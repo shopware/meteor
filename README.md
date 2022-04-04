@@ -1,7 +1,3 @@
-# Warning:
-### This repository is still under development and should not be used yet.
-____
-
 [![npm version](https://badge.fury.io/js/@shopware-ag%2Fmeteor-icon-kit.svg)](https://badge.fury.io/js/@shopware-ag%2Fmeteor-icon-kit)
 
 # meteor-icon-kit
