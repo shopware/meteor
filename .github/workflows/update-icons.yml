@@ -33,3 +33,11 @@ jobs:
         run: npm run start
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
+        with:
+          commit-message: Update icons
+          comitter: ${{ secrets.COMITTER }}
+          author: Dennis Mader <${{ secrets.COMITTER }}>
+          branch: update-icons
+          delete-branch: true
+          branch-suffix: timestamp
+          title: Update icons
