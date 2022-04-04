@@ -1,6 +1,6 @@
 {
   "name": "@shopware-ag/meteor-icon-kit",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "An icon library and toolkit that follows a minimal, yet highly expressive style perfectly aligned with Shopware's product language",
   "main": "index.js",
   "repository": {
@@ -19,6 +19,9 @@
     "lint:types": "tsc --noEmit",
     "lint:eslint": "eslint ./src --ext .ts"
   },
+  "files": [
+    "icons"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/shopware/meteor-icon-kit/issues"

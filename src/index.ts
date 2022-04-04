@@ -7,6 +7,10 @@ import * as cliProgress from 'cli-progress';
 const client = new FigmaApiClient();
 const util = new FigmaUtil();
 
+console.log(chalk.green('Clean up...'));
+
+fse.removeSync(`${__dirname}/../icons`);
+
 console.log(chalk.green('Fetching Figma file stand by...'));
 
 client.getFile().then(async (response) => {
