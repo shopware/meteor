@@ -1,5 +1,5 @@
 {
-  "name": "meteor-icon-kit",
+  "name": "@shopware-ag/meteor-icon-kit",
   "version": "0.0.1",
   "description": "An icon library and toolkit that follows a minimal, yet highly expressive style perfectly aligned with Shopware's product language",
   "main": "index.js",
