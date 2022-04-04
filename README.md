@@ -2,7 +2,7 @@
 ### This repository is still under development and should not be used yet.
 ____
 
-[![npm version](https://badge.fury.io/js/@shopware-ag%2Fadmin-extension-sdk.svg)](https://badge.fury.io/js/@shopware-ag%2Fadmin-extension-sdk)
+[![npm version](https://badge.fury.io/js/@shopware-ag%2Fmeteor-icon-kit.svg)](https://badge.fury.io/js/@shopware-ag%2Fmeteor-icon-kit)
 
 # meteor-icon-kit
 
