@@ -27,6 +27,7 @@ $ yarn -v
   - [Installation](#installation)
   - [Usage](#usage)
   - [Built With](#built-with)
+  - [Figma library](#figma-library)
   - [License](#license)
 
 ## Installation
@@ -87,6 +88,11 @@ By defining the following class structure in `CSS` you can change the color of t
 * VS-Code
 * Love :blue_heart: :blue_heart: :blue_heart:
 
+## Figma library
+Meteor Icon Kit is available as a [Figma library](https://www.figma.com/community/file/1032564947404478461/Meteor-Icon-Kit-%E2%80%93-Shopware) through the Figma Community. To use the icons, log in to your Figma account and duplicate the file to your drafts.
+
 ## License
 
-[MIT License](https://andreasonny.mit-license.org/2019) © shopware AG
+See the [LICENSE](LICENSE.md) file for license rights and limitations (MIT). 
+
+2022 © shopware AG
