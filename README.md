@@ -26,7 +26,6 @@ $ yarn -v
   - [Table of contents](#table-of-contents)
   - [Installation](#installation)
   - [Usage](#usage)
-  - [Change log](#changelog)
   - [Built With](#built-with)
   - [Figma library](#figma-library)
   - [License](#license)
