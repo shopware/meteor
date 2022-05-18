@@ -1,5 +1,15 @@
 # CHANGELOG.md
 
+## 2.1.0
+
+Added: 
+
+    - `regular/party-horn` and `solid/party-horn`
+    - `regular/google` and `solid/google`
+
+Fixed: 
+    - Fix size and path issues of `regular/shopware` and `solid/shopware`
+
 ## 2.0.0
 
 Breaking change:
