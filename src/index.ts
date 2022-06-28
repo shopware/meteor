@@ -37,7 +37,7 @@ client.getFile().then(async (response) => {
 
       return client.downloadImage(iconUrl).then((result) => {
         const svg = result.data as string;
-  
+
         // Remove width/height from SVGs
         const optimizedSvgResult = optimize(svg, {
           // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -51,15 +51,15 @@ client.getFile().then(async (response) => {
             },
           ],
         }) as OptimizedSvg;
-  
+
         const optimizedSvg = optimizedSvgResult.data;
-  
+
         fse.outputFileSync(`${__dirname}/../${iconName}.svg`, optimizedSvg);
-  
+
         ++count;
-  
+
         bar1.update(count);
-  
+
         return Promise.resolve();
       });
     });
