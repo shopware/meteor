@@ -51,6 +51,8 @@ export default defineConfigWithTheme<ThemeConfig>({
   // srcExclude: ["tutorial/**/description.md"], In case we need something to be excluded
   scrollOffset: "header",
 
+  base: '/meteor-icon-kit/',
+
   head: [],
 
   themeConfig: {
