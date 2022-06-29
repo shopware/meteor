@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "cp -R ../icons public && vitepress",
     "build": "cp -R ../icons public && vitepress build",
-    "serve": "cp -R ../icons public && vitepress serve"
+    "serve": "cp -R ../icons public && vitepress serve --port 3001"
   },
   "dependencies": {
     "fuse.js": "^6.6.2",
