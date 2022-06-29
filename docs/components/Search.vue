@@ -71,6 +71,30 @@ export default {
 .container {
   max-width: none !important;
 }
+
+/* Override dark mode because toggling it to false in the config enables it for build... */
+.dark {
+  --vt-c-bg: #ffffff !important;
+  --vt-c-bg-soft: #f9f9f9 !important;
+  --vt-c-bg-mute: #f1f1f1 !important;
+  --vt-c-divider: rgba(60, 60, 60, .29) !important;
+  --vt-c-divider-light: rgba(60, 60, 60, .12) !important;
+  --vt-c-divider-inverse: rgba(84, 84, 84, .65) !important;
+  --vt-c-divider-inverse-light: rgba(84, 84, 84, .48) !important;
+  --vt-c-text-1: #213547 !important;
+  --vt-c-text-2: rgba(60, 60, 60, .7) !important;
+  --vt-c-text-3: rgba(60, 60, 60, .33) !important;
+  --vt-c-text-4: rgba(60, 60, 60, .18) !important;
+  --vt-c-text-code: #476582 !important;
+  --vt-c-text-inverse-1: rgba(255, 255, 255, .87) !important;
+  --vt-c-text-inverse-2: rgba(235, 235, 235, .6) !important;
+  --vt-c-text-inverse-3: rgba(235, 235, 235, .38) !important;
+  --vt-c-text-inverse-4: rgba(235, 235, 235, .18) !important;
+  --vt-c-brand-highlight: #3468a3 !important;
+  --sw-nav-bg: #142432 !important;
+  --sw-sidebar-bg: #f5f7f9 !important;
+  --sw-sidebar-border: #d3dce4 !important;
+}
 /* End vitepress overrides */
 
 .search-container {

@@ -80,6 +80,8 @@ export default defineConfigWithTheme<ThemeConfig>({
       repo: "shopware/meteor-icon-kit",
       text: "Edit this page on GitHub",
     },
+
+    // Toggle dark mode to false also @see Search.vue .dark class override.
     appearance: false,
   },
 
