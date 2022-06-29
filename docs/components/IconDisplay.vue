@@ -1,7 +1,7 @@
 <template>
 <div class="icon-container">
   <div class="icon-display">
-    <img :src="icon.path" :alt="icon.name" @click="copyIconName"/>
+    <img :src="withBase(icon.path)" :alt="icon.name" @click="copyIconName"/>
   </div>
 
   <p>{{ icon.name }}</p>
@@ -9,7 +9,8 @@
 </template>
 
 <script setup>
-import {defineProps} from "vue";
+import {defineProps} from 'vue';
+import {withBase} from 'vitepress';
 
 const props = defineProps({
   icon: Object,
