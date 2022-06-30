@@ -66,6 +66,7 @@ export default {
 
 .content {
   max-width: none !important;
+  margin: 0 auto !important;
 }
 
 .container {
