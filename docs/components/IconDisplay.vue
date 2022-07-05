@@ -1,7 +1,7 @@
 <template>
 <div class="icon-container">
   <div class="icon-display">
-    <img :src="withBase(icon.path)" :alt="icon.name" @click="copyIconName"/>
+    <img :id="id" :src="withBase(icon.path)" :alt="icon.name" @click="copyIconName"/>
   </div>
 
   <p>{{ icon.name }}</p>
@@ -9,7 +9,7 @@
 </template>
 
 <script setup>
-import {defineProps} from 'vue';
+import {defineProps, computed} from 'vue';
 import {withBase} from 'vitepress';
 
 const props = defineProps({
@@ -24,6 +24,10 @@ const copyIconName = () => {
   document.execCommand('copy');
   document.body.removeChild(tempTextArea);
 }
+
+const id = computed(() => {
+  return `meteor-icon-kit__${props.icon.regular ? 'regular-' : 'solid-'}${props.icon.name}`;
+});
 </script>
 
 <style lang="css" scoped>
@@ -50,8 +54,6 @@ const copyIconName = () => {
 }
 
 img {
-  width: 24px;
-  height: 24px;
   cursor: pointer;
 }
 </style>

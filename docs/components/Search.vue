@@ -58,7 +58,9 @@ export default {
 }
 </script>
 
-<style lang="css">
+<style lang="scss">
+@import "public/icons/meteor-icon-kit.scss";
+
 /* Begin vitepress overrides */
 .VPContentDoc {
   padding: 64px !important;
