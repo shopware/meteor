@@ -48,7 +48,19 @@ $ yarn add @shopware-ag/meteor-icon-kit
 
 ## Usage
 
-Start by importing the icon you would like:
+Start by importing/using the provided styling.
+Either utilizing sass/scss:
+```scss
+@import '@shopware-ag/meteor-icon-kit/icons/meteor-icon-kit.scss';
+```
+
+Or classic via the css file:
+
+```html
+<link rel="stylesheet" href="your-asset-folder/meteor-icon-kit-8e350007463127dbe9f66c60cd6896ca.css">
+```
+
+Then, you can use the icons:
 ```js
 import wallet from '@shopware-ag/meteor-icon-kit/icons/regular/wallet.svg';
 ```

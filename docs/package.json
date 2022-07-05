@@ -17,7 +17,8 @@
   "devDependencies": {
     "@originjs/vite-plugin-require-context": "^1.0.9",
     "@types/markdown-it": "^12.2.3",
-    "@types/node": "^16.9.1"
+    "@types/node": "^16.9.1",
+    "sass": "^1.53.0"
   },
   "pnpm": {
     "peerDependencyRules": {
