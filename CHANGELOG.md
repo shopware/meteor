@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## 4.2.0
+
+Added: 
+
+    - `regular/link-horizontal` and `solid/link-horizontal`
+    - `regular/link-horizontal-slash` and `solid/link-horizontal-slash`
+    - CSS is now generated along svgs files
+    
 ## 2.1.0
 
 Added: 
