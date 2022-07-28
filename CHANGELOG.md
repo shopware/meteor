@@ -1,19 +1,25 @@
 # CHANGELOG.md
 
+## 4.3.0
+
+Added: 
+
+  - `regular/globe` and `solid/globe`
+  
 ## 4.2.0
 
 Added: 
 
-    - `regular/link-horizontal` and `solid/link-horizontal`
-    - `regular/link-horizontal-slash` and `solid/link-horizontal-slash`
-    - CSS is now generated along svgs files
+  - `regular/link-horizontal` and `solid/link-horizontal`
+  - `regular/link-horizontal-slash` and `solid/link-horizontal-slash`
+  - CSS is now generated along svgs files
     
 ## 2.1.0
 
 Added: 
 
-    - `regular/party-horn` and `solid/party-horn`
-    - `regular/google` and `solid/google`
+  - `regular/party-horn` and `solid/party-horn`
+  - `regular/google` and `solid/google`
 
 Fixed: 
     - Fix size and path issues of `regular/shopware` and `solid/shopware`
@@ -21,7 +27,7 @@ Fixed:
 ## 2.0.0
 
 Breaking change:
-    - Updated names of icons: `solid/thumbs-up`, `regular/thumbs-up`, `regular/times-hexagon`, `regular/thumbs-down`
+  - Updated names of icons: `solid/thumbs-up`, `regular/thumbs-up`, `regular/times-hexagon`, `regular/thumbs-down`
 
 ## 1.1.0
 
