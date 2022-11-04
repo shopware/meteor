@@ -1,5 +1,31 @@
 # CHANGELOG.md
 
+## 4.4.0
+
+Changed: 
+
+ - `regular/microphone-slash`
+ - `solid/microphone-slash`
+ - `regular/video-slash`
+ - `solid/video-slash`
+ - `regular/phone-slash`
+ - `solid/phone-slash`
+ - `regular/eye-slash`
+ - `solid/eye-slash`
+ - `regular/volume-mute`
+ - `solid/volume-mute`
+ - `regular/bell-slash`
+ - `solid/bell-slash`
+
+Added:
+
+ - `regular/mobile-slash`
+ - `solid/mobile-slash`
+ - `regular/tablet-slash`
+ - `solid/tablet-slash`
+ - `regular/desktop-slash`
+ - `solid/desktop-slash`
+
 ## 4.3.0
 
 Added: 
