@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## 4.5.0
+
+Added:
+ - `regular/image-text`
+ - `solid/image-text`
+
 ## 4.4.0
 
 Changed: 
