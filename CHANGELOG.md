@@ -1,5 +1,25 @@
 # CHANGELOG.md
 
+## 5.0.0
+
+Added:
+   - `regular/artificial-intelligence`
+   - `solid/artificial-intelligence`
+   - `regular/cloud`
+   - `solid/cloud`
+   - `regular/line-column`
+   - `solid/line-column`
+   - `regular/line-column-xs`
+
+  Updated:
+  - `regular/filter`
+  - `solid/filter`
+
+ Breaking change:
+   - Renamed `delete-coloumn` to `delete-column`
+   - Renamed `insert-coloumn-after` to `insert-column-after` 
+   - Renamed `insert-coloumn-before` to `insert-column-before`
+
 ## 4.5.0
 
 Added:
