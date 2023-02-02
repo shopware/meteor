@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/trunk/src/Core/Framework/App/Manifest/Schema/manifest-1.0.xsd">
+    <meta>
+        <name>AdminExtensionSDKExampleApp</name>
+        <label>Admin Extension SDK Example App</label>
+        <description>This is an example app to show you a boilerplate structure for your admin extensions.</description>
+        <author>Shopware AG</author>
+        <copyright>(c) by Shopware AG</copyright>
+        <version>1.0.0</version>
+        <license>MIT</license>
+    </meta>
+
+    <setup>
+        <registrationUrl>http://localhost:8888/authorize</registrationUrl>
+        <secret>testSecret</secret>
+    </setup>
+
+    <admin>
+        <base-app-url>http://localhost:8888/index.html</base-app-url>
+    </admin>
+
+    <permissions>
+        <read>product_manufacturer</read>
+        <update>product_manufacturer</update>
+        <create>product_manufacturer</create>
+        <delete>product_manufacturer</delete>
+    </permissions>
+</manifest>
