@@ -34,6 +34,27 @@ Added:
    - Renamed `delete-coloumn` to `delete-column`
    - Renamed `insert-coloumn-after` to `insert-column-after` 
    - Renamed `insert-coloumn-before` to `insert-column-before`
+   - Removed `regular/wand-magic` (available in 5.1.0)
+   - Removed `solid/wand-magic` (available in 5.1.0)
+   - Removed `regular/wand-magic-sparkles` (available in 5.1.0)
+   - Removed `solid/wand-magic-sparkles` (available in 5.1.0)
+   - Removed `regular/sparkle` (available in 5.1.0)
+   - Removed `solid/sparkle` (available in 5.1.0)
+   - Removed `regular/sparkles` (available in 5.1.0)
+   - Removed `solid/sparkles` (available in 5.1.0) 
+
+## 4.6.0
+
+Revelio ✨
+Added:
+- `regular/wand-magic`
+- `solid/wand-magic`
+- `regular/wand-magic-sparkles`
+- `solid/wand-magic-sparkles`
+- `regular/sparkle`
+- `solid/sparkle`
+- `regular/sparkles`
+- `solid/sparkles`
 
 ## 4.5.0
 
