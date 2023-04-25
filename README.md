@@ -26,6 +26,7 @@ $ yarn -v
   - [Table of contents](#table-of-contents)
   - [Installation](#installation)
   - [Usage](#usage)
+  - [Vite example](#example)
   - [Built With](#built-with)
   - [Figma library](#figma-library)
   - [License](#license)
@@ -70,9 +71,7 @@ import wallet from '@shopware-ag/meteor-icon-kit/icons/regular/wallet.svg';
 Take this pseudo html:
 ```html
 <span class="icon-example">
-    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
-    <!--- ... -->
-    </svg>
+    <wallet />
 </span>
 ```
 
@@ -92,6 +91,38 @@ By defining the following class structure in `CSS` you can change the color of t
   }
 }
 ```
+
+## Example
+
+Following is an example for a Vue3 project using Vite as a bundler.
+We are using the `vite-svg-loader` to load the svg files.
+
+In your `vite.config.js` add the following:
+```js
+//...
+import svgLoader from 'vite-svg-loader';
+
+export default {
+  plugins: [
+    //...
+    svgLoader()
+  ],
+};
+
+```
+
+This way you can import your svg files as components:
+```vue
+<template>
+  <ActivityIcon />
+</template>
+
+<script setup>
+import ActivityIcon from '@shopware-ag/meteor-icon-kit/icons/regular/activity.svg';
+</script>
+```
+
+You can find this example as a CodeSandbox template [here](https://codesandbox.io/p/sandbox/meteor-icon-kit-example-revdlr).
 
 ## Built With
 
