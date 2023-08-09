@@ -17,6 +17,8 @@ Added:
    - `regular/AR`
    - `solid/AR`
 
+Updated:
+   - Adjusted visual alignment of arrows and chevrons
 
 
 ## 5.1.0
