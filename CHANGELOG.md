@@ -1,5 +1,25 @@
 # CHANGELOG.md
 
+## 5.2.0
+
+We've added *X* to the set of social network icons. Farewell Larry 🐦
+Added:
+   - `regular/x`
+   - `solid/x`
+   - `regular/tiktok`
+   - `solid/tiktok`
+   - `regular/stackoverflow` 
+   - `solid/stackoverflow`
+   - `regular/slack`
+   - `solid/slack`
+   - `regular/3D`
+   - `solid/3D`
+   - `regular/AR`
+   - `solid/AR`
+
+Updated:
+   - Adjusted visual alignment of arrows and chevrons
+
 
 ## 5.1.0
 
