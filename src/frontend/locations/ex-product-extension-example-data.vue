@@ -86,13 +86,18 @@ export default Vue.extend({
     }
   },
   mounted(): void {
-    data.get({ id: 'sw-product-detail__product' }).then((product) => {
+    data.get({ 
+      id: 'sw-product-detail__product',
+      selectors: ['name']
+    }).then((product) => {
         console.log('product', product)
       this.product = product;
     });
 
     data.subscribe('sw-product-detail__product', (product) => {
       this.product = product.data;
+    }, {
+      selectors: ['name']
     });
   },
 

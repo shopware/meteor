@@ -24,5 +24,13 @@
         <update>product_manufacturer</update>
         <create>product_manufacturer</create>
         <delete>product_manufacturer</delete>
+        <read>product</read>
+        <update>product</update>
+        <create>product</create>
+        <delete>product</delete>
+        <read>product_manufacturer_translation</read>
+        <update>product_manufacturer_translation</update>
+        <create>product_manufacturer_translation</create>
+        <delete>product_manufacturer_translation</delete>
     </permissions>
 </manifest>
