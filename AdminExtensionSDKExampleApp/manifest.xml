@@ -32,5 +32,9 @@
         <update>product_manufacturer_translation</update>
         <create>product_manufacturer_translation</create>
         <delete>product_manufacturer_translation</delete>
+        <read>cms_slot</read>
+        <update>cms_slot</update>
+        <create>cms_slot</create>
+        <delete>cms_slot</delete>
     </permissions>
 </manifest>
