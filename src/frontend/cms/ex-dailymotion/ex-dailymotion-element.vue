@@ -25,18 +25,18 @@ import EX_DAILYMOTION_CONSTANTS from './ex-dailymotion-constants';
 
 export default Vue.extend({
   data(): {
-    dailyUrlValue: string;
+    dailyUrlValue: string|undefined;
     dailyUrlSource: string;
   } {
       return {
-        dailyUrlValue: '',
+        dailyUrlValue: undefined,
         dailyUrlSource: 'static',
       }
   },
 
   computed: {
       dailyUrl(): string {
-          const dailymotionURL = this.dailyUrlValue ?? 'x8hc5d6'
+          const dailymotionURL = this.dailyUrlValue || 'x8hc5d6';
 
           return `https://www.dailymotion.com/embed/video/${dailymotionURL}`;
       },
@@ -46,6 +46,17 @@ export default Vue.extend({
             'config.dailyUrl.value',
             'config.dailyUrl.source',
           ];
+      },
+
+      dataId(): string {
+        const params = new URLSearchParams(window.location.search);
+        const elementId = params.get('elementId');
+
+        if (!elementId) {
+          return EX_DAILYMOTION_CONSTANTS.PUBLISHING_KEY;
+        }
+
+        return EX_DAILYMOTION_CONSTANTS.PUBLISHING_KEY + '__' + elementId;
       }
   },
 
@@ -56,7 +67,7 @@ export default Vue.extend({
   methods: {
       async createdComponent() {
           const value = await data.get({
-            id: EX_DAILYMOTION_CONSTANTS.PUBLISHING_KEY,
+            id: this.dataId,
             selectors: this.dataSelectors,
           }) as {
             'config.dailyUrl.value': string,
@@ -68,7 +79,11 @@ export default Vue.extend({
             this.dailyUrlSource = value['config.dailyUrl.source'];
           }
 
-          data.subscribe(EX_DAILYMOTION_CONSTANTS.PUBLISHING_KEY, this.elementSubscriber, {
+          data.subscribe(
+            this.dataId,
+            // @ts-expect-error
+            this.elementSubscriber,
+          {
             selectors: this.dataSelectors,
           });
       },
@@ -77,8 +92,8 @@ export default Vue.extend({
         'config.dailyUrl.value': string,
         'config.dailyUrl.source': string,
       }, id: string }): void {
-          this.dailyUrlSource = response.data['config.dailyUrl.source'];
-          this.dailyUrlValue = response.data['config.dailyUrl.value'];
+        this.dailyUrlSource = response.data['config.dailyUrl.source'];
+        this.dailyUrlValue = response.data['config.dailyUrl.value'];
       }
   }
 })

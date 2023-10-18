@@ -37,7 +37,7 @@ export default Vue.extend({
               this.dailyUrlValue = value;
 
               data.update({
-                  id: EX_DAILYMOTION_CONSTANTS.PUBLISHING_KEY,
+                  id: this.dataId,
                   data: {
                     config: {
                       dailyUrl: {
@@ -55,6 +55,18 @@ export default Vue.extend({
               'config.dailyUrl.value',
               'config.dailyUrl.source',
           ];
+      },
+
+
+      dataId(): string {
+        const params = new URLSearchParams(window.location.search);
+        const elementId = params.get('elementId');
+
+        if (!elementId) {
+          return EX_DAILYMOTION_CONSTANTS.PUBLISHING_KEY;
+        }
+
+        return EX_DAILYMOTION_CONSTANTS.PUBLISHING_KEY + '__' + elementId;
       }
   },
 
@@ -65,7 +77,7 @@ export default Vue.extend({
   methods: {
       async createdComponent() {
           const value = await data.get({
-            id: EX_DAILYMOTION_CONSTANTS.PUBLISHING_KEY,
+            id: this.dataId,
             selectors: this.dataSelectors,
           }) as {
             'config.dailyUrl.value': string,
