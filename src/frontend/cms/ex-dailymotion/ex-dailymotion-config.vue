@@ -18,27 +18,43 @@ import EX_DAILYMOTION_CONSTANTS from './ex-dailymotion-constants';
 
 export default Vue.extend({
   data(): {
-    element: any;
+    dailyUrlValue: string;
+    dailyUrlSource: string;
   } {
       return {
-          element: null
+        dailyUrlValue: '',
+        dailyUrlSource: 'static',
       }
   },
 
   computed: {
       dailyUrl: {
           get(): string {
-              return this.element?.config?.dailyUrl?.value || '';
+              return this.dailyUrlValue || '';
           },
 
           set(value: string): void {
-              this.element.config.dailyUrl.value = value;
+              this.dailyUrlValue = value;
 
               data.update({
                   id: EX_DAILYMOTION_CONSTANTS.PUBLISHING_KEY,
-                  data: this.element,
+                  data: {
+                    config: {
+                      dailyUrl: {
+                        value: this.dailyUrlValue,
+                        source: this.dailyUrlSource,
+                      }
+                    }
+                  },
               });
           }
+      },
+
+      dataSelectors(): string[] {
+          return [
+              'config.dailyUrl.value',
+              'config.dailyUrl.source',
+          ];
       }
   },
 
@@ -48,7 +64,18 @@ export default Vue.extend({
 
   methods: {
       async createdComponent() {
-          this.element = await data.get({ id: EX_DAILYMOTION_CONSTANTS.PUBLISHING_KEY });
+          const value = await data.get({
+            id: EX_DAILYMOTION_CONSTANTS.PUBLISHING_KEY,
+            selectors: this.dataSelectors,
+          }) as {
+            'config.dailyUrl.value': string,
+            'config.dailyUrl.source': string,
+          };
+
+          if (value) {
+            this.dailyUrlValue = value['config.dailyUrl.value'];
+            this.dailyUrlSource = value['config.dailyUrl.source'];
+          }
       }
   }
 })
