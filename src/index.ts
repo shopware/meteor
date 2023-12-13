@@ -1,11 +1,12 @@
-import FigmaApiClient from './figma';
+import FigmaApiClient, {Icon, Meta} from './figma';
 import FigmaUtil from './figma/util';
 import * as fse from 'fs-extra';
 import chalk from 'chalk';
 import * as cliProgress from 'cli-progress';
-import type { OptimizedSvg } from 'svgo';
-import { optimize } from 'svgo';
+import type {OptimizedSvg} from 'svgo';
+import {optimize} from 'svgo';
 import md5 from 'js-md5';
+import {PromisePool} from '@supercharge/promise-pool';
 // @ts-expect-error - this dependency has no type definitions
 import * as svgoAutocrop from 'svgo-autocrop';
 
@@ -19,76 +20,70 @@ fse.removeSync(`${__dirname}/../icons`);
 console.log(chalk.green('Fetching Figma file stand by...'));
 
 client.getFile().then(async (response) => {
-  const iconOverview = response.data.document.children.find(node => node.id === '217:6');
-  console.log(chalk.green('Gathering icons...'));
-  const iconMap = await util.buildIconMap(iconOverview);
+    const iconOverview = response.data.document.children.find(node => node.id === '217:6');
 
-  console.log(chalk.green('Downloading and optimizing icons...'));
-  const bar1 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
+    console.log(chalk.green('Gathering icons...'));
+    const iconMap = await util.buildIconMap(iconOverview);
+    const meta = util.buildMeta(iconMap);
 
-  bar1.start(iconMap.size, 0);
+    console.log(chalk.green('Downloading and optimizing icons...'));
+    const bar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
 
-  let count = 0;
-  const promises: Promise<void>[] = [];
-  const styling = [] as {name: string, width: string, height: string}[];
+    bar.start(iconMap.size, 0);
 
-  iconMap.forEach((iconUrl, iconName) => {
-    const promise = Promise.resolve().then(async () => {
-      // Sleep for a random number below 10s to avoid too many connections at the same time
-      await new Promise(resolve => setTimeout(resolve, Math.floor(Math.random() * 10000)));
+    //const promises: Promise<void>[] = [];
+    const styling = [] as { name: string, width: string, height: string }[];
 
-      return client.downloadImage(iconUrl).then((result) => {
-        const svg = result.data as string;
+    const {results, errors} = await PromisePool
+        .for(Array.from(iconMap.keys()))
+        .withConcurrency(25)
+        .onTaskFinished((iconName, pool) => {
+            bar.update(pool.processedItems().length);
+        })
+        .process(async (iconName: string) => {
+            const icon: Icon = iconMap.get(iconName);
 
-        // Remove width/height from SVGs
-        const optimizedSvgResult = optimize(svg, {
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-          plugins: [
-            { name: 'removeDimensions' },
-            {
-              ...svgoAutocrop,
-              params: {
-                disableTranslateWarning: true,
-              },
-            },
-          ],
-        }) as OptimizedSvg;
+            const result = await client.downloadImage(icon.image);
+            const svg = result.data as string;
 
-        let optimizedSvg = optimizedSvgResult.data;
+            // Remove width/height from SVGs
+            const optimizedSvgResult = optimize(svg, {
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                plugins: [
+                    {name: 'removeDimensions'},
+                    {
+                        ...svgoAutocrop,
+                        params: {
+                            disableTranslateWarning: true,
+                        },
+                    },
+                ],
+            }) as OptimizedSvg;
 
-        const viewBox = optimizedSvg.match(/viewBox="(\d*) (\d*) (\d*) (\d*)"/);
-        if (viewBox) {
-          const width = viewBox[3];
-          const height = viewBox[4];
-          const className = iconName.replace(/icons\//, '').replace(/\//g, '-');
+            let optimizedSvg = optimizedSvgResult.data;
 
-          // Add class name to SVG
-          optimizedSvg = optimizedSvg.replace(/<svg/, `<svg id="meteor-icon-kit__${className}"`);
+            const viewBox = optimizedSvg.match(/viewBox="(\d*) (\d*) (\d*) (\d*)"/);
+            if (viewBox) {
+                const width = viewBox[3];
+                const height = viewBox[4];
+                const className = iconName.replace(/icons\//, '').replace(/\//g, '-');
 
-          styling.push({
-            name: className,
-            width,
-            height,
-          });
-        } else {
-          console.log(chalk.red(`Could not find viewBox for ${iconName}`));
-        }
+                // Add class name to SVG
+                optimizedSvg = optimizedSvg.replace(/<svg/, `<svg id="meteor-icon-kit__${className}"`);
 
-        fse.outputFileSync(`${__dirname}/../${iconName}.svg`, optimizedSvg);
+                styling.push({
+                    name: className,
+                    width,
+                    height,
+                });
+            } else {
+                console.log(chalk.red(`Could not find viewBox for ${iconName}`));
+            }
 
-        ++count;
+            fse.outputFileSync(`${__dirname}/../${iconName}.svg`, optimizedSvg);
+        });
 
-        bar1.update(count);
-
-        return Promise.resolve();
-      });
-    });
-
-    promises.push(promise);
-  });
-
-  return Promise.all(promises).then(() => {
-    bar1.stop();
+    bar.stop();
     console.log(chalk.green('All icons written!'));
 
     console.log(chalk.green('Writing styling...'));
@@ -98,9 +93,9 @@ client.getFile().then(async (response) => {
 
     scssFileContent += '#meteor-icon-kit {';
 
-    styling.forEach(({ name, width, height }) => {
-      cssFileContent += `#meteor-icon-kit__${name}{width:${width}px;height:${height}px;}`;
-      scssFileContent += `\n  &__${name} {\n    width: ${width}px;\n    height: ${height}px;\n  }\n`;
+    styling.forEach(({name, width, height}) => {
+        cssFileContent += `#meteor-icon-kit__${name}{width:${width}px;height:${height}px;}`;
+        scssFileContent += `\n  &__${name} {\n    width: ${width}px;\n    height: ${height}px;\n  }\n`;
     });
 
     scssFileContent += '}\n';
@@ -110,8 +105,11 @@ client.getFile().then(async (response) => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/restrict-template-expressions
     fse.outputFileSync(`${__dirname}/../icons/meteor-icon-kit.scss`, scssFileContent);
 
+    console.log(chalk.green('Writing metadata'));
+    fse.outputFileSync(`${__dirname}/../icons/meta.json`, JSON.stringify(meta));
+
     console.log(chalk.green('All done!'));
-  });
+    //});
 }).catch((e) => {
-  console.error(e);
+    console.error(e);
 });

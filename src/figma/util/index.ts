@@ -1,11 +1,11 @@
-import type { node } from '../index';
-import FigmaApiClient from '../index';
+import type {Icon, IconMode, Meta, node} from '../index';
+import FigmaApiClient, {IconSize} from '../index';
 
 export default class FigmaUtil {
-  public async buildIconMap(document: node): Promise<Map<string, string>> {
+  public async buildIconMap(document: node): Promise<Map<string, Icon>> {
     const client = new FigmaApiClient();
     const iconNodes = this.getIconNodes(document);
-    const iconMap: Map<string, string> = new Map();
+    const iconMap: Map<string, Icon> = new Map();
 
     while(iconNodes.length) {
       // Get svgs in 300 chunks max
@@ -19,11 +19,110 @@ export default class FigmaUtil {
       Object.keys(svgs.images).forEach((nodeId) => {
         const node = chunk.find(n => n.id === nodeId);
 
-        iconMap.set(node.name, svgs.images[nodeId]);
+        iconMap.set(node.name, {
+          image: svgs.images[nodeId],
+          nodeId: nodeId,
+        });
       });
     }
 
+    const nodeIds: string[] = Array.from(iconMap.values()).map(({nodeId}) => nodeId);
+
+    const components: node[] = (await client.getNodeInfo(nodeIds)).data.components;
+    Object.values(components).forEach((component: node) => {
+      iconMap.set(component.name, {
+        ...iconMap.get(component.name),
+        description: component.description,
+      });
+    });
+
     return iconMap;
+  }
+
+  public buildMeta(iconMap: Map<string, Icon>): Meta[] {
+    const metas:Meta[] = [];
+    const sizes = ['s', 'xs', 'xxs'];
+    const modes = ['regular', 'solid'];
+    Array.from(iconMap.keys()).forEach(key => {
+      const name: string = key.split('/')[2];
+      const mode: string = key.split('/')[1];
+      let size: string = IconSize.DEFAULT;
+      let basename: string = name;
+
+      sizes.forEach(mySize => {
+        const suffix = `-${mySize}`;
+        if (!name.endsWith(suffix)) {
+          return;
+        }
+
+        basename = name.substring(0, name.length - suffix.length);
+        size = mySize;
+      });
+
+      // Extract tags from the description
+      const description: string = (iconMap.get(key).description.split('🔎')[1] || '').split('\n')[0].trim();
+      let tags: string[] = [];
+      if (description.startsWith('[') && description.endsWith(']')) {
+        tags = description.substring(1, description.length - 1).split(',').map(tag => tag.trim());
+      }
+
+      const mySizes: string[] = [];
+      const myModes: string[] = [];
+
+      if (iconMap.has(`icons/${mode}/${basename}`)) {
+        mySizes.push('');
+      }
+
+      // Find all available sizes
+      sizes.forEach(size => {
+        if (iconMap.has(`icons/${mode}/${basename}-${size}`)) {
+          mySizes.push(size);
+        }
+      });
+
+      // Find all available modes
+      modes.forEach(mode => {
+        if (iconMap.has(`icons/${mode}/${name}`)) {
+          myModes.push(mode);
+        }
+      });
+
+      metas.push({
+        name,
+        basename,
+        mode: mode as IconMode,
+        size: size as IconSize,
+        tags,
+        sizes: mySizes,
+        modes: myModes,
+        related: [],
+      });
+    });
+
+    // Find all related icons with matching tags
+    metas.forEach((meta: Meta, key: number) => {
+      meta.tags.forEach((tag: string) => {
+        metas.forEach((secondMeta: Meta, secondKey: number) => {
+          if (metas[secondKey].tags.includes(tag)) {
+            metas[key].related.push(secondMeta.name);
+          }
+        });
+      });
+      // Make unique items
+      metas[key].related = [...new Set(metas[key].related)];
+    });
+
+    return metas.sort((a, b) => {
+      if (a.name < b.name) {
+        return -1;
+      }
+
+      if (a.name > b.name) {
+        return 1;
+      }
+
+      return 0;
+    });
   }
 
   private getIconNodes(document: node): node[] {

@@ -6,6 +6,7 @@ export type node = {
     name: string,
     type: 'DOCUMENT' | 'CANVAS' | 'PAGE',
     children?: node[],
+    description: string,
 }
 
 type FigmaFileResponse = {
@@ -17,6 +18,40 @@ type FigmaImageResponse = {
     images: {
         [nodeId: string]: string,
     },
+}
+
+type FigmaNodeResponse = {
+    components: node[],
+}
+
+export enum IconMode {
+    REGULAR = 'regular',
+    SOLID = 'solid',
+}
+
+export enum IconSize {
+    DEFAULT = '',
+    S = 's',
+    XS = 'xs',
+    XXS = 'xxs',
+}
+
+export type Icon = {
+    image: string,
+    nodeId: string,
+    description?: string,
+    tags?: string[],
+}
+
+export type Meta = {
+    name: string,
+    basename: string,
+    mode: IconMode,
+    size: IconSize,
+    tags: string[],
+    sizes: string[],
+    modes: string[],
+    related: string[],
 }
 
 export default class FigmaApiClient {
@@ -54,6 +89,15 @@ export default class FigmaApiClient {
       responseType: 'blob',
     });
   }
+
+    public getNodeInfo(ids: string[]): Promise<AxiosPromise<FigmaNodeResponse>> {
+        return this.httpClient.get(
+            `/files/${process.env.FIGMA_FILE}?ids=${ids.join(',')}`,
+            {
+                headers: this.getHeaders(),
+            }
+        );
+    }
 
   private getHeaders(): AxiosRequestHeaders {
     return {

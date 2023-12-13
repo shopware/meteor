@@ -1,7 +1,6 @@
 ---
 sidebar: false
 aside: false
-layout: page
 ---
 
 <script setup>

@@ -1,45 +1,41 @@
 <template>
-<div class="search-result">
-  <div class="icon-list">
-    <IconDisplay :icon="icon" v-for="icon in resultIcons" :key="icon" />
+  <div class="SearchResult">
+    <div class="SearchResult_list">
+      <IconDisplay
+          v-for="icon in resultIcons"
+          :icon="icon"
+          :key="icon"
+          @select="selectedIcon = icon"/>
+    </div>
+
+    <div v-if="selectedIcon" class="SearchResult_sidebar">
+      <IconSelection :icon="selectedIcon"
+                     @switch="switchSelectedIcon"
+                     :icons="icons"/>
+    </div>
   </div>
-</div>
 </template>
 
 <script setup>
+import IconDisplay from './IconDisplay.vue';
 import {ref, computed} from "vue";
 import Fuse from 'fuse.js'
+import IconSelection from "./IconSelection.vue";
 
-const icons = ref([]);
-const regular = require.context('../public/icons/regular', true, /svg$/);
-const solid = require.context('../public/icons/solid', true, /svg$/);
+// context of the developer portal
+import meta from "../public/icons/meta.json";
 
-icons.value.push(...regular.keys().map(x => {
-  return {
-    path: x.replace('./', '/icons/regular/'),
-    name: x.substring(2, x.length - 4),
-    regular: true,
-    solid: false,
-  }
-}));
+const icons = ref(meta);
 
-icons.value.push(...solid.keys().map(x => {
-  return {
-    path: x.replace('./', '/icons/solid/'),
-    name: x.substring(2, x.length - 4),
-    regular: false,
-    solid: true,
-  }
-}));
+const selectedIcon = ref(null);
 
 const props = defineProps({
   phrase: String,
-  regular: Boolean,
-  solid: Boolean,
+  mode: 'solid' | 'regular',
 })
 
 const resultIcons = computed(() => {
-  const filteredIcons = icons.value.filter(i => i.regular === props.regular && i.solid === props.solid);
+  const filteredIcons = icons.value.filter(i => i.mode === props.mode);
   if (props.phrase.length <= 0) {
     return filteredIcons;
   }
@@ -52,33 +48,41 @@ const resultIcons = computed(() => {
 
   return searchResult.map(r => r.item);
 })
-</script>
 
-<script>
-import IconDisplay from './IconDisplay.vue';
-
-export default {
-  name: 'SearchResult',
-
-  components: {
-    'IconDisplay': IconDisplay,
+const switchSelectedIcon = (data) => {
+  if (!data) {
+    selectedIcon.value = null;
+    return;
   }
+  const {basename, size, mode} = data;
+  selectedIcon.value = icons.value.find(icon => icon.basename === basename && icon.size === size && icon.mode === mode)
 }
 </script>
 
-<style lang="css" scoped>
-.search-result {
-  background: #F2F2F2;
-  border-radius: 8px;
-  padding: 21px 48px;
-}
+<style lang="scss">
+.SearchResult {
+  @apply flex gap-12;
+  flex-wrap: nowrap;
 
-.icon-list {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-evenly;
-  align-items: stretch;
-  gap: 32px;
-  flex-wrap: wrap;
+  &_list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(7rem, 1fr));
+    flex-direction: row;
+    justify-content: space-evenly;
+    align-items: flex-start;
+    gap: 24px;
+    row-gap: 2rem;
+    flex-wrap: wrap;
+    flex-grow: 1;
+  }
+
+  &_sidebar {
+    @media (min-width: 960.5px) {
+      flex-basis: 24rem;
+      flex-grow: 0;
+      flex-shrink: 0;
+      position: relative;
+    }
+  }
 }
 </style>
