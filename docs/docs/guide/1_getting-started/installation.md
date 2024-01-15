@@ -60,19 +60,19 @@ The CDN method is easy to use and fast to implement. It is best used for quick p
 ### Using NPM (require bundling):
 Install it to your `package.json`
 ```
-npm i --save @shopware-ag/admin-extension-sdk
+npm i --save @shopware-ag/meteor-admin-sdk
 ```
 
 and import it into your app or plugin:
 ```js
 // import everything as one big object
-import * as sw from '@shopware-ag/admin-extension-sdk';
+import * as sw from '@shopware-ag/meteor-admin-sdk';
 
 // or import only needed functionality scope
-import { notification }  from '@shopware-ag/admin-extension-sdk';
+import { notification }  from '@shopware-ag/meteor-admin-sdk';
 
 // or the direct method (here with an alias)
-import { dispatch as dispatchNotification } from '@shopware-ag/admin-extension-sdk/es/notification'
+import { dispatch as dispatchNotification } from '@shopware-ag/meteor-admin-sdk/es/notification'
 
 ```
 
@@ -81,10 +81,10 @@ Import the source from the CDN
 
 ```js
 // use the latest version available
-<script src="https://unpkg.com/@shopware-ag/admin-extension-sdk/cdn"></script>
+<script src="https://unpkg.com/@shopware-ag/meteor-admin-sdk/cdn"></script>
 
 // use a fix version (example here: 1.2.3)
-<script src="https://unpkg.com/@shopware-ag/admin-extension-sdk@1.2.3/cdn"></script>
+<script src="https://unpkg.com/@shopware-ag/meteor-admin-sdk@1.2.3/cdn"></script>
 ```
 
 and access it with the global variable `sw`.

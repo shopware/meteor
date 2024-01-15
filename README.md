@@ -1,25 +1,25 @@
-# Admin Extension SDK
-[![Tests](https://github.com/shopware/admin-extension-sdk/actions/workflows/tests.yml/badge.svg)](https://github.com/shopware/admin-extension-sdk/actions/workflows/tests.yml)
-[![NPM Package](https://img.shields.io/npm/v/@shopware-ag/admin-extension-sdk)](https://www.npmjs.com/package/@shopware-ag/admin-extension-sdk)
+# meteor-admin-sdk
+[![Tests](https://github.com/shopware/meteor-admin-sdk/actions/workflows/tests.yml/badge.svg)](https://github.com/shopware/meteor-admin-sdk/actions/workflows/tests.yml)
+[![NPM Package](https://img.shields.io/npm/v/@shopware-ag/meteor-admin-sdk)](https://www.npmjs.com/package/@shopware-ag/meteor-admin-sdk)
 
-The `admin-extension-sdk` is a JavaScript library for all [Shopware 6](https://github.com/shopware/platform) App and Plugin developer which want an easy way to extend and customize the administration.
+The `meteor-admin-sdk` is a JavaScript library for all [Shopware 6](https://github.com/shopware/platform) App and Plugin developer which want an easy way to extend and customize the administration.
 
-[See Documentation](https://shopware.github.io/admin-extension-sdk/)
+[See Documentation](https://shopware.github.io/meteor-admin-sdk/)
 
 ## Installation
 #### Using NPM:
 Install it to your `package.json`
 ```
-npm i --save @shopware-ag/admin-extension-sdk
+npm i --save @shopware-ag/meteor-admin-sdk
 ```
 
 and import it in your app:
 ```js
 // import everything
-import * as sw from '@shopware-ag/admin-extension-sdk';
+import * as sw from '@shopware-ag/meteor-admin-sdk';
 
 // or import only needed functionality
-import { notification }  from '@shopware-ag/admin-extension-sdk';
+import { notification }  from '@shopware-ag/meteor-admin-sdk';
 ```
 
 #### Using CDN:
@@ -27,10 +27,10 @@ Import the source from the CDN
 
 ```js
 // use the latest version available
-<script src="https://unpkg.com/@shopware-ag/admin-extension-sdk/cdn"></script>
+<script src="https://unpkg.com/@shopware-ag/meteor-admin-sdk/cdn"></script>
 
 // use a fix version (example here: 1.2.3)
-<script src="https://unpkg.com/@shopware-ag/admin-extension-sdk@1.2.3/cdn"></script>
+<script src="https://unpkg.com/@shopware-ag/meteor-admin-sdk@1.2.3/cdn"></script>
 ```
 
 and then you can access it with the global variable `sw`.
@@ -75,4 +75,4 @@ sw.context.subscribeLocale(({ locale }) => {
 })
 ```
 
-See more examples in the [Documentation](https://shopware.github.io/admin-extension-sdk/).
+See more examples in the [Documentation](https://shopware.github.io/meteor-admin-sdk/).

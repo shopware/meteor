@@ -13,7 +13,7 @@ You can use the SDK features directly in your JS file. Just import the specific 
 ### NPM example:
 ```js
 // import notification toolkit from the SDK
-import { notification }  from '@shopware-ag/admin-extension-sdk';
+import { notification }  from '@shopware-ag/meteor-admin-sdk';
 
 // dispatch a new notification
 notification.dispatch({
@@ -84,7 +84,7 @@ With this feature you can create mix the usage of the SDK and the existing plugi
 
 ```js
 // in a normal plugin js file without a HTML file
-import { ui, location } from '@shopware-ag/admin-extension-sdk';
+import { ui, location } from '@shopware-ag/meteor-admin-sdk';
 
 if (!location.isIframe()) {
   const myLocationId = 'my-example-location-id';

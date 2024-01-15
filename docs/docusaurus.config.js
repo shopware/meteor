@@ -9,12 +9,12 @@ const config = {
   title: 'Admin Extension SDK',
   tagline: 'for Shopware 6 apps and plugins',
   url: 'https://shopware.github.io',
-  baseUrl: '/admin-extension-sdk/',
+  baseUrl: '/meteor-admin-sdk/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
   organizationName: 'Shopware AG', // Usually your GitHub org/user name.
-  projectName: 'admin-extension-sdk', // Usually your repo name.
+  projectName: 'meteor-admin-sdk', // Usually your repo name.
 
   plugins: [
     [
@@ -71,7 +71,7 @@ const config = {
             label: 'API',
           },
           {
-            href: 'https://github.com/shopware/admin-extension-sdk',
+            href: 'https://github.com/shopware/meteor-admin-sdk',
             label: 'GitHub',
             position: 'right',
           },

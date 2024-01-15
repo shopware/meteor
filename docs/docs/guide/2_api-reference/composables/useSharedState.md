@@ -11,7 +11,7 @@ The value stored within the shared state can be any data type that can be serial
 #### Usage:  
 ```ts
 // Inside a Vue component setup
-import { composables } from '@shopware-ag/admin-extension-sdk';
+import { composables } from '@shopware-ag/meteor-admin-sdk';
 const { useSharedState } = composables;
 
 const mySharedStateValue = useSharedState('myUniqueKeyForTheSharedState', 'myInitialDataValue');

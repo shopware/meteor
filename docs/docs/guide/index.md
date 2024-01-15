@@ -40,7 +40,7 @@ Requirements for this quick start guide are:
   <meta charset="UTF-8">
 </head>
 <body>
-  <script src="https://unpkg.com/@shopware-ag/admin-extension-sdk/cdn"></script>
+  <script src="https://unpkg.com/@shopware-ag/meteor-admin-sdk/cdn"></script>
 
   <script>
     sw.notification.dispatch({
@@ -69,7 +69,7 @@ Congratulation 🎉 You just created your first interaction with the Administrat
   <meta charset="UTF-8">
 </head>
 <body>
-  <script src="https://unpkg.com/@shopware-ag/admin-extension-sdk/cdn"></script>
+  <script src="https://unpkg.com/@shopware-ag/meteor-admin-sdk/cdn"></script>
 
   <script>
     sw.notification.dispatch({

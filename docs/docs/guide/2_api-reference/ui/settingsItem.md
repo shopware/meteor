@@ -26,12 +26,12 @@ ui.settings.addSettingsItem({
 
 ### Getting the right icon
 Assuming that your editor supports TypeScript, you should get auto-completion for valid `icon` values.
-In case that doesn't work take a look at the list [here](https://github.com/shopware/admin-extension-sdk/blob/main/src/icons.ts).
+In case that doesn't work take a look at the list [here](https://github.com/shopware/meteor-admin-sdk/blob/trunk/src/icons.ts).
 
 #### Example
 ![Settings item example](./assets/add-settings-item-example.png)
 ```ts
-import { location, ui } from '@shopware-ag/admin-extension-sdk';
+import { location, ui } from '@shopware-ag/meteor-admin-sdk';
 
 // General commands
 if (location.is(location.MAIN_HIDDEN)) {

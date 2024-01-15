@@ -36,7 +36,7 @@ the administration and add custom locations to different extension points. To ch
 location you can use the predefined constant:
 
 ```js
-import { location } from '@shopware-ag/admin-extension-sdk';
+import { location } from '@shopware-ag/meteor-admin-sdk';
 
 if (location.is(location.MAIN_HIDDEN)) {
   // Do the stuff in the hidden iFrame
@@ -85,7 +85,7 @@ With this feature you can create mix the usage of the SDK and the existing plugi
 
 ```js
 // in a normal plugin js file without a HTML file
-import { ui, location } from '@shopware-ag/admin-extension-sdk';
+import { ui, location } from '@shopware-ag/meteor-admin-sdk';
 
 if (!location.isIframe()) {
   const myLocationId = 'my-example-location-id';

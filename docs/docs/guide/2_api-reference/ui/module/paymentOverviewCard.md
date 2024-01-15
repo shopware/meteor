@@ -15,7 +15,7 @@ This allows you, for example, to require an onboarding to your payment provider 
 
 ### Extension example
 ```ts
-import { ui } from '@shopware-ag/admin-extension-sdk';
+import { ui } from '@shopware-ag/meteor-admin-sdk';
 
 if (sw.location.is(sw.location.MAIN_HIDDEN)) {
   // create the position
@@ -48,7 +48,7 @@ if (sw.location.is('my-custom-payment-overview-position-before')) {
 
 ### Custom plugin component example
 ```ts
-import { ui } from '@shopware-ag/admin-extension-sdk';
+import { ui } from '@shopware-ag/meteor-admin-sdk';
 
 // register a custom component
 Component.register('my-custom-payment-overview-card', {

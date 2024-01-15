@@ -7,7 +7,7 @@ Add a new component to a component section.
 
 #### Usage:  
 ```ts
-import { ui } from '@shopware-ag/admin-extension-sdk';
+import { ui } from '@shopware-ag/meteor-admin-sdk';
 
 ui.componentSection.add({
     component: 'the-component', // Choose the component which you want to render at the component section
@@ -40,7 +40,7 @@ This method does not have a return value.
 
 #### Usage:
 ```js
-import { ui } from '@shopware-ag/admin-extension-sdk';
+import { ui } from '@shopware-ag/meteor-admin-sdk';
 
 ui.componentSection.add({
     component: 'card',
@@ -58,7 +58,7 @@ ui.componentSection.add({
 
 #### With tabs:
 ```js
-import { ui } from '@shopware-ag/admin-extension-sdk';
+import { ui } from '@shopware-ag/meteor-admin-sdk';
 
 ui.componentSection.add({
     component: 'card',

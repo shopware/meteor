@@ -23,7 +23,7 @@ function HomepageHeader() {
           <Link
             className="button button--secondary button--lg"
             style={{marginLeft: '16px'}}
-            to="https://github.com/shopware/admin-extension-sdk-example-app">
+            to="https://github.com/shopware/meteor-admin-sdk-example-app">
             Example App
           </Link>
         </div>

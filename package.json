@@ -1,9 +1,9 @@
 {
-  "name": "@shopware-ag/admin-extension-sdk",
+  "name": "@shopware-ag/meteor-admin-sdk",
   "license": "MIT",
   "version": "3.0.16",
-  "repository": "git://github.com/shopware/admin-extension-sdk.git",
-  "description": "The SDK for App iframes to communicate with the Shopware Administration",
+  "repository": "git://github.com/shopware/meteor-admin-sdk.git",
+  "description": "The Meteor SDK for the Shopware Administration.",
   "keywords": [
     "iframe",
     "shopware",

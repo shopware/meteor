@@ -8,7 +8,7 @@ will be generated automatically.
 
 #### Usage:  
 ```ts
-import { ui } from '@shopware-ag/admin-extension-sdk';
+import { ui } from '@shopware-ag/meteor-admin-sdk';
 
 ui.tabs('sw-product-detail' /* The positionId of the tab bar*/).addTabItem({
     label: 'Example tab',
@@ -25,7 +25,7 @@ ui.tabs('sw-product-detail' /* The positionId of the tab bar*/).addTabItem({
 #### Example
 ![Tab item example](./assets/add-tab-item-example.png)
 ```ts
-import { ui, location } from '@shopware-ag/admin-extension-sdk';
+import { ui, location } from '@shopware-ag/meteor-admin-sdk';
 
 // For general commands
 if (location.is(location.MAIN_HIDDEN)) {

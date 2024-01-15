@@ -2,7 +2,7 @@
 
 #### Usage:  
 ```ts
-import { location, ui } from '@shopware-ag/admin-extension-sdk';
+import { location, ui } from '@shopware-ag/meteor-admin-sdk';
 
 if (location.is(sw.location.MAIN_HIDDEN)) {
     ui.actionButton.add({
@@ -32,7 +32,7 @@ The following example will render the same action button as the above example bu
 **This will only work for apps. Plugin developers need to use a api client directly in there callback.**.
 
 ```ts
-import { location, ui } from '@shopware-ag/admin-extension-sdk';
+import { location, ui } from '@shopware-ag/meteor-admin-sdk';
 
 if (location.is(sw.location.MAIN_HIDDEN)) {
     ui.actionButton.add({

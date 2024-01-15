@@ -46,7 +46,7 @@ check to separate code which should be executed inside the Extension SDK context
 
 ```ts
 if (location.isIframe()) {
-    // Execute the code which uses the Admin-Extension-SDK context
+    // Execute the code which uses the meteor-admin-sdk context
     import('./extension-code');
 } else {
     // Execute the plugin code
