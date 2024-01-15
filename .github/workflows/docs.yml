@@ -43,7 +43,7 @@ jobs:
         run: npm run doc
 
       - name: Deploy 🚀
-        if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/trunk'
         uses: JamesIves/github-pages-deploy-action@4.1.4
         with:
           branch: gh-pages
