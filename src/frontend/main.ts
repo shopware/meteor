@@ -1,4 +1,4 @@
-import { location } from '@shopware-ag/admin-extension-sdk';
+import { location } from '@shopware-ag/meteor-admin-sdk';
 
 if (location.is(location.MAIN_HIDDEN)) {
     /**

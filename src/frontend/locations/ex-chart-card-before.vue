@@ -2,7 +2,7 @@
   <div>
     <p>
       This App is built for demonstration purposes. It is an example where developer can see, what are
-      the possibilities of the Admin Extension SDK. It is not intended to be used in production. 
+      the possibilities of the Meteor Admin SDK. It is not intended to be used in production. 
 
       <br>
       <br>
@@ -23,7 +23,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { window, context } from "@shopware-ag/admin-extension-sdk";
+import { window, context } from "@shopware-ag/meteor-admin-sdk";
 import { SwButton } from '@shopware-ag/meteor-component-library';
 
 export default Vue.extend({
@@ -37,7 +37,7 @@ computed: {},
 methods: {
   async goToExampleModule() {
     const moduleInformation = await context.getModuleInformation();
-    const exampleModule = moduleInformation.modules.find(module => module.locationId === 'ex-admin-extension-sdk-example-module');
+    const exampleModule = moduleInformation.modules.find(module => module.locationId === 'ex-meteor-admin-sdk-example-module');
 
     if (exampleModule) {
       window.routerPush({

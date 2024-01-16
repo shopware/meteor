@@ -1,6 +1,6 @@
 import Vue from 'vue';
 import VueI18n from 'vue-i18n'
-import { location } from '@shopware-ag/admin-extension-sdk';
+import { location } from '@shopware-ag/meteor-admin-sdk';
 import '@shopware-ag/meteor-component-library/dist/style.css';
 
 Vue.use(VueI18n);
@@ -13,7 +13,7 @@ const locations = {
     'ex-product-extension-example-resize': () => import('./ex-product-extension-example-resize.vue'),
     'ex-product-extension-example-data': () => import('./ex-product-extension-example-data.vue'),
     'ex-chart-card-before': () => import('./ex-chart-card-before.vue'),
-    'ex-admin-extension-sdk-example-module': () => import('./module/example-module/ex-admin-extension-sdk-example-module.vue'),
+    'ex-meteor-admin-sdk-example-module': () => import('./module/example-module/ex-meteor-admin-sdk-example-module.vue'),
     'ex-dailymotion-config': () => import('../cms/ex-dailymotion/ex-dailymotion-config.vue'),
     'ex-dailymotion-preview': () => import('../cms/ex-dailymotion/ex-dailymotion-preview.vue'),
     'ex-dailymotion-element': () => import('../cms/ex-dailymotion/ex-dailymotion-element.vue'),
