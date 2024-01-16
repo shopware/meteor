@@ -1,7 +1,7 @@
 <template>
   <sw-card title="CMS">
     <p>
-      You can create your own custom CMS elements with the Admin Extension SDK. You can go to the <a
+      You can create your own custom CMS elements with the Meteor Admin SDK. You can go to the <a
         href="#"
         @click="goToCmsModule"
       >CMS
@@ -11,7 +11,7 @@
 </template>
 
 <script lang="ts">
-import { window } from '@shopware-ag/admin-extension-sdk';
+import { window } from '@shopware-ag/meteor-admin-sdk';
 import { SwCard } from '@shopware-ag/meteor-component-library';
 import Vue from 'vue';
 

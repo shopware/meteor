@@ -29,7 +29,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { location } from "@shopware-ag/admin-extension-sdk";
+import { location } from "@shopware-ag/meteor-admin-sdk";
 import { SwButton, SwNumberField } from '@shopware-ag/meteor-component-library';
 
 export default Vue.extend({

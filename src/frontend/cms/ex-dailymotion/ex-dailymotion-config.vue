@@ -12,7 +12,7 @@
 </template>
 
 <script lang="ts">
-import { data } from '@shopware-ag/admin-extension-sdk';
+import { data } from '@shopware-ag/meteor-admin-sdk';
 import Vue from 'vue';
 import EX_DAILYMOTION_CONSTANTS from './ex-dailymotion-constants';
 

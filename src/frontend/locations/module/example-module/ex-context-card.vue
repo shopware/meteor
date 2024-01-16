@@ -32,7 +32,7 @@
   </sw-card>
 </template>
 
-<script lang="ts">import { context, notification } from '@shopware-ag/admin-extension-sdk';
+<script lang="ts">import { context, notification } from '@shopware-ag/meteor-admin-sdk';
 import { SwCard, SwButton } from '@shopware-ag/meteor-component-library';
 import Vue from 'vue';
 

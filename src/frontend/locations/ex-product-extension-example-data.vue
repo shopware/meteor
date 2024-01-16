@@ -47,7 +47,7 @@
 
 <script lang="ts">
 import Vue from 'vue'
-import { notification, data } from "@shopware-ag/admin-extension-sdk";
+import { notification, data } from "@shopware-ag/meteor-admin-sdk";
 import { SwButton, SwTextField } from '@shopware-ag/meteor-component-library';
 
 export default Vue.extend({

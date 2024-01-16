@@ -1,5 +1,5 @@
 <template>
-  <div class="ex-admin-extension-sdk-example-module">
+  <div class="ex-meteor-admin-sdk-example-module">
     <ex-cms-card />
     <ex-context-card />
   </div>
@@ -24,7 +24,7 @@ methods: {}
 </script>
 
 <style scoped>
-.ex-admin-extension-sdk-example-module {
+.ex-meteor-admin-sdk-example-module {
   padding-top: 40px;
 }
 </style>
