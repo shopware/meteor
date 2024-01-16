@@ -9,7 +9,7 @@ custom_edit_url: null
 
 # Introduction
 
-The Admin Extension SDK is an NPM library for Shopware 6 apps and plugins that need an easy way of extending or customizing the Administration.
+The Meteor Admin SDK is an NPM library for Shopware 6 apps and plugins that need an easy way of extending or customizing the Administration.
 
 It contains helper functions to communicate with the Administration, execute actions, subscribe to data or extend the user interface.
 
@@ -56,7 +56,7 @@ Requirements for this quick start guide are:
 
 3. Visit the Administration. After you have logged in you should see the notification from your app.
 
-Congratulation 🎉 You just created your first interaction with the Administration via the Admin Extension SDK.
+Congratulation 🎉 You just created your first interaction with the Administration via the Meteor Admin SDK.
 
 ### Plugin
 **Notice:** Plugins will only be working on self-hosted instances. You can't use a Shopware 6 cloud instance for plugins.
@@ -88,4 +88,4 @@ Congratulation 🎉 You just created your first interaction with the Administrat
 
 After all files have been compiled, a new browser window should open, in which you should see the Administration. After logging in, you should see the notification from your plugin.
 
-Congratulations 🎉 You just created your first interaction with the Administration via the Admin Extension SDK.
+Congratulations 🎉 You just created your first interaction with the Administration via the Meteor Admin SDK.

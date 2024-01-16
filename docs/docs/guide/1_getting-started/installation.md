@@ -38,7 +38,7 @@ Once you got the registration/ handshake working you need to add the `<base-app-
 </manifest>
 ```
 
-In your new HTML file you need inject a JS file. This file can use the Admin Extension SDK via CDN or if you want to use a build tools then you
+In your new HTML file you need inject a JS file. This file can use the Meteor Admin SDK via CDN or if you want to use a build tools then you
 can use the NPM package.
 
 ### Plugin:

@@ -1,4 +1,4 @@
-import { Page, test, expect } from "@playwright/test";
+import { Page, expect } from "@playwright/test";
 
 export async function setup({ page }: { page: Page }) {
   await page.goto(`http://localhost:8181`);

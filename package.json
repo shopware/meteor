@@ -2,7 +2,10 @@
   "name": "@shopware-ag/meteor-admin-sdk",
   "license": "MIT",
   "version": "3.0.16",
-  "repository": "git://github.com/shopware/meteor-admin-sdk.git",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/shopware/meteor-admin-sdk.git"
+  },
   "description": "The Meteor SDK for the Shopware Administration.",
   "keywords": [
     "iframe",

@@ -1,6 +1,6 @@
 # How it works
 
-The Admin Extension SDK provides wrapper methods for a better development experience. It abstracts and hides the more
+The Meteor Admin SDK provides wrapper methods for a better development experience. It abstracts and hides the more
 complex logic behind a simple API. This makes it easier for app and plugin developers to create their solutions and focus
 on their business instead of caring about the technical details.
 

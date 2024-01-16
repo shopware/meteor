@@ -37,7 +37,7 @@ export default function Home(): JSX.Element {
   return (
     <Layout
       title={`${siteConfig.title}`}
-      description="Admin Extension SDK for Shopware 6 apps and plugins">
+      description="Meteor Admin SDK for Shopware 6 apps and plugins">
       <HomepageHeader />
       <main>
         <HomepageFeatures />

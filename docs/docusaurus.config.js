@@ -6,7 +6,7 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Admin Extension SDK',
+  title: 'Meteor Admin SDK',
   tagline: 'for Shopware 6 apps and plugins',
   url: 'https://shopware.github.io',
   baseUrl: '/meteor-admin-sdk/',
@@ -52,7 +52,7 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       navbar: {
-        title: 'Admin Extension SDK',
+        title: 'Meteor Admin SDK',
         logo: {
           alt: 'Shopware 6 Logo',
           src: 'img/sw6-logo.svg',
