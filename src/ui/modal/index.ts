@@ -10,6 +10,7 @@ export type uiModalOpen =
    locationId: string,
    variant?: 'default'|'small'|'large'|'full',
    showHeader?: boolean,
+   showFooter?: boolean,
    closable?: boolean,
    buttons?: buttonProps[],
  }

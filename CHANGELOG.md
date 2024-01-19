@@ -2,10 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.0.17] - 19.01.2024
+
+## Added
+- Added `showFooter` to `ui.modal` to allow toggling the modal footer
+
 ## [3.0.15] - 09.10.2023
 
 ## Changed
-- Changed `handle` of `channel.ts` to only validate dataset collections and entities 
+- Changed `handle` of `channel.ts` to only validate dataset collections and entities
 
 ## [3.0.13] - 21.07.2023
 
