@@ -1,3 +1,5 @@
+import { type FigmaVariable, type FigmaVariableCollection } from "./figmaApi";
+
 type DictionaryValue = {
   $value: string;
 
@@ -5,9 +7,9 @@ type DictionaryValue = {
   $type: string;
 };
 
-interface DictionaryTree {
-  [key: string]: DictionaryTree | DictionaryValue;
-}
+type DictionaryTree = {
+  [key: string]: DictionaryValue | DictionaryTree;
+};
 
 export class Dictionary {
   // TODO: use inferred type from zod schema
@@ -15,7 +17,24 @@ export class Dictionary {
     // TODO: add zod validation
   }
 
-  public static fromFigmaVariables(): Dictionary {
-    return new Dictionary({});
+  public static fromFigmaVariables({
+    variables,
+    collections,
+  }: {
+    variables: FigmaVariable[];
+    collections: FigmaVariableCollection[];
+  }): Dictionary {
+    const tokens = variables.reduce((accumulator, variable) => {
+      console.log({ variable });
+
+      accumulator[variable.name] = {
+        $value: "#0000FF",
+        $type: variable.resolvedType.toLowerCase(),
+      };
+
+      return accumulator;
+    }, {});
+
+    return new Dictionary(tokens);
   }
 }
