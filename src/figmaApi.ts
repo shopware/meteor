@@ -13,6 +13,7 @@ const colorValue = z.object({
   a: z.number(),
 });
 
+export type FigmaVariable = z.infer<typeof variableSchema>;
 const variableSchema = z.object({
   id: z.string(),
   name: z.string(),
@@ -30,6 +31,7 @@ const variableSchema = z.object({
   // codeSyntax: variableCodeSyntax,
 });
 
+export type FigmaVariableCollection = z.infer<typeof variableCollection>;
 const variableCollection = z.object({
   id: z.string(),
   name: z.string(),
