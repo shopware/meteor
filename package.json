@@ -10,5 +10,8 @@
   "license": "MIT",
   "devDependencies": {
     "tsx": "^4.7.0"
+  },
+  "dependencies": {
+    "zod": "^3.22.4"
   }
 }
