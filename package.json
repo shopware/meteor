@@ -4,7 +4,7 @@
   "description": "Design Tokens for the Meteor Design System used at shopware",
   "main": "index.js",
   "scripts": {
-    "start": "node --env-file=\".env\" node_modules/.bin/tsx ./src/index.ts"
+    "start": "node --env-file=\".env\" node_modules/.bin/tsx ./src/scripts/index.ts"
   },
   "author": "Nils Haberkamp",
   "license": "MIT",

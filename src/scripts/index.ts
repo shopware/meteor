@@ -1,5 +1,5 @@
-import { env } from "./env";
-import { FigmaApi } from "./figmaApi";
+import { env } from "../env";
+import { FigmaApi } from "../figmaApi";
 
 const figmaApi = new FigmaApi({
   apiKey: env.API_KEY,
