@@ -6,4 +6,4 @@ const figmaApi = new FigmaApi({
 });
 
 const fileKey = "Krub3xbG0vMUdoL8vzEZ7l";
-figmaApi.getDesignTokens(fileKey);
+figmaApi.getLocalVariablesOfFile(fileKey);

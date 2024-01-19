@@ -7,7 +7,7 @@ type Config = {
 export class FigmaApi {
   constructor(private readonly config: Config) {}
 
-  getDesignTokens(fileKey: string) {
+  getLocalVariablesOfFile(fileKey: string) {
     return get(`https://api.figma.com/v1/files/${fileKey}/variables/local`, {
       Accept: "*/*",
       "X-Figma-Token": this.config.apiKey,
