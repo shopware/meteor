@@ -54,7 +54,7 @@ fact("it creates a dictionary out of Figma Variables", () => {
 });
 
 fact(
-  "it creates a dictionary with nested values out of Figma Variables",
+  "it creates a dictionary with nested Tokens out of Figma Variables",
   () => {
     // GIVEN
     const variables: FigmaVariable[] = [
