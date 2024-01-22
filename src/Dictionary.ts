@@ -1,33 +1,6 @@
 import { Color } from "./Color";
 import { type FigmaVariable, type FigmaVariableCollection } from "./figmaApi";
-
-function set(obj, path, value) {
-  if (!obj || typeof obj !== "object" || !path || typeof path !== "string") {
-    throw new Error(
-      "Invalid input: obj must be an object, path must be a string"
-    );
-  }
-
-  const keys = path.split(".");
-  let currentObj = obj;
-
-  for (let i = 0; i < keys.length - 1; i++) {
-    const key = keys[i];
-
-    if (!currentObj.hasOwnProperty(key)) {
-      currentObj[key] = {};
-    } else if (typeof currentObj[key] !== "object") {
-      throw new Error(`Invalid path: "${key}" is not an object`);
-    }
-
-    currentObj = currentObj[key];
-  }
-
-  const lastKey = keys[keys.length - 1];
-  currentObj[lastKey] = value;
-
-  return obj;
-}
+import { set } from "./utils/object";
 
 type DictionaryValue = {
   $value: string;
