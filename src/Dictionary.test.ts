@@ -42,7 +42,7 @@ fact("it creates a dictionary out of Figma Variables", () => {
   const subject = Dictionary;
 
   // WHEN
-  const result = subject.fromFigmaVariables({ variables, collections }).value;
+  const result = subject.fromFigmaApiResponse({ variables, collections }).value;
 
   // THEN
   expect(result).toStrictEqual({
@@ -95,7 +95,10 @@ fact(
     const subject = Dictionary;
 
     // WHEN
-    const result = subject.fromFigmaVariables({ variables, collections }).value;
+    const result = subject.fromFigmaApiResponse({
+      variables,
+      collections,
+    }).value;
 
     // THEN
     expect(result).toStrictEqual({
@@ -167,7 +170,10 @@ fact(
     const subject = Dictionary;
 
     // WHEN
-    const result = subject.fromFigmaVariables({ variables, collections }).value;
+    const result = subject.fromFigmaApiResponse({
+      variables,
+      collections,
+    }).value;
 
     // THEN
     expect(result).toStrictEqual({

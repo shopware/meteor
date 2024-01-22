@@ -19,7 +19,7 @@ export class Dictionary {
     // TODO: add zod validation
   }
 
-  public static fromFigmaVariables({
+  public static fromFigmaApiResponse({
     variables,
     collections,
   }: {
