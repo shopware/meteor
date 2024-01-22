@@ -1,5 +1,10 @@
 import { Color } from "./Color";
-import { type FigmaVariable, type FigmaVariableCollection } from "./figmaApi";
+import {
+  FigmaApi,
+  FigmaApiResponse,
+  type FigmaVariable,
+  type FigmaVariableCollection,
+} from "./figmaApi";
 import { set } from "./utils/object";
 
 type DictionaryValue = {
@@ -19,13 +24,13 @@ export class Dictionary {
     // TODO: add zod validation
   }
 
-  public static fromFigmaApiResponse({
-    variables,
-    collections,
-  }: {
-    variables: FigmaVariable[];
-    collections: FigmaVariableCollection[];
-  }): Dictionary {
+  public static fromFigmaApiResponse(
+    // TODO: use inferred type from zod schema
+    response: FigmaApiResponse
+  ): Dictionary {
+    const collections = Object.values(response.meta.variableCollections);
+    const variables = Object.values(response.meta.variables);
+
     const modes = collections.reduce<{ modeId: string; name: string }[]>(
       (accumulator, collection) => {
         const uniqueModes = collection.modes.filter(
