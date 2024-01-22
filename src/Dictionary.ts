@@ -53,42 +53,96 @@ export class Dictionary {
     variables: FigmaVariable[];
     collections: FigmaVariableCollection[];
   }): Dictionary {
-    const tokens = variables.reduce((accumulator, variable) => {
-      const collection = collections.find(
-        (collection) => collection.id === variable.variableCollectionId
-      );
-
-      if (!collection)
-        throw new Error(
-          `Failed to create dictionary: Could not find collection for variable with id: ${variable.id}`
+    const modes = collections.reduce<{ modeId: string; name: string }[]>(
+      (accumulator, collection) => {
+        const uniqueModes = collection.modes.filter(
+          (mode) => !accumulator.some((m) => m.modeId === mode.modeId)
         );
 
-      if (collection.modes.length === 1) {
-        const rawValue = variable.valuesByMode[collection.modes[0].modeId];
-        if (typeof rawValue !== "object" || "r" in rawValue === false)
+        accumulator.push(...uniqueModes);
+
+        return accumulator;
+      },
+      []
+    );
+
+    if (modes.length < 2) {
+      const tokens = variables.reduce((accumulator, variable) => {
+        const collection = collections.find(
+          (collection) => collection.id === variable.variableCollectionId
+        );
+
+        if (!collection)
           throw new Error(
-            "Failed to create dictionary: Value is not a color value"
+            `Failed to create dictionary: Could not find collection for variable with id: ${variable.id}`
           );
 
-        const path = variable.name
-          .replace(/\//g, ".")
-          .replace(/ /g, "")
-          .toLowerCase();
+        if (collection.modes.length === 1) {
+          const rawValue = variable.valuesByMode[collection.modes[0].modeId];
+          const itIsAnAliasedToken =
+            typeof rawValue === "object" &&
+            "type" in rawValue &&
+            rawValue.type === "VARIABLE_ALIAS";
 
-        set(accumulator, path, {
-          $value: Color.fromRGB(
-            rawValue.r * 255,
-            rawValue.g * 255,
-            rawValue.b * 255,
-            rawValue.a
-          ).toHex(),
-          $type: variable.resolvedType.toLowerCase(),
-        });
-      }
+          if (itIsAnAliasedToken) {
+            const path = variable.name
+              .replace(/\//g, ".")
+              .replace(/ /g, "")
+              .toLowerCase();
 
-      return accumulator;
-    }, {});
+            const referencedVariable = variables.find(
+              (variable) => variable.id === rawValue.id
+            );
 
-    return new Dictionary(tokens);
+            const referencedVariableDoesNotExist = !referencedVariable;
+            if (referencedVariableDoesNotExist)
+              throw new Error(
+                `Failed to create dictionary: Referenced variable with id "${rawValue.id}" does not exist`
+              );
+
+            set(accumulator, path, {
+              $value: `{${referencedVariable.name
+                .replace(/\//g, ".")
+                .replace(/ /g, "")
+                .toLowerCase()}}`,
+              $type: variable.resolvedType.toLowerCase(),
+            });
+
+            return accumulator;
+          }
+
+          const itIsAColorValue =
+            typeof rawValue === "object" && "r" in rawValue;
+
+          if (itIsAColorValue) {
+            // TODO: should we validate that the naming convention is followed? and if yes where? here or in the figmaApi?
+            const path = variable.name
+              .replace(/\//g, ".")
+              .replace(/ /g, "")
+              .toLowerCase();
+
+            set(accumulator, path, {
+              $value: Color.fromRGB(
+                rawValue.r * 255,
+                rawValue.g * 255,
+                rawValue.b * 255,
+                rawValue.a
+              ).toHex(),
+              $type: variable.resolvedType.toLowerCase(),
+            });
+          }
+
+          return accumulator;
+        }
+
+        throw new Error(
+          "Failed to create dictionary: Value is not a color value"
+        );
+      }, {});
+
+      return new Dictionary(tokens);
+    }
+
+    return new Dictionary({});
   }
 }

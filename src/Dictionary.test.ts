@@ -110,3 +110,83 @@ fact(
     });
   }
 );
+
+fact(
+  "it creates a dictionary containing an aliased Token out of Figma Variables",
+  () => {
+    // GIVEN
+    const variables: FigmaVariable[] = [
+      {
+        id: "VariableID:41413:11953",
+        name: "Neutrals / Gray / 50",
+        key: "db9aa5d3b7c6f03b4cddb78e045b566fae112d17",
+        variableCollectionId: "VariableCollectionId:11953:115879",
+        resolvedType: "COLOR",
+        valuesByMode: {
+          "11953:0": {
+            r: 0,
+            g: 0,
+            b: 1,
+            a: 1,
+          },
+        },
+        remote: false,
+        description: "",
+        hiddenFromPublishing: false,
+        scopes: ["ALL_SCOPES"],
+      },
+      {
+        id: "VariableID:11953:115880",
+        name: "Text / Secondary / Default",
+        key: "db9aa5d3b7c6f03b4cddb78e045b566fae112d17",
+        variableCollectionId: "VariableCollectionId:11953:115879",
+        resolvedType: "COLOR",
+        valuesByMode: {
+          "11953:0": { type: "VARIABLE_ALIAS", id: "VariableID:41413:11953" },
+        },
+        remote: false,
+        description: "",
+        hiddenFromPublishing: false,
+        scopes: ["ALL_SCOPES"],
+      },
+    ];
+
+    const collections: FigmaVariableCollection[] = [
+      {
+        id: "VariableCollectionId:11953:115879",
+        name: ".Design Tokens",
+        key: "9130479ef323598b1ccfb32e7b16dc80fcb30f14",
+        modes: [{ modeId: "11953:0", name: "Default" }],
+        defaultModeId: "11953:0",
+        remote: false,
+        hiddenFromPublishing: true,
+        variableIds: ["VariableID:11953:115880"],
+      },
+    ];
+
+    const subject = Dictionary;
+
+    // WHEN
+    const result = subject.fromFigmaVariables({ variables, collections }).value;
+
+    // THEN
+    expect(result).toStrictEqual({
+      neutrals: {
+        gray: {
+          50: {
+            $type: "color",
+            $value: "#0000ff",
+          },
+        },
+      },
+      text: {
+        secondary: {
+          default: {
+            $type: "color",
+            $value: "{neutrals.gray.50}",
+          },
+        },
+      },
+    });
+  }
+);
