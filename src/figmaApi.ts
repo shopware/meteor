@@ -64,6 +64,23 @@ export class FigmaApi {
     return get(`https://api.figma.com/v1/files/${fileKey}/variables/local`, {
       Accept: "*/*",
       "X-Figma-Token": this.config.apiKey,
-    }).then((response) => responseSchema.parse(response));
+    })
+      .then((response) => responseSchema.parse(response))
+      .then((response) => {
+        // filter out all remote variables and variable collections
+        response.meta.variables = Object.fromEntries(
+          Object.entries(response.meta.variables).filter(
+            ([_, variable]) => !variable.remote
+          )
+        );
+
+        response.meta.variableCollections = Object.fromEntries(
+          Object.entries(response.meta.variableCollections).filter(
+            ([_, collection]) => !collection.remote
+          )
+        );
+
+        return response;
+      });
   }
 }
