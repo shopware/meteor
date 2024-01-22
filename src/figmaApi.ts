@@ -43,6 +43,7 @@ const variableCollection = z.object({
   variableIds: z.array(z.string()),
 });
 
+export type FigmaApiResponse = z.infer<typeof responseSchema>;
 const responseSchema = z.object({
   status: z.number(),
   error: z.boolean(),
