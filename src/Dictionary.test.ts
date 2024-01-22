@@ -2,7 +2,7 @@ import { expect, test as fact } from "vitest";
 import { Dictionary } from "./dictionary";
 import { FigmaVariable, FigmaVariableCollection } from "./figmaApi";
 
-fact("it is possible to create a dictionary out of the Figma Variables", () => {
+fact("it creates a dictionary out of Figma Variables", () => {
   // GIVEN
   const variables: FigmaVariable[] = [
     {
@@ -48,7 +48,7 @@ fact("it is possible to create a dictionary out of the Figma Variables", () => {
   expect(result).toStrictEqual({
     blue: {
       $type: "color",
-      $value: "#0000FF",
+      $value: "#0000ff",
     },
   });
 });
