@@ -13,6 +13,10 @@
     "./administration/light.css": "./dist/administration/light.css",
     "./administration/dark.css": "./dist/administration/dark.css"
   },
+  "files": [
+    "dist",
+    "tokens"
+  ],
   "author": "Nils Haberkamp",
   "license": "MIT",
   "devDependencies": {
