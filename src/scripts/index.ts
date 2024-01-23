@@ -2,6 +2,7 @@ import { Dictionary } from "../dictionary";
 import { env } from "../env";
 import { FigmaApi } from "../figmaApi";
 import fs from "node:fs";
+import StyleDictionary from "style-dictionary";
 
 const figmaApi = new FigmaApi({
   apiKey: env.API_KEY,
@@ -41,23 +42,89 @@ fs.mkdirSync("./tokens");
 fs.mkdirSync("./tokens/foundation");
 fs.mkdirSync("./tokens/administration");
 
-fs.writeFile(
+fs.writeFileSync(
   "./tokens/foundation/primitives.tokens.json",
   // TODO: format with prettier
-  JSON.stringify(primitiveTokens, null, 2),
-  () => {}
+  JSON.stringify(primitiveTokens, null, 2)
 );
 
-fs.writeFile(
+fs.writeFileSync(
   "./tokens/administration/light.tokens.json",
   // TODO: format with prettier
-  JSON.stringify(adminTokensForLightMode, null, 2),
-  () => {}
+  JSON.stringify(adminTokensForLightMode, null, 2)
 );
 
-fs.writeFile(
+fs.writeFileSync(
   "./tokens/administration/dark.tokens.json",
   // TODO: format with prettier
-  JSON.stringify(adminTokensForDarkMode, null, 2),
-  () => {}
+  JSON.stringify(adminTokensForDarkMode, null, 2)
 );
+
+StyleDictionary.registerParser({
+  pattern: /\.json$|\.tokens\.json$|\.tokens$/,
+  parse: ({ contents }: { contents: string }) => {
+    // replace $value with value so that style dictionary recognizes it
+    const preparedContent = (contents || "{}")
+      .replace(/"\$?value"\s*:/g, '"value":')
+      // convert $description to comment
+      .replace(/"\$?description"\s*:/g, '"comment":');
+
+    return JSON.parse(preparedContent);
+  },
+});
+
+// TODO: clear dist before building
+
+StyleDictionary.extend({
+  source: ["./tokens/foundation/*.tokens.json"],
+  platforms: {
+    css: {
+      transformGroup: "css",
+      buildPath: "./dist/foundation/",
+      files: [
+        {
+          destination: "primitives.css",
+          format: "css/variables",
+        },
+      ],
+    },
+  },
+}).buildAllPlatforms();
+
+StyleDictionary.extend({
+  source: [
+    "./tokens/foundation/*.tokens.json",
+    "./tokens/administration/light.tokens.json",
+  ],
+  platforms: {
+    css: {
+      transformGroup: "css",
+      buildPath: "./dist/administration/",
+      files: [
+        {
+          destination: "light.css",
+          format: "css/variables",
+        },
+      ],
+    },
+  },
+}).buildAllPlatforms();
+
+StyleDictionary.extend({
+  source: [
+    "./tokens/foundation/*.tokens.json",
+    "./tokens/administration/dark.tokens.json",
+  ],
+  platforms: {
+    css: {
+      transformGroup: "css",
+      buildPath: "./dist/administration/",
+      files: [
+        {
+          destination: "dark.css",
+          format: "css/variables",
+        },
+      ],
+    },
+  },
+}).buildAllPlatforms();
