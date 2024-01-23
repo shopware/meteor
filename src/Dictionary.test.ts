@@ -56,9 +56,12 @@ fact("it creates a dictionary out of Figma Variables", () => {
 
   // THEN
   expect(result).toStrictEqual({
-    blue: {
-      $type: "color",
-      $value: "#0000ff",
+    default: {
+      $type: "mode",
+      blue: {
+        $type: "color",
+        $value: "#0000ff",
+      },
     },
   });
 });
@@ -114,11 +117,14 @@ fact(
 
     // THEN
     expect(result).toStrictEqual({
-      neutrals: {
-        gray: {
-          50: {
-            $type: "color",
-            $value: "#f9fafb",
+      default: {
+        $type: "mode",
+        neutrals: {
+          gray: {
+            50: {
+              $type: "color",
+              $value: "#f9fafb",
+            },
           },
         },
       },
@@ -194,19 +200,22 @@ fact(
 
     // THEN
     expect(result).toStrictEqual({
-      neutrals: {
-        gray: {
-          50: {
-            $type: "color",
-            $value: "#0000ff",
+      default: {
+        $type: "mode",
+        neutrals: {
+          gray: {
+            50: {
+              $type: "color",
+              $value: "#0000ff",
+            },
           },
         },
-      },
-      text: {
-        secondary: {
-          default: {
-            $type: "color",
-            $value: "{neutrals.gray.50}",
+        text: {
+          secondary: {
+            default: {
+              $type: "color",
+              $value: "{neutrals.gray.50}",
+            },
           },
         },
       },
