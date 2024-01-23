@@ -34,6 +34,13 @@ const { $type: __, ...adminTokensForLightMode } =
 const { $type: ___, ...adminTokensForDarkMode } =
   adminDictionary.value["dark mode"];
 
+fs.existsSync("./tokens") &&
+  fs.rmSync("./tokens", { recursive: true, force: true });
+
+fs.mkdirSync("./tokens");
+fs.mkdirSync("./tokens/foundation");
+fs.mkdirSync("./tokens/administration");
+
 fs.writeFile(
   "./tokens/foundation/primitives.tokens.json",
   // TODO: format with prettier
