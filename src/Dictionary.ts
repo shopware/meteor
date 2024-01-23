@@ -27,7 +27,8 @@ export class Dictionary {
 
   public static fromFigmaApiResponse(
     // TODO: use inferred type from zod schema
-    response: FigmaApiResponse
+    response: FigmaApiResponse,
+    ...remoteFiles: FigmaApiResponse[]
   ): Dictionary {
     const collections = Object.values(response.meta.variableCollections);
     const variables = Object.values(response.meta.variables);
@@ -71,21 +72,63 @@ export class Dictionary {
               (variable) => variable.id === rawValue.id
             );
 
-            const referencedVariableDoesNotExist = !referencedVariable;
-            if (referencedVariableDoesNotExist)
-              throw new Error(
-                `Failed to create dictionary: Referenced variable with id "${rawValue.id}" does not exist`
-              );
+            const referencedVariableExistsLocally = referencedVariable;
+            if (referencedVariableExistsLocally) {
+              set(accumulatedVariables, path, {
+                $value: `{${referencedVariable.name
+                  .replace(/\//g, ".")
+                  .replace(/ /g, "")
+                  .toLowerCase()}}`,
+                $type: variable.resolvedType.toLowerCase(),
+              });
 
-            set(accumulatedVariables, path, {
-              $value: `{${referencedVariable.name
-                .replace(/\//g, ".")
-                .replace(/ /g, "")
-                .toLowerCase()}}`,
-              $type: variable.resolvedType.toLowerCase(),
-            });
+              return accumulatedVariables;
+            }
 
-            return accumulatedVariables;
+            const keyOfRemoteVariable = rawValue.id
+              .split("/")[0]
+              .replace("VariableID:", "");
+
+            const idOfRemoteVariable = `VariableID:${
+              rawValue.id.split("/")[1]
+            }`;
+
+            const remoteVariable = remoteFiles.reduce<FigmaVariable | null>(
+              (accumulatedVariable, remoteFile) => {
+                // TODO: generally find every variable trough their key
+                // TODO: update data in the test so it's easier to know what is
+                //  relevant and what is not
+                const potentialVariable = Object.values(
+                  remoteFile.meta.variables
+                ).find((variable) => {
+                  return variable.key === keyOfRemoteVariable;
+                });
+
+                if (potentialVariable) {
+                  return potentialVariable;
+                }
+
+                return accumulatedVariable;
+              },
+              null
+            );
+            const referencedVariableExistsInRemoteFile = !!remoteVariable;
+
+            if (referencedVariableExistsInRemoteFile) {
+              set(accumulatedVariables, path, {
+                $value: `{${remoteVariable.name
+                  .replace(/\//g, ".")
+                  .replace(/ /g, "")
+                  .toLowerCase()}}`,
+                $type: variable.resolvedType.toLowerCase(),
+              });
+
+              return accumulatedVariables;
+            }
+
+            throw new Error(
+              `Failed to create dictionary: Referenced variable with id ${rawValue.id} does not exist locally or in remote file`
+            );
           }
 
           const itIsAColorValue =
