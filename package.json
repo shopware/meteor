@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "description": "Design Tokens for the Meteor Design System used at shopware",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "start": "node --env-file=\".env\" node_modules/.bin/tsx ./src/scripts/index.ts",
     "test": "vitest"
