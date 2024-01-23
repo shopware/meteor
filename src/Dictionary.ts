@@ -1,3 +1,4 @@
+import { accessSync } from "fs";
 import { Color } from "./Color";
 import {
   FigmaApi,
@@ -121,6 +122,82 @@ export class Dictionary {
       return new Dictionary(tokens);
     }
 
-    return new Dictionary({});
+    // TODO: should we throw an error if we have two different modes with the same name?
+    const result = modes.reduce((accumulator, mode) => {
+      // TODO: add toKebabCase function
+      accumulator[mode.name.toLowerCase()] = variables.reduce(
+        (accumulatedVariables, variable) => {
+          const path = variable.name
+            .replace(/\//g, ".")
+            .replace(/ /g, "")
+            .toLowerCase();
+
+          const rawValue = variable.valuesByMode[mode.modeId];
+          const itIsAnAliasedToken =
+            typeof rawValue === "object" &&
+            "type" in rawValue &&
+            rawValue.type === "VARIABLE_ALIAS";
+
+          if (itIsAnAliasedToken) {
+            const path = variable.name
+              .replace(/\//g, ".")
+              .replace(/ /g, "")
+              .toLowerCase();
+
+            const referencedVariable = variables.find(
+              (variable) => variable.id === rawValue.id
+            );
+
+            const referencedVariableDoesNotExist = !referencedVariable;
+            if (referencedVariableDoesNotExist)
+              throw new Error(
+                `Failed to create dictionary: Referenced variable with id "${rawValue.id}" does not exist`
+              );
+
+            set(accumulatedVariables, path, {
+              $value: `{${referencedVariable.name
+                .replace(/\//g, ".")
+                .replace(/ /g, "")
+                .toLowerCase()}}`,
+              $type: variable.resolvedType.toLowerCase(),
+            });
+
+            return accumulatedVariables;
+          }
+
+          const itIsAColorValue =
+            typeof rawValue === "object" && "r" in rawValue;
+
+          if (itIsAColorValue) {
+            // TODO: should we validate that the naming convention is followed? and if yes where? here or in the figmaApi?
+            const path = variable.name
+              .replace(/\//g, ".")
+              .replace(/ /g, "")
+              .toLowerCase();
+
+            set(accumulatedVariables, path, {
+              $value: Color.fromRGB(
+                rawValue.r * 255,
+                rawValue.g * 255,
+                rawValue.b * 255,
+                rawValue.a
+              ).toHex(),
+              $type: variable.resolvedType.toLowerCase(),
+            });
+
+            return accumulatedVariables;
+          }
+
+          throw new Error(
+            "Failed to create dictionary: Value is not a color value"
+          );
+        },
+        { $type: "mode" }
+      );
+
+      return accumulator;
+    }, {});
+
+    return new Dictionary(result);
   }
 }
