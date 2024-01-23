@@ -35,21 +35,21 @@ const { $type: ___, ...adminTokensForDarkMode } =
   adminDictionary.value["dark mode"];
 
 fs.writeFile(
-  "./tokens/foundation/primitives.json",
+  "./tokens/foundation/primitives.tokens.json",
   // TODO: format with prettier
   JSON.stringify(primitiveTokens, null, 2),
   () => {}
 );
 
 fs.writeFile(
-  "./tokens/administration/light.json",
+  "./tokens/administration/light.tokens.json",
   // TODO: format with prettier
   JSON.stringify(adminTokensForLightMode, null, 2),
   () => {}
 );
 
 fs.writeFile(
-  "./tokens/administration/dark.json",
+  "./tokens/administration/dark.tokens.json",
   // TODO: format with prettier
   JSON.stringify(adminTokensForDarkMode, null, 2),
   () => {}
