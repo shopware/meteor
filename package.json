@@ -8,6 +8,11 @@
     "start": "node --env-file=\".env\" node_modules/.bin/tsx ./src/scripts/index.ts",
     "test": "vitest"
   },
+  "exports": {
+    "./primitives.css": "./dist/foundation/primitives.css",
+    "./administration/light.css": "./dist/administration/light.css",
+    "./administration/dark.css": "./dist/administration/dark.css"
+  },
   "author": "Nils Haberkamp",
   "license": "MIT",
   "devDependencies": {
