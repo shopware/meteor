@@ -7,6 +7,7 @@ import {
   type FigmaVariableCollection,
 } from "./figmaApi";
 import { set } from "./utils/object";
+import { kebabCase } from "./utils/string";
 
 type DictionaryValue = {
   $value: string;
@@ -51,10 +52,7 @@ export class Dictionary {
       // TODO: add toKebabCase function
       accumulator[mode.name.toLowerCase()] = variables.reduce(
         (accumulatedVariables, variable) => {
-          const path = variable.name
-            .replace(/\//g, ".")
-            .replace(/ /g, "")
-            .toLowerCase();
+          const path = kebabCase(variable.name);
 
           const rawValue = variable.valuesByMode[mode.modeId];
           const itIsAnAliasedToken =
@@ -63,10 +61,7 @@ export class Dictionary {
             rawValue.type === "VARIABLE_ALIAS";
 
           if (itIsAnAliasedToken) {
-            const path = variable.name
-              .replace(/\//g, ".")
-              .replace(/ /g, "")
-              .toLowerCase();
+            const path = kebabCase(variable.name);
 
             const referencedVariable = variables.find(
               (variable) => variable.id === rawValue.id
@@ -75,10 +70,7 @@ export class Dictionary {
             const referencedVariableExistsLocally = referencedVariable;
             if (referencedVariableExistsLocally) {
               set(accumulatedVariables, path, {
-                $value: `{${referencedVariable.name
-                  .replace(/\//g, ".")
-                  .replace(/ /g, "")
-                  .toLowerCase()}}`,
+                $value: `{${kebabCase(referencedVariable.name)}}`,
                 $type: variable.resolvedType.toLowerCase(),
               });
 
@@ -116,10 +108,7 @@ export class Dictionary {
 
             if (referencedVariableExistsInRemoteFile) {
               set(accumulatedVariables, path, {
-                $value: `{${remoteVariable.name
-                  .replace(/\//g, ".")
-                  .replace(/ /g, "")
-                  .toLowerCase()}}`,
+                $value: `{${kebabCase(remoteVariable.name)}}`,
                 $type: variable.resolvedType.toLowerCase(),
               });
 
@@ -136,10 +125,7 @@ export class Dictionary {
 
           if (itIsAColorValue) {
             // TODO: should we validate that the naming convention is followed? and if yes where? here or in the figmaApi?
-            const path = variable.name
-              .replace(/\//g, ".")
-              .replace(/ /g, "")
-              .toLowerCase();
+            const path = kebabCase(variable.name);
 
             set(accumulatedVariables, path, {
               $value: Color.fromRGB(
