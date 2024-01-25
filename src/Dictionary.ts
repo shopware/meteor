@@ -152,4 +152,8 @@ export class Dictionary {
 
     return new Dictionary(result);
   }
+
+  public toJSON() {
+    return JSON.stringify(this.value, null, 2);
+  }
 }
