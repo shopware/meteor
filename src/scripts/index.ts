@@ -3,6 +3,9 @@ import { env } from "../env";
 import { FigmaApi } from "../figmaApi";
 import fs from "node:fs";
 import StyleDictionary from "style-dictionary";
+import { HardDiskFileSystem } from "../common/infrastructure/file-system/HardDiskFileSystem";
+
+const fileSystem = new HardDiskFileSystem();
 
 const figmaApi = new FigmaApi({
   apiKey: env.API_KEY,
@@ -42,19 +45,18 @@ fs.mkdirSync("./tokens");
 fs.mkdirSync("./tokens/foundation");
 fs.mkdirSync("./tokens/administration");
 
-fs.writeFileSync(
+fileSystem.saveFile(
   "./tokens/foundation/primitives.tokens.json",
-  // TODO: format with prettier
   JSON.stringify(primitiveTokens, null, 2)
 );
 
-fs.writeFileSync(
+fileSystem.saveFile(
   "./tokens/administration/light.tokens.json",
   // TODO: format with prettier
   JSON.stringify(adminTokensForLightMode, null, 2)
 );
 
-fs.writeFileSync(
+fileSystem.saveFile(
   "./tokens/administration/dark.tokens.json",
   // TODO: format with prettier
   JSON.stringify(adminTokensForDarkMode, null, 2)
