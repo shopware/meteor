@@ -1,4 +1,4 @@
-import { get } from "./httpClient";
+import { type HttpClient } from "./common/domain/http-client/HttpClient";
 import { z } from "zod";
 
 const variableAlias = z.object({
@@ -58,13 +58,17 @@ type Config = {
 };
 
 export class FigmaApi {
-  constructor(private readonly config: Config) {}
+  constructor(
+    private readonly config: Config,
+    private readonly httpClient: HttpClient
+  ) {}
 
   getLocalVariablesOfFile(fileKey: string) {
-    return get(`https://api.figma.com/v1/files/${fileKey}/variables/local`, {
-      Accept: "*/*",
-      "X-Figma-Token": this.config.apiKey,
-    })
+    return this.httpClient
+      .get(`https://api.figma.com/v1/files/${fileKey}/variables/local`, {
+        Accept: "*/*",
+        "X-Figma-Token": this.config.apiKey,
+      })
       .then((response) => responseSchema.parse(response))
       .then((response) => {
         // filter out all remote variables and variable collections
