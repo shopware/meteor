@@ -69,4 +69,23 @@ fact("overwrites a file that already exists", () => {
   cleanUp(pathToFile);
 });
 
-fact.todo("overwrites a file in a nested directory that already exists");
+fact("overwrites a file in a nested directory that already exists", () => {
+  // GIVEN
+  const pathToFile = path.join(__dirname, "./artifact/test.txt");
+  cleanUp(pathToFile);
+
+  fs.mkdirSync(path.dirname(pathToFile), { recursive: true });
+  fs.writeFileSync(pathToFile, "Hello, World!", { encoding: "utf-8" });
+
+  const subject = new HardDiskFileSystem();
+
+  // WHEN
+  subject.saveFile(pathToFile, "Hello, Darling!");
+
+  // THEN
+  const result = fs.readFileSync(pathToFile, "utf8");
+  expect(result).toBe("Hello, Darling!");
+
+  // TEARDOWN
+  cleanUp(pathToFile);
+});
