@@ -6,7 +6,7 @@ import path from "node:path";
 function cleanUp(pathToFile: string) {
   fs.existsSync(pathToFile) && fs.unlinkSync(pathToFile);
 
-  const directory = path.join(__dirname, "./nested");
+  const directory = path.join(__dirname, "./artifact");
   fs.existsSync(directory) && fs.rmdirSync(directory);
 }
 
@@ -32,7 +32,7 @@ fact(
   "creates a new file in a nested directory that did not exist before",
   () => {
     // GIVEN
-    const pathToFile = path.join(__dirname, "./nested/test.txt");
+    const pathToFile = path.join(__dirname, "./artifact/test.txt");
     cleanUp(pathToFile);
 
     const subject = new HardDiskFileSystem();
