@@ -16,6 +16,12 @@ const keyOfFileContainingPrimitiveTokens = "hSDX8IwmRAPOTL4NWPwVCl";
 // https://www.figma.com/file/8X90GCcpIa4GllKCHA7qFM/%F0%9F%92%8E-Meteor-Admin-Tokens-%E2%80%93-0.0.1?type=design&node-id=4%3A147&mode=design&t=YlIcPJh7KZX41p3T-1
 const keyOfFileContainingAdminTokens = "8X90GCcpIa4GllKCHA7qFM";
 
+figmaApi
+  .getLocalVariablesOfFile(keyOfFileContainingPrimitiveTokens)
+  .then((response) => {
+    console.dir(response.meta, { depth: null });
+  });
+
 const [primitiveTokenResponse, adminTokenResponse] = await Promise.all(
   [keyOfFileContainingPrimitiveTokens, keyOfFileContainingAdminTokens].map(
     (fileKey) => figmaApi.getLocalVariablesOfFile(fileKey)

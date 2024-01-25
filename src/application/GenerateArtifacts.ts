@@ -32,5 +32,28 @@ export class GenerateArtifacts {
       "./tokens/foundation/primitives.tokens.json",
       JSON.stringify(primitiveTokens, null, 2)
     );
+
+    const adminDictionary = Dictionary.fromFigmaApiResponse(
+      adminTokenResponse,
+      primitiveTokenResponse
+    );
+
+    const { $type: __, ...adminTokensForLightMode } =
+      adminDictionary.value["light mode"];
+
+    this.fileSystem.saveFile(
+      "./tokens/administration/light.tokens.json",
+      // TODO: format with prettier
+      JSON.stringify(adminTokensForLightMode, null, 2)
+    );
+
+    const { $type: ___, ...adminTokensForDarkMode } =
+      adminDictionary.value["dark mode"];
+
+    this.fileSystem.saveFile(
+      "./tokens/administration/dark.tokens.json",
+      // TODO: format with prettier
+      JSON.stringify(adminTokensForDarkMode, null, 2)
+    );
   }
 }
