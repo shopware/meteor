@@ -1,7 +1,6 @@
 import { Dictionary } from "../dictionary";
 import { env } from "../env";
 import { FigmaApi } from "../figmaApi";
-import fs from "node:fs";
 import StyleDictionary from "style-dictionary";
 import { HardDiskFileSystem } from "../common/infrastructure/file-system/HardDiskFileSystem";
 
@@ -37,13 +36,6 @@ const { $type: __, ...adminTokensForLightMode } =
   adminDictionary.value["light mode"];
 const { $type: ___, ...adminTokensForDarkMode } =
   adminDictionary.value["dark mode"];
-
-fs.existsSync("./tokens") &&
-  fs.rmSync("./tokens", { recursive: true, force: true });
-
-fs.mkdirSync("./tokens");
-fs.mkdirSync("./tokens/foundation");
-fs.mkdirSync("./tokens/administration");
 
 fileSystem.saveFile(
   "./tokens/foundation/primitives.tokens.json",
