@@ -1,9 +1,10 @@
-import { optional } from "zod";
+import { get } from "../common/domain/utils/object";
 import { Dictionary } from "../dictionary";
 import { Deliverable } from "./Deliverable";
 
 type Options = {
   selector: string;
+  additionalDictionaries?: Dictionary[];
 };
 
 export class CSSDeliverable implements Deliverable {
@@ -32,7 +33,30 @@ export class CSSDeliverable implements Deliverable {
             if (typeof value === "object" && value !== null) {
               processToken(value, `${variableName}-`);
             } else if (typeof value === "string" && key !== "$type") {
-              cssVariables.push(`--${variableName}: ${value};`);
+              const isAliasedToken = /\{.+\}/.test(value);
+
+              if (isAliasedToken) {
+                const pathToAliasedToken =
+                  value.replace(/\{/, "").replace(/\}/, "") + ".$value";
+
+                const aliasedValue =
+                  this.options.additionalDictionaries?.reduce(
+                    // @ts-expect-error
+                    (accumulator, dictionary) => {
+                      if (accumulator) return accumulator;
+                      const value = get(dictionary.value, pathToAliasedToken);
+
+                      if (value) {
+                        return value;
+                      }
+                    },
+                    undefined
+                  );
+
+                cssVariables.push(`--${variableName}: ${aliasedValue};`);
+              } else {
+                cssVariables.push(`--${variableName}: ${value};`);
+              }
             }
           }
         }
