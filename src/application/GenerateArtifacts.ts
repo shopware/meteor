@@ -1,5 +1,6 @@
 import type { FileSystem } from "../common/domain/file-system/FileSystem";
 import { Dictionary } from "../dictionary";
+import { CSSDeliverable } from "../domain/CSSDeliverable";
 import { FigmaApi } from "../figmaApi";
 
 const PRIMITIVE_TOKENS_FILE_KEY = "hSDX8IwmRAPOTL4NWPwVCl";
@@ -28,6 +29,14 @@ export class GenerateArtifacts {
       primitiveDictionary.toJSON()
     );
 
+    const primitiveCSSDeliverable =
+      CSSDeliverable.fromDictionary(primitiveDictionary);
+
+    this.fileSystem.saveFile(
+      "./dist/foundation/primitives.css",
+      primitiveCSSDeliverable.toString()
+    );
+
     const adminLightModeDictionary = Dictionary.fromFigmaApiResponse(
       adminTokenResponse,
       { mode: "Light mode", remoteFiles: [primitiveTokenResponse] }
@@ -39,6 +48,19 @@ export class GenerateArtifacts {
       adminLightModeDictionary.toJSON()
     );
 
+    const adminLightModeCSSDeliverable = CSSDeliverable.fromDictionary(
+      adminLightModeDictionary,
+      {
+        selector: ":root",
+        additionalDictionaries: [primitiveDictionary],
+      }
+    );
+
+    this.fileSystem.saveFile(
+      "./dist/administration/light.css",
+      adminLightModeCSSDeliverable.toString()
+    );
+
     const adminDarkModeDictionary = Dictionary.fromFigmaApiResponse(
       adminTokenResponse,
       { mode: "Dark mode", remoteFiles: [primitiveTokenResponse] }
@@ -48,6 +70,19 @@ export class GenerateArtifacts {
       "./tokens/administration/dark.tokens.json",
       // TODO: format with prettier
       adminDarkModeDictionary.toJSON()
+    );
+
+    const adminDarkModeCSSDeliverable = CSSDeliverable.fromDictionary(
+      adminDarkModeDictionary,
+      {
+        selector: '[data-theme="dark"]',
+        additionalDictionaries: [primitiveDictionary],
+      }
+    );
+
+    this.fileSystem.saveFile(
+      "./dist/administration/dark.css",
+      adminDarkModeCSSDeliverable.toString()
     );
   }
 }
