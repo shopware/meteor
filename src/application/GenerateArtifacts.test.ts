@@ -4,7 +4,7 @@ import { InMemoryFileSystem } from "../common/domain/file-system/InMemoryFileSys
 import { FigmaApi } from "../figmaApi";
 
 fact(
-  "it creates a Dictionary in form of a JSON file for the primitive Design Tokens",
+  "creates a Dictionary in form of a JSON file for the primitive Design Tokens",
   async () => {
     // GIVEN
     const figmaApi = {

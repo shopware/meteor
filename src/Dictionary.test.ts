@@ -52,16 +52,15 @@ fact("it creates a dictionary out of Figma Variables", () => {
   const subject = Dictionary;
 
   // WHEN
-  const result = subject.fromFigmaApiResponse(response).value;
+  const result = subject.fromFigmaApiResponse(response, {
+    mode: "Default",
+  }).value;
 
   // THEN
   expect(result).toStrictEqual({
-    default: {
-      $type: "mode",
-      blue: {
-        $type: "color",
-        $value: "#0000ff",
-      },
+    blue: {
+      $type: "color",
+      $value: "#0000ff",
     },
   });
 });
@@ -113,18 +112,17 @@ fact(
     const subject = Dictionary;
 
     // WHEN
-    const result = subject.fromFigmaApiResponse(response).value;
+    const result = subject.fromFigmaApiResponse(response, {
+      mode: "Default",
+    }).value;
 
     // THEN
     expect(result).toStrictEqual({
-      default: {
-        $type: "mode",
-        neutrals: {
-          gray: {
-            50: {
-              $type: "color",
-              $value: "#f9fafb",
-            },
+      neutrals: {
+        gray: {
+          50: {
+            $type: "color",
+            $value: "#f9fafb",
           },
         },
       },
@@ -196,116 +194,25 @@ fact(
     const subject = Dictionary;
 
     // WHEN
-    const result = subject.fromFigmaApiResponse(response).value;
+    const result = subject.fromFigmaApiResponse(response, {
+      mode: "Default",
+    }).value;
 
     // THEN
     expect(result).toStrictEqual({
-      default: {
-        $type: "mode",
-        neutrals: {
-          gray: {
-            50: {
-              $type: "color",
-              $value: "#0000ff",
-            },
-          },
-        },
-        text: {
-          secondary: {
-            default: {
-              $type: "color",
-              $value: "{neutrals.gray.50}",
-            },
+      neutrals: {
+        gray: {
+          50: {
+            $type: "color",
+            $value: "#0000ff",
           },
         },
       },
-    });
-  }
-);
-
-fact(
-  "it creates a dictionary out of Figma Variables with multiple modes",
-  () => {
-    // GIVEN
-    const response: FigmaApiResponse = {
-      status: 200,
-      error: false,
-      meta: {
-        variables: {
-          "VariableID:41413:11953": {
-            id: "VariableID:41413:11953",
-            name: "Color / Elevation / Surface / Overlay",
-            key: "db9aa5d3b7c6f03b4cddb78e045b566fae112d17",
-            variableCollectionId: "VariableCollectionId:11953:115879",
-            resolvedType: "COLOR",
-            valuesByMode: {
-              "11953:0": {
-                r: 1,
-                g: 1,
-                b: 1,
-                a: 1,
-              },
-              "11953:1": {
-                r: 0,
-                g: 0,
-                b: 0,
-                a: 1,
-              },
-            },
-            remote: false,
-            description: "",
-            hiddenFromPublishing: false,
-            scopes: ["ALL_SCOPES"],
-          },
-        },
-        variableCollections: {
-          "VariableCollectionId:11953:115879": {
-            id: "VariableCollectionId:11953:115879",
-            name: ".Design Tokens",
-            key: "9130479ef323598b1ccfb32e7b16dc80fcb30f14",
-            modes: [
-              { modeId: "11953:0", name: "Light" },
-              { modeId: "11953:1", name: "Dark" },
-            ],
-            defaultModeId: "11953:0",
-            remote: false,
-            hiddenFromPublishing: true,
-            variableIds: ["VariableID:11953:115880"],
-          },
-        },
-      },
-    };
-
-    const subject = Dictionary;
-
-    // WHEN
-    const result = subject.fromFigmaApiResponse(response).value;
-
-    // THEN
-    expect(result).toStrictEqual({
-      light: {
-        $type: "mode",
-        color: {
-          elevation: {
-            surface: {
-              overlay: {
-                $type: "color",
-                $value: "#ffffff",
-              },
-            },
-          },
-        },
-      },
-      dark: {
-        $type: "mode",
-        color: {
-          elevation: {
-            surface: {
-              overlay: {
-                $type: "color",
-                $value: "#000000",
-              },
-            },
+      text: {
+        secondary: {
+          default: {
+            $type: "color",
+            $value: "{neutrals.gray.50}",
           },
         },
       },
@@ -399,20 +306,18 @@ fact(
 
     // WHEN
     const result = subject.fromFigmaApiResponse(response, {
+      mode: "Default",
       remoteFiles: [responseOfFileWithPrimitiveTokens],
     }).value;
 
     // THEN
     expect(result).toStrictEqual({
-      default: {
-        $type: "mode",
-        color: {
-          elevation: {
-            surface: {
-              overlay: {
-                $type: "color",
-                $value: "{gray.50}",
-              },
+      color: {
+        elevation: {
+          surface: {
+            overlay: {
+              $type: "color",
+              $value: "{gray.50}",
             },
           },
         },
@@ -423,7 +328,7 @@ fact(
 
 fact("return a JSON representation of the dictionary", () => {
   // GIVEN
-  const subject = Dictionary.fromFigmaApiResponse({
+  const response: FigmaApiResponse = {
     status: 200,
     error: false,
     meta: {
@@ -461,6 +366,10 @@ fact("return a JSON representation of the dictionary", () => {
         },
       },
     },
+  };
+
+  const subject = Dictionary.fromFigmaApiResponse(response, {
+    mode: "Default",
   });
 
   // WHEN
@@ -468,12 +377,9 @@ fact("return a JSON representation of the dictionary", () => {
 
   expect(result).toMatchInlineSnapshot(`
     "{
-      "default": {
-        "$type": "mode",
-        "blue": {
-          "$value": "#0000ff",
-          "$type": "color"
-        }
+      "blue": {
+        "$value": "#0000ff",
+        "$type": "color"
       }
     }"
   `);
