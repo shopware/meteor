@@ -19,3 +19,21 @@ export function set(target: Record<string, any>, path: string, value: any) {
 
   return target;
 }
+
+// TODO: add tests
+export function get(target: Record<string, any>, path: string) {
+  const keys = path.split(".");
+  let currentObj = target;
+
+  for (let i = 0; i < keys.length; i++) {
+    const key = keys[i];
+
+    if (!currentObj.hasOwnProperty(key)) {
+      return undefined;
+    }
+
+    currentObj = currentObj[key];
+  }
+
+  return currentObj;
+}
