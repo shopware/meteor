@@ -398,10 +398,9 @@ fact(
     const subject = Dictionary;
 
     // WHEN
-    const result = subject.fromFigmaApiResponse(
-      response,
-      responseOfFileWithPrimitiveTokens
-    ).value;
+    const result = subject.fromFigmaApiResponse(response, {
+      remoteFiles: [responseOfFileWithPrimitiveTokens],
+    }).value;
 
     // THEN
     expect(result).toStrictEqual({

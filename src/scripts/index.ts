@@ -31,10 +31,9 @@ const [primitiveTokenResponse, adminTokenResponse] = await Promise.all(
 const primitiveDictionary = Dictionary.fromFigmaApiResponse(
   primitiveTokenResponse
 );
-const adminDictionary = Dictionary.fromFigmaApiResponse(
-  adminTokenResponse,
-  primitiveTokenResponse
-);
+const adminDictionary = Dictionary.fromFigmaApiResponse(adminTokenResponse, {
+  remoteFiles: [primitiveTokenResponse],
+});
 
 const { $type: _, ...primitiveTokens } =
   primitiveDictionary.value["light mode"];

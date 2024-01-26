@@ -29,8 +29,12 @@ export class Dictionary {
   public static fromFigmaApiResponse(
     // TODO: use inferred type from zod schema
     response: FigmaApiResponse,
-    ...remoteFiles: FigmaApiResponse[]
+    options?: {
+      remoteFiles?: FigmaApiResponse[];
+    }
   ): Dictionary {
+    const remoteFiles = options?.remoteFiles ?? [];
+
     const collections = Object.values(response.meta.variableCollections);
     const variables = Object.values(response.meta.variables);
 

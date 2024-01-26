@@ -35,7 +35,7 @@ export class GenerateArtifacts {
 
     const adminDictionary = Dictionary.fromFigmaApiResponse(
       adminTokenResponse,
-      primitiveTokenResponse
+      { remoteFiles: [primitiveTokenResponse] }
     );
 
     const { $type: __, ...adminTokensForLightMode } =
