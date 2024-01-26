@@ -20,13 +20,26 @@ export class CSSDeliverable implements Deliverable {
   }
 
   toString(): string {
-    const cssVariables = Object.entries(this.dictionary.value).map(
-      ([tokenName, tokenValue]) => {
-        const cssVariableName = `--${tokenName}`;
+    const cssVariables: string[] = [];
 
-        return `${cssVariableName}: ${tokenValue.$value};`;
+    const processToken = (token: any, prefix: string = "") => {
+      if (typeof token === "object" && token !== null) {
+        for (const key in token) {
+          if (token.hasOwnProperty(key)) {
+            const value = token[key];
+            const variableName = `${prefix}${key}`.replace("-$value", "");
+
+            if (typeof value === "object" && value !== null) {
+              processToken(value, `${variableName}-`);
+            } else if (typeof value === "string" && key !== "$type") {
+              cssVariables.push(`--${variableName}: ${value};`);
+            }
+          }
+        }
       }
-    );
+    };
+
+    processToken(this.dictionary.value);
 
     return `${this.options.selector} {
   ${cssVariables.join("\n")}
