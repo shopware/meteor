@@ -2,7 +2,7 @@ import { describe, expect, it as fact } from 'vitest';
 import { set, get } from './object.js';
 
 describe('set', () => {
-  fact('it adds a new key to an object', () => {
+  fact('adds a new key to an object', () => {
     // GIVEN
     const subject = set;
 
@@ -15,7 +15,7 @@ describe('set', () => {
     });
   });
 
-  fact('it adds a new key to an object with a nested path', () => {
+  fact('adds a new key to an object with a nested path', () => {
     // GIVEN
     const subject = set;
 
@@ -30,7 +30,7 @@ describe('set', () => {
     });
   });
 
-  fact('it overwrites an existing key', () => {
+  fact('overwrites an existing key', () => {
     // GIVEN
     const subject = set;
 

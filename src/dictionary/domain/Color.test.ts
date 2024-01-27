@@ -1,7 +1,7 @@
 import { expect, test as fact } from 'vitest';
 import { Color } from './Color.js';
 
-fact('it creates a hex color out of an RGB value', () => {
+fact('creates a hex color out of an RGB value', () => {
   // GIVEN
   const subject = Color;
 
@@ -12,7 +12,7 @@ fact('it creates a hex color out of an RGB value', () => {
   expect(result.toHex()).toBe('#0000ff');
 });
 
-fact('it creates a hex color out of an RGBA value', () => {
+fact('creates a hex color out of an RGBA value', () => {
   const subject = Color;
 
   // WHEN

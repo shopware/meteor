@@ -2,7 +2,7 @@ import { expect, test as fact } from 'vitest';
 import { FigmaApiResponse } from '../../figma/infrastructure/FigmaApi.js';
 import { Dictionary } from './Dictionary.js';
 
-fact('it creates a dictionary out of Figma Variables', () => {
+fact('creates a dictionary out of Figma Variables', () => {
   // GIVEN
   const response: FigmaApiResponse = {
     status: 200,
