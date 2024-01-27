@@ -1,5 +1,5 @@
 import { get } from '../../common/domain/utils/object.js';
-import { Dictionary } from '../../dictionary/application/Dictionary.js';
+import { Dictionary } from '../../dictionary/domain/Dictionary.js';
 import { Deliverable } from './Deliverable.js';
 
 type Options = {
