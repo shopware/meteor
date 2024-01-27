@@ -149,4 +149,46 @@ export class Dictionary {
   public toJSON() {
     return JSON.stringify(this.value, null, 2);
   }
+
+  public flat() {
+    function getToken(
+      input: unknown,
+      accumulator: Record<string, string>,
+      path?: string,
+    ) {
+      if (isObject(input)) {
+        const entries = Object.entries(input);
+
+        for (let index = 0; index < entries.length; index++) {
+          const [key, value] = entries[index] as [string, unknown];
+
+          if (isObject(value)) {
+            const newPath = `${path ?? ''}${path ? '.' : ''}${key}`;
+
+            return getToken(value, accumulator, newPath);
+          }
+
+          if (
+            key === '$value' &&
+            typeof path === 'string' &&
+            typeof value === 'string'
+          ) {
+            accumulator[path] = value;
+
+            return accumulator;
+          }
+        }
+
+        return accumulator;
+      }
+
+      return accumulator;
+    }
+
+    return getToken(this.value, {});
+  }
 }
+
+const isObject = (value: unknown): value is object => {
+  return !!(value && typeof value === 'object' && !Array.isArray(value));
+};
