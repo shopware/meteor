@@ -1,4 +1,3 @@
-import { get } from '../../common/domain/utils/object.js';
 import { Dictionary } from '../../dictionary/domain/Dictionary.js';
 import { Deliverable } from './Deliverable.js';
 
@@ -21,52 +20,45 @@ export class CSSDeliverable implements Deliverable {
   }
 
   toString(): string {
-    const cssVariables: string[] = [];
+    const tokensInAdditionalDictionaries =
+      this.options.additionalDictionaries?.reduce<Record<string, unknown>>(
+        (accumulator, dictionary) => ({
+          ...accumulator,
+          ...dictionary.flat(),
+        }),
+        {},
+      );
 
-    const processToken = (token: any, prefix: string = '') => {
-      if (typeof token === 'object' && token !== null) {
-        for (const key in token) {
-          if (token.hasOwnProperty(key)) {
-            const value = token[key];
-            const variableName = `${prefix}${key}`.replace('-$value', '');
+    const variables = Object.entries(this.dictionary.flat()).map(
+      ([key, value]) => {
+        const variableName = key.replace(/\./g, '-');
+        const itIsAnAliasedToken = /^\{.+\}$/gi.test(value);
 
-            if (typeof value === 'object' && value !== null) {
-              processToken(value, `${variableName}-`);
-            } else if (typeof value === 'string' && key !== '$type') {
-              const isAliasedToken = /\{.+\}/.test(value);
+        if (itIsAnAliasedToken) {
+          const pathToAliasedTokenValue = value
+            .replace('{', '')
+            .replace('}', '');
 
-              if (isAliasedToken) {
-                const pathToAliasedToken =
-                  value.replace(/\{/, '').replace(/\}/, '') + '.$value';
+          if (!tokensInAdditionalDictionaries) return;
 
-                const aliasedValue =
-                  this.options.additionalDictionaries?.reduce(
-                    // @ts-expect-error
-                    (accumulator, dictionary) => {
-                      if (accumulator) return accumulator;
-                      const value = get(dictionary.value, pathToAliasedToken);
+          const resolvedValue =
+            tokensInAdditionalDictionaries[pathToAliasedTokenValue];
 
-                      if (value) {
-                        return value;
-                      }
-                    },
-                    undefined,
-                  );
-
-                cssVariables.push(`--${variableName}: ${aliasedValue};`);
-              } else {
-                cssVariables.push(`--${variableName}: ${value};`);
-              }
-            }
+          if (typeof resolvedValue !== 'string') {
+            throw new Error(
+              'Failed to create CSSDeliverable; Could not resolve value of aliased token',
+            );
           }
-        }
-      }
-    };
 
-    processToken(this.dictionary.value);
+          return `--${variableName}: ${resolvedValue};`;
+        }
+
+        return `--${variableName}: ${value};`;
+      },
+    );
 
     return `${this.options.selector} {
-  ${cssVariables.join('\n')}
+  ${variables.join('\n')}
 }`;
   }
 }
