@@ -20,7 +20,6 @@ export function set(target: Record<string, any>, path: string, value: any) {
   return target;
 }
 
-// TODO: add tests
 export function get(target: Record<string, any>, path: string) {
   const keys = path.split('.');
   let currentObj = target;
