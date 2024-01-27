@@ -1,6 +1,6 @@
 import type { FileSystem } from '../common/domain/file-system/FileSystem.js';
 import { Dictionary } from '../dictionary/application/Dictionary.js';
-import { CSSDeliverable } from '../domain/CSSDeliverable.js';
+import { CSSDeliverable } from '../deliverable/domain/CSSDeliverable.js';
 import { FigmaApi } from '../figma/infrastructure/FigmaApi.js';
 
 const PRIMITIVE_TOKENS_FILE_KEY = 'hSDX8IwmRAPOTL4NWPwVCl';

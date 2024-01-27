@@ -1,7 +1,7 @@
 import { expect, test as fact } from 'vitest';
 import { CSSDeliverable } from './CSSDeliverable.js';
-import { Dictionary } from '../dictionary/application/Dictionary.js';
-import { FigmaApiResponse } from '../figma/infrastructure/FigmaApi.js';
+import { Dictionary } from '../../dictionary/application/Dictionary.js';
+import { FigmaApiResponse } from '../../figma/infrastructure/FigmaApi.js';
 
 fact('creates a CSSDeliverable with the default selector of ":root"', () => {
   // GIVEN
