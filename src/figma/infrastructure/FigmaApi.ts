@@ -1,4 +1,4 @@
-import { type HttpClient } from './common/domain/http-client/HttpClient.js';
+import { type HttpClient } from '../../common/domain/http-client/HttpClient.js';
 import { z } from 'zod';
 
 const variableAlias = z.object({
