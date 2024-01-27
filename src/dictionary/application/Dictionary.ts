@@ -6,8 +6,8 @@ import {
   type FigmaVariable,
   type FigmaVariableCollection,
 } from './figmaApi';
-import { set } from './common/domain/utils/object';
-import { kebabCase } from './common/domain/utils/string';
+import { set } from '../../common/domain/utils/object.js';
+import { kebabCase } from '../../common/domain/utils/string.js';
 
 type DictionaryValue = {
   $value: string;

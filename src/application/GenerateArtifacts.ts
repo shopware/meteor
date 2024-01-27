@@ -1,5 +1,5 @@
 import type { FileSystem } from '../common/domain/file-system/FileSystem';
-import { Dictionary } from '../dictionary';
+import { Dictionary } from '../dictionary/application/Dictionary';
 import { CSSDeliverable } from '../domain/CSSDeliverable';
 import { FigmaApi } from '../figmaApi';
 
