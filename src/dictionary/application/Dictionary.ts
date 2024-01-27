@@ -1,13 +1,10 @@
-import { accessSync } from 'fs';
-import { Color } from './Color.js';
-import {
-  FigmaApi,
-  FigmaApiResponse,
-  type FigmaVariable,
-  type FigmaVariableCollection,
-} from '../../figma/infrastructure/FigmaApi.js';
 import { set } from '../../common/domain/utils/object.js';
 import { kebabCase } from '../../common/domain/utils/string.js';
+import {
+  FigmaApiResponse,
+  type FigmaVariable,
+} from '../../figma/infrastructure/FigmaApi.js';
+import { Color } from './Color.js';
 
 type DictionaryValue = {
   $value: string;
@@ -34,7 +31,7 @@ export class Dictionary {
       remoteFiles?: FigmaApiResponse[];
     },
   ): Dictionary {
-    const remoteFiles = options?.remoteFiles ?? [];
+    const remoteFiles = options.remoteFiles ?? [];
 
     const collections = Object.values(response.meta.variableCollections);
     const variables = Object.values(response.meta.variables);
@@ -57,8 +54,6 @@ export class Dictionary {
     const result = modes.reduce((accumulator, mode) => {
       // TODO: add toKebabCase function
       accumulator = variables.reduce((accumulatedVariables, variable) => {
-        const path = kebabCase(variable.name);
-
         const rawValue = variable.valuesByMode[mode.modeId];
         const itIsAnAliasedToken =
           typeof rawValue === 'object' &&
@@ -85,8 +80,6 @@ export class Dictionary {
           const keyOfRemoteVariable = rawValue.id
             .split('/')[0]
             .replace('VariableID:', '');
-
-          const idOfRemoteVariable = `VariableID:${rawValue.id.split('/')[1]}`;
 
           const remoteVariable = remoteFiles.reduce<FigmaVariable | null>(
             (accumulatedVariable, remoteFile) => {

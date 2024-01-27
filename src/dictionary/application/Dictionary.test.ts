@@ -1,11 +1,6 @@
 import { expect, test as fact } from 'vitest';
+import { FigmaApiResponse } from '../../figma/infrastructure/FigmaApi.js';
 import { Dictionary } from './Dictionary.js';
-import {
-  FigmaApi,
-  FigmaApiResponse,
-  FigmaVariable,
-  FigmaVariableCollection,
-} from '../../figma/infrastructure/FigmaApi.js';
 
 fact('it creates a dictionary out of Figma Variables', () => {
   // GIVEN
