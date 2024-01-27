@@ -420,6 +420,25 @@ fact(
             hiddenFromPublishing: false,
             scopes: ['ALL_SCOPES'],
           },
+          'VariableID:61413:51953': {
+            id: 'VariableID:61413:51953',
+            name: 'Gray / 900',
+            key: 'db9aa5d3b7c6f03b4cddb78e045b566fae112d17',
+            variableCollectionId: 'VariableCollectionId:21953:215879',
+            resolvedType: 'COLOR',
+            valuesByMode: {
+              '11953:0': {
+                r: 1,
+                g: 1,
+                b: 1,
+                a: 1,
+              },
+            },
+            remote: false,
+            description: '',
+            hiddenFromPublishing: false,
+            scopes: ['ALL_SCOPES'],
+          },
         },
       },
     };
@@ -434,6 +453,7 @@ fact(
     // THEN
     expect(result).toStrictEqual({
       'gray.50': '#0000ff',
+      'gray.900': '#ffffff',
     });
   },
 );

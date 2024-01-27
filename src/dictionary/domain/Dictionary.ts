@@ -165,7 +165,7 @@ export class Dictionary {
           if (isObject(value)) {
             const newPath = `${path ?? ''}${path ? '.' : ''}${key}`;
 
-            return getToken(value, accumulator, newPath);
+            getToken(value, accumulator, newPath);
           }
 
           if (
@@ -174,8 +174,6 @@ export class Dictionary {
             typeof value === 'string'
           ) {
             accumulator[path] = value;
-
-            return accumulator;
           }
         }
 
