@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "node --env-file=\".env\" node_modules/.bin/tsx ./src/scripts/index.ts",
-    "test": "vitest"
+    "test": "vitest",
+    "format": "prettier --write ."
   },
   "exports": {
     "./primitives.css": "./dist/foundation/primitives.css",
