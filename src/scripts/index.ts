@@ -1,5 +1,5 @@
 import { env } from '../env.js';
-import { GenerateArtifacts } from '../application/GenerateArtifacts.js';
+import { GenerateArtifacts } from '../GenerateArtifacts.js';
 import { HardDiskFileSystem } from '../common/infrastructure/file-system/HardDiskFileSystem.js';
 import { FigmaApi } from '../figma/infrastructure/FigmaApi.js';
 import { HttpClientUsingFetch } from '../common/infrastructure/http-client/HttpClientUsingFetch.js';

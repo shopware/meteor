@@ -1,7 +1,7 @@
-import type { FileSystem } from '../common/domain/file-system/FileSystem.js';
-import { Dictionary } from '../dictionary/application/Dictionary.js';
-import { CSSDeliverable } from '../deliverable/domain/CSSDeliverable.js';
-import { FigmaApi } from '../figma/infrastructure/FigmaApi.js';
+import type { FileSystem } from './common/domain/file-system/FileSystem.js';
+import { Dictionary } from './dictionary/application/Dictionary.js';
+import { CSSDeliverable } from './deliverable/domain/CSSDeliverable.js';
+import { FigmaApi } from './figma/infrastructure/FigmaApi.js';
 
 const PRIMITIVE_TOKENS_FILE_KEY = 'hSDX8IwmRAPOTL4NWPwVCl';
 const ADMIN_TOKENS_FILE_KEY = '8X90GCcpIa4GllKCHA7qFM';
