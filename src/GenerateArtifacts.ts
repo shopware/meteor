@@ -44,7 +44,6 @@ export class GenerateArtifacts {
 
     this.fileSystem.saveFile(
       './tokens/administration/light.tokens.json',
-      // TODO: format with prettier
       adminLightModeDictionary.toJSON(),
     );
 
@@ -68,7 +67,6 @@ export class GenerateArtifacts {
 
     this.fileSystem.saveFile(
       './tokens/administration/dark.tokens.json',
-      // TODO: format with prettier
       adminDarkModeDictionary.toJSON(),
     );
 
