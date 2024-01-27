@@ -36,3 +36,7 @@ export function get(target: Record<string, any>, path: string) {
 
   return currentObj;
 }
+
+export function isObject(value: unknown): value is object {
+  return !!(value && typeof value === 'object' && !Array.isArray(value));
+}

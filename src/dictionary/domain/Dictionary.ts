@@ -1,4 +1,4 @@
-import { set } from '../../common/domain/utils/object.js';
+import { isObject, set } from '../../common/domain/utils/object.js';
 import { kebabCase } from '../../common/domain/utils/string.js';
 import {
   FigmaApiResponse,
@@ -186,7 +186,3 @@ export class Dictionary {
     return getToken(this.value, {});
   }
 }
-
-const isObject = (value: unknown): value is object => {
-  return !!(value && typeof value === 'object' && !Array.isArray(value));
-};

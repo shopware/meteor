@@ -1,5 +1,5 @@
 import { describe, expect, it as fact } from 'vitest';
-import { set, get } from './object.js';
+import { set, get, isObject } from './object.js';
 
 describe('set', () => {
   fact('adds a new key to an object', () => {
@@ -65,5 +65,39 @@ describe('get', () => {
 
     // THEN
     expect(result).toBe('baz');
+  });
+});
+
+describe('isObject', () => {
+  fact.each([
+    NaN,
+    null,
+    undefined,
+    1,
+    -1,
+    true,
+    false,
+    ['hello', 'world'],
+    'hello, world',
+  ])('returns false because the provided value is not an object', (value) => {
+    // GIVEN
+    const subject = isObject;
+
+    // WHEN
+    const result = subject(value);
+
+    // THEN
+    expect(result).toBe(false);
+  });
+
+  fact('returns true because the provide value is an object', () => {
+    // GIVEN
+    const subject = isObject;
+
+    // WHEN
+    const result = subject({});
+
+    // THEN
+    expect(result).toBe(true);
   });
 });
