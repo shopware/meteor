@@ -20,6 +20,7 @@
   "author": "Nils Haberkamp",
   "license": "MIT",
   "devDependencies": {
+    "prettier": "^3.2.4",
     "style-dictionary": "^3.9.2",
     "tsx": "^4.7.0"
   },
