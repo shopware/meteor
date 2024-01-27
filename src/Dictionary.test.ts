@@ -1,27 +1,27 @@
-import { expect, test as fact } from "vitest";
-import { Dictionary } from "./dictionary";
+import { expect, test as fact } from 'vitest';
+import { Dictionary } from './dictionary';
 import {
   FigmaApi,
   FigmaApiResponse,
   FigmaVariable,
   FigmaVariableCollection,
-} from "./figmaApi";
+} from './figmaApi';
 
-fact("it creates a dictionary out of Figma Variables", () => {
+fact('it creates a dictionary out of Figma Variables', () => {
   // GIVEN
   const response: FigmaApiResponse = {
     status: 200,
     error: false,
     meta: {
       variables: {
-        "VariableID:11953:115880": {
-          id: "VariableID:11953:115880",
-          name: "blue",
-          key: "db9aa5d3b7c6f03b4cddb78e045b566fae112d17",
-          variableCollectionId: "VariableCollectionId:11953:115879",
-          resolvedType: "COLOR",
+        'VariableID:11953:115880': {
+          id: 'VariableID:11953:115880',
+          name: 'blue',
+          key: 'db9aa5d3b7c6f03b4cddb78e045b566fae112d17',
+          variableCollectionId: 'VariableCollectionId:11953:115879',
+          resolvedType: 'COLOR',
           valuesByMode: {
-            "11953:0": {
+            '11953:0': {
               r: 0,
               g: 0,
               b: 1,
@@ -29,21 +29,21 @@ fact("it creates a dictionary out of Figma Variables", () => {
             },
           },
           remote: false,
-          description: "",
+          description: '',
           hiddenFromPublishing: false,
-          scopes: ["ALL_SCOPES"],
+          scopes: ['ALL_SCOPES'],
         },
       },
       variableCollections: {
-        "VariableCollectionId:11953:115879": {
-          id: "VariableCollectionId:11953:115879",
-          name: ".Design Tokens",
-          key: "9130479ef323598b1ccfb32e7b16dc80fcb30f14",
-          modes: [{ modeId: "11953:0", name: "Default" }],
-          defaultModeId: "11953:0",
+        'VariableCollectionId:11953:115879': {
+          id: 'VariableCollectionId:11953:115879',
+          name: '.Design Tokens',
+          key: '9130479ef323598b1ccfb32e7b16dc80fcb30f14',
+          modes: [{ modeId: '11953:0', name: 'Default' }],
+          defaultModeId: '11953:0',
           remote: false,
           hiddenFromPublishing: true,
-          variableIds: ["VariableID:11953:115880"],
+          variableIds: ['VariableID:11953:115880'],
         },
       },
     },
@@ -53,20 +53,20 @@ fact("it creates a dictionary out of Figma Variables", () => {
 
   // WHEN
   const result = subject.fromFigmaApiResponse(response, {
-    mode: "Default",
+    mode: 'Default',
   }).value;
 
   // THEN
   expect(result).toStrictEqual({
     blue: {
-      $type: "color",
-      $value: "#0000ff",
+      $type: 'color',
+      $value: '#0000ff',
     },
   });
 });
 
 fact(
-  "it creates a dictionary with nested Tokens out of Figma Variables",
+  'it creates a dictionary with nested Tokens out of Figma Variables',
   () => {
     // GIVEN
     const response: FigmaApiResponse = {
@@ -74,14 +74,14 @@ fact(
       error: false,
       meta: {
         variables: {
-          "VariableID:11953:115880": {
-            id: "VariableID:11953:115880",
-            name: "Neutrals / Gray / 50",
-            key: "db9aa5d3b7c6f03b4cddb78e045b566fae112d17",
-            variableCollectionId: "VariableCollectionId:11953:115879",
-            resolvedType: "COLOR",
+          'VariableID:11953:115880': {
+            id: 'VariableID:11953:115880',
+            name: 'Neutrals / Gray / 50',
+            key: 'db9aa5d3b7c6f03b4cddb78e045b566fae112d17',
+            variableCollectionId: 'VariableCollectionId:11953:115879',
+            resolvedType: 'COLOR',
             valuesByMode: {
-              "11953:0": {
+              '11953:0': {
                 r: 0.9764705896377563,
                 g: 0.9803921580314636,
                 b: 0.9843137264251709,
@@ -89,21 +89,21 @@ fact(
               },
             },
             remote: false,
-            description: "",
+            description: '',
             hiddenFromPublishing: false,
-            scopes: ["ALL_SCOPES"],
+            scopes: ['ALL_SCOPES'],
           },
         },
         variableCollections: {
-          "VariableCollectionId:11953:115879": {
-            id: "VariableCollectionId:11953:115879",
-            name: ".Design Tokens",
-            key: "9130479ef323598b1ccfb32e7b16dc80fcb30f14",
-            modes: [{ modeId: "11953:0", name: "Default" }],
-            defaultModeId: "11953:0",
+          'VariableCollectionId:11953:115879': {
+            id: 'VariableCollectionId:11953:115879',
+            name: '.Design Tokens',
+            key: '9130479ef323598b1ccfb32e7b16dc80fcb30f14',
+            modes: [{ modeId: '11953:0', name: 'Default' }],
+            defaultModeId: '11953:0',
             remote: false,
             hiddenFromPublishing: true,
-            variableIds: ["VariableID:11953:115880"],
+            variableIds: ['VariableID:11953:115880'],
           },
         },
       },
@@ -113,7 +113,7 @@ fact(
 
     // WHEN
     const result = subject.fromFigmaApiResponse(response, {
-      mode: "Default",
+      mode: 'Default',
     }).value;
 
     // THEN
@@ -121,17 +121,17 @@ fact(
       neutrals: {
         gray: {
           50: {
-            $type: "color",
-            $value: "#f9fafb",
+            $type: 'color',
+            $value: '#f9fafb',
           },
         },
       },
     });
-  }
+  },
 );
 
 fact(
-  "it creates a dictionary containing an aliased Token out of Figma Variables",
+  'it creates a dictionary containing an aliased Token out of Figma Variables',
   () => {
     // GIVEN
     const response: FigmaApiResponse = {
@@ -139,14 +139,14 @@ fact(
       error: false,
       meta: {
         variables: {
-          "VariableID:41413:11953": {
-            id: "VariableID:41413:11953",
-            name: "Neutrals / Gray / 50",
-            key: "db9aa5d3b7c6f03b4cddb78e045b566fae112d17",
-            variableCollectionId: "VariableCollectionId:11953:115879",
-            resolvedType: "COLOR",
+          'VariableID:41413:11953': {
+            id: 'VariableID:41413:11953',
+            name: 'Neutrals / Gray / 50',
+            key: 'db9aa5d3b7c6f03b4cddb78e045b566fae112d17',
+            variableCollectionId: 'VariableCollectionId:11953:115879',
+            resolvedType: 'COLOR',
             valuesByMode: {
-              "11953:0": {
+              '11953:0': {
                 r: 0,
                 g: 0,
                 b: 1,
@@ -154,38 +154,38 @@ fact(
               },
             },
             remote: false,
-            description: "",
+            description: '',
             hiddenFromPublishing: false,
-            scopes: ["ALL_SCOPES"],
+            scopes: ['ALL_SCOPES'],
           },
-          "VariableID:11953:115880": {
-            id: "VariableID:11953:115880",
-            name: "Text / Secondary / Default",
-            key: "db9aa5d3b7c6f03b4cddb78e045b566fae112d17",
-            variableCollectionId: "VariableCollectionId:11953:115879",
-            resolvedType: "COLOR",
+          'VariableID:11953:115880': {
+            id: 'VariableID:11953:115880',
+            name: 'Text / Secondary / Default',
+            key: 'db9aa5d3b7c6f03b4cddb78e045b566fae112d17',
+            variableCollectionId: 'VariableCollectionId:11953:115879',
+            resolvedType: 'COLOR',
             valuesByMode: {
-              "11953:0": {
-                type: "VARIABLE_ALIAS",
-                id: "VariableID:41413:11953",
+              '11953:0': {
+                type: 'VARIABLE_ALIAS',
+                id: 'VariableID:41413:11953',
               },
             },
             remote: false,
-            description: "",
+            description: '',
             hiddenFromPublishing: false,
-            scopes: ["ALL_SCOPES"],
+            scopes: ['ALL_SCOPES'],
           },
         },
         variableCollections: {
-          "VariableCollectionId:11953:115879": {
-            id: "VariableCollectionId:11953:115879",
-            name: ".Design Tokens",
-            key: "9130479ef323598b1ccfb32e7b16dc80fcb30f14",
-            modes: [{ modeId: "11953:0", name: "Default" }],
-            defaultModeId: "11953:0",
+          'VariableCollectionId:11953:115879': {
+            id: 'VariableCollectionId:11953:115879',
+            name: '.Design Tokens',
+            key: '9130479ef323598b1ccfb32e7b16dc80fcb30f14',
+            modes: [{ modeId: '11953:0', name: 'Default' }],
+            defaultModeId: '11953:0',
             remote: false,
             hiddenFromPublishing: true,
-            variableIds: ["VariableID:11953:115880"],
+            variableIds: ['VariableID:11953:115880'],
           },
         },
       },
@@ -195,7 +195,7 @@ fact(
 
     // WHEN
     const result = subject.fromFigmaApiResponse(response, {
-      mode: "Default",
+      mode: 'Default',
     }).value;
 
     // THEN
@@ -203,25 +203,25 @@ fact(
       neutrals: {
         gray: {
           50: {
-            $type: "color",
-            $value: "#0000ff",
+            $type: 'color',
+            $value: '#0000ff',
           },
         },
       },
       text: {
         secondary: {
           default: {
-            $type: "color",
-            $value: "{neutrals.gray.50}",
+            $type: 'color',
+            $value: '{neutrals.gray.50}',
           },
         },
       },
     });
-  }
+  },
 );
 
 fact(
-  "it creates a dictionary containing aliased Tokens that reference Design Tokens from other files",
+  'it creates a dictionary containing aliased Tokens that reference Design Tokens from other files',
   () => {
     // GIVEN
     const response: FigmaApiResponse = {
@@ -229,34 +229,34 @@ fact(
       error: false,
       meta: {
         variables: {
-          "VariableID:41413:11953": {
-            id: "VariableID:41413:11953",
-            name: "Color / Elevation / Surface / Overlay",
-            key: "db9aa5d3b7c6f03b4cddb78e045b566fae112d17",
-            variableCollectionId: "VariableCollectionId:11953:115879",
-            resolvedType: "COLOR",
+          'VariableID:41413:11953': {
+            id: 'VariableID:41413:11953',
+            name: 'Color / Elevation / Surface / Overlay',
+            key: 'db9aa5d3b7c6f03b4cddb78e045b566fae112d17',
+            variableCollectionId: 'VariableCollectionId:11953:115879',
+            resolvedType: 'COLOR',
             valuesByMode: {
-              "11953:0": {
-                type: "VARIABLE_ALIAS",
-                id: "VariableID:db9aa5d3b7c6f03b4cddb78e045b566fae112d17/51413:51953",
+              '11953:0': {
+                type: 'VARIABLE_ALIAS',
+                id: 'VariableID:db9aa5d3b7c6f03b4cddb78e045b566fae112d17/51413:51953',
               },
             },
             remote: false,
-            description: "",
+            description: '',
             hiddenFromPublishing: false,
-            scopes: ["ALL_SCOPES"],
+            scopes: ['ALL_SCOPES'],
           },
         },
         variableCollections: {
-          "VariableCollectionId:11953:115879": {
-            id: "VariableCollectionId:11953:115879",
-            name: ".Design Tokens",
-            key: "9130479ef323598b1ccfb32e7b16dc80fcb30f14",
-            modes: [{ modeId: "11953:0", name: "Default" }],
-            defaultModeId: "11953:0",
+          'VariableCollectionId:11953:115879': {
+            id: 'VariableCollectionId:11953:115879',
+            name: '.Design Tokens',
+            key: '9130479ef323598b1ccfb32e7b16dc80fcb30f14',
+            modes: [{ modeId: '11953:0', name: 'Default' }],
+            defaultModeId: '11953:0',
             remote: false,
             hiddenFromPublishing: true,
-            variableIds: ["VariableID:41413:11953"],
+            variableIds: ['VariableID:41413:11953'],
           },
         },
       },
@@ -267,26 +267,26 @@ fact(
       error: false,
       meta: {
         variableCollections: {
-          "VariableCollectionId:21953:215879": {
-            id: "VariableCollectionId:21953:215879",
-            name: ".Design Tokens",
-            key: "9130479ef323598b1ccfb32e7b16dc80fcb30f14",
-            modes: [{ modeId: "11953:0", name: "Default" }],
-            defaultModeId: "11953:0",
+          'VariableCollectionId:21953:215879': {
+            id: 'VariableCollectionId:21953:215879',
+            name: '.Design Tokens',
+            key: '9130479ef323598b1ccfb32e7b16dc80fcb30f14',
+            modes: [{ modeId: '11953:0', name: 'Default' }],
+            defaultModeId: '11953:0',
             remote: false,
             hiddenFromPublishing: true,
-            variableIds: ["VariableID:51413:51953"],
+            variableIds: ['VariableID:51413:51953'],
           },
         },
         variables: {
-          "VariableID:51413:51953": {
-            id: "VariableID:51413:51953",
-            name: "Gray / 50",
-            key: "db9aa5d3b7c6f03b4cddb78e045b566fae112d17",
-            variableCollectionId: "VariableCollectionId:21953:215879",
-            resolvedType: "COLOR",
+          'VariableID:51413:51953': {
+            id: 'VariableID:51413:51953',
+            name: 'Gray / 50',
+            key: 'db9aa5d3b7c6f03b4cddb78e045b566fae112d17',
+            variableCollectionId: 'VariableCollectionId:21953:215879',
+            resolvedType: 'COLOR',
             valuesByMode: {
-              "11953:0": {
+              '11953:0': {
                 r: 0,
                 g: 0,
                 b: 0,
@@ -294,9 +294,9 @@ fact(
               },
             },
             remote: false,
-            description: "",
+            description: '',
             hiddenFromPublishing: false,
-            scopes: ["ALL_SCOPES"],
+            scopes: ['ALL_SCOPES'],
           },
         },
       },
@@ -306,7 +306,7 @@ fact(
 
     // WHEN
     const result = subject.fromFigmaApiResponse(response, {
-      mode: "Default",
+      mode: 'Default',
       remoteFiles: [responseOfFileWithPrimitiveTokens],
     }).value;
 
@@ -316,31 +316,31 @@ fact(
         elevation: {
           surface: {
             overlay: {
-              $type: "color",
-              $value: "{gray.50}",
+              $type: 'color',
+              $value: '{gray.50}',
             },
           },
         },
       },
     });
-  }
+  },
 );
 
-fact("return a JSON representation of the dictionary", () => {
+fact('return a JSON representation of the dictionary', () => {
   // GIVEN
   const response: FigmaApiResponse = {
     status: 200,
     error: false,
     meta: {
       variables: {
-        "VariableID:11953:115880": {
-          id: "VariableID:11953:115880",
-          name: "blue",
-          key: "db9aa5d3b7c6f03b4cddb78e045b566fae112d17",
-          variableCollectionId: "VariableCollectionId:11953:115879",
-          resolvedType: "COLOR",
+        'VariableID:11953:115880': {
+          id: 'VariableID:11953:115880',
+          name: 'blue',
+          key: 'db9aa5d3b7c6f03b4cddb78e045b566fae112d17',
+          variableCollectionId: 'VariableCollectionId:11953:115879',
+          resolvedType: 'COLOR',
           valuesByMode: {
-            "11953:0": {
+            '11953:0': {
               r: 0,
               g: 0,
               b: 1,
@@ -348,28 +348,28 @@ fact("return a JSON representation of the dictionary", () => {
             },
           },
           remote: false,
-          description: "",
+          description: '',
           hiddenFromPublishing: false,
-          scopes: ["ALL_SCOPES"],
+          scopes: ['ALL_SCOPES'],
         },
       },
       variableCollections: {
-        "VariableCollectionId:11953:115879": {
-          id: "VariableCollectionId:11953:115879",
-          name: ".Design Tokens",
-          key: "9130479ef323598b1ccfb32e7b16dc80fcb30f14",
-          modes: [{ modeId: "11953:0", name: "Default" }],
-          defaultModeId: "11953:0",
+        'VariableCollectionId:11953:115879': {
+          id: 'VariableCollectionId:11953:115879',
+          name: '.Design Tokens',
+          key: '9130479ef323598b1ccfb32e7b16dc80fcb30f14',
+          modes: [{ modeId: '11953:0', name: 'Default' }],
+          defaultModeId: '11953:0',
           remote: false,
           hiddenFromPublishing: true,
-          variableIds: ["VariableID:11953:115880"],
+          variableIds: ['VariableID:11953:115880'],
         },
       },
     },
   };
 
   const subject = Dictionary.fromFigmaApiResponse(response, {
-    mode: "Default",
+    mode: 'Default',
   });
 
   // WHEN

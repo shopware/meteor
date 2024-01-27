@@ -1,9 +1,9 @@
-import { type HttpClient } from "./common/domain/http-client/HttpClient";
-import { z } from "zod";
+import { type HttpClient } from './common/domain/http-client/HttpClient';
+import { z } from 'zod';
 
 const variableAlias = z.object({
   id: z.string(),
-  type: z.literal("VARIABLE_ALIAS"),
+  type: z.literal('VARIABLE_ALIAS'),
 });
 
 const colorValue = z.object({
@@ -19,10 +19,10 @@ const variableSchema = z.object({
   name: z.string(),
   key: z.string(),
   variableCollectionId: z.string(),
-  resolvedType: z.enum(["BOOLEAN", "FLOAT", "STRING", "COLOR"]),
+  resolvedType: z.enum(['BOOLEAN', 'FLOAT', 'STRING', 'COLOR']),
   valuesByMode: z.record(
     z.string(),
-    z.union([z.boolean(), z.number(), z.string(), variableAlias, colorValue])
+    z.union([z.boolean(), z.number(), z.string(), variableAlias, colorValue]),
   ),
   remote: z.boolean(),
   description: z.string(),
@@ -60,28 +60,28 @@ type Config = {
 export class FigmaApi {
   constructor(
     private readonly config: Config,
-    private readonly httpClient: HttpClient
+    private readonly httpClient: HttpClient,
   ) {}
 
   getLocalVariablesOfFile(fileKey: string) {
     return this.httpClient
       .get(`https://api.figma.com/v1/files/${fileKey}/variables/local`, {
-        Accept: "*/*",
-        "X-Figma-Token": this.config.apiKey,
+        Accept: '*/*',
+        'X-Figma-Token': this.config.apiKey,
       })
       .then((response) => responseSchema.parse(response))
       .then((response) => {
         // filter out all remote variables and variable collections
         response.meta.variables = Object.fromEntries(
           Object.entries(response.meta.variables).filter(
-            ([_, variable]) => !variable.remote
-          )
+            ([_, variable]) => !variable.remote,
+          ),
         );
 
         response.meta.variableCollections = Object.fromEntries(
           Object.entries(response.meta.variableCollections).filter(
-            ([_, collection]) => !collection.remote
-          )
+            ([_, collection]) => !collection.remote,
+          ),
         );
 
         return response;

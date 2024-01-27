@@ -1,6 +1,6 @@
-import { get } from "../common/domain/utils/object";
-import { Dictionary } from "../dictionary";
-import { Deliverable } from "./Deliverable";
+import { get } from '../common/domain/utils/object';
+import { Dictionary } from '../dictionary';
+import { Deliverable } from './Deliverable';
 
 type Options = {
   selector: string;
@@ -10,12 +10,12 @@ type Options = {
 export class CSSDeliverable implements Deliverable {
   constructor(
     private readonly dictionary: Dictionary,
-    private readonly options: Options
+    private readonly options: Options,
   ) {}
 
   public static fromDictionary(
     dictionary: Dictionary,
-    options: Options = { selector: ":root" }
+    options: Options = { selector: ':root' },
   ): Deliverable {
     return new this(dictionary, options);
   }
@@ -23,21 +23,21 @@ export class CSSDeliverable implements Deliverable {
   toString(): string {
     const cssVariables: string[] = [];
 
-    const processToken = (token: any, prefix: string = "") => {
-      if (typeof token === "object" && token !== null) {
+    const processToken = (token: any, prefix: string = '') => {
+      if (typeof token === 'object' && token !== null) {
         for (const key in token) {
           if (token.hasOwnProperty(key)) {
             const value = token[key];
-            const variableName = `${prefix}${key}`.replace("-$value", "");
+            const variableName = `${prefix}${key}`.replace('-$value', '');
 
-            if (typeof value === "object" && value !== null) {
+            if (typeof value === 'object' && value !== null) {
               processToken(value, `${variableName}-`);
-            } else if (typeof value === "string" && key !== "$type") {
+            } else if (typeof value === 'string' && key !== '$type') {
               const isAliasedToken = /\{.+\}/.test(value);
 
               if (isAliasedToken) {
                 const pathToAliasedToken =
-                  value.replace(/\{/, "").replace(/\}/, "") + ".$value";
+                  value.replace(/\{/, '').replace(/\}/, '') + '.$value';
 
                 const aliasedValue =
                   this.options.additionalDictionaries?.reduce(
@@ -50,7 +50,7 @@ export class CSSDeliverable implements Deliverable {
                         return value;
                       }
                     },
-                    undefined
+                    undefined,
                   );
 
                 cssVariables.push(`--${variableName}: ${aliasedValue};`);
@@ -66,7 +66,7 @@ export class CSSDeliverable implements Deliverable {
     processToken(this.dictionary.value);
 
     return `${this.options.selector} {
-  ${cssVariables.join("\n")}
+  ${cssVariables.join('\n')}
 }`;
   }
 }

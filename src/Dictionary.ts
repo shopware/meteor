@@ -1,13 +1,13 @@
-import { accessSync } from "fs";
-import { Color } from "./Color";
+import { accessSync } from 'fs';
+import { Color } from './Color';
 import {
   FigmaApi,
   FigmaApiResponse,
   type FigmaVariable,
   type FigmaVariableCollection,
-} from "./figmaApi";
-import { set } from "./common/domain/utils/object";
-import { kebabCase } from "./common/domain/utils/string";
+} from './figmaApi';
+import { set } from './common/domain/utils/object';
+import { kebabCase } from './common/domain/utils/string';
 
 type DictionaryValue = {
   $value: string;
@@ -32,7 +32,7 @@ export class Dictionary {
     options: {
       mode: string;
       remoteFiles?: FigmaApiResponse[];
-    }
+    },
   ): Dictionary {
     const remoteFiles = options?.remoteFiles ?? [];
 
@@ -42,7 +42,7 @@ export class Dictionary {
     const modes = collections
       .reduce<{ modeId: string; name: string }[]>((accumulator, collection) => {
         const uniqueModes = collection.modes.filter(
-          (mode) => !accumulator.some((m) => m.modeId === mode.modeId)
+          (mode) => !accumulator.some((m) => m.modeId === mode.modeId),
         );
 
         accumulator.push(...uniqueModes);
@@ -61,15 +61,15 @@ export class Dictionary {
 
         const rawValue = variable.valuesByMode[mode.modeId];
         const itIsAnAliasedToken =
-          typeof rawValue === "object" &&
-          "type" in rawValue &&
-          rawValue.type === "VARIABLE_ALIAS";
+          typeof rawValue === 'object' &&
+          'type' in rawValue &&
+          rawValue.type === 'VARIABLE_ALIAS';
 
         if (itIsAnAliasedToken) {
           const path = kebabCase(variable.name);
 
           const referencedVariable = variables.find(
-            (variable) => variable.id === rawValue.id
+            (variable) => variable.id === rawValue.id,
           );
 
           const referencedVariableExistsLocally = referencedVariable;
@@ -83,10 +83,10 @@ export class Dictionary {
           }
 
           const keyOfRemoteVariable = rawValue.id
-            .split("/")[0]
-            .replace("VariableID:", "");
+            .split('/')[0]
+            .replace('VariableID:', '');
 
-          const idOfRemoteVariable = `VariableID:${rawValue.id.split("/")[1]}`;
+          const idOfRemoteVariable = `VariableID:${rawValue.id.split('/')[1]}`;
 
           const remoteVariable = remoteFiles.reduce<FigmaVariable | null>(
             (accumulatedVariable, remoteFile) => {
@@ -94,7 +94,7 @@ export class Dictionary {
               // TODO: update data in the test so it's easier to know what is
               //  relevant and what is not
               const potentialVariable = Object.values(
-                remoteFile.meta.variables
+                remoteFile.meta.variables,
               ).find((variable) => {
                 return variable.key === keyOfRemoteVariable;
               });
@@ -105,7 +105,7 @@ export class Dictionary {
 
               return accumulatedVariable;
             },
-            null
+            null,
           );
           const referencedVariableExistsInRemoteFile = !!remoteVariable;
 
@@ -119,11 +119,11 @@ export class Dictionary {
           }
 
           throw new Error(
-            `Failed to create dictionary: Referenced variable with id ${rawValue.id} does not exist locally or in remote file`
+            `Failed to create dictionary: Referenced variable with id ${rawValue.id} does not exist locally or in remote file`,
           );
         }
 
-        const itIsAColorValue = typeof rawValue === "object" && "r" in rawValue;
+        const itIsAColorValue = typeof rawValue === 'object' && 'r' in rawValue;
 
         if (itIsAColorValue) {
           // TODO: should we validate that the naming convention is followed? and if yes where? here or in the figmaApi?
@@ -134,7 +134,7 @@ export class Dictionary {
               rawValue.r * 255,
               rawValue.g * 255,
               rawValue.b * 255,
-              rawValue.a
+              rawValue.a,
             ).toHex(),
             $type: variable.resolvedType.toLowerCase(),
           });
@@ -143,7 +143,7 @@ export class Dictionary {
         }
 
         throw new Error(
-          "Failed to create dictionary: Value is not a color value"
+          'Failed to create dictionary: Value is not a color value',
         );
       }, {});
 

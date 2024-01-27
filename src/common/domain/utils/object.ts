@@ -1,5 +1,5 @@
 export function set(target: Record<string, any>, path: string, value: any) {
-  const keys = path.split(".");
+  const keys = path.split('.');
   let currentObj = target;
 
   for (let i = 0; i < keys.length - 1; i++) {
@@ -7,7 +7,7 @@ export function set(target: Record<string, any>, path: string, value: any) {
 
     if (!currentObj.hasOwnProperty(key)) {
       currentObj[key] = {};
-    } else if (typeof currentObj[key] !== "object") {
+    } else if (typeof currentObj[key] !== 'object') {
       throw new Error(`Invalid path: "${key}" is not an object`);
     }
 
@@ -22,7 +22,7 @@ export function set(target: Record<string, any>, path: string, value: any) {
 
 // TODO: add tests
 export function get(target: Record<string, any>, path: string) {
-  const keys = path.split(".");
+  const keys = path.split('.');
   let currentObj = target;
 
   for (let i = 0; i < keys.length; i++) {

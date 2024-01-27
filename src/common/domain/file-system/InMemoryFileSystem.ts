@@ -1,4 +1,4 @@
-import type { FileSystem } from "./FileSystem";
+import type { FileSystem } from './FileSystem';
 
 export class InMemoryFileSystem implements FileSystem {
   private readonly files: Map<string, string> = new Map();

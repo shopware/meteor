@@ -1,69 +1,69 @@
-import { describe, expect, it as fact } from "vitest";
-import { set, get } from "./object";
+import { describe, expect, it as fact } from 'vitest';
+import { set, get } from './object';
 
-describe("set", () => {
-  fact("it adds a new key to an object", () => {
+describe('set', () => {
+  fact('it adds a new key to an object', () => {
     // GIVEN
     const subject = set;
 
     // WHEN
-    const result = subject({}, "foo", "bar");
+    const result = subject({}, 'foo', 'bar');
 
     // THEN
     expect(result).toStrictEqual({
-      foo: "bar",
+      foo: 'bar',
     });
   });
 
-  fact("it adds a new key to an object with a nested path", () => {
+  fact('it adds a new key to an object with a nested path', () => {
     // GIVEN
     const subject = set;
 
     // WHEN
-    const result = subject({}, "foo.bar", "baz");
+    const result = subject({}, 'foo.bar', 'baz');
 
     // THEN
     expect(result).toStrictEqual({
       foo: {
-        bar: "baz",
+        bar: 'baz',
       },
     });
   });
 
-  fact("it overwrites an existing key", () => {
+  fact('it overwrites an existing key', () => {
     // GIVEN
     const subject = set;
 
     // WHEN
-    const result = subject({ foo: "bar" }, "foo", "baz");
+    const result = subject({ foo: 'bar' }, 'foo', 'baz');
 
     // THEN
     expect(result).toStrictEqual({
-      foo: "baz",
+      foo: 'baz',
     });
   });
 });
 
-describe("get", () => {
-  fact("returns the value of a key", () => {
+describe('get', () => {
+  fact('returns the value of a key', () => {
     // GIVEN
     const subject = get;
 
     // WHEN
-    const result = subject({ foo: "bar" }, "foo");
+    const result = subject({ foo: 'bar' }, 'foo');
 
     // THEN
-    expect(result).toBe("bar");
+    expect(result).toBe('bar');
   });
 
-  fact("returns the value of a nested key", () => {
+  fact('returns the value of a nested key', () => {
     // GIVEN
     const subject = get;
 
     // WHEN
-    const result = subject({ foo: { bar: "baz" } }, "foo.bar");
+    const result = subject({ foo: { bar: 'baz' } }, 'foo.bar');
 
     // THEN
-    expect(result).toBe("baz");
+    expect(result).toBe('baz');
   });
 });
