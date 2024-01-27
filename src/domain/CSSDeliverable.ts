@@ -1,6 +1,6 @@
-import { get } from '../common/domain/utils/object';
-import { Dictionary } from '../dictionary';
-import { Deliverable } from './Deliverable';
+import { get } from '../common/domain/utils/object.js';
+import { Dictionary } from '../dictionary/application/Dictionary.js';
+import { Deliverable } from './Deliverable.js';
 
 type Options = {
   selector: string;

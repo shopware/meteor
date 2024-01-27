@@ -1,11 +1,11 @@
 import { accessSync } from 'fs';
-import { Color } from './Color';
+import { Color } from './Color.js';
 import {
   FigmaApi,
   FigmaApiResponse,
   type FigmaVariable,
   type FigmaVariableCollection,
-} from './figmaApi';
+} from '../../figma/infrastructure/FigmaApi.js';
 import { set } from '../../common/domain/utils/object.js';
 import { kebabCase } from '../../common/domain/utils/string.js';
 

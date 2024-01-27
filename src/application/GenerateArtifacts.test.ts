@@ -1,7 +1,7 @@
 import { expect, test as fact, vitest } from 'vitest';
-import { GenerateArtifacts } from './GenerateArtifacts';
-import { InMemoryFileSystem } from '../common/domain/file-system/InMemoryFileSystem';
-import { FigmaApi } from '../figmaApi';
+import { GenerateArtifacts } from './GenerateArtifacts.js';
+import { InMemoryFileSystem } from '../common/domain/file-system/InMemoryFileSystem.js';
+import { FigmaApi } from '../figma/infrastructure/FigmaApi.js';
 
 fact(
   'creates a Dictionary in form of a JSON file for the primitive Design Tokens',

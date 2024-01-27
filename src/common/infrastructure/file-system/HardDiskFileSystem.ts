@@ -1,4 +1,4 @@
-import type { FileSystem } from '../../domain/file-system/FileSystem';
+import type { FileSystem } from '../../domain/file-system/FileSystem.js';
 import fs from 'node:fs';
 import { dirname } from 'node:path';
 

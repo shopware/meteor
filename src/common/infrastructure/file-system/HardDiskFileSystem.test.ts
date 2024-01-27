@@ -1,5 +1,5 @@
 import { expect, test as fact } from 'vitest';
-import { HardDiskFileSystem } from './HardDiskFileSystem';
+import { HardDiskFileSystem } from './HardDiskFileSystem.js';
 import fs from 'node:fs';
 import path from 'node:path';
 

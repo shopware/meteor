@@ -1,8 +1,8 @@
-import { env } from '../env';
-import { GenerateArtifacts } from '../application/GenerateArtifacts';
-import { HardDiskFileSystem } from '../common/infrastructure/file-system/HardDiskFileSystem';
-import { FigmaApi } from '../figmaApi';
-import { HttpClientUsingFetch } from '../common/infrastructure/http-client/HttpClientUsingFetch';
+import { env } from '../env.js';
+import { GenerateArtifacts } from '../application/GenerateArtifacts.js';
+import { HardDiskFileSystem } from '../common/infrastructure/file-system/HardDiskFileSystem.js';
+import { FigmaApi } from '../figma/infrastructure/FigmaApi.js';
+import { HttpClientUsingFetch } from '../common/infrastructure/http-client/HttpClientUsingFetch.js';
 import ora from 'ora';
 
 const fileSystem = new HardDiskFileSystem();

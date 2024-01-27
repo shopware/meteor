@@ -1,4 +1,4 @@
-import { HttpClient } from '../../domain/http-client/HttpClient';
+import { HttpClient } from '../../domain/http-client/HttpClient.js';
 
 export class HttpClientUsingFetch implements HttpClient {
   get(url: string, headers?: Record<string, string>) {

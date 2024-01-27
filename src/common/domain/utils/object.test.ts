@@ -1,5 +1,5 @@
 import { describe, expect, it as fact } from 'vitest';
-import { set, get } from './object';
+import { set, get } from './object.js';
 
 describe('set', () => {
   fact('it adds a new key to an object', () => {

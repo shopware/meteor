@@ -1,5 +1,5 @@
 import { expect, test as fact } from 'vitest';
-import { InMemoryFileSystem } from './InMemoryFileSystem';
+import { InMemoryFileSystem } from './InMemoryFileSystem.js';
 
 fact('creates a file that did not exist before', () => {
   // GIVEN

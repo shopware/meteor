@@ -1,5 +1,5 @@
 import { expect, test as fact } from 'vitest';
-import { kebabCase } from './string';
+import { kebabCase } from './string.js';
 
 fact.each([
   'Slate / 50',

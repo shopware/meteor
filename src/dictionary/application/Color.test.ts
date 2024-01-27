@@ -1,5 +1,5 @@
 import { expect, test as fact } from 'vitest';
-import { Color } from './Color';
+import { Color } from './Color.js';
 
 fact('it creates a hex color out of an RGB value', () => {
   // GIVEN
