@@ -22,6 +22,9 @@
   "license": "MIT",
   "devDependencies": {
     "@types/node": "^20.11.8",
+    "@typescript-eslint/eslint-plugin": "^6.19.1",
+    "@typescript-eslint/parser": "^6.19.1",
+    "eslint": "^8.56.0",
     "prettier": "^3.2.4",
     "style-dictionary": "^3.9.2",
     "tsx": "^4.7.0"
