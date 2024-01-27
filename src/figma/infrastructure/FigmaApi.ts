@@ -28,7 +28,6 @@ const variableSchema = z.object({
   description: z.string(),
   hiddenFromPublishing: z.boolean(),
   scopes: z.array(z.unknown()),
-  // codeSyntax: variableCodeSyntax,
 });
 
 export type FigmaVariableCollection = z.infer<typeof variableCollection>;
