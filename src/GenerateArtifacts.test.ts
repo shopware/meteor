@@ -671,7 +671,7 @@ fact('creates a CSS file for the admin light mode tokens', async () => {
   `);
 });
 
-fact('creates a CSS file for the admin light mode tokens', async () => {
+fact('creates a CSS file for the admin dark mode tokens', async () => {
   // GIVEN
   const figmaApi = {
     getLocalVariablesOfFile: vitest
