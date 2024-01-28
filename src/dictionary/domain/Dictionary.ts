@@ -1,3 +1,4 @@
+import { aC } from 'vitest/dist/reporters-rzC174PQ.js';
 import { isObject, set } from '../../common/domain/utils/object.js';
 import { kebabCase } from '../../common/domain/utils/string.js';
 import {
@@ -63,6 +64,34 @@ export class Dictionary {
             rawValue.b * 255,
             rawValue.a,
           ).toHex(),
+          $type: variable.resolvedType.toLocaleLowerCase(),
+        });
+      }
+
+      const isAliasedValue = typeof rawValue === 'object' && 'type' in rawValue;
+      if (isAliasedValue) {
+        const pathToAliasedToken = [
+          response,
+          ...(options.remoteFiles ?? []),
+        ].reduce<undefined | string>((accumulator, remoteFile) => {
+          if (accumulator) return accumulator;
+
+          const START_OF_ID = 52;
+          const variableId = `VariableID:${rawValue.id.slice(START_OF_ID)}`;
+
+          const resolvedVariable = remoteFile.meta.variables[variableId];
+          if (!resolvedVariable) return undefined;
+
+          return kebabCase(resolvedVariable.name);
+        }, undefined);
+
+        if (!pathToAliasedToken)
+          throw new Error(
+            `Failed to resolve aliased Token; Could not find token with the id "${rawValue.id}".`,
+          );
+
+        set(accumulator, kebabCase(variable.name), {
+          $value: `{${pathToAliasedToken}}`,
           $type: variable.resolvedType.toLocaleLowerCase(),
         });
       }
