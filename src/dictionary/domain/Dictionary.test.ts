@@ -227,7 +227,7 @@ fact(
           'VariableID:41413:11953': {
             id: 'VariableID:41413:11953',
             name: 'Color / Elevation / Surface / Overlay',
-            key: 'db9aa5d3b7c6f03b4cddb78e045b566fae112d17',
+            key: 'd7db1858980b1b6fcbde5ebbaeb48b1880c68a55',
             variableCollectionId: 'VariableCollectionId:11953:115879',
             resolvedType: 'COLOR',
             valuesByMode: {

@@ -1,10 +1,6 @@
-import { aC } from 'vitest/dist/reporters-rzC174PQ.js';
 import { isObject, set } from '../../common/domain/utils/object.js';
 import { kebabCase } from '../../common/domain/utils/string.js';
-import {
-  FigmaApiResponse,
-  type FigmaVariable,
-} from '../../figma/infrastructure/FigmaApi.js';
+import { FigmaApiResponse } from '../../figma/infrastructure/FigmaApi.js';
 import { Color } from './Color.js';
 
 type DictionaryValue = {
@@ -76,10 +72,14 @@ export class Dictionary {
         ].reduce<undefined | string>((accumulator, remoteFile) => {
           if (accumulator) return accumulator;
 
-          const START_OF_ID = 52;
-          const variableId = `VariableID:${rawValue.id.slice(START_OF_ID)}`;
+          const START_OF_KEY = 11;
+          const END_OF_KEY = 51;
+          const variableKey = rawValue.id.slice(START_OF_KEY, END_OF_KEY);
 
-          const resolvedVariable = remoteFile.meta.variables[variableId];
+          const resolvedVariable = Object.values(
+            remoteFile.meta.variables,
+          ).find((variable) => variable.key === variableKey);
+
           if (!resolvedVariable) return undefined;
 
           return kebabCase(resolvedVariable.name);
