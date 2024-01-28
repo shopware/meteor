@@ -31,119 +31,46 @@ export class Dictionary {
       remoteFiles?: FigmaApiResponse[];
     },
   ): Dictionary {
-    const remoteFiles = options.remoteFiles ?? [];
+    const modeId = Object.values(response.meta.variableCollections).reduce<
+      undefined | string
+    >((accumulator, collection) => {
+      if (accumulator) return accumulator;
 
-    const collections = Object.values(response.meta.variableCollections);
-    const variables = Object.values(response.meta.variables);
+      return collection.modes.find((mode) => mode.name === options.mode)
+        ?.modeId;
+    }, undefined);
 
-    const modes = collections
-      .reduce<{ modeId: string; name: string }[]>((accumulator, collection) => {
-        const uniqueModes = collection.modes.filter(
-          (mode) => !accumulator.some((m) => m.modeId === mode.modeId),
-        );
+    if (!modeId)
+      throw new Error(
+        `Failed to create Dictionary; Could not find mode with the name "${modeId}"`,
+      );
 
-        accumulator.push(...uniqueModes);
+    const variables = Object.values(
+      response.meta.variables,
+    ).reduce<DictionaryTree>((accumulator, variable) => {
+      const rawValue = variable.valuesByMode[modeId];
 
-        return accumulator;
-      }, [])
-      .filter((mode) => {
-        return mode.name === options.mode;
-      });
+      const isColorValue =
+        variable.resolvedType === 'COLOR' &&
+        typeof rawValue === 'object' &&
+        'r' in rawValue;
 
-    // TODO: should we throw an error if we have two different modes with the same name?
-    const result = modes.reduce((accumulator, mode) => {
-      // TODO: add toKebabCase function
-      accumulator = variables.reduce((accumulatedVariables, variable) => {
-        const rawValue = variable.valuesByMode[mode.modeId];
-        const itIsAnAliasedToken =
-          typeof rawValue === 'object' &&
-          'type' in rawValue &&
-          rawValue.type === 'VARIABLE_ALIAS';
-
-        if (itIsAnAliasedToken) {
-          const path = kebabCase(variable.name);
-
-          const referencedVariable = variables.find(
-            (variable) => variable.id === rawValue.id,
-          );
-
-          const referencedVariableExistsLocally = referencedVariable;
-          if (referencedVariableExistsLocally) {
-            set(accumulatedVariables, path, {
-              $value: `{${kebabCase(referencedVariable.name)}}`,
-              $type: variable.resolvedType.toLowerCase(),
-            });
-
-            return accumulatedVariables;
-          }
-
-          const keyOfRemoteVariable = rawValue.id
-            .split('/')[0]
-            .replace('VariableID:', '');
-
-          const remoteVariable = remoteFiles.reduce<FigmaVariable | null>(
-            (accumulatedVariable, remoteFile) => {
-              // TODO: generally find every variable trough their key
-              // TODO: update data in the test so it's easier to know what is
-              //  relevant and what is not
-              const potentialVariable = Object.values(
-                remoteFile.meta.variables,
-              ).find((variable) => {
-                return variable.key === keyOfRemoteVariable;
-              });
-
-              if (potentialVariable) {
-                return potentialVariable;
-              }
-
-              return accumulatedVariable;
-            },
-            null,
-          );
-          const referencedVariableExistsInRemoteFile = !!remoteVariable;
-
-          if (referencedVariableExistsInRemoteFile) {
-            set(accumulatedVariables, path, {
-              $value: `{${kebabCase(remoteVariable.name)}}`,
-              $type: variable.resolvedType.toLowerCase(),
-            });
-
-            return accumulatedVariables;
-          }
-
-          throw new Error(
-            `Failed to create dictionary: Referenced variable with id ${rawValue.id} does not exist locally or in remote file`,
-          );
-        }
-
-        const itIsAColorValue = typeof rawValue === 'object' && 'r' in rawValue;
-
-        if (itIsAColorValue) {
-          // TODO: should we validate that the naming convention is followed? and if yes where? here or in the figmaApi?
-          const path = kebabCase(variable.name);
-
-          set(accumulatedVariables, path, {
-            $value: Color.fromRGB(
-              rawValue.r * 255,
-              rawValue.g * 255,
-              rawValue.b * 255,
-              rawValue.a,
-            ).toHex(),
-            $type: variable.resolvedType.toLowerCase(),
-          });
-
-          return accumulatedVariables;
-        }
-
-        throw new Error(
-          'Failed to create dictionary: Value is not a color value',
-        );
-      }, {});
+      if (isColorValue) {
+        set(accumulator, kebabCase(variable.name), {
+          $value: Color.fromRGB(
+            rawValue.r * 255,
+            rawValue.g * 255,
+            rawValue.b * 255,
+            rawValue.a,
+          ).toHex(),
+          $type: variable.resolvedType.toLocaleLowerCase(),
+        });
+      }
 
       return accumulator;
     }, {});
 
-    return new Dictionary(result);
+    return new this(variables);
   }
 
   public toJSON() {
