@@ -5,8 +5,6 @@ import { Color } from './Color.js';
 
 type DictionaryValue = {
   $value: string;
-
-  // TODO: are we able to make a union of all possible types?
   $type: string;
 };
 
@@ -15,13 +13,9 @@ type DictionaryTree = {
 };
 
 export class Dictionary {
-  // TODO: use inferred type from zod schema
-  private constructor(public readonly value: DictionaryTree) {
-    // TODO: add zod validation
-  }
+  private constructor(public readonly value: DictionaryTree) {}
 
   public static fromFigmaApiResponse(
-    // TODO: use inferred type from zod schema
     response: FigmaApiResponse,
     options: {
       mode: string;

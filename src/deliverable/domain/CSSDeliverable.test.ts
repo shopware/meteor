@@ -302,7 +302,6 @@ fact('creates a CSSDeliverable with aliased token', () => {
 
   // WHEN
   const subject = CSSDeliverable.fromDictionary(adminDarkDictionary, {
-    // TODO: make this property optional
     selector: ':root',
     additionalDictionaries: [primitiveTokenDictionary],
   });
