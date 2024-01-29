@@ -545,7 +545,8 @@ fact('creates a CSS file for the primitive Design Tokens', async () => {
     ":root {
       --zinc-50: #fafbfe;
       --zinc-900: #1e1e24;
-    }"
+    }
+    "
   `);
 });
 
@@ -670,7 +671,8 @@ fact('creates a CSS file for the admin light mode tokens', async () => {
   expect(result).toMatchInlineSnapshot(`
     ":root {
       --color-elevation-surface-default: #fafbfe;
-    }"
+    }
+    "
   `);
 });
 
@@ -795,6 +797,7 @@ fact('creates a CSS file for the admin dark mode tokens', async () => {
   expect(result).toMatchInlineSnapshot(`
     "[data-theme="dark"] {
       --color-elevation-surface-default: #1e1e24;
-    }"
+    }
+    "
   `);
 });

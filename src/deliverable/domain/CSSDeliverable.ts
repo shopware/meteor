@@ -58,9 +58,10 @@ export class CSSDeliverable implements Deliverable {
     );
 
     const INDENTATION = '  ';
+    const EMPTY_NEW_LINE = '\n';
 
     return `${this.options.selector} {
 ${variables.map((variable) => INDENTATION + variable).join('\n')}
-}`;
+}${EMPTY_NEW_LINE}`;
   }
 }

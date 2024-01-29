@@ -77,7 +77,8 @@ fact('creates a CSSDeliverable with the default selector of ":root"', () => {
     ":root {
       --blue: #0000ff;
       --red: #ff0000;
-    }"
+    }
+    "
   `);
 });
 
@@ -137,7 +138,8 @@ fact('creates a CSSDeliverable with a custom selector', () => {
   expect(result).toMatchInlineSnapshot(`
     "[data-theme="dark"] {
       --blue: #0000ff;
-    }"
+    }
+    "
   `);
 });
 
@@ -195,7 +197,8 @@ fact('creates a CSSDeliverable with nested tokens', () => {
   expect(result).toMatchInlineSnapshot(`
     ":root {
       --zinc-50: #fafbfe;
-    }"
+    }
+    "
   `);
 });
 
@@ -331,6 +334,7 @@ fact('creates a CSSDeliverable with aliased token', () => {
   expect(result).toMatchInlineSnapshot(`
     ":root {
       --color-elevation-surface-default: #fafbfe;
-    }"
+    }
+    "
   `);
 });
