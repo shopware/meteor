@@ -8,7 +8,8 @@
     "start": "node --env-file=\".env\" node_modules/.bin/tsx ./src/scripts/index.ts",
     "test": "vitest",
     "format": "prettier --write .",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "lint:types": "tsc --noEmit"
   },
   "exports": {
     "./primitives.css": "./dist/foundation/primitives.css",
