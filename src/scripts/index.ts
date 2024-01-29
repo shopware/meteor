@@ -15,6 +15,12 @@ const figmaApi = new FigmaApi(
 
 const spinner = ora('Generating artifacts').start();
 
-await new GenerateArtifacts(fileSystem, figmaApi).execute();
+try {
+  await new GenerateArtifacts(fileSystem, figmaApi).execute();
 
-spinner.succeed('Artifacts generated');
+  spinner.succeed('Artifacts generated');
+} catch (error) {
+  spinner.stop();
+
+  console.error(error);
+}
