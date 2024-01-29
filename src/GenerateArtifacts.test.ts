@@ -6,6 +6,10 @@ import { env } from './env.js';
 import { HttpClientUsingFetch } from './common/infrastructure/http-client/HttpClientUsingFetch.js';
 import { server } from '../tests/mocks/node.js';
 import { HttpResponse, http } from 'msw';
+import {
+  ADMIN_TOKENS_FILE_KEY,
+  PRIMITIVE_TOKENS_FILE_KEY,
+} from './constants.js';
 
 fact(
   'creates a Dictionary in form of a JSON file for the primitive Design Tokens',
@@ -13,8 +17,7 @@ fact(
     // GIVEN
     server.use(
       http.get(
-        // TODO: replace hard-coded id with constant
-        'https://api.figma.com/v1/files/hSDX8IwmRAPOTL4NWPwVCl/variables/local',
+        `https://api.figma.com/v1/files/${PRIMITIVE_TOKENS_FILE_KEY}/variables/local`,
         () => {
           return HttpResponse.json({
             status: 200,
@@ -77,7 +80,7 @@ fact(
         },
       ),
       http.get(
-        'https://api.figma.com/v1/files/8X90GCcpIa4GllKCHA7qFM/variables/local',
+        `https://api.figma.com/v1/files/${ADMIN_TOKENS_FILE_KEY}/variables/local`,
         () => {
           return HttpResponse.json({
             status: 200,
@@ -169,7 +172,7 @@ fact(
     // GIVEN
     server.use(
       http.get(
-        'https://api.figma.com/v1/files/hSDX8IwmRAPOTL4NWPwVCl/variables/local',
+        `https://api.figma.com/v1/files/${PRIMITIVE_TOKENS_FILE_KEY}/variables/local`,
         () => {
           return HttpResponse.json({
             status: 200,
@@ -232,7 +235,7 @@ fact(
         },
       ),
       http.get(
-        'https://api.figma.com/v1/files/8X90GCcpIa4GllKCHA7qFM/variables/local',
+        `https://api.figma.com/v1/files/${ADMIN_TOKENS_FILE_KEY}/variables/local`,
         () => {
           return HttpResponse.json({
             status: 200,
@@ -324,7 +327,7 @@ fact(
     // GIVEN
     server.use(
       http.get(
-        'https://api.figma.com/v1/files/hSDX8IwmRAPOTL4NWPwVCl/variables/local',
+        `https://api.figma.com/v1/files/${PRIMITIVE_TOKENS_FILE_KEY}/variables/local`,
         () => {
           return HttpResponse.json({
             status: 200,
@@ -387,7 +390,7 @@ fact(
         },
       ),
       http.get(
-        'https://api.figma.com/v1/files/8X90GCcpIa4GllKCHA7qFM/variables/local',
+        `https://api.figma.com/v1/files/${ADMIN_TOKENS_FILE_KEY}/variables/local`,
         () => {
           return HttpResponse.json({
             status: 200,
@@ -477,7 +480,7 @@ fact('creates a CSS file for the primitive Design Tokens', async () => {
   // GIVEN
   server.use(
     http.get(
-      'https://api.figma.com/v1/files/hSDX8IwmRAPOTL4NWPwVCl/variables/local',
+      `https://api.figma.com/v1/files/${PRIMITIVE_TOKENS_FILE_KEY}/variables/local`,
       () => {
         return HttpResponse.json({
           status: 200,
@@ -540,7 +543,7 @@ fact('creates a CSS file for the primitive Design Tokens', async () => {
       },
     ),
     http.get(
-      'https://api.figma.com/v1/files/8X90GCcpIa4GllKCHA7qFM/variables/local',
+      `https://api.figma.com/v1/files/${ADMIN_TOKENS_FILE_KEY}/variables/local`,
       () => {
         return HttpResponse.json({
           status: 200,
@@ -619,7 +622,7 @@ fact('creates a CSS file for the admin light mode tokens', async () => {
   // GIVEN
   server.use(
     http.get(
-      'https://api.figma.com/v1/files/hSDX8IwmRAPOTL4NWPwVCl/variables/local',
+      `https://api.figma.com/v1/files/${PRIMITIVE_TOKENS_FILE_KEY}/variables/local`,
       () => {
         return HttpResponse.json({
           status: 200,
@@ -682,7 +685,7 @@ fact('creates a CSS file for the admin light mode tokens', async () => {
       },
     ),
     http.get(
-      'https://api.figma.com/v1/files/8X90GCcpIa4GllKCHA7qFM/variables/local',
+      `https://api.figma.com/v1/files/${ADMIN_TOKENS_FILE_KEY}/variables/local`,
       () => {
         return HttpResponse.json({
           status: 200,
@@ -760,7 +763,7 @@ fact('creates a CSS file for the admin dark mode tokens', async () => {
   // GIVEN
   server.use(
     http.get(
-      'https://api.figma.com/v1/files/hSDX8IwmRAPOTL4NWPwVCl/variables/local',
+      `https://api.figma.com/v1/files/${PRIMITIVE_TOKENS_FILE_KEY}/variables/local`,
       () => {
         return HttpResponse.json({
           status: 200,
@@ -823,7 +826,7 @@ fact('creates a CSS file for the admin dark mode tokens', async () => {
       },
     ),
     http.get(
-      'https://api.figma.com/v1/files/8X90GCcpIa4GllKCHA7qFM/variables/local',
+      `https://api.figma.com/v1/files/${ADMIN_TOKENS_FILE_KEY}/variables/local`,
       () => {
         return HttpResponse.json({
           status: 200,
