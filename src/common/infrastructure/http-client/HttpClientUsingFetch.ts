@@ -1,7 +1,10 @@
 import { HttpClient } from '../../domain/http-client/HttpClient.js';
 
 export class HttpClientUsingFetch implements HttpClient {
-  get(url: string, headers?: Record<string, string>) {
+  get<TResponse = unknown>(
+    url: string,
+    headers?: Record<string, string>,
+  ): Promise<TResponse> {
     return fetch(url, {
       method: 'GET',
       headers,
@@ -10,7 +13,7 @@ export class HttpClientUsingFetch implements HttpClient {
         throw new Error(response.statusText);
       }
 
-      return response.json();
+      return response.json() as TResponse;
     });
   }
 }

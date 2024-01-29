@@ -19,6 +19,11 @@ export class GenerateArtifacts {
       ),
     );
 
+    if (!primitiveTokenResponse || !adminTokenResponse)
+      throw new Error(
+        'Failed to generate artifacts: Primitive or Admin Tokens are undefined.',
+      );
+
     const primitiveDictionary = Dictionary.fromFigmaApiResponse(
       primitiveTokenResponse,
       { mode: 'Light mode' },
