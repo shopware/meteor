@@ -57,8 +57,10 @@ export class CSSDeliverable implements Deliverable {
       },
     );
 
+    const INDENTATION = '  ';
+
     return `${this.options.selector} {
-  ${variables.join('\n')}
+${variables.map((variable) => INDENTATION + variable).join('\n')}
 }`;
   }
 }

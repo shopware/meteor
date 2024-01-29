@@ -541,7 +541,7 @@ fact('creates a CSS file for the primitive Design Tokens', async () => {
   expect(result).toMatchInlineSnapshot(`
     ":root {
       --zinc-50: #fafbfe;
-    --zinc-900: #1e1e24;
+      --zinc-900: #1e1e24;
     }"
   `);
 });

@@ -29,6 +29,25 @@ fact('creates a CSSDeliverable with the default selector of ":root"', () => {
           hiddenFromPublishing: false,
           scopes: ['ALL_SCOPES'],
         },
+        'VariableID:21953:615880': {
+          id: 'VariableID:21953:615880',
+          name: 'red',
+          key: 'dc9aa5d3b7c6f03b4cddb78e045b566fae112d17',
+          variableCollectionId: 'VariableCollectionId:11953:115879',
+          resolvedType: 'COLOR',
+          valuesByMode: {
+            '11953:0': {
+              r: 1,
+              g: 0,
+              b: 0,
+              a: 1,
+            },
+          },
+          remote: false,
+          description: '',
+          hiddenFromPublishing: false,
+          scopes: ['ALL_SCOPES'],
+        },
       },
       variableCollections: {
         'VariableCollectionId:11953:115879': {
@@ -39,7 +58,7 @@ fact('creates a CSSDeliverable with the default selector of ":root"', () => {
           defaultModeId: '11953:0',
           remote: false,
           hiddenFromPublishing: true,
-          variableIds: ['VariableID:11953:115880'],
+          variableIds: ['VariableID:11953:115880', 'VariableID:21953:615880'],
         },
       },
     },
@@ -57,6 +76,7 @@ fact('creates a CSSDeliverable with the default selector of ":root"', () => {
   expect(result).toMatchInlineSnapshot(`
     ":root {
       --blue: #0000ff;
+      --red: #ff0000;
     }"
   `);
 });
