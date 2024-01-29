@@ -373,7 +373,8 @@ fact('return a JSON representation of the dictionary', () => {
         "$value": "#0000ff",
         "$type": "color"
       }
-    }"
+    }
+    "
   `);
 });
 

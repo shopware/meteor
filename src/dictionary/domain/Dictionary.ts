@@ -97,7 +97,9 @@ export class Dictionary {
   }
 
   public toJSON() {
-    return JSON.stringify(this.value, null, 2);
+    const EMPTY_NEW_LINE = '\n';
+
+    return JSON.stringify(this.value, null, 2) + EMPTY_NEW_LINE;
   }
 
   public flat() {
