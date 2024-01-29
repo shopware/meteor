@@ -115,7 +115,7 @@ fact('creates a CSSDeliverable with a custom selector', () => {
 
   // THEN
   expect(result).toMatchInlineSnapshot(`
-    "[data-theme=\"dark\"] {
+    "[data-theme="dark"] {
       --blue: #0000ff;
     }"
   `);
