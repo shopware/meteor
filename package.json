@@ -1,0 +1,9 @@
+{
+  "name": "meteor",
+  "version": "0.0.0",
+  "private": true,
+  "description": "The monorepo that contains all Meteor related projects",
+  "scripts": {},
+  "keywords": [],
+  "license": "MIT"
+}
