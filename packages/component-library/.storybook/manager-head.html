@@ -1,0 +1,26 @@
+<style>
+  /*
+   * Hide all interaction tests in the menu
+   * in development
+   */
+   body:not(.show-interaction-tests) [id$='interaction-tests'],
+   body:not(.show-interaction-tests) [data-parent-id^='interaction-tests'] {
+    display: none !important;
+   }
+
+   body.dark * {
+      color-scheme: dark;
+   }
+
+   body.light * {
+      color-scheme: light;
+   }
+</style>
+
+<script>
+  setTimeout(() => {
+    if (window.CONFIG_TYPE === 'DEVELOPMENT') {
+      document.body.classList.add('show-interaction-tests');
+    }
+  }, 150)
+</script>
