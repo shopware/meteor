@@ -5,5 +5,8 @@
   "description": "The monorepo that contains all Meteor related projects",
   "scripts": {},
   "keywords": [],
-  "license": "MIT"
+  "license": "MIT",
+  "workspaces": [
+    "packages/*"
+  ]
 }
