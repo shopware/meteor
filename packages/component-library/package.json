@@ -4,8 +4,8 @@
   "scripts": {
     "test:unit": "jest",
     "test:unit:watch": "jest --watch",
-    "lint": "npm run lint:tsc && npm run lint:eslint",
-    "lint:tsc": "vue-tsc --noEmit --declaration false",
+    "lint:all": "npm run lint:types && npm run lint:eslint",
+    "lint:types": "vue-tsc --noEmit --declaration false",
     "lint:eslint": "eslint --ext .js,.ts,.vue src",
     "storybook": "SHOW_INTERACTIONS=true storybook dev -p 6006",
     "build-vue": "vite build",

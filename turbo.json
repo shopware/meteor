@@ -1,7 +1,9 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "pipeline": {
-    "lint": {}
+    "lint:all": {},
+    "lint:types": {},
+    "lint:eslint": {}
   }
 }
   
