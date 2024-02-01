@@ -6,7 +6,8 @@
   "scripts": {
     "lint:all": "turbo run lint:eslint",
     "lint:types": "turbo run lint:types",
-    "lint:eslint": "turbo run lint:eslint"
+    "lint:eslint": "turbo run lint:eslint",
+    "format": "turbo run format"
   },
   "keywords": [],
   "license": "MIT",

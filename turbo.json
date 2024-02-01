@@ -3,7 +3,8 @@
   "pipeline": {
     "lint:all": {},
     "lint:types": {},
-    "lint:eslint": {}
+    "lint:eslint": {},
+    "format": {}
   }
 }
   
