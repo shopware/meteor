@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node --env-file=\".env\" node_modules/.bin/tsx ./src/scripts/index.ts",
+    "build": "node --env-file=\".env\" ../../node_modules/.bin/tsx ./src/scripts/index.ts",
     "test:unit": "node --env-file=\".env\" node_modules/.bin/vitest --run",
     "test:unit:watch": "node --env-file=\".env\" node_modules/.bin/vitest",
     "format": "prettier --write .",

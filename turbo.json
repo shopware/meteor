@@ -1,6 +1,10 @@
 {
   "$schema": "https://turbo.build/schema.json",
   "pipeline": {
+    "build": {
+      "dependsOn": ["^build"],
+      "env": ["API_KEY"]
+    },
     "lint:all": {},
     "lint:types": {},
     "lint:eslint": {},
