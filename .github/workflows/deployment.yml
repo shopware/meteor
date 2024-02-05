@@ -1,0 +1,41 @@
+name: Deployment
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  create_storybook_pages:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+
+      # - name: Retrieve the cached main "node_modules" directory (if present)
+      #   uses: actions/cache@v3
+      #   id: node-cache-main
+      #   with:
+      #     path: node_modules
+      #     key: node-modules-main-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Install main dependencies (if the cached directory was not found)
+        # if: steps.node-cache-main.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Create the static pages directory locally in CI
+        run: npm --prefix ./packages/component-library run build-storybook
+
+      - name: Deploy 🚀
+        if: github.ref == 'refs/heads/main'
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          force: false
+          branch: gh-pages
+          folder: storybook-static
+          clean-exclude: pr-preview/
