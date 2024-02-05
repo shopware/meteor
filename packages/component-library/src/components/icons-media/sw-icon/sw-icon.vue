@@ -75,7 +75,7 @@ export default Vue.extend({
         const [variant] = newName.split('-');
         const iconName = newName.split('-').slice(1).join('-');
 
-        import(`./../../../../node_modules/@shopware-ag/meteor-icon-kit/icons/${variant}/${iconName}.svg`).then((iconSvgData) => {
+        import(`./../../../../../../node_modules/@shopware-ag/meteor-icon-kit/icons/${variant}/${iconName}.svg`).then((iconSvgData) => {
           if (iconSvgData.default) {
             this.iconSvgData = iconSvgData.default;
           } else {
@@ -97,7 +97,7 @@ export default Vue.extend({
 <style lang="scss">
 @import "../../assets/scss/variables.scss";
 @import "../../assets/scss/mixins.scss";
-@import "node_modules/@shopware-ag/meteor-icon-kit/icons/meteor-icon-kit.scss";
+@import "../../node_modules/@shopware-ag/meteor-icon-kit/icons/meteor-icon-kit.scss";
 
 .sw-icon {
   display: inline-block;
