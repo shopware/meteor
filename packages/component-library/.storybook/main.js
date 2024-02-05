@@ -1,4 +1,4 @@
-const custom = require('../node_modules/@vue/cli-service/webpack.config.js');
+const custom = require('../../../node_modules/@vue/cli-service/webpack.config.js');
 const path = require('path');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 module.exports = {
