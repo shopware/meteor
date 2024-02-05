@@ -5,6 +5,7 @@
     "lint:types": {},
     "lint:eslint": {},
     "format": {},
-    "format:check": {}
+    "format:check": {},
+    "test:unit": {}
   }
 }

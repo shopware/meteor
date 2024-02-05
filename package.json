@@ -8,7 +8,8 @@
     "lint:types": "turbo run lint:types",
     "lint:eslint": "turbo run lint:eslint",
     "format": "turbo run format",
-    "format:check": "turbo run format:check"
+    "format:check": "turbo run format:check",
+    "test:unit": "turbo run test:unit"
   },
   "keywords": [],
   "license": "MIT",

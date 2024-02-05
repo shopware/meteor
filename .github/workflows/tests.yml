@@ -35,3 +35,24 @@ jobs:
         run: npm run lint:types
       - name: Lint code
         run: npm run lint:eslint
+  unit-tests:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - name: Retrieve the cached "node_modules" directory (if present)
+        uses: actions/cache@v3
+        id: node-cache
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+      - name: Install dependencies (if the cached directory was not found)
+        if: steps.node-cache.outputs.cache-hit != 'true'
+        run: npm ci
+      - name: unit
+        run: npm run test:unit
