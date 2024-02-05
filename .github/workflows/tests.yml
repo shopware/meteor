@@ -29,6 +29,8 @@ jobs:
       - name: Install dependencies (if the cached directory was not found)
         if: steps.node-cache.outputs.cache-hit != 'true'
         run: npm ci
+      - name: Check formatting
+        run: npm run format:check
       - name: Perform typecheck
         run: npm run lint:types
       - name: Lint code
