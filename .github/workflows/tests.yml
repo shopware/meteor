@@ -2,9 +2,11 @@ name: Tests
 
 on:
   pull_request:
+
   push:
     branches:
       - main
+
   workflow_dispatch:
 
 jobs:
@@ -14,78 +16,97 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-      #   - name: Retrieve the cached "node_modules" directory (if present)
-      #     uses: actions/cache@v3
-      #     id: node-cache
-      #     with:
-      #       path: node_modules
-      #       key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Retrieve the cached "node_modules" directory (if present)
+        uses: actions/cache@v3
+        id: node-cache
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
       - name: Install dependencies (if the cached directory was not found)
-        # if: steps.node-cache.outputs.cache-hit != 'true'
+        if: steps.node-cache.outputs.cache-hit != 'true'
         run: npm ci
+
       - name: Check formatting
         run: npm run format:check
+
       - name: Perform typecheck
         run: npm run lint:types
+
       - name: Lint code
         run: npm run lint:eslint
+
   unit-tests:
     name: Unit tests
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-      #   - name: Retrieve the cached "node_modules" directory (if present)
-      #     uses: actions/cache@v3
-      #     id: node-cache
-      #     with:
-      #       path: node_modules
-      #       key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Retrieve the cached "node_modules" directory (if present)
+        uses: actions/cache@v3
+        id: node-cache
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
       - name: Install dependencies (if the cached directory was not found)
-        # if: steps.node-cache.outputs.cache-hit != 'true'
+        if: steps.node-cache.outputs.cache-hit != 'true'
         run: npm ci
+
       - name: unit
         run: npm run test:unit
-#   storybook-tests:
-#     name: Storybook Tests
-#     timeout-minutes: 60
-#     runs-on: ubuntu-latest
-#     steps:
-#       - name: Checkout
-#         uses: actions/checkout@v4
-#       - name: Setup Node.js
-#         uses: actions/setup-node@v4
-#       #   - name: Retrieve the cached "node_modules" directory (if present)
-#       #     uses: actions/cache@v3
-#       #     id: node-cache
-#       #     with:
-#       #       path: node_modules
-#       #       key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-#       - name: Install dependencies (if the cached directory was not found)
-#         # if: steps.node-cache.outputs.cache-hit != 'true'
-#         run: npm ci
-#       - name: Install Playwright
-#         run: npx playwright install
-#       - name: Create the static pages directory locally in CI
-#         run: npm --prefix ./packages/component-library run build-storybook
-#       - name: Run Tests
-#         id: storybookTests
-#         run: |
-#           cd ./packages/component-library &&
-#           npx concurrently --kill-others --success first --names "SB,TEST" --prefix-colors "magenta,blue" \
-#           "http-server storybook-static -a 127.0.0.1 --port 6006" \
-#           "wait-on http://127.0.0.1:6006 && npm run test-storybook"
-#       - name: Archive visual test diffs
-#         uses: actions/upload-artifact@v3
-#         if: always()
-#         with:
-#           name: visual-test-diffs
-#           path: ./packages/component-library/__snapshots__
+
+  storybook-tests:
+    name: Storybook Tests
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+
+      - name: Retrieve the cached "node_modules" directory (if present)
+        uses: actions/cache@v3
+        id: node-cache
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+
+      - name: Install dependencies (if the cached directory was not found)
+        if: steps.node-cache.outputs.cache-hit != 'true'
+        run: npm ci
+
+      - name: Install Playwright
+        run: npx playwright install
+
+      - name: Create the static pages directory locally in CI
+        run: npm --prefix ./packages/component-library run build-storybook
+
+      - name: Run Tests
+        id: storybookTests
+        run: |
+          cd ./packages/component-library &&
+          npx concurrently --kill-others --success first --names "SB,TEST" --prefix-colors "magenta,blue" \
+          "http-server storybook-static -a 127.0.0.1 --port 6006" \
+          "wait-on http://127.0.0.1:6006 && npm run test-storybook"
+
+      - name: Archive visual test diffs
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: visual-test-diffs
+          path: ./packages/component-library/__snapshots__
