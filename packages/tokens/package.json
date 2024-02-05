@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "start": "node --env-file=\".env\" node_modules/.bin/tsx ./src/scripts/index.ts",
-    "test:unit": "node --env-file=\".env\" node_modules/.bin/vitest",
+    "test:unit": "node --env-file=\".env\" node_modules/.bin/vitest --run",
+    "test:unit:watch": "node --env-file=\".env\" node_modules/.bin/vitest",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "lint:all": "npm run lint:eslint && npm run lint:types",
