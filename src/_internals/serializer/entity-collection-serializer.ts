@@ -6,7 +6,7 @@ import type { SerializerFactory } from '.';
 const EntityCollectionSerializerFactory: SerializerFactory = () => ({
   name: 'entity-collection',
 
-  serialize: ({ value, customizerMethod }): any => {
+  serialize: ({ value, customizerMethod, seen }): any => {
     if (value instanceof EntityCollection || (value?.__identifier__ && value.__identifier__() === 'EntityCollection')) {
       return customizerMethod({
         __type__: '__EntityCollection__',
@@ -17,7 +17,7 @@ const EntityCollectionSerializerFactory: SerializerFactory = () => ({
         __entities__: Array.from(value),
         __total__: value.total,
         __aggregations__: value.aggregations,
-      });
+      }, seen);
     }
   },
 

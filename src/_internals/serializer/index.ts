@@ -19,12 +19,21 @@ interface customizerProperties {
   object: any | undefined,
   stack: any,
   event?: MessageEvent<string>,
+  customizerMethod: (messageData: any, seen: Map<any, any>, event?: MessageEvent<string>) => any,
+  seen: Map<any, any>,
+}
+
+interface deserializeCustomizerProperties extends Omit<
+  customizerProperties,
+  'customizerMethod' | 'seen'
+> {
   customizerMethod: (messageData: any, event?: MessageEvent<string>) => any,
 }
+
 interface serializer {
   name: string,
   serialize: (customizerProperties: customizerProperties) => any,
-  deserialize: (customizerProperties: customizerProperties) => any,
+  deserialize: (customizerProperties: deserializeCustomizerProperties) => any,
 }
 
 export type SerializerFactory = (dependencies: SerializerDependencies) => serializer;
@@ -63,8 +72,18 @@ export default function mainSerializerFactory(dependencies: SerializerDependenci
   }
 
   /* eslint-disable */
-  function serialize(messageData: any): any {
+  function serialize(messageData: any, seen = new Map()): any {
     return cloneDeepWith<unknown>(messageData, (value, key, object, stack) => {
+      if (seen.has(value)) {
+        if (typeof seen.get(value) === 'string' && seen.get(value).startsWith('$#')) {
+          return;
+        }
+
+        return seen.get(value);
+      }
+
+      seen.set(value, `$#${Math.random()}`);
+
       // return first matching serializer result
       for (const serializer of serializers) {
         const result = serializer.serialize({
@@ -73,9 +92,12 @@ export default function mainSerializerFactory(dependencies: SerializerDependenci
           object,
           stack,
           customizerMethod: serialize,
+          seen,
         });
 
         if (result) {
+          // console.log('object', object)
+          seen.set(value, result)
           return result;
         };
       }

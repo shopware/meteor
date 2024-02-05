@@ -110,6 +110,7 @@
     "wait-on": "^6.0.1"
   },
   "dependencies": {
+    "json-complete": "^2.0.1",
     "localforage": "^1.10.0",
     "lodash": "^4.17.21"
   }

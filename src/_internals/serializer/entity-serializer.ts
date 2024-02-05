@@ -6,7 +6,7 @@ import type { SerializerFactory } from '.';
 const EntitySerializerFactory: SerializerFactory = () => ({
   name: 'entity',
 
-  serialize: ({ value, customizerMethod }): any => {
+  serialize: ({ value, customizerMethod, seen }): any => {
     if (!isObject(value) || typeof value.__identifier__ !== 'function' || value.__identifier__() !== 'Entity') {
       return;
     }
@@ -17,8 +17,8 @@ const EntitySerializerFactory: SerializerFactory = () => ({
       __entityName__: value._entityName,
       __isDirty__: value._isDirty,
       __isNew__: value._isNew,
-      __origin__: customizerMethod(value._origin),
-      __draft__: customizerMethod(value._draft),
+      __origin__: customizerMethod(value._origin, seen),
+      __draft__: customizerMethod(value._draft, seen),
     };
   },
 
