@@ -31,14 +31,19 @@ export function hasOwnProperty(obj: any, path: string): boolean {
 }
 
 
-export function traverseObject(this: any, traversableObject: any, processor: (parentEntry: any, key: string, value: any) => void) {
+export function traverseObject(this: any, traversableObject: any, processor: (parentEntry: any, key: string, value: any) => void, seen: Map<any, any> = new Map()) {
   for (let index in traversableObject) {
     const currentEntry = traversableObject[index];
+    if (seen.has(currentEntry)) {
+      continue;
+    }
+
+    seen.set(currentEntry, true);
 
     processor.apply(this, [traversableObject, index, currentEntry]);
 
     if (isObject(currentEntry)) {
-      traverseObject(currentEntry, processor);
+      traverseObject(currentEntry, processor, seen);
     }
   }
 }
