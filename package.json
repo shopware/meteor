@@ -4,7 +4,7 @@
   "private": true,
   "description": "The monorepo that contains all Meteor related projects",
   "scripts": {
-    "lint:all": "turbo run lint:eslint",
+    "lint:all": "turbo run lint:all",
     "lint:types": "turbo run lint:types",
     "lint:eslint": "turbo run lint:eslint",
     "format": "turbo run format",
