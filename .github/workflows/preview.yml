@@ -39,4 +39,4 @@ jobs:
       - name: Deploy preview
         uses: rossjrw/pr-preview-action@v1
         with:
-          source-dir: ./packages/component-library./storybook-static/
+          source-dir: ./packages/component-library/storybook-static/
