@@ -8,6 +8,7 @@
     "start": "node --env-file=\".env\" node_modules/.bin/tsx ./src/scripts/index.ts",
     "test": "node --env-file=\".env\" node_modules/.bin/vitest",
     "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "lint:all": "npm run lint:eslint && npm run lint:types",
     "lint:eslint": "eslint .",
     "lint:types": "tsc --noEmit"
