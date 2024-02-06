@@ -1,0 +1,53 @@
+name: Visual tests
+
+on:
+  push:
+    branches:
+      - main
+
+  workflow_dispatch:
+
+jobs:
+  storybook-tests:
+    name: Storybook Tests
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    env:
+        TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+        TURBO_TEAM: ${{ vars.TURBO_TEAM }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Install Playwright
+        run: pnpm dlx playwright install
+
+      - name: Create the static pages directory locally in CI
+        run: pnpm --prefix ./packages/component-library run build-storybook
+
+      - name: Run Tests
+        id: storybookTests
+        run: |
+          cd ./packages/component-library &&
+          npx concurrently --kill-others --success first --names "SB,TEST" --prefix-colors "magenta,blue" \
+          "http-server storybook-static -a 127.0.0.1 --port 6006" \
+          "wait-on http://127.0.0.1:6006 && pnpm run test-storybook"
+
+      - name: Archive visual test diffs
+        uses: actions/upload-artifact@v3
+        if: always()
+        with:
+          name: visual-test-diffs
+          path: ./packages/component-library/__snapshots__

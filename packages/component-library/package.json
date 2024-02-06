@@ -8,11 +8,11 @@
     "lint:types": "vue-tsc --noEmit --declaration false",
     "lint:eslint": "eslint --ext .js,.ts,.vue src",
     "storybook": "SHOW_INTERACTIONS=true storybook dev -p 6006",
-    "build-vue": "vite build",
+    "build": "vite build",
     "build-storybook": "storybook build",
     "test-storybook": "test-storybook --url http://127.0.0.1:6006",
     "test-storybook:ci": "concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"http-server storybook-static -a 127.0.0.1 --port 6006 --silent\" \"wait-on tcp:6006 && npm run test-storybook\"",
-    "docker": "docker run -v $PWD:/tests:delegated -w /tests -it --rm --ipc=host mcr.microsoft.com/playwright:v1.20.0-focal /bin/bash"
+    "docker": "docker run -v $PWD/../../:/tests:delegated -w /tests -it --rm --ipc=host mcr.microsoft.com/playwright:v1.20.0-focal /bin/bash"
   },
   "main": "dist/common/index.js",
   "module": "dist/esm/index.js",
@@ -90,7 +90,7 @@
     "vite": "^4.4.9",
     "vite-plugin-dts": "^3.6.0",
     "vite-plugin-svgstring": "^1.0.0",
-    "vue": "^2.7.10",
+    "vue": "2.7.10",
     "vue-apexcharts": "^1.6.2",
     "vue-class-component": "^7.2.3",
     "vue-i18n": "^8.26.8",

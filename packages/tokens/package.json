@@ -5,9 +5,11 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node --env-file=\".env\" node_modules/.bin/tsx ./src/scripts/index.ts",
-    "test": "node --env-file=\".env\" node_modules/.bin/vitest",
+    "build": "tsx ./src/scripts/index.ts",
+    "test:unit": "vitest --run",
+    "test:unit:watch": "vitest",
     "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "lint:all": "npm run lint:eslint && npm run lint:types",
     "lint:eslint": "eslint .",
     "lint:types": "tsc --noEmit"
@@ -35,6 +37,7 @@
     "tsx": "^4.7.0"
   },
   "dependencies": {
+    "dotenv": "^16.4.1",
     "ora": "^8.0.1",
     "vitest": "^1.2.1",
     "zod": "^3.22.4"
