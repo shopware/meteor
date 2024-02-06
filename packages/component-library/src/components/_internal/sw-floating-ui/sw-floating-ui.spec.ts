@@ -1,7 +1,7 @@
 import { mount, Wrapper } from "@vue/test-utils";
 import SwFloatingUi from "./sw-floating-ui.vue";
 
-// mock resizeOvserver
+// mock resizeObserver
 global.ResizeObserver = class ResizeObserver {
   observe() {
       // do nothing
@@ -90,7 +90,7 @@ describe("sw-floating-ui", () => {
 
   it.only("should render the arrow when prop is set", async () => {
     wrapper = createWrapper();
-    
+
     await wrapper.setProps({
       showArrow: true,
       isOpened: true,
@@ -124,7 +124,7 @@ describe("sw-floating-ui", () => {
     });
 
     await wrapper.destroy();
-   
+
     const floatingUi = document.querySelector(".sw-floating-ui");
     const floatingUiContent = document.querySelector(".sw-floating-ui__content");
 
