@@ -14,9 +14,6 @@
   },
   "keywords": [],
   "license": "MIT",
-  "workspaces": [
-    "packages/*"
-  ],
   "devDependencies": {
     "turbo": "^1.12.2"
   }
