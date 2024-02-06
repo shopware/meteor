@@ -13,6 +13,9 @@ jobs:
   static-analysis:
     name: Static Analysis
     runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -41,6 +44,9 @@ jobs:
   unit-tests:
     name: Unit tests
     runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ vars.TURBO_TEAM }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
