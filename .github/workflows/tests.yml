@@ -112,7 +112,7 @@ jobs:
         id: storybookTests
         run: |
           cd ./packages/component-library &&
-          pnpm dlx concurrently --kill-others --success first --names "SB,TEST" --prefix-colors "magenta,blue" \
+          npx concurrently --kill-others --success first --names "SB,TEST" --prefix-colors "magenta,blue" \
           "http-server storybook-static -a 127.0.0.1 --port 6006" \
           "wait-on http://127.0.0.1:6006 && pnpm run test-storybook"
 
