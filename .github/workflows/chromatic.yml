@@ -19,6 +19,10 @@ jobs:
         with:
           node-version: '20'
 
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
       # - name: Retrieve the cached main "node_modules" directory (if present)
       #   uses: actions/cache@v3
       #   id: node-cache-main
@@ -28,7 +32,7 @@ jobs:
 
       - name: Install main dependencies (if the cached directory was not found)
         # if: steps.node-cache-main.outputs.cache-hit != 'true'
-        run: npm ci
+        run: pnpm ci
 
       - name: Publish to Chromatic
         uses: chromaui/action@v1

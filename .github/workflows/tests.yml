@@ -22,6 +22,10 @@ jobs:
         with:
           node-version: '20'
 
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
       # - name: Retrieve the cached "node_modules" directory (if present)
       #   uses: actions/cache@v3
       #   id: node-cache
@@ -31,16 +35,16 @@ jobs:
 
       - name: Install dependencies (if the cached directory was not found)
         # if: steps.node-cache.outputs.cache-hit != 'true'
-        run: npm ci
+        run: pnpm i
 
       - name: Check formatting
-        run: npm run format:check
+        run: pnpm run format:check
 
       - name: Perform typecheck
-        run: npm run lint:types
+        run: pnpm run lint:types
 
       - name: Lint code
-        run: npm run lint:eslint
+        run: pnpm run lint:eslint
 
   unit-tests:
     name: Unit tests
@@ -54,6 +58,10 @@ jobs:
         with:
           node-version: '20'
 
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
       # - name: Retrieve the cached "node_modules" directory (if present)
       #   uses: actions/cache@v3
       #   id: node-cache
@@ -63,10 +71,10 @@ jobs:
 
       - name: Install dependencies (if the cached directory was not found)
         # if: steps.node-cache.outputs.cache-hit != 'true'
-        run: npm ci
+        run: pnpm install
 
       - name: unit
-        run: npm run test:unit
+        run: pnpm run test:unit
 
   storybook-tests:
     name: Storybook Tests
@@ -79,6 +87,10 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
 
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
       # - name: Retrieve the cached "node_modules" directory (if present)
       #   uses: actions/cache@v3
       #   id: node-cache
@@ -88,21 +100,21 @@ jobs:
 
       - name: Install dependencies (if the cached directory was not found)
         # if: steps.node-cache.outputs.cache-hit != 'true'
-        run: npm ci
+        run: pnpm install
 
       - name: Install Playwright
-        run: npx playwright install
+        run: pnpm dlx playwright install
 
       - name: Create the static pages directory locally in CI
-        run: npm --prefix ./packages/component-library run build-storybook
+        run: pnpm --prefix ./packages/component-library run build-storybook
 
       - name: Run Tests
         id: storybookTests
         run: |
           cd ./packages/component-library &&
-          npx concurrently --kill-others --success first --names "SB,TEST" --prefix-colors "magenta,blue" \
+          pnpm dlx concurrently --kill-others --success first --names "SB,TEST" --prefix-colors "magenta,blue" \
           "http-server storybook-static -a 127.0.0.1 --port 6006" \
-          "wait-on http://127.0.0.1:6006 && npm run test-storybook"
+          "wait-on http://127.0.0.1:6006 && pnpm run test-storybook"
 
       - name: Archive visual test diffs
         uses: actions/upload-artifact@v3
