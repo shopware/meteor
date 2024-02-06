@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.0.0] - 07.02.2024
+
+## Changed
+- Changed this version is not compatible with the previous versions
+
+## Fixed
+- Fixed an issue with circular references in json structures causing pages to freeze
+
 ## [3.0.17] - 19.01.2024
 
 ## Added

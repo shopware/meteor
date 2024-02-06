@@ -1,7 +1,7 @@
 {
   "name": "@shopware-ag/meteor-admin-sdk",
   "license": "MIT",
-  "version": "3.0.17",
+  "version": "4.0.0",
   "repository": {
     "type": "git",
     "url": "git://github.com/shopware/meteor-admin-sdk.git"
@@ -110,7 +110,6 @@
     "wait-on": "^6.0.1"
   },
   "dependencies": {
-    "json-complete": "^2.0.1",
     "localforage": "^1.10.0",
     "lodash": "^4.17.21"
   }

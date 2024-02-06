@@ -31,19 +31,30 @@ export function hasOwnProperty(obj: any, path: string): boolean {
 }
 
 
-export function traverseObject(this: any, traversableObject: any, processor: (parentEntry: any, key: string, value: any) => void, seen: Map<any, any> = new Map()) {
+export function traverseObject(this: any, traversableObject: any, processor: (parentEntry: any, key: string, value: any, previousKey: string) => void, previousKey = 'root') {
   for (let index in traversableObject) {
     const currentEntry = traversableObject[index];
-    if (seen.has(currentEntry)) {
-      continue;
-    }
 
-    seen.set(currentEntry, true);
-
-    processor.apply(this, [traversableObject, index, currentEntry]);
+    processor.apply(this, [traversableObject, index, currentEntry, previousKey]);
 
     if (isObject(currentEntry)) {
-      traverseObject(currentEntry, processor, seen);
+      let pk = previousKey + '.' + index;
+      traverseObject(currentEntry, processor, pk);
     }
   }
+}
+
+export function isPrimitive(value: any): boolean {
+  return value !== Object(value) || value === null || value === undefined;
+}
+
+/**
+ * Removes the root prefix from a path
+ */
+export function removeRoot(path: string | number): string | number {
+  if (typeof path !== 'string') {
+    return path;
+  }
+
+  return path.replace(/^root\./, '');
 }

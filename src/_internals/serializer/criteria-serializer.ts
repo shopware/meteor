@@ -6,11 +6,11 @@ import type { SerializerFactory } from './index';
 const CriteriaSerializer: SerializerFactory = () => ({
     name: 'criteria',
 
-    serialize: ({ value, customizerMethod, seen }): any => {
+    serialize: ({ value, customizerMethod, seen, path }): any => {
       if (value instanceof Criteria) {
         return {
           __type__: '__Criteria__',
-          data: customizerMethod(value.getCriteriaData(), seen),
+          data: customizerMethod(value.getCriteriaData(), seen, path),
         };
       }
     },

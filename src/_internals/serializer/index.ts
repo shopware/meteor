@@ -5,8 +5,9 @@ import CriteriaSerializer from './criteria-serializer';
 import EntitySerializer from './entity-serializer';
 import EntityCollectionSerializer from './entity-collection-serializer';
 import HandleErrorSerializer from './handle-error-serializer';
-import cloneDeepWith from 'lodash/cloneDeepWith';
+import { cloneDeepWith, get, set } from 'lodash';
 import MissingPrivilegesErrorSerializer from './missing-priviliges-error-serializer';
+import { isPrimitive, traverseObject, removeRoot } from '../utils';
 
 interface SerializerDependencies {
   send: typeof send,
@@ -19,13 +20,14 @@ interface customizerProperties {
   object: any | undefined,
   stack: any,
   event?: MessageEvent<string>,
-  customizerMethod: (messageData: any, seen: Map<any, any>, event?: MessageEvent<string>) => any,
+  customizerMethod: (messageData: any, seen: Map<any, any>, path: string, event?: MessageEvent<string>) => any,
   seen: Map<any, any>,
+  path: string,
 }
 
 interface deserializeCustomizerProperties extends Omit<
   customizerProperties,
-  'customizerMethod' | 'seen'
+  'customizerMethod' | 'seen' | 'path'
 > {
   customizerMethod: (messageData: any, event?: MessageEvent<string>) => any,
 }
@@ -72,17 +74,26 @@ export default function mainSerializerFactory(dependencies: SerializerDependenci
   }
 
   /* eslint-disable */
-  function serialize(messageData: any, seen = new Map()): any {
+  function serialize(messageData: any, seen = new Map(), path = 'root'): any {
     return cloneDeepWith<unknown>(messageData, (value, key, object, stack) => {
-      if (seen.has(value)) {
-        if (typeof seen.get(value) === 'string' && seen.get(value).startsWith('$#')) {
-          return;
-        }
+      // track the path to the current value
+      let p = path + '.' + key;
 
-        return seen.get(value);
+      // early return for primitives to save some computation
+      if (isPrimitive(value)) {
+        return value;
       }
 
-      seen.set(value, `$#${Math.random()}`);
+      // encountered this value before === circular reference
+      if (seen.has(value)) {
+        // replace the circular reference with a reference object containing its origin
+        return {
+          __$CR__: seen.get(value),
+        };
+      }
+
+      // save the path to the current value
+      seen.set(value, p);
 
       // return first matching serializer result
       for (const serializer of serializers) {
@@ -93,11 +104,10 @@ export default function mainSerializerFactory(dependencies: SerializerDependenci
           stack,
           customizerMethod: serialize,
           seen,
+          path: p,
         });
 
         if (result) {
-          // console.log('object', object)
-          seen.set(value, result)
           return result;
         };
       }
@@ -106,6 +116,29 @@ export default function mainSerializerFactory(dependencies: SerializerDependenci
 
 
   function deserialize(messageData: any, event?: MessageEvent<string>): any {
+    // restore all entities, collections and other serialized objects
+    const desirialized = _deserialize(messageData, event);
+
+    // restore circular references
+    traverseObject(desirialized, (_, key, value, previousKey) => {
+        // check if the current key is a circular reference identifier
+        if (key !== '__$CR__') {
+          return;
+        }
+
+        // the path to the value going to be restored as a circular reference
+        const path = removeRoot(value);
+        // the path where the circular reference should be restored
+        const reference = removeRoot(previousKey);
+
+        // restore the circular reference
+        set(desirialized, reference, get(desirialized, path));
+    });
+
+    return desirialized;
+  }
+
+  function _deserialize(messageData: any, event?: MessageEvent<string>): any {
     return cloneDeepWith<unknown>(messageData, (value, key, object, stack) => {
       // return first matching serializer result
       for (const serializer of serializers) {
@@ -115,7 +148,7 @@ export default function mainSerializerFactory(dependencies: SerializerDependenci
           object,
           stack,
           event,
-          customizerMethod: deserialize,
+          customizerMethod: _deserialize,
         });
 
         if (result) {
