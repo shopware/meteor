@@ -13,24 +13,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
-
-      # - name: Retrieve the cached "node_modules" directory (if present)
-      #   uses: actions/cache@v3
-      #   id: node-cache
-      #   with:
-      #     path: node_modules
-      #     key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-
-      - name: Install dependencies (if the cached directory was not found)
-        # if: steps.node-cache.outputs.cache-hit != 'true'
+      - name: Install dependencies
         run: pnpm ci
 
       - name: Build distributed files

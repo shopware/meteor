@@ -12,24 +12,16 @@ jobs:
       - name: Checkout the repository
         uses: actions/checkout@v4
 
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: '20'
 
-      - uses: pnpm/action-setup@v2
-        with:
-          version: 8
-
-      # - name: Retrieve the cached main "node_modules" directory (if present)
-      #   uses: actions/cache@v3
-      #   id: node-cache-main
-      #   with:
-      #     path: node_modules
-      #     key: node-modules-main-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
-
-      - name: Install main dependencies (if the cached directory was not found)
-        # if: steps.node-cache-main.outputs.cache-hit != 'true'
+      - name: Install main dependencies
         run: pnpm ci
 
       - name: Create the static pages directory locally in CI
