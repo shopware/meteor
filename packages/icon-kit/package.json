@@ -1,0 +1,60 @@
+{
+  "name": "@shopware-ag/meteor-icon-kit",
+  "version": "5.2.0",
+  "description": "An icon library and toolkit that follows a minimal, yet highly expressive style perfectly aligned with Shopware's product language",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/shopware/meteor-icon-kit.git"
+  },
+  "keywords": [
+    "svg",
+    "shopware",
+    "icons"
+  ],
+  "scripts": {
+    "prepublish": "npm run build",
+    "build": "tsc",
+    "start": "node dist",
+    "start:dev": "ts-node src",
+    "debug": "ts-node src/debug.ts",
+    "lint": "npm run lint:types && npm run lint:eslint",
+    "lint:types": "tsc --noEmit",
+    "lint:eslint": "eslint ./src --ext .ts",
+    "docs:link": "../developer-portal/docs-cli link --src docs --dst resources/meteor-icon-kit --symlink",
+    "docs:copy": "../developer-portal/docs-cli link --src docs --dst resources/meteor-icon-kit",
+    "docs:preview": "../developer-portal/docs-cli preview"
+  },
+  "files": [
+    "icons"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/shopware/meteor-icon-kit/issues"
+  },
+  "homepage": "https://github.com/shopware/meteor-icon-kit#readme",
+  "devDependencies": {
+    "@types/axios": "^0.14.0",
+    "@types/cli-progress": "^3.9.2",
+    "@types/fs-extra": "^9.0.13",
+    "@types/js-md5": "^0.4.3",
+    "@types/node": "^18.11.15",
+    "@types/svgo": "^2.6.3",
+    "@typescript-eslint/eslint-plugin": "^5.17.0",
+    "@typescript-eslint/parser": "^5.17.0",
+    "axios": "^0.26.1",
+    "chalk": "^4.1.2",
+    "cli-progress": "^3.10.0",
+    "eslint": "^8.12.0",
+    "eslint-plugin-import": "^2.25.4",
+    "fs-extra": "^10.0.1",
+    "svgo": "^2.8.0",
+    "svgo-autocrop": "^1.1.1",
+    "ts-node": "^10.8.1",
+    "typescript": "^4.6.3",
+    "@supercharge/promise-pool": "^2.4.0"
+  },
+  "dependencies": {
+    "js-md5": "^0.7.3"
+  }
+}
