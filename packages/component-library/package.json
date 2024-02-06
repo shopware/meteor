@@ -12,7 +12,7 @@
     "build-storybook": "storybook build",
     "test-storybook": "test-storybook --url http://127.0.0.1:6006",
     "test-storybook:ci": "concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"http-server storybook-static -a 127.0.0.1 --port 6006 --silent\" \"wait-on tcp:6006 && npm run test-storybook\"",
-    "docker": "docker run -v $PWD:/tests:delegated -w /tests -it --rm --ipc=host mcr.microsoft.com/playwright:v1.20.0-focal /bin/bash"
+    "docker": "docker run -v $PWD/../../:/tests:delegated -w /tests -it --rm --ipc=host mcr.microsoft.com/playwright:v1.20.0-focal /bin/bash"
   },
   "main": "dist/common/index.js",
   "module": "dist/esm/index.js",
