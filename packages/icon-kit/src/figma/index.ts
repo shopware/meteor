@@ -90,14 +90,14 @@ export default class FigmaApiClient {
     });
   }
 
-    public getNodeInfo(ids: string[]): Promise<AxiosPromise<FigmaNodeResponse>> {
-        return this.httpClient.get(
-            `/files/${process.env.FIGMA_FILE}?ids=${ids.join(',')}`,
-            {
-                headers: this.getHeaders(),
-            }
-        );
-    }
+  public getNodeInfo(ids: string[]): Promise<AxiosPromise<FigmaNodeResponse>> {
+    return this.httpClient.get(
+      `/files/${process.env.FIGMA_FILE}?ids=${ids.join(',')}`,
+      {
+        headers: this.getHeaders(),
+      }
+    );
+  }
 
   private getHeaders(): AxiosRequestHeaders {
     return {
