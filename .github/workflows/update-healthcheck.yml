@@ -26,7 +26,6 @@ on:
         type: string
 
 jobs:
-
   update-healthcheck:
     uses: shopware/developer-portal/.github/workflows/update-healthcheck.yml@main
     with:
