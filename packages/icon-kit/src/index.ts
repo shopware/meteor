@@ -1,5 +1,5 @@
 import type {Icon} from './figma';
-import FigmaApiClient, { Meta} from './figma';
+import FigmaApiClient from './figma';
 import FigmaUtil from './figma/util';
 import * as fse from 'fs-extra';
 import chalk from 'chalk';
@@ -35,7 +35,7 @@ client.getFile().then(async (response) => {
   //Const promises: Promise<void>[] = [];
   const styling = [] as { name: string, width: string, height: string }[];
 
-  const {results, errors} = await PromisePool
+  await PromisePool
     .for(Array.from(iconMap.keys()))
     .withConcurrency(25)
     .onTaskFinished((iconName, pool) => {
