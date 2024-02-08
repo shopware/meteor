@@ -65,3 +65,28 @@ jobs:
 
       - name: unit
         run: pnpm run test:unit
+
+  circular-dependencies:
+    name: Check for circular dependencies (Madge)
+    runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: madge
+        run: pnpm --filter @shopware-ag/meteor-admin-sdk run circular-dependencies
