@@ -1,0 +1,116 @@
+{
+  "name": "@shopware-ag/meteor-admin-sdk",
+  "license": "MIT",
+  "version": "4.0.0",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/shopware/meteor-admin-sdk.git"
+  },
+  "description": "The Meteor SDK for the Shopware Administration.",
+  "keywords": [
+    "iframe",
+    "shopware",
+    "admin",
+    "bridge",
+    "app",
+    "sdk"
+  ],
+  "files": [
+    "umd",
+    "es",
+    "cdn"
+  ],
+  "main": "./umd/index.js",
+  "module": "./es/index.js",
+  "exports": {
+    "./es/channel": {
+      "import": "./es/channel.js",
+      "require": "./umd/channel.js"
+    },
+    "./es/data": {
+      "import": "./es/data/index.js",
+      "require": "./umd/data/index.js"
+    },
+    "./es/location": {
+      "import": "./es/location/index.js",
+      "require": "./umd/location/index.js"
+    },
+    "./es/privileges/missing-privileges-error": {
+      "import": "./es/privileges/missing-privileges-error.js",
+      "require": "./umd/privileges/missing-privileges-error.js"
+    },
+    "./es/data/_internals/selectData": {
+      "import": "./es/data/_internals/selectData.js",
+      "require": "./umd/data/_internals/selectData.js"
+    },
+    "./es/data/Criteria": {
+      "import": "./es/data/Criteria.js",
+      "require": "./umd/data/Criteria.js"
+    },
+    "./es/data/_internals/Entity": {
+      "import": "./es/data/_internals/Entity.js",
+      "require": "./umd/data/_internals/Entity.js"
+    },
+    "./es/data/_internals/EntityCollection": {
+      "import": "./es/data/_internals/EntityCollection.js",
+      "require": "./umd/data/_internals/EntityCollection.js"
+    },
+    ".": {
+      "import": "./es/index.js",
+      "require": "./umd/index.js"
+    }
+  },
+  "types": "./es/index.d.ts",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:build-watch\" \"npm run dev:serve -- --port=8181\" \"npm run dev:serve -- --port=8182\"",
+    "dev:build-watch": "vite build --watch --mode example --emptyOutDir",
+    "dev:serve": "http-server testpageDist --silent",
+    "build": "rm -rf es && rm -rf umd && rm -rf cdn && npm run build:umd && npm run build:es && npm run build:cdn",
+    "build:umd": "tsc --project tsconfig.json --module umd --outDir \"./umd\"",
+    "build:es": "tsc --project tsconfig.json --outDir \"./es\"",
+    "build:cdn": "vite build --mode cdn",
+    "doc": "cd docs && npm run build",
+    "doc:dev": "cd docs && npm run start",
+    "doc:install-dependencies": "cd ./docs && npm ci",
+    "lint": "npm run lint:types && npm run lint:eslint",
+    "lint:types": "tsc --noEmit",
+    "lint:eslint": "eslint ./src --ext .ts",
+    "test": "jest --collectCoverage",
+    "test:watch": "jest --watch",
+    "e2e": "concurrently --handle-input --kill-others --success first \"npm run dev\" \"wait-on http://127.0.0.1:8181 && wait-on http://127.0.0.1:8182 && playwright test\"",
+    "e2e:dev": "playwright test --project=chromium --reporter=list",
+    "e2e:dev-watch": "chokidar \"{e2e,src}/**/*.{js,ts}\" -c 'clear && npm run e2e:dev' --initial",
+    "e2e:dev-debug": "PWDEBUG=1 npm run e2e:dev",
+    "prepublish": "npm run build",
+    "circular-dependencies": "madge --circular --warning src",
+    "circular-dependencies:image": "madge --circular --warning --image ./dependency-graph.png src"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.20.0",
+    "@types/jest": "^27.4.1",
+    "@types/lodash": "^4.14.191",
+    "@types/node": "^18.11.17",
+    "@typescript-eslint/eslint-plugin": "^5.47.0",
+    "@typescript-eslint/parser": "^5.47.0",
+    "chokidar-cli": "^3.0.0",
+    "concurrently": "^7.0.0",
+    "eslint": "^8.11.0",
+    "eslint-plugin-import": "^2.25.4",
+    "flush-promises": "^1.0.2",
+    "http-server": "^14.1.0",
+    "jest": "^27.5.1",
+    "jest-fail-on-console": "^2.2.3",
+    "madge": "^5.0.1",
+    "ts-jest": "^27.1.3",
+    "typescript": "^4.9.4",
+    "vite": "^2.8.6",
+    "vite-plugin-dts": "^0.9.10",
+    "vite-tsconfig-paths": "^3.4.1",
+    "vue": "^2.7.14",
+    "wait-on": "^6.0.1"
+  },
+  "dependencies": {
+    "localforage": "^1.10.0",
+    "lodash": "^4.17.21"
+  }
+}
