@@ -1,0 +1,46 @@
+name: Update icons
+
+# Manual trigger
+on: workflow_dispatch
+
+env:
+  FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
+  FIGMA_FILE: ${{ secrets.FIGMA_FILE }}
+
+jobs:
+  update:
+    name: Update icons
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build
+        run: pnpm --prefix ./packages/icon-kit run build
+
+      - name: Update icons
+        run: pnpm --prefix ./packages/icon-kit run start
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v4
+        with:
+          commit-message: Update icons
+          comitter: ${{ secrets.COMITTER }}
+          author: Dennis Mader <${{ secrets.COMITTER }}>
+          branch: update-icons
+          delete-branch: true
+          branch-suffix: timestamp
+          title: Update icons
+          assignees: Weltraumakustik
