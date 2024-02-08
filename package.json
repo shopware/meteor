@@ -16,5 +16,8 @@
   "license": "MIT",
   "devDependencies": {
     "turbo": "^1.12.2"
+  },
+  "dependencies": {
+    "@changesets/cli": "^2.27.1"
   }
 }
