@@ -61,7 +61,7 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile --prefer-offline
 
       - name: unit
         run: pnpm run test:unit
@@ -86,7 +86,7 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile --prefer-offline
 
       - name: madge
         run: pnpm --filter @shopware-ag/meteor-admin-sdk run circular-dependencies
@@ -109,7 +109,7 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile --prefer-offline
 
       - name: Install Playwright
         run: npx playwright install

@@ -33,7 +33,7 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile --prefer-offline
 
       - name: Test to see if the project compiles
         run: pnpm --filter @shopware-ag/meteor-admin-sdk run lint:all

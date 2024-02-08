@@ -27,7 +27,7 @@ jobs:
           node-version: '20'
 
       - name: Install main dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile --prefer-offline
 
       - name: Create the static pages directory locally in CI
         run: pnpm --prefix ./packages/component-library run build-storybook

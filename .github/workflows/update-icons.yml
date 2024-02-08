@@ -25,7 +25,7 @@ jobs:
           node-version: '20'
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile --prefer-offline
 
       - name: Build
         run: pnpm --prefix ./packages/icon-kit run build
