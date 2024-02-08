@@ -90,3 +90,35 @@ jobs:
 
       - name: madge
         run: pnpm --filter @shopware-ag/meteor-admin-sdk run circular-dependencies
+
+  playwright-run:
+    name: Playwright Integration Tests
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Install Playwright
+        run: npx playwright install
+
+      - name: Run Playwright tests
+        run: pnpm run test:e2e
+
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: playwright-test-results
+          path: playwright-report/
