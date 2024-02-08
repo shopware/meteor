@@ -120,5 +120,5 @@ jobs:
       - uses: actions/upload-artifact@v2
         if: always()
         with:
-          name: playwright-test-results
-          path: playwright-report/
+          name: meteor-admin-sdk--playwright-test-results
+          path: packages/admin-sdk/playwright-report/
