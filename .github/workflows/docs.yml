@@ -16,3 +16,37 @@ jobs:
           branch: gh-pages
           folder: redirect
           clean: true
+
+  create-docs-admin-sdk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository
+        uses: actions/checkout@v2
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --prefer-offline
+
+      - name: Test to see if the project compiles
+        run: pnpm --filter @shopware-ag/meteor-admin-sdk run lint:all
+
+      - name: Create the docs directory locally in CI
+        run: |
+          cd packages/admin-sdk
+          pnpm run doc:install-dependencies
+          pnpm run doc
+
+      - name: Deploy 🚀
+        if: github.ref == 'refs/heads/trunk'
+        uses: JamesIves/github-pages-deploy-action@4.1.4
+        with:
+          branch: gh-pages
+          folder: packages/admin-sdk/docs/build

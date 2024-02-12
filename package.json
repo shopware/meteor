@@ -10,7 +10,8 @@
     "lint:eslint": "turbo run lint:eslint",
     "format": "turbo run format",
     "format:check": "turbo run format:check",
-    "test:unit": "turbo run test:unit"
+    "test:unit": "turbo run test:unit",
+    "test:e2e": "turbo run test:e2e"
   },
   "keywords": [],
   "license": "MIT",

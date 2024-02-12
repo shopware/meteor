@@ -10,6 +10,7 @@
     "lint:eslint": {},
     "format": {},
     "format:check": {},
-    "test:unit": {}
+    "test:unit": {},
+    "test:e2e": {}
   }
 }
