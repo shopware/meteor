@@ -36,3 +36,24 @@ can up-vote that issue. This helps us to see what the community wants the most.
 
 If there does not already exist a feature request for your idea,
 you can [request a feature](https://github.com/shopware/meteor/issues/new).
+
+## Creating a pull request
+
+After you cloned and made your change make sure you followed the steps below:
+
+1. You linted your code with `pnpm run lint:eslint`
+2. There are no type errors, run `pnpm run lint:types`
+3. Run `pnpm run test:unit` to see if all tests pass
+4. You generated a changeset with `npx changeset`
+
+After completing all the tests you can submit your pull request.
+
+### Create a changelog
+
+We create and manage our changelogs with changesets. Follow these steps
+to create a changelog:
+
+1. Run `npx changesets`
+2. Select the packages you updated
+3. Define your version bump for each package
+4. Write a meaningful changelog message
