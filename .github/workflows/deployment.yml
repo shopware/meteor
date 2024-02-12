@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  create_storybook_pages:
+  create-storybook-pages:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
@@ -21,17 +21,15 @@ jobs:
         with:
           node-version: '20'
 
-      - name: Install main dependencies
-        run: pnpm ci
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --prefer-offline
 
       - name: Create the static pages directory locally in CI
         run: pnpm --prefix ./packages/component-library run build-storybook
 
       - name: Deploy 🚀
-        if: github.ref == 'refs/heads/main'
         uses: JamesIves/github-pages-deploy-action@4.1.4
         with:
-          force: false
           branch: gh-pages
-          folder: storybook-static
+          folder: packages/component-library/storybook-static
           clean-exclude: pr-preview/
