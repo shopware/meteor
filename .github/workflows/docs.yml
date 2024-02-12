@@ -39,7 +39,10 @@ jobs:
         run: pnpm --filter @shopware-ag/meteor-admin-sdk run lint:all
 
       - name: Create the docs directory locally in CI
-        run: pnpm --filter @shopware-ag/meteor-admin-sdk run doc
+        run: |
+          cd packages/admin-sdk
+          pnpm run doc:install-dependencies
+          pnpm run doc
 
       - name: Deploy 🚀
         if: github.ref == 'refs/heads/trunk'
