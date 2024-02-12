@@ -37,7 +37,7 @@ jobs:
         uses: peter-evans/create-pull-request@v4
         with:
           commit-message: Update icons
-          committer: ${{ secrets.ICON_KIT__COMMITTER }}
+          committer: Dennis Mader <${{ secrets.ICON_KIT__COMMITTER }}>
           author: Dennis Mader <${{ secrets.ICON_KIT__COMMITTER }}>
           branch: update-icons
           delete-branch: true
