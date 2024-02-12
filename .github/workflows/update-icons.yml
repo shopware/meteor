@@ -5,7 +5,7 @@ on: workflow_dispatch
 
 env:
   FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
-  FIGMA_FILE: ${{ secrets.FIGMA_FILE }}
+  FIGMA_FILE: ${{ secrets.ICON_KIT__FIGMA_FILE }}
 
 jobs:
   update:
@@ -37,8 +37,8 @@ jobs:
         uses: peter-evans/create-pull-request@v4
         with:
           commit-message: Update icons
-          comitter: ${{ secrets.COMITTER }}
-          author: Dennis Mader <${{ secrets.COMITTER }}>
+          committer: ${{ secrets.ICON_KIT__COMITTER }}
+          author: Dennis Mader <${{ secrets.ICON_KIT__COMITTER }}>
           branch: update-icons
           delete-branch: true
           branch-suffix: timestamp
