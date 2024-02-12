@@ -1,6 +1,6 @@
 # Meteor
 
-## About
+## How to navigate through this project 
 
 This repository contains all project related to the Meteor Design System used and maintained by shopware and it's contributors.
 
