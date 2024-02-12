@@ -16,8 +16,6 @@ meteor/
 
 Pull requests are welcome. See the [contribution guidelines](./.github/CONTRIBUTING.md) for more information.
 
-<!-- TODO: add contribution guidelines -->
-
 ## License
 
 Source code is under a custom license based on MIT. 
