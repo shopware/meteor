@@ -3,7 +3,7 @@ name: Docs
 on: push
 
 jobs:
-  create_docs:
+  create-docs-icon-kit:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout the repository
@@ -14,7 +14,7 @@ jobs:
         uses: JamesIves/github-pages-deploy-action@4.1.4
         with:
           branch: gh-pages
-          folder: redirect
+          folder: packages/icon-kit/redirect
           clean: true
 
   create-docs-admin-sdk:
