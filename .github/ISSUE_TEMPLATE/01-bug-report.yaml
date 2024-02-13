@@ -14,13 +14,13 @@ body:
       label: Link to minimal reproduction
       description: |
         The easiest way to provide a reproduction is by creating a new project
-        in [StackBlitz](https://vite.new/vue). If this is not suitable, you can
-        always provide a GitHub repository.
+        in [StackBlitz](https://vite.new/vue). If this is not suitable, you can always provide a GitHub repository.
 
         The reproduction should be **minimal** - i.e. it should contain only the
         bare minimum amount of code needed to show the bug.
 
-        Please do not just fill in a random link. The issue will be closed if no valid reproduction is provided.
+        Please do not just fill in a random link. The issue will be closed if no valid
+        reproduction is provided.
       placeholder: Reproduction Link
     validations:
       required: true
@@ -32,8 +32,7 @@ body:
       description: |
         What do we need to do after opening your repro in order to make the bug happen?
         Clear and concise reproduction instructions are important for us to be able to
-        triage your issue in a timely manner. Note that you can use
-        [Markdown](https://guides.github.com/features/mastering-markdown/)
+        triage your issue in a timely manner. Note that you can use [Markdown](https://guides.github.com/features/mastering-markdown/)
         to format lists and code.
       placeholder: Steps to reproduce
     validations:
