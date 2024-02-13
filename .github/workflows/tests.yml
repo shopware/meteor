@@ -35,13 +35,13 @@ jobs:
         run: pnpm i
 
       - name: Check formatting
-        run: pnpm run format:check
+        run: pnpx turbo run format:check
 
       - name: Perform typecheck
-        run: pnpm run lint:types
+        run: pnpx turbo run lint:types
 
       - name: Lint code
-        run: pnpm run lint:eslint
+        run: pnpx turbo run lint:eslint
 
   unit-tests:
     name: Unit tests
@@ -68,7 +68,7 @@ jobs:
         run: pnpm install --frozen-lockfile --prefer-offline
 
       - name: unit
-        run: pnpm run test:unit
+        run: pnpx turbo run test:unit
 
   circular-dependencies:
     name: Check for circular dependencies (Madge)
