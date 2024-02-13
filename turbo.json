@@ -8,7 +8,6 @@
     "lint:all": {},
     "lint:types": {},
     "lint:eslint": {},
-    "format": {},
     "format:check": {},
     "test:unit": {},
     "test:e2e": {}
