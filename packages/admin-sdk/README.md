@@ -1,4 +1,4 @@
-# meteor-admin-sdk
+  # meteor-admin-sdk
 [![Tests](https://github.com/shopware/meteor-admin-sdk/actions/workflows/tests.yml/badge.svg)](https://github.com/shopware/meteor-admin-sdk/actions/workflows/tests.yml)
 [![NPM Package](https://img.shields.io/npm/v/@shopware-ag/meteor-admin-sdk)](https://www.npmjs.com/package/@shopware-ag/meteor-admin-sdk)
 
