@@ -1,12 +1,11 @@
 name: Deploy PR previews
 
-on:
+on: 
   pull_request:
-    types:
-      - opened
-      - reopened
-      - synchronize
-      - closed
+    branches:
+      - main
+    paths:
+      - 'packages/component-library/**'
 
 concurrency: preview-${{ github.ref }}
 
