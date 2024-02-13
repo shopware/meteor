@@ -5,11 +5,21 @@
       "dependsOn": ["^build"],
       "env": ["API_KEY"]
     },
-    "lint:all": {},
-    "lint:types": {},
-    "lint:eslint": {},
+    "lint:all": {
+      "outputs": []
+    },
+    "lint:types": {
+      "outputs": []
+    },
+    "lint:eslint": {
+      "outputs": []
+    },
     "format:check": {},
-    "test:unit": {},
-    "test:e2e": {}
+    "test:unit": {
+      "outputs": []
+    },
+    "test:e2e": {
+      "outputs": []
+    }
   }
 }
