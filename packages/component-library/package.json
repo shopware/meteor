@@ -9,9 +9,9 @@
     "lint:eslint": "eslint --ext .js,.ts,.vue src",
     "storybook": "SHOW_INTERACTIONS=true storybook dev -p 6006",
     "build": "vite build",
-    "build-storybook": "storybook build",
-    "test-storybook": "test-storybook --url http://127.0.0.1:6006",
-    "test-storybook:ci": "concurrently -k -s first -n \"SB,TEST\" -c \"magenta,blue\" \"http-server storybook-static -a 127.0.0.1 --port 6006 --silent\" \"wait-on tcp:6006 && npm run test-storybook\"",
+    "build:storybook": "storybook build",
+    "start:storybook": "serve ./storybook-static -p 6006 --no-request-logging",
+    "test:storybook": "test-storybook --url http://127.0.0.1:6006",
     "docker": "docker run -v $PWD/../../:/tests:delegated -w /tests -it --rm --ipc=host mcr.microsoft.com/playwright:v1.20.0-focal /bin/bash"
   },
   "main": "dist/common/index.js",
@@ -32,6 +32,7 @@
     "inter-ui": "^3.19.3",
     "lodash-es": "^4.17.21",
     "punycode": "^2.1.1",
+    "serve": "^14.2.1",
     "v-click-outside": "^3.2.0",
     "vue-demi": "^0.13.11",
     "vue-smooth-reflow": "^0.1.12"
@@ -73,7 +74,6 @@
     "eslint-plugin-storybook": "^0.6.13",
     "eslint-plugin-vue": "^9.5.1",
     "flush-promises": "^1.0.2",
-    "http-server": "^14.1.1",
     "jest": "^27.5.1",
     "jest-image-snapshot": "6.1.0",
     "mini-css-extract-plugin": "^2.6.1",

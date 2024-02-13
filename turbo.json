@@ -6,6 +6,10 @@
       "outputs": ["dist/**", "es/**", "umd/**"],
       "env": ["API_KEY"]
     },
+    "@shopware-ag/meteor-component-library#build:storybook": {
+      "outputs": ["storybook-static/**"],
+      "env": ["SHOW_INTERACTIONS"]
+    },
     "lint:all": {
       "outputs": []
     },
@@ -20,6 +24,9 @@
       "outputs": []
     },
     "test:e2e": {
+      "outputs": []
+    },
+    "@shopware-ag/meteor-component-library#test:storybook": {
       "outputs": []
     }
   }
