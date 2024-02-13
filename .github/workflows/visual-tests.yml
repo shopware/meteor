@@ -39,7 +39,7 @@ jobs:
         run: pnpm dlx playwright install
 
       - name: Create the static pages directory locally in CI
-        run: pnpm --prefix ./packages/component-library run build-storybook
+        run: pnpm --filter @shopware-ag/meteor-component-library run build-storybook
 
       - name: Run Tests
         id: storybookTests
