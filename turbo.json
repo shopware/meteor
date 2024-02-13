@@ -3,6 +3,7 @@
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
+      "outputs": ["dist/**", "es/**", "umd/**"],
       "env": ["API_KEY"]
     },
     "lint:all": {
