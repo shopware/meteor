@@ -37,9 +37,6 @@ jobs:
 
       - name: Install Playwright
         run: pnpm dlx playwright install
-
-      - name: Create the static pages directory locally in CI
-        run: pnpm --filter @shopware-ag/meteor-component-library run build-storybook
       
       - name: Build storybook
         run: pnpx turbo run build:storybook --filter=@shopware-ag/meteor-component-library

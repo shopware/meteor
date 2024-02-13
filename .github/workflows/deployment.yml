@@ -28,8 +28,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
 
-      - name: Create the static pages directory locally in CI
-        run: pnpm --filter @shopware-ag/meteor-component-library run build-storybook
+      - name: Build storybook
+        run: pnpx turbo run build:storybook --filter=@shopware-ag/meteor-component-library
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.4
