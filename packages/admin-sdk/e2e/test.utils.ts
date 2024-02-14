@@ -21,7 +21,7 @@ export async function setup({ page }: { page: Page }) {
     document.body.appendChild(iframe);
   })
 
-  await page.waitForEvent('load');
+  await page.waitForLoadState('networkidle');
 
   const subFrame = page.frame({ name: 'subFrame' });
 
