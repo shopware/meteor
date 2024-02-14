@@ -79,8 +79,8 @@
     "test:unit:watch": "jest --watch",
     "test:e2e": "concurrently --handle-input --kill-others --success first \"npm run dev\" \"wait-on http://127.0.0.1:8181 && wait-on http://127.0.0.1:8182 && playwright test\"",
     "test:e2e:dev": "playwright test --project=chromium --reporter=list",
-    "test:e2e:dev-watch": "chokidar \"{e2e,src}/**/*.{js,ts}\" -c 'clear && npm run e2e:dev' --initial",
-    "test:e2e:dev-debug": "PWDEBUG=1 npm run e2e:dev",
+    "test:e2e:dev-watch": "chokidar \"{e2e,src}/**/*.{js,ts}\" -c 'clear && npm run test:e2e:dev' --initial",
+    "test:e2e:dev-debug": "PWDEBUG=1 npm run test:e2e:dev",
     "prepublish": "npm run build",
     "circular-dependencies": "madge --circular --warning src",
     "circular-dependencies:image": "madge --circular --warning --image ./dependency-graph.png src"
