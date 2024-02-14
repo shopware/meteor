@@ -86,7 +86,7 @@
     "circular-dependencies:image": "madge --circular --warning --image ./dependency-graph.png src"
   },
   "devDependencies": {
-    "@playwright/test": "^1.20.0",
+    "@playwright/test": "^1.41.2",
     "@types/jest": "^27.4.1",
     "@types/lodash": "^4.14.191",
     "@types/node": "^18.11.17",
