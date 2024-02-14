@@ -127,7 +127,7 @@ jobs:
         run: npx playwright install
 
       - name: Run Playwright tests
-        run: pnpm --filter @shopware-ag/meteor-admin-sdk run test:e2e
+        run: pnpx turbo run test:e2e --filter @shopware-ag/meteor-admin-sdk
 
       - uses: actions/upload-artifact@v2
         if: always()
