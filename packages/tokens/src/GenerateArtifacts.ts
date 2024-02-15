@@ -12,8 +12,8 @@ export class GenerateArtifacts {
 
   public async execute() {
     const [primitiveTokenResponse, adminTokenResponse] = await Promise.all(
-      [env.PRIMITIVE_TOKENS_FILE_KEY, env.ADMIN_TOKENS_FILE_KEY].map((fileKey) =>
-        this.figmaApi.getLocalVariablesOfFile(fileKey),
+      [env.PRIMITIVE_TOKENS_FILE_KEY, env.ADMIN_TOKENS_FILE_KEY].map(
+        (fileKey) => this.figmaApi.getLocalVariablesOfFile(fileKey),
       ),
     );
 
