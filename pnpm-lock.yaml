@@ -329,6 +329,9 @@ importers:
 
   packages/icon-kit:
     dependencies:
+      dotenv:
+        specifier: ^16.4.1
+        version: 16.4.1
       js-md5:
         specifier: ^0.7.3
         version: 0.7.3

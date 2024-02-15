@@ -34,6 +34,7 @@
   },
   "homepage": "https://github.com/shopware/meteor-icon-kit#readme",
   "devDependencies": {
+    "@supercharge/promise-pool": "^2.4.0",
     "@types/axios": "^0.14.0",
     "@types/cli-progress": "^3.9.2",
     "@types/fs-extra": "^9.0.13",
@@ -51,10 +52,10 @@
     "svgo": "^2.8.0",
     "svgo-autocrop": "^1.1.1",
     "ts-node": "^10.8.1",
-    "typescript": "^4.6.3",
-    "@supercharge/promise-pool": "^2.4.0"
+    "typescript": "^4.6.3"
   },
   "dependencies": {
+    "dotenv": "^16.4.1",
     "js-md5": "^0.7.3"
   }
 }
