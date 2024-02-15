@@ -11,6 +11,8 @@ jobs:
   update:
     name: Update icons
     runs-on: ubuntu-latest
+    env:
+      FIGMA_FILE: ${{ secrets.ICON_KIT__FIGMA_FILE }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
