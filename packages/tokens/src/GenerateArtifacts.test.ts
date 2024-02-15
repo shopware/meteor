@@ -128,7 +128,7 @@ fact(
 
     const figmaApi = new FigmaApi(
       {
-        apiKey: env.API_KEY,
+        apiKey: env.FIGMA_TOKEN,
       },
       new HttpClientUsingFetch(),
     );
@@ -283,7 +283,7 @@ fact(
 
     const figmaApi = new FigmaApi(
       {
-        apiKey: env.API_KEY,
+        apiKey: env.FIGMA_TOKEN,
       },
       new HttpClientUsingFetch(),
     );
@@ -438,7 +438,7 @@ fact(
 
     const figmaApi = new FigmaApi(
       {
-        apiKey: env.API_KEY,
+        apiKey: env.FIGMA_TOKEN,
       },
       new HttpClientUsingFetch(),
     );
@@ -591,7 +591,7 @@ fact('creates a CSS file for the primitive Design Tokens', async () => {
 
   const figmaApi = new FigmaApi(
     {
-      apiKey: env.API_KEY,
+      apiKey: env.FIGMA_TOKEN,
     },
     new HttpClientUsingFetch(),
   );
@@ -733,7 +733,7 @@ fact('creates a CSS file for the admin light mode tokens', async () => {
 
   const figmaApi = new FigmaApi(
     {
-      apiKey: env.API_KEY,
+      apiKey: env.FIGMA_TOKEN,
     },
     new HttpClientUsingFetch(),
   );
@@ -874,7 +874,7 @@ fact('creates a CSS file for the admin dark mode tokens', async () => {
 
   const figmaApi = new FigmaApi(
     {
-      apiKey: env.API_KEY,
+      apiKey: env.FIGMA_TOKEN,
     },
     new HttpClientUsingFetch(),
   );
