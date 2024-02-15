@@ -1,5 +1,9 @@
 # Meteor
 
+Meteor is Shopware’s open-source design system that drives our commerce solutions.
+Extend and customise every aspect of Shopware – create elegant, delightful, and
+accessible experiences. There are no limits to your imagination.
+
 ## How to navigate through this project 
 
 This repository contains all project related to the Meteor Design System used and maintained by shopware and it's contributors.
