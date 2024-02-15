@@ -5,6 +5,8 @@ dotenv.config();
 
 const schema = z.object({
   API_KEY: z.string().min(1),
+  ADMIN_TOKENS_FILE_KEY: z.string().min(1), 
+  PRIMITIVE_TOKENS_FILE_KEY: z.string().min(1), 
 });
 
 export const env = schema.parse(process.env);
