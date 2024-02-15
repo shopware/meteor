@@ -1,4 +1,4 @@
-import { expect, test as fact } from 'vitest';
+import { expect, test } from 'vitest';
 import { GenerateArtifacts } from './GenerateArtifacts.js';
 import { InMemoryFileSystem } from './common/domain/file-system/InMemoryFileSystem.js';
 import { FigmaApi } from './figma/infrastructure/FigmaApi.js';
@@ -7,7 +7,7 @@ import { HttpClientUsingFetch } from './common/infrastructure/http-client/HttpCl
 import { server } from '../tests/mocks/node.js';
 import { HttpResponse, http } from 'msw';
 
-fact(
+test(
   'creates a Dictionary in form of a JSON file for the primitive Design Tokens',
   async () => {
     // GIVEN
@@ -162,7 +162,7 @@ fact(
   },
 );
 
-fact(
+test(
   'creates a Dictionary in form of a JSON file for the admin light mode tokens',
   async () => {
     // GIVEN
@@ -317,7 +317,7 @@ fact(
   },
 );
 
-fact(
+test(
   'creates a Dictionary in form of a JSON file for the admin dark mode tokens',
   async () => {
     // GIVEN
@@ -472,7 +472,7 @@ fact(
   },
 );
 
-fact('creates a CSS file for the primitive Design Tokens', async () => {
+test('creates a CSS file for the primitive Design Tokens', async () => {
   // GIVEN
   server.use(
     http.get(
@@ -614,7 +614,7 @@ fact('creates a CSS file for the primitive Design Tokens', async () => {
   `);
 });
 
-fact('creates a CSS file for the admin light mode tokens', async () => {
+test('creates a CSS file for the admin light mode tokens', async () => {
   // GIVEN
   server.use(
     http.get(
@@ -755,7 +755,7 @@ fact('creates a CSS file for the admin light mode tokens', async () => {
   `);
 });
 
-fact('creates a CSS file for the admin dark mode tokens', async () => {
+test('creates a CSS file for the admin dark mode tokens', async () => {
   // GIVEN
   server.use(
     http.get(
