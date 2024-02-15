@@ -23,15 +23,17 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: '**/pnpm-lock.yaml'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
 
       - name: Build
-        run: pnpm --prefix ./packages/icon-kit run build
+        run: pnpm --filter @shopware-ag/meteor-component-library run build
 
       - name: Update icons
-        run: pnpm --prefix ./packages/icon-kit run start
+        run: pnpm --filter @shopware-ag/meteor-component-library run start
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4

@@ -28,18 +28,20 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: '**/pnpm-lock.yaml'
 
       - name: Install dependencies
         run: pnpm i
 
       - name: Check formatting
-        run: pnpm run format:check
+        run: pnpx turbo run format:check
 
       - name: Perform typecheck
-        run: pnpm run lint:types
+        run: pnpx turbo run lint:types
 
       - name: Lint code
-        run: pnpm run lint:eslint
+        run: pnpx turbo run lint:eslint
 
   unit-tests:
     name: Unit tests
@@ -59,12 +61,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: '**/pnpm-lock.yaml'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
 
       - name: unit
-        run: pnpm run test:unit
+        run: pnpx turbo run test:unit
 
   circular-dependencies:
     name: Check for circular dependencies (Madge)
@@ -84,6 +88,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: '**/pnpm-lock.yaml'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
@@ -99,6 +105,9 @@ jobs:
       - circular-dependencies
       - unit-tests
       - static-analysis
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -111,6 +120,8 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: '**/pnpm-lock.yaml'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
@@ -119,7 +130,7 @@ jobs:
         run: npx playwright install
 
       - name: Run Playwright tests
-        run: pnpm --filter @shopware-ag/meteor-admin-sdk run test:e2e
+        run: pnpx turbo run test:e2e --filter @shopware-ag/meteor-admin-sdk
 
       - uses: actions/upload-artifact@v2
         if: always()

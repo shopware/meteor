@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'packages/component-library/**'
 
 jobs:
   create-storybook-pages:
@@ -20,12 +22,14 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: '**/pnpm-lock.yaml'
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
 
-      - name: Create the static pages directory locally in CI
-        run: pnpm --prefix ./packages/component-library run build-storybook
+      - name: Build storybook
+        run: pnpx turbo run build:storybook --filter=@shopware-ag/meteor-component-library
 
       - name: Deploy 🚀
         uses: JamesIves/github-pages-deploy-action@4.1.4

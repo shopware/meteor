@@ -5,7 +5,7 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "build": "tsx ./src/scripts/index.ts",
+    "start": "tsx ./src/scripts/index.ts",
     "test:unit": "vitest --run",
     "test:unit:watch": "vitest",
     "format": "prettier --write .",
