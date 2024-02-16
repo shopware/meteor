@@ -28,21 +28,53 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: '**/pnpm-lock.yaml'
 
       - name: Install dependencies
         run: pnpm i
 
       - name: Check formatting
-        run: pnpm run format:check
+        run: pnpx turbo run format:check
 
       - name: Perform typecheck
-        run: pnpm run lint:types
+        run: pnpx turbo run lint:types
 
       - name: Lint code
-        run: pnpm run lint:eslint
+        run: pnpx turbo run lint:eslint
 
   unit-tests:
     name: Unit tests
+    runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+      FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
+      ADMIN_TOKENS_FILE_KEY: ${{ secrets.TOKENS__ADMIN_TOKENS_FILE_KEY }}
+      PRIMITIVE_TOKENS_FILE_KEY: ${{ secrets.TOKENS__PRIMITIVE_TOKENS_FILE_KEY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: '**/pnpm-lock.yaml'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --prefer-offline
+
+      - name: unit
+        run: pnpx turbo run test:unit
+
+  circular-dependencies:
+    name: Check for circular dependencies (Madge)
     runs-on: ubuntu-latest
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
@@ -59,9 +91,52 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: '**/pnpm-lock.yaml'
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile --prefer-offline
 
-      - name: unit
-        run: pnpm run test:unit
+      - name: madge
+        run: pnpm --filter @shopware-ag/meteor-admin-sdk run circular-dependencies
+
+  playwright-run:
+    name: Playwright Integration Tests
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    needs: 
+      - circular-dependencies
+      - unit-tests
+      - static-analysis
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: '**/pnpm-lock.yaml'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --prefer-offline
+
+      - name: Install Playwright
+        run: npx playwright install
+
+      - name: Run Playwright tests
+        run: pnpx turbo run test:e2e --filter @shopware-ag/meteor-admin-sdk
+
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: meteor-admin-sdk--playwright-test-results
+          path: packages/admin-sdk/playwright-report/

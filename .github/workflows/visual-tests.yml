@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+    paths:
+      - 'packages/component-library/**'
 
   workflow_dispatch:
 
@@ -27,23 +29,23 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: '**/pnpm-lock.yaml'
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile --prefer-offline
 
       - name: Install Playwright
         run: pnpm dlx playwright install
-
-      - name: Create the static pages directory locally in CI
-        run: pnpm --prefix ./packages/component-library run build-storybook
+      
+      - name: Build storybook
+        run: pnpx turbo run build:storybook --filter=@shopware-ag/meteor-component-library
 
       - name: Run Tests
-        id: storybookTests
         run: |
-          cd ./packages/component-library &&
           npx concurrently --kill-others --success first --names "SB,TEST" --prefix-colors "magenta,blue" \
-          "http-server storybook-static -a 127.0.0.1 --port 6006" \
-          "wait-on http://127.0.0.1:6006 && pnpm run test-storybook"
+          "pnpm --filter @shopware-ag/meteor-component-library run start:storybook" \
+          "wait-on http://127.0.0.1:6006 && pnpx turbo run test:storybook --filter=@shopware-ag/meteor-component-library"
 
       - name: Archive visual test diffs
         uses: actions/upload-artifact@v3

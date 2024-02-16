@@ -8,7 +8,7 @@ import ora from 'ora';
 const fileSystem = new HardDiskFileSystem();
 const figmaApi = new FigmaApi(
   {
-    apiKey: env.API_KEY,
+    apiKey: env.FIGMA_TOKEN,
   },
   new HttpClientUsingFetch(),
 );

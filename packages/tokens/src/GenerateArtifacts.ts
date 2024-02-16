@@ -2,10 +2,7 @@ import type { FileSystem } from './common/domain/file-system/FileSystem.js';
 import { Dictionary } from './dictionary/domain/Dictionary.js';
 import { CSSDeliverable } from './deliverable/domain/CSSDeliverable.js';
 import { FigmaApi } from './figma/infrastructure/FigmaApi.js';
-import {
-  ADMIN_TOKENS_FILE_KEY,
-  PRIMITIVE_TOKENS_FILE_KEY,
-} from './constants.js';
+import { env } from './env.js';
 
 export class GenerateArtifacts {
   public constructor(
@@ -15,8 +12,8 @@ export class GenerateArtifacts {
 
   public async execute() {
     const [primitiveTokenResponse, adminTokenResponse] = await Promise.all(
-      [PRIMITIVE_TOKENS_FILE_KEY, ADMIN_TOKENS_FILE_KEY].map((fileKey) =>
-        this.figmaApi.getLocalVariablesOfFile(fileKey),
+      [env.PRIMITIVE_TOKENS_FILE_KEY, env.ADMIN_TOKENS_FILE_KEY].map(
+        (fileKey) => this.figmaApi.getLocalVariablesOfFile(fileKey),
       ),
     );
 

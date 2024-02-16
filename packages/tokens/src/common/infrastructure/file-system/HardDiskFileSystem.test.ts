@@ -1,4 +1,4 @@
-import { expect, test as fact } from 'vitest';
+import { expect, test } from 'vitest';
 import { HardDiskFileSystem } from './HardDiskFileSystem.js';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -10,7 +10,7 @@ function cleanUp(pathToFile: string) {
   fs.existsSync(directory) && fs.rmdirSync(directory);
 }
 
-fact('creates a file that did not exist before', () => {
+test('creates a file that did not exist before', () => {
   // GIVEN
   const pathToFile = path.join(__dirname, './test.txt');
   cleanUp(pathToFile);
@@ -28,28 +28,25 @@ fact('creates a file that did not exist before', () => {
   cleanUp(pathToFile);
 });
 
-fact(
-  'creates a new file in a nested directory that did not exist before',
-  () => {
-    // GIVEN
-    const pathToFile = path.join(__dirname, './artifact/test.txt');
-    cleanUp(pathToFile);
+test('creates a new file in a nested directory that did not exist before', () => {
+  // GIVEN
+  const pathToFile = path.join(__dirname, './artifact/test.txt');
+  cleanUp(pathToFile);
 
-    const subject = new HardDiskFileSystem();
+  const subject = new HardDiskFileSystem();
 
-    // WHEN
-    subject.saveFile(pathToFile, 'Hello, Hell!');
+  // WHEN
+  subject.saveFile(pathToFile, 'Hello, Hell!');
 
-    // THEN
-    const result = fs.readFileSync(pathToFile, 'utf8');
-    expect(result).toBe('Hello, Hell!');
+  // THEN
+  const result = fs.readFileSync(pathToFile, 'utf8');
+  expect(result).toBe('Hello, Hell!');
 
-    // TEARDOWN
-    cleanUp(pathToFile);
-  },
-);
+  // TEARDOWN
+  cleanUp(pathToFile);
+});
 
-fact('overwrites a file that already exists', () => {
+test('overwrites a file that already exists', () => {
   // GIVEN
   const pathToFile = path.join(__dirname, './test.txt');
   cleanUp(pathToFile);
@@ -69,7 +66,7 @@ fact('overwrites a file that already exists', () => {
   cleanUp(pathToFile);
 });
 
-fact('overwrites a file in a nested directory that already exists', () => {
+test('overwrites a file in a nested directory that already exists', () => {
   // GIVEN
   const pathToFile = path.join(__dirname, './artifact/test.txt');
   cleanUp(pathToFile);

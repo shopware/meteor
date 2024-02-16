@@ -5,7 +5,7 @@ on: workflow_dispatch
 
 env:
   FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
-  FIGMA_FILE: ${{ secrets.FIGMA_FILE }}
+  FIGMA_FILE: ${{ secrets.ICON_KIT__FIGMA_FILE }}
 
 jobs:
   update:
@@ -23,22 +23,27 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: '**/pnpm-lock.yaml'
 
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm install --frozen-lockfile --prefer-offline
+      
+      - name: Install puppeteer
+        run: npx @puppeteer/browsers install chrome
 
       - name: Build
-        run: pnpm --prefix ./packages/icon-kit run build
+        run: pnpm --filter @shopware-ag/meteor-icon-kit run build
 
       - name: Update icons
-        run: pnpm --prefix ./packages/icon-kit run start
+        run: pnpm --filter @shopware-ag/meteor-icon-kit run start
 
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v4
         with:
           commit-message: Update icons
-          comitter: ${{ secrets.COMITTER }}
-          author: Dennis Mader <${{ secrets.COMITTER }}>
+          committer: Dennis Mader <${{ secrets.ICON_KIT__COMMITTER }}>
+          author: Dennis Mader <${{ secrets.ICON_KIT__COMMITTER }}>
           branch: update-icons
           delete-branch: true
           branch-suffix: timestamp

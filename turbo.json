@@ -3,13 +3,31 @@
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
+      "outputs": ["dist/**", "es/**", "umd/**"],
       "env": ["API_KEY"]
     },
-    "lint:all": {},
-    "lint:types": {},
-    "lint:eslint": {},
-    "format": {},
+    "@shopware-ag/meteor-component-library#build:storybook": {
+      "outputs": ["storybook-static/**"],
+      "env": ["SHOW_INTERACTIONS"]
+    },
+    "lint:all": {
+      "outputs": []
+    },
+    "lint:types": {
+      "outputs": []
+    },
+    "lint:eslint": {
+      "outputs": []
+    },
     "format:check": {},
-    "test:unit": {}
+    "test:unit": {
+      "outputs": []
+    },
+    "test:e2e": {
+      "outputs": []
+    },
+    "@shopware-ag/meteor-component-library#test:storybook": {
+      "outputs": []
+    }
   }
 }

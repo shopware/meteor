@@ -1,8 +1,8 @@
-import { describe, expect, it as fact } from 'vitest';
+import { describe, expect, test } from 'vitest';
 import { set, get, isObject } from './object.js';
 
 describe('set', () => {
-  fact('adds a new key to an object', () => {
+  test('adds a new key to an object', () => {
     // GIVEN
     const subject = set;
 
@@ -15,7 +15,7 @@ describe('set', () => {
     });
   });
 
-  fact('adds a new key to an object with a nested path', () => {
+  test('adds a new key to an object with a nested path', () => {
     // GIVEN
     const subject = set;
 
@@ -30,7 +30,7 @@ describe('set', () => {
     });
   });
 
-  fact('overwrites an existing key', () => {
+  test('overwrites an existing key', () => {
     // GIVEN
     const subject = set;
 
@@ -45,7 +45,7 @@ describe('set', () => {
 });
 
 describe('get', () => {
-  fact('returns the value of a key', () => {
+  test('returns the value of a key', () => {
     // GIVEN
     const subject = get;
 
@@ -56,7 +56,7 @@ describe('get', () => {
     expect(result).toBe('bar');
   });
 
-  fact('returns the value of a nested key', () => {
+  test('returns the value of a nested key', () => {
     // GIVEN
     const subject = get;
 
@@ -69,7 +69,7 @@ describe('get', () => {
 });
 
 describe('isObject', () => {
-  fact.each([
+  test.each([
     NaN,
     null,
     undefined,
@@ -90,7 +90,7 @@ describe('isObject', () => {
     expect(result).toBe(false);
   });
 
-  fact('returns true because the provide value is an object', () => {
+  test('returns true because the provide value is an object', () => {
     // GIVEN
     const subject = isObject;
 

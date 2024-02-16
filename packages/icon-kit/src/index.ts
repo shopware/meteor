@@ -10,6 +10,9 @@ import md5 from 'js-md5';
 import {PromisePool} from '@supercharge/promise-pool';
 // @ts-expect-error - this dependency has no type definitions
 import * as svgoAutocrop from 'svgo-autocrop';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 const client = new FigmaApiClient();
 const util = new FigmaUtil();

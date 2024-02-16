@@ -1,11 +1,11 @@
 {
-  "name": "design-tokens",
+  "name": "@shopware-ag/meteor-tokens",
   "version": "0.0.0",
   "description": "Design Tokens for the Meteor Design System used at shopware",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "build": "tsx ./src/scripts/index.ts",
+    "start": "tsx ./src/scripts/index.ts",
     "test:unit": "vitest --run",
     "test:unit:watch": "vitest",
     "format": "prettier --write .",

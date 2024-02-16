@@ -1,9 +1,9 @@
-import { expect, test as fact } from 'vitest';
+import { expect, test } from 'vitest';
 import { CSSDeliverable } from './CSSDeliverable.js';
 import { Dictionary } from '../../dictionary/domain/Dictionary.js';
 import { FigmaApiResponse } from '../../figma/infrastructure/FigmaApi.js';
 
-fact('creates a CSSDeliverable with the default selector of ":root"', () => {
+test('creates a CSSDeliverable with the default selector of ":root"', () => {
   // GIVEN
   const response: FigmaApiResponse = {
     status: 200,
@@ -82,7 +82,7 @@ fact('creates a CSSDeliverable with the default selector of ":root"', () => {
   `);
 });
 
-fact('creates a CSSDeliverable with a custom selector', () => {
+test('creates a CSSDeliverable with a custom selector', () => {
   // GIVEN
   const response: FigmaApiResponse = {
     status: 200,
@@ -143,7 +143,7 @@ fact('creates a CSSDeliverable with a custom selector', () => {
   `);
 });
 
-fact('creates a CSSDeliverable with nested tokens', () => {
+test('creates a CSSDeliverable with nested tokens', () => {
   // GIVEN
   const response: FigmaApiResponse = {
     status: 200,
@@ -202,7 +202,7 @@ fact('creates a CSSDeliverable with nested tokens', () => {
   `);
 });
 
-fact('creates a CSSDeliverable with aliased token', () => {
+test('creates a CSSDeliverable with aliased token', () => {
   // GIVEN
   const primitiveTokenResponse: FigmaApiResponse = {
     status: 200,

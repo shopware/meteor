@@ -1,0 +1,69 @@
+name: Report a bug
+description: Create a report to improve Meteor
+body:
+  - type: input
+    id: version
+    attributes:
+      label: Meteor version
+    validations:
+      required: true
+
+  - type: input
+    id: reproduction-link
+    attributes:
+      label: Link to minimal reproduction
+      description: |
+        The easiest way to provide a reproduction is by creating a new project
+        in [StackBlitz](https://vite.new/vue). If this is not suitable, you can always provide a GitHub repository.
+
+        The reproduction should be **minimal** - i.e. it should contain only the
+        bare minimum amount of code needed to show the bug.
+
+        Please do not just fill in a random link. The issue will be closed if no valid
+        reproduction is provided.
+      placeholder: Reproduction Link
+    validations:
+      required: true
+  
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to reproduce
+      description: |
+        What do we need to do after opening your repro in order to make the bug happen?
+        Clear and concise reproduction instructions are important for us to be able to
+        triage your issue in a timely manner. Note that you can use [Markdown](https://guides.github.com/features/mastering-markdown/)
+        to format lists and code.
+      placeholder: Steps to reproduce
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: Actual behavior
+      placeholder: Actual behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected behavior
+      placeholder: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: system-info
+    attributes:
+      label: System Info
+      description: Output of `npx envinfo --system --binaries --browsers`
+      render: shell
+      placeholder: Operating system, Binaries, Browsers
+
+  - type: textarea
+    id: additional-comments
+    attributes:
+      label: Any additional comments?
+      description: e.g. some background/context of how you ran into this bug.
