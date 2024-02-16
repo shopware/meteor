@@ -9,7 +9,7 @@ const config = {
   title: 'Meteor Admin SDK',
   tagline: 'for Shopware 6 apps and plugins',
   url: 'https://shopware.github.io',
-  baseUrl: '/meteor-admin-sdk/',
+  baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/favicon.ico',
