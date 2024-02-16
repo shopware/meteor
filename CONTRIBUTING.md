@@ -48,6 +48,16 @@ pnpm install
 In case you have not installed pnpm execute `npm install -g pnpm`.
 If you want to install pnpm through another way take a look at their documentation.
 
+To execute scripts defined in the packages.json file of each package you have three options:
+
+1. Or you use turbo: `npx turbo run <TASK_NAME>`
+2. You run the script from the root with `pnpm --filter <PACKAGE_NAME> run <SCRIPT_NAME>`
+3. You cd into the package directory and run the script 
+
+You can find the available turbo tasks in the turbo.json file
+
+Don't know turborepo? Check out [their documentation](https://turbo.build/repo/docs).
+
 Make sure to follow these steps before you push your branch:
 
 1. You linted your code with `pnpm run lint:eslint`
