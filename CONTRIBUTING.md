@@ -57,3 +57,6 @@ to create a changelog:
 2. Select the packages you updated
 3. Define your version bump for each package
 4. Write a meaningful changelog message
+
+Feel free to check out the [changesets documentation](https://github.com/changesets/changesets?tab=readme-ov-file#documentation)
+for more information on how to work with it.
