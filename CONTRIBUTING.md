@@ -69,3 +69,11 @@ to create a changelog:
 
 Feel free to check out the [changesets documentation](https://github.com/changesets/changesets?tab=readme-ov-file#documentation)
 for more information on how to work with it.
+
+## Managing releases
+
+When your pull request gets merged a GitHub Action looks at your changes. If it finds a changeset in there it will copy that changeset over to a release branch.
+
+If you decide to release a new version, merge the release branch. Changesets will now take over. It updates the changelog files, bumps up the version numbers and it publishes the packages to npm.
+
+That's it there is nothing more you have to do.
