@@ -138,4 +138,4 @@ Meteor Icon Kit is available as a [Figma library](https://www.figma.com/communit
 
 See the [LICENSE](LICENSE.md) file for license rights and limitations (MIT). 
 
-2023 © shopware AG
+2024 © shopware AG
