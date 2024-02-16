@@ -18,7 +18,7 @@ meteor/
 
 ## Contribute to Meteor
 
-Pull requests are welcome. See the [contribution guidelines](./.github/CONTRIBUTING.md) for more information.
+Pull requests are welcome. See the [contribution guidelines](./CONTRIBUTING.md) for more information.
 
 ## License
 
