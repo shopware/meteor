@@ -39,7 +39,16 @@ you can [request a feature](https://github.com/shopware/meteor/issues/new).
 
 ## Creating a pull request
 
-After you cloned and made your change make sure you followed the steps below:
+The first step is to clone your repo. Then, install the dependencies with:
+
+```sh
+pnpm install
+```
+
+In case you have not installed pnpm execute `npm install -g pnpm`.
+If you want to install pnpm through another way take a look at their documentation.
+
+Make sure to follow these steps before you push your branch:
 
 1. You linted your code with `pnpm run lint:eslint`
 2. There are no type errors, run `pnpm run lint:types`
