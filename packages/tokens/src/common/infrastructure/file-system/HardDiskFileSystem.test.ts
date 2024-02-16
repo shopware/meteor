@@ -28,26 +28,23 @@ test('creates a file that did not exist before', () => {
   cleanUp(pathToFile);
 });
 
-test(
-  'creates a new file in a nested directory that did not exist before',
-  () => {
-    // GIVEN
-    const pathToFile = path.join(__dirname, './artifact/test.txt');
-    cleanUp(pathToFile);
+test('creates a new file in a nested directory that did not exist before', () => {
+  // GIVEN
+  const pathToFile = path.join(__dirname, './artifact/test.txt');
+  cleanUp(pathToFile);
 
-    const subject = new HardDiskFileSystem();
+  const subject = new HardDiskFileSystem();
 
-    // WHEN
-    subject.saveFile(pathToFile, 'Hello, Hell!');
+  // WHEN
+  subject.saveFile(pathToFile, 'Hello, Hell!');
 
-    // THEN
-    const result = fs.readFileSync(pathToFile, 'utf8');
-    expect(result).toBe('Hello, Hell!');
+  // THEN
+  const result = fs.readFileSync(pathToFile, 'utf8');
+  expect(result).toBe('Hello, Hell!');
 
-    // TEARDOWN
-    cleanUp(pathToFile);
-  },
-);
+  // TEARDOWN
+  cleanUp(pathToFile);
+});
 
 test('overwrites a file that already exists', () => {
   // GIVEN

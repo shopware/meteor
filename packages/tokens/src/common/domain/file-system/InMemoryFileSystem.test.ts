@@ -13,20 +13,17 @@ test('creates a file that did not exist before', () => {
   expect(result).toBe('Hello, World!');
 });
 
-test(
-  'creates a new file in a nested directory that did not exist before',
-  () => {
-    // GIVEN
-    const subject = new InMemoryFileSystem();
+test('creates a new file in a nested directory that did not exist before', () => {
+  // GIVEN
+  const subject = new InMemoryFileSystem();
 
-    // WHEN
-    subject.saveFile('./artifact/test.txt', 'Hello, Hell!');
+  // WHEN
+  subject.saveFile('./artifact/test.txt', 'Hello, Hell!');
 
-    // THEN
-    const result = subject.readFile('./artifact/test.txt');
-    expect(result).toBe('Hello, Hell!');
-  },
-);
+  // THEN
+  const result = subject.readFile('./artifact/test.txt');
+  expect(result).toBe('Hello, Hell!');
+});
 
 test('overwrites file that already exists', () => {
   // GIVEN
