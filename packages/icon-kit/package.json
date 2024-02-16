@@ -1,11 +1,11 @@
 {
   "name": "@shopware-ag/meteor-icon-kit",
-  "version": "5.2.0",
+  "version": "5.2.1",
   "description": "An icon library and toolkit that follows a minimal, yet highly expressive style perfectly aligned with Shopware's product language",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/shopware/meteor-icon-kit.git"
+    "url": "git+ssh://git@github.com:shopware/meteor.git"
   },
   "keywords": [
     "svg",
@@ -30,9 +30,9 @@
   ],
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/shopware/meteor-icon-kit/issues"
+    "url": "https://github.com/shopware/meteor/issues"
   },
-  "homepage": "https://github.com/shopware/meteor-icon-kit#readme",
+  "homepage": "https://github.com/shopware/meteor/tree/main/packages/icon-kit#readme",
   "devDependencies": {
     "@supercharge/promise-pool": "^2.4.0",
     "@types/axios": "^0.14.0",
