@@ -45,3 +45,13 @@ body:
     id: icon-details
     attributes:
       label: Anything else?
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this report, you agree to follow our [Code of Conduct](https://github.com/shopware/meteor/blob/main/CODE_OF_CONDUCT.md)
+      options:
+        - label:
+            I have read and agree to follow Meteor's [Code of
+            Conduct](https://github.com/shopware/meteor/blob/main/CODE_OF_CONDUCT.md)
+          required: true

@@ -1,0 +1,104 @@
+name: Accessibility Issue ♿
+description: Report an accessibility issue.
+title: '[a11y]: '
+labels: 'type: a11y ♿'
+body:
+  - type: markdown
+    attributes:
+      value: '## Welcome!'
+  - type: markdown
+    attributes:
+      value:
+        Thank you for taking the time to fill out this accessibility report. 
+        At Shopware, we firmly believe that software and e-commerce, in general, should be accessible to everyone.
+        We are committed to following and complying with accessibility best practices.
+
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package
+      description: Which package(s) are you using?
+      multiple: true
+      options:
+        - '@meteor/admin-sdk'
+        - '@meteor/component-library'
+        - '@meteor/icon-kit'
+        - '@meteor/tokens'
+    validations:
+      required: true
+
+  - type: dropdown
+    id: browser
+    attributes:
+      label: Browser
+      description: Which browser(s) are you experiencing the issue?
+      multiple: true
+      options:
+        - Chrome
+        - Safari
+        - Firefox
+        - Edge
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      description: Which operating system are you using?
+      multiple: true
+      options:
+        - Windows
+        - MacOS
+        - Other
+
+  - type: input
+    id: version
+    attributes:
+      label: Package version
+      description: 'Which version(s) are you using?'
+      placeholder: e.g. 5.2.1
+    validations:
+      required: true
+
+  - type: input
+    id: technology
+    attributes:
+      label: Assistive technology
+      description: 'Did you experience the issue using an assistive technology?'
+      placeholder: e.g. MacOS VoiceOver, JAWS
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description:
+        "Tell us more about the accessibility issue that you're experiencing"
+      placeholder: What did you expect to happen? What happened instead?
+    validations:
+      required: true
+
+  - type: input
+    id: wcag
+    attributes:
+      label: WCAG 2.1 Violation
+      description: 'Does this violate a specific WCAG 2.1 checkpoint?'
+      placeholder: e.g Success Criteria 1.1 Text Alternatives
+
+  - type: input
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description:
+        'How can we reproduce the accessibility issue you described?'
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this report, you agree to follow our [Code of Conduct](https://github.com/shopware/meteor/blob/main/CODE_OF_CONDUCT.md)
+      options:
+        - label:
+            I have read and agree to follow Meteor's [Code of
+            Conduct](https://github.com/shopware/meteor/blob/main/CODE_OF_CONDUCT.md)
+          required: true
