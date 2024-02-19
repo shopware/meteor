@@ -26,5 +26,5 @@ jobs:
         run: npm run lint
       - uses: JS-DevTools/npm-publish@v1
         with:
-          token: ${{ secrets.NPM_TOKEN }}
+          token: ${{ secrets.NPM_TOKEN_ICONS }}
           access: "public"
