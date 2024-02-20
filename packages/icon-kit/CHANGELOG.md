@@ -1,12 +1,5 @@
 # CHANGELOG.md
 
-## 5.2.1
-
-We've fixed and issue that prevented two icons from being available as solid variant
-Fixed:
-   - `solid/e-scooter`
-   - `solid/balance-scale`
-
 ## 5.2.0
 
 We've added *X* to the set of social network icons. Farewell Larry 🐦
