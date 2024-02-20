@@ -9,7 +9,7 @@ A specific view or a set of actions can be triggered based on the `locationId`.
 ui.settings.addSettingsItem({
     label: 'App Settings',
     locationId: 'settings-location-id',
-    icon: 'default-object-books',
+    icon: 'regular-AR',
     displaySearchBar: true,
     tab: 'plugins',
 });
@@ -39,7 +39,7 @@ if (location.is(location.MAIN_HIDDEN)) {
     ui.settings.addSettingsItem({
         label: 'App Settings',
         locationId: 'settings-location-id',
-        icon: 'default-object-books',
+        icon: 'regular-AR',
         displaySearchBar: true,
         tab: 'plugins',
     });
