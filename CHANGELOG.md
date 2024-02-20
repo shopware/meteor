@@ -2,10 +2,20 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.0.3] - 20.02.2024
+
+## Removed
+- Query parameter privileges to check privilieges on app side. The administration now handels this.
+
 ## [4.0.2] - 20.02.2024
 
 ## Fixed
 - `data.subscribe` throws now correctly an error if privileges are missing
+
+## [4.0.1] - 20.02.2024
+
+## Fixed
+- Settings item documentation icon name
 
 ## [4.0.0] - 07.02.2024
 

@@ -552,40 +552,6 @@ test.describe('Privilege tests', () => {
     expect(result.message.includes('Your app is missing the privileges product:read for action "repositorySearch".')).toBe(true);
   });
 
-  test('should not handle callback with missing privileges', async ({ page }) => {
-    const { mainFrame, subFrame } = await setup({ page });
-
-    await mainFrame.evaluate(() => {
-      window.sw_internal.setExtensions({
-        foo: {
-          baseUrl: 'http://localhost:8182',
-          permissions: {
-            create: ['notification']
-          }
-        }
-      });
-
-      window.sw_internal.handle('_privileges', () => {})
-    })
-
-    const response = await subFrame.evaluate(() => {
-      return window.sw_internal.send('_privileges', {})
-        .then((response) => ({
-          response: response,
-          errorMessage: 'No error happened',
-          isMissingPrivilesErrorInstance: false,
-        }))
-        .catch((error) => ({
-          response: error,
-          errorMessage: error.toString(),
-          isMissingPrivilesErrorInstance: error instanceof window.sw_internal.MissingPrivilegesError
-        }))
-    });
-
-    expect(response.errorMessage).toEqual(`Error: Your app is missing the privileges additional:not_entity_related, create:user, read:user, update:user, delete:user for action "_privileges".`);
-    expect(response.isMissingPrivilesErrorInstance).toBe(true);
-  });
-
   test('should not accept entity data without correct privileges (create,read,update,delete)', async ({ page }) => {
     const { mainFrame, subFrame } = await setup({ page });
 

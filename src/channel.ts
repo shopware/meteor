@@ -2,7 +2,6 @@
 import type { ShopwareMessageTypes } from './messages.types';
 import { generateUniqueId } from './_internals/utils';
 import type { extension } from './privileges/privilege-resolver';
-import { sendPrivileged, handlePrivileged } from './privileges/privilege-resolver';
 import { ShopwareMessageTypePrivileges } from './privileges';
 import MissingPrivilegesError from './privileges/missing-privileges-error';
 import SerializerFactory from './_internals/serializer';
@@ -106,13 +105,6 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
   _targetWindow?: Window,
   _origin?: string
 ): Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType'] | null> {
-  const missingPriviliges = sendPrivileged(type);
-  if (missingPriviliges !== null) {
-    const missingPrivilegesError = new MissingPrivilegesError(type, missingPriviliges);
-
-    return Promise.reject(missingPrivilegesError);
-  }
-
   // Generate a unique callback ID. This here is only for simple demonstration purposes
   const callbackId = generateUniqueId();
 
@@ -277,11 +269,6 @@ export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
     // Message type needs privileges to be handled
     if (ShopwareMessageTypePrivileges[type] && Object.keys(ShopwareMessageTypePrivileges[type]).length) {
       if (!adminExtensions) {
-        return;
-      }
-
-      const missingPrivileges = handlePrivileged(type, event.origin);
-      if (missingPrivileges !== null) {
         return;
       }
     }
