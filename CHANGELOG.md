@@ -2,6 +2,11 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.0.2] - 20.02.2024
+
+## Fixed
+- `data.subscribe` throws now correctly an error if privileges are missing
+
 ## [4.0.0] - 07.02.2024
 
 ## Changed

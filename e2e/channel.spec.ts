@@ -10,14 +10,20 @@ declare global {
   }
 }
 
+let pageConsoleCheck = (msg) => {}
+
 // Fail on console errors
 test.beforeEach(({ page }, testInfo) => {
-  page.on('console', (msg) => {
+  pageConsoleCheck = (msg) => {
     console.log('LOG IN PAGE: ', msg.text());
 
     if (msg.type() === 'error') {
       expect(msg.text()).toBeUndefined();
     }
+  }
+  
+  page.on('console', (msg) => {
+    pageConsoleCheck(msg);
   })
 })
 
@@ -800,15 +806,21 @@ test.describe('Privilege tests', () => {
     expect(response.isMissingPrivilesErrorInstance).toBe(true);
   });
 
-  test('should not send entity data without correct privileges in data handling (read)', async ({ page }) => {
+  test('should not send entity data without correct privileges in data handling (read)', async ({ page, browserName }) => {
     const { mainFrame, subFrame } = await setup({ page });
+
+    // Disable console check
+    pageConsoleCheck = () => {}
+
+    // Check manually for console error
+    const waitForConsoleError = page.waitForEvent('console');
 
     // subscribe to dataset publish
     await subFrame.evaluate(async () => {
       await window.sw.data.subscribe('e2e-test', (data) => {
         // @ts-expect-error
         window.result = { data: data.data };
-      });
+      })
     })
 
     // publish dataset
@@ -842,6 +854,13 @@ test.describe('Privilege tests', () => {
         errorText: window.result.data.toString(),
       };
     })
+
+    // Firefox doesn't support logging out the text directly in playwright
+    if (browserName !== 'firefox') {
+      // Expect console error to be thrown
+      const consoleError = await waitForConsoleError;
+      expect(consoleError.text()).toContain('Error: Your app is missing the privileges read:product for action "datasetSubscribe".');
+    }
 
     // check if receiving value matches
     expect(result.isError).toBe(true);
