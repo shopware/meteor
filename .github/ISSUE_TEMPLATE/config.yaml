@@ -1,1 +1,6 @@
 blank_issues_enabled: true
+contact_links:
+  - name: 📖 Documentation
+    url: https://shopware.design/
+    about: Guides, best practices, API documentation, and more.
+    
