@@ -21,7 +21,7 @@
   },
   "files": [
     "dist",
-    "tokens"
+    "dictionaries"
   ],
   "author": "Nils Haberkamp",
   "license": "MIT",
