@@ -594,7 +594,7 @@ test('creates a CSS file for the primitive Design Tokens', async () => {
   await subject.execute();
 
   // THEN
-  const result = fileSystem.readFile('./dist/foundation/primitives.css');
+  const result = fileSystem.readFile('./deliverables/foundation/primitives.css');
 
   expect(result).toMatchInlineSnapshot(`
     ":root {
@@ -736,7 +736,7 @@ test('creates a CSS file for the admin light mode tokens', async () => {
   await subject.execute();
 
   // THEN
-  const result = fileSystem.readFile('./dist/administration/light.css');
+  const result = fileSystem.readFile('./deliverables/administration/light.css');
 
   expect(result).toMatchInlineSnapshot(`
     ":root {
@@ -877,7 +877,7 @@ test('creates a CSS file for the admin dark mode tokens', async () => {
   await subject.execute();
 
   // THEN
-  const result = fileSystem.readFile('./dist/administration/dark.css');
+  const result = fileSystem.readFile('./deliverables/administration/dark.css');
 
   expect(result).toMatchInlineSnapshot(`
     "[data-theme="dark"] {

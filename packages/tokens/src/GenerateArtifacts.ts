@@ -36,7 +36,7 @@ export class GenerateArtifacts {
       CSSDeliverable.fromDictionary(primitiveDictionary);
 
     this.fileSystem.saveFile(
-      './dist/foundation/primitives.css',
+      './deliverables/foundation/primitives.css',
       primitiveCSSDeliverable.toString(),
     );
 
@@ -59,7 +59,7 @@ export class GenerateArtifacts {
     );
 
     this.fileSystem.saveFile(
-      './dist/administration/light.css',
+      './deliverables/administration/light.css',
       adminLightModeCSSDeliverable.toString(),
     );
 
@@ -82,7 +82,7 @@ export class GenerateArtifacts {
     );
 
     this.fileSystem.saveFile(
-      './dist/administration/dark.css',
+      './deliverables/administration/dark.css',
       adminDarkModeCSSDeliverable.toString(),
     );
   }
