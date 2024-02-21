@@ -28,7 +28,7 @@ export class GenerateArtifacts {
     );
 
     this.fileSystem.saveFile(
-      './tokens/foundation/primitives.tokens.json',
+      './dictionaries/foundation/primitives.tokens.json',
       primitiveDictionary.toJSON(),
     );
 
@@ -46,7 +46,7 @@ export class GenerateArtifacts {
     );
 
     this.fileSystem.saveFile(
-      './tokens/administration/light.tokens.json',
+      './dictionaries/administration/light.tokens.json',
       adminLightModeDictionary.toJSON(),
     );
 
@@ -69,7 +69,7 @@ export class GenerateArtifacts {
     );
 
     this.fileSystem.saveFile(
-      './tokens/administration/dark.tokens.json',
+      './dictionaries/administration/dark.tokens.json',
       adminDarkModeDictionary.toJSON(),
     );
 

@@ -139,7 +139,7 @@ test('creates a Dictionary in form of a JSON file for the primitive Design Token
 
   // THEN
   const result = fileSystem.readFile(
-    './tokens/foundation/primitives.tokens.json',
+    './dictionaries/foundation/primitives.tokens.json',
   );
 
   expect(result).toMatchInlineSnapshot(`
@@ -291,7 +291,7 @@ test('creates a Dictionary in form of a JSON file for the admin light mode token
 
   // THEN
   const result = fileSystem.readFile(
-    './tokens/administration/light.tokens.json',
+    './dictionaries/administration/light.tokens.json',
   );
 
   expect(result).toMatchInlineSnapshot(`
@@ -443,7 +443,7 @@ test('creates a Dictionary in form of a JSON file for the admin dark mode tokens
 
   // THEN
   const result = fileSystem.readFile(
-    './tokens/administration/dark.tokens.json',
+    './dictionaries/administration/dark.tokens.json',
   );
 
   expect(result).toMatchInlineSnapshot(`
