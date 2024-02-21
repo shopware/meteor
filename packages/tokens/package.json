@@ -15,12 +15,12 @@
     "lint:types": "tsc --noEmit"
   },
   "exports": {
-    "./primitives.css": "./dist/foundation/primitives.css",
-    "./administration/light.css": "./dist/administration/light.css",
-    "./administration/dark.css": "./dist/administration/dark.css"
+    "./primitives.css": "./deliverables/foundation/primitives.css",
+    "./administration/light.css": "./deliverables/administration/light.css",
+    "./administration/dark.css": "./deliverables/administration/dark.css"
   },
   "files": [
-    "dist",
+    "deliverables",
     "dictionaries"
   ],
   "author": "Nils Haberkamp",
