@@ -147,10 +147,10 @@ const props = defineProps({
   icons: {}
 });
 
-const exampleHTML = computed(() => props.icon ? `<SwagIcon name="${props.icon.name}" type="${props.icon.mode}" />` : null);
-const exampleVue2 = computed(() => props.icon ? `<SwagIcon name="${props.icon.name}" type="${props.icon.mode}" />` : null);
-const exampleVue3 = computed(() => props.icon ? `<SwagIcon name="${props.icon.name}" type="${props.icon.mode}" />` : null);
-const exampleReact = computed(() => props.icon ? `<SwagIcon name="${props.icon.name}" type="${props.icon.mode}" />` : null);
+const exampleHTML = computed(() => props.icon ? `<sw-icon name="${props.icon.mode}-${props.icon.name}" />` : null);
+const exampleVue2 = computed(() => props.icon ? `<sw-icon name="${props.icon.mode}-${props.icon.name}" />` : null);
+const exampleVue3 = computed(() => props.icon ? `<sw-icon name="${props.icon.mode}-${props.icon.name}" />` : null);
+const exampleReact = computed(() => props.icon ? `<sw-icon name="${props.icon.mode}-${props.icon.name}" />` : null);
 
 const copyIconName = () => {
   const tempTextArea = document.createElement('textarea');
