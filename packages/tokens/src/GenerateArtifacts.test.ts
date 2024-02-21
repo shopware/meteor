@@ -594,7 +594,9 @@ test('creates a CSS file for the primitive Design Tokens', async () => {
   await subject.execute();
 
   // THEN
-  const result = fileSystem.readFile('./deliverables/foundation/primitives.css');
+  const result = fileSystem.readFile(
+    './deliverables/foundation/primitives.css',
+  );
 
   expect(result).toMatchInlineSnapshot(`
     ":root {
