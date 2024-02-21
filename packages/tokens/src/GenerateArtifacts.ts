@@ -76,7 +76,7 @@ export class GenerateArtifacts {
     const adminDarkModeCSSDeliverable = CSSDeliverable.fromDictionary(
       adminDarkModeDictionary,
       {
-        selector: '[data-theme="dark"]',
+        selector: "[data-theme='dark']",
         additionalDictionaries: [primitiveDictionary],
       },
     );

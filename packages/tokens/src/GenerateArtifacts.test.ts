@@ -882,7 +882,7 @@ test('creates a CSS file for the admin dark mode tokens', async () => {
   const result = fileSystem.readFile('./deliverables/administration/dark.css');
 
   expect(result).toMatchInlineSnapshot(`
-    "[data-theme="dark"] {
+    "[data-theme='dark'] {
       --color-elevation-surface-default: #1e1e24;
     }
     "
