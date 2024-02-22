@@ -72,10 +72,11 @@ After completing all the tests you can submit your pull request.
 We create and manage our changelogs with changesets. Follow these steps
 to create a changelog:
 
-1. Run `npx changesets`
-2. Select the packages you updated
-3. Define your version bump for each package
+1. Run `npx changesets add`
+2. Select the package you updated
+3. Define your version bump for this package
 4. Write a meaningful changelog message
+5. Repeat the step for other packages you want to change
 
 Feel free to check out the [changesets documentation](https://github.com/changesets/changesets?tab=readme-ov-file#documentation)
 for more information on how to work with it.
