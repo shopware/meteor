@@ -1,17 +1,17 @@
 <template>
-  <hr class="sw_context_menu_divider">
+  <hr class="sw_context_menu_divider" />
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from "vue";
 
-export default Vue.extend({
-  name: 'SwContextMenuDivider',
+export default defineComponent({
+  name: "SwContextMenuDivider",
 });
 </script>
 
 <style lang="scss">
-@import '../../assets/scss/variables.scss';
+@import "../../assets/scss/variables.scss";
 
 $sw-context-menu-color-border: $color-gray-300;
 

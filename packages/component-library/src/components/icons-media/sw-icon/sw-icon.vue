@@ -6,16 +6,16 @@
     :style="styles"
     :aria-hidden="decorative"
     :data-testid="'sw-icon__' + name"
-    v-on="$listeners"
+    v-bind="$attrs"
     v-html="iconSvgData"
   />
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from "vue";
 
-export default Vue.extend({
-  name: 'SwIcon',
+export default defineComponent({
+  name: "SwIcon",
 
   props: {
     /**
@@ -47,8 +47,8 @@ export default Vue.extend({
 
   data() {
     return {
-      iconSvgData: ''
-    }
+      iconSvgData: "",
+    };
   },
 
   computed: {
@@ -57,9 +57,7 @@ export default Vue.extend({
     },
 
     classes(): string[] {
-      return [
-        `icon--${this.name}`,
-      ];
+      return [`icon--${this.name}`];
     },
 
     styles(): Record<string, string> {
@@ -72,25 +70,29 @@ export default Vue.extend({
   watch: {
     name: {
       handler(newName) {
-        const [variant] = newName.split('-');
-        const iconName = newName.split('-').slice(1).join('-');
+        const [variant] = newName.split("-");
+        const iconName = newName.split("-").slice(1).join("-");
 
-        import(`./../../../../../../node_modules/@shopware-ag/meteor-icon-kit/icons/${variant}/${iconName}.svg`).then((iconSvgData) => {
+        import(
+          `./../../../../node_modules/@shopware-ag/meteor-icon-kit/icons/${variant}/${iconName}.svg`
+        ).then((iconSvgData) => {
           if (iconSvgData.default) {
             this.iconSvgData = iconSvgData.default;
           } else {
-            console.error(`The SVG file for the icon name ${newName} could not be found and loaded.`)
-            this.iconSvgData = '';
+            console.error(
+              `The SVG file for the icon name ${newName} could not be found and loaded.`,
+            );
+            this.iconSvgData = "";
           }
-        })
+        });
       },
       immediate: true,
-    }
+    },
   },
 
   beforeMount() {
-    this.iconSvgData = `<svg id="meteor-icon-kit__${this.name}"></svg>`
-  }
+    this.iconSvgData = `<svg id="meteor-icon-kit__${this.name}"></svg>`;
+  },
 });
 </script>
 

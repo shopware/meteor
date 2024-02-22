@@ -1,9 +1,6 @@
 <template>
   <div class="sw-loader">
-    <div
-      class="sw-loader__container"
-      :style="loaderSize"
-    >
+    <div class="sw-loader__container" :style="loaderSize">
       <div class="sw-loader-element">
         <div :style="{ borderWidth: borderWidth }" />
         <div :style="{ borderWidth: borderWidth }" />
@@ -15,10 +12,10 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from "vue";
 
-export default Vue.extend({
-  name: 'SwLoader',
+export default defineComponent({
+  name: "SwLoader",
 
   props: {
     /**
@@ -27,17 +24,17 @@ export default Vue.extend({
     size: {
       type: String,
       required: false,
-      default: '50px',
+      default: "50px",
       validator(value: string) {
-        return value.endsWith('px');
+        return value.endsWith("px");
       },
     },
   },
 
   computed: {
     loaderSize(): {
-      width: string,
-      height: string,
+      width: string;
+      height: string;
     } {
       return {
         width: `${this.numericSize}px`,

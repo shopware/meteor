@@ -1,9 +1,6 @@
 <template>
   <div class="sw-field--checkbox__container">
-    <div
-      class="sw-field--checkbox"
-      :class="swCheckboxFieldClasses"
-    >
+    <div class="sw-field--checkbox" :class="swCheckboxFieldClasses">
       <div class="sw-field--checkbox__content">
         <div class="sw-field__checkbox">
           <input
@@ -13,13 +10,10 @@
             :checked="inputState"
             :disabled="isDisabled"
             :indeterminate.prop="partial"
-            @change="onChange"
-          >
+            @change.stop="onChange"
+          />
           <div class="sw-field__checkbox-state">
-            <sw-icon
-              :name="iconName"
-              size="16"
-            />
+            <sw-icon :name="iconName" size="16" />
           </div>
         </div>
 
@@ -46,27 +40,23 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import SwIcon from '../../icons-media/sw-icon/sw-icon.vue';
-import SwBaseField from '../_internal/sw-base-field/sw-base-field.vue';
-import SwFieldError from '../_internal/sw-field-error/sw-field-error.vue';
-import SwFormFieldMixin from '../../../mixins/form-field.mixin';
-import { createId } from '../../../utils/uuid';
+import { defineComponent } from "vue";
+import SwIcon from "../../icons-media/sw-icon/sw-icon.vue";
+import SwBaseField from "../_internal/sw-base-field/sw-base-field.vue";
+import SwFieldError from "../_internal/sw-field-error/sw-field-error.vue";
+import SwFormFieldMixin from "../../../mixins/form-field.mixin";
+import { createId } from "../../../utils/uuid";
 
-export default Vue.extend({
-  name: 'SwCheckbox',
+export default defineComponent({
+  name: "SwCheckbox",
 
   components: {
-    'sw-icon': SwIcon,
-    'sw-base-field': SwBaseField,
-    'sw-field-error': SwFieldError,
+    "sw-icon": SwIcon,
+    "sw-base-field": SwBaseField,
+    "sw-field-error": SwFieldError,
   },
 
-  mixins: [
-    SwFormFieldMixin,
-  ],
-
-  inheritAttrs: false,
+  mixins: [SwFormFieldMixin],
 
   props: {
     /**
@@ -75,7 +65,7 @@ export default Vue.extend({
     label: {
       type: String,
       required: false,
-      default: undefined
+      default: undefined,
     },
 
     /**
@@ -160,18 +150,18 @@ export default Vue.extend({
 
   computed: {
     swCheckboxFieldClasses(): {
-      'has--error': boolean,
-      'is--disabled': boolean,
-      'is--inherited': boolean,
-      'is--bordered': boolean,
-      'is--partly-checked': boolean,
+      "has--error": boolean;
+      "is--disabled": boolean;
+      "is--inherited": boolean;
+      "is--bordered": boolean;
+      "is--partly-checked": boolean;
     } {
       return {
-        'has--error': !!this.hasError,
-        'is--disabled': this.disabled,
-        'is--inherited': !!this.isInherited,
-        'is--bordered': this.bordered,
-        'is--partly-checked': this.isPartlyChecked,
+        "has--error": !!this.hasError,
+        "is--disabled": this.disabled,
+        "is--inherited": !!this.isInherited,
+        "is--bordered": this.bordered,
+        "is--partly-checked": this.isPartlyChecked,
       };
     },
 
@@ -214,7 +204,7 @@ export default Vue.extend({
     },
 
     iconName(): string {
-      return this.isPartlyChecked ? 'regular-minus-xxs' : 'regular-checkmark-xxs';
+      return this.isPartlyChecked ? "regular-minus-xxs" : "regular-checkmark-xxs";
     },
   },
 
@@ -230,7 +220,7 @@ export default Vue.extend({
   methods: {
     onChange(changeEvent: Event) {
       // @ts-expect-error - target is defined in the event
-      this.$emit('change', changeEvent.target.checked);
+      this.$emit("change", changeEvent.target.checked);
     },
   },
 });
@@ -376,7 +366,9 @@ $sw-field-color-inherited: $color-module-purple-900;
 
       input[type="checkbox"] {
         &:disabled ~ .sw-field__checkbox-state {
-          border: 1px solid $sw-field-color-error, 5%;
+          border:
+            1px solid $sw-field-color-error,
+            5%;
         }
 
         &:checked ~ .sw-field__checkbox-state {

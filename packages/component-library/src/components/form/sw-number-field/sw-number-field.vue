@@ -1,5 +1,7 @@
 <template>
   <sw-base-field
+    class="sw-number-field"
+    :class="$attrs.class"
     :disabled="disabled"
     :required="required"
     :is-inherited="isInherited"
@@ -19,13 +21,11 @@
       {{ label }}
     </template>
 
-    <template
-      #field-prefix
-    >
+    <template #field-prefix>
       <slot name="prefix" />
     </template>
 
-    <template #element="{identification}">
+    <template #element="{ identification }">
       <!-- @vue-ignore -->
       <input
         :id="createInputId(identification)"
@@ -40,13 +40,9 @@
         @change="onChange"
         @focus="setFocusClass"
         @blur="removeFocusClass"
-        v-on="additionalListeners"
-      >
+      />
 
-      <div
-        class="sw-field--controls"
-        :class="controlClasses"
-      >
+      <div class="sw-field--controls" :class="controlClasses">
         <sw-icon
           :class="upControlClasses"
           name="regular-chevron-up-s"
@@ -63,17 +59,12 @@
       </div>
     </template>
 
-    <template
-      #field-suffix
-    >
+    <template #field-suffix>
       <slot name="suffix" />
     </template>
 
     <template #error>
-      <sw-field-error
-        v-if="error"
-        :error="error"
-      />
+      <sw-field-error v-if="error" :error="error" />
     </template>
 
     <template #field-hint>
@@ -83,33 +74,31 @@
 </template>
 
 <script lang="ts">
-import type { PropType } from 'vue';
+import type { PropType } from "vue";
 
-import Vue from 'vue';
-import SwTextField from '../sw-text-field/sw-text-field.vue';
-import SwIcon from '../../icons-media/sw-icon/sw-icon.vue';
+import { defineComponent } from "vue";
+import SwTextField from "../sw-text-field/sw-text-field.vue";
+import SwIcon from "../../icons-media/sw-icon/sw-icon.vue";
 
-export default Vue.extend({
-  name: 'SwNumberField',
+export default defineComponent({
+  name: "SwNumberField",
 
   components: {
-    'sw-icon': SwIcon,
+    "sw-icon": SwIcon,
   },
 
   extends: SwTextField,
-
-  inheritAttrs: false,
 
   props: {
     /**
      * Defines if the number should be a floating point number or integer.
      */
     numberType: {
-      type: String as PropType<'float'|'int'>,
+      type: String as PropType<"float" | "int">,
       required: false,
-      default: 'float',
+      default: "float",
       validator(value: string) {
-        return ['float', 'int'].includes(value);
+        return ["float", "int"].includes(value);
       },
     },
 
@@ -143,8 +132,8 @@ export default Vue.extend({
     /**
      * The value of the field.
      */
-    value: {
-      type: Number,
+    modelValue: {
+      type: Number as PropType<number | null>,
       required: false,
       default: null,
     },
@@ -159,7 +148,7 @@ export default Vue.extend({
       validator(value: number) {
         const isInt = value === Math.floor(value);
         if (!isInt) {
-          console.warn('sw-number-field', 'Provided prop digits must be of type integer');
+          console.warn("sw-number-field", "Provided prop digits must be of type integer");
         }
         return isInt;
       },
@@ -185,52 +174,51 @@ export default Vue.extend({
   },
 
   data(): {
-    upControlClasses: null,
-    downControlClasses: null,
-    upHandler: null|number,
-    downHandler: null|number,
+    upControlClasses: null;
+    downControlClasses: null;
+    upHandler: null | number;
+    downHandler: null | number;
   } {
     return {
       upControlClasses: null,
       downControlClasses: null,
       upHandler: null,
-      downHandler: null
+      downHandler: null,
     };
   },
 
   computed: {
     realStep(): number {
       if (this.step === null) {
-        return this.numberType === 'int' ? 1 : 0.01;
+        return this.numberType === "int" ? 1 : 0.01;
       }
 
-      return (this.numberType === 'int') ? Math.round(this.step) : this.step;
+      return this.numberType === "int" ? Math.round(this.step) : this.step;
     },
 
-    realMinimum(): number|null {
+    realMinimum(): number | null {
       if (this.min === null) {
         return null;
       }
-      return (this.numberType === 'int') ? Math.ceil(this.min) : this.min;
+      return this.numberType === "int" ? Math.ceil(this.min) : this.min;
     },
 
-    realMaximum(): number|null {
+    realMaximum(): number | null {
       if (this.max === null) {
         return null;
       }
 
-      return (this.numberType === 'int') ? Math.floor(this.max) : this.max;
+      return this.numberType === "int" ? Math.floor(this.max) : this.max;
     },
 
     stringRepresentation(): string {
       if (this.currentValue === null) {
-        return '';
+        return "";
       }
 
-      return this.fillDigits && this.numberType !== 'int'
-      // @ts-expect-error - defined in parent
-        ? this.currentValue.toFixed(this.digits)
-        // @ts-expect-error - defined in parent
+      return this.fillDigits && this.numberType !== "int"
+        ? // @ts-expect-error - wrong type because of component extends
+          this.currentValue.toFixed(this.digits)
         : this.currentValue.toString();
     },
 
@@ -240,21 +228,22 @@ export default Vue.extend({
     } {
       return {
         disabled: this.disabled,
-        error: !!this.error
-      }
+        error: !!this.error,
+      };
     },
   },
 
   watch: {
-    value: {
+    modelValue: {
       handler() {
-        if (this.value === null || this.value === undefined) {
+        if (this.modelValue === null || this.modelValue === undefined) {
           // @ts-expect-error - defined in parent
           this.currentValue = null;
           return;
         }
 
-        this.computeValue(this.value.toString());
+        // @ts-expect-error - wrong type because of component extends
+        this.computeValue(this.modelValue.toString());
       },
       immediate: true,
     },
@@ -264,7 +253,7 @@ export default Vue.extend({
     onChange(event: Event) {
       // @ts-expect-error - target exists
       this.computeValue(event.target.value);
-      this.$emit('change', this.currentValue);
+      this.$emit("change", this.currentValue);
     },
 
     onInput(event: Event) {
@@ -279,7 +268,7 @@ export default Vue.extend({
           val = this.min;
         }
 
-        this.$emit('input-change', val);
+        this.$emit("input-change", val);
       }
     },
 
@@ -290,7 +279,7 @@ export default Vue.extend({
 
       // @ts-expect-error - defined in parent
       this.upControlClasses = {
-        'sw-icon--toggled': true,
+        "sw-icon--toggled": true,
       };
 
       if (this.upHandler) {
@@ -303,7 +292,7 @@ export default Vue.extend({
       }, 100);
 
       this.computeValue((this.currentValue + this.realStep).toString());
-      this.$emit('change', this.currentValue);
+      this.$emit("change", this.currentValue);
     },
 
     decreaseNumberByStep() {
@@ -313,7 +302,7 @@ export default Vue.extend({
 
       // @ts-expect-error - defined in parent
       this.downControlClasses = {
-        'sw-icon--toggled': true,
+        "sw-icon--toggled": true,
       };
 
       if (this.downHandler) {
@@ -325,13 +314,13 @@ export default Vue.extend({
         this.downControlClasses = {};
       }, 100);
 
+      // @ts-expect-error - wrong type because of component extends
       this.computeValue((this.currentValue - this.realStep).toString());
-      this.$emit('change', this.currentValue);
+      this.$emit("change", this.currentValue);
     },
 
     computeValue(stringRepresentation: string) {
       const value = this.getNumberFromString(stringRepresentation);
-      // @ts-expect-error - defined in parent
       this.currentValue = this.parseValue(value);
     },
 
@@ -363,26 +352,26 @@ export default Vue.extend({
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getNumberFromString(value: any) {
-      let splits = value.split('e').shift();
-      splits = splits.replace(/,/g, '.').split('.');
+      let splits = value.split("e").shift();
+      splits = splits.replace(/,/g, ".").split(".");
 
       if (splits.length === 1) {
         return parseFloat(splits[0]);
       }
 
-      if (this.numberType === 'int') {
-        return parseInt(splits.join(''), 10);
+      if (this.numberType === "int") {
+        return parseInt(splits.join(""), 10);
       }
       const decimals = splits[splits.length - 1].length;
-      const float = parseFloat(splits.join('.')).toFixed(decimals);
+      const float = parseFloat(splits.join(".")).toFixed(decimals);
       return decimals > this.digits
-        // @ts-expect-error - can be calculated
-        ? Math.round(float * (10 ** this.digits)) / (10 ** this.digits)
+        ? // @ts-expect-error - can be calculated
+          Math.round(float * 10 ** this.digits) / 10 ** this.digits
         : Number(float);
     },
 
     checkForInteger(value: number) {
-      if (this.numberType !== 'int') {
+      if (this.numberType !== "int") {
         return value;
       }
 

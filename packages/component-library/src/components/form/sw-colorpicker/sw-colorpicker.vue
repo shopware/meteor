@@ -24,13 +24,10 @@
       >
         <div
           class="sw-colorpicker__previewColor"
-          :class="{active:visible}"
+          :class="{ active: visible }"
           :style="{ background: previewColorValue }"
         />
-        <div
-          class="sw-colorpicker__previewBackground"
-          :class="{'is--invalid': !isColorValid}"
-        />
+        <div class="sw-colorpicker__previewBackground" :class="{ 'is--invalid': !isColorValid }" />
       </div>
     </template>
 
@@ -43,7 +40,7 @@
         :disabled="disabled"
         :readonly="readonly"
         @click="onClickInput"
-      >
+      />
 
       <sw-popover-deprecated
         v-if="visible"
@@ -57,10 +54,7 @@
             :style="{ backgroundColor: selectorBackground }"
             @mousedown="setDragging"
           >
-            <div
-              class="sw-colorpicker__colorpicker-selector"
-              :style="selectorStyles"
-            />
+            <div class="sw-colorpicker__colorpicker-selector" :style="selectorStyles" />
           </div>
           <div class="sw-colorpicker__row">
             <div class="sw-colorpicker__sliders">
@@ -72,7 +66,7 @@
                 min="0"
                 max="360"
                 step="1"
-              >
+              />
 
               <input
                 v-if="alpha"
@@ -84,16 +78,13 @@
                 max="1"
                 step="0.01"
                 :style="{ backgroundImage: sliderBackground }"
-              >
+              />
             </div>
 
-            <div
-              class="sw-colorpicker__colorpicker-wrapper"
-              :class="{ 'is--small': !alpha }"
-            >
+            <div class="sw-colorpicker__colorpicker-wrapper" :class="{ 'is--small': !alpha }">
               <div
                 class="sw-colorpicker__colorpicker-previewColor"
-                :style="{ background: previewColorValue}"
+                :style="{ background: previewColorValue }"
               />
               <div
                 class="sw-colorpicker__colorpicker-previewBackground"
@@ -110,11 +101,8 @@
                 aria-label="hex-value"
                 type="text"
                 spellcheck="false"
-              >
-              <label
-                v-if="colorLabels"
-                class="sw-colorpicker__row-column-label"
-              >HEX</label>
+              />
+              <label v-if="colorLabels" class="sw-colorpicker__row-column-label">HEX</label>
             </div>
 
             <div class="sw-colorpicker__row-column">
@@ -127,11 +115,8 @@
                 max="255"
                 step="1"
                 placeholder="0"
-              >
-              <label
-                v-if="colorLabels"
-                class="sw-colorpicker__row-column-label"
-              >R</label>
+              />
+              <label v-if="colorLabels" class="sw-colorpicker__row-column-label">R</label>
             </div>
 
             <div class="sw-colorpicker__row-column">
@@ -144,11 +129,8 @@
                 max="255"
                 step="1"
                 placeholder="0"
-              >
-              <label
-                v-if="colorLabels"
-                class="sw-colorpicker__row-column-label"
-              >G</label>
+              />
+              <label v-if="colorLabels" class="sw-colorpicker__row-column-label">G</label>
             </div>
 
             <div class="sw-colorpicker__row-column">
@@ -161,17 +143,11 @@
                 max="255"
                 step="1"
                 placeholder="0"
-              >
-              <label
-                v-if="colorLabels"
-                class="sw-colorpicker__row-column-label"
-              >B</label>
+              />
+              <label v-if="colorLabels" class="sw-colorpicker__row-column-label">B</label>
             </div>
 
-            <div
-              v-if="alpha"
-              class="sw-colorpicker__row-column"
-            >
+            <div v-if="alpha" class="sw-colorpicker__row-column">
               <input
                 v-model.number="integerAlpha"
                 class="sw-colorpicker__colorpicker-input"
@@ -181,11 +157,8 @@
                 max="100"
                 step="1"
                 placeholder="0"
-              >
-              <label
-                v-if="colorLabels"
-                class="sw-colorpicker__row-column-label"
-              >Alpha</label>
+              />
+              <label v-if="colorLabels" class="sw-colorpicker__row-column-label">Alpha</label>
             </div>
           </div>
         </div>
@@ -193,38 +166,35 @@
     </template>
 
     <template #error>
-      <sw-field-error
-        v-if="error"
-        :error="error"
-      />
+      <sw-field-error v-if="error" :error="error" />
     </template>
   </sw-base-field>
 </template>
 
 <script lang="ts">
-import type { PropType } from 'vue';
+import type { PropType } from "vue";
 
-import Vue from 'vue';
-import { debounce } from 'lodash-es';
+import { defineComponent } from "vue";
+import { debounce } from "lodash-es";
 import SwBaseField from "../_internal/sw-base-field/sw-base-field.vue";
-import SwPopoverDeprecated from '../../_internal/sw-popover-deprecated/sw-popover-deprecated.vue';
+import SwPopoverDeprecated from "../../_internal/sw-popover-deprecated/sw-popover-deprecated.vue";
 
-export default Vue.extend({
-  name: 'SwColorpicker',
+export default defineComponent({
+  name: "SwColorpicker",
 
   components: {
-    'sw-popover-deprecated': SwPopoverDeprecated,
-    'sw-base-field': SwBaseField,
+    "sw-popover-deprecated": SwPopoverDeprecated,
+    "sw-base-field": SwBaseField,
   },
 
   props: {
     /**
      * The value of the colorpicker field.
      */
-    value: {
+    modelValue: {
       type: String,
       required: false,
-      default: '',
+      default: "",
     },
 
     /**
@@ -245,14 +215,14 @@ export default Vue.extend({
       default: null,
     },
 
-  /**
-   * Change the output value which gets emitted and shown in the field.
-   * @values auto, hex, hsl, rgb
-   */
+    /**
+     * Change the output value which gets emitted and shown in the field.
+     * @values auto, hex, hsl, rgb
+     */
     colorOutput: {
-      type: String as PropType<'auto'|'hex'|'hsl'|'rgb'>,
+      type: String as PropType<"auto" | "hex" | "hsl" | "rgb">,
       required: false,
-      default: 'auto',
+      default: "auto",
     },
 
     /**
@@ -328,7 +298,7 @@ export default Vue.extend({
     },
 
     zIndex: {
-      type: [Number, null] as PropType<number|null>,
+      type: [Number, null] as PropType<number | null>,
       required: false,
       default: null,
     },
@@ -355,18 +325,20 @@ export default Vue.extend({
   },
 
   data(): {
-    localValue: string|{ string: string; red: string; green: string; blue: string; alpha?: string; },
-    visible: boolean,
-    isDragging: boolean,
-    userInput: null,
-    luminanceValue: number,
-    saturationValue: number,
-    hueValue: number,
-    alphaValue: number,
-    hasFocus: boolean,
+    localValue:
+      | string
+      | { string: string; red: string; green: string; blue: string; alpha?: string };
+    visible: boolean;
+    isDragging: boolean;
+    userInput: null;
+    luminanceValue: number;
+    saturationValue: number;
+    hueValue: number;
+    alphaValue: number;
+    hasFocus: boolean;
   } {
     return {
-      localValue: this.value,
+      localValue: this.modelValue,
       visible: false,
       isDragging: false,
       userInput: null,
@@ -380,11 +352,17 @@ export default Vue.extend({
 
   computed: {
     colorValue: {
-      get(): string|{ string: string; red: string; green: string; blue: string; alpha?: string; } {
+      get(): string | { string: string; red: string; green: string; blue: string; alpha?: string } {
         return this.localValue;
       },
 
-      set(newColor: { string: string; red: string; green: string; blue: string; alpha?: string; }): void {
+      set(newColor: {
+        string: string;
+        red: string;
+        green: string;
+        blue: string;
+        alpha?: string;
+      }): void {
         this.localValue = newColor;
         this.debounceEmitColorValue();
       },
@@ -406,21 +384,27 @@ export default Vue.extend({
     },
 
     isColorValid(): boolean {
-      if (typeof this.colorValue === 'string') {
-        return this.colorValue.startsWith("rgb") || this.colorValue.startsWith("hsl")
-        || this.colorValue.startsWith("#");
+      if (typeof this.colorValue === "string") {
+        return (
+          this.colorValue.startsWith("rgb") ||
+          this.colorValue.startsWith("hsl") ||
+          this.colorValue.startsWith("#")
+        );
       }
 
-      return this.colorValue.string.startsWith("rgb") || this.colorValue.string.startsWith("hsl")
-        || this.colorValue.string.startsWith("#");
+      return (
+        this.colorValue.string.startsWith("rgb") ||
+        this.colorValue.string.startsWith("hsl") ||
+        this.colorValue.string.startsWith("#")
+      );
     },
 
     previewColorValue(): string {
       if (!this.isColorValid) {
-        return 'transparent';
+        return "transparent";
       }
 
-      return typeof this.colorValue === 'string' ? this.colorValue : this.colorValue.string;
+      return typeof this.colorValue === "string" ? this.colorValue : this.colorValue.string;
     },
 
     selectorBackground(): string {
@@ -436,7 +420,7 @@ export default Vue.extend({
           this.alphaValue,
         );
 
-        if (typeof value !== 'string') {
+        if (typeof value !== "string") {
           return Number(value.red);
         }
 
@@ -444,7 +428,7 @@ export default Vue.extend({
       },
 
       set(newRedValue: number): void {
-        this.setSingleRGBValue(newRedValue, 'red');
+        this.setSingleRGBValue(newRedValue, "red");
       },
     },
 
@@ -457,7 +441,7 @@ export default Vue.extend({
           this.alphaValue,
         );
 
-        if (typeof value !== 'string') {
+        if (typeof value !== "string") {
           return Number(value.green);
         }
 
@@ -465,7 +449,7 @@ export default Vue.extend({
       },
 
       set(newGreenValue: number): void {
-        this.setSingleRGBValue(newGreenValue, 'green');
+        this.setSingleRGBValue(newGreenValue, "green");
       },
     },
 
@@ -478,7 +462,7 @@ export default Vue.extend({
           this.alphaValue,
         );
 
-        if (typeof value !== 'string') {
+        if (typeof value !== "string") {
           return Number(value.blue);
         }
 
@@ -486,7 +470,7 @@ export default Vue.extend({
       },
 
       set(newBlueValue: number): void {
-        this.setSingleRGBValue(newBlueValue, 'blue');
+        this.setSingleRGBValue(newBlueValue, "blue");
       },
     },
 
@@ -498,7 +482,7 @@ export default Vue.extend({
         Math.abs(this.alphaValue),
       );
 
-      if (typeof value !== 'string') {
+      if (typeof value !== "string") {
         return value.string;
       }
 
@@ -519,13 +503,15 @@ export default Vue.extend({
     },
 
     hexValue: {
-      get(): string | {
-        string: string;
-        red: string;
-        green: string;
-        blue: string;
-        alpha?: string | undefined;
-    } {
+      get():
+        | string
+        | {
+            string: string;
+            red: string;
+            green: string;
+            blue: string;
+            alpha?: string | undefined;
+          } {
         if (this.alphaValue < 1) {
           return this.convertHSLtoHEX(
             this.hueValue,
@@ -561,27 +547,29 @@ export default Vue.extend({
       },
     },
 
-    convertedValue(): string|{
-      string: string;
-      red: string;
-      green: string;
-      blue: string;
-      alpha?: string;
-    } {
+    convertedValue():
+      | string
+      | {
+          string: string;
+          red: string;
+          green: string;
+          blue: string;
+          alpha?: string;
+        } {
       switch (this.colorOutput) {
-        case 'auto': {
+        case "auto": {
           return this.alphaValue < 1 ? this.rgbValue : this.hexValue;
         }
 
-        case 'rgb': {
+        case "rgb": {
           return this.rgbValue;
         }
 
-        case 'hsl': {
+        case "hsl": {
           return this.hslValue;
         }
 
-        case 'hex':
+        case "hex":
         default: {
           return this.hexValue;
         }
@@ -613,7 +601,7 @@ export default Vue.extend({
 
   watch: {
     value() {
-      this.colorValue = this.value;
+      this.colorValue = this.modelValue;
     },
 
     hslValue() {
@@ -627,9 +615,11 @@ export default Vue.extend({
 
       const color = this.colorValue;
 
-      if ((typeof color === 'string' ? color : color.string).startsWith("#")) {
+      if ((typeof color === "string" ? color : color.string).startsWith("#")) {
         // if color is a hex value
-        const convertedHSLValue = this.convertHEXtoHSL(typeof this.colorValue === 'string' ? this.colorValue : this.colorValue.string);
+        const convertedHSLValue = this.convertHEXtoHSL(
+          typeof this.colorValue === "string" ? this.colorValue : this.colorValue.string,
+        );
 
         if (!convertedHSLValue) {
           return;
@@ -641,10 +631,16 @@ export default Vue.extend({
           convertedHSLValue.luminance,
           convertedHSLValue.alpha,
         );
-      } else if ((typeof color === 'string' ? color : color.string).startsWith("rgb")) {
+      } else if ((typeof color === "string" ? color : color.string).startsWith("rgb")) {
         // if color is a rgb value
-        const rgbValues = this.splitRGBValues(typeof this.colorValue === 'string' ? this.colorValue : this.colorValue.string);
-        const convertedHSLValue = this.convertRGBtoHSL(rgbValues.red, rgbValues.green, rgbValues.blue);
+        const rgbValues = this.splitRGBValues(
+          typeof this.colorValue === "string" ? this.colorValue : this.colorValue.string,
+        );
+        const convertedHSLValue = this.convertRGBtoHSL(
+          rgbValues.red,
+          rgbValues.green,
+          rgbValues.blue,
+        );
 
         this.setHslaValues(
           convertedHSLValue.hue,
@@ -652,9 +648,11 @@ export default Vue.extend({
           convertedHSLValue.luminance,
           rgbValues.alpha,
         );
-      } else if ((typeof color === 'string' ? color : color.string).startsWith("hsl")) {
+      } else if ((typeof color === "string" ? color : color.string).startsWith("hsl")) {
         // if color is an hsl value
-        const hslValues = this.splitHSLValues(typeof this.colorValue === 'string' ? this.colorValue : this.colorValue.string);
+        const hslValues = this.splitHSLValues(
+          typeof this.colorValue === "string" ? this.colorValue : this.colorValue.string,
+        );
 
         this.setHslaValues(
           hslValues.hue,
@@ -666,8 +664,8 @@ export default Vue.extend({
     },
   },
 
-  beforeDestroy(): void {
-    window.removeEventListener('mousedown', this.outsideClick);
+  beforeUnmount(): void {
+    window.removeEventListener("mousedown", this.outsideClick);
   },
 
   methods: {
@@ -677,7 +675,7 @@ export default Vue.extend({
        * @property {string} this.colorValue the new color value
        */
       // @ts-expect-error - this context is wrong detected
-      this.$emit('input', this.colorValue);
+      this.$emit("update:modelValue", this.colorValue);
     }, 50),
 
     outsideClick(e: Event) {
@@ -687,7 +685,7 @@ export default Vue.extend({
       }
 
       // @ts-expect-error - target exists
-      const isColorpicker = e.target.closest('.sw-colorpicker__colorpicker');
+      const isColorpicker = e.target.closest(".sw-colorpicker__colorpicker");
 
       if (isColorpicker !== null) {
         return;
@@ -698,11 +696,11 @@ export default Vue.extend({
     },
 
     setOutsideClickEvent() {
-      window.addEventListener('mousedown', this.outsideClick);
+      window.addEventListener("mousedown", this.outsideClick);
     },
 
     removeOutsideClickEvent() {
-      window.removeEventListener('mousedown', this.outsideClick);
+      window.removeEventListener("mousedown", this.outsideClick);
     },
 
     toggleColorPicker() {
@@ -742,7 +740,7 @@ export default Vue.extend({
         correctedXValue = xValue;
       }
 
-      const yValue = ((cursorY / colorpickerLocation.height) - 1) * -100;
+      const yValue = (cursorY / colorpickerLocation.height - 1) * -100;
       let correctedYValue;
 
       if (yValue > 100) {
@@ -758,12 +756,12 @@ export default Vue.extend({
     },
 
     setDragging(event: MouseEvent) {
-      document.body.style.userSelect = 'none';
+      document.body.style.userSelect = "none";
       this.isDragging = true;
       this.moveSelector(event);
 
-      window.addEventListener('mousemove', this.moveSelector, false);
-      window.addEventListener('mouseup', this.removeDragging, false);
+      window.addEventListener("mousemove", this.moveSelector, false);
+      window.addEventListener("mouseup", this.removeDragging, false);
     },
 
     removeDragging() {
@@ -771,12 +769,12 @@ export default Vue.extend({
       document.body.style.userSelect = null;
       this.isDragging = false;
 
-      window.removeEventListener('mousemove', this.moveSelector);
-      window.removeEventListener('mouseup', this.removeDragging);
+      window.removeEventListener("mousemove", this.moveSelector);
+      window.removeEventListener("mouseup", this.removeDragging);
     },
 
-    setSingleRGBValue(newColorValue: number, type: 'red'|'green'|'blue') {
-      const validTypes = ['red', 'green', 'blue'];
+    setSingleRGBValue(newColorValue: number, type: "red" | "green" | "blue") {
+      const validTypes = ["red", "green", "blue"];
 
       if (!validTypes.includes(type)) {
         return;
@@ -793,9 +791,9 @@ export default Vue.extend({
       }
 
       const hslValue = this.convertRGBtoHSL(
-        type === 'red' ? sanitizedColorValue : this.redValue,
-        type === 'green' ? sanitizedColorValue : this.greenValue,
-        type === 'blue' ? sanitizedColorValue : this.blueValue,
+        type === "red" ? sanitizedColorValue : this.redValue,
+        type === "green" ? sanitizedColorValue : this.greenValue,
+        type === "blue" ? sanitizedColorValue : this.blueValue,
       );
 
       this.setHslaValues(hslValue.hue, hslValue.saturation, hslValue.luminance, this.alphaValue);
@@ -809,24 +807,26 @@ export default Vue.extend({
     },
 
     splitRGBValues(rgbString: string) {
-      const rgbValues = rgbString.slice(rgbString.indexOf('(') + 1, rgbString.length - 1).split(', ');
+      const rgbValues = rgbString
+        .slice(rgbString.indexOf("(") + 1, rgbString.length - 1)
+        .split(", ");
 
       const red = Number(rgbValues[0]);
       const green = Number(rgbValues[1]);
       const blue = Number(rgbValues[2]);
 
       const returnValue: {
-        red: number,
-        green: number,
-        blue: number,
-        alpha?: number
+        red: number;
+        green: number;
+        blue: number;
+        alpha?: number;
       } = {
         red,
         green,
         blue,
       };
 
-      if (rgbString.includes('a')) {
+      if (rgbString.includes("a")) {
         returnValue.alpha = Number(rgbValues[3]);
       }
 
@@ -834,7 +834,9 @@ export default Vue.extend({
     },
 
     splitHSLValues(hslString: string) {
-      const hslValue = hslString.slice(hslString.indexOf('(') + 1, hslString.length - 1).split(', ');
+      const hslValue = hslString
+        .slice(hslString.indexOf("(") + 1, hslString.length - 1)
+        .split(", ");
 
       // Removing the '%' character in string
       const hue = Number(hslValue[0]);
@@ -843,10 +845,10 @@ export default Vue.extend({
       const alpha = hslValue[3] || Number(hslValue[3]) === 0 ? Number(hslValue[3]) : undefined;
 
       const returnValue: {
-        hue: number,
-        saturation: number,
-        luminance: number,
-        alpha?: number
+        hue: number;
+        saturation: number;
+        luminance: number;
+        alpha?: number;
       } = {
         hue,
         saturation,
@@ -864,7 +866,7 @@ export default Vue.extend({
       previousHue: number,
       previousSaturation: number,
       previousLuminance: number,
-      previousAlpha: number
+      previousAlpha: number,
     ) {
       const hsla = {
         hue: previousHue,
@@ -873,21 +875,23 @@ export default Vue.extend({
         alpha: previousAlpha,
       };
 
-      return this.convertHSL('rgb', hsla);
+      return this.convertHSL("rgb", hsla);
     },
 
     convertHSLtoHEX(
       previousHue: number,
       previousSaturation: number,
       previousLuminance: number,
-      previousAlpha?: number
-    ): string | {
-        string: string;
-        red: string;
-        green: string;
-        blue: string;
-        alpha?: string | undefined;
-    } {
+      previousAlpha?: number,
+    ):
+      | string
+      | {
+          string: string;
+          red: string;
+          green: string;
+          blue: string;
+          alpha?: string | undefined;
+        } {
       const hsla = {
         hue: previousHue,
         saturation: previousSaturation,
@@ -895,37 +899,38 @@ export default Vue.extend({
         alpha: previousAlpha,
       };
 
-      return this.convertHSL('hex', hsla);
+      return this.convertHSL("hex", hsla);
     },
 
     convertHSL(
-      mode: 'hex'|'rgb',
+      mode: "hex" | "rgb",
       color: {
-        hue: number,
-        saturation: number,
-        luminance: number,
-        alpha?: number|string
-    }): {
-      string: string;
-      red: string;
-      green: string;
-      blue: string;
-      alpha?: string;
-    }|string {
-      const validModes = ['hex', 'rgb'];
+        hue: number;
+        saturation: number;
+        luminance: number;
+        alpha?: number | string;
+      },
+    ):
+      | {
+          string: string;
+          red: string;
+          green: string;
+          blue: string;
+          alpha?: string;
+        }
+      | string {
+      const validModes = ["hex", "rgb"];
       if (!validModes.includes(mode)) {
         return {
-          string: '',
-          red: '',
-          green: '',
-          blue: '',
+          string: "",
+          red: "",
+          green: "",
+          blue: "",
         };
       }
 
       // eslint-disable-next-line prefer-const
-      let {
-        hue, saturation, luminance, alpha,
-      } = color;
+      let { hue, saturation, luminance, alpha } = color;
 
       saturation /= 100;
       luminance /= 100;
@@ -933,29 +938,41 @@ export default Vue.extend({
       const chroma = (1 - Math.abs(2 * luminance - 1)) * saturation;
       const x = chroma * (1 - Math.abs(((hue / 60) % 2) - 1));
       const m = luminance - chroma / 2;
-      let red: number|string = 0;
-      let green: number|string = 0;
-      let blue: number|string = 0;
+      let red: number | string = 0;
+      let green: number | string = 0;
+      let blue: number | string = 0;
 
       if (hue >= 0 && hue < 60) {
-        red = chroma; green = x; blue = 0;
+        red = chroma;
+        green = x;
+        blue = 0;
       } else if (hue >= 60 && hue < 120) {
-        red = x; green = chroma; blue = 0;
+        red = x;
+        green = chroma;
+        blue = 0;
       } else if (hue >= 120 && hue < 180) {
-        red = 0; green = chroma; blue = x;
+        red = 0;
+        green = chroma;
+        blue = x;
       } else if (hue >= 180 && hue < 240) {
-        red = 0; green = x; blue = chroma;
+        red = 0;
+        green = x;
+        blue = chroma;
       } else if (hue >= 240 && hue < 300) {
-        red = x; green = 0; blue = chroma;
+        red = x;
+        green = 0;
+        blue = chroma;
       } else if (hue >= 300 && hue < 361) {
-        red = chroma; green = 0; blue = x;
+        red = chroma;
+        green = 0;
+        blue = x;
       }
 
       red = Math.round((red + m) * 255);
       green = Math.round((green + m) * 255);
       blue = Math.round((blue + m) * 255);
 
-      if (mode === 'hex') {
+      if (mode === "hex") {
         // convert colors into hex values
         red = red.toString(16);
         green = green.toString(16);
@@ -988,22 +1005,22 @@ export default Vue.extend({
       }
 
       const rgbValue: {
-        string: string,
-        red: string,
-        green: string,
-        blue: string,
-        alpha?: string,
+        string: string;
+        red: string;
+        green: string;
+        blue: string;
+        alpha?: string;
       } = {
         string: `rgb(${red}, ${green}, ${blue})`,
-        red: typeof red === 'string' ? red : red.toString(),
-        green: typeof green === 'string' ? green : green.toString(),
-        blue: typeof blue === 'string' ? blue : blue.toString(),
+        red: typeof red === "string" ? red : red.toString(),
+        green: typeof green === "string" ? green : green.toString(),
+        blue: typeof blue === "string" ? blue : blue.toString(),
         alpha: undefined,
       };
 
       if (alpha !== 1) {
         rgbValue.string = `rgba(${red}, ${green}, ${blue}, ${alpha})`;
-        if (typeof alpha === 'string' ) {
+        if (typeof alpha === "string") {
           rgbValue.alpha = alpha;
         } else if (alpha !== undefined) {
           rgbValue.alpha = alpha.toString();
@@ -1085,9 +1102,9 @@ export default Vue.extend({
       const hex = previousHex;
 
       // Convert hex to RGB first
-      let red: number|string = 0;
-      let green: number|string = 0;
-      let blue: number|string = 0;
+      let red: number | string = 0;
+      let green: number | string = 0;
+      let blue: number | string = 0;
       let alpha;
 
       if (hex.length !== 5 && hex.length !== 9 && hex.length !== 4 && hex.length !== 7) {
@@ -1154,11 +1171,11 @@ export default Vue.extend({
       luminance = +(luminance * 100).toFixed(1);
 
       const hslValue: {
-        string: string,
-        hue: number,
-        saturation: number,
-        luminance: number,
-        alpha?: number
+        string: string;
+        hue: number;
+        saturation: number;
+        luminance: number;
+        alpha?: number;
       } = {
         string: `hsl(${hue}, ${saturation}%, ${luminance}%)`,
         hue,
@@ -1224,7 +1241,7 @@ export default Vue.extend({
 
     &.is--invalid::after {
       position: absolute;
-      content: '';
+      content: "";
       width: 100%;
       height: 100%;
       background-size: contain;
@@ -1291,7 +1308,7 @@ export default Vue.extend({
     box-shadow: 0 3px 6px 0 rgba(120, 138, 155, 0.5);
 
     &::before {
-      content: '';
+      content: "";
       position: absolute;
       width: 12px;
       height: 12px;
@@ -1321,8 +1338,7 @@ export default Vue.extend({
       height: 150px;
       border: 1px solid $color-gray-300;
       border-radius: $border-radius-default;
-      background-image:
-        linear-gradient(180deg, #fff, rgba(255, 255, 255, 0) 50%),
+      background-image: linear-gradient(180deg, #fff, rgba(255, 255, 255, 0) 50%),
         linear-gradient(0deg, #000, rgba(0, 0, 0, 0) 50%),
         linear-gradient(90deg, #808080, rgba(128, 128, 128, 0) 100%);
     }
@@ -1346,7 +1362,16 @@ export default Vue.extend({
       width: 100%;
       height: 20px;
       border-radius: $border-radius-default;
-      background-image: linear-gradient(90deg, #f00 0%, #ff0 16.66%, #0f0 33.33%, #0ff 50%, #00f 66.66%, #f0f 83.33%, #f00 100%);
+      background-image: linear-gradient(
+        90deg,
+        #f00 0%,
+        #ff0 16.66%,
+        #0f0 33.33%,
+        #0ff 50%,
+        #00f 66.66%,
+        #f0f 83.33%,
+        #f00 100%
+      );
       outline: none;
       -webkit-appearance: none;
     }
@@ -1415,7 +1440,7 @@ export default Vue.extend({
 
       &.is--invalid::after {
         position: absolute;
-        content: '';
+        content: "";
         width: 100%;
         height: 100%;
         background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 90 90' width='100%25' height='100%25'%3E%3Cline x1='0' y1='90' x2='90' y2='0' style='stroke:%23DE294C;stroke-width:10' /%3E%3C/svg%3E");
@@ -1436,12 +1461,12 @@ export default Vue.extend({
       color: $color-darkgray-200;
       outline: none;
 
-      &[type=number] {
+      &[type="number"] {
         -moz-appearance: textfield;
       }
 
-      &[type=number]::-webkit-inner-spin-button,
-      &[type=number]::-webkit-outer-spin-button {
+      &[type="number"]::-webkit-inner-spin-button,
+      &[type="number"]::-webkit-outer-spin-button {
         -webkit-appearance: none;
       }
 

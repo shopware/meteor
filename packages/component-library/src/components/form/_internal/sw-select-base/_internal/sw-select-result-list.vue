@@ -9,17 +9,16 @@
       <div
         ref="popoverContent"
         class="sw-select-result-list__content"
-        :class="{ 'sw-select-result-list__content_empty': isLoading && (!options || options.length <= 0) }"
+        :class="{
+          'sw-select-result-list__content_empty': isLoading && (!options || options.length <= 0),
+        }"
         @scroll="onScroll"
       >
         <slot name="before-item-list" />
 
         <ul class="sw-select-result-list__item-list">
           <template v-for="(item, index) in options">
-            <slot
-              name="result-item"
-              v-bind="{ item, index }"
-            />
+            <slot name="result-item" v-bind="{ item, index }" />
           </template>
         </ul>
 
@@ -29,10 +28,7 @@
           v-if="!isLoading && options && options.length < 1"
           class="sw-select-result-list__empty"
         >
-          <sw-icon
-            name="default-action-search"
-            size="20px"
-          />
+          <sw-icon name="default-action-search" size="20px" />
           {{ emptyMessageText }}
         </div>
       </div>
@@ -41,38 +37,98 @@
 </template>
 
 <script lang="ts">
-import type { PropType } from 'vue';
+import type { PropType } from "vue";
 
-import Vue from 'vue';
-import SwPopoverDeprecated from '../../../../_internal/sw-popover-deprecated/sw-popover-deprecated.vue';
-import SwIcon from '../../../../icons-media/sw-icon/sw-icon.vue';
+import { defineComponent } from "vue";
+import SwPopoverDeprecated from "../../../../_internal/sw-popover-deprecated/sw-popover-deprecated.vue";
+import SwIcon from "../../../../icons-media/sw-icon/sw-icon.vue";
+import { provide } from "vue";
+import {
+  swSelectResultAddActiveItemListener,
+  swSelectResultAddItemSelectByKeyboardListener,
+  swSelectResultRemoveActiveItemListener,
+  swSelectResultRemoveItemSelectByKeyboardListener,
+} from "@/helper/provideInjectKeys";
+import { ref } from "vue";
 
-export default Vue.extend({
-  name: 'SwSelectResultList',
+export default defineComponent({
+  name: "SwSelectResultList",
 
   i18n: {
     messages: {
       en: {
-        'sw-select-result-list': {
-          messageNoResults: 'No results found.',
-        }
+        "sw-select-result-list": {
+          messageNoResults: "No results found.",
+        },
       },
       de: {
-        'sw-select-result-list': {
-          messageNoResults: 'Es wurden keine Ergebnisse gefunden.',
-        }
-      }
+        "sw-select-result-list": {
+          messageNoResults: "Es wurden keine Ergebnisse gefunden.",
+        },
+      },
     },
   },
 
   components: {
-    'sw-popover-deprecated': SwPopoverDeprecated,
-    'sw-icon': SwIcon,
+    "sw-popover-deprecated": SwPopoverDeprecated,
+    "sw-icon": SwIcon,
   },
 
-  provide(): { setActiveItemIndex: (index: number) => void} {
+  provide() {
     return {
       setActiveItemIndex: this.setActiveItemIndex,
+    };
+  },
+
+  setup() {
+    const activeItemIndex = ref(0);
+    const activeItemChangeListeners = ref<Array<(index: number) => void>>([]);
+    const itemSelectByKeyboardListeners = ref<Array<(index: number) => void>>([]);
+
+    const emitActiveItemIndex = () => {
+      activeItemChangeListeners.value.forEach((listener) => {
+        listener(activeItemIndex.value);
+      });
+    };
+
+    const setActiveItemIndex = (index: number) => {
+      activeItemIndex.value = index;
+      emitActiveItemIndex();
+    };
+
+    const addToActiveItemChangeListeners = (listener: (index: number) => void) => {
+      activeItemChangeListeners.value.push(listener);
+    };
+
+    const removeActiveItemChangeListener = (listener: (index: number) => void) => {
+      activeItemChangeListeners.value = activeItemChangeListeners.value.filter(
+        (l) => l !== listener,
+      );
+    };
+
+    const addToItemSelectByKeyboardListeners = (listener: (index: number) => void) => {
+      itemSelectByKeyboardListeners.value.push(listener);
+    };
+
+    const removeItemSelectByKeyboardListener = (listener: (index: number) => void) => {
+      itemSelectByKeyboardListeners.value = itemSelectByKeyboardListeners.value.filter(
+        (l) => l !== listener,
+      );
+    };
+
+    provide(swSelectResultAddActiveItemListener, addToActiveItemChangeListeners);
+    provide(swSelectResultRemoveActiveItemListener, removeActiveItemChangeListener);
+    provide(swSelectResultAddItemSelectByKeyboardListener, addToItemSelectByKeyboardListeners);
+    provide(swSelectResultRemoveItemSelectByKeyboardListener, removeItemSelectByKeyboardListener);
+
+    return {
+      activeItemIndex,
+      emitActiveItemIndex,
+      setActiveItemIndex,
+      addToActiveItemChangeListeners,
+      removeActiveItemChangeListener,
+      addToItemSelectByKeyboardListeners,
+      removeItemSelectByKeyboardListener,
     };
   },
 
@@ -92,9 +148,11 @@ export default Vue.extend({
     },
 
     focusEl: {
-      type: [HTMLDocument, HTMLElement] as PropType<HTMLDocument|HTMLElement>,
+      type: [HTMLElement] as PropType<HTMLDocument | HTMLElement>,
       required: false,
-      default() { return document; },
+      default() {
+        return document;
+      },
     },
 
     isLoading: {
@@ -119,21 +177,22 @@ export default Vue.extend({
   },
 
   data(): {
-    activeItemIndex: number,
+    activeItemChangeListeners: Array<(index: number) => void>;
+    itemSelectByKeyboardListeners: Array<(index: number) => void>;
   } {
     return {
-      activeItemIndex: 0,
+      activeItemChangeListeners: [],
+      itemSelectByKeyboardListeners: [],
     };
   },
 
   computed: {
     emptyMessageText(): string {
-
-return this.emptyMessage || this.$tc('sw-select-result-list.messageNoResults');
+      return this.emptyMessage || this.$tc("sw-select-result-list.messageNoResults");
     },
 
     popoverClass(): string[] {
-      return [...this.popoverClasses, 'sw-select-result-list-popover-wrapper'];
+      return [...this.popoverClasses, "sw-select-result-list-popover-wrapper"];
     },
   },
 
@@ -143,33 +202,24 @@ return this.emptyMessage || this.$tc('sw-select-result-list.messageNoResults');
 
   mounted(): void {
     // Set first item active
-      this.emitActiveItemIndex();
+    this.emitActiveItemIndex();
   },
 
-  beforeDestroy(): void {
+  beforeUnmount(): void {
     this.removeEventListeners();
   },
 
   methods: {
-    setActiveItemIndex(index: number) {
-      this.activeItemIndex = index;
-      this.emitActiveItemIndex();
-    },
-
     addEventListeners() {
       // @ts-expect-error - property "key" exists on this event
-      this.focusEl.addEventListener('keydown', this.navigate);
-      document.addEventListener('click', this.checkOutsideClick);
+      this.focusEl.addEventListener("keydown", this.navigate);
+      document.addEventListener("click", this.checkOutsideClick);
     },
 
     removeEventListeners() {
       // @ts-expect-error - property "key" exists on this event
-      this.focusEl.removeEventListener('keydown', this.navigate);
-      document.removeEventListener('click', this.checkOutsideClick);
-    },
-
-    emitActiveItemIndex() {
-      this.$emit('active-item-change', this.activeItemIndex);
+      this.focusEl.removeEventListener("keydown", this.navigate);
+      document.removeEventListener("click", this.checkOutsideClick);
     },
 
     /**
@@ -181,7 +231,6 @@ return this.emptyMessage || this.$tc('sw-select-result-list.messageNoResults');
 
       // @ts-expect-error - $refs is defined
       const popoverContentClicked = this.$refs.popoverContent.contains(event.target);
-      // @ts-expect-error - target exists
       const componentClicked = this.$el.contains(event.target);
       // @ts-expect-error - target exists
       const parentClicked = this.$parent.$el.contains(event.target);
@@ -190,29 +239,29 @@ return this.emptyMessage || this.$tc('sw-select-result-list.messageNoResults');
         return;
       }
 
-      this.$emit('outside-click');
+      this.$emit("outside-click");
     },
 
     navigate({ key }: { key: string }) {
       key = key.toUpperCase();
-      if (key === 'ARROWDOWN') {
+      if (key === "ARROWDOWN") {
         this.navigateNext();
         return;
       }
 
-      if (key === 'ARROWUP') {
+      if (key === "ARROWUP") {
         this.navigatePrevious();
         return;
       }
 
-      if (key === 'ENTER') {
+      if (key === "ENTER") {
         this.emitClicked();
       }
     },
 
     navigateNext() {
       if (this.activeItemIndex >= this.options.length - 1) {
-        this.$emit('paginate');
+        this.$emit("paginate");
         return;
       }
 
@@ -234,9 +283,9 @@ return this.emptyMessage || this.$tc('sw-select-result-list.messageNoResults');
     updateScrollPosition() {
       // wait until the new active item is rendered and has the active class
       this.$nextTick(() => {
-        const resultContainer = document.querySelector('.sw-select-result-list__content');
+        const resultContainer = document.querySelector(".sw-select-result-list__content");
         // @ts-expect-error - resultContainer is defined
-        const activeItem = resultContainer.querySelector('.is--active');
+        const activeItem = resultContainer.querySelector(".is--active");
         // @ts-expect-error - activeItem is defined
         const itemHeight = activeItem.offsetHeight;
         // @ts-expect-error - activeItem is defined
@@ -266,7 +315,11 @@ return this.emptyMessage || this.$tc('sw-select-result-list.messageNoResults');
     emitClicked() {
       // This emit is subscribed in the sw-result component. They can for example be disabled and need
       // choose on their own if they are selected
-      this.$emit('item-select-by-keyboard', this.activeItemIndex);
+      this.$emit("item-select-by-keyboard", this.activeItemIndex);
+
+      this.itemSelectByKeyboardListeners.forEach((listener) => {
+        listener(this.activeItemIndex);
+      });
     },
 
     onScroll(event: UIEvent) {
@@ -275,7 +328,7 @@ return this.emptyMessage || this.$tc('sw-select-result-list.messageNoResults');
         return;
       }
 
-      this.$emit('paginate');
+      this.$emit("paginate");
     },
 
     getBottomDistance(element: Element) {

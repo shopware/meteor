@@ -15,15 +15,12 @@
     :is-inheritance-field="isInheritanceField"
     @inheritance-restore="$emit('inheritance-restore', $event)"
     @inheritance-remove="$emit('inheritance-remove', $event)"
-    v-on="$listeners"
   >
     <template #label>
       {{ label }}
     </template>
 
-    <template
-      #field-prefix
-    >
+    <template #field-prefix>
       <slot name="prefix" />
     </template>
 
@@ -36,25 +33,19 @@
         :disabled="disabled"
         :value="currentValue"
         :placeHolder="placeholder"
-        @input="onInput"
-        @change="onChange"
+        @input.stop="onInput"
+        @change.stop="onChange"
         @focus="setFocus"
         @blur="removeFocus"
-        v-on="additionalListeners"
-      >
+      />
     </template>
 
-    <template
-      #field-suffix
-    >
+    <template #field-suffix>
       <slot name="suffix" />
     </template>
 
     <template #error>
-      <sw-field-error
-        v-if="computedError"
-        :error="computedError"
-      />
+      <sw-field-error v-if="computedError" :error="computedError" />
     </template>
 
     <template #field-hint>
@@ -64,11 +55,11 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import SwTextField from '../sw-text-field/sw-text-field.vue';
+import { defineComponent } from "vue";
+import SwTextField from "../sw-text-field/sw-text-field.vue";
 
-export default Vue.extend({
-  name: 'SwEmailField',
+export default defineComponent({
+  name: "SwEmailField",
 
   extends: SwTextField,
 
@@ -91,7 +82,7 @@ export default Vue.extend({
   },
 
   mounted() {
-    if (!this.value) {
+    if (!this.modelValue) {
       return;
     }
 
@@ -122,7 +113,7 @@ export default Vue.extend({
         // @ts-expect-error - ref is available
         detail: this.$refs.input.validationMessage,
       };
-    }
-  }
+    },
+  },
 });
 </script>

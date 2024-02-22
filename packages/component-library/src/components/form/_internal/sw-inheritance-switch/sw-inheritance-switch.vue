@@ -10,7 +10,10 @@
     <sw-icon
       v-if="isInherited"
       key="inherit-icon"
-      v-tooltip="{ message: $tc('sw-inheritance-switch.tooltipRemoveInheritance'), disabled: disabled }"
+      v-tooltip="{
+        message: $tc('sw-inheritance-switch.tooltipRemoveInheritance'),
+        disabled: disabled,
+      }"
       data-testid="sw-inheritance-switch-icon"
       :multicolor="true"
       name="regular-lock-s"
@@ -19,7 +22,10 @@
     <sw-icon
       v-else
       key="uninherit-icon"
-      v-tooltip="{ message: $tc('sw-inheritance-switch.tooltipRestoreInheritance'), disabled: disabled }"
+      v-tooltip="{
+        message: $tc('sw-inheritance-switch.tooltipRestoreInheritance'),
+        disabled: disabled,
+      }"
       :class="unInheritClasses"
       :multicolor="true"
       name="regular-lock-open-s"
@@ -30,32 +36,32 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue'
-import SwTooltipDirective from '../../../../directives/tooltip.directive';
-import SwIcon from '../../../icons-media/sw-icon/sw-icon.vue';
+import { defineComponent } from "vue";
+import SwTooltipDirective from "../../../../directives/tooltip.directive";
+import SwIcon from "../../../icons-media/sw-icon/sw-icon.vue";
 
-export default Vue.extend({
-  name: 'SwInheritanceSwitch',
+export default defineComponent({
+  name: "SwInheritanceSwitch",
 
   i18n: {
-    messages : {
+    messages: {
       en: {
-        'sw-inheritance-switch': {
-          tooltipRemoveInheritance: 'Remove inheritance',
-          tooltipRestoreInheritance: 'Restore inheritance',
-        }
+        "sw-inheritance-switch": {
+          tooltipRemoveInheritance: "Remove inheritance",
+          tooltipRestoreInheritance: "Restore inheritance",
+        },
       },
       de: {
-        'sw-inheritance-switch': {
-          tooltipRemoveInheritance: 'Vererbung entfernen',
-          tooltipRestoreInheritance: 'Vererbung wiederherstellen',
-        }
-      }
+        "sw-inheritance-switch": {
+          tooltipRemoveInheritance: "Vererbung entfernen",
+          tooltipRestoreInheritance: "Vererbung wiederherstellen",
+        },
+      },
     },
   },
 
   components: {
-    'sw-icon': SwIcon,
+    "sw-icon": SwIcon,
   },
 
   directives: {
@@ -77,8 +83,8 @@ export default Vue.extend({
   },
 
   computed: {
-    unInheritClasses(): { 'is--clickable': boolean } {
-      return { 'is--clickable': !this.disabled };
+    unInheritClasses(): { "is--clickable": boolean } {
+      return { "is--clickable": !this.disabled };
     },
   },
 
@@ -87,14 +93,14 @@ export default Vue.extend({
       if (this.disabled) {
         return;
       }
-      this.$emit('inheritance-restore');
+      this.$emit("inheritance-restore");
     },
 
     onClickRemoveInheritance() {
       if (this.disabled) {
         return;
       }
-      this.$emit('inheritance-remove');
+      this.$emit("inheritance-remove");
     },
   },
 });

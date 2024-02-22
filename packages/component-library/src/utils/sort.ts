@@ -1,6 +1,6 @@
 interface SortElements {
-  id: string,
-  data: Record<string, unknown>
+  id: string;
+  data: Record<string, unknown>;
 }
 
 /**
@@ -10,7 +10,7 @@ interface SortElements {
  * @param {string} property
  * @returns {array}
  */
-export function afterSort(elements: SortElements[], property = 'afterId'): SortElements[] {
+export function afterSort(elements: SortElements[], property = "afterId"): SortElements[] {
   if (elements.length === 0) {
     return elements;
   }
@@ -64,7 +64,7 @@ export function afterSort(elements: SortElements[], property = 'afterId'): SortE
         break;
       }
 
-      lastId = nextItem && nextItem.data[property] as string;
+      lastId = nextItem && (nextItem.data[property] as string);
     }
   }
 

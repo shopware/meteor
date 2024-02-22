@@ -8,19 +8,16 @@
     {{ renderString }}
   </a>
 
-  <p
-    v-else
-    class="sw-data-table-text-renderer"
-  >
+  <p v-else class="sw-data-table-text-renderer">
     {{ renderString }}
   </p>
 </template>
 
 <script lang="ts">
-import type { PropType} from 'vue';
-import { defineComponent, computed } from 'vue';
-import type { BaseColumnDefinition } from '../sw-data-table.vue';
-import { get } from 'lodash-es';
+import type { PropType } from "vue";
+import { defineComponent, computed } from "vue";
+import type { BaseColumnDefinition } from "../sw-data-table.vue";
+import { get } from "lodash-es";
 
 export interface TextColumnDefinition extends BaseColumnDefinition {
   renderer: "text";
@@ -28,7 +25,7 @@ export interface TextColumnDefinition extends BaseColumnDefinition {
 }
 
 export default defineComponent({
-  name: 'SwDataTableTextRenderer',
+  name: "SwDataTableTextRenderer",
 
   props: {
     columnDefinition: {
@@ -45,17 +42,17 @@ export default defineComponent({
   setup(props) {
     const renderString = computed(() => {
       return get(props.data, props.columnDefinition.property);
-    })
+    });
 
     return {
-      renderString
-    }
+      renderString,
+    };
   },
 });
 </script>
 
 <style lang="scss" scoped>
-@import '../../../assets/scss/variables.scss';
+@import "../../../assets/scss/variables.scss";
 
 a.sw-data-table-text-renderer {
   font-weight: $font-weight-medium;
@@ -64,8 +61,7 @@ a.sw-data-table-text-renderer {
 
   &:hover {
     text-decoration: underline;
-    color: $color-shopware-brand-900
+    color: $color-shopware-brand-900;
   }
 }
-
 </style>

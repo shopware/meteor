@@ -8,19 +8,16 @@
     {{ renderString }}
   </a>
 
-  <p
-    v-else
-    class="sw-data-table-number-renderer"
-  >
+  <p v-else class="sw-data-table-number-renderer">
     {{ renderString }}
   </p>
 </template>
 
 <script lang="ts">
-import type { PropType} from 'vue';
-import { defineComponent, computed } from 'vue';
-import type { BaseColumnDefinition } from '../sw-data-table.vue';
-import { get } from 'lodash-es';
+import type { PropType } from "vue";
+import { defineComponent, computed } from "vue";
+import type { BaseColumnDefinition } from "../sw-data-table.vue";
+import { get } from "lodash-es";
 
 export interface NumberColumnDefinition extends BaseColumnDefinition {
   renderer: "number";
@@ -28,7 +25,7 @@ export interface NumberColumnDefinition extends BaseColumnDefinition {
 }
 
 export default defineComponent({
-  name: 'SwDataTableNumberRenderer',
+  name: "SwDataTableNumberRenderer",
 
   props: {
     columnDefinition: {
@@ -45,11 +42,11 @@ export default defineComponent({
   setup(props) {
     const renderString = computed(() => {
       return String(Number(get(props.data, props.columnDefinition.property)));
-    })
+    });
 
     return {
-      renderString
-    }
+      renderString,
+    };
   },
 });
 </script>

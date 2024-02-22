@@ -1,6 +1,7 @@
 <template>
   <a
-    v-if="$attrs.hasOwnProperty('href') && !!$attrs.href"
+    v-if="!!href"
+    :href="href"
     v-bind="$attrs"
     target="_blank"
     :rel="rel"
@@ -9,10 +10,7 @@
     :class="classes"
   >
     <slot />
-    <sw-icon
-      class="sw-external-link__icon"
-      :name="icon"
-    />
+    <sw-icon class="sw-external-link__icon" :name="icon" />
   </a>
   <!-- eslint-disable-next-line vuejs-accessibility/click-events-have-key-events -->
   <span
@@ -24,22 +22,19 @@
     @click="onClick"
   >
     <slot />
-    <sw-icon
-      class="sw-external-link__icon"
-      :name="icon"
-    />
+    <sw-icon class="sw-external-link__icon" :name="icon" />
   </span>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import SwIcon from '../../icons-media/sw-icon/sw-icon.vue';
+import { defineComponent } from "vue";
+import SwIcon from "../../icons-media/sw-icon/sw-icon.vue";
 
-export default Vue.extend({
-  name: 'SwExternalLink',
+export default defineComponent({
+  name: "SwExternalLink",
 
   components: {
-    'sw-icon': SwIcon,
+    "sw-icon": SwIcon,
   },
 
   inheritAttrs: false,
@@ -64,34 +59,35 @@ export default Vue.extend({
     },
 
     /**
-    * Change the "rel" attribute of <a> elements
-    */
+     * Change the "rel" attribute of <a> elements
+     */
     rel: {
       type: String,
       required: false,
-      default: 'noopener',
+      default: "noopener",
       validator(value: string) {
-        return [
-          'nofollow',
-          'noopener',
-          'noreferrer',
-          'opener',
-        ].includes(value)
-      }
+        return ["nofollow", "noopener", "noreferrer", "opener"].includes(value);
+      },
+    },
+
+    href: {
+      type: String,
+      required: false,
+      default: undefined,
     },
   },
 
   computed: {
     classes() {
       return {
-        'sw-external-link--small': this.small,
-        'sw-external-link--disabled': this.disabled,
+        "sw-external-link--small": this.small,
+        "sw-external-link--disabled": this.disabled,
       };
     },
 
     icon() {
-      return 'regular-external-link-s';
-    }
+      return "regular-external-link-s";
+    },
   },
 
   methods: {
@@ -100,7 +96,7 @@ export default Vue.extend({
         return;
       }
 
-      this.$emit('click', event);
+      this.$emit("click", event);
     },
   },
 });
@@ -134,10 +130,10 @@ export default Vue.extend({
     pointer-events: none;
     color: $color-shopware-brand-300;
 
-      &:hover,
-      &:focus {
-        color: $color-shopware-brand-300;
-      }
+    &:hover,
+    &:focus {
+      color: $color-shopware-brand-300;
+    }
   }
 
   &--small {

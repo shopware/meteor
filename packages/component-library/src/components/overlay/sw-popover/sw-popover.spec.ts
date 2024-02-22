@@ -1,293 +1,388 @@
 import { mount } from "@vue/test-utils";
 import SwPopover from "./sw-popover.vue";
+import flushPromises from "flush-promises";
 
 // mock resizeOvserver
 global.ResizeObserver = class ResizeObserver {
   observe() {
-      // do nothing
+    // do nothing
   }
   unobserve() {
-      // do nothing
+    // do nothing
   }
   disconnect() {
-      // do nothing
+    // do nothing
   }
 };
 
-async function createWrapper({ scopedSlots, disableInitialOpen }: {
-  disableInitialOpen?: boolean;
-  scopedSlots?: any;
-} = {
-  scopedSlots: {},
-  disableInitialOpen: false
- }) {
+async function createWrapper(
+  {
+    slots,
+    disableInitialOpen,
+  }: {
+    disableInitialOpen?: boolean;
+    slots?: any;
+  } = {
+    slots: {},
+    disableInitialOpen: false,
+  },
+) {
   const wrapper = mount(SwPopover, {
-    scopedSlots: {
-      'popover-items__base': `
+    slots: {
+      "popover-items__base": `
           <div class="base-view">
             <span>Base view content</span>
-            <span id="goToExampleView" @click="props.changeView('example')">Go to example view</span>
-            <span id="goToExampleWithAnotherChildView" @click="props.changeView('example_with_another_child')">Go to example with another child view</span>
+            <span id="goToExampleView" @click="params.changeView('example')">Go to example view</span>
+            <span id="goToExampleWithAnotherChildView" @click="params.changeView('example_with_another_child')">Go to example with another child view</span>
           </div>
       `,
-      'popover-items__example': `
+      "popover-items__example": `
           <div class="example-view">
             <span>Example view content</span>
-            <span id="goToBaseView" @click="props.changeView('base')">Go to base view</span>
+            <span id="goToBaseView" @click="params.changeView('base')">Go to base view</span>
           </div>
       `,
-      'popover-items__example_with_another_child': `
+      "popover-items__example_with_another_child": `
           <div class="example_with_another_child-view">
             <span>Example with another child view content</span>
-            <span id="goToThirdLevelView" @click="props.changeView('example_third_level')">Go to third level view</span>
+            <span id="goToThirdLevelView" @click="params.changeView('example_third_level')">Go to third level view</span>
           </div>
       `,
-      'popover-items__example_third_level': `
+      "popover-items__example_third_level": `
           <div class="example_third_level-view">
             <span>Example with third level view content</span>
-            <span id="toToExampleWithAnotherChild" @click="props.changeView('example_with_another_child')">Go to example with another child view</span>
+            <span id="toToExampleWithAnotherChild" @click="params.changeView('example_with_another_child')">Go to example with another child view</span>
           </div>
       `,
       trigger: `
         <span
           class="trigger-slot"
-          @click="props.toggleFloatingUi"
+          @click="params.toggleFloatingUi"
         >
           Trigger slot content
         </span>`,
-      ...scopedSlots
+      ...slots,
     },
-    propsData: {
-      title: 'My default popover title',
+    props: {
+      title: "My default popover title",
       childViews: [
-        { name: 'example', title: 'Example view title' },
-        { name: 'example_with_another_child', title: 'Example view with another child title', childViews: [
-          { name: 'example_third_level', title: 'Example third level view title' }
-        ] },
-      ]
+        { name: "example", title: "Example view title" },
+        {
+          name: "example_with_another_child",
+          title: "Example view with another child title",
+          childViews: [{ name: "example_third_level", title: "Example third level view title" }],
+        },
+      ],
     },
-    mocks: {}
+    attachTo: document.getElementById("appWrapper")!,
+    mocks: {},
   });
-  
+
   if (!disableInitialOpen) {
     // open the floating UI
-    await wrapper.find('.trigger-slot').trigger('click');
+    await wrapper.find(".trigger-slot").trigger("click");
   }
 
   return wrapper;
 }
 
 describe("sw-popover-item", () => {
+  let wrapper: undefined | Awaited<ReturnType<typeof createWrapper>>;
+
+  // create app wrapper
+  let appWrapper = document.createElement("div");
+  appWrapper.setAttribute("id", "appWrapper");
+  document.body.appendChild(appWrapper);
+
+  beforeEach(async () => {
+    if (wrapper) {
+      await wrapper.unmount();
+    }
+    await flushPromises();
+
+    document.body.innerHTML = '<div id="app"></div>';
+    appWrapper = document.createElement("div");
+    appWrapper.setAttribute("id", "appWrapper");
+    document.body.appendChild(appWrapper);
+  });
+
   it("should render the component", async () => {
-    const wrapper = await createWrapper();
+    wrapper = await createWrapper();
 
     expect(wrapper.vm).toBeTruthy();
   });
 
   it("should render the trigger slot content", async () => {
-    const wrapper = await createWrapper();
+    wrapper = await createWrapper();
 
-    expect(wrapper.find('.trigger-slot').exists()).toBeTruthy();
-    expect(wrapper.find('.trigger-slot').text()).toBe('Trigger slot content');
-  })
+    expect(wrapper.find(".trigger-slot").exists()).toBeTruthy();
+    expect(wrapper.find(".trigger-slot").text()).toBe("Trigger slot content");
+  });
 
   it("should not render the trigger slot content when float is disabled", async () => {
-    const wrapper = await createWrapper({
-      disableInitialOpen: true
+    wrapper = await createWrapper({
+      disableInitialOpen: true,
     });
 
     await wrapper.setProps({
       disableFloat: true,
-    })
+    });
 
-    expect(wrapper.find('.trigger-slot').exists()).toBeFalsy();
-  })
+    expect(wrapper.find(".trigger-slot").exists()).toBeFalsy();
+  });
 
   it("should render the popover directly when disable float", async () => {
-    const wrapper = await createWrapper({
-      scopedSlots: {},
-      disableInitialOpen: true
+    wrapper = await createWrapper({
+      slots: {},
+      disableInitialOpen: true,
     });
 
     await wrapper.setProps({
       disableFloat: true,
-    })
+    });
 
-    expect(wrapper.find('.sw-popover__content').exists()).toBeTruthy();
-    expect(wrapper.find('.sw-popover__content').text()).toContain('Base view content')
+    expect(document.querySelectorAll(".sw-popover__content")).toHaveLength(1);
+    expect(wrapper.find(".sw-popover__content").text()).toContain("Base view content");
   });
 
   it("should open the floating UI with trigger click", async () => {
-    const wrapper = await createWrapper({
-      scopedSlots: {},
-      disableInitialOpen: true
+    wrapper = await createWrapper({
+      slots: {},
+      disableInitialOpen: true,
     });
 
-    expect(wrapper.find('.sw-popover__content').exists()).toBeFalsy();
+    expect(wrapper.find(".sw-popover__content").exists()).toBeFalsy();
 
-    await wrapper.find('.trigger-slot').trigger('click');
+    await wrapper.find(".trigger-slot").trigger("click");
 
-    expect(wrapper.find('.sw-popover__content').exists()).toBeTruthy();
+    expect(document.querySelectorAll(".sw-popover__content")).toHaveLength(1);
   });
 
   it("should close the floating UI with trigger click", async () => {
-    const wrapper = await createWrapper();
+    wrapper = await createWrapper();
 
-    expect(wrapper.find('.sw-popover__content').exists()).toBeTruthy();
+    await flushPromises();
 
-    await wrapper.find('.trigger-slot').trigger('click');
+    expect(document.querySelectorAll(".sw-popover__content")).toHaveLength(1);
 
-    expect(wrapper.find('.sw-popover__content').exists()).toBeFalsy();
+    await wrapper.find(".trigger-slot").trigger("click");
+
+    expect(document.querySelectorAll(".sw-popover__content")).toHaveLength(0);
   });
 
   it("should close the floating UI emit close event", async () => {
-    const wrapper = await createWrapper();
+    wrapper = await createWrapper();
 
-    expect(wrapper.find('.sw-popover__content').exists()).toBeTruthy();
+    expect(document.querySelectorAll(".sw-popover__content")).toHaveLength(1);
 
-    const swFloatingUi = wrapper.findComponent({ name: 'SwFloatingUi' });
+    const swFloatingUi = wrapper.findComponent({ name: "SwFloatingUi" });
 
-    // @ts-expect-error - onClickOutside exists on SwFloatingUi
-    swFloatingUi.vm.onClickOutside(new MouseEvent('click'));
+    swFloatingUi.vm.onClickOutside(new MouseEvent("click"));
     await wrapper.vm.$nextTick();
 
-    expect(wrapper.find('.sw-popover__content').exists()).toBeFalsy();
+    expect(document.querySelectorAll(".sw-popover__content")).toHaveLength(0);
   });
 
   it("should render the title", async () => {
-    const wrapper = await createWrapper();
+    wrapper = await createWrapper();
 
-    expect(wrapper.find('h3').exists()).toBeTruthy();
-    expect(wrapper.find('h3').text()).toBe('My default popover title');
-  })
+    expect(document.querySelectorAll("h3")).toHaveLength(1);
+    expect(document.querySelector("h3")?.textContent).toBe("My default popover title");
+  });
 
   it("should use changeView to switch to example view", async () => {
-    const wrapper = await createWrapper();
+    wrapper = await createWrapper();
+
     // check content rendering on base view
-    expect(wrapper.find('.sw-popover__content').text()).toContain('Base view content');
+    expect(document.querySelector(".sw-popover__content")?.textContent).toContain(
+      "Base view content",
+    );
 
     // go to example view
-    await wrapper.find('#goToExampleView').trigger('click');
+    document.querySelector("#goToExampleView")?.dispatchEvent(new MouseEvent("click"));
+    await flushPromises();
 
     // check content rendering on example view
-    expect(wrapper.find('.sw-popover__content').text()).toContain('Example view content');
-  })
+    expect(document.querySelector(".sw-popover__content")?.textContent).toContain(
+      "Example view content",
+    );
+  });
 
   it("should use changeView to switch back to base view", async () => {
-    const wrapper = await createWrapper();
+    wrapper = await createWrapper();
     // check content rendering on base view
-    expect(wrapper.find('.sw-popover__content').text()).toContain('Base view content');
+    expect(document.querySelector(".sw-popover__content")?.textContent).toContain(
+      "Base view content",
+    );
 
     // go to example view
-    await wrapper.find('#goToExampleView').trigger('click');
+    document.querySelector("#goToExampleView")?.dispatchEvent(new MouseEvent("click"));
+    await flushPromises();
 
     // check content rendering on example view
-    expect(wrapper.find('.sw-popover__content').text()).toContain('Example view content');
+    expect(document.querySelector(".sw-popover__content")?.textContent).toContain(
+      "Example view content",
+    );
 
     // go to example view
-    await wrapper.find('#goToBaseView').trigger('click');
+    document.querySelector("#goToBaseView")?.dispatchEvent(new MouseEvent("click"));
+    await flushPromises();
 
     // check content rendering on base view
-    expect(wrapper.find('.sw-popover__content').text()).toContain('Base view content');
-  })
+    expect(document.querySelector(".sw-popover__content")?.textContent).toContain(
+      "Base view content",
+    );
+  });
 
   it("should not render back button base view", async () => {
-    const wrapper = await createWrapper();
+    wrapper = await createWrapper();
 
-    expect(wrapper.find('.sw-popover__back-button').exists()).toBeFalsy();
+    expect(wrapper.find(".sw-popover__back-button").exists()).toBeFalsy();
   });
 
   it("should render back button on example view", async () => {
-    const wrapper = await createWrapper();
+    wrapper = await createWrapper();
 
     // go to example view
-    await wrapper.find('#goToExampleView').trigger('click');
+    document.querySelector("#goToExampleView")?.dispatchEvent(new MouseEvent("click"));
+    await flushPromises();
 
-    expect(wrapper.find('.sw-popover__back-button').exists()).toBeTruthy();
+    expect(document.querySelectorAll(".sw-popover__back-button")).toHaveLength(1);
   });
 
   it("should use back button to switch back to base view", async () => {
-    const wrapper = await createWrapper();
+    wrapper = await createWrapper();
     // check content rendering on base view
-    expect(wrapper.find('.sw-popover__content').text()).toContain('Base view content');
+    expect(document.querySelector(".sw-popover__content")?.textContent).toContain(
+      "Base view content",
+    );
 
     // go to example view
-    await wrapper.find('#goToExampleView').trigger('click');
+    document.querySelector("#goToExampleView")?.dispatchEvent(new MouseEvent("click"));
+    await flushPromises();
 
     // check content rendering on example view
-    expect(wrapper.find('.sw-popover__content').text()).toContain('Example view content');
+    expect(document.querySelector(".sw-popover__content")?.textContent).toContain(
+      "Example view content",
+    );
 
     // go to example view
-    await wrapper.find('.sw-popover__back-button').trigger('click');
+    document.querySelector(".sw-popover__back-button")?.dispatchEvent(new MouseEvent("click"));
+    await flushPromises();
 
     // check content rendering on base view
-    expect(wrapper.find('.sw-popover__content').text()).toContain('Base view content');
+    expect(document.querySelector(".sw-popover__content")?.textContent).toContain(
+      "Base view content",
+    );
   });
 
   it("should render the title and content of base view", async () => {
-    const wrapper = await createWrapper();
+    wrapper = await createWrapper();
 
     // check title rendering on base view
-    expect(wrapper.find('.sw-popover__content').text()).toContain('My default popover title');
-    expect(wrapper.find('.sw-popover__content').text()).not.toContain('Example view title');
+    expect(document.querySelector(".sw-popover__content")?.textContent).toContain(
+      "My default popover title",
+    );
+    expect(document.querySelector(".sw-popover__content")?.textContent).not.toContain(
+      "Example view title",
+    );
 
     // check content rendering on base view
-    expect(wrapper.find('.sw-popover__content').text()).toContain('Base view content');
-    expect(wrapper.find('.sw-popover__content').text()).not.toContain('Example view content');
-  })
+    expect(document.querySelector(".sw-popover__content")?.textContent).toContain(
+      "Base view content",
+    );
+    expect(document.querySelector(".sw-popover__content")?.textContent).not.toContain(
+      "Example view content",
+    );
+  });
 
   it("should render the title and content of example view", async () => {
-    const wrapper = await createWrapper();
+    wrapper = await createWrapper();
 
     // go to example view
-    await wrapper.find('#goToExampleView').trigger('click');
+    document.querySelector("#goToExampleView")?.dispatchEvent(new MouseEvent("click"));
+    await flushPromises();
 
     // check title rendering on example view
-    expect(wrapper.find('.sw-popover__content').text()).not.toContain('My default popover title');
-    expect(wrapper.find('.sw-popover__content').text()).toContain('Example view title');
+    expect(document.querySelector(".sw-popover__content")?.textContent).not.toContain(
+      "My default popover title",
+    );
+    expect(document.querySelector(".sw-popover__content")?.textContent).toContain(
+      "Example view title",
+    );
 
     // check content rendering on example view
-    expect(wrapper.find('.sw-popover__content').text()).not.toContain('Base view content');
-    expect(wrapper.find('.sw-popover__content').text()).toContain('Example view content');
-  })
+    expect(document.querySelector(".sw-popover__content")?.textContent).not.toContain(
+      "Base view content",
+    );
+    expect(document.querySelector(".sw-popover__content")?.textContent).toContain(
+      "Example view content",
+    );
+  });
 
   it("should render the title and content of third level view", async () => {
-    const wrapper = await createWrapper();
+    wrapper = await createWrapper();
 
     // go to example with another child view
-    await wrapper.find('#goToExampleWithAnotherChildView').trigger('click');
+    document
+      .querySelector("#goToExampleWithAnotherChildView")
+      ?.dispatchEvent(new MouseEvent("click"));
+    await flushPromises();
 
     // go to third level view
-    await wrapper.find('#goToThirdLevelView').trigger('click');
+    document.querySelector("#goToThirdLevelView")?.dispatchEvent(new MouseEvent("click"));
+    await flushPromises();
 
     // check title rendering on third level view
-    expect(wrapper.find('.sw-popover__content').text()).not.toContain('My default popover title');
-    expect(wrapper.find('.sw-popover__content').text()).not.toContain('Example view title');
-    expect(wrapper.find('.sw-popover__content').text()).toContain('Example third level view title');
+    expect(document.querySelector(".sw-popover__content")?.textContent).not.toContain(
+      "My default popover title",
+    );
+    expect(document.querySelector(".sw-popover__content")?.textContent).not.toContain(
+      "Example view title",
+    );
+    expect(document.querySelector(".sw-popover__content")?.textContent).toContain(
+      "Example third level view title",
+    );
 
     // check content rendering on third level view
-    expect(wrapper.find('.sw-popover__content').text()).not.toContain('Base view content');
-    expect(wrapper.find('.sw-popover__content').text()).not.toContain('Example view content');
-    expect(wrapper.find('.sw-popover__content').text()).toContain('Example with third level view content');
-  })
+    expect(document.querySelector(".sw-popover__content")?.textContent).not.toContain(
+      "Base view content",
+    );
+    expect(document.querySelector(".sw-popover__content")?.textContent).not.toContain(
+      "Example view content",
+    );
+    expect(document.querySelector(".sw-popover__content")?.textContent).toContain(
+      "Example with third level view content",
+    );
+  });
 
   it("should go back from third level view to base view with back button", async () => {
-    const wrapper = await createWrapper();
+    wrapper = await createWrapper();
 
     // go to example with another child view
-    await wrapper.find('#goToExampleWithAnotherChildView').trigger('click');
+    document
+      .querySelector("#goToExampleWithAnotherChildView")
+      ?.dispatchEvent(new MouseEvent("click"));
+    await flushPromises();
 
     // go to third level view
-    await wrapper.find('#goToThirdLevelView').trigger('click');
+    document.querySelector("#goToThirdLevelView")?.dispatchEvent(new MouseEvent("click"));
+    await flushPromises();
 
     // go back to base view with clicking back button twice
-    await wrapper.find('.sw-popover__back-button').trigger('click');
-    await wrapper.find('.sw-popover__back-button').trigger('click');
+    document.querySelector(".sw-popover__back-button")?.dispatchEvent(new MouseEvent("click"));
+    await flushPromises();
+    document.querySelector(".sw-popover__back-button")?.dispatchEvent(new MouseEvent("click"));
+    await flushPromises();
 
     // check title rendering on base view
-    expect(wrapper.find('.sw-popover__content').text()).toContain('My default popover title');
+    expect(document.querySelector(".sw-popover__content")?.textContent).toContain(
+      "My default popover title",
+    );
 
     // check content rendering on base view
-    expect(wrapper.find('.sw-popover__content').text()).toContain('Base view content');
-  })  
+    expect(document.querySelector(".sw-popover__content")?.textContent).toContain(
+      "Base view content",
+    );
+  });
 });

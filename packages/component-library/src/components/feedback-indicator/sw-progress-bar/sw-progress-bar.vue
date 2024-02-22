@@ -2,7 +2,7 @@
   <sw-base-field
     class="sw-progress-bar"
     role="progressbar"
-    :aria-valuenow="value"
+    :aria-valuenow="modelValue"
     :aria-valuemax="maxValue"
     aria-label="Current progress"
     :has-focus="false"
@@ -27,32 +27,29 @@
     </template>
 
     <template #error>
-      <sw-field-error
-        v-if="error"
-        :error="error"
-      />
+      <sw-field-error v-if="error" :error="error" />
     </template>
   </sw-base-field>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from "vue";
 import SwBaseField from "../../form/_internal/sw-base-field/sw-base-field.vue";
 import SwFieldError from "../../form/_internal/sw-field-error/sw-field-error.vue";
 
-export default Vue.extend({
-  name: 'SwProgressBar',
+export default defineComponent({
+  name: "SwProgressBar",
 
   components: {
-    'sw-base-field': SwBaseField,
-    'sw-field-error': SwFieldError,
+    "sw-base-field": SwBaseField,
+    "sw-field-error": SwFieldError,
   },
 
   props: {
     /**
      * The current value which is used for showing the current progress.
      */
-    value: {
+    modelValue: {
       type: Number,
       default: 0,
     },
@@ -79,7 +76,7 @@ export default Vue.extend({
     progressLabelType: {
       type: String,
       required: false,
-      default: 'percent'
+      default: "percent",
     },
     /**
      * An error in your business logic related to this field.
@@ -95,16 +92,16 @@ export default Vue.extend({
 
   computed: {
     progressLabel(): string {
-      if (!this.progressLabelType || this.progressLabelType === 'percent') {
+      if (!this.progressLabelType || this.progressLabelType === "percent") {
         return this.styleWidth;
       }
 
-      return `${this.value} ${this.progressLabelType} / ${this.maxValue} ${this.progressLabelType}`;
+      return `${this.modelValue} ${this.progressLabelType} / ${this.maxValue} ${this.progressLabelType}`;
     },
 
     styleWidth(): string {
       // @ts-expect-error - vue can't detect value correctly
-      let percentage = parseInt(this.value / this.maxValue * 100);
+      let percentage = parseInt((this.modelValue / this.maxValue) * 100);
 
       if (percentage > 100) {
         percentage = 100;
@@ -118,12 +115,13 @@ export default Vue.extend({
     },
 
     progressClasses(): {
-      'sw-progress-bar__value--no-transition': boolean,
-      'sw-progress-bar__value--has-error': boolean,
+      "sw-progress-bar__value--no-transition": boolean;
+      "sw-progress-bar__value--has-error": boolean;
     } {
       return {
-        'sw-progress-bar__value--no-transition': this.value < 1 || this.value >= this.maxValue,
-        'sw-progress-bar__value--has-error': !!this.error,
+        "sw-progress-bar__value--no-transition":
+          this.modelValue < 1 || this.modelValue >= this.maxValue,
+        "sw-progress-bar__value--has-error": !!this.error,
       };
     },
   },

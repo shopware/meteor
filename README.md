@@ -22,4 +22,4 @@ Pull requests are welcome. See the [contribution guidelines](./CONTRIBUTING.md) 
 
 ## License
 
-Source code is under a custom license based on MIT. 
+Source code is under a custom license based on MIT.

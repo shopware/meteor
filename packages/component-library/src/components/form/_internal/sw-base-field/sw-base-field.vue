@@ -1,51 +1,29 @@
 <template>
-  <div
-    class="sw-field"
-    :class="classes"
-  >
+  <div class="sw-field" :class="classes">
     <div class="sw-field__label">
       <sw-inheritance-switch
         v-if="isInheritanceField"
         :disabled="disableInheritanceToggle"
         class="sw-field__inheritance-icon"
         :is-inherited="isInherited"
-        v-on="$listeners"
+        v-bind="{ ...$attrs, class: '' }"
       />
 
-      <label
-        v-if="showLabel"
-        :for="identification"
-        :class="swFieldLabelClasses"
-      >
+      <label v-if="showLabel" :for="identification" :class="swFieldLabelClasses">
         <slot name="label" />
       </label>
 
-      <sw-help-text
-        v-if="helpText"
-        class="sw-field__help-text"
-        :text="helpText"
-      />
+      <sw-help-text v-if="helpText" class="sw-field__help-text" :text="helpText" />
     </div>
 
     <div class="sw-block-field__block">
-      <div
-        class="sw-field__addition is--prefix"
-      >
-        <slot
-          name="field-prefix"
-          v-bind="{ disabled, identification }"
-        />
+      <div class="sw-field__addition is--prefix">
+        <slot name="field-prefix" v-bind="{ disabled, identification }" />
       </div>
 
-      <slot
-        name="element"
-        v-bind="{ disabled, identification }"
-      />
+      <slot name="element" v-bind="{ disabled, identification }" />
 
-      <div
-        v-if="copyable"
-        class="sw-field__addition"
-      >
+      <div v-if="copyable" class="sw-field__addition">
         <sw-field-copyable
           :display-name="identification"
           :copyable-text="copyableText"
@@ -53,49 +31,39 @@
         />
       </div>
 
-      <div
-        v-else
-        class="sw-field__addition"
-      >
-        <slot
-          name="field-suffix"
-          v-bind="{ disabled, identification }"
-        />
+      <div v-else class="sw-field__addition">
+        <slot name="field-suffix" v-bind="{ disabled, identification }" />
       </div>
     </div>
 
     <slot name="error" />
 
-    <div
-      class="sw-field__hint"
-    >
+    <div class="sw-field__hint">
       <slot name="field-hint" />
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import SwInheritanceSwitch from '../sw-inheritance-switch/sw-inheritance-switch.vue';
-import SwFieldCopyable from '../sw-field-copyable/sw-field-copyable.vue';
-import SwHelpText from '../../sw-help-text/sw-help-text.vue';
-import SwValidationMixin from '../../../../mixins/validation.mixin';
-import SwFormFieldMixin from '../../../../mixins/form-field.mixin';
-import { createId } from '../../../../utils/uuid';
+import { defineComponent } from "vue";
+import SwInheritanceSwitch from "../sw-inheritance-switch/sw-inheritance-switch.vue";
+import SwFieldCopyable from "../sw-field-copyable/sw-field-copyable.vue";
+import SwHelpText from "../../sw-help-text/sw-help-text.vue";
+import useEmptySlotCheck from "../../../../composables/useEmptySlotCheck";
+import SwValidationMixin from "../../../../mixins/validation.mixin";
+import SwFormFieldMixin from "../../../../mixins/form-field.mixin";
+import { createId } from "../../../../utils/uuid";
 
-export default Vue.extend({
-  name: 'SwBaseField',
+export default defineComponent({
+  name: "SwBaseField",
 
   components: {
-    'sw-inheritance-switch': SwInheritanceSwitch,
-    'sw-help-text': SwHelpText,
-    'sw-field-copyable': SwFieldCopyable,
+    "sw-inheritance-switch": SwInheritanceSwitch,
+    "sw-help-text": SwHelpText,
+    "sw-field-copyable": SwFieldCopyable,
   },
 
-  mixins: [
-    SwFormFieldMixin,
-    SwValidationMixin,
-  ],
+  mixins: [SwFormFieldMixin, SwValidationMixin],
 
   props: {
     /**
@@ -172,13 +140,13 @@ export default Vue.extend({
     helpText: {
       type: String,
       required: false,
-      default: '',
+      default: "",
     },
 
     copyableText: {
       type: String,
       required: false,
-      default: '',
+      default: "",
     },
 
     /**
@@ -189,9 +157,9 @@ export default Vue.extend({
     size: {
       type: String,
       required: false,
-      default: 'default',
+      default: "default",
       validator(value: string) {
-        return ['small', 'default'].includes(value);
+        return ["small", "default"].includes(value);
       },
     },
 
@@ -222,12 +190,12 @@ export default Vue.extend({
 
     showLabel(): boolean {
       // @ts-expect-error - label exists on scopedSlots and if not we use optional chaining
-      return !!this.$slots.label || !!this.$scopedSlots.label?.();
+      return !!this.$slots.label || !!this.$slots.label?.();
     },
 
-    swFieldLabelClasses(): { 'is--required': boolean } {
+    swFieldLabelClasses(): { "is--required": boolean } {
       return {
-        'is--required': this.required,
+        "is--required": this.required,
       };
     },
 
@@ -235,10 +203,10 @@ export default Vue.extend({
     classes(): any[] {
       return [
         {
-          'has--error': this.hasError,
-          'is--disabled': this.disabled,
-          'is--inherited': this.isInherited,
-          'has--focus': this.hasFocus,
+          "has--error": this.hasError,
+          "is--disabled": this.disabled,
+          "is--inherited": this.isInherited,
+          "has--focus": this.hasFocus,
         },
         this.swBlockSize,
       ];
@@ -249,11 +217,17 @@ export default Vue.extend({
     },
 
     hasError(): boolean {
-      // @ts-expect-error - error method exists on scopedSlots
-      // eslint-disable-next-line @typescript-eslint/prefer-optional-chain
-      return this.$slots.error ?? !!(this.$scopedSlots.error && this.$scopedSlots.error());
-    }
-  }
+      return this.hasSlotContent(this.$slots.error);
+    },
+  },
+
+  setup() {
+    const { hasSlotContent } = useEmptySlotCheck();
+
+    return {
+      hasSlotContent,
+    };
+  },
 });
 </script>
 
@@ -261,7 +235,9 @@ export default Vue.extend({
 @import "../../../assets/scss/variables.scss";
 
 $sw-field-transition: border-color 0.3s ease-out;
-$sw-field-transition: border-color 0.3s ease-out, background 0.3s ease;
+$sw-field-transition:
+  border-color 0.3s ease-out,
+  background 0.3s ease;
 
 .sw-field {
   width: 100%;

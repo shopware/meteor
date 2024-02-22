@@ -6,24 +6,12 @@
     :class="componentClasses"
     @close="closeFloatingUi"
   >
-    <template
-      #trigger
-    >
-      <slot
-        name="trigger"
-        :is-opened="isOpened"
-        :toggle-floating-ui="toggleFloatingUi"
-      />
+    <template #trigger>
+      <slot name="trigger" :is-opened="isOpened" :toggle-floating-ui="toggleFloatingUi" />
     </template>
 
-    <div
-      ref="SwPopover"
-      class="sw-popover__content"
-    >
-      <div
-        v-if="showHeader"
-        class="sw-popover__header"
-      >
+    <div ref="SwPopover" role="dialog" class="sw-popover__content">
+      <div v-if="showHeader" class="sw-popover__header">
         <sw-button
           v-if="currentView.name !== 'base'"
           class="sw-popover__back-button"
@@ -35,18 +23,11 @@
 
         <h3>{{ currentView.title }}</h3>
 
-        <div
-          v-if="currentView.name !== 'base'"
-          class="sw-popover__header-placeholder-right"
-        />
+        <div v-if="currentView.name !== 'base'" class="sw-popover__header-placeholder-right" />
       </div>
 
-      <div
-        class="sw-popover__items"
-      >
-        <transition
-          :name="viewTransition"
-        >
+      <div class="sw-popover__items">
+        <transition :name="viewTransition">
           <div :key="currentView.name.toString()">
             <slot
               :name="'popover-items__' + currentView.name"
@@ -61,33 +42,33 @@
 </template>
 
 <script lang="ts">
-import type { PropType } from 'vue';
-import { defineComponent, computed, ref, watch } from 'vue';
-import SwCheckbox from '../../form/sw-checkbox/sw-checkbox.vue';
-import SwSwitch from '../../form/sw-switch/sw-switch.vue';
-import SwIcon from '../../icons-media/sw-icon/sw-icon.vue';
-import SwPopoverItem from '../sw-popover-item/sw-popover-item.vue';
-import SwButton from '../../form/sw-button/sw-button.vue';
-import SwSmoothReflow from '../../_internal/sw-smooth-reflow.vue';
-import SwFloatingUi from '../../_internal/sw-floating-ui/sw-floating-ui.vue';
-import { TranslateResult } from 'vue-i18n';
-import { View } from './sw-popover.interfaces';
+import type { PropType } from "vue";
+import { defineComponent, computed, ref, watch } from "vue";
+import SwCheckbox from "../../form/sw-checkbox/sw-checkbox.vue";
+import SwSwitch from "../../form/sw-switch/sw-switch.vue";
+import SwIcon from "../../icons-media/sw-icon/sw-icon.vue";
+import SwPopoverItem from "../sw-popover-item/sw-popover-item.vue";
+import SwButton from "../../form/sw-button/sw-button.vue";
+import SwSmoothReflow from "../../_internal/sw-smooth-reflow.vue";
+import SwFloatingUi from "../../_internal/sw-floating-ui/sw-floating-ui.vue";
+import type { TranslateResult } from "vue-i18n";
+import type { View } from "./sw-popover.interfaces";
 
 export default defineComponent({
   components: {
-    'sw-checkbox': SwCheckbox,
-    'sw-switch': SwSwitch,
-    'sw-icon': SwIcon,
-    'sw-popover-item': SwPopoverItem,
-    'sw-button': SwButton,
-    'sw-smooth-reflow': SwSmoothReflow,
-    'sw-floating-ui': SwFloatingUi,
+    "sw-checkbox": SwCheckbox,
+    "sw-switch": SwSwitch,
+    "sw-icon": SwIcon,
+    "sw-popover-item": SwPopoverItem,
+    "sw-button": SwButton,
+    "sw-smooth-reflow": SwSmoothReflow,
+    "sw-floating-ui": SwFloatingUi,
   },
   props: {
     title: {
-      type: String as PropType<string|TranslateResult>,
+      type: String as PropType<string | TranslateResult>,
       required: false,
-      default: '',
+      default: "",
     },
     childViews: {
       type: Array as PropType<View[]>,
@@ -100,38 +81,40 @@ export default defineComponent({
       default: false,
     },
     width: {
-      type: String as PropType<'auto'|'large'|'medium'|'small'>,
+      type: String as PropType<"auto" | "large" | "medium" | "small">,
       required: false,
-      default: 'dynamic',
+      default: "dynamic",
       validator: (value: string) => {
-        return ['dynamic', 'large', 'medium', 'small'].includes(value);
+        return ["dynamic", "large", "medium", "small"].includes(value);
       },
     },
   },
-  emits: ['update:isOpened'],
+  emits: ["update:isOpened"],
   setup(props, { emit }) {
-    const SwPopover = ref<HTMLElement|null>(null);
-    const activeView = ref('base');
-    const viewTransition = ref<'slideIn'|'slideOut'>('slideIn');
+    const SwPopover = ref<HTMLElement | null>(null);
+    const activeView = ref("base");
+    const viewTransition = ref<"slideIn" | "slideOut">("slideIn");
     const isOpened = ref(false);
 
     watch(isOpened, (value) => {
-      emit('update:isOpened', value);
+      emit("update:isOpened", value);
     });
 
     const mainComponentTag = computed(() => {
-      return props.disableFloat ? 'div' : 'sw-floating-ui';
+      return props.disableFloat ? "div" : "sw-floating-ui";
     });
 
     const goViewBack = () => {
-      viewTransition.value = 'slideOut';
+      viewTransition.value = "slideOut";
 
-      const previousView = allViews.value.find((view) => view.childViews?.some(v => v.name === activeView.value));
+      const previousView = allViews.value.find((view) =>
+        view.childViews?.some((v) => v.name === activeView.value),
+      );
 
       if (previousView) {
         activeView.value = previousView.name as string;
       } else {
-        activeView.value = 'base';
+        activeView.value = "base";
       }
 
       if (SwPopover.value) {
@@ -140,7 +123,7 @@ export default defineComponent({
     };
 
     const changeView = (view: string) => {
-      viewTransition.value = 'slideIn';
+      viewTransition.value = "slideIn";
       activeView.value = view;
 
       if (SwPopover.value) {
@@ -152,7 +135,7 @@ export default defineComponent({
       if (!views) {
         return [];
       }
-      
+
       return views.reduce<View[]>((acc, view) => {
         return [...acc, view, ...getAllViews(view.childViews)];
       }, []);
@@ -161,7 +144,7 @@ export default defineComponent({
     const allViews = computed<View[]>(() => {
       return [
         {
-          name: 'base',
+          name: "base",
           title: props.title,
         },
         ...getAllViews(props.childViews),
@@ -180,7 +163,7 @@ export default defineComponent({
         };
       }
 
-      return { name: 'base', title: props.title };
+      return { name: "base", title: props.title };
     });
 
     const closeFloatingUi = () => {
@@ -192,19 +175,19 @@ export default defineComponent({
     };
 
     const showHeader = computed(() => {
-      return !!currentView.value.title || currentView.value.name !== 'base';
+      return !!currentView.value.title || currentView.value.name !== "base";
     });
 
     const componentClasses = computed(() => {
       const classes: {
-        'is--float': boolean;
-        'is--open': boolean;
-        'has--header': boolean;
+        "is--float": boolean;
+        "is--open": boolean;
+        "has--header": boolean;
         [key: `is--width-${string}`]: boolean;
       } = {
-        'is--float': !props.disableFloat,
-        'is--open': isOpened.value,
-        'has--header': showHeader.value,
+        "is--float": !props.disableFloat,
+        "is--open": isOpened.value,
+        "has--header": showHeader.value,
       };
 
       classes[`is--width-${props.width}`] = true;
@@ -238,12 +221,35 @@ export default defineComponent({
 /**
 * Use inter-font instead of normal font for popover. Also add the new variables to this file.
 */
-$font-family-default: "Inter", -apple-system, BlinkMacSystemFont, "San Francisco", "Segoe UI",
-  Roboto, "Helvetica Neue", sans-serif;
-$font-family-variables: "Inter var", -apple-system, BlinkMacSystemFont, "San Francisco", "Segoe UI",
-  Roboto, "Helvetica Neue", sans-serif;
-$font-family-default-feature-settings: "ss01" on, "ss02" on, "case" on, "cpsp" on, "zero" on,
-  "cv09" on, "cv07" on, "cv06" on, "cv10" on, "cv11" on;
+$font-family-default:
+  "Inter",
+  -apple-system,
+  BlinkMacSystemFont,
+  "San Francisco",
+  "Segoe UI",
+  Roboto,
+  "Helvetica Neue",
+  sans-serif;
+$font-family-variables:
+  "Inter var",
+  -apple-system,
+  BlinkMacSystemFont,
+  "San Francisco",
+  "Segoe UI",
+  Roboto,
+  "Helvetica Neue",
+  sans-serif;
+$font-family-default-feature-settings:
+  "ss01" on,
+  "ss02" on,
+  "case" on,
+  "cpsp" on,
+  "zero" on,
+  "cv09" on,
+  "cv07" on,
+  "cv06" on,
+  "cv10" on,
+  "cv11" on;
 
 $font-weight-medium: 500;
 
@@ -259,7 +265,6 @@ $scrollShadowSize: 16px;
 $scrollShadowColor: rgba(120, 120, 120, 0.2);
 
 .sw-popover {
-
   &.is--float {
     .sw-popover__content {
       max-height: max(50vh, 250px);
@@ -280,26 +285,26 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
     &:has(.sw-popover__header) {
       padding-top: 16px;
     }
-  
+
     // add new Inter font to popover
     * {
       font-family: $font-family-default;
     }
-  
+
     @supports (font-variation-settings: normal) {
       * {
         font-family: $font-family-variables;
         font-feature-settings: $font-family-default-feature-settings;
       }
     }
-  
+
     .sw-popover__header {
       display: flex;
       align-items: center;
       justify-content: center;
       margin-bottom: 16px;
       gap: 16px;
-  
+
       h3 {
         margin-right: auto;
         font-size: $font-size-s;
@@ -309,20 +314,20 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
         margin-bottom: 0;
       }
     }
-  
+
     &__header-placeholder-right {
       width: 44px;
     }
-  
+
     .sw-popover__back-button {
       margin-right: auto;
       padding-top: 12px;
       padding-bottom: 12px;
       background-color: $color-white;
-  
+
       .sw-icon {
         color: $color-darkgray-800;
-  
+
         svg {
           width: 12px !important;
           height: 8px !important;
@@ -361,12 +366,12 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
 
   .slideIn-leave-active,
   .slideOut-leave-active {
-    transition: all .125s ease;
+    transition: all 0.125s ease;
   }
   .slideIn-enter-active,
   .slideOut-enter-active {
-    transition: all .125s ease;
-    transition-delay: .125s;
+    transition: all 0.125s ease;
+    transition-delay: 0.125s;
   }
 
   .slideIn-leave-active,

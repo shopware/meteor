@@ -1,12 +1,6 @@
 <template>
-  <div
-    class="sw-popover-item"
-    :class="componentClasses"
-  >
-    <div
-      class="sw-popover-item__top-row"
-      @click="handleLableClick"
-    >
+  <div class="sw-popover-item" :class="componentClasses">
+    <div class="sw-popover-item__top-row" @click="handleLableClick">
       <sw-checkbox
         v-if="showCheckbox"
         class="sw-popover-item__checkbox"
@@ -36,37 +30,28 @@
         @keyup.enter="handleLableClick"
       >
         {{ label }}
-        
-        <div
-          v-if="metaCopy"
-          class="sw-popover-item__meta-copy"
-        >
+
+        <div v-if="metaCopy" class="sw-popover-item__meta-copy">
           {{ metaCopy }}
         </div>
       </div>
 
       <div class="sw-popover-item__align-right">
-        <div
-          v-if="contextualDetail"
-          class="sw-popover-item__contextual-detail"
-        >
+        <div v-if="contextualDetail" class="sw-popover-item__contextual-detail">
           {{ contextualDetail }}
         </div>
-  
-        <div
-          v-if="shortcut"
-          class="sw-popover-item__shortcut"
-        >
+
+        <div v-if="shortcut" class="sw-popover-item__shortcut">
           {{ shortcut }}
         </div>
-  
+
         <sw-switch
           v-if="showSwitch"
           :checked="switchValue"
           class="sw-popover-item__switch"
           @change="emitChangeSwitch"
         />
-  
+
         <template v-if="showVisibility">
           <sw-icon
             class="sw-popover-item__visibility"
@@ -75,13 +60,10 @@
           />
         </template>
 
-        <div
-          v-if="typeof optionsCount === 'number'"
-          class="sw-popover-item__options-count"
-        >
+        <div v-if="typeof optionsCount === 'number'" class="sw-popover-item__options-count">
           {{ optionsCount }}
         </div>
-  
+
         <sw-icon
           v-if="showOptions"
           class="sw-popover-item__options"
@@ -96,35 +78,31 @@
 <script lang="ts">
 import type { PropType } from "vue";
 import { defineComponent, computed } from "vue";
-import { TranslateResult } from "vue-i18n";
-import SwCheckbox from '../../form/sw-checkbox/sw-checkbox.vue';
-import SwSwitch from '../../form/sw-switch/sw-switch.vue';
-import SwIcon from '../../icons-media/sw-icon/sw-icon.vue';
+import type { TranslateResult } from "vue-i18n";
+import SwCheckbox from "../../form/sw-checkbox/sw-checkbox.vue";
+import SwSwitch from "../../form/sw-switch/sw-switch.vue";
+import SwIcon from "../../icons-media/sw-icon/sw-icon.vue";
 
-export type SwPopoverItemType = 'default'|'critical'|'active';
+export type SwPopoverItemType = "default" | "critical" | "active";
 
 export default defineComponent({
-  name: 'SwPopoverItem',
+  name: "SwPopoverItem",
   components: {
-    'sw-checkbox': SwCheckbox,
-    'sw-switch': SwSwitch,
-    'sw-icon': SwIcon,
+    "sw-checkbox": SwCheckbox,
+    "sw-switch": SwSwitch,
+    "sw-icon": SwIcon,
   },
   props: {
     label: {
-      type: String as PropType<string|TranslateResult>,
+      type: String as PropType<string | TranslateResult>,
       required: true,
     },
     type: {
       type: String as PropType<SwPopoverItemType>,
       required: false,
-      default: 'default',
+      default: "default",
       validator: (value: string) => {
-        return [
-          'default',
-          'critical',
-          'active',
-        ].includes(value);
+        return ["default", "critical", "active"].includes(value);
       },
     },
     showCheckbox: {
@@ -145,27 +123,27 @@ export default defineComponent({
     icon: {
       type: String,
       required: false,
-      default: '',
+      default: "",
     },
     onLabelClick: {
-      type: Function as PropType<(() => void)|undefined>,
+      type: Function as PropType<(() => void) | undefined>,
       required: false,
       default: undefined,
     },
     metaCopy: {
-      type: String as PropType<string|TranslateResult>,
+      type: String as PropType<string | TranslateResult>,
       required: false,
-      default: '',
+      default: "",
     },
     contextualDetail: {
       type: String,
       required: false,
-      default: '',
+      default: "",
     },
     shortcut: {
       type: String,
       required: false,
-      default: '',
+      default: "",
     },
     showSwitch: {
       type: Boolean,
@@ -206,17 +184,17 @@ export default defineComponent({
     borderTop: {
       type: Boolean,
       required: false,
-      default: false
+      default: false,
     },
     borderBottom: {
       type: Boolean,
       required: false,
-      default: false
+      default: false,
     },
     role: {
       type: String,
       required: false,
-      default: 'menuitem',
+      default: "menuitem",
     },
     isOptionItem: {
       type: Boolean,
@@ -224,54 +202,52 @@ export default defineComponent({
       default: false,
     },
   },
-  emits: ['change-checkbox', 'change-switch', 'change-visibility', 'click-options'],
+  emits: ["change-checkbox", "change-switch", "change-visibility", "click-options"],
   setup(props, { emit }) {
     const emitChangeCheckbox = (changeValue: boolean) => {
-      emit('change-checkbox', changeValue);
+      emit("change-checkbox", changeValue);
     };
 
     const emitChangeSwitch = (changeValue: boolean) => {
-      emit('change-switch', changeValue);
+      emit("change-switch", changeValue);
     };
 
     const emitVisibilityChange = (changeValue: boolean) => {
-      emit('change-visibility', changeValue);
+      emit("change-visibility", changeValue);
     };
 
     const emitClickOptions = () => {
-      emit('click-options');
+      emit("click-options");
     };
 
     const isClickable = computed(() => {
       return (
-        !!props.onLabelClick ||
-        props.showSwitch ||
-        props.showCheckbox ||
-        props.showOptions ||
-        props.isOptionItem
-      ) && !props.disabled;
+        (!!props.onLabelClick ||
+          props.showSwitch ||
+          props.showCheckbox ||
+          props.showOptions ||
+          props.isOptionItem) &&
+        !props.disabled
+      );
     });
 
     const componentClasses = computed(() => {
       return {
-        'sw-popover-item--default': props.type === 'default',
-        'sw-popover-item--critical': props.type === 'critical',
-        'sw-popover-item--active': props.type === 'active',
-        'sw-popover-item--disabled': props.disabled,
-        'sw-popover-item--border-top': props.borderTop,
-        'sw-popover-item--border-bottom': props.borderBottom,
-        'sw-popover-item--clickable': !!isClickable.value,
+        "sw-popover-item--default": props.type === "default",
+        "sw-popover-item--critical": props.type === "critical",
+        "sw-popover-item--active": props.type === "active",
+        "sw-popover-item--disabled": props.disabled,
+        "sw-popover-item--border-top": props.borderTop,
+        "sw-popover-item--border-bottom": props.borderBottom,
+        "sw-popover-item--clickable": !!isClickable.value,
       };
     });
 
     const labelClasses = computed(() => {
       return {
-        'sw-popover-item__label--clickable': (
-          !!props.onLabelClick ||
-          props.showSwitch ||
-          props.showCheckbox ||
-          props.showOptions
-        ) && !props.disabled,
+        "sw-popover-item__label--clickable":
+          (!!props.onLabelClick || props.showSwitch || props.showCheckbox || props.showOptions) &&
+          !props.disabled,
       };
     });
 
@@ -303,10 +279,10 @@ export default defineComponent({
 
     const iconClasses = computed(() => {
       return {
-        'sw-popover-item__icon--clickable': !!props.onLabelClick,
+        "sw-popover-item__icon--clickable": !!props.onLabelClick,
       };
     });
-    
+
     return {
       emitChangeCheckbox,
       emitChangeSwitch,
@@ -317,7 +293,7 @@ export default defineComponent({
       onLabelClickTabIndex,
       handleLableClick,
       isClickable,
-      iconClasses
+      iconClasses,
     };
   },
 });
@@ -330,12 +306,35 @@ export default defineComponent({
 /**
 * Use inter-font instead of normal font for popover. Also add the new variables to this file.
 */
-$font-family-default: "Inter", -apple-system, BlinkMacSystemFont, "San Francisco", "Segoe UI",
-  Roboto, "Helvetica Neue", sans-serif;
-$font-family-variables: "Inter var", -apple-system, BlinkMacSystemFont, "San Francisco", "Segoe UI",
-  Roboto, "Helvetica Neue", sans-serif;
-$font-family-default-feature-settings: "ss01" on, "ss02" on, "case" on, "cpsp" on, "zero" on,
-  "cv09" on, "cv07" on, "cv06" on, "cv10" on, "cv11" on;
+$font-family-default:
+  "Inter",
+  -apple-system,
+  BlinkMacSystemFont,
+  "San Francisco",
+  "Segoe UI",
+  Roboto,
+  "Helvetica Neue",
+  sans-serif;
+$font-family-variables:
+  "Inter var",
+  -apple-system,
+  BlinkMacSystemFont,
+  "San Francisco",
+  "Segoe UI",
+  Roboto,
+  "Helvetica Neue",
+  sans-serif;
+$font-family-default-feature-settings:
+  "ss01" on,
+  "ss02" on,
+  "case" on,
+  "cpsp" on,
+  "zero" on,
+  "cv09" on,
+  "cv07" on,
+  "cv06" on,
+  "cv10" on,
+  "cv11" on;
 
 $font-weight-medium: 500;
 
@@ -345,10 +344,10 @@ $line-height-sm: 20px;
 $line-height-md: 24px;
 $line-height-lg: 28px;
 
-$color-custom-dark: #0F172A;
-$color-custom-grey: #64748B;
-$color-custom-lightgrey: #CBD5E1;
-$color-custom-border: #E5E7EB;
+$color-custom-dark: #0f172a;
+$color-custom-grey: #64748b;
+$color-custom-lightgrey: #cbd5e1;
+$color-custom-border: #e5e7eb;
 
 $scrollShadowSize: 16px;
 $scrollShadowColor: rgba(120, 120, 120, 0.2);
@@ -379,7 +378,7 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
     position: relative;
 
     &::before {
-      content: '';
+      content: "";
     }
   }
 

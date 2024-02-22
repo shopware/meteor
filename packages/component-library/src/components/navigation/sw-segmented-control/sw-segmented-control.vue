@@ -1,11 +1,6 @@
 <template>
-  <div
-    class="sw-segmented-control"
-    :class="segmentedControlClasses"
-  >
-    <template
-      v-for="(action, index) in actions"
-    >
+  <div class="sw-segmented-control" :class="segmentedControlClasses">
+    <template v-for="(action, index) in actions">
       <div
         v-if="typeof action === 'string' && !disableContext"
         :key="index"
@@ -14,7 +9,7 @@
 
       <!-- TOOD: Add is-opened from action value -->
       <sw-popover
-        v-if="(typeof action !== 'string')"
+        v-if="typeof action !== 'string'"
         :key="action.id"
         :child-views="action.popover && action.popover.childViews"
         :title="action.popover && action.popover.title"
@@ -65,7 +60,7 @@
         </template>
 
         <template
-          v-for="(childView) in flatChildViews(action.popover && action.popover.childViews)"
+          v-for="childView in flatChildViews(action.popover && action.popover.childViews)"
           #[`popover-items__${childView.name}`]="{ toggleFloatingUi, changeView }"
         >
           <slot
@@ -80,44 +75,44 @@
 </template>
 
 <script lang="ts">
-import SwCheckbox from '../../form/sw-checkbox/sw-checkbox.vue';
-import SwIcon from '../../icons-media/sw-icon/sw-icon.vue';
-import SwPopover from '../../overlay/sw-popover/sw-popover.vue'
-import { View } from '../../overlay/sw-popover/sw-popover.interfaces';
-import type { PropType } from 'vue';
-import { defineComponent, computed } from 'vue';
+import SwCheckbox from "../../form/sw-checkbox/sw-checkbox.vue";
+import SwIcon from "../../icons-media/sw-icon/sw-icon.vue";
+import SwPopover from "../../overlay/sw-popover/sw-popover.vue";
+import type { View } from "../../overlay/sw-popover/sw-popover.interfaces";
+import type { PropType } from "vue";
+import { defineComponent, computed } from "vue";
 
 export interface SegmentedControlAction {
-  id: string,
-  label?: string,
-  onClick?: ({ checkboxValue }: {checkboxValue?: boolean}) => void,
+  id: string;
+  label?: string;
+  onClick?: ({ checkboxValue }: { checkboxValue?: boolean }) => void;
   isPressed?: boolean;
-  isCritical?: boolean,
-  hasCheckbox?: boolean,
-  checked?: boolean,
-  iconName?: string,
-  options?: boolean,
-  disabled?: boolean,
-  minSquare?: boolean,
+  isCritical?: boolean;
+  hasCheckbox?: boolean;
+  checked?: boolean;
+  iconName?: string;
+  options?: boolean;
+  disabled?: boolean;
+  minSquare?: boolean;
   popover?: {
-    title?: string,
-    childViews?: View[],
-    disableFloat?: boolean,
-  }
+    title?: string;
+    childViews?: View[];
+    disableFloat?: boolean;
+  };
 }
 
-export type SegmentedControlActionsProp = (SegmentedControlAction | 'divider')[]
+export type SegmentedControlActionsProp = (SegmentedControlAction | "divider")[];
 
 export default defineComponent({
   components: {
-    'sw-checkbox': SwCheckbox,
-    'sw-icon': SwIcon,
-    'sw-popover': SwPopover
+    "sw-checkbox": SwCheckbox,
+    "sw-icon": SwIcon,
+    "sw-popover": SwPopover,
   },
   props: {
     actions: {
       type: Array as PropType<SegmentedControlActionsProp>,
-      required: true
+      required: true,
     },
     /**
      * Activate to hide the padding around the controls.
@@ -125,39 +120,34 @@ export default defineComponent({
     disableContext: {
       type: Boolean,
       required: false,
-      default: false
-    }
+      default: false,
+    },
   },
   emits: [],
   setup(props) {
     const getActionClass = (action: SegmentedControlAction) => {
-      const classes = [
-        `sw-segmented-control__action-id-${action.id}`
-      ];
+      const classes = [`sw-segmented-control__action-id-${action.id}`];
 
       if (action.isPressed && !action.hasCheckbox) {
-        classes.push('sw-segmented-control__action--pressed');
+        classes.push("sw-segmented-control__action--pressed");
       }
 
       if (action.isCritical) {
-        classes.push('sw-segmented-control__action--critical');
+        classes.push("sw-segmented-control__action--critical");
       }
 
       if (action.disabled) {
-        classes.push('sw-segmented-control__action--disabled');
+        classes.push("sw-segmented-control__action--disabled");
       }
 
       if (action.minSquare) {
-        classes.push('sw-segmented-control__action--min-square');
+        classes.push("sw-segmented-control__action--min-square");
       }
 
       return classes;
-    }
+    };
 
-    const handleClick = (
-      action: SegmentedControlAction,
-      toggleFloatingUi: () => void
-    ) => {
+    const handleClick = (action: SegmentedControlAction, toggleFloatingUi: () => void) => {
       if (action.disabled) {
         return;
       }
@@ -173,7 +163,7 @@ export default defineComponent({
       if (action.onClick) {
         action.onClick({});
       }
-    }
+    };
 
     const handleCheckboxChange = (action: SegmentedControlAction, checkboxValue: boolean) => {
       if (action.disabled) {
@@ -183,13 +173,13 @@ export default defineComponent({
       if (action.onClick) {
         action.onClick({ checkboxValue });
       }
-    }
+    };
 
     const segmentedControlClasses = computed((): Record<string, boolean> => {
       return {
-        'sw-segmented-control--disabled-context': props.disableContext
-      }
-    })
+        "sw-segmented-control--disabled-context": props.disableContext,
+      };
+    });
 
     const flatChildViews = (childViews?: View[]): View[] => {
       if (!childViews) {
@@ -203,22 +193,22 @@ export default defineComponent({
 
         return [...acc, childView];
       }, []);
-    }
+    };
 
     return {
       getActionClass,
       handleClick,
       handleCheckboxChange,
       segmentedControlClasses,
-      flatChildViews
+      flatChildViews,
     };
-  }
-})
+  },
+});
 </script>
 
 <style lang="scss">
-@import '../../assets/scss/variables.scss';
-@import '../../assets/scss/mixins.scss';
+@import "../../assets/scss/variables.scss";
+@import "../../assets/scss/mixins.scss";
 
 .sw-segmented-control {
   display: flex;
@@ -266,7 +256,7 @@ export default defineComponent({
         width: 12px;
         height: 12px;
       }
-  
+
       &.sw-icon > svg {
         width: 100% !important;
         height: 100% !important;
@@ -377,7 +367,8 @@ export default defineComponent({
     }
   }
 
-  .sw-field__label, .sw-field__label label {
+  .sw-field__label,
+  .sw-field__label label {
     cursor: pointer;
     font-family: inherit;
     font-size: inherit;

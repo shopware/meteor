@@ -12,15 +12,15 @@
 </template>
 
 <script lang="ts">
-import type { PropType } from 'vue';
-import Vue from 'vue';
-import SwPopoverDirective from '../../../directives/popover.directive';
+import type { PropType } from "vue";
+import { defineComponent } from "vue";
+import SwPopoverDirective from "../../../directives/popover.directive";
 
 /**
  * @deprecated - Use `sw-floating-ui` instead
  */
-export default Vue.extend({
-  name: 'SwPopover',
+export default defineComponent({
+  name: "SwPopover",
 
   directives: {
     popover: SwPopoverDirective,
@@ -28,7 +28,7 @@ export default Vue.extend({
 
   props: {
     zIndex: {
-      type: [Number, null] as PropType<number|null>,
+      type: [Number, null] as PropType<number | null>,
       required: false,
       default: null,
     },
@@ -38,19 +38,19 @@ export default Vue.extend({
       default: false,
     },
     popoverClass: {
-      type: [String, Array, Object] as PropType<string|unknown[]|Record<string,unknown>>,
+      type: [String, Array, Object] as PropType<string | unknown[] | Record<string, unknown>>,
       required: false,
-      default: '',
+      default: "",
     },
   },
 
   computed: {
-    componentStyle(): { 'z-Index': number|null } {
+    componentStyle(): { "z-Index": number | null } {
       return {
-        'z-Index': this.zIndex,
+        "z-Index": this.zIndex,
       };
     },
-    popoverConfig(): { active: boolean, resizeWidth: boolean } {
+    popoverConfig(): { active: boolean; resizeWidth: boolean } {
       return {
         active: true,
         resizeWidth: this.resizeWidth,

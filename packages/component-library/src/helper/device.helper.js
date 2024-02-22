@@ -1,4 +1,4 @@
-import { debounce } from 'lodash-es';
+import { debounce } from "lodash-es";
 
 /**
  * The DeviceHelper provides methods to get device and browser information like the current viewport size.
@@ -9,7 +9,7 @@ import { debounce } from 'lodash-es';
 function DeviceHelper() {
   this.listeners = [];
 
-  window.addEventListener('resize', this.resize.bind(this));
+  window.addEventListener("resize", this.resize.bind(this));
 }
 
 DeviceHelper.prototype = Object.assign(DeviceHelper.prototype, {
@@ -41,7 +41,9 @@ DeviceHelper.prototype = Object.assign(DeviceHelper.prototype, {
   },
 
   removeResizeListener(component) {
-    this.listeners = this.listeners.filter((listenerObject) => component !== listenerObject.component);
+    this.listeners = this.listeners.filter(
+      (listenerObject) => component !== listenerObject.component,
+    );
 
     return true;
   },
@@ -132,9 +134,7 @@ DeviceHelper.prototype = Object.assign(DeviceHelper.prototype, {
    * @returns {string}
    */
   getSystemKey() {
-    return this.getPlatform().indexOf('Mac') > -1
-      ? 'CTRL'
-      : 'ALT';
+    return this.getPlatform().indexOf("Mac") > -1 ? "CTRL" : "ALT";
   },
 });
 

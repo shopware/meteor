@@ -11,21 +11,21 @@
 </template>
 
 <script lang="ts">
-import SwPopoverItem from '../../overlay/sw-popover-item/sw-popover-item.vue';
-import type { PropType } from 'vue';
-import { defineComponent } from 'vue';
-import { TranslateResult } from 'vue-i18n';
+import SwPopoverItem from "../../overlay/sw-popover-item/sw-popover-item.vue";
+import type { PropType } from "vue";
+import { defineComponent } from "vue";
+import { type TranslateResult } from "vue-i18n";
 
 export default defineComponent({
-  name: 'SwContextMenuItem',
+  name: "SwContextMenuItem",
 
   components: {
-    'sw-popover-item': SwPopoverItem,
+    "sw-popover-item": SwPopoverItem,
   },
 
   props: {
     label: {
-      type: String as PropType<string|TranslateResult>,
+      type: String as PropType<string | TranslateResult>,
       required: true,
     },
 
@@ -42,31 +42,30 @@ export default defineComponent({
     },
 
     type: {
-      type: String as PropType<'default' | 'active' | 'critical'>,
+      type: String as PropType<"default" | "active" | "critical">,
       required: false,
-      default: 'default',
+      default: "default",
     },
 
     role: {
       type: String,
       required: false,
-      default: 'menuitem',
+      default: "menuitem",
     },
   },
-  emits: ['click'],
+  emits: ["click"],
   setup(props, { emit }) {
     const handleLableClick = () => {
       if (props.disabled) {
         return;
       }
 
-      emit('click');
+      emit("click");
     };
 
     return {
-      handleLableClick
+      handleLableClick,
     };
-  }
+  },
 });
 </script>
-

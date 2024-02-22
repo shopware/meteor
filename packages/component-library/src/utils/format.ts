@@ -1,5 +1,5 @@
 export interface CurrencyOptions extends Intl.NumberFormatOptions {
-  language?: string
+  language?: string;
 }
 
 export function currency(
@@ -8,21 +8,24 @@ export function currency(
   decimalPlaces?: number,
   additionalOptions: CurrencyOptions = {},
 ): string {
-  const decimalOpts = decimalPlaces !== undefined ? {
-      minimumFractionDigits: decimalPlaces,
-      maximumFractionDigits: decimalPlaces,
-  } : {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 20,
-  };
+  const decimalOpts =
+    decimalPlaces !== undefined
+      ? {
+          minimumFractionDigits: decimalPlaces,
+          maximumFractionDigits: decimalPlaces,
+        }
+      : {
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 20,
+        };
 
   const opts = {
-      style: 'currency',
-      currency: sign,
-      ...decimalOpts,
-      ...additionalOptions,
+    style: "currency",
+    currency: sign,
+    ...decimalOpts,
+    ...additionalOptions,
   };
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument
-  return val.toLocaleString(additionalOptions.language ?? 'en-US', opts);
+  return val.toLocaleString(additionalOptions.language ?? "en-US", opts);
 }

@@ -1,22 +1,13 @@
 <template>
-  <priority-plus
-    ref="priorityPlus"
-    #default="{ mainItems, moreItems }"
-    class="sw-tabs"
-    :class="tabClasses"
-    :list="items"
-  >
-    <ul role="tablist">
-      <span
-        class="sw-tabs--slider"
-        :class="sliderClasses"
-        :style="sliderStyle"
-      />
+  <priority-plus ref="priorityPlus" #default="{ mainItems, moreItems }" :list="items">
+    <ul class="sw-tabs" :class="tabClasses" role="tablist">
+      <span class="sw-tabs--slider" :class="sliderClasses" :style="sliderStyle" />
 
       <template v-if="!vertical">
         <li
           v-for="item in mainItems"
           :key="item.name"
+          :data-priority-plus="item.name"
           ref="items"
           class="sw-tabs--item"
           :class="getItemClasses(item)"
@@ -35,18 +26,14 @@
             name="solid-exclamation-circle"
           />
 
-          <sw-color-badge
-            v-if="item.badge"
-            :variant="item.badge"
-            rounded
-          />
+          <sw-color-badge v-if="item.badge" :variant="item.badge" rounded />
         </li>
 
         <!-- @vue-skip -->
         <sw-context-button
           v-if="moreItems.length"
           ref="more-items-button"
-          :has-error="moreItems.some(i => i.hasError)"
+          :has-error="moreItems.some((i) => i.hasError)"
         >
           <template #button-text>
             <!-- Add translation  -->
@@ -61,7 +48,10 @@
               role="tab"
               :aria-selected="moreItem.name === activeItemName"
               :label="moreItem.label"
-              @click="handleClick(moreItem.name); toggleFloatingUi();"
+              @click="
+                handleClick(moreItem.name);
+                toggleFloatingUi();
+              "
               @keyup.enter="handleClick(moreItem.name)"
             />
           </template>
@@ -86,35 +76,35 @@
 </template>
 
 <script lang="ts">
-import type { PropType } from 'vue';
+import type { PropType } from "vue";
 
-import Vue from 'vue';
-import SwContextButton from '../../context-menu/sw-context-button/sw-context-button.vue';
-import SwContextMenuItem from '../../context-menu/sw-context-menu-item/sw-context-menu-item.vue';
-import SwColorBadge from '../../feedback-indicator/sw-color-badge/sw-color-badge.vue';
-import SwIcon from '../../icons-media/sw-icon/sw-icon.vue';
-import PriorityPlus from '../../_internal/sw-priority-plus-navigation.vue';
+import { defineComponent } from "vue";
+import SwContextButton from "../../context-menu/sw-context-button/sw-context-button.vue";
+import SwContextMenuItem from "../../context-menu/sw-context-menu-item/sw-context-menu-item.vue";
+import SwColorBadge from "../../feedback-indicator/sw-color-badge/sw-color-badge.vue";
+import SwIcon from "../../icons-media/sw-icon/sw-icon.vue";
+import PriorityPlus from "../../_internal/sw-priority-plus-navigation.vue";
 
 interface TabItem {
   label: string;
   name: string;
   hasError?: boolean;
   disabled?: boolean;
-  badge?: 'positive'|'critical'|'warning'|'info';
+  badge?: "positive" | "critical" | "warning" | "info";
   onClick?: (name: string) => void;
   // @internal - will be added by priority plus menu component
   hidden?: boolean;
 }
 
-export default Vue.extend({
-  name: 'SwTabs',
+export default defineComponent({
+  name: "SwTabs",
 
   components: {
-    'sw-context-button': SwContextButton,
-    'sw-context-menu-item': SwContextMenuItem,
-    'priority-plus': PriorityPlus,
-    'sw-color-badge': SwColorBadge,
-    'sw-icon': SwIcon
+    "sw-context-button": SwContextButton,
+    "sw-context-menu-item": SwContextMenuItem,
+    "priority-plus": PriorityPlus,
+    "sw-color-badge": SwColorBadge,
+    "sw-icon": SwIcon,
   },
 
   props: {
@@ -138,19 +128,19 @@ export default Vue.extend({
     defaultItem: {
       type: String,
       required: false,
-      default: '',
+      default: "",
     },
   },
 
   data(): {
-    refreshKey: boolean,
-    activeItemName: string,
-    showMoreItems: boolean,
+    refreshKey: boolean;
+    activeItemName: string;
+    showMoreItems: boolean;
   } {
     return {
       // refreshKey is for recalculating specific computed properties
       refreshKey: true,
-      activeItemName: '',
+      activeItemName: "",
       showMoreItems: false,
     };
   },
@@ -160,23 +150,23 @@ export default Vue.extend({
       this.refreshKey;
 
       return {
-        'sw-tabs--vertical': this.vertical,
-        'sw-tabs--small': this.small
+        "sw-tabs--vertical": this.vertical,
+        "sw-tabs--small": this.small,
       };
     },
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    activeDomItem(): any|undefined {
+    activeDomItem(): any | undefined {
       this.refreshKey;
 
       // Access "this.activeItemName" before to react dynamically on changes
       const activeItemName = this.activeItemName;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const domItems = this.$refs.items ? this.$refs.items as any[] : [];
+      const domItems = this.$refs.items ? (this.$refs.items as any[]) : [];
 
-      const activeDomItem = domItems.find(item => {
-        return item.getAttribute('data-item-name') === activeItemName;
-      })
+      const activeDomItem = domItems.find((item) => {
+        return item.getAttribute("data-item-name") === activeItemName;
+      });
 
       return activeDomItem;
     },
@@ -184,16 +174,14 @@ export default Vue.extend({
     sliderPosition(): number {
       this.refreshKey;
 
-      if (!this.activeDomItem && !this.activeItem) {
+      if (!this.activeItem) {
         return 0;
       }
 
-      if (
-        this.activeItem?.hidden &&
-        this.$refs['more-items-button']
-      ) {
+      // Handle the case when the active item is hidden
+      if (!this.activeDomItem && this.$refs["more-items-button"]) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return (this.$refs['more-items-button'] as any).$el?.offsetLeft
+        return (this.$refs["more-items-button"] as any).$el?.offsetLeft;
       }
 
       return this.vertical ? this.activeDomItem?.offsetTop : this.activeDomItem?.offsetLeft;
@@ -202,27 +190,28 @@ export default Vue.extend({
     sliderLength(): number {
       this.refreshKey;
 
-      if (!this.activeDomItem && !this.activeItem) {
+      if (!this.activeItem) {
         return 0;
       }
 
-      if (
-        this.activeItem?.hidden &&
-        this.$refs['more-items-button']
-      ) {
+      // Handle the case when the active item is hidden
+      if (!this.activeDomItem && this.$refs["more-items-button"]) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return (this.$refs['more-items-button'] as any).$el?.offsetWidth
+        return (this.$refs["more-items-button"] as any).$el?.offsetWidth;
       }
 
-      return this.vertical
-        ? this.activeDomItem?.offsetHeight
-        : this.activeDomItem?.offsetWidth;
+      if (this.activeItem?.hidden && this.$refs["more-items-button"]) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return (this.$refs["more-items-button"] as any).$el?.offsetWidth;
+      }
+
+      return this.vertical ? this.activeDomItem?.offsetHeight : this.activeDomItem?.offsetWidth;
     },
 
-    activeItem(): TabItem|undefined {
+    activeItem(): TabItem | undefined {
       this.refreshKey;
 
-      return this.items.find(item => {
+      return this.items.find((item) => {
         return item.name === this.activeItemName;
       });
     },
@@ -231,8 +220,8 @@ export default Vue.extend({
       this.refreshKey;
 
       return {
-        'sw-tabs--slider__has-error': (this.activeItem?.hasError) ?? false,
-      }
+        "sw-tabs--slider__has-error": this.activeItem?.hasError ?? false,
+      };
     },
 
     sliderStyle(): string {
@@ -249,17 +238,21 @@ export default Vue.extend({
           transform: translate(${this.sliderPosition}px, 0) rotate(0deg);
           width: ${this.sliderLength}px;
       `;
-    }
+    },
   },
 
   watch: {
-    items: 'handleResize',
-    vertical: 'handleResize',
-    small: 'handleResize',
+    items: "handleResize",
+    vertical: "handleResize",
+    small: "handleResize",
   },
 
   mounted() {
     this.setActiveItem(this.defaultItem);
+
+    this.$nextTick(() => {
+      this.handleResize();
+    });
 
     // @ts-expect-error $device helper is not registered in TS yet
     this.$device.onResize({
@@ -271,7 +264,7 @@ export default Vue.extend({
     });
   },
 
-  beforeDestroy() {
+  beforeUnmount() {
     // @ts-expect-error $device helper is not registered in TS yet
     this.$device.removeResizeListener(this);
   },
@@ -279,9 +272,9 @@ export default Vue.extend({
   methods: {
     handleClick(itemName: string): void {
       this.setActiveItem(itemName);
-      this.$emit('new-item-active', itemName);
+      this.$emit("new-item-active", itemName);
 
-      const matchingItem = this.items.find(item => item.name === itemName);
+      const matchingItem = this.items.find((item) => item.name === itemName);
 
       if (!matchingItem?.onClick) {
         return;
@@ -292,25 +285,25 @@ export default Vue.extend({
 
     getItemClasses(item: TabItem) {
       return {
-        'sw-tabs--item__has-error': item.hasError,
-        'sw-tabs--item__is-active': item.name === this.activeItemName,
-      }
+        "sw-tabs--item__has-error": item.hasError,
+        "sw-tabs--item__is-active": item.name === this.activeItemName,
+      };
     },
 
     getContextMenuItemVariant(item: TabItem): string {
       if (item.hasError) {
-        return 'critical';
+        return "critical";
       }
 
       if (item.name === this.activeItemName) {
-        return 'active'
+        return "active";
       }
 
-      if (item.badge === 'critical') {
-        return 'critical'
+      if (item.badge === "critical") {
+        return "critical";
       }
 
-      return 'default';
+      return "default";
     },
 
     setActiveItem(itemName: string): void {
@@ -324,14 +317,14 @@ export default Vue.extend({
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (this.$refs.priorityPlus as any).handleResize().then(() => {
           this.refreshKey = !this.refreshKey;
-        })
+        });
       }
     },
 
     toggleMoreTabItems() {
       this.showMoreItems = !this.showMoreItems;
-    }
-  }
+    },
+  },
 });
 </script>
 

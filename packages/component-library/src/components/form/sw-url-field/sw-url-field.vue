@@ -28,58 +28,48 @@
         role="button"
         @click="changeMode(disabled)"
       >
-        <sw-icon
-          v-if="sslActive"
-          name="regular-lock"
-          :small="true"
-        />
-        <sw-icon
-          v-else
-          name="regular-lock-open"
-          :small="true"
-        />
+        <sw-icon v-if="sslActive" name="regular-lock" :small="true" />
+        <sw-icon v-else name="regular-lock-open" :small="true" />
         <span aria-describedby="url-prefix">
           {{ urlPrefix }}
         </span>
       </span>
     </template>
 
-    <template #element="{identification}">
+    <template #element="{ identification }">
       <!-- @vue-ignore -->
       <input
         :id="identification"
         type="url"
         class="sw-url-input-field__input"
         :name="identification"
-        :value="currentValue|unicodeUri"
+        :value="unicodeUri(currentValue)"
         :placeholder="placeholder"
         :disabled="disabled"
-        @input="onInput"
+        @input.stop="onInput"
         @focus="setFocusClass"
-        @blur="onBlur($event); removeFocusClass();"
-      >
+        @blur="
+          onBlur($event);
+          removeFocusClass();
+        "
+      />
     </template>
 
-    <template
-      #field-suffix
-    >
+    <template #field-suffix>
       <slot name="suffix" />
     </template>
 
     <template #error>
-      <sw-field-error
-        v-if="error"
-        :error="error"
-      />
+      <sw-field-error v-if="error" :error="error" />
     </template>
   </sw-base-field>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import SwTextField from '../sw-text-field/sw-text-field.vue';
-import SwIcon from '../../icons-media/sw-icon/sw-icon.vue';
-import UnicodeUriFilter from '../../../filters/unicode-uri.filter';
+import { defineComponent } from "vue";
+import SwTextField from "../sw-text-field/sw-text-field.vue";
+import SwIcon from "../../icons-media/sw-icon/sw-icon.vue";
+import unicodeUriFilter from "../../../filters/unicode-uri.filter";
 
 const URL_REGEX = {
   PROTOCOL: /([a-zA-Z0-9]+:\/\/)+/,
@@ -88,15 +78,11 @@ const URL_REGEX = {
   TRAILING_SLASH: /\/+$/,
 };
 
-export default Vue.extend({
-  name: 'SwUrlField',
+export default defineComponent({
+  name: "SwUrlField",
 
   components: {
-    'sw-icon': SwIcon,
-  },
-
-  filters: {
-    unicodeUri: UnicodeUriFilter,
+    "sw-icon": SwIcon,
   },
 
   extends: SwTextField,
@@ -123,8 +109,7 @@ export default Vue.extend({
   data() {
     return {
       sslActive: true,
-      // @ts-expect-error - value is defined in swTextField
-      currentValue: this.value || '',
+      currentValue: this.modelValue || "",
       errorUrl: null,
       currentDebounce: null,
     };
@@ -133,24 +118,24 @@ export default Vue.extend({
   computed: {
     prefixClass(): string {
       if (this.sslActive) {
-        return 'is--ssl';
+        return "is--ssl";
       }
 
-      return '';
+      return "";
     },
 
     urlPrefix(): string {
       if (this.sslActive) {
-        return 'https://';
+        return "https://";
       }
 
-      return 'http://';
+      return "http://";
     },
 
     url(): string {
       const trimmedValue = this.currentValue.trim();
-      if (trimmedValue === '') {
-        return '';
+      if (trimmedValue === "") {
+        return "";
       }
 
       return `${this.urlPrefix}${trimmedValue}`;
@@ -164,7 +149,7 @@ export default Vue.extend({
 
   watch: {
     value() {
-      this.checkInput(this.value || '');
+      this.checkInput(this.modelValue || "");
     },
   },
 
@@ -175,6 +160,10 @@ export default Vue.extend({
   methods: {
     createdComponent() {
       this.checkInput(this.currentValue);
+    },
+
+    unicodeUri(value: string) {
+      return unicodeUriFilter(value);
     },
 
     onBlur(event: Event) {
@@ -203,14 +192,14 @@ export default Vue.extend({
       } else {
         this.currentValue = validated;
 
-        this.$emit('input', this.url);
+        this.$emit("update:modelValue", this.url);
       }
     },
 
     handleEmptyUrl() {
-      this.currentValue = '';
+      this.currentValue = "";
 
-      this.$emit('input', '');
+      this.$emit("update:modelValue", "");
     },
 
     validateCurrentValue(value: string) {
@@ -222,23 +211,23 @@ export default Vue.extend({
       }
 
       if (this.omitUrlSearch) {
-        url.search = '';
+        url.search = "";
       }
 
       if (this.omitUrlHash) {
-        url.hash = '';
+        url.hash = "";
       }
 
       // when a hash or search query is provided we want to allow trailing slash, eg a vue route `admin#/`
-      const removeTrailingSlash = url.hash === '' && url.search === '' ? URL_REGEX.TRAILING_SLASH : '';
+      const removeTrailingSlash =
+        url.hash === "" && url.search === "" ? URL_REGEX.TRAILING_SLASH : "";
 
       // build URL via native URL.toString() function instead by hand @see NEXT-15747
       return url
         .toString()
-        .replace(URL_REGEX.PROTOCOL, '')
-        .replace(removeTrailingSlash, '')
-        // @ts-expect-error - filters is defined in options
-        .replace(url.host, this.$options.filters.unicodeUri(url.host));
+        .replace(URL_REGEX.PROTOCOL, "")
+        .replace(removeTrailingSlash, "")
+        .replace(url.host, this.unicodeUri(url.host));
     },
 
     changeMode(disabled: boolean) {
@@ -247,7 +236,7 @@ export default Vue.extend({
       }
 
       this.sslActive = !this.sslActive;
-      this.$emit('input', this.url);
+      this.$emit("update:modelValue", this.url);
     },
 
     getURLInstance(value: string) {
@@ -269,7 +258,7 @@ export default Vue.extend({
     },
 
     setInvalidUrlError() {
-      console.error({ code: 'INVALID_URL' })
+      console.error({ code: "INVALID_URL" });
     },
   },
 });

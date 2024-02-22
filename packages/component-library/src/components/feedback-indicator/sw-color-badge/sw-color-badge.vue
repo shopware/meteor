@@ -1,40 +1,29 @@
 <template>
-  <span
-    class="sw-color-badge"
-    :class="variantClass"
-    v-bind="$attrs"
-    :style="colorStyle"
-  >
+  <span class="sw-color-badge" :class="variantClass" v-bind="$attrs" :style="colorStyle">
     <slot />
   </span>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from "vue";
 
-export type SwColorBadgeVariant = 'default' | 'warning' | 'critical' | 'positive' | 'info';
+export type SwColorBadgeVariant = "default" | "warning" | "critical" | "positive" | "info";
 
-export default Vue.extend({
-  name: 'SwColorBadge',
+export default defineComponent({
+  name: "SwColorBadge",
   props: {
     variant: {
       type: String,
       required: false,
-      default: 'default',
+      default: "default",
       validator(value: SwColorBadgeVariant) {
-        return [
-          'default',
-          'warning',
-          'critical',
-          'positive',
-          'info'
-        ].includes(value)
-      }
+        return ["default", "warning", "critical", "positive", "info"].includes(value);
+      },
     },
     color: {
       type: String,
       required: false,
-      default: '',
+      default: "",
     },
     rounded: {
       type: Boolean,
@@ -45,21 +34,21 @@ export default Vue.extend({
       type: Boolean,
       required: false,
       default: false,
-    }
+    },
   },
 
   computed: {
     colorStyle(): string {
       if (!this.color.length) {
-        return '';
+        return "";
       }
       return `background:${this.color}`;
     },
     variantClass(): Record<string, boolean> {
       return {
         [`is--${this.variant}`]: true,
-        'is--rounded': this.rounded,
-        'has--text': this.hasText,
+        "is--rounded": this.rounded,
+        "has--text": this.hasText,
       };
     },
   },
@@ -103,7 +92,7 @@ $sw-color-badge-color-info: $color-shopware-brand-500;
   &.is--info {
     background-color: $sw-color-badge-color-info;
   }
-  
+
   &.has--text {
     height: auto;
     width: auto;
@@ -132,5 +121,4 @@ $sw-color-badge-color-info: $color-shopware-brand-500;
     }
   }
 }
-
 </style>

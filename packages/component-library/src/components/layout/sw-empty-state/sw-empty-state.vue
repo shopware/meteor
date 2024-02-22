@@ -15,33 +15,32 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue';
-import { TranslateResult } from "vue-i18n";
-import { PropType } from "vue/types/v3-component-props";
+import { defineComponent, type PropType } from "vue";
+import type { TranslateResult } from "vue-i18n";
 import SwIcon from "../../icons-media/sw-icon/sw-icon.vue";
 
 export default defineComponent({
   name: "SwEmptyState",
 
   components: {
-    'sw-icon': SwIcon,
+    "sw-icon": SwIcon,
   },
 
   props: {
     headline: {
-      type: String as PropType<string|TranslateResult>,
+      type: String as PropType<string | TranslateResult>,
       required: true,
     },
 
     description: {
-      type: String as PropType<string|TranslateResult>,
+      type: String as PropType<string | TranslateResult>,
       required: true,
     },
 
     icon: {
       type: String,
       required: false,
-      default: 'solid-content',
+      default: "solid-content",
     },
   },
 });

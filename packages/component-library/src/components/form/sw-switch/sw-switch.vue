@@ -1,9 +1,6 @@
 <template>
   <div class="sw-field--switch__container">
-    <div
-      class="sw-field--switch"
-      :class="swSwitchFieldClasses"
-    >
+    <div class="sw-field--switch" :class="swSwitchFieldClasses">
       <div class="sw-field--switch__content">
         <div class="sw-field--switch__input">
           <!-- eslint-disable-next-line vuejs-accessibility/form-control-has-label -->
@@ -13,8 +10,8 @@
             :name="formFieldName || identification"
             :checked="inputState"
             :disabled="isDisabled"
-            @change="onChange"
-          >
+            @change.stop="onChange"
+          />
           <div class="sw-field__switch-state">
             <div class="sw-field__switch-state-knob" />
           </div>
@@ -38,37 +35,32 @@
         </sw-base-field>
       </div>
     </div>
-    <sw-field-error
-      :error="error"
-      :class="errorClasses"
-    />
+    <sw-field-error :error="error" :class="errorClasses" />
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import SwBaseField from '../_internal/sw-base-field/sw-base-field.vue';
-import SwFieldError from '../_internal/sw-field-error/sw-field-error.vue';
-import SwFormFieldMixin from '../../../mixins/form-field.mixin';
-import { createId } from '../../../utils/uuid';
+import { defineComponent } from "vue";
+import SwBaseField from "../_internal/sw-base-field/sw-base-field.vue";
+import SwFieldError from "../_internal/sw-field-error/sw-field-error.vue";
+import SwFormFieldMixin from "../../../mixins/form-field.mixin";
+import { createId } from "../../../utils/uuid";
 
-export default Vue.extend({
-  name: 'SwSwitch',
+export default defineComponent({
+  name: "SwSwitch",
 
   components: {
-    'sw-base-field': SwBaseField,
-    'sw-field-error': SwFieldError,
+    "sw-base-field": SwBaseField,
+    "sw-field-error": SwFieldError,
   },
 
   mixins: [SwFormFieldMixin],
-
-  inheritAttrs: false,
 
   props: {
     label: {
       type: String,
       required: false,
-      default: ''
+      default: "",
     },
     required: {
       type: Boolean,
@@ -129,6 +121,15 @@ export default Vue.extend({
       required: false,
       default: false,
     },
+
+    /**
+     * Name of the form field.
+     */
+    name: {
+      type: String,
+      required: false,
+      default: "",
+    },
   },
 
   data() {
@@ -172,22 +173,20 @@ export default Vue.extend({
     swSwitchFieldClasses(): Record<string, boolean>[] {
       return [
         {
-          'has--error': this.hasError,
-          'sw-field--switch-bordered': this.bordered,
-          'sw-field--switch-no-margin-top': this.removeTopMargin,
-          'sw-field--switch-no-margin-bottom': this.hasError,
-          // @ts-expect-error - classes exist on checkbox field
-          ...this.swCheckboxFieldClasses,
+          "has--error": this.hasError,
+          "sw-field--switch-bordered": this.bordered,
+          "sw-field--switch-no-margin-top": this.removeTopMargin,
+          "sw-field--switch-no-margin-bottom": this.hasError,
         },
       ];
     },
 
     errorClasses(): {
-      'sw-field__error--move-up': boolean;
+      "sw-field__error--move-up": boolean;
     }[] {
       return [
         {
-          'sw-field__error--move-up': !this.bordered,
+          "sw-field__error--move-up": !this.bordered,
         },
       ];
     },
@@ -198,17 +197,19 @@ export default Vue.extend({
   },
 
   watch: {
-    checked() { this.currentValue = this.checked; },
+    checked() {
+      this.currentValue = this.checked;
+    },
   },
 
   methods: {
     onChange(changeEvent: Event) {
       // @ts-expect-error - target exists on event
-      this.$emit('change', changeEvent.target.checked);
+      this.$emit("change", changeEvent.target.checked);
     },
 
     onInheritanceRestore(event: Event) {
-      this.$emit('inheritance-restore', event);
+      this.$emit("inheritance-restore", event);
     },
   },
 });

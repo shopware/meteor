@@ -1,31 +1,19 @@
 <template>
   <!-- Height needs to be set inline because the card has an sw-ignore-class component as a wrapper -->
-  <sw-card
-    class="sw-data-table"
-    :class="swDataTableClasses"
-    style="height: 100%"
-    :title="title"
-    :subtitle="subtitle"
-  >
+  <sw-card class="sw-data-table" :class="swDataTableClasses" :title="title" :subtitle="subtitle">
     <template #toolbar>
       <sw-search
         v-if="disableSearch !== true"
         size="small"
-        :value="searchValue"
+        :model-value="searchValue"
         @change="emitSearchValueChange"
       />
       <slot name="toolbar" />
     </template>
 
     <template #default>
-      <div
-        v-if="somethingSelected"
-        class="sw-data-table__table-selection-bulk-edit"
-      >
-        <sw-segmented-control
-          disable-context
-          :actions="bulkEditSegmentedControlActions"
-        >
+      <div v-if="somethingSelected" class="sw-data-table__table-selection-bulk-edit">
+        <sw-segmented-control disable-context :actions="bulkEditSegmentedControlActions">
           <template #more--popover-items__base>
             <sw-popover-item
               v-for="moreAction in bulkEditMoreActions"
@@ -41,28 +29,23 @@
         </sw-segmented-control>
       </div>
 
-      <div
-        ref="tableWrapper"
-        class="sw-data-table__table-wrapper"
-      >
-        <table
-          ref="dataTable"
-        >
+      <div ref="tableWrapper" class="sw-data-table__table-wrapper">
+        <table ref="dataTable">
           <caption class="sw-data-table__caption">
-            {{ caption }}
+            {{
+              caption
+            }}
           </caption>
 
           <thead>
             <tr>
               <th
-                v-if="enableRowNumbering" 
+                v-if="enableRowNumbering"
                 v-stickyColumn
                 class="sw-data-table__table-row-number-head"
                 scope="col"
               >
-                <span>
-                  #
-                </span>
+                <span> # </span>
               </th>
 
               <th
@@ -71,22 +54,21 @@
                 class="sw-data-table__table-selection-head"
                 scope="col"
               >
-                <sw-checkbox
-                  :checked="somethingSelected"
-                  @change="handleSelectAll"
-                />
+                <sw-checkbox :checked="somethingSelected" @change="handleSelectAll" />
               </th>
 
-              <template v-for="(column) in sortedColumns">
+              <template v-for="column in sortedColumns">
                 <!-- @vue-skip -->
                 <th
                   v-if="isColumnVisible(column)"
                   :key="column.property"
-                  :ref="(el) => {
-                    if (el) {
-                      columnHeaderRefs[column.property] = el;
+                  :ref="
+                    (el) => {
+                      if (el) {
+                        columnHeaderRefs[column.property] = el;
+                      }
                     }
-                  }"
+                  "
                   v-draggable="{ ...dragConfig, data: column }"
                   scope="col"
                   class="sw-data-table__table-wrapper-table-head"
@@ -94,8 +76,8 @@
                   :data-header-column-property="column.property"
                   :style="renderColumnHeaderStyle(column)"
                   :data-testid="'column-table-head__' + column.property"
-                  @mouseenter="() => currentHoveredColumn = column.property"
-                  @mouseleave="() => currentHoveredColumn = null"
+                  @mouseenter="() => (currentHoveredColumn = column.property)"
+                  @mouseleave="() => (currentHoveredColumn = null)"
                 >
                   <div
                     class="sw-data-table__table-head-dragzone"
@@ -105,9 +87,7 @@
                       class="sw-data-table__table-head-dragzone-bar"
                       :data-testid="'column-dragzone-bar__' + column.property"
                     >
-                      <div
-                        class="sw-data-table__table-head-dragzone-indicator"
-                      >
+                      <div class="sw-data-table__table-head-dragzone-indicator">
                         <sw-icon name="regular-grip-horizontal-s" />
                       </div>
                     </div>
@@ -124,7 +104,9 @@
                       class="sw-data-table__table-head-sorting-icons"
                     >
                       <sw-icon
-                        :name="sortDirection === 'ASC' ? 'solid-long-arrow-up' : 'solid-long-arrow-down'"
+                        :name="
+                          sortDirection === 'ASC' ? 'solid-long-arrow-up' : 'solid-long-arrow-down'
+                        "
                         class="sw-data-table__table-head-sort"
                       />
                     </div>
@@ -161,7 +143,9 @@
                         :label="$t('sw-data-table.columnSettings.sortAscending')"
                         icon="regular-long-arrow-up"
                         contextual-detail="A -> Z"
-                        :on-label-click="() => onColumnSettingsSortChange(column.property, 'ASC', toggleFloatingUi)"
+                        :on-label-click="
+                          () => onColumnSettingsSortChange(column.property, 'ASC', toggleFloatingUi)
+                        "
                       />
 
                       <sw-popover-item
@@ -169,7 +153,10 @@
                         :label="$t('sw-data-table.columnSettings.sortDescending')"
                         icon="regular-long-arrow-down"
                         contextual-detail="Z -> A"
-                        :on-label-click="() => onColumnSettingsSortChange(column.property, 'DESC', toggleFloatingUi)"
+                        :on-label-click="
+                          () =>
+                            onColumnSettingsSortChange(column.property, 'DESC', toggleFloatingUi)
+                        "
                       />
 
                       <sw-popover-item
@@ -191,12 +178,14 @@
                   >
                     <sw-popover
                       :title="$t('sw-data-table.addColumnIndicator.popoverTitle')"
-                      @update:isOpened="(value) => {
-                        if (value === false) {
-                          forceHighlightedColumn = false;
-                          setHighlightedColumn(null)
+                      @update:isOpened="
+                        (value) => {
+                          if (value === false) {
+                            forceHighlightedColumn = false;
+                            setHighlightedColumn(null);
+                          }
                         }
-                      }"
+                      "
                     >
                       <template #trigger="{ toggleFloatingUi }">
                         <sw-icon
@@ -208,10 +197,12 @@
                           :data-testid="'add-column-indicator-icon__' + column.property"
                           @mouseenter="() => setHighlightedColumn(column)"
                           @mouseleave="() => setHighlightedColumn(null)"
-                          @click="() => {
-                            forceHighlightedColumn = true;
-                            toggleFloatingUi()
-                          }"
+                          @click="
+                            () => {
+                              forceHighlightedColumn = true;
+                              toggleFloatingUi();
+                            }
+                          "
                         />
                       </template>
 
@@ -219,10 +210,12 @@
                         <sw-popover-item-result
                           :options="addColumnOptions"
                           @search="onAddColumnSearch"
-                          @click-option="(columnProperty) => {
-                            onAddColumnOptionClick(columnProperty, column.property)
-                            toggleFloatingUi()
-                          }"
+                          @click-option="
+                            (columnProperty) => {
+                              onAddColumnOptionClick(columnProperty, column.property);
+                              toggleFloatingUi();
+                            }
+                          "
                         />
                       </template>
                     </sw-popover>
@@ -232,7 +225,9 @@
                     v-if="column.allowResize !== false"
                     class="sw-data-table__table-head-resizable sw-data-table__table-head-resizable-before"
                     :data-testid="'sw-data-table__table-head-resizable-before__' + column.property"
-                    @mousedown.prevent.stop="() => startColumnResizing(getPreviousVisibleColumn(column))"
+                    @mousedown.prevent.stop="
+                      () => startColumnResizing(getPreviousVisibleColumn(column))
+                    "
                     @mouseenter="() => setHighlightedColumn(getPreviousVisibleColumn(column))"
                     @mouseleave="() => setHighlightedColumn(null)"
                   />
@@ -248,10 +243,7 @@
                 </th>
               </template>
 
-              <th
-                class="sw-data-table__table-settings-button"
-                scope="col"
-              >
+              <th class="sw-data-table__table-settings-button" scope="col">
                 <sw-data-table-settings
                   :columns="sortedColumns"
                   :show-outlines="showOutlines"
@@ -261,20 +253,27 @@
                   @change-show-outlines="(newValue) => $emit('change-show-outlines', newValue)"
                   @change-show-stripes="(newValue) => $emit('change-show-stripes', newValue)"
                   @change-outline-framing="(newValue) => $emit('change-outline-framing', newValue)"
-                  @change-enable-row-numbering="(newValue) => $emit('change-enable-row-numbering', newValue)"
+                  @change-enable-row-numbering="
+                    (newValue) => $emit('change-enable-row-numbering', newValue)
+                  "
                   @reset-all-changes="resetAllChanges"
-                  @change-column-order="({ itemId, dropId, dropZone }) => changeColumnPosition(itemId, dropId, dropZone)"
-                  @change-column-visibility="(columnProperty, visibility) => changeColumnVisibility(columnProperty, visibility)"
+                  @change-column-order="
+                    ({ itemId, dropId, dropZone }) => changeColumnPosition(itemId, dropId, dropZone)
+                  "
+                  @change-column-visibility="
+                    (columnProperty, visibility) =>
+                      changeColumnVisibility(columnProperty, visibility)
+                  "
                 />
               </th>
             </tr>
           </thead>
-            
+
           <tbody>
             <template v-if="dataSource.length > 0 || isLoading">
               <!-- @vue-skip -->
               <tr
-                v-for="(data, rowIndex) in (isLoading ? emptyData : dataSource)"
+                v-for="(data, rowIndex) in isLoading ? emptyData : dataSource"
                 :key="data.id"
                 :class="getColumnDataRowClasses(data.id)"
               >
@@ -288,11 +287,7 @@
                   </span>
                 </td>
 
-                <td
-                  v-if="allowRowSelection"
-                  v-stickyColumn
-                  class="sw-data-table__table-select-row"
-                >
+                <td v-if="allowRowSelection" v-stickyColumn class="sw-data-table__table-select-row">
                   <sw-checkbox
                     :checked="getSelectionValue(data.id)"
                     @change="onRowSelect(data.id)"
@@ -352,12 +347,8 @@
                 </template>
 
                 <td class="sw-data-table__table-context-button">
-                  <a
-                    v-if="!disableEdit"
-                    href="#"
-                    @click.prevent="$emit('open-details')"
-                  >
-                    {{ $t('sw-data-table.contextButtons.edit') }}
+                  <a v-if="!disableEdit" href="#" @click.prevent="$emit('open-details')">
+                    {{ $t("sw-data-table.contextButtons.edit") }}
                   </a>
                   <sw-context-button>
                     <sw-context-menu-item
@@ -415,7 +406,7 @@
           small
           hide-clearable-button
           :options="paginationOptionsConverted"
-          :value="paginationLimit"
+          :model-value="paginationLimit"
           @change="emitPaginationLimitChange"
         />
         <span class="sw-data-table__pagination-info-text">
@@ -450,39 +441,51 @@
 
 <script lang="ts">
 import useScrollPossibilitiesClasses from "./composables/useScrollPossibilitiesClasses";
-import { PropType } from "vue";
-import { defineComponent, computed, onBeforeUpdate, onMounted, onBeforeUnmount, ref, set, getCurrentInstance, onBeforeMount } from "vue";
+import type { PropType } from "vue";
+import {
+  defineComponent,
+  computed,
+  onBeforeUpdate,
+  onMounted,
+  onBeforeUnmount,
+  ref,
+  getCurrentInstance,
+  onBeforeMount,
+} from "vue";
 import SwCard from "../../layout/sw-card/sw-card.vue";
 import SwButton from "../../form/sw-button/sw-button.vue";
 import SwSelect from "../../form/sw-select/sw-select.vue";
 import SwIcon from "../../icons-media/sw-icon/sw-icon.vue";
 import SwPagination from "../sw-pagination/sw-pagination.vue";
-import SwSearch from '../../navigation/sw-search/sw-search.vue';
-import SwContextButton from '../../context-menu/sw-context-button/sw-context-button.vue';
-import SwContextMenu from '../../context-menu/sw-context-menu-item/sw-context-menu-item.vue';
-import SwDataTableSettings from './sub-components/sw-data-table-settings/sw-data-table-settings.vue';
-import SwPopover from '../../overlay/sw-popover/sw-popover.vue';
-import SwPopoverItem, { type SwPopoverItemType } from '../../overlay/sw-popover-item/sw-popover-item.vue';
-import SwPopoverItemResult from '../../overlay/sw-popover-item-result/sw-popover-item-result.vue';
-import SwSkeletonBar from '../../feedback-indicator/sw-skeleton-bar/sw-skeleton-bar.vue';
-import SwCheckbox from '../../form/sw-checkbox/sw-checkbox.vue';
-import type { DropConfig, DragConfig} from '../../../directives/dragdrop.directive';
-import { draggable, droppable } from '../../../directives/dragdrop.directive';
-import type { TextColumnDefinition } from './renderer/sw-data-table-text-renderer.vue';
-import SwDataTableTextRenderer from './renderer/sw-data-table-text-renderer.vue';
-import type { NumberColumnDefinition } from './renderer/sw-data-table-number-renderer.vue';
-import SwDataTableNumberRenderer from './renderer/sw-data-table-number-renderer.vue';
-import type { BadgeColumnDefinition } from './renderer/sw-data-table-badge-renderer.vue';
-import SwDataTableBadgeRenderer from './renderer/sw-data-table-badge-renderer.vue';
-import SwDataTablePriceRenderer from './renderer/sw-data-table-price-renderer.vue';
-import type { PriceColumnDefinition } from './renderer/sw-data-table-price-renderer.vue';
-import SwSegmentedControl from '../../navigation/sw-segmented-control/sw-segmented-control.vue';
-import { SegmentedControlActionsProp } from '../../navigation/sw-segmented-control/sw-segmented-control.vue';
-import SwFloatingUi from '../../_internal/sw-floating-ui/sw-floating-ui.vue';
-import SwTooltipDirective from '../../../directives/tooltip.directive';
-import SwEmptyState from '../../layout/sw-empty-state/sw-empty-state.vue';
-import StickyColumn from '../../../directives/stickyColumn.directive';
-import { throttle } from 'lodash-es';
+import SwSearch from "../../navigation/sw-search/sw-search.vue";
+import SwContextButton from "../../context-menu/sw-context-button/sw-context-button.vue";
+import SwContextMenu from "../../context-menu/sw-context-menu-item/sw-context-menu-item.vue";
+import SwDataTableSettings from "./sub-components/sw-data-table-settings/sw-data-table-settings.vue";
+import SwPopover from "../../overlay/sw-popover/sw-popover.vue";
+import SwPopoverItem, {
+  type SwPopoverItemType,
+} from "../../overlay/sw-popover-item/sw-popover-item.vue";
+import SwPopoverItemResult from "../../overlay/sw-popover-item-result/sw-popover-item-result.vue";
+import SwSkeletonBar from "../../feedback-indicator/sw-skeleton-bar/sw-skeleton-bar.vue";
+import SwCheckbox from "../../form/sw-checkbox/sw-checkbox.vue";
+import type { DropConfig, DragConfig } from "../../../directives/dragdrop.directive";
+import { draggable, droppable } from "../../../directives/dragdrop.directive";
+import type { TextColumnDefinition } from "./renderer/sw-data-table-text-renderer.vue";
+import SwDataTableTextRenderer from "./renderer/sw-data-table-text-renderer.vue";
+import type { NumberColumnDefinition } from "./renderer/sw-data-table-number-renderer.vue";
+import SwDataTableNumberRenderer from "./renderer/sw-data-table-number-renderer.vue";
+import type { BadgeColumnDefinition } from "./renderer/sw-data-table-badge-renderer.vue";
+import SwDataTableBadgeRenderer from "./renderer/sw-data-table-badge-renderer.vue";
+import SwDataTablePriceRenderer from "./renderer/sw-data-table-price-renderer.vue";
+import type { PriceColumnDefinition } from "./renderer/sw-data-table-price-renderer.vue";
+import SwSegmentedControl from "../../navigation/sw-segmented-control/sw-segmented-control.vue";
+import type { SegmentedControlActionsProp } from "../../navigation/sw-segmented-control/sw-segmented-control.vue";
+import SwFloatingUi from "../../_internal/sw-floating-ui/sw-floating-ui.vue";
+import SwTooltipDirective from "../../../directives/tooltip.directive";
+import SwEmptyState from "../../layout/sw-empty-state/sw-empty-state.vue";
+import StickyColumn from "../../../directives/stickyColumn.directive";
+import { throttle } from "lodash-es";
+import { reactive } from "vue";
 
 export interface BaseColumnDefinition {
   label: string; // the label for the column
@@ -495,10 +498,11 @@ export interface BaseColumnDefinition {
   visible?: boolean; // you can hide a column by default
 }
 
-export type ColumnDefinition = BadgeColumnDefinition |
-                               TextColumnDefinition |
-                               NumberColumnDefinition |
-                               PriceColumnDefinition;
+export type ColumnDefinition =
+  | BadgeColumnDefinition
+  | TextColumnDefinition
+  | NumberColumnDefinition
+  | PriceColumnDefinition;
 
 export interface ColumnChanges {
   property?: ColumnDefinition["property"];
@@ -531,21 +535,21 @@ export default defineComponent({
     "sw-icon": SwIcon,
     "sw-pagination": SwPagination,
     "sw-search": SwSearch,
-    'sw-checkbox': SwCheckbox,
-    'sw-context-button': SwContextButton,
-    'sw-data-table-settings': SwDataTableSettings,
-    'sw-popover': SwPopover,
-    'sw-popover-item': SwPopoverItem,
-    'sw-popover-item-result': SwPopoverItemResult,
-    'sw-skeleton-bar': SwSkeletonBar,
-    'sw-context-menu-item': SwContextMenu,
-    'sw-floating-ui': SwFloatingUi,
-    'sw-segmented-control': SwSegmentedControl,
-    'sw-empty-state': SwEmptyState,
-    'sw-data-table-text-renderer': SwDataTableTextRenderer,
-    'sw-data-table-number-renderer': SwDataTableNumberRenderer,
-    'sw-data-table-badge-renderer': SwDataTableBadgeRenderer,
-    'sw-data-table-price-renderer': SwDataTablePriceRenderer,
+    "sw-checkbox": SwCheckbox,
+    "sw-context-button": SwContextButton,
+    "sw-data-table-settings": SwDataTableSettings,
+    "sw-popover": SwPopover,
+    "sw-popover-item": SwPopoverItem,
+    "sw-popover-item-result": SwPopoverItemResult,
+    "sw-skeleton-bar": SwSkeletonBar,
+    "sw-context-menu-item": SwContextMenu,
+    "sw-floating-ui": SwFloatingUi,
+    "sw-segmented-control": SwSegmentedControl,
+    "sw-empty-state": SwEmptyState,
+    "sw-data-table-text-renderer": SwDataTableTextRenderer,
+    "sw-data-table-number-renderer": SwDataTableNumberRenderer,
+    "sw-data-table-badge-renderer": SwDataTableBadgeRenderer,
+    "sw-data-table-price-renderer": SwDataTablePriceRenderer,
   },
   props: {
     /**
@@ -589,7 +593,7 @@ export default defineComponent({
     columnChanges: {
       type: Object as PropType<Record<string, ColumnChanges>>,
       required: false,
-      default: () => ({}),
+      default: () => reactive({}),
     },
     /**
      * Define the title of the table.
@@ -659,15 +663,15 @@ export default defineComponent({
     sortBy: {
       type: String,
       required: false,
-      default: '',
+      default: "",
     },
     /**
      * Define the current sort direction.
      */
     sortDirection: {
-      type: String as PropType<'ASC' | 'DESC'>,
+      type: String as PropType<"ASC" | "DESC">,
       required: false,
-      default: 'ASC',
+      default: "ASC",
     },
     /**
      * If active then the search input will be disabled.
@@ -683,7 +687,7 @@ export default defineComponent({
     searchValue: {
       type: String,
       required: false,
-      default: '',
+      default: "",
     },
     /**
      * If active then the table will be in loading state.
@@ -728,23 +732,25 @@ export default defineComponent({
     /**
      * Add more custom bulk edit actions
      */
-     bulkEditMoreActions: {
-      type: Array as PropType<{
-        id: string,
-        label: string,
-        onClick: () => void,
-        icon: 'default'|'critical'|'active',
-        type: SwPopoverItemType,
-        metaCopy: string,
-        contextualDetail: string,
-      }[]>,
+    bulkEditMoreActions: {
+      type: Array as PropType<
+        {
+          id: string;
+          label: string;
+          onClick: () => void;
+          icon?: "default" | "critical" | "active" | string;
+          type?: SwPopoverItemType;
+          metaCopy?: string;
+          contextualDetail?: string;
+        }[]
+      >,
       required: false,
       default: () => [],
-     },
+    },
 
-     /***
-      * Enable numbered rows
-      */
+    /***
+     * Enable numbered rows
+     */
     enableRowNumbering: {
       type: Boolean,
       required: false,
@@ -754,73 +760,73 @@ export default defineComponent({
     /**
      * Enable or disable the stripe design for the table.
      */
-     showStripes: {
+    showStripes: {
       type: Boolean,
       required: false,
       default: true,
-     },
+    },
 
-     /**
-      * Enable or disable outlines for the table.
-      */
-     showOutlines: {
+    /**
+     * Enable or disable outlines for the table.
+     */
+    showOutlines: {
       type: Boolean,
       required: false,
       default: true,
-     },
+    },
 
-     /**
-      * Enable or disable outline framing on hover
-      */
-     enableOutlineFraming: {
+    /**
+     * Enable or disable outline framing on hover
+     */
+    enableOutlineFraming: {
       type: Boolean,
       required: false,
       default: false,
-     },
+    },
 
-     /**
-      * Disable the possibility to delete items
-      */
-     disableDelete: {
+    /**
+     * Disable the possibility to delete items
+     */
+    disableDelete: {
       type: Boolean,
       required: false,
       default: false,
-     },
+    },
 
-      /**
-      * Disable the possibility to edit items
-      */
-     disableEdit: {
+    /**
+     * Disable the possibility to edit items
+     */
+    disableEdit: {
       type: Boolean,
       required: false,
       default: false,
-     },
+    },
 
-     /**
-      * Caption for accessibility
-      */
-     caption: {
+    /**
+     * Caption for accessibility
+     */
+    caption: {
       type: String,
       required: false,
-      default: 'Data table',
-     },
+      default: "Data table",
+    },
   },
   emits: [
     "reload",
     "pagination-limit-change",
     "pagination-current-page-change",
-    'search-value-change',
-    'sort-change',
-    'open-details',
-    'selection-change',
-    'multiple-selection-change',
-    'bulk-edit',
-    'bulk-delete',
-    'change-show-outlines',
-    'change-show-stripes',
-    'change-outline-framing',
-    'change-enable-row-numbering',
-    'item-delete'
+    "search-value-change",
+    "sort-change",
+    "open-details",
+    "selection-change",
+    "multiple-selection-change",
+    "bulk-edit",
+    "bulk-delete",
+    "change-show-outlines",
+    "change-show-stripes",
+    "change-outline-framing",
+    "change-enable-row-numbering",
+    "item-delete",
   ],
   i18n: {
     messages: {
@@ -848,11 +854,11 @@ export default defineComponent({
             itemsSelected: "1 item selected | {n} items selected",
             edit: "Edit",
             delete: "Delete",
-            more: '...',
+            more: "...",
           },
           reload: {
-            tooltip: 'Reload',
-          }
+            tooltip: "Reload",
+          },
         },
       },
       de: {
@@ -879,11 +885,11 @@ export default defineComponent({
             itemsSelected: "1 Element ausgewählt | {n} Elemente ausgewählt",
             edit: "Bearbeiten",
             delete: "Löschen",
-            more: '...',
+            more: "...",
           },
           reload: {
-            tooltip: 'Neu laden',
-          }
+            tooltip: "Neu laden",
+          },
         },
       },
     },
@@ -897,7 +903,7 @@ export default defineComponent({
 
     onBeforeMount(() => {
       i18n = getCurrentInstance()?.proxy?.$i18n;
-    })
+    });
 
     /**
      * General
@@ -906,13 +912,13 @@ export default defineComponent({
       return columnsWithChanges.value.slice().sort((a, b) => a.position - b.position);
     });
 
-    const currentHoveredColumn = ref<string|null>(null);
-    const currentHoveredRow = ref<string|null>(null);
+    const currentHoveredColumn = ref<string | null>(null);
+    const currentHoveredRow = ref<string | null>(null);
 
-    const setCurrentHoveredCell = (columnProperty: string|null, rowId: string) => {
+    const setCurrentHoveredCell = (columnProperty: string | null, rowId: string) => {
       currentHoveredColumn.value = columnProperty;
       currentHoveredRow.value = rowId;
-    }
+    };
 
     const visibleColumns = computed(() => {
       return sortedColumns.value.filter((column) => column.visible !== false);
@@ -929,10 +935,10 @@ export default defineComponent({
     /***
      * Add column indicator
      */
-    const addColumnOptionsSearch = ref('');
+    const addColumnOptionsSearch = ref("");
     const onAddColumnSearch = (value: string) => {
       addColumnOptionsSearch.value = value;
-    }
+    };
     const addColumnOptions = computed(() => {
       return sortedColumns.value
         .map((column) => {
@@ -946,42 +952,46 @@ export default defineComponent({
             isSortable: false,
             isHidable: false,
             disabled: column.visible === false ? false : true,
-          }
+          };
         })
         .filter((column) => {
           return column.label.toLowerCase().includes(addColumnOptionsSearch.value.toLowerCase());
         });
-    })
+    });
 
     const onAddColumnOptionClick = (columnProperty: string, previousColumnProperty: string) => {
-      changeColumnPosition(columnProperty, previousColumnProperty, 'after');
+      changeColumnPosition(columnProperty, previousColumnProperty, "after");
       changeColumnVisibility(columnProperty, true);
-    }
+    };
 
     /***
-    * Colum changes helper
-    */
+     * Colum changes helper
+     */
     const resetAllChanges = () => {
       Object.keys(props.columnChanges).forEach((key) => {
-        set(props.columnChanges, key, {});
+        // eslint-disable-next-line vue/no-mutating-props
+        props.columnChanges[key] = {};
       });
     };
 
     const addToColumnChanges = (columnProperty: string, columnChanges: ColumnChanges) => {
       if (!props.columnChanges[columnProperty]) {
-          set(props.columnChanges, columnProperty, {});
-        }
+        // eslint-disable-next-line vue/no-mutating-props
+        props.columnChanges[columnProperty] = {};
+      }
 
-        // save new width to columnChanges to make changes permanent
-        set(props.columnChanges, columnProperty, {
-          ...props.columnChanges[columnProperty],
-          ...columnChanges,
-        });
-    }
+      // save new width to columnChanges to make changes permanent
+      // eslint-disable-next-line vue/no-mutating-props
+      props.columnChanges[columnProperty] = {
+        ...props.columnChanges[columnProperty],
+        ...columnChanges,
+      };
+    };
 
     const columnsWithChanges = computed(() => {
       return props.columns.map((column) => {
         const columnChanges = props.columnChanges[column.property];
+
         if (!columnChanges) {
           return column;
         }
@@ -1028,7 +1038,7 @@ export default defineComponent({
     /***
      * This method will be executed when the user press the mouse down on the hidden resize bar of the column
      */
-    const startColumnResizing = (column: ColumnDefinition|null) => {
+    const startColumnResizing = (column: ColumnDefinition | null) => {
       if (!column) {
         return;
       }
@@ -1111,7 +1121,7 @@ export default defineComponent({
 
       Object.entries(columnHeaderRefs.value).forEach(([columnProperty, columnHeaderElement]) => {
         const currentColumnDefinition = props.columns.find(
-          (column) => column.property === columnProperty
+          (column) => column.property === columnProperty,
         );
 
         // skip the columns which shouldn't be resized and have fixed with
@@ -1250,13 +1260,13 @@ export default defineComponent({
 
     const isColumnVisible = (column: ColumnDefinition) => {
       return column.visible ?? true;
-    }
+    };
 
     const isMouseOver = ref<boolean>(false);
     const forceHighlightedColumn = ref<boolean>(false);
-    const highlightedColumn = ref<string|null>(null);
+    const highlightedColumn = ref<string | null>(null);
 
-    const setHighlightedColumn = (column: ColumnDefinition|null) => {
+    const setHighlightedColumn = (column: ColumnDefinition | null) => {
       if (dataTable.value?.classList.contains("--resizing")) {
         return;
       }
@@ -1282,7 +1292,7 @@ export default defineComponent({
 
       isMouseOver.value = true;
       highlightedColumn.value = column.property;
-    }
+    };
 
     /***
      * Pagination
@@ -1301,7 +1311,7 @@ export default defineComponent({
      * Search
      */
     const emitSearchValueChange = (searchValue: string) => {
-      emit('search-value-change', searchValue);
+      emit("search-value-change", searchValue);
     };
 
     const paginationOptionsConverted = computed(() => {
@@ -1314,49 +1324,58 @@ export default defineComponent({
 
     /***
      * Column Reordering
-    */
-    const changeColumnPosition = (columnId: string, targetColumnId: string, insertPosition: 'before'|'after' = 'before') => {
+     */
+    const changeColumnPosition = (
+      columnId: string,
+      targetColumnId: string,
+      insertPosition: "before" | "after" = "before",
+    ) => {
       const column = columnsWithChanges.value.find((column) => column.property === columnId);
-      const targetColumn = columnsWithChanges.value.find((column) => column.property === targetColumnId);
+      const targetColumn = columnsWithChanges.value.find(
+        (column) => column.property === targetColumnId,
+      );
 
       if (!column || !targetColumn) {
         return;
       }
 
-      [...columnsWithChanges.value].sort((columnA, columnB) => {
-        return columnA.position - columnB.position;
-      }).sort((columnA, columnB) => {
-        // The logic for inserting the column before or after the target column
-        if (columnB.property === column.property) {
-          if (insertPosition === 'after') {
-            return columnA.position <= targetColumn.position ? -1 : 1;
-          } else {
-            return columnA.position < targetColumn.position ? -1 : 1;
+      [...columnsWithChanges.value]
+        .sort((columnA, columnB) => {
+          return columnA.position - columnB.position;
+        })
+        .sort((columnA, columnB) => {
+          // The logic for inserting the column before or after the target column
+          if (columnB.property === column.property) {
+            if (insertPosition === "after") {
+              return columnA.position <= targetColumn.position ? -1 : 1;
+            } else {
+              return columnA.position < targetColumn.position ? -1 : 1;
+            }
           }
-        }
 
-        if (columnA.property === column.property) {
-          if (insertPosition === 'after') {
-            return columnB.position > targetColumn.position ? -1 : 1;
-          } else {
-            return columnB.position >= targetColumn.position ? -1 : 1;
+          if (columnA.property === column.property) {
+            if (insertPosition === "after") {
+              return columnB.position > targetColumn.position ? -1 : 1;
+            } else {
+              return columnB.position >= targetColumn.position ? -1 : 1;
+            }
           }
-        }
 
-        return 0;
-      }).forEach((column, index) => {
-        addToColumnChanges(column.property, { position: index * 100 });
-      });
+          return 0;
+        })
+        .forEach((column, index) => {
+          addToColumnChanges(column.property, { position: index * 100 });
+        });
     };
 
     const isDragging = ref<boolean>(false);
-    const DRAG_GROUP_COLUMN = 'drag-group-column';
+    const DRAG_GROUP_COLUMN = "drag-group-column";
 
-    const dragConfig: Partial<DragConfig<ColumnDefinition & {dropZone?: 'before'|'after'}>> = {
+    const dragConfig: Partial<DragConfig<ColumnDefinition & { dropZone?: "before" | "after" }>> = {
       dragGroup: DRAG_GROUP_COLUMN,
       preventEvent: false,
       validateDragStart: (dragConfigData, el, event) => {
-        const allDragZones = document.querySelectorAll('.sw-data-table__table-head-dragzone');
+        const allDragZones = document.querySelectorAll(".sw-data-table__table-head-dragzone");
         // @ts-expect-error - TS doesn't know that target is a valid element
         const isChild = [...allDragZones].some((dragZone) => dragZone.contains(event.target));
 
@@ -1383,14 +1402,18 @@ export default defineComponent({
         isDragging.value = false;
 
         if (dragConfigData && dropConfigData) {
-          changeColumnPosition(dragConfigData.property, dropConfigData.property, dropConfigData.dropZone);
+          changeColumnPosition(
+            dragConfigData.property,
+            dropConfigData.property,
+            dropConfigData.dropZone,
+          );
         }
-      }
-    }
+      },
+    };
 
-    const dropConfig: Partial<DropConfig & {dropZone?: 'before'|'after'}> = {
+    const dropConfig: Partial<DropConfig & { dropZone?: "before" | "after" }> = {
       dragGroup: DRAG_GROUP_COLUMN,
-    }
+    };
 
     const changeColumnVisibility = (columnProperty: string, visibility: boolean) => {
       const column = columnsWithChanges.value.find((column) => column.property === columnProperty);
@@ -1400,24 +1423,28 @@ export default defineComponent({
       }
 
       addToColumnChanges(columnProperty, {
-        visible: visibility
+        visible: visibility,
       });
-    }
+    };
 
     /**
      * Methods for sorting and filtering the data
      */
-    const emitSortChange = (property: string, direction: 'ASC'|'DESC') => {
-      emit('sort-change', property, direction);
-    }
+    const emitSortChange = (property: string, direction: "ASC" | "DESC") => {
+      emit("sort-change", property, direction);
+    };
 
-    const onColumnSettingsSortChange = (property: string, direction: 'ASC'|'DESC', chainMethod?: () => void) => {
+    const onColumnSettingsSortChange = (
+      property: string,
+      direction: "ASC" | "DESC",
+      chainMethod?: () => void,
+    ) => {
       emitSortChange(property, direction);
 
       if (chainMethod) {
         chainMethod();
       }
-    }
+    };
 
     /***
      * Add scroll possibilities to tableWrapper
@@ -1430,30 +1457,26 @@ export default defineComponent({
      */
     const swDataTableClasses = computed(() => {
       return {
-        'sw-data-table__layout-default': props.layout === 'default',
-        'sw-data-table__layout-full': props.layout === 'full',
-        'sw-data-table__first-column-fixed': props.allowRowSelection,
+        "sw-data-table__layout-default": props.layout === "default",
+        "sw-data-table__layout-full": props.layout === "full",
+        "sw-data-table__first-column-fixed": props.allowRowSelection,
         // could be relevant in the feature when you can disable the context button
-        'sw-data-table__last-column-fixed': true,
-        'sw-data-table__stripes': props.showStripes,
-        'sw-data-table__outlines': props.showOutlines,
-        'sw-data-table__column-outline-framing-active': props.enableOutlineFraming,
+        "sw-data-table__last-column-fixed": true,
+        "sw-data-table__stripes": props.showStripes,
+        "sw-data-table__outlines": props.showOutlines,
+        "sw-data-table__column-outline-framing-active": props.enableOutlineFraming,
       };
     });
 
     const getColumnHeaderInnerWrapperClasses = (column: ColumnDefinition) => {
-      return [
-        `sw-data-table__table-head-inner-wrapper-${column.renderer}-renderer`
-      ];
-    }
+      return [`sw-data-table__table-head-inner-wrapper-${column.renderer}-renderer`];
+    };
 
     const leftFixedColumnWidth = ref<number>(0);
 
     const calculateLeftFixedColumnWith = () => {
       if (dataTable.value) {
-        const stickyColumns = dataTable.value.querySelectorAll(
-          "thead th[data-sticky-column]"
-        );
+        const stickyColumns = dataTable.value.querySelectorAll("thead th[data-sticky-column]");
 
         const lastStickyColumn = stickyColumns[stickyColumns.length - 1] as HTMLElement;
 
@@ -1461,20 +1484,21 @@ export default defineComponent({
           return;
         }
 
-        const lastStickyColumnRight =
-          lastStickyColumn.dataset.stickyColumnRight;
+        const lastStickyColumnRight = lastStickyColumn.dataset.stickyColumnRight;
 
         leftFixedColumnWidth.value = Number(lastStickyColumnRight);
       }
-    }
+    };
 
-    let tableMutationObserver: MutationObserver|undefined;
-    
+    let tableMutationObserver: MutationObserver | undefined;
+
     const createTableMutationObserver = () => {
       if (dataTable.value) {
-        tableMutationObserver = new MutationObserver(throttle(() => {
-          calculateLeftFixedColumnWith();
-        }, 60));
+        tableMutationObserver = new MutationObserver(
+          throttle(() => {
+            calculateLeftFixedColumnWith();
+          }, 60),
+        );
 
         tableMutationObserver.observe(dataTable.value, {
           childList: true,
@@ -1482,8 +1506,8 @@ export default defineComponent({
           attributes: true,
         });
       }
-    }
-    
+    };
+
     onMounted(() => {
       createTableMutationObserver();
       calculateLeftFixedColumnWith();
@@ -1500,8 +1524,8 @@ export default defineComponent({
      */
     const tableStylingVariables = computed(() => {
       return {
-        '--fixed-left-column-width': `${leftFixedColumnWidth.value}px`,
-        '--fixed-right-column-width': '105px',
+        "--fixed-left-column-width": `${leftFixedColumnWidth.value}px`,
+        "--fixed-right-column-width": "105px",
       };
     });
 
@@ -1519,10 +1543,10 @@ export default defineComponent({
     const onRowSelect = (dataId: string) => {
       if (props.allowRowSelection) {
         const previousValue = getSelectionValue(dataId);
-        
-        emit('selection-change', {
+
+        emit("selection-change", {
           id: dataId,
-          value: !previousValue
+          value: !previousValue,
         });
       }
     };
@@ -1534,56 +1558,56 @@ export default defineComponent({
     const bulkEditSegmentedControlActions = computed(() => {
       const actions: SegmentedControlActionsProp = [
         {
-          id: 'item-selection-count',
-          label: i18n.tc('sw-data-table.bulkEdit.itemsSelected', props.selectedRows.length),
+          id: "item-selection-count",
+          label: i18n.tc("sw-data-table.bulkEdit.itemsSelected", props.selectedRows.length),
           onClick: () => {
-            emit('multiple-selection-change', {
+            emit("multiple-selection-change", {
               selections: props.selectedRows,
-              value: false
+              value: false,
             });
           },
           isPressed: true,
           checked: true,
           hasCheckbox: true,
         },
-      ]
+      ];
 
       if (props.allowBulkEdit && !props.disableEdit) {
         actions.push({
-          id: 'edit',
-          label: i18n.t('sw-data-table.bulkEdit.edit'),
-          onClick: () => emit('bulk-edit'),
-        })
+          id: "edit",
+          label: i18n.t("sw-data-table.bulkEdit.edit"),
+          onClick: () => emit("bulk-edit"),
+        });
       }
 
       if (props.allowBulkDelete && !props.disableDelete) {
         actions.push({
-          id: 'delete',
-          label: i18n.t('sw-data-table.bulkEdit.delete'),
-          onClick: () => emit('bulk-delete'),
-          isCritical: true
-        })
+          id: "delete",
+          label: i18n.t("sw-data-table.bulkEdit.delete"),
+          onClick: () => emit("bulk-delete"),
+          isCritical: true,
+        });
       }
 
       if (props.bulkEditMoreActions.length > 0) {
         actions.push({
-          id: 'more',
-          label: i18n.t('sw-data-table.bulkEdit.more'),
-          popover: {}
-        })
+          id: "more",
+          label: i18n.t("sw-data-table.bulkEdit.more"),
+          popover: {},
+        });
       }
 
       return actions;
     });
 
     const handleSelectAll = () => {
-      emit('multiple-selection-change', {
-        selections: props.dataSource.map(r => r.id),
-        value: true
+      emit("multiple-selection-change", {
+        selections: props.dataSource.map((r) => r.id),
+        value: true,
       });
-    }
+    };
 
-    const getPreviousVisibleColumn = (column: ColumnDefinition): ColumnDefinition|null => {
+    const getPreviousVisibleColumn = (column: ColumnDefinition): ColumnDefinition | null => {
       const visibleColumns = sortedColumns.value.filter((c) => isColumnVisible(c));
 
       const index = visibleColumns.findIndex((c) => c.property === column.property);
@@ -1593,7 +1617,7 @@ export default defineComponent({
       }
 
       return visibleColumns[index - 1];
-    }
+    };
 
     /**
      * Add empty data to source when data is loading
@@ -1607,7 +1631,7 @@ export default defineComponent({
      */
     const getRealIndex = (index: number) => {
       return (props.currentPage - 1) * props.paginationLimit + index + 1;
-    }
+    };
 
     return {
       sortedColumns,
@@ -1670,12 +1694,35 @@ export default defineComponent({
 /**
 * Use inter-font instead of normal font for data-table. Also add the new variables to this file.
 */
-$font-family-default: "Inter", -apple-system, BlinkMacSystemFont, "San Francisco", "Segoe UI",
-  Roboto, "Helvetica Neue", sans-serif;
-$font-family-variables: "Inter var", -apple-system, BlinkMacSystemFont, "San Francisco", "Segoe UI",
-  Roboto, "Helvetica Neue", sans-serif;
-$font-family-default-feature-settings: "ss01" on, "ss02" on, "case" on, "cpsp" on, "zero" on,
-  "cv09" on, "cv07" on, "cv06" on, "cv10" on, "cv11" on;
+$font-family-default:
+  "Inter",
+  -apple-system,
+  BlinkMacSystemFont,
+  "San Francisco",
+  "Segoe UI",
+  Roboto,
+  "Helvetica Neue",
+  sans-serif;
+$font-family-variables:
+  "Inter var",
+  -apple-system,
+  BlinkMacSystemFont,
+  "San Francisco",
+  "Segoe UI",
+  Roboto,
+  "Helvetica Neue",
+  sans-serif;
+$font-family-default-feature-settings:
+  "ss01" on,
+  "ss02" on,
+  "case" on,
+  "cpsp" on,
+  "zero" on,
+  "cv09" on,
+  "cv07" on,
+  "cv06" on,
+  "cv10" on,
+  "cv11" on;
 
 $font-weight-medium: 500;
 
@@ -1686,7 +1733,7 @@ $line-height-md: 24px;
 $line-height-lg: 28px;
 
 $color-card-headline: #1c1c1c;
-$color-shopware-brand-vivacious-500: #0F76DE;
+$color-shopware-brand-vivacious-500: #0f76de;
 
 $scrollShadowSize: 16px;
 $scrollShadowColor: rgba(120, 120, 120, 0.1);
@@ -1697,7 +1744,8 @@ $tableCellPaddingTop: 18px;
 $tableCellPaddingRight: 16px;
 $tableCellPaddingBottom: 14px;
 $tableCellPaddingLeft: 16px;
-$tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPaddingBottom $tableCellPaddingLeft;
+$tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPaddingBottom
+  $tableCellPaddingLeft;
 
 .sw-data-table {
   display: flex;
@@ -1775,8 +1823,8 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   &__caption {
     // Hide the caption visually but show it for screen readers
     position: absolute !important;
-    height: 1px; 
-    width: 1px; 
+    height: 1px;
+    width: 1px;
     overflow: hidden;
     clip: rect(1px, 1px, 1px, 1px);
   }
@@ -2050,7 +2098,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   }
 
   .sw-data-table__table-selection-bulk-edit {
-    background-color: $color-gray-50; 
+    background-color: $color-gray-50;
     position: absolute;
     top: -0.5px;
     left: -0.5px;
@@ -2122,11 +2170,13 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
 
   .sw-data-table__table-head-dropzone-before {
     left: 0;
-    box-shadow: inset $dropzone-highlight-width 0px $dropzone-highlight-width $dropzone-highlight-negative-width $color-shopware-brand-900;    
+    box-shadow: inset $dropzone-highlight-width 0px $dropzone-highlight-width
+      $dropzone-highlight-negative-width $color-shopware-brand-900;
   }
   .sw-data-table__table-head-dropzone-after {
     right: 0;
-    box-shadow: inset $dropzone-highlight-negative-width 0px $dropzone-highlight-width $dropzone-highlight-negative-width $color-shopware-brand-900;
+    box-shadow: inset $dropzone-highlight-negative-width 0px $dropzone-highlight-width
+      $dropzone-highlight-negative-width $color-shopware-brand-900;
   }
 
   /**
@@ -2330,7 +2380,7 @@ thead th.is--dragging {
 
   /* simHover (simulate hover) is needed for interaction testing
   /* because the testing library has no support for css hover
-  */ 
+  */
   &.simHover .sw-data-table__table-head-dragzone-bar,
   &:hover .sw-data-table__table-head-dragzone-bar {
     transform: scale(1, 1);

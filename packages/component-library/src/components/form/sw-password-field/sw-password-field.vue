@@ -34,30 +34,24 @@
           :disabled="disabled"
           :value="currentValue"
           :autocomplete="autocomplete"
-          @input="onInput"
-          @change="onChange"
+          @input.stop="onInput"
+          @change.stop="onChange"
           @focus="setFocusClass"
           @blur="removeFocusClass"
-          v-on="additionalListeners"
-        >
+        />
         <span
           v-if="passwordToggleAble"
-          :title="showPassword ? $tc('sw-password-field.titleHidePassword') : $tc('sw-password-field.titleShowPassword')"
+          :title="
+            showPassword
+              ? $tc('sw-password-field.titleHidePassword')
+              : $tc('sw-password-field.titleShowPassword')
+          "
           class="sw-field__toggle-password-visibility"
           @click="onTogglePasswordVisibility(disabled)"
         >
-          <sw-icon
-            v-if="showPassword"
-            name="regular-eye-slash"
-            small
-          />
+          <sw-icon v-if="showPassword" name="regular-eye-slash" small />
 
-          <sw-icon
-            v-else
-            data-testid="sw-password-field-show-button"
-            name="regular-eye"
-            small
-          />
+          <sw-icon v-else data-testid="sw-password-field-show-button" name="regular-eye" small />
         </span>
       </div>
     </template>
@@ -67,10 +61,7 @@
     </template>
 
     <template #error>
-      <sw-field-error
-        v-if="error"
-        :error="error"
-      />
+      <sw-field-error v-if="error" :error="error" />
     </template>
 
     <template #field-hint>
@@ -79,32 +70,32 @@
   </sw-base-field>
 </template>
 <script lang="ts">
-import Vue from 'vue';
-import SwIcon from '../../icons-media/sw-icon/sw-icon.vue';
-import SwTextField from '../sw-text-field/sw-text-field.vue';
+import { defineComponent } from "vue";
+import SwIcon from "../../icons-media/sw-icon/sw-icon.vue";
+import SwTextField from "../sw-text-field/sw-text-field.vue";
 
-export default Vue.extend({
-  name: 'SwPasswordField',
+export default defineComponent({
+  name: "SwPasswordField",
 
   i18n: {
     messages: {
       en: {
-        'sw-password-field': {
-          titleHidePassword: 'Hide password',
-          titleShowPassword: 'Show password',
-        }
+        "sw-password-field": {
+          titleHidePassword: "Hide password",
+          titleShowPassword: "Show password",
+        },
       },
       de: {
-        'sw-password-field': {
-          titleHidePassword: 'Passwort verbergen',
-          titleShowPassword: 'Passwort anzeigen',
-        }
-      }
+        "sw-password-field": {
+          titleHidePassword: "Passwort verbergen",
+          titleShowPassword: "Passwort anzeigen",
+        },
+      },
     },
   },
 
   components: {
-    'sw-icon': SwIcon,
+    "sw-icon": SwIcon,
   },
 
   extends: SwTextField,
@@ -137,15 +128,15 @@ export default Vue.extend({
 
   computed: {
     typeFieldClass(): string {
-      return this.passwordToggleAble ? 'sw-field--password' : 'sw-field--password sw-field--password--untoggable';
+      return this.passwordToggleAble
+        ? "sw-field--password"
+        : "sw-field--password sw-field--password--untoggable";
     },
 
     passwordPlaceholder(): string {
-      return this.showPassword
-      || !this.placeholderIsPassword
+      return this.showPassword || !this.placeholderIsPassword
         ? this.placeholder
-        // @ts-expect-error - placeholder is defined in parent component
-        : '*'.repeat(this.placeholder.length ? this.placeholder.length : 6);
+        : "*".repeat(this.placeholder.length ? this.placeholder.length : 6);
     },
   },
 

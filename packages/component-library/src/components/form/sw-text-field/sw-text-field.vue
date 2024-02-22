@@ -19,39 +19,31 @@
       {{ label }}
     </template>
 
-    <template
-      #field-prefix
-    >
+    <template #field-prefix>
       <slot name="prefix" />
     </template>
 
-    <template #element="{identification}">
+    <template #element="{ identification }">
       <input
         :id="createInputId(identification)"
         type="text"
         :name="identification"
-        :disabled="disabled"
+        :disabled="hasDisabledInput"
         :value="currentValue"
         :placeholder="placeholder"
         @input="onInput"
         @change="onChange"
         @focus="setFocusClass"
         @blur="removeFocusClass"
-        v-on="additionalListeners"
-      >
+      />
     </template>
 
-    <template
-      #field-suffix
-    >
+    <template #field-suffix>
       <slot name="suffix" />
     </template>
 
     <template #error>
-      <sw-field-error
-        v-if="error"
-        :error="error"
-      />
+      <sw-field-error v-if="error" :error="error" />
     </template>
 
     <template #field-hint>
@@ -61,16 +53,16 @@
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
+import { defineComponent } from "vue";
 import SwBaseField from "../_internal/sw-base-field/sw-base-field.vue";
 import SwFieldError from "../_internal/sw-field-error/sw-field-error.vue";
 
-export default Vue.extend({
-  name: 'SwTextField',
+export default defineComponent({
+  name: "SwTextField",
 
   components: {
-    'sw-field-error': SwFieldError,
-    'sw-base-field': SwBaseField
+    "sw-field-error": SwFieldError,
+    "sw-base-field": SwBaseField,
   },
 
   inheritAttrs: false,
@@ -79,10 +71,10 @@ export default Vue.extend({
     /**
      * The value of the text field.
      */
-    value: {
+    modelValue: {
       type: String,
       required: false,
-      default: '',
+      default: "",
     },
 
     /**
@@ -91,7 +83,7 @@ export default Vue.extend({
     placeholder: {
       type: String,
       required: false,
-      default: '',
+      default: "",
     },
 
     /**
@@ -120,9 +112,9 @@ export default Vue.extend({
     size: {
       type: String,
       required: false,
-      default: 'default',
+      default: "default",
       validator(value: string) {
-        return ['small', 'default'].includes(value);
+        return ["small", "default"].includes(value);
       },
     },
 
@@ -206,7 +198,7 @@ export default Vue.extend({
     idSuffix: {
       type: String,
       required: false,
-      default: '',
+      default: "",
     },
 
     /**
@@ -221,31 +213,24 @@ export default Vue.extend({
 
   data() {
     return {
-      currentValue: this.value,
+      currentValue: this.modelValue,
       hasFocus: false,
     };
   },
 
   computed: {
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    additionalListeners(): Record<string, (Function | Function[])> {
-
-      const additionalListeners = { ...this.$listeners };
-
-      delete additionalListeners.input;
-      delete additionalListeners.change;
-
-      return additionalListeners;
-    },
-
     hasError(): boolean {
       // @ts-expect-error - isValid gets called in the mixin
       return !this.isValid || !!this.error;
     },
+
+    hasDisabledInput(): boolean {
+      return this.disabled || this.isInherited;
+    },
   },
 
   watch: {
-    value(value) {
+    modelValue(value) {
       this.currentValue = value;
     },
   },
@@ -253,16 +238,16 @@ export default Vue.extend({
   methods: {
     onChange(event: Event): void {
       // @ts-expect-error - target is defined
-      this.$emit('change', event.target.value || '');
+      this.$emit("change", event.target.value || "");
     },
 
     onInput(event: Event): void {
       // @ts-expect-error - target is defined
-      this.$emit('input', event.target.value);
+      this.$emit("update:modelValue", event.target.value);
     },
 
     restoreInheritance(): void {
-      this.$emit('input', null);
+      this.$emit("update:modelValue", null);
     },
 
     createInputId(identification: string): string {

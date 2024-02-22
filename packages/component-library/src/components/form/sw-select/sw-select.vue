@@ -15,7 +15,6 @@
     @select-expanded="onSelectExpanded"
     @select-collapsed="onSelectCollapsed"
     @clear="onClearSelection"
-    v-on="$listeners"
   >
     <template #sw-select-prefix>
       <slot name="prefix" />
@@ -37,7 +36,7 @@
         <template #label-property="{ item, index, itemLabelProperty, itemValueProperty }">
           <slot
             name="selection-label-property"
-            v-bind="{ item, index, itemLabelProperty, itemValueProperty}"
+            v-bind="{ item, index, itemLabelProperty, itemValueProperty }"
           >
             {{ getKey(item, labelProperty) }}
           </slot>
@@ -62,7 +61,17 @@
         <template #result-item="{ item, index }">
           <slot
             name="result-item"
-            v-bind="{ item, index, labelProperty, valueProperty, searchTerm, highlightSearchTerm, isSelected, addItem, getKey }"
+            v-bind="{
+              item,
+              index,
+              labelProperty,
+              valueProperty,
+              searchTerm,
+              highlightSearchTerm,
+              isSelected,
+              addItem,
+              getKey,
+            }"
           >
             <sw-select-result
               :selected="isSelected(item)"
@@ -106,47 +115,47 @@
 
 <script lang="ts">
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { PropType } from 'vue';
+import type { PropType } from "vue";
 
-import Vue from 'vue';
-import { debounce, get } from 'lodash-es';
-import SwSelectBase from '../_internal/sw-select-base/sw-select-base.vue';
-import SwSelectResultList from '../_internal/sw-select-base/_internal/sw-select-result-list.vue';
-import SwSelectResult from '../_internal/sw-select-base/_internal/sw-select-result.vue';
-import SwSelectSelectionList from '../_internal/sw-select-base/_internal/sw-select-selection-list.vue';
-import SwHighlightText from '../../_internal/sw-highlight-text.vue';
+import { defineComponent } from "vue";
+import { debounce, get } from "lodash-es";
+import SwSelectBase from "../_internal/sw-select-base/sw-select-base.vue";
+import SwSelectResultList from "../_internal/sw-select-base/_internal/sw-select-result-list.vue";
+import SwSelectResult from "../_internal/sw-select-base/_internal/sw-select-result.vue";
+import SwSelectSelectionList from "../_internal/sw-select-base/_internal/sw-select-selection-list.vue";
+import SwHighlightText from "../../_internal/sw-highlight-text.vue";
 
-export default Vue.extend({
-  name: 'SwSelect',
+export default defineComponent({
+  name: "SwSelect",
 
   i18n: {
     messages: {
       en: {
-        'sw-select': {
+        "sw-select": {
           messageNoResults: 'No results found for "{term}".',
-        }
+        },
       },
       de: {
-        'sw-select': {
+        "sw-select": {
           messageNoResults: 'Es wurden keine Ergebnisse für "{term}" gefunden.',
-        }
-      }
+        },
+      },
     },
   },
 
   components: {
-    'sw-select-base': SwSelectBase,
-    'sw-select-result-list': SwSelectResultList,
-    'sw-select-selection-list': SwSelectSelectionList,
-    'sw-highlight-text': SwHighlightText,
-    'sw-select-result': SwSelectResult,
+    "sw-select-base": SwSelectBase,
+    "sw-select-result-list": SwSelectResultList,
+    "sw-select-selection-list": SwSelectSelectionList,
+    "sw-highlight-text": SwHighlightText,
+    "sw-select-result": SwSelectResult,
   },
 
   inheritAttrs: false,
 
   model: {
-    prop: 'value',
-    event: 'change',
+    prop: "value",
+    event: "change",
   },
 
   props: {
@@ -171,8 +180,10 @@ export default Vue.extend({
     /**
      * Dependent on multiSelection, either a single value or an array of values.
      */
-    value: {
-      type: [String, Number, Boolean, Array, null, undefined] as PropType<string|number|boolean|unknown[]|null|undefined>,
+    modelValue: {
+      type: [String, Number, Boolean, Array, null, undefined] as PropType<
+        string | number | boolean | unknown[] | null | undefined
+      >,
       required: false,
       default: null,
     },
@@ -183,7 +194,7 @@ export default Vue.extend({
     labelProperty: {
       type: String,
       required: false,
-      default: 'label',
+      default: "label",
     },
 
     /**
@@ -192,7 +203,7 @@ export default Vue.extend({
     valueProperty: {
       type: String,
       required: false,
-      default: 'value',
+      default: "value",
     },
 
     /**
@@ -210,7 +221,7 @@ export default Vue.extend({
     label: {
       type: String,
       required: false,
-      default: ''
+      default: "",
     },
 
     /**
@@ -219,7 +230,7 @@ export default Vue.extend({
     placeholder: {
       type: String,
       required: false,
-      default: '',
+      default: "",
     },
 
     /**
@@ -265,11 +276,17 @@ export default Vue.extend({
     searchFunction: {
       type: Function,
       required: false,
-      default({ options, labelProperty, searchTerm }
-             :{ options: any, labelProperty: string, searchTerm: string })
-      {
+      default({
+        options,
+        labelProperty,
+        searchTerm,
+      }: {
+        options: any;
+        labelProperty: string;
+        searchTerm: string;
+      }) {
         return options.filter((option: any) => {
-          const label = this.getKey(option, labelProperty);
+          const label = get(option, labelProperty);
           if (!label) {
             return false;
           }
@@ -323,12 +340,12 @@ export default Vue.extend({
       type: Boolean,
       required: false,
       default: false,
-    }
+    },
   },
 
   data() {
     return {
-      searchTerm: '',
+      searchTerm: "",
       limit: this.valueLimit,
     };
   },
@@ -336,9 +353,9 @@ export default Vue.extend({
   computed: {
     visibleValues(): any[] {
       if (
-        typeof this.currentValue === 'string' ||
-        typeof this.currentValue === 'number' ||
-        typeof this.currentValue === 'boolean'
+        typeof this.currentValue === "string" ||
+        typeof this.currentValue === "number" ||
+        typeof this.currentValue === "boolean"
       ) {
         const value = this.currentValue;
 
@@ -352,14 +369,20 @@ export default Vue.extend({
           return [];
         }
 
-        return this.options.filter((item) => value.includes(this.getKey(item, this.valueProperty))).slice(0, this.limit);
+        return this.options
+          .filter((item) => value.includes(this.getKey(item, this.valueProperty)))
+          .slice(0, this.limit);
       }
 
       return this.options.filter((item) => this.isSelected(item)).slice(0, this.limit);
     },
 
     totalValuesCount(): number {
-      if (this.enableMultiSelection && Array.isArray(this.currentValue) && this.currentValue.length) {
+      if (
+        this.enableMultiSelection &&
+        Array.isArray(this.currentValue) &&
+        this.currentValue.length
+      ) {
         return this.currentValue.length;
       }
 
@@ -383,28 +406,26 @@ export default Vue.extend({
     },
 
     currentValue: {
-      get(): string|number|boolean|unknown[]|null|undefined {
-        if (!this.value) {
+      get(): string | number | boolean | unknown[] | null | undefined {
+        if (!this.modelValue) {
           return [];
         }
 
-        return this.value;
+        return this.modelValue;
       },
-      set(newValue: string|number|boolean|unknown[]|null|undefined) {
-        this.$emit('change', newValue);
+      set(newValue: string | number | boolean | unknown[] | null | undefined) {
+        this.$emit("change", newValue);
       },
     },
 
     visibleResults(): any[] {
       if (this.searchTerm) {
-        return this.searchFunction(
-          {
-            options: this.options,
-            labelProperty: this.labelProperty,
-            valueProperty: this.valueProperty,
-            searchTerm: this.searchTerm,
-          },
-        );
+        return this.searchFunction({
+          options: this.options,
+          labelProperty: this.labelProperty,
+          valueProperty: this.valueProperty,
+          searchTerm: this.searchTerm,
+        });
       }
 
       return this.options;
@@ -412,9 +433,9 @@ export default Vue.extend({
 
     componentClasses(): Record<string, boolean> {
       return {
-        'sw-select--small': this.small
-      }
-    }
+        "sw-select--small": this.small,
+      };
+    },
   },
 
   watch: {
@@ -440,7 +461,7 @@ export default Vue.extend({
         return;
       }
 
-      this.$emit('item-add', item);
+      this.$emit("item-add", item);
 
       if (this.enableMultiSelection) {
         if (Array.isArray(this.currentValue)) {
@@ -450,7 +471,7 @@ export default Vue.extend({
         } else {
           this.currentValue = [this.currentValue, identifier];
         }
-      }else if (this.currentValue !== identifier) {
+      } else if (this.currentValue !== identifier) {
         this.currentValue = identifier;
         // @ts-expect-error - ref exists
         this.$refs.selectBase.collapse();
@@ -465,15 +486,17 @@ export default Vue.extend({
     },
 
     remove(item: any) {
-      this.$emit('item-remove', item);
+      this.$emit("item-remove", item);
 
-      if(!Array.isArray(this.currentValue)) {
+      if (!Array.isArray(this.currentValue)) {
         this.currentValue = null;
 
         return;
       }
 
-      this.currentValue = this.currentValue.filter((value) => value !== this.getKey(item, this.valueProperty));
+      this.currentValue = this.currentValue.filter(
+        (value) => value !== this.getKey(item, this.valueProperty),
+      );
     },
 
     removeLastItem() {
@@ -491,7 +514,7 @@ export default Vue.extend({
     },
 
     expandValueLimit() {
-      this.$emit('display-values-expand');
+      this.$emit("display-values-expand");
 
       this.limit += this.limit;
     },
@@ -500,7 +523,7 @@ export default Vue.extend({
       // @ts-expect-error - this context exists even here
       this.searchTerm = term;
       // @ts-expect-error - this context exists even here
-      this.$emit('search-term-change', this.searchTerm);
+      this.$emit("search-term-change", this.searchTerm);
       // @ts-expect-error - this context exists even here
       this.resetActiveItem();
     }, 100),
@@ -520,7 +543,7 @@ export default Vue.extend({
     },
 
     onSelectCollapsed() {
-      this.searchTerm = '';
+      this.searchTerm = "";
       // @ts-expect-error - ref exists
       this.$refs.selectionList.blur();
     },

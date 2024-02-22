@@ -4,33 +4,30 @@
       message: text,
       width: width,
       showDelay: showDelay,
-      hideDelay: hideDelay
+      hideDelay: hideDelay,
     }"
     class="sw-help-text"
     role="tooltip"
     aria-label="help-text"
   >
-    <sw-icon
-      data-testid="sw-help-text__icon"
-      name="solid-question-circle-s"
-    />
+    <sw-icon data-testid="sw-help-text__icon" name="solid-question-circle-s" />
     <span class="sw-help-text__tooltip-text">{{ text }}</span>
   </span>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import SwIcon from '../../icons-media/sw-icon/sw-icon.vue';
-import SwTooltipDirective from '../../../directives/tooltip.directive';
+import { defineComponent } from "vue";
+import SwIcon from "../../icons-media/sw-icon/sw-icon.vue";
+import SwTooltipDirective from "../../../directives/tooltip.directive";
 
 /**
  * @internal
  */
-export default Vue.extend({
-  name: 'SwHelpText',
+export default defineComponent({
+  name: "SwHelpText",
 
   components: {
-    'sw-icon': SwIcon,
+    "sw-icon": SwIcon,
   },
 
   directives: {
@@ -44,7 +41,7 @@ export default Vue.extend({
     text: {
       type: String,
       required: true,
-      default: '',
+      default: "",
     },
     /**
      * The width of the tooltip

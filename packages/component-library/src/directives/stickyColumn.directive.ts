@@ -1,22 +1,21 @@
 import { throttle } from "lodash-es";
-import { DirectiveOptions } from "vue";
+import type { Directive } from "vue";
 
-const getPreviousSibling = function (el: Element|undefined, selector: string) {
+const getPreviousSibling = function (el: Element | undefined, selector: string) {
   if (!el) return;
 
-	// Get the next sibling element
-	let sibling = el.previousElementSibling;
+  // Get the next sibling element
+  let sibling = el.previousElementSibling;
 
-	// If there's no selector, return the first sibling
-	if (!selector) return sibling;
+  // If there's no selector, return the first sibling
+  if (!selector) return sibling;
 
-	// If the sibling matches our selector, use it
-	// If not, jump to the next sibling and continue the loop
-	while (sibling) {
-		if (sibling.matches(selector)) return sibling;
-		sibling = sibling.previousElementSibling;
-	}
-
+  // If the sibling matches our selector, use it
+  // If not, jump to the next sibling and continue the loop
+  while (sibling) {
+    if (sibling.matches(selector)) return sibling;
+    sibling = sibling.previousElementSibling;
+  }
 };
 
 const setLeftValue = (el: HTMLElement) => {
@@ -31,31 +30,33 @@ const setLeftValue = (el: HTMLElement) => {
   // Set the left position of the column to the difference between the table and column x positions
   el.style.left = `${width - 0.5}px`;
   el.dataset.stickyColumnRight = `${width + el.getBoundingClientRect().width - 0.5}`;
-}
+};
 
-let mutationObserver: MutationObserver|undefined;
+let mutationObserver: MutationObserver | undefined;
 
-const stickyColumn: DirectiveOptions = {
-  bind(el) {
+const stickyColumn: Directive = {
+  beforeMount(el) {
     el.dataset.stickyColumn = "";
   },
-  inserted(el) {
+  mounted(el) {
     // Set the left value on load
     setLeftValue(el);
 
     // Set the left value on mutation
-    mutationObserver = new MutationObserver(throttle(() => {
-      setLeftValue(el);
-    }, 60));
+    mutationObserver = new MutationObserver(
+      throttle(() => {
+        setLeftValue(el);
+      }, 60),
+    );
 
     mutationObserver.observe(el.parentElement as Element, {
       childList: true,
       subtree: true,
     });
   },
-  unbind() {
+  unmounted() {
     mutationObserver?.disconnect();
-  }
+  },
 };
 
 export default stickyColumn;

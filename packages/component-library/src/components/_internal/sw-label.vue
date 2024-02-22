@@ -1,15 +1,7 @@
 <template>
   <!-- eslint-disable-next-line vuejs-accessibility/click-events-have-key-events -->
-  <span
-    class="sw-label"
-    :class="labelClasses"
-    @click.stop="$emit('selected')"
-  >
-    <sw-color-badge
-      v-if="appearance === 'badged'"
-      :variant="variant"
-      :rounded="true"
-    />
+  <span class="sw-label" :class="labelClasses" @click.stop="$emit('selected')">
+    <sw-color-badge v-if="appearance === 'badged'" :variant="variant" :rounded="true" />
 
     <span class="sw-label__caption">
       <slot />
@@ -21,73 +13,69 @@
       :title="$tc('sw-label.remove')"
       @click.prevent.stop="$emit('dismiss')"
     >
-
       <slot name="dismiss-icon">
-        <sw-icon
-          data-testid="dismiss-label"
-          name="regular-times-xxs"
-        />
+        <sw-icon data-testid="dismiss-label" name="regular-times-xxs" />
       </slot>
     </button>
   </span>
 </template>
 
 <script lang="ts">
-import type { PropType } from 'vue';
+import type { PropType } from "vue";
 
-import Vue from 'vue';
-import SwIcon from '../icons-media/sw-icon/sw-icon.vue';
-import SwColorBadge from '../feedback-indicator/sw-color-badge/sw-color-badge.vue';
+import { defineComponent } from "vue";
+import SwIcon from "../icons-media/sw-icon/sw-icon.vue";
+import SwColorBadge from "../feedback-indicator/sw-color-badge/sw-color-badge.vue";
 
-export default Vue.extend({
-  name: 'SwLabel',
+export default defineComponent({
+  name: "SwLabel",
 
   i18n: {
     messages: {
       en: {
-        'sw-label': {
-          remove: 'Remove',
+        "sw-label": {
+          remove: "Remove",
         },
       },
       de: {
-        'sw-label': {
-          remove: 'Entfernen',
+        "sw-label": {
+          remove: "Entfernen",
         },
       },
     },
   },
 
   components: {
-    'sw-icon': SwIcon,
-    'sw-color-badge': SwColorBadge,
+    "sw-icon": SwIcon,
+    "sw-color-badge": SwColorBadge,
   },
 
   props: {
     variant: {
-      type: String as PropType<'info'|'danger'|'success'|'warning'|'neutral'|'primary'>,
+      type: String as PropType<"info" | "danger" | "success" | "warning" | "neutral" | "primary">,
       required: false,
-      default: '',
+      default: "",
       validator(value: string) {
         if (!value.length) {
           return true;
         }
-        return ['info', 'danger', 'success', 'warning', 'neutral', 'primary'].includes(value);
+        return ["info", "danger", "success", "warning", "neutral", "primary"].includes(value);
       },
     },
     size: {
-      type: String as PropType<'small'|'medium'|'default'>,
+      type: String as PropType<"small" | "medium" | "default">,
       required: false,
-      default: 'default',
+      default: "default",
       validator(value: string) {
-        return ['small', 'medium', 'default'].includes(value);
+        return ["small", "medium", "default"].includes(value);
       },
     },
     appearance: {
-      type: String as PropType<'default'|'pill'|'circle'|'badged'>,
+      type: String as PropType<"default" | "pill" | "circle" | "badged">,
       required: false,
-      default: 'default',
+      default: "default",
       validator(value: string) {
-        return ['default', 'pill', 'circle', 'badged'].includes(value);
+        return ["default", "pill", "circle", "badged"].includes(value);
       },
     },
     ghost: {
@@ -108,25 +96,20 @@ export default Vue.extend({
   },
 
   computed: {
-    labelClasses(): (string | {
-        [x: string]: boolean;
-        'sw-label--dismissable': boolean;
-        'sw-label--ghost': boolean;
-        'sw-label--caps': boolean;
-    })[] {
+    labelClasses() {
       return [
         `sw-label--appearance-${this.appearance}`,
         `sw-label--size-${this.size}`,
         {
           [`sw-label--${this.variant}`]: !!this.variant,
-          'sw-label--dismissable': this.showDismissable,
-          'sw-label--ghost': this.ghost,
-          'sw-label--caps': this.caps,
+          "sw-label--dismissable": this.showDismissable,
+          "sw-label--ghost": this.ghost,
+          "sw-label--caps": this.caps,
         },
       ];
     },
     showDismissable(): boolean {
-      return !!this.$listeners.dismiss && this.dismissable;
+      return !!this.$attrs.onDismiss && this.dismissable;
     },
   },
 });
@@ -281,7 +264,7 @@ $sw-label-pill-border-radius: 50px;
     }
 
     &.sw-label--small::before {
-      content: '';
+      content: "";
       display: block;
       height: 6px;
       width: 6px;
@@ -292,27 +275,57 @@ $sw-label-pill-border-radius: 50px;
   }
 
   &.sw-label--info:not(&--appearance-badged) {
-    @include sw-label-variant($color-shopware-brand-50, $color-shopware-brand-500, $color-shopware-brand-500, $color-shopware-brand-100);
+    @include sw-label-variant(
+      $color-shopware-brand-50,
+      $color-shopware-brand-500,
+      $color-shopware-brand-500,
+      $color-shopware-brand-100
+    );
   }
 
   &.sw-label--success:not(&--appearance-badged) {
-    @include sw-label-variant($color-emerald-50, $color-emerald-500, $color-emerald-500, $color-emerald-100);
+    @include sw-label-variant(
+      $color-emerald-50,
+      $color-emerald-500,
+      $color-emerald-500,
+      $color-emerald-100
+    );
   }
 
   &.sw-label--danger:not(&--appearance-badged) {
-    @include sw-label-variant($color-crimson-50, $color-crimson-500, $color-crimson-500, $color-crimson-100);
+    @include sw-label-variant(
+      $color-crimson-50,
+      $color-crimson-500,
+      $color-crimson-500,
+      $color-crimson-100
+    );
   }
 
   &.sw-label--warning:not(&--appearance-badged) {
-    @include sw-label-variant($color-pumpkin-spice-50, $color-pumpkin-spice-500, $color-pumpkin-spice-500, $color-pumpkin-spice-100);
+    @include sw-label-variant(
+      $color-pumpkin-spice-50,
+      $color-pumpkin-spice-500,
+      $color-pumpkin-spice-500,
+      $color-pumpkin-spice-100
+    );
   }
 
   &.sw-label--neutral:not(&--appearance-badged) {
-    @include sw-label-variant($color-gray-50, $color-darkgray-200, $color-gray-300, $color-gray-100);
+    @include sw-label-variant(
+      $color-gray-50,
+      $color-darkgray-200,
+      $color-gray-300,
+      $color-gray-100
+    );
   }
 
   &.sw-label--primary:not(&--appearance-badged) {
-    @include sw-label-variant($color-shopware-brand-500, $color-shopware-brand-50, $color-shopware-brand-500, $color-shopware-brand-100);
+    @include sw-label-variant(
+      $color-shopware-brand-500,
+      $color-shopware-brand-50,
+      $color-shopware-brand-500,
+      $color-shopware-brand-100
+    );
   }
 }
 </style>

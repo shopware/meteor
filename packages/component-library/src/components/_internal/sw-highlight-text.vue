@@ -1,9 +1,10 @@
 <script lang="ts">
-import type { VNode } from 'vue';
-import Vue from 'vue';
+import type { VNode } from "vue";
+import { h } from "vue";
+import { defineComponent } from "vue";
 
-export default Vue.extend({
-  name: 'SwHighlightText',
+export default defineComponent({
+  name: "SwHighlightText",
 
   props: {
     searchTerm: {
@@ -21,7 +22,7 @@ export default Vue.extend({
   methods: {
     searchAndReplace(): string {
       if (!this.text) {
-        return '';
+        return "";
       }
 
       if (!this.searchTerm) {
@@ -29,26 +30,23 @@ export default Vue.extend({
       }
 
       const prefix = '<span class="sw-highlight-text__highlight">';
-      const suffix = '</span>';
+      const suffix = "</span>";
 
-      const regExp = new RegExp(this.escapeRegExp(this.searchTerm), 'ig');
+      const regExp = new RegExp(this.escapeRegExp(this.searchTerm), "ig");
       return this.text.replace(regExp, (str) => `${prefix}${str}${suffix}`);
     },
 
     // Remove regex special characters from search string
     escapeRegExp(string: string): string {
-      return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // $& means the whole matched string
+      return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string
     },
   },
 
-  render(createElement): VNode {
-    return createElement(
-      'div',
-      {
-        class: 'sw-highlight-text',
-        domProps: { innerHTML: this.searchAndReplace() },
-      },
-    );
+  render(): VNode {
+    return h("div", {
+      class: "sw-highlight-text",
+      innerHTML: this.searchAndReplace(),
+    });
   },
 });
 </script>
