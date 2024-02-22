@@ -4,7 +4,7 @@ set -e
 [[ -z "$1" ]] && echo "Missing working directory argument" && exit 1
 
 DIR=$1
-SRC=$1/..
+SRC=$1/packages/component-library
 
 reverse() {
     declare -n arr="$1" rev="$2"
