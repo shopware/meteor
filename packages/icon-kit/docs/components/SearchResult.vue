@@ -23,7 +23,7 @@ import Fuse from 'fuse.js'
 import IconSelection from "./IconSelection.vue";
 
 // context of the developer portal
-import meta from "../../icons/meta.json";
+import meta from "../public/icons/meta.json";
 
 const icons = ref(meta);
 
