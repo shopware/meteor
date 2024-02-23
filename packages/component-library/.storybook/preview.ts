@@ -4,6 +4,7 @@ import { darkTheme, lightTheme } from "./shopwareTheme";
 import { setup } from "@storybook/vue3";
 import { createI18n } from "vue-i18n";
 import DeviceHelperPlugin from "./../src/plugin/device-helper.plugin";
+import { DARK_THEME_BACKGROUND_VALUE, LIGHT_THEME_BACKGROUND_VALUE, ThemeProvider } from "./ThemeProvider";
 
 const i18n = createI18n({
   // something vue-i18n options here ...
@@ -37,7 +38,15 @@ const preview: Preview = {
       dark: { ...darkTheme },
       light: { ...lightTheme },
     },
+    backgrounds: {
+      default: 'light',
+      values: [
+        { name: 'light', value: LIGHT_THEME_BACKGROUND_VALUE },
+        { name: 'dark', value: DARK_THEME_BACKGROUND_VALUE },
+      ],
+    },
   },
+  decorators: [ThemeProvider],
 };
 
 export default preview;
