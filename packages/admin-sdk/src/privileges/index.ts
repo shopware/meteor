@@ -1,4 +1,3 @@
-import { _privileges } from './messages/_privileges';
 import type { privileges } from './privilege-resolver';
 
 /**
@@ -36,5 +35,4 @@ export const ShopwareMessageTypePrivileges: Record<string, privileges> = {
   _collectionTest: {},
   _multiply: {},
   _subtract: {},
-  _privileges: _privileges,
 };
