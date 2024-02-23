@@ -1,0 +1,6 @@
+vue.config.js
+jest.config.js
+rollup.config.js
+node_modules/
+.eslintrc.cjs
+dist/
