@@ -12,6 +12,9 @@
     "build:storybook": "storybook build",
     "start:storybook": "serve ./storybook-static -p 6006 --no-request-logging",
     "test:storybook": "test-storybook --url http://127.0.0.1:6006",
+    "docs:env": "[ -d \"../../../developer-portal\" ] && ../../../developer-portal/docs-cli.cjs pull || (git clone git@github.com:shopware/developer-portal.git ../../../developer-portal && pnpm i -C ../../../developer-portal)",
+    "docs:link": "../../../developer-portal/docs-cli.cjs link --src docs --dst resources/meteor-component-library --symlink --keep",
+    "docs:preview": "../../../developer-portal/docs-cli.cjs preview",
     "docker": "docker run -v $PWD/../../:/tests:delegated -w /tests -it --rm --ipc=host mcr.microsoft.com/playwright:v1.20.0-focal /bin/bash"
   },
   "main": "dist/common/index.js",
