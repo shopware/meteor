@@ -26,6 +26,7 @@
   "dependencies": {
     "@floating-ui/dom": "^1.4.3",
     "@shopware-ag/meteor-icon-kit": "^5.2.0",
+    "@shopware-ag/meteor-tokens": "workspace:*",
     "@vueuse/components": "^10.7.2",
     "@vueuse/core": "^10.7.2",
     "date-fns": "^2.30.0",
