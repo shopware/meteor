@@ -4,7 +4,15 @@ import { darkTheme, lightTheme } from "./shopwareTheme";
 import { setup } from "@storybook/vue3";
 import { createI18n } from "vue-i18n";
 import DeviceHelperPlugin from "./../src/plugin/device-helper.plugin";
-import { DARK_THEME_BACKGROUND_VALUE, LIGHT_THEME_BACKGROUND_VALUE, ThemeProvider } from "./ThemeProvider";
+import {
+  DARK_THEME_BACKGROUND_VALUE,
+  LIGHT_THEME_BACKGROUND_VALUE,
+  ThemeProvider,
+} from "./ThemeProvider";
+
+// importing meteor tokens
+import "@shopware-ag/meteor-tokens/administration/light.css";
+import "@shopware-ag/meteor-tokens/administration/dark.css";
 
 const i18n = createI18n({
   // something vue-i18n options here ...
@@ -39,10 +47,10 @@ const preview: Preview = {
       light: { ...lightTheme },
     },
     backgrounds: {
-      default: 'light',
+      default: "light",
       values: [
-        { name: 'light', value: LIGHT_THEME_BACKGROUND_VALUE },
-        { name: 'dark', value: DARK_THEME_BACKGROUND_VALUE },
+        { name: "light", value: LIGHT_THEME_BACKGROUND_VALUE },
+        { name: "dark", value: DARK_THEME_BACKGROUND_VALUE },
       ],
     },
   },
