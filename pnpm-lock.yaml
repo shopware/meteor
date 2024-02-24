@@ -100,6 +100,9 @@ importers:
       '@shopware-ag/meteor-icon-kit':
         specifier: ^5.2.0
         version: link:../icon-kit
+      '@shopware-ag/meteor-tokens':
+        specifier: workspace:*
+        version: link:../tokens
       '@vueuse/components':
         specifier: ^10.7.2
         version: 10.8.0(vue@3.3.8)
