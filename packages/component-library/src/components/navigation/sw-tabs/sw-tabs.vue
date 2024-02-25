@@ -354,6 +354,7 @@ methods: {
     .sw-tabs__slider {
       top: 0;
       bottom: auto;
+      left: 3px;
     }
   }
 
