@@ -1,7 +1,7 @@
 <template>
   <priority-plus ref="priorityPlus" #default="{ mainItems, moreItems }" :list="items">
     <ul class="sw-tabs" :class="tabClasses" role="tablist">
-      <span class="sw-tabs--slider" :class="sliderClasses" :style="sliderStyle" />
+      <span class="sw-tabs__slider" :class="sliderClasses" :style="sliderStyle" />
 
       <template v-if="!vertical">
         <li
@@ -9,7 +9,7 @@
           :key="item.name"
           :data-priority-plus="item.name"
           ref="items"
-          class="sw-tabs--item"
+          class="sw-tabs__item"
           :class="getItemClasses(item)"
           :data-item-name="item.name"
           role="tab"
@@ -22,7 +22,7 @@
 
           <sw-icon
             v-if="item.hasError"
-            class="sw-tabs--error-badge"
+            class="sw-tabs__error-badge"
             name="solid-exclamation-circle"
           />
 
@@ -63,7 +63,7 @@
           v-for="item in [...mainItems, ...moreItems]"
           :key="item.name"
           ref="items"
-          class="sw-tabs--item"
+          class="sw-tabs__item"
           :class="getItemClasses(item)"
           :data-item-name="item.name"
           @click="handleClick(item.name)"
@@ -220,7 +220,7 @@ computed: {
     this.refreshKey;
 
     return {
-      "sw-tabs--slider__has-error": this.activeItem?.hasError ?? false,
+      "sw-tabs__slider--error": this.activeItem?.hasError ?? false,
     };
   },
 
@@ -285,8 +285,8 @@ methods: {
 
   getItemClasses(item: TabItem) {
     return {
-      "sw-tabs--item__has-error": item.hasError,
-      "sw-tabs--item__is-active": item.name === this.activeItemName,
+      "sw-tabs__item--error": item.hasError,
+      "sw-tabs__item--active": item.name === this.activeItemName,
     };
   },
 
@@ -350,13 +350,13 @@ methods: {
       border-left: 1px solid var(--color-border-primary-default);
     }
 
-    .sw-tabs--slider {
+    .sw-tabs__slider {
       top: 0;
       bottom: auto;
     }
   }
 
-  .sw-tabs--item {
+  .sw-tabs__item {
     display: inline-block;
     border-bottom: 1px solid var(--color-border-primary-default);
     padding: 10px 16px;
@@ -365,16 +365,16 @@ methods: {
     cursor: pointer;
     color: var(--color-text-primary-default);
 
-    &__has-error {
+    &--error {
       color: var(--color-text-critical-default);
     }
 
-    &__is-active {
+    &--active {
       font-weight: $font-weight-medium;
     }
   }
 
-  .sw-tabs--slider {
+  .sw-tabs__slider {
     transform-origin: top left;
     transition: 0.2s all ease-in-out;
     position: absolute;
@@ -384,7 +384,7 @@ methods: {
     background-color: var(--color-border-brand-selected);
     z-index: 1;
 
-    &__has-error {
+    &--error {
       background-color: var(--color-border-critical-default);
     }
   }
@@ -402,7 +402,7 @@ methods: {
     }
   }
 
-  .sw-tabs--error-badge {
+  .sw-tabs__error-badge {
     margin-left: 2px;
     width: 12px;
     height: 12px;
