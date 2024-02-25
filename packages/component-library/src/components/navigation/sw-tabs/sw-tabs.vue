@@ -10,6 +10,7 @@
           :data-priority-plus="item.name"
           ref="items"
           class="sw-tabs__item"
+          :data-text="item.label"
           :class="getItemClasses(item)"
           :data-item-name="item.name"
           role="tab"
@@ -371,6 +372,24 @@ methods: {
 
     &--active {
       font-weight: $font-weight-medium;
+    }
+
+    // Trick to stop items from jumping when the active item changes
+    // see: https://css-tricks.com/bold-on-hover-without-the-layout-shift/
+    &::after {
+      content: attr(data-text);
+      content: attr(data-text) / "";
+      height: 0;
+      display: block;
+      visibility: hidden;
+      overflow: hidden;
+      user-select: none;
+      pointer-events: none;
+      font-weight: $font-weight-medium;
+
+      @media speech {
+        display: none;
+      }
     }
   }
 
