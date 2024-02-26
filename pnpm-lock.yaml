@@ -348,6 +348,10 @@ importers:
       stylelint:
         specifier: ^16.2.1
         version: 16.2.1
+    devDependencies:
+      prettier:
+        specifier: ^3.2.5
+        version: 3.2.5
 
   packages/tokens:
     dependencies:

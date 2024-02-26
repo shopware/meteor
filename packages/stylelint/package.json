@@ -3,11 +3,17 @@
   "version": "0.0.0",
   "description": "",
   "main": "index.js",
-  "scripts": {},
+  "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
   "keywords": [],
   "author": "Nils Haberkamp",
   "license": "MIT",
   "peerDependencies": {
     "stylelint": "^16.2.1"
+  },
+  "devDependencies": {
+    "prettier": "^3.2.5"
   }
 }
