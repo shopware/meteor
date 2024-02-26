@@ -6,6 +6,8 @@ on:
       - main
     paths:
       - 'packages/component-library/**'
+  
+  pull_request:
 
   workflow_dispatch:
 
