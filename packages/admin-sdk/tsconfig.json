@@ -10,6 +10,7 @@
     "sourceMap": true,
     "resolveJsonModule": false,
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noImplicitReturns": true,

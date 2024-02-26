@@ -1,6 +1,6 @@
-import EntityCollection, {ApiContext} from '../../data/_internals/EntityCollection';
+import EntityCollection, {ApiContext} from '../data/EntityCollection';
 import Criteria from '../../data/Criteria';
-import Entity from '../../data/_internals/Entity';
+import Entity from '../data/Entity';
 import SerializerFactory from './index';
 import { handle, send } from '../../channel';
 import Vue from 'vue';

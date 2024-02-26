@@ -1,8 +1,8 @@
 import HandleError from './HandleError';
-import {hasOwnProperty} from '../utils';
-import MissingPrivilegesError from '../../privileges/missing-privileges-error';
-import type {ShopwareMessageTypes} from '../../messages.types';
-import type { privilegeString } from '../../privileges/privilege-resolver';
+import { hasOwnProperty } from '../utils';
+import MissingPrivilegesError from '../privileges/missing-privileges-error';
+import type { ShopwareMessageTypes } from '../../message-types';
+import type { privilegeString } from '../privileges';
 
 export default function createError(type: keyof ShopwareMessageTypes, e: unknown): Error {
   if (typeof e === 'string') {

@@ -1,7 +1,7 @@
-import Entity from '../../data/_internals/Entity';
+import Entity from '../data/Entity';
 import SerializerFactory from './index';
 import { handle, send } from '../../channel';
-import EntityCollection from '../../data/_internals/EntityCollection';
+import EntityCollection from '../data/EntityCollection';
 import Criteria from '../../data/Criteria';
 
 const { serialize, deserialize } = SerializerFactory({

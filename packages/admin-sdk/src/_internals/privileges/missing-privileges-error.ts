@@ -1,5 +1,5 @@
-import type { ShopwareMessageTypes } from '../messages.types';
-import type { privilegeString } from './privilege-resolver';
+import type { ShopwareMessageTypes } from '../../message-types';
+import type { privilegeString } from './index';
 
 type type = '__MissingPrivilegesError__';
 

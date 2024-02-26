@@ -1,4 +1,4 @@
-import Criteria from '../Criteria';
+import Criteria from '../../data/Criteria';
 import type { Entity } from './Entity';
 
 type ApiAuthToken = {

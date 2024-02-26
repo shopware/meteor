@@ -1,20 +1,20 @@
 import * as window from './window';
 import * as notification from './notification';
 import * as context from './context';
-import * as componentSection from './ui/componentSection';
+import * as componentSection from './ui/component-section';
 import tabs from './ui/tabs';
 import * as cms from './ui/cms';
 import * as location from './location';
 import * as menu from './ui/menu';
 import * as settings from './ui/settings';
-import * as mainModule from './ui/mainModule';
+import * as mainModule from './ui/main-module';
 import * as module from './ui/module';
 import * as modal from './ui/modal';
-import * as actionButton from './ui/actionButton';
+import * as actionButton from './ui/action-button';
 import * as webhook from './app/action';
 import * as data from './data';
-import type EntityCollectionType from './data/_internals/EntityCollection';
-import type { Entity as EntityType } from './data/_internals/Entity';
+import type EntityCollectionType from './_internals/data/EntityCollection';
+import type { Entity as EntityType } from './_internals/data/Entity';
 import composables from './data/composables';
 
 const app = {

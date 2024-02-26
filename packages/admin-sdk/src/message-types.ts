@@ -1,22 +1,22 @@
 import type { notificationDispatch } from './notification/index';
 import type { windowRedirect, windowReload, windowRouterPush } from './window/index';
 import type { contextLanguage, contextEnvironment, contextLocale, contextCurrency, contextShopwareVersion, contextAppInformation, contextModuleInformation, contextUserInformation } from './context/index';
-import type { uiComponentSectionRenderer } from './ui/componentSection/index';
+import type { uiComponentSectionRenderer } from './ui/component-section/index';
 import type { uiTabsAddTabItem } from './ui/tabs';
-import type { uiModulePaymentOverviewCard } from './ui/module/payment/overviewCard';
+import type { uiModulePaymentOverviewCard } from './ui/module/payment/overview-card';
 import type { cmsRegisterElement } from './ui/cms';
 import type { locationUpdateHeight, locationUpdateUrl } from './location/index';
 import type { menuItemAdd } from './ui/menu';
 import type { settingsItemAdd } from './ui/settings';
-import type { mainModuleAdd } from './ui/mainModule';
-import type { smartBarButtonAdd } from './ui/mainModule';
+import type { mainModuleAdd } from './ui/main-module';
+import type { smartBarButtonAdd } from './ui/main-module';
 import type { uiModalOpen, uiModalClose } from './ui/modal/index';
-import type { actionButtonAdd } from './ui/actionButton';
+import type { actionButtonAdd } from './ui/action-button';
 import type { actionExecute } from './app/action';
 import type Criteria from './data/Criteria';
 import type { datasetRegistration, datasetUpdate, datasetGet, datasetSubscribe, datasetSubscribeRegistration } from './data';
-import type EntityCollection from './data/_internals/EntityCollection';
-import type { Entity } from './data/_internals/Entity';
+import type EntityCollection from './_internals/data/EntityCollection';
+import type { Entity } from './_internals/data/Entity';
 import type {
   repositoryGet,
   repositorySearch,

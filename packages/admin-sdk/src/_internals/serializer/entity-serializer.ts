@@ -1,5 +1,5 @@
 import { isObject, hasType } from '../utils';
-import EntityClass from '../../data/_internals/Entity';
+import EntityClass from '../data/Entity';
 import type { SerializerFactory } from '.';
 
 /* eslint-disable */

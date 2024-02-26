@@ -1,4 +1,5 @@
 import has from 'lodash/has';
+import type { extension } from './privileges';
 
 export function generateUniqueId(): string {
   return String(Date.now().toString(36) + Math.random().toString(36).substr(2));
@@ -58,3 +59,39 @@ export function removeRoot(path: string | number): string | number {
 
   return path.replace(/^root\./, '');
 }
+
+ export function findExtensionByBaseUrl(baseUrl?: string): extension | undefined {
+   if (typeof baseUrl !== 'string') {
+   return undefined;
+   }
+ 
+   if (baseUrl === '') {
+   return undefined;
+   }
+ 
+   const comparedBaseUrl = new URL(baseUrl);
+ 
+   /*
+  * Check if baseUrl is the same as the current window location
+  * If so, return the dummy extension with all privileges available
+  */
+   if (comparedBaseUrl.origin === window.location.origin) {
+   return {
+     baseUrl: comparedBaseUrl.hostname,
+     permissions: {
+     additional: ['*'],
+     create: ['*'],
+     read: ['*'],
+     update: ['*'],
+     delete: ['*'],
+     },
+   };
+   }
+ 
+   return Object.values(window._swsdk.adminExtensions)
+     .find((ext) => {
+     const extensionBaseUrl = new URL(ext.baseUrl);
+ 
+     return extensionBaseUrl.hostname === comparedBaseUrl.hostname;
+     });
+ }
