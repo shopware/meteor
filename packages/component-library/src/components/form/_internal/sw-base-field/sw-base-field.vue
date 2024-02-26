@@ -255,7 +255,7 @@ $sw-field-transition:
   &__hint {
     margin-top: 4px;
     font-size: $font-size-extra-small;
-    color: $color-gray-500;
+    color: var(--color-text-tertiary-default);
     display: flex;
     align-items: center;
     gap: 8px;
@@ -277,15 +277,16 @@ $sw-field-transition:
     min-width: 0;
     padding: 13px 16px;
     border: none;
-    background: $color-white;
+    background: var(--color-elevation-surface-overlay);
     font-size: $font-size-small;
     font-family: $font-family-default;
     line-height: 22px;
     transition: $sw-field-transition;
-    color: $color-darkgray-200;
+    color: var(--color-text-primary-default);
     outline: none;
     -webkit-appearance: none;
     -moz-appearance: none;
+    caret-color: var(--color-icon-primary-default);
 
     &:invalid,
     &:-moz-submit-invalid,
@@ -294,26 +295,29 @@ $sw-field-transition:
     }
 
     &:disabled {
-      background: $color-gray-100;
-      border-color: $color-gray-300;
-      cursor: default !important;
+      background: var(--color-background-primary-disabled);
+      color: var(--color-text-primary-disabled);
     }
 
     &::placeholder {
-      color: lighten($color-darkgray-200, 25%);
+      color: var(--color-text-secondary-default);
+    }
+
+    &:disabled::placeholder {
+      color: var(--color-text-secondary-disabled);
     }
   }
 
   .sw-block-field__block {
-    border: 1px solid $color-gray-300;
+    border: 1px solid var(--color-border-primary-default);
     border-radius: $border-radius-default;
     overflow: hidden;
   }
 
   &.has--focus {
     .sw-block-field__block {
-      border-color: $color-shopware-brand-500;
-      box-shadow: 0 0 4px lighten($color-shopware-brand-500, 30%);
+      border-color: var(--color-border-brand-selected);
+      box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.30);
     }
   }
 
@@ -418,13 +422,12 @@ $sw-field-transition:
     cursor: pointer;
   }
 
-  // Label
   .sw-field__label {
     display: flex;
     line-height: 16px;
     font-size: 14px;
     margin-bottom: 8px;
-    color: $color-darkgray-200;
+    color: var(--color-text-primary-default);
 
     label {
       flex-grow: 1;
