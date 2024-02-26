@@ -1,9 +1,9 @@
 import * as sw from '../../src/index';
 import { handle, publish, send, setExtensions } from '../../src/channel';
 import Criteria from '../../src/data/Criteria';
-import EntityCollection from "../../src/data/_internals/EntityCollection";
-import EntityClass from "../../src/data/_internals/Entity";
-import MissingPrivilegesError from '../../src/privileges/missing-privileges-error';
+import EntityCollection from "../../src/_internals/data/EntityCollection";
+import EntityClass from "../../src/_internals/data/Entity";
+import MissingPrivilegesError from '../../src/_internals/privileges/missing-privileges-error';
 export interface sw_internal {
   handle: typeof handle,
   publish: typeof publish,

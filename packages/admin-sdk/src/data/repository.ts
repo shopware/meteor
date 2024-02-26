@@ -1,8 +1,8 @@
 import { send } from '../channel';
 import type Criteria from './Criteria';
-import type { ApiContext } from './_internals/EntityCollection';
-import type EntityCollection from './_internals/EntityCollection';
-import type { Entity } from './_internals/Entity';
+import type { ApiContext } from '../_internals/data/EntityCollection';
+import type EntityCollection from '../_internals/data/EntityCollection';
+import type { Entity } from '../_internals/data/Entity';
 
 type Entities = EntitySchema.Entities;
 

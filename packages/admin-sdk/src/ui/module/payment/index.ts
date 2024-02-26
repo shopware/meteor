@@ -1,4 +1,4 @@
-import * as overviewCard from './overviewCard';
+import * as overviewCard from './overview-card';
 
 export {
   overviewCard,

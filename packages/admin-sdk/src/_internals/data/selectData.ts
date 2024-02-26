@@ -1,8 +1,8 @@
 import { toPath, get } from 'lodash';
-import type { ShopwareMessageTypes } from '../../messages.types';
-import MissingPrivilegesError from '../../privileges/missing-privileges-error';
-import type { privilegeString } from '../../privileges/privilege-resolver';
-import { findExtensionByBaseUrl } from '../../privileges/privilege-resolver';
+import type { ShopwareMessageTypes } from '../../message-types';
+import MissingPrivilegesError from '../privileges/missing-privileges-error';
+import type { privilegeString } from '../privileges';
+import { findExtensionByBaseUrl } from '../utils';
 
 export function selectData(
   sourceData: unknown,

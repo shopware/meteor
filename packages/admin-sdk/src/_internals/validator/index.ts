@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { privilegeString } from '../../privileges/privilege-resolver';
-import type { privileges } from '../../privileges/privilege-resolver';
-import type { ShopwareMessageTypes } from '../../messages.types';
-import { findExtensionByBaseUrl } from '../../privileges/privilege-resolver';
-import { traverseObject } from '../utils';
-import MissingPrivilegesError from '../../privileges/missing-privileges-error';
+import type { privilegeString } from '../privileges';
+import type { privileges } from '../privileges';
+import type { ShopwareMessageTypes } from '../../message-types';
+import { findExtensionByBaseUrl, traverseObject } from '../utils';
+import MissingPrivilegesError from '../privileges/missing-privileges-error';
 
 export default function validate({
   serializedData,

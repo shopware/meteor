@@ -52,6 +52,9 @@ importers:
       eslint:
         specifier: ^8.11.0
         version: 8.56.0
+      eslint-plugin-check-file:
+        specifier: ^2.7.0
+        version: 2.7.1(eslint@8.56.0)
       eslint-plugin-import:
         specifier: ^2.25.4
         version: 2.29.1(@typescript-eslint/parser@5.62.0)(eslint@8.56.0)
@@ -9039,6 +9042,17 @@ packages:
       eslint-import-resolver-node: 0.3.9
     transitivePeerDependencies:
       - supports-color
+    dev: true
+
+  /eslint-plugin-check-file@2.7.1(eslint@8.56.0):
+    resolution: {integrity: sha512-vPCcKE+jHthIVLTwyCv61uygT/day3wuPTk/WASS/xPqbz0hTPxMTYIE5qBXSpSZVPdfj+H1kUAtdaLCYtfHBg==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      eslint: '>=7.28.0'
+    dependencies:
+      eslint: 8.56.0
+      is-glob: 4.0.3
+      micromatch: 4.0.5
     dev: true
 
   /eslint-plugin-import@2.29.1(@typescript-eslint/parser@5.62.0)(eslint@8.56.0):

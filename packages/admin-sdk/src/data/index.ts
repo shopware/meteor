@@ -1,8 +1,8 @@
 import { createHandler, createSender, processDataRegistration, send, subscribe as createSubscriber } from '../channel';
-import MissingPrivilegesError from '../privileges/missing-privileges-error';
+import MissingPrivilegesError from '../_internals/privileges/missing-privileges-error';
 import Criteria from './Criteria';
-import Entity from './_internals/Entity';
-import EntityCollection from './_internals/EntityCollection';
+import Entity from '../_internals/data/Entity';
+import EntityCollection from '../_internals/data/EntityCollection';
 import repository from './repository';
 
 // Internal function to create a filterable subscriber

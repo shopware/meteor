@@ -1,5 +1,5 @@
 import { hasType } from '../utils';
-import EntityCollection from '../../data/_internals/EntityCollection';
+import EntityCollection from '../data/EntityCollection';
 import type { SerializerFactory } from '.';
 
 /* eslint-disable */

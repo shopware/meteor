@@ -8,7 +8,7 @@ import type {
   publish as publishType,
   setExtensions as setExtensionsType,
 } from './channel';
-import MissingPrivilegesError from './privileges/missing-privileges-error';
+import MissingPrivilegesError from './_internals/privileges/missing-privileges-error';
 
 // Channel send timout + 1000
 jest.setTimeout(8000);
