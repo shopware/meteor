@@ -87,257 +87,257 @@ import SwIcon from "../../icons-media/sw-icon/sw-icon.vue";
 import PriorityPlus from "../../_internal/sw-priority-plus-navigation.vue";
 
 interface TabItem {
-label: string;
-name: string;
-hasError?: boolean;
-disabled?: boolean;
-badge?: "positive" | "critical" | "warning" | "info";
-onClick?: (name: string) => void;
-// @internal - will be added by priority plus menu component
-hidden?: boolean;
+  label: string;
+  name: string;
+  hasError?: boolean;
+  disabled?: boolean;
+  badge?: "positive" | "critical" | "warning" | "info";
+  onClick?: (name: string) => void;
+  // @internal - will be added by priority plus menu component
+  hidden?: boolean;
 }
 
 export default defineComponent({
-name: "SwTabs",
+  name: "SwTabs",
 
-components: {
-  "sw-context-button": SwContextButton,
-  "sw-context-menu-item": SwContextMenuItem,
-  "priority-plus": PriorityPlus,
-  "sw-color-badge": SwColorBadge,
-  "sw-icon": SwIcon,
-},
-
-props: {
-  items: {
-    type: Array as PropType<TabItem[]>,
-    required: true,
+  components: {
+    "sw-context-button": SwContextButton,
+    "sw-context-menu-item": SwContextMenuItem,
+    "priority-plus": PriorityPlus,
+    "sw-color-badge": SwColorBadge,
+    "sw-icon": SwIcon,
   },
 
-  vertical: {
-    type: Boolean,
-    required: false,
-    default: false,
+  props: {
+    items: {
+      type: Array as PropType<TabItem[]>,
+      required: true,
+    },
+
+    vertical: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    small: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    defaultItem: {
+      type: String,
+      required: false,
+      default: "",
+    },
   },
 
-  small: {
-    type: Boolean,
-    required: false,
-    default: false,
-  },
-
-  defaultItem: {
-    type: String,
-    required: false,
-    default: "",
-  },
-},
-
-data(): {
-  refreshKey: boolean;
-  activeItemName: string;
-  showMoreItems: boolean;
-} {
-  return {
-    // refreshKey is for recalculating specific computed properties
-    refreshKey: true,
-    activeItemName: "",
-    showMoreItems: false,
-  };
-},
-
-computed: {
-  tabClasses(): Record<string, boolean> {
-    this.refreshKey;
-
+  data(): {
+    refreshKey: boolean;
+    activeItemName: string;
+    showMoreItems: boolean;
+  } {
     return {
-      "sw-tabs--vertical": this.vertical,
-      "sw-tabs--small": this.small,
+      // refreshKey is for recalculating specific computed properties
+      refreshKey: true,
+      activeItemName: "",
+      showMoreItems: false,
     };
   },
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  activeDomItem(): any | undefined {
-    this.refreshKey;
+  computed: {
+    tabClasses(): Record<string, boolean> {
+      this.refreshKey;
 
-    // Access "this.activeItemName" before to react dynamically on changes
-    const activeItemName = this.activeItemName;
+      return {
+        "sw-tabs--vertical": this.vertical,
+        "sw-tabs--small": this.small,
+      };
+    },
+
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const domItems = this.$refs.items ? (this.$refs.items as any[]) : [];
+    activeDomItem(): any | undefined {
+      this.refreshKey;
 
-    const activeDomItem = domItems.find((item) => {
-      return item.getAttribute("data-item-name") === activeItemName;
-    });
-
-    return activeDomItem;
-  },
-
-  sliderPosition(): number {
-    this.refreshKey;
-
-    if (!this.activeItem) {
-      return 0;
-    }
-
-    // Handle the case when the active item is hidden
-    if (!this.activeDomItem && this.$refs["more-items-button"]) {
+      // Access "this.activeItemName" before to react dynamically on changes
+      const activeItemName = this.activeItemName;
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return (this.$refs["more-items-button"] as any).$el?.offsetLeft;
-    }
+      const domItems = this.$refs.items ? (this.$refs.items as any[]) : [];
 
-    const leftPaddingOfActiveDomItem = parseFloat(
-      getComputedStyle(this.activeDomItem).paddingLeft
-    );
+      const activeDomItem = domItems.find((item) => {
+        return item.getAttribute("data-item-name") === activeItemName;
+      });
 
-    return this.vertical ?
-       this.activeDomItem.offsetTop :
-       this.activeDomItem.offsetLeft +
-       leftPaddingOfActiveDomItem;
-  },
+      return activeDomItem;
+    },
 
-  sliderLength(): number {
-    this.refreshKey;
+    sliderPosition(): number {
+      this.refreshKey;
 
-    if (!this.activeItem) {
-      return 0;
-    }
+      if (!this.activeItem) {
+        return 0;
+      }
 
-    // Handle the case when the active item is hidden
-    if (!this.activeDomItem && this.$refs["more-items-button"]) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return (this.$refs["more-items-button"] as any).$el?.offsetWidth;
-    }
+      // Handle the case when the active item is hidden
+      if (!this.activeDomItem && this.$refs["more-items-button"]) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return (this.$refs["more-items-button"] as any).$el?.offsetLeft;
+      }
 
-    if (this.activeItem?.hidden && this.$refs["more-items-button"]) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return (this.$refs["more-items-button"] as any).$el?.offsetWidth;
-    }
+      const leftPaddingOfActiveDomItem = parseFloat(
+        getComputedStyle(this.activeDomItem).paddingLeft,
+      );
 
-    const stylesOfActiveDomItem = getComputedStyle(this.activeDomItem);
-    const widthWithoutPadding = this.activeDomItem.clientWidth
-      - parseFloat(stylesOfActiveDomItem.paddingLeft)
-      - parseFloat(stylesOfActiveDomItem.paddingRight);
+      return this.vertical
+        ? this.activeDomItem.offsetTop
+        : this.activeDomItem.offsetLeft + leftPaddingOfActiveDomItem;
+    },
 
-    return this.vertical ? this.activeDomItem.offsetHeight : widthWithoutPadding;
-  },
+    sliderLength(): number {
+      this.refreshKey;
 
-  activeItem(): TabItem | undefined {
-    this.refreshKey;
+      if (!this.activeItem) {
+        return 0;
+      }
 
-    return this.items.find((item) => {
-      return item.name === this.activeItemName;
-    });
-  },
+      // Handle the case when the active item is hidden
+      if (!this.activeDomItem && this.$refs["more-items-button"]) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return (this.$refs["more-items-button"] as any).$el?.offsetWidth;
+      }
 
-  sliderClasses(): Record<string, boolean> {
-    this.refreshKey;
+      if (this.activeItem?.hidden && this.$refs["more-items-button"]) {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        return (this.$refs["more-items-button"] as any).$el?.offsetWidth;
+      }
 
-    return {
-      "sw-tabs__slider--error": this.activeItem?.hasError ?? false,
-    };
-  },
+      const stylesOfActiveDomItem = getComputedStyle(this.activeDomItem);
+      const widthWithoutPadding =
+        this.activeDomItem.clientWidth -
+        parseFloat(stylesOfActiveDomItem.paddingLeft) -
+        parseFloat(stylesOfActiveDomItem.paddingRight);
 
-  sliderStyle(): string {
-    this.refreshKey;
+      return this.vertical ? this.activeDomItem.offsetHeight : widthWithoutPadding;
+    },
 
-    if (this.vertical) {
-      return `
+    activeItem(): TabItem | undefined {
+      this.refreshKey;
+
+      return this.items.find((item) => {
+        return item.name === this.activeItemName;
+      });
+    },
+
+    sliderClasses(): Record<string, boolean> {
+      this.refreshKey;
+
+      return {
+        "sw-tabs__slider--error": this.activeItem?.hasError ?? false,
+      };
+    },
+
+    sliderStyle(): string {
+      this.refreshKey;
+
+      if (this.vertical) {
+        return `
           transform: translate(0, ${this.sliderPosition}px) rotate(90deg);
           width: ${this.sliderLength}px;
       `;
-    }
+      }
 
-    return `
+      return `
         transform: translate(${this.sliderPosition}px, 0) rotate(0deg);
         width: ${this.sliderLength}px;
     `;
-  },
-},
-
-watch: {
-  items: "handleResize",
-  vertical: "handleResize",
-  small: "handleResize",
-},
-
-mounted() {
-  this.setActiveItem(this.defaultItem);
-
-  this.$nextTick(() => {
-    this.handleResize();
-  });
-
-  // @ts-expect-error $device helper is not registered in TS yet
-  this.$device.onResize({
-    listener() {
-      this.handleResize();
     },
-    component: this,
-    scope: this,
-  });
-},
-
-beforeUnmount() {
-  // @ts-expect-error $device helper is not registered in TS yet
-  this.$device.removeResizeListener(this);
-},
-
-methods: {
-  handleClick(itemName: string): void {
-    this.setActiveItem(itemName);
-    this.$emit("new-item-active", itemName);
-
-    const matchingItem = this.items.find((item) => item.name === itemName);
-
-    if (!matchingItem?.onClick) {
-      return;
-    }
-
-    matchingItem.onClick(itemName);
   },
 
-  getItemClasses(item: TabItem) {
-    return {
-      "sw-tabs__item--error": item.hasError,
-      "sw-tabs__item--active": item.name === this.activeItemName,
-    };
+  watch: {
+    items: "handleResize",
+    vertical: "handleResize",
+    small: "handleResize",
   },
 
-  getContextMenuItemVariant(item: TabItem): string {
-    if (item.hasError) {
-      return "critical";
-    }
+  mounted() {
+    this.setActiveItem(this.defaultItem);
 
-    if (item.name === this.activeItemName) {
-      return "active";
-    }
+    this.$nextTick(() => {
+      this.handleResize();
+    });
 
-    if (item.badge === "critical") {
-      return "critical";
-    }
-
-    return "default";
+    // @ts-expect-error $device helper is not registered in TS yet
+    this.$device.onResize({
+      listener() {
+        this.handleResize();
+      },
+      component: this,
+      scope: this,
+    });
   },
 
-  setActiveItem(itemName: string): void {
-    this.activeItemName = `${itemName}`;
-    this.refreshKey = !this.refreshKey;
+  beforeUnmount() {
+    // @ts-expect-error $device helper is not registered in TS yet
+    this.$device.removeResizeListener(this);
   },
 
-  handleResize() {
-    if (this.$refs.priorityPlus) {
+  methods: {
+    handleClick(itemName: string): void {
+      this.setActiveItem(itemName);
+      this.$emit("new-item-active", itemName);
+
+      const matchingItem = this.items.find((item) => item.name === itemName);
+
+      if (!matchingItem?.onClick) {
+        return;
+      }
+
+      matchingItem.onClick(itemName);
+    },
+
+    getItemClasses(item: TabItem) {
+      return {
+        "sw-tabs__item--error": item.hasError,
+        "sw-tabs__item--active": item.name === this.activeItemName,
+      };
+    },
+
+    getContextMenuItemVariant(item: TabItem): string {
+      if (item.hasError) {
+        return "critical";
+      }
+
+      if (item.name === this.activeItemName) {
+        return "active";
+      }
+
+      if (item.badge === "critical") {
+        return "critical";
+      }
+
+      return "default";
+    },
+
+    setActiveItem(itemName: string): void {
+      this.activeItemName = `${itemName}`;
       this.refreshKey = !this.refreshKey;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (this.$refs.priorityPlus as any).handleResize().then(() => {
-        this.refreshKey = !this.refreshKey;
-      });
-    }
-  },
+    },
 
-  toggleMoreTabItems() {
-    this.showMoreItems = !this.showMoreItems;
+    handleResize() {
+      if (this.$refs.priorityPlus) {
+        this.refreshKey = !this.refreshKey;
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (this.$refs.priorityPlus as any).handleResize().then(() => {
+          this.refreshKey = !this.refreshKey;
+        });
+      }
+    },
+
+    toggleMoreTabItems() {
+      this.showMoreItems = !this.showMoreItems;
+    },
   },
-},
 });
 </script>
 
