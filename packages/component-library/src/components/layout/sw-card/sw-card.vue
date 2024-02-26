@@ -170,7 +170,7 @@ export default defineComponent({
   max-width: $content-width;
   margin: 0 auto 40px;
   position: relative;
-  color: $color-darkgray-200;
+  background: var(--color-elevation-surface-raised);
 
   &:not(&--hero) {
     @include drop-shadow-default;
@@ -224,11 +224,9 @@ export default defineComponent({
     flex-wrap: wrap;
     align-items: stretch;
     gap: 12px;
-    background-color: $color-white;
     padding: 24px;
     padding-bottom: 20px;
-    border-radius: $border-radius-lg $border-radius-lg 0 0;
-    border-bottom: 1px solid $color-gray-300;
+    border-bottom: 1px solid var(--color-border-primary-default);
   }
 
   .sw-card__avatar {
@@ -248,20 +246,15 @@ export default defineComponent({
     display: none;
   }
 
-  .sw-card__title,
-  .sw-card__subtitle {
-    color: $color-darkgray-200;
-  }
-
   .sw-card__title {
-    color: $color-darkgray-300;
+    color: var(--color-text-primary-default);
     font-size: $font-size-large;
     font-weight: $font-weight-semi-bold;
     line-height: 18px;
   }
 
   .sw-card__subtitle {
-    color: $color-darkgray-50;
+    color: var(--color-text-tertiary-default);
     font-size: $font-size-small;
     line-height: 14px;
   }
@@ -273,6 +266,7 @@ export default defineComponent({
   }
 
   .sw-card__titles-right-slot {
+    color: var(--color-text-primary-default);
     margin-left: auto;
   }
 
@@ -281,7 +275,6 @@ export default defineComponent({
     flex-basis: auto;
     gap: 8px;
     padding: 20px 24px 16px 24px;
-    background-color: $color-white;
 
     &:empty {
       display: none;
@@ -289,8 +282,6 @@ export default defineComponent({
   }
 
   &__tabs {
-    background-color: $color-white;
-
     .sw-tabs {
       margin: 0;
       max-width: none;
@@ -305,21 +296,13 @@ export default defineComponent({
     border-bottom: none;
   }
 
-  &.has--header {
-    .sw-card__content {
-      border-top: none;
-      border-radius: 0 0 $border-radius-lg $border-radius-lg;
-    }
-  }
-
   .sw-card__content {
     display: flow-root;
     flex-basis: 100%;
     padding: 30px;
-    background: $color-white;
     background-clip: padding-box;
-    border-radius: $border-radius-lg;
     position: relative;
+    color: var(--color-text-primary-default);
 
     @media screen and (max-width: $content-width) {
       padding: 15px;
@@ -358,21 +341,20 @@ export default defineComponent({
       grid-column-gap: 6px;
       align-items: center;
       text-decoration: none;
-      color: $color-shopware-brand-500;
+      color: var(--color-text-brand-default);
       font-size: 14px;
 
       &:hover {
-        color: $color-shopware-brand-600;
+        color: var(--color-text-brand-hover);
       }
     }
   }
 
   .sw-card__footer {
     display: flex;
-    background-color: $color-white;
     padding: 16px 24px;
     border-top: none;
-    border-radius: 0 0 $border-radius-lg $border-radius-lg;
+    color: var(--color-text-secondary-default);
   }
 
   .sw-card__footer:empty {

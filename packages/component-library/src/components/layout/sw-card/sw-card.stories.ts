@@ -103,7 +103,7 @@ export const ExtendedStory: StoryObj<SwCardMeta> = {
     },
     template: `
     <sw-card v-bind="args">
-        <h4>
+        <h4 style="color: var(--color-text-primary-default);">
           Active Tab: {{ activeTab }}
         </h4>
 
