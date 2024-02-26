@@ -6,5 +6,8 @@
   "scripts": {},
   "keywords": [],
   "author": "Nils Haberkamp",
-  "license": "MIT"
+  "license": "MIT",
+  "peerDependencies": {
+    "stylelint": "^16.2.1"
+  }
 }
