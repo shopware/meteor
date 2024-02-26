@@ -185,7 +185,14 @@ computed: {
       return (this.$refs["more-items-button"] as any).$el?.offsetLeft;
     }
 
-    return this.vertical ? this.activeDomItem?.offsetTop : this.activeDomItem?.offsetLeft;
+    const leftPaddingOfActiveDomItem = parseFloat(
+      getComputedStyle(this.activeDomItem).paddingLeft
+    );
+
+    return this.vertical ?
+       this.activeDomItem.offsetTop :
+       this.activeDomItem.offsetLeft +
+       leftPaddingOfActiveDomItem;
   },
 
   sliderLength(): number {
@@ -206,7 +213,12 @@ computed: {
       return (this.$refs["more-items-button"] as any).$el?.offsetWidth;
     }
 
-    return this.vertical ? this.activeDomItem?.offsetHeight : this.activeDomItem?.offsetWidth;
+    const stylesOfActiveDomItem = getComputedStyle(this.activeDomItem);
+    const widthWithoutPadding = this.activeDomItem.clientWidth
+      - parseFloat(stylesOfActiveDomItem.paddingLeft)
+      - parseFloat(stylesOfActiveDomItem.paddingRight);
+
+    return this.vertical ? this.activeDomItem.offsetHeight : widthWithoutPadding;
   },
 
   activeItem(): TabItem | undefined {
