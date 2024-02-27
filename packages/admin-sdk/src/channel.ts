@@ -566,11 +566,6 @@ const datasets = new Map<string, unknown>();
 export async function processDataRegistration(data: Omit<datasetRegistration, 'responseType'>): Promise<void> {
   datasets.set(data.id, data.data);
 
-  // Only publish whole data to sources that don't have a sdkVersion (for backwards compatibility)
-  publish('datasetSubscribe', data, [
-    ...[...sourceRegistry].filter(({ sdkVersion }) => !sdkVersion),
-  ]);
-
   // Publish selected data to sources that are inside the subscriberRegistry
   subscriberRegistry.forEach(({ id, selectors, source, origin }) => {
     if (id !== data.id) {
