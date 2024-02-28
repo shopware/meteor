@@ -2,37 +2,42 @@
   "name": "@shopware-ag/meteor-icon-kit",
   "version": "5.2.1",
   "description": "An icon library and toolkit that follows a minimal, yet highly expressive style perfectly aligned with Shopware's product language",
-  "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com:shopware/meteor.git"
-  },
   "keywords": [
     "svg",
     "shopware",
     "icons"
   ],
-  "scripts": {
-    "prepublish": "npm run build",
-    "build": "tsc",
-    "start": "node dist",
-    "start:dev": "ts-node src",
-    "debug": "ts-node src/debug.ts",
-    "lint:all": "npm run lint:types && npm run lint:eslint",
-    "lint:types": "tsc --noEmit",
-    "lint:eslint": "eslint ./src --ext .ts",
-    "docs:link": "../developer-portal/docs-cli link --src docs --dst resources/meteor-icon-kit --symlink",
-    "docs:copy": "../developer-portal/docs-cli link --src docs --dst resources/meteor-icon-kit",
-    "docs:preview": "../developer-portal/docs-cli preview"
-  },
-  "files": [
-    "icons"
-  ],
-  "license": "MIT",
+  "homepage": "https://github.com/shopware/meteor/tree/main/packages/icon-kit#readme",
   "bugs": {
     "url": "https://github.com/shopware/meteor/issues"
   },
-  "homepage": "https://github.com/shopware/meteor/tree/main/packages/icon-kit#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:shopware/meteor.git"
+  },
+  "license": "MIT",
+  "author": "shopware AG",
+  "main": "index.js",
+  "files": [
+    "icons"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "debug": "ts-node src/debug.ts",
+    "docs:copy": "../developer-portal/docs-cli link --src docs --dst resources/meteor-icon-kit",
+    "docs:link": "../developer-portal/docs-cli link --src docs --dst resources/meteor-icon-kit --symlink",
+    "docs:preview": "../developer-portal/docs-cli preview",
+    "lint:all": "npm run lint:types && npm run lint:eslint",
+    "lint:eslint": "eslint ./src --ext .ts",
+    "lint:types": "tsc --noEmit",
+    "prepublish": "npm run build",
+    "start": "node dist",
+    "start:dev": "ts-node src"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.1",
+    "js-md5": "^0.7.3"
+  },
   "devDependencies": {
     "@supercharge/promise-pool": "^2.4.0",
     "@types/axios": "^0.14.0",
@@ -53,9 +58,5 @@
     "svgo-autocrop": "1.1.1",
     "ts-node": "^10.8.1",
     "typescript": "^4.6.3"
-  },
-  "dependencies": {
-    "dotenv": "^16.4.1",
-    "js-md5": "^0.7.3"
   }
 }

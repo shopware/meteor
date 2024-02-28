@@ -21,35 +21,23 @@
   </div>
 </template>
 
-<script lang="ts">
-import Vue from 'vue'
+<script setup lang="ts">
 import { window, context } from "@shopware-ag/meteor-admin-sdk";
 import { SwButton } from '@shopware-ag/meteor-component-library';
 
-export default Vue.extend({
-components: {
-  SwButton
-},
-data() {
-    return {}
-},
-computed: {},
-methods: {
-  async goToExampleModule() {
-    const moduleInformation = await context.getModuleInformation();
-    const exampleModule = moduleInformation.modules.find(module => module.locationId === 'ex-meteor-admin-sdk-example-module');
+async function goToExampleModule() {
+  const moduleInformation = await context.getModuleInformation();
+  const exampleModule = moduleInformation.modules.find(module => module.locationId === 'ex-meteor-admin-sdk-example-module');
 
-    if (exampleModule) {
-      window.routerPush({
-          name: 'sw.extension.sdk.index',
-          params: {
-              id: exampleModule.id
-          }
-      })
-    }
+  if (exampleModule) {
+    window.routerPush({
+        name: 'sw.extension.sdk.index',
+        params: {
+            id: exampleModule.id
+        }
+    })
   }
 }
-})
 </script>
 
 <style>
