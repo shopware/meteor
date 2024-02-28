@@ -3,6 +3,9 @@ module.exports = {
   parserOptions: {
     parser: '@typescript-eslint/parser',
   },
+  globals: {
+    EntitySchema: true,
+  },
   extends: [
     // add more generic rulesets here, such as:
     'eslint:recommended',

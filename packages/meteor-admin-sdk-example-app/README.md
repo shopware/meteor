@@ -1,25 +1,19 @@
-# Meteor
+# Meteor Admin SDK Example App
 
-Meteor is Shopware’s open-source design system that drives our commerce solutions.
-Extend and customise every aspect of Shopware – create elegant, delightful, and
-accessible experiences. There are no limits to your imagination.
+This repository contains an example folder structure inside `src/static` which you can use as an inspiration for your admin extensions in your app. It uses the [Meteor Admin SDK](https://github.com/shopware/meteor-admin-sdk) for extending the administration.
 
-## How to navigate through this project 
+Everything else is just for setting up a basic app server.
 
-This repository contains all project related to the Meteor Design System used and maintained by shopware and it's contributors.
+## Initial setup
 
-```
-meteor/
-├── admin-sdk                   # SDK to build Apps for the Shopware 6 Administration
-├── component-library           # Collection of the Meteor Vue.js components
-├── icon-kit                    # Meteor icons in one single place
-└── tokens                      # Design Tokens powering the Meteor Design System
-```
+1. Check out this repository somewhere locally.
+2. Run `npm install` to install all dependencies
+3. Start the development server with `npm run dev`
 
-## Contribute to Meteor
+## App installation
 
-Pull requests are welcome. See the [contribution guidelines](./CONTRIBUTING.md) for more information.
+1. Copy the folder `MeteorAdminSDKExampleApp` to the `custom/apps` folder inside your Shopware installation
+2. Install the App in Shopware: `bin/console app:install MeteorAdminSDKExampleApp`
 
-## License
+Now you should see the app installed when opening the Shopware Admin and looking in "Extensions" -> "My Extensions".
 
-Source code is under a custom license based on MIT. 

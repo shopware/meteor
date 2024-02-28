@@ -6,8 +6,8 @@ import { Config } from 'shopware-app-server-sdk/config';
 import { InMemoryShopRepository } from 'shopware-app-server-sdk/repository';
 import { NodeHmacSigner } from 'shopware-app-server-sdk/runtime/node/signer';
 import { convertRequest, convertResponse, rawRequestMiddleware } from 'shopware-app-server-sdk/runtime/node/express';
-import { createServer as createViteServer } from 'vite'
-import vue from '@vitejs/plugin-vue2'
+import { createServer as createViteServer } from 'vite';
+import vue from '@vitejs/plugin-vue';
 
 async function createServer() {
     const PORT = process.env.PORT || 8888;
@@ -64,7 +64,7 @@ async function createServer() {
                 '@shopware-ag/meteor-admin-sdk',
                 '@shopware-ag/meteor-component-library'
             ]
-        }
+        },
     })
 
     // use vite's connect instance as middleware
