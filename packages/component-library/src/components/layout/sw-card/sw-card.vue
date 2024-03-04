@@ -30,10 +30,7 @@
         <slot name="headerRight" />
       </div>
 
-      <div
-        v-if="!!$slots['context-actions'] || !!$slots['context-actions']"
-        class="sw-card__context-menu"
-      >
+      <div v-if="!!$slots['context-actions']" class="sw-card__context-menu">
         <sw-context-button>
           <!-- @slot Slot for adding sw-context-menu-item components for rendering a context menu -->
           <slot name="context-actions" />
