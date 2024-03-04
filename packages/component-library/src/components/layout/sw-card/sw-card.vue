@@ -121,11 +121,8 @@ export default defineComponent({
       return (
         !!this.title ||
         !!this.$slots.title ||
-        !!this.$slots.title ||
         !!this.subtitle ||
         !!this.$slots.subtitle ||
-        !!this.$slots.subtitle ||
-        !!this.$slots.avatar ||
         !!this.$slots.avatar
       );
     },
@@ -134,14 +131,14 @@ export default defineComponent({
   methods: {
     cardClasses() {
       return {
-        "sw-card--grid": !!this.$slots.grid || !!this.$slots.grid,
+        "sw-card--grid": !!this.$slots.grid,
         "sw-card--hero": !!this.hero,
         "sw-card--large": this.large,
         "has--header": !!this.showHeader,
-        "has--title": !!this.title || !!this.$slots.title || !!this.$slots.title,
-        "has--subtitle": !!this.subtitle || !!this.$slots.subtitle || !!this.$slots.subtitle,
-        "has--toolbar": !!this.$slots.toolbar || !!this.$slots.toolbar,
-        "has--footer": !!this.$slots.footer || !!this.$slots.footer,
+        "has--title": !!this.title || !!this.$slots.title,
+        "has--subtitle": !!this.subtitle,
+        "has--toolbar": !!this.$slots.toolbar,
+        "has--footer": !!this.$slots.footer,
       };
     },
   },
