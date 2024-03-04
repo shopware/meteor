@@ -355,7 +355,7 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
 .sw-popover-item {
   display: flex;
   flex-direction: column;
-  color: $color-custom-dark;
+  color: var(--color-text-primary-default);
   padding: 8px 0;
 
   // add new Inter font to popover item
@@ -383,9 +383,11 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
   }
 
   &:hover {
+    color: var(--color-text-brand-default);
+
     &::before {
       position: absolute;
-      background-color: $color-shopware-brand-50;
+      background-color: var(--color-background-brand-default);
       border-radius: $border-radius-default;
       top: 4px;
       right: -8px;
@@ -400,12 +402,14 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
   }
 
   &--critical {
-    color: $color-crimson-500;
+    color: var(--color-interaction-critical-default);
   }
 
   &--critical:hover {
+    color: var(--color-interaction-critical-default);
+
     &::before {
-      background-color: $color-crimson-50;
+      background-color: var(--color-background-critical-dark);
     }
   }
 
@@ -414,7 +418,7 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
   }
 
   &--disabled {
-    color: $color-custom-lightgrey;
+    color: var(--color-text-primary-disabled);
 
     &:hover {
       text-decoration: none;
