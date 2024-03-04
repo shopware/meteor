@@ -137,7 +137,7 @@ export default defineComponent({
 
     contentVisibilityClass() {
       return {
-        "is--hidden": this.isLoading,
+        "sw-button__content--hidden": this.isLoading,
       };
     },
   },
@@ -178,7 +178,7 @@ $sw-button-transition: all 0.15s ease-out;
     grid-gap: 0 8px;
   }
 
-  .sw-button__content.is--hidden {
+  .sw-button__content--hidden {
     visibility: hidden;
   }
 
