@@ -62,7 +62,7 @@
     </div>
 
     <div class="sw-card__footer">
-      <!-- @slot The footer slot which allows rendering addintional things after the content -->
+      <!-- @slot The footer slot which allows rendering additional things after the content -->
       <slot name="footer" />
     </div>
   </div>
