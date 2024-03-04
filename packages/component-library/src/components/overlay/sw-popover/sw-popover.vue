@@ -275,10 +275,11 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
     padding: 16px;
     padding-top: 4px;
     padding-bottom: 4px;
-    background-color: $color-white;
+    background-color: var(--color-elevation-surface-overlay);
     overflow: auto;
     border-radius: $border-radius-default;
-    @include drop-shadow-default;
+    box-shadow: 0 3px 6px 0 var(--color-border-primary-default);
+    border: 1px solid var(--color-border-primary-default);
     overflow-x: hidden;
     scroll-behavior: smooth;
 
