@@ -134,11 +134,7 @@ export default defineComponent({
         "sw-card--grid": !!this.$slots.grid,
         "sw-card--hero": !!this.hero,
         "sw-card--large": this.large,
-        "has--header": !!this.showHeader,
-        "has--title": !!this.title || !!this.$slots.title,
-        "has--subtitle": !!this.subtitle,
-        "has--toolbar": !!this.$slots.toolbar,
-        "has--footer": !!this.$slots.footer,
+        "sw-card--has-footer": !!this.$slots.footer,
       };
     },
   },
@@ -355,7 +351,7 @@ export default defineComponent({
     display: none;
   }
 
-  &.has--footer {
+  &.sw-card--has-footer {
     .sw-card__content {
       border: none;
       border-radius: 0;
