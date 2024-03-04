@@ -187,13 +187,6 @@ $sw-button-transition: all 0.15s ease-out;
     background: $color-gray-100;
   }
 
-  // TODO: decide what to do with it, this selector causes problems
-  //     with the sw-button--primary-ghost when it's hovered
-  // &:active:not(.sw-button--disabled) {
-  //   background: $color-gray-200;
-  //   border-color: $color-gray-400;
-  // }
-
   &:disabled,
   &.sw-button--disabled {
     color: $color-gray-500;
