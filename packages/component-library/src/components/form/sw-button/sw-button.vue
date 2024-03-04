@@ -3,7 +3,6 @@
     v-if="link"
     :href="!disabled ? link : ''"
     target="_blank"
-    role="button"
     rel="noopener"
     class="sw-button"
     :class="buttonClasses"
