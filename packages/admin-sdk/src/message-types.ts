@@ -4,7 +4,7 @@ import type { contextLanguage, contextEnvironment, contextLocale, contextCurrenc
 import type { uiComponentSectionRenderer } from './ui/component-section/index';
 import type { uiTabsAddTabItem } from './ui/tabs';
 import type { uiModulePaymentOverviewCard } from './ui/module/payment/overview-card';
-import type { cmsRegisterElement } from './ui/cms';
+import type { cmsRegisterElement, cmsRegisterBlock } from './ui/cms';
 import type { locationUpdateHeight, locationUpdateUrl } from './location/index';
 import type { menuItemAdd } from './ui/menu';
 import type { settingsItemAdd } from './ui/settings';
@@ -50,6 +50,7 @@ export interface ShopwareMessageTypes {
   uiTabsAddTabItem: uiTabsAddTabItem,
   uiModulePaymentOverviewCard: uiModulePaymentOverviewCard,
   cmsRegisterElement: cmsRegisterElement,
+  cmsRegisterBlock: cmsRegisterBlock,
   locationUpdateHeight: locationUpdateHeight,
   locationUpdateUrl: locationUpdateUrl,
   menuItemAdd: menuItemAdd,
