@@ -53,7 +53,7 @@ describe("src/app/component/navigation/sw-tabs", () => {
     expect(wrapper.emitted("new-item-active")?.[0]).toStrictEqual(["bar"]);
   });
 
-  it.only("should emit on clicked vertical tab", async () => {
+  it("should emit on clicked vertical tab", async () => {
     wrapper = await createWrapper(undefined, {
       vertical: true,
     });
