@@ -1,6 +1,6 @@
 <template>
   <div class="sw-popover-item" :class="componentClasses">
-    <div class="sw-popover-item__top-row" @click="handleLableClick">
+    <div class="sw-popover-item__top-row" @click="handleLabelClick">
       <sw-checkbox
         v-if="showCheckbox"
         class="sw-popover-item__checkbox"
@@ -17,8 +17,8 @@
         :class="iconClasses"
         :tabindex="onLabelClickTabIndex"
         :name="icon"
-        @click="handleLableClick"
-        @keyup.enter="handleLableClick"
+        @click="handleLabelClick"
+        @keyup.enter="handleLabelClick"
       />
 
       <div
@@ -26,8 +26,8 @@
         :class="labelClasses"
         :tabindex="onLabelClickTabIndex"
         :role="role"
-        @click.stop.prevent="handleLableClick"
-        @keyup.enter="handleLableClick"
+        @click.stop.prevent="handleLabelClick"
+        @keyup.enter="handleLabelClick"
       >
         {{ label }}
 
@@ -255,7 +255,7 @@ export default defineComponent({
       return props.onLabelClick ? 0 : -1;
     });
 
-    const handleLableClick = () => {
+    const handleLabelClick = () => {
       if (props.onLabelClick) {
         props.onLabelClick();
         return;
@@ -291,7 +291,7 @@ export default defineComponent({
       componentClasses,
       labelClasses,
       onLabelClickTabIndex,
-      handleLableClick,
+      handleLabelClick,
       isClickable,
       iconClasses,
     };
