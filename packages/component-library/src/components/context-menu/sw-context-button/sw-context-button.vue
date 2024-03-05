@@ -141,13 +141,13 @@ $sw-context-button-border-radius: $border-radius-default;
     }
   }
 
-  &.sw-context-button--disabled.is--open {
+  &.sw-context-button--disabled.sw-popover--open {
     .sw-context-button__button {
       border: none;
     }
   }
 
-  &.is--open .sw-context-button__button {
+  &.sw-popover--open .sw-context-button__button {
     border-color: var(--color-border-primary-default);
   }
 

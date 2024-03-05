@@ -179,20 +179,12 @@ export default defineComponent({
     });
 
     const componentClasses = computed(() => {
-      const classes: {
-        "is--float": boolean;
-        "is--open": boolean;
-        "has--header": boolean;
-        [key: `is--width-${string}`]: boolean;
-      } = {
-        "is--float": !props.disableFloat,
-        "is--open": isOpened.value,
-        "has--header": showHeader.value,
+      return {
+        "sw-popover--float": !props.disableFloat,
+        "sw-popover--open": isOpened.value,
+        "sw-popover--header": showHeader.value,
+        [`sw-popover--width-${props.width}`]: true,
       };
-
-      classes[`is--width-${props.width}`] = true;
-
-      return classes;
     });
 
     return {
@@ -265,7 +257,7 @@ $scrollShadowSize: 16px;
 $scrollShadowColor: rgba(120, 120, 120, 0.2);
 
 .sw-popover {
-  &.is--float {
+  &.sw-popover--float {
     .sw-popover__content {
       max-height: max(50vh, 250px);
     }
@@ -337,22 +329,22 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
     }
   }
 
-  &.is--width-dynamic .sw-popover__content {
+  &.sw-popover--width-dynamic .sw-popover__content {
     min-width: 220px;
     max-width: 440px;
   }
 
-  &.is--width-large .sw-popover__content {
+  &.sw-popover--width-large .sw-popover__content {
     min-width: 340px;
     max-width: 340px;
   }
 
-  &.is--width-medium .sw-popover__content {
+  &.sw-popover--width-medium .sw-popover__content {
     min-width: 280px;
     max-width: 280px;
   }
 
-  &.is--width-small .sw-popover__content {
+  &.sw-popover--width-small .sw-popover__content {
     min-width: 220px;
     max-width: 220px;
   }
