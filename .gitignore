@@ -1,0 +1,6 @@
+node_modules/
+.turbo
+.env
+chrome/
+.idea/
+.DS_Store
