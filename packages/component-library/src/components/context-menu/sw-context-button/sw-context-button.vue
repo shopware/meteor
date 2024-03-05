@@ -112,13 +112,10 @@ export default defineComponent({
   },
 
   computed: {
-    contextClass(): {
-      "is--disabled": boolean;
-      "has--error": boolean;
-    } {
+    contextClass() {
       return {
-        "is--disabled": this.disabled,
-        "has--error": this.hasError,
+        "sw-context-button--disabled": this.disabled,
+        "sw-context-button--error": this.hasError,
       };
     },
   },
@@ -133,7 +130,7 @@ export default defineComponent({
 $sw-context-button-border-radius: $border-radius-default;
 
 .sw-context-button {
-  &.is--disabled {
+  &.sw-context-button--disabled {
     .sw-context-button__button {
       color: var(--color-icon-primary-default);
       cursor: initial;
@@ -144,7 +141,7 @@ $sw-context-button-border-radius: $border-radius-default;
     }
   }
 
-  &.is--disabled.is--open {
+  &.sw-context-button--disabled.is--open {
     .sw-context-button__button {
       border: none;
     }
@@ -172,7 +169,7 @@ $sw-context-button-border-radius: $border-radius-default;
     }
   }
 
-  &.has--error {
+  &.sw-context-button--error {
     .sw-context-button__button {
       color: var(--color-text-critical-default);
 
