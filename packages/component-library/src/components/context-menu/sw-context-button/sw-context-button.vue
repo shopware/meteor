@@ -130,10 +130,7 @@ export default defineComponent({
 <style lang="scss">
 @import "../../assets/scss/variables.scss";
 
-$sw-context-button-color-text: $color-darkgray-200;
 $sw-context-button-border-radius: $border-radius-default;
-$sw-context-button-color-border: $color-gray-300;
-$sw-context-button-color-disabled: $color-gray-100;
 
 .sw-context-button {
   &.is--disabled {
