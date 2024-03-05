@@ -138,7 +138,7 @@ $sw-context-button-color-disabled: $color-gray-100;
 .sw-context-button {
   &.is--disabled {
     .sw-context-button__button {
-      color: lighten($sw-context-button-color-text, 20%);
+      color: var(--color-icon-primary-default);
       cursor: initial;
 
       &:hover {
@@ -154,12 +154,12 @@ $sw-context-button-color-disabled: $color-gray-100;
   }
 
   &.is--open .sw-context-button__button {
-    border-color: $sw-context-button-color-border;
+    border-color: var(--color-border-primary-default);
   }
 
   .sw-context-button__button {
     position: relative;
-    color: $sw-context-button-color-text;
+    color: var(--color-icon-primary-default);
     background: 0 none;
     border: 1px solid transparent;
     border-radius: $sw-context-button-border-radius;
@@ -171,17 +171,17 @@ $sw-context-button-color-disabled: $color-gray-100;
     font-family: $font-family-default;
 
     &:hover {
-      border-color: $sw-context-button-color-border;
+      border-color: var(--color-border-primary-default);
     }
   }
 
   &.has--error {
     .sw-context-button__button {
-      .sw-icon {
-        color: $sw-context-button-color-text;
-      }
+      color: var(--color-text-critical-default);
 
-      color: $color-crimson-300;
+      .sw-icon {
+        color: var(--color-icon-primary-default);
+      }
     }
   }
 }
