@@ -5230,7 +5230,7 @@ packages:
       ts-dedent: 2.2.0
       type-fest: 2.19.0
       vue: 3.4.21(typescript@5.2.2)
-      vue-component-type-helpers: 1.8.27
+      vue-component-type-helpers: 2.0.5
     transitivePeerDependencies:
       - encoding
       - supports-color
@@ -16789,6 +16789,10 @@ packages:
 
   /vue-component-type-helpers@1.8.27:
     resolution: {integrity: sha512-0vOfAtI67UjeO1G6UiX5Kd76CqaQ67wrRZiOe7UAb9Jm6GzlUr/fC7CV90XfwapJRjpCMaZFhv1V0ajWRmE9Dg==}
+    dev: true
+
+  /vue-component-type-helpers@2.0.5:
+    resolution: {integrity: sha512-v9N4ufDSnd8YHcDq/vURPjxDyBVak5ZVAQ6aGNIrf7ZAj/VxRKpLZXFHEaqt9yHkWi0/TZp76Jmf8yNJxDQi4g==}
     dev: true
 
   /vue-demi@0.14.7(vue@3.4.21):
