@@ -1,6 +1,6 @@
 # Meteor Admin SDK Example App
 
-This package contains an example app and server. It uses the [Meteor Admin SDK](https://github.com/shopware/meteor-admin-sdk) to extend the administration.
+This package contains an example app and server. It uses the [Meteor Admin SDK](https://github.com/shopware/meteor/tree/main/packages/admin-sdk) to extend the administration.
 
 ## Server setup
 
