@@ -1,53 +1,81 @@
 # Changelog
 
+## 5.0.0
+
+### Major Changes
+
+- 957e419: # Restructured files and folders
+  If you only use the public API, meaning importing from the index file, your code will work as before.
+  If you import files directly, it is very likely that paths have changed. A lot of **\_internals** have been moved and some not internal files.
+  Some files have also become `_internals` now.
+
+### Minor Changes
+
+- e90e2c4: \* Added the `cms.registerCmsBlock` to add CMS blocks to the administration
+- 30d0128: - Changed from lodash get for selectors to own implementation which supports wildcards
+
+### Patch Changes
+
+- 6e65a4b: - Changed `channel.ts` to no longer submit full datasets for old sdk versions
+
 All notable changes to this project will be documented in this file.
 
 ## [4.0.3] - 20.02.2024
 
 ## Removed
+
 - Query parameter privileges to check privilieges on app side. The administration now handels this.
 
 ## [4.0.2] - 20.02.2024
 
 ## Fixed
+
 - `data.subscribe` throws now correctly an error if privileges are missing
 
 ## [4.0.1] - 20.02.2024
 
 ## Fixed
+
 - Settings item documentation icon name
 
 ## [4.0.0] - 07.02.2024
 
 ## Changed
+
 - Changed this version is not compatible with the previous versions
 
 ## Fixed
+
 - Fixed an issue with circular references in json structures causing pages to freeze
 
 ## [3.0.17] - 19.01.2024
 
 ## Added
+
 - Added `showFooter` to `ui.modal` to allow toggling the modal footer
 
 ## [3.0.15] - 09.10.2023
 
 ## Changed
+
 - Changed `handle` of `channel.ts` to only validate dataset collections and entities
 
 ## [3.0.13] - 21.07.2023
 
 ## Fixed
+
 - Fixed invalid URL type error
 
 ## [3.0.12] - 21.07.2023
 
 ## Fixed
+
 - Fixed permission handling for plugin usage with same origin
 
 ## [3.0.11] - 20.07.2023
 
 ## Fixed
+
 - Fixed permission handling for `data.get` and `data.subscribe`
 
 ### Added
@@ -76,7 +104,7 @@ All notable changes to this project will be documented in this file.
 
 ### Bugfix
 
-- Fixed the serialization of Entities and EntityCollections with reactive Vue objects which previously could lead to errors like e.g. "*.has is not a function"
+- Fixed the serialization of Entities and EntityCollections with reactive Vue objects which previously could lead to errors like e.g. "\*.has is not a function"
 
 ## [3.0.4] - 03.02.2023
 
@@ -86,6 +114,7 @@ All notable changes to this project will be documented in this file.
 - Added `tabs` prop to component section to provide the ability to use tabs inside a card.
 
 ## [3.0.3] - 25.01.2023
+
 - Added the method `location.get` for getting the actual location ID inside the app
 
 ## [3.0.2] - 05.01.2023
