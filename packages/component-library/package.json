@@ -1,6 +1,14 @@
 {
   "name": "@shopware-ag/meteor-component-library",
   "version": "3.0.0-alpha1",
+  "author": "shopware AG",
+  "main": "dist/common/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/esm/index.d.ts",
+  "files": [
+    "src",
+    "dist"
+  ],
   "scripts": {
     "build": "run-p lint:types \"build-only {@}\" --",
     "preview": "vite preview",
@@ -16,13 +24,6 @@
     "build:storybook": "storybook build",
     "test:storybook": "test-storybook"
   },
-  "main": "dist/common/index.js",
-  "module": "dist/esm/index.js",
-  "types": "dist/esm/index.d.ts",
-  "files": [
-    "src",
-    "dist"
-  ],
   "dependencies": {
     "@floating-ui/dom": "^1.4.3",
     "@shopware-ag/meteor-icon-kit": "^5.2.0",
@@ -34,8 +35,8 @@
     "flatpickr": "4.6.3",
     "inter-ui": "^3.19.3",
     "lodash-es": "^4.17.21",
-    "vue": "3.3.8",
-    "vue-i18n": "^9.6.5",
+    "vue": "3.4.21",
+    "vue-i18n": "^9.9.1",
     "vue-smooth-reflow": "^0.1.12"
   },
   "devDependencies": {

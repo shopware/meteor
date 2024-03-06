@@ -1,0 +1,45 @@
+name: Update tokens
+
+on: workflow_dispatch
+
+env:
+  FIGMA_TOKEN: ${{ secrets.FIGMA_TOKEN }}
+  PRIMITIVE_TOKENS_FILE_KEY: ${{ secrets.TOKENS__PRIMITIVE_TOKENS_FILE_KEY }}
+  ADMIN_TOKENS_FILE_KEY: ${{ secrets.TOKENS__ADMIN_TOKENS_FILE_KEY }}
+
+jobs:
+  update:
+    name: Update icons
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v2
+        with:
+          version: 8
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'pnpm'
+          cache-dependency-path: '**/pnpm-lock.yaml'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --prefer-offline
+
+      - name: Update tokens
+        run: pnpm --filter @shopware-ag/meteor-tokens run start
+
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: Update tokens
+          committer: Dennis Mader <${{ secrets.ICON_KIT__COMMITTER }}>
+          author: Dennis Mader <${{ secrets.ICON_KIT__COMMITTER }}>
+          branch: update-tokens
+          delete-branch: true
+          branch-suffix: timestamp
+          title: Update icons
+          assignees: Weltraumakustik
