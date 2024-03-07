@@ -19,7 +19,7 @@ async function createServer() {
      * Configure the app server for authentication and verification
      */
     const cfg: Config = {
-    appName: 'MeteorAdminSDKExampleApp',
+    appName: 'MeteorAdminSDKApp',
     appSecret: 'testSecret',
     authorizeCallbackUrl: `${URL}/authorize/callback`
     };

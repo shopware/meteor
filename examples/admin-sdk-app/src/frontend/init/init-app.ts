@@ -8,7 +8,7 @@ ui.componentSection.add({
     component: 'card',
     positionId: 'sw-chart-card__before',
     props: {
-        title: 'Meteor Admin SDK example',
+        title: 'Meteor Admin SDK',
         subtitle: 'Welcome to the example',
         locationId: 'ex-chart-card-before'
     }
