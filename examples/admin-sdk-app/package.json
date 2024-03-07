@@ -2,7 +2,7 @@
   "name": "meteor-admin-sdk-app",
   "version": "1.0.2",
   "description": "",
-  "license": "ISC",
+  "license": "MIT",
   "author": "shopware AG",
   "main": "index.js",
   "repository": {
