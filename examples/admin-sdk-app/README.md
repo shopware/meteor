@@ -8,7 +8,7 @@ This package contains an example app and server. It uses the [Meteor Admin SDK](
 2. Change your working directory to the mono repo root.
 3. Run `pnpm install` to install all dependencies.
 4. Build all packages with turbo, using `npx turbo run build`. This can take a minute or two depending on your hardware.
-5. Start the development server with `pnpm --filter meteor-admin-sdk-example-app run dev`.
+5. Start the development server with `pnpm --filter meteor-admin-sdk-app run dev`.
 
 ## App installation
 
