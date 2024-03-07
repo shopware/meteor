@@ -1,6 +1,6 @@
 {
   "name": "@shopware-ag/meteor-admin-sdk",
-  "version": "5.0.0",
+  "version": "5.0.1",
   "description": "The Meteor SDK for the Shopware Administration.",
   "keywords": [
     "iframe",
@@ -12,7 +12,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/shopware/meteor-admin-sdk.git"
+    "url": "git+ssh://git@github.com:shopware/meteor.git"
   },
   "license": "MIT",
   "exports": {
@@ -28,25 +28,25 @@
       "import": "./es/location/index.js",
       "require": "./umd/location/index.js"
     },
-    "./es/privileges/missing-privileges-error": {
-      "import": "./es/privileges/missing-privileges-error.js",
-      "require": "./umd/privileges/missing-privileges-error.js"
+    "./es/_internals/privileges/missing-privileges-error": {
+      "import": "./es/_internals/privileges/missing-privileges-error.js",
+      "require": "./umd/_internals/privileges/missing-privileges-error.js"
     },
-    "./es/data/_internals/selectData": {
-      "import": "./es/data/_internals/selectData.js",
-      "require": "./umd/data/_internals/selectData.js"
+    "./es/_internals/data/selectData": {
+      "import": "./es/_internals/data/selectData.js",
+      "require": "./umd/_internals/data/selectData.js"
     },
     "./es/data/Criteria": {
       "import": "./es/data/Criteria.js",
       "require": "./umd/data/Criteria.js"
     },
-    "./es/data/_internals/Entity": {
-      "import": "./es/data/_internals/Entity.js",
-      "require": "./umd/data/_internals/Entity.js"
+    "./es/_internals/data/Entity": {
+      "import": "./es/_internals/data/Entity.js",
+      "require": "./umd/_internals/data/Entity.js"
     },
-    "./es/data/_internals/EntityCollection": {
-      "import": "./es/data/_internals/EntityCollection.js",
-      "require": "./umd/data/_internals/EntityCollection.js"
+    "./es/_internals/data/EntityCollection": {
+      "import": "./es/_internals/data/EntityCollection.js",
+      "require": "./umd/_internals/data/EntityCollection.js"
     },
     ".": {
       "import": "./es/index.js",

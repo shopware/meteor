@@ -1,10 +1,14 @@
 {
   "name": "meteor-admin-sdk-example-app",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "",
   "license": "ISC",
   "author": "shopware AG",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:shopware/meteor.git"
+  },
   "scripts": {
     "dev": "ts-node src/server.ts",
     "lint:all": "npm run lint:eslint && vue-tsc --noEmit",
