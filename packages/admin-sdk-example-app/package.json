@@ -5,6 +5,10 @@
   "license": "ISC",
   "author": "shopware AG",
   "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:shopware/meteor.git"
+  },
   "scripts": {
     "dev": "ts-node src/server.ts",
     "lint:all": "npm run lint:eslint && vue-tsc --noEmit",

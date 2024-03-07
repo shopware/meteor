@@ -15,6 +15,10 @@
     "deliverables",
     "dictionaries"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:shopware/meteor.git"
+  },
   "scripts": {
     "format": "prettier --write .",
     "format:check": "prettier --check .",
