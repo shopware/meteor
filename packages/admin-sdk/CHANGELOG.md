@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.0.1
+
+### Patch Changes
+
+- 4048af6: Fix package exports
+
 ## 5.0.0
 
 ### Major Changes
