@@ -3,6 +3,7 @@
   "version": "1.0.2",
   "description": "",
   "license": "MIT",
+  "private": true,
   "author": "shopware AG",
   "main": "index.js",
   "repository": {
