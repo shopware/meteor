@@ -256,13 +256,12 @@ $sw-banner-size-close: 40px;
   }
 
   &--neutral {
-    border-color: $color-gray-300;
-    color: $color-darkgray-200;
-    background-color: $color-white;
+    border-color: var(--color-border-primary-default);
+    background-color: var(--color-elevation-surface-overlay);
 
     .sw-banner__icon,
     .sw-banner__close {
-      color: $color-darkgray-200;
+      color: var(--color-icon-primary-default);
     }
   }
 
