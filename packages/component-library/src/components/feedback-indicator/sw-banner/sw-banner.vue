@@ -201,13 +201,12 @@ $sw-banner-size-close: 40px;
   }
 
   &--info {
-    border-color: $color-shopware-brand-500;
-    background-color: $color-shopware-brand-50;
-    color: $color-shopware-brand-500;
+    border-color: var(--color-border-brand-selected);
+    background-color: var(--color-background-brand-default);
 
     .sw-banner__icon,
     .sw-banner__close {
-      color: $color-shopware-brand-500;
+      color: var(--color-icon-brand-default);
     }
   }
 
