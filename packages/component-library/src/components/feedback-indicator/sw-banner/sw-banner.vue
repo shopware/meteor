@@ -152,6 +152,7 @@ $sw-banner-size-close: 40px;
   position: relative;
   margin: 0 auto 20px;
   font-size: $font-size-default;
+  color: var(--color-text-primary-default);
 
   &__body {
     padding: 24px 60px 24px 24px;
