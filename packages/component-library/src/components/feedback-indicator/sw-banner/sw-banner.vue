@@ -3,14 +3,17 @@
     <slot name="customIcon">
       <sw-icon v-if="!hideIcon" class="sw-banner__icon" :name="bannerIcon" decorative />
     </slot>
+
     <div class="sw-banner__body" :class="bannerBodyClasses">
       <div v-if="title" class="sw-banner__title">
         {{ title }}
       </div>
+
       <div class="sw-banner__message">
         <slot />
       </div>
     </div>
+
     <button
       v-if="closable"
       class="sw-banner__close"
