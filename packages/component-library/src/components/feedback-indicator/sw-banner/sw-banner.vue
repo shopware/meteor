@@ -241,13 +241,12 @@ $sw-banner-size-close: 40px;
   }
 
   &--inherited {
-    border-color: $color-module-purple-900;
-    background-color: $color-module-purple-50;
-    color: $color-module-purple-900;
+    border-color: var(--color-border-accent-default);
+    background-color: var(--color-background-accent-default);
 
     .sw-banner__icon,
     .sw-banner__close {
-      color: $color-module-purple-900;
+      color: var(--color-icon-accent-default);
     }
   }
 
