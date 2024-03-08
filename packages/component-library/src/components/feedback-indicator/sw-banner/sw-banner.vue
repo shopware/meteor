@@ -221,13 +221,12 @@ $sw-banner-size-close: 40px;
   }
 
   &--critical {
-    border-color: $color-crimson-500;
-    background-color: $color-crimson-50;
-    color: $color-crimson-900;
+    border-color: var(--color-border-critical-default);
+    background-color: var(--color-background-critical-default);
 
     .sw-banner__icon,
     .sw-banner__close {
-      color: $color-crimson-500;
+      color: var(--color-icon-critical-default);
     }
   }
 
