@@ -231,13 +231,12 @@ $sw-banner-size-close: 40px;
   }
 
   &--positive {
-    border-color: $color-emerald-500;
-    background-color: $color-emerald-50;
-    color: $color-emerald-900;
+    border-color: var(--color-border-positive-default);
+    background-color: var(--color-background-positive-default);
 
     .sw-banner__icon,
     .sw-banner__close {
-      color: $color-emerald-500;
+      color: var(--color-icon-positive-default);
     }
   }
 
