@@ -196,7 +196,7 @@ $sw-banner-size-close: 40px;
     margin-top: 1px;
     margin-bottom: 3px;
     display: block;
-    font-weight: bold;
+    font-weight: $font-weight-semi-bold;
   }
 
   &--info {
