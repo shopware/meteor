@@ -114,10 +114,7 @@ export default defineComponent({
       return `${percentage}%`;
     },
 
-    progressClasses(): {
-      "sw-progress-bar__value--no-transition": boolean;
-      "sw-progress-bar__value--has-error": boolean;
-    } {
+    progressClasses() {
       return {
         "sw-progress-bar__value--no-transition":
           this.modelValue < 1 || this.modelValue >= this.maxValue,
