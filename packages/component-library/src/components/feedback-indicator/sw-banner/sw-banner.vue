@@ -211,13 +211,12 @@ $sw-banner-size-close: 40px;
   }
 
   &--attention {
-    border-color: $color-pumpkin-spice-500;
-    background-color: $color-pumpkin-spice-50;
-    color: $color-pumpkin-spice-900;
+    border-color: var(--color-border-attention-default);
+    background-color: var(--color-background-attention-default);
 
     .sw-banner__icon,
     .sw-banner__close {
-      color: $color-pumpkin-spice-900;
+      color: var(--color-icon-attention-default);
     }
   }
 
