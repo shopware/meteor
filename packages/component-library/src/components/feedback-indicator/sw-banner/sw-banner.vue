@@ -21,7 +21,7 @@
       title="Schließen"
       @click.prevent="$emit('close', bannerIndex)"
     >
-      <sw-icon name="regular-times-s" />
+      <sw-icon name="solid-times-s" />
     </button>
   </div>
 </template>
@@ -107,15 +107,15 @@ export default defineComponent({
       }
 
       const iconConfig: Record<string, string> = {
-        neutral: "regular-info-circle",
-        info: "regular-info-circle",
-        attention: "regular-exclamation-triangle",
-        critical: "regular-exclamation-circle",
-        positive: "regular-check-circle",
-        inherited: "regular-link",
+        neutral: "solid-info-circle",
+        info: "solid-info-circle",
+        attention: "solid-exclamation-triangle",
+        critical: "solid-exclamation-circle",
+        positive: "solid-check-circle",
+        inherited: "solid-link",
       };
 
-      return iconConfig[this.variant] || "regular-info-circle";
+      return iconConfig[this.variant] || "solid-info-circle";
     },
 
     bannerClasses(): CssClasses {
@@ -264,7 +264,7 @@ $sw-banner-size-close: 40px;
     padding: 8px 0 8px 20px;
   }
 
-  .sw-icon.icon--regular-times-s {
+  .sw-icon.icon--solid-times-s {
     width: 12px;
     height: 12px;
   }
