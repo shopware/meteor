@@ -148,14 +148,14 @@ export default defineComponent({
   .sw-progress-bar__total {
     width: 100%;
     height: 8px;
-    background-color: $color-gray-200;
+    background-color: var(--color-background-primary-disabled);
     border-radius: $border-radius-pill;
   }
 
   .sw-progress-bar__value {
     transition: 1s width linear;
     height: 100%;
-    background-color: $color-shopware-brand-500;
+    background-color: var(--color-interaction-primary-default);
     border-radius: $border-radius-pill;
 
     &--no-transition {
@@ -164,7 +164,7 @@ export default defineComponent({
 
     &--has-error {
       transition: 0s width linear;
-      background-color: $color-crimson-500;
+      background-color: var(--color-interaction-critical-default);
     }
   }
 }
