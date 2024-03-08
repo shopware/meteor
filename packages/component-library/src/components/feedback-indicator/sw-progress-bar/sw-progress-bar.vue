@@ -129,10 +129,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@use "sass:math";
 @import "../../assets/scss/variables.scss";
-
-$sw-progress-bar-height: 8px;
 
 .sw-progress-bar {
   .sw-block-field__block {
@@ -144,21 +141,22 @@ $sw-progress-bar-height: 8px;
   }
 
   &__progress-label {
+    display: flex;
     margin-left: auto;
   }
 
   .sw-progress-bar__total {
     width: 100%;
-    height: $sw-progress-bar-height;
+    height: 8px;
     background-color: $color-gray-200;
-    border-radius: math.div($sw-progress-bar-height, 2);
+    border-radius: $border-radius-pill;
   }
 
   .sw-progress-bar__value {
     transition: 1s width linear;
     height: 100%;
     background-color: $color-shopware-brand-500;
-    border-radius: math.div($sw-progress-bar-height, 2);
+    border-radius: $border-radius-pill;
 
     &--no-transition {
       transition: 0s width linear;
