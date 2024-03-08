@@ -142,10 +142,9 @@ export default defineComponent({
 $sw-banner-size-close: 40px;
 
 .sw-banner {
-  border: 1px solid $color-gray-300;
+  border-width: 1px;
+  border-style: solid;
   border-radius: $border-radius-default;
-  color: $color-darkgray-200;
-  background-color: $color-white;
   text-align: left;
   position: relative;
   margin: 0 auto 20px;
@@ -165,7 +164,6 @@ $sw-banner-size-close: 40px;
   }
 
   &__icon {
-    color: $color-gray-300;
     position: absolute;
     display: block;
     left: 26px;
@@ -254,6 +252,10 @@ $sw-banner-size-close: 40px;
   }
 
   &--neutral {
+    border-color: $color-gray-300;
+    color: $color-darkgray-200;
+    background-color: $color-white;
+
     .sw-banner__icon,
     .sw-banner__close {
       color: $color-darkgray-200;
