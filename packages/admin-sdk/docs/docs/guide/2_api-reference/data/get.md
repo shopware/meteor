@@ -17,6 +17,6 @@ data.get({
 ```
 
 #### Parameters
-| Name      | Required | Description                                                                                                |
-| :-------- | :------- | :--------------------------------------------------------------------------------------------------------- |
-| `options` | true     | Options containing the unique `id` and optional `selectors` for minimizing the payload and needed privileges |
+| Name      | Required | Description                                                                                                          |
+| :-------- | :------- |:---------------------------------------------------------------------------------------------------------------------|
+| `options` | true     | Containing the unique `id` and optional `selectors`. Read more about selectors [here](../../4_concepts/selectors.md) |

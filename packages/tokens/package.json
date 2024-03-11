@@ -2,29 +2,39 @@
   "name": "@shopware-ag/meteor-tokens",
   "version": "0.0.1",
   "description": "Design Tokens for the Meteor Design System used at shopware",
-  "main": "index.js",
+  "license": "MIT",
+  "author": "shopware AG",
   "type": "module",
-  "scripts": {
-    "start": "tsx ./src/scripts/index.ts",
-    "test:unit": "vitest --run",
-    "test:unit:watch": "vitest",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "lint:all": "npm run lint:eslint && npm run lint:types",
-    "lint:eslint": "eslint .",
-    "lint:types": "tsc --noEmit"
-  },
   "exports": {
     "./primitives.css": "./deliverables/foundation/primitives.css",
     "./administration/light.css": "./deliverables/administration/light.css",
     "./administration/dark.css": "./deliverables/administration/dark.css"
   },
+  "main": "index.js",
   "files": [
     "deliverables",
     "dictionaries"
   ],
-  "author": "Nils Haberkamp",
-  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:shopware/meteor.git"
+  },
+  "scripts": {
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint:all": "npm run lint:eslint && npm run lint:types",
+    "lint:eslint": "eslint .",
+    "lint:types": "tsc --noEmit",
+    "start": "tsx ./src/scripts/index.ts",
+    "test:unit": "vitest --run",
+    "test:unit:watch": "vitest"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.1",
+    "ora": "^8.0.1",
+    "vitest": "^1.2.1",
+    "zod": "^3.22.4"
+  },
   "devDependencies": {
     "@types/node": "^20.11.8",
     "@typescript-eslint/eslint-plugin": "^6.19.1",
@@ -35,11 +45,5 @@
     "prettier": "^3.2.4",
     "style-dictionary": "^3.9.2",
     "tsx": "^4.7.0"
-  },
-  "dependencies": {
-    "dotenv": "^16.4.1",
-    "ora": "^8.0.1",
-    "vitest": "^1.2.1",
-    "zod": "^3.22.4"
   }
 }

@@ -541,7 +541,7 @@ const datasets = new Map<string, unknown>();
     const dataset = datasets.get(data.id);
 
     if (dataset) {
-      const selectedData = selectData(dataset, data.selectors, 'datasetSubscribe', origin);
+      const selectedData = selectData(dataset as Record<string|number, unknown>, data.selectors, 'datasetSubscribe', origin);
 
       if (selectedData instanceof MissingPrivilegesError) {
         console.error(selectedData);
@@ -572,7 +572,7 @@ export async function processDataRegistration(data: Omit<datasetRegistration, 'r
       return;
     }
 
-    const selectedData = selectData(data.data, selectors, 'datasetSubscribe', origin);
+    const selectedData = selectData(data.data as Record<string|number, unknown>, selectors, 'datasetSubscribe', origin);
 
     if (selectedData instanceof MissingPrivilegesError) {
       console.error(selectedData);

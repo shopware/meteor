@@ -1,11 +1,6 @@
 {
   "name": "@shopware-ag/meteor-admin-sdk",
-  "license": "MIT",
-  "version": "4.0.3",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/shopware/meteor-admin-sdk.git"
-  },
+  "version": "5.0.1",
   "description": "The Meteor SDK for the Shopware Administration.",
   "keywords": [
     "iframe",
@@ -15,13 +10,11 @@
     "app",
     "sdk"
   ],
-  "files": [
-    "umd",
-    "es",
-    "cdn"
-  ],
-  "main": "./umd/index.js",
-  "module": "./es/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:shopware/meteor.git"
+  },
+  "license": "MIT",
   "exports": {
     "./es/channel": {
       "import": "./es/channel.js",
@@ -35,55 +28,66 @@
       "import": "./es/location/index.js",
       "require": "./umd/location/index.js"
     },
-    "./es/privileges/missing-privileges-error": {
-      "import": "./es/privileges/missing-privileges-error.js",
-      "require": "./umd/privileges/missing-privileges-error.js"
+    "./es/_internals/privileges/missing-privileges-error": {
+      "import": "./es/_internals/privileges/missing-privileges-error.js",
+      "require": "./umd/_internals/privileges/missing-privileges-error.js"
     },
-    "./es/data/_internals/selectData": {
-      "import": "./es/data/_internals/selectData.js",
-      "require": "./umd/data/_internals/selectData.js"
+    "./es/_internals/data/selectData": {
+      "import": "./es/_internals/data/selectData.js",
+      "require": "./umd/_internals/data/selectData.js"
     },
     "./es/data/Criteria": {
       "import": "./es/data/Criteria.js",
       "require": "./umd/data/Criteria.js"
     },
-    "./es/data/_internals/Entity": {
-      "import": "./es/data/_internals/Entity.js",
-      "require": "./umd/data/_internals/Entity.js"
+    "./es/_internals/data/Entity": {
+      "import": "./es/_internals/data/Entity.js",
+      "require": "./umd/_internals/data/Entity.js"
     },
-    "./es/data/_internals/EntityCollection": {
-      "import": "./es/data/_internals/EntityCollection.js",
-      "require": "./umd/data/_internals/EntityCollection.js"
+    "./es/_internals/data/EntityCollection": {
+      "import": "./es/_internals/data/EntityCollection.js",
+      "require": "./umd/_internals/data/EntityCollection.js"
     },
     ".": {
       "import": "./es/index.js",
       "require": "./umd/index.js"
     }
   },
+  "main": "./umd/index.js",
+  "module": "./es/index.js",
   "types": "./es/index.d.ts",
+  "files": [
+    "umd",
+    "es",
+    "cdn"
+  ],
   "scripts": {
+    "build": "rm -rf es && rm -rf umd && rm -rf cdn && npm run build:umd && npm run build:es && npm run build:cdn",
+    "build:cdn": "vite build --mode cdn",
+    "build:es": "tsc --project tsconfig.json --outDir \"./es\"",
+    "build:umd": "tsc --project tsconfig.json --module umd --outDir \"./umd\"",
+    "circular-dependencies": "madge --circular --warning src",
+    "circular-dependencies:image": "madge --circular --warning --image ./dependency-graph.png src",
     "dev": "concurrently \"npm run dev:build-watch\" \"npm run dev:serve -- --port=8181\" \"npm run dev:serve -- --port=8182\"",
     "dev:build-watch": "vite build --watch --mode example --emptyOutDir",
     "dev:serve": "http-server testpageDist --silent",
-    "build": "rm -rf es && rm -rf umd && rm -rf cdn && npm run build:umd && npm run build:es && npm run build:cdn",
-    "build:umd": "tsc --project tsconfig.json --module umd --outDir \"./umd\"",
-    "build:es": "tsc --project tsconfig.json --outDir \"./es\"",
-    "build:cdn": "vite build --mode cdn",
     "doc": "cd docs && npm run build",
     "doc:dev": "cd docs && npm run start",
     "doc:install-dependencies": "cd ./docs && npm ci",
     "lint:all": "npm run lint:types && npm run lint:eslint",
-    "lint:types": "tsc --noEmit",
     "lint:eslint": "eslint ./src --ext .ts",
-    "test:unit": "jest --collectCoverage",
-    "test:unit:watch": "npm run circular-dependencies && jest --watch",
+    "lint:types": "tsc --noEmit",
+    "prepublish": "npm run build",
     "test:e2e": "concurrently --handle-input --kill-others --success first \"npm run dev\" \"wait-on http://127.0.0.1:8181 && wait-on http://127.0.0.1:8182 && playwright test\"",
     "test:e2e:dev": "playwright test --project=chromium --reporter=list",
-    "test:e2e:dev-watch": "chokidar \"{e2e,src}/**/*.{js,ts}\" -c 'clear && npm run test:e2e:dev' --initial",
     "test:e2e:dev-debug": "PWDEBUG=1 npm run test:e2e:dev",
-    "prepublish": "npm run build",
-    "circular-dependencies": "madge --circular --warning src",
-    "circular-dependencies:image": "madge --circular --warning --image ./dependency-graph.png src"
+    "test:e2e:dev-watch": "chokidar \"{e2e,src}/**/*.{js,ts}\" -c 'clear && npm run test:e2e:dev' --initial",
+    "test:unit": "jest --collectCoverage",
+    "test:unit:watch": "npm run circular-dependencies && jest --watch"
+  },
+  "dependencies": {
+    "localforage": "^1.10.0",
+    "lodash": "^4.17.21"
   },
   "devDependencies": {
     "@playwright/test": "^1.41.2",
@@ -109,9 +113,5 @@
     "vite-tsconfig-paths": "^3.4.1",
     "vue": "^2.7.14",
     "wait-on": "^6.0.1"
-  },
-  "dependencies": {
-    "localforage": "^1.10.0",
-    "lodash": "^4.17.21"
   }
 }

@@ -16,7 +16,7 @@ data.subscribe(
 
 #### Parameters
 | Name        | Required | Description                                                                                           |
-| :---------- | :------- | :---------------------------------------------------------------------------------------------------- |
+| :---------- | :------- |:------------------------------------------------------------------------------------------------------|
 | `id`        | true     | The unique id of the dataset you want to receive                                                      |
 | `callback`  | true     | A callback function which will be called every time the Shopware Administration publishes the dataset |
-| `selectors` | false    | Selectors for reducing the payload and minimizing the needed privileges                               |
+| `selectors` | false    | Read more about selectors [here](../../4_concepts/selectors.md)                                       |
