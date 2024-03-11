@@ -58,8 +58,12 @@
     },
     "elevation": {
       "surface": {
-        "default": {
+        "sunken": {
           "$value": "{zinc.50}",
+          "$type": "color"
+        },
+        "default": {
+          "$value": "{zinc.0}",
           "$type": "color"
         },
         "selected": {
@@ -70,15 +74,11 @@
           "$value": "{zinc.100}",
           "$type": "color"
         },
-        "overlay": {
-          "$value": "{zinc.0}",
-          "$type": "color"
-        },
         "raised": {
           "$value": "{zinc.0}",
           "$type": "color"
         },
-        "sunken": {
+        "overlay": {
           "$value": "{zinc.0}",
           "$type": "color"
         }
@@ -97,6 +97,10 @@
       },
       "critical": {
         "default": {
+          "$value": "{red.50}",
+          "$type": "color"
+        },
+        "dark": {
           "$value": "{red.50}",
           "$type": "color"
         }
@@ -129,7 +133,7 @@
     "border": {
       "secondary": {
         "default": {
-          "$value": "{zinc.100}",
+          "$value": "{zinc.800}",
           "$type": "color"
         }
       },
@@ -289,12 +293,6 @@
           "$type": "color"
         }
       },
-      "attention": {
-        "default": {
-          "$value": "{orange.800}",
-          "$type": "color"
-        }
-      },
       "critical": {
         "default": {
           "$value": "{red.500}",
@@ -310,6 +308,12 @@
         },
         "dark": {
           "$value": "{red.800}",
+          "$type": "color"
+        }
+      },
+      "attention": {
+        "default": {
+          "$value": "{orange.800}",
           "$type": "color"
         }
       },
