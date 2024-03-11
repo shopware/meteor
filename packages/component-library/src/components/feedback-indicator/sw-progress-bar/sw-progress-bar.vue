@@ -114,10 +114,7 @@ export default defineComponent({
       return `${percentage}%`;
     },
 
-    progressClasses(): {
-      "sw-progress-bar__value--no-transition": boolean;
-      "sw-progress-bar__value--has-error": boolean;
-    } {
+    progressClasses() {
       return {
         "sw-progress-bar__value--no-transition":
           this.modelValue < 1 || this.modelValue >= this.maxValue,
@@ -129,10 +126,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@use "sass:math";
 @import "../../assets/scss/variables.scss";
-
-$sw-progress-bar-height: 8px;
 
 .sw-progress-bar {
   .sw-block-field__block {
@@ -144,21 +138,22 @@ $sw-progress-bar-height: 8px;
   }
 
   &__progress-label {
+    display: flex;
     margin-left: auto;
   }
 
   .sw-progress-bar__total {
     width: 100%;
-    height: $sw-progress-bar-height;
-    background-color: $color-gray-200;
-    border-radius: math.div($sw-progress-bar-height, 2);
+    height: 8px;
+    background-color: var(--color-background-primary-disabled);
+    border-radius: $border-radius-pill;
   }
 
   .sw-progress-bar__value {
     transition: 1s width linear;
     height: 100%;
-    background-color: $color-shopware-brand-500;
-    border-radius: math.div($sw-progress-bar-height, 2);
+    background-color: var(--color-interaction-primary-default);
+    border-radius: $border-radius-pill;
 
     &--no-transition {
       transition: 0s width linear;
@@ -166,7 +161,7 @@ $sw-progress-bar-height: 8px;
 
     &--has-error {
       transition: 0s width linear;
-      background-color: $color-crimson-500;
+      background-color: var(--color-interaction-critical-default);
     }
   }
 }
