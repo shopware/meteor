@@ -3,14 +3,17 @@
     <slot name="customIcon">
       <sw-icon v-if="!hideIcon" class="sw-banner__icon" :name="bannerIcon" decorative />
     </slot>
+
     <div class="sw-banner__body" :class="bannerBodyClasses">
       <div v-if="title" class="sw-banner__title">
         {{ title }}
       </div>
+
       <div class="sw-banner__message">
         <slot />
       </div>
     </div>
+
     <button
       v-if="closable"
       class="sw-banner__close"
@@ -18,7 +21,7 @@
       title="Schließen"
       @click.prevent="$emit('close', bannerIndex)"
     >
-      <sw-icon name="regular-times-s" />
+      <sw-icon name="solid-times-s" />
     </button>
   </div>
 </template>
@@ -104,15 +107,15 @@ export default defineComponent({
       }
 
       const iconConfig: Record<string, string> = {
-        neutral: "regular-info-circle",
-        info: "regular-info-circle",
-        attention: "regular-exclamation-triangle",
-        critical: "regular-exclamation-circle",
-        positive: "regular-check-circle",
-        inherited: "regular-link",
+        neutral: "solid-info-circle",
+        info: "solid-info-circle",
+        attention: "solid-exclamation-triangle",
+        critical: "solid-exclamation-circle",
+        positive: "solid-check-circle",
+        inherited: "solid-link",
       };
 
-      return iconConfig[this.variant] || "regular-info-circle";
+      return iconConfig[this.variant] || "solid-info-circle";
     },
 
     bannerClasses(): CssClasses {
@@ -142,14 +145,14 @@ export default defineComponent({
 $sw-banner-size-close: 40px;
 
 .sw-banner {
-  border: 1px solid $color-gray-300;
+  border-width: 1px;
+  border-style: solid;
   border-radius: $border-radius-default;
-  color: $color-darkgray-200;
-  background-color: $color-white;
   text-align: left;
   position: relative;
   margin: 0 auto 20px;
   font-size: $font-size-default;
+  color: var(--color-text-primary-default);
 
   &__body {
     padding: 24px 60px 24px 24px;
@@ -165,7 +168,6 @@ $sw-banner-size-close: 40px;
   }
 
   &__icon {
-    color: $color-gray-300;
     position: absolute;
     display: block;
     left: 26px;
@@ -195,68 +197,66 @@ $sw-banner-size-close: 40px;
     margin-top: 1px;
     margin-bottom: 3px;
     display: block;
-    font-weight: bold;
+    font-weight: $font-weight-semi-bold;
   }
 
   &--info {
-    border-color: $color-shopware-brand-500;
-    background-color: $color-shopware-brand-50;
-    color: $color-shopware-brand-500;
+    border-color: var(--color-border-brand-selected);
+    background-color: var(--color-background-brand-default);
 
     .sw-banner__icon,
     .sw-banner__close {
-      color: $color-shopware-brand-500;
+      color: var(--color-icon-brand-default);
     }
   }
 
   &--attention {
-    border-color: $color-pumpkin-spice-500;
-    background-color: $color-pumpkin-spice-50;
-    color: $color-pumpkin-spice-900;
+    border-color: var(--color-border-attention-default);
+    background-color: var(--color-background-attention-default);
 
     .sw-banner__icon,
     .sw-banner__close {
-      color: $color-pumpkin-spice-900;
+      color: var(--color-icon-attention-default);
     }
   }
 
   &--critical {
-    border-color: $color-crimson-500;
-    background-color: $color-crimson-50;
-    color: $color-crimson-900;
+    border-color: var(--color-border-critical-default);
+    background-color: var(--color-background-critical-default);
 
     .sw-banner__icon,
     .sw-banner__close {
-      color: $color-crimson-500;
+      color: var(--color-icon-critical-default);
     }
   }
 
   &--positive {
-    border-color: $color-emerald-500;
-    background-color: $color-emerald-50;
-    color: $color-emerald-900;
+    border-color: var(--color-border-positive-default);
+    background-color: var(--color-background-positive-default);
 
     .sw-banner__icon,
     .sw-banner__close {
-      color: $color-emerald-500;
+      color: var(--color-icon-positive-default);
     }
   }
 
   &--inherited {
-    border-color: $color-module-purple-900;
-    background-color: $color-module-purple-50;
-    color: $color-module-purple-900;
+    border-color: var(--color-border-accent-default);
+    background-color: var(--color-background-accent-default);
 
     .sw-banner__icon,
     .sw-banner__close {
-      color: $color-module-purple-900;
+      color: var(--color-icon-accent-default);
     }
   }
 
   &--neutral {
+    border-color: var(--color-border-primary-default);
+    background-color: var(--color-elevation-surface-overlay);
+
     .sw-banner__icon,
     .sw-banner__close {
-      color: $color-darkgray-200;
+      color: var(--color-icon-primary-default);
     }
   }
 
@@ -264,7 +264,7 @@ $sw-banner-size-close: 40px;
     padding: 8px 0 8px 20px;
   }
 
-  .sw-icon.icon--regular-times-s {
+  .sw-icon.icon--solid-times-s {
     width: 12px;
     height: 12px;
   }
