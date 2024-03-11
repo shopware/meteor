@@ -1,7 +1,7 @@
 <template>
   <priority-plus ref="priorityPlus" #default="{ mainItems, moreItems }" :list="items">
     <ul class="sw-tabs" :class="tabClasses" role="tablist">
-      <span class="sw-tabs--slider" :class="sliderClasses" :style="sliderStyle" />
+      <span class="sw-tabs__slider" :class="sliderClasses" :style="sliderStyle" />
 
       <template v-if="!vertical">
         <li
@@ -9,7 +9,8 @@
           :key="item.name"
           :data-priority-plus="item.name"
           ref="items"
-          class="sw-tabs--item"
+          class="sw-tabs__item"
+          :data-text="item.label"
           :class="getItemClasses(item)"
           :data-item-name="item.name"
           role="tab"
@@ -22,7 +23,7 @@
 
           <sw-icon
             v-if="item.hasError"
-            class="sw-tabs--error-badge"
+            class="sw-tabs__error-badge"
             name="solid-exclamation-circle"
           />
 
@@ -63,7 +64,7 @@
           v-for="item in [...mainItems, ...moreItems]"
           :key="item.name"
           ref="items"
-          class="sw-tabs--item"
+          class="sw-tabs__item"
           :class="getItemClasses(item)"
           :data-item-name="item.name"
           @click="handleClick(item.name)"
@@ -184,7 +185,13 @@ export default defineComponent({
         return (this.$refs["more-items-button"] as any).$el?.offsetLeft;
       }
 
-      return this.vertical ? this.activeDomItem?.offsetTop : this.activeDomItem?.offsetLeft;
+      const leftPaddingOfActiveDomItem = parseFloat(
+        getComputedStyle(this.activeDomItem).paddingLeft,
+      );
+
+      return this.vertical
+        ? this.activeDomItem.offsetTop
+        : this.activeDomItem.offsetLeft + leftPaddingOfActiveDomItem;
     },
 
     sliderLength(): number {
@@ -205,7 +212,13 @@ export default defineComponent({
         return (this.$refs["more-items-button"] as any).$el?.offsetWidth;
       }
 
-      return this.vertical ? this.activeDomItem?.offsetHeight : this.activeDomItem?.offsetWidth;
+      const stylesOfActiveDomItem = getComputedStyle(this.activeDomItem);
+      const widthWithoutPadding =
+        this.activeDomItem.clientWidth -
+        parseFloat(stylesOfActiveDomItem.paddingLeft) -
+        parseFloat(stylesOfActiveDomItem.paddingRight);
+
+      return this.vertical ? this.activeDomItem.offsetHeight : widthWithoutPadding;
     },
 
     activeItem(): TabItem | undefined {
@@ -220,7 +233,7 @@ export default defineComponent({
       this.refreshKey;
 
       return {
-        "sw-tabs--slider__has-error": this.activeItem?.hasError ?? false,
+        "sw-tabs__slider--error": this.activeItem?.hasError ?? false,
       };
     },
 
@@ -229,15 +242,15 @@ export default defineComponent({
 
       if (this.vertical) {
         return `
-            transform: translate(0, ${this.sliderPosition}px) rotate(90deg);
-            width: ${this.sliderLength}px;
-        `;
+          transform: translate(0, ${this.sliderPosition}px) rotate(90deg);
+          width: ${this.sliderLength}px;
+      `;
       }
 
       return `
-          transform: translate(${this.sliderPosition}px, 0) rotate(0deg);
-          width: ${this.sliderLength}px;
-      `;
+        transform: translate(${this.sliderPosition}px, 0) rotate(0deg);
+        width: ${this.sliderLength}px;
+    `;
     },
   },
 
@@ -285,8 +298,8 @@ export default defineComponent({
 
     getItemClasses(item: TabItem) {
       return {
-        "sw-tabs--item__has-error": item.hasError,
-        "sw-tabs--item__is-active": item.name === this.activeItemName,
+        "sw-tabs__item--error": item.hasError,
+        "sw-tabs__item--active": item.name === this.activeItemName,
       };
     },
 
@@ -334,7 +347,7 @@ export default defineComponent({
 .sw-tabs {
   display: flex;
   position: relative;
-  box-shadow: inset 0 -1px 0 $color-gray-300;
+  box-shadow: inset 0 -1px 0 var(--color-border-primary-default);
 
   &.sw-tabs--small {
     max-width: 800px;
@@ -347,57 +360,71 @@ export default defineComponent({
 
     li {
       border-bottom: none;
-      border-left: 1px solid $color-gray-300;
+      border-left: 1px solid var(--color-border-primary-default);
     }
 
-    .sw-tabs--slider {
+    .sw-tabs__slider {
       top: 0;
       bottom: auto;
+      left: 3px;
     }
   }
 
-  .sw-tabs--item {
+  .sw-tabs__item {
     display: inline-block;
-    border-bottom: 1px solid $color-gray-300;
+    border-bottom: 1px solid var(--color-border-primary-default);
     padding: 10px 16px;
     white-space: nowrap;
     font-size: $font-size-default;
     cursor: pointer;
-    color: $color-darkgray-200;
+    color: var(--color-text-primary-default);
 
-    &__has-error {
-      color: $color-crimson-500;
-      border-bottom: 1px solid $color-crimson-500;
+    &--error {
+      color: var(--color-text-critical-default);
     }
 
-    &__is-active {
-      color: $color-black;
+    &--active {
+      font-weight: $font-weight-medium;
     }
 
-    &__has-error.sw-tabs--item__is-active {
-      color: $color-crimson-500;
+    // Trick to stop items from jumping when the active item changes
+    // see: https://css-tricks.com/bold-on-hover-without-the-layout-shift/
+    &::after {
+      content: attr(data-text);
+      content: attr(data-text) / "";
+      height: 0;
+      display: block;
+      visibility: hidden;
+      overflow: hidden;
+      user-select: none;
+      pointer-events: none;
+      font-weight: $font-weight-medium;
+
+      @media speech {
+        display: none;
+      }
     }
   }
 
-  .sw-tabs--slider {
+  .sw-tabs__slider {
     transform-origin: top left;
     transition: 0.2s all ease-in-out;
     position: absolute;
     bottom: 0;
     left: 0;
     height: 2px;
-    background-color: $color-shopware-brand-500;
+    background-color: var(--color-border-brand-selected);
     z-index: 1;
 
-    &__has-error {
-      background-color: $color-crimson-500;
+    &--error {
+      background-color: var(--color-border-critical-default);
     }
   }
 
   .sw-context-button {
     display: flex;
     align-items: center;
-    border-bottom: 1px solid $color-gray-300;
+    border-bottom: 1px solid var(--color-border-primary-default);
 
     button {
       display: flex;
@@ -407,10 +434,11 @@ export default defineComponent({
     }
   }
 
-  .sw-tabs--error-badge {
+  .sw-tabs__error-badge {
     margin-left: 2px;
     width: 12px;
     height: 12px;
+    color: var(--color-icon-critical-default);
 
     > svg {
       width: 100% !important;
