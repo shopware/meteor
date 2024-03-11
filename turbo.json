@@ -10,6 +10,11 @@
       "outputs": ["storybook-static/**"],
       "env": ["SHOW_INTERACTIONS"]
     },
+    "dev": {
+      "dependsOn": ["^build"],
+      "cache": false,
+      "persistent": true
+    },
     "lint:all": {
       "outputs": []
     },

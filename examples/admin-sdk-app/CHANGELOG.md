@@ -1,4 +1,4 @@
-# meteor-admin-sdk-example-app
+# meteor-admin-sdk-app
 
 ## 1.0.2
 

@@ -12,7 +12,7 @@ This package contains an example app and server. It uses the [Meteor Admin SDK](
 
 ## App installation
 
-1. Copy the folder `MeteorAdminSDKExampleApp` to the `custom/apps` folder inside your Shopware installation
-2. Install the App in Shopware: `bin/console app:install MeteorAdminSDKExampleApp`
+1. Copy the folder `MeteorAdminSDKApp` to the `custom/apps` folder inside your Shopware installation
+2. Install the App in Shopware: `bin/console app:install MeteorAdminSDKApp`
 
 Now you should see the app installed when opening the Shopware Admin and looking in "Extensions" -> "My Extensions".
