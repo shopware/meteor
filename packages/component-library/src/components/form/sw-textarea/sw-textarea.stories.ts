@@ -6,6 +6,7 @@ export type SwTextareaMeta = SlottedMeta<
   typeof SwTextarea,
   | "default"
   | "change"
+  | "updateModelValue"
   | "hint"
   | "label"
   | "placeholder"

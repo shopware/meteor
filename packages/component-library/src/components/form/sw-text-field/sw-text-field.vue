@@ -31,6 +31,7 @@
         :disabled="hasDisabledInput"
         :value="currentValue"
         :placeholder="placeholder"
+        :maxlength="maxLength"
         @input="onInput"
         @change="onChange"
         @focus="setFocusClass"
@@ -48,6 +49,10 @@
 
     <template #field-hint>
       <slot name="hint" />
+    </template>
+
+    <template v-if="maxLength" #field-hint-right>
+      {{ modelValue?.length ?? 0 }}/{{ maxLength }}
     </template>
   </sw-base-field>
 </template>
@@ -190,6 +195,15 @@ export default defineComponent({
       type: Boolean,
       required: false,
       default: false,
+    },
+
+    /**
+     * If set to a value a character counter will be displayed.
+     */
+    maxLength: {
+      type: Number,
+      required: false,
+      default: undefined,
     },
 
     /**

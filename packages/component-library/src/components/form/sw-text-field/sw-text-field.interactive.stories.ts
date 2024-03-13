@@ -58,6 +58,76 @@ export const VisualTestHint: SwTextFieldStory = {
   },
 };
 
+export const VisualTestEmptyCharacterCount: SwTextFieldStory = {
+  name: "Should display empty character count",
+  args: {
+    maxLength: 60,
+  },
+  play: ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getByText("0/60")).toBeDefined();
+  },
+};
+
+export const VisualTestCharacterCount: SwTextFieldStory = {
+  name: "Should display character count with text",
+  args: {
+    maxLength: 60,
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    await userEvent.type(canvas.getByRole("textbox"), "Shopware");
+    await userEvent.click(canvas.getByText("hidden"));
+
+    expect(canvas.getByText("8/60")).toBeDefined();
+  },
+};
+
+export const VisualTestCharacterCountExceeding: SwTextFieldStory = {
+  name: "Should display error when character count exceeds max value",
+  args: {
+    maxLength: 60,
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    await userEvent.type(
+      canvas.getByRole("textbox"),
+      "Shopware is a trendsetting ecommerce platform to power your online business.",
+    );
+    await userEvent.click(canvas.getByText("hidden"));
+
+    expect(canvas.getByText("60/60")).toBeDefined();
+
+    expect(args.updateModelValue).toHaveBeenCalledWith(
+      "Shopware is a trendsetting ecommerce platform to power your ",
+    );
+
+    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe(
+      "Shopware is a trendsetting ecommerce platform to power your ",
+    );
+  },
+};
+
+export const VisualTestCharacterCountWithHint: SwTextFieldStory = {
+  name: "Should display character count with text and hint",
+  args: {
+    maxLength: 60,
+    hint: "hint",
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    await userEvent.type(canvas.getByRole("textbox"), "Shopware");
+    await userEvent.click(canvas.getByText("hidden"));
+
+    expect(canvas.getByText("8/60")).toBeDefined();
+    expect(canvas.getByText(args.hint)).toBeDefined();
+  },
+};
+
 export const TestLabel: SwTextFieldStory = {
   name: "Should display label",
   args: {

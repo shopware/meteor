@@ -191,7 +191,7 @@ export const LinkButton: SwButtonStory = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    await userEvent.click(canvas.getByRole("button"));
+    await userEvent.click(canvas.getByRole("link"));
 
     // TODO: check redirects is currently not supported
   },
