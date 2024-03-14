@@ -148,7 +148,7 @@ export default defineComponent({
     },
 
     focusEl: {
-      type: [HTMLElement] as PropType<HTMLDocument | HTMLElement>,
+      type: [Object] as PropType<HTMLDocument | HTMLElement>,
       required: false,
       default() {
         return document;
