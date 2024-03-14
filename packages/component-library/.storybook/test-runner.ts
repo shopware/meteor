@@ -1,7 +1,8 @@
+const path = require("path");
 const { toMatchImageSnapshot } = require("jest-image-snapshot");
 
-const customSnapshotsDir = `${process.cwd()}/__snapshots__`;
-const customReceivedDir = `${process.cwd()}/__snapshots__/__received__`;
+const customSnapshotsDir = path.resolve(path.join(__dirname, "..", "/__snapshots__"));
+const customReceivedDir = path.resolve(path.join(__dirname, "..", "/__snapshots__/__received__"));
 
 module.exports = {
   setup() {

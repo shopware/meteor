@@ -38,8 +38,14 @@
 
     <slot name="error" />
 
-    <div class="sw-field__hint">
-      <slot name="field-hint" />
+    <div class="sw-field__hint-wrapper">
+      <div class="sw-field__hint">
+        <slot name="field-hint" />
+      </div>
+
+      <div class="sw-field__hint-right">
+        <slot name="field-hint-right" />
+      </div>
     </div>
   </div>
 </template>
@@ -252,13 +258,23 @@ $sw-field-transition:
     margin-bottom: 12px;
   }
 
-  &__hint {
+  &__hint-wrapper {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  &__hint,
+  &__hint-right {
     margin-top: 4px;
     font-size: $font-size-extra-small;
     color: $color-gray-500;
     display: flex;
     align-items: center;
     gap: 8px;
+  }
+
+  &__hint-right {
+    justify-content: flex-end;
   }
 
   input:-webkit-autofill {
