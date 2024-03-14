@@ -4,3 +4,4 @@ rollup.config.js
 node_modules/
 .eslintrc.cjs
 dist/
+storybook-static

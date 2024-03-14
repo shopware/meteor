@@ -7,6 +7,7 @@ export type SwTextFieldMeta = SlottedMeta<
   typeof SwTextField,
   | "default"
   | "change"
+  | "updateModelValue"
   | "prefix"
   | "suffix"
   | "hint"
@@ -27,6 +28,7 @@ export default {
       <sw-text-field
         v-bind="args"
         :modelValue="currentValue"
+        @update:modelValue="onUpdateModelValue"
         @inheritance-restore="inheritanceRestoreWrapper"
         @inheritance-remove="inheritanceRemoveWrapper"
         @change="onChange">
@@ -74,6 +76,11 @@ export default {
       inheritanceRestoreWrapper() {
         args.inheritanceRestore();
         args.isInherited = true;
+      },
+
+      onUpdateModelValue(value: string) {
+        this.currentValue = value;
+        args.updateModelValue(value);
       },
 
       onChange(value: string) {
