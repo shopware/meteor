@@ -1,6 +1,6 @@
 <template>
   <div class="sw-popover-item" :class="componentClasses">
-    <div class="sw-popover-item__top-row" @click="handleLableClick">
+    <div class="sw-popover-item__top-row" @click="handleLabelClick">
       <sw-checkbox
         v-if="showCheckbox"
         class="sw-popover-item__checkbox"
@@ -17,8 +17,8 @@
         :class="iconClasses"
         :tabindex="onLabelClickTabIndex"
         :name="icon"
-        @click="handleLableClick"
-        @keyup.enter="handleLableClick"
+        @click="handleLabelClick"
+        @keyup.enter="handleLabelClick"
       />
 
       <div
@@ -26,8 +26,8 @@
         :class="labelClasses"
         :tabindex="onLabelClickTabIndex"
         :role="role"
-        @click.stop.prevent="handleLableClick"
-        @keyup.enter="handleLableClick"
+        @click.stop.prevent="handleLabelClick"
+        @keyup.enter="handleLabelClick"
       >
         {{ label }}
 
@@ -255,7 +255,7 @@ export default defineComponent({
       return props.onLabelClick ? 0 : -1;
     });
 
-    const handleLableClick = () => {
+    const handleLabelClick = () => {
       if (props.onLabelClick) {
         props.onLabelClick();
         return;
@@ -291,7 +291,7 @@ export default defineComponent({
       componentClasses,
       labelClasses,
       onLabelClickTabIndex,
-      handleLableClick,
+      handleLabelClick,
       isClickable,
       iconClasses,
     };
@@ -355,7 +355,7 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
 .sw-popover-item {
   display: flex;
   flex-direction: column;
-  color: $color-custom-dark;
+  color: var(--color-text-primary-default);
   padding: 8px 0;
 
   // add new Inter font to popover item
@@ -383,9 +383,11 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
   }
 
   &:hover {
+    color: var(--color-text-brand-default);
+
     &::before {
       position: absolute;
-      background-color: $color-shopware-brand-50;
+      background-color: var(--color-background-brand-default);
       border-radius: $border-radius-default;
       top: 4px;
       right: -8px;
@@ -400,12 +402,14 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
   }
 
   &--critical {
-    color: $color-crimson-500;
+    color: var(--color-interaction-critical-default);
   }
 
   &--critical:hover {
+    color: var(--color-interaction-critical-default);
+
     &::before {
-      background-color: $color-crimson-50;
+      background-color: var(--color-background-critical-dark);
     }
   }
 
@@ -414,7 +418,7 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
   }
 
   &--disabled {
-    color: $color-custom-lightgrey;
+    color: var(--color-text-primary-disabled);
 
     &:hover {
       text-decoration: none;
