@@ -153,11 +153,6 @@ export default defineComponent({
 
   inheritAttrs: false,
 
-  model: {
-    prop: "value",
-    event: "change",
-  },
-
   props: {
     /**
      * An array of objects with the labelProperty and valueProperty.
@@ -414,7 +409,7 @@ export default defineComponent({
         return this.modelValue;
       },
       set(newValue: string | number | boolean | unknown[] | null | undefined) {
-        this.$emit("change", newValue);
+        this.$emit("update:modelValue", newValue);
       },
     },
 
