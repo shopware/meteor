@@ -15,7 +15,9 @@
           doloremque tempore similique!
         </SwBanner>
 
-        <p>{{ !!text ? text : 'Type something into the text field!' }}</p>
+        <p data-testid="example-text">
+          {{ !!text ? text : 'Type something into the text field!' }}
+        </p>
 
         <SwTextField label="A text field" v-model="text" />
       </SwBlockStack>
