@@ -127,8 +127,6 @@ function onRemoveToast() {
     display: flex;
     flex-direction: column;
     height: 51px;
-    transition: transform 5s ease, opacity 2s ease, height 5s ease;
-    transform-origin: bottom;
     box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.10), 0px 2px 1px 0px rgba(0, 0, 0, 0.06), 0px 1px 1px 0px rgba(0, 0, 0, 0.08);
 
     &:hover {

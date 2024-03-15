@@ -64,25 +64,25 @@ export default {
         }
 
         // oldest in front
-        /*this.toasts.push({
+        this.toasts.push({
           id: createId(),
-          msg: "Three important words",
+          msg: "Three important words" + Math.random(),
           pos,
           type: this.toastVariant,
           autoClose
-        })*/
+        })
 
         // newest in front
-        this.toasts = [
-          {
-            id: createId(),
-            msg: "Three important words" + this.toasts.length,
-            pos,
-            type: this.toastVariant,
-            autoClose
-          },
-          ...this.toasts
-        ]
+        // this.toasts = [
+        //   {
+        //     id: createId(),
+        //     msg: "Three important words" + this.toasts.length,
+        //     pos,
+        //     type: this.toastVariant,
+        //     autoClose
+        //   },
+        //   ...this.toasts
+        // ]
       },
       onRemoveToast(id: string) {
         this.toasts = this.toasts.filter(t => t.id !== id);
