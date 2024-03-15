@@ -10,10 +10,14 @@ This repository contains all project related to the Meteor Design System used an
 
 ```
 meteor/
-├── admin-sdk                   # SDK to build Apps for the Shopware 6 Administration
-├── component-library           # Collection of the Meteor Vue.js components
-├── icon-kit                    # Meteor icons in one single place
-└── tokens                      # Design Tokens powering the Meteor Design System
+├── examples
+│   ├── admin-sdk-app           # Basic project to get started with the Admin SDK
+│   └── nuxt-app                # Simple Nuxt server-side rendered application
+└── packages
+    ├── admin-sdk               # SDK to build Apps for the Shopware 6 Administration
+    ├── component-library       # Collection of the Meteor Vue.js components
+    ├── icon-kit                # Meteor icons in one single place
+    └── tokens                  # Design Tokens powering the Meteor Design System
 ```
 
 ## Contribute to Meteor
@@ -22,4 +26,4 @@ Pull requests are welcome. See the [contribution guidelines](./CONTRIBUTING.md) 
 
 ## License
 
-Source code is under a custom license based on MIT. 
+Source code is under a custom license based on MIT.
