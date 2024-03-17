@@ -347,13 +347,13 @@
                 </template>
 
                 <td class="mt-data-table__table-context-button">
-                  <a v-if="!disableEdit" href="#" @click.prevent="$emit('open-details')">
+                  <a v-if="!disableEdit" href="#" @click.prevent="$emit('open-details', data)">
                     {{ $t("mt-data-table.contextButtons.edit") }}
                   </a>
                   <mt-context-button>
                     <mt-context-menu-item
                       v-if="!disableEdit"
-                      :label="$t('mt-data-table.contextButtons.edit')"
+                      :label="$t('mt-data-table.contextButtons.edit', data)"
                       @click="$emit('open-details')"
                     />
 
@@ -361,7 +361,7 @@
                       v-if="!disableDelete"
                       type="critical"
                       :label="$t('mt-data-table.contextButtons.delete')"
-                      @click="$emit('item-delete')"
+                      @click="$emit('item-delete', data)"
                     />
                   </mt-context-button>
                 </td>
