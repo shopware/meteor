@@ -39,7 +39,7 @@
     <slot name="error" />
 
     <div
-      v-if="!!$slots['field-hint'] && !$slots['field-hint-right']"
+      v-if="!!$slots['field-hint'] || !!$slots['field-hint-right']"
       class="mt-field__hint-wrapper"
     >
       <div class="mt-field__hint">
