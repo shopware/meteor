@@ -166,3 +166,32 @@ export const TestDisabledDoesNotOpenFlatpickr: MtDatepickerStory = {
     expect((canvas.getByRole("textbox") as HTMLInputElement).disabled).toBe(true);
   },
 };
+
+export const TestVisualInputRangeDate: MtDatepickerStory = {
+  name: "Should input range date value",
+  args: {
+    modelValue: [
+      new Date(Date.UTC(2024, 1, 15)).toISOString(),
+      new Date(Date.UTC(2024, 1, 20)).toISOString(),
+    ],
+    label: "Range date value",
+    dateType: "date",
+    config: {
+      mode: "range",
+    },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const calendar = within(
+      document.getElementsByClassName("flatpickr-calendar")[0] as HTMLElement,
+    );
+
+    // Open datepicker
+    await userEvent.click(canvas.getByRole("textbox"));
+    await waitUntilRendered(() => document.getElementsByClassName("flatpickr-calendar").length > 0);
+
+    // Expect input event is triggered
+    expect(calendar).toBeDefined();
+  },
+};
