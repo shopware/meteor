@@ -303,6 +303,8 @@ export default {
     ],
     disableEdit: false,
     disableDelete: false,
+    filters: [],
+    appliedFilters: [],
     // TODO: can be removed when component is not experimental anymore
     _storybook_internal_show_experimental_warning_: false,
     _remove_primary_toolbar_button_: false,
@@ -322,6 +324,9 @@ export default {
         showStripesValue: boolean;
         enableOutlineFramingValue: boolean;
         enableRowNumberingValue: boolean;
+        // TODO: add better types for filters
+        filters: object[];
+        appliedFilters: object[];
       } {
         return {
           paginationLimitValue: 0,
@@ -335,6 +340,8 @@ export default {
           showStripesValue: true,
           enableOutlineFramingValue: true,
           enableRowNumberingValue: true,
+          filters: [],
+          appliedFilters: [],
         };
       },
       computed: {
@@ -484,6 +491,18 @@ export default {
             }
 
             this.enableRowNumberingValue = v;
+          },
+          immediate: true,
+        },
+        "args.filters": {
+          handler(v) {
+            this.filters = v;
+          },
+          immediate: true,
+        },
+        "args.appliedFilters": {
+          handler(v) {
+            this.appliedFilters = v;
           },
           immediate: true,
         },
@@ -648,6 +667,9 @@ export default {
             :enableOutlineFraming="enableOutlineFramingValue"
             @change-enable-row-numbering="changeEnableRowNumberingHandler"
             :enableRowNumbering="enableRowNumberingValue"
+            :filters="filters"
+            :applied-filters="appliedFilters"
+            @update:applied-filters="appliedFilters = $event"
         >
           {{ args.default}}
 

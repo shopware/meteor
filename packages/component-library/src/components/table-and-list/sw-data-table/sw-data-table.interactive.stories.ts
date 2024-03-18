@@ -557,3 +557,60 @@ export const VisualTestEnableRowNumbering: SwDataTableStory = {
     await expect(canvas.getByText("Awesome Concrete Chair")).toBeInTheDocument();
   },
 };
+
+export const VisualTestShowFilters: SwDataTableStory = {
+  name: "Should show filters",
+  args: {
+    appliedFilters: [
+      {
+        id: "manufacturer",
+        label: "Manufacturer",
+        type: {
+          id: "options",
+          options: [
+            {
+              id: "manufacturer1",
+              label: "Schmidt and Bailey",
+            },
+          ],
+        },
+      },
+    ],
+    filters: [
+      {
+        id: "manufacturer",
+        label: "Manufacturer",
+        type: {
+          id: "options",
+          options: [
+            {
+              id: "manufacturer1",
+              label: "Schmidt and Bailey",
+            },
+            {
+              id: "manufacturer2",
+              label: "Little - Flatley",
+            },
+          ],
+        },
+      },
+      {
+        id: "status",
+        label: "Status",
+        type: {
+          id: "options",
+          options: [
+            {
+              id: "active",
+              label: "Active",
+            },
+            {
+              id: "inactive",
+              label: "Inactive",
+            },
+          ],
+        },
+      },
+    ],
+  },
+};

@@ -139,12 +139,17 @@ export default defineComponent({
       required: false,
       default: false,
     },
+
+    id: {
+      type: String,
+      required: false,
+      default: () => createId(),
+    },
   },
 
   data() {
     return {
       currentValue: this.checked,
-      id: createId(),
     };
   },
 
@@ -166,7 +171,7 @@ export default defineComponent({
     },
 
     identification(): string {
-      return `sw-field--${this.id}`;
+      return this.id;
     },
 
     hasError(): boolean {

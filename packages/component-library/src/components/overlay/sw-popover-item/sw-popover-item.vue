@@ -6,6 +6,7 @@
         class="sw-popover-item__checkbox"
         :checked="checkboxChecked"
         :partial="checkboxPartial"
+        :id="id"
         @change="emitChangeCheckbox"
       />
 
@@ -21,11 +22,12 @@
         @keyup.enter="handleLableClick"
       />
 
-      <div
+      <label
         class="sw-popover-item__label"
         :class="labelClasses"
         :tabindex="onLabelClickTabIndex"
         :role="role"
+        :for="id"
         @click.stop.prevent="handleLableClick"
         @keyup.enter="handleLableClick"
       >
@@ -34,7 +36,7 @@
         <div v-if="metaCopy" class="sw-popover-item__meta-copy">
           {{ metaCopy }}
         </div>
-      </div>
+      </label>
 
       <div class="sw-popover-item__align-right">
         <div v-if="contextualDetail" class="sw-popover-item__contextual-detail">
@@ -82,6 +84,7 @@ import type { TranslateResult } from "vue-i18n";
 import SwCheckbox from "../../form/sw-checkbox/sw-checkbox.vue";
 import SwSwitch from "../../form/sw-switch/sw-switch.vue";
 import SwIcon from "../../icons-media/sw-icon/sw-icon.vue";
+import { createId } from "../../../utils/uuid";
 
 export type SwPopoverItemType = "default" | "critical" | "active";
 
@@ -204,6 +207,8 @@ export default defineComponent({
   },
   emits: ["change-checkbox", "change-switch", "change-visibility", "click-options"],
   setup(props, { emit }) {
+    const id = createId();
+
     const emitChangeCheckbox = (changeValue: boolean) => {
       emit("change-checkbox", changeValue);
     };
@@ -294,6 +299,7 @@ export default defineComponent({
       handleLableClick,
       isClickable,
       iconClasses,
+      id,
     };
   },
 });

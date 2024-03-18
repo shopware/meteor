@@ -2,13 +2,73 @@
   <!-- Height needs to be set inline because the card has an sw-ignore-class component as a wrapper -->
   <sw-card class="sw-data-table" :class="swDataTableClasses" :title="title" :subtitle="subtitle">
     <template #toolbar>
-      <sw-search
-        v-if="disableSearch !== true"
-        size="small"
-        :model-value="searchValue"
-        @change="emitSearchValueChange"
-      />
-      <slot name="toolbar" />
+      <div class="sw-data-table__toolbar">
+        <sw-search
+          v-if="disableSearch !== true"
+          size="small"
+          :model-value="searchValue"
+          @change="emitSearchValueChange"
+        />
+
+        <sw-popover v-if="filters.length > 0" title="Filters" :child-views="filterChildViews">
+          <template #trigger="{ toggleFloatingUi }">
+            <sw-button variant="secondary" @click="toggleFloatingUi">
+              <sw-icon name="solid-filter-s" aria-hidden="true" />
+
+              <!-- TODO: add translation -->
+              <span>Add filter</span>
+            </sw-button>
+          </template>
+
+          <template #popover-items__base="{ changeView }">
+            <sw-popover-item
+              v-for="filter in filters"
+              :key="filter.id"
+              :label="filter.label"
+              show-options
+              @click-options="() => changeView(filter.id)"
+            />
+          </template>
+
+          <template v-for="filter in filters" :key="filter.id" #[`popover-items__${filter.id}`]>
+            <sw-popover-item
+              v-for="option in filter.type.options"
+              :key="option.id"
+              :label="option.label"
+              show-checkbox
+              :checkbox-checked="isOptionSelected(filter.id, option.id)"
+              @change-checkbox="
+                (isChecked) => (isChecked ? addOption(filter, option.id) : removeOption(filter.id))
+              "
+            />
+          </template>
+        </sw-popover>
+
+        <slot name="toolbar" />
+      </div>
+
+      <div v-if="appliedFilters.length > 0" class="sw-data-table__filter">
+        <span>{{ $tc("sw-data-table.filter.numberOfResults", 0) }}</span>
+
+        <div class="sw-data-table__filter-list">
+          <sw-data-table-filter
+            v-for="filter in appliedFilters"
+            :key="filter.id"
+            :property="filter.label"
+            :option="
+              filter.type.options.reduce((acc, option) => [...acc, option.label], []).join(', ')
+            "
+            @remove="() => removeFilter(filter.id)"
+          />
+        </div>
+
+        <sw-data-table-add-filter-button />
+
+        <sw-data-table-reset-filter-button
+          :number-of-applied-filters="appliedFilters.length"
+          @click="$emit('update:appliedFilters', [])"
+        />
+      </div>
     </template>
 
     <template #default>
@@ -484,6 +544,9 @@ import SwFloatingUi from "../../_internal/sw-floating-ui/sw-floating-ui.vue";
 import SwTooltipDirective from "../../../directives/tooltip.directive";
 import SwEmptyState from "../../layout/sw-empty-state/sw-empty-state.vue";
 import StickyColumn from "../../../directives/stickyColumn.directive";
+import SwDataTableAddFilterButton from "./sub-components/sw-data-table-add-filter-button/sw-data-table-add-filter-button.vue";
+import SwDataTableResetFilterButton from "./sub-components/sw-data-table-reset-filter-button/sw-data-table-reset-filter-button.vue";
+import SwDataTableFilter from "./sub-components/sw-data-table-filter/sw-data-table-filter.vue";
 import { throttle } from "lodash-es";
 import { reactive } from "vue";
 
@@ -518,6 +581,11 @@ type DataSourcePropType = {
 
 type ColumnProperty = ColumnDefinition[];
 
+export interface Filter {
+  id: string;
+  label: string;
+}
+
 /**
  * @experimental - This component can be used but there are no guarantees for API stability yet.
  */
@@ -550,6 +618,9 @@ export default defineComponent({
     "sw-data-table-number-renderer": SwDataTableNumberRenderer,
     "sw-data-table-badge-renderer": SwDataTableBadgeRenderer,
     "sw-data-table-price-renderer": SwDataTablePriceRenderer,
+    "sw-data-table-add-filter-button": SwDataTableAddFilterButton,
+    "sw-data-table-reset-filter-button": SwDataTableResetFilterButton,
+    "sw-data-table-filter": SwDataTableFilter,
   },
   props: {
     /**
@@ -810,6 +881,18 @@ export default defineComponent({
       required: false,
       default: "Data table",
     },
+
+    filters: {
+      type: Array as PropType<Filter[]>,
+      required: false,
+      default: () => [],
+    },
+
+    appliedFilters: {
+      type: Array as PropType<Filter[]>,
+      required: false,
+      default: () => [],
+    },
   },
   emits: [
     "reload",
@@ -833,6 +916,9 @@ export default defineComponent({
       en: {
         "sw-data-table": {
           itemsPerPage: "Items per page",
+          filter: {
+            numberOfResults: "No results found for | One result found for | {n} results found for",
+          },
           columnSettings: {
             sortAscending: "Sort ascending",
             sortDescending: "Sort descending",
@@ -864,6 +950,10 @@ export default defineComponent({
       de: {
         "sw-data-table": {
           itemsPerPage: "Einträge pro Seite",
+          filter: {
+            numberOfResults:
+              "Keine Einträge gefunden | Ein Eintrag gefunden | {n} Einträge gefunden",
+          },
           columnSettings: {
             sortAscending: "Aufsteigend sortieren",
             sortDescending: "Absteigend sortieren",
@@ -903,6 +993,10 @@ export default defineComponent({
 
     onBeforeMount(() => {
       i18n = getCurrentInstance()?.proxy?.$i18n;
+    });
+
+    const filterChildViews = computed(() => {
+      return props.filters.map(({ id, label }) => ({ name: id, title: label }));
     });
 
     /**
@@ -1446,6 +1540,76 @@ export default defineComponent({
       }
     };
 
+    function removeFilter(id: string) {
+      const updatedFilters = props.appliedFilters.filter((filter) => filter.id !== id);
+
+      emit("update:appliedFilters", updatedFilters);
+    }
+
+    function addOption(filter: object, optionId: string) {
+      const filterAlreadyInUse = !!props.appliedFilters.find((appliedFilter) => {
+        return appliedFilter.id === filter.id;
+      });
+
+      if (!filterAlreadyInUse) {
+        emit("update:appliedFilters", [
+          ...this.appliedFilters,
+          {
+            ...filter,
+            type: {
+              ...filter.type,
+              options: [filter.type.options.find((option) => option.id === optionId)],
+            },
+          },
+        ]);
+
+        return;
+      }
+
+      emit("update:appliedFilters", [
+        ...this.appliedFilters.map((appliedFilter) => {
+          if (appliedFilter.id === filter.id) {
+            return {
+              ...appliedFilter,
+              type: {
+                ...appliedFilter.type,
+                options: [
+                  ...appliedFilter.type.options,
+                  filter.type.options.find((option) => option.id === optionId),
+                ],
+              },
+            };
+          }
+
+          return appliedFilter;
+        }),
+      ]);
+    }
+
+    function removeOption() {
+      const removingLastOption = true;
+
+      if (removingLastOption) {
+        emit("update:appliedFilters", []);
+
+        return;
+      }
+
+      emit("update:appliedFilters", []);
+    }
+
+    function isOptionSelected(filterId: string, optionId: string) {
+      const filterInUse = props.appliedFilters.find((appliedFilter) => {
+        return appliedFilter.id === filterId;
+      });
+
+      if (!filterInUse) return false;
+
+      const isOptionInUse = filterInUse.type.options.find((option) => option.id === optionId);
+
+      return isOptionInUse;
+    }
+
     /***
      * Add scroll possibilities to tableWrapper
      */
@@ -1683,6 +1847,11 @@ export default defineComponent({
       emptyData,
       getRealIndex,
       isDragging,
+      filterChildViews,
+      removeFilter,
+      addOption,
+      removeOption,
+      isOptionSelected,
     };
   },
 });
@@ -1774,7 +1943,6 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   * Adjust card styling so that it looks good with Inter font and the grid
   */
   .sw-card__title {
-    color: $color-card-headline;
     font-size: $font-size-s;
     line-height: $line-height-md;
     font-weight: $font-weight-medium;
@@ -1784,6 +1952,10 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     font-size: $font-size-xxs;
     line-height: $line-height-sm;
     font-weight: $font-weight-regular;
+  }
+
+  .sw-card__toolbar {
+    display: block;
   }
 
   .sw-card__content {
@@ -1819,6 +1991,29 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   font-weight: $font-weight-regular;
   color: $color-darkgray-300;
   line-height: $line-height-sm;
+
+  .sw-data-table__toolbar {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  // TODO: improve the name of this css selector
+  .sw-data-table__filter {
+    color: var(--color-text-primary-default);
+    padding-top: 16px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .sw-data-table__filter-list {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
 
   &__caption {
     // Hide the caption visually but show it for screen readers
