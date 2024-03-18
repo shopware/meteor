@@ -383,20 +383,11 @@ export default defineComponent({
      * @returns {any}
      */
     getMergedConfig(newConfig: any) {
-      if (newConfig.mode !== undefined) {
-        console.warn(
-          "[mt-datepicker] The only allowed mode is the default 'single' mode " +
-            "(the specified mode will be ignored!). " +
-            "The modes 'multiple' or 'range' are currently not supported",
-        );
-      }
-
       return {
         ...this.defaultConfig,
         enableTime: this.enableTime,
         noCalendar: this.noCalendar,
         ...newConfig,
-        mode: "single",
       };
     },
 
