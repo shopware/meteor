@@ -80,7 +80,7 @@ export default defineComponent({
     /**
      * Determines the checked state of the checkbox.
      */
-    checked: {
+    modelValue: {
       type: Boolean,
       required: false,
       default: undefined,
@@ -143,7 +143,7 @@ export default defineComponent({
 
   data() {
     return {
-      currentValue: this.checked,
+      currentValue: this.modelValue,
       id: createId(),
     };
   },
@@ -209,9 +209,9 @@ export default defineComponent({
   },
 
   watch: {
-    checked: {
+    modelValue: {
       handler() {
-        this.currentValue = this.checked;
+        this.currentValue = this.modelValue;
       },
       immediate: true,
     },
@@ -220,7 +220,7 @@ export default defineComponent({
   methods: {
     onChange(changeEvent: Event) {
       // @ts-expect-error - target is defined in the event
-      this.$emit("change", changeEvent.target.checked);
+      this.$emit("update:modelValue", changeEvent.target.checked);
     },
   },
 });

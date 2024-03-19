@@ -5,7 +5,7 @@
         </div>
 
         <div class="sw-toast-container__center">
-            <TransitionGroup name="toasts">
+            <TransitionGroup name="toastsdddd">
                 <SwToast
                     v-for="(ct, index) in centerToasts"
                     :key="`ct-${ct.id}`"
@@ -33,6 +33,7 @@
 <script setup lang="ts">
 import { defineProps, type PropType, computed, toRefs } from 'vue';
 import SwToast from '../feedback-indicator/sw-toast/sw-toast.vue';
+import type { Toast } from '../feedback-indicator/sw-toast/sw-toast.vue';
 
 const emit = defineEmits(['remove-toast']);
 
@@ -66,20 +67,20 @@ function onRemoveToast(id: string) {
     left: 0;
     right: 0;
     height: 100px;
-    background-color: lightblue;
-    display: flex;
-    justify-content: space-between;
+    display: block;
 
     &__left {
-        flex: 1;
+        width: 33%;
+        min-width: 33%;
+        max-width: 33%;
     }
 
     &__center {
-        flex: 1;
+        width: 33%;
     }
 
     &__right {
-        flex: 1;
+        width: 33%;
     }
 
     .sw-toast {
@@ -228,4 +229,4 @@ function onRemoveToast(id: string) {
 //         position: fixed;
 //     }
 // }
-</style>
+</style>../feedback-indicator/sw-toast/sw-toast-notification.vue../feedback-indicator/sw-toast/sw-toast-notification.vue
