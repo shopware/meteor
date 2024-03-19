@@ -557,3 +557,47 @@ export const VisualTestEnableRowNumbering: MtDataTableStory = {
     await expect(canvas.getByText("Awesome Concrete Chair")).toBeInTheDocument();
   },
 };
+
+export const EmitOpenDetailsEventOnClickingEdit: SwDataTableStory = {
+  name: "Emit open details event on clicking edit",
+  args: {
+    disableEdit: false,
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    await waitUntilRendered(() => document.querySelectorAll(".sw-skeleton-bar").length === 0);
+
+    const editLink = canvas.getAllByText("Edit")[0];
+
+    await userEvent.click(editLink);
+    
+    await expect(args.openDetails).toHaveBeenCalled();
+  },
+};
+
+export const EmitItemDeleteEventOnClickingDelete: SwDataTableStory = {
+  name: "Emit item delete event on clicking delete",
+  args: {
+    disableDelete: false,
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    await waitUntilRendered(() => document.querySelectorAll(".sw-skeleton-bar").length === 0);
+
+    const contextButton = canvas.getAllByLabelText("Context menu")[0];
+
+    await userEvent.click(contextButton);
+
+    const popover = within(
+      document.querySelector('.sw-floating-ui__content[data-show="true"]') as HTMLElement,
+    );
+
+    const deleteOption = popover.getByText("Delete");
+
+    await userEvent.click(deleteOption);
+
+    await expect(args.itemDelete).toHaveBeenCalled();
+  },
+};
