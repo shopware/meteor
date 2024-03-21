@@ -27,4 +27,6 @@ test('renders an example page', async ({ page }) => {
   await inputField.fill('Hello, World!');
 
   await expect(text).toHaveText('Hello, World!');
+
+  await expect(page).toHaveScreenshot();
 });
