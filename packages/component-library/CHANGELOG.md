@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.0.0
+
+### Minor Changes
+
+- bff12c5: - Added character count to sw-text-field and sw-textarea
+
+### Patch Changes
+
+- 8a9066a: Fix prop type validation inside sw-select-result-list which fixes SSR
+
 All notable changes to this project will be documented in this file.
 
 ## [3.0.0] - 16.02.2024
