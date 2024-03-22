@@ -1,53 +1,97 @@
-import SwDatepicker from "./components/form/sw-datepicker/sw-datepicker.vue";
-import SwBanner from "./components/feedback-indicator/sw-banner/sw-banner.vue";
-import SwLoader from "./components/feedback-indicator/sw-loader/sw-loader.vue";
-import SwProgressBar from "./components/feedback-indicator/sw-progress-bar/sw-progress-bar.vue";
-import SwButton from "./components/form/sw-button/sw-button.vue";
-import SwCheckbox from "./components/form/sw-checkbox/sw-checkbox.vue";
-import SwColorpicker from "./components/form/sw-colorpicker/sw-colorpicker.vue";
-import SwEmailField from "./components/form/sw-email-field/sw-email-field.vue";
-import SwExternalLink from "./components/form/sw-external-link/sw-external-link.vue";
-import SwNumberField from "./components/form/sw-number-field/sw-number-field.vue";
-import SwPasswordField from "./components/form/sw-password-field/sw-password-field.vue";
-import SwSelect from "./components/form/sw-select/sw-select.vue";
-import SwSwitch from "./components/form/sw-switch/sw-switch.vue";
-import SwTextField from "./components/form/sw-text-field/sw-text-field.vue";
-import SwTextarea from "./components/form/sw-textarea/sw-textarea.vue";
-import SwUrlField from "./components/form/sw-url-field/sw-url-field.vue";
-import SwIcon from "./components/icons-media/sw-icon/sw-icon.vue";
-import SwCard from "./components/layout/sw-card/sw-card.vue";
-import SwTabs from "./components/navigation/sw-tabs/sw-tabs.vue";
-import SwDataTable from "./components/table-and-list/sw-data-table/sw-data-table.vue";
-import SwPagination from "./components/table-and-list/sw-pagination/sw-pagination.vue";
-import SwSkeletonBar from "./components/feedback-indicator/sw-skeleton-bar/sw-skeleton-bar.vue";
+import MtDatepicker from "./components/form/mt-datepicker/mt-datepicker.vue";
+import MtBanner from "./components/feedback-indicator/mt-banner/mt-banner.vue";
+import MtLoader from "./components/feedback-indicator/mt-loader/mt-loader.vue";
+import MtProgressBar from "./components/feedback-indicator/mt-progress-bar/mt-progress-bar.vue";
+import MtButton from "./components/form/mt-button/mt-button.vue";
+import MtCheckbox from "./components/form/mt-checkbox/mt-checkbox.vue";
+import MtColorpicker from "./components/form/mt-colorpicker/mt-colorpicker.vue";
+import MtEmailField from "./components/form/mt-email-field/mt-email-field.vue";
+import MtExternalLink from "./components/form/mt-external-link/mt-external-link.vue";
+import MtNumberField from "./components/form/mt-number-field/mt-number-field.vue";
+import MtPasswordField from "./components/form/mt-password-field/mt-password-field.vue";
+import MtSelect from "./components/form/mt-select/mt-select.vue";
+import MtSwitch from "./components/form/mt-switch/mt-switch.vue";
+import MtTextField from "./components/form/mt-text-field/mt-text-field.vue";
+import MtTextarea from "./components/form/mt-textarea/mt-textarea.vue";
+import MtUrlField from "./components/form/mt-url-field/mt-url-field.vue";
+import MtIcon from "./components/icons-media/mt-icon/mt-icon.vue";
+import MtCard from "./components/layout/mt-card/mt-card.vue";
+import MtTabs from "./components/navigation/mt-tabs/mt-tabs.vue";
+import MtDataTable from "./components/table-and-list/mt-data-table/mt-data-table.vue";
+import MtPagination from "./components/table-and-list/mt-pagination/mt-pagination.vue";
+import MtSkeletonBar from "./components/feedback-indicator/mt-skeleton-bar/mt-skeleton-bar.vue";
 import TooltipDirective from "./directives/tooltip.directive";
 import DeviceHelperPlugin from "./plugin/device-helper.plugin";
 // Import SCSS for styling
 import "./components/assets/scss/all.scss";
 
 export {
-  SwBanner,
-  SwLoader,
-  SwProgressBar,
-  SwButton,
-  SwCheckbox,
-  SwColorpicker,
-  SwDatepicker,
-  SwEmailField,
-  SwExternalLink,
-  SwNumberField,
-  SwPasswordField,
-  SwSelect,
-  SwSwitch,
-  SwTextField,
-  SwTextarea,
-  SwUrlField,
-  SwIcon,
-  SwCard,
-  SwTabs,
-  SwDataTable,
-  SwPagination,
-  SwSkeletonBar,
+  MtBanner,
+  MtLoader,
+  MtProgressBar,
+  MtButton,
+  MtCheckbox,
+  MtColorpicker,
+  MtDatepicker,
+  MtEmailField,
+  MtExternalLink,
+  MtNumberField,
+  MtPasswordField,
+  MtSelect,
+  MtSwitch,
+  MtTextField,
+  MtTextarea,
+  MtUrlField,
+  MtIcon,
+  MtCard,
+  MtTabs,
+  MtDataTable,
+  MtPagination,
+  MtSkeletonBar,
   TooltipDirective,
   DeviceHelperPlugin,
+  // @deprecated
+  MtBanner as SwBanner,
+  // @deprecated
+  MtLoader as SwLoader,
+  // @deprecated
+  MtProgressBar as SwProgressBar,
+  // @deprecated
+  MtButton as SwButton,
+  // @deprecated
+  MtCheckbox as SwCheckbox,
+  // @deprecated
+  MtColorpicker as SwColorpicker,
+  // @deprecated
+  MtDatepicker as SwDatepicker,
+  // @deprecated
+  MtEmailField as SwEmailField,
+  // @deprecated
+  MtExternalLink as SwExternalLink,
+  // @deprecated
+  MtNumberField as SwNumberField,
+  // @deprecated
+  MtPasswordField as SwPasswordField,
+  // @deprecated
+  MtSelect as SwSelect,
+  // @deprecated
+  MtSwitch as SwSwitch,
+  // @deprecated
+  MtTextField as SwTextField,
+  // @deprecated
+  MtTextarea as SwTextarea,
+  // @deprecated
+  MtUrlField as SwUrlField,
+  // @deprecated
+  MtIcon as SwIcon,
+  // @deprecated
+  MtCard as SwCard,
+  // @deprecated
+  MtTabs as SwTabs,
+  // @deprecated
+  MtDataTable as SwDataTable,
+  // @deprecated
+  MtPagination as SwPagination,
+  // @deprecated
+  MtSkeletonBar as SwSkeletonBar,
 };

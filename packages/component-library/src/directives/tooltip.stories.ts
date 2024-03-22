@@ -1,10 +1,10 @@
-import SwIcon from "../components/icons-media/sw-icon/sw-icon.vue";
+import MtIcon from "../components/icons-media/mt-icon/mt-icon.vue";
 import TooltipDirective from "./tooltip.directive";
 import type { SlottedMeta } from "@/_internal/story-helper";
 import { defineComponent } from "vue";
 
 const meta: SlottedMeta<
-  typeof SwIcon,
+  typeof MtIcon,
   | "message"
   | "width"
   | "showDelay"
@@ -14,20 +14,20 @@ const meta: SlottedMeta<
   | "showOnDisabledElements"
 > = {
   title: "Directives/Tooltip",
-  component: SwIcon,
+  component: MtIcon,
   render: (args) =>
     defineComponent({
-      components: { SwIcon },
+      components: { MtIcon },
       directives: {
         tooltip: TooltipDirective,
       },
       template: `<div>
-      <sw-icon
+      <mt-icon
         name="regular-question-circle"
           v-tooltip="{
           ...args
         }">
-      </sw-icon>
+      </mt-icon>
     </div>`,
       setup: () => {
         return {

@@ -169,9 +169,9 @@ class Tooltip {
     }
 
     if (appearance && this._appearance !== appearance) {
-      this._DOMElement!.classList.remove(`sw-tooltip--${this._appearance}`);
+      this._DOMElement!.classList.remove(`mt-tooltip--${this._appearance}`);
       this._appearance = appearance;
-      this._DOMElement!.classList.add(`sw-tooltip--${this._appearance}`);
+      this._DOMElement!.classList.add(`mt-tooltip--${this._appearance}`);
     }
 
     if (
@@ -194,7 +194,7 @@ class Tooltip {
    */
   createParentDOMElementWrapper() {
     const element = document.createElement("div");
-    element.classList.add("sw-tooltip--wrapper");
+    element.classList.add("mt-tooltip--wrapper");
 
     this._parentDOMElement.parentNode!.insertBefore(element, this._parentDOMElement);
     element.appendChild(this._parentDOMElement);
@@ -209,8 +209,8 @@ class Tooltip {
     element.setAttribute("aria-hidden", "false");
     element.setAttribute("aria-role", "tooltip");
     element.setAttribute("aria-label", "currently-opened-tooltip");
-    element.classList.add("sw-tooltip");
-    element.classList.add(`sw-tooltip--${this._appearance}`);
+    element.classList.add("mt-tooltip");
+    element.classList.add(`mt-tooltip--${this._appearance}`);
 
     if (this._zIndex !== null) {
       element.style.zIndex = this._zIndex.toFixed(0);
@@ -303,7 +303,7 @@ class Tooltip {
     possiblePlacements = possiblePlacements.filter((pos) => pos !== placement);
 
     // Remove previous placement class if it exists
-    this._DOMElement!.classList.remove(`sw-tooltip--${this._actualTooltipPlacement!}`);
+    this._DOMElement!.classList.remove(`mt-tooltip--${this._actualTooltipPlacement!}`);
 
     // Set the tooltip to the desired place
     this._setDOMElementPosition(this._calculateTooltipPosition(placement ?? "top"));
@@ -323,7 +323,7 @@ class Tooltip {
       this._actualTooltipPlacement = placement ?? null;
     }
 
-    this._DOMElement!.classList.add(`sw-tooltip--${this._actualTooltipPlacement ?? ""}`);
+    this._DOMElement!.classList.add(`mt-tooltip--${this._actualTooltipPlacement ?? ""}`);
   }
 
   _setDOMElementPosition({ top, left }: { top: string; left: string }) {
@@ -495,7 +495,7 @@ function createOrUpdateTooltip(
  *  showDelay: The delay before the tooltip is shown when the original element is hovered.
  *  hideDelay: The delay before the tooltip is removed when the original element is not hovered.
  *  disabled: Disables the tooltip and it wont be shown.
- *  appearance: Sets a additional css class "sw-tooltip--$appearance" for styling
+ *  appearance: Sets a additional css class "mt-tooltip--$appearance" for styling
  *  showOnDisabledElements: Shows the tooltip also if the original element is disabled. To achieve
  *      this a wrapper div element is created around the original element because the original element
  *      prevents mouse events when disabled.

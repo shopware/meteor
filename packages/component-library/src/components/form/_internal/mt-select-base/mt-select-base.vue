@@ -1,0 +1,421 @@
+<template>
+  <mt-base-field
+    :class="mtFieldClasses"
+    v-bind="$attrs"
+    :disabled="disabled"
+    :has-focus="expanded"
+    :is-inherited="isInherited"
+    :is-inheritance-field="isInheritanceField"
+    :disable-inheritance-toggle="disableInheritanceToggle"
+  >
+    <template #label>
+      {{ label }}
+    </template>
+
+    <template #field-prefix>
+      <slot name="mt-select-prefix" />
+    </template>
+
+    <!-- eslint-disable-next-line vue/no-template-shadow -->
+    <template #element="{ identification, error, size }">
+      <div
+        ref="selectWrapper"
+        class="mt-select__selection"
+        tabindex="0"
+        @click="expand"
+        @focus="expand"
+        @keydown.tab="collapse"
+        @keydown.esc="collapse"
+      >
+        <slot
+          name="mt-select-selection"
+          v-bind="{ identification, error, disabled, size, expand, collapse }"
+        />
+        <div class="mt-select__selection-indicators">
+          <mt-loader v-if="isLoading" class="mt-select__select-indicator" size="16px" />
+
+          <button
+            v-if="!disabled && showClearableButton"
+            class="mt-select__select-indicator-hitbox"
+            data-clearable-button
+            data-testid="select-clear-button"
+            @click.prevent.stop="emitClear"
+            @keydown.tab.stop="focusParentSelect"
+          >
+            <mt-icon
+              class="mt-select__select-indicator mt-select__select-indicator-clear"
+              name="regular-times-xxs"
+            />
+          </button>
+
+          <mt-icon class="mt-select__select-indicator" name="solid-chevron-down-xs" />
+        </div>
+      </div>
+
+      <template v-if="expanded">
+        <transition name="mt-select-result-list-fade-down">
+          <slot name="results-list" v-bind="{ collapse }" />
+        </transition>
+      </template>
+    </template>
+
+    <template #field-suffix>
+      <slot name="mt-select-suffix" />
+    </template>
+
+    <template #field-hint>
+      <slot name="mt-select-hint" />
+    </template>
+
+    <template #error>
+      <mt-field-error v-if="error" :error="error" />
+    </template>
+  </mt-base-field>
+</template>
+
+<script lang="ts">
+import { defineComponent } from "vue";
+import MtBaseField from "../mt-base-field/mt-base-field.vue";
+import MtIcon from "../../../icons-media/mt-icon/mt-icon.vue";
+import MtLoader from "../../../feedback-indicator/mt-loader/mt-loader.vue";
+import MtFieldError from "../../_internal/mt-field-error/mt-field-error.vue";
+
+export default defineComponent({
+  name: "MtSelectBase",
+
+  components: {
+    "mt-base-field": MtBaseField,
+    "mt-icon": MtIcon,
+    "mt-loader": MtLoader,
+    "mt-field-error": MtFieldError,
+  },
+
+  inheritAttrs: false,
+
+  props: {
+    /**
+     * The label for the select field itself.
+     */
+    label: {
+      type: String,
+      required: true,
+    },
+
+    /**
+     * Toggles the loading state of the select field.
+     */
+    isLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    /**
+     * Disables or enables the select field.
+     */
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    /**
+     * Toggles a button to clear all selections.
+     */
+    showClearableButton: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    /**
+     * An error in your business logic related to this field.
+     *
+     * @example {"code": 500, "detail": "Error while saving"}
+     */
+    error: {
+      type: Object,
+      required: false,
+      default: null,
+    },
+
+    /**
+     * Toggles the inheritance visualization.
+     */
+    isInherited: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    /**
+     * Determines if the field is inheritable.
+     */
+    isInheritanceField: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    /**
+     * Determines the active state of the inheritance toggle.
+     */
+    disableInheritanceToggle: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+  },
+
+  data() {
+    return {
+      expanded: false,
+    };
+  },
+
+  computed: {
+    mtFieldClasses(): { "has--focus": boolean } {
+      return { "has--focus": this.expanded };
+    },
+  },
+
+  methods: {
+    toggleExpand() {
+      if (!this.expanded) {
+        this.expand();
+      } else {
+        this.collapse();
+      }
+    },
+
+    expand() {
+      if (this.expanded) {
+        return;
+      }
+
+      if (this.disabled) {
+        return;
+      }
+
+      this.expanded = true;
+      document.addEventListener("click", this.listenToClickOutside);
+      this.$emit("select-expanded");
+    },
+
+    collapse(event?: Event) {
+      document.removeEventListener("click", this.listenToClickOutside);
+      this.expanded = false;
+
+      // @ts-expect-error - target is set and contains dataset
+      // do not let clearable button trigger change event
+      if (event?.target?.dataset.clearableButton === undefined) {
+        this.$emit("select-collapsed");
+      }
+
+      // @ts-expect-error - event is a click event
+      // allow to step back through form via SHIFT+TAB
+      if (event?.shiftKey) {
+        event.preventDefault();
+        this.focusPreviousFormElement();
+      }
+    },
+
+    focusPreviousFormElement() {
+      const focusableSelector =
+        'a, button, input, textarea, select, details, [tabindex]:not([tabindex="-1"])';
+      const myFocusable = this.$el.querySelector(focusableSelector);
+      const keyboardFocusable = [
+        ...document.querySelectorAll(focusableSelector),
+        // @ts-expect-error - target is set and contains dataset
+      ].filter((el) => !el.hasAttribute("disabled") && el.dataset.clearableButton === undefined);
+
+      keyboardFocusable.forEach((element, index) => {
+        if (index > 0 && element === myFocusable) {
+          const kbFocusable = keyboardFocusable[index - 1];
+          // @ts-expect-error - click exists on element
+          kbFocusable.click();
+          // @ts-expect-error - focus exists on element
+          kbFocusable.focus();
+        }
+      });
+    },
+
+    listenToClickOutside(event: Event) {
+      // @ts-expect-error - path exists in event
+      let { path } = event;
+      if (typeof path === "undefined") {
+        path = this.computePath(event);
+      }
+
+      // @ts-expect-error - path contains elements
+      if (!path.find((element) => element === this.$el)) {
+        this.collapse();
+      }
+    },
+
+    computePath(event: Event) {
+      const path = [];
+      let { target } = event;
+
+      while (target) {
+        path.push(target);
+        // @ts-expect-error - parentElement exists on target
+        target = target.parentElement;
+      }
+
+      return path;
+    },
+
+    emitClear() {
+      this.$emit("clear");
+    },
+
+    focusParentSelect(event: KeyboardEvent) {
+      if (event?.shiftKey) {
+        // @ts-expect-error - ref selectWrapper is defined
+        this.$refs.selectWrapper.click();
+        event.preventDefault();
+      }
+    },
+  },
+});
+</script>
+
+<style lang="scss">
+@import "../../../assets/scss/variables.scss";
+
+$mt-select-focus-transition: all ease-in-out 0.2s;
+
+.mt-select {
+  position: relative;
+  min-width: 100px;
+
+  .mt-block-field__block {
+    transition: $mt-select-focus-transition;
+    background-color: $color-white;
+    position: relative;
+    overflow: visible;
+  }
+
+  .mt-select__selection {
+    width: 100%;
+    position: relative;
+    padding: 0 8px;
+    border: none;
+    font-size: $font-size-small;
+    font-family: $font-family-default;
+    line-height: 22px;
+    color: $color-darkgray-200;
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+  }
+
+  .mt-select__selection-indicators {
+    position: absolute;
+    display: flex;
+    gap: 8px;
+    top: 50%;
+    right: 16px;
+    transform: translate(0, -50%);
+    z-index: 1;
+  }
+
+  .mt-select__selection-indicators .mt-loader {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    left: -24px;
+    top: -4px;
+
+    .mt-loader__container {
+      transform: none;
+      left: 0;
+      top: 0;
+    }
+  }
+
+  .mt-select__select-indicator-hitbox {
+    background-color: transparent;
+    border: 0 solid transparent;
+    color: $color-darkgray-200;
+    padding: 0 4px;
+    cursor: pointer;
+
+    .mt-select__select-indicator {
+      display: block;
+    }
+
+    &:focus {
+      .mt-select__select-indicator-clear {
+        opacity: 1;
+        pointer-events: all;
+        cursor: pointer;
+      }
+    }
+  }
+
+  .mt-select__select-indicator {
+    flex-shrink: 0;
+    cursor: pointer;
+  }
+
+  .mt-select__select-indicator-clear {
+    transition: 0.1s opacity ease;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  &:hover .mt-select__select-indicator-clear,
+  &.has--focus .mt-select__select-indicator-clear {
+    opacity: 1;
+    pointer-events: all;
+    cursor: pointer;
+  }
+
+  &.mt-field--medium .mt-select__selection {
+    padding: 4px 6px 0;
+  }
+
+  &.mt-field--small .mt-select__selection {
+    padding: 4px 6px 0;
+  }
+
+  &.is--disabled {
+    .mt-block-field__block {
+      background-color: $color-gray-100;
+    }
+
+    .mt-label {
+      background-color: $color-gray-100;
+    }
+
+    input {
+      background-color: $color-gray-100;
+    }
+  }
+
+  &--small {
+    cursor: pointer;
+
+    .mt-select-selection-list--single .mt-label {
+      cursor: pointer;
+      height: 18px;
+      padding-top: 1px;
+    }
+  }
+}
+
+// Vue.js transitions
+.mt-select-result-list-fade-down-enter-active,
+.mt-select-result-list-fade-down-leave-active {
+  transition: $mt-select-focus-transition;
+  transform: translateY(0);
+}
+
+.mt-select-result-list-fade-down-enter,
+.mt-select-result-list-fade-down-leave-to {
+  transform: translateY(-10px);
+  opacity: 0;
+}
+</style>
