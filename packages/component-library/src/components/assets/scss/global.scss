@@ -22,7 +22,7 @@ body {
   }
 }
 
-.sw-drag-select-box {
+.mt-drag-select-box {
   position: absolute;
   background: $color-drag-select-box;
   z-index: $z-index-drag-select-box;
@@ -34,7 +34,7 @@ body {
 }
 
 /* style inline external links */
-a[target="_blank"]:not(.sw-external-link, .sw-internal-link, .sw-button) {
+a[target="_blank"]:not(.mt-external-link, .mt-internal-link, .mt-button) {
   display: inline-block;
   position: relative;
   color: $color-shopware-brand-500;

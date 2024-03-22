@@ -29,11 +29,11 @@ Each component works independently and can be imported directly from the root li
 
 ```html
 <script>
-  import { SwButton } from "@shopware-ag/meteor-component-library";
+  import { MtButton } from "@shopware-ag/meteor-component-library";
 
   export default {
     components: {
-      "sw-button": SwButton,
+      "mt-button": MtButton,
     },
   };
 </script>
@@ -97,12 +97,12 @@ All interaction tests are written in `component-name.interactive.stories.js` fil
 Example:
 
 ```js
-import meta from "./sw-button.stories";
+import meta from "./mt-button.stories";
 
 export default {
   ...meta,
-  title: "Interaction Tests/base/sw-button",
-  component: SwButton,
+  title: "Interaction Tests/base/mt-button",
+  component: MtButton,
 };
 ```
 

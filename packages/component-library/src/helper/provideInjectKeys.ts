@@ -1,14 +1,14 @@
 import type { InjectionKey } from "vue";
 
-export const swSelectResultAddActiveItemListener = Symbol() as InjectionKey<
+export const MtSelectResultAddActiveItemListener = Symbol() as InjectionKey<
   (listener: (index: number) => void) => void
 >;
-export const swSelectResultRemoveActiveItemListener = Symbol() as InjectionKey<
+export const MtSelectResultRemoveActiveItemListener = Symbol() as InjectionKey<
   (listener: (index: number) => void) => void
 >;
-export const swSelectResultAddItemSelectByKeyboardListener = Symbol() as InjectionKey<
+export const MtSelectResultAddItemSelectByKeyboardListener = Symbol() as InjectionKey<
   (listener: (index: number) => void) => void
 >;
-export const swSelectResultRemoveItemSelectByKeyboardListener = Symbol() as InjectionKey<
+export const MtSelectResultRemoveItemSelectByKeyboardListener = Symbol() as InjectionKey<
   (listener: (index: number) => void) => void
 >;

@@ -1,5 +1,5 @@
 /**
- * @deprecated - don't use this Directive anymore. Use sw-floating-ui instead
+ * @deprecated - don't use this Directive anymore. Use mt-floating-ui instead
  */
 
 import type { ComponentPublicInstance } from "vue";
@@ -171,7 +171,7 @@ function unregisterVirtualScrollingElement(uid?: string) {
 }
 
 /**
- * @deprecated - don't use this Directive anymore. Use sw-floating-ui instead
+ * @deprecated - don't use this Directive anymore. Use mt-floating-ui instead
  */
 const PopoverDirective: Directive = {
   mounted(element, binding) {

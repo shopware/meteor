@@ -20,14 +20,14 @@ export const VisualTestRenderTooltip = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    const icon = await canvas.getByTestId("sw-icon__regular-question-circle");
+    const icon = await canvas.getByTestId("mt-icon__regular-question-circle");
 
     await userEvent.hover(icon);
 
     // wait until tooltip is loaded
-    await waitUntilRendered(() => document.querySelector(".sw-tooltip"));
+    await waitUntilRendered(() => document.querySelector(".mt-tooltip"));
 
-    const tooltip = within(document.getElementsByClassName("sw-tooltip")[0]);
+    const tooltip = within(document.getElementsByClassName("mt-tooltip")[0]);
     const helpText = tooltip.getByText("This is the help text");
 
     expect(helpText).toBeDefined();
@@ -43,15 +43,15 @@ export const VisualTestRenderTooltipInWide = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    const icon = canvas.getByTestId("sw-icon__regular-question-circle");
+    const icon = canvas.getByTestId("mt-icon__regular-question-circle");
 
     await userEvent.hover(icon);
 
     // wait until tooltip is loaded
-    await waitUntilRendered(() => document.querySelector(".sw-tooltip"));
-    await waitUntilRendered(() => document.querySelector(".sw-tooltip"));
+    await waitUntilRendered(() => document.querySelector(".mt-tooltip"));
+    await waitUntilRendered(() => document.querySelector(".mt-tooltip"));
 
-    const tooltip = within(document.getElementsByClassName("sw-tooltip")[0]);
+    const tooltip = within(document.getElementsByClassName("mt-tooltip")[0]);
     const helpText = tooltip.getByText("This is the help text");
 
     expect(helpText).toBeDefined();
