@@ -1,5 +1,12 @@
 # Changelog
 
+## 3.1.0
+
+### Minor Changes
+
+- 6c6678d: - Renamed all "sw" prefixes to "mt"
+  - Keep old sw prefixes for backwards compatibility
+
 ## 3.0.0
 
 ### Minor Changes
