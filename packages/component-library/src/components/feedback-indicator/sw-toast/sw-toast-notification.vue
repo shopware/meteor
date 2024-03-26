@@ -1,18 +1,44 @@
 <template>
-<div class="sw-toast-notification" :class="classes" @mouseenter="pauseTimer" @mouseleave="resumeTimer">
+<div
+    class="sw-toast-notification"
+    :class="classes"
+    ref="toastEl"
+    :role="role"
+    :aria-live="ariaLive"
+    tabindex="0"
+    @mouseenter="pauseTimer"
+    @mouseleave="resumeTimer"
+>
     <div class="sw-toast-notification__content">
-        <sw-icon
-            v-if="toast.icon"
-            :name="toast.icon"
-        />
+        <div class="sw-toast-notification__content-left">
+            <sw-icon
+                v-if="toast.icon"
+                class="sw-toast-notification__icon"
+                :name="toast.icon"
+            />
 
-        <div class="sw-toast-notification__message">
-            {{ toast.msg }}
+            <div
+                class="sw-toast-notification__message"
+                :class="messageClasses"
+            >
+                {{ toast.msg }}
+            </div>
+        </div>
+
+        <div class="sw-toast-notification__content-right">
+            <sw-button
+                v-if="toast.action"
+                @click="onActionClick"
+                size="small"
+            >
+                {{ toast.action.label }}
+            </sw-button>
         </div>
 
         <div
-            v-if="!toast.action"
+            v-if="toast.dismissable"
             class="sw-toast-notification__close-action"
+            aria-hidden="true"
             @click="onRemoveToast"
         >
             <sw-icon name="solid-times-circle-s" />
@@ -27,8 +53,10 @@
 
 <script setup lang="ts">
 import SwIcon from '@/components/icons-media/sw-icon/sw-icon.vue';
-import { defineProps, toRefs, type PropType, computed, watch, ref } from 'vue';
+import SwButton from '@/components/form/sw-button/sw-button.vue';
+import { defineProps, toRefs, type PropType, computed, watch, ref, onBeforeUnmount, onMounted } from 'vue';
 import type { Toast } from './sw-toast.vue';
+import { nextTick } from 'vue';
 
 const emit = defineEmits(['remove-toast'])
 
@@ -37,26 +65,72 @@ const props = defineProps({
         type: Object as PropType<Toast>,
         required: true,
     },
-    showTimer: {
+    shortNotice: {
         type: Boolean,
         required: false,
         default: false,
-    }
+    },
+    index: {
+        type: Number,
+        required: false,
+        default: NaN,
+    },
 });
-
-const { toast, showTimer } = toRefs(props);
 
 const classes = computed(() => {
     return {
         'sw-toast-notification__positive': toast.value.type === 'positive',
         'sw-toast-notification__critical': toast.value.type === 'critical',
-        'sw-toast-notification__default': toast.value.type === 'default',
+        'sw-toast-notification__informal': toast.value.type === 'informal',
+        'sw-toast-notification__short-notice': shortNotice.value,
     }
 })
 
+const messageClasses = computed(() => {
+    return {
+        'sw-toast-notification__message-space': !!toast.value.icon,
+    };
+})
+
+const showTimer = computed(() => {
+    if (shortNotice.value) {
+        return true;
+    }
+
+    return !toast.value.action && index.value === 0;
+});
+
+const role = computed(() => {
+    if (toast.value.action) {
+        return 'alertdialog';
+    }
+
+    switch(toast.value.type) {
+        case 'positive':
+        case 'informal':
+        default:
+            return 'log';
+        case 'critical':
+            return 'alert';
+    }
+});
+
+const ariaLive = computed(() => {
+    switch(toast.value.type) {
+        case 'positive':
+        case 'informal':
+        default:
+            return 'polite';
+        case 'critical':
+            return 'assertive';
+    }
+});
+
+const { toast, shortNotice, index } = toRefs(props);
+const toastEl = ref<HTMLElement|null>(null);
 let timeoutId = ref<number|undefined>(undefined);
 let timeoutStartTime = ref<number|undefined>(undefined);
-let remainingTimeOut = ref(5500);
+let remainingTimeOut = ref(shortNotice.value ? 3700 : 10500);
 
 watch(showTimer, (newValue) => {
     // Stop timer?
@@ -65,6 +139,8 @@ watch(showTimer, (newValue) => {
         if (timeoutId.value) {
             window.clearTimeout(timeoutId.value);
             timeoutId.value = undefined;
+            remainingTimeOut.value = shortNotice.value ? 3700 : 10500;
+            console.log('RESETTING TIMEOUT BECAUSE SHOWTIMER false', remainingTimeOut.value)
         }
 
         return;
@@ -79,6 +155,10 @@ watch(showTimer, (newValue) => {
 }, { immediate: true })
 
 function pauseTimer() {
+    if (!timeoutId.value) {
+        return;
+    }
+
     // Terminate current timeout
     window.clearTimeout(timeoutId.value);
 
@@ -92,7 +172,7 @@ function resumeTimer() {
     if (!showTimer.value) {
         return;
     }
-    console.log('RESUMING TIMER');
+    console.log('RESUME TIMER');
 
     // Start timer
     timeoutStartTime.value = Date.now();
@@ -109,6 +189,31 @@ function onRemoveToast() {
 
     emit('remove-toast', toast.value.id);
 }
+
+function onActionClick() {
+    // Trigger callback
+    toast.value?.action?.callback();
+
+    // Remove toast
+    onRemoveToast();
+}
+
+onMounted(() => {
+    if (!toast.value.action || !toastEl.value) {
+        return;
+    }
+
+    console.log('FOCUS', toastEl.value);
+    toastEl.value?.focus();
+})
+
+onBeforeUnmount(() => {
+    if (!timeoutId.value) {
+        return;
+    }
+
+    window.clearTimeout(timeoutId.value);
+})
 </script>
 
 <style scoped lang="scss">
@@ -135,6 +240,20 @@ function onRemoveToast() {
         display: flex;
         align-items: center;
 
+        &-left {
+            display: flex;
+            flex: 1;
+            justify-content: flex-start;
+            margin-left: 16px;
+            align-items: center;
+        }
+
+        &-right {
+            display: flex;
+            justify-content: flex-end;
+            margin-right: 16px;
+            align-items: center;
+        }
     }
     
     &__positive {
@@ -161,7 +280,7 @@ function onRemoveToast() {
         }
     }
 
-    &__default {
+    &__informal {
         background-color: $color-darkgray-700;
 
         .sw-toast-notification__close-action {
@@ -174,7 +293,6 @@ function onRemoveToast() {
     }
 
     &__message {
-        padding: 16px 24px;
         color: $color-white;
         font-family: $font-family-default;
         font-size: $font-size-xs;
@@ -182,6 +300,10 @@ function onRemoveToast() {
         font-weight: $font-weight-semi-bold;
         line-height: 16px; /* 114.286% */
         letter-spacing: 0.08px;
+
+        &-space {
+            padding-left: 8px;
+        }
     }
 
     &__close-action {
@@ -208,16 +330,22 @@ function onRemoveToast() {
             height: 100%;
             background-color: white;
             transform-origin: 0% 0%;
-            animation: shrink 5s forwards linear 0.5s;
+            animation: shrink 10s forwards linear 0.5s;
         }
+    }
 
-        @keyframes shrink {
-            from {
-                transform: scaleX(1);
-            }
-            to {
-                transform: scaleX(0);
-            }
+    &__short-notice {
+        .sw-toast-notification__timer-loader {
+            animation: shrink 3s forwards linear 0.8s;
+        }
+    }
+
+    @keyframes shrink {
+        from {
+            transform: scaleX(1);
+        }
+        to {
+            transform: scaleX(0);
         }
     }
 }

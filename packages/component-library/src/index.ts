@@ -22,6 +22,7 @@ import SwPagination from "./components/table-and-list/sw-pagination/sw-paginatio
 import SwSkeletonBar from "./components/feedback-indicator/sw-skeleton-bar/sw-skeleton-bar.vue";
 import TooltipDirective from "./directives/tooltip.directive";
 import DeviceHelperPlugin from "./plugin/device-helper.plugin";
+import SwToast from "./components/feedback-indicator/sw-toast/sw-toast.vue";
 // Import SCSS for styling
 import "./components/assets/scss/all.scss";
 
@@ -48,6 +49,7 @@ export {
   SwDataTable,
   SwPagination,
   SwSkeletonBar,
+  SwToast,
   TooltipDirective,
   DeviceHelperPlugin,
 };

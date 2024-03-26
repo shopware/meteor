@@ -6,6 +6,7 @@ import SwCheckbox from "@/components/form/sw-checkbox/sw-checkbox.vue";
 import type { Toast } from "./sw-toast.vue";
 import type { StoryObj } from "@storybook/vue3";
 import type { SlottedMeta } from "@/_internal/story-helper";
+import { createId } from "@/utils/uuid";
 
 export type SwToastMeta = SlottedMeta<typeof SwToast, ''>
 
@@ -17,16 +18,19 @@ export default {
     template: `
           <h2>Spawn some toasts 🍞</h2>
 
-          <div style="width: 400px;">
-            <sw-select label="Toast position" :options="positions" v-model="position" />
+          <div style="width: 420px;">
             <sw-text-field label="ToastMessage" v-model="msg" />
-            <sw-checkbox label="Display toast icon?" v-model="displayIcon" />
+            <div style="display: flex; gap: 12px;">
+              <sw-checkbox label="Display toast icon?" v-model="displayIcon" />
+              <sw-checkbox label="Toast manually dismissable?" v-model="dismissable" />
+              <sw-checkbox label="Add action?" v-model="action" />
+            </div>
           </div>
 
-          <div style="width: 400px; display: flex; justify-content: space-around;">
-            <sw-button @click="onAddToast('critical')" variant="critical">Add error toast</sw-button>
-            <sw-button @click="onAddToast('positive')" variant="primary">Add success toast</sw-button>
-            <sw-button @click="onAddToast('default')" variant="secondary">Add info toast</sw-button>
+          <div style="width: 420px; display: flex; justify-content: space-around;">
+            <sw-button @click="onAddToast('critical')" variant="critical">Add critical toast</sw-button>
+            <sw-button @click="onAddToast('positive')" variant="primary">Add positive toast</sw-button>
+            <sw-button @click="onAddToast('informal')" variant="secondary">Add informal toast</sw-button>
           </div>
 
           <SwToast
@@ -39,39 +43,27 @@ export default {
         args,
       };
     },
-    data(): { toasts: Toast[], position: string, positions: { label: string, value: string }[], msg: string, displayIcon: boolean } {
+    data(): { toasts: Toast[], msg: string, displayIcon: boolean, dismissable: boolean, action: boolean } {
      return {
       toasts: [],
-      position: 'center',
-      positions: [
-        {
-          label: 'Center',
-          value: 'center',
-        },
-        {
-          label: 'Right',
-          value: 'right',
-        }
-      ],
       msg: 'Max three words',
       displayIcon: false,
+      dismissable: false,
+      action: false,
      };
     },
     methods: {
       onAddToast(type: string) {
-        let msg = '';
-        for (let i = 0; i < 12; i++) {
-          msg = msg + this.toasts.length;
-        }
-      
         this.toasts = [
           {
-            id: this.toasts.length + 1,
+            id: createId(), // auto generated at the sdk
+
+            // Provided by the user
             msg: this.msg,
             type,
-            autoClose: type !== 'error',
-            pos: this.position,
-            icon: this.displayIcon ? 'solid-exclamation-circle' : undefined
+            dismissable: this.dismissable,
+            icon: this.displayIcon ? 'solid-exclamation-circle' : undefined,
+            action: this.action ? { label: 'action', callback: () => console.log('action') } : undefined,
           },
           ...this.toasts,
         ];
