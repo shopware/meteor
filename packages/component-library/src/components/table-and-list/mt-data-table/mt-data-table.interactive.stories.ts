@@ -558,7 +558,7 @@ export const VisualTestEnableRowNumbering: MtDataTableStory = {
   },
 };
 
-export const EmitOpenDetailsEventOnClickingEdit: SwDataTableStory = {
+export const EmitOpenDetailsEventOnClickingEdit: MtDataTableStory = {
   name: "Emit open details event on clicking edit",
   args: {
     disableEdit: false,
@@ -599,7 +599,7 @@ export const EmitOpenDetailsEventOnClickingEdit: SwDataTableStory = {
   },
 };
 
-export const EmitItemDeleteEventOnClickingDelete: SwDataTableStory = {
+export const EmitItemDeleteEventOnClickingDelete: MtDataTableStory = {
   name: "Emit item delete event on clicking delete",
   args: {
     disableDelete: false,
