@@ -566,7 +566,7 @@ export const EmitOpenDetailsEventOnClickingEdit: SwDataTableStory = {
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
 
-    await waitUntilRendered(() => document.querySelectorAll(".sw-skeleton-bar").length === 0);
+    await waitUntilRendered(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
 
     const editLink = canvas.getAllByText("Edit")[0];
 
@@ -607,14 +607,14 @@ export const EmitItemDeleteEventOnClickingDelete: SwDataTableStory = {
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
 
-    await waitUntilRendered(() => document.querySelectorAll(".sw-skeleton-bar").length === 0);
+    await waitUntilRendered(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
 
     const contextButton = canvas.getAllByLabelText("Context menu")[0];
 
     await userEvent.click(contextButton);
 
     const popover = within(
-      document.querySelector('.sw-floating-ui__content[data-show="true"]') as HTMLElement,
+      document.querySelector('.mt-floating-ui__content[data-show="true"]') as HTMLElement,
     );
 
     const deleteOption = popover.getByText("Delete");
