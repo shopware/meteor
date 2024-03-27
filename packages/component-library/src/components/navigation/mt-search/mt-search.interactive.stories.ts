@@ -1,5 +1,7 @@
-import { within, userEvent } from "@storybook/testing-library";
-import { expect, jest } from "@storybook/jest";
+import { within, userEvent } from "@storybook/test";
+import { expect } from "@storybook/test";
+
+import * as test from "@storybook/test";
 
 import meta, { type MtSearchMeta, type MtSearchStory } from "./mt-search.stories";
 
@@ -11,7 +13,7 @@ export default {
 export const TestInputValue: MtSearchStory = {
   name: "Should keep input value",
   args: {
-    change: jest.fn(),
+    change: test.fn(),
   },
   play: async ({ args, canvasElement }) => {
     // we can't use canvasElement because it is not available anymore

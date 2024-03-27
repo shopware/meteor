@@ -1,5 +1,5 @@
-import { within, userEvent } from "@storybook/testing-library";
-import { expect } from "@storybook/jest";
+import { within, userEvent } from "@storybook/test";
+import { expect } from "@storybook/test";
 
 import meta from "./mt-button.stories";
 import type { MtButtonMeta, MtButtonStory } from "./mt-button.stories";

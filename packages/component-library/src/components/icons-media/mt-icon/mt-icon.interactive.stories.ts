@@ -1,5 +1,5 @@
-import { within } from "@storybook/testing-library";
-import { expect } from "@storybook/jest";
+import { within } from "@storybook/test";
+import { expect } from "@storybook/test";
 import { waitUntilRendered } from "@/_internal/test-helper";
 
 import meta, { type MtIconStory, type MtIconMeta } from "./mt-icon.stories";
