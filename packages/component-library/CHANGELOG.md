@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.2.0
+
+### Minor Changes
+
+- e0e1741: Add property "size" to "mt-icon"
+
 ## 3.1.0
 
 ### Minor Changes
