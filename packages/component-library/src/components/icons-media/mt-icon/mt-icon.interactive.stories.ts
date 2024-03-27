@@ -14,7 +14,7 @@ export const VisualTestRenderIcon: MtIconStory = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // wait until tab bar is loaded and context button gets rendered
+    // wait until icon is loaded and rendered
     await waitUntilRendered(() => document.getElementById("meteor-icon-kit__regular-products"));
 
     expect(canvas.findByTestId("mt-icon__regular-products")).toBeDefined();
@@ -29,7 +29,7 @@ export const VisualTestRenderCalendarIcon: MtIconStory = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // wait until tab bar is loaded and context button gets rendered
+    // wait until icon is loaded and rendered
     await waitUntilRendered(() => document.getElementById("meteor-icon-kit__regular-calendar"));
 
     expect(canvas.findByTestId("mt-icon__regular-calendar")).toBeDefined();
@@ -44,7 +44,7 @@ export const VisualTestRenderIconInYellow: MtIconStory = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // wait until tab bar is loaded and context button gets rendered
+    // wait until icon is loaded and rendered
     await waitUntilRendered(() => document.getElementById("meteor-icon-kit__regular-products"));
 
     expect(canvas.findByTestId("mt-icon__regular-products")).toBeDefined();
@@ -60,10 +60,42 @@ export const VisualTestRenderIconInHidden: MtIconStory = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // wait until tab bar is loaded and context button gets rendered
+    // wait until icon is loaded and rendered
     await waitUntilRendered(() => document.getElementById("meteor-icon-kit__regular-products"));
 
     expect(canvas.findByTestId("mt-icon__regular-products")).toBeDefined();
     expect((await canvas.findByTestId("mt-icon__regular-products")).ariaHidden).toBe("true");
+  },
+};
+
+export const VisualTestRenderIconInCustomSizeLarge: MtIconStory = {
+  name: "Render icon in custom size large",
+  args: {
+    size: "120px",
+    name: "regular-fingerprint",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // wait until icon is loaded and rendered
+    await waitUntilRendered(() => document.getElementById("meteor-icon-kit__regular-fingerprint"));
+
+    expect(canvas.findByTestId("mt-icon__regular-fingerprint")).toBeDefined();
+  },
+};
+
+export const VisualTestRenderIconInCustomSizeSmall: MtIconStory = {
+  name: "Render icon in custom size small",
+  args: {
+    size: "10px",
+    name: "regular-fingerprint",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // wait until icon is loaded and rendered
+    await waitUntilRendered(() => document.getElementById("meteor-icon-kit__regular-fingerprint"));
+
+    expect(canvas.findByTestId("mt-icon__regular-fingerprint")).toBeDefined();
   },
 };
