@@ -41,7 +41,7 @@ jobs:
         run: pnpm dlx playwright install
       
       - name: Build storybook
-        run: pnpx turbo run build:storybook --filter=@shopware-ag/meteor-component-library
+        run: pnpx turbo run build:storybook --filter=@shopware-ag/meteor-component-library -- --test
 
       - name: Run Tests
         id: storybookTests
