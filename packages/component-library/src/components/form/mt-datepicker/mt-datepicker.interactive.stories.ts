@@ -1,5 +1,5 @@
-import { within, userEvent } from "@storybook/testing-library";
-import { expect } from "@storybook/jest";
+import { within, userEvent } from "@storybook/test";
+import { expect } from "@storybook/test";
 
 import meta, { type MtDatepickerMeta, type MtDatepickerStory } from "./mt-datepicker.stories";
 import { waitUntilRendered } from "../../../_internal/test-helper";

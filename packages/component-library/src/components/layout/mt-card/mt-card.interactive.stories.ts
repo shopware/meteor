@@ -1,5 +1,5 @@
-import { within, userEvent } from "@storybook/testing-library";
-import { expect } from "@storybook/jest";
+import { within, userEvent } from "@storybook/test";
+import { expect } from "@storybook/test";
 
 import { MinimalStory, ExtendedStory, type MtCardMeta, type MtCardStory } from "./mt-card.stories";
 
