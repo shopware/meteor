@@ -8,17 +8,18 @@ These components are prebuilt (like cards) and contain in most cases custom [loc
 
 ```js
 if (location.is(location.MAIN_HIDDEN)) {
-  // Choose a position id where you want to render a custom component
-  sw.ui.componentSection('sw-manufacturer-card-custom-fields__before').add({
-      // The Component Sections provides different components out of the box
-      component: 'card', 
-      // Props are depending on the type of component
-      props: {
-          title: 'Hello from plugin',
-          subtitle: 'I am before the properties card',
-          // Some components can render a custom view. In this case the extension can render custom content in the card.
-          locationId: 'my-app-card-before-properties'
-      }
+    sw.ui.componentSection.add({
+        // Choose a position id where you want to render a custom component
+        positionId: 'sw-manufacturer-card-custom-fields__before',
+        // The Component Sections provides different components out of the box
+        component: 'card', 
+        // Props are depending on the type of component
+        props: {
+            title: 'Hello from plugin',
+            subtitle: 'I am before the properties card',
+            // Some components can render a custom view. In this case the extension can render custom content in the card.
+            locationId: 'my-app-card-before-properties'
+        }
   })
 }
 
@@ -33,7 +34,7 @@ if (sw.location.is('my-app-card-before-properties')) {
 
 If you want to render tabs inside the `card` component section, we provide a way to do so:
 ```js
-if (location.is(location.MAIN_HIDDEN)) {
+if (sw.location.is(sw.location.MAIN_HIDDEN)) {
   // Choose a position id where you want to render a custom component
   sw.ui.componentSection.add({
       // The Component Sections provides different components out of the box

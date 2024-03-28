@@ -9,7 +9,7 @@ A extension wants to render a custom iFrame in a card in the dashboard. The `loc
 The extension want to render different views depending on the `location` of the iFrame. So the extension developer can render the correct view depending on the `locationId`:
 ```js
 // Add the ui extensions when your extension is loaded in the hidden iFrame
-if (location.is(location.MAIN_HIDDEN)) {
+if (sw.location.is(sw.location.MAIN_HIDDEN)) {
   ui.componentSection.add({
       component: 'card',
       positionId: 'sw-product-properties__before',
