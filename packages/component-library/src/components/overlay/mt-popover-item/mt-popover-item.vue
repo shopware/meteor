@@ -1,12 +1,12 @@
 <template>
   <div class="mt-popover-item" :class="componentClasses">
-    <div class="mt-popover-item__top-row" @click="handleLableClick">
+    <div class="mt-popover-item__top-row" @click="handleLabelClick">
       <mt-checkbox
         v-if="showCheckbox"
         class="mt-popover-item__checkbox"
         :checked="checkboxChecked"
         :partial="checkboxPartial"
-        @change="emitChangeCheckbox"
+        @change="$emit('change-checkbox', $event)"
       />
 
       <slot name="extension-logo" />
@@ -17,8 +17,8 @@
         :class="iconClasses"
         :tabindex="onLabelClickTabIndex"
         :name="icon"
-        @click="handleLableClick"
-        @keyup.enter="handleLableClick"
+        @click="handleLabelClick"
+        @keyup.enter="handleLabelClick"
       />
 
       <div
@@ -26,8 +26,8 @@
         :class="labelClasses"
         :tabindex="onLabelClickTabIndex"
         :role="role"
-        @click.stop.prevent="handleLableClick"
-        @keyup.enter="handleLableClick"
+        @click.stop.prevent="handleLabelClick"
+        @keyup.enter="handleLabelClick"
       >
         {{ label }}
 
@@ -49,14 +49,14 @@
           v-if="showSwitch"
           :checked="switchValue"
           class="mt-popover-item__switch"
-          @change="emitChangeSwitch"
+          @change="$emit('change-switch', $event)"
         />
 
         <template v-if="showVisibility">
           <mt-icon
             class="mt-popover-item__visibility"
             :name="visible ? 'solid-eye' : 'solid-eye-slash'"
-            @click="() => emitVisibilityChange(!visible)"
+            @click="$emit('change-visibility', !visible)"
           />
         </template>
 
@@ -68,7 +68,7 @@
           v-if="showOptions"
           class="mt-popover-item__options"
           name="solid-chevron-right-s"
-          @click="emitClickOptions"
+          @click="$emit('click-options')"
         />
       </div>
     </div>
@@ -204,22 +204,6 @@ export default defineComponent({
   },
   emits: ["change-checkbox", "change-switch", "change-visibility", "click-options"],
   setup(props, { emit }) {
-    const emitChangeCheckbox = (changeValue: boolean) => {
-      emit("change-checkbox", changeValue);
-    };
-
-    const emitChangeSwitch = (changeValue: boolean) => {
-      emit("change-switch", changeValue);
-    };
-
-    const emitVisibilityChange = (changeValue: boolean) => {
-      emit("change-visibility", changeValue);
-    };
-
-    const emitClickOptions = () => {
-      emit("click-options");
-    };
-
     const isClickable = computed(() => {
       return (
         (!!props.onLabelClick ||
@@ -255,24 +239,24 @@ export default defineComponent({
       return props.onLabelClick ? 0 : -1;
     });
 
-    const handleLableClick = () => {
+    const handleLabelClick = () => {
       if (props.onLabelClick) {
         props.onLabelClick();
         return;
       }
 
       if (props.showOptions) {
-        emitClickOptions();
+        emit("click-options");
         return;
       }
 
       if (props.showSwitch) {
-        emitChangeSwitch(!props.switchValue);
+        emit("change-switch", !props.switchValue);
         return;
       }
 
       if (props.showCheckbox) {
-        emitChangeCheckbox(!props.checkboxChecked);
+        emit("change-checkbox", !props.checkboxChecked);
         return;
       }
     };
@@ -284,14 +268,10 @@ export default defineComponent({
     });
 
     return {
-      emitChangeCheckbox,
-      emitChangeSwitch,
-      emitVisibilityChange,
-      emitClickOptions,
       componentClasses,
       labelClasses,
       onLabelClickTabIndex,
-      handleLableClick,
+      handleLabelClick,
       isClickable,
       iconClasses,
     };
