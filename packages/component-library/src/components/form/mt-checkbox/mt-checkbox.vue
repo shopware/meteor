@@ -13,7 +13,7 @@
             @change.stop="onChange"
           />
           <div class="mt-field__checkbox-state">
-            <mt-icon :name="iconName" size="16" />
+            <mt-icon :name="iconName" />
           </div>
         </div>
 
