@@ -1,6 +1,6 @@
 <template>
   <div class="mt-popover-item" :class="componentClasses">
-    <div class="mt-popover-item__top-row" @click="handleLabelClick">
+    <label class="mt-popover-item__top-row" @click="handleLabelClick">
       <mt-checkbox
         v-if="showCheckbox"
         class="mt-popover-item__checkbox"
@@ -26,7 +26,6 @@
         :class="labelClasses"
         :tabindex="onLabelClickTabIndex"
         :role="role"
-        @click.stop.prevent="handleLabelClick"
         @keyup.enter="handleLabelClick"
       >
         {{ label }}
@@ -71,7 +70,7 @@
           @click="$emit('click-options')"
         />
       </div>
-    </div>
+    </label>
   </div>
 </template>
 
@@ -247,11 +246,6 @@ export default defineComponent({
 
       if (props.showOptions) {
         emit("click-options");
-        return;
-      }
-
-      if (props.showSwitch) {
-        emit("change-switch", !props.switchValue);
         return;
       }
 
