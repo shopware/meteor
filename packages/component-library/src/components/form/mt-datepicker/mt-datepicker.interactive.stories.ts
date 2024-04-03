@@ -2,7 +2,7 @@ import { within, userEvent } from "@storybook/test";
 import { expect } from "@storybook/test";
 
 import meta, { type MtDatepickerMeta, type MtDatepickerStory } from "./mt-datepicker.stories";
-import { waitUntilRendered } from "../../../_internal/test-helper";
+import { waitUntil } from "../../../_internal/test-helper";
 
 export default {
   ...meta,
@@ -19,7 +19,7 @@ export const VisualTestDatepickerShouldOpen: MtDatepickerStory = {
 
     // Open datepicker
     await userEvent.click(canvas.getByRole("textbox"));
-    await waitUntilRendered(() => document.getElementsByClassName("flatpickr-calendar").length > 0);
+    await waitUntil(() => document.getElementsByClassName("flatpickr-calendar").length > 0);
 
     const calendar = within(
       document.getElementsByClassName("flatpickr-calendar")[0] as HTMLElement,
@@ -45,7 +45,7 @@ export const VisualTestDateInputValue: MtDatepickerStory = {
 
     // Open datepicker
     await userEvent.click(canvas.getByRole("textbox"));
-    await waitUntilRendered(() => document.getElementsByClassName("flatpickr-calendar").length > 0);
+    await waitUntil(() => document.getElementsByClassName("flatpickr-calendar").length > 0);
 
     // Click the 24th of month XYZ
     await userEvent.click(calendar.getByText("24"));
@@ -75,7 +75,7 @@ export const VisualTestDateTimeInputValue: MtDatepickerStory = {
 
     // Open datepicker
     await userEvent.click(canvas.getByRole("textbox"));
-    await waitUntilRendered(() => document.getElementsByClassName("flatpickr-calendar").length > 0);
+    await waitUntil(() => document.getElementsByClassName("flatpickr-calendar").length > 0);
 
     // Enter 22 as hour
     const hourInput = calendar.getByLabelText("Hour");
@@ -112,7 +112,7 @@ export const VisualTestTimeInputValue: MtDatepickerStory = {
 
     // Open datepicker
     await userEvent.click(canvas.getByRole("textbox"));
-    await waitUntilRendered(() => document.getElementsByClassName("flatpickr-calendar").length > 0);
+    await waitUntil(() => document.getElementsByClassName("flatpickr-calendar").length > 0);
 
     // Enter 22 as hour
     await userEvent.clear(calendar.getByLabelText("Hour"));

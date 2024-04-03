@@ -1,6 +1,6 @@
 import { within, userEvent } from "@storybook/test";
 import { expect } from "@storybook/test";
-import { waitUntilRendered } from "../../../_internal/test-helper";
+import { waitUntil } from "../../../_internal/test-helper";
 
 import meta, { type MtSelectMeta, type MtSelectStory } from "./mt-select.stories";
 
@@ -67,7 +67,7 @@ export const VisualTestSingleSelection: MtSelectStory = {
     await new Promise((resolve) => setTimeout(resolve, 300));
 
     let popover = within(document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement);
-    await waitUntilRendered(() => popover.getByTestId("mt-select-option--a"));
+    await waitUntil(() => popover.getByTestId("mt-select-option--a"));
     await userEvent.click(popover.getByTestId("mt-select-option--a"));
 
     expect(args.itemAdd).toHaveBeenCalledWith({
@@ -84,7 +84,7 @@ export const VisualTestSingleSelection: MtSelectStory = {
     await new Promise((resolve) => setTimeout(resolve, 300));
     popover = within(document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement);
 
-    await waitUntilRendered(() => popover.getByTestId("mt-select-option--f"));
+    await waitUntil(() => popover.getByTestId("mt-select-option--f"));
     await userEvent.click(popover.getByTestId("mt-select-option--f"));
 
     expect(args.itemAdd).toHaveBeenCalledWith({
@@ -100,7 +100,7 @@ export const VisualTestSingleSelection: MtSelectStory = {
     await userEvent.type(canvas.getByRole("textbox"), "FF");
     popover = within(document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement);
 
-    await waitUntilRendered(() => popover.getByTestId("mt-select-option--ff"));
+    await waitUntil(() => popover.getByTestId("mt-select-option--ff"));
     await userEvent.click(popover.getByTestId("mt-select-option--ff"));
 
     expect(args.itemAdd).toHaveBeenCalledWith({
@@ -203,7 +203,7 @@ export const VisualTestHint: MtSelectStory = {
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
-    await waitUntilRendered(() => {
+    await waitUntil(() => {
       // Check if selection list item contains "Option B"
       const selectionListItem = document.querySelector(".mt-select-selection-list__item");
       return selectionListItem?.textContent === "Option B";
@@ -241,7 +241,7 @@ export const VisualTestError: MtSelectStory = {
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
 
-    await waitUntilRendered(() => {
+    await waitUntil(() => {
       // Check if selection list item contains "Option B"
       const selectionListItem = document.querySelector(".mt-select-selection-list__item");
       return selectionListItem?.textContent === "Option B";
@@ -261,7 +261,7 @@ export const VisualTestHighlightSearchTerm: MtSelectStory = {
     await userEvent.type(canvas.getByRole("textbox"), "A");
 
     // wait until only one result is rendered
-    await waitUntilRendered(() => document.getElementsByClassName("mt-select-result").length === 1);
+    await waitUntil(() => document.getElementsByClassName("mt-select-result").length === 1);
 
     const popover = within(
       document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement,
@@ -301,12 +301,12 @@ export const VisualTestEnsureSingleSelectionWithoutLoadMore: MtSelectStory = {
   name: "Should not show load more",
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
-    await waitUntilRendered(() =>
+    await waitUntil(() =>
       document.querySelector('.mt-select-selection-list__item[title="Option B"]'),
     );
 
     await userEvent.type(canvas.getByRole("textbox"), "Option long text");
-    await waitUntilRendered(() => {
+    await waitUntil(() => {
       // Check if highlight text contains the search term
       const highlight = document.querySelector(".mt-highlight-text__highlight");
       return highlight?.textContent === "Option long text";

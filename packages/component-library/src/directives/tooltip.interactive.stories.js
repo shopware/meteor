@@ -1,7 +1,7 @@
 import meta from "./tooltip.stories";
 import { within, userEvent } from "@storybook/test";
 import { expect } from "@storybook/test";
-import { waitUntilRendered } from "../_internal/test-helper";
+import { waitUntil } from "../_internal/test-helper";
 
 export default {
   ...meta,
@@ -25,7 +25,7 @@ export const VisualTestRenderTooltip = {
     await userEvent.hover(icon);
 
     // wait until tooltip is loaded
-    await waitUntilRendered(() => document.querySelector(".mt-tooltip"));
+    await waitUntil(() => document.querySelector(".mt-tooltip"));
 
     const tooltip = within(document.getElementsByClassName("mt-tooltip")[0]);
     const helpText = tooltip.getByText("This is the help text");
@@ -48,8 +48,8 @@ export const VisualTestRenderTooltipInWide = {
     await userEvent.hover(icon);
 
     // wait until tooltip is loaded
-    await waitUntilRendered(() => document.querySelector(".mt-tooltip"));
-    await waitUntilRendered(() => document.querySelector(".mt-tooltip"));
+    await waitUntil(() => document.querySelector(".mt-tooltip"));
+    await waitUntil(() => document.querySelector(".mt-tooltip"));
 
     const tooltip = within(document.getElementsByClassName("mt-tooltip")[0]);
     const helpText = tooltip.getByText("This is the help text");

@@ -1,6 +1,6 @@
 import { within, userEvent } from "@storybook/test";
 import { expect } from "@storybook/test";
-import { waitUntilRendered } from "../../../_internal/test-helper";
+import { waitUntil } from "../../../_internal/test-helper";
 
 import meta, { type MtSwitchMeta, type MtSwitchStory } from "./mt-switch.stories";
 
@@ -105,7 +105,7 @@ export const VisualTestInherited: MtSwitchStory = {
 
     await userEvent.click(canvas.getByTestId("mt-inheritance-switch-icon"));
 
-    await waitUntilRendered(() => document.querySelector(".mt-tooltip"));
+    await waitUntil(() => document.querySelector(".mt-tooltip"));
 
     expect(args.inheritanceRemove).toHaveBeenCalledWith(undefined);
   },
@@ -158,7 +158,7 @@ export const VisualTestHelpText: MtSwitchStory = {
 
     await userEvent.click(canvas.getByTestId("mt-help-text__icon"));
 
-    await waitUntilRendered(() => document.querySelector(".mt-tooltip"));
+    await waitUntil(() => document.querySelector(".mt-tooltip"));
 
     expect(document.querySelector(".mt-tooltip")).toBeDefined();
   },

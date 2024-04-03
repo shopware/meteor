@@ -20,6 +20,7 @@ import MtTabs from "./components/navigation/mt-tabs/mt-tabs.vue";
 import MtDataTable from "./components/table-and-list/mt-data-table/mt-data-table.vue";
 import MtPagination from "./components/table-and-list/mt-pagination/mt-pagination.vue";
 import MtSkeletonBar from "./components/feedback-indicator/mt-skeleton-bar/mt-skeleton-bar.vue";
+import MtToast from "./components/feedback-indicator/mt-toast/mt-toast.vue";
 import TooltipDirective from "./directives/tooltip.directive";
 import DeviceHelperPlugin from "./plugin/device-helper.plugin";
 // Import SCSS for styling
@@ -48,6 +49,7 @@ export {
   MtDataTable,
   MtPagination,
   MtSkeletonBar,
+  MtToast,
   TooltipDirective,
   DeviceHelperPlugin,
   // @deprecated
