@@ -7,8 +7,7 @@ export const darkTheme = create({
   // Brand specifc stuff
   brandTitle: "Shopware",
   brandUrl: "https://docs.shopware.com",
-  brandImage:
-    "https://shopware.github.io/meteor-component-library/shopware_docs_horizontal_white.svg",
+  brandImage: "https://meteor-component-library.vercel.app/shopware_docs_horizontal_white.svg",
   brandTarget: "_self",
 
   // Storybook-specific color palette
@@ -48,8 +47,7 @@ export const lightTheme = create({
   // Brand specifc stuff
   brandTitle: "Shopware",
   brandUrl: "https://docs.shopware.com",
-  brandImage:
-    "https://shopware.github.io/meteor-component-library/shopware_docs_horizontal_dark.svg",
+  brandImage: "https://meteor-component-library.vercel.app/shopware_docs_horizontal_dark.svg",
   brandTarget: "_self",
 
   // Storybook-specific color palette
