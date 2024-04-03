@@ -1,6 +1,6 @@
 import meta, { type MtDataTableMeta, type MtDataTableStory } from "./mt-data-table.stories";
 import MtDataTableFixtures from "./mt-data-table.fixtures.json";
-import { waitUntilRendered } from "../../../_internal/test-helper";
+import { waitUntil } from "../../../_internal/test-helper";
 import { within, userEvent, waitFor, fireEvent } from "@storybook/test";
 import { expect } from "@storybook/test";
 
@@ -20,7 +20,7 @@ export const VisualTestRenderFullTable: MtDataTableStory = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await waitUntilRendered(() => {
+    await waitUntil(() => {
       return document.querySelector(".mt-data-table-text-renderer");
     });
 
@@ -36,7 +36,7 @@ export const VisualTestRenderEmptyState: MtDataTableStory = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    await waitUntilRendered(() => {
+    await waitUntil(() => {
       return document.querySelector(".mt-empty-state");
     });
 
@@ -49,8 +49,8 @@ export const VisualTestRenderTableStickyHeader: MtDataTableStory = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    await waitUntilRendered(() => document.body.textContent?.includes("Gorgeous Wooden Ball"));
-    await waitUntilRendered(() => document.body.textContent?.includes("Available"));
+    await waitUntil(() => document.body.textContent?.includes("Gorgeous Wooden Ball"));
+    await waitUntil(() => document.body.textContent?.includes("Available"));
 
     // wait 1 second so that everything is correctly rendered
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -79,8 +79,8 @@ export const VisualTestRenderTableWithoutCardHeader: MtDataTableStory = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    await waitUntilRendered(() => document.body.textContent?.includes("Awesome Concrete Chair"));
-    await waitUntilRendered(() => document.body.textContent?.includes("Available"));
+    await waitUntil(() => document.body.textContent?.includes("Awesome Concrete Chair"));
+    await waitUntil(() => document.body.textContent?.includes("Available"));
 
     // wait 1 second so that everything is correctly rendered
     await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -130,9 +130,9 @@ export const VisualTestRenderTableWithScrollShadows: MtDataTableStory = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await waitUntilRendered(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
 
-    await waitUntilRendered(() => document.body.textContent?.includes("Aa Render scroll shadows"));
+    await waitUntil(() => document.body.textContent?.includes("Aa Render scroll shadows"));
 
     // scroll to middle horizontally and vertically
     const MtDataTable = document.querySelector(".mt-data-table__table-wrapper");
@@ -158,9 +158,9 @@ export const VisualTestEmitReloadEventOnClickingReload: MtDataTableStory = {
   },
   play: async ({ args, canvasElement }) => {
     const canvas = within(canvasElement);
-    await waitUntilRendered(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
 
-    await waitUntilRendered(() => document.querySelector('.mt-button[aria-label="reload-data"]'));
+    await waitUntil(() => document.querySelector('.mt-button[aria-label="reload-data"]'));
 
     const reloadButton = canvas.getByLabelText("reload-data");
 
@@ -168,7 +168,7 @@ export const VisualTestEmitReloadEventOnClickingReload: MtDataTableStory = {
 
     // wait 1 second so that everything is correctly rendered
     await new Promise((resolve) => setTimeout(resolve, 1000));
-    await waitUntilRendered(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
 
     await expect(args.reload).toHaveBeenCalled();
   },
@@ -178,15 +178,15 @@ export const VisualTestOpenSettingsMenu: MtDataTableStory = {
   name: "Open settings menu with correct popover items inside",
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await waitUntilRendered(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
 
-    await waitUntilRendered(() => document.querySelector('.mt-button[aria-label="reload-data"]'));
+    await waitUntil(() => document.querySelector('.mt-button[aria-label="reload-data"]'));
 
     const toggleTableSettingsButton = canvas.getByLabelText("Toggle view settings");
 
     await userEvent.click(toggleTableSettingsButton);
 
-    await waitUntilRendered(() => document.querySelector(".mt-floating-ui__content"));
+    await waitUntil(() => document.querySelector(".mt-floating-ui__content"));
 
     const popover = within(
       document.querySelector('.mt-floating-ui__content[data-show="true"]') as HTMLElement,
@@ -194,7 +194,7 @@ export const VisualTestOpenSettingsMenu: MtDataTableStory = {
     await expect(popover.getByText("Settings")).toBeInTheDocument();
     await expect(popover.getByText("Columns")).toBeInTheDocument();
 
-    await waitUntilRendered(() => !document.querySelector('[class*="popoverTransition"]'));
+    await waitUntil(() => !document.querySelector('[class*="popoverTransition"]'));
 
     await expect(popover.getByText("Reset all changes")).toBeInTheDocument();
   },
@@ -204,9 +204,9 @@ export const VisualTestOpenColumnSettingsMenu: MtDataTableStory = {
   name: "Open column settings menu",
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await waitUntilRendered(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
 
-    await waitUntilRendered(() => document.querySelector('.mt-button[aria-label="reload-data"]'));
+    await waitUntil(() => document.querySelector('.mt-button[aria-label="reload-data"]'));
 
     const toggleTableSettingsButton = canvas.getByRole("button", {
       name: "Toggle view settings",
@@ -214,9 +214,7 @@ export const VisualTestOpenColumnSettingsMenu: MtDataTableStory = {
 
     await userEvent.click(toggleTableSettingsButton);
 
-    await waitUntilRendered(() =>
-      document.querySelector('.mt-floating-ui__content[data-show="true"]'),
-    );
+    await waitUntil(() => document.querySelector('.mt-floating-ui__content[data-show="true"]'));
 
     let popover = within(
       document.querySelector('.mt-floating-ui__content[data-show="true"]') as HTMLElement,
@@ -231,7 +229,7 @@ export const VisualTestOpenColumnSettingsMenu: MtDataTableStory = {
       document.querySelector('.mt-floating-ui__content[data-show="true"]') as HTMLElement,
     );
 
-    await waitUntilRendered(() => document.querySelector(".mt-popover-item-result__group-label"));
+    await waitUntil(() => document.querySelector(".mt-popover-item-result__group-label"));
 
     // check if correct items are visible
     await expect(popover.getByText("Shown in table")).toBeInTheDocument();
@@ -255,10 +253,10 @@ export const VisualTestColumnDragBar: MtDataTableStory = {
   name: "Show the column drag bar on hover",
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await waitUntilRendered(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
 
-    await waitUntilRendered(() => document.querySelector('.mt-button[aria-label="reload-data"]'));
-    await waitUntilRendered(() => document.querySelector(".mt-data-table__table-head-dragzone"));
+    await waitUntil(() => document.querySelector('.mt-button[aria-label="reload-data"]'));
+    await waitUntil(() => document.querySelector(".mt-data-table__table-head-dragzone"));
 
     const manufacturerColumnDragBar = await canvas.getByTestId(
       "column-dragzone__manufacturer.name",
@@ -283,10 +281,10 @@ export const VisualTestColumnDragDropOrdering: MtDataTableStory = {
   name: "Order the columns by drag and drop",
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await waitUntilRendered(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
 
-    await waitUntilRendered(() => document.querySelector('.mt-button[aria-label="reload-data"]'));
-    await waitUntilRendered(() => document.querySelector(".mt-data-table__table-head-dragzone"));
+    await waitUntil(() => document.querySelector('.mt-button[aria-label="reload-data"]'));
+    await waitUntil(() => document.querySelector(".mt-data-table__table-head-dragzone"));
 
     const manufacturerColumnDragzone = await canvas.getByTestId(
       "column-dragzone__manufacturer.name",
@@ -315,15 +313,15 @@ export const VisualTestColumnSettingsPopover: MtDataTableStory = {
   name: "Show the column settings on click",
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await waitUntilRendered(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
 
-    await waitUntilRendered(() => document.querySelector('.mt-button[aria-label="reload-data"]'));
-    await waitUntilRendered(() => document.querySelector(".mt-data-table__table-head-dragzone"));
+    await waitUntil(() => document.querySelector('.mt-button[aria-label="reload-data"]'));
+    await waitUntil(() => document.querySelector(".mt-data-table__table-head-dragzone"));
 
     const nameColumnSettingsTrigger = await canvas.getByTestId("column-settings-trigger__name");
     await userEvent.click(nameColumnSettingsTrigger);
 
-    await waitUntilRendered(() =>
+    await waitUntil(() =>
       document.querySelector('.mt-data-table__table-head-column-settings[data-show="true"]'),
     );
 
@@ -342,15 +340,15 @@ export const VisualTestColumnSettingsPopoverWithoutSort: MtDataTableStory = {
   name: "Show the column settings without sort on click",
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await waitUntilRendered(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
 
-    await waitUntilRendered(() => document.querySelector('.mt-button[aria-label="reload-data"]'));
-    await waitUntilRendered(() => document.querySelector(".mt-data-table__table-head-dragzone"));
+    await waitUntil(() => document.querySelector('.mt-button[aria-label="reload-data"]'));
+    await waitUntil(() => document.querySelector(".mt-data-table__table-head-dragzone"));
 
     const activeColumnSettingsTrigger = await canvas.getByTestId("column-settings-trigger__active");
     await userEvent.click(activeColumnSettingsTrigger);
 
-    await waitUntilRendered(() =>
+    await waitUntil(() =>
       document.querySelector('.mt-data-table__table-head-column-settings[data-show="true"]'),
     );
 
@@ -367,15 +365,15 @@ export const VisualTestDataSortingInColumnSettings: MtDataTableStory = {
   name: "Sort the data by clicking on the column settings",
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await waitUntilRendered(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
 
-    await waitUntilRendered(() => document.querySelector('.mt-button[aria-label="reload-data"]'));
-    await waitUntilRendered(() => document.querySelector(".mt-data-table__table-head-dragzone"));
+    await waitUntil(() => document.querySelector('.mt-button[aria-label="reload-data"]'));
+    await waitUntil(() => document.querySelector(".mt-data-table__table-head-dragzone"));
 
     const nameColumnSettingsTrigger = await canvas.getByTestId("column-settings-trigger__name");
     await userEvent.click(nameColumnSettingsTrigger);
 
-    await waitUntilRendered(() =>
+    await waitUntil(() =>
       document.querySelector('.mt-data-table__table-head-column-settings[data-show="true"]'),
     );
 
@@ -391,7 +389,7 @@ export const VisualTestDataSortingInColumnSettings: MtDataTableStory = {
     const sortDescendingButton = await columnSettingsPopover.getByText("Sort descending");
     await userEvent.click(sortDescendingButton);
 
-    await waitUntilRendered(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
 
     const rowContentName = await canvas.getAllByText("Unbranded Steel Bike");
     await expect(rowContentName.length).toBeGreaterThan(0);
@@ -405,7 +403,7 @@ export const VisualTestRenderSkeleton: MtDataTableStory = {
     isLoading: true,
   },
   play: async () => {
-    await waitUntilRendered(() => document.querySelector(".mt-skeleton-bar"));
+    await waitUntil(() => document.querySelector(".mt-skeleton-bar"));
   },
 };
 
@@ -413,17 +411,17 @@ export const VisualTestAddColumnIndicator: MtDataTableStory = {
   name: "Render the add column indicator",
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await waitUntilRendered(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
 
-    await waitUntilRendered(() => document.querySelector('.mt-button[aria-label="reload-data"]'));
-    await waitUntilRendered(() => document.querySelector(".mt-data-table__table-head-dragzone"));
+    await waitUntil(() => document.querySelector('.mt-button[aria-label="reload-data"]'));
+    await waitUntil(() => document.querySelector(".mt-data-table__table-head-dragzone"));
 
     const tableHeadResizableAfter = await canvas.getByTestId(
       "mt-data-table__table-head-resizable-before__manufacturer.name",
     );
     await userEvent.hover(tableHeadResizableAfter);
 
-    await waitUntilRendered(() =>
+    await waitUntil(() =>
       document.querySelector(
         ".mt-floating-ui__content.mt-data-table__table-head-add-column-indicator",
       ),
@@ -435,17 +433,17 @@ export const VisualTestAddColumnIndicatorPopover: MtDataTableStory = {
   name: "Render the add column indicator popover",
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await waitUntilRendered(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
 
-    await waitUntilRendered(() => document.querySelector('.mt-button[aria-label="reload-data"]'));
-    await waitUntilRendered(() => document.querySelector(".mt-data-table__table-head-dragzone"));
+    await waitUntil(() => document.querySelector('.mt-button[aria-label="reload-data"]'));
+    await waitUntil(() => document.querySelector(".mt-data-table__table-head-dragzone"));
 
     const tableHeadResizableAfter = await canvas.getByTestId(
       "mt-data-table__table-head-resizable-before__manufacturer.name",
     );
     await userEvent.hover(tableHeadResizableAfter);
 
-    await waitUntilRendered(() =>
+    await waitUntil(() =>
       document.querySelector(
         ".mt-floating-ui__content.mt-data-table__table-head-add-column-indicator",
       ),
@@ -457,24 +455,24 @@ export const VisualTestAddColumnIndicatorPopover: MtDataTableStory = {
     const addColumnIndicatorIcon = await popover.getByTestId("add-column-indicator-icon__name");
 
     await userEvent.click(addColumnIndicatorIcon);
-    await waitUntilRendered(() => document.querySelector(".mt-popover-item-result__option"));
+    await waitUntil(() => document.querySelector(".mt-popover-item-result__option"));
   },
 };
 export const VisualTestAddNewColumn: MtDataTableStory = {
   name: "Add new column with add column indicator popover",
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await waitUntilRendered(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
 
-    await waitUntilRendered(() => document.querySelector('.mt-button[aria-label="reload-data"]'));
-    await waitUntilRendered(() => document.querySelector(".mt-data-table__table-head-dragzone"));
+    await waitUntil(() => document.querySelector('.mt-button[aria-label="reload-data"]'));
+    await waitUntil(() => document.querySelector(".mt-data-table__table-head-dragzone"));
 
     const tableHeadResizableAfter = await canvas.getByTestId(
       "mt-data-table__table-head-resizable-before__manufacturer.name",
     );
     await userEvent.hover(tableHeadResizableAfter);
 
-    await waitUntilRendered(() =>
+    await waitUntil(() =>
       document.querySelector(
         ".mt-floating-ui__content.mt-data-table__table-head-add-column-indicator",
       ),
@@ -486,7 +484,7 @@ export const VisualTestAddNewColumn: MtDataTableStory = {
     const addColumnIndicatorIcon = await popover.getByTestId("add-column-indicator-icon__name");
 
     await userEvent.click(addColumnIndicatorIcon);
-    await waitUntilRendered(() => document.querySelector(".mt-popover-item-result__option"));
+    await waitUntil(() => document.querySelector(".mt-popover-item-result__option"));
 
     popover = within(document.querySelector(".mt-floating-ui__content.mt-popover") as HTMLElement);
     const stockOption = await popover.getByText("Stock");
@@ -495,7 +493,7 @@ export const VisualTestAddNewColumn: MtDataTableStory = {
 
     const columnSettingsTriggerStock = await canvas.getByTestId("column-settings-trigger__stock");
 
-    await waitUntilRendered(
+    await waitUntil(
       () =>
         document.querySelectorAll(
           ".mt-floating-ui__content.mt-data-table__table-head-add-column-indicator",
@@ -512,7 +510,7 @@ export const VisualTestHideOutlines: MtDataTableStory = {
   },
   async play({ canvasElement }) {
     const canvas = within(canvasElement);
-    await waitUntilRendered(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
 
     await expect(canvas.getByText("Awesome Concrete Chair")).toBeInTheDocument();
   },
@@ -525,7 +523,7 @@ export const VisualTestHideStripes: MtDataTableStory = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await waitUntilRendered(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
 
     await expect(canvas.getByText("Awesome Concrete Chair")).toBeInTheDocument();
   },
@@ -539,7 +537,7 @@ export const VisualTestBlankTable: MtDataTableStory = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await waitUntilRendered(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
 
     await expect(canvas.getByText("Awesome Concrete Chair")).toBeInTheDocument();
   },
@@ -552,7 +550,7 @@ export const VisualTestEnableRowNumbering: MtDataTableStory = {
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await waitUntilRendered(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
 
     await expect(canvas.getByText("Awesome Concrete Chair")).toBeInTheDocument();
   },
@@ -566,7 +564,7 @@ export const EmitOpenDetailsEventOnClickingEdit: MtDataTableStory = {
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
 
-    await waitUntilRendered(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
 
     const editLink = canvas.getAllByText("Edit")[0];
 
@@ -607,7 +605,7 @@ export const EmitItemDeleteEventOnClickingDelete: MtDataTableStory = {
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
 
-    await waitUntilRendered(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
 
     const contextButton = canvas.getAllByLabelText("Context menu")[0];
 

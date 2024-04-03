@@ -1,6 +1,6 @@
 import { within, userEvent } from "@storybook/test";
 import { expect } from "@storybook/test";
-import { waitUntilRendered } from "../../../_internal/test-helper";
+import { waitUntil } from "../../../_internal/test-helper";
 
 import meta, { type MtTabsMeta, type MtTabsStory } from "./mt-tabs.stories";
 
@@ -167,8 +167,8 @@ export const VisualTestRenderContextTabWithActiveItem: MtTabsStory = {
 
     // wait until tab bar is loaded and context button gets rendered
 
-    await waitUntilRendered(() => document.body.textContent?.includes("Context tab test"));
-    await waitUntilRendered(() => document.querySelector(".mt-context-button__button"));
+    await waitUntil(() => document.body.textContent?.includes("Context tab test"));
+    await waitUntil(() => document.querySelector(".mt-context-button__button"));
 
     const button = canvas.getByRole("button");
 
@@ -186,9 +186,7 @@ export const VisualTestRenderContextTabWithActiveItem: MtTabsStory = {
 
     await userEvent.click(lastItem);
 
-    await waitUntilRendered(
-      () => document.getElementsByClassName("mt-popover__content").length === 0,
-    );
+    await waitUntil(() => document.getElementsByClassName("mt-popover__content").length === 0);
 
     expect(document.getElementsByClassName("mt-popover__content").length).toEqual(0);
   },
@@ -252,8 +250,8 @@ export const VisualTestRenderTabsWithContextMenuBadge: MtTabsStory = {
 
     // wait until tab bar is loaded and context button gets rendered
 
-    await waitUntilRendered(() => document.body.textContent?.includes("Context tab test"));
-    await waitUntilRendered(() => document.querySelector("button"));
+    await waitUntil(() => document.body.textContent?.includes("Context tab test"));
+    await waitUntil(() => document.querySelector("button"));
 
     const button = canvas.getByRole("button");
 

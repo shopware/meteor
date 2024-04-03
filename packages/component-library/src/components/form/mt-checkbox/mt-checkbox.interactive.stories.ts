@@ -1,6 +1,6 @@
 import { within, userEvent } from "@storybook/test";
 import { expect } from "@storybook/test";
-import { waitUntilRendered } from "../../../_internal/test-helper";
+import { waitUntil } from "../../../_internal/test-helper";
 
 import meta, { type MtCheckboxMeta, type MtCheckboxStory } from "./mt-checkbox.stories";
 
@@ -99,7 +99,7 @@ export const VisualTestInherited: MtCheckboxStory = {
 
     await userEvent.click(canvas.getByTestId("mt-inheritance-switch-icon"));
 
-    await waitUntilRendered(() => document.querySelector(".mt-tooltip"));
+    await waitUntil(() => document.querySelector(".mt-tooltip"));
 
     await expect(args.inheritanceRemove).toHaveBeenCalledWith(undefined);
   },
@@ -152,7 +152,7 @@ export const VisualTestHelpText: MtCheckboxStory = {
 
     await userEvent.click(canvas.getByTestId("mt-help-text__icon"));
 
-    await waitUntilRendered(() => document.querySelector(".mt-tooltip"));
+    await waitUntil(() => document.querySelector(".mt-tooltip"));
   },
 };
 

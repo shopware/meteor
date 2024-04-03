@@ -1,4 +1,4 @@
-import { waitUntilRendered } from "../../../_internal/test-helper";
+import { waitUntil } from "../../../_internal/test-helper";
 import { within, userEvent } from "@storybook/test";
 import { expect } from "@storybook/test";
 
@@ -18,7 +18,7 @@ export const VisualTestRenderPopover: MtPopoverStory = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    await waitUntilRendered(() => document.body.textContent?.includes("Toggle popover"));
+    await waitUntil(() => document.body.textContent?.includes("Toggle popover"));
 
     const popoverToggle = canvas.getByText("Toggle popover");
     await userEvent.click(popoverToggle);
@@ -33,7 +33,7 @@ export const VisualTestRenderChildView: MtPopoverStory = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    await waitUntilRendered(() => document.body.textContent?.includes("Toggle popover"));
+    await waitUntil(() => document.body.textContent?.includes("Toggle popover"));
 
     const popoverToggle = canvas.getByText("Toggle popover");
     await userEvent.click(popoverToggle);
@@ -55,7 +55,7 @@ export const VisualTestRenderWithoutFloat: MtPopoverStory = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    await waitUntilRendered(() => document.body.textContent?.includes("Popover example"));
+    await waitUntil(() => document.body.textContent?.includes("Popover example"));
 
     expect(canvas.getByText("Popover example")).toBeInTheDocument();
   },

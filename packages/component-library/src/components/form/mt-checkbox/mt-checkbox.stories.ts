@@ -6,7 +6,7 @@ import { fn } from "@storybook/test";
 
 export type MtCheckboxMeta = SlottedMeta<
   typeof MtCheckbox,
-  "default" | "change" | "isInherited" | "inheritanceRemove"
+  "default" | "change" | "isInherited" | "inheritanceRemove" | "checked"
 >;
 
 export default {

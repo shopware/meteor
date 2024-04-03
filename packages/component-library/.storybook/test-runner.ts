@@ -11,8 +11,11 @@ module.exports = {
   async preRender(page, context) {
     await page.setViewportSize({ width: 850, height: 650 });
 
-    // use bigger viewport for data-table
-    if (context.id.startsWith("interaction-tests-table-and-list")) {
+    // use bigger viewport for data-table and toasts
+    if (
+      context.id.startsWith("interaction-tests-table-and-list") ||
+      context.id.startsWith("interaction-tests-feedback-indicator-mt-toast")
+    ) {
       await page.setViewportSize({ width: 1600, height: 900 });
     }
   },

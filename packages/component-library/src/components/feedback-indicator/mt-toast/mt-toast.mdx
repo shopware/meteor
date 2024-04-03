@@ -1,0 +1,48 @@
+import { Canvas, Meta, Markdown } from "@storybook/blocks";
+
+import * as ToastStories from "./mt-toast.stories";
+
+<Meta of={ToastStories} />
+
+# Toasts
+
+A toast is a form of notifaction, directly bound to user actions, to provide additional feedback.
+Unsimilar to notifications, toasts are not persistent, they are context specific.
+
+In `meteor` toasts are placed into one of two categories automatically. These categories are `quick toasts` and `regular toasts`.
+
+## Quick toasts
+
+A `quick toast` has a show time of 3 seconds and is displayed in the `bottom center` position.
+
+Quick toasts are either of type `informal` or `positive`. In addition to that, quick toasts can neither be manually dismissed, nor contain an action.
+
+## Regular toasts
+
+A regular toast has a show time of 10 seconds or until it's manually dismissed.
+
+A regular toast can be of any type: `positive`, `informal` and `critical`. It follows the exact oposites of a quick toast.
+
+A regular toast either has a `action`, is manually dismissable or of type `critical`.
+
+## Overview
+
+These rules generate the following toast matrix.
+
+<Markdown>
+  {`
+| Type     | Dismissable | Action | Toast category | Auto close | Show time |
+|----------|-------------|--------|----------------|------------|-----------|
+| critical | no          | none   | regular        | yes        | 10s       |
+| critical | yes         | none   | regular        | yes        | 10s       |
+| critical | yes         | yes    | regular        | no         | none      |
+| positive | no          | no     | quick          | yes        | 3s        |
+| positive | yes         | no     | regular        | yes        | 10s       |
+| positive | yes         | yes    | regular        | yes        | 10s       |
+| informal | no          | no     | quick          | yes        | 3s        |
+| informal | yes         | no     | regular        | yes        | 10s       |
+| informal | yes         | yes    | regular        | yes        | 10s       |
+`}
+</Markdown>
+
+<Canvas of={ToastStories.Default} />

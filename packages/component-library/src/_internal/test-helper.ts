@@ -1,11 +1,11 @@
-export function waitUntilRendered(check: () => any) {
+export function waitUntil(check: () => any, timeOut = 2500) {
   return new Promise((resolve, reject) => {
     const waitUntilElementLoad = (retryTime = 0) => {
       // do not wait longer than 2.5 seconds
       if (retryTime > 100) {
         reject(
           new Error(
-            `"waitUntilRendered": condition ${check.toString().replace(/(\r\n|\n|\r)/gm, "")} not met after 2.5 seconds`,
+            `"waitUntil": condition ${check.toString().replace(/(\r\n|\n|\r)/gm, "")} not met after ${timeOut / 1000} seconds`,
           ),
         );
         return;
@@ -15,7 +15,7 @@ export function waitUntilRendered(check: () => any) {
 
       // retry selection when not found otherwise resolve it
       if (!result) {
-        window.setTimeout(() => waitUntilElementLoad(retryTime + 1), 25);
+        window.setTimeout(() => waitUntilElementLoad(retryTime + 1), timeOut / 100);
       } else {
         resolve(true);
       }

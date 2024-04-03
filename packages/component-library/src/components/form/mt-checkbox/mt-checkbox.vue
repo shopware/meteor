@@ -220,6 +220,10 @@ export default defineComponent({
   methods: {
     onChange(changeEvent: Event) {
       // @ts-expect-error - target is defined in the event
+      this.$emit("update:checked", changeEvent.target.checked);
+
+      // @ts-expect-error - target is defined in the event
+      // @deprecated tag:4.0 - Will be removed. Use `update:checked` instead.
       this.$emit("change", changeEvent.target.checked);
     },
   },
