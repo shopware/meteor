@@ -4,6 +4,7 @@ import MtLoader from "./components/feedback-indicator/mt-loader/mt-loader.vue";
 import MtProgressBar from "./components/feedback-indicator/mt-progress-bar/mt-progress-bar.vue";
 import MtButton from "./components/form/mt-button/mt-button.vue";
 import MtCheckbox from "./components/form/mt-checkbox/mt-checkbox.vue";
+import MtColorBadge from "./components/feedback-indicator/mt-color-badge/mt-color-badge.vue";
 import MtColorpicker from "./components/form/mt-colorpicker/mt-colorpicker.vue";
 import MtEmailField from "./components/form/mt-email-field/mt-email-field.vue";
 import MtExternalLink from "./components/form/mt-external-link/mt-external-link.vue";
@@ -32,6 +33,7 @@ export {
   MtProgressBar,
   MtButton,
   MtCheckbox,
+  MtColorBadge,
   MtColorpicker,
   MtDatepicker,
   MtEmailField,
