@@ -239,7 +239,7 @@ export default defineComponent({
 
 .mt-select-selection-list {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   list-style: none;
   width: calc(100% - 30px);
 
