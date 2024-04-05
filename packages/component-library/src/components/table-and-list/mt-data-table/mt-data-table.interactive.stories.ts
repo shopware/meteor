@@ -1,8 +1,8 @@
 import meta, { type MtDataTableMeta, type MtDataTableStory } from "./mt-data-table.stories";
 import MtDataTableFixtures from "./mt-data-table.fixtures.json";
 import { waitUntilRendered } from "../../../_internal/test-helper";
-import { within, userEvent, waitFor, fireEvent } from "@storybook/testing-library";
-import { expect } from "@storybook/jest";
+import { within, userEvent, waitFor, fireEvent } from "@storybook/test";
+import { expect } from "@storybook/test";
 
 export default {
   ...meta,

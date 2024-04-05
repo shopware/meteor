@@ -43,6 +43,11 @@ export default defineComponent({
       required: false,
       default: false,
     },
+    size: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
   },
 
   data() {
@@ -57,13 +62,37 @@ export default defineComponent({
     },
 
     classes(): string[] {
-      return [`icon--${this.name}`];
+      const classes = [`icon--${this.name}`];
+
+      if (this.size) {
+        classes.push(`mt-icon--custom-size`);
+      }
+
+      return classes;
     },
 
     styles(): Record<string, string> {
-      return {
+      const styles: {
+        color: string;
+        width?: string;
+        height?: string;
+      } = {
         color: this.color,
       };
+
+      if (this.size) {
+        let size = this.size;
+
+        // @ts-expect-error - This is a valid check
+        if (!Number.isNaN(parseFloat(size)) && !Number.isNaN(size - 0)) {
+          size = `${size}px`;
+        }
+
+        styles.width = size;
+        styles.height = size;
+      }
+
+      return styles;
     },
   },
 
@@ -105,6 +134,11 @@ export default defineComponent({
   display: inline-block;
   vertical-align: middle;
   line-height: 0;
+
+  &--custom-size > svg {
+    width: 100% !important;
+    height: 100% !important;
+  }
 
   > svg {
     fill: currentColor;

@@ -1,5 +1,5 @@
-import { within, userEvent, fireEvent } from "@storybook/testing-library";
-import { expect } from "@storybook/jest";
+import { within, userEvent, fireEvent } from "@storybook/test";
+import { expect } from "@storybook/test";
 
 import meta, { type MtColorpickerMeta, type MtColorpickerStory } from "./mt-colorpicker.stories";
 

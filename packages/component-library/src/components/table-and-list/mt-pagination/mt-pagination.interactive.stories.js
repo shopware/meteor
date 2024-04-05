@@ -1,4 +1,4 @@
-import { expect } from "@storybook/jest";
+import { expect } from "@storybook/test";
 import MtPagination from "./mt-pagination.vue";
 import defaultPaginationStory, { Default } from "./mt-pagination.stories";
 import flushPromises from "flush-promises";

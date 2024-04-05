@@ -1,5 +1,5 @@
-import { within } from "@storybook/testing-library";
-import { expect } from "@storybook/jest";
+import { within } from "@storybook/test";
+import { expect } from "@storybook/test";
 import meta, { type MtProgressBarMeta, type MtProgressBarStory } from "./mt-progress-bar.stories";
 
 export default {
