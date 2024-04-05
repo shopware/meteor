@@ -22,6 +22,12 @@ export type menuItemAdd = {
   displaySearchBar?: boolean,
 
   /**
+   * Toggles the sw-page smart bar on/off.
+   * Defaults to true.
+   */
+  displaySmartBar?: boolean,
+
+  /**
    * Determines under which main menu entry your item is displayed.
    * Defaults to `sw-extension`.
    */
