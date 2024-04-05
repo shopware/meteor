@@ -133,16 +133,13 @@ export default defineComponent({
     },
   },
 
-  data(): {
-    refreshKey: boolean;
-    activeItemName: string;
-    showMoreItems: boolean;
-  } {
+  data() {
     return {
       // refreshKey is for recalculating specific computed properties
       refreshKey: true,
       activeItemName: "",
       showMoreItems: false,
+      passedFirstRender: false,
     };
   },
 
@@ -234,6 +231,7 @@ export default defineComponent({
 
       return {
         "mt-tabs__slider--error": this.activeItem?.hasError ?? false,
+        "mt-tabs__slider--animated": this.passedFirstRender,
       };
     },
 
@@ -265,6 +263,8 @@ export default defineComponent({
 
     this.$nextTick(() => {
       this.handleResize();
+
+      this.passedFirstRender = true;
     });
 
     // @ts-expect-error $device helper is not registered in TS yet
@@ -408,7 +408,6 @@ export default defineComponent({
 
   .mt-tabs__slider {
     transform-origin: top left;
-    transition: 0.2s all ease-in-out;
     position: absolute;
     bottom: 0;
     left: 0;
@@ -418,6 +417,10 @@ export default defineComponent({
 
     &--error {
       background-color: var(--color-border-critical-default);
+    }
+
+    &--animated {
+      transition: 0.2s all ease-in-out;
     }
   }
 
