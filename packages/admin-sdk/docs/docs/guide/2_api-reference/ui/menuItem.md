@@ -1,15 +1,16 @@
 # Menu Item
 
 ### Add menu item
-Add a new menu item to the Shopware admin menu. The content of the menu item module is determined by your `locationId`. 
+Add a new menu item to the Shopware admin menu. The content of the menu item module is determined by your `locationId`.
 A specific view or a set of actions can be triggered based on the `locationId`.
 
-#### Usage:  
+#### Usage:
 ```ts
 ui.menu.addMenuItem({
     label: 'Test item',
     locationId: 'your-location-id',
     displaySearchBar: true,
+    displaySmartBar: true,
     parent: 'sw-catalogue',
 })
 ```
@@ -20,6 +21,7 @@ ui.menu.addMenuItem({
 | `label`              | true     |                | The label of the tab bar item                                 |
 | `locationId`         | true     |                | The id for the content of the menu item module                |
 | `displaySearchBar`   | false    | true           | Toggles the sw-page search bar on/off                         |
+| `displaySmartBar`    | false    | true           | Toggles the sw-page smart bar on/off                          |
 | `parent`             | false    | 'sw-extension' | Determines under which main menu entry your item is displayed |
 | `position`           | false    | 110            | Determines the position of your menu item                     |
 
@@ -34,6 +36,7 @@ if (location.is(sw.location.MAIN_HIDDEN)) {
     ui.menu.addMenuItem({
         label: 'Test item',
         displaySearchBar: true,
+        displaySmartBar: true,
         locationId: 'your-location-id',
         parent: 'sw-catalogue',
     });
