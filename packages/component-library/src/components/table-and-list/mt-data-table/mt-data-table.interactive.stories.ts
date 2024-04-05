@@ -557,3 +557,93 @@ export const VisualTestEnableRowNumbering: MtDataTableStory = {
     await expect(canvas.getByText("Awesome Concrete Chair")).toBeInTheDocument();
   },
 };
+
+export const EmitOpenDetailsEventOnClickingEdit: MtDataTableStory = {
+  name: "Emit open details event on clicking edit",
+  args: {
+    disableEdit: false,
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    await waitUntilRendered(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+
+    const editLink = canvas.getAllByText("Edit")[0];
+
+    await userEvent.click(editLink);
+
+    await expect(args.openDetails).toHaveBeenCalledWith({
+      id: "4f683593-13f1-4767-91c6-8e154d68a22d",
+      active: false,
+      name: "Awesome Concrete Chair",
+      manufacturer: {
+        name: "Emard, Schmidt and Bailey",
+        translated: {
+          name: "Emard, Schmidt and Bailey",
+        },
+      },
+      price: [
+        {
+          currencyId: "b7d2554b0ce847cd82f3ac9bd1c0dfca",
+          gross: "835.00",
+          net: "681.00",
+          linked: false,
+        },
+      ],
+      stock: 9458,
+      available: 12822,
+      translated: {
+        name: "Awesome Concrete Chair",
+      },
+    });
+  },
+};
+
+export const EmitItemDeleteEventOnClickingDelete: MtDataTableStory = {
+  name: "Emit item delete event on clicking delete",
+  args: {
+    disableDelete: false,
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    await waitUntilRendered(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+
+    const contextButton = canvas.getAllByLabelText("Context menu")[0];
+
+    await userEvent.click(contextButton);
+
+    const popover = within(
+      document.querySelector('.mt-floating-ui__content[data-show="true"]') as HTMLElement,
+    );
+
+    const deleteOption = popover.getByText("Delete");
+
+    await userEvent.click(deleteOption);
+
+    await expect(args.itemDelete).toHaveBeenCalledWith({
+      id: "4f683593-13f1-4767-91c6-8e154d68a22d",
+      active: false,
+      name: "Awesome Concrete Chair",
+      manufacturer: {
+        name: "Emard, Schmidt and Bailey",
+        translated: {
+          name: "Emard, Schmidt and Bailey",
+        },
+      },
+      price: [
+        {
+          currencyId: "b7d2554b0ce847cd82f3ac9bd1c0dfca",
+          gross: "835.00",
+          net: "681.00",
+          linked: false,
+        },
+      ],
+      stock: 9458,
+      available: 12822,
+      translated: {
+        name: "Awesome Concrete Chair",
+      },
+    });
+  },
+};

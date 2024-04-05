@@ -21,6 +21,7 @@ export type MtDataTableMeta = SlottedMeta<
   | "sortChange"
   | "open-details"
   | "openDetails"
+  | "itemDelete"
   | "selection-change"
   | "selectionChange"
   | "multiple-selection-change"
@@ -108,6 +109,17 @@ export default {
     },
     openDetails: {
       action: "open-details",
+      table: {
+        category: "Events",
+      },
+    },
+    "item-delete": {
+      table: {
+        disable: true,
+      },
+    },
+    itemDelete: {
+      action: "item-delete",
       table: {
         category: "Events",
       },
@@ -637,7 +649,8 @@ export default {
             :selectedRows="selectedRowsValue"
             @selection-change="selectionChangeHandler"
             @multiple-selection-change="multipleSelectionChangeHandler"
-            @open-details="openDetails"
+            @open-details="args.openDetails"
+            @item-delete="args.itemDelete"
             @bulk-edit="bulkEdit"
             @bulk-delete="bulkDelete"
             @change-show-outlines="changeShowOutlinesHandler"
