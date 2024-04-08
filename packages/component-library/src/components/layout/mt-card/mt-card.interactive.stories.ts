@@ -15,9 +15,41 @@ export const VisualTestMinimalPage: MtCardStory = {
   },
 };
 
+export const VisualTestMinimalPageWithLinkedInheritance: MtCardStory = {
+  ...MinimalStory,
+  name: "Render an extended card with linked inheritance",
+  args: {
+    ...MinimalStory.args,
+    inheritance: true,
+  },
+  async play({ canvasElement, args }) {
+    const canvas = within(canvasElement);
+
+    await userEvent.click(canvas.getByRole("button", { name: "Disable inheritance" }));
+
+    expect(args.updateInheritance).toHaveBeenNthCalledWith(1, false);
+  },
+};
+
+export const VisualTestMinimalPageWithUnlinkedInheritance: MtCardStory = {
+  ...MinimalStory,
+  name: "Render an extended card with unlinked inheritance",
+  args: {
+    ...MinimalStory.args,
+    inheritance: false,
+  },
+  async play({ canvasElement, args }) {
+    const canvas = within(canvasElement);
+
+    await userEvent.click(canvas.getByRole("button", { name: "Enable inheritance" }));
+
+    expect(args.updateInheritance).toHaveBeenNthCalledWith(1, true);
+  },
+};
+
 export const VisualTestExtendedPage: MtCardStory = {
   ...ExtendedStory,
-  name: "Render a extended card",
+  name: "Render an extended card",
   args: {
     ...ExtendedStory.args,
   },
@@ -25,7 +57,7 @@ export const VisualTestExtendedPage: MtCardStory = {
 
 export const VisualTestExtendedPageWithoutToolbar: MtCardStory = {
   ...ExtendedStory,
-  name: "Render a extended card without toolbar",
+  name: "Render an extended card without toolbar",
   args: {
     ...ExtendedStory.args,
     toolbar: null,
@@ -34,7 +66,7 @@ export const VisualTestExtendedPageWithoutToolbar: MtCardStory = {
 
 export const VisualTestExtendedPageWithHero: MtCardStory = {
   ...ExtendedStory,
-  name: "Render a extended card with hero",
+  name: "Render an extended card with hero",
   args: {
     ...ExtendedStory.args,
     hero: true,
@@ -43,7 +75,7 @@ export const VisualTestExtendedPageWithHero: MtCardStory = {
 
 export const VisualTestExtendedPageWithoutHeaderRight: MtCardStory = {
   ...ExtendedStory,
-  name: "Render a extended card without headerRight",
+  name: "Render an extended card without headerRight",
   args: {
     ...ExtendedStory.args,
     headerRight: null,
@@ -52,7 +84,7 @@ export const VisualTestExtendedPageWithoutHeaderRight: MtCardStory = {
 
 export const VisualTestExtendedPageWithoutTabs: MtCardStory = {
   ...ExtendedStory,
-  name: "Render a extended card without Tabs",
+  name: "Render an extended card without Tabs",
   args: {
     ...ExtendedStory.args,
     tabs: null,
@@ -61,7 +93,7 @@ export const VisualTestExtendedPageWithoutTabs: MtCardStory = {
 
 export const VisualTestExtendedPageWithoutAvatar: MtCardStory = {
   ...ExtendedStory,
-  name: "Render a extended card without Avatar",
+  name: "Render an extended card without Avatar",
   args: {
     ...ExtendedStory.args,
     avatar: null,
@@ -70,7 +102,7 @@ export const VisualTestExtendedPageWithoutAvatar: MtCardStory = {
 
 export const VisualTestExtendedPageWithoutFooter: MtCardStory = {
   ...ExtendedStory,
-  name: "Render a extended card without Footer",
+  name: "Render an extended card without Footer",
   args: {
     ...ExtendedStory.args,
     footer: null,
@@ -79,7 +111,7 @@ export const VisualTestExtendedPageWithoutFooter: MtCardStory = {
 
 export const VisualTestExtendedPageWithoutContextActions: MtCardStory = {
   ...ExtendedStory,
-  name: "Render a extended card without Context Actions",
+  name: "Render an extended card without Context Actions",
   args: {
     ...ExtendedStory.args,
     "context-actions": null,
@@ -88,7 +120,7 @@ export const VisualTestExtendedPageWithoutContextActions: MtCardStory = {
 
 export const VisualTestExtendedPageWithOpenedContextActions: MtCardStory = {
   ...ExtendedStory,
-  name: "Render a extended card with opened Context Actions",
+  name: "Render an extended card with opened Context Actions",
   args: {
     ...ExtendedStory.args,
   },
