@@ -1770,22 +1770,6 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     width: 100%;
   }
 
-  /**
-  * Adjust card styling so that it looks good with Inter font and the grid
-  */
-  .mt-card__title {
-    color: $color-card-headline;
-    font-size: $font-size-s;
-    line-height: $line-height-md;
-    font-weight: $font-weight-medium;
-  }
-
-  .mt-card__subtitle {
-    font-size: $font-size-xxs;
-    line-height: $line-height-sm;
-    font-weight: $font-weight-regular;
-  }
-
   .mt-card__content {
     height: auto;
     padding: 0;

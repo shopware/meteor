@@ -2,14 +2,27 @@
   <!-- @slot This slot is @private and should not be used -->
   <slot name="before-card" />
 
-  <div class="mt-card" :class="cardClasses()" v-bind="$attrs">
+  <div class="mt-card" :class="cardClasses" v-bind="$attrs">
     <div v-if="showHeader" class="mt-card__header">
       <div class="mt-card__avatar">
         <!-- @slot Slot for an avatar or logo -->
         <slot name="avatar" />
       </div>
 
-      <div class="mt-card__titles">
+      <div :class="titleWrapperClasses">
+        <button
+          v-if="inheritance !== undefined"
+          class="mt-card__inheritance-toggle"
+          :aria-label="
+            !!inheritance
+              ? $t('mt-card.inheritanceToggle.disableInheritance')
+              : $t('mt-card.inheritanceToggle.enableInheritance')
+          "
+          @click="$emit('update:inheritance', !inheritance)"
+        >
+          <mt-icon :name="inheritanceToggleIcon" size="20" />
+        </button>
+
         <!-- @slot Alternative slot to the title property -->
         <slot name="title">
           <div v-if="title" class="mt-card__title">
@@ -69,27 +82,39 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent, useSlots, type PropType } from "vue";
 import MtContextButton from "../../context-menu/mt-context-button/mt-context-button.vue";
 import MtLoader from "../../feedback-indicator/mt-loader/mt-loader.vue";
+import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 
 export default defineComponent({
+  name: "MtCard",
+
   components: {
-    "mt-context-button": MtContextButton,
-    "mt-loader": MtLoader,
+    MtContextButton,
+    MtLoader,
+    MtIcon,
   },
 
   props: {
+    /**
+     * The title of the card
+     */
     title: {
       type: String,
       required: false,
       default: "",
     },
+
+    /**
+     * The subtitle of the card
+     */
     subtitle: {
       type: String,
       required: false,
       default: "",
     },
+
     /**
      * Renders the card as a hero card without styling
      */
@@ -98,6 +123,7 @@ export default defineComponent({
       required: false,
       default: false,
     },
+
     /**
      * Show a loading spinner overlay over the whole card.
      */
@@ -106,6 +132,7 @@ export default defineComponent({
       required: false,
       default: false,
     },
+
     /**
      * Render the card in a large size
      */
@@ -114,29 +141,71 @@ export default defineComponent({
       required: false,
       default: false,
     },
-  },
 
-  computed: {
-    showHeader(): boolean {
-      return (
-        !!this.title ||
-        !!this.$slots.title ||
-        !!this.subtitle ||
-        !!this.$slots.subtitle ||
-        !!this.$slots.avatar
-      );
+    /**
+     * Render a inheritance toggle
+     */
+    inheritance: {
+      type: Boolean as PropType<boolean | undefined>,
+      required: false,
+      default: undefined,
     },
   },
 
-  methods: {
-    cardClasses() {
-      return {
-        "mt-card--grid": !!this.$slots.grid,
-        "mt-card--hero": !!this.hero,
-        "mt-card--large": this.large,
-        "mt-card--has-footer": !!this.$slots.footer,
-      };
+  emits: ["update:inheritance"],
+
+  i18n: {
+    messages: {
+      en: {
+        "mt-card": {
+          inheritanceToggle: {
+            disableInheritance: "Disable inheritance",
+            enableInheritance: "Enable inheritance",
+          },
+        },
+      },
+      de: {
+        "mt-card": {
+          inheritanceToggle: {
+            disableInheritance: "Vererbung deaktivieren",
+            enableInheritance: "Vererbung aktivieren",
+          },
+        },
+      },
     },
+  },
+
+  setup(props) {
+    const slots = useSlots();
+
+    const showHeader = computed(
+      () =>
+        !!props.title || !!slots.title || !!props.subtitle || !!slots.subtitle || !!slots.avatar,
+    );
+
+    const cardClasses = computed(() => ({
+      "mt-card--grid": !!slots.grid,
+      "mt-card--hero": !!props.hero,
+      "mt-card--large": props.large,
+      "mt-card--has-footer": !!slots.footer,
+      "mt-card--is-inherited": !!props.inheritance,
+    }));
+
+    const titleWrapperClasses = computed(() => ({
+      "mt-card__titles": true,
+      "mt-card__titles--has-inheritance-toggle": props.inheritance !== undefined,
+    }));
+
+    const inheritanceToggleIcon = computed(() =>
+      props.inheritance ? "regular-link-horizontal" : "regular-link-horizontal-slash",
+    );
+
+    return {
+      showHeader,
+      cardClasses,
+      titleWrapperClasses,
+      inheritanceToggleIcon,
+    };
   },
 });
 </script>
@@ -161,10 +230,23 @@ export default defineComponent({
   margin: 0 auto 40px;
   position: relative;
   background: var(--color-elevation-surface-raised);
+  border: 1px solid var(--color-border-primary-default);
+  overflow: hidden;
 
   &:not(&--hero) {
-    @include drop-shadow-default;
     border-radius: $border-radius-lg;
+  }
+
+  &.mt-card--is-inherited {
+    border-color: var(--color-border-accent-default);
+
+    .mt-card__title {
+      color: var(--color-text-accent-default);
+    }
+
+    .mt-card__inheritance-toggle {
+      color: var(--color-icon-accent-default);
+    }
   }
 
   &.mt-card--grid {
@@ -179,12 +261,6 @@ export default defineComponent({
   }
 
   &.mt-card--hero {
-    .mt-card__header,
-    .mt-card__tabs,
-    .mt-card__toolbar {
-      @include drop-shadow-default;
-    }
-
     .mt-card__content {
       background: none;
       border: none;
@@ -238,26 +314,44 @@ export default defineComponent({
 
   .mt-card__title {
     color: var(--color-text-primary-default);
-    font-size: $font-size-large;
-    font-weight: $font-weight-semi-bold;
-    line-height: 18px;
+    font-size: $font-size-s;
+    line-height: $line-height-md;
+    font-weight: $font-weight-medium;
   }
 
   .mt-card__subtitle {
     color: var(--color-text-tertiary-default);
-    font-size: $font-size-small;
-    line-height: 14px;
+    font-size: $font-size-xs;
+    line-height: $line-height-sm;
+    font-weight: $font-weight-regular;
   }
 
   .mt-card__titles {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+
+    &--has-inheritance-toggle {
+      display: grid;
+      grid-template-columns: min-content 1fr;
+      column-gap: 4px;
+    }
+
+    .mt-card__subtitle {
+      grid-column: 1 / -1;
+    }
   }
 
   .mt-card__titles-right-slot {
     color: var(--color-text-primary-default);
     margin-left: auto;
+  }
+
+  .mt-card__inheritance-toggle {
+    cursor: pointer;
+    outline-offset: 2px;
+    outline-color: var(--color-border-brand-selected);
+    color: var(--color-icon-primary-default);
   }
 
   .mt-card__toolbar {
