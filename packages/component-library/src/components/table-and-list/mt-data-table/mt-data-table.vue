@@ -2023,16 +2023,27 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     width: 67px;
     padding-right: 8px;
     border-right: 0px;
+    border-left-width: 0px;
   }
 
   .mt-data-table__table-row-number {
     min-width: 50px;
     width: 50px;
     text-align: center;
+    border-left: 0px;
+
+    + .mt-data-table__table-select-row {
+      border-left-width: 1px;
+    }
   }
 
   .mt-data-table__table-row-number-head {
     text-align: center;
+    border-left: 0px;
+
+    + .mt-data-table__table-selection-head {
+      border-left-width: 1px;
+    }
   }
 
   th[data-sticky-column],
