@@ -138,14 +138,14 @@ jobs:
       - name: Build packages
         run: npx turbo run build
 
-      - name: Run admin sdk e2e tests
+      - name: Run e2e tests
         run: pnpx turbo run test:e2e
 
       - uses: actions/upload-artifact@v2
         if: always()
         with:
           name: nuxt-app--playwright-test-results
-          path: examples/nuxt-app/tests/smoke.spec.ts-snapshots/
+          path: examples/nuxt-app/test-results/
 
       - uses: actions/upload-artifact@v2
         if: always()

@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.0.2
+
+### Patch Changes
+
+- e7d95c3: Allow toggling the sw-page smart bar
+
 ## 5.0.1
 
 ### Patch Changes

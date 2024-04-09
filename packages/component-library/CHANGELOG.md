@@ -1,5 +1,17 @@
 # Changelog
 
+## 3.3.0
+
+### Minor Changes
+
+- f0655bf: Add inheritance toggle to card component
+
+### Patch Changes
+
+- a6fe140: resize checkmark in checkbox to correct dimensions
+- 0ba5c91: Change wrong Fragment import from React to Vue
+- 856489b: Only animate tabs slider after first render
+
 ## 3.2.0
 
 ### Minor Changes

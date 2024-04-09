@@ -3,6 +3,8 @@ import MtButton from "../../form/mt-button/mt-button.vue";
 import MtContextMenuItem from "../../context-menu/mt-context-menu-item/mt-context-menu-item.vue";
 import MtTabs from "../../navigation/mt-tabs/mt-tabs.vue";
 import MtAvatar from "../../icons-media/mt-avatar/mt-avatar.vue";
+import { fn } from "@storybook/test";
+import { action } from "@storybook/addon-actions";
 import type { SlottedMeta } from "@/_internal/story-helper";
 import type { StoryObj } from "@storybook/vue3";
 
@@ -18,7 +20,8 @@ type MtCardSlots =
   | "grid"
   | "tabs"
   | "before-card"
-  | "after-card";
+  | "after-card"
+  | "updateInheritance";
 
 export type MtCardMeta = SlottedMeta<typeof MtCard, MtCardSlots>;
 export type MtCardStory = StoryObj<MtCardMeta>;
@@ -51,6 +54,18 @@ const meta: MtCardMeta = {
     avatar: {
       control: { type: null },
     },
+    inheritance: {
+      control: { type: "boolean" },
+      table: {
+        category: "props",
+      },
+    },
+    updateInheritance: {
+      action: "updateInheritance",
+      table: {
+        category: "Events",
+      },
+    },
     "before-card": {
       control: { type: null },
     },
@@ -70,7 +85,7 @@ export const MinimalStory: StoryObj<MtCardMeta> = {
       return { args };
     },
     template: `
-    <mt-card v-bind="args">
+    <mt-card v-bind="args" @update:inheritance="args.updateInheritance">
       <div v-html="args.default"></div>
     </mt-card>`,
   }),
@@ -90,6 +105,7 @@ export const MinimalStory: StoryObj<MtCardMeta> = {
     isLoading: false,
     large: false,
     avatar: null,
+    updateInheritance: fn(action("update:inhertitance")),
   },
   ...meta,
 };
@@ -102,7 +118,7 @@ export const ExtendedStory: StoryObj<MtCardMeta> = {
       return { args };
     },
     template: `
-    <mt-card v-bind="args">
+    <mt-card v-bind="args" @update:inheritance="args.updateInheritance">
         <h4 style="color: var(--color-text-primary-default);">
           Active Tab: {{ activeTab }}
         </h4>
