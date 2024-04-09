@@ -328,3 +328,55 @@ export const VisualTestEnsureSingleSelectionWithoutLoadMore: MtSelectStory = {
     expect(canvas.queryByText("+12")).toBeNull();
   },
 };
+
+export const VisualTestEnsureCorrectMultiSelectionWrapping: MtSelectStory = {
+  name: "Should wrap multi selection correctly",
+  args: {
+    enableMultiSelection: true,
+    options: [
+      {
+        id: 1,
+        label: "This is a very long option A with some text",
+        value: "a",
+      },
+      {
+        id: 2,
+        label: "This is a very long option B with some text",
+        value: "b",
+      },
+      {
+        id: 3,
+        label: "This is a very long option C with some text",
+        value: "c",
+      },
+      {
+        id: 4,
+        label: "This is a very long option D with some text",
+        value: "d",
+      },
+      {
+        id: 5,
+        label: "This is a very long option E with some text",
+        value: "e",
+      },
+      {
+        id: 6,
+        label: "This is a very long option F with some text",
+        value: "f",
+      },
+      {
+        id: 7,
+        label: "This is a very long option G with some text",
+        value: "g",
+      },
+    ],
+    modelValue: ["a", "b", "c", "d", "e", "f", "g"],
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    const loadMoreButton = canvas.getByText("+2");
+
+    await userEvent.click(loadMoreButton);
+  },
+};
