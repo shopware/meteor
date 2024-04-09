@@ -342,12 +342,20 @@
       "$value": "#2d2e32",
       "$type": "color"
     },
+    "850": {
+      "$value": "#26262b",
+      "$type": "color"
+    },
     "900": {
       "$value": "#1e1e24",
       "$type": "color"
     },
     "950": {
       "$value": "#141418",
+      "$type": "color"
+    },
+    "975": {
+      "$value": "#101013",
       "$type": "color"
     },
     "1000": {
