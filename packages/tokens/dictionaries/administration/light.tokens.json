@@ -81,6 +81,10 @@
         "overlay": {
           "$value": "{zinc.0}",
           "$type": "color"
+        },
+        "frame": {
+          "$value": "{zinc.50}",
+          "$type": "color"
         }
       }
     },
@@ -293,6 +297,12 @@
           "$type": "color"
         }
       },
+      "attention": {
+        "default": {
+          "$value": "{orange.800}",
+          "$type": "color"
+        }
+      },
       "critical": {
         "default": {
           "$value": "{red.500}",
@@ -308,12 +318,6 @@
         },
         "dark": {
           "$value": "{red.800}",
-          "$type": "color"
-        }
-      },
-      "attention": {
-        "default": {
-          "$value": "{orange.800}",
           "$type": "color"
         }
       },

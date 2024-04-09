@@ -25,11 +25,11 @@
           "$type": "color"
         },
         "hover": {
-          "$value": "{zinc.800}",
+          "$value": "{zinc.700}",
           "$type": "color"
         },
         "disabled": {
-          "$value": "{zinc.600}",
+          "$value": "{zinc.700}",
           "$type": "color"
         },
         "dark": {
@@ -59,7 +59,7 @@
     "elevation": {
       "surface": {
         "sunken": {
-          "$value": "{zinc.900}",
+          "$value": "{zinc.975}",
           "$type": "color"
         },
         "default": {
@@ -79,6 +79,10 @@
           "$type": "color"
         },
         "overlay": {
+          "$value": "{zinc.850}",
+          "$type": "color"
+        },
+        "frame": {
           "$value": "{zinc.900}",
           "$type": "color"
         }
@@ -289,7 +293,13 @@
       },
       "accent": {
         "default": {
-          "$value": "{purple.50}",
+          "$value": "{purple.400}",
+          "$type": "color"
+        }
+      },
+      "attention": {
+        "default": {
+          "$value": "{orange.50}",
           "$type": "color"
         }
       },
@@ -308,12 +318,6 @@
         },
         "dark": {
           "$value": "{red.100}",
-          "$type": "color"
-        }
-      },
-      "attention": {
-        "default": {
-          "$value": "{orange.50}",
           "$type": "color"
         }
       },
