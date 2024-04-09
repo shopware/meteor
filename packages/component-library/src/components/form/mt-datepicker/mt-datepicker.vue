@@ -570,17 +570,16 @@ export default defineComponent({
 <style lang="scss">
 @import "../../assets/scss/variables.scss";
 
-$mt-datepicker-color-border: $color-gray-300;
-$mt-datepicker-color-font: $color-darkgray-200;
-$mt-datepicker-color-disabled-font: #b3bfcc;
-$mt-datepicker-color-hover: $color-shopware-brand-500;
-$mt-datepicker-color-selected: #e6e6e6;
+$mt-datepicker-color-border: #cdced4;
+$mt-datepicker-color-font: #2d2e32;
+$mt-datepicker-color-disabled-font: #b9babf;
+$mt-datepicker-color-hover: #e2e3e9;
+$mt-datepicker-color-selected: $color-shopware-brand-900;
 $mt-datepicker-color-text-selected: $color-white;
 
 @mixin flatpickr-day-hovered {
-  color: $mt-datepicker-color-text-selected;
+  color: #2d2e32;
   background-color: $mt-datepicker-color-hover;
-  border-color: $color-shopware-brand-500;
 }
 
 .mt-field--datepicker {
@@ -619,7 +618,7 @@ $mt-datepicker-color-text-selected: $color-white;
   color: $mt-datepicker-color-font;
   box-shadow: 0 3px 6px 0 rgba(120, 138, 155, 0.3);
   border: 1px solid $mt-datepicker-color-border;
-  border-radius: 4px;
+  border-radius: $border-radius-lg;
 
   &::before,
   &::after {
@@ -662,28 +661,42 @@ $mt-datepicker-color-text-selected: $color-white;
   }
 
   .flatpickr-current-month {
-    display: flex;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-content: center;
+    gap: 40px;
+    width: 100%;
+    position: static;
+    font-size: $font-size-xs;
+    font-weight: $font-weight-semi-bold;
 
-    .numInputWrapper,
     .flatpickr-monthDropdown-months {
-      flex: 1;
+      padding: 0;
+    }
+
+    .cur-year {
+      padding: 0;
+      font-size: $font-size-xs;
+      font-weight: $font-weight-semi-bold;
     }
   }
 
   .flatpickr-weekday {
-    font-size: inherit;
-    color: inherit;
-    font-weight: 400;
+    font-size: $font-size-xs;
+    color: $mt-datepicker-color-font;
+    font-weight: $font-weight-medium;
   }
 
   .flatpickr-day {
     border-radius: 4px;
     margin-bottom: 6px;
+    max-width: 40px;
+    height: 40px;
+    line-height: 40px;
 
     &:not(.flatpickr-disabled) {
-      color: $mt-datepicker-color-font;
+      color: #2d2e32;
     }
-
     &:hover {
       @include flatpickr-day-hovered;
     }
@@ -691,6 +704,7 @@ $mt-datepicker-color-text-selected: $color-white;
     &.selected {
       background-color: $mt-datepicker-color-selected;
       border-color: $mt-datepicker-color-border;
+      color: $mt-datepicker-color-text-selected;
 
       &:hover {
         @include flatpickr-day-hovered;
@@ -709,7 +723,7 @@ $mt-datepicker-color-text-selected: $color-white;
     }
 
     &.today {
-      border-color: $color-gray-300;
+      border-color: #cdced4;
 
       &:hover {
         @include flatpickr-day-hovered;
@@ -726,10 +740,35 @@ $mt-datepicker-color-text-selected: $color-white;
 
     &.startRange {
       border-radius: 4px 0 0 4px;
+      &:hover {
+        border: none;
+      }
+
+      &.selected {
+        border: none;
+      }
+    }
+
+    &.inRange {
+      background-color: #f0f6ff;
+      -webkit-box-shadow:
+        -4px 0 0 #f0f6ff,
+        4px 0 0 #f0f6ff;
+      box-shadow:
+        -4px 0 0 #f0f6ff,
+        4px 0 0 #f0f6ff;
+      border: none;
     }
 
     &.endRange {
       border-radius: 0 4px 4px 0;
+      &:hover {
+        border: none;
+      }
+
+      &.selected {
+        border: none;
+      }
     }
   }
 }
