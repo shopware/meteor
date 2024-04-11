@@ -1,13 +1,14 @@
 {
   "name": "nuxt-app",
+  "version": "0.0.1",
   "private": true,
   "type": "module",
   "scripts": {
     "build": "nuxt build",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
-    "preview": "nuxt preview",
     "postinstall": "nuxt prepare",
+    "preview": "nuxt preview",
     "test:e2e": "concurrently --handle-input --kill-others --success first \"npm run dev\" \"wait-on --verbose http-get://localhost:3000/ && playwright test\"",
     "test:e2e:dev": "playwright test"
   },
@@ -20,6 +21,5 @@
   "devDependencies": {
     "@playwright/test": "^1.43.0",
     "@types/node": "^20.11.28"
-  },
-  "version": null
+  }
 }

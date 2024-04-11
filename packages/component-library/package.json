@@ -1,11 +1,11 @@
 {
   "name": "@shopware-ag/meteor-component-library",
   "version": "3.3.0",
-  "author": "shopware AG",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com:shopware/meteor.git"
   },
+  "author": "shopware AG",
   "main": "dist/common/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",

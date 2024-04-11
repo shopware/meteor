@@ -2,6 +2,10 @@
   "name": "@shopware-ag/meteor-tokens",
   "version": "0.0.1",
   "description": "Design Tokens for the Meteor Design System used at shopware",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:shopware/meteor.git"
+  },
   "license": "MIT",
   "author": "shopware AG",
   "type": "module",
@@ -15,10 +19,6 @@
     "deliverables",
     "dictionaries"
   ],
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com:shopware/meteor.git"
-  },
   "scripts": {
     "format": "prettier --write .",
     "format:check": "prettier --check .",
