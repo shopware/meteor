@@ -46,12 +46,12 @@
         :value="unicodeUri(currentValue)"
         :placeholder="placeholder"
         :disabled="disabled"
-        @input.stop="onInput"
         @focus="setFocusClass"
         @blur="
           onBlur($event);
           removeFocusClass();
         "
+        @change.stop="onChange"
       />
     </template>
 
@@ -86,8 +86,6 @@ export default defineComponent({
   },
 
   extends: MtTextField,
-
-  inheritAttrs: false,
 
   props: {
     /**
@@ -148,7 +146,7 @@ export default defineComponent({
   },
 
   watch: {
-    value() {
+    modelValue() {
       this.checkInput(this.modelValue || "");
     },
   },
@@ -169,6 +167,11 @@ export default defineComponent({
     onBlur(event: Event) {
       // @ts-expect-error - target is defined
       this.checkInput(event.target.value);
+    },
+
+    onChange(event: Event): void {
+      // @ts-expect-error - target is defined
+      this.$emit("change", event.target.value || "");
     },
 
     checkInput(inputValue: string) {

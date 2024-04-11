@@ -90,8 +90,6 @@ export default defineComponent({
     "mt-field-error": MtFieldError,
   },
 
-  inheritAttrs: false,
-
   props: {
     /**
      * The label for the select field itself.
