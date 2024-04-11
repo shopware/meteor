@@ -5,7 +5,7 @@ import type { SlottedMeta } from "@/_internal/story-helper";
 
 export type MtDataTableFilterMeta = SlottedMeta<
   typeof MtDataTableFilter,
-  "addOption" | "removeOption"
+  "addOption" | "removeOption" | "removeFilter"
 >;
 
 export default {
@@ -22,6 +22,7 @@ export default {
   args: {
     addOption: action("addOption"),
     removeOption: action("removeOption"),
+    removeFilter: action("removeFilter"),
     filter: {
       id: "filter",
       label: "Filter",

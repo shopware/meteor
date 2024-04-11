@@ -674,7 +674,7 @@ export const VisualTestAddFilterViaFilterMenu: MtDataTableStory = {
   async play({ canvasElement, args }) {
     const canvas = within(canvasElement);
 
-    await waitUntilRendered(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
 
     const filterMenuToggleButton = canvas.getByRole("button", { name: "Add filter" });
     expect(filterMenuToggleButton).toBeVisible();
@@ -747,7 +747,7 @@ export const VisualTestRemoveFilterViaFilterMenu: MtDataTableStory = {
   async play({ canvasElement, args }) {
     const canvas = within(canvasElement);
 
-    await waitUntilRendered(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
 
     const filterMenuToggleButton = canvas.getAllByRole("button", { name: "Add filter" })[0];
     expect(filterMenuToggleButton).toBeVisible();
@@ -806,7 +806,7 @@ export const VisualTestAddFilterViaIconButton: MtDataTableStory = {
   async play({ canvasElement, args }) {
     const canvas = within(canvasElement);
 
-    await waitUntilRendered(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
 
     const filterMenuToggleButton = canvas.getAllByRole("button", { name: "Add filter" })[1];
     expect(filterMenuToggleButton).toBeVisible();
@@ -879,7 +879,7 @@ export const VisualTestRemoveFilterViaIconButton: MtDataTableStory = {
   async play({ canvasElement, args }) {
     const canvas = within(canvasElement);
 
-    await waitUntilRendered(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
 
     const filterMenuToggleButton = canvas.getAllByRole("button", { name: "Add filter" })[1];
     expect(filterMenuToggleButton).toBeVisible();
@@ -938,7 +938,7 @@ export const VisualTestAddOptionViaTheFilterEditMenu: MtDataTableStory = {
   async play({ canvasElement, args }) {
     const canvas = within(canvasElement);
 
-    await waitUntilRendered(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
 
     await userEvent.click(canvas.getByRole("button", { name: "Schmidt and Bailey" }));
 
@@ -1015,7 +1015,7 @@ export const VisualTestRemoveOptionViaTheFilterEditMenu: MtDataTableStory = {
   async play({ canvasElement, args }) {
     const canvas = within(canvasElement);
 
-    await waitUntilRendered(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
 
     await userEvent.click(
       canvas.getByRole("button", { name: "Schmidt and Bailey, Little - Flatley" }),
@@ -1082,7 +1082,7 @@ export const VisualTestRemoveOptionViaTheRemoveButton: MtDataTableStory = {
   async play({ canvasElement, args }) {
     const canvas = within(canvasElement);
 
-    await waitUntilRendered(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
 
     await userEvent.click(canvas.getAllByRole("button", { name: "Remove filter" })[0]);
 
@@ -1155,7 +1155,7 @@ export const VisualTestRemoveOptionViaTheRemoveAllButton: MtDataTableStory = {
   async play({ canvasElement, args }) {
     const canvas = within(canvasElement);
 
-    await waitUntilRendered(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
 
     expect(canvas.queryAllByTestId("mt-data-table-filter")).toHaveLength(2);
 

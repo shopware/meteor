@@ -1,6 +1,6 @@
 <template>
   <div class="mt-data-table-filter" data-testid="mt-data-table-filter">
-    <span class="mt-data-table-filter__property" @keydown.delete="$emit('removeOption')">
+    <span class="mt-data-table-filter__property">
       {{ filter.label }}
     </span>
 
@@ -8,7 +8,7 @@
 
     <mt-popover class="mt-data-table-filter__option" title="Manufactuer">
       <template #trigger="{ toggleFloatingUi }">
-        <button @keydown.delete="$emit('removeOption')" @click="toggleFloatingUi">
+        <button @keydown.delete="$emit('removeFilter')" @click="toggleFloatingUi">
           {{ appliedOptions.map((option) => option.label).join(", ") }}
         </button>
       </template>
@@ -33,8 +33,8 @@
     <button
       class="mt-data-table-filter__remove-button"
       :aria-label="$t('mt-data-table-filter.remove-button')"
-      @keydown.delete="$emit('removeOption')"
-      @click="$emit('removeOption')"
+      @keydown.delete="$emit('removeFilter')"
+      @click="$emit('removeFilter')"
     >
       <mt-icon name="solid-times-xxs" aria-hidden="true" />
     </button>
@@ -66,7 +66,7 @@ export default defineComponent({
       },
     },
   },
-  emits: ["removeOption", "addOption"],
+  emits: ["removeOption", "addOption", "removeFilter"],
   props: {
     filter: {
       type: Object as PropType<Filter>,
