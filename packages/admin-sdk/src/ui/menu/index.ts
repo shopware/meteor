@@ -1,6 +1,16 @@
 import { createSender } from '../../channel';
 
+export const collapseMenu = createSender('menuCollapse');
+export const expandMenu = createSender('menuExpand');
 export const addMenuItem = createSender('menuItemAdd');
+
+export type menuCollapse = {
+  responseType: void,
+}
+
+export type menuExpand = {
+  responseType: void,
+}
 
 export type menuItemAdd = {
   responseType: void,
