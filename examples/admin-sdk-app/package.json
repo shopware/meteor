@@ -1,20 +1,20 @@
 {
   "name": "meteor-admin-sdk-app",
   "version": "1.0.6",
-  "description": "",
-  "license": "MIT",
   "private": true,
-  "author": "shopware AG",
-  "main": "index.js",
+  "description": "",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com:shopware/meteor.git"
   },
+  "license": "MIT",
+  "author": "shopware AG",
+  "main": "index.js",
   "scripts": {
     "dev": "ts-node src/server.ts",
     "lint:all": "npm run lint:eslint && vue-tsc --noEmit",
-    "lint:types": "vue-tsc --noEmit",
-    "lint:eslint": "eslint --ext .js,.ts,.vue src"
+    "lint:eslint": "eslint --ext .js,.ts,.vue src",
+    "lint:types": "vue-tsc --noEmit"
   },
   "dependencies": {
     "@shopware-ag/entity-schema-types": "^5.8.6",
