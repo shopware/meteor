@@ -179,10 +179,14 @@ export default defineComponent({
     },
   },
 
-  data() {
+  data(): { id: string | undefined } {
     return {
-      id: createId(),
+      id: undefined,
     };
+  },
+
+  mounted() {
+    this.id = createId();
   },
 
   computed: {
