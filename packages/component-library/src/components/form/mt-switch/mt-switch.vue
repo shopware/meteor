@@ -132,11 +132,15 @@ export default defineComponent({
     },
   },
 
-  data() {
+  data(): { id: string | undefined; currentValue: boolean | undefined } {
     return {
       currentValue: this.checked,
-      id: createId(),
+      id: undefined,
     };
+  },
+
+  mounted() {
+    this.id = createId();
   },
 
   computed: {
