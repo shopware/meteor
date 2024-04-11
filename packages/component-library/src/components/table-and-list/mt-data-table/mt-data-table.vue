@@ -62,6 +62,7 @@
             :applied-options="filter.type.options"
             @add-option="(filterId, optionId) => addOption(filterId, optionId)"
             @remove-option="(filterId, optionId) => removeOption(filterId, optionId)"
+            @remove-filter="removeFilter(filter.id)"
           />
         </div>
 
@@ -2021,6 +2022,11 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     width: 100%;
   }
 
+  .mt-card__toolbar {
+    flex-direction: column;
+    gap: 0;
+  }
+
   .mt-card__content {
     height: auto;
     padding: 0;
@@ -2056,6 +2062,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   line-height: $line-height-sm;
 
   .mt-data-table__toolbar {
+    width: 100%;
     display: flex;
     align-items: baseline;
     gap: 8px;

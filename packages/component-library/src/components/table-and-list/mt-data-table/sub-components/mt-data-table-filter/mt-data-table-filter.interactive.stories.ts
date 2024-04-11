@@ -28,6 +28,6 @@ export const FocusCloseButton: MtDataTableFilterStory = {
 
     await userEvent.click(canvas.getByRole("button", { name: "Remove filter" }));
 
-    expect(args.onRemoveOption).toHaveBeenCalledOnce();
+    expect(args.onRemoveFilter).toHaveBeenCalledOnce();
   },
 };
