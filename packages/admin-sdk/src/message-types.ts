@@ -6,7 +6,7 @@ import type { uiTabsAddTabItem } from './ui/tabs';
 import type { uiModulePaymentOverviewCard } from './ui/module/payment/overview-card';
 import type { cmsRegisterElement, cmsRegisterBlock } from './ui/cms';
 import type { locationUpdateHeight, locationUpdateUrl } from './location/index';
-import type { menuItemAdd } from './ui/menu';
+import type { menuCollapse, menuExpand, menuItemAdd } from './ui/menu';
 import type { settingsItemAdd } from './ui/settings';
 import type { mainModuleAdd } from './ui/main-module';
 import type { smartBarButtonAdd } from './ui/main-module';
@@ -53,6 +53,8 @@ export interface ShopwareMessageTypes {
   cmsRegisterBlock: cmsRegisterBlock,
   locationUpdateHeight: locationUpdateHeight,
   locationUpdateUrl: locationUpdateUrl,
+  menuCollapse: menuCollapse,
+  menuExpand: menuExpand,
   menuItemAdd: menuItemAdd,
   settingsItemAdd: settingsItemAdd,
   mainModuleAdd: mainModuleAdd,
