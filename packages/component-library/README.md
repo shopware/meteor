@@ -46,48 +46,37 @@ These guides are useful if you want to contribute this component library.
 ### Project setup
 
 ```
-npm install
+pnpm install
 ```
 
 #### Compiles and hot-reloads for development
 
 ```
-npm run storybook
+pnpm run storybook
 ```
 
 #### Compiles and minifies for production
 
 ```
-npm run build-storybook
+pnpm run build:storybook
 ```
 
 #### Run your interaction tests (running Storybook instance is needed)
 
 ```
-npm run test-storybook
-```
-
-#### Start a docker instance for running interaction and visual tests inside a container
-
-Useful for creating screenshot files to have a consistent screenshot between different operating systems.
-
-```
-npm run docker;
-
-// Inside docker
-npm run test-storybook:ci
+pnpm run test:storybook
 ```
 
 #### Lints and fixes files
 
 ```
-npm run lint
+pnpm run lint:all
 ```
 
 #### Build the bundled component library
 
 ```
-npm run build-vue
+pnpm run build
 ```
 
 ### Writing interaction tests
