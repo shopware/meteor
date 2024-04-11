@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.1.0
+
+### Minor Changes
+
+- aa772a9: Allow toggling the admin menu
+
 ## 5.0.2
 
 ### Patch Changes

@@ -1,5 +1,17 @@
 # Changelog
 
+## 3.4.0
+
+### Minor Changes
+
+- 97ba4d8: Implement toasts
+
+### Patch Changes
+
+- 7ff2788: Remove unnecessary left border in data table
+- Updated dependencies [8443590]
+  - @shopware-ag/meteor-tokens@0.1.0
+
 ## 3.3.0
 
 ### Minor Changes
