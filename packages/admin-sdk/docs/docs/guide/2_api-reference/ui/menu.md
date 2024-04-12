@@ -1,4 +1,15 @@
-# Menu Item
+# Menu
+
+### Toggle menu
+
+The Admin SDK allows you to manipulate the Admin menu of your application. One of the features it provides is the ability to toggle the Admin menu. This is done using the `collapseMenu` and `expandMenu` methods.
+
+#### Usage:
+```ts
+ui.menu.collapseMenu(); // To collapse the Admin menu;
+
+ui.menu.expandMenu(); // To expand the Admin menu;
+```
 
 ### Add menu item
 Add a new menu item to the Shopware admin menu. The content of the menu item module is determined by your `locationId`.
