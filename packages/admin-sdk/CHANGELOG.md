@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.1.1
+
+### Patch Changes
+
+- d13e2fb: Update the documentation for ui.menu
+
 ## 5.1.0
 
 ### Minor Changes
