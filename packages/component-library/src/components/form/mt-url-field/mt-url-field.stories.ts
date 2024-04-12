@@ -27,7 +27,7 @@ export default {
           v-bind="args"
           :modelValue="currentValue"
           @change="onChange"
-          @update:modelValue="args.updateModelValue"
+          @update:modelValue="onUpdateModelValue"
           @inheritance-restore="inheritanceRestoreWrapper"
           @inheritance-remove="inheritanceRemoveWrapper">
           <template
@@ -73,6 +73,11 @@ export default {
 
       onChange(value: string) {
         args.change(value);
+        this.currentValue = value;
+      },
+
+      onUpdateModelValue(value: string) {
+        args.updateModelValue(value);
         this.currentValue = value;
       },
     },

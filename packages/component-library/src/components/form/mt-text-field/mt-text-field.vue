@@ -1,5 +1,6 @@
 <template>
   <mt-base-field
+    class="mt-text-field"
     :disabled="disabled"
     :required="required"
     :is-inherited="isInherited"
@@ -33,7 +34,7 @@
         :placeholder="placeholder"
         :maxlength="maxLength"
         @input="onInput"
-        @change="onChange"
+        @change.stop="onChange"
         @focus="setFocusClass"
         @blur="removeFocusClass"
       />
@@ -69,8 +70,6 @@ export default defineComponent({
     "mt-field-error": MtFieldError,
     "mt-base-field": MtBaseField,
   },
-
-  inheritAttrs: false,
 
   props: {
     /**

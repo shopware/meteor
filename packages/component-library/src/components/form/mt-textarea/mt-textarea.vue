@@ -63,8 +63,6 @@ export default defineComponent({
 
   mixins: [MtFormFieldMixin],
 
-  inheritAttrs: false,
-
   props: {
     modelValue: {
       type: String,
