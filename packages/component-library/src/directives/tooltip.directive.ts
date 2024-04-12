@@ -1,4 +1,4 @@
-import { createId } from "../utils/uuid";
+import { createId } from "../utils/id";
 import type { ObjectDirective } from "vue";
 
 /**

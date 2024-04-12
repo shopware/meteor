@@ -6,7 +6,7 @@ import MtCheckbox from "@/components/form/mt-checkbox/mt-checkbox.vue";
 import type { Toast } from "./mt-toast.vue";
 import type { StoryObj } from "@storybook/vue3";
 import type { SlottedMeta } from "@/_internal/story-helper";
-import { createId } from "@/utils/uuid";
+import { createId } from "@/utils/id";
 
 export type MtToastMeta = SlottedMeta<typeof MtToast, "">;
 

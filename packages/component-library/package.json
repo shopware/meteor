@@ -39,6 +39,7 @@
     "flatpickr": "4.6.3",
     "inter-ui": "^3.19.3",
     "lodash-es": "^4.17.21",
+    "nanoid": "^5.0.7",
     "vue": "3.4.21",
     "vue-i18n": "^9.9.1",
     "vue-smooth-reflow": "^0.1.12"
