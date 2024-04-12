@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.5.1
+
+### Patch Changes
+
+- b68fa55: fix createId not being compatible with webpack
+
 ## 3.5.0
 
 ### Minor Changes
