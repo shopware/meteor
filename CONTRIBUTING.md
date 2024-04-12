@@ -24,7 +24,7 @@ Please take a look at the [existing issues](https://github.com/shopware/meteor/i
 before creating a new one. That way keep the number of duplicate issues low.
 Complete the issue template as much as possible when creating a new issue.
 
-To get your bug fixed faster, add a link to a 
+To get your bug fixed faster, add a link to a
 [project with the bug](https://stackblitz.com/edit/vitejs-vite-emem8b?file=index.html&terminal=dev)
 for us to reproduce in the issue's description.
 
@@ -52,7 +52,7 @@ To execute scripts defined in the packages.json file of each package you have th
 
 1. Or you use turbo: `npx turbo run <TASK_NAME>`
 2. You run the script from the root with `pnpm --filter <PACKAGE_NAME> run <SCRIPT_NAME>`
-3. You cd into the package directory and run the script 
+3. You cd into the package directory and run the script
 
 You can find the available turbo tasks in the turbo.json file
 
@@ -72,7 +72,7 @@ After completing all the tests you can submit your pull request.
 We create and manage our changelogs with changesets. Follow these steps
 to create a changelog:
 
-1. Run `npx changesets add`
+1. Run `npx changeset add`
 2. Select the package you updated
 3. Define your version bump for this package
 4. Write a meaningful changelog message
