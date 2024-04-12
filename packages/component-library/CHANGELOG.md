@@ -1,5 +1,15 @@
 # Changelog
 
+## 3.5.0
+
+### Minor Changes
+
+- 95cdb1f: Allow attribute inheritance on every form field
+
+### Patch Changes
+
+- 85942a2: Fix id generation for inputs when using SSR
+
 ## 3.4.0
 
 ### Minor Changes
