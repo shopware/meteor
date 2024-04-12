@@ -45,7 +45,7 @@ import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtFormFieldMixin from "../../../mixins/form-field.mixin";
-import { createId } from "../../../utils/uuid";
+import { createId } from "../../../utils/id";
 
 export default defineComponent({
   name: "MtCheckbox",

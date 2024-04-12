@@ -58,7 +58,7 @@ import MtHelpText from "../../mt-help-text/mt-help-text.vue";
 import useEmptySlotCheck from "../../../../composables/useEmptySlotCheck";
 import MtValidationMixin from "../../../../mixins/validation.mixin";
 import MtFormFieldMixin from "../../../../mixins/form-field.mixin";
-import { createId } from "../../../../utils/uuid";
+import { createId } from "../../../../utils/id";
 
 export default defineComponent({
   name: "MtBaseField",
