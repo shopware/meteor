@@ -337,7 +337,6 @@ export default {
         showStripesValue: boolean;
         enableOutlineFramingValue: boolean;
         enableRowNumberingValue: boolean;
-        // TODO: add better types for filters
         filters: object[];
         appliedFilters: object[];
         numberOfResults: number | undefined;
