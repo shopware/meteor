@@ -634,79 +634,68 @@ export default {
       },
       template: `
       <div
-          style="
-      margin: 0 auto;
-      height: 100vh;
-      width: 100vw;
-      margin: -1rem;
-      padding: 1rem;
-      overflow: auto;
-    "
+          v-if="args._storybook_internal_show_experimental_warning_"
+          style="width: 960px; max-width: 100%; margin: 0 auto;"
       >
-        <div
-            v-if="args._storybook_internal_show_experimental_warning_"
-            style="width: 960px; max-width: 100%; margin: 0 auto;"
+        <mt-banner
+            title="Experimental component"
+            variant="attention"
         >
-          <mt-banner
-              title="Experimental component"
-              variant="attention"
-          >
-            This component is currently in an experimental state and may undergo frequent
-            changes. Please use it with discretion and be prepared for potential updates
-            that could impact its functionality, appearance, or behavior. We welcome
-            feedback, which can be submitted in the GitHub Discussions of the
-            Meteor Component Library.
-          </mt-banner>
-        </div>
-
-        <mt-data-table
-            v-bind="args"
-            :dataSource="dataSourceValue"
-            :paginationTotalItems="paginationTotalItemsValue"
-            @reload="reloadHandler"
-            :paginationLimit="paginationLimitValue"
-            @pagination-limit-change="paginationLimitChangeHandler"
-            :currentPage="currentPageValue"
-            @pagination-current-page-change="paginationCurrentPageChangeHandler"
-            :searchValue="searchValueValue"
-            @search-value-change="searchValueChangeHandler"
-            :sortBy="sortByValue"
-            :sortDirection="sortDirectionValue"
-            @sort-change="sortChangeValueHandler"
-            :isLoading="isLoadingValue"
-            :selectedRows="selectedRowsValue"
-            @selection-change="selectionChangeHandler"
-            @multiple-selection-change="multipleSelectionChangeHandler"
-            @open-details="args.openDetails"
-            @item-delete="args.itemDelete"
-            @bulk-edit="bulkEdit"
-            @bulk-delete="bulkDelete"
-            @change-show-outlines="changeShowOutlinesHandler"
-            :showOutlines="showOutlinesValue"
-            @change-show-stripes="changeShowStripesHandler"
-            :showStripes="showStripesValue"
-            @change-outline-framing="changeOutlineFramingHandler"
-            :enableOutlineFraming="enableOutlineFramingValue"
-            @change-enable-row-numbering="changeEnableRowNumberingHandler"
-            :enableRowNumbering="enableRowNumberingValue"
-            :filters="filters"
-            :applied-filters="appliedFilters"
-            @update:applied-filters="appliedFilters = $event"
-            :numberOfResults="numberOfResults"
-        >
-          {{ args.default}}
-
-          <template #toolbar>
-            <mt-button
-                v-if="!args._remove_primary_toolbar_button_"
-                variant="primary"
-                @click="reloadHandler"
-            >
-              Primary
-            </mt-button>
-          </template>
-        </mt-data-table>
+          This component is currently in an experimental state and may undergo frequent
+          changes. Please use it with discretion and be prepared for potential updates
+          that could impact its functionality, appearance, or behavior. We welcome
+          feedback, which can be submitted in the GitHub Discussions of the
+          Meteor Component Library.
+        </mt-banner>
       </div>
+
+      <mt-data-table
+          v-bind="args"
+          :dataSource="dataSourceValue"
+          :paginationTotalItems="paginationTotalItemsValue"
+          @reload="reloadHandler"
+          :paginationLimit="paginationLimitValue"
+          @pagination-limit-change="paginationLimitChangeHandler"
+          :currentPage="currentPageValue"
+          @pagination-current-page-change="paginationCurrentPageChangeHandler"
+          :searchValue="searchValueValue"
+          @search-value-change="searchValueChangeHandler"
+          :sortBy="sortByValue"
+          :sortDirection="sortDirectionValue"
+          @sort-change="sortChangeValueHandler"
+          :isLoading="isLoadingValue"
+          :selectedRows="selectedRowsValue"
+          @selection-change="selectionChangeHandler"
+          @multiple-selection-change="multipleSelectionChangeHandler"
+          @open-details="args.openDetails"
+          @item-delete="args.itemDelete"
+          @bulk-edit="bulkEdit"
+          @bulk-delete="bulkDelete"
+          @change-show-outlines="changeShowOutlinesHandler"
+          :showOutlines="showOutlinesValue"
+          @change-show-stripes="changeShowStripesHandler"
+          :showStripes="showStripesValue"
+          @change-outline-framing="changeOutlineFramingHandler"
+          :enableOutlineFraming="enableOutlineFramingValue"
+          @change-enable-row-numbering="changeEnableRowNumberingHandler"
+          :enableRowNumbering="enableRowNumberingValue"
+          :filters="filters"
+          :applied-filters="appliedFilters"
+          @update:applied-filters="appliedFilters = $event"
+          :numberOfResults="numberOfResults"
+      >
+        {{ args.default}}
+
+        <template #toolbar>
+          <mt-button
+              v-if="!args._remove_primary_toolbar_button_"
+              variant="primary"
+              @click="reloadHandler"
+          >
+            Primary
+          </mt-button>
+        </template>
+      </mt-data-table>
     `,
       setup: () => {
         return {
