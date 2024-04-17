@@ -710,6 +710,40 @@ export type MtDataTableStory = StoryObj<MtDataTableMeta>;
 export const Default: MtDataTableStory = {
   args: {
     _storybook_internal_show_experimental_warning_: true,
+    filters: [
+      {
+        id: "active",
+        label: "Active",
+        type: {
+          id: "options",
+          options: [
+            {
+              id: "true",
+              label: "Active",
+            },
+            {
+              id: "false",
+              label: "Inactive",
+            },
+          ],
+        },
+      },
+    ],
+    appliedFilters: [
+      {
+        id: "active",
+        label: "Active",
+        type: {
+          id: "options",
+          options: [
+            {
+              id: "false",
+              label: "Inactive",
+            },
+          ],
+        },
+      },
+    ],
   },
 };
 
