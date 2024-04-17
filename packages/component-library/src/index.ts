@@ -21,6 +21,9 @@ import MtDataTable from "./components/table-and-list/mt-data-table/mt-data-table
 import MtPagination from "./components/table-and-list/mt-pagination/mt-pagination.vue";
 import MtSkeletonBar from "./components/feedback-indicator/mt-skeleton-bar/mt-skeleton-bar.vue";
 import MtToast from "./components/feedback-indicator/mt-toast/mt-toast.vue";
+import MtPopover from "./components/overlay/mt-popover/mt-popover.vue";
+import MtPopoverItem from "./components/overlay/mt-popover-item/mt-popover-item.vue";
+import MtPopoverItemResult from "./components/overlay/mt-popover-item-result/mt-popover-item-result.vue";
 import TooltipDirective from "./directives/tooltip.directive";
 import DeviceHelperPlugin from "./plugin/device-helper.plugin";
 // Import SCSS for styling
@@ -50,6 +53,9 @@ export {
   MtPagination,
   MtSkeletonBar,
   MtToast,
+  MtPopover,
+  MtPopoverItem,
+  MtPopoverItemResult,
   TooltipDirective,
   DeviceHelperPlugin,
   // @deprecated
