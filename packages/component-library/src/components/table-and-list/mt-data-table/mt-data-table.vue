@@ -1665,8 +1665,6 @@ export default defineComponent({
         return;
       }
 
-      // debugger;
-
       const newFilters = props.appliedFilters.map((appliedFilter) => {
         if (appliedFilter.id === filterId) {
           return {
