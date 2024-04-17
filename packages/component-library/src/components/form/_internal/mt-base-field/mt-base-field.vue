@@ -38,10 +38,7 @@
 
     <slot name="error" />
 
-    <div
-      v-if="!!$slots['field-hint'] || !!$slots['field-hint-right']"
-      class="mt-field__hint-wrapper"
-    >
+    <div class="mt-field__hint-wrapper">
       <div class="mt-field__hint">
         <slot name="field-hint" />
       </div>
@@ -278,6 +275,10 @@ $mt-field-transition:
     display: flex;
     align-items: center;
     gap: 8px;
+
+    &:empty {
+      display: none;
+    }
   }
 
   &__hint-right {
