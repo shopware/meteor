@@ -1165,3 +1165,20 @@ export const VisualTestRemoveOptionViaTheRemoveAllButton: MtDataTableStory = {
     expect(args["onUpdate:appliedFilters"]).toHaveBeenNthCalledWith(1, []);
   },
 };
+
+export const VisualTestShouldHideTheLastColumnWithViaDisableContextMenuAndSettingsTable: MtDataTableStory =
+  {
+    name: "Should hide the last column with disableContextMenu and disableSettingsTable",
+    args: {
+      disableEdit: true,
+      disableDelete: true,
+      disableSettingsTable: true,
+    },
+    play: async ({ canvasElement }) => {
+      const canvas = within(canvasElement);
+      await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+
+      await expect(canvas.queryByLabelText("Context menu")).toBeNull();
+      await expect(canvas.queryByLabelText("Toggle view settings")).toBeNull();
+    },
+  };
