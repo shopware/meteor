@@ -543,6 +543,20 @@ describe("mt-data-table", () => {
       const firstColumnData = wrapper.findAll("td").at(0);
       expect(firstColumnData?.attributes().style).toContain("min-width: 789px");
     });
+
+    it("should not render table cell when disable context menu action and settings table action", async () => {
+      const wrapper = createWrapper();
+
+      await wrapper.setProps({
+        ...wrapper.props(),
+        disableEdit: true,
+        disableDelete: true,
+        disableSettingsTable: true,
+      });
+
+      expect(wrapper.find(".mt-data-table__table-context-button").exists()).toBeFalsy();
+      expect(wrapper.find(".mt-data-table__table-settings-button").exists()).toBeFalsy();
+    });
   });
 
   it("should render table data cells with an image inside", async () => {
@@ -1175,6 +1189,17 @@ describe("mt-data-table", () => {
       expect(wrapper.props().columnChanges).toStrictEqual({
         active: { visible: false },
       });
+    });
+
+    it("should disable settings table", async () => {
+      const wrapper = createWrapper();
+
+      await wrapper.setProps({
+        ...wrapper.props(),
+        disableSettingsTable: true,
+      });
+
+      expect(wrapper.find(".mt-data-table-settings").exists()).toBeFalsy();
     });
   });
 });

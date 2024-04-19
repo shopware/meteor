@@ -341,8 +341,13 @@
                 </th>
               </template>
 
-              <th class="mt-data-table__table-settings-button" scope="col">
+              <th
+                v-if="!(disableSettingsTable && disableEdit && disableDelete)"
+                class="mt-data-table__table-settings-button"
+                scope="col"
+              >
                 <mt-data-table-settings
+                  v-if="!disableSettingsTable"
                   :columns="sortedColumns"
                   :show-outlines="showOutlines"
                   :show-stripes="showStripes"
@@ -444,11 +449,14 @@
                   </td>
                 </template>
 
-                <td class="mt-data-table__table-context-button">
+                <td
+                  v-if="!(disableSettingsTable && disableEdit && disableDelete)"
+                  class="mt-data-table__table-context-button"
+                >
                   <a v-if="!disableEdit" href="#" @click.prevent="$emit('open-details', data)">
                     {{ $t("mt-data-table.contextButtons.edit") }}
                   </a>
-                  <mt-context-button>
+                  <mt-context-button v-if="!(disableDelete && disableEdit)">
                     <mt-context-menu-item
                       v-if="!disableEdit"
                       :label="$t('mt-data-table.contextButtons.edit', data)"
@@ -900,6 +908,15 @@ export default defineComponent({
      * Disable the possibility to edit items
      */
     disableEdit: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    /**
+     * Disable the possibility to settings table
+     */
+    disableSettingsTable: {
       type: Boolean,
       required: false,
       default: false,
