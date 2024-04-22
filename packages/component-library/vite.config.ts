@@ -14,6 +14,7 @@ export default defineConfig({
     dts({
       outDir: ["dist/esm", "dist/common"],
       cleanVueFileName: true,
+      copyDtsFiles: true,
       compilerOptions: {
         moduleResolution: 99,
       },
