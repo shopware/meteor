@@ -6,6 +6,7 @@
         class="mt-popover-item__checkbox"
         :checked="checkboxChecked"
         :partial="checkboxPartial"
+        :id="id"
         @change="emitChangeCheckbox"
       />
 
@@ -21,11 +22,12 @@
         @keyup.enter="handleLableClick"
       />
 
-      <div
+      <label
         class="mt-popover-item__label"
         :class="labelClasses"
         :tabindex="onLabelClickTabIndex"
         :role="role"
+        :for="id"
         @click.stop.prevent="handleLableClick"
         @keyup.enter="handleLableClick"
       >
@@ -34,7 +36,7 @@
         <div v-if="metaCopy" class="mt-popover-item__meta-copy">
           {{ metaCopy }}
         </div>
-      </div>
+      </label>
 
       <div class="mt-popover-item__align-right">
         <div v-if="contextualDetail" class="mt-popover-item__contextual-detail">
@@ -82,6 +84,7 @@ import type { TranslateResult } from "vue-i18n";
 import MtCheckbox from "../../form/mt-checkbox/mt-checkbox.vue";
 import MtSwitch from "../../form/mt-switch/mt-switch.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
+import { createId } from "../../../utils/id";
 
 export type MtPopoverItemType = "default" | "critical" | "active";
 
@@ -204,6 +207,8 @@ export default defineComponent({
   },
   emits: ["change-checkbox", "change-switch", "change-visibility", "click-options"],
   setup(props, { emit }) {
+    const id = createId();
+
     const emitChangeCheckbox = (changeValue: boolean) => {
       emit("change-checkbox", changeValue);
     };
@@ -294,6 +299,7 @@ export default defineComponent({
       handleLableClick,
       isClickable,
       iconClasses,
+      id,
     };
   },
 });

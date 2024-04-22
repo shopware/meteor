@@ -2,13 +2,111 @@
   <!-- Height needs to be set inline because the card has an mt-ignore-class component as a wrapper -->
   <mt-card class="mt-data-table" :class="MtDataTableClasses" :title="title" :subtitle="subtitle">
     <template #toolbar>
-      <mt-search
-        v-if="disableSearch !== true"
-        size="small"
-        :model-value="searchValue"
-        @change="emitSearchValueChange"
-      />
-      <slot name="toolbar" />
+      <div class="mt-data-table__toolbar">
+        <mt-search
+          v-if="disableSearch !== true"
+          size="small"
+          :model-value="searchValue"
+          @change="emitSearchValueChange"
+        />
+
+        <mt-popover v-if="filters.length > 0" title="Filters" :child-views="filterChildViews">
+          <template #trigger="{ toggleFloatingUi }">
+            <mt-button variant="secondary" @click="toggleFloatingUi">
+              <mt-icon name="solid-filter-s" aria-hidden="true" />
+
+              <span>{{ $t("mt-data-table.filter.addFilter") }}</span>
+            </mt-button>
+          </template>
+
+          <template #popover-items__base="{ changeView }">
+            <mt-popover-item
+              v-for="filter in filters"
+              :key="filter.id"
+              :label="filter.label"
+              show-options
+              @click-options="() => changeView(filter.id)"
+            />
+          </template>
+
+          <template v-for="filter in filters" :key="filter.id" #[`popover-items__${filter.id}`]>
+            <mt-popover-item
+              v-for="option in filter.type.options"
+              :key="option.id"
+              :label="option.label"
+              show-checkbox
+              :checkbox-checked="isOptionSelected(filter.id, option.id)"
+              @change-checkbox="
+                (isChecked) =>
+                  isChecked ? addOption(filter.id, option.id) : removeOption(filter.id, option.id)
+              "
+            />
+          </template>
+        </mt-popover>
+
+        <slot name="toolbar" />
+      </div>
+
+      <div v-if="appliedFilters.length > 0" class="mt-data-table__filter">
+        <span>{{
+          isLoading
+            ? $t("mt-data-table.filter.fetchingFilteredResults")
+            : $tc("mt-data-table.filter.numberOfResults", numberOfResults ?? 0)
+        }}</span>
+
+        <div class="mt-data-table__filter-list">
+          <mt-data-table-filter
+            v-for="filter in appliedFilters"
+            :key="filter.id"
+            :filter="filters.find((f) => f.id === filter.id)!"
+            :applied-options="filter.type.options"
+            @add-option="(filterId, optionId) => addOption(filterId, optionId)"
+            @remove-option="(filterId, optionId) => removeOption(filterId, optionId)"
+            @remove-filter="removeFilter(filter.id)"
+          />
+        </div>
+
+        <mt-popover title="Filters" :child-views="filterChildViews">
+          <template #trigger="{ toggleFloatingUi }">
+            <button
+              @click="toggleFloatingUi"
+              class="mt-data-table__add-filter-button"
+              :aria-label="$t('mt-data-table.filter.addFilter')"
+            >
+              <mt-icon name="solid-plus-square-s" />
+            </button>
+          </template>
+
+          <template #popover-items__base="{ changeView }">
+            <mt-popover-item
+              v-for="filter in filters"
+              :key="filter.id"
+              :label="filter.label"
+              show-options
+              @click-options="() => changeView(filter.id)"
+            />
+          </template>
+
+          <template v-for="filter in filters" :key="filter.id" #[`popover-items__${filter.id}`]>
+            <mt-popover-item
+              v-for="option in filter.type.options"
+              :key="option.id"
+              :label="option.label"
+              show-checkbox
+              :checkbox-checked="isOptionSelected(filter.id, option.id)"
+              @change-checkbox="
+                (isChecked) =>
+                  isChecked ? addOption(filter.id, option.id) : removeOption(filter.id, option.id)
+              "
+            />
+          </template>
+        </mt-popover>
+
+        <mt-data-table-reset-filter-button
+          :number-of-applied-filters="appliedFilters.length"
+          @click="$emit('update:appliedFilters', [])"
+        />
+      </div>
     </template>
 
     <template #default>
@@ -484,8 +582,11 @@ import MtFloatingUi from "../../_internal/mt-floating-ui/mt-floating-ui.vue";
 import MtTooltipDirective from "../../../directives/tooltip.directive";
 import MtEmptyState from "../../layout/mt-empty-state/mt-empty-state.vue";
 import StickyColumn from "../../../directives/stickyColumn.directive";
+import MtDataTableResetFilterButton from "./sub-components/mt-data-table-reset-filter-button/mt-data-table-reset-filter-button.vue";
+import MtDataTableFilter from "./sub-components/mt-data-table-filter/mt-data-table-filter.vue";
 import { throttle } from "lodash-es";
 import { reactive } from "vue";
+import type { Filter } from "./mt-data-table.interfaces";
 
 export interface BaseColumnDefinition {
   label: string; // the label for the column
@@ -550,6 +651,8 @@ export default defineComponent({
     "mt-data-table-number-renderer": MtDataTableNumberRenderer,
     "mt-data-table-badge-renderer": MtDataTableBadgeRenderer,
     "mt-data-table-price-renderer": MtDataTablePriceRenderer,
+    "mt-data-table-reset-filter-button": MtDataTableResetFilterButton,
+    "mt-data-table-filter": MtDataTableFilter,
   },
   props: {
     /**
@@ -810,6 +913,33 @@ export default defineComponent({
       required: false,
       default: "Data table",
     },
+
+    /**
+     * All available filters
+     */
+    filters: {
+      type: Array as PropType<Filter[]>,
+      required: false,
+      default: () => [],
+    },
+
+    /**
+     * Filters in use by the user
+     */
+    appliedFilters: {
+      type: Array as PropType<Filter[]>,
+      required: false,
+      default: () => [],
+    },
+
+    /**
+     * Displays how many results are found
+     */
+    numberOfResults: {
+      type: Number,
+      required: false,
+      default: undefined,
+    },
   },
   emits: [
     "reload",
@@ -827,12 +957,18 @@ export default defineComponent({
     "change-outline-framing",
     "change-enable-row-numbering",
     "item-delete",
+    "update:appliedFilters",
   ],
   i18n: {
     messages: {
       en: {
         "mt-data-table": {
           itemsPerPage: "Items per page",
+          filter: {
+            numberOfResults: "No results found for | One result found for | {n} results found for",
+            addFilter: "Add filter",
+            fetchingFilteredResults: "Getting filtered results...",
+          },
           columnSettings: {
             sortAscending: "Sort ascending",
             sortDescending: "Sort descending",
@@ -864,6 +1000,12 @@ export default defineComponent({
       de: {
         "mt-data-table": {
           itemsPerPage: "Einträge pro Seite",
+          filter: {
+            numberOfResults:
+              "Keine Einträge gefunden | Ein Eintrag gefunden | {n} Einträge gefunden",
+            addFilter: "Filter hinzufügen",
+            fetchingFilteredResults: "Filterergebnisse werden geladen...",
+          },
           columnSettings: {
             sortAscending: "Aufsteigend sortieren",
             sortDescending: "Absteigend sortieren",
@@ -903,6 +1045,10 @@ export default defineComponent({
 
     onBeforeMount(() => {
       i18n = getCurrentInstance()?.proxy?.$i18n;
+    });
+
+    const filterChildViews = computed(() => {
+      return props.filters.map(({ id, label }) => ({ name: id, title: label }));
     });
 
     /**
@@ -1446,6 +1592,105 @@ export default defineComponent({
       }
     };
 
+    function removeFilter(id: string) {
+      const updatedFilters = props.appliedFilters.filter((filter) => filter.id !== id);
+
+      emit("update:appliedFilters", updatedFilters);
+    }
+
+    function addOption(filterId: string, optionId: string) {
+      const filter = props.filters.find((filter) => filter.id === filterId);
+      if (!filter)
+        throw new Error(
+          `Failed to add filter option: Filter with the id "${filterId}" is not correct`,
+        );
+
+      const filterAlreadyInUse = !!props.appliedFilters.find((appliedFilter) => {
+        return appliedFilter.id === filter.id;
+      });
+
+      if (!filterAlreadyInUse) {
+        emit("update:appliedFilters", [
+          ...props.appliedFilters,
+          {
+            ...filter,
+            type: {
+              ...filter.type,
+              options: [filter.type.options.find((option) => option.id === optionId)],
+            },
+          },
+        ]);
+
+        return;
+      }
+
+      emit("update:appliedFilters", [
+        ...props.appliedFilters.map((appliedFilter) => {
+          if (appliedFilter.id === filter.id) {
+            return {
+              ...appliedFilter,
+              type: {
+                ...appliedFilter.type,
+                options: [
+                  ...appliedFilter.type.options,
+                  filter.type.options.find((option) => option.id === optionId),
+                ],
+              },
+            };
+          }
+
+          return appliedFilter;
+        }),
+      ]);
+    }
+
+    function removeOption(filterId: string, optionId: string) {
+      const removingLastOptionInFilter = props.appliedFilters.some((appliedFilter) => {
+        if (appliedFilter.id === filterId) {
+          if (appliedFilter.type.options.length === 1) {
+            return true;
+          }
+        }
+
+        return false;
+      });
+
+      if (removingLastOptionInFilter) {
+        const newFilters = props.appliedFilters.filter(
+          (appliedFilter) => appliedFilter.id !== filterId,
+        );
+
+        emit("update:appliedFilters", newFilters);
+
+        return;
+      }
+
+      const newFilters = props.appliedFilters.map((appliedFilter) => {
+        if (appliedFilter.id === filterId) {
+          return {
+            ...appliedFilter,
+            type: {
+              ...appliedFilter.type,
+              options: appliedFilter.type.options.filter((option) => option.id !== optionId),
+            },
+          };
+        }
+
+        return appliedFilter;
+      });
+
+      emit("update:appliedFilters", newFilters);
+    }
+
+    function isOptionSelected(filterId: string, optionId: string) {
+      const filterInUse = props.appliedFilters.find((appliedFilter) => {
+        return appliedFilter.id === filterId;
+      });
+
+      if (!filterInUse) return false;
+      return !!filterInUse.type.options.find((option) => option.id === optionId);
+    }
+
     /***
      * Add scroll possibilities to tableWrapper
      */
@@ -1683,6 +1928,11 @@ export default defineComponent({
       emptyData,
       getRealIndex,
       isDragging,
+      filterChildViews,
+      removeFilter,
+      addOption,
+      removeOption,
+      isOptionSelected,
     };
   },
 });
@@ -1770,6 +2020,11 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     width: 100%;
   }
 
+  .mt-card__toolbar {
+    flex-direction: column;
+    gap: 0;
+  }
+
   .mt-card__content {
     height: auto;
     padding: 0;
@@ -1803,6 +2058,30 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   font-weight: $font-weight-regular;
   color: $color-darkgray-300;
   line-height: $line-height-sm;
+
+  .mt-data-table__toolbar {
+    width: 100%;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  // TODO: improve the name of this css selector
+  .mt-data-table__filter {
+    color: var(--color-text-primary-default);
+    padding-top: 16px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .mt-data-table__filter-list {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
 
   &__caption {
     // Hide the caption visually but show it for screen readers
@@ -2446,6 +2725,24 @@ table.is--dragging-inside {
         height: 14px;
       }
     }
+  }
+}
+
+.mt-data-table__add-filter-button {
+  color: var(--color-icon-primary-default);
+  height: 34px;
+  width: 34px;
+
+  // remove min-width later when we found a better solution
+  min-width: 34px;
+  cursor: pointer;
+  outline: 0;
+  border-radius: $border-radius-default;
+
+  &:hover,
+  &:focus-visible {
+    background-color: var(--color-background-primary-disabled);
+    color: var(--color-icon-primary-hover);
   }
 }
 </style>

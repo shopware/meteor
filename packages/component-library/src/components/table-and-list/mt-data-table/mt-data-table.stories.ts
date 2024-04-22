@@ -315,6 +315,9 @@ export default {
     ],
     disableEdit: false,
     disableDelete: false,
+    filters: [],
+    appliedFilters: [],
+    numberOfResults: undefined,
     // TODO: can be removed when component is not experimental anymore
     _storybook_internal_show_experimental_warning_: false,
     _remove_primary_toolbar_button_: false,
@@ -334,6 +337,9 @@ export default {
         showStripesValue: boolean;
         enableOutlineFramingValue: boolean;
         enableRowNumberingValue: boolean;
+        filters: object[];
+        appliedFilters: object[];
+        numberOfResults: number | undefined;
       } {
         return {
           paginationLimitValue: 0,
@@ -347,6 +353,9 @@ export default {
           showStripesValue: true,
           enableOutlineFramingValue: true,
           enableRowNumberingValue: true,
+          filters: [],
+          appliedFilters: [],
+          numberOfResults: undefined,
         };
       },
       computed: {
@@ -499,6 +508,24 @@ export default {
           },
           immediate: true,
         },
+        "args.filters": {
+          handler(v) {
+            this.filters = v;
+          },
+          immediate: true,
+        },
+        "args.appliedFilters": {
+          handler(v) {
+            this.appliedFilters = v;
+          },
+          immediate: true,
+        },
+        "args.numberOfResults": {
+          handler(v) {
+            this.numberOfResults = v;
+          },
+          immediate: true,
+        },
       },
       created() {
         if (!args.isLoading) {
@@ -606,75 +633,68 @@ export default {
       },
       template: `
       <div
-          style="
-      margin: 0 auto;
-      height: 100vh;
-      width: 100vw;
-      margin: -1rem;
-      padding: 1rem;
-      overflow: auto;
-    "
+          v-if="args._storybook_internal_show_experimental_warning_"
+          style="width: 960px; max-width: 100%; margin: 0 auto;"
       >
-        <div
-            v-if="args._storybook_internal_show_experimental_warning_"
-            style="width: 960px; max-width: 100%; margin: 0 auto;"
+        <mt-banner
+            title="Experimental component"
+            variant="attention"
         >
-          <mt-banner
-              title="Experimental component"
-              variant="attention"
-          >
-            This component is currently in an experimental state and may undergo frequent
-            changes. Please use it with discretion and be prepared for potential updates
-            that could impact its functionality, appearance, or behavior. We welcome
-            feedback, which can be submitted in the GitHub Discussions of the
-            Meteor Component Library.
-          </mt-banner>
-        </div>
-
-        <mt-data-table
-            v-bind="args"
-            :dataSource="dataSourceValue"
-            :paginationTotalItems="paginationTotalItemsValue"
-            @reload="reloadHandler"
-            :paginationLimit="paginationLimitValue"
-            @pagination-limit-change="paginationLimitChangeHandler"
-            :currentPage="currentPageValue"
-            @pagination-current-page-change="paginationCurrentPageChangeHandler"
-            :searchValue="searchValueValue"
-            @search-value-change="searchValueChangeHandler"
-            :sortBy="sortByValue"
-            :sortDirection="sortDirectionValue"
-            @sort-change="sortChangeValueHandler"
-            :isLoading="isLoadingValue"
-            :selectedRows="selectedRowsValue"
-            @selection-change="selectionChangeHandler"
-            @multiple-selection-change="multipleSelectionChangeHandler"
-            @open-details="args.openDetails"
-            @item-delete="args.itemDelete"
-            @bulk-edit="bulkEdit"
-            @bulk-delete="bulkDelete"
-            @change-show-outlines="changeShowOutlinesHandler"
-            :showOutlines="showOutlinesValue"
-            @change-show-stripes="changeShowStripesHandler"
-            :showStripes="showStripesValue"
-            @change-outline-framing="changeOutlineFramingHandler"
-            :enableOutlineFraming="enableOutlineFramingValue"
-            @change-enable-row-numbering="changeEnableRowNumberingHandler"
-            :enableRowNumbering="enableRowNumberingValue"
-        >
-          {{ args.default}}
-
-          <template #toolbar>
-            <mt-button
-                v-if="!args._remove_primary_toolbar_button_"
-                variant="primary"
-                @click="reloadHandler"
-            >
-              Primary
-            </mt-button>
-          </template>
-        </mt-data-table>
+          This component is currently in an experimental state and may undergo frequent
+          changes. Please use it with discretion and be prepared for potential updates
+          that could impact its functionality, appearance, or behavior. We welcome
+          feedback, which can be submitted in the GitHub Discussions of the
+          Meteor Component Library.
+        </mt-banner>
       </div>
+
+      <mt-data-table
+          v-bind="args"
+          :dataSource="dataSourceValue"
+          :paginationTotalItems="paginationTotalItemsValue"
+          @reload="reloadHandler"
+          :paginationLimit="paginationLimitValue"
+          @pagination-limit-change="paginationLimitChangeHandler"
+          :currentPage="currentPageValue"
+          @pagination-current-page-change="paginationCurrentPageChangeHandler"
+          :searchValue="searchValueValue"
+          @search-value-change="searchValueChangeHandler"
+          :sortBy="sortByValue"
+          :sortDirection="sortDirectionValue"
+          @sort-change="sortChangeValueHandler"
+          :isLoading="isLoadingValue"
+          :selectedRows="selectedRowsValue"
+          @selection-change="selectionChangeHandler"
+          @multiple-selection-change="multipleSelectionChangeHandler"
+          @open-details="args.openDetails"
+          @item-delete="args.itemDelete"
+          @bulk-edit="bulkEdit"
+          @bulk-delete="bulkDelete"
+          @change-show-outlines="changeShowOutlinesHandler"
+          :showOutlines="showOutlinesValue"
+          @change-show-stripes="changeShowStripesHandler"
+          :showStripes="showStripesValue"
+          @change-outline-framing="changeOutlineFramingHandler"
+          :enableOutlineFraming="enableOutlineFramingValue"
+          @change-enable-row-numbering="changeEnableRowNumberingHandler"
+          :enableRowNumbering="enableRowNumberingValue"
+          :filters="filters"
+          :applied-filters="appliedFilters"
+          @update:applied-filters="appliedFilters = $event"
+          :numberOfResults="numberOfResults"
+      >
+        {{ args.default}}
+
+        <template #toolbar>
+          <mt-button
+              v-if="!args._remove_primary_toolbar_button_"
+              variant="primary"
+              @click="reloadHandler"
+          >
+            Primary
+          </mt-button>
+        </template>
+      </mt-data-table>
     `,
       setup: () => {
         return {
@@ -689,6 +709,40 @@ export type MtDataTableStory = StoryObj<MtDataTableMeta>;
 export const Default: MtDataTableStory = {
   args: {
     _storybook_internal_show_experimental_warning_: true,
+    filters: [
+      {
+        id: "active",
+        label: "Active",
+        type: {
+          id: "options",
+          options: [
+            {
+              id: "true",
+              label: "Active",
+            },
+            {
+              id: "false",
+              label: "Inactive",
+            },
+          ],
+        },
+      },
+    ],
+    appliedFilters: [
+      {
+        id: "active",
+        label: "Active",
+        type: {
+          id: "options",
+          options: [
+            {
+              id: "false",
+              label: "Inactive",
+            },
+          ],
+        },
+      },
+    ],
   },
 };
 

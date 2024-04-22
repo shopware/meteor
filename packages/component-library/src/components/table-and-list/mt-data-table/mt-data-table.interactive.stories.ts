@@ -2,7 +2,7 @@ import meta, { type MtDataTableMeta, type MtDataTableStory } from "./mt-data-tab
 import MtDataTableFixtures from "./mt-data-table.fixtures.json";
 import { waitUntil } from "../../../_internal/test-helper";
 import { within, userEvent, waitFor, fireEvent } from "@storybook/test";
-import { expect } from "@storybook/test";
+import { expect, fn } from "@storybook/test";
 
 export default {
   ...meta,
@@ -643,5 +643,525 @@ export const EmitItemDeleteEventOnClickingDelete: MtDataTableStory = {
         name: "Awesome Concrete Chair",
       },
     });
+  },
+};
+
+export const VisualTestAddFilterViaFilterMenu: MtDataTableStory = {
+  name: "Add filters via the filter menu",
+  args: {
+    filters: [
+      {
+        id: "manufacturer",
+        label: "Manufacturer",
+        type: {
+          id: "options",
+          options: [
+            {
+              id: "manufacturer1",
+              label: "Schmidt and Bailey",
+            },
+            {
+              id: "manufacturer2",
+              label: "Little - Flatley",
+            },
+          ],
+        },
+      },
+    ],
+    appliedFilters: [],
+    "onUpdate:appliedFilters": fn(),
+  },
+  async play({ canvasElement, args }) {
+    const canvas = within(canvasElement);
+
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+
+    const filterMenuToggleButton = canvas.getByRole("button", { name: "Add filter" });
+    expect(filterMenuToggleButton).toBeVisible();
+    await userEvent.click(filterMenuToggleButton);
+
+    const popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
+
+    await userEvent.click(popover.getByText("Manufacturer"));
+
+    await userEvent.click(popover.getByText("Schmidt and Bailey"));
+
+    expect(canvas.getAllByTestId("mt-data-table-filter")).toHaveLength(1);
+    expect(args["onUpdate:appliedFilters"]).toHaveBeenNthCalledWith(1, [
+      {
+        id: "manufacturer",
+        label: "Manufacturer",
+        type: {
+          id: "options",
+          options: [
+            {
+              id: "manufacturer1",
+              label: "Schmidt and Bailey",
+            },
+          ],
+        },
+      },
+    ]);
+  },
+};
+
+export const VisualTestRemoveFilterViaFilterMenu: MtDataTableStory = {
+  name: "Remove filters via the filter menu",
+  args: {
+    filters: [
+      {
+        id: "manufacturer",
+        label: "Manufacturer",
+        type: {
+          id: "options",
+          options: [
+            {
+              id: "manufacturer1",
+              label: "Schmidt and Bailey",
+            },
+            {
+              id: "manufacturer2",
+              label: "Little - Flatley",
+            },
+          ],
+        },
+      },
+    ],
+    appliedFilters: [
+      {
+        id: "manufacturer",
+        label: "Manufacturer",
+        type: {
+          id: "options",
+          options: [
+            {
+              id: "manufacturer1",
+              label: "Schmidt and Bailey",
+            },
+          ],
+        },
+      },
+    ],
+    "onUpdate:appliedFilters": fn(),
+  },
+  async play({ canvasElement, args }) {
+    const canvas = within(canvasElement);
+
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+
+    const filterMenuToggleButton = canvas.getAllByRole("button", { name: "Add filter" })[0];
+    expect(filterMenuToggleButton).toBeVisible();
+    await userEvent.click(filterMenuToggleButton);
+
+    const popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
+
+    await userEvent.click(popover.getByText("Manufacturer"));
+
+    await userEvent.click(popover.getByText("Schmidt and Bailey"));
+
+    expect(canvas.queryAllByTestId("mt-data-table-filter")).toHaveLength(0);
+    expect(args["onUpdate:appliedFilters"]).toHaveBeenNthCalledWith(1, []);
+  },
+};
+
+export const VisualTestAddFilterViaIconButton: MtDataTableStory = {
+  name: "Add filters via the icon button",
+  args: {
+    filters: [
+      {
+        id: "manufacturer",
+        label: "Manufacturer",
+        type: {
+          id: "options",
+          options: [
+            {
+              id: "manufacturer1",
+              label: "Schmidt and Bailey",
+            },
+            {
+              id: "manufacturer2",
+              label: "Little - Flatley",
+            },
+          ],
+        },
+      },
+    ],
+    appliedFilters: [
+      {
+        id: "manufacturer",
+        label: "Manufacturer",
+        type: {
+          id: "options",
+          options: [
+            {
+              id: "manufacturer1",
+              label: "Schmidt and Bailey",
+            },
+          ],
+        },
+      },
+    ],
+    "onUpdate:appliedFilters": fn(),
+  },
+  async play({ canvasElement, args }) {
+    const canvas = within(canvasElement);
+
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+
+    const filterMenuToggleButton = canvas.getAllByRole("button", { name: "Add filter" })[1];
+    expect(filterMenuToggleButton).toBeVisible();
+    await userEvent.click(filterMenuToggleButton);
+
+    const popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
+
+    await userEvent.click(popover.getByText("Manufacturer"));
+
+    await userEvent.click(popover.getByText("Little - Flatley"));
+
+    expect(canvas.getAllByTestId("mt-data-table-filter")).toHaveLength(1);
+    expect(args["onUpdate:appliedFilters"]).toHaveBeenNthCalledWith(1, [
+      {
+        id: "manufacturer",
+        label: "Manufacturer",
+        type: {
+          id: "options",
+          options: [
+            {
+              id: "manufacturer1",
+              label: "Schmidt and Bailey",
+            },
+            {
+              id: "manufacturer2",
+              label: "Little - Flatley",
+            },
+          ],
+        },
+      },
+    ]);
+  },
+};
+
+export const VisualTestRemoveFilterViaIconButton: MtDataTableStory = {
+  name: "Remove filters via the icon button",
+  args: {
+    filters: [
+      {
+        id: "manufacturer",
+        label: "Manufacturer",
+        type: {
+          id: "options",
+          options: [
+            {
+              id: "manufacturer1",
+              label: "Schmidt and Bailey",
+            },
+          ],
+        },
+      },
+    ],
+    appliedFilters: [
+      {
+        id: "manufacturer",
+        label: "Manufacturer",
+        type: {
+          id: "options",
+          options: [
+            {
+              id: "manufacturer1",
+              label: "Schmidt and Bailey",
+            },
+          ],
+        },
+      },
+    ],
+    "onUpdate:appliedFilters": fn(),
+  },
+  async play({ canvasElement, args }) {
+    const canvas = within(canvasElement);
+
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+
+    const filterMenuToggleButton = canvas.getAllByRole("button", { name: "Add filter" })[1];
+    expect(filterMenuToggleButton).toBeVisible();
+    await userEvent.click(filterMenuToggleButton);
+
+    const popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
+
+    await userEvent.click(popover.getByText("Manufacturer"));
+
+    await userEvent.click(popover.getByText("Schmidt and Bailey"));
+
+    expect(canvas.queryAllByTestId("mt-data-table-filter")).toHaveLength(0);
+    expect(args["onUpdate:appliedFilters"]).toHaveBeenNthCalledWith(1, []);
+  },
+};
+
+export const VisualTestAddOptionViaTheFilterEditMenu: MtDataTableStory = {
+  name: "Add an option via the filter edit menu",
+  args: {
+    filters: [
+      {
+        id: "manufacturer",
+        label: "Manufacturer",
+        type: {
+          id: "options",
+          options: [
+            {
+              id: "manufacturer1",
+              label: "Schmidt and Bailey",
+            },
+            {
+              id: "manufacturer2",
+              label: "Little - Flatley",
+            },
+          ],
+        },
+      },
+    ],
+    appliedFilters: [
+      {
+        id: "manufacturer",
+        label: "Manufacturer",
+        type: {
+          id: "options",
+          options: [
+            {
+              id: "manufacturer1",
+              label: "Schmidt and Bailey",
+            },
+          ],
+        },
+      },
+    ],
+    "onUpdate:appliedFilters": fn(),
+  },
+  async play({ canvasElement, args }) {
+    const canvas = within(canvasElement);
+
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+
+    await userEvent.click(canvas.getByRole("button", { name: "Schmidt and Bailey" }));
+
+    const popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
+
+    await userEvent.click(popover.getByText("Little - Flatley"));
+
+    expect(canvas.getAllByTestId("mt-data-table-filter")).toHaveLength(1);
+    expect(args["onUpdate:appliedFilters"]).toHaveBeenNthCalledWith(1, [
+      {
+        id: "manufacturer",
+        label: "Manufacturer",
+        type: {
+          id: "options",
+          options: [
+            {
+              id: "manufacturer1",
+              label: "Schmidt and Bailey",
+            },
+            {
+              id: "manufacturer2",
+              label: "Little - Flatley",
+            },
+          ],
+        },
+      },
+    ]);
+  },
+};
+
+export const VisualTestRemoveOptionViaTheFilterEditMenu: MtDataTableStory = {
+  name: "Remove an option via the filter edit menu",
+  args: {
+    filters: [
+      {
+        id: "manufacturer",
+        label: "Manufacturer",
+        type: {
+          id: "options",
+          options: [
+            {
+              id: "manufacturer1",
+              label: "Schmidt and Bailey",
+            },
+            {
+              id: "manufacturer2",
+              label: "Little - Flatley",
+            },
+          ],
+        },
+      },
+    ],
+    appliedFilters: [
+      {
+        id: "manufacturer",
+        label: "Manufacturer",
+        type: {
+          id: "options",
+          options: [
+            {
+              id: "manufacturer1",
+              label: "Schmidt and Bailey",
+            },
+            {
+              id: "manufacturer2",
+              label: "Little - Flatley",
+            },
+          ],
+        },
+      },
+    ],
+    "onUpdate:appliedFilters": fn(),
+  },
+  async play({ canvasElement, args }) {
+    const canvas = within(canvasElement);
+
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+
+    await userEvent.click(
+      canvas.getByRole("button", { name: "Schmidt and Bailey, Little - Flatley" }),
+    );
+
+    const popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
+
+    await userEvent.click(popover.getByText("Little - Flatley"));
+
+    expect(canvas.getAllByTestId("mt-data-table-filter")).toHaveLength(1);
+    expect(args["onUpdate:appliedFilters"]).toHaveBeenNthCalledWith(1, [
+      {
+        id: "manufacturer",
+        label: "Manufacturer",
+        type: {
+          id: "options",
+          options: [
+            {
+              id: "manufacturer1",
+              label: "Schmidt and Bailey",
+            },
+          ],
+        },
+      },
+    ]);
+  },
+};
+
+export const VisualTestRemoveOptionViaTheRemoveButton: MtDataTableStory = {
+  name: "Remove an option via the remove button",
+  args: {
+    filters: [
+      {
+        id: "manufacturer",
+        label: "Manufacturer",
+        type: {
+          id: "options",
+          options: [
+            {
+              id: "manufacturer1",
+              label: "Schmidt and Bailey",
+            },
+          ],
+        },
+      },
+    ],
+    appliedFilters: [
+      {
+        id: "manufacturer",
+        label: "Manufacturer",
+        type: {
+          id: "options",
+          options: [
+            {
+              id: "manufacturer1",
+              label: "Schmidt and Bailey",
+            },
+          ],
+        },
+      },
+    ],
+    "onUpdate:appliedFilters": fn(),
+  },
+  async play({ canvasElement, args }) {
+    const canvas = within(canvasElement);
+
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+
+    await userEvent.click(canvas.getAllByRole("button", { name: "Remove filter" })[0]);
+
+    expect(canvas.queryAllByTestId("mt-data-table-filter")).toHaveLength(0);
+    expect(args["onUpdate:appliedFilters"]).toHaveBeenNthCalledWith(1, []);
+  },
+};
+
+export const VisualTestRemoveOptionViaTheRemoveAllButton: MtDataTableStory = {
+  name: "Remove an option via the remove all button",
+  args: {
+    filters: [
+      {
+        id: "manufacturer",
+        label: "Manufacturer",
+        type: {
+          id: "options",
+          options: [
+            {
+              id: "manufacturer1",
+              label: "Schmidt and Bailey",
+            },
+          ],
+        },
+      },
+      {
+        id: "status",
+        label: "Status",
+        type: {
+          id: "options",
+          options: [
+            {
+              id: "active",
+              label: "Active",
+            },
+          ],
+        },
+      },
+    ],
+    appliedFilters: [
+      {
+        id: "manufacturer",
+        label: "Manufacturer",
+        type: {
+          id: "options",
+          options: [
+            {
+              id: "manufacturer1",
+              label: "Schmidt and Bailey",
+            },
+          ],
+        },
+      },
+      {
+        id: "status",
+        label: "Status",
+        type: {
+          id: "options",
+          options: [
+            {
+              id: "active",
+              label: "Active",
+            },
+          ],
+        },
+      },
+    ],
+    "onUpdate:appliedFilters": fn(),
+  },
+  async play({ canvasElement, args }) {
+    const canvas = within(canvasElement);
+
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+
+    expect(canvas.queryAllByTestId("mt-data-table-filter")).toHaveLength(2);
+
+    await userEvent.click(canvas.getByRole("button", { name: "Remove filters" }));
+
+    expect(canvas.queryAllByTestId("mt-data-table-filter")).toHaveLength(0);
+    expect(args["onUpdate:appliedFilters"]).toHaveBeenNthCalledWith(1, []);
   },
 };

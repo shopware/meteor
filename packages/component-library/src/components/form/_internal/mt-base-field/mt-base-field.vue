@@ -275,6 +275,10 @@ $mt-field-transition:
     display: flex;
     align-items: center;
     gap: 8px;
+
+    &:empty {
+      display: none;
+    }
   }
 
   &__hint-right {
