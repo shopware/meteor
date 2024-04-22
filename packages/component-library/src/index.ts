@@ -29,6 +29,12 @@ import DeviceHelperPlugin from "./plugin/device-helper.plugin";
 // Import SCSS for styling
 import "./components/assets/scss/all.scss";
 
+// Importing types
+import type {
+  Filter,
+  Option,
+} from "./components/table-and-list/mt-data-table/mt-data-table.interfaces";
+
 export {
   MtBanner,
   MtLoader,
@@ -103,3 +109,6 @@ export {
   // @deprecated
   MtSkeletonBar as SwSkeletonBar,
 };
+
+// Exporting types
+export type { Filter, Option };
