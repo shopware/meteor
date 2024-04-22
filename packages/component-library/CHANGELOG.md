@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.5.2
+
+### Patch Changes
+
+- 84836ea: Fix correct wrapping of "mt-select-selection-list"
+
 ## 3.5.1
 
 ### Patch Changes

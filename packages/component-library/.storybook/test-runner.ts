@@ -18,6 +18,14 @@ module.exports = {
     ) {
       await page.setViewportSize({ width: 1600, height: 900 });
     }
+
+    // use smaller viewport to test wrapping of multi select
+    if (
+      context.id ===
+      "interaction-tests-form-mt-select--visual-test-ensure-correct-multi-selection-wrapping"
+    ) {
+      await page.setViewportSize({ width: 500, height: 650 });
+    }
   },
   async postRender(page, context) {
     // Render screenshots only for interaction tests with Visual Test name
