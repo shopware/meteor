@@ -87,7 +87,8 @@
   },
   "dependencies": {
     "localforage": "^1.10.0",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "@shopware-ag/meteor-component-library": "workspace:*"
   },
   "devDependencies": {
     "@playwright/test": "^1.43.0",
