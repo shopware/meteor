@@ -3,7 +3,7 @@
   "pipeline": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", "es/**", "umd/**"],
+      "outputs": ["dist/**", "es/**", "umd/**", ".docusaurus/**", "build/**"],
       "env": ["API_KEY"]
     },
     "@shopware-ag/meteor-component-library#build:storybook": {
