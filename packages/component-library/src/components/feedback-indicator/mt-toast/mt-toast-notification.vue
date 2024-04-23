@@ -165,7 +165,7 @@ watch(
 );
 
 function pauseTimer() {
-  if (!timeoutId.value) {
+  if (!timeoutId.value || quickDisplay.value) {
     return;
   }
 
@@ -179,7 +179,7 @@ function pauseTimer() {
 }
 
 function resumeTimer() {
-  if (!showTimer.value) {
+  if (!showTimer.value || quickDisplay.value) {
     return;
   }
 

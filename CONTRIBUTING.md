@@ -37,6 +37,16 @@ can up-vote that issue. This helps us to see what the community wants the most.
 If there does not already exist a feature request for your idea,
 you can [request a feature](https://github.com/shopware/meteor/issues/new).
 
+## Local development
+
+For local development we use `yalc` to publish packages into a virtual store and use them in other projects.
+You can find yalc [here](https://github.com/wclr/yalc) on GitHub.
+The workflow looks something like this:
+
+1. Make changes for the desired package/s
+2. Publish packages with `yalc publish --private --workspace --pure` from the package root folder `e.g <meteorRoot>/packages/admin-sdk`
+3. Link package in the Shopware Administration folder with `yalc link <package-name@package-version>`
+
 ## Creating a pull request
 
 The first step is to clone your repo. Then, install the dependencies with:

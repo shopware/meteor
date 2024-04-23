@@ -1,5 +1,6 @@
 import * as window from './window';
 import * as notification from './notification';
+import * as toast from './toast';
 import * as context from './context';
 import * as componentSection from './ui/component-section';
 import tabs from './ui/tabs';
@@ -38,6 +39,7 @@ const ui = {
 export {
   window,
   notification,
+  toast,
   context,
   ui,
   cms,

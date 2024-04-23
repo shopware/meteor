@@ -1,4 +1,5 @@
 import type { notificationDispatch } from './notification/index';
+import type { toastDispatch } from './toast';
 import type { windowRedirect, windowReload, windowRouterPush } from './window/index';
 import type { contextLanguage, contextEnvironment, contextLocale, contextCurrency, contextShopwareVersion, contextAppInformation, contextModuleInformation, contextUserInformation } from './context/index';
 import type { uiComponentSectionRenderer } from './ui/component-section/index';
@@ -34,6 +35,7 @@ import type {
  */
 export interface ShopwareMessageTypes {
   notificationDispatch: notificationDispatch,
+  toastDispatch: toastDispatch,
   windowRedirect: windowRedirect,
   windowRouterPush: windowRouterPush,
   windowReload: windowReload,

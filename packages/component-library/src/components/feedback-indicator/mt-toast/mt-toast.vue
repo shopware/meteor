@@ -35,7 +35,7 @@ import { type PropType, ref, toRef, defineProps, computed, watch, defineEmits } 
 import MtToastNotification from "./mt-toast-notification.vue";
 
 export interface Toast {
-  id: number;
+  id: number | string;
 
   // Public api
   msg: string; // Toast message
