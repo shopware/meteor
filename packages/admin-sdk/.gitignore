@@ -6,7 +6,6 @@ dist-example
 *.local
 .idea
 coverage
-docs/docs/api
 es
 umd
 example-dist
