@@ -49,7 +49,7 @@ ui.modal.open({
 | `showHeader` | false    | true      | Enable the header in the modal which contains the title                                                                                        |                       |
 | `showFooter` | false    | true      | Enable the modal footer                                                                                                                        | v6.5.8                |
 | `closable`   | false    | true      | If this is set to `false` then the modal can only be closed programmatically                                                                   |                       |
-| `buttons`    | false    | []        | This array contains [button configurations](../../../api/modules/ui_modal.md#buttonprops) which will render buttons in the footer of the modal |                       |
+| `buttons`    | false    | []        | This array contains button configurations which will render buttons in the footer of the modal |                       |
 
 #### Example
 ![Menu item example](./assets/modal-example.png)
