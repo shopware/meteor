@@ -1,5 +1,19 @@
 # Changelog
 
+## 5.2.0
+
+### Minor Changes
+
+- b54d88c: Implement Toasts
+
+### Patch Changes
+
+- Updated dependencies [22a5068]
+- Updated dependencies [b54d88c]
+- Updated dependencies [321a830]
+- Updated dependencies [3b22c7a]
+  - @shopware-ag/meteor-component-library@3.6.0
+
 ## 5.1.1
 
 ### Patch Changes
