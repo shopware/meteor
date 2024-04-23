@@ -10,8 +10,10 @@ This repository contains all project related to the Meteor Design System used an
 
 ```
 meteor/
+├── docs
+│   └── admin-sdk               # Documentation about the Meteor Admin SDK
 ├── examples
-│   ├── admin-sdk-app           # Basic project to get started with the Admin SDK
+│   ├── admin-sdk-app           # Basic project to get started with the Meteor Admin SDK
 │   └── nuxt-app                # Simple Nuxt server-side rendered application
 └── packages
     ├── admin-sdk               # SDK to build Apps for the Shopware 6 Administration
