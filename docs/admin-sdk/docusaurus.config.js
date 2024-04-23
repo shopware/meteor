@@ -16,23 +16,6 @@ const config = {
   organizationName: 'Shopware AG', // Usually your GitHub org/user name.
   projectName: 'meteor-admin-sdk', // Usually your repo name.
 
-  plugins: [
-    [
-      'docusaurus-plugin-typedoc',
-
-      // Plugin / TypeDoc options
-      {
-        entryPoints: ['../src'],
-        entryPointStrategy: 'expand',
-        tsconfig: '../tsconfig.json',
-        watch: process.env.TYPEDOC_WATCH,
-        publicPath: 'api/',
-        readme: 'none',
-        sort: ['instance-first']
-      },
-    ]
-  ],
-
   presets: [
     [
       '@docusaurus/preset-classic',
@@ -65,12 +48,6 @@ const config = {
             label: 'Guide',
           },
           {
-            to: 'docs/api',
-            activeBasePath: 'docs/api',
-            position: 'left',
-            label: 'API',
-          },
-          {
             href: 'https://github.com/shopware/meteor-admin-sdk',
             label: 'GitHub',
             position: 'right',
@@ -87,24 +64,24 @@ const config = {
       algolia: {
         // If Algolia did not provide you any appId, use 'BH4D9OD16A'
         appId: 'BH4D9OD16A',
-  
+
         // Public API key: it is safe to commit it
         apiKey: 'YOUR_SEARCH_API_KEY',
-  
+
         indexName: 'Shopware_Admin_Extension_SDK',
-  
+
         // Optional: see doc section below
         contextualSearch: true,
-  
+
         // Optional: Specify domains where the navigation should occur through window.location instead on history.push. Useful when our Algolia config crawls multiple documentation sites and we want to navigate with window.location.href to them.
         // externalUrlRegex: 'external\\.com|domain\\.com',
-  
+
         // Optional: see doc section below
         // appId: 'YOUR_APP_ID',
-  
+
         // Optional: Algolia search parameters
         searchParameters: {},
-  
+
         //... other Algolia params
       },
     }),
