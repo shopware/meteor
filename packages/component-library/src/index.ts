@@ -16,6 +16,7 @@ import MtTextarea from "./components/form/mt-textarea/mt-textarea.vue";
 import MtUrlField from "./components/form/mt-url-field/mt-url-field.vue";
 import MtIcon from "./components/icons-media/mt-icon/mt-icon.vue";
 import MtCard from "./components/layout/mt-card/mt-card.vue";
+import MtEmptyState from "./components/layout/mt-empty-state/mt-empty-state.vue";
 import MtTabs from "./components/navigation/mt-tabs/mt-tabs.vue";
 import MtDataTable from "./components/table-and-list/mt-data-table/mt-data-table.vue";
 import MtPagination from "./components/table-and-list/mt-pagination/mt-pagination.vue";
@@ -54,6 +55,7 @@ export {
   MtUrlField,
   MtIcon,
   MtCard,
+  MtEmptyState,
   MtTabs,
   MtDataTable,
   MtPagination,
