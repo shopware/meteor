@@ -16,7 +16,8 @@
       }"
       data-testid="mt-inheritance-switch-icon"
       :multicolor="true"
-      name="regular-lock-s"
+      name="regular-link-horizontal"
+      size="14"
       @click="onClickRemoveInheritance"
     />
     <mt-icon
@@ -28,7 +29,7 @@
       }"
       :class="unInheritClasses"
       :multicolor="true"
-      name="regular-lock-open-s"
+      name="regular-link-horizontal-slash"
       size="14"
       @click="onClickRestoreInheritance"
     />
