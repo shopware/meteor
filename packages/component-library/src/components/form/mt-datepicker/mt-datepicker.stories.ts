@@ -18,6 +18,7 @@ export default {
         v-bind="args"
         v-model="currentValue"
         @update:modelValue="args.updateModelValue"
+        :config="args.config"
       ></mt-datepicker>`,
     components: { MtDatepicker },
     data() {
@@ -41,6 +42,7 @@ export default {
     label: "Datepicker",
     updateModelValue: fn(action("update:modelValue")),
     modelValue: null,
+    config: {},
   },
 } as MtDatepickerMeta;
 

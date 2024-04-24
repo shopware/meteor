@@ -237,4 +237,18 @@ describe("src/app/component/form/mt-datepicker", () => {
     // Skip this test because data-fns-tz is not working correctly in the test environment
     // expect(wrapper.emitted('update:modelValue')[0]).toStrictEqual(['2023-03-21T23:00:00.000Z']);
   });
+
+  it("should allow to select a range of dates", async () => {
+    wrapper = await createWrapper({
+      props: {
+        modelValue: "2024-03-19T00:00:00 to 2024-03-30T00:00:00",
+        dateType: "date",
+        config: {
+          mode: "range",
+        },
+      },
+    });
+
+    expect(wrapper.vm.timezoneFormattedValue).toBe("2024-03-19T00:00:00 to 2024-03-30T00:00:00");
+  });
 });
