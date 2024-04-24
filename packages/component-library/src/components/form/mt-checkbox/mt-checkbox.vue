@@ -235,13 +235,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-$mt-field-color-text: $color-darkgray-200;
-$mt-field-color-focus: $color-shopware-brand-500;
-$mt-field-color-background: $color-white;
-$mt-field-color-border: $color-gray-300;
-$mt-field-color-error: $color-crimson-500;
-$mt-field-color-inherited: $color-module-purple-900;
-
 .mt-field--checkbox__container {
   .mt-field--checkbox {
     margin-bottom: 22px;
@@ -301,39 +294,38 @@ $mt-field-color-inherited: $color-module-purple-900;
         }
 
         &:disabled ~ .mt-field__checkbox-state {
-          background: $color-gray-100;
-          border-color: $color-gray-300;
-          color: lighten($mt-field-color-text, 40%);
+          background: var(--color-background-primary-disabled);
+          border-color: var(--color-border-primary-default);
         }
 
         &:checked ~ .mt-field__checkbox-state {
-          background: $mt-field-color-focus;
-          border-color: $mt-field-color-focus;
+          background: var(--color-interaction-primary-default);
+          border-color: var(--color-interaction-primary-default);
 
           .mt-icon {
             display: flex;
             justify-content: center;
             align-items: center;
+            color: var(--color-icon-inverted-default);
           }
         }
 
         &:checked:disabled ~ .mt-field__checkbox-state {
-          background: $color-gray-100;
-          border-color: $color-gray-300;
-          color: lighten($mt-field-color-text, 40%);
+          background: var(--color-background-primary-disabled);
+          border-color: var(--color-border-primary-default);
 
           .mt-icon {
-            color: lighten($mt-field-color-text, 40%);
+            color: var(--color-border-primary-default);
           }
         }
 
         &:indeterminate ~ .mt-field__checkbox-state {
-          background-color: $color-shopware-brand-500;
-          border: 1px solid $color-shopware-brand-500;
+          background-color: var(--color-interaction-primary-default);
+          border: 1px solid var(--color-interaction-primary-default);
 
           .mt-icon {
             display: inline-block;
-            color: white;
+            color: var(--color-icon-inverted-default);
           }
         }
       }
@@ -344,9 +336,9 @@ $mt-field-color-inherited: $color-module-purple-900;
         height: 100%;
         z-index: 1;
         text-align: center;
-        background: $mt-field-color-background;
-        color: $mt-field-color-text;
-        border: 1px solid $mt-field-color-border;
+        background: var(--color-background-primary-default);
+        color: var(--color-text-primary-default);
+        border: 1px solid var(--color-border-primary-default);
         border-radius: 4px;
         display: flex;
         justify-content: center;
@@ -354,7 +346,7 @@ $mt-field-color-inherited: $color-module-purple-900;
 
         .mt-icon {
           display: none;
-          color: $mt-field-color-background;
+          color: var(--color-background-primary-default);
         }
       }
     }
@@ -363,27 +355,27 @@ $mt-field-color-inherited: $color-module-purple-900;
       margin-bottom: 0;
 
       .mt-field__checkbox-state {
-        border: 1px solid $mt-field-color-error;
+        border: 1px solid var(--color-interaction-critical-default);
       }
 
       .mt-field__label {
-        color: $color-crimson-500;
+        color: var(--color-text-critical-default);
       }
 
       input[type="checkbox"] {
         &:disabled ~ .mt-field__checkbox-state {
           border:
-            1px solid $mt-field-color-error,
+            1px solid var(--color-interaction-critical-default),
             5%;
         }
 
         &:checked ~ .mt-field__checkbox-state {
-          border: 1px solid $mt-field-color-error;
-          background-color: $mt-field-color-error;
+          border: 1px solid var(--color-interaction-critical-default);
+          background-color: var(--color-interaction-critical-default);
         }
 
         &:checked:disabled ~ .mt-field__checkbox-state {
-          border: 1px solid $mt-field-color-error;
+          border: 1px solid var(--color-interaction-critical-default);
         }
       }
     }
@@ -391,19 +383,19 @@ $mt-field-color-inherited: $color-module-purple-900;
     &.is--inherited {
       input[type="checkbox"] {
         &:checked ~ .mt-field__checkbox-state {
-          border-color: $mt-field-color-border;
-          background: $mt-field-color-border;
+          border-color: var(--color-border-primary-default);
+          background: var(--color-background-primary-disabled);
         }
       }
     }
 
     &.is--bordered {
       border-radius: 4px;
-      border: 1px solid $color-gray-300;
+      border: 1px solid var(--color-border-primary-default);
       padding: 16px;
 
       &.has--error {
-        border-color: $mt-field-color-error;
+        border-color: var(--color-border-critical-default);
       }
     }
   }
