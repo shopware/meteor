@@ -137,11 +137,11 @@ export default defineComponent({
 .mt-search.mt-field {
   .icon--regular-search-s {
     transition: 0.3s all ease;
-    background-color: $color-white;
-    color: $color-gray-600;
+    color: var(--color-icon-primary-default);
     display: flex;
     align-items: center;
     padding-left: 12px;
+    background: var(--color-elevation-surface-raised);
 
     #meteor-icon-kit__regular-search-s {
       width: 10px;
@@ -155,7 +155,7 @@ export default defineComponent({
 
   &.is--disabled {
     .icon--regular-search-s {
-      background-color: $color-gray-100;
+      background-color: var(--color-background-primary-disabled);
     }
   }
 }
