@@ -271,7 +271,7 @@ $mt-field-transition:
   &__hint-right {
     margin-top: 4px;
     font-size: $font-size-extra-small;
-    color: $color-gray-500;
+    color: var(--color-text-tertiary-default);
     display: flex;
     align-items: center;
     gap: 8px;
@@ -301,12 +301,12 @@ $mt-field-transition:
     min-width: 0;
     padding: 13px 16px;
     border: none;
-    background: $color-white;
+    background: var(--color-elevation-surface-raised);
     font-size: $font-size-small;
     font-family: $font-family-default;
     line-height: 22px;
     transition: $mt-field-transition;
-    color: $color-darkgray-200;
+    color: var(--color-text-primary-default);
     outline: none;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -318,49 +318,49 @@ $mt-field-transition:
     }
 
     &:disabled {
-      background: $color-gray-100;
+      background: var(--color-background-primary-disabled);
       border-color: $color-gray-300;
       cursor: default !important;
     }
 
     &::placeholder {
-      color: lighten($color-darkgray-200, 25%);
+      color: var(--color-text-secondary-default);
     }
   }
 
   .mt-block-field__block {
-    border: 1px solid $color-gray-300;
+    border: 1px solid var(--color-border-primary-default);
     border-radius: $border-radius-default;
     overflow: hidden;
   }
 
   &.has--focus {
     .mt-block-field__block {
-      border-color: $color-shopware-brand-500;
-      box-shadow: 0 0 4px lighten($color-shopware-brand-500, 30%);
+      border-color: var(--color-border-brand-selected);
+      box-shadow: 0px 0px 4px 0px rgba(24, 158, 255, 0.3);
     }
   }
 
   &.has--error {
     label {
-      color: $color-crimson-500;
+      color: var(--color-text-critical-default);
     }
 
     &.mt-field input {
-      background-color: $color-crimson-50;
+      background-color: var(--color-background-critical-dark);
     }
 
     .mt-field__addition {
-      border-left: 1px solid $color-crimson-500;
+      border-left: 1px solid var(--color-border-critical-default);
 
       &.is--prefix {
-        border-right: 1px solid $color-crimson-500;
+        border-right: 1px solid var(--color-border-critical-default);
       }
     }
 
     .mt-block-field__block {
-      background: $color-crimson-50;
-      border-color: $color-crimson-500;
+      background: var(--color-background-critical-dark);
+      border-color: var(--color-border-critical-default);
     }
   }
 
@@ -390,13 +390,13 @@ $mt-field-transition:
     justify-content: center;
     align-items: center;
     min-width: 50px;
-    background: $color-gray-50;
-    border-left: 1px solid $color-gray-300;
+    background: var(--color-interaction-secondary-dark);
+    border-left: 1px solid var(--color-border-primary-default);
     border-right: none;
     line-height: 22px;
     padding: 12px 15px;
     font-size: $font-size-small;
-    color: $color-darkgray-200;
+    color: var(--color-text-primary-default);
     transition: $mt-field-transition;
 
     &:empty {
@@ -404,18 +404,12 @@ $mt-field-transition:
     }
 
     &.is--prefix {
-      border-right: 1px solid $color-gray-300;
+      border-right: 1px solid var(--color-border-primary-default);
       border-left: none;
 
       &:empty {
         display: none;
       }
-    }
-  }
-
-  &.is--disabled {
-    .mt-field__addition {
-      background: $color-gray-100;
     }
   }
 
@@ -448,7 +442,7 @@ $mt-field-transition:
     line-height: 16px;
     font-size: 14px;
     margin-bottom: 8px;
-    color: $color-darkgray-200;
+    color: var(--color-text-primary-default);
 
     label {
       flex-grow: 1;
@@ -462,7 +456,11 @@ $mt-field-transition:
 
   &.is--inherited {
     .mt-field__label {
-      color: $color-module-purple-900;
+      color: var(--color-text-accent-default);
+
+      .sw-icon {
+        color: var(--color-icon-accent-default);
+      }
     }
   }
 }
