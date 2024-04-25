@@ -545,6 +545,26 @@ describe("mt-data-table", () => {
     });
   });
 
+  it("should render table data cells with an image inside", async () => {
+    const wrapper = createWrapper();
+
+    await wrapper.setProps({
+      ...wrapper.props(),
+      columns: [
+        {
+          label: "Name",
+          property: "name",
+          previewImage: "imageURL",
+          renderer: "text",
+          position: 0,
+        },
+      ],
+    });
+
+    const image = wrapper.find("img");
+    expect(image.exists()).toBeTruthy();
+  });
+
   describe("should render the card props correctly", () => {
     it("should render the title", () => {
       const wrapper = createWrapper();
