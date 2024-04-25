@@ -225,8 +225,6 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped lang="scss">
-@import "../../assets/scss/variables.scss";
-
 .mt-toast-notification {
   position: absolute;
   bottom: 0;

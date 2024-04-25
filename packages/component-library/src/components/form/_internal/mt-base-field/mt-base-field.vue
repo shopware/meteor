@@ -242,8 +242,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "../../../assets/scss/variables.scss";
-
 $mt-field-transition: border-color 0.3s ease-out;
 $mt-field-transition:
   border-color 0.3s ease-out,

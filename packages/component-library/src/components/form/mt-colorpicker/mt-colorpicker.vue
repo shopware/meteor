@@ -1212,9 +1212,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "../../assets/scss/variables.scss";
-@import "../../assets/scss/mixins.scss";
-
 .mt-colorpicker {
   position: relative;
 
