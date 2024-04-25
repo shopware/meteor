@@ -140,8 +140,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "../../assets/scss/variables.scss";
-
 $mt-banner-size-close: 40px;
 
 .mt-banner {

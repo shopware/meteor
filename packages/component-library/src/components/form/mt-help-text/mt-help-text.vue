@@ -72,8 +72,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "../../assets/scss/variables.scss";
-
 .mt-help-text {
   color: $color-shopware-brand-500;
   display: inline-flex;

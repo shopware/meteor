@@ -86,8 +86,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "../../assets/scss/variables.scss";
-
 .mt-empty-state {
   &__icon {
     display: inline-block;

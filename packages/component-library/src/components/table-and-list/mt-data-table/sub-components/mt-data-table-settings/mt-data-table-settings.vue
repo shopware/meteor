@@ -64,8 +64,8 @@
         @change-switch="($event) => $emit('change-outline-framing', $event)"
       />
 
-      <!-- 
-        More popover items will be added in the future. 
+      <!--
+        More popover items will be added in the future.
         Some examples can be found in the mt-popover story.
       -->
 
@@ -313,8 +313,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "../../../../assets/scss/variables.scss";
-
 .mt-data-table-settings {
 }
 </style>

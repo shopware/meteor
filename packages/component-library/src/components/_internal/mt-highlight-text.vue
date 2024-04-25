@@ -52,8 +52,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "../assets/scss/variables.scss";
-
 .mt-highlight-text {
   .mt-highlight-text__highlight {
     color: $color-shopware-brand-500;

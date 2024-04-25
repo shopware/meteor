@@ -109,8 +109,6 @@ function onMouseLeave() {
 </script>
 
 <style scoped lang="scss">
-@import "../../assets/scss/variables.scss";
-
 .mt-toast {
   display: flex;
   position: fixed;

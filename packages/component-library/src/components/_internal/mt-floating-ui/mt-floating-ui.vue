@@ -218,8 +218,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "../../assets/scss/variables.scss";
-
 .mt-floating-ui {
   display: inline-block;
   position: relative;

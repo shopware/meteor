@@ -207,9 +207,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "../../assets/scss/variables.scss";
-@import "../../assets/scss/mixins.scss";
-
 /**
 * Use inter-font instead of normal font for popover. Also add the new variables to this file.
 */
