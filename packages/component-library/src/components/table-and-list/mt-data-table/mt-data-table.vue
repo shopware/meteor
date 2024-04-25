@@ -1939,8 +1939,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "../../assets/scss/variables.scss";
-
 /**
 * Use inter-font instead of normal font for data-table. Also add the new variables to this file.
 */

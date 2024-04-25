@@ -56,8 +56,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "../../assets/scss/variables.scss";
-
 $mt-color-badge-color-fallback: $color-gray-300;
 $mt-color-badge-color-warning: $color-pumpkin-spice-500;
 $mt-color-badge-color-critical: $color-crimson-500;

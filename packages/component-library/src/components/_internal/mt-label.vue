@@ -116,10 +116,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@use "sass:math";
-@import "../assets/scss/variables.scss";
-@import "../assets/scss/mixins.scss";
-
 @mixin mt-label-variant($color-background, $color-text, $color-border, $color-border-normal) {
   background-color: $color-background;
   border-color: $color-border-normal;

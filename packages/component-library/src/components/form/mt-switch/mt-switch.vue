@@ -220,8 +220,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "../../assets/scss/variables.scss";
-
 $mt-field--switch-color-border: $color-gray-300;
 $mt-field--switch-color-background: $color-white;
 $mt-field--switch-color-text: $color-darkgray-200;

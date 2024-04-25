@@ -577,8 +577,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "../../assets/scss/variables.scss";
-
 $mt-datepicker-color-border: $color-gray-300;
 $mt-datepicker-color-font: $color-darkgray-200;
 $mt-datepicker-color-disabled-font: #b3bfcc;

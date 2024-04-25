@@ -103,8 +103,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "../../assets/scss/variables.scss";
-
 .mt-external-link {
   color: $color-shopware-brand-500;
   font-size: $font-size-small;

@@ -134,8 +134,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "../../assets/scss/variables.scss";
-
 .mt-search.mt-field {
   .icon--regular-search-s {
     transition: 0.3s all ease;

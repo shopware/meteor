@@ -206,8 +206,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "../../assets/scss/variables.scss";
-
 $mt-avatar-size-default: 40px;
 
 .mt-avatar {

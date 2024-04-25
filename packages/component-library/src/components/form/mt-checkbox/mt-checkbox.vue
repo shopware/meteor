@@ -235,8 +235,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "../../assets/scss/variables.scss";
-
 $mt-field-color-text: $color-darkgray-200;
 $mt-field-color-focus: $color-shopware-brand-500;
 $mt-field-color-background: $color-white;

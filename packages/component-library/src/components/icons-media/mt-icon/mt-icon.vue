@@ -126,8 +126,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "../../assets/scss/variables.scss";
-@import "../../assets/scss/mixins.scss";
 @import "node_modules/@shopware-ag/meteor-icon-kit/icons/meteor-icon-kit.scss";
 
 .mt-icon {

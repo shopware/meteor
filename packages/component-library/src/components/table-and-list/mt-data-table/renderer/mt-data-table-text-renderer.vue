@@ -52,8 +52,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import "../../../assets/scss/variables.scss";
-
 a.mt-data-table-text-renderer {
   font-weight: $font-weight-medium;
   text-decoration: none;

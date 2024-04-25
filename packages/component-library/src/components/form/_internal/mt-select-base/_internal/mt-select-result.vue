@@ -165,8 +165,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "../../../../assets/scss/variables.scss";
-
 $mt-select-result-active-color-background: lighten($color-shopware-brand-500, 40%);
 $mt-select-result-active-color-text: $color-shopware-brand-500;
 $mt-select-result-color-border: $color-gray-300;
