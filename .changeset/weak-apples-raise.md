@@ -2,4 +2,4 @@
 "@shopware-ag/meteor-component-library": minor
 ---
 
-Import overlay popover component to use.
+Allow add an image to cell table

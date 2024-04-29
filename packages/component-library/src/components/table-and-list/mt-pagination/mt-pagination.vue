@@ -145,8 +145,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "../../assets/scss/variables.scss";
-
 .mt-pagination {
   display: flex;
   flex-wrap: nowrap;

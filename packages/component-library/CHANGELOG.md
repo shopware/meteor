@@ -1,5 +1,17 @@
 # Changelog
 
+## 3.6.0
+
+### Minor Changes
+
+- 22a5068: Exporting Filter and Option types
+- 321a830: Add filters to data table
+- 3b22c7a: Import overlay popover component to use.
+
+### Patch Changes
+
+- b54d88c: Fix toast type to accept string|number for property id
+
 ## 3.5.2
 
 ### Patch Changes

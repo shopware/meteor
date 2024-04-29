@@ -90,8 +90,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-@import "../../../../assets/scss/variables.scss";
-
 .mt-data-table-filter {
   display: inline-flex;
   font-size: 12px;

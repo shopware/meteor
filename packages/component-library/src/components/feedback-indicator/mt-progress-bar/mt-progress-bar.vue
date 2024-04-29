@@ -126,8 +126,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "../../assets/scss/variables.scss";
-
 .mt-progress-bar {
   .mt-block-field__block {
     border: none;

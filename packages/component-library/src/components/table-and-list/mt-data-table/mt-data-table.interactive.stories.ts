@@ -3,6 +3,7 @@ import MtDataTableFixtures from "./mt-data-table.fixtures.json";
 import { waitUntil } from "../../../_internal/test-helper";
 import { within, userEvent, waitFor, fireEvent } from "@storybook/test";
 import { expect, fn } from "@storybook/test";
+import Image34x24 from "../../assets/images/34x24.png";
 
 export default {
   ...meta,
@@ -1165,3 +1166,184 @@ export const VisualTestRemoveOptionViaTheRemoveAllButton: MtDataTableStory = {
     expect(args["onUpdate:appliedFilters"]).toHaveBeenNthCalledWith(1, []);
   },
 };
+
+export const VisualTestRenderTableWithAnImageInCellTable: MtDataTableStory = {
+  name: "Should render an image in a cell table",
+  args: {
+    dataSource: [
+      {
+        id: "bbf41666-d40f-44d1-8d31-49daab4fdc87",
+        active: true,
+        name: "Aa Render scroll shadows",
+        imageURL: Image34x24,
+        manufacturer: {
+          name: "Last manufacturer",
+          translated: {
+            name: "Last manufacturer",
+          },
+        },
+        translated: {
+          name: "Aa Render scroll shadows",
+        },
+        price: [
+          {
+            currencyId: "b7d2554b0ce847cd82f3ac9bd1c0dfca",
+            gross: "835.00",
+            net: "681.00",
+            linked: false,
+          },
+        ],
+        stock: 409278,
+        available: 202164,
+      },
+      {
+        id: "bbf41666-d40f-44d1-8d31-49daab4fdc87",
+        active: true,
+        name: "Aa Render scroll shadows",
+        imageURL: Image34x24,
+        manufacturer: {
+          name: "Last manufacturer",
+          translated: {
+            name: "Last manufacturer",
+          },
+        },
+        translated: {
+          name: "Aa Render scroll shadows",
+        },
+        price: [
+          {
+            currencyId: "b7d2554b0ce847cd82f3ac9bd1c0dfca",
+            gross: "972.00",
+            net: "681.00",
+            linked: false,
+          },
+        ],
+        stock: 409278,
+        available: 202164,
+      },
+      {
+        id: "bbf41666-d40f-44d1-8d31-49daab4fdc87",
+        active: true,
+        name: "Aa Render scroll shadows",
+        imageURL: Image34x24,
+        manufacturer: {
+          name: "Last manufacturer",
+          translated: {
+            name: "Last manufacturer",
+          },
+        },
+        translated: {
+          name: "Aa Render scroll shadows",
+        },
+        price: [
+          {
+            currencyId: "b7d2554b0ce847cd82f3ac9bd1c0dfca",
+            gross: "972.00",
+            net: "681.00",
+            linked: false,
+          },
+        ],
+        stock: 409278,
+        available: 202164,
+      },
+      {
+        id: "bbf41666-d40f-44d1-8d31-49daab4fdc87",
+        active: true,
+        name: "Aa Render scroll shadows",
+        imageURL: Image34x24,
+        manufacturer: {
+          name: "Last manufacturer",
+          translated: {
+            name: "Last manufacturer",
+          },
+        },
+        translated: {
+          name: "Aa Render scroll shadows",
+        },
+        price: [
+          {
+            currencyId: "b7d2554b0ce847cd82f3ac9bd1c0dfca",
+            gross: "972.00",
+            net: "681.00",
+            linked: false,
+          },
+        ],
+        stock: 409278,
+        available: 202164,
+      },
+      {
+        id: "bbf41666-d40f-44d1-8d31-49daab4fdc87",
+        active: true,
+        name: "Aa Render scroll shadows",
+        imageURL: Image34x24,
+        manufacturer: {
+          name: "Last manufacturer",
+          translated: {
+            name: "Last manufacturer",
+          },
+        },
+        translated: {
+          name: "Aa Render scroll shadows",
+        },
+        price: [
+          {
+            currencyId: "b7d2554b0ce847cd82f3ac9bd1c0dfca",
+            gross: "972.00",
+            net: "681.00",
+            linked: false,
+          },
+        ],
+        stock: 409278,
+        available: 202164,
+      },
+    ],
+    columns: [
+      {
+        label: "Name",
+        property: "name",
+        renderer: "text",
+        position: 0,
+        cellWrap: "normal",
+        sortable: true,
+        clickable: true,
+        previewImage: "imageURL",
+      },
+      {
+        label: "Manufacturer",
+        property: "manufacturer.name",
+        renderer: "text",
+        position: 100,
+        cellWrap: "normal",
+        sortable: true,
+      },
+    ],
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+
+    const elementsWithText = canvas.getAllByText("Aa Render scroll shadows");
+    expect(elementsWithText.length).toBeGreaterThan(0);
+
+    const elementsWithAltText = canvas.getAllByAltText("Aa Render scroll shadows");
+    expect(elementsWithAltText.length).toBeGreaterThan(0);
+  },
+};
+
+export const VisualTestShouldHideTheLastColumnWithViaDisableContextMenuAndSettingsTable: MtDataTableStory =
+  {
+    name: "Should hide the last column with disableContextMenu and disableSettingsTable",
+    args: {
+      disableEdit: true,
+      disableDelete: true,
+      disableSettingsTable: true,
+    },
+    play: async ({ canvasElement }) => {
+      const canvas = within(canvasElement);
+      await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+
+      await expect(canvas.queryByLabelText("Context menu")).toBeNull();
+      await expect(canvas.queryByLabelText("Toggle view settings")).toBeNull();
+    },
+  };

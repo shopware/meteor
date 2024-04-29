@@ -128,8 +128,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "../../assets/scss/variables.scss";
-
 $mt-context-button-color-text: $color-darkgray-200;
 $mt-context-button-border-radius: $border-radius-default;
 $mt-context-button-color-border: $color-gray-300;

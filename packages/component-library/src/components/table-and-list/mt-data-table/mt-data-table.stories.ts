@@ -315,6 +315,7 @@ export default {
     ],
     disableEdit: false,
     disableDelete: false,
+    disableSettingsTable: false,
     filters: [],
     appliedFilters: [],
     numberOfResults: undefined,

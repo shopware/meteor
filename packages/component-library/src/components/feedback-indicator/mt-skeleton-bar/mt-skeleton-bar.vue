@@ -13,8 +13,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "../../assets/scss/variables.scss";
-
 $mt-skeleton-bar-color: $color-gray-100;
 $mt-skeleton-bar-height: 32px;
 $mt-skeleton-shimmer-dark: $color-gray-200;

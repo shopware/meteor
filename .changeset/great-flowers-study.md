@@ -2,4 +2,4 @@
 "@shopware-ag/meteor-component-library": minor
 ---
 
-Exporting Filter and Option types
+Update and build globally mt-empty-state

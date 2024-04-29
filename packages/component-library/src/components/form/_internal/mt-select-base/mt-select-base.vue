@@ -280,8 +280,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "../../../assets/scss/variables.scss";
-
 $mt-select-focus-transition: all ease-in-out 0.2s;
 
 .mt-select {

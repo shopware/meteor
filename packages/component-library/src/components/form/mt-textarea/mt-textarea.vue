@@ -184,8 +184,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "../../assets/scss/variables.scss";
-
 .mt-field--textarea {
   textarea {
     line-height: 22px;

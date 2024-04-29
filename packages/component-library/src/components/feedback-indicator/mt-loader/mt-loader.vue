@@ -61,8 +61,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "../../assets/scss/variables.scss";
-
 $mt-loader-color-overlay: rgba(255, 255, 255, 0.8);
 $mt-loader-element-color: $color-shopware-brand-500;
 $mt-loader-rotate-duration: 1.4s;

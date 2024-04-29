@@ -1,16 +1,27 @@
 <template>
-  <a
-    v-if="columnDefinition.clickable"
-    class="mt-data-table-text-renderer"
-    href="#"
-    @click.prevent="$emit('click', data)"
-  >
-    {{ renderString }}
-  </a>
+  <div class="mt-data-table-text-renderer-cell">
+    <div v-if="columnDefinition.previewImage" class="mt-data-table-preview-image-renderer">
+      <img
+        v-if="columnDefinition.previewImage"
+        class="mt-data-table-preview-image-renderer-item"
+        :src="renderPreviewImage"
+        :alt="renderString"
+      />
+    </div>
 
-  <p v-else class="mt-data-table-text-renderer">
-    {{ renderString }}
-  </p>
+    <a
+      v-if="columnDefinition.clickable"
+      class="mt-data-table-text-renderer"
+      href="#"
+      @click.prevent="$emit('click', data)"
+    >
+      {{ renderString }}
+    </a>
+
+    <p v-else class="mt-data-table-text-renderer">
+      {{ renderString }}
+    </p>
+  </div>
 </template>
 
 <script lang="ts">
@@ -22,6 +33,7 @@ import { get } from "lodash-es";
 export interface TextColumnDefinition extends BaseColumnDefinition {
   renderer: "text";
   clickable?: boolean; // you can enable the possibility to click on a column for opening details
+  previewImage?: string; // you can enable the possibility to show a preview image
 }
 
 export default defineComponent({
@@ -40,28 +52,54 @@ export default defineComponent({
   },
 
   setup(props) {
+    const renderPreviewImage = computed(() => {
+      return get(props.data, props.columnDefinition.previewImage || "");
+    });
+
     const renderString = computed(() => {
       return get(props.data, props.columnDefinition.property);
     });
 
     return {
       renderString,
+      renderPreviewImage,
     };
   },
 });
 </script>
 
 <style lang="scss" scoped>
-@import "../../../assets/scss/variables.scss";
+.mt-data-table-text-renderer-cell {
+  display: flex;
+  align-items: center;
 
-a.mt-data-table-text-renderer {
-  font-weight: $font-weight-medium;
-  text-decoration: none;
-  color: $color-darkgray-600;
+  .mt-data-table-preview-image-renderer {
+    position: relative;
+    width: 34px;
+    height: 24px;
+    border: 1px solid $color-gray-300;
+    border-radius: $border-radius-default;
+    margin-right: 15px;
+    flex-shrink: 0;
+    img.mt-data-table-preview-image-renderer-item {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      max-width: calc(100% - 5px);
+      max-height: calc(100% - 5px);
+    }
+  }
 
-  &:hover {
-    text-decoration: underline;
-    color: $color-shopware-brand-900;
+  a.mt-data-table-text-renderer {
+    font-weight: $font-weight-medium;
+    text-decoration: none;
+    color: $color-darkgray-600;
+
+    &:hover {
+      text-decoration: underline;
+      color: $color-shopware-brand-900;
+    }
   }
 }
 </style>

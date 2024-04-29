@@ -145,8 +145,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "../../assets/scss/variables.scss";
-
 $mt-button-transition: all 0.15s ease-out;
 
 .mt-button {

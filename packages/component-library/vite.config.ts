@@ -1,3 +1,4 @@
+import path from "path";
 import { fileURLToPath, URL } from "node:url";
 
 import { defineConfig } from "vite";
@@ -43,6 +44,17 @@ export default defineConfig({
     },
     rollupOptions: {
       external: ["vue"],
+    },
+  },
+  css: {
+    preprocessorOptions: {
+      scss: {
+        additionalData: `
+          @use "sass:math";
+          @import "${path.resolve(__dirname, "src/components/assets/scss/variables.scss")}";
+          @import "${path.resolve(__dirname, "src/components/assets/scss/mixins.scss")}";
+        `,
+      },
     },
   },
 });

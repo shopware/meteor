@@ -82,8 +82,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "../../../assets/scss/variables.scss";
-
 .mt-field__error {
   display: flex;
   align-items: center;
