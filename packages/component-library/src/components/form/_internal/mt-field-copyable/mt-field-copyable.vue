@@ -9,7 +9,8 @@
       hideDelay: 0,
     }"
     class="mt-field-copyable"
-    name="regular-products-s"
+    name="regular-copy"
+    size="18"
     @click="copyToClipboard"
     @mouseleave="resetTooltipText"
   />

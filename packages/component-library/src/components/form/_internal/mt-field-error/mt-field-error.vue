@@ -89,11 +89,12 @@ export default defineComponent({
   margin-top: 4px;
   font-size: $font-size-extra-small;
   line-height: 1.25;
-  color: $color-crimson-500;
+  color: var(--color-text-critical-default);
 
   #meteor-icon-kit__solid-exclamation-circle {
     width: 12px;
     height: 12px;
+    color: var(--color-icon-critical-default);
   }
 }
 </style>
