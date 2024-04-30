@@ -2077,7 +2077,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   .mt-data-table__toolbar {
     width: 100%;
     display: flex;
-    align-items: baseline;
+    align-items: center;
     gap: 8px;
   }
 
