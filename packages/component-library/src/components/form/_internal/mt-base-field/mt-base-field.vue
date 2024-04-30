@@ -378,7 +378,7 @@ $mt-field-transition:
     input,
     textarea,
     select {
-      padding: 5px 16px;
+      padding: 4px 16px;
     }
   }
 
