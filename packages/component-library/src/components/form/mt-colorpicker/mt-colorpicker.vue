@@ -529,6 +529,7 @@ export default defineComponent({
         const newHexValue = newValue;
         const validHexCharacters = /^#[0-9a-f]{3,8}/i;
 
+        // eslint-disable-next-line vitest/no-conditional-tests
         if (!validHexCharacters.test(newHexValue)) {
           return;
         }
