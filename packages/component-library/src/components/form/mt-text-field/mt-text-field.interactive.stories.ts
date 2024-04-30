@@ -63,7 +63,7 @@ export const VisualTestEmptyCharacterCount: MtTextFieldStory = {
   args: {
     maxLength: 60,
   },
-  play: ({ canvasElement, args }) => {
+  play: ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
     expect(canvas.getByText("0/60")).toBeDefined();
@@ -75,7 +75,7 @@ export const VisualTestCharacterCount: MtTextFieldStory = {
   args: {
     maxLength: 60,
   },
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
     await userEvent.type(canvas.getByRole("textbox"), "Shopware");

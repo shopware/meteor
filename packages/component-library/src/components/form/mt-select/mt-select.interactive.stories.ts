@@ -372,7 +372,7 @@ export const VisualTestEnsureCorrectMultiSelectionWrapping: MtSelectStory = {
     ],
     modelValue: ["a", "b", "c", "d", "e", "f", "g"],
   },
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
     const loadMoreButton = canvas.getByText("+2");
