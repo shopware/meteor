@@ -56,7 +56,7 @@ jobs:
       # TODO: Check if there are visual diffs and fail the build if there are
 
       - name: Archive visual test diffs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: visual-test-diffs
