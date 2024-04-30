@@ -288,7 +288,7 @@ $mt-select-focus-transition: all ease-in-out 0.2s;
 
   .mt-block-field__block {
     transition: $mt-select-focus-transition;
-    background-color: $color-white;
+    background-color: var(--color-elevation-surface-raised);
     position: relative;
     overflow: visible;
   }
@@ -301,7 +301,7 @@ $mt-select-focus-transition: all ease-in-out 0.2s;
     font-size: $font-size-small;
     font-family: $font-family-default;
     line-height: 22px;
-    color: $color-darkgray-200;
+    color: var(--color-icon-primary-default);
     outline: none;
     -webkit-appearance: none;
     -moz-appearance: none;
@@ -334,7 +334,7 @@ $mt-select-focus-transition: all ease-in-out 0.2s;
   .mt-select__select-indicator-hitbox {
     background-color: transparent;
     border: 0 solid transparent;
-    color: $color-darkgray-200;
+    color: var(--color-icon-primary-default);
     padding: 0 4px;
     cursor: pointer;
 
@@ -378,16 +378,10 @@ $mt-select-focus-transition: all ease-in-out 0.2s;
   }
 
   &.is--disabled {
-    .mt-block-field__block {
-      background-color: $color-gray-100;
-    }
-
-    .mt-label {
-      background-color: $color-gray-100;
-    }
-
+    .mt-block-field__block,
+    .mt-label,
     input {
-      background-color: $color-gray-100;
+      background-color: var(--color-background-primary-disabled);
     }
   }
 
