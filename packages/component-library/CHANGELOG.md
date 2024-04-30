@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.6.1
+
+### Patch Changes
+
+- c58b80f: Fix data table open details event emitter in context menu item
+
 ## 3.6.0
 
 ### Minor Changes

@@ -459,8 +459,8 @@
                   <mt-context-button v-if="!(disableDelete && disableEdit)">
                     <mt-context-menu-item
                       v-if="!disableEdit"
-                      :label="$t('mt-data-table.contextButtons.edit', data)"
-                      @click="$emit('open-details')"
+                      :label="$t('mt-data-table.contextButtons.edit')"
+                      @click="$emit('open-details', data)"
                     />
 
                     <mt-context-menu-item

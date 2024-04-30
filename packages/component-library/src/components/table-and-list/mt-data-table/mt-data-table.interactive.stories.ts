@@ -571,7 +571,7 @@ export const EmitOpenDetailsEventOnClickingEdit: MtDataTableStory = {
 
     await userEvent.click(editLink);
 
-    await expect(args.openDetails).toHaveBeenCalledWith({
+    const dataSet = {
       id: "4f683593-13f1-4767-91c6-8e154d68a22d",
       active: false,
       name: "Awesome Concrete Chair",
@@ -594,7 +594,23 @@ export const EmitOpenDetailsEventOnClickingEdit: MtDataTableStory = {
       translated: {
         name: "Awesome Concrete Chair",
       },
-    });
+    };
+
+    await expect(args.openDetails).toHaveBeenCalledWith(dataSet);
+
+    const contextButton = canvas.getAllByLabelText("Context menu")[0];
+
+    await userEvent.click(contextButton);
+
+    const popover = within(
+      document.querySelector('.mt-floating-ui__content[data-show="true"]') as HTMLElement,
+    );
+
+    const editOption = popover.getByText("Edit");
+
+    await userEvent.click(editOption);
+
+    await expect(args.openDetails).toHaveBeenCalledWith(dataSet);
   },
 };
 
