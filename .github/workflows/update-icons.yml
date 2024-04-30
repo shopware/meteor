@@ -15,7 +15,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v3
         with:
           version: 8
 
@@ -28,7 +28,7 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
-      
+
       - name: Install puppeteer
         run: npx @puppeteer/browsers install chrome
 
