@@ -6,7 +6,7 @@ on:
       - main
     paths:
       - 'packages/component-library/**'
-  
+
   pull_request:
 
   workflow_dispatch:
@@ -17,13 +17,13 @@ jobs:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     env:
-        TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-        TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v3
         with:
           version: 8
 
@@ -36,13 +36,13 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
-      
+
       - name: Install Playwright dependencies
         run: pnpm dlx playwright install-deps
 
       - name: Install Playwright
         run: pnpm dlx playwright install
-      
+
       - name: Build storybook
         run: pnpx turbo run build:storybook --filter=@shopware-ag/meteor-component-library -- --test
 
@@ -56,7 +56,7 @@ jobs:
       # TODO: Check if there are visual diffs and fail the build if there are
 
       - name: Archive visual test diffs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: visual-test-diffs
