@@ -220,12 +220,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-$mt-field--switch-color-border: $color-gray-300;
-$mt-field--switch-color-background: $color-white;
-$mt-field--switch-color-text: $color-darkgray-200;
-$mt-field--switch-color-focus: $color-shopware-brand-500;
-$mt-field--switch-color-error: $color-crimson-500;
-
 .mt-field--switch__container {
   .mt-field--switch {
     margin-top: 24px;
@@ -265,7 +259,6 @@ $mt-field--switch-color-error: $color-crimson-500;
       display: grid;
       grid-template-columns: 24px 1fr auto;
       align-items: center;
-      color: $mt-field--switch-color-text;
     }
 
     &.mt-field--switch-bordered {
@@ -276,7 +269,7 @@ $mt-field--switch-color-error: $color-crimson-500;
 
     &.mt-field--switch-bordered .mt-field--switch__content {
       border-radius: 4px;
-      border: 1px solid $mt-field--switch-color-border;
+      border: 1px solid var(--color-border-primary-default);
       padding: 0 16px;
     }
 
@@ -305,15 +298,15 @@ $mt-field--switch-color-error: $color-crimson-500;
         }
 
         &:disabled ~ .mt-field__switch-state {
-          background: $color-gray-100;
+          background: var(--color-interaction-secondary-disabled);
 
           .mt-field__switch-state-knob {
-            background: $mt-field--switch-color-border;
+            background: var(--color-icon-primary-disabled);
           }
         }
 
         &:checked ~ .mt-field__switch-state {
-          background: $mt-field--switch-color-focus;
+          background: var(--color-interaction-primary-default);
 
           .mt-field__switch-state-knob {
             left: 10px;
@@ -321,7 +314,11 @@ $mt-field--switch-color-error: $color-crimson-500;
         }
 
         &:checked:disabled ~ .mt-field__switch-state {
-          background: $color-gray-100;
+          background: var(--color-interaction-primary-disabled);
+
+          .mt-field__switch-state-knob {
+            background: var(--color-icon-inverted-default);
+          }
         }
       }
 
@@ -331,7 +328,7 @@ $mt-field--switch-color-error: $color-crimson-500;
         height: 16px;
         z-index: 1;
         text-align: center;
-        background: $mt-field--switch-color-border;
+        background: var(--color-interaction-secondary-disabled);
         border-radius: 8px;
 
         .mt-field__switch-state-knob {
@@ -341,7 +338,7 @@ $mt-field--switch-color-error: $color-crimson-500;
           position: absolute;
           top: 3px;
           left: 3px;
-          background: $mt-field--switch-color-background;
+          background: var(--color-icon-inverted-default);
           border-radius: 7px;
         }
       }
@@ -355,45 +352,19 @@ $mt-field--switch-color-error: $color-crimson-500;
     }
 
     &.has--error {
-      .mt-block-field__block {
-        background: $color-crimson-50;
-      }
-
       &.mt-field--switch-bordered {
         .mt-field--switch__content {
-          border: 1px solid $mt-field--switch-color-error;
-          background: $color-crimson-50;
+          border: 1px solid var(--color-border-critical-default);
+          background: var(--color-background-critical-dark);
         }
       }
 
       .mt-field__switch-state {
-        background: $mt-field--switch-color-error;
+        background: var(--color-interaction-critical-default);
       }
 
-      input[type="checkbox"] {
-        &:disabled ~ .mt-field__switch-state {
-          background: $mt-field--switch-color-error;
-
-          .mt-field__switch-state-knob {
-            background: darken($mt-field--switch-color-error, 5%);
-          }
-        }
-
-        &:checked ~ .mt-field__switch-state {
-          background: $mt-field--switch-color-error;
-        }
-
-        &:checked:disabled ~ .mt-field__switch-state {
-          background: $mt-field--switch-color-error;
-        }
-      }
-    }
-
-    &.is--inherited {
-      input[type="checkbox"] {
-        &:checked ~ .mt-field__switch-state {
-          background: $mt-field--switch-color-border;
-        }
+      input[type="checkbox"]:checked ~ .mt-field__switch-state {
+        background: var(--color-interaction-critical-default);
       }
     }
 
@@ -407,7 +378,7 @@ $mt-field--switch-color-error: $color-crimson-500;
 
   .mt-field__error {
     &--move-up {
-      transform: translateY(-19px);
+      transform: translateY(-15px);
       margin-bottom: 21px;
     }
   }
