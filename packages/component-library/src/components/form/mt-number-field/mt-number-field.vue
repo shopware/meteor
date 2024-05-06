@@ -42,7 +42,7 @@
         @blur="removeFocusClass"
       />
 
-      <div class="mt-field--controls" :class="controlClasses">
+      <div class="mt-field__controls" :class="controlClasses">
         <mt-icon
           :class="upControlClasses"
           name="regular-chevron-up-s"
@@ -222,13 +222,10 @@ export default defineComponent({
         : this.currentValue.toString();
     },
 
-    controlClasses(): {
-      disabled: boolean;
-      error: boolean;
-    } {
+    controlClasses() {
       return {
-        disabled: this.disabled,
-        error: !!this.error,
+        "mt-field__controls--disabled": this.disabled,
+        "mt-field__controls--has-error": !!this.error,
       };
     },
   },
@@ -389,38 +386,38 @@ export default defineComponent({
 
 <style lang="scss">
 .mt-field {
-  &--controls {
-    background: $color-white;
+  &__controls {
+    background: var(--color-elevation-surface-raised);
     display: flex;
     flex-direction: column;
-    justify-content: space-evenly;
+    justify-content: center;
+    row-gap: 8px;
     align-items: center;
     width: 42px;
 
-    &.disabled {
-      background: $color-gray-100;
-      border-color: $color-gray-300;
+    &--disabled {
+      background: var(--color-background-primary-disabled);
       cursor: default !important;
 
       .mt-icon:hover {
         cursor: default !important;
-        color: $color-gray-500;
       }
     }
 
-    &.error {
-      background: $color-crimson-50;
+    &--has-error {
+      background: var(--color-background-critical-dark);
     }
 
     .mt-icon {
       cursor: pointer;
-      color: $color-gray-500;
+      color: var(--color-icon-primary-default);
 
-      &--toggled {
-        color: $color-gray-900;
+      & svg {
+        width: 12px !important;
+        height: 6px !important;
       }
 
-      &:hover {
+      &--toggled {
         color: $color-gray-900;
       }
     }
