@@ -1,5 +1,21 @@
 # Changelog
 
+## 3.7.0
+
+### Minor Changes
+
+- cfff3b8: Update and build globally mt-empty-state
+- 50afd23: Add a prop to remove settings table button in the header
+- fbe8152: Allow add an image to cell table
+
+### Patch Changes
+
+- c76ec92: Add tokens for search component
+- 15efa51: Add tokens for mt-base-field
+- 1b4e735: Add tokens for checkbox component
+- b9b4005: Change icon of inheritance switch
+- d9f7c3e: Adjust icon of copy button
+
 ## 3.6.1
 
 ### Patch Changes
