@@ -194,7 +194,7 @@ export default defineComponent({
 
   &.has--error {
     textarea {
-      background: $color-crimson-50;
+      background: var(--color-background-critical-dark);
     }
   }
 }
