@@ -21,6 +21,10 @@ export type extensions = {
   [key: string]: extension,
 }
 
+export type Config = {
+  timeoutMs: number,
+};
+
 // This can't be exported and used in other files as it leads to circular dependencies. Use window._swsdk.adminExtensions instead
 const adminExtensions: extensions = {};
 
@@ -91,6 +95,14 @@ const subscriberRegistry: Set<{
  * MAIN FUNCTIONS FOR EXPORT
  * ----------------
  */
+
+let config: Config = {
+  timeoutMs: 7000,
+};
+
+export function configure(newConfig: Config): void {
+  config = { ...config, ...newConfig };
+}
 
 /**
  * With this method you can send actions or you can request data:
@@ -166,7 +178,6 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
 
   // Set value if send was resolved
   let isResolved = false;
-  const timeoutMs = 7000;
 
   // Return a promise which resolves when the response is received
   return new Promise((resolve, reject) => {
@@ -251,7 +262,7 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
       }
 
       reject('Send timeout expired. It could be possible that no handler for the postMessage request exists or that the handler freezed.');
-    }, timeoutMs);
+    }, config.timeoutMs);
   });
 }
 
@@ -521,7 +532,7 @@ const datasets = new Map<string, unknown>();
   handle('datasetSubscribeRegistration', (data, { _event_ }) => {
     let source: Window | undefined;
     let origin: string | undefined;
-  
+
     if (_event_.source) {
       source = _event_.source as Window;
       origin = _event_.origin;
@@ -529,7 +540,7 @@ const datasets = new Map<string, unknown>();
       source = window;
       origin = window.origin;
     }
-  
+
     subscriberRegistry.add({
       id: data.id,
       source: source,

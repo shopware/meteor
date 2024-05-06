@@ -1,3 +1,4 @@
+import { configure } from './channel';
 import * as window from './window';
 import * as notification from './notification';
 import * as toast from './toast';
@@ -37,6 +38,7 @@ const ui = {
  * The main export which will be available by direct imports.
  */
 export {
+  configure,
   window,
   notification,
   toast,
