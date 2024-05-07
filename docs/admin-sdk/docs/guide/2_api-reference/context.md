@@ -271,6 +271,31 @@ Promise<{
 }
 ```
 
+## User Timezone
+
+### Get user timezone
+
+:::caution
+Do not use this feature yet. It is not implemented in a Shopware release yet.
+:::
+
+This feature allows you to get the timezone of the user.
+
+#### Usage:
+```ts
+const userTimezone = await sw.context.getUserTimezone();
+```
+
+#### Parameters
+No parameters needed.
+
+#### Return value:
+```ts
+Promise<string>
+```
+
+This function returns a Promise that resolves to a string representing the user's timezone.
+
 ## Module information
 
 ### Get module information

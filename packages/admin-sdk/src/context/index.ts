@@ -8,6 +8,7 @@ export const subscribeLocale = createSubscriber('contextLocale');
 export const getCurrency = createSender('contextCurrency', {});
 export const getShopwareVersion = createSender('contextShopwareVersion', {});
 export const getUserInformation = createSender('contextUserInformation', {});
+export const getUserTimezone = createSender('contextUserTimezone', {});
 export const getAppInformation = createSender('contextAppInformation', {});
 export const getModuleInformation = createSender('contextModuleInformation', {});
 
@@ -89,6 +90,13 @@ export type contextUserInformation = {
     type: string,
     username: string,
   },
+}
+
+/**
+ * Get the user's timezone
+ */
+export type contextUserTimezone = {
+  responseType: string,
 }
 
 /**
