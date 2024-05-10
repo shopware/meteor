@@ -276,7 +276,7 @@ Promise<{
 ### Get user timezone
 
 :::caution
-Do not use this feature yet. It is not implemented in a Shopware release yet.
+This feature will be available with Shopware ^6.6.2.0
 :::
 
 This feature allows you to get the timezone of the user.
