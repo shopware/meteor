@@ -91,7 +91,7 @@
     "@shopware-ag/meteor-component-library": "workspace:*"
   },
   "devDependencies": {
-    "@playwright/test": "^1.43.0",
+    "@playwright/test": "^1.44.0",
     "@types/jest": "^27.4.1",
     "@types/lodash": "^4.14.191",
     "@types/node": "^18.11.17",
