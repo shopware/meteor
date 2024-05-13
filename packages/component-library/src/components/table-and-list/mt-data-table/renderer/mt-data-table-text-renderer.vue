@@ -77,10 +77,11 @@ export default defineComponent({
     position: relative;
     width: 34px;
     height: 24px;
-    border: 1px solid $color-gray-300;
+    border: 1px solid var(--color-border-primary-default);
     border-radius: $border-radius-default;
     margin-right: 15px;
     flex-shrink: 0;
+
     img.mt-data-table-preview-image-renderer-item {
       position: absolute;
       left: 50%;
@@ -94,11 +95,11 @@ export default defineComponent({
   a.mt-data-table-text-renderer {
     font-weight: $font-weight-medium;
     text-decoration: none;
-    color: $color-darkgray-600;
+    color: var(--color-text-primary-default);
 
     &:hover {
       text-decoration: underline;
-      color: $color-shopware-brand-900;
+      color: var(--color-text-brand-default);
     }
   }
 }

@@ -536,6 +536,7 @@
           }"
           square
           aria-label="reload-data"
+          variant="secondary"
           @click="emitReload"
         >
           <mt-icon name="solid-undo-s" />
@@ -2210,8 +2211,8 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
 
   &.mt-data-table__outlines td,
   &.mt-data-table__outlines th {
-    border-right-color: $color-gray-200;
-    border-left-color: $color-gray-200;
+    border-right-color: var(--color-border-primary-default);
+    border-left-color: var(--color-border-primary-default);
   }
 
   td,
@@ -2219,7 +2220,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     position: relative;
     padding: $tableCellPadding;
     // border needs to be half the size because they are getting combined with other cells
-    border: 0.5px solid $color-gray-200;
+    border: 0.5px solid var(--color-border-primary-default);
     border-right-color: transparent;
     border-left-color: transparent;
     white-space: nowrap;
@@ -2228,7 +2229,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     vertical-align: top;
 
     &.--highlighted {
-      border-right: 1px solid $color-shopware-brand-900;
+      border-right: 1px solid var(--color-border-brand-selected);
       padding-right: calc($tableCellPaddingRight - 0.5px);
     }
   }
@@ -2240,17 +2241,17 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
 
   &__column-outline-framing-active th.--hovered,
   &__column-outline-framing-active td.--hovered {
-    border-right-color: $color-shopware-brand-400;
-    border-left-color: $color-shopware-brand-400;
+    border-right-color: var(--color-border-brand-selected);
+    border-left-color: var(--color-border-brand-selected);
   }
 
   &__column-outline-framing-active tr.--hovered td {
-    border-top-color: $color-shopware-brand-400;
-    border-bottom-color: $color-shopware-brand-400;
+    border-top-color: var(--color-border-brand-selected);
+    border-bottom-color: var(--color-border-brand-selected);
   }
 
   &.mt-data-table__stripes tr:nth-child(even) {
-    background-color: $color-gray-50;
+    background-color: var(--color-elevation-surface-sunken);
   }
 
   // remove duplicated border from header
@@ -2259,14 +2260,14 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   }
 
   thead tr {
-    background-color: $color-gray-50;
+    background-color: var(--color-elevation-surface-raised);
   }
 
   thead th {
     font-weight: $font-weight-medium;
     line-height: $line-height-xs;
-    background-color: $color-gray-50;
-    color: #6b7280; // TODO: this needs to be a variable in the future
+    background-color: var(--color-elevation-surface-raised);
+    color: var(--color-text-secondary-default);
     min-width: 50px;
     height: $tableHeaderSize;
     // header is sticky so it needs to have the full border
@@ -2290,7 +2291,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   }
 
   tr {
-    background-color: $color-white;
+    background-color: var(--color-elevation-surface-raised);
   }
 
   /**
@@ -2387,7 +2388,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   }
 
   .mt-data-table__table-selection-bulk-edit {
-    background-color: $color-gray-50;
+    background-color: var(--color-elevation-surface-raised);
     position: absolute;
     top: -0.5px;
     left: -0.5px;
@@ -2396,7 +2397,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     display: flex;
     align-items: center;
     padding: $tableCellPadding;
-    border: 1px solid $color-gray-200;
+    border: 1px solid var(--color-border-primary-default);
     border-top: none;
     border-right: none;
     z-index: 120;
@@ -2510,7 +2511,6 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     width: $settingsColumnWidth;
 
     #meteor-icon-kit__solid-cog-s {
-      color: $color-gray-800;
       width: 10px;
       height: 10px;
     }
@@ -2567,11 +2567,6 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     .mt-button[aria-label="reload-data"] {
       height: 34px;
       width: 34px;
-      background-color: $color-white;
-
-      &:hover {
-        background-color: $color-gray-100;
-      }
     }
 
     .mt-button #meteor-icon-kit__solid-undo-s {
@@ -2581,7 +2576,6 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   }
 
   &__pagination-info-text {
-    color: $color-gray-800;
     white-space: nowrap;
     font-size: $font-size-xxs;
     margin-left: 12px;
@@ -2606,7 +2600,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
 
   .mt-data-table__table-head-sort {
     transition: 0.3s color ease;
-    color: $color-gray-800;
+    color: var(--color-icon-secondary-default);
 
     #meteor-icon-kit__solid-long-arrow-up,
     #meteor-icon-kit__solid-long-arrow-down {
@@ -2632,7 +2626,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   text-align: left;
   font-size: $font-size-xs;
   padding: $tableCellPadding;
-  border: 1px solid $color-shopware-brand-900;
+  border: 1px solid var(--color-border-brand-selected);
   border-radius: $border-radius-default $border-radius-default 0 0;
   border-top: 0;
   white-space: nowrap;
@@ -2641,8 +2635,8 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   vertical-align: top;
   font-weight: $font-weight-medium;
   line-height: $line-height-xs;
-  background-color: $color-shopware-brand-50;
-  color: #6b7280; // TODO: this needs to be a variable in the future
+  background-color: var(--color-elevation-surface-raised);
+  color: var(--color-text-primary-default);
   min-width: 50px;
   text-transform: uppercase;
 
@@ -2729,11 +2723,12 @@ table.is--dragging-inside {
   &.mt-data-table__table-head-add-column-indicator {
     cursor: pointer;
     z-index: 10;
-    background-color: $color-white;
 
     .mt-icon {
       display: block;
       color: $color-darkgray-200;
+      background: #fff;
+      border-radius: 999px;
 
       #meteor-icon-kit__solid-plus-square-s {
         width: 14px;
