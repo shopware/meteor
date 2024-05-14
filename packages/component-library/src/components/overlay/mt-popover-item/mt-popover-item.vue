@@ -168,7 +168,6 @@ export default defineComponent({
       required: false,
       default: false,
     },
-    // TODO: implement styling for disabled
     disabled: {
       type: Boolean,
       required: false,
@@ -358,7 +357,7 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
 .mt-popover-item {
   display: flex;
   flex-direction: column;
-  color: $color-custom-dark;
+  color: var(--color-text-primary-default);
   padding: 8px 0;
 
   // add new Inter font to popover item
@@ -388,7 +387,7 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
   &:hover {
     &::before {
       position: absolute;
-      background-color: $color-shopware-brand-50;
+      background-color: var(--color-interaction-secondary-hover);
       border-radius: $border-radius-default;
       top: 4px;
       right: -8px;
@@ -403,12 +402,12 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
   }
 
   &--critical {
-    color: $color-crimson-500;
+    color: var(--color-text-critical-default);
   }
 
   &--critical:hover {
     &::before {
-      background-color: $color-crimson-50;
+      background-color: var(--color-background-critical-default);
     }
   }
 
@@ -417,7 +416,7 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
   }
 
   &--disabled {
-    color: $color-custom-lightgrey;
+    color: var(--color-text-primary-disabled);
 
     &:hover {
       text-decoration: none;
@@ -430,12 +429,12 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
   }
 
   &--border-top {
-    border-top: 1px solid $color-custom-border;
+    border-top: 1px solid var(--color-border-primary-default);
     margin-top: -1px;
   }
 
   &--border-bottom {
-    border-bottom: 1px solid $color-custom-border;
+    border-bottom: 1px solid var(--color-border-primary-default);
     margin-bottom: -1px;
   }
 
@@ -491,7 +490,7 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
 
   &__contextual-detail,
   &__shortcut {
-    color: $color-custom-lightgrey;
+    color: var(--color-text-secondary-default);
     white-space: nowrap;
   }
 
@@ -549,7 +548,7 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
   }
 
   &__meta-copy {
-    color: $color-custom-grey;
+    color: var(--color-text-secondary-default);
     font-size: $font-size-xxs;
     line-height: $line-height-xs;
     font-weight: $font-weight-medium;

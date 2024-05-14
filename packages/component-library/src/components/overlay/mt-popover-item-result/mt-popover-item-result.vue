@@ -266,7 +266,7 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
   }
 
   &__group-label {
-    color: $color-gray-900;
+    color: var(--color-text-secondary-default);
     text-transform: uppercase;
     font-size: $font-size-xxs;
     line-height: $line-height-md;
@@ -277,7 +277,7 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
     transition: 0.3s all ease;
     background-color: transparent;
     border: none;
-    color: $color-shopware-brand-500;
+    color: var(--color-text-brand-default);
     font-size: $font-size-xs;
     line-height: $line-height-xs;
     font-weight: $font-weight-semi-bold;
