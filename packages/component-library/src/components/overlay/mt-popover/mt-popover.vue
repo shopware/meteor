@@ -272,7 +272,7 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
     padding: 16px;
     padding-top: 4px;
     padding-bottom: 4px;
-    background-color: $color-white;
+    background-color: var(--color-elevation-surface-overlay);
     overflow: auto;
     border-radius: $border-radius-default;
     @include drop-shadow-default;
@@ -307,7 +307,7 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
         font-size: $font-size-s;
         font-weight: $font-weight-semi-bold;
         line-height: $line-height-md;
-        color: $color-darkgray-600;
+        color: var(--color-text-primary-default);
         margin-bottom: 0;
       }
     }
@@ -320,11 +320,8 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
       margin-right: auto;
       padding-top: 12px;
       padding-bottom: 12px;
-      background-color: $color-white;
 
       .mt-icon {
-        color: $color-darkgray-800;
-
         svg {
           width: 12px !important;
           height: 8px !important;

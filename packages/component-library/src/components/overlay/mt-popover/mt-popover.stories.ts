@@ -227,7 +227,7 @@ export default {
       <div style="max-width: 1000px; max-height: 350px; height: 350px; margin: 0 auto;">
         <mt-popover v-bind="args">
           <template #trigger="{ toggleFloatingUi }">
-            <mt-button @click.stop="toggleFloatingUi">Toggle popover</mt-button>
+            <mt-button @click.stop="toggleFloatingUi" variant="secondary">Toggle popover</mt-button>
           </template>
 
           {{ $props.default}}
