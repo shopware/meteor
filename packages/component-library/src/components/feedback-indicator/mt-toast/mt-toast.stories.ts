@@ -55,7 +55,7 @@ export default {
         id: number;
         label: string;
         value: number;
-      }[]
+      }[];
     } {
       return {
         toasts: [],
@@ -68,7 +68,7 @@ export default {
           { id: 0, label: "Default auto close behavior", value: 1 },
           { id: 1, label: "Enable Auto close", value: 2 },
           { id: 2, label: "Disable auto close", value: 3 },
-        ]
+        ],
       };
     },
     methods: {

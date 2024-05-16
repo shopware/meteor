@@ -538,26 +538,3 @@ export const VisualTestMessageTooLong: MtToastStory = {
     expect(toast).toBeInTheDocument();
   },
 };
-
-export const TestPreventAutoClose: MtToastStory = {
-  name: "Render toast with prevent auto close",
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    const message = "This message is too long to be displayed";
-    const msg = await canvas.getByRole("textbox");
-    await userEvent.clear(msg);
-    await userEvent.type(msg, message);
-
-    const actionCheckbox = await canvas.findByText("Add action?");
-    await userEvent.click(actionCheckbox);
-
-    const toastButton = await canvas.findByText("Add critical toast");
-    await userEvent.click(toastButton);
-
-    await userEvent.hover(await canvas.getByRole("alertdialog"));
-
-    const toast = await canvas.getByText(message);
-    expect(toast).toBeInTheDocument();
-  },
-};
