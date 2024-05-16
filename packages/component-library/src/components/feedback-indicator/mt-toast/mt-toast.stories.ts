@@ -18,16 +18,17 @@ export default {
     template: `
           <h2>Spawn some toasts 🍞</h2>
 
-          <div style="width: 420px;">
+          <div style="width: 500px;">
             <mt-text-field label="ToastMessage" v-model="msg" />
             <div style="display: flex; gap: 12px;">
               <mt-checkbox label="Display toast icon?" v-model:checked="displayIcon" />
               <mt-checkbox label="Toast manually dismissible?" v-model:checked="dismissible" />
               <mt-checkbox label="Add action?" v-model:checked="action" />
+              <mt-select small hide-clearable-button :options="autoCloseOptions" v-model="autoClose" />
             </div>
           </div>
 
-          <div style="width: 420px; display: flex; justify-content: space-around;">
+          <div style="width: 500px; display: flex; justify-content: space-around;">
             <mt-button @click="onAddToast('critical')" variant="critical">Add critical toast</mt-button>
             <mt-button @click="onAddToast('positive')" variant="primary">Add positive toast</mt-button>
             <mt-button @click="onAddToast('informal')" variant="secondary">Add informal toast</mt-button>
@@ -49,6 +50,12 @@ export default {
       displayIcon: boolean;
       dismissible: boolean;
       action: boolean;
+      autoClose: number;
+      autoCloseOptions: {
+        id: number;
+        label: string;
+        value: number;
+      }[]
     } {
       return {
         toasts: [],
@@ -56,6 +63,12 @@ export default {
         displayIcon: false,
         dismissible: false,
         action: false,
+        autoClose: 1,
+        autoCloseOptions: [
+          { id: 0, label: "Default auto close behavior", value: 1 },
+          { id: 1, label: "Enable Auto close", value: 2 },
+          { id: 2, label: "Disable auto close", value: 3 },
+        ]
       };
     },
     methods: {
@@ -67,6 +80,15 @@ export default {
 
         if (type === "informal") {
           icon = "regular-lightbulb";
+        }
+
+        let autoCloseValue;
+        if (this.autoClose === 1) {
+          autoCloseValue = undefined;
+        } else if (this.autoClose === 2) {
+          autoCloseValue = true;
+        } else if (this.autoClose === 3) {
+          autoCloseValue = false;
         }
 
         this.toasts = [
@@ -81,6 +103,7 @@ export default {
             action: this.action
               ? { label: "action", callback: () => console.log("action") }
               : undefined,
+            autoClose: autoCloseValue,
           },
           ...this.toasts,
         ];

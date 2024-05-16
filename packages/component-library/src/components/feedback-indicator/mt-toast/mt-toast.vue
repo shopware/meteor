@@ -47,6 +47,7 @@ export interface Toast {
     callback: () => void; // Callback will be called on click
   };
   dismissible?: boolean; // Toggles if the toast is manually closable
+  autoClose?: boolean; // Toggles if the toast should auto close
 }
 
 const emit = defineEmits(["remove-toast"]);

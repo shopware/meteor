@@ -96,6 +96,11 @@ const messageClasses = computed(() => {
 });
 
 const showTimer = computed(() => {
+  // If autoClose is set, use that value
+  if (toast.value.autoClose !== undefined) {
+    return toast.value.autoClose;
+  }
+
   // Quick toasts, toasts in background and critical toasts with an action never show a timer
   if (
     quickDisplay.value ||
