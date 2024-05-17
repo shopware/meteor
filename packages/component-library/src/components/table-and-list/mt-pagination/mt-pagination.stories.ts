@@ -5,15 +5,17 @@ import type { SlottedMeta } from "@/_internal/story-helper";
 import { ref } from "vue";
 import { fn } from "@storybook/test";
 
-const meta: SlottedMeta<typeof MtPagination, "default"> = {
+export type MtPaginationMeta = SlottedMeta<typeof MtPagination, "default">;
+
+const meta: MtPaginationMeta = {
   title: "Components/Table and list/mt-pagination",
   component: MtPagination,
 };
 
 export default meta;
-type Story = StoryObj<typeof MtPagination>;
+export type MtPaginationStory = StoryObj<typeof MtPagination>;
 
-export const Default: Story = {
+export const Default: MtPaginationStory = {
   render: (args) => ({
     components: { MtPagination },
     setup: () => {
