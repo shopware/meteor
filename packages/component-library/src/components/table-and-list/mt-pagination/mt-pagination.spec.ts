@@ -10,44 +10,38 @@ function createWrapper() {
     },
     global: {
       mocks: {
-        $t: (v: string) => v,
+        $t: (v: string, options: object) => v + JSON.stringify(options),
       },
     },
   });
 }
 
 describe("mt-pagination", () => {
-  it("should render the component", () => {
-    const wrapper = createWrapper();
-
-    expect(wrapper.vm).toBeTruthy();
-  });
-
   describe("should render the correct info text", () => {
     it.each([
       {
         currentPage: 1,
         limit: 25,
         totalItems: 213,
-        expectedText: "1-25 mt-pagination.of 213",
+        expectedText: 'mt-pagination.infoText{"start":1,"end":25,"totalItems":213}',
       },
       {
         currentPage: 2,
         limit: 25,
         totalItems: 213,
-        expectedText: "26-50 mt-pagination.of 213",
+        expectedText: 'mt-pagination.infoText{"start":26,"end":50,"totalItems":213}',
       },
       {
         currentPage: 3,
         limit: 5,
         totalItems: 152,
-        expectedText: "11-15 mt-pagination.of 152",
+        expectedText: 'mt-pagination.infoText{"start":11,"end":15,"totalItems":152}',
       },
       {
         currentPage: 4,
         limit: 50,
         totalItems: 167,
-        expectedText: "151-167 mt-pagination.of 167",
+        expectedText: 'mt-pagination.infoText{"start":151,"end":167,"totalItems":167}',
       },
     ])('should render the info text "$expectedText"', async (testCase) => {
       const wrapper = createWrapper();
@@ -56,7 +50,8 @@ describe("mt-pagination", () => {
         limit: testCase.limit,
         totalItems: testCase.totalItems,
       });
-      const infoText = wrapper.find(".mt-pagination__info-text").text();
+
+      const infoText = wrapper.find("[data-testid='mt-pagination-info-text']").text();
 
       expect(infoText).toStrictEqual(testCase.expectedText);
     });
@@ -66,7 +61,7 @@ describe("mt-pagination", () => {
     it("should emit the first page", async () => {
       const wrapper = createWrapper();
 
-      await wrapper.find(".mt-segmented-control__action-id-pagination-first").trigger("click");
+      await wrapper.find("[data-testid='mt-pagination-first-page-button']").trigger("click");
 
       expect(wrapper.emitted()["change-current-page"][0]).toStrictEqual([1]);
     });
@@ -78,7 +73,7 @@ describe("mt-pagination", () => {
         currentPage: 4,
       });
 
-      await wrapper.find(".mt-segmented-control__action-id-pagination-previous").trigger("click");
+      await wrapper.find("[data-testid='mt-pagination-previous-page-button']").trigger("click");
 
       expect(wrapper.emitted()["change-current-page"][0]).toStrictEqual([3]);
     });
@@ -90,7 +85,7 @@ describe("mt-pagination", () => {
         currentPage: 6,
       });
 
-      await wrapper.find(".mt-segmented-control__action-id-pagination-next").trigger("click");
+      await wrapper.find("[data-testid='mt-pagination-next-page-button']").trigger("click");
 
       expect(wrapper.emitted()["change-current-page"][0]).toStrictEqual([7]);
     });
@@ -102,7 +97,7 @@ describe("mt-pagination", () => {
         currentPage: 2,
       });
 
-      await wrapper.find(".mt-segmented-control__action-id-pagination-last").trigger("click");
+      await wrapper.find("[data-testid='mt-pagination-last-page-button']").trigger("click");
 
       expect(wrapper.emitted()["change-current-page"][0]).toStrictEqual([9]);
     });
@@ -114,7 +109,7 @@ describe("mt-pagination", () => {
         currentPage: 2,
       });
 
-      const pageInput = wrapper.find(".mt-pagination__current-input input");
+      const pageInput = wrapper.find("[data-testid='mt-pagination-current-page-input']");
       await pageInput.setValue(7);
       await pageInput.trigger("change");
 
