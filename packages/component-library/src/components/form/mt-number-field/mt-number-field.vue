@@ -44,14 +44,12 @@
 
       <div class="mt-field__controls" :class="controlClasses">
         <mt-icon
-          :class="upControlClasses"
           name="regular-chevron-up-s"
           data-testid="mt-number-field-increase-button"
           @click="increaseNumberByStep"
         />
 
         <mt-icon
-          :class="downControlClasses"
           name="regular-chevron-down-s"
           data-testid="mt-number-field-decrease-button"
           @click="decreaseNumberByStep"
@@ -173,20 +171,6 @@ export default defineComponent({
     },
   },
 
-  data(): {
-    upControlClasses: null;
-    downControlClasses: null;
-    upHandler: null | number;
-    downHandler: null | number;
-  } {
-    return {
-      upControlClasses: null,
-      downControlClasses: null,
-      upHandler: null,
-      downHandler: null,
-    };
-  },
-
   computed: {
     realStep(): number {
       if (this.step === null) {
@@ -274,20 +258,6 @@ export default defineComponent({
         return;
       }
 
-      // @ts-expect-error - defined in parent
-      this.upControlClasses = {
-        "mt-icon--toggled": true,
-      };
-
-      if (this.upHandler) {
-        window.clearTimeout(this.upHandler);
-      }
-
-      this.upHandler = window.setTimeout(() => {
-        // @ts-expect-error - defined in parent
-        this.upControlClasses = {};
-      }, 100);
-
       this.computeValue((this.currentValue + this.realStep).toString());
       this.$emit("change", this.currentValue);
     },
@@ -296,20 +266,6 @@ export default defineComponent({
       if (this.disabled) {
         return;
       }
-
-      // @ts-expect-error - defined in parent
-      this.downControlClasses = {
-        "mt-icon--toggled": true,
-      };
-
-      if (this.downHandler) {
-        window.clearTimeout(this.downHandler);
-      }
-
-      this.downHandler = window.setTimeout(() => {
-        // @ts-expect-error - defined in parent
-        this.downControlClasses = {};
-      }, 100);
 
       // @ts-expect-error - wrong type because of component extends
       this.computeValue((this.currentValue - this.realStep).toString());
@@ -415,10 +371,6 @@ export default defineComponent({
       & svg {
         width: 12px !important;
         height: 6px !important;
-      }
-
-      &--toggled {
-        color: $color-gray-900;
       }
     }
   }
