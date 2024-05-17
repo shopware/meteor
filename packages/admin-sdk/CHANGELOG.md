@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.3.0
+
+### Minor Changes
+
+- 7a54401: Allow getting user's timezone
+
 ## 5.2.1
 
 ### Patch Changes

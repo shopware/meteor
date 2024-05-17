@@ -1,7 +1,17 @@
 import type { notificationDispatch } from './notification/index';
 import type { toastDispatch } from './toast';
 import type { windowRedirect, windowReload, windowRouterPush } from './window/index';
-import type { contextLanguage, contextEnvironment, contextLocale, contextCurrency, contextShopwareVersion, contextAppInformation, contextModuleInformation, contextUserInformation } from './context/index';
+import type {
+  contextLanguage,
+  contextEnvironment,
+  contextLocale,
+  contextCurrency,
+  contextShopwareVersion,
+  contextAppInformation,
+  contextModuleInformation,
+  contextUserInformation,
+  contextUserTimezone,
+} from './context/index';
 import type { uiComponentSectionRenderer } from './ui/component-section/index';
 import type { uiTabsAddTabItem } from './ui/tabs';
 import type { uiModulePaymentOverviewCard } from './ui/module/payment/overview-card';
@@ -45,6 +55,7 @@ export interface ShopwareMessageTypes {
   contextCurrency: contextCurrency,
   contextShopwareVersion: contextShopwareVersion,
   contextUserInformation: contextUserInformation,
+  contextUserTimezone: contextUserTimezone,
   contextAppInformation: contextAppInformation,
   contextModuleInformation: contextModuleInformation,
   getPageTitle: getPageTitle,
