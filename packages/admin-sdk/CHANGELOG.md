@@ -1,5 +1,25 @@
 # Changelog
 
+## 5.3.0
+
+### Minor Changes
+
+- 7a54401: Allow getting user's timezone
+
+## 5.2.1
+
+### Patch Changes
+
+- Updated dependencies [c76ec92]
+- Updated dependencies [15efa51]
+- Updated dependencies [cfff3b8]
+- Updated dependencies [1b4e735]
+- Updated dependencies [50afd23]
+- Updated dependencies [b9b4005]
+- Updated dependencies [fbe8152]
+- Updated dependencies [d9f7c3e]
+  - @shopware-ag/meteor-component-library@3.7.0
+
 ## 5.2.0
 
 ### Minor Changes
