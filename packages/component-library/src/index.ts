@@ -25,6 +25,7 @@ import MtToast from "./components/feedback-indicator/mt-toast/mt-toast.vue";
 import MtPopover from "./components/overlay/mt-popover/mt-popover.vue";
 import MtPopoverItem from "./components/overlay/mt-popover-item/mt-popover-item.vue";
 import MtPopoverItemResult from "./components/overlay/mt-popover-item-result/mt-popover-item-result.vue";
+import MtFloatingUi from "./components/_internal/mt-floating-ui/mt-floating-ui.vue";
 import TooltipDirective from "./directives/tooltip.directive";
 import DeviceHelperPlugin from "./plugin/device-helper.plugin";
 // Import SCSS for styling
@@ -64,6 +65,7 @@ export {
   MtPopover,
   MtPopoverItem,
   MtPopoverItemResult,
+  MtFloatingUi,
   TooltipDirective,
   DeviceHelperPlugin,
   // @deprecated
