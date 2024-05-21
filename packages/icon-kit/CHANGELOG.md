@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## 5.3.0
+
+### Minor Changes
+
+- e15e23a: Add share icon
+
 ## 5.2.1
 
 ### Patch Changes
