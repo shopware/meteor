@@ -42,12 +42,8 @@ module.exports = {
 
     // @ts-expect-error
     expect(image).toMatchImageSnapshot({
-      comparisonMethod: "ssim",
-      customDiffConfig: { ssim: "fast" },
-      failureThreshold: 0.01,
-      failureThresholdType: "percent",
+      comparisonMethod: "pixelmatch",
       customSnapshotsDir,
-      blur: 0.001,
       customSnapshotIdentifier: context.id + "-snap",
       storeReceivedOnFailure: true,
       customReceivedDir: customReceivedDir,
