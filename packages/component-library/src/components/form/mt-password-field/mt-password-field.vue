@@ -49,9 +49,9 @@
           class="mt-field__toggle-password-visibility"
           @click="onTogglePasswordVisibility(disabled)"
         >
-          <mt-icon v-if="showPassword" name="regular-eye-slash" small />
+          <mt-icon v-if="showPassword" name="solid-eye-slash" size="18" />
 
-          <mt-icon v-else data-testid="mt-password-field-show-button" name="regular-eye" small />
+          <mt-icon v-else data-testid="mt-password-field-show-button" name="solid-eye" size="18" />
         </span>
       </div>
     </template>
@@ -177,15 +177,7 @@ export default defineComponent({
   }
 
   .mt-icon {
-    #meteor-icon-kit__regular-eye-slash {
-      width: 16px;
-      height: 16px;
-    }
-
-    #meteor-icon-kit__regular-eye {
-      width: 16px;
-      height: 16px;
-    }
+    color: var(--color-icon-primary-default);
   }
 }
 </style>
