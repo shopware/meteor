@@ -8,6 +8,7 @@
     :aria-disabled="disabled"
     class="mt-external-link"
     :class="classes"
+    :tabindex="disabled ? -1 : 0"
   >
     <slot />
     <mt-icon class="mt-external-link__icon" :name="icon" />
@@ -104,14 +105,14 @@ export default defineComponent({
 
 <style lang="scss">
 .mt-external-link {
-  color: $color-shopware-brand-500;
+  color: var(--color-text-brand-default);
   font-size: $font-size-small;
   text-decoration: underline;
   cursor: pointer;
 
   &:hover,
   &:focus {
-    color: $color-shopware-brand-700;
+    color: var(--color-text-brand-hover);
   }
 
   &__icon {
@@ -126,12 +127,7 @@ export default defineComponent({
 
   &--disabled {
     pointer-events: none;
-    color: $color-shopware-brand-300;
-
-    &:hover,
-    &:focus {
-      color: $color-shopware-brand-300;
-    }
+    color: var(--color-text-brand-disabled);
   }
 
   &--small {
