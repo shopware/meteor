@@ -327,6 +327,7 @@ class Tooltip {
   }
 
   _setDOMElementPosition({ top, left }: { top: string; left: string }) {
+    this._DOMElement!.style.position = "fixed";
     this._DOMElement!.style.top = top;
     this._DOMElement!.style.left = left;
   }
