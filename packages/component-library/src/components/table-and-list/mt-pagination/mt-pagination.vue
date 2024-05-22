@@ -1,53 +1,82 @@
 <template>
   <div class="mt-pagination">
-    <span class="mt-pagination__info-text">
-      {{ firstVisibleItemNumber }}-{{ lastVisibleItemNumber }} {{ $t("mt-pagination.of") }}
-      {{ totalItems }}
-    </span>
+    <p class="mt-pagination__info-text" data-testid="mt-pagination-info-text">
+      {{
+        $t("mt-pagination.infoText", {
+          start: firstVisibleItemNumber,
+          end: lastVisibleItemNumber,
+          totalItems,
+        })
+      }}
+    </p>
 
-    <mt-segmented-control disable-context :actions="segmentedControlActions">
-      <template #label__pagination-first>
-        <mt-icon name="solid-double-chevron-left-xxs" />
-      </template>
+    <div class="mt-pagination__controls">
+      <button
+        class="mt-pagination__button"
+        :disabled="isOnFirstPage"
+        @click="$emit('change-current-page', 1)"
+        data-testid="mt-pagination-first-page-button"
+      >
+        <span class="visually-hidden">{{ $t("mt-pagination.firstPage") }}</span>
 
-      <template #label__pagination-previous>
-        <mt-icon name="solid-chevron-left-xs" />
-      </template>
+        <mt-icon name="regular-double-chevron-left-s" aria-hidden="true" />
+      </button>
 
-      <template #label__pagination-current>
-        <mt-number-field
-          class="mt-pagination__current-input"
-          :model-value="currentPage as never"
-          :min="1"
-          :max="totalPages"
-          number-type="int"
-          @change="(event) => $emit('change-current-page', event)"
-        />
-      </template>
+      <button
+        class="mt-pagination__button"
+        :disabled="isOnFirstPage"
+        @click="$emit('change-current-page', currentPage - 1)"
+        data-testid="mt-pagination-previous-page-button"
+      >
+        <span class="visually-hidden">{{ $t("mt-pagination.previousPage") }}</span>
 
-      <template #label__pagination-next>
-        <mt-icon name="solid-chevron-right-xs" />
-      </template>
+        <mt-icon name="regular-chevron-left-s" aria-hidden="true" />
+      </button>
 
-      <template #label__pagination-last>
-        <mt-icon name="solid-double-chevron-right-xxs" />
-      </template>
-    </mt-segmented-control>
+      <input
+        class="mt-pagination__current-page-input"
+        type="number"
+        min="1"
+        step="1"
+        :style="{ width: inputLength }"
+        :value="currentPage"
+        @input="onChangeInput"
+        :aria-label="`Page ${currentPage}`"
+        data-testid="mt-pagination-current-page-input"
+      />
+
+      <button
+        class="mt-pagination__button"
+        :disabled="isOnLastPage"
+        @click="$emit('change-current-page', currentPage + 1)"
+        data-testid="mt-pagination-next-page-button"
+      >
+        <span class="visually-hidden">{{ $t("mt-pagination.nextPage") }}</span>
+
+        <mt-icon name="regular-chevron-right-s" aria-hidden="true" />
+      </button>
+
+      <button
+        class="mt-pagination__button"
+        :disabled="isOnLastPage"
+        @click="$emit('change-current-page', totalPages)"
+        data-testid="mt-pagination-last-page-button"
+      >
+        <span class="visually-hidden">{{ $t("mt-pagination.lastPage") }}</span>
+
+        <mt-icon name="regular-double-chevron-right-s" aria-hidden="true" />
+      </button>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent, computed, watch } from "vue";
-import MtSegmentedControl from "../../navigation/mt-segmented-control/mt-segmented-control.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
-import type { SegmentedControlActionsProp } from "../../navigation/mt-segmented-control/mt-segmented-control.vue";
-import MtNumberField from "../../form/mt-number-field/mt-number-field.vue";
 
 export default defineComponent({
   components: {
-    "mt-segmented-control": MtSegmentedControl,
     "mt-icon": MtIcon,
-    "mt-number-field": MtNumberField,
   },
   props: {
     currentPage: {
@@ -67,12 +96,20 @@ export default defineComponent({
     messages: {
       en: {
         "mt-pagination": {
-          of: "of",
+          infoText: "{start}-{end} of {totalItems}",
+          firstPage: "First page",
+          previousPage: "Previous page",
+          nextPage: "Next page",
+          lastPage: "Last page",
         },
       },
       de: {
         "mt-pagination": {
-          of: "von",
+          infoText: "{start}-{end} von {totalItems}",
+          firstPage: "Erste Seite",
+          previousPage: "Voherige Seite",
+          nextPage: "Nächste Seite",
+          lastPage: "Letzte Seite",
         },
       },
     },
@@ -86,59 +123,43 @@ export default defineComponent({
       },
     );
 
+    const totalPages = computed(() => {
+      return Math.ceil(props.totalItems / props.limit);
+    });
+
+    const isOnFirstPage = computed(() => props.currentPage === 1);
+    const isOnLastPage = computed(() => props.currentPage === totalPages.value);
+
+    const inputLength = computed(() => {
+      const length = props.currentPage.toString().length;
+      if (length === 0) return "calc(1ch + 1px)";
+
+      return `calc(${length}ch + 1px)`;
+    });
+
+    function onChangeInput(event: Event) {
+      const target = event.target as HTMLInputElement;
+      if (target.value === "") return;
+
+      emit("change-current-page", parseInt(target.value));
+    }
+
     const firstVisibleItemNumber = computed(() => (props.currentPage - 1) * props.limit + 1);
     const lastVisibleItemNumber = computed(() => {
       const lastItemNumberWithLimitOnly = props.limit * props.currentPage;
-
       return lastItemNumberWithLimitOnly > props.totalItems
         ? props.totalItems
         : lastItemNumberWithLimitOnly;
     });
 
-    const totalPages = computed(() => {
-      return Math.ceil(props.totalItems / props.limit);
-    });
-
-    const previousPageIsPossible = computed(() => props.currentPage > 1);
-    const nextPageIsPossible = computed(() => props.currentPage < totalPages.value);
-
-    const segmentedControlActions = computed<SegmentedControlActionsProp>(() => [
-      {
-        id: "pagination-first",
-        onClick: () => emit("change-current-page", 1),
-        disabled: !previousPageIsPossible.value,
-        minSquare: true,
-      },
-      {
-        id: "pagination-previous",
-        onClick: () => emit("change-current-page", props.currentPage - 1),
-        disabled: !previousPageIsPossible.value,
-        minSquare: true,
-      },
-      {
-        id: "pagination-current",
-        disabled: totalPages.value <= 1,
-        minSquare: true,
-      },
-      {
-        id: "pagination-next",
-        onClick: () => emit("change-current-page", props.currentPage + 1),
-        disabled: !nextPageIsPossible.value,
-        minSquare: true,
-      },
-      {
-        id: "pagination-last",
-        onClick: () => emit("change-current-page", totalPages.value),
-        disabled: !nextPageIsPossible.value,
-        minSquare: true,
-      },
-    ]);
-
     return {
+      totalPages,
+      inputLength,
+      isOnLastPage,
+      isOnFirstPage,
+      onChangeInput,
       firstVisibleItemNumber,
       lastVisibleItemNumber,
-      totalPages,
-      segmentedControlActions,
     };
   },
 });
@@ -147,81 +168,97 @@ export default defineComponent({
 <style lang="scss">
 .mt-pagination {
   display: flex;
-  flex-wrap: nowrap;
-  align-items: center;
+  align-items: baseline;
+  gap: 12px;
 
-  .mt-segmented-control__action {
-    padding-left: 8px;
-    padding-right: 8px;
-    color: $color-gray-800;
-
-    &--disabled {
-      color: $color-gray-400;
-    }
-
-    .mt-segmented-control__action-icon {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    #meteor-icon-kit__solid-double-chevron-left-xxs {
-      width: 8px !important;
-      height: 6px !important;
-    }
-
-    #meteor-icon-kit__solid-chevron-left-xs {
-      width: 5px !important;
-      height: 8px !important;
-    }
-
-    #meteor-icon-kit__solid-chevron-right-xs {
-      width: 5px !important;
-      height: 8px !important;
-    }
-
-    #meteor-icon-kit__solid-double-chevron-right-xxs {
-      width: 8px !important;
-      height: 6px !important;
-    }
-  }
-
-  // change styling of input field
-  .mt-segmented-control__action-id-pagination-current {
-    padding: 0;
-
-    .mt-field {
-      margin-bottom: 0;
-    }
-
-    .mt-field__label,
-    .mt-field__hint,
-    .mt-field--controls {
-      display: none;
-    }
-
-    .mt-block-field__block {
-      width: 32px;
-      border-width: 0;
-    }
-
-    input {
-      font-weight: $font-weight-semi-bold;
-      font-size: $font-size-extra-small;
-      line-height: $font-size-extra-small;
-      text-align: center;
-      padding-top: 8px;
-      padding-right: 4px;
-      padding-bottom: 8px;
-      padding-left: 4px;
-    }
+  &__controls {
+    display: inline-flex;
+    border-radius: $border-radius-default;
+    border: 1px solid var(--color-border-primary-default);
   }
 
   &__info-text {
-    color: $color-gray-800;
-    white-space: nowrap;
-    font-size: $font-size-xxs;
-    margin-right: 8px;
+    color: var(--color-text-tertiary-default);
+    font-size: $font-size-xs;
+  }
+
+  #meteor-icon-kit__regular-double-chevron-left-s {
+    width: 8px !important;
+    height: 7.5px !important;
+  }
+
+  #meteor-icon-kit__regular-chevron-left-s {
+    width: 4px !important;
+    height: 7.5px !important;
+  }
+
+  #meteor-icon-kit__regular-chevron-right-s {
+    width: 4px !important;
+    height: 7.5px !important;
+  }
+
+  #meteor-icon-kit__regular-double-chevron-right-s {
+    width: 8px !important;
+    height: 7.5px !important;
+  }
+
+  &__button {
+    border-right: 1px solid var(--color-border-primary-default);
+    color: var(--color-icon-primary-default);
+    height: 2rem;
+    width: 2.5rem;
+    display: grid;
+    place-items: center;
+    transition: all 0.15s ease-out;
+
+    &:focus-visible {
+      outline: 1px solid var(--color-border-brand-selected);
+      background-color: var(--color-interaction-secondary-hover);
+    }
+
+    &:hover:not(:disabled) {
+      background-color: var(--color-interaction-secondary-hover);
+    }
+
+    &:last-of-type {
+      border-right: none;
+    }
+
+    &:disabled {
+      color: var(--color-icon-primary-disabled);
+      cursor: default;
+    }
+  }
+
+  :last-child {
+    border-top-right-radius: $border-radius-default;
+    border-bottom-right-radius: $border-radius-default;
+  }
+
+  :first-child {
+    border-top-left-radius: $border-radius-default;
+    border-bottom-left-radius: $border-radius-default;
+  }
+
+  &__current-page-input {
+    all: unset;
+    width: auto;
+    border-right: 1px solid var(--color-border-primary-default);
+    padding: 0 12px;
+    color: var(--color-text-primary-default);
+    font-size: $font-size-xs;
+    font-feature-settings: "tnum";
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+
+    /* Firefox */
+    &[type="number"] {
+      -moz-appearance: textfield;
+    }
   }
 }
 </style>
