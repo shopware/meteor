@@ -35,6 +35,7 @@ export const VisualTestDateInputValue: MtDatepickerStory = {
   args: {
     label: "Date value",
     dateType: "date",
+    modelValue: new Date(Date.UTC(2024, 4, 22, 22, 22)).toISOString(),
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
