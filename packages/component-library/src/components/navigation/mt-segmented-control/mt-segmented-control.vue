@@ -211,8 +211,8 @@ export default defineComponent({
   display: flex;
   gap: 2px;
   width: max-content;
-  background-color: $color-white;
-  border: 1px solid $color-gray-500;
+  background-color: var(--color-elevation-surface-overlay);
+  border: 1px solid var(--color-border-primary-default);
   border-radius: $border-radius-default;
   padding: 2px;
 
@@ -233,16 +233,20 @@ export default defineComponent({
     border: none;
     border-radius: $border-radius-default;
     padding: 6px 12px;
-    background-color: $color-white;
     font-family: inherit;
     font-size: $font-size-extra-small;
     font-weight: $font-weight-semi-bold;
-    color: $color-darkgray-900;
-    transition: 0.15s all ease;
+    color: var(--color-text-primary-default);
+    transition:
+      0.15s background ease,
+      0.15s color ease;
     justify-content: center;
     text-align: center;
 
-    @include focus-style();
+    &:focus-visible {
+      outline: 2px solid var(--color-border-brand-selected);
+      box-shadow: 0px 0px 4px 0px rgba(24, 158, 255, 0.3);
+    }
 
     .mt-field--checkbox {
       margin-bottom: 0;
@@ -271,61 +275,59 @@ export default defineComponent({
       height: 6px !important;
     }
 
-    &:hover {
-      color: $color-darkgray-900;
-      background-color: $color-gray-100;
+    &:hover,
+    &:focus-visible {
+      background-color: var(--color-interaction-secondary-hover);
     }
 
     &:active {
-      background-color: $color-gray-200;
+      background-color: var(--color-interaction-secondary-dark);
     }
 
     &--pressed:not(&--critical) {
-      color: $color-white;
-      background-color: $color-shopware-brand-500;
+      color: var(--color-text-inverted-default);
+      background-color: var(--color-interaction-primary-default);
 
-      &:hover {
-        color: $color-white;
-        background-color: $color-shopware-brand-700;
+      &:hover,
+      &:focus-visible {
+        background-color: var(--color-interaction-primary-hover);
       }
 
       &:active {
-        background-color: $color-shopware-brand-900;
+        background-color: var(--color-interaction-primary-pressed);
       }
     }
 
     &--critical.mt-segmented-control__action--pressed {
-      color: $color-white;
-      background-color: $color-crimson-500;
+      color: var(--color-text-inverted-default);
+      background-color: var(--color-interaction-critical-default);
 
-      &:hover {
-        color: $color-white;
-        background-color: $color-crimson-600;
+      &:hover,
+      &:focus-visible {
+        background-color: var(--color-interaction-critical-hover);
       }
 
       &:active {
-        color: $color-white;
-        background-color: $color-crimson-900;
+        background-color: var(--color-interaction-critical-pressed);
       }
     }
 
     &--critical {
-      background-color: $color-white;
-      color: $color-crimson-500;
+      color: var(--color-text-critical-default);
 
-      &:hover {
-        color: $color-crimson-500;
-        background-color: $color-crimson-50;
+      &:hover,
+      &:focus-visible {
+        background-color: var(--color-background-critical-dark);
       }
 
       &:active {
-        color: $color-crimson-500;
-        background-color: $color-crimson-100;
+        color: var(--color-text-inverted-default);
+        background-color: var(--color-interaction-critical-pressed);
       }
     }
 
     &--disabled {
-      color: $color-gray-400;
+      color: var(--color-text-primary-disabled);
       cursor: default;
       pointer-events: none;
     }
@@ -336,7 +338,7 @@ export default defineComponent({
   }
 
   &__divider {
-    background-color: $color-gray-500;
+    background-color: var(--color-border-primary-default);
     width: 1px;
     margin-top: 4px;
     margin-bottom: 4px;
@@ -348,7 +350,7 @@ export default defineComponent({
 
     .mt-floating-ui .mt-segmented-control__action {
       border-radius: 0;
-      border-right: 1px solid $color-gray-500;
+      border-right: 1px solid var(--color-border-primary-default);
     }
 
     .mt-floating-ui:first-child .mt-segmented-control__action {
