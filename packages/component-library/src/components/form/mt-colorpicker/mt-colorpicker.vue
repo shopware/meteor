@@ -1221,6 +1221,7 @@ export default defineComponent({
     width: 22px;
     height: 22px;
     border-radius: $border-radius-default;
+    border: 1px solid var(--color-border-primary-default);
     overflow: hidden;
     cursor: pointer;
   }
@@ -1267,10 +1268,9 @@ export default defineComponent({
       margin-right: 5px;
 
       &-label {
-        text-align: center;
-        color: $color-darkgray-200;
+        color: var(--color-text-primary-default);
         font-size: $font-size-xxs;
-        margin-top: 2px;
+        margin-top: 8px;
         user-select: none;
         -moz-user-select: none;
         -webkit-user-select: none;
@@ -1300,8 +1300,8 @@ export default defineComponent({
   &__colorpicker {
     width: 260px;
     padding: 10px;
-    border: 1px solid $color-gray-300;
-    background-color: $color-white;
+    border: 1px solid var(--color-border-primary-default);
+    background-color: var(--color-elevation-surface-raised);
     border-radius: $border-radius-default;
     box-shadow: 0 3px 6px 0 rgba(120, 138, 155, 0.5);
 
@@ -1312,10 +1312,10 @@ export default defineComponent({
       height: 12px;
       top: -6px;
       left: 20px;
-      border: 1px solid $color-gray-300;
+      border: 1px solid var(--color-border-primary-default);
       border-bottom: none;
       border-right: none;
-      background: $color-white;
+      background: var(--color-elevation-surface-raised);
       transform: rotate(45deg);
     }
 
@@ -1334,7 +1334,7 @@ export default defineComponent({
       display: block;
       width: 238px;
       height: 150px;
-      border: 1px solid $color-gray-300;
+      border: 1px solid var(--color-border-primary-default);
       border-radius: $border-radius-default;
       background-image: linear-gradient(180deg, #fff, rgba(255, 255, 255, 0) 50%),
         linear-gradient(0deg, #000, rgba(0, 0, 0, 0) 50%),
@@ -1346,9 +1346,9 @@ export default defineComponent({
       position: relative;
       width: 18px;
       height: 18px;
-      border: 3px solid #fff;
+      border: 3px solid var(--color-icon-inverted-default);
       border-radius: 50%;
-      box-shadow: 0 0 5px $color-shopware-brand-500;
+      filter: drop-shadow(0px 0px 8px rgba(0, 0, 0, 0.25));
       cursor: grab;
 
       &:active {
@@ -1378,8 +1378,8 @@ export default defineComponent({
       height: 26px;
       width: 8px;
       border-radius: $border-radius-default;
-      border: 1px solid $color-gray-300;
-      background: #fff;
+      border: 1px solid var(--color-border-primary-default);
+      background: var(--color-icon-inverted-default);
       -webkit-appearance: none;
       cursor: pointer;
     }
@@ -1387,9 +1387,9 @@ export default defineComponent({
     &-slider-range::-moz-range-thumb {
       height: 26px;
       width: 8px;
+      border: 1px solid var(--color-border-primary-default);
+      background: var(--color-icon-inverted-default);
       border-radius: $border-radius-default;
-      border: 1px solid $color-gray-300;
-      background: #fff;
       cursor: pointer;
     }
 
@@ -1422,7 +1422,7 @@ export default defineComponent({
       display: inline-block;
       width: 58px;
       height: 58px;
-      border: 1px solid $color-gray-300;
+      border: 1px solid var(--color-border-primary-default);
       border-radius: $border-radius-default;
       z-index: 1;
     }
@@ -1432,7 +1432,7 @@ export default defineComponent({
       display: inline-block;
       width: 58px;
       height: 58px;
-      border: 1px solid $color-gray-300;
+      border: 1px solid var(--color-border-primary-default);
       border-radius: $border-radius-default;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 90 90' width='100%25' height='100%25'%3E%3Crect width='30' height='30' x='00' y='00' fill='%23cdd5db' /%3E%3Crect width='30' height='30' x='30' y='30' fill='%23cdd5db' /%3E%3Crect width='30' height='30' x='60' y='00' fill='%23cdd5db' /%3E%3Crect width='30' height='30' x='60' y='60' fill='%23cdd5db' /%3E%3Crect width='30' height='30' x='00' y='60' fill='%23cdd5db' /%3E%3C/svg%3E");
 
@@ -1448,15 +1448,16 @@ export default defineComponent({
     }
 
     &-input {
+      background: var(--color-elevation-surface-raised);
       width: 100%;
       min-width: 0;
       height: 32px;
       padding: 0 5px;
-      border: 1px solid $color-gray-300;
+      border: 1px solid var(--color-border-primary-default);
       border-radius: $border-radius-default;
       font-size: $font-size-xxs;
       font-family: $font-family-default;
-      color: $color-darkgray-200;
+      color: var(--color-text-primary-default);
       outline: none;
 
       &[type="number"] {
@@ -1477,7 +1478,8 @@ export default defineComponent({
       }
 
       &:focus {
-        border-color: $color-shopware-brand-500;
+        border-color: var(--color-border-brand-selected);
+        box-shadow: 0px 0px 4px 0px rgba(24, 158, 255, 0.3);
       }
     }
   }
@@ -1486,7 +1488,7 @@ export default defineComponent({
     width: 100%;
     height: 20px;
     margin-top: 10px;
-    border: 1px solid $color-gray-300;
+    border: 1px solid var(--color-border-primary-default);
     border-radius: $border-radius-default;
     background-image: url("data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' width='100%25' height='100%25'%3E%3Crect width='10' height='10' x='00' y='00' fill='%23cdd5db' /%3E%3Crect width='10' height='10' x='10' y='10' fill='%23cdd5db' /%3E%3C/svg%3E");
     outline: none;
@@ -1496,8 +1498,8 @@ export default defineComponent({
       height: 26px;
       width: 8px;
       border-radius: $border-radius-default;
-      border: 1px solid $color-gray-300;
-      background: #fff;
+      border: 1px solid var(--color-border-primary-default);
+      background: var(--color-icon-inverted-default);
       -webkit-appearance: none;
       cursor: pointer;
     }
@@ -1505,9 +1507,9 @@ export default defineComponent({
     &::-moz-range-thumb {
       height: 26px;
       width: 8px;
-      border: 1px solid $color-gray-300;
+      border: 1px solid var(--color-border-brand-selected);
       border-radius: $border-radius-default;
-      background: #fff;
+
       cursor: pointer;
     }
   }
