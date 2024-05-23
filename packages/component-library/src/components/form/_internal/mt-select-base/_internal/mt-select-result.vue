@@ -192,16 +192,16 @@ $mt-select-result-disabled-color-text: darken($color-gray-300, 15%);
     word-break: break-word;
     display: flex;
     flex-direction: column;
-    color: $color-darkgray-200;
+    color: var(--color-text-primary-default);
     order: 2;
   }
 
   &.is--active {
-    background: $mt-select-result-active-color-background;
-    color: $mt-select-result-active-color-text;
+    background: var(--color-background-brand-default);
+    color: var(--color-text-brand-default);
 
     .mt-select-result__result-item-text {
-      color: $mt-select-result-active-color-text;
+      color: var(--color-text-brand-default);
     }
   }
 
@@ -214,7 +214,7 @@ $mt-select-result-disabled-color-text: darken($color-gray-300, 15%);
   }
 
   > .mt-icon {
-    color: $mt-select-result-color-icon;
+    color: var(--color-icon-primary-default);
     margin-left: 4px;
     order: 4;
     justify-self: end;

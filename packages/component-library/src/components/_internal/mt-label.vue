@@ -143,9 +143,6 @@ export default defineComponent({
   }
 }
 
-$mt-label-border-radius: math.div($border-radius-default, 2);
-$mt-label-pill-border-radius: 50px;
-
 .mt-label {
   display: inline-block;
   position: relative;
@@ -156,10 +153,10 @@ $mt-label-pill-border-radius: 50px;
   line-height: 14px;
   font-size: $font-size-extra-small;
   height: 32px;
-  border: 1px solid $color-gray-300;
-  background: $color-gray-50;
-  border-radius: $mt-label-border-radius;
-  color: $color-darkgray-200;
+  border: 1px solid var(--color-border-primary-default);
+  background: var(--color-background-primary-default);
+  border-radius: 4px;
+  color: var(--color-text-primary-default);
   cursor: default;
 
   .mt-label__caption {
@@ -170,7 +167,8 @@ $mt-label-pill-border-radius: 50px;
   }
 
   &.mt-label--dismissable:hover {
-    border-color: $color-shopware-brand-500;
+    background-color: var(--color-background-brand-default);
+    border-color: var(--color-border-brand-selected);
 
     .mt-label__caption {
       width: calc(100% - 15px);
@@ -178,8 +176,9 @@ $mt-label-pill-border-radius: 50px;
 
     .mt-label__dismiss {
       display: inline-block;
-      color: $color-shopware-brand-500;
+      color: var(--color-icon-brand-default);
       background: transparent;
+      transform: translateY(1px);
     }
   }
 
@@ -229,7 +228,7 @@ $mt-label-pill-border-radius: 50px;
   }
 
   &.mt-label--appearance-pill {
-    border-radius: $mt-label-pill-border-radius;
+    border-radius: 99999px;
   }
 
   &.mt-label--appearance-circle {
