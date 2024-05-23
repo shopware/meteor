@@ -1315,7 +1315,7 @@ export default defineComponent({
       border: 1px solid var(--color-border-primary-default);
       border-bottom: none;
       border-right: none;
-      background: var(--color-elevation-surface-raised);
+      background: var(--color-elevation-surface-overlay);
       transform: rotate(45deg);
     }
 
