@@ -289,6 +289,11 @@ export default defineComponent({
         cursor: pointer;
         z-index: 2;
 
+        &:focus-visible ~ .mt-field__checkbox-state {
+          border-color: var(--color-border-brand-selected);
+          box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
+        }
+
         &:disabled {
           cursor: not-allowed;
         }
