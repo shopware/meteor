@@ -370,8 +370,8 @@ export default defineComponent({
 
     &:focus-within {
       .mt-field__switch-state {
-        border-color: $color-shopware-brand-500;
-        box-shadow: 0 0 4px $color-shopware-brand-500;
+        outline: 1px solid var(--color-border-brand-selected);
+        box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
       }
     }
   }
