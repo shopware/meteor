@@ -1,5 +1,25 @@
 # Changelog
 
+## 3.8.0
+
+### Minor Changes
+
+- 19bba6e: Make mt-floating-ui component public available
+
+### Patch Changes
+
+- 2946e98: Add tokens to switch component
+- 7798532: Remove unecessary pressed state for number field component
+- 1c90253: Add tokens to external link component
+- 23dc704: Add tokens for password field
+- 1574963: Set disabled attribute on disabled items in segmented control
+- 40641b6: Fix tooltip placement
+- 2d24896: Add tokens for textarea field
+- d935701: Adjust padding of card content
+- 5fc49f8: Add tokens for color picker
+- 16be216: Add tokens to segmented control component
+- 2b13b0b: Add tokens to number field
+
 ## 3.7.0
 
 ### Minor Changes
