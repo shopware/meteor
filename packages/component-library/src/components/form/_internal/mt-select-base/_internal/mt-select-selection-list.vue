@@ -36,6 +36,7 @@
     <li v-if="invisibleCount > 0 && !hideLabels" class="mt-select-selection-list__load-more">
       <slot name="invisible-count" v-bind="{ invisibleCount, onClickInvisibleCount }">
         <mt-button
+          variant="secondary"
           class="mt-select-selection-list__load-more-button"
           @click.stop="onClickInvisibleCount"
           tabindex="0"
@@ -264,12 +265,12 @@ export default defineComponent({
   button.mt-select-selection-list__load-more-button {
     padding: 8px 12px;
     margin: 0 6px 0 0;
-    color: $color-shopware-brand-500;
+    color: var(--color-text-brand-default);
     font-size: 12px;
     line-height: 14px;
     border-radius: 2px;
     height: unset;
-    border-color: $color-gray-300;
+    border-color: var(--color-border-primary-default);
   }
 
   .mt-select-selection-list__input {

@@ -290,7 +290,7 @@ $mt-select-focus-transition: all ease-in-out 0.2s;
     transition: $mt-select-focus-transition;
     background-color: var(--color-elevation-surface-raised);
     position: relative;
-    overflow: visible;
+    overflow: hidden;
   }
 
   .mt-select__selection {
