@@ -20,6 +20,7 @@
             :class="getActionClass(action)"
             :aria-pressed="action.isPressed"
             @click="() => handleClick(action, toggleFloatingUi)"
+            :disabled="action.disabled"
           >
             <mt-icon
               v-if="action.iconName"
