@@ -65,6 +65,7 @@ export const VisualTestDateInputValue: MtDatepickerStory = {
 export const VisualTestDateTimeInputValue: MtDatepickerStory = {
   name: "Should input datetime value",
   args: {
+    modelValue: new Date(Date.UTC(2024, 4, 22, 22, 22)).toISOString(),
     label: "Date value",
     dateType: "datetime",
   },
