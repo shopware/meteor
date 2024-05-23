@@ -369,6 +369,7 @@ export default defineComponent({
     .mt-tabs {
       margin: 0;
       max-width: none;
+      padding-left: 8px;
 
       .mt-tabs__custom-content {
         padding: 0;
@@ -383,14 +384,10 @@ export default defineComponent({
   .mt-card__content {
     display: flow-root;
     flex-basis: 100%;
-    padding: 30px;
+    padding: 24px;
     background-clip: padding-box;
     position: relative;
     color: var(--color-text-primary-default);
-
-    @media screen and (max-width: $content-width) {
-      padding: 15px;
-    }
 
     h1,
     h2,
