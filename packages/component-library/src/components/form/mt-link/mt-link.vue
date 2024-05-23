@@ -1,5 +1,12 @@
 <template>
-  <component :is="elementType" v-if="to" :to="to" class="mt-link" :class="linkClasses" v-bind="$attrs">
+  <component
+    :is="elementType"
+    v-if="to"
+    :to="to"
+    class="mt-link"
+    :class="linkClasses"
+    v-bind="$attrs"
+  >
     <slot />
   </component>
   <mt-button v-else :variant="variant" :size="size" :disabled="disabled" v-bind="$attrs">
@@ -160,5 +167,4 @@ export default defineComponent({
     }
   }
 }
-
 </style>
