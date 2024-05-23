@@ -1301,7 +1301,7 @@ export default defineComponent({
     width: 260px;
     padding: 10px;
     border: 1px solid var(--color-border-primary-default);
-    background-color: var(--color-elevation-surface-raised);
+    background-color: var(--color-elevation-surface-overlay);
     border-radius: $border-radius-default;
     box-shadow: 0 3px 6px 0 rgba(120, 138, 155, 0.5);
 
