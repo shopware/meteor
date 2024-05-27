@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import type { ShopwareMessageTypes } from './message-types';
 import { generateUniqueId } from './_internals/utils';
-import type { extension } from './_internals/privileges';
+import type { extension, privilegeString } from './_internals/privileges';
 import MissingPrivilegesError from './_internals/privileges/missing-privileges-error';
 import SerializerFactory from './_internals/serializer';
 import createError from './_internals/error-handling/error-factory';
@@ -43,6 +43,11 @@ export function setExtensions(extensions: extensions): void {
  */
 
 /**
+ * Resembles the options that are available on any ShopwareMessageType.
+ */
+export type BaseMessageOptions = { privileges?: privilegeString[] }
+
+/**
  * This type contains the data of the type without the responseType
  * @internal
  */
@@ -54,7 +59,7 @@ export type MessageDataType<TYPE extends keyof ShopwareMessageTypes> = Omit<Shop
  */
 export type ShopwareMessageSendData<MESSAGE_TYPE extends keyof ShopwareMessageTypes> = {
   _type: MESSAGE_TYPE,
-  _data: MessageDataType<MESSAGE_TYPE>,
+  _data: MessageDataType<MESSAGE_TYPE> & BaseMessageOptions,
   _callbackId: string,
 }
 
@@ -101,7 +106,7 @@ const subscriberRegistry: Set<{
  */
 export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
   type: MESSAGE_TYPE,
-  data: MessageDataType<MESSAGE_TYPE>,
+  data: MessageDataType<MESSAGE_TYPE> & BaseMessageOptions,
   _targetWindow?: Window,
   _origin?: string
 ): Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType'] | null> {
@@ -255,6 +260,11 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
   });
 }
 
+export type HandleMethod<MESSAGE_TYPE extends keyof ShopwareMessageTypes> = (
+  data: MessageDataType<MESSAGE_TYPE> & BaseMessageOptions,
+  additionalInformation: { _event_: MessageEvent<string> }
+) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | ShopwareMessageTypes[MESSAGE_TYPE]['responseType'];
+
 /**
  * @param type Choose a type of action from the {@link send-types}
  * @param method This method should return the response value
@@ -263,7 +273,7 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
 export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
 (
   type: MESSAGE_TYPE,
-  method: (data: MessageDataType<MESSAGE_TYPE>, additionalInformation: { _event_: MessageEvent<string>}) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | ShopwareMessageTypes[MESSAGE_TYPE]['responseType']
+  method: HandleMethod<MESSAGE_TYPE>
 )
   : () => void
 {
@@ -433,24 +443,24 @@ export function subscribe<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
 // SENDER WITH OPTIONAL ARGUMENTS (WHEN ALL BASE ARGUMENTS ARE DEFINED)
 export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
 (messageType: MESSAGE_TYPE, baseMessageOptions: MessageDataType<MESSAGE_TYPE>)
-:(messageOptions?: MessageDataType<MESSAGE_TYPE>) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']>
+:(messageOptions?: MessageDataType<MESSAGE_TYPE> & BaseMessageOptions) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']>
 
 // SENDER WITH PARTIAL ARGUMENTS (ARGUMENTS DEFINED IN BASE OPTIONS ARE OMITTED)
 export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes, BASE_OPTIONS extends Partial<MessageDataType<MESSAGE_TYPE>>>
 (messageType: MESSAGE_TYPE, baseMessageOptions: BASE_OPTIONS)
-:(messageOptions: Omit<MessageDataType<MESSAGE_TYPE>, keyof BASE_OPTIONS>) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']>
+:(messageOptions: Omit<MessageDataType<MESSAGE_TYPE>, keyof BASE_OPTIONS> & BaseMessageOptions) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']>
 
 // SENDER WITH FULL ARGUMENTS (WHEN NO BASE ARGUMENTS ARE DEFINED)
 export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
 (messageType: MESSAGE_TYPE)
-:(messageOptions: MessageDataType<MESSAGE_TYPE>) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']>
+:(messageOptions: MessageDataType<MESSAGE_TYPE> & BaseMessageOptions) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']>
 
 // MAIN FUNCTION WHICH INCLUDES ALL POSSIBILITES
 export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
 (messageType: MESSAGE_TYPE, baseMessageOptions?: MessageDataType<MESSAGE_TYPE>)
 {
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  return (messageOptions: MessageDataType<MESSAGE_TYPE>) => {
+  return (messageOptions: MessageDataType<MESSAGE_TYPE> & BaseMessageOptions) => {
     return send(messageType, { ...baseMessageOptions, ...messageOptions });
   };
 }
@@ -461,7 +471,7 @@ export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
  */
 export function createHandler<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(messageType: MESSAGE_TYPE) {
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  return (method: (data: MessageDataType<MESSAGE_TYPE>, additionalInformation: {
+  return (method: (data: MessageDataType<MESSAGE_TYPE> & BaseMessageOptions, additionalInformation: {
     _event_: MessageEvent<string>,
   }) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | ShopwareMessageTypes[MESSAGE_TYPE]['responseType']) => {
     return handle(messageType, method);
