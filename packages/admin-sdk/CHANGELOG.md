@@ -1,5 +1,11 @@
 # Changelog
 
+## 5.4.0
+
+### Minor Changes
+
+- 6d2359e: Add privileges to all messages
+
 ## 5.3.1
 
 ### Patch Changes
