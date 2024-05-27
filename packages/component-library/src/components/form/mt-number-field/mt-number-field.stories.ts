@@ -9,7 +9,7 @@ export type MtNumberFieldMeta = SlottedMeta<
   | "inheritanceRemove"
   | "inheritanceRestore"
   | "isInherited"
-  | "change"
+  | "updateModelValue"
   | "modelValue"
   | "hint"
   | "suffix"
@@ -26,7 +26,6 @@ export default {
         <mt-number-field
           v-bind="args"
           v-model="currentValue"
-          @change="args.change"
           @update:modelValue="args.updateModelValue"
           @inheritance-restore="inheritanceRestoreWrapper"
           @inheritance-remove="inheritanceRemoveWrapper">

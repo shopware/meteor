@@ -234,7 +234,8 @@ export default defineComponent({
     onChange(event: Event) {
       // @ts-expect-error - target exists
       this.computeValue(event.target.value);
-      this.$emit("change", this.currentValue);
+
+      this.$emit("update:modelValue", this.currentValue);
     },
 
     onInput(event: Event) {
@@ -259,7 +260,7 @@ export default defineComponent({
       }
 
       this.computeValue((this.currentValue + this.realStep).toString());
-      this.$emit("change", this.currentValue);
+      this.$emit("update:modelValue", this.currentValue);
     },
 
     decreaseNumberByStep() {
@@ -269,7 +270,7 @@ export default defineComponent({
 
       // @ts-expect-error - wrong type because of component extends
       this.computeValue((this.currentValue - this.realStep).toString());
-      this.$emit("change", this.currentValue);
+      this.$emit("update:modelValue", this.currentValue);
     },
 
     computeValue(stringRepresentation: string) {
