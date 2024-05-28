@@ -24,7 +24,7 @@ export class GenerateArtifacts {
 
     const primitiveDictionary = Dictionary.fromFigmaApiResponse(
       primitiveTokenResponse,
-      { mode: 'Light mode' },
+      { mode: 'Value' },
     );
 
     this.fileSystem.saveFile(
