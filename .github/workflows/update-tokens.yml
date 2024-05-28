@@ -9,7 +9,7 @@ env:
 
 jobs:
   update:
-    name: Update icons
+    name: Update tokens
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -41,5 +41,5 @@ jobs:
           branch: update-tokens
           delete-branch: true
           branch-suffix: timestamp
-          title: Update icons
+          title: Update tokens
           assignees: Weltraumakustik
