@@ -3,8 +3,8 @@
   --color-interaction-primary-hover: #0042a0;
   --color-interaction-primary-disabled: #76aaff;
   --color-interaction-primary-pressed: #005cd7;
-  --color-interaction-secondary-default: #2d2e32;
-  --color-interaction-secondary-hover: #3d3e42;
+  --color-interaction-secondary-default: #26262b;
+  --color-interaction-secondary-hover: #2d2e32;
   --color-interaction-secondary-disabled: #3d3e42;
   --color-interaction-secondary-dark: #1e1e24;
   --color-interaction-critical-default: #e2262a;
@@ -18,6 +18,7 @@
   --color-elevation-surface-raised: #1e1e24;
   --color-elevation-surface-overlay: #26262b;
   --color-elevation-surface-frame: #1e1e24;
+  --color-elevation-surface-floating: #ffffff;
   --color-background-primary-default: #1e1e24;
   --color-background-primary-disabled: #2d2e32;
   --color-background-critical-default: #5e0006;
@@ -32,15 +33,16 @@
   --color-border-brand-default: #00296a;
   --color-border-brand-disabled: #76aaff;
   --color-border-positive-default: #36d046;
+  --color-border-attention-default: #fbaf18;
   --color-border-critical-default: #fc4945;
   --color-border-critical-dark: #5e0006;
   --color-border-critical-disabled: #ff7f74;
-  --color-border-attention-default: #fbaf18;
   --color-border-primary-default: #3d3e42;
   --color-border-accent-default: #a694ff;
   --color-icon-primary-default: #e2e3e9;
   --color-icon-primary-disabled: #838489;
-  --color-icon-inverted-default: #e2e3e9;
+  --color-icon-static-default: #e2e3e9;
+  --color-icon-static-dark: #101013;
   --color-icon-brand-default: #0870ff;
   --color-icon-brand-hover: #0042a0;
   --color-icon-brand-disabled: #76aaff;
@@ -50,6 +52,7 @@
   --color-icon-critical-hover: #90000e;
   --color-icon-critical-disabled: #ff7f74;
   --color-icon-accent-default: #b5a8ff;
+  --color-icon-inverse-default: #26262b;
   --color-text-primary-default: #cdced4;
   --color-text-primary-disabled: #838489;
   --color-text-secondary-default: #a5a6ab;
@@ -61,9 +64,11 @@
   --color-text-critical-hover: #90000e;
   --color-text-critical-disabled: #ff7f74;
   --color-text-critical-dark: #ffcfc9;
-  --color-text-inverted-default: #ffffff;
+  --color-text-static-default: #ffffff;
+  --color-text-static-dark: #101013;
   --color-text-positive-default: #e1ffe0;
   --color-text-brand-default: #0870ff;
   --color-text-brand-hover: #0042a0;
   --color-text-brand-disabled: #76aaff;
+  --color-text-inverse-default: #26262b;
 }
