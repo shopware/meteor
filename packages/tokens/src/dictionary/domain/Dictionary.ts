@@ -33,7 +33,7 @@ export class Dictionary {
 
     if (!modeId)
       throw new Error(
-        `Failed to create Dictionary; Could not find mode with the name "${modeId}"`,
+        `Failed to create Dictionary; Could not find mode with the name "${options.mode}"`,
       );
 
     const variables = Object.values(

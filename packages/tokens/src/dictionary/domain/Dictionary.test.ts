@@ -446,3 +446,76 @@ test('returns a flat object with all design tokens stored in the Dictionary', ()
     'gray.900': '#ffffff',
   });
 });
+
+test('throws an error if the mode is not found in the FigmaApiResponse', () => {
+  // GIVEN
+  const response: FigmaApiResponse = {
+    status: 200,
+    error: false,
+    meta: {
+      variableCollections: {
+        'VariableCollectionId:21953:215879': {
+          id: 'VariableCollectionId:21953:215879',
+          name: '.Design Tokens',
+          key: '9130479ef323598b1ccfb32e7b16dc80fcb30f14',
+          modes: [{ modeId: '11953:0', name: 'Default' }],
+          defaultModeId: '11953:0',
+          remote: false,
+          hiddenFromPublishing: true,
+          variableIds: ['VariableID:51413:51953'],
+        },
+      },
+      variables: {
+        'VariableID:51413:51953': {
+          id: 'VariableID:51413:51953',
+          name: 'Gray / 50',
+          key: 'db9aa5d3b7c6f03b4cddb78e045b566fae112d17',
+          variableCollectionId: 'VariableCollectionId:21953:215879',
+          resolvedType: 'COLOR',
+          valuesByMode: {
+            '11953:0': {
+              r: 0,
+              g: 0,
+              b: 1,
+              a: 1,
+            },
+          },
+          remote: false,
+          description: '',
+          hiddenFromPublishing: false,
+          scopes: ['ALL_SCOPES'],
+        },
+        'VariableID:61413:51953': {
+          id: 'VariableID:61413:51953',
+          name: 'Gray / 900',
+          key: 'db9aa5d3b7c6f03b4cddb78e045b566fae112d17',
+          variableCollectionId: 'VariableCollectionId:21953:215879',
+          resolvedType: 'COLOR',
+          valuesByMode: {
+            '11953:0': {
+              r: 1,
+              g: 1,
+              b: 1,
+              a: 1,
+            },
+          },
+          remote: false,
+          description: '',
+          hiddenFromPublishing: false,
+          scopes: ['ALL_SCOPES'],
+        },
+      },
+    },
+  };
+
+  // WHEN
+  const execute = () =>
+    Dictionary.fromFigmaApiResponse(response, {
+      mode: 'Light mode',
+    });
+
+  // THEN
+  expect(execute).toThrowErrorMatchingInlineSnapshot(
+    `[Error: Failed to create Dictionary; Could not find mode with the name "Light mode"]`,
+  );
+});
