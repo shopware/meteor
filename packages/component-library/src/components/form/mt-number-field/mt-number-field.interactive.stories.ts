@@ -20,6 +20,7 @@ export const TestInputValue: MtNumberFieldStory = {
     // Notice that the value is of type string and the value of the event is of type number
     expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("42");
 
+    expect(args.change).toHaveBeenCalledWith(42);
     expect(args.updateModelValue).toHaveBeenCalledWith(42);
   },
 };
@@ -40,6 +41,7 @@ export const TestIncreaseByKeyStroke: MtNumberFieldStory = {
     // Notice that the value is of type string and the value of the event is of type number
     expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("11");
 
+    expect(args.change).toHaveBeenCalledWith(11);
     expect(args.updateModelValue).toHaveBeenCalledWith(11);
   },
 };
@@ -58,6 +60,7 @@ export const TestIncreaseByControl: MtNumberFieldStory = {
     // Notice that the value is of type string and the value of the event is of type number
     expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("11");
 
+    expect(args.change).toHaveBeenCalledWith(11);
     expect(args.updateModelValue).toHaveBeenCalledWith(11);
   },
 };
@@ -78,6 +81,7 @@ export const TestDecreaseByKeyStroke: MtNumberFieldStory = {
     // Notice that the value is of type string and the value of the event is of type number
     expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("9");
 
+    expect(args.change).toHaveBeenCalledWith(9);
     expect(args.updateModelValue).toHaveBeenCalledWith(9);
   },
 };
@@ -97,6 +101,7 @@ export const TestDecreaseByControl: MtNumberFieldStory = {
     // Notice that the value is of type string and the value of the event is of type number
     expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("9");
 
+    expect(args.change).toHaveBeenCalledWith(9);
     expect(args.updateModelValue).toHaveBeenCalledWith(9);
   },
 };
@@ -120,6 +125,7 @@ export const TestStepIncrease: MtNumberFieldStory = {
     // Notice that the value is of type string and the value of the event is of type number
     expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("11.40");
 
+    expect(args.change).toHaveBeenCalledWith(11.4);
     expect(args.updateModelValue).toHaveBeenCalledWith(11.4);
   },
 };
@@ -141,6 +147,7 @@ export const TestDecreaseConsidersMin: MtNumberFieldStory = {
     // Notice that the value is of type string and the value of the event is of type number
     expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("10");
 
+    expect(args.change).toHaveBeenCalledWith(10);
     expect(args.updateModelValue).toHaveBeenCalledWith(10);
   },
 };
@@ -162,6 +169,7 @@ export const TestIncreaseConsiderMax: MtNumberFieldStory = {
     // Notice that the value is of type string and the value of the event is of type number
     expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("10");
 
+    expect(args.change).toHaveBeenCalledWith(10);
     expect(args.updateModelValue).toHaveBeenCalledWith(10);
   },
 };
