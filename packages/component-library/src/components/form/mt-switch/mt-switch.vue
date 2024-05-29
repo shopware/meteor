@@ -317,7 +317,7 @@ export default defineComponent({
           background: var(--color-interaction-primary-disabled);
 
           .mt-field__switch-state-knob {
-            background: var(--color-icon-inverted-default);
+            background: var(--color-icon-static-default);
           }
         }
       }
@@ -338,7 +338,7 @@ export default defineComponent({
           position: absolute;
           top: 3px;
           left: 3px;
-          background: var(--color-icon-inverted-default);
+          background: var(--color-icon-static-default);
           border-radius: 7px;
         }
       }

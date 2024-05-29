@@ -1346,7 +1346,7 @@ export default defineComponent({
       position: relative;
       width: 18px;
       height: 18px;
-      border: 3px solid var(--color-icon-inverted-default);
+      border: 3px solid var(--color-icon-static-default);
       border-radius: 50%;
       filter: drop-shadow(0px 0px 8px rgba(0, 0, 0, 0.25));
       cursor: grab;
@@ -1379,7 +1379,7 @@ export default defineComponent({
       width: 8px;
       border-radius: $border-radius-default;
       border: 1px solid var(--color-border-primary-default);
-      background: var(--color-icon-inverted-default);
+      background: var(--color-icon-static-default);
       -webkit-appearance: none;
       cursor: pointer;
     }
@@ -1388,7 +1388,7 @@ export default defineComponent({
       height: 26px;
       width: 8px;
       border: 1px solid var(--color-border-primary-default);
-      background: var(--color-icon-inverted-default);
+      background: var(--color-icon-static-default);
       border-radius: $border-radius-default;
       cursor: pointer;
     }
@@ -1499,7 +1499,7 @@ export default defineComponent({
       width: 8px;
       border-radius: $border-radius-default;
       border: 1px solid var(--color-border-primary-default);
-      background: var(--color-icon-inverted-default);
+      background: var(--color-icon-static-default);
       -webkit-appearance: none;
       cursor: pointer;
     }

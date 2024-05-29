@@ -306,7 +306,7 @@ export default defineComponent({
             display: flex;
             justify-content: center;
             align-items: center;
-            color: var(--color-icon-inverted-default);
+            color: var(--color-icon-static-default);
           }
         }
 
@@ -325,7 +325,7 @@ export default defineComponent({
 
           .mt-icon {
             display: inline-block;
-            color: var(--color-icon-inverted-default);
+            color: var(--color-icon-static-default);
           }
         }
       }
