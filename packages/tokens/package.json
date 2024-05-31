@@ -27,7 +27,8 @@
     "lint:types": "tsc --noEmit",
     "start": "tsx ./src/scripts/index.ts",
     "test:unit": "vitest --run",
-    "test:unit:watch": "vitest"
+    "test:unit:watch": "vitest",
+    "build": "echo 'This is only used for turbo repo caching'"
   },
   "dependencies": {
     "dotenv": "^16.4.1",
