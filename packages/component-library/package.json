@@ -26,7 +26,7 @@
     "format": "prettier --write .",
     "storybook": "storybook dev -p 6006",
     "build:storybook": "storybook build",
-    "test:storybook": "echo 'hii'"
+    "test:storybook": "test-storybook"
   },
   "dependencies": {
     "@floating-ui/dom": "^1.4.3",

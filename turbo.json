@@ -29,7 +29,8 @@
       "outputs": []
     },
     "test:e2e": {
-      "outputs": []
+      "outputs": [],
+      "dependsOn": ["^build"]
     },
     "@shopware-ag/meteor-component-library#test:storybook": {
       "outputs": [],
