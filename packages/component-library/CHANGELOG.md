@@ -1,5 +1,26 @@
 # Changelog
 
+## 3.8.1
+
+### Patch Changes
+
+- def10ee: Add tokens to tooltip component
+- 81f8d4c: Fix tag deletion is not working on the Safari browser
+- d60aad5: # Fix number field events
+  - Deprecated `change` event for `mt-number-field`
+  - Added `update:modelValue` event to `mt-number-field`
+- Updated dependencies [0a0ac80]
+- Updated dependencies [0a0ac80]
+- Updated dependencies [0a0ac80]
+- Updated dependencies [0a0ac80]
+- Updated dependencies [0a0ac80]
+- Updated dependencies [0a0ac80]
+- Updated dependencies [0a0ac80]
+- Updated dependencies [0a0ac80]
+- Updated dependencies [0a0ac80]
+- Updated dependencies [0a0ac80]
+  - @shopware-ag/meteor-tokens@0.2.0
+
 ## 3.8.0
 
 ### Minor Changes
