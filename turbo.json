@@ -32,7 +32,8 @@
       "outputs": []
     },
     "@shopware-ag/meteor-component-library#test:storybook": {
-      "outputs": []
+      "outputs": [],
+      "dependsOn": ["^build"]
     }
   }
 }
