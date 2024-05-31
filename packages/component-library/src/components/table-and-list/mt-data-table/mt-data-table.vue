@@ -2726,8 +2726,8 @@ table.is--dragging-inside {
 
     .mt-icon {
       display: block;
-      color: $color-darkgray-200;
-      background: #fff;
+      color: var(--color-elevation-surface-floating);
+      background: var(--color-icon-inverse-default);
       border-radius: 999px;
 
       #meteor-icon-kit__solid-plus-square-s {
