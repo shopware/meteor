@@ -2260,13 +2260,13 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   }
 
   thead tr {
-    background-color: var(--color-elevation-surface-raised);
+    background-color: var(--color-elevation-surface-sunken);
   }
 
   thead th {
     font-weight: $font-weight-medium;
     line-height: $line-height-xs;
-    background-color: var(--color-elevation-surface-raised);
+    background-color: var(--color-elevation-surface-sunken);
     color: var(--color-text-secondary-default);
     min-width: 50px;
     height: $tableHeaderSize;
@@ -2388,7 +2388,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   }
 
   .mt-data-table__table-selection-bulk-edit {
-    background-color: var(--color-elevation-surface-raised);
+    background-color: var(--color-elevation-surface-sunken);
     position: absolute;
     top: -0.5px;
     left: -0.5px;
@@ -2635,7 +2635,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   vertical-align: top;
   font-weight: $font-weight-medium;
   line-height: $line-height-xs;
-  background-color: var(--color-elevation-surface-raised);
+  background-color: var(--color-elevation-surface-sunken);
   color: var(--color-text-primary-default);
   min-width: 50px;
   text-transform: uppercase;
