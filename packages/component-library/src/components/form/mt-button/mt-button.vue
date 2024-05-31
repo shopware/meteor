@@ -214,12 +214,12 @@ $mt-button-transition: all 0.15s ease-out;
 
   &.mt-button--primary {
     background: var(--color-interaction-primary-default);
-    color: var(--color-text-inverted-default);
+    color: var(--color-text-static-default);
     line-height: 36px;
     border-color: var(--color-interaction-primary-default);
 
     .mt-icon {
-      color: var(--color-icon-inverted-default);
+      color: var(--color-icon-static-default);
     }
 
     &:is(:hover, :focus-visible, :active) {
@@ -300,7 +300,7 @@ $mt-button-transition: all 0.15s ease-out;
 
   &.mt-button--critical {
     background: var(--color-interaction-critical-default);
-    color: var(--color-text-inverted-default);
+    color: var(--color-text-static-default);
     line-height: 36px;
     border-color: var(--color-interaction-critical-default);
 
@@ -320,12 +320,12 @@ $mt-button-transition: all 0.15s ease-out;
       border-color: var(--color-interaction-critical-disabled);
 
       .mt-icon {
-        color: var(--color-icon-inverted-default);
+        color: var(--color-icon-static-default);
       }
     }
 
     .mt-icon {
-      color: var(--color-icon-inverted-default);
+      color: var(--color-icon-static-default);
     }
   }
 

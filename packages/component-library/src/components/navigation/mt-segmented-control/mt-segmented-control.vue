@@ -286,7 +286,7 @@ export default defineComponent({
     }
 
     &--pressed:not(&--critical) {
-      color: var(--color-text-inverted-default);
+      color: var(--color-text-static-default);
       background-color: var(--color-interaction-primary-default);
 
       &:hover,
@@ -300,7 +300,7 @@ export default defineComponent({
     }
 
     &--critical.mt-segmented-control__action--pressed {
-      color: var(--color-text-inverted-default);
+      color: var(--color-text-static-default);
       background-color: var(--color-interaction-critical-default);
 
       &:hover,
@@ -322,7 +322,7 @@ export default defineComponent({
       }
 
       &:active {
-        color: var(--color-text-inverted-default);
+        color: var(--color-text-static-default);
         background-color: var(--color-interaction-critical-pressed);
       }
     }

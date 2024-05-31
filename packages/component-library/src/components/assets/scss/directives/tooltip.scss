@@ -1,8 +1,6 @@
 @import "../variables.scss";
 
 $mt-tooltip-z-index: $z-index-tooltip;
-$mt-tooltip-color-background: $color-menu-end;
-$mt-tooltip-color: $color-white;
 $mt-tooltip-border-radius: $border-radius-default;
 $mt-tooltip-color-light: $color-darkgray-200;
 $mt-tooltip-border-color-light: $color-gray-300;
@@ -12,9 +10,9 @@ $mt-tooltip-border-color-light: $color-gray-300;
   z-index: $mt-tooltip-z-index;
 
   &.mt-tooltip--dark {
-    background-color: $mt-tooltip-color-background;
+    background-color: var(--color-elevation-surface-floating);
     border-radius: $mt-tooltip-border-radius;
-    color: $mt-tooltip-color;
+    color: var(--color-text-inverse-default);
     padding: 12px 16px;
     font-size: 14px;
     word-wrap: break-word;
@@ -25,7 +23,7 @@ $mt-tooltip-border-color-light: $color-gray-300;
       height: 8px;
       width: 8px;
       transform: rotate(45deg);
-      background: $mt-tooltip-color-background;
+      background: var(--color-elevation-surface-floating);
     }
 
     &.mt-tooltip--top::before {
@@ -62,7 +60,7 @@ $mt-tooltip-border-color-light: $color-gray-300;
     width: auto !important;
     height: auto !important;
     padding: 5px 10px;
-    background: $mt-tooltip-color;
+    background: $color-white;
     border: 1px solid $mt-tooltip-border-color-light;
     box-shadow: 0 3px 6px 0 rgba(120, 138, 155, 0.5);
     border-radius: 4px;
