@@ -13,16 +13,17 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-$mt-skeleton-bar-color: $color-gray-100;
+$mt-skeleton-bar-color: var(--color-background-primary-disabled);
 $mt-skeleton-bar-height: 32px;
-$mt-skeleton-shimmer-dark: $color-gray-200;
-$mt-skeleton-shimmer-light: $color-gray-100;
+$mt-skeleton-shimmer-dark: var(--color-elevation-surface-sunken);
+$mt-skeleton-shimmer-light: var(--color-background-primary-disabled);
 
 .mt-skeleton-bar {
   height: $mt-skeleton-bar-height;
   width: 100%;
   background-color: $mt-skeleton-bar-color;
   overflow: hidden;
+  border-radius: $border-radius-default;
 
   &:not(:last-child) {
     margin-bottom: 32px;
