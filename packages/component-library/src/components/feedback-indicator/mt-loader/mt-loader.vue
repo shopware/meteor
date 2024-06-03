@@ -61,8 +61,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-$mt-loader-color-overlay: rgba(255, 255, 255, 0.8);
-$mt-loader-element-color: $color-shopware-brand-500;
+$mt-loader-color-overlay: var(--color-background-primary-disabled);
+$mt-loader-element-color: var(--color-border-brand-selected);
 $mt-loader-rotate-duration: 1.4s;
 $mt-loader-z-index: $z-index-loader;
 
@@ -77,6 +77,7 @@ $mt-loader-z-index: $z-index-loader;
   margin: auto;
   z-index: $mt-loader-z-index;
   background: $mt-loader-color-overlay;
+  opacity: 0.8;
 
   .mt-loader__container {
     display: grid;
