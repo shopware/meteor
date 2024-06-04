@@ -128,15 +128,15 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-$mt-context-button-color-text: $color-darkgray-200;
+$mt-context-button-color-text: var(--color-icon-primary-default);
 $mt-context-button-border-radius: $border-radius-default;
-$mt-context-button-color-border: $color-gray-300;
-$mt-context-button-color-disabled: $color-gray-100;
+$mt-context-button-color-border: var(--color-border-primary-default);
+$mt-context-button-color-disabled: var(--color-icon-primary-disabled);
 
 .mt-context-button {
   &.is--disabled {
     .mt-context-button__button {
-      color: lighten($mt-context-button-color-text, 20%);
+      color: var(--color-icon-primary-disabled);
       cursor: initial;
 
       &:hover {
