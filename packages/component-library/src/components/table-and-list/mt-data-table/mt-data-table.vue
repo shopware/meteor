@@ -9,40 +9,48 @@
           :model-value="searchValue"
           @change="emitSearchValueChange"
         />
+        <template v-if="filters.length > 0">
+          <slot
+            name="filter-button"
+            v-bind="{ filterChildViews, isOptionSelected, addOption, removeOption }"
+          >
+            <mt-popover title="Filters" :child-views="filterChildViews">
+              <template #trigger="{ toggleFloatingUi }">
+                <mt-button variant="secondary" @click="toggleFloatingUi">
+                  <mt-icon name="solid-filter-s" aria-hidden="true" />
 
-        <mt-popover v-if="filters.length > 0" title="Filters" :child-views="filterChildViews">
-          <template #trigger="{ toggleFloatingUi }">
-            <mt-button variant="secondary" @click="toggleFloatingUi">
-              <mt-icon name="solid-filter-s" aria-hidden="true" />
+                  <span>{{ $t("mt-data-table.filter.addFilter") }}</span>
+                </mt-button>
+              </template>
 
-              <span>{{ $t("mt-data-table.filter.addFilter") }}</span>
-            </mt-button>
-          </template>
+              <template #popover-items__base="{ changeView }">
+                <mt-popover-item
+                  v-for="filter in filters"
+                  :key="filter.id"
+                  :label="filter.label"
+                  show-options
+                  @click-options="() => changeView(filter.id)"
+                />
+              </template>
 
-          <template #popover-items__base="{ changeView }">
-            <mt-popover-item
-              v-for="filter in filters"
-              :key="filter.id"
-              :label="filter.label"
-              show-options
-              @click-options="() => changeView(filter.id)"
-            />
-          </template>
-
-          <template v-for="filter in filters" :key="filter.id" #[`popover-items__${filter.id}`]>
-            <mt-popover-item
-              v-for="option in filter.type.options"
-              :key="option.id"
-              :label="option.label"
-              show-checkbox
-              :checkbox-checked="isOptionSelected(filter.id, option.id)"
-              @change-checkbox="
-                (isChecked) =>
-                  isChecked ? addOption(filter.id, option.id) : removeOption(filter.id, option.id)
-              "
-            />
-          </template>
-        </mt-popover>
+              <template v-for="filter in filters" :key="filter.id" #[`popover-items__${filter.id}`]>
+                <mt-popover-item
+                  v-for="option in filter.type.options"
+                  :key="option.id"
+                  :label="option.label"
+                  show-checkbox
+                  :checkbox-checked="isOptionSelected(filter.id, option.id)"
+                  @change-checkbox="
+                    (isChecked) =>
+                      isChecked
+                        ? addOption(filter.id, option.id)
+                        : removeOption(filter.id, option.id)
+                  "
+                />
+              </template>
+            </mt-popover>
+          </slot>
+        </template>
 
         <slot name="toolbar" />
       </div>
@@ -417,34 +425,36 @@
                     </template>
 
                     <template v-else>
-                      <!-- Use the correct renderer for the column -->
-                      <mt-data-table-number-renderer
-                        v-if="column.renderer === 'number'"
-                        :data="data"
-                        :column-definition="column"
-                        @click="$emit('open-details', data)"
-                      />
+                      <slot :name="`column-${column.property}`" v-bind="{ data, column }">
+                        <!-- Use the correct renderer for the column -->
+                        <mt-data-table-number-renderer
+                          v-if="column.renderer === 'number'"
+                          :data="data"
+                          :column-definition="column"
+                          @click="$emit('open-details', data)"
+                        />
 
-                      <mt-data-table-text-renderer
-                        v-else-if="column.renderer === 'text'"
-                        :data="data"
-                        :column-definition="column"
-                        @click="$emit('open-details', data)"
-                      />
+                        <mt-data-table-text-renderer
+                          v-else-if="column.renderer === 'text'"
+                          :data="data"
+                          :column-definition="column"
+                          @click="$emit('open-details', data)"
+                        />
 
-                      <mt-data-table-badge-renderer
-                        v-else-if="column.renderer === 'badge'"
-                        :data="data"
-                        :column-definition="column"
-                        @click="$emit('open-details', data)"
-                      />
+                        <mt-data-table-badge-renderer
+                          v-else-if="column.renderer === 'badge'"
+                          :data="data"
+                          :column-definition="column"
+                          @click="$emit('open-details', data)"
+                        />
 
-                      <mt-data-table-price-renderer
-                        v-else-if="column.renderer === 'price'"
-                        :data="data"
-                        :column-definition="column"
-                        @click="$emit('open-details', data)"
-                      />
+                        <mt-data-table-price-renderer
+                          v-else-if="column.renderer === 'price'"
+                          :data="data"
+                          :column-definition="column"
+                          @click="$emit('open-details', data)"
+                        />
+                      </slot>
                     </template>
                   </td>
                 </template>
@@ -453,23 +463,27 @@
                   v-if="!(disableSettingsTable && disableEdit && disableDelete)"
                   class="mt-data-table__table-context-button"
                 >
-                  <a v-if="!disableEdit" href="#" @click.prevent="$emit('open-details', data)">
-                    {{ $t("mt-data-table.contextButtons.edit") }}
-                  </a>
-                  <mt-context-button v-if="!(disableDelete && disableEdit)">
-                    <mt-context-menu-item
-                      v-if="!disableEdit"
-                      :label="$t('mt-data-table.contextButtons.edit')"
-                      @click="$emit('open-details', data)"
-                    />
+                  <slot name="action-button" v-bind="{ data }">
+                    <a v-if="!disableEdit" href="#" @click.prevent="$emit('open-details', data)">
+                      {{ $t("mt-data-table.contextButtons.edit") }}
+                    </a>
+                  </slot>
+                  <slot name="context-button" v-bind="{ data }">
+                    <mt-context-button v-if="!(disableDelete && disableEdit)">
+                      <mt-context-menu-item
+                        v-if="!disableEdit"
+                        :label="$t('mt-data-table.contextButtons.edit')"
+                        @click="$emit('open-details', data)"
+                      />
 
-                    <mt-context-menu-item
-                      v-if="!disableDelete"
-                      type="critical"
-                      :label="$t('mt-data-table.contextButtons.delete')"
-                      @click="$emit('item-delete', data)"
-                    />
-                  </mt-context-button>
+                      <mt-context-menu-item
+                        v-if="!disableDelete"
+                        type="critical"
+                        :label="$t('mt-data-table.contextButtons.delete')"
+                        @click="$emit('item-delete', data)"
+                      />
+                    </mt-context-button>
+                  </slot>
                 </td>
               </tr>
             </template>
