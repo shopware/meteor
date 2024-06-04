@@ -11,6 +11,7 @@
         />
         <template v-if="filters.length > 0">
           <slot
+            v-if="filters.length > 0"
             name="filter-button"
             v-bind="{ filterChildViews, isOptionSelected, addOption, removeOption }"
           >
@@ -425,36 +426,36 @@
                     </template>
 
                     <template v-else>
-                      <slot :name="`column-${column.property}`" v-bind="{ data, column }">
-                        <!-- Use the correct renderer for the column -->
-                        <mt-data-table-number-renderer
-                          v-if="column.renderer === 'number'"
-                          :data="data"
-                          :column-definition="column"
-                          @click="$emit('open-details', data)"
-                        />
+                      <!-- Use the correct renderer for the column -->
+                      <mt-data-table-number-renderer
+                        v-if="column.renderer === 'number'"
+                        :data="data"
+                        :column-definition="column"
+                        @click="$emit('open-details', data)"
+                      />
 
-                        <mt-data-table-text-renderer
-                          v-else-if="column.renderer === 'text'"
-                          :data="data"
-                          :column-definition="column"
-                          @click="$emit('open-details', data)"
-                        />
+                      <mt-data-table-text-renderer
+                        v-else-if="column.renderer === 'text'"
+                        :data="data"
+                        :column-definition="column"
+                        @click="$emit('open-details', data)"
+                      />
 
-                        <mt-data-table-badge-renderer
-                          v-else-if="column.renderer === 'badge'"
-                          :data="data"
-                          :column-definition="column"
-                          @click="$emit('open-details', data)"
-                        />
+                      <mt-data-table-badge-renderer
+                        v-else-if="column.renderer === 'badge'"
+                        :data="data"
+                        :column-definition="column"
+                        @click="$emit('open-details', data)"
+                      />
 
-                        <mt-data-table-price-renderer
-                          v-else-if="column.renderer === 'price'"
-                          :data="data"
-                          :column-definition="column"
-                          @click="$emit('open-details', data)"
-                        />
-                      </slot>
+                      <mt-data-table-price-renderer
+                        v-else-if="column.renderer === 'price'"
+                        :data="data"
+                        :column-definition="column"
+                        @click="$emit('open-details', data)"
+                      />
+
+                      <slot v-else name="custom-column-renderer" v-bind="{ data, column }" />
                     </template>
                   </td>
                 </template>
@@ -468,22 +469,28 @@
                       {{ $t("mt-data-table.contextButtons.edit") }}
                     </a>
                   </slot>
-                  <slot name="context-button" v-bind="{ data }">
-                    <mt-context-button v-if="!(disableDelete && disableEdit)">
-                      <mt-context-menu-item
-                        v-if="!disableEdit"
-                        :label="$t('mt-data-table.contextButtons.edit')"
-                        @click="$emit('open-details', data)"
-                      />
+                  <mt-context-button v-if="!(disableDelete && disableEdit && additionalContextButtons?.length > 0)">
+                    <mt-context-menu-item
+                      v-if="!disableEdit"
+                      :label="$t('mt-data-table.contextButtons.edit')"
+                      @click="$emit('open-details', data)"
+                    />
 
-                      <mt-context-menu-item
-                        v-if="!disableDelete"
-                        type="critical"
-                        :label="$t('mt-data-table.contextButtons.delete')"
-                        @click="$emit('item-delete', data)"
-                      />
-                    </mt-context-button>
-                  </slot>
+                    <mt-context-menu-item
+                      v-for="action in additionalContextButtons"
+                      :key="action.key"
+                      :type="action.type"
+                      :label="action.label"
+                      @click="$emit('context-select', action.key, data)"
+                    />
+
+                    <mt-context-menu-item
+                      v-if="!disableDelete"
+                      type="critical"
+                      :label="$t('mt-data-table.contextButtons.delete')"
+                      @click="$emit('item-delete', data)"
+                    />
+                  </mt-context-button>
                 </td>
               </tr>
             </template>
@@ -972,6 +979,16 @@ export default defineComponent({
       required: false,
       default: undefined,
     },
+
+    additionalContextButtons: {
+      type: Array as PropType<Array<{
+        type: "default" | "active" | "critical";
+        label: string;
+        key: string;
+      }>>,
+      required: false,
+      default: undefined
+    }
   },
   emits: [
     "reload",
@@ -990,6 +1007,7 @@ export default defineComponent({
     "change-enable-row-numbering",
     "item-delete",
     "update:appliedFilters",
+    "context-select"
   ],
   i18n: {
     messages: {
