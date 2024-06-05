@@ -10,6 +10,7 @@ export default {
   title: "Components/Form/mt-link",
   component: MtLink,
   args: {
+    elementType: "router-link",
     default: "Link",
     size: "small",
     to: "/",
