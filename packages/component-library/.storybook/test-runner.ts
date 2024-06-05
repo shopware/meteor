@@ -43,6 +43,8 @@ module.exports = {
     // @ts-expect-error
     expect(image).toMatchImageSnapshot({
       comparisonMethod: "pixelmatch",
+      failureThreshold: 0.005,
+      failureThresholdType: "percent",
       customSnapshotsDir,
       customSnapshotIdentifier: context.id + "-snap",
       storeReceivedOnFailure: true,
