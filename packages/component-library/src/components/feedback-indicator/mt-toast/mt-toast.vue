@@ -158,7 +158,8 @@ function onMouseLeave() {
   &--bottom-right {
     flex: 1;
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
+    padding-right: 1rem;
 
     .mt-toast-notification {
       display: flex;
