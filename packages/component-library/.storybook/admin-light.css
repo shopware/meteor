@@ -1,0 +1,24 @@
+:root {
+  --button-border-radius: 4px;
+  --button-background-color-primary-default: var(
+    --color-interaction-primary-default
+  );
+  --button-text-color-primary-default: var(--color-text-static-default);
+  --button-border-color-primary-default: var(
+    --color-interaction-primary-default
+  );
+  --button-background-color-primary-hover: var(
+    --color-interaction-primary-hover
+  );
+  --button-border-color-primary-hover: var(--color-interaction-primary-hover);
+  --button-border-color-primary-focus: var(--color-border-brand-selected);
+  --button-shadow-primary-focus: 0 0 4px 0 rgba(24, 158, 255, 0.3);
+  --button-color-primary-ghost-default: var(--color-text-brand-default);
+  --button-border-color-primary-ghost-default: var(
+    --color-border-brand-selected
+  );
+  --button-background-color-primary-ghost-hover: var(
+    --color-background-brand-default
+  );
+  --button-color-primary-ghost-hover: var(--color-text-brand-default);
+}

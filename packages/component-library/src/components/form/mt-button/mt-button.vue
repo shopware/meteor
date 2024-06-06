@@ -153,7 +153,7 @@ $mt-button-transition: all 0.15s ease-out;
   color: $color-darkgray-200;
   transition: $mt-button-transition;
   display: inline-block;
-  border-radius: $border-radius-default;
+  border-radius: var(--button-border-radius);
   padding: 2px 24px;
   font-size: 14px;
   line-height: 34px;
@@ -213,23 +213,23 @@ $mt-button-transition: all 0.15s ease-out;
   }
 
   &.mt-button--primary {
-    background: var(--color-interaction-primary-default);
-    color: var(--color-text-static-default);
+    background: var(--button-background-color-primary-default);
+    color: var(--button-text-color-primary-default);
     line-height: 36px;
-    border-color: var(--color-interaction-primary-default);
+    border-color: var(--button-border-color-primary-default);
 
     .mt-icon {
       color: var(--color-icon-static-default);
     }
 
     &:is(:hover, :focus-visible, :active) {
-      background: var(--color-interaction-primary-hover);
-      border-color: var(--color-interaction-primary-hover);
+      background: var(--button-background-color-primary-hover);
+      border-color: var(--button-border-color-primary-hover);
     }
 
     &:focus-visible {
-      border-color: var(--color-border-brand-selected);
-      box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
+      border-color: var(--button-border-color-primary-focus);
+      box-shadow: var(--button-shadow-primary-focus);
     }
 
     &:disabled,
@@ -241,11 +241,12 @@ $mt-button-transition: all 0.15s ease-out;
 
   &.mt-button--primary-ghost {
     background: transparent;
-    border-color: var(--color-border-brand-selected);
-    color: var(--color-text-brand-default);
+    border-color: var(--button-border-color-primary-ghost-default);
+    color: var(--button-color-primary-ghost-default);
 
     &:is(:hover, :focus-visible, :active) {
-      background: var(--color-background-brand-default);
+      background: var(--button-background-color-primary-ghost-hover);
+      color: var(--button-color-primary-ghost-hover);
     }
 
     &:focus-visible {

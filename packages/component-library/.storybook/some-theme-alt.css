@@ -1,0 +1,10 @@
+:root {
+  --button-border-radius: 9999px;
+  --button-background-color-primary-default: #00ab26;
+  --button-border-color-primary-default: #00ab26;
+  --button-text-color-primary-default: #e1ffe0;
+  --button-text-color-primary-hover: #e1ffe0;
+  --button-background-color-primary-hover: #00470a;
+  --button-border-color-primary-hover: #00470a;
+  --button-border-color-primary-focus: #00470a;
+}

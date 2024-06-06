@@ -1,0 +1,13 @@
+:root {
+  --button-border-radius: 9999px;
+  --button-background-color-primary-default: #2b2e3a;
+  --button-text-color-primary-default: var(--color-text-static-default);
+  --button-border-color-primary-default: #2b2e3a;
+  --button-background-color-primary-hover: #12141e;
+  --button-border-color-primary-hover: #12141e;
+  --button-border-color-primary-focus: #12141e;
+  --button-color-primary-ghost-default: #2b2e3a;
+  --button-border-color-primary-ghost-default: #2b2e3a;
+  --button-background-color-primary-ghost-hover: #12141e;
+  --button-color-primary-ghost-hover: #fff;
+}

@@ -14,6 +14,11 @@ import {
 import "@shopware-ag/meteor-tokens/administration/light.css";
 import "@shopware-ag/meteor-tokens/administration/dark.css";
 
+// importing component based tokens TODO: remove later, this is only for testing
+import "./some-theme-alt.css";
+// import "./some-theme-light.css";
+// import "./admin-light.css";
+
 const i18n = createI18n({
   // something vue-i18n options here ...
   globalInjection: true,
