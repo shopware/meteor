@@ -1,6 +1,6 @@
 <template>
   <component
-    :is="elementType"
+    :is="as"
     class="mt-link"
     :class="linkClasses"
     :aria-disabled="disabled"
@@ -20,56 +20,53 @@ export default defineComponent({
   name: "MtLink",
 
   props: {
+    /**
+     * Set the element type of the link
+     */
+    as: {
+      type: String,
+      required: false,
+      default: "router-link",
+    },
+
+    /**
+     * Set the to prop of the router/nuxt-link
+     */
     to: {
       type: String,
       required: false,
       default: undefined,
     },
-    size: {
-      type: String,
-      required: false,
-      default: "default",
-      validator(value: string) {
-        if (!value.length) {
-          return true;
-        }
-        return ["small", "default", "large"].includes(value);
-      },
-    },
+
+    /**
+     * Render the link in various styles
+     */
     variant: {
-      type: String as PropType<"primary" | "secondary" | "critical">,
+      type: String as PropType<"primary" | "critical">,
       required: false,
       default: "primary",
       validator(value: string) {
         if (!value.length) {
           return true;
         }
-        return ["primary", "secondary", "critical"].includes(value);
+        return ["primary", "critical"].includes(value);
       },
     },
+
+    /**
+     * Make the link unclickable
+     */
     disabled: {
       type: Boolean,
       required: false,
       default: false,
-    },
-    underline: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    elementType: {
-      type: String,
-      required: false,
-      default: "router-link",
     },
   },
   computed: {
     linkClasses() {
       return {
         [`mt-link--${this.variant}`]: !!this.variant,
-        [`mt-link--${this.size}`]: !!this.size,
         "mt-link--disabled": this.disabled,
-        "mt-link--underline": this.underline,
       };
     },
   },
@@ -91,34 +88,12 @@ export default defineComponent({
 <style lang="scss">
 .mt-link {
   display: inline-block;
-  text-decoration: none;
-  font-family: $font-family-default;
-  margin: 0;
   cursor: pointer;
-
-  &.mt-link--underline {
-    text-decoration: underline;
-  }
-
-  &.mt-link--small {
-    font-size: $font-size-xxs;
-    font-weight: $font-weight-regular;
-  }
-
-  &.mt-link--default {
-    font-size: $font-size-xs;
-    font-weight: $font-weight-medium;
-  }
-
-  &.mt-link--large {
-    font-size: $font-size-s;
-    font-weight: $font-weight-medium;
-  }
-
-  &:focus-visible {
-    border-color: var(--color-border-brand-selected);
-    outline: none;
-  }
+  margin: 0;
+  font-family: $font-family-default;
+  font-size: $font-size-small;
+  font-weight: $font-weight-medium;
+  text-decoration: underline;
 
   &:disabled,
   &.mt-link--disabled {
@@ -137,20 +112,6 @@ export default defineComponent({
     &:disabled,
     &.mt-link--disabled {
       color: var(--color-text-brand-disabled);
-    }
-  }
-
-  &.mt-link--secondary {
-    color: var(--color-text-secondary-default);
-
-    &:hover,
-    &:active {
-      color: var(--color-text-secondary-hover);
-    }
-
-    &:disabled,
-    &.mt-link--disabled {
-      color: var(--color-text-secondary-disabled);
     }
   }
 

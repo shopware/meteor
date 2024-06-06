@@ -22,31 +22,10 @@ export const VisualTestRenderLinkPrimary: MtLinkStory = {
   },
 };
 
-export const VisualTestRenderLinkSecondary: MtLinkStory = {
-  name: "Link secondary",
-  args: {
-    variant: "secondary",
-  },
-};
-
 export const VisualTestRenderLinkCritical: MtLinkStory = {
   name: "Link critical",
   args: {
     variant: "critical",
-  },
-};
-
-export const VisualTestRenderLinkSmall: MtLinkStory = {
-  name: "Link positive",
-  args: {
-    size: "small",
-  },
-};
-
-export const VisualTestRenderLinkLarge: MtLinkStory = {
-  name: "Link large",
-  args: {
-    size: "large",
   },
 };
 

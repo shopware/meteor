@@ -10,11 +10,11 @@ export default {
   title: "Components/Form/mt-link",
   component: MtLink,
   args: {
-    elementType: "router-link",
+    as: "router-link",
     default: "Link",
-    size: "small",
     to: "/",
     variant: "primary",
+    disabled: false,
     click: fn(action("click")),
   },
   render: (args) => ({
