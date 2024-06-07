@@ -165,9 +165,7 @@ export default defineComponent({
     },
 
     showPlaceholder(): string {
-      return this.alwaysShowPlaceholder || (this.selections.length === 0 && this.hideLabels)
-        ? this.placeholder
-        : "";
+      return this.alwaysShowPlaceholder || this.selections.length === 0 ? this.placeholder : "";
     },
   },
 
