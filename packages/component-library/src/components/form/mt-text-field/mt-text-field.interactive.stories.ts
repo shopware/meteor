@@ -85,6 +85,13 @@ export const VisualTestCharacterCount: MtTextFieldStory = {
   },
 };
 
+export const VisualTestFieldIsRequired: MtTextFieldStory = {
+  name: "Should display an indicator that the field id required",
+  args: {
+    required: true,
+  },
+};
+
 export const VisualTestCharacterCountExceeding: MtTextFieldStory = {
   name: "Should display error when character count exceeds max value",
   args: {
