@@ -449,7 +449,8 @@ $mt-field-transition:
 
   .mt-field__label .is--required::after {
     content: "*";
-    color: $color-shopware-brand-500;
+    color: var(--color-icon-brand-default);
+    margin-left: 0.25rem;
   }
 
   &.is--inherited {
