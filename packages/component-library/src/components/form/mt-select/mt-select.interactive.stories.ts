@@ -196,6 +196,33 @@ export const VisualTestSuffix: MtSelectStory = {
   },
 };
 
+export const VisualTestPlaceholder: MtSelectStory = {
+  name: "Should display placeholder",
+  args: {
+    placeholder: "Select an option",
+    modelValue: undefined,
+  },
+  play: ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getAllByPlaceholderText(args.placeholder!)).toBeDefined();
+  },
+};
+
+export const VisualTestPlaceholderMulti: MtSelectStory = {
+  name: "Should display placeholder in multi select",
+  args: {
+    placeholder: "Select an option",
+    modelValue: undefined,
+    enableMultiSelection: true,
+  },
+  play: ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getAllByPlaceholderText(args.placeholder!)).toBeDefined();
+  },
+};
+
 export const VisualTestHint: MtSelectStory = {
   name: "Should display hint",
   args: {
