@@ -1,5 +1,17 @@
 # Changelog
 
+## 3.8.2
+
+### Patch Changes
+
+- 4be837e: Add tokens for loader component
+- b6c52b7: Fix positioning of the toast notifications
+- b301a99: Fix placeholder in select components
+- 4f85b4f: Style required star for base field
+- cdb9eda: Add tokens to context button
+- 8182c77: Add tokens for data table component
+- 3eb91a0: Add tokens for skeleton bar
+
 ## 3.8.1
 
 ### Patch Changes
