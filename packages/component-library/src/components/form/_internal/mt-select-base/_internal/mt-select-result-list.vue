@@ -376,6 +376,7 @@ $mt-select-result-list-transition: all ease-in-out 0.2s;
 
   .mt-select-result-list__empty {
     padding: 10px 16px;
+    color: var(--color-text-primary-default);
   }
 }
 
