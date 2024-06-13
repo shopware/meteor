@@ -5,20 +5,13 @@ import meta, { type MtLinkMeta, type MtLinkStory } from "./mt-link.stories";
 
 export default {
   ...meta,
-  title: "Interaction Tests/Form/mt-link",
+  title: "Interaction Tests/Navigation/mt-link",
 } as MtLinkMeta;
 
 export const VisualTestRenderLink: MtLinkStory = {
   name: "Render link",
   args: {
     to: "/",
-  },
-};
-
-export const VisualTestRenderLinkPrimary: MtLinkStory = {
-  name: "Link primary",
-  args: {
-    variant: "primary",
   },
 };
 
