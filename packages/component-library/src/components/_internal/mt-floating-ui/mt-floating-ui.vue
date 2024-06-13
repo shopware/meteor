@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts">
-import type { PropType } from "vue";
+import type { PropType, Ref } from "vue";
 import { defineComponent, ref, onBeforeUnmount, watch, nextTick } from "vue";
 import type { AutoUpdateOptions, ComputePositionConfig } from "@floating-ui/dom";
 import { computePosition, autoUpdate, offset, arrow, flip } from "@floating-ui/dom";
@@ -82,7 +82,7 @@ export default defineComponent({
       }
 
       // move the popover to the body
-      bodyContainer.appendChild(floatingUiContent.value);
+      bodyContainer.appendChild(floatingUiContent.value as HTMLElement);
 
       // add given classes also to popover element
       const givenClasses = [...(floatingUi.value?.classList.values() ?? [])].filter(
@@ -92,20 +92,20 @@ export default defineComponent({
 
       cleanup = autoUpdate(
         floatingUiTrigger.value,
-        floatingUiContent.value,
+        floatingUiContent.value as HTMLElement,
         () => {
           if (!floatingUiTrigger.value || !floatingUiContent.value) {
             return;
           }
 
-          computePosition(floatingUiTrigger.value, floatingUiContent.value, {
+          computePosition(floatingUiTrigger.value, floatingUiContent.value as HTMLElement, {
             placement: "bottom-start",
             strategy: "fixed",
             middleware: [
               offset(props.offset),
               ...(() => {
                 if (props.showArrow && floatingUiArrow.value) {
-                  return [arrow({ element: floatingUiArrow.value })];
+                  return [arrow({ element: floatingUiArrow.value as HTMLElement })];
                 }
                 return [];
               })(),
@@ -169,7 +169,7 @@ export default defineComponent({
         // floatingUiContent.value have to be direct child of bodyContainer
         floatingUiContent.value.parentElement === bodyContainer
       ) {
-        originalParentContainer?.appendChild(floatingUiContent.value);
+        originalParentContainer?.appendChild(floatingUiContent.value as HTMLElement);
       }
     };
 
@@ -200,17 +200,17 @@ export default defineComponent({
       removeFloatingUi();
 
       if (floatingUiContent?.value && originalParentContainer) {
-        originalParentContainer?.removeChild(floatingUiContent?.value);
+        originalParentContainer?.removeChild(floatingUiContent?.value as HTMLElement);
       } else {
         floatingUiContent?.value?.remove();
       }
     });
 
     return {
-      floatingUiContent,
-      floatingUiTrigger,
-      floatingUiArrow,
-      floatingUi,
+      floatingUiContent: floatingUiContent as unknown as Ref<HTMLElement | null>,
+      floatingUiTrigger: floatingUiTrigger as unknown as Ref<HTMLElement | null>,
+      floatingUiArrow: floatingUiArrow as unknown as Ref<HTMLElement | null>,
+      floatingUi: floatingUi as unknown as Ref<HTMLElement | null>,
       onClickOutside,
     };
   },
