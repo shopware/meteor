@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## 5.4.0
+
+### Minor Changes
+
+- ec91cce: Add solid and regular "plans" icon
+
 ## 5.3.0
 
 ### Minor Changes
