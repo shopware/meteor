@@ -225,8 +225,8 @@ export default defineComponent({
     }
 
     &:disabled {
-      color: var(--color-icon-primary-disabled);
-      cursor: default;
+      background-color: var(--color-interaction-secondary-disabled);
+      cursor: not-allowed;
     }
   }
 
