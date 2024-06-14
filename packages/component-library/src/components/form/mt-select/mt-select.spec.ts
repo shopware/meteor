@@ -63,4 +63,20 @@ describe("mt-select", () => {
     expect(itemHolder).toHaveLength(1);
     expect(itemHolder.at(0)?.text()).toBe("25");
   });
+
+  it("should render a label for option with id 0", async () => {
+    const wrapper = await createWrapper();
+    await wrapper.setProps({
+      modelValue: 0,
+      options: [
+        { id: 0, label: "Id 0", value: 0 },
+        { id: 10, label: "Id 10", value: 10 },
+      ],
+    });
+
+    const itemHolder = wrapper.findAll(".mt-select-selection-list__item-holder");
+
+    expect(itemHolder).toHaveLength(1);
+    expect(itemHolder.at(0)?.text()).toBe("Id 0");
+  });
 });
