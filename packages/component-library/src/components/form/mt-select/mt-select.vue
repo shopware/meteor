@@ -402,7 +402,7 @@ export default defineComponent({
 
     currentValue: {
       get(): string | number | boolean | unknown[] | null | undefined {
-        if (!this.modelValue) {
+        if (this.modelValue === null || this.modelValue === undefined) {
           return [];
         }
 
