@@ -1,5 +1,17 @@
 # Changelog
 
+## 3.9.0
+
+### Minor Changes
+
+- 8c74a37: Add mt-link component
+
+### Patch Changes
+
+- 24e5d7a: Add token to select empty state
+- 573953b: Fix mt-select currentValue getter early return on null or undefined values
+- 0ee7820: Make difference between enabled and disabled paginations button more clear
+
 ## 3.8.2
 
 ### Patch Changes
