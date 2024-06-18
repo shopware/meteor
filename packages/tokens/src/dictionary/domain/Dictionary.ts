@@ -49,6 +49,14 @@ export class Dictionary {
         });
       }
 
+      const isFloatValue = variable.resolvedType === 'FLOAT';
+      if (isFloatValue) {
+        set(accumulator, kebabCase(variable.name), {
+          $value: rawValue,
+          $type: variable.resolvedType.toLocaleLowerCase(),
+        });
+      }
+
       const isColorValue =
         variable.resolvedType === 'COLOR' &&
         typeof rawValue === 'object' &&
