@@ -550,7 +550,7 @@ test('throws an error if the mode is not found in the FigmaApiResponse', () => {
   );
 });
 
-test('creates a dictionary with string tokens', async () => {
+test('creates a dictionary with string tokens', () => {
   // GIVEN
   const response: FigmaApiResponse = {
     status: 200,
@@ -607,7 +607,7 @@ test('creates a dictionary with string tokens', async () => {
   });
 });
 
-test('creates a dictionary with number tokens', async () => {
+test('creates a dictionary with number tokens', () => {
   // GIVEN
   const response: FigmaApiResponse = {
     status: 200,
