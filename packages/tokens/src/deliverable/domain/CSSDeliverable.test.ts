@@ -391,3 +391,56 @@ test('creates a CSSDeliverable with string tokens', () => {
     "
   `);
 });
+
+test('creates a CSSDeliverable with font weight tokens', () => {
+  // GIVEN
+  const response: FigmaApiResponse = {
+    status: 200,
+    error: false,
+    meta: {
+      variables: {
+        'VariableID:21953:615880': {
+          id: 'VariableID:21953:615880',
+          name: 'Font / Weight / 200',
+          key: 'dc9aa5d3b7c6f03b4cddb78e045b566fae112d17',
+          variableCollectionId: 'VariableCollectionId:11953:115879',
+          resolvedType: 'FLOAT',
+          valuesByMode: {
+            '11953:0': 200,
+          },
+          remote: false,
+          description: '',
+          hiddenFromPublishing: false,
+          scopes: ['ALL_SCOPES'],
+        },
+      },
+      variableCollections: {
+        'VariableCollectionId:11953:115879': {
+          id: 'VariableCollectionId:11953:115879',
+          name: '.Design Tokens',
+          key: '9130479ef323598b1ccfb32e7b16dc80fcb30f14',
+          modes: [{ modeId: '11953:0', name: 'Default' }],
+          defaultModeId: '11953:0',
+          remote: false,
+          hiddenFromPublishing: true,
+          variableIds: ['VariableID:11953:115880', 'VariableID:21953:615880'],
+        },
+      },
+    },
+  };
+
+  const dictionary = Dictionary.fromFigmaApiResponse(response, {
+    mode: 'Default',
+  });
+
+  // WHEN
+  const result = CSSDeliverable.fromDictionary(dictionary).toString();
+
+  // THEN
+  expect(result).toMatchInlineSnapshot(`
+  ":root {
+    --font-weight-200: 200;
+  }
+  "
+`);
+});

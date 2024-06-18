@@ -121,7 +121,7 @@ export class Dictionary {
   public flat() {
     function getToken(
       input: unknown,
-      accumulator: Record<string, string>,
+      accumulator: Record<string, string | number>,
       path?: string,
     ) {
       if (isObject(input)) {
@@ -139,7 +139,7 @@ export class Dictionary {
           if (
             key === '$value' &&
             typeof path === 'string' &&
-            typeof value === 'string'
+            (typeof value === 'string' || typeof value === 'number')
           ) {
             accumulator[path] = value;
           }
