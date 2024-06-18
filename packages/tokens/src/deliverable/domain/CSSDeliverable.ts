@@ -53,7 +53,11 @@ export class CSSDeliverable implements Deliverable {
           return `--${variableName}: ${resolvedValue};`;
         }
 
-        return `--${variableName}: ${value};`;
+        if (value.startsWith('#')) {
+          return `--${variableName}: ${value};`;
+        }
+
+        return `--${variableName}: '${value}';`;
       },
     );
 
