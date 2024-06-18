@@ -41,6 +41,14 @@ export class Dictionary {
     ).reduce<DictionaryTree>((accumulator, variable) => {
       const rawValue = variable.valuesByMode[modeId];
 
+      const isStringValue = variable.resolvedType === 'STRING';
+      if (isStringValue) {
+        set(accumulator, kebabCase(variable.name), {
+          $value: rawValue,
+          $type: variable.resolvedType.toLocaleLowerCase(),
+        });
+      }
+
       const isColorValue =
         variable.resolvedType === 'COLOR' &&
         typeof rawValue === 'object' &&
