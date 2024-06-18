@@ -32,7 +32,8 @@ export class CSSDeliverable implements Deliverable {
     const variables = Object.entries(this.dictionary.flat()).map(
       ([key, value]) => {
         const variableName = key.replace(/\./g, '-');
-        const itIsAnAliasedToken = /^\{.+\}$/gi.test(value);
+        const itIsAnAliasedToken =
+          typeof value === 'string' && /^\{.+\}$/gi.test(value);
 
         if (itIsAnAliasedToken) {
           const pathToAliasedTokenValue = value
@@ -53,7 +54,11 @@ export class CSSDeliverable implements Deliverable {
           return `--${variableName}: ${resolvedValue};`;
         }
 
-        if (value.startsWith('#')) {
+        if (typeof value === 'string' && value.startsWith('#')) {
+          return `--${variableName}: ${value};`;
+        }
+
+        if (typeof value === 'number') {
           return `--${variableName}: ${value};`;
         }
 
