@@ -1,3 +1,4 @@
+import path from 'node:path';
 import { Dictionary } from '../../dictionary/domain/Dictionary.js';
 import { Deliverable } from './Deliverable.js';
 
@@ -59,6 +60,10 @@ export class CSSDeliverable implements Deliverable {
         }
 
         if (typeof value === 'number') {
+          if (!variableName.includes('weight')) {
+            return `--${variableName}: ${value / 16}rem;`;
+          }
+
           return `--${variableName}: ${value};`;
         }
 
