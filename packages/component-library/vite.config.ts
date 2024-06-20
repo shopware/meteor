@@ -6,12 +6,14 @@ import vue from "@vitejs/plugin-vue";
 // @ts-expect-error - not typed
 import svg from "vite-plugin-svgstring";
 import dts from "vite-plugin-dts";
+import stylex from "vite-plugin-stylex";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     vue({}),
     svg(),
+    stylex(),
     dts({
       outDir: ["dist/esm", "dist/common"],
       cleanVueFileName: true,

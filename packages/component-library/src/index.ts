@@ -31,6 +31,7 @@ import TooltipDirective from "./directives/tooltip.directive";
 import DeviceHelperPlugin from "./plugin/device-helper.plugin";
 // Import SCSS for styling
 import "./components/assets/scss/all.scss";
+import "./components/assets/css/all.css";
 
 // Importing types
 import type {
