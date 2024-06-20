@@ -1,8 +1,7 @@
 <template>
-  <span
+  <div
     ref="MtAvatar"
-    class="mt-avatar"
-    :class="'mt-avatar__' + variant"
+    :class="stylex(styles.root)"
     :style="[avatarImage, avatarColor, avatarSize, avatarInitialsSize]"
     role="img"
   >
@@ -14,12 +13,32 @@
         <mt-icon name="default-avatar-single" />
       </span>
     </slot>
-  </span>
+  </div>
 </template>
+
+<script lang="ts" setup>
+import stylex from "@stylexjs/stylex";
+</script>
 
 <script lang="ts">
 import cloneDeep from "lodash-es/cloneDeep";
 import { defineComponent, type StyleValue } from "vue";
+
+const styles = stylex.create({
+  root: {
+    display: "grid",
+    placeItems: "center",
+    height: "2.5rem",
+    width: "2.5rem",
+    borderRadius: "0.25rem",
+    textAlign: "center",
+    fontWeight: 600,
+    // TODO: can we provide auto-contrast like Mantine does? https://mantine.dev/core/button/#auto-contrast
+    color: "var(--color-text-static-default)",
+    userSelect: "none",
+    textTransform: "uppercase",
+  },
+});
 
 const colors = [
   "#FFD700",
@@ -204,29 +223,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style lang="scss">
-$mt-avatar-size-default: 40px;
-
-.mt-avatar {
-  display: inline-block;
-  width: $mt-avatar-size-default;
-  height: $mt-avatar-size-default;
-  border-radius: 100%;
-  background: $color-gray-200 no-repeat center center;
-  background-size: cover;
-  text-align: center;
-  font-weight: 600;
-  text-transform: uppercase;
-  color: $color-white;
-  user-select: none;
-
-  .mt-icon {
-    color: $color-shopware-brand-500;
-  }
-
-  &.mt-avatar__square {
-    border-radius: 4px;
-  }
-}
-</style>

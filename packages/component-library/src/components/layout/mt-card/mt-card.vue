@@ -25,14 +25,14 @@
 
         <!-- @slot Alternative slot to the title property -->
         <slot name="title">
-          <div v-if="title" class="mt-card__title">
+          <div v-if="title" :class="stylex(styles.title)">
             {{ title }}
           </div>
         </slot>
 
         <!-- @slot Alternative slot to the subtitle property -->
         <slot name="subtitle">
-          <div v-if="subtitle" class="mt-card__subtitle">
+          <div v-if="subtitle" :class="stylex(styles.subTitle)">
             {{ subtitle }}
           </div>
         </slot>
@@ -86,6 +86,31 @@ import { computed, defineComponent, useSlots, type PropType } from "vue";
 import MtContextButton from "../../context-menu/mt-context-button/mt-context-button.vue";
 import MtLoader from "../../feedback-indicator/mt-loader/mt-loader.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
+import stylex from "@stylexjs/stylex";
+
+type Stylex = (...classes: Record<string, unknown>[]) => string;
+
+const styles = stylex.create({
+  root: {
+    border: "1px solid var(--color-border-primary-default)",
+    borderRadius: "0.5rem",
+    position: "relative",
+    background: "var(--color-elevation-surface-raised)",
+    overflow: "hidden",
+  },
+  title: {
+    color: "var(--color-text-primary-default)",
+    fontSize: "1rem",
+    lineHeight: "1.5rem",
+    fontWeight: 500,
+  },
+  subTitle: {
+    color: "var(--color-text-tertiary-default)",
+    fontSize: "0.875rem",
+    lineHeight: "1.25rem",
+    fontWeight: 400,
+  },
+});
 
 export default defineComponent({
   name: "MtCard",
@@ -184,6 +209,7 @@ export default defineComponent({
     );
 
     const cardClasses = computed(() => ({
+      [stylex(styles.root)]: true,
       "mt-card--grid": !!slots.grid,
       "mt-card--hero": !!props.hero,
       "mt-card--large": props.large,
@@ -205,6 +231,8 @@ export default defineComponent({
       cardClasses,
       titleWrapperClasses,
       inheritanceToggleIcon,
+      stylex: stylex as Stylex,
+      styles,
     };
   },
 });
@@ -226,17 +254,6 @@ export default defineComponent({
 }
 
 .mt-card {
-  max-width: $content-width;
-  margin: 0 auto 40px;
-  position: relative;
-  background: var(--color-elevation-surface-raised);
-  border: 1px solid var(--color-border-primary-default);
-  overflow: hidden;
-
-  &:not(&--hero) {
-    border-radius: $border-radius-lg;
-  }
-
   &.mt-card--is-inherited {
     border-color: var(--color-border-accent-default);
 
@@ -310,20 +327,6 @@ export default defineComponent({
 
   .mt-card__avatar:empty {
     display: none;
-  }
-
-  .mt-card__title {
-    color: var(--color-text-primary-default);
-    font-size: $font-size-s;
-    line-height: $line-height-md;
-    font-weight: $font-weight-medium;
-  }
-
-  .mt-card__subtitle {
-    color: var(--color-text-tertiary-default);
-    font-size: $font-size-xs;
-    line-height: $line-height-sm;
-    font-weight: $font-weight-regular;
   }
 
   .mt-card__titles {

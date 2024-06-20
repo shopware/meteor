@@ -1,7 +1,7 @@
 <template>
   <priority-plus ref="priorityPlus" #default="{ mainItems, moreItems }" :list="items">
-    <ul class="mt-tabs" :class="tabClasses" role="tablist">
-      <span class="mt-tabs__slider" :class="sliderClasses" :style="sliderStyle" />
+    <ul :class="tabClasses" role="tablist">
+      <span :class="sliderClasses" :style="sliderStyle" />
 
       <template v-if="!vertical">
         <li
@@ -9,7 +9,6 @@
           :key="item.name"
           :data-priority-plus="item.name"
           ref="items"
-          class="mt-tabs__item"
           :data-text="item.label"
           :class="getItemClasses(item)"
           :data-item-name="item.name"
@@ -23,7 +22,8 @@
 
           <mt-icon
             v-if="item.hasError"
-            class="mt-tabs__error-badge"
+            :class="stylex(styles.errorBadge)"
+            size="0.75rem"
             name="solid-exclamation-circle"
           />
 
@@ -77,14 +77,94 @@
 </template>
 
 <script lang="ts">
-import type { PropType } from "vue";
-
-import { defineComponent } from "vue";
+import stylex from "@stylexjs/stylex";
+import { defineComponent, type PropType } from "vue";
 import MtContextButton from "../../context-menu/mt-context-button/mt-context-button.vue";
 import MtContextMenuItem from "../../context-menu/mt-context-menu-item/mt-context-menu-item.vue";
 import MtColorBadge from "../../feedback-indicator/mt-color-badge/mt-color-badge.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import PriorityPlus from "../../_internal/mt-priority-plus-navigation.vue";
+
+type Stylex = (...classes: Record<string, unknown>[]) => string;
+
+const styles = stylex.create({
+  tabs: {
+    display: "flex",
+    position: "relative",
+  },
+  tabsSmall: {
+    // TODO: do we really need this? I strongly believe the parent should take care of that
+    maxWidth: "50rem",
+    // TODO: again I belive this should not be here. The parent should take care of that.
+    margin: "0 auto",
+    marginBlockEnd: "0.9375rem",
+  },
+  tabsHorizontal: {
+    flexDirection: "row",
+    borderBottom: "1px solid var(--color-border-primary-default)",
+  },
+  tabsVertical: {
+    flexDirection: "column",
+    borderLeft: "1px solid var(--color-border-primary-default)",
+  },
+  item: {
+    display: "inline-block",
+    cursor: "pointer",
+    color: "var(--color-text-primary-default)",
+    paddingBlock: "0.625rem",
+    paddingInline: "1rem",
+    fontSize: "1rem",
+    "::after": {
+      content: 'attr(data-text) / ""',
+      height: 0,
+      display: "block",
+      visibility: "hidden",
+      overflow: "hidden",
+      userSelect: "none",
+      pointerEvents: "none",
+      fontWeight: 500,
+
+      "@media speech": {
+        display: "none",
+      },
+    },
+  },
+  itemError: {
+    color: "var(--color-text-critical-default)",
+  },
+  itemActive: {
+    fontWeight: 500,
+  },
+  errorBadge: {
+    // TODO: can we get rid of this and use flex gap instead?
+    marginInlineStart: "0.125rem",
+    height: "0.75rem",
+    width: "0.75rem",
+    color: "var(--color-icon-critical-default)",
+    whiteSpace: "nowrap",
+  },
+  slider: {
+    transformOrigin: "top left",
+    position: "absolute",
+    backgroundColor: "var(--color-border-brand-selected)",
+  },
+  sliderHorizontal: {
+    bottom: -1,
+    left: 0,
+    height: "0.125rem",
+  },
+  sliderVertical: {
+    top: 0,
+    bottom: "auto",
+    left: "0.125rem",
+  },
+  sliderError: {
+    backgroundColor: "var(--color-border-critical-default)",
+  },
+  sliderAnimated: {
+    transition: "0.2s all ease-out",
+  },
+});
 
 export interface TabItem {
   label: string;
@@ -148,8 +228,10 @@ export default defineComponent({
       this.refreshKey;
 
       return {
-        "mt-tabs--vertical": this.vertical,
-        "mt-tabs--small": this.small,
+        [stylex(styles.tabs)]: true,
+        [stylex(styles.tabsSmall)]: !!this.small,
+        [stylex(styles.tabsVertical)]: !!this.vertical,
+        [stylex(styles.tabsHorizontal)]: !this.vertical,
       };
     },
 
@@ -230,8 +312,11 @@ export default defineComponent({
       this.refreshKey;
 
       return {
-        "mt-tabs__slider--error": this.activeItem?.hasError ?? false,
-        "mt-tabs__slider--animated": this.passedFirstRender,
+        [stylex(styles.slider)]: true,
+        [stylex(styles.sliderHorizontal)]: !this.vertical,
+        [stylex(styles.sliderVertical)]: !!this.vertical,
+        [stylex(styles.sliderError)]: this.activeItem?.hasError ?? false,
+        [stylex(styles.sliderAnimated)]: this.passedFirstRender,
       };
     },
 
@@ -282,6 +367,15 @@ export default defineComponent({
     this.$device.removeResizeListener(this);
   },
 
+  setup() {
+    type NewType = Stylex;
+
+    return {
+      stylex: stylex as unknown as NewType,
+      styles,
+    };
+  },
+
   methods: {
     handleClick(itemName: string): void {
       this.setActiveItem(itemName);
@@ -298,8 +392,9 @@ export default defineComponent({
 
     getItemClasses(item: TabItem) {
       return {
-        "mt-tabs__item--error": item.hasError,
-        "mt-tabs__item--active": item.name === this.activeItemName,
+        [stylex(styles.item)]: true,
+        [stylex(styles.itemError)]: item.hasError,
+        [stylex(styles.itemActive)]: item.name === this.activeItemName,
       };
     },
 
@@ -343,85 +438,6 @@ export default defineComponent({
 
 <style lang="scss">
 .mt-tabs {
-  display: flex;
-  position: relative;
-  box-shadow: inset 0 -1px 0 var(--color-border-primary-default);
-
-  &.mt-tabs--small {
-    max-width: 800px;
-    margin: 0 auto 15px auto;
-  }
-
-  &.mt-tabs--vertical {
-    flex-direction: column;
-    box-shadow: none;
-
-    li {
-      border-bottom: none;
-      border-left: 1px solid var(--color-border-primary-default);
-    }
-
-    .mt-tabs__slider {
-      top: 0;
-      bottom: auto;
-      left: 3px;
-    }
-  }
-
-  .mt-tabs__item {
-    display: inline-block;
-    border-bottom: 1px solid var(--color-border-primary-default);
-    padding: 10px 16px;
-    white-space: nowrap;
-    font-size: $font-size-default;
-    cursor: pointer;
-    color: var(--color-text-primary-default);
-
-    &--error {
-      color: var(--color-text-critical-default);
-    }
-
-    &--active {
-      font-weight: $font-weight-medium;
-    }
-
-    // Trick to stop items from jumping when the active item changes
-    // see: https://css-tricks.com/bold-on-hover-without-the-layout-shift/
-    &::after {
-      content: attr(data-text);
-      content: attr(data-text) / "";
-      height: 0;
-      display: block;
-      visibility: hidden;
-      overflow: hidden;
-      user-select: none;
-      pointer-events: none;
-      font-weight: $font-weight-medium;
-
-      @media speech {
-        display: none;
-      }
-    }
-  }
-
-  .mt-tabs__slider {
-    transform-origin: top left;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 2px;
-    background-color: var(--color-border-brand-selected);
-    z-index: 1;
-
-    &--error {
-      background-color: var(--color-border-critical-default);
-    }
-
-    &--animated {
-      transition: 0.2s all ease-in-out;
-    }
-  }
-
   .mt-context-button {
     display: flex;
     align-items: center;
@@ -432,18 +448,6 @@ export default defineComponent({
       align-items: center;
       gap: 4px;
       font-size: $font-size-default;
-    }
-  }
-
-  .mt-tabs__error-badge {
-    margin-left: 2px;
-    width: 12px;
-    height: 12px;
-    color: var(--color-icon-critical-default);
-
-    > svg {
-      width: 100% !important;
-      height: 100% !important;
     }
   }
 }
