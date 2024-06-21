@@ -453,23 +453,28 @@
                   v-if="!(disableSettingsTable && disableEdit && disableDelete)"
                   class="mt-data-table__table-context-button"
                 >
-                  <a v-if="!disableEdit" href="#" @click.prevent="$emit('open-details', data)">
-                    {{ $t("mt-data-table.contextButtons.edit") }}
-                  </a>
-                  <mt-context-button v-if="!(disableDelete && disableEdit)">
-                    <mt-context-menu-item
-                      v-if="!disableEdit"
-                      :label="$t('mt-data-table.contextButtons.edit')"
-                      @click="$emit('open-details', data)"
-                    />
+                  <div class="mt-data-table__table-context-button-inner">
+                    <slot name="row-actions" :data="data">
+                      <a v-if="!disableEdit" href="#" @click.prevent="$emit('open-details', data)">
+                        {{ $t("mt-data-table.contextButtons.edit") }}
+                      </a>
+                    </slot>
 
-                    <mt-context-menu-item
-                      v-if="!disableDelete"
-                      type="critical"
-                      :label="$t('mt-data-table.contextButtons.delete')"
-                      @click="$emit('item-delete', data)"
-                    />
-                  </mt-context-button>
+                    <mt-context-button v-if="!(disableDelete && disableEdit)">
+                      <mt-context-menu-item
+                        v-if="!disableEdit"
+                        :label="$t('mt-data-table.contextButtons.edit')"
+                        @click="$emit('open-details', data)"
+                      />
+
+                      <mt-context-menu-item
+                        v-if="!disableDelete"
+                        type="critical"
+                        :label="$t('mt-data-table.contextButtons.delete')"
+                        @click="$emit('item-delete', data)"
+                      />
+                    </mt-context-button>
+                  </div>
                 </td>
               </tr>
             </template>
@@ -2524,6 +2529,12 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     right: 0;
     background-color: inherit;
 
+    &-inner {
+      display: flex;
+      column-gap: 0.5rem;
+      align-items: baseline;
+    }
+
     a {
       position: relative;
       top: 1px;
@@ -2532,7 +2543,6 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
       font-weight: $font-weight-semi-bold;
       font-size: $font-size-xs;
       line-height: $line-height-xs;
-      margin-right: 8px;
 
       &:hover {
         text-decoration: underline;
