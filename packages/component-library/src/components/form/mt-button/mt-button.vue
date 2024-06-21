@@ -148,18 +148,26 @@ export default defineComponent({
 $mt-button-transition: all 0.15s ease-out;
 
 .mt-button {
-  border: 1px solid $color-gray-400;
-  background: $color-gray-50;
-  color: $color-darkgray-200;
+  border: 1px solid #c2ccd6;
+  background: #f9fafb;
+  color: #52667a;
   transition: $mt-button-transition;
   display: inline-block;
-  border-radius: $border-radius-default;
+  border-radius: 4px;
   padding: 2px 24px;
   font-size: 14px;
   line-height: 34px;
   outline: none;
   font-weight: 600;
-  font-family: $font-family-default;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "San Francisco",
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    sans-serif;
   white-space: nowrap;
   text-overflow: ellipsis;
   vertical-align: middle;
@@ -182,22 +190,22 @@ $mt-button-transition: all 0.15s ease-out;
 
   &:hover:not(.mt-button--disabled),
   &:hover:not([disabled]) {
-    background: $color-gray-100;
+    background: #f0f2f5;
   }
 
   &:disabled,
   &.mt-button--disabled {
-    color: $color-gray-500;
-    border-color: $color-gray-200;
+    color: #f9fafb0;
+    border-color: #e0e6eb;
     cursor: not-allowed;
 
     .mt-icon {
-      color: $color-gray-400;
+      color: #c2ccd6;
     }
   }
 
   .mt-icon {
-    color: $color-gray-800;
+    color: #8599ad;
   }
 
   .mt-button--small {
@@ -359,22 +367,22 @@ $mt-button-transition: all 0.15s ease-out;
   }
 
   &.mt-button--action {
-    border: 1px solid $color-gray-300;
-    background-color: $color-white;
-    color: $color-black;
+    border: 1px solid #d1d9e0;
+    background-color: #fff;
+    color: #000;
 
     .mt-icon {
-      color: $color-darkgray-800;
+      color: #14191f;
     }
 
     &:hover {
-      background-color: $color-gray-100;
-      color: $color-darkgray-200;
+      background-color: #f0f2f5;
+      color: #52667a;
     }
 
     &:disabled {
-      background-color: $color-gray-50;
-      color: $color-gray-500;
+      background-color: #f9fafb;
+      color: #f9fafb0;
     }
   }
 
@@ -428,7 +436,7 @@ $mt-button-transition: all 0.15s ease-out;
   }
 
   .mt-button__loader {
-    border-radius: $border-radius-default;
+    border-radius: 4px;
   }
 }
 </style>

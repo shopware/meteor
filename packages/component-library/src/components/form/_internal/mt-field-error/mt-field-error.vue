@@ -87,7 +87,7 @@ export default defineComponent({
   align-items: center;
   gap: 4px;
   margin-top: 4px;
-  font-size: $font-size-extra-small;
+  font-size: 12px;
   line-height: 1.25;
   color: var(--color-text-critical-default);
 

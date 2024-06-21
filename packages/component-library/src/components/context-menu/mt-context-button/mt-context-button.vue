@@ -129,7 +129,7 @@ export default defineComponent({
 
 <style lang="scss">
 $mt-context-button-color-text: var(--color-icon-primary-default);
-$mt-context-button-border-radius: $border-radius-default;
+$mt-context-button-border-radius: 4px;
 $mt-context-button-color-border: var(--color-border-primary-default);
 $mt-context-button-color-disabled: var(--color-icon-primary-disabled);
 
@@ -166,7 +166,15 @@ $mt-context-button-color-disabled: var(--color-icon-primary-disabled);
     line-height: 20px;
     padding: 0 8px;
     outline: none;
-    font-family: $font-family-default;
+    font-family:
+      "Inter",
+      -apple-system,
+      BlinkMacSystemFont,
+      "San Francisco",
+      "Segoe UI",
+      Roboto,
+      "Helvetica Neue",
+      sans-serif;
 
     &:hover {
       border-color: $mt-context-button-color-border;
@@ -179,7 +187,7 @@ $mt-context-button-color-disabled: var(--color-icon-primary-disabled);
         color: $mt-context-button-color-text;
       }
 
-      color: $color-crimson-300;
+      color: #e86982;
     }
   }
 }

@@ -173,13 +173,13 @@ export default defineComponent({
 
   &__controls {
     display: inline-flex;
-    border-radius: $border-radius-default;
+    border-radius: 4px;
     border: 1px solid var(--color-border-primary-default);
   }
 
   &__info-text {
     color: var(--color-text-tertiary-default);
-    font-size: $font-size-xs;
+    font-size: 14px;
   }
 
   #meteor-icon-kit__regular-double-chevron-left-s {
@@ -231,13 +231,13 @@ export default defineComponent({
   }
 
   :last-child {
-    border-top-right-radius: $border-radius-default;
-    border-bottom-right-radius: $border-radius-default;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
   }
 
   :first-child {
-    border-top-left-radius: $border-radius-default;
-    border-bottom-left-radius: $border-radius-default;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
   }
 
   &__current-page-input {
@@ -246,7 +246,7 @@ export default defineComponent({
     border-right: 1px solid var(--color-border-primary-default);
     padding: 0 12px;
     color: var(--color-text-primary-default);
-    font-size: $font-size-xs;
+    font-size: 14px;
     font-feature-settings: "tnum";
 
     &::-webkit-outer-spin-button,

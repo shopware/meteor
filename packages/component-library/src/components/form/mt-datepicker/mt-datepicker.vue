@@ -577,17 +577,17 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-$mt-datepicker-color-border: $color-gray-300;
-$mt-datepicker-color-font: $color-darkgray-200;
+$mt-datepicker-color-border: #d1d9e0;
+$mt-datepicker-color-font: #52667a;
 $mt-datepicker-color-disabled-font: #b3bfcc;
-$mt-datepicker-color-hover: $color-shopware-brand-500;
+$mt-datepicker-color-hover: #189eff;
 $mt-datepicker-color-selected: #e6e6e6;
-$mt-datepicker-color-text-selected: $color-white;
+$mt-datepicker-color-text-selected: #fff;
 
 @mixin flatpickr-day-hovered {
   color: $mt-datepicker-color-text-selected;
   background-color: $mt-datepicker-color-hover;
-  border-color: $color-shopware-brand-500;
+  border-color: #189eff;
 }
 
 .mt-field--datepicker {
@@ -640,15 +640,15 @@ $mt-datepicker-color-text-selected: $color-white;
     .flatpickr-monthDropdown-months {
       padding-top: 2px;
       padding-bottom: 4px;
-      font-weight: $font-weight-semi-bold;
-      color: $color-darkgray-200;
+      font-weight: 600;
+      color: #52667a;
       text-align: right;
       -moz-appearance: none;
       -webkit-appearance: none;
       line-height: 1.2;
 
       option {
-        font-weight: $font-weight-regular;
+        font-weight: 400;
       }
     }
 
@@ -658,13 +658,13 @@ $mt-datepicker-color-text-selected: $color-white;
 
       &:hover {
         svg {
-          fill: $color-shopware-brand-500;
+          fill: #189eff;
         }
       }
     }
 
     .cur-year {
-      color: $color-darkgray-200;
+      color: #52667a;
     }
   }
 
@@ -716,7 +716,7 @@ $mt-datepicker-color-text-selected: $color-white;
     }
 
     &.today {
-      border-color: $color-gray-300;
+      border-color: #d1d9e0;
 
       &:hover {
         @include flatpickr-day-hovered;

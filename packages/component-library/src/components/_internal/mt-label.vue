@@ -151,7 +151,7 @@ export default defineComponent({
   margin: 0 6px 6px 0;
   padding: 8px 12px;
   line-height: 14px;
-  font-size: $font-size-extra-small;
+  font-size: 12px;
   height: 32px;
   border: 1px solid var(--color-border-primary-default);
   background: var(--color-background-primary-default);
@@ -198,8 +198,8 @@ export default defineComponent({
     height: 100%;
     right: 10px;
     top: 0;
-    color: $color-darkgray-200;
-    background-color: $color-gray-50;
+    color: #52667a;
+    background-color: #f9fafb;
     border: 0 none;
     cursor: pointer;
     outline: none;
@@ -212,13 +212,13 @@ export default defineComponent({
 
   &.mt-label--ghost {
     background: transparent;
-    border-color: $color-gray-300;
+    border-color: #d1d9e0;
   }
 
   &.mt-label--appearance-badged {
     background: transparent;
     border: 0;
-    font-size: $font-size-small;
+    font-size: 14px;
     padding: 4px 0;
     line-height: 22px;
 
@@ -270,57 +270,27 @@ export default defineComponent({
   }
 
   &.mt-label--info:not(&--appearance-badged) {
-    @include mt-label-variant(
-      $color-shopware-brand-50,
-      $color-shopware-brand-500,
-      $color-shopware-brand-500,
-      $color-shopware-brand-100
-    );
+    @include mt-label-variant(#e3f3ff, #189eff, #189eff, #bae2ff);
   }
 
   &.mt-label--success:not(&--appearance-badged) {
-    @include mt-label-variant(
-      $color-emerald-50,
-      $color-emerald-500,
-      $color-emerald-500,
-      $color-emerald-100
-    );
+    @include mt-label-variant(#e7f9e9, #37d046, #37d046, #c3f1c8);
   }
 
   &.mt-label--danger:not(&--appearance-badged) {
-    @include mt-label-variant(
-      $color-crimson-50,
-      $color-crimson-500,
-      $color-crimson-500,
-      $color-crimson-100
-    );
+    @include mt-label-variant(#fbe5ea, #de294c, #de294c, #f5bfc9);
   }
 
   &.mt-label--warning:not(&--appearance-badged) {
-    @include mt-label-variant(
-      $color-pumpkin-spice-50,
-      $color-pumpkin-spice-500,
-      $color-pumpkin-spice-500,
-      $color-pumpkin-spice-100
-    );
+    @include mt-label-variant(#fff3e0, #ff9800, #ff9800, #ffe0b2);
   }
 
   &.mt-label--neutral:not(&--appearance-badged) {
-    @include mt-label-variant(
-      $color-gray-50,
-      $color-darkgray-200,
-      $color-gray-300,
-      $color-gray-100
-    );
+    @include mt-label-variant(#f9fafb, #52667a, #d1d9e0, #f0f2f5);
   }
 
   &.mt-label--primary:not(&--appearance-badged) {
-    @include mt-label-variant(
-      $color-shopware-brand-500,
-      $color-shopware-brand-50,
-      $color-shopware-brand-500,
-      $color-shopware-brand-100
-    );
+    @include mt-label-variant(#189eff, #e3f3ff, #189eff, #bae2ff);
   }
 }
 </style>

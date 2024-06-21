@@ -214,7 +214,7 @@ export default defineComponent({
   width: max-content;
   background-color: var(--color-elevation-surface-overlay);
   border: 1px solid var(--color-border-primary-default);
-  border-radius: $border-radius-default;
+  border-radius: 4px;
   padding: 2px;
 
   .mt-floating-ui {
@@ -232,11 +232,11 @@ export default defineComponent({
     position: relative;
     cursor: pointer;
     border: none;
-    border-radius: $border-radius-default;
+    border-radius: 4px;
     padding: 6px 12px;
     font-family: inherit;
-    font-size: $font-size-extra-small;
-    font-weight: $font-weight-semi-bold;
+    font-size: 12px;
+    font-weight: 600;
     color: var(--color-text-primary-default);
     transition:
       0.15s background ease,
@@ -355,14 +355,14 @@ export default defineComponent({
     }
 
     .mt-floating-ui:first-child .mt-segmented-control__action {
-      border-top-left-radius: $border-radius-default - 1;
-      border-bottom-left-radius: $border-radius-default - 1;
+      border-top-left-radius: 4px - 1;
+      border-bottom-left-radius: 4px - 1;
       border-left: none;
     }
 
     .mt-floating-ui:last-child .mt-segmented-control__action {
-      border-top-right-radius: $border-radius-default - 1;
-      border-bottom-right-radius: $border-radius-default - 1;
+      border-top-right-radius: 4px - 1;
+      border-bottom-right-radius: 4px - 1;
       border-right: none;
     }
   }

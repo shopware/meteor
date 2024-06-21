@@ -218,44 +218,6 @@ export default defineComponent({
 /**
 * Use inter-font instead of normal font for popover. Also add the new variables to this file.
 */
-$font-family-default:
-  "Inter",
-  -apple-system,
-  BlinkMacSystemFont,
-  "San Francisco",
-  "Segoe UI",
-  Roboto,
-  "Helvetica Neue",
-  sans-serif;
-$font-family-variables:
-  "Inter var",
-  -apple-system,
-  BlinkMacSystemFont,
-  "San Francisco",
-  "Segoe UI",
-  Roboto,
-  "Helvetica Neue",
-  sans-serif;
-$font-family-default-feature-settings:
-  "ss01" on,
-  "ss02" on,
-  "case" on,
-  "cpsp" on,
-  "zero" on,
-  "cv09" on,
-  "cv07" on,
-  "cv06" on,
-  "cv10" on,
-  "cv11" on;
-
-$font-weight-medium: 500;
-
-$line-height-auto: auto;
-$line-height-xs: 18px;
-$line-height-sm: 20px;
-$line-height-md: 24px;
-$line-height-lg: 28px;
-
 $color-card-headline: #1c1c1c;
 
 $scrollShadowSize: 16px;
@@ -274,7 +236,7 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
     padding-bottom: 4px;
     background-color: var(--color-elevation-surface-overlay);
     overflow: auto;
-    border-radius: $border-radius-default;
+    border-radius: 4px;
     @include drop-shadow-default;
     overflow-x: hidden;
     scroll-behavior: smooth;
@@ -285,13 +247,37 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
 
     // add new Inter font to popover
     * {
-      font-family: $font-family-default;
+      font-family:
+        "Inter",
+        -apple-system,
+        BlinkMacSystemFont,
+        "San Francisco",
+        "Segoe UI",
+        Roboto,
+        "Helvetica Neue",
+        sans-serif;
     }
 
     @supports (font-variation-settings: normal) {
       * {
-        font-family: $font-family-variables;
-        font-feature-settings: $font-family-default-feature-settings;
+        font-family:
+          "Inter var",
+          -apple-system,
+          BlinkMacSystemFont,
+          "San Francisco",
+          "Segoe UI",
+          Roboto,
+          "Helvetica Neue",
+          sans-serif;
+        font-feature-settings:
+          "Inter",
+          -apple-system,
+          BlinkMacSystemFont,
+          "San Francisco",
+          "Segoe UI",
+          Roboto,
+          "Helvetica Neue",
+          sans-serif-feature-settings;
       }
     }
 
@@ -304,9 +290,9 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
 
       h3 {
         margin-right: auto;
-        font-size: $font-size-s;
-        font-weight: $font-weight-semi-bold;
-        line-height: $line-height-md;
+        font-size: 16px;
+        font-weight: 600;
+        line-height: 24px;
         color: var(--color-text-primary-default);
         margin-bottom: 0;
       }

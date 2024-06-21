@@ -308,44 +308,6 @@ export default defineComponent({
 /**
 * Use inter-font instead of normal font for popover. Also add the new variables to this file.
 */
-$font-family-default:
-  "Inter",
-  -apple-system,
-  BlinkMacSystemFont,
-  "San Francisco",
-  "Segoe UI",
-  Roboto,
-  "Helvetica Neue",
-  sans-serif;
-$font-family-variables:
-  "Inter var",
-  -apple-system,
-  BlinkMacSystemFont,
-  "San Francisco",
-  "Segoe UI",
-  Roboto,
-  "Helvetica Neue",
-  sans-serif;
-$font-family-default-feature-settings:
-  "ss01" on,
-  "ss02" on,
-  "case" on,
-  "cpsp" on,
-  "zero" on,
-  "cv09" on,
-  "cv07" on,
-  "cv06" on,
-  "cv10" on,
-  "cv11" on;
-
-$font-weight-medium: 500;
-
-$line-height-auto: auto;
-$line-height-xs: 18px;
-$line-height-sm: 20px;
-$line-height-md: 24px;
-$line-height-lg: 28px;
-
 $color-custom-dark: #0f172a;
 $color-custom-grey: #64748b;
 $color-custom-lightgrey: #cbd5e1;
@@ -362,13 +324,37 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
 
   // add new Inter font to popover item
   * {
-    font-family: $font-family-default;
+    font-family:
+      "Inter",
+      -apple-system,
+      BlinkMacSystemFont,
+      "San Francisco",
+      "Segoe UI",
+      Roboto,
+      "Helvetica Neue",
+      sans-serif;
   }
 
   @supports (font-variation-settings: normal) {
     * {
-      font-family: $font-family-variables;
-      font-feature-settings: $font-family-default-feature-settings;
+      font-family:
+        "Inter var",
+        -apple-system,
+        BlinkMacSystemFont,
+        "San Francisco",
+        "Segoe UI",
+        Roboto,
+        "Helvetica Neue",
+        sans-serif;
+      font-feature-settings:
+        "Inter",
+        -apple-system,
+        BlinkMacSystemFont,
+        "San Francisco",
+        "Segoe UI",
+        Roboto,
+        "Helvetica Neue",
+        sans-serif-feature-settings;
     }
   }
 
@@ -388,7 +374,7 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
     &::before {
       position: absolute;
       background-color: var(--color-interaction-secondary-hover);
-      border-radius: $border-radius-default;
+      border-radius: 4px;
       top: 4px;
       right: -8px;
       bottom: 4px;
@@ -479,9 +465,9 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
   &__label,
   &__contextual-detail,
   &__shortcut {
-    font-size: $font-size-xs;
-    line-height: $line-height-md;
-    font-weight: $font-weight-medium;
+    font-size: 14px;
+    line-height: 24px;
+    font-weight: 500;
 
     &--clickable {
       cursor: pointer;
@@ -528,9 +514,9 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
 
   &__options-count {
     margin-right: 8px;
-    font-size: $font-size-xs;
-    line-height: $line-height-md;
-    font-weight: $font-weight-medium;
+    font-size: 14px;
+    line-height: 24px;
+    font-weight: 500;
   }
 
   &__options {
@@ -549,9 +535,9 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
 
   &__meta-copy {
     color: var(--color-text-secondary-default);
-    font-size: $font-size-xxs;
-    line-height: $line-height-xs;
-    font-weight: $font-weight-medium;
+    font-size: 12px;
+    line-height: 18px;
+    font-weight: 500;
   }
 }
 </style>

@@ -277,7 +277,7 @@ export default defineComponent({
     padding: 12px 16px 12px 8px;
 
     &::placeholder {
-      color: lighten($color-darkgray-200, 25%);
+      color: lighten(#52667a, 25%);
     }
   }
 }

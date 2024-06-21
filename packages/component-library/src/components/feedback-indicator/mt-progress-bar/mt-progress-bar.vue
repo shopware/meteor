@@ -144,14 +144,14 @@ export default defineComponent({
     width: 100%;
     height: 8px;
     background-color: var(--color-background-primary-disabled);
-    border-radius: $border-radius-pill;
+    border-radius: 9999px;
   }
 
   .mt-progress-bar__value {
     transition: 1s width linear;
     height: 100%;
     background-color: var(--color-interaction-primary-default);
-    border-radius: $border-radius-pill;
+    border-radius: 9999px;
 
     &--no-transition {
       transition: 0s width linear;

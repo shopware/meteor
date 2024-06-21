@@ -363,10 +363,18 @@ $mt-select-result-list-transition: all ease-in-out 0.2s;
   overflow-x: hidden;
   overflow-y: auto;
   border: 1px solid var(--color-border-primary-default);
-  box-shadow: 0 3px 6px 0 $color-gray-300;
+  box-shadow: 0 3px 6px 0 #d1d9e0;
   background-color: var(--color-elevation-surface-overlay);
-  font-size: $font-size-small;
-  font-family: $font-family-default;
+  font-size: 14px;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "San Francisco",
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    sans-serif;
   padding: 8px;
   border-radius: 4px;
 

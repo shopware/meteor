@@ -247,7 +247,7 @@ onBeforeUnmount(() => {
 
   &:focus-visible {
     outline: 2px solid var(--color-border-brand-selected);
-    border: 2px solid $color-white;
+    border: 2px solid #fff;
   }
 
   &__content {
@@ -278,41 +278,41 @@ onBeforeUnmount(() => {
   }
 
   &--positive {
-    border: 1px solid $color-emerald-500;
-    background-color: $color-emerald-500;
+    border: 1px solid #37d046;
+    background-color: #37d046;
 
     .mt-toast-notification__close-action {
-      border-left: 1px solid $color-emerald-900;
+      border-left: 1px solid #16b320;
     }
 
     .mt-toast-notification__timer {
-      background-color: $color-emerald-900;
+      background-color: #16b320;
     }
   }
 
   &--critical {
-    border: 1px solid $color-crimson-500;
-    background-color: $color-crimson-500;
+    border: 1px solid #de294c;
+    background-color: #de294c;
 
     .mt-toast-notification__close-action {
-      border-left: 1px solid $color-crimson-900;
+      border-left: 1px solid #c80f24;
     }
 
     .mt-toast-notification__timer {
-      background-color: $color-crimson-900;
+      background-color: #c80f24;
     }
   }
 
   &--informal {
-    border: 1px solid $color-darkgray-700;
-    background-color: $color-darkgray-700;
+    border: 1px solid #1f262e;
+    background-color: #1f262e;
 
     .mt-toast-notification__close-action {
-      border-left: 1px solid $color-darkgray-900;
+      border-left: 1px solid #0a0d0f;
     }
 
     .mt-toast-notification__timer {
-      background-color: $color-darkgray-900;
+      background-color: #0a0d0f;
     }
   }
 
@@ -321,11 +321,19 @@ onBeforeUnmount(() => {
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    color: $color-white;
-    font-family: $font-family-default;
-    font-size: $font-size-xs;
+    color: #fff;
+    font-family:
+      "Inter",
+      -apple-system,
+      BlinkMacSystemFont,
+      "San Francisco",
+      "Segoe UI",
+      Roboto,
+      "Helvetica Neue",
+      sans-serif;
+    font-size: 14px;
     font-style: normal;
-    font-weight: $font-weight-semi-bold;
+    font-weight: 600;
     line-height: 16px;
     letter-spacing: 0.08px;
 
@@ -342,11 +350,11 @@ onBeforeUnmount(() => {
     justify-content: flex-end;
     align-items: center;
     cursor: pointer;
-    color: $color-white;
+    color: #fff;
     transition: color 0.2s ease;
 
     &:hover {
-      color: $color-gray-200;
+      color: #e0e6eb;
       box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
     }
   }
@@ -355,7 +363,7 @@ onBeforeUnmount(() => {
     height: 3px;
     width: 100%;
     border-radius: 0 0 4px 4px;
-    background-color: $color-white;
+    background-color: #fff;
 
     &-loader {
       top: 0;

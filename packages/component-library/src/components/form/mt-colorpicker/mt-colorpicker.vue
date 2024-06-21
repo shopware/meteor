@@ -1220,7 +1220,7 @@ export default defineComponent({
     position: relative;
     width: 22px;
     height: 22px;
-    border-radius: $border-radius-default;
+    border-radius: 4px;
     border: 1px solid var(--color-border-primary-default);
     overflow: hidden;
     cursor: pointer;
@@ -1269,7 +1269,7 @@ export default defineComponent({
 
       &-label {
         color: var(--color-text-primary-default);
-        font-size: $font-size-xxs;
+        font-size: 12px;
         margin-top: 8px;
         user-select: none;
         -moz-user-select: none;
@@ -1302,7 +1302,7 @@ export default defineComponent({
     padding: 10px;
     border: 1px solid var(--color-border-primary-default);
     background-color: var(--color-elevation-surface-overlay);
-    border-radius: $border-radius-default;
+    border-radius: 4px;
     box-shadow: 0 3px 6px 0 rgba(120, 138, 155, 0.5);
 
     &::before {
@@ -1335,7 +1335,7 @@ export default defineComponent({
       width: 238px;
       height: 150px;
       border: 1px solid var(--color-border-primary-default);
-      border-radius: $border-radius-default;
+      border-radius: 4px;
       background-image: linear-gradient(180deg, #fff, rgba(255, 255, 255, 0) 50%),
         linear-gradient(0deg, #000, rgba(0, 0, 0, 0) 50%),
         linear-gradient(90deg, #808080, rgba(128, 128, 128, 0) 100%);
@@ -1359,7 +1359,7 @@ export default defineComponent({
     &-slider-range {
       width: 100%;
       height: 20px;
-      border-radius: $border-radius-default;
+      border-radius: 4px;
       background-image: linear-gradient(
         90deg,
         #f00 0%,
@@ -1377,7 +1377,7 @@ export default defineComponent({
     &-slider-range::-webkit-slider-thumb {
       height: 26px;
       width: 8px;
-      border-radius: $border-radius-default;
+      border-radius: 4px;
       border: 1px solid var(--color-border-primary-default);
       background: var(--color-icon-static-default);
       -webkit-appearance: none;
@@ -1389,7 +1389,7 @@ export default defineComponent({
       width: 8px;
       border: 1px solid var(--color-border-primary-default);
       background: var(--color-icon-static-default);
-      border-radius: $border-radius-default;
+      border-radius: 4px;
       cursor: pointer;
     }
 
@@ -1423,7 +1423,7 @@ export default defineComponent({
       width: 58px;
       height: 58px;
       border: 1px solid var(--color-border-primary-default);
-      border-radius: $border-radius-default;
+      border-radius: 4px;
       z-index: 1;
     }
 
@@ -1433,7 +1433,7 @@ export default defineComponent({
       width: 58px;
       height: 58px;
       border: 1px solid var(--color-border-primary-default);
-      border-radius: $border-radius-default;
+      border-radius: 4px;
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 90 90' width='100%25' height='100%25'%3E%3Crect width='30' height='30' x='00' y='00' fill='%23cdd5db' /%3E%3Crect width='30' height='30' x='30' y='30' fill='%23cdd5db' /%3E%3Crect width='30' height='30' x='60' y='00' fill='%23cdd5db' /%3E%3Crect width='30' height='30' x='60' y='60' fill='%23cdd5db' /%3E%3Crect width='30' height='30' x='00' y='60' fill='%23cdd5db' /%3E%3C/svg%3E");
 
       &.is--invalid::after {
@@ -1454,9 +1454,17 @@ export default defineComponent({
       height: 32px;
       padding: 0 5px;
       border: 1px solid var(--color-border-primary-default);
-      border-radius: $border-radius-default;
-      font-size: $font-size-xxs;
-      font-family: $font-family-default;
+      border-radius: 4px;
+      font-size: 12px;
+      font-family:
+        "Inter",
+        -apple-system,
+        BlinkMacSystemFont,
+        "San Francisco",
+        "Segoe UI",
+        Roboto,
+        "Helvetica Neue",
+        sans-serif;
       color: var(--color-text-primary-default);
       outline: none;
 
@@ -1489,7 +1497,7 @@ export default defineComponent({
     height: 20px;
     margin-top: 10px;
     border: 1px solid var(--color-border-primary-default);
-    border-radius: $border-radius-default;
+    border-radius: 4px;
     background-image: url("data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' width='100%25' height='100%25'%3E%3Crect width='10' height='10' x='00' y='00' fill='%23cdd5db' /%3E%3Crect width='10' height='10' x='10' y='10' fill='%23cdd5db' /%3E%3C/svg%3E");
     outline: none;
     -webkit-appearance: none;
@@ -1497,7 +1505,7 @@ export default defineComponent({
     &::-webkit-slider-thumb {
       height: 26px;
       width: 8px;
-      border-radius: $border-radius-default;
+      border-radius: 4px;
       border: 1px solid var(--color-border-primary-default);
       background: var(--color-icon-static-default);
       -webkit-appearance: none;
@@ -1508,7 +1516,7 @@ export default defineComponent({
       height: 26px;
       width: 8px;
       border: 1px solid var(--color-border-brand-selected);
-      border-radius: $border-radius-default;
+      border-radius: 4px;
 
       cursor: pointer;
     }

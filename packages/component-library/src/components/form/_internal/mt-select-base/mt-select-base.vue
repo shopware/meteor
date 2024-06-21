@@ -298,8 +298,16 @@ $mt-select-focus-transition: all ease-in-out 0.2s;
     position: relative;
     padding: 0 8px;
     border: none;
-    font-size: $font-size-small;
-    font-family: $font-family-default;
+    font-size: 14px;
+    font-family:
+      "Inter",
+      -apple-system,
+      BlinkMacSystemFont,
+      "San Francisco",
+      "Segoe UI",
+      Roboto,
+      "Helvetica Neue",
+      sans-serif;
     line-height: 22px;
     color: var(--color-icon-primary-default);
     outline: none;

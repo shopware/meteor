@@ -73,7 +73,7 @@ export default defineComponent({
 
 <style lang="scss">
 .mt-help-text {
-  color: $color-shopware-brand-500;
+  color: #189eff;
   display: inline-flex;
   align-items: center;
   justify-content: center;

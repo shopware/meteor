@@ -106,7 +106,7 @@ export default defineComponent({
 <style lang="scss">
 .mt-external-link {
   color: var(--color-text-brand-default);
-  font-size: $font-size-small;
+  font-size: 14px;
   text-decoration: underline;
   cursor: pointer;
 
@@ -131,7 +131,7 @@ export default defineComponent({
   }
 
   &--small {
-    font-size: $font-size-extra-small;
+    font-size: 12px;
 
     .mt-external-link__icon {
       width: 8px;

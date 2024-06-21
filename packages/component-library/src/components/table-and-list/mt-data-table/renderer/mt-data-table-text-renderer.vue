@@ -78,7 +78,7 @@ export default defineComponent({
     width: 34px;
     height: 24px;
     border: 1px solid var(--color-border-primary-default);
-    border-radius: $border-radius-default;
+    border-radius: 4px;
     margin-right: 15px;
     flex-shrink: 0;
 
@@ -93,7 +93,7 @@ export default defineComponent({
   }
 
   a.mt-data-table-text-renderer {
-    font-weight: $font-weight-medium;
+    font-weight: 500;
     text-decoration: none;
     color: var(--color-text-primary-default);
 

@@ -268,7 +268,7 @@ $mt-field-transition:
   &__hint,
   &__hint-right {
     margin-top: 4px;
-    font-size: $font-size-extra-small;
+    font-size: 12px;
     color: var(--color-text-tertiary-default);
     display: flex;
     align-items: center;
@@ -284,7 +284,7 @@ $mt-field-transition:
   }
 
   input:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0 1000px $color-white inset;
+    -webkit-box-shadow: 0 0 0 1000px #fff inset;
   }
 
   .mt-block-field__block {
@@ -300,8 +300,16 @@ $mt-field-transition:
     padding: 13px 16px;
     border: none;
     background: var(--color-elevation-surface-raised);
-    font-size: $font-size-small;
-    font-family: $font-family-default;
+    font-size: 14px;
+    font-family:
+      "Inter",
+      -apple-system,
+      BlinkMacSystemFont,
+      "San Francisco",
+      "Segoe UI",
+      Roboto,
+      "Helvetica Neue",
+      sans-serif;
     line-height: 22px;
     transition: $mt-field-transition;
     color: var(--color-text-primary-default);
@@ -317,7 +325,7 @@ $mt-field-transition:
 
     &:disabled {
       background: var(--color-background-primary-disabled);
-      border-color: $color-gray-300;
+      border-color: #d1d9e0;
       cursor: default !important;
     }
 
@@ -328,7 +336,7 @@ $mt-field-transition:
 
   .mt-block-field__block {
     border: 1px solid var(--color-border-primary-default);
-    border-radius: $border-radius-default;
+    border-radius: 4px;
     overflow: hidden;
   }
 
@@ -364,7 +372,7 @@ $mt-field-transition:
 
   &.has--error.has--focus {
     .mt-block-field__block {
-      box-shadow: 0 0 4px lighten($color-crimson-500, 30%);
+      box-shadow: 0 0 4px lighten(#de294c, 30%);
     }
   }
 
@@ -393,7 +401,7 @@ $mt-field-transition:
     border-right: none;
     line-height: 22px;
     padding: 12px 15px;
-    font-size: $font-size-small;
+    font-size: 14px;
     color: var(--color-text-primary-default);
     transition: $mt-field-transition;
 
@@ -424,7 +432,7 @@ $mt-field-transition:
   }
 
   .mt-field__button-restore {
-    color: $color-darkgray-200;
+    color: #52667a;
     padding: 0 8px;
     border: none;
     background: none;

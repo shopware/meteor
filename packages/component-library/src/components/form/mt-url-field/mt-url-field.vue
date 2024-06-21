@@ -270,7 +270,7 @@ export default defineComponent({
 <style lang="scss">
 @import "../../assets/scss/variables";
 
-$mt-field-color-secure: $color-emerald-500;
+$mt-field-color-secure: #37d046;
 
 .mt-field {
   &__url-input__prefix {

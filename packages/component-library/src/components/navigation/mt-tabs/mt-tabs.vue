@@ -447,7 +447,7 @@ export default defineComponent({
       display: flex;
       align-items: center;
       gap: 4px;
-      font-size: $font-size-default;
+      font-size: 16px;
     }
   }
 }

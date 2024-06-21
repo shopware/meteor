@@ -11,7 +11,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-$mt-context-menu-color-border: $color-gray-300;
+$mt-context-menu-color-border: #d1d9e0;
 
 .mt_context_menu_divider {
   border: none;

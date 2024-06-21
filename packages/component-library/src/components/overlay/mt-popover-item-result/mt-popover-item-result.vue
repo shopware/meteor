@@ -210,44 +210,6 @@ export default defineComponent({
 /**
 * Use inter-font instead of normal font for popover. Also add the new variables to this file.
 */
-$font-family-default:
-  "Inter",
-  -apple-system,
-  BlinkMacSystemFont,
-  "San Francisco",
-  "Segoe UI",
-  Roboto,
-  "Helvetica Neue",
-  sans-serif;
-$font-family-variables:
-  "Inter var",
-  -apple-system,
-  BlinkMacSystemFont,
-  "San Francisco",
-  "Segoe UI",
-  Roboto,
-  "Helvetica Neue",
-  sans-serif;
-$font-family-default-feature-settings:
-  "ss01" on,
-  "ss02" on,
-  "case" on,
-  "cpsp" on,
-  "zero" on,
-  "cv09" on,
-  "cv07" on,
-  "cv06" on,
-  "cv10" on,
-  "cv11" on;
-
-$font-weight-medium: 500;
-
-$line-height-auto: auto;
-$line-height-xs: 18px;
-$line-height-sm: 20px;
-$line-height-md: 24px;
-$line-height-lg: 28px;
-
 $color-custom-dark: #0f172a;
 $color-custom-grey: #64748b;
 $color-custom-lightgrey: #cbd5e1;
@@ -268,9 +230,9 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
   &__group-label {
     color: var(--color-text-secondary-default);
     text-transform: uppercase;
-    font-size: $font-size-xxs;
-    line-height: $line-height-md;
-    font-weight: $font-weight-medium;
+    font-size: 12px;
+    line-height: 24px;
+    font-weight: 500;
   }
 
   &__group-action {
@@ -278,18 +240,18 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
     background-color: transparent;
     border: none;
     color: var(--color-text-brand-default);
-    font-size: $font-size-xs;
-    line-height: $line-height-xs;
-    font-weight: $font-weight-semi-bold;
+    font-size: 14px;
+    line-height: 18px;
+    font-weight: 600;
     text-decoration: underline;
     cursor: pointer;
 
     &:hover {
-      color: $color-shopware-brand-800;
+      color: #0e82ff;
     }
 
     &:active {
-      color: $color-shopware-brand-900;
+      color: #0870ff;
     }
   }
 
@@ -317,13 +279,13 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
   &__option_drop_before {
     top: 0;
     box-shadow: inset 0px $dropzone-highlight-width $dropzone-highlight-width
-      $dropzone-highlight-negative-width $color-shopware-brand-900;
+      $dropzone-highlight-negative-width #0870ff;
   }
 
   &__option_drop_after {
     bottom: 0;
     box-shadow: inset 0px $dropzone-highlight-negative-width $dropzone-highlight-width
-      $dropzone-highlight-negative-width $color-shopware-brand-900;
+      $dropzone-highlight-negative-width #0870ff;
   }
 
   .mt-popover-item {

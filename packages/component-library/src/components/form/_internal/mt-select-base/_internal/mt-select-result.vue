@@ -165,13 +165,13 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-$mt-select-result-active-color-background: lighten($color-shopware-brand-500, 40%);
-$mt-select-result-active-color-text: $color-shopware-brand-500;
-$mt-select-result-color-border: $color-gray-300;
-$mt-select-result-color-icon: darken($color-gray-100, 20%);
+$mt-select-result-active-color-background: lighten(#189eff, 40%);
+$mt-select-result-active-color-text: #189eff;
+$mt-select-result-color-border: #d1d9e0;
+$mt-select-result-color-icon: darken(#f0f2f5, 20%);
 $mt-select-result-transition-item-icon: all ease-in-out 0.15s;
-$mt-select-result-disabled-color-background: $color-gray-100;
-$mt-select-result-disabled-color-text: darken($color-gray-300, 15%);
+$mt-select-result-disabled-color-background: #f0f2f5;
+$mt-select-result-disabled-color-text: darken(#d1d9e0, 15%);
 
 .mt-select-result {
   padding: 12px 4px;
@@ -207,7 +207,7 @@ $mt-select-result-disabled-color-text: darken($color-gray-300, 15%);
 
   .mt-select-result__result-item-description {
     width: 100%;
-    color: $color-gray-600;
+    color: #a3b3c2;
     order: 3;
     line-height: 14px;
     padding: 0 0 0 8px;

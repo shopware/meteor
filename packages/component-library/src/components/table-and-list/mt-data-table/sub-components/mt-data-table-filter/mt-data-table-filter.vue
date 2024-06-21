@@ -103,8 +103,8 @@ export default defineComponent({
   .mt-data-table-filter__property {
     border: 1px solid var(--color-border-primary-default);
     border-right: 0 none;
-    border-top-left-radius: $border-radius-default;
-    border-bottom-left-radius: $border-radius-default;
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
     color: var(--color-text-primary-default);
     padding-inline: 8px;
   }
@@ -139,8 +139,8 @@ export default defineComponent({
 
   .mt-data-table-filter__remove-button {
     color: var(--color-icon-primary-default);
-    border-top-right-radius: $border-radius-default;
-    border-bottom-right-radius: $border-radius-default;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
     border: 1px solid var(--color-border-primary-default);
     outline: 0 none;
     position: relative;

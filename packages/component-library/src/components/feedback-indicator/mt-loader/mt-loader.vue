@@ -64,7 +64,7 @@ export default defineComponent({
 $mt-loader-color-overlay: var(--color-background-primary-disabled);
 $mt-loader-element-color: var(--color-border-brand-selected);
 $mt-loader-rotate-duration: 1.4s;
-$mt-loader-z-index: $z-index-loader;
+$mt-loader-z-index: 400;
 
 .mt-loader {
   width: 100%;

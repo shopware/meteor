@@ -1960,44 +1960,6 @@ export default defineComponent({
 /**
 * Use inter-font instead of normal font for data-table. Also add the new variables to this file.
 */
-$font-family-default:
-  "Inter",
-  -apple-system,
-  BlinkMacSystemFont,
-  "San Francisco",
-  "Segoe UI",
-  Roboto,
-  "Helvetica Neue",
-  sans-serif;
-$font-family-variables:
-  "Inter var",
-  -apple-system,
-  BlinkMacSystemFont,
-  "San Francisco",
-  "Segoe UI",
-  Roboto,
-  "Helvetica Neue",
-  sans-serif;
-$font-family-default-feature-settings:
-  "ss01" on,
-  "ss02" on,
-  "case" on,
-  "cpsp" on,
-  "zero" on,
-  "cv09" on,
-  "cv07" on,
-  "cv06" on,
-  "cv10" on,
-  "cv11" on;
-
-$font-weight-medium: 500;
-
-$line-height-auto: auto;
-$line-height-xs: 18px;
-$line-height-sm: 20px;
-$line-height-md: 24px;
-$line-height-lg: 28px;
-
 $color-card-headline: #1c1c1c;
 $color-shopware-brand-vivacious-500: #0f76de;
 
@@ -2059,21 +2021,45 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
 
   // add new Inter font to data table
   * {
-    font-family: $font-family-default;
+    font-family:
+      "Inter",
+      -apple-system,
+      BlinkMacSystemFont,
+      "San Francisco",
+      "Segoe UI",
+      Roboto,
+      "Helvetica Neue",
+      sans-serif;
   }
 
   @supports (font-variation-settings: normal) {
     * {
-      font-family: $font-family-variables;
-      font-feature-settings: $font-family-default-feature-settings;
+      font-family:
+        "Inter var",
+        -apple-system,
+        BlinkMacSystemFont,
+        "San Francisco",
+        "Segoe UI",
+        Roboto,
+        "Helvetica Neue",
+        sans-serif;
+      font-feature-settings:
+        "Inter",
+        -apple-system,
+        BlinkMacSystemFont,
+        "San Francisco",
+        "Segoe UI",
+        Roboto,
+        "Helvetica Neue",
+        sans-serif-feature-settings;
     }
   }
 
   // adjust font styling
-  font-size: $font-size-xs;
-  font-weight: $font-weight-regular;
-  color: $color-darkgray-300;
-  line-height: $line-height-sm;
+  font-size: 14px;
+  font-weight: 400;
+  color: #47596b;
+  line-height: 20px;
 
   .mt-data-table__toolbar {
     width: 100%;
@@ -2264,8 +2250,8 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   }
 
   thead th {
-    font-weight: $font-weight-medium;
-    line-height: $line-height-xs;
+    font-weight: 500;
+    line-height: 18px;
     background-color: var(--color-elevation-surface-sunken);
     color: var(--color-text-secondary-default);
     min-width: 50px;
@@ -2461,12 +2447,12 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   .mt-data-table__table-head-dropzone-before {
     left: 0;
     box-shadow: inset $dropzone-highlight-width 0px $dropzone-highlight-width
-      $dropzone-highlight-negative-width $color-shopware-brand-900;
+      $dropzone-highlight-negative-width #0870ff;
   }
   .mt-data-table__table-head-dropzone-after {
     right: 0;
     box-shadow: inset $dropzone-highlight-negative-width 0px $dropzone-highlight-width
-      $dropzone-highlight-negative-width $color-shopware-brand-900;
+      $dropzone-highlight-negative-width #0870ff;
   }
 
   /**
@@ -2529,9 +2515,9 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
       top: 1px;
       color: $color-shopware-brand-vivacious-500;
       text-decoration: none;
-      font-weight: $font-weight-semi-bold;
-      font-size: $font-size-xs;
-      line-height: $line-height-xs;
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 18px;
       margin-right: 8px;
 
       &:hover {
@@ -2577,7 +2563,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
 
   &__pagination-info-text {
     white-space: nowrap;
-    font-size: $font-size-xxs;
+    font-size: 12px;
     margin-left: 12px;
   }
 }
@@ -2618,23 +2604,47 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   opacity: 0.8;
 
   // set the normal table header cell styling
-  font-family: $font-family-default;
+  font-family:
+    "Inter",
+    -apple-system,
+    BlinkMacSystemFont,
+    "San Francisco",
+    "Segoe UI",
+    Roboto,
+    "Helvetica Neue",
+    sans-serif;
   @supports (font-variation-settings: normal) {
-    font-family: $font-family-variables;
-    font-feature-settings: $font-family-default-feature-settings;
+    font-family:
+      "Inter var",
+      -apple-system,
+      BlinkMacSystemFont,
+      "San Francisco",
+      "Segoe UI",
+      Roboto,
+      "Helvetica Neue",
+      sans-serif;
+    font-feature-settings:
+      "Inter",
+      -apple-system,
+      BlinkMacSystemFont,
+      "San Francisco",
+      "Segoe UI",
+      Roboto,
+      "Helvetica Neue",
+      sans-serif-feature-settings;
   }
   text-align: left;
-  font-size: $font-size-xs;
+  font-size: 14px;
   padding: $tableCellPadding;
   border: 1px solid var(--color-border-brand-selected);
-  border-radius: $border-radius-default $border-radius-default 0 0;
+  border-radius: 4px 4px 0 0;
   border-top: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   vertical-align: top;
-  font-weight: $font-weight-medium;
-  line-height: $line-height-xs;
+  font-weight: 500;
+  line-height: 18px;
   background-color: var(--color-elevation-surface-sunken);
   color: var(--color-text-primary-default);
   min-width: 50px;
@@ -2696,8 +2706,8 @@ table.is--dragging-inside {
   left: 0;
   width: 100%;
   height: 8px;
-  background-color: $color-shopware-brand-900;
-  border-radius: $border-radius-default $border-radius-default 0 0;
+  background-color: #0870ff;
+  border-radius: 4px 4px 0 0;
   transition: transform 0.2s ease;
   transform-origin: top center;
 }
@@ -2710,11 +2720,11 @@ table.is--dragging-inside {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: $color-shopware-brand-900;
-  border-radius: 0 0 $border-radius-default $border-radius-default;
+  background-color: #0870ff;
+  border-radius: 0 0 4px 4px;
 
   #meteor-icon-kit__regular-grip-horizontal-s {
-    color: $color-white;
+    color: #fff;
     width: 9px;
   }
 }
@@ -2747,7 +2757,7 @@ table.is--dragging-inside {
   min-width: 34px;
   cursor: pointer;
   outline: 0;
-  border-radius: $border-radius-default;
+  border-radius: 4px;
 
   &:hover,
   &:focus-visible {

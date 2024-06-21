@@ -56,11 +56,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-$mt-color-badge-color-fallback: $color-gray-300;
-$mt-color-badge-color-warning: $color-pumpkin-spice-500;
-$mt-color-badge-color-critical: $color-crimson-500;
-$mt-color-badge-color-positive: $color-emerald-500;
-$mt-color-badge-color-info: $color-shopware-brand-500;
+$mt-color-badge-color-fallback: #d1d9e0;
+$mt-color-badge-color-warning: #ff9800;
+$mt-color-badge-color-critical: #de294c;
+$mt-color-badge-color-positive: #37d046;
+$mt-color-badge-color-info: #189eff;
 
 .mt-color-badge {
   display: inline-block;
@@ -98,24 +98,24 @@ $mt-color-badge-color-info: $color-shopware-brand-500;
     border-radius: 8px;
 
     &.is--warning {
-      background-color: $color-pumpkin-spice-50;
-      color: $color-pumpkin-spice-900;
+      background-color: #fff3e0;
+      color: #e65100;
     }
 
     &.is--critical,
     &.is--danger {
-      background-color: $color-crimson-50;
-      color: $color-crimson-900;
+      background-color: #fbe5ea;
+      color: #c80f24;
     }
 
     &.is--positive {
-      background-color: $color-emerald-50;
-      color: $color-emerald-900;
+      background-color: #e7f9e9;
+      color: #16b320;
     }
 
     &.is--info {
-      background-color: $color-shopware-brand-50;
-      color: $color-shopware-brand-900;
+      background-color: #e3f3ff;
+      color: #0870ff;
     }
   }
 }

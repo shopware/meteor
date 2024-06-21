@@ -23,7 +23,7 @@ $mt-skeleton-shimmer-light: var(--color-background-primary-disabled);
   width: 100%;
   background-color: $mt-skeleton-bar-color;
   overflow: hidden;
-  border-radius: $border-radius-default;
+  border-radius: 4px;
 
   &:not(:last-child) {
     margin-bottom: 32px;

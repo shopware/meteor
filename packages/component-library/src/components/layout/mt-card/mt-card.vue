@@ -314,7 +314,7 @@ export default defineComponent({
 
   .mt-card__avatar {
     overflow: hidden;
-    border-radius: $border-radius-default;
+    border-radius: 4px;
     width: 40px;
     height: 40px;
 

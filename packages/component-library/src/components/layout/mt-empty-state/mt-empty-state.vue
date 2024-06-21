@@ -90,7 +90,7 @@ export default defineComponent({
   &__icon {
     display: inline-block;
     padding: 12px;
-    border-radius: $border-radius-default;
+    border-radius: 4px;
     background-color: var(--color-interaction-secondary-dark);
 
     svg {
@@ -100,16 +100,16 @@ export default defineComponent({
 
   &__headline {
     color: var(--color-text-primary-default);
-    font-weight: $font-weight-bold;
-    font-size: $font-size-l;
-    line-height: $line-height-lg;
+    font-weight: 700;
+    font-size: 20px;
+    line-height: 28px;
     margin: 16px 0 0;
   }
 
   &__description {
     color: var(--color-text-secondary-default);
-    font-size: $font-size-xs;
-    line-height: $line-height-sm;
+    font-size: 14px;
+    line-height: 20px;
     margin-top: 8px;
   }
 
