@@ -4,26 +4,16 @@
     :href="!disabled ? link : ''"
     target="_blank"
     rel="noopener"
-    class="mt-button"
     :class="buttonClasses"
     v-bind="$attrs"
   >
-    <span class="mt-button__content">
-      <slot />
-    </span>
+    <slot />
   </a>
 
-  <button
-    v-else
-    class="mt-button"
-    :class="buttonClasses"
-    :disabled="disabled || isLoading"
-    v-bind="$attrs"
-  >
-    <mt-loader v-if="isLoading" size="16px" class="mt-button__loader" />
-    <span class="mt-button__content" :class="contentVisibilityClass">
-      <slot />
-    </span>
+  <button v-else :class="buttonClasses" :disabled="disabled || isLoading" v-bind="$attrs">
+    <mt-loader v-if="isLoading" size="16px" :class="stylex(styles.loader)" />
+
+    <slot v-else />
   </button>
 </template>
 
@@ -31,6 +21,134 @@
 import { defineComponent } from "vue";
 import MtLoader from "../../feedback-indicator/mt-loader/mt-loader.vue";
 import type { PropType } from "vue";
+import stylex from "@stylexjs/stylex";
+import { first } from "lodash-es";
+
+type Stylex = (...classes: Record<string, unknown>[]) => string;
+
+const styles = stylex.create({
+  button: {
+    outline: "0 none",
+    borderWidth: "0.0625rem",
+    borderStyle: "solid",
+    transition: "all 0.15s ease-out",
+    borderRadius: "0.25rem",
+    fontWeight: 600,
+    fontFamily:
+      'Inter, -apple-system, BlinkMacSystemFont, "San Francisco", "Segoe UI", Roboto, "Helvetica Neue" ,sans-serif',
+    whiteSpace: "nowrap",
+    position: "relative",
+  },
+  // TODO: IMHO we can get rid of the lineHeight and set them differently
+  buttonSizeSmall: {
+    fontSize: "0.75rem",
+    paddingInline: "0.8125rem",
+    paddingBlock: "0.375rem",
+  },
+  buttonSizeDefault: {
+    fontSize: "0.875rem",
+    paddingInline: "0.9375rem",
+    paddingBlock: "0.5rem",
+  },
+  buttonVariantPrimary: {
+    background: "var(--color-interaction-primary-default)",
+    color: "var(--color-text-static-default)",
+    borderColor: "var(--color-interaction-primary-default)",
+    ":is(:hover, :focus-visible, :active)": {
+      background: "var(--color-interaction-primary-hover)",
+      borderColor: "var(--color-interaction-primary-hover)",
+    },
+    ":focus-visible": {
+      borderColor: "var(--color-border-brand-selected)",
+      boxShadow: "0 0 4px 0 rgba(24, 158, 255, 0.3)",
+    },
+    ":disabled": {
+      background: "var(--color-interaction-primary-disabled)",
+      borderColor: "var(--color-interaction-primary-disabled)",
+    },
+  },
+  buttonVariantPrimaryGhost: {
+    background: "transparent",
+    borderColor: "var(--color-border-brand-selected)",
+    color: "var(--color-text-brand-default)",
+    ":is(:hover, :focus-visible, :active)": {
+      background: "var(--color-background-brand-default)",
+    },
+    ":focus-visible": {
+      boxShadow: "0 0 4px 0 rgba(24, 158, 255, 0.3)",
+    },
+    ":disabled": {
+      color: "var(--color-text-brand-disabled)",
+      borderColor: "var(--color-border-brand-disabled)",
+    },
+  },
+  buttonVariantSecondary: {
+    background: "var(--color-interaction-secondary-default)",
+    color: "var(--color-text-primary-default)",
+    borderColor: "var(--color-border-primary-default)",
+    ":is(:hover, :focus-visible, :active)": {
+      background: "var(--color-interaction-secondary-hover)",
+    },
+    // TODO: I think we can also share this
+    ":focus-visible": {
+      borderColor: "var(--color-border-brand-selected)",
+      boxShadow: "0 0 4px 0 rgba(24, 158, 255, 0.3)",
+    },
+    ":disabled": {
+      color: "var(--color-text-primary-disabled)",
+      background: "var(--color-interaction-secondary-disabled)",
+    },
+  },
+  buttonVariantCritical: {
+    background: "var(--color-interaction-critical-default)",
+    color: "var(--color-text-static-default)",
+    borderColor: "var(--color-interaction-critical-default)",
+    ":is(:hover, :focus-visible, :active)": {
+      background: "var(--color-interaction-critical-hover)",
+      borderColor: "var(--color-interaction-critical-hover)",
+    },
+    ":focus-visible": {
+      borderColor: "var(--color-border-brand-selected)",
+      boxShadow: "0 0 4px 0 rgba(24, 158, 255, 0.3)",
+    },
+    ":disabled": {
+      background: "var(--color-interaction-critical-disabled)",
+      borderColor: "var(--color-interaction-critical-disabled)",
+    },
+  },
+  buttonVariantCriticalGhost: {
+    background: "transparent",
+    borderColor: "var(--color-border-critical-default)",
+    color: "var(--color-text-critical-default)",
+    ":is(:hover, :focus-visible, :active)": {
+      background: "var(--color-background-critical-dark)",
+    },
+    ":focus-visible": {
+      borderColor: "var(--color-border-brand-selected)",
+      boxShadow: "0 0 4px 0 rgba(255, 0, 0, 0.3)",
+    },
+    ":disabled": {
+      color: "var(--color-text-critical-disabled)",
+      borderColor: "var(--color-border-critical-disabled)",
+    },
+  },
+  // TODO: IMHO the parent should take care of this
+  buttonBlock: {
+    display: "block",
+    width: "100%",
+  },
+  buttonSquareSmall: {
+    width: "2rem",
+    height: "2rem",
+  },
+  buttonSquareLarge: {
+    width: "3rem",
+    height: "3rem",
+  },
+  loader: {
+    borderRadius: "0.25rem",
+  },
+});
 
 export default defineComponent({
   name: "MtButton",
@@ -58,9 +176,8 @@ export default defineComponent({
       required: false,
       default: "",
       validator(value: string) {
-        if (!value.length) {
-          return true;
-        }
+        if (!value.length) return true;
+
         return ["primary", "secondary", "critical", "action"].includes(value);
       },
     },
@@ -78,9 +195,8 @@ export default defineComponent({
       required: false,
       default: "small",
       validator(value: string) {
-        if (!value.length) {
-          return true;
-        }
+        if (!value.length) return true;
+
         return ["small", "default", "large"].includes(value);
       },
     },
@@ -120,152 +236,56 @@ export default defineComponent({
     },
   },
 
+  setup(props) {
+    if (props.ghost && props.variant === "secondary")
+      throw new Error(
+        "Failed to render <mt-button />; Cannot use ghost and secondary variant together.",
+      );
+
+    return {
+      styles,
+      stylex: stylex as unknown as Stylex,
+    };
+  },
+
   computed: {
     buttonClasses() {
-      return {
-        [`mt-button--${this.variant}${this.allowGhostVariant ? "-ghost" : ""}`]: !!this.variant,
-        [`mt-button--${this.size}`]: !!this.size,
-        "mt-button--block": this.block,
-        "mt-button--disabled": this.disabled,
-        "mt-button--square": this.square,
-      };
-    },
+      function firstLetterToUpperCase(str: string) {
+        return str.charAt(0).toUpperCase() + str.slice(1);
+      }
 
-    allowGhostVariant() {
-      return this.ghost && this.variant !== "secondary";
-    },
-
-    contentVisibilityClass() {
-      return {
-        "mt-button__content--hidden": this.isLoading,
-      };
+      return stylex(
+        styles.button,
+        //@ts-expect-error
+        styles[`buttonSize${firstLetterToUpperCase(this.size)}`],
+        //@ts-expect-error
+        styles[`buttonVariant${firstLetterToUpperCase(this.variant)}${this.ghost ? "Ghost" : ""}`],
+        this.block && styles.buttonBlock,
+        //@ts-expect-error
+        this.square && [`buttonSquare${firstLetterToUpperCase(this.size)}`],
+      );
     },
   },
 });
 </script>
 
 <style lang="scss">
-$mt-button-transition: all 0.15s ease-out;
-
 .mt-button {
-  border: 1px solid #c2ccd6;
-  background: #f9fafb;
-  color: #52667a;
-  transition: $mt-button-transition;
-  display: inline-block;
-  border-radius: 4px;
-  padding: 2px 24px;
-  font-size: 14px;
-  line-height: 34px;
-  outline: none;
-  font-weight: 600;
-  font-family:
-    "Inter",
-    -apple-system,
-    BlinkMacSystemFont,
-    "San Francisco",
-    "Segoe UI",
-    Roboto,
-    "Helvetica Neue",
-    sans-serif;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  vertical-align: middle;
-  text-decoration: none;
-  cursor: pointer;
-  user-select: none;
-  margin: 0;
-  position: relative;
-
-  .mt-button__content {
-    display: grid;
-    grid-auto-flow: column;
-    align-items: center;
-    grid-gap: 0 8px;
-  }
-
-  .mt-button__content--hidden {
-    visibility: hidden;
-  }
-
-  &:hover:not(.mt-button--disabled),
-  &:hover:not([disabled]) {
-    background: #f0f2f5;
-  }
-
-  &:disabled,
-  &.mt-button--disabled {
-    color: #f9fafb0;
-    border-color: #e0e6eb;
-    cursor: not-allowed;
-
-    .mt-icon {
-      color: #c2ccd6;
-    }
-  }
-
   .mt-icon {
+    // TODO: find solution
     color: #8599ad;
   }
 
-  .mt-button--small {
-    line-height: 20px;
-  }
-
-  .mt-button--default {
-    line-height: 28px;
-  }
-
-  .mt-button--large {
-    line-height: 44px;
-  }
-
   &.mt-button--primary {
-    background: var(--color-interaction-primary-default);
-    color: var(--color-text-static-default);
-    line-height: 36px;
-    border-color: var(--color-interaction-primary-default);
-
+    // TODO: find solution
     .mt-icon {
       color: var(--color-icon-static-default);
-    }
-
-    &:is(:hover, :focus-visible, :active) {
-      background: var(--color-interaction-primary-hover);
-      border-color: var(--color-interaction-primary-hover);
-    }
-
-    &:focus-visible {
-      border-color: var(--color-border-brand-selected);
-      box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
-    }
-
-    &:disabled,
-    &.mt-button--disabled {
-      background: var(--color-interaction-primary-disabled);
-      border-color: var(--color-interaction-primary-disabled);
     }
   }
 
   &.mt-button--primary-ghost {
-    background: transparent;
-    border-color: var(--color-border-brand-selected);
-    color: var(--color-text-brand-default);
-
-    &:is(:hover, :focus-visible, :active) {
-      background: var(--color-background-brand-default);
-    }
-
-    &:focus-visible {
-      box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
-    }
-
     &:disabled,
     &.mt-button--disabled {
-      color: var(--color-text-brand-disabled);
-      border-color: var(--color-border-brand-disabled);
-      background: transparent;
-
       .mt-icon {
         color: var(--color-icon-brand-disabled);
       }
@@ -277,25 +297,8 @@ $mt-button-transition: all 0.15s ease-out;
   }
 
   &.mt-button--secondary {
-    background: var(--color-interaction-secondary-default);
-    color: var(--color-text-primary-default);
-    line-height: 36px;
-    border-color: var(--color-border-primary-default);
-
-    &:is(:hover, :focus-visible, :active) {
-      background: var(--color-interaction-secondary-hover);
-    }
-
-    &:focus-visible {
-      border-color: var(--color-border-brand-selected);
-      box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
-    }
-
     &:disabled,
     &.mt-button--disabled {
-      color: var(--color-text-primary-disabled);
-      background: var(--color-interaction-secondary-disabled);
-
       .mt-icon {
         color: var(--color-icon-primary-disabled);
       }
@@ -307,26 +310,8 @@ $mt-button-transition: all 0.15s ease-out;
   }
 
   &.mt-button--critical {
-    background: var(--color-interaction-critical-default);
-    color: var(--color-text-static-default);
-    line-height: 36px;
-    border-color: var(--color-interaction-critical-default);
-
-    &:is(:hover, :focus-visible, :active) {
-      background: var(--color-interaction-critical-hover);
-      border-color: var(--color-interaction-critical-hover);
-    }
-
-    &:focus-visible {
-      border-color: var(--color-border-brand-selected);
-      box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
-    }
-
     &:disabled,
     &.mt-button--disabled {
-      background: var(--color-interaction-critical-disabled);
-      border-color: var(--color-interaction-critical-disabled);
-
       .mt-icon {
         color: var(--color-icon-static-default);
       }
@@ -338,24 +323,8 @@ $mt-button-transition: all 0.15s ease-out;
   }
 
   &.mt-button--critical-ghost {
-    background: transparent;
-    border-color: var(--color-border-critical-default);
-    color: var(--color-text-critical-default);
-
-    &:is(:hover, :focus-visible, :active) {
-      background-color: var(--color-background-critical-dark);
-    }
-
-    &:focus-visible {
-      border-color: var(--color-border-brand-selected);
-      box-shadow: 0 0 4px 0 rgba(255, 0, 0, 0.3);
-    }
-
     &:disabled,
     &.mt-button--disabled {
-      color: var(--color-text-critical-disabled);
-      border-color: var(--color-border-critical-disabled);
-
       .mt-icon {
         color: var(--color-icon-critical-disabled);
       }
@@ -364,79 +333,6 @@ $mt-button-transition: all 0.15s ease-out;
     .mt-icon {
       color: var(--color-icon-critical-default);
     }
-  }
-
-  &.mt-button--action {
-    border: 1px solid #d1d9e0;
-    background-color: #fff;
-    color: #000;
-
-    .mt-icon {
-      color: #14191f;
-    }
-
-    &:hover {
-      background-color: #f0f2f5;
-      color: #52667a;
-    }
-
-    &:disabled {
-      background-color: #f9fafb;
-      color: #f9fafb0;
-    }
-  }
-
-  &.mt-button--block {
-    display: block;
-    width: 100%;
-  }
-
-  &.mt-button--x-small {
-    padding-left: 10px;
-    padding-right: 10px;
-    font-size: 12px;
-    line-height: 18px;
-
-    &.mt-button--square {
-      width: 24px;
-    }
-  }
-
-  &.mt-button--small {
-    padding-left: 15px;
-    padding-right: 15px;
-    font-size: 12px;
-    line-height: 26px;
-
-    &.mt-button--square {
-      width: 32px;
-    }
-  }
-
-  &.mt-button--large {
-    padding-left: 28px;
-    padding-right: 28px;
-    line-height: 42px;
-    font-size: 15px;
-
-    &.mt-button--square {
-      width: 48px;
-    }
-  }
-
-  &.mt-button--square {
-    width: 40px;
-    padding-left: 0;
-    padding-right: 0;
-    text-align: center;
-
-    .mt-button__content {
-      display: inline;
-    }
-  }
-
-  .mt-button__loader {
-    border-radius: 4px;
   }
 }
 </style>
