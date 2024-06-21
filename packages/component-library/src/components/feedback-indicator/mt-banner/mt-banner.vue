@@ -3,7 +3,13 @@
     <slot name="customIcon">
       <mt-icon
         v-if="!hideIcon"
-        :class="stylex(styles.icon)"
+        :class="
+          stylex(
+            styles.icon,
+            // @ts-expect-error
+            styles[`iconColor${firstLetterUppercase(variant)}`],
+          )
+        "
         :name="bannerIcon"
         size="1.25rem"
         decorative
@@ -22,7 +28,13 @@
 
     <button
       v-if="closable"
-      :class="stylex(styles.close)"
+      :class="
+        stylex(
+          styles.close,
+          // @ts-expect-error
+          styles[`iconColor${firstLetterUppercase(variant)}`],
+        )
+      "
       aria-label="Schließen"
       title="Schließen"
       @click.prevent="$emit('close', bannerIndex)"
@@ -77,6 +89,25 @@ const styles = stylex.create({
   },
   icon: {
     display: "block",
+  },
+  // determines the color of the icon and the close button
+  iconColorInfo: {
+    color: "var(--color-icon-brand-default)",
+  },
+  iconColorAttention: {
+    color: "var(--color-icon-attention-default)",
+  },
+  iconColorCritical: {
+    color: "var(--color-icon-critical-default)",
+  },
+  iconColorInherited: {
+    color: "var(--color-icon-accent-default)",
+  },
+  iconColorPositive: {
+    color: "var(--color-icon-positive-default)",
+  },
+  iconColorNeutral: {
+    color: "var(--color-icon-primary-default)",
   },
   title: {
     fontWeight: 600,
@@ -161,9 +192,14 @@ export default defineComponent({
   },
 
   setup() {
+    function firstLetterUppercase(str: string) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
+    }
+
     return {
       styles,
       stylex: stylex as unknown as Stylex,
+      firstLetterUppercase,
     };
   },
 
@@ -196,49 +232,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style lang="scss">
-.mt-banner {
-  &--info {
-    .mt-banner__icon,
-    .mt-banner__close {
-      color: var(--color-icon-brand-default);
-    }
-  }
-
-  &--attention {
-    .mt-banner__icon,
-    .mt-banner__close {
-      color: var(--color-icon-attention-default);
-    }
-  }
-
-  &--critical {
-    .mt-banner__icon,
-    .mt-banner__close {
-      color: var(--color-icon-critical-default);
-    }
-  }
-
-  &--positive {
-    .mt-banner__icon,
-    .mt-banner__close {
-      color: var(--color-icon-positive-default);
-    }
-  }
-
-  &--inherited {
-    .mt-banner__icon,
-    .mt-banner__close {
-      color: var(--color-icon-accent-default);
-    }
-  }
-
-  &--neutral {
-    .mt-banner__icon,
-    .mt-banner__close {
-      color: var(--color-icon-primary-default);
-    }
-  }
-}
-</style>
