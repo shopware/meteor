@@ -1,6 +1,6 @@
 <template>
-  <div class="mt-pagination">
-    <p class="mt-pagination__info-text" data-testid="mt-pagination-info-text">
+  <div :class="stylex(styles.root)">
+    <p :class="stylex(styles.infoText)" data-testid="mt-pagination-info-text">
       {{
         $t("mt-pagination.infoText", {
           start: firstVisibleItemNumber,
@@ -10,20 +10,24 @@
       }}
     </p>
 
-    <div class="mt-pagination__controls">
+    <div :class="stylex(styles.controls)">
       <button
-        class="mt-pagination__button"
+        :class="stylex(styles.button)"
         :disabled="isOnFirstPage"
         @click="$emit('change-current-page', 1)"
         data-testid="mt-pagination-first-page-button"
       >
         <span class="visually-hidden">{{ $t("mt-pagination.firstPage") }}</span>
 
-        <mt-icon name="regular-double-chevron-left-s" aria-hidden="true" />
+        <mt-icon
+          name="regular-double-chevron-left-s"
+          aria-hidden="true"
+          :class="stylex(styles.iconFirstPage)"
+        />
       </button>
 
       <button
-        class="mt-pagination__button"
+        :class="stylex(styles.button)"
         :disabled="isOnFirstPage"
         @click="$emit('change-current-page', currentPage - 1)"
         data-testid="mt-pagination-previous-page-button"
@@ -34,7 +38,7 @@
       </button>
 
       <input
-        class="mt-pagination__current-page-input"
+        :class="stylex(styles.pageInput)"
         type="number"
         min="1"
         step="1"
@@ -46,7 +50,7 @@
       />
 
       <button
-        class="mt-pagination__button"
+        :class="stylex(styles.button)"
         :disabled="isOnLastPage"
         @click="$emit('change-current-page', currentPage + 1)"
         data-testid="mt-pagination-next-page-button"
@@ -57,7 +61,7 @@
       </button>
 
       <button
-        class="mt-pagination__button"
+        :class="stylex(styles.button)"
         :disabled="isOnLastPage"
         @click="$emit('change-current-page', totalPages)"
         data-testid="mt-pagination-last-page-button"
@@ -72,7 +76,80 @@
 
 <script lang="ts">
 import { defineComponent, computed, watch } from "vue";
+import stylex from "@stylexjs/stylex";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
+
+type Stylex = (...classes: Record<string, unknown>[]) => string;
+
+const styles = stylex.create({
+  root: {
+    display: "flex",
+    alignItems: "baseline",
+    gap: "0.75rem",
+  },
+  controls: {
+    display: "inline-flex",
+    borderRadius: "0.25rem",
+    border: "1px solid var(--color-border-primary-default)",
+    ":last-child": {
+      borderTopRightRadius: "0.25rem",
+      borderBottomRightRadius: "0.25rem",
+    },
+    ":first-child": {
+      borderTopLeftRadius: "0.25rem",
+      borderBottomLeftRadius: "0.25rem",
+    },
+  },
+  infoText: {
+    color: "var(--color-text-tertiary-default)",
+    fontSize: "0.875rem",
+  },
+  button: {
+    borderRight: "1px solid var(--color-border-primary-default)",
+    color: "var(--color-icon-primary-default)",
+    height: "2rem",
+    width: "2.5rem",
+    display: "grid",
+    placeItems: "center",
+    transition: "all 0.15s ease-out",
+    ":focus-visible": {
+      outline: "1px solid var(--color-border-brand-selected)",
+      backgroundColor: "var(--color-interaction-secondary-hover)",
+    },
+    ":hover:not(:disabled)": {
+      backgroundColor: "var(--color-interaction-secondary-hover)",
+    },
+    ":last-of-type": {
+      borderRight: "none",
+    },
+    ":disabled": {
+      backgroundColor: "var(--color-interaction-secondary-disabled)",
+      cursor: "not-allowed",
+    },
+  },
+  pageInput: {
+    border: "none",
+    outline: "none",
+    width: "auto",
+    borderRight: "1px solid var(--color-border-primary-default)",
+    paddingInline: "0.75rem",
+    color: "var(--color-text-primary-default)",
+    fontSize: "0.875rem",
+    fontFeatureSettings: "tnum",
+    "::-webkit-outer-spin-button": {
+      "-webkit-appearance": "none",
+      margin: 0,
+    },
+    "::-webkit-outer-inner-button": {
+      "-webkit-appearance": "none",
+      margin: 0,
+    },
+  },
+  iconFirstPage: {
+    width: "0.5rem",
+    height: "0.46875rem",
+  },
+});
 
 export default defineComponent({
   components: {
@@ -160,6 +237,8 @@ export default defineComponent({
       onChangeInput,
       firstVisibleItemNumber,
       lastVisibleItemNumber,
+      stylex: stylex as unknown as Stylex,
+      styles,
     };
   },
 });
@@ -167,26 +246,6 @@ export default defineComponent({
 
 <style lang="scss">
 .mt-pagination {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-
-  &__controls {
-    display: inline-flex;
-    border-radius: 4px;
-    border: 1px solid var(--color-border-primary-default);
-  }
-
-  &__info-text {
-    color: var(--color-text-tertiary-default);
-    font-size: 14px;
-  }
-
-  #meteor-icon-kit__regular-double-chevron-left-s {
-    width: 8px !important;
-    height: 7.5px !important;
-  }
-
   #meteor-icon-kit__regular-chevron-left-s {
     width: 4px !important;
     height: 7.5px !important;
@@ -202,59 +261,7 @@ export default defineComponent({
     height: 7.5px !important;
   }
 
-  &__button {
-    border-right: 1px solid var(--color-border-primary-default);
-    color: var(--color-icon-primary-default);
-    height: 2rem;
-    width: 2.5rem;
-    display: grid;
-    place-items: center;
-    transition: all 0.15s ease-out;
-
-    &:focus-visible {
-      outline: 1px solid var(--color-border-brand-selected);
-      background-color: var(--color-interaction-secondary-hover);
-    }
-
-    &:hover:not(:disabled) {
-      background-color: var(--color-interaction-secondary-hover);
-    }
-
-    &:last-of-type {
-      border-right: none;
-    }
-
-    &:disabled {
-      background-color: var(--color-interaction-secondary-disabled);
-      cursor: not-allowed;
-    }
-  }
-
-  :last-child {
-    border-top-right-radius: 4px;
-    border-bottom-right-radius: 4px;
-  }
-
-  :first-child {
-    border-top-left-radius: 4px;
-    border-bottom-left-radius: 4px;
-  }
-
   &__current-page-input {
-    all: unset;
-    width: auto;
-    border-right: 1px solid var(--color-border-primary-default);
-    padding: 0 12px;
-    color: var(--color-text-primary-default);
-    font-size: 14px;
-    font-feature-settings: "tnum";
-
-    &::-webkit-outer-spin-button,
-    &::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
-
     /* Firefox */
     &[type="number"] {
       -moz-appearance: textfield;
