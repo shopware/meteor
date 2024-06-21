@@ -91,6 +91,8 @@ const styles = stylex.create({
   tabs: {
     display: "flex",
     position: "relative",
+    padding: 0,
+    margin: 0,
   },
   tabsSmall: {
     // TODO: do we really need this? I strongly believe the parent should take care of that

@@ -1,7 +1,6 @@
 <template>
   <component
     :is="as"
-    class="mt-link"
     :class="linkClasses"
     :aria-disabled="disabled"
     :tabindex="disabled ? -1 : 0"
@@ -12,9 +11,58 @@
   </component>
 </template>
 
+<script setup lang="ts">
+import stylex from "@stylexjs/stylex";
+</script>
+
 <script lang="ts">
 import { defineComponent } from "vue";
 import type { PropType } from "vue";
+
+const styles = stylex.create({
+  root: {
+    borderRadius: "0.25rem",
+    outlineOffset: "0.25rem",
+    display: "inline-block",
+    cursor: "pointer",
+    fontFamily:
+      'Inter, -apple-system, BlinkMacSystemFont, "San Francisco", "Segoe UI", Roboto, "Helvetica Neue", sans-serif',
+    fontSize: "0.875rem",
+    fontWeight: 500,
+    textDecoration: "underline",
+    ":disabled": {
+      cursor: "not-allowed",
+      pointerEvents: "none",
+    },
+    ":focus-visible": {
+      outline: "2px solid var(--color-border-brand-selected)",
+    },
+  },
+  variantPrimary: {
+    color: "var(--color-text-brand-default)",
+    ":hover": {
+      color: "var(--color-text-brand-hover)",
+    },
+    ":active": {
+      color: "var(--color-text-brand-hover)",
+    },
+    ":disabled": {
+      color: "var(--color-text-brand-disabled)",
+    },
+  },
+  variantCritical: {
+    color: "var(--color-text-critical-default)",
+    ":hover": {
+      color: "var(--color-text-critical-hover)",
+    },
+    ":active": {
+      color: "var(--color-text-critical-hover)",
+    },
+    ":disabled": {
+      color: "var(--color-text-critical-disabled)",
+    },
+  },
+});
 
 export default defineComponent({
   name: "MtLink",
@@ -64,10 +112,12 @@ export default defineComponent({
   },
   computed: {
     linkClasses() {
-      return {
-        [`mt-link--${this.variant}`]: !!this.variant,
-        "mt-link--disabled": this.disabled,
-      };
+      function firstLetterToUpperCase(string: string) {
+        return string.charAt(0).toUpperCase() + string.slice(1);
+      }
+
+      // @ts-expect-error
+      return stylex(styles.root, styles[`variant${firstLetterToUpperCase(this.variant)}`]);
     },
   },
 
@@ -84,57 +134,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style lang="scss" scoped>
-.mt-link {
-  display: inline-block;
-  cursor: pointer;
-  margin: 0;
-  font-family:
-    "Inter",
-    -apple-system,
-    BlinkMacSystemFont,
-    "San Francisco",
-    "Segoe UI",
-    Roboto,
-    "Helvetica Neue",
-    sans-serif;
-  font-size: 14px;
-  font-weight: 500;
-  text-decoration: underline;
-
-  &:disabled,
-  &.mt-link--disabled {
-    cursor: not-allowed;
-    pointer-events: none;
-  }
-
-  &.mt-link--primary {
-    color: var(--color-text-brand-default);
-
-    &:hover,
-    &:active {
-      color: var(--color-text-brand-hover);
-    }
-
-    &:disabled,
-    &.mt-link--disabled {
-      color: var(--color-text-brand-disabled);
-    }
-  }
-
-  &.mt-link--critical {
-    color: var(--color-text-critical-default);
-
-    &:hover,
-    &:active {
-      color: var(--color-text-critical-hover);
-    }
-
-    &:disabled,
-    &.mt-link--disabled {
-      color: var(--color-text-critical-disabled);
-    }
-  }
-}
-</style>
