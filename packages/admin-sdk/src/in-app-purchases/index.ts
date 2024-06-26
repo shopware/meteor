@@ -1,27 +1,14 @@
-import { createSender } from "../channel";
+import { createSender } from '../channel';
 
 /**
- * Trigger the initial in-app purchase flow.
+ * Trigger the in-app purchase flow modal.
  */
-export const start = createSender('inAppPurchaseStart');
+export const trigger = createSender('inAppPurchases');
 
-/**
- * Trigger the creation of an in-app purchase.
- */
-export const create = createSender('inAppPurchaseCreate');
-
-export type inAppPurchaseStart = {
+export type inAppPurchases = {
     responseType: unknown,
 
     featureName: string,
 
-    paymentTier: string,
-}
-
-export type inAppPurchaseCreate = {
-    responseType: unknown,
-
-    featureName: string,
-
-    paymentTier: string,
+    priceModel: string,
 }
