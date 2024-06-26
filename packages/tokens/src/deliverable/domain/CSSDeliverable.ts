@@ -47,7 +47,7 @@ export class CSSDeliverable implements Deliverable {
 
           if (typeof resolvedValue !== 'string') {
             throw new Error(
-              'Failed to create CSSDeliverable; Could not resolve value of aliased token',
+              `Failed to create CSSDeliverable; Could not resolve value of aliased token: ${pathToAliasedTokenValue}`,
             );
           }
 
