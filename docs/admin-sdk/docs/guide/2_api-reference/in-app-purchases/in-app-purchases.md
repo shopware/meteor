@@ -8,8 +8,7 @@ To open a modal with the details of the feature you want to purchase, you can us
 
 ```ts
 sw.iap.trigger({
-    featureName: 'Your Feature Name',
-    priceModel: 'The price model that the user selected',
+    featureId: 'your-feature-id',
 });
 ```
 

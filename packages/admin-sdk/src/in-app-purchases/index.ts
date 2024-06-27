@@ -8,7 +8,5 @@ export const trigger = createSender('inAppPurchases');
 export type inAppPurchases = {
     responseType: unknown,
 
-    featureName: string,
-
-    priceModel: string,
+    featureId: string,
 }
