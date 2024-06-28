@@ -1,5 +1,7 @@
 # In-App Purchase Flow
 
+> Available since Shopware v6.6.7.0
+> 
 In-App purchases allow you to create different functionality based on purchases the user has made in your app. This guide will show you how to start the in-app purchase flow.
 
 ### Opening modal with details of feature
