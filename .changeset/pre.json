@@ -1,0 +1,14 @@
+{
+  "mode": "pre",
+  "tag": "5.4.5-alpha.0",
+  "initialVersions": {
+    "admin-sdk-docs": "0.0.0",
+    "meteor-admin-sdk-app": "1.0.17",
+    "nuxt-app": "0.0.10",
+    "@shopware-ag/meteor-admin-sdk": "5.4.3",
+    "@shopware-ag/meteor-component-library": "3.9.0",
+    "@shopware-ag/meteor-icon-kit": "5.4.0",
+    "@shopware-ag/meteor-tokens": "0.2.0"
+  },
+  "changesets": []
+}
