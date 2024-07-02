@@ -1,3 +1,6 @@
 export function kebabCase(input: string) {
-  return input.toLowerCase().replace(/\//g, '.').replace(/ /g, '');
+  return input
+    .split('/')
+    .map((value) => value.toLocaleLowerCase().trim().replaceAll(' ', '-'))
+    .join('.');
 }
