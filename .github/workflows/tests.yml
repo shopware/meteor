@@ -22,17 +22,17 @@ jobs:
 
       - uses: pnpm/action-setup@v3
         with:
-          version: 8
+          version: 9
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
-          cache-dependency-path: '**/pnpm-lock.yaml'
+          node-version: "20"
+          cache: "pnpm"
+          cache-dependency-path: "**/pnpm-lock.yaml"
 
       - name: Install dependencies
-        run: pnpm i
+        run: pnpm i --frozen-lockfile --prefer-offline
 
       - name: Build packages
         run: npx turbo run build
@@ -52,23 +52,23 @@ jobs:
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
-      FIGMA_TOKEN: 'FIGMA_TOKEN'
-      ADMIN_TOKENS_FILE_KEY: 'ADMIN_TOKENS_FILE_KEY'
-      PRIMITIVE_TOKENS_FILE_KEY: 'PRIMITIVE_TOKENS_FILE_KEY'
+      FIGMA_TOKEN: "FIGMA_TOKEN"
+      ADMIN_TOKENS_FILE_KEY: "ADMIN_TOKENS_FILE_KEY"
+      PRIMITIVE_TOKENS_FILE_KEY: "PRIMITIVE_TOKENS_FILE_KEY"
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
       - uses: pnpm/action-setup@v3
         with:
-          version: 8
+          version: 9
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
-          cache-dependency-path: '**/pnpm-lock.yaml'
+          node-version: "20"
+          cache: "pnpm"
+          cache-dependency-path: "**/pnpm-lock.yaml"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
@@ -88,14 +88,14 @@ jobs:
 
       - uses: pnpm/action-setup@v3
         with:
-          version: 8
+          version: 9
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
-          cache-dependency-path: '**/pnpm-lock.yaml'
+          node-version: "20"
+          cache: "pnpm"
+          cache-dependency-path: "**/pnpm-lock.yaml"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
@@ -120,14 +120,14 @@ jobs:
 
       - uses: pnpm/action-setup@v3
         with:
-          version: 8
+          version: 9
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
-          cache-dependency-path: '**/pnpm-lock.yaml'
+          node-version: "20"
+          cache: "pnpm"
+          cache-dependency-path: "**/pnpm-lock.yaml"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
