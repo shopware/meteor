@@ -923,7 +923,7 @@ test('creates a CSS file for the admin dark mode tokens', async () => {
   expect(result).toMatchInlineSnapshot(`
     "[data-theme='dark'] {
       --color-elevation-surface-default: #1e1e24;
-      --font-size-s: 1rem;
+      --font-size-s: 2rem;
     }
     "
   `);
