@@ -165,7 +165,6 @@ test('creates a Dictionary in form of a JSON file for the admin light mode token
     http.get(
       `https://api.figma.com/v1/files/${env.PRIMITIVE_TOKENS_FILE_KEY}/variables/local`,
       () => {
-        // DEBUG
         return HttpResponse.json({
           status: 200,
           error: false,
@@ -885,6 +884,7 @@ test('creates a CSS file for the admin dark mode tokens', async () => {
   expect(result).toMatchInlineSnapshot(`
     "[data-theme='dark'] {
       --color-elevation-surface-default: #1e1e24;
+      --font-size-s: 1rem;
     }
     "
   `);
