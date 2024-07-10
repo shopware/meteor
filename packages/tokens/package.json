@@ -32,6 +32,7 @@
   },
   "dependencies": {
     "dotenv": "^16.4.1",
+    "nanoid": "^5.0.7",
     "ora": "^8.0.1",
     "vitest": "^1.2.1",
     "winston": "^3.13.0",
