@@ -1,8 +1,20 @@
 import winston from 'winston';
 import { Logger } from '../../application/Logger.js';
+import { WinstonTransport as AxiomTransport } from '@axiomhq/winston';
+import { env } from '../../../env.js';
 
 export class LoggerUsingWinston implements Logger {
-  private readonly logger = winston.createLogger();
+  private readonly logger = winston.createLogger({
+    level: 'debug',
+    format: winston.format.json(),
+    defaultMeta: { service: 'user-service' },
+    transports: [
+      new AxiomTransport({
+        dataset: 'meteor-tokens',
+        token: env.AXIOM_TOKEN,
+      }),
+    ],
+  });
 
   private runId: string | undefined = undefined;
 
