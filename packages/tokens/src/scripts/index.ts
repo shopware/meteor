@@ -4,8 +4,10 @@ import { HardDiskFileSystem } from '../common/infrastructure/file-system/HardDis
 import { FigmaApi } from '../figma/infrastructure/FigmaApi.js';
 import { HttpClientUsingFetch } from '../common/infrastructure/http-client/HttpClientUsingFetch.js';
 import ora from 'ora';
+import { LoggerUsingWinston } from '../common/infrastructure/logger/LoggerUsingWinston.js';
 
-const fileSystem = new HardDiskFileSystem();
+const logger = new LoggerUsingWinston();
+const fileSystem = new HardDiskFileSystem(logger);
 const figmaApi = new FigmaApi(
   {
     apiKey: env.FIGMA_TOKEN,
@@ -16,7 +18,7 @@ const figmaApi = new FigmaApi(
 const spinner = ora('Generating artifacts').start();
 
 try {
-  await new GenerateArtifacts(fileSystem, figmaApi).execute();
+  await new GenerateArtifacts(fileSystem, figmaApi, logger).execute();
 
   spinner.succeed('Artifacts generated');
 } catch (error) {
