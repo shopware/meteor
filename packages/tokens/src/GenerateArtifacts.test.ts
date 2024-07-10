@@ -797,6 +797,20 @@ test('creates a CSS file for the admin dark mode tokens', async () => {
                 hiddenFromPublishing: false,
                 scopes: ['ALL_SCOPES'],
               },
+              'VariableID:12362:273': {
+                id: 'VariableID:12362:273',
+                name: 'scale/size/16',
+                key: '5214fca84a5f0d56ea22ac198ad2500eaa8b547b',
+                variableCollectionId: 'VariableCollectionId:12362:179',
+                resolvedType: 'FLOAT',
+                valuesByMode: {
+                  '12362:0': '1rem',
+                },
+                remote: false,
+                description: '',
+                hiddenFromPublishing: false,
+                scopes: ['ALL_SCOPES'],
+              },
             },
             variableCollections: {
               'VariableCollectionId:12362:179': {
@@ -807,7 +821,11 @@ test('creates a CSS file for the admin dark mode tokens', async () => {
                 defaultModeId: '12362:0',
                 remote: false,
                 hiddenFromPublishing: false,
-                variableIds: ['VariableID:12362:253', 'VariableID:12362:263'],
+                variableIds: [
+                  'VariableID:12362:253',
+                  'VariableID:12362:263',
+                  'VariableID:12362:273',
+                ],
               },
             },
           },
@@ -843,6 +861,27 @@ test('creates a CSS file for the admin dark mode tokens', async () => {
                 hiddenFromPublishing: false,
                 scopes: ['ALL_SCOPES'],
               },
+              'VariableID:2:3764': {
+                id: 'VariableID:2:3764',
+                name: 'font/size/s',
+                key: 'fcc4dd0912912eb8216b47a914b6a8ed017a43f4',
+                variableCollectionId: 'VariableCollectionId:2:1625',
+                resolvedType: 'FLOAT',
+                valuesByMode: {
+                  '2:1': {
+                    id: 'VariableID:5214fca84a5f0d56ea22ac198ad2500eaa8b547b/12362:179',
+                    type: 'VARIABLE_ALIAS',
+                  },
+                  '2:2': {
+                    id: 'VariableID:5214fca84a5f0d56ea22ac198ad2500eaa8b547b/12362:179',
+                    type: 'VARIABLE_ALIAS',
+                  },
+                },
+                remote: false,
+                description: '',
+                hiddenFromPublishing: false,
+                scopes: ['ALL_SCOPES'],
+              },
             },
             variableCollections: {
               'VariableCollectionId:2:1625': {
@@ -856,7 +895,7 @@ test('creates a CSS file for the admin dark mode tokens', async () => {
                 defaultModeId: '2:1',
                 remote: false,
                 hiddenFromPublishing: false,
-                variableIds: ['VariableID:2:1764'],
+                variableIds: ['VariableID:2:1764', 'VariableID:2:3764'],
               },
             },
           },
