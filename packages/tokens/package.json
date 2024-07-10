@@ -31,6 +31,7 @@
     "build": "echo 'This is only used for turbo repo caching'"
   },
   "dependencies": {
+    "@axiomhq/winston": "^1.0.0",
     "dotenv": "^16.4.1",
     "nanoid": "^5.0.7",
     "ora": "^8.0.1",

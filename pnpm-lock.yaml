@@ -474,6 +474,9 @@ importers:
 
   packages/tokens:
     dependencies:
+      '@axiomhq/winston':
+        specifier: ^1.0.0
+        version: 1.0.0
       dotenv:
         specifier: ^16.4.1
         version: 16.4.5
@@ -608,6 +611,14 @@ packages:
   '@aw-web-design/x-default-browser@1.4.126':
     resolution: {integrity: sha512-Xk1sIhyNC/esHGGVjL/niHLowM0csl/kFO5uawBy4IrWwy0o1G8LGt3jP6nmWGz+USxeeqbihAmp/oVZju6wug==}
     hasBin: true
+
+  '@axiomhq/js@1.0.0':
+    resolution: {integrity: sha512-4xf0b/KFVFmNvjxK4lHHuwioQ6TPr+PZLqEdMl/vcot1RqFwDnjaOEOp0/VPhyTgdE0di8bl/hOsu33bHMM27w==}
+    engines: {node: '>=16'}
+
+  '@axiomhq/winston@1.0.0':
+    resolution: {integrity: sha512-I37gx0eIhQeLZw0r/F3Xt+ERWWFD0VLAcGhXmCJcdmCcHLwwpEiKPsZsYshglZdeFQ2dCPUkOTyJMsjNFb3BdA==}
+    engines: {node: '>=16'}
 
   '@babel/code-frame@7.23.5':
     resolution: {integrity: sha512-CgH3s1a96LipHCmSUmYFPwY7MNx8C3avkq7i4Wl3cfa662ldtUe4VM1TPXX70pfmrlWTb6jLqTYrZyT2ZTJBgA==}
@@ -6325,6 +6336,9 @@ packages:
 
   fetch-retry@5.0.6:
     resolution: {integrity: sha512-3yurQZ2hD9VISAhJJP9bpYFNQrHHBXE2JxxjY5aLEcDi46RmAzJE2OC9FAde0yis5ElW0jTTzs0zfg/Cca4XqQ==}
+
+  fetch-retry@6.0.0:
+    resolution: {integrity: sha512-BUFj1aMubgib37I3v4q78fYo63Po7t4HUPTpQ6/QE6yK6cIQrP+W43FYToeTEyg5m2Y7eFUtijUuAv/PDlWuag==}
 
   fflate@0.8.2:
     resolution: {integrity: sha512-cPJU47OaAoCbg0pBvzsgpTPhmhqI5eJjh/JIu8tPj5q+T7iLvW/JAYUqmE7KOB4R1ZyEhzBaIQpQpardBF5z8A==}
@@ -12430,6 +12444,16 @@ snapshots:
   '@aw-web-design/x-default-browser@1.4.126':
     dependencies:
       default-browser-id: 3.0.0
+
+  '@axiomhq/js@1.0.0':
+    dependencies:
+      fetch-retry: 6.0.0
+      uuid: 8.3.2
+
+  '@axiomhq/winston@1.0.0':
+    dependencies:
+      '@axiomhq/js': 1.0.0
+      winston-transport: 4.7.0
 
   '@babel/code-frame@7.23.5':
     dependencies:
@@ -20503,6 +20527,8 @@ snapshots:
       xml-js: 1.6.11
 
   fetch-retry@5.0.6: {}
+
+  fetch-retry@6.0.0: {}
 
   fflate@0.8.2: {}
 
