@@ -165,6 +165,7 @@ test('creates a Dictionary in form of a JSON file for the admin light mode token
     http.get(
       `https://api.figma.com/v1/files/${env.PRIMITIVE_TOKENS_FILE_KEY}/variables/local`,
       () => {
+        // DEBUG
         return HttpResponse.json({
           status: 200,
           error: false,
