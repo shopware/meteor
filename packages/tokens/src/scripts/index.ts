@@ -5,6 +5,7 @@ import { FigmaApi } from '../figma/infrastructure/FigmaApi.js';
 import { HttpClientUsingFetch } from '../common/infrastructure/http-client/HttpClientUsingFetch.js';
 import ora from 'ora';
 import { LoggerUsingWinston } from '../common/infrastructure/logger/LoggerUsingWinston.js';
+import { nanoid } from 'nanoid';
 
 const logger = new LoggerUsingWinston();
 const fileSystem = new HardDiskFileSystem(logger);
@@ -15,7 +16,11 @@ const figmaApi = new FigmaApi(
   new HttpClientUsingFetch(),
 );
 
-const spinner = ora('Generating artifacts').start();
+const runId = nanoid();
+
+const spinner = ora(`Generating artifacts. Run ID: ${runId}`).start();
+
+logger.setRunId(nanoid());
 
 try {
   await new GenerateArtifacts(fileSystem, figmaApi, logger).execute();

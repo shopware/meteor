@@ -3,7 +3,6 @@ import { Dictionary } from './dictionary/domain/Dictionary.js';
 import { CSSDeliverable } from './deliverable/domain/CSSDeliverable.js';
 import { FigmaApi } from './figma/infrastructure/FigmaApi.js';
 import { env } from './env.js';
-import { nanoid } from 'nanoid';
 import { Logger } from './common/application/Logger.js';
 
 export class GenerateArtifacts {
@@ -14,8 +13,6 @@ export class GenerateArtifacts {
   ) {}
 
   public async execute() {
-    this.logger.setRunId(nanoid());
-
     const [primitiveTokenResponse, adminTokenResponse] = await Promise.all(
       [env.PRIMITIVE_TOKENS_FILE_KEY, env.ADMIN_TOKENS_FILE_KEY].map(
         (fileKey) => this.figmaApi.getLocalVariablesOfFile(fileKey),
