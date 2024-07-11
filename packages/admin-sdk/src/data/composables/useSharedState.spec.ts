@@ -1,3 +1,11 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/await-thenable */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/explicit-function-return-type */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { useSharedState as useSharedStateType } from './useSharedState';
 import { BroadcastChannel } from 'worker_threads';
 import Vue from 'vue';
@@ -52,7 +60,7 @@ describe('useSharedState composable', () => {
         permissions: {},
       },
     });
-  })
+  });
 
   beforeEach(async () => {
     // @ts-expect-error - Mocking BroadcastChannel
@@ -87,7 +95,7 @@ describe('useSharedState composable', () => {
       };
     })();
     
-    Object.defineProperty(window, "localStorage", { value: localStorageMock });
+    Object.defineProperty(window, 'localStorage', { value: localStorageMock });
   });
 
   afterEach(async () => {
@@ -108,7 +116,7 @@ describe('useSharedState composable', () => {
       initialValue: 'John Doe',
     },
   ].forEach(({ key, initialValue }) => {
-    it(`should return a shared state value for key "${key}" with initial value "${initialValue}"`, () => {
+    it(`should return a shared state value for key "${key}" with initial value "${initialValue}"`, async () => {
       const [result, app] = mockLoadComposableInApp(() => useSharedState(key, initialValue));
 
       expect(result.value).toBe(initialValue);
@@ -141,7 +149,7 @@ describe('useSharedState composable', () => {
 
       expect(result.value).toBe(initialValue);
 
-      // wait until the value is loaded from the localforage
+      // Wait until the value is loaded from the localforage
       await flushPromises();
 
       expect(result.value).toBe(storeValue);
@@ -172,12 +180,12 @@ describe('useSharedState composable', () => {
       await flushPromises();
   
       let storeValue = await storeMock.getItem(key);
-      expect(storeValue).toBe(null);
+      expect(storeValue).toBe(initialValue);
       expect(result.value).toBe(initialValue);
   
       result.value = updatedValue;
   
-      // wait until the value is updated in the localforage
+      // Wait until the value is updated in the localforage
       await flushPromises();
   
       storeValue = await storeMock.getItem(key);
@@ -190,19 +198,20 @@ describe('useSharedState composable', () => {
 
   it('should update all sharedStates when the value is changed', async () => {
     const [result1, app1] = mockLoadComposableInApp(() => useSharedState('age', 0));
+    await flushPromises();
     const [result2, app2] = mockLoadComposableInApp(() => useSharedState('age', 27));
     const [result3, app3] = mockLoadComposableInApp(() => useSharedState('name', 'John Doe'));
     await flushPromises();
 
     expect(result1.value).toBe(0);
-    expect(result2.value).toBe(27);
+    expect(result2.value).toBe(0);
     expect(result3.value).toBe('John Doe');
 
-    result1.value = 27;
+    result1.value = 42;
     await flushPromises();
 
-    expect(result1.value).toBe(27);
-    expect(result2.value).toBe(27);
+    expect(result1.value).toBe(42);
+    expect(result2.value).toBe(42);
     expect(result3.value).toBe('John Doe');
 
     app1.$destroy();
