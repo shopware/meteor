@@ -5,7 +5,7 @@ on:
     branches:
       - main
     paths:
-      - 'packages/component-library/**'
+      - "packages/component-library/**"
 
   pull_request:
 
@@ -30,9 +30,9 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
-          cache-dependency-path: '**/pnpm-lock.yaml'
+          node-version: "20"
+          cache: "pnpm"
+          cache-dependency-path: "**/pnpm-lock.yaml"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
@@ -41,7 +41,7 @@ jobs:
         run: pnpm dlx playwright install-deps
 
       - name: Install Playwright
-        run: pnpm dlx playwright install
+        run: pnpm dlx playwright@1.44.0 install
 
       - name: Build storybook
         run: pnpx turbo run build:storybook --filter=@shopware-ag/meteor-component-library -- --test

@@ -9,6 +9,27 @@ const { serialize, deserialize } = SerializerFactory({
   send: send,
 });
 
+async function setItem<INITIAL_VALUE>({
+  key,
+  newValue,
+  persistentSharedValueStore,
+  persistentSharedValueStoreBroadcast,
+}: {
+  key: string,
+  newValue: INITIAL_VALUE,
+  persistentSharedValueStore: LocalForage,
+  persistentSharedValueStoreBroadcast: BroadcastChannel,
+}): Promise<void>
+{
+  const serializedValue = serialize(newValue) as UnwrapRef<INITIAL_VALUE>;
+  await persistentSharedValueStore.setItem(key, serializedValue);
+
+  persistentSharedValueStoreBroadcast.postMessage({
+    type: 'store-change',
+    key: key,
+  });
+}
+
 function createValueWatcher<INITIAL_VALUE>({
   key,
   sharedValue,
@@ -31,12 +52,11 @@ function createValueWatcher<INITIAL_VALUE>({
         return;
       }
 
-      const serializedValue = serialize(newValue) as UnwrapRef<INITIAL_VALUE>;
-      await persistentSharedValueStore.setItem(key, serializedValue);
-
-      persistentSharedValueStoreBroadcast.postMessage({
-        type: 'store-change',
-        key: key,
+      await setItem<UnwrapRef<INITIAL_VALUE>>({
+        key,
+        newValue,
+        persistentSharedValueStore,
+        persistentSharedValueStoreBroadcast,
       });
     },
     { deep: true }
@@ -166,6 +186,24 @@ export function useSharedState<INITIAL_VALUE>(key: string, initalValue: INITIAL_
     key,
     sharedValue,
   });
+
+  // Set inital value when remote value is not available
+  persistentSharedValueStore.getItem<INITIAL_VALUE>(key)
+    .then(async (value) => {
+      if (value !== null) {
+        return;
+      }
+
+      await setItem<INITIAL_VALUE>({
+        key,
+        newValue: initalValue,
+        persistentSharedValueStore,
+        persistentSharedValueStoreBroadcast,
+      });
+    })
+    // Handle error silently because the broadcast channel could be closed
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    .catch(() => {});
 
   return sharedValue;
 }
