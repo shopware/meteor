@@ -15,4 +15,12 @@ describe('Test Criteria class', () => {
     expect(criteria.getLimit()).toBe(42);
     expect(criteria.getPage()).toBe(1);
   });
+
+  it('should able to add a title', () => {
+    const criteria = new Criteria();
+
+    expect(criteria.getTitle()).toBe(null);
+    criteria.setTitle('foo');
+    expect(criteria.getTitle()).toBe('foo');
+  });
 });

@@ -27,6 +27,7 @@ describe('Criteria Serializer', () => {
           page: 1,
           limit: null,
           term: null,
+          title: null,
           filters: [],
           ids: [],
           queries: [],
@@ -69,6 +70,7 @@ describe('Criteria Serializer', () => {
           page: 50,
           limit: 500,
           term: null,
+          title: null,
           filters: [],
           ids: [],
           queries: [],
@@ -98,6 +100,7 @@ describe('Criteria Serializer', () => {
     const myCriteria = new Criteria();
 
     myCriteria.setTerm('Hello world')
+    myCriteria.setTitle('Test title')
 
     myCriteria.addFilter(
       Criteria.equals('name', 'Hello world'),
@@ -165,6 +168,7 @@ describe('Criteria Serializer', () => {
         data: {
           page: 1,
           limit: null,
+          title: 'Test title',
           term: 'Hello world',
           filters: [
             {
@@ -218,6 +222,7 @@ describe('Criteria Serializer', () => {
                   page: null,
                   limit: null,
                   term: null,
+                  title: null,
                   filters: [],
                   ids: [],
                   queries: [],
@@ -238,6 +243,7 @@ describe('Criteria Serializer', () => {
                           page: null,
                           limit: null,
                           term: null,
+                          title: null,
                           filters: [],
                           ids: [],
                           queries: [],
