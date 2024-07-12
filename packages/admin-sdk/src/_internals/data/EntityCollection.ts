@@ -7,6 +7,13 @@ type ApiAuthToken = {
     refresh: string,
 }
 
+type Aggregations = {
+  [key: string]: {
+    name: string,
+    [key: string]: unknown,
+  },
+}
+
 export interface ApiContext {
     apiPath: null | string,
     apiResourcePath: null | string,
@@ -36,7 +43,7 @@ export default class EntityCollection<EntityName extends keyof Entities> extends
 
   criteria: Criteria|null;
 
-  aggregations: string[]|null;
+  aggregations: Aggregations|null;
 
   total: number|null;
 
@@ -69,7 +76,7 @@ export default class EntityCollection<EntityName extends keyof Entities> extends
     criteria: Criteria|null = null,
     entities: Entity<EntityName>[] = [],
     total: number|null = null,
-    aggregations: string[]|null = null,
+    aggregations: Aggregations|null = null,
   ) {
     super();
 
