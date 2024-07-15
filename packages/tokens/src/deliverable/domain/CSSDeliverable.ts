@@ -45,10 +45,21 @@ export class CSSDeliverable implements Deliverable {
           const resolvedValue =
             tokensInAdditionalDictionaries[pathToAliasedTokenValue];
 
-          if (typeof resolvedValue !== 'string') {
+          if (
+            typeof resolvedValue !== 'string' &&
+            typeof resolvedValue !== 'number'
+          ) {
             throw new Error(
               `Failed to create CSSDeliverable; Could not resolve value of aliased token: ${pathToAliasedTokenValue}`,
             );
+          }
+
+          if (typeof resolvedValue === 'number') {
+            if (!variableName.includes('weight')) {
+              return `--${variableName}: ${resolvedValue / 16}rem;`;
+            }
+
+            return `--${variableName}: ${resolvedValue};`;
           }
 
           return `--${variableName}: ${resolvedValue};`;
