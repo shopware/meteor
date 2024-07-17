@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.10.0
+
+### Minor Changes
+
+- 4c8d610: Add mt-modal component
+
 ## 3.9.0
 
 ### Minor Changes
