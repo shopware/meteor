@@ -43,16 +43,16 @@ const meta: MtCardMeta = {
       },
     },
     "context-actions": {
-      control: { type: null },
+      control: { type: undefined },
     },
     grid: {
-      control: { type: null },
+      control: { type: undefined },
     },
     tabs: {
-      control: { type: null },
+      control: { type: undefined },
     },
     avatar: {
-      control: { type: null },
+      control: { type: undefined },
     },
     inheritance: {
       control: { type: "boolean" },
@@ -67,10 +67,10 @@ const meta: MtCardMeta = {
       },
     },
     "before-card": {
-      control: { type: null },
+      control: { type: undefined },
     },
     "after-card": {
-      control: { type: null },
+      control: { type: undefined },
     },
   },
 };
