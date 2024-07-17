@@ -23,8 +23,9 @@
 
     <template #element="{ identification }">
       <mt-number-field
-        v-model="rangeLeftValue"
         v-if="isRange"
+        :value="rangeLeftValue"
+        @input="rangeLeftValue = parseFloat($event)"
         :min="min"
         :max="max - step"
         :step="step"
@@ -55,7 +56,7 @@
           :step="step"
           :disabled="disabled"
           :value="rangeLeftValue"
-          @input="(event) => (rangeLeftValue = parseFloat(event.target?.value))"
+          @input="rangeLeftValue = parseFloat(($event.target as HTMLInputElement).value)"
           @mouseenter="activeSlider = 'left'"
           @mouseleave="activeSlider = null"
       />
@@ -68,7 +69,7 @@
           :step="step"
           :disabled="disabled"
           :value="rangeRightValue"
-          @input="(event) => (rangeRightValue = parseFloat(event.target?.value))"
+          @input="rangeRightValue = parseFloat(($event.target as HTMLInputElement).value)"
           @mouseenter="activeSlider = 'right'"
           @mouseleave="activeSlider = null"
         />
@@ -81,7 +82,8 @@
         </span>
       </div>
       <mt-number-field
-        v-model="rangeRightValue"
+        :value="rangeRightValue"
+        @input="rangeRightValue = parseFloat($event)"
         :min="isRange ? min + step : min"
         :max="max"
         :step="step"
@@ -179,6 +181,16 @@ export default defineComponent({
     },
 
     /**
+     * Defines the minimum distance between the two sliders.
+     * Should be a multiple of the step.
+     */
+    minDistance: {
+      type: Number,
+      required: false,
+      default: 0
+    },
+
+    /**
      * Defines the amount of marks on the slider.
      */
     markCount: {
@@ -219,15 +231,14 @@ export default defineComponent({
         }
         if (this.isRange) {
           if (value <= this.min) {
-            value = this.min + this.step;
+            value = this.min + this.minDistance;
           }
           let newLeftValue = this.rangeLeftValue;
           if (value <= this.rangeLeftValue) {
-            newLeftValue = value - this.step;
+            newLeftValue = value - this.minDistance;
           }
           this.$emit("update:modelValue", [newLeftValue, value]);
-        } else if (!this.isRange && typeof this.modelValue === "number") {
-        } else if (!this.isRange && typeof this.modelValue === "number") {
+        } else if (!this.isRange) {
           if (value <= this.min) {
             value = this.min;
           }
@@ -242,11 +253,11 @@ export default defineComponent({
           value = parseFloat(value);
         }
         if (value >= this.max) {
-          value = this.max - this.step;
+          value = this.max - this.minDistance;
         }
         let newRightValue = this.rangeRightValue;
         if (value >= this.rangeRightValue) {
-          newRightValue = value + this.step;
+          newRightValue = value + this.minDistance;
         }
         this.$emit("update:modelValue", [value, newRightValue]);
       },
@@ -266,7 +277,7 @@ export default defineComponent({
           this.rangeLeftValue = value;
         }
         if (this.rangeRightValue <= this.rangeLeftValue) {
-          this.rangeRightValue = this.rangeLeftValue + this.step;
+          this.rangeRightValue = this.rangeLeftValue + this.minDistance;
         }
       },
       immediate: true,
@@ -279,7 +290,7 @@ export default defineComponent({
         }
 
         if (this.rangeLeftValue >= this.rangeRightValue) {
-          this.rangeLeftValue = this.rangeRightValue - this.step;
+          this.rangeLeftValue = this.rangeRightValue - this.minDistance;
         }
       },
       immediate: true,
@@ -301,8 +312,8 @@ export default defineComponent({
       handler(value) {
         if (!value) return;
 
-        if (this.rangeRightValue < this.min + this.step) {
-          this.rangeRightValue = this.min + this.step;
+        if (this.rangeRightValue < this.min + this.minDistance) {
+          this.rangeRightValue = this.min + this.minDistance;
         }
         this.rangeLeftValue = this.min;
       },
