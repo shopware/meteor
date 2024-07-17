@@ -389,30 +389,30 @@ export default defineComponent({
     position: relative;
     color: var(--color-text-primary-default);
 
-    h1,
-    h2,
-    h3,
-    h4,
-    h5,
-    h6 {
+    > h1,
+    > h2,
+    > h3,
+    > h4,
+    > h5,
+    > h6 {
       font-weight: normal;
     }
 
-    h1 {
+    > h1 {
       font-size: 24px;
     }
 
-    h2 {
+    > h2 {
       font-size: 22px;
     }
 
-    h3 {
+    > h3 {
       font-size: 20px;
     }
 
-    h4,
-    h5,
-    h6 {
+    > h4,
+    > h5,
+    > h6 {
       font-size: 18px;
     }
 

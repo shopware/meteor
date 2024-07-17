@@ -548,7 +548,7 @@
 
 <script lang="ts">
 import useScrollPossibilitiesClasses from "./composables/useScrollPossibilitiesClasses";
-import type { PropType } from "vue";
+import type { PropType, Ref } from "vue";
 import {
   defineComponent,
   computed,
@@ -1763,7 +1763,7 @@ export default defineComponent({
           }, 60),
         );
 
-        tableMutationObserver.observe(dataTable.value, {
+        tableMutationObserver.observe(dataTable.value as HTMLElement, {
           childList: true,
           subtree: true,
           attributes: true,
@@ -1912,7 +1912,7 @@ export default defineComponent({
       columnHeaderRefs,
       columnDataCellRefs,
       setColumnDataCellRefs,
-      dataTable,
+      dataTable: dataTable as Ref<HTMLElement | null>,
       dragConfig,
       dropConfig,
       resetAllChanges,
