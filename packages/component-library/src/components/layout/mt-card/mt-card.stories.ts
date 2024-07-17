@@ -7,6 +7,7 @@ import { fn } from "@storybook/test";
 import { action } from "@storybook/addon-actions";
 import type { SlottedMeta } from "@/_internal/story-helper";
 import type { StoryObj } from "@storybook/vue3";
+import MtText from "@/components/content/mt-text/mt-text.vue";
 
 type MtCardSlots =
   | "default"
@@ -80,7 +81,7 @@ export default meta;
 export const MinimalStory: StoryObj<MtCardMeta> = {
   name: "Minimal",
   render: (args) => ({
-    components: { MtCard, MtContextMenuItem, MtTabs, MtAvatar, MtButton },
+    components: { MtCard, MtContextMenuItem, MtTabs, MtAvatar, MtButton, MtText },
     setup() {
       return { args };
     },
@@ -91,9 +92,9 @@ export const MinimalStory: StoryObj<MtCardMeta> = {
   }),
   args: {
     default: `
-    <p>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
+    <mt-text>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</mt-text>
     <br>
-    <p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>
+    <mt-text>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</mt-text>
     <br>
     `,
     title: "Title",
@@ -113,15 +114,15 @@ export const MinimalStory: StoryObj<MtCardMeta> = {
 export const ExtendedStory: StoryObj<MtCardMeta> = {
   name: "Extended",
   render: (args) => ({
-    components: { MtCard, MtContextMenuItem, MtTabs, MtAvatar, MtButton },
+    components: { MtCard, MtContextMenuItem, MtTabs, MtAvatar, MtButton, MtText },
     setup() {
       return { args };
     },
     template: `
     <mt-card v-bind="args" @update:inheritance="args.updateInheritance">
-        <h4 style="color: var(--color-text-primary-default);">
+        <mt-text as="h4" size="l" style="color: var(--color-text-primary-default);">
           Active Tab: {{ activeTab }}
-        </h4>
+        </mt-text>
 
         <div v-html="args.default"></div>
 
@@ -179,13 +180,13 @@ export const ExtendedStory: StoryObj<MtCardMeta> = {
   }),
   args: {
     default: `
-    <p>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</p>
+    <mt-text>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</mt-text>
     <br>
-    <p>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</p>
+    <mt-text>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</mt-text>
     <br>
     `,
-    toolbar: `<p>Toolbar</p>`,
-    footer: "<p><strong>Footer</strong></p>",
+    toolbar: `<mt-text>Toolbar</mt-text>`,
+    footer: "<mt-text><strong>Footer</strong></mt-text>",
     title: "Title",
     subtitle: "Subtitle",
     headerRight: "Header right",

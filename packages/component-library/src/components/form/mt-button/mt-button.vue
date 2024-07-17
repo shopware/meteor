@@ -155,11 +155,11 @@ $mt-button-transition: all 0.15s ease-out;
   display: inline-block;
   border-radius: $border-radius-default;
   padding: 2px 24px;
-  font-size: 14px;
+  font-size: var(--font-size-xs);
   line-height: 34px;
   outline: none;
-  font-weight: 600;
-  font-family: $font-family-default;
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-family-body);
   white-space: nowrap;
   text-overflow: ellipsis;
   vertical-align: middle;
@@ -198,18 +198,6 @@ $mt-button-transition: all 0.15s ease-out;
 
   .mt-icon {
     color: $color-gray-800;
-  }
-
-  .mt-button--small {
-    line-height: 20px;
-  }
-
-  .mt-button--default {
-    line-height: 28px;
-  }
-
-  .mt-button--large {
-    line-height: 44px;
   }
 
   &.mt-button--primary {
@@ -386,7 +374,7 @@ $mt-button-transition: all 0.15s ease-out;
   &.mt-button--x-small {
     padding-left: 10px;
     padding-right: 10px;
-    font-size: 12px;
+    font-size: var(--font-size-2xs);
     line-height: 18px;
 
     &.mt-button--square {
@@ -397,7 +385,7 @@ $mt-button-transition: all 0.15s ease-out;
   &.mt-button--small {
     padding-left: 15px;
     padding-right: 15px;
-    font-size: 12px;
+    font-size: var(--font-size-2xs);
     line-height: 26px;
 
     &.mt-button--square {
@@ -409,7 +397,7 @@ $mt-button-transition: all 0.15s ease-out;
     padding-left: 28px;
     padding-right: 28px;
     line-height: 42px;
-    font-size: 15px;
+    font-size: var(--font-size-2xs);
 
     &.mt-button--square {
       width: 48px;

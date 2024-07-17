@@ -21,7 +21,9 @@
           <mt-icon name="solid-long-arrow-left" />
         </mt-button>
 
-        <h3>{{ currentView.title }}</h3>
+        <mt-text as="h3" class="mt-popover__title" size="s" weight="semibold">
+          {{ currentView.title }}
+        </mt-text>
 
         <div v-if="currentView.name !== 'base'" class="mt-popover__header-placeholder-right" />
       </div>
@@ -53,9 +55,11 @@ import MtSmoothReflow from "../../_internal/mt-smooth-reflow.vue";
 import MtFloatingUi from "../../_internal/mt-floating-ui/mt-floating-ui.vue";
 import type { TranslateResult } from "vue-i18n";
 import type { View } from "./mt-popover.interfaces";
+import MtText from "@/components/content/mt-text/mt-text.vue";
 
 export default defineComponent({
   components: {
+    "mt-text": MtText,
     "mt-checkbox": MtCheckbox,
     "mt-switch": MtSwitch,
     "mt-icon": MtIcon,
@@ -248,8 +252,6 @@ $font-family-default-feature-settings:
   "cv10" on,
   "cv11" on;
 
-$font-weight-medium: 500;
-
 $line-height-auto: auto;
 $line-height-xs: 18px;
 $line-height-sm: 20px;
@@ -285,7 +287,7 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
 
     // add new Inter font to popover
     * {
-      font-family: $font-family-default;
+      font-family: var(--font-family-body);
     }
 
     @supports (font-variation-settings: normal) {
@@ -301,15 +303,10 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
       justify-content: center;
       margin-bottom: 16px;
       gap: 16px;
+    }
 
-      h3 {
-        margin-right: auto;
-        font-size: $font-size-s;
-        font-weight: $font-weight-semi-bold;
-        line-height: $line-height-md;
-        color: var(--color-text-primary-default);
-        margin-bottom: 0;
-      }
+    .mt-popover__title {
+      margin-right: auto;
     }
 
     &__header-placeholder-right {

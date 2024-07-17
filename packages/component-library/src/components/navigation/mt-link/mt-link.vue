@@ -85,48 +85,44 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .mt-link {
   display: inline-block;
   cursor: pointer;
   margin: 0;
-  font-family: $font-family-default;
-  font-size: $font-size-small;
-  font-weight: $font-weight-medium;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+  font-weight: var(--font-weight-medium);
   text-decoration: underline;
+}
 
-  &:disabled,
-  &.mt-link--disabled {
-    cursor: not-allowed;
-    pointer-events: none;
-  }
+.mt-link:is(:disabled, .mt-link--disabled) {
+  cursor: not-allowed;
+  pointer-events: none;
+}
 
-  &.mt-link--primary {
-    color: var(--color-text-brand-default);
+.mt-link--primary {
+  color: var(--color-text-brand-default);
+}
 
-    &:hover,
-    &:active {
-      color: var(--color-text-brand-hover);
-    }
+.mt-link--primary:is(:hover, :active) {
+  color: var(--color-text-brand-hover);
+}
 
-    &:disabled,
-    &.mt-link--disabled {
-      color: var(--color-text-brand-disabled);
-    }
-  }
+.mt-link--primary:is(:disabled, .mt-link--disabled) {
+  color: var(--color-text-brand-disabled);
+}
 
-  &.mt-link--critical {
-    color: var(--color-text-critical-default);
+.mt-link--critical {
+  color: var(--color-text-critical-default);
+}
 
-    &:hover,
-    &:active {
-      color: var(--color-text-critical-hover);
-    }
+.mt-link--critical:is(:hover, :active) {
+  color: var(--color-text-critical-hover);
+}
 
-    &:disabled,
-    &.mt-link--disabled {
-      color: var(--color-text-critical-disabled);
-    }
-  }
+.mt-link--critical:is(:disabled, .mt-link--disabled) {
+  color: var(--color-text-critical-disabled);
 }
 </style>

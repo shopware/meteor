@@ -102,7 +102,14 @@
                 type="text"
                 spellcheck="false"
               />
-              <label v-if="colorLabels" class="mt-colorpicker__row-column-label">HEX</label>
+              <mt-text
+                v-if="colorLabels"
+                size="2xs"
+                as="label"
+                class="mt-colorpicker__row-column-label"
+              >
+                HEX
+              </mt-text>
             </div>
 
             <div class="mt-colorpicker__row-column">
@@ -116,7 +123,14 @@
                 step="1"
                 placeholder="0"
               />
-              <label v-if="colorLabels" class="mt-colorpicker__row-column-label">R</label>
+              <mt-text
+                v-if="colorLabels"
+                size="2xs"
+                as="label"
+                class="mt-colorpicker__row-column-label"
+              >
+                R
+              </mt-text>
             </div>
 
             <div class="mt-colorpicker__row-column">
@@ -130,7 +144,14 @@
                 step="1"
                 placeholder="0"
               />
-              <label v-if="colorLabels" class="mt-colorpicker__row-column-label">G</label>
+              <mt-text
+                v-if="colorLabels"
+                size="2xs"
+                as="label"
+                class="mt-colorpicker__row-column-label"
+              >
+                G
+              </mt-text>
             </div>
 
             <div class="mt-colorpicker__row-column">
@@ -144,7 +165,14 @@
                 step="1"
                 placeholder="0"
               />
-              <label v-if="colorLabels" class="mt-colorpicker__row-column-label">B</label>
+              <mt-text
+                v-if="colorLabels"
+                size="2xs"
+                as="label"
+                class="mt-colorpicker__row-column-label"
+              >
+                B
+              </mt-text>
             </div>
 
             <div v-if="alpha" class="mt-colorpicker__row-column">
@@ -158,7 +186,14 @@
                 step="1"
                 placeholder="0"
               />
-              <label v-if="colorLabels" class="mt-colorpicker__row-column-label">Alpha</label>
+              <mt-text
+                v-if="colorLabels"
+                as="label"
+                size="2xs"
+                class="mt-colorpicker__row-column-label"
+              >
+                Alpha
+              </mt-text>
             </div>
           </div>
         </div>
@@ -178,6 +213,7 @@ import { defineComponent } from "vue";
 import { debounce } from "lodash-es";
 import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
 import MtPopoverDeprecated from "../../_internal/mt-popover-deprecated/mt-popover-deprecated.vue";
+import MtText from "@/components/content/mt-text/mt-text.vue";
 
 export default defineComponent({
   name: "MtColorpicker",
@@ -185,6 +221,7 @@ export default defineComponent({
   components: {
     "mt-popover-deprecated": MtPopoverDeprecated,
     "mt-base-field": MtBaseField,
+    "mt-text": MtText,
   },
 
   props: {
@@ -1268,8 +1305,6 @@ export default defineComponent({
       margin-right: 5px;
 
       &-label {
-        color: var(--color-text-primary-default);
-        font-size: $font-size-xxs;
         margin-top: 8px;
         user-select: none;
         -moz-user-select: none;
@@ -1455,8 +1490,9 @@ export default defineComponent({
       padding: 0 5px;
       border: 1px solid var(--color-border-primary-default);
       border-radius: $border-radius-default;
-      font-size: $font-size-xxs;
-      font-family: $font-family-default;
+      font-size: var(--font-size-2xs);
+      line-height: var(--font-line-height-2xs);
+      font-family: var(--font-family-body);
       color: var(--color-text-primary-default);
       outline: none;
 

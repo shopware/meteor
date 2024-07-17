@@ -375,7 +375,9 @@ export default defineComponent({
     border-bottom: 1px solid var(--color-border-primary-default);
     padding: 10px 16px;
     white-space: nowrap;
-    font-size: $font-size-default;
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-xs);
+    line-height: var(--font-line-height-xs);
     cursor: pointer;
     color: var(--color-text-primary-default);
 
@@ -384,7 +386,7 @@ export default defineComponent({
     }
 
     &--active {
-      font-weight: $font-weight-medium;
+      font-weight: var(--font-weight-medium);
     }
 
     // Trick to stop items from jumping when the active item changes
@@ -398,7 +400,7 @@ export default defineComponent({
       overflow: hidden;
       user-select: none;
       pointer-events: none;
-      font-weight: $font-weight-medium;
+      font-weight: var(--font-weight-medium);
 
       @media speech {
         display: none;
@@ -433,7 +435,9 @@ export default defineComponent({
       display: flex;
       align-items: center;
       gap: 4px;
-      font-size: $font-size-default;
+      font-size: var(--font-size-s);
+      line-height: var(--font-line-height-s);
+      font-family: var(--font-family-body);
     }
   }
 
