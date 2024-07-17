@@ -38,7 +38,7 @@ import type {
   repositoryDelete,
   repositoryCreate,
 } from './data/repository';
-import type { inAppPurchases } from './in-app-purchases';
+import type { inAppFeaturePurchase } from './in-app-features';
 
 /**
  * Contains all shopware send types.
@@ -92,7 +92,7 @@ export interface ShopwareMessageTypes {
   datasetSubscribeRegistration: datasetSubscribeRegistration,
   datasetUpdate: datasetUpdate,
   datasetGet: datasetGet,
-  inAppPurchases: inAppPurchases,
+  inAppFeaturePurchase: inAppFeaturePurchase,
   __function__: __function__,
   __registerWindow__: __registerWindow__,
   _multiply: _multiply,
