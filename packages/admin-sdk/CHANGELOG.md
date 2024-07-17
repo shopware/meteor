@@ -1,5 +1,17 @@
 # Changelog
 
+## 5.4.4
+
+### Patch Changes
+
+- 719b6f9: Add title for Criteria for debugging
+
+  Fix typescript typehint annotations
+
+- 6e9cc2b: Fix initial state for useSharedState composable
+- Updated dependencies [4c8d610]
+  - @shopware-ag/meteor-component-library@3.10.0
+
 ## 5.4.3
 
 ### Patch Changes
