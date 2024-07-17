@@ -5,8 +5,10 @@ import { createSender } from '../channel';
  */
 export const purchase = createSender('inAppFeaturePurchase');
 
-export type inAppFeaturePurchase = {
+export type inAppFeaturePurchase<T extends 'oneTime' | 'subscription' = 'oneTime' | 'subscription'> = {
     responseType: unknown,
+    rentType: T,
+    model: T extends 'subscription' ? 'yearly' | 'monthly' : undefined | null,
 
     featureId: string,
 }
