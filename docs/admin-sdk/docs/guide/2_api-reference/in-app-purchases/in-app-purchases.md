@@ -1,15 +1,15 @@
-# In-App Purchase Flow
+# In-App Feature Purchase Flow
 
 > Available since Shopware v6.6.7.0
 > 
-In-App purchases allow you to create different functionality based on purchases the user has made in your app. This guide will show you how to start the in-app purchase flow.
+In-App features allow you to create different functionality based on purchases the user has made in your app. This guide will show you how to start the in-app feature purchase flow.
 
 ### Opening modal with details of feature
 
 To open a modal with the details of the feature you want to purchase, you can use the following code:
 
 ```ts
-sw.iap.trigger({
+sw.inAppFeatures.purchase({
     featureId: 'your-feature-id',
 });
 ```
