@@ -5,9 +5,9 @@
     </slot>
 
     <div class="mt-banner__body" :class="bannerBodyClasses">
-      <div v-if="title" class="mt-banner__title">
+      <mt-text v-if="title" as="h3" weight="bold" size="xs">
         {{ title }}
-      </div>
+      </mt-text>
 
       <div class="mt-banner__message">
         <slot />
@@ -31,6 +31,7 @@ import type { PropType } from "vue";
 
 import { defineComponent } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
+import MtText from "@/components/content/mt-text/mt-text.vue";
 
 type CssClasses = (string | Record<string, boolean>)[] | Record<string, boolean>;
 type BannerType = "neutral" | "info" | "attention" | "critical" | "positive" | "inherited";
@@ -39,7 +40,8 @@ export default defineComponent({
   name: "MtBanner",
 
   components: {
-    "mt-icon": MtIcon,
+    MtIcon,
+    MtText,
   },
 
   props: {
@@ -149,12 +151,14 @@ $mt-banner-size-close: 40px;
   text-align: left;
   position: relative;
   margin: 0 auto 20px;
-  font-size: $font-size-default;
-  color: var(--color-text-primary-default);
 
   &__body {
     padding: 24px 60px 24px 24px;
     line-height: 1.5625;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
 
     &--icon {
       padding: 24px 60px;
@@ -189,13 +193,6 @@ $mt-banner-size-close: 40px;
     border: 0 none;
     outline: none;
     cursor: pointer;
-  }
-
-  &__title {
-    margin-top: 1px;
-    margin-bottom: 3px;
-    display: block;
-    font-weight: $font-weight-semi-bold;
   }
 
   &--info {

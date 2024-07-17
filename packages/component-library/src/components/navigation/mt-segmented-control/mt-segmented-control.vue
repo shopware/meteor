@@ -234,9 +234,10 @@ export default defineComponent({
     border: none;
     border-radius: $border-radius-default;
     padding: 6px 12px;
-    font-family: inherit;
-    font-size: $font-size-extra-small;
-    font-weight: $font-weight-semi-bold;
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-2xs);
+    line-height: var(--font-line-height-2xs);
+    font-weight: var(--font-weight-semibold);
     color: var(--color-text-primary-default);
     transition:
       0.15s background ease,

@@ -1,13 +1,21 @@
 <template>
-  <div v-if="!!error" class="mt-field__error" aria-label="Error message">
+  <mt-text
+    as="span"
+    size="2xs"
+    color="color-text-critical-default"
+    v-if="!!error"
+    class="mt-field__error"
+    aria-label="Error message"
+  >
     <mt-icon name="solid-exclamation-circle" />
     {{ errorMessage }}
-  </div>
+  </mt-text>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
 import MtIcon from "../../../icons-media/mt-icon/mt-icon.vue";
+import MtText from "@/components/content/mt-text/mt-text.vue";
 
 export default defineComponent({
   name: "MtFieldError",
@@ -53,6 +61,7 @@ export default defineComponent({
 
   components: {
     "mt-icon": MtIcon,
+    "mt-text": MtText,
   },
 
   props: {
@@ -87,9 +96,6 @@ export default defineComponent({
   align-items: center;
   gap: 4px;
   margin-top: 4px;
-  font-size: $font-size-extra-small;
-  line-height: 1.25;
-  color: var(--color-text-critical-default);
 
   #meteor-icon-kit__solid-exclamation-circle {
     width: 12px;

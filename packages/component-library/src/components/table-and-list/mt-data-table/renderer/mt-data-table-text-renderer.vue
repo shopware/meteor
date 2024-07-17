@@ -93,7 +93,7 @@ export default defineComponent({
   }
 
   a.mt-data-table-text-renderer {
-    font-weight: $font-weight-medium;
+    font-weight: var(--font-weight-medium);
     text-decoration: none;
     color: var(--color-text-primary-default);
 

@@ -33,6 +33,7 @@ import MtModalRoot from "./components/overlay/mt-modal/sub-components/mt-modal-r
 import MtModalClose from "./components/overlay/mt-modal/sub-components/mt-modal-close.vue";
 import MtModalTrigger from "./components/overlay/mt-modal/sub-components/mt-modal-trigger.vue";
 import MtModalAction from "./components/overlay/mt-modal/sub-components/mt-modal-action.vue";
+import MtText from "./components/content/mt-text/mt-text.vue";
 import TooltipDirective from "./directives/tooltip.directive";
 import DeviceHelperPlugin from "./plugin/device-helper.plugin";
 // Import SCSS for styling
@@ -80,6 +81,7 @@ export {
   MtModalTrigger,
   MtModalClose,
   MtModalAction,
+  MtText,
   TooltipDirective,
   DeviceHelperPlugin,
   // @deprecated

@@ -179,7 +179,9 @@ export default defineComponent({
 
   &__info-text {
     color: var(--color-text-tertiary-default);
-    font-size: $font-size-xs;
+    font-size: var(--font-size-xs);
+    line-height: var(--font-line-height-xs);
+    font-family: var(--font-family-body);
   }
 
   #meteor-icon-kit__regular-double-chevron-left-s {
@@ -246,7 +248,9 @@ export default defineComponent({
     border-right: 1px solid var(--color-border-primary-default);
     padding: 0 12px;
     color: var(--color-text-primary-default);
-    font-size: $font-size-xs;
+    font-size: var(--font-size-xs);
+    line-height: var(--font-line-height-xs);
+    font-family: var(--font-family-body);
     font-feature-settings: "tnum";
 
     &::-webkit-outer-spin-button,

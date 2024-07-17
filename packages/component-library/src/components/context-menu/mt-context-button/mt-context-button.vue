@@ -166,7 +166,7 @@ $mt-context-button-color-disabled: var(--color-icon-primary-disabled);
     line-height: 20px;
     padding: 0 8px;
     outline: none;
-    font-family: $font-family-default;
+    font-family: var(--font-family-body);
 
     &:hover {
       border-color: $mt-context-button-color-border;

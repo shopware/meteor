@@ -25,16 +25,21 @@
 
         <!-- @slot Alternative slot to the title property -->
         <slot name="title">
-          <div v-if="title" class="mt-card__title">
+          <MtText v-if="title" weight="medium" size="s" class="mt-card__title">
             {{ title }}
-          </div>
+          </MtText>
         </slot>
 
         <!-- @slot Alternative slot to the subtitle property -->
         <slot name="subtitle">
-          <div v-if="subtitle" class="mt-card__subtitle">
+          <MtText
+            v-if="subtitle"
+            color="color-text-tertiary-default"
+            size="xs"
+            class="mt-card__subtitle"
+          >
             {{ subtitle }}
-          </div>
+          </MtText>
         </slot>
       </div>
 
@@ -86,6 +91,8 @@ import { computed, defineComponent, useSlots, type PropType } from "vue";
 import MtContextButton from "../../context-menu/mt-context-button/mt-context-button.vue";
 import MtLoader from "../../feedback-indicator/mt-loader/mt-loader.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
+// TODO: this file needs to be one level lower
+import MtText from "../../content/mt-text/mt-text.vue";
 
 export default defineComponent({
   name: "MtCard",
@@ -94,6 +101,7 @@ export default defineComponent({
     MtContextButton,
     MtLoader,
     MtIcon,
+    MtText,
   },
 
   props: {
@@ -240,6 +248,7 @@ export default defineComponent({
   &.mt-card--is-inherited {
     border-color: var(--color-border-accent-default);
 
+    // TODO: handle case
     .mt-card__title {
       color: var(--color-text-accent-default);
     }
@@ -310,20 +319,6 @@ export default defineComponent({
 
   .mt-card__avatar:empty {
     display: none;
-  }
-
-  .mt-card__title {
-    color: var(--color-text-primary-default);
-    font-size: $font-size-s;
-    line-height: $line-height-md;
-    font-weight: $font-weight-medium;
-  }
-
-  .mt-card__subtitle {
-    color: var(--color-text-tertiary-default);
-    font-size: $font-size-xs;
-    line-height: $line-height-sm;
-    font-weight: $font-weight-regular;
   }
 
   .mt-card__titles {

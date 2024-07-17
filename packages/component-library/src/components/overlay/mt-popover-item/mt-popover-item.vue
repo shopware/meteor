@@ -338,14 +338,6 @@ $font-family-default-feature-settings:
   "cv10" on,
   "cv11" on;
 
-$font-weight-medium: 500;
-
-$line-height-auto: auto;
-$line-height-xs: 18px;
-$line-height-sm: 20px;
-$line-height-md: 24px;
-$line-height-lg: 28px;
-
 $color-custom-dark: #0f172a;
 $color-custom-grey: #64748b;
 $color-custom-lightgrey: #cbd5e1;
@@ -362,7 +354,7 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
 
   // add new Inter font to popover item
   * {
-    font-family: $font-family-default;
+    font-family: var(--font-family-body);
   }
 
   @supports (font-variation-settings: normal) {
@@ -479,9 +471,9 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
   &__label,
   &__contextual-detail,
   &__shortcut {
-    font-size: $font-size-xs;
-    line-height: $line-height-md;
-    font-weight: $font-weight-medium;
+    font-size: var(--font-size-s);
+    line-height: var(--font-line-height-s);
+    font-weight: var(--font-weight-medium);
 
     &--clickable {
       cursor: pointer;
@@ -528,9 +520,10 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
 
   &__options-count {
     margin-right: 8px;
-    font-size: $font-size-xs;
-    line-height: $line-height-md;
-    font-weight: $font-weight-medium;
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-xs);
+    line-height: var(--font-line-height-xs);
+    font-weight: var(--font-weight-medium);
   }
 
   &__options {
@@ -549,9 +542,9 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
 
   &__meta-copy {
     color: var(--color-text-secondary-default);
-    font-size: $font-size-xxs;
-    line-height: $line-height-xs;
-    font-weight: $font-weight-medium;
+    font-size: var(--font-size-2xs);
+    line-height: var(--font-line-height-2xs);
+    font-weight: var(--font-weight-medium);
   }
 }
 </style>
