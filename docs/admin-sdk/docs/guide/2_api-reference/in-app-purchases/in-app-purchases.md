@@ -9,8 +9,8 @@ In-App purchases allow you to create different functionality based on purchases 
 To open a modal with the details of the feature you want to purchase, you can use the following code:
 
 ```ts
-sw.iap.trigger({
-    featureId: 'your-feature-id',
+sw.iap.purchase({
+    identifier: 'your-in-app-purchase-id',
 });
 ```
 
