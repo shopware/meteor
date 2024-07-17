@@ -20,14 +20,16 @@ const CriteriaSerializer: SerializerFactory = () => ({
       if (hasType('__Criteria__', value) && typeof value['data'] === 'object') {
         // The original values
         const serializedData = value.data;
-  
+
         // Create new criteria object
         const deserializedCriteria = new Criteria();
-  
         // Hydrate the criteria with the orignal values
         deserializedCriteria.setPage(serializedData.page);
         deserializedCriteria.setLimit(serializedData.limit);
         deserializedCriteria.setTerm(serializedData.term);
+        if (serializedData.title !== null) {
+          deserializedCriteria.setTitle(serializedData.title);
+        }
         // @ts-expect-error
         serializedData.filters.forEach((filter) => {
           deserializedCriteria.addFilter(filter);
