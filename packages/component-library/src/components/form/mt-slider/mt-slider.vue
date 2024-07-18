@@ -22,16 +22,17 @@
     </template>
 
     <template #element="{ identification }">
+      <!-- @vue-ignore -->
       <mt-number-field
+        v-model="rangeLeftValue as any"
         v-if="isRange"
-        :value="rangeLeftValue"
-        @input="rangeLeftValue = parseFloat($event)"
         :min="min"
         :max="max - step"
         :step="step"
         :disabled="disabled"
         size="small"
         :number-type="step % 1 === 0 ? 'int' : 'float'"
+        data-testid="left-number-field"
       />
       <div class="mt-slider__slider">
         <div class="mt-slider__marks">
@@ -43,53 +44,58 @@
         </div>
         <div class="mt-slider__bar" ref="sliderBar">
           <div
-              class="mt-slider__value"
-              :style="{ left: styleStartPosition, right: styleEndPosition }"
+            class="mt-slider__value"
+            :style="{ left: styleStartPosition, right: styleEndPosition }"
           />
         </div>
+        <!-- eslint-disable-next-line vuejs-accessibility/form-control-has-label -->
         <input
           v-if="isRange"
           type="range"
           class="mt-slider__input-slider mt-slider__input-slider__double"
+          aria-label="Left range slider"
           :min="min"
           :max="max"
           :step="step"
           :disabled="disabled"
-          :value="rangeLeftValue"
-          @input="rangeLeftValue = parseFloat(($event.target as HTMLInputElement).value)"
+          v-model.number="rangeLeftValue"
           @mouseenter="activeSlider = 'left'"
           @mouseleave="activeSlider = null"
-      />
+          data-testid="left-slider"
+        />
+        <!-- eslint-disable-next-line vuejs-accessibility/form-control-has-label -->
         <input
           type="range"
           class="mt-slider__input-slider"
           :class="{ 'mt-slider__input-slider__double': isRange }"
+          aria-label="Right range slider"
           :min="min"
           :max="max"
           :step="step"
           :disabled="disabled"
-          :value="rangeRightValue"
-          @input="rangeRightValue = parseFloat(($event.target as HTMLInputElement).value)"
+          v-model.number="rangeRightValue"
           @mouseenter="activeSlider = 'right'"
           @mouseleave="activeSlider = null"
+          data-testid="right-slider"
         />
 
         <span
-            class="mt-slider__input-slider__hint mt-tooltip mt-tooltip--dark mt-tooltip--top mt-tooltip--wrapper"
-            :style="toolTipStyle"
+          class="mt-slider__input-slider__hint mt-tooltip mt-tooltip--dark mt-tooltip--top mt-tooltip--wrapper"
+          :style="toolTipStyle"
         >
           {{ toolTipText }}
         </span>
       </div>
+      <!-- @vue-ignore -->
       <mt-number-field
-        :value="rangeRightValue"
-        @input="rangeRightValue = parseFloat($event)"
+        v-model="rangeRightValue"
         :min="isRange ? min + step : min"
         :max="max"
         :step="step"
         :disabled="disabled"
         size="small"
         :number-type="step % 1 === 0 ? 'int' : 'float'"
+        data-testid="right-number-field"
       />
     </template>
 
@@ -100,8 +106,8 @@
 </template>
 
 <script lang="ts">
-import type {PropType} from "vue";
-import {defineComponent} from "vue";
+import type { PropType } from "vue";
+import { defineComponent } from "vue";
 import MtBaseField from "@/components/form/_internal/mt-base-field/mt-base-field.vue";
 import MtNumberField from "@/components/form/mt-number-field/mt-number-field.vue";
 import MtTooltipDirective from "@/directives/tooltip.directive";
@@ -118,7 +124,6 @@ export default defineComponent({
   extends: MtBaseField,
 
   props: {
-
     /**
      * Defines the label of the slider
      */
@@ -151,7 +156,7 @@ export default defineComponent({
     step: {
       type: Number,
       required: false,
-      default: 1
+      default: 1,
     },
 
     /**
@@ -177,7 +182,7 @@ export default defineComponent({
     isRange: {
       type: Boolean,
       required: false,
-      default: false
+      default: false,
     },
 
     /**
@@ -187,7 +192,7 @@ export default defineComponent({
     minDistance: {
       type: Number,
       required: false,
-      default: 0
+      default: 0,
     },
 
     /**
@@ -196,7 +201,7 @@ export default defineComponent({
     markCount: {
       type: Number,
       required: false,
-      default: 5
+      default: 5,
     },
   },
 
@@ -205,7 +210,7 @@ export default defineComponent({
       rangeRightValue: 0 as number,
       rangeLeftValue: 0 as number,
       activeSlider: null as null | "left" | "right",
-    }
+    };
   },
 
   watch: {
@@ -334,7 +339,7 @@ export default defineComponent({
       const SLIDER_PADDING = 10;
 
       const totalLength = this.max - this.min;
-      const factor = ((this.rangeLeftValue - this.min) / totalLength);
+      const factor = (this.rangeLeftValue - this.min) / totalLength;
 
       const percentage = factor * 100;
       const left = (1 - factor * 2) * SLIDER_PADDING;
@@ -346,7 +351,7 @@ export default defineComponent({
       const SLIDER_PADDING = 10;
 
       const totalLength = this.max - this.min;
-      const factor = ((this.max - this.rangeRightValue) / totalLength);
+      const factor = (this.max - this.rangeRightValue) / totalLength;
 
       const percentage = factor * 100;
       const right = (1 - factor * 2) * SLIDER_PADDING;
@@ -355,39 +360,42 @@ export default defineComponent({
     },
 
     markStep(): number {
-      return (this.max - this.min) / (this.markCount -1);
+      return (this.max - this.min) / (this.markCount - 1);
     },
 
     toolTipText(): string {
       if (!this.activeSlider) return "";
-      return this.activeSlider === "left" ? this.rangeLeftValue.toString() : this.rangeRightValue.toString();
+      return this.activeSlider === "left"
+        ? this.rangeLeftValue.toString()
+        : this.rangeRightValue.toString();
     },
 
     toolTipStyle() {
-      if (!this.activeSlider) return {
-        display: "none"
-      };
-      return this.activeSlider === "left" ? {
-        left: this.styleStartPosition,
-        transform: "translateX(-50%)"
-      } : {
-        right: this.styleEndPosition,
-        transform: "translateX(50%)"
-      };
-    }
+      if (!this.activeSlider)
+        return {
+          display: "none",
+        };
+      return this.activeSlider === "left"
+        ? {
+            left: this.styleStartPosition,
+            transform: "translateX(-50%)",
+          }
+        : {
+            right: this.styleEndPosition,
+            transform: "translateX(50%)",
+          };
+    },
   },
 
   methods: {
     isArray(value: number | number[] | { target: number | number[] }): value is number[] {
-      return Array.isArray(value) || (typeof value !== 'number' && Array.isArray(value.target));
+      return Array.isArray(value) || (typeof value !== "number" && Array.isArray(value.target));
     },
-  }
+  },
 });
-
 </script>
 
 <style lang="scss">
-
 $slider-dot-size: 20px;
 $slider-bar-height: 8px;
 
@@ -567,4 +575,3 @@ $slider-bar-height: 8px;
   }
 }
 </style>
-
