@@ -26,10 +26,8 @@ export default {
       <div>
         <mt-slider
           v-bind="args"
-          v-model="currentValue"
+          v-model="args.modelValue"
           :disabled="args.disabled"
-          @change="args.change"
-          @update:modelValue="args.updateModelValue"
           @inheritance-restore="inheritanceRestoreWrapper"
           @inheritance-remove="inheritanceRemoveWrapper">
           <template
@@ -41,23 +39,6 @@ export default {
         <h4 style="display: none;">hidden</h4>
       </div>`,
     components: { MtSlider },
-    data() {
-      return {
-        currentValue: "",
-      };
-    },
-    watch: {
-      "args.modelValue"(v) {
-        if (this.currentValue === v) {
-          return;
-        }
-
-        this.currentValue = v;
-      },
-    },
-    created() {
-      this.currentValue = args.modelValue;
-    },
     methods: {
       inheritanceRemoveWrapper() {
         args.inheritanceRemove();

@@ -36,7 +36,7 @@
       />
       <div class="mt-slider__slider">
         <div class="mt-slider__marks">
-          <div v-for="index in markCount" :key="index" class="mt-slider__mark">
+          <div v-for="index in markCount" :key="index" class="mt-slider__mark" data-testid="mark">
             <span class="mt-slider__mark__label">
               {{ (index - 1) * markStep + min }}
             </span>
@@ -243,19 +243,23 @@ export default defineComponent({
             newLeftValue = value - this.minDistance;
           }
           this.$emit("update:modelValue", [newLeftValue, value]);
-        } else if (!this.isRange) {
+        } else {
           if (value <= this.min) {
             value = this.min;
           }
           this.$emit("update:modelValue", value);
         }
       },
+      immediate: true,
     },
 
     rangeLeftValue: {
       handler(value) {
         if (typeof value === "string") {
           value = parseFloat(value);
+        }
+        if (!this.isRange) {
+          return;
         }
         if (value >= this.max) {
           value = this.max - this.minDistance;
@@ -266,6 +270,7 @@ export default defineComponent({
         }
         this.$emit("update:modelValue", [value, newRightValue]);
       },
+      immediate: true,
     },
 
     // ensure that the range values are within the min and max range
@@ -320,7 +325,9 @@ export default defineComponent({
         if (this.rangeRightValue < this.min + this.minDistance) {
           this.rangeRightValue = this.min + this.minDistance;
         }
-        this.rangeLeftValue = this.min;
+        if (this.rangeLeftValue > this.rangeRightValue - this.minDistance) {
+          this.rangeLeftValue = this.rangeRightValue - this.minDistance;
+        }
       },
       immediate: true,
     },
