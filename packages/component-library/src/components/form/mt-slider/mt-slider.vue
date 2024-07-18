@@ -65,6 +65,7 @@
         />
         <!-- eslint-disable-next-line vuejs-accessibility/form-control-has-label -->
         <input
+          :id="identification"
           type="range"
           class="mt-slider__input-slider"
           :class="{ 'mt-slider__input-slider__double': isRange }"
