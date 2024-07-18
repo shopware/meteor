@@ -27,7 +27,7 @@
         v-model="rangeLeftValue as any"
         v-if="isRange"
         :min="min"
-        :max="max - step"
+        :max="max - minDistance"
         :step="step"
         :disabled="disabled"
         size="small"
@@ -89,7 +89,7 @@
       <!-- @vue-ignore -->
       <mt-number-field
         v-model="rangeRightValue"
-        :min="isRange ? min + step : min"
+        :min="isRange ? min + minDistance : min"
         :max="max"
         :step="step"
         :disabled="disabled"
@@ -276,18 +276,10 @@ export default defineComponent({
     // ensure that the range values are within the min and max range
     min: {
       handler(value) {
-        if (!this.isRange) {
-          if (this.rangeRightValue < value) {
-            this.rangeRightValue = value;
-          }
-          return;
-        }
-
-        if (this.rangeLeftValue < value) {
+        if (!this.isRange && this.rangeRightValue < value) {
+          this.rangeRightValue = value;
+        } else if (this.rangeLeftValue < value) {
           this.rangeLeftValue = value;
-        }
-        if (this.rangeRightValue <= this.rangeLeftValue) {
-          this.rangeRightValue = this.rangeLeftValue + this.minDistance;
         }
       },
       immediate: true,
@@ -297,10 +289,6 @@ export default defineComponent({
       handler(value) {
         if (this.rangeRightValue > value) {
           this.rangeRightValue = value;
-        }
-
-        if (this.rangeLeftValue >= this.rangeRightValue) {
-          this.rangeLeftValue = this.rangeRightValue - this.minDistance;
         }
       },
       immediate: true,
