@@ -1,5 +1,4 @@
 import { expect, within, userEvent, fireEvent } from "@storybook/test";
-
 import meta, { type MtSliderMeta, type MtSliderStory } from "./mt-slider.stories";
 
 export default {
@@ -7,21 +6,20 @@ export default {
   title: "Interaction Tests/Form/mt-slider",
 } as MtSliderMeta;
 
-export const TestInputValue: MtSliderStory = {
-  name: "Slider - Set range value on input enter",
+/*
+ * Single tests
+ */
+
+export const VisualTestNumberInput: MtSliderStory = {
+  name: "Slider: Should set value on input enter",
   args: {
     modelValue: 0,
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
+    const { rightInput, rightSlider } = extractElements(canvas);
 
-    const rightInput = canvas.getByTestId("right-number-field").getElementsByTagName("input")[0];
-    const rightSlider = canvas.getByTestId("right-slider");
-
-    await userEvent.click(rightInput);
-    await userEvent.clear(rightInput);
-    await userEvent.type(rightInput, "50");
-    await userEvent.click(canvas.getByText("hidden"));
+    await setNumberFieldValue(rightInput, 50, canvas);
 
     expect(rightInput).toHaveValue("50");
     expect(rightSlider).toHaveValue("50");
@@ -29,30 +27,46 @@ export const TestInputValue: MtSliderStory = {
   },
 };
 
-export const TestIncreaseByKeyStroke: MtSliderStory = {
-  name: "Slider - Increase range value",
+export const VisualTestSliderInput: MtSliderStory = {
+  name: "Slider: Should set value on slider change",
   args: {
     modelValue: 0,
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
+    const { rightInput, rightSlider } = extractElements(canvas);
 
-    const rightInput = canvas.getByTestId("right-number-field").getElementsByTagName("input")[0];
-    const rightSlider = canvas.getByTestId("right-slider");
+    await setSliderValue(rightSlider, 50);
 
-    await userEvent.click(rightSlider);
-    rightSlider.value = "1";
-    fireEvent(rightSlider, new Event("input"));
-    await userEvent.click(canvas.getByText("hidden"));
-
-    expect(rightInput).toHaveValue("1");
-    expect(rightSlider).toHaveValue("1");
-    expect(args.modelValue).toBe(1);
+    expect(rightInput).toHaveValue("50");
+    expect(rightSlider).toHaveValue("50");
+    expect(args.modelValue).toBe(50);
   },
-}
+};
 
-export const TestMinMax: MtSliderStory = {
-  name: "Slider - value should be keept between min/max",
+export const VisualTestDisabled: MtSliderStory = {
+  name: "Slider: Should not change value when disabled",
+  args: {
+    modelValue: 0,
+    disabled: true,
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const { rightInput, rightSlider } = extractElements(canvas);
+
+    expect(rightSlider).toBeDisabled();
+
+    expect(rightInput).toBeDisabled();
+    await increaseNumberFieldValue(rightInput, canvas);
+
+    expect(rightInput).toHaveValue("0");
+    expect(rightSlider).toHaveValue("0");
+    expect(args.modelValue).toBe(0);
+  },
+};
+
+export const VisualTestMinMax: MtSliderStory = {
+  name: "Slider: Should keep value between min/max",
   args: {
     modelValue: 0,
     min: 0,
@@ -60,57 +74,71 @@ export const TestMinMax: MtSliderStory = {
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
+    const { rightInput, rightSlider } = extractElements(canvas);
 
-    const rightInput = canvas.getByTestId("right-number-field").getElementsByTagName("input")[0];
-    const rightSlider = canvas.getByTestId("right-slider");
+    // The slider value can not exceed the min/max value, so we can only test the attributes here
+    expect(rightSlider).toHaveAttribute("min", "0");
+    expect(rightSlider).toHaveAttribute("max", "10");
 
-    await userEvent.click(rightSlider);
-    rightSlider.value = "11";
-    fireEvent(rightSlider, new Event("input"));
-    await userEvent.click(canvas.getByText("hidden"));
+    await setNumberFieldValue(rightInput, 11, canvas);
 
     expect(rightInput).toHaveValue("10");
     expect(rightSlider).toHaveValue("10");
     expect(args.modelValue).toBe(10);
 
-    await userEvent.click(rightSlider);
-    rightSlider.value = "-1";
-    fireEvent(rightSlider, new Event("input"));
-    await userEvent.click(canvas.getByText("hidden"));
+    await setNumberFieldValue(rightInput, -1, canvas);
 
     expect(rightInput).toHaveValue("0");
     expect(rightSlider).toHaveValue("0");
     expect(args.modelValue).toBe(0);
   },
-}
+};
 
-export const TestRangeInputValue: MtSliderStory = {
-  name: "Range - Set range value on input enter",
+export const VisualTestStep: MtSliderStory = {
+  name: "Slider: Should apply step to slider",
+  args: {
+    min: 0,
+    max: 100,
+    modelValue: 0,
+    step: 10,
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const { rightInput, rightSlider } = extractElements(canvas);
+
+    // Test if step is applied to slider
+    // We can not use keyboard events here, because the framework does not send them to the slider
+    expect(rightSlider).toHaveAttribute("step", "10");
+
+    await increaseNumberFieldValue(rightInput, canvas);
+    expect(args.modelValue).toBe(10);
+
+    await decreaseNumberFieldValue(rightInput, canvas);
+    expect(args.modelValue).toBe(0);
+  },
+};
+
+/*
+ * Range tests
+ */
+
+export const VisualTestRangeInputValue: MtSliderStory = {
+  name: "Range: Should set value on input enter",
   args: {
     modelValue: [0, 0],
     isRange: true,
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
+    const { leftInput, leftSlider, rightInput, rightSlider } = extractElements(canvas);
 
-    const leftInput = canvas.getByTestId("left-number-field").getElementsByTagName("input")[0];
-    const leftSlider = canvas.getByTestId("left-slider");
-    const rightInput = canvas.getByTestId("right-number-field").getElementsByTagName("input")[0];
-    const rightSlider = canvas.getByTestId("right-slider");
-
-    await userEvent.click(rightInput);
-    await userEvent.clear(rightInput);
-    await userEvent.type(rightInput, "50");
-    await userEvent.click(canvas.getByText("hidden"));
+    await setNumberFieldValue(rightInput, 50, canvas);
 
     expect(rightInput).toHaveValue("50");
     expect(rightSlider).toHaveValue("50");
     expect(args.modelValue).toEqual([0, 50]);
 
-    await userEvent.click(leftInput);
-    await userEvent.clear(leftInput);
-    await userEvent.type(leftInput, "25");
-    await userEvent.click(canvas.getByText("hidden"));
+    await setNumberFieldValue(leftInput, 25, canvas);
 
     expect(leftInput).toHaveValue("25");
     expect(leftSlider).toHaveValue("25");
@@ -118,38 +146,91 @@ export const TestRangeInputValue: MtSliderStory = {
   },
 };
 
-export const TestRangeOverlapping: MtSliderStory = {
-  name: "Range - Range should not overlap",
+export const VisualTestRangeSliderValue: MtSliderStory = {
+  name: "Range: Should set value on slider change",
   args: {
-    min: 0,
-    max: 100,
-    modelValue: [0, 50],
+    modelValue: [0, 0],
     isRange: true,
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
+    const { leftInput, leftSlider, rightInput, rightSlider } = extractElements(canvas);
 
-    const leftInput = canvas.getByTestId("left-number-field").getElementsByTagName("input")[0];
-    const rightInput = canvas.getByTestId("right-number-field").getElementsByTagName("input")[0];
+    await setSliderValue(rightSlider, 50);
 
-    await userEvent.click(leftInput);
-    await userEvent.clear(leftInput);
-    await userEvent.type(leftInput, "75");
-    await userEvent.click(canvas.getByText("hidden"));
+    expect(rightInput).toHaveValue("50");
+    expect(rightSlider).toHaveValue("50");
+    expect(args.modelValue).toEqual([0, 50]);
 
+    await setSliderValue(leftSlider, 25);
+
+    expect(leftInput).toHaveValue("25");
+    expect(leftSlider).toHaveValue("25");
+    expect(args.modelValue).toEqual([25, 50]);
+  },
+};
+
+export const VisualTestRangeDisabled: MtSliderStory = {
+  name: "Range: Should not change value when disabled",
+  args: {
+    modelValue: [0, 0],
+    isRange: true,
+    disabled: true,
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const { leftInput, leftSlider, rightInput, rightSlider } = extractElements(canvas);
+
+    expect(leftSlider).toBeDisabled();
+    expect(rightSlider).toBeDisabled();
+
+    await increaseNumberFieldValue(leftInput, canvas);
+
+    expect(leftInput).toHaveValue("0");
+    expect(leftSlider).toHaveValue("0");
+    expect(args.modelValue).toEqual([0, 0]);
+
+    await increaseNumberFieldValue(rightInput, canvas);
+
+    expect(rightInput).toHaveValue("0");
+    expect(rightSlider).toHaveValue("0");
+    expect(args.modelValue).toEqual([0, 0]);
+  },
+};
+
+export const VisualTestRangeOverlapping: MtSliderStory = {
+  name: "Range: Should keep range from overlapping",
+  args: {
+    min: 0,
+    max: 100,
+    modelValue: [0, 50],
+    minDistance: 0,
+    isRange: true,
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const { leftInput, leftSlider, rightInput, rightSlider } = extractElements(canvas);
+
+    // Test slider input
+
+    await setSliderValue(leftSlider, 75);
     expect(args.modelValue[0]).toBeLessThanOrEqual(args.modelValue[1]);
 
-    await userEvent.click(rightInput);
-    await userEvent.clear(rightInput);
-    await userEvent.type(rightInput, "25");
-    await userEvent.click(canvas.getByText("hidden"));
+    await setSliderValue(rightSlider, 25);
+    expect(args.modelValue[0]).toBeLessThanOrEqual(args.modelValue[1]);
 
+    // Test number input
+
+    await setNumberFieldValue(leftInput, 75, canvas);
+    expect(args.modelValue[0]).toBeLessThanOrEqual(args.modelValue[1]);
+
+    await setNumberFieldValue(rightInput, 25, canvas);
     expect(args.modelValue[0]).toBeLessThanOrEqual(args.modelValue[1]);
   },
 };
 
-export const TestRangeDistance: MtSliderStory = {
-  name: "Range - min distance between range should be kept",
+export const VisualTestRangeDistance: MtSliderStory = {
+  name: "Range: Should keep distance between sliders",
   args: {
     min: 0,
     max: 100,
@@ -159,26 +240,36 @@ export const TestRangeDistance: MtSliderStory = {
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
+    const { leftInput, leftSlider, rightInput, rightSlider } = extractElements(canvas);
 
-    const leftInput = canvas.getByTestId("left-number-field").getElementsByTagName("input")[0];
-    const rightInput = canvas.getByTestId("right-number-field").getElementsByTagName("input")[0];
+    // Test slider input
 
-    await userEvent.click(rightInput);
-    await userEvent.type(rightInput, "{backspace}{backspace}45");
-    await userEvent.click(canvas.getByText("hidden"));
+    await setSliderValue(rightSlider, 40);
+    expect(args.modelValue[1] - args.modelValue[0]).toBeGreaterThanOrEqual(
+      args.minDistance as number,
+    );
 
-    expect(args.modelValue[1] - args.modelValue[0]).toBeGreaterThanOrEqual(args.minDistance as number);
+    await setSliderValue(leftSlider, 60);
+    expect(args.modelValue[1] - args.modelValue[0]).toBeGreaterThanOrEqual(
+      args.minDistance as number,
+    );
 
-    await userEvent.click(leftInput);
-    await userEvent.type(leftInput, "{backspace}{backspace}55");
-    await userEvent.click(canvas.getByText("hidden"));
+    // Test number input
 
-    expect(args.modelValue[1] - args.modelValue[0]).toBeGreaterThanOrEqual(args.minDistance as number);
+    await setNumberFieldValue(rightInput, 45, canvas);
+    expect(args.modelValue[1] - args.modelValue[0]).toBeGreaterThanOrEqual(
+      args.minDistance as number,
+    );
+
+    await setNumberFieldValue(leftInput, 55, canvas);
+    expect(args.modelValue[1] - args.modelValue[0]).toBeGreaterThanOrEqual(
+      args.minDistance as number,
+    );
   },
-}
+};
 
-export const TestRangeStep: MtSliderStory = {
-  name: "Range - step should be applied to both sliders",
+export const VisualTestRangeStep: MtSliderStory = {
+  name: "Range: Should apply step to slider",
   args: {
     min: 0,
     max: 100,
@@ -188,26 +279,84 @@ export const TestRangeStep: MtSliderStory = {
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
+    const { leftInput, leftSlider, rightInput, rightSlider } = extractElements(canvas);
 
-    const leftInput = canvas.getByTestId("left-number-field").getElementsByTagName("input")[0];
-    const rightInput = canvas.getByTestId("right-number-field").getElementsByTagName("input")[0];
+    // Check if step is applied to slider
+    // We can not use keyboard events here, because the framework does not send them to the slider
+    expect(leftSlider).toHaveAttribute("step", "10");
+    expect(rightSlider).toHaveAttribute("step", "10");
 
-    await userEvent.click(leftInput);
-    await userEvent.type(leftInput, "{arrowup}");
-    await userEvent.click(canvas.getByText("hidden"));
+    // Check if step is applied to input
+    await increaseNumberFieldValue(leftInput, canvas);
 
     expect(args.modelValue[0]).toBe(10);
 
-    await userEvent.click(rightInput);
-    await userEvent.type(rightInput, "{arrowdown}");
-    await userEvent.click(canvas.getByText("hidden"));
+    await decreaseNumberFieldValue(rightInput, canvas);
 
     expect(args.modelValue[1]).toBe(90);
   },
-}
+};
 
-export const MarkCount: MtSliderStory = {
-  name: "Slider - Marks should be applied correctly",
+export const VisualTestRangeMinMax: MtSliderStory = {
+  name: "Range: Should keep values between min/max",
+  args: {
+    min: 0,
+    max: 50,
+    isRange: true,
+    modelValue: [0, 50],
+    minDistance: 0,
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const { leftInput, leftSlider, rightInput, rightSlider } = extractElements(canvas);
+
+    // The slider value can not be exceed the min/max value, so we can only test the attributes here
+    expect(leftSlider).toHaveAttribute("min", "0");
+    expect(leftSlider).toHaveAttribute("max", "50");
+    expect(rightSlider).toHaveAttribute("min", "0");
+    expect(rightSlider).toHaveAttribute("max", "50");
+
+    await setNumberFieldValue(leftInput, 60, canvas);
+    expect(args.modelValue[0]).toBe(50);
+
+    await setNumberFieldValue(rightInput, -10, canvas);
+    expect(args.modelValue[1]).toBe(0);
+  },
+};
+
+export const VisualTestRangeMinMaxDistance: MtSliderStory = {
+  name: "Range: Should keep distance between sliders at borders of min/max",
+  args: {
+    min: 0,
+    max: 100,
+    isRange: true,
+    modelValue: [0, 100],
+    minDistance: 10,
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const { leftInput, leftSlider, rightInput, rightSlider } = extractElements(canvas);
+
+    // Test slider input
+
+    await setSliderValue(leftSlider, 101);
+    expect(args.modelValue[0]).toBe(90);
+
+    await setSliderValue(rightSlider, -1);
+    expect(args.modelValue[1]).toBe(10);
+
+    // Test number input
+
+    await setNumberFieldValue(leftInput, 101, canvas);
+    expect(args.modelValue[0]).toBe(90);
+
+    await setNumberFieldValue(rightInput, -1, canvas);
+    expect(args.modelValue[1]).toBe(10);
+  },
+};
+
+export const VisualTestMarkCount: MtSliderStory = {
+  name: "Slider: Should display marks",
   args: {
     markCount: 6,
     min: -5,
@@ -220,7 +369,45 @@ export const MarkCount: MtSliderStory = {
     expect(marks).toHaveLength(args.markCount as number);
 
     marks.forEach((mark, index) => {
-      expect(mark).toHaveTextContent(`${args.min as number + index * 10}`);
+      expect(mark).toHaveTextContent(`${(args.min as number) + index * 10}`);
     });
   },
+};
+
+/*
+ * Utility functions
+ */
+
+async function setSliderValue(slider: HTMLInputElement, value: number) {
+  slider.value = value.toString();
+  fireEvent(slider, new Event("input"));
+}
+
+async function increaseNumberFieldValue(input: HTMLInputElement, canvas: any) {
+  await userEvent.click(input);
+  await userEvent.type(input, "{arrowup}");
+  await userEvent.click(canvas.getByText("hidden"));
+}
+
+async function decreaseNumberFieldValue(input: HTMLInputElement, canvas: any) {
+  await userEvent.click(input);
+  await userEvent.type(input, "{arrowdown}");
+  await userEvent.click(canvas.getByText("hidden"));
+}
+
+async function setNumberFieldValue(input: HTMLInputElement, value: number, canvas: any) {
+  await userEvent.click(input);
+  await userEvent.clear(input);
+  await userEvent.type(input, value.toString());
+  await userEvent.click(canvas.getByText("hidden"));
+}
+
+function extractElements(canvas: any) {
+  // We need to use getElementsByTagName because you can not chain testing-library queries
+  return {
+    leftInput: canvas.queryByTestId("left-number-field")?.getElementsByTagName("input")[0],
+    leftSlider: canvas.queryByTestId("left-slider"),
+    rightInput: canvas.getByTestId("right-number-field").getElementsByTagName("input")[0],
+    rightSlider: canvas.getByTestId("right-slider"),
+  };
 }
