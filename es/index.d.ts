@@ -13,7 +13,7 @@ import * as modal from './ui/modal';
 import * as actionButton from './ui/action-button';
 import * as webhook from './app/action';
 import * as data from './data';
-import * as inAppPurchases from './in-app-purchases';
+import * as iap from './iap';
 import type EntityCollectionType from './_internals/data/EntityCollection';
 import type { Entity as EntityType } from './_internals/data/Entity';
 import composables from './data/composables';
@@ -35,7 +35,7 @@ declare const ui: {
 /**
  * The main export which will be available by direct imports.
  */
-export { window, notification, toast, context, ui, cms, location, app, data, composables, inAppPurchases, };
+export { window, notification, toast, context, ui, cms, location, app, data, composables, iap, };
 /**
  * Declare global EntitySchema namespace for allowing to extend the entity definitions
  */

@@ -12,8 +12,8 @@
     exports.purchase = void 0;
     const channel_1 = require("../channel");
     /**
-     * Trigger the in-app purchase.
+     * Trigger the in-app purchase checkout modal.
      */
-    exports.purchase = (0, channel_1.createSender)('inAppPurchase');
+    exports.purchase = (0, channel_1.createSender)('iapCheckout');
 });
 //# sourceMappingURL=index.js.map

@@ -19,7 +19,7 @@ import type { datasetRegistration, datasetUpdate, datasetGet, datasetSubscribe, 
 import type EntityCollection from './_internals/data/EntityCollection';
 import type { Entity } from './_internals/data/Entity';
 import type { repositoryGet, repositorySearch, repositorySave, repositoryClone, repositoryHasChanges, repositorySaveAll, repositoryDelete, repositoryCreate } from './data/repository';
-import type { inAppPurchase } from './in-app-purchases';
+import type { iapCheckout } from './iap';
 /**
  * Contains all shopware send types.
  * @internal
@@ -70,7 +70,7 @@ export interface ShopwareMessageTypes {
     datasetSubscribeRegistration: datasetSubscribeRegistration;
     datasetUpdate: datasetUpdate;
     datasetGet: datasetGet;
-    inAppPurchase: inAppPurchase;
+    iapCheckout: iapCheckout;
     __function__: __function__;
     __registerWindow__: __registerWindow__;
     _multiply: _multiply;

@@ -30,12 +30,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
         if (v !== undefined) module.exports = v;
     }
     else if (typeof define === "function" && define.amd) {
-        define(["require", "exports", "./window", "./notification", "./toast", "./context", "./ui/component-section", "./ui/tabs", "./ui/cms", "./location", "./ui/menu", "./ui/settings", "./ui/main-module", "./ui/module", "./ui/modal", "./ui/action-button", "./app/action", "./data", "./in-app-purchases", "./data/composables"], factory);
+        define(["require", "exports", "./window", "./notification", "./toast", "./context", "./ui/component-section", "./ui/tabs", "./ui/cms", "./location", "./ui/menu", "./ui/settings", "./ui/main-module", "./ui/module", "./ui/modal", "./ui/action-button", "./app/action", "./data", "./iap", "./data/composables"], factory);
     }
 })(function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    exports.inAppPurchases = exports.composables = exports.data = exports.app = exports.location = exports.cms = exports.ui = exports.context = exports.toast = exports.notification = exports.window = void 0;
+    exports.iap = exports.composables = exports.data = exports.app = exports.location = exports.cms = exports.ui = exports.context = exports.toast = exports.notification = exports.window = void 0;
     const window = __importStar(require("./window"));
     exports.window = window;
     const notification = __importStar(require("./notification"));
@@ -59,8 +59,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     const webhook = __importStar(require("./app/action"));
     const data = __importStar(require("./data"));
     exports.data = data;
-    const inAppPurchases = __importStar(require("./in-app-purchases"));
-    exports.inAppPurchases = inAppPurchases;
+    const iap = __importStar(require("./iap"));
+    exports.iap = iap;
     const composables_1 = __importDefault(require("./data/composables"));
     exports.composables = composables_1.default;
     const app = {
