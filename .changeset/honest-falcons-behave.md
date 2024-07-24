@@ -1,5 +1,0 @@
----
-"@shopware-ag/meteor-component-library": minor
----
-
-Add mt-slider component

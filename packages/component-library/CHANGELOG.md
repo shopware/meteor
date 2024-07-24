@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.11.0
+
+### Minor Changes
+
+- 1319ae3: Add mt-slider component
+
 ## 3.10.0
 
 ### Minor Changes
