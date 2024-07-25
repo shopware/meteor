@@ -1,13 +1,6 @@
 <template>
   <!-- eslint-disable-next-line vuejs-accessibility/click-events-have-key-events -->
-  <mt-text
-    as="span"
-    class="mt-label"
-    size="xs"
-    :class="labelClasses"
-    @click.stop="$emit('selected')"
-    tabindex="0"
-  >
+  <span class="mt-label" :class="labelClasses" @click.stop="$emit('selected')" tabindex="0">
     <mt-color-badge v-if="appearance === 'badged'" :variant="variant" :rounded="true" />
 
     <span class="mt-label__caption">
@@ -24,7 +17,7 @@
         <mt-icon data-testid="dismiss-label" name="regular-times-xxs" />
       </slot>
     </button>
-  </mt-text>
+  </span>
 </template>
 
 <script lang="ts">
@@ -33,7 +26,6 @@ import type { PropType } from "vue";
 import { defineComponent } from "vue";
 import MtIcon from "../icons-media/mt-icon/mt-icon.vue";
 import MtColorBadge from "../feedback-indicator/mt-color-badge/mt-color-badge.vue";
-import MtText from "../content/mt-text/mt-text.vue";
 
 export default defineComponent({
   name: "MtLabel",
@@ -56,7 +48,6 @@ export default defineComponent({
   components: {
     "mt-icon": MtIcon,
     "mt-color-badge": MtColorBadge,
-    "mt-text": MtText,
   },
 
   props: {
@@ -162,6 +153,10 @@ export default defineComponent({
   height: 32px;
   border: 1px solid var(--color-border-primary-default);
   background: var(--color-background-primary-default);
+  line-height: 1.1;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-primary-default);
   border-radius: 4px;
   cursor: default;
 

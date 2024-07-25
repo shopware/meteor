@@ -471,8 +471,8 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
   &__label,
   &__contextual-detail,
   &__shortcut {
-    font-size: var(--font-size-s);
-    line-height: var(--font-line-height-s);
+    font-size: var(--font-size-xs);
+    line-height: var(--font-line-height-xs);
     font-weight: var(--font-weight-medium);
 
     &--clickable {
