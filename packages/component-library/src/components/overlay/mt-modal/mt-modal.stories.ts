@@ -19,8 +19,20 @@ export default {
         args,
       };
     },
-    template:
-      "<mt-modal-root isOpen><mt-modal v-bind='args'><mt-text>Modal content</mt-text></mt-text><template #footer><div style='width: 100%; display: flex; justify-content: flex-end;'><mt-button variant='primary'>Continue</mt-button></div></template></mt-modal></mt-modal-root>",
+    template: `
+<mt-modal-root isOpen>
+  <mt-modal v-bind='args'>
+    <template #default>
+      <mt-text>Modal content</mt-text>
+    </template>
+
+    <template #footer>
+      <div style='width: 100%; display: flex; justify-content: flex-end;'>
+        <mt-button variant='primary'>Continue</mt-button>
+      </div>
+    </template>
+  </mt-modal>
+</mt-modal-root>`,
   }),
 };
 
