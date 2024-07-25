@@ -302,9 +302,9 @@ $mt-field-transition:
     padding: 13px 16px;
     border: none;
     background: var(--color-elevation-surface-raised);
-    font-size: var(--font-size-s);
+    font-size: var(--font-size-xs);
     font-family: var(--font-size-body);
-    line-height: var(--font-line-height-s);
+    line-height: 1;
     transition: $mt-field-transition;
     color: var(--color-text-primary-default);
     outline: none;
@@ -394,8 +394,8 @@ $mt-field-transition:
     border-left: 1px solid var(--color-border-primary-default);
     border-right: none;
     padding: 12px 15px;
-    font-size: var(--font-size-s);
-    line-height: var(--font-line-height-s);
+    font-size: var(--font-size-xs);
+    line-height: var(--font-line-height-xs);
     font-family: var(--font-family-body);
     color: var(--color-text-primary-default);
     transition: $mt-field-transition;

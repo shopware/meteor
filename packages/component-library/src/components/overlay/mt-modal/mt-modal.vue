@@ -10,7 +10,9 @@
     >
       <div class="mt-modal__header">
         <div class="mt-modal__header-content">
-          <mt-text as="h2" size="m" weight="medium" :id="id">{{ title }}</mt-text>
+          <mt-text as="h2" class="mt-modal__title" size="m" weight="semibold" :id="id">
+            {{ title }}
+          </mt-text>
 
           <slot name="title-after" />
         </div>
@@ -268,6 +270,10 @@ onUnmounted(() => {
   @media (prefers-reduced-motion: no-preference) {
     scale: 0.9;
   }
+}
+
+.mt-modal__title {
+  margin-block-end: 0;
 }
 
 .mt-modal__content {

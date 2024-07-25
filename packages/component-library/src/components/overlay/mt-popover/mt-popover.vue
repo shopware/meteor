@@ -307,6 +307,7 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
 
     .mt-popover__title {
       margin-right: auto;
+      margin-block-end: 0;
     }
 
     &__header-placeholder-right {
