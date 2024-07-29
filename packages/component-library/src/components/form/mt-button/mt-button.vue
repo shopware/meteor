@@ -71,7 +71,7 @@ export default defineComponent({
     },
     /**
      * Change the size of the button
-     * @values small, default, large
+     * @values x-small, small, default, large
      */
     size: {
       type: String,
@@ -81,7 +81,7 @@ export default defineComponent({
         if (!value.length) {
           return true;
         }
-        return ["small", "default", "large"].includes(value);
+        return ["x-small", "small", "default", "large"].includes(value);
       },
     },
     /**
