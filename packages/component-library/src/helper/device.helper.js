@@ -11,7 +11,7 @@ function DeviceHelper() {
 
   // do not register the resize event listener on the server
   if (typeof window === "undefined") {
-    return
+    return;
   }
 
   window.addEventListener("resize", this.resize.bind(this));
