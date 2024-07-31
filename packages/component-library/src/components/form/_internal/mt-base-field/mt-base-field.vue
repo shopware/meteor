@@ -445,6 +445,11 @@ $mt-field-transition:
     label {
       flex-grow: 1;
     }
+
+    &:empty,
+    &:has(label:only-child:empty) {
+      display: none;
+    }
   }
 
   .mt-field__label .is--required::after {
