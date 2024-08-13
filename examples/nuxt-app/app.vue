@@ -20,6 +20,8 @@
         </MtText>
 
         <SwTextField label="A text field" v-model="text" />
+
+        <MtSearch />
       </SwBlockStack>
 
       <MtModalRoot>
@@ -261,6 +263,7 @@ import {
   MtModalClose,
   MtModalTrigger,
   MtModalAction,
+  MtSearch,
   MtText,
 } from "@shopware-ag/meteor-component-library";
 import SwBlockStack from "./components/sw-block-stack.vue";
