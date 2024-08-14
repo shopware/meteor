@@ -48,7 +48,7 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, onMounted, onUnmounted, ref, watch, type PropType, defineEmits } from "vue";
+import { nextTick, onMounted, onUnmounted, ref, watch, type PropType } from "vue";
 import { useModalContext } from "./composables/useModalContext";
 import MtIcon from "@/components/icons-media/mt-icon/mt-icon.vue";
 import MtModalClose from "./sub-components/mt-modal-close.vue";
