@@ -11,6 +11,7 @@ import MtLink from "./components/navigation/mt-link/mt-link.vue";
 import MtNumberField from "./components/form/mt-number-field/mt-number-field.vue";
 import MtPasswordField from "./components/form/mt-password-field/mt-password-field.vue";
 import MtSelect from "./components/form/mt-select/mt-select.vue";
+import MtSlider from "@/components/form/mt-slider/mt-slider.vue";
 import MtSwitch from "./components/form/mt-switch/mt-switch.vue";
 import MtTextField from "./components/form/mt-text-field/mt-text-field.vue";
 import MtTextarea from "./components/form/mt-textarea/mt-textarea.vue";
@@ -57,6 +58,7 @@ export {
   MtNumberField,
   MtPasswordField,
   MtSelect,
+  MtSlider,
   MtSwitch,
   MtTextField,
   MtTextarea,

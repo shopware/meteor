@@ -175,11 +175,11 @@ $mt-context-button-color-disabled: var(--color-icon-primary-disabled);
 
   &.has--error {
     .mt-context-button__button {
+      color: $color-crimson-300;
+
       .mt-icon {
         color: $mt-context-button-color-text;
       }
-
-      color: $color-crimson-300;
     }
   }
 }

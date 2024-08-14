@@ -46,7 +46,7 @@
       </slot>
     </li>
 
-    <li v-if="!disableInput">
+    <li v-if="!disableInput" class="mt-select-selection-list__input-wrapper">
       <slot name="input" v-bind="{ placeholder, searchTerm, onSearchTermChange, onKeyDownDelete }">
         <!-- eslint-disable-next-line vuejs-accessibility/form-control-has-label -->
         <input
@@ -271,6 +271,9 @@ export default defineComponent({
     border-color: var(--color-border-primary-default);
   }
 
+  .mt-select-selection-list__input-wrapper {
+    flex: 1 1 0;
+  }
   .mt-select-selection-list__input {
     display: inline-block;
     min-width: 200px;
@@ -278,6 +281,7 @@ export default defineComponent({
 
     &::placeholder {
       color: lighten($color-darkgray-200, 25%);
+      white-space: break-spaces;
     }
   }
 }
