@@ -108,7 +108,7 @@ export default defineComponent({
     "mt-icon": MtIcon,
   },
 
-  emits: ['new-item-active'],
+  emits: ["new-item-active"],
 
   props: {
     items: {
