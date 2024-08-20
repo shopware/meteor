@@ -108,6 +108,8 @@ export default defineComponent({
     "mt-icon": MtIcon,
   },
 
+  emits: ["new-item-active"],
+
   props: {
     items: {
       type: Array as PropType<TabItem[]>,
