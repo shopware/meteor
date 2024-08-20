@@ -124,7 +124,7 @@ export default defineComponent({
     );
 
     const totalPages = computed(() => {
-      return Math.ceil(props.totalItems / props.limit);
+      return Math.max(1, Math.ceil(props.totalItems / props.limit));
     });
 
     const isOnFirstPage = computed(() => props.currentPage === 1);
