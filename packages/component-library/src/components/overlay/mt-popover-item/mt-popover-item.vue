@@ -380,7 +380,7 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
     &::before {
       position: absolute;
       background-color: var(--color-interaction-secondary-hover);
-      border-radius: $border-radius-default;
+      border-radius: var(--border-radius-xs);
       top: 4px;
       right: -8px;
       bottom: 4px;

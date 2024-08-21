@@ -242,7 +242,7 @@ export default defineComponent({
   overflow: hidden;
 
   &:not(&--hero) {
-    border-radius: $border-radius-lg;
+    border-radius: var(--border-radius-m);
   }
 
   &.mt-card--is-inherited {
@@ -306,7 +306,7 @@ export default defineComponent({
 
   .mt-card__avatar {
     overflow: hidden;
-    border-radius: $border-radius-default;
+    border-radius: var(--border-radius-xs);
     width: 40px;
     height: 40px;
 

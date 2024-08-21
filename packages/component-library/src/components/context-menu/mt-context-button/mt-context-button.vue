@@ -129,7 +129,7 @@ export default defineComponent({
 
 <style lang="scss">
 $mt-context-button-color-text: var(--color-icon-primary-default);
-$mt-context-button-border-radius: $border-radius-default;
+$mt-context-button-border-radius: var(--border-radius-xs);
 $mt-context-button-color-border: var(--color-border-primary-default);
 $mt-context-button-color-disabled: var(--color-icon-primary-disabled);
 

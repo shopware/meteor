@@ -173,7 +173,7 @@ export default defineComponent({
 
   &__controls {
     display: inline-flex;
-    border-radius: $border-radius-default;
+    border-radius: var(--border-radius-xs);
     border: 1px solid var(--color-border-primary-default);
   }
 
@@ -233,13 +233,13 @@ export default defineComponent({
   }
 
   :last-child {
-    border-top-right-radius: $border-radius-default;
-    border-bottom-right-radius: $border-radius-default;
+    border-top-right-radius: var(--border-radius-xs);
+    border-bottom-right-radius: var(--border-radius-xs);
   }
 
   :first-child {
-    border-top-left-radius: $border-radius-default;
-    border-bottom-left-radius: $border-radius-default;
+    border-top-left-radius: var(--border-radius-xs);
+    border-bottom-left-radius: var(--border-radius-xs);
   }
 
   &__current-page-input {

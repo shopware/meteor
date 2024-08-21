@@ -96,7 +96,7 @@ export default defineComponent({
   &__icon {
     display: inline-block;
     padding: 12px;
-    border-radius: $border-radius-default;
+    border-radius: var(--border-radius-xs);
     background-color: var(--color-interaction-secondary-dark);
 
     svg {
