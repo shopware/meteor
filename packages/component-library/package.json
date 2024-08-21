@@ -92,8 +92,5 @@
     "vite-plugin-svgstring": "^1.0.0",
     "vitest": "^1.1.3",
     "vue-tsc": "^2.0.21"
-  },
-  "overrides": {
-    "vue": "3.3.8"
   }
 }
