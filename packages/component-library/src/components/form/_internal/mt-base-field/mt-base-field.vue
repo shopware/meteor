@@ -330,7 +330,7 @@ $mt-field-transition:
 
   .mt-block-field__block {
     border: 1px solid var(--color-border-primary-default);
-    border-radius: $border-radius-default;
+    border-radius: var(--border-radius-xs);
     overflow: hidden;
   }
 

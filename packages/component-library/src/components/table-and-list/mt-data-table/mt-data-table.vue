@@ -2613,7 +2613,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   font-size: var(--font-size-xs);
   padding: $tableCellPadding;
   border: 1px solid var(--color-border-brand-selected);
-  border-radius: $border-radius-default $border-radius-default 0 0;
+  border-radius: var(--border-radius-xs) var(--border-radius-xs) 0 0;
   border-top: 0;
   white-space: nowrap;
   overflow: hidden;
@@ -2683,7 +2683,7 @@ table.is--dragging-inside {
   width: 100%;
   height: 8px;
   background-color: $color-shopware-brand-900;
-  border-radius: $border-radius-default $border-radius-default 0 0;
+  border-radius: var(--border-radius-xs) var(--border-radius-xs) 0 0;
   transition: transform 0.2s ease;
   transform-origin: top center;
 }
@@ -2697,7 +2697,7 @@ table.is--dragging-inside {
   justify-content: center;
   align-items: center;
   background-color: $color-shopware-brand-900;
-  border-radius: 0 0 $border-radius-default $border-radius-default;
+  border-radius: 0 0 var(--border-radius-xs) var(--border-radius-xs);
 
   #meteor-icon-kit__regular-grip-horizontal-s {
     color: $color-white;
@@ -2733,7 +2733,7 @@ table.is--dragging-inside {
   min-width: 34px;
   cursor: pointer;
   outline: 0;
-  border-radius: $border-radius-default;
+  border-radius: var(--border-radius-xs);
 
   &:hover,
   &:focus-visible {

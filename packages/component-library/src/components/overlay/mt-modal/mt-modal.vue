@@ -356,7 +356,7 @@ onUnmounted(() => {
 .mt-modal__close-button {
   cursor: pointer;
   color: var(--color-icon-primary-default);
-  border-radius: $border-radius-default;
+  border-radius: var(--border-radius-xs);
   width: 2rem;
   height: 2rem;
 
