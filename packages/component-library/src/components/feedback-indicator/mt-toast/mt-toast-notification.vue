@@ -19,9 +19,16 @@
           size="20px"
         />
 
-        <div class="mt-toast-notification__message" :class="messageClasses" :title="toast.msg">
+        <mt-text
+          class="mt-toast-notification__message"
+          color="color-text-static-default"
+          weight="bold"
+          size="xs"
+          :class="messageClasses"
+          :title="toast.msg"
+        >
           {{ toast.msg }}
-        </div>
+        </mt-text>
       </div>
 
       <div class="mt-toast-notification__content-right">
@@ -50,6 +57,7 @@
 <script setup lang="ts">
 import MtIcon from "@/components/icons-media/mt-icon/mt-icon.vue";
 import MtButton from "@/components/form/mt-button/mt-button.vue";
+import MtText from "@/components/content/mt-text/mt-text.vue";
 import {
   defineProps,
   toRefs,
@@ -321,13 +329,6 @@ onBeforeUnmount(() => {
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
-    color: $color-white;
-    font-family: $font-family-default;
-    font-size: $font-size-xs;
-    font-style: normal;
-    font-weight: $font-weight-semi-bold;
-    line-height: 16px;
-    letter-spacing: 0.08px;
 
     &-space {
       padding-left: 8px;

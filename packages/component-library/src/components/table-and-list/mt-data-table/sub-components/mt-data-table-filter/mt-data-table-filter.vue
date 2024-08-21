@@ -1,10 +1,12 @@
 <template>
   <div class="mt-data-table-filter" data-testid="mt-data-table-filter">
-    <span class="mt-data-table-filter__property">
+    <mt-text class="mt-data-table-filter__property" size="2xs">
       {{ filter.label }}
-    </span>
+    </mt-text>
 
-    <span class="mt-data-table-filter__rule">is</span>
+    <mt-text size="2xs" color="color-text-secondary-default" class="mt-data-table-filter__rule"
+      >is</mt-text
+    >
 
     <mt-popover class="mt-data-table-filter__option" title="Manufactuer">
       <template #trigger="{ toggleFloatingUi }">
@@ -47,6 +49,7 @@ import MtPopover from "@/components/overlay/mt-popover/mt-popover.vue";
 import MtPopoverItem from "@/components/overlay/mt-popover-item/mt-popover-item.vue";
 import { defineComponent, type PropType } from "vue";
 import type { Filter, Option } from "../../mt-data-table.interfaces";
+import MtText from "@/components/content/mt-text/mt-text.vue";
 
 export default defineComponent({
   name: "MtDataTableFilter",
@@ -55,6 +58,7 @@ export default defineComponent({
     "mt-icon": MtIcon,
     "mt-popover": MtPopover,
     "mt-popover-item": MtPopoverItem,
+    "mt-text": MtText,
   },
   i18n: {
     messages: {
@@ -92,7 +96,6 @@ export default defineComponent({
 <style lang="scss" scoped>
 .mt-data-table-filter {
   display: inline-flex;
-  font-size: 12px;
 
   & > * {
     height: 24px;
@@ -110,7 +113,6 @@ export default defineComponent({
   }
 
   .mt-data-table-filter__rule {
-    color: var(--color-text-secondary-default);
     border-top: 1px solid var(--color-border-primary-default);
     border-bottom: 1px solid var(--color-border-primary-default);
     padding-right: 4px;
@@ -118,6 +120,9 @@ export default defineComponent({
 
   .mt-data-table-filter__option {
     color: var(--color-text-primary-default);
+    font-size: var(--font-size-2xs);
+    font-family: var(--font-family-body);
+    line-height: var(--font-line-height-2xs);
     border-top: 1px solid var(--color-border-primary-default);
     border-bottom: 1px solid var(--color-border-primary-default);
     padding-inline: 4px 8px;

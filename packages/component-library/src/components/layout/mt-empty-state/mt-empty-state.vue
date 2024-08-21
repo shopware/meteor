@@ -4,13 +4,13 @@
       <mt-icon :name="icon" />
     </div>
 
-    <h2 class="mt-empty-state__headline">
+    <mt-text as="h2" size="l" weight="bold" class="mt-empty-state__headline">
       {{ headline }}
-    </h2>
+    </mt-text>
 
-    <p class="mt-empty-state__description">
+    <mt-text size="xs" color="color-text-secondary-default" class="mt-empty-state__description">
       {{ description }}
-    </p>
+    </mt-text>
 
     <mt-external-link v-if="linkHref && linkText" class="mt-empty-state__link" :href="linkHref">
       {{ linkText }}
@@ -35,6 +35,7 @@ import type { TranslateResult } from "vue-i18n";
 import MtExternalLink from "@/components/form/mt-external-link/mt-external-link.vue";
 import MtButton from "@/components/form/mt-button/mt-button.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
+import MtText from "@/components/content/mt-text/mt-text.vue";
 
 export default defineComponent({
   name: "MtEmptyState",
@@ -43,6 +44,7 @@ export default defineComponent({
     MtIcon,
     MtExternalLink,
     MtButton,
+    MtText,
   },
 
   props: {
@@ -87,6 +89,10 @@ export default defineComponent({
 
 <style lang="scss">
 .mt-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+
   &__icon {
     display: inline-block;
     padding: 12px;
@@ -99,22 +105,14 @@ export default defineComponent({
   }
 
   &__headline {
-    color: var(--color-text-primary-default);
-    font-weight: $font-weight-bold;
-    font-size: $font-size-l;
-    line-height: $line-height-lg;
     margin: 16px 0 0;
   }
 
   &__description {
-    color: var(--color-text-secondary-default);
-    font-size: $font-size-xs;
-    line-height: $line-height-sm;
     margin-top: 8px;
   }
 
   &__link {
-    display: block;
     margin-top: 8px;
   }
 

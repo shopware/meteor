@@ -150,13 +150,14 @@ export default defineComponent({
   min-width: 56px;
   margin: 0 6px 6px 0;
   padding: 8px 12px;
-  line-height: 14px;
-  font-size: $font-size-extra-small;
   height: 32px;
   border: 1px solid var(--color-border-primary-default);
   background: var(--color-background-primary-default);
-  border-radius: 4px;
+  line-height: 1.1;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-xs);
   color: var(--color-text-primary-default);
+  border-radius: 4px;
   cursor: default;
 
   .mt-label__caption {
@@ -218,7 +219,7 @@ export default defineComponent({
   &.mt-label--appearance-badged {
     background: transparent;
     border: 0;
-    font-size: $font-size-small;
+    font-size: var(--font-size-s);
     padding: 4px 0;
     line-height: 22px;
 

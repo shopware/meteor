@@ -12,7 +12,7 @@
     @inheritance-restore="$emit('inheritance-restore', $event)"
     @inheritance-remove="$emit('inheritance-remove', $event)"
   >
-    <template #label>
+    <template #label v-if="label">
       {{ label }}
     </template>
 
@@ -81,7 +81,8 @@ export default defineComponent({
 
     label: {
       type: String,
-      required: true,
+      required: false,
+      default: null,
     },
 
     placeholder: {

@@ -1960,15 +1960,6 @@ export default defineComponent({
 /**
 * Use inter-font instead of normal font for data-table. Also add the new variables to this file.
 */
-$font-family-default:
-  "Inter",
-  -apple-system,
-  BlinkMacSystemFont,
-  "San Francisco",
-  "Segoe UI",
-  Roboto,
-  "Helvetica Neue",
-  sans-serif;
 $font-family-variables:
   "Inter var",
   -apple-system,
@@ -1989,14 +1980,6 @@ $font-family-default-feature-settings:
   "cv06" on,
   "cv10" on,
   "cv11" on;
-
-$font-weight-medium: 500;
-
-$line-height-auto: auto;
-$line-height-xs: 18px;
-$line-height-sm: 20px;
-$line-height-md: 24px;
-$line-height-lg: 28px;
 
 $color-card-headline: #1c1c1c;
 $color-shopware-brand-vivacious-500: #0f76de;
@@ -2059,7 +2042,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
 
   // add new Inter font to data table
   * {
-    font-family: $font-family-default;
+    font-family: var(--font-family-body);
   }
 
   @supports (font-variation-settings: normal) {
@@ -2070,10 +2053,10 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   }
 
   // adjust font styling
-  font-size: $font-size-xs;
-  font-weight: $font-weight-regular;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-regular);
   color: $color-darkgray-300;
-  line-height: $line-height-sm;
+  line-height: var(--font-line-height-xs);
 
   .mt-data-table__toolbar {
     width: 100%;
@@ -2264,8 +2247,8 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   }
 
   thead th {
-    font-weight: $font-weight-medium;
-    line-height: $line-height-xs;
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-2xs);
     background-color: var(--color-elevation-surface-sunken);
     color: var(--color-text-secondary-default);
     min-width: 50px;
@@ -2529,9 +2512,10 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
       top: 1px;
       color: $color-shopware-brand-vivacious-500;
       text-decoration: none;
-      font-weight: $font-weight-semi-bold;
-      font-size: $font-size-xs;
-      line-height: $line-height-xs;
+      font-weight: var(--font-weight-semibold);
+      font-size: var(--font-size-xs);
+      line-height: var(--font-line-height-xs);
+      font-family: var(--font-family-body);
       margin-right: 8px;
 
       &:hover {
@@ -2577,7 +2561,9 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
 
   &__pagination-info-text {
     white-space: nowrap;
-    font-size: $font-size-xxs;
+    font-size: var(--font-size-2xs);
+    line-height: var(--font-line-height-2xs);
+    font-family: var(--font-family-body);
     margin-left: 12px;
   }
 }
@@ -2618,13 +2604,13 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   opacity: 0.8;
 
   // set the normal table header cell styling
-  font-family: $font-family-default;
+  font-family: var(--font-family-body);
   @supports (font-variation-settings: normal) {
     font-family: $font-family-variables;
     font-feature-settings: $font-family-default-feature-settings;
   }
   text-align: left;
-  font-size: $font-size-xs;
+  font-size: var(--font-size-xs);
   padding: $tableCellPadding;
   border: 1px solid var(--color-border-brand-selected);
   border-radius: $border-radius-default $border-radius-default 0 0;
@@ -2633,8 +2619,8 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   overflow: hidden;
   text-overflow: ellipsis;
   vertical-align: top;
-  font-weight: $font-weight-medium;
-  line-height: $line-height-xs;
+  font-weight: var(--font-weight-medium);
+  line-height: var(--font-line-height-xs);
   background-color: var(--color-elevation-surface-sunken);
   color: var(--color-text-primary-default);
   min-width: 50px;

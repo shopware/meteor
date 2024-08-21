@@ -2,7 +2,7 @@
   <div class="page">
     <SwCard title="Example card" subtitle="This is an example card">
       <SwBlockStack>
-        <p>This is some very interesting text.</p>
+        <MtText>This is some very interesting text.</MtText>
 
         <SwButton variant="primary" @click="showBanner = !showBanner">
           Show banner
@@ -15,9 +15,9 @@
           doloremque tempore similique!
         </SwBanner>
 
-        <p data-testid="example-text">
+        <MtText data-testid="example-text">
           {{ !!text ? text : "Type something into the text field!" }}
-        </p>
+        </MtText>
 
         <SwTextField label="A text field" v-model="text" />
       </SwBlockStack>
@@ -261,6 +261,7 @@ import {
   MtModalClose,
   MtModalTrigger,
   MtModalAction,
+  MtText,
 } from "@shopware-ag/meteor-component-library";
 import SwBlockStack from "./components/sw-block-stack.vue";
 

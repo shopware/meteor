@@ -14,7 +14,9 @@ $mt-tooltip-border-color-light: $color-gray-300;
     border-radius: $mt-tooltip-border-radius;
     color: var(--color-text-inverse-default);
     padding: 12px 16px;
-    font-size: 14px;
+    font-size: var(--font-size-xs);
+    line-height: var(--font-line-height-xs);
+    font-family: var(--font-family-body);
     word-wrap: break-word;
 
     &::before {

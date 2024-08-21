@@ -365,8 +365,9 @@ $mt-select-result-list-transition: all ease-in-out 0.2s;
   border: 1px solid var(--color-border-primary-default);
   box-shadow: 0 3px 6px 0 $color-gray-300;
   background-color: var(--color-elevation-surface-overlay);
-  font-size: $font-size-small;
-  font-family: $font-family-default;
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+  font-family: var(--font-family-body);
   padding: 8px;
   border-radius: 4px;
 

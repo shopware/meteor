@@ -640,7 +640,7 @@ $mt-datepicker-color-text-selected: $color-white;
     .flatpickr-monthDropdown-months {
       padding-top: 2px;
       padding-bottom: 4px;
-      font-weight: $font-weight-semi-bold;
+      font-weight: var(--font-weight-semi-bold);
       color: $color-darkgray-200;
       text-align: right;
       -moz-appearance: none;
@@ -648,7 +648,7 @@ $mt-datepicker-color-text-selected: $color-white;
       line-height: 1.2;
 
       option {
-        font-weight: $font-weight-regular;
+        font-weight: var(--font-weight-regular);
       }
     }
 
