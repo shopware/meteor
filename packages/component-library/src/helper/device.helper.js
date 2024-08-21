@@ -10,7 +10,6 @@ function DeviceHelper() {
   this.listeners = [];
 
   // do not register the resize event listener on the server
-  // what about updating the methods in the prototype?
   if (typeof window === "undefined") {
     return
   }

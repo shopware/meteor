@@ -20,6 +20,8 @@
         </MtText>
 
         <SwTextField label="A text field" v-model="text" />
+
+        <MtTabs :items="[{ label: 'Foo' }, { label: 'Bar' }]" />
       </SwBlockStack>
 
       <MtModalRoot>
@@ -262,6 +264,7 @@ import {
   MtModalTrigger,
   MtModalAction,
   MtText,
+  MtTabs,
 } from "@shopware-ag/meteor-component-library";
 import SwBlockStack from "./components/sw-block-stack.vue";
 
