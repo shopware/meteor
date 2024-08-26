@@ -4,3 +4,7 @@ node_modules/
 chrome/
 .idea/
 .DS_Store
+# Devenv
+.direnv
+.devenv*
+devenv.local.nix
