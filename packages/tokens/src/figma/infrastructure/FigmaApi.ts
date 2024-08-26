@@ -2,7 +2,7 @@ import { type HttpClient } from '../../common/domain/http-client/HttpClient.js';
 import { z } from 'zod';
 
 const variableAlias = z.object({
-  id: z.string().regex(/^VariableID:[0-9a-f]{40}\/\d+:\d+$/),
+  id: z.string().regex(/^VariableID:([0-9a-f]{40}\/)?\d+:\d+$/),
   type: z.literal('VARIABLE_ALIAS'),
 });
 
