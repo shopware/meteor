@@ -253,6 +253,7 @@ export default defineComponent({
           val = this.min;
         }
 
+        this.computeValue(val.toString());
         this.$emit("input-change", val);
       }
     },
