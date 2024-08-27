@@ -1,0 +1,31 @@
+---
+"@shopware-ag/meteor-tokens": minor
+---
+
+- Removed scale/size/3
+- Removed scale/size/9
+- Removed scale/size/11
+- Removed scale/size/13
+- Removed scale/size/15
+- Removed scale/size/17
+- Removed scale/size/19
+- Removed scale/size/34
+- Removed scale/size/38
+- Removed scale/size/42
+- Removed scale/size/44
+- Removed scale/size/52
+- Removed scale/size/60
+- Removed scale/size/88
+- Removed scale/size/112
+- Removed scale/size/144
+- Removed scale/size/176
+- Removed scale/size/208
+- Removed scale/size/240
+- Added scale/size/0
+- Added border/radius/none
+- Added spacing/radius/checkbox
+- Added border/radius/button
+- Added border/radius/overlay
+- Added border/radius/card
+- Removed color/border/tertiary/default
+- Removed color/border/secondary/default
