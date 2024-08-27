@@ -153,7 +153,7 @@ $mt-button-transition: all 0.15s ease-out;
   color: $color-darkgray-200;
   transition: $mt-button-transition;
   display: inline-block;
-  border-radius: var(--border-radius-xs);
+  border-radius: var(--border-radius-button);
   padding: 2px 24px;
   font-size: var(--font-size-xs);
   line-height: 34px;
