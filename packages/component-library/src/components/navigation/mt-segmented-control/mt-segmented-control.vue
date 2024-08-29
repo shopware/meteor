@@ -214,7 +214,7 @@ export default defineComponent({
   width: max-content;
   background-color: var(--color-elevation-surface-overlay);
   border: 1px solid var(--color-border-primary-default);
-  border-radius: var(--border-radius-xs);
+  border-radius: var(--border-radius-button);
   padding: 2px;
 
   .mt-floating-ui {
@@ -232,7 +232,7 @@ export default defineComponent({
     position: relative;
     cursor: pointer;
     border: none;
-    border-radius: var(--border-radius-xs);
+    border-radius: var(--border-radius-button);
     padding: 6px 12px;
     font-family: var(--font-family-body);
     font-size: var(--font-size-2xs);
@@ -351,7 +351,7 @@ export default defineComponent({
     gap: 0;
 
     .mt-floating-ui .mt-segmented-control__action {
-      border-radius: 0;
+      border-radius: var(--border-radius-none);
       border-right: 1px solid var(--color-border-primary-default);
     }
 
