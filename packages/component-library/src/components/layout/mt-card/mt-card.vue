@@ -367,7 +367,6 @@ export default defineComponent({
   align-items: stretch;
   gap: 12px;
   padding: 24px;
-  padding-bottom: 20px;
   border-bottom: 1px solid var(--color-border-primary-default);
 }
 
