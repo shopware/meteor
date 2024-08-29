@@ -232,7 +232,7 @@ export default defineComponent({
 
 .mt-card {
   max-width: 60rem;
-  margin: 0 auto 40px;
+  margin: 0 auto 2.5rem;
   position: relative;
   background: var(--color-elevation-surface-raised);
   border: 1px solid var(--color-border-primary-default);
@@ -250,7 +250,7 @@ export default defineComponent({
 .mt-card__content {
   display: flow-root;
   flex-basis: 100%;
-  padding: 24px;
+  padding: 1.5rem;
   background-clip: padding-box;
   position: relative;
   color: var(--color-text-primary-default);
@@ -260,29 +260,29 @@ export default defineComponent({
   }
 
   & > h1 {
-    font-size: 24px;
+    font-size: 1.5rem;
   }
 
   & > h2 {
-    font-size: 22px;
+    font-size: 1.375rem;
   }
 
   & > h3 {
-    font-size: 20px;
+    font-size: 1.25rem;
   }
 
   & > :where(h4, h5, h6) {
-    font-size: 18px;
+    font-size: 1.125rem;
   }
 
   & a.mt-card__quick-link {
     display: grid;
     grid-auto-flow: column;
-    grid-column-gap: 6px;
+    grid-column-gap: 0.375rem;
     align-items: center;
     text-decoration: none;
     color: var(--color-text-brand-default);
-    font-size: 14px;
+    font-size: 0.875rem;
 
     &:hover {
       color: var(--color-text-brand-hover);
@@ -304,13 +304,13 @@ export default defineComponent({
     text-align: center;
 
     & h3 {
-      font-size: 30px;
+      font-size: 1.875rem;
     }
   }
 }
 
 .mt-card--large {
-  max-width: 1330px;
+  max-width: 83.125rem;
 
   & .mt-card__title,
   & .mt-card__subtitle {
@@ -365,16 +365,16 @@ export default defineComponent({
   display: flex;
   flex-wrap: wrap;
   align-items: stretch;
-  gap: 12px;
-  padding: 24px;
+  gap: 0.75rem;
+  padding: 1.5rem;
   border-bottom: 1px solid var(--color-border-primary-default);
 }
 
 .mt-card__toolbar {
   display: flex;
   flex-basis: auto;
-  gap: 8px;
-  padding: 20px 24px 16px 24px;
+  gap: 0.5rem;
+  padding: 1.25rem 1.5rem 1rem 1.5rem;
 
   &:empty {
     display: none;
@@ -384,8 +384,8 @@ export default defineComponent({
 .mt-card__avatar {
   overflow: hidden;
   border-radius: var(--border-radius-xs);
-  width: 40px;
-  height: 40px;
+  width: 2.5rem;
+  height: 2.5rem;
 
   & img {
     width: 100%;
@@ -427,7 +427,7 @@ export default defineComponent({
   & .mt-tabs {
     margin: 0;
     max-width: none;
-    padding-left: 8px;
+    padding-left: 0.8rem;
 
     & .mt-tabs__custom-content {
       padding: 0;
