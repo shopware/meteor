@@ -1,7 +1,7 @@
 @import "../variables.scss";
 
 $mt-tooltip-z-index: $z-index-tooltip;
-$mt-tooltip-border-radius: var(--border-radius-xs);
+$mt-tooltip-border-radius: var(--border-radius-overlay);
 $mt-tooltip-color-light: $color-darkgray-200;
 $mt-tooltip-border-color-light: $color-gray-300;
 

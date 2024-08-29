@@ -183,18 +183,12 @@ export default defineComponent({
     });
 
     const componentClasses = computed(() => {
-      const classes: {
-        "is--float": boolean;
-        "is--open": boolean;
-        "has--header": boolean;
-        [key: `is--width-${string}`]: boolean;
-      } = {
+      const classes = {
         "is--float": !props.disableFloat,
         "is--open": isOpened.value,
         "has--header": showHeader.value,
+        [`mt-popover--width-${props.width}`]: true,
       };
-
-      classes[`is--width-${props.width}`] = true;
 
       return classes;
     });
@@ -276,7 +270,7 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
     padding-bottom: 4px;
     background-color: var(--color-elevation-surface-overlay);
     overflow: auto;
-    border-radius: var(--border-radius-xs);
+    border-radius: var(--border-radius-overlay);
     @include drop-shadow-default;
     overflow-x: hidden;
     scroll-behavior: smooth;
