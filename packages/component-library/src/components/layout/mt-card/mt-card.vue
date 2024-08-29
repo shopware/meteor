@@ -234,7 +234,7 @@ export default defineComponent({
 }
 
 .mt-card {
-  max-width: $content-width;
+  max-width: 60rem;
   margin: 0 auto 40px;
   position: relative;
   background: var(--color-elevation-surface-raised);
