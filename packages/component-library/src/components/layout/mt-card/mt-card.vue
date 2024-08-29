@@ -413,8 +413,8 @@ export default defineComponent({
 
 .mt-card__footer {
   display: flex;
-  padding: 16px 24px;
-  border-top: none;
+  padding: 1.5rem;
+  border-top: 1px solid var(--color-border-primary-default);
   color: var(--color-text-secondary-default);
 
   &:empty {
