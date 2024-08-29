@@ -184,7 +184,7 @@ export default defineComponent({
 
     const componentClasses = computed(() => {
       const classes = {
-        "is--float": !props.disableFloat,
+        "mt-popover--float": !props.disableFloat,
         "is--open": isOpened.value,
         "has--header": showHeader.value,
         [`mt-popover--width-${props.width}`]: true,
@@ -212,172 +212,121 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-/**
-* Use inter-font instead of normal font for popover. Also add the new variables to this file.
-*/
-$font-family-default:
-  "Inter",
-  -apple-system,
-  BlinkMacSystemFont,
-  "San Francisco",
-  "Segoe UI",
-  Roboto,
-  "Helvetica Neue",
-  sans-serif;
-$font-family-variables:
-  "Inter var",
-  -apple-system,
-  BlinkMacSystemFont,
-  "San Francisco",
-  "Segoe UI",
-  Roboto,
-  "Helvetica Neue",
-  sans-serif;
-$font-family-default-feature-settings:
-  "ss01" on,
-  "ss02" on,
-  "case" on,
-  "cpsp" on,
-  "zero" on,
-  "cv09" on,
-  "cv07" on,
-  "cv06" on,
-  "cv10" on,
-  "cv11" on;
+<style>
+.mt-popover--float .mt-popover__content {
+  max-height: max(50vh, 250px);
+}
 
-$line-height-auto: auto;
-$line-height-xs: 18px;
-$line-height-sm: 20px;
-$line-height-md: 24px;
-$line-height-lg: 28px;
+.mt-popover__content {
+  padding: 1rem;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  background-color: var(--color-elevation-surface-overlay);
+  overflow: auto;
+  border-radius: var(--border-radius-overlay);
+  box-shadow:
+    0 1px 1px rgba(0, 0, 0, 8%),
+    0 2px 1px rgba(0, 0, 0, 6%),
+    0 1px 3px rgba(0, 0, 0, 10%);
+  overflow-x: hidden;
+  scroll-behavior: smooth;
 
-$color-card-headline: #1c1c1c;
+  &:has(.mt-popover__header) {
+    padding-top: 16px;
+  }
+}
 
-$scrollShadowSize: 16px;
-$scrollShadowColor: rgba(120, 120, 120, 0.2);
+.mt-popover__content__header-placeholder-right {
+  width: 44px;
+}
 
-.mt-popover {
-  &.is--float {
-    .mt-popover__content {
-      max-height: max(50vh, 250px);
+.mt-popover__header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  gap: 16px;
+}
+
+.mt-popover__title {
+  margin-right: auto;
+  margin-block-end: 0;
+}
+
+.mt-popover__back-button {
+  margin-right: auto;
+  padding-top: 12px;
+  padding-bottom: 12px;
+
+  & .mt-icon {
+    & svg {
+      width: 12px !important;
+      height: 8px !important;
     }
   }
+}
 
-  .mt-popover__content {
-    padding: 16px;
-    padding-top: 4px;
-    padding-bottom: 4px;
-    background-color: var(--color-elevation-surface-overlay);
-    overflow: auto;
-    border-radius: var(--border-radius-overlay);
-    @include drop-shadow-default;
-    overflow-x: hidden;
-    scroll-behavior: smooth;
+.mt-popover--width-dynamic .mt-popover__content {
+  min-width: 220px;
+  max-width: 440px;
+}
 
-    &:has(.mt-popover__header) {
-      padding-top: 16px;
-    }
+.mt-popover--width-large .mt-popover__content {
+  min-width: 340px;
+  max-width: 340px;
+}
 
-    // add new Inter font to popover
-    * {
-      font-family: var(--font-family-body);
-    }
+.mt-popover--width-medium .mt-popover__content {
+  min-width: 280px;
+  max-width: 280px;
+}
 
-    @supports (font-variation-settings: normal) {
-      * {
-        font-family: $font-family-variables;
-        font-feature-settings: $font-family-default-feature-settings;
-      }
-    }
+.mt-popover--width-small .mt-popover__content {
+  min-width: 220px;
+  max-width: 220px;
+}
 
-    .mt-popover__header {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-bottom: 16px;
-      gap: 16px;
-    }
+.mt-popover__items {
+  position: relative;
 
-    .mt-popover__title {
-      margin-right: auto;
-      margin-block-end: 0;
-    }
-
-    &__header-placeholder-right {
-      width: 44px;
-    }
-
-    .mt-popover__back-button {
-      margin-right: auto;
-      padding-top: 12px;
-      padding-bottom: 12px;
-
-      .mt-icon {
-        svg {
-          width: 12px !important;
-          height: 8px !important;
-        }
-      }
-    }
-  }
-
-  &.is--width-dynamic .mt-popover__content {
-    min-width: 220px;
-    max-width: 440px;
-  }
-
-  &.is--width-large .mt-popover__content {
-    min-width: 340px;
-    max-width: 340px;
-  }
-
-  &.is--width-medium .mt-popover__content {
-    min-width: 280px;
-    max-width: 280px;
-  }
-
-  &.is--width-small .mt-popover__content {
-    min-width: 220px;
-    max-width: 220px;
-  }
-
-  &__items {
-    position: relative;
-  }
-
-  &__items:has(div.slideIn-leave-active) {
+  &:has(div.slideIn-leave-active) {
     overflow: hidden !important;
   }
+}
 
-  .slideIn-leave-active,
-  .slideOut-leave-active {
+/* Animations */
+.mt-popover {
+  & .slideIn-leave-active,
+  & .slideOut-leave-active {
     transition: all 0.125s ease;
   }
-  .slideIn-enter-active,
-  .slideOut-enter-active {
+
+  & .slideIn-enter-active,
+  & .slideOut-enter-active {
     transition: all 0.125s ease;
     transition-delay: 0.125s;
   }
 
-  .slideIn-leave-active,
-  .slideOut-leave-active {
+  & .slideIn-leave-active,
+  & .slideOut-leave-active {
     position: absolute;
   }
 
-  .slideIn-leave-to {
+  & .slideIn-leave-to {
     transform: translate3d(-110%, 0, 0);
     opacity: 0;
   }
-  .slideIn-enter {
+
+  & .slideIn-enter {
     transform: translate3d(110%, 0, 0);
   }
 
-  .slideOut-leave-to {
+  & .slideOut-leave-to {
     transform: translate3d(110%, 0, 0);
     opacity: 0;
   }
-  .slideOut-enter {
+
+  & .slideOut-enter {
     transform: translate3d(-110%, 0, 0);
   }
 }
