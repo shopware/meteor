@@ -42,7 +42,6 @@ const meta: SlottedMeta<
     showDelay: 100,
     hideDelay: 100,
     disabled: false,
-    appearance: "dark",
     showOnDisabledElements: false,
   },
   argTypes: {
