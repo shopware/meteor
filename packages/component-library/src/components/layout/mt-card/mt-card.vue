@@ -411,8 +411,15 @@ export default defineComponent({
 }
 
 .mt-card__footer {
+  --mt-card-footer-padding: 1.5rem;
+
+  --mt-inset-block-start: var(--mt-card-footer-padding);
+  --mt-inset-block-end: var(--mt-card-footer-padding);
+  --mt-inset-inline-start: var(--mt-card-footer-padding);
+  --mt-inset-inline-end: var(--mt-card-footer-padding);
+
   display: flex;
-  padding: 1.5rem;
+  padding: var(--mt-card-footer-padding);
   border-top: 1px solid var(--color-border-primary-default);
   color: var(--color-text-secondary-default);
 

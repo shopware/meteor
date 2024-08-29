@@ -507,41 +507,43 @@
     </template>
 
     <template #footer>
-      <div class="mt-data-table__footer-left">
-        <mt-select
-          small
-          hide-clearable-button
-          :options="paginationOptionsConverted"
-          :model-value="paginationLimit"
-          @change="emitPaginationLimitChange"
-        />
-        <span class="mt-data-table__pagination-info-text">
-          {{ $t("mt-data-table.itemsPerPage") }}
-        </span>
-      </div>
+      <mt-inset class="mt-data-table__footer-inset">
+        <div class="mt-data-table__footer-left">
+          <mt-select
+            small
+            hide-clearable-button
+            :options="paginationOptionsConverted"
+            :model-value="paginationLimit"
+            @change="emitPaginationLimitChange"
+          />
+          <span class="mt-data-table__pagination-info-text">
+            {{ $t("mt-data-table.itemsPerPage") }}
+          </span>
+        </div>
 
-      <div class="mt-data-table__footer-right">
-        <mt-pagination
-          :limit="paginationLimit"
-          :current-page="currentPage"
-          :total-items="paginationTotalItems"
-          @change-current-page="emitPaginationCurrentPageChange"
-        />
+        <div class="mt-data-table__footer-right">
+          <mt-pagination
+            :limit="paginationLimit"
+            :current-page="currentPage"
+            :total-items="paginationTotalItems"
+            @change-current-page="emitPaginationCurrentPageChange"
+          />
 
-        <mt-button
-          v-if="enableReload"
-          v-tooltip="{
-            message: $t('mt-data-table.reload.tooltip'),
-            width: 'auto',
-          }"
-          square
-          aria-label="reload-data"
-          variant="secondary"
-          @click="emitReload"
-        >
-          <mt-icon name="solid-undo-s" />
-        </mt-button>
-      </div>
+          <mt-button
+            v-if="enableReload"
+            v-tooltip="{
+              message: $t('mt-data-table.reload.tooltip'),
+              width: 'auto',
+            }"
+            square
+            aria-label="reload-data"
+            variant="secondary"
+            @click="emitReload"
+          >
+            <mt-icon name="solid-undo-s" />
+          </mt-button>
+        </div>
+      </mt-inset>
     </template>
   </mt-card>
 </template>
@@ -593,6 +595,7 @@ import MtEmptyState from "../../layout/mt-empty-state/mt-empty-state.vue";
 import StickyColumn from "../../../directives/stickyColumn.directive";
 import MtDataTableResetFilterButton from "./sub-components/mt-data-table-reset-filter-button/mt-data-table-reset-filter-button.vue";
 import MtDataTableFilter from "./sub-components/mt-data-table-filter/mt-data-table-filter.vue";
+import MtInset from "@/components/layout/mt-inset/mt-inset.vue";
 import { throttle } from "lodash-es";
 import { reactive } from "vue";
 import type { Filter } from "./mt-data-table.interfaces";
@@ -662,6 +665,7 @@ export default defineComponent({
     "mt-data-table-price-renderer": MtDataTablePriceRenderer,
     "mt-data-table-reset-filter-button": MtDataTableResetFilterButton,
     "mt-data-table-filter": MtDataTableFilter,
+    "mt-inset": MtInset,
   },
   props: {
     /**
@@ -2539,6 +2543,12 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     .mt-select {
       margin-bottom: 0;
     }
+  }
+
+  &__footer-inset {
+    display: flex;
+    width: calc(100% + var(--mt-card-footer-padding) * 2);
+    padding: 1rem var(--mt-card-footer-padding);
   }
 
   &__footer-right {
