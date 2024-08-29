@@ -218,10 +218,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-@import "../../assets/scss/variables";
-@import "../../assets/scss/mixins";
-
+<style scoped>
 /**
  * @hotfix fixes a bug in safari which leads to disappearing cards
  */
@@ -241,206 +238,200 @@ export default defineComponent({
   border: 1px solid var(--color-border-primary-default);
   overflow: hidden;
 
-  &:not(&--hero) {
+  &:not(.mt-card--hero) {
     border-radius: var(--border-radius-card);
-  }
-
-  &.mt-card--is-inherited {
-    border-color: var(--color-border-accent-default);
-
-    // TODO: handle case
-    .mt-card__title {
-      color: var(--color-text-accent-default);
-    }
-
-    .mt-card__inheritance-toggle {
-      color: var(--color-icon-accent-default);
-    }
-  }
-
-  &.mt-card--grid {
-    .mt-card__content {
-      display: grid;
-      padding: 0;
-
-      .mt-grid {
-        border-top: none;
-      }
-    }
-  }
-
-  &.mt-card--hero {
-    .mt-card__content {
-      background: none;
-      border: none;
-      text-align: center;
-
-      h3 {
-        font-size: 30px;
-      }
-    }
-  }
-
-  &.mt-card--large {
-    max-width: 1330px;
-
-    .mt-card__title,
-    .mt-card__subtitle {
-      width: auto;
-      position: relative;
-      top: 0;
-      left: 0;
-      text-align: left;
-    }
-  }
-
-  .mt-card__header {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: stretch;
-    gap: 12px;
-    padding: 24px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--color-border-primary-default);
-  }
-
-  .mt-card__avatar {
-    overflow: hidden;
-    border-radius: var(--border-radius-xs);
-    width: 40px;
-    height: 40px;
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-  }
-
-  .mt-card__avatar:empty {
-    display: none;
-  }
-
-  .mt-card__titles {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-
-    &--has-inheritance-toggle {
-      display: grid;
-      grid-template-columns: min-content 1fr;
-      column-gap: 4px;
-    }
-
-    .mt-card__subtitle {
-      grid-column: 1 / -1;
-    }
-  }
-
-  .mt-card__titles-right-slot {
-    color: var(--color-text-primary-default);
-    margin-left: auto;
-  }
-
-  .mt-card__inheritance-toggle {
-    cursor: pointer;
-    outline-offset: 2px;
-    outline-color: var(--color-border-brand-selected);
-    color: var(--color-icon-primary-default);
-  }
-
-  .mt-card__toolbar {
-    display: flex;
-    flex-basis: auto;
-    gap: 8px;
-    padding: 20px 24px 16px 24px;
-
-    &:empty {
-      display: none;
-    }
-  }
-
-  &__tabs {
-    .mt-tabs {
-      margin: 0;
-      max-width: none;
-      padding-left: 8px;
-
-      .mt-tabs__custom-content {
-        padding: 0;
-      }
-    }
   }
 
   &:not(:has(.mt-card__tabs:empty)) .mt-card__header {
     border-bottom: none;
   }
+}
 
-  .mt-card__content {
-    display: flow-root;
-    flex-basis: 100%;
-    padding: 24px;
-    background-clip: padding-box;
+.mt-card__content {
+  display: flow-root;
+  flex-basis: 100%;
+  padding: 24px;
+  background-clip: padding-box;
+  position: relative;
+  color: var(--color-text-primary-default);
+
+  & > :where(h1, h2, h3, h4, h5, h6) {
+    font-weight: normal;
+  }
+
+  & > h1 {
+    font-size: 24px;
+  }
+
+  & > h2 {
+    font-size: 22px;
+  }
+
+  & > h3 {
+    font-size: 20px;
+  }
+
+  & > :where(h4, h5, h6) {
+    font-size: 18px;
+  }
+
+  & a.mt-card__quick-link {
+    display: grid;
+    grid-auto-flow: column;
+    grid-column-gap: 6px;
+    align-items: center;
+    text-decoration: none;
+    color: var(--color-text-brand-default);
+    font-size: 14px;
+
+    &:hover {
+      color: var(--color-text-brand-hover);
+    }
+  }
+}
+
+.mt-card--has-footer {
+  & .mt-card__content {
+    border: none;
+    border-radius: var(--border-radius-none);
+  }
+}
+
+.mt-card--hero {
+  & .mt-card__content {
+    background: none;
+    border: none;
+    text-align: center;
+
+    & h3 {
+      font-size: 30px;
+    }
+  }
+}
+
+.mt-card--large {
+  max-width: 1330px;
+
+  & .mt-card__title,
+  & .mt-card__subtitle {
+    width: auto;
     position: relative;
-    color: var(--color-text-primary-default);
+    top: 0;
+    left: 0;
+    text-align: left;
+  }
+}
 
-    > h1,
-    > h2,
-    > h3,
-    > h4,
-    > h5,
-    > h6 {
-      font-weight: normal;
-    }
+.mt-card__titles {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
 
-    > h1 {
-      font-size: 24px;
-    }
+.mt-card__titles--has-inheritance-toggle {
+  display: grid;
+  grid-template-columns: min-content 1fr;
+  column-gap: 0.25rem;
 
-    > h2 {
-      font-size: 22px;
-    }
+  & .mt-card__subtitle {
+    grid-column: 1 / -1;
+  }
+}
 
-    > h3 {
-      font-size: 20px;
-    }
+.mt-card--is-inherited {
+  border-color: var(--color-border-accent-default);
 
-    > h4,
-    > h5,
-    > h6 {
-      font-size: 18px;
-    }
-
-    a.mt-card__quick-link {
-      display: grid;
-      grid-auto-flow: column;
-      grid-column-gap: 6px;
-      align-items: center;
-      text-decoration: none;
-      color: var(--color-text-brand-default);
-      font-size: 14px;
-
-      &:hover {
-        color: var(--color-text-brand-hover);
-      }
-    }
+  & .mt-card__title {
+    color: var(--color-text-accent-default);
   }
 
-  .mt-card__footer {
-    display: flex;
-    padding: 16px 24px;
-    border-top: none;
-    color: var(--color-text-secondary-default);
+  & .mt-card__inheritance-toggle {
+    color: var(--color-icon-accent-default);
   }
+}
 
-  .mt-card__footer:empty {
+.mt-card--grid {
+  & .mt-card__content {
+    display: grid;
+    padding: 0;
+
+    & .mt-grid {
+      border-top: none;
+    }
+  }
+}
+
+.mt-card__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 12px;
+  padding: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--color-border-primary-default);
+}
+
+.mt-card__toolbar {
+  display: flex;
+  flex-basis: auto;
+  gap: 8px;
+  padding: 20px 24px 16px 24px;
+
+  &:empty {
     display: none;
   }
+}
 
-  &.mt-card--has-footer {
-    .mt-card__content {
-      border: none;
-      border-radius: var(--border-radius-none);
+.mt-card__avatar {
+  overflow: hidden;
+  border-radius: var(--border-radius-xs);
+  width: 40px;
+  height: 40px;
+
+  & img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  &:empty {
+    display: none;
+  }
+}
+
+.mt-card__inheritance-toggle {
+  cursor: pointer;
+  outline-offset: 2px;
+  outline-color: var(--color-border-brand-selected);
+  color: var(--color-icon-primary-default);
+}
+
+.mt-card__titles-right-slot {
+  color: var(--color-text-primary-default);
+  margin-left: auto;
+}
+
+.mt-card__footer {
+  display: flex;
+  padding: 16px 24px;
+  border-top: none;
+  color: var(--color-text-secondary-default);
+
+  &:empty {
+    display: none;
+  }
+}
+</style>
+
+<style>
+.mt-card__tabs {
+  & .mt-tabs {
+    margin: 0;
+    max-width: none;
+    padding-left: 8px;
+
+    & .mt-tabs__custom-content {
+      padding: 0;
     }
   }
 }
