@@ -9,6 +9,11 @@ import { debounce } from "lodash-es";
 function DeviceHelper() {
   this.listeners = [];
 
+  // do not register the resize event listener on the server
+  if (typeof window === "undefined") {
+    return;
+  }
+
   window.addEventListener("resize", this.resize.bind(this));
 }
 
