@@ -123,6 +123,7 @@ export const VisualTestTimeInputValue: MtDatepickerStory = {
     // Enter 22 as minute
     await userEvent.clear(calendar.getByLabelText("Minute"));
     await userEvent.type(calendar.getByLabelText("Minute"), "22");
+    await userEvent.type(canvas.getByRole("textbox"), "{enter}");
 
     // Click label to close datepicker
     await userEvent.click(canvas.getByText(args.label!));
@@ -166,5 +167,36 @@ export const TestDisabledDoesNotOpenFlatpickr: MtDatepickerStory = {
     await userEvent.click(canvas.getByRole("textbox"));
 
     expect((canvas.getByRole("textbox") as HTMLInputElement).disabled).toBe(true);
+  },
+};
+
+export const TestManualInput: MtDatepickerStory = {
+  name: "Should emit date value when manually typed",
+  args: {
+    label: "Date value",
+    dateType: "date",
+    modelValue: null,
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByRole("textbox");
+
+    // Focus input
+    await userEvent.click(input);
+
+    // Clear input
+    await userEvent.clear(input);
+
+    // Enter date manually
+    await userEvent.type(input, "2024-12-24");
+
+    // Click label to close datepicker
+    await userEvent.click(canvas.getByText(args.label!));
+
+    // Expect input value
+    expect((input as HTMLInputElement).value).toBe("2024-12-24");
+
+    // Expect input event is triggered
+    expect(args.updateModelValue).toHaveBeenCalledWith("2024-12-24T00:00:00");
   },
 };
