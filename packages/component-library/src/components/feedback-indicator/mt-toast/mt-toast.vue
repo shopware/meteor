@@ -31,7 +31,7 @@
 </template>
 
 <script setup lang="ts">
-import { type PropType, ref, toRef, defineProps, computed, watch, defineEmits } from "vue";
+import { type PropType, ref, toRef, computed, watch } from "vue";
 import MtToastNotification from "./mt-toast-notification.vue";
 
 export interface Toast {

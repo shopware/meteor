@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, type Component } from "vue";
+import { type Component } from "vue";
 import { useModalContext } from "../composables/useModalContext";
 
 defineProps<{ as: Component }>();
