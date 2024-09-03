@@ -25,7 +25,7 @@
 
         <!-- @slot Alternative slot to the title property -->
         <slot name="title">
-          <MtText v-if="title" weight="medium" size="s" class="mt-card__title">
+          <MtText v-if="title" weight="semibold" size="m" class="mt-card__title">
             {{ title }}
           </MtText>
         </slot>
