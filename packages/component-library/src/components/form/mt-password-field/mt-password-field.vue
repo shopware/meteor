@@ -152,32 +152,30 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-.mt-field.mt-field--password {
-  .mt-field--password__container {
-    position: relative;
-    width: 100%;
-  }
-
-  .mt-field__toggle-password-visibility {
-    position: absolute;
-    right: 16px;
-    top: 50%;
-    transform: translate(0, -50%);
-  }
-
-  input {
+<style scoped>
+.mt-field--password {
+  & input {
     padding-right: 40px;
   }
 
-  &.mt-field--password.mt-field--password--untoggable .mt-field__input {
-    input {
-      padding-right: 16px;
-    }
-  }
-
-  .mt-icon {
+  & .mt-icon {
     color: var(--color-icon-primary-default);
   }
+}
+
+.mt-field--password--untoggable .mt-field__input input {
+  padding-right: 16px;
+}
+
+.mt-field__toggle-password-visibility {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translate(0, -50%);
+}
+
+.mt-field--password__container {
+  position: relative;
+  width: 100%;
 }
 </style>
