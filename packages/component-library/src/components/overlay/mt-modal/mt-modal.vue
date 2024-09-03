@@ -205,7 +205,7 @@ onUnmounted(() => {
 });
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .mt-modal {
   height: auto;
   position: fixed;
@@ -360,7 +360,7 @@ onUnmounted(() => {
   width: 2rem;
   height: 2rem;
 
-  // prevents hover stlyes from being applied to non-hoverable devices
+  /* prevents hover stlyes from being applied to non-hoverable devices */
   @media (hover: hover) {
     &:hover {
       background-color: var(--color-interaction-secondary-hover);
