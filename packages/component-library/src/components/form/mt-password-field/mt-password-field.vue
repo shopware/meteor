@@ -48,7 +48,7 @@
               : $tc('mt-password-field.titleShowPassword')
           "
           class="mt-field__toggle-password-visibility"
-          @click="onTogglePasswordVisibility(disabled)"
+          @click="() => (showPassword = !showPassword)"
         >
           <mt-icon v-if="showPassword" name="solid-eye-slash" size="18" />
 
@@ -71,7 +71,7 @@
   </mt-base-field>
 </template>
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtTextField from "../mt-text-field/mt-text-field.vue";
 
@@ -121,34 +121,19 @@ export default defineComponent({
     },
   },
 
-  data() {
+  setup(props) {
+    const showPassword = ref(false);
+
+    const passwordPlaceholder = computed(() =>
+      showPassword.value || !props.placeholderIsPassword
+        ? props.placeholder
+        : "*".repeat(props.placeholder.length ? props.placeholder.length : 6),
+    );
+
     return {
-      showPassword: false,
+      showPassword,
+      passwordPlaceholder,
     };
-  },
-
-  computed: {
-    typeFieldClass(): string {
-      return this.passwordToggleAble
-        ? "mt-field--password"
-        : "mt-field--password mt-field--password--untoggable";
-    },
-
-    passwordPlaceholder(): string {
-      return this.showPassword || !this.placeholderIsPassword
-        ? this.placeholder
-        : "*".repeat(this.placeholder.length ? this.placeholder.length : 6);
-    },
-  },
-
-  methods: {
-    onTogglePasswordVisibility(disabled: boolean) {
-      if (disabled) {
-        return;
-      }
-
-      this.showPassword = !this.showPassword;
-    },
   },
 });
 </script>
