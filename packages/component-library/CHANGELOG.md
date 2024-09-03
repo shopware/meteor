@@ -1,5 +1,33 @@
 # Changelog
 
+## 3.12.0
+
+### Minor Changes
+
+- ea49a5e: Disable next page and last page button in mt-pagination when data table is empty
+- ecf9d1a: Allow insetting of card footer
+- 627f2fb: Add mt-text component
+- ebf0a2a: Add mt-inset component
+
+### Patch Changes
+
+- da43c4e: Use semantic border radius tokens in card component
+- c412dd0: Change styling of card footer
+- 36e0812: Fixed missing emit definition and console warning
+- 4a59fcc: Replaced border radius tokens with tokens
+- 0630e58: Adjust padding of card header
+- 9ea8e15: Allow null label for mt-textarea
+- dc6ad1a: allow x-small as valid variant for button
+- 1321454: Add semantic border radius token for checkbox
+- 6371d3a: Use rem values instead of px values in card
+- 11d870a: Make toggle password button accessible
+- 099ca2b: Fix styling of card title
+- 8045090: Hide label with CSS in base-field component when empty
+- ebe7a33: Use semantic border radius token for overlays
+- bebea2e: Use button border radius token for buttons and segmented control
+- Updated dependencies [e644cef]
+  - @shopware-ag/meteor-tokens@0.3.0
+
 ## 3.11.0
 
 ### Minor Changes
