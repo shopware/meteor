@@ -247,6 +247,7 @@ export default defineComponent({
     flex-wrap: nowrap;
 
     .mt-select-selection-list--single {
+      min-width: 0;
       max-width: 100%;
     }
   }
