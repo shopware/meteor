@@ -42,18 +42,29 @@
         @blur="removeFocusClass"
       />
 
-      <div class="mt-field__controls" :class="controlClasses">
-        <mt-icon
-          name="regular-chevron-up-s"
-          data-testid="mt-number-field-increase-button"
+      <div class="mt-number-field__controls" :class="controlClasses">
+        <button
           @click="increaseNumberByStep"
-        />
+          :disabled="disabled"
+          :aria-label="$tc('mt-number-field.increaseButton')"
+          data-testid="mt-number-field-increase-button"
+        >
+          <mt-icon size="10" name="regular-chevron-up-s" aria-hidden="true" />
+        </button>
 
-        <mt-icon
-          name="regular-chevron-down-s"
-          data-testid="mt-number-field-decrease-button"
+        <button
           @click="decreaseNumberByStep"
-        />
+          :disabled="disabled"
+          :aria-label="$t('mt-number-field.decreaseButton')"
+          data-testid="mt-number-field-decrease-button"
+        >
+          <mt-icon
+            style="margin-top: -3px"
+            size="10"
+            name="regular-chevron-down-s"
+            aria-hidden="true"
+          />
+        </button>
       </div>
     </template>
 
@@ -86,6 +97,19 @@ export default defineComponent({
   },
 
   extends: MtTextField,
+
+  i18n: {
+    messages: {
+      en: {
+        "mt-number-field.increaseButton": "Increase",
+        "mt-number-field.decreaseButton": "Decrease",
+      },
+      de: {
+        "mt-number-field.increaseButton": "Erhöhen",
+        "mt-number-field.decreaseButton": "Verringern",
+      },
+    },
+  },
 
   props: {
     /**
@@ -259,10 +283,6 @@ export default defineComponent({
     },
 
     increaseNumberByStep() {
-      if (this.disabled) {
-        return;
-      }
-
       this.computeValue((this.currentValue + this.realStep).toString());
 
       /** @deprecated tag: 5.0 - Will be removed use update:model-value instead */
@@ -272,10 +292,6 @@ export default defineComponent({
     },
 
     decreaseNumberByStep() {
-      if (this.disabled) {
-        return;
-      }
-
       // @ts-expect-error - wrong type because of component extends
       this.computeValue((this.currentValue - this.realStep).toString());
 
@@ -353,39 +369,34 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-.mt-field {
-  &__controls {
-    background: var(--color-elevation-surface-raised);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    row-gap: 8px;
-    align-items: center;
-    width: 42px;
+<style scoped>
+.mt-number-field__controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 2.625rem;
 
-    &--disabled {
-      background: var(--color-background-primary-disabled);
-      cursor: default !important;
+  & button {
+    outline-color: var(--color-border-brand-selected);
+    padding-inline: 0.25rem;
+    border-radius: var(--border-radius-button);
+    transition: all 0.15s ease-out;
+    width: 100%;
+    flex: 1;
 
-      .mt-icon:hover {
-        cursor: default !important;
-      }
+    &:is(:hover, :focus-visible) {
+      background-color: var(--color-interaction-secondary-hover);
     }
 
-    &--has-error {
-      background: var(--color-background-critical-dark);
-    }
-
-    .mt-icon {
-      cursor: pointer;
-      color: var(--color-icon-primary-default);
-
-      & svg {
-        width: 12px !important;
-        height: 6px !important;
-      }
+    &:disabled {
+      cursor: default;
     }
   }
+}
+</style>
+
+<style>
+.mt-number-field.is--disabled .mt-block-field__block {
+  background: var(--color-background-primary-disabled);
 }
 </style>
