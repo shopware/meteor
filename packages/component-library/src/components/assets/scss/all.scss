@@ -1,8 +1,9 @@
 @import "fonts/inter.font";
 @import "variables";
 @import "typography";
-@import "global.scss";
+@import "global.css";
 @import "directives/tooltip";
 @import "directives/dragdrop";
+@import "utilities.css";
 @import "@shopware-ag/meteor-tokens/administration/light.css";
 @import "@shopware-ag/meteor-tokens/administration/dark.css";
