@@ -91,7 +91,6 @@ import { computed, defineComponent, useSlots, type PropType } from "vue";
 import MtContextButton from "../../context-menu/mt-context-button/mt-context-button.vue";
 import MtLoader from "../../feedback-indicator/mt-loader/mt-loader.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
-// TODO: this file needs to be one level lower
 import MtText from "../../content/mt-text/mt-text.vue";
 
 export default defineComponent({
