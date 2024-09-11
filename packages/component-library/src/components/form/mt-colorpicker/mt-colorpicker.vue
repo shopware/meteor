@@ -42,10 +42,11 @@
         @click="onClickInput"
       />
 
-      <mt-popover-deprecated
-        v-if="visible"
+      <mt-floating-ui
+        :isOpened="visible"
         class="mt-colorpicker__colorpicker-position"
         :z-index="zIndex"
+        :offset="-12"
       >
         <div class="mt-colorpicker__colorpicker">
           <div
@@ -197,7 +198,7 @@
             </div>
           </div>
         </div>
-      </mt-popover-deprecated>
+      </mt-floating-ui>
     </template>
 
     <template #error>
@@ -212,16 +213,16 @@ import type { PropType } from "vue";
 import { defineComponent } from "vue";
 import { debounce } from "lodash-es";
 import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
-import MtPopoverDeprecated from "../../_internal/mt-popover-deprecated/mt-popover-deprecated.vue";
+import MtFloatingUi from "../../_internal/mt-floating-ui/mt-floating-ui.vue";
 import MtText from "@/components/content/mt-text/mt-text.vue";
 
 export default defineComponent({
   name: "MtColorpicker",
 
   components: {
-    "mt-popover-deprecated": MtPopoverDeprecated,
     "mt-base-field": MtBaseField,
     "mt-text": MtText,
+    "mt-floating-ui": MtFloatingUi,
   },
 
   props: {

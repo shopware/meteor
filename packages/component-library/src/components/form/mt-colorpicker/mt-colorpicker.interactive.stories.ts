@@ -27,7 +27,7 @@ export const VisualTestOpenColorpicker: MtColorpickerStory = {
     // todo: figure out what element this is
     // Look inside the popover
     const popover = within(
-      document.getElementsByClassName("mt-popover-deprecated__wrapper")[0] as HTMLElement,
+      document.getElementsByClassName("mt-floating-ui__content")[0] as HTMLElement,
     );
 
     const colorRange = popover.getByLabelText("colorpicker-color-range") as HTMLInputElement;
@@ -70,7 +70,7 @@ export const VisualTestChangeColorpickerColor: MtColorpickerStory = {
 
     // Look inside the popover
     const popover = within(
-      document.getElementsByClassName("mt-popover-deprecated__wrapper")[0] as HTMLElement,
+      document.getElementsByClassName("mt-floating-ui__content")[0] as HTMLElement,
     );
 
     const colorRange = popover.getByLabelText("colorpicker-color-range") as HTMLInputElement;
@@ -143,7 +143,7 @@ export const VisualTestChangeColorpickerOutputHex: MtColorpickerStory = {
 
     // Look inside the popover
     const popover = within(
-      document.getElementsByClassName("mt-popover-deprecated__wrapper")[0] as HTMLElement,
+      document.getElementsByClassName("mt-floating-ui__content")[0] as HTMLElement,
     );
 
     const hexInput = popover.getByLabelText("hex-value") as HTMLInputElement;
@@ -171,7 +171,7 @@ export const VisualTestChangeColorpickerOutputHsl: MtColorpickerStory = {
 
     // Look inside the popover
     const popover = within(
-      document.getElementsByClassName("mt-popover-deprecated__wrapper")[0] as HTMLElement,
+      document.getElementsByClassName("mt-floating-ui__content")[0] as HTMLElement,
     );
 
     const hexInput = popover.getByLabelText("hex-value") as HTMLInputElement;
@@ -199,7 +199,7 @@ export const VisualTestChangeColorpickerOutputRgb: MtColorpickerStory = {
 
     // Look inside the popover
     const popover = within(
-      document.getElementsByClassName("mt-popover-deprecated__wrapper")[0] as HTMLElement,
+      document.getElementsByClassName("mt-floating-ui__content")[0] as HTMLElement,
     );
 
     const hexInput = popover.getByLabelText("hex-value") as HTMLInputElement;
@@ -228,7 +228,7 @@ export const VisualTestChangeColorpickerOutputHexAlpha: MtColorpickerStory = {
 
     // Look inside the popover
     const popover = within(
-      document.getElementsByClassName("mt-popover-deprecated__wrapper")[0] as HTMLElement,
+      document.getElementsByClassName("mt-floating-ui__content")[0] as HTMLElement,
     );
 
     const hexInput = popover.getByLabelText("hex-value") as HTMLInputElement;
@@ -257,7 +257,7 @@ export const VisualTestChangeColorpickerOutputHslAlpha: MtColorpickerStory = {
 
     // Look inside the popover
     const popover = within(
-      document.getElementsByClassName("mt-popover-deprecated__wrapper")[0] as HTMLElement,
+      document.getElementsByClassName("mt-floating-ui__content")[0] as HTMLElement,
     );
 
     const hexInput = popover.getByLabelText("hex-value") as HTMLInputElement;
@@ -286,7 +286,7 @@ export const VisualTestChangeColorpickerOutputRgbAlpha: MtColorpickerStory = {
 
     // Look inside the popover
     const popover = within(
-      document.getElementsByClassName("mt-popover-deprecated__wrapper")[0] as HTMLElement,
+      document.getElementsByClassName("mt-floating-ui__content")[0] as HTMLElement,
     );
 
     const hexInput = popover.getByLabelText("hex-value") as HTMLInputElement;
@@ -314,7 +314,7 @@ export const VisualTestColorpickerWithoutAlpha: MtColorpickerStory = {
 
     // Look inside the popover
     const popover = within(
-      document.getElementsByClassName("mt-popover-deprecated__wrapper")[0] as HTMLElement,
+      document.getElementsByClassName("mt-floating-ui__content")[0] as HTMLElement,
     );
 
     const hexInput = popover.getByLabelText("hex-value") as HTMLInputElement;
@@ -340,7 +340,7 @@ export const VisualTestColorpickerDisabled: MtColorpickerStory = {
     await userEvent.click(pickerToggle);
 
     // Expect no popover
-    expect(document.getElementsByClassName("mt-popover-deprecated__wrapper").length).toEqual(0);
+    expect(document.getElementsByClassName("mt-floating-ui__content").length).toEqual(0);
   },
 };
 
@@ -391,7 +391,7 @@ export const VisualTestColorpickerDisabledColorLabels: MtColorpickerStory = {
 
     // Look inside the popover
     const popover = within(
-      document.getElementsByClassName("mt-popover-deprecated__wrapper")[0] as HTMLElement,
+      document.getElementsByClassName("mt-floating-ui__content")[0] as HTMLElement,
     );
 
     const hexInput = popover.getByLabelText("hex-value") as HTMLInputElement;
