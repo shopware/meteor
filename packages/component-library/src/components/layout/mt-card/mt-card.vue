@@ -125,6 +125,7 @@ export default defineComponent({
 
     /**
      * Renders the card as a hero card without styling
+     * @deprecated v4.0.0 - will be removed without replacement
      */
     hero: {
       type: Boolean,
@@ -193,6 +194,7 @@ export default defineComponent({
 
     const cardClasses = computed(() => ({
       "mt-card--grid": !!slots.grid,
+      // @deprecated v4.0.0 - will be removed without replacement
       "mt-card--hero": !!props.hero,
       "mt-card--large": props.large,
       "mt-card--has-footer": !!slots.footer,
@@ -238,6 +240,7 @@ export default defineComponent({
   border: 1px solid var(--color-border-primary-default);
   overflow: hidden;
 
+  /* @deprecated v4.0.0 */
   &:not(.mt-card--hero) {
     border-radius: var(--border-radius-card);
   }
@@ -297,6 +300,7 @@ export default defineComponent({
   }
 }
 
+/* @deprecated v4.0.0 */
 .mt-card--hero {
   & .mt-card__content {
     background: none;
