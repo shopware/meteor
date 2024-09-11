@@ -142,6 +142,7 @@ export default defineComponent({
 
     /**
      * Render the card in a large size
+     * @depracated v4.0.0 - will be removed without replacement
      */
     large: {
       type: Boolean,
@@ -308,6 +309,7 @@ export default defineComponent({
   }
 }
 
+/* @depracated v4.0.0 - will be removed without replacement */
 .mt-card--large {
   max-width: 83.125rem;
 
