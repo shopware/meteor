@@ -471,7 +471,8 @@ export default defineComponent({
         this.isDatepickerOpen = true;
       });
 
-      this.flatpickrInstance.config.onClose.push(() => {
+      this.flatpickrInstance.config.onClose.push((...args) => {
+        this.emitValue(args[1]);
         this.isDatepickerOpen = false;
       });
 
