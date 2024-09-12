@@ -9,7 +9,13 @@
     />
 
     <div :class="inputClasses">
-      <input v-model="model" type="text" id="some-id" :disabled="disabled || isInherited" />
+      <input
+        v-model="model"
+        type="text"
+        id="some-id"
+        :disabled="disabled || isInherited"
+        :placeholder="placeholder"
+      />
     </div>
   </div>
 </template>
@@ -28,6 +34,7 @@ const props = withDefaults(
     isInheritanceField?: boolean;
     isInherited?: boolean;
     disabled?: boolean;
+    placeholder?: string;
   }>(),
   {
     isInheritanceField: false,
@@ -89,5 +96,13 @@ function handleInheritanceUpdate(value: boolean) {
   font-size: var(--font-size-xs);
   outline: none;
   line-height: 1;
+}
+
+.mt-text-field__input input::placeholder {
+  color: var(--color-text-secondary-default);
+}
+
+.mt-text-field__input--disabled input::placeholder {
+  color: var(--color-text-secondary-disabled);
 }
 </style>

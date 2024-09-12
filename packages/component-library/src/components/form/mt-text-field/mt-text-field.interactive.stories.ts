@@ -156,7 +156,7 @@ export const VisualTestDisabled: MtTextFieldStory = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    await userEvent.type(canvas.getByRole("textbox"), "1337");
+    await userEvent.type(canvas.getByRole("textbox", { name: "Textfield label" }), "1337");
 
     expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("Shopware");
   },
