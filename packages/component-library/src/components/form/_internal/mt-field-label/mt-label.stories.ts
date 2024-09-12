@@ -11,6 +11,7 @@ export default {
     required: false,
     inheritance: null,
     hasError: false,
+    id: "some-id",
   },
   render: (args) => ({
     components: { MtFieldLabel },
