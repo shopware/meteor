@@ -8,6 +8,9 @@ export default {
   title: "Components/Form/mt-field-label",
   args: {
     label: "Label",
+    required: false,
+    inheritance: null,
+    hasError: false,
   },
   render: (args) => ({
     components: { MtFieldLabel },

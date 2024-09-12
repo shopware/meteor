@@ -1,47 +1,91 @@
 <template>
-  <label :class="classes" for="">
-    <mt-text
-      size="xs"
-      :color="hasError ? 'color-text-critical-default' : 'color-text-primary-default'"
-      >{{ label }}</mt-text
-    >
-  </label>
+  <div class="mt-field-label">
+    <button v-if="inheritance !== null" class="mt-field-label__inheritance-button">
+      <mt-icon
+        v-if="inheritance === true"
+        size="1rem"
+        name="regular-link-horizontal"
+        :color="
+          hasError ? 'var(--color-icon-critical-default)' : 'var(--color-icon-accent-default)'
+        "
+        aria-label="Disable inheritance"
+      />
+
+      <mt-icon
+        v-else
+        size="1rem"
+        name="regular-link-horizontal-slash"
+        :color="
+          hasError ? 'var(--color-icon-critical-default)' : 'var(--color-icon-primary-default)'
+        "
+        aria-label="Enable inheritance"
+      />
+    </button>
+
+    <mt-text as="label" :class="labelClasses" :for="id" size="xs" :color="labelColor">
+      {{ label }}
+    </mt-text>
+  </div>
 </template>
 
 <script setup lang="ts">
 import MtText from "@/components/content/mt-text/mt-text.vue";
+import MtIcon from "@/components/icons-media/mt-icon/mt-icon.vue";
 import { computed } from "vue";
 
 const props = withDefaults(
   defineProps<{
+    id: string;
     label: string;
     required?: boolean;
     hasError?: boolean;
+    inheritance?: boolean | null;
   }>(),
   {
     required: false,
     hasError: false,
+    inheritance: null,
   },
 );
 
-const classes = computed(() => {
+const labelClasses = computed(() => {
   return [
     {
-      "mt-field-label--required": props.required,
-      "mt-field-label--has-error": props.hasError,
+      "mt-field-label__label--required": props.required,
+      "mt-field-label__label--has-error": props.hasError,
     },
-    "mt-field-label",
+    "mt-field-label__label",
   ];
+});
+
+const labelColor = computed<string>(() => {
+  if (props.hasError) return "color-text-critical-default";
+
+  if (props.inheritance === true) return "color-text-accent-default";
+
+  return "color-text-primary-default";
 });
 </script>
 
 <style scoped>
 .mt-field-label {
+  display: flex;
+  align-items: baseline;
+  column-gap: 0.3125rem;
+}
+
+.mt-field-label__label {
   position: relative;
   display: inline-block;
 }
 
-.mt-field-label--required::after {
+.mt-field-label__inheritance-button:focus-visible {
+  outline: 2px solid var(--color-border-brand-selected);
+  border-radius: var(--border-radius-2xs);
+  outline-offset: 2px;
+}
+
+.mt-field-label__label--required::after {
   content: "*";
   position: absolute;
   top: 0;

@@ -21,3 +21,15 @@ export const WithError: MtFieldLabelStory = {
     hasError: true,
   },
 };
+
+export const UnlinkedInhertiance: MtFieldLabelStory = {
+  args: {
+    inheritance: false,
+  },
+};
+
+export const LinkedInhertiance: MtFieldLabelStory = {
+  args: {
+    inheritance: true,
+  },
+};
