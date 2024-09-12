@@ -143,15 +143,6 @@ export default defineComponent({
     },
 
     /**
-     * Render the card in a large size
-     */
-    large: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    /**
      * Render a inheritance toggle
      */
     inheritance: {
@@ -196,7 +187,6 @@ export default defineComponent({
       "mt-card--grid": !!slots.grid,
       // @deprecated v4.0.0 - will be removed without replacement
       "mt-card--hero": !!props.hero,
-      "mt-card--large": props.large,
       "mt-card--has-footer": !!slots.footer,
       "mt-card--is-inherited": !!props.inheritance,
     }));
@@ -310,19 +300,6 @@ export default defineComponent({
     & h3 {
       font-size: 1.875rem;
     }
-  }
-}
-
-.mt-card--large {
-  max-width: 83.125rem;
-
-  & .mt-card__title,
-  & .mt-card__subtitle {
-    width: auto;
-    position: relative;
-    top: 0;
-    left: 0;
-    text-align: left;
   }
 }
 
