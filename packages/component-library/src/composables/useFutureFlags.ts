@@ -1,8 +1,12 @@
 import { inject, provide } from "vue";
 
-export type FutureFlags = {};
+export type FutureFlags = {
+  removeCardWidth: boolean;
+};
 
-const defaultFutureFlags: FutureFlags = {};
+const defaultFutureFlags: FutureFlags = {
+  removeCardWidth: false,
+};
 
 export const futureFlagsInjectionKey = Symbol("mt-future-flags");
 
