@@ -9,7 +9,7 @@
     />
 
     <div :class="inputClasses">
-      <input type="text" id="some-id" :disabled="isInherited" />
+      <input v-model="model" type="text" id="some-id" :disabled="disabled || isInherited" />
     </div>
   </div>
 </template>
@@ -18,22 +18,28 @@
 import { computed } from "vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 
+const model = defineModel({
+  type: String,
+});
+
 const props = withDefaults(
   defineProps<{
     label: string;
     isInheritanceField?: boolean;
     isInherited?: boolean;
+    disabled?: boolean;
   }>(),
   {
     isInheritanceField: false,
     isInherited: false,
+    disabled: false,
   },
 );
 
 const inputClasses = computed(() => {
   return [
     {
-      "mt-text-field__input--disabled": props.isInherited,
+      "mt-text-field__input--disabled": props.disabled || props.isInherited,
     },
     "mt-text-field__input",
   ];
@@ -42,6 +48,7 @@ const inputClasses = computed(() => {
 const emit = defineEmits(["inheritance-restore", "inheritance-remove"]);
 
 function handleInheritanceUpdate(value: boolean) {
+  if (props.disabled) return;
   const ifInheritanceRestored = value === true;
 
   if (ifInheritanceRestored) {
