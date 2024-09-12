@@ -1,6 +1,10 @@
 <template>
   <label :class="classes" for="">
-    <mt-text size="xs">{{ label }}</mt-text>
+    <mt-text
+      size="xs"
+      :color="hasError ? 'color-text-critical-default' : 'color-text-primary-default'"
+      >{{ label }}</mt-text
+    >
   </label>
 </template>
 
@@ -12,9 +16,11 @@ const props = withDefaults(
   defineProps<{
     label: string;
     required?: boolean;
+    hasError?: boolean;
   }>(),
   {
     required: false,
+    hasError: false,
   },
 );
 
@@ -22,6 +28,7 @@ const classes = computed(() => {
   return [
     {
       "mt-field-label--required": props.required,
+      "mt-field-label--has-error": props.hasError,
     },
     "mt-field-label",
   ];

@@ -15,3 +15,9 @@ export const Required: MtFieldLabelStory = {
     required: true,
   },
 };
+
+export const WithError: MtFieldLabelStory = {
+  args: {
+    hasError: true,
+  },
+};
