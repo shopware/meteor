@@ -163,7 +163,12 @@ export const VisualTestMinimalPageWithCustomFooter: MtCardStory = {
     },
     template: `
     <mt-card v-bind="args">
-      <div v-html="args.default"></div>
+      <template #default>
+        <mt-text>Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi. Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore magna aliquam erat volutpat.</mt-text>
+        <br>
+        <mt-text>Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait nulla facilisi.</mt-text>
+      </template>
+
       <template #footer>
         <mt-inset style="background: var(--color-elevation-surface-sunken); padding: var(--mt-card-footer-padding)">
           <mt-text as="h3" size="m" weight="bold">Headline</mt-text>
