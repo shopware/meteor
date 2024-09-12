@@ -9,7 +9,6 @@ export default {
   args: {
     label: "Label",
     required: false,
-    inheritance: null,
     hasError: false,
     id: "some-id",
   },

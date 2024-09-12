@@ -1,8 +1,12 @@
 <template>
   <div class="mt-field-label">
-    <button v-if="inheritance !== null" class="mt-field-label__inheritance-button">
+    <button
+      v-if="model !== null"
+      @click="$emit('update:inheritance', !model)"
+      class="mt-field-label__inheritance-button"
+    >
       <mt-icon
-        v-if="inheritance === true"
+        v-if="model === true"
         size="1rem"
         name="regular-link-horizontal"
         :color="
@@ -33,18 +37,21 @@ import MtText from "@/components/content/mt-text/mt-text.vue";
 import MtIcon from "@/components/icons-media/mt-icon/mt-icon.vue";
 import { computed } from "vue";
 
+const model = defineModel("inheritance", {
+  type: Boolean,
+  default: null,
+});
+
 const props = withDefaults(
   defineProps<{
     id: string;
     label: string;
     required?: boolean;
     hasError?: boolean;
-    inheritance?: boolean | null;
   }>(),
   {
     required: false,
     hasError: false,
-    inheritance: null,
   },
 );
 
@@ -61,7 +68,7 @@ const labelClasses = computed(() => {
 const labelColor = computed<string>(() => {
   if (props.hasError) return "color-text-critical-default";
 
-  if (props.inheritance === true) return "color-text-accent-default";
+  if (model.value === true) return "color-text-accent-default";
 
   return "color-text-primary-default";
 });
@@ -83,6 +90,11 @@ const labelColor = computed<string>(() => {
   outline: 2px solid var(--color-border-brand-selected);
   border-radius: var(--border-radius-2xs);
   outline-offset: 2px;
+}
+
+.mt-field-label__inheritance-button > .mt-icon {
+  position: relative;
+  top: -1px;
 }
 
 .mt-field-label__label--required::after {
