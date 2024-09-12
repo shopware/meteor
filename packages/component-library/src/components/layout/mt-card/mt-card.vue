@@ -92,6 +92,7 @@ import MtContextButton from "../../context-menu/mt-context-button/mt-context-but
 import MtLoader from "../../feedback-indicator/mt-loader/mt-loader.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtText from "../../content/mt-text/mt-text.vue";
+import { useFutureFlags } from "@/composables/useFutureFlags";
 
 export default defineComponent({
   name: "MtCard",
@@ -187,6 +188,8 @@ export default defineComponent({
   setup(props) {
     const slots = useSlots();
 
+    const futureFlags = useFutureFlags();
+
     const showHeader = computed(
       () =>
         !!props.title || !!slots.title || !!props.subtitle || !!slots.subtitle || !!slots.avatar,
@@ -199,6 +202,7 @@ export default defineComponent({
       "mt-card--large": props.large,
       "mt-card--has-footer": !!slots.footer,
       "mt-card--is-inherited": !!props.inheritance,
+      "mt-card--future-ignore-max-width": futureFlags.removeCardWidth,
     }));
 
     const titleWrapperClasses = computed(() => ({
@@ -325,6 +329,11 @@ export default defineComponent({
     left: 0;
     text-align: left;
   }
+}
+
+.mt-card--future-ignore-max-width {
+  max-width: none;
+  margin-inline: 0;
 }
 
 .mt-card__titles {
