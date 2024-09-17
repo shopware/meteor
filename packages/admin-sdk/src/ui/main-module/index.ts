@@ -2,6 +2,7 @@ import { createSender } from '../../channel';
 
 export const addMainModule = createSender('mainModuleAdd');
 export const addSmartBarButton = createSender('smartBarButtonAdd');
+export const hideSmartBar = createSender('smartBarHide');
 
 export type mainModuleAdd = {
     responseType: void,
@@ -62,3 +63,12 @@ export type smartBarButtonAdd = {
      */
     onClickCallback: () => void,
 }
+
+export type smartBarHide = {
+    responseType: void,
+
+    /**
+     * The locationId you want to hide.
+     */
+    locationId: string,
+};
