@@ -122,6 +122,9 @@ export default defineComponent({
       default: false,
     },
 
+    /**
+     * @deprecated v4.0.0 - Set max-width through parent container element
+     */
     small: {
       type: Boolean,
       required: false,
