@@ -12,6 +12,21 @@ html {
   text-size-adjust: none;
 }
 
+/* Enable font features */
+body {
+  font-feature-settings:
+    "ss01" on,
+    "ss02" on,
+    "case" on,
+    "cpsp" on,
+    "zero" on,
+    "cv09" on,
+    "cv07" on,
+    "cv06" on,
+    "cv10" on,
+    "cv11" on;
+}
+
 /* Remove default margin in favour of better control in authored CSS */
 body,
 h1,
