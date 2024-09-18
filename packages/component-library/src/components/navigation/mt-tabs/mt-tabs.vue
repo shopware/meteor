@@ -348,6 +348,8 @@ export default defineComponent({
   display: flex;
   position: relative;
   box-shadow: inset 0 -1px 0 var(--color-border-primary-default);
+  padding: 0;
+  margin: 0;
 
   &.mt-tabs--small {
     max-width: 800px;
