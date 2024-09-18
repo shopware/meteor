@@ -11,7 +11,7 @@
         {{ avatarInitials }}
       </span>
       <span v-if="showPlaceholder">
-        <mt-icon name="default-avatar-single" />
+        <mt-icon color="var(--color-icon-brand-default)" name="default-avatar-single" />
       </span>
     </slot>
   </span>
@@ -205,28 +205,22 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-$mt-avatar-size-default: 40px;
-
+<style scoped>
 .mt-avatar {
   display: inline-block;
-  width: $mt-avatar-size-default;
-  height: $mt-avatar-size-default;
-  border-radius: 100%;
-  background: $color-gray-200 no-repeat center center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: var(--border-radius-round);
+  background: #ffc700 no-repeat center center;
   background-size: cover;
   text-align: center;
-  font-weight: 600;
+  font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
-  color: $color-white;
+  color: var(--color-text-static-default);
   user-select: none;
+}
 
-  .mt-icon {
-    color: $color-shopware-brand-500;
-  }
-
-  &.mt-avatar__square {
-    border-radius: 4px;
-  }
+.mt-avatar__square {
+  border-radius: var(--border-radius-xs);
 }
 </style>
