@@ -442,17 +442,3 @@ export default defineComponent({
   }
 }
 </style>
-
-<style>
-.mt-card__tabs {
-  & .mt-tabs {
-    margin: 0;
-    max-width: none;
-    padding-left: 0.8rem;
-
-    & .mt-tabs__custom-content {
-      padding: 0;
-    }
-  }
-}
-</style>
