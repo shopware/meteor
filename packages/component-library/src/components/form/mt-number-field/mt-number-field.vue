@@ -396,6 +396,10 @@ export default defineComponent({
 </style>
 
 <style>
+.mt-number-field .mt-block-field__block {
+  background: var(--color-elevation-surface-raised);
+}
+
 .mt-number-field.is--disabled .mt-block-field__block {
   background: var(--color-background-primary-disabled);
 }
