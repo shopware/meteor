@@ -242,6 +242,8 @@ export default defineComponent({
   flex-wrap: wrap;
   list-style: none;
   width: calc(100% - 30px);
+  margin: 0;
+  padding: 0;
 
   &--single {
     .mt-label {

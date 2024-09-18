@@ -16,7 +16,7 @@
       >
         <slot name="before-item-list" />
 
-        <ul class="mt-select-result-list__item-list">
+        <ul class="mt-select-result-list__item-list" role="list">
           <template v-for="(item, index) in options">
             <slot name="result-item" v-bind="{ item, index }" />
           </template>
@@ -372,7 +372,8 @@ $mt-select-result-list-transition: all ease-in-out 0.2s;
   border-radius: 4px;
 
   .mt-select-result-list__item-list {
-    list-style: none;
+    padding: 0;
+    margin: 0;
   }
 
   .mt-select-result-list__empty {
