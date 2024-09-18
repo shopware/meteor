@@ -334,6 +334,7 @@ $mt-field-transition:
     border: 1px solid var(--color-border-primary-default);
     border-radius: var(--border-radius-xs);
     overflow: hidden;
+    min-height: 3rem;
   }
 
   &.has--focus {
