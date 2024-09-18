@@ -9,7 +9,7 @@ export default {
   title: "Interaction Tests/Form/mt-datepicker",
 } as MtDatepickerMeta;
 
-export const VisualTestDatepickerShouldOpen: MtDatepickerStory = {
+export const TestDatepickerShouldOpen: MtDatepickerStory = {
   name: "Should open datepicker",
   args: {
     modelValue: new Date(Date.UTC(2012, 1, 21)).toISOString(),
