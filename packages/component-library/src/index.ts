@@ -36,6 +36,7 @@ import MtModalAction from "./components/overlay/mt-modal/sub-components/mt-modal
 import MtText from "./components/content/mt-text/mt-text.vue";
 import MtInset from "./components/layout/mt-inset/mt-inset.vue";
 import MtThemeProvider from "./components/theme/mt-theme-provider.vue";
+import MtSearch from "./components/navigation/mt-search/mt-search.vue";
 import TooltipDirective from "./directives/tooltip.directive";
 import DeviceHelperPlugin from "./plugin/device-helper.plugin";
 // Import SCSS for styling
@@ -86,6 +87,7 @@ export {
   MtText,
   MtInset,
   MtThemeProvider,
+  MtSearch,
   TooltipDirective,
   DeviceHelperPlugin,
   // @deprecated
