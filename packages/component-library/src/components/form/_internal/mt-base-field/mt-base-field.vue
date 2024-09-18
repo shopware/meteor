@@ -298,6 +298,8 @@ $mt-field-transition:
   textarea {
     display: block;
     width: 100%;
+    height: 100%;
+    box-sizing: border-box;
     min-width: 0;
     padding: 13px 16px;
     border: none;
