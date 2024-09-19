@@ -117,6 +117,9 @@ export default defineComponent({
       default: null,
     },
 
+    /**
+     * @deprecated v4.0.0 - the parent component should take care of spacing elements, not the element itself
+     */
     removeTopMargin: {
       type: Boolean,
       required: false,
