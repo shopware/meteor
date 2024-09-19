@@ -1,6 +1,6 @@
 <template>
   <div class="mt-field--checkbox__container">
-    <div class="mt-field--checkbox" :class="MtCheckboxFieldClasses">
+    <div class="mt-field--checkbox" :class="{ ...MtCheckboxFieldClasses, ...checkboxClasses }">
       <div class="mt-field--checkbox__content">
         <div class="mt-field__checkbox">
           <input
@@ -40,12 +40,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtFormFieldMixin from "../../../mixins/form-field.mixin";
 import { createId } from "../../../utils/id";
+import { useFutureFlags } from "@/composables/useFutureFlags";
 
 export default defineComponent({
   name: "MtCheckbox",
@@ -152,6 +153,18 @@ export default defineComponent({
     this.id = createId();
   },
 
+  setup() {
+    const futureFlags = useFutureFlags();
+
+    const checkboxClasses = computed(() => ({
+      "mt-switch--future-remove-default-margin": futureFlags.removeDefaultMargin,
+    }));
+
+    return {
+      checkboxClasses,
+    };
+  },
+
   computed: {
     MtCheckboxFieldClasses(): {
       "has--error": boolean;
@@ -238,6 +251,10 @@ export default defineComponent({
 .mt-field--checkbox__container {
   & .mt-field--checkbox {
     margin-bottom: 22px;
+
+    &.mt-switch--future-remove-default-margin {
+      margin-bottom: 0;
+    }
 
     & .mt-inheritance-switch {
       &.mt-field__inheritance-icon {
