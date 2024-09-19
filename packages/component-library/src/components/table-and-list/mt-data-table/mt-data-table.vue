@@ -5,6 +5,7 @@
       <div class="mt-data-table__toolbar">
         <mt-search
           v-if="disableSearch !== true"
+          class="mt-data-table__search"
           size="small"
           :model-value="searchValue"
           @change="emitSearchValueChange"
@@ -2027,6 +2028,10 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   .mt-card__toolbar {
     flex-direction: column;
     gap: 0;
+  }
+
+  .mt-data-table__search {
+    flex: 1;
   }
 
   .mt-card__content {

@@ -1,37 +1,25 @@
 <template>
-  <mt-base-field class="mt-search" :disabled="disabled" :has-focus="hasFocus" :size="size">
-    <template #element="{ identification }">
-      <mt-icon name="regular-search-s" />
+  <div :class="['mt-search', `mt-search--size-${size}`, { 'mt-search--disabled': disabled }]">
+    <input
+      :value="modelValue"
+      @input="onInput"
+      @change="onChange"
+      class="mt-search__input"
+      :disabled="disabled"
+      type="text"
+      :placeholder="placeholder || $t('mt-search.searchPlaceholder')"
+    />
 
-      <input
-        :id="identification"
-        class="mt-search__text-input"
-        type="text"
-        :name="identification"
-        :disabled="disabled"
-        :value="currentValue"
-        :placeholder="
-          $t(placeholder)
-            ? $t(placeholder).toString()
-            : $t('mt-search.searchPlaceholder').toString()
-        "
-        @input="onInput"
-        @change="onChange"
-        @focus="setFocusClass"
-        @blur="removeFocusClass"
-      />
-    </template>
-  </mt-base-field>
+    <mt-icon name="regular-search-s" size="1rem" color="var(--color-icon-primary-default)" />
+  </div>
 </template>
 
 <script lang="ts">
-import MtBaseField from "../../form/_internal/mt-base-field/mt-base-field.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
-import { defineComponent, ref, watch } from "vue";
+import { defineComponent } from "vue";
 
 export default defineComponent({
   components: {
-    "mt-base-field": MtBaseField,
     "mt-icon": MtIcon,
   },
 
@@ -91,18 +79,10 @@ export default defineComponent({
       },
     },
   },
+
   emits: ["change", "update:modelValue"],
-  setup(props, { emit }) {
-    const hasFocus = ref(false);
-    const currentValue = ref(props.modelValue);
 
-    watch(
-      () => props.modelValue,
-      (value) => {
-        currentValue.value = value;
-      },
-    );
-
+  setup(_, { emit }) {
     const onChange = (event: Event) => {
       // @ts-expect-error - target is defined
       emit("change", event.target.value || "");
@@ -113,50 +93,68 @@ export default defineComponent({
       emit("update:modelValue", event.target.value);
     };
 
-    const setFocusClass = () => {
-      hasFocus.value = true;
-    };
-
-    const removeFocusClass = () => {
-      hasFocus.value = false;
-    };
-
     return {
-      hasFocus,
-      setFocusClass,
-      removeFocusClass,
       onChange,
       onInput,
-      currentValue,
     };
   },
 });
 </script>
 
-<style lang="scss">
-.mt-search.mt-field {
-  .icon--regular-search-s {
-    transition: 0.3s all ease;
-    color: var(--color-icon-primary-default);
-    display: flex;
-    align-items: center;
-    padding-left: 12px;
-    background: var(--color-elevation-surface-raised);
+<style scoped>
+.mt-search {
+  background: var(--color-elevation-surface-raised);
+  border: 1px solid var(--color-border-primary-default);
+  border-radius: var(--border-radius-xs);
+  color: var(--color-text-primary-default);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--font-line-height-xs);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
 
-    #meteor-icon-kit__regular-search-s {
-      width: 10px;
-      height: 10px;
+  &:focus-within {
+    border-color: var(--color-border-brand-selected);
+    box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
+  }
+}
+
+.mt-search--size-default {
+  padding: 0.75rem 1rem;
+}
+
+.mt-search--size-small {
+  padding: 0.25rem 1rem;
+}
+
+.mt-search__input {
+  display: block;
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-size: var(--font-size-xs);
+  font-family: var(--font-size-body);
+  line-height: var(--font-line-height-xs);
+  color: var(--color-text-primary-default);
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  &::placeholder {
+    color: var(--color-text-secondary-default);
+  }
+
+  &:disabled {
+    color: var(--color-text-primary-disabled);
+
+    &::placeholder {
+      color: var(--color-text-secondary-disabled);
     }
   }
+}
 
-  .mt-search__text-input {
-    padding-left: 8px;
-  }
-
-  &.is--disabled {
-    .icon--regular-search-s {
-      background-color: var(--color-background-primary-disabled);
-    }
-  }
+.mt-search--disabled {
+  background-color: var(--color-background-primary-disabled);
 }
 </style>
