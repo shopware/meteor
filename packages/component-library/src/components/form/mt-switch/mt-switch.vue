@@ -1,6 +1,6 @@
 <template>
   <div class="mt-field--switch__container">
-    <div class="mt-field--switch" :class="MtSwitchFieldClasses">
+    <div class="mt-field--switch" :class="{ ...MtSwitchFieldClasses, ...switchFieldClasses }">
       <div class="mt-field--switch__content">
         <div class="mt-field--switch__input">
           <!-- eslint-disable-next-line vuejs-accessibility/form-control-has-label -->
@@ -40,11 +40,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent } from "vue";
 import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtFormFieldMixin from "../../../mixins/form-field.mixin";
 import { createId } from "../../../utils/id";
+import { useFutureFlags } from "@/composables/useFutureFlags";
 
 export default defineComponent({
   name: "MtSwitch",
@@ -200,6 +201,18 @@ export default defineComponent({
     },
   },
 
+  setup() {
+    const futureFlags = useFutureFlags();
+
+    const switchFieldClasses = computed(() => ({
+      "mt-field--switch-future-remove-default-margin": futureFlags.removeDefaultMargin,
+    }));
+
+    return {
+      switchFieldClasses,
+    };
+  },
+
   watch: {
     checked() {
       this.currentValue = this.checked;
@@ -231,6 +244,10 @@ export default defineComponent({
 
     &.mt-field--switch-no-margin-bottom {
       margin-bottom: 0;
+    }
+
+    &.mt-field--switch-future-remove-default-margin {
+      margin: 0;
     }
 
     .mt-field__error {
