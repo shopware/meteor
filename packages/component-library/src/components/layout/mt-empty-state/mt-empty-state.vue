@@ -29,61 +29,22 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
 import MtExternalLink from "@/components/form/mt-external-link/mt-external-link.vue";
 import MtButton from "@/components/form/mt-button/mt-button.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtText from "@/components/content/mt-text/mt-text.vue";
 
-export default defineComponent({
-  name: "MtEmptyState",
+defineProps<{
+  headline: string;
+  description: string;
+  icon: string;
+  linkHref?: string;
+  linkText?: string;
+  buttonText?: string;
+}>();
 
-  components: {
-    MtIcon,
-    MtExternalLink,
-    MtButton,
-    MtText,
-  },
-
-  props: {
-    headline: {
-      type: String,
-      required: true,
-    },
-
-    description: {
-      type: String,
-      required: true,
-    },
-
-    icon: {
-      type: String,
-      required: false,
-      default: "solid-content",
-    },
-
-    linkHref: {
-      type: String,
-      required: false,
-      default: undefined,
-    },
-
-    linkText: {
-      type: String,
-      required: false,
-      default: undefined,
-    },
-
-    buttonText: {
-      type: String,
-      required: false,
-      default: undefined,
-    },
-  },
-
-  emits: ["button-click"],
-});
+defineEmits(["button-click"]);
 </script>
 
 <style scoped>

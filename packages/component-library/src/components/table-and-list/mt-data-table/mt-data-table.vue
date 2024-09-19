@@ -478,6 +478,7 @@
               <div class="mt-data-table__empty-state">
                 <slot name="empty-state">
                   <mt-empty-state
+                    icon="solid-products"
                     :headline="$t('mt-data-table.emptyState.headline')"
                     :description="$t('mt-data-table.emptyState.description')"
                   />
