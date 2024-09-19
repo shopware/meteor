@@ -203,6 +203,7 @@ export default defineComponent({
       "mt-card--has-footer": !!slots.footer,
       "mt-card--is-inherited": !!props.inheritance,
       "mt-card--future-ignore-max-width": futureFlags.removeCardWidth,
+      "mt-card--future-remove-default-margin": futureFlags.removeDefaultMargin,
     }));
 
     const titleWrapperClasses = computed(() => ({
@@ -252,6 +253,10 @@ export default defineComponent({
   &:not(:has(.mt-card__tabs:empty)) .mt-card__header {
     border-bottom: none;
   }
+}
+
+.mt-card--future-remove-default-margin {
+  margin-block-end: 0;
 }
 
 .mt-card__content {
