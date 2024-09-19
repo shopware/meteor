@@ -4,13 +4,13 @@ import { fn } from "@storybook/test";
 import MtLink from "./mt-link.vue";
 import type { SlottedMeta } from "@/_internal/story-helper";
 
-export type MtLinkMeta = SlottedMeta<typeof MtLink, "default" | "close">;
+export type MtLinkMeta = SlottedMeta<typeof MtLink, "default" | "close" | "click">;
 
 export default {
   title: "Components/Navigation/mt-link",
   component: MtLink,
   args: {
-    as: "router-link",
+    as: "a",
     default: "Link",
     to: "/",
     variant: "primary",
