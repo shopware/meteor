@@ -7,13 +7,16 @@
     role="img"
   >
     <slot>
-      <span v-if="showInitials" class="mt-avatar__initials">
+      <span v-if="showInitials" class="mt-avatar__initials" data-testid="mt-avatar-initials">
         {{ avatarInitials }}
       </span>
 
-      <span v-if="showPlaceholder">
-        <mt-icon name="regular-user" />
-      </span>
+      <mt-icon
+        v-if="showPlaceholder"
+        aria-hidden
+        name="regular-user"
+        data-testid="mt-avatar-placeholder"
+      />
     </slot>
   </span>
 </template>
