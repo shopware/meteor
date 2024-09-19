@@ -1,88 +1,41 @@
 <template>
   <component
     :is="as"
-    class="mt-link"
-    :class="linkClasses"
+    :class="[
+      'mt-link',
+      `mt-link--${variant}`,
+      {
+        'mt-link--disabled': disabled,
+      },
+    ]"
     :aria-disabled="disabled"
+    role="link"
     :tabindex="disabled ? -1 : 0"
     v-bind="to ? { ...$attrs, to } : $attrs"
-    @click="onClick"
+    @click="disabled ? undefined : $emit('click', $event)"
   >
     <slot />
   </component>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-import type { PropType } from "vue";
-
-export default defineComponent({
-  name: "MtLink",
-
-  props: {
-    /**
-     * Set the element type of the link
-     */
-    as: {
-      type: String,
-      required: false,
-      default: "router-link",
-    },
-
-    /**
-     * Set the to prop of the router/nuxt-link
-     */
-    to: {
-      type: String,
-      required: false,
-      default: undefined,
-    },
-
-    /**
-     * Render the link in various styles
-     */
-    variant: {
-      type: String as PropType<"primary" | "critical">,
-      required: false,
-      default: "primary",
-      validator(value: string) {
-        if (!value.length) {
-          return true;
-        }
-        return ["primary", "critical"].includes(value);
-      },
-    },
-
-    /**
-     * Make the link unclickable
-     */
-    disabled: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
+<script setup lang="ts">
+withDefaults(
+  defineProps<{
+    to?: string;
+    as?: string;
+    variant?: "primary" | "critical";
+    disabled?: boolean;
+  }>(),
+  {
+    as: "router-link",
+    variant: "primary",
+    disabled: false,
   },
-  computed: {
-    linkClasses() {
-      return {
-        [`mt-link--${this.variant}`]: !!this.variant,
-        "mt-link--disabled": this.disabled,
-      };
-    },
-  },
+);
 
-  methods: {
-    onClick(event: MouseEvent) {
-      if (this.disabled) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        return;
-      }
-
-      this.$emit("click", event);
-    },
-  },
-});
+defineEmits<{
+  (e: "click", event: MouseEvent): void;
+}>();
 </script>
 
 <style scoped>
@@ -99,7 +52,6 @@ export default defineComponent({
 
 .mt-link:is(:disabled, .mt-link--disabled) {
   cursor: not-allowed;
-  pointer-events: none;
 }
 
 .mt-link--primary {
