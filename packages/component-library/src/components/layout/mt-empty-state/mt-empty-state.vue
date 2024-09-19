@@ -30,8 +30,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, type PropType } from "vue";
-import type { TranslateResult } from "vue-i18n";
+import { defineComponent } from "vue";
 import MtExternalLink from "@/components/form/mt-external-link/mt-external-link.vue";
 import MtButton from "@/components/form/mt-button/mt-button.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
@@ -49,12 +48,12 @@ export default defineComponent({
 
   props: {
     headline: {
-      type: String as PropType<string | TranslateResult>,
+      type: String,
       required: true,
     },
 
     description: {
-      type: String as PropType<string | TranslateResult>,
+      type: String,
       required: true,
     },
 
@@ -65,19 +64,19 @@ export default defineComponent({
     },
 
     linkHref: {
-      type: String as PropType<string | TranslateResult>,
+      type: String,
       required: false,
       default: undefined,
     },
 
     linkText: {
-      type: String as PropType<string | TranslateResult>,
+      type: String,
       required: false,
       default: undefined,
     },
 
     buttonText: {
-      type: String as PropType<string | TranslateResult>,
+      type: String,
       required: false,
       default: undefined,
     },
