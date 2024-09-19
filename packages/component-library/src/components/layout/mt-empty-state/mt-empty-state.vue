@@ -1,7 +1,7 @@
 <template>
   <div class="mt-empty-state">
     <div class="mt-empty-state__icon">
-      <mt-icon :name="icon" color="var(--color-icon-primary-default)" />
+      <mt-icon :name="icon" color="var(--color-icon-primary-default)" aria-hidden="true" />
     </div>
 
     <mt-text as="h2" size="l" weight="bold" class="mt-empty-state__headline">
