@@ -1,5 +1,5 @@
 <template>
-  <mt-base-field
+  <!-- <mt-base-field
     class="mt-field--datepicker"
     :class="{ 'has--focus': isDatepickerOpen }"
     v-bind="$attrs"
@@ -9,43 +9,61 @@
     :has-focus="isDatepickerOpen"
     @inheritance-restore="$emit('inheritance-restore', $event)"
     @inheritance-remove="$emit('inheritance-remove', $event)"
-  >
-    <template #element="{ identification, disabled }">
+  > -->
+  <!-- :id="identification" -->
+    <!-- <template #element="{ identification, disabled }"> -->
       <vue-datepicker
         ref="datepicker"
         v-model="timezoneFormattedValue"
         class="date-picker"
-        :id="identification"
         :disabled="disabled"
-        :placeholder="placeholder"
+        placeholder="Select Date"
         :locale="locale"
         :timezone="timeZone"
         :required="required"
         :type="dateType"
         :open="isDatepickerOpen"
+        position="left"
+        :teleport="true"
+        :show-cancel="false"
+        :clearable="false"
         @focus="isDatepickerOpen = true"
         @blur="isDatepickerOpen = false"
         @closed="isDatepickerOpen = false"
-      />
+      >
+        <template #input-icon>
+            <mt-icon name="regular-calendar" class="regular-calendar"/>
+        </template>
 
-      <!-- <mt-icon
-        v-if="!required && timezoneFormattedValue && !disabled"
-        data-testid="mt-datepicker-clear-button"
-        class="mt-field--datepicker__button-reset-value"
-        name="regular-times-xs"
-        @click="unsetValue"
-      /> -->
-    </template>
+        <template #clock-icon>
+            <p>time</p>
+        </template>
 
-    <template v-if="showTimeZoneHint" #field-hint>
+         <template #calendar-icon>
+            <mt-icon name="regular-calendar" class="regular-calendar"/>
+        </template>
+        <!-- <template #tp-inline-arrow-up>
+          <span class="my-icon">
+            +
+          </span>
+        </template>
+        <template #tp-inline-arrow-down>
+            <span class="my-icon">
+              -
+            </span>
+        </template> -->
+      </vue-datepicker>
+    <!-- </template> -->
+
+    <!-- <template v-if="showTimeZoneHint" #field-hint>
       <mt-icon name="solid-clock" />
       {{ timeZone }}
     </template>
 
     <template #label>
       {{ label }}
-    </template>
-  </mt-base-field>
+    </template> -->
+  <!-- </mt-base-field> -->
 </template>
 
 <script lang="ts">
@@ -61,7 +79,7 @@ export default defineComponent({
   name: "MtDatepicker",
 
   components: {
-    "mt-base-field": MtBaseField,
+    // "mt-base-field": MtBaseField,
     "mt-icon": MtIcon,
     "vue-datepicker": DatePicker,
   },
@@ -175,13 +193,44 @@ export default defineComponent({
 
 <style lang="css">
 
-.mt-field--datepicker .mt-block-field__block {
-  border: 1px solid var(--color-border-primary-default);
-  border-radius: var(--border-radius-xs);
-  overflow: visible;
-}
-
 .date-picker {
   --dp-menu-padding: 6px 8px;
+  --dp-arrow-left: 20px;
 }
+
+.date-picker .dp__input_icon {
+  position: absolute;
+  left: auto;
+  right: 0px;
+  background: var(--color-background-primary-disabled);
+  width: 48px;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 0 1px 1px 0;
+  padding: 12px;
+  z-index: -9;
+  border-left: 1px solid var(--color-border-primary-default);
+}
+
+.date-picker .dp__input_icon #meteor-icon-kit__regular-calendar {
+  color: var(--color-icon-primary-default);
+  width: 16.5px;
+  height: 18px;
+}
+
+.date-picker .dp--menu-wrapper {
+  padding: 0px !important;
+  /* background: var(--color-border-brand-selected); */
+}
+
+.date-picker input {
+  height: 48px;
+  padding: 0px !important;
+  border: 1px solid var(--color-border-primary-default);
+  border-radius: var(--border-radius-xs);
+  background: none;
+}
+
 </style>
