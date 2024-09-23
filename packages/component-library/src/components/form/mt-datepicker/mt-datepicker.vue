@@ -17,7 +17,7 @@
         v-model="timezoneFormattedValue"
         class="date-picker"
         :disabled="disabled"
-        placeholder="Select Date"
+        placeholder="Y-m-d..."
         :locale="locale"
         :timezone="timeZone"
         :required="required"
@@ -27,6 +27,8 @@
         :teleport="true"
         :show-cancel="false"
         :clearable="false"
+        model-auto
+        range
         @focus="isDatepickerOpen = true"
         @blur="isDatepickerOpen = false"
         @closed="isDatepickerOpen = false"
@@ -39,21 +41,15 @@
             <p>time</p>
         </template>
 
-         <template #calendar-icon>
+        <template #calendar-icon>
             <mt-icon name="regular-calendar" class="regular-calendar"/>
         </template>
-        <!-- <template #tp-inline-arrow-up>
-          <span class="my-icon">
-            +
-          </span>
+        <template #action-buttons>
+          <p class="custom-select" @click="selectDate">Select</p>
         </template>
-        <template #tp-inline-arrow-down>
-            <span class="my-icon">
-              -
-            </span>
-        </template> -->
       </vue-datepicker>
     <!-- </template> -->
+
 
     <!-- <template v-if="showTimeZoneHint" #field-hint>
       <mt-icon name="solid-clock" />
@@ -187,15 +183,20 @@ export default defineComponent({
     unsetValue() {
       this.$emit("update:modelValue", null);
     },
+
+    selectDate() {
+      this.$refs.datepicker.selectDate();
+    },
   },
 });
 </script>
 
 <style lang="css">
 
-.date-picker {
-  --dp-menu-padding: 6px 8px;
+:root {
   --dp-arrow-left: 20px;
+  --dp-font-family: var(--font-family-body);
+  --dp-arrow-left: 0%;
 }
 
 .date-picker .dp__input_icon {
@@ -222,12 +223,12 @@ export default defineComponent({
 
 .date-picker .dp--menu-wrapper {
   padding: 0px !important;
-  /* background: var(--color-border-brand-selected); */
+  font-family: var(--font-family-body) !important;
 }
 
 .date-picker input {
   height: 48px;
-  padding: 0px !important;
+  padding-left: 16px !important;
   border: 1px solid var(--color-border-primary-default);
   border-radius: var(--border-radius-xs);
   background: none;
