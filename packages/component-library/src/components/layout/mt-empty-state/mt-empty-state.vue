@@ -1,7 +1,7 @@
 <template>
   <div class="mt-empty-state">
     <div class="mt-empty-state__icon">
-      <mt-icon :name="icon" />
+      <mt-icon :name="icon" color="var(--color-icon-primary-default)" aria-hidden="true" />
     </div>
 
     <mt-text as="h2" size="l" weight="bold" class="mt-empty-state__headline">
@@ -29,95 +29,43 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, type PropType } from "vue";
-import type { TranslateResult } from "vue-i18n";
+<script setup lang="ts">
 import MtExternalLink from "@/components/form/mt-external-link/mt-external-link.vue";
 import MtButton from "@/components/form/mt-button/mt-button.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtText from "@/components/content/mt-text/mt-text.vue";
 
-export default defineComponent({
-  name: "MtEmptyState",
+defineProps<{
+  headline: string;
+  description: string;
+  icon: string;
+  linkHref?: string;
+  linkText?: string;
+  buttonText?: string;
+}>();
 
-  components: {
-    MtIcon,
-    MtExternalLink,
-    MtButton,
-    MtText,
-  },
-
-  props: {
-    headline: {
-      type: String as PropType<string | TranslateResult>,
-      required: true,
-    },
-
-    description: {
-      type: String as PropType<string | TranslateResult>,
-      required: true,
-    },
-
-    icon: {
-      type: String,
-      required: false,
-      default: "solid-content",
-    },
-
-    linkHref: {
-      type: String as PropType<string | TranslateResult>,
-      required: false,
-      default: undefined,
-    },
-
-    linkText: {
-      type: String as PropType<string | TranslateResult>,
-      required: false,
-      default: undefined,
-    },
-
-    buttonText: {
-      type: String as PropType<string | TranslateResult>,
-      required: false,
-      default: undefined,
-    },
-  },
-
-  emits: ["button-click"],
-});
+defineEmits(["button-click"]);
 </script>
 
-<style lang="scss">
-.mt-empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+<style scoped>
+.mt-empty-state__icon {
+  display: inline-block;
+  padding: 0.75rem;
+  border-radius: var(--border-radius-xs);
+  background-color: var(--color-interaction-secondary-dark);
+  margin-block-end: 1.5rem;
+}
 
-  &__icon {
-    display: inline-block;
-    padding: 12px;
-    border-radius: var(--border-radius-xs);
-    background-color: var(--color-interaction-secondary-dark);
+.mt-empty-state__headline {
+  margin-block-end: 0.5rem;
+}
 
-    svg {
-      color: var(--color-icon-primary-default);
-    }
-  }
+.mt-empty-state__link {
+  margin-block-start: 0.5rem;
+  display: block;
+}
 
-  &__headline {
-    margin: 16px 0 0;
-  }
-
-  &__description {
-    margin-top: 8px;
-  }
-
-  &__link {
-    margin-top: 8px;
-  }
-
-  &__button {
-    margin-top: 16px;
-  }
+.mt-empty-state__button {
+  margin-block-start: 1.5rem;
 }
 </style>

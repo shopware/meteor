@@ -1,5 +1,27 @@
 # Changelog
 
+## 5.5.0
+
+### Minor Changes
+
+- 1efc49c: Allow toggling page smart bar
+
+### Patch Changes
+
+- Updated dependencies [ec2aba1]
+- Updated dependencies [a438ea0]
+- Updated dependencies [340f7af]
+- Updated dependencies [5a5e797]
+- Updated dependencies [3c1b5ad]
+- Updated dependencies [307439b]
+- Updated dependencies [d0185b6]
+- Updated dependencies [3ddcd26]
+- Updated dependencies [cb83cca]
+- Updated dependencies [17bca01]
+- Updated dependencies [c43799c]
+- Updated dependencies [79f0b40]
+  - @shopware-ag/meteor-component-library@3.13.0
+
 ## 5.4.6
 
 ### Patch Changes

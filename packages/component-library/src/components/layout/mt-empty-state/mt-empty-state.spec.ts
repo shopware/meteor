@@ -4,6 +4,7 @@ import MtEmptyState from "./mt-empty-state.vue";
 async function createWrapper(customOptions = {}, props = {}) {
   return mount(MtEmptyState, {
     props: {
+      icon: "solid-chart-line-arrow",
       headline: "Foo",
       description: "Bar",
       ...props,

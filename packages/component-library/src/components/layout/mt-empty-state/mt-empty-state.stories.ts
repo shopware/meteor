@@ -44,6 +44,7 @@ const DefaultTemplate: StoryFn = (args) => ({
 
 export const Default: StoryFn = DefaultTemplate.bind({});
 Default.args = {
+  icon: "solid-chart-line-arrow",
   headline: "Default Headline",
   description: "Default Description",
 };
