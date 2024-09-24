@@ -22,7 +22,7 @@ export const TestLabel: MtCheckboxStory = {
 };
 
 export const VisualTestCheckable: MtCheckboxStory = {
-  name: "Should be checkable",
+  name: "Should be checked",
   args: {
     label: "Checked",
   },
@@ -37,7 +37,7 @@ export const VisualTestCheckable: MtCheckboxStory = {
 };
 
 export const VisualTestUncheckable: MtCheckboxStory = {
-  name: "Should be uncheckable",
+  name: "Should be unchecked",
   args: {
     label: "Unchecked",
     checked: true,
@@ -110,13 +110,14 @@ export const VisualTestError: MtCheckboxStory = {
   args: {
     label: "Error label",
     error: {
+      code: 500,
       detail: "Error message",
     },
   },
   play: ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText(args.error?.detail)).toBeDefined();
+    expect(canvas.getByText(args.error?.detail!)).toBeDefined();
   },
 };
 
@@ -127,6 +128,7 @@ export const VisualTestBorderedError: MtCheckboxStory = {
     bordered: true,
     checked: true,
     error: {
+      code: 500,
       detail: "Error message",
     },
   },
@@ -134,7 +136,7 @@ export const VisualTestBorderedError: MtCheckboxStory = {
     const canvas = within(canvasElement);
 
     expect((canvas.getByRole("checkbox") as HTMLInputElement).checked).toBe(true);
-    expect(canvas.getByText(args.error?.detail)).toBeDefined();
+    expect(canvas.getByText(args.error?.detail!)).toBeDefined();
   },
 };
 
@@ -168,7 +170,5 @@ export const VisualTestPartialChecked: MtCheckboxStory = {
 
     await expect((canvas.getByRole("checkbox") as HTMLInputElement).indeterminate).toBe(true);
     await expect((canvas.getByRole("checkbox") as HTMLInputElement).checked).toBe(false);
-
-    await expect(canvas.getByTestId("mt-icon__regular-minus-xxs")).toBeDefined();
   },
 };

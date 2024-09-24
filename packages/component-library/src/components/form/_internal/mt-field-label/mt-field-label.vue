@@ -120,8 +120,6 @@ export default defineComponent({
 }
 
 .mt-field-label__inheritance-switch {
-  margin-right: 0.25rem;
-
   &:focus-visible {
     outline-offset: 0.25rem;
     border-radius: var(--border-radius-2xs);

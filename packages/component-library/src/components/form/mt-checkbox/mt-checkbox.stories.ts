@@ -16,6 +16,7 @@ export default {
     label: "Checkbox",
     disabled: false,
     bordered: false,
+    checked: false,
     change: fn(action("change")),
     inheritanceRemove: fn(action("inheritance-remove")),
     inheritanceRestore: fn(action("inheritance-restore")),
