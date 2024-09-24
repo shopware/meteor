@@ -1,6 +1,6 @@
 <template>
   <div class="mt-loader">
-    <div class="mt-loader__container" :style="loaderSize">
+    <div class="mt-loader__container" :style="{ width: size, height: size }">
       <div class="mt-loader-element">
         <div :style="{ borderWidth: borderWidth }" />
         <div :style="{ borderWidth: borderWidth }" />
@@ -11,52 +11,23 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { computed } from "vue";
 
-export default defineComponent({
-  name: "MtLoader",
-
-  props: {
-    /**
-     * Define the size of the loader. Should be a string containing "${yourNumber}px"
-     */
-    size: {
-      type: String,
-      required: false,
-      default: "50px",
-      validator(value: string) {
-        return value.endsWith("px");
-      },
-    },
+const props = withDefaults(
+  defineProps<{
+    size: `${string}px`;
+  }>(),
+  {
+    size: "50px",
   },
+);
 
-  computed: {
-    loaderSize(): {
-      width: string;
-      height: string;
-    } {
-      return {
-        width: `${this.numericSize}px`,
-        height: `${this.numericSize}px`,
-      };
-    },
-    numericSize(): number {
-      const numericSize = parseInt(this.size, 10);
+const borderWidth = computed(() => {
+  const numericSize = Number(props.size.replace("px", ""));
+  const borderWith = Number(numericSize / 12).toPrecision(2);
 
-      if (Number.isNaN(numericSize)) {
-        return 50;
-      }
-
-      return numericSize;
-    },
-
-    borderWidth(): string {
-      const borderWith = Number(this.numericSize / 12).toPrecision(2);
-
-      return `${borderWith}px`;
-    },
-  },
+  return `${borderWith}px`;
 });
 </script>
 
