@@ -1,5 +1,5 @@
 <template>
-  <span
+  <button
     v-tooltip="{
       message: text,
       width: width,
@@ -11,8 +11,9 @@
     aria-label="help-text"
   >
     <mt-icon data-testid="mt-help-text__icon" name="solid-question-circle-s" />
+
     <span class="mt-help-text__tooltip-text">{{ text }}</span>
-  </span>
+  </button>
 </template>
 
 <script lang="ts">
@@ -71,16 +72,36 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style scoped>
 .mt-help-text {
-  color: $color-shopware-brand-500;
+  color: var(--color-icon-brand-default);
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  pointer-events: auto;
+  position: relative;
+  border-radius: var(--border-radius-round);
 
-  &__tooltip-text {
-    display: none;
+  &:focus-visible {
+    outline-offset: 0.25rem;
+    outline: 2px solid var(--color-border-brand-selected);
   }
+
+  &:where(:hover, :focus-visible) {
+    color: var(--color-icon-brand-hover);
+  }
+}
+
+.mt-help-text::after {
+  content: "";
+  display: block;
+  position: absolute;
+  inset: 0;
+  background-color: var(--color-icon-static-default);
+  z-index: -1;
+  border-radius: var(--border-radius-round);
+}
+
+.mt-help-text__tooltip-text {
+  display: none;
 }
 </style>
