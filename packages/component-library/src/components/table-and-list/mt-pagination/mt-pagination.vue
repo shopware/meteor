@@ -19,7 +19,7 @@
       >
         <span class="visually-hidden">{{ $t("mt-pagination.firstPage") }}</span>
 
-        <mt-icon name="regular-double-chevron-left-s" aria-hidden="true" />
+        <mt-icon name="regular-double-chevron-left-s" size="0.5rem" aria-hidden="true" />
       </button>
 
       <button
@@ -30,7 +30,7 @@
       >
         <span class="visually-hidden">{{ $t("mt-pagination.previousPage") }}</span>
 
-        <mt-icon name="regular-chevron-left-s" aria-hidden="true" />
+        <mt-icon name="regular-chevron-left-s" size="0.5rem" aria-hidden="true" />
       </button>
 
       <input
@@ -53,7 +53,7 @@
       >
         <span class="visually-hidden">{{ $t("mt-pagination.nextPage") }}</span>
 
-        <mt-icon name="regular-chevron-right-s" aria-hidden="true" />
+        <mt-icon name="regular-chevron-right-s" size="0.5rem" aria-hidden="true" />
       </button>
 
       <button
@@ -64,7 +64,7 @@
       >
         <span class="visually-hidden">{{ $t("mt-pagination.lastPage") }}</span>
 
-        <mt-icon name="regular-double-chevron-right-s" aria-hidden="true" />
+        <mt-icon name="regular-double-chevron-right-s" size="0.5rem" aria-hidden="true" />
       </button>
     </div>
   </div>
@@ -165,104 +165,84 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style scoped>
 .mt-pagination {
   display: flex;
   align-items: baseline;
   gap: 12px;
 
-  &__controls {
-    display: inline-flex;
-    border-radius: var(--border-radius-xs);
-    border: 1px solid var(--color-border-primary-default);
-  }
-
-  &__info-text {
-    color: var(--color-text-tertiary-default);
-    font-size: var(--font-size-xs);
-    line-height: var(--font-line-height-xs);
-    font-family: var(--font-family-body);
-  }
-
-  #meteor-icon-kit__regular-double-chevron-left-s {
-    width: 8px !important;
-    height: 7.5px !important;
-  }
-
-  #meteor-icon-kit__regular-chevron-left-s {
-    width: 4px !important;
-    height: 7.5px !important;
-  }
-
-  #meteor-icon-kit__regular-chevron-right-s {
-    width: 4px !important;
-    height: 7.5px !important;
-  }
-
-  #meteor-icon-kit__regular-double-chevron-right-s {
-    width: 8px !important;
-    height: 7.5px !important;
-  }
-
-  &__button {
-    border-right: 1px solid var(--color-border-primary-default);
-    color: var(--color-icon-primary-default);
-    height: 2rem;
-    width: 2.5rem;
-    display: grid;
-    place-items: center;
-    transition: all 0.15s ease-out;
-
-    &:focus-visible {
-      outline: 1px solid var(--color-border-brand-selected);
-      background-color: var(--color-interaction-secondary-hover);
-    }
-
-    &:hover:not(:disabled) {
-      background-color: var(--color-interaction-secondary-hover);
-    }
-
-    &:last-of-type {
-      border-right: none;
-    }
-
-    &:disabled {
-      background-color: var(--color-interaction-secondary-disabled);
-      cursor: not-allowed;
-    }
-  }
-
-  :last-child {
+  & :last-child {
     border-top-right-radius: var(--border-radius-xs);
     border-bottom-right-radius: var(--border-radius-xs);
   }
 
-  :first-child {
+  & :first-child {
     border-top-left-radius: var(--border-radius-xs);
     border-bottom-left-radius: var(--border-radius-xs);
   }
+}
 
-  &__current-page-input {
-    all: unset;
-    width: auto;
-    border-right: 1px solid var(--color-border-primary-default);
-    padding: 0 12px;
-    color: var(--color-text-primary-default);
-    font-size: var(--font-size-xs);
-    line-height: var(--font-line-height-xs);
-    font-family: var(--font-family-body);
-    font-feature-settings: "tnum";
+.mt-pagination__controls {
+  display: inline-flex;
+  border-radius: var(--border-radius-xs);
+  border: 1px solid var(--color-border-primary-default);
+}
 
-    &::-webkit-outer-spin-button,
-    &::-webkit-inner-spin-button {
-      -webkit-appearance: none;
-      margin: 0;
-    }
+.mt-pagination__info-text {
+  color: var(--color-text-tertiary-default);
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+  font-family: var(--font-family-body);
+}
 
-    /* Firefox */
-    &[type="number"] {
-      -moz-appearance: textfield;
-    }
+.mt-pagination__button {
+  border-right: 1px solid var(--color-border-primary-default);
+  color: var(--color-icon-primary-default);
+  height: 2rem;
+  width: 2.5rem;
+  display: grid;
+  place-items: center;
+  transition: all 0.15s ease-out;
+
+  &:focus-visible {
+    outline: 1px solid var(--color-border-brand-selected);
+    background-color: var(--color-interaction-secondary-hover);
+  }
+
+  &:hover:not(:disabled) {
+    background-color: var(--color-interaction-secondary-hover);
+  }
+
+  &:last-of-type {
+    border-right: none;
+  }
+
+  &:disabled {
+    background-color: var(--color-interaction-secondary-disabled);
+    cursor: not-allowed;
+  }
+}
+
+.mt-pagination__current-page-input {
+  all: unset;
+  width: auto;
+  border-right: 1px solid var(--color-border-primary-default);
+  padding: 0 12px;
+  color: var(--color-text-primary-default);
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+  font-family: var(--font-family-body);
+  font-feature-settings: "tnum";
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+
+  /* Firefox */
+  &[type="number"] {
+    -moz-appearance: textfield;
   }
 }
 </style>
