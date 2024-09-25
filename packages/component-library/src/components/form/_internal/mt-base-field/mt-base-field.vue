@@ -1,5 +1,17 @@
 <template>
-  <div class="mt-field" :class="classes">
+  <div
+    class="mt-field"
+    :class="[
+      {
+        'has--error': hasError,
+        'is--disabled': disabled,
+        'is--inherited': isInherited,
+        'has--focus': hasFocus,
+        'mt-field--future-remove-default-margin': future.removeDefaultMargin,
+      },
+      mtBlockSize,
+    ]"
+  >
     <div class="mt-field__label">
       <mt-inheritance-switch
         v-if="isInheritanceField"
@@ -59,6 +71,7 @@ import useEmptySlotCheck from "../../../../composables/useEmptySlotCheck";
 import MtValidationMixin from "../../../../mixins/validation.mixin";
 import MtFormFieldMixin from "../../../../mixins/form-field.mixin";
 import { createId } from "../../../../utils/id";
+import { useFutureFlags } from "@/composables/useFutureFlags";
 
 export default defineComponent({
   name: "MtBaseField",
@@ -209,19 +222,6 @@ export default defineComponent({
       };
     },
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    classes(): any[] {
-      return [
-        {
-          "has--error": this.hasError,
-          "is--disabled": this.disabled,
-          "is--inherited": this.isInherited,
-          "has--focus": this.hasFocus,
-        },
-        this.mtBlockSize,
-      ];
-    },
-
     mtBlockSize(): string {
       return `mt-field--${this.size}`;
     },
@@ -233,9 +233,11 @@ export default defineComponent({
 
   setup() {
     const { hasSlotContent } = useEmptySlotCheck();
+    const future = useFutureFlags();
 
     return {
       hasSlotContent,
+      future,
     };
   },
 });
@@ -470,5 +472,9 @@ $mt-field-transition:
       }
     }
   }
+}
+
+.mt-field--future-remove-default-margin {
+  margin-bottom: 0;
 }
 </style>
