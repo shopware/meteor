@@ -2,4 +2,4 @@
 "@shopware-ag/meteor-component-library": patch
 ---
 
-Make buttons in number field accessible
+move mt-loader over to plain css
