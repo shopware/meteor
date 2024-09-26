@@ -209,17 +209,13 @@ export const VisualTestInheritance: MtTextFieldStory = {
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
 
-    await userEvent.click(canvas.getByTestId("mt-icon__regular-link-horizontal-slash"));
+    await userEvent.click(canvas.getByRole("button"));
 
     expect(args.inheritanceRestore).toBeCalled();
 
-    expect(canvas.getByTestId("mt-inheritance-switch-icon")).toBeDefined();
-
-    await userEvent.click(canvas.getByTestId("mt-inheritance-switch-icon"));
+    await userEvent.click(canvas.getByRole("button"));
 
     expect(args.inheritanceRemove).toBeCalled();
-
-    expect(canvas.getByTestId("mt-icon__regular-link-horizontal-slash")).toBeDefined();
   },
 };
 

@@ -1,283 +1,228 @@
 <template>
-  <mt-base-field
-    class="mt-text-field"
-    :disabled="disabled"
-    :required="required"
-    :is-inherited="isInherited"
-    :is-inheritance-field="isInheritanceField"
-    :disable-inheritance-toggle="disableInheritanceToggle"
-    :copyable="copyable"
-    :copyable-tooltip="copyableTooltip"
-    :copyable-text="currentValue"
-    :has-focus="hasFocus"
-    :help-text="helpText"
-    :name="name"
-    :size="size"
-    @inheritance-restore="$emit('inheritance-restore', $event)"
-    @inheritance-remove="$emit('inheritance-remove', $event)"
+  <div
+    :class="[
+      'mt-text-field',
+      {
+        'mt-text-field--future-remove-default-margin': future.removeDefaultMargin,
+      },
+    ]"
   >
-    <template #label>
+    <mt-field-label
+      id="id"
+      :required="required"
+      :has-error="!!error"
+      :inheritance="inheritance"
+      style="grid-area: label"
+      @update:inheritance="handleInheritanceChange"
+    >
       {{ label }}
-    </template>
+    </mt-field-label>
 
-    <template #field-prefix>
-      <slot name="prefix" />
-    </template>
+    <div :class="['mt-text-field__box', { 'mt-text-field__box--has-error': !!error }]">
+      <div class="mt-text-field__affix mt-text-field__affix--prefix">
+        <slot name="prefix"></slot>
+      </div>
 
-    <template #element="{ identification }">
       <input
-        :id="createInputId(identification)"
+        id="id"
+        :value="modelValue"
+        @change="$emit('change', ($event.target as HTMLInputElement).value)"
+        @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
         type="text"
-        :name="identification"
-        :disabled="hasDisabledInput"
-        :value="currentValue"
         :placeholder="placeholder"
+        :disabled="disabled"
         :maxlength="maxLength"
-        @input="onInput"
-        @change.stop="onChange"
-        @focus="setFocusClass"
-        @blur="removeFocusClass"
       />
-    </template>
 
-    <template #field-suffix>
-      <slot name="suffix" />
-    </template>
+      <div class="mt-text-field__affix mt-text-field__affix--suffix">
+        <button
+          v-if="copyable"
+          class="mt-text-field__copy-button"
+          @click="copy(modelValue)"
+          :disabled="disabled"
+        >
+          <mt-icon
+            aria-hidden="true"
+            :name="copied ? 'regular-checkmark' : 'regular-copy'"
+            size="1.125rem"
+            :color="
+              disabled ? 'var(--color-icon-primary-disabled)' : 'var(--color-icon-primary-default)'
+            "
+          />
+        </button>
 
-    <template #error>
-      <mt-field-error v-if="error" :error="error" />
-    </template>
+        <slot v-else name="suffix"></slot>
+      </div>
+    </div>
 
-    <template #field-hint>
+    <mt-field-error v-if="!!error" :error="error" style="grid-area: error" />
+
+    <div class="mt-text-field__hint">
       <slot name="hint" />
-    </template>
+    </div>
 
-    <template v-if="maxLength" #field-hint-right>
+    <mt-text
+      v-if="maxLength !== undefined"
+      color="color-text-tertiary-default"
+      size="xs"
+      style="justify-self: flex-end"
+    >
       {{ modelValue?.length ?? 0 }}/{{ maxLength }}
-    </template>
-  </mt-base-field>
+    </mt-text>
+  </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
+<script setup lang="ts">
+import { computed } from "vue";
+import { useClipboard } from "@vueuse/core";
+import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
+import MtText from "@/components/content/mt-text/mt-text.vue";
+import MtIcon from "@/components/icons-media/mt-icon/mt-icon.vue";
+import { useFutureFlags } from "@/composables/useFutureFlags";
 
-export default defineComponent({
-  name: "MtTextField",
+const props = defineProps<{
+  label: string;
+  placeholder?: string;
+  maxLength?: number;
+  modelValue: string;
+  required?: boolean;
+  disabled?: boolean;
+  error?: { code: number; detail: string } | null;
+  isInheritanceField?: boolean;
+  isInherited?: boolean;
+  copyable?: boolean;
+}>();
 
-  components: {
-    "mt-field-error": MtFieldError,
-    "mt-base-field": MtBaseField,
-  },
+const emit = defineEmits<{
+  change: [value: string];
+  "update:modelValue": [value: string];
+  "inheritance-restore": [];
+  "inheritance-remove": [];
+}>();
 
-  props: {
-    /**
-     * The value of the text field.
-     */
-    modelValue: {
-      type: String,
-      required: false,
-      default: "",
-    },
+const inheritance = computed(() => {
+  if (!props.isInheritanceField) return "none";
 
-    /**
-     * A placeholder text being displayed if no value is set.
-     */
-    placeholder: {
-      type: String,
-      required: false,
-      default: "",
-    },
-
-    /**
-     * A label for your text field. Usually used to guide the user what value this field controls.
-     */
-    label: {
-      type: String,
-      required: false,
-      default: null,
-    },
-
-    /**
-     * A text that helps the user to understand what this field does.
-     */
-    helpText: {
-      type: String,
-      required: false,
-      default: null,
-    },
-
-    /**
-     * The size of the text field.
-     *
-     * @values small, default
-     */
-    size: {
-      type: String,
-      required: false,
-      default: "default",
-      validator(value: string) {
-        return ["small", "default"].includes(value);
-      },
-    },
-
-    /**
-     * Toggles the copy function of the text field.
-     */
-    copyable: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    /**
-     * If set to true the tooltip will change on successful copy.
-     */
-    copyableTooltip: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    /**
-     * An error in your business logic related to this field.
-     *
-     * @example {"code": 500, "detail": "Error while saving"}
-     */
-    error: {
-      type: Object,
-      required: false,
-      default: null,
-    },
-
-    /**
-     * Determines if the field is disabled.
-     */
-    disabled: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    /**
-     * Determines if the field is required.
-     */
-    required: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    /**
-     * Toggles the inheritance visualization.
-     */
-    isInherited: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    /**
-     * Determines if the field is inheritable.
-     */
-    isInheritanceField: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    /**
-     * Determines the active state of the inheritance toggle.
-     */
-    disableInheritanceToggle: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    /**
-     * If set to a value a character counter will be displayed.
-     */
-    maxLength: {
-      type: Number,
-      required: false,
-      default: undefined,
-    },
-
-    /**
-     * @ignore
-     */
-    idSuffix: {
-      type: String,
-      required: false,
-      default: "",
-    },
-
-    /**
-     * @ignore
-     */
-    name: {
-      type: String,
-      required: false,
-      default: null,
-    },
-  },
-
-  data() {
-    return {
-      currentValue: this.modelValue,
-      hasFocus: false,
-    };
-  },
-
-  computed: {
-    hasError(): boolean {
-      // @ts-expect-error - isValid gets called in the mixin
-      return !this.isValid || !!this.error;
-    },
-
-    hasDisabledInput(): boolean {
-      return this.disabled || this.isInherited;
-    },
-  },
-
-  watch: {
-    modelValue(value) {
-      this.currentValue = value;
-    },
-  },
-
-  methods: {
-    onChange(event: Event): void {
-      // @ts-expect-error - target is defined
-      this.$emit("change", event.target.value || "");
-    },
-
-    onInput(event: Event): void {
-      // @ts-expect-error - target is defined
-      this.$emit("update:modelValue", event.target.value);
-    },
-
-    restoreInheritance(): void {
-      this.$emit("update:modelValue", null);
-    },
-
-    createInputId(identification: string): string {
-      if (!this.idSuffix || this.idSuffix.length <= 0) {
-        return identification;
-      }
-
-      return `${identification}-${this.idSuffix}`;
-    },
-
-    setFocusClass(): void {
-      this.hasFocus = true;
-    },
-
-    removeFocusClass(): void {
-      this.hasFocus = false;
-    },
-  },
+  return props.isInherited ? "linked" : "unlinked";
 });
+
+const { copy, copied } = useClipboard();
+
+function handleInheritanceChange(value: string) {
+  if (value === "linked") {
+    emit("inheritance-restore");
+    return;
+  }
+
+  emit("inheritance-remove");
+}
+
+const future = useFutureFlags();
 </script>
+
+<style scoped>
+.mt-text-field {
+  display: grid;
+  grid-template-areas:
+    "label label"
+    "box box"
+    "error error"
+    "hint hint";
+  margin-bottom: 32px;
+}
+
+.mt-text-field--future-remove-default-margin {
+  margin-bottom: 0;
+}
+
+.mt-text-field__box {
+  border-radius: var(--border-radius-xs);
+  background: var(--color-elevation-surface-raised);
+  height: 3rem;
+  border: 1px solid var(--color-border-primary-default);
+  color: var(--color-text-primary-default);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+  display: flex;
+  grid-area: box;
+
+  &:has(input:focus) {
+    border-color: var(--color-border-brand-selected);
+    box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
+  }
+
+  &:has(input:disabled) {
+    background: var(--color-background-primary-disabled);
+  }
+}
+
+.mt-text-field__box--has-error {
+  border-color: var(--color-border-critical-default);
+  background: var(--color-background-critical-dark);
+
+  &:focus-within {
+    border-color: var(--color-border-critical-default);
+    box-shadow: unset;
+  }
+}
+
+input {
+  all: unset;
+  padding: 0.8125rem 1rem;
+  flex: 1;
+
+  &:disabled {
+    color: var(--color-text-secondary-disabled);
+  }
+
+  &::placeholder {
+    color: var(--color-text-secondary-default);
+  }
+}
+
+.mt-text-field__hint {
+  color: var(--color-text-tertiary-default);
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+  font-family: var(--font-family-body);
+}
+
+.mt-text-field__affix {
+  display: grid;
+  place-items: center;
+  background: var(--color-interaction-secondary-default);
+  padding-inline: 1rem;
+}
+
+.mt-text-field__affix--prefix {
+  border-inline-end: 1px solid var(--color-border-primary-default);
+  border-top-left-radius: var(--border-radius-xs);
+  border-bottom-left-radius: var(--border-radius-xs);
+
+  &:empty {
+    display: none;
+  }
+}
+
+.mt-text-field__affix--suffix {
+  border-inline-start: 1px solid var(--color-border-primary-default);
+  border-top-right-radius: var(--border-radius-xs);
+  border-bottom-right-radius: var(--border-radius-xs);
+
+  &:empty {
+    display: none;
+  }
+}
+
+.mt-text-field__copy-button {
+  outline-offset: 0.375rem;
+  background: var(--color-interaction-secondary-default);
+
+  &:focus-visible {
+    outline: 2px solid var(--color-border-brand-selected);
+    border-radius: 0.025rem;
+  }
+}
+</style>
