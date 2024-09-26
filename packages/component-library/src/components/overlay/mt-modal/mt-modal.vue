@@ -10,7 +10,9 @@
     >
       <div class="mt-modal__header">
         <div class="mt-modal__header-content">
-          <h2 class="mt-modal__title" :id="id">{{ title }}</h2>
+          <mt-text as="h2" class="mt-modal__title" size="m" weight="semibold" :id="id">
+            {{ title }}
+          </mt-text>
 
           <slot name="title-after" />
         </div>
@@ -48,10 +50,11 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, onMounted, onUnmounted, ref, watch, type PropType, defineEmits } from "vue";
+import { nextTick, onMounted, onUnmounted, ref, watch, type PropType } from "vue";
 import { useModalContext } from "./composables/useModalContext";
 import MtIcon from "@/components/icons-media/mt-icon/mt-icon.vue";
 import MtModalClose from "./sub-components/mt-modal-close.vue";
+import MtText from "@/components/content/mt-text/mt-text.vue";
 import { createId } from "@/utils/id";
 import * as focusTrap from "focus-trap";
 
@@ -202,7 +205,7 @@ onUnmounted(() => {
 });
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .mt-modal {
   height: auto;
   position: fixed;
@@ -267,6 +270,10 @@ onUnmounted(() => {
   @media (prefers-reduced-motion: no-preference) {
     scale: 0.9;
   }
+}
+
+.mt-modal__title {
+  margin-block-end: 0;
 }
 
 .mt-modal__content {
@@ -339,14 +346,6 @@ onUnmounted(() => {
   align-items: center;
 }
 
-.mt-modal__title {
-  color: var(--color-text-primary-default);
-  margin-block-end: 0;
-  font-weight: $font-weight-medium;
-  line-height: $line-height-lg;
-  font-size: $font-size-m;
-}
-
 .mt-modal__header-content {
   display: flex;
   flex-direction: row;
@@ -357,11 +356,11 @@ onUnmounted(() => {
 .mt-modal__close-button {
   cursor: pointer;
   color: var(--color-icon-primary-default);
-  border-radius: $border-radius-default;
+  border-radius: var(--border-radius-xs);
   width: 2rem;
   height: 2rem;
 
-  // prevents hover stlyes from being applied to non-hoverable devices
+  /* prevents hover stlyes from being applied to non-hoverable devices */
   @media (hover: hover) {
     &:hover {
       background-color: var(--color-interaction-secondary-hover);

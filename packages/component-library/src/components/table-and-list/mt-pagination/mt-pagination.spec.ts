@@ -1,5 +1,11 @@
 import { mount } from "@vue/test-utils";
 import MtPagination from "./mt-pagination.vue";
+import { render, screen } from "@testing-library/vue";
+
+// Mock the $t function
+const mockT = (key: any) => {
+  return key;
+};
 
 function createWrapper() {
   return mount(MtPagination, {
@@ -114,6 +120,27 @@ describe("mt-pagination", () => {
       await pageInput.trigger("change");
 
       expect(wrapper.emitted()["change-current-page"][0]).toStrictEqual([7]);
+    });
+
+    it("should disable the next page and last page button when total page value is zero", async () => {
+      render(MtPagination, {
+        props: {
+          currentPage: 1,
+          totalItems: 0,
+          limit: 25,
+        },
+        global: {
+          mocks: {
+            $t: mockT,
+          },
+        },
+      });
+
+      const nextPageButton = screen.getByRole("button", { name: /mt-pagination.nextPage/i });
+      const lastPageButton = screen.getByRole("button", { name: /mt-pagination.lastPage/i });
+
+      expect(nextPageButton).toBeDisabled();
+      expect(lastPageButton).toBeDisabled();
     });
   });
 });

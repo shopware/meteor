@@ -103,7 +103,7 @@
       top: -3px;
       bottom: -3px;
       border: 2px solid $color-shopware-brand-500;
-      border-radius: $border-radius-default;
+      border-radius: var(--border-radius-xs);
     }
   }
 }

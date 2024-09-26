@@ -71,7 +71,7 @@ export default defineComponent({
     },
     /**
      * Change the size of the button
-     * @values small, default, large
+     * @values x-small, small, default, large
      */
     size: {
       type: String,
@@ -81,7 +81,7 @@ export default defineComponent({
         if (!value.length) {
           return true;
         }
-        return ["small", "default", "large"].includes(value);
+        return ["x-small", "small", "default", "large"].includes(value);
       },
     },
     /**
@@ -153,13 +153,13 @@ $mt-button-transition: all 0.15s ease-out;
   color: $color-darkgray-200;
   transition: $mt-button-transition;
   display: inline-block;
-  border-radius: $border-radius-default;
+  border-radius: var(--border-radius-button);
   padding: 2px 24px;
-  font-size: 14px;
+  font-size: var(--font-size-xs);
   line-height: 34px;
   outline: none;
-  font-weight: 600;
-  font-family: $font-family-default;
+  font-weight: var(--font-weight-semibold);
+  font-family: var(--font-family-body);
   white-space: nowrap;
   text-overflow: ellipsis;
   vertical-align: middle;
@@ -198,18 +198,6 @@ $mt-button-transition: all 0.15s ease-out;
 
   .mt-icon {
     color: $color-gray-800;
-  }
-
-  .mt-button--small {
-    line-height: 20px;
-  }
-
-  .mt-button--default {
-    line-height: 28px;
-  }
-
-  .mt-button--large {
-    line-height: 44px;
   }
 
   &.mt-button--primary {
@@ -386,7 +374,7 @@ $mt-button-transition: all 0.15s ease-out;
   &.mt-button--x-small {
     padding-left: 10px;
     padding-right: 10px;
-    font-size: 12px;
+    font-size: var(--font-size-2xs);
     line-height: 18px;
 
     &.mt-button--square {
@@ -397,7 +385,7 @@ $mt-button-transition: all 0.15s ease-out;
   &.mt-button--small {
     padding-left: 15px;
     padding-right: 15px;
-    font-size: 12px;
+    font-size: var(--font-size-2xs);
     line-height: 26px;
 
     &.mt-button--square {
@@ -409,7 +397,7 @@ $mt-button-transition: all 0.15s ease-out;
     padding-left: 28px;
     padding-right: 28px;
     line-height: 42px;
-    font-size: 15px;
+    font-size: var(--font-size-2xs);
 
     &.mt-button--square {
       width: 48px;
@@ -428,7 +416,7 @@ $mt-button-transition: all 0.15s ease-out;
   }
 
   .mt-button__loader {
-    border-radius: $border-radius-default;
+    border-radius: var(--border-radius-xs);
   }
 }
 </style>

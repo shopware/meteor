@@ -1,13 +1,19 @@
 <template>
   <div class="mt-banner" :class="bannerClasses" role="banner">
     <slot name="customIcon">
-      <mt-icon v-if="!hideIcon" class="mt-banner__icon" :name="bannerIcon" decorative />
+      <mt-icon
+        v-if="!hideIcon"
+        size="1.25rem"
+        class="mt-banner__icon"
+        :name="bannerIcon"
+        decorative
+      />
     </slot>
 
     <div class="mt-banner__body" :class="bannerBodyClasses">
-      <div v-if="title" class="mt-banner__title">
+      <mt-text v-if="title" as="h3" weight="bold" size="xs" class="mt-banner__title">
         {{ title }}
-      </div>
+      </mt-text>
 
       <div class="mt-banner__message">
         <slot />
@@ -31,6 +37,7 @@ import type { PropType } from "vue";
 
 import { defineComponent } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
+import MtText from "@/components/content/mt-text/mt-text.vue";
 
 type CssClasses = (string | Record<string, boolean>)[] | Record<string, boolean>;
 type BannerType = "neutral" | "info" | "attention" | "critical" | "positive" | "inherited";
@@ -39,7 +46,8 @@ export default defineComponent({
   name: "MtBanner",
 
   components: {
-    "mt-icon": MtIcon,
+    MtIcon,
+    MtText,
   },
 
   props: {
@@ -139,139 +147,121 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-$mt-banner-size-close: 40px;
-
+<style scoped>
 .mt-banner {
+  --mt-banner-close-button-size: 2.5rem;
+
   border-width: 1px;
   border-style: solid;
-  border-radius: $border-radius-default;
-  text-align: left;
+  border-radius: var(--border-radius-xs);
   position: relative;
-  margin: 0 auto 20px;
-  font-size: $font-size-default;
-  color: var(--color-text-primary-default);
+  margin: 0 auto 1.25rem;
 
-  &__body {
-    padding: 24px 60px 24px 24px;
-    line-height: 1.5625;
-
-    &--icon {
-      padding: 24px 60px;
-    }
-
-    &--closable {
-      padding-right: $mt-banner-size-close;
-    }
+  & ul {
+    padding: 0.5rem 0 0.5rem 1.25rem;
   }
+}
 
-  &__icon {
-    position: absolute;
-    display: block;
-    left: 26px;
-    top: 28px;
-    width: 20px;
-    height: 20px;
+.mt-banner__title {
+  margin-block-end: 0;
+}
+
+.mt-banner__body {
+  padding: 1.5rem 3.75rem 1.5rem 1.5rem;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.25rem;
+}
+
+.mt-banner__body--icon {
+  padding: 1.5rem 3.75rem;
+}
+
+.mt-banner__body--closable {
+  padding-right: var(--mt-banner-close-button-size);
+}
+
+.mt-banner__icon {
+  position: absolute;
+  display: block;
+  left: 1.625rem;
+  top: 1.75rem;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.mt-banner__close {
+  width: var(--mt-banner-close-button-size);
+  height: var(--mt-banner-close-button-size);
+  line-height: var(--mt-banner-close-button-size);
+  position: absolute;
+  display: block;
+  top: 0.75rem;
+  right: 0.75rem;
+  padding: 0;
+  margin: 0;
+  text-align: center;
+  background: none;
+  border: 0 none;
+  outline: none;
+  cursor: pointer;
+}
+
+.mt-banner--info {
+  border-color: var(--color-border-brand-selected);
+  background-color: var(--color-background-brand-default);
+
+  & :is(.mt-banner__icon, .mt-banner__close) {
+    color: var(--color-icon-brand-default);
   }
+}
 
-  &__close {
-    width: $mt-banner-size-close;
-    height: $mt-banner-size-close;
-    line-height: $mt-banner-size-close;
-    position: absolute;
-    display: block;
-    top: 12px;
-    right: 12px;
-    padding: 0;
-    margin: 0;
-    text-align: center;
-    background: none;
-    border: 0 none;
-    outline: none;
-    cursor: pointer;
+.mt-banner--attention {
+  border-color: var(--color-border-attention-default);
+  background-color: var(--color-background-attention-default);
+
+  & :is(.mt-banner__icon, .mt-banner__close) {
+    color: var(--color-icon-attention-default);
   }
+}
 
-  &__title {
-    margin-top: 1px;
-    margin-bottom: 3px;
-    display: block;
-    font-weight: $font-weight-semi-bold;
+.mt-banner--critical {
+  border-color: var(--color-border-critical-default);
+  background-color: var(--color-background-critical-default);
+
+  & :is(.mt-banner__icon, .mt-banner__close) {
+    color: var(--color-icon-critical-default);
   }
+}
 
-  &--info {
-    border-color: var(--color-border-brand-selected);
-    background-color: var(--color-background-brand-default);
+.mt-banner--positive {
+  border-color: var(--color-border-positive-default);
+  background-color: var(--color-background-positive-default);
 
-    .mt-banner__icon,
-    .mt-banner__close {
-      color: var(--color-icon-brand-default);
-    }
+  & :is(.mt-banner__icon, .mt-banner__close) {
+    color: var(--color-icon-positive-default);
   }
+}
 
-  &--attention {
-    border-color: var(--color-border-attention-default);
-    background-color: var(--color-background-attention-default);
+.mt-banner--inherited {
+  border-color: var(--color-border-accent-default);
+  background-color: var(--color-background-accent-default);
 
-    .mt-banner__icon,
-    .mt-banner__close {
-      color: var(--color-icon-attention-default);
-    }
+  & :is(.mt-banner__icon, .mt-banner__close) {
+    color: var(--color-icon-accent-default);
   }
+}
 
-  &--critical {
-    border-color: var(--color-border-critical-default);
-    background-color: var(--color-background-critical-default);
+.mt-banner--neutral {
+  border-color: var(--color-border-primary-default);
+  background-color: var(--color-elevation-surface-overlay);
 
-    .mt-banner__icon,
-    .mt-banner__close {
-      color: var(--color-icon-critical-default);
-    }
-  }
-
-  &--positive {
-    border-color: var(--color-border-positive-default);
-    background-color: var(--color-background-positive-default);
-
-    .mt-banner__icon,
-    .mt-banner__close {
-      color: var(--color-icon-positive-default);
-    }
-  }
-
-  &--inherited {
-    border-color: var(--color-border-accent-default);
-    background-color: var(--color-background-accent-default);
-
-    .mt-banner__icon,
-    .mt-banner__close {
-      color: var(--color-icon-accent-default);
-    }
-  }
-
-  &--neutral {
-    border-color: var(--color-border-primary-default);
-    background-color: var(--color-elevation-surface-overlay);
-
-    .mt-banner__icon,
-    .mt-banner__close {
-      color: var(--color-icon-primary-default);
-    }
-  }
-
-  ul {
-    padding: 8px 0 8px 20px;
-  }
-
-  .mt-icon.icon--solid-times-s {
-    width: 12px;
-    height: 12px;
-  }
-
-  .mt-icon {
-    > svg {
-      width: 100% !important;
-      height: 100% !important;
-    }
+  & :is(.mt-banner__icon, .mt-banner__close) {
+    color: var(--color-icon-primary-default);
   }
 }
 </style>

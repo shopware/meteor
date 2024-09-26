@@ -5,6 +5,7 @@
       <div class="mt-data-table__toolbar">
         <mt-search
           v-if="disableSearch !== true"
+          class="mt-data-table__search"
           size="small"
           :model-value="searchValue"
           @change="emitSearchValueChange"
@@ -478,6 +479,7 @@
               <div class="mt-data-table__empty-state">
                 <slot name="empty-state">
                   <mt-empty-state
+                    icon="solid-products"
                     :headline="$t('mt-data-table.emptyState.headline')"
                     :description="$t('mt-data-table.emptyState.description')"
                   />
@@ -507,41 +509,43 @@
     </template>
 
     <template #footer>
-      <div class="mt-data-table__footer-left">
-        <mt-select
-          small
-          hide-clearable-button
-          :options="paginationOptionsConverted"
-          :model-value="paginationLimit"
-          @change="emitPaginationLimitChange"
-        />
-        <span class="mt-data-table__pagination-info-text">
-          {{ $t("mt-data-table.itemsPerPage") }}
-        </span>
-      </div>
+      <mt-inset class="mt-data-table__footer-inset">
+        <div class="mt-data-table__footer-left">
+          <mt-select
+            small
+            hide-clearable-button
+            :options="paginationOptionsConverted"
+            :model-value="paginationLimit"
+            @change="emitPaginationLimitChange"
+          />
+          <span class="mt-data-table__pagination-info-text">
+            {{ $t("mt-data-table.itemsPerPage") }}
+          </span>
+        </div>
 
-      <div class="mt-data-table__footer-right">
-        <mt-pagination
-          :limit="paginationLimit"
-          :current-page="currentPage"
-          :total-items="paginationTotalItems"
-          @change-current-page="emitPaginationCurrentPageChange"
-        />
+        <div class="mt-data-table__footer-right">
+          <mt-pagination
+            :limit="paginationLimit"
+            :current-page="currentPage"
+            :total-items="paginationTotalItems"
+            @change-current-page="emitPaginationCurrentPageChange"
+          />
 
-        <mt-button
-          v-if="enableReload"
-          v-tooltip="{
-            message: $t('mt-data-table.reload.tooltip'),
-            width: 'auto',
-          }"
-          square
-          aria-label="reload-data"
-          variant="secondary"
-          @click="emitReload"
-        >
-          <mt-icon name="solid-undo-s" />
-        </mt-button>
-      </div>
+          <mt-button
+            v-if="enableReload"
+            v-tooltip="{
+              message: $t('mt-data-table.reload.tooltip'),
+              width: 'auto',
+            }"
+            square
+            aria-label="reload-data"
+            variant="secondary"
+            @click="emitReload"
+          >
+            <mt-icon name="solid-undo-s" />
+          </mt-button>
+        </div>
+      </mt-inset>
     </template>
   </mt-card>
 </template>
@@ -593,6 +597,7 @@ import MtEmptyState from "../../layout/mt-empty-state/mt-empty-state.vue";
 import StickyColumn from "../../../directives/stickyColumn.directive";
 import MtDataTableResetFilterButton from "./sub-components/mt-data-table-reset-filter-button/mt-data-table-reset-filter-button.vue";
 import MtDataTableFilter from "./sub-components/mt-data-table-filter/mt-data-table-filter.vue";
+import MtInset from "@/components/layout/mt-inset/mt-inset.vue";
 import { throttle } from "lodash-es";
 import { reactive } from "vue";
 import type { Filter } from "./mt-data-table.interfaces";
@@ -662,6 +667,7 @@ export default defineComponent({
     "mt-data-table-price-renderer": MtDataTablePriceRenderer,
     "mt-data-table-reset-filter-button": MtDataTableResetFilterButton,
     "mt-data-table-filter": MtDataTableFilter,
+    "mt-inset": MtInset,
   },
   props: {
     /**
@@ -1960,15 +1966,6 @@ export default defineComponent({
 /**
 * Use inter-font instead of normal font for data-table. Also add the new variables to this file.
 */
-$font-family-default:
-  "Inter",
-  -apple-system,
-  BlinkMacSystemFont,
-  "San Francisco",
-  "Segoe UI",
-  Roboto,
-  "Helvetica Neue",
-  sans-serif;
 $font-family-variables:
   "Inter var",
   -apple-system,
@@ -1989,14 +1986,6 @@ $font-family-default-feature-settings:
   "cv06" on,
   "cv10" on,
   "cv11" on;
-
-$font-weight-medium: 500;
-
-$line-height-auto: auto;
-$line-height-xs: 18px;
-$line-height-sm: 20px;
-$line-height-md: 24px;
-$line-height-lg: 28px;
 
 $color-card-headline: #1c1c1c;
 $color-shopware-brand-vivacious-500: #0f76de;
@@ -2041,6 +2030,10 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     gap: 0;
   }
 
+  .mt-data-table__search {
+    flex: 1;
+  }
+
   .mt-card__content {
     height: auto;
     padding: 0;
@@ -2059,7 +2052,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
 
   // add new Inter font to data table
   * {
-    font-family: $font-family-default;
+    font-family: var(--font-family-body);
   }
 
   @supports (font-variation-settings: normal) {
@@ -2070,10 +2063,10 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   }
 
   // adjust font styling
-  font-size: $font-size-xs;
-  font-weight: $font-weight-regular;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-regular);
   color: $color-darkgray-300;
-  line-height: $line-height-sm;
+  line-height: var(--font-line-height-xs);
 
   .mt-data-table__toolbar {
     width: 100%;
@@ -2264,8 +2257,8 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   }
 
   thead th {
-    font-weight: $font-weight-medium;
-    line-height: $line-height-xs;
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-2xs);
     background-color: var(--color-elevation-surface-sunken);
     color: var(--color-text-secondary-default);
     min-width: 50px;
@@ -2529,9 +2522,10 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
       top: 1px;
       color: $color-shopware-brand-vivacious-500;
       text-decoration: none;
-      font-weight: $font-weight-semi-bold;
-      font-size: $font-size-xs;
-      line-height: $line-height-xs;
+      font-weight: var(--font-weight-semibold);
+      font-size: var(--font-size-xs);
+      line-height: var(--font-line-height-xs);
+      font-family: var(--font-family-body);
       margin-right: 8px;
 
       &:hover {
@@ -2557,6 +2551,12 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     }
   }
 
+  &__footer-inset {
+    display: flex;
+    width: calc(100% + var(--mt-card-footer-padding) * 2);
+    padding: 1rem var(--mt-card-footer-padding);
+  }
+
   &__footer-right {
     display: flex;
     flex-wrap: nowrap;
@@ -2577,7 +2577,9 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
 
   &__pagination-info-text {
     white-space: nowrap;
-    font-size: $font-size-xxs;
+    font-size: var(--font-size-2xs);
+    line-height: var(--font-line-height-2xs);
+    font-family: var(--font-family-body);
     margin-left: 12px;
   }
 }
@@ -2618,23 +2620,23 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   opacity: 0.8;
 
   // set the normal table header cell styling
-  font-family: $font-family-default;
+  font-family: var(--font-family-body);
   @supports (font-variation-settings: normal) {
     font-family: $font-family-variables;
     font-feature-settings: $font-family-default-feature-settings;
   }
   text-align: left;
-  font-size: $font-size-xs;
+  font-size: var(--font-size-xs);
   padding: $tableCellPadding;
   border: 1px solid var(--color-border-brand-selected);
-  border-radius: $border-radius-default $border-radius-default 0 0;
+  border-radius: var(--border-radius-xs) var(--border-radius-xs) 0 0;
   border-top: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   vertical-align: top;
-  font-weight: $font-weight-medium;
-  line-height: $line-height-xs;
+  font-weight: var(--font-weight-medium);
+  line-height: var(--font-line-height-xs);
   background-color: var(--color-elevation-surface-sunken);
   color: var(--color-text-primary-default);
   min-width: 50px;
@@ -2697,7 +2699,7 @@ table.is--dragging-inside {
   width: 100%;
   height: 8px;
   background-color: $color-shopware-brand-900;
-  border-radius: $border-radius-default $border-radius-default 0 0;
+  border-radius: var(--border-radius-xs) var(--border-radius-xs) 0 0;
   transition: transform 0.2s ease;
   transform-origin: top center;
 }
@@ -2711,7 +2713,7 @@ table.is--dragging-inside {
   justify-content: center;
   align-items: center;
   background-color: $color-shopware-brand-900;
-  border-radius: 0 0 $border-radius-default $border-radius-default;
+  border-radius: 0 0 var(--border-radius-xs) var(--border-radius-xs);
 
   #meteor-icon-kit__regular-grip-horizontal-s {
     color: $color-white;
@@ -2747,7 +2749,7 @@ table.is--dragging-inside {
   min-width: 34px;
   cursor: pointer;
   outline: 0;
-  border-radius: $border-radius-default;
+  border-radius: var(--border-radius-xs);
 
   &:hover,
   &:focus-visible {

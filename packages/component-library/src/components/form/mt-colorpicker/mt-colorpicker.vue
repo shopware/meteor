@@ -42,10 +42,11 @@
         @click="onClickInput"
       />
 
-      <mt-popover-deprecated
-        v-if="visible"
+      <mt-floating-ui
+        :isOpened="visible"
         class="mt-colorpicker__colorpicker-position"
         :z-index="zIndex"
+        :offset="-12"
       >
         <div class="mt-colorpicker__colorpicker">
           <div
@@ -102,7 +103,14 @@
                 type="text"
                 spellcheck="false"
               />
-              <label v-if="colorLabels" class="mt-colorpicker__row-column-label">HEX</label>
+              <mt-text
+                v-if="colorLabels"
+                size="2xs"
+                as="label"
+                class="mt-colorpicker__row-column-label"
+              >
+                HEX
+              </mt-text>
             </div>
 
             <div class="mt-colorpicker__row-column">
@@ -116,7 +124,14 @@
                 step="1"
                 placeholder="0"
               />
-              <label v-if="colorLabels" class="mt-colorpicker__row-column-label">R</label>
+              <mt-text
+                v-if="colorLabels"
+                size="2xs"
+                as="label"
+                class="mt-colorpicker__row-column-label"
+              >
+                R
+              </mt-text>
             </div>
 
             <div class="mt-colorpicker__row-column">
@@ -130,7 +145,14 @@
                 step="1"
                 placeholder="0"
               />
-              <label v-if="colorLabels" class="mt-colorpicker__row-column-label">G</label>
+              <mt-text
+                v-if="colorLabels"
+                size="2xs"
+                as="label"
+                class="mt-colorpicker__row-column-label"
+              >
+                G
+              </mt-text>
             </div>
 
             <div class="mt-colorpicker__row-column">
@@ -144,7 +166,14 @@
                 step="1"
                 placeholder="0"
               />
-              <label v-if="colorLabels" class="mt-colorpicker__row-column-label">B</label>
+              <mt-text
+                v-if="colorLabels"
+                size="2xs"
+                as="label"
+                class="mt-colorpicker__row-column-label"
+              >
+                B
+              </mt-text>
             </div>
 
             <div v-if="alpha" class="mt-colorpicker__row-column">
@@ -158,11 +187,18 @@
                 step="1"
                 placeholder="0"
               />
-              <label v-if="colorLabels" class="mt-colorpicker__row-column-label">Alpha</label>
+              <mt-text
+                v-if="colorLabels"
+                as="label"
+                size="2xs"
+                class="mt-colorpicker__row-column-label"
+              >
+                Alpha
+              </mt-text>
             </div>
           </div>
         </div>
-      </mt-popover-deprecated>
+      </mt-floating-ui>
     </template>
 
     <template #error>
@@ -177,14 +213,16 @@ import type { PropType } from "vue";
 import { defineComponent } from "vue";
 import { debounce } from "lodash-es";
 import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
-import MtPopoverDeprecated from "../../_internal/mt-popover-deprecated/mt-popover-deprecated.vue";
+import MtFloatingUi from "../../_internal/mt-floating-ui/mt-floating-ui.vue";
+import MtText from "@/components/content/mt-text/mt-text.vue";
 
 export default defineComponent({
   name: "MtColorpicker",
 
   components: {
-    "mt-popover-deprecated": MtPopoverDeprecated,
     "mt-base-field": MtBaseField,
+    "mt-text": MtText,
+    "mt-floating-ui": MtFloatingUi,
   },
 
   props: {
@@ -1220,7 +1258,7 @@ export default defineComponent({
     position: relative;
     width: 22px;
     height: 22px;
-    border-radius: $border-radius-default;
+    border-radius: var(--border-radius-xs);
     border: 1px solid var(--color-border-primary-default);
     overflow: hidden;
     cursor: pointer;
@@ -1268,8 +1306,6 @@ export default defineComponent({
       margin-right: 5px;
 
       &-label {
-        color: var(--color-text-primary-default);
-        font-size: $font-size-xxs;
         margin-top: 8px;
         user-select: none;
         -moz-user-select: none;
@@ -1302,7 +1338,7 @@ export default defineComponent({
     padding: 10px;
     border: 1px solid var(--color-border-primary-default);
     background-color: var(--color-elevation-surface-overlay);
-    border-radius: $border-radius-default;
+    border-radius: var(--border-radius-overlay);
     box-shadow: 0 3px 6px 0 rgba(120, 138, 155, 0.5);
 
     &::before {
@@ -1335,7 +1371,7 @@ export default defineComponent({
       width: 238px;
       height: 150px;
       border: 1px solid var(--color-border-primary-default);
-      border-radius: $border-radius-default;
+      border-radius: var(--border-radius-xs);
       background-image: linear-gradient(180deg, #fff, rgba(255, 255, 255, 0) 50%),
         linear-gradient(0deg, #000, rgba(0, 0, 0, 0) 50%),
         linear-gradient(90deg, #808080, rgba(128, 128, 128, 0) 100%);
@@ -1359,7 +1395,7 @@ export default defineComponent({
     &-slider-range {
       width: 100%;
       height: 20px;
-      border-radius: $border-radius-default;
+      border-radius: var(--border-radius-xs);
       background-image: linear-gradient(
         90deg,
         #f00 0%,
@@ -1377,7 +1413,7 @@ export default defineComponent({
     &-slider-range::-webkit-slider-thumb {
       height: 26px;
       width: 8px;
-      border-radius: $border-radius-default;
+      border-radius: var(--border-radius-xs);
       border: 1px solid var(--color-border-primary-default);
       background: var(--color-icon-static-default);
       -webkit-appearance: none;
@@ -1389,7 +1425,7 @@ export default defineComponent({
       width: 8px;
       border: 1px solid var(--color-border-primary-default);
       background: var(--color-icon-static-default);
-      border-radius: $border-radius-default;
+      border-radius: var(--border-radius-xs);
       cursor: pointer;
     }
 
@@ -1423,7 +1459,7 @@ export default defineComponent({
       width: 58px;
       height: 58px;
       border: 1px solid var(--color-border-primary-default);
-      border-radius: $border-radius-default;
+      border-radius: var(--border-radius-xs);
       z-index: 1;
     }
 
@@ -1433,7 +1469,7 @@ export default defineComponent({
       width: 58px;
       height: 58px;
       border: 1px solid var(--color-border-primary-default);
-      border-radius: $border-radius-default;
+      border-radius: var(--border-radius-xs);
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 90 90' width='100%25' height='100%25'%3E%3Crect width='30' height='30' x='00' y='00' fill='%23cdd5db' /%3E%3Crect width='30' height='30' x='30' y='30' fill='%23cdd5db' /%3E%3Crect width='30' height='30' x='60' y='00' fill='%23cdd5db' /%3E%3Crect width='30' height='30' x='60' y='60' fill='%23cdd5db' /%3E%3Crect width='30' height='30' x='00' y='60' fill='%23cdd5db' /%3E%3C/svg%3E");
 
       &.is--invalid::after {
@@ -1454,9 +1490,10 @@ export default defineComponent({
       height: 32px;
       padding: 0 5px;
       border: 1px solid var(--color-border-primary-default);
-      border-radius: $border-radius-default;
-      font-size: $font-size-xxs;
-      font-family: $font-family-default;
+      border-radius: var(--border-radius-xs);
+      font-size: var(--font-size-2xs);
+      line-height: var(--font-line-height-2xs);
+      font-family: var(--font-family-body);
       color: var(--color-text-primary-default);
       outline: none;
 
@@ -1489,7 +1526,7 @@ export default defineComponent({
     height: 20px;
     margin-top: 10px;
     border: 1px solid var(--color-border-primary-default);
-    border-radius: $border-radius-default;
+    border-radius: var(--border-radius-xs);
     background-image: url("data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' width='100%25' height='100%25'%3E%3Crect width='10' height='10' x='00' y='00' fill='%23cdd5db' /%3E%3Crect width='10' height='10' x='10' y='10' fill='%23cdd5db' /%3E%3C/svg%3E");
     outline: none;
     -webkit-appearance: none;
@@ -1497,7 +1534,7 @@ export default defineComponent({
     &::-webkit-slider-thumb {
       height: 26px;
       width: 8px;
-      border-radius: $border-radius-default;
+      border-radius: var(--border-radius-xs);
       border: 1px solid var(--color-border-primary-default);
       background: var(--color-icon-static-default);
       -webkit-appearance: none;
@@ -1508,7 +1545,7 @@ export default defineComponent({
       height: 26px;
       width: 8px;
       border: 1px solid var(--color-border-brand-selected);
-      border-radius: $border-radius-default;
+      border-radius: var(--border-radius-xs);
 
       cursor: pointer;
     }

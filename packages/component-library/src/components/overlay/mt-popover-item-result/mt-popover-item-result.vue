@@ -13,7 +13,14 @@
           class="mt-popover-item-result__group-header"
           :aria-label="group.label"
         >
-          <span class="mt-popover-item-result__group-label">{{ group.label }}</span>
+          <mt-text
+            as="span"
+            size="xs"
+            color="color-text-secondary-default"
+            class="mt-popover-item-result__group-label"
+          >
+            {{ group.label }}
+          </mt-text>
 
           <button
             v-if="group.actionLabel"
@@ -79,6 +86,7 @@ import MtPopoverItem from "../mt-popover-item/mt-popover-item.vue";
 import MtSmoothReflow from "../../_internal/mt-smooth-reflow.vue";
 import type { DropConfig, DragConfig } from "../../../directives/dragdrop.directive";
 import { draggable, droppable } from "../../../directives/dragdrop.directive";
+import MtText from "@/components/content/mt-text/mt-text.vue";
 
 export interface Option {
   id: string;
@@ -111,6 +119,7 @@ export default defineComponent({
     "mt-search": MtSearch,
     "mt-popover-item": MtPopoverItem,
     "mt-smooth-reflow": MtSmoothReflow,
+    "mt-text": MtText,
   },
   props: {
     options: {
@@ -240,8 +249,6 @@ $font-family-default-feature-settings:
   "cv10" on,
   "cv11" on;
 
-$font-weight-medium: 500;
-
 $line-height-auto: auto;
 $line-height-xs: 18px;
 $line-height-sm: 20px;
@@ -266,11 +273,7 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
   }
 
   &__group-label {
-    color: var(--color-text-secondary-default);
     text-transform: uppercase;
-    font-size: $font-size-xxs;
-    line-height: $line-height-md;
-    font-weight: $font-weight-medium;
   }
 
   &__group-action {
@@ -278,9 +281,10 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
     background-color: transparent;
     border: none;
     color: var(--color-text-brand-default);
-    font-size: $font-size-xs;
-    line-height: $line-height-xs;
-    font-weight: $font-weight-semi-bold;
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-xs);
+    line-height: var(--font-line-height-xs);
+    font-weight: var(--font-weight-semibold);
     text-decoration: underline;
     cursor: pointer;
 

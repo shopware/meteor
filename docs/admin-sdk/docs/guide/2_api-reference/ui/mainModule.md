@@ -41,6 +41,10 @@ if (location.is(location.MAIN_HIDDEN)) {
       variant: 'primary', // The button variant
       onClickCallback: () => {}
   });
+
+    ui.mainModule.hideSmartBar({
+        locationId: 'main-location-id',
+    });
 }
 
 // Render your custom view
@@ -72,3 +76,18 @@ ui.mainModule.addSmartbarButton({
 | `variant`         | false    | `primary` | Set the variant of the button. Possible values: `primary`, `ghost`, `danger`, `ghost-danger`, `contrast`, `context` |
 | `onClickCallback` | true     |           | Callback function which will be called once the button is clicked                                                   |
 | `disabled`        | false    | false     | Toggle disabled state of the button                                                                                 |
+
+### Hide smart bar
+Turn the smart bar off as needed.
+
+#### Usage:
+```ts
+ui.mainModule.hideSmartBar({
+    locationId: 'main-location-id',
+});
+```
+
+#### Parameters
+| Name         | Required | Default   | Description                                                                                                                                    | Available at Shopware |
+| :----------- | :------- | :-------- | :--------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------|
+| `locationId` | true     |           | The locationId of the module you want to hide the smart bar                                                                                    | v6.6.6.2               |

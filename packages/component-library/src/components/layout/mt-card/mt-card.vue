@@ -25,16 +25,21 @@
 
         <!-- @slot Alternative slot to the title property -->
         <slot name="title">
-          <div v-if="title" class="mt-card__title">
+          <MtText v-if="title" weight="semibold" size="m" class="mt-card__title">
             {{ title }}
-          </div>
+          </MtText>
         </slot>
 
         <!-- @slot Alternative slot to the subtitle property -->
         <slot name="subtitle">
-          <div v-if="subtitle" class="mt-card__subtitle">
+          <MtText
+            v-if="subtitle"
+            color="color-text-tertiary-default"
+            size="xs"
+            class="mt-card__subtitle"
+          >
             {{ subtitle }}
-          </div>
+          </MtText>
         </slot>
       </div>
 
@@ -86,6 +91,8 @@ import { computed, defineComponent, useSlots, type PropType } from "vue";
 import MtContextButton from "../../context-menu/mt-context-button/mt-context-button.vue";
 import MtLoader from "../../feedback-indicator/mt-loader/mt-loader.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
+import MtText from "../../content/mt-text/mt-text.vue";
+import { useFutureFlags } from "@/composables/useFutureFlags";
 
 export default defineComponent({
   name: "MtCard",
@@ -94,6 +101,7 @@ export default defineComponent({
     MtContextButton,
     MtLoader,
     MtIcon,
+    MtText,
   },
 
   props: {
@@ -117,6 +125,7 @@ export default defineComponent({
 
     /**
      * Renders the card as a hero card without styling
+     * @deprecated v4.0.0 - will be removed without replacement
      */
     hero: {
       type: Boolean,
@@ -135,6 +144,7 @@ export default defineComponent({
 
     /**
      * Render the card in a large size
+     * @depracated v4.0.0 - will be removed without replacement
      */
     large: {
       type: Boolean,
@@ -178,6 +188,8 @@ export default defineComponent({
   setup(props) {
     const slots = useSlots();
 
+    const futureFlags = useFutureFlags();
+
     const showHeader = computed(
       () =>
         !!props.title || !!slots.title || !!props.subtitle || !!slots.subtitle || !!slots.avatar,
@@ -185,10 +197,13 @@ export default defineComponent({
 
     const cardClasses = computed(() => ({
       "mt-card--grid": !!slots.grid,
+      // @deprecated v4.0.0 - will be removed without replacement
       "mt-card--hero": !!props.hero,
       "mt-card--large": props.large,
       "mt-card--has-footer": !!slots.footer,
       "mt-card--is-inherited": !!props.inheritance,
+      "mt-card--future-ignore-max-width": futureFlags.removeCardWidth,
+      "mt-card--future-remove-default-margin": futureFlags.removeDefaultMargin,
     }));
 
     const titleWrapperClasses = computed(() => ({
@@ -210,10 +225,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-@import "../../assets/scss/variables";
-@import "../../assets/scss/mixins";
-
+<style scoped>
 /**
  * @hotfix fixes a bug in safari which leads to disappearing cards
  */
@@ -226,227 +238,212 @@ export default defineComponent({
 }
 
 .mt-card {
-  max-width: $content-width;
-  margin: 0 auto 40px;
+  max-width: 60rem;
+  margin: 0 auto 2.5rem;
   position: relative;
   background: var(--color-elevation-surface-raised);
   border: 1px solid var(--color-border-primary-default);
   overflow: hidden;
 
-  &:not(&--hero) {
-    border-radius: $border-radius-lg;
-  }
-
-  &.mt-card--is-inherited {
-    border-color: var(--color-border-accent-default);
-
-    .mt-card__title {
-      color: var(--color-text-accent-default);
-    }
-
-    .mt-card__inheritance-toggle {
-      color: var(--color-icon-accent-default);
-    }
-  }
-
-  &.mt-card--grid {
-    .mt-card__content {
-      display: grid;
-      padding: 0;
-
-      .mt-grid {
-        border-top: none;
-      }
-    }
-  }
-
-  &.mt-card--hero {
-    .mt-card__content {
-      background: none;
-      border: none;
-      text-align: center;
-
-      h3 {
-        font-size: 30px;
-      }
-    }
-  }
-
-  &.mt-card--large {
-    max-width: 1330px;
-
-    .mt-card__title,
-    .mt-card__subtitle {
-      width: auto;
-      position: relative;
-      top: 0;
-      left: 0;
-      text-align: left;
-    }
-  }
-
-  .mt-card__header {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: stretch;
-    gap: 12px;
-    padding: 24px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--color-border-primary-default);
-  }
-
-  .mt-card__avatar {
-    overflow: hidden;
-    border-radius: $border-radius-default;
-    width: 40px;
-    height: 40px;
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-    }
-  }
-
-  .mt-card__avatar:empty {
-    display: none;
-  }
-
-  .mt-card__title {
-    color: var(--color-text-primary-default);
-    font-size: $font-size-s;
-    line-height: $line-height-md;
-    font-weight: $font-weight-medium;
-  }
-
-  .mt-card__subtitle {
-    color: var(--color-text-tertiary-default);
-    font-size: $font-size-xs;
-    line-height: $line-height-sm;
-    font-weight: $font-weight-regular;
-  }
-
-  .mt-card__titles {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-
-    &--has-inheritance-toggle {
-      display: grid;
-      grid-template-columns: min-content 1fr;
-      column-gap: 4px;
-    }
-
-    .mt-card__subtitle {
-      grid-column: 1 / -1;
-    }
-  }
-
-  .mt-card__titles-right-slot {
-    color: var(--color-text-primary-default);
-    margin-left: auto;
-  }
-
-  .mt-card__inheritance-toggle {
-    cursor: pointer;
-    outline-offset: 2px;
-    outline-color: var(--color-border-brand-selected);
-    color: var(--color-icon-primary-default);
-  }
-
-  .mt-card__toolbar {
-    display: flex;
-    flex-basis: auto;
-    gap: 8px;
-    padding: 20px 24px 16px 24px;
-
-    &:empty {
-      display: none;
-    }
-  }
-
-  &__tabs {
-    .mt-tabs {
-      margin: 0;
-      max-width: none;
-      padding-left: 8px;
-
-      .mt-tabs__custom-content {
-        padding: 0;
-      }
-    }
+  /* @deprecated v4.0.0 */
+  &:not(.mt-card--hero) {
+    border-radius: var(--border-radius-card);
   }
 
   &:not(:has(.mt-card__tabs:empty)) .mt-card__header {
     border-bottom: none;
   }
+}
 
-  .mt-card__content {
-    display: flow-root;
-    flex-basis: 100%;
-    padding: 24px;
-    background-clip: padding-box;
+.mt-card--future-remove-default-margin {
+  margin-block-end: 0;
+}
+
+.mt-card__content {
+  display: flow-root;
+  flex-basis: 100%;
+  padding: 1.5rem;
+  background-clip: padding-box;
+  position: relative;
+  color: var(--color-text-primary-default);
+
+  & > :where(h1, h2, h3, h4, h5, h6) {
+    font-weight: normal;
+  }
+
+  & > h1 {
+    font-size: 1.5rem;
+  }
+
+  & > h2 {
+    font-size: 1.375rem;
+  }
+
+  & > h3 {
+    font-size: 1.25rem;
+  }
+
+  & > :where(h4, h5, h6) {
+    font-size: 1.125rem;
+  }
+
+  & a.mt-card__quick-link {
+    display: grid;
+    grid-auto-flow: column;
+    grid-column-gap: 0.375rem;
+    align-items: center;
+    text-decoration: none;
+    color: var(--color-text-brand-default);
+    font-size: 0.875rem;
+
+    &:hover {
+      color: var(--color-text-brand-hover);
+    }
+  }
+}
+
+.mt-card--has-footer {
+  & .mt-card__content {
+    border: none;
+    border-radius: var(--border-radius-none);
+  }
+}
+
+/* @deprecated v4.0.0 */
+.mt-card--hero {
+  & .mt-card__content {
+    background: none;
+    border: none;
+    text-align: center;
+
+    & h3 {
+      font-size: 1.875rem;
+    }
+  }
+}
+
+/* @depracated v4.0.0 - will be removed without replacement */
+.mt-card--large {
+  max-width: 83.125rem;
+
+  & .mt-card__title,
+  & .mt-card__subtitle {
+    width: auto;
     position: relative;
-    color: var(--color-text-primary-default);
+    top: 0;
+    left: 0;
+    text-align: left;
+  }
+}
 
-    > h1,
-    > h2,
-    > h3,
-    > h4,
-    > h5,
-    > h6 {
-      font-weight: normal;
-    }
+.mt-card--future-ignore-max-width {
+  max-width: none;
+  margin-inline: 0;
+}
 
-    > h1 {
-      font-size: 24px;
-    }
+.mt-card__titles {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
 
-    > h2 {
-      font-size: 22px;
-    }
+.mt-card__titles--has-inheritance-toggle {
+  display: grid;
+  grid-template-columns: min-content 1fr;
+  column-gap: 0.25rem;
 
-    > h3 {
-      font-size: 20px;
-    }
+  & .mt-card__subtitle {
+    grid-column: 1 / -1;
+  }
+}
 
-    > h4,
-    > h5,
-    > h6 {
-      font-size: 18px;
-    }
+.mt-card--is-inherited {
+  border-color: var(--color-border-accent-default);
 
-    a.mt-card__quick-link {
-      display: grid;
-      grid-auto-flow: column;
-      grid-column-gap: 6px;
-      align-items: center;
-      text-decoration: none;
-      color: var(--color-text-brand-default);
-      font-size: 14px;
-
-      &:hover {
-        color: var(--color-text-brand-hover);
-      }
-    }
+  & .mt-card__title {
+    color: var(--color-text-accent-default);
   }
 
-  .mt-card__footer {
-    display: flex;
-    padding: 16px 24px;
-    border-top: none;
-    color: var(--color-text-secondary-default);
+  & .mt-card__inheritance-toggle {
+    color: var(--color-icon-accent-default);
   }
+}
 
-  .mt-card__footer:empty {
+.mt-card--grid {
+  & .mt-card__content {
+    display: grid;
+    padding: 0;
+
+    & .mt-grid {
+      border-top: none;
+    }
+  }
+}
+
+.mt-card__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: 0.75rem;
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--color-border-primary-default);
+}
+
+.mt-card__toolbar {
+  display: flex;
+  flex-basis: auto;
+  gap: 0.5rem;
+  padding: 1.25rem 1.5rem 1rem 1.5rem;
+
+  &:empty {
     display: none;
   }
+}
 
-  &.mt-card--has-footer {
-    .mt-card__content {
-      border: none;
-      border-radius: 0;
-    }
+.mt-card__avatar {
+  overflow: hidden;
+  border-radius: var(--border-radius-xs);
+  width: 2.5rem;
+  height: 2.5rem;
+
+  & img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  &:empty {
+    display: none;
+  }
+}
+
+.mt-card__inheritance-toggle {
+  cursor: pointer;
+  outline-offset: 2px;
+  outline-color: var(--color-border-brand-selected);
+  color: var(--color-icon-primary-default);
+}
+
+.mt-card__titles-right-slot {
+  color: var(--color-text-primary-default);
+  margin-left: auto;
+}
+
+.mt-card__footer {
+  --mt-card-footer-padding: 1.5rem;
+
+  --mt-inset-block-start: var(--mt-card-footer-padding);
+  --mt-inset-block-end: var(--mt-card-footer-padding);
+  --mt-inset-inline-start: var(--mt-card-footer-padding);
+  --mt-inset-inline-end: var(--mt-card-footer-padding);
+
+  display: flex;
+  padding: var(--mt-card-footer-padding);
+  border-top: 1px solid var(--color-border-primary-default);
+  color: var(--color-text-secondary-default);
+
+  &:empty {
+    display: none;
   }
 }
 </style>

@@ -1,5 +1,17 @@
 <template>
-  <div class="mt-field" :class="classes">
+  <div
+    class="mt-field"
+    :class="[
+      {
+        'has--error': hasError,
+        'is--disabled': disabled,
+        'is--inherited': isInherited,
+        'has--focus': hasFocus,
+        'mt-field--future-remove-default-margin': future.removeDefaultMargin,
+      },
+      mtBlockSize,
+    ]"
+  >
     <div class="mt-field__label">
       <mt-inheritance-switch
         v-if="isInheritanceField"
@@ -59,6 +71,7 @@ import useEmptySlotCheck from "../../../../composables/useEmptySlotCheck";
 import MtValidationMixin from "../../../../mixins/validation.mixin";
 import MtFormFieldMixin from "../../../../mixins/form-field.mixin";
 import { createId } from "../../../../utils/id";
+import { useFutureFlags } from "@/composables/useFutureFlags";
 
 export default defineComponent({
   name: "MtBaseField",
@@ -209,19 +222,6 @@ export default defineComponent({
       };
     },
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    classes(): any[] {
-      return [
-        {
-          "has--error": this.hasError,
-          "is--disabled": this.disabled,
-          "is--inherited": this.isInherited,
-          "has--focus": this.hasFocus,
-        },
-        this.mtBlockSize,
-      ];
-    },
-
     mtBlockSize(): string {
       return `mt-field--${this.size}`;
     },
@@ -233,9 +233,11 @@ export default defineComponent({
 
   setup() {
     const { hasSlotContent } = useEmptySlotCheck();
+    const future = useFutureFlags();
 
     return {
       hasSlotContent,
+      future,
     };
   },
 });
@@ -268,7 +270,9 @@ $mt-field-transition:
   &__hint,
   &__hint-right {
     margin-top: 4px;
-    font-size: $font-size-extra-small;
+    font-size: var(--font-size-xs);
+    line-height: var(--font-line-height-xs);
+    font-family: var(--font-family-body);
     color: var(--color-text-tertiary-default);
     display: flex;
     align-items: center;
@@ -300,9 +304,9 @@ $mt-field-transition:
     padding: 13px 16px;
     border: none;
     background: var(--color-elevation-surface-raised);
-    font-size: $font-size-small;
-    font-family: $font-family-default;
-    line-height: 22px;
+    font-size: var(--font-size-xs);
+    font-family: var(--font-size-body);
+    line-height: 1;
     transition: $mt-field-transition;
     color: var(--color-text-primary-default);
     outline: none;
@@ -328,7 +332,7 @@ $mt-field-transition:
 
   .mt-block-field__block {
     border: 1px solid var(--color-border-primary-default);
-    border-radius: $border-radius-default;
+    border-radius: var(--border-radius-xs);
     overflow: hidden;
   }
 
@@ -391,9 +395,10 @@ $mt-field-transition:
     background: var(--color-interaction-secondary-dark);
     border-left: 1px solid var(--color-border-primary-default);
     border-right: none;
-    line-height: 22px;
     padding: 12px 15px;
-    font-size: $font-size-small;
+    font-size: var(--font-size-xs);
+    line-height: var(--font-line-height-xs);
+    font-family: var(--font-family-body);
     color: var(--color-text-primary-default);
     transition: $mt-field-transition;
 
@@ -445,6 +450,11 @@ $mt-field-transition:
     label {
       flex-grow: 1;
     }
+
+    &:empty,
+    &:has(label:only-child:empty) {
+      display: none;
+    }
   }
 
   .mt-field__label .is--required::after {
@@ -462,5 +472,9 @@ $mt-field-transition:
       }
     }
   }
+}
+
+.mt-field--future-remove-default-margin {
+  margin-bottom: 0;
 }
 </style>

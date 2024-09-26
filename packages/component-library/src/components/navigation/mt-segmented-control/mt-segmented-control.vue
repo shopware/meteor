@@ -214,7 +214,7 @@ export default defineComponent({
   width: max-content;
   background-color: var(--color-elevation-surface-overlay);
   border: 1px solid var(--color-border-primary-default);
-  border-radius: $border-radius-default;
+  border-radius: var(--border-radius-button);
   padding: 2px;
 
   .mt-floating-ui {
@@ -232,11 +232,12 @@ export default defineComponent({
     position: relative;
     cursor: pointer;
     border: none;
-    border-radius: $border-radius-default;
+    border-radius: var(--border-radius-button);
     padding: 6px 12px;
-    font-family: inherit;
-    font-size: $font-size-extra-small;
-    font-weight: $font-weight-semi-bold;
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-2xs);
+    line-height: var(--font-line-height-2xs);
+    font-weight: var(--font-weight-semibold);
     color: var(--color-text-primary-default);
     transition:
       0.15s background ease,
@@ -350,19 +351,19 @@ export default defineComponent({
     gap: 0;
 
     .mt-floating-ui .mt-segmented-control__action {
-      border-radius: 0;
+      border-radius: var(--border-radius-none);
       border-right: 1px solid var(--color-border-primary-default);
     }
 
     .mt-floating-ui:first-child .mt-segmented-control__action {
-      border-top-left-radius: $border-radius-default - 1;
-      border-bottom-left-radius: $border-radius-default - 1;
+      border-top-left-radius: var(--border-radius-xs) - 1;
+      border-bottom-left-radius: var(--border-radius-xs) - 1;
       border-left: none;
     }
 
     .mt-floating-ui:last-child .mt-segmented-control__action {
-      border-top-right-radius: $border-radius-default - 1;
-      border-bottom-right-radius: $border-radius-default - 1;
+      border-top-right-radius: var(--border-radius-xs) - 1;
+      border-bottom-right-radius: var(--border-radius-xs) - 1;
       border-right: none;
     }
   }

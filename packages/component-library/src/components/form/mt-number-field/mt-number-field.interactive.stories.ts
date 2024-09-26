@@ -64,7 +64,6 @@ export const TestIncreaseByControl: MtNumberFieldStory = {
     expect(args.updateModelValue).toHaveBeenCalledWith(11);
   },
 };
-
 export const TestDecreaseByKeyStroke: MtNumberFieldStory = {
   name: "Should decrease value by key stroke",
   args: {
@@ -174,6 +173,40 @@ export const TestIncreaseConsiderMax: MtNumberFieldStory = {
   },
 };
 
+export const TestIncreaseByKeyStrokeAfterTyping: MtNumberFieldStory = {
+  name: "Should increase value by key stroke after typing a value",
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    await userEvent.click(canvas.getByRole("textbox"));
+    await userEvent.type(canvas.getByRole("textbox"), "10");
+    await userEvent.type(canvas.getByRole("textbox"), "{arrowup}");
+
+    // Notice that the value is of type string and the value of the event is of type number
+    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("11");
+
+    expect(args.change).toHaveBeenCalledWith(11);
+    expect(args.updateModelValue).toHaveBeenCalledWith(11);
+  },
+};
+
+export const TestDecreaseByKeyStrokeAfterTyping: MtNumberFieldStory = {
+  name: "Should decrease value by key stroke after typing a value",
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    await userEvent.click(canvas.getByRole("textbox"));
+    await userEvent.type(canvas.getByRole("textbox"), "10");
+    await userEvent.type(canvas.getByRole("textbox"), "{arrowdown}");
+
+    // Notice that the value is of type string and the value of the event is of type number
+    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("9");
+
+    expect(args.change).toHaveBeenCalledWith(9);
+    expect(args.updateModelValue).toHaveBeenCalledWith(9);
+  },
+};
+
 export const VisualTestPrefix: MtNumberFieldStory = {
   name: "Should display prefix",
   args: {
@@ -221,6 +254,12 @@ export const VisualTestDisabled: MtNumberFieldStory = {
 
     await userEvent.type(canvas.getByRole("textbox"), "1337");
 
+    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("44");
+
+    await userEvent.click(canvas.getByRole("button", { name: "Decrease" }));
+    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("44");
+
+    await userEvent.click(canvas.getByRole("button", { name: "Increase" }));
     expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("44");
   },
 };

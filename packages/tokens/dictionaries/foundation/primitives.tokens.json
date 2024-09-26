@@ -621,16 +621,16 @@
   },
   "scale": {
     "size": {
+      "0": {
+        "$value": 0,
+        "$type": "float"
+      },
       "1": {
         "$value": 1,
         "$type": "float"
       },
       "2": {
         "$value": 2,
-        "$type": "float"
-      },
-      "3": {
-        "$value": 3,
         "$type": "float"
       },
       "4": {
@@ -645,48 +645,24 @@
         "$value": 8,
         "$type": "float"
       },
-      "9": {
-        "$value": 9,
-        "$type": "float"
-      },
       "10": {
         "$value": 10,
-        "$type": "float"
-      },
-      "11": {
-        "$value": 11,
         "$type": "float"
       },
       "12": {
         "$value": 12,
         "$type": "float"
       },
-      "13": {
-        "$value": 13,
-        "$type": "float"
-      },
       "14": {
         "$value": 14,
-        "$type": "float"
-      },
-      "15": {
-        "$value": 15,
         "$type": "float"
       },
       "16": {
         "$value": 16,
         "$type": "float"
       },
-      "17": {
-        "$value": 17,
-        "$type": "float"
-      },
       "18": {
         "$value": 18,
-        "$type": "float"
-      },
-      "19": {
-        "$value": 19,
         "$type": "float"
       },
       "20": {
@@ -717,44 +693,20 @@
         "$value": 32,
         "$type": "float"
       },
-      "34": {
-        "$value": 34,
-        "$type": "float"
-      },
       "36": {
         "$value": 36,
-        "$type": "float"
-      },
-      "38": {
-        "$value": 38,
         "$type": "float"
       },
       "40": {
         "$value": 40,
         "$type": "float"
       },
-      "42": {
-        "$value": 42,
-        "$type": "float"
-      },
-      "44": {
-        "$value": 44,
-        "$type": "float"
-      },
       "48": {
         "$value": 48,
         "$type": "float"
       },
-      "52": {
-        "$value": 52,
-        "$type": "float"
-      },
       "56": {
         "$value": 56,
-        "$type": "float"
-      },
-      "60": {
-        "$value": 60,
         "$type": "float"
       },
       "64": {
@@ -769,48 +721,24 @@
         "$value": 80,
         "$type": "float"
       },
-      "88": {
-        "$value": 88,
-        "$type": "float"
-      },
       "96": {
         "$value": 96,
-        "$type": "float"
-      },
-      "112": {
-        "$value": 112,
         "$type": "float"
       },
       "128": {
         "$value": 128,
         "$type": "float"
       },
-      "144": {
-        "$value": 144,
-        "$type": "float"
-      },
       "160": {
         "$value": 160,
-        "$type": "float"
-      },
-      "176": {
-        "$value": 176,
         "$type": "float"
       },
       "192": {
         "$value": 192,
         "$type": "float"
       },
-      "208": {
-        "$value": 208,
-        "$type": "float"
-      },
       "224": {
         "$value": 224,
-        "$type": "float"
-      },
-      "240": {
-        "$value": 240,
         "$type": "float"
       },
       "256": {

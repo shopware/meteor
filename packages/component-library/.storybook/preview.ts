@@ -4,6 +4,7 @@ import { darkTheme, lightTheme } from "./shopwareTheme";
 import { setup } from "@storybook/vue3";
 import { createI18n } from "vue-i18n";
 import DeviceHelperPlugin from "./../src/plugin/device-helper.plugin";
+import MtThemeProvider from "../src/components/theme/mt-theme-provider.vue";
 import {
   DARK_THEME_BACKGROUND_VALUE,
   LIGHT_THEME_BACKGROUND_VALUE,
@@ -53,7 +54,17 @@ const preview: Preview = {
       ],
     },
   },
-  decorators: [ThemeProvider],
+  decorators: [
+    ThemeProvider,
+    () => ({
+      components: { MtThemeProvider },
+      template: `
+        <mt-theme-provider>
+          <story />
+        </mt-theme-provider>
+      `,
+    }),
+  ],
 };
 
 export default preview;

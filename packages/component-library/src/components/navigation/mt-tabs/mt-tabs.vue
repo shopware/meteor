@@ -1,6 +1,6 @@
 <template>
   <priority-plus ref="priorityPlus" #default="{ mainItems, moreItems }" :list="items">
-    <ul class="mt-tabs" :class="tabClasses" role="tablist">
+    <ul :class="tabClasses" role="tablist">
       <span class="mt-tabs__slider" :class="sliderClasses" :style="sliderStyle" />
 
       <template v-if="!vertical">
@@ -79,12 +79,13 @@
 <script lang="ts">
 import type { PropType } from "vue";
 
-import { defineComponent } from "vue";
+import { defineComponent, computed } from "vue";
 import MtContextButton from "../../context-menu/mt-context-button/mt-context-button.vue";
 import MtContextMenuItem from "../../context-menu/mt-context-menu-item/mt-context-menu-item.vue";
 import MtColorBadge from "../../feedback-indicator/mt-color-badge/mt-color-badge.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import PriorityPlus from "../../_internal/mt-priority-plus-navigation.vue";
+import { useFutureFlags } from "@/composables/useFutureFlags";
 
 export interface TabItem {
   label: string;
@@ -108,6 +109,8 @@ export default defineComponent({
     "mt-icon": MtIcon,
   },
 
+  emits: ["new-item-active"],
+
   props: {
     items: {
       type: Array as PropType<TabItem[]>,
@@ -120,6 +123,9 @@ export default defineComponent({
       default: false,
     },
 
+    /**
+     * @deprecated v4.0.0 - Set max-width through parent container element
+     */
     small: {
       type: Boolean,
       required: false,
@@ -144,15 +150,6 @@ export default defineComponent({
   },
 
   computed: {
-    tabClasses(): Record<string, boolean> {
-      this.refreshKey;
-
-      return {
-        "mt-tabs--vertical": this.vertical,
-        "mt-tabs--small": this.small,
-      };
-    },
-
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     activeDomItem(): any | undefined {
       this.refreshKey;
@@ -252,6 +249,25 @@ export default defineComponent({
     },
   },
 
+  setup(props) {
+    const futureFlags = useFutureFlags();
+
+    const tabClasses = computed(() => {
+      return [
+        "mt-tabs",
+        {
+          "mt-tabs--vertical": props.vertical,
+          "mt-tabs--small": props.small,
+          "mt-tabs--future-remove-default-margin": futureFlags.removeDefaultMargin,
+        },
+      ];
+    });
+
+    return {
+      tabClasses,
+    };
+  },
+
   watch: {
     items: "handleResize",
     vertical: "handleResize",
@@ -341,110 +357,119 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style scoped>
 .mt-tabs {
   display: flex;
   position: relative;
   box-shadow: inset 0 -1px 0 var(--color-border-primary-default);
+}
 
-  &.mt-tabs--small {
-    max-width: 800px;
-    margin: 0 auto 15px auto;
+.mt-tabs--small {
+  max-width: 800px;
+  margin: 0 auto 15px auto;
+}
+
+.mt-tabs--future-remove-default-margin {
+  margin-block-end: 0;
+}
+
+.mt-tabs--vertical {
+  flex-direction: column;
+  box-shadow: none;
+
+  & li {
+    border-bottom: none;
+    border-left: 1px solid var(--color-border-primary-default);
   }
 
-  &.mt-tabs--vertical {
-    flex-direction: column;
-    box-shadow: none;
+  & .mt-tabs__slider {
+    top: 0;
+    bottom: auto;
+    left: 3px;
+  }
+}
 
-    li {
-      border-bottom: none;
-      border-left: 1px solid var(--color-border-primary-default);
-    }
+.mt-tabs__item {
+  display: inline-block;
+  border-bottom: 1px solid var(--color-border-primary-default);
+  padding: 10px 16px;
+  white-space: nowrap;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+  cursor: pointer;
+  color: var(--color-text-primary-default);
 
-    .mt-tabs__slider {
-      top: 0;
-      bottom: auto;
-      left: 3px;
+  /* Trick to stop items from jumping when the active item changes
+   * see: https://css-tricks.com/bold-on-hover-without-the-layout-shift/
+   */
+  &::after {
+    content: attr(data-text);
+    content: attr(data-text) / "";
+    height: 0;
+    display: block;
+    visibility: hidden;
+    overflow: hidden;
+    user-select: none;
+    pointer-events: none;
+    font-weight: var(--font-weight-medium);
+
+    @media speech {
+      display: none;
     }
   }
+}
 
-  .mt-tabs__item {
-    display: inline-block;
-    border-bottom: 1px solid var(--color-border-primary-default);
-    padding: 10px 16px;
-    white-space: nowrap;
-    font-size: $font-size-default;
-    cursor: pointer;
-    color: var(--color-text-primary-default);
+.mt-tabs__item--error {
+  color: var(--color-text-critical-default);
+}
 
-    &--error {
-      color: var(--color-text-critical-default);
-    }
+.mt-tabs__item--active {
+  font-weight: var(--font-weight-medium);
+}
 
-    &--active {
-      font-weight: $font-weight-medium;
-    }
+.mt-tabs__slider {
+  transform-origin: top left;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background-color: var(--color-border-brand-selected);
+  z-index: 1;
+}
 
-    // Trick to stop items from jumping when the active item changes
-    // see: https://css-tricks.com/bold-on-hover-without-the-layout-shift/
-    &::after {
-      content: attr(data-text);
-      content: attr(data-text) / "";
-      height: 0;
-      display: block;
-      visibility: hidden;
-      overflow: hidden;
-      user-select: none;
-      pointer-events: none;
-      font-weight: $font-weight-medium;
+.mt-tabs__slider--error {
+  background-color: var(--color-border-critical-default);
+}
 
-      @media speech {
-        display: none;
-      }
-    }
-  }
+.mt-tabs__slider--animated {
+  transition: 0.2s all ease-in-out;
+}
 
-  .mt-tabs__slider {
-    transform-origin: top left;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    height: 2px;
-    background-color: var(--color-border-brand-selected);
-    z-index: 1;
+.mt-context-button {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--color-border-primary-default);
 
-    &--error {
-      background-color: var(--color-border-critical-default);
-    }
-
-    &--animated {
-      transition: 0.2s all ease-in-out;
-    }
-  }
-
-  .mt-context-button {
+  & button {
     display: flex;
     align-items: center;
-    border-bottom: 1px solid var(--color-border-primary-default);
-
-    button {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      font-size: $font-size-default;
-    }
+    gap: 4px;
+    font-size: var(--font-size-s);
+    line-height: var(--font-line-height-s);
+    font-family: var(--font-family-body);
   }
+}
 
-  .mt-tabs__error-badge {
-    margin-left: 2px;
-    width: 12px;
-    height: 12px;
-    color: var(--color-icon-critical-default);
+.mt-tabs__error-badge {
+  margin-left: 2px;
+  width: 12px;
+  height: 12px;
+  color: var(--color-icon-critical-default);
 
-    > svg {
-      width: 100% !important;
-      height: 100% !important;
-    }
+  > svg {
+    width: 100% !important;
+    height: 100% !important;
   }
 }
 </style>

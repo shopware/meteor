@@ -2,7 +2,7 @@ import { type HttpClient } from '../../common/domain/http-client/HttpClient.js';
 import { z } from 'zod';
 
 const variableAlias = z.object({
-  id: z.string().regex(/^VariableID:[0-9a-f]{40}\/\d+:\d+$/),
+  id: z.string().regex(/^VariableID:([0-9a-f]{40}\/)?\d+:\d+$/),
   type: z.literal('VARIABLE_ALIAS'),
 });
 
@@ -68,7 +68,18 @@ export class FigmaApi {
         Accept: '*/*',
         'X-Figma-Token': this.config.apiKey,
       })
-      .then((response) => responseSchema.parse(response))
+      .then((response) => {
+        try {
+          return responseSchema.parse(response);
+        } catch (error) {
+          const notAZodError = !(error instanceof z.ZodError);
+          if (notAZodError) throw error;
+
+          throw new Error(
+            `Failed to parse Figma API response: ${error.message}`,
+          );
+        }
+      })
       .then((response) => {
         // filter out all remote variables and variable collections
         response.meta.variables = Object.fromEntries(

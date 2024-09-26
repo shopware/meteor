@@ -1,6 +1,6 @@
 <template>
   <div class="mt-field--checkbox__container">
-    <div class="mt-field--checkbox" :class="MtCheckboxFieldClasses">
+    <div class="mt-field--checkbox" :class="{ ...MtCheckboxFieldClasses, ...checkboxClasses }">
       <div class="mt-field--checkbox__content">
         <div class="mt-field__checkbox">
           <input
@@ -40,12 +40,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtFormFieldMixin from "../../../mixins/form-field.mixin";
 import { createId } from "../../../utils/id";
+import { useFutureFlags } from "@/composables/useFutureFlags";
 
 export default defineComponent({
   name: "MtCheckbox",
@@ -152,6 +153,18 @@ export default defineComponent({
     this.id = createId();
   },
 
+  setup() {
+    const futureFlags = useFutureFlags();
+
+    const checkboxClasses = computed(() => ({
+      "mt-switch--future-remove-default-margin": futureFlags.removeDefaultMargin,
+    }));
+
+    return {
+      checkboxClasses,
+    };
+  },
+
   computed: {
     MtCheckboxFieldClasses(): {
       "has--error": boolean;
@@ -234,12 +247,16 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style>
 .mt-field--checkbox__container {
-  .mt-field--checkbox {
+  & .mt-field--checkbox {
     margin-bottom: 22px;
 
-    .mt-inheritance-switch {
+    &.mt-switch--future-remove-default-margin {
+      margin-bottom: 0;
+    }
+
+    & .mt-inheritance-switch {
       &.mt-field__inheritance-icon {
         display: flex;
         justify-content: center;
@@ -247,35 +264,35 @@ export default defineComponent({
       }
     }
 
-    .mt-field--checkbox__content {
+    & .mt-field--checkbox__content {
       display: grid;
       grid-template-columns: 16px 1fr;
       align-items: center;
     }
 
-    .mt-field {
+    & .mt-field {
       margin-bottom: 0;
 
-      .mt-block-field__block {
+      & .mt-block-field__block {
         border: none;
       }
     }
 
-    .mt-field--default {
+    & .mt-field--default {
       display: flex;
     }
 
-    .mt-field__label {
+    & .mt-field__label {
       margin-bottom: 0;
       margin-left: 4px;
     }
 
-    .mt-field__checkbox {
+    & .mt-field__checkbox {
       width: 16px;
       height: 16px;
       position: relative;
 
-      input[type="checkbox"] {
+      & input[type="checkbox"] {
         opacity: 0;
         display: block;
         width: 100%;
@@ -302,7 +319,7 @@ export default defineComponent({
           background: var(--color-interaction-primary-default);
           border-color: var(--color-interaction-primary-default);
 
-          .mt-icon {
+          & .mt-icon {
             display: flex;
             justify-content: center;
             align-items: center;
@@ -314,7 +331,7 @@ export default defineComponent({
           background: var(--color-background-primary-disabled);
           border-color: var(--color-border-primary-default);
 
-          .mt-icon {
+          & .mt-icon {
             color: var(--color-border-primary-default);
           }
         }
@@ -323,14 +340,14 @@ export default defineComponent({
           background-color: var(--color-interaction-primary-default);
           border: 1px solid var(--color-interaction-primary-default);
 
-          .mt-icon {
+          & .mt-icon {
             display: inline-block;
             color: var(--color-icon-static-default);
           }
         }
       }
 
-      .mt-field__checkbox-state {
+      & .mt-field__checkbox-state {
         position: absolute;
         width: 100%;
         height: 100%;
@@ -339,12 +356,12 @@ export default defineComponent({
         background: var(--color-background-primary-default);
         color: var(--color-text-primary-default);
         border: 1px solid var(--color-border-primary-default);
-        border-radius: 4px;
+        border-radius: var(--border-radius-checkbox);
         display: flex;
         justify-content: center;
         align-items: center;
 
-        .mt-icon {
+        & .mt-icon {
           display: none;
           color: var(--color-background-primary-default);
         }
@@ -354,19 +371,17 @@ export default defineComponent({
     &.has--error {
       margin-bottom: 0;
 
-      .mt-field__checkbox-state {
+      & .mt-field__checkbox-state {
         border: 1px solid var(--color-interaction-critical-default);
       }
 
-      .mt-field__label {
+      & .mt-field__label {
         color: var(--color-text-critical-default);
       }
 
-      input[type="checkbox"] {
+      & input[type="checkbox"] {
         &:disabled ~ .mt-field__checkbox-state {
-          border:
-            1px solid var(--color-interaction-critical-default),
-            5%;
+          border: 1px solid var(--color-interaction-critical-default);
         }
 
         &:checked ~ .mt-field__checkbox-state {
@@ -381,7 +396,7 @@ export default defineComponent({
     }
 
     &.is--inherited {
-      input[type="checkbox"] {
+      & input[type="checkbox"] {
         &:checked ~ .mt-field__checkbox-state {
           border-color: var(--color-border-primary-default);
           background: var(--color-background-primary-disabled);
@@ -400,7 +415,7 @@ export default defineComponent({
     }
   }
 
-  .mt-field__error {
+  & .mt-field__error {
     margin-bottom: 14px;
 
     &.checkbox-bordered {

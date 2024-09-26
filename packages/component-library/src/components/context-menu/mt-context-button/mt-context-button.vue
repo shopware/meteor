@@ -129,7 +129,7 @@ export default defineComponent({
 
 <style lang="scss">
 $mt-context-button-color-text: var(--color-icon-primary-default);
-$mt-context-button-border-radius: $border-radius-default;
+$mt-context-button-border-radius: var(--border-radius-xs);
 $mt-context-button-color-border: var(--color-border-primary-default);
 $mt-context-button-color-disabled: var(--color-icon-primary-disabled);
 
@@ -166,7 +166,7 @@ $mt-context-button-color-disabled: var(--color-icon-primary-disabled);
     line-height: 20px;
     padding: 0 8px;
     outline: none;
-    font-family: $font-family-default;
+    font-family: var(--font-family-body);
 
     &:hover {
       border-color: $mt-context-button-color-border;
@@ -175,11 +175,11 @@ $mt-context-button-color-disabled: var(--color-icon-primary-disabled);
 
   &.has--error {
     .mt-context-button__button {
+      color: $color-crimson-300;
+
       .mt-icon {
         color: $mt-context-button-color-text;
       }
-
-      color: $color-crimson-300;
     }
   }
 }

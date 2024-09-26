@@ -1,5 +1,53 @@
 # Changelog
 
+## 3.13.0
+
+### Minor Changes
+
+- a438ea0: Add future flag for removing card max width
+- 3c1b5ad: Add mt-theme-provider component
+- 79f0b40: Remove default margin for tab component when using removeDefaultMargin future flag
+
+### Patch Changes
+
+- ec2aba1: Do not announce icon of empty state
+- 340f7af: fix the issue in the sw-number-field component when pressing the up or down arrow keys if a new value was typed
+- 5a5e797: Replace mt-popover-deprecated in mt-colorpicker
+- 307439b: Updated flatpickr dependency to the latest version to fix mt-datepicker issue when date typed manually
+- d0185b6: Deprecate hero card
+- 3ddcd26: Make buttons in number field accessible
+- cb83cca: Deprecate small prop on tabs component
+- 17bca01: Remove default margin from checkbox, hidden by future flag
+- c43799c: remove default margin from card component, hidden by future flag
+
+## 3.12.0
+
+### Minor Changes
+
+- ea49a5e: Disable next page and last page button in mt-pagination when data table is empty
+- ecf9d1a: Allow insetting of card footer
+- 627f2fb: Add mt-text component
+- ebf0a2a: Add mt-inset component
+
+### Patch Changes
+
+- da43c4e: Use semantic border radius tokens in card component
+- c412dd0: Change styling of card footer
+- 36e0812: Fixed missing emit definition and console warning
+- 4a59fcc: Replaced border radius tokens with tokens
+- 0630e58: Adjust padding of card header
+- 9ea8e15: Allow null label for mt-textarea
+- dc6ad1a: allow x-small as valid variant for button
+- 1321454: Add semantic border radius token for checkbox
+- 6371d3a: Use rem values instead of px values in card
+- 11d870a: Make toggle password button accessible
+- 099ca2b: Fix styling of card title
+- 8045090: Hide label with CSS in base-field component when empty
+- ebe7a33: Use semantic border radius token for overlays
+- bebea2e: Use button border radius token for buttons and segmented control
+- Updated dependencies [e644cef]
+  - @shopware-ag/meteor-tokens@0.3.0
+
 ## 3.11.0
 
 ### Minor Changes
