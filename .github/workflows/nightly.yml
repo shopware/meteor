@@ -1,0 +1,27 @@
+name: Nightly
+
+on:
+  schedule:
+    - cron: '0 1 * * *' # every day at 01:00
+  workflow_dispatch:
+
+jobs:
+    cypress:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Setup Shopware
+              uses: shopware/setup-shopware@v1
+              with:
+                shopware-version: '6.5.7.3'
+                php-version: 8.1
+                env: 'e2e'
+
+            - name: Checkout
+              uses: actions/checkout@v3
+              with:
+                  path: custom/plugins/FroshPlatformTemplateMail
+
+            - name: Run Tests
+              run: |
+                  cd custom/plugins/FroshPlatformTemplateMail/
+                  php -d pcov.enabled=1 ../../../vendor/bin/phpunit --coverage-clover clover.xml

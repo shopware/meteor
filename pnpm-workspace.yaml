@@ -1,5 +1,7 @@
 packages:
   - 'packages/*'
   - 'examples/*'
+  - 'examples/TestPlugin/src/Resources/app/administration'
+  - 'examples/TestPlugin/tests/acceptance'
   - 'docs/*'
   - 'apps/*'
