@@ -1,10 +1,10 @@
 <template>
   <priority-plus ref="priorityPlus" #default="{ mainItems, moreItems }" :list="items">
-    <ul :class="tabClasses" role="tablist">
+    <div :class="tabClasses" role="tablist">
       <span class="mt-tabs__slider" :class="sliderClasses" :style="sliderStyle" />
 
       <template v-if="!vertical">
-        <li
+        <button
           v-for="item in mainItems"
           :key="item.name"
           :data-priority-plus="item.name"
@@ -15,7 +15,7 @@
           :data-item-name="item.name"
           role="tab"
           :aria-selected="item.name === activeItemName"
-          :tabindex="0"
+          :disabled="item.disabled"
           @click="handleClick(item.name)"
           @keyup.enter="handleClick(item.name)"
         >
@@ -28,7 +28,7 @@
           />
 
           <mt-color-badge v-if="item.badge" :variant="item.badge" rounded />
-        </li>
+        </button>
 
         <!-- @vue-skip -->
         <mt-context-button
@@ -72,7 +72,7 @@
           {{ item.label }}
         </li>
       </template>
-    </ul>
+    </div>
   </priority-plus>
 </template>
 
@@ -399,6 +399,11 @@ export default defineComponent({
   line-height: var(--font-line-height-xs);
   cursor: pointer;
   color: var(--color-text-primary-default);
+
+  &:disabled {
+    cursor: not-allowed;
+    color: var(--color-text-primary-disabled);
+  }
 
   /* Trick to stop items from jumping when the active item changes
    * see: https://css-tricks.com/bold-on-hover-without-the-layout-shift/
