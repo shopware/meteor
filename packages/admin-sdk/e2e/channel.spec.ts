@@ -825,7 +825,7 @@ test.describe('Privilege tests', () => {
     if (browserName !== 'firefox') {
       // Expect console error to be thrown
       const consoleError = await waitForConsoleError;
-      expect(consoleError.text()).toContain('Error: Your app is missing the privileges read:product for action "datasetSubscribe".');
+      expect(consoleError.text()).toContain('Your app is missing the privileges read:product for action "datasetSubscribe".');
     }
 
     // check if receiving value matches

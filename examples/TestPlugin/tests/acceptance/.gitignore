@@ -1,0 +1,9 @@
+# Folders
+node_modules/
+artifacts/
+playwright-report/
+/blob-report/
+/playwright/.cache/
+
+# Files
+.env
