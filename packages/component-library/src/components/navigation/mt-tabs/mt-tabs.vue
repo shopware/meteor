@@ -405,6 +405,12 @@ export default defineComponent({
     color: var(--color-text-primary-disabled);
   }
 
+  &:focus-visible {
+    outline: 2px solid var(--color-border-brand-selected);
+    outline-offset: 2px;
+    border-radius: var(--border-radius-xs);
+  }
+
   /* Trick to stop items from jumping when the active item changes
    * see: https://css-tricks.com/bold-on-hover-without-the-layout-shift/
    */
