@@ -74,14 +74,6 @@ export const VisualTestCriticalGhostVariant: MtButtonStory = {
   },
 };
 
-export const VisualTestActionVariant: MtButtonStory = {
-  name: "Render the action variant",
-  args: {
-    default: "Action button",
-    variant: "action",
-  },
-};
-
 export const VisualTestSmallSize: MtButtonStory = {
   name: "Render the small size",
   args: {
