@@ -59,6 +59,12 @@ defineEmits<{
   line-height: var(--font-line-height-xs);
   font-weight: var(--font-weight-medium);
   text-decoration: underline;
+
+  &:focus-visible {
+    outline-offset: 2px;
+    outline: 2px solid var(--color-border-brand-selected);
+    border-radius: var(--border-radius-xs);
+  }
 }
 
 .mt-link:is(:disabled, .mt-link--disabled) {
