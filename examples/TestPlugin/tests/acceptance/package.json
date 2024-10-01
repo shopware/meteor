@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test:e2e": "playwright test",
-    "test:e2e:dev": "playwright test --ui",
+    "test:ats": "playwright test",
+    "test:ats:dev": "playwright test --ui",
     "format": "prettier ./tests --write",
     "lint:eslint": "eslint . --ext .ts",
     "lint:fix": "eslint . --ext .ts --fix"
