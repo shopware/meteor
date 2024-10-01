@@ -34,3 +34,17 @@ export const VisualTestRenderExternalLinkDisabled: MtLinkStory = {
     expect(args.click).not.toHaveBeenCalled();
   },
 };
+
+export const VisualTestRenderExternalLink: MtLinkStory = {
+  name: "Render external link",
+  args: {
+    type: "external",
+  },
+};
+
+export const VisualTestRenderInternalLink: MtLinkStory = {
+  name: "Render internal link",
+  args: {
+    type: "internal",
+  },
+};
