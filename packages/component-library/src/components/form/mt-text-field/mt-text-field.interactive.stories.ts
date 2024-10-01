@@ -226,3 +226,10 @@ export const VisualTestInheritanceActive: MtTextFieldStory = {
     isInherited: true,
   },
 };
+
+export const VisualTestSmallSize: MtTextFieldStory = {
+  name: "Should display small size",
+  args: {
+    size: "small",
+  },
+};

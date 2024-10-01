@@ -8,7 +8,7 @@
     ]"
   >
     <mt-field-label
-      id="id"
+      :id="id"
       :required="required"
       :has-error="!!error"
       :inheritance="inheritance"
@@ -18,13 +18,21 @@
       {{ label }}
     </mt-field-label>
 
-    <div :class="['mt-text-field__box', { 'mt-text-field__box--has-error': !!error }]">
+    <div
+      :class="[
+        'mt-text-field__box',
+        {
+          'mt-text-field__box--has-error': !!error,
+          'mt-text-field__box--size-small': size === 'small',
+        },
+      ]"
+    >
       <div class="mt-text-field__affix mt-text-field__affix--prefix">
         <slot name="prefix"></slot>
       </div>
 
       <input
-        id="id"
+        :id="id"
         :value="modelValue"
         @change="$emit('change', ($event.target as HTMLInputElement).value)"
         @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
@@ -73,26 +81,33 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
+import { computed, onMounted, ref } from "vue";
 import { useClipboard } from "@vueuse/core";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtText from "@/components/content/mt-text/mt-text.vue";
 import MtIcon from "@/components/icons-media/mt-icon/mt-icon.vue";
 import { useFutureFlags } from "@/composables/useFutureFlags";
+import { createId } from "@/utils/id";
 
-const props = defineProps<{
-  label: string;
-  placeholder?: string;
-  maxLength?: number;
-  modelValue: string;
-  required?: boolean;
-  disabled?: boolean;
-  error?: { code: number; detail: string } | null;
-  isInheritanceField?: boolean;
-  isInherited?: boolean;
-  copyable?: boolean;
-}>();
+const props = withDefaults(
+  defineProps<{
+    label: string;
+    placeholder?: string;
+    maxLength?: number;
+    modelValue: string;
+    required?: boolean;
+    disabled?: boolean;
+    error?: { code: number; detail: string } | null;
+    isInheritanceField?: boolean;
+    isInherited?: boolean;
+    copyable?: boolean;
+    size?: "default" | "small";
+  }>(),
+  {
+    size: "default",
+  },
+);
 
 const emit = defineEmits<{
   change: [value: string];
@@ -105,6 +120,11 @@ const inheritance = computed(() => {
   if (!props.isInheritanceField) return "none";
 
   return props.isInherited ? "linked" : "unlinked";
+});
+
+const id = ref("");
+onMounted(() => {
+  id.value = createId();
 });
 
 const { copy, copied } = useClipboard();
@@ -224,5 +244,9 @@ input {
     outline: 2px solid var(--color-border-brand-selected);
     border-radius: 0.025rem;
   }
+}
+
+.mt-text-field__box--size-small {
+  height: 2rem;
 }
 </style>
