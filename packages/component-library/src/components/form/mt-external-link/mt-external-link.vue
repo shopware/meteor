@@ -31,6 +31,7 @@
 import { defineComponent } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 
+/** @deprecated tag:4.0 -- use mt-link instead */
 export default defineComponent({
   name: "MtExternalLink",
 
