@@ -1,66 +1,38 @@
 <template>
-  <!-- <mt-base-field
-    class="mt-field--datepicker"
-    :class="{ 'has--focus': isDatepickerOpen }"
-    v-bind="$attrs"
-    :required="required"
-    :name="formFieldName"
+
+  <vue-datepicker
+    ref="datepicker"
+    v-model="timezoneFormattedValue"
+    class="date-picker"
     :disabled="disabled"
-    :has-focus="isDatepickerOpen"
-    @inheritance-restore="$emit('inheritance-restore', $event)"
-    @inheritance-remove="$emit('inheritance-remove', $event)"
-  > -->
-  <!-- :id="identification" -->
-    <!-- <template #element="{ identification, disabled }"> -->
-      <vue-datepicker
-        ref="datepicker"
-        v-model="timezoneFormattedValue"
-        class="date-picker"
-        :disabled="disabled"
-        placeholder="Y-m-d..."
-        :locale="locale"
-        :timezone="timeZone"
-        :required="required"
-        :type="dateType"
-        :open="isDatepickerOpen"
-        position="left"
-        :teleport="true"
-        :show-cancel="false"
-        :clearable="false"
-        :auto-apply="true"
-        @focus="isDatepickerOpen = true"
-        @blur="isDatepickerOpen = false"
-        @closed="isDatepickerOpen = false"
-        :start-time="startTime"
-        :range="range"
-      >
-        <template #input-icon>
-            <mt-icon name="regular-calendar" class="regular-calendar"/>
-        </template>
-
-        <template #clock-icon>
-             <p>{{ formattedStartTime }}</p>
-        </template>
-
-        <template #calendar-icon>
-            <mt-icon name="regular-calendar" class="regular-calendar"/>
-        </template>
-
-        <template #action-buttons>
-          <button class="custom-select" @click="selectDate">Select</button>
-        </template>
-      </vue-datepicker>
-    <!-- </template> -->
-
-    <!-- <template v-if="showTimeZoneHint" #field-hint>
-      <mt-icon name="solid-clock" />
-      {{ timeZone }}
+    placeholder="Y-m-d..."
+    :locale="locale"
+    :timezone="timeZone"
+    :required="required"
+    :type="dateType"
+    :open="isDatepickerOpen"
+    position="left"
+    :teleport="true"
+    :show-cancel="false"
+    :clearable="false"
+    :auto-apply="true"
+    @open="isDatepickerOpen = true"
+    @close="isDatepickerOpen = false"
+    :start-time="startTime"
+    :range="range"
+  >
+    <template #input-icon>
+      <mt-icon name="regular-calendar" class="regular-calendar" />
     </template>
 
-    <template #label>
-      {{ label }}
-    </template> -->
-  <!-- </mt-base-field> -->
+    <template #clock-icon>
+      <p>{{ formattedStartTime }}</p>
+    </template>
+
+    <template #calendar-icon>
+      <mt-icon name="regular-calendar" class="regular-calendar" />
+    </template>
+  </vue-datepicker>
 </template>
 
 <script lang="ts">
@@ -100,17 +72,16 @@ export default defineComponent({
       default: "UTC",
     },
     modelValue: {
-      type: String,
+      type: [String, Array],
       required: false,
       default: null,
     },
-    dateType: {
-      type: String,
-      default: "date",
-      validValues: ["time", "date", "datetime"],
+     dateType: {
+       type: String,
+       default: "date",
       validator(value: string) {
-        return ["time", "date", "datetime"].includes(value);
-      },
+         return ["time", "date", "datetime"].includes(value);
+       },
     },
     placeholder: {
       type: String,
@@ -153,6 +124,11 @@ export default defineComponent({
           return null;
         }
 
+        if (this.range && Array.isArray(this.modelValue)) {
+          // Handle date range (start and end date)
+          return this.modelValue.map((date) => (date instanceof Date ? date.toISOString() : date));
+        }
+
         if (["time", "date"].includes(this.dateType)) {
           return this.modelValue instanceof Date ? this.modelValue.toISOString() : this.modelValue;
         }
@@ -166,8 +142,19 @@ export default defineComponent({
           return;
         }
 
+        if (this.range && Array.isArray(newValue)) {
+          const utcDates = newValue.map((date) =>
+            zonedTimeToUtc(new Date(date), this.timeZone).toISOString(),
+          );
+          this.$emit("update:modelValue", utcDates);
+          return;
+        }
+
         if (["time", "date"].includes(this.dateType)) {
-          this.$emit("update:modelValue", newValue instanceof Date ? newValue.toISOString() : newValue);
+          this.$emit(
+            "update:modelValue",
+            newValue instanceof Date ? newValue.toISOString() : newValue,
+          );
           return;
         }
 
@@ -177,8 +164,8 @@ export default defineComponent({
     },
 
     formattedStartTime() {
-      const formattedHours = this.startTime.hours.toString().padStart(2, '0');
-      const formattedMinutes = this.startTime.minutes.toString().padStart(2, '0');
+      const formattedHours = this.startTime.hours.toString().padStart(2, "0");
+      const formattedMinutes = this.startTime.minutes.toString().padStart(2, "0");
       return `${formattedHours}:${formattedMinutes}`;
     },
 
@@ -199,9 +186,9 @@ export default defineComponent({
 
     handleDate(value) {
       if (value) {
-        console.log(value)
+        console.log(value);
       }
-    }
+    },
     // selectDate() {
     //   this.$refs.datepicker.selectDate();
     // },
@@ -210,11 +197,9 @@ export default defineComponent({
 </script>
 
 <style lang="css">
-
 :root {
   --dp-arrow-left: 20px;
   --dp-font-family: var(--font-family-body);
-  --dp-arrow-left: 0%;
 }
 
 .date-picker .dp__input_icon {
@@ -251,6 +236,5 @@ export default defineComponent({
   border-radius: var(--border-radius-xs);
   background: none;
 }
-
 </style>
 
