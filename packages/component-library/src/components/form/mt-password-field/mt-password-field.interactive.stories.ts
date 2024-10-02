@@ -125,6 +125,10 @@ export const VisualTestShowPassword: MtPasswordFieldStory = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    await userEvent.click(canvas.getByTestId("mt-password-field-show-button"));
+    await userEvent.click(
+      canvas.getByRole("button", {
+        name: "Show password",
+      }),
+    );
   },
 };
