@@ -8,15 +8,15 @@
       </div>
 
       <input
-        :value="modelValue"
+        v-model="model"
         :type="showPassword ? 'text' : 'password'"
         :id="id"
         :placeholder="placeholder"
         :disabled="disabled"
-        @change="$emit('change', ($event.target as HTMLInputElement).value)"
       />
 
       <button
+        v-if="toggable"
         @click="showPassword = !showPassword"
         class="mt-password-field__visibility-toggle"
         :aria-label="showPassword ? t('hidePassword') : t('showPassword')"
@@ -51,15 +51,21 @@ import MtIcon from "@/components/icons-media/mt-icon/mt-icon.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import { useI18n } from "@/composables/useI18n";
 
-defineProps<{
-  // TODO: can we use defineModel?
-  modelValue?: string;
-  label?: string;
-  placeholder?: string;
-  disabled?: boolean;
-  error?: { code: number; detail: string } | null;
-  hint?: string;
-}>();
+const model = defineModel();
+
+withDefaults(
+  defineProps<{
+    label?: string;
+    placeholder?: string;
+    disabled?: boolean;
+    error?: { code: number; detail: string } | null;
+    hint?: string;
+    toggable?: boolean;
+  }>(),
+  {
+    toggable: true,
+  },
+);
 
 defineEmits<{
   (e: "change", value: string): void;
@@ -71,7 +77,7 @@ defineSlots<{
   hint: void;
 }>();
 
-const id = ref();
+const id = ref("");
 onMounted(() => {
   id.value = createId();
 });
@@ -93,6 +99,10 @@ const { t } = useI18n({
 </script>
 
 <style scoped>
+.mt-password-field {
+  width: 100%;
+}
+
 .mt-password-field__box {
   display: flex;
   align-items: center;
