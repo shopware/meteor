@@ -27,29 +27,30 @@
         :teleport="true"
         :show-cancel="false"
         :clearable="false"
-        model-auto
-        range
+        :auto-apply="true"
         @focus="isDatepickerOpen = true"
         @blur="isDatepickerOpen = false"
         @closed="isDatepickerOpen = false"
+        :start-time="startTime"
+        :range="range"
       >
         <template #input-icon>
             <mt-icon name="regular-calendar" class="regular-calendar"/>
         </template>
 
         <template #clock-icon>
-            <p>time</p>
+             <p>{{ formattedStartTime }}</p>
         </template>
 
         <template #calendar-icon>
             <mt-icon name="regular-calendar" class="regular-calendar"/>
         </template>
+
         <template #action-buttons>
-          <p class="custom-select" @click="selectDate">Select</p>
+          <button class="custom-select" @click="selectDate">Select</button>
         </template>
       </vue-datepicker>
     <!-- </template> -->
-
 
     <!-- <template v-if="showTimeZoneHint" #field-hint>
       <mt-icon name="solid-clock" />
@@ -131,11 +132,17 @@ export default defineComponent({
       default: false,
       required: false,
     },
+    range: {
+      type: Boolean,
+      default: false,
+      required: false,
+    },
   },
 
   data() {
     return {
       isDatepickerOpen: false,
+      startTime: { hours: 0, minutes: 0 },
     };
   },
 
@@ -169,6 +176,12 @@ export default defineComponent({
       },
     },
 
+    formattedStartTime() {
+      const formattedHours = this.startTime.hours.toString().padStart(2, '0');
+      const formattedMinutes = this.startTime.minutes.toString().padStart(2, '0');
+      return `${formattedHours}:${formattedMinutes}`;
+    },
+
     showTimeZoneHint() {
       return this.dateType === "datetime" && !this.hideHint;
     },
@@ -184,9 +197,14 @@ export default defineComponent({
       this.$emit("update:modelValue", null);
     },
 
-    selectDate() {
-      this.$refs.datepicker.selectDate();
-    },
+    handleDate(value) {
+      if (value) {
+        console.log(value)
+      }
+    }
+    // selectDate() {
+    //   this.$refs.datepicker.selectDate();
+    // },
   },
 });
 </script>
@@ -235,3 +253,4 @@ export default defineComponent({
 }
 
 </style>
+
