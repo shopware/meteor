@@ -9,18 +9,24 @@
         <slot name="avatar" />
       </div>
 
-      <div :class="titleWrapperClasses">
+      <div
+        :class="[
+          'mt-card__titles',
+          {
+            'mt-card__titles--has-inheritance-toggle': props.inheritance !== undefined,
+          },
+        ]"
+      >
         <button
           v-if="inheritance !== undefined"
           class="mt-card__inheritance-toggle"
-          :aria-label="
-            !!inheritance
-              ? $t('mt-card.inheritanceToggle.disableInheritance')
-              : $t('mt-card.inheritanceToggle.enableInheritance')
-          "
+          :aria-label="!!inheritance ? t('disableInheritance') : t('enableInheritance')"
           @click="$emit('update:inheritance', !inheritance)"
         >
-          <mt-icon :name="inheritanceToggleIcon" size="20" />
+          <mt-icon
+            :name="inheritance ? 'regular-link-horizontal' : 'regular-link-horizontal-slash'"
+            size="1.25rem"
+          />
         </button>
 
         <!-- @slot Alternative slot to the title property -->
@@ -86,143 +92,75 @@
   <slot name="after-card" />
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, useSlots, type PropType } from "vue";
+<script setup lang="ts">
+import { computed } from "vue";
 import MtContextButton from "../../context-menu/mt-context-button/mt-context-button.vue";
 import MtLoader from "../../feedback-indicator/mt-loader/mt-loader.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtText from "../../content/mt-text/mt-text.vue";
 import { useFutureFlags } from "@/composables/useFutureFlags";
+import { useI18n } from "@/composables/useI18n";
 
-export default defineComponent({
-  name: "MtCard",
+const props = defineProps<{
+  title?: string;
+  subtitle?: string;
 
-  components: {
-    MtContextButton,
-    MtLoader,
-    MtIcon,
-    MtText,
-  },
+  // @deprecated v4.0.0 - will be removed without replacement
+  hero?: boolean;
+  isLoading?: boolean;
 
-  props: {
-    /**
-     * The title of the card
-     */
-    title: {
-      type: String,
-      required: false,
-      default: "",
+  // @deprecated v4.0.0 - will be removed without replacement
+  large?: boolean;
+  inheritance?: boolean;
+}>();
+
+defineEmits<{
+  (e: "update:inheritance", value: boolean): void;
+}>();
+
+const { t } = useI18n({
+  messages: {
+    en: {
+      disableInheritance: "Disable inheritance",
+      enableInheritance: "Enable inheritance",
     },
-
-    /**
-     * The subtitle of the card
-     */
-    subtitle: {
-      type: String,
-      required: false,
-      default: "",
+    de: {
+      disableInheritance: "Vererbung deaktivieren",
+      enableInheritance: "Vererbung aktivieren",
     },
-
-    /**
-     * Renders the card as a hero card without styling
-     * @deprecated v4.0.0 - will be removed without replacement
-     */
-    hero: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    /**
-     * Show a loading spinner overlay over the whole card.
-     */
-    isLoading: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    /**
-     * Render the card in a large size
-     * @depracated v4.0.0 - will be removed without replacement
-     */
-    large: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    /**
-     * Render a inheritance toggle
-     */
-    inheritance: {
-      type: Boolean as PropType<boolean | undefined>,
-      required: false,
-      default: undefined,
-    },
-  },
-
-  emits: ["update:inheritance"],
-
-  i18n: {
-    messages: {
-      en: {
-        "mt-card": {
-          inheritanceToggle: {
-            disableInheritance: "Disable inheritance",
-            enableInheritance: "Enable inheritance",
-          },
-        },
-      },
-      de: {
-        "mt-card": {
-          inheritanceToggle: {
-            disableInheritance: "Vererbung deaktivieren",
-            enableInheritance: "Vererbung aktivieren",
-          },
-        },
-      },
-    },
-  },
-
-  setup(props) {
-    const slots = useSlots();
-
-    const futureFlags = useFutureFlags();
-
-    const showHeader = computed(
-      () =>
-        !!props.title || !!slots.title || !!props.subtitle || !!slots.subtitle || !!slots.avatar,
-    );
-
-    const cardClasses = computed(() => ({
-      "mt-card--grid": !!slots.grid,
-      // @deprecated v4.0.0 - will be removed without replacement
-      "mt-card--hero": !!props.hero,
-      "mt-card--large": props.large,
-      "mt-card--has-footer": !!slots.footer,
-      "mt-card--is-inherited": !!props.inheritance,
-      "mt-card--future-ignore-max-width": futureFlags.removeCardWidth,
-      "mt-card--future-remove-default-margin": futureFlags.removeDefaultMargin,
-    }));
-
-    const titleWrapperClasses = computed(() => ({
-      "mt-card__titles": true,
-      "mt-card__titles--has-inheritance-toggle": props.inheritance !== undefined,
-    }));
-
-    const inheritanceToggleIcon = computed(() =>
-      props.inheritance ? "regular-link-horizontal" : "regular-link-horizontal-slash",
-    );
-
-    return {
-      showHeader,
-      cardClasses,
-      titleWrapperClasses,
-      inheritanceToggleIcon,
-    };
   },
 });
+
+const slots = defineSlots<{
+  title(): void;
+  subtitle(): void;
+  avatar(): void;
+  grid(): void;
+  footer(): void;
+  default(): void;
+  toolbar(): void;
+  tabs(): void;
+  "before-card"(): void;
+  "after-card"(): void;
+  headerRight(): void;
+  "context-actions"(): void;
+}>();
+
+const showHeader = computed(
+  () => !!props.title || !!slots.title || !!props.subtitle || !!slots.subtitle || !!slots.avatar,
+);
+
+const futureFlags = useFutureFlags();
+const cardClasses = computed(() => ({
+  "mt-card--grid": !!slots.grid,
+  // @deprecated v4.0.0 - will be removed without replacement
+  "mt-card--hero": !!props.hero,
+  "mt-card--large": props.large,
+  "mt-card--has-footer": !!slots.footer,
+  "mt-card--is-inherited": !!props.inheritance,
+  "mt-card--future-ignore-max-width": futureFlags.removeCardWidth,
+  "mt-card--future-remove-default-margin": futureFlags.removeDefaultMargin,
+}));
 </script>
 
 <style scoped>
