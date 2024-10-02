@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-banner" :class="classes" role="banner">
+  <div :class="classes" role="banner">
     <slot name="customIcon">
       <mt-icon
         v-if="!hideIcon"
@@ -36,6 +36,7 @@
 import { computed } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtText from "@/components/content/mt-text/mt-text.vue";
+import { useFutureFlags } from "@/composables/useFutureFlags";
 
 const props = withDefaults(
   defineProps<{
@@ -68,9 +69,13 @@ const bannerIcon = computed(() => {
   return iconConfig[props.variant] || "solid-info-circle";
 });
 
+const future = useFutureFlags();
+
 const classes = computed(() => [
+  "mt-banner",
   `mt-banner--${props.variant}`,
   {
+    "mt-banner--future-remove-default-margin": future.removeDefaultMargin,
     "mt-banner--icon": !props.hideIcon,
     "mt-banner--closable": props.closable,
   },
@@ -95,6 +100,10 @@ const bodyClasses = computed(() => ({
   & ul {
     padding: 0.5rem 0 0.5rem 1.25rem;
   }
+}
+
+.mt-banner--future-remove-default-margin {
+  margin-block-end: 0;
 }
 
 .mt-banner__title {

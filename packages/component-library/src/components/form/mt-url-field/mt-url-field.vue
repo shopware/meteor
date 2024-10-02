@@ -78,6 +78,9 @@ const URL_REGEX = {
   TRAILING_SLASH: /\/+$/,
 };
 
+/**
+ * @deprecated tag:4.0 -- will be removed without replacement
+ */
 export default defineComponent({
   name: "MtUrlField",
 
