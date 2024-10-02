@@ -90,4 +90,4 @@ ui.mainModule.hideSmartBar({
 #### Parameters
 | Name         | Required | Default   | Description                                                                                                                                    | Available at Shopware |
 | :----------- | :------- | :-------- | :--------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------|
-| `locationId` | true     |           | The locationId of the module you want to hide the smart bar                                                                                    | v6.6.6.2               |
+| `locationId` | true     |           | The locationId of the module you want to hide the smart bar                                                                                    | v6.6.7.0               |
