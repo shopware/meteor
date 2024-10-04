@@ -20,33 +20,69 @@
   >
 
     <template #time-picker="{ time, updateTime }">
-      <div class="custom-time-picker-component">
+      <!-- Start Time -->
+      <div v-if="range === true" class="custom-time-picker-component">
+        <input
+          class="time-input"
+          type="text"
+          :value="time.hours[0]"
+          placeholder="--"
+          @input="updateTime([$event.target.value, time.hours[1]], true, false)"
+          aria-label="Start Hours"
+        />
+        <span class="time-separator">:</span>
+        <input
+          class="time-input"
+          type="text"
+          :value="time.minutes[0]"
+          placeholder="--"
+          @input="updateTime([time.minutes[0], $event.target.value], false, false)"
+          aria-label="Start Minutes"
+        />
+      </div>
+      <!-- End Time -->
+      <div v-if="range === true" class="custom-time-picker-component">
+        <input
+          class="time-input"
+          type="text"
+          :value="time.hours[1]"
+          placeholder="--"
+          @input="updateTime([time.hours[0], $event.target.value], true, false)"
+          aria-label="End Hours"
+        />
+        <span class="time-separator">:</span>
+        <input
+          class="time-input"
+          type="text"
+          :value="time.minutes[1]"
+          placeholder="--"
+          @input="updateTime([time.minutes[0], $event.target.value], false, false)"
+          aria-label="End Minutes"
+        />
+      </div>
+      <div v-else class="custom-time-picker-component">
         <input
           class="time-input"
           type="text"
           :value="time.hours"
-          placeholder="time.hours ? time.hours : '--'"
+          placeholder="--"
           @input="updateTime($event.target.value, true)"
-          aria-label="Hours"
+          aria-label="End Hours"
         />
         <span class="time-separator">:</span>
         <input
           class="time-input"
           type="text"
           :value="time.minutes"
-          placeholder="time.minutes ? time.minutes : '--'"
+          placeholder="--"
           @input="updateTime($event.target.value, false)"
-          aria-label="Minutes"
+          aria-label="End Minutes"
         />
       </div>
     </template>
 
     <template #input-icon>
       <mt-icon name="regular-calendar" class="regular-calendar" />
-    </template>
-
-    <template #clock-icon>
-      <span>{{ timeValue }}</span>
     </template>
 
     <template #calendar-icon>
@@ -134,7 +170,7 @@ export default defineComponent({
 
   watch: {
     localValue(newValue) {
-      console.log(newValue);
+      console.log(this.date);
       this.emitValue(newValue);
     },
   },
@@ -148,66 +184,73 @@ export default defineComponent({
     unsetValue() {
       this.$emit("update:modelValue", null);
     },
-
-    handleDate(value) {
-      if (value) {
-        console.log(value);
-      }
-    },
-
-    updateTime(value, isHour) {
-      const newDate = new Date(this.date);
-      if (isHour) {
-        newDate.setHours(value);
-      } else {
-        newDate.setMinutes(value);
-      }
-      this.date = newDate;
-    },
-
   },
 });
 </script>
 
 <style lang="css">
-:root {
-  --dp-arrow-left: 20px;
-  --dp-font-family: var(--font-family-body);
-}
+  :root {
+    --dp-arrow-left: 20px;
+    --dp-font-family: var(--font-family-body);
+  }
 
-.date-picker .dp__input_icon {
-  position: absolute;
-  left: auto;
-  right: 0px;
-  background: var(--color-background-primary-disabled);
-  width: 48px;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 0 1px 1px 0;
-  padding: 12px;
-  z-index: -9;
-  border-left: 1px solid var(--color-border-primary-default);
-}
+  .date-picker .dp__input_icon {
+    position: absolute;
+    left: auto;
+    right: 0px;
+    background: var(--color-background-primary-disabled);
+    width: 48px;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 0 1px 1px 0;
+    padding: 12px;
+    z-index: -9;
+    border-left: 1px solid var(--color-border-primary-default);
+  }
 
-.date-picker .dp__input_icon #meteor-icon-kit__regular-calendar {
-  color: var(--color-icon-primary-default);
-  width: 16.5px;
-  height: 18px;
-}
+  .date-picker .dp__input_icon #meteor-icon-kit__regular-calendar {
+    color: var(--color-icon-primary-default);
+    width: 16.5px;
+    height: 18px;
+  }
 
-.date-picker .dp--menu-wrapper {
-  padding: 0px !important;
-  font-family: var(--font-family-body) !important;
-}
+  .date-picker .dp--menu-wrapper {
+    padding: 0px !important;
+    font-family: var(--font-family-body) !important;
+  }
 
-.date-picker input {
-  height: 48px;
-  padding-left: 16px !important;
-  border: 1px solid var(--color-border-primary-default);
-  border-radius: var(--border-radius-xs);
-  background: none;
-}
+  .date-picker input {
+    height: 48px;
+    padding-left: 16px !important;
+    border: 1px solid var(--color-border-primary-default);
+    border-radius: var(--border-radius-xs);
+    background: none;
+  }
+
+  .custom-time-picker-component {
+    width: 100%;
+    padding: 5px;
+    display: flex;
+    justify-content: center;
+    border-top: 1px solid black;
+  }
+
+  .custom-time-picker-component input {
+    width: 20px;
+    text-align: center;
+    border: none;
+    background: none;
+    padding: 0;
+    margin: 0;
+    outline: none;
+    box-shadow: none;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    font: inherit;
+  }
+
 </style>
 
