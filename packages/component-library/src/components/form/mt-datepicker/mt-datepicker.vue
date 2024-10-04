@@ -1,32 +1,52 @@
 <template>
-
   <vue-datepicker
     ref="datepicker"
-    v-model="timezoneFormattedValue"
+    v-model="localValue"
     class="date-picker"
+    position="left"
+    :placeholder="placeholder"
     :disabled="disabled"
-    placeholder="Y-m-d..."
+    :required="required"
     :locale="locale"
     :timezone="timeZone"
-    :required="required"
-    :type="dateType"
     :open="isDatepickerOpen"
-    position="left"
     :teleport="true"
     :show-cancel="false"
     :clearable="false"
     :auto-apply="true"
+    :range="range"
     @open="isDatepickerOpen = true"
     @close="isDatepickerOpen = false"
-    :start-time="startTime"
-    :range="range"
   >
+
+    <template #time-picker="{ time, updateTime }">
+      <div class="custom-time-picker-component">
+        <input
+          class="time-input"
+          type="text"
+          :value="time.hours"
+          placeholder="time.hours ? time.hours : '--'"
+          @input="updateTime($event.target.value, true)"
+          aria-label="Hours"
+        />
+        <span class="time-separator">:</span>
+        <input
+          class="time-input"
+          type="text"
+          :value="time.minutes"
+          placeholder="time.minutes ? time.minutes : '--'"
+          @input="updateTime($event.target.value, false)"
+          aria-label="Minutes"
+        />
+      </div>
+    </template>
+
     <template #input-icon>
       <mt-icon name="regular-calendar" class="regular-calendar" />
     </template>
 
     <template #clock-icon>
-      <p>{{ formattedStartTime }}</p>
+      <span>{{ timeValue }}</span>
     </template>
 
     <template #calendar-icon>
@@ -76,16 +96,9 @@ export default defineComponent({
       required: false,
       default: null,
     },
-     dateType: {
-       type: String,
-       default: "date",
-      validator(value: string) {
-         return ["time", "date", "datetime"].includes(value);
-       },
-    },
     placeholder: {
       type: String,
-      default: "",
+      default: "M-d-y...",
       required: false,
     },
     required: {
@@ -112,65 +125,17 @@ export default defineComponent({
 
   data() {
     return {
+      localValue: null,
       isDatepickerOpen: false,
-      startTime: { hours: 0, minutes: 0 },
     };
   },
 
-  computed: {
-    timezoneFormattedValue: {
-      get() {
-        if (!this.modelValue) {
-          return null;
-        }
+  computed: {},
 
-        if (this.range && Array.isArray(this.modelValue)) {
-          // Handle date range (start and end date)
-          return this.modelValue.map((date) => (date instanceof Date ? date.toISOString() : date));
-        }
-
-        if (["time", "date"].includes(this.dateType)) {
-          return this.modelValue instanceof Date ? this.modelValue.toISOString() : this.modelValue;
-        }
-
-        const timeZoneDate = utcToZonedTime(this.modelValue, this.timeZone);
-        return timeZoneDate.toISOString();
-      },
-      set(newValue) {
-        if (newValue === null) {
-          this.$emit("update:modelValue", null);
-          return;
-        }
-
-        if (this.range && Array.isArray(newValue)) {
-          const utcDates = newValue.map((date) =>
-            zonedTimeToUtc(new Date(date), this.timeZone).toISOString(),
-          );
-          this.$emit("update:modelValue", utcDates);
-          return;
-        }
-
-        if (["time", "date"].includes(this.dateType)) {
-          this.$emit(
-            "update:modelValue",
-            newValue instanceof Date ? newValue.toISOString() : newValue,
-          );
-          return;
-        }
-
-        const utcDate = zonedTimeToUtc(new Date(newValue), this.timeZone);
-        this.$emit("update:modelValue", utcDate.toISOString());
-      },
-    },
-
-    formattedStartTime() {
-      const formattedHours = this.startTime.hours.toString().padStart(2, "0");
-      const formattedMinutes = this.startTime.minutes.toString().padStart(2, "0");
-      return `${formattedHours}:${formattedMinutes}`;
-    },
-
-    showTimeZoneHint() {
-      return this.dateType === "datetime" && !this.hideHint;
+  watch: {
+    localValue(newValue) {
+      console.log(newValue);
+      this.emitValue(newValue);
     },
   },
 
@@ -189,9 +154,17 @@ export default defineComponent({
         console.log(value);
       }
     },
-    // selectDate() {
-    //   this.$refs.datepicker.selectDate();
-    // },
+
+    updateTime(value, isHour) {
+      const newDate = new Date(this.date);
+      if (isHour) {
+        newDate.setHours(value);
+      } else {
+        newDate.setMinutes(value);
+      }
+      this.date = newDate;
+    },
+
   },
 });
 </script>
