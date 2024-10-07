@@ -1,7 +1,7 @@
 packages:
   - 'packages/*'
   - 'examples/*'
-  - 'examples/TestPlugin/src/Resources/app/administration'
-  - 'examples/TestPlugin/tests/acceptance'
+  - 'examples/admin-sdk-plugin/src/Resources/app/administration'
+  - 'examples/admin-sdk-plugin/tests/acceptance'
   - 'docs/*'
   - 'apps/*'

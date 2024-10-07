@@ -207,7 +207,7 @@ jobs:
 
       - name: Symlink plugin
         working-directory: shopware/custom/plugins/
-        run: ln -s ../../../meteor/examples/TestPlugin
+        run: ln -s ../../../meteor/examples/admin-sdk-plugin TestPlugin
           
       - name: Activate TestPlugin
         working-directory: shopware/
@@ -246,23 +246,23 @@ jobs:
         run: symfony server:start --allow-http --no-tls --port=8000 -d
 
       - name: Install playwright
-        working-directory: meteor/examples/TestPlugin/tests/acceptance/
+        working-directory: meteor/examples/admin-sdk-plugin/tests/acceptance/
         run: |
           pnpm install --frozen-lockfile --prefer-offline
           npx playwright install --with-deps
 
       - name: Run Playwrigth
-        working-directory: meteor/examples/TestPlugin/tests/acceptance/
+        working-directory: meteor/examples/admin-sdk-plugin/tests/acceptance/
         run: npx playwright test --retries=2 --reporter=github --trace=on-first-retry --project chromium
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: ats-test-results-${{ matrix.project }}
-          path: meteor/examples/TestPlugin/tests/acceptance/test-results/
+          path: meteor/examples/admin-sdk-plugin/tests/acceptance/test-results/
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: ats-report-${{ matrix.project }}
-          path: meteor/examples/TestPlugin/tests/acceptance/playwright-report/
+          path: meteor/examples/admin-sdk-plugin/tests/acceptance/playwright-report/
