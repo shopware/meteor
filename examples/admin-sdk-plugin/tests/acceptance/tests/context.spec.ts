@@ -1,5 +1,5 @@
 import { test, expect } from '../fixtures/AcceptanceTest';
-import { getSDKiFrame } from '../fixtures/Helper';
+import { getSDKiFrame, mockUpdateApi } from '../fixtures/Helper';
 
 // Defaults
 const DEFAULT_LANGUAGE_ID = '2fbb5fe2e29a4d70aa5854ce7ce3e20b';
@@ -10,6 +10,8 @@ const FALLBACK_LOCALE = 'en-GB';
 let productId = '';
 
 test.beforeEach(async ({ ShopAdmin, TestDataService, AdminDashboard }) => {
+  await mockUpdateApi(ShopAdmin.page);
+
   // Create product and assign id
   const product = await TestDataService.createBasicProduct();
   productId = product.id;

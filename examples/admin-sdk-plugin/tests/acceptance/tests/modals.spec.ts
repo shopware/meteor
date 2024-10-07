@@ -1,7 +1,9 @@
 import { test, expect } from '../fixtures/AcceptanceTest';
-import { getSDKiFrame } from '../fixtures/Helper';
+import { getSDKiFrame, mockUpdateApi } from '../fixtures/Helper';
 
 test.beforeEach(async ({ ShopAdmin, TestDataService, AdminProductDetail }) => {
+  await mockUpdateApi(ShopAdmin.page);
+
   const product = await TestDataService.createBasicProduct();
   await ShopAdmin.goesTo(AdminProductDetail.url(product.id));
 

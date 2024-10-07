@@ -1,7 +1,9 @@
 import { test, expect } from '../fixtures/AcceptanceTest';
-import { getSDKiFrame } from '../fixtures/Helper';
+import { getSDKiFrame, mockUpdateApi } from '../fixtures/Helper';
 
 test.beforeEach(async ({ ShopAdmin }) => {
+  await mockUpdateApi(ShopAdmin.page);
+
   await ShopAdmin.goesTo('/admin/#sw/settings/index/shop');
 
   const mainHidden = await getSDKiFrame(ShopAdmin.page, 'sw-main-hidden');

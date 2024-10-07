@@ -21,3 +21,17 @@ export async function getSDKiFrame(
 
   return frame;
 }
+
+/**
+ * Mocks the check updates call to return null.
+ * 
+ * This method is called before each test case to prevent the "Updates available" 
+ * notification from interfering with tests on older Shopware versions.
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function mockUpdateApi(page: Page): Promise<any> {
+  return page.route('*/**/_action/update/check', async (route) => {
+    const json = null;
+    await route.fulfill({ json });
+  });
+}
