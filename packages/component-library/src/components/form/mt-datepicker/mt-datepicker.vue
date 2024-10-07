@@ -21,63 +21,72 @@
 
     <template #time-picker="{ time, updateTime }">
       <!-- Start Time -->
-      <div v-if="range === true" class="custom-time-picker-component">
-        <input
-          class="time-input"
-          type="text"
-          :value="time.hours[0]"
-          placeholder="--"
-          @input="updateTime([$event.target.value, time.hours[1]], true, false)"
-          aria-label="Start Hours"
-        />
-        <span class="time-separator">:</span>
-        <input
-          class="time-input"
-          type="text"
-          :value="time.minutes[0]"
-          placeholder="--"
-          @input="updateTime([time.minutes[0], $event.target.value], false, false)"
-          aria-label="Start Minutes"
-        />
+      <div v-if="range === true" class="time-picker">
+        <div class="time-picker-separator"></div>
+        <div class="time-picker-inner">
+          <input
+            class="time-input"
+            type="text"
+            :value="time.hours[0]"
+            placeholder="--"
+            @input="updateTime([$event.target.value, time.hours[1]], true, false)"
+            aria-label="Start Hours"
+          />
+          <span class="time-separator">:</span>
+          <input
+            class="time-input"
+            type="text"
+            :value="time.minutes[0]"
+            placeholder="--"
+            @input="updateTime([time.minutes[0], $event.target.value], false, false)"
+            aria-label="Start Minutes"
+          />
+        </div>
       </div>
       <!-- End Time -->
-      <div v-if="range === true" class="custom-time-picker-component">
-        <input
-          class="time-input"
-          type="text"
-          :value="time.hours[1]"
-          placeholder="--"
-          @input="updateTime([time.hours[0], $event.target.value], true, false)"
-          aria-label="End Hours"
-        />
-        <span class="time-separator">:</span>
-        <input
-          class="time-input"
-          type="text"
-          :value="time.minutes[1]"
-          placeholder="--"
-          @input="updateTime([time.minutes[0], $event.target.value], false, false)"
-          aria-label="End Minutes"
-        />
+      <div v-if="range === true" class="time-picker">
+        <div class="time-picker-separator"></div>
+        <div class="time-picker-inner">
+          <input
+            class="time-input"
+            type="text"
+            :value="time.hours[1]"
+            placeholder="--"
+            @input="updateTime([time.hours[0], $event.target.value], true, false)"
+            aria-label="End Hours"
+          />
+          <span class="time-separator">:</span>
+          <input
+            class="time-input"
+            type="text"
+            :value="time.minutes[1]"
+            placeholder="--"
+            @input="updateTime([time.minutes[0], $event.target.value], false, false)"
+            aria-label="End Minutes"
+          />
+        </div>
       </div>
-      <div v-else class="custom-time-picker-component">
-        <input
-          class="time-input"
-          type="text"
-          :value="time.hours"
-          placeholder="--"
-          @input="updateTime($event.target.value, true)"
-          aria-label="End Hours"
-        />
-        <span class="time-separator">:</span>
-        <input
-          class="time-input"
-          type="text"
-          :value="time.minutes"
-          placeholder="--"
-          @input="updateTime($event.target.value, false)"
-          aria-label="End Minutes"
-        />
+      <div v-else class="time-picker">
+        <div class="time-picker-separator"></div>
+        <div class="time-picker-inner">
+          <input
+            class="time-input"
+            type="text"
+            :value="time.hours"
+            placeholder="--"
+            @input="updateTime($event.target.value, true)"
+            aria-label="End Hours"
+          />
+          <span class="time-separator">:</span>
+          <input
+            class="time-input"
+            type="text"
+            :value="time.minutes"
+            placeholder="--"
+            @input="updateTime($event.target.value, false)"
+            aria-label="End Minutes"
+          />
+        </div>
       </div>
     </template>
 
@@ -189,13 +198,30 @@ export default defineComponent({
 </script>
 
 <style lang="css">
-  :root {
+  /* :root {
     --dp-arrow-left: 20px;
     --dp-font-family: var(--font-family-body);
+  } */
+
+  .dp__main {
+    font-family: var(--font-family-body) !important;
   }
 
-  .date-picker .dp__input_icon {
+  /* input wrapper */
+  .dp__input_wrap {
+  }
+
+  .dp__input {
+    height: 48px;
+    padding-left: 16px !important;
+    border: 1px solid var(--color-border-primary-default);
+    border-radius: var(--border-radius-xs);
+    background: none;
+  }
+
+  .dp__input_icon {
     position: absolute;
+    display:none;
     left: auto;
     right: 0px;
     background: var(--color-background-primary-disabled);
@@ -210,35 +236,74 @@ export default defineComponent({
     border-left: 1px solid var(--color-border-primary-default);
   }
 
-  .date-picker .dp__input_icon #meteor-icon-kit__regular-calendar {
+  .dp__input_icon #meteor-icon-kit__regular-calendar {
     color: var(--color-icon-primary-default);
     width: 16.5px;
     height: 18px;
   }
 
-  .date-picker .dp--menu-wrapper {
-    padding: 0px !important;
+  /* Menu outer wrapper */
+  .dp--menu-wrapper {
     font-family: var(--font-family-body) !important;
+    background: blueviolet;
   }
 
-  .date-picker input {
-    height: 48px;
-    padding-left: 16px !important;
-    border: 1px solid var(--color-border-primary-default);
-    border-radius: var(--border-radius-xs);
-    background: none;
+  .dp__arrow_top {
+    background:blue;
   }
 
-  .custom-time-picker-component {
+  .dp--menu-wrapper :nth-child(2) {
+    /* background: green; */
+  }
+
+  .dp__instance_calender {
+
+  }
+
+  .dp__menu_inner {
+    padding: 20px !important;
+    background: rgb(167, 103, 228);
+  }
+
+  .dp--header-wrap {
+    background: grey;
+  }
+
+  .dp__calendar {
+    background: lightblue;
+  }
+
+  .dp__calendar_header_separator {
+    display: none;
+  }
+
+  /* Time picker */
+  .time-picker {
     width: 100%;
-    padding: 5px;
+    height: 59px;
     display: flex;
-    justify-content: center;
-    border-top: 1px solid black;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 8px;
+    padding-left: 20px;
+    padding-right: 20px;
   }
 
-  .custom-time-picker-component input {
-    width: 20px;
+  .time-picker-separator {
+    border-top: 1px solid black;
+    padding-bottom: 14px;
+    width: 100%;
+  }
+
+  .time-picker-inner {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .time-input {
+    width: 100%;
     text-align: center;
     border: none;
     background: none;
