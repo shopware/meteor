@@ -90,20 +90,26 @@
       </div>
     </template>
 
+    <template #arrow-left>
+      <mt-icon name="regular-chevron-left-xs" class="month-control-arrow" />
+    </template>
+
+    <template #arrow-right>
+      <mt-icon name="regular-chevron-right-xs" class="month-control-arrow" />
+    </template>
+
     <template #input-icon>
       <mt-icon name="regular-calendar" class="regular-calendar" />
     </template>
 
     <template #calendar-icon>
-      <mt-icon name="regular-calendar" class="regular-calendar" />
+      <mt-icon name="regular-calendar" class="back-to-calendar" />
     </template>
   </vue-datepicker>
 </template>
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { zonedTimeToUtc, utcToZonedTime } from "date-fns-tz";
-import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtFormFieldMixin from "../../../mixins/form-field.mixin";
 import DatePicker from "@vuepic/vue-datepicker";
@@ -113,9 +119,8 @@ export default defineComponent({
   name: "MtDatepicker",
 
   components: {
-    // "mt-base-field": MtBaseField,
     "mt-icon": MtIcon,
-    "vue-datepicker": DatePicker,
+    "vue-datepicker": DatePicker
   },
 
   mixins: [MtFormFieldMixin],
@@ -203,94 +208,142 @@ export default defineComponent({
     --dp-font-family: var(--font-family-body);
   } */
 
+  /* || Datepicker  */
   .dp__main {
     font-family: var(--font-family-body) !important;
   }
 
-  /* input wrapper */
+  /* || Input wrapper */
   .dp__input_wrap {
+    font: inherit;
+    font-weight: var(--font-weight-regular) !important;
+    font-size: var(--font-size-xs) !important;
   }
 
   .dp__input {
     height: 48px;
-    padding-left: 16px !important;
+    padding-left: 1rem !important;
     border: 1px solid var(--color-border-primary-default);
     border-radius: var(--border-radius-xs);
+    font: inherit;
+    color: var(--color-text-secondary-default);
     background: none;
   }
 
   .dp__input_icon {
     position: absolute;
-    display:none;
-    left: auto;
-    right: 0px;
-    background: var(--color-background-primary-disabled);
     width: 48px;
     height: 100%;
-    display: flex;
+    left: auto;
+    right: 0px;
+    /* display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: center; */
+    text-align: center;
     border-radius: 0 1px 1px 0;
     padding: 12px;
     z-index: -9;
     border-left: 1px solid var(--color-border-primary-default);
+    background: var(--color-background-primary-disabled);
   }
 
   .dp__input_icon #meteor-icon-kit__regular-calendar {
     color: var(--color-icon-primary-default);
     width: 16.5px;
     height: 18px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 
-  /* Menu outer wrapper */
+  /* || Menu outer wrapper */
   .dp--menu-wrapper {
-    font-family: var(--font-family-body) !important;
-    background: blueviolet;
+    border-radius: var(--border-radius-s) !important;
+    border: 1px solid var(--color-border-primary-default);
+    font-family: inherit;
+    font-weight: inherit;
+    filter: drop-shadow(0px 1px 3px #0000000F);
+    filter: drop-shadow(0px 1px 3px #0000001A);
   }
 
   .dp__arrow_top {
-    background:blue;
+    left: 24px;
+    border-radius: 3px;
+    border-inline-end: 1px solid var(--color-border-primary-default);
+    border-top: 1px solid var(--color-border-primary-default);
   }
 
-  .dp--menu-wrapper :nth-child(2) {
-    /* background: green; */
-  }
-
-  .dp__instance_calender {
-
+  .dp__instance_calendar {
+    padding: 0.5rem !important;
   }
 
   .dp__menu_inner {
-    padding: 20px !important;
-    background: rgb(167, 103, 228);
+    padding: 0px;
   }
 
   .dp--header-wrap {
-    background: grey;
+    font: inherit;
+    font-weight: var(--font-weight-semibold) !important;
+    font-size: var(--font-size-xs) !important;
+  }
+
+  .dp__month_year_select {
+    color: var(--color-text-primary-default);
+  }
+
+  .month-control-arrow {
+    color: var(--color-icon-primary-default);
+  }
+
+  .dp__overlay {
+    border-radius:  var(--border-radius-m);
+    font: inherit;
+    font-weight: var(--font-weight-regular) !important;
+    font-size: var(--font-size-xs) !important;
+  }
+
+  .back-to-calendar svg {
+    width: 1.2rem !important;
+    color: var(--color-text-primary-default);
   }
 
   .dp__calendar {
-    background: lightblue;
+    /* background: lightblue; */
+  }
+
+  .dp__calendar_header{
+    color: var(--color-text-primary-default);
+    font: inherit;
+    font-weight: var(--font-weight-medium) !important;
+    font-size: var(--font-size-xs) !important;
   }
 
   .dp__calendar_header_separator {
     display: none;
   }
 
-  /* Time picker */
+  .dp__cell_inner {
+    font: inherit;
+    font-size: var(--font-size-xs) !important;
+    font-weight: var(--font-weight-regular) !important;
+  }
+
+  /* || Time picker */
   .time-picker {
     width: 100%;
-    height: 59px;
+    height: 48px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 8px;
-    padding-left: 20px;
-    padding-right: 20px;
+    padding-top: 0.5rem;
+    font-weight: var(--font-weight-regular) !important;
+    font-size: var(--font-size-xs) !important;
+    font-weight: 400;
   }
 
   .time-picker-separator {
-    border-top: 1px solid black;
+    border-top: 1px solid var(--color-border-primary-default);
     padding-bottom: 14px;
     width: 100%;
   }
@@ -318,4 +371,3 @@ export default defineComponent({
   }
 
 </style>
-
