@@ -203,10 +203,13 @@ export default defineComponent({
 </script>
 
 <style lang="css">
-  /* :root {
-    --dp-arrow-left: 20px;
-    --dp-font-family: var(--font-family-body);
-  } */
+ /* || Datepicker theme  */
+  .dp__theme_light {
+    --dp-hover-color: var(--color-interaction-secondary-hover);
+    --dp-primary-color: var(--color-interaction-primary-default);
+    --dp-secondary-color: var(--color-interaction-secondar-hover);
+    --dp-border-color-hover: var(--color-border-primary-default);
+  }
 
   /* || Datepicker  */
   .dp__main {
@@ -236,9 +239,6 @@ export default defineComponent({
     height: 100%;
     left: auto;
     right: 0px;
-    /* display: flex;
-    justify-content: center;
-    align-items: center; */
     text-align: center;
     border-radius: 0 1px 1px 0;
     padding: 12px;
@@ -255,6 +255,11 @@ export default defineComponent({
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+  }
+
+  .dp__input_focus {
+    border-color: var(--color-border-brand-selected);
+    filter: drop-shadow(0px 0px 3px #189EFF4D);
   }
 
   /* || Menu outer wrapper */
@@ -308,11 +313,7 @@ export default defineComponent({
     color: var(--color-text-primary-default);
   }
 
-  .dp__calendar {
-    /* background: lightblue; */
-  }
-
-  .dp__calendar_header{
+  .dp__calendar_header {
     color: var(--color-text-primary-default);
     font: inherit;
     font-weight: var(--font-weight-medium) !important;
@@ -327,6 +328,20 @@ export default defineComponent({
     font: inherit;
     font-size: var(--font-size-xs) !important;
     font-weight: var(--font-weight-regular) !important;
+  }
+
+  .dp__cell_inner:hover {
+    background: var(--color-interaction-secondary-hover);
+    color: var(--color-text-primary-default);
+  }
+
+  .dp__active_date {
+    background: var(--color-interaction-primary-default);
+    color: var(--color-text-static-default);
+  }
+
+  .dp__today {
+    border: 1px solid var(--color-border-primary-default);
   }
 
   /* || Time picker */
