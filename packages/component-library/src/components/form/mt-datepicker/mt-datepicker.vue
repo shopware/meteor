@@ -68,61 +68,97 @@ export default defineComponent({
   mixins: [MtFormFieldMixin],
 
   props: {
+    /**
+     * A label for your date picker field. It helps the user understand what this field is for.
+     */
     label: {
       type: String as PropType<string | null>,
       default: null,
     },
+
+    /**
+     * Defines the type of the date picker.
+     * Options: "date" (for selecting a date), "time" (for selecting a time), or "datetime" (for selecting both).
+     */
     dateType: {
       type: String as PropType<"date" | "time" | "datetime">,
-      default: "date",
+      default: "datetime",
     },
+
+    /**
+     * Sets the locale for the date picker.
+     * This affects things like the language used for month names and weekdays.
+     */
     locale: {
       type: String,
       default: "de",
     },
+
+    /**
+     * Defines the time zone for the date picker.
+     * Useful for adjusting date and time according to a specific timezone.
+     */
     timeZone: {
       type: String,
       default: "UTC",
     },
+
+    /**
+     * The value of the date picker. Can be a single string or an array of strings.
+     * This represents the currently selected date(s).
+     */
     modelValue: {
       type: [String, Array] as PropType<string | string[] | null>,
       default: null,
     },
+
+    /**
+     * Placeholder text to show in the date picker input field when no date is selected.
+     */
     placeholder: {
       type: String,
       default: "Y-m-d",
     },
+
+    /**
+     * Determines if the date picker field is required.
+     * If true, the user must select a value before submitting the form.
+     */
     required: {
       type: Boolean,
       default: false,
     },
+
+    /**
+     * Determines if the date picker field is disabled.
+     * If true, the user will not be able to interact with the field.
+     */
     disabled: {
       type: Boolean,
       default: false,
     },
+
+    /**
+     * Enables the date range selection feature.
+     * If true, the user can select a start and end date.
+     */
     range: {
       type: Boolean,
       default: false,
     },
-    hideHint: {
-      type: Boolean,
-      default: false,
-    },
   },
 
-  data() {
+
+  data(): {
+    localValue: string | Date | [Date, Date] | null;
+    isDatepickerOpen: boolean;
+  } {
     return {
-      localValue: null as string | Date | [Date, Date] | null,
+      localValue: null,
       isDatepickerOpen: false,
     };
   },
-
-  computed: {
-    shouldShowHint(): boolean {
-      return !this.hideHint && this.dateType !== "datetime";
-    },
-  },
-
+  
   watch: {
     localValue(newValue: string | Date | [Date, Date] | null) {
       this.emitValue(newValue);
