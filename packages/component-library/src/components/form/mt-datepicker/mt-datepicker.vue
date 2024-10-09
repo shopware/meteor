@@ -17,20 +17,26 @@
     :range="range"
     :format="formatDate"
     :is-24="true"
+    :time-picker="dateType === 'time'"
+    :enable-time-picker="dateType !== 'date'"
     time-picker-inline
     @open="isDatepickerOpen = true"
     @close="isDatepickerOpen = false"
   >
+    <template #input-icon>
+      <mt-icon name="regular-calendar" class="regular-calendar" />
+    </template>
+
     <template #calendar-icon>
       <mt-icon name="regular-calendar" class="regular-calendar" />
     </template>
 
     <template #tp-inline-arrow-up>
-      <mt-icon name="regular-chevron-up-s" class="tp-arrow-up-down" />
+      <mt-icon name="regular-chevron-up-s" class="time-arrow-up-down" />
     </template>
 
     <template #tp-inline-arrow-down>
-      <mt-icon name="regular-chevron-down-s" class="tp-arrow-up-down" />
+      <mt-icon name="regular-chevron-down-s" class="time-arrow-up-down" />
     </template>
 
     <template #arrow-left>
@@ -40,15 +46,11 @@
     <template #arrow-right>
       <mt-icon name="regular-chevron-right-xs" class="month-control-arrow" />
     </template>
-
-    <template #input-icon>
-      <mt-icon name="regular-calendar" class="regular-calendar" />
-    </template>
   </vue-datepicker>
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch } from "vue";
+import { defineComponent, ref, computed, watch, nextTick } from "vue";
 import type { PropType } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtFormFieldMixin from "../../../mixins/form-field.mixin";
@@ -148,7 +150,6 @@ export default defineComponent({
     },
   },
 
-
   data(): {
     localValue: string | Date | [Date, Date] | null;
     isDatepickerOpen: boolean;
@@ -158,7 +159,7 @@ export default defineComponent({
       isDatepickerOpen: false,
     };
   },
-  
+
   watch: {
     localValue(newValue: string | Date | [Date, Date] | null) {
       this.emitValue(newValue);
@@ -173,9 +174,15 @@ export default defineComponent({
         const day = String(date.getDate()).padStart(2, "0");
         const hours = String(date.getHours()).padStart(2, "0");
         const minutes = String(date.getMinutes()).padStart(2, "0");
-        return `${year}-${month}-${day}, ${hours}:${minutes}`;
+
+        return this.dateType === "date"
+          ? `${year}-${month}-${day}`
+          : this.dateType === "time"
+            ? `${hours}:${minutes}`
+            : `${year}-${month}-${day}, ${hours}:${minutes}`;
       }
-      return date;
+
+      return typeof date === "string" ? date : "";
     },
 
     emitValue(value: string | Date | [Date, Date] | null): void {
@@ -183,21 +190,34 @@ export default defineComponent({
         const timezoneRangeValue = this.getTimezoneFormattedRange(value);
         this.$emit("update:modelValue", timezoneRangeValue);
       } else {
-        if (this.dateType === "date" || this.dateType === "time") {
-          const formattedValue = this.getFormattedDateValue(value);
-          this.$emit("update:modelValue", formattedValue);
+        if (this.dateType === "date") {
+          const formattedDate = this.getFormattedDateValue(value);
+          console.log(formattedDate);
+          this.$emit("update:modelValue", formattedDate);
+        } else if (this.dateType === "time") {
+          const formattedTime = this.getFormattedDateValue(value);
+          console.log(formattedTime);
+          this.$emit("update:modelValue", formattedTime);
         } else {
           const timezoneValue = this.getTimezoneFormattedValue(value);
+          console.log(timezoneValue);
           this.$emit("update:modelValue", timezoneValue);
         }
       }
     },
 
-    getFormattedDateValue(value: string | Date | null): string | null {
+    getFormattedDateValue(
+      value: string | Date | { hours: number; minutes: number; seconds: number } | null,
+    ): string | null {
       if (value instanceof Date) {
-        return value.toISOString();
+        return format(value, "yyyy-MM-dd");
+      } else if (typeof value === "object" && value !== null) {
+        const { hours, minutes, seconds } = value;
+        return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
+      } else if (typeof value === "string") {
+        return value;
       }
-      return value;
+      return null;
     },
 
     getTimezoneFormattedValue(value: string | Date | null): string | null {
@@ -302,6 +322,11 @@ export default defineComponent({
 
 .dp__menu_inner {
   padding: 0px;
+  border-bottom: 1px solid var(--color-border-primary-default) !important;
+}
+
+.no-border-bottom {
+  padding-bottom: 0 !important;
 }
 
 .dp--header-wrap {
@@ -363,7 +388,7 @@ export default defineComponent({
 
 /* || Time picker */
 .dp__time_picker_inline_container {
-  padding-top: 5px;
+  padding-top: 0px;
 }
 
 .dp__flex {
@@ -371,13 +396,10 @@ export default defineComponent({
 }
 
 .dp__time_input {
-  border-top: 1px solid var(--color-border-primary-default);
   width: 100%;
   justify-content: space-between;
   padding-left: 35px;
   padding-right: 35px;
-  padding-top: 5px;
-  padding-bottom: 5px;
 }
 
 .dp__time_display {
@@ -395,7 +417,7 @@ export default defineComponent({
   opacity: 1;
 }
 
-.tp-arrow-up-down {
+.time-arrow-up-down {
   color: var(--color-border-primary-default);
 }
 
@@ -409,5 +431,15 @@ export default defineComponent({
   font: inherit;
 }
 
+.dp--overlay-relative {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.line {
+  width: 100%;
+  border-top: 1px solid black;
+}
 /* .dp__button.dp__overlay_action */
 </style>
