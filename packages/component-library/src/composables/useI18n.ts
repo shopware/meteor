@@ -1,6 +1,6 @@
 import { provide, inject } from "vue";
 
-function get(obj: Record<string, unknown>, path: string) {
+function get(obj: Record<string, unknown>, path: string): string | undefined {
   if (typeof obj !== "object" || obj === null) return undefined;
 
   const keys = path.split(".");
@@ -13,6 +13,7 @@ function get(obj: Record<string, unknown>, path: string) {
     result = result[key];
   }
 
+  // @ts-ignore
   return result;
 }
 
@@ -38,15 +39,22 @@ export function provideI18n(locale: string = "en") {
   provide(i18nInjectionKey, state);
 }
 
+const CUSTOM_VALUE_REGEX = /{([^}]*)}/g;
+
 export function useI18n({ messages }: Options) {
   const i18n = inject(i18nInjectionKey, defaultI18nState);
 
-  function translate(path: string): string {
-    const translation = get(messages, `${i18n.locale}.${path}`);
-    if (translation) return translation.toString();
+  function translate(path: string, customValues: Record<string, string | number> = {}): string {
+    const translation =
+      get(messages, `${i18n.locale}.${path}`) || get(messages, `${i18n.defaultLocale}.${path}`);
 
-    const fallback = get(messages, `${i18n.defaultLocale}.${path}`);
-    return fallback ? fallback.toString() : path;
+    if (!translation) return path;
+
+    return translation.replace(CUSTOM_VALUE_REGEX, (match: string, key: string) => {
+      return Object.prototype.hasOwnProperty.call(customValues, key)
+        ? customValues[key].toString()
+        : match;
+    });
   }
 
   return { t: translate };
