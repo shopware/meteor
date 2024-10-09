@@ -1,5 +1,22 @@
 # Changelog
 
+## 3.14.0
+
+### Minor Changes
+
+- 001adb3: Add external and internal variants for link component
+
+### Patch Changes
+
+- cc754b9: Deprecated the mt-url-field component
+- 47063ae: Deprecated mt-external link component
+- 62be382: move mt-loader over to plain css
+- 28f5cb1: remove default margin of banner component, hidden by future flag
+- 6d32afa: Improve a11y of help text
+- 936ccf3: Allow disabling individual tab items
+- 2f0a666: Remove default margin from base field, hidden by future flag
+- 07e243a: Migrate mt-loader over to the composition api
+
 ## 3.13.0
 
 ### Minor Changes

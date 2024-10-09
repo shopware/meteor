@@ -31,4 +31,34 @@ describe("useI18n", () => {
 
     expect(screen.getByText("path.to.translation")).toBeInTheDocument();
   });
+
+  it("translates the snippet with custom values", () => {
+    render({
+      setup() {
+        const { t } = useI18n({
+          messages: { en: { greeting: "Hello, {name}!" } },
+        });
+
+        return { t };
+      },
+      template: "{{ t('greeting', { name: 'World' }) }}",
+    });
+
+    expect(screen.getByText("Hello, World!")).toBeInTheDocument();
+  });
+
+  it("keeps the custom value syntax when no custom value is provided", () => {
+    render({
+      setup() {
+        const { t } = useI18n({
+          messages: { en: { greeting: "Hello, {name}!" } },
+        });
+
+        return { t };
+      },
+      template: "{{ t('greeting') }}",
+    });
+
+    expect(screen.getByText("Hello, {name}!")).toBeInTheDocument();
+  });
 });

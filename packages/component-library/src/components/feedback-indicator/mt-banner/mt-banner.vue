@@ -23,8 +23,7 @@
     <button
       v-if="closable"
       class="mt-banner__close"
-      aria-label="Schließen"
-      title="Schließen"
+      :aria-label="t('close')"
       @click.prevent="$emit('close', bannerIndex)"
     >
       <mt-icon name="solid-times-s" />
@@ -37,6 +36,18 @@ import { computed } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtText from "@/components/content/mt-text/mt-text.vue";
 import { useFutureFlags } from "@/composables/useFutureFlags";
+import { useI18n } from "@/composables/useI18n";
+
+const { t } = useI18n({
+  messages: {
+    de: {
+      close: "Schließen",
+    },
+    en: {
+      close: "Close",
+    },
+  },
+});
 
 const props = withDefaults(
   defineProps<{
