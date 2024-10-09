@@ -1,13 +1,14 @@
 {
   "name": "administration",
   "version": "1.0.0",
+  "private": true,
   "description": "",
+  "license": "MIT",
+  "author": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "MIT",
   "dependencies": {
     "@shopware-ag/meteor-admin-sdk": "workspace:*",
     "@shopware-ag/meteor-component-library": "workspace:*",
