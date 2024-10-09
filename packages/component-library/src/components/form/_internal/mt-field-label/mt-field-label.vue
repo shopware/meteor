@@ -3,11 +3,7 @@
     <button
       v-if="inheritance !== 'none'"
       class="mt-field-label__inheritance-switch"
-      :aria-label="
-        inheritance === 'linked'
-          ? $t('mt-field-label.unlinkInheritance')
-          : $t('mt-field-label.linkInheritance')
-      "
+      :aria-label="inheritance === 'linked' ? t('unlinkInheritance') : t('linkInheritance')"
       @click="$emit('update:inheritance', inheritance === 'linked' ? 'unlinked' : 'linked')"
     >
       <mt-icon
@@ -23,75 +19,48 @@
   </label>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from "vue";
+<script setup lang="ts">
+import { computed } from "vue";
 import MtIcon from "@/components/icons-media/mt-icon/mt-icon.vue";
+import { useI18n } from "@/composables/useI18n";
 
-export default defineComponent({
-  name: "MtFieldLabel",
-
-  components: {
-    MtIcon,
-  },
-
-  i18n: {
-    messages: {
-      en: {
-        "mt-field-label": {
-          linkInheritance: "Link inheritance",
-          unlinkInheritance: "Unlink inheritance",
-        },
-      },
-      de: {
-        "mt-field-label": {
-          linkInheritance: "Vererbung verknüpfen",
-          unlinkInheritance: "Vererbung trennen",
-        },
-      },
+const { t } = useI18n({
+  messages: {
+    en: {
+      linkInheritance: "Link inheritance",
+      unlinkInheritance: "Unlink inheritance",
     },
-  },
-
-  props: {
-    id: {
-      type: String,
-      required: true,
+    de: {
+      linkInheritance: "Vererbung verknüpfen",
+      unlinkInheritance: "Vererbung trennen",
     },
-
-    hasError: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    required: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    inheritance: {
-      type: String,
-      required: false,
-      default: "none",
-      validator: (value: string) => ["linked", "unlinked", "none"].includes(value),
-    },
-  },
-
-  emits: ["update:inheritance"],
-
-  setup(props) {
-    const classes = computed(() => ({
-      "mt-field-label": true,
-      "mt-field-label--with-error": props.hasError,
-      "mt-field-label--is-required": props.required,
-      "mt-field-label--has-linked-inheritance": props.inheritance === "linked",
-    }));
-
-    return {
-      classes,
-    };
   },
 });
+
+const props = withDefaults(
+  defineProps<{
+    id: string;
+    hasError?: boolean;
+    required?: boolean;
+    inheritance?: "linked" | "unlinked" | "none";
+  }>(),
+  {
+    inheritance: "none",
+  },
+);
+
+defineEmits<{
+  (e: "update:inheritance", value: "linked" | "unlinked"): void;
+}>();
+
+const classes = computed(() => [
+  "mt-field-label",
+  {
+    "mt-field-label--with-error": props.hasError,
+    "mt-field-label--is-required": props.required,
+    "mt-field-label--has-linked-inheritance": props.inheritance === "linked",
+  },
+]);
 </script>
 
 <style scoped>
