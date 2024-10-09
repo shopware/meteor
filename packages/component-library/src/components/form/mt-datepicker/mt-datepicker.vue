@@ -15,79 +15,22 @@
     :clearable="false"
     :auto-apply="true"
     :range="range"
+    :format="formatDate"
+    :is-24="true"
+    time-picker-inline
     @open="isDatepickerOpen = true"
     @close="isDatepickerOpen = false"
   >
+    <template #calendar-icon>
+      <mt-icon name="regular-calendar" class="regular-calendar" />
+    </template>
 
-    <template #time-picker="{ time, updateTime }">
-      <!-- Start Time -->
-      <div v-if="range === true" class="time-picker">
-        <div class="time-picker-separator"></div>
-        <div class="time-picker-inner">
-          <input
-            class="time-input"
-            type="text"
-            :value="time.hours[0]"
-            placeholder="--"
-            @input="updateTime([$event.target.value, time.hours[1]], true, false)"
-            aria-label="Start Hours"
-          />
-          <span class="time-separator">:</span>
-          <input
-            class="time-input"
-            type="text"
-            :value="time.minutes[0]"
-            placeholder="--"
-            @input="updateTime([time.minutes[0], $event.target.value], false, false)"
-            aria-label="Start Minutes"
-          />
-        </div>
-      </div>
-      <!-- End Time -->
-      <div v-if="range === true" class="time-picker">
-        <div class="time-picker-separator"></div>
-        <div class="time-picker-inner">
-          <input
-            class="time-input"
-            type="text"
-            :value="time.hours[1]"
-            placeholder="--"
-            @input="updateTime([time.hours[0], $event.target.value], true, false)"
-            aria-label="End Hours"
-          />
-          <span class="time-separator">:</span>
-          <input
-            class="time-input"
-            type="text"
-            :value="time.minutes[1]"
-            placeholder="--"
-            @input="updateTime([time.minutes[0], $event.target.value], false, false)"
-            aria-label="End Minutes"
-          />
-        </div>
-      </div>
-      <div v-else class="time-picker">
-        <div class="time-picker-separator"></div>
-        <div class="time-picker-inner">
-          <input
-            class="time-input"
-            type="text"
-            :value="time.hours"
-            placeholder="--"
-            @input="updateTime($event.target.value, true)"
-            aria-label="End Hours"
-          />
-          <span class="time-separator">:</span>
-          <input
-            class="time-input"
-            type="text"
-            :value="time.minutes"
-            placeholder="--"
-            @input="updateTime($event.target.value, false)"
-            aria-label="End Minutes"
-          />
-        </div>
-      </div>
+    <template #tp-inline-arrow-up>
+      <mt-icon name="regular-chevron-up-s" class="tp-arrow-up-down" />
+    </template>
+
+    <template #tp-inline-arrow-down>
+      <mt-icon name="regular-chevron-down-s" class="tp-arrow-up-down" />
     </template>
 
     <template #arrow-left>
@@ -101,288 +44,334 @@
     <template #input-icon>
       <mt-icon name="regular-calendar" class="regular-calendar" />
     </template>
-
-    <template #calendar-icon>
-      <mt-icon name="regular-calendar" class="back-to-calendar" />
-    </template>
   </vue-datepicker>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref, computed, watch } from "vue";
+import type { PropType } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtFormFieldMixin from "../../../mixins/form-field.mixin";
 import DatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
+import { formatInTimeZone } from "date-fns-tz";
+import { parseISO, isValid, format } from "date-fns";
 
 export default defineComponent({
   name: "MtDatepicker",
 
   components: {
     "mt-icon": MtIcon,
-    "vue-datepicker": DatePicker
+    "vue-datepicker": DatePicker,
   },
 
   mixins: [MtFormFieldMixin],
 
   props: {
     label: {
-      type: String,
-      required: false,
+      type: String as PropType<string | null>,
       default: null,
+    },
+    dateType: {
+      type: String as PropType<"date" | "time" | "datetime">,
+      default: "date",
     },
     locale: {
       type: String,
-      required: false,
-      default: "en",
+      default: "de",
     },
     timeZone: {
       type: String,
-      required: false,
       default: "UTC",
     },
     modelValue: {
-      type: [String, Array],
-      required: false,
+      type: [String, Array] as PropType<string | string[] | null>,
       default: null,
     },
     placeholder: {
       type: String,
-      default: "M-d-y...",
-      required: false,
+      default: "Y-m-d",
     },
     required: {
       type: Boolean,
       default: false,
-      required: false,
     },
     disabled: {
       type: Boolean,
       default: false,
-      required: false,
-    },
-    hideHint: {
-      type: Boolean,
-      default: false,
-      required: false,
     },
     range: {
       type: Boolean,
       default: false,
-      required: false,
+    },
+    hideHint: {
+      type: Boolean,
+      default: false,
     },
   },
 
   data() {
     return {
-      localValue: null,
+      localValue: null as string | Date | [Date, Date] | null,
       isDatepickerOpen: false,
     };
   },
 
-  computed: {},
+  computed: {
+    shouldShowHint(): boolean {
+      return !this.hideHint && this.dateType !== "datetime";
+    },
+  },
 
   watch: {
-    localValue(newValue) {
-      console.log(this.date);
+    localValue(newValue: string | Date | [Date, Date] | null) {
       this.emitValue(newValue);
     },
   },
 
   methods: {
-    emitValue(value) {
-      const formattedValue = value instanceof Date ? value.toISOString() : value;
-      this.$emit("update:modelValue", formattedValue);
+    formatDate(date: Date | string): string {
+      if (date instanceof Date) {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, "0");
+        const day = String(date.getDate()).padStart(2, "0");
+        const hours = String(date.getHours()).padStart(2, "0");
+        const minutes = String(date.getMinutes()).padStart(2, "0");
+        return `${year}-${month}-${day}, ${hours}:${minutes}`;
+      }
+      return date;
     },
 
-    unsetValue() {
-      this.$emit("update:modelValue", null);
+    emitValue(value: string | Date | [Date, Date] | null): void {
+      if (Array.isArray(value)) {
+        const timezoneRangeValue = this.getTimezoneFormattedRange(value);
+        this.$emit("update:modelValue", timezoneRangeValue);
+      } else {
+        if (this.dateType === "date" || this.dateType === "time") {
+          const formattedValue = this.getFormattedDateValue(value);
+          this.$emit("update:modelValue", formattedValue);
+        } else {
+          const timezoneValue = this.getTimezoneFormattedValue(value);
+          this.$emit("update:modelValue", timezoneValue);
+        }
+      }
+    },
+
+    getFormattedDateValue(value: string | Date | null): string | null {
+      if (value instanceof Date) {
+        return value.toISOString();
+      }
+      return value;
+    },
+
+    getTimezoneFormattedValue(value: string | Date | null): string | null {
+      if (this.timeZone && this.dateType === "datetime" && value) {
+        const parsedDate = typeof value === "string" ? parseISO(value) : value;
+        if (!isValid(parsedDate)) return null;
+        return formatInTimeZone(parsedDate, this.timeZone, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+      }
+      return value ? String(value) : null;
+    },
+
+    getTimezoneFormattedRange(value: [Date, Date]): [string, string] {
+      const [startDate, endDate] = value;
+      const formattedStartDate = this.getTimezoneFormattedValue(startDate);
+      const formattedEndDate = this.getTimezoneFormattedValue(endDate);
+      return [formattedStartDate as string, formattedEndDate as string];
     },
   },
 });
 </script>
 
 <style lang="css">
- /* || Datepicker theme  */
-  .dp__theme_light {
-    --dp-hover-color: var(--color-interaction-secondary-hover);
-    --dp-primary-color: var(--color-interaction-primary-default);
-    --dp-secondary-color: var(--color-interaction-secondar-hover);
-    --dp-border-color-hover: var(--color-border-primary-default);
-  }
+/* || Datepicker theme  */
+.dp__theme_light {
+  --dp-hover-color: var(--color-interaction-secondary-hover);
+  --dp-primary-color: var(--color-interaction-primary-default);
+  --dp-secondary-color: var(--color-text-primary-disabled);
+  --dp-border-color-hover: var(--color-border-primary-default);
+}
 
-  /* || Datepicker  */
-  .dp__main {
-    font-family: var(--font-family-body) !important;
-  }
+/* || Datepicker  */
+.dp__main {
+  font-family: var(--font-family-body) !important;
+}
 
-  /* || Input wrapper */
-  .dp__input_wrap {
-    font: inherit;
-    font-weight: var(--font-weight-regular) !important;
-    font-size: var(--font-size-xs) !important;
-  }
+/* || Input wrapper */
+.dp__input_wrap {
+  font: inherit;
+  font-weight: var(--font-weight-regular) !important;
+  font-size: var(--font-size-xs) !important;
+}
 
-  .dp__input {
-    height: 48px;
-    padding-left: 1rem !important;
-    border: 1px solid var(--color-border-primary-default);
-    border-radius: var(--border-radius-xs);
-    font: inherit;
-    color: var(--color-text-secondary-default);
-    background: none;
-  }
+.dp__input {
+  height: 48px;
+  padding-left: 1rem !important;
+  border: 1px solid var(--color-border-primary-default);
+  border-radius: var(--border-radius-xs);
+  font: inherit;
+  color: var(--color-text-secondary-default);
+  background: none;
+}
 
-  .dp__input_icon {
-    position: absolute;
-    width: 48px;
-    height: 100%;
-    left: auto;
-    right: 0px;
-    text-align: center;
-    border-radius: 0 1px 1px 0;
-    padding: 12px;
-    z-index: -9;
-    border-left: 1px solid var(--color-border-primary-default);
-    background: var(--color-background-primary-disabled);
-  }
+.dp__input_icon {
+  position: absolute;
+  width: 48px;
+  height: 100%;
+  left: auto;
+  right: 0px;
+  text-align: center;
+  border-radius: 0 1px 1px 0;
+  padding: 12px;
+  z-index: -9;
+  border-left: 1px solid var(--color-border-primary-default);
+  background: var(--color-background-primary-disabled);
+}
 
-  .dp__input_icon #meteor-icon-kit__regular-calendar {
-    color: var(--color-icon-primary-default);
-    width: 16.5px;
-    height: 18px;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
+.dp__input_icon #meteor-icon-kit__regular-calendar {
+  color: var(--color-icon-primary-default);
+  width: 16.5px;
+  height: 18px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 
-  .dp__input_focus {
-    border-color: var(--color-border-brand-selected);
-    filter: drop-shadow(0px 0px 3px #189EFF4D);
-  }
+.dp__input_focus {
+  border-color: var(--color-border-brand-selected);
+  filter: drop-shadow(0px 0px 3px #189eff4d);
+}
 
-  /* || Menu outer wrapper */
-  .dp--menu-wrapper {
-    border-radius: var(--border-radius-s) !important;
-    border: 1px solid var(--color-border-primary-default);
-    font-family: inherit;
-    font-weight: inherit;
-    filter: drop-shadow(0px 1px 3px #0000000F);
-    filter: drop-shadow(0px 1px 3px #0000001A);
-  }
+/* || Menu outer wrapper */
+.dp--menu-wrapper {
+  border-radius: var(--border-radius-s) !important;
+  border: 1px solid var(--color-border-primary-default);
+  font-family: inherit;
+  font-weight: inherit;
+  filter: drop-shadow(0px 1px 3px #0000000f);
+  filter: drop-shadow(0px 1px 3px #0000001a);
+}
 
-  .dp__arrow_top {
-    left: 24px;
-    border-radius: 3px;
-    border-inline-end: 1px solid var(--color-border-primary-default);
-    border-top: 1px solid var(--color-border-primary-default);
-  }
+.dp__arrow_top {
+  left: 24px;
+  border-radius: 3px;
+  border-inline-end: 1px solid var(--color-border-primary-default);
+  border-top: 1px solid var(--color-border-primary-default);
+}
 
-  .dp__instance_calendar {
-    padding: 0.5rem !important;
-  }
+.dp__instance_calendar {
+  padding: 0.5rem !important;
+}
 
-  .dp__menu_inner {
-    padding: 0px;
-  }
+.dp__menu_inner {
+  padding: 0px;
+}
 
-  .dp--header-wrap {
-    font: inherit;
-    font-weight: var(--font-weight-semibold) !important;
-    font-size: var(--font-size-xs) !important;
-  }
+.dp--header-wrap {
+  font: inherit;
+  font-weight: var(--font-weight-semibold) !important;
+  font-size: var(--font-size-xs) !important;
+}
 
-  .dp__month_year_select {
-    color: var(--color-text-primary-default);
-  }
+.dp__month_year_select {
+  color: var(--color-text-primary-default);
+}
 
-  .month-control-arrow {
-    color: var(--color-icon-primary-default);
-  }
+.month-control-arrow {
+  color: var(--color-icon-primary-default);
+}
 
-  .dp__overlay {
-    border-radius:  var(--border-radius-m);
-    font: inherit;
-    font-weight: var(--font-weight-regular) !important;
-    font-size: var(--font-size-xs) !important;
-  }
+.dp__overlay {
+  border-radius: var(--border-radius-m);
+  font: inherit;
+  font-weight: var(--font-weight-regular) !important;
+  font-size: var(--font-size-xs) !important;
+}
 
-  .back-to-calendar svg {
-    width: 1.2rem !important;
-    color: var(--color-text-primary-default);
-  }
+.back-to-calendar svg {
+  width: 1.2rem !important;
+  color: var(--color-text-primary-default);
+}
 
-  .dp__calendar_header {
-    color: var(--color-text-primary-default);
-    font: inherit;
-    font-weight: var(--font-weight-medium) !important;
-    font-size: var(--font-size-xs) !important;
-  }
+.dp__calendar_header {
+  color: var(--color-text-primary-default);
+  font: inherit;
+  font-weight: var(--font-weight-medium) !important;
+  font-size: var(--font-size-xs) !important;
+}
 
-  .dp__calendar_header_separator {
-    display: none;
-  }
+.dp__calendar_header_separator {
+  display: none;
+}
 
-  .dp__cell_inner {
-    font: inherit;
-    font-size: var(--font-size-xs) !important;
-    font-weight: var(--font-weight-regular) !important;
-  }
+.dp__cell_inner {
+  font: inherit;
+  font-size: var(--font-size-xs) !important;
+  font-weight: var(--font-weight-regular) !important;
+}
 
-  .dp__cell_inner:hover {
-    background: var(--color-interaction-secondary-hover);
-    color: var(--color-text-primary-default);
-  }
+.dp__cell_inner:hover {
+  background: var(--color-interaction-secondary-hover);
+  color: var(--color-text-primary-default);
+}
 
-  .dp__active_date {
-    background: var(--color-interaction-primary-default);
-    color: var(--color-text-static-default);
-  }
+.dp__active_date {
+  background: var(--color-interaction-primary-default);
+  color: var(--color-text-static-default);
+}
 
-  .dp__today {
-    border: 1px solid var(--color-border-primary-default);
-  }
+.dp__today {
+  border: 1px solid var(--color-border-primary-default);
+}
 
-  /* || Time picker */
-  .time-picker {
-    width: 100%;
-    height: 48px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 0.5rem;
-    font-weight: var(--font-weight-regular) !important;
-    font-size: var(--font-size-xs) !important;
-    font-weight: 400;
-  }
+/* || Time picker */
+.dp__time_picker_inline_container {
+  padding-top: 5px;
+}
 
-  .time-picker-separator {
-    border-top: 1px solid var(--color-border-primary-default);
-    padding-bottom: 14px;
-    width: 100%;
-  }
+.dp__flex {
+  width: 100%;
+}
 
-  .time-picker-inner {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-  }
+.dp__time_input {
+  border-top: 1px solid var(--color-border-primary-default);
+  width: 100%;
+  justify-content: space-between;
+  padding-left: 35px;
+  padding-right: 35px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
 
-  .time-input {
-    width: 100%;
-    text-align: center;
-    border: none;
-    background: none;
-    padding: 0;
-    margin: 0;
-    outline: none;
-    box-shadow: none;
-    appearance: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    font: inherit;
-  }
+.dp__time_display {
+  font-family: var(--font-family-body) !important;
+  font-weight: var(--font-weight-regular) !important;
+  font-size: var(--font-size-xs) !important;
+}
 
+.dp__inc_dec_button_inline {
+  opacity: 0;
+  justify-content: center;
+}
+
+.dp__inc_dec_button_inline:hover {
+  opacity: 1;
+}
+
+.tp-arrow-up-down {
+  color: var(--color-border-primary-default);
+}
+
+.dp__overlay {
+  font-family: var(--font-family-body) !important;
+  font-weight: var(--font-weight-regular) !important;
+  font-size: var(--font-size-xs) !important;
+}
+
+.dp__overlay_container {
+  font: inherit;
+}
+
+/* .dp__button.dp__overlay_action */
 </style>
