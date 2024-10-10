@@ -1,5 +1,11 @@
 # Changelog
 
+## 3.14.1
+
+### Patch Changes
+
+- 54b5fa4: Add translation for mt-banner
+
 ## 3.14.0
 
 ### Minor Changes
