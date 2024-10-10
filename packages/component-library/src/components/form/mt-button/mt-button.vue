@@ -87,6 +87,7 @@ const buttonClasses = computed(() => [
   user-select: none;
   margin: 0;
   position: relative;
+  border: 1px solid transparent;
 }
 
 .mt-button__content {
@@ -251,17 +252,6 @@ const buttonClasses = computed(() => [
   width: 100%;
 }
 
-.mt-button--square {
-  width: 40px;
-  padding-left: 0;
-  padding-right: 0;
-  text-align: center;
-
-  & .mt-button__content {
-    display: inline;
-  }
-}
-
 .mt-button--large {
   padding-left: 28px;
   padding-right: 28px;
@@ -292,6 +282,18 @@ const buttonClasses = computed(() => [
 
   &.mt-button--square {
     width: 24px;
+  }
+}
+
+.mt-button--square {
+  width: 40px;
+  padding: 0;
+  text-align: center;
+  aspect-ratio: 1 / 1;
+
+  & .mt-button__content {
+    display: grid;
+    place-items: center;
   }
 }
 

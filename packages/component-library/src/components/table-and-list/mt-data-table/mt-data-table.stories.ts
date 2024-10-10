@@ -690,6 +690,7 @@ export default {
           <mt-button
               v-if="!args._remove_primary_toolbar_button_"
               variant="primary"
+              size="small"
               @click="reloadHandler"
           >
             Primary

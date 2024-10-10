@@ -28,7 +28,7 @@ export default {
 
     <template #footer>
       <div style='width: 100%; display: flex; justify-content: flex-end;'>
-        <mt-button variant='primary'>Continue</mt-button>
+        <mt-button variant='primary' size='small'>Continue</mt-button>
       </div>
     </template>
   </mt-modal>
