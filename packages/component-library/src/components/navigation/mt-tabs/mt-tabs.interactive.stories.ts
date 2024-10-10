@@ -267,3 +267,38 @@ export const VisualTestRenderTabsWithContextMenuBadge: MtTabsStory = {
     await expect(menuItem[menuItem.length - 9]).toHaveTextContent("Item with critical badge");
   },
 };
+
+export const VisualTestRenderTabsWithDisabledItem: MtTabsStory = {
+  name: "Render tabs with disabled item",
+  args: {
+    defaultItem: "item1",
+    items: [
+      ...tabItems.slice(0, 4),
+      {
+        label: "Disabled item",
+        name: "item5",
+        disabled: true,
+      },
+    ],
+  },
+  async play({ canvasElement }) {
+    const canvas = within(canvasElement);
+
+    const disabledTabItem = canvas.getByRole("tab", { name: /disabled/i });
+
+    expect(disabledTabItem).toBeDisabled();
+
+    await userEvent.tab();
+    await userEvent.tab();
+    await userEvent.tab();
+    await userEvent.tab();
+    await userEvent.tab();
+    await userEvent.tab();
+
+    expect(canvas.getByRole("tab", { name: /item 1/i })).toHaveFocus();
+
+    await userEvent.click(disabledTabItem);
+
+    expect(canvas.getByRole("tab", { name: /item 1/i })).toHaveAttribute("aria-selected", "true");
+  },
+};

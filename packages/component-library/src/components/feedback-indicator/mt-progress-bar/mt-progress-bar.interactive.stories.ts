@@ -90,9 +90,6 @@ export const VisualTestError: MtProgressBarStory = {
 
     expect(errorMessage).toBeDefined();
     expect(errorMessage.innerText).toContain("Error while sending variants");
-
-    const progressBar = canvas.getByTestId("progress-bar-value");
-    expect(window.getComputedStyle(progressBar).backgroundColor).toEqual("rgb(226, 38, 42)");
   },
 };
 

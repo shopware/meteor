@@ -21,7 +21,7 @@ export default {
     maxValue: 356,
     label: "Example progress bar",
     error: undefined,
-    progressLabelType: "",
+    progressLabelType: undefined,
   },
 } as MtProgressBarMeta;
 
