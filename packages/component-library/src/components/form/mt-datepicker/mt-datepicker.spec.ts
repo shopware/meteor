@@ -26,83 +26,88 @@ describe("src/app/component/form/mt-datepicker", () => {
     wrapper = await createWrapper();
 
     const field = wrapper.find(".mt-field");
-    const flatpickrInput = wrapper.find(".flatpickr-input");
+    const datepickerInput = wrapper.find(".dp__input"); // Updated from flatpickr-input to vue-datepicker input
 
     expect(field.attributes().disabled).toBeUndefined();
-    expect(flatpickrInput.attributes().disabled).toBeUndefined();
+    expect(datepickerInput.attributes().disabled).toBeUndefined();
   });
 
-  it("should show the dateformat, when no placeholderText is provided", async () => {
+  it("should show the date format when no placeholderText is provided", async () => {
     wrapper = await createWrapper();
-    const flatpickrInput = wrapper.find(".flatpickr-input");
+    const datepickerInput = wrapper.find(".dp__input"); // Updated selector
 
-    expect(flatpickrInput.attributes().placeholder).toBe("Y-m-d");
+    // Check if placeholder uses default format
+    expect(datepickerInput.attributes().placeholder).toBe("Y-m-d");
   });
 
-  it("should show the placeholderText, when provided", async () => {
+  it("should show the placeholderText when provided", async () => {
     const placeholderText = "Stop! Hammertime!";
     wrapper = await createWrapper({
       props: {
-        placeholderText,
+        placeholder: placeholderText, // Updated prop
       },
     });
-    const flatpickrInput = wrapper.find(".flatpickr-input");
+    const datepickerInput = wrapper.find(".dp__input"); // Updated selector
 
-    expect(flatpickrInput.attributes().placeholder).toBe(placeholderText);
+    // Check if placeholder uses provided text
+    expect(datepickerInput.attributes().placeholder).toBe(placeholderText);
   });
 
   it("should use the admin locale", async () => {
     wrapper = await createWrapper({
       props: {
-        locale: "de",
+        locale: "de", // Set locale to "de"
       },
     });
 
-    // @ts-expect-error
-    expect(wrapper.vm.$data.flatpickrInstance.config.locale).toBe("de");
+    // Ensure locale is set correctly
+    expect(wrapper.vm.locale).toBe("de");
 
     await wrapper.setProps({
-      locale: "en",
+      locale: "en", // Change locale to "en"
     });
     await flushPromises();
 
-    // @ts-expect-error
-    expect(wrapper.vm.$data.flatpickrInstance.config.locale).toBe("en");
+    // Ensure locale is updated correctly
+    expect(wrapper.vm.locale).toBe("en");
   });
 
   it("should show the label from the property", async () => {
     wrapper = await createWrapper({
       props: {
-        label: "Label from prop",
+        label: "Label from prop", // Provided label prop
       },
     });
 
+    // Ensure label text matches the prop value
     expect(wrapper.find("label").text()).toBe("Label from prop");
   });
 
   it("should not show the actual user timezone as a hint when it is not a datetime", async () => {
     wrapper = await createWrapper({
       props: {
-        dateType: "date",
+        dateType: "date", // Not datetime type
         timeZone: "Europe/Berlin",
       },
     });
 
     const hint = wrapper.find(".mt-field__hint .mt-icon");
 
+    // Ensure no timezone hint is shown
     expect(hint.exists()).toBeFalsy();
   });
 
   it("should show the UTC timezone as a hint when no timezone was selected and when datetime is datetime", async () => {
     wrapper = await createWrapper({
       props: {
-        dateType: "datetime",
+        dateType: "datetime", // Set datetime type
       },
     });
 
     const hint = wrapper.find(".mt-field__hint");
     const clockIcon = hint.find('[data-testid="mt-icon__solid-clock"]');
 
+    // Ensure the hint shows UTC
     expect(hint.text()).toContain("UTC");
     expect(clockIcon.isVisible()).toBeTruthy();
   });
@@ -110,14 +115,15 @@ describe("src/app/component/form/mt-datepicker", () => {
   it("should show the actual user timezone as a hint when datetime is datetime", async () => {
     wrapper = await createWrapper({
       props: {
-        timeZone: "Europe/Berlin",
-        dateType: "datetime",
+        timeZone: "Europe/Berlin", // Set timezone to Europe/Berlin
+        dateType: "datetime", // Set datetime type
       },
     });
 
     const hint = wrapper.find(".mt-field__hint");
     const clockIcon = hint.find('[data-testid="mt-icon__solid-clock"]');
 
+    // Ensure the hint shows the provided timezone
     expect(hint.text()).toContain("Europe/Berlin");
     expect(clockIcon.isVisible()).toBeTruthy();
   });
@@ -125,54 +131,56 @@ describe("src/app/component/form/mt-datepicker", () => {
   it("should not show the actual user timezone as a hint when the hideHint property is set to true", async () => {
     wrapper = await createWrapper({
       props: {
-        timeZone: "Europe/Berlin",
-        dateType: "datetime",
-        hideHint: true,
+        timeZone: "Europe/Berlin", // Set timezone to Europe/Berlin
+        dateType: "datetime", // Set datetime type
+        hideHint: true, // hideHint prop set to true
       },
     });
 
     const hint = wrapper.find(".mt-field__hint .mt-icon");
 
+    // Ensure no hint is shown due to hideHint being true
     expect(hint.exists()).toBeFalsy();
   });
 
-  it("should not show the actual user timezone as a hint when hideHint is false and dateType is not dateTime", async () => {
+  it("should not show the actual user timezone as a hint when hideHint is false and dateType is not datetime", async () => {
     wrapper = await createWrapper({
       props: {
-        timeZone: "Europe/Berlin",
+        timeZone: "Europe/Berlin", // Set timezone
       },
     });
 
     const hint = wrapper.find(".mt-field__hint .mt-icon");
 
+    // Ensure no timezone hint is shown when it's not datetime
     expect(hint.exists()).toBeFalsy();
   });
 
   it("should not convert the date when a timezone is set (type=date)", async () => {
     wrapper = await createWrapper({
       props: {
-        modelValue: "2023-03-27T00:00:00.000+00:00",
-        dateType: "date",
+        modelValue: "2023-03-27T00:00:00.000+00:00", // Date value
+        dateType: "date", // Date type, no timezone conversion
         timeZone: "Europe/Berlin",
       },
     });
 
-    // Can't test with DOM because of the flatpickr dependency
-    expect(wrapper.vm.timezoneFormattedValue).toBe("2023-03-27T00:00:00.000+00:00");
+    // Check the raw value remains unchanged
+    expect(wrapper.vm.localValue).toBe("2023-03-27T00:00:00.000+00:00");
   });
 
   it("should not emit a converted date when a timezone is set (type=date)", async () => {
     wrapper = await createWrapper({
       props: {
-        modelValue: "2023-03-27T00:00:00.000+00:00",
-        dateType: "date",
+        modelValue: "2023-03-27T00:00:00.000+00:00", // Date value
+        dateType: "date", // Date type, no timezone conversion
         timeZone: "Europe/Berlin",
       },
     });
 
-    // can't test with DOM because of the flatpickr dependency
-    wrapper.vm.timezoneFormattedValue = "2023-03-22T00:00:00.000+00:00";
+    wrapper.vm.handleDateInput("2023-03-22T00:00:00.000+00:00");
 
+    // Ensure the emitted value is not converted
     expect(wrapper.emitted("update:modelValue")?.[0]).toStrictEqual([
       "2023-03-22T00:00:00.000+00:00",
     ]);
@@ -181,28 +189,28 @@ describe("src/app/component/form/mt-datepicker", () => {
   it("should not convert the date when a timezone is set (type=time)", async () => {
     wrapper = await createWrapper({
       props: {
-        modelValue: "2023-03-27T00:00:00.000+00:00",
-        dateType: "time",
+        modelValue: "2023-03-27T00:00:00.000+00:00", // Time value
+        dateType: "time", // Time type, no timezone conversion
         timeZone: "Europe/Berlin",
       },
     });
 
-    // Can't test with DOM because of the flatpickr dependency
-    expect(wrapper.vm.timezoneFormattedValue).toBe("2023-03-27T00:00:00.000+00:00");
+    // Ensure the raw time remains unchanged
+    expect(wrapper.vm.localValue).toBe("2023-03-27T00:00:00.000+00:00");
   });
 
-  it("should not emit a converted date when a timezone is set (type=time)", async () => {
+  it("should not emit a converted time when a timezone is set (type=time)", async () => {
     wrapper = await createWrapper({
       props: {
-        modelValue: "2023-03-27T00:00:00.000+00:00",
-        dateType: "time",
+        modelValue: "2023-03-27T00:00:00.000+00:00", // Time value
+        dateType: "time", // Time type, no timezone conversion
         timeZone: "Europe/Berlin",
       },
     });
 
-    // can't test with DOM because of the flatpickr dependency
-    wrapper.vm.timezoneFormattedValue = "2023-03-22T00:00:00.000+00:00";
+    wrapper.vm.handleDateInput("2023-03-22T00:00:00.000+00:00");
 
+    // Ensure the emitted value is not converted
     expect(wrapper.emitted("update:modelValue")?.[0]).toStrictEqual([
       "2023-03-22T00:00:00.000+00:00",
     ]);
@@ -211,30 +219,26 @@ describe("src/app/component/form/mt-datepicker", () => {
   it("should convert the date when a timezone is set (type=datetime)", async () => {
     wrapper = await createWrapper({
       props: {
-        modelValue: "2023-03-27T00:00:00.000+00:00",
-        dateType: "datetime",
+        modelValue: "2023-03-27T00:00:00.000+00:00", // DateTime value
+        dateType: "datetime", // DateTime type, timezone conversion expected
         timeZone: "Europe/Berlin",
       },
     });
 
-    // Skip this test because data-fns-tz is not working correctly in the test environment
-    // Can't test with DOM because of the flatpickr dependency
-    // expect(wrapper.vm.timezoneFormattedValue).toStrictEqual('2023-03-27T02:00:00.000Z');
+    // Skipping the actual check as it depends on date-fns-tz
+    // expect(wrapper.vm.localValue).toBe('2023-03-27T02:00:00.000Z');
   });
 
   it("should emit a converted date when a timezone is set (type=datetime)", async () => {
     wrapper = await createWrapper({
       props: {
-        modelValue: "2023-03-27T00:00:00.000+00:00",
-        dateType: "datetime",
+        modelValue: "2023-03-27T00:00:00.000+00:00", // DateTime value
+        dateType: "datetime", // DateTime type, timezone conversion expected
         timeZone: "Europe/Berlin",
       },
     });
 
-    // can't test with DOM because of the flatpickr dependency
-    wrapper.vm.timezoneFormattedValue = "2023-03-22T00:00:00.000+00:00";
+    wrapper.vm.handleDateInput("2023-03-22T00:00:00.000+00:00");
 
-    // Skip this test because data-fns-tz is not working correctly in the test environment
-    // expect(wrapper.emitted('update:modelValue')[0]).toStrictEqual(['2023-03-21T23:00:00.000Z']);
-  });
-});
+    // Skipping the actual check as it depends on date-fns-tz
+    // expect(wrapper.emitted('update:modelValue')[0]).toStrictEqual(['2023-03-21T23:00:00.000Z

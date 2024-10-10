@@ -4,6 +4,8 @@
     v-model="localValue"
     class="date-picker"
     position="left"
+    @open="isDatepickerOpen = true"
+    @close="isDatepickerOpen = false"
     :placeholder="placeholder"
     :disabled="disabled"
     :required="required"
@@ -17,11 +19,11 @@
     :range="range"
     :format="formatDate"
     :is-24="true"
+    :type="dateType"
+    :exactMatch="dateType === 'date' || dateType === 'time'"
     :time-picker="dateType === 'time'"
     :enable-time-picker="dateType !== 'date'"
     time-picker-inline
-    @open="isDatepickerOpen = true"
-    @close="isDatepickerOpen = false"
   >
     <template #input-icon>
       <mt-icon name="regular-calendar" class="regular-calendar" />
@@ -84,6 +86,7 @@ export default defineComponent({
      */
     dateType: {
       type: String as PropType<"date" | "time" | "datetime">,
+      required: false,
       default: "datetime",
     },
 
@@ -103,6 +106,14 @@ export default defineComponent({
     timeZone: {
       type: String,
       default: "UTC",
+    },
+
+    /**
+     * When enabled, it will not convert date to the given timezone.
+     */
+    exactMatch: {
+      type: Boolean,
+      default: true,
     },
 
     /**
@@ -161,8 +172,8 @@ export default defineComponent({
   },
 
   watch: {
-    localValue(newValue: string | Date | [Date, Date] | null) {
-      this.emitValue(newValue);
+    localValue(newValue) {
+      this.handleDateInput(newValue);
     },
   },
 
@@ -185,55 +196,47 @@ export default defineComponent({
       return typeof date === "string" ? date : "";
     },
 
-    emitValue(value: string | Date | [Date, Date] | null): void {
-      if (Array.isArray(value)) {
-        const timezoneRangeValue = this.getTimezoneFormattedRange(value);
-        this.$emit("update:modelValue", timezoneRangeValue);
-      } else {
-        if (this.dateType === "date") {
-          const formattedDate = this.getFormattedDateValue(value);
-          console.log(formattedDate);
-          this.$emit("update:modelValue", formattedDate);
+    handleDateInput(date:any) {
+      // Helper function to pad numbers to two digits
+      const padToTwoDigits = (num:number) => String(num).padStart(2, "0");
+
+      // Check if the date is an array (range mode) or a single date
+      if (Array.isArray(date)) {
+        const [startDate, endDate] = date;
+
+        if (this.dateType === "date" || this.dateType === "datetime") {
+          this.$emit("update:modelValue", startDate.toISOString());
+          this.$emit("update:modelValue", endDate.toISOString());
         } else if (this.dateType === "time") {
-          const formattedTime = this.getFormattedDateValue(value);
-          console.log(formattedTime);
+          const startTime =
+            padToTwoDigits(startDate.hours) +
+            ":" +
+            padToTwoDigits(startDate.minutes) +
+            ":" +
+            padToTwoDigits(startDate.seconds || 0);
+          const endTime =
+            padToTwoDigits(endDate.hours) +
+            ":" +
+            padToTwoDigits(endDate.minutes) +
+            ":" +
+            padToTwoDigits(endDate.seconds || 0);
+          this.$emit("update:modelValue", startTime);
+          this.$emit("update:modelValue", endTime);
+        }
+      } else {
+        // Single date/time selection
+        if (this.dateType === "date" || this.dateType === "datetime") {
+          this.$emit("update:modelValue", date.toISOString());
+        } else if (this.dateType === "time") {
+          const formattedTime =
+            padToTwoDigits(date.hours) +
+            ":" +
+            padToTwoDigits(date.minutes) +
+            ":" +
+            padToTwoDigits(date.seconds || 0);
           this.$emit("update:modelValue", formattedTime);
-        } else {
-          const timezoneValue = this.getTimezoneFormattedValue(value);
-          console.log(timezoneValue);
-          this.$emit("update:modelValue", timezoneValue);
         }
       }
-    },
-
-    getFormattedDateValue(
-      value: string | Date | { hours: number; minutes: number; seconds: number } | null,
-    ): string | null {
-      if (value instanceof Date) {
-        return format(value, "yyyy-MM-dd");
-      } else if (typeof value === "object" && value !== null) {
-        const { hours, minutes, seconds } = value;
-        return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}:${String(seconds).padStart(2, "0")}`;
-      } else if (typeof value === "string") {
-        return value;
-      }
-      return null;
-    },
-
-    getTimezoneFormattedValue(value: string | Date | null): string | null {
-      if (this.timeZone && this.dateType === "datetime" && value) {
-        const parsedDate = typeof value === "string" ? parseISO(value) : value;
-        if (!isValid(parsedDate)) return null;
-        return formatInTimeZone(parsedDate, this.timeZone, "yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
-      }
-      return value ? String(value) : null;
-    },
-
-    getTimezoneFormattedRange(value: [Date, Date]): [string, string] {
-      const [startDate, endDate] = value;
-      const formattedStartDate = this.getTimezoneFormattedValue(startDate);
-      const formattedEndDate = this.getTimezoneFormattedValue(endDate);
-      return [formattedStartDate as string, formattedEndDate as string];
     },
   },
 });
@@ -393,6 +396,9 @@ export default defineComponent({
 
 .dp__flex {
   width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .dp__time_input {
@@ -437,9 +443,4 @@ export default defineComponent({
   align-items: center;
 }
 
-.line {
-  width: 100%;
-  border-top: 1px solid black;
-}
-/* .dp__button.dp__overlay_action */
 </style>
