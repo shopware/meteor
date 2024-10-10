@@ -16,6 +16,7 @@
           v-if="currentView.name !== 'base'"
           class="mt-popover__back-button"
           variant="secondary"
+          size="small"
           @click="goViewBack"
         >
           <mt-icon name="solid-long-arrow-left" />

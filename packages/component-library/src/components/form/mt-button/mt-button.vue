@@ -73,9 +73,7 @@ const buttonClasses = computed(() => [
   transition: all 0.15s ease-out;
   display: inline-block;
   border-radius: var(--border-radius-button);
-  padding: 2px 24px;
   font-size: var(--font-size-xs);
-  line-height: 34px;
   outline: none;
   font-weight: var(--font-weight-semibold);
   font-family: var(--font-family-body);
@@ -87,6 +85,7 @@ const buttonClasses = computed(() => [
   user-select: none;
   margin: 0;
   position: relative;
+  border: 1px solid transparent;
 }
 
 .mt-button__content {
@@ -103,7 +102,6 @@ const buttonClasses = computed(() => [
 .mt-button--primary {
   background: var(--color-interaction-primary-default);
   color: var(--color-text-static-default);
-  line-height: 36px;
   border-color: var(--color-interaction-primary-default);
 
   & .mt-icon {
@@ -159,7 +157,6 @@ const buttonClasses = computed(() => [
 .mt-button--secondary {
   background: var(--color-interaction-secondary-default);
   color: var(--color-text-primary-default);
-  line-height: 36px;
   border-color: var(--color-border-primary-default);
 
   &:is(:hover, :focus-visible, :active) {
@@ -189,7 +186,6 @@ const buttonClasses = computed(() => [
 .mt-button--critical {
   background: var(--color-interaction-critical-default);
   color: var(--color-text-static-default);
-  line-height: 36px;
   border-color: var(--color-interaction-critical-default);
 
   &:is(:hover, :focus-visible, :active) {
@@ -251,47 +247,53 @@ const buttonClasses = computed(() => [
   width: 100%;
 }
 
-.mt-button--square {
-  width: 40px;
-  padding-left: 0;
-  padding-right: 0;
-  text-align: center;
-
-  & .mt-button__content {
-    display: inline;
-  }
-}
-
 .mt-button--large {
-  padding-left: 28px;
-  padding-right: 28px;
-  line-height: 42px;
+  padding-inline: 28px;
   font-size: var(--font-size-2xs);
+  height: 3rem;
 
   &.mt-button--square {
     width: 48px;
   }
 }
 
-.mt-button--small {
-  padding-left: 15px;
-  padding-right: 15px;
-  font-size: var(--font-size-2xs);
-  line-height: 26px;
+.mt-button--default {
+  padding-inline: 15px;
+  height: 2.5rem;
 
   &.mt-button--square {
-    width: 32px;
+    width: 2.5rem;
+  }
+}
+
+.mt-button--small {
+  padding-inline: 13px;
+  height: 2rem;
+  font-size: var(--font-size-2xs);
+
+  &.mt-button--square {
+    width: 2rem;
   }
 }
 
 .mt-button--x-small {
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-inline: 10px;
   font-size: var(--font-size-2xs);
-  line-height: 18px;
 
   &.mt-button--square {
-    width: 24px;
+    width: 1.5rem;
+  }
+}
+
+.mt-button--square {
+  width: 40px;
+  padding: 0;
+  text-align: center;
+  aspect-ratio: 1 / 1;
+
+  & .mt-button__content {
+    display: grid;
+    place-items: center;
   }
 }
 

@@ -13,7 +13,7 @@
 
         <mt-popover v-if="filters.length > 0" title="Filters" :child-views="filterChildViews">
           <template #trigger="{ toggleFloatingUi }">
-            <mt-button variant="secondary" @click="toggleFloatingUi">
+            <mt-button variant="secondary" size="small" @click="toggleFloatingUi">
               <mt-icon name="solid-filter-s" aria-hidden="true" />
 
               <span>{{ $t("mt-data-table.filter.addFilter") }}</span>

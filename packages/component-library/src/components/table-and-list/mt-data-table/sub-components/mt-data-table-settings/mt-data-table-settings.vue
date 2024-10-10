@@ -13,6 +13,7 @@
         }"
         variant="secondary"
         square
+        size="small"
         :aria-label="t('mt-data-table-settings.aria-toggle-table-settings')"
         @click="toggleFloatingUi"
       >

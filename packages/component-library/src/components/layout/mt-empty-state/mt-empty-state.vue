@@ -20,6 +20,7 @@
       v-if="buttonText"
       class="mt-empty-state__button"
       variant="primary"
+      size="small"
       @click="$emit('button-click')"
     >
       <mt-icon name="solid-plus-circle-s" />
