@@ -25,8 +25,8 @@ describe("src/app/component/form/mt-datepicker", () => {
   it("should have enabled links", async () => {
     wrapper = await createWrapper();
 
-    const field = wrapper.find(".mt-field");
-    const datepickerInput = wrapper.find(".dp__input"); // Updated from flatpickr-input to vue-datepicker input
+    const field = wrapper.find(".mt-field"); // mt-field currently disabled
+    const datepickerInput = wrapper.find(".dp__input");
 
     expect(field.attributes().disabled).toBeUndefined();
     expect(datepickerInput.attributes().disabled).toBeUndefined();
@@ -166,7 +166,7 @@ describe("src/app/component/form/mt-datepicker", () => {
     });
 
     // Check the raw value remains unchanged
-    expect(wrapper.vm.localValue).toBe("2023-03-27T00:00:00.000+00:00");
+    expect(wrapper.vm.modelValue).toBe("2023-03-27T00:00:00.000+00:00");
   });
 
   it("should not emit a converted date when a timezone is set (type=date)", async () => {
@@ -196,7 +196,7 @@ describe("src/app/component/form/mt-datepicker", () => {
     });
 
     // Ensure the raw time remains unchanged
-    expect(wrapper.vm.localValue).toBe("2023-03-27T00:00:00.000+00:00");
+    expect(wrapper.vm.modelValue).toBe("2023-03-27T00:00:00.000+00:00");
   });
 
   it("should not emit a converted time when a timezone is set (type=time)", async () => {
@@ -226,7 +226,7 @@ describe("src/app/component/form/mt-datepicker", () => {
     });
 
     // Skipping the actual check as it depends on date-fns-tz
-    // expect(wrapper.vm.localValue).toBe('2023-03-27T02:00:00.000Z');
+     expect(wrapper.vm.modelValue).toBe('2023-03-27T02:00:00.000Z');
   });
 
   it("should emit a converted date when a timezone is set (type=datetime)", async () => {
@@ -241,4 +241,6 @@ describe("src/app/component/form/mt-datepicker", () => {
     wrapper.vm.handleDateInput("2023-03-22T00:00:00.000+00:00");
 
     // Skipping the actual check as it depends on date-fns-tz
-    // expect(wrapper.emitted('update:modelValue')[0]).toStrictEqual(['2023-03-21T23:00:00.000Z
+     expect(wrapper.emitted('update:modelValue')?.[0]).toStrictEqual(['2023-03-21T23:00:00.000Z']);
+  });
+});

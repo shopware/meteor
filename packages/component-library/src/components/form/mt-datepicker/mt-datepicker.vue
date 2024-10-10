@@ -52,14 +52,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch, nextTick } from "vue";
+import { defineComponent } from "vue";
 import type { PropType } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtFormFieldMixin from "../../../mixins/form-field.mixin";
 import DatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
-import { formatInTimeZone } from "date-fns-tz";
-import { parseISO, isValid, format } from "date-fns";
 
 export default defineComponent({
   name: "MtDatepicker",
@@ -196,17 +194,17 @@ export default defineComponent({
       return typeof date === "string" ? date : "";
     },
 
-    handleDateInput(date:any) {
+    handleDateInput(date: any) {
       // Helper function to pad numbers to two digits
-      const padToTwoDigits = (num:number) => String(num).padStart(2, "0");
+      const padToTwoDigits = (num: number) => String(num).padStart(2, "0");
 
       // Check if the date is an array (range mode) or a single date
       if (Array.isArray(date)) {
         const [startDate, endDate] = date;
 
         if (this.dateType === "date" || this.dateType === "datetime") {
-          this.$emit("update:modelValue", startDate.toISOString());
-          this.$emit("update:modelValue", endDate.toISOString());
+          this.$emit("update:modelValue", startDate);
+          this.$emit("update:modelValue", endDate);
         } else if (this.dateType === "time") {
           const startTime =
             padToTwoDigits(startDate.hours) +
@@ -226,15 +224,15 @@ export default defineComponent({
       } else {
         // Single date/time selection
         if (this.dateType === "date" || this.dateType === "datetime") {
-          this.$emit("update:modelValue", date.toISOString());
+          this.$emit("update:modelValue", date);
         } else if (this.dateType === "time") {
-          const formattedTime =
-            padToTwoDigits(date.hours) +
-            ":" +
-            padToTwoDigits(date.minutes) +
-            ":" +
-            padToTwoDigits(date.seconds || 0);
-          this.$emit("update:modelValue", formattedTime);
+          const time = new Date();
+          const hours = Number(padToTwoDigits(date.hours));
+          const minutes = Number(padToTwoDigits(date.minutes));
+          const seconds = Number(padToTwoDigits(date.seconds));
+          const timeFormatted = time.setHours(hours, minutes, seconds);
+
+          this.$emit("update:modelValue", timeFormatted);
         }
       }
     },
@@ -442,5 +440,4 @@ export default defineComponent({
   display: flex;
   align-items: center;
 }
-
 </style>
