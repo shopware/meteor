@@ -103,3 +103,17 @@ textarea:not([rows]) {
   clip: rect(0, 0, 0, 0);
   border: 0;
 }
+
+/* Remove all styles from button elements, needs to be explicitly defined */
+button[data-reset-style] {
+  height: auto;
+  border-radius: 0;
+  text-align: inherit;
+  background: none;
+  box-shadow: none;
+  padding: 0;
+  cursor: pointer;
+  border: none;
+  color: inherit;
+  font: inherit;
+}

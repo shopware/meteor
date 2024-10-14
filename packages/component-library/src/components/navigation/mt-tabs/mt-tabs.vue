@@ -8,6 +8,7 @@
           v-for="item in mainItems"
           :key="item.name"
           :data-priority-plus="item.name"
+          data-reset-style
           ref="items"
           class="mt-tabs__item"
           :data-text="item.label"

@@ -20,6 +20,7 @@
         <button
           v-if="inheritance !== undefined"
           class="mt-card__inheritance-toggle"
+          data-reset-style
           :aria-label="!!inheritance ? t('disableInheritance') : t('enableInheritance')"
           @click="$emit('update:inheritance', !inheritance)"
         >
