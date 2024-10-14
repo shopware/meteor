@@ -11,6 +11,14 @@ html {
   -webkit-text-size-adjust: none;
   text-size-adjust: none;
   font-family: Inter, sans-serif;
+  font-feature-settings:
+    "cv10" on,
+    "cv05" on,
+    "cv02" on,
+    "cv07" on,
+    "cv09" on,
+    "cv04" on,
+    "cv03" on;
 }
 
 /* Remove default margin in favour of better control in authored CSS */
