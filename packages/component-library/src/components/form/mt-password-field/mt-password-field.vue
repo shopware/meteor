@@ -47,6 +47,7 @@
               ? $tc('mt-password-field.titleHidePassword')
               : $tc('mt-password-field.titleShowPassword')
           "
+          data-reset-style
           class="mt-field__toggle-password-visibility"
           @click="() => (showPassword = !showPassword)"
         >
