@@ -16,7 +16,7 @@
       >
         <slot name="before-item-list" />
 
-        <ul class="mt-select-result-list__item-list">
+        <ul class="mt-select-result-list__item-list" role="list">
           <template v-for="(item, index) in options">
             <slot name="result-item" v-bind="{ item, index }" />
           </template>

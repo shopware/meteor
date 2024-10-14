@@ -1,5 +1,5 @@
 <template>
-  <button class="mt-data-table-reset-filter-button">
+  <button class="mt-data-table-reset-filter-button" data-reset-style>
     {{ $tc("mt-data-table-reset-filter-button.label", numberOfAppliedFilters) }}
   </button>
 </template>

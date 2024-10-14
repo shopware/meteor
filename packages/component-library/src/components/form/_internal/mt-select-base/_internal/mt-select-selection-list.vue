@@ -1,5 +1,5 @@
 <template>
-  <ul class="mt-select-selection-list">
+  <ul class="mt-select-selection-list" role="list">
     <!-- eslint-disable vue/no-use-v-if-with-v-for -->
     <template v-for="(selection, index) in selections" :key="selection[valueProperty]">
       <li
@@ -278,6 +278,7 @@ export default defineComponent({
     display: inline-block;
     min-width: 200px;
     padding: 12px 16px 12px 8px;
+    height: 100%;
 
     &::placeholder {
       color: lighten($color-darkgray-200, 25%);

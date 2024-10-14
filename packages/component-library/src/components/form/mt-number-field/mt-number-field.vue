@@ -46,6 +46,7 @@
         <button
           @click="increaseNumberByStep"
           :disabled="disabled"
+          data-reset-style
           :aria-label="$tc('mt-number-field.increaseButton')"
           data-testid="mt-number-field-increase-button"
         >
@@ -55,6 +56,7 @@
         <button
           @click="decreaseNumberByStep"
           :disabled="disabled"
+          data-reset-style
           :aria-label="$t('mt-number-field.decreaseButton')"
           data-testid="mt-number-field-decrease-button"
         >
@@ -383,6 +385,7 @@ export default defineComponent({
     transition: all 0.15s ease-out;
     width: 100%;
     flex: 1;
+    text-align: center;
 
     &:is(:hover, :focus-visible) {
       background-color: var(--color-interaction-secondary-hover);
