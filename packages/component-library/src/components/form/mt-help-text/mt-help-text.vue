@@ -6,6 +6,7 @@
       showDelay: showDelay,
       hideDelay: hideDelay,
     }"
+    data-reset-style
     class="mt-help-text"
     role="tooltip"
     aria-label="help-text"

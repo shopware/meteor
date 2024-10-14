@@ -10,7 +10,7 @@
 
     <mt-popover class="mt-data-table-filter__option" title="Manufactuer">
       <template #trigger="{ toggleFloatingUi }">
-        <button @keydown.delete="$emit('removeFilter')" @click="toggleFloatingUi">
+        <button @keydown.delete="$emit('removeFilter')" @click="toggleFloatingUi" data-reset-style>
           {{ appliedOptions.map((option) => option.label).join(", ") }}
         </button>
       </template>
@@ -35,6 +35,7 @@
     <button
       class="mt-data-table-filter__remove-button"
       :aria-label="t('removeButton')"
+      data-reset-style
       @keydown.delete="$emit('removeFilter')"
       @click="$emit('removeFilter')"
     >

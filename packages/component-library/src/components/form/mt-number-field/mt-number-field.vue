@@ -46,6 +46,7 @@
         <button
           @click="increaseNumberByStep"
           :disabled="disabled"
+          data-reset-style
           :aria-label="$tc('mt-number-field.increaseButton')"
           data-testid="mt-number-field-increase-button"
         >
@@ -55,6 +56,7 @@
         <button
           @click="decreaseNumberByStep"
           :disabled="disabled"
+          data-reset-style
           :aria-label="$t('mt-number-field.decreaseButton')"
           data-testid="mt-number-field-decrease-button"
         >

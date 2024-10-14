@@ -39,6 +39,8 @@ dd {
 ul[role="list"],
 ol[role="list"] {
   list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 /* Set core body defaults */
@@ -105,7 +107,7 @@ textarea:not([rows]) {
 }
 
 /* Remove all styles from button elements, needs to be explicitly defined */
-button[data-reset-style] {
+button:where([data-reset-style]) {
   height: auto;
   border-radius: 0;
   text-align: inherit;

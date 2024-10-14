@@ -1,5 +1,5 @@
 <template>
-  <ul class="mt-select-selection-list">
+  <ul class="mt-select-selection-list" role="list">
     <!-- eslint-disable vue/no-use-v-if-with-v-for -->
     <template v-for="(selection, index) in selections" :key="selection[valueProperty]">
       <li

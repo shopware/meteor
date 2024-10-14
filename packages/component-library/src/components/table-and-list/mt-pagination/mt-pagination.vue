@@ -13,6 +13,7 @@
     <div class="mt-pagination__controls">
       <button
         class="mt-pagination__button"
+        data-reset-style
         :disabled="isOnFirstPage"
         @click="$emit('change-current-page', 1)"
         data-testid="mt-pagination-first-page-button"
@@ -24,6 +25,7 @@
 
       <button
         class="mt-pagination__button"
+        data-reset-style
         :disabled="isOnFirstPage"
         @click="$emit('change-current-page', currentPage - 1)"
         data-testid="mt-pagination-previous-page-button"
@@ -47,6 +49,7 @@
 
       <button
         class="mt-pagination__button"
+        data-reset-style
         :disabled="isOnLastPage"
         @click="$emit('change-current-page', currentPage + 1)"
         data-testid="mt-pagination-next-page-button"
@@ -58,6 +61,7 @@
 
       <button
         class="mt-pagination__button"
+        data-reset-style
         :disabled="isOnLastPage"
         @click="$emit('change-current-page', totalPages)"
         data-testid="mt-pagination-last-page-button"
