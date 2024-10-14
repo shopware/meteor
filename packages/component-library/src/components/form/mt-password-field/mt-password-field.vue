@@ -159,10 +159,13 @@ export default defineComponent({
   right: 0.5rem;
   top: 50%;
   transform: translate(0, -50%);
-  padding: 0.5rem;
   border-radius: var(--border-radius-button);
   outline-color: var(--color-border-brand-selected);
   transition: all 0.15s ease-out;
+  width: 2.25rem;
+  height: 2.25rem;
+  display: grid;
+  place-items: center;
 
   &:is(:hover, :focus-visible) {
     background-color: var(--color-interaction-secondary-hover);

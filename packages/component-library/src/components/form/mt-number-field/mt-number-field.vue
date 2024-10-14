@@ -385,6 +385,7 @@ export default defineComponent({
     transition: all 0.15s ease-out;
     width: 100%;
     flex: 1;
+    text-align: center;
 
     &:is(:hover, :focus-visible) {
       background-color: var(--color-interaction-secondary-hover);
