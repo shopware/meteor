@@ -1,5 +1,13 @@
 # Changelog
 
+## 3.14.1
+
+### Patch Changes
+
+- 54b5fa4: Add translation for mt-banner
+- a4b2203: Add focus styles for checkbox
+- 3b50452: Update focus style of switch
+
 ## 3.14.0
 
 ### Minor Changes
