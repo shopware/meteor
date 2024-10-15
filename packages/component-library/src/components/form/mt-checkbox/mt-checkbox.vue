@@ -292,6 +292,12 @@ export default defineComponent({
       height: 16px;
       position: relative;
 
+      &:has(:focus-visible) {
+        outline: 2px solid var(--color-border-brand-selected);
+        outline-offset: 2px;
+        border-radius: var(--border-radius-checkbox);
+      }
+
       & input[type="checkbox"] {
         opacity: 0;
         display: block;
