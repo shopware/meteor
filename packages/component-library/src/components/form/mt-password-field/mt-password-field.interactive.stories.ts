@@ -23,7 +23,7 @@ export const TestInputValue: MtPasswordFieldStory = {
 
     expect((canvas.getByLabelText(args.label!) as HTMLInputElement).value).toBe(password);
 
-    expect(args.change).toHaveBeenCalledWith(password);
+    expect(args["onUpdate:modelValue"]).toHaveBeenCalledWith(password);
   },
 };
 
@@ -125,6 +125,22 @@ export const VisualTestShowPassword: MtPasswordFieldStory = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    await userEvent.click(canvas.getByTestId("mt-password-field-show-button"));
+    await userEvent.click(
+      canvas.getByRole("button", {
+        name: "Show password",
+      }),
+    );
+  },
+};
+
+export const TestShouldNowShowToggleButton: MtPasswordFieldStory = {
+  name: "Should not show toggle button",
+  args: {
+    toggable: false,
+  },
+  play: ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.queryByRole("button")).not.toBeInTheDocument();
   },
 };
