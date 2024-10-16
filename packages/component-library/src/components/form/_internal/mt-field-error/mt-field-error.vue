@@ -1,7 +1,7 @@
 <template>
   <mt-text
     as="span"
-    size="2xs"
+    size="xs"
     color="color-text-critical-default"
     v-if="!!error"
     class="mt-field__error"

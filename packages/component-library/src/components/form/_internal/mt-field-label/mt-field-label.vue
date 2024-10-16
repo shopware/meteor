@@ -88,13 +88,9 @@ const classes = computed(() => [
   color: var(--color-text-critical-default);
 }
 
-.mt-field-label__inheritance-switch {
-  margin-right: 0.25rem;
-
-  &:focus-visible {
-    outline-offset: 0.25rem;
-    border-radius: var(--border-radius-2xs);
-    outline-color: var(--color-border-brand-selected);
-  }
+.mt-field-label__inheritance-switch:focus-visible {
+  outline-offset: 0.25rem;
+  border-radius: var(--border-radius-2xs);
+  outline-color: var(--color-border-brand-selected);
 }
 </style>
