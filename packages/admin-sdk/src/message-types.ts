@@ -38,6 +38,7 @@ import type {
   repositoryDelete,
   repositoryCreate,
 } from './data/repository';
+import type { iapCheckout } from './iap';
 
 /**
  * Contains all shopware send types.
@@ -92,6 +93,7 @@ export interface ShopwareMessageTypes {
   datasetSubscribeRegistration: datasetSubscribeRegistration,
   datasetUpdate: datasetUpdate,
   datasetGet: datasetGet,
+  iapCheckout: iapCheckout,
   __function__: __function__,
   __registerWindow__: __registerWindow__,
   _multiply: _multiply,
