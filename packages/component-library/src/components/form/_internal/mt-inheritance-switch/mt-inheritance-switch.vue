@@ -1,11 +1,13 @@
 <template>
   <div
-    class="mt-inheritance-switch"
-    :class="{
-      'mt-inheritance-switch--disabled': disabled,
-      'mt-inheritance-switch--is-inherited': isInherited,
-      'mt-inheritance-switch--is-not-inherited': !isInherited,
-    }"
+    :class="[
+      'mt-inheritance-switch',
+      {
+        'mt-inheritance-switch--disabled': disabled,
+        'mt-inheritance-switch--is-inherited': isInherited,
+        'mt-inheritance-switch--is-not-inherited': !isInherited,
+      },
+    ]"
   >
     <mt-icon
       v-if="isInherited"
