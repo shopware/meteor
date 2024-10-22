@@ -12,47 +12,20 @@
     name="regular-copy"
     size="18"
     @click="copyToClipboard"
-    @mouseleave="resetTooltipText"
+    @mouseleave="wasCopied = false"
   />
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent, ref } from "vue";
 import MtIcon from "../../../icons-media/mt-icon/mt-icon.vue";
 import MtTooltipDirective from "../../../../directives/tooltip.directive";
 import MtNotificationMixin from "../../../../mixins/notification.mixin";
 import { copyToClipboard as copyToClipboardUtil } from "../../../../utils/dom";
+import { useI18n } from "@/composables/useI18n";
 
 export default defineComponent({
   name: "MtFieldCopyable",
-
-  i18n: {
-    messages: {
-      en: {
-        "mt-field-copyable": {
-          tooltip: {
-            wasCopied: "Copied to clipboard.",
-            canCopy: "Copy to clipboard.",
-            notificationCopySuccessMessage: "Text has been copied to clipboard.",
-            notificationCopyFailureMessage: "Text could not be copied to clipboard.",
-            errorTitle: "Error copying to clipboard",
-          },
-        },
-      },
-      de: {
-        "mt-field-copyable": {
-          tooltip: {
-            wasCopied: "In Zwischenablage kopiert.",
-            canCopy: "In Zwischenablage kopieren.",
-            notificationCopySuccessMessage: "Der Text wurde in die Zwischenablage kopiert.",
-            notificationCopyFailureMessage:
-              "Der Text konnte nicht in die Zwischenablage kopiert werden.",
-            errorTitle: "Fehler beim kopieren in die Zwischenablage",
-          },
-        },
-      },
-    },
-  },
 
   directives: {
     tooltip: MtTooltipDirective,
@@ -78,56 +51,47 @@ export default defineComponent({
     },
   },
 
-  data() {
-    return {
-      wasCopied: false,
-    };
-  },
+  setup(props) {
+    const wasCopied = ref(false);
 
-  computed: {
-    tooltipText(): string {
-      if (this.wasCopied) {
-        return this.$tc("mt-field-copyable.tooltip.wasCopied");
-      }
+    const { t } = useI18n({
+      messages: {
+        en: {
+          tooltip: {
+            wasCopied: "Copied to clipboard.",
+            canCopy: "Copy to clipboard.",
+            notificationCopySuccessMessage: "Text has been copied to clipboard.",
+            notificationCopyFailureMessage: "Text could not be copied to clipboard.",
+            errorTitle: "Error copying to clipboard",
+          },
+        },
+        de: {
+          tooltip: {
+            wasCopied: "In Zwischenablage kopiert.",
+            canCopy: "In Zwischenablage kopieren.",
+            notificationCopySuccessMessage: "Der Text wurde in die Zwischenablage kopiert.",
+            notificationCopyFailureMessage:
+              "Der Text konnte nicht in die Zwischenablage kopiert werden.",
+            errorTitle: "Fehler beim kopieren in die Zwischenablage",
+          },
+        },
+      },
+    });
 
-      return this.$tc("mt-field-copyable.tooltip.canCopy");
-    },
-  },
+    const tooltipText = computed(() => {
+      if (wasCopied.value) return t("tooltip.wasCopied");
 
-  methods: {
-    copyToClipboard() {
-      if (!this.copyableText) {
-        return;
-      }
+      return t("tooltip.canCopy");
+    });
 
-      try {
-        copyToClipboardUtil(this.copyableText);
-        if (this.tooltip) {
-          this.tooltipSuccess();
-        } else {
-          this.notificationSuccess();
-        }
-      } catch (err) {
-        this.createNotificationError({
-          title: this.$tc("mt-field-copyable.errorTitle"),
-          message: this.$tc("mt-field-copyable.notificationCopyFailureMessage"),
-        });
-      }
-    },
+    function copyToClipboard() {
+      if (!props.copyableText) return;
 
-    tooltipSuccess() {
-      this.wasCopied = true;
-    },
+      copyToClipboardUtil(props.copyableText);
+      if (props.tooltip) wasCopied.value = true;
+    }
 
-    notificationSuccess() {
-      this.createNotificationInfo({
-        message: this.$tc("mt-field-copyable.notificationCopySuccessMessage"),
-      });
-    },
-
-    resetTooltipText() {
-      this.wasCopied = false;
-    },
+    return { tooltipText, copyToClipboard, wasCopied };
   },
 });
 </script>
