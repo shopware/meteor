@@ -98,7 +98,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .mt-data-table-filter {
   display: inline-flex;
 
@@ -107,71 +107,71 @@ export default defineComponent({
     display: grid;
     place-items: center;
   }
+}
 
-  .mt-data-table-filter__property {
-    border: 1px solid var(--color-border-primary-default);
-    border-right: 0 none;
-    border-top-left-radius: var(--border-radius-xs);
-    border-bottom-left-radius: var(--border-radius-xs);
-    color: var(--color-text-primary-default);
-    padding-inline: 8px;
-  }
+.mt-data-table-filter__property {
+  border: 1px solid var(--color-border-primary-default);
+  border-right: 0 none;
+  border-top-left-radius: var(--border-radius-xs);
+  border-bottom-left-radius: var(--border-radius-xs);
+  color: var(--color-text-primary-default);
+  padding-inline: 8px;
+}
 
-  .mt-data-table-filter__rule {
-    border-top: 1px solid var(--color-border-primary-default);
-    border-bottom: 1px solid var(--color-border-primary-default);
-    padding-right: 4px;
-  }
+.mt-data-table-filter__rule {
+  border-top: 1px solid var(--color-border-primary-default);
+  border-bottom: 1px solid var(--color-border-primary-default);
+  padding-right: 4px;
+}
 
-  .mt-data-table-filter__option {
-    color: var(--color-text-primary-default);
-    font-size: var(--font-size-2xs);
-    font-family: var(--font-family-body);
-    line-height: var(--font-line-height-2xs);
-    border-top: 1px solid var(--color-border-primary-default);
-    border-bottom: 1px solid var(--color-border-primary-default);
-    padding-inline: 4px 8px;
+.mt-data-table-filter__option {
+  color: var(--color-text-primary-default);
+  font-size: var(--font-size-2xs);
+  font-family: var(--font-family-body);
+  line-height: var(--font-line-height-2xs);
+  border-top: 1px solid var(--color-border-primary-default);
+  border-bottom: 1px solid var(--color-border-primary-default);
+  padding-inline: 4px 8px;
 
-    button {
-      outline: 0 none;
-    }
-
-    &:has(button:hover) {
-      background-color: var(--color-interaction-secondary-hover);
-    }
-
-    &:has(button:focus-visible) {
-      background-color: var(--color-background-brand-default);
-      outline: var(--color-border-brand-selected) solid 1px;
-      outline-offset: -1px;
-    }
-  }
-
-  .mt-data-table-filter__remove-button {
-    color: var(--color-icon-primary-default);
-    border-top-right-radius: var(--border-radius-xs);
-    border-bottom-right-radius: var(--border-radius-xs);
-    border: 1px solid var(--color-border-primary-default);
+  & button {
     outline: 0 none;
-    position: relative;
-    height: 24px;
-    width: 24px;
+  }
 
-    .mt-icon {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
+  &:has(button:hover) {
+    background-color: var(--color-interaction-secondary-hover);
+  }
 
-    &:focus-visible {
-      background-color: var(--color-background-brand-default);
-      border-color: var(--color-border-brand-selected);
-    }
+  &:has(button:focus-visible) {
+    background-color: var(--color-background-brand-default);
+    outline: var(--color-border-brand-selected) solid 1px;
+    outline-offset: -1px;
+  }
+}
 
-    &:hover {
-      background-color: var(--color-interaction-secondary-hover);
-    }
+.mt-data-table-filter__remove-button {
+  color: var(--color-icon-primary-default);
+  border-top-right-radius: var(--border-radius-xs);
+  border-bottom-right-radius: var(--border-radius-xs);
+  border: 1px solid var(--color-border-primary-default);
+  outline: 0 none;
+  position: relative;
+  height: 24px;
+  width: 24px;
+
+  & .mt-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  &:focus-visible {
+    background-color: var(--color-background-brand-default);
+    border-color: var(--color-border-brand-selected);
+  }
+
+  &:hover {
+    background-color: var(--color-interaction-secondary-hover);
   }
 }
 </style>

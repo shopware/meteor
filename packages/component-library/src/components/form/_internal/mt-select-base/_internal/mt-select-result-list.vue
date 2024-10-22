@@ -39,7 +39,7 @@
 <script lang="ts">
 import type { PropType } from "vue";
 
-import { defineComponent } from "vue";
+import { computed, defineComponent } from "vue";
 import MtPopoverDeprecated from "../../../../_internal/mt-popover-deprecated/mt-popover-deprecated.vue";
 import MtIcon from "../../../../icons-media/mt-icon/mt-icon.vue";
 import { provide } from "vue";
@@ -50,24 +50,10 @@ import {
   MtSelectResultRemoveItemSelectByKeyboardListener,
 } from "@/helper/provideInjectKeys";
 import { ref } from "vue";
+import { useI18n } from "@/composables/useI18n";
 
 export default defineComponent({
   name: "MtSelectResultList",
-
-  i18n: {
-    messages: {
-      en: {
-        "mt-select-result-list": {
-          messageNoResults: "No results found.",
-        },
-      },
-      de: {
-        "mt-select-result-list": {
-          messageNoResults: "Es wurden keine Ergebnisse gefunden.",
-        },
-      },
-    },
-  },
 
   components: {
     "mt-popover-deprecated": MtPopoverDeprecated,
@@ -80,7 +66,7 @@ export default defineComponent({
     };
   },
 
-  setup() {
+  setup(props) {
     const activeItemIndex = ref(0);
     const activeItemChangeListeners = ref<Array<(index: number) => void>>([]);
     const itemSelectByKeyboardListeners = ref<Array<(index: number) => void>>([]);
@@ -121,8 +107,22 @@ export default defineComponent({
     provide(MtSelectResultAddItemSelectByKeyboardListener, addToItemSelectByKeyboardListeners);
     provide(MtSelectResultRemoveItemSelectByKeyboardListener, removeItemSelectByKeyboardListener);
 
+    const { t } = useI18n({
+      messages: {
+        en: {
+          messageNoResults: "No results found.",
+        },
+        de: {
+          messageNoResults: "Es wurden keine Ergebnisse gefunden.",
+        },
+      },
+    });
+
+    const emptyMessageText = computed(() => props.emptyMessage || t("messageNoResults"));
+
     return {
       activeItemIndex,
+      emptyMessageText,
       emitActiveItemIndex,
       setActiveItemIndex,
       addToActiveItemChangeListeners,
@@ -187,10 +187,6 @@ export default defineComponent({
   },
 
   computed: {
-    emptyMessageText(): string {
-      return this.emptyMessage || this.$tc("mt-select-result-list.messageNoResults");
-    },
-
     popoverClass(): string[] {
       return [...this.popoverClasses, "mt-select-result-list-popover-wrapper"];
     },
