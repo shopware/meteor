@@ -1,33 +1,30 @@
 <template>
   <button class="mt-data-table-reset-filter-button">
-    {{ $tc("mt-data-table-reset-filter-button.label", numberOfAppliedFilters) }}
+    {{ t("mt-data-table-reset-filter-button.label", numberOfAppliedFilters) }}
   </button>
 </template>
 
-<script lang="ts">
-export default {
-  props: {
-    numberOfAppliedFilters: {
-      type: Number,
-      required: true,
-      validator: (value: number) => value >= 1,
-    },
-  },
-  i18n: {
-    messages: {
-      en: {
-        "mt-data-table-reset-filter-button": {
-          label: "Remove filter | Remove filters",
-        },
+<script setup lang="ts">
+import { useI18n } from "vue-i18n";
+
+defineProps<{
+  numberOfAppliedFilters: number;
+}>();
+
+const { t } = useI18n({
+  messages: {
+    en: {
+      "mt-data-table-reset-filter-button": {
+        label: "Remove filter | Remove filters",
       },
-      de: {
-        "mt-data-table-reset-filter-button": {
-          label: "Filter entfernen | Filter entfernen",
-        },
+    },
+    de: {
+      "mt-data-table-reset-filter-button": {
+        label: "Filter entfernen | Filter entfernen",
       },
     },
   },
-};
+});
 </script>
 
 <style lang="scss" scoped>
