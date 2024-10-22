@@ -11,7 +11,7 @@
       v-if="isInherited"
       key="inherit-icon"
       v-tooltip="{
-        message: $tc('mt-inheritance-switch.tooltipRemoveInheritance'),
+        message: t('tooltipRemoveInheritance'),
         disabled: disabled,
       }"
       data-testid="mt-inheritance-switch-icon"
@@ -24,10 +24,10 @@
       v-else
       key="uninherit-icon"
       v-tooltip="{
-        message: $tc('mt-inheritance-switch.tooltipRestoreInheritance'),
+        message: t('tooltipRestoreInheritance'),
         disabled: disabled,
       }"
-      :class="unInheritClasses"
+      :class="{ 'is--clickable': !disabled }"
       :multicolor="true"
       name="regular-link-horizontal-slash"
       size="14"
@@ -40,26 +40,10 @@
 import { defineComponent } from "vue";
 import MtTooltipDirective from "../../../../directives/tooltip.directive";
 import MtIcon from "../../../icons-media/mt-icon/mt-icon.vue";
+import { useI18n } from "@/composables/useI18n";
 
 export default defineComponent({
   name: "MtInheritanceSwitch",
-
-  i18n: {
-    messages: {
-      en: {
-        "mt-inheritance-switch": {
-          tooltipRemoveInheritance: "Remove inheritance",
-          tooltipRestoreInheritance: "Restore inheritance",
-        },
-      },
-      de: {
-        "mt-inheritance-switch": {
-          tooltipRemoveInheritance: "Vererbung entfernen",
-          tooltipRestoreInheritance: "Vererbung wiederherstellen",
-        },
-      },
-    },
-  },
 
   components: {
     "mt-icon": MtIcon,
@@ -83,26 +67,33 @@ export default defineComponent({
     },
   },
 
-  computed: {
-    unInheritClasses(): { "is--clickable": boolean } {
-      return { "is--clickable": !this.disabled };
-    },
-  },
+  setup(props, { emit }) {
+    const { t } = useI18n({
+      messages: {
+        en: {
+          tooltipRemoveInheritance: "Remove inheritance",
+          tooltipRestoreInheritance: "Restore inheritance",
+        },
+        de: {
+          tooltipRemoveInheritance: "Vererbung entfernen",
+          tooltipRestoreInheritance: "Vererbung wiederherstellen",
+        },
+      },
+    });
 
-  methods: {
-    onClickRestoreInheritance() {
-      if (this.disabled) {
-        return;
-      }
-      this.$emit("inheritance-restore");
-    },
+    function onClickRestoreInheritance() {
+      if (props.disabled) return;
 
-    onClickRemoveInheritance() {
-      if (this.disabled) {
-        return;
-      }
-      this.$emit("inheritance-remove");
-    },
+      emit("inheritance-restore");
+    }
+
+    function onClickRemoveInheritance() {
+      if (props.disabled) return;
+
+      emit("inheritance-remove");
+    }
+
+    return { t, onClickRestoreInheritance, onClickRemoveInheritance };
   },
 });
 </script>
