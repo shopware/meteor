@@ -23,7 +23,7 @@ const { t } = useI18n({
 });
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .mt-data-table-reset-filter-button {
   color: var(--color-text-brand-default);
   text-decoration: underline;
