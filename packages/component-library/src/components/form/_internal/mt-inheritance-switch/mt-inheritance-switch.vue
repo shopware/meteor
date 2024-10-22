@@ -98,13 +98,13 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style>
 .mt-inheritance-switch {
   cursor: pointer;
   margin-top: -1px;
+}
 
-  &.mt-inheritance-switch--disabled {
-    cursor: default;
-  }
+.mt-inheritance-switch--disabled {
+  cursor: default;
 }
 </style>
