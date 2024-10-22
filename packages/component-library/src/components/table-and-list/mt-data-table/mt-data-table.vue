@@ -601,6 +601,7 @@ import MtInset from "@/components/layout/mt-inset/mt-inset.vue";
 import { throttle } from "lodash-es";
 import { reactive } from "vue";
 import type { Filter } from "./mt-data-table.interfaces";
+import { useI18n } from "@/composables/useI18n";
 
 export interface BaseColumnDefinition {
   label: string; // the label for the column
@@ -983,89 +984,85 @@ export default defineComponent({
     "item-delete",
     "update:appliedFilters",
   ],
-  i18n: {
-    messages: {
-      en: {
-        "mt-data-table": {
-          itemsPerPage: "Items per page",
-          filter: {
-            numberOfResults: "No results found for | One result found for | {n} results found for",
-            addFilter: "Add filter",
-            fetchingFilteredResults: "Getting filtered results...",
-          },
-          columnSettings: {
-            sortAscending: "Sort ascending",
-            sortDescending: "Sort descending",
-            hideColumn: "Hide column",
-          },
-          addColumnIndicator: {
-            popoverTitle: "Add column content",
-            tooltipMessage: "Add column",
-          },
-          contextButtons: {
-            edit: "Edit",
-            delete: "Delete",
-          },
-          emptyState: {
-            headline: "Add your first item",
-            description: "Currently no items are available yet.",
-          },
-          bulkEdit: {
-            itemsSelected: "1 item selected | {n} items selected",
-            edit: "Edit",
-            delete: "Delete",
-            more: "...",
-          },
-          reload: {
-            tooltip: "Reload",
-          },
-        },
-      },
-      de: {
-        "mt-data-table": {
-          itemsPerPage: "Einträge pro Seite",
-          filter: {
-            numberOfResults:
-              "Keine Einträge gefunden | Ein Eintrag gefunden | {n} Einträge gefunden",
-            addFilter: "Filter hinzufügen",
-            fetchingFilteredResults: "Filterergebnisse werden geladen...",
-          },
-          columnSettings: {
-            sortAscending: "Aufsteigend sortieren",
-            sortDescending: "Absteigend sortieren",
-            hideColumn: "Spalte ausblenden",
-          },
-          addColumnIndicator: {
-            popoverTitle: "Spalteninhalt hinzufügen",
-            tooltipMessage: "Spalte hinzufügen",
-          },
-          contextButtons: {
-            edit: "Bearbeiten",
-            delete: "Löschen",
-          },
-          emptyState: {
-            headline: "Füge dein erstes Element hinzu",
-            description: "Aktuell sind noch keine Elemente vorhanden.",
-          },
-          bulkEdit: {
-            itemsSelected: "1 Element ausgewählt | {n} Elemente ausgewählt",
-            edit: "Bearbeiten",
-            delete: "Löschen",
-            more: "...",
-          },
-          reload: {
-            tooltip: "Neu laden",
-          },
-        },
-      },
-    },
-  },
   setup(props, { emit }) {
-    /**
-     * hack for accessing i18n in legacy mode (https://github.com/intlify/vue-i18n-next/discussions/605#discussioncomment-2057136)
-     **/
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let i18n: any;
+    const { t } = useI18n({
+      messages: {
+        en: {
+          "mt-data-table": {
+            itemsPerPage: "Items per page",
+            filter: {
+              numberOfResults:
+                "No results found for | One result found for | {n} results found for",
+              addFilter: "Add filter",
+              fetchingFilteredResults: "Getting filtered results...",
+            },
+            columnSettings: {
+              sortAscending: "Sort ascending",
+              sortDescending: "Sort descending",
+              hideColumn: "Hide column",
+            },
+            addColumnIndicator: {
+              popoverTitle: "Add column content",
+              tooltipMessage: "Add column",
+            },
+            contextButtons: {
+              edit: "Edit",
+              delete: "Delete",
+            },
+            emptyState: {
+              headline: "Add your first item",
+              description: "Currently no items are available yet.",
+            },
+            bulkEdit: {
+              itemsSelected: "1 item selected | {n} items selected",
+              edit: "Edit",
+              delete: "Delete",
+              more: "...",
+            },
+            reload: {
+              tooltip: "Reload",
+            },
+          },
+        },
+        de: {
+          "mt-data-table": {
+            itemsPerPage: "Einträge pro Seite",
+            filter: {
+              numberOfResults:
+                "Keine Einträge gefunden | Ein Eintrag gefunden | {n} Einträge gefunden",
+              addFilter: "Filter hinzufügen",
+              fetchingFilteredResults: "Filterergebnisse werden geladen...",
+            },
+            columnSettings: {
+              sortAscending: "Aufsteigend sortieren",
+              sortDescending: "Absteigend sortieren",
+              hideColumn: "Spalte ausblenden",
+            },
+            addColumnIndicator: {
+              popoverTitle: "Spalteninhalt hinzufügen",
+              tooltipMessage: "Spalte hinzufügen",
+            },
+            contextButtons: {
+              edit: "Bearbeiten",
+              delete: "Löschen",
+            },
+            emptyState: {
+              headline: "Füge dein erstes Element hinzu",
+              description: "Aktuell sind noch keine Elemente vorhanden.",
+            },
+            bulkEdit: {
+              itemsSelected: "1 Element ausgewählt | {n} Elemente ausgewählt",
+              edit: "Bearbeiten",
+              delete: "Löschen",
+              more: "...",
+            },
+            reload: {
+              tooltip: "Neu laden",
+            },
+          },
+        },
+      },
+    });
 
     onBeforeMount(() => {
       i18n = getCurrentInstance()?.proxy?.$i18n;
@@ -1828,7 +1825,7 @@ export default defineComponent({
       const actions: SegmentedControlActionsProp = [
         {
           id: "item-selection-count",
-          label: i18n.tc("mt-data-table.bulkEdit.itemsSelected", props.selectedRows.length),
+          label: t("mt-data-table.bulkEdit.itemsSelected", { n: props.selectedRows.length }),
           onClick: () => {
             emit("multiple-selection-change", {
               selections: props.selectedRows,
@@ -1844,7 +1841,7 @@ export default defineComponent({
       if (props.allowBulkEdit && !props.disableEdit) {
         actions.push({
           id: "edit",
-          label: i18n.t("mt-data-table.bulkEdit.edit"),
+          label: t("mt-data-table.bulkEdit.edit"),
           onClick: () => emit("bulk-edit"),
         });
       }
@@ -1852,7 +1849,7 @@ export default defineComponent({
       if (props.allowBulkDelete && !props.disableDelete) {
         actions.push({
           id: "delete",
-          label: i18n.t("mt-data-table.bulkEdit.delete"),
+          label: t("mt-data-table.bulkEdit.delete"),
           onClick: () => emit("bulk-delete"),
           isCritical: true,
         });
@@ -1861,7 +1858,7 @@ export default defineComponent({
       if (props.bulkEditMoreActions.length > 0) {
         actions.push({
           id: "more",
-          label: i18n.t("mt-data-table.bulkEdit.more"),
+          label: t("mt-data-table.bulkEdit.more"),
           popover: {},
         });
       }
@@ -1903,6 +1900,7 @@ export default defineComponent({
     };
 
     return {
+      t,
       sortedColumns,
       isFirstVisibleColumn,
       addColumnOptions,
