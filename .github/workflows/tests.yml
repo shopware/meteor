@@ -195,8 +195,8 @@ jobs:
         with:
           path: shopware/
           install: "true"
-          installAdmin: "true"
-          installStorefront: "true"
+          install-admin: "true"
+          install-storefront: "true"
           shopware-version: "${{ matrix.shopware-version }}"
           env: dev
 
