@@ -61,4 +61,64 @@ describe("useI18n", () => {
 
     expect(screen.getByText("Hello, {name}!")).toBeInTheDocument();
   });
+
+  it("translates the singular version", () => {
+    render({
+      setup() {
+        const { t } = useI18n({
+          messages: { en: { apple: "apple | apples" } },
+        });
+
+        return { t };
+      },
+      template: "{{ t('apple', { n: 1 }) }}",
+    });
+
+    expect(screen.getByText("apple")).toBeInTheDocument();
+  });
+
+  it("translates the pluralized version", () => {
+    render({
+      setup() {
+        const { t } = useI18n({
+          messages: { en: { apple: "apple | apples" } },
+        });
+
+        return { t };
+      },
+      template: "{{ t('apple', { n: 2 }) }}",
+    });
+
+    expect(screen.getByText("apples")).toBeInTheDocument;
+  });
+
+  it("translates the 'none' version", () => {
+    render({
+      setup() {
+        const { t } = useI18n({
+          messages: { en: { apple: "no apple | apple | apples" } },
+        });
+
+        return { t };
+      },
+      template: "{{ t('apple', { n: 0 }) }}",
+    });
+
+    expect(screen.getByText("no apple")).toBeInTheDocument();
+  });
+
+  it("translates the pluralized version with custom values", () => {
+    render({
+      setup() {
+        const { t } = useI18n({
+          messages: { en: { apple: "no apple | apple | {n} apples" } },
+        });
+
+        return { t };
+      },
+      template: "{{ t('apple', { n: 3 }) }}",
+    });
+
+    expect(screen.getByText("3 apples")).toBeInTheDocument();
+  });
 });
