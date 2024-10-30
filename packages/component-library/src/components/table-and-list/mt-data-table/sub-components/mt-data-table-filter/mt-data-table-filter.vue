@@ -34,7 +34,7 @@
 
     <button
       class="mt-data-table-filter__remove-button"
-      :aria-label="$t('mt-data-table-filter.remove-button')"
+      :aria-label="t('removeButton')"
       @keydown.delete="$emit('removeFilter')"
       @click="$emit('removeFilter')"
     >
@@ -50,6 +50,7 @@ import MtPopoverItem from "@/components/overlay/mt-popover-item/mt-popover-item.
 import { defineComponent, type PropType } from "vue";
 import type { Filter, Option } from "../../mt-data-table.interfaces";
 import MtText from "@/components/content/mt-text/mt-text.vue";
+import { useI18n } from "@/composables/useI18n";
 
 export default defineComponent({
   name: "MtDataTableFilter",
@@ -59,16 +60,6 @@ export default defineComponent({
     "mt-popover": MtPopover,
     "mt-popover-item": MtPopoverItem,
     "mt-text": MtText,
-  },
-  i18n: {
-    messages: {
-      en: {
-        "mt-data-table-filter.remove-button": "Remove filter",
-      },
-      de: {
-        "mt-data-table-filter.remove-button": "Filter entfernen",
-      },
-    },
   },
   emits: ["removeOption", "addOption", "removeFilter"],
   props: {
@@ -86,7 +77,19 @@ export default defineComponent({
       return !!props.appliedOptions.find((option) => option.id === optionId);
     }
 
+    const { t } = useI18n({
+      messages: {
+        en: {
+          removeButton: "Remove filter",
+        },
+        de: {
+          removeButton: "Filter entfernen",
+        },
+      },
+    });
+
     return {
+      t,
       isOptionSelected,
     };
   },
