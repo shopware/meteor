@@ -4,9 +4,9 @@
       {{ filter.label }}
     </mt-text>
 
-    <mt-text size="2xs" color="color-text-secondary-default" class="mt-data-table-filter__rule"
-      >is</mt-text
-    >
+    <mt-text size="2xs" color="color-text-secondary-default" class="mt-data-table-filter__rule">
+      {{ t("is") }}
+    </mt-text>
 
     <mt-popover class="mt-data-table-filter__option" title="Manufactuer">
       <template #trigger="{ toggleFloatingUi }">
@@ -69,9 +69,11 @@ function isOptionSelected(optionId: string) {
 const { t } = useI18n({
   messages: {
     en: {
+      is: "is",
       removeButton: "Remove filter",
     },
     de: {
+      is: "ist",
       removeButton: "Filter entfernen",
     },
   },
