@@ -43,55 +43,37 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import MtIcon from "@/components/icons-media/mt-icon/mt-icon.vue";
 import MtPopover from "@/components/overlay/mt-popover/mt-popover.vue";
 import MtPopoverItem from "@/components/overlay/mt-popover-item/mt-popover-item.vue";
-import { defineComponent, type PropType } from "vue";
 import type { Filter, Option } from "../../mt-data-table.interfaces";
 import MtText from "@/components/content/mt-text/mt-text.vue";
 import { useI18n } from "@/composables/useI18n";
 
-export default defineComponent({
-  name: "MtDataTableFilter",
+defineEmits<{
+  (e: "removeOption", filterId: string, optionId: string): void;
+  (e: "addOption", filterId: string, optionId: string): void;
+  (e: "removeFilter"): void;
+}>();
 
-  components: {
-    "mt-icon": MtIcon,
-    "mt-popover": MtPopover,
-    "mt-popover-item": MtPopoverItem,
-    "mt-text": MtText,
-  },
-  emits: ["removeOption", "addOption", "removeFilter"],
-  props: {
-    filter: {
-      type: Object as PropType<Filter>,
-      required: true,
+const props = defineProps<{
+  filter: Filter;
+  appliedOptions: Option[];
+}>();
+
+function isOptionSelected(optionId: string) {
+  return !!props.appliedOptions.find((option) => option.id === optionId);
+}
+
+const { t } = useI18n({
+  messages: {
+    en: {
+      removeButton: "Remove filter",
     },
-    appliedOptions: {
-      type: Array as PropType<Option[]>,
-      required: true,
+    de: {
+      removeButton: "Filter entfernen",
     },
-  },
-  setup(props) {
-    function isOptionSelected(optionId: string) {
-      return !!props.appliedOptions.find((option) => option.id === optionId);
-    }
-
-    const { t } = useI18n({
-      messages: {
-        en: {
-          removeButton: "Remove filter",
-        },
-        de: {
-          removeButton: "Filter entfernen",
-        },
-      },
-    });
-
-    return {
-      t,
-      isOptionSelected,
-    };
   },
 });
 </script>
