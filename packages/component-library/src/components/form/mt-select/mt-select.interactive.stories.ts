@@ -407,3 +407,26 @@ export const VisualTestEnsureCorrectMultiSelectionWrapping: MtSelectStory = {
     await userEvent.click(loadMoreButton);
   },
 };
+
+export const VisualTestEnsureSelectionOpensViaIndicators: MtSelectStory = {
+  name: "Should open selection via indicators",
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await waitUntil(() =>
+      document.querySelector('.mt-select-selection-list__item[title="Option B"]'),
+    );
+
+    // open selection via indicator
+    await userEvent.click(canvas.getByTestId("mt-select__select-indicator"));
+
+    // selection should open
+    const popover = within(
+      document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement,
+    );
+    await waitUntil(() => popover.getByTestId("mt-select-option--a"));
+
+    // close selection via indicator
+    await userEvent.click(canvas.getByTestId("mt-select__select-indicator"));
+    expect(document.querySelector(".mt-popover-deprecated__wrapper")).toBeNull();
+  },
+};
