@@ -194,7 +194,6 @@ export default defineComponent({
         // Handle date conversion for 'date' type
         if (this.dateType === "date") {
           const isoFormattedDate = this.convertDateToIso(newValue);
-          console.log(isoFormattedDate);
           this.$emit("update:modelValue", isoFormattedDate);
           return;
         }
@@ -202,7 +201,6 @@ export default defineComponent({
         // Handle 'datetime' type: Convert to UTC first, then to ISO
         const utcConvertedDate = this.convertLocalToUtc(newValue, this.timeZone);
         const isoFormattedDate = this.convertDateToIso(utcConvertedDate);
-        console.log(isoFormattedDate);
         this.$emit("update:modelValue", isoFormattedDate);
       },
     },
