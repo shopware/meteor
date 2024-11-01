@@ -19,7 +19,6 @@
       :auto-apply="true"
       :range="range"
       :format="formatDate"
-      :dark="dark === true"
       :is-24="is24"
       :type="dateType"
       :enable-time-picker="dateType !== 'date'"
@@ -141,15 +140,6 @@ export default defineComponent({
       type: Boolean as PropType<boolean>,
       required: false,
       default: true,
-    },
-
-    /**
-     * Determines if the timepicker in dark mode
-     */
-    dark: {
-      type: Boolean as PropType<boolean>,
-      required: false,
-      default:false,
     },
 
     /**
