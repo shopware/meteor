@@ -274,10 +274,33 @@ export default defineComponent({
 <style lang="css">
 /* || Datepicker theme  */
 .dp__theme_light {
+  --dp-background-color: var(--color-elevation-surface-overlay);
+  --dp-text-color: var(--color-text-primary-default);
   --dp-hover-color: var(--color-interaction-secondary-hover);
+  --dp-hover-text-color: var(--color-text-primary-default);
+  --dp-hover-icon-color: #959595;
   --dp-primary-color: var(--color-interaction-primary-default);
+  --dp-primary-disabled-color: var(--color-background-critical-dark);
+  --dp-primary-text-color: var(--color-text-static-default);
   --dp-secondary-color: var(--color-text-primary-disabled);
+  --dp-border-color: var(--color-border-primary-default);
+  --dp-menu-border-color: var(--color-border-primary-default);
   --dp-border-color-hover: var(--color-border-primary-default);
+  --dp-border-color-focus: var(--color-border-brand-selected);
+  --dp-disabled-color: var(--color-background-primary-disabled);
+  --dp-scroll-bar-background: #f3f3f3;
+  --dp-scroll-bar-color: #959595;
+  --dp-success-color: #76d275;
+  --dp-success-color-disabled: #a3d9b1;
+  --dp-icon-color: var(--color-icon-primary-default);
+  --dp-danger-color: var(--color-border-critical-default);
+  --dp-marker-color: var(--color-border-critical-default);
+  --dp-tooltip-color: #fafafa;
+  --dp-disabled-color-text: #8e8e8e;
+  --dp-highlight-color: rgba(210, 25, 189, 0.867);
+  --dp-range-between-dates-background-color: var(--color-background-brand-default);
+  --dp-range-between-dates-text-color: var(--color-text-primary-default);
+  --dp-range-between-border-color: var(--color-background-brand-default);
 }
 
 /* || Datepicker  */
@@ -295,23 +318,21 @@ export default defineComponent({
 .dp__input {
   height: 48px;
   padding-left: 1rem !important;
-  border: 1px solid var(--color-border-primary-default);
   border-radius: var(--border-radius-xs);
   font: inherit;
   color: var(--color-text-secondary-default);
-  background: none;
+  background:var(--color-elevation-surface-raised);
 }
 
 .dp__input_icon {
   position: absolute;
   width: 48px;
-  height: 100%;
+  height: 96%;
   left: auto;
-  right: 0px;
+  right: 1px;
   text-align: center;
-  border-radius: 0 1px 1px 0;
+  border-radius: 0 3px 3px 0;
   padding: 12px;
-  z-index: -9;
   border-left: 1px solid var(--color-border-primary-default);
   background: var(--color-background-primary-disabled);
 }
@@ -327,25 +348,27 @@ export default defineComponent({
 }
 
 .dp__input_focus {
-  border-color: var(--color-border-brand-selected);
   filter: drop-shadow(0px 0px 3px #189eff4d);
+}
+
+.dp__disabled {
+  background: var(--color-background-primary-disabled);
 }
 
 /* || Menu / calendar */
 .dp--menu-wrapper {
   border-radius: var(--border-radius-s) !important;
-  border: 1px solid var(--color-border-primary-default);
   font-family: inherit;
   font-weight: inherit;
   filter: drop-shadow(0px 1px 3px #0000000f);
   filter: drop-shadow(0px 1px 3px #0000001a);
+  top: -7px;
 }
 
 .dp__arrow_top {
+  top: -0.5px;
   left: 24px;
-  border-radius: 3px;
-  border-inline-end: 1px solid var(--color-border-primary-default);
-  border-top: 1px solid var(--color-border-primary-default);
+  border-top-right-radius:3px;
 }
 
 .dp__instance_calendar {
@@ -408,20 +431,9 @@ export default defineComponent({
   color: var(--color-text-primary-default);
 }
 
-.dp__active_date {
-  background: var(--color-interaction-primary-default);
-  color: var(--color-text-static-default);
-}
-
 .dp__today {
   border: 1px solid var(--color-border-primary-default);
 }
-
-/* #meteor-icon-kit__regular-calendar {
-    width: 22px;
-    height: 24px;
-    display: none;
-} */
 
 /* || Time picker */
 .dp__time_picker_inline_container {
