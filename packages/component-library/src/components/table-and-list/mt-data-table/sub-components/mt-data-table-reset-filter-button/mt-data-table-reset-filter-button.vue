@@ -1,10 +1,12 @@
 <template>
   <button class="mt-data-table-reset-filter-button">
-    {{ $tc("mt-data-table-reset-filter-button.label", numberOfAppliedFilters) }}
+    {{ t("mt-data-table-reset-filter-button.label", { n: numberOfAppliedFilters }) }}
   </button>
 </template>
 
 <script lang="ts">
+import { useI18n } from "@/composables/useI18n";
+
 export default {
   props: {
     numberOfAppliedFilters: {
@@ -13,19 +15,23 @@ export default {
       validator: (value: number) => value >= 1,
     },
   },
-  i18n: {
-    messages: {
-      en: {
-        "mt-data-table-reset-filter-button": {
-          label: "Remove filter | Remove filters",
+  setup() {
+    const { t } = useI18n({
+      messages: {
+        en: {
+          "mt-data-table-reset-filter-button": {
+            label: "Remove filter | Remove filters",
+          },
+        },
+        de: {
+          "mt-data-table-reset-filter-button": {
+            label: "Filter entfernen | Filter entfernen",
+          },
         },
       },
-      de: {
-        "mt-data-table-reset-filter-button": {
-          label: "Filter entfernen | Filter entfernen",
-        },
-      },
-    },
+    });
+
+    return { t };
   },
 };
 </script>
