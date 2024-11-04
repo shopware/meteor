@@ -1,6 +1,6 @@
 <template>
   <button class="mt-data-table-reset-filter-button">
-    {{ t("mt-data-table-reset-filter-button.label", { n: numberOfAppliedFilters }) }}
+    {{ t("label", { n: numberOfAppliedFilters }) }}
   </button>
 </template>
 
@@ -14,14 +14,10 @@ defineProps<{
 const { t } = useI18n({
   messages: {
     en: {
-      "mt-data-table-reset-filter-button": {
-        label: "Remove filter | Remove filters",
-      },
+      label: "Remove filter | Remove filters",
     },
     de: {
-      "mt-data-table-reset-filter-button": {
-        label: "Filter entfernen | Filter entfernen",
-      },
+      label: "Filter entfernen | Filter entfernen",
     },
   },
 });
