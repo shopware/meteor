@@ -5,9 +5,8 @@
     size="2xs"
     color="color-text-critical-default"
     class="mt-field__error"
-    aria-label="Error message"
   >
-    <mt-icon name="solid-exclamation-circle" size="0.75rem" />
+    <mt-icon name="solid-exclamation-circle" size="0.75rem" aria-hidden="true" />
 
     <span>{{ errorMessage }}</span>
   </mt-text>
