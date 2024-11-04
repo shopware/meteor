@@ -4,36 +4,27 @@
   </button>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import { useI18n } from "@/composables/useI18n";
 
-export default {
-  props: {
-    numberOfAppliedFilters: {
-      type: Number,
-      required: true,
-      validator: (value: number) => value >= 1,
+defineProps<{
+  numberOfAppliedFilters: number;
+}>();
+
+const { t } = useI18n({
+  messages: {
+    en: {
+      "mt-data-table-reset-filter-button": {
+        label: "Remove filter | Remove filters",
+      },
+    },
+    de: {
+      "mt-data-table-reset-filter-button": {
+        label: "Filter entfernen | Filter entfernen",
+      },
     },
   },
-  setup() {
-    const { t } = useI18n({
-      messages: {
-        en: {
-          "mt-data-table-reset-filter-button": {
-            label: "Remove filter | Remove filters",
-          },
-        },
-        de: {
-          "mt-data-table-reset-filter-button": {
-            label: "Filter entfernen | Filter entfernen",
-          },
-        },
-      },
-    });
-
-    return { t };
-  },
-};
+});
 </script>
 
 <style lang="scss" scoped>
