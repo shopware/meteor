@@ -22,7 +22,7 @@
         ref="selectWrapper"
         class="mt-select__selection"
         tabindex="0"
-        @click="expand"
+        @click.stop="expand"
         @focus="expand"
         @keydown.tab="collapse"
         @keydown.esc="collapse"
@@ -31,25 +31,32 @@
           name="mt-select-selection"
           v-bind="{ identification, error, disabled, size, expand, collapse }"
         />
-        <div class="mt-select__selection-indicators">
-          <mt-loader v-if="isLoading" class="mt-select__select-indicator" size="16px" />
+      </div>
 
-          <button
-            v-if="!disabled && showClearableButton"
-            class="mt-select__select-indicator-hitbox"
-            data-clearable-button
-            data-testid="select-clear-button"
-            @click.prevent.stop="emitClear"
-            @keydown.tab.stop="focusParentSelect"
-          >
-            <mt-icon
-              class="mt-select__select-indicator mt-select__select-indicator-clear"
-              name="regular-times-xxs"
-            />
-          </button>
+      <div class="mt-select__selection-indicators">
+        <mt-loader v-if="isLoading" class="mt-select__select-indicator" size="16px" />
 
-          <mt-icon class="mt-select__select-indicator" name="solid-chevron-down-xs" />
-        </div>
+        <button
+          v-if="!disabled && showClearableButton"
+          class="mt-select__select-indicator-hitbox"
+          data-clearable-button
+          data-testid="select-clear-button"
+          @click.prevent.stop="emitClear"
+          @keydown.tab.stop="focusParentSelect"
+        >
+          <mt-icon
+            class="mt-select__select-indicator mt-select__select-indicator-clear"
+            name="regular-times-xxs"
+          />
+        </button>
+
+        <mt-icon
+          class="mt-select__select-indicator"
+          data-testid="mt-select__select-indicator"
+          :class="{ 'mt-select__select-indicator-rotated': expanded }"
+          name="solid-chevron-down-xxs"
+          @click.stop="toggleExpand"
+        />
       </div>
 
       <template v-if="expanded">
@@ -354,6 +361,11 @@ $mt-select-focus-transition: all ease-in-out 0.2s;
   .mt-select__select-indicator {
     flex-shrink: 0;
     cursor: pointer;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .mt-select__select-indicator-rotated {
+    transform: rotate(180deg);
   }
 
   .mt-select__select-indicator-clear {
