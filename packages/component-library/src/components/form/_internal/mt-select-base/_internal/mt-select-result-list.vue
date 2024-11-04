@@ -29,7 +29,7 @@
           class="mt-select-result-list__empty"
         >
           <mt-icon name="default-action-search" size="20px" />
-          {{ emptyMessageText }}
+          {{ emptyMessage || t("messageNoResults") }}
         </div>
       </div>
     </mt-popover-deprecated>
@@ -50,24 +50,10 @@ import {
   MtSelectResultRemoveItemSelectByKeyboardListener,
 } from "@/helper/provideInjectKeys";
 import { ref } from "vue";
+import { useI18n } from "@/composables/useI18n";
 
 export default defineComponent({
   name: "MtSelectResultList",
-
-  i18n: {
-    messages: {
-      en: {
-        "mt-select-result-list": {
-          messageNoResults: "No results found.",
-        },
-      },
-      de: {
-        "mt-select-result-list": {
-          messageNoResults: "Es wurden keine Ergebnisse gefunden.",
-        },
-      },
-    },
-  },
 
   components: {
     "mt-popover-deprecated": MtPopoverDeprecated,
@@ -81,6 +67,17 @@ export default defineComponent({
   },
 
   setup() {
+    const { t } = useI18n({
+      messages: {
+        en: {
+          messageNoResults: "No results found.",
+        },
+        de: {
+          messageNoResults: "Es wurden keine Ergebnisse gefunden.",
+        },
+      },
+    });
+
     const activeItemIndex = ref(0);
     const activeItemChangeListeners = ref<Array<(index: number) => void>>([]);
     const itemSelectByKeyboardListeners = ref<Array<(index: number) => void>>([]);
@@ -122,6 +119,7 @@ export default defineComponent({
     provide(MtSelectResultRemoveItemSelectByKeyboardListener, removeItemSelectByKeyboardListener);
 
     return {
+      t,
       activeItemIndex,
       emitActiveItemIndex,
       setActiveItemIndex,
@@ -187,10 +185,6 @@ export default defineComponent({
   },
 
   computed: {
-    emptyMessageText(): string {
-      return this.emptyMessage || this.$tc("mt-select-result-list.messageNoResults");
-    },
-
     popoverClass(): string[] {
       return [...this.popoverClasses, "mt-select-result-list-popover-wrapper"];
     },
