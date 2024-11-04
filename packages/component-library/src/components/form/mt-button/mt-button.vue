@@ -22,7 +22,9 @@
   >
     <mt-loader v-if="isLoading" size="16px" class="mt-button__loader" />
     <span class="mt-button__content" :class="contentVisibilityClass">
+      <slot name="iconFront" v-if="$slots.iconFront" />
       <slot />
+      <slot name="iconBack" v-if="$slots.iconBack" />
     </span>
   </button>
 </template>
@@ -178,6 +180,11 @@ $mt-button-transition: all 0.15s ease-out;
 
   .mt-button__content--hidden {
     visibility: hidden;
+  }
+
+  .mt-button__content svg {
+    width: 10px !important;
+    height: 10px !important;
   }
 
   &:hover:not(.mt-button--disabled),
