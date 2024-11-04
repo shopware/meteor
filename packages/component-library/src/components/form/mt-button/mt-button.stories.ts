@@ -11,6 +11,8 @@ export default {
   component: MtButton,
   args: {
     default: "Button",
+    iconFront: "",
+    iconBack: "",
     variant: "primary",
     size: "small",
     disabled: false,
@@ -28,7 +30,15 @@ export default {
         args,
       };
     },
-    template: `<mt-button @click="args.click" v-bind="args">{{ args.default}}</mt-button>`,
+    template: `<mt-button @click="args.click" v-bind="args">
+      <template v-if="args.iconFront" #iconFront>
+        <div v-html="args.iconFront"></div>
+      </template>
+      {{ args.default}}
+      <template v-if="args.iconBack" #iconBack>
+        <div v-html="args.iconBack"></div>
+      </template>
+     </mt-button>`,
   }),
 } as MtButtonMeta;
 
