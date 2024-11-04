@@ -1,14 +1,15 @@
 <template>
   <mt-text
+    v-if="!!error"
     as="span"
     size="2xs"
     color="color-text-critical-default"
-    v-if="!!error"
     class="mt-field__error"
     aria-label="Error message"
   >
-    <mt-icon name="solid-exclamation-circle" />
-    {{ errorMessage }}
+    <mt-icon name="solid-exclamation-circle" size="0.75rem" />
+
+    <span>{{ errorMessage }}</span>
   </mt-text>
 </template>
 
@@ -71,17 +72,12 @@ const { t } = useI18n({
 });
 </script>
 
-<style lang="scss">
+<style scoped>
 .mt-field__error {
   display: flex;
   align-items: center;
   gap: 4px;
   margin-top: 4px;
-
-  #meteor-icon-kit__solid-exclamation-circle {
-    width: 12px;
-    height: 12px;
-    color: var(--color-icon-critical-default);
-  }
+  color: var(--color-icon-critical-default);
 }
 </style>
