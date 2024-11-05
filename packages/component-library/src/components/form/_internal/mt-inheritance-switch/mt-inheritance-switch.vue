@@ -11,7 +11,7 @@
       v-if="isInherited"
       key="inherit-icon"
       v-tooltip="{
-        message: $tc('mt-inheritance-switch.tooltipRemoveInheritance'),
+        message: t('tooltipRemoveInheritance'),
         disabled: disabled,
       }"
       data-testid="mt-inheritance-switch-icon"
@@ -24,7 +24,7 @@
       v-else
       key="uninherit-icon"
       v-tooltip="{
-        message: $tc('mt-inheritance-switch.tooltipRestoreInheritance'),
+        message: t('tooltipRestoreInheritance'),
         disabled: disabled,
       }"
       :class="unInheritClasses"
@@ -40,26 +40,10 @@
 import { defineComponent } from "vue";
 import MtTooltipDirective from "../../../../directives/tooltip.directive";
 import MtIcon from "../../../icons-media/mt-icon/mt-icon.vue";
+import { useI18n } from "@/composables/useI18n";
 
 export default defineComponent({
   name: "MtInheritanceSwitch",
-
-  i18n: {
-    messages: {
-      en: {
-        "mt-inheritance-switch": {
-          tooltipRemoveInheritance: "Remove inheritance",
-          tooltipRestoreInheritance: "Restore inheritance",
-        },
-      },
-      de: {
-        "mt-inheritance-switch": {
-          tooltipRemoveInheritance: "Vererbung entfernen",
-          tooltipRestoreInheritance: "Vererbung wiederherstellen",
-        },
-      },
-    },
-  },
 
   components: {
     "mt-icon": MtIcon,
@@ -103,6 +87,23 @@ export default defineComponent({
       }
       this.$emit("inheritance-remove");
     },
+  },
+
+  setup() {
+    const { t } = useI18n({
+      messages: {
+        en: {
+          tooltipRemoveInheritance: "Remove inheritance",
+          tooltipRestoreInheritance: "Restore inheritance",
+        },
+        de: {
+          tooltipRemoveInheritance: "Vererbung entfernen",
+          tooltipRestoreInheritance: "Vererbung wiederherstellen",
+        },
+      },
+    });
+
+    return { t };
   },
 });
 </script>
