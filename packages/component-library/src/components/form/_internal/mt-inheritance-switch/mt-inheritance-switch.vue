@@ -1,11 +1,13 @@
 <template>
   <div
-    class="mt-inheritance-switch"
-    :class="{
-      'mt-inheritance-switch--disabled': disabled,
-      'mt-inheritance-switch--is-inherited': isInherited,
-      'mt-inheritance-switch--is-not-inherited': !isInherited,
-    }"
+    :class="[
+      'mt-inheritance-switch',
+      {
+        'mt-inheritance-switch--disabled': disabled,
+        'mt-inheritance-switch--is-inherited': isInherited,
+        'mt-inheritance-switch--is-not-inherited': !isInherited,
+      },
+    ]"
   >
     <mt-icon
       v-if="isInherited"
@@ -20,6 +22,7 @@
       size="14"
       @click="onClickRemoveInheritance"
     />
+
     <mt-icon
       v-else
       key="uninherit-icon"
@@ -27,7 +30,9 @@
         message: t('tooltipRestoreInheritance'),
         disabled: disabled,
       }"
-      :class="unInheritClasses"
+      :class="{
+        'is--clickable': !disabled,
+      }"
       :multicolor="true"
       name="regular-link-horizontal-slash"
       size="14"
@@ -67,29 +72,7 @@ export default defineComponent({
     },
   },
 
-  computed: {
-    unInheritClasses(): { "is--clickable": boolean } {
-      return { "is--clickable": !this.disabled };
-    },
-  },
-
-  methods: {
-    onClickRestoreInheritance() {
-      if (this.disabled) {
-        return;
-      }
-      this.$emit("inheritance-restore");
-    },
-
-    onClickRemoveInheritance() {
-      if (this.disabled) {
-        return;
-      }
-      this.$emit("inheritance-remove");
-    },
-  },
-
-  setup() {
+  setup(props, { emit }) {
     const { t } = useI18n({
       messages: {
         en: {
@@ -103,7 +86,19 @@ export default defineComponent({
       },
     });
 
-    return { t };
+    function onClickRestoreInheritance() {
+      if (props.disabled) return;
+
+      emit("inheritance-restore");
+    }
+
+    function onClickRemoveInheritance() {
+      if (props.disabled) return;
+
+      emit("inheritance-remove");
+    }
+
+    return { t, onClickRemoveInheritance, onClickRestoreInheritance };
   },
 });
 </script>
