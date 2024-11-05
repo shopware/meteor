@@ -100,10 +100,8 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style scoped>
 .mt-field-copyable {
-  &.mt-icon {
-    cursor: pointer;
-  }
+  cursor: pointer;
 }
 </style>
