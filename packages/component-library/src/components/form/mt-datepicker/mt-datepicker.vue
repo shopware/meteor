@@ -278,8 +278,8 @@ export default defineComponent({
   --dp-border-color-hover: var(--color-border-primary-default);
   --dp-border-color-focus: var(--color-border-brand-selected);
   --dp-disabled-color: var(--color-background-primary-disabled);
-  --dp-scroll-bar-background: #f3f3f3;
-  --dp-scroll-bar-color: #959595;
+  --dp-scroll-bar-background: var(--color-elevation-surface-overlay);
+  --dp-scroll-bar-color: var(--color-interaction-secondary-dark);
   --dp-success-color: #76d275;
   --dp-success-color-disabled: #a3d9b1;
   --dp-icon-color: var(--color-icon-primary-default);
