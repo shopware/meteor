@@ -42,11 +42,7 @@
         <button
           v-if="passwordToggleAble"
           :disabled="disabled"
-          :aria-label="
-            showPassword
-              ? $tc('mt-password-field.titleHidePassword')
-              : $tc('mt-password-field.titleShowPassword')
-          "
+          :aria-label="showPassword ? t('titleHidePassword') : t('titleShowPassword')"
           class="mt-field__toggle-password-visibility"
           @click="() => (showPassword = !showPassword)"
         >
@@ -70,30 +66,15 @@
     </template>
   </mt-base-field>
 </template>
+
 <script lang="ts">
 import { computed, defineComponent, ref } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtTextField from "../mt-text-field/mt-text-field.vue";
+import { useI18n } from "@/composables/useI18n";
 
 export default defineComponent({
   name: "MtPasswordField",
-
-  i18n: {
-    messages: {
-      en: {
-        "mt-password-field": {
-          titleHidePassword: "Hide password",
-          titleShowPassword: "Show password",
-        },
-      },
-      de: {
-        "mt-password-field": {
-          titleHidePassword: "Passwort verbergen",
-          titleShowPassword: "Passwort anzeigen",
-        },
-      },
-    },
-  },
 
   components: {
     "mt-icon": MtIcon,
@@ -130,7 +111,21 @@ export default defineComponent({
         : "*".repeat(props.placeholder.length ? props.placeholder.length : 6),
     );
 
+    const { t } = useI18n({
+      messages: {
+        en: {
+          titleHidePassword: "Hide password",
+          titleShowPassword: "Show password",
+        },
+        de: {
+          titleHidePassword: "Passwort verbergen",
+          titleShowPassword: "Passwort anzeigen",
+        },
+      },
+    });
+
     return {
+      t,
       showPassword,
       passwordPlaceholder,
     };
