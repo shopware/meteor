@@ -11,7 +11,6 @@ export type MtPasswordFieldMeta = SlottedMeta<
   | "inheritanceRemove"
   | "inheritanceRestore"
   | "isInherited"
-  | "change"
   | "value"
   | "hint"
   | "suffix"
@@ -27,8 +26,7 @@ export default {
       <div>
         <mt-password-field
           v-bind="args"
-          :modelValue="currentValue"
-          @change="onChange"
+          v-model="currentValue"
           @inheritance-restore="inheritanceRestoreWrapper"
           @inheritance-remove="inheritanceRemoveWrapper"
         >
@@ -68,7 +66,6 @@ export default {
     },
     methods: {
       onChange(value: string) {
-        args.change(value);
         this.currentValue = value;
       },
       inheritanceRemoveWrapper(a: any) {
@@ -90,7 +87,7 @@ export default {
   args: {
     label: "Passwordfield",
     change: fn(action("change")),
-    updateModelValue: fn(action("updateModelValue")),
+    "onUpdate:modelValue": fn(action("updateModelValue")),
   },
   argTypes: {
     ...baseFieldArgTypes,
