@@ -22,9 +22,13 @@
   >
     <mt-loader v-if="isLoading" size="16px" class="mt-button__loader" />
     <span class="mt-button__content" :class="contentVisibilityClass">
-      <slot name="iconFront" v-if="$slots.iconFront" />
-      <slot />
-      <slot name="iconBack" v-if="$slots.iconBack" />
+      <span v-if="$slots.iconFront" class="mt-button__icon mt-button__icon--front">
+        <slot name="iconFront" />
+      </span>
+      <slot></slot>
+      <span v-if="$slots.iconBack" class="mt-button__icon mt-button__icon--back">
+        <slot name="iconBack" />
+      </span>
     </span>
   </button>
 </template>
@@ -146,14 +150,9 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-$mt-button-transition: all 0.15s ease-out;
-
+<style lang="css">
 .mt-button {
-  border: 1px solid $color-gray-400;
-  background: $color-gray-50;
-  color: $color-darkgray-200;
-  transition: $mt-button-transition;
+  transition: all 0.15s ease-out;
   display: inline-block;
   border-radius: var(--border-radius-button);
   padding: 2px 24px;
@@ -170,260 +169,254 @@ $mt-button-transition: all 0.15s ease-out;
   user-select: none;
   margin: 0;
   position: relative;
+}
 
-  .mt-button__content {
-    display: grid;
-    grid-auto-flow: column;
-    align-items: center;
-    grid-gap: 0 8px;
-  }
+.mt-button .mt-button__content {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
 
-  .mt-button__content--hidden {
-    visibility: hidden;
-  }
+.mt-button .mt-button__content--hidden {
+  visibility: hidden;
+}
 
-  .mt-button__content svg {
-    width: 10px !important;
-    height: 10px !important;
-  }
+.mt-button__icon {
+  width: 12px;
+  height: 12px;
+}
 
-  &:hover:not(.mt-button--disabled),
-  &:hover:not([disabled]) {
-    background: $color-gray-100;
-  }
+.mt-button__icon > * {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  &:disabled,
-  &.mt-button--disabled {
-    color: $color-gray-500;
-    border-color: $color-gray-200;
-    cursor: not-allowed;
+.mt-button.mt-button--primary {
+  background: var(--color-interaction-primary-default);
+  color: var(--color-text-static-default);
+  line-height: 36px;
+  border-color: var(--color-interaction-primary-default);
+}
 
-    .mt-icon {
-      color: $color-gray-400;
-    }
-  }
+.mt-button.mt-button--primary .mt-icon {
+  color: var(--color-icon-static-default);
+}
 
-  .mt-icon {
-    color: $color-gray-800;
-  }
+.mt-button.mt-button--primary:hover,
+.mt-button.mt-button--primary:focus-visible,
+.mt-button.mt-button--primary:active {
+  background: var(--color-interaction-primary-hover);
+  border-color: var(--color-interaction-primary-hover);
+}
 
-  &.mt-button--primary {
-    background: var(--color-interaction-primary-default);
-    color: var(--color-text-static-default);
-    line-height: 36px;
-    border-color: var(--color-interaction-primary-default);
+.mt-button.mt-button--primary:focus-visible {
+  border-color: var(--color-border-brand-selected);
+  box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
+}
 
-    .mt-icon {
-      color: var(--color-icon-static-default);
-    }
+.mt-button.mt-button--primary:disabled,
+.mt-button.mt-button--primary.mt-button--disabled {
+  background: var(--color-interaction-primary-disabled);
+  border-color: var(--color-interaction-primary-disabled);
+  cursor: not-allowed;
+}
 
-    &:is(:hover, :focus-visible, :active) {
-      background: var(--color-interaction-primary-hover);
-      border-color: var(--color-interaction-primary-hover);
-    }
+.mt-button.mt-button--primary-ghost {
+  background: transparent;
+  border: 1px solid var(--color-border-brand-selected);
+  border-color: var(--color-border-brand-selected);
+  color: var(--color-text-brand-default);
+}
 
-    &:focus-visible {
-      border-color: var(--color-border-brand-selected);
-      box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
-    }
+.mt-button.mt-button--primary-ghost:is(:hover, :focus-visible, :active) {
+  background: var(--color-background-brand-default);
+}
 
-    &:disabled,
-    &.mt-button--disabled {
-      background: var(--color-interaction-primary-disabled);
-      border-color: var(--color-interaction-primary-disabled);
-    }
-  }
+.mt-button.mt-button--primary-ghost:focus-visible {
+  box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
+}
 
-  &.mt-button--primary-ghost {
-    background: transparent;
-    border-color: var(--color-border-brand-selected);
-    color: var(--color-text-brand-default);
+.mt-button.mt-button--primary-ghost:disabled,
+.mt-button.mt-button--primary-ghost.mt-button--disabled {
+  color: var(--color-text-brand-disabled);
+  border-color: var(--color-border-brand-disabled);
+  background: transparent;
+}
 
-    &:is(:hover, :focus-visible, :active) {
-      background: var(--color-background-brand-default);
-    }
+.mt-button.mt-button--primary-ghost:disabled .mt-icon,
+.mt-button.mt-button--primary-ghost.mt-button--disabled .mt-icon {
+  color: var(--color-icon-brand-disabled);
+}
 
-    &:focus-visible {
-      box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
-    }
+.mt-button.mt-button--primary-ghost .mt-icon {
+  color: var(--color-icon-brand-default);
+}
 
-    &:disabled,
-    &.mt-button--disabled {
-      color: var(--color-text-brand-disabled);
-      border-color: var(--color-border-brand-disabled);
-      background: transparent;
+.mt-button.mt-button--secondary {
+  background: var(--color-interaction-secondary-default);
+  border: 1px solid var(--color-border-primary-default);
+  color: var(--color-text-primary-default);
+  line-height: 36px;
+}
 
-      .mt-icon {
-        color: var(--color-icon-brand-disabled);
-      }
-    }
+.mt-button.mt-button--secondary:is(:hover, :focus-visible, :active) {
+  background: var(--color-interaction-secondary-hover);
+}
 
-    .mt-icon {
-      color: var(--color-icon-brand-default);
-    }
-  }
+.mt-button.mt-button--secondary:focus-visible {
+  border-color: var(--color-border-brand-selected);
+  box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
+}
 
-  &.mt-button--secondary {
-    background: var(--color-interaction-secondary-default);
-    color: var(--color-text-primary-default);
-    line-height: 36px;
-    border-color: var(--color-border-primary-default);
+.mt-button.mt-button--secondary:disabled,
+.mt-button.mt-button--secondary.mt-button--disabled {
+  color: var(--color-text-primary-disabled);
+  background: var(--color-interaction-secondary-disabled);
+  cursor: not-allowed;
+}
 
-    &:is(:hover, :focus-visible, :active) {
-      background: var(--color-interaction-secondary-hover);
-    }
+.mt-button.mt-button--secondary:disabled .mt-icon,
+.mt-button.mt-button--secondary.mt-button--disabled .mt-icon {
+  color: var(--color-icon-primary-disabled);
+}
 
-    &:focus-visible {
-      border-color: var(--color-border-brand-selected);
-      box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
-    }
+.mt-button.mt-button--secondary .mt-icon {
+  color: var(--color-icon-primary-default);
+}
 
-    &:disabled,
-    &.mt-button--disabled {
-      color: var(--color-text-primary-disabled);
-      background: var(--color-interaction-secondary-disabled);
+.mt-button.mt-button--critical {
+  background: var(--color-interaction-critical-default);
+  color: var(--color-text-static-default);
+  border: 1px solid var(--color-interaction-critical-default);
+  line-height: 36px;
+}
 
-      .mt-icon {
-        color: var(--color-icon-primary-disabled);
-      }
-    }
+.mt-button.mt-button--critical:is(:hover, :focus-visible, :active) {
+  background: var(--color-interaction-critical-hover);
+  border-color: var(--color-interaction-critical-hover);
+}
 
-    .mt-icon {
-      color: var(--color-icon-primary-default);
-    }
-  }
+.mt-button.mt-button--critical:focus-visible {
+  border-color: var(--color-border-brand-selected);
+  box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
+}
 
-  &.mt-button--critical {
-    background: var(--color-interaction-critical-default);
-    color: var(--color-text-static-default);
-    line-height: 36px;
-    border-color: var(--color-interaction-critical-default);
+.mt-button.mt-button--critical:disabled,
+.mt-button.mt-button--critical.mt-button--disabled {
+  background: var(--color-interaction-critical-disabled);
+  border-color: var(--color-interaction-critical-disabled);
+}
 
-    &:is(:hover, :focus-visible, :active) {
-      background: var(--color-interaction-critical-hover);
-      border-color: var(--color-interaction-critical-hover);
-    }
+.mt-button.mt-button--critical:disabled .mt-icon,
+.mt-button.mt-button--critical.mt-button--disabled .mt-icon,
+.mt-button.mt-button--critical .mt-icon {
+  color: var(--color-icon-static-default);
+}
 
-    &:focus-visible {
-      border-color: var(--color-border-brand-selected);
-      box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
-    }
+.mt-button.mt-button--critical-ghost {
+  background: transparent;
+  border: 1px solid var(--color-border-critical-default);
+  color: var(--color-text-critical-default);
+}
 
-    &:disabled,
-    &.mt-button--disabled {
-      background: var(--color-interaction-critical-disabled);
-      border-color: var(--color-interaction-critical-disabled);
+.mt-button.mt-button--critical-ghost:is(:hover, :focus-visible, :active) {
+  background-color: var(--color-background-critical-dark);
+}
 
-      .mt-icon {
-        color: var(--color-icon-static-default);
-      }
-    }
+.mt-button.mt-button--critical-ghost:focus-visible {
+  border-color: var(--color-border-brand-selected);
+  box-shadow: 0 0 4px 0 rgba(255, 0, 0, 0.3);
+}
 
-    .mt-icon {
-      color: var(--color-icon-static-default);
-    }
-  }
+.mt-button.mt-button--critical-ghost:disabled,
+.mt-button.mt-button--critical-ghost.mt-button--disabled {
+  color: var(--color-text-critical-disabled);
+  border-color: var(--color-border-critical-disabled);
+}
 
-  &.mt-button--critical-ghost {
-    background: transparent;
-    border-color: var(--color-border-critical-default);
-    color: var(--color-text-critical-default);
+.mt-button.mt-button--critical-ghost:disabled .mt-icon,
+.mt-button.mt-button--critical-ghost.mt-button--disabled .mt-icon {
+  color: var(--color-icon-critical-disabled);
+}
 
-    &:is(:hover, :focus-visible, :active) {
-      background-color: var(--color-background-critical-dark);
-    }
+.mt-button.mt-button--critical-ghost .mt-icon {
+  color: var(--color-icon-critical-default);
+}
 
-    &:focus-visible {
-      border-color: var(--color-border-brand-selected);
-      box-shadow: 0 0 4px 0 rgba(255, 0, 0, 0.3);
-    }
+.mt-button.mt-button--action {
+  border: 1px solid #e2e8f0;
+  background-color: #ffffff;
+  color: #000000;
+}
 
-    &:disabled,
-    &.mt-button--disabled {
-      color: var(--color-text-critical-disabled);
-      border-color: var(--color-border-critical-disabled);
+.mt-button.mt-button--action .mt-icon {
+  color: #1a202c;
+}
 
-      .mt-icon {
-        color: var(--color-icon-critical-disabled);
-      }
-    }
+.mt-button.mt-button--action:hover {
+  background-color: #edf2f7;
+  color: #4a5568;
+}
 
-    .mt-icon {
-      color: var(--color-icon-critical-default);
-    }
-  }
+.mt-button.mt-button--action:disabled {
+  background-color: #f7fafc;
+  color: #a0aec0;
+}
 
-  &.mt-button--action {
-    border: 1px solid $color-gray-300;
-    background-color: $color-white;
-    color: $color-black;
+.mt-button.mt-button--block {
+  display: block;
+  width: 100%;
+}
 
-    .mt-icon {
-      color: $color-darkgray-800;
-    }
+.mt-button.mt-button--x-small {
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: var(--font-size-2xs);
+  line-height: 18px;
+}
 
-    &:hover {
-      background-color: $color-gray-100;
-      color: $color-darkgray-200;
-    }
+.mt-button.mt-button--x-small.mt-button--square {
+  width: 24px;
+}
 
-    &:disabled {
-      background-color: $color-gray-50;
-      color: $color-gray-500;
-    }
-  }
+.mt-button.mt-button--small {
+  padding-left: 15px;
+  padding-right: 15px;
+  font-size: var(--font-size-2xs);
+  line-height: 26px;
+}
 
-  &.mt-button--block {
-    display: block;
-    width: 100%;
-  }
+.mt-button.mt-button--small.mt-button--square {
+  width: 32px;
+}
 
-  &.mt-button--x-small {
-    padding-left: 10px;
-    padding-right: 10px;
-    font-size: var(--font-size-2xs);
-    line-height: 18px;
+.mt-button.mt-button--large {
+  padding-left: 28px;
+  padding-right: 28px;
+  line-height: 42px;
+  font-size: var(--font-size-2xs);
+}
 
-    &.mt-button--square {
-      width: 24px;
-    }
-  }
+.mt-button.mt-button--large.mt-button--square {
+  width: 48px;
+}
 
-  &.mt-button--small {
-    padding-left: 15px;
-    padding-right: 15px;
-    font-size: var(--font-size-2xs);
-    line-height: 26px;
+.mt-button.mt-button--square {
+  width: 40px;
+  padding-left: 0;
+  padding-right: 0;
+  text-align: center;
+}
 
-    &.mt-button--square {
-      width: 32px;
-    }
-  }
+.mt-button.mt-button--square .mt-button__content {
+  display: inline;
+}
 
-  &.mt-button--large {
-    padding-left: 28px;
-    padding-right: 28px;
-    line-height: 42px;
-    font-size: var(--font-size-2xs);
-
-    &.mt-button--square {
-      width: 48px;
-    }
-  }
-
-  &.mt-button--square {
-    width: 40px;
-    padding-left: 0;
-    padding-right: 0;
-    text-align: center;
-
-    .mt-button__content {
-      display: inline;
-    }
-  }
-
-  .mt-button__loader {
-    border-radius: var(--border-radius-xs);
-  }
+.mt-button .mt-button__loader {
+  border-radius: var(--border-radius-xs);
 }
 </style>
