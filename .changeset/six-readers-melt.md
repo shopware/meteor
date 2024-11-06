@@ -2,4 +2,4 @@
 "@shopware-ag/meteor-component-library": patch
 ---
 
-move mt-loader over to plain css
+Update focus style of switch

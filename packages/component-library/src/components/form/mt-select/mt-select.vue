@@ -49,7 +49,7 @@
         ref="MtSelectResultList"
         :options="visibleResults"
         :is-loading="isLoading"
-        :empty-message="$t('mt-select.messageNoResults', { term: searchTerm })"
+        :empty-message="t('messageNoResults', { term: searchTerm })"
         :focus-el="$refs.selectionList.getFocusEl()"
         @paginate="$emit('paginate')"
         @item-select="addItem"
@@ -124,24 +124,10 @@ import MtSelectResultList from "../_internal/mt-select-base/_internal/mt-select-
 import MtSelectResult from "../_internal/mt-select-base/_internal/mt-select-result.vue";
 import MtSelectSelectionList from "../_internal/mt-select-base/_internal/mt-select-selection-list.vue";
 import MtHighlightText from "../../_internal/mt-highlight-text.vue";
+import { useI18n } from "@/composables/useI18n";
 
 export default defineComponent({
   name: "MtSelect",
-
-  i18n: {
-    messages: {
-      en: {
-        "mt-select": {
-          messageNoResults: 'No results found for "{term}".',
-        },
-      },
-      de: {
-        "mt-select": {
-          messageNoResults: 'Es wurden keine Ergebnisse für "{term}" gefunden.',
-        },
-      },
-    },
-  },
 
   components: {
     "mt-select-base": MtSelectBase,
@@ -434,6 +420,23 @@ export default defineComponent({
         "mt-select--small": this.small,
       };
     },
+  },
+
+  setup() {
+    const { t } = useI18n({
+      messages: {
+        en: {
+          messageNoResults: 'No results found for "{term}".',
+        },
+        de: {
+          messageNoResults: 'Es wurden keine Ergebnisse für "{term}" gefunden.',
+        },
+      },
+    });
+
+    return {
+      t,
+    };
   },
 
   watch: {

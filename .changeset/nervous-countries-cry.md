@@ -2,4 +2,4 @@
 "@shopware-ag/meteor-component-library": patch
 ---
 
-Deprecated mt-external link component
+Add missing translation for data table filters

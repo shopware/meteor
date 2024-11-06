@@ -16,7 +16,7 @@
             <mt-button variant="secondary" @click="toggleFloatingUi">
               <mt-icon name="solid-filter-s" aria-hidden="true" />
 
-              <span>{{ $t("mt-data-table.filter.addFilter") }}</span>
+              <span>{{ t("filter.addFilter") }}</span>
             </mt-button>
           </template>
 
@@ -51,8 +51,8 @@
       <div v-if="appliedFilters.length > 0" class="mt-data-table__filter">
         <span>{{
           isLoading
-            ? $t("mt-data-table.filter.fetchingFilteredResults")
-            : $tc("mt-data-table.filter.numberOfResults", numberOfResults ?? 0)
+            ? t("filter.fetchingFilteredResults")
+            : t("filter.numberOfResults", { n: numberOfResults ?? 0 })
         }}</span>
 
         <div class="mt-data-table__filter-list">
@@ -72,7 +72,7 @@
             <button
               @click="toggleFloatingUi"
               class="mt-data-table__add-filter-button"
-              :aria-label="$t('mt-data-table.filter.addFilter')"
+              :aria-label="t('filter.addFilter')"
             >
               <mt-icon name="solid-plus-square-s" />
             </button>
@@ -239,7 +239,7 @@
                     <template #popover-items__base="{ toggleFloatingUi }">
                       <mt-popover-item
                         v-if="column.sortable"
-                        :label="$t('mt-data-table.columnSettings.sortAscending')"
+                        :label="t('columnSettings.sortAscending')"
                         icon="regular-long-arrow-up"
                         contextual-detail="A -> Z"
                         :on-label-click="
@@ -249,7 +249,7 @@
 
                       <mt-popover-item
                         v-if="column.sortable"
-                        :label="$t('mt-data-table.columnSettings.sortDescending')"
+                        :label="t('columnSettings.sortDescending')"
                         icon="regular-long-arrow-down"
                         contextual-detail="Z -> A"
                         :on-label-click="
@@ -260,7 +260,7 @@
 
                       <mt-popover-item
                         v-if="!isPrimaryColumn(column)"
-                        :label="$t('mt-data-table.columnSettings.hideColumn')"
+                        :label="t('columnSettings.hideColumn')"
                         icon="regular-eye-slash"
                         :on-label-click="() => changeColumnVisibility(column.property, false)"
                         border-top
@@ -276,7 +276,7 @@
                     :auto-update-options="{ animationFrame: true }"
                   >
                     <mt-popover
-                      :title="$t('mt-data-table.addColumnIndicator.popoverTitle')"
+                      :title="t('addColumnIndicator.popoverTitle')"
                       @update:isOpened="
                         (value) => {
                           if (value === false) {
@@ -289,7 +289,7 @@
                       <template #trigger="{ toggleFloatingUi }">
                         <mt-icon
                           v-tooltip="{
-                            message: $t('mt-data-table.addColumnIndicator.tooltipMessage'),
+                            message: t('addColumnIndicator.tooltipMessage'),
                             width: 'auto',
                           }"
                           name="solid-plus-square-s"
@@ -455,19 +455,19 @@
                   class="mt-data-table__table-context-button"
                 >
                   <a v-if="!disableEdit" href="#" @click.prevent="$emit('open-details', data)">
-                    {{ $t("mt-data-table.contextButtons.edit") }}
+                    {{ t("contextButtons.edit") }}
                   </a>
                   <mt-context-button v-if="!(disableDelete && disableEdit)">
                     <mt-context-menu-item
                       v-if="!disableEdit"
-                      :label="$t('mt-data-table.contextButtons.edit')"
+                      :label="t('contextButtons.edit')"
                       @click="$emit('open-details', data)"
                     />
 
                     <mt-context-menu-item
                       v-if="!disableDelete"
                       type="critical"
-                      :label="$t('mt-data-table.contextButtons.delete')"
+                      :label="t('contextButtons.delete')"
                       @click="$emit('item-delete', data)"
                     />
                   </mt-context-button>
@@ -480,8 +480,8 @@
                 <slot name="empty-state">
                   <mt-empty-state
                     icon="solid-products"
-                    :headline="$t('mt-data-table.emptyState.headline')"
-                    :description="$t('mt-data-table.emptyState.description')"
+                    :headline="t('emptyState.headline')"
+                    :description="t('emptyState.description')"
                   />
                 </slot>
               </div>
@@ -519,7 +519,7 @@
             @change="emitPaginationLimitChange"
           />
           <span class="mt-data-table__pagination-info-text">
-            {{ $t("mt-data-table.itemsPerPage") }}
+            {{ t("itemsPerPage") }}
           </span>
         </div>
 
@@ -534,7 +534,7 @@
           <mt-button
             v-if="enableReload"
             v-tooltip="{
-              message: $t('mt-data-table.reload.tooltip'),
+              message: t('reload.tooltip'),
               width: 'auto',
             }"
             square
@@ -601,6 +601,7 @@ import MtInset from "@/components/layout/mt-inset/mt-inset.vue";
 import { throttle } from "lodash-es";
 import { reactive } from "vue";
 import type { Filter } from "./mt-data-table.interfaces";
+import { useI18n } from "@/composables/useI18n";
 
 export interface BaseColumnDefinition {
   label: string; // the label for the column
@@ -983,10 +984,10 @@ export default defineComponent({
     "item-delete",
     "update:appliedFilters",
   ],
-  i18n: {
-    messages: {
-      en: {
-        "mt-data-table": {
+  setup(props, { emit }) {
+    const { t } = useI18n({
+      messages: {
+        en: {
           itemsPerPage: "Items per page",
           filter: {
             numberOfResults: "No results found for | One result found for | {n} results found for",
@@ -1020,9 +1021,7 @@ export default defineComponent({
             tooltip: "Reload",
           },
         },
-      },
-      de: {
-        "mt-data-table": {
+        de: {
           itemsPerPage: "Einträge pro Seite",
           filter: {
             numberOfResults:
@@ -1058,17 +1057,6 @@ export default defineComponent({
           },
         },
       },
-    },
-  },
-  setup(props, { emit }) {
-    /**
-     * hack for accessing i18n in legacy mode (https://github.com/intlify/vue-i18n-next/discussions/605#discussioncomment-2057136)
-     **/
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let i18n: any;
-
-    onBeforeMount(() => {
-      i18n = getCurrentInstance()?.proxy?.$i18n;
     });
 
     const filterChildViews = computed(() => {
@@ -1828,7 +1816,7 @@ export default defineComponent({
       const actions: SegmentedControlActionsProp = [
         {
           id: "item-selection-count",
-          label: i18n.tc("mt-data-table.bulkEdit.itemsSelected", props.selectedRows.length),
+          label: t("bulkEdit.itemsSelected", { n: props.selectedRows.length }),
           onClick: () => {
             emit("multiple-selection-change", {
               selections: props.selectedRows,
@@ -1844,7 +1832,7 @@ export default defineComponent({
       if (props.allowBulkEdit && !props.disableEdit) {
         actions.push({
           id: "edit",
-          label: i18n.t("mt-data-table.bulkEdit.edit"),
+          label: t("bulkEdit.edit"),
           onClick: () => emit("bulk-edit"),
         });
       }
@@ -1852,7 +1840,7 @@ export default defineComponent({
       if (props.allowBulkDelete && !props.disableDelete) {
         actions.push({
           id: "delete",
-          label: i18n.t("mt-data-table.bulkEdit.delete"),
+          label: t("bulkEdit.delete"),
           onClick: () => emit("bulk-delete"),
           isCritical: true,
         });
@@ -1861,7 +1849,7 @@ export default defineComponent({
       if (props.bulkEditMoreActions.length > 0) {
         actions.push({
           id: "more",
-          label: i18n.t("mt-data-table.bulkEdit.more"),
+          label: t("bulkEdit.more"),
           popover: {},
         });
       }
@@ -1903,6 +1891,7 @@ export default defineComponent({
     };
 
     return {
+      t,
       sortedColumns,
       isFirstVisibleColumn,
       addColumnOptions,

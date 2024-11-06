@@ -1,16 +1,7 @@
 import { mount } from "@vue/test-utils";
 import MtDataTableSettings from "./mt-data-table-settings.vue";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { useI18n } from "vue-i18n";
 import flushPromises from "flush-promises";
-
-vi.mock("vue-i18n", () => ({
-  useI18n: vi.fn(() => {
-    return {
-      t: (tKey: string) => tKey,
-    };
-  }),
-}));
 
 // mock resizeOvserver
 global.ResizeObserver = class ResizeObserver {
@@ -104,27 +95,26 @@ describe("mt-data-table-settings", () => {
 
     const popoverContent = document.querySelector(".mt-popover__content");
     expect(popoverContent).toBeTruthy();
-    expect(popoverContent?.querySelector(".mt-popover__header")?.textContent).toBe(
-      "mt-data-table-settings.title",
-    );
+    expect(popoverContent?.querySelector(".mt-popover__header")?.textContent).toBe("Settings");
 
     const popoverItems = popoverContent?.querySelectorAll(".mt-popover-item");
 
     expect(popoverItems).toHaveLength(6);
 
     // The "Columns" popover item should have the correct label and should render the number of columns
-    expect(popoverItems?.[0]?.textContent).toContain("mt-data-table-settings.columnOrder.title");
-    expect(popoverItems?.[0]?.textContent).toContain("6");
+    expect(popoverItems?.[0]?.textContent).toContain("Columns 6");
 
     // The popover items should have the correct label
-    expect(popoverItems?.[1]?.textContent).toContain("mt-data-table-settings.showNumberedColumn");
-    expect(popoverItems?.[2]?.textContent).toContain("mt-data-table-settings.showStripedRows");
-    expect(popoverItems?.[3]?.textContent).toContain("mt-data-table-settings.showOutlines");
-    expect(popoverItems?.[4]?.textContent).toContain("mt-data-table-settings.frameOutlines");
+    expect(popoverItems?.[1]?.textContent).toContain("Show numbered column");
+    expect(popoverItems?.[2]?.textContent).toContain("Show striped rows");
+    expect(popoverItems?.[3]?.textContent).toContain("Show outlines");
     expect(popoverItems?.[4]?.textContent).toContain(
-      "mt-data-table-settings.frameOutlinesMetaCopy",
+      "Frame outlines Highlight column and row outlines on mouse hover",
     );
-    expect(popoverItems?.[5]?.textContent).toContain("mt-data-table-settings.resetAllChanges");
+    expect(popoverItems?.[4]?.textContent).toContain(
+      "Frame outlines Highlight column and row outlines on mouse hover",
+    );
+    expect(popoverItems?.[5]?.textContent).toContain("Reset all changes");
   });
 
   it("should switch to columns view", async () => {
@@ -135,17 +125,13 @@ describe("mt-data-table-settings", () => {
     // Click on "Columns" label to switch to the columns view
     const columnsPopoverItemLabel =
       popoverContent?.querySelectorAll(".mt-popover-item__label")?.[0];
-    expect(columnsPopoverItemLabel?.textContent).toContain(
-      "mt-data-table-settings.columnOrder.title",
-    );
+    expect(columnsPopoverItemLabel?.textContent).toContain("Columns");
     await columnsPopoverItemLabel?.dispatchEvent(new Event("click"));
     await flushPromises();
 
     // Check if the columns view header title is rendered
     popoverContent = document.querySelector(".mt-popover__content");
-    expect(popoverContent?.querySelector(".mt-popover__header")?.textContent).toBe(
-      "mt-data-table-settings.columnOrder.title",
-    );
+    expect(popoverContent?.querySelector(".mt-popover__header")?.textContent).toBe("Columns");
 
     // Check if every column is rendered correctly
     const columns = document.querySelectorAll(".mt-popover-item-result__option_item");
@@ -240,9 +226,7 @@ describe("mt-data-table-settings", () => {
     const visibleGroupHeader = document.querySelectorAll(
       ".mt-popover-item-result__group-action",
     )?.[0];
-    expect(visibleGroupHeader?.textContent).toContain(
-      "mt-data-table-settings.columnOrder.columnGroups.actionLabelShown",
-    );
+    expect(visibleGroupHeader?.textContent).toContain("Hide all");
     await visibleGroupHeader?.dispatchEvent(new Event("click"));
 
     await wrapper.vm.$nextTick();
@@ -268,9 +252,7 @@ describe("mt-data-table-settings", () => {
     const visibleGroupHeader = document.querySelectorAll(
       ".mt-popover-item-result__group-action",
     )?.[1];
-    expect(visibleGroupHeader?.textContent).toContain(
-      "mt-data-table-settings.columnOrder.columnGroups.actionLabelHidden",
-    );
+    expect(visibleGroupHeader?.textContent).toContain("Show all");
     await visibleGroupHeader?.dispatchEvent(new Event("click"));
 
     await wrapper.vm.$nextTick();
@@ -288,7 +270,7 @@ describe("mt-data-table-settings", () => {
 
     // Click on "Reset" button to reset all changes
     const resetButton = document.querySelectorAll(".mt-popover-item__label")?.[5];
-    expect(resetButton?.textContent).toContain("mt-data-table-settings.resetAllChanges");
+    expect(resetButton?.textContent).toContain("Reset all changes");
     await resetButton?.dispatchEvent(new Event("click"));
 
     // Check if the reset-all-changes event was emitted

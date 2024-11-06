@@ -2,7 +2,7 @@
   <div class="mt-pagination">
     <p class="mt-pagination__info-text" data-testid="mt-pagination-info-text">
       {{
-        $t("mt-pagination.infoText", {
+        t("infoText", {
           start: firstVisibleItemNumber,
           end: lastVisibleItemNumber,
           totalItems,
@@ -17,7 +17,7 @@
         @click="$emit('change-current-page', 1)"
         data-testid="mt-pagination-first-page-button"
       >
-        <span class="visually-hidden">{{ $t("mt-pagination.firstPage") }}</span>
+        <span class="visually-hidden">{{ t("firstPage") }}</span>
 
         <mt-icon name="regular-double-chevron-left-s" size="0.5rem" aria-hidden="true" />
       </button>
@@ -28,7 +28,7 @@
         @click="$emit('change-current-page', currentPage - 1)"
         data-testid="mt-pagination-previous-page-button"
       >
-        <span class="visually-hidden">{{ $t("mt-pagination.previousPage") }}</span>
+        <span class="visually-hidden">{{ t("previousPage") }}</span>
 
         <mt-icon name="regular-chevron-left-s" size="0.5rem" aria-hidden="true" />
       </button>
@@ -51,7 +51,7 @@
         @click="$emit('change-current-page', currentPage + 1)"
         data-testid="mt-pagination-next-page-button"
       >
-        <span class="visually-hidden">{{ $t("mt-pagination.nextPage") }}</span>
+        <span class="visually-hidden">{{ t("nextPage") }}</span>
 
         <mt-icon name="regular-chevron-right-s" size="0.5rem" aria-hidden="true" />
       </button>
@@ -62,7 +62,7 @@
         @click="$emit('change-current-page', totalPages)"
         data-testid="mt-pagination-last-page-button"
       >
-        <span class="visually-hidden">{{ $t("mt-pagination.lastPage") }}</span>
+        <span class="visually-hidden">{{ t("lastPage") }}</span>
 
         <mt-icon name="regular-double-chevron-right-s" size="0.5rem" aria-hidden="true" />
       </button>
@@ -70,98 +70,75 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, computed, watch } from "vue";
+<script setup lang="ts">
+import { computed, watch } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
+import { useI18n } from "@/composables/useI18n";
 
-export default defineComponent({
-  components: {
-    "mt-icon": MtIcon,
-  },
-  props: {
-    currentPage: {
-      type: Number,
-      required: true,
+const props = defineProps<{
+  currentPage: number;
+  limit: number;
+  totalItems: number;
+}>();
+
+const { t } = useI18n({
+  messages: {
+    en: {
+      infoText: "{start}-{end} of {totalItems}",
+      firstPage: "First page",
+      previousPage: "Previous page",
+      nextPage: "Next page",
+      lastPage: "Last page",
     },
-    limit: {
-      type: Number,
-      required: true,
-    },
-    totalItems: {
-      type: Number,
-      required: true,
-    },
-  },
-  i18n: {
-    messages: {
-      en: {
-        "mt-pagination": {
-          infoText: "{start}-{end} of {totalItems}",
-          firstPage: "First page",
-          previousPage: "Previous page",
-          nextPage: "Next page",
-          lastPage: "Last page",
-        },
-      },
-      de: {
-        "mt-pagination": {
-          infoText: "{start}-{end} von {totalItems}",
-          firstPage: "Erste Seite",
-          previousPage: "Voherige Seite",
-          nextPage: "Nächste Seite",
-          lastPage: "Letzte Seite",
-        },
-      },
+    de: {
+      infoText: "{start}-{end} von {totalItems}",
+      firstPage: "Erste Seite",
+      previousPage: "Voherige Seite",
+      nextPage: "Nächste Seite",
+      lastPage: "Letzte Seite",
     },
   },
-  emits: ["change-current-page"],
-  setup(props, { emit }) {
-    watch(
-      () => props.limit,
-      () => {
-        emit("change-current-page", 1);
-      },
-    );
+});
 
-    const totalPages = computed(() => {
-      return Math.max(1, Math.ceil(props.totalItems / props.limit));
-    });
+const emit = defineEmits<{
+  (e: "change-current-page", value: number): void;
+}>();
 
-    const isOnFirstPage = computed(() => props.currentPage === 1);
-    const isOnLastPage = computed(() => props.currentPage === totalPages.value);
-
-    const inputLength = computed(() => {
-      const length = props.currentPage.toString().length;
-      if (length === 0) return "calc(1ch + 1px)";
-
-      return `calc(${length}ch + 1px)`;
-    });
-
-    function onChangeInput(event: Event) {
-      const target = event.target as HTMLInputElement;
-      if (target.value === "") return;
-
-      emit("change-current-page", parseInt(target.value));
-    }
-
-    const firstVisibleItemNumber = computed(() => (props.currentPage - 1) * props.limit + 1);
-    const lastVisibleItemNumber = computed(() => {
-      const lastItemNumberWithLimitOnly = props.limit * props.currentPage;
-      return lastItemNumberWithLimitOnly > props.totalItems
-        ? props.totalItems
-        : lastItemNumberWithLimitOnly;
-    });
-
-    return {
-      totalPages,
-      inputLength,
-      isOnLastPage,
-      isOnFirstPage,
-      onChangeInput,
-      firstVisibleItemNumber,
-      lastVisibleItemNumber,
-    };
+watch(
+  () => props.limit,
+  () => {
+    emit("change-current-page", 1);
   },
+);
+
+const totalPages = computed(() => {
+  return Math.max(1, Math.ceil(props.totalItems / props.limit));
+});
+
+const isOnFirstPage = computed(() => props.currentPage === 1);
+const isOnLastPage = computed(() => props.currentPage === totalPages.value);
+
+const inputLength = computed(() => {
+  const length = props.currentPage.toString().length;
+  if (length === 0) return "calc(1ch + 1px)";
+
+  return `calc(${length}ch + 1px)`;
+});
+
+function onChangeInput(event: Event) {
+  const target = event.target as HTMLInputElement;
+  if (target.value === "") return;
+
+  emit("change-current-page", parseInt(target.value));
+}
+
+const firstVisibleItemNumber = computed(() => (props.currentPage - 1) * props.limit + 1);
+const lastVisibleItemNumber = computed(() => {
+  const lastItemNumberWithLimitOnly = props.limit * props.currentPage;
+
+  return lastItemNumberWithLimitOnly > props.totalItems
+    ? props.totalItems
+    : lastItemNumberWithLimitOnly;
 });
 </script>
 

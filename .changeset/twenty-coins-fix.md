@@ -2,4 +2,4 @@
 "@shopware-ag/meteor-component-library": patch
 ---
 
-Improve a11y of help text
+Migrate mt-label to custom built i18n composable

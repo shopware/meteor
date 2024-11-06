@@ -67,10 +67,6 @@ withDefaults(
   },
 );
 
-defineEmits<{
-  (e: "change", value: string): void;
-}>();
-
 defineSlots<{
   prefix: void;
   suffix: void;

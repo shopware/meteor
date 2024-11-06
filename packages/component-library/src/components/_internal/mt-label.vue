@@ -10,7 +10,7 @@
     <button
       v-if="showDismissable"
       class="mt-label__dismiss"
-      :title="$tc('mt-label.remove')"
+      :title="t('remove')"
       @click.prevent.stop="$emit('dismiss')"
     >
       <slot name="dismiss-icon">
@@ -20,98 +20,56 @@
   </span>
 </template>
 
-<script lang="ts">
-import type { PropType } from "vue";
-
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { computed, useAttrs } from "vue";
 import MtIcon from "../icons-media/mt-icon/mt-icon.vue";
 import MtColorBadge from "../feedback-indicator/mt-color-badge/mt-color-badge.vue";
+import { useI18n } from "@/composables/useI18n";
 
-export default defineComponent({
-  name: "MtLabel",
+const props = withDefaults(
+  defineProps<{
+    variant?: "info" | "danger" | "success" | "warning" | "neutral" | "primary";
+    size?: "small" | "medium" | "default";
+    appearance?: "default" | "pill" | "circle" | "badged";
+    ghost?: boolean;
+    caps?: boolean;
+    dismissable?: boolean;
+  }>(),
+  {
+    // @ts-expect-error
+    variant: "",
+    size: "default",
+    appearance: "default",
+    ghost: false,
+    caps: false,
+  },
+);
 
-  i18n: {
-    messages: {
-      en: {
-        "mt-label": {
-          remove: "Remove",
-        },
-      },
-      de: {
-        "mt-label": {
-          remove: "Entfernen",
-        },
-      },
+const { t } = useI18n({
+  messages: {
+    en: {
+      remove: "Remove",
+    },
+    de: {
+      remove: "Entfernen",
     },
   },
+});
 
-  components: {
-    "mt-icon": MtIcon,
-    "mt-color-badge": MtColorBadge,
-  },
+const attrs = useAttrs();
+const showDismissable = computed(() => !!attrs.onDismiss && props.dismissable);
 
-  props: {
-    variant: {
-      type: String as PropType<"info" | "danger" | "success" | "warning" | "neutral" | "primary">,
-      required: false,
-      default: "",
-      validator(value: string) {
-        if (!value.length) {
-          return true;
-        }
-        return ["info", "danger", "success", "warning", "neutral", "primary"].includes(value);
-      },
+const labelClasses = computed(() => {
+  return [
+    `mt-label--appearance-${props.appearance}`,
+    `mt-label--size-${props.size}`,
+    {
+      [`mt-label--${props.variant}`]: !!props.variant,
+      "mt-label--dismissable": showDismissable,
+      "mt-label--ghost": props.ghost,
+      "mt-label--caps": props.caps,
     },
-    size: {
-      type: String as PropType<"small" | "medium" | "default">,
-      required: false,
-      default: "default",
-      validator(value: string) {
-        return ["small", "medium", "default"].includes(value);
-      },
-    },
-    appearance: {
-      type: String as PropType<"default" | "pill" | "circle" | "badged">,
-      required: false,
-      default: "default",
-      validator(value: string) {
-        return ["default", "pill", "circle", "badged"].includes(value);
-      },
-    },
-    ghost: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    caps: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    dismissable: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
-  },
-
-  computed: {
-    labelClasses() {
-      return [
-        `mt-label--appearance-${this.appearance}`,
-        `mt-label--size-${this.size}`,
-        {
-          [`mt-label--${this.variant}`]: !!this.variant,
-          "mt-label--dismissable": this.showDismissable,
-          "mt-label--ghost": this.ghost,
-          "mt-label--caps": this.caps,
-        },
-      ];
-    },
-    showDismissable(): boolean {
-      return !!this.$attrs.onDismiss && this.dismissable;
-    },
-  },
+  ];
 });
 </script>
 

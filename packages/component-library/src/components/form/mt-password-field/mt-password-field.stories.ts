@@ -26,8 +26,7 @@ export default {
       <div>
         <mt-password-field
           v-bind="args"
-          :modelValue="currentValue"
-          @change="onChange"
+          v-model="currentValue"
           @inheritance-restore="inheritanceRestoreWrapper"
           @inheritance-remove="inheritanceRemoveWrapper"
         >
