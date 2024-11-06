@@ -1,5 +1,6 @@
 import type { Preview } from "@storybook/vue3";
 import "~/src/components/assets/scss/all.scss";
+import "~/src/components/assets/scss/font.scss";
 import { darkTheme, lightTheme } from "./shopwareTheme";
 import { setup } from "@storybook/vue3";
 import { createI18n } from "vue-i18n";
