@@ -150,7 +150,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="css">
+<style lang="css" scoped>
 .mt-button {
   transition: all 0.15s ease-out;
   display: inline-block;
