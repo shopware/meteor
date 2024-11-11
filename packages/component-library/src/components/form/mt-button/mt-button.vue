@@ -22,11 +22,11 @@
   >
     <mt-loader v-if="isLoading" size="16px" class="mt-button__loader" />
     <span class="mt-button__content" :class="contentVisibilityClass">
-      <span v-if="$slots.iconFront" class="mt-button__icon mt-button__icon--front">
+      <span v-if="$slots.iconFront" class="mt-button__icon">
         <slot name="iconFront" />
       </span>
       <slot></slot>
-      <span v-if="$slots.iconBack" class="mt-button__icon mt-button__icon--back">
+      <span v-if="$slots.iconBack" class="mt-button__icon">
         <slot name="iconBack" />
       </span>
     </span>
@@ -171,14 +171,14 @@ export default defineComponent({
   position: relative;
 }
 
-.mt-button .mt-button__content {
+.mt-button__content {
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: 8px;
 }
 
-.mt-button .mt-button__content--hidden {
+.mt-button__content--hidden {
   visibility: hidden;
 }
 
@@ -195,228 +195,245 @@ export default defineComponent({
   align-items: center;
 }
 
-.mt-button.mt-button--primary {
+.mt-button--primary {
   background: var(--color-interaction-primary-default);
   color: var(--color-text-static-default);
   line-height: 36px;
   border-color: var(--color-interaction-primary-default);
 }
 
-.mt-button.mt-button--primary .mt-icon {
+.mt-button--primary .mt-icon {
   color: var(--color-icon-static-default);
 }
 
-.mt-button.mt-button--primary:hover,
-.mt-button.mt-button--primary:focus-visible,
-.mt-button.mt-button--primary:active {
+.mt-button--primary:hover,
+.mt-button--primary:focus-visible,
+.mt-button--primary:active {
   background: var(--color-interaction-primary-hover);
   border-color: var(--color-interaction-primary-hover);
 }
 
-.mt-button.mt-button--primary:focus-visible {
+.mt-button--primary:focus-visible {
   border-color: var(--color-border-brand-selected);
   box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
 }
 
-.mt-button.mt-button--primary:disabled,
-.mt-button.mt-button--primary.mt-button--disabled {
+.mt-button--primary:disabled,
+.mt-button--primary.mt-button--disabled {
   background: var(--color-interaction-primary-disabled);
   border-color: var(--color-interaction-primary-disabled);
   cursor: not-allowed;
 }
 
-.mt-button.mt-button--primary-ghost {
+.mt-button--primary-ghost {
   background: transparent;
   border: 1px solid var(--color-border-brand-selected);
   border-color: var(--color-border-brand-selected);
   color: var(--color-text-brand-default);
 }
 
-.mt-button.mt-button--primary-ghost:is(:hover, :focus-visible, :active) {
+.mt-button--primary-ghost:is(:hover, :focus-visible, :active) {
   background: var(--color-background-brand-default);
 }
 
-.mt-button.mt-button--primary-ghost:focus-visible {
+.mt-button--primary-ghost:focus-visible {
   box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
 }
 
-.mt-button.mt-button--primary-ghost:disabled,
-.mt-button.mt-button--primary-ghost.mt-button--disabled {
+.mt-button--primary-ghost:disabled,
+.mt-button--primary-ghost.mt-button--disabled {
   color: var(--color-text-brand-disabled);
   border-color: var(--color-border-brand-disabled);
   background: transparent;
 }
 
-.mt-button.mt-button--primary-ghost:disabled .mt-icon,
-.mt-button.mt-button--primary-ghost.mt-button--disabled .mt-icon {
+.mt-button--primary-ghost:disabled .mt-icon,
+.mt-button--primary-ghost.mt-button--disabled .mt-icon {
   color: var(--color-icon-brand-disabled);
 }
 
-.mt-button.mt-button--primary-ghost .mt-icon {
+.mt-button--primary-ghost .mt-icon {
   color: var(--color-icon-brand-default);
 }
 
-.mt-button.mt-button--secondary {
+.mt-button--secondary {
   background: var(--color-interaction-secondary-default);
   border: 1px solid var(--color-border-primary-default);
   color: var(--color-text-primary-default);
   line-height: 36px;
 }
 
-.mt-button.mt-button--secondary:is(:hover, :focus-visible, :active) {
+.mt-button--secondary:is(:hover, :focus-visible, :active) {
   background: var(--color-interaction-secondary-hover);
 }
 
-.mt-button.mt-button--secondary:focus-visible {
+.mt-button--secondary:focus-visible {
   border-color: var(--color-border-brand-selected);
   box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
 }
 
-.mt-button.mt-button--secondary:disabled,
-.mt-button.mt-button--secondary.mt-button--disabled {
+.mt-button--secondary:disabled,
+.mt-button--secondary.mt-button--disabled {
   color: var(--color-text-primary-disabled);
   background: var(--color-interaction-secondary-disabled);
   cursor: not-allowed;
 }
 
-.mt-button.mt-button--secondary:disabled .mt-icon,
-.mt-button.mt-button--secondary.mt-button--disabled .mt-icon {
+.mt-button--secondary:disabled .mt-icon,
+.mt-button--secondary.mt-button--disabled .mt-icon {
   color: var(--color-icon-primary-disabled);
 }
 
-.mt-button.mt-button--secondary .mt-icon {
+.mt-button--secondary .mt-icon {
   color: var(--color-icon-primary-default);
 }
 
-.mt-button.mt-button--critical {
+.mt-button--critical {
   background: var(--color-interaction-critical-default);
   color: var(--color-text-static-default);
   border: 1px solid var(--color-interaction-critical-default);
   line-height: 36px;
 }
 
-.mt-button.mt-button--critical:is(:hover, :focus-visible, :active) {
+.mt-button--critical:is(:hover, :focus-visible, :active) {
   background: var(--color-interaction-critical-hover);
   border-color: var(--color-interaction-critical-hover);
 }
 
-.mt-button.mt-button--critical:focus-visible {
+.mt-button--critical:focus-visible {
   border-color: var(--color-border-brand-selected);
   box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
 }
 
-.mt-button.mt-button--critical:disabled,
-.mt-button.mt-button--critical.mt-button--disabled {
+.mt-button--critical:disabled,
+.mt-button--critical.mt-button--disabled {
   background: var(--color-interaction-critical-disabled);
   border-color: var(--color-interaction-critical-disabled);
 }
 
-.mt-button.mt-button--critical:disabled .mt-icon,
-.mt-button.mt-button--critical.mt-button--disabled .mt-icon,
-.mt-button.mt-button--critical .mt-icon {
+.mt-button--critical:disabled .mt-icon,
+.mt-button--critical.mt-button--disabled .mt-icon,
+.mt-button--critical .mt-icon {
   color: var(--color-icon-static-default);
 }
 
-.mt-button.mt-button--critical-ghost {
+.mt-button--critical-ghost {
   background: transparent;
   border: 1px solid var(--color-border-critical-default);
   color: var(--color-text-critical-default);
 }
 
-.mt-button.mt-button--critical-ghost:is(:hover, :focus-visible, :active) {
+.mt-button--critical-ghost:is(:hover, :focus-visible, :active) {
   background-color: var(--color-background-critical-dark);
 }
 
-.mt-button.mt-button--critical-ghost:focus-visible {
+.mt-button--critical-ghost:focus-visible {
   border-color: var(--color-border-brand-selected);
   box-shadow: 0 0 4px 0 rgba(255, 0, 0, 0.3);
 }
 
-.mt-button.mt-button--critical-ghost:disabled,
-.mt-button.mt-button--critical-ghost.mt-button--disabled {
+.mt-button--critical-ghost:disabled,
+.mt-button--critical-ghost.mt-button--disabled {
   color: var(--color-text-critical-disabled);
   border-color: var(--color-border-critical-disabled);
 }
 
-.mt-button.mt-button--critical-ghost:disabled .mt-icon,
-.mt-button.mt-button--critical-ghost.mt-button--disabled .mt-icon {
+.mt-button--critical-ghost:disabled .mt-icon,
+.mt-button--critical-ghost.mt-button--disabled .mt-icon {
   color: var(--color-icon-critical-disabled);
 }
 
-.mt-button.mt-button--critical-ghost .mt-icon {
+.mt-button--critical-ghost .mt-icon {
   color: var(--color-icon-critical-default);
 }
 
-.mt-button.mt-button--action {
+.mt-button--action {
   border: 1px solid #e2e8f0;
   background-color: #ffffff;
   color: #000000;
 }
 
-.mt-button.mt-button--action .mt-icon {
+.mt-button--action .mt-icon {
   color: #1a202c;
 }
 
-.mt-button.mt-button--action:hover {
+.mt-button--action:hover {
   background-color: #edf2f7;
   color: #4a5568;
 }
 
-.mt-button.mt-button--action:disabled {
+.mt-button--action:disabled {
   background-color: #f7fafc;
   color: #a0aec0;
 }
 
-.mt-button.mt-button--block {
+.mt-button--block {
   display: block;
   width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
-.mt-button.mt-button--x-small {
+.mt-button--x-small {
   padding-left: 10px;
   padding-right: 10px;
   font-size: var(--font-size-2xs);
   line-height: 18px;
 }
 
-.mt-button.mt-button--x-small.mt-button--square {
+.mt-button--x-small .mt-button__icon {
+  width: 10px;
+  height: 10px;
+}
+
+.mt-button--x-small.mt-button--square {
   width: 24px;
 }
 
-.mt-button.mt-button--small {
+.mt-button--small {
   padding-left: 15px;
   padding-right: 15px;
   font-size: var(--font-size-2xs);
   line-height: 26px;
 }
 
-.mt-button.mt-button--small.mt-button--square {
+.mt-button--small .mt-button__icon {
+  width: 12px;
+  height: 12px;
+}
+
+.mt-button--small.mt-button--square {
   width: 32px;
 }
 
-.mt-button.mt-button--large {
+.mt-button--large {
   padding-left: 28px;
   padding-right: 28px;
   line-height: 42px;
   font-size: var(--font-size-2xs);
 }
 
-.mt-button.mt-button--large.mt-button--square {
+.mt-button--large .mt-button__icon {
+  width: 12px;
+  height: 12px;
+}
+
+.mt-button--large.mt-button--square {
   width: 48px;
 }
 
-.mt-button.mt-button--square {
+.mt-button--square {
   width: 40px;
   padding-left: 0;
   padding-right: 0;
   text-align: center;
 }
 
-.mt-button.mt-button--square .mt-button__content {
+.mt-button--square .mt-button__content {
   display: inline;
 }
 
-.mt-button .mt-button__loader {
+.mt-button__loader {
   border-radius: var(--border-radius-xs);
 }
 </style>
