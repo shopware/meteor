@@ -17,18 +17,6 @@
           },
         ]"
       >
-        <button
-          v-if="inheritance !== undefined"
-          class="mt-card__inheritance-toggle"
-          :aria-label="!!inheritance ? t('disableInheritance') : t('enableInheritance')"
-          @click="$emit('update:inheritance', !inheritance)"
-        >
-          <mt-icon
-            :name="inheritance ? 'regular-link-horizontal' : 'regular-link-horizontal-slash'"
-            size="1.25rem"
-          />
-        </button>
-
         <!-- @slot Alternative slot to the title property -->
         <slot name="title">
           <MtText v-if="title" as="h3" weight="semibold" size="m" class="mt-card__title">
@@ -47,6 +35,19 @@
             {{ subtitle }}
           </MtText>
         </slot>
+
+        <button
+          v-if="inheritance !== undefined"
+          class="mt-card__inheritance-toggle"
+          :aria-label="!!inheritance ? t('disableInheritance') : t('enableInheritance')"
+          style="grid-area: inheritance"
+          @click="$emit('update:inheritance', !inheritance)"
+        >
+          <mt-icon
+            :name="inheritance ? 'regular-link-horizontal' : 'regular-link-horizontal-slash'"
+            size="1.25rem"
+          />
+        </button>
       </div>
 
       <div class="mt-card__titles-right-slot">
@@ -289,6 +290,9 @@ const cardClasses = computed(() => ({
   display: grid;
   grid-template-columns: min-content 1fr;
   column-gap: 0.25rem;
+  grid-template-areas:
+    "inheritance title"
+    "subtitle subtitle";
 
   & .mt-card__subtitle {
     grid-column: 1 / -1;
