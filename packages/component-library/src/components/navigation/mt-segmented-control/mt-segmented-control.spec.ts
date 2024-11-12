@@ -15,6 +15,7 @@ describe("mt-segmented-control", () => {
             id: "labelStart",
             label: "Label",
             onClick: handler,
+            hasCheckbox: false,
           },
         ],
       },
@@ -25,5 +26,29 @@ describe("mt-segmented-control", () => {
 
     // ASSERT
     expect(handler).toHaveBeenCalledOnce();
+  });
+
+  it("emits an event when checking a checkbox", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+    render(MtSegmentedControl, {
+      props: {
+        actions: [
+          {
+            id: "labelStart",
+            label: "Label",
+            onClick: handler,
+            hasCheckbox: true,
+          },
+        ],
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("checkbox"));
+
+    // ASSERT
+    expect(handler).toHaveBeenCalledOnce();
+    expect(handler).toHaveBeenLastCalledWith({ checkboxValue: true });
   });
 });
