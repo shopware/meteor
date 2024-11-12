@@ -22,13 +22,9 @@
   >
     <mt-loader v-if="isLoading" size="16px" class="mt-button__loader" />
     <span class="mt-button__content" :class="contentVisibilityClass">
-      <span v-if="$slots.iconFront" class="mt-button__icon">
-        <slot name="iconFront" />
-      </span>
+      <slot name="iconFront" :size="iconSize" v-if="$slots.iconFront" />
       <slot></slot>
-      <span v-if="$slots.iconBack" class="mt-button__icon">
-        <slot name="iconBack" />
-      </span>
+      <slot name="iconBack" :size="iconSize" v-if="$slots.iconBack" />
     </span>
   </button>
 </template>
@@ -146,6 +142,10 @@ export default defineComponent({
         "mt-button__content--hidden": this.isLoading,
       };
     },
+
+    iconSize() {
+      return this.size === "x-small" ? 8 : this.size === "large" ? 12 : 10;
+    },
   },
 });
 </script>
@@ -173,26 +173,13 @@ export default defineComponent({
 
 .mt-button__content {
   display: flex;
-  flex-direction: row;
+  justify-content: center;
   align-items: center;
   gap: 8px;
 }
 
 .mt-button__content--hidden {
   visibility: hidden;
-}
-
-.mt-button__icon {
-  width: 12px;
-  height: 12px;
-}
-
-.mt-button__icon > * {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 
 .mt-button--primary {
@@ -381,11 +368,6 @@ export default defineComponent({
   line-height: 18px;
 }
 
-.mt-button--x-small .mt-button__icon {
-  width: 10px;
-  height: 10px;
-}
-
 .mt-button--x-small.mt-button--square {
   width: 24px;
 }
@@ -397,11 +379,6 @@ export default defineComponent({
   line-height: 26px;
 }
 
-.mt-button--small .mt-button__icon {
-  width: 12px;
-  height: 12px;
-}
-
 .mt-button--small.mt-button--square {
   width: 32px;
 }
@@ -411,11 +388,6 @@ export default defineComponent({
   padding-right: 28px;
   line-height: 42px;
   font-size: var(--font-size-2xs);
-}
-
-.mt-button--large .mt-button__icon {
-  width: 12px;
-  height: 12px;
 }
 
 .mt-button--large.mt-button--square {
