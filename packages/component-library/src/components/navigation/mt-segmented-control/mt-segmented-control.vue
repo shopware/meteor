@@ -9,6 +9,7 @@
         @click="!!action.hasCheckbox ? undefined : action.onClick()"
         class="mt-segmented-control__action"
         :data-pressed="!!action.isPressed"
+        :disabled="!!action.disabled && !action.hasCheckbox"
         :data-variant="!!action.isCritical ? 'critical' : 'default'"
         :data-context="!!disableContext ? 'none' : 'default'"
         :data-checkbox="!!action.hasCheckbox"
@@ -19,6 +20,7 @@
         >
           <input
             type="checkbox"
+            :disabled="!!action.disabled"
             class="mt-segmented-control__checkbox"
             @change="
               (event) =>
@@ -54,6 +56,7 @@ type Action =
       isCritical?: boolean;
       iconName?: string;
       hasCheckbox?: boolean;
+      disabled?: boolean;
     }
   | "divider";
 

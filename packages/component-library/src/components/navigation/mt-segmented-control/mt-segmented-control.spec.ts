@@ -51,4 +51,51 @@ describe("mt-segmented-control", () => {
     expect(handler).toHaveBeenCalledOnce();
     expect(handler).toHaveBeenLastCalledWith({ checkboxValue: true });
   });
+
+  it("does not emit an event when clicking on a disabled action", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+    render(MtSegmentedControl, {
+      props: {
+        actions: [
+          {
+            id: "labelStart",
+            label: "Label",
+            onClick: handler,
+            disabled: true,
+          },
+        ],
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("button", { name: "Label" }));
+
+    // ASSERT
+    expect(handler).not.toHaveBeenCalled();
+  });
+
+  it("does not emit an event when clicking on a disabled checkbox", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+    render(MtSegmentedControl, {
+      props: {
+        actions: [
+          {
+            id: "labelStart",
+            label: "Label",
+            onClick: handler,
+            hasCheckbox: true,
+            disabled: true,
+          },
+        ],
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("checkbox"));
+
+    // ASSERT
+    expect(handler).not.toHaveBeenCalled();
+  });
 });
