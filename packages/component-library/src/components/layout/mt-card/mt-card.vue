@@ -2,8 +2,8 @@
   <!-- @slot This slot is @private and should not be used -->
   <slot name="before-card" />
 
-  <div class="mt-card" :class="cardClasses" v-bind="$attrs">
-    <div v-if="showHeader" class="mt-card__header">
+  <article class="mt-card" :class="cardClasses" :aria-label="title" v-bind="$attrs">
+    <header v-if="showHeader" class="mt-card__header">
       <div class="mt-card__avatar">
         <!-- @slot Slot for an avatar or logo -->
         <slot name="avatar" />
@@ -31,7 +31,7 @@
 
         <!-- @slot Alternative slot to the title property -->
         <slot name="title">
-          <MtText v-if="title" weight="semibold" size="m" class="mt-card__title">
+          <MtText v-if="title" as="h3" weight="semibold" size="m" class="mt-card__title">
             {{ title }}
           </MtText>
         </slot>
@@ -60,7 +60,7 @@
           <slot name="context-actions" />
         </mt-context-button>
       </div>
-    </div>
+    </header>
 
     <div class="mt-card__tabs">
       <!-- @slot Slot for adding a tab bar. The content need to be changed manually and you can't use the content slot of the tab bar -->
@@ -82,11 +82,11 @@
       <mt-loader v-if="isLoading" />
     </div>
 
-    <div class="mt-card__footer">
+    <footer class="mt-card__footer">
       <!-- @slot The footer slot which allows rendering additional things after the content -->
       <slot name="footer" />
-    </div>
-  </div>
+    </footer>
+  </article>
 
   <!-- @slot This slot is @private and should not be used -->
   <slot name="after-card" />
@@ -325,6 +325,10 @@ const cardClasses = computed(() => ({
   gap: 0.75rem;
   padding: 1.5rem;
   border-bottom: 1px solid var(--color-border-primary-default);
+}
+
+.mt-card__title {
+  margin: 0;
 }
 
 .mt-card__toolbar {
