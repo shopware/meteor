@@ -6,7 +6,7 @@
       <component
         v-else
         :is="!!action.hasCheckbox ? 'label' : 'button'"
-        @click="!!action.hasCheckbox ? undefined : action.onClick()"
+        @click="!action.hasCheckbox ? handleClick(action) : undefined"
         class="mt-segmented-control__action"
         :data-pressed="!!action.isPressed"
         :disabled="!!action.disabled && !action.hasCheckbox"
@@ -39,6 +39,36 @@
         />
 
         <span>{{ action.label }}</span>
+
+        <mt-popover
+          v-if="!!action.options"
+          :is-opened="popoverMap.get(action.id)"
+          :child-views="action.popover?.childViews"
+          :title="action.popover?.title"
+        >
+          <template #trigger>
+            <mt-icon v-if="!!action.options" name="regular-chevron-down-xs" />
+          </template>
+
+          <template #popover-items__base="{ toggleFloatingUi, changeView }">
+            <slot
+              :name="action.id + '--popover-items__base'"
+              :toggle-floating-ui="toggleFloatingUi"
+              :change-view="changeView"
+            />
+          </template>
+
+          <template
+            v-for="childView in flatChildViews(action.popover && action.popover.childViews)"
+            #[`popover-items__${childView.name}`]="{ toggleFloatingUi, changeView }"
+          >
+            <slot
+              :name="action.id + '--popover-items__' + childView.name"
+              :toggle-floating-ui="toggleFloatingUi"
+              :change-view="changeView"
+            />
+          </template>
+        </mt-popover>
       </component>
     </template>
   </div>
@@ -46,6 +76,9 @@
 
 <script setup lang="ts">
 import MtIcon from "@/components/icons-media/mt-icon/mt-icon.vue";
+import type { View } from "@/components/overlay/mt-popover/mt-popover.interfaces";
+import MtPopover from "@/components/overlay/mt-popover/mt-popover.vue";
+import { reactive, watch } from "vue";
 
 type Action =
   | {
@@ -57,13 +90,54 @@ type Action =
       iconName?: string;
       hasCheckbox?: boolean;
       disabled?: boolean;
+      options?: boolean;
+      popover?: {
+        title?: string;
+        childViews: View[];
+        disabled?: boolean;
+      };
     }
   | "divider";
 
-defineProps<{
+const props = defineProps<{
   actions: Action[];
   disableContext?: boolean;
 }>();
+
+const popoverMap = reactive(new Map<string, boolean>());
+watch(
+  props.actions,
+  () => {
+    props.actions.forEach((action) => {
+      if (action === "divider") return;
+
+      if (action.options) popoverMap.set(action.id, false);
+    });
+  },
+  { immediate: true },
+);
+
+function handleClick(action: Action) {
+  if (action === "divider") return;
+
+  if (!action.options) action.onClick();
+
+  popoverMap.set(action.id, !popoverMap.get(action.id));
+}
+
+const flatChildViews = (childViews?: View[]): View[] => {
+  if (!childViews) {
+    return [];
+  }
+
+  return childViews.reduce<View[]>((acc, childView) => {
+    if (childView.childViews) {
+      return [...acc, childView, ...flatChildViews(childView.childViews)];
+    }
+
+    return [...acc, childView];
+  }, []);
+};
 </script>
 
 <style scoped>
