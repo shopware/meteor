@@ -368,6 +368,12 @@ const cardClasses = computed(() => ({
   outline-offset: 2px;
   outline-color: var(--color-border-brand-selected);
   color: var(--color-icon-primary-default);
+
+  &:focus-visible {
+    outline: 2px solid var(--color-border-brand-selected);
+    outline-offset: 2px;
+    border-radius: var(--border-radius-button);
+  }
 }
 
 .mt-card__titles-right-slot {
