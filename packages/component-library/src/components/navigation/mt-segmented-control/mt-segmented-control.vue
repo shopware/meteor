@@ -35,10 +35,10 @@
           v-if="!!action.iconName"
           :name="action.iconName"
           size="0.75rem"
-          :aria-label="action.label"
+          aria-hidden="true"
         />
 
-        <span v-else>{{ action.label }}</span>
+        <span>{{ action.label }}</span>
       </component>
     </template>
   </div>
