@@ -44,6 +44,18 @@ export const VisualTestDateInputValue: MtDatepickerStory = {
     await userEvent.click(canvas.getByRole("textbox"));
     await waitUntil(() => document.getElementsByClassName("dp__menu").length > 0);
 
+    await userEvent.click(
+      document.querySelector('[data-test="year-toggle-overlay-0"]') as HTMLInputElement,
+    );
+
+    await userEvent.click(document.querySelector('[data-test="2024"]') as HTMLInputElement);
+
+    await userEvent.click(
+      document.querySelector('[data-test="month-toggle-overlay-0"]') as HTMLInputElement,
+    );
+
+    await userEvent.click(document.querySelector('[data-test="Nov"]') as HTMLInputElement);
+
     // Access the calendar and click the date
     const firstDate = document.getElementById("2024-11-13") as HTMLInputElement;
     await userEvent.click(firstDate);
@@ -72,6 +84,18 @@ export const VisualTestDateTimeInputValue: MtDatepickerStory = {
     // Open datepicker by clicking the input wrapper
     await userEvent.click(canvas.getByRole("textbox"));
     await waitUntil(() => document.getElementsByClassName("dp__menu").length > 0);
+
+    await userEvent.click(
+      document.querySelector('[data-test="year-toggle-overlay-0"]') as HTMLInputElement,
+    );
+
+    await userEvent.click(document.querySelector('[data-test="2024"]') as HTMLInputElement);
+
+    await userEvent.click(
+      document.querySelector('[data-test="month-toggle-overlay-0"]') as HTMLInputElement,
+    );
+
+    await userEvent.click(document.querySelector('[data-test="Nov"]') as HTMLInputElement);
 
     // Open the hours panel
     const hourButton = document.querySelector(
@@ -122,6 +146,18 @@ export const VisualTestDateRangeValue: MtDatepickerStory = {
     await userEvent.click(canvas.getByRole("textbox"));
     await waitUntil(() => document.getElementsByClassName("dp__menu").length > 0);
 
+    await userEvent.click(
+      document.querySelector('[data-test="year-toggle-overlay-0"]') as HTMLInputElement,
+    );
+
+    await userEvent.click(document.querySelector('[data-test="2024"]') as HTMLInputElement);
+
+    await userEvent.click(
+      document.querySelector('[data-test="month-toggle-overlay-0"]') as HTMLInputElement,
+    );
+
+    await userEvent.click(document.querySelector('[data-test="Nov"]') as HTMLInputElement);
+
     // Click first date on calendar
     const firstDate = document.getElementById("2024-11-13") as HTMLInputElement;
     await userEvent.click(firstDate);
@@ -151,6 +187,18 @@ export const VisualTestDateTimeRangeValue: MtDatepickerStory = {
     // Open datepicker by clicking the input wrapper
     await userEvent.click(canvas.getByRole("textbox"));
     await waitUntil(() => document.getElementsByClassName("dp__menu").length > 0);
+
+    await userEvent.click(
+      document.querySelector('[data-test="year-toggle-overlay-0"]') as HTMLInputElement,
+    );
+
+    await userEvent.click(document.querySelector('[data-test="2024"]') as HTMLInputElement);
+
+    await userEvent.click(
+      document.querySelector('[data-test="month-toggle-overlay-0"]') as HTMLInputElement,
+    );
+
+    await userEvent.click(document.querySelector('[data-test="Nov"]') as HTMLInputElement);
 
     // Set hours for first date
     const hourButton1 = document.querySelector(
