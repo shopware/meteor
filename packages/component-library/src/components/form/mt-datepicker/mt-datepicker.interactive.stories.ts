@@ -45,9 +45,7 @@ export const VisualTestDateInputValue: MtDatepickerStory = {
     await waitUntil(() => document.getElementsByClassName("dp__menu").length > 0);
 
     // Access the calendar and click the date
-    const firstDate = document.querySelector(
-      '[data-test="Wed Nov 13 2024 00:00:00 GMT+0100 (Central European Standard Time)"]',
-    ) as HTMLInputElement;
+    const firstDate = document.getElementById("2024-11-13") as HTMLInputElement;
     await userEvent.click(firstDate);
 
     // Check that the input value matches the date chosen
@@ -96,9 +94,7 @@ export const VisualTestDateTimeInputValue: MtDatepickerStory = {
     await userEvent.click(selectedMin);
 
     // Click date within calendar
-    const firstDate = document.querySelector(
-      '[data-test="Wed Nov 13 2024 00:00:00 GMT+0100 (Central European Standard Time)"]',
-    ) as HTMLInputElement;
+    const firstDate = document.getElementById("2024-11-13") as HTMLInputElement;
     await userEvent.click(firstDate);
 
     // Check that the input value matches the date chosen
@@ -127,15 +123,11 @@ export const VisualTestDateRangeValue: MtDatepickerStory = {
     await waitUntil(() => document.getElementsByClassName("dp__menu").length > 0);
 
     // Click first date on calendar
-    const firstDate = document.querySelector(
-      '[data-test="Wed Nov 13 2024 00:00:00 GMT+0100 (Central European Standard Time)"]',
-    ) as HTMLInputElement;
+    const firstDate = document.getElementById("2024-11-13") as HTMLInputElement;
     await userEvent.click(firstDate);
 
     // Click second date on calendar
-    const secondDate = document.querySelector(
-      '[data-test="Sat Nov 16 2024 00:00:00 GMT+0100 (Central European Standard Time)"]',
-    ) as HTMLInputElement;
+    const secondDate = document.getElementById("2024-11-16") as HTMLInputElement;
     await userEvent.click(secondDate);
 
     // Check that the input value matches the dates chosen
@@ -197,15 +189,11 @@ export const VisualTestDateTimeRangeValue: MtDatepickerStory = {
     await userEvent.click(selectedMinute2);
 
     // Click first date on calendar
-    const firstDate = document.querySelector(
-      '[data-test="Wed Nov 13 2024 00:00:00 GMT+0100 (Central European Standard Time)"]',
-    ) as HTMLInputElement;
+    const firstDate = document.getElementById("2024-11-13") as HTMLInputElement;
     await userEvent.click(firstDate);
 
     // Click second date on calendar
-    const secondDate = document.querySelector(
-      '[data-test="Sat Nov 16 2024 00:00:00 GMT+0100 (Central European Standard Time)"]',
-    ) as HTMLInputElement;
+    const secondDate = document.getElementById("2024-11-16") as HTMLInputElement;
     await userEvent.click(secondDate);
 
     // Check that the input value matches the dates and times chosen
