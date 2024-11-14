@@ -12,10 +12,6 @@
       {{ description }}
     </mt-text>
 
-    <mt-external-link v-if="linkHref && linkText" class="mt-empty-state__link" :href="linkHref">
-      {{ linkText }}
-    </mt-external-link>
-
     <mt-button
       v-if="buttonText"
       class="mt-empty-state__button"
@@ -30,7 +26,6 @@
 </template>
 
 <script setup lang="ts">
-import MtExternalLink from "@/components/form/mt-external-link/mt-external-link.vue";
 import MtButton from "@/components/form/mt-button/mt-button.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtText from "@/components/content/mt-text/mt-text.vue";
