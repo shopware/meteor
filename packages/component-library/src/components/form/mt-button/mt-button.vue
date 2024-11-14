@@ -370,6 +370,7 @@ export default defineComponent({
 
 .mt-button--x-small.mt-button--square {
   width: 24px;
+  height: 24px;
 }
 
 .mt-button--small {
@@ -381,6 +382,7 @@ export default defineComponent({
 
 .mt-button--small.mt-button--square {
   width: 32px;
+  height: 32px;
 }
 
 .mt-button--large {
@@ -392,10 +394,12 @@ export default defineComponent({
 
 .mt-button--large.mt-button--square {
   width: 48px;
+  height: 48px;
 }
 
 .mt-button--square {
   width: 40px;
+  height: 40px;
   padding-left: 0;
   padding-right: 0;
   text-align: center;
