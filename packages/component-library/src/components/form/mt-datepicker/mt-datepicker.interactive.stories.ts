@@ -45,15 +45,20 @@ export const VisualTestDateInputValue: MtDatepickerStory = {
     await waitUntil(() => document.getElementsByClassName("dp__menu").length > 0);
 
     // Access the calendar and click the date
-    const firstDate = document.getElementById("2024-10-12") as HTMLInputElement;
+    const firstDate = document.querySelector(
+      '[data-test="Wed Nov 13 2024 00:00:00 GMT+0100 (Central European Standard Time)"]',
+    ) as HTMLInputElement;
     await userEvent.click(firstDate);
 
     // Check that the input value matches the date chosen
     const input = document.querySelector('[data-test="dp-input"]') as HTMLInputElement;
-    expect(input.value).toContain("2024/10/12");
+    expect(input.value).toContain("2024/11/13");
 
     // Expect updatemodelvalue to have been called with date
-     expect(args.updateModelValue).toHaveBeenCalledWith(expect.stringContaining("24-10-12"));
+    expect(args.updateModelValue).toHaveBeenCalledWith(
+      expect.stringMatching(/^2024-11-13T\d{2}:\d{2}:\d{2}.\d{3}Z$/),
+    );
+
   },
 };
 
@@ -92,23 +97,27 @@ export const VisualTestDateTimeInputValue: MtDatepickerStory = {
     await userEvent.click(selectedMin);
 
     // Click date within calendar
-    const firstDate = document.getElementById("2024-10-12") as HTMLInputElement;
+    const firstDate = document.querySelector(
+      '[data-test="Wed Nov 13 2024 00:00:00 GMT+0100 (Central European Standard Time)"]',
+    ) as HTMLInputElement;
     await userEvent.click(firstDate);
 
     // Check that the input value matches the date chosen
     const input = document.querySelector('[data-test="dp-input"]') as HTMLInputElement;
-    expect(input.value).toContain("2024/10/12, 12:40");
+    expect(input.value).toContain("2024/11/13, 12:40");
 
     // Expect updatemodelvalue to have been called with date
-    expect(args.updateModelValue).toHaveBeenCalledWith(expect.stringContaining("24-10-12"));
+    expect(args.updateModelValue).toHaveBeenCalledWith(
+      expect.stringMatching(/^2024-11-13T11:40:00\.000Z$/),
+    );
   },
 };
 
-export const VisualRangeInputValue: MtDatepickerStory = {
-  name: "Should input range",
+export const VisualTestDateRangeValue: MtDatepickerStory = {
+  name: "Should input date range",
   args: {
     label: "Date value",
-    dateType: "datetime",
+    dateType: "date",
     range:true
   },
   play: async ({ canvasElement }) => {
@@ -119,17 +128,96 @@ export const VisualRangeInputValue: MtDatepickerStory = {
     await waitUntil(() => document.getElementsByClassName("dp__menu").length > 0);
 
     // Click first date on calendar
-    const firstDate = document.getElementById("2024-10-12") as HTMLInputElement;
+    const firstDate = document.querySelector(
+      '[data-test="Wed Nov 13 2024 00:00:00 GMT+0100 (Central European Standard Time)"]',
+    ) as HTMLInputElement;
     await userEvent.click(firstDate);
 
     // Click second date on calendar
-    const secondDate = document.getElementById("2024-10-14") as HTMLInputElement;
+    const secondDate = document.querySelector(
+      '[data-test="Sat Nov 16 2024 00:00:00 GMT+0100 (Central European Standard Time)"]',
+    ) as HTMLInputElement;
     await userEvent.click(secondDate);
 
     // Check that the input value matches the dates chosen
     const input = document.querySelector('[data-test="dp-input"]') as HTMLInputElement;
     const dateRange = input.value.split(" - ").map((date) => date.split(",")[0].trim());
-    expect(dateRange).toEqual(["2024/10/12", "2024/10/14"]);
+    expect(dateRange).toEqual(["2024/11/13", "2024/11/16"]);
+  },
+};
+
+export const VisualTestDateTimeRangeValue: MtDatepickerStory = {
+  name: "Should input datetime range",
+  args: {
+    label: "Date value",
+    dateType: "datetime",
+    range: true,
+    timeZone: "Europe/Berlin",
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    // Open datepicker by clicking the input wrapper
+    await userEvent.click(canvas.getByRole("textbox"));
+    await waitUntil(() => document.getElementsByClassName("dp__menu").length > 0);
+
+    // Set hours for first date
+    const hourButton1 = document.querySelector(
+      '[data-test="hours-toggle-overlay-btn-0"]',
+    ) as HTMLInputElement;
+    await userEvent.click(hourButton1);
+
+    const selectedHour1 = document.querySelector('[data-test="12"]') as HTMLInputElement;
+    await userEvent.click(selectedHour1);
+
+    // Set minutes for first date
+    const minuteButton1 = document.querySelector(
+      '[data-test="minutes-toggle-overlay-btn-0"]',
+    ) as HTMLInputElement;
+    await userEvent.click(minuteButton1);
+
+    const selectedMinute1 = document.querySelector('[data-test="40"]') as HTMLInputElement;
+    await userEvent.click(selectedMinute1);
+
+    // Set hours for second date
+    const hourButton2 = document.querySelector(
+      '[data-test="hours-toggle-overlay-btn-1"]',
+    ) as HTMLInputElement;
+    await userEvent.click(hourButton2);
+
+    const selectedHour2 = document.querySelector('[data-test="12"]') as HTMLInputElement;
+    await userEvent.click(selectedHour2);
+
+    // Set minutes for second date
+    const minuteButton2 = document.querySelector(
+      '[data-test="minutes-toggle-overlay-btn-1"]',
+    ) as HTMLInputElement;
+    await userEvent.click(minuteButton2);
+
+    const selectedMinute2 = document.querySelector('[data-test="40"]') as HTMLInputElement;
+    await userEvent.click(selectedMinute2);
+
+    // Click first date on calendar
+    const firstDate = document.querySelector(
+      '[data-test="Wed Nov 13 2024 00:00:00 GMT+0100 (Central European Standard Time)"]',
+    ) as HTMLInputElement;
+    await userEvent.click(firstDate);
+
+    // Click second date on calendar
+    const secondDate = document.querySelector(
+      '[data-test="Sat Nov 16 2024 00:00:00 GMT+0100 (Central European Standard Time)"]',
+    ) as HTMLInputElement;
+    await userEvent.click(secondDate);
+
+    // Check that the input value matches the dates and times chosen
+    const input = document.querySelector('[data-test="dp-input"]') as HTMLInputElement;
+    expect(input.value).toBe("2024/11/13, 12:40 - 2024/11/16, 12:40");
+
+    // Expect updatemodelvalue to have been called with array of ISO formatted dates
+    expect(args.updateModelValue).toHaveBeenCalledWith([
+      expect.stringMatching(/^2024-11-13T11:40:00\.000Z$/),
+      expect.stringMatching(/^2024-11-16T11:40:00\.000Z$/),
+    ]);
   },
 };
 
