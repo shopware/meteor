@@ -172,10 +172,10 @@ export default defineComponent({
 }
 
 .mt-button__content {
-  display: flex;
-  justify-content: center;
+  display: grid;
+  grid-auto-flow: column;
   align-items: center;
-  gap: 8px;
+  grid-gap: 0 8px;
 }
 
 .mt-button__content--hidden {
