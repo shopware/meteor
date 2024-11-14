@@ -53,7 +53,6 @@ describe("src/app/component/form/mt-datepicker", () => {
     expect(datepickerInput.attributes().placeholder).toBe(placeholderText);
   });
 
-
   it("should not show the timezone if datepicker is configured for date only", async () => {
     wrapper = await createWrapper({
       props: {
@@ -78,5 +77,4 @@ describe("src/app/component/form/mt-datepicker", () => {
     expect(timeZoneHint.exists()).toBe(true);
     expect(timeZoneHint.text()).toBe("Europe/Berlin");
   });
-
 });

@@ -311,7 +311,7 @@ export default defineComponent({
   border-radius: var(--border-radius-xs);
   font: inherit;
   color: var(--color-text-secondary-default);
-  background:var(--color-elevation-surface-raised);
+  background: var(--color-elevation-surface-raised);
 }
 
 .dp__input_icon {
@@ -358,7 +358,7 @@ export default defineComponent({
 .dp__arrow_top {
   top: -0.5px;
   left: 24px;
-  border-top-right-radius:3px;
+  border-top-right-radius: 3px;
 }
 
 .dp__instance_calendar {

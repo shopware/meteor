@@ -58,7 +58,6 @@ export const VisualTestDateInputValue: MtDatepickerStory = {
     expect(args.updateModelValue).toHaveBeenCalledWith(
       expect.stringMatching(/^2024-11-13T\d{2}:\d{2}:\d{2}.\d{3}Z$/),
     );
-
   },
 };
 
@@ -67,7 +66,7 @@ export const VisualTestDateTimeInputValue: MtDatepickerStory = {
   args: {
     label: "Date value",
     dateType: "datetime",
-    timeZone: "Europe/Berlin"
+    timeZone: "Europe/Berlin",
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
@@ -118,7 +117,7 @@ export const VisualTestDateRangeValue: MtDatepickerStory = {
   args: {
     label: "Date value",
     dateType: "date",
-    range:true
+    range: true,
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
