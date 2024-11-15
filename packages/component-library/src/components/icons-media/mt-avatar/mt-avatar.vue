@@ -10,6 +10,7 @@
     ]"
     :style="[avatarImage, avatarSize, avatarInitialsSize]"
     role="img"
+    alt=""
   >
     <slot>
       <span v-if="showInitials" data-testid="mt-avatar-initials">
