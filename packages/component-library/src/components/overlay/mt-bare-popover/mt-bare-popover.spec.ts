@@ -1,6 +1,7 @@
 import { userEvent } from "@storybook/test";
 import { screen, render } from "@testing-library/vue";
 import MtBarePopover from "./mt-bare-popover.vue";
+import { flushPromises } from "@vue/test-utils";
 
 describe("mt-bare-popover", () => {
   it("does not show the popover by default", () => {
@@ -101,4 +102,61 @@ describe("mt-bare-popover", () => {
       expect(screen.getByRole("dialog")).toBeVisible();
     },
   );
+
+  it("closes the popover when clicking outside of it", async () => {
+    // ARRANGE
+    render({
+      components: { MtBarePopover },
+      template: `
+        <mt-bare-popover>
+          <template #trigger="params">
+            <button v-bind="params">Trigger</button>
+          </template>
+
+          <template #default>
+            <div>Content</div>
+          </template>
+        </mt-bare-popover>
+
+        <div data-testid="element-outside-of-popover"></div>
+      `,
+    });
+
+    await userEvent.click(screen.getByRole("button"));
+
+    // ACT
+    await userEvent.click(screen.getByTestId("element-outside-of-popover"));
+
+    // ASSERT
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("closes the popover when pressing the Escape key", async () => {
+    // ARRANGE
+    render({
+      components: { MtBarePopover },
+      template: `
+        <mt-bare-popover>
+          <template #trigger="params">
+            <button v-bind="params">Trigger</button>
+          </template>
+
+          <template #default>
+            <div>Content</div>
+          </template>
+        </mt-bare-popover>
+      `,
+    });
+
+    await userEvent.click(screen.getByRole("button"));
+
+    // ACT
+    await userEvent.keyboard("{Escape}");
+
+    // ASSERT
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(document.activeElement?.getAttribute("id")).toBe(
+      screen.getByRole("button").getAttribute("id"),
+    );
+  });
 });
