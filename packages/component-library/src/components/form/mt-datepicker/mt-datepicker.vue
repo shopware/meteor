@@ -2,9 +2,7 @@
   <div class="wrapper">
     <mt-field-label
       :style="{ gridArea: 'label' }"
-      :id="fieldId"
-      :required="required"
-      :inheritance="inheritance"
+      id="field-id"
     >
       {{ label }}
     </mt-field-label>
