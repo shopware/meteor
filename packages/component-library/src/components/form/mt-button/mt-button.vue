@@ -370,7 +370,7 @@ export default defineComponent({
 }
 
 .mt-button--x-small .mt-button__content {
-   min-height: 18px;
+  min-height: 18px;
 }
 
 .mt-button--x-small.mt-button--square {
@@ -386,7 +386,7 @@ export default defineComponent({
 }
 
 .mt-button--small .mt-button__content {
-   min-height: 26px;
+  min-height: 26px;
 }
 
 .mt-button--small.mt-button--square {
@@ -402,7 +402,7 @@ export default defineComponent({
 }
 
 .mt-button--large .mt-button__content {
-   min-height: 42px;
+  min-height: 42px;
 }
 
 .mt-button--large.mt-button--square {
