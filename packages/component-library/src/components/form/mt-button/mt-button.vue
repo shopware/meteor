@@ -172,6 +172,7 @@ export default defineComponent({
 }
 
 .mt-button__content {
+  min-height: 26px;
   display: grid;
   grid-auto-flow: column;
   align-items: center;
@@ -368,6 +369,10 @@ export default defineComponent({
   line-height: 18px;
 }
 
+.mt-button--x-small .mt-button__content {
+   min-height: 18px;
+}
+
 .mt-button--x-small.mt-button--square {
   width: 24px;
   height: 24px;
@@ -380,6 +385,10 @@ export default defineComponent({
   line-height: 26px;
 }
 
+.mt-button--small .mt-button__content {
+   min-height: 26px;
+}
+
 .mt-button--small.mt-button--square {
   width: 32px;
   height: 32px;
@@ -390,6 +399,10 @@ export default defineComponent({
   padding-right: 28px;
   line-height: 42px;
   font-size: var(--font-size-2xs);
+}
+
+.mt-button--large .mt-button__content {
+   min-height: 42px;
 }
 
 .mt-button--large.mt-button--square {
