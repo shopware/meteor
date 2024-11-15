@@ -25,11 +25,12 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, onMounted, ref } from "vue";
+import { nextTick, onMounted, onUnmounted, ref } from "vue";
 import MtText from "@/components/content/mt-text/mt-text.vue";
 import { flip, offset, shift, useFloating } from "@floating-ui/vue";
 import { createId } from "@/utils/id";
 import { onClickOutside, useEventListener } from "@vueuse/core";
+import * as focusTrap from "focus-trap";
 
 const triggerRef = ref<HTMLElement | null>(null);
 const dialogRef = ref<HTMLElement | null>(null);
@@ -40,6 +41,8 @@ const { floatingStyles } = useFloating(triggerRef, dialogRef, {
 
 const isVisible = ref(false);
 
+let trap: ReturnType<typeof focusTrap.createFocusTrap> | undefined;
+
 function toggleDialog() {
   if (isVisible.value) {
     isVisible.value = false;
@@ -48,7 +51,16 @@ function toggleDialog() {
 
   isVisible.value = true;
   nextTick(() => {
-    dialogRef.value?.focus();
+    if (!dialogRef.value) return;
+    dialogRef.value.focus();
+
+    trap = focusTrap.createFocusTrap(dialogRef.value, {
+      tabbableOptions: { displayCheck: "none" },
+      allowOutsideClick: true,
+      fallbackFocus: dialogRef.value,
+    });
+
+    trap.activate();
   });
 }
 
@@ -77,6 +89,10 @@ onClickOutside(dialogRef, (event) => {
   isVisible.value = false;
 });
 
+onUnmounted(() => {
+  if (trap) trap.deactivate();
+});
+
 // needs to be in onMounted to avoid SSR issues
 onMounted(() => {
   useEventListener(dialogRef, "keydown", (event) => {
@@ -102,6 +118,7 @@ onMounted(() => {
 
   &:focus-visible {
     outline: 2px solid var(--color-border-brand-selected);
+    outline-offset: 2px;
   }
 }
 

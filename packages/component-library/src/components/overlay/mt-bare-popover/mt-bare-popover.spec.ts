@@ -159,4 +159,36 @@ describe("mt-bare-popover", () => {
       screen.getByRole("button").getAttribute("id"),
     );
   });
+
+  it("locks the focus inside the popover when it is open", async () => {
+    // ARRANGE
+    render({
+      components: { MtBarePopover },
+      template: `
+        <mt-bare-popover>
+          <template #trigger="params">
+            <button v-bind="params">Trigger</button>
+          </template>
+
+          <template #default>
+            <input />
+          </template>
+        </mt-bare-popover>
+      `,
+    });
+
+    await userEvent.click(screen.getByRole("button"));
+
+    // ACT
+    await userEvent.keyboard("{Tab}");
+
+    // focuses the body element
+    await userEvent.keyboard("{Tab}");
+
+    // focuses the button
+    // await userEvent.keyboard("{Tab}");
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveFocus();
+  });
 });
