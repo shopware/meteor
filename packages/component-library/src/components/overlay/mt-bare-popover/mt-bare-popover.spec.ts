@@ -191,4 +191,35 @@ describe("mt-bare-popover", () => {
     // ASSERT
     expect(screen.getByRole("textbox")).toHaveFocus();
   });
+
+  it("stops locking the focus when the popover gets closed by clicking outside the popover", async () => {
+    // ARRANGE
+    render({
+      components: { MtBarePopover },
+      template: `
+        <mt-bare-popover>
+          <template #trigger="params">
+            <button v-bind="params">Trigger</button>
+          </template>
+
+          <template #default>
+            <input />
+          </template>
+        </mt-bare-popover>
+
+        <div data-testid="element-outside-of-popover"></div>
+      `,
+    });
+
+    await userEvent.click(screen.getByRole("button"));
+
+    // ACT
+    await userEvent.click(screen.getByTestId("element-outside-of-popover"));
+    await userEvent.tab();
+
+    // ASSERT
+    expect(document.activeElement?.getAttribute("id")).toBe(
+      screen.getByRole("button").getAttribute("id"),
+    );
+  });
 });
