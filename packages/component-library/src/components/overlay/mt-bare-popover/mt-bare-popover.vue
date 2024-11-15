@@ -86,6 +86,8 @@ onClickOutside(dialogRef, (event) => {
 
   if (clickedOnTrigger) return;
 
+  if (trap) trap.deactivate();
+
   isVisible.value = false;
 });
 
