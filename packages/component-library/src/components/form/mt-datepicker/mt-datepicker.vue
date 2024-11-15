@@ -1,7 +1,12 @@
 <template>
   <div class="wrapper">
-    <mt-field-label :style="{ gridArea: 'label' }">
-        {{ label }}
+    <mt-field-label
+      :style="{ gridArea: 'label' }"
+      :id="fieldId"
+      :required="required"
+      :inheritance="inheritance"
+    >
+      {{ label }}
     </mt-field-label>
 
     <vue-datepicker
@@ -69,7 +74,7 @@ import { defineComponent } from "vue";
 import { zonedTimeToUtc } from "date-fns-tz";
 import type { PropType } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
-import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue"
+import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import DatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 
@@ -303,7 +308,7 @@ export default defineComponent({
 .wrapper {
   display: grid;
   grid-template-areas:
-   "label"
+    "label"
     "datepicker"
     "hint";
   row-gap: 0.5rem;
