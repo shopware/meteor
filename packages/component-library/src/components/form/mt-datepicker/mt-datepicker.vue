@@ -1,8 +1,13 @@
 <template>
   <div class="wrapper">
+    <mt-field-label :style="{ gridArea: 'label' }">
+        {{ label }}
+    </mt-field-label>
+
     <vue-datepicker
       ref="datepicker"
       v-model="computedValue"
+      :style="{ gridArea: 'datepicker' }"
       class="date-picker"
       position="left"
       @open="isDatepickerOpen = true"
@@ -51,7 +56,7 @@
     </vue-datepicker>
 
     <template v-if="isTimeHintVisible">
-      <div class="field-hint" data-test="time-zone-hint">
+      <div class="field-hint" data-test="time-zone-hint" :style="{ gridArea: 'hint' }">
         <mt-icon name="solid-clock" class="field-hint-icon" />
         <p>{{ timeZone || "UTC" }}</p>
       </div>
@@ -64,6 +69,7 @@ import { defineComponent } from "vue";
 import { zonedTimeToUtc } from "date-fns-tz";
 import type { PropType } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
+import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue"
 import DatePicker from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 
@@ -73,6 +79,7 @@ export default defineComponent({
   components: {
     "mt-icon": MtIcon,
     "vue-datepicker": DatePicker,
+    "mt-field-label": MtFieldLabel,
   },
 
   props: {
@@ -291,6 +298,15 @@ export default defineComponent({
   --dp-range-between-dates-background-color: var(--color-background-brand-default);
   --dp-range-between-dates-text-color: var(--color-text-primary-default);
   --dp-range-between-border-color: var(--color-background-brand-default);
+}
+
+.wrapper {
+  display: grid;
+  grid-template-areas:
+   "label"
+    "datepicker"
+    "hint";
+  row-gap: 0.5rem;
 }
 
 /* || Datepicker  */
