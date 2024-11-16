@@ -8,35 +8,55 @@
     }"
   />
 
-  <div
-    v-if="isVisible"
-    role="dialog"
-    class="mt-bare-popover__dialog"
-    ref="dialogRef"
-    tabindex="-1"
-    :style="floatingStyles"
-  >
-    <mt-text as="h4" size="s" weight="semibold" class="mt-bare-popover__title">Title</mt-text>
+  <teleport to="body">
+    <div
+      v-if="isVisible"
+      role="dialog"
+      :class="['mt-bare-popover__dialog', [`mt-bare-popover__dialog--width-${width}`]]"
+      ref="dialogRef"
+      tabindex="-1"
+      :style="floatingStyles"
+    >
+      <mt-text v-if="!!title" as="h4" size="s" weight="semibold" class="mt-bare-popover__title"
+        >Title</mt-text
+      >
 
-    <ul class="mt-bare-popover__list">
-      <slot name="default" />
-    </ul>
-  </div>
+      <ul class="mt-bare-popover__list">
+        <slot name="default" />
+      </ul>
+    </div>
+  </teleport>
 </template>
 
 <script setup lang="ts">
 import { nextTick, onMounted, onUnmounted, ref } from "vue";
 import MtText from "@/components/content/mt-text/mt-text.vue";
-import { flip, offset, shift, useFloating } from "@floating-ui/vue";
+import { autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/vue";
 import { createId } from "@/utils/id";
 import { onClickOutside, useEventListener } from "@vueuse/core";
 import * as focusTrap from "focus-trap";
+
+type A = "bottom" | "top" | "left" | "right";
+type B = "start" | "end" | "center";
+
+const props = withDefaults(
+  defineProps<{
+    placement?: `${A}-${B}`;
+    width?: "auto" | "large" | "medium" | "small";
+    title?: string;
+  }>(),
+  {
+    placement: "bottom-start",
+    width: "small",
+  },
+);
 
 const triggerRef = ref<HTMLElement | null>(null);
 const dialogRef = ref<HTMLElement | null>(null);
 const { floatingStyles } = useFloating(triggerRef, dialogRef, {
   middleware: [offset(8), flip(), shift()],
-  placement: "bottom-start",
+  placement: props.placement,
+  whileElementsMounted: autoUpdate,
 });
 
 const isVisible = ref(false);
@@ -110,18 +130,36 @@ onMounted(() => {
 
 <style scoped>
 .mt-bare-popover__dialog {
-  padding: 1rem;
+  padding: 0.5rem 1rem;
   box-shadow:
     0px 1px 1px 0px rgba(0, 0, 0, 0.08),
     0px 2px 1px 0px rgba(0, 0, 0, 0.06),
     0px 1px 3px 0px rgba(0, 0, 0, 0.1);
   border-radius: var(--border-radius-overlay);
+  border: 1px solid var(--color-border-primary-default);
   width: max-content;
+  background: var(--color-elevation-surface-overlay);
 
   &:focus-visible {
     outline: 2px solid var(--color-border-brand-selected);
     outline-offset: 2px;
   }
+}
+
+.mt-bare-popover__dialog--width-auto {
+  width: max-content;
+}
+
+.mt-bare-popover__dialog--width--large {
+  width: 22rem;
+}
+
+.mt-bare-popover__dialog--width-medium {
+  width: 18rem;
+}
+
+.mt-bare-popover__dialog--width-small {
+  width: 14rem;
 }
 
 .mt-bare-popover__title {
@@ -130,5 +168,7 @@ onMounted(() => {
 
 .mt-bare-popover__list {
   list-style: none;
+  display: flex;
+  flex-direction: column;
 }
 </style>

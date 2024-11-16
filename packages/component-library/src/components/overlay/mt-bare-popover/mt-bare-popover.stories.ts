@@ -18,7 +18,9 @@ export default {
     </template>
 
     <template #default>
-        <mt-bare-popover-item />
+        <mt-bare-popover-item>
+            Item 1
+        </mt-bare-popover-item>
     </template>
 </mt-bare-popover>
 `,
