@@ -1,90 +1,29 @@
 <template>
-  <priority-plus ref="priorityPlus" #default="{ mainItems, moreItems }" :list="items">
-    <div :class="tabClasses" role="tablist">
-      <span class="mt-tabs__slider" :class="sliderClasses" :style="sliderStyle" />
-
-      <template v-if="!vertical">
-        <button
-          v-for="item in mainItems"
-          :key="item.name"
-          :data-priority-plus="item.name"
-          ref="items"
-          class="mt-tabs__item"
-          :data-text="item.label"
-          :class="getItemClasses(item)"
-          :data-item-name="item.name"
-          role="tab"
-          :aria-selected="item.name === activeItemName"
-          :disabled="item.disabled"
-          @click="handleClick(item.name)"
-          @keyup.enter="handleClick(item.name)"
-        >
-          {{ item.label }}
-
-          <mt-icon
-            v-if="item.hasError"
-            class="mt-tabs__error-badge"
-            name="solid-exclamation-circle"
-          />
-
-          <mt-color-badge v-if="item.badge" :variant="item.badge" rounded />
-        </button>
-
-        <!-- @vue-skip -->
-        <mt-context-button
-          v-if="moreItems.length"
-          ref="more-items-button"
-          :has-error="moreItems.some((i) => i.hasError)"
-        >
-          <template #button-text>
-            <!-- Add translation  -->
-            More
-          </template>
-
-          <template #default="{ toggleFloatingUi }">
-            <mt-context-menu-item
-              v-for="moreItem in moreItems"
-              :key="moreItem.name"
-              :type="getContextMenuItemVariant(moreItem)"
-              role="tab"
-              :aria-selected="moreItem.name === activeItemName"
-              :label="moreItem.label"
-              @click="
-                handleClick(moreItem.name);
-                toggleFloatingUi();
-              "
-              @keyup.enter="handleClick(moreItem.name)"
-            />
-          </template>
-        </mt-context-button>
-      </template>
-
-      <template v-if="vertical">
-        <li
-          v-for="item in [...mainItems, ...moreItems]"
-          :key="item.name"
-          ref="items"
-          class="mt-tabs__item"
-          :class="getItemClasses(item)"
-          :data-item-name="item.name"
-          @click="handleClick(item.name)"
-        >
-          {{ item.label }}
-        </li>
-      </template>
-    </div>
-  </priority-plus>
+  <ul class="mt-tabs">
+    <li v-for="item in items" :key="item.name">
+      <button
+        :class="[
+          'mt-tabs__item',
+          {
+            'mt-tabs__item--active': item.name === nameOfActiveItem,
+          },
+        ]"
+        role="tab"
+        :aria-selected="item.name === nameOfActiveItem"
+      >
+        {{ item.label }}
+      </button>
+    </li>
+  </ul>
 </template>
 
-<script lang="ts">
-import type { PropType } from "vue";
-
-import { defineComponent, computed } from "vue";
-import MtContextButton from "../../context-menu/mt-context-button/mt-context-button.vue";
-import MtContextMenuItem from "../../context-menu/mt-context-menu-item/mt-context-menu-item.vue";
+<script setup lang="ts">
+import { defineComponent, computed, ref, onMounted } from "vue";
 import MtColorBadge from "../../feedback-indicator/mt-color-badge/mt-color-badge.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import PriorityPlus from "../../_internal/mt-priority-plus-navigation.vue";
+
+// TODO: add default bottom margin
 import { useFutureFlags } from "@/composables/useFutureFlags";
 
 export interface TabItem {
@@ -98,262 +37,25 @@ export interface TabItem {
   hidden?: boolean;
 }
 
-export default defineComponent({
-  name: "MtTabs",
+// TODO: IMO it makes more sense to use v-model for the component
+defineEmits(["new-item-active"]);
 
-  components: {
-    "mt-context-button": MtContextButton,
-    "mt-context-menu-item": MtContextMenuItem,
-    "priority-plus": PriorityPlus,
-    "mt-color-badge": MtColorBadge,
-    "mt-icon": MtIcon,
-  },
+const props = defineProps<{
+  items: TabItem[];
+  vertical?: boolean;
+  small?: boolean;
+  defaultItem?: string;
+}>();
 
-  emits: ["new-item-active"],
+const nameOfActiveItem = ref("unknown");
+onMounted(() => {
+  const firstItem = props.items.at(0);
+  if (!firstItem)
+    throw new Error(
+      "Failed to render mt-tabs; No items provided, please provide at least one item.",
+    );
 
-  props: {
-    items: {
-      type: Array as PropType<TabItem[]>,
-      required: true,
-    },
-
-    vertical: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    /**
-     * @deprecated v4.0.0 - Set max-width through parent container element
-     */
-    small: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    defaultItem: {
-      type: String,
-      required: false,
-      default: "",
-    },
-  },
-
-  data() {
-    return {
-      // refreshKey is for recalculating specific computed properties
-      refreshKey: true,
-      activeItemName: "",
-      showMoreItems: false,
-      passedFirstRender: false,
-    };
-  },
-
-  computed: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    activeDomItem(): any | undefined {
-      this.refreshKey;
-
-      // Access "this.activeItemName" before to react dynamically on changes
-      const activeItemName = this.activeItemName;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const domItems = this.$refs.items ? (this.$refs.items as any[]) : [];
-
-      const activeDomItem = domItems.find((item) => {
-        return item.getAttribute("data-item-name") === activeItemName;
-      });
-
-      return activeDomItem;
-    },
-
-    sliderPosition(): number {
-      this.refreshKey;
-
-      if (!this.activeItem) {
-        return 0;
-      }
-
-      // Handle the case when the active item is hidden
-      if (!this.activeDomItem && this.$refs["more-items-button"]) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return (this.$refs["more-items-button"] as any).$el?.offsetLeft;
-      }
-
-      const leftPaddingOfActiveDomItem = parseFloat(
-        getComputedStyle(this.activeDomItem).paddingLeft,
-      );
-
-      return this.vertical
-        ? this.activeDomItem.offsetTop
-        : this.activeDomItem.offsetLeft + leftPaddingOfActiveDomItem;
-    },
-
-    sliderLength(): number {
-      this.refreshKey;
-
-      if (!this.activeItem) {
-        return 0;
-      }
-
-      // Handle the case when the active item is hidden
-      if (!this.activeDomItem && this.$refs["more-items-button"]) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return (this.$refs["more-items-button"] as any).$el?.offsetWidth;
-      }
-
-      if (this.activeItem?.hidden && this.$refs["more-items-button"]) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return (this.$refs["more-items-button"] as any).$el?.offsetWidth;
-      }
-
-      const stylesOfActiveDomItem = getComputedStyle(this.activeDomItem);
-      const widthWithoutPadding =
-        this.activeDomItem.clientWidth -
-        parseFloat(stylesOfActiveDomItem.paddingLeft) -
-        parseFloat(stylesOfActiveDomItem.paddingRight);
-
-      return this.vertical ? this.activeDomItem.offsetHeight : widthWithoutPadding;
-    },
-
-    activeItem(): TabItem | undefined {
-      this.refreshKey;
-
-      return this.items.find((item) => {
-        return item.name === this.activeItemName;
-      });
-    },
-
-    sliderClasses(): Record<string, boolean> {
-      this.refreshKey;
-
-      return {
-        "mt-tabs__slider--error": this.activeItem?.hasError ?? false,
-        "mt-tabs__slider--animated": this.passedFirstRender,
-      };
-    },
-
-    sliderStyle(): string {
-      this.refreshKey;
-
-      if (this.vertical) {
-        return `
-          transform: translate(0, ${this.sliderPosition}px) rotate(90deg);
-          width: ${this.sliderLength}px;
-      `;
-      }
-
-      return `
-        transform: translate(${this.sliderPosition}px, 0) rotate(0deg);
-        width: ${this.sliderLength}px;
-    `;
-    },
-  },
-
-  setup(props) {
-    const futureFlags = useFutureFlags();
-
-    const tabClasses = computed(() => {
-      return [
-        "mt-tabs",
-        {
-          "mt-tabs--vertical": props.vertical,
-          "mt-tabs--small": props.small,
-          "mt-tabs--future-remove-default-margin": futureFlags.removeDefaultMargin,
-        },
-      ];
-    });
-
-    return {
-      tabClasses,
-    };
-  },
-
-  watch: {
-    items: "handleResize",
-    vertical: "handleResize",
-    small: "handleResize",
-  },
-
-  mounted() {
-    this.setActiveItem(this.defaultItem);
-
-    this.$nextTick(() => {
-      this.handleResize();
-
-      this.passedFirstRender = true;
-    });
-
-    // @ts-expect-error $device helper is not registered in TS yet
-    this.$device.onResize({
-      listener() {
-        this.handleResize();
-      },
-      component: this,
-      scope: this,
-    });
-  },
-
-  beforeUnmount() {
-    // @ts-expect-error $device helper is not registered in TS yet
-    this.$device.removeResizeListener(this);
-  },
-
-  methods: {
-    handleClick(itemName: string): void {
-      this.setActiveItem(itemName);
-      this.$emit("new-item-active", itemName);
-
-      const matchingItem = this.items.find((item) => item.name === itemName);
-
-      if (!matchingItem?.onClick) {
-        return;
-      }
-
-      matchingItem.onClick(itemName);
-    },
-
-    getItemClasses(item: TabItem) {
-      return {
-        "mt-tabs__item--error": item.hasError,
-        "mt-tabs__item--active": item.name === this.activeItemName,
-      };
-    },
-
-    getContextMenuItemVariant(item: TabItem): string {
-      if (item.hasError) {
-        return "critical";
-      }
-
-      if (item.name === this.activeItemName) {
-        return "active";
-      }
-
-      if (item.badge === "critical") {
-        return "critical";
-      }
-
-      return "default";
-    },
-
-    setActiveItem(itemName: string): void {
-      this.activeItemName = `${itemName}`;
-      this.refreshKey = !this.refreshKey;
-    },
-
-    handleResize() {
-      if (this.$refs.priorityPlus) {
-        this.refreshKey = !this.refreshKey;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (this.$refs.priorityPlus as any).handleResize().then(() => {
-          this.refreshKey = !this.refreshKey;
-        });
-      }
-    },
-
-    toggleMoreTabItems() {
-      this.showMoreItems = !this.showMoreItems;
-    },
-  },
+  nameOfActiveItem.value = props.defaultItem ?? firstItem.name;
 });
 </script>
 
@@ -362,6 +64,7 @@ export default defineComponent({
   display: flex;
   position: relative;
   box-shadow: inset 0 -1px 0 var(--color-border-primary-default);
+  list-style: none;
 }
 
 .mt-tabs--small {
@@ -447,29 +150,11 @@ export default defineComponent({
   height: 2px;
   background-color: var(--color-border-brand-selected);
   z-index: 1;
+  transition: 0.2s all ease-in-out;
 }
 
 .mt-tabs__slider--error {
   background-color: var(--color-border-critical-default);
-}
-
-.mt-tabs__slider--animated {
-  transition: 0.2s all ease-in-out;
-}
-
-.mt-context-button {
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid var(--color-border-primary-default);
-
-  & button {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: var(--font-size-s);
-    line-height: var(--font-line-height-s);
-    font-family: var(--font-family-body);
-  }
 }
 
 .mt-tabs__error-badge {
