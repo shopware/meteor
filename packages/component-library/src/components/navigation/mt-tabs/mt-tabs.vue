@@ -29,12 +29,24 @@
       </button>
     </li>
 
-    <div class="mt-tabs__slider" :style="sliderStyles" />
+    <div
+      :class="['mt-tabs__slider', { 'mt-tabs__slider--animated': passedFirstRender }]"
+      :style="sliderStyles"
+    />
   </ul>
 </template>
 
 <script setup lang="ts">
-import { defineComponent, computed, ref, onMounted, nextTick } from "vue";
+import {
+  defineComponent,
+  computed,
+  ref,
+  onMounted,
+  watch,
+  onBeforeUpdate,
+  onUpdated,
+  nextTick,
+} from "vue";
 import MtColorBadge from "../../feedback-indicator/mt-color-badge/mt-color-badge.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import PriorityPlus from "../../_internal/mt-priority-plus-navigation.vue";
@@ -66,6 +78,8 @@ const props = defineProps<{
 
 const tabListRef = ref<HTMLElement | null>(null);
 
+const passedFirstRender = ref(false);
+
 const sliderStyles = computed(() => {
   if (!tabListRef.value || nameOfActiveTab.value === "unknown") return undefined;
 
@@ -83,6 +97,15 @@ const sliderStyles = computed(() => {
     width: `${activeTab.offsetWidth}px`,
     left: `${activeTab.offsetLeft}px`,
   };
+});
+
+onMounted(async () => {
+  if (passedFirstRender.value) return;
+
+  // nextTick does not work here, so we use setTimeout
+  setTimeout(() => {
+    passedFirstRender.value = true;
+  }, 1);
 });
 
 function changeActiveTab(tabName: string) {
@@ -195,6 +218,9 @@ const futureFlags = useFutureFlags();
   height: 2px;
   background-color: var(--color-border-brand-selected);
   z-index: 1;
+}
+
+.mt-tabs__slider--animated {
   transition: 0.25s all cubic-bezier(0.77, 0, 0.175, 1);
 }
 
