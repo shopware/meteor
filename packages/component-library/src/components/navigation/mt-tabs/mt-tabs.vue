@@ -9,6 +9,8 @@
           },
         ]"
         role="tab"
+        @click="() => changeActiveTab(item.name)"
+        :data-text="item.label"
         :aria-selected="item.name === nameOfActiveItem"
       >
         {{ item.label }}
@@ -38,7 +40,7 @@ export interface TabItem {
 }
 
 // TODO: IMO it makes more sense to use v-model for the component
-defineEmits(["new-item-active"]);
+const emit = defineEmits(["new-item-active"]);
 
 const props = defineProps<{
   items: TabItem[];
@@ -46,6 +48,11 @@ const props = defineProps<{
   small?: boolean;
   defaultItem?: string;
 }>();
+
+function changeActiveTab(tabName: string) {
+  nameOfActiveItem.value = tabName;
+  emit("new-item-active", tabName);
+}
 
 const nameOfActiveItem = ref("unknown");
 onMounted(() => {
