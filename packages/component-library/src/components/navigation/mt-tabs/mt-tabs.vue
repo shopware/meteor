@@ -1,7 +1,8 @@
 <template>
-  <ul class="mt-tabs">
+  <ul class="mt-tabs" ref="tabListRef">
     <li v-for="item in items" :key="item.name">
       <button
+        :id="`mt-tabs__item--${item.name}`"
         :class="[
           'mt-tabs__item',
           {
@@ -16,6 +17,8 @@
         {{ item.label }}
       </button>
     </li>
+
+    <div class="mt-tabs__slider" :style="sliderStyles" />
   </ul>
 </template>
 
@@ -48,6 +51,27 @@ const props = defineProps<{
   small?: boolean;
   defaultItem?: string;
 }>();
+
+const tabListRef = ref<HTMLElement | null>(null);
+
+const sliderStyles = computed(() => {
+  if (!tabListRef.value || nameOfActiveItem.value === "unknown") return undefined;
+
+  const activeTab = tabListRef.value.querySelector(
+    `#mt-tabs__item--${nameOfActiveItem.value}`,
+  ) as HTMLElement | null;
+
+  if (!activeTab)
+    throw new Error(
+      "Failed to render mt-tabs; Tab not found, please make sure the tab exists. Searched for tab with id: mt-tabs__item--" +
+        nameOfActiveItem.value,
+    );
+
+  return {
+    width: `${activeTab.offsetWidth}px`,
+    left: `${activeTab.offsetLeft}px`,
+  };
+});
 
 function changeActiveTab(tabName: string) {
   nameOfActiveItem.value = tabName;
@@ -157,7 +181,7 @@ onMounted(() => {
   height: 2px;
   background-color: var(--color-border-brand-selected);
   z-index: 1;
-  transition: 0.2s all ease-in-out;
+  transition: 0.25s all cubic-bezier(0.77, 0, 0.175, 1);
 }
 
 .mt-tabs__slider--error {
