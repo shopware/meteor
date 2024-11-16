@@ -1,6 +1,6 @@
 <template>
   <li>
-    <button class="mt-bare-popover-item">
+    <button class="mt-bare-popover-item" :role="$attrs?.role ?? 'button'">
       <slot />
     </button>
   </li>
