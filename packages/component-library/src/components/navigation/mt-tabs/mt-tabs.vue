@@ -3,6 +3,7 @@
     :class="[
       'mt-tabs',
       {
+        'mt-tabs--small': small,
         'mt-tabs--future-remove-default-margin': futureFlags.removeDefaultMargin,
       },
     ]"
