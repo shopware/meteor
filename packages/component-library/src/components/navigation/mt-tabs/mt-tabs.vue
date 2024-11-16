@@ -10,6 +10,7 @@
           },
         ]"
         role="tab"
+        :disabled="item.disabled"
         @click="() => changeActiveTab(item.name)"
         :data-text="item.label"
         :aria-selected="item.name === nameOfActiveTab"
