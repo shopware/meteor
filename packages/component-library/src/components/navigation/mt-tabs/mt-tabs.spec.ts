@@ -71,4 +71,32 @@ describe("mt-tabs", () => {
     expect(handler).toHaveBeenCalledOnce();
     expect(handler).toHaveBeenLastCalledWith("tab2");
   });
+
+  it("does not select the tab when clicked if it is disabled", async () => {
+    // ARRANGE
+    const items: TabItem[] = [
+      { label: "Tab 1", name: "tab1" },
+      { label: "Tab 2", name: "tab2", disabled: true },
+    ];
+
+    const handler = vi.fn();
+
+    render(MtTabs, {
+      props: {
+        items,
+        "onNew-item-active": handler,
+      },
+    });
+
+    await flushPromises();
+
+    // ACT
+    await userEvent.click(screen.getByRole("tab", { name: "Tab 2" }));
+
+    // ASSERT
+    expect(screen.getByRole("tab", { name: "Tab 1" })).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByRole("tab", { name: "Tab 2" })).toHaveAttribute("aria-selected", "false");
+
+    expect(handler).not.toHaveBeenCalled();
+  });
 });
