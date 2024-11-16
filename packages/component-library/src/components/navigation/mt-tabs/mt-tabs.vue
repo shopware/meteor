@@ -1,5 +1,14 @@
 <template>
-  <ul class="mt-tabs" ref="tabListRef" role="tablist">
+  <ul
+    :class="[
+      'mt-tabs',
+      {
+        'mt-tabs--future-remove-default-margin': futureFlags.removeDefaultMargin,
+      },
+    ]"
+    ref="tabListRef"
+    role="tablist"
+  >
     <li v-for="item in items" :key="item.name">
       <button
         :id="`mt-tabs__item--${item.name}`"
@@ -24,13 +33,14 @@
 </template>
 
 <script setup lang="ts">
-import { defineComponent, computed, ref, onMounted } from "vue";
+import { defineComponent, computed, ref, onMounted, nextTick } from "vue";
 import MtColorBadge from "../../feedback-indicator/mt-color-badge/mt-color-badge.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import PriorityPlus from "../../_internal/mt-priority-plus-navigation.vue";
 
 // TODO: add default bottom margin
 import { useFutureFlags } from "@/composables/useFutureFlags";
+import { useMounted } from "@vueuse/core";
 
 export interface TabItem {
   label: string;
@@ -89,6 +99,8 @@ onMounted(() => {
 
   nameOfActiveTab.value = props.defaultItem ?? firstItem.name;
 });
+
+const futureFlags = useFutureFlags();
 </script>
 
 <style scoped>
