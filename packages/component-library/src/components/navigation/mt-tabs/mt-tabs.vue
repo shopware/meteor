@@ -6,13 +6,13 @@
         :class="[
           'mt-tabs__item',
           {
-            'mt-tabs__item--active': item.name === nameOfActiveItem,
+            'mt-tabs__item--active': item.name === nameOfActiveTab,
           },
         ]"
         role="tab"
         @click="() => changeActiveTab(item.name)"
         :data-text="item.label"
-        :aria-selected="item.name === nameOfActiveItem"
+        :aria-selected="item.name === nameOfActiveTab"
       >
         {{ item.label }}
       </button>
@@ -55,16 +55,16 @@ const props = defineProps<{
 const tabListRef = ref<HTMLElement | null>(null);
 
 const sliderStyles = computed(() => {
-  if (!tabListRef.value || nameOfActiveItem.value === "unknown") return undefined;
+  if (!tabListRef.value || nameOfActiveTab.value === "unknown") return undefined;
 
   const activeTab = tabListRef.value.querySelector(
-    `#mt-tabs__item--${nameOfActiveItem.value}`,
+    `#mt-tabs__item--${nameOfActiveTab.value}`,
   ) as HTMLElement | null;
 
   if (!activeTab)
     throw new Error(
       "Failed to render mt-tabs; Tab not found, please make sure the tab exists. Searched for tab with id: mt-tabs__item--" +
-        nameOfActiveItem.value,
+        nameOfActiveTab.value,
     );
 
   return {
@@ -74,11 +74,11 @@ const sliderStyles = computed(() => {
 });
 
 function changeActiveTab(tabName: string) {
-  nameOfActiveItem.value = tabName;
+  nameOfActiveTab.value = tabName;
   emit("new-item-active", tabName);
 }
 
-const nameOfActiveItem = ref("unknown");
+const nameOfActiveTab = ref("unknown");
 onMounted(() => {
   const firstItem = props.items.at(0);
   if (!firstItem)
@@ -86,7 +86,7 @@ onMounted(() => {
       "Failed to render mt-tabs; No items provided, please provide at least one item.",
     );
 
-  nameOfActiveItem.value = props.defaultItem ?? firstItem.name;
+  nameOfActiveTab.value = props.defaultItem ?? firstItem.name;
 });
 </script>
 
