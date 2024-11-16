@@ -30,7 +30,7 @@
     </li>
 
     <div
-      :class="['mt-tabs__slider', { 'mt-tabs__slider--animated': passedFirstRender }]"
+      :class="['mt-tabs__slider', { 'mt-tabs__slider--animated': !!sliderStyles }]"
       :style="sliderStyles"
     />
   </ul>
@@ -53,7 +53,6 @@ import PriorityPlus from "../../_internal/mt-priority-plus-navigation.vue";
 
 // TODO: add default bottom margin
 import { useFutureFlags } from "@/composables/useFutureFlags";
-import { useMounted } from "@vueuse/core";
 
 export interface TabItem {
   label: string;
@@ -78,8 +77,6 @@ const props = defineProps<{
 
 const tabListRef = ref<HTMLElement | null>(null);
 
-const passedFirstRender = ref(false);
-
 const sliderStyles = computed(() => {
   if (!tabListRef.value || nameOfActiveTab.value === "unknown") return undefined;
 
@@ -93,19 +90,24 @@ const sliderStyles = computed(() => {
         nameOfActiveTab.value,
     );
 
+  const paddingInlineStart = parseInt(
+    window.getComputedStyle(activeTab).getPropertyValue("padding-inline-start").replace("px", ""),
+  );
+
+  const paddingInlineEnd = parseInt(
+    window.getComputedStyle(activeTab).getPropertyValue("padding-inline-end").replace("px", ""),
+  );
+
+  const width = parseInt(
+    window.getComputedStyle(activeTab).getPropertyValue("width").replace("px", ""),
+  );
+
+  const sliderWidth = width - paddingInlineStart - paddingInlineEnd + "px";
+
   return {
-    width: `${activeTab.offsetWidth}px`,
-    left: `${activeTab.offsetLeft}px`,
+    width: sliderWidth,
+    left: `${activeTab.offsetLeft + paddingInlineStart}px`,
   };
-});
-
-onMounted(async () => {
-  if (passedFirstRender.value) return;
-
-  // nextTick does not work here, so we use setTimeout
-  setTimeout(() => {
-    passedFirstRender.value = true;
-  }, 1);
 });
 
 function changeActiveTab(tabName: string) {
