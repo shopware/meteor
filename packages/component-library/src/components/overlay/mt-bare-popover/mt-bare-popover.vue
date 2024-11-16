@@ -4,7 +4,7 @@
     v-bind="{
       onClick: toggleDialog,
       id: `mt-popover__trigger--${id}`,
-      'aria-haspopup': 'dialog',
+      'aria-haspopup': 'dialog' as AriaAttributes['aria-haspopup'],
     }"
   />
 
@@ -29,7 +29,7 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, onMounted, onUnmounted, ref } from "vue";
+import { AriaAttributes, nextTick, onMounted, onUnmounted, ref } from "vue";
 import MtText from "@/components/content/mt-text/mt-text.vue";
 import { autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/vue";
 import { createId } from "@/utils/id";
