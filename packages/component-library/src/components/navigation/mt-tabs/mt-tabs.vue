@@ -1,5 +1,5 @@
 <template>
-  <ul class="mt-tabs" ref="tabListRef">
+  <ul class="mt-tabs" ref="tabListRef" role="tablist">
     <li v-for="item in items" :key="item.name">
       <button
         :id="`mt-tabs__item--${item.name}`"
