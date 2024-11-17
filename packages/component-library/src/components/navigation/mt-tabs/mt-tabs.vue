@@ -30,7 +30,7 @@
     </li>
 
     <div
-      :class="['mt-tabs__slider', { 'mt-tabs__slider--animated': !!sliderStyles }]"
+      :class="['mt-tabs__slider', { 'mt-tabs__slider--animated': shouldAnimateSlider }]"
       :style="sliderStyles"
     />
   </ul>
@@ -110,7 +110,10 @@ const sliderStyles = computed(() => {
   };
 });
 
+const shouldAnimateSlider = ref(false);
+
 function changeActiveTab(tabName: string) {
+  shouldAnimateSlider.value = true;
   nameOfActiveTab.value = tabName;
   emit("new-item-active", tabName);
 }
