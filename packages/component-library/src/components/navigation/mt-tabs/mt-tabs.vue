@@ -77,8 +77,17 @@ const props = defineProps<{
 
 const tabListRef = ref<HTMLElement | null>(null);
 
+const showSlider = ref(false);
+
+onMounted(() => {
+  document.fonts.ready.then(() => {
+    showSlider.value = true;
+  });
+});
+
 const sliderStyles = computed(() => {
-  if (!tabListRef.value || nameOfActiveTab.value === "unknown") return undefined;
+  if (!tabListRef.value || nameOfActiveTab.value === "unknown" || !showSlider.value)
+    return undefined;
 
   const activeTab = tabListRef.value.querySelector(
     `#mt-tabs__item--${nameOfActiveTab.value}`,
