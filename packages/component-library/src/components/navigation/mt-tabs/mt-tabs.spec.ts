@@ -116,4 +116,32 @@ describe("mt-tabs", () => {
     // ASSERT
     expect(screen.getByRole("tab", { name: "Tab 2" })).toHaveAttribute("aria-invalid", "true");
   });
+
+  it("shows normal tab when error is resolved", async () => {
+    // ARRANGE
+    const items: TabItem[] = [
+      { label: "Tab 1", name: "tab1" },
+      { label: "Tab 2", name: "tab2", hasError: true },
+    ];
+
+    const { rerender } = render(MtTabs, {
+      props: { items },
+    });
+
+    await flushPromises();
+
+    await userEvent.click(screen.getByRole("tab", { name: "Tab 2" }));
+
+    // ACT
+    await rerender({
+      items: [
+        { label: "Tab 1", name: "tab1" },
+        { label: "Tab 2", name: "tab2", hasError: false },
+      ],
+    });
+
+    // ASSERT
+    expect(screen.getByRole("tab", { name: "Tab 2" })).toHaveAttribute("aria-invalid", "false");
+    expect(screen.getByTestId("mt-tabs__slider")).not.toHaveClass("mt-tabs__slider--error");
+  });
 });

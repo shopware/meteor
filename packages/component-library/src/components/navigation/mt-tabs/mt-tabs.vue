@@ -16,15 +16,15 @@
         :class="[
           'mt-tabs__item',
           {
-            'mt-tabs__item--active': item.name === nameOfActiveTab,
+            'mt-tabs__item--active': item.name === activeTab?.name,
             'mt-tabs__item--error': item.hasError,
           },
         ]"
         role="tab"
         :disabled="item.disabled"
-        @click="() => changeActiveTab(item.name)"
+        @click="() => changeActiveTab(item)"
         :data-text="item.label"
-        :aria-selected="item.name === nameOfActiveTab"
+        :aria-selected="item.name === activeTab?.name"
         :aria-invalid="item.hasError"
       >
         <span>{{ item.label }}</span>
@@ -40,8 +40,15 @@
     </li>
 
     <div
-      :class="['mt-tabs__slider', { 'mt-tabs__slider--animated': shouldAnimateSlider }]"
+      :class="[
+        'mt-tabs__slider',
+        {
+          'mt-tabs__slider--animated': shouldAnimateSlider,
+          'mt-tabs__slider--error': activeTab?.hasError,
+        },
+      ]"
       :style="sliderStyles"
+      data-testid="mt-tabs__slider"
     />
   </ul>
 </template>
@@ -60,9 +67,8 @@ import {
 import MtColorBadge from "../../feedback-indicator/mt-color-badge/mt-color-badge.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import PriorityPlus from "../../_internal/mt-priority-plus-navigation.vue";
-
-// TODO: add default bottom margin
 import { useFutureFlags } from "@/composables/useFutureFlags";
+import { should } from "chai";
 
 export interface TabItem {
   label: string;
@@ -71,11 +77,9 @@ export interface TabItem {
   disabled?: boolean;
   badge?: "positive" | "critical" | "warning" | "info";
   onClick?: (name: string) => void;
-  // @internal - will be added by priority plus menu component
   hidden?: boolean;
 }
 
-// TODO: IMO it makes more sense to use v-model for the component
 const emit = defineEmits(["new-item-active"]);
 
 const props = defineProps<{
@@ -86,67 +90,96 @@ const props = defineProps<{
 }>();
 
 const tabListRef = ref<HTMLElement | null>(null);
-
 const showSlider = ref(false);
+const shouldAnimateSlider = ref(false);
+const activeTab = ref<TabItem | null>(null);
+const sliderStyles = ref<{ width: string; left: string } | undefined>(undefined);
 
-onMounted(() => {
-  document.fonts.ready.then(() => {
-    showSlider.value = true;
-  });
-});
+// Function to calculate slider dimensions
+const calculateSliderDimensions = () => {
+  if (!tabListRef.value || !activeTab.value || !showSlider.value) return undefined;
 
-const sliderStyles = computed(() => {
-  if (!tabListRef.value || nameOfActiveTab.value === "unknown" || !showSlider.value)
-    return undefined;
-
-  const activeTab = tabListRef.value.querySelector(
-    `#mt-tabs__item--${nameOfActiveTab.value}`,
+  const activeTabDOMElement = tabListRef.value.querySelector(
+    `#mt-tabs__item--${activeTab.value.name}`,
   ) as HTMLElement | null;
 
-  if (!activeTab)
+  if (!activeTabDOMElement) {
     throw new Error(
       "Failed to render mt-tabs; Tab not found, please make sure the tab exists. Searched for tab with id: mt-tabs__item--" +
-        nameOfActiveTab.value,
+        activeTab.value.name,
     );
+  }
 
   const paddingInlineStart = parseInt(
-    window.getComputedStyle(activeTab).getPropertyValue("padding-inline-start").replace("px", ""),
+    window
+      .getComputedStyle(activeTabDOMElement)
+      .getPropertyValue("padding-inline-start")
+      .replace("px", ""),
   );
 
   const paddingInlineEnd = parseInt(
-    window.getComputedStyle(activeTab).getPropertyValue("padding-inline-end").replace("px", ""),
+    window
+      .getComputedStyle(activeTabDOMElement)
+      .getPropertyValue("padding-inline-end")
+      .replace("px", ""),
   );
 
   const width = parseInt(
-    window.getComputedStyle(activeTab).getPropertyValue("width").replace("px", ""),
+    window.getComputedStyle(activeTabDOMElement).getPropertyValue("width").replace("px", ""),
   );
 
   const sliderWidth = width - paddingInlineStart - paddingInlineEnd + "px";
 
   return {
     width: sliderWidth,
-    left: `${activeTab.offsetLeft + paddingInlineStart}px`,
+    left: `${activeTabDOMElement.offsetLeft + paddingInlineStart}px`,
   };
-});
+};
 
-const shouldAnimateSlider = ref(false);
+watch(
+  () => [activeTab.value, props.items],
+  async () => {
+    await nextTick();
+    sliderStyles.value = calculateSliderDimensions();
+  },
+  { deep: true },
+);
 
-function changeActiveTab(tabName: string) {
-  shouldAnimateSlider.value = true;
-  nameOfActiveTab.value = tabName;
-  emit("new-item-active", tabName);
-}
-
-const nameOfActiveTab = ref("unknown");
 onMounted(() => {
   const firstItem = props.items.at(0);
-  if (!firstItem)
+  if (!firstItem) {
     throw new Error(
       "Failed to render mt-tabs; No items provided, please provide at least one item.",
     );
+  }
 
-  nameOfActiveTab.value = props.defaultItem ?? firstItem.name;
+  const defaultItem = props.items.find((item) => item.name === props.defaultItem);
+  activeTab.value = defaultItem ?? firstItem;
+
+  document.fonts.ready.then(async () => {
+    showSlider.value = true;
+    await nextTick();
+
+    sliderStyles.value = calculateSliderDimensions();
+  });
 });
+
+function changeActiveTab(tab: TabItem) {
+  shouldAnimateSlider.value = true;
+  activeTab.value = tab;
+
+  emit("new-item-active", tab.name);
+}
+
+watch(
+  () => props.items,
+  () => {
+    const newActiveTab = props.items.find((item) => item.name === activeTab.value?.name);
+    if (!newActiveTab) return;
+
+    activeTab.value = newActiveTab;
+  },
+);
 
 const futureFlags = useFutureFlags();
 </script>
