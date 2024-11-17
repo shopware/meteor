@@ -35,7 +35,7 @@
           color="var(--color-text-critical-default)"
           size="0.75rem"
           name="solid-exclamation-circle"
-          :style="{ marginInlineStart: '0.25rem' }"
+          :style="{ marginInlineStart: '0.5rem' }"
         />
 
         <mt-color-badge v-if="item.badge" :variant="item.badge" rounded />
