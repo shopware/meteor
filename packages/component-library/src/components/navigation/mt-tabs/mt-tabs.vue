@@ -37,6 +37,8 @@
           name="solid-exclamation-circle"
           :style="{ marginInlineStart: '0.25rem' }"
         />
+
+        <mt-color-badge v-if="item.badge" :variant="item.badge" rounded />
       </button>
     </li>
 
