@@ -17,6 +17,7 @@
           'mt-tabs__item',
           {
             'mt-tabs__item--active': item.name === nameOfActiveTab,
+            'mt-tabs__item--error': item.hasError,
           },
         ]"
         role="tab"
