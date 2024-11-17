@@ -25,7 +25,15 @@
         :data-text="item.label"
         :aria-selected="item.name === nameOfActiveTab"
       >
-        {{ item.label }}
+        <span>{{ item.label }}</span>
+
+        <mt-icon
+          v-if="item.hasError"
+          color="var(--color-text-critical-default)"
+          size="0.75rem"
+          name="solid-exclamation-circle"
+          :style="{ marginInlineStart: '0.25rem' }"
+        />
       </button>
     </li>
 
@@ -240,17 +248,5 @@ const futureFlags = useFutureFlags();
 
 .mt-tabs__slider--error {
   background-color: var(--color-border-critical-default);
-}
-
-.mt-tabs__error-badge {
-  margin-left: 2px;
-  width: 12px;
-  height: 12px;
-  color: var(--color-icon-critical-default);
-
-  > svg {
-    width: 100% !important;
-    height: 100% !important;
-  }
 }
 </style>
