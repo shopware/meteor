@@ -99,4 +99,21 @@ describe("mt-tabs", () => {
 
     expect(handler).not.toHaveBeenCalled();
   });
+
+  it("announces an errored tab", async () => {
+    // ARRANGE
+    const items: TabItem[] = [
+      { label: "Tab 1", name: "tab1" },
+      { label: "Tab 2", name: "tab2", hasError: true },
+    ];
+
+    render(MtTabs, {
+      props: { items },
+    });
+
+    await flushPromises();
+
+    // ASSERT
+    expect(screen.getByRole("tab", { name: "Tab 2" })).toHaveAttribute("aria-invalid", "true");
+  });
 });

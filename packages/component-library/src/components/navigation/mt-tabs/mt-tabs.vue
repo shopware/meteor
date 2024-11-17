@@ -24,6 +24,7 @@
         @click="() => changeActiveTab(item.name)"
         :data-text="item.label"
         :aria-selected="item.name === nameOfActiveTab"
+        :aria-invalid="item.hasError"
       >
         <span>{{ item.label }}</span>
 
