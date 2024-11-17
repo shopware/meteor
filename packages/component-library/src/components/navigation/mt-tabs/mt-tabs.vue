@@ -4,6 +4,7 @@
       'mt-tabs',
       {
         'mt-tabs--small': small,
+        'mt-tabs--vertical': vertical,
         'mt-tabs--future-remove-default-margin': futureFlags.removeDefaultMargin,
       },
     ]"
@@ -63,6 +64,7 @@ import {
   onBeforeUpdate,
   onUpdated,
   nextTick,
+  type CSSProperties,
 } from "vue";
 import MtColorBadge from "../../feedback-indicator/mt-color-badge/mt-color-badge.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
@@ -93,7 +95,7 @@ const tabListRef = ref<HTMLElement | null>(null);
 const showSlider = ref(false);
 const shouldAnimateSlider = ref(false);
 const activeTab = ref<TabItem | null>(null);
-const sliderStyles = ref<{ width: string; left: string } | undefined>(undefined);
+const sliderStyles = ref<CSSProperties | undefined>(undefined);
 
 // Function to calculate slider dimensions
 const calculateSliderDimensions = () => {
@@ -108,6 +110,13 @@ const calculateSliderDimensions = () => {
       "Failed to render mt-tabs; Tab not found, please make sure the tab exists. Searched for tab with id: mt-tabs__item--" +
         activeTab.value.name,
     );
+  }
+
+  if (props.vertical) {
+    return {
+      height: `${activeTabDOMElement.offsetHeight}px`,
+      top: `${activeTabDOMElement.offsetTop}px`,
+    };
   }
 
   const paddingInlineStart = parseInt(
@@ -205,15 +214,13 @@ const futureFlags = useFutureFlags();
   flex-direction: column;
   box-shadow: none;
 
-  & li {
+  & .mt-tabs__item {
     border-bottom: none;
     border-left: 1px solid var(--color-border-primary-default);
   }
 
   & .mt-tabs__slider {
-    top: 0;
-    bottom: auto;
-    left: 3px;
+    width: 2px;
   }
 }
 
