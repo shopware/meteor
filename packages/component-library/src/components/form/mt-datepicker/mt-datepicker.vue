@@ -66,7 +66,6 @@
 
 <script lang="ts">
 import { defineComponent } from "vue";
-import { zonedTimeToUtc } from "date-fns-tz";
 import type { PropType } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
@@ -205,10 +204,9 @@ export default defineComponent({
           return;
         }
 
-        // Handle 'datetime' type: Convert to UTC first, then to ISO
-        const utcConvertedDate = this.convertLocalToUtc(newValue, this.timeZone);
-        const isoFormattedDate = this.convertDateToIso(utcConvertedDate);
-        this.$emit("update:modelValue", isoFormattedDate);
+        // Handle 'datetime' type: Convert to UTC
+        const isoValue = this.convertDateToIso(newValue)
+        this.$emit("update:modelValue", isoValue);
       },
     },
   },
@@ -246,20 +244,7 @@ export default defineComponent({
       } else {
         return date.toISOString();
       }
-    },
-
-    convertLocalToUtc(inputDate: Date | [Date, Date], timezone: string): Date | [Date, Date] {
-      // Handle date range conversion
-      if (Array.isArray(inputDate)) {
-        const [startDate, endDate] = inputDate;
-        const startUtcConvertedDate = zonedTimeToUtc(startDate, timezone);
-        const endUtcConvertedDate = zonedTimeToUtc(endDate, timezone);
-        return [startUtcConvertedDate, endUtcConvertedDate];
-      }
-
-      // Handle single date conversion to UTC
-      return zonedTimeToUtc(inputDate, timezone);
-    },
+    }
   },
 
   mounted() {
