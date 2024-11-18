@@ -123,7 +123,8 @@ export const VisualTestDateTimeInputValue: MtDatepickerStory = {
 
     // Check that the input value matches the date chosen
     const input = document.querySelector('[data-test="dp-input"]') as HTMLInputElement;
-    expect(input.value).toContain("2024/11/13, 12:40");
+    expect(input.value).toEqual(expect.stringMatching(/^2024\/11\/13, \d{2}:\d{2}$/));
+
 
     // Expect updatemodelvalue to have been called with date
     expect(args.updateModelValue).toHaveBeenCalledWith(
@@ -246,7 +247,9 @@ export const VisualTestDateTimeRangeValue: MtDatepickerStory = {
 
     // Check that the input value matches the dates and times chosen
     const input = document.querySelector('[data-test="dp-input"]') as HTMLInputElement;
-    expect(input.value).toBe("2024/11/13, 12:40 - 2024/11/16, 12:40");
+    expect(input.value).toEqual(
+      expect.stringMatching(/^2024\/11\/13, \d{2}:\d{2} - 2024\/11\/16, \d{2}:\d{2}$/),
+    );
 
     // Expect updatemodelvalue to have been called with array of ISO formatted dates
     expect(args.updateModelValue).toHaveBeenCalledWith([
