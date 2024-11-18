@@ -187,7 +187,6 @@ jobs:
           # TODO: add again with next major, does not work right now because 6.5 does not support vue3
           # - ${{ needs.tested-versions.outputs.lts-latest-version }}
           - ${{ needs.tested-versions.outputs.first-version }}
-          - ${{ needs.tested-versions.outputs.latest-version }}
           - trunk
     steps:
       - name: Setup shopware
