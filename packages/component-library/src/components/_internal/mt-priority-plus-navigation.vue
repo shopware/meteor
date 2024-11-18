@@ -3,7 +3,6 @@
 </template>
 
 <script lang="ts">
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { PropType } from "vue";
 import { defineComponent } from "vue";
 
@@ -12,15 +11,12 @@ interface ItemBase {
   [key: string]: any;
 }
 
-function getWidth(el: Element) {
-  if (!el) {
-    return 0;
-  }
+function getWidth(el: HTMLElement | null) {
+  if (!el) return 0;
 
   const styles = window.getComputedStyle(el);
   const margin = parseFloat(styles.marginLeft) + parseFloat(styles.marginRight);
 
-  // @ts-expect-error - offsetWidth exists on this element
   return Math.ceil(el.offsetWidth + margin);
 }
 
@@ -134,8 +130,8 @@ export default defineComponent({
     /**
      * The HTML elements of the visible items.
      */
-    visibleElements(): { [key: string]: Element } {
-      const els = {} as { [key: string]: Element };
+    visibleElements(): { [key: string]: HTMLElement } {
+      const els = {} as { [key: string]: HTMLElement };
       this.list.forEach((item) => {
         if (this.hiddenItemIdentifiers.includes(item[this.identifier])) {
           return;

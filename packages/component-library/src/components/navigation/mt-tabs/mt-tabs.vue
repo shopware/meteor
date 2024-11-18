@@ -1,59 +1,100 @@
 <template>
-  <ul
-    :class="[
-      'mt-tabs',
-      {
-        'mt-tabs--small': small,
-        'mt-tabs--vertical': vertical,
-        'mt-tabs--future-remove-default-margin': futureFlags.removeDefaultMargin,
-      },
-    ]"
-    ref="tabListRef"
-    role="tablist"
-  >
-    <li v-for="item in items" :key="item.name">
-      <button
-        :id="`mt-tabs__item--${item.name}`"
-        :class="[
-          'mt-tabs__item',
-          {
-            'mt-tabs__item--active': item.name === activeTab?.name,
-            'mt-tabs__item--error': item.hasError,
-          },
-        ]"
-        role="tab"
-        :disabled="item.disabled"
-        @click="() => changeActiveTab(item)"
-        :data-text="item.label"
-        :aria-selected="item.name === activeTab?.name"
-        :aria-invalid="item.hasError"
-      >
-        <span>{{ item.label }}</span>
-
-        <mt-icon
-          v-if="item.hasError"
-          color="var(--color-text-critical-default)"
-          size="0.75rem"
-          name="solid-exclamation-circle"
-          :style="{ marginInlineStart: '0.5rem' }"
-        />
-
-        <mt-color-badge v-if="item.badge" :variant="item.badge" rounded />
-      </button>
-    </li>
-
-    <div
+  <mt-priority-plus :list="items" #default="{ mainItems, moreItems }">
+    <ul
       :class="[
-        'mt-tabs__slider',
+        'mt-tabs',
         {
-          'mt-tabs__slider--animated': shouldAnimateSlider,
-          'mt-tabs__slider--error': activeTab?.hasError,
+          'mt-tabs--small': small,
+          'mt-tabs--vertical': vertical,
+          'mt-tabs--future-remove-default-margin': futureFlags.removeDefaultMargin,
         },
       ]"
-      :style="sliderStyles"
-      data-testid="mt-tabs__slider"
-    />
-  </ul>
+      ref="tabListRef"
+      role="tablist"
+    >
+      <li
+        v-for="item in vertical ? [...mainItems, ...moreItems] : mainItems"
+        :key="item.name"
+        :data-priority-plus="item.name"
+      >
+        <button
+          :id="`mt-tabs__item--${item.name}`"
+          :class="[
+            'mt-tabs__item',
+            {
+              'mt-tabs__item--active': item.name === activeTab?.name,
+              'mt-tabs__item--error': item.hasError,
+            },
+          ]"
+          role="tab"
+          :disabled="item.disabled"
+          @click="() => changeActiveTab(item)"
+          :data-text="item.label"
+          :aria-selected="item.name === activeTab?.name"
+          :aria-invalid="item.hasError"
+        >
+          <span>{{ item.label }}</span>
+
+          <mt-icon
+            v-if="item.hasError"
+            color="var(--color-text-critical-default)"
+            size="0.75rem"
+            name="solid-exclamation-circle"
+            :style="{ marginInlineStart: '0.5rem' }"
+          />
+
+          <mt-color-badge v-if="item.badge" :variant="item.badge" rounded />
+        </button>
+      </li>
+
+      <li v-if="moreItems.length && !vertical">
+        <mt-bare-popover>
+          <template #trigger="params">
+            <button
+              ref="moreTabsButton"
+              v-bind="params"
+              role="tab"
+              class="mt-tabs__item"
+              :aria-label="t('moreTabsAriaLabel')"
+            >
+              <mt-icon name="solid-ellipsis-h-s" style="margin-inline-end: 0.5rem" />
+
+              <span>{{ t("moreTabs") }}</span>
+            </button>
+          </template>
+
+          <template #default="{ closePopover }">
+            <mt-bare-popover-item
+              v-for="item in moreItems"
+              :key="item.name"
+              role="tab"
+              :aria-selected="item.name === activeTab?.name"
+              @click="
+                () => {
+                  changeActiveTab(item);
+                  closePopover();
+                }
+              "
+            >
+              {{ item.label }}
+            </mt-bare-popover-item>
+          </template>
+        </mt-bare-popover>
+      </li>
+
+      <div
+        :class="[
+          'mt-tabs__slider',
+          {
+            'mt-tabs__slider--animated': shouldAnimateSlider,
+            'mt-tabs__slider--error': activeTab?.hasError,
+          },
+        ]"
+        :style="sliderStyles"
+        data-testid="mt-tabs__slider"
+      />
+    </ul>
+  </mt-priority-plus>
 </template>
 
 <script setup lang="ts">
@@ -70,9 +111,11 @@ import {
 } from "vue";
 import MtColorBadge from "../../feedback-indicator/mt-color-badge/mt-color-badge.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
-import PriorityPlus from "../../_internal/mt-priority-plus-navigation.vue";
+import MtPriorityPlus from "../../_internal/mt-priority-plus-navigation.vue";
+import MtBarePopoverItem from "@/components/overlay/mt-bare-popover/sub-components/mt-bare-popover-item.vue";
+import MtBarePopover from "@/components/overlay/mt-bare-popover/mt-bare-popover.vue";
 import { useFutureFlags } from "@/composables/useFutureFlags";
-import { should } from "chai";
+import { useI18n } from "@/composables/useI18n";
 
 export interface TabItem {
   label: string;
@@ -93,13 +136,26 @@ const props = defineProps<{
   defaultItem?: string;
 }>();
 
+const { t } = useI18n({
+  messages: {
+    en: {
+      moreTabs: "More",
+      moreTabsAriaLabel: "More tabs",
+    },
+    de: {
+      moreTabs: "Mehr",
+      moreTabsAriaLabel: "Mehr Tabs",
+    },
+  },
+});
+
 const tabListRef = ref<HTMLElement | null>(null);
 const showSlider = ref(false);
 const shouldAnimateSlider = ref(false);
 const activeTab = ref<TabItem | null>(null);
 const sliderStyles = ref<CSSProperties | undefined>(undefined);
+const moreTabsButton = ref<HTMLElement | null>(null);
 
-// Function to calculate slider dimensions
 const calculateSliderDimensions = () => {
   if (!tabListRef.value || !activeTab.value || !showSlider.value) return undefined;
 
@@ -108,10 +164,16 @@ const calculateSliderDimensions = () => {
   ) as HTMLElement | null;
 
   if (!activeTabDOMElement) {
-    throw new Error(
-      "Failed to render mt-tabs; Tab not found, please make sure the tab exists. Searched for tab with id: mt-tabs__item--" +
-        activeTab.value.name,
-    );
+    if (!moreTabsButton.value)
+      throw new Error(
+        "Failed to render mt-tabs; Tab not found, please make sure the tab exists. Searched for tab with id: mt-tabs__item--" +
+          activeTab.value.name,
+      );
+
+    return {
+      width: `${moreTabsButton.value.offsetWidth}px`,
+      left: `${moreTabsButton.value.offsetLeft}px`,
+    };
   }
 
   if (props.vertical) {
