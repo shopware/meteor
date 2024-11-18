@@ -1,7 +1,7 @@
 import { userEvent } from "@storybook/test";
 import { screen, render } from "@testing-library/vue";
 import MtBarePopover from "./mt-bare-popover.vue";
-import { flushPromises } from "@vue/test-utils";
+import MtBarePopoverItem from "./sub-components/mt-bare-popover-item.vue";
 
 describe("mt-bare-popover", () => {
   it("does not show the popover by default", () => {
@@ -221,5 +221,61 @@ describe("mt-bare-popover", () => {
     expect(document.activeElement?.getAttribute("id")).toBe(
       screen.getByRole("button").getAttribute("id"),
     );
+  });
+
+  it("closes the popover when clicking on an item", async () => {
+    // ARRANGE
+    render({
+      components: { MtBarePopover, MtBarePopoverItem },
+      template: `
+        <mt-bare-popover>
+          <template #trigger="params">
+            <button v-bind="params">Trigger</button>
+          </template>
+
+          <template #default="{ closePopover }">
+            <mt-bare-popover-item @click="closePopover">Click me</mt-bare-popover-item>
+          </template>
+        </mt-bare-popover>
+      `,
+    });
+
+    await userEvent.click(screen.getByRole("button"));
+
+    // ACT
+    await userEvent.click(screen.getByRole("button", { name: "Click me" }));
+
+    // ASSERT
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+    expect(screen.getByRole("button")).toHaveFocus();
+  });
+
+  it("is still possible to tab through elements after closing popover by clicking on an item", async () => {
+    // ARRANGE
+    render({
+      components: { MtBarePopover, MtBarePopoverItem },
+      template: `
+        <mt-bare-popover>
+          <template #trigger="params">
+            <button v-bind="params">Trigger</button>
+          </template>
+
+          <template #default="{ closePopover }">
+            <mt-bare-popover-item @click="closePopover">Click me</mt-bare-popover-item>
+          </template>
+        </mt-bare-popover>
+
+        <input data-testid="input" />
+      `,
+    });
+
+    await userEvent.click(screen.getByRole("button"));
+
+    // ACT
+    await userEvent.click(screen.getByRole("button", { name: "Click me" }));
+    await userEvent.tab();
+
+    // ASSERT
+    expect(screen.getByTestId("input")).toHaveFocus();
   });
 });

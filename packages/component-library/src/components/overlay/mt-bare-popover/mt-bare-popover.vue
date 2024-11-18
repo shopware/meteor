@@ -22,14 +22,14 @@
       >
 
       <ul class="mt-bare-popover__list">
-        <slot name="default" />
+        <slot name="default" v-bind="{ closePopover: () => (isVisible = false) }" />
       </ul>
     </div>
   </teleport>
 </template>
 
 <script setup lang="ts">
-import { AriaAttributes, nextTick, onMounted, onUnmounted, ref } from "vue";
+import { AriaAttributes, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 import MtText from "@/components/content/mt-text/mt-text.vue";
 import { autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/vue";
 import { createId } from "@/utils/id";
@@ -109,6 +109,12 @@ onClickOutside(dialogRef, (event) => {
   if (trap) trap.deactivate();
 
   isVisible.value = false;
+});
+
+watch(isVisible, () => {
+  if (isVisible.value) return;
+
+  if (trap) trap.deactivate();
 });
 
 onUnmounted(() => {

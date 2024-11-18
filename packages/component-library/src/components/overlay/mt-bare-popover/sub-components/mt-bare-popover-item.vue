@@ -1,12 +1,20 @@
 <template>
   <li>
-    <button class="mt-bare-popover-item" :role="$attrs?.role ?? 'button'">
+    <button
+      class="mt-bare-popover-item"
+      v-bind="{ ...$attrs, role: $attrs?.role ?? 'button' }"
+      @click="$emit('click')"
+    >
       <slot />
     </button>
   </li>
 </template>
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+defineOptions({ inheritAttrs: false });
+
+defineEmits(["click"]);
+</script>
 
 <style scoped>
 .mt-bare-popover-item {

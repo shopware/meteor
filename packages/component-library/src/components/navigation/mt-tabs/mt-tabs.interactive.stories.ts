@@ -167,28 +167,24 @@ export const VisualTestRenderContextTabWithActiveItem: MtTabsStory = {
 
     // wait until tab bar is loaded and context button gets rendered
 
-    await waitUntil(() => document.body.textContent?.includes("Context tab test"));
-    await waitUntil(() => document.querySelector(".mt-context-button__button"));
+    await waitUntil(() => canvas.getByRole("tab", { name: "Context tab test" }));
+    await waitUntil(() => canvas.getByRole("tab", { name: "More tabs" }));
 
-    const button = canvas.getByRole("button");
+    await userEvent.click(canvas.getByRole("tab", { name: "More tabs" }));
 
-    await userEvent.click(button);
+    const popover = within(document.querySelector('[role="dialog"]') as HTMLElement);
 
-    // Look inside the popover
-    const popover = within(
-      document.getElementsByClassName("mt-popover__content")[0] as HTMLElement,
+    await userEvent.click(popover.getByRole("tab", { name: "Item 10" }));
+
+    expect(document.querySelector('[role="dialog"]')).not.toBeInTheDocument();
+
+    await userEvent.click(canvas.getByRole("tab", { name: "More tabs" }));
+
+    const popoverWithSelectedTab = within(document.querySelector('[role="dialog"]') as HTMLElement);
+    expect(popoverWithSelectedTab.getByRole("tab", { name: "Item 10" })).toHaveAttribute(
+      "aria-selected",
+      "true",
     );
-
-    const menuItem = popover.getAllByRole("tab");
-
-    const lastItem = menuItem[menuItem.length - 1];
-    await expect(lastItem).toHaveTextContent("Item 10");
-
-    await userEvent.click(lastItem);
-
-    await waitUntil(() => document.getElementsByClassName("mt-popover__content").length === 0);
-
-    expect(document.getElementsByClassName("mt-popover__content").length).toEqual(0);
   },
 };
 
