@@ -157,7 +157,7 @@ export default defineComponent({
   border-radius: var(--border-radius-button);
   padding: 2px 24px;
   font-size: var(--font-size-xs);
-  line-height: 34px;
+  border: 1px solid transparent;
   outline: none;
   font-weight: var(--font-weight-semibold);
   font-family: var(--font-family-body);
@@ -172,11 +172,10 @@ export default defineComponent({
 }
 
 .mt-button__content {
-  min-height: 26px;
   display: grid;
   grid-auto-flow: column;
   align-items: center;
-  grid-gap: 0 8px;
+  column-gap: 0.5rem;
 }
 
 .mt-button__content--hidden {
@@ -186,7 +185,6 @@ export default defineComponent({
 .mt-button--primary {
   background: var(--color-interaction-primary-default);
   color: var(--color-text-static-default);
-  line-height: 36px;
   border-color: var(--color-interaction-primary-default);
 }
 
@@ -248,7 +246,6 @@ export default defineComponent({
   background: var(--color-interaction-secondary-default);
   border: 1px solid var(--color-border-primary-default);
   color: var(--color-text-primary-default);
-  line-height: 36px;
 }
 
 .mt-button--secondary:is(:hover, :focus-visible, :active) {
@@ -280,7 +277,6 @@ export default defineComponent({
   background: var(--color-interaction-critical-default);
   color: var(--color-text-static-default);
   border: 1px solid var(--color-interaction-critical-default);
-  line-height: 36px;
 }
 
 .mt-button--critical:is(:hover, :focus-visible, :active) {
@@ -366,11 +362,7 @@ export default defineComponent({
   padding-left: 10px;
   padding-right: 10px;
   font-size: var(--font-size-2xs);
-  line-height: 18px;
-}
-
-.mt-button--x-small .mt-button__content {
-  min-height: 18px;
+  min-height: 24px;
 }
 
 .mt-button--x-small.mt-button--square {
@@ -382,11 +374,7 @@ export default defineComponent({
   padding-left: 15px;
   padding-right: 15px;
   font-size: var(--font-size-2xs);
-  line-height: 26px;
-}
-
-.mt-button--small .mt-button__content {
-  min-height: 26px;
+  min-height: 32px;
 }
 
 .mt-button--small.mt-button--square {
@@ -394,15 +382,22 @@ export default defineComponent({
   height: 32px;
 }
 
-.mt-button--large {
-  padding-left: 28px;
-  padding-right: 28px;
-  line-height: 42px;
-  font-size: var(--font-size-2xs);
+.mt-button--default {
+  padding-inline: 1rem;
+  font-size: var(--font-size-xs);
+  min-height: 2.5rem;
 }
 
-.mt-button--large .mt-button__content {
-  min-height: 42px;
+.mt-button--default.mt-button-square {
+  width: 2.5rem;
+  height: 2.5rem;
+}
+
+.mt-button--large {
+  padding-left: 1.75rem;
+  padding-right: 1.75rem;
+  min-height: 3rem;
+  font-size: var(--font-size-2xs);
 }
 
 .mt-button--large.mt-button--square {
