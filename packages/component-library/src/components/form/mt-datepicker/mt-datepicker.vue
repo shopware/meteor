@@ -205,7 +205,7 @@ export default defineComponent({
         }
 
         // Handle 'datetime' type: Convert to UTC
-        const isoValue = this.convertDateToIso(newValue)
+        const isoValue = this.convertDateToIso(newValue);
         this.$emit("update:modelValue", isoValue);
       },
     },
@@ -244,7 +244,7 @@ export default defineComponent({
       } else {
         return date.toISOString();
       }
-    }
+    },
   },
 
   mounted() {
