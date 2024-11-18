@@ -207,6 +207,7 @@ export const VisualTestDateTimeRangeValue: MtDatepickerStory = {
     await userEvent.click(hourButton1);
 
     const selectedHour1 = document.querySelector('[data-test="12"]') as HTMLInputElement;
+    await waitUntil(() => selectedHour1 !== null);
     await userEvent.click(selectedHour1);
 
     // Set minutes for first date
@@ -216,6 +217,7 @@ export const VisualTestDateTimeRangeValue: MtDatepickerStory = {
     await userEvent.click(minuteButton1);
 
     const selectedMinute1 = document.querySelector('[data-test="40"]') as HTMLInputElement;
+    await waitUntil(() => selectedMinute1 !== null);
     await userEvent.click(selectedMinute1);
 
     // Set hours for second date
@@ -225,6 +227,7 @@ export const VisualTestDateTimeRangeValue: MtDatepickerStory = {
     await userEvent.click(hourButton2);
 
     const selectedHour2 = document.querySelector('[data-test="12"]') as HTMLInputElement;
+    await waitUntil(() => selectedHour2 !== null);
     await userEvent.click(selectedHour2);
 
     // Set minutes for second date
@@ -234,6 +237,7 @@ export const VisualTestDateTimeRangeValue: MtDatepickerStory = {
     await userEvent.click(minuteButton2);
 
     const selectedMinute2 = document.querySelector('[data-test="40"]') as HTMLInputElement;
+    await waitUntil(() => selectedMinute2 !== null);
     await userEvent.click(selectedMinute2);
 
     // Click first date on calendar
