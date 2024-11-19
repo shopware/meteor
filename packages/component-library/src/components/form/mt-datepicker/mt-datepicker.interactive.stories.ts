@@ -236,9 +236,8 @@ export const VisualTestDateTimeRangeValue: MtDatepickerStory = {
     ) as HTMLInputElement;
     await userEvent.click(minuteButton2);
 
-    const selectedMinute2 = document.querySelector('[data-test="30"]') as HTMLInputElement;
-    await waitUntil(() => selectedMinute2 !== null);
-    await userEvent.click(selectedMinute2);
+    await expect(document.querySelector('[data-test="30"]')).toBeInTheDocument();
+    await userEvent.click(document.querySelector('[data-test="30"]') as HTMLElement);
 
     // Click first date on calendar
     const firstDate = document.getElementById("2024-11-13") as HTMLInputElement;
