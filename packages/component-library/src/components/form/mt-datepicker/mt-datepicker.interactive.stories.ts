@@ -226,7 +226,7 @@ export const VisualTestDateTimeRangeValue: MtDatepickerStory = {
     ) as HTMLInputElement;
     await userEvent.click(hourButton2);
 
-    const selectedHour2 = document.querySelector('[data-test="12"]') as HTMLInputElement;
+    const selectedHour2 = document.querySelector('[data-test="11"]') as HTMLInputElement;
     await waitUntil(() => selectedHour2 !== null);
     await userEvent.click(selectedHour2);
 
@@ -236,7 +236,7 @@ export const VisualTestDateTimeRangeValue: MtDatepickerStory = {
     ) as HTMLInputElement;
     await userEvent.click(minuteButton2);
 
-    const selectedMinute2 = document.querySelector('[data-test="40"]') as HTMLInputElement;
+    const selectedMinute2 = document.querySelector('[data-test="30"]') as HTMLInputElement;
     await waitUntil(() => selectedMinute2 !== null);
     await userEvent.click(selectedMinute2);
 
@@ -257,7 +257,7 @@ export const VisualTestDateTimeRangeValue: MtDatepickerStory = {
     // Expect updatemodelvalue to have been called with array of ISO formatted dates
     expect(args.updateModelValue).toHaveBeenCalledWith([
       expect.stringMatching(/^2024-11-13T11:40:00\.000Z$/),
-      expect.stringMatching(/^2024-11-16T11:40:00\.000Z$/),
+      expect.stringMatching(/^2024-11-16T10:30:00\.000Z$/),
     ]);
   },
 };
