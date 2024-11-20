@@ -291,3 +291,46 @@ export const VisualTestRenderTabsWithDisabledItem: MtTabsStory = {
     expect(canvas.getByRole("tab", { name: /item 1/i })).toHaveAttribute("aria-selected", "true");
   },
 };
+
+export const CannotTabToMoreItemsTabWhenNoneOfItsChildrenIsActive: MtTabsStory = {
+  args: {
+    small: true,
+    defaultItem: "item1",
+    items: [
+      ...tabItems.slice(0, 4),
+      {
+        label: "Item with icon",
+        name: "item5",
+      },
+      ...tabItems.slice(5),
+    ],
+  },
+  async play() {
+    await userEvent.tab();
+    await userEvent.tab();
+
+    await expect(document.body).toHaveFocus();
+  },
+};
+
+export const TabsToMoreItemsTabWhenOneOfItsChildrenIsActive: MtTabsStory = {
+  args: {
+    small: true,
+    defaultItem: "item11",
+    items: [
+      ...tabItems.slice(0, 4),
+      {
+        label: "Item with icon",
+        name: "item5",
+      },
+      ...tabItems.slice(5),
+    ],
+  },
+  async play({ canvasElement }) {
+    const canvas = within(canvasElement);
+
+    await userEvent.tab();
+
+    await expect(canvas.getByRole("tab", { name: "More tabs" })).toHaveFocus();
+  },
+};

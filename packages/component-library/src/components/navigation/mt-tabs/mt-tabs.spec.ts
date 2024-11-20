@@ -3,6 +3,7 @@ import type { TabItem } from "./mt-tabs.vue";
 import MtTabs from "./mt-tabs.vue";
 import { render, screen } from "@testing-library/vue";
 import { userEvent } from "@storybook/test";
+import { setup } from "@storybook/vue3";
 
 describe("mt-tabs", () => {
   it("selects the first tab by default", async () => {
@@ -143,5 +144,46 @@ describe("mt-tabs", () => {
     // ASSERT
     expect(screen.getByRole("tab", { name: "Tab 2" })).toHaveAttribute("aria-invalid", "false");
     expect(screen.getByTestId("mt-tabs__slider")).not.toHaveClass("mt-tabs__slider--error");
+  });
+
+  it("focuses the active tab when tabbing into the tabs", async () => {
+    // ARRANGE
+    const items: TabItem[] = [
+      { label: "Tab 1", name: "tab1" },
+      { label: "Tab 2", name: "tab2" },
+    ];
+
+    render(MtTabs, {
+      props: { items, defaultItem: "tab2" },
+    });
+
+    await flushPromises();
+
+    // ACT
+    await userEvent.tab();
+
+    // ASSERT
+    expect(screen.getByRole("tab", { name: "Tab 2" })).toHaveFocus();
+  });
+
+  it("only tabs through one tab and than to the next element", async () => {
+    // ARRANGE
+    render({
+      components: { MtTabs },
+      template: '<div><mt-tabs :items="items" /><button>Some button</button></div>',
+      setup: () => ({
+        items: [
+          { label: "Tab 1", name: "tab1" },
+          { label: "Tab 2", name: "tab2" },
+        ],
+      }),
+    });
+
+    // ACT
+    await userEvent.tab();
+    await userEvent.tab();
+
+    // ASSERT
+    expect(screen.getByRole("button", { name: "Some button" })).toHaveFocus();
   });
 });

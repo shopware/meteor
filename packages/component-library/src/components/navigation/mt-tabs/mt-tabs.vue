@@ -32,6 +32,7 @@
           :data-text="item.label"
           :aria-selected="item.name === activeTab?.name"
           :aria-invalid="item.hasError"
+          :tabindex="item.name === activeTab?.name ? 0 : -1"
         >
           <span>{{ item.label }}</span>
 
@@ -64,6 +65,7 @@
                 },
               ]"
               :aria-label="t('moreTabsAriaLabel')"
+              :tabindex="moreItems.some((item) => item.name === activeTab?.name) ? 0 : -1"
             >
               <mt-icon
                 name="solid-ellipsis-h-s"
