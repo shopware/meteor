@@ -33,6 +33,8 @@
           :aria-selected="item.name === activeTab?.name"
           :aria-invalid="item.hasError"
           :tabindex="item.name === activeTab?.name ? 0 : -1"
+          @keydown.arrow-right="focusNextTab"
+          @blur="onBlur"
         >
           <span>{{ item.label }}</span>
 
@@ -278,6 +280,43 @@ watch(
     activeTab.value = newActiveTab;
   },
 );
+
+function focusNextTab() {
+  const indexOfActiveTab = props.items.findIndex((item) => item.name === activeTab.value?.name);
+  const nextItem = props.items.at(indexOfActiveTab + 1);
+
+  if (!tabListRef.value || !nextItem || !activeTab.value) return;
+
+  const nextTabDOMElement = tabListRef.value.querySelector<HTMLButtonElement>(
+    `#mt-tabs__item--${nextItem.name}`,
+  );
+  const currentFocusedTab = tabListRef.value.querySelector<HTMLButtonElement>(
+    `#mt-tabs__item--${activeTab.value.name}`,
+  );
+
+  if (!nextTabDOMElement || !currentFocusedTab) return;
+
+  nextTabDOMElement.setAttribute("tabindex", "0");
+  nextTabDOMElement.focus();
+
+  currentFocusedTab.setAttribute("tabindex", "-1");
+}
+
+function onBlur(event: FocusEvent) {
+  const focusedAnotherTabItem =
+    event.relatedTarget instanceof HTMLElement &&
+    event.relatedTarget.getAttribute("role") === "tab";
+
+  if (focusedAnotherTabItem || !tabListRef.value || !(event.target instanceof HTMLElement)) return;
+  event.target.setAttribute("tabindex", "-1");
+
+  const activeTabDOMElement = tabListRef.value.querySelector<HTMLButtonElement>(
+    `#mt-tabs__item--${activeTab.value?.name}`,
+  );
+
+  if (!activeTabDOMElement) return;
+  activeTabDOMElement.setAttribute("tabindex", "0");
+}
 
 const futureFlags = useFutureFlags();
 </script>

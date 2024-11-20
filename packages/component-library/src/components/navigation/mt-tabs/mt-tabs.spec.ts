@@ -3,7 +3,6 @@ import type { TabItem } from "./mt-tabs.vue";
 import MtTabs from "./mt-tabs.vue";
 import { render, screen } from "@testing-library/vue";
 import { userEvent } from "@storybook/test";
-import { setup } from "@storybook/vue3";
 
 describe("mt-tabs", () => {
   it("selects the first tab by default", async () => {
@@ -185,5 +184,57 @@ describe("mt-tabs", () => {
 
     // ASSERT
     expect(screen.getByRole("button", { name: "Some button" })).toHaveFocus();
+  });
+
+  it("focuses the next tab when pressing right arrow key", async () => {
+    // ARRANGE
+    const items: TabItem[] = [
+      { label: "Tab 1", name: "tab1" },
+      { label: "Tab 2", name: "tab2" },
+    ];
+
+    render(MtTabs, {
+      props: { items, defaultItem: "tab1" },
+    });
+
+    await flushPromises();
+
+    await userEvent.tab();
+
+    // ACT
+    await userEvent.keyboard("{ArrowRight}");
+
+    // ASSERT
+    expect(screen.getByRole("tab", { name: "Tab 2" })).toHaveFocus();
+
+    expect(screen.getByRole("tab", { name: "Tab 1" })).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByRole("tab", { name: "Tab 2" })).toHaveAttribute("aria-selected", "false");
+  });
+
+  it("is only possible to focus the active element after navigating via the arrow keys", async () => {
+    // ARRANGE
+    render(MtTabs, {
+      props: {
+        items: [
+          { label: "Tab 1", name: "tab1" },
+          { label: "Tab 2", name: "tab2" },
+        ],
+        defaultItem: "tab1",
+      },
+    });
+
+    await flushPromises();
+
+    await userEvent.tab();
+    await userEvent.keyboard("{ArrowRight}");
+
+    // ACT & ASSERT
+    await userEvent.tab();
+
+    await userEvent.tab();
+    expect(screen.getByRole("tab", { name: "Tab 1" })).toHaveFocus();
+
+    await userEvent.tab();
+    expect(document.body).toHaveFocus();
   });
 });
