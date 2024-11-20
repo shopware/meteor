@@ -59,6 +59,8 @@
                 {
                   // @ts-expect-error
                   'mt-tabs__item--active': moreItems.some((item) => item.name === activeTab?.name),
+                  // @ts-expect-error
+                  'mt-tabs__item--error': moreItems.some((item) => item.hasError),
                 },
               ]"
               :aria-label="t('moreTabsAriaLabel')"
@@ -75,13 +77,15 @@
               :key="item.name"
               role="tab"
               :aria-selected="item.name === activeTab?.name"
-              :style="
-                item.name === activeTab?.name && {
-                  textDecoration: 'underline',
-                  fontWeight: 'var(--font-weight-semibold)',
-                  color: 'var(--color-text-brand-default)',
-                }
-              "
+              :style="{
+                textDecoration: item.name === activeTab?.name && 'underline',
+                fontWeight: item.name === activeTab?.name && 'var(--font-weight-semibold)',
+                color: item.hasError
+                  ? 'var(--color-text-critical-default)'
+                  : item.name === activeTab?.name
+                    ? 'var(--color-text-brand-default)'
+                    : 'var(--color-text-primary-default)',
+              }"
               @click="
                 () => {
                   changeActiveTab(item);
