@@ -69,6 +69,13 @@
               :key="item.name"
               role="tab"
               :aria-selected="item.name === activeTab?.name"
+              :style="
+                item.name === activeTab?.name && {
+                  textDecoration: 'underline',
+                  fontWeight: 'var(--font-weight-semibold)',
+                  color: 'var(--color-text-brand-default)',
+                }
+              "
               @click="
                 () => {
                   changeActiveTab(item);
