@@ -54,7 +54,13 @@
               ref="moreTabsButton"
               v-bind="params"
               role="tab"
-              class="mt-tabs__item"
+              :class="[
+                'mt-tabs__item',
+                {
+                  // @ts-expect-error
+                  'mt-tabs__item--active': moreItems.some((item) => item.name === activeTab?.name),
+                },
+              ]"
               :aria-label="t('moreTabsAriaLabel')"
             >
               <mt-icon name="solid-ellipsis-h-s" style="margin-inline-end: 0.5rem" />
