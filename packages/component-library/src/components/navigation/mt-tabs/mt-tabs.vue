@@ -65,7 +65,11 @@
               ]"
               :aria-label="t('moreTabsAriaLabel')"
             >
-              <mt-icon name="solid-ellipsis-h-s" style="margin-inline-end: 0.5rem" />
+              <mt-icon
+                name="solid-ellipsis-h-s"
+                color="var(--color-text-primary-default)"
+                style="margin-inline-end: 0.5rem"
+              />
 
               <span>{{ t("moreTabs") }}</span>
             </button>
