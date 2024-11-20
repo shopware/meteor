@@ -237,4 +237,32 @@ describe("mt-tabs", () => {
     await userEvent.tab();
     expect(document.body).toHaveFocus();
   });
+
+  it("focuses the third tab when pressing the right arrow key two times", async () => {
+    // ARRANGE
+    const items: TabItem[] = [
+      { label: "Tab 1", name: "tab1" },
+      { label: "Tab 2", name: "tab2" },
+      { label: "Tab 3", name: "tab3" },
+    ];
+
+    render(MtTabs, {
+      props: { items, defaultItem: "tab1" },
+    });
+
+    await flushPromises();
+
+    await userEvent.tab();
+
+    // ACT
+    await userEvent.keyboard("{ArrowRight}");
+    await userEvent.keyboard("{ArrowRight}");
+
+    // ASSERT
+    expect(screen.getByRole("tab", { name: "Tab 3" })).toHaveFocus();
+
+    expect(screen.getByRole("tab", { name: "Tab 1" })).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByRole("tab", { name: "Tab 2" })).toHaveAttribute("aria-selected", "false");
+    expect(screen.getByRole("tab", { name: "Tab 3" })).toHaveAttribute("aria-selected", "false");
+  });
 });

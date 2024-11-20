@@ -33,7 +33,7 @@
           :aria-selected="item.name === activeTab?.name"
           :aria-invalid="item.hasError"
           :tabindex="item.name === activeTab?.name ? 0 : -1"
-          @keydown.arrow-right="focusNextTab"
+          @keydown.arrow-right="() => focusNextTab({ currentTab: item.name })"
           @blur="onBlur"
         >
           <span>{{ item.label }}</span>
@@ -281,8 +281,8 @@ watch(
   },
 );
 
-function focusNextTab() {
-  const indexOfActiveTab = props.items.findIndex((item) => item.name === activeTab.value?.name);
+function focusNextTab({ currentTab }: { currentTab: string }) {
+  const indexOfActiveTab = props.items.findIndex((item) => item.name === currentTab);
   const nextItem = props.items.at(indexOfActiveTab + 1);
 
   if (!tabListRef.value || !nextItem || !activeTab.value) return;
