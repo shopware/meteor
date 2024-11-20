@@ -34,6 +34,7 @@
           :aria-invalid="item.hasError"
           :tabindex="item.name === activeTab?.name ? 0 : -1"
           @keydown.arrow-right="() => focusNextTab({ currentTab: item.name })"
+          @keydown.arrow-left="() => focusPreviousTab({ currentTab: item.name })"
           @blur="onBlur"
         >
           <span>{{ item.label }}</span>
@@ -298,6 +299,27 @@ function focusNextTab({ currentTab }: { currentTab: string }) {
 
   nextTabDOMElement.setAttribute("tabindex", "0");
   nextTabDOMElement.focus();
+
+  currentFocusedTab.setAttribute("tabindex", "-1");
+}
+
+function focusPreviousTab({ currentTab }: { currentTab: string }) {
+  const indexOfActiveTab = props.items.findIndex((item) => item.name === currentTab);
+  const previousItem = props.items.at(indexOfActiveTab - 1);
+
+  if (!tabListRef.value || !previousItem || !activeTab.value) return;
+
+  const previousTabDOMElement = tabListRef.value.querySelector<HTMLButtonElement>(
+    `#mt-tabs__item--${previousItem.name}`,
+  );
+  const currentFocusedTab = tabListRef.value.querySelector<HTMLButtonElement>(
+    `#mt-tabs__item--${activeTab.value.name}`,
+  );
+
+  if (!previousTabDOMElement || !currentFocusedTab) return;
+
+  previousTabDOMElement.setAttribute("tabindex", "0");
+  previousTabDOMElement.focus();
 
   currentFocusedTab.setAttribute("tabindex", "-1");
 }
