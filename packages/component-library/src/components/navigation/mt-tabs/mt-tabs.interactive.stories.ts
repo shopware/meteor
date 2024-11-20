@@ -245,22 +245,15 @@ export const VisualTestRenderTabsWithContextMenuBadge: MtTabsStory = {
     const canvas = within(canvasElement);
 
     // wait until tab bar is loaded and context button gets rendered
+    await waitUntil(() => canvas.getByRole("tab", { name: "Context tab test" }));
 
-    await waitUntil(() => document.body.textContent?.includes("Context tab test"));
-    await waitUntil(() => document.querySelector("button"));
+    await userEvent.click(canvas.getByRole("tab", { name: "More tabs" }));
 
-    const button = canvas.getByRole("button");
+    const popover = within(document.querySelector("[role='dialog']") as HTMLElement);
 
-    await userEvent.click(button);
-
-    // Look inside the popover
-    const popover = within(
-      document.getElementsByClassName("mt-popover__content")[0] as HTMLElement,
-    );
-
-    const menuItem = popover.getAllByRole("tab");
-
-    await expect(menuItem[menuItem.length - 9]).toHaveTextContent("Item with critical badge");
+    await expect(
+      popover.getByRole("tab", { name: "Item with critical badge" }),
+    ).toBeInTheDocument();
   },
 };
 

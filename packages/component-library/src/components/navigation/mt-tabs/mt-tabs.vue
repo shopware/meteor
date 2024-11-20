@@ -97,7 +97,9 @@
                 }
               "
             >
-              {{ item.label }}
+              <span>{{ item.label }}</span>
+
+              <mt-color-badge v-if="item.badge" :variant="item.badge" rounded />
             </mt-bare-popover-item>
           </template>
         </mt-bare-popover>
