@@ -144,6 +144,7 @@ import MtBarePopoverItem from "@/components/overlay/mt-bare-popover/sub-componen
 import MtBarePopover from "@/components/overlay/mt-bare-popover/mt-bare-popover.vue";
 import { useFutureFlags } from "@/composables/useFutureFlags";
 import { useI18n } from "@/composables/useI18n";
+import { debug } from "console";
 
 export interface TabItem {
   label: string;
@@ -312,14 +313,21 @@ function focusPreviousTab({ currentTab }: { currentTab: string }) {
   const previousTabDOMElement = tabListRef.value.querySelector<HTMLButtonElement>(
     `#mt-tabs__item--${previousItem.name}`,
   );
+
+  const lastVisibleTabDOMElement = Array.from(
+    tabListRef.value.querySelectorAll<HTMLButtonElement>(".mt-tabs__item:not([aria-haspopup])"),
+  ).at(-1);
+
+  const nextElementToFocus = previousTabDOMElement ?? lastVisibleTabDOMElement;
+
   const currentFocusedTab = tabListRef.value.querySelector<HTMLButtonElement>(
     `#mt-tabs__item--${activeTab.value.name}`,
   );
 
-  if (!previousTabDOMElement || !currentFocusedTab) return;
+  if (!nextElementToFocus || !currentFocusedTab) return;
 
-  previousTabDOMElement.setAttribute("tabindex", "0");
-  previousTabDOMElement.focus();
+  nextElementToFocus.setAttribute("tabindex", "0");
+  nextElementToFocus.focus();
 
   currentFocusedTab.setAttribute("tabindex", "-1");
 }
