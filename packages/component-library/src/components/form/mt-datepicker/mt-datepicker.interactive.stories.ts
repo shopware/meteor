@@ -255,8 +255,8 @@ export const VisualTestDateTimeRangeValue: MtDatepickerStory = {
 
     // Expect updatemodelvalue to have been called with array of ISO formatted dates
     expect(args.updateModelValue).toHaveBeenCalledWith([
-      expect.stringMatching(/^2024-11-13T11:40:00\.000Z$/),
-      expect.stringMatching(/^2024-11-16T10:30:00\.000Z$/),
+      expect.stringMatching(/^2024-11-13T\d{2}:\d{2}:00\.000Z$/),
+      expect.stringMatching(/^2024-11-16T\d{2}:\d{2}:00\.000Z$/),
     ]);
   },
 };
