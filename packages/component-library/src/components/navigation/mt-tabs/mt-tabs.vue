@@ -284,8 +284,9 @@ watch(
 );
 
 function focusNextTab({ currentTab }: { currentTab: string }) {
-  const indexOfActiveTab = props.items.findIndex((item) => item.name === currentTab);
-  const nextItem = props.items.at(indexOfActiveTab + 1);
+  const indexOfFocusedTab = props.items.findIndex((item) => item.name === currentTab);
+
+  const nextItem = props.items.at(indexOfFocusedTab + 1);
   const firstItem = props.items.at(0);
 
   const nextItemToFocus = nextItem ?? firstItem;
@@ -296,7 +297,7 @@ function focusNextTab({ currentTab }: { currentTab: string }) {
     `#mt-tabs__item--${nextItemToFocus.name}`,
   );
   const currentFocusedTab = tabListRef.value.querySelector<HTMLButtonElement>(
-    `#mt-tabs__item--${activeTab.value.name}`,
+    `#mt-tabs__item--${currentTab}`,
   );
 
   if (!nextTabDOMElement || !currentFocusedTab) return;

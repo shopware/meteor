@@ -340,4 +340,33 @@ describe("mt-tabs", () => {
     expect(screen.getByRole("tab", { name: "Tab 1" })).toHaveAttribute("aria-selected", "false");
     expect(screen.getByRole("tab", { name: "Tab 2" })).toHaveAttribute("aria-selected", "true");
   });
+
+  it("moves focus out of the tab component when pressing shift and tab and the user previously navigated via the right arrow key", async () => {
+    // ARRANGE
+    render(MtTabs, {
+      props: {
+        items: [
+          { label: "Tab 1", name: "tab1" },
+          { label: "Tab 2", name: "tab2" },
+          { label: "Tab 3", name: "tab3" },
+          { label: "Tab 4", name: "tab4" },
+        ],
+        defaultItem: "tab1",
+      },
+    });
+
+    await flushPromises();
+
+    await userEvent.tab();
+
+    // ACT
+    await userEvent.keyboard("{ArrowRight}");
+    await userEvent.keyboard("{ArrowRight}");
+    await userEvent.keyboard("{ArrowRight}");
+
+    await userEvent.keyboard("{Shift>}{Tab}{/Shift}");
+
+    // ASSERT
+    expect(document.body).toHaveFocus();
+  });
 });
