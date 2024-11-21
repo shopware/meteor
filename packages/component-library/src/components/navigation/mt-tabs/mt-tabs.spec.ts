@@ -315,4 +315,29 @@ describe("mt-tabs", () => {
     expect(screen.getByRole("tab", { name: "Tab 1" })).toHaveAttribute("aria-selected", "true");
     expect(screen.getByRole("tab", { name: "Tab 2" })).toHaveAttribute("aria-selected", "false");
   });
+
+  it("focuses the first tab when pressing the right arrow key on the last tab", async () => {
+    // ARRANGE
+    const items: TabItem[] = [
+      { label: "Tab 1", name: "tab1" },
+      { label: "Tab 2", name: "tab2" },
+    ];
+
+    render(MtTabs, {
+      props: { items, defaultItem: "tab2" },
+    });
+
+    await flushPromises();
+
+    await userEvent.tab();
+
+    // ACT
+    await userEvent.keyboard("{ArrowRight}");
+
+    // ASSERT
+    expect(screen.getByRole("tab", { name: "Tab 1" })).toHaveFocus();
+
+    expect(screen.getByRole("tab", { name: "Tab 1" })).toHaveAttribute("aria-selected", "false");
+    expect(screen.getByRole("tab", { name: "Tab 2" })).toHaveAttribute("aria-selected", "true");
+  });
 });
