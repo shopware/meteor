@@ -334,3 +334,20 @@ export const TabsToMoreItemsTabWhenOneOfItsChildrenIsActive: MtTabsStory = {
     await expect(canvas.getByRole("tab", { name: "More tabs" })).toHaveFocus();
   },
 };
+
+export const FocusesTheMoreTabsWhenPressingLeftArrowKeyOnFirstTab: MtTabsStory = {
+  args: {
+    small: true,
+    defaultItem: "item1",
+    items: tabItems,
+  },
+  async play({ canvasElement }) {
+    const canvas = within(canvasElement);
+
+    await userEvent.tab();
+
+    await userEvent.keyboard("{arrowleft}");
+
+    await expect(canvas.getByRole("tab", { name: "More tabs" })).toHaveFocus();
+  },
+};

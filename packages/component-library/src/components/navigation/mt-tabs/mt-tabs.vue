@@ -72,6 +72,7 @@
                 // @ts-expect-error
                 moreItems.some((item) => item.name === activeTab?.name) ? 0 : -1
               "
+              @blur="onBlur"
             >
               <mt-icon
                 name="solid-ellipsis-h-s"
@@ -315,17 +316,20 @@ function focusPreviousTab({ currentTab }: { currentTab: string }) {
   const indexOfFocusedTab = props.items.findIndex((item) => item.name === currentTab);
   const previousItem = props.items.at(indexOfFocusedTab - 1);
 
-  if (!tabListRef.value || !previousItem || !activeTab.value) return;
+  const previousItemToFocus = previousItem ?? props.items.at(-1);
+
+  if (!tabListRef.value || !previousItemToFocus || !activeTab.value) return;
 
   const previousTabDOMElement = tabListRef.value.querySelector<HTMLButtonElement>(
-    `#mt-tabs__item--${previousItem.name}`,
+    `#mt-tabs__item--${previousItemToFocus.name}`,
   );
 
   const lastVisibleTabDOMElement = Array.from(
     tabListRef.value.querySelectorAll<HTMLButtonElement>(".mt-tabs__item:not([aria-haspopup])"),
   ).at(-1);
 
-  const nextElementToFocus = previousTabDOMElement ?? lastVisibleTabDOMElement;
+  const nextElementToFocus =
+    previousTabDOMElement ?? moreTabsButton.value ?? lastVisibleTabDOMElement;
 
   const currentFocusedTab = tabListRef.value.querySelector<HTMLButtonElement>(
     `#mt-tabs__item--${currentTab}`,
