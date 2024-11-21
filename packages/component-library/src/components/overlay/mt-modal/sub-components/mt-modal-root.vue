@@ -26,6 +26,13 @@ watch(isOpen, () => {
   emit("change", isOpen.value);
 });
 
+watch(
+  () => props.isOpen,
+  (value) => {
+    isOpen.value = value;
+  }
+);
+
 function setIsOpen(state: boolean) {
   isOpen.value = state;
 }
