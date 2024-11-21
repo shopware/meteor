@@ -3,6 +3,7 @@ import { expect } from "@storybook/test";
 import { waitUntil } from "../../../_internal/test-helper";
 
 import meta, { type MtTabsMeta, type MtTabsStory } from "./mt-tabs.stories";
+import mtTabsStories from "./mt-tabs.stories";
 
 const tabItems = [
   {
@@ -347,6 +348,23 @@ export const FocusesTheMoreTabsWhenPressingLeftArrowKeyOnFirstTab: MtTabsStory =
     await userEvent.tab();
 
     await userEvent.keyboard("{arrowleft}");
+
+    await expect(canvas.getByRole("tab", { name: "More tabs" })).toHaveFocus();
+  },
+};
+
+export const FocusesTheMoreTabsButtonWhenPressingRightArrowKeyOnLastTab: MtTabsStory = {
+  args: {
+    small: true,
+    defaultItem: "item7",
+    items: tabItems,
+  },
+  async play({ canvasElement }) {
+    const canvas = within(canvasElement);
+
+    await userEvent.tab();
+
+    await userEvent.keyboard("{arrowright}");
 
     await expect(canvas.getByRole("tab", { name: "More tabs" })).toHaveFocus();
   },
