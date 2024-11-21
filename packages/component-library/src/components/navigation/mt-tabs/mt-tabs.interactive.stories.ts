@@ -351,3 +351,26 @@ export const FocusesTheMoreTabsWhenPressingLeftArrowKeyOnFirstTab: MtTabsStory =
     await expect(canvas.getByRole("tab", { name: "More tabs" })).toHaveFocus();
   },
 };
+
+export const MovesFocusAwayFromTheMoreTabsButtonWhenPressingTheArrowKeys: MtTabsStory = {
+  args: {
+    small: true,
+    defaultItem: "item1",
+    items: tabItems,
+  },
+  async play({ canvasElement }) {
+    const canvas = within(canvasElement);
+
+    await userEvent.tab();
+
+    await userEvent.keyboard("{arrowleft}");
+    await userEvent.keyboard("{arrowright}");
+
+    await expect(canvas.getByRole("tab", { name: "Item 1" })).toHaveFocus();
+
+    await userEvent.keyboard("{arrowleft}");
+    await userEvent.keyboard("{arrowleft}");
+
+    await expect(canvas.getByRole("tab", { name: "Item 7" })).toHaveFocus();
+  },
+};

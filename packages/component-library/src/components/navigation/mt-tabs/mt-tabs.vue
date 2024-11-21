@@ -73,6 +73,8 @@
                 moreItems.some((item) => item.name === activeTab?.name) ? 0 : -1
               "
               @blur="onBlur"
+              @keydown.arrow-right="() => focusNextTab({ currentTab: 'more-tabs' })"
+              @keydown.arrow-left="() => focusPreviousTab({ currentTab: 'more-tabs' })"
             >
               <mt-icon
                 name="solid-ellipsis-h-s"
@@ -287,7 +289,7 @@ watch(
   },
 );
 
-function focusNextTab({ currentTab }: { currentTab: string }) {
+function focusNextTab({ currentTab }: { currentTab: "more-tabs" | string }) {
   const indexOfFocusedTab = props.items.findIndex((item) => item.name === currentTab);
 
   const nextItem = props.items.at(indexOfFocusedTab + 1);
@@ -300,9 +302,11 @@ function focusNextTab({ currentTab }: { currentTab: string }) {
   const nextTabDOMElement = tabListRef.value.querySelector<HTMLButtonElement>(
     `#mt-tabs__item--${nextItemToFocus.name}`,
   );
-  const currentFocusedTab = tabListRef.value.querySelector<HTMLButtonElement>(
-    `#mt-tabs__item--${currentTab}`,
-  );
+
+  const currentFocusedTab =
+    currentTab === "more-tabs"
+      ? moreTabsButton.value
+      : tabListRef.value.querySelector<HTMLButtonElement>(`#mt-tabs__item--${currentTab}`);
 
   if (!nextTabDOMElement || !currentFocusedTab) return;
 
@@ -312,7 +316,7 @@ function focusNextTab({ currentTab }: { currentTab: string }) {
   currentFocusedTab.setAttribute("tabindex", "-1");
 }
 
-function focusPreviousTab({ currentTab }: { currentTab: string }) {
+function focusPreviousTab({ currentTab }: { currentTab: "more-tabs" | string }) {
   const indexOfFocusedTab = props.items.findIndex((item) => item.name === currentTab);
   const previousItem = props.items.at(indexOfFocusedTab - 1);
 
@@ -329,11 +333,14 @@ function focusPreviousTab({ currentTab }: { currentTab: string }) {
   ).at(-1);
 
   const nextElementToFocus =
-    previousTabDOMElement ?? moreTabsButton.value ?? lastVisibleTabDOMElement;
+    currentTab === "more-tabs"
+      ? lastVisibleTabDOMElement
+      : previousTabDOMElement ?? moreTabsButton.value ?? lastVisibleTabDOMElement;
 
-  const currentFocusedTab = tabListRef.value.querySelector<HTMLButtonElement>(
-    `#mt-tabs__item--${currentTab}`,
-  );
+  const currentFocusedTab =
+    currentTab === "more-tabs"
+      ? moreTabsButton.value
+      : tabListRef.value.querySelector<HTMLButtonElement>(`#mt-tabs__item--${currentTab}`);
 
   if (!nextElementToFocus || !currentFocusedTab) return;
 
