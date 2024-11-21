@@ -15,7 +15,6 @@ import MtSlider from "@/components/form/mt-slider/mt-slider.vue";
 import MtSwitch from "./components/form/mt-switch/mt-switch.vue";
 import MtTextField from "./components/form/mt-text-field/mt-text-field.vue";
 import MtTextarea from "./components/form/mt-textarea/mt-textarea.vue";
-import MtUrlField from "./components/form/mt-url-field/mt-url-field.vue";
 import MtIcon from "./components/icons-media/mt-icon/mt-icon.vue";
 import MtCard from "./components/layout/mt-card/mt-card.vue";
 import MtEmptyState from "./components/layout/mt-empty-state/mt-empty-state.vue";
@@ -65,7 +64,6 @@ export {
   MtSwitch,
   MtTextField,
   MtTextarea,
-  MtUrlField,
   MtIcon,
   MtCard,
   MtEmptyState,
@@ -118,8 +116,6 @@ export {
   MtTextField as SwTextField,
   // @deprecated
   MtTextarea as SwTextarea,
-  // @deprecated
-  MtUrlField as SwUrlField,
   // @deprecated
   MtIcon as SwIcon,
   // @deprecated
