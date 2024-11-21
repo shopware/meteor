@@ -553,16 +553,7 @@
 <script lang="ts">
 import useScrollPossibilitiesClasses from "./composables/useScrollPossibilitiesClasses";
 import type { PropType, Ref } from "vue";
-import {
-  defineComponent,
-  computed,
-  onBeforeUpdate,
-  onMounted,
-  onBeforeUnmount,
-  ref,
-  getCurrentInstance,
-  onBeforeMount,
-} from "vue";
+import { defineComponent, computed, onBeforeUpdate, onMounted, onBeforeUnmount, ref } from "vue";
 import MtCard from "../../layout/mt-card/mt-card.vue";
 import MtButton from "../../form/mt-button/mt-button.vue";
 import MtSelect from "../../form/mt-select/mt-select.vue";

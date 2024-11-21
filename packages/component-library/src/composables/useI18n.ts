@@ -35,12 +35,12 @@ function limit(value: number, max: number) {
 }
 
 export function provideI18n(locale: string = "en") {
-  const state = {
+  const currentInjectionState = {
     ...defaultI18nState,
     locale: locale,
   };
 
-  provide(i18nInjectionKey, state);
+  provide(i18nInjectionKey, currentInjectionState);
 }
 
 const CUSTOM_VALUE_REGEX = /{([^}]*)}/g;
@@ -82,5 +82,11 @@ export function useI18n({ messages }: Options) {
     return resolveCustomKeys(translation);
   }
 
-  return { t: translate };
+  function translationExists(path: string): boolean {
+    return (
+      !!get(messages, `${i18n.locale}.${path}`) || !!get(messages, `${i18n.defaultLocale}.${path}`)
+    );
+  }
+
+  return { t: translate, te: translationExists };
 }
