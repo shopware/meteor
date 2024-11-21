@@ -30,6 +30,7 @@ export default {
     isInherited: false,
     isInheritanceField: false,
     disableInheritanceToggle: false,
+    compact: false,
   },
 } as MtColorpickerMeta;
 

@@ -4,6 +4,7 @@ import MtModal from "./mt-modal.vue";
 import MtModalRoot from "./sub-components/mt-modal-root.vue";
 import MtModalTrigger from "./sub-components/mt-modal-trigger.vue";
 import MtButton from "@/components/form/mt-button/mt-button.vue";
+import { ref } from "vue";
 
 export default {
   ...meta,
@@ -21,6 +22,27 @@ export const VisualTestContent = {
     },
     template:
       "<mt-modal-root isOpen><mt-modal v-bind='args'><template #default><mt-text>Lorem ipsum dolor sit amet</mt-text></template><template #footer><div style='width: 100%; display: flex; justify-content: flex-end;'><mt-button variant='primary'>Continue</mt-button></div></template></mt-modal></mt-modal-root>",
+  }),
+};
+
+export const TestModalOpening = {
+  name: "The modal opens when the trigger is clicked",
+  render: (args: unknown) => ({
+    components: { MtModal, MtModalRoot, MtModalTrigger, MtButton, MtText },
+    setup() {
+      const isOpen = ref(false);
+      return {
+        args,
+        isOpen,
+      };
+    },
+    template:
+      `
+      <div>
+        <mt-button @click='isOpen = !isOpen'>Open modal</mt-button>
+        <mt-modal-root :isOpen="isOpen"><mt-modal v-bind='args'><template #default><mt-text>Lorem ipsum dolor sit amet</mt-text></template><template #footer><div style='width: 100%; display: flex; justify-content: flex-end;'><mt-button variant='primary'>Continue</mt-button></div></template></mt-modal></mt-modal-root>
+      </div>
+      `,
   }),
 };
 

@@ -140,7 +140,7 @@ export default defineComponent({
     },
 
     /**
-     * The value of the field.
+     * The value of the number field.
      */
     modelValue: {
       type: Number as PropType<number | null>,
