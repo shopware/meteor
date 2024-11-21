@@ -369,4 +369,32 @@ describe("mt-tabs", () => {
     // ASSERT
     expect(document.body).toHaveFocus();
   });
+
+  it("moves focus out of the tabs when pressing tab and the user navigated via the left arrow key before", async () => {
+    // ARRANGE
+    render(MtTabs, {
+      props: {
+        items: [
+          { label: "Tab 1", name: "tab1" },
+          { label: "Tab 2", name: "tab2" },
+          { label: "Tab 3", name: "tab3" },
+          { label: "Tab 4", name: "tab4" },
+        ],
+        defaultItem: "tab4",
+      },
+    });
+
+    await flushPromises();
+
+    await userEvent.tab();
+
+    // ACT
+    await userEvent.keyboard("{ArrowLeft}");
+    await userEvent.keyboard("{ArrowLeft}");
+
+    await userEvent.tab();
+
+    // ASSERT
+    expect(document.body).toHaveFocus();
+  });
 });
