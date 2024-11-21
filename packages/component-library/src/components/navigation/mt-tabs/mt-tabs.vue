@@ -68,7 +68,10 @@
                 },
               ]"
               :aria-label="t('moreTabsAriaLabel')"
-              :tabindex="moreItems.some((item) => item.name === activeTab?.name) ? 0 : -1"
+              :tabindex="
+                // @ts-expect-error
+                moreItems.some((item) => item.name === activeTab?.name) ? 0 : -1
+              "
             >
               <mt-icon
                 name="solid-ellipsis-h-s"
