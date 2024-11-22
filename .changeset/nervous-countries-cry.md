@@ -2,4 +2,4 @@
 "@shopware-ag/meteor-component-library": patch
 ---
 
-move mt-loader over to plain css
+Add missing translation for data table filters

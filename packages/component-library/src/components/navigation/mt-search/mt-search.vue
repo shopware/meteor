@@ -2,103 +2,49 @@
   <div :class="['mt-search', `mt-search--size-${size}`, { 'mt-search--disabled': disabled }]">
     <input
       :value="modelValue"
-      @input="onInput"
-      @change="onChange"
+      @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
+      @change="$emit('change', ($event.target as HTMLInputElement).value || '')"
       class="mt-search__input"
       :disabled="disabled"
       type="text"
-      :placeholder="placeholder || $t('mt-search.searchPlaceholder')"
+      :placeholder="placeholder || t('placeholder')"
     />
 
     <mt-icon name="regular-search-s" size="1rem" color="var(--color-icon-primary-default)" />
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
+import { useI18n } from "@/composables/useI18n";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
-import { defineComponent } from "vue";
 
-export default defineComponent({
-  components: {
-    "mt-icon": MtIcon,
+withDefaults(
+  defineProps<{
+    modelValue?: string;
+    placeholder?: string;
+    size?: "small" | "default";
+    disabled?: boolean;
+  }>(),
+  {
+    size: "default",
   },
+);
 
-  props: {
-    /**
-     * The value of the search field.
-     */
-    modelValue: {
-      type: String,
-      required: false,
-      default: "",
+const { t } = useI18n({
+  messages: {
+    en: {
+      placeholder: "Search",
     },
-
-    /**
-     * A placeholder text being displayed if no value is set.
-     */
-    placeholder: {
-      type: String,
-      required: false,
-      default: "",
+    de: {
+      placeholder: "Suchen",
     },
-
-    /**
-     * The size of the search field.
-     *
-     * @values small, default
-     */
-    size: {
-      type: String,
-      required: false,
-      default: "default",
-      validator: (value: string) => {
-        return ["small", "default"].includes(value);
-      },
-    },
-
-    /**
-     * Determines if the field is disabled.
-     */
-    disabled: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-  },
-  i18n: {
-    messages: {
-      en: {
-        "mt-search": {
-          searchPlaceholder: "Search",
-        },
-      },
-      de: {
-        "mt-search": {
-          searchPlaceholder: "Suchen",
-        },
-      },
-    },
-  },
-
-  emits: ["change", "update:modelValue"],
-
-  setup(_, { emit }) {
-    const onChange = (event: Event) => {
-      // @ts-expect-error - target is defined
-      emit("change", event.target.value || "");
-    };
-
-    const onInput = (event: Event) => {
-      // @ts-expect-error - target is defined
-      emit("update:modelValue", event.target.value);
-    };
-
-    return {
-      onChange,
-      onInput,
-    };
   },
 });
+
+defineEmits<{
+  (e: "change", value: string): void;
+  (e: "update:modelValue", value: string): void;
+}>();
 </script>
 
 <style scoped>

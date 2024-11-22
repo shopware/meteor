@@ -46,7 +46,7 @@
         <button
           @click="increaseNumberByStep"
           :disabled="disabled"
-          :aria-label="$tc('mt-number-field.increaseButton')"
+          :aria-label="t('increaseButton')"
           data-testid="mt-number-field-increase-button"
         >
           <mt-icon size="10" name="regular-chevron-up-s" aria-hidden="true" />
@@ -55,7 +55,7 @@
         <button
           @click="decreaseNumberByStep"
           :disabled="disabled"
-          :aria-label="$t('mt-number-field.decreaseButton')"
+          :aria-label="t('decreaseButton')"
           data-testid="mt-number-field-decrease-button"
         >
           <mt-icon
@@ -88,6 +88,7 @@ import type { PropType } from "vue";
 import { defineComponent } from "vue";
 import MtTextField from "../mt-text-field/mt-text-field.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
+import { useI18n } from "@/composables/useI18n";
 
 export default defineComponent({
   name: "MtNumberField",
@@ -97,19 +98,6 @@ export default defineComponent({
   },
 
   extends: MtTextField,
-
-  i18n: {
-    messages: {
-      en: {
-        "mt-number-field.increaseButton": "Increase",
-        "mt-number-field.decreaseButton": "Decrease",
-      },
-      de: {
-        "mt-number-field.increaseButton": "Erhöhen",
-        "mt-number-field.decreaseButton": "Verringern",
-      },
-    },
-  },
 
   props: {
     /**
@@ -365,6 +353,23 @@ export default defineComponent({
       }
       return floor;
     },
+  },
+
+  setup() {
+    const { t } = useI18n({
+      messages: {
+        en: {
+          increaseButton: "Increase",
+          decreaseButton: "Decrease",
+        },
+        de: {
+          increaseButton: "Erhöhen",
+          decreaseButton: "Verringern",
+        },
+      },
+    });
+
+    return { t };
   },
 });
 </script>
