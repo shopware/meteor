@@ -49,14 +49,14 @@ jobs:
 
       - name: Run Tests
         id: storybookTests
-        if: ${{ github.event_name !== 'workflow_dispatch' }}
+        if: ${{ github.event_name != 'workflow_dispatch' }}
         run: |
           npx concurrently --kill-others --success first --names "SB,TEST"  --hide "SB" --prefix-colors "magenta,blue" \
           "http-server ./packages/component-library/storybook-static -a 127.0.0.1 --port 6006" \
           "wait-on http://127.0.0.1:6006 && pnpx turbo run test:storybook --filter=@shopware-ag/meteor-component-library"
 
       - name: Run tests and update snapshots
-        if: ${{ github.event_name === 'workflow_dispatch' }}
+        if: ${{ github.event_name == 'workflow_dispatch' }}
         id: storybookTests
         run: |
           npx concurrently --kill-others --success first --names "SB,TEST"  --hide "SB" --prefix-colors "magenta,blue" \
@@ -71,7 +71,7 @@ jobs:
           path: ./packages/component-library/__snapshots__
 
       - name: Commit update snapshots
-        if: ${{ github.event_name === 'workflow_dispatch' }}
+        if: ${{ github.event_name == 'workflow_dispatch' }}
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "update snapshots"
