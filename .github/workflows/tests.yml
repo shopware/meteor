@@ -21,7 +21,7 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-        width:
+        with:
           ref: ${{ github.head_ref }}
 
       - uses: pnpm/action-setup@v3
