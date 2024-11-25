@@ -22,7 +22,9 @@ type ComponentPropsOrProps<TCmpOrArgs> =
 export function defineStory<T>(
   config: Omit<StoryObj<T>, "play"> & {
     play?: (
-      context: Omit<StoryObj<T>, "play"> & { screen: BoundFunctions<typeof queries> },
+      context: PlayFunctionContext<VueRenderer, ComponentPropsOrProps<T>> & {
+        screen: BoundFunctions<typeof queries>;
+      },
     ) => Promise<void>;
   },
   extension?: { from: StoryObj<T> },

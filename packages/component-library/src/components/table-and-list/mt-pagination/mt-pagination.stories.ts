@@ -1,21 +1,15 @@
 import MtPagination from "./mt-pagination.vue";
-import type { StoryObj } from "@storybook/vue3";
 import { action } from "@storybook/addon-actions";
-import type { SlottedMeta } from "@/_internal/story-helper";
+import { type SlottedMeta, defineStory } from "@/_internal/story-helper";
 import { ref } from "vue";
 import { fn } from "@storybook/test";
 
-export type MtPaginationMeta = SlottedMeta<typeof MtPagination, "default">;
-
-const meta: MtPaginationMeta = {
+export default {
   title: "Components/Table and list/mt-pagination",
   component: MtPagination,
-};
+} satisfies SlottedMeta<typeof MtPagination, "default">;
 
-export default meta;
-export type MtPaginationStory = StoryObj<typeof MtPagination>;
-
-export const Default: MtPaginationStory = {
+export const Default = defineStory<typeof MtPagination>({
   render: (args) => ({
     components: { MtPagination },
     setup: () => {
@@ -32,11 +26,9 @@ export const Default: MtPaginationStory = {
     },
     template: `<mt-pagination v-bind="args" :current-page="page" @change-current-page="onChangeCurrentPage" />`,
   }),
-
   args: {
     totalItems: 100,
     limit: 25,
   },
-
   name: "mt-pagination",
-};
+});
