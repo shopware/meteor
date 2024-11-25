@@ -48,7 +48,6 @@ jobs:
         run: pnpm dlx playwright@1.47.2 install
 
       - name: Run Tests
-        id: storybookTests
         if: ${{ github.event_name != 'workflow_dispatch' }}
         run: |
           npx concurrently --kill-others --success first --names "SB,TEST"  --hide "SB" --prefix-colors "magenta,blue" \
@@ -57,7 +56,6 @@ jobs:
 
       - name: Run tests and update snapshots
         if: ${{ github.event_name == 'workflow_dispatch' }}
-        id: storybookTests
         run: |
           npx concurrently --kill-others --success first --names "SB,TEST"  --hide "SB" --prefix-colors "magenta,blue" \
           "http-server ./packages/component-library/storybook-static -a 127.0.0.1 --port 6006" \
