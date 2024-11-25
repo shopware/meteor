@@ -28,6 +28,7 @@
       "outputs": []
     },
     "format:check": {},
+    "format": {},
     "test:unit": {
       "env": [
         "FIGMA_TOKEN",
