@@ -2,6 +2,7 @@ import MtTextField from "./mt-text-field.vue";
 import baseFieldArgTypes from "../_internal/mt-base-field/arg-types";
 import type { StoryObj } from "@storybook/vue3";
 import type { SlottedMeta } from "@/_internal/story-helper";
+import { fn } from "@storybook/test";
 
 export type MtTextFieldMeta = SlottedMeta<
   typeof MtTextField,
@@ -99,6 +100,10 @@ export default {
   },
   args: {
     label: "Textfield label",
+    change: fn(),
+    updateModelValue: fn(),
+    inheritanceRemove: fn(),
+    inheritanceRestore: fn(),
   },
 } as MtTextFieldMeta;
 

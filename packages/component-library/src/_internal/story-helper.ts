@@ -42,5 +42,5 @@ export function defineStory<T>(
       const screen = within(document.body);
       await config.play({ ...context, screen });
     },
-  } as StoryObj<T>;
+  } as unknown as StoryObj<T>;
 }
