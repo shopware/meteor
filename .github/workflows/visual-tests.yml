@@ -16,12 +16,16 @@ jobs:
     name: Storybook Tests
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
 
       - uses: pnpm/action-setup@v3
         with:
@@ -45,10 +49,19 @@ jobs:
 
       - name: Run Tests
         id: storybookTests
+        if: ${{ github.event_name !== 'workflow_dispatch' }}
         run: |
           npx concurrently --kill-others --success first --names "SB,TEST"  --hide "SB" --prefix-colors "magenta,blue" \
           "http-server ./packages/component-library/storybook-static -a 127.0.0.1 --port 6006" \
           "wait-on http://127.0.0.1:6006 && pnpx turbo run test:storybook --filter=@shopware-ag/meteor-component-library"
+
+      - name: Run tests and update snapshots
+        if: ${{ github.event_name === 'workflow_dispatch' }}
+        id: storybookTests
+        run: |
+          npx concurrently --kill-others --success first --names "SB,TEST"  --hide "SB" --prefix-colors "magenta,blue" \
+          "http-server ./packages/component-library/storybook-static -a 127.0.0.1 --port 6006" \
+          "wait-on http://127.0.0.1:6006 && pnpx turbo run test:storybook --filter=@shopware-ag/meteor-component-library -- -u"
 
       - name: Archive visual test diffs
         uses: actions/upload-artifact@v4
@@ -56,3 +69,9 @@ jobs:
         with:
           name: visual-test-diffs
           path: ./packages/component-library/__snapshots__
+
+      - name: Commit update snapshots
+        if: ${{ github.event_name === 'workflow_dispatch' }}
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "update snapshots"
