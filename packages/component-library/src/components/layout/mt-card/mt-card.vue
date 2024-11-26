@@ -109,9 +109,6 @@ const props = defineProps<{
   // @deprecated v4.0.0 - will be removed without replacement
   hero?: boolean;
   isLoading?: boolean;
-
-  // @deprecated v4.0.0 - will be removed without replacement
-  large?: boolean;
   inheritance?: boolean;
 }>();
 
@@ -156,7 +153,6 @@ const cardClasses = computed(() => ({
   "mt-card--grid": !!slots.grid,
   // @deprecated v4.0.0 - will be removed without replacement
   "mt-card--hero": !!props.hero,
-  "mt-card--large": props.large,
   "mt-card--has-footer": !!slots.footer,
   "mt-card--is-inherited": !!props.inheritance,
   "mt-card--future-ignore-max-width": futureFlags.removeCardWidth,
@@ -258,20 +254,6 @@ const cardClasses = computed(() => ({
     & h3 {
       font-size: 1.875rem;
     }
-  }
-}
-
-/* @depracated v4.0.0 - will be removed without replacement */
-.mt-card--large {
-  max-width: 83.125rem;
-
-  & .mt-card__title,
-  & .mt-card__subtitle {
-    width: auto;
-    position: relative;
-    top: 0;
-    left: 0;
-    text-align: left;
   }
 }
 
