@@ -183,7 +183,7 @@ export default defineComponent({
 }
 
 .mt-button--primary {
-  background: var(--color-interaction-primary-default);
+  background: red;
   color: var(--color-text-static-default);
   border-color: var(--color-interaction-primary-default);
 }
