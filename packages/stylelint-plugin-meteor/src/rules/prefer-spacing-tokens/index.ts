@@ -41,6 +41,7 @@ const ruleFunction: Rule = (primary, secondaryOptions, context) => {
       const isUsingQValue = /Q$/.test(ruleNode.value);
       const isUsingInValue = /\d\s*in$/.test(ruleNode.value);
       const isUsingPcValue = /pc$/.test(ruleNode.value);
+      const isUsingPtValue = /pt$/.test(ruleNode.value);
 
       if (
         isASpacingToken &&
@@ -54,7 +55,8 @@ const ruleFunction: Rule = (primary, secondaryOptions, context) => {
           isUsingMmValue ||
           isUsingQValue ||
           isUsingInValue ||
-          isUsingPcValue)
+          isUsingPcValue ||
+          isUsingPtValue)
       ) {
         report({
           message: messages.rejected(ruleNode.value),

@@ -148,5 +148,14 @@ testRule({
       endLine: 1,
       endColumn: 19,
     },
+    {
+      code: ".a { padding: 1pt; }",
+      message:
+        'Unexpected hard-coded spacing of "1pt" (meteor/prefer-spacing-token)',
+      line: 1,
+      column: 6,
+      endLine: 1,
+      endColumn: 19,
+    },
   ],
 });
