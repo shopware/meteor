@@ -27,5 +27,14 @@ testRule({
       endLine: 1,
       endColumn: 16,
     },
+    {
+      code: ".a { padding: 8px; }",
+      message:
+        'Unexpected hard-coded spacing of "8px" (meteor/prefer-spacing-token)',
+      line: 1,
+      column: 6,
+      endLine: 1,
+      endColumn: 19,
+    },
   ],
 });
