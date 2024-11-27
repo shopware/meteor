@@ -166,5 +166,14 @@ testRule({
       endLine: 1,
       endColumn: 17,
     },
+    {
+      code: ".a { height: 1px; }",
+      message:
+        'Unexpected hard-coded spacing of "1px" (meteor/prefer-spacing-token)',
+      line: 1,
+      column: 6,
+      endLine: 1,
+      endColumn: 18,
+    },
   ],
 });
