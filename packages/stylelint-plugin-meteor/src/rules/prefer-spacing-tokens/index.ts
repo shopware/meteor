@@ -34,13 +34,15 @@ const ruleFunction: Rule = (primary, secondaryOptions, context) => {
       const isUsingRemValue = /rem$/.test(ruleNode.value);
       const isUsingCapValue = /cap$/.test(ruleNode.value);
       const isUsingEmValue = /em$/.test(ruleNode.value);
+      const isUsingExValue = /ex$/.test(ruleNode.value);
 
       if (
         isASpacingToken &&
         (usingPixelValue ||
           isUsingRemValue ||
           isUsingCapValue ||
-          isUsingEmValue)
+          isUsingEmValue ||
+          isUsingExValue)
       ) {
         report({
           message: messages.rejected(ruleNode.value),
