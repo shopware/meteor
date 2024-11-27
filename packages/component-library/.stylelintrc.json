@@ -1,0 +1,12 @@
+{
+  "plugins": ["@shopware-ag/stylelint-plugin-meteor"],
+  "rules": {
+    "meteor/prefer-spacing-token": true
+  },
+  "overrides": [
+    {
+      "files": ["*.vue", "**/*.vue"],
+      "customSyntax": "postcss-html"
+    }
+  ]
+}
