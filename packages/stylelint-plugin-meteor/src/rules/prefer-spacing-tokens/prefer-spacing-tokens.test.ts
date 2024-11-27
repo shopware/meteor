@@ -25,6 +25,9 @@ testRule({
     { code: ".a { margin: 10vh; }" },
     { code: ".a { margin: 10vw; }" },
     { code: ".a { margin: 10vmax; }" },
+    { code: ".a { margin: 10vmin; }" },
+    { code: ".a { margin: 10vb; }" },
+    { code: ".a { margin: 10vi; }" },
   ],
 
   reject: [
