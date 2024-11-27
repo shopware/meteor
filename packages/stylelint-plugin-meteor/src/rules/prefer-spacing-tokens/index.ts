@@ -15,7 +15,7 @@ const meta = {
   url: "https://github.com/foo-org/stylelint-selector-no-foo/blob/main/README.md",
 };
 
-const SPACING_PROPERTIES = ["margin", "padding"];
+const SPACING_PROPERTIES = ["margin", "padding", "width"];
 
 const ruleFunction: Rule = (primary, secondaryOptions, context) => {
   return (root, result) => {
