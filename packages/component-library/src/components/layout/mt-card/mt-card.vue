@@ -176,7 +176,7 @@ const cardClasses = computed(() => ({
   position: relative;
   background: var(--color-elevation-surface-raised);
   border: 1px solid var(--color-border-primary-default);
-  border-radius: var(--border-radius-card);  /* Added here */
+  border-radius: var(--border-radius-card); /* Added here */
   overflow: hidden;
 
   &:not(:has(.mt-card__tabs:empty)) .mt-card__header {
