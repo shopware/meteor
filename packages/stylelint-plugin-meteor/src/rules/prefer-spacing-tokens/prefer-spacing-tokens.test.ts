@@ -60,5 +60,14 @@ testRule({
       endLine: 1,
       endColumn: 20,
     },
+    {
+      code: ".a { padding: 1em; }",
+      message:
+        'Unexpected hard-coded spacing of "1em" (meteor/prefer-spacing-token)',
+      line: 1,
+      column: 6,
+      endLine: 1,
+      endColumn: 19,
+    },
   ],
 });
