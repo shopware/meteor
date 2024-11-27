@@ -20,6 +20,7 @@ testRule({
     { code: ".a { margin: revert; }" },
     { code: ".a { margin: revert-layer; }" },
     { code: ".a { margin: unset; }" },
+    { code: ".a { margin: 55ch; }" },
   ],
 
   reject: [
