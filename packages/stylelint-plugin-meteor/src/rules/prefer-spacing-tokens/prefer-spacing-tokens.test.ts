@@ -15,6 +15,9 @@ testRule({
     {
       code: ".a { margin: var(--scale-size-0); }",
     },
+    {
+      code: ".a { padding: 50%; }",
+    },
   ],
 
   reject: [

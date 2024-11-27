@@ -29,7 +29,8 @@ const ruleFunction: Rule = (primary, secondaryOptions, context) => {
     root.walkDecls((ruleNode) => {
       const isNotASpacingProperty = !SPACING_PROPERTIES.includes(ruleNode.prop);
       const usingToken = /^var\(.*\)$/.test(ruleNode.value);
-      if (isNotASpacingProperty || usingToken) return;
+      const usingRelativeValue = /%$/.test(ruleNode.value);
+      if (isNotASpacingProperty || usingToken || usingRelativeValue) return;
 
       report({
         message: messages.rejected(ruleNode.value),
