@@ -24,6 +24,9 @@
     "lint:eslint": {
       "outputs": []
     },
+    "lint:css": {
+      "outputs": []
+    },
     "format:check": {},
     "test:unit": {
       "env": [
