@@ -18,6 +18,9 @@ testRule({
     {
       code: ".a { padding: 50%; }",
     },
+    {
+      code: ".a { margin: auto; }",
+    },
   ],
 
   reject: [

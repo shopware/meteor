@@ -27,17 +27,20 @@ const ruleFunction: Rule = (primary, secondaryOptions, context) => {
     if (!validOptions) return;
 
     root.walkDecls((ruleNode) => {
-      const isNotASpacingProperty = !SPACING_PROPERTIES.includes(ruleNode.prop);
-      const usingToken = /^var\(.*\)$/.test(ruleNode.value);
-      const usingRelativeValue = /%$/.test(ruleNode.value);
-      if (isNotASpacingProperty || usingToken || usingRelativeValue) return;
+      const isASpacingToken = SPACING_PROPERTIES.includes(ruleNode.prop);
+      const usingPixelValue =
+        /px$/.test(ruleNode.value) || /^\d+$/.test(ruleNode.value);
 
-      report({
-        message: messages.rejected(ruleNode.value),
-        node: ruleNode,
-        result,
-        ruleName,
-      });
+      const isUsingRemValue = /rem$/.test(ruleNode.value);
+
+      if (isASpacingToken && (usingPixelValue || isUsingRemValue)) {
+        report({
+          message: messages.rejected(ruleNode.value),
+          node: ruleNode,
+          result,
+          ruleName,
+        });
+      }
     });
   };
 };
