@@ -21,6 +21,21 @@ testRule({
     {
       code: ".a { margin: auto; }",
     },
+    {
+      code: ".a { margin: inherit; }",
+    },
+    {
+      code: ".a { margin: initial; }",
+    },
+    {
+      code: ".a { margin: revert; }",
+    },
+    {
+      code: ".a { margin: revert-layer; }",
+    },
+    {
+      code: ".a { margin: unset; }",
+    },
   ],
 
   reject: [
