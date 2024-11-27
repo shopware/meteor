@@ -12,30 +12,14 @@ testRule({
   config: true,
 
   accept: [
-    {
-      code: ".a { margin: var(--scale-size-0); }",
-    },
-    {
-      code: ".a { padding: 50%; }",
-    },
-    {
-      code: ".a { margin: auto; }",
-    },
-    {
-      code: ".a { margin: inherit; }",
-    },
-    {
-      code: ".a { margin: initial; }",
-    },
-    {
-      code: ".a { margin: revert; }",
-    },
-    {
-      code: ".a { margin: revert-layer; }",
-    },
-    {
-      code: ".a { margin: unset; }",
-    },
+    { code: ".a { margin: var(--scale-size-0); }" },
+    { code: ".a { padding: 50%; }" },
+    { code: ".a { margin: auto; }" },
+    { code: ".a { margin: inherit; }" },
+    { code: ".a { margin: initial; }" },
+    { code: ".a { margin: revert; }" },
+    { code: ".a { margin: revert-layer; }" },
+    { code: ".a { margin: unset; }" },
   ],
 
   reject: [
