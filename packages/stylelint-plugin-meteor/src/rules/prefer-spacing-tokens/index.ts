@@ -15,6 +15,8 @@ const meta = {
   url: "https://github.com/foo-org/stylelint-selector-no-foo/blob/main/README.md",
 };
 
+const SPACING_PROPERTIES = ["margin", "padding"];
+
 const ruleFunction: Rule = (primary, secondaryOptions, context) => {
   return (root, result) => {
     const validOptions = validateOptions(result, ruleName, {
@@ -25,14 +27,16 @@ const ruleFunction: Rule = (primary, secondaryOptions, context) => {
     if (!validOptions) return;
 
     root.walkDecls((ruleNode) => {
-      if (ruleNode.prop === "margin" && ruleNode.value === "0") {
-        report({
-          message: messages.rejected("0"),
-          node: ruleNode,
-          result,
-          ruleName,
-        });
-      }
+      const isNotASpacingProperty = !SPACING_PROPERTIES.includes(ruleNode.prop);
+      const usingToken = ruleNode.value !== "0";
+      if (isNotASpacingProperty || usingToken) return;
+
+      report({
+        message: messages.rejected("0"),
+        node: ruleNode,
+        result,
+        ruleName,
+      });
     });
   };
 };
