@@ -35,6 +35,7 @@ const ruleFunction: Rule = (primary, secondaryOptions, context) => {
       const isUsingCapValue = /cap$/.test(ruleNode.value);
       const isUsingEmValue = /em$/.test(ruleNode.value);
       const isUsingExValue = /ex$/.test(ruleNode.value);
+      const isUsingIcValue = /ic$/.test(ruleNode.value);
 
       if (
         isASpacingToken &&
@@ -42,7 +43,8 @@ const ruleFunction: Rule = (primary, secondaryOptions, context) => {
           isUsingRemValue ||
           isUsingCapValue ||
           isUsingEmValue ||
-          isUsingExValue)
+          isUsingExValue ||
+          isUsingIcValue)
       ) {
         report({
           message: messages.rejected(ruleNode.value),
