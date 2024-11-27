@@ -23,6 +23,7 @@ testRule({
     { code: ".a { margin: 55ch; }" },
     { code: ".a { margin: 1.55lh; }" },
     { code: ".a { margin: 10vh; }" },
+    { code: ".a { margin: 10vw; }" },
   ],
 
   reject: [
