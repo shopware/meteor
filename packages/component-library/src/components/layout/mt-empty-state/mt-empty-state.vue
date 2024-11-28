@@ -55,7 +55,9 @@ defineEmits(["button-click"]);
 
 <style scoped>
 .mt-empty-state {
-  display: grid;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .mt-empty-state__icon {
@@ -63,17 +65,14 @@ defineEmits(["button-click"]);
   padding: 0.75rem;
   border-radius: var(--border-radius-xs);
   background-color: var(--color-interaction-secondary-dark);
-  justify-self: start;
 }
 
 .mt-empty-state__headline {
   margin-top: 1.5rem;
-  justify-self: start;
   margin-bottom: 0;
 }
 
 .mt-empty-state__description {
-  justify-self: start;
   margin-top: 0.5rem;
 }
 
@@ -82,7 +81,6 @@ defineEmits(["button-click"]);
 }
 
 .mt-empty-state__button {
-  justify-self: start;
   margin-top: 1.5rem;
 }
 </style>
