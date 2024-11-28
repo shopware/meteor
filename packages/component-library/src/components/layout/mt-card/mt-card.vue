@@ -105,11 +105,7 @@ import { useI18n } from "@/composables/useI18n";
 const props = defineProps<{
   title?: string;
   subtitle?: string;
-
-  // @deprecated v4.0.0 - will be removed without replacement
-  hero?: boolean;
   isLoading?: boolean;
-
   // @deprecated v4.0.0 - will be removed without replacement
   large?: boolean;
   inheritance?: boolean;
@@ -154,8 +150,6 @@ const showHeader = computed(
 const futureFlags = useFutureFlags();
 const cardClasses = computed(() => ({
   "mt-card--grid": !!slots.grid,
-  // @deprecated v4.0.0 - will be removed without replacement
-  "mt-card--hero": !!props.hero,
   "mt-card--large": props.large,
   "mt-card--has-footer": !!slots.footer,
   "mt-card--is-inherited": !!props.inheritance,
@@ -182,12 +176,8 @@ const cardClasses = computed(() => ({
   position: relative;
   background: var(--color-elevation-surface-raised);
   border: 1px solid var(--color-border-primary-default);
+  border-radius: var(--border-radius-card); /* Added here */
   overflow: hidden;
-
-  /* @deprecated v4.0.0 */
-  &:not(.mt-card--hero) {
-    border-radius: var(--border-radius-card);
-  }
 
   &:not(:has(.mt-card__tabs:empty)) .mt-card__header {
     border-bottom: none;
@@ -245,19 +235,6 @@ const cardClasses = computed(() => ({
   & .mt-card__content {
     border: none;
     border-radius: var(--border-radius-none);
-  }
-}
-
-/* @deprecated v4.0.0 */
-.mt-card--hero {
-  & .mt-card__content {
-    background: none;
-    border: none;
-    text-align: center;
-
-    & h3 {
-      font-size: 1.875rem;
-    }
   }
 }
 

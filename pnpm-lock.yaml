@@ -282,6 +282,9 @@ importers:
       '@floating-ui/dom':
         specifier: ^1.4.3
         version: 1.6.5
+      '@floating-ui/vue':
+        specifier: ^1.1.5
+        version: 1.1.5(vue@3.4.21(typescript@5.2.2))
       '@shopware-ag/meteor-icon-kit':
         specifier: workspace:*
         version: link:../icon-kit
@@ -2141,6 +2144,12 @@ packages:
 
   '@floating-ui/utils@0.2.2':
     resolution: {integrity: sha512-J4yDIIthosAsRZ5CPYP/jQvUAQtlZTTD/4suA08/FEnlxqW3sKS9iAhgsa9VYLZ6vDHn/ixJgIqRQPotoBjxIw==}
+
+  '@floating-ui/utils@0.2.8':
+    resolution: {integrity: sha512-kym7SodPp8/wloecOpcmSnWJsK7M0E5Wg8UcFA+uO4B9s5d0ywXOEro/8HM9x0rW+TljRzul/14UYz3TleT3ig==}
+
+  '@floating-ui/vue@1.1.5':
+    resolution: {integrity: sha512-ynL1p5Z+woPVSwgMGqeDrx6HrJfGIDzFyESFkyqJKilGW1+h/8yVY29Khn0LaU6wHBRwZ13ntG6reiHWK6jyzw==}
 
   '@hapi/hoek@9.3.0':
     resolution: {integrity: sha512-/c6rf4UJlmHlC9b5BaNvzAcFv7HZ2QHaV0D4/HNlBdvFnvQq8RI4kYdhyPCl7Xj+oWvTWQ8ujhqS53LIgAe6KQ==}
@@ -15660,6 +15669,17 @@ snapshots:
       '@floating-ui/utils': 0.2.2
 
   '@floating-ui/utils@0.2.2': {}
+
+  '@floating-ui/utils@0.2.8': {}
+
+  '@floating-ui/vue@1.1.5(vue@3.4.21(typescript@5.2.2))':
+    dependencies:
+      '@floating-ui/dom': 1.6.5
+      '@floating-ui/utils': 0.2.8
+      vue-demi: 0.14.8(vue@3.4.21(typescript@5.2.2))
+    transitivePeerDependencies:
+      - '@vue/composition-api'
+      - vue
 
   '@hapi/hoek@9.3.0': {}
 
