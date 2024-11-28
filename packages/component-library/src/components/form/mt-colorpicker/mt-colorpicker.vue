@@ -1,6 +1,6 @@
 <template>
   <mt-base-field
-    class="mt-colorpicker"
+    :class="componentClasses"
     :disabled="disabled"
     :required="required"
     :is-inherited="isInherited"
@@ -360,6 +360,15 @@ export default defineComponent({
       required: false,
       default: null,
     },
+
+    /**
+     * Show the colorpicker in a compact mode
+     */
+    compact: {
+      type: Boolean,
+      required: false,
+      default: false,
+    }
   },
 
   data(): {
@@ -636,10 +645,20 @@ export default defineComponent({
         left: this.selectorPositionX,
       };
     },
+
+    componentClasses(): {
+      "mt-colorpicker": boolean;
+      "mt-colorpicker--compact": boolean;
+    } {
+      return {
+        "mt-colorpicker": true,
+        "mt-colorpicker--compact": this.compact,
+      };
+    },
   },
 
   watch: {
-    value() {
+    modelValue() {
       this.colorValue = this.modelValue;
     },
 
@@ -1553,6 +1572,40 @@ export default defineComponent({
 
   .is--disabled &__previewWrapper {
     cursor: default;
+  }
+
+  &--compact {
+    display: inline-block;
+    width: auto;
+    margin-bottom: 0;
+
+    .mt-field__label,
+    .mt-field__hint-wrapper,
+    .mt-colorpicker__input {
+      display: none;
+    }
+
+    .mt-block-field__block {
+      width: fit-content;
+      border: none;
+    }
+
+    .mt-field__addition.is--prefix {
+      border-right: none;
+      padding: 0;
+      min-width: auto;
+    }
+
+    .mt-colorpicker__previewWrapper {
+      border: none;
+    }
+
+    .mt-colorpicker__colorpicker-position {
+      position: absolute;
+      // 10px padding, 20px pointer distance from left
+      left: calc(-1 * (10px + 20px) / 2);
+      top: calc(100% + 2px);
+    }
   }
 }
 
