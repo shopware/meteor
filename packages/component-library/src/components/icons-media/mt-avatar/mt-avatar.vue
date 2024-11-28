@@ -1,13 +1,19 @@
 <template>
   <span
     ref="avatarRef"
-    class="mt-avatar"
-    :class="'mt-avatar__' + variant"
-    :style="[avatarImage, avatarColor, avatarSize, avatarInitialsSize]"
+    :class="[
+      'mt-avatar',
+      `mt-avatar--color-${color}`,
+      {
+        'mt-avatar--square': props.variant === 'square',
+      },
+    ]"
+    :style="[avatarImage, avatarSize, avatarInitialsSize]"
     role="img"
+    alt=""
   >
     <slot>
-      <span v-if="showInitials" class="mt-avatar__initials" data-testid="mt-avatar-initials">
+      <span v-if="showInitials" data-testid="mt-avatar-initials">
         {{ avatarInitials }}
       </span>
 
@@ -24,77 +30,19 @@
 <script setup lang="ts">
 import cloneDeep from "lodash-es/cloneDeep";
 import MtIcon from "../mt-icon/mt-icon.vue";
-import {
-  reactive,
-  computed,
-  onMounted,
-  ref,
-  watch,
-  nextTick,
-  type CSSProperties,
-  type PropType,
-} from "vue";
+import { reactive, computed, onMounted, ref, watch, nextTick, type CSSProperties } from "vue";
 
-const colors = [
-  "#FFD700",
-  "#FFC700",
-  "#F88962",
-  "#F56C46",
-  "#FF85C2",
-  "#FF68AC",
-  "#6AD6F0",
-  "#4DC6E9",
-  "#A092F0",
-  "#8475E9",
-  "#57D9A3",
-  "#3CCA88",
-];
+const colors = ["orange", "pink", "yellow", "purple", "red", "blue", "emerald"] as const;
 
-const props = defineProps({
-  color: {
-    type: String,
-    required: false,
-    default: "",
-  },
-  size: {
-    type: String,
-    required: false,
-    default: null,
-  },
-  firstName: {
-    type: String,
-    required: false,
-    default: "",
-  },
-  lastName: {
-    type: String,
-    required: false,
-    default: "",
-  },
-  imageUrl: {
-    type: String,
-    required: false,
-    default: null,
-  },
-  placeholder: {
-    type: Boolean,
-    required: false,
-    default: false,
-  },
-  sourceContext: {
-    type: Object as PropType<{
-      avatarMedia: { url: string; thumbnails: { width: number; url: string }[] } | undefined;
-    }>,
-    required: false,
-    default: null,
-  },
-  variant: {
-    type: String,
-    required: false,
-    default: "circle",
-    validator: (value: string) => ["circle", "square"].includes(value),
-  },
-});
+const props = defineProps<{
+  size?: string;
+  firstName?: string;
+  lastName?: string;
+  imageUrl?: string;
+  placeholder?: boolean;
+  sourceContext?: { avatarMedia: { url: string; thumbnails: { width: number; url: string }[] } };
+  variant?: "circle" | "square";
+}>();
 
 const sizes = reactive({
   fontSize: 16,
@@ -170,22 +118,13 @@ const showInitials = computed(() => {
   return !props.placeholder && !hasAvatarImage.value;
 });
 
-const avatarColor = computed<CSSProperties>(() => {
-  if (props.color.length) {
-    return {
-      "background-color": props.color,
-    };
-  }
-
+const color = computed(() => {
   const firstNameLength = props.firstName ? props.firstName.length : 0;
   const lastNameLength = props.lastName ? props.lastName.length : 0;
 
   const nameLength = firstNameLength + lastNameLength;
-  const color = colors[nameLength % colors.length];
 
-  return {
-    "background-color": color,
-  };
+  return colors[nameLength % colors.length];
 });
 </script>
 
@@ -195,16 +134,57 @@ const avatarColor = computed<CSSProperties>(() => {
   width: 2.5rem;
   height: 2.5rem;
   border-radius: var(--border-radius-round);
-  background: #ffc700 no-repeat center center;
   background-size: cover;
   text-align: center;
   font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
-  color: var(--color-text-static-default);
   user-select: none;
+
+  color: var(--mt-avatar--color-primary);
+  background-color: var(--mt-avatar--color-secondary);
 }
 
-.mt-avatar__square {
+[data-theme="dark"] .mt-avatar {
+  color: var(--mt-avatar--color-secondary);
+  background-color: var(--mt-avatar--color-primary);
+}
+
+.mt-avatar--square {
   border-radius: var(--border-radius-xs);
+}
+
+.mt-avatar--color-orange {
+  --mt-avatar--color-primary: #974200;
+  --mt-avatar--color-secondary: #fff2ec;
+}
+
+.mt-avatar--color-emerald {
+  --mt-avatar--color-primary: #007e4e;
+  --mt-avatar--color-secondary: #ddffea;
+}
+
+.mt-avatar--color-pink {
+  --mt-avatar--color-primary: #a8005c;
+  --mt-avatar--color-secondary: #fff1f5;
+}
+
+.mt-avatar--color-yellow {
+  --mt-avatar--color-primary: #4f4100;
+  --mt-avatar--color-secondary: #fff7d6;
+}
+
+.mt-avatar--color-purple {
+  --mt-avatar--color-primary: #633bc6;
+  --mt-avatar--color-secondary: #f5f4ff;
+}
+
+.mt-avatar--color-red {
+  --mt-avatar--color-primary: #90000e;
+  --mt-avatar--color-secondary: #fff2f0;
+}
+
+.mt-avatar--color-blue {
+  --mt-avatar--color-primary: #005b99;
+  --mt-avatar--color-secondary: #eef6ff;
 }
 </style>
