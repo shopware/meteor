@@ -1591,5 +1591,4 @@ export default defineComponent({
     }
   }
 }
-/* stylelint-enable */
 </style>

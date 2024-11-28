@@ -2,8 +2,8 @@
   <!-- @slot This slot is @private and should not be used -->
   <slot name="before-card" />
 
-  <div class="mt-card" :class="cardClasses" v-bind="$attrs">
-    <div v-if="showHeader" class="mt-card__header">
+  <article class="mt-card" :class="cardClasses" :aria-label="title" v-bind="$attrs">
+    <header v-if="showHeader" class="mt-card__header">
       <div class="mt-card__avatar">
         <!-- @slot Slot for an avatar or logo -->
         <slot name="avatar" />
@@ -17,21 +17,9 @@
           },
         ]"
       >
-        <button
-          v-if="inheritance !== undefined"
-          class="mt-card__inheritance-toggle"
-          :aria-label="!!inheritance ? t('disableInheritance') : t('enableInheritance')"
-          @click="$emit('update:inheritance', !inheritance)"
-        >
-          <mt-icon
-            :name="inheritance ? 'regular-link-horizontal' : 'regular-link-horizontal-slash'"
-            size="1.25rem"
-          />
-        </button>
-
         <!-- @slot Alternative slot to the title property -->
         <slot name="title">
-          <MtText v-if="title" weight="semibold" size="m" class="mt-card__title">
+          <MtText v-if="title" as="h3" weight="semibold" size="m" class="mt-card__title">
             {{ title }}
           </MtText>
         </slot>
@@ -47,6 +35,19 @@
             {{ subtitle }}
           </MtText>
         </slot>
+
+        <button
+          v-if="inheritance !== undefined"
+          class="mt-card__inheritance-toggle"
+          :aria-label="!!inheritance ? t('disableInheritance') : t('enableInheritance')"
+          style="grid-area: inheritance"
+          @click="$emit('update:inheritance', !inheritance)"
+        >
+          <mt-icon
+            :name="inheritance ? 'regular-link-horizontal' : 'regular-link-horizontal-slash'"
+            size="1.25rem"
+          />
+        </button>
       </div>
 
       <div class="mt-card__titles-right-slot">
@@ -60,7 +61,7 @@
           <slot name="context-actions" />
         </mt-context-button>
       </div>
-    </div>
+    </header>
 
     <div class="mt-card__tabs">
       <!-- @slot Slot for adding a tab bar. The content need to be changed manually and you can't use the content slot of the tab bar -->
@@ -82,11 +83,11 @@
       <mt-loader v-if="isLoading" />
     </div>
 
-    <div class="mt-card__footer">
+    <footer class="mt-card__footer">
       <!-- @slot The footer slot which allows rendering additional things after the content -->
       <slot name="footer" />
-    </div>
-  </div>
+    </footer>
+  </article>
 
   <!-- @slot This slot is @private and should not be used -->
   <slot name="after-card" />
@@ -104,11 +105,7 @@ import { useI18n } from "@/composables/useI18n";
 const props = defineProps<{
   title?: string;
   subtitle?: string;
-
-  // @deprecated v4.0.0 - will be removed without replacement
-  hero?: boolean;
   isLoading?: boolean;
-
   // @deprecated v4.0.0 - will be removed without replacement
   large?: boolean;
   inheritance?: boolean;
@@ -153,8 +150,6 @@ const showHeader = computed(
 const futureFlags = useFutureFlags();
 const cardClasses = computed(() => ({
   "mt-card--grid": !!slots.grid,
-  // @deprecated v4.0.0 - will be removed without replacement
-  "mt-card--hero": !!props.hero,
   "mt-card--large": props.large,
   "mt-card--has-footer": !!slots.footer,
   "mt-card--is-inherited": !!props.inheritance,
@@ -181,12 +176,8 @@ const cardClasses = computed(() => ({
   position: relative;
   background: var(--color-elevation-surface-raised);
   border: 1px solid var(--color-border-primary-default);
+  border-radius: var(--border-radius-card); /* Added here */
   overflow: hidden;
-
-  /* @deprecated v4.0.0 */
-  &:not(.mt-card--hero) {
-    border-radius: var(--border-radius-card);
-  }
 
   &:not(:has(.mt-card__tabs:empty)) .mt-card__header {
     border-bottom: none;
@@ -247,19 +238,6 @@ const cardClasses = computed(() => ({
   }
 }
 
-/* @deprecated v4.0.0 */
-.mt-card--hero {
-  & .mt-card__content {
-    background: none;
-    border: none;
-    text-align: center;
-
-    & h3 {
-      font-size: 1.875rem;
-    }
-  }
-}
-
 /* @depracated v4.0.0 - will be removed without replacement */
 .mt-card--large {
   max-width: 83.125rem;
@@ -289,6 +267,9 @@ const cardClasses = computed(() => ({
   display: grid;
   grid-template-columns: min-content 1fr;
   column-gap: 0.25rem;
+  grid-template-areas:
+    "inheritance title"
+    "subtitle subtitle";
 
   & .mt-card__subtitle {
     grid-column: 1 / -1;
@@ -327,6 +308,10 @@ const cardClasses = computed(() => ({
   border-bottom: 1px solid var(--color-border-primary-default);
 }
 
+.mt-card__title {
+  margin: 0;
+}
+
 .mt-card__toolbar {
   display: flex;
   flex-basis: auto;
@@ -360,6 +345,12 @@ const cardClasses = computed(() => ({
   outline-offset: 2px;
   outline-color: var(--color-border-brand-selected);
   color: var(--color-icon-primary-default);
+
+  &:focus-visible {
+    outline: 2px solid var(--color-border-brand-selected);
+    outline-offset: 2px;
+    border-radius: var(--border-radius-button);
+  }
 }
 
 .mt-card__titles-right-slot {

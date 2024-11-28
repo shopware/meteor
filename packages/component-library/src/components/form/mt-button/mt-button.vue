@@ -22,7 +22,9 @@
   >
     <mt-loader v-if="isLoading" size="16px" class="mt-button__loader" />
     <span class="mt-button__content" :class="contentVisibilityClass">
-      <slot />
+      <slot name="iconFront" :size="iconSize" v-if="$slots.iconFront" />
+      <slot></slot>
+      <slot name="iconBack" :size="iconSize" v-if="$slots.iconBack" />
     </span>
   </button>
 </template>
@@ -140,23 +142,22 @@ export default defineComponent({
         "mt-button__content--hidden": this.isLoading,
       };
     },
+
+    iconSize() {
+      return this.size === "x-small" ? 8 : this.size === "large" ? 12 : 10;
+    },
   },
 });
 </script>
 
-<style lang="scss">
-$mt-button-transition: all 0.15s ease-out;
-
+<style lang="css" scoped>
 .mt-button {
-  border: 1px solid $color-gray-400;
-  background: $color-gray-50;
-  color: $color-darkgray-200;
-  transition: $mt-button-transition;
+  transition: all 0.15s ease-out;
   display: inline-block;
   border-radius: var(--border-radius-button);
   padding: 2px 24px;
   font-size: var(--font-size-xs);
-  line-height: 34px;
+  border: 1px solid transparent;
   outline: none;
   font-weight: var(--font-weight-semibold);
   font-family: var(--font-family-body);
@@ -168,255 +169,255 @@ $mt-button-transition: all 0.15s ease-out;
   user-select: none;
   margin: 0;
   position: relative;
+}
 
-  .mt-button__content {
-    display: grid;
-    grid-auto-flow: column;
-    align-items: center;
-    grid-gap: 0 8px;
-  }
+.mt-button__content {
+  display: grid;
+  grid-auto-flow: column;
+  align-items: center;
+  column-gap: 0.5rem;
+}
 
-  .mt-button__content--hidden {
-    visibility: hidden;
-  }
+.mt-button__content--hidden {
+  visibility: hidden;
+}
 
-  &:hover:not(.mt-button--disabled),
-  &:hover:not([disabled]) {
-    background: $color-gray-100;
-  }
+.mt-button--primary {
+  background: var(--color-interaction-primary-default);
+  color: var(--color-text-static-default);
+  border-color: var(--color-interaction-primary-default);
+}
 
-  &:disabled,
-  &.mt-button--disabled {
-    color: $color-gray-500;
-    border-color: $color-gray-200;
-    cursor: not-allowed;
+.mt-button--primary .mt-icon {
+  color: var(--color-icon-static-default);
+}
 
-    .mt-icon {
-      color: $color-gray-400;
-    }
-  }
+.mt-button--primary:hover,
+.mt-button--primary:focus-visible,
+.mt-button--primary:active {
+  background: var(--color-interaction-primary-hover);
+  border-color: var(--color-interaction-primary-hover);
+}
 
-  .mt-icon {
-    color: $color-gray-800;
-  }
+.mt-button--primary:focus-visible {
+  border-color: var(--color-border-brand-selected);
+  box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
+}
 
-  &.mt-button--primary {
-    background: var(--color-interaction-primary-default);
-    color: var(--color-text-static-default);
-    line-height: 36px;
-    border-color: var(--color-interaction-primary-default);
+.mt-button--primary:disabled,
+.mt-button--primary.mt-button--disabled {
+  background: var(--color-interaction-primary-disabled);
+  border-color: var(--color-interaction-primary-disabled);
+  cursor: not-allowed;
+}
 
-    .mt-icon {
-      color: var(--color-icon-static-default);
-    }
+.mt-button--primary-ghost {
+  background: transparent;
+  border: 1px solid var(--color-border-brand-selected);
+  border-color: var(--color-border-brand-selected);
+  color: var(--color-text-brand-default);
+}
 
-    &:is(:hover, :focus-visible, :active) {
-      background: var(--color-interaction-primary-hover);
-      border-color: var(--color-interaction-primary-hover);
-    }
+.mt-button--primary-ghost:is(:hover, :focus-visible, :active) {
+  background: var(--color-background-brand-default);
+}
 
-    &:focus-visible {
-      border-color: var(--color-border-brand-selected);
-      box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
-    }
+.mt-button--primary-ghost:focus-visible {
+  box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
+}
 
-    &:disabled,
-    &.mt-button--disabled {
-      background: var(--color-interaction-primary-disabled);
-      border-color: var(--color-interaction-primary-disabled);
-    }
-  }
+.mt-button--primary-ghost:disabled,
+.mt-button--primary-ghost.mt-button--disabled {
+  color: var(--color-text-brand-disabled);
+  border-color: var(--color-border-brand-disabled);
+  background: transparent;
+}
 
-  &.mt-button--primary-ghost {
-    background: transparent;
-    border-color: var(--color-border-brand-selected);
-    color: var(--color-text-brand-default);
+.mt-button--primary-ghost:disabled .mt-icon,
+.mt-button--primary-ghost.mt-button--disabled .mt-icon {
+  color: var(--color-icon-brand-disabled);
+}
 
-    &:is(:hover, :focus-visible, :active) {
-      background: var(--color-background-brand-default);
-    }
+.mt-button--primary-ghost .mt-icon {
+  color: var(--color-icon-brand-default);
+}
 
-    &:focus-visible {
-      box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
-    }
+.mt-button--secondary {
+  background: var(--color-interaction-secondary-default);
+  border: 1px solid var(--color-border-primary-default);
+  color: var(--color-text-primary-default);
+}
 
-    &:disabled,
-    &.mt-button--disabled {
-      color: var(--color-text-brand-disabled);
-      border-color: var(--color-border-brand-disabled);
-      background: transparent;
+.mt-button--secondary:is(:hover, :focus-visible, :active) {
+  background: var(--color-interaction-secondary-hover);
+}
 
-      .mt-icon {
-        color: var(--color-icon-brand-disabled);
-      }
-    }
+.mt-button--secondary:focus-visible {
+  border-color: var(--color-border-brand-selected);
+  box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
+}
 
-    .mt-icon {
-      color: var(--color-icon-brand-default);
-    }
-  }
+.mt-button--secondary:disabled,
+.mt-button--secondary.mt-button--disabled {
+  color: var(--color-text-primary-disabled);
+  background: var(--color-interaction-secondary-disabled);
+  cursor: not-allowed;
+}
 
-  &.mt-button--secondary {
-    background: var(--color-interaction-secondary-default);
-    color: var(--color-text-primary-default);
-    line-height: 36px;
-    border-color: var(--color-border-primary-default);
+.mt-button--secondary:disabled .mt-icon,
+.mt-button--secondary.mt-button--disabled .mt-icon {
+  color: var(--color-icon-primary-disabled);
+}
 
-    &:is(:hover, :focus-visible, :active) {
-      background: var(--color-interaction-secondary-hover);
-    }
+.mt-button--secondary .mt-icon {
+  color: var(--color-icon-primary-default);
+}
 
-    &:focus-visible {
-      border-color: var(--color-border-brand-selected);
-      box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
-    }
+.mt-button--critical {
+  background: var(--color-interaction-critical-default);
+  color: var(--color-text-static-default);
+  border: 1px solid var(--color-interaction-critical-default);
+}
 
-    &:disabled,
-    &.mt-button--disabled {
-      color: var(--color-text-primary-disabled);
-      background: var(--color-interaction-secondary-disabled);
+.mt-button--critical:is(:hover, :focus-visible, :active) {
+  background: var(--color-interaction-critical-hover);
+  border-color: var(--color-interaction-critical-hover);
+}
 
-      .mt-icon {
-        color: var(--color-icon-primary-disabled);
-      }
-    }
+.mt-button--critical:focus-visible {
+  border-color: var(--color-border-brand-selected);
+  box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
+}
 
-    .mt-icon {
-      color: var(--color-icon-primary-default);
-    }
-  }
+.mt-button--critical:disabled,
+.mt-button--critical.mt-button--disabled {
+  background: var(--color-interaction-critical-disabled);
+  border-color: var(--color-interaction-critical-disabled);
+}
 
-  &.mt-button--critical {
-    background: var(--color-interaction-critical-default);
-    color: var(--color-text-static-default);
-    line-height: 36px;
-    border-color: var(--color-interaction-critical-default);
+.mt-button--critical:disabled .mt-icon,
+.mt-button--critical.mt-button--disabled .mt-icon,
+.mt-button--critical .mt-icon {
+  color: var(--color-icon-static-default);
+}
 
-    &:is(:hover, :focus-visible, :active) {
-      background: var(--color-interaction-critical-hover);
-      border-color: var(--color-interaction-critical-hover);
-    }
+.mt-button--critical-ghost {
+  background: transparent;
+  border: 1px solid var(--color-border-critical-default);
+  color: var(--color-text-critical-default);
+}
 
-    &:focus-visible {
-      border-color: var(--color-border-brand-selected);
-      box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
-    }
+.mt-button--critical-ghost:is(:hover, :focus-visible, :active) {
+  background-color: var(--color-background-critical-dark);
+}
 
-    &:disabled,
-    &.mt-button--disabled {
-      background: var(--color-interaction-critical-disabled);
-      border-color: var(--color-interaction-critical-disabled);
+.mt-button--critical-ghost:focus-visible {
+  border-color: var(--color-border-brand-selected);
+  box-shadow: 0 0 4px 0 rgba(255, 0, 0, 0.3);
+}
 
-      .mt-icon {
-        color: var(--color-icon-static-default);
-      }
-    }
+.mt-button--critical-ghost:disabled,
+.mt-button--critical-ghost.mt-button--disabled {
+  color: var(--color-text-critical-disabled);
+  border-color: var(--color-border-critical-disabled);
+}
 
-    .mt-icon {
-      color: var(--color-icon-static-default);
-    }
-  }
+.mt-button--critical-ghost:disabled .mt-icon,
+.mt-button--critical-ghost.mt-button--disabled .mt-icon {
+  color: var(--color-icon-critical-disabled);
+}
 
-  &.mt-button--critical-ghost {
-    background: transparent;
-    border-color: var(--color-border-critical-default);
-    color: var(--color-text-critical-default);
+.mt-button--critical-ghost .mt-icon {
+  color: var(--color-icon-critical-default);
+}
 
-    &:is(:hover, :focus-visible, :active) {
-      background-color: var(--color-background-critical-dark);
-    }
+.mt-button--action {
+  border: 1px solid #e2e8f0;
+  background-color: #ffffff;
+  color: #000000;
+}
 
-    &:focus-visible {
-      border-color: var(--color-border-brand-selected);
-      box-shadow: 0 0 4px 0 rgba(255, 0, 0, 0.3);
-    }
+.mt-button--action .mt-icon {
+  color: #1a202c;
+}
 
-    &:disabled,
-    &.mt-button--disabled {
-      color: var(--color-text-critical-disabled);
-      border-color: var(--color-border-critical-disabled);
+.mt-button--action:hover {
+  background-color: #edf2f7;
+  color: #4a5568;
+}
 
-      .mt-icon {
-        color: var(--color-icon-critical-disabled);
-      }
-    }
+.mt-button--action:disabled {
+  background-color: #f7fafc;
+  color: #a0aec0;
+}
 
-    .mt-icon {
-      color: var(--color-icon-critical-default);
-    }
-  }
+.mt-button--block {
+  display: block;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
 
-  &.mt-button--action {
-    border: 1px solid $color-gray-300;
-    background-color: $color-white;
-    color: $color-black;
+.mt-button--x-small {
+  padding-left: 10px;
+  padding-right: 10px;
+  font-size: var(--font-size-2xs);
+  min-height: 24px;
+}
 
-    .mt-icon {
-      color: $color-darkgray-800;
-    }
+.mt-button--x-small.mt-button--square {
+  width: 24px;
+  height: 24px;
+}
 
-    &:hover {
-      background-color: $color-gray-100;
-      color: $color-darkgray-200;
-    }
+.mt-button--small {
+  padding-left: 15px;
+  padding-right: 15px;
+  font-size: var(--font-size-2xs);
+  min-height: 32px;
+}
 
-    &:disabled {
-      background-color: $color-gray-50;
-      color: $color-gray-500;
-    }
-  }
+.mt-button--small.mt-button--square {
+  width: 32px;
+  height: 32px;
+}
 
-  &.mt-button--block {
-    display: block;
-    width: 100%;
-  }
+.mt-button--default {
+  padding-inline: 1rem;
+  font-size: var(--font-size-xs);
+  min-height: 2.5rem;
+}
 
-  &.mt-button--x-small {
-    padding-left: 10px;
-    padding-right: 10px;
-    font-size: var(--font-size-2xs);
-    line-height: 18px;
+.mt-button--default.mt-button-square {
+  width: 2.5rem;
+  height: 2.5rem;
+}
 
-    &.mt-button--square {
-      width: 24px;
-    }
-  }
+.mt-button--large {
+  padding-left: 1.75rem;
+  padding-right: 1.75rem;
+  min-height: 3rem;
+  font-size: var(--font-size-2xs);
+}
 
-  &.mt-button--small {
-    padding-left: 15px;
-    padding-right: 15px;
-    font-size: var(--font-size-2xs);
-    line-height: 26px;
+.mt-button--large.mt-button--square {
+  width: 48px;
+  height: 48px;
+}
 
-    &.mt-button--square {
-      width: 32px;
-    }
-  }
+.mt-button--square {
+  width: 40px;
+  height: 40px;
+  padding-left: 0;
+  padding-right: 0;
+  text-align: center;
+}
 
-  &.mt-button--large {
-    padding-left: 28px;
-    padding-right: 28px;
-    line-height: 42px;
-    font-size: var(--font-size-2xs);
+.mt-button--square .mt-button__content {
+  display: inline;
+}
 
-    &.mt-button--square {
-      width: 48px;
-    }
-  }
-
-  &.mt-button--square {
-    width: 40px;
-    padding-left: 0;
-    padding-right: 0;
-    text-align: center;
-
-    .mt-button__content {
-      display: inline;
-    }
-  }
-
-  .mt-button__loader {
-    border-radius: var(--border-radius-xs);
-  }
+.mt-button__loader {
+  border-radius: var(--border-radius-xs);
 }
 </style>
