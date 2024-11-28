@@ -1,0 +1,45 @@
+{
+  "name": "@shopware-ag/stylelint-plugin-meteor",
+  "version": "0.0.0",
+  "main": "./dist/commonjs/index.js",
+  "scripts": {
+    "build": "tshy",
+    "test:unit": "node --import tsx --test $(find . -name \"*.test.ts\")"
+  },
+  "keywords": [],
+  "license": "MIT",
+  "description": "The stylelint plugin for the Meteor Design System",
+  "peerDependencies": {
+    "stylelint": "^16.10.0"
+  },
+  "devDependencies": {
+    "tshy": "^3.0.2",
+    "stylelint-test-rule-node": "^0.3.0",
+    "tsx": "^4.7.0"
+  },
+  "type": "module",
+  "tshy": {
+    "exclude": [
+      "src/**/*.test.ts"
+    ],
+    "exports": {
+      "./package.json": "./package.json",
+      ".": "./src/index.ts"
+    }
+  },
+  "exports": {
+    "./package.json": "./package.json",
+    ".": {
+      "import": {
+        "types": "./dist/esm/index.d.ts",
+        "default": "./dist/esm/index.js"
+      },
+      "require": {
+        "types": "./dist/commonjs/index.d.ts",
+        "default": "./dist/commonjs/index.js"
+      }
+    }
+  },
+  "types": "./dist/commonjs/index.d.ts",
+  "module": "./dist/esm/index.js"
+}
