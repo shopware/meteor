@@ -9,14 +9,19 @@ const ruleName = "meteor/prefer-font-token";
 
 const messages = ruleMessages(ruleName, {
   rejected: (value) =>
-    `Font-family must use token or inherit, got ${value}`,
+    `Font property must use token, got "${value}"`,
 });
 
 const meta = {
   url: "",
 };
 
-const FONT_PROPERTIES = ["font-family"];
+const FONT_PROPERTIES: (string | RegExp)[] = [
+  "font-family",
+  "font-weight",
+  "font-size",
+  /^font-/,
+];
 
 const ruleFunction: Rule = (primary, secondaryOptions, context) => {
   return (root, result) => {
@@ -28,11 +33,15 @@ const ruleFunction: Rule = (primary, secondaryOptions, context) => {
     if (!validOptions) return;
 
     root.walkDecls((ruleNode) => {
-      const isFontFamily = FONT_PROPERTIES.includes(ruleNode.prop);
+      const isFontProperty = FONT_PROPERTIES.some((prop) =>
+        typeof prop === "string"
+          ? prop === ruleNode.prop
+          : prop.test(ruleNode.prop)
+      );
       const usesVariable = /var\(--.*\)/.test(ruleNode.value);
       const isInherit = ruleNode.value === "inherit";
 
-      if (isFontFamily && !usesVariable && !isInherit) {
+      if (isFontProperty && !usesVariable && !isInherit) {
         report({
           message: messages.rejected(ruleNode.value),
           node: ruleNode,
