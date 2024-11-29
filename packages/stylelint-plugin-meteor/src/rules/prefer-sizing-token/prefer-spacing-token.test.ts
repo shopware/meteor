@@ -421,5 +421,14 @@ testRule({
       endLine: 1,
       endColumn: 22,
     },
+    {
+      code: ".a { margin: $spacing-1; }",
+      message:
+        'Unexpected SCSS sizing variable "$spacing-1" (meteor/prefer-sizing-token)',
+      line: 1,
+      column: 6,
+      endLine: 1,
+      endColumn: 25,
+    },
   ],
 });
