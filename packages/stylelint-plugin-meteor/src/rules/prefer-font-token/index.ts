@@ -8,8 +8,7 @@ const {
 const ruleName = "meteor/prefer-font-token";
 
 const messages = ruleMessages(ruleName, {
-  rejected: (value) =>
-    `Font property must use token, got "${value}"`,
+  rejected: (value) => `Font property must use token, got "${value}"`,
 });
 
 const meta = {
