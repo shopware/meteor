@@ -6,7 +6,6 @@ import MtButton from "./components/form/mt-button/mt-button.vue";
 import MtCheckbox from "./components/form/mt-checkbox/mt-checkbox.vue";
 import MtColorpicker from "./components/form/mt-colorpicker/mt-colorpicker.vue";
 import MtEmailField from "./components/form/mt-email-field/mt-email-field.vue";
-import MtExternalLink from "./components/form/mt-external-link/mt-external-link.vue";
 import MtLink from "./components/navigation/mt-link/mt-link.vue";
 import MtNumberField from "./components/form/mt-number-field/mt-number-field.vue";
 import MtPasswordField from "./components/form/mt-password-field/mt-password-field.vue";
@@ -55,7 +54,6 @@ export {
   MtColorpicker,
   MtDatepicker,
   MtEmailField,
-  MtExternalLink,
   MtLink,
   MtNumberField,
   MtPasswordField,
@@ -102,8 +100,6 @@ export {
   MtDatepicker as SwDatepicker,
   // @deprecated
   MtEmailField as SwEmailField,
-  // @deprecated
-  MtExternalLink as SwExternalLink,
   // @deprecated
   MtNumberField as SwNumberField,
   // @deprecated
