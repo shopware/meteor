@@ -47,51 +47,53 @@ const ruleFunction: Rule = (primary, secondaryOptions, context) => {
           : prop.test(ruleNode.prop)
       );
 
-      const usingPixelValue =
-        /px$/.test(ruleNode.value) || /^\d+$/.test(ruleNode.value);
+      const values = ruleNode.value.split(" ");
+      values.forEach((value) => {
+        const usingPixelValue = /px$/.test(value) || /^\d+$/.test(value);
 
-      const isUsingRemValue = /rem$/.test(ruleNode.value);
-      const isUsingCapValue = /cap$/.test(ruleNode.value);
-      const isUsingEmValue = /em$/.test(ruleNode.value);
-      const isUsingExValue = /ex$/.test(ruleNode.value);
-      const isUsingIcValue = /ic$/.test(ruleNode.value);
-      const isUsingCmValue = /cm$/.test(ruleNode.value);
-      const isUsingMmValue = /mm$/.test(ruleNode.value);
-      const isUsingQValue = /Q$/.test(ruleNode.value);
-      const isUsingInValue = /\d\s*in$/.test(ruleNode.value);
-      const isUsingPcValue = /pc$/.test(ruleNode.value);
-      const isUsingPtValue = /pt$/.test(ruleNode.value);
-      const isUsingSCSSVariable = /^\$/.test(ruleNode.value);
+        const isUsingRemValue = /rem$/.test(value);
+        const isUsingCapValue = /cap$/.test(value);
+        const isUsingEmValue = /em$/.test(value);
+        const isUsingExValue = /ex$/.test(value);
+        const isUsingIcValue = /ic$/.test(value);
+        const isUsingCmValue = /cm$/.test(value);
+        const isUsingMmValue = /mm$/.test(value);
+        const isUsingQValue = /Q$/.test(value);
+        const isUsingInValue = /\d\s*in$/.test(value);
+        const isUsingPcValue = /pc$/.test(value);
+        const isUsingPtValue = /pt$/.test(value);
+        const isUsingSCSSVariable = /^\$/.test(value);
 
-      const valueIsZero = /^0(px)?/.test(ruleNode.value);
+        const valueIsZero = /^0(px)?/.test(value);
 
-      if (
-        isASpacingToken &&
-        ((usingPixelValue && !valueIsZero) ||
-          isUsingRemValue ||
-          isUsingCapValue ||
-          isUsingEmValue ||
-          isUsingExValue ||
-          isUsingIcValue ||
-          isUsingCmValue ||
-          isUsingMmValue ||
-          isUsingQValue ||
-          isUsingInValue ||
-          isUsingPcValue ||
-          isUsingPtValue ||
-          isUsingSCSSVariable)
-      ) {
-        const message = isUsingSCSSVariable
-          ? messages.SCSSVariable(ruleNode.value)
-          : messages.hardCodedValue(ruleNode.value);
+        if (
+          isASpacingToken &&
+          ((usingPixelValue && !valueIsZero) ||
+            isUsingRemValue ||
+            isUsingCapValue ||
+            isUsingEmValue ||
+            isUsingExValue ||
+            isUsingIcValue ||
+            isUsingCmValue ||
+            isUsingMmValue ||
+            isUsingQValue ||
+            isUsingInValue ||
+            isUsingPcValue ||
+            isUsingPtValue ||
+            isUsingSCSSVariable)
+        ) {
+          const message = isUsingSCSSVariable
+            ? messages.SCSSVariable(value)
+            : messages.hardCodedValue(value);
 
-        report({
-          message,
-          node: ruleNode,
-          result,
-          ruleName,
-        });
-      }
+          report({
+            message,
+            node: ruleNode,
+            result,
+            ruleName,
+          });
+        }
+      });
     });
   };
 };
