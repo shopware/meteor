@@ -34,7 +34,7 @@ body {
 }
 
 /* style inline external links */
-a[target="_blank"]:not(.mt-external-link, .mt-internal-link, .mt-button) {
+a[target="_blank"]:not(.mt-internal-link, .mt-button) {
   display: inline-block;
   position: relative;
   color: $color-shopware-brand-500;

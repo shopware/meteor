@@ -16,7 +16,7 @@ test("@sdk: add main module", async ({ ShopAdmin }) => {
   ).toBeVisible();
   await ShopAdmin.page
     .locator(".sw-meteor-card__content-wrapper", { hasText: "SDK Testplugin" })
-    .locator(".sw-context-button > button")
+    .locator(".sw-context-button")
     .click();
   await ShopAdmin.page
     .locator(".sw-context-menu-item__text", { hasText: "Open extension" })
