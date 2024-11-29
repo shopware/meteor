@@ -31,6 +31,7 @@ testRule({
     { code: ".a { margin: 10vb; }" },
     { code: ".a { margin: 10vi; }" },
     { code: ".a { margin: 0 auto; }" },
+    { code: ".a { margin: var(--scale-size-4) var(--scale-size-8); }" },
   ],
 
   reject: [
@@ -123,15 +124,6 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 19,
-    },
-    {
-      code: ".a { padding: 1 in; }",
-      message:
-        'Unexpected hard-coded sizing of "1 in" (meteor/prefer-sizing-token)',
-      line: 1,
-      column: 6,
-      endLine: 1,
-      endColumn: 20,
     },
     {
       code: ".a { padding: 1pc; }",
@@ -429,6 +421,57 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 25,
+    },
+    {
+      code: ".a { padding: $spacing-4 $spacing-8; }",
+      warnings: [
+        {
+          message:
+            'Unexpected SCSS sizing variable "$spacing-4" (meteor/prefer-sizing-token)',
+          line: 1,
+          column: 6,
+          endLine: 1,
+          endColumn: 37,
+        },
+        {
+          message:
+            'Unexpected SCSS sizing variable "$spacing-8" (meteor/prefer-sizing-token)',
+          line: 1,
+          column: 6,
+          endLine: 1,
+          endColumn: 37,
+        },
+      ],
+    },
+    {
+      code: ".a { padding: $spacing-4 8px; }",
+      warnings: [
+        {
+          message:
+            'Unexpected SCSS sizing variable "$spacing-4" (meteor/prefer-sizing-token)',
+          line: 1,
+          column: 6,
+          endLine: 1,
+          endColumn: 30,
+        },
+        {
+          message:
+            'Unexpected hard-coded sizing of "8px" (meteor/prefer-sizing-token)',
+          line: 1,
+          column: 6,
+          endLine: 1,
+          endColumn: 30,
+        },
+      ],
+    },
+    {
+      code: ".a { padding: 4px var(--scale-size-1); }",
+      message:
+        'Unexpected hard-coded sizing of "4px" (meteor/prefer-sizing-token)',
+      line: 1,
+      column: 6,
+      endLine: 1,
+      endColumn: 39,
     },
   ],
 });
