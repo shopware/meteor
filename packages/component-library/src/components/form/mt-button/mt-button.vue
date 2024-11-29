@@ -52,8 +52,7 @@ const props = withDefaults(
   {
     // @ts-expect-error -- This is to keep the default behaviour
     variant: "",
-    // TODO: Update default value to "default"
-    default: "small",
+    size: "default",
   },
 );
 
