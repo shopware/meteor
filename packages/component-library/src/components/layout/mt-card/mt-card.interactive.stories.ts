@@ -67,15 +67,6 @@ export const VisualTestExtendedPageWithoutToolbar: MtCardStory = {
   },
 };
 
-export const VisualTestExtendedPageWithHero: MtCardStory = {
-  ...ExtendedStory,
-  name: "Render an extended card with hero",
-  args: {
-    ...ExtendedStory.args,
-    hero: true,
-  },
-};
-
 export const VisualTestExtendedPageWithoutHeaderRight: MtCardStory = {
   ...ExtendedStory,
   name: "Render an extended card without headerRight",
