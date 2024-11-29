@@ -66,7 +66,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, nextTick, computed } from "vue";
+import { onMounted, ref, nextTick, computed, provide } from "vue";
 import {
   autoUpdate,
   flip,
@@ -79,6 +79,7 @@ import {
 import { useId } from "@/composables/useId";
 import { useTooltipState } from "./composables/useTooltipState";
 import { useTimeout } from "@vueuse/core";
+import { TooltipContext } from "./composables/useIsInsideTooltip";
 
 const props = withDefaults(
   defineProps<{
@@ -185,6 +186,8 @@ const arrowOffset = computed<string>(() => {
 
   return staticSide ?? "";
 });
+
+provide(TooltipContext, true);
 </script>
 
 <style scoped>
