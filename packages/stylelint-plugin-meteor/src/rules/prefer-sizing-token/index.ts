@@ -8,7 +8,8 @@ const {
 const ruleName = "meteor/prefer-sizing-token";
 
 const messages = ruleMessages(ruleName, {
-  rejected: (value) => `Unexpected hard-coded sizing of "${value}"`,
+  hardCodedValue: (value) => `Unexpected hard-coded sizing of "${value}"`,
+  SCSSVariable: (value) => `Unexpected SCSS sizing variable "${value}"`,
 });
 
 const meta = {
@@ -60,6 +61,7 @@ const ruleFunction: Rule = (primary, secondaryOptions, context) => {
       const isUsingInValue = /\d\s*in$/.test(ruleNode.value);
       const isUsingPcValue = /pc$/.test(ruleNode.value);
       const isUsingPtValue = /pt$/.test(ruleNode.value);
+      const isUsingSCSSVariable = /^\$/.test(ruleNode.value);
 
       const valueIsZero = /^0(px)?/.test(ruleNode.value);
 
@@ -76,10 +78,15 @@ const ruleFunction: Rule = (primary, secondaryOptions, context) => {
           isUsingQValue ||
           isUsingInValue ||
           isUsingPcValue ||
-          isUsingPtValue)
+          isUsingPtValue ||
+          isUsingSCSSVariable)
       ) {
+        const message = isUsingSCSSVariable
+          ? messages.SCSSVariable(ruleNode.value)
+          : messages.hardCodedValue(ruleNode.value);
+
         report({
-          message: messages.rejected(ruleNode.value),
+          message,
           node: ruleNode,
           result,
           ruleName,
