@@ -13,26 +13,39 @@ testRule({
   accept: [
     { code: ".a { font-family: var(--font-family-body); }" },
     { code: ".a { font-family: inherit; }" },
+    { code: ".a { font-weight: var(--font-weight-regular); }" },
+    { code: ".a { font-weight: inherit; }" },
+    { code: ".a { font-size: var(--font-size-xs); }" },
+    { code: ".a { font-size: inherit; }" },
   ],
 
   reject: [
     {
-      code: '.a { font-family: "Arial"; }',
+      code: ".a { font-family: Arial; }",
       message:
-        'Font-family must use token or inherit, got "Arial" (meteor/prefer-font-token)',
+        'Font property must use token, got "Arial" (meteor/prefer-font-token)',
       line: 1,
       column: 6,
       endLine: 1,
-      endColumn: 27,
+      endColumn: 25,
     },
     {
-      code: '.a { font-family: "Times New Roman"; }',
+      code: ".a { font-weight: 700; }",
       message:
-        'Font-family must use token or inherit, got "Times New Roman" (meteor/prefer-font-token)',
+        'Font property must use token, got "700" (meteor/prefer-font-token)',
       line: 1,
       column: 6,
       endLine: 1,
-      endColumn: 37,
+      endColumn: 23,
+    },
+    {
+      code: ".a { font-size: 16px; }",
+      message:
+        'Font property must use token, got "16px" (meteor/prefer-font-token)',
+      line: 1,
+      column: 6,
+      endLine: 1,
+      endColumn: 22,
     },
   ],
 });
