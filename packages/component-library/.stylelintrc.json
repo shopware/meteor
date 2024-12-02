@@ -5,7 +5,8 @@
     "meteor/prefer-background-token": [true, { "severity": "warning" }],
     "meteor/prefer-color-token": [true, { "severity": "warning" }],
     "meteor/no-primitive-token": [true, { "severity": "warning" }],
-    "meteor/prefer-font-token": [true, { "severity": "warning" }]
+    "meteor/prefer-font-token": [true, { "severity": "warning" }],
+    "meteor/prefer-border-token": [true, { "severity": "warning" }]
   },
   "overrides": [
     {
