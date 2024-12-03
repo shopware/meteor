@@ -34,6 +34,7 @@
         :disabled="disabled"
         :value="stringRepresentation"
         :placeholder="placeholder"
+        :class="numberAlignEnd ? 'mt-number-field__align-end' : ''"
         @input="onInput"
         @keydown.up="increaseNumberByStep"
         @keydown.down="decreaseNumberByStep"
@@ -177,6 +178,15 @@ export default defineComponent({
      * Defines if the field can be empty.
      */
     allowEmpty: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    /**
+     * Defines if the number should be aligned to the end of the input field.
+     */
+    numberAlignEnd: {
       type: Boolean,
       required: false,
       default: false,
@@ -397,6 +407,10 @@ export default defineComponent({
       cursor: default;
     }
   }
+}
+
+input.mt-number-field__align-end {
+  text-align: end;
 }
 </style>
 
