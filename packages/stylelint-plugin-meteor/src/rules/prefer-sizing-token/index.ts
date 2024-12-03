@@ -44,7 +44,7 @@ const ruleFunction: Rule = (primary, secondaryOptions, context) => {
       const isASpacingToken = SPACING_PROPERTIES.some((prop) =>
         typeof prop === "string"
           ? prop === ruleNode.prop
-          : prop.test(ruleNode.prop)
+          : prop.test(ruleNode.prop),
       );
 
       const values = ruleNode.value.split(" ");

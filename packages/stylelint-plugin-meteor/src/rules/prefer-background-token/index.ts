@@ -31,7 +31,7 @@ const ruleFunction: Rule = (primary) => {
       const isBackgroundProperty = ruleNode.prop === "background";
       const hasMultipleValues = ruleNode.value.split(" ").length > 1;
       const isCSSFunctionValue = [/^url\(/].some((regex) =>
-        regex.test(ruleNode.value)
+        regex.test(ruleNode.value),
       );
 
       if (isBackgroundProperty && (hasMultipleValues || isCSSFunctionValue))
@@ -40,7 +40,7 @@ const ruleFunction: Rule = (primary) => {
       const isBackgroundColorProperty = ruleNode.prop === "background-color";
       const isTokenValue = ruleNode.value.startsWith("var(--");
       const isKeywordValue = ["currentcolor", "transparent"].includes(
-        ruleNode.value.toLowerCase()
+        ruleNode.value.toLowerCase(),
       );
 
       const isGlobalValue = [
@@ -60,7 +60,7 @@ const ruleFunction: Rule = (primary) => {
       ].some((regex) => regex.test(ruleNode.value));
 
       const isGradient = [/^linear-gradient\(/, /^radial-gradient\(/].some(
-        (regex) => regex.test(ruleNode.value)
+        (regex) => regex.test(ruleNode.value),
       );
 
       if (
@@ -75,7 +75,7 @@ const ruleFunction: Rule = (primary) => {
         report({
           message: messages.rejectedHardCodedValue(
             ruleNode.value,
-            ruleNode.prop
+            ruleNode.prop,
           ),
           node: ruleNode,
           result,
@@ -90,7 +90,7 @@ const ruleFunction: Rule = (primary) => {
         report({
           message: messages.rejectedSCSSColorFunction(
             ruleNode.value,
-            ruleNode.prop
+            ruleNode.prop,
           ),
           node: ruleNode,
           result,
