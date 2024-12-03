@@ -13,12 +13,16 @@ jobs:
   static-analysis:
     name: Static Analysis
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
 
       - uses: pnpm/action-setup@v3
         with:
@@ -37,14 +41,23 @@ jobs:
       - name: Build packages
         run: npx turbo run build
 
+      - name: Lint code
+        run: pnpx turbo run lint:eslint -- --fix
+
       - name: Check formatting
-        run: pnpx turbo run format:check
+        run: pnpx turbo run format
 
       - name: Perform typecheck
         run: pnpx turbo run lint:types
 
-      - name: Lint code
-        run: pnpx turbo run lint:eslint
+      - name: Commit changes
+        if: always()
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Apply code formatting and fixable ESLint issues"
+
+      - name: Lint css
+        run: pnpx turbo run lint:css
 
   unit-tests:
     name: Unit tests
@@ -153,7 +166,6 @@ jobs:
           name: meteor-admin-sdk--playwright-test-results
           path: packages/admin-sdk/playwright-report/
 
-  
   tested-versions:
     name: tested-versions
     runs-on: ubuntu-latest
@@ -207,7 +219,7 @@ jobs:
       - name: Symlink plugin
         working-directory: shopware/custom/plugins/
         run: ln -s ../../../meteor/examples/admin-sdk-plugin TestPlugin
-          
+
       - name: Activate TestPlugin
         working-directory: shopware/
         run: |

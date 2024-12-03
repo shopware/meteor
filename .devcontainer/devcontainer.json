@@ -13,10 +13,12 @@
       "extensions": [
         "dbaeumer.vscode-eslint",
         "esbenp.prettier-vscode",
-        "Vue.volar"
+        "Vue.volar",
+        "stylelint.vscode-stylelint"
       ],
       "settings": {
-        "editor.defaultFormatter": "esbenp.prettier-vscode"
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "stylelint.validate": ["css", "postcss", "vue"]
       }
     }
   },

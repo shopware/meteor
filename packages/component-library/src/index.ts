@@ -6,7 +6,6 @@ import MtButton from "./components/form/mt-button/mt-button.vue";
 import MtCheckbox from "./components/form/mt-checkbox/mt-checkbox.vue";
 import MtColorpicker from "./components/form/mt-colorpicker/mt-colorpicker.vue";
 import MtEmailField from "./components/form/mt-email-field/mt-email-field.vue";
-import MtExternalLink from "./components/form/mt-external-link/mt-external-link.vue";
 import MtLink from "./components/navigation/mt-link/mt-link.vue";
 import MtNumberField from "./components/form/mt-number-field/mt-number-field.vue";
 import MtPasswordField from "./components/form/mt-password-field/mt-password-field.vue";
@@ -15,7 +14,6 @@ import MtSlider from "@/components/form/mt-slider/mt-slider.vue";
 import MtSwitch from "./components/form/mt-switch/mt-switch.vue";
 import MtTextField from "./components/form/mt-text-field/mt-text-field.vue";
 import MtTextarea from "./components/form/mt-textarea/mt-textarea.vue";
-import MtUrlField from "./components/form/mt-url-field/mt-url-field.vue";
 import MtIcon from "./components/icons-media/mt-icon/mt-icon.vue";
 import MtCard from "./components/layout/mt-card/mt-card.vue";
 import MtEmptyState from "./components/layout/mt-empty-state/mt-empty-state.vue";
@@ -57,7 +55,6 @@ export {
   MtColorpicker,
   MtDatepicker,
   MtEmailField,
-  MtExternalLink,
   MtLink,
   MtNumberField,
   MtPasswordField,
@@ -66,7 +63,6 @@ export {
   MtSwitch,
   MtTextField,
   MtTextarea,
-  MtUrlField,
   MtIcon,
   MtCard,
   MtEmptyState,
@@ -106,8 +102,6 @@ export {
   // @deprecated
   MtEmailField as SwEmailField,
   // @deprecated
-  MtExternalLink as SwExternalLink,
-  // @deprecated
   MtNumberField as SwNumberField,
   // @deprecated
   MtPasswordField as SwPasswordField,
@@ -119,8 +113,6 @@ export {
   MtTextField as SwTextField,
   // @deprecated
   MtTextarea as SwTextarea,
-  // @deprecated
-  MtUrlField as SwUrlField,
   // @deprecated
   MtIcon as SwIcon,
   // @deprecated

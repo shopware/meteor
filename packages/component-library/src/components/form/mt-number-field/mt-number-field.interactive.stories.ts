@@ -231,6 +231,23 @@ export const VisualTestSuffix: MtNumberFieldStory = {
   },
 };
 
+export const VisualTestNumberAlignedEnd: MtNumberFieldStory = {
+  name: "Should align number to end",
+  args: {
+    numberAlignEnd: true,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await userEvent.click(canvas.getByRole("textbox"));
+    await userEvent.type(canvas.getByRole("textbox"), "42");
+    await userEvent.click(canvas.getByText("hidden"));
+
+    // Notice that the value is of type string and the value of the event is of type number
+    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("42");
+  },
+};
+
 export const VisualTestHint: MtNumberFieldStory = {
   name: "Should display hint",
   args: {
