@@ -2,7 +2,8 @@
   "plugins": ["@shopware-ag/stylelint-plugin-meteor"],
   "rules": {
     "meteor/prefer-sizing-token": [true, { "severity": "warning" }],
-    "meteor/prefer-background-token": [true, { "severity": "warning" }]
+    "meteor/prefer-background-token": [true, { "severity": "warning" }],
+    "meteor/prefer-color-token": [true, { "severity": "warning" }]
   },
   "overrides": [
     {
