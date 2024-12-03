@@ -1,4 +1,4 @@
-import stylelint, { Rule } from "stylelint";
+import stylelint, { Rule, RuleMeta } from "stylelint";
 
 const {
   createPlugin,
@@ -12,8 +12,9 @@ const messages = ruleMessages(ruleName, {
   SCSSVariable: (value) => `Unexpected SCSS sizing variable "${value}"`,
 });
 
-const meta = {
+const meta: RuleMeta = {
   url: "",
+  fixable: true,
 };
 
 const SPACING_PROPERTIES: (string | RegExp)[] = [
@@ -30,6 +31,11 @@ const SPACING_PROPERTIES: (string | RegExp)[] = [
   "row-gap",
   "flex-basis",
 ];
+
+const SPACING_SCALE: number[] = [
+  0, 1, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 36, 40, 48,
+  56, 64, 72, 80, 96, 128, 160, 192, 224, 256,
+] as const;
 
 const ruleFunction: Rule = (primary, secondaryOptions, context) => {
   return (root, result) => {
@@ -82,15 +88,28 @@ const ruleFunction: Rule = (primary, secondaryOptions, context) => {
             isUsingPtValue ||
             isUsingSCSSVariable)
         ) {
+          const isLargerThanOnePixel =
+            usingPixelValue && Number(ruleNode.value.replace("px", "")) > 1;
+
           const message = isUsingSCSSVariable
             ? messages.SCSSVariable(value)
             : messages.hardCodedValue(value);
+
+          function fix() {
+            const value = Number(ruleNode.value.replace("px", ""));
+
+            const isOutsideOfScale = !SPACING_SCALE.includes(value);
+            if (isOutsideOfScale) return;
+
+            ruleNode.value = `var(--scale-size-${value})`;
+          }
 
           report({
             message,
             node: ruleNode,
             result,
             ruleName,
+            fix: usingPixelValue && isLargerThanOnePixel ? fix : undefined,
           });
         }
       });
