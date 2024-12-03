@@ -85,12 +85,12 @@ const props = withDefaults(
     content: string;
     delayDurationInMs?: number;
     hideDelayDurationInMs?: number;
-    placement: Placement;
+    placement?: Placement;
   }>(),
   {
     delayDurationInMs: 500,
     hideDelayDurationInMs: 300,
-    placement: "bottom",
+    placement: "top",
   },
 );
 
