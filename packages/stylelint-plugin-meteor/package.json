@@ -13,8 +13,9 @@
     "stylelint": "^16.10.0"
   },
   "devDependencies": {
-    "tshy": "^3.0.2",
+    "prettier": "^3.4.1",
     "stylelint-test-rule-node": "^0.3.0",
+    "tshy": "^3.0.2",
     "tsx": "^4.7.0"
   },
   "type": "module",
