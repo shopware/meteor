@@ -9,6 +9,14 @@
   "main": "dist/common/index.js",
   "module": "dist/esm/index.js",
   "types": "dist/esm/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/esm/index.d.ts",
+      "import": "./dist/esm/index.js"
+    },
+    "./styles.css": "./dist/index.css",
+    "./font.css": "./dist/fonts.css"
+  },
   "files": [
     "src",
     "dist"

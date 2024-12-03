@@ -36,6 +36,7 @@ import MtInset from "./components/layout/mt-inset/mt-inset.vue";
 import MtThemeProvider from "./components/theme/mt-theme-provider.vue";
 import TooltipDirective from "./directives/tooltip.directive";
 import DeviceHelperPlugin from "./plugin/device-helper.plugin";
+
 // Import SCSS for styling
 import "./components/assets/scss/all.scss";
 

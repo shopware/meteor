@@ -42,8 +42,13 @@ export default defineConfig({
       formats: ["es", "cjs"],
       fileName: (format, entryName) => `${{ es: "esm", cjs: "common" }[format]}/${entryName}.js`,
     },
+    cssCodeSplit: true,
     rollupOptions: {
       external: ["vue"],
+      input: {
+        index: path.resolve(__dirname, "src/index.ts"),
+        fonts: path.resolve(__dirname, "src/fonts.ts"),
+      },
     },
   },
   css: {
