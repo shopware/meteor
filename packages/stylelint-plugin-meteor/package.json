@@ -4,7 +4,9 @@
   "main": "./dist/commonjs/index.js",
   "scripts": {
     "build": "tshy",
-    "test:unit": "node --import tsx --test $(find . -name \"*.test.ts\")"
+    "test:unit": "node --import tsx --test $(find . -name \"*.test.ts\")",
+    "format:check": "prettier . --check",
+    "format": "prettier --write ."
   },
   "keywords": [],
   "license": "MIT",
