@@ -22,6 +22,16 @@ const FONT_PROPERTIES: (string | RegExp)[] = [
   /^font-/,
 ];
 
+const GLOBAL_KEYWORDS = [
+  "inherit",
+  "initial",
+  "revert",
+  "revert-layer",
+  "unset",
+  "none",
+  "normal",
+];
+
 const ruleFunction: Rule = (primary, secondaryOptions, context) => {
   return (root, result) => {
     const validOptions = validateOptions(result, ruleName, {
@@ -38,9 +48,9 @@ const ruleFunction: Rule = (primary, secondaryOptions, context) => {
           : prop.test(ruleNode.prop)
       );
       const usesVariable = /var\(--.*\)/.test(ruleNode.value);
-      const isInherit = ruleNode.value === "inherit";
+      const isGlobalKeyword = GLOBAL_KEYWORDS.includes(ruleNode.value);
 
-      if (isFontProperty && !usesVariable && !isInherit) {
+      if (isFontProperty && !usesVariable && !isGlobalKeyword) {
         report({
           message: messages.rejected(ruleNode.value),
           node: ruleNode,
