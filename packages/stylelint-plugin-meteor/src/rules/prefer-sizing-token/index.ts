@@ -62,9 +62,11 @@ const ruleFunction: Rule = (primary, secondaryOptions, context) => {
       const isUsingPtValue = /pt$/.test(ruleNode.value);
 
       const valueIsZero = /^0(px)?/.test(ruleNode.value);
+      const isNegativeValue = /^-/.test(ruleNode.value);
 
       if (
         isASpacingToken &&
+        !isNegativeValue &&
         ((usingPixelValue && !valueIsZero) ||
           isUsingRemValue ||
           isUsingCapValue ||
