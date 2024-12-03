@@ -71,9 +71,11 @@ const ruleFunction: Rule = (primary, secondaryOptions, context) => {
         const isUsingSCSSVariable = /^\$/.test(value);
 
         const valueIsZero = /^0(px)?/.test(value);
+        const isNegativeValue = /^-/.test(value);
 
         if (
           isASpacingToken &&
+          !isNegativeValue &&
           ((usingPixelValue && !valueIsZero) ||
             isUsingRemValue ||
             isUsingCapValue ||
