@@ -11,5 +11,6 @@
       "files": ["*.vue", "**/*.vue"],
       "customSyntax": "postcss-html"
     }
-  ]
+  ],
+  "formatter": "github"
 }
