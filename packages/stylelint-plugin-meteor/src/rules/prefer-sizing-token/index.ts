@@ -89,19 +89,22 @@ const ruleFunction: Rule = (primary, secondaryOptions, context) => {
             isUsingSCSSVariable)
         ) {
           const isLargerThanOnePixel =
-            usingPixelValue && Number(ruleNode.value.replace("px", "")) > 1;
+            usingPixelValue && Number(value.replace("px", "")) > 1;
 
           const message = isUsingSCSSVariable
             ? messages.SCSSVariable(value)
             : messages.hardCodedValue(value);
 
           function fix() {
-            const value = Number(ruleNode.value.replace("px", ""));
+            const newValue = Number(value.replace("px", ""));
 
-            const isOutsideOfScale = !SPACING_SCALE.includes(value);
+            const isOutsideOfScale = !SPACING_SCALE.includes(newValue);
             if (isOutsideOfScale) return;
 
-            ruleNode.value = `var(--scale-size-${value})`;
+            ruleNode.value = ruleNode.value.replace(
+              value,
+              `var(--scale-size-${newValue})`
+            );
           }
 
           report({
