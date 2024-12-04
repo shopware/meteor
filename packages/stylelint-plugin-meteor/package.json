@@ -10,11 +10,12 @@
   "license": "MIT",
   "description": "The stylelint plugin for the Meteor Design System",
   "peerDependencies": {
+    "@shopware-ag/meteor-tokens": "workspace:*",
     "stylelint": "^16.10.0"
   },
   "devDependencies": {
-    "tshy": "^3.0.2",
     "stylelint-test-rule-node": "^0.3.0",
+    "tshy": "^3.0.2",
     "tsx": "^4.7.0"
   },
   "type": "module",
