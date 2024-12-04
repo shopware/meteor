@@ -337,6 +337,9 @@ importers:
         specifier: ^0.1.12
         version: 0.1.12(vue@3.4.21(typescript@5.2.2))
     devDependencies:
+      '@csstools/stylelint-formatter-github':
+        specifier: ^1.0.0
+        version: 1.0.0(stylelint@16.10.0(typescript@5.2.2))
       '@rushstack/eslint-patch':
         specifier: ^1.3.3
         version: 1.10.3
@@ -1486,6 +1489,12 @@ packages:
     engines: {node: '>=18'}
     peerDependencies:
       postcss-selector-parser: ^6.1.0
+
+  '@csstools/stylelint-formatter-github@1.0.0':
+    resolution: {integrity: sha512-YBKb4lNRXEpqrO6oJY0ql+D7lQGZcIwj/bs2bf3t95CU3NZFLrrZoJrKxVeyp5mCPo5iNopsp+wkksrjI7FI/Q==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      stylelint: ^16.6.0
 
   '@cush/relative@1.0.0':
     resolution: {integrity: sha512-RpfLEtTlyIxeNPGKcokS+p3BZII/Q3bYxryFRglh5H3A3T8q9fsLYm72VYAMEOOIBLEa8o93kFLiBDUWKrwXZA==}
@@ -14316,6 +14325,10 @@ snapshots:
   '@csstools/selector-specificity@4.0.0(postcss-selector-parser@6.1.2)':
     dependencies:
       postcss-selector-parser: 6.1.2
+
+  '@csstools/stylelint-formatter-github@1.0.0(stylelint@16.10.0(typescript@5.2.2))':
+    dependencies:
+      stylelint: 16.10.0(typescript@5.2.2)
 
   '@cush/relative@1.0.0': {}
 
