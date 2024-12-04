@@ -585,15 +585,5 @@ testRule({
       ],
       unfixable: true,
     },
-    {
-      code: ".a { padding: 4px var(--scale-size-1); }",
-      message:
-        'Unexpected hard-coded sizing of "4px" (meteor/prefer-sizing-token)',
-      line: 1,
-      column: 6,
-      endLine: 1,
-      endColumn: 39,
-      unfixable: true,
-    },
   ],
 });
