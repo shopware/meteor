@@ -12,7 +12,8 @@
   "exports": {
     "./primitives.css": "./deliverables/foundation/primitives.css",
     "./administration/light.css": "./deliverables/administration/light.css",
-    "./administration/dark.css": "./deliverables/administration/dark.css"
+    "./administration/dark.css": "./deliverables/administration/dark.css",
+    "./foundation/primitives.json": "./dictionaries/foundation/primitives.tokens.json"
   },
   "main": "index.js",
   "files": [
