@@ -6,6 +6,7 @@ import { get } from "lodash-es";
 import type { StoryObj } from "@storybook/vue3";
 import type { SlottedMeta } from "@/_internal/story-helper";
 import { defineComponent } from "vue";
+import { fn } from "@storybook/test";
 
 export type MtDataTableMeta = SlottedMeta<
   typeof MtDataTable,
@@ -319,6 +320,10 @@ export default {
     filters: [],
     appliedFilters: [],
     numberOfResults: undefined,
+    reload: fn(),
+    openDetails: fn(),
+    itemDelete: fn(),
+    "onUpdate:appliedFilters": fn(),
     // TODO: can be removed when component is not experimental anymore
     _storybook_internal_show_experimental_warning_: false,
     _remove_primary_toolbar_button_: false,

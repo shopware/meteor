@@ -11,6 +11,7 @@ testRule({
   plugins: [plugin],
   ruleName,
   config: true,
+  fix: true,
 
   accept: [
     { code: ".a { margin: var(--scale-size-0); }" },
@@ -44,6 +45,17 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 19,
+      fixed: ".a { padding: var(--scale-size-8); }",
+    },
+    {
+      code: ".a { padding: 7px; }",
+      message:
+        'Unexpected hard-coded sizing of "7px" (meteor/prefer-sizing-token)',
+      line: 1,
+      column: 6,
+      endLine: 1,
+      endColumn: 19,
+      unfixable: true,
     },
     {
       code: ".a { margin: 1rem; }",
@@ -53,6 +65,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 19,
+      unfixable: true,
     },
     {
       code: ".a { padding: 3cap; }",
@@ -62,6 +75,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 20,
+      unfixable: true,
     },
     {
       code: ".a { padding: 1em; }",
@@ -71,6 +85,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 19,
+      unfixable: true,
     },
     {
       code: ".a { padding: 1ex; }",
@@ -80,6 +95,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 19,
+      unfixable: true,
     },
     {
       code: ".a { padding: 1ic; }",
@@ -89,6 +105,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 19,
+      unfixable: true,
     },
     {
       code: ".a { padding: 1cm; }",
@@ -98,6 +115,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 19,
+      unfixable: true,
     },
     {
       code: ".a { padding: 1mm; }",
@@ -107,6 +125,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 19,
+      unfixable: true,
     },
     {
       code: ".a { padding: 1Q; }",
@@ -116,6 +135,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 18,
+      unfixable: true,
     },
     {
       code: ".a { padding: 1in; }",
@@ -125,6 +145,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 19,
+      unfixable: true,
     },
     {
       code: ".a { padding: 1pc; }",
@@ -134,6 +155,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 19,
+      unfixable: true,
     },
     {
       code: ".a { padding: 1pt; }",
@@ -143,6 +165,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 19,
+      unfixable: true,
     },
     {
       code: ".a { width: 1px; }",
@@ -152,6 +175,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 17,
+      unfixable: true,
     },
     {
       code: ".a { height: 1px; }",
@@ -161,6 +185,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 18,
+      unfixable: true,
     },
     {
       code: ".a { top: 1px; }",
@@ -170,6 +195,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 15,
+      unfixable: true,
     },
     {
       code: ".a { right: 1px; }",
@@ -179,6 +205,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 17,
+      unfixable: true,
     },
     {
       code: ".a { bottom: 1px; }",
@@ -188,6 +215,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 18,
+      unfixable: true,
     },
     {
       code: ".a { left: 1px; }",
@@ -197,6 +225,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 16,
+      unfixable: true,
     },
     {
       code: ".a { margin-block: 1px; }",
@@ -206,6 +235,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 24,
+      unfixable: true,
     },
     {
       code: ".a { margin-inline: 1px; }",
@@ -215,6 +245,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 25,
+      unfixable: true,
     },
     {
       code: ".a { margin-inline-start: 1px; }",
@@ -224,6 +255,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 31,
+      unfixable: true,
     },
     {
       code: ".a { margin-inline-end: 1px; }",
@@ -233,6 +265,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 29,
+      unfixable: true,
     },
     {
       code: ".a { margin-block-end: 1px; }",
@@ -242,6 +275,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 28,
+      unfixable: true,
     },
     {
       code: ".a { margin-block-start: 1px; }",
@@ -251,6 +285,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 30,
+      unfixable: true,
     },
     {
       code: ".a { margin-top: 1px; }",
@@ -260,6 +295,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 22,
+      unfixable: true,
     },
     {
       code: ".a { margin-right: 1px; }",
@@ -269,6 +305,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 24,
+      unfixable: true,
     },
     {
       code: ".a { margin-bottom: 1px; }",
@@ -278,6 +315,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 25,
+      unfixable: true,
     },
     {
       code: ".a { margin-left: 1px; }",
@@ -287,6 +325,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 23,
+      unfixable: true,
     },
     {
       code: ".a { padding-block: 1px; }",
@@ -296,6 +335,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 25,
+      unfixable: true,
     },
     {
       code: ".a { padding-inline: 1px; }",
@@ -305,6 +345,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 26,
+      unfixable: true,
     },
     {
       code: ".a { padding-inline-start: 1px; }",
@@ -314,6 +355,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 32,
+      unfixable: true,
     },
     {
       code: ".a { padding-inline-end: 1px; }",
@@ -323,6 +365,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 30,
+      unfixable: true,
     },
     {
       code: ".a { padding-block-start: 1px; }",
@@ -332,6 +375,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 31,
+      unfixable: true,
     },
     {
       code: ".a { padding-block-end: 1px; }",
@@ -341,6 +385,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 29,
+      unfixable: true,
     },
     {
       code: ".a { padding-top: 1px; }",
@@ -350,6 +395,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 23,
+      unfixable: true,
     },
     {
       code: ".a { padding-right: 1px; }",
@@ -359,6 +405,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 25,
+      unfixable: true,
     },
     {
       code: ".a { padding-bottom: 1px; }",
@@ -368,6 +415,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 26,
+      unfixable: true,
     },
     {
       code: ".a { padding-left: 1px; }",
@@ -377,6 +425,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 24,
+      unfixable: true,
     },
     {
       code: ".a { gap: 1px; }",
@@ -386,6 +435,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 15,
+      unfixable: true,
     },
     {
       code: ".a { row-gap: 1px; }",
@@ -395,6 +445,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 19,
+      unfixable: true,
     },
     {
       code: ".a { column-gap: 1px; }",
@@ -404,6 +455,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 22,
+      unfixable: true,
     },
     {
       code: ".a { flex-basis: 1px; }",
@@ -413,6 +465,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 22,
+      unfixable: true,
     },
     {
       code: ".a { margin: $spacing-1; }",
@@ -422,6 +475,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 25,
+      unfixable: true,
     },
     {
       code: ".a { padding: $spacing-4 $spacing-8; }",
@@ -443,27 +497,7 @@ testRule({
           endColumn: 37,
         },
       ],
-    },
-    {
-      code: ".a { padding: $spacing-4 8px; }",
-      warnings: [
-        {
-          message:
-            'Unexpected SCSS sizing variable "$spacing-4" (meteor/prefer-sizing-token)',
-          line: 1,
-          column: 6,
-          endLine: 1,
-          endColumn: 30,
-        },
-        {
-          message:
-            'Unexpected hard-coded sizing of "8px" (meteor/prefer-sizing-token)',
-          line: 1,
-          column: 6,
-          endLine: 1,
-          endColumn: 30,
-        },
-      ],
+      unfixable: true,
     },
     {
       code: ".a { padding: 4px var(--scale-size-1); }",
@@ -473,6 +507,79 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 39,
+      fixed: ".a { padding: var(--scale-size-4) var(--scale-size-1); }",
     },
+    {
+      code: ".a { padding: 4px 8px; }",
+      warnings: [
+        {
+          message:
+            'Unexpected hard-coded sizing of "4px" (meteor/prefer-sizing-token)',
+          line: 1,
+          column: 6,
+          endLine: 1,
+          endColumn: 23,
+        },
+        {
+          message:
+            'Unexpected hard-coded sizing of "8px" (meteor/prefer-sizing-token)',
+          line: 1,
+          column: 6,
+          endLine: 1,
+          endColumn: 23,
+        },
+      ],
+      fixed: ".a { padding: var(--scale-size-4) var(--scale-size-8); }",
+    },
+    {
+      code: ".a { margin: $spacing-1; }",
+      message:
+        'Unexpected SCSS sizing variable "$spacing-1" (meteor/prefer-sizing-token)',
+      line: 1,
+      column: 6,
+      endLine: 1,
+      endColumn: 25,
+      unfixable: true,
+    },
+    {
+      code: ".a { padding: $spacing-4 $spacing-8; }",
+      warnings: [
+        {
+          message:
+            'Unexpected SCSS sizing variable "$spacing-4" (meteor/prefer-sizing-token)',
+          line: 1,
+          column: 6,
+          endLine: 1,
+          endColumn: 37,
+        },
+        {
+          message:
+            'Unexpected SCSS sizing variable "$spacing-8" (meteor/prefer-sizing-token)',
+          line: 1,
+          column: 6,
+          endLine: 1,
+          endColumn: 37,
+        },
+      ],
+      unfixable: true,
+    },
+    // {
+    //   code: ".a { padding: $spacing-4 8px; }",
+    //   warnings: [
+    //     {
+    //       message:
+    //         'Unexpected SCSS sizing variable "$spacing-4" (meteor/prefer-sizing-token)',
+    //       line: 1,
+    //       column: 6,
+    //       endLine: 1,
+    //       endColumn: 30,
+    //     },
+    //     {
+    //       message:
+    //         'Unexpected hard-coded sizing of "8px" (meteor/prefer-sizing-token)',
+    //     },
+    //   ],
+    //   fixed: ".a { padding: $spacing-4 var(--scale-size-8); }",
+    // },
   ],
 });
