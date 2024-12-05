@@ -102,14 +102,19 @@ import MtText from "../../content/mt-text/mt-text.vue";
 import { useFutureFlags } from "@/composables/useFutureFlags";
 import { useI18n } from "@/composables/useI18n";
 
-const props = defineProps<{
-  title?: string;
-  subtitle?: string;
-  isLoading?: boolean;
-  // @deprecated v4.0.0 - will be removed without replacement
-  large?: boolean;
-  inheritance?: boolean;
-}>();
+const props = withDefaults(
+  defineProps<{
+    title?: string;
+    subtitle?: string;
+    isLoading?: boolean;
+    // @deprecated v4.0.0 - will be removed without replacement
+    large?: boolean;
+    inheritance?: boolean;
+  }>(),
+  {
+    inheritance: undefined,
+  },
+);
 
 defineEmits<{
   (e: "update:inheritance", value: boolean): void;
