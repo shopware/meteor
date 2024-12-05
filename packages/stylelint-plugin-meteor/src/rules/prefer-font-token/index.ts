@@ -8,7 +8,8 @@ const {
 const ruleName = "meteor/prefer-font-token";
 
 const messages = ruleMessages(ruleName, {
-  rejected: (value) => `Font property must use token, got "${value}"`,
+  rejected: (value, property) =>
+    `Unexpected hard-coded value "${value}" for ${property}, please use a typography token`,
 });
 
 const meta = {
@@ -16,6 +17,7 @@ const meta = {
 };
 
 const FONT_PROPERTIES: (string | RegExp)[] = [
+  "line-height",
   "font-family",
   "font-weight",
   "font-size",
@@ -52,7 +54,7 @@ const ruleFunction: Rule = (primary, secondaryOptions, context) => {
 
       if (isFontProperty && !usesVariable && !isGlobalKeyword) {
         report({
-          message: messages.rejected(ruleNode.value),
+          message: messages.rejected(ruleNode.value, ruleNode.prop),
           node: ruleNode,
           result,
           ruleName,
