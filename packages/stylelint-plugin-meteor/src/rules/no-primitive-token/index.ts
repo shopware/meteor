@@ -15,7 +15,7 @@ const messages = ruleMessages(ruleName, {
 });
 
 const meta = {
-  url: "",
+  url: "https://github.com/shopware/meteor/blob/main/packages/stylelint-plugin-meteor/src/rules/no-primitive-token/README.md",
 };
 
 export function makeNoPrimitiveRule(dependencies: {
