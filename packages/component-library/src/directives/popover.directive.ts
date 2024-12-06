@@ -201,6 +201,7 @@ const PopoverDirective: Directive = {
     }
 
     // append to target element
+    // @ts-expect-error
     calculateOutsideEdges(element, binding.instance!);
 
     // @ts-expect-error
