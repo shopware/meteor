@@ -166,10 +166,8 @@ const {
   floatingStyles,
   middlewareData,
   placement: calculatedPlacement,
-  // @ts-expect-error -- Type for tooltipRef of @floating-ui/vue is not correct
 } = useFloating(triggerRef, tooltipRef, {
-  // @ts-expect-error -- Type for tooltipRef of @floating-ui/vue is not correct
-  middleware: [offset(8), flip(), shift(), arrow({ element: arrowRef, padding: "0.5rem" })],
+  middleware: [offset(8), flip(), shift(), arrow({ element: arrowRef, padding: 8 })],
   whileElementsMounted: autoUpdate,
   placement: props.placement,
 });
