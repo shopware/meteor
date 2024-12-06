@@ -17,5 +17,4 @@ export default defineConfig({
       customSyntax: "postcss-html",
     },
   ],
-  formatter: "github",
 });
