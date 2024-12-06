@@ -13,7 +13,7 @@ const messages = ruleMessages(ruleName, {
 });
 
 const meta = {
-  url: "",
+  url: "https://github.com/shopware/meteor/blob/main/packages/stylelint-plugin-meteor/src/rules/prefer-font-token/README.md",
 };
 
 const FONT_PROPERTIES: (string | RegExp)[] = [
