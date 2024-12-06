@@ -13,7 +13,7 @@ const messages = ruleMessages(ruleName, {
 });
 
 const meta: RuleMeta = {
-  url: "",
+  url: "https://github.com/shopware/meteor/blob/main/packages/stylelint-plugin-meteor/src/rules/prefer-sizing-token/index.ts",
   fixable: true,
 };
 
