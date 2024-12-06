@@ -463,6 +463,9 @@ importers:
       stylelint-config-standard-scss:
         specifier: ^13.1.0
         version: 13.1.0(postcss@8.4.49)(stylelint@16.10.0(typescript@5.2.2))
+      stylelint-define-config:
+        specifier: ^1.8.0
+        version: 1.8.0(stylelint@16.10.0(typescript@5.2.2))
       ts-morph:
         specifier: ^20.0.0
         version: 20.0.0
@@ -11420,6 +11423,12 @@ packages:
     engines: {node: '>=18.12.0'}
     peerDependencies:
       stylelint: ^16.1.0
+
+  stylelint-define-config@1.8.0:
+    resolution: {integrity: sha512-rvPW4Co2YX6f8GoyDYhTada0yamK8AwPc//k60lR0JpMl/UzApm3NnnSEAkMPwtgP3OCXQE+waq5SHmiC19/cQ==}
+    engines: {node: '>=18.0.0', npm: '>=9.0.0', pnpm: '>=8.6.0'}
+    peerDependencies:
+      stylelint: '>=16.0.0'
 
   stylelint-scss@6.10.0:
     resolution: {integrity: sha512-y03if6Qw9xBMoVaf7tzp5BbnYhYvudIKzURkhSHzcHG0bW0fAYvQpTUVJOe7DyhHaxeThBil4ObEMvGbV7+M+w==}
@@ -27588,6 +27597,11 @@ snapshots:
     dependencies:
       stylelint: 16.10.0(typescript@5.2.2)
       stylelint-config-recommended: 14.0.1(stylelint@16.10.0(typescript@5.2.2))
+
+  stylelint-define-config@1.8.0(stylelint@16.10.0(typescript@5.2.2)):
+    dependencies:
+      csstype: 3.1.3
+      stylelint: 16.10.0(typescript@5.2.2)
 
   stylelint-scss@6.10.0(stylelint@16.10.0(typescript@5.2.2)):
     dependencies:
