@@ -51,7 +51,7 @@ jobs:
         run: |
           npx concurrently --kill-others --success first --names "SB,TEST"  --hide "SB" --prefix-colors "magenta,blue" \
           "http-server ./packages/component-library/storybook-static -a 127.0.0.1 --port 6006" \
-          "wait-on http://127.0.0.1:6006 && pnpx turbo run test:storybook --filter=@shopware-ag/meteor-component-library -- -u"
+          "wait-on http://127.0.0.1:6006 && pnpx turbo run test:storybook --filter=@shopware-ag/meteor-component-library"
 
       - name: Archive visual test diffs
         uses: actions/upload-artifact@v4
