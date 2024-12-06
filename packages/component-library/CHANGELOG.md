@@ -1,5 +1,68 @@
 # Changelog
 
+## 4.0.0
+
+### Major Changes
+
+- fc3c5a6: Reduce bundle size caused by font
+
+  # Upgrade guide
+
+  Previously you needed to only import one css file:
+
+  ```js
+  // Some JavaScript file: index.js
+  import "@shopware-ag/meteor-component-library/dist/styles.css";
+  ```
+
+  You now need to update that one import to the following two imports:
+
+  ```js
+  // Some JavaScript file: index.js
+  import "@shopware-ag/meteor-component-library/styles.css"; // Note: this path is different from the old one
+  import "@shopware-ag/meteor-component-library/font.css";
+  ```
+
+  If you want to load the font by yourself, you can do that.
+  Remove the second import and load the font the way you want.
+
+- b2ef241: Making vue a peer dependency
+
+  This allows you to define the version of Vue you want to use. Before
+  you needed to use the exact vue version Meteor used. Now you can
+  define it by yourself, but it must meet the version requirements.
+
+- 50de30f: Require a minimum version of vue 3.5
+
+### Minor Changes
+
+- ba4fdbd: Adds a new slot for custom content within the button, enabling more flexible button customization.
+- d9c26a2: Export mt-tooltip component
+- 7593d00: remove hero variant from mt-card
+- b5ed517: Add mt-tooltip component
+- b7423bb: remove mt-url-field
+
+### Patch Changes
+
+- ad10063: Hide inheritance toggle in card by default
+- 0dcb079: Improve reading order for card titles when using a screen reader
+- 54b5fa4: Add translation for mt-banner
+- a4b2203: Add focus styles for checkbox
+- 066da5c: Open tooltip when focusing disabled button
+- 51d6160: Migrate mt-select over to the custom built i18n composable
+- 85908bf: Migrate mt-data-table over to the custom built i18n composable
+- 824ee5a: Update focus style of inheritance toggle in card
+- 0280b80: Add missing translation for data table filters
+- 069a2ad: Do not announce mt-avatar for screen readers
+- daa8824: Add landmarks to card component for screen readers
+- ed03f65: Improve accessibility of mt-field-error
+- 893fba8: Increase contrast ratio in mt-avatar
+- 3b50452: Update focus style of switch
+- 4f9e73d: Migrate mt-data-table-settings over to the composition api
+- 893fba8: Increase color contrast in mt-avatar component
+- 45e2dc7: Make size propert on mt-loader optional
+- 235546f: Migrate mt-label to custom built i18n composable
+
 ## 3.14.0
 
 ### Minor Changes
