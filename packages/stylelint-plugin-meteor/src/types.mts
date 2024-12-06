@@ -36,5 +36,11 @@ declare module "stylelint-define-config" {
      * @see [prefer-font-token](https://github.com/shopware/meteor/blob/main/packages/stylelint-plugin-meteor/src/prefer-font-token/README.md)
      */
     "meteor/prefer-font-token": CustomRuleConfig;
+    /**
+     * Prefer border token for border color
+     *
+     * @see [prefer-border-token](https://github.com/shopware/meteor/blob/main/packages/stylelint-plugin-meteor/src/prefer-border-token/README.md)
+     */
+    "meteor/prefer-border-token": CustomRuleConfig;
   }
 }
