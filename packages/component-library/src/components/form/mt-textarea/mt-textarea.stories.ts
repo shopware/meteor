@@ -1,6 +1,7 @@
 import MtTextarea from "./mt-textarea.vue";
 import type { StoryObj } from "@storybook/vue3";
 import type { SlottedMeta } from "@/_internal/story-helper";
+import { fn } from "@storybook/test";
 
 export type MtTextareaMeta = SlottedMeta<
   typeof MtTextarea,
@@ -62,6 +63,8 @@ export default {
   }),
   args: {
     label: "Textareafield",
+    change: fn(),
+    updateModelValue: fn(),
   },
   argTypes: {
     updateModelValue: {

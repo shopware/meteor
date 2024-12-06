@@ -1,6 +1,7 @@
 import MtSwitch from "./mt-switch.vue";
 import type { StoryObj } from "@storybook/vue3";
 import type { SlottedMeta } from "@/_internal/story-helper";
+import { fn } from "@storybook/test";
 
 export type MtSwitchMeta = SlottedMeta<
   typeof MtSwitch,
@@ -49,6 +50,8 @@ export default {
   },
   args: {
     label: "Switchfield",
+    change: fn(),
+    inheritanceRemove: fn(),
   },
 } as MtSwitchMeta;
 

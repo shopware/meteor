@@ -55,6 +55,7 @@ const preview: Preview = {
       ],
     },
   },
+
   decorators: [
     ThemeProvider,
     () => ({
@@ -66,6 +67,8 @@ const preview: Preview = {
       `,
     }),
   ],
+
+  tags: ["autodocs"],
 };
 
 export default preview;

@@ -17,7 +17,9 @@
     v-else
     class="mt-button"
     :class="buttonClasses"
-    :disabled="disabled || isLoading"
+    :disabled="(disabled && !isInsideTooltip) || isLoading"
+    :aria-disabled="disabled && isInsideTooltip"
+    @click="disabled && isInsideTooltip ? $event.stopImmediatePropagation() : null"
     v-bind="$attrs"
   >
     <mt-loader v-if="isLoading" size="16px" class="mt-button__loader" />
@@ -35,6 +37,7 @@
 </template>
 
 <script setup lang="ts">
+import { useIsInsideTooltip } from "@/components/overlay/mt-tooltip/composables/useIsInsideTooltip";
 import MtLoader from "../../feedback-indicator/mt-loader/mt-loader.vue";
 import { computed } from "vue";
 
@@ -76,6 +79,8 @@ const buttonClasses = computed(() => {
 });
 
 const iconSize = computed(() => (props.size === "x-small" ? 8 : props.size === "large" ? 12 : 10));
+
+const isInsideTooltip = useIsInsideTooltip();
 </script>
 
 <style lang="css" scoped>
