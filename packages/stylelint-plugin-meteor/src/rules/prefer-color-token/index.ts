@@ -13,7 +13,7 @@ const messages = ruleMessages(ruleName, {
 });
 
 const meta = {
-  url: "",
+  url: "https://github.com/shopware/meteor/blob/main/packages/stylelint-plugin-meteor/src/rules/prefer-color-token/README.md",
 };
 
 const ruleFunction: Rule = (primary, secondaryOptions, context) => {
