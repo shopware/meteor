@@ -15,7 +15,7 @@
   "dependencies": {
     "@shopware-ag/meteor-component-library": "workspace:*",
     "nuxt": "^3.10.3",
-    "vue": "^3.4.21",
+    "vue": "^3.5.0",
     "vue-router": "^4.3.0"
   },
   "devDependencies": {
