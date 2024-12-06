@@ -1,4 +1,3 @@
-import isObject from "lodash-es/isObject";
 import type { Directive } from "vue";
 
 export interface DragConfig<DATA = unknown> {
@@ -494,7 +493,7 @@ function validateDrag(): boolean {
 function mergeConfigs(defaultConfig: DragConfig | DropConfig, binding: { value: unknown }) {
   const mergedConfig = { ...defaultConfig };
 
-  if (isObject(binding.value)) {
+  if (binding.value instanceof Object) {
     Object.assign(mergedConfig, binding.value);
   } else {
     Object.assign(mergedConfig, { data: binding.value });
@@ -600,7 +599,7 @@ export const droppable: Directive = {
   updated: (el, binding) => {
     const dropZone = dropZones.find((zone) => zone.el === el);
 
-    if (isObject(binding.value)) {
+    if (binding.value instanceof Object) {
       // @ts-expect-error - typescript support is missing here
       Object.assign(dropZone?.dropConfig, binding.value);
     } else {
