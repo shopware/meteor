@@ -245,7 +245,6 @@ export default defineComponent({
           return;
         }
 
-        // @ts-expect-error - wrong type because of component extends
         this.computeValue(this.modelValue.toString());
       },
       immediate: true,
