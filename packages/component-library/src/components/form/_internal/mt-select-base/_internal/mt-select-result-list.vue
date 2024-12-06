@@ -6,6 +6,7 @@
       :z-index="1100"
       :resize-width="popoverResizeWidth"
     >
+      <!-- @vue-expect-error -->
       <div
         ref="popoverContent"
         class="mt-select-result-list__content"
