@@ -49,7 +49,7 @@
     "@vueuse/components": "^10.7.2",
     "@vueuse/core": "^10.7.2",
     "date-fns": "^2.30.0",
-    "date-fns-tz": "^2.0.0",
+    "date-fns-tz": "^3.2.0",
     "flatpickr": "4.6.13",
     "focus-trap": "^7.5.4",
     "inter-ui": "^3.19.3",
