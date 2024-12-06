@@ -8,29 +8,74 @@ const {
 const ruleName = "meteor/prefer-border-token";
 
 const messages = ruleMessages(ruleName, {
-  rejected: (value) => `Unexpected hard-coded border value of "${value}"`,
+  rejectedBorderColor: (value) =>
+    `Unexpected hard-coded border color of "${value}"`,
+  rejectedBorderRadius: (value) =>
+    `Unexpected hard-coded border radius of "${value}"`,
 });
 
 const meta = {
   url: "",
 };
 
-const BORDER_PROPERTIES: (string | RegExp)[] = [
-  "border-radius",
+const BORDER_COLOR_PROPERTIES: (string | RegExp)[] = [
   "border-color",
-  "border",
-  /^border-(?:top|right|bottom|left)$/,
-  /^border-(?:top|right|bottom|left)-color$/,
+  /^border-(top|right|bottom|left)-color$/,
 ];
 
-const COLOR_VALUES = [
-  /^#([A-Fa-f0-9]{3,4}){1,2}$/,
-  /^rgb\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*\)$/,
-  /^rgba\(\s*\d+\s*,\s*\d+\s*,\s*\d+\s*,\s*[\d.]+\s*\)$/,
-  /^hsl\(\s*\d+\s*,\s*\d+%?\s*,\s*\d+%?\s*\)$/,
-  /^hsla\(\s*\d+\s*,\s*\d+%?\s*,\s*\d+%?\s*,\s*[\d.]+\s*\)$/,
-  /^[a-z]+$/,
+const BORDER_RADIUS_PROPERTIES: (string | RegExp)[] = [
+  "border-radius",
+  /^border-(top|bottom)-(left|right)-radius$/,
 ];
+
+const BORDER_PROPERTIES: (string | RegExp)[] = [
+  "border",
+  "border-top",
+  "border-right",
+  "border-left",
+];
+
+const globalValues = [
+  "inherit",
+  "initial",
+  "unset",
+  "revert",
+  "revert-layer",
+  "none",
+  "transparent",
+  "currentColor",
+  "0",
+];
+
+const borderStyleValues = [
+  "solid",
+  "dashed",
+  "dotted",
+  "double",
+  "groove",
+  "ridge",
+  "inset",
+  "outset",
+  "none",
+];
+
+const isValidColorValue = (value: string): boolean => {
+  return (
+    globalValues.includes(value.toLowerCase()) || /var\(--.*\)/.test(value)
+  );
+};
+
+const isValidRadiusValue = (value: string): boolean => {
+  return (
+    globalValues.includes(value.toLowerCase()) || /var\(--.*\)/.test(value)
+  );
+};
+
+const isWidthValue = (value: string): boolean => {
+  return /^[\d.]+(%|px|em|rem|vh|vw|ch|ex|vmin|vmax|cm|mm|in|pt|pc)$/.test(
+    value
+  );
+};
 
 const ruleFunction: Rule = (primary, secondaryOptions, context) => {
   return (root, result) => {
@@ -42,28 +87,69 @@ const ruleFunction: Rule = (primary, secondaryOptions, context) => {
     if (!validOptions) return;
 
     root.walkDecls((ruleNode) => {
-      const isABorderToken = BORDER_PROPERTIES.some((prop) =>
+      const isABorderColorProp = BORDER_COLOR_PROPERTIES.some((prop) =>
         typeof prop === "string"
           ? prop === ruleNode.prop
           : prop.test(ruleNode.prop)
       );
 
-      const hasColorValue = COLOR_VALUES.some(
-        (pattern) =>
-          pattern.test(ruleNode.value) ||
-          ruleNode.value.split(" ").some((part) => pattern.test(part))
+      const isABorderRadiusProp = BORDER_RADIUS_PROPERTIES.some((prop) =>
+        typeof prop === "string"
+          ? prop === ruleNode.prop
+          : prop.test(ruleNode.prop)
       );
 
-      const usesVariable = /var\(--.*\)/.test(ruleNode.value);
-      const isInherit = ruleNode.value === "inherit";
+      const isABorderProp = BORDER_PROPERTIES.some((prop) =>
+        typeof prop === "string"
+          ? prop === ruleNode.prop
+          : prop.test(ruleNode.prop)
+      );
 
-      if (isABorderToken && hasColorValue && !usesVariable && !isInherit) {
-        report({
-          message: messages.rejected(ruleNode.value),
-          node: ruleNode,
-          result,
-          ruleName,
+      if (isABorderColorProp) {
+        if (!isValidColorValue(ruleNode.value)) {
+          report({
+            message: messages.rejectedBorderColor(ruleNode.value),
+            node: ruleNode,
+            result,
+            ruleName,
+          });
+        }
+        return;
+      }
+
+      if (isABorderRadiusProp) {
+        const values = ruleNode.value.split(/\s+/).filter((val) => val !== "");
+        values.forEach((value) => {
+          if (!isValidRadiusValue(value)) {
+            report({
+              message: messages.rejectedBorderRadius(value),
+              node: ruleNode,
+              result,
+              ruleName,
+            });
+          }
         });
+        return;
+      }
+
+      if (isABorderProp) {
+        const values = ruleNode.value.split(/\s+/).filter((val) => val !== "");
+        const colorValue = values[values.length - 1];
+
+        if (
+          colorValue &&
+          !isWidthValue(colorValue) &&
+          !globalValues.includes(colorValue) &&
+          !borderStyleValues.includes(colorValue.toLowerCase()) &&
+          !isValidColorValue(colorValue)
+        ) {
+          report({
+            message: messages.rejectedBorderColor(colorValue),
+            node: ruleNode,
+            result,
+            ruleName,
+          });
+        }
       }
     });
   };
