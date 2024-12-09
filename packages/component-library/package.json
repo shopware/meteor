@@ -46,6 +46,7 @@
     "@storybook/addon-a11y": "^8.4.5",
     "@testing-library/jest-dom": "^6.4.6",
     "@testing-library/vue": "^8.1.0",
+    "@vuepic/vue-datepicker": "^10.0.0",
     "@vueuse/components": "^10.7.2",
     "@vueuse/core": "^10.7.2",
     "date-fns": "^2.30.0",
