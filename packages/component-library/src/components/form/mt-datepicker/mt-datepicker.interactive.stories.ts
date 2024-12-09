@@ -45,23 +45,22 @@ export const VisualTestDateInputValue: MtDatepickerStory = {
     await waitUntil(() => document.getElementsByClassName("dp__menu").length > 0);
 
     await userEvent.click(
-      document.querySelector('[data-test="year-toggle-overlay-0"]') as HTMLInputElement,
+      document.querySelector('[data-test-id="year-toggle-overlay-0"]') as HTMLInputElement,
     );
 
-    await userEvent.click(document.querySelector('[data-test="2024"]') as HTMLInputElement);
+    await userEvent.click(document.querySelector('[data-test-id="2024"]') as HTMLInputElement);
 
     await userEvent.click(
-      document.querySelector('[data-test="month-toggle-overlay-0"]') as HTMLInputElement,
+      document.querySelector('[data-test-id="month-toggle-overlay-0"]') as HTMLInputElement,
     );
 
-    await userEvent.click(document.querySelector('[data-test="Nov"]') as HTMLInputElement);
+    await userEvent.click(document.querySelector('[data-test-id="Nov"]') as HTMLInputElement);
 
     // Access the calendar and click the date
-    const firstDate = document.getElementById("2024-11-13") as HTMLInputElement;
-    await userEvent.click(firstDate);
+    await userEvent.click(document.getElementById("2024-11-13") as HTMLInputElement);
 
     // Check that the input value matches the date chosen
-    const input = document.querySelector('[data-test="dp-input"]') as HTMLInputElement;
+    const input = document.querySelector('[data-test-id="dp-input"]') as HTMLInputElement;
     expect(input.value).toContain("2024/11/13");
 
     // Expect updatemodelvalue to have been called with date
@@ -86,43 +85,35 @@ export const VisualTestDateTimeInputValue: MtDatepickerStory = {
     await waitUntil(() => document.getElementsByClassName("dp__menu").length > 0);
 
     await userEvent.click(
-      document.querySelector('[data-test="year-toggle-overlay-0"]') as HTMLInputElement,
+      document.querySelector('[data-test-id="year-toggle-overlay-0"]') as HTMLInputElement,
     );
 
-    await userEvent.click(document.querySelector('[data-test="2024"]') as HTMLInputElement);
+    await userEvent.click(document.querySelector('[data-test-id="2024"]') as HTMLInputElement);
 
     await userEvent.click(
-      document.querySelector('[data-test="month-toggle-overlay-0"]') as HTMLInputElement,
+      document.querySelector('[data-test-id="month-toggle-overlay-0"]') as HTMLInputElement,
     );
 
-    await userEvent.click(document.querySelector('[data-test="Nov"]') as HTMLInputElement);
+    await userEvent.click(document.querySelector('[data-test-id="Nov"]') as HTMLInputElement);
 
     // Open the hours panel
-    const hourButton = document.querySelector(
-      '[data-test="hours-toggle-overlay-btn-0"]',
-    ) as HTMLInputElement;
-    await userEvent.click(hourButton);
+    await userEvent.click(document.querySelector('[data-test-id="hours-toggle-overlay-btn-0"]') as HTMLInputElement);
 
     // Select an hour
-    const selectedHour = document.querySelector('[data-test="12"]') as HTMLInputElement;
-    await userEvent.click(selectedHour);
+    await userEvent.click(document.querySelector('[data-test-id="12"]') as HTMLInputElement);
 
     // Open the minutes panel
-    const hourMin = document.querySelector(
-      '[data-test="minutes-toggle-overlay-btn-0"]',
-    ) as HTMLInputElement;
-    await userEvent.click(hourMin);
+    await userEvent.click(document.querySelector('[data-test-id="minutes-toggle-overlay-btn-0"]') as HTMLInputElement);
 
     // Select minute
-    const selectedMin = document.querySelector('[data-test="40"]') as HTMLInputElement;
+    const selectedMin = document.querySelector('[data-test-id="40"]') as HTMLInputElement;
     await userEvent.click(selectedMin);
 
     // Click date within calendar
-    const firstDate = document.getElementById("2024-11-13") as HTMLInputElement;
-    await userEvent.click(firstDate);
+    await userEvent.click(document.getElementById("2024-11-13") as HTMLInputElement);
 
     // Check that the input value matches the date chosen
-    const input = document.querySelector('[data-test="dp-input"]') as HTMLInputElement;
+    const input = document.querySelector('[data-test-id="dp-input"]') as HTMLInputElement;
     expect(input.value).toEqual(expect.stringMatching(/^2024\/11\/13, \d{2}:\d{2}$/));
 
     // Expect updatemodelvalue to have been called with date
@@ -147,27 +138,25 @@ export const VisualTestDateRangeValue: MtDatepickerStory = {
     await waitUntil(() => document.getElementsByClassName("dp__menu").length > 0);
 
     await userEvent.click(
-      document.querySelector('[data-test="year-toggle-overlay-0"]') as HTMLInputElement,
+      document.querySelector('[data-test-id="year-toggle-overlay-0"]') as HTMLInputElement,
     );
 
-    await userEvent.click(document.querySelector('[data-test="2024"]') as HTMLInputElement);
+    await userEvent.click(document.querySelector('[data-test-id="2024"]') as HTMLInputElement);
 
     await userEvent.click(
-      document.querySelector('[data-test="month-toggle-overlay-0"]') as HTMLInputElement,
+      document.querySelector('[data-test-id="month-toggle-overlay-0"]') as HTMLInputElement,
     );
 
-    await userEvent.click(document.querySelector('[data-test="Nov"]') as HTMLInputElement);
+    await userEvent.click(document.querySelector('[data-test-id="Nov"]') as HTMLInputElement);
 
     // Click first date on calendar
-    const firstDate = document.getElementById("2024-11-13") as HTMLInputElement;
-    await userEvent.click(firstDate);
+    await userEvent.click(document.getElementById("2024-11-13") as HTMLInputElement);
 
     // Click second date on calendar
-    const secondDate = document.getElementById("2024-11-16") as HTMLInputElement;
-    await userEvent.click(secondDate);
+    await userEvent.click(document.getElementById("2024-11-16") as HTMLInputElement);
 
     // Check that the input value matches the dates chosen
-    const input = document.querySelector('[data-test="dp-input"]') as HTMLInputElement;
+    const input = document.querySelector('[data-test-id="dp-input"]') as HTMLInputElement;
     const dateRange = input.value.split(" - ").map((date) => date.split(",")[0].trim());
     expect(dateRange).toEqual(["2024/11/13", "2024/11/16"]);
   },
@@ -189,55 +178,52 @@ export const VisualTestDateTimeRangeValue: MtDatepickerStory = {
     await waitUntil(() => document.getElementsByClassName("dp__menu").length > 0);
 
     await userEvent.click(
-      document.querySelector('[data-test="year-toggle-overlay-0"]') as HTMLInputElement,
+      document.querySelector('[data-test-id="year-toggle-overlay-0"]') as HTMLInputElement,
     );
 
-    await userEvent.click(document.querySelector('[data-test="2024"]') as HTMLInputElement);
+    await userEvent.click(document.querySelector('[data-test-id="2024"]') as HTMLInputElement);
 
     await userEvent.click(
-      document.querySelector('[data-test="month-toggle-overlay-0"]') as HTMLInputElement,
+      document.querySelector('[data-test-id="month-toggle-overlay-0"]') as HTMLInputElement,
     );
 
-    await userEvent.click(document.querySelector('[data-test="Nov"]') as HTMLInputElement);
+    await userEvent.click(document.querySelector('[data-test-id="Nov"]') as HTMLInputElement);
 
     // Set hours for first date
-    const hourButton1 = document.querySelector(
-      '[data-test="hours-toggle-overlay-btn-0"]',
-    ) as HTMLInputElement;
-    await userEvent.click(hourButton1);
+    await userEvent.click(document.querySelector('[data-test-id="hours-toggle-overlay-btn-0"]') as HTMLInputElement);
 
-    const selectedHour1 = document.querySelector('[data-test="12"]') as HTMLInputElement;
+    const selectedHour1 = document.querySelector('[data-test-id="12"]') as HTMLInputElement;
     await waitUntil(() => selectedHour1 !== null);
     await userEvent.click(selectedHour1);
 
     // Set minutes for first date
     const minuteButton1 = document.querySelector(
-      '[data-test="minutes-toggle-overlay-btn-0"]',
+      '[data-test-id="minutes-toggle-overlay-btn-0"]',
     ) as HTMLInputElement;
     await userEvent.click(minuteButton1);
 
-    const selectedMinute1 = document.querySelector('[data-test="40"]') as HTMLInputElement;
+    const selectedMinute1 = document.querySelector('[data-test-id="40"]') as HTMLInputElement;
     await waitUntil(() => selectedMinute1 !== null);
     await userEvent.click(selectedMinute1);
 
     // Set hours for second date
     const hourButton2 = document.querySelector(
-      '[data-test="hours-toggle-overlay-btn-1"]',
+      '[data-test-id="hours-toggle-overlay-btn-1"]',
     ) as HTMLInputElement;
     await userEvent.click(hourButton2);
 
-    const selectedHour2 = document.querySelector('[data-test="11"]') as HTMLInputElement;
+    const selectedHour2 = document.querySelector('[data-test-id="11"]') as HTMLInputElement;
     await waitUntil(() => selectedHour2 !== null);
     await userEvent.click(selectedHour2);
 
     // Set minutes for second date
     const minuteButton2 = document.querySelector(
-      '[data-test="minutes-toggle-overlay-btn-1"]',
+      '[data-test-id="minutes-toggle-overlay-btn-1"]',
     ) as HTMLInputElement;
     await userEvent.click(minuteButton2);
 
-    await expect(document.querySelector('[data-test="30"]')).toBeInTheDocument();
-    await userEvent.click(document.querySelector('[data-test="30"]') as HTMLElement);
+    await expect(document.querySelector('[data-test-id="30"]')).toBeInTheDocument();
+    await userEvent.click(document.querySelector('[data-test-id="30"]') as HTMLElement);
 
     // Click first date on calendar
     const firstDate = document.getElementById("2024-11-13") as HTMLInputElement;
@@ -248,7 +234,7 @@ export const VisualTestDateTimeRangeValue: MtDatepickerStory = {
     await userEvent.click(secondDate);
 
     // Check that the input value matches the dates and times chosen
-    const input = document.querySelector('[data-test="dp-input"]') as HTMLInputElement;
+    const input = document.querySelector('[data-test-id="dp-input"]') as HTMLInputElement;
     expect(input.value).toEqual(
       expect.stringMatching(/^2024\/11\/13, \d{2}:\d{2} - 2024\/11\/16, \d{2}:\d{2}$/),
     );
