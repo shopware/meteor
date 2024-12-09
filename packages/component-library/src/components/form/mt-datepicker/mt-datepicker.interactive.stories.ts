@@ -97,13 +97,17 @@ export const VisualTestDateTimeInputValue: MtDatepickerStory = {
     await userEvent.click(document.querySelector('[data-test-id="Nov"]') as HTMLInputElement);
 
     // Open the hours panel
-    await userEvent.click(document.querySelector('[data-test-id="hours-toggle-overlay-btn-0"]') as HTMLInputElement);
+    await userEvent.click(
+      document.querySelector('[data-test-id="hours-toggle-overlay-btn-0"]') as HTMLInputElement,
+    );
 
     // Select an hour
     await userEvent.click(document.querySelector('[data-test-id="12"]') as HTMLInputElement);
 
     // Open the minutes panel
-    await userEvent.click(document.querySelector('[data-test-id="minutes-toggle-overlay-btn-0"]') as HTMLInputElement);
+    await userEvent.click(
+      document.querySelector('[data-test-id="minutes-toggle-overlay-btn-0"]') as HTMLInputElement,
+    );
 
     // Select minute
     const selectedMin = document.querySelector('[data-test-id="40"]') as HTMLInputElement;
@@ -190,7 +194,9 @@ export const VisualTestDateTimeRangeValue: MtDatepickerStory = {
     await userEvent.click(document.querySelector('[data-test-id="Nov"]') as HTMLInputElement);
 
     // Set hours for first date
-    await userEvent.click(document.querySelector('[data-test-id="hours-toggle-overlay-btn-0"]') as HTMLInputElement);
+    await userEvent.click(
+      document.querySelector('[data-test-id="hours-toggle-overlay-btn-0"]') as HTMLInputElement,
+    );
 
     const selectedHour1 = document.querySelector('[data-test-id="12"]') as HTMLInputElement;
     await waitUntil(() => selectedHour1 !== null);
