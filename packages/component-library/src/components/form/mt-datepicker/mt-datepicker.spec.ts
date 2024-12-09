@@ -62,7 +62,7 @@ describe("src/app/component/form/mt-datepicker", () => {
     });
 
     const timeZoneHint = wrapper.find('[data-test="time-zone-hint"]');
-    expect(timeZoneHint.exists()).toBe(false);
+    expect(timeZoneHint.exists()).toBeFalsy();
   });
 
   it("should show the timezone if datepicker is configured to datetime", async () => {
@@ -74,7 +74,7 @@ describe("src/app/component/form/mt-datepicker", () => {
     });
 
     const timeZoneHint = wrapper.find('[data-test="time-zone-hint"]');
-    expect(timeZoneHint.exists()).toBe(true);
+    expect(timeZoneHint.exists()).toBeTruthy();
     expect(timeZoneHint.text()).toBe("Europe/Berlin");
   });
 });

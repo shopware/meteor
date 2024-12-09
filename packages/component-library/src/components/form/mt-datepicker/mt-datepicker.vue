@@ -291,7 +291,7 @@ export default defineComponent({
     "label"
     "datepicker"
     "hint";
-  row-gap: 0.5rem;
+  row-gap: 0.4rem;
 }
 
 /* || Datepicker  */
@@ -511,7 +511,6 @@ export default defineComponent({
 
 /* || Field hint */
 .field-hint {
-  margin-top: 4px;
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
   font-family: var(--font-family-body);
