@@ -193,9 +193,11 @@ const { t } = useI18n({
 const tabListRef = ref<HTMLElement | null>(null);
 const moreTabsButton = ref<HTMLElement | null>(null);
 
-const items = computed(() => props.items.map((item) => ({ ...item, id: item.name })));
+const updatedItems = computed(() => {
+  return props.items.map((item) => ({ ...item, id: item.name }));
+});
 
-const { showNavigation, overflowItems, priorityItems } = usePriorityPlusNavigation(items, {
+const { showNavigation, overflowItems, priorityItems } = usePriorityPlusNavigation(updatedItems, {
   container: tabListRef,
   overflowButton: moreTabsButton,
 });
