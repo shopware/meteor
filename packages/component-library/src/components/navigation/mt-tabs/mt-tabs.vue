@@ -1,5 +1,5 @@
 <template>
-  <ul
+  <div
     :class="[
       'mt-tabs',
       {
@@ -14,114 +14,107 @@
     ref="tabListRef"
     role="tablist"
   >
-    <li
+    <button
       v-for="(item, index) in vertical ? items : priorityItems"
       :key="item.name"
       :data-priority-plus="item.name"
+      :id="`mt-tabs__item--${item.name}`"
+      :class="[
+        'mt-tabs__item',
+        {
+          'mt-tabs__item--active': item.name === activeTab?.name,
+          'mt-tabs__item--error': item.hasError,
+        },
+      ]"
+      role="tab"
+      :disabled="item.disabled"
+      @click="() => changeActiveTab(item)"
+      :data-text="item.label"
+      :aria-selected="item.name === activeTab?.name"
+      :aria-invalid="item.hasError"
+      :tabindex="item.name === activeTab?.name ? 0 : -1"
+      @keydown.arrow-right="
+        () =>
+          focusNextTab({
+            currentTab: item.name,
+            isLastVisibleElement: index === priorityItems.length - 1,
+          })
+      "
+      @keydown.arrow-left="() => focusPreviousTab({ currentTab: item.name })"
+      @blur="onBlur"
     >
-      <button
-        :id="`mt-tabs__item--${item.name}`"
-        :class="[
-          'mt-tabs__item',
-          {
-            'mt-tabs__item--active': item.name === activeTab?.name,
-            'mt-tabs__item--error': item.hasError,
-          },
-        ]"
-        role="tab"
-        :disabled="item.disabled"
-        @click="() => changeActiveTab(item)"
-        :data-text="item.label"
-        :aria-selected="item.name === activeTab?.name"
-        :aria-invalid="item.hasError"
-        :tabindex="item.name === activeTab?.name ? 0 : -1"
-        @keydown.arrow-right="
-          () =>
-            focusNextTab({
-              currentTab: item.name,
-              isLastVisibleElement: index === priorityItems.length - 1,
-            })
-        "
-        @keydown.arrow-left="() => focusPreviousTab({ currentTab: item.name })"
-        @blur="onBlur"
-      >
-        <span>{{ item.label }}</span>
+      <span>{{ item.label }}</span>
 
-        <mt-icon
-          v-if="item.hasError"
-          color="var(--color-text-critical-default)"
-          size="0.75rem"
-          name="solid-exclamation-circle"
-          :style="{ marginInlineStart: '0.5rem' }"
-        />
+      <mt-icon
+        v-if="item.hasError"
+        color="var(--color-text-critical-default)"
+        size="0.75rem"
+        name="solid-exclamation-circle"
+        :style="{ marginInlineStart: '0.5rem' }"
+      />
 
-        <mt-color-badge v-if="item.badge" :variant="item.badge" rounded />
-      </button>
-    </li>
+      <mt-color-badge v-if="item.badge" :variant="item.badge" rounded />
+    </button>
 
-    <li v-if="overflowItems.length && !vertical">
-      <mt-bare-popover>
-        <template #trigger="params">
-          <button
-            ref="moreTabsButton"
-            v-bind="params"
-            role="tab"
-            :class="[
-              'mt-tabs__item',
-              {
-                'mt-tabs__item--active': overflowItems.some(
-                  (item) => item.name === activeTab?.name,
-                ),
-                'mt-tabs__item--error': overflowItems.some((item) => item.hasError),
-              },
-            ]"
-            :aria-label="t('moreTabsAriaLabel')"
-            :tabindex="overflowItems.some((item) => item.name === activeTab?.name) ? 0 : -1"
-            @blur="onBlur"
-            @keydown.arrow-right="
-              () => focusNextTab({ currentTab: 'more-tabs', isLastVisibleElement: false })
-            "
-            @keydown.arrow-left="() => focusPreviousTab({ currentTab: 'more-tabs' })"
-          >
-            <mt-icon
-              name="solid-ellipsis-h-s"
-              color="var(--color-text-primary-default)"
-              style="margin-inline-end: 0.5rem"
-            />
+    <mt-bare-popover v-if="overflowItems.length && !vertical">
+      <template #trigger="params">
+        <button
+          ref="moreTabsButton"
+          v-bind="params"
+          role="tab"
+          :class="[
+            'mt-tabs__item',
+            {
+              'mt-tabs__item--active': overflowItems.some((item) => item.name === activeTab?.name),
+              'mt-tabs__item--error': overflowItems.some((item) => item.hasError),
+            },
+          ]"
+          :aria-label="t('moreTabsAriaLabel')"
+          :tabindex="overflowItems.some((item) => item.name === activeTab?.name) ? 0 : -1"
+          @blur="onBlur"
+          @keydown.arrow-right="
+            () => focusNextTab({ currentTab: 'more-tabs', isLastVisibleElement: false })
+          "
+          @keydown.arrow-left="() => focusPreviousTab({ currentTab: 'more-tabs' })"
+        >
+          <mt-icon
+            name="solid-ellipsis-h-s"
+            color="var(--color-text-primary-default)"
+            style="margin-inline-end: 0.5rem"
+          />
 
-            <span>{{ t("moreTabs") }}</span>
-          </button>
-        </template>
+          <span>{{ t("moreTabs") }}</span>
+        </button>
+      </template>
 
-        <template #default="{ closePopover }">
-          <mt-bare-popover-item
-            v-for="item in overflowItems"
-            :key="item.name"
-            role="tab"
-            :aria-selected="item.name === activeTab?.name"
-            :style="{
-              textDecoration: item.name === activeTab?.name && 'underline',
-              fontWeight: item.name === activeTab?.name && 'var(--font-weight-semibold)',
-              color: item.hasError
-                ? 'var(--color-text-critical-default)'
-                : item.name === activeTab?.name
-                  ? 'var(--color-text-brand-default)'
-                  : 'var(--color-text-primary-default)',
-            }"
-            @click="
-              () => {
-                changeActiveTab(item);
-                closePopover();
-              }
-            "
-          >
-            <span>{{ item.label }}</span>
+      <template #default="{ closePopover }">
+        <mt-bare-popover-item
+          v-for="item in overflowItems"
+          :key="item.name"
+          role="tab"
+          :aria-selected="item.name === activeTab?.name"
+          :style="{
+            textDecoration: item.name === activeTab?.name && 'underline',
+            fontWeight: item.name === activeTab?.name && 'var(--font-weight-semibold)',
+            color: item.hasError
+              ? 'var(--color-text-critical-default)'
+              : item.name === activeTab?.name
+                ? 'var(--color-text-brand-default)'
+                : 'var(--color-text-primary-default)',
+          }"
+          @click="
+            () => {
+              changeActiveTab(item);
+              closePopover();
+            }
+          "
+        >
+          <span>{{ item.label }}</span>
 
-            <mt-color-badge v-if="item.badge" :variant="item.badge" rounded />
-          </mt-bare-popover-item>
-        </template>
-      </mt-bare-popover>
-    </li>
+          <mt-color-badge v-if="item.badge" :variant="item.badge" rounded />
+        </mt-bare-popover-item>
+      </template>
+    </mt-bare-popover>
 
     <div
       :class="[
@@ -134,7 +127,7 @@
       :style="sliderStyles"
       data-testid="mt-tabs__slider"
     />
-  </ul>
+  </div>
 </template>
 
 <script setup lang="ts">
