@@ -29,19 +29,16 @@
 </template>
 
 <script setup lang="ts">
-import { AriaAttributes, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
+import { type AriaAttributes, nextTick, onMounted, onUnmounted, ref, watch } from "vue";
 import MtText from "@/components/content/mt-text/mt-text.vue";
-import { autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/vue";
+import { autoUpdate, flip, offset, shift, useFloating, type Placement } from "@floating-ui/vue";
 import { createId } from "@/utils/id";
 import { onClickOutside, useEventListener } from "@vueuse/core";
 import * as focusTrap from "focus-trap";
 
-type A = "bottom" | "top" | "left" | "right";
-type B = "start" | "end" | "center";
-
 const props = withDefaults(
   defineProps<{
-    placement?: `${A}-${B}`;
+    placement?: Placement;
     width?: "auto" | "large" | "medium" | "small";
     title?: string;
   }>(),
