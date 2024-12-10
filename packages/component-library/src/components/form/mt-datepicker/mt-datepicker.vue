@@ -594,8 +594,8 @@ $mt-datepicker-color-text-selected: $color-white;
 .mt-field--datepicker {
   .mt-field__hint {
     svg#meteor-icon-kit__solid-clock {
-      width: 12px;
-      height: 12px;
+      width: var(--scale-size-12);
+      height: var(--scale-size-12);
     }
   }
 
@@ -606,7 +606,7 @@ $mt-datepicker-color-text-selected: $color-white;
   .mt-field--datepicker__button-reset-value {
     position: absolute;
     cursor: pointer;
-    right: 14px;
+    right: var(--scale-size-14);
     top: 19px;
   }
 
@@ -618,7 +618,7 @@ $mt-datepicker-color-text-selected: $color-white;
 
   &.mt-field--medium {
     .mt-field--datepicker__button-reset-value {
-      top: 12px;
+      top: var(--scale-size-12);
     }
   }
 }
@@ -635,12 +635,12 @@ $mt-datepicker-color-text-selected: $color-white;
   }
 
   .flatpickr-months {
-    padding-top: 8px;
-    padding-bottom: 16px;
+    padding-top: var(--scale-size-8);
+    padding-bottom: var(--scale-size-16);
 
     .flatpickr-monthDropdown-months {
-      padding-top: 2px;
-      padding-bottom: 4px;
+      padding-top: var(--scale-size-2);
+      padding-bottom: var(--scale-size-4);
       font-weight: var(--font-weight-semi-bold);
       color: $color-darkgray-200;
       text-align: right;
@@ -655,7 +655,7 @@ $mt-datepicker-color-text-selected: $color-white;
 
     .flatpickr-prev-month,
     .flatpickr-next-month {
-      top: 8px;
+      top: var(--scale-size-8);
 
       &:hover {
         svg {
@@ -686,7 +686,7 @@ $mt-datepicker-color-text-selected: $color-white;
 
   .flatpickr-day {
     border-radius: 4px;
-    margin-bottom: 6px;
+    margin-bottom: var(--scale-size-6);
 
     &:not(.flatpickr-disabled) {
       color: $mt-datepicker-color-font;

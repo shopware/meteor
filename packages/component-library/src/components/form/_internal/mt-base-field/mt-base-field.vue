@@ -251,15 +251,15 @@ $mt-field-transition:
 
 .mt-field {
   width: 100%;
-  margin-bottom: 32px;
+  margin-bottom: var(--scale-size-32);
 
   .mt-field__help-text {
-    margin-left: 4px;
+    margin-left: var(--scale-size-4);
     align-self: center;
   }
 
   &.has--error {
-    margin-bottom: 12px;
+    margin-bottom: var(--scale-size-12);
   }
 
   &__hint-wrapper {
@@ -269,14 +269,14 @@ $mt-field-transition:
 
   &__hint,
   &__hint-right {
-    margin-top: 4px;
+    margin-top: var(--scale-size-4);
     font-size: var(--font-size-xs);
     line-height: var(--font-line-height-xs);
     font-family: var(--font-family-body);
     color: var(--color-text-tertiary-default);
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--scale-size-8);
 
     &:empty {
       display: none;
@@ -301,7 +301,7 @@ $mt-field-transition:
     display: block;
     width: 100%;
     min-width: 0;
-    padding: 13px 16px;
+    padding: 13px var(--scale-size-16);
     border: none;
     background: var(--color-elevation-surface-raised);
     font-size: var(--font-size-xs);
@@ -382,7 +382,7 @@ $mt-field-transition:
     input,
     textarea,
     select {
-      padding: 4px 16px;
+      padding: var(--scale-size-4) var(--scale-size-16);
     }
   }
 
@@ -395,7 +395,7 @@ $mt-field-transition:
     background: var(--color-interaction-secondary-dark);
     border-left: 1px solid var(--color-border-primary-default);
     border-right: none;
-    padding: 12px 15px;
+    padding: var(--scale-size-12) 15px;
     font-size: var(--font-size-xs);
     line-height: var(--font-line-height-xs);
     font-family: var(--font-family-body);
@@ -418,19 +418,19 @@ $mt-field-transition:
 
   &.mt-field--small {
     .mt-field__addition {
-      padding: 5px 16px;
+      padding: 5px var(--scale-size-16);
     }
   }
 
   // Inheritance
   .mt-field__inheritance-icon {
-    margin-left: 4px;
-    margin-right: 4px;
+    margin-left: var(--scale-size-4);
+    margin-right: var(--scale-size-4);
   }
 
   .mt-field__button-restore {
     color: $color-darkgray-200;
-    padding: 0 8px;
+    padding: 0 var(--scale-size-8);
     border: none;
     background: none;
     outline: none;
@@ -444,7 +444,7 @@ $mt-field-transition:
     display: flex;
     line-height: 16px;
     font-size: 14px;
-    margin-bottom: 8px;
+    margin-bottom: var(--scale-size-8);
     color: var(--color-text-primary-default);
 
     label {

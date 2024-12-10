@@ -1256,8 +1256,8 @@ export default defineComponent({
 
   &__previewWrapper {
     position: relative;
-    width: 22px;
-    height: 22px;
+    width: var(--scale-size-22);
+    height: var(--scale-size-22);
     border-radius: var(--border-radius-xs);
     border: 1px solid var(--color-border-primary-default);
     overflow: hidden;
@@ -1297,7 +1297,7 @@ export default defineComponent({
 
   &__row {
     display: flex;
-    margin-top: 10px;
+    margin-top: var(--scale-size-10);
 
     &-column {
       display: flex;
@@ -1306,7 +1306,7 @@ export default defineComponent({
       margin-right: 5px;
 
       &-label {
-        margin-top: 8px;
+        margin-top: var(--scale-size-8);
         user-select: none;
         -moz-user-select: none;
         -webkit-user-select: none;
@@ -1335,7 +1335,7 @@ export default defineComponent({
 
   &__colorpicker {
     width: 260px;
-    padding: 10px;
+    padding: var(--scale-size-10);
     border: 1px solid var(--color-border-primary-default);
     background-color: var(--color-elevation-surface-overlay);
     border-radius: var(--border-radius-overlay);
@@ -1344,10 +1344,10 @@ export default defineComponent({
     &::before {
       content: "";
       position: absolute;
-      width: 12px;
-      height: 12px;
+      width: var(--scale-size-12);
+      height: var(--scale-size-12);
       top: -6px;
-      left: 20px;
+      left: var(--scale-size-20);
       border: 1px solid var(--color-border-primary-default);
       border-bottom: none;
       border-right: none;
@@ -1357,7 +1357,7 @@ export default defineComponent({
 
     &--compact {
       position: absolute;
-      top: 30px;
+      top: var(--scale-size-30);
       left: -20px;
       z-index: 10;
 
@@ -1380,8 +1380,8 @@ export default defineComponent({
     &-selector {
       transform: translate3d(0, 0, 0); // Fixed rendering bug in Safari
       position: relative;
-      width: 18px;
-      height: 18px;
+      width: var(--scale-size-18);
+      height: var(--scale-size-18);
       border: 3px solid var(--color-icon-static-default);
       border-radius: 50%;
       filter: drop-shadow(0px 0px 8px rgba(0, 0, 0, 0.25));
@@ -1394,7 +1394,7 @@ export default defineComponent({
 
     &-slider-range {
       width: 100%;
-      height: 20px;
+      height: var(--scale-size-20);
       border-radius: var(--border-radius-xs);
       background-image: linear-gradient(
         90deg,
@@ -1411,8 +1411,8 @@ export default defineComponent({
     }
 
     &-slider-range::-webkit-slider-thumb {
-      height: 26px;
-      width: 8px;
+      height: var(--scale-size-26);
+      width: var(--scale-size-8);
       border-radius: var(--border-radius-xs);
       border: 1px solid var(--color-border-primary-default);
       background: var(--color-icon-static-default);
@@ -1421,8 +1421,8 @@ export default defineComponent({
     }
 
     &-slider-range::-moz-range-thumb {
-      height: 26px;
-      width: 8px;
+      height: var(--scale-size-26);
+      width: var(--scale-size-8);
       border: 1px solid var(--color-border-primary-default);
       background: var(--color-icon-static-default);
       border-radius: var(--border-radius-xs);
@@ -1433,22 +1433,22 @@ export default defineComponent({
       display: flex;
       height: 58px;
       width: 58px;
-      margin-left: 10px;
+      margin-left: var(--scale-size-10);
       justify-content: space-between;
 
       &.is--small {
-        width: 22px;
-        height: 22px;
+        width: var(--scale-size-22);
+        height: var(--scale-size-22);
 
         .mt-colorpicker__colorpicker-previewColor {
-          width: 22px;
-          height: 22px;
+          width: var(--scale-size-22);
+          height: var(--scale-size-22);
           border: none;
         }
 
         .mt-colorpicker__colorpicker-previewBackground {
-          width: 22px;
-          height: 22px;
+          width: var(--scale-size-22);
+          height: var(--scale-size-22);
         }
       }
     }
@@ -1487,7 +1487,7 @@ export default defineComponent({
       background: var(--color-elevation-surface-raised);
       width: 100%;
       min-width: 0;
-      height: 32px;
+      height: var(--scale-size-32);
       padding: 0 5px;
       border: 1px solid var(--color-border-primary-default);
       border-radius: var(--border-radius-xs);
@@ -1523,8 +1523,8 @@ export default defineComponent({
 
   &__alpha-slider {
     width: 100%;
-    height: 20px;
-    margin-top: 10px;
+    height: var(--scale-size-20);
+    margin-top: var(--scale-size-10);
     border: 1px solid var(--color-border-primary-default);
     border-radius: var(--border-radius-xs);
     background-image: url("data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' width='100%25' height='100%25'%3E%3Crect width='10' height='10' x='00' y='00' fill='%23cdd5db' /%3E%3Crect width='10' height='10' x='10' y='10' fill='%23cdd5db' /%3E%3C/svg%3E");
@@ -1532,8 +1532,8 @@ export default defineComponent({
     -webkit-appearance: none;
 
     &::-webkit-slider-thumb {
-      height: 26px;
-      width: 8px;
+      height: var(--scale-size-26);
+      width: var(--scale-size-8);
       border-radius: var(--border-radius-xs);
       border: 1px solid var(--color-border-primary-default);
       background: var(--color-icon-static-default);
@@ -1542,8 +1542,8 @@ export default defineComponent({
     }
 
     &::-moz-range-thumb {
-      height: 26px;
-      width: 8px;
+      height: var(--scale-size-26);
+      width: var(--scale-size-8);
       border: 1px solid var(--color-border-brand-selected);
       border-radius: var(--border-radius-xs);
 

@@ -146,7 +146,7 @@ const lastVisibleItemNumber = computed(() => {
 .mt-pagination {
   display: flex;
   align-items: baseline;
-  gap: 12px;
+  gap: var(--scale-size-12);
 
   & :last-child {
     border-top-right-radius: var(--border-radius-xs);
@@ -204,7 +204,7 @@ const lastVisibleItemNumber = computed(() => {
   all: unset;
   width: auto;
   border-right: 1px solid var(--color-border-primary-default);
-  padding: 0 12px;
+  padding: 0 var(--scale-size-12);
   color: var(--color-text-primary-default);
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);

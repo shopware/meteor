@@ -162,9 +162,9 @@ $mt-context-button-color-disabled: var(--color-icon-primary-disabled);
     border: 1px solid transparent;
     border-radius: $mt-context-button-border-radius;
     cursor: pointer;
-    height: 24px;
+    height: var(--scale-size-24);
     line-height: 20px;
-    padding: 0 8px;
+    padding: 0 var(--scale-size-8);
     outline: none;
     font-family: var(--font-family-body);
 

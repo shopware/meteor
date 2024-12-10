@@ -106,9 +106,9 @@ const labelClasses = computed(() => {
   position: relative;
   max-width: 100%;
   min-width: 56px;
-  margin: 0 6px 6px 0;
-  padding: 8px 12px;
-  height: 32px;
+  margin: 0 var(--scale-size-6) var(--scale-size-6) 0;
+  padding: var(--scale-size-8) var(--scale-size-12);
+  height: var(--scale-size-32);
   border: 1px solid var(--color-border-primary-default);
   background: var(--color-background-primary-default);
   line-height: 1.1;
@@ -142,20 +142,20 @@ const labelClasses = computed(() => {
   }
 
   &.mt-label--size-medium {
-    height: 24px;
-    padding: 4px 12px;
+    height: var(--scale-size-24);
+    padding: var(--scale-size-4) var(--scale-size-12);
   }
 
   &.mt-label--size-small {
-    height: 16px;
-    padding: 0 8px;
+    height: var(--scale-size-16);
+    padding: 0 var(--scale-size-8);
   }
 
   .mt-label__dismiss {
     display: none;
     position: absolute;
     height: 100%;
-    right: 10px;
+    right: var(--scale-size-10);
     top: 0;
     color: $color-darkgray-200;
     background-color: $color-gray-50;
@@ -164,8 +164,8 @@ const labelClasses = computed(() => {
     outline: none;
 
     .mt-icon {
-      width: 12px;
-      height: 12px;
+      width: var(--scale-size-12);
+      height: var(--scale-size-12);
     }
   }
 
@@ -178,11 +178,11 @@ const labelClasses = computed(() => {
     background: transparent;
     border: 0;
     font-size: var(--font-size-s);
-    padding: 4px 0;
+    padding: var(--scale-size-4) 0;
     line-height: 22px;
 
     .mt-color-badge {
-      margin: 0 8px 6px 0;
+      margin: 0 var(--scale-size-8) var(--scale-size-6) 0;
     }
   }
 
@@ -191,10 +191,10 @@ const labelClasses = computed(() => {
   }
 
   &.mt-label--appearance-circle {
-    width: 24px;
-    height: 24px;
+    width: var(--scale-size-24);
+    height: var(--scale-size-24);
     border-radius: 100%;
-    padding: 4px;
+    padding: var(--scale-size-4);
     border: 0;
     min-width: 24px;
   }
@@ -214,16 +214,16 @@ const labelClasses = computed(() => {
       font-size: 12px;
       padding: 0 5px;
       padding-left: 15px;
-      height: 16px;
+      height: var(--scale-size-16);
     }
 
     &.mt-label--small::before {
       content: "";
       display: block;
-      height: 6px;
-      width: 6px;
+      height: var(--scale-size-6);
+      width: var(--scale-size-6);
       position: absolute;
-      top: 4px;
+      top: var(--scale-size-4);
       left: 5px;
     }
   }

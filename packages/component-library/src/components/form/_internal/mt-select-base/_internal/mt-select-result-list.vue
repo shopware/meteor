@@ -365,7 +365,7 @@ $mt-select-result-list-transition: all ease-in-out 0.2s;
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
   font-family: var(--font-family-body);
-  padding: 8px;
+  padding: var(--scale-size-8);
   border-radius: 4px;
 
   .mt-select-result-list__item-list {
@@ -373,7 +373,7 @@ $mt-select-result-list-transition: all ease-in-out 0.2s;
   }
 
   .mt-select-result-list__empty {
-    padding: 10px 16px;
+    padding: var(--scale-size-10) var(--scale-size-16);
     color: var(--color-text-primary-default);
   }
 }

@@ -303,7 +303,7 @@ $mt-select-focus-transition: all ease-in-out 0.2s;
   .mt-select__selection {
     width: 100%;
     position: relative;
-    padding: 0 8px;
+    padding: 0 var(--scale-size-8);
     border: none;
     font-size: var(--font-size-s);
     line-height: var(--font-line-height-s);
@@ -317,16 +317,16 @@ $mt-select-focus-transition: all ease-in-out 0.2s;
   .mt-select__selection-indicators {
     position: absolute;
     display: flex;
-    gap: 8px;
+    gap: var(--scale-size-8);
     top: 50%;
-    right: 16px;
+    right: var(--scale-size-16);
     transform: translate(0, -50%);
     z-index: 1;
   }
 
   .mt-select__selection-indicators .mt-loader {
-    width: 16px;
-    height: 16px;
+    width: var(--scale-size-16);
+    height: var(--scale-size-16);
     margin: 0;
     left: -24px;
     top: -4px;
@@ -342,7 +342,7 @@ $mt-select-focus-transition: all ease-in-out 0.2s;
     background-color: transparent;
     border: 0 solid transparent;
     color: var(--color-icon-primary-default);
-    padding: 0 4px;
+    padding: 0 var(--scale-size-4);
     cursor: pointer;
 
     .mt-select__select-indicator {
@@ -382,11 +382,11 @@ $mt-select-focus-transition: all ease-in-out 0.2s;
   }
 
   &.mt-field--medium .mt-select__selection {
-    padding: 4px 6px 0;
+    padding: var(--scale-size-4) var(--scale-size-6) 0;
   }
 
   &.mt-field--small .mt-select__selection {
-    padding: 4px 6px 0;
+    padding: var(--scale-size-4) var(--scale-size-6) 0;
   }
 
   &.is--disabled {
@@ -402,7 +402,7 @@ $mt-select-focus-transition: all ease-in-out 0.2s;
 
     .mt-select-selection-list--single .mt-label {
       cursor: pointer;
-      height: 18px;
+      height: var(--scale-size-18);
       padding-top: 1px;
     }
   }

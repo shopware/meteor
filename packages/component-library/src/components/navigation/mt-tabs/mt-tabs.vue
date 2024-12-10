@@ -392,7 +392,7 @@ export default defineComponent({
 .mt-tabs__item {
   display: inline-block;
   border-bottom: 1px solid var(--color-border-primary-default);
-  padding: 10px 16px;
+  padding: var(--scale-size-10) var(--scale-size-16);
   white-space: nowrap;
   font-family: var(--font-family-body);
   font-size: var(--font-size-xs);
@@ -444,7 +444,7 @@ export default defineComponent({
   position: absolute;
   bottom: 0;
   left: 0;
-  height: 2px;
+  height: var(--scale-size-2);
   background-color: var(--color-border-brand-selected);
   z-index: 1;
 }
@@ -465,7 +465,7 @@ export default defineComponent({
   & button {
     display: flex;
     align-items: center;
-    gap: 4px;
+    gap: var(--scale-size-4);
     font-size: var(--font-size-s);
     line-height: var(--font-line-height-s);
     font-family: var(--font-family-body);
@@ -473,9 +473,9 @@ export default defineComponent({
 }
 
 .mt-tabs__error-badge {
-  margin-left: 2px;
-  width: 12px;
-  height: 12px;
+  margin-left: var(--scale-size-2);
+  width: var(--scale-size-12);
+  height: var(--scale-size-12);
   color: var(--color-icon-critical-default);
 
   > svg {
