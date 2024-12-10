@@ -17,9 +17,13 @@ testRule({
     { code: ".a { border-color: var(--color-border-brand-selected); }" },
     { code: ".a { border-radius: var(--border-radius-xs); }" },
     { code: ".a { border-radius: 0; }" },
-    { code: ".a { border-right-color: var(--color-border-brand-selected) }" },
+    { code: ".a { border-right-color: var(--color-border-brand-selected); }" },
     { code: ".a { border: 1px solid transparent; }" },
     { code: ".a { border: none; }" },
+    {
+      code: ".a { border-bottom-right-radius: calc(4px / 0.95) calc(4px / 0.18); }",
+    },
+    { code: ".a { border-radius: calc(2px / 0.95) calc(2px / 0.18); }" },
   ],
 
   reject: [
@@ -85,6 +89,15 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 24,
+    },
+    {
+      code: ".a { border-bottom-right-radius: 1px calc(2px / 0.18); }",
+      message:
+        'Unexpected hard-coded border radius of "1px" (meteor/prefer-border-token)',
+      line: 1,
+      column: 6,
+      endLine: 1,
+      endColumn: 55,
     },
   ],
 });

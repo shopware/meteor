@@ -61,13 +61,17 @@ const borderStyleValues = [
 
 const isValidColorValue = (value: string): boolean => {
   return (
-    globalValues.includes(value.toLowerCase()) || /var\(--.*\)/.test(value)
+    globalValues.includes(value.toLowerCase()) ||
+    /var\(--.*\)/.test(value) ||
+    /^calc\(.*\)$/.test(value)
   );
 };
 
 const isValidRadiusValue = (value: string): boolean => {
   return (
-    globalValues.includes(value.toLowerCase()) || /var\(--.*\)/.test(value)
+    globalValues.includes(value.toLowerCase()) ||
+    /var\(--.*\)/.test(value) ||
+    /^calc\(.*\)$/.test(value)
   );
 };
 
@@ -118,8 +122,10 @@ const ruleFunction: Rule = (primary, secondaryOptions, context) => {
       }
 
       if (isABorderRadiusProp) {
-        const values = ruleNode.value.split(/\s+/).filter((val) => val !== "");
-        values.forEach((value) => {
+        const regex = /calc\([^\)]+\)|var\([^\)]+\)|[^\s()]+/g;
+        const matches = ruleNode.value.match(regex);
+
+        matches?.forEach((value) => {
           if (!isValidRadiusValue(value)) {
             report({
               message: messages.rejectedBorderRadius(value),
