@@ -214,7 +214,7 @@ onUnmounted(() => {
   translate: -50% -50%;
   z-index: 2000;
   background-color: var(--color-elevation-surface-raised);
-  border-radius: 0.5rem;
+  border-radius: var(--border-radius-card);
   overflow: hidden;
   width: min(var(--mt-modal-width), calc(100vw - 2rem));
   border: 1px solid var(--color-border-primary-default);
@@ -282,7 +282,7 @@ onUnmounted(() => {
 }
 
 .mt-modal__content-inner {
-  padding: 1.5rem;
+  padding: var(--scale-size-24);
 }
 
 .mt-modal__content-inner--no-padding {
@@ -293,10 +293,10 @@ onUnmounted(() => {
   position: sticky;
   left: 0;
   right: 0;
-  height: 0.25rem;
+  height: var(--scale-size-4);
   margin-top: -0.25rem;
   filter: blur(3px);
-  background-color: #101013;
+  background-color: var(--color-elevation-shadow-default);
   opacity: 0.1;
 }
 
@@ -334,12 +334,12 @@ onUnmounted(() => {
 }
 
 .mt-modal__footer {
-  padding: 1.5rem;
+  padding: var(--scale-size-24);
   border-top: 1px solid var(--color-border-primary-default);
 }
 
 .mt-modal__header {
-  padding: 1.5rem;
+  padding: var(--scale-size-24);
   border-bottom: 1px solid var(--color-border-primary-default);
   display: flex;
   justify-content: space-between;
@@ -350,15 +350,15 @@ onUnmounted(() => {
   display: flex;
   flex-direction: row;
   align-items: baseline;
-  column-gap: 0.5rem;
+  column-gap: var(--scale-size-8);
 }
 
 .mt-modal__close-button {
   cursor: pointer;
   color: var(--color-icon-primary-default);
   border-radius: var(--border-radius-xs);
-  width: 2rem;
-  height: 2rem;
+  width: var(--scale-size-32);
+  height: var(--scale-size-32);
 
   /* prevents hover stlyes from being applied to non-hoverable devices */
   @media (hover: hover) {
