@@ -57,7 +57,7 @@ jobs:
           commit_message: "Apply code formatting and fixable ESLint issues"
 
       - name: Lint css
-        run: pnpx turbo run lint:css
+        run: pnpx turbo run lint:css -- --custom-formatter @csstools/stylelint-formatter-github
 
   unit-tests:
     name: Unit tests
