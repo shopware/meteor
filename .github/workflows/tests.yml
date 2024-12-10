@@ -262,7 +262,7 @@ jobs:
           pnpm install --frozen-lockfile --prefer-offline
           npx playwright install --with-deps
 
-      - name: Run Playwrigth
+      - name: Run playwright
         working-directory: meteor/examples/admin-sdk-plugin/tests/acceptance/
         run: npx playwright test --retries=2 --reporter=github --trace=on-first-retry --project chromium
 
