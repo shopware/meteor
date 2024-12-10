@@ -259,7 +259,7 @@ const calculateSliderDimensions = () => {
 };
 
 watch(
-  () => [activeTab.value, props.items],
+  () => [activeTab.value, priorityItems.value],
   async () => {
     await nextTick();
     sliderStyles.value = calculateSliderDimensions();
