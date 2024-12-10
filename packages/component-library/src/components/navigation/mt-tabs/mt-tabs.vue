@@ -8,6 +8,9 @@
         'mt-tabs--future-remove-default-margin': futureFlags.removeDefaultMargin,
       },
     ]"
+    :style="{
+      opacity: showNavigation ? 1 : 0,
+    }"
     ref="tabListRef"
     role="tablist"
   >
