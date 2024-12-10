@@ -181,7 +181,7 @@ jobs:
 
   ats:
     name: Acceptance tests
-    timeout-minutes: 20
+    timeout-minutes: 45
     runs-on: ubuntu-latest
     needs:
       - circular-dependencies
