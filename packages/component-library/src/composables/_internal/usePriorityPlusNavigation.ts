@@ -1,12 +1,12 @@
 import { reactiveComputed, unrefElement, useElementSize, type MaybeElementRef } from "@vueuse/core";
-import { computed, onMounted, ref, toRefs, watch } from "vue";
+import { computed, onMounted, ref, toRefs, unref, watch, type MaybeRef } from "vue";
 
 export function usePriorityPlusNavigation<
   T extends {
     id: string;
   },
 >(
-  items: T[],
+  items: MaybeRef<T[]>,
   { container, overflowButton }: { container: MaybeElementRef; overflowButton: MaybeElementRef },
 ) {
   const containerSize = useElementSize(container);
@@ -48,21 +48,22 @@ export function usePriorityPlusNavigation<
     overflowItems: T[];
   }>(() => {
     const hasOverflow = widthsOfItems.value.some((width) => width > containerSize.width.value);
+    const rawItems = unref(items);
     if (!hasOverflow) {
       return {
-        priorityItems: items,
+        priorityItems: rawItems,
         overflowItems: [],
       };
     }
 
-    const priorityItems = items.filter((_, index) => {
+    const priorityItems = rawItems.filter((_, index) => {
       const overflows =
         widthsOfItems.value[index] > containerSize.width.value - overflowButtonSize.width.value;
 
       return !overflows;
     });
 
-    const overflowItems = items.filter((_, index) => {
+    const overflowItems = rawItems.filter((_, index) => {
       const overflows =
         widthsOfItems.value[index] > containerSize.width.value - overflowButtonSize.width.value;
 
