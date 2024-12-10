@@ -28,7 +28,9 @@ Add this package to your stylelint config.
 
 # Rules
 
-- `meteor/prefer-sizing-token`
-- `meteor/prefer-color-token`
-- `meteor/prefer-background-token`
 - `meteor/no-primitive-token`
+- `meteor/prefer-background-token`
+- `meteor/prefer-border-token`
+- `meteor/prefer-color-token`
+- `meteor/prefer-font-token`
+- `meteor/prefer-sizing-token`
