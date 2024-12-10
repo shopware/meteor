@@ -138,20 +138,9 @@
 </template>
 
 <script setup lang="ts">
-import {
-  defineComponent,
-  computed,
-  ref,
-  onMounted,
-  watch,
-  onBeforeUpdate,
-  onUpdated,
-  nextTick,
-  type CSSProperties,
-} from "vue";
+import { computed, ref, onMounted, watch, nextTick, type CSSProperties } from "vue";
 import MtColorBadge from "../../feedback-indicator/mt-color-badge/mt-color-badge.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
-import MtPriorityPlus from "../../_internal/mt-priority-plus-navigation.vue";
 import MtBarePopoverItem from "@/components/overlay/mt-bare-popover/sub-components/mt-bare-popover-item.vue";
 import MtBarePopover from "@/components/overlay/mt-bare-popover/mt-bare-popover.vue";
 import { useFutureFlags } from "@/composables/useFutureFlags";
