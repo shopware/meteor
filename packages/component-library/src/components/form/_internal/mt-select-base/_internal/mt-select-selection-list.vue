@@ -253,16 +253,16 @@ export default defineComponent({
   .mt-select-selection-list__item-holder {
     max-width: 220px;
     line-height: 0;
-    margin: 8px 6px 0 0;
+    margin: var(--scale-size-8) var(--scale-size-6) 0 0;
   }
 
   .mt-select-selection-list__load-more {
-    margin: 8px 6px 0 0;
+    margin: var(--scale-size-8) var(--scale-size-6) 0 0;
   }
 
   button.mt-select-selection-list__load-more-button {
-    padding: 8px 12px;
-    margin: 0 6px 0 0;
+    padding: var(--scale-size-8) var(--scale-size-12);
+    margin: 0 var(--scale-size-6) 0 0;
     color: var(--color-text-brand-default);
     font-size: 12px;
     line-height: 14px;
@@ -277,7 +277,7 @@ export default defineComponent({
   .mt-select-selection-list__input {
     display: inline-block;
     min-width: 200px;
-    padding: 12px 16px 12px 8px;
+    padding: var(--scale-size-12) var(--scale-size-16) var(--scale-size-12) var(--scale-size-8);
 
     &::placeholder {
       color: lighten($color-darkgray-200, 25%);
@@ -288,31 +288,31 @@ export default defineComponent({
 
 .mt-field--medium .mt-select-selection-list {
   .mt-select-selection-list__item-holder .mt-label {
-    margin: 4px 6px 0 0;
+    margin: var(--scale-size-4) var(--scale-size-6) 0 0;
   }
 
   input {
-    padding: 4px 16px 8px 8px;
+    padding: var(--scale-size-4) var(--scale-size-16) var(--scale-size-8) var(--scale-size-8);
   }
 
   .mt-select-selection-list__load-more-button {
-    padding: 4px 12px;
-    margin: 4px 6px 0 0;
+    padding: var(--scale-size-4) var(--scale-size-12);
+    margin: var(--scale-size-4) var(--scale-size-6) 0 0;
   }
 }
 
 .mt-field--small .mt-select-selection-list {
   .mt-select-selection-list__item-holder .mt-label {
-    margin: 4px 6px 0 0;
+    margin: var(--scale-size-4) var(--scale-size-6) 0 0;
   }
 
   input {
-    padding: 2px 16px 4px 8px;
+    padding: var(--scale-size-2) var(--scale-size-16) var(--scale-size-4) var(--scale-size-8);
   }
 
   .mt-select-selection-list__load-more-button {
-    padding: 0 8px;
-    margin: -1px 6px 0 0;
+    padding: 0 var(--scale-size-8);
+    margin: -1px var(--scale-size-6) 0 0;
   }
 }
 </style>

@@ -76,7 +76,7 @@ export default defineComponent({
   .mt-data-table-preview-image-renderer {
     position: relative;
     width: 34px;
-    height: 24px;
+    height: var(--scale-size-24);
     border: 1px solid var(--color-border-primary-default);
     border-radius: var(--border-radius-xs);
     margin-right: 15px;

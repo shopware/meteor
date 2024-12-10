@@ -136,7 +136,7 @@ export default defineComponent({
 <style scoped>
 .mt-field--password {
   & input {
-    padding-right: 40px;
+    padding-right: var(--scale-size-40);
   }
 
   & .mt-icon {

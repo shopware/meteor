@@ -210,12 +210,12 @@ export default defineComponent({
 <style lang="scss">
 .mt-segmented-control {
   display: flex;
-  gap: 2px;
+  gap: var(--scale-size-2);
   width: max-content;
   background-color: var(--color-elevation-surface-overlay);
   border: 1px solid var(--color-border-primary-default);
   border-radius: var(--border-radius-button);
-  padding: 2px;
+  padding: var(--scale-size-2);
 
   .mt-floating-ui {
     display: flex;
@@ -228,12 +228,12 @@ export default defineComponent({
   &__action {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--scale-size-8);
     position: relative;
     cursor: pointer;
     border: none;
     border-radius: var(--border-radius-button);
-    padding: 6px 12px;
+    padding: var(--scale-size-6) var(--scale-size-12);
     font-family: var(--font-family-body);
     font-size: var(--font-size-2xs);
     line-height: var(--font-line-height-2xs);
@@ -256,8 +256,8 @@ export default defineComponent({
 
     &-icon {
       &.mt-icon {
-        width: 12px;
-        height: 12px;
+        width: var(--scale-size-12);
+        height: var(--scale-size-12);
       }
 
       &.mt-icon > svg {
@@ -268,13 +268,13 @@ export default defineComponent({
 
     &-options-icon.mt-icon {
       margin-top: 1px;
-      width: 8px;
+      width: var(--scale-size-8);
       height: 5px;
     }
 
     .mt-field__checkbox #meteor-icon-kit__regular-checkmark-xxs {
-      width: 8px !important;
-      height: 6px !important;
+      width: var(--scale-size-8) !important;
+      height: var(--scale-size-6) !important;
     }
 
     &:hover,
@@ -342,8 +342,8 @@ export default defineComponent({
   &__divider {
     background-color: var(--color-border-primary-default);
     width: 1px;
-    margin-top: 4px;
-    margin-bottom: 4px;
+    margin-top: var(--scale-size-4);
+    margin-bottom: var(--scale-size-4);
   }
 
   &--disabled-context {
@@ -378,7 +378,7 @@ export default defineComponent({
   }
 
   .mt-field--checkbox__container .mt-field__label {
-    margin-left: 8px;
+    margin-left: var(--scale-size-8);
   }
 }
 </style>

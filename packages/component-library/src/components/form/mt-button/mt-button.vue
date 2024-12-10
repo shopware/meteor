@@ -88,7 +88,7 @@ const isInsideTooltip = useIsInsideTooltip();
   transition: all 0.15s ease-out;
   display: inline-block;
   border-radius: var(--border-radius-button);
-  padding: 2px 24px;
+  padding: var(--scale-size-2) var(--scale-size-24);
   font-size: var(--font-size-xs);
   border: 1px solid transparent;
   outline: none;
@@ -292,15 +292,15 @@ const isInsideTooltip = useIsInsideTooltip();
 }
 
 .mt-button--x-small {
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: var(--scale-size-10);
+  padding-right: var(--scale-size-10);
   font-size: var(--font-size-2xs);
   min-height: 24px;
 }
 
 .mt-button--x-small.mt-button--square {
-  width: 24px;
-  height: 24px;
+  width: var(--scale-size-24);
+  height: var(--scale-size-24);
 }
 
 .mt-button--small {
@@ -311,8 +311,8 @@ const isInsideTooltip = useIsInsideTooltip();
 }
 
 .mt-button--small.mt-button--square {
-  width: 32px;
-  height: 32px;
+  width: var(--scale-size-32);
+  height: var(--scale-size-32);
 }
 
 .mt-button--default {
@@ -334,13 +334,13 @@ const isInsideTooltip = useIsInsideTooltip();
 }
 
 .mt-button--large.mt-button--square {
-  width: 48px;
-  height: 48px;
+  width: var(--scale-size-48);
+  height: var(--scale-size-48);
 }
 
 .mt-button--square {
-  width: 40px;
-  height: 40px;
+  width: var(--scale-size-40);
+  height: var(--scale-size-40);
   padding-left: 0;
   padding-right: 0;
   text-align: center;

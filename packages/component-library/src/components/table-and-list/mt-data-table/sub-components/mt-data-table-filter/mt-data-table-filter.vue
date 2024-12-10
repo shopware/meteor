@@ -85,7 +85,7 @@ const { t } = useI18n({
   display: inline-flex;
 
   & > * {
-    height: 24px;
+    height: var(--scale-size-24);
     display: grid;
     place-items: center;
   }
@@ -97,13 +97,13 @@ const { t } = useI18n({
   border-top-left-radius: var(--border-radius-xs);
   border-bottom-left-radius: var(--border-radius-xs);
   color: var(--color-text-primary-default);
-  padding-inline: 8px;
+  padding-inline: var(--scale-size-8);
 }
 
 .mt-data-table-filter__rule {
   border-top: 1px solid var(--color-border-primary-default);
   border-bottom: 1px solid var(--color-border-primary-default);
-  padding-right: 4px;
+  padding-right: var(--scale-size-4);
 }
 
 .mt-data-table-filter__option {
@@ -113,7 +113,7 @@ const { t } = useI18n({
   line-height: var(--font-line-height-2xs);
   border-top: 1px solid var(--color-border-primary-default);
   border-bottom: 1px solid var(--color-border-primary-default);
-  padding-inline: 4px 8px;
+  padding-inline: var(--scale-size-4) var(--scale-size-8);
 
   & button {
     outline: 0 none;
@@ -137,8 +137,8 @@ const { t } = useI18n({
   border: 1px solid var(--color-border-primary-default);
   outline: 0 none;
   position: relative;
-  height: 24px;
-  width: 24px;
+  height: var(--scale-size-24);
+  width: var(--scale-size-24);
 
   & .mt-icon {
     position: absolute;

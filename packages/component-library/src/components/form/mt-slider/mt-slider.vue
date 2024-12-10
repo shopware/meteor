@@ -400,8 +400,8 @@ $slider-bar-height: 8px;
 
   & > .mt-block-field__block {
     border: none;
-    padding: 4px 4px calc($slider-dot-size / 2);
-    gap: 16px;
+    padding: var(--scale-size-4) var(--scale-size-4) calc($slider-dot-size / 2);
+    gap: var(--scale-size-16);
     overflow: visible;
   }
 
@@ -420,8 +420,8 @@ $slider-bar-height: 8px;
 
     input {
       text-align: center;
-      padding-left: 4px;
-      padding-right: 4px;
+      padding-left: var(--scale-size-4);
+      padding-right: var(--scale-size-4);
     }
   }
 
@@ -436,7 +436,7 @@ $slider-bar-height: 8px;
       font-size: 14px;
       user-select: none;
       padding: 0 calc($slider-dot-size / 2);
-      height: 20px;
+      height: var(--scale-size-20);
     }
 
     .mt-slider__mark {
@@ -454,8 +454,8 @@ $slider-bar-height: 8px;
     .mt-slider__mark:after {
       content: "";
       position: absolute;
-      width: 2px;
-      height: 4px;
+      width: var(--scale-size-2);
+      height: var(--scale-size-4);
       background-color: var(--color-border-primary-default);
       border-radius: 50%;
       bottom: -2px;
@@ -469,7 +469,7 @@ $slider-bar-height: 8px;
       background-color: var(--color-background-primary-disabled);
       border-radius: calc($slider-bar-height / 2);
       width: 100%;
-      margin-top: 4px;
+      margin-top: var(--scale-size-4);
     }
 
     .mt-slider__value {
@@ -563,8 +563,8 @@ $slider-bar-height: 8px;
 
     .mt-slider__input-slider__hint {
       position: absolute;
-      bottom: 24px;
-      padding: 8px;
+      bottom: var(--scale-size-24);
+      padding: var(--scale-size-8);
       min-width: 4ch;
       text-align: center;
     }
