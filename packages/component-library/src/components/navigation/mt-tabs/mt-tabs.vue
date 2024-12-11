@@ -1,91 +1,144 @@
 <template>
-  <priority-plus ref="priorityPlus" #default="{ mainItems, moreItems }" :list="items">
-    <div :class="tabClasses" role="tablist">
-      <span class="mt-tabs__slider" :class="sliderClasses" :style="sliderStyle" />
+  <div
+    :class="[
+      'mt-tabs',
+      {
+        'mt-tabs--small': small,
+        'mt-tabs--vertical': vertical,
+        'mt-tabs--future-remove-default-margin': futureFlags.removeDefaultMargin,
+      },
+    ]"
+    :style="{
+      opacity: showNavigation ? 1 : 0,
+    }"
+    ref="tabListRef"
+    role="tablist"
+  >
+    <button
+      v-for="(item, index) in vertical ? items : priorityItems"
+      :key="item.name"
+      :data-priority-plus="item.name"
+      :id="`mt-tabs__item--${item.name}`"
+      :class="[
+        'mt-tabs__item',
+        {
+          'mt-tabs__item--active': item.name === activeTab?.name,
+          'mt-tabs__item--error': item.hasError,
+        },
+      ]"
+      role="tab"
+      :disabled="item.disabled"
+      @click="() => changeActiveTab(item)"
+      :data-text="item.label"
+      :aria-selected="item.name === activeTab?.name"
+      :aria-invalid="item.hasError"
+      :tabindex="item.name === activeTab?.name ? 0 : -1"
+      @keydown.arrow-right="
+        () =>
+          focusNextTab({
+            currentTab: item.name,
+            isLastVisibleElement: index === priorityItems.length - 1,
+          })
+      "
+      @keydown.arrow-left="() => focusPreviousTab({ currentTab: item.name })"
+      @blur="onBlur"
+    >
+      <span>{{ item.label }}</span>
 
-      <template v-if="!vertical">
+      <mt-icon
+        v-if="item.hasError"
+        color="var(--color-text-critical-default)"
+        size="0.75rem"
+        name="solid-exclamation-circle"
+        :style="{ marginInlineStart: '0.5rem' }"
+      />
+
+      <mt-color-badge v-if="item.badge" :variant="item.badge" rounded />
+    </button>
+
+    <mt-bare-popover v-if="overflowItems.length && !vertical">
+      <template #trigger="params">
         <button
-          v-for="item in mainItems"
-          :key="item.name"
-          :data-priority-plus="item.name"
-          ref="items"
-          class="mt-tabs__item"
-          :data-text="item.label"
-          :class="getItemClasses(item)"
-          :data-item-name="item.name"
+          ref="moreTabsButton"
+          v-bind="params"
           role="tab"
-          :aria-selected="item.name === activeItemName"
-          :disabled="item.disabled"
-          @click="handleClick(item.name)"
-          @keyup.enter="handleClick(item.name)"
+          :class="[
+            'mt-tabs__item',
+            {
+              'mt-tabs__item--active': overflowItems.some((item) => item.name === activeTab?.name),
+              'mt-tabs__item--error': overflowItems.some((item) => item.hasError),
+            },
+          ]"
+          :aria-label="t('moreTabsAriaLabel')"
+          :tabindex="overflowItems.some((item) => item.name === activeTab?.name) ? 0 : -1"
+          @blur="onBlur"
+          @keydown.arrow-right="
+            () => focusNextTab({ currentTab: 'more-tabs', isLastVisibleElement: false })
+          "
+          @keydown.arrow-left="() => focusPreviousTab({ currentTab: 'more-tabs' })"
         >
-          {{ item.label }}
-
           <mt-icon
-            v-if="item.hasError"
-            class="mt-tabs__error-badge"
-            name="solid-exclamation-circle"
+            name="solid-ellipsis-h-s"
+            color="var(--color-text-primary-default)"
+            style="margin-inline-end: 0.5rem"
           />
 
-          <mt-color-badge v-if="item.badge" :variant="item.badge" rounded />
+          <span>{{ t("moreTabs") }}</span>
         </button>
-
-        <!-- @vue-skip -->
-        <mt-context-button
-          v-if="moreItems.length"
-          ref="more-items-button"
-          :has-error="moreItems.some((i) => i.hasError)"
-        >
-          <template #button-text>
-            <!-- Add translation  -->
-            More
-          </template>
-
-          <template #default="{ toggleFloatingUi }">
-            <mt-context-menu-item
-              v-for="moreItem in moreItems"
-              :key="moreItem.name"
-              :type="getContextMenuItemVariant(moreItem)"
-              role="tab"
-              :aria-selected="moreItem.name === activeItemName"
-              :label="moreItem.label"
-              @click="
-                handleClick(moreItem.name);
-                toggleFloatingUi();
-              "
-              @keyup.enter="handleClick(moreItem.name)"
-            />
-          </template>
-        </mt-context-button>
       </template>
 
-      <template v-if="vertical">
-        <li
-          v-for="item in [...mainItems, ...moreItems]"
+      <template #default="{ closePopover }">
+        <mt-bare-popover-item
+          v-for="item in overflowItems"
           :key="item.name"
-          ref="items"
-          class="mt-tabs__item"
-          :class="getItemClasses(item)"
-          :data-item-name="item.name"
-          @click="handleClick(item.name)"
+          role="tab"
+          :aria-selected="item.name === activeTab?.name"
+          :style="{
+            textDecoration: item.name === activeTab?.name && 'underline',
+            fontWeight: item.name === activeTab?.name && 'var(--font-weight-semibold)',
+            color: item.hasError
+              ? 'var(--color-text-critical-default)'
+              : item.name === activeTab?.name
+                ? 'var(--color-text-brand-default)'
+                : 'var(--color-text-primary-default)',
+          }"
+          @click="
+            () => {
+              changeActiveTab(item);
+              closePopover();
+            }
+          "
         >
-          {{ item.label }}
-        </li>
+          <span>{{ item.label }}</span>
+
+          <mt-color-badge v-if="item.badge" :variant="item.badge" rounded />
+        </mt-bare-popover-item>
       </template>
-    </div>
-  </priority-plus>
+    </mt-bare-popover>
+
+    <div
+      :class="[
+        'mt-tabs__slider',
+        {
+          'mt-tabs__slider--animated': shouldAnimateSlider,
+          'mt-tabs__slider--error': activeTab?.hasError,
+        },
+      ]"
+      :style="sliderStyles"
+      data-testid="mt-tabs__slider"
+    />
+  </div>
 </template>
 
-<script lang="ts">
-import type { PropType } from "vue";
-
-import { defineComponent, computed } from "vue";
-import MtContextButton from "../../context-menu/mt-context-button/mt-context-button.vue";
-import MtContextMenuItem from "../../context-menu/mt-context-menu-item/mt-context-menu-item.vue";
+<script setup lang="ts">
+import { computed, ref, onMounted, watch, nextTick, type CSSProperties } from "vue";
 import MtColorBadge from "../../feedback-indicator/mt-color-badge/mt-color-badge.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
-import PriorityPlus from "../../_internal/mt-priority-plus-navigation.vue";
+import MtBarePopoverItem from "@/components/overlay/mt-bare-popover/sub-components/mt-bare-popover-item.vue";
+import MtBarePopover from "@/components/overlay/mt-bare-popover/mt-bare-popover.vue";
 import { useFutureFlags } from "@/composables/useFutureFlags";
+import { useI18n } from "@/composables/useI18n";
+import { usePriorityPlusNavigation } from "@/composables/_internal/usePriorityPlusNavigation";
 
 export interface TabItem {
   label: string;
@@ -94,267 +147,238 @@ export interface TabItem {
   disabled?: boolean;
   badge?: "positive" | "critical" | "warning" | "info";
   onClick?: (name: string) => void;
-  // @internal - will be added by priority plus menu component
   hidden?: boolean;
 }
 
-export default defineComponent({
-  name: "MtTabs",
+const emit = defineEmits(["new-item-active"]);
 
-  components: {
-    "mt-context-button": MtContextButton,
-    "mt-context-menu-item": MtContextMenuItem,
-    "priority-plus": PriorityPlus,
-    "mt-color-badge": MtColorBadge,
-    "mt-icon": MtIcon,
-  },
+const props = defineProps<{
+  items: TabItem[];
+  vertical?: boolean;
+  small?: boolean;
+  defaultItem?: string;
+}>();
 
-  emits: ["new-item-active"],
-
-  props: {
-    items: {
-      type: Array as PropType<TabItem[]>,
-      required: true,
+const { t } = useI18n({
+  messages: {
+    en: {
+      moreTabs: "More",
+      moreTabsAriaLabel: "More tabs",
     },
-
-    vertical: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    /**
-     * @deprecated v4.0.0 - Set max-width through parent container element
-     */
-    small: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    defaultItem: {
-      type: String,
-      required: false,
-      default: "",
-    },
-  },
-
-  data() {
-    return {
-      // refreshKey is for recalculating specific computed properties
-      refreshKey: true,
-      activeItemName: "",
-      showMoreItems: false,
-      passedFirstRender: false,
-    };
-  },
-
-  computed: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    activeDomItem(): any | undefined {
-      this.refreshKey;
-
-      // Access "this.activeItemName" before to react dynamically on changes
-      const activeItemName = this.activeItemName;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const domItems = this.$refs.items ? (this.$refs.items as any[]) : [];
-
-      const activeDomItem = domItems.find((item) => {
-        return item.getAttribute("data-item-name") === activeItemName;
-      });
-
-      return activeDomItem;
-    },
-
-    sliderPosition(): number {
-      this.refreshKey;
-
-      if (!this.activeItem) {
-        return 0;
-      }
-
-      // Handle the case when the active item is hidden
-      if (!this.activeDomItem && this.$refs["more-items-button"]) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return (this.$refs["more-items-button"] as any).$el?.offsetLeft;
-      }
-
-      const leftPaddingOfActiveDomItem = parseFloat(
-        getComputedStyle(this.activeDomItem).paddingLeft,
-      );
-
-      return this.vertical
-        ? this.activeDomItem.offsetTop
-        : this.activeDomItem.offsetLeft + leftPaddingOfActiveDomItem;
-    },
-
-    sliderLength(): number {
-      this.refreshKey;
-
-      if (!this.activeItem) {
-        return 0;
-      }
-
-      // Handle the case when the active item is hidden
-      if (!this.activeDomItem && this.$refs["more-items-button"]) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return (this.$refs["more-items-button"] as any).$el?.offsetWidth;
-      }
-
-      if (this.activeItem?.hidden && this.$refs["more-items-button"]) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return (this.$refs["more-items-button"] as any).$el?.offsetWidth;
-      }
-
-      const stylesOfActiveDomItem = getComputedStyle(this.activeDomItem);
-      const widthWithoutPadding =
-        this.activeDomItem.clientWidth -
-        parseFloat(stylesOfActiveDomItem.paddingLeft) -
-        parseFloat(stylesOfActiveDomItem.paddingRight);
-
-      return this.vertical ? this.activeDomItem.offsetHeight : widthWithoutPadding;
-    },
-
-    activeItem(): TabItem | undefined {
-      this.refreshKey;
-
-      return this.items.find((item) => {
-        return item.name === this.activeItemName;
-      });
-    },
-
-    sliderClasses(): Record<string, boolean> {
-      this.refreshKey;
-
-      return {
-        "mt-tabs__slider--error": this.activeItem?.hasError ?? false,
-        "mt-tabs__slider--animated": this.passedFirstRender,
-      };
-    },
-
-    sliderStyle(): string {
-      this.refreshKey;
-
-      if (this.vertical) {
-        return `
-          transform: translate(0, ${this.sliderPosition}px) rotate(90deg);
-          width: ${this.sliderLength}px;
-      `;
-      }
-
-      return `
-        transform: translate(${this.sliderPosition}px, 0) rotate(0deg);
-        width: ${this.sliderLength}px;
-    `;
-    },
-  },
-
-  setup(props) {
-    const futureFlags = useFutureFlags();
-
-    const tabClasses = computed(() => {
-      return [
-        "mt-tabs",
-        {
-          "mt-tabs--vertical": props.vertical,
-          "mt-tabs--small": props.small,
-          "mt-tabs--future-remove-default-margin": futureFlags.removeDefaultMargin,
-        },
-      ];
-    });
-
-    return {
-      tabClasses,
-    };
-  },
-
-  watch: {
-    items: "handleResize",
-    vertical: "handleResize",
-    small: "handleResize",
-  },
-
-  mounted() {
-    this.setActiveItem(this.defaultItem);
-
-    this.$nextTick(() => {
-      this.handleResize();
-
-      this.passedFirstRender = true;
-    });
-
-    // @ts-expect-error $device helper is not registered in TS yet
-    this.$device.onResize({
-      listener() {
-        this.handleResize();
-      },
-      component: this,
-      scope: this,
-    });
-  },
-
-  beforeUnmount() {
-    // @ts-expect-error $device helper is not registered in TS yet
-    this.$device.removeResizeListener(this);
-  },
-
-  methods: {
-    handleClick(itemName: string): void {
-      this.setActiveItem(itemName);
-      this.$emit("new-item-active", itemName);
-
-      const matchingItem = this.items.find((item) => item.name === itemName);
-
-      if (!matchingItem?.onClick) {
-        return;
-      }
-
-      matchingItem.onClick(itemName);
-    },
-
-    getItemClasses(item: TabItem) {
-      return {
-        "mt-tabs__item--error": item.hasError,
-        "mt-tabs__item--active": item.name === this.activeItemName,
-      };
-    },
-
-    getContextMenuItemVariant(item: TabItem): string {
-      if (item.hasError) {
-        return "critical";
-      }
-
-      if (item.name === this.activeItemName) {
-        return "active";
-      }
-
-      if (item.badge === "critical") {
-        return "critical";
-      }
-
-      return "default";
-    },
-
-    setActiveItem(itemName: string): void {
-      this.activeItemName = `${itemName}`;
-      this.refreshKey = !this.refreshKey;
-    },
-
-    handleResize() {
-      if (this.$refs.priorityPlus) {
-        this.refreshKey = !this.refreshKey;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (this.$refs.priorityPlus as any).handleResize().then(() => {
-          this.refreshKey = !this.refreshKey;
-        });
-      }
-    },
-
-    toggleMoreTabItems() {
-      this.showMoreItems = !this.showMoreItems;
+    de: {
+      moreTabs: "Mehr",
+      moreTabsAriaLabel: "Mehr Tabs",
     },
   },
 });
+
+const tabListRef = ref<HTMLElement | null>(null);
+const moreTabsButton = ref<HTMLElement | null>(null);
+
+const updatedItems = computed(() => {
+  return props.items.map((item) => ({ ...item, id: item.name }));
+});
+
+const { showNavigation, overflowItems, priorityItems } = usePriorityPlusNavigation(updatedItems, {
+  container: tabListRef,
+  overflowButton: moreTabsButton,
+});
+
+const showSlider = ref(false);
+const shouldAnimateSlider = ref(false);
+const activeTab = ref<TabItem | null>(null);
+const sliderStyles = ref<CSSProperties | undefined>(undefined);
+
+const calculateSliderDimensions = () => {
+  if (!tabListRef.value || !activeTab.value || !showSlider.value) return undefined;
+
+  const activeTabDOMElement = tabListRef.value.querySelector(
+    `#mt-tabs__item--${activeTab.value.name}`,
+  ) as HTMLElement | null;
+
+  if (!activeTabDOMElement) {
+    if (!moreTabsButton.value)
+      throw new Error(
+        "Failed to render mt-tabs; Tab not found, please make sure the tab exists. Searched for tab with id: mt-tabs__item--" +
+          activeTab.value.name,
+      );
+
+    return {
+      width: `${moreTabsButton.value.offsetWidth}px`,
+      left: `${moreTabsButton.value.offsetLeft}px`,
+    };
+  }
+
+  if (props.vertical) {
+    return {
+      height: `${activeTabDOMElement.offsetHeight}px`,
+      top: `${activeTabDOMElement.offsetTop}px`,
+    };
+  }
+
+  const paddingInlineStart = parseInt(
+    window
+      .getComputedStyle(activeTabDOMElement)
+      .getPropertyValue("padding-inline-start")
+      .replace("px", ""),
+  );
+
+  const paddingInlineEnd = parseInt(
+    window
+      .getComputedStyle(activeTabDOMElement)
+      .getPropertyValue("padding-inline-end")
+      .replace("px", ""),
+  );
+
+  const width = parseInt(
+    window.getComputedStyle(activeTabDOMElement).getPropertyValue("width").replace("px", ""),
+  );
+
+  const sliderWidth = width - paddingInlineStart - paddingInlineEnd + "px";
+
+  return {
+    width: sliderWidth,
+    left: `${activeTabDOMElement.offsetLeft + paddingInlineStart}px`,
+  };
+};
+
+watch(
+  () => [activeTab.value, priorityItems.value],
+  async () => {
+    await nextTick();
+    sliderStyles.value = calculateSliderDimensions();
+  },
+  { deep: true },
+);
+
+onMounted(() => {
+  const firstItem = props.items.at(0);
+  if (!firstItem) {
+    throw new Error(
+      "Failed to render mt-tabs; No items provided, please provide at least one item.",
+    );
+  }
+
+  const defaultItem = props.items.find((item) => item.name === props.defaultItem);
+  activeTab.value = defaultItem ?? firstItem;
+
+  document.fonts.ready.then(async () => {
+    showSlider.value = true;
+    await nextTick();
+
+    sliderStyles.value = calculateSliderDimensions();
+  });
+});
+
+function changeActiveTab(tab: TabItem) {
+  shouldAnimateSlider.value = true;
+  activeTab.value = tab;
+
+  emit("new-item-active", tab.name);
+}
+
+watch(
+  () => props.items,
+  () => {
+    const newActiveTab = props.items.find((item) => item.name === activeTab.value?.name);
+    if (!newActiveTab) return;
+
+    activeTab.value = newActiveTab;
+  },
+);
+
+function focusNextTab({
+  currentTab,
+  isLastVisibleElement,
+}:
+  | {
+      currentTab: "more-tabs";
+      isLastVisibleElement: false;
+    }
+  | {
+      currentTab: string;
+      isLastVisibleElement: boolean;
+    }) {
+  const indexOfFocusedTab = props.items.findIndex((item) => item.name === currentTab);
+
+  const nextItem = props.items.at(indexOfFocusedTab + 1);
+  const firstItem = props.items.at(0);
+
+  const nextItemToFocus = nextItem ?? firstItem;
+
+  if (!tabListRef.value || !nextItemToFocus || !activeTab.value) return;
+
+  const nextTabDOMElement =
+    isLastVisibleElement && moreTabsButton.value
+      ? moreTabsButton.value
+      : tabListRef.value.querySelector<HTMLButtonElement>(
+          `#mt-tabs__item--${nextItemToFocus.name}`,
+        );
+
+  const currentFocusedTab =
+    currentTab === "more-tabs"
+      ? moreTabsButton.value
+      : tabListRef.value.querySelector<HTMLButtonElement>(`#mt-tabs__item--${currentTab}`);
+
+  if (!nextTabDOMElement || !currentFocusedTab) return;
+
+  nextTabDOMElement.setAttribute("tabindex", "0");
+  nextTabDOMElement.focus();
+
+  currentFocusedTab.setAttribute("tabindex", "-1");
+}
+
+function focusPreviousTab({ currentTab }: { currentTab: "more-tabs" | string }) {
+  const indexOfFocusedTab = props.items.findIndex((item) => item.name === currentTab);
+  const previousItem = props.items.at(indexOfFocusedTab - 1);
+
+  const previousItemToFocus = previousItem ?? props.items.at(-1);
+
+  if (!tabListRef.value || !previousItemToFocus || !activeTab.value) return;
+
+  const previousTabDOMElement = tabListRef.value.querySelector<HTMLButtonElement>(
+    `#mt-tabs__item--${previousItemToFocus.name}`,
+  );
+
+  const lastVisibleTabDOMElement = Array.from(
+    tabListRef.value.querySelectorAll<HTMLButtonElement>(".mt-tabs__item:not([aria-haspopup])"),
+  ).at(-1);
+
+  const nextElementToFocus =
+    currentTab === "more-tabs"
+      ? lastVisibleTabDOMElement
+      : previousTabDOMElement ?? moreTabsButton.value ?? lastVisibleTabDOMElement;
+
+  const currentFocusedTab =
+    currentTab === "more-tabs"
+      ? moreTabsButton.value
+      : tabListRef.value.querySelector<HTMLButtonElement>(`#mt-tabs__item--${currentTab}`);
+
+  if (!nextElementToFocus || !currentFocusedTab) return;
+
+  nextElementToFocus.setAttribute("tabindex", "0");
+  nextElementToFocus.focus();
+
+  currentFocusedTab.setAttribute("tabindex", "-1");
+}
+
+function onBlur(event: FocusEvent) {
+  const focusedAnotherTabItem =
+    event.relatedTarget instanceof HTMLElement &&
+    event.relatedTarget.getAttribute("role") === "tab";
+
+  if (focusedAnotherTabItem || !tabListRef.value || !(event.target instanceof HTMLElement)) return;
+  event.target.setAttribute("tabindex", "-1");
+
+  const activeTabDOMElement = tabListRef.value.querySelector<HTMLButtonElement>(
+    `#mt-tabs__item--${activeTab.value?.name}`,
+  );
+
+  if (!activeTabDOMElement) return;
+  activeTabDOMElement.setAttribute("tabindex", "0");
+}
+
+const futureFlags = useFutureFlags();
 </script>
 
 <style scoped>
@@ -362,6 +386,7 @@ export default defineComponent({
   display: flex;
   position: relative;
   box-shadow: inset 0 -1px 0 var(--color-border-primary-default);
+  list-style: none;
 }
 
 .mt-tabs--small {
@@ -377,15 +402,13 @@ export default defineComponent({
   flex-direction: column;
   box-shadow: none;
 
-  & li {
+  & .mt-tabs__item {
     border-bottom: none;
     border-left: 1px solid var(--color-border-primary-default);
   }
 
   & .mt-tabs__slider {
-    top: 0;
-    bottom: auto;
-    left: 3px;
+    width: 2px;
   }
 }
 
@@ -449,38 +472,11 @@ export default defineComponent({
   z-index: 1;
 }
 
+.mt-tabs__slider--animated {
+  transition: 0.25s all cubic-bezier(0.77, 0, 0.175, 1);
+}
+
 .mt-tabs__slider--error {
   background-color: var(--color-border-critical-default);
-}
-
-.mt-tabs__slider--animated {
-  transition: 0.2s all ease-in-out;
-}
-
-.mt-context-button {
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid var(--color-border-primary-default);
-
-  & button {
-    display: flex;
-    align-items: center;
-    gap: 4px;
-    font-size: var(--font-size-s);
-    line-height: var(--font-line-height-s);
-    font-family: var(--font-family-body);
-  }
-}
-
-.mt-tabs__error-badge {
-  margin-left: 2px;
-  width: 12px;
-  height: 12px;
-  color: var(--color-icon-critical-default);
-
-  > svg {
-    width: 100% !important;
-    height: 100% !important;
-  }
 }
 </style>

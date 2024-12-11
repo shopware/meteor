@@ -1,12 +1,12 @@
-import { reactiveComputed, unrefElement, useElementSize, type MaybeElementRef } from "@vueuse/core";
-import { computed, onMounted, ref, toRefs, watch } from "vue";
+import { unrefElement, useElementSize, type MaybeElementRef } from "@vueuse/core";
+import { computed, onMounted, ref, unref, watch, type MaybeRef } from "vue";
 
 export function usePriorityPlusNavigation<
   T extends {
     id: string;
   },
 >(
-  items: T[],
+  items: MaybeRef<T[]>,
   { container, overflowButton }: { container: MaybeElementRef; overflowButton: MaybeElementRef },
 ) {
   const containerSize = useElementSize(container);
@@ -43,39 +43,25 @@ export function usePriorityPlusNavigation<
     return result.widthsOfItems;
   });
 
-  const prioritizedItems = reactiveComputed<{
-    priorityItems: T[];
-    overflowItems: T[];
-  }>(() => {
-    const hasOverflow = widthsOfItems.value.some((width) => width > containerSize.width.value);
-    if (!hasOverflow) {
-      return {
-        priorityItems: items,
-        overflowItems: [],
-      };
-    }
-
-    const priorityItems = items.filter((_, index) => {
-      const overflows =
-        widthsOfItems.value[index] > containerSize.width.value - overflowButtonSize.width.value;
-
-      return !overflows;
-    });
-
-    const overflowItems = items.filter((_, index) => {
+  const overflowItems = computed(() => {
+    return unref(items).filter((_, index) => {
       const overflows =
         widthsOfItems.value[index] > containerSize.width.value - overflowButtonSize.width.value;
 
       return overflows;
     });
-
-    return {
-      priorityItems,
-      overflowItems,
-    };
   });
 
-  const hasOverflow = computed(() => prioritizedItems.overflowItems.length > 0);
+  const priorityItems = computed(() => {
+    return unref(items).filter((_, index) => {
+      const overflows =
+        widthsOfItems.value[index] > containerSize.width.value - overflowButtonSize.width.value;
+
+      return !overflows;
+    });
+  });
+
+  const hasOverflow = computed(() => overflowItems.value.length > 0);
   watch(hasOverflow, () => {
     const overflowButtonElement = unrefElement(overflowButton);
     if (!overflowButtonElement) return;
@@ -89,6 +75,7 @@ export function usePriorityPlusNavigation<
 
   return {
     showNavigation,
-    ...toRefs(prioritizedItems),
+    overflowItems,
+    priorityItems,
   };
 }

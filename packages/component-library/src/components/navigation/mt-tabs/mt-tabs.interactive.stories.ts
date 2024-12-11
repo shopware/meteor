@@ -3,6 +3,7 @@ import { expect } from "@storybook/test";
 import { waitUntil } from "../../../_internal/test-helper";
 
 import meta, { type MtTabsMeta, type MtTabsStory } from "./mt-tabs.stories";
+import mtTabsStories from "./mt-tabs.stories";
 
 const tabItems = [
   {
@@ -167,28 +168,24 @@ export const VisualTestRenderContextTabWithActiveItem: MtTabsStory = {
 
     // wait until tab bar is loaded and context button gets rendered
 
-    await waitUntil(() => document.body.textContent?.includes("Context tab test"));
-    await waitUntil(() => document.querySelector(".mt-context-button__button"));
+    await waitUntil(() => canvas.getByRole("tab", { name: "Context tab test" }));
+    await waitUntil(() => canvas.getByRole("tab", { name: "More tabs" }));
 
-    const button = canvas.getByRole("button");
+    await userEvent.click(canvas.getByRole("tab", { name: "More tabs" }));
 
-    await userEvent.click(button);
+    const popover = within(document.querySelector('[role="dialog"]') as HTMLElement);
 
-    // Look inside the popover
-    const popover = within(
-      document.getElementsByClassName("mt-popover__content")[0] as HTMLElement,
+    await userEvent.click(popover.getByRole("tab", { name: "Item 10" }));
+
+    expect(document.querySelector('[role="dialog"]')).not.toBeInTheDocument();
+
+    await userEvent.click(canvas.getByRole("tab", { name: "More tabs" }));
+
+    const popoverWithSelectedTab = within(document.querySelector('[role="dialog"]') as HTMLElement);
+    expect(popoverWithSelectedTab.getByRole("tab", { name: "Item 10" })).toHaveAttribute(
+      "aria-selected",
+      "true",
     );
-
-    const menuItem = popover.getAllByRole("tab");
-
-    const lastItem = menuItem[menuItem.length - 1];
-    await expect(lastItem).toHaveTextContent("Item 10");
-
-    await userEvent.click(lastItem);
-
-    await waitUntil(() => document.getElementsByClassName("mt-popover__content").length === 0);
-
-    expect(document.getElementsByClassName("mt-popover__content").length).toEqual(0);
   },
 };
 
@@ -249,22 +246,15 @@ export const VisualTestRenderTabsWithContextMenuBadge: MtTabsStory = {
     const canvas = within(canvasElement);
 
     // wait until tab bar is loaded and context button gets rendered
+    await waitUntil(() => canvas.getByRole("tab", { name: "Context tab test" }));
 
-    await waitUntil(() => document.body.textContent?.includes("Context tab test"));
-    await waitUntil(() => document.querySelector("button"));
+    await userEvent.click(canvas.getByRole("tab", { name: "More tabs" }));
 
-    const button = canvas.getByRole("button");
+    const popover = within(document.querySelector("[role='dialog']") as HTMLElement);
 
-    await userEvent.click(button);
-
-    // Look inside the popover
-    const popover = within(
-      document.getElementsByClassName("mt-popover__content")[0] as HTMLElement,
-    );
-
-    const menuItem = popover.getAllByRole("tab");
-
-    await expect(menuItem[menuItem.length - 9]).toHaveTextContent("Item with critical badge");
+    await expect(
+      popover.getByRole("tab", { name: "Item with critical badge" }),
+    ).toBeInTheDocument();
   },
 };
 
@@ -300,5 +290,105 @@ export const VisualTestRenderTabsWithDisabledItem: MtTabsStory = {
     await userEvent.click(disabledTabItem);
 
     expect(canvas.getByRole("tab", { name: /item 1/i })).toHaveAttribute("aria-selected", "true");
+  },
+};
+
+export const CannotTabToMoreItemsTabWhenNoneOfItsChildrenIsActive: MtTabsStory = {
+  args: {
+    small: true,
+    defaultItem: "item1",
+    items: [
+      ...tabItems.slice(0, 4),
+      {
+        label: "Item with icon",
+        name: "item5",
+      },
+      ...tabItems.slice(5),
+    ],
+  },
+  async play() {
+    await userEvent.tab();
+    await userEvent.tab();
+
+    await expect(document.body).toHaveFocus();
+  },
+};
+
+export const TabsToMoreItemsTabWhenOneOfItsChildrenIsActive: MtTabsStory = {
+  args: {
+    small: true,
+    defaultItem: "item11",
+    items: [
+      ...tabItems.slice(0, 4),
+      {
+        label: "Item with icon",
+        name: "item5",
+      },
+      ...tabItems.slice(5),
+    ],
+  },
+  async play({ canvasElement }) {
+    const canvas = within(canvasElement);
+
+    await userEvent.tab();
+
+    await expect(canvas.getByRole("tab", { name: "More tabs" })).toHaveFocus();
+  },
+};
+
+export const FocusesTheMoreTabsWhenPressingLeftArrowKeyOnFirstTab: MtTabsStory = {
+  args: {
+    small: true,
+    defaultItem: "item1",
+    items: tabItems,
+  },
+  async play({ canvasElement }) {
+    const canvas = within(canvasElement);
+
+    await userEvent.tab();
+
+    await userEvent.keyboard("{arrowleft}");
+
+    await expect(canvas.getByRole("tab", { name: "More tabs" })).toHaveFocus();
+  },
+};
+
+export const FocusesTheMoreTabsButtonWhenPressingRightArrowKeyOnLastTab: MtTabsStory = {
+  args: {
+    small: true,
+    defaultItem: "item7",
+    items: tabItems,
+  },
+  async play({ canvasElement }) {
+    const canvas = within(canvasElement);
+
+    await userEvent.tab();
+
+    await userEvent.keyboard("{arrowright}");
+
+    await expect(canvas.getByRole("tab", { name: "More tabs" })).toHaveFocus();
+  },
+};
+
+export const MovesFocusAwayFromTheMoreTabsButtonWhenPressingTheArrowKeys: MtTabsStory = {
+  args: {
+    small: true,
+    defaultItem: "item1",
+    items: tabItems,
+  },
+  async play({ canvasElement }) {
+    const canvas = within(canvasElement);
+
+    await userEvent.tab();
+
+    await userEvent.keyboard("{arrowleft}");
+    await userEvent.keyboard("{arrowright}");
+
+    await expect(canvas.getByRole("tab", { name: "Item 1" })).toHaveFocus();
+
+    await userEvent.keyboard("{arrowleft}");
+    await userEvent.keyboard("{arrowleft}");
+
+    await expect(canvas.getByRole("tab", { name: "Item 7" })).toHaveFocus();
   },
 };
