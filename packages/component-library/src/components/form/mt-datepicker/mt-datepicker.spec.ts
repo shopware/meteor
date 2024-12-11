@@ -36,7 +36,7 @@ describe("src/app/component/form/mt-datepicker", () => {
     wrapper = await createWrapper();
     const flatpickrInput = wrapper.find(".flatpickr-input");
 
-    expect(flatpickrInput.attributes().placeholder).toBe("Y-m-d");
+    expect(flatpickrInput.attributes().placeholder).toBe("m/d/Y");
   });
 
   it("should show the placeholderText, when provided", async () => {
@@ -236,5 +236,29 @@ describe("src/app/component/form/mt-datepicker", () => {
 
     // Skip this test because data-fns-tz is not working correctly in the test environment
     // expect(wrapper.emitted('update:modelValue')[0]).toStrictEqual(['2023-03-21T23:00:00.000Z']);
+  });
+
+  it("should support other locales formats", async () => {
+    wrapper = await createWrapper({
+      props: {
+        locale: "en-Us",
+        modelValue: "2023-03-27T14:00:00.000+00:00",
+        dateType: "datetime",
+        timeZone: "Europe/Berlin",
+      },
+    });
+
+    expect(wrapper.find("input.form-control").element.value).toMatch(/03\/27\/2023, 4:00\s?PM/);
+
+    wrapper = await createWrapper({
+      props: {
+        locale: "en-Uk",
+        modelValue: "2023-03-27T14:00:00.000+00:00",
+        dateType: "datetime",
+        timeZone: "Europe/Berlin",
+      },
+    });
+
+    expect(wrapper.find("input.form-control").element.value).toMatch(/27\/03\/2023, 16:00/);
   });
 });

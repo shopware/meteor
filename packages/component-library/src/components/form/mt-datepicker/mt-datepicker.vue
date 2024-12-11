@@ -284,6 +284,12 @@ export default defineComponent({
     showTimeZoneHint() {
       return this.dateType === "datetime" && !this.hideHint;
     },
+
+    is24HourFormat() {
+      const formatter = new Intl.DateTimeFormat(this.locale, { hour: "numeric" });
+      const intlOptions = formatter.resolvedOptions();
+      return !intlOptions.hour12;
+    },
   },
 
   watch: {
@@ -553,25 +559,56 @@ export default defineComponent({
 
     createConfig() {
       let dateFormat = "Y-m-dTH:i:S";
-      let altFormat = "Y-m-d H:i";
+      let altFormat = this.getDateStringFormat({
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+      });
 
       if (this.dateType === "time") {
         dateFormat = "H:i:S";
-        altFormat = "H:i";
+        altFormat = this.getDateStringFormat({
+          hour: "2-digit",
+          minute: "2-digit",
+        });
       }
 
       if (this.dateType === "date") {
-        altFormat = "Y-m-d";
+        altFormat = this.getDateStringFormat({
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        });
       }
 
       this.defaultConfig = {
-        time_24hr: true,
+        time_24hr: this.is24HourFormat,
         locale: this.locale,
         dateFormat,
         altInput: true,
         altFormat,
         allowInput: true,
       };
+    },
+
+    getDateStringFormat(options: Intl.DateTimeFormatOptions) {
+      const formatter = new Intl.DateTimeFormat(this.locale, options);
+      const parts = formatter.formatToParts(new Date(2000, 0, 1, 0, 0, 0));
+      const flatpickrMapping: Partial<Record<Intl.DateTimeFormatPartTypes, string>> = {
+        // https://flatpickr.js.org/formatting/
+        year: "Y", // 4-digit year
+        month: "m", // 2-digit month
+        day: "d", // 2-digit day
+        hour: this.is24HourFormat ? "H" : "h", // 24-hour or 12-hour
+        minute: "i", // 2-digit minute
+        dayPeriod: "K", // AM/PM
+      };
+      // 'literal' parts are the separators
+      return parts
+        .map((part) => (part.type === "literal" ? part.value : flatpickrMapping[part.type]))
+        .join("");
     },
   },
 });
