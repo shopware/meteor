@@ -75,8 +75,8 @@ const { t } = useI18n({
 .mt-field__error {
   display: flex;
   align-items: center;
-  gap: 4px;
-  margin-top: 4px;
+  gap: var(--scale-size-4);
+  margin-top: var(--scale-size-4);
   color: var(--color-icon-critical-default);
 }
 </style>

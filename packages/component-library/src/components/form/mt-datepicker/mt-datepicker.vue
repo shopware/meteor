@@ -307,7 +307,7 @@ export default defineComponent({
 }
 
 .dp__input {
-  height: 48px;
+  height: var(--scale-size-48);
   padding-left: 1rem !important;
   border-radius: var(--border-radius-xs);
   font: inherit;
@@ -317,13 +317,13 @@ export default defineComponent({
 
 .dp__input_icon {
   position: absolute;
-  width: 48px;
+  width: var(--scale-size-48);
   height: 96%;
   left: auto;
   right: 1px;
   text-align: center;
   border-radius: 0 3px 3px 0;
-  padding: 12px;
+  padding: var(--scale-size-12);
   border-left: 1px solid var(--color-border-primary-default);
   background: var(--color-background-primary-disabled);
 }
@@ -331,7 +331,7 @@ export default defineComponent({
 .dp__input_icon #meteor-icon-kit__regular-calendar {
   color: var(--color-icon-primary-default);
   width: 16.5px;
-  height: 18px;
+  height: var(--scale-size-18);
   position: absolute;
   top: 50%;
   left: 50%;
@@ -358,7 +358,7 @@ export default defineComponent({
 
 .dp__arrow_top {
   top: -0.5px;
-  left: 24px;
+  left: var(--scale-size-24);
   border-top-right-radius: 3px;
 }
 
@@ -517,11 +517,11 @@ export default defineComponent({
   color: var(--color-text-tertiary-default);
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--scale-size-8);
 }
 
 .field-hint .field-hint-icon svg#meteor-icon-kit__solid-clock {
-  width: 12px;
-  height: 12px;
+  width: var(--scale-size-12);
+  height: var(--scale-size-12);
 }
 </style>
