@@ -242,8 +242,8 @@ export default defineComponent({
   */
   .mt-floating-ui__arrow {
     position: absolute;
-    width: 8px;
-    height: 8px;
+    width: var(--scale-size-8);
+    height: var(--scale-size-8);
     background: inherit;
     transform: rotate(45deg);
   }
