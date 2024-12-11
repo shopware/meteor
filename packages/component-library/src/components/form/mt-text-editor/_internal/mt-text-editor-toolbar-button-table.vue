@@ -60,9 +60,10 @@ import mtButton from "@/components/form/mt-button/mt-button.vue";
 import mtSwitch from "@/components/form/mt-switch/mt-switch.vue";
 import mtTextEditorToolbarButton from "./mt-text-editor-toolbar-button.vue";
 import mtNumberField from "@/components/form/mt-number-field/mt-number-field.vue";
-import { useI18n } from "@/composables/useI18n";
+import { useI18n } from "vue-i18n";
 
 const { t } = useI18n({
+  useScope: 'global',
   messages: {
     en: {
       "mt-text-editor-toolbar-button-table": {

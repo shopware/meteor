@@ -97,7 +97,7 @@ import { computed, watch, type PropType } from "vue";
 import mtPopover from "@/components/overlay/mt-popover/mt-popover.vue";
 import mtPopoverItem from "@/components/overlay/mt-popover-item/mt-popover-item.vue";
 import mtTextEditorToolbarButton from "./mt-text-editor-toolbar-button.vue";
-import { useI18n } from "@/composables/useI18n";
+import { useI18n } from "vue-i18n";
 
 export interface CustomButton {
   name: string;
@@ -114,6 +114,7 @@ export interface CustomButton {
 }
 
 useI18n({
+  useScope: "global",
   messages: {
     en: {
       "mt-text-editor-toolbar": {

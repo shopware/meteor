@@ -16,10 +16,10 @@ import type { PropType } from "vue";
 import MtColorpicker from "../../mt-colorpicker/mt-colorpicker.vue";
 import type { Editor } from "@tiptap/vue-3";
 import type { CustomButton } from "./mt-text-editor-toolbar.vue";
-
-import { useI18n } from "@/composables/useI18n";
+import { useI18n } from "vue-i18n";
 
 useI18n({
+  useScope: 'global',
   messages: {
     en: {
       "mt-text-editor-toolbar-button-color": {

@@ -22,11 +22,9 @@ import type { CustomButton } from "./mt-text-editor-toolbar.vue";
 import type { Editor } from "@tiptap/vue-3";
 import mtIcon from "@/components/icons-media/mt-icon/mt-icon.vue";
 import vTooltip from "@/directives/tooltip.directive";
-import { useI18n } from "@/composables/useI18n";
+import { useI18n } from "vue-i18n";
 
-const { t, te } = useI18n({
-  messages: {},
-});
+const { t } = useI18n();
 
 const props = defineProps({
   editor: {
@@ -57,11 +55,7 @@ const buttonClass = (button: CustomButton) => {
 };
 
 const translatedLabel = computed(() => {
-  if (te(props.button.label)) {
-    return t(props.button.label);
-  }
-
-  return props.button.label;
+  return t(props.button.label);
 });
 </script>
 

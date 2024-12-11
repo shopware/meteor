@@ -148,9 +148,10 @@ import mtTextEditorToolbarButton from "./_internal/mt-text-editor-toolbar-button
 import CodeMirror from "vue-codemirror6";
 import { computed, h, reactive, ref, watch, type PropType } from "vue";
 import { html } from "@codemirror/lang-html";
-import { useI18n } from "@/composables/useI18n";
+import { useI18n } from "vue-i18n";
 
 const { t } = useI18n({
+  useScope: "global",
   messages: {
     en: {
       "mt-text-editor": {
