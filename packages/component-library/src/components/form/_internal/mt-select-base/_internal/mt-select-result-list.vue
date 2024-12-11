@@ -9,10 +9,12 @@
       <!-- @vue-expect-error -->
       <div
         ref="popoverContent"
-        class="mt-select-result-list__content"
-        :class="{
-          'mt-select-result-list__content_empty': isLoading && (!options || options.length <= 0),
-        }"
+        :class="[
+          'mt-select-result-list__content',
+          {
+            'mt-select-result-list__content_empty': isLoading && (!options || options.length <= 0),
+          },
+        ]"
         @scroll="onScroll"
       >
         <slot name="before-item-list" />

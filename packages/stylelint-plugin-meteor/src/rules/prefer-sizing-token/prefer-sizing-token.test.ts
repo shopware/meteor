@@ -34,6 +34,8 @@ testRule({
     { code: ".a { margin: 10vi; }" },
     { code: ".a { margin: 0 auto; }" },
     { code: ".a { margin: var(--scale-size-4) var(--scale-size-8); }" },
+    { code: ".a { margin: -4px; }" },
+    { code: ".a { margin: -1rem; }" },
   ],
 
   reject: [
