@@ -2,6 +2,7 @@ import MtColorpicker from "./mt-colorpicker.vue";
 import type { StoryObj } from "@storybook/vue3";
 import type { SlottedMeta } from "@/_internal/story-helper";
 import { ref } from "vue";
+import { fn } from "@storybook/test";
 
 export type MtColorpickerMeta = SlottedMeta<typeof MtColorpicker, "default" | "updateModelValue">;
 
@@ -44,14 +45,7 @@ export default {
     isInheritanceField: false,
     disableInheritanceToggle: false,
     compact: false,
-  },
-  argTypes: {
-    updateModelValue: {
-      action: "updateModelValue",
-      table: {
-        category: "Events",
-      },
-    },
+    updateModelValue: fn()
   },
 } as MtColorpickerMeta;
 

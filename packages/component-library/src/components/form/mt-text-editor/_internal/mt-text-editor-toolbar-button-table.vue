@@ -63,7 +63,7 @@ import mtNumberField from "@/components/form/mt-number-field/mt-number-field.vue
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n({
-  useScope: 'global',
+  useScope: "global",
   messages: {
     en: {
       "mt-text-editor-toolbar-button-table": {

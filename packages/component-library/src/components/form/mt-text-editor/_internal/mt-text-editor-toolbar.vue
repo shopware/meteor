@@ -22,7 +22,7 @@
               <mt-popover-item
                 v-for="child in button.children"
                 :key="child.name"
-                :label="child.label"
+                :label="t(child.label)"
                 :icon="child.icon"
                 :type="child.isActive && child.isActive(props.editor) ? 'active' : 'default'"
                 :onLabelClick="
@@ -70,7 +70,7 @@
               <mt-popover-item
                 v-for="child in button.children"
                 :key="child.name"
-                :label="child.label"
+                :label="t(child.label)"
                 :icon="child.icon"
                 :type="child.isActive && child.isActive(props.editor) ? 'active' : 'default'"
                 :onLabelClick="() => handleButtonClick(child)"
@@ -113,7 +113,7 @@ export interface CustomButton {
   contextualButtons?: (editor: Editor) => CustomButton[];
 }
 
-useI18n({
+const { t } = useI18n({
   useScope: "global",
   messages: {
     en: {

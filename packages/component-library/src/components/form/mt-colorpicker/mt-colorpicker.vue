@@ -227,6 +227,7 @@ import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
 import MtFloatingUi from "../../_internal/mt-floating-ui/mt-floating-ui.vue";
 import MtText from "@/components/content/mt-text/mt-text.vue";
 import MtButton from "@/components/form/mt-button/mt-button.vue";
+import mtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import { useI18n } from "@/composables/useI18n";
 
 export default defineComponent({
@@ -248,7 +249,7 @@ export default defineComponent({
       },
     });
     return {
-      t
+      t,
     };
   },
 
@@ -257,6 +258,7 @@ export default defineComponent({
     "mt-text": MtText,
     "mt-floating-ui": MtFloatingUi,
     "mt-button": MtButton,
+    "mt-field-error": mtFieldError,
   },
 
   props: {

@@ -53,7 +53,7 @@
         v-else
         :lang="lang"
         :modelValue="modelValue"
-        @update:modelValue="editor?.commands.setContent($event, true)"
+        @update:modelValue="editor?.commands.setContent(String($event), true)"
         class="mt-text-editor__code-editor"
         wrap
         basic
@@ -125,9 +125,6 @@ import Superscript from "@tiptap/extension-superscript";
 import TextAlign from "@tiptap/extension-text-align";
 import { Color } from "@tiptap/extension-color";
 import TextStyle from "@tiptap/extension-text-style";
-import ListItem from "@tiptap/extension-list-item";
-import OrderedList from "@tiptap/extension-ordered-list";
-import BulletList from "@tiptap/extension-bullet-list";
 import Link from "@tiptap/extension-link";
 import CharacterCount from "@tiptap/extension-character-count";
 import Table from "@tiptap/extension-table";
@@ -145,6 +142,8 @@ import mtTextEditorToolbarButtonTable, {
   tableButton,
 } from "./_internal/mt-text-editor-toolbar-button-table.vue";
 import mtTextEditorToolbarButton from "./_internal/mt-text-editor-toolbar-button.vue";
+import mtPopoverItem from "@/components/overlay/mt-popover-item/mt-popover-item.vue";
+import mtPopover from "@/components/overlay/mt-popover/mt-popover.vue";
 import CodeMirror from "vue-codemirror6";
 import { computed, h, reactive, ref, watch, type PropType } from "vue";
 import { html } from "@codemirror/lang-html";
@@ -235,9 +234,6 @@ const editor = new Editor({
     }),
     Color,
     TextStyle,
-    ListItem,
-    OrderedList,
-    BulletList,
     Link.configure({
       openOnClick: false,
     }),

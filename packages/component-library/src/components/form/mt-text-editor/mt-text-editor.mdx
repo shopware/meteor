@@ -211,7 +211,7 @@ The `mt-text-editor` supports adding custom buttons to the toolbar by passing an
 ### Key Properties of `CustomButton`
 
 - **`name`** (required): A unique identifier for the button.
-- **`label`** (required): The visible label for the button.
+- **`label`** (required): The visible label for the button, can be the direct text or a translation key.
 - **`icon`**: An optional icon to display instead of the label. You can use an icon name from the Meteor icon set.
 - **`isActive`**: A function that determines whether the button is currently active (e.g., for toggling bold or italic formatting).
 - **`action`**: A function that executes when the button is clicked. This is where you can apply an editor command.
@@ -390,7 +390,7 @@ For each button a dynamic slot is rendered: `button_${name}`. You can use this s
 
 ```html
 <template>
-  <mt-text-editor v-model="content">
+  <mt-text-editor v-model="content" :customButtons="customButtons">
     <!-- Replaces the "text-color" button with custom component -->
     <template #button_text-color="{ editor, disabled, button }">
       <mt-text-editor-toolbar-button

@@ -280,7 +280,7 @@ export default defineComponent({
     },
 
     increaseNumberByStep() {
-      this.computeValue((this.currentValue + this.realStep).toString());
+      this.computeValue((Number(this.currentValue) + this.realStep).toString());
 
       /** @deprecated tag: 5.0 - Will be removed use update:model-value instead */
       this.$emit("change", this.currentValue);

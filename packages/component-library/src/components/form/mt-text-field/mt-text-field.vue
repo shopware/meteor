@@ -8,7 +8,7 @@
     :disable-inheritance-toggle="disableInheritanceToggle"
     :copyable="copyable"
     :copyable-tooltip="copyableTooltip"
-    :copyable-text="currentValue"
+    :copyable-text="String(currentValue)"
     :has-focus="hasFocus"
     :help-text="helpText"
     :name="name"
@@ -53,9 +53,7 @@
       <slot name="hint" />
     </template>
 
-    <template v-if="maxLength" #field-hint-right>
-      {{ modelValue?.length ?? 0 }}/{{ maxLength }}
-    </template>
+    <template v-if="maxLength" #field-hint-right> {{ String(modelValue)?.length ?? 0 }}/{{ maxLength }} </template>
   </mt-base-field>
 </template>
 

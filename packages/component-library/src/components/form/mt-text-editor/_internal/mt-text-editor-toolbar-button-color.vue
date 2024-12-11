@@ -19,7 +19,7 @@ import type { CustomButton } from "./mt-text-editor-toolbar.vue";
 import { useI18n } from "vue-i18n";
 
 useI18n({
-  useScope: 'global',
+  useScope: "global",
   messages: {
     en: {
       "mt-text-editor-toolbar-button-color": {
