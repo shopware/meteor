@@ -16,7 +16,7 @@ test.beforeEach(async ({ ShopAdmin, TestDataService, AdminProductDetail }) => {
 test("@sdk: update the height of the location iFrame", async ({
   ShopAdmin,
 }) => {
-  await ShopAdmin.page.getByRole("link", { name: "Specifications" }).click();
+  await ShopAdmin.page.getByRole("tab", { name: "Specifications" }).click();
   await expect(
     ShopAdmin.page.locator(".sw-card__title", { hasText: "Location tests" }),
   ).toBeVisible();
@@ -40,7 +40,7 @@ test("@sdk: update the height of the location iFrame", async ({
 test("@sdk: start auto resizing of the iFrame height", async ({
   ShopAdmin,
 }) => {
-  await ShopAdmin.page.getByRole("link", { name: "Specifications" }).click();
+  await ShopAdmin.page.getByRole("tab", { name: "Specifications" }).click();
   await expect(
     ShopAdmin.page.locator(".sw-card__title", { hasText: "Location tests" }),
   ).toBeVisible();
