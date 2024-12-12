@@ -56,10 +56,19 @@
       </div>
 
       <div v-if="!!$slots['context-actions']" class="mt-card__context-menu">
-        <mt-context-button>
-          <!-- @slot Slot for adding mt-context-menu-item components for rendering a context menu -->
-          <slot name="context-actions" />
-        </mt-context-button>
+        <mt-bare-popover placement="bottom-end" width="small">
+          <template #trigger="params">
+            <button v-bind="params" class="mt-card__context-button">
+              <mt-icon name="solid-ellipsis-h-s" />
+            </button>
+          </template>
+
+          <template #default>
+            <mt-bare-popover-item>Item A</mt-bare-popover-item>
+            <mt-bare-popover-item>Item B</mt-bare-popover-item>
+            <mt-bare-popover-item>Item C</mt-bare-popover-item>
+          </template>
+        </mt-bare-popover>
       </div>
     </header>
 
@@ -95,10 +104,11 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import MtContextButton from "../../context-menu/mt-context-button/mt-context-button.vue";
 import MtLoader from "../../feedback-indicator/mt-loader/mt-loader.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtText from "../../content/mt-text/mt-text.vue";
+import MtBarePopover from "@/components/overlay/mt-bare-popover/mt-bare-popover.vue";
+import MtBarePopoverItem from "@/components/overlay/mt-bare-popover/sub-components/mt-bare-popover-item.vue";
 import { useFutureFlags } from "@/composables/useFutureFlags";
 import { useI18n } from "@/composables/useI18n";
 
@@ -378,6 +388,29 @@ const cardClasses = computed(() => ({
 
   &:empty {
     display: none;
+  }
+}
+
+.mt-card__context-button {
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid var(--color-border-primary-default);
+  border-radius: var(--border-radius-button);
+  color: var(--color-text-primary-default);
+  background: var(--color-interaction-secondary-default);
+  display: grid;
+  place-items: center;
+  transition: all 0.15s ease-out;
+
+  &:hover,
+  &:focus-visible {
+    background-color: var(--color-interaction-secondary-hover);
+  }
+
+  &:focus-visible {
+    box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
+    border-color: var(--color-border-brand-selected);
+    outline: 0;
   }
 }
 </style>
