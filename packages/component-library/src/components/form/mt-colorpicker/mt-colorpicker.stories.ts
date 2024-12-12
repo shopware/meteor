@@ -45,7 +45,7 @@ export default {
     isInheritanceField: false,
     disableInheritanceToggle: false,
     compact: false,
-    updateModelValue: fn()
+    updateModelValue: fn(),
   },
 } as MtColorpickerMeta;
 

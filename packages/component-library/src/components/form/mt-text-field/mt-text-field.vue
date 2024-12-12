@@ -53,7 +53,9 @@
       <slot name="hint" />
     </template>
 
-    <template v-if="maxLength" #field-hint-right> {{ String(modelValue)?.length ?? 0 }}/{{ maxLength }} </template>
+    <template v-if="maxLength" #field-hint-right>
+      {{ String(modelValue)?.length ?? 0 }}/{{ maxLength }}
+    </template>
   </mt-base-field>
 </template>
 

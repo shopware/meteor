@@ -1339,10 +1339,6 @@ export default defineComponent({
   position: relative;
   transition: all 0.3s ease;
 
-  &.is--disabled {
-    opacity: 0.5;
-  }
-
   &__previewWrapper {
     position: relative;
     width: var(--scale-size-22);
@@ -1676,6 +1672,10 @@ export default defineComponent({
       left: calc(-1 * (10px + 20px) / 2);
       top: calc(100% + 2px);
     }
+  }
+
+  &--compact.is--disabled {
+    opacity: 0.5;
   }
 }
 
