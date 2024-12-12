@@ -38,9 +38,10 @@
       </template>
       <template #footer>
         <div class="mt-text-editor__table-modal-footer">
-          <mt-button variant="secondary" @click="() => (showTableModal = false)">
+          <mt-modal-close :as="mtButton" variant="secondary">
             {{ t("mt-text-editor-toolbar-button-table.cancel") }}
-          </mt-button>
+          </mt-modal-close>
+
           <mt-button variant="primary" @click="insertTable">
             {{ t("mt-text-editor-toolbar-button-table.insertTable") }}
           </mt-button>
@@ -60,6 +61,7 @@ import mtButton from "@/components/form/mt-button/mt-button.vue";
 import mtSwitch from "@/components/form/mt-switch/mt-switch.vue";
 import mtTextEditorToolbarButton from "./mt-text-editor-toolbar-button.vue";
 import mtNumberField from "@/components/form/mt-number-field/mt-number-field.vue";
+import mtModalClose from "@/components/overlay/mt-modal/sub-components/mt-modal-close.vue";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n({
@@ -157,7 +159,13 @@ export const tableButton: CustomButton = {
   name: "table",
   label: "mt-text-editor-toolbar-button-table.label",
   icon: "regular-table-xs",
-  disabled: (editor) => editor.isActive("table"),
+  disabled: (editor, globalDisabled) => {
+    if (globalDisabled) {
+      return true;
+    }
+
+    return editor.isActive("table");
+  },
   position: 13000,
   contextualButtons: (editor) => {
     if (!editor.isActive("table")) {
@@ -212,10 +220,10 @@ export const tableButton: CustomButton = {
 };
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .mt-text-editor__table-modal-footer {
   display: flex;
   justify-content: flex-end;
-  gap: 8px;
+  gap: var(--scale-size-8);
 }
 </style>

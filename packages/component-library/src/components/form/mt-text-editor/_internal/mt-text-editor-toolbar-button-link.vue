@@ -31,9 +31,10 @@
       </template>
       <template #footer>
         <div class="mt-text-editor__link-modal-footer">
-          <mt-button variant="secondary" @click="() => (showLinkModal = false)">
+          <mt-modal-close :as="mtButton" variant="secondary">
             {{ t("mt-text-editor-toolbar-button-link.cancel") }}
-          </mt-button>
+          </mt-modal-close>
+
           <mt-button
             variant="primary"
             @click="
@@ -66,6 +67,7 @@ import mtButton from "@/components/form/mt-button/mt-button.vue";
 import mtTextField from "@/components/form/mt-text-field/mt-text-field.vue";
 import mtSwitch from "@/components/form/mt-switch/mt-switch.vue";
 import mtTextEditorToolbarButton from "./mt-text-editor-toolbar-button.vue";
+import mtModalClose from "@/components/overlay/mt-modal/sub-components/mt-modal-close.vue";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n({
@@ -131,10 +133,10 @@ export const linkButton: CustomButton = {
 };
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .mt-text-editor__link-modal-footer {
   display: flex;
   justify-content: flex-end;
-  gap: 8px;
+  gap: var(--scale-size-8);
 }
 </style>

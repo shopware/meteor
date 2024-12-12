@@ -27,26 +27,6 @@ export const VisualTestContent = {
   }),
 };
 
-export const TestModalOpening = {
-  name: "The modal opens when the trigger is clicked",
-  render: (args: unknown) => ({
-    components: { MtModal, MtModalRoot, MtModalTrigger, MtButton, MtText },
-    setup() {
-      const isOpen = ref(false);
-      return {
-        args,
-        isOpen,
-      };
-    },
-    template: `
-      <div>
-        <mt-button @click='isOpen = !isOpen'>Open modal</mt-button>
-        <mt-modal-root :isOpen="isOpen"><mt-modal v-bind='args'><template #default><mt-text>Lorem ipsum dolor sit amet</mt-text></template><template #footer><div style='width: 100%; display: flex; justify-content: flex-end;'><mt-button variant='primary'>Continue</mt-button></div></template></mt-modal></mt-modal-root>
-      </div>
-      `,
-  }),
-};
-
 export const VisualTestInsetContent = {
   name: "Render the modal with inset content",
   args: {

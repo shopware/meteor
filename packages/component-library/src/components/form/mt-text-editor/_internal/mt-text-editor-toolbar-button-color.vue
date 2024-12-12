@@ -5,7 +5,7 @@
       compact
       :model-value="getTextColor()"
       @update:modelValue="onUpdateModelValue"
-      :disabled="button.disabled ? button.disabled(props.editor) : disabled"
+      :disabled="button.disabled ? button.disabled(props.editor, disabled) : disabled"
       apply-mode
     />
   </div>
@@ -66,20 +66,20 @@ export const colorButton: CustomButton = {
 };
 </script>
 
-<style lang="scss">
+<style scoped>
 .mt-text-editor-toolbar-button-color {
   display: flex;
   justify-content: center;
-  width: 32px;
+  width: var(--scale-size-32);
 
-  .mt-colorpicker__previewWrapper {
-    width: 14px;
-    height: 14px;
+  :deep(.mt-colorpicker__previewWrapper) {
+    width: var(--scale-size-14);
+    height: var(--scale-size-14);
   }
 
-  .mt-colorpicker--compact .mt-colorpicker__colorpicker-position {
+  :deep(.mt-colorpicker--compact .mt-colorpicker__colorpicker-position) {
     left: calc(-1 * (14px + 24px) / 2);
-    top: calc(100% + 14px + 4px);
+    top: calc(100% + var(--scale-size-14) + 4px);
   }
 }
 </style>

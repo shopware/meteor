@@ -109,7 +109,7 @@ export interface CustomButton {
   alignment?: "left" | "right";
   // For sorting the button order. Default using 1000s steps to provide space for custom buttons
   position?: number;
-  disabled?: (editor: Editor) => boolean;
+  disabled?: (editor: Editor, globalDisabled: boolean) => boolean;
   contextualButtons?: (editor: Editor) => CustomButton[];
 }
 
@@ -149,28 +149,28 @@ const { t } = useI18n({
       "mt-text-editor-toolbar": {
         buttons: {
           format: "Format",
-          p: "Paragraph",
-          h1: "Headline 1",
-          h2: "Headline 2",
-          h3: "Headline 3",
-          h4: "Headline 4",
-          h5: "Headline 5",
-          h6: "Headline 6",
-          bold: "Bold",
-          italic: "Italic",
-          underline: "Underline",
-          strikethrough: "Strikethrough",
-          superscript: "Superscript",
-          subscript: "Subscript",
-          "text-alignment": "Text Alignment",
-          "align-left": "Align left",
-          "align-center": "Align center",
-          "align-right": "Align right",
-          justify: "Justify",
-          "unordered-list": "Insert Unordered List",
-          "numbered-list": "Insert Ordered List",
-          undo: "Undo",
-          redo: "Redo",
+          p: "Absatz",
+          h1: "Überschrift 1",
+          h2: "Überschrift 2",
+          h3: "Überschrift 3",
+          h4: "Überschrift 4",
+          h5: "Überschrift 5",
+          h6: "Überschrift 6",
+          bold: "Fett",
+          italic: "Kursiv",
+          underline: "Unterstrichen",
+          strikethrough: "Durchgestrichen",
+          superscript: "Hochgestellt",
+          subscript: "Tiefgestellt",
+          "text-alignment": "Textausrichtung",
+          "align-left": "Links ausrichten",
+          "align-center": "Zentriert ausrichten",
+          "align-right": "Rechts ausrichten",
+          justify: "Blocksatz",
+          "unordered-list": "Unsortierte Liste einfügen",
+          "numbered-list": "Sortierte Liste einfügen",
+          undo: "Rückgängig",
+          redo: "Wiederholen",
         },
       },
     },
@@ -439,47 +439,45 @@ watch(
 );
 </script>
 
-<style lang="scss">
+<style scoped>
 .mt-text-editor-toolbar {
-  padding: 0 6px;
+  padding: 0 var(--scale-size-6);
   border-radius: var(--border-radius-xs) var(--border-radius-xs) 0 0;
-  height: 36px;
+  height: var(--scale-size-36);
   user-select: none;
   width: 100%;
   background: var(--color-background-primary-disabled);
   border-bottom: 1px solid var(--color-icon-primary-disabled);
   color: var(--color-text-secondary-default);
   display: flex;
-
-  &__buttons-left,
-  &__buttons-right {
-    display: flex;
-    align-items: center;
-    height: 100%;
-  }
-
-  &__buttons-right {
-    margin-left: auto;
-  }
-
-  .mt-floating-ui {
-    height: inherit;
-  }
-
-  .mt-floating-ui__trigger {
-    display: block;
-    height: inherit;
-  }
 }
 
-.mt-text-editor--inline-edit {
-  .mt-text-editor-toolbar {
-    border: none;
-    border-radius: var(--border-radius-xs);
-    box-shadow:
-      0 1px 1px rgba(0, 0, 0, 8%),
-      0 2px 1px rgba(0, 0, 0, 6%),
-      0 1px 3px rgba(0, 0, 0, 10%);
-  }
+.mt-text-editor-toolbar__buttons-left,
+.mt-text-editor-toolbar__buttons-right {
+  display: flex;
+  align-items: center;
+  height: 100%;
+}
+
+.mt-text-editor-toolbar__buttons-right {
+  margin-left: auto;
+}
+
+.mt-text-editor-toolbar :deep(.mt-floating-ui) {
+  height: inherit;
+}
+
+.mt-text-editor-toolbar :deep(.mt-floating-ui__trigger) {
+  display: block;
+  height: inherit;
+}
+
+.mt-text-editor--inline-edit .mt-text-editor-toolbar {
+  border: none;
+  border-radius: var(--border-radius-xs);
+  box-shadow:
+    0 1px 1px rgba(0, 0, 0, 8%),
+    0 2px 1px rgba(0, 0, 0, 6%),
+    0 1px 3px rgba(0, 0, 0, 10%);
 }
 </style>

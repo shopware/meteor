@@ -9,7 +9,7 @@
       hideDelay: 0,
     }"
     :aria-label="translatedLabel"
-    :disabled="button.disabled ? button.disabled(props.editor) : disabled"
+    :disabled="button.disabled ? button.disabled(props.editor, disabled) : disabled"
   >
     <mt-icon v-if="button.icon" :name="button.icon" />
     <span v-else>{{ translatedLabel }}</span>
@@ -59,12 +59,12 @@ const translatedLabel = computed(() => {
 });
 </script>
 
-<style>
+<style scoped>
 .mt-text-editor-toolbar-button {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 32px;
+  width: var(--scale-size-32);
   height: 100%;
 
   .mt-icon {
@@ -82,10 +82,10 @@ const translatedLabel = computed(() => {
 
   &:disabled {
     cursor: not-allowed;
-
-    .mt-icon {
-      color: var(--color-text-secondary-disabled);
-    }
   }
+}
+
+.mt-text-editor-toolbar-button:disabled .mt-icon {
+  color: var(--color-text-secondary-disabled);
 }
 </style>

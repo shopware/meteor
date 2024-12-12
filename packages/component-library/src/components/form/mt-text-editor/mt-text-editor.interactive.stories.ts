@@ -3,6 +3,7 @@ import { expect } from "@storybook/test";
 import { waitUntil } from "../../../_internal/test-helper";
 
 import meta, { type MtTextEditorMeta, type MtTextEditorStory } from "./mt-text-editor.stories";
+import { defineStory } from "@/_internal/story-helper";
 
 export default {
   ...meta,
@@ -24,7 +25,7 @@ function selectText(element: HTMLElement) {
   selection?.addRange(range);
 }
 
-export const VisualTestRenderEditor: MtTextEditorStory = {
+export const VisualTestRenderEditor: MtTextEditorStory = defineStory({
   name: "Should render the text editor",
   args: {},
   play: async ({ canvasElement }) => {
@@ -32,9 +33,9 @@ export const VisualTestRenderEditor: MtTextEditorStory = {
 
     expect(canvas.getByText("82 characters")).toBeDefined();
   },
-};
+});
 
-export const VisualTestRenderEditorInlineMode: MtTextEditorStory = {
+export const VisualTestRenderEditorInlineMode: MtTextEditorStory = defineStory({
   name: "Should render the text editor in inline mode",
   args: {
     isInlineEdit: true,
@@ -44,9 +45,9 @@ export const VisualTestRenderEditorInlineMode: MtTextEditorStory = {
 
     expect(canvas.getByText("82 characters")).toBeDefined();
   },
-};
+});
 
-export const VisualTestRenderEditorInlineModeSelected: MtTextEditorStory = {
+export const VisualTestRenderEditorInlineModeSelected: MtTextEditorStory = defineStory({
   name: "Should render the bubble menu in inline mode when text is selected",
   args: {
     isInlineEdit: true,
@@ -77,14 +78,14 @@ export const VisualTestRenderEditorInlineModeSelected: MtTextEditorStory = {
     expect(canvas.getByLabelText("Insert row after")).toBeDefined();
     expect(canvas.getByLabelText("Delete row")).toBeDefined();
   },
-};
+});
 
-export const SetParagraph: MtTextEditorStory = {
+export const SetParagraph: MtTextEditorStory = defineStory({
   name: "Should set paragraph",
   args: {
     modelValue: `<h1>Hello World</h1>`,
   },
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, screen }) => {
     const canvas = within(canvasElement);
 
     expect(canvas.getByText("11 characters")).toBeDefined();
@@ -93,10 +94,7 @@ export const SetParagraph: MtTextEditorStory = {
     await userEvent.click(canvas.getByLabelText("Format"));
 
     // Click on menuitem with text "Paragraph"
-    await waitUntil(() => document.body.textContent?.includes("Paragraph"));
-    const popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
-    expect(popover.getByText("Paragraph")).toBeInTheDocument();
-    await userEvent.click(popover.getByText("Paragraph"));
+    await userEvent.click(screen.getByText("Paragraph"));
 
     // Wait until args was triggered with new content
     await waitUntil(() => args.updateModelValue.mock.calls.length > 0);
@@ -104,14 +102,14 @@ export const SetParagraph: MtTextEditorStory = {
     // Check if args was triggered with new content
     expect(args.updateModelValue).toHaveBeenCalledWith("<p>Hello World</p>");
   },
-};
+});
 
-export const SetHeadlineH1: MtTextEditorStory = {
+export const SetHeadlineH1: MtTextEditorStory = defineStory({
   name: "Should set h1 headline",
   args: {
     modelValue: `<p>Hello World</p>`,
   },
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, screen }) => {
     const canvas = within(canvasElement);
 
     expect(canvas.getByText("11 characters")).toBeDefined();
@@ -120,10 +118,7 @@ export const SetHeadlineH1: MtTextEditorStory = {
     await userEvent.click(canvas.getByLabelText("Format"));
 
     // Click on menuitem with text "Headline 1"
-    await waitUntil(() => document.body.textContent?.includes("Headline 1"));
-    const popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
-    expect(popover.getByText("Headline 1")).toBeInTheDocument();
-    await userEvent.click(popover.getByText("Headline 1"));
+    await userEvent.click(screen.getByText("Headline 1"));
 
     // Wait until args was triggered with new content
     await waitUntil(() => args.updateModelValue.mock.calls.length > 0);
@@ -131,14 +126,14 @@ export const SetHeadlineH1: MtTextEditorStory = {
     // Check if args was triggered with new content
     expect(args.updateModelValue).toHaveBeenCalledWith("<h1>Hello World</h1>");
   },
-};
+});
 
-export const SetHeadlineH2: MtTextEditorStory = {
+export const SetHeadlineH2: MtTextEditorStory = defineStory({
   name: "Should set h2 headline",
   args: {
     modelValue: "<p>Hello World</p>",
   },
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, screen }) => {
     const canvas = within(canvasElement);
 
     expect(canvas.getByText("11 characters")).toBeDefined();
@@ -147,10 +142,7 @@ export const SetHeadlineH2: MtTextEditorStory = {
     await userEvent.click(canvas.getByLabelText("Format"));
 
     // Click on menuitem with text "Headline 2"
-    await waitUntil(() => document.body.textContent?.includes("Headline 2"));
-    const popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
-    expect(popover.getByText("Headline 2")).toBeInTheDocument();
-    await userEvent.click(popover.getByText("Headline 2"));
+    await userEvent.click(screen.getByText("Headline 2"));
 
     // Wait until args was triggered with new content
     await waitUntil(() => args.updateModelValue.mock.calls.length > 0);
@@ -158,14 +150,14 @@ export const SetHeadlineH2: MtTextEditorStory = {
     // Check if args was triggered with new content
     expect(args.updateModelValue).toHaveBeenCalledWith("<h2>Hello World</h2>");
   },
-};
+});
 
-export const SetHeadlineH3: MtTextEditorStory = {
+export const SetHeadlineH3: MtTextEditorStory = defineStory({
   name: "Should set h3 headline",
   args: {
     modelValue: "<p>Hello World</p>",
   },
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, screen }) => {
     const canvas = within(canvasElement);
 
     expect(canvas.getByText("11 characters")).toBeDefined();
@@ -174,10 +166,7 @@ export const SetHeadlineH3: MtTextEditorStory = {
     await userEvent.click(canvas.getByLabelText("Format"));
 
     // Click on menuitem with text "Headline 3"
-    await waitUntil(() => document.body.textContent?.includes("Headline 3"));
-    const popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
-    expect(popover.getByText("Headline 3")).toBeInTheDocument();
-    await userEvent.click(popover.getByText("Headline 3"));
+    await userEvent.click(screen.getByText("Headline 3"));
 
     // Wait until args was triggered with new content
     await waitUntil(() => args.updateModelValue.mock.calls.length > 0);
@@ -185,14 +174,14 @@ export const SetHeadlineH3: MtTextEditorStory = {
     // Check if args was triggered with new content
     expect(args.updateModelValue).toHaveBeenCalledWith("<h3>Hello World</h3>");
   },
-};
+});
 
-export const SetHeadlineH4: MtTextEditorStory = {
+export const SetHeadlineH4: MtTextEditorStory = defineStory({
   name: "Should set h4 headline",
   args: {
     modelValue: "<p>Hello World</p>",
   },
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, screen }) => {
     const canvas = within(canvasElement);
 
     expect(canvas.getByText("11 characters")).toBeDefined();
@@ -201,10 +190,7 @@ export const SetHeadlineH4: MtTextEditorStory = {
     await userEvent.click(canvas.getByLabelText("Format"));
 
     // Click on menuitem with text "Headline 4"
-    await waitUntil(() => document.body.textContent?.includes("Headline 4"));
-    const popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
-    expect(popover.getByText("Headline 4")).toBeInTheDocument();
-    await userEvent.click(popover.getByText("Headline 4"));
+    await userEvent.click(screen.getByText("Headline 4"));
 
     // Wait until args was triggered with new content
     await waitUntil(() => args.updateModelValue.mock.calls.length > 0);
@@ -212,14 +198,14 @@ export const SetHeadlineH4: MtTextEditorStory = {
     // Check if args was triggered with new content
     expect(args.updateModelValue).toHaveBeenCalledWith("<h4>Hello World</h4>");
   },
-};
+});
 
-export const SetHeadlineH5: MtTextEditorStory = {
+export const SetHeadlineH5: MtTextEditorStory = defineStory({
   name: "Should set h5 headline",
   args: {
     modelValue: "<p>Hello World</p>",
   },
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, screen }) => {
     const canvas = within(canvasElement);
 
     expect(canvas.getByText("11 characters")).toBeDefined();
@@ -228,10 +214,7 @@ export const SetHeadlineH5: MtTextEditorStory = {
     await userEvent.click(canvas.getByLabelText("Format"));
 
     // Click on menuitem with text "Headline 5"
-    await waitUntil(() => document.body.textContent?.includes("Headline 5"));
-    const popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
-    expect(popover.getByText("Headline 5")).toBeInTheDocument();
-    await userEvent.click(popover.getByText("Headline 5"));
+    await userEvent.click(screen.getByText("Headline 5"));
 
     // Wait until args was triggered with new content
     await waitUntil(() => args.updateModelValue.mock.calls.length > 0);
@@ -239,14 +222,14 @@ export const SetHeadlineH5: MtTextEditorStory = {
     // Check if args was triggered with new content
     expect(args.updateModelValue).toHaveBeenCalledWith("<h5>Hello World</h5>");
   },
-};
+});
 
-export const SetHeadlineH6: MtTextEditorStory = {
+export const SetHeadlineH6: MtTextEditorStory = defineStory({
   name: "Should set h6 headline",
   args: {
     modelValue: "<p>Hello World</p>",
   },
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, screen }) => {
     const canvas = within(canvasElement);
 
     expect(canvas.getByText("11 characters")).toBeDefined();
@@ -255,10 +238,7 @@ export const SetHeadlineH6: MtTextEditorStory = {
     await userEvent.click(canvas.getByLabelText("Format"));
 
     // Click on menuitem with text "Headline 6"
-    await waitUntil(() => document.body.textContent?.includes("Headline 6"));
-    const popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
-    expect(popover.getByText("Headline 6")).toBeInTheDocument();
-    await userEvent.click(popover.getByText("Headline 6"));
+    await userEvent.click(screen.getByText("Headline 6"));
 
     // Wait until args was triggered with new content
     await waitUntil(() => args.updateModelValue.mock.calls.length > 0);
@@ -266,14 +246,14 @@ export const SetHeadlineH6: MtTextEditorStory = {
     // Check if args was triggered with new content
     expect(args.updateModelValue).toHaveBeenCalledWith("<h6>Hello World</h6>");
   },
-};
+});
 
-export const SetTextColor: MtTextEditorStory = {
+export const SetTextColor: MtTextEditorStory = defineStory({
   name: "Should set text color",
   args: {
     modelValue: "<h1>Hello World</h1><p>Some text</p>",
   },
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, screen }) => {
     const canvas = within(canvasElement);
 
     expect(canvas.getByText("20 characters")).toBeDefined();
@@ -290,10 +270,9 @@ export const SetTextColor: MtTextEditorStory = {
     // Set new color value
     await waitUntil(() => document.querySelector("[aria-label='colorpicker-apply-color']"));
 
-    const popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
-    const redInput = popover.getByLabelText("red-value") as HTMLInputElement;
-    const greenInput = popover.getByLabelText("green-value") as HTMLInputElement;
-    const blueInput = popover.getByLabelText("blue-value") as HTMLInputElement;
+    const redInput = screen.getByLabelText("red-value") as HTMLInputElement;
+    const greenInput = screen.getByLabelText("green-value") as HTMLInputElement;
+    const blueInput = screen.getByLabelText("blue-value") as HTMLInputElement;
 
     await userEvent.clear(redInput);
     await userEvent.type(redInput, "255");
@@ -305,7 +284,7 @@ export const SetTextColor: MtTextEditorStory = {
     await userEvent.type(blueInput, "0");
 
     // Click on button with aria-label "Apply"
-    await userEvent.click(popover.getByLabelText("colorpicker-apply-color"));
+    await userEvent.click(screen.getByLabelText("colorpicker-apply-color"));
 
     // Expect the color to be applied
     await waitUntil(() => args.updateModelValue?.mock?.calls?.length > 0);
@@ -313,9 +292,9 @@ export const SetTextColor: MtTextEditorStory = {
       '<h1><span style="color: #ff0000">Hello World</span></h1><p>Some text</p>',
     );
   },
-};
+});
 
-export const MakeFontBold: MtTextEditorStory = {
+export const MakeFontBold: MtTextEditorStory = defineStory({
   name: "Should make font bold",
   args: {
     modelValue: "<h1>Hello World</h1><p>Some text</p>",
@@ -342,9 +321,9 @@ export const MakeFontBold: MtTextEditorStory = {
       "<h1><strong>Hello World</strong></h1><p>Some text</p>",
     );
   },
-};
+});
 
-export const MakeFontItalic: MtTextEditorStory = {
+export const MakeFontItalic: MtTextEditorStory = defineStory({
   name: "Should make font italic",
   args: {
     modelValue: "<h1>Hello World</h1><p>Some text</p>",
@@ -371,9 +350,9 @@ export const MakeFontItalic: MtTextEditorStory = {
       "<h1><em>Hello World</em></h1><p>Some text</p>",
     );
   },
-};
+});
 
-export const MakeFontUnderline: MtTextEditorStory = {
+export const MakeFontUnderline: MtTextEditorStory = defineStory({
   name: "Should make font underline",
   args: {
     modelValue: "<h1>Hello World</h1><p>Some text</p>",
@@ -400,9 +379,9 @@ export const MakeFontUnderline: MtTextEditorStory = {
       "<h1><u>Hello World</u></h1><p>Some text</p>",
     );
   },
-};
+});
 
-export const MakeFontStrikeThrough: MtTextEditorStory = {
+export const MakeFontStrikeThrough: MtTextEditorStory = defineStory({
   name: "Should make font strike through",
   args: {
     modelValue: "<h1>Hello World</h1><p>Some text</p>",
@@ -429,9 +408,9 @@ export const MakeFontStrikeThrough: MtTextEditorStory = {
       "<h1><s>Hello World</s></h1><p>Some text</p>",
     );
   },
-};
+});
 
-export const MakeFontSuperScript: MtTextEditorStory = {
+export const MakeFontSuperScript: MtTextEditorStory = defineStory({
   name: "Should make font super script",
   args: {
     modelValue: "<h1>Hello World</h1><p>Some text</p>",
@@ -458,9 +437,9 @@ export const MakeFontSuperScript: MtTextEditorStory = {
       "<h1><sup>Hello World</sup></h1><p>Some text</p>",
     );
   },
-};
+});
 
-export const MakeFontSubScript: MtTextEditorStory = {
+export const MakeFontSubScript: MtTextEditorStory = defineStory({
   name: "Should make font sub script",
   args: {
     modelValue: "<h1>Hello World</h1><p>Some text</p>",
@@ -487,14 +466,14 @@ export const MakeFontSubScript: MtTextEditorStory = {
       "<h1><sub>Hello World</sub></h1><p>Some text</p>",
     );
   },
-};
+});
 
-export const SetTextAlignmentLeft: MtTextEditorStory = {
+export const SetTextAlignmentLeft: MtTextEditorStory = defineStory({
   name: "Should set text alignment left",
   args: {
     modelValue: "<h1>Hello World</h1><p>Some text</p>",
   },
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, screen }) => {
     const canvas = within(canvasElement);
 
     expect(canvas.getByText("20 characters")).toBeDefined();
@@ -508,13 +487,8 @@ export const SetTextAlignmentLeft: MtTextEditorStory = {
     // Click on button with aria-label "Text Alignment"
     await userEvent.click(canvas.getByLabelText("Text Alignment"));
 
-    // Wait until popover was opened
-    await waitUntil(() => document.body.textContent?.includes("Align left"));
-
     // Click on menuitem with text "Align left"
-    const popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
-    expect(popover.getByText("Align left")).toBeInTheDocument();
-    await userEvent.click(popover.getByText("Align left"));
+    await userEvent.click(screen.getByText("Align left"));
 
     // Wait until args was triggered with new content
     await waitUntil(() => args.updateModelValue?.mock?.calls?.length > 0);
@@ -522,14 +496,14 @@ export const SetTextAlignmentLeft: MtTextEditorStory = {
     // Check if args was triggered with new content (no change expected because left is default)
     expect(args.updateModelValue).toHaveBeenCalledWith("<h1>Hello World</h1><p>Some text</p>");
   },
-};
+});
 
-export const SetTextAlignmentCenter: MtTextEditorStory = {
+export const SetTextAlignmentCenter: MtTextEditorStory = defineStory({
   name: "Should set text alignment center",
   args: {
     modelValue: "<h1>Hello World</h1><p>Some text</p>",
   },
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, screen }) => {
     const canvas = within(canvasElement);
 
     expect(canvas.getByText("20 characters")).toBeDefined();
@@ -543,13 +517,8 @@ export const SetTextAlignmentCenter: MtTextEditorStory = {
     // Click on button with aria-label "Text Alignment"
     await userEvent.click(canvas.getByLabelText("Text Alignment"));
 
-    // Wait until popover was opened
-    await waitUntil(() => document.body.textContent?.includes("Align center"));
-
     // Click on menuitem with text "Align center"
-    const popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
-    expect(popover.getByText("Align center")).toBeInTheDocument();
-    await userEvent.click(popover.getByText("Align center"));
+    await userEvent.click(screen.getByText("Align center"));
 
     // Wait until args was triggered with new content
     await waitUntil(() => args.updateModelValue?.mock?.calls?.length > 0);
@@ -559,14 +528,14 @@ export const SetTextAlignmentCenter: MtTextEditorStory = {
       '<h1 style="text-align: center">Hello World</h1><p>Some text</p>',
     );
   },
-};
+});
 
-export const SetTextAlignmentRight: MtTextEditorStory = {
+export const SetTextAlignmentRight: MtTextEditorStory = defineStory({
   name: "Should set text alignment right",
   args: {
     modelValue: "<h1>Hello World</h1><p>Some text</p>",
   },
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, screen }) => {
     const canvas = within(canvasElement);
 
     expect(canvas.getByText("20 characters")).toBeDefined();
@@ -580,13 +549,8 @@ export const SetTextAlignmentRight: MtTextEditorStory = {
     // Click on button with aria-label "Text Alignment"
     await userEvent.click(canvas.getByLabelText("Text Alignment"));
 
-    // Wait until popover was opened
-    await waitUntil(() => document.body.textContent?.includes("Align right"));
-
     // Click on menuitem with text "Align right"
-    const popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
-    expect(popover.getByText("Align right")).toBeInTheDocument();
-    await userEvent.click(popover.getByText("Align right"));
+    await userEvent.click(screen.getByText("Align right"));
 
     // Wait until args was triggered with new content
     await waitUntil(() => args.updateModelValue?.mock?.calls?.length > 0);
@@ -596,14 +560,14 @@ export const SetTextAlignmentRight: MtTextEditorStory = {
       '<h1 style="text-align: right">Hello World</h1><p>Some text</p>',
     );
   },
-};
+});
 
-export const SetTextAlignmentJustify: MtTextEditorStory = {
+export const SetTextAlignmentJustify: MtTextEditorStory = defineStory({
   name: "Should set text alignment justify",
   args: {
     modelValue: "<h1>Hello World</h1><p>Some text</p>",
   },
-  play: async ({ canvasElement, args }) => {
+  play: async ({ canvasElement, args, screen }) => {
     const canvas = within(canvasElement);
 
     // Click inside the editor
@@ -615,13 +579,8 @@ export const SetTextAlignmentJustify: MtTextEditorStory = {
     // Click on button with aria-label "Text Alignment"
     await userEvent.click(canvas.getByLabelText("Text Alignment"));
 
-    // Wait until popover was opened
-    await waitUntil(() => document.body.textContent?.includes("Justify"));
-
     // Click on menuitem with text "Align justify"
-    const popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
-    expect(popover.getByText("Justify")).toBeInTheDocument();
-    await userEvent.click(popover.getByText("Justify"));
+    await userEvent.click(screen.getByText("Justify"));
 
     // Wait until args was triggered with new content
     await waitUntil(() => args.updateModelValue?.mock?.calls?.length > 0);
@@ -631,9 +590,9 @@ export const SetTextAlignmentJustify: MtTextEditorStory = {
       '<h1 style="text-align: justify">Hello World</h1><p>Some text</p>',
     );
   },
-};
+});
 
-export const SetUnorderedList: MtTextEditorStory = {
+export const SetUnorderedList: MtTextEditorStory = defineStory({
   name: "Should set unordered list",
   args: {
     modelValue: "<h1>Hello World</h1><p>Some text</p>",
@@ -658,9 +617,9 @@ export const SetUnorderedList: MtTextEditorStory = {
       "<ul><li><p>Hello World</p></li></ul><p>Some text</p>",
     );
   },
-};
+});
 
-export const SetOrderedList: MtTextEditorStory = {
+export const SetOrderedList: MtTextEditorStory = defineStory({
   name: "Should set ordered list",
   args: {
     modelValue: "<h1>Hello World</h1><p>Some text</p>",
@@ -685,9 +644,9 @@ export const SetOrderedList: MtTextEditorStory = {
       "<ol><li><p>Hello World</p></li></ol><p>Some text</p>",
     );
   },
-};
+});
 
-export const SetLink: MtTextEditorStory = {
+export const SetLink: MtTextEditorStory = defineStory({
   name: "Should set link",
   args: {
     modelValue: "<h1>Hello World</h1><p>Some text</p>",
@@ -704,9 +663,6 @@ export const SetLink: MtTextEditorStory = {
     // Click on button with aria-label "Link"
     await userEvent.click(canvas.getByLabelText("Link"));
 
-    // Wait until modal was opened
-    await waitUntil(() => document.body.querySelector("div[role='dialog']"));
-
     // Set link url
     const linkInput = canvas.getByLabelText("Link URL");
     await userEvent.clear(linkInput);
@@ -721,9 +677,6 @@ export const SetLink: MtTextEditorStory = {
     // Click on button with text "Apply link"
     await userEvent.click(canvas.getByText("Apply link"));
 
-    // Wait until modal was closed
-    await waitUntil(() => !document.body.querySelector("div[role='dialog']"));
-
     // Wait until args was triggered with new content
     await waitUntil(() => args.updateModelValue?.mock?.calls?.length > 0);
 
@@ -732,9 +685,9 @@ export const SetLink: MtTextEditorStory = {
       '<h1><a target="_blank" rel="noopener noreferrer nofollow" href="https://www.shopware.com">Hello World</a></h1><p>Some text</p>',
     );
   },
-};
+});
 
-export const InsertTable: MtTextEditorStory = {
+export const InsertTable: MtTextEditorStory = defineStory({
   name: "Should insert table",
   args: {
     modelValue: "<h1>Hello World</h1><p>Some text</p>",
@@ -744,9 +697,6 @@ export const InsertTable: MtTextEditorStory = {
 
     // Click on button with aria-label "Table"
     await userEvent.click(canvas.getByLabelText("Table"));
-
-    // Wait until modal is opened
-    await waitUntil(() => document.body.querySelector("div[role='dialog']"));
 
     // Set table columns
     const columnsInput = canvas.getByLabelText("Columns");
@@ -759,9 +709,6 @@ export const InsertTable: MtTextEditorStory = {
     // Click on button with text "Insert table"
     await userEvent.click(canvas.getByText("Insert table"));
 
-    // Wait until modal is closed
-    await waitUntil(() => !document.body.querySelector("div[role='dialog']"));
-
     // Wait until args was triggered with new content
     await waitUntil(() => args.updateModelValue?.mock?.calls?.length > 0);
 
@@ -770,9 +717,9 @@ export const InsertTable: MtTextEditorStory = {
       '<table style="min-width: 100px"><colgroup><col style="min-width: 25px"><col style="min-width: 25px"><col style="min-width: 25px"><col style="min-width: 25px"></colgroup><tbody><tr><th colspan="1" rowspan="1"><p></p></th><th colspan="1" rowspan="1"><p></p></th><th colspan="1" rowspan="1"><p></p></th><th colspan="1" rowspan="1"><p></p></th></tr><tr><td colspan="1" rowspan="1"><p></p></td><td colspan="1" rowspan="1"><p></p></td><td colspan="1" rowspan="1"><p></p></td><td colspan="1" rowspan="1"><p></p></td></tr></tbody></table><h1>Hello World</h1><p>Some text</p>',
     );
   },
-};
+});
 
-export const VisualTestShowContextualButtons: MtTextEditorStory = {
+export const VisualTestShowContextualButtons: MtTextEditorStory = defineStory({
   name: "Should show contextual buttons when inside a table",
   args: {
     modelValue: "<h1>Hello World</h1><p>Some text</p>",
@@ -782,9 +729,6 @@ export const VisualTestShowContextualButtons: MtTextEditorStory = {
 
     // Click on button with aria-label "Table"
     await userEvent.click(canvas.getByLabelText("Table"));
-
-    // Wait until modal is opened
-    await waitUntil(() => document.body.querySelector("div[role='dialog']"));
 
     // Set table columns
     const columnsInput = canvas.getByLabelText("Columns");
@@ -818,9 +762,9 @@ export const VisualTestShowContextualButtons: MtTextEditorStory = {
     expect(canvas.getByLabelText("Delete column")).toBeDefined();
     expect(canvas.getByLabelText("Remove table")).toBeDefined();
   },
-};
+});
 
-export const VisualTestRenderCodeView: MtTextEditorStory = {
+export const VisualTestRenderCodeView: MtTextEditorStory = defineStory({
   name: "Should render the code view",
   args: {
     modelValue: "<h1>Hello World</h1><p>Some text</p>",
@@ -836,4 +780,4 @@ export const VisualTestRenderCodeView: MtTextEditorStory = {
     expect(codeEditor).toBeDefined();
     expect(codeEditor.innerText).toBe("<h1>Hello World</h1><p>Some text</p>");
   },
-};
+});
