@@ -250,7 +250,7 @@ export default defineComponent({
 <style>
 .mt-field--checkbox__container {
   & .mt-field--checkbox {
-    margin-bottom: 22px;
+    margin-bottom: var(--scale-size-22);
 
     &.mt-switch--future-remove-default-margin {
       margin-bottom: 0;
@@ -284,12 +284,12 @@ export default defineComponent({
 
     & .mt-field__label {
       margin-bottom: 0;
-      margin-left: 4px;
+      margin-left: var(--scale-size-4);
     }
 
     & .mt-field__checkbox {
-      width: 16px;
-      height: 16px;
+      width: var(--scale-size-16);
+      height: var(--scale-size-16);
       position: relative;
 
       &:has(:focus-visible) {
@@ -413,7 +413,7 @@ export default defineComponent({
     &.is--bordered {
       border-radius: 4px;
       border: 1px solid var(--color-border-primary-default);
-      padding: 16px;
+      padding: var(--scale-size-16);
 
       &.has--error {
         border-color: var(--color-border-critical-default);
@@ -422,10 +422,10 @@ export default defineComponent({
   }
 
   & .mt-field__error {
-    margin-bottom: 14px;
+    margin-bottom: var(--scale-size-14);
 
     &.checkbox-bordered {
-      margin-bottom: 8px;
+      margin-bottom: var(--scale-size-8);
     }
   }
 }

@@ -64,9 +64,9 @@ $mt-color-badge-color-info: $color-shopware-brand-500;
 
 .mt-color-badge {
   display: inline-block;
-  height: 8px;
-  width: 8px;
-  margin: 0 0 1px 10px;
+  height: var(--scale-size-8);
+  width: var(--scale-size-8);
+  margin: 0 0 1px var(--scale-size-10);
   border-radius: 2px;
   background-color: $mt-color-badge-color-fallback;
 
@@ -94,7 +94,7 @@ $mt-color-badge-color-info: $color-shopware-brand-500;
   &.has--text {
     height: auto;
     width: auto;
-    padding: 4px 8px;
+    padding: var(--scale-size-4) var(--scale-size-8);
     border-radius: 8px;
 
     &.is--warning {

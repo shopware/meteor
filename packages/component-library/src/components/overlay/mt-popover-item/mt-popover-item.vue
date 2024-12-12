@@ -350,7 +350,7 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
   display: flex;
   flex-direction: column;
   color: var(--color-text-primary-default);
-  padding: 8px 0;
+  padding: var(--scale-size-8) 0;
 
   // add new Inter font to popover item
   * {
@@ -381,9 +381,9 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
       position: absolute;
       background-color: var(--color-interaction-secondary-hover);
       border-radius: var(--border-radius-xs);
-      top: 4px;
+      top: var(--scale-size-4);
       right: -8px;
-      bottom: 4px;
+      bottom: var(--scale-size-4);
       left: -8px;
       pointer-events: none;
     }
@@ -432,18 +432,18 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
 
   &__top-row {
     display: flex;
-    gap: 8px;
+    gap: var(--scale-size-8);
     z-index: 1;
   }
 
   &__align-right {
     display: flex;
-    gap: 8px;
+    gap: var(--scale-size-8);
     margin-left: auto;
   }
 
   &__checkbox {
-    margin-top: 4px;
+    margin-top: var(--scale-size-4);
 
     .mt-field--checkbox {
       margin: 0;
@@ -451,7 +451,7 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
   }
 
   &__icon {
-    margin-top: 4px;
+    margin-top: var(--scale-size-4);
     padding: 1px;
 
     &--clickable {
@@ -459,13 +459,13 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
     }
 
     svg {
-      width: 14px !important;
-      height: 14px !important;
+      width: var(--scale-size-14) !important;
+      height: var(--scale-size-14) !important;
     }
   }
 
   &__label {
-    margin-right: 4px;
+    margin-right: var(--scale-size-4);
   }
 
   &__label,
@@ -487,13 +487,13 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
   }
 
   &__switch {
-    margin-top: 4px;
+    margin-top: var(--scale-size-4);
 
     .mt-field--switch {
       margin: 0;
 
       .mt-field--switch__input {
-        height: 16px;
+        height: var(--scale-size-16);
         padding: 0;
       }
 
@@ -505,13 +505,13 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
 
   &__visibility {
     svg {
-      width: 12px !important;
-      height: 8px !important;
+      width: var(--scale-size-12) !important;
+      height: var(--scale-size-8) !important;
     }
 
     #meteor-icon-kit__solid-eye-slash {
-      width: 14px !important;
-      height: 10px !important;
+      width: var(--scale-size-14) !important;
+      height: var(--scale-size-10) !important;
       margin-top: -1px;
       margin-left: -1px;
       margin-right: -1px;
@@ -519,7 +519,7 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
   }
 
   &__options-count {
-    margin-right: 8px;
+    margin-right: var(--scale-size-8);
     font-family: var(--font-family-body);
     font-size: var(--font-size-xs);
     line-height: var(--font-line-height-xs);
@@ -529,15 +529,15 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
   &__options {
     svg {
       width: 5px !important;
-      height: 8px !important;
+      height: var(--scale-size-8) !important;
     }
   }
 
   &__visibility,
   &__options {
     cursor: pointer;
-    padding-top: 4px;
-    margin-top: 4px;
+    padding-top: var(--scale-size-4);
+    margin-top: var(--scale-size-4);
   }
 
   &__meta-copy {

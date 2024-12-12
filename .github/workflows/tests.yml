@@ -44,6 +44,9 @@ jobs:
       - name: Lint code
         run: pnpx turbo run lint:eslint -- --fix
 
+      - name: Lint css
+        run: pnpx turbo run lint:css -- --fix --custom-formatter @csstools/stylelint-formatter-github
+
       - name: Check formatting
         run: pnpx turbo run format
 
@@ -55,9 +58,6 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Apply code formatting and fixable ESLint issues"
-
-      - name: Lint css
-        run: pnpx turbo run lint:css
 
   unit-tests:
     name: Unit tests

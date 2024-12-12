@@ -219,8 +219,8 @@ export default defineComponent({
 
 .mt-popover__content {
   padding: 1rem;
-  padding-top: 4px;
-  padding-bottom: 4px;
+  padding-top: var(--scale-size-4);
+  padding-bottom: var(--scale-size-4);
   background-color: var(--color-elevation-surface-overlay);
   overflow: auto;
   border-radius: var(--border-radius-overlay);
@@ -232,7 +232,7 @@ export default defineComponent({
   scroll-behavior: smooth;
 
   &:has(.mt-popover__header) {
-    padding-top: 16px;
+    padding-top: var(--scale-size-16);
   }
 }
 
@@ -244,8 +244,8 @@ export default defineComponent({
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 16px;
-  gap: 16px;
+  margin-bottom: var(--scale-size-16);
+  gap: var(--scale-size-16);
 }
 
 .mt-popover__title {
@@ -255,13 +255,13 @@ export default defineComponent({
 
 .mt-popover__back-button {
   margin-right: auto;
-  padding-top: 12px;
-  padding-bottom: 12px;
+  padding-top: var(--scale-size-12);
+  padding-bottom: var(--scale-size-12);
 
   & .mt-icon {
     & svg {
-      width: 12px !important;
-      height: 8px !important;
+      width: var(--scale-size-12) !important;
+      height: var(--scale-size-8) !important;
     }
   }
 }

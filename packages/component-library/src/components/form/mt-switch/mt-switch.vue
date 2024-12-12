@@ -222,8 +222,8 @@ export default defineComponent({
 <style lang="scss">
 .mt-field--switch__container {
   .mt-field--switch {
-    margin-top: 24px;
-    margin-bottom: 22px;
+    margin-top: var(--scale-size-24);
+    margin-bottom: var(--scale-size-22);
 
     &.mt-field--switch-no-margin-top {
       margin-top: 0;
@@ -251,7 +251,7 @@ export default defineComponent({
       label {
         cursor: pointer;
         flex-grow: initial;
-        padding: 15px 0 15px 4px;
+        padding: 15px 0 15px var(--scale-size-4);
       }
     }
 
@@ -263,20 +263,20 @@ export default defineComponent({
 
     &.mt-field--switch-bordered {
       .mt-field__error {
-        padding: 0 16px;
+        padding: 0 var(--scale-size-16);
       }
     }
 
     &.mt-field--switch-bordered .mt-field--switch__content {
       border-radius: 4px;
       border: 1px solid var(--color-border-primary-default);
-      padding: 0 16px;
+      padding: 0 var(--scale-size-16);
     }
 
     .mt-field--switch__input {
       position: relative;
       padding: 15px 0;
-      width: 24px;
+      width: var(--scale-size-24);
       height: 100%;
 
       input[type="checkbox"] {
@@ -309,7 +309,7 @@ export default defineComponent({
           background: var(--color-interaction-primary-default);
 
           .mt-field__switch-state-knob {
-            left: 10px;
+            left: var(--scale-size-10);
           }
         }
 
@@ -325,7 +325,7 @@ export default defineComponent({
       .mt-field__switch-state {
         position: absolute;
         width: 100%;
-        height: 16px;
+        height: var(--scale-size-16);
         z-index: 1;
         text-align: center;
         background: var(--color-interaction-secondary-disabled);
@@ -333,8 +333,8 @@ export default defineComponent({
 
         .mt-field__switch-state-knob {
           transition: all 0.3s ease-in-out;
-          width: 10px;
-          height: 10px;
+          width: var(--scale-size-10);
+          height: var(--scale-size-10);
           position: absolute;
           top: 3px;
           left: 3px;
@@ -347,7 +347,7 @@ export default defineComponent({
     .mt-field__inheritance-icon {
       display: flex;
       align-items: center;
-      margin-left: 8px;
+      margin-left: var(--scale-size-8);
       margin-right: 0;
     }
 

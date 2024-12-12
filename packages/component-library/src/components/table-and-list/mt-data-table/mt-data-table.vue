@@ -2061,24 +2061,24 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     width: 100%;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--scale-size-8);
   }
 
   // TODO: improve the name of this css selector
   .mt-data-table__filter {
     color: var(--color-text-primary-default);
-    padding-top: 16px;
+    padding-top: var(--scale-size-16);
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: var(--scale-size-12);
   }
 
   .mt-data-table__filter-list {
     display: flex;
     align-items: baseline;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: var(--scale-size-6);
   }
 
   &__caption {
@@ -2264,7 +2264,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
 
   // custom skeleton styling
   tbody td .mt-skeleton-bar {
-    height: 24px;
+    height: var(--scale-size-24);
   }
 
   // override default cursor when user is resizing the columns
@@ -2298,7 +2298,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     min-width: 67px;
     max-width: 67px;
     width: 67px;
-    padding-right: 8px;
+    padding-right: var(--scale-size-8);
     border-right: 0px;
     border-left-width: 0px;
   }
@@ -2349,7 +2349,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   .mt-data-table__table-select-row + td,
   .mt-data-table__table-selection-head + th {
     border-left: 0px;
-    padding-left: 8px;
+    padding-left: var(--scale-size-8);
   }
 
   .mt-data-table__table-select-row,
@@ -2360,7 +2360,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
       .mt-field--checkbox__content {
         display: flex;
         justify-content: center;
-        margin-top: 2px;
+        margin-top: var(--scale-size-2);
       }
 
       .mt-field {
@@ -2392,7 +2392,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     z-index: 10;
     cursor: col-resize;
     height: 100%;
-    width: 6px;
+    width: var(--scale-size-6);
     position: absolute;
     top: 0px;
   }
@@ -2413,8 +2413,8 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     top: 0;
     right: 0;
     transform: translate3d(50%, -150%, 0);
-    width: 14px;
-    height: 16px;
+    width: var(--scale-size-14);
+    height: var(--scale-size-16);
   }
 
   table.is--dragging-inside .mt-data-table__table-head-add-column-indicator {
@@ -2456,7 +2456,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   */
   .mt-data-table__table-head-column-settings {
     position: absolute;
-    top: 16px;
+    top: var(--scale-size-16);
     left: 0;
     width: 100%;
     height: calc(100% - 16px);
@@ -2493,8 +2493,8 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     width: $settingsColumnWidth;
 
     #meteor-icon-kit__solid-cog-s {
-      width: 10px;
-      height: 10px;
+      width: var(--scale-size-10);
+      height: var(--scale-size-10);
     }
   }
 
@@ -2515,7 +2515,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
       font-size: var(--font-size-xs);
       line-height: var(--font-line-height-xs);
       font-family: var(--font-family-body);
-      margin-right: 8px;
+      margin-right: var(--scale-size-8);
 
       &:hover {
         text-decoration: underline;
@@ -2550,7 +2550,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
-    gap: 16px;
+    gap: var(--scale-size-16);
     margin-left: auto;
 
     .mt-button[aria-label="reload-data"] {
@@ -2559,8 +2559,8 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     }
 
     .mt-button #meteor-icon-kit__solid-undo-s {
-      width: 12px;
-      height: 12px;
+      width: var(--scale-size-12);
+      height: var(--scale-size-12);
     }
   }
 
@@ -2569,7 +2569,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     font-size: var(--font-size-2xs);
     line-height: var(--font-line-height-2xs);
     font-family: var(--font-family-body);
-    margin-left: 12px;
+    margin-left: var(--scale-size-12);
   }
 }
 
@@ -2579,7 +2579,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
 .mt-data-table__table-head-inner-wrapper {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--scale-size-8);
 }
 
 /**
@@ -2595,7 +2595,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
 
     #meteor-icon-kit__solid-long-arrow-up,
     #meteor-icon-kit__solid-long-arrow-down {
-      height: 12px;
+      height: var(--scale-size-12);
     }
   }
 }
@@ -2643,7 +2643,7 @@ thead th.is--dragging {
   top: 0;
   left: 0;
   width: 100%;
-  height: 16px;
+  height: var(--scale-size-16);
   z-index: 1;
   cursor: grab;
 
@@ -2686,7 +2686,7 @@ table.is--dragging-inside {
   top: 0;
   left: 0;
   width: 100%;
-  height: 8px;
+  height: var(--scale-size-8);
   background-color: $color-shopware-brand-900;
   border-radius: var(--border-radius-xs) var(--border-radius-xs) 0 0;
   transition: transform 0.2s ease;
@@ -2695,8 +2695,8 @@ table.is--dragging-inside {
 
 .mt-data-table__table-head-dragzone-indicator {
   position: absolute;
-  width: 28px;
-  height: 16px;
+  width: var(--scale-size-28);
+  height: var(--scale-size-16);
   left: calc(50% - 14px);
   display: flex;
   justify-content: center;
@@ -2722,8 +2722,8 @@ table.is--dragging-inside {
       border-radius: 999px;
 
       #meteor-icon-kit__solid-plus-square-s {
-        width: 14px;
-        height: 14px;
+        width: var(--scale-size-14);
+        height: var(--scale-size-14);
       }
     }
   }
