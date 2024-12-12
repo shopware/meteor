@@ -1,5 +1,6 @@
 import { createApp, defineAsyncComponent } from "vue";
 import { location } from "@shopware-ag/meteor-admin-sdk";
+import { createI18n } from "vue-i18n";
 import "@shopware-ag/meteor-component-library/styles.css";
 
 // watch for height changes
@@ -47,8 +48,8 @@ const app = createApp({
     `,
 });
 
-// Hack to fake i18n
-app.config.globalProperties.$tc = (s) => s;
-app.config.globalProperties.$t = (s) => s;
+const i18n = createI18n();
+
+app.use(i18n);
 
 app.mount("#app");
