@@ -21,6 +21,9 @@
         :aria-pressed="visible"
         aria-label="colorpicker-toggle"
         @click="toggleColorPicker"
+        @keyup.enter="toggleColorPicker"
+        @keyup.escape="outsideClick"
+        tabindex="0"
       >
         <div
           class="mt-colorpicker__previewColor"
@@ -48,17 +51,22 @@
         :z-index="zIndex"
         :offset="-12"
       >
-        <div class="mt-colorpicker__colorpicker">
+        <div class="mt-colorpicker__colorpicker" ref="modal" @keydown="handleKeydown">
           <div
             ref="colorPicker"
             class="mt-colorpicker__colorpicker-selection"
             :style="{ backgroundColor: selectorBackground }"
             @mousedown="setDragging"
           >
-            <div class="mt-colorpicker__colorpicker-selector" :style="selectorStyles" />
+            <div
+              class="mt-colorpicker__colorpicker-selector"
+              :style="selectorStyles"
+              ref="first"
+              tabindex="0"
+            />
           </div>
           <div class="mt-colorpicker__row">
-            <div class="mt-colorpicker__sliders">
+            <div class="mt-colorpicker__sliders" tabindex="0" ref="last">
               <input
                 v-model.number="hueValue"
                 aria-label="colorpicker-color-range"
@@ -215,6 +223,7 @@ import { debounce } from "lodash-es";
 import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
 import MtFloatingUi from "../../_internal/mt-floating-ui/mt-floating-ui.vue";
 import MtText from "@/components/content/mt-text/mt-text.vue";
+import { createFocusTrap } from "focus-trap";
 
 export default defineComponent({
   name: "MtColorpicker",
@@ -385,6 +394,7 @@ export default defineComponent({
       hueValue: 0,
       alphaValue: 1,
       hasFocus: false,
+      trap: null,
     };
   },
 
@@ -649,9 +659,18 @@ export default defineComponent({
 
     visible(visibleStatus) {
       if (!visibleStatus) {
+        this.trap.deactivate();
         return;
       }
 
+      this.$nextTick(() => {
+        this.trap = createFocusTrap(this.$refs.modal, {
+          escapeDeactivates: true,
+          clickOutsideDeactivates: true,
+        });
+        this.trap.activate();
+        this.$refs.first.focus();
+      });
       const color = this.colorValue;
 
       if ((typeof color === "string" ? color : color.string).startsWith("#")) {
@@ -751,10 +770,8 @@ export default defineComponent({
 
       if (this.visible) {
         this.setOutsideClickEvent();
-
         return;
       }
-
       this.removeOutsideClickEvent();
     },
 
@@ -1245,6 +1262,25 @@ export default defineComponent({
 
     removeFocusClass() {
       this.hasFocus = false;
+    },
+
+    handleKeydown(event) {
+      const firstFocusable = this.$refs.first;
+      const lastFocusable = this.$refs.last;
+
+      if (event.key === "Tab") {
+        if (event.shiftKey) {
+          if (document.activeElement === firstFocusable) {
+            lastFocusable.focus();
+            event.preventDefault();
+          }
+        } else {
+          if (document.activeElement === lastFocusable) {
+            firstFocusable.focus();
+            event.preventDefault();
+          }
+        }
+      }
     },
   },
 });
