@@ -459,3 +459,5 @@ export const VisualTestColorpickerWithHelpText: MtColorpickerStory = {
     expect(openedTooltip.innerText).toEqual("Text for helping you");
   },
 };
+
+
