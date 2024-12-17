@@ -1,9 +1,17 @@
 <template>
-  <mt-field-label v-if="label && id" :id="id" data-testid="mt-select__label">
+  <mt-field-label v-if="label && id" :id="id" :has-error="!!error" data-testid="mt-select__label">
     {{ label }}
   </mt-field-label>
 
-  <div class="mt-select__box" ref="box">
+  <div
+    :class="[
+      'mt-select__box',
+      {
+        'mt-select__box--has-error': !!error,
+      },
+    ]"
+    ref="box"
+  >
     <input
       class="mt-select__input"
       :id="id"
@@ -13,9 +21,9 @@
       :disabled="disabled"
       :placeholder="placeholder"
     />
-
-    <mt-field-error v-if="!!error" :error="error" data-testid="mt-select__error" />
   </div>
+
+  <mt-field-error v-if="!!error" :error="error" data-testid="mt-select__error" />
 
   <div
     v-if="isOpen"
@@ -120,6 +128,11 @@ const { floatingStyles } = useFloating(box, listbox, {
   &:has(input:disabled) {
     background: var(--color-background-primary-disabled);
   }
+}
+
+.mt-select__box--has-error {
+  border-color: var(--color-border-critical-default);
+  background-color: var(--color-background-critical-dark);
 }
 
 .mt-select__input {
