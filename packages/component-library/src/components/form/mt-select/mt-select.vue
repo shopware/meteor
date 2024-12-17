@@ -3,7 +3,7 @@
     {{ label }}
   </mt-field-label>
 
-  <div class="mt-select__box">
+  <div class="mt-select__box" ref="box">
     <input
       class="mt-select__input"
       :id="id"
@@ -13,7 +13,13 @@
     />
   </div>
 
-  <div v-if="isOpen" ref="listbox" role="listbox" class="mt-select__listbox">
+  <div
+    v-if="isOpen"
+    ref="listbox"
+    role="listbox"
+    class="mt-select__listbox"
+    :style="floatingStyles"
+  >
     <button
       v-for="option in options"
       :key="option.value"
@@ -40,6 +46,7 @@ import { ref, useTemplateRef } from "vue";
 import { onClickOutside } from "@vueuse/core";
 import { useId } from "@/composables/useId";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
+import { autoUpdate, flip, offset, shift, size, useFloating } from "@floating-ui/vue";
 
 const id = useId();
 
@@ -68,6 +75,24 @@ function changeValue(value: string, label: string) {
   model.value = value;
   selectedItem.value = label;
 }
+
+const box = useTemplateRef<HTMLDivElement>("box");
+
+const { floatingStyles } = useFloating(box, listbox, {
+  middleware: [
+    offset(8),
+    flip(),
+    shift(),
+    size({
+      apply({ rects, elements }) {
+        Object.assign(elements.floating.style, {
+          minWidth: `${rects.reference.width}px`,
+        });
+      },
+    }),
+  ],
+  whileElementsMounted: autoUpdate,
+});
 </script>
 
 <style scoped>
