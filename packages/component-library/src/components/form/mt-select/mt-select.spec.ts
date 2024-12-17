@@ -120,4 +120,21 @@ describe("mt-select", () => {
     // ASSERT
     expect(screen.queryByTestId("mt-select__label")).not.toBeInTheDocument();
   });
+
+  it("closes the option list after selecting an option", async () => {
+    // ARRANGE
+    render(MtSelect, {
+      props: {
+        options: [{ label: "Option 1", value: "1" }],
+      },
+    });
+
+    await userEvent.click(screen.getByRole("textbox"));
+
+    // ACT
+    await userEvent.click(screen.getByText("Option 1"));
+
+    // ASSERT
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+  });
 });

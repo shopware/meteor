@@ -74,6 +74,8 @@ const selectedItem = ref<string | null>(null);
 function changeValue(value: string, label: string) {
   model.value = value;
   selectedItem.value = label;
+
+  isOpen.value = false;
 }
 
 const box = useTemplateRef<HTMLDivElement>("box");
