@@ -24,4 +24,17 @@ describe("mt-select", () => {
     // ASSERT
     expect(screen.getByRole("listbox")).toBeVisible();
   });
+
+  it("closes the option list when clicking outside of it", async () => {
+    // ARRANGE
+    render(MtSelect);
+
+    await userEvent.click(screen.getByRole("textbox"));
+
+    // ACT
+    await userEvent.click(document.body);
+
+    // ASSERT
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+  });
 });
