@@ -13,11 +13,12 @@
     />
   </div>
 
-  <div v-if="isOpen" ref="listbox" role="listbox">
+  <div v-if="isOpen" ref="listbox" role="listbox" class="mt-select__listbox">
     <button
       v-for="option in options"
       :key="option.value"
       role="listitem"
+      class="mt-select__listitem"
       @click="() => changeValue(option.value, option.label)"
     >
       {{ option.label }}
@@ -102,5 +103,27 @@ function changeValue(value: string, label: string) {
   &::placeholder {
     color: var(--color-text-secondary-default);
   }
+}
+
+.mt-select__listbox {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-border-primary-default);
+  border-radius: var(--border-radius-overlay);
+  background-color: var(--color-elevation-surface-overlay);
+  box-shadow: 0 3px 6px 0 var(--color-elevation-shadow-default);
+  padding: var(--scale-size-8);
+}
+
+.mt-select__listitem {
+  width: 100%;
+  text-align: left;
+  line-height: var(--font-line-height-xs);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-regular);
+  font-family: var(--font-family-body);
+  color: var(--color-text-primary-default);
+  padding-inline: var(--scale-size-16);
+  min-height: var(--scale-size-32);
 }
 </style>
