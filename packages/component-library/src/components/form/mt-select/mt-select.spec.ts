@@ -37,4 +37,24 @@ describe("mt-select", () => {
     // ASSERT
     expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
   });
+
+  it("updates the value when clicking on an option", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtSelect, {
+      props: {
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    await userEvent.click(screen.getByRole("textbox"));
+
+    // ACT
+    await userEvent.click(screen.getByText("Option 1"));
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("Option 1");
+    expect(handler).toHaveBeenNthCalledWith(1, "1");
+  });
 });
