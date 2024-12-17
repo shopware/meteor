@@ -13,4 +13,15 @@ describe("mt-select", () => {
     // ASSERT
     expect(screen.getByRole("listbox")).toBeVisible();
   });
+
+  it("opens the option list when focusing the field", async () => {
+    // ARRANGE
+    render(MtSelect);
+
+    // ACT
+    await userEvent.tab();
+
+    // ASSERT
+    expect(screen.getByRole("listbox")).toBeVisible();
+  });
 });

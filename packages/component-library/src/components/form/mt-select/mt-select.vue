@@ -1,5 +1,5 @@
 <template>
-  <input type="text" @click="isOpen = true" />
+  <input type="text" @focus="isOpen = true" />
 
   <div v-if="isOpen" role="listbox"></div>
 </template>
