@@ -8,6 +8,7 @@
       'mt-select__box',
       {
         'mt-select__box--has-error': !!error,
+        'mt-select__box--small': small,
       },
     ]"
     ref="box"
@@ -73,6 +74,7 @@ withDefaults(
     error?: {
       detail: string;
     };
+    small?: boolean;
   }>(),
   {
     valueProperty: "value",
@@ -165,6 +167,10 @@ const { floatingStyles } = useFloating(box, listbox, {
   &:disabled::placeholder {
     color: var(--color-text-secondary-disabled);
   }
+}
+
+.mt-select__box--small {
+  min-height: var(--scale-size-32);
 }
 
 .mt-select__listbox {
