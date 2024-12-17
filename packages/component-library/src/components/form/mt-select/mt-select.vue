@@ -2,17 +2,34 @@
   <input type="text" @focus="isOpen = true" :value="selectedItem" />
 
   <div v-if="isOpen" ref="listbox" role="listbox">
-    <button role="listitem" @click="() => changeValue('1', 'Option 1')">Option 1</button>
+    <button
+      v-for="option in options"
+      :key="option.value"
+      role="listitem"
+      @click="() => changeValue(option.value, option.label)"
+    >
+      {{ option.label }}
+    </button>
   </div>
 </template>
 
-<script setup lang="ts">
+<script
+  setup
+  lang="ts"
+  generic="
+    T extends {
+      value: string;
+      label: string;
+    }
+  "
+>
 import { ref, useTemplateRef } from "vue";
 import { onClickOutside } from "@vueuse/core";
 
 withDefaults(
   defineProps<{
     valueProperty?: string;
+    options: T[];
   }>(),
   {
     valueProperty: "value",

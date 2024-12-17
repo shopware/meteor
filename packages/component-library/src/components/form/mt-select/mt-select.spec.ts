@@ -5,7 +5,14 @@ import MtSelect from "./mt-select.vue";
 describe("mt-select", () => {
   it("opens the option list when clicking on the field", async () => {
     // ARRANGE
-    render(MtSelect);
+    render(MtSelect, {
+      props: {
+        options: [
+          { label: "Option 1", value: "1" },
+          { label: "Option 2", value: "2" },
+        ],
+      },
+    });
 
     // ACT
     await userEvent.click(screen.getByRole("textbox"));
@@ -16,7 +23,14 @@ describe("mt-select", () => {
 
   it("opens the option list when focusing the field", async () => {
     // ARRANGE
-    render(MtSelect);
+    render(MtSelect, {
+      props: {
+        options: [
+          { label: "Option 1", value: "1" },
+          { label: "Option 2", value: "2" },
+        ],
+      },
+    });
 
     // ACT
     await userEvent.tab();
@@ -27,7 +41,14 @@ describe("mt-select", () => {
 
   it("closes the option list when clicking outside of it", async () => {
     // ARRANGE
-    render(MtSelect);
+    render(MtSelect, {
+      props: {
+        options: [
+          { label: "Option 1", value: "1" },
+          { label: "Option 2", value: "2" },
+        ],
+      },
+    });
 
     await userEvent.click(screen.getByRole("textbox"));
 
@@ -45,6 +66,10 @@ describe("mt-select", () => {
     render(MtSelect, {
       props: {
         "onUpdate:modelValue": handler,
+        options: [
+          { label: "Option 1", value: "1" },
+          { label: "Option 2", value: "2" },
+        ],
       },
     });
 
