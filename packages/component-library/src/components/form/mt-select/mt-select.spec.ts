@@ -178,4 +178,31 @@ describe("mt-select", () => {
     // ASSERT
     expect(screen.queryByTestId("mt-select__error")).not.toBeInTheDocument();
   });
+
+  it("shows a hint message when there is one defined", async () => {
+    // ARRANGE
+    render(MtSelect, {
+      props: {
+        options: [],
+      },
+      slots: {
+        hint: "This is a hint",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByText("This is a hint")).toBeVisible();
+  });
+
+  it("does not show a hint message when there is no hint defined", async () => {
+    // ARRANGE
+    render(MtSelect, {
+      props: {
+        options: [],
+      },
+    });
+
+    // ASSERT
+    expect(screen.queryByTestId("mt-select__hint")).not.toBeInTheDocument();
+  });
 });

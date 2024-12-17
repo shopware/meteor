@@ -26,6 +26,10 @@
 
   <mt-field-error v-if="!!error" :error="error" data-testid="mt-select__error" />
 
+  <div v-if="!!$slots.hint" class="mt-select__hint" data-testid="mt-select__hint">
+    <slot name="hint" />
+  </div>
+
   <div
     v-if="isOpen"
     ref="listbox"
@@ -80,6 +84,10 @@ withDefaults(
     valueProperty: "value",
   },
 );
+
+defineSlots<{
+  hint(): void;
+}>();
 
 const isOpen = ref(false);
 
@@ -193,5 +201,17 @@ const { floatingStyles } = useFloating(box, listbox, {
   color: var(--color-text-primary-default);
   padding-inline: var(--scale-size-16);
   min-height: var(--scale-size-32);
+}
+
+.mt-select__hint {
+  color: var(--color-text-tertiary-default);
+  font-family: var(--font-family-body);
+  font-weight: var(--font-weight-regular);
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+
+  & .mt-icon {
+    color: var(--color-icon-tertiary-default);
+  }
 }
 </style>
