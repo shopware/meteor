@@ -110,6 +110,10 @@ const { floatingStyles } = useFloating(box, listbox, {
   padding-inline: var(--scale-size-16);
   display: flex;
   align-items: center;
+
+  &:has(input:disabled) {
+    background: var(--color-background-primary-disabled);
+  }
 }
 
 .mt-select__input {
@@ -131,8 +135,16 @@ const { floatingStyles } = useFloating(box, listbox, {
     box-shadow: none;
   }
 
+  &:disabled {
+    color: var(--color-text-primary-disabled);
+  }
+
   &::placeholder {
     color: var(--color-text-secondary-default);
+  }
+
+  &:disabled::placeholder {
+    color: var(--color-text-secondary-disabled);
   }
 }
 
