@@ -1,9 +1,17 @@
 <template>
-  <mt-field-label v-if="label && id" :id="id" data-testid="mt-select__label">{{
-    label
-  }}</mt-field-label>
+  <mt-field-label v-if="label && id" :id="id" data-testid="mt-select__label">
+    {{ label }}
+  </mt-field-label>
 
-  <input :id="id" type="text" @focus="isOpen = true" :value="selectedItem" />
+  <div class="mt-select__box">
+    <input
+      class="mt-select__input"
+      :id="id"
+      type="text"
+      @focus="isOpen = true"
+      :value="selectedItem"
+    />
+  </div>
 
   <div v-if="isOpen" ref="listbox" role="listbox">
     <button
@@ -60,3 +68,39 @@ function changeValue(value: string, label: string) {
   selectedItem.value = label;
 }
 </script>
+
+<style scoped>
+.mt-select__box {
+  min-height: var(--scale-size-48);
+  border: 1px solid var(--color-border-primary-default);
+  border-radius: var(--border-radius-xs);
+  background: var(--color-elevation-surface-raised);
+  padding-inline: var(--scale-size-16);
+  display: flex;
+  align-items: center;
+}
+
+.mt-select__input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  border: none;
+  background: transparent;
+  font-size: var(--font-size-xs);
+  font-family: var(--font-size-body);
+  line-height: var(--line-height-xs);
+  color: var(--color-text-primary-default);
+  outline: none;
+  appearance: none;
+
+  &:invalid,
+  &:-moz-submit-invalid,
+  &:-moz-ui-invalid {
+    box-shadow: none;
+  }
+
+  &::placeholder {
+    color: var(--color-text-secondary-default);
+  }
+}
+</style>
