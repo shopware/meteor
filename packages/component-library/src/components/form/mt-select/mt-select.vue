@@ -10,6 +10,7 @@
       type="text"
       @focus="isOpen = true"
       :value="selectedItem"
+      :placeholder="placeholder"
     />
   </div>
 
@@ -55,6 +56,7 @@ withDefaults(
     valueProperty?: string;
     options: T[];
     label?: string;
+    placeholder?: string;
   }>(),
   {
     valueProperty: "value",
