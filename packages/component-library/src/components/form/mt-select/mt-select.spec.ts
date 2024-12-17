@@ -102,4 +102,19 @@ describe("mt-select", () => {
     expect(screen.getByRole("listbox")).toBeVisible();
     expect(screen.getByRole("textbox")).toHaveFocus();
   });
+
+  it("hides the label when there is not label specified", () => {
+    // ARRANGE
+    render(MtSelect, {
+      props: {
+        options: [
+          { label: "Option 1", value: "1" },
+          { label: "Option 2", value: "2" },
+        ],
+      },
+    });
+
+    // ASSERT
+    expect(screen.queryByTestId("mt-select__label")).not.toBeInTheDocument();
+  });
 });

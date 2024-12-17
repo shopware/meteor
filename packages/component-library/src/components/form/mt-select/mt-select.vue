@@ -1,5 +1,5 @@
 <template>
-  <label :for="id">{{ label }}</label>
+  <label v-if="label" :for="id" data-testid="mt-select__label">{{ label }}</label>
 
   <input :id="id" type="text" @focus="isOpen = true" :value="selectedItem" />
 
