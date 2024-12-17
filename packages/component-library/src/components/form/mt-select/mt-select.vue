@@ -10,6 +10,7 @@
       type="text"
       @focus="isOpen = true"
       :value="selectedItem"
+      :disabled="disabled"
       :placeholder="placeholder"
     />
   </div>
@@ -57,6 +58,7 @@ withDefaults(
     options: T[];
     label?: string;
     placeholder?: string;
+    disabled?: boolean;
   }>(),
   {
     valueProperty: "value",

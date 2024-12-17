@@ -137,4 +137,20 @@ describe("mt-select", () => {
     // ASSERT
     expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
   });
+
+  it("does not open the option list when clicking on a disabled field", async () => {
+    // ARRANGE
+    render(MtSelect, {
+      props: {
+        disabled: true,
+        options: [],
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("textbox"));
+
+    // ASSERT
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+  });
 });
