@@ -153,4 +153,29 @@ describe("mt-select", () => {
     // ASSERT
     expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
   });
+
+  it("shows an error message when there is an error", async () => {
+    // ARRANGE
+    render(MtSelect, {
+      props: {
+        error: { detail: "This is an error" },
+        options: [],
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByText("This is an error")).toBeVisible();
+  });
+
+  it("does not show an error message when there is no error", async () => {
+    // ARRANGE
+    render(MtSelect, {
+      props: {
+        options: [],
+      },
+    });
+
+    // ASSERT
+    expect(screen.queryByTestId("mt-select__error")).not.toBeInTheDocument();
+  });
 });

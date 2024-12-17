@@ -13,6 +13,8 @@
       :disabled="disabled"
       :placeholder="placeholder"
     />
+
+    <mt-field-error v-if="!!error" :error="error" data-testid="mt-select__error" />
   </div>
 
   <div
@@ -48,6 +50,7 @@ import { ref, useTemplateRef } from "vue";
 import { onClickOutside } from "@vueuse/core";
 import { useId } from "@/composables/useId";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
+import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import { autoUpdate, flip, offset, shift, size, useFloating } from "@floating-ui/vue";
 
 const id = useId();
@@ -59,6 +62,9 @@ withDefaults(
     label?: string;
     placeholder?: string;
     disabled?: boolean;
+    error?: {
+      detail: string;
+    };
   }>(),
   {
     valueProperty: "value",
