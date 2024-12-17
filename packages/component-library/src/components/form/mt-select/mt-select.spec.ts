@@ -1,6 +1,7 @@
 import { userEvent } from "@storybook/test";
 import { render, screen } from "@testing-library/vue";
 import MtSelect from "./mt-select.vue";
+import { flushPromises } from "@vue/test-utils";
 
 describe("mt-select", () => {
   it("opens the option list when clicking on the field", async () => {
@@ -94,6 +95,8 @@ describe("mt-select", () => {
         ],
       },
     });
+
+    await flushPromises();
 
     // ACT
     await userEvent.click(screen.getByText("Select an option"));

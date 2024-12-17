@@ -1,5 +1,7 @@
 <template>
-  <label v-if="label" :for="id" data-testid="mt-select__label">{{ label }}</label>
+  <mt-field-label v-if="label && id" :id="id" data-testid="mt-select__label">{{
+    label
+  }}</mt-field-label>
 
   <input :id="id" type="text" @focus="isOpen = true" :value="selectedItem" />
 
@@ -28,6 +30,7 @@
 import { ref, useTemplateRef } from "vue";
 import { onClickOutside } from "@vueuse/core";
 import { useId } from "@/composables/useId";
+import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 
 const id = useId();
 
