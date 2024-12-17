@@ -1,5 +1,7 @@
 <template>
-  <input type="text" @focus="isOpen = true" :value="selectedItem" />
+  <label :for="id">{{ label }}</label>
+
+  <input :id="id" type="text" @focus="isOpen = true" :value="selectedItem" />
 
   <div v-if="isOpen" ref="listbox" role="listbox">
     <button
@@ -25,11 +27,15 @@
 >
 import { ref, useTemplateRef } from "vue";
 import { onClickOutside } from "@vueuse/core";
+import { useId } from "@/composables/useId";
+
+const id = useId();
 
 withDefaults(
   defineProps<{
     valueProperty?: string;
     options: T[];
+    label?: string;
   }>(),
   {
     valueProperty: "value",

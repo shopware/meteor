@@ -82,4 +82,24 @@ describe("mt-select", () => {
     expect(screen.getByRole("textbox")).toHaveValue("Option 1");
     expect(handler).toHaveBeenNthCalledWith(1, "1");
   });
+
+  it("clicking on the label opens the option list", async () => {
+    // ARRANGE
+    render(MtSelect, {
+      props: {
+        label: "Select an option",
+        options: [
+          { label: "Option 1", value: "1" },
+          { label: "Option 2", value: "2" },
+        ],
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByText("Select an option"));
+
+    // ASSERT
+    expect(screen.getByRole("listbox")).toBeVisible();
+    expect(screen.getByRole("textbox")).toHaveFocus();
+  });
 });
