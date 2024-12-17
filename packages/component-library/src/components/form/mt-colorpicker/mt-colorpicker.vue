@@ -1,218 +1,221 @@
 <template>
-  <mt-base-field
-    class="mt-colorpicker"
-    :disabled="disabled"
-    :required="required"
-    :is-inherited="isInherited"
-    :is-inheritance-field="isInheritanceField"
-    :disable-inheritance-toggle="disableInheritanceToggle"
-    :has-focus="hasFocus"
-    :help-text="helpText"
-    :name="name"
-  >
-    <template #label>
-      {{ label }}
-    </template>
+    <mt-base-field
+      class="mt-colorpicker"
+      :disabled="disabled"
+      :required="required"
+      :is-inherited="isInherited"
+      :is-inheritance-field="isInheritanceField"
+      :disable-inheritance-toggle="disableInheritanceToggle"
+      :has-focus="hasFocus"
+      :help-text="helpText"
+      :name="name"
+    >
+      <template #label>
+        {{ label }}
+      </template>
 
-    <template #field-prefix>
-      <div
-        class="mt-colorpicker__previewWrapper"
-        role="button"
-        :aria-pressed="visible"
-        aria-label="colorpicker-toggle"
-        @click="toggleColorPicker"
-        @keyup.enter="toggleColorPicker"
-        @keyup.escape="outsideClick"
-        tabindex="0"
-      >
+      <template #field-prefix>
         <div
-          class="mt-colorpicker__previewColor"
-          :class="{ active: visible }"
-          :style="{ background: previewColorValue }"
-        />
-        <div class="mt-colorpicker__previewBackground" :class="{ 'is--invalid': !isColorValid }" />
-      </div>
-    </template>
-
-    <template #element>
-      <input
-        v-model="colorValue"
-        aria-label="colorpicker-color-value"
-        class="mt-colorpicker__input"
-        spellcheck="false"
-        :disabled="disabled"
-        :readonly="readonly"
-        @click="onClickInput"
-      />
-
-      <mt-floating-ui
-        :isOpened="visible"
-        class="mt-colorpicker__colorpicker-position"
-        :z-index="zIndex"
-        :offset="-12"
-      >
-        <div class="mt-colorpicker__colorpicker" ref="modal" @keydown="handleKeydown">
+          class="mt-colorpicker__previewWrapper"
+          role="button"
+          :aria-pressed="visible"
+          aria-label="colorpicker-toggle"
+          @click="toggleColorPicker"
+        >
           <div
-            ref="colorPicker"
-            class="mt-colorpicker__colorpicker-selection"
-            :style="{ backgroundColor: selectorBackground }"
-            @mousedown="setDragging"
-          >
-            <div
-              class="mt-colorpicker__colorpicker-selector"
-              :style="selectorStyles"
-              ref="first"
-              tabindex="0"
-            />
-          </div>
-          <div class="mt-colorpicker__row">
-            <div class="mt-colorpicker__sliders" tabindex="0" ref="last">
-              <input
-                v-model.number="hueValue"
-                aria-label="colorpicker-color-range"
-                class="mt-colorpicker__colorpicker-slider-range"
-                type="range"
-                min="0"
-                max="360"
-                step="1"
-              />
-
-              <input
-                v-if="alpha"
-                v-model.number="alphaValue"
-                class="mt-colorpicker__alpha-slider"
-                aria-label="colorpicker-alpha-range"
-                type="range"
-                min="0"
-                max="1"
-                step="0.01"
-                :style="{ backgroundImage: sliderBackground }"
-              />
-            </div>
-
-            <div class="mt-colorpicker__colorpicker-wrapper" :class="{ 'is--small': !alpha }">
-              <div
-                class="mt-colorpicker__colorpicker-previewColor"
-                :style="{ background: previewColorValue }"
-              />
-              <div
-                class="mt-colorpicker__colorpicker-previewBackground"
-                :class="{ 'is--invalid': !isColorValid }"
-              />
-            </div>
-          </div>
-
-          <div class="mt-colorpicker__row mt-colorpicker__input-row">
-            <div class="mt-colorpicker__row-column">
-              <input
-                v-model.lazy="hexValue"
-                class="mt-colorpicker__colorpicker-input is--hex"
-                aria-label="hex-value"
-                type="text"
-                spellcheck="false"
-              />
-              <mt-text
-                v-if="colorLabels"
-                size="2xs"
-                as="label"
-                class="mt-colorpicker__row-column-label"
-              >
-                HEX
-              </mt-text>
-            </div>
-
-            <div class="mt-colorpicker__row-column">
-              <input
-                v-model.number="redValue"
-                class="mt-colorpicker__colorpicker-input"
-                aria-label="red-value"
-                type="number"
-                min="0"
-                max="255"
-                step="1"
-                placeholder="0"
-              />
-              <mt-text
-                v-if="colorLabels"
-                size="2xs"
-                as="label"
-                class="mt-colorpicker__row-column-label"
-              >
-                R
-              </mt-text>
-            </div>
-
-            <div class="mt-colorpicker__row-column">
-              <input
-                v-model.number="greenValue"
-                class="mt-colorpicker__colorpicker-input"
-                aria-label="green-value"
-                type="number"
-                min="0"
-                max="255"
-                step="1"
-                placeholder="0"
-              />
-              <mt-text
-                v-if="colorLabels"
-                size="2xs"
-                as="label"
-                class="mt-colorpicker__row-column-label"
-              >
-                G
-              </mt-text>
-            </div>
-
-            <div class="mt-colorpicker__row-column">
-              <input
-                v-model.number="blueValue"
-                class="mt-colorpicker__colorpicker-input"
-                aria-label="blue-value"
-                type="number"
-                min="0"
-                max="255"
-                step="1"
-                placeholder="0"
-              />
-              <mt-text
-                v-if="colorLabels"
-                size="2xs"
-                as="label"
-                class="mt-colorpicker__row-column-label"
-              >
-                B
-              </mt-text>
-            </div>
-
-            <div v-if="alpha" class="mt-colorpicker__row-column">
-              <input
-                v-model.number="integerAlpha"
-                class="mt-colorpicker__colorpicker-input"
-                aria-label="alpha-value"
-                type="number"
-                min="0"
-                max="100"
-                step="1"
-                placeholder="0"
-              />
-              <mt-text
-                v-if="colorLabels"
-                as="label"
-                size="2xs"
-                class="mt-colorpicker__row-column-label"
-              >
-                Alpha
-              </mt-text>
-            </div>
-          </div>
+            class="mt-colorpicker__previewColor"
+            :class="{ active: visible }"
+            :style="{ background: previewColorValue }"
+          />
+          <div
+            class="mt-colorpicker__previewBackground"
+            :class="{ 'is--invalid': !isColorValid }"
+          />
         </div>
-      </mt-floating-ui>
-    </template>
+      </template>
 
-    <template #error>
-      <mt-field-error v-if="error" :error="error" />
-    </template>
-  </mt-base-field>
+      <template #element>
+        <input
+          v-model="colorValue"
+          aria-label="colorpicker-color-value"
+          class="mt-colorpicker__input"
+          spellcheck="false"
+          :disabled="disabled"
+          :readonly="readonly"
+          @click="onClickInput"
+          @keyup.tab="toggleFocusClass"
+          @keyup.enter="toggleColorPicker"
+          @keyup.escape="outsideClick"
+        />
+
+        <mt-floating-ui
+          :isOpened="visible"
+          class="mt-colorpicker__colorpicker-position"
+          :z-index="zIndex"
+          :offset="-12"
+        >
+          <div class="mt-colorpicker__colorpicker" ref="modal" @keyup.escape="outsideClick">
+            <div
+              ref="colorPicker"
+              class="mt-colorpicker__colorpicker-selection"
+              :style="{ backgroundColor: selectorBackground }"
+              @mousedown="setDragging"
+              @keydown="keyMoveSelector"
+            >
+              <div
+                class="mt-colorpicker__colorpicker-selector"
+                :style="selectorStyles"
+                tabindex="0"
+              />
+            </div>
+            <div class="mt-colorpicker__row">
+              <div class="mt-colorpicker__sliders">
+                <input
+                  v-model.number="hueValue"
+                  aria-label="colorpicker-color-range"
+                  class="mt-colorpicker__colorpicker-slider-range"
+                  type="range"
+                  min="0"
+                  max="360"
+                  step="1"
+                />
+
+                <input
+                  v-if="alpha"
+                  v-model.number="alphaValue"
+                  class="mt-colorpicker__alpha-slider"
+                  aria-label="colorpicker-alpha-range"
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.01"
+                  :style="{ backgroundImage: sliderBackground }"
+                />
+              </div>
+
+              <div class="mt-colorpicker__colorpicker-wrapper" :class="{ 'is--small': !alpha }">
+                <div
+                  class="mt-colorpicker__colorpicker-previewColor"
+                  :style="{ background: previewColorValue }"
+                />
+                <div
+                  class="mt-colorpicker__colorpicker-previewBackground"
+                  :class="{ 'is--invalid': !isColorValid }"
+                />
+              </div>
+            </div>
+
+            <div class="mt-colorpicker__row mt-colorpicker__input-row">
+              <div class="mt-colorpicker__row-column">
+                <input
+                  v-model.lazy="hexValue"
+                  class="mt-colorpicker__colorpicker-input is--hex"
+                  aria-label="hex-value"
+                  type="text"
+                  spellcheck="false"
+                />
+                <mt-text
+                  v-if="colorLabels"
+                  size="2xs"
+                  as="label"
+                  class="mt-colorpicker__row-column-label"
+                >
+                  HEX
+                </mt-text>
+              </div>
+
+              <div class="mt-colorpicker__row-column">
+                <input
+                  v-model.number="redValue"
+                  class="mt-colorpicker__colorpicker-input"
+                  aria-label="red-value"
+                  type="number"
+                  min="0"
+                  max="255"
+                  step="1"
+                  placeholder="0"
+                />
+                <mt-text
+                  v-if="colorLabels"
+                  size="2xs"
+                  as="label"
+                  class="mt-colorpicker__row-column-label"
+                >
+                  R
+                </mt-text>
+              </div>
+
+              <div class="mt-colorpicker__row-column">
+                <input
+                  v-model.number="greenValue"
+                  class="mt-colorpicker__colorpicker-input"
+                  aria-label="green-value"
+                  type="number"
+                  min="0"
+                  max="255"
+                  step="1"
+                  placeholder="0"
+                />
+                <mt-text
+                  v-if="colorLabels"
+                  size="2xs"
+                  as="label"
+                  class="mt-colorpicker__row-column-label"
+                >
+                  G
+                </mt-text>
+              </div>
+
+              <div class="mt-colorpicker__row-column">
+                <input
+                  v-model.number="blueValue"
+                  class="mt-colorpicker__colorpicker-input"
+                  aria-label="blue-value"
+                  type="number"
+                  min="0"
+                  max="255"
+                  step="1"
+                  placeholder="0"
+                />
+                <mt-text
+                  v-if="colorLabels"
+                  size="2xs"
+                  as="label"
+                  class="mt-colorpicker__row-column-label"
+                >
+                  B
+                </mt-text>
+              </div>
+
+              <div v-if="alpha" class="mt-colorpicker__row-column">
+                <input
+                  v-model.number="integerAlpha"
+                  class="mt-colorpicker__colorpicker-input"
+                  aria-label="alpha-value"
+                  type="number"
+                  min="0"
+                  max="100"
+                  step="1"
+                  placeholder="0"
+                />
+                <mt-text
+                  v-if="colorLabels"
+                  as="label"
+                  size="2xs"
+                  class="mt-colorpicker__row-column-label"
+                >
+                  Alpha
+                </mt-text>
+              </div>
+            </div>
+          </div>
+        </mt-floating-ui>
+      </template>
+
+      <template #error>
+        <mt-field-error v-if="error" :error="error" />
+      </template>
+    </mt-base-field>
 </template>
 
 <script lang="ts">
@@ -223,7 +226,7 @@ import { debounce } from "lodash-es";
 import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
 import MtFloatingUi from "../../_internal/mt-floating-ui/mt-floating-ui.vue";
 import MtText from "@/components/content/mt-text/mt-text.vue";
-import { createFocusTrap } from "focus-trap";
+import { createFocusTrap, FocusTrap } from "focus-trap";
 
 export default defineComponent({
   name: "MtColorpicker",
@@ -383,6 +386,7 @@ export default defineComponent({
     hueValue: number;
     alphaValue: number;
     hasFocus: boolean;
+    trap: FocusTrap | null;
   } {
     return {
       localValue: this.modelValue,
@@ -663,14 +667,6 @@ export default defineComponent({
         return;
       }
 
-      this.$nextTick(() => {
-        this.trap = createFocusTrap(this.$refs.modal, {
-          escapeDeactivates: true,
-          clickOutsideDeactivates: true,
-        });
-        this.trap.activate();
-        this.$refs.first.focus();
-      });
       const color = this.colorValue;
 
       if ((typeof color === "string" ? color : color.string).startsWith("#")) {
@@ -724,6 +720,9 @@ export default defineComponent({
 
   beforeUnmount(): void {
     window.removeEventListener("mousedown", this.outsideClick);
+    if (this.trap) {
+      this.trap.deactivate();
+    }
   },
 
   methods: {
@@ -750,6 +749,11 @@ export default defineComponent({
       }
 
       this.visible = false;
+
+      if (this.trap) {
+        this.trap.deactivate();
+      }
+
       this.removeOutsideClickEvent();
     },
 
@@ -767,6 +771,15 @@ export default defineComponent({
       }
 
       this.visible = !this.visible;
+
+      this.$nextTick(() => {
+        this.trap = createFocusTrap(this.$refs.modal, {
+          escapeDeactivates: true,
+          clickOutsideDeactivates: true,
+          initialFocus: false,
+        });
+        this.trap.activate();
+      });
 
       if (this.visible) {
         this.setOutsideClickEvent();
@@ -809,6 +822,37 @@ export default defineComponent({
 
       this.saturationValue = Math.floor(correctedXValue);
       this.luminanceValue = Math.floor(correctedYValue);
+    },
+
+    keyMoveSelector(event: KeyboardEvent) {
+      if (!["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)) {
+        return;
+      }
+
+      event.preventDefault();
+
+      const STEP_SIZE = 5;
+
+      let newSaturationValue = this.saturationValue;
+      let newLuminanceValue = this.luminanceValue;
+
+      switch (event.key) {
+        case "ArrowRight":
+          newSaturationValue = Math.min(100, newSaturationValue + STEP_SIZE);
+          break;
+        case "ArrowLeft":
+          newSaturationValue = Math.max(0, newSaturationValue - STEP_SIZE);
+          break;
+        case "ArrowUp":
+          newLuminanceValue = Math.min(100, newLuminanceValue + STEP_SIZE);
+          break;
+        case "ArrowDown":
+          newLuminanceValue = Math.max(0, newLuminanceValue - STEP_SIZE);
+          break;
+      }
+
+      this.saturationValue = newSaturationValue;
+      this.luminanceValue = newLuminanceValue;
     },
 
     setDragging(event: MouseEvent) {
@@ -1256,31 +1300,20 @@ export default defineComponent({
       this.toggleColorPicker();
     },
 
+    toggleFocusClass() {
+      if (this.hasFocus) {
+        this.removeFocusClass();
+      }
+      this.setFocusClass();
+      console.log(this.hasFocus)
+    },
+
     setFocusClass() {
       this.hasFocus = true;
     },
 
     removeFocusClass() {
       this.hasFocus = false;
-    },
-
-    handleKeydown(event) {
-      const firstFocusable = this.$refs.first;
-      const lastFocusable = this.$refs.last;
-
-      if (event.key === "Tab") {
-        if (event.shiftKey) {
-          if (document.activeElement === firstFocusable) {
-            lastFocusable.focus();
-            event.preventDefault();
-          }
-        } else {
-          if (document.activeElement === lastFocusable) {
-            firstFocusable.focus();
-            event.preventDefault();
-          }
-        }
-      }
     },
   },
 });
@@ -1431,6 +1464,11 @@ export default defineComponent({
   cursor: grabbing;
 }
 
+.mt-colorpicker__colorpicker-selector:focus {
+  transform: scale(1.3);
+  outline: none;
+}
+
 .mt-colorpicker__colorpicker-slider-range {
   width: 100%;
   height: var(--scale-size-20);
@@ -1459,6 +1497,12 @@ export default defineComponent({
   cursor: pointer;
 }
 
+.mt-colorpicker__colorpicker-slider-range:focus::-webkit-slider-thumb {
+  outline: 2px solid var(--color-border-brand-selected);
+  outline-offset: 2px;
+  border-radius: var(--border-radius-checkbox);
+}
+
 .mt-colorpicker__colorpicker-slider-range::-moz-range-thumb {
   height: var(--scale-size-26);
   width: var(--scale-size-8);
@@ -1466,6 +1510,12 @@ export default defineComponent({
   background: var(--color-icon-static-default);
   border-radius: var(--border-radius-xs);
   cursor: pointer;
+}
+
+.mt-colorpicker__colorpicker-slider-range:focus::-moz-range-thumb {
+  outline: 2px solid var(--color-border-brand-selected);
+  outline-offset: 2px;
+  border-radius: var(--border-radius-checkbox);
 }
 
 .mt-colorpicker__colorpicker-wrapper {
@@ -1537,6 +1587,12 @@ export default defineComponent({
   outline: none;
 }
 
+.mt-colorpicker__colorpicker-input:focus {
+  // outline: 1px solid var(--color-border-brand-selected);
+  outline-offset: 0px;
+  border-radius: var(--border-radius-checkbox);
+}
+
 .mt-colorpicker__colorpicker-input[type="number"] {
   -moz-appearance: textfield;
 }
@@ -1580,12 +1636,24 @@ export default defineComponent({
   cursor: pointer;
 }
 
+.mt-colorpicker__alpha-slider:focus::-webkit-slider-thumb {
+  outline: 2px solid var(--color-border-brand-selected);
+  outline-offset: 2px;
+  border-radius: var(--border-radius-checkbox);
+}
+
 .mt-colorpicker__alpha-slider::-moz-range-thumb {
   height: var(--scale-size-26);
   width: var(--scale-size-8);
   border: 1px solid var(--color-border-brand-selected);
   border-radius: var(--border-radius-xs);
   cursor: pointer;
+}
+
+.mt-colorpicker__alpha-slider:focus::-moz-range-thumb {
+  outline: 2px solid var(--color-border-brand-selected);
+  outline-offset: 2px;
+  border-radius: var(--border-radius-checkbox);
 }
 
 .is--disabled .mt-colorpicker__previewWrapper {
