@@ -37,7 +37,11 @@
         () => {
           isOpen = true;
 
-          indexOfSelectedOption = filteredOptions.length - 1;
+          if (indexOfSelectedOption === 'none') {
+            indexOfSelectedOption = filteredOptions.length - 1;
+          } else {
+            indexOfSelectedOption--;
+          }
         }
       "
       @keydown.arrow-down="
