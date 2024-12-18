@@ -229,4 +229,26 @@ describe("mt-select", () => {
     expect(screen.getByText("Option 1")).toBeVisible();
     expect(screen.queryByText("Option 2")).not.toBeInTheDocument();
   });
+
+  it("filters the options when using a custom search algorithm", async () => {
+    // ARRANGE
+    render(MtSelect, {
+      props: {
+        options: [
+          { label: "Option 1", value: "1" },
+          { label: "Option 2", value: "2" },
+        ],
+        searchFunction: ({ searchTerm, option }) => !option.label.includes(searchTerm),
+      },
+    });
+
+    await userEvent.click(screen.getByRole("textbox"));
+
+    // ACT
+    await fireEvent.input(screen.getByRole("textbox"), { target: { value: "1" } });
+
+    // ASSERT
+    expect(screen.getByText("Option 2")).toBeVisible();
+    expect(screen.queryByText("Option 1")).not.toBeInTheDocument();
+  });
 });

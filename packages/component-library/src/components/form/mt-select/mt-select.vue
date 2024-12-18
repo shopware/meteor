@@ -80,9 +80,12 @@ const props = withDefaults(
       detail: string;
     };
     small?: boolean;
+    searchFunction?: (params: { searchTerm: string; option: T }) => boolean;
   }>(),
   {
     valueProperty: "value",
+    searchFunction: ({ option, searchTerm }: { option: T; searchTerm: string }) =>
+      option.label.toLowerCase().includes(searchTerm.toLowerCase()),
   },
 );
 
@@ -93,9 +96,9 @@ defineSlots<{
 const searchTerm = ref("");
 
 const filteredOptions = computed(() => {
-  return props.options.filter((option) => {
-    return option.label.toLowerCase().includes(searchTerm.value.toLowerCase());
-  });
+  return props.options.filter((option) =>
+    props.searchFunction({ searchTerm: searchTerm.value, option }),
+  );
 });
 
 const isOpen = ref(false);
