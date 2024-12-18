@@ -409,4 +409,21 @@ describe("mt-select", () => {
     expect(screen.getByRole("listbox")).toBeVisible();
     expect(screen.getByRole("combobox")).toHaveFocus();
   });
+
+  it("opens the option list when pressing the arrow down and alt key when focusing the input", async () => {
+    // ARRANGE
+    render(MtSelect, {
+      props: {
+        options: [{ label: "Option 1", value: "1" }],
+      },
+    });
+
+    // ACT
+    await userEvent.tab();
+    await userEvent.keyboard("{Alt}{ArrowDown}");
+
+    // ASSERT
+    expect(screen.getByRole("listbox")).toBeVisible();
+    expect(screen.getByRole("combobox")).toHaveFocus();
+  });
 });
