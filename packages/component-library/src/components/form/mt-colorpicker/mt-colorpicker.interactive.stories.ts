@@ -2,6 +2,7 @@ import { within, userEvent, fireEvent } from "@storybook/test";
 import { expect } from "@storybook/test";
 
 import meta, { type MtColorpickerMeta, type MtColorpickerStory } from "./mt-colorpicker.stories";
+import { waitUntil } from "@/_internal/test-helper";
 
 export default {
   ...meta,
@@ -53,6 +54,188 @@ export const VisualTestOpenColorpicker: MtColorpickerStory = {
     expect(blueInput.value).toEqual("37");
     expect(alphaInput).toBeDefined();
     expect(alphaInput.value).toEqual("81");
+  },
+};
+
+export const VisualTestOpenColorpickerWithApplyMode: MtColorpickerStory = {
+  name: "Open colorpicker with apply mode",
+  args: {
+    modelValue: "rgba(72, 228, 37, 0.81)",
+    applyMode: true,
+    colorOutput: "rgb",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const pickerToggle = canvas.getByLabelText("colorpicker-toggle");
+
+    await userEvent.click(pickerToggle);
+
+    // Look inside the popover
+    const popover = within(
+      document.getElementsByClassName("mt-floating-ui__content")[0] as HTMLElement,
+    );
+
+    const colorRange = popover.getByLabelText("colorpicker-color-range") as HTMLInputElement;
+    const alphaRange = popover.getByLabelText("colorpicker-alpha-range") as HTMLInputElement;
+    const hexInput = popover.getByLabelText("hex-value") as HTMLInputElement;
+    const redInput = popover.getByLabelText("red-value") as HTMLInputElement;
+    const greenInput = popover.getByLabelText("green-value") as HTMLInputElement;
+    const blueInput = popover.getByLabelText("blue-value") as HTMLInputElement;
+    const alphaInput = popover.getByLabelText("alpha-value") as HTMLInputElement;
+
+    expect(colorRange).toBeDefined();
+    expect(colorRange.value).toEqual("109");
+    expect(alphaRange).toBeDefined();
+    expect(alphaRange.value).toEqual("0.81");
+
+    expect(hexInput).toBeDefined();
+    expect(hexInput.value).toEqual("#48e425cf");
+    expect(redInput).toBeDefined();
+    expect(redInput.value).toEqual("72");
+    expect(greenInput).toBeDefined();
+    expect(greenInput.value).toEqual("228");
+    expect(blueInput).toBeDefined();
+    expect(blueInput.value).toEqual("37");
+    expect(alphaInput).toBeDefined();
+    expect(alphaInput.value).toEqual("81");
+
+    // Check for apply button
+    const applyButton = popover.getByLabelText("colorpicker-apply-color") as HTMLButtonElement;
+    expect(applyButton).toBeDefined();
+  },
+};
+
+export const TestOpenColorpickerWithApplyMode: MtColorpickerStory = {
+  name: "Use colorpicker with apply mode",
+  args: {
+    modelValue: "rgba(72, 228, 37, 0.81)",
+    applyMode: true,
+    colorOutput: "rgb",
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    const pickerToggle = canvas.getByLabelText("colorpicker-toggle");
+
+    await userEvent.click(pickerToggle);
+
+    // Look inside the popover
+    const popover = within(
+      document.getElementsByClassName("mt-floating-ui__content")[0] as HTMLElement,
+    );
+
+    const colorRange = popover.getByLabelText("colorpicker-color-range") as HTMLInputElement;
+    const alphaRange = popover.getByLabelText("colorpicker-alpha-range") as HTMLInputElement;
+    const hexInput = popover.getByLabelText("hex-value") as HTMLInputElement;
+    const redInput = popover.getByLabelText("red-value") as HTMLInputElement;
+    const greenInput = popover.getByLabelText("green-value") as HTMLInputElement;
+    const blueInput = popover.getByLabelText("blue-value") as HTMLInputElement;
+    const alphaInput = popover.getByLabelText("alpha-value") as HTMLInputElement;
+
+    expect(colorRange).toBeDefined();
+    expect(colorRange.value).toEqual("109");
+    expect(alphaRange).toBeDefined();
+    expect(alphaRange.value).toEqual("0.81");
+
+    expect(hexInput).toBeDefined();
+    expect(hexInput.value).toEqual("#48e425cf");
+    expect(redInput).toBeDefined();
+    expect(redInput.value).toEqual("72");
+    expect(greenInput).toBeDefined();
+    expect(greenInput.value).toEqual("228");
+    expect(blueInput).toBeDefined();
+    expect(blueInput.value).toEqual("37");
+    expect(alphaInput).toBeDefined();
+    expect(alphaInput.value).toEqual("81");
+
+    // Check for apply button
+    const applyButton = popover.getByLabelText("colorpicker-apply-color") as HTMLButtonElement;
+    expect(applyButton).toBeDefined();
+
+    // Change colors
+    fireEvent.input(colorRange, { target: { value: 300 } });
+    fireEvent.input(alphaRange, { target: { value: 0.5 } });
+
+    // Apply changes
+    await userEvent.click(applyButton);
+
+    // Wait until the popover is closed
+    await waitUntil(() => {
+      return document.getElementsByClassName("mt-floating-ui__content").length === 0;
+    });
+
+    // Check if the color is applied
+    expect(args.updateModelValue).toHaveBeenCalledWith("rgba(228, 37, 228, 0.5)");
+  },
+};
+
+export const ResetsColorInApplyMode: MtColorpickerStory = {
+  name: "Resets color in apply mode when closed without applying",
+  args: {
+    modelValue: "rgba(72, 228, 37, 0.81)",
+    applyMode: true,
+    colorOutput: "rgb",
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    const pickerToggle = canvas.getByLabelText("colorpicker-toggle");
+
+    await userEvent.click(pickerToggle);
+
+    // Look inside the popover
+    const popover = within(
+      document.getElementsByClassName("mt-floating-ui__content")[0] as HTMLElement,
+    );
+
+    const colorRange = popover.getByLabelText("colorpicker-color-range") as HTMLInputElement;
+    const alphaRange = popover.getByLabelText("colorpicker-alpha-range") as HTMLInputElement;
+    const hexInput = popover.getByLabelText("hex-value") as HTMLInputElement;
+    const redInput = popover.getByLabelText("red-value") as HTMLInputElement;
+    const greenInput = popover.getByLabelText("green-value") as HTMLInputElement;
+    const blueInput = popover.getByLabelText("blue-value") as HTMLInputElement;
+    const alphaInput = popover.getByLabelText("alpha-value") as HTMLInputElement;
+
+    expect(colorRange).toBeDefined();
+    expect(colorRange.value).toEqual("109");
+    expect(alphaRange).toBeDefined();
+    expect(alphaRange.value).toEqual("0.81");
+
+    expect(hexInput).toBeDefined();
+    expect(hexInput.value).toEqual("#48e425cf");
+    expect(redInput).toBeDefined();
+    expect(redInput.value).toEqual("72");
+    expect(greenInput).toBeDefined();
+    expect(greenInput.value).toEqual("228");
+    expect(blueInput).toBeDefined();
+    expect(blueInput.value).toEqual("37");
+    expect(alphaInput).toBeDefined();
+    expect(alphaInput.value).toEqual("81");
+
+    // Check for apply button
+    const applyButton = popover.getByLabelText("colorpicker-apply-color") as HTMLButtonElement;
+    expect(applyButton).toBeDefined();
+
+    // Change colors
+    fireEvent.input(colorRange, { target: { value: 300 } });
+    fireEvent.input(alphaRange, { target: { value: 0.5 } });
+
+    const colorpickerInputField = canvas.getByLabelText(
+      "colorpicker-color-value",
+    ) as HTMLInputElement;
+
+    // Close popover without applying
+    await userEvent.click(colorpickerInputField);
+
+    // Wait until the popover is closed
+    await waitUntil(() => {
+      return document.getElementsByClassName("mt-floating-ui__content").length === 0;
+    });
+
+    // Check if the color is resetted
+    expect(args.updateModelValue).not.toHaveBeenCalled();
+    expect(colorpickerInputField.value).toEqual("rgba(72, 228, 37, 0.81)");
   },
 };
 
