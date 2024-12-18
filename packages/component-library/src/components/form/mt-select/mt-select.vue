@@ -22,6 +22,7 @@
       :disabled="disabled"
       :placeholder="placeholder"
       @input="searchTerm = ($event.target as HTMLInputElement).value"
+      @keydown.esc="isOpen = false"
     />
 
     <mt-icon

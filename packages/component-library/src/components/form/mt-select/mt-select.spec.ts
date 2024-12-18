@@ -251,4 +251,24 @@ describe("mt-select", () => {
     expect(screen.getByText("Option 2")).toBeVisible();
     expect(screen.queryByText("Option 1")).not.toBeInTheDocument();
   });
+
+  it("closes the option list when pressing the escape key inside the field", async () => {
+    // ARRANGE
+    render(MtSelect, {
+      props: {
+        options: [
+          { label: "Option 1", value: "1" },
+          { label: "Option 2", value: "2" },
+        ],
+      },
+    });
+
+    await userEvent.click(screen.getByRole("textbox"));
+
+    // ACT
+    await fireEvent.keyDown(screen.getByRole("textbox"), { key: "Escape" });
+
+    // ASSERT
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+  });
 });
