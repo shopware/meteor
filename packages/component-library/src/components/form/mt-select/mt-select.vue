@@ -14,6 +14,7 @@
     ref="box"
   >
     <input
+      role="combobox"
       class="mt-select__input"
       :id="id"
       type="text"

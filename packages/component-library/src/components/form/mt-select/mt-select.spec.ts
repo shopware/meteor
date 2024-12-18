@@ -17,7 +17,7 @@ describe("mt-select", () => {
     });
 
     // ACT
-    await userEvent.click(screen.getByRole("textbox"));
+    await userEvent.click(screen.getByRole("combobox"));
 
     // ASSERT
     expect(screen.getByRole("listbox")).toBeVisible();
@@ -52,7 +52,7 @@ describe("mt-select", () => {
       },
     });
 
-    await userEvent.click(screen.getByRole("textbox"));
+    await userEvent.click(screen.getByRole("combobox"));
 
     // ACT
     await userEvent.click(document.body);
@@ -75,13 +75,13 @@ describe("mt-select", () => {
       },
     });
 
-    await userEvent.click(screen.getByRole("textbox"));
+    await userEvent.click(screen.getByRole("combobox"));
 
     // ACT
     await userEvent.click(screen.getByText("Option 1"));
 
     // ASSERT
-    expect(screen.getByRole("textbox")).toHaveValue("Option 1");
+    expect(screen.getByRole("combobox")).toHaveValue("Option 1");
     expect(handler).toHaveBeenNthCalledWith(1, "1");
   });
 
@@ -104,7 +104,7 @@ describe("mt-select", () => {
 
     // ASSERT
     expect(screen.getByRole("listbox")).toBeVisible();
-    expect(screen.getByRole("textbox")).toHaveFocus();
+    expect(screen.getByRole("combobox")).toHaveFocus();
   });
 
   it("hides the label when there is not label specified", () => {
@@ -130,7 +130,7 @@ describe("mt-select", () => {
       },
     });
 
-    await userEvent.click(screen.getByRole("textbox"));
+    await userEvent.click(screen.getByRole("combobox"));
 
     // ACT
     await userEvent.click(screen.getByText("Option 1"));
@@ -149,7 +149,7 @@ describe("mt-select", () => {
     });
 
     // ACT
-    await userEvent.click(screen.getByRole("textbox"));
+    await userEvent.click(screen.getByRole("combobox"));
 
     // ASSERT
     expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
@@ -218,12 +218,12 @@ describe("mt-select", () => {
       },
     });
 
-    await userEvent.click(screen.getByRole("textbox"));
+    await userEvent.click(screen.getByRole("combobox"));
 
     // ACT
     // We need to use fireEvent here because
     // userEvent.type closes the listbox
-    await fireEvent.input(screen.getByRole("textbox"), { target: { value: "1" } });
+    await fireEvent.input(screen.getByRole("combobox"), { target: { value: "1" } });
 
     // ASSERT
     expect(screen.getByText("Option 1")).toBeVisible();
@@ -242,10 +242,10 @@ describe("mt-select", () => {
       },
     });
 
-    await userEvent.click(screen.getByRole("textbox"));
+    await userEvent.click(screen.getByRole("combobox"));
 
     // ACT
-    await fireEvent.input(screen.getByRole("textbox"), { target: { value: "1" } });
+    await fireEvent.input(screen.getByRole("combobox"), { target: { value: "1" } });
 
     // ASSERT
     expect(screen.getByText("Option 2")).toBeVisible();
@@ -263,10 +263,10 @@ describe("mt-select", () => {
       },
     });
 
-    await userEvent.click(screen.getByRole("textbox"));
+    await userEvent.click(screen.getByRole("combobox"));
 
     // ACT
-    await fireEvent.keyDown(screen.getByRole("textbox"), { key: "Escape" });
+    await fireEvent.keyDown(screen.getByRole("combobox"), { key: "Escape" });
 
     // ASSERT
     expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
@@ -283,7 +283,7 @@ describe("mt-select", () => {
       },
     });
 
-    await userEvent.click(screen.getByRole("textbox"));
+    await userEvent.click(screen.getByRole("combobox"));
     await userEvent.tab();
 
     // ACT
