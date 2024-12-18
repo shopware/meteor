@@ -4,7 +4,7 @@
     :id="id"
     :has-error="!!error"
     data-testid="mt-select__label"
-    @click="isOpen = true"
+    @click="nextTick(() => (isOpen = true))"
   >
     {{ label }}
   </mt-field-label>
@@ -91,6 +91,7 @@ import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtIcon from "@/components/icons-media/mt-icon/mt-icon.vue";
 import { autoUpdate, flip, offset, shift, size, useFloating } from "@floating-ui/vue";
+import { nextTick } from "process";
 
 const id = useId();
 

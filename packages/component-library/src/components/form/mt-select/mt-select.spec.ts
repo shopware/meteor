@@ -85,34 +85,27 @@ describe("mt-select", () => {
     expect(handler).toHaveBeenNthCalledWith(1, "1");
   });
 
-  it(
-    "clicking on the label opens the option list",
-    async () => {
-      // ARRANGE
-      render(MtSelect, {
-        props: {
-          label: "Select an option",
-          options: [
-            { label: "Option 1", value: "1" },
-            { label: "Option 2", value: "2" },
-          ],
-        },
-      });
+  it("clicking on the label opens the option list", async () => {
+    // ARRANGE
+    render(MtSelect, {
+      props: {
+        label: "Select an option",
+        options: [
+          { label: "Option 1", value: "1" },
+          { label: "Option 2", value: "2" },
+        ],
+      },
+    });
 
-      await flushPromises();
+    await flushPromises();
 
-      // ACT
-      await userEvent.click(screen.getByText("Select an option"));
+    // ACT
+    await userEvent.click(screen.getByText("Select an option"));
 
-      // ASSERT
-      expect(screen.getByRole("listbox")).toBeVisible();
-      expect(screen.getByRole("combobox")).toHaveFocus();
-    },
-    {
-      // TODO: this test works but it is not in the browser
-      skip: true,
-    },
-  );
+    // ASSERT
+    expect(screen.getByRole("listbox")).toBeVisible();
+    expect(screen.getByRole("combobox")).toHaveFocus();
+  });
 
   it("hides the label when there is not label specified", () => {
     // ARRANGE
