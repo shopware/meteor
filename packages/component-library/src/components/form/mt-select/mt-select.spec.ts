@@ -350,4 +350,33 @@ describe("mt-select", () => {
     // ASSERT
     expect(screen.getByRole("combobox")).toHaveAttribute("aria-expanded", "false");
   });
+
+  it("announces to screen readers the active element when focusing that selected option", async () => {
+    // ARRANGE
+    render(MtSelect, {
+      props: {
+        modelValue: "1",
+        options: [{ label: "Option 1", value: "1" }],
+      },
+    });
+
+    await userEvent.click(screen.getByRole("combobox"));
+
+    // ASSERT
+    expect(screen.getByText("Option 1")).toHaveAttribute("aria-selected", "true");
+  });
+
+  it("announces to the screen readers that a non-selected option is not selected", async () => {
+    // ARRANGE
+    render(MtSelect, {
+      props: {
+        options: [{ label: "Option 2", value: "2" }],
+      },
+    });
+
+    await userEvent.click(screen.getByRole("combobox"));
+
+    // ASSERT
+    expect(screen.getByText("Option 2")).toHaveAttribute("aria-selected", "false");
+  });
 });

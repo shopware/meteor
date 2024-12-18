@@ -57,6 +57,7 @@
       v-for="option in filteredOptions"
       :key="option.value"
       role="listitem"
+      :aria-selected="option.value === model"
       class="mt-select__listitem"
       @click="() => changeValue(option.value, option.label)"
       @keydown.esc="isOpen = false"
