@@ -502,4 +502,21 @@ describe("mt-select", () => {
       screen.getByRole("option", { name: "Option 1" }).getAttribute("id"),
     );
   });
+
+  it("opens the listbox when pressing the arrow up key", async () => {
+    // ARRANGE
+    render(MtSelect, {
+      props: {
+        options: [{ label: "Option 1", value: "1" }],
+      },
+    });
+
+    // ACT
+    await userEvent.tab();
+    await userEvent.keyboard("{ArrowUp}");
+
+    // ASSERT
+    expect(screen.getByRole("listbox")).toBeVisible();
+    expect(screen.getByRole("combobox")).toHaveFocus();
+  });
 });
