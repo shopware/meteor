@@ -14,7 +14,6 @@
     "@shopware-ag/meteor-component-library": "workspace:*",
     "regenerator-runtime": "^0.14.1",
     "vue": "3.4.21",
-    "vue-i18n": "9.9.1",
     "vue-router": "4.4.5"
   },
   "devDependencies": {
