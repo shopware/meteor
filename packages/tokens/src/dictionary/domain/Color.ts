@@ -1,4 +1,4 @@
-import { z } from 'zod';
+import { z } from "zod";
 
 const schema = z.object({
   red: z.number().min(0).max(255),
@@ -25,16 +25,16 @@ export class Color {
     const toHex = (value: number) => {
       const hex = Math.round(value).toString(16);
 
-      return hex.length === 1 ? '0' + hex : hex;
+      return hex.length === 1 ? "0" + hex : hex;
     };
 
     const hex = [
       toHex(this.value.red),
       toHex(this.value.green),
       toHex(this.value.blue),
-    ].join('');
+    ].join("");
 
     const containsAlpha = this.value.alpha !== 1;
-    return `#${hex}` + (containsAlpha ? toHex(this.value.alpha) : '');
+    return `#${hex}` + (containsAlpha ? toHex(this.value.alpha) : "");
   }
 }

@@ -1,9 +1,9 @@
-import { type HttpClient } from '../../common/domain/http-client/HttpClient.js';
-import { z } from 'zod';
+import { type HttpClient } from "../../common/domain/http-client/HttpClient.js";
+import { z } from "zod";
 
 const variableAlias = z.object({
   id: z.string().regex(/^VariableID:([0-9a-f]{40}\/)?\d+:\d+$/),
-  type: z.literal('VARIABLE_ALIAS'),
+  type: z.literal("VARIABLE_ALIAS"),
 });
 
 const colorValue = z.object({
@@ -19,7 +19,7 @@ const variableSchema = z.object({
   name: z.string(),
   key: z.string(),
   variableCollectionId: z.string(),
-  resolvedType: z.enum(['BOOLEAN', 'FLOAT', 'STRING', 'COLOR']),
+  resolvedType: z.enum(["BOOLEAN", "FLOAT", "STRING", "COLOR"]),
   valuesByMode: z.record(
     z.string(),
     z.union([z.boolean(), z.number(), z.string(), variableAlias, colorValue]),
@@ -65,8 +65,8 @@ export class FigmaApi {
   getLocalVariablesOfFile(fileKey: string) {
     return this.httpClient
       .get(`https://api.figma.com/v1/files/${fileKey}/variables/local`, {
-        Accept: '*/*',
-        'X-Figma-Token': this.config.apiKey,
+        Accept: "*/*",
+        "X-Figma-Token": this.config.apiKey,
       })
       .then((response) => {
         try {

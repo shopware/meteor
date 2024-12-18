@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { privilegeString } from '../privileges';
-import type { privileges } from '../privileges';
-import type { ShopwareMessageTypes } from '../../message-types';
-import { findExtensionByBaseUrl, traverseObject } from '../utils';
-import MissingPrivilegesError from '../privileges/missing-privileges-error';
+import type { privilegeString } from "../privileges";
+import type { privileges } from "../privileges";
+import type { ShopwareMessageTypes } from "../../message-types";
+import { findExtensionByBaseUrl, traverseObject } from "../utils";
+import MissingPrivilegesError from "../privileges/missing-privileges-error";
 
 export default function validate({
   serializedData,
@@ -13,11 +13,11 @@ export default function validate({
   type,
   privilegesToCheck = [],
 }: {
-  serializedData: any,
-  origin: string,
-  type: keyof ShopwareMessageTypes,
-  privilegesToCheck: (keyof privileges)[],
-}): Error|null {
+  serializedData: any;
+  origin: string;
+  type: keyof ShopwareMessageTypes;
+  privilegesToCheck: (keyof privileges)[];
+}): Error | null {
   if (origin === undefined) {
     return null;
   }
@@ -33,24 +33,23 @@ export default function validate({
   const privilegeErrors: privilegeString[] = [];
 
   traverseObject(serializedData, (parentEntry, key, value) => {
-    if (key === '__type__' && ['__EntityCollection__', '__Entity__'].includes(value as string)) {
+    if (
+      key === "__type__" &&
+      ["__EntityCollection__", "__Entity__"].includes(value as string)
+    ) {
       const entityName = parentEntry.__entityName__ as string;
 
       if (!entityName) {
         return;
       }
 
-      [...privilegesToCheck].sort().forEach(privilege => {
+      [...privilegesToCheck].sort().forEach((privilege) => {
         const permissionsForPrivilege = extension.permissions[privilege];
         if (
-          (
-            !permissionsForPrivilege ||
-            !permissionsForPrivilege.includes(entityName)
-          )
-          &&
-          !privilegeErrors.includes(`${privilege}:${entityName}`)
-          &&
-          !permissionsForPrivilege?.includes('*')
+          (!permissionsForPrivilege ||
+            !permissionsForPrivilege.includes(entityName)) &&
+          !privilegeErrors.includes(`${privilege}:${entityName}`) &&
+          !permissionsForPrivilege?.includes("*")
         ) {
           privilegeErrors.push(`${privilege}:${entityName}`);
         }

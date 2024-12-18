@@ -77,7 +77,7 @@ const isValidRadiusValue = (value: string): boolean => {
 
 const isWidthValue = (value: string): boolean => {
   return /^[\d.]+(%|px|em|rem|vh|vw|ch|ex|vmin|vmax|cm|mm|in|pt|pc)$/.test(
-    value
+    value,
   );
 };
 
@@ -94,19 +94,19 @@ const ruleFunction: Rule = (primary, secondaryOptions, context) => {
       const isABorderColorProp = BORDER_COLOR_PROPERTIES.some((prop) =>
         typeof prop === "string"
           ? prop === ruleNode.prop
-          : prop.test(ruleNode.prop)
+          : prop.test(ruleNode.prop),
       );
 
       const isABorderRadiusProp = BORDER_RADIUS_PROPERTIES.some((prop) =>
         typeof prop === "string"
           ? prop === ruleNode.prop
-          : prop.test(ruleNode.prop)
+          : prop.test(ruleNode.prop),
       );
 
       const isABorderProp = BORDER_PROPERTIES.some((prop) =>
         typeof prop === "string"
           ? prop === ruleNode.prop
-          : prop.test(ruleNode.prop)
+          : prop.test(ruleNode.prop),
       );
 
       if (isABorderColorProp) {

@@ -47,7 +47,7 @@ const ruleFunction: Rule = (primary, secondaryOptions, context) => {
       const isFontProperty = FONT_PROPERTIES.some((prop) =>
         typeof prop === "string"
           ? prop === ruleNode.prop
-          : prop.test(ruleNode.prop)
+          : prop.test(ruleNode.prop),
       );
       const usesVariable = /var\(--.*\)/.test(ruleNode.value);
       const isGlobalKeyword = GLOBAL_KEYWORDS.includes(ruleNode.value);

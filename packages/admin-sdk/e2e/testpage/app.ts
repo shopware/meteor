@@ -1,24 +1,24 @@
-import * as sw from '../../src/index';
-import { handle, publish, send, setExtensions } from '../../src/channel';
-import Criteria from '../../src/data/Criteria';
+import * as sw from "../../src/index";
+import { handle, publish, send, setExtensions } from "../../src/channel";
+import Criteria from "../../src/data/Criteria";
 import EntityCollection from "../../src/_internals/data/EntityCollection";
 import EntityClass from "../../src/_internals/data/Entity";
-import MissingPrivilegesError from '../../src/_internals/privileges/missing-privileges-error';
+import MissingPrivilegesError from "../../src/_internals/privileges/missing-privileges-error";
 export interface sw_internal {
-  handle: typeof handle,
-  publish: typeof publish,
-  send: typeof send,
-  setExtensions: typeof setExtensions,
-  Criteria: typeof Criteria,
-  Collection: typeof EntityCollection,
-  MissingPrivilegesError: typeof MissingPrivilegesError
-  Entity: typeof EntityClass,
+  handle: typeof handle;
+  publish: typeof publish;
+  send: typeof send;
+  setExtensions: typeof setExtensions;
+  Criteria: typeof Criteria;
+  Collection: typeof EntityCollection;
+  MissingPrivilegesError: typeof MissingPrivilegesError;
+  Entity: typeof EntityClass;
 }
 
 declare global {
   interface Window {
     sw: typeof sw;
-    sw_internal: sw_internal
+    sw_internal: sw_internal;
   }
 }
 
@@ -32,17 +32,16 @@ window.sw_internal = {
   Collection: EntityCollection,
   Entity: EntityClass,
   MissingPrivilegesError: MissingPrivilegesError,
-}
-
+};
 
 window.sw_internal.setExtensions({
   example: {
-    baseUrl: 'http://localhost:8182',
+    baseUrl: "http://localhost:8182",
     permissions: {
-      create: ['test', 'foo', 'product'],
-      update: ['test', 'foo', 'product'],
-      delete: ['test', 'foo', 'product'],
-      read: ['test', 'foo', 'product'],
-    }
+      create: ["test", "foo", "product"],
+      update: ["test", "foo", "product"],
+      delete: ["test", "foo", "product"],
+      read: ["test", "foo", "product"],
+    },
   },
 });

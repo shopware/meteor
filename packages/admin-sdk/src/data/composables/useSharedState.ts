@@ -1,8 +1,8 @@
-import SerializerFactory from './../../_internals/serializer';
-import localforage from 'localforage';
-import type { UnwrapRef, WatchStopHandle } from 'vue';
-import { reactive, watch, onBeforeUnmount } from 'vue';
-import { handle, send } from '../../channel';
+import SerializerFactory from "./../../_internals/serializer";
+import localforage from "localforage";
+import type { UnwrapRef, WatchStopHandle } from "vue";
+import { reactive, watch, onBeforeUnmount } from "vue";
+import { handle, send } from "../../channel";
 
 const { serialize, deserialize } = SerializerFactory({
   handle: handle,
@@ -15,17 +15,16 @@ async function setItem<INITIAL_VALUE>({
   persistentSharedValueStore,
   persistentSharedValueStoreBroadcast,
 }: {
-  key: string,
-  newValue: INITIAL_VALUE,
-  persistentSharedValueStore: LocalForage,
-  persistentSharedValueStoreBroadcast: BroadcastChannel,
-}): Promise<void>
-{
+  key: string;
+  newValue: INITIAL_VALUE;
+  persistentSharedValueStore: LocalForage;
+  persistentSharedValueStoreBroadcast: BroadcastChannel;
+}): Promise<void> {
   const serializedValue = serialize(newValue) as UnwrapRef<INITIAL_VALUE>;
   await persistentSharedValueStore.setItem(key, serializedValue);
 
   persistentSharedValueStoreBroadcast.postMessage({
-    type: 'store-change',
+    type: "store-change",
     key: key,
   });
 }
@@ -37,13 +36,13 @@ function createValueWatcher<INITIAL_VALUE>({
   persistentSharedValueStoreBroadcast,
   getPendingValue,
 }: {
-  key: string,
+  key: string;
   sharedValue: {
-    value: UnwrapRef<INITIAL_VALUE>,
-  },
-  persistentSharedValueStore: LocalForage,
-  persistentSharedValueStoreBroadcast: BroadcastChannel,
-  getPendingValue: () => boolean,
+    value: UnwrapRef<INITIAL_VALUE>;
+  };
+  persistentSharedValueStore: LocalForage;
+  persistentSharedValueStoreBroadcast: BroadcastChannel;
+  getPendingValue: () => boolean;
 }): WatchStopHandle {
   return watch(
     () => sharedValue.value,
@@ -59,7 +58,7 @@ function createValueWatcher<INITIAL_VALUE>({
         persistentSharedValueStoreBroadcast,
       });
     },
-    { deep: true }
+    { deep: true },
   );
 }
 
@@ -71,25 +70,29 @@ function setRemoteValue<INITIAL_VALUE>({
   key,
   sharedValue,
 }: {
-  setPendingValue: (newValue: boolean) => void,
-  removeWatcher: () => void,
-  setWatcher: () => void,
-  store: LocalForage,
-  key: string,
+  setPendingValue: (newValue: boolean) => void;
+  removeWatcher: () => void;
+  setWatcher: () => void;
+  store: LocalForage;
+  key: string;
   sharedValue: {
-    value: UnwrapRef<INITIAL_VALUE>,
-  },
+    value: UnwrapRef<INITIAL_VALUE>;
+  };
 }): void {
   setPendingValue(true);
   removeWatcher();
 
-  store.getItem<INITIAL_VALUE>(key)
+  store
+    .getItem<INITIAL_VALUE>(key)
     .then((value) => {
       if (value === null) {
         return;
       }
 
-      const deserializedValue = deserialize(value, new MessageEvent('message')) as UnwrapRef<INITIAL_VALUE>;
+      const deserializedValue = deserialize(
+        value,
+        new MessageEvent("message"),
+      ) as UnwrapRef<INITIAL_VALUE>;
 
       sharedValue.value = deserializedValue;
     })
@@ -100,13 +103,16 @@ function setRemoteValue<INITIAL_VALUE>({
 }
 
 /**
- * 
+ *
  * @param key - Shared state key
  * @param initalValue - Initial value
- * @returns 
+ * @returns
  */
-export function useSharedState<INITIAL_VALUE>(key: string, initalValue: INITIAL_VALUE): {
-  value: UnwrapRef<INITIAL_VALUE>,
+export function useSharedState<INITIAL_VALUE>(
+  key: string,
+  initalValue: INITIAL_VALUE,
+): {
+  value: UnwrapRef<INITIAL_VALUE>;
 } {
   let isPending = false;
 
@@ -130,11 +136,13 @@ export function useSharedState<INITIAL_VALUE>(key: string, initalValue: INITIAL_
   };
 
   const persistentSharedValueStore = localforage.createInstance({
-    name: 'adminExtensionSDK',
-    storeName: 'persistentSharedValueStore',
+    name: "adminExtensionSDK",
+    storeName: "persistentSharedValueStore",
   });
 
-  const persistentSharedValueStoreBroadcast = new BroadcastChannel('persistentSharedValueStore');
+  const persistentSharedValueStoreBroadcast = new BroadcastChannel(
+    "persistentSharedValueStore",
+  );
 
   const sharedValue = reactive({
     value: initalValue,
@@ -148,11 +156,13 @@ export function useSharedState<INITIAL_VALUE>(key: string, initalValue: INITIAL_
     getPendingValue,
   });
 
-  const eventListener = (event: MessageEvent<{
-    type: string,
-    key: string,
-  }>): void => {
-    if (event.data.type !== 'store-change') {
+  const eventListener = (
+    event: MessageEvent<{
+      type: string;
+      key: string;
+    }>,
+  ): void => {
+    if (event.data.type !== "store-change") {
       return;
     }
 
@@ -170,11 +180,17 @@ export function useSharedState<INITIAL_VALUE>(key: string, initalValue: INITIAL_
     });
   };
 
-  persistentSharedValueStoreBroadcast.addEventListener('message', eventListener);
+  persistentSharedValueStoreBroadcast.addEventListener(
+    "message",
+    eventListener,
+  );
 
   onBeforeUnmount(() => {
     persistentSharedValueStoreBroadcast.close();
-    persistentSharedValueStoreBroadcast.removeEventListener('message', eventListener);
+    persistentSharedValueStoreBroadcast.removeEventListener(
+      "message",
+      eventListener,
+    );
   });
 
   // Get initial value from remote
@@ -188,7 +204,8 @@ export function useSharedState<INITIAL_VALUE>(key: string, initalValue: INITIAL_
   });
 
   // Set inital value when remote value is not available
-  persistentSharedValueStore.getItem<INITIAL_VALUE>(key)
+  persistentSharedValueStore
+    .getItem<INITIAL_VALUE>(key)
     .then(async (value) => {
       if (value !== null) {
         return;

@@ -1,3 +1,3 @@
-const failOnConsole = require('jest-fail-on-console');
+const failOnConsole = require("jest-fail-on-console");
 
-failOnConsole()
+failOnConsole();

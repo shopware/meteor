@@ -1,18 +1,22 @@
-import { isObject, hasType } from '../utils';
-import EntityClass from '../data/Entity';
-import type { SerializerFactory } from '.';
+import { isObject, hasType } from "../utils";
+import EntityClass from "../data/Entity";
+import type { SerializerFactory } from ".";
 
 /* eslint-disable */
 const EntitySerializerFactory: SerializerFactory = () => ({
-  name: 'entity',
+  name: "entity",
 
   serialize: ({ value, customizerMethod, seen, path }): any => {
-    if (!isObject(value) || typeof value.__identifier__ !== 'function' || value.__identifier__() !== 'Entity') {
+    if (
+      !isObject(value) ||
+      typeof value.__identifier__ !== "function" ||
+      value.__identifier__() !== "Entity"
+    ) {
       return;
     }
 
     return {
-      __type__: '__Entity__',
+      __type__: "__Entity__",
       __id__: value.id,
       __entityName__: value._entityName,
       __isDirty__: value._isDirty,
@@ -23,7 +27,7 @@ const EntitySerializerFactory: SerializerFactory = () => ({
   },
 
   deserialize: ({ value, customizerMethod }): any => {
-    if (hasType('__Entity__', value) && typeof value.__origin__ === 'object') {
+    if (hasType("__Entity__", value) && typeof value.__origin__ === "object") {
       return new EntityClass(
         value.__id__,
         value.__entityName__,
@@ -32,7 +36,7 @@ const EntitySerializerFactory: SerializerFactory = () => ({
           originData: customizerMethod(value.__origin__),
           isDirty: value.__isDirty__,
           isNew: value.__isNew__,
-        }
+        },
       );
     }
   },

@@ -1,7 +1,7 @@
-import { isObject, set } from '../../common/domain/utils/object.js';
-import { kebabCase } from '../../common/domain/utils/string.js';
-import { FigmaApiResponse } from '../../figma/infrastructure/FigmaApi.js';
-import { Color } from './Color.js';
+import { isObject, set } from "../../common/domain/utils/object.js";
+import { kebabCase } from "../../common/domain/utils/string.js";
+import { FigmaApiResponse } from "../../figma/infrastructure/FigmaApi.js";
+import { Color } from "./Color.js";
 
 type DictionaryValue = {
   $value: string;
@@ -41,7 +41,7 @@ export class Dictionary {
     ).reduce<DictionaryTree>((accumulator, variable) => {
       const rawValue = variable.valuesByMode[modeId];
 
-      const isStringValue = variable.resolvedType === 'STRING';
+      const isStringValue = variable.resolvedType === "STRING";
       if (isStringValue) {
         set(accumulator, kebabCase(variable.name), {
           $value: rawValue,
@@ -49,7 +49,7 @@ export class Dictionary {
         });
       }
 
-      const isFloatValue = variable.resolvedType === 'FLOAT';
+      const isFloatValue = variable.resolvedType === "FLOAT";
       if (isFloatValue) {
         set(accumulator, kebabCase(variable.name), {
           $value: rawValue,
@@ -58,9 +58,9 @@ export class Dictionary {
       }
 
       const isColorValue =
-        variable.resolvedType === 'COLOR' &&
-        typeof rawValue === 'object' &&
-        'r' in rawValue;
+        variable.resolvedType === "COLOR" &&
+        typeof rawValue === "object" &&
+        "r" in rawValue;
 
       if (isColorValue) {
         set(accumulator, kebabCase(variable.name), {
@@ -74,7 +74,7 @@ export class Dictionary {
         });
       }
 
-      const isAliasedValue = typeof rawValue === 'object' && 'type' in rawValue;
+      const isAliasedValue = typeof rawValue === "object" && "type" in rawValue;
       if (isAliasedValue) {
         const pathToAliasedToken = [
           response,
@@ -82,7 +82,7 @@ export class Dictionary {
         ].reduce<undefined | string>((accumulator, remoteFile) => {
           if (accumulator) return accumulator;
 
-          const referencingVariableFromSameFile = !rawValue.id.includes('/');
+          const referencingVariableFromSameFile = !rawValue.id.includes("/");
           if (referencingVariableFromSameFile) {
             const resolvedVariable = Object.values(
               remoteFile.meta.variables,
@@ -124,7 +124,7 @@ export class Dictionary {
   }
 
   public toJSON() {
-    const EMPTY_NEW_LINE = '\n';
+    const EMPTY_NEW_LINE = "\n";
 
     return JSON.stringify(this.value, null, 2) + EMPTY_NEW_LINE;
   }
@@ -142,15 +142,15 @@ export class Dictionary {
           const [key, value] = entries[index] as [string, unknown];
 
           if (isObject(value)) {
-            const newPath = `${path ?? ''}${path ? '.' : ''}${key}`;
+            const newPath = `${path ?? ""}${path ? "." : ""}${key}`;
 
             getToken(value, accumulator, newPath);
           }
 
           if (
-            key === '$value' &&
-            typeof path === 'string' &&
-            (typeof value === 'string' || typeof value === 'number')
+            key === "$value" &&
+            typeof path === "string" &&
+            (typeof value === "string" || typeof value === "number")
           ) {
             accumulator[path] = value;
           }

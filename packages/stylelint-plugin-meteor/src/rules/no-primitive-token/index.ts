@@ -68,5 +68,5 @@ export default createPlugin(
   ruleName,
   makeNoPrimitiveRule({
     tokenGateway: new TokenGatewayUsingImport(),
-  })
+  }),
 );

@@ -1,5 +1,3 @@
-import * as payment from './payment';
+import * as payment from "./payment";
 
-export {
-  payment,
-};
+export { payment };

@@ -1,17 +1,17 @@
-import Criteria from './Criteria';
-import { addDataTableFilters } from './data-table-filter.helper';
+import Criteria from "./Criteria";
+import { addDataTableFilters } from "./data-table-filter.helper";
 
-describe('src/app/service/criteria-helper.service.ts', () => {
-  describe('addDataTableFilters', () => {
+describe("src/app/service/criteria-helper.service.ts", () => {
+  describe("addDataTableFilters", () => {
     it.each([
       { filters: [], expected: new Criteria() },
       {
         filters: [
           {
-            id: 'test',
-            label: 'Test',
+            id: "test",
+            label: "Test",
             type: {
-              id: 'options',
+              id: "options",
               options: [],
             },
           },
@@ -21,79 +21,79 @@ describe('src/app/service/criteria-helper.service.ts', () => {
       {
         filters: [
           {
-            id: 'test',
-            label: 'Test',
+            id: "test",
+            label: "Test",
             type: {
-              id: 'options',
+              id: "options",
               options: [
                 {
-                  id: 'test',
-                  label: 'Test',
+                  id: "test",
+                  label: "Test",
                 },
               ],
             },
           },
         ],
-        expected: new Criteria().addFilter(Criteria.equals('test', 'test')),
+        expected: new Criteria().addFilter(Criteria.equals("test", "test")),
       },
       {
         filters: [
           {
-            id: 'test',
-            label: 'Test',
+            id: "test",
+            label: "Test",
             type: {
-              id: 'options',
+              id: "options",
               options: [
                 {
-                  id: 'test',
-                  label: 'Test',
+                  id: "test",
+                  label: "Test",
                 },
                 {
-                  id: 'test2',
-                  label: 'Test2',
+                  id: "test2",
+                  label: "Test2",
                 },
               ],
             },
           },
         ],
         expected: new Criteria()
-          .addFilter(Criteria.equals('test', 'test'))
-          .addFilter(Criteria.equals('test', 'test2')),
+          .addFilter(Criteria.equals("test", "test"))
+          .addFilter(Criteria.equals("test", "test2")),
       },
       {
         filters: [
           {
-            id: 'test',
-            label: 'Test',
+            id: "test",
+            label: "Test",
             type: {
-              id: 'options',
+              id: "options",
               options: [
                 {
-                  id: 'test',
-                  label: 'Test',
+                  id: "test",
+                  label: "Test",
                 },
               ],
             },
           },
           {
-            id: 'test2',
-            label: 'Test2',
+            id: "test2",
+            label: "Test2",
             type: {
-              id: 'options',
+              id: "options",
               options: [
                 {
-                  id: 'test2',
-                  label: 'Test2',
+                  id: "test2",
+                  label: "Test2",
                 },
               ],
             },
           },
         ],
         expected: new Criteria()
-          .addFilter(Criteria.equals('test', 'test'))
-          .addFilter(Criteria.equals('test2', 'test2')),
+          .addFilter(Criteria.equals("test", "test"))
+          .addFilter(Criteria.equals("test2", "test2")),
       },
-    ])('should adds filters to criteria', ({ filters, expected }) => {
+    ])("should adds filters to criteria", ({ filters, expected }) => {
       const result = addDataTableFilters(new Criteria(), filters);
 
       expect(result).toStrictEqual(expected);

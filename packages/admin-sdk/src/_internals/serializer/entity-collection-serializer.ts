@@ -1,16 +1,19 @@
-import { hasType } from '../utils';
-import EntityCollection from '../data/EntityCollection';
-import type { SerializerFactory } from '.';
+import { hasType } from "../utils";
+import EntityCollection from "../data/EntityCollection";
+import type { SerializerFactory } from ".";
 
 /* eslint-disable */
 const EntityCollectionSerializerFactory: SerializerFactory = () => ({
-  name: 'entity-collection',
+  name: "entity-collection",
 
   serialize: ({ value, customizerMethod, seen, path }): any => {
-    if (value instanceof EntityCollection || (value?.__identifier__ && value.__identifier__() === 'EntityCollection')) {
+    if (
+      value instanceof EntityCollection ||
+      (value?.__identifier__ && value.__identifier__() === "EntityCollection")
+    ) {
       return customizerMethod(
         {
-          __type__: '__EntityCollection__',
+          __type__: "__EntityCollection__",
           __source__: value.source,
           __entityName__: value.entity,
           __context__: value.context,
@@ -20,13 +23,13 @@ const EntityCollectionSerializerFactory: SerializerFactory = () => ({
           __aggregations__: value.aggregations,
         },
         seen,
-        path
+        path,
       );
     }
   },
 
   deserialize: ({ value, customizerMethod }): any => {
-    if (hasType('__EntityCollection__', value)) {
+    if (hasType("__EntityCollection__", value)) {
       return new EntityCollection(
         value.__source__,
         value.__entityName__,
@@ -34,10 +37,10 @@ const EntityCollectionSerializerFactory: SerializerFactory = () => ({
         customizerMethod(value.__criteria__),
         customizerMethod(value.__entities__),
         value.__total__,
-        value.__aggregations__
+        value.__aggregations__,
       );
     }
   },
-})
+});
 
 export default EntityCollectionSerializerFactory;

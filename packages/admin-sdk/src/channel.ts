@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import type { ShopwareMessageTypes } from './message-types';
-import { generateUniqueId } from './_internals/utils';
-import type { extension, privilegeString } from './_internals/privileges';
-import MissingPrivilegesError from './_internals/privileges/missing-privileges-error';
-import SerializerFactory from './_internals/serializer';
-import createError from './_internals/error-handling/error-factory';
-import validate from './_internals/validator';
-import type { datasetRegistration } from './data';
-import { selectData } from './_internals/data/selectData';
-import sdkVersion from './_internals/sdkVersion';
+import type { ShopwareMessageTypes } from "./message-types";
+import { generateUniqueId } from "./_internals/utils";
+import type { extension, privilegeString } from "./_internals/privileges";
+import MissingPrivilegesError from "./_internals/privileges/missing-privileges-error";
+import SerializerFactory from "./_internals/serializer";
+import createError from "./_internals/error-handling/error-factory";
+import validate from "./_internals/validator";
+import type { datasetRegistration } from "./data";
+import { selectData } from "./_internals/data/selectData";
+import sdkVersion from "./_internals/sdkVersion";
 
 const packageVersion = sdkVersion as string;
 
@@ -18,8 +18,8 @@ const { serialize, deserialize } = SerializerFactory({
 });
 
 export type extensions = {
-  [key: string]: extension,
-}
+  [key: string]: extension;
+};
 
 // This can't be exported and used in other files as it leads to circular dependencies. Use window._swsdk.adminExtensions instead
 const adminExtensions: extensions = {};
@@ -45,33 +45,40 @@ export function setExtensions(extensions: extensions): void {
 /**
  * Resembles the options that are available on any ShopwareMessageType.
  */
-export type BaseMessageOptions = { privileges?: privilegeString[] }
+export type BaseMessageOptions = { privileges?: privilegeString[] };
 
 /**
  * This type contains the data of the type without the responseType
  * @internal
  */
-export type MessageDataType<TYPE extends keyof ShopwareMessageTypes> = Omit<ShopwareMessageTypes[TYPE], 'responseType'>;
+export type MessageDataType<TYPE extends keyof ShopwareMessageTypes> = Omit<
+  ShopwareMessageTypes[TYPE],
+  "responseType"
+>;
 
 /**
  * This is the structure of the data which will be send with {@link send}
  * @internal
  */
-export type ShopwareMessageSendData<MESSAGE_TYPE extends keyof ShopwareMessageTypes> = {
-  _type: MESSAGE_TYPE,
-  _data: MessageDataType<MESSAGE_TYPE> & BaseMessageOptions,
-  _callbackId: string,
-}
+export type ShopwareMessageSendData<
+  MESSAGE_TYPE extends keyof ShopwareMessageTypes,
+> = {
+  _type: MESSAGE_TYPE;
+  _data: MessageDataType<MESSAGE_TYPE> & BaseMessageOptions;
+  _callbackId: string;
+};
 
 /**
  * This is the structure of the data which will be send back when the admin gives a response
  * @internal
  */
-export type ShopwareMessageResponseData<MESSAGE_TYPE extends keyof ShopwareMessageTypes> = {
-  _type: MESSAGE_TYPE,
-  _response: ShopwareMessageTypes[MESSAGE_TYPE]['responseType'] | null,
-  _callbackId: string,
-}
+export type ShopwareMessageResponseData<
+  MESSAGE_TYPE extends keyof ShopwareMessageTypes,
+> = {
+  _type: MESSAGE_TYPE;
+  _response: ShopwareMessageTypes[MESSAGE_TYPE]["responseType"] | null;
+  _callbackId: string;
+};
 
 /**
  * ----------------
@@ -79,16 +86,16 @@ export type ShopwareMessageResponseData<MESSAGE_TYPE extends keyof ShopwareMessa
  * ----------------
  */
 const sourceRegistry: Set<{
-  source: Window,
-  origin: string,
-  sdkVersion: string|undefined,
+  source: Window;
+  origin: string;
+  sdkVersion: string | undefined;
 }> = new Set();
 
 const subscriberRegistry: Set<{
-  id: string,
-  selectors: string[] | undefined,
-  source: Window,
-  origin: string,
+  id: string;
+  selectors: string[] | undefined;
+  source: Window;
+  origin: string;
 }> = new Set();
 
 /**
@@ -108,8 +115,8 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
   type: MESSAGE_TYPE,
   data: MessageDataType<MESSAGE_TYPE> & BaseMessageOptions,
   _targetWindow?: Window,
-  _origin?: string
-): Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType'] | null> {
+  _origin?: string,
+): Promise<ShopwareMessageTypes[MESSAGE_TYPE]["responseType"] | null> {
   // Generate a unique callback ID used to match the response for this request
   const callbackId = generateUniqueId();
 
@@ -124,25 +131,29 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
   };
 
   // Serialize the message data to transform Entity, EntityCollection, Criteria etc. to a JSON serializable format
-  let serializedData = serialize(messageData) as ShopwareMessageSendData<MESSAGE_TYPE>;
+  let serializedData = serialize(
+    messageData,
+  ) as ShopwareMessageSendData<MESSAGE_TYPE>;
 
   // Validate if send value contains entity data where the app has no privileges for
   if (_origin) {
     const validationErrors = validate({
       serializedData: serializedData,
       origin: _origin,
-      privilegesToCheck: ['read'],
+      privilegesToCheck: ["read"],
       type: type,
     });
 
     if (validationErrors) {
       // Datasets need the id for matching the response
-      if ([
-        'datasetSubscribe',
-        'datasetUpdate',
-        'datasetRegistration',
-        'datasetGet',
-      ].includes(serializedData._type)) {
+      if (
+        [
+          "datasetSubscribe",
+          "datasetUpdate",
+          "datasetRegistration",
+          "datasetGet",
+        ].includes(serializedData._type)
+      ) {
         serializedData = serialize({
           _type: serializedData._type,
           _callbackId: serializedData._callbackId,
@@ -162,7 +173,6 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
           _data: validationErrors,
         }) as ShopwareMessageSendData<MESSAGE_TYPE>;
       }
-
     }
   }
 
@@ -175,8 +185,8 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
 
   // Return a promise which resolves when the response is received
   return new Promise((resolve, reject) => {
-    const callbackHandler = function(event: MessageEvent<string>):void {
-      if (typeof event.data !== 'string') {
+    const callbackHandler = function (event: MessageEvent<string>): void {
+      if (typeof event.data !== "string") {
         return;
       }
 
@@ -200,15 +210,18 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
       }
 
       // Only execute if response value exists
-      if (!shopwareResponseData.hasOwnProperty('_response')) {
+      if (!shopwareResponseData.hasOwnProperty("_response")) {
         return;
       }
 
       // Deserialize methods etc. so that they are callable in JS
-      const deserializedResponseData = deserialize(shopwareResponseData, event) as ShopwareMessageResponseData<MESSAGE_TYPE>;
+      const deserializedResponseData = deserialize(
+        shopwareResponseData,
+        event,
+      ) as ShopwareMessageResponseData<MESSAGE_TYPE>;
 
       // Remove event so that in only execute once
-      window.removeEventListener('message', callbackHandler);
+      window.removeEventListener("message", callbackHandler);
 
       // Only return the data if the request is not timed out
       if (!isResolved) {
@@ -228,7 +241,7 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
       }
     };
 
-    window.addEventListener('message', callbackHandler);
+    window.addEventListener("message", callbackHandler);
 
     let corsRestriction = true;
 
@@ -238,7 +251,9 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
       // Silent catch to prevent cross origin frame exception
     }
 
-    let targetOrigin = corsRestriction ? document.referrer : window.parent.origin;
+    let targetOrigin = corsRestriction
+      ? document.referrer
+      : window.parent.origin;
 
     // If _origin was provided then update the targetOrigin
     if (_origin) {
@@ -246,7 +261,9 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
     }
 
     // Send the data to the target window
-    _targetWindow ? _targetWindow.postMessage(message, targetOrigin) : window.parent.postMessage(message, targetOrigin);
+    _targetWindow
+      ? _targetWindow.postMessage(message, targetOrigin)
+      : window.parent.postMessage(message, targetOrigin);
 
     // Send timeout when no one sends data back or handler freezes
     setTimeout(() => {
@@ -255,30 +272,33 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
         return;
       }
 
-      reject('Send timeout expired. It could be possible that no handler for the postMessage request exists or that the handler freezed.');
+      reject(
+        "Send timeout expired. It could be possible that no handler for the postMessage request exists or that the handler freezed.",
+      );
     }, timeoutMs);
   });
 }
 
 export type HandleMethod<MESSAGE_TYPE extends keyof ShopwareMessageTypes> = (
   data: MessageDataType<MESSAGE_TYPE> & BaseMessageOptions,
-  additionalInformation: { _event_: MessageEvent<string> }
-) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | ShopwareMessageTypes[MESSAGE_TYPE]['responseType'];
+  additionalInformation: { _event_: MessageEvent<string> },
+) =>
+  | Promise<ShopwareMessageTypes[MESSAGE_TYPE]["responseType"]>
+  | ShopwareMessageTypes[MESSAGE_TYPE]["responseType"];
 
 /**
  * @param type Choose a type of action from the {@link send-types}
  * @param method This method should return the response value
  * @returns The return value is a cancel function to stop listening to the events
  */
-export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
-(
+export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
   type: MESSAGE_TYPE,
-  method: HandleMethod<MESSAGE_TYPE>
-)
-  : () => void
-{
-  const handleListener = async function(event: MessageEvent<string>): Promise<void> {
-    if (typeof event.data !== 'string') {
+  method: HandleMethod<MESSAGE_TYPE>,
+): () => void {
+  const handleListener = async function (
+    event: MessageEvent<string>,
+  ): Promise<void> {
+    if (typeof event.data !== "string") {
       return;
     }
 
@@ -303,49 +323,48 @@ export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
     }
 
     // Deserialize methods etc. so that they are callable in JS
-    const deserializedMessageData = deserialize(shopwareMessageData, event) as ShopwareMessageSendData<MESSAGE_TYPE>;
+    const deserializedMessageData = deserialize(
+      shopwareMessageData,
+      event,
+    ) as ShopwareMessageSendData<MESSAGE_TYPE>;
 
     // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-    const responseValue = await Promise.resolve((() => {
-      const responseValidationTypes = [
-        'datasetSubscribe',
-        'datasetGet',
-        'datasetUpdate',
-        // Test value
-        '_collectionTest',
-      ];
+    const responseValue = await Promise.resolve(
+      (() => {
+        const responseValidationTypes = [
+          "datasetSubscribe",
+          "datasetGet",
+          "datasetUpdate",
+          // Test value
+          "_collectionTest",
+        ];
 
-      // Message type is not dataset related so just execute the method
-      if (!responseValidationTypes.includes(type)) {
+        // Message type is not dataset related so just execute the method
+        if (!responseValidationTypes.includes(type)) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+          return method(deserializedMessageData._data, { _event_: event });
+        }
+
+        /*
+         * Validate incoming handle messages for privileges
+         * in Entity and Entity Collection
+         */
+        const validationErrors = validate({
+          serializedData: shopwareMessageData,
+          origin: event.origin,
+          type: type,
+          privilegesToCheck: ["create", "delete", "update", "read"],
+        });
+
+        // If validation errors exists then return them as the response value
+        if (validationErrors) {
+          return validationErrors;
+        }
+
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-        return method(
-          deserializedMessageData._data,
-          { _event_: event }
-        );
-      }
-
-      /*
-       * Validate incoming handle messages for privileges
-       * in Entity and Entity Collection
-       */
-      const validationErrors = validate({
-        serializedData: shopwareMessageData,
-        origin: event.origin,
-        type: type,
-        privilegesToCheck: ['create', 'delete', 'update', 'read'],
-      });
-
-      // If validation errors exists then return them as the response value
-      if (validationErrors) {
-        return validationErrors;
-      }
-
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      return method(
-        deserializedMessageData._data,
-        { _event_: event }
-      );
-    })()).catch(e => createError(type, e));
+        return method(deserializedMessageData._data, { _event_: event });
+      })(),
+    ).catch((e) => createError(type, e));
 
     const responseMessage: ShopwareMessageResponseData<MESSAGE_TYPE> = {
       _callbackId: deserializedMessageData._callbackId,
@@ -354,43 +373,50 @@ export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
     };
 
     // Replace methods etc. so that they are working in JSON format
-    const serializedResponseMessage = ((): ShopwareMessageResponseData<MESSAGE_TYPE> => {
-      let serializedMessage = serialize(responseMessage) as ShopwareMessageResponseData<MESSAGE_TYPE>;
-      const messageValidationTypes = [
-        'datasetSubscribe',
-        'datasetGet',
-        // Test value
-        '_collectionTest',
-      ];
+    const serializedResponseMessage =
+      ((): ShopwareMessageResponseData<MESSAGE_TYPE> => {
+        let serializedMessage = serialize(
+          responseMessage,
+        ) as ShopwareMessageResponseData<MESSAGE_TYPE>;
+        const messageValidationTypes = [
+          "datasetSubscribe",
+          "datasetGet",
+          // Test value
+          "_collectionTest",
+        ];
 
-      if (!messageValidationTypes.includes(type)) {
+        if (!messageValidationTypes.includes(type)) {
+          return serializedMessage;
+        }
+
+        // Validate if response value contains entity data where the app has no privileges for
+        const validationErrors = validate({
+          serializedData: serializedMessage,
+          origin: event.origin,
+          privilegesToCheck: ["read"],
+          type: type,
+        });
+
+        if (validationErrors) {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+          serializedMessage._response = validationErrors;
+          serializedMessage = serialize(
+            serializedMessage,
+          ) as ShopwareMessageResponseData<MESSAGE_TYPE>;
+        }
+
         return serializedMessage;
-      }
+      })();
 
-      // Validate if response value contains entity data where the app has no privileges for
-      const validationErrors = validate({
-        serializedData: serializedMessage,
-        origin: event.origin,
-        privilegesToCheck: ['read'],
-        type: type,
-      });
-
-      if (validationErrors) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        serializedMessage._response = validationErrors;
-        serializedMessage = serialize(serializedMessage) as ShopwareMessageResponseData<MESSAGE_TYPE>;
-      }
-
-      return serializedMessage;
-    })();
-
-    const stringifiedResponseMessage = JSON.stringify(serializedResponseMessage);
+    const stringifiedResponseMessage = JSON.stringify(
+      serializedResponseMessage,
+    );
 
     if (event.source) {
       // If event source exists then send it back to original source
       event.source.postMessage(stringifiedResponseMessage, {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        targetOrigin: event.origin ?? '*',
+        targetOrigin: event.origin ?? "*",
       });
     } else {
       // If no event source exists then it should send to same window
@@ -399,27 +425,25 @@ export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
   };
 
   // Start listening directly
-  window.addEventListener('message', handleListener);
+  window.addEventListener("message", handleListener);
 
   // Return a cancel method
-  return ():void => window.removeEventListener('message', handleListener);
+  return (): void => window.removeEventListener("message", handleListener);
 }
 
 export function publish<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
   type: MESSAGE_TYPE,
-  data: ShopwareMessageTypes[MESSAGE_TYPE]['responseType'],
+  data: ShopwareMessageTypes[MESSAGE_TYPE]["responseType"],
   sources: {
-    source: Window,
-    origin: string,
-    sdkVersion: string | undefined,
+    source: Window;
+    origin: string;
+    sdkVersion: string | undefined;
   }[] = [...sourceRegistry].map(({ source, origin, sdkVersion }) => ({
     source,
     origin,
     sdkVersion,
-  }))
-)
-:void
-{
+  })),
+): void {
   sources.forEach(({ source, origin }) => {
     // Disable error handling because not every window need to react to the data
     // eslint-disable-next-line @typescript-eslint/no-empty-function
@@ -429,7 +453,9 @@ export function publish<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
 
 export function subscribe<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
   type: MESSAGE_TYPE,
-  method: (data: ShopwareMessageTypes[MESSAGE_TYPE]['responseType']) => void | Promise<unknown>
+  method: (
+    data: ShopwareMessageTypes[MESSAGE_TYPE]["responseType"],
+  ) => void | Promise<unknown>,
 ): () => void {
   return handle(type, method);
 }
@@ -441,26 +467,41 @@ export function subscribe<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
  */
 
 // SENDER WITH OPTIONAL ARGUMENTS (WHEN ALL BASE ARGUMENTS ARE DEFINED)
-export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
-(messageType: MESSAGE_TYPE, baseMessageOptions: MessageDataType<MESSAGE_TYPE>)
-:(messageOptions?: MessageDataType<MESSAGE_TYPE> & BaseMessageOptions) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']>
+export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
+  messageType: MESSAGE_TYPE,
+  baseMessageOptions: MessageDataType<MESSAGE_TYPE>,
+): (
+  messageOptions?: MessageDataType<MESSAGE_TYPE> & BaseMessageOptions,
+) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]["responseType"]>;
 
 // SENDER WITH PARTIAL ARGUMENTS (ARGUMENTS DEFINED IN BASE OPTIONS ARE OMITTED)
-export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes, BASE_OPTIONS extends Partial<MessageDataType<MESSAGE_TYPE>>>
-(messageType: MESSAGE_TYPE, baseMessageOptions: BASE_OPTIONS)
-:(messageOptions: Omit<MessageDataType<MESSAGE_TYPE>, keyof BASE_OPTIONS> & BaseMessageOptions) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']>
+export function createSender<
+  MESSAGE_TYPE extends keyof ShopwareMessageTypes,
+  BASE_OPTIONS extends Partial<MessageDataType<MESSAGE_TYPE>>,
+>(
+  messageType: MESSAGE_TYPE,
+  baseMessageOptions: BASE_OPTIONS,
+): (
+  messageOptions: Omit<MessageDataType<MESSAGE_TYPE>, keyof BASE_OPTIONS> &
+    BaseMessageOptions,
+) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]["responseType"]>;
 
 // SENDER WITH FULL ARGUMENTS (WHEN NO BASE ARGUMENTS ARE DEFINED)
-export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
-(messageType: MESSAGE_TYPE)
-:(messageOptions: MessageDataType<MESSAGE_TYPE> & BaseMessageOptions) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']>
+export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
+  messageType: MESSAGE_TYPE,
+): (
+  messageOptions: MessageDataType<MESSAGE_TYPE> & BaseMessageOptions,
+) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]["responseType"]>;
 
 // MAIN FUNCTION WHICH INCLUDES ALL POSSIBILITES
-export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
-(messageType: MESSAGE_TYPE, baseMessageOptions?: MessageDataType<MESSAGE_TYPE>)
-{
+export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
+  messageType: MESSAGE_TYPE,
+  baseMessageOptions?: MessageDataType<MESSAGE_TYPE>,
+) {
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  return (messageOptions: MessageDataType<MESSAGE_TYPE> & BaseMessageOptions) => {
+  return (
+    messageOptions: MessageDataType<MESSAGE_TYPE> & BaseMessageOptions,
+  ) => {
     return send(messageType, { ...baseMessageOptions, ...messageOptions });
   };
 }
@@ -469,11 +510,20 @@ export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
  * Factory method which creates a handler so that the type don't need to be
  * defined and can be hidden.
  */
-export function createHandler<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(messageType: MESSAGE_TYPE) {
+export function createHandler<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
+  messageType: MESSAGE_TYPE,
+) {
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  return (method: (data: MessageDataType<MESSAGE_TYPE> & BaseMessageOptions, additionalInformation: {
-    _event_: MessageEvent<string>,
-  }) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | ShopwareMessageTypes[MESSAGE_TYPE]['responseType']) => {
+  return (
+    method: (
+      data: MessageDataType<MESSAGE_TYPE> & BaseMessageOptions,
+      additionalInformation: {
+        _event_: MessageEvent<string>;
+      },
+    ) =>
+      | Promise<ShopwareMessageTypes[MESSAGE_TYPE]["responseType"]>
+      | ShopwareMessageTypes[MESSAGE_TYPE]["responseType"],
+  ) => {
     return handle(messageType, method);
   };
 }
@@ -482,14 +532,23 @@ export function createHandler<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(m
  * Factory method which creates a handler so that the type doesn't need to be
  * defined and can be hidden.
  */
-export function createSubscriber<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(messageType: MESSAGE_TYPE) {
+export function createSubscriber<
+  MESSAGE_TYPE extends keyof ShopwareMessageTypes,
+>(messageType: MESSAGE_TYPE) {
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  return (method: (data: ShopwareMessageTypes[MESSAGE_TYPE]['responseType']) => void | Promise<unknown>, id?: string) => {
+  return (
+    method: (
+      data: ShopwareMessageTypes[MESSAGE_TYPE]["responseType"],
+    ) => void | Promise<unknown>,
+    id?: string,
+  ) => {
     if (!id) {
       return subscribe(messageType, method);
     }
 
-    const wrapper = (data: ShopwareMessageTypes[MESSAGE_TYPE]['responseType']): void => {
+    const wrapper = (
+      data: ShopwareMessageTypes[MESSAGE_TYPE]["responseType"],
+    ): void => {
       if (data.id === id) {
         void method(data);
       }
@@ -509,7 +568,7 @@ const datasets = new Map<string, unknown>();
 
 (async (): Promise<void> => {
   // Handle registrations at current window
-  handle('__registerWindow__', ({ sdkVersion }, additionalOptions) => {
+  handle("__registerWindow__", ({ sdkVersion }, additionalOptions) => {
     let source: Window | undefined;
     let origin: string | undefined;
 
@@ -528,10 +587,10 @@ const datasets = new Map<string, unknown>();
     });
   });
 
-  handle('datasetSubscribeRegistration', (data, { _event_ }) => {
+  handle("datasetSubscribeRegistration", (data, { _event_ }) => {
     let source: Window | undefined;
     let origin: string | undefined;
-  
+
     if (_event_.source) {
       source = _event_.source as Window;
       origin = _event_.origin;
@@ -539,7 +598,7 @@ const datasets = new Map<string, unknown>();
       source = window;
       origin = window.origin;
     }
-  
+
     subscriberRegistry.add({
       id: data.id,
       source: source,
@@ -551,29 +610,41 @@ const datasets = new Map<string, unknown>();
     const dataset = datasets.get(data.id);
 
     if (dataset) {
-      const selectedData = selectData(dataset as Record<string|number, unknown>, data.selectors, 'datasetSubscribe', origin);
+      const selectedData = selectData(
+        dataset as Record<string | number, unknown>,
+        data.selectors,
+        "datasetSubscribe",
+        origin,
+      );
 
       if (selectedData instanceof MissingPrivilegesError) {
         console.error(selectedData);
         return;
       }
 
-      void send('datasetSubscribe', {
-        id: data.id,
-        data: selectedData,
-        selectors: data.selectors,
-      }, source, origin);
+      void send(
+        "datasetSubscribe",
+        {
+          id: data.id,
+          data: selectedData,
+          selectors: data.selectors,
+        },
+        source,
+        origin,
+      );
     }
   });
 
   // Register at parent window
-  await send('__registerWindow__', {
+  await send("__registerWindow__", {
     sdkVersion: packageVersion,
   });
 })().catch((e) => console.error(e));
 
 // New dataset registered
-export async function processDataRegistration(data: Omit<datasetRegistration, 'responseType'>): Promise<void> {
+export async function processDataRegistration(
+  data: Omit<datasetRegistration, "responseType">,
+): Promise<void> {
   datasets.set(data.id, data.data);
 
   // Publish selected data to sources that are inside the subscriberRegistry
@@ -582,14 +653,24 @@ export async function processDataRegistration(data: Omit<datasetRegistration, 'r
       return;
     }
 
-    const selectedData = selectData(data.data as Record<string|number, unknown>, selectors, 'datasetSubscribe', origin);
+    const selectedData = selectData(
+      data.data as Record<string | number, unknown>,
+      selectors,
+      "datasetSubscribe",
+      origin,
+    );
 
     if (selectedData instanceof MissingPrivilegesError) {
       console.error(selectedData);
     }
 
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    send('datasetSubscribe', { id, data: selectedData, selectors }, source, origin).catch(() => {});
+    send(
+      "datasetSubscribe",
+      { id, data: selectedData, selectors },
+      source,
+      origin,
+    ).catch(() => {});
   });
 
   return Promise.resolve();
@@ -599,14 +680,14 @@ export async function processDataRegistration(data: Omit<datasetRegistration, 'r
  * Add utils to global window object for
  * testing
  */
- declare global {
+declare global {
   interface Window {
     _swsdk: {
-      sourceRegistry: typeof sourceRegistry,
-      subscriberRegistry: typeof subscriberRegistry,
-      datasets: typeof datasets,
-      adminExtensions: typeof adminExtensions,
-    },
+      sourceRegistry: typeof sourceRegistry;
+      subscriberRegistry: typeof subscriberRegistry;
+      datasets: typeof datasets;
+      adminExtensions: typeof adminExtensions;
+    };
   }
 }
 
@@ -626,19 +707,29 @@ window._swsdk = {
 /**
  * Check if the data is valid message data
  */
-function isMessageData<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(eventData: unknown): eventData is ShopwareMessageSendData<MESSAGE_TYPE> {
-  const shopwareMessageData = eventData as ShopwareMessageSendData<MESSAGE_TYPE>;
+function isMessageData<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
+  eventData: unknown,
+): eventData is ShopwareMessageSendData<MESSAGE_TYPE> {
+  const shopwareMessageData =
+    eventData as ShopwareMessageSendData<MESSAGE_TYPE>;
 
-  return !!shopwareMessageData._type
-         && !!shopwareMessageData._data
-         && !!shopwareMessageData._callbackId;
+  return (
+    !!shopwareMessageData._type &&
+    !!shopwareMessageData._data &&
+    !!shopwareMessageData._callbackId
+  );
 }
 
 // ShopwareMessageTypes[MESSAGE_TYPE]['responseType']
-function isMessageResponseData<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(eventData: unknown): eventData is ShopwareMessageResponseData<MESSAGE_TYPE> {
-  const shopwareMessageData = eventData as ShopwareMessageResponseData<MESSAGE_TYPE>;
+function isMessageResponseData<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
+  eventData: unknown,
+): eventData is ShopwareMessageResponseData<MESSAGE_TYPE> {
+  const shopwareMessageData =
+    eventData as ShopwareMessageResponseData<MESSAGE_TYPE>;
 
-  return !!shopwareMessageData._type
-         && !!shopwareMessageData.hasOwnProperty('_response')
-         && !!shopwareMessageData._callbackId;
+  return (
+    !!shopwareMessageData._type &&
+    !!shopwareMessageData.hasOwnProperty("_response") &&
+    !!shopwareMessageData._callbackId
+  );
 }
