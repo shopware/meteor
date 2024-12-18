@@ -197,6 +197,9 @@ importers:
       '@types/node':
         specifier: ^20.11.28
         version: 20.14.5
+      prettier:
+        specifier: 3.4.2
+        version: 3.4.2
 
   packages/admin-sdk:
     dependencies:
