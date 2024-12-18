@@ -122,6 +122,23 @@ describe("mt-select", () => {
     expect(screen.queryByTestId("mt-select__label")).not.toBeInTheDocument();
   });
 
+  it("closes the option list when clicking on the input and the list is already open", async () => {
+    // ARRANGE
+    render(MtSelect, {
+      props: {
+        options: [{ label: "Option 1", value: "1" }],
+      },
+    });
+
+    await userEvent.click(screen.getByRole("combobox"));
+
+    // ACT
+    await userEvent.click(screen.getByRole("combobox"));
+
+    // ASSERT
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+  });
+
   it("closes the option list after selecting an option", async () => {
     // ARRANGE
     render(MtSelect, {
