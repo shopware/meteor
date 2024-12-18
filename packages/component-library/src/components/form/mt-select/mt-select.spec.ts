@@ -586,4 +586,38 @@ describe("mt-select", () => {
       screen.getByRole("option", { name: "Option 1" }).getAttribute("id"),
     );
   });
+
+  it("marks the last option as selected when pressing the arrow up key and the first option is selected", async () => {
+    // ARRANGE
+    render(MtSelect, {
+      props: {
+        options: [
+          { label: "Option 1", value: "1" },
+          { label: "Option 2", value: "2" },
+        ],
+      },
+    });
+
+    await userEvent.tab();
+    await userEvent.keyboard("{ArrowDown}");
+
+    // ACT
+    await userEvent.keyboard("{ArrowUp}");
+
+    // ASSERT
+    expect(screen.getByRole("option", { name: "Option 1" })).toHaveAttribute(
+      "aria-selected",
+      "false",
+    );
+
+    expect(screen.getByRole("option", { name: "Option 2" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
+
+    expect(screen.getByRole("combobox")).toHaveAttribute(
+      "aria-activedescendant",
+      screen.getByRole("option", { name: "Option 2" }).getAttribute("id"),
+    );
+  });
 });
