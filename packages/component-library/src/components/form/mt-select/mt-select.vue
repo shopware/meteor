@@ -56,7 +56,7 @@
     <button
       v-for="option in filteredOptions"
       :key="option.value"
-      role="listitem"
+      role="option"
       :aria-selected="option.value === model"
       class="mt-select__listitem"
       @click="() => changeValue(option.value, option.label)"

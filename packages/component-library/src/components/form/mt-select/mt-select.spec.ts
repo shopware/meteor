@@ -78,7 +78,7 @@ describe("mt-select", () => {
     await userEvent.click(screen.getByRole("combobox"));
 
     // ACT
-    await userEvent.click(screen.getByText("Option 1"));
+    await userEvent.click(screen.getByRole("option", { name: "Option 1" }));
 
     // ASSERT
     expect(screen.getByRole("combobox")).toHaveValue("Option 1");
@@ -133,7 +133,7 @@ describe("mt-select", () => {
     await userEvent.click(screen.getByRole("combobox"));
 
     // ACT
-    await userEvent.click(screen.getByText("Option 1"));
+    await userEvent.click(screen.getByRole("option", { name: "Option 1" }));
 
     // ASSERT
     expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
@@ -226,7 +226,7 @@ describe("mt-select", () => {
     await fireEvent.input(screen.getByRole("combobox"), { target: { value: "1" } });
 
     // ASSERT
-    expect(screen.getByText("Option 1")).toBeVisible();
+    expect(screen.getByRole("option", { name: "Option 1" })).toBeVisible();
     expect(screen.queryByText("Option 2")).not.toBeInTheDocument();
   });
 
@@ -248,7 +248,7 @@ describe("mt-select", () => {
     await fireEvent.input(screen.getByRole("combobox"), { target: { value: "1" } });
 
     // ASSERT
-    expect(screen.getByText("Option 2")).toBeVisible();
+    expect(screen.getByRole("option", { name: "Option 2" })).toBeVisible();
     expect(screen.queryByText("Option 1")).not.toBeInTheDocument();
   });
 
@@ -287,7 +287,7 @@ describe("mt-select", () => {
     await userEvent.tab();
 
     // ACT
-    await fireEvent.keyDown(screen.getByText("Option 1"), { key: "Escape" });
+    await fireEvent.keyDown(screen.getByRole("option", { name: "Option 1" }), { key: "Escape" });
 
     // ASSERT
     expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
@@ -363,7 +363,10 @@ describe("mt-select", () => {
     await userEvent.click(screen.getByRole("combobox"));
 
     // ASSERT
-    expect(screen.getByText("Option 1")).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByRole("option", { name: "Option 1" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
   });
 
   it("announces to the screen readers that a non-selected option is not selected", async () => {
@@ -377,6 +380,9 @@ describe("mt-select", () => {
     await userEvent.click(screen.getByRole("combobox"));
 
     // ASSERT
-    expect(screen.getByText("Option 2")).toHaveAttribute("aria-selected", "false");
+    expect(screen.getByRole("option", { name: "Option 2" })).toHaveAttribute(
+      "aria-selected",
+      "false",
+    );
   });
 });
