@@ -10,12 +10,10 @@ module.exports = {
     "eslint:recommended",
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking",
+    "prettier",
   ],
   rules: {
     "no-prototype-builtins": "off",
-    "comma-dangle": "off",
-    "no-irregular-whitespace": "error",
-    "no-multiple-empty-lines": ["error", { max: 1 }],
     "@typescript-eslint/comma-dangle": ["error", "always-multiline"],
     "@typescript-eslint/explicit-function-return-type": ["error"],
     "@typescript-eslint/consistent-type-imports": ["error"],
@@ -32,29 +30,17 @@ module.exports = {
         },
       },
     ],
-    "capitalized-comments": [
-      "error",
-      "always",
-      {
-        ignorePattern: "pragma|ignored",
-        ignoreInlineComments: true,
-      },
-    ],
-    semi: ["error", "always"],
     "no-console": [
       "error",
       {
         allow: ["warn", "error"],
       },
     ],
-    indent: ["error", 2],
     "no-debugger": "error",
     "no-unreachable": "error",
     "consistent-return": "error",
-    camelcase: "error",
     curly: "error",
     eqeqeq: "error",
-    "multiline-comment-style": ["error", "starred-block"],
     "no-iterator": "error",
     "import/no-cycle": [
       2,
@@ -62,9 +48,6 @@ module.exports = {
         maxDepth: 1,
       },
     ],
-    quotes: ["error", "single"],
-    "eol-last": ["error", "always"],
-    "object-curly-spacing": ["error", "always"],
     "check-file/folder-naming-convention": [
       "error",
       { "src/!(_internals)/**/": "KEBAB_CASE" },

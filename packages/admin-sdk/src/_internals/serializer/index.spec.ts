@@ -13,9 +13,9 @@ describe("index.ts", () => {
   it("should convert entities with circular reference", () => {
     // @ts-expect-error - We don't care about valid entities here
     const entity = new Entity("foo", "jest", {
-      // @ts-expect-error - We don't care about valid entities here
       lineItems: new EntityCollection(
         "line_items",
+        // @ts-expect-error - We don't care about valid entities here
         "line_item",
         undefined,
         new Criteria(),
@@ -29,16 +29,16 @@ describe("index.ts", () => {
               unitPrice: 100,
               totalPrice: 100,
             },
-            // @ts-expect-error - We don't care about valid entities here
             children: new EntityCollection(
               "line_item",
+              // @ts-expect-error - We don't care about valid entities here
               "order_line_item",
               undefined,
               new Criteria(),
               [
-                // @ts-expect-error - We don't care about valid entities here
                 new Entity(
                   "extension",
+                  // @ts-expect-error - We don't care about valid entities here
                   "order_line_item_foreign_keys_extension",
                   {
                     id: "extension",
@@ -46,9 +46,9 @@ describe("index.ts", () => {
                     parent: undefined,
                   },
                 ),
-                // @ts-expect-error - We don't care about valid entities here
                 new Entity(
                   "extension",
+                  // @ts-expect-error - We don't care about valid entities here
                   "order_line_item_foreign_keys_extension",
                   {
                     id: "extension2",
@@ -74,6 +74,7 @@ describe("index.ts", () => {
 
     // @ts-expect-error - Create circular reference
     entity.lineItems.first(0).children.getAt(0).parent =
+      // @ts-expect-error - Create circular reference
       entity.lineItems.getAt(0);
 
     const messageData = {
