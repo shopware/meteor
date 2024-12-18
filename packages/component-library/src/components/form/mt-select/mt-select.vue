@@ -55,6 +55,7 @@
       role="listitem"
       class="mt-select__listitem"
       @click="() => changeValue(option.value, option.label)"
+      @keydown.esc="isOpen = false"
     >
       {{ option.label }}
     </button>

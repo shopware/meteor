@@ -271,4 +271,25 @@ describe("mt-select", () => {
     // ASSERT
     expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
   });
+
+  it("closes the option list when pressing the escape key and an optin is focused", async () => {
+    // ARRANGE
+    render(MtSelect, {
+      props: {
+        options: [
+          { label: "Option 1", value: "1" },
+          { label: "Option 2", value: "2" },
+        ],
+      },
+    });
+
+    await userEvent.click(screen.getByRole("textbox"));
+    await userEvent.tab();
+
+    // ACT
+    await fireEvent.keyDown(screen.getByText("Option 1"), { key: "Escape" });
+
+    // ASSERT
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+  });
 });
