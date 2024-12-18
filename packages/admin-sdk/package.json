@@ -83,7 +83,9 @@
     "test:e2e:dev-debug": "PWDEBUG=1 npm run test:e2e:dev",
     "test:e2e:dev-watch": "chokidar \"{e2e,src}/**/*.{js,ts}\" -c 'clear && npm run test:e2e:dev' --initial",
     "test:unit": "jest --collectCoverage",
-    "test:unit:watch": "npm run circular-dependencies && jest --watch"
+    "test:unit:watch": "npm run circular-dependencies && jest --watch",
+    "format:check": "prettier . --check",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "localforage": "^1.10.0",
@@ -91,6 +93,7 @@
     "@shopware-ag/meteor-component-library": "workspace:*"
   },
   "devDependencies": {
+    "prettier": "3.4.2",
     "@playwright/test": "^1.45.0",
     "@types/jest": "^27.4.1",
     "@types/lodash": "^4.14.191",
