@@ -392,4 +392,21 @@ describe("mt-select", () => {
       "false",
     );
   });
+
+  it("opens the option list when pressing the arrow down key when focusing the input", async () => {
+    // ARRANGE
+    render(MtSelect, {
+      props: {
+        options: [{ label: "Option 1", value: "1" }],
+      },
+    });
+
+    // ACT
+    await userEvent.tab();
+    await userEvent.keyboard("{ArrowDown}");
+
+    // ASSERT
+    expect(screen.getByRole("listbox")).toBeVisible();
+    expect(screen.getByRole("combobox")).toHaveFocus();
+  });
 });
