@@ -264,7 +264,15 @@ jobs:
 
       - name: Run playwright
         working-directory: meteor/examples/admin-sdk-plugin/tests/acceptance/
-        run: npx playwright test --reporter=github --trace=on-first-retry --project chromium
+        run: npx playwright test --reporter=github --trace=on --project chromium
+
+      - run: ls -la
+        working-directory: meteor/examples/admin-sdk-plugin/tests/acceptance/
+        if: always()
+
+      - run: ls -la
+        working-directory: meteor/examples/admin-sdk-plugin/tests/acceptance/playwright-report/
+        if: always()
 
       - uses: actions/upload-artifact@v4
         if: always()
