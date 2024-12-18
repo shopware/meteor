@@ -23,6 +23,16 @@
       :placeholder="placeholder"
       @input="searchTerm = ($event.target as HTMLInputElement).value"
     />
+
+    <mt-icon
+      name="regular-chevron-down-xs"
+      color="var(--color-icon-primary-default)"
+      class="mt-select__indicator"
+      aria-hidden="true"
+      :style="{
+        transform: isOpen ? 'rotate(180deg)' : undefined,
+      }"
+    />
   </div>
 
   <mt-field-error v-if="!!error" :error="error" data-testid="mt-select__error" />
@@ -65,6 +75,7 @@ import { onClickOutside } from "@vueuse/core";
 import { useId } from "@/composables/useId";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
+import MtIcon from "@/components/icons-media/mt-icon/mt-icon.vue";
 import { autoUpdate, flip, offset, shift, size, useFloating } from "@floating-ui/vue";
 
 const id = useId();
@@ -191,6 +202,11 @@ const { floatingStyles } = useFloating(box, listbox, {
 
 .mt-select__box--small {
   min-height: var(--scale-size-32);
+}
+
+.mt-select__indicator {
+  transition: 0.125s transform cubic-bezier(0.785, 0.135, 0.15, 0.86);
+  pointer-events: none;
 }
 
 .mt-select__listbox {
