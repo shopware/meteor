@@ -36,7 +36,7 @@
         v-model="colorValue"
         aria-label="colorpicker-color-value"
         class="mt-colorpicker__input"
-        spellcheck="false"
+        :spellcheck="false"
         :disabled="disabled"
         :readonly="readonly"
         @click="onClickInput"
@@ -101,7 +101,7 @@
                 class="mt-colorpicker__colorpicker-input is--hex"
                 aria-label="hex-value"
                 type="text"
-                spellcheck="false"
+                :spellcheck="false"
               />
               <mt-text
                 v-if="colorLabels"

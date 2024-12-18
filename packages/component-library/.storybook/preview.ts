@@ -55,12 +55,6 @@ const preview: Preview = {
         { name: "dark", value: DARK_THEME_BACKGROUND_VALUE },
       ],
     },
-    options: {
-      storySort: (a, b) => {
-        // Sort the stories by their id alphabetically
-        return a.id === b.id ? 0 : a.id.localeCompare(b.id, undefined, { numeric: true });
-      },
-    },
   },
 
   decorators: [

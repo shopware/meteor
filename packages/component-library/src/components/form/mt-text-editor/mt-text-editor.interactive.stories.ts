@@ -663,8 +663,11 @@ export const SetLink: MtTextEditorStory = defineStory({
     // Click on button with aria-label "Link"
     await userEvent.click(canvas.getByLabelText("Link"));
 
+    // Get body
+    const body = within(document.body);
+
     // Set link url
-    const linkInput = canvas.getByLabelText("Link URL");
+    const linkInput = body.getByLabelText("Link URL");
     await userEvent.clear(linkInput);
     await userEvent.type(linkInput, "https://www.shopware.com");
 
@@ -675,7 +678,7 @@ export const SetLink: MtTextEditorStory = defineStory({
     await userEvent.click(targetCheckbox);
 
     // Click on button with text "Apply link"
-    await userEvent.click(canvas.getByText("Apply link"));
+    await userEvent.click(body.getByText("Apply link"));
 
     // Wait until args was triggered with new content
     await waitUntil(() => args.updateModelValue?.mock?.calls?.length > 0);
@@ -698,16 +701,19 @@ export const InsertTable: MtTextEditorStory = defineStory({
     // Click on button with aria-label "Table"
     await userEvent.click(canvas.getByLabelText("Table"));
 
+    // Get body
+    const body = within(document.body);
+
     // Set table columns
-    const columnsInput = canvas.getByLabelText("Columns");
+    const columnsInput = body.getByLabelText("Columns");
     await userEvent.type(columnsInput, "{selectall}{backspace}4");
 
     // Set table rows
-    const rowsInput = canvas.getByLabelText("Rows");
+    const rowsInput = body.getByLabelText("Rows");
     await userEvent.type(rowsInput, "{selectall}{backspace}2");
 
     // Click on button with text "Insert table"
-    await userEvent.click(canvas.getByText("Insert table"));
+    await userEvent.click(body.getByText("Insert table"));
 
     // Wait until args was triggered with new content
     await waitUntil(() => args.updateModelValue?.mock?.calls?.length > 0);
@@ -730,16 +736,23 @@ export const VisualTestShowContextualButtons: MtTextEditorStory = defineStory({
     // Click on button with aria-label "Table"
     await userEvent.click(canvas.getByLabelText("Table"));
 
+    // Get body
+    const body = within(document.body);
+
+    // Wait until modal transition is finished
+    await waitUntil(() => document.body.querySelector("div[role='dialog']"));
+    await waitUntil(() => !document.body.querySelector(".modal-enter-active"));
+
     // Set table columns
-    const columnsInput = canvas.getByLabelText("Columns");
+    const columnsInput = body.getByLabelText("Columns");
     await userEvent.type(columnsInput, "{selectall}{backspace}4");
 
     // Set table rows
-    const rowsInput = canvas.getByLabelText("Rows");
+    const rowsInput = body.getByLabelText("Rows");
     await userEvent.type(rowsInput, "{selectall}{backspace}2");
 
     // Click on button with text "Insert table"
-    await userEvent.click(canvas.getByText("Insert table"));
+    await userEvent.click(body.getByText("Insert table"));
 
     // Wait until modal is closed
     await waitUntil(() => !document.body.querySelector("div[role='dialog']"));
