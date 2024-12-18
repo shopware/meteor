@@ -21,9 +21,9 @@ export function assignSetterMethod(
 type Entities = EntitySchema.Entities;
 
 interface EntityOptions<EntityName extends keyof Entities> {
-  originData?: Entities[EntityName];
-  isDirty?: boolean;
-  isNew?: boolean;
+  originData?: Entities[EntityName],
+  isDirty?: boolean,
+  isNew?: boolean,
 }
 
 class EntityClass<EntityName extends keyof Entities> {
@@ -139,7 +139,7 @@ interface EntityConstructor {
     entityName: EntityName,
     data: Entities[EntityName],
     options?: EntityOptions<EntityName>,
-  ): EntityType<EntityName>;
+  ): EntityType<EntityName>,
 }
 
 const Entity = function Entity<EntityName extends keyof Entities>(

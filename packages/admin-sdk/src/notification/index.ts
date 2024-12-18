@@ -6,34 +6,34 @@ export const dispatch = createSender("notificationDispatch");
  * Dispatch a notification.
  */
 export type notificationDispatch = {
-  responseType: void;
+  responseType: void,
   /**
    * This message will be shown in the notification.
    * HTML syntax can be used but it will be sanitized.
    * Only some basic tags and attributes can be used.
    */
-  message: string;
+  message: string,
 
   /**
    * The title of the notification
    */
-  title: string;
+  title: string,
 
   /**
    * Create a growl notification. Default is true.
    */
-  growl?: boolean;
+  growl?: boolean,
 
   /**
    * The variant of the notification
    */
-  variant?: "success" | "info" | "warning" | "error";
+  variant?: "success" | "info" | "warning" | "error",
 
   /**
    * There are two types of notification styles. Use
    * "system" only for technical application notifications.
    */
-  appearance?: "system" | "notification";
+  appearance?: "system" | "notification",
 
   /**
    * You can add several action buttons to the notification.
@@ -41,9 +41,9 @@ export type notificationDispatch = {
    * a click.
    */
   actions?: Array<{
-    label: string;
-    method?: () => void;
-    route?: string;
-    disabled?: boolean;
-  }>;
+    label: string,
+    method?: () => void,
+    route?: string,
+    disabled?: boolean,
+  }>,
 };

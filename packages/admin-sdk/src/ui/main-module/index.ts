@@ -5,53 +5,53 @@ export const addSmartBarButton = createSender("smartBarButtonAdd");
 export const hideSmartBar = createSender("smartBarHide");
 
 export type mainModuleAdd = {
-  responseType: void;
+  responseType: void,
 
   /**
    * Heading of the main module.
    */
-  heading: string;
+  heading: string,
 
   /**
    * The locationId you want to display.
    */
-  locationId: string;
+  locationId: string,
 
   /**
    * Toggles the sw-page search bar on/off.
    * Defaults to true.
    */
-  displaySearchBar?: boolean;
+  displaySearchBar?: boolean,
 
   /**
    * Toggles the sw-page language switch on/off.
    * Defaults to false.
    */
-  displayLanguageSwitch?: boolean;
+  displayLanguageSwitch?: boolean,
 };
 
 export type smartBarButtonAdd = {
-  responseType: void;
+  responseType: void,
 
   /**
    * The locationId you want to display.
    */
-  locationId: string;
+  locationId: string,
 
   /**
    * The id of the button
    */
-  buttonId: string;
+  buttonId: string,
 
   /**
    * The label of the button
    */
-  label: string;
+  label: string,
 
   /**
    * Toggle disabled state of the button
    */
-  disabled?: boolean;
+  disabled?: boolean,
 
   /**
    * Set the variant of the button
@@ -62,19 +62,19 @@ export type smartBarButtonAdd = {
     | "danger"
     | "ghost-danger"
     | "contrast"
-    | "context";
+    | "context",
 
   /**
    * Callback function which will be called once the button is clicked.
    */
-  onClickCallback: () => void;
+  onClickCallback: () => void,
 };
 
 export type smartBarHide = {
-  responseType: void;
+  responseType: void,
 
   /**
    * The locationId you want to hide.
    */
-  locationId: string;
+  locationId: string,
 };

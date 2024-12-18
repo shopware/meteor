@@ -11,112 +11,112 @@ export const enum TotalCountMode {
 
 interface Filters {
   contains: {
-    type: "contains";
-    field: string;
-    value: string;
-  };
+    type: "contains",
+    field: string,
+    value: string,
+  },
   prefix: {
-    type: "prefix";
-    field: string;
-    value: string;
-  };
+    type: "prefix",
+    field: string,
+    value: string,
+  },
   suffix: {
-    type: "suffix";
-    field: string;
-    value: string;
-  };
+    type: "suffix",
+    field: string,
+    value: string,
+  },
   equalsAny: {
-    type: "equalsAny";
-    field: string;
-    value: string;
-  };
+    type: "equalsAny",
+    field: string,
+    value: string,
+  },
   equals: {
-    type: "equals";
-    field: string;
-    value: string | number | boolean | null;
-  };
+    type: "equals",
+    field: string,
+    value: string | number | boolean | null,
+  },
   range: {
-    type: "range";
-    field: string;
+    type: "range",
+    field: string,
     parameters: {
-      lte?: string;
-      lt?: string;
-      gte?: string;
-      gt?: string;
-    };
-  };
+      lte?: string,
+      lt?: string,
+      gte?: string,
+      gt?: string,
+    },
+  },
   not: {
-    type: "not";
-    operator: "and" | "AND" | "or" | "OR";
-    queries: SingleFilter[];
-  };
+    type: "not",
+    operator: "and" | "AND" | "or" | "OR",
+    queries: SingleFilter[],
+  },
   multi: {
-    type: "multi";
-    operator: "and" | "AND" | "or" | "OR";
-    queries: SingleFilter[];
-  };
+    type: "multi",
+    operator: "and" | "AND" | "or" | "OR",
+    queries: SingleFilter[],
+  },
 }
 
 interface Aggregations {
   histogram: {
-    type: "histogram";
-    name: string;
-    field: string;
-    interval: string | null;
-    format: string | null;
-    aggregation: Aggregation | null;
-    timeZone: string | null;
-  };
+    type: "histogram",
+    name: string,
+    field: string,
+    interval: string | null,
+    format: string | null,
+    aggregation: Aggregation | null,
+    timeZone: string | null,
+  },
   terms: {
-    type: "terms";
-    name: string;
-    field: string;
-    limit: number | null;
-    sort: Sorting | null;
-    aggregation: Aggregation | null;
-  };
+    type: "terms",
+    name: string,
+    field: string,
+    limit: number | null,
+    sort: Sorting | null,
+    aggregation: Aggregation | null,
+  },
   sum: {
-    type: "sum";
-    name: string;
-    field: string;
-  };
+    type: "sum",
+    name: string,
+    field: string,
+  },
   stats: {
-    type: "stats";
-    name: string;
-    field: string;
-  };
+    type: "stats",
+    name: string,
+    field: string,
+  },
   min: {
-    type: "min";
-    name: string;
-    field: string;
-  };
+    type: "min",
+    name: string,
+    field: string,
+  },
   max: {
-    type: "max";
-    name: string;
-    field: string;
-  };
+    type: "max",
+    name: string,
+    field: string,
+  },
   count: {
-    type: "count";
-    name: string;
-    field: string;
-  };
+    type: "count",
+    name: string,
+    field: string,
+  },
   avg: {
-    type: "avg";
-    name: string;
-    field: string;
-  };
+    type: "avg",
+    name: string,
+    field: string,
+  },
   entity: {
-    type: "entity";
-    name: string;
-    field: string;
-    definition: keyof EntitySchema.Entities;
-  };
+    type: "entity",
+    name: string,
+    field: string,
+    definition: keyof EntitySchema.Entities,
+  },
   filter: {
-    type: "filter";
-    name: string;
-    filter: SingleFilter[];
-    aggregation: Aggregation;
-  };
+    type: "filter",
+    name: string,
+    filter: SingleFilter[],
+    aggregation: Aggregation,
+  },
 }
 
 type ValueOf<T> = T[keyof T];
@@ -124,50 +124,50 @@ type SingleFilter = ValueOf<Filters>;
 type Aggregation = ValueOf<Aggregations>;
 
 interface Include {
-  [entityName: string]: string[];
+  [entityName: string]: string[],
 }
 interface Association {
-  association: string;
-  criteria: Criteria;
+  association: string,
+  criteria: Criteria,
 }
 interface Query {
-  score: number;
-  query: SingleFilter;
-  [scoreField: string]: unknown;
+  score: number,
+  query: SingleFilter,
+  [scoreField: string]: unknown,
 }
 interface Sorting {
-  field: string;
-  order: "ASC" | "DESC";
-  naturalSorting: boolean;
-  type?: string;
+  field: string,
+  order: "ASC" | "DESC",
+  naturalSorting: boolean,
+  type?: string,
 }
 type GroupField = string;
 interface RequestParams {
-  ids?: string;
-  page?: number;
-  limit?: number;
-  term?: string;
-  query?: Query[];
-  filter?: SingleFilter[];
-  "post-filter"?: SingleFilter[];
-  sort?: Sorting[];
-  aggregations?: Aggregation[];
-  groupFields?: GroupField[];
-  grouping?: string[];
-  fields?: string[];
+  ids?: string,
+  page?: number,
+  limit?: number,
+  term?: string,
+  query?: Query[],
+  filter?: SingleFilter[],
+  "post-filter"?: SingleFilter[],
+  sort?: Sorting[],
+  aggregations?: Aggregation[],
+  groupFields?: GroupField[],
+  grouping?: string[],
+  fields?: string[],
   associations?: {
-    [association: string]: RequestParams;
-  };
-  includes?: Include;
-  "total-count-mode"?: TotalCountMode;
+    [association: string]: RequestParams,
+  },
+  includes?: Include,
+  "total-count-mode"?: TotalCountMode,
 }
 
 let defaultPage: null | number = 1;
 let defaultLimit: null | number = null;
 
 export function setDefaultValues(options: {
-  page?: number | null;
-  limit?: number | null;
+  page?: number | null,
+  limit?: number | null,
 }): void {
   if (options.page) {
     defaultPage = options.page;
@@ -504,22 +504,22 @@ export default class Criteria {
   }
 
   getCriteriaData(): {
-    page: Criteria["page"];
-    limit: Criteria["limit"];
-    term: Criteria["term"];
-    title: Criteria["title"];
-    filters: Criteria["filters"];
-    ids: Criteria["ids"];
-    queries: Criteria["queries"];
-    associations: Criteria["associations"];
-    postFilter: Criteria["postFilter"];
-    sortings: Criteria["sortings"];
-    aggregations: Criteria["aggregations"];
-    grouping: Criteria["grouping"];
-    fields: Criteria["fields"];
-    groupFields: Criteria["groupFields"];
-    totalCountMode: Criteria["totalCountMode"];
-    includes: Criteria["includes"];
+    page: Criteria["page"],
+    limit: Criteria["limit"],
+    term: Criteria["term"],
+    title: Criteria["title"],
+    filters: Criteria["filters"],
+    ids: Criteria["ids"],
+    queries: Criteria["queries"],
+    associations: Criteria["associations"],
+    postFilter: Criteria["postFilter"],
+    sortings: Criteria["sortings"],
+    aggregations: Criteria["aggregations"],
+    grouping: Criteria["grouping"],
+    fields: Criteria["fields"],
+    groupFields: Criteria["groupFields"],
+    totalCountMode: Criteria["totalCountMode"],
+    includes: Criteria["includes"],
   } {
     return {
       page: this.page,

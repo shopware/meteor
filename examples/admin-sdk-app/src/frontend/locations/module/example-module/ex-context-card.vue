@@ -6,12 +6,18 @@
     </p>
 
     <div class="context-functionality-buttons">
-      <SwButton @click="getCurrentLanguage"> Get current language </SwButton>
+      <SwButton @click="getCurrentLanguage">
+        Get current language
+      </SwButton>
       <SwButton @click="getCurrentEnvironment">
         Get current environment
       </SwButton>
-      <SwButton @click="getCurrentLocale"> Get current locale </SwButton>
-      <SwButton @click="getCurrentCurrency"> Get current currency </SwButton>
+      <SwButton @click="getCurrentLocale">
+        Get current locale
+      </SwButton>
+      <SwButton @click="getCurrentCurrency">
+        Get current currency
+      </SwButton>
       <SwButton @click="getCurrentShopwareVersion">
         Get current Shopware version
       </SwButton>

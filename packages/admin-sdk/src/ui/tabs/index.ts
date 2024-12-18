@@ -6,10 +6,10 @@ export default (tabPositionId: string) => ({
 });
 
 export type uiTabsAddTabItem = {
-  responseType: void;
-  positionId: string;
+  responseType: void,
+  positionId: string,
   /* The label of the tab item */
-  label: string;
+  label: string,
   /* The componentSectionId for the tab content */
-  componentSectionId: string;
+  componentSectionId: string,
 };

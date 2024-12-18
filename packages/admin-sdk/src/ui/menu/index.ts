@@ -5,47 +5,47 @@ export const expandMenu = createSender("menuExpand");
 export const addMenuItem = createSender("menuItemAdd");
 
 export type menuCollapse = {
-  responseType: void;
+  responseType: void,
 };
 
 export type menuExpand = {
-  responseType: void;
+  responseType: void,
 };
 
 export type menuItemAdd = {
-  responseType: void;
+  responseType: void,
 
   /**
    * Label of the menu item.
    */
-  label: string;
+  label: string,
 
   /**
    * The locationId you want to display.
    */
-  locationId: string;
+  locationId: string,
 
   /**
    * Toggles the sw-page search bar on/off.
    * Defaults to true.
    */
-  displaySearchBar?: boolean;
+  displaySearchBar?: boolean,
 
   /**
    * Toggles the sw-page smart bar on/off.
    * Defaults to true.
    */
-  displaySmartBar?: boolean;
+  displaySmartBar?: boolean,
 
   /**
    * Determines under which main menu entry your item is displayed.
    * Defaults to `sw-extension`.
    */
-  parent?: string;
+  parent?: string,
 
   /**
    * Determines the position of your menu item.
    * Defaults to 110.
    */
-  position?: number;
+  position?: number,
 };

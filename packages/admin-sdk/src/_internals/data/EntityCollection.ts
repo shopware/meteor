@@ -2,34 +2,34 @@ import Criteria from "../../data/Criteria";
 import type { Entity } from "./Entity";
 
 type ApiAuthToken = {
-  access: string;
-  expiry: number;
-  refresh: string;
+  access: string,
+  expiry: number,
+  refresh: string,
 };
 
 type Aggregations = {
   [key: string]: {
-    name: string;
-    [key: string]: unknown;
-  };
+    name: string,
+    [key: string]: unknown,
+  },
 };
 
 export interface ApiContext {
-  apiPath: null | string;
-  apiResourcePath: null | string;
-  assetsPath: null | string;
-  authToken: null | ApiAuthToken;
-  basePath: null | string;
-  pathInfo: null | string;
-  inheritance: null | boolean;
-  installationPath: null | string;
-  languageId: null | string;
+  apiPath: null | string,
+  apiResourcePath: null | string,
+  assetsPath: null | string,
+  authToken: null | ApiAuthToken,
+  basePath: null | string,
+  pathInfo: null | string,
+  inheritance: null | boolean,
+  installationPath: null | string,
+  languageId: null | string,
   language: null | {
-    name: string;
-  };
-  apiVersion: null | string;
-  liveVersionId: null | string;
-  systemLanguageId: null | string;
+    name: string,
+  },
+  apiVersion: null | string,
+  liveVersionId: null | string,
+  systemLanguageId: null | string,
 }
 
 type Entities = EntitySchema.Entities;

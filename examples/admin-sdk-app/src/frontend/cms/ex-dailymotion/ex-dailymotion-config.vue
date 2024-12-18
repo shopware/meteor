@@ -2,7 +2,10 @@
   <div>
     <h2>Config!</h2>
 
-    Video-Code: <input v-model="dailyUrl" type="text" /><br />
+    Video-Code: <input
+      v-model="dailyUrl"
+      type="text"
+    ><br>
   </div>
 </template>
 

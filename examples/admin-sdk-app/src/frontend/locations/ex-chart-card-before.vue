@@ -5,16 +5,19 @@
       developer can see, what are the possibilities of the Meteor Admin SDK. It
       is not intended to be used in production.
 
-      <br />
-      <br />
+      <br>
+      <br>
 
       You can find in the menu a separate module for this App. There are all
       features described.
     </p>
 
-    <br />
+    <br>
 
-    <SwButton variant="primary" @click="goToExampleModule">
+    <SwButton
+      variant="primary"
+      @click="goToExampleModule"
+    >
       Go to the example module
     </SwButton>
   </div>
