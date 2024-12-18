@@ -33,7 +33,13 @@
       :aria-activedescendant="`mt-select--${id}__listitem--${filteredOptions[indexOfSelectedOption]?.value}`"
       @input="searchTerm = ($event.target as HTMLInputElement).value"
       @keydown.esc="isOpen = false"
-      @keydown.arrow-up="isOpen = true"
+      @keydown.arrow-up="
+        () => {
+          isOpen = true;
+
+          indexOfSelectedOption = filteredOptions.length - 1;
+        }
+      "
       @keydown.arrow-down="
         () => {
           isOpen = true;
