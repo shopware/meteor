@@ -1,7 +1,8 @@
 import { userEvent } from "@storybook/test";
-import { render, screen } from "@testing-library/vue";
+import { render, screen, fireEvent } from "@testing-library/vue";
 import MtSelect from "./mt-select.vue";
 import { flushPromises } from "@vue/test-utils";
+import { describe, it, expect } from "vitest";
 
 describe("mt-select", () => {
   it("opens the option list when clicking on the field", async () => {
@@ -204,5 +205,28 @@ describe("mt-select", () => {
 
     // ASSERT
     expect(screen.queryByTestId("mt-select__hint")).not.toBeInTheDocument();
+  });
+
+  it("filters the options when typing in the field", async () => {
+    // ARRANGE
+    render(MtSelect, {
+      props: {
+        options: [
+          { label: "Option 1", value: "1" },
+          { label: "Option 2", value: "2" },
+        ],
+      },
+    });
+
+    await userEvent.click(screen.getByRole("textbox"));
+
+    // ACT
+    // We need to use fireEvent here because
+    // userEvent.type closes the listbox
+    await fireEvent.input(screen.getByRole("textbox"), { target: { value: "1" } });
+
+    // ASSERT
+    expect(screen.getByText("Option 1")).toBeVisible();
+    expect(screen.queryByText("Option 2")).not.toBeInTheDocument();
   });
 });

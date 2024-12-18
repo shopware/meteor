@@ -21,6 +21,7 @@
       :value="selectedItem"
       :disabled="disabled"
       :placeholder="placeholder"
+      @input="searchTerm = ($event.target as HTMLInputElement).value"
     />
   </div>
 
@@ -38,7 +39,7 @@
     :style="floatingStyles"
   >
     <button
-      v-for="option in options"
+      v-for="option in filteredOptions"
       :key="option.value"
       role="listitem"
       class="mt-select__listitem"
@@ -59,7 +60,7 @@
     }
   "
 >
-import { ref, useTemplateRef } from "vue";
+import { computed, ref, useTemplateRef } from "vue";
 import { onClickOutside } from "@vueuse/core";
 import { useId } from "@/composables/useId";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
@@ -68,7 +69,7 @@ import { autoUpdate, flip, offset, shift, size, useFloating } from "@floating-ui
 
 const id = useId();
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     valueProperty?: string;
     options: T[];
@@ -88,6 +89,14 @@ withDefaults(
 defineSlots<{
   hint(): void;
 }>();
+
+const searchTerm = ref("");
+
+const filteredOptions = computed(() => {
+  return props.options.filter((option) => {
+    return option.label.toLowerCase().includes(searchTerm.value.toLowerCase());
+  });
+});
 
 const isOpen = ref(false);
 
