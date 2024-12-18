@@ -289,7 +289,7 @@ describe("mt-select", () => {
     expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
   });
 
-  it("closes the option list when pressing the escape key and an optin is focused", async () => {
+  it("closes the option list when pressing the escape key and an option is focused", async () => {
     // ARRANGE
     render(MtSelect, {
       props: {
@@ -300,11 +300,11 @@ describe("mt-select", () => {
       },
     });
 
-    await userEvent.click(screen.getByRole("combobox"));
     await userEvent.tab();
+    await userEvent.keyboard("{ArrowDown}");
 
     // ACT
-    await fireEvent.keyDown(screen.getByRole("option", { name: "Option 1" }), { key: "Escape" });
+    await userEvent.keyboard("{Escape}");
 
     // ASSERT
     expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
@@ -368,41 +368,6 @@ describe("mt-select", () => {
     expect(screen.getByRole("combobox")).toHaveAttribute("aria-expanded", "false");
   });
 
-  it("announces to screen readers the active element when focusing that selected option", async () => {
-    // ARRANGE
-    render(MtSelect, {
-      props: {
-        modelValue: "1",
-        options: [{ label: "Option 1", value: "1" }],
-      },
-    });
-
-    await userEvent.click(screen.getByRole("combobox"));
-
-    // ASSERT
-    expect(screen.getByRole("option", { name: "Option 1" })).toHaveAttribute(
-      "aria-selected",
-      "true",
-    );
-  });
-
-  it("announces to the screen readers that a non-selected option is not selected", async () => {
-    // ARRANGE
-    render(MtSelect, {
-      props: {
-        options: [{ label: "Option 2", value: "2" }],
-      },
-    });
-
-    await userEvent.click(screen.getByRole("combobox"));
-
-    // ASSERT
-    expect(screen.getByRole("option", { name: "Option 2" })).toHaveAttribute(
-      "aria-selected",
-      "false",
-    );
-  });
-
   it("opens the option list when pressing the arrow down key when focusing the input", async () => {
     // ARRANGE
     render(MtSelect, {
@@ -435,5 +400,37 @@ describe("mt-select", () => {
     // ASSERT
     expect(screen.getByRole("listbox")).toBeVisible();
     expect(screen.getByRole("combobox")).toHaveFocus();
+  });
+
+  it("marks the first option as selected when pressing the arrow down key on the input field", async () => {
+    // ARRANGE
+    render(MtSelect, {
+      props: {
+        options: [
+          { label: "Option 1", value: "1" },
+          { label: "Option 2", value: "2" },
+        ],
+      },
+    });
+
+    // ACT
+    await userEvent.tab();
+    await userEvent.keyboard("{ArrowDown}");
+
+    // ASSERT
+    expect(screen.getByRole("option", { name: "Option 1" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
+
+    expect(screen.getByRole("option", { name: "Option 2" })).toHaveAttribute(
+      "aria-selected",
+      "false",
+    );
+
+    expect(screen.getByRole("combobox")).toHaveAttribute(
+      "aria-activedescendant",
+      screen.getByRole("option", { name: "Option 1" }).getAttribute("id"),
+    );
   });
 });

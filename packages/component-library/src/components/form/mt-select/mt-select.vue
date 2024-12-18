@@ -30,9 +30,15 @@
       :value="selectedItem"
       :disabled="disabled"
       :placeholder="placeholder"
+      :aria-activedescendant="`mt-select--${id}__listitem--${filteredOptions[indexOfSelectedOption]?.value}`"
       @input="searchTerm = ($event.target as HTMLInputElement).value"
       @keydown.esc="isOpen = false"
-      @keydown.arrow-down="isOpen = true"
+      @keydown.arrow-down="
+        () => {
+          isOpen = true;
+          indexOfSelectedOption = 0;
+        }
+      "
     />
 
     <mt-icon
@@ -60,17 +66,17 @@
     :id="`mt-select__listbox--${id}`"
     :style="floatingStyles"
   >
-    <button
-      v-for="option in filteredOptions"
+    <div
+      v-for="(option, index) in filteredOptions"
+      :id="`mt-select--${id}__listitem--${option.value}`"
       :key="option.value"
       role="option"
-      :aria-selected="option.value === model"
+      :aria-selected="indexOfSelectedOption === index"
       class="mt-select__listitem"
       @click="() => changeValue(option.value, option.label)"
-      @keydown.esc="isOpen = false"
     >
       {{ option.label }}
-    </button>
+    </div>
   </div>
 </template>
 
@@ -143,6 +149,8 @@ function changeValue(value: string, label: string) {
 
   isOpen.value = false;
 }
+
+const indexOfSelectedOption = ref<number | "none">("none");
 
 const box = useTemplateRef<HTMLDivElement>("box");
 
@@ -235,6 +243,8 @@ const { floatingStyles } = useFloating(box, listbox, {
 }
 
 .mt-select__listitem {
+  display: flex;
+  align-items: center;
   width: 100%;
   text-align: left;
   line-height: var(--font-line-height-xs);
