@@ -1,5 +1,11 @@
 <template>
-  <mt-field-label v-if="label && id" :id="id" :has-error="!!error" data-testid="mt-select__label">
+  <mt-field-label
+    v-if="label && id"
+    :id="id"
+    :has-error="!!error"
+    data-testid="mt-select__label"
+    @click="isOpen = true"
+  >
     {{ label }}
   </mt-field-label>
 
@@ -20,7 +26,7 @@
       :aria-expanded="isOpen"
       :id="id"
       type="text"
-      @focus="isOpen = true"
+      @mousedown="isOpen = true"
       :value="selectedItem"
       :disabled="disabled"
       :placeholder="placeholder"
