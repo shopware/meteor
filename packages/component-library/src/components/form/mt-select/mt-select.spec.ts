@@ -324,4 +324,30 @@ describe("mt-select", () => {
     // ASSERT
     expect(screen.getByRole("combobox")).not.toHaveAttribute("aria-controls");
   });
+
+  it("announces to screen readers that the combobox is expanded when the listbox is visible", async () => {
+    // ARRANGE
+    render(MtSelect, {
+      props: {
+        options: [],
+      },
+    });
+
+    await userEvent.click(screen.getByRole("combobox"));
+
+    // ASSERT
+    expect(screen.getByRole("combobox")).toHaveAttribute("aria-expanded", "true");
+  });
+
+  it("announces to screen readers that the combobox is collapsed when the listbox is not visible", async () => {
+    // ARRANGE
+    render(MtSelect, {
+      props: {
+        options: [],
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("combobox")).toHaveAttribute("aria-expanded", "false");
+  });
 });

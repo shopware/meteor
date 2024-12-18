@@ -17,6 +17,7 @@
       role="combobox"
       class="mt-select__input"
       :aria-controls="isOpen ? `mt-select__listbox--${id}` : undefined"
+      :aria-expanded="isOpen"
       :id="id"
       type="text"
       @focus="isOpen = true"
