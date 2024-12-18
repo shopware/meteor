@@ -36,7 +36,11 @@
       @keydown.arrow-down="
         () => {
           isOpen = true;
-          indexOfSelectedOption = 0;
+          if (indexOfSelectedOption === 'none') {
+            indexOfSelectedOption = 0;
+          } else {
+            indexOfSelectedOption++;
+          }
         }
       "
     />
