@@ -16,6 +16,7 @@
     <input
       role="combobox"
       class="mt-select__input"
+      :aria-controls="isOpen ? `mt-select__listbox--${id}` : undefined"
       :id="id"
       type="text"
       @focus="isOpen = true"
@@ -48,6 +49,7 @@
     ref="listbox"
     role="listbox"
     class="mt-select__listbox"
+    :id="`mt-select__listbox--${id}`"
     :style="floatingStyles"
   >
     <button

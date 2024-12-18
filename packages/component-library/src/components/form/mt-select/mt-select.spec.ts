@@ -292,4 +292,36 @@ describe("mt-select", () => {
     // ASSERT
     expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
   });
+
+  it("announces to screen readers that the combobox controls the listbox", async () => {
+    // ARRANGE
+    render(MtSelect, {
+      props: {
+        options: [],
+      },
+    });
+
+    await flushPromises();
+
+    // ACT
+    await userEvent.tab();
+
+    // ASSERT
+    expect(screen.getByRole("combobox")).toHaveAttribute(
+      "aria-controls",
+      screen.getByRole("listbox").getAttribute("id"),
+    );
+  });
+
+  it("does not announce to screen readers that the combobox controls the listbox when the listbox is not visible", async () => {
+    // ARRANGE
+    render(MtSelect, {
+      props: {
+        options: [],
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("combobox")).not.toHaveAttribute("aria-controls");
+  });
 });
