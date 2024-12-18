@@ -36,11 +36,14 @@
       @keydown.arrow-down="
         () => {
           isOpen = true;
-          if (indexOfSelectedOption === 'none') {
+
+          const reachedEnd = indexOfSelectedOption === filteredOptions.length - 1;
+          if (indexOfSelectedOption === 'none' || reachedEnd) {
             indexOfSelectedOption = 0;
-          } else {
-            indexOfSelectedOption++;
+            return;
           }
+
+          indexOfSelectedOption++;
         }
       "
     />
