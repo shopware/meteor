@@ -100,6 +100,7 @@
       :key="option.value"
       role="option"
       :aria-selected="indexOfSelectedOption === index"
+      @mouseover="() => (indexOfSelectedOption = index)"
       :class="[
         'mt-select__option',
         {

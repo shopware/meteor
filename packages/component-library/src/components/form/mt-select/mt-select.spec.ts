@@ -642,4 +642,24 @@ describe("mt-select", () => {
     expect(handler).toHaveBeenNthCalledWith(1, "1");
     expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
   });
+
+  it("marks the hovered option as selected", async () => {
+    // ARRANGE
+    render(MtSelect, {
+      props: {
+        options: [{ label: "Option 1", value: "1" }],
+      },
+    });
+
+    await userEvent.click(screen.getByRole("combobox"));
+
+    // ACT
+    await userEvent.hover(screen.getByRole("option", { name: "Option 1" }));
+
+    // ASSERT
+    expect(screen.getByRole("option", { name: "Option 1" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
+  });
 });
