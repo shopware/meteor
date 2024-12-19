@@ -24,64 +24,66 @@
       <slot name="prefix" />
     </div>
 
-    <input
-      role="combobox"
-      class="mt-select__input"
-      :aria-controls="isOpen ? `mt-select__listbox--${id}` : undefined"
-      :aria-expanded="isOpen"
-      :id="id"
-      type="text"
-      :value="selectedItem"
-      :disabled="disabled"
-      :placeholder="placeholder"
-      :aria-activedescendant="`mt-select--${id}__listitem--${filteredOptions[indexOfSelectedOption]?.value}`"
-      @input="searchTerm = ($event.target as HTMLInputElement).value"
-      @keydown.esc="hideListbox"
-      @keydown.enter="
-        () => {
-          const newOption = filteredOptions[indexOfSelectedOption];
-          if (!newOption) return;
+    <div class="mt-select__input-wrapper">
+      <input
+        role="combobox"
+        class="mt-select__input"
+        :aria-controls="isOpen ? `mt-select__listbox--${id}` : undefined"
+        :aria-expanded="isOpen"
+        :id="id"
+        type="text"
+        :value="selectedItem"
+        :disabled="disabled"
+        :placeholder="placeholder"
+        :aria-activedescendant="`mt-select--${id}__listitem--${filteredOptions[indexOfSelectedOption]?.value}`"
+        @input="searchTerm = ($event.target as HTMLInputElement).value"
+        @keydown.esc="hideListbox"
+        @keydown.enter="
+          () => {
+            const newOption = filteredOptions[indexOfSelectedOption];
+            if (!newOption) return;
 
-          changeValue(newOption.value, newOption.label);
-        }
-      "
-      @keydown.arrow-up="
-        () => {
-          isOpen = true;
-
-          const reachedStart = indexOfSelectedOption === 0;
-          if (indexOfSelectedOption === 'none' || reachedStart) {
-            indexOfSelectedOption = filteredOptions.length - 1;
-            return;
+            changeValue(newOption.value, newOption.label);
           }
+        "
+        @keydown.arrow-up="
+          () => {
+            isOpen = true;
 
-          indexOfSelectedOption--;
-        }
-      "
-      @keydown.arrow-down="
-        () => {
-          isOpen = true;
+            const reachedStart = indexOfSelectedOption === 0;
+            if (indexOfSelectedOption === 'none' || reachedStart) {
+              indexOfSelectedOption = filteredOptions.length - 1;
+              return;
+            }
 
-          const reachedEnd = indexOfSelectedOption === filteredOptions.length - 1;
-          if (indexOfSelectedOption === 'none' || reachedEnd) {
-            indexOfSelectedOption = 0;
-            return;
+            indexOfSelectedOption--;
           }
+        "
+        @keydown.arrow-down="
+          () => {
+            isOpen = true;
 
-          indexOfSelectedOption++;
-        }
-      "
-    />
+            const reachedEnd = indexOfSelectedOption === filteredOptions.length - 1;
+            if (indexOfSelectedOption === 'none' || reachedEnd) {
+              indexOfSelectedOption = 0;
+              return;
+            }
 
-    <mt-icon
-      name="regular-chevron-down-xs"
-      color="var(--color-icon-primary-default)"
-      class="mt-select__indicator"
-      aria-hidden="true"
-      :style="{
-        transform: isOpen ? 'rotate(180deg)' : undefined,
-      }"
-    />
+            indexOfSelectedOption++;
+          }
+        "
+      />
+
+      <mt-icon
+        name="regular-chevron-down-xs"
+        color="var(--color-icon-primary-default)"
+        class="mt-select__indicator"
+        aria-hidden="true"
+        :style="{
+          transform: isOpen ? 'rotate(180deg)' : undefined,
+        }"
+      />
+    </div>
 
     <div v-if="!!$slots.suffix" class="mt-select__affix mt-select__affix--suffix">
       <slot name="suffix" />
@@ -289,6 +291,13 @@ const { floatingStyles } = useFloating(box, listbox, {
   border-inline-start: 1px solid var(--color-border-primary-default);
 }
 
+.mt-select__input-wrapper {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  padding-inline: var(--scale-size-16);
+}
+
 .mt-select__input {
   display: block;
   width: 100%;
@@ -299,7 +308,6 @@ const { floatingStyles } = useFloating(box, listbox, {
   font-family: var(--font-size-body);
   line-height: var(--line-height-xs);
   color: var(--color-text-primary-default);
-  padding-inline: var(--scale-size-16);
   outline: none;
   appearance: none;
 
