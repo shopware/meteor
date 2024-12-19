@@ -201,26 +201,6 @@ const cardClasses = computed(() => ({
   position: relative;
   color: var(--color-text-primary-default);
 
-  & > :where(h1, h2, h3, h4, h5, h6) {
-    font-weight: normal;
-  }
-
-  & > h1 {
-    font-size: 1.5rem;
-  }
-
-  & > h2 {
-    font-size: 1.375rem;
-  }
-
-  & > h3 {
-    font-size: 1.25rem;
-  }
-
-  & > :where(h4, h5, h6) {
-    font-size: 1.125rem;
-  }
-
   & a.mt-card__quick-link {
     display: grid;
     grid-auto-flow: column;
