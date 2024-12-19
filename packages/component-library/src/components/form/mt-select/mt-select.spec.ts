@@ -723,4 +723,19 @@ describe("mt-select", () => {
     expect(optionOne.queryByTestId("mt-select__selected-indicator")).not.toBeInTheDocument();
     expect(optionTwo.getByTestId("mt-select__selected-indicator")).toBeVisible();
   });
+
+  it("shows a prefix", () => {
+    // ARRANGE
+    render(MtSelect, {
+      props: {
+        options: [],
+      },
+      slots: {
+        prefix: "prefix",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByText("prefix")).toBeVisible();
+  });
 });

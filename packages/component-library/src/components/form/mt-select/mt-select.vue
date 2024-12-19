@@ -20,6 +20,10 @@
     ref="box"
     @mousedown="isOpen = true"
   >
+    <div v-if="!!$slots.prefix" class="mt-select__affix mt-select__affix--prefix">
+      <slot name="prefix" />
+    </div>
+
     <input
       role="combobox"
       class="mt-select__input"
@@ -170,6 +174,7 @@ const props = withDefaults(
 
 defineSlots<{
   hint(): void;
+  prefix(): void;
 }>();
 
 const searchTerm = ref("");
@@ -228,10 +233,10 @@ const { floatingStyles } = useFloating(box, listbox, {
 .mt-select__box {
   cursor: text;
   min-height: var(--scale-size-48);
+  height: var(--scale-size-48);
   border: 1px solid var(--color-border-primary-default);
   border-radius: var(--border-radius-xs);
   background: var(--color-elevation-surface-raised);
-  padding-inline: var(--scale-size-16);
   display: flex;
   align-items: center;
 
@@ -250,6 +255,29 @@ const { floatingStyles } = useFloating(box, listbox, {
   background-color: var(--color-background-critical-dark);
 }
 
+.mt-select__affix {
+  height: 100%;
+  display: grid;
+  place-items: center;
+  background-color: var(--color-interaction-secondary-dark);
+  color: var(--color-text-primary-default);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+  font-weight: var(--font-weight-regular);
+  font-family: var(--font-family-body);
+  padding-inline: var(--scale-size-16);
+
+  & .mt-icon {
+    color: var(--color-icon-primary-default);
+  }
+}
+
+.mt-select__affix--prefix {
+  border-top-left-radius: var(--border-radius-xs);
+  border-bottom-left-radius: var(--border-radius-xs);
+  border-inline-end: 1px solid var(--color-border-primary-default);
+}
+
 .mt-select__input {
   display: block;
   width: 100%;
@@ -260,6 +288,7 @@ const { floatingStyles } = useFloating(box, listbox, {
   font-family: var(--font-size-body);
   line-height: var(--line-height-xs);
   color: var(--color-text-primary-default);
+  padding-inline: var(--scale-size-16);
   outline: none;
   appearance: none;
 
