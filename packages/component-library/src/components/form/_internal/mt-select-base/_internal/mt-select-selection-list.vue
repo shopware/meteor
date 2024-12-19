@@ -243,6 +243,15 @@ export default defineComponent({
   list-style: none;
   width: calc(100% - 30px);
 
+  &:has(.mt-select-selection-list--single) {
+    flex-wrap: nowrap;
+
+    .mt-select-selection-list--single {
+      min-width: 0;
+      max-width: 100%;
+    }
+  }
+
   &--single {
     .mt-label {
       border: none;
