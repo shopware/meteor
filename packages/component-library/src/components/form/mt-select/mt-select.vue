@@ -18,6 +18,7 @@
       },
     ]"
     ref="box"
+    @mousedown="isOpen = true"
   >
     <input
       role="combobox"
@@ -26,7 +27,6 @@
       :aria-expanded="isOpen"
       :id="id"
       type="text"
-      @mousedown="isOpen = true"
       :value="selectedItem"
       :disabled="disabled"
       :placeholder="placeholder"
@@ -213,6 +213,7 @@ const { floatingStyles } = useFloating(box, listbox, {
 
 <style scoped>
 .mt-select__box {
+  cursor: text;
   min-height: var(--scale-size-48);
   border: 1px solid var(--color-border-primary-default);
   border-radius: var(--border-radius-xs);
@@ -283,6 +284,7 @@ const { floatingStyles } = useFloating(box, listbox, {
 }
 
 .mt-select__option {
+  cursor: pointer;
   display: flex;
   align-items: center;
   width: 100%;
