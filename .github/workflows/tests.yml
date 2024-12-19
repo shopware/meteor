@@ -271,17 +271,11 @@ jobs:
         if: always()
 
       - run: ls -la
-        working-directory: meteor/examples/admin-sdk-plugin/tests/acceptance/playwright-report/
+        working-directory: meteor/examples/admin-sdk-plugin/tests/acceptance/artifacts/
         if: always()
 
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: ats-test-results-${{ matrix.project }}
-          path: meteor/examples/admin-sdk-plugin/tests/acceptance/test-results/
-
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: ats-report-${{ matrix.project }}
-          path: meteor/examples/admin-sdk-plugin/tests/acceptance/playwright-report/
+          name: ats-artifacts-${{ matrix.project }}
+          path: meteor/examples/admin-sdk-plugin/tests/acceptance/artifacts/
