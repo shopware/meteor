@@ -109,7 +109,18 @@
       ]"
       @click="() => changeValue(option.value, option.label)"
     >
-      {{ option.label }}
+      <span>
+        {{ option.label }}
+      </span>
+
+      <mt-icon
+        v-if="model === option.value"
+        name="regular-checkmark-xs"
+        color="var(--color-icon-primary-default)"
+        :style="{
+          marginInlineStart: 'auto',
+        }"
+      />
     </div>
   </div>
 </template>
