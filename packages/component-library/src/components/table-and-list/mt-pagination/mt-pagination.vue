@@ -175,8 +175,8 @@ const lastVisibleItemNumber = computed(() => {
 .mt-pagination__button {
   border-right: 1px solid var(--color-border-primary-default);
   color: var(--color-icon-primary-default);
-  height: 2rem;
-  width: 2.5rem;
+  height: var(--scale-size-32);
+  width: var(--scale-size-40);
   display: grid;
   place-items: center;
   transition: all 0.15s ease-out;
