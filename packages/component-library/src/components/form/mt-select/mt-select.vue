@@ -32,7 +32,7 @@
       :placeholder="placeholder"
       :aria-activedescendant="`mt-select--${id}__listitem--${filteredOptions[indexOfSelectedOption]?.value}`"
       @input="searchTerm = ($event.target as HTMLInputElement).value"
-      @keydown.esc="isOpen = false"
+      @keydown.esc="hideListbox"
       @keydown.enter="
         () => {
           const newOption = filteredOptions[indexOfSelectedOption];
@@ -170,9 +170,7 @@ const filteredOptions = computed(() => {
 const isOpen = ref(false);
 
 const listbox = useTemplateRef<HTMLElement>("listbox");
-onClickOutside(listbox, () => {
-  isOpen.value = false;
-});
+onClickOutside(listbox, hideListbox);
 
 const model = defineModel();
 const selectedItem = ref<string | null>(null);
@@ -180,6 +178,14 @@ const selectedItem = ref<string | null>(null);
 function changeValue(value: string, label: string) {
   model.value = value;
   selectedItem.value = label;
+
+  hideListbox();
+}
+
+function hideListbox() {
+  indexOfSelectedOption.value = filteredOptions.value.findIndex(
+    (option) => option.value === model.value,
+  );
 
   isOpen.value = false;
 }

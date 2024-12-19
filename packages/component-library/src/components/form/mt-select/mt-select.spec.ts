@@ -662,4 +662,42 @@ describe("mt-select", () => {
       "true",
     );
   });
+
+  it("marks the option in the input field as selected when re-opening the listbox", async () => {
+    // ARRANGE
+    render(MtSelect, {
+      props: {
+        modelValue: "2",
+        options: [
+          { label: "Option 1", value: "1" },
+          { label: "Option 2", value: "2" },
+          { label: "Option 3", value: "3" },
+        ],
+      },
+    });
+
+    await userEvent.click(screen.getByRole("combobox"));
+
+    // ACT
+    await userEvent.hover(screen.getByRole("option", { name: "Option 3" }));
+    await userEvent.keyboard("{Escape}");
+
+    await userEvent.click(screen.getByRole("combobox"));
+
+    // ASSERT
+    expect(screen.getByRole("option", { name: "Option 1" })).toHaveAttribute(
+      "aria-selected",
+      "false",
+    );
+
+    expect(screen.getByRole("option", { name: "Option 2" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
+
+    expect(screen.getByRole("option", { name: "Option 3" })).toHaveAttribute(
+      "aria-selected",
+      "false",
+    );
+  });
 });
