@@ -209,7 +209,7 @@ const box = useTemplateRef<HTMLDivElement>("box");
 
 const { floatingStyles } = useFloating(box, listbox, {
   middleware: [
-    offset(8),
+    offset(4),
     flip(),
     shift(),
     size({
