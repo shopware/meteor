@@ -59,59 +59,59 @@ export default <EntityName extends keyof Entities>(entityName: EntityName) => ({
 });
 
 export type repositoryGet<EntityName extends keyof Entities> = {
-  responseType: Entity<EntityName> | null,
-  entityName: EntityName,
-  id: string,
-  context?: ApiContext,
-  criteria?: Criteria,
+  responseType: Entity<EntityName> | null;
+  entityName: EntityName;
+  id: string;
+  context?: ApiContext;
+  criteria?: Criteria;
 };
 
 export type repositorySearch<EntityName extends keyof Entities> = {
-  responseType: EntityCollection<EntityName>,
-  entityName: EntityName,
-  criteria?: Criteria,
-  context?: ApiContext,
+  responseType: EntityCollection<EntityName>;
+  entityName: EntityName;
+  criteria?: Criteria;
+  context?: ApiContext;
 };
 
 export type repositorySave<EntityName extends keyof Entities> = {
-  responseType: void,
-  entityName: EntityName,
-  entity: Entity<EntityName>,
-  context?: ApiContext,
+  responseType: void;
+  entityName: EntityName;
+  entity: Entity<EntityName>;
+  context?: ApiContext;
 };
 
 export type repositoryClone<EntityName extends keyof Entities> = {
-  responseType: unknown,
-  entityName: EntityName,
-  entityId: string,
-  context?: ApiContext,
+  responseType: unknown;
+  entityName: EntityName;
+  entityId: string;
+  context?: ApiContext;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  behavior?: any,
+  behavior?: any;
 };
 
 export type repositoryHasChanges<EntityName extends keyof Entities> = {
-  responseType: boolean,
-  entityName: EntityName,
-  entity: Entity<EntityName>,
+  responseType: boolean;
+  entityName: EntityName;
+  entity: Entity<EntityName>;
 };
 
 export type repositorySaveAll<EntityName extends keyof Entities> = {
-  responseType: void,
-  entityName: EntityName,
-  entities: EntityCollection<EntityName>,
-  context?: ApiContext,
+  responseType: void;
+  entityName: EntityName;
+  entities: EntityCollection<EntityName>;
+  context?: ApiContext;
 };
 
 export type repositoryDelete<EntityName extends keyof Entities> = {
-  responseType: void,
-  entityName: EntityName,
-  entityId: string,
-  context?: ApiContext,
+  responseType: void;
+  entityName: EntityName;
+  entityId: string;
+  context?: ApiContext;
 };
 
 export type repositoryCreate<EntityName extends keyof Entities> = {
-  responseType: Entity<EntityName>,
-  entityName: EntityName,
-  entityId?: string,
-  context?: ApiContext,
+  responseType: Entity<EntityName>;
+  entityName: EntityName;
+  entityId?: string;
+  context?: ApiContext;
 };

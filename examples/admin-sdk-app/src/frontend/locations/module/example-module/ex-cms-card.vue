@@ -2,10 +2,7 @@
   <SwCard title="CMS">
     <p>
       You can create your own custom CMS elements with the Meteor Admin SDK. You
-      can go to the <a
-        href="#"
-        @click="goToCmsModule"
-      >CMS module</a> and
+      can go to the <a href="#" @click="goToCmsModule">CMS module</a> and
       replace an existing element with the dailymotion element.
     </p>
   </SwCard>

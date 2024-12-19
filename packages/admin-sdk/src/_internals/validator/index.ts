@@ -13,10 +13,10 @@ export default function validate({
   type,
   privilegesToCheck = [],
 }: {
-  serializedData: any,
-  origin: string,
-  type: keyof ShopwareMessageTypes,
-  privilegesToCheck: (keyof privileges)[],
+  serializedData: any;
+  origin: string;
+  type: keyof ShopwareMessageTypes;
+  privilegesToCheck: (keyof privileges)[];
 }): Error | null {
   if (origin === undefined) {
     return null;

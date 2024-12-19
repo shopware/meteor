@@ -18,7 +18,7 @@ const { serialize, deserialize } = SerializerFactory({
 });
 
 export type extensions = {
-  [key: string]: extension,
+  [key: string]: extension;
 };
 
 // This can't be exported and used in other files as it leads to circular dependencies. Use window._swsdk.adminExtensions instead
@@ -63,9 +63,9 @@ export type MessageDataType<TYPE extends keyof ShopwareMessageTypes> = Omit<
 export type ShopwareMessageSendData<
   MESSAGE_TYPE extends keyof ShopwareMessageTypes,
 > = {
-  _type: MESSAGE_TYPE,
-  _data: MessageDataType<MESSAGE_TYPE> & BaseMessageOptions,
-  _callbackId: string,
+  _type: MESSAGE_TYPE;
+  _data: MessageDataType<MESSAGE_TYPE> & BaseMessageOptions;
+  _callbackId: string;
 };
 
 /**
@@ -75,9 +75,9 @@ export type ShopwareMessageSendData<
 export type ShopwareMessageResponseData<
   MESSAGE_TYPE extends keyof ShopwareMessageTypes,
 > = {
-  _type: MESSAGE_TYPE,
-  _response: ShopwareMessageTypes[MESSAGE_TYPE]["responseType"] | null,
-  _callbackId: string,
+  _type: MESSAGE_TYPE;
+  _response: ShopwareMessageTypes[MESSAGE_TYPE]["responseType"] | null;
+  _callbackId: string;
 };
 
 /**
@@ -86,16 +86,16 @@ export type ShopwareMessageResponseData<
  * ----------------
  */
 const sourceRegistry: Set<{
-  source: Window,
-  origin: string,
-  sdkVersion: string | undefined,
+  source: Window;
+  origin: string;
+  sdkVersion: string | undefined;
 }> = new Set();
 
 const subscriberRegistry: Set<{
-  id: string,
-  selectors: string[] | undefined,
-  source: Window,
-  origin: string,
+  id: string;
+  selectors: string[] | undefined;
+  source: Window;
+  origin: string;
 }> = new Set();
 
 /**
@@ -328,8 +328,8 @@ export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
       event,
     ) as ShopwareMessageSendData<MESSAGE_TYPE>;
 
-    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
     const responseValue = await Promise.resolve(
+      // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
       (() => {
         const responseValidationTypes = [
           "datasetSubscribe",
@@ -435,9 +435,9 @@ export function publish<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
   type: MESSAGE_TYPE,
   data: ShopwareMessageTypes[MESSAGE_TYPE]["responseType"],
   sources: {
-    source: Window,
-    origin: string,
-    sdkVersion: string | undefined,
+    source: Window;
+    origin: string;
+    sdkVersion: string | undefined;
   }[] = [...sourceRegistry].map(({ source, origin, sdkVersion }) => ({
     source,
     origin,
@@ -518,7 +518,7 @@ export function createHandler<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
     method: (
       data: MessageDataType<MESSAGE_TYPE> & BaseMessageOptions,
       additionalInformation: {
-        _event_: MessageEvent<string>,
+        _event_: MessageEvent<string>;
       },
     ) =>
       | Promise<ShopwareMessageTypes[MESSAGE_TYPE]["responseType"]>
@@ -664,12 +664,12 @@ export async function processDataRegistration(
       console.error(selectedData);
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
     send(
       "datasetSubscribe",
       { id, data: selectedData, selectors },
       source,
       origin,
+      // eslint-disable-next-line @typescript-eslint/no-empty-function
     ).catch(() => {});
   });
 
@@ -683,11 +683,11 @@ export async function processDataRegistration(
 declare global {
   interface Window {
     _swsdk: {
-      sourceRegistry: typeof sourceRegistry,
-      subscriberRegistry: typeof subscriberRegistry,
-      datasets: typeof datasets,
-      adminExtensions: typeof adminExtensions,
-    },
+      sourceRegistry: typeof sourceRegistry;
+      subscriberRegistry: typeof subscriberRegistry;
+      datasets: typeof datasets;
+      adminExtensions: typeof adminExtensions;
+    };
   }
 }
 

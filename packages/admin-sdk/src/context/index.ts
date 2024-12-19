@@ -20,16 +20,16 @@ export const getModuleInformation = createSender(
  */
 export type contextLanguage = {
   responseType: {
-    systemLanguageId: string,
-    languageId: string,
-  },
+    systemLanguageId: string;
+    languageId: string;
+  };
 };
 
 /**
  * Get the current environment (development or production)
  */
 export type contextEnvironment = {
-  responseType: "development" | "production" | "testing",
+  responseType: "development" | "production" | "testing";
 };
 
 /**
@@ -37,9 +37,9 @@ export type contextEnvironment = {
  */
 export type contextLocale = {
   responseType: {
-    locale: string,
-    fallbackLocale: string,
-  },
+    locale: string;
+    fallbackLocale: string;
+  };
 };
 
 /**
@@ -47,16 +47,16 @@ export type contextLocale = {
  */
 export type contextCurrency = {
   responseType: {
-    systemCurrencyISOCode: string,
-    systemCurrencyId: string,
-  },
+    systemCurrencyISOCode: string;
+    systemCurrencyId: string;
+  };
 };
 
 /**
  * Get the current Shopware version
  */
 export type contextShopwareVersion = {
-  responseType: string,
+  responseType: string;
 };
 
 /**
@@ -64,10 +64,10 @@ export type contextShopwareVersion = {
  */
 export type contextAppInformation = {
   responseType: {
-    name: string,
-    version: string,
-    type: "app" | "plugin",
-  },
+    name: string;
+    version: string;
+    type: "app" | "plugin";
+  };
 };
 
 /**
@@ -76,30 +76,30 @@ export type contextAppInformation = {
 export type contextUserInformation = {
   responseType: {
     aclRoles: Array<{
-      name: string,
-      type: string,
-      id: string,
-      privileges: Array<string>,
-    }>,
-    active: boolean,
-    admin: boolean,
-    avatarId: string,
-    email: string,
-    firstName: string,
-    id: string,
-    lastName: string,
-    localeId: string,
-    title: string,
-    type: string,
-    username: string,
-  },
+      name: string;
+      type: string;
+      id: string;
+      privileges: Array<string>;
+    }>;
+    active: boolean;
+    admin: boolean;
+    avatarId: string;
+    email: string;
+    firstName: string;
+    id: string;
+    lastName: string;
+    localeId: string;
+    title: string;
+    type: string;
+    username: string;
+  };
 };
 
 /**
  * Get the user's timezone
  */
 export type contextUserTimezone = {
-  responseType: string,
+  responseType: string;
 };
 
 /**
@@ -108,10 +108,10 @@ export type contextUserTimezone = {
 export type contextModuleInformation = {
   responseType: {
     modules: Array<{
-      displaySearchBar: boolean,
-      heading: string,
-      id: string,
-      locationId: string,
-    }>,
-  },
+      displaySearchBar: boolean;
+      heading: string;
+      id: string;
+      locationId: string;
+    }>;
+  };
 };

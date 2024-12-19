@@ -6,7 +6,7 @@ import { createSender } from "../channel";
 export const purchase = createSender("iapCheckout");
 
 export type iapCheckout = {
-  responseType: unknown,
+  responseType: unknown;
 
-  identifier: string,
+  identifier: string;
 };

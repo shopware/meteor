@@ -1,29 +1,22 @@
 <template>
   <div :style="componentStyling">
     <p>Auto-Resize: {{ isAutoResizing ? "On" : "Off" }}</p>
-    <SwNumberField
-      :value="heightInput"
-      @input-change="setHeightInput"
-    />
+    <SwNumberField :value="heightInput" @input-change="setHeightInput" />
 
-    <br><br>
+    <br /><br />
 
     <SwButton @click="changeHeight">
       Set height of blue box to {{ heightInput }}
     </SwButton>
-    <br>
+    <br />
     <SwButton @click="changeHeightManually">
       Set height of iFrame manually to {{ heightInput }}
     </SwButton>
 
-    <br><br>
+    <br /><br />
 
-    <SwButton @click="startAutoResizing">
-      Start auto resizing
-    </SwButton>
-    <SwButton @click="stopAutoResizing">
-      Stop auto resizing
-    </SwButton>
+    <SwButton @click="startAutoResizing"> Start auto resizing </SwButton>
+    <SwButton @click="stopAutoResizing"> Stop auto resizing </SwButton>
   </div>
 </template>
 

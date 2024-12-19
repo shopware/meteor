@@ -17,19 +17,6 @@ module.exports = {
     "@typescript-eslint/comma-dangle": ["error", "always-multiline"],
     "@typescript-eslint/explicit-function-return-type": ["error"],
     "@typescript-eslint/consistent-type-imports": ["error"],
-    "@typescript-eslint/member-delimiter-style": [
-      "error",
-      {
-        multiline: {
-          delimiter: "comma",
-          requireLast: true,
-        },
-        singleline: {
-          delimiter: "comma",
-          requireLast: false,
-        },
-      },
-    ],
     "no-console": [
       "error",
       {

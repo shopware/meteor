@@ -15,9 +15,9 @@ import repository from "./repository";
 function createFilteredSubscriber(type: "datasetSubscribe" | "datasetUpdate") {
   return (
     id: string,
-    callback: (data: { id: string, data: unknown }) => void | Promise<unknown>,
+    callback: (data: { id: string; data: unknown }) => void | Promise<unknown>,
     options?: {
-      selectors?: string[],
+      selectors?: string[];
     },
   ): unknown => {
     if (type === "datasetSubscribe") {
@@ -29,9 +29,9 @@ function createFilteredSubscriber(type: "datasetSubscribe" | "datasetUpdate") {
     }
 
     const wrapper = (data: {
-      id: string,
-      data: unknown,
-      selectors?: string[],
+      id: string;
+      data: unknown;
+      selectors?: string[];
     }): void => {
       if (data?.id !== id) {
         return;
@@ -84,23 +84,23 @@ export const handleGet = createHandler("datasetGet");
 // Register sends message to all registered
 export type datasetRegistration = {
   responseType: {
-    id: string,
-    data: unknown,
-  },
+    id: string;
+    data: unknown;
+  };
 
-  id: string,
+  id: string;
 
-  data: unknown,
+  data: unknown;
 };
 
 export type datasetSubscribe = {
-  responseType: unknown,
+  responseType: unknown;
 
-  id: string,
+  id: string;
 
-  data: unknown,
+  data: unknown;
 
-  selectors?: string[],
+  selectors?: string[];
 };
 
 /**
@@ -108,35 +108,35 @@ export type datasetSubscribe = {
  * a window wants to subscribe to a dataset
  */
 export type datasetSubscribeRegistration = {
-  responseType: unknown,
+  responseType: unknown;
 
-  id: string,
+  id: string;
 
-  selectors?: string[],
+  selectors?: string[];
 };
 
 export type datasetUpdate = {
-  responseType: unknown,
+  responseType: unknown;
 
-  id: string,
+  id: string;
 
-  data: unknown,
+  data: unknown;
 };
 
 export type datasetGet = {
-  responseType: unknown,
+  responseType: unknown;
 
-  id: string,
+  id: string;
 
-  data?: unknown,
+  data?: unknown;
 
-  selectors?: string[],
+  selectors?: string[];
 };
 
 const Classes: {
-  Criteria: typeof Criteria,
-  Entity: typeof Entity,
-  EntityCollection: typeof EntityCollection,
+  Criteria: typeof Criteria;
+  Entity: typeof Entity;
+  EntityCollection: typeof EntityCollection;
 } = {
   Criteria,
   Entity: Entity,

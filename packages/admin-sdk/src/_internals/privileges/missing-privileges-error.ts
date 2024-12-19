@@ -4,9 +4,9 @@ import type { privilegeString } from "./index";
 type type = "__MissingPrivilegesError__";
 
 interface MissingPrivilegeErrorJson {
-  __type__: type,
-  __messageType__: string,
-  __data__: string[],
+  __type__: type;
+  __messageType__: string;
+  __data__: string[];
 }
 
 export default class MissingPrivilegesError extends Error {

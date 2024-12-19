@@ -4,7 +4,7 @@ export const registerCmsElement = createSender("cmsRegisterElement");
 export const registerCmsBlock = createSender("cmsRegisterBlock");
 
 export type cmsRegisterElement = {
-  responseType: void,
+  responseType: void;
 
   /**
    * The unique name of the cms element, which will also be used to generate locationIds - Should have vendor prefix
@@ -14,29 +14,29 @@ export type cmsRegisterElement = {
    * - 'company-my-image-slider-preview' for the preview in the cms element selection
    * - 'company-my-image-slider-config' for the configuration modal of a placed element
    */
-  name: string,
+  name: string;
 
   /**
    * The label, which is visible when selecting the cms element - Use snippet keys here!
    */
-  label: string,
+  label: string;
 
   /**
    * Object containing the defaultConfig; same like in plugin development.
    * @url https://developer.shopware.com/docs/guides/plugins/plugins/content/cms/add-cms-element
    */
   defaultConfig: {
-    [key: string]: unknown,
-  },
+    [key: string]: unknown;
+  };
 };
 
 export type cmsRegisterBlock = {
-  responseType: void,
+  responseType: void;
 
   /**
    * A unique technical name for your block. We recommend to use a shorthand prefix for your company, e.g. "Swag" for shopware AG.
    */
-  name: string,
+  name: string;
 
   /**
    * The category your block is associated with, e.g. "commerce", "form", "image", "sidebar", "text-image", "text", "video", etc.
@@ -53,19 +53,19 @@ export type cmsRegisterBlock = {
         | "text"
         | "video"
       )
-    | (string & Record<never, never>),
+    | (string & Record<never, never>);
 
   /**
    * Your block's label which will be shown in the CMS module in the Administration.
    */
-  label: string,
+  label: string;
 
   /**
    * Define the slots of the block. Each slot is a single div. The element property is the name of the element that can be placed in the slot.
    */
   slots: Array<{
-    element: string,
-  }>,
+    element: string;
+  }>;
 
   /**
    * Define the layout of the block. The grid property is a shorthand for the CSS grid property. The grid property is optional.
@@ -80,9 +80,9 @@ export type cmsRegisterBlock = {
      * 2 column layout example: "auto / auto auto"
      * 2 row layout example: "auto auto / auto-flow auto"
      */
-    grid?: string,
-  },
+    grid?: string;
+  };
 
   // The preview image for the block. Minimum width should be 350px
-  previewImage?: string,
+  previewImage?: string;
 };

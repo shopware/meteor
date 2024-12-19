@@ -55,63 +55,63 @@ import type { iapCheckout } from "./iap";
  * @internal
  */
 export interface ShopwareMessageTypes {
-  notificationDispatch: notificationDispatch,
-  toastDispatch: toastDispatch,
-  windowRedirect: windowRedirect,
-  windowRouterPush: windowRouterPush,
-  windowReload: windowReload,
-  contextLanguage: contextLanguage,
-  contextEnvironment: contextEnvironment,
-  contextLocale: contextLocale,
-  contextCurrency: contextCurrency,
-  contextShopwareVersion: contextShopwareVersion,
-  contextUserInformation: contextUserInformation,
-  contextUserTimezone: contextUserTimezone,
-  contextAppInformation: contextAppInformation,
-  contextModuleInformation: contextModuleInformation,
-  getPageTitle: getPageTitle,
-  uiComponentSectionRenderer: uiComponentSectionRenderer,
-  uiTabsAddTabItem: uiTabsAddTabItem,
-  uiModulePaymentOverviewCard: uiModulePaymentOverviewCard,
-  cmsRegisterElement: cmsRegisterElement,
-  cmsRegisterBlock: cmsRegisterBlock,
-  locationUpdateHeight: locationUpdateHeight,
-  locationUpdateUrl: locationUpdateUrl,
-  menuCollapse: menuCollapse,
-  menuExpand: menuExpand,
-  menuItemAdd: menuItemAdd,
-  settingsItemAdd: settingsItemAdd,
-  mainModuleAdd: mainModuleAdd,
-  smartBarButtonAdd: smartBarButtonAdd,
-  smartBarHide: smartBarHide,
-  uiModalOpen: uiModalOpen,
-  uiModalClose: uiModalClose,
-  actionButtonAdd: actionButtonAdd,
-  actionExecute: actionExecute,
+  notificationDispatch: notificationDispatch;
+  toastDispatch: toastDispatch;
+  windowRedirect: windowRedirect;
+  windowRouterPush: windowRouterPush;
+  windowReload: windowReload;
+  contextLanguage: contextLanguage;
+  contextEnvironment: contextEnvironment;
+  contextLocale: contextLocale;
+  contextCurrency: contextCurrency;
+  contextShopwareVersion: contextShopwareVersion;
+  contextUserInformation: contextUserInformation;
+  contextUserTimezone: contextUserTimezone;
+  contextAppInformation: contextAppInformation;
+  contextModuleInformation: contextModuleInformation;
+  getPageTitle: getPageTitle;
+  uiComponentSectionRenderer: uiComponentSectionRenderer;
+  uiTabsAddTabItem: uiTabsAddTabItem;
+  uiModulePaymentOverviewCard: uiModulePaymentOverviewCard;
+  cmsRegisterElement: cmsRegisterElement;
+  cmsRegisterBlock: cmsRegisterBlock;
+  locationUpdateHeight: locationUpdateHeight;
+  locationUpdateUrl: locationUpdateUrl;
+  menuCollapse: menuCollapse;
+  menuExpand: menuExpand;
+  menuItemAdd: menuItemAdd;
+  settingsItemAdd: settingsItemAdd;
+  mainModuleAdd: mainModuleAdd;
+  smartBarButtonAdd: smartBarButtonAdd;
+  smartBarHide: smartBarHide;
+  uiModalOpen: uiModalOpen;
+  uiModalClose: uiModalClose;
+  actionButtonAdd: actionButtonAdd;
+  actionExecute: actionExecute;
   /* eslint-disable @typescript-eslint/no-explicit-any */
-  repositoryGet: repositoryGet<any>,
-  repositorySearch: repositorySearch<any>,
-  repositorySave: repositorySave<any>,
-  repositoryClone: repositoryClone<any>,
-  repositoryHasChanges: repositoryHasChanges<any>,
-  repositorySaveAll: repositorySaveAll<any>,
-  repositoryDelete: repositoryDelete<any>,
-  repositoryCreate: repositoryCreate<any>,
+  repositoryGet: repositoryGet<any>;
+  repositorySearch: repositorySearch<any>;
+  repositorySave: repositorySave<any>;
+  repositoryClone: repositoryClone<any>;
+  repositoryHasChanges: repositoryHasChanges<any>;
+  repositorySaveAll: repositorySaveAll<any>;
+  repositoryDelete: repositoryDelete<any>;
+  repositoryCreate: repositoryCreate<any>;
   /* eslint-enable @typescript-eslint/no-explicit-any */
-  datasetRegistration: datasetRegistration,
-  datasetSubscribe: datasetSubscribe,
-  datasetSubscribeRegistration: datasetSubscribeRegistration,
-  datasetUpdate: datasetUpdate,
-  datasetGet: datasetGet,
-  iapCheckout: iapCheckout,
-  __function__: __function__,
-  __registerWindow__: __registerWindow__,
-  _multiply: _multiply,
-  _subtract: _subtract,
-  _criteriaTest: _criteriaTest,
-  _collectionTest: _collectionTest,
-  _entityTest: _entityTest,
-  _privileges: _privileges,
+  datasetRegistration: datasetRegistration;
+  datasetSubscribe: datasetSubscribe;
+  datasetSubscribeRegistration: datasetSubscribeRegistration;
+  datasetUpdate: datasetUpdate;
+  datasetGet: datasetGet;
+  iapCheckout: iapCheckout;
+  __function__: __function__;
+  __registerWindow__: __registerWindow__;
+  _multiply: _multiply;
+  _subtract: _subtract;
+  _criteriaTest: _criteriaTest;
+  _collectionTest: _collectionTest;
+  _entityTest: _entityTest;
+  _privileges: _privileges;
 }
 
 /**
@@ -120,7 +120,7 @@ export interface ShopwareMessageTypes {
  * Get the actual page title
  */
 export type getPageTitle = {
-  responseType: string,
+  responseType: string;
 };
 
 /**
@@ -128,61 +128,61 @@ export type getPageTitle = {
  * JUST FOR TEST CASES
  */
 export type _multiply = {
-  responseType: number,
-  firstNumber: number,
-  secondNumber: number,
+  responseType: number;
+  firstNumber: number;
+  secondNumber: number;
 };
 
 export type _subtract = {
-  responseType: number,
-  firstNumber: number,
-  secondNumber: number,
+  responseType: number;
+  firstNumber: number;
+  secondNumber: number;
 };
 
 export type _privileges = {
-  responseType: void,
+  responseType: void;
 };
 
 export type _criteriaTest = {
   responseType: {
-    title: string,
-    myCriteria: Criteria,
-  },
-  title: string,
-  myCriteria: Criteria,
+    title: string;
+    myCriteria: Criteria;
+  };
+  title: string;
+  myCriteria: Criteria;
 };
 
 export type _collectionTest = {
   responseType: {
-    title: string,
+    title: string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    collection: EntityCollection<any>,
-  },
-  title: string,
+    collection: EntityCollection<any>;
+  };
+  title: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  collection: EntityCollection<any>,
+  collection: EntityCollection<any>;
 };
 
 export type _entityTest = {
   responseType: {
-    title: string,
+    title: string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    entity: Entity<any>,
-  },
-  title: string,
+    entity: Entity<any>;
+  };
+  title: string;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  entity: Entity<any>,
+  entity: Entity<any>;
 };
 
 export type __function__ = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  responseType: any,
-  args: unknown[],
-  id: string,
+  responseType: any;
+  args: unknown[];
+  id: string;
 };
 
 export type __registerWindow__ = {
-  responseType: void,
+  responseType: void;
 
-  sdkVersion: string,
+  sdkVersion: string;
 };

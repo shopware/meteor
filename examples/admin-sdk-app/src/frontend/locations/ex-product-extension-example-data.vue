@@ -2,49 +2,41 @@
   <div>
     <p><strong>Changing existing data: </strong></p>
 
-    <br>
-    <br>
+    <br />
+    <br />
 
-    <SwTextField
-      v-model="productName"
-      label="Product name"
-    />
+    <SwTextField v-model="productName" label="Product name" />
 
     <p>
       You can see in the title that the product name gets updated in realtime.
     </p>
 
-    <br>
-    <br>
+    <br />
+    <br />
 
     <p><strong>Working with repository: </strong></p>
 
-    <br>
-    <br>
+    <br />
+    <br />
 
     <p>
       You can have access to the whole repository functionalities for creating,
       reading, updating and deleting entities.
     </p>
 
-    <br>
+    <br />
 
-    <SwButton @click="loadManufacturer">
-      Load first manufacturer
-    </SwButton>
+    <SwButton @click="loadManufacturer"> Load first manufacturer </SwButton>
 
-    <br>
-    <br>
+    <br />
+    <br />
 
     <SwTextField
       v-if="manufacturer"
       v-model="manufacturer.name"
       label="Manufacturer name"
     />
-    <SwButton
-      v-if="manufacturer"
-      @click="saveManufacturer"
-    >
+    <SwButton v-if="manufacturer" @click="saveManufacturer">
       Save manufacturer
     </SwButton>
   </div>

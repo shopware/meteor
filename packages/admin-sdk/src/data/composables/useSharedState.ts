@@ -15,10 +15,10 @@ async function setItem<INITIAL_VALUE>({
   persistentSharedValueStore,
   persistentSharedValueStoreBroadcast,
 }: {
-  key: string,
-  newValue: INITIAL_VALUE,
-  persistentSharedValueStore: LocalForage,
-  persistentSharedValueStoreBroadcast: BroadcastChannel,
+  key: string;
+  newValue: INITIAL_VALUE;
+  persistentSharedValueStore: LocalForage;
+  persistentSharedValueStoreBroadcast: BroadcastChannel;
 }): Promise<void> {
   const serializedValue = serialize(newValue) as UnwrapRef<INITIAL_VALUE>;
   await persistentSharedValueStore.setItem(key, serializedValue);
@@ -36,13 +36,13 @@ function createValueWatcher<INITIAL_VALUE>({
   persistentSharedValueStoreBroadcast,
   getPendingValue,
 }: {
-  key: string,
+  key: string;
   sharedValue: {
-    value: UnwrapRef<INITIAL_VALUE>,
-  },
-  persistentSharedValueStore: LocalForage,
-  persistentSharedValueStoreBroadcast: BroadcastChannel,
-  getPendingValue: () => boolean,
+    value: UnwrapRef<INITIAL_VALUE>;
+  };
+  persistentSharedValueStore: LocalForage;
+  persistentSharedValueStoreBroadcast: BroadcastChannel;
+  getPendingValue: () => boolean;
 }): WatchStopHandle {
   return watch(
     () => sharedValue.value,
@@ -70,14 +70,14 @@ function setRemoteValue<INITIAL_VALUE>({
   key,
   sharedValue,
 }: {
-  setPendingValue: (newValue: boolean) => void,
-  removeWatcher: () => void,
-  setWatcher: () => void,
-  store: LocalForage,
-  key: string,
+  setPendingValue: (newValue: boolean) => void;
+  removeWatcher: () => void;
+  setWatcher: () => void;
+  store: LocalForage;
+  key: string;
   sharedValue: {
-    value: UnwrapRef<INITIAL_VALUE>,
-  },
+    value: UnwrapRef<INITIAL_VALUE>;
+  };
 }): void {
   setPendingValue(true);
   removeWatcher();
@@ -112,7 +112,7 @@ export function useSharedState<INITIAL_VALUE>(
   key: string,
   initalValue: INITIAL_VALUE,
 ): {
-  value: UnwrapRef<INITIAL_VALUE>,
+  value: UnwrapRef<INITIAL_VALUE>;
 } {
   let isPending = false;
 
@@ -158,8 +158,8 @@ export function useSharedState<INITIAL_VALUE>(
 
   const eventListener = (
     event: MessageEvent<{
-      type: string,
-      key: string,
+      type: string;
+      key: string;
     }>,
   ): void => {
     if (event.data.type !== "store-change") {

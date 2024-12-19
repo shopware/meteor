@@ -3,20 +3,20 @@ import { createSender } from "../../channel";
 export const actionExecute = createSender("actionExecute");
 
 export type actionExecute = {
-  responseType: void,
+  responseType: void;
 
   /**
    * The webhook url of your app.
    */
-  url: string,
+  url: string;
 
   /**
    * The payload you want to send.
    */
-  entityIds: string[],
+  entityIds: string[];
 
   /**
    * The entity this action is for.
    */
-  entity: string,
+  entity: string;
 };

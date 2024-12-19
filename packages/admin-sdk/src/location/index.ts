@@ -87,21 +87,21 @@ export const stopAutoUrlUpdater = (): void => {
 export const MAIN_HIDDEN = "sw-main-hidden";
 
 export type locationUpdateHeight = {
-  responseType: void,
+  responseType: void;
 
   /**
    * The height of the iFrame
    */
-  height: number,
+  height: number;
 
   /**
    * The locationID of the current element
    */
-  locationId: string | null,
+  locationId: string | null;
 };
 
 export type locationUpdateUrl = {
-  responseType: void,
+  responseType: void;
 
   /**
    * The hash of the url
@@ -109,7 +109,7 @@ export type locationUpdateUrl = {
    * @example
    * #/sw/dashboard
    */
-  hash: string,
+  hash: string;
 
   /**
    * The pathname of the url
@@ -117,7 +117,7 @@ export type locationUpdateUrl = {
    * @example
    * /
    */
-  pathname: string,
+  pathname: string;
 
   /**
    * The searchParams of the url
@@ -128,10 +128,10 @@ export type locationUpdateUrl = {
    *  ['baz', 'qux'],
    * ]
    */
-  searchParams: Array<[string, string]>,
+  searchParams: Array<[string, string]>;
 
   /**
    * The locationID of the current element
    */
-  locationId: string | null,
+  locationId: string | null;
 };
