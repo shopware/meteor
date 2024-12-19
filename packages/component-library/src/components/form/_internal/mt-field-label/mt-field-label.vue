@@ -66,7 +66,7 @@ const classes = computed(() => [
 <style scoped>
 .mt-field-label {
   display: flex;
-  column-gap: 0.25rem;
+  column-gap: var(--scale-size-4);
   align-items: center;
   color: var(--color-text-primary-default);
   font-family: var(--font-family-body);
@@ -89,7 +89,7 @@ const classes = computed(() => [
 }
 
 .mt-field-label__inheritance-switch {
-  margin-right: 0.25rem;
+  margin-right: var(--scale-size-4);
 
   &:focus-visible {
     outline-offset: 0.25rem;
