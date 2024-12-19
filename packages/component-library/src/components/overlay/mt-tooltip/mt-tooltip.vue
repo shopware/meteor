@@ -198,7 +198,7 @@ provide(TooltipContext, true);
   line-height: var(--line-height-2xs);
   background: var(--color-elevation-surface-floating);
   line-height: var(--font-family-line-height-2xs);
-  padding: 0.75rem;
+  padding: var(--scale-size-12);
   border-radius: var(--border-radius-overlay);
   width: max-content;
 }
@@ -224,21 +224,21 @@ provide(TooltipContext, true);
 
 .v-enter-from[data-placement="top"],
 .v-leave-to[data-placement="top"] {
-  margin-bottom: 0.25rem;
+  margin-bottom: var(--scale-size-4);
 }
 
 .v-enter-from[data-placement="bottom"],
 .v-leave-to[data-placement="bottom"] {
-  margin-top: 0.25rem;
+  margin-top: var(--scale-size-4);
 }
 
 .v-enter-from[data-placement="left"],
 .v-leave-to[data-placement="left"] {
-  margin-right: 0.25rem;
+  margin-right: var(--scale-size-4);
 }
 
 .v-enter-from[data-placement="right"],
 .v-leave-to[data-placement="right"] {
-  margin-left: 0.25rem;
+  margin-left: var(--scale-size-4);
 }
 </style>
