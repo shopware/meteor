@@ -1,8 +1,9 @@
-import EntityCollection, {ApiContext} from '../data/EntityCollection';
+import EntityCollection from '../data/EntityCollection';
 import Criteria from '../../data/Criteria';
 import Entity from '../data/Entity';
 import SerializerFactory from './index';
 import { handle, send } from '../../channel';
+import type { ApiContext } from '../../context';
 import Vue from 'vue';
 
 const { serialize, deserialize } = SerializerFactory({
