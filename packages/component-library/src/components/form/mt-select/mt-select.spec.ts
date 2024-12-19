@@ -620,4 +620,26 @@ describe("mt-select", () => {
       screen.getByRole("option", { name: "Option 2" }).getAttribute("id"),
     );
   });
+
+  it("selects the option when pressing the enter key on the input field", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtSelect, {
+      props: {
+        "onUpdate:modelValue": handler,
+        options: [{ label: "Option 1", value: "1" }],
+      },
+    });
+
+    await userEvent.tab();
+    await userEvent.keyboard("{ArrowDown}");
+
+    // ACT
+    await userEvent.keyboard("{Enter}");
+
+    // ASSERT
+    expect(handler).toHaveBeenNthCalledWith(1, "1");
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+  });
 });
