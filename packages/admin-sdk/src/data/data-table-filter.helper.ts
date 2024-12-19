@@ -1,9 +1,9 @@
-import Criteria from './Criteria';
-import { type Filter } from '@shopware-ag/meteor-component-library';
+import Criteria from "./Criteria";
+import { type Filter } from "@shopware-ag/meteor-component-library";
 
 export function addDataTableFilters(
   criteria: Criteria,
-  filters: Filter[]
+  filters: Filter[],
 ): Criteria {
   filters.forEach((filter) => {
     filter.type.options.forEach((option) => {

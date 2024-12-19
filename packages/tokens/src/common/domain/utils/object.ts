@@ -3,17 +3,17 @@ export function set<TValue>(
   path: string,
   value: TValue,
 ) {
-  const keys = path.split('.');
+  const keys = path.split(".");
   let currentObj = target;
 
   for (let i = 0; i < keys.length - 1; i++) {
     const key = keys[i];
     if (!key)
-      throw new Error('Failed to set property on object: Key does not exist.');
+      throw new Error("Failed to set property on object: Key does not exist.");
 
     if (!(key in currentObj)) {
       currentObj[key] = {};
-    } else if (typeof currentObj[key] !== 'object') {
+    } else if (typeof currentObj[key] !== "object") {
       throw new Error(`Invalid path: "${key}" is not an object`);
     }
 
@@ -23,7 +23,7 @@ export function set<TValue>(
   const lastKey = keys[keys.length - 1];
   if (!lastKey)
     throw new Error(
-      'Failed to set property on object: Last key does not exist.',
+      "Failed to set property on object: Last key does not exist.",
     );
 
   currentObj[lastKey] = value;
@@ -32,14 +32,14 @@ export function set<TValue>(
 }
 
 export function get(target: Record<string, unknown>, path: string) {
-  const keys = path.split('.');
+  const keys = path.split(".");
   let currentObj = target;
 
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i];
     if (!key)
       throw new Error(
-        'Failed to access property of object: Key does not exist.',
+        "Failed to access property of object: Key does not exist.",
       );
 
     if (!(key in currentObj)) {
@@ -53,5 +53,5 @@ export function get(target: Record<string, unknown>, path: string) {
 }
 
 export function isObject(value: unknown): value is object {
-  return !!(value && typeof value === 'object' && !Array.isArray(value));
+  return !!(value && typeof value === "object" && !Array.isArray(value));
 }

@@ -71,8 +71,8 @@
   --color-text-static-default: #ffffff;
   --color-text-static-dark: #101013;
   --color-text-inverse-default: #fafbfe;
-  --font-family-headings: 'Inter';
-  --font-family-body: 'Inter';
+  --font-family-headings: "Inter";
+  --font-family-body: "Inter";
   --font-size-2xs: 0.75rem;
   --font-size-xs: 0.875rem;
   --font-size-s: 1rem;

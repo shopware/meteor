@@ -1,4 +1,4 @@
-import { HttpClient } from '../../domain/http-client/HttpClient.js';
+import { HttpClient } from "../../domain/http-client/HttpClient.js";
 
 export class HttpClientUsingFetch implements HttpClient {
   get<TResponse = unknown>(
@@ -6,7 +6,7 @@ export class HttpClientUsingFetch implements HttpClient {
     headers?: Record<string, string>,
   ): Promise<TResponse> {
     return fetch(url, {
-      method: 'GET',
+      method: "GET",
       headers,
     }).then((response) => {
       if (!response.ok) {

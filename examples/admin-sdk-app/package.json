@@ -14,7 +14,9 @@
     "dev": "ts-node src/server.ts",
     "lint:all": "npm run lint:eslint && vue-tsc --noEmit",
     "lint:eslint": "eslint --ext .js,.ts,.vue src",
-    "lint:types": "vue-tsc --noEmit"
+    "lint:types": "vue-tsc --noEmit",
+    "format:check": "prettier . --check",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@shopware-ag/entity-schema-types": "^5.8.6",
@@ -37,6 +39,7 @@
     "nodemon": "^2.0.22",
     "ts-node": "^10.9.2",
     "tslib": "^2.6.2",
-    "typescript": "^5.3.3"
+    "typescript": "^5.3.3",
+    "prettier": "3.4.2"
   }
 }

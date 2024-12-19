@@ -1,6 +1,6 @@
-import { selectData } from './selectData';
+import { selectData } from "./selectData";
 
-describe('test selectData method', () => {
+describe("test selectData method", () => {
   beforeAll(() => {
     /**
      * Mocking the global window "_swdsk" object
@@ -10,141 +10,133 @@ describe('test selectData method', () => {
       datasets: new Map(),
       subscriberRegistry: new Set(),
       adminExtensions: {
-        'https://jestjs.io': {
-          baseUrl: 'https://jestjs.io',
+        "https://jestjs.io": {
+          baseUrl: "https://jestjs.io",
           permissions: {
-            additional: ['*'],
-            create: ['*'],
-            read: ['*'],
-            update: ['*'],
-            delete: ['*'],
+            additional: ["*"],
+            create: ["*"],
+            read: ["*"],
+            update: ["*"],
+            delete: ["*"],
           },
         },
       },
     };
   });
 
-  it('should select string data with one path', () => {
+  it("should select string data with one path", () => {
     const sourceData = {
       a: {
         b: {
-          c: 'c',
+          c: "c",
         },
       },
     };
 
-    const selectors = ['a.b.c'];
+    const selectors = ["a.b.c"];
 
     const selectedData = selectData(
       sourceData,
       selectors,
       undefined,
-      'https://jestjs.io'
+      "https://jestjs.io",
     );
 
     expect(selectedData).toEqual({
       a: {
         b: {
-          c: 'c',
+          c: "c",
         },
       },
     });
   });
 
-  it('should select object data with one path', () => {
+  it("should select object data with one path", () => {
     const sourceData = {
       a: {
         b: {
           c: {
-            d: 'd',
+            d: "d",
           },
         },
       },
     };
 
-    const selectors = [
-      'a.b.c',
-    ];
+    const selectors = ["a.b.c"];
 
     const selectedData = selectData(
       sourceData,
       selectors,
       undefined,
-      'https://jestjs.io'
+      "https://jestjs.io",
     );
 
     expect(selectedData).toEqual({
       a: {
         b: {
           c: {
-            d: 'd',
+            d: "d",
           },
         },
       },
     });
   });
 
-  it('should select data with multiple paths', () => {
+  it("should select data with multiple paths", () => {
     const sourceData = {
       a: {
         b: {
-          c: 'c',
+          c: "c",
         },
       },
       d: {
-        e: 'e',
+        e: "e",
       },
     };
 
-    const selectors = [
-      'a.b.c',
-      'd.e',
-    ];
+    const selectors = ["a.b.c", "d.e"];
 
     const selectedData = selectData(
       sourceData,
       selectors,
       undefined,
-      'https://jestjs.io'
+      "https://jestjs.io",
     );
 
     expect(selectedData).toEqual({
       a: {
         b: {
-          c: 'c',
+          c: "c",
         },
       },
       d: {
-        e: 'e',
+        e: "e",
       },
     });
   });
 
-  it('should select data with multiple paths and one of them is not found', () => {
+  it("should select data with multiple paths and one of them is not found", () => {
     const sourceData = {
       a: {
         b: {
-          c: 'c',
+          c: "c",
         },
       },
     };
 
-    const selectors = [
-      'a.b.c',
-      'd.e',
-    ];
+    const selectors = ["a.b.c", "d.e"];
 
     const selectedData = selectData(
       sourceData,
       selectors,
       undefined,
-      'https://jestjs.io'
+      "https://jestjs.io",
     );
 
     expect(selectedData).toEqual({
       a: {
         b: {
-          c: 'c',
+          c: "c",
         },
       },
       d: {
@@ -153,176 +145,165 @@ describe('test selectData method', () => {
     });
   });
 
-  it('should select array data with one path', () => {
+  it("should select array data with one path", () => {
     const sourceData = {
       a: {
         b: {
-          c: ['c', 'd'],
+          c: ["c", "d"],
         },
       },
     };
 
-    const selectors = [
-      'a.b.c',
-    ];
+    const selectors = ["a.b.c"];
 
     const selectedData = selectData(
       sourceData,
       selectors,
       undefined,
-      'https://jestjs.io'
+      "https://jestjs.io",
     );
 
     expect(selectedData).toEqual({
       a: {
         b: {
-          c: ['c', 'd'],
+          c: ["c", "d"],
         },
       },
     });
   });
 
-  it('should select array data', () => {
+  it("should select array data", () => {
     const sourceData = {
       a: {
         b: {
-          c: ['c', 'd'],
+          c: ["c", "d"],
         },
       },
     };
 
-    const selectors = ['a.b.c.*'];
+    const selectors = ["a.b.c.*"];
 
     const selectedData = selectData(
       sourceData,
       selectors,
       undefined,
-      'https://jestjs.io'
+      "https://jestjs.io",
     );
 
     expect(selectedData).toEqual({
       a: {
         b: {
-          c: ['c', 'd'],
+          c: ["c", "d"],
         },
       },
     });
   });
 
-  it('should select array data with one path and one of the values is an object', () => {
+  it("should select array data with one path and one of the values is an object", () => {
     const sourceData = {
       a: {
         b: {
-          c: ['c', { d: 'd' }],
+          c: ["c", { d: "d" }],
         },
       },
     };
 
-    const selectors = ['a.b.c'];
+    const selectors = ["a.b.c"];
 
     const selectedData = selectData(
       sourceData,
       selectors,
       undefined,
-      'https://jestjs.io'
+      "https://jestjs.io",
     );
 
     expect(selectedData).toEqual({
       a: {
         b: {
-          c: ['c', { d: 'd' }],
+          c: ["c", { d: "d" }],
         },
       },
     });
   });
 
-  it('should select all values from array objects', () => {
+  it("should select all values from array objects", () => {
     const sourceData = {
       products: [
         {
           id: 1,
-          name: 'Product 1',
+          name: "Product 1",
         },
         {
           id: 2,
-          name: 'Product 2',
+          name: "Product 2",
         },
         {
           id: 3,
-          name: 'Product 3',
+          name: "Product 3",
         },
         {
           id: 4,
-          name: 'Product 4',
+          name: "Product 4",
         },
       ],
     };
 
-    const selectors = [
-      'products.*',
-    ];
+    const selectors = ["products.*"];
 
     const selectedData = selectData(
       sourceData,
       selectors,
       undefined,
-      'https://jestjs.io'
+      "https://jestjs.io",
     );
 
     expect(selectedData).toEqual({
       products: [
-        { id: 1, name: 'Product 1' },
-        { id: 2, name: 'Product 2' },
-        { id: 3, name: 'Product 3' },
-        { id: 4, name: 'Product 4' },
+        { id: 1, name: "Product 1" },
+        { id: 2, name: "Product 2" },
+        { id: 3, name: "Product 3" },
+        { id: 4, name: "Product 4" },
       ],
     });
   });
 
-  it('should select from array object', () => {
+  it("should select from array object", () => {
     const sourceData = {
       products: [
         {
           id: 1,
-          name: 'Product 1',
+          name: "Product 1",
         },
         {
           id: 2,
-          name: 'Product 2',
+          name: "Product 2",
         },
         {
           id: 3,
-          name: 'Product 3',
+          name: "Product 3",
         },
         {
           id: 4,
-          name: 'Product 4',
+          name: "Product 4",
         },
       ],
     };
 
-    const selectors = [
-      'products.*.id',
-    ];
+    const selectors = ["products.*.id"];
 
     const selectedData = selectData(
       sourceData,
       selectors,
       undefined,
-      'https://jestjs.io'
+      "https://jestjs.io",
     );
 
     expect(selectedData).toEqual({
-      products: [
-        { id: 1 },
-        { id: 2 },
-        { id: 3 },
-        { id: 4 },
-      ],
+      products: [{ id: 1 }, { id: 2 }, { id: 3 }, { id: 4 }],
     });
   });
 
-  it('should select multiple filtered values from array objects and one of the values is not found', () => {
+  it("should select multiple filtered values from array objects and one of the values is not found", () => {
     const sourceData = {
       products: [
         {
@@ -340,16 +321,13 @@ describe('test selectData method', () => {
       ],
     };
 
-    const selectors = [
-      'products.*.id',
-      'products.*.price',
-    ];
+    const selectors = ["products.*.id", "products.*.price"];
 
     const selectedData = selectData(
       sourceData,
       selectors,
       undefined,
-      'https://jestjs.io'
+      "https://jestjs.io",
     );
 
     expect(selectedData).toEqual({
@@ -362,116 +340,113 @@ describe('test selectData method', () => {
     });
   });
 
-  it('should select multiple filtered values from array objects', () => {
+  it("should select multiple filtered values from array objects", () => {
     const sourceData = {
       products: [
         {
           id: 1,
-          name: 'Product 1',
+          name: "Product 1",
         },
         {
           id: 2,
-          name: 'Product 2',
+          name: "Product 2",
         },
         {
           id: 3,
-          name: 'Product 3',
+          name: "Product 3",
         },
         {
           id: 4,
-          name: 'Product 4',
+          name: "Product 4",
         },
       ],
     };
 
-    const selectors = [
-      'products.*.id',
-      'products.*.name',
-    ];
+    const selectors = ["products.*.id", "products.*.name"];
 
     const selectedData = selectData(
       sourceData,
       selectors,
       undefined,
-      'https://jestjs.io'
+      "https://jestjs.io",
     );
 
     expect(selectedData).toEqual({
       products: [
-        { id: 1, name: 'Product 1' },
-        { id: 2, name: 'Product 2' },
-        { id: 3, name: 'Product 3' },
-        { id: 4, name: 'Product 4' },
+        { id: 1, name: "Product 1" },
+        { id: 2, name: "Product 2" },
+        { id: 3, name: "Product 3" },
+        { id: 4, name: "Product 4" },
       ],
     });
   });
 
-  it('should select multiple filtered values from nested array objects and return it in one object', () => {
+  it("should select multiple filtered values from nested array objects and return it in one object", () => {
     const sourceData = {
-      name: 'Test',
+      name: "Test",
       deep: {
         foo: {
-          value: 'Jest',
+          value: "Jest",
         },
       },
       products: [
         {
           id: 1,
-          name: 'Product 1',
+          name: "Product 1",
           price: 100,
           variants: [
             {
               id: 1,
-              name: 'Variant 1',
+              name: "Variant 1",
             },
             {
               id: 2,
-              name: 'Variant 2',
+              name: "Variant 2",
             },
           ],
         },
         {
           id: 2,
-          name: 'Product 2',
+          name: "Product 2",
           price: 200,
           variants: [
             {
               id: 3,
-              name: 'Variant 3',
+              name: "Variant 3",
             },
             {
               id: 4,
-              name: 'Variant 4',
+              name: "Variant 4",
             },
           ],
         },
         {
           id: 3,
-          name: 'Product 3',
+          name: "Product 3",
           price: 300,
           variants: [
             {
               id: 5,
-              name: 'Variant 5',
+              name: "Variant 5",
             },
             {
               id: 6,
-              name: 'Variant 6',
+              name: "Variant 6",
             },
           ],
         },
         {
           id: 4,
-          name: 'Product 4',
+          name: "Product 4",
           price: 400,
           variants: [
             {
               id: 7,
-              name: 'Variant 7',
+              name: "Variant 7",
             },
             {
               id: 8,
-              name: 'Variant 8',
+              name: "Variant 8",
             },
           ],
         },
@@ -479,31 +454,31 @@ describe('test selectData method', () => {
     };
 
     const selectors = [
-      'name',
-      'deep.foo.value',
-      'products.*.id',
-      'products.*.name',
-      'products.*.variants.*.id',
+      "name",
+      "deep.foo.value",
+      "products.*.id",
+      "products.*.name",
+      "products.*.variants.*.id",
     ];
 
     const selectedData = selectData(
       sourceData,
       selectors,
       undefined,
-      'https://jestjs.io'
+      "https://jestjs.io",
     );
 
     expect(selectedData).toEqual({
-      name: 'Test',
+      name: "Test",
       deep: {
         foo: {
-          value: 'Jest',
+          value: "Jest",
         },
       },
       products: [
         {
           id: 1,
-          name: 'Product 1',
+          name: "Product 1",
           variants: [
             {
               id: 1,
@@ -515,7 +490,7 @@ describe('test selectData method', () => {
         },
         {
           id: 2,
-          name: 'Product 2',
+          name: "Product 2",
           variants: [
             {
               id: 3,
@@ -527,7 +502,7 @@ describe('test selectData method', () => {
         },
         {
           id: 3,
-          name: 'Product 3',
+          name: "Product 3",
           variants: [
             {
               id: 5,
@@ -539,7 +514,7 @@ describe('test selectData method', () => {
         },
         {
           id: 4,
-          name: 'Product 4',
+          name: "Product 4",
           variants: [
             {
               id: 7,
@@ -553,38 +528,35 @@ describe('test selectData method', () => {
     });
   });
 
-  it('should select specific value from array', () => {
+  it("should select specific value from array", () => {
     const sourceData = {
       products: [
         {
           id: 1,
-          name: 'Product 1',
+          name: "Product 1",
           price: 100,
         },
         {
           id: 2,
-          name: 'Product 2',
+          name: "Product 2",
           price: 200,
         },
       ],
     };
 
-    const selectors = [
-      'products.[0].name',
-      'products.[1].id',
-    ];
+    const selectors = ["products.[0].name", "products.[1].id"];
 
     const selectedData = selectData(
-        sourceData,
-        selectors,
-        undefined,
-        'https://jestjs.io'
+      sourceData,
+      selectors,
+      undefined,
+      "https://jestjs.io",
     );
 
     expect(selectedData).toEqual({
       products: [
         {
-          name: 'Product 1',
+          name: "Product 1",
         },
         {
           id: 2,

@@ -28,13 +28,13 @@
     // "noEmit": true,
 
     /* If your code doesn't run in the DOM: */
-    "lib": ["es2022"]
+    "lib": ["es2022"],
   },
   "include": [
     "./.eslintrc.cjs",
     "./vitest.setup.ts",
     "./vitest.config.ts",
     "src",
-    "tests"
-  ]
+    "tests",
+  ],
 }

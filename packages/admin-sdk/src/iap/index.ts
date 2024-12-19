@@ -1,12 +1,12 @@
-import { createSender } from '../channel';
+import { createSender } from "../channel";
 
 /**
  * Trigger the in-app purchase checkout modal.
  */
-export const purchase = createSender('iapCheckout');
+export const purchase = createSender("iapCheckout");
 
 export type iapCheckout = {
-    responseType: unknown,
+  responseType: unknown;
 
-    identifier: string,
-}
+  identifier: string;
+};

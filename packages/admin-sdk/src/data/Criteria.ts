@@ -1,171 +1,174 @@
-import cloneDeep from 'lodash/cloneDeep';
+import cloneDeep from "lodash/cloneDeep";
 
 export const enum TotalCountMode {
-    /* No total count will be selected. Should be used if no pagination required (fastest) */
-    'NO_TOTAL_COUNT' = 0,
-    /* Exact total count will be selected. Should be used if an exact pagination is required (slow) */
-    'EXACT_TOTAL_COUNT' = 1,
-    /* Fetches limit * 5 + 1. Should be used if pagination can work with "next page exists" (fast) */
-    'PAGINATION_TOTAL_COUNT' = 2,
+  /* No total count will be selected. Should be used if no pagination required (fastest) */
+  "NO_TOTAL_COUNT" = 0,
+  /* Exact total count will be selected. Should be used if an exact pagination is required (slow) */
+  "EXACT_TOTAL_COUNT" = 1,
+  /* Fetches limit * 5 + 1. Should be used if pagination can work with "next page exists" (fast) */
+  "PAGINATION_TOTAL_COUNT" = 2,
 }
 
 interface Filters {
-    contains: {
-        type: 'contains',
-        field: string,
-        value: string,
-    },
-    prefix: {
-        type: 'prefix',
-        field: string,
-        value: string,
-    },
-    suffix: {
-        type: 'suffix',
-        field: string,
-        value: string,
-    },
-    equalsAny: {
-        type: 'equalsAny',
-        field: string,
-        value: string,
-    },
-    equals: {
-        type: 'equals',
-        field: string,
-        value: string|number|boolean|null,
-    },
-    range: {
-        type: 'range',
-        field: string,
-        parameters: {
-            lte?: string,
-            lt?: string,
-            gte?: string,
-            gt?: string,
-        },
-    },
-    not: {
-        type: 'not',
-        operator: 'and'|'AND'|'or'|'OR',
-        queries: SingleFilter[],
-    },
-    multi: {
-        type: 'multi',
-        operator: 'and'|'AND'|'or'|'OR',
-        queries: SingleFilter[],
-    },
+  contains: {
+    type: "contains";
+    field: string;
+    value: string;
+  };
+  prefix: {
+    type: "prefix";
+    field: string;
+    value: string;
+  };
+  suffix: {
+    type: "suffix";
+    field: string;
+    value: string;
+  };
+  equalsAny: {
+    type: "equalsAny";
+    field: string;
+    value: string;
+  };
+  equals: {
+    type: "equals";
+    field: string;
+    value: string | number | boolean | null;
+  };
+  range: {
+    type: "range";
+    field: string;
+    parameters: {
+      lte?: string;
+      lt?: string;
+      gte?: string;
+      gt?: string;
+    };
+  };
+  not: {
+    type: "not";
+    operator: "and" | "AND" | "or" | "OR";
+    queries: SingleFilter[];
+  };
+  multi: {
+    type: "multi";
+    operator: "and" | "AND" | "or" | "OR";
+    queries: SingleFilter[];
+  };
 }
 
 interface Aggregations {
-    histogram: {
-        type: 'histogram',
-        name: string,
-        field: string,
-        interval: string|null,
-        format: string|null,
-        aggregation: Aggregation|null,
-        timeZone: string|null,
-    },
-    terms: {
-        type: 'terms',
-        name: string,
-        field: string,
-        limit: number|null,
-        sort: Sorting|null,
-        aggregation: Aggregation|null,
-    },
-    sum: {
-        type: 'sum',
-        name: string,
-        field: string,
-    },
-    stats: {
-        type: 'stats',
-        name: string,
-        field: string,
-    },
-    min: {
-        type: 'min',
-        name: string,
-        field: string,
-    },
-    max: {
-        type: 'max',
-        name: string,
-        field: string,
-    },
-    count: {
-        type: 'count',
-        name: string,
-        field: string,
-    },
-    avg: {
-        type: 'avg',
-        name: string,
-        field: string,
-    },
-    entity: {
-        type: 'entity',
-        name: string,
-        field: string,
-        definition: keyof EntitySchema.Entities,
-    },
-    filter: {
-        type: 'filter',
-        name: string,
-        filter: SingleFilter[],
-        aggregation: Aggregation,
-    },
+  histogram: {
+    type: "histogram";
+    name: string;
+    field: string;
+    interval: string | null;
+    format: string | null;
+    aggregation: Aggregation | null;
+    timeZone: string | null;
+  };
+  terms: {
+    type: "terms";
+    name: string;
+    field: string;
+    limit: number | null;
+    sort: Sorting | null;
+    aggregation: Aggregation | null;
+  };
+  sum: {
+    type: "sum";
+    name: string;
+    field: string;
+  };
+  stats: {
+    type: "stats";
+    name: string;
+    field: string;
+  };
+  min: {
+    type: "min";
+    name: string;
+    field: string;
+  };
+  max: {
+    type: "max";
+    name: string;
+    field: string;
+  };
+  count: {
+    type: "count";
+    name: string;
+    field: string;
+  };
+  avg: {
+    type: "avg";
+    name: string;
+    field: string;
+  };
+  entity: {
+    type: "entity";
+    name: string;
+    field: string;
+    definition: keyof EntitySchema.Entities;
+  };
+  filter: {
+    type: "filter";
+    name: string;
+    filter: SingleFilter[];
+    aggregation: Aggregation;
+  };
 }
 
-type ValueOf<T> = T[keyof T]
+type ValueOf<T> = T[keyof T];
 type SingleFilter = ValueOf<Filters>;
 type Aggregation = ValueOf<Aggregations>;
 
 interface Include {
-    [entityName: string]: string[],
+  [entityName: string]: string[];
 }
 interface Association {
-    association: string,
-    criteria: Criteria,
+  association: string;
+  criteria: Criteria;
 }
 interface Query {
-    score: number,
-    query: SingleFilter,
-    [scoreField: string]: unknown,
+  score: number;
+  query: SingleFilter;
+  [scoreField: string]: unknown;
 }
 interface Sorting {
-    field: string,
-    order: 'ASC'|'DESC',
-    naturalSorting: boolean,
-    type?: string,
+  field: string;
+  order: "ASC" | "DESC";
+  naturalSorting: boolean;
+  type?: string;
 }
 type GroupField = string;
 interface RequestParams {
-    ids?: string,
-    page?: number,
-    limit?: number,
-    term?: string,
-    query?: Query[],
-    filter?: SingleFilter[],
-    'post-filter'?: SingleFilter[],
-    sort?: Sorting[],
-    aggregations?: Aggregation[],
-    groupFields?: GroupField[],
-    grouping?: string[],
-    fields?: string[],
-    associations?: {
-        [association: string]: RequestParams,
-    },
-    includes?: Include,
-    'total-count-mode'?: TotalCountMode,
+  ids?: string;
+  page?: number;
+  limit?: number;
+  term?: string;
+  query?: Query[];
+  filter?: SingleFilter[];
+  "post-filter"?: SingleFilter[];
+  sort?: Sorting[];
+  aggregations?: Aggregation[];
+  groupFields?: GroupField[];
+  grouping?: string[];
+  fields?: string[];
+  associations?: {
+    [association: string]: RequestParams;
+  };
+  includes?: Include;
+  "total-count-mode"?: TotalCountMode;
 }
 
-let defaultPage: null|number = 1;
-let defaultLimit: null|number = null;
+let defaultPage: null | number = 1;
+let defaultLimit: null | number = null;
 
-export function setDefaultValues(options: { page?: number|null, limit?: number|null}): void {
+export function setDefaultValues(options: {
+  page?: number | null;
+  limit?: number | null;
+}): void {
   if (options.page) {
     defaultPage = options.page;
   }
@@ -208,7 +211,10 @@ export default class Criteria {
 
   includes: Include | null;
 
-  constructor(page: number|null = defaultPage, limit: number|null = defaultLimit) {
+  constructor(
+    page: number | null = defaultPage,
+    limit: number | null = defaultLimit,
+  ) {
     this.page = page;
     this.limit = limit;
     this.term = null;
@@ -238,7 +244,7 @@ export default class Criteria {
     const params: RequestParams = {};
 
     if (this.ids.length > 0) {
-      params.ids = this.ids.join('|');
+      params.ids = this.ids.join("|");
     }
     if (this.page !== null) {
       params.page = this.page;
@@ -256,7 +262,7 @@ export default class Criteria {
       params.filter = this.filters;
     }
     if (this.postFilter.length > 0) {
-      params['post-filter'] = this.postFilter;
+      params["post-filter"] = this.postFilter;
     }
     if (this.sortings.length > 0) {
       params.sort = this.sortings;
@@ -277,7 +283,9 @@ export default class Criteria {
       params.associations = {};
 
       this.associations.forEach((item) => {
-        if (!params.associations) {return;}
+        if (!params.associations) {
+          return;
+        }
         params.associations[item.association] = item.criteria.parse();
       });
     }
@@ -286,7 +294,7 @@ export default class Criteria {
     }
 
     if (this.totalCountMode !== null) {
-      params['total-count-mode'] = this.totalCountMode;
+      params["total-count-mode"] = this.totalCountMode;
     }
 
     return params;
@@ -300,7 +308,7 @@ export default class Criteria {
     return this;
   }
 
-  getTitle(): string|null {
+  getTitle(): string | null {
     return this.title;
   }
   /**
@@ -318,11 +326,11 @@ export default class Criteria {
    * 2 - fetches limit * 5 + 1. Should be used if pagination can work with "next page exists" (fast)
    */
   setTotalCountMode(mode: TotalCountMode): this {
-    if (typeof mode !== 'number') {
+    if (typeof mode !== "number") {
       this.totalCountMode = null;
     }
 
-    this.totalCountMode = (mode < 0 || mode > 2) ? null : mode;
+    this.totalCountMode = mode < 0 || mode > 2 ? null : mode;
     return this;
   }
 
@@ -383,7 +391,11 @@ export default class Criteria {
    * @see \Shopware\Core\Framework\DataAbstractionLayer\Search\Query\ScoreQuery.
    * These queries are used to search for documents and score them with a ranking
    */
-  addQuery(filter: SingleFilter, score: number, scoreField: string|null = null): this {
+  addQuery(
+    filter: SingleFilter,
+    score: number,
+    scoreField: string | null = null,
+  ): this {
     const query: Query = { score: score, query: filter };
 
     if (scoreField) {
@@ -435,7 +447,7 @@ export default class Criteria {
    * Returns the own instance
    */
   addAssociation(path: string): this {
-    const parts = path.split('.');
+    const parts = path.split(".");
 
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     let criteria = this;
@@ -452,7 +464,7 @@ export default class Criteria {
    * Returns the criteria instance of the last path segment
    */
   getAssociation(path: string): Criteria {
-    const parts = path.split('.');
+    const parts = path.split(".");
 
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     let criteria = this;
@@ -471,7 +483,7 @@ export default class Criteria {
     return criteria;
   }
 
-  getAssociationCriteria(part: string): Criteria|null {
+  getAssociationCriteria(part: string): Criteria | null {
     let criteria = null;
 
     this.associations.forEach((association) => {
@@ -492,23 +504,23 @@ export default class Criteria {
   }
 
   getCriteriaData(): {
-      page: Criteria['page'],
-      limit: Criteria['limit'],
-      term: Criteria['term'],
-      title: Criteria['title'],
-      filters: Criteria['filters'],
-      ids: Criteria['ids'],
-      queries: Criteria['queries'],
-      associations: Criteria['associations'],
-      postFilter: Criteria['postFilter'],
-      sortings: Criteria['sortings'],
-      aggregations: Criteria['aggregations'],
-      grouping: Criteria['grouping'],
-      fields: Criteria['fields'],
-      groupFields: Criteria['groupFields'],
-      totalCountMode: Criteria['totalCountMode'],
-      includes: Criteria['includes'],
-      } {
+    page: Criteria["page"];
+    limit: Criteria["limit"];
+    term: Criteria["term"];
+    title: Criteria["title"];
+    filters: Criteria["filters"];
+    ids: Criteria["ids"];
+    queries: Criteria["queries"];
+    associations: Criteria["associations"];
+    postFilter: Criteria["postFilter"];
+    sortings: Criteria["sortings"];
+    aggregations: Criteria["aggregations"];
+    grouping: Criteria["grouping"];
+    fields: Criteria["fields"];
+    groupFields: Criteria["groupFields"];
+    totalCountMode: Criteria["totalCountMode"];
+    includes: Criteria["includes"];
+  } {
     return {
       page: this.page,
       limit: this.limit,
@@ -546,48 +558,48 @@ export default class Criteria {
    * @see \Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Metric\AvgAggregation
    * Allows to calculate the avg value for the provided field
    */
-  static avg(name: string, field: string): Aggregations['avg'] {
-    return { type: 'avg', name, field };
+  static avg(name: string, field: string): Aggregations["avg"] {
+    return { type: "avg", name, field };
   }
 
   /**
    * @see \Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Metric\CountAggregation
    * Allows to calculate the count value for the provided field
    */
-  static count(name: string, field: string): Aggregations['count'] {
-    return { type: 'count', name, field };
+  static count(name: string, field: string): Aggregations["count"] {
+    return { type: "count", name, field };
   }
 
   /**
    * @see \Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Metric\MaxAggregation
    * Allows to calculate the max value for the provided field
    */
-  static max(name: string, field: string): Aggregations['max'] {
-    return { type: 'max', name, field };
+  static max(name: string, field: string): Aggregations["max"] {
+    return { type: "max", name, field };
   }
 
   /**
    * @see \Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Metric\MinAggregation
    * Allows to calculate the min value for the provided field
    */
-  static min(name: string, field: string): Aggregations['min'] {
-    return { type: 'min', name, field };
+  static min(name: string, field: string): Aggregations["min"] {
+    return { type: "min", name, field };
   }
 
   /**
    * @see \Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Metric\StatsAggregation
    * Allows to calculate the sum, max, min, avg, count values for the provided field
    */
-  static stats(name: string, field: string): Aggregations['stats'] {
-    return { type: 'stats', name, field };
+  static stats(name: string, field: string): Aggregations["stats"] {
+    return { type: "stats", name, field };
   }
 
   /**
    * @see \Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Metric\SumAggregation
    * Allows to calculate the sum value for the provided field
    */
-  static sum(name: string, field: string): Aggregations['sum'] {
-    return { type: 'sum', name, field };
+  static sum(name: string, field: string): Aggregations["sum"] {
+    return { type: "sum", name, field };
   }
 
   /**
@@ -597,27 +609,35 @@ export default class Criteria {
   static terms(
     name: string,
     field: string,
-    limit: number|null = null,
-    sort: Sorting|null = null,
-    aggregation: Aggregation|null = null,
-  ): Aggregations['terms'] {
-    return { type: 'terms', name, field, limit, sort, aggregation };
+    limit: number | null = null,
+    sort: Sorting | null = null,
+    aggregation: Aggregation | null = null,
+  ): Aggregations["terms"] {
+    return { type: "terms", name, field, limit, sort, aggregation };
   }
 
   /**
    * @see \Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Metric\EntityAggregation
    * Allows to filter an aggregation result
    */
-  static entityAggregation(name: string, field: string, definition: keyof EntitySchema.Entities): Aggregations['entity'] {
-    return { type: 'entity', name, field, definition };
+  static entityAggregation(
+    name: string,
+    field: string,
+    definition: keyof EntitySchema.Entities,
+  ): Aggregations["entity"] {
+    return { type: "entity", name, field, definition };
   }
 
   /**
    * @see \Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Bucket\FilterAggregation
    * Allows to filter an aggregation result
    */
-  static filter(name: string, filter: SingleFilter[], aggregation: Aggregation): Aggregations['filter'] {
-    return { type: 'filter', name, filter, aggregation };
+  static filter(
+    name: string,
+    filter: SingleFilter[],
+    aggregation: Aggregation,
+  ): Aggregations["filter"] {
+    return { type: "filter", name, filter, aggregation };
   }
 
   /**
@@ -631,15 +651,27 @@ export default class Criteria {
     format: string | null,
     aggregation: Aggregation | null,
     timeZone: string | null,
-  ): Aggregations['histogram'] {
-    return { type: 'histogram', name, field, interval, format, aggregation, timeZone };
+  ): Aggregations["histogram"] {
+    return {
+      type: "histogram",
+      name,
+      field,
+      interval,
+      format,
+      aggregation,
+      timeZone,
+    };
   }
 
   /**
    * @see \Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting.
    * Allows to sort the documents by the provided field
    */
-  static sort(field: string, order:Sorting['order'] = 'ASC', naturalSorting = false): Sorting {
+  static sort(
+    field: string,
+    order: Sorting["order"] = "ASC",
+    naturalSorting = false,
+  ): Sorting {
     return { field, order, naturalSorting };
   }
 
@@ -647,7 +679,10 @@ export default class Criteria {
    * @see \Shopware\Core\Framework\DataAbstractionLayer\Search\Sorting\FieldSorting.
    * Allows to sort the documents by the provided field naturally
    */
-  static naturalSorting(field: string, order:Sorting['order'] = 'ASC'): Sorting {
+  static naturalSorting(
+    field: string,
+    order: Sorting["order"] = "ASC",
+  ): Sorting {
     return { field, order, naturalSorting: true };
   }
 
@@ -657,8 +692,8 @@ export default class Criteria {
    *
    * Sql representation: `ORDER BY COUNT({field}) {order}`
    */
-  static countSorting(field: string, order:Sorting['order'] = 'ASC'): Sorting {
-    return { field, order, naturalSorting: false, type: 'count' };
+  static countSorting(field: string, order: Sorting["order"] = "ASC"): Sorting {
+    return { field, order, naturalSorting: false, type: "count" };
   }
 
   /**
@@ -667,8 +702,8 @@ export default class Criteria {
    *
    * Sql representation: `{field} LIKE %{value}%`
    */
-  static contains(field: string, value: string): Filters['contains'] {
-    return { type: 'contains', field, value };
+  static contains(field: string, value: string): Filters["contains"] {
+    return { type: "contains", field, value };
   }
 
   /**
@@ -677,8 +712,8 @@ export default class Criteria {
    *
    * Sql representation: `{field} LIKE {value}%`
    */
-  static prefix(field: string, value: string): Filters['prefix'] {
-    return { type: 'prefix', field, value };
+  static prefix(field: string, value: string): Filters["prefix"] {
+    return { type: "prefix", field, value };
   }
 
   /**
@@ -687,8 +722,8 @@ export default class Criteria {
    *
    * Sql representation: `{field} LIKE %{value}`
    */
-  static suffix(field: string, value: string): Filters['suffix'] {
-    return { type: 'suffix', field, value };
+  static suffix(field: string, value: string): Filters["suffix"] {
+    return { type: "suffix", field, value };
   }
 
   /**
@@ -697,8 +732,11 @@ export default class Criteria {
    *
    * Sql representation: `{field} IN ({value}, {value})`
    */
-  static equalsAny(field: string, value: (string|number|boolean|null)[]): Filters['equalsAny'] {
-    return { type: 'equalsAny', field, value: value.join('|') };
+  static equalsAny(
+    field: string,
+    value: (string | number | boolean | null)[],
+  ): Filters["equalsAny"] {
+    return { type: "equalsAny", field, value: value.join("|") };
   }
 
   /**
@@ -707,8 +745,11 @@ export default class Criteria {
    *
    * Sql representation: `{field} >= {value}`, `{field} <= {value}`, ...
    */
-  static range(field: string, range: Filters['range']['parameters']): Filters['range'] {
-    return { type: 'range', field, parameters: range };
+  static range(
+    field: string,
+    range: Filters["range"]["parameters"],
+  ): Filters["range"] {
+    return { type: "range", field, parameters: range };
   }
 
   /**
@@ -717,8 +758,11 @@ export default class Criteria {
    *
    * Sql representation: `{field} = {value}`
    */
-  static equals(field: string, value: string|number|boolean|null): Filters['equals'] {
-    return { type: 'equals', field, value };
+  static equals(
+    field: string,
+    value: string | number | boolean | null,
+  ): Filters["equals"] {
+    return { type: "equals", field, value };
   }
 
   /**
@@ -733,8 +777,11 @@ export default class Criteria {
    *
    * @returns {Object}
    */
-  static not(operator: Filters['not']['operator'], queries: SingleFilter[] = []): Filters['not'] {
-    return { type: 'not', operator: operator, queries: queries };
+  static not(
+    operator: Filters["not"]["operator"],
+    queries: SingleFilter[] = [],
+  ): Filters["not"] {
+    return { type: "not", operator: operator, queries: queries };
   }
 
   /**
@@ -749,7 +796,10 @@ export default class Criteria {
    *
    * @returns {Object}
    */
-  static multi(operator: Filters['multi']['operator'], queries: SingleFilter[] = []): Filters['multi'] {
-    return { type: 'multi', operator, queries };
+  static multi(
+    operator: Filters["multi"]["operator"],
+    queries: SingleFilter[] = [],
+  ): Filters["multi"] {
+    return { type: "multi", operator, queries };
   }
 }

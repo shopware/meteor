@@ -4,7 +4,9 @@
   "main": "./dist/commonjs/index.js",
   "scripts": {
     "build": "tshy",
-    "test:unit": "node --import tsx --test $(find . -name \"*.test.ts\")"
+    "test:unit": "node --import tsx --test $(find . -name \"*.test.ts\")",
+    "format:check": "prettier . --check",
+    "format": "prettier --write ."
   },
   "keywords": [],
   "license": "MIT",
@@ -16,7 +18,8 @@
   "devDependencies": {
     "stylelint-test-rule-node": "^0.3.0",
     "tshy": "^3.0.2",
-    "tsx": "^4.7.0"
+    "tsx": "^4.7.0",
+    "prettier": "3.4.2"
   },
   "type": "module",
   "tshy": {

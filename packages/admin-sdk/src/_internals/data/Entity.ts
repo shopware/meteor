@@ -1,23 +1,29 @@
-import cloneDeep from 'lodash/cloneDeep';
+import cloneDeep from "lodash/cloneDeep";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-let setterMethod = (draft: Record<any, any>, property: string, value: unknown): void => {
+let setterMethod = (
+  draft: Record<any, any>,
+  property: string,
+  value: unknown,
+): void => {
   draft[property] = value;
 };
 
 /**
  * @internal
  */
-export function assignSetterMethod(newSetterMethod: (draft: unknown, property: string, value: unknown) => void): void {
+export function assignSetterMethod(
+  newSetterMethod: (draft: unknown, property: string, value: unknown) => void,
+): void {
   setterMethod = newSetterMethod;
 }
 
 type Entities = EntitySchema.Entities;
 
 interface EntityOptions<EntityName extends keyof Entities> {
-    originData?: Entities[EntityName],
-    isDirty?: boolean,
-    isNew?: boolean,
+  originData?: Entities[EntityName];
+  isDirty?: boolean;
+  isNew?: boolean;
 }
 
 class EntityClass<EntityName extends keyof Entities> {
@@ -40,7 +46,9 @@ class EntityClass<EntityName extends keyof Entities> {
     options: EntityOptions<EntityName> = {},
   ) {
     this.id = id;
-    this._origin = options.originData ? cloneDeep(options.originData) : cloneDeep(data);
+    this._origin = options.originData
+      ? cloneDeep(options.originData)
+      : cloneDeep(data);
     this._entityName = entityName;
     this._draft = data;
     this._isDirty = options.isDirty ?? false;
@@ -74,7 +82,7 @@ class EntityClass<EntityName extends keyof Entities> {
    * plain object. With this identifier method we can (de)serialie it back to the correct entity class.
    */
   __identifier__(): string {
-    return 'Entity';
+    return "Entity";
   }
 
   /**
@@ -122,15 +130,16 @@ class EntityClass<EntityName extends keyof Entities> {
   }
 }
 
-type EntityType<EntityName extends keyof Entities> = Entities[EntityName] & EntityClass<EntityName>;
+type EntityType<EntityName extends keyof Entities> = Entities[EntityName] &
+  EntityClass<EntityName>;
 
 interface EntityConstructor {
-  new<EntityName extends keyof Entities>(
+  new <EntityName extends keyof Entities>(
     id: string,
     entityName: EntityName,
     data: Entities[EntityName],
     options?: EntityOptions<EntityName>,
-  ): EntityType<EntityName>,
+  ): EntityType<EntityName>;
 }
 
 const Entity = function Entity<EntityName extends keyof Entities>(

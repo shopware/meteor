@@ -50,7 +50,7 @@ const ruleFunction: Rule = (primary, secondaryOptions, context) => {
       const isASpacingToken = SPACING_PROPERTIES.some((prop) =>
         typeof prop === "string"
           ? prop === ruleNode.prop
-          : prop.test(ruleNode.prop)
+          : prop.test(ruleNode.prop),
       );
 
       const values = ruleNode.value.split(" ");
@@ -105,7 +105,7 @@ const ruleFunction: Rule = (primary, secondaryOptions, context) => {
 
             ruleNode.value = ruleNode.value.replace(
               value,
-              `var(--scale-size-${newValue})`
+              `var(--scale-size-${newValue})`,
             );
           }
 

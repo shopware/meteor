@@ -1,5 +1,5 @@
-import { send } from '../channel';
-import { getLocationId } from '../_internals/utils';
+import { send } from "../channel";
+import { getLocationId } from "../_internals/utils";
 
 // TODO: add documentation (+ "body {overflow: hidden}" notice for views)
 export const is = (location: string): boolean => {
@@ -7,16 +7,16 @@ export const is = (location: string): boolean => {
 };
 
 export const get = (): string => {
-  return getLocationId() ?? '';
+  return getLocationId() ?? "";
 };
 
 export const isIframe = (): boolean => {
   return window !== window.parent;
 };
 
-export const updateHeight = (height?: number): Promise<void|null> => {
+export const updateHeight = (height?: number): Promise<void | null> => {
   if (height) {
-    return send('locationUpdateHeight', {
+    return send("locationUpdateHeight", {
       height,
       locationId: getLocationId(),
     });
@@ -25,7 +25,7 @@ export const updateHeight = (height?: number): Promise<void|null> => {
   // If no height is defined then send the current document height
   const currentHeight = document.documentElement.offsetHeight;
 
-  return send('locationUpdateHeight', {
+  return send("locationUpdateHeight", {
     height: currentHeight,
     locationId: getLocationId(),
   });
@@ -33,7 +33,7 @@ export const updateHeight = (height?: number): Promise<void|null> => {
 
 let resizeObserver: ResizeObserver | null = null;
 
-export const startAutoResizer = ():void => {
+export const startAutoResizer = (): void => {
   // Create an Observer instance
   resizeObserver = new ResizeObserver(() => {
     void updateHeight();
@@ -43,15 +43,15 @@ export const startAutoResizer = ():void => {
   resizeObserver.observe(document.body);
 };
 
-export const stopAutoResizer = ():void => {
+export const stopAutoResizer = (): void => {
   if (resizeObserver) {
     resizeObserver.unobserve(document.body);
     resizeObserver.disconnect();
   }
 };
 
-export const updateUrl = (url: URL): Promise<void|null> => {
-  return send('locationUpdateUrl', {
+export const updateUrl = (url: URL): Promise<void | null> => {
+  return send("locationUpdateUrl", {
     hash: url.hash,
     pathname: url.pathname,
     searchParams: [...url.searchParams.entries()],
@@ -59,10 +59,10 @@ export const updateUrl = (url: URL): Promise<void|null> => {
   });
 };
 
-let urlUpdateInterval: null|number = null;
+let urlUpdateInterval: null | number = null;
 
-export const startAutoUrlUpdater = ():void => {
-  let prevUrl: string|undefined = undefined;
+export const startAutoUrlUpdater = (): void => {
+  let prevUrl: string | undefined = undefined;
 
   if (urlUpdateInterval) {
     clearInterval(urlUpdateInterval);
@@ -78,38 +78,38 @@ export const startAutoUrlUpdater = ():void => {
   }, 50) as unknown as number;
 };
 
-export const stopAutoUrlUpdater = ():void => {
+export const stopAutoUrlUpdater = (): void => {
   if (urlUpdateInterval) {
     clearInterval(urlUpdateInterval);
   }
 };
 
-export const MAIN_HIDDEN = 'sw-main-hidden';
+export const MAIN_HIDDEN = "sw-main-hidden";
 
 export type locationUpdateHeight = {
-  responseType: void,
+  responseType: void;
 
   /**
    * The height of the iFrame
    */
-  height: number,
+  height: number;
 
   /**
    * The locationID of the current element
    */
-  locationId: string | null,
-}
+  locationId: string | null;
+};
 
 export type locationUpdateUrl = {
-  responseType: void,
+  responseType: void;
 
   /**
    * The hash of the url
-   * 
+   *
    * @example
    * #/sw/dashboard
    */
-  hash: string,
+  hash: string;
 
   /**
    * The pathname of the url
@@ -117,21 +117,21 @@ export type locationUpdateUrl = {
    * @example
    * /
    */
-  pathname: string,
+  pathname: string;
 
   /**
    * The searchParams of the url
-   * 
+   *
    * @example
    * [
    *  ['foo', 'bar'],
    *  ['baz', 'qux'],
    * ]
    */
-  searchParams: Array<[string, string]>,
+  searchParams: Array<[string, string]>;
 
   /**
    * The locationID of the current element
    */
-  locationId: string | null,
-}
+  locationId: string | null;
+};

@@ -1,5 +1,5 @@
-import { Dictionary } from '../../dictionary/domain/Dictionary.js';
-import { Deliverable } from './Deliverable.js';
+import { Dictionary } from "../../dictionary/domain/Dictionary.js";
+import { Deliverable } from "./Deliverable.js";
 
 type Options = {
   selector: string;
@@ -14,7 +14,7 @@ export class CSSDeliverable implements Deliverable {
 
   public static fromDictionary(
     dictionary: Dictionary,
-    options: Options = { selector: ':root' },
+    options: Options = { selector: ":root" },
   ): Deliverable {
     return new this(dictionary, options);
   }
@@ -33,19 +33,19 @@ export class CSSDeliverable implements Deliverable {
 
     const variables = Object.entries(this.dictionary.flat()).map(
       ([key, value]) => {
-        const variableName = key.replace(/\./g, '-');
+        const variableName = key.replace(/\./g, "-");
 
         const resolvedValue = this.resolveAliasedTokenValue(value, allTokens);
 
         if (
-          typeof resolvedValue === 'string' &&
-          resolvedValue.startsWith('#')
+          typeof resolvedValue === "string" &&
+          resolvedValue.startsWith("#")
         ) {
           return `--${variableName}: ${resolvedValue};`;
         }
 
-        if (typeof resolvedValue === 'number') {
-          if (!variableName.includes('weight')) {
+        if (typeof resolvedValue === "number") {
+          if (!variableName.includes("weight")) {
             return `--${variableName}: ${resolvedValue / 16}rem;`;
           }
 
@@ -56,11 +56,11 @@ export class CSSDeliverable implements Deliverable {
       },
     );
 
-    const INDENTATION = '  ';
-    const EMPTY_NEW_LINE = '\n';
+    const INDENTATION = "  ";
+    const EMPTY_NEW_LINE = "\n";
 
     return `${this.options.selector} {
-${variables.map((variable) => INDENTATION + variable).join('\n')}
+${variables.map((variable) => INDENTATION + variable).join("\n")}
 }${EMPTY_NEW_LINE}`;
   }
 
@@ -69,15 +69,15 @@ ${variables.map((variable) => INDENTATION + variable).join('\n')}
     tokens: Record<string, unknown>,
   ): string | number {
     const itIsAnAliasedToken =
-      typeof value === 'string' && /^\{.+\}$/gi.test(value);
+      typeof value === "string" && /^\{.+\}$/gi.test(value);
 
     if (itIsAnAliasedToken) {
-      const pathToAliasedTokenValue = value.replace('{', '').replace('}', '');
+      const pathToAliasedTokenValue = value.replace("{", "").replace("}", "");
       const resolvedValue = tokens[pathToAliasedTokenValue];
 
       if (
-        typeof resolvedValue !== 'string' &&
-        typeof resolvedValue !== 'number'
+        typeof resolvedValue !== "string" &&
+        typeof resolvedValue !== "number"
       ) {
         throw new Error(
           `Failed to create CSSDeliverable; Could not resolve value of aliased token: ${pathToAliasedTokenValue}`,
@@ -85,9 +85,9 @@ ${variables.map((variable) => INDENTATION + variable).join('\n')}
       }
 
       const itResolvedToAnAlias =
-        typeof resolvedValue === 'string' &&
-        resolvedValue.startsWith('{') &&
-        resolvedValue.endsWith('}');
+        typeof resolvedValue === "string" &&
+        resolvedValue.startsWith("{") &&
+        resolvedValue.endsWith("}");
 
       if (itResolvedToAnAlias) {
         return this.resolveAliasedTokenValue(resolvedValue, tokens);

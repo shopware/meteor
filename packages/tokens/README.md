@@ -23,10 +23,10 @@ for the Shopware 6 Administration.
 Import the CSS files that contain the corresponding tokens.
 
 ```js
-import '@shopware-ag/meteor-tokens/administration/light.css';
+import "@shopware-ag/meteor-tokens/administration/light.css";
 
 // If you want to support dark mode
-import '@shopware-ag/meteor-tokens/administration/dark.css';
+import "@shopware-ag/meteor-tokens/administration/dark.css";
 ```
 
 Now, you're able to make use of the Design Tokens trough

@@ -10,7 +10,9 @@
     "postinstall": "nuxt prepare",
     "preview": "nuxt preview",
     "test:e2e": "concurrently --handle-input --kill-others --success first \"npm run dev\" \"wait-on --verbose http-get://localhost:3000/ && playwright test\"",
-    "test:e2e:dev": "playwright test"
+    "test:e2e:dev": "playwright test",
+    "format:check": "prettier . --check",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "@shopware-ag/meteor-component-library": "workspace:*",
@@ -20,6 +22,7 @@
   },
   "devDependencies": {
     "@playwright/test": "^1.45.0",
-    "@types/node": "^20.11.28"
+    "@types/node": "^20.11.28",
+    "prettier": "3.4.2"
   }
 }

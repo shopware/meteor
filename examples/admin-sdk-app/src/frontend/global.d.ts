@@ -1,3 +1,3 @@
-declare module '*.vue';
+declare module "*.vue";
 
-import '@shopware-ag/entity-schema-types';
+import "@shopware-ag/entity-schema-types";

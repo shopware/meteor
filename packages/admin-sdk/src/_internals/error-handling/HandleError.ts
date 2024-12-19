@@ -1,9 +1,9 @@
-type typeName = '__HandleError__';
+type typeName = "__HandleError__";
 
 interface HandleErrorJson {
-  __type__: typeName,
-  __code__: number,
-  __message__: string,
+  __type__: typeName;
+  __code__: number;
+  __message__: string;
 }
 
 export default class HandleError extends Error {
@@ -21,7 +21,7 @@ export default class HandleError extends Error {
 
   toJSON(): HandleErrorJson {
     return {
-      __type__: '__HandleError__',
+      __type__: "__HandleError__",
       __code__: this.code,
       __message__: this.message,
     };
