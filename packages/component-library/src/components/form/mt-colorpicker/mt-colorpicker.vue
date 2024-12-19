@@ -43,9 +43,10 @@
           :disabled="disabled"
           :readonly="readonly"
           @click="onClickInput"
-          @keyup.tab="toggleFocusClass"
           @keyup.enter="toggleColorPicker"
           @keyup.escape="outsideClick"
+          @focus="hasFocus = true"
+          @blur="hasFocus = false"
         />
 
         <mt-floating-ui
@@ -1298,14 +1299,6 @@ export default defineComponent({
       }
 
       this.toggleColorPicker();
-    },
-
-    toggleFocusClass() {
-      if (this.hasFocus) {
-        this.removeFocusClass();
-      }
-      this.setFocusClass();
-      console.log(this.hasFocus)
     },
 
     setFocusClass() {
