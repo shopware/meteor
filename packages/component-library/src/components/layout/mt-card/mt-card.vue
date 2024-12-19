@@ -177,7 +177,7 @@ const cardClasses = computed(() => ({
 
 .mt-card {
   max-width: 60rem;
-  margin: 0 auto 2.5rem;
+  margin: 0 auto var(--scale-size-40);
   position: relative;
   background: var(--color-elevation-surface-raised);
   border: 1px solid var(--color-border-primary-default);
@@ -196,7 +196,7 @@ const cardClasses = computed(() => ({
 .mt-card__content {
   display: flow-root;
   flex-basis: 100%;
-  padding: 1.5rem;
+  padding: var(--scale-size-24);
   background-clip: padding-box;
   position: relative;
   color: var(--color-text-primary-default);
@@ -228,7 +228,7 @@ const cardClasses = computed(() => ({
     align-items: center;
     text-decoration: none;
     color: var(--color-text-brand-default);
-    font-size: 0.875rem;
+    font-size: var(--font-size-xs);
 
     &:hover {
       color: var(--color-text-brand-hover);
@@ -271,7 +271,7 @@ const cardClasses = computed(() => ({
 .mt-card__titles--has-inheritance-toggle {
   display: grid;
   grid-template-columns: min-content 1fr;
-  column-gap: 0.25rem;
+  column-gap: var(--scale-size-4);
   grid-template-areas:
     "inheritance title"
     "subtitle subtitle";
@@ -308,8 +308,8 @@ const cardClasses = computed(() => ({
   display: flex;
   flex-wrap: wrap;
   align-items: stretch;
-  gap: 0.75rem;
-  padding: 1.5rem;
+  gap: var(--scale-size-12);
+  padding: var(--scale-size-24);
   border-bottom: 1px solid var(--color-border-primary-default);
 }
 
@@ -320,8 +320,8 @@ const cardClasses = computed(() => ({
 .mt-card__toolbar {
   display: flex;
   flex-basis: auto;
-  gap: 0.5rem;
-  padding: 1.25rem 1.5rem 1rem 1.5rem;
+  gap: var(--scale-size-8);
+  padding: var(--scale-size-20) var(--scale-size-24) var(--scale-size-16) var(--scale-size-24);
 
   &:empty {
     display: none;
@@ -331,8 +331,8 @@ const cardClasses = computed(() => ({
 .mt-card__avatar {
   overflow: hidden;
   border-radius: var(--border-radius-xs);
-  width: 2.5rem;
-  height: 2.5rem;
+  width: var(--scale-size-40);
+  height: var(--scale-size-40);
 
   & img {
     width: 100%;
@@ -364,7 +364,7 @@ const cardClasses = computed(() => ({
 }
 
 .mt-card__footer {
-  --mt-card-footer-padding: 1.5rem;
+  --mt-card-footer-padding: var(--scale-size-24);
 
   --mt-inset-block-start: var(--mt-card-footer-padding);
   --mt-inset-block-end: var(--mt-card-footer-padding);
