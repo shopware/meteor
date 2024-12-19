@@ -53,7 +53,7 @@ const borderWidth = computed(() => {
     height: 100%;
     border-width: 4px;
     border-style: solid;
-    border-radius: 50%;
+    border-radius: var(--border-radius-circle);
     border-color: var(--color-border-brand-selected) transparent transparent transparent;
     animation: mt-loader-rotator 1.4s cubic-bezier(0.5, 0, 0.5, 1) infinite;
 
