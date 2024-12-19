@@ -82,6 +82,10 @@
         transform: isOpen ? 'rotate(180deg)' : undefined,
       }"
     />
+
+    <div v-if="!!$slots.suffix" class="mt-select__affix mt-select__affix--suffix">
+      <slot name="suffix" />
+    </div>
   </div>
 
   <mt-field-error v-if="!!error" :error="error" data-testid="mt-select__error" />
@@ -175,6 +179,7 @@ const props = withDefaults(
 defineSlots<{
   hint(): void;
   prefix(): void;
+  suffix(): void;
 }>();
 
 const searchTerm = ref("");
@@ -276,6 +281,12 @@ const { floatingStyles } = useFloating(box, listbox, {
   border-top-left-radius: var(--border-radius-xs);
   border-bottom-left-radius: var(--border-radius-xs);
   border-inline-end: 1px solid var(--color-border-primary-default);
+}
+
+.mt-select__affix--suffix {
+  border-top-right-radius: var(--border-radius-xs);
+  border-bottom-right-radius: var(--border-radius-xs);
+  border-inline-start: 1px solid var(--color-border-primary-default);
 }
 
 .mt-select__input {

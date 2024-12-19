@@ -738,4 +738,19 @@ describe("mt-select", () => {
     // ASSERT
     expect(screen.getByText("prefix")).toBeVisible();
   });
+
+  it("shows a suffxi", () => {
+    // ARRANGE
+    render(MtSelect, {
+      props: {
+        options: [],
+      },
+      slots: {
+        suffix: "suffix",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByText("suffix")).toBeVisible();
+  });
 });
