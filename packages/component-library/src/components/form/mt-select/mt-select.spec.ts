@@ -753,4 +753,40 @@ describe("mt-select", () => {
     // ASSERT
     expect(screen.getByText("suffix")).toBeVisible();
   });
+
+  it("does not show the listbox when clicking on the prefix", async () => {
+    // ARRANGE
+    render(MtSelect, {
+      props: {
+        options: [],
+      },
+      slots: {
+        prefix: "prefix",
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByText("prefix"));
+
+    // ASSERT
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+  });
+
+  it("does not show the listbox when clicking on the suffix", async () => {
+    // ARRANGE
+    render(MtSelect, {
+      props: {
+        options: [],
+      },
+      slots: {
+        suffix: "suffix",
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByText("suffix"));
+
+    // ASSERT
+    expect(screen.queryByRole("listbox")).not.toBeInTheDocument();
+  });
 });

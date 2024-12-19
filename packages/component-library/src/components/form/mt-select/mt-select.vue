@@ -18,13 +18,12 @@
       },
     ]"
     ref="box"
-    @mousedown="isOpen = true"
   >
     <div v-if="!!$slots.prefix" class="mt-select__affix mt-select__affix--prefix">
       <slot name="prefix" />
     </div>
 
-    <div class="mt-select__input-wrapper">
+    <div class="mt-select__input-wrapper" @mousedown="isOpen = true">
       <input
         role="combobox"
         class="mt-select__input"
