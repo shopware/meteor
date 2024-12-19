@@ -1,5 +1,5 @@
 import { userEvent } from "@storybook/test";
-import { render, screen, fireEvent } from "@testing-library/vue";
+import { render, screen, fireEvent, within } from "@testing-library/vue";
 import MtSelect from "./mt-select.vue";
 import { flushPromises } from "@vue/test-utils";
 import { describe, it, expect } from "vitest";
@@ -699,5 +699,28 @@ describe("mt-select", () => {
       "aria-selected",
       "false",
     );
+  });
+
+  it("shows an checkmark icon next to the selected option", async () => {
+    // ARRANGE
+    render(MtSelect, {
+      props: {
+        modelValue: "2",
+        options: [
+          { label: "Option 1", value: "1" },
+          { label: "Option 2", value: "2" },
+        ],
+      },
+    });
+
+    await userEvent.click(screen.getByRole("combobox"));
+
+    // ACT
+    const optionOne = within(screen.getByRole("option", { name: "Option 1" }));
+    const optionTwo = within(screen.getByRole("option", { name: "Option 2" }));
+
+    // ASSERT
+    expect(optionOne.queryByTestId("mt-select__selected-indicator")).not.toBeInTheDocument();
+    expect(optionTwo.getByTestId("mt-select__selected-indicator")).toBeVisible();
   });
 });

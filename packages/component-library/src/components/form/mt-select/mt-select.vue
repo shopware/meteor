@@ -117,6 +117,8 @@
         v-if="model === option.value"
         name="regular-checkmark-xs"
         color="var(--color-icon-primary-default)"
+        data-testid="mt-select__selected-indicator"
+        aria-hidden="true"
         :style="{
           marginInlineStart: 'auto',
         }"
