@@ -92,7 +92,7 @@
       :key="option.value"
       role="option"
       :aria-selected="indexOfSelectedOption === index"
-      class="mt-select__listitem"
+      class="mt-select__option"
       @click="() => changeValue(option.value, option.label)"
     >
       {{ option.label }}
@@ -262,7 +262,7 @@ const { floatingStyles } = useFloating(box, listbox, {
   padding: var(--scale-size-8);
 }
 
-.mt-select__listitem {
+.mt-select__option {
   display: flex;
   align-items: center;
   width: 100%;
