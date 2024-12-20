@@ -144,7 +144,7 @@ import Table from "@tiptap/extension-table";
 import TableCell from "@tiptap/extension-table-cell";
 import TableHeader from "@tiptap/extension-table-header";
 import TableRow from "@tiptap/extension-table-row";
-import Placeholder from '@tiptap/extension-placeholder'
+import Placeholder from "@tiptap/extension-placeholder";
 import mtTextEditorToolbar, { type CustomButton } from "./_internal/mt-text-editor-toolbar.vue";
 import mtTextEditorToolbarButtonColor, {
   colorButton,
@@ -247,7 +247,7 @@ const props = defineProps({
    *
    * @example {"code": 500, "detail": "Error while saving"}
    */
-    error: {
+  error: {
     type: Object,
     required: false,
     default: null,
@@ -256,7 +256,7 @@ const props = defineProps({
   /**
    * A label for your text field. Usually used to guide the user what value this field controls.
    */
-    label: {
+  label: {
     type: String,
     required: false,
     default: null,
@@ -687,5 +687,4 @@ label {
 .mt-text-editor--error label {
   color: var(--color-text-critical-default);
 }
-
 </style>
