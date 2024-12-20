@@ -89,7 +89,7 @@ export const VisualTestTeleportFeature = defineStory({
 <div style="width: 400px; height: 200px; background-color: lightblue; transform: translate3d(1px, 1px, 1px); padding: 20px;">
   <p>
     The modal should also working inside a container with a transform
-    
+
     <br />
     <br />
 

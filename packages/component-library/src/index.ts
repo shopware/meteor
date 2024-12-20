@@ -37,6 +37,8 @@ import MtThemeProvider from "./components/theme/mt-theme-provider.vue";
 import TooltipDirective from "./directives/tooltip.directive";
 import DeviceHelperPlugin from "./plugin/device-helper.plugin";
 import MtTooltip from "./components/overlay/mt-tooltip/mt-tooltip.vue";
+import MtTextEditor from "./components/form/mt-text-editor/mt-text-editor.vue";
+import MtTextEditorToolbarButton from "./components/form/mt-text-editor/_internal/mt-text-editor-toolbar-button.vue";
 
 // Import SCSS for styling
 import "./components/assets/scss/all.scss";
@@ -64,6 +66,8 @@ export {
   MtSwitch,
   MtTextField,
   MtTextarea,
+  MtTextEditor,
+  MtTextEditorToolbarButton,
   MtIcon,
   MtCard,
   MtEmptyState,
