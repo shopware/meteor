@@ -47,6 +47,46 @@ export const VisualTestRenderEditorInlineMode: MtTextEditorStory = defineStory({
   },
 });
 
+export const VisualTestRenderDisabledEditor: MtTextEditorStory = defineStory({
+  name: "Should render the disabled text editor",
+  args: {
+    disabled: true,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getByText("82 characters")).toBeDefined();
+  },
+});
+
+export const VisualTestRenderPlaceholder: MtTextEditorStory = defineStory({
+  name: "Should render the placeholder inside text editor",
+  args: {
+    placeholder: "Type something...",
+    modelValue: "",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getByText("0 characters")).toBeDefined();
+  },
+});
+
+export const VisualTestRenderError: MtTextEditorStory = defineStory({
+  name: "Should render a error in text editor",
+  args: {
+    error: {
+      code: 500,
+      detail: "Error while saving!",
+    },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getByText("82 characters")).toBeDefined();
+  },
+});
+
 export const VisualTestRenderEditorInlineModeSelected: MtTextEditorStory = defineStory({
   name: "Should render the bubble menu in inline mode when text is selected",
   args: {

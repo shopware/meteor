@@ -55,6 +55,7 @@
     "@tiptap/extension-link": "^2.10.0",
     "@tiptap/extension-list-item": "^2.10.0",
     "@tiptap/extension-ordered-list": "^2.10.0",
+    "@tiptap/extension-placeholder": "^2.10.4",
     "@tiptap/extension-subscript": "^2.9.1",
     "@tiptap/extension-superscript": "^2.9.1",
     "@tiptap/extension-table": "^2.10.3",

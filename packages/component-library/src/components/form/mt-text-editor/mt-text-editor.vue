@@ -1,5 +1,9 @@
 <template>
   <div class="mt-text-editor" :class="componentClasses" v-if="editor">
+    <label v-if="label">
+      {{ label }}
+    </label>
+
     <div class="mt-text-editor__box">
       <component
         :is="toolbarWrapperComponent"
@@ -13,7 +17,7 @@
         <mt-text-editor-toolbar
           :editor="editor"
           :custom-buttons="mergedCustomButtons"
-          :disabled="showCodeEditor"
+          :disabled="globalToolbarButtonDisabled"
           @updateContextualButtons="updateContextualButtons"
           :excludedButtons="excludedButtons"
         >
@@ -58,11 +62,17 @@
         class="mt-text-editor__code-editor"
         wrap
         basic
+        :disabled="disabled"
       />
 
       <div class="mt-text-editor__footer">
         <div class="mt-text-editor__footer-left">
-          <slot name="contextual-buttons" :editor="editor" :buttons="contextualButtons">
+          <slot
+            v-if="!disabled"
+            name="contextual-buttons"
+            :editor="editor"
+            :buttons="contextualButtons"
+          >
             <template v-for="button in contextualButtons" :key="button.name">
               <mt-popover v-if="button.children">
                 <template #trigger="{ toggleFloatingUi }">
@@ -70,7 +80,7 @@
                     :button="button"
                     :editor="editor"
                     @click="toggleFloatingUi"
-                    :disabled="showCodeEditor"
+                    :disabled="globalToolbarButtonDisabled"
                   />
                 </template>
 
@@ -95,7 +105,7 @@
                 v-else
                 :button="button"
                 :editor="editor"
-                :disabled="showCodeEditor"
+                :disabled="globalToolbarButtonDisabled"
                 @click="button.action?.(editor)"
               />
             </template>
@@ -113,6 +123,8 @@
         </div>
       </div>
     </div>
+
+    <mt-field-error v-if="error" :error="error" />
   </div>
 </template>
 
@@ -132,6 +144,7 @@ import Table from "@tiptap/extension-table";
 import TableCell from "@tiptap/extension-table-cell";
 import TableHeader from "@tiptap/extension-table-header";
 import TableRow from "@tiptap/extension-table-row";
+import Placeholder from '@tiptap/extension-placeholder'
 import mtTextEditorToolbar, { type CustomButton } from "./_internal/mt-text-editor-toolbar.vue";
 import mtTextEditorToolbarButtonColor, {
   colorButton,
@@ -145,6 +158,7 @@ import mtTextEditorToolbarButtonTable, {
 import mtTextEditorToolbarButton from "./_internal/mt-text-editor-toolbar-button.vue";
 import mtPopoverItem from "@/components/overlay/mt-popover-item/mt-popover-item.vue";
 import mtPopover from "@/components/overlay/mt-popover/mt-popover.vue";
+import mtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import CodeMirror from "vue-codemirror6";
 import { computed, h, reactive, ref, watch, type PropType } from "vue";
 import { html } from "@codemirror/lang-html";
@@ -212,11 +226,48 @@ const props = defineProps({
     type: Array as PropType<string[]>,
     default: () => [],
   },
+  /**
+   * Add disabled state to the editor
+   */
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
+
+  /**
+   * Add placeholder text to the editor
+   */
+  placeholder: {
+    type: String,
+    default: "",
+  },
+
+  /**
+   * An error in your business logic related to this field.
+   *
+   * @example {"code": 500, "detail": "Error while saving"}
+   */
+    error: {
+    type: Object,
+    required: false,
+    default: null,
+  },
+
+  /**
+   * A label for your text field. Usually used to guide the user what value this field controls.
+   */
+    label: {
+    type: String,
+    required: false,
+    default: null,
+  },
 });
 
 const componentClasses = computed(() => {
   return {
     "mt-text-editor--inline-edit": props.isInlineEdit,
+    "mt-text-editor--disabled": props.disabled,
+    "mt-text-editor--error": !!props.error,
   };
 });
 
@@ -245,6 +296,10 @@ const editor = useEditor({
     TableRow,
     TableHeader,
     TableCell,
+    Placeholder.configure({
+      placeholder: props.placeholder,
+      showOnlyWhenEditable: true,
+    }),
     ...(props.tipTapConfig.extensions ?? []),
   ],
   content: props.modelValue,
@@ -256,6 +311,7 @@ const editor = useEditor({
   onUpdate: ({ editor }) => {
     emit("update:modelValue", editor.getHTML());
   },
+  editable: !props.disabled,
 });
 
 watch(
@@ -274,6 +330,17 @@ watch(
     editor.value?.commands.setContent(newValue, false);
   },
 );
+
+watch(
+  () => props.disabled,
+  (newValue) => {
+    editor.value?.setEditable(!newValue);
+  },
+);
+
+const globalToolbarButtonDisabled = computed(() => {
+  return props.disabled || showCodeEditor.value;
+});
 
 /**
  * Custom buttons
@@ -336,6 +403,14 @@ watch(
   background-color: var(--color-elevation-surface-default);
 }
 
+label {
+  display: block;
+  font-size: var(--font-size-xs);
+  line-height: 1rem;
+  color: var(--color-text-primary-default);
+  margin-bottom: var(--scale-size-8);
+}
+
 .mt-text-editor__box {
   border: 1px solid var(--color-border-primary-default);
   border-radius: var(--border-radius-xs);
@@ -378,7 +453,7 @@ watch(
   h5,
   h6 {
     font-weight: var(--font-weight-semibold);
-    color: var(--color-text-secondary-default);
+    color: var(--color-text-primary-default);
     letter-spacing: 0;
     margin-bottom: 0;
   }
@@ -424,7 +499,7 @@ watch(
     font-weight: normal;
     font-size: var(--font-size-s);
     line-height: var(--font-line-height-m);
-    color: var(--color-text-secondary-default);
+    color: var(--color-text-primary-default);
     letter-spacing: 0;
     margin-top: var(--scale-size-16);
   }
@@ -433,7 +508,7 @@ watch(
     font-size: var(--font-size-s);
     font-style: italic;
     line-height: var(--font-line-height-m);
-    color: var(--color-text-secondary-default);
+    color: var(--color-text-primary-default);
     margin-left: var(--scale-size-20);
     position: relative;
     margin-top: var(--scale-size-16);
@@ -458,7 +533,7 @@ watch(
       font-weight: normal;
       font-size: var(--font-size-s);
       line-height: var(--font-line-height-m);
-      color: var(--color-text-secondary-default);
+      color: var(--color-text-primary-default);
       margin-bottom: var(--scale-size-4);
     }
 
@@ -588,4 +663,29 @@ watch(
   pointer-events: all;
   transform: scale(1, 1);
 }
+
+.mt-text-editor--disabled .mt-text-editor__content {
+  background-color: var(--color-background-primary-disabled);
+}
+
+:deep(.mt-text-editor__content-editor p.is-editor-empty:first-child::before) {
+  color: var(--color-text-secondary-default);
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.mt-text-editor--error .mt-text-editor__box {
+  border-color: var(--color-icon-critical-default);
+}
+
+.mt-text-editor--error .mt-text-editor__content {
+  background-color: var(--color-background-critical-dark);
+}
+
+.mt-text-editor--error label {
+  color: var(--color-text-critical-default);
+}
+
 </style>
