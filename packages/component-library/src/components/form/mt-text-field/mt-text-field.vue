@@ -36,7 +36,7 @@
         :aria-label="label"
         @input="onInput"
         @change.stop="onChange"
-        @focus="setFocusClass"
+        @focus="handleFocus"
         @blur="removeFocusClass"
       />
     </template>
@@ -258,6 +258,11 @@ export default defineComponent({
     onInput(event: Event): void {
       // @ts-expect-error - target is defined
       this.$emit("update:modelValue", event.target.value);
+    },
+
+    handleFocus(event: Event): void {
+      this.$emit("focus", event);
+      this.setFocusClass();
     },
 
     restoreInheritance(): void {
