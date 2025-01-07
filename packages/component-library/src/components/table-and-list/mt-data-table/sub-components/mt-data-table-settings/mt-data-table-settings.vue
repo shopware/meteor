@@ -103,7 +103,7 @@ import MtPopoverItemResult from "../../../../overlay/mt-popover-item-result/mt-p
 import MtTooltipDirective from "../../../../../directives/tooltip.directive";
 import type { ColumnDefinition } from "../../mt-data-table.vue";
 import type { Option as ItemResultOption } from "../../../../overlay/mt-popover-item-result/mt-popover-item-result.vue";
-import { useI18n } from "@/composables/useI18n";
+import { useI18n } from "vue-i18n";
 
 export default defineComponent({
   name: "MtDataTableSettings",
@@ -234,7 +234,7 @@ export default defineComponent({
         return {
           id: column.property,
           label: column.label,
-          parentGroup: (column.visible ?? true) ? "visible" : "hidden",
+          parentGroup: column.visible ?? true ? "visible" : "hidden",
           position: column.position,
           isVisible: column.visible ?? true,
           isHidable: isPrimaryColumn(column) ? false : true,
