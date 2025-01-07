@@ -8,7 +8,7 @@
     :disable-inheritance-toggle="disableInheritanceToggle"
     :copyable="copyable"
     :copyable-tooltip="copyableTooltip"
-    :copyable-text="currentValue"
+    :copyable-text="String(currentValue)"
     :has-focus="hasFocus"
     :help-text="helpText"
     :name="name"
@@ -33,6 +33,7 @@
         :value="currentValue"
         :placeholder="placeholder"
         :maxlength="maxLength"
+        :aria-label="label"
         @input="onInput"
         @change.stop="onChange"
         @focus="setFocusClass"
@@ -53,13 +54,13 @@
     </template>
 
     <template v-if="maxLength" #field-hint-right>
-      {{ modelValue?.length ?? 0 }}/{{ maxLength }}
+      {{ String(modelValue)?.length ?? 0 }}/{{ maxLength }}
     </template>
   </mt-base-field>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, type PropType } from "vue";
 import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 
@@ -76,7 +77,7 @@ export default defineComponent({
      * The value of the text field.
      */
     modelValue: {
-      type: String,
+      type: String as PropType<string | number>,
       required: false,
       default: "",
     },
