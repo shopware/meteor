@@ -16,7 +16,7 @@
 import { computed } from "vue";
 import MtIcon from "../../../icons-media/mt-icon/mt-icon.vue";
 import MtText from "@/components/content/mt-text/mt-text.vue";
-import { useI18n } from "@/composables/useI18n";
+import { useI18n } from "vue-i18n";
 
 const props = defineProps<{
   error?: Record<string, any> | null;
