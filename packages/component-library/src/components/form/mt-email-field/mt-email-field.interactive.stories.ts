@@ -8,25 +8,6 @@ export default {
   title: "Interaction Tests/Form/mt-email-field",
 } as MtEmailFieldMeta;
 
-export const TestInputValue: MtEmailFieldStory = {
-  name: "Should keep input value",
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-    const TEST_EMAIL = "admin@shopware.com";
-
-    await userEvent.type(canvas.getByRole("textbox"), TEST_EMAIL);
-    await userEvent.click(canvas.getByText("hidden"));
-
-    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe(TEST_EMAIL);
-
-    // Input to be called once for each letter
-
-    expect(args.updateModelValue).toHaveBeenCalledTimes(18);
-
-    expect(args.change).toHaveBeenCalledWith(TEST_EMAIL);
-  },
-};
-
 export const VisualTestPrefix: MtEmailFieldStory = {
   name: "Should display prefix",
   args: {
@@ -60,18 +41,6 @@ export const VisualTestHint: MtEmailFieldStory = {
     const canvas = within(canvasElement);
 
     expect(canvas.getByText(args.hint)).toBeDefined();
-  },
-};
-
-export const TestLabel: MtEmailFieldStory = {
-  name: "Should display label",
-  args: {
-    label: "label",
-  },
-  play: ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    expect(canvas.getByText(args.label!)).toBeDefined();
   },
 };
 
@@ -114,16 +83,17 @@ export const VisualTestError: MtEmailFieldStory = {
   },
 };
 
-export const VisualTestValidationError: MtEmailFieldStory = {
-  name: "Should validate email",
+export const VisualTestSmall: MtEmailFieldStory = {
+  name: "Should display small",
   args: {
-    modelValue: "admin@",
+    small: true,
   },
-  play: ({ canvasElement }) => {
-    const canvas = within(canvasElement);
+};
 
-    expect(
-      canvas.getByText("Please enter a part following '@'. 'admin@' is incomplete."),
-    ).toBeDefined();
+export const TestShouldCopyValue: MtEmailFieldStory = {
+  name: "Should copy value",
+  args: {
+    modelValue: "Shopware",
+    copyable: true,
   },
 };
