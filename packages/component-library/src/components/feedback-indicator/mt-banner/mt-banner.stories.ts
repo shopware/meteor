@@ -28,7 +28,7 @@ const meta: MtBannerMeta = {
         v-bind="args"
         @close="args.close"
       >
-        <mt-text size="xs" v-html="args.default"></mt-text>
+        {{ args.default }}
       </mt-banner>`,
   }),
 };

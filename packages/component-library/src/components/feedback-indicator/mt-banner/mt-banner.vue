@@ -11,7 +11,14 @@
     </slot>
 
     <div class="mt-banner__body" :class="bodyClasses">
-      <mt-text v-if="title" as="h3" weight="bold" size="xs" class="mt-banner__title">
+      <mt-text
+        class="mt-banner__title"
+        v-if="title"
+        as="h3"
+        weight="bold"
+        size="xs"
+        :color="bannerColor"
+      >
         {{ title }}
       </mt-text>
 
@@ -20,14 +27,14 @@
       </div>
     </div>
 
-    <button
+    <mt-button
       v-if="closable"
       class="mt-banner__close"
       :aria-label="t('close')"
       @click.prevent="$emit('close', bannerIndex)"
     >
       <mt-icon name="solid-times-s" />
-    </button>
+    </mt-button>
   </div>
 </template>
 
@@ -35,6 +42,7 @@
 import { computed } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtText from "@/components/content/mt-text/mt-text.vue";
+import MtButton from "@/components/form/mt-button/mt-button.vue";
 import { useFutureFlags } from "@/composables/useFutureFlags";
 import { useI18n } from "@/composables/useI18n";
 
@@ -78,6 +86,19 @@ const bannerIcon = computed(() => {
   };
 
   return iconConfig[props.variant] || "solid-info-circle";
+});
+
+const bannerColor = computed(() => {
+  const colorConfig = {
+    neutral: "color-text-primary-default",
+    info: "color-text-brand-default",
+    attention: "color-text-attention-default",
+    critical: "color-text-critical-default",
+    positive: "color-text-positive-default",
+    inherited: "color-text-accent-default",
+  };
+
+  return colorConfig[props.variant] || "color-text-primary-default";
 });
 
 const future = useFutureFlags();
@@ -149,7 +170,7 @@ const bodyClasses = computed(() => ({
   height: 1.25rem;
 }
 
-.mt-banner__close {
+.mt-button.mt-banner__close {
   width: var(--mt-banner-close-button-size);
   height: var(--mt-banner-close-button-size);
   line-height: var(--mt-banner-close-button-size);
@@ -169,6 +190,7 @@ const bodyClasses = computed(() => ({
 .mt-banner--info {
   border-color: var(--color-border-brand-selected);
   background-color: var(--color-background-brand-default);
+  color: var(--color-text-brand-default);
 
   & :is(.mt-banner__icon, .mt-banner__close) {
     color: var(--color-icon-brand-default);
@@ -178,6 +200,7 @@ const bodyClasses = computed(() => ({
 .mt-banner--attention {
   border-color: var(--color-border-attention-default);
   background-color: var(--color-background-attention-default);
+  color: var(--color-text-attention-default);
 
   & :is(.mt-banner__icon, .mt-banner__close) {
     color: var(--color-icon-attention-default);
@@ -187,6 +210,7 @@ const bodyClasses = computed(() => ({
 .mt-banner--critical {
   border-color: var(--color-border-critical-default);
   background-color: var(--color-background-critical-default);
+  color: var(--color-text-critical-default);
 
   & :is(.mt-banner__icon, .mt-banner__close) {
     color: var(--color-icon-critical-default);
@@ -196,6 +220,7 @@ const bodyClasses = computed(() => ({
 .mt-banner--positive {
   border-color: var(--color-border-positive-default);
   background-color: var(--color-background-positive-default);
+  color: var(--color-text-positive-default);
 
   & :is(.mt-banner__icon, .mt-banner__close) {
     color: var(--color-icon-positive-default);
@@ -205,6 +230,7 @@ const bodyClasses = computed(() => ({
 .mt-banner--inherited {
   border-color: var(--color-border-accent-default);
   background-color: var(--color-background-accent-default);
+  color: var(--color-text-accent-default);
 
   & :is(.mt-banner__icon, .mt-banner__close) {
     color: var(--color-icon-accent-default);
@@ -214,6 +240,7 @@ const bodyClasses = computed(() => ({
 .mt-banner--neutral {
   border-color: var(--color-border-primary-default);
   background-color: var(--color-elevation-surface-overlay);
+  color: var(--color-text-primary-default);
 
   & :is(.mt-banner__icon, .mt-banner__close) {
     color: var(--color-icon-primary-default);
