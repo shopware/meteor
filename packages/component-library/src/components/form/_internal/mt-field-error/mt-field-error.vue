@@ -26,7 +26,7 @@ const errorMessage = computed(() => {
   if (!props.error) return "";
 
   const translation = t(props.error.code, props.error.parameters || {});
-  const noTranslationFound = translation === props.error.code;
+  const noTranslationFound = translation === props.error.code.toString();
 
   return noTranslationFound ? props.error.detail : translation;
 });
