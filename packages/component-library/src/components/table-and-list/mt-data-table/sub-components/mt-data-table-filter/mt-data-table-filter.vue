@@ -49,7 +49,7 @@ import MtPopover from "@/components/overlay/mt-popover/mt-popover.vue";
 import MtPopoverItem from "@/components/overlay/mt-popover-item/mt-popover-item.vue";
 import type { Filter, Option } from "../../mt-data-table.interfaces";
 import MtText from "@/components/content/mt-text/mt-text.vue";
-import { useI18n } from "@/composables/useI18n";
+import { useI18n } from "vue-i18n";
 
 defineEmits<{
   (e: "removeOption", filterId: string, optionId: string): void;

@@ -1,51 +1,56 @@
 <template>
   <transition name="modal">
-    <div
-      v-if="isOpen"
-      ref="modalRef"
-      :class="['mt-modal', `mt-modal--width-${width}`]"
-      role="dialog"
-      aria-modal="true"
-      :aria-labelledby="id"
-    >
-      <div class="mt-modal__header">
-        <div class="mt-modal__header-content">
-          <mt-text as="h2" class="mt-modal__title" size="m" weight="semibold" :id="id">
-            {{ title }}
-          </mt-text>
+    <Teleport to="body">
+      <div
+        v-if="isOpen"
+        ref="modalRef"
+        :class="['mt-modal', `mt-modal--width-${width}`]"
+        role="dialog"
+        aria-modal="true"
+        :aria-labelledby="id"
+      >
+        <div class="mt-modal__header">
+          <div class="mt-modal__header-content">
+            <mt-text as="h2" class="mt-modal__title" size="m" weight="semibold" :id="id">
+              {{ title }}
+            </mt-text>
 
-          <slot name="title-after" />
+            <slot name="title-after" />
+          </div>
+
+          <mt-modal-close class="mt-modal__close-button" aria-label="Close">
+            <mt-icon aria-hidden name="regular-times-xs" />
+          </mt-modal-close>
         </div>
 
-        <mt-modal-close class="mt-modal__close-button" aria-label="Close">
-          <mt-icon aria-hidden name="regular-times-xs" />
-        </mt-modal-close>
-      </div>
+        <div class="mt-modal__content" ref="modalContentRef">
+          <transition name="shadow-fade">
+            <div
+              v-if="['bottom', 'middle'].includes(showShadows)"
+              class="mt-modal__scroll-shadow mt-modal__scroll-shadow--top"
+            />
+          </transition>
 
-      <div class="mt-modal__content" ref="modalContentRef">
-        <transition name="shadow-fade">
           <div
-            v-if="['bottom', 'middle'].includes(showShadows)"
-            class="mt-modal__scroll-shadow mt-modal__scroll-shadow--top"
-          />
-        </transition>
+            :class="{
+              'mt-modal__content-inner': true,
+              'mt-modal__content-inner--no-padding': inset,
+            }"
+          >
+            <slot name="default" />
+          </div>
 
-        <div
-          :class="{ 'mt-modal__content-inner': true, 'mt-modal__content-inner--no-padding': inset }"
-        >
-          <slot name="default" />
+          <transition name="shadow-fade">
+            <div
+              v-if="['top', 'middle'].includes(showShadows)"
+              class="mt-modal__scroll-shadow mt-modal__scroll-shadow--bottom"
+            />
+          </transition>
         </div>
 
-        <transition name="shadow-fade">
-          <div
-            v-if="['top', 'middle'].includes(showShadows)"
-            class="mt-modal__scroll-shadow mt-modal__scroll-shadow--bottom"
-          />
-        </transition>
+        <div class="mt-modal__footer"><slot name="footer" /></div>
       </div>
-
-      <div class="mt-modal__footer"><slot name="footer" /></div>
-    </div>
+    </Teleport>
   </transition>
 </template>
 

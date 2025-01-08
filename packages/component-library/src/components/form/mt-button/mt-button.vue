@@ -289,6 +289,7 @@ const isInsideTooltip = useIsInsideTooltip();
   width: 100%;
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 
 .mt-button--x-small {

@@ -1,6 +1,6 @@
 <template>
-  <div class="mt-popover-item" :class="componentClasses">
-    <div class="mt-popover-item__top-row" @click="handleLableClick">
+  <div class="mt-popover-item" :class="componentClasses" @click="handleLableClick">
+    <div class="mt-popover-item__top-row">
       <mt-checkbox
         v-if="showCheckbox"
         class="mt-popover-item__checkbox"

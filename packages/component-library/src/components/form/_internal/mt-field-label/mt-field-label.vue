@@ -22,7 +22,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import MtIcon from "@/components/icons-media/mt-icon/mt-icon.vue";
-import { useI18n } from "@/composables/useI18n";
+import { useI18n } from "vue-i18n";
 
 const { t } = useI18n({
   messages: {

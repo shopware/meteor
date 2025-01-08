@@ -1,6 +1,6 @@
 <template>
   <mt-base-field
-    class="mt-colorpicker"
+    :class="componentClasses"
     :disabled="disabled"
     :required="required"
     :is-inherited="isInherited"
@@ -36,7 +36,7 @@
         v-model="colorValue"
         aria-label="colorpicker-color-value"
         class="mt-colorpicker__input"
-        spellcheck="false"
+        :spellcheck="false"
         :disabled="disabled"
         :readonly="readonly"
         @click="onClickInput"
@@ -112,7 +112,7 @@
                 class="mt-colorpicker__colorpicker-input is--hex"
                 aria-label="hex-value"
                 type="text"
-                spellcheck="false"
+                :spellcheck="false"
               />
               <mt-text
                 v-if="colorLabels"
@@ -208,6 +208,17 @@
               </mt-text>
             </div>
           </div>
+
+          <div v-if="applyMode" class="mt-colorpicker__row mt-colorpicker__apply-row">
+            <mt-button
+              variant="primary"
+              block
+              aria-label="colorpicker-apply-color"
+              @click="applyColor"
+            >
+              {{ t("mt-colorpicker.apply") }}
+            </mt-button>
+          </div>
         </div>
       </mt-floating-ui>
     </template>
@@ -228,14 +239,39 @@ import MtFloatingUi from "../../_internal/mt-floating-ui/mt-floating-ui.vue";
 import MtText from "@/components/content/mt-text/mt-text.vue";
 import { createFocusTrap } from "focus-trap";
 import type { FocusTrap } from "focus-trap";
+import MtButton from "@/components/form/mt-button/mt-button.vue";
+import mtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
+import { useI18n } from "vue-i18n";
 
 export default defineComponent({
   name: "MtColorpicker",
+
+  setup() {
+    const { t } = useI18n({
+      messages: {
+        en: {
+          "mt-colorpicker": {
+            apply: "Apply",
+          },
+        },
+        de: {
+          "mt-colorpicker": {
+            apply: "Anwenden",
+          },
+        },
+      },
+    });
+    return {
+      t,
+    };
+  },
 
   components: {
     "mt-base-field": MtBaseField,
     "mt-text": MtText,
     "mt-floating-ui": MtFloatingUi,
+    "mt-button": MtButton,
+    "mt-field-error": mtFieldError,
   },
 
   props: {
@@ -372,6 +408,24 @@ export default defineComponent({
       type: String,
       required: false,
       default: null,
+    },
+
+    /**
+     * Show the colorpicker in a compact mode
+     */
+    compact: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    /**
+     * Use apply-mode to apply the color value on button click
+     */
+    applyMode: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
   data(): {
@@ -654,10 +708,20 @@ export default defineComponent({
         left: this.selectorPositionX,
       };
     },
+
+    componentClasses(): {
+      "mt-colorpicker": boolean;
+      "mt-colorpicker--compact": boolean;
+    } {
+      return {
+        "mt-colorpicker": true,
+        "mt-colorpicker--compact": this.compact,
+      };
+    },
   },
 
   watch: {
-    value() {
+    modelValue() {
       this.colorValue = this.modelValue;
     },
 
@@ -665,7 +729,14 @@ export default defineComponent({
       this.colorValue = this.convertedValue;
     },
 
-    visible(visibleStatus) {
+    visible(visibleStatus, visibleStatusBefore) {
+      if (this.applyMode) {
+        // When colorpicker is closed, reset the color value
+        if (!visibleStatus && visibleStatusBefore) {
+          this.colorValue = this.modelValue;
+        }
+      }
+
       if (!visibleStatus) {
         this.trap?.deactivate();
         return;
@@ -731,6 +802,12 @@ export default defineComponent({
 
   methods: {
     debounceEmitColorValue: debounce(function emitValue() {
+      // @ts-expect-error - this context is wrong detected
+      // Don't emit the value if applyMode is active
+      if (this.applyMode) {
+        return;
+      }
+
       /**
        * Emits the selected color value
        * @property {string} this.colorValue the new color value
@@ -796,6 +873,13 @@ export default defineComponent({
         return;
       }
       this.removeOutsideClickEvent();
+    },
+
+    applyColor() {
+      // Manually emit the color value
+      this.$emit("update:modelValue", this.colorValue);
+      // Close the colorpicker
+      this.visible = false;
     },
 
     moveSelector(event: MouseEvent) {

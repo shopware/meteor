@@ -45,7 +45,7 @@
 import { defineComponent } from "vue";
 import MtTooltipDirective from "../../../../directives/tooltip.directive";
 import MtIcon from "../../../icons-media/mt-icon/mt-icon.vue";
-import { useI18n } from "@/composables/useI18n";
+import { useI18n } from "vue-i18n";
 
 export default defineComponent({
   name: "MtInheritanceSwitch",

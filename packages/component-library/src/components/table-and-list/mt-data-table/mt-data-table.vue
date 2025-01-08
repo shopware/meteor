@@ -553,16 +553,7 @@
 <script lang="ts">
 import useScrollPossibilitiesClasses from "./composables/useScrollPossibilitiesClasses";
 import type { PropType, Ref } from "vue";
-import {
-  defineComponent,
-  computed,
-  onBeforeUpdate,
-  onMounted,
-  onBeforeUnmount,
-  ref,
-  getCurrentInstance,
-  onBeforeMount,
-} from "vue";
+import { defineComponent, computed, onBeforeUpdate, onMounted, onBeforeUnmount, ref } from "vue";
 import MtCard from "../../layout/mt-card/mt-card.vue";
 import MtButton from "../../form/mt-button/mt-button.vue";
 import MtSelect from "../../form/mt-select/mt-select.vue";
@@ -601,7 +592,7 @@ import MtInset from "@/components/layout/mt-inset/mt-inset.vue";
 import { throttle } from "lodash-es";
 import { reactive } from "vue";
 import type { Filter } from "./mt-data-table.interfaces";
-import { useI18n } from "@/composables/useI18n";
+import { useI18n } from "vue-i18n";
 
 export interface BaseColumnDefinition {
   label: string; // the label for the column
