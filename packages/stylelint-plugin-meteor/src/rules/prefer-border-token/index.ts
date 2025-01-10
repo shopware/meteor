@@ -71,7 +71,8 @@ const isValidRadiusValue = (value: string): boolean => {
   return (
     globalValues.includes(value.toLowerCase()) ||
     /var\(--.*\)/.test(value) ||
-    /^calc\(.*\)$/.test(value)
+    /^calc\(.*\)$/.test(value) ||
+    /^var\(--.*\)\s*[-+]?\d+(\.\d+)?$/.test(value)
   );
 };
 
@@ -122,7 +123,8 @@ const ruleFunction: Rule = (primary, secondaryOptions, context) => {
       }
 
       if (isABorderRadiusProp) {
-        const regex = /calc\([^\)]+\)|var\([^\)]+\)|[^\s()]+/g;
+        const regex =
+          /calc\([^\)]+\)|var\([^\)]+\)(\s*[-+]\s*\d+(\.\d+)?)?|[^\s()]+/g;
         const matches = ruleNode.value.match(regex);
 
         matches?.forEach((value) => {

@@ -24,6 +24,8 @@ testRule({
       code: ".a { border-bottom-right-radius: calc(4px / 0.95) calc(4px / 0.18); }",
     },
     { code: ".a { border-radius: calc(2px / 0.95) calc(2px / 0.18); }" },
+    { code: ".a { border-top-left-radius: var(--border-radius-xs) - 1; }" },
+    { code: ".a { border-bottom-left-radius: var(--border-radius-xs) - 1; }" },
   ],
 
   reject: [
