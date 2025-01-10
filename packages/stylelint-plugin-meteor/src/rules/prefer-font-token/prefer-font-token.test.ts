@@ -19,6 +19,7 @@ testRule({
     { code: ".a { font-size: inherit; }" },
     { code: ".a { line-height: var(--line-height-xs); }" },
     { code: ".a { line-height: inherit; }" },
+    { code: ".a { font-feature-settings: normal; }" },
   ],
 
   reject: [
