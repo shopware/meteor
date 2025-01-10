@@ -100,7 +100,7 @@ import MtLoader from "../../feedback-indicator/mt-loader/mt-loader.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtText from "../../content/mt-text/mt-text.vue";
 import { useFutureFlags } from "@/composables/useFutureFlags";
-import { useI18n } from "@/composables/useI18n";
+import { useI18n } from "vue-i18n";
 
 const props = withDefaults(
   defineProps<{

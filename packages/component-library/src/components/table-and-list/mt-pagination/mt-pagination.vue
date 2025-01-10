@@ -73,7 +73,7 @@
 <script setup lang="ts">
 import { computed, watch } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
-import { useI18n } from "@/composables/useI18n";
+import { useI18n } from "vue-i18n";
 
 const props = defineProps<{
   currentPage: number;
