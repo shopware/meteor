@@ -12,7 +12,7 @@ test.beforeEach(async ({ ShopAdmin, TestDataService, AdminProductDetail }) => {
 });
 
 test("@sdk: Check tab existence", async ({ ShopAdmin }) => {
-  await ShopAdmin.page.getByRole("link", { name: "Example" }).click();
+  await ShopAdmin.page.getByRole("tab", { name: "Example" }).click();
   await expect(
     ShopAdmin.page.locator(".sw-card", { hasText: "Hello in the new tab" }),
   ).toBeVisible();
