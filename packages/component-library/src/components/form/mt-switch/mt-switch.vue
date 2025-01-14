@@ -10,6 +10,9 @@
             :name="formFieldName || identification"
             :checked="inputState"
             :disabled="isDisabled"
+            :aria-checked="inputState"
+            :aria-label="label"
+            role="switch"
             @change.stop="onChange"
           />
           <div class="mt-field__switch-state">
