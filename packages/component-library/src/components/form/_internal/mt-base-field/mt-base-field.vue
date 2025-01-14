@@ -262,6 +262,10 @@ $mt-field-transition:
     margin-bottom: var(--scale-size-12);
   }
 
+  &.is--disabled {
+    cursor: not-allowed;
+  }
+
   &__hint-wrapper {
     display: flex;
     justify-content: space-between;

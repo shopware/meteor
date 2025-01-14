@@ -16,7 +16,7 @@
 import { computed } from "vue";
 import MtIcon from "../../../icons-media/mt-icon/mt-icon.vue";
 import MtText from "@/components/content/mt-text/mt-text.vue";
-import { useI18n } from "@/composables/useI18n";
+import { useI18n } from "vue-i18n";
 
 const props = defineProps<{
   error?: Record<string, any> | null;
@@ -25,8 +25,12 @@ const props = defineProps<{
 const errorMessage = computed(() => {
   if (!props.error) return "";
 
+  if (!props.error.code) {
+    return t(props.error.detail);
+  }
+
   const translation = t(props.error.code, props.error.parameters || {});
-  const noTranslationFound = translation === props.error.code;
+  const noTranslationFound = translation === props.error.code.toString();
 
   return noTranslationFound ? props.error.detail : translation;
 });

@@ -71,7 +71,7 @@
 import { computed, defineComponent, ref } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtTextField from "../mt-text-field/mt-text-field.vue";
-import { useI18n } from "@/composables/useI18n";
+import { useI18n } from "vue-i18n";
 
 export default defineComponent({
   name: "MtPasswordField",

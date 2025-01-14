@@ -89,7 +89,7 @@ import type { PropType } from "vue";
 import { defineComponent } from "vue";
 import MtTextField from "../mt-text-field/mt-text-field.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
-import { useI18n } from "@/composables/useI18n";
+import { useI18n } from "vue-i18n";
 
 export default defineComponent({
   name: "MtNumberField",
@@ -141,7 +141,7 @@ export default defineComponent({
     },
 
     /**
-     * The value of the field.
+     * The value of the number field.
      */
     modelValue: {
       type: Number as PropType<number | null>,
@@ -280,7 +280,7 @@ export default defineComponent({
     },
 
     increaseNumberByStep() {
-      this.computeValue((this.currentValue + this.realStep).toString());
+      this.computeValue((Number(this.currentValue) + this.realStep).toString());
 
       /** @deprecated tag: 5.0 - Will be removed use update:model-value instead */
       this.$emit("change", this.currentValue);
