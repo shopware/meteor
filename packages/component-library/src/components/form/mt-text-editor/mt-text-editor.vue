@@ -47,7 +47,7 @@
           </template>
 
           <!-- Dynamically pass all slots -->
-          <template #[name]="bindings" v-for="(_, name) in $slots">
+          <template #[name]="bindings" v-for="(_, name) in slots">
             <slot :name="name" v-bind="bindings"> </slot>
           </template>
         </mt-text-editor-toolbar>
@@ -160,7 +160,7 @@ import mtPopoverItem from "@/components/overlay/mt-popover-item/mt-popover-item.
 import mtPopover from "@/components/overlay/mt-popover/mt-popover.vue";
 import mtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import CodeMirror from "vue-codemirror6";
-import { computed, h, reactive, ref, watch, type PropType } from "vue";
+import { computed, h, reactive, ref, useSlots, watch, type PropType } from "vue";
 import { html } from "@codemirror/lang-html";
 import { useI18n } from "vue-i18n";
 
@@ -394,6 +394,8 @@ watch(
     }
   },
 );
+
+const slots = useSlots() as Record<string, unknown>;
 </script>
 
 <style scoped>
