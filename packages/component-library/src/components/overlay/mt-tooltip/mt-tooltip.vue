@@ -36,6 +36,7 @@
       >
         <span>{{ content }}</span>
 
+        <!-- @vue-ignore -->
         <svg
           ref="arrowRef"
           width="8"
@@ -166,7 +167,9 @@ const {
   floatingStyles,
   middlewareData,
   placement: calculatedPlacement,
+  // @ts-ignore
 } = useFloating(triggerRef, tooltipRef, {
+  // @ts-ignore
   middleware: [offset(8), flip(), shift(), arrow({ element: arrowRef, padding: 8 })],
   whileElementsMounted: autoUpdate,
   placement: props.placement,
