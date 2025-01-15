@@ -23,18 +23,14 @@ test("@sdk: add a component section", async ({ ShopAdmin }) => {
 });
 
 test("@sdk: add a component section with tabs", async ({ ShopAdmin }) => {
-  await ShopAdmin.page.getByRole("link", { name: "Specifications" }).click();
+  await ShopAdmin.page.getByRole("tab", { name: "Specifications" }).click();
 
+  await expect(ShopAdmin.page.getByText("Card tabs tests")).toBeVisible();
   await expect(
-    ShopAdmin.page.locator(".sw-card__title", { hasText: "Card tabs tests" })
+    ShopAdmin.page.getByText("Testing if the the card tabs work correctly")
   ).toBeVisible();
   await expect(
-    ShopAdmin.page.locator(".sw-card__subtitle", {
-      hasText: "Testing if the the card tabs work correctly",
-    })
-  ).toBeVisible();
-  await expect(
-    ShopAdmin.page.locator(".sw-tabs-item", { hasText: "Tab 1" })
+    ShopAdmin.page.getByRole("tab", { name: "Tab 1" })
   ).toBeVisible();
 
   await getSDKiFrame(ShopAdmin.page, "card-tab-1");

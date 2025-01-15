@@ -28,6 +28,9 @@ const locations = {
   "ex-dailymotion-element": defineAsyncComponent(
     () => import("../cms/ex-dailymotion/ex-dailymotion-element.vue")
   ),
+  "ui-main-module-add-main-module": defineAsyncComponent(
+    () => import("./module/main-module/main-module.vue")
+  ),
 };
 
 const app = createApp({

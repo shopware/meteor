@@ -30,6 +30,50 @@ ui.actionButton.add({
 
 ui.componentSection.add({
   component: "card",
+  positionId: "sw-product-properties__after",
+  props: {
+    title: "Card tabs tests",
+    subtitle: "Testing if the the card tabs work correctly",
+    locationId: "card-tabs",
+    tabs: [
+      {
+        name: "card-tab-1",
+        label: "Tab 1",
+        locationId: "card-tab-1",
+      },
+      {
+        name: "card-tab-2",
+        label: "Tab 2",
+        locationId: "card-tab-2",
+      },
+    ],
+  },
+});
+
+ui.componentSection.add({
+  component: "card",
+  positionId: "ex-product-extension-example-page",
+  props: {
+    title: "Hello in the new tab",
+    locationId: "ui-modals",
+  },
+});
+
+ui.mainModule.addMainModule({
+  heading: "My App",
+  locationId: "ui-main-module-add-main-module",
+  displaySearchBar: false,
+});
+
+ui.menu.addMenuItem({
+  label: "Test item",
+  locationId: "ui-main-module-add-main-module",
+  displaySearchBar: false,
+  parent: "sw-order",
+});
+
+ui.componentSection.add({
+  component: "card",
   positionId: "sw-product-properties__before",
   props: {
     title: "Location tests",

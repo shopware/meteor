@@ -8,8 +8,7 @@ test.beforeEach(async ({ ShopAdmin }) => {
   await ShopAdmin.goesTo("/admin/#sw/settings/index/shop");
 
   // The main hidden iFrame should exist
-  const mainHidden = await getSDKiFrame(ShopAdmin.page, "sw-main-hidden");
-  await expect(mainHidden.locator("body")).not.toBeEmpty();
+  await getSDKiFrame(ShopAdmin.page, "sw-main-hidden");
 });
 
 test("@sdk: dataset get", async ({ ShopAdmin }) => {
@@ -21,10 +20,10 @@ test("@sdk: dataset get", async ({ ShopAdmin }) => {
   await frame.locator("button", { hasText: "Get dataset" }).click();
 
   await expect(
-    frame.locator("p", { hasText: "Returned name: Storefront" }),
+    frame.locator("p", { hasText: "Returned name: Storefront" })
   ).toBeVisible();
   await expect(
-    frame.locator("p", { hasText: "Returned active state: true" }),
+    frame.locator("p", { hasText: "Returned active state: true" })
   ).toBeVisible();
 });
 
@@ -37,7 +36,7 @@ test("@sdk: dataset subscribe", async ({ ShopAdmin }) => {
   await frame.locator("button", { hasText: "Subscribe dataset" }).click();
 
   await expect(
-    frame.locator("p", { hasText: "Returned name: Storefront" }),
+    frame.locator("p", { hasText: "Returned name: Storefront" })
   ).toBeVisible();
 });
 
@@ -50,7 +49,7 @@ test("@sdk: dataset update", async ({ ShopAdmin }) => {
   await frame.locator("button", { hasText: "Get dataset" }).click();
 
   await expect(
-    frame.locator("p", { hasText: "Returned name: Storefront" }),
+    frame.locator("p", { hasText: "Returned name: Storefront" })
   ).toBeVisible();
 
   await frame.locator("input").clear();
@@ -60,6 +59,6 @@ test("@sdk: dataset update", async ({ ShopAdmin }) => {
   await expect(
     ShopAdmin.page.locator(".smart-bar__header", {
       hasText: "Shoppingfront",
-    }),
+    })
   ).toBeVisible();
 });

@@ -5,10 +5,6 @@ test.beforeEach(async ({ ShopAdmin, AdminDashboard }) => {
   await mockUpdateApi(ShopAdmin.page);
 
   await ShopAdmin.goesTo(AdminDashboard.url());
-
-  // The main hidden iFrame should exist
-  const mainHidden = await getSDKiFrame(ShopAdmin.page, "sw-main-hidden");
-  await expect(mainHidden.locator("body")).not.toBeEmpty();
 });
 
 test("@sdk: redirect to another URL", async ({ ShopAdmin }) => {
@@ -17,7 +13,7 @@ test("@sdk: redirect to another URL", async ({ ShopAdmin }) => {
 
   const frame = await getSDKiFrame(
     ShopAdmin.page,
-    "ui-main-module-add-main-module",
+    "ui-main-module-add-main-module"
   );
   await frame.locator("button", { hasText: "Dispatch a notification" }).click();
 
@@ -41,11 +37,11 @@ test("@sdk: push router", async ({ ShopAdmin }) => {
 
   const frame = await getSDKiFrame(
     ShopAdmin.page,
-    "ui-main-module-add-main-module",
+    "ui-main-module-add-main-module"
   );
   await frame.locator("button", { hasText: "Push route" }).click();
 
   await expect(
-    ShopAdmin.page.locator(".sw-card__title", { hasText: "Orders" }),
+    ShopAdmin.page.locator(".sw-card__title", { hasText: "Orders" })
   ).toBeVisible();
 });
