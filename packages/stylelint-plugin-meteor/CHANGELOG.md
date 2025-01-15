@@ -1,5 +1,12 @@
 # @shopware-ag/stylelint-plugin-meteor
 
+## 0.1.1
+
+### Patch Changes
+
+- ed632bf: Fix border rule to allow expressions
+- 4245a21: Fix stylelint font rule to exclude font-feature-settings
+
 ## 0.1.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.0.1
+
+### Patch Changes
+
+- f3b0e2f: Fixed the Type generation for components like mt-text-editor or mt-tabs
+
 ## 4.0.0
 
 ### Major Changes
