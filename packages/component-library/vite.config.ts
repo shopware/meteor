@@ -26,9 +26,9 @@ export default defineConfig({
         "src/**/*.vue",
         "src/**/*.ts",
         "src/**/*.js",
-        "src/**/*.json"
+        "src/**/*.json",
       ],
-      "exclude": ["node_modules", "**/*.stories.ts", "**/*.spec.ts", "**/*.spec.js"],
+      exclude: ["node_modules", "**/*.stories.ts", "**/*.spec.ts", "**/*.spec.js"],
     }),
   ],
   resolve: {
