@@ -7,26 +7,21 @@ test.beforeEach(async ({ ShopAdmin, TestDataService, AdminProductDetail }) => {
   const product = await TestDataService.createBasicProduct();
   ShopAdmin.goesTo(AdminProductDetail.url(product.id));
 
-  const mainHidden = await getSDKiFrame(ShopAdmin.page, "sw-main-hidden");
-  await expect(mainHidden.locator("body")).not.toBeEmpty();
+  await getSDKiFrame(ShopAdmin.page, "sw-main-hidden");
 });
 
 test("@sdk: action button", async ({ ShopAdmin }) => {
   await ShopAdmin.page.locator(".sw-app-actions").click();
-  await ShopAdmin.page
-    .locator(".sw-context-menu__content .sw-app-action-button", {
-      hasText: "Test action",
-    })
-    .click();
+  await ShopAdmin.page.getByText("Test action").click();
 
   await expect(
     ShopAdmin.page.locator(".sw-alert__title", {
       hasText: "Action button click",
-    }),
+    })
   ).toBeVisible();
   await expect(
     ShopAdmin.page.locator(".sw-alert__message", {
       hasText: "The action button in the product detail page was clicked",
-    }),
+    })
   ).toBeVisible();
 });

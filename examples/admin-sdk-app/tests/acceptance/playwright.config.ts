@@ -1,29 +1,29 @@
-import { PlaywrightTestConfig, devices } from '@playwright/test';
-import dotenv from 'dotenv';
+import { PlaywrightTestConfig, devices } from "@playwright/test";
+import dotenv from "dotenv";
 
 // Read from default ".env" file.
 dotenv.config();
 
-process.env['SHOPWARE_ADMIN_USERNAME'] =
-  process.env['SHOPWARE_ADMIN_USERNAME'] || 'admin';
-process.env['SHOPWARE_ADMIN_PASSWORD'] =
-  process.env['SHOPWARE_ADMIN_PASSWORD'] || 'shopware';
+process.env["SHOPWARE_ADMIN_USERNAME"] =
+  process.env["SHOPWARE_ADMIN_USERNAME"] || "admin";
+process.env["SHOPWARE_ADMIN_PASSWORD"] =
+  process.env["SHOPWARE_ADMIN_PASSWORD"] || "shopware";
 
-process.env['APP_URL'] = process.env['APP_URL'] ?? 'http://localhost:8000';
+process.env["APP_URL"] = process.env["APP_URL"] ?? "http://localhost:8000";
 
 // make sure APP_URL ends with a slash
-process.env['APP_URL'] = process.env['APP_URL'].replace(/\/+$/, '') + '/';
-if (process.env['ADMIN_URL']) {
-  process.env['ADMIN_URL'] = process.env['ADMIN_URL'].replace(/\/+$/, '') + '/';
+process.env["APP_URL"] = process.env["APP_URL"].replace(/\/+$/, "") + "/";
+if (process.env["ADMIN_URL"]) {
+  process.env["ADMIN_URL"] = process.env["ADMIN_URL"].replace(/\/+$/, "") + "/";
 } else {
-  process.env['ADMIN_URL'] = process.env['APP_URL'] + 'admin/';
+  process.env["ADMIN_URL"] = process.env["APP_URL"] + "admin/";
 }
 
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
 const config: PlaywrightTestConfig = {
-  testDir: './tests',
+  testDir: "./tests",
 
   /* Maximum time one test can run for. */
   timeout: 30 * 1000,
@@ -47,9 +47,9 @@ const config: PlaywrightTestConfig = {
 
   /* Reporter to use. See https://playwright.dev/docs/test-reporters */
   reporter: [
-    ['html', { open: true, outputDir: 'artifacts' }],
-    ['json', { outputFile: 'artifacts/test-results/results.json' }],
-    ['junit', { outputFile: 'artifacts/test-results/results.xml' }],
+    ["html", { open: true, outputDir: "artifacts" }],
+    ["json", { outputFile: "artifacts/test-results/results.json" }],
+    ["junit", { outputFile: "artifacts/test-results/results.xml" }],
   ],
 
   /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -61,22 +61,23 @@ const config: PlaywrightTestConfig = {
     // baseURL: 'http://localhost:3000',
 
     /* Collect trace when retrying the failed test. See https://playwright.dev/docs/trace-viewer */
-    trace: 'on-first-retry',
+    trace: "on-first-retry",
   },
 
   /* Configure projects for major browsers */
   projects: [
     {
-      name: 'chromium',
+      name: "chromium",
 
       /* Project-specific settings. */
       use: {
-        ...devices['Desktop Chrome'],
+        ...devices["Desktop Chrome"],
       },
     },
   ],
 
   /* Folder for test artifacts such as screenshots, videos, traces, etc. */
-  outputDir: './artifacts/playwright-test-results/',
+  outputDir: "./artifacts/playwright-test-results/",
 };
+
 export default config;

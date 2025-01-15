@@ -1,0 +1,55 @@
+name: Integration tests
+
+on:
+  pull_request:
+
+  push:
+    branches:
+      - main
+
+jobs:
+  playwright-run:
+    name: Playwright Integration Tests
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v3
+        with:
+          version: 9
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "pnpm"
+          cache-dependency-path: "**/pnpm-lock.yaml"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --prefer-offline
+
+      - name: Install Playwright
+        run: npx playwright install
+
+      - name: Build packages
+        run: npx turbo run build
+
+      - name: Run e2e tests
+        run: pnpx turbo run test:e2e
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nuxt-app--playwright-test-results
+          path: examples/nuxt-app/test-results/
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: meteor-admin-sdk--playwright-test-results
+          path: packages/admin-sdk/playwright-report/
