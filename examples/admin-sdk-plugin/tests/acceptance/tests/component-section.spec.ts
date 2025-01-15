@@ -12,7 +12,7 @@ test.beforeEach(async ({ ShopAdmin, TestDataService, AdminProductDetail }) => {
 });
 
 test("@sdk: add a component section", async ({ ShopAdmin }) => {
-  await ShopAdmin.page.getByRole("link", { name: "Specifications" }).click();
+  await ShopAdmin.page.getByRole("tab", { name: "Specifications" }).click();
 
   await expect(
     ShopAdmin.page.locator(".sw-card__title", { hasText: "Location tests" }),
@@ -27,7 +27,7 @@ test("@sdk: add a component section", async ({ ShopAdmin }) => {
 });
 
 test("@sdk: add a component section with tabs", async ({ ShopAdmin }) => {
-  await ShopAdmin.page.getByRole("link", { name: "Specifications" }).click();
+  await ShopAdmin.page.getByRole("tab", { name: "Specifications" }).click();
 
   await expect(
     ShopAdmin.page.locator(".sw-card__title", { hasText: "Card tabs tests" }),
