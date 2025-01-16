@@ -22,78 +22,24 @@ export default {
   component: MtTextarea,
   render: (args) => ({
     template: `
-            <div>
-              <mt-textarea
-                v-bind="args"
-                :modelValue="currentValue"
-                @update:modelValue="args.updateModelValue"
-                @change="onChange"
-                @inheritance-restore="args.inheritanceRestore"
-                @inheritance-remove="args.inheritanceRemove"
-              >
-                <template #hint>{{ args.hint }}</template>
-              </mt-textarea>
-              <p style="display: none">hidden</p>
-            </div>`,
+<mt-textarea
+  v-bind="args"
+  v-model="args.modelValue"
+  @change="args.change"
+  @blur="args.blur"
+  @focus="args.focus"
+>
+  <template #hint>{{ args.hint }}</template>
+</mt-textarea>`,
     components: { MtTextarea },
-    data() {
-      return {
-        currentValue: "",
-      };
-    },
-    watch: {
-      "args.modelValue"(v) {
-        this.currentValue = v;
-      },
-    },
-    created() {
-      this.currentValue = args.modelValue;
-    },
-    methods: {
-      onChange(value: string) {
-        args.change(value);
-        this.currentValue = value;
-      },
-    },
-    setup: () => {
-      return {
-        args,
-      };
-    },
+    setup: () => ({ args }),
   }),
   args: {
     label: "Textareafield",
+    "onUpdate:modelValue": fn(),
     change: fn(),
-    updateModelValue: fn(),
-  },
-  argTypes: {
-    updateModelValue: {
-      action: "updateModelValue",
-      table: {
-        category: "Events",
-      },
-    },
-    change: {
-      action: "change",
-      table: {
-        category: "Events",
-      },
-    },
-    inheritanceRestore: {
-      action: "inheritance-restore",
-      table: {
-        category: "Events",
-      },
-    },
-    inheritanceRemove: {
-      action: "inheritance-remove",
-      table: {
-        category: "Events",
-      },
-    },
-    hint: {
-      control: { type: "text" },
-    },
+    blur: fn(),
+    focus: fn(),
   },
 } as MtTextareaMeta;
 
