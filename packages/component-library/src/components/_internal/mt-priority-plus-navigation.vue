@@ -7,7 +7,7 @@
 import type { PropType } from "vue";
 import { defineComponent } from "vue";
 
-interface ItemBase {
+export interface ItemBase {
   hidden?: boolean;
   [key: string]: any;
 }
