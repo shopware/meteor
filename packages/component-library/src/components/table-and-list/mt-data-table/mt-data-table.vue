@@ -589,7 +589,7 @@ import StickyColumn from "../../../directives/stickyColumn.directive";
 import MtDataTableResetFilterButton from "./sub-components/mt-data-table-reset-filter-button/mt-data-table-reset-filter-button.vue";
 import MtDataTableFilter from "./sub-components/mt-data-table-filter/mt-data-table-filter.vue";
 import MtInset from "@/components/layout/mt-inset/mt-inset.vue";
-import { throttle } from "lodash-es";
+import { throttle } from "@/utils/throttle";
 import { reactive } from "vue";
 import type { Filter } from "./mt-data-table.interfaces";
 import { useI18n } from "vue-i18n";

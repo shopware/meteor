@@ -3,7 +3,7 @@ import { mount } from "@vue/test-utils";
 import { ref, onMounted } from "vue";
 
 // mock throttle
-vi.mock("lodash-es", () => ({
+vi.mock("@/utils/throttle", () => ({
   throttle: vi.fn((fn) => fn),
 }));
 
