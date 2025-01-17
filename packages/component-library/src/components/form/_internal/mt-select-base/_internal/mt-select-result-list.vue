@@ -31,7 +31,11 @@
           v-if="!isLoading && options && options.length < 1"
           class="mt-select-result-list__empty"
         >
-          <mt-icon name="default-action-search" size="20px" />
+          <mt-icon
+            name="regular-search"
+            size="var(--scale-size-16)"
+            style="margin-right: var(--scale-size-4)"
+          />
           {{ emptyMessage || t("messageNoResults") }}
         </div>
       </div>
