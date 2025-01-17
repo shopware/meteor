@@ -13,6 +13,7 @@
   "devDependencies": {
     "turbo": "^2.0.1"
   },
+  "packageManager": "pnpm@10.0.0",
   "volta": {
     "node": "22.13.0",
     "pnpm": "10.0.0"
