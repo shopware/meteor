@@ -663,3 +663,123 @@ test('creates a dictionary with number tokens', () => {
     },
   });
 });
+
+test('Creates a dictionary with variable aliases from the same file', () => {
+  // GIVEN
+  const response: FigmaApiResponse = {
+    status: 200,
+    error: false,
+    meta: {
+      variables: {
+        'VariableID:41413:11953': {
+          id: 'VariableID:41413:11953',
+          name: 'border radius/m',
+          key: 'd7db1858980b1b6fcbde5ebbaeb48b1880c68a55',
+          variableCollectionId: 'VariableCollectionId:11953:115879',
+          resolvedType: 'FLOAT',
+          valuesByMode: {
+            '11953:0': {
+              type: 'VARIABLE_ALIAS',
+              id: 'VariableID:db9aa5d3b7c6f03b4cddb78e045b566fae112d17/51413:51953',
+            },
+          },
+          remote: false,
+          description: '',
+          hiddenFromPublishing: false,
+          scopes: ['ALL_SCOPES'],
+        },
+        'VariableID:64259:28974': {
+          id: 'VariableID:64259:28974',
+          name: 'border radius/card',
+          key: 'l4dh1d48980b1b6fcbde5ebbaeb48b1880c68a55',
+          variableCollectionId: 'VariableCollectionId:11953:115879',
+          resolvedType: 'FLOAT',
+          valuesByMode: {
+            '11953:0': {
+              type: 'VARIABLE_ALIAS',
+              id: 'VariableID:41413:11953',
+            },
+          },
+          remote: false,
+          description: '',
+          hiddenFromPublishing: false,
+          scopes: ['ALL_SCOPES'],
+        },
+      },
+      variableCollections: {
+        'VariableCollectionId:11953:115879': {
+          id: 'VariableCollectionId:11953:115879',
+          name: '.Design Tokens',
+          key: '9130479ef323598b1ccfb32e7b16dc80fcb30f14',
+          modes: [{ modeId: '11953:0', name: 'Default' }],
+          defaultModeId: '11953:0',
+          remote: false,
+          hiddenFromPublishing: true,
+          variableIds: ['VariableID:41413:11953', 'VariableID:64259:28974'],
+        },
+      },
+    },
+  };
+
+  const responseOfFileWithPrimitiveTokens: FigmaApiResponse = {
+    status: 200,
+    error: false,
+    meta: {
+      variableCollections: {
+        'VariableCollectionId:21953:215879': {
+          id: 'VariableCollectionId:21953:215879',
+          name: '.Design Tokens',
+          key: '9130479ef323598b1ccfb32e7b16dc80fcb30f14',
+          modes: [{ modeId: '11953:0', name: 'Default' }],
+          defaultModeId: '11953:0',
+          remote: false,
+          hiddenFromPublishing: true,
+          variableIds: ['VariableID:51413:51953'],
+        },
+      },
+      variables: {
+        'VariableID:51413:51953': {
+          id: 'VariableID:51413:51953',
+          name: 'scale/size/8',
+          key: 'db9aa5d3b7c6f03b4cddb78e045b566fae112d17',
+          variableCollectionId: 'VariableCollectionId:21953:215879',
+          resolvedType: 'FLOAT',
+          valuesByMode: {
+            '11953:0': {
+              r: 0,
+              g: 0,
+              b: 0,
+              a: 1,
+            },
+          },
+          remote: false,
+          description: '',
+          hiddenFromPublishing: false,
+          scopes: ['ALL_SCOPES'],
+        },
+      },
+    },
+  };
+
+  const subject = Dictionary;
+
+  // WHEN
+  const result = subject.fromFigmaApiResponse(response, {
+    mode: 'Default',
+    remoteFiles: [responseOfFileWithPrimitiveTokens],
+  }).value;
+
+  // THEN
+  expect(result).toStrictEqual({
+    'border-radius': {
+      m: {
+        $type: 'float',
+        $value: '{scale.size.8}',
+      },
+      card: {
+        $type: 'float',
+        $value: '{border-radius.m}',
+      },
+    },
+  });
+});

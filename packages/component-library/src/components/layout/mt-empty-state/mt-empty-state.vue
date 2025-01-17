@@ -1,20 +1,26 @@
 <template>
   <div class="mt-empty-state">
     <div class="mt-empty-state__icon">
-      <mt-icon :name="icon" />
+      <mt-icon :name="icon" color="var(--color-icon-primary-default)" aria-hidden="true" />
     </div>
 
-    <h2 class="mt-empty-state__headline">
+    <mt-text as="h2" size="l" weight="bold" class="mt-empty-state__headline">
       {{ headline }}
-    </h2>
+    </mt-text>
 
-    <p class="mt-empty-state__description">
+    <mt-text size="xs" color="color-text-secondary-default" class="mt-empty-state__description">
       {{ description }}
-    </p>
+    </mt-text>
 
-    <mt-external-link v-if="linkHref && linkText" class="mt-empty-state__link" :href="linkHref">
+    <mt-link
+      v-if="linkHref && linkText"
+      :href="linkHref"
+      class="mt-empty-state__link"
+      type="external"
+      as="a"
+    >
       {{ linkText }}
-    </mt-external-link>
+    </mt-link>
 
     <mt-button
       v-if="buttonText"
@@ -29,97 +35,52 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, type PropType } from "vue";
-import type { TranslateResult } from "vue-i18n";
-import MtExternalLink from "@/components/form/mt-external-link/mt-external-link.vue";
+<script setup lang="ts">
 import MtButton from "@/components/form/mt-button/mt-button.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
+import MtText from "@/components/content/mt-text/mt-text.vue";
+import MtLink from "@/components/navigation/mt-link/mt-link.vue";
 
-export default defineComponent({
-  name: "MtEmptyState",
+defineProps<{
+  headline: string;
+  description: string;
+  icon: string;
+  linkHref?: string;
+  linkText?: string;
+  buttonText?: string;
+}>();
 
-  components: {
-    MtIcon,
-    MtExternalLink,
-    MtButton,
-  },
-
-  props: {
-    headline: {
-      type: String as PropType<string | TranslateResult>,
-      required: true,
-    },
-
-    description: {
-      type: String as PropType<string | TranslateResult>,
-      required: true,
-    },
-
-    icon: {
-      type: String,
-      required: false,
-      default: "solid-content",
-    },
-
-    linkHref: {
-      type: String as PropType<string | TranslateResult>,
-      required: false,
-      default: undefined,
-    },
-
-    linkText: {
-      type: String as PropType<string | TranslateResult>,
-      required: false,
-      default: undefined,
-    },
-
-    buttonText: {
-      type: String as PropType<string | TranslateResult>,
-      required: false,
-      default: undefined,
-    },
-  },
-
-  emits: ["button-click"],
-});
+defineEmits(["button-click"]);
 </script>
 
-<style lang="scss">
+<style scoped>
 .mt-empty-state {
-  &__icon {
-    display: inline-block;
-    padding: 12px;
-    border-radius: $border-radius-default;
-    background-color: var(--color-interaction-secondary-dark);
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
 
-    svg {
-      color: var(--color-icon-primary-default);
-    }
-  }
+.mt-empty-state__icon {
+  display: inline-block;
+  padding: 0.75rem;
+  border-radius: var(--border-radius-xs);
+  background-color: var(--color-interaction-secondary-dark);
+}
 
-  &__headline {
-    color: var(--color-text-primary-default);
-    font-weight: $font-weight-bold;
-    font-size: $font-size-l;
-    line-height: $line-height-lg;
-    margin: 16px 0 0;
-  }
+.mt-empty-state__headline {
+  margin-top: 1.5rem;
+  margin-bottom: 0;
+}
 
-  &__description {
-    color: var(--color-text-secondary-default);
-    font-size: $font-size-xs;
-    line-height: $line-height-sm;
-    margin-top: 8px;
-  }
+.mt-empty-state__description {
+  margin-top: 0.5rem;
+}
 
-  &__link {
-    display: block;
-    margin-top: 8px;
-  }
+.mt-empty-state__link {
+  margin-top: 0.5rem;
+}
 
-  &__button {
-    margin-top: 16px;
-  }
+.mt-empty-state__button {
+  margin-top: 1.5rem;
 }
 </style>

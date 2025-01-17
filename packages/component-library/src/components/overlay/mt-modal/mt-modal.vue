@@ -1,57 +1,65 @@
 <template>
   <transition name="modal">
-    <div
-      v-if="isOpen"
-      ref="modalRef"
-      :class="['mt-modal', `mt-modal--width-${width}`]"
-      role="dialog"
-      aria-modal="true"
-      :aria-labelledby="id"
-    >
-      <div class="mt-modal__header">
-        <div class="mt-modal__header-content">
-          <h2 class="mt-modal__title" :id="id">{{ title }}</h2>
+    <Teleport to="body">
+      <div
+        v-if="isOpen"
+        ref="modalRef"
+        :class="['mt-modal', `mt-modal--width-${width}`]"
+        role="dialog"
+        aria-modal="true"
+        :aria-labelledby="id"
+      >
+        <div class="mt-modal__header">
+          <div class="mt-modal__header-content">
+            <mt-text as="h2" class="mt-modal__title" size="m" weight="semibold" :id="id">
+              {{ title }}
+            </mt-text>
 
-          <slot name="title-after" />
+            <slot name="title-after" />
+          </div>
+
+          <mt-modal-close class="mt-modal__close-button" aria-label="Close">
+            <mt-icon aria-hidden name="regular-times-xs" />
+          </mt-modal-close>
         </div>
 
-        <mt-modal-close class="mt-modal__close-button" aria-label="Close">
-          <mt-icon aria-hidden name="regular-times-xs" />
-        </mt-modal-close>
-      </div>
+        <div class="mt-modal__content" ref="modalContentRef">
+          <transition name="shadow-fade">
+            <div
+              v-if="['bottom', 'middle'].includes(showShadows)"
+              class="mt-modal__scroll-shadow mt-modal__scroll-shadow--top"
+            />
+          </transition>
 
-      <div class="mt-modal__content" ref="modalContentRef">
-        <transition name="shadow-fade">
           <div
-            v-if="['bottom', 'middle'].includes(showShadows)"
-            class="mt-modal__scroll-shadow mt-modal__scroll-shadow--top"
-          />
-        </transition>
+            :class="{
+              'mt-modal__content-inner': true,
+              'mt-modal__content-inner--no-padding': inset,
+            }"
+          >
+            <slot name="default" />
+          </div>
 
-        <div
-          :class="{ 'mt-modal__content-inner': true, 'mt-modal__content-inner--no-padding': inset }"
-        >
-          <slot name="default" />
+          <transition name="shadow-fade">
+            <div
+              v-if="['top', 'middle'].includes(showShadows)"
+              class="mt-modal__scroll-shadow mt-modal__scroll-shadow--bottom"
+            />
+          </transition>
         </div>
 
-        <transition name="shadow-fade">
-          <div
-            v-if="['top', 'middle'].includes(showShadows)"
-            class="mt-modal__scroll-shadow mt-modal__scroll-shadow--bottom"
-          />
-        </transition>
+        <div class="mt-modal__footer"><slot name="footer" /></div>
       </div>
-
-      <div class="mt-modal__footer"><slot name="footer" /></div>
-    </div>
+    </Teleport>
   </transition>
 </template>
 
 <script setup lang="ts">
-import { nextTick, onMounted, onUnmounted, ref, watch, type PropType, defineEmits } from "vue";
+import { nextTick, onMounted, onUnmounted, ref, watch, type PropType } from "vue";
 import { useModalContext } from "./composables/useModalContext";
 import MtIcon from "@/components/icons-media/mt-icon/mt-icon.vue";
 import MtModalClose from "./sub-components/mt-modal-close.vue";
+import MtText from "@/components/content/mt-text/mt-text.vue";
 import { createId } from "@/utils/id";
 import * as focusTrap from "focus-trap";
 
@@ -202,7 +210,7 @@ onUnmounted(() => {
 });
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .mt-modal {
   height: auto;
   position: fixed;
@@ -211,7 +219,7 @@ onUnmounted(() => {
   translate: -50% -50%;
   z-index: 2000;
   background-color: var(--color-elevation-surface-raised);
-  border-radius: 0.5rem;
+  border-radius: var(--border-radius-card);
   overflow: hidden;
   width: min(var(--mt-modal-width), calc(100vw - 2rem));
   border: 1px solid var(--color-border-primary-default);
@@ -269,13 +277,17 @@ onUnmounted(() => {
   }
 }
 
+.mt-modal__title {
+  margin-block-end: 0;
+}
+
 .mt-modal__content {
   position: relative;
   overflow-y: auto;
 }
 
 .mt-modal__content-inner {
-  padding: 1.5rem;
+  padding: var(--scale-size-24);
 }
 
 .mt-modal__content-inner--no-padding {
@@ -286,10 +298,10 @@ onUnmounted(() => {
   position: sticky;
   left: 0;
   right: 0;
-  height: 0.25rem;
+  height: var(--scale-size-4);
   margin-top: -0.25rem;
   filter: blur(3px);
-  background-color: #101013;
+  background-color: var(--color-elevation-shadow-default);
   opacity: 0.1;
 }
 
@@ -327,41 +339,33 @@ onUnmounted(() => {
 }
 
 .mt-modal__footer {
-  padding: 1.5rem;
+  padding: var(--scale-size-24);
   border-top: 1px solid var(--color-border-primary-default);
 }
 
 .mt-modal__header {
-  padding: 1.5rem;
+  padding: var(--scale-size-24);
   border-bottom: 1px solid var(--color-border-primary-default);
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.mt-modal__title {
-  color: var(--color-text-primary-default);
-  margin-block-end: 0;
-  font-weight: $font-weight-medium;
-  line-height: $line-height-lg;
-  font-size: $font-size-m;
-}
-
 .mt-modal__header-content {
   display: flex;
   flex-direction: row;
   align-items: baseline;
-  column-gap: 0.5rem;
+  column-gap: var(--scale-size-8);
 }
 
 .mt-modal__close-button {
   cursor: pointer;
   color: var(--color-icon-primary-default);
-  border-radius: $border-radius-default;
-  width: 2rem;
-  height: 2rem;
+  border-radius: var(--border-radius-xs);
+  width: var(--scale-size-32);
+  height: var(--scale-size-32);
 
-  // prevents hover stlyes from being applied to non-hoverable devices
+  /* prevents hover stlyes from being applied to non-hoverable devices */
   @media (hover: hover) {
     &:hover {
       background-color: var(--color-interaction-secondary-hover);

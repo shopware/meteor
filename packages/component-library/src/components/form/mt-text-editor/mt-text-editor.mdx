@@ -1,0 +1,445 @@
+import { Canvas, Meta, Markdown } from "@storybook/blocks";
+
+import * as TextEditorStories from "./mt-text-editor.stories";
+
+<Meta of={TextEditorStories} />
+
+# Text Editor
+
+The `mt-text-editor` component is a powerful and flexible rich text editor built with [tiptap](https://tiptap.dev/). It is designed to handle a variety of use cases, such as adding rich text editing to your application. This component is highly customizable and can be extended with additional buttons, features, or configurations to suit your needs.
+
+## Features
+
+- **Rich Text Editing**: Includes common formatting options like bold, italic, underline, and more, with support for text alignment, bullet lists, ordered lists, and more.
+- **Customizable Toolbar**: Add or exclude toolbar buttons as per your requirements.
+- **Code Editor Mode**: Toggle between WYSIWYG editing and raw HTML editing with CodeMirror integration.
+- **Character Count**: Displays a live character count at the bottom.
+- **Inline Editing**: Option to enable inline editing with a floating toolbar.
+- **Contextual Buttons**: Provides custom buttons for the footer of the editor that change contextually based on the current cursor position.
+
+---
+
+## Usage
+
+To use the `mt-text-editor` component in your project, import it and provide the required props.
+
+### Minimal Example
+
+```html
+<template>
+  <mt-text-editor v-model="content" />
+</template>
+
+<script setup>
+  import { ref } from "vue";
+
+  const content = ref("<p>Your content here</p>");
+</script>
+```
+
+<Canvas of={TextEditorStories.DefaultStory} />
+
+### Inline Editing
+
+```html
+<template>
+  <mt-text-editor v-model="content" :isInlineEdit="true" />
+</template>
+
+<script setup>
+  import { ref } from "vue";
+
+  const content = ref("<p>Inline editing example</p>");
+</script>
+```
+
+<Canvas of={TextEditorStories.InlineEditStory} />
+
+### Custom Toolbar Buttons
+
+```html
+<template>
+  <mt-text-editor
+    v-model="content"
+    :custom-buttons="customButtons"
+    :tipTapConfig="customTipTapConfig"
+  />
+</template>
+
+<script setup>
+  import { ref } from "vue";
+  import Highlight from "@tiptap/extension-highlight";
+
+  const content = ref("<p>Your content here</p>");
+
+  const customTipTapConfig = {
+    extensions: [Highlight],
+  };
+  const customButtons = [
+    {
+      name: "highlight",
+      label: "Highlight",
+      icon: "regular-circle-xs",
+      action: (editor) => {
+        editor.chain().focus().toggleMark("highlight").run();
+      },
+    },
+  ];
+</script>
+```
+
+<Canvas of={TextEditorStories.CustomButtonsStory} />
+
+### Props
+
+<Markdown>
+  {`
+| Prop Name       | Type    | Default | Description                                                             |
+| --------------- | ------- | ------- | ----------------------------------------------------------------------- |
+| modelValue      | String  | ''      | The HTML content of the editor. Use 'v-model' to bind it to a variable. |
+| isInlineEdit    | Boolean | 'false' | Enables inline editing with a floating toolbar.                         |
+| tipTapConfig    | Object  | {}      | Custom configuration for the tiptap editor.                             |
+| customButtons   | Array   | []      | Array of custom buttons to add to the toolbar.                          |
+| excludedButtons | Array   | []      | Array of button names to exclude from the toolbar.                      |
+`}
+</Markdown>
+
+---
+
+## Slots
+
+The `mt-text-editor` component provides several slots for customization:
+
+### `button_<name>`
+
+Allows you to override or customize specific buttons in the toolbar. For example, to customize the `text-color` button:
+
+```html
+<template>
+  <mt-text-editor v-model="content">
+    <template #button_text-color="{ editor, disabled, button }">
+      <mt-text-editor-toolbar-button
+        :button="button"
+        :editor="props.editor"
+        :disabled="disabled"
+        @click="openColorPickerModal"
+      />
+
+      <ColorPickerModal
+        v-if="showColorPickerModal"
+        v-model="color"
+        @confirm="applyTextColor"
+        @cancel="closeColorPickerModal"
+      />
+    </template>
+  </mt-text-editor>
+</template>
+
+<script setup>
+  // TODO: Add logic for custom button
+</script>
+```
+
+### `contextual-buttons`
+
+Provides custom buttons for the footer of the editor. These buttons can change contextually based on the editor's state.
+
+### `footer-left` and `footer-right`
+
+Customize the left or right sections of the editor's footer.
+
+---
+
+## Toolbar Buttons
+
+The `mt-text-editor` includes the following built-in buttons by default:
+
+<Markdown>
+  {`
+| Button Name    | Description                                        | Alignment | Position |
+| -------------- | -------------------------------------------------- | --------- | -------- |
+| format         | Opens a popover with formatting options.           | 'left'    | 1000     |
+| text-color     | Allows the user to pick a text color.              | 'left'    | 2000     |
+| bold           | Toggles bold text.                                 | 'left'    | 3000     |
+| italic         | Toggles italic text.                               | 'left'    | 4000     |
+| underline      | Toggles underlined text.                           | 'left'    | 5000     |
+| strikethrough  | Toggles strikethrough text.                        | 'left'    | 6000     |
+| superscript    | Toggles superscript text.                          | 'left'    | 7000     |
+| subscript      | Toggles subscript text.                            | 'left'    | 8000     |
+| text-alignment | Opens a popover to set text alignment.             | 'left'    | 9000     |
+| unordered-list | Toggles an unordered list.                         | 'left'    | 10000    |
+| numbered-list  | Toggles an numbered list.                          | 'left'    | 11000    |
+| link           | Opens a modal to insert or edit links.             | 'left'    | 12000    |
+| table          | Opens a modal to insert or modify tables.          | 'left'    | 13000    |
+| undo           | Undoes the last action.                            | 'right'   | 1000     |
+| redo           | Redoes the last undone action.                     | 'right'   | 2000     |
+| toggle-code    | Toggles between WYSIWYG mode and raw HTML editing. | 'right'   | 3000     |
+`}
+</Markdown>
+
+You can exclude or add custom buttons using the `excludedButtons` and `customButtons` props.
+
+---
+
+## Customizing with TipTap Extensions
+
+The editor uses [tiptap extensions](https://tiptap.dev/guide/extensions) for its features.
+You can include custom extensions by passing them through the `tipTapConfig` prop except the hardcoded properties `content`, `editorProps` and `onUpdate`.
+For example:
+
+```html
+<script setup>
+  import { Underline } from "@tiptap/extension-underline";
+  import { TextEditor } from "@/components/mt-text-editor.vue";
+
+  const tipTapConfig = {
+    extensions: [Underline],
+  };
+</script>
+
+<template>
+  <mt-text-editor v-model="content" :tipTapConfig="tipTapConfig" />
+</template>
+```
+
+---
+
+## Customizing with Custom Buttons
+
+The `mt-text-editor` supports adding custom buttons to the toolbar by passing an array of `CustomButton` objects to the `customButtons` prop.
+
+### Key Properties of `CustomButton`
+
+- **`name`** (required): A unique identifier for the button.
+- **`label`** (required): The visible label for the button, can be the direct text or a translation key.
+- **`icon`**: An optional icon to display instead of the label. You can use an icon name from the Meteor icon set.
+- **`isActive`**: A function that determines whether the button is currently active (e.g., for toggling bold or italic formatting).
+- **`action`**: A function that executes when the button is clicked. This is where you can apply an editor command.
+- **`children`**: An array of child buttons to create a dropdown or multi-level menu.
+- **`alignment`**: Specifies whether the button should appear on the left or right side of the toolbar.
+- **`position`**: Defines the order of the button in the toolbar. Buttons with lower `position` values appear first. See the table with existing buttons to see their positions.
+- **`disabled`**: A function that determines whether the button should be disabled.
+- **`contextualButtons`**: A function that returns additional buttons to display in the footer based on the editor's state.
+
+---
+
+### Example: Adding a Simple Custom Button
+
+Here’s how you can add a simple custom button to toggle bold formatting:
+
+```html
+<template>
+  <mt-text-editor v-model="content" :custom-buttons="customButtons" />
+</template>
+
+<script setup>
+  import { ref } from "vue";
+
+  const content = ref("<p>Your content here</p>");
+
+  // Define a custom button
+  const customButtons = [
+    {
+      name: "custom-bold",
+      label: "Bold",
+      icon: "regular-bold-xs",
+      position: 3500,
+      action: (editor) => {
+        editor.chain().focus().toggleBold().run();
+      },
+      isActive: (editor) => editor.isActive("bold"),
+    },
+  ];
+</script>
+```
+
+### Example: Adding a Dropdown Menu
+
+You can create a dropdown menu by using the `children` property. Each child button is defined as another `CustomButton` object.
+
+```html
+<template>
+  <mt-text-editor v-model="content" :custom-buttons="customButtons" />
+</template>
+
+<script setup>
+  import { ref } from "vue";
+
+  const content = ref("<p>Your content here</p>");
+
+  // Define a dropdown menu with child buttons
+  const customButtons = [
+    {
+      name: "custom-format",
+      label: "Format",
+      icon: "regular-style-xs",
+      position: 1500,
+      children: [
+        {
+          name: "regular-bold-xs",
+          label: "Bold",
+          icon: "bold-icon",
+          action: (editor) => {
+            editor.chain().focus().toggleBold().run();
+          },
+          isActive: (editor) => editor.isActive("bold"),
+        },
+        {
+          name: "custom-italic",
+          label: "Italic",
+          icon: "regular-italic-xs",
+          action: (editor) => {
+            editor.chain().focus().toggleItalic().run();
+          },
+          isActive: (editor) => editor.isActive("italic"),
+        },
+      ],
+    },
+  ];
+</script>
+```
+
+---
+
+### Example: Adding Contextual Buttons in the Footer
+
+Contextual buttons are buttons that appear in the editor's footer and can change depending on the editor's current state. Use the `contextualButtons` property to define these.
+
+```html
+<template>
+  <mt-text-editor v-model="content" :custom-buttons="customButtons" />
+</template>
+
+<script setup>
+  import { ref } from "vue";
+
+  const content = ref("<p>Your content here</p>");
+
+  // Define a custom button with contextual footer buttons
+  const customButtons = [
+    {
+      name: "custom-link",
+      label: "Link",
+      icon: "regular-link-xs",
+      position: 12500,
+      action: (editor) => {
+        const url = prompt("Enter the URL");
+        if (url) {
+          editor.chain().focus().setLink({ href: url }).run();
+        }
+      },
+      contextualButtons: (editor) => {
+        if (!editor.isActive("link")) {
+          return [];
+        }
+
+        return [
+          {
+            name: "remove-link",
+            label: "Remove Link",
+            icon: "regular-times-xs",
+            action: (editor) => {
+              editor.chain().focus().unsetLink().run();
+            },
+          },
+        ];
+      },
+    },
+  ];
+</script>
+```
+
+---
+
+### Example: Disabling a Button Based on Editor State
+
+You can disable a button dynamically by providing a `disabled` function. For example, disabling the "Bold" button if the editor is empty:
+
+```html
+<template>
+  <mt-text-editor v-model="content" :custom-buttons="customButtons" />
+</template>
+
+<script setup>
+  import { ref } from "vue";
+
+  const content = ref("<p>Your content here</p>");
+
+  // Define a custom button with a disabled state
+  const customButtons = [
+    {
+      name: "custom-bold",
+      label: "Bold",
+      icon: "regular-bold-xs",
+      position: 100,
+      action: (editor) => {
+        editor.chain().focus().toggleBold().run();
+      },
+      isActive: (editor) => editor.isActive("bold"),
+      disabled: (editor) => editor.getText().length === 0,
+    },
+  ];
+</script>
+```
+
+---
+
+### Example: Using a complete custom button with the dynamic slot
+
+For each button a dynamic slot is rendered: `button_${name}`. You can use this slot to replace the automatic rendered button defined in the button object with your own component:
+
+```html
+<template>
+  <mt-text-editor v-model="content" :customButtons="customButtons">
+    <!-- Replaces the "text-color" button with custom component -->
+    <template #button_text-color="{ editor, disabled, button }">
+      <mt-text-editor-toolbar-button
+        :button="button"
+        :editor="props.editor"
+        :disabled="disabled"
+        @click="openColorPickerModal"
+      />
+
+      <ColorPickerModal
+        v-if="showColorPickerModal"
+        v-model="color"
+        @confirm="applyTextColor"
+        @cancel="closeColorPickerModal"
+      />
+    </template>
+  </mt-text-editor>
+</template>
+
+<script setup>
+  // TODO: Add logic for custom button
+</script>
+```
+
+---
+
+### Positioning Custom Buttons in the Toolbar
+
+By default, buttons are sorted in the toolbar based on their `position` value. Buttons with lower `position` values appear earlier. The default buttons have predefined positions in increments of `1000`, leaving space for you to insert custom buttons at specific positions.
+
+For example:
+
+- Default buttons (like `bold`, `italic`, etc.) have `position` values starting at `1000`.
+- You can insert your custom buttons between or after them by specifying values like `1500`, `3500`, or `8500`.
+
+```js
+const customButtons = [
+  {
+    name: "custom-highlight",
+    label: "Highlight",
+    icon: "circle-xs",
+    position: 3500, // Places this button between "Bold" (3000) and "Italic" (4000)
+    action: (editor) => editor.chain().focus().toggleHighlight().run(),
+  },
+];
+```
+
+---
+
+## Code Editor Mode
+
+The `mt-text-editor` includes a code editor mode for editing raw HTML. This mode is powered by [CodeMirror](https://codemirror.net/). Use the `toggle-code` button to switch between WYSIWYG mode and code mode.

@@ -19,9 +19,16 @@
           size="20px"
         />
 
-        <div class="mt-toast-notification__message" :class="messageClasses" :title="toast.msg">
+        <mt-text
+          class="mt-toast-notification__message"
+          color="color-text-static-default"
+          weight="bold"
+          size="xs"
+          :class="messageClasses"
+          :title="toast.msg"
+        >
           {{ toast.msg }}
-        </div>
+        </mt-text>
       </div>
 
       <div class="mt-toast-notification__content-right">
@@ -50,6 +57,7 @@
 <script setup lang="ts">
 import MtIcon from "@/components/icons-media/mt-icon/mt-icon.vue";
 import MtButton from "@/components/form/mt-button/mt-button.vue";
+import MtText from "@/components/content/mt-text/mt-text.vue";
 import {
   defineProps,
   toRefs,
@@ -224,7 +232,7 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .mt-toast-notification {
   position: absolute;
   bottom: 0;
@@ -232,7 +240,7 @@ onBeforeUnmount(() => {
   margin-bottom: 17px;
   display: flex;
   flex-direction: column;
-  height: 56px;
+  height: var(--scale-size-56);
   box-shadow:
     0px 1px 3px 0px rgba(0, 0, 0, 0.1),
     0px 2px 1px 0px rgba(0, 0, 0, 0.06),
@@ -247,134 +255,154 @@ onBeforeUnmount(() => {
 
   &:focus-visible {
     outline: 2px solid var(--color-border-brand-selected);
-    border: 2px solid $color-white;
+    border: 2px solid #fff;
+  }
+}
+
+.mt-toast-notification__content {
+  height: 100%;
+  display: flex;
+  align-items: center;
+
+  &.mt-icon > svg {
+    fill: black;
+    width: var(--scale-size-20) !important;
+    height: var(--scale-size-20) !important;
+  }
+}
+
+.mt-toast-notification__content-left {
+  display: flex;
+  flex: 1;
+  justify-content: flex-start;
+  margin-left: var(--scale-size-16);
+  align-items: center;
+}
+
+.mt-toast-notification__content-right {
+  display: flex;
+  justify-content: flex-end;
+  margin-right: var(--scale-size-16);
+  align-items: center;
+}
+
+.mt-toast-notification__timer {
+  height: 3px;
+  width: 100%;
+  border-radius: 0 0 4px 4px;
+  background-color: #fff;
+}
+
+.mt-toast-notification__timer-loader {
+  top: 0;
+  left: 100%;
+  width: 100%;
+  height: 100%;
+  background-color: #fff;
+  transform-origin: 0% 0%;
+  animation: shrink 10s forwards linear 0.5s;
+}
+
+@keyframes shrink {
+  from {
+    transform: scaleX(1);
+  }
+  to {
+    transform: scaleX(0);
+  }
+}
+
+.mt-toast-notification__message {
+  max-width: 200px;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.mt-toast-notification__message-space {
+  padding-left: var(--scale-size-8);
+}
+
+.mt-toast-notification__content {
+  height: 100%;
+  display: flex;
+  align-items: center;
+
+  &.mt-icon > svg {
+    fill: #000;
+    width: var(--scale-size-20) !important;
+    height: var(--scale-size-20) !important;
+  }
+}
+
+.mt-toast-notification__content-left {
+  display: flex;
+  flex: 1;
+  justify-content: flex-start;
+  margin-left: var(--scale-size-16);
+  align-items: center;
+}
+
+.mt-toast-notification__content-right {
+  display: flex;
+  justify-content: flex-end;
+  margin-right: var(--scale-size-16);
+  align-items: center;
+}
+
+.mt-toast-notification--positive {
+  border: 1px solid #37d046;
+  background-color: #37d046;
+
+  & .mt-toast-notification__close-action {
+    border-left: 1px solid #16b320;
   }
 
-  &__content {
-    height: 100%;
-    display: flex;
-    align-items: center;
+  & .mt-toast-notification__timer {
+    background-color: #16b320;
+  }
+}
 
-    &-left {
-      display: flex;
-      flex: 1;
-      justify-content: flex-start;
-      margin-left: 16px;
-      align-items: center;
-    }
+.mt-toast-notification__close-action {
+  margin-left: auto;
+  height: 100%;
+  display: flex;
+  padding: var(--scale-size-12);
+  justify-content: flex-end;
+  align-items: center;
+  cursor: pointer;
+  color: #fff;
+  transition: color 0.2s ease;
 
-    &-right {
-      display: flex;
-      justify-content: flex-end;
-      margin-right: 16px;
-      align-items: center;
-    }
+  &:hover {
+    color: #e0e6eb;
+    box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
+  }
+}
 
-    &.mt-icon > svg {
-      fill: black;
-      width: 20px !important;
-      height: 20px !important;
-    }
+.mt-toast-notification--critical {
+  border: 1px solid #de294c;
+  background-color: #de294c;
+
+  & .mt-toast-notification__close-action {
+    border-left: 1px solid #c80f24;
   }
 
-  &--positive {
-    border: 1px solid $color-emerald-500;
-    background-color: $color-emerald-500;
+  & .mt-toast-notification__timer {
+    background-color: #c80f24;
+  }
+}
 
-    .mt-toast-notification__close-action {
-      border-left: 1px solid $color-emerald-900;
-    }
+.mt-toast-notification--informal {
+  border: 1px solid #1f262e;
+  background-color: #1f262e;
 
-    .mt-toast-notification__timer {
-      background-color: $color-emerald-900;
-    }
+  & .mt-toast-notification__close-action {
+    border-left: 1px solid #0a0d0f;
   }
 
-  &--critical {
-    border: 1px solid $color-crimson-500;
-    background-color: $color-crimson-500;
-
-    .mt-toast-notification__close-action {
-      border-left: 1px solid $color-crimson-900;
-    }
-
-    .mt-toast-notification__timer {
-      background-color: $color-crimson-900;
-    }
-  }
-
-  &--informal {
-    border: 1px solid $color-darkgray-700;
-    background-color: $color-darkgray-700;
-
-    .mt-toast-notification__close-action {
-      border-left: 1px solid $color-darkgray-900;
-    }
-
-    .mt-toast-notification__timer {
-      background-color: $color-darkgray-900;
-    }
-  }
-
-  &__message {
-    max-width: 200px;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    color: $color-white;
-    font-family: $font-family-default;
-    font-size: $font-size-xs;
-    font-style: normal;
-    font-weight: $font-weight-semi-bold;
-    line-height: 16px;
-    letter-spacing: 0.08px;
-
-    &-space {
-      padding-left: 8px;
-    }
-  }
-
-  &__close-action {
-    margin-left: auto;
-    height: 100%;
-    display: flex;
-    padding: 12px;
-    justify-content: flex-end;
-    align-items: center;
-    cursor: pointer;
-    color: $color-white;
-    transition: color 0.2s ease;
-
-    &:hover {
-      color: $color-gray-200;
-      box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
-    }
-  }
-
-  &__timer {
-    height: 3px;
-    width: 100%;
-    border-radius: 0 0 4px 4px;
-    background-color: $color-white;
-
-    &-loader {
-      top: 0;
-      left: 100%;
-      width: 100%;
-      height: 100%;
-      background-color: white;
-      transform-origin: 0% 0%;
-      animation: shrink 10s forwards linear 0.5s;
-    }
-  }
-
-  @keyframes shrink {
-    from {
-      transform: scaleX(1);
-    }
-    to {
-      transform: scaleX(0);
-    }
+  & .mt-toast-notification__timer {
+    background-color: #0a0d0f;
   }
 }
 </style>

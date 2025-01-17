@@ -1,6 +1,7 @@
 import MtSelect from "./mt-select.vue";
 import type { StoryObj } from "@storybook/vue3";
 import type { SlottedMeta } from "@/_internal/story-helper";
+import { fn } from "@storybook/test";
 
 export type MtSelectMeta = SlottedMeta<
   typeof MtSelect,
@@ -153,6 +154,9 @@ export default {
   args: {
     label: "Select",
     modelValue: "b",
+    change: fn(),
+    itemAdd: fn(),
+    inheritanceRemove: fn(),
     options: [
       {
         id: 1,

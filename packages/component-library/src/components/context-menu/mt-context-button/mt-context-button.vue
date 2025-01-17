@@ -129,7 +129,7 @@ export default defineComponent({
 
 <style lang="scss">
 $mt-context-button-color-text: var(--color-icon-primary-default);
-$mt-context-button-border-radius: $border-radius-default;
+$mt-context-button-border-radius: var(--border-radius-xs);
 $mt-context-button-color-border: var(--color-border-primary-default);
 $mt-context-button-color-disabled: var(--color-icon-primary-disabled);
 
@@ -162,11 +162,11 @@ $mt-context-button-color-disabled: var(--color-icon-primary-disabled);
     border: 1px solid transparent;
     border-radius: $mt-context-button-border-radius;
     cursor: pointer;
-    height: 24px;
+    height: var(--scale-size-24);
     line-height: 20px;
-    padding: 0 8px;
+    padding: 0 var(--scale-size-8);
     outline: none;
-    font-family: $font-family-default;
+    font-family: var(--font-family-body);
 
     &:hover {
       border-color: $mt-context-button-color-border;

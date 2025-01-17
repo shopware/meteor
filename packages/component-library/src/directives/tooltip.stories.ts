@@ -23,6 +23,7 @@ const meta: SlottedMeta<
       },
       template: `<div>
       <mt-icon
+        style="color: var(--color-icon-primary-default)"
         name="regular-question-circle"
           v-tooltip="{
           ...args
@@ -41,7 +42,6 @@ const meta: SlottedMeta<
     showDelay: 100,
     hideDelay: 100,
     disabled: false,
-    appearance: "dark",
     showOnDisabledElements: false,
   },
   argTypes: {

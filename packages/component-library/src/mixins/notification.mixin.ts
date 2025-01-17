@@ -1,27 +1,6 @@
 import { defineComponent } from "vue";
 
 export default defineComponent({
-  i18n: {
-    messages: {
-      en: {
-        notification: {
-          success: "Success",
-          info: "Info",
-          warning: "Warning",
-          error: "Error",
-        },
-      },
-      de: {
-        notification: {
-          success: "Erfolg",
-          info: "Info",
-          warning: "Warnung",
-          error: "Fehler",
-        },
-      },
-    },
-  },
-
   methods: {
     // eslint-disable-next-line no-unused-vars
     createNotification() {
@@ -32,7 +11,7 @@ export default defineComponent({
     createNotificationSuccess(config: any) {
       const notification = {
         variant: "success",
-        title: this.$tc("global.default.success"),
+        title: "global.default.success",
         ...config,
       };
 
@@ -43,7 +22,7 @@ export default defineComponent({
     createNotificationInfo(config: any) {
       const notification = {
         variant: "info",
-        title: this.$tc("global.default.info"),
+        title: "global.default.info",
         ...config,
       };
 
@@ -65,7 +44,7 @@ export default defineComponent({
     createNotificationError(config: any) {
       const notification = {
         variant: "error",
-        title: this.$tc("global.default.error"),
+        title: "global.default.error",
         ...config,
       };
 

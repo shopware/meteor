@@ -90,6 +90,14 @@ export const VisualTestSmallSize: MtButtonStory = {
   },
 };
 
+export const VisualTestXSmallSize: MtButtonStory = {
+  name: "Render the x-small size",
+  args: {
+    default: "X-Small button",
+    size: "x-small",
+  },
+};
+
 export const VisualTestDefaultSize: MtButtonStory = {
   name: "Render the default size",
   args: {

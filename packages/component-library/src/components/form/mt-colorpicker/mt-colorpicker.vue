@@ -1,6 +1,6 @@
 <template>
   <mt-base-field
-    class="mt-colorpicker"
+    :class="componentClasses"
     :disabled="disabled"
     :required="required"
     :is-inherited="isInherited"
@@ -36,16 +36,17 @@
         v-model="colorValue"
         aria-label="colorpicker-color-value"
         class="mt-colorpicker__input"
-        spellcheck="false"
+        :spellcheck="false"
         :disabled="disabled"
         :readonly="readonly"
         @click="onClickInput"
       />
 
-      <mt-popover-deprecated
-        v-if="visible"
+      <mt-floating-ui
+        :isOpened="visible"
         class="mt-colorpicker__colorpicker-position"
         :z-index="zIndex"
+        :offset="-12"
       >
         <div class="mt-colorpicker__colorpicker">
           <div
@@ -100,9 +101,16 @@
                 class="mt-colorpicker__colorpicker-input is--hex"
                 aria-label="hex-value"
                 type="text"
-                spellcheck="false"
+                :spellcheck="false"
               />
-              <label v-if="colorLabels" class="mt-colorpicker__row-column-label">HEX</label>
+              <mt-text
+                v-if="colorLabels"
+                size="2xs"
+                as="label"
+                class="mt-colorpicker__row-column-label"
+              >
+                HEX
+              </mt-text>
             </div>
 
             <div class="mt-colorpicker__row-column">
@@ -116,7 +124,14 @@
                 step="1"
                 placeholder="0"
               />
-              <label v-if="colorLabels" class="mt-colorpicker__row-column-label">R</label>
+              <mt-text
+                v-if="colorLabels"
+                size="2xs"
+                as="label"
+                class="mt-colorpicker__row-column-label"
+              >
+                R
+              </mt-text>
             </div>
 
             <div class="mt-colorpicker__row-column">
@@ -130,7 +145,14 @@
                 step="1"
                 placeholder="0"
               />
-              <label v-if="colorLabels" class="mt-colorpicker__row-column-label">G</label>
+              <mt-text
+                v-if="colorLabels"
+                size="2xs"
+                as="label"
+                class="mt-colorpicker__row-column-label"
+              >
+                G
+              </mt-text>
             </div>
 
             <div class="mt-colorpicker__row-column">
@@ -144,7 +166,14 @@
                 step="1"
                 placeholder="0"
               />
-              <label v-if="colorLabels" class="mt-colorpicker__row-column-label">B</label>
+              <mt-text
+                v-if="colorLabels"
+                size="2xs"
+                as="label"
+                class="mt-colorpicker__row-column-label"
+              >
+                B
+              </mt-text>
             </div>
 
             <div v-if="alpha" class="mt-colorpicker__row-column">
@@ -158,11 +187,29 @@
                 step="1"
                 placeholder="0"
               />
-              <label v-if="colorLabels" class="mt-colorpicker__row-column-label">Alpha</label>
+              <mt-text
+                v-if="colorLabels"
+                as="label"
+                size="2xs"
+                class="mt-colorpicker__row-column-label"
+              >
+                Alpha
+              </mt-text>
             </div>
           </div>
+
+          <div v-if="applyMode" class="mt-colorpicker__row mt-colorpicker__apply-row">
+            <mt-button
+              variant="primary"
+              block
+              aria-label="colorpicker-apply-color"
+              @click="applyColor"
+            >
+              {{ t("mt-colorpicker.apply") }}
+            </mt-button>
+          </div>
         </div>
-      </mt-popover-deprecated>
+      </mt-floating-ui>
     </template>
 
     <template #error>
@@ -177,14 +224,41 @@ import type { PropType } from "vue";
 import { defineComponent } from "vue";
 import { debounce } from "lodash-es";
 import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
-import MtPopoverDeprecated from "../../_internal/mt-popover-deprecated/mt-popover-deprecated.vue";
+import MtFloatingUi from "../../_internal/mt-floating-ui/mt-floating-ui.vue";
+import MtText from "@/components/content/mt-text/mt-text.vue";
+import MtButton from "@/components/form/mt-button/mt-button.vue";
+import mtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
+import { useI18n } from "vue-i18n";
 
 export default defineComponent({
   name: "MtColorpicker",
 
+  setup() {
+    const { t } = useI18n({
+      messages: {
+        en: {
+          "mt-colorpicker": {
+            apply: "Apply",
+          },
+        },
+        de: {
+          "mt-colorpicker": {
+            apply: "Anwenden",
+          },
+        },
+      },
+    });
+    return {
+      t,
+    };
+  },
+
   components: {
-    "mt-popover-deprecated": MtPopoverDeprecated,
     "mt-base-field": MtBaseField,
+    "mt-text": MtText,
+    "mt-floating-ui": MtFloatingUi,
+    "mt-button": MtButton,
+    "mt-field-error": mtFieldError,
   },
 
   props: {
@@ -321,6 +395,24 @@ export default defineComponent({
       type: String,
       required: false,
       default: null,
+    },
+
+    /**
+     * Show the colorpicker in a compact mode
+     */
+    compact: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    /**
+     * Use apply-mode to apply the color value on button click
+     */
+    applyMode: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
   },
 
@@ -598,10 +690,20 @@ export default defineComponent({
         left: this.selectorPositionX,
       };
     },
+
+    componentClasses(): {
+      "mt-colorpicker": boolean;
+      "mt-colorpicker--compact": boolean;
+    } {
+      return {
+        "mt-colorpicker": true,
+        "mt-colorpicker--compact": this.compact,
+      };
+    },
   },
 
   watch: {
-    value() {
+    modelValue() {
       this.colorValue = this.modelValue;
     },
 
@@ -609,7 +711,14 @@ export default defineComponent({
       this.colorValue = this.convertedValue;
     },
 
-    visible(visibleStatus) {
+    visible(visibleStatus, visibleStatusBefore) {
+      if (this.applyMode) {
+        // When colorpicker is closed, reset the color value
+        if (!visibleStatus && visibleStatusBefore) {
+          this.colorValue = this.modelValue;
+        }
+      }
+
       if (!visibleStatus) {
         return;
       }
@@ -671,6 +780,12 @@ export default defineComponent({
 
   methods: {
     debounceEmitColorValue: debounce(function emitValue() {
+      // @ts-expect-error - this context is wrong detected
+      // Don't emit the value if applyMode is active
+      if (this.applyMode) {
+        return;
+      }
+
       /**
        * Emits the selected color value
        * @property {string} this.colorValue the new color value
@@ -718,6 +833,13 @@ export default defineComponent({
       }
 
       this.removeOutsideClickEvent();
+    },
+
+    applyColor() {
+      // Manually emit the color value
+      this.$emit("update:modelValue", this.colorValue);
+      // Close the colorpicker
+      this.visible = false;
     },
 
     moveSelector(event: MouseEvent) {
@@ -1215,12 +1337,13 @@ export default defineComponent({
 <style lang="scss">
 .mt-colorpicker {
   position: relative;
+  transition: all 0.3s ease;
 
   &__previewWrapper {
     position: relative;
-    width: 22px;
-    height: 22px;
-    border-radius: $border-radius-default;
+    width: var(--scale-size-22);
+    height: var(--scale-size-22);
+    border-radius: var(--border-radius-xs);
     border: 1px solid var(--color-border-primary-default);
     overflow: hidden;
     cursor: pointer;
@@ -1259,7 +1382,7 @@ export default defineComponent({
 
   &__row {
     display: flex;
-    margin-top: 10px;
+    margin-top: var(--scale-size-10);
 
     &-column {
       display: flex;
@@ -1268,9 +1391,7 @@ export default defineComponent({
       margin-right: 5px;
 
       &-label {
-        color: var(--color-text-primary-default);
-        font-size: $font-size-xxs;
-        margin-top: 8px;
+        margin-top: var(--scale-size-8);
         user-select: none;
         -moz-user-select: none;
         -webkit-user-select: none;
@@ -1299,19 +1420,19 @@ export default defineComponent({
 
   &__colorpicker {
     width: 260px;
-    padding: 10px;
+    padding: var(--scale-size-10);
     border: 1px solid var(--color-border-primary-default);
     background-color: var(--color-elevation-surface-overlay);
-    border-radius: $border-radius-default;
+    border-radius: var(--border-radius-overlay);
     box-shadow: 0 3px 6px 0 rgba(120, 138, 155, 0.5);
 
     &::before {
       content: "";
       position: absolute;
-      width: 12px;
-      height: 12px;
+      width: var(--scale-size-12);
+      height: var(--scale-size-12);
       top: -6px;
-      left: 20px;
+      left: var(--scale-size-20);
       border: 1px solid var(--color-border-primary-default);
       border-bottom: none;
       border-right: none;
@@ -1321,7 +1442,7 @@ export default defineComponent({
 
     &--compact {
       position: absolute;
-      top: 30px;
+      top: var(--scale-size-30);
       left: -20px;
       z-index: 10;
 
@@ -1335,7 +1456,7 @@ export default defineComponent({
       width: 238px;
       height: 150px;
       border: 1px solid var(--color-border-primary-default);
-      border-radius: $border-radius-default;
+      border-radius: var(--border-radius-xs);
       background-image: linear-gradient(180deg, #fff, rgba(255, 255, 255, 0) 50%),
         linear-gradient(0deg, #000, rgba(0, 0, 0, 0) 50%),
         linear-gradient(90deg, #808080, rgba(128, 128, 128, 0) 100%);
@@ -1344,8 +1465,8 @@ export default defineComponent({
     &-selector {
       transform: translate3d(0, 0, 0); // Fixed rendering bug in Safari
       position: relative;
-      width: 18px;
-      height: 18px;
+      width: var(--scale-size-18);
+      height: var(--scale-size-18);
       border: 3px solid var(--color-icon-static-default);
       border-radius: 50%;
       filter: drop-shadow(0px 0px 8px rgba(0, 0, 0, 0.25));
@@ -1358,8 +1479,8 @@ export default defineComponent({
 
     &-slider-range {
       width: 100%;
-      height: 20px;
-      border-radius: $border-radius-default;
+      height: var(--scale-size-20);
+      border-radius: var(--border-radius-xs);
       background-image: linear-gradient(
         90deg,
         #f00 0%,
@@ -1375,9 +1496,9 @@ export default defineComponent({
     }
 
     &-slider-range::-webkit-slider-thumb {
-      height: 26px;
-      width: 8px;
-      border-radius: $border-radius-default;
+      height: var(--scale-size-26);
+      width: var(--scale-size-8);
+      border-radius: var(--border-radius-xs);
       border: 1px solid var(--color-border-primary-default);
       background: var(--color-icon-static-default);
       -webkit-appearance: none;
@@ -1385,11 +1506,11 @@ export default defineComponent({
     }
 
     &-slider-range::-moz-range-thumb {
-      height: 26px;
-      width: 8px;
+      height: var(--scale-size-26);
+      width: var(--scale-size-8);
       border: 1px solid var(--color-border-primary-default);
       background: var(--color-icon-static-default);
-      border-radius: $border-radius-default;
+      border-radius: var(--border-radius-xs);
       cursor: pointer;
     }
 
@@ -1397,22 +1518,22 @@ export default defineComponent({
       display: flex;
       height: 58px;
       width: 58px;
-      margin-left: 10px;
+      margin-left: var(--scale-size-10);
       justify-content: space-between;
 
       &.is--small {
-        width: 22px;
-        height: 22px;
+        width: var(--scale-size-22);
+        height: var(--scale-size-22);
 
         .mt-colorpicker__colorpicker-previewColor {
-          width: 22px;
-          height: 22px;
+          width: var(--scale-size-22);
+          height: var(--scale-size-22);
           border: none;
         }
 
         .mt-colorpicker__colorpicker-previewBackground {
-          width: 22px;
-          height: 22px;
+          width: var(--scale-size-22);
+          height: var(--scale-size-22);
         }
       }
     }
@@ -1423,7 +1544,7 @@ export default defineComponent({
       width: 58px;
       height: 58px;
       border: 1px solid var(--color-border-primary-default);
-      border-radius: $border-radius-default;
+      border-radius: var(--border-radius-xs);
       z-index: 1;
     }
 
@@ -1433,7 +1554,7 @@ export default defineComponent({
       width: 58px;
       height: 58px;
       border: 1px solid var(--color-border-primary-default);
-      border-radius: $border-radius-default;
+      border-radius: var(--border-radius-xs);
       background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 90 90' width='100%25' height='100%25'%3E%3Crect width='30' height='30' x='00' y='00' fill='%23cdd5db' /%3E%3Crect width='30' height='30' x='30' y='30' fill='%23cdd5db' /%3E%3Crect width='30' height='30' x='60' y='00' fill='%23cdd5db' /%3E%3Crect width='30' height='30' x='60' y='60' fill='%23cdd5db' /%3E%3Crect width='30' height='30' x='00' y='60' fill='%23cdd5db' /%3E%3C/svg%3E");
 
       &.is--invalid::after {
@@ -1451,12 +1572,13 @@ export default defineComponent({
       background: var(--color-elevation-surface-raised);
       width: 100%;
       min-width: 0;
-      height: 32px;
+      height: var(--scale-size-32);
       padding: 0 5px;
       border: 1px solid var(--color-border-primary-default);
-      border-radius: $border-radius-default;
-      font-size: $font-size-xxs;
-      font-family: $font-family-default;
+      border-radius: var(--border-radius-xs);
+      font-size: var(--font-size-2xs);
+      line-height: var(--font-line-height-2xs);
+      font-family: var(--font-family-body);
       color: var(--color-text-primary-default);
       outline: none;
 
@@ -1486,18 +1608,18 @@ export default defineComponent({
 
   &__alpha-slider {
     width: 100%;
-    height: 20px;
-    margin-top: 10px;
+    height: var(--scale-size-20);
+    margin-top: var(--scale-size-10);
     border: 1px solid var(--color-border-primary-default);
-    border-radius: $border-radius-default;
+    border-radius: var(--border-radius-xs);
     background-image: url("data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' width='100%25' height='100%25'%3E%3Crect width='10' height='10' x='00' y='00' fill='%23cdd5db' /%3E%3Crect width='10' height='10' x='10' y='10' fill='%23cdd5db' /%3E%3C/svg%3E");
     outline: none;
     -webkit-appearance: none;
 
     &::-webkit-slider-thumb {
-      height: 26px;
-      width: 8px;
-      border-radius: $border-radius-default;
+      height: var(--scale-size-26);
+      width: var(--scale-size-8);
+      border-radius: var(--border-radius-xs);
       border: 1px solid var(--color-border-primary-default);
       background: var(--color-icon-static-default);
       -webkit-appearance: none;
@@ -1505,10 +1627,10 @@ export default defineComponent({
     }
 
     &::-moz-range-thumb {
-      height: 26px;
-      width: 8px;
+      height: var(--scale-size-26);
+      width: var(--scale-size-8);
       border: 1px solid var(--color-border-brand-selected);
-      border-radius: $border-radius-default;
+      border-radius: var(--border-radius-xs);
 
       cursor: pointer;
     }
@@ -1517,6 +1639,48 @@ export default defineComponent({
   .is--disabled &__previewWrapper {
     cursor: default;
   }
+
+  &--compact {
+    display: inline-block;
+    width: auto;
+    margin-bottom: 0;
+
+    .mt-field__label,
+    .mt-field__hint-wrapper,
+    .mt-colorpicker__input {
+      display: none;
+    }
+
+    .mt-block-field__block {
+      width: fit-content;
+      border: none;
+    }
+
+    .mt-field__addition.is--prefix {
+      border-right: none;
+      padding: 0;
+      min-width: auto;
+    }
+
+    .mt-colorpicker__previewWrapper {
+      border: none;
+    }
+
+    .mt-colorpicker__colorpicker-position {
+      position: absolute;
+      // 10px padding, 20px pointer distance from left
+      left: calc(-1 * (10px + 20px) / 2);
+      top: calc(100% + 2px);
+    }
+  }
+
+  &--compact.is--disabled {
+    opacity: 0.5;
+  }
+}
+
+.is--disabled .mt-colorpicker__previewWrapper {
+  cursor: not-allowed;
 }
 
 .mt-field__addition {
@@ -1554,5 +1718,4 @@ export default defineComponent({
     }
   }
 }
-/* stylelint-enable */
 </style>

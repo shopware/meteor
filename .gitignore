@@ -4,3 +4,8 @@ node_modules/
 chrome/
 .idea/
 .DS_Store
+.pnpm-store/
+# Devenv
+.direnv
+.devenv*
+devenv.local.nix

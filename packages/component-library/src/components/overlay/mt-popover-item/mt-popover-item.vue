@@ -1,6 +1,6 @@
 <template>
-  <div class="mt-popover-item" :class="componentClasses">
-    <div class="mt-popover-item__top-row" @click="handleLableClick">
+  <div class="mt-popover-item" :class="componentClasses" @click="handleLableClick">
+    <div class="mt-popover-item__top-row">
       <mt-checkbox
         v-if="showCheckbox"
         class="mt-popover-item__checkbox"
@@ -338,14 +338,6 @@ $font-family-default-feature-settings:
   "cv10" on,
   "cv11" on;
 
-$font-weight-medium: 500;
-
-$line-height-auto: auto;
-$line-height-xs: 18px;
-$line-height-sm: 20px;
-$line-height-md: 24px;
-$line-height-lg: 28px;
-
 $color-custom-dark: #0f172a;
 $color-custom-grey: #64748b;
 $color-custom-lightgrey: #cbd5e1;
@@ -358,11 +350,11 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
   display: flex;
   flex-direction: column;
   color: var(--color-text-primary-default);
-  padding: 8px 0;
+  padding: var(--scale-size-8) 0;
 
   // add new Inter font to popover item
   * {
-    font-family: $font-family-default;
+    font-family: var(--font-family-body);
   }
 
   @supports (font-variation-settings: normal) {
@@ -388,10 +380,10 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
     &::before {
       position: absolute;
       background-color: var(--color-interaction-secondary-hover);
-      border-radius: $border-radius-default;
-      top: 4px;
+      border-radius: var(--border-radius-xs);
+      top: var(--scale-size-4);
       right: -8px;
-      bottom: 4px;
+      bottom: var(--scale-size-4);
       left: -8px;
       pointer-events: none;
     }
@@ -440,18 +432,18 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
 
   &__top-row {
     display: flex;
-    gap: 8px;
+    gap: var(--scale-size-8);
     z-index: 1;
   }
 
   &__align-right {
     display: flex;
-    gap: 8px;
+    gap: var(--scale-size-8);
     margin-left: auto;
   }
 
   &__checkbox {
-    margin-top: 4px;
+    margin-top: var(--scale-size-4);
 
     .mt-field--checkbox {
       margin: 0;
@@ -459,7 +451,7 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
   }
 
   &__icon {
-    margin-top: 4px;
+    margin-top: var(--scale-size-4);
     padding: 1px;
 
     &--clickable {
@@ -467,21 +459,21 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
     }
 
     svg {
-      width: 14px !important;
-      height: 14px !important;
+      width: var(--scale-size-14) !important;
+      height: var(--scale-size-14) !important;
     }
   }
 
   &__label {
-    margin-right: 4px;
+    margin-right: var(--scale-size-4);
   }
 
   &__label,
   &__contextual-detail,
   &__shortcut {
-    font-size: $font-size-xs;
-    line-height: $line-height-md;
-    font-weight: $font-weight-medium;
+    font-size: var(--font-size-xs);
+    line-height: var(--font-line-height-xs);
+    font-weight: var(--font-weight-medium);
 
     &--clickable {
       cursor: pointer;
@@ -495,13 +487,13 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
   }
 
   &__switch {
-    margin-top: 4px;
+    margin-top: var(--scale-size-4);
 
     .mt-field--switch {
       margin: 0;
 
       .mt-field--switch__input {
-        height: 16px;
+        height: var(--scale-size-16);
         padding: 0;
       }
 
@@ -513,13 +505,13 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
 
   &__visibility {
     svg {
-      width: 12px !important;
-      height: 8px !important;
+      width: var(--scale-size-12) !important;
+      height: var(--scale-size-8) !important;
     }
 
     #meteor-icon-kit__solid-eye-slash {
-      width: 14px !important;
-      height: 10px !important;
+      width: var(--scale-size-14) !important;
+      height: var(--scale-size-10) !important;
       margin-top: -1px;
       margin-left: -1px;
       margin-right: -1px;
@@ -527,31 +519,32 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
   }
 
   &__options-count {
-    margin-right: 8px;
-    font-size: $font-size-xs;
-    line-height: $line-height-md;
-    font-weight: $font-weight-medium;
+    margin-right: var(--scale-size-8);
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-xs);
+    line-height: var(--font-line-height-xs);
+    font-weight: var(--font-weight-medium);
   }
 
   &__options {
     svg {
       width: 5px !important;
-      height: 8px !important;
+      height: var(--scale-size-8) !important;
     }
   }
 
   &__visibility,
   &__options {
     cursor: pointer;
-    padding-top: 4px;
-    margin-top: 4px;
+    padding-top: var(--scale-size-4);
+    margin-top: var(--scale-size-4);
   }
 
   &__meta-copy {
     color: var(--color-text-secondary-default);
-    font-size: $font-size-xxs;
-    line-height: $line-height-xs;
-    font-weight: $font-weight-medium;
+    font-size: var(--font-size-2xs);
+    line-height: var(--font-line-height-2xs);
+    font-weight: var(--font-weight-medium);
   }
 }
 </style>

@@ -2,6 +2,7 @@ import MtNumberField from "./mt-number-field.vue";
 import baseFieldArgTypes from "../_internal/mt-base-field/arg-types";
 import type { StoryObj } from "@storybook/vue3";
 import type { SlottedMeta } from "@/_internal/story-helper";
+import { fn } from "@storybook/test";
 
 export type MtNumberFieldMeta = SlottedMeta<
   typeof MtNumberField,
@@ -88,6 +89,10 @@ export default {
     label: "Numberfield",
     step: 1,
     numberType: "int",
+    change: fn(),
+    updateModelValue: fn(),
+    inheritanceRemove: fn(),
+    inheritanceRestore: fn(),
   },
   argTypes: {
     ...baseFieldArgTypes,

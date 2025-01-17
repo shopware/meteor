@@ -1,4 +1,4 @@
-import { within, userEvent } from "@storybook/test";
+import { within, userEvent, fireEvent } from "@storybook/test";
 import { expect } from "@storybook/test";
 
 import meta, { type MtTextFieldMeta, type MtTextFieldStory } from "./mt-text-field.stories";
@@ -228,5 +228,24 @@ export const VisualTestInheritanceActive: MtTextFieldStory = {
   args: {
     isInheritanceField: true,
     isInherited: true,
+  },
+};
+export const VisualTestHandleFocus: MtTextFieldStory = {
+  name: "Should emit focus event",
+  args: {
+    placeholder: "Focus here",
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const input = canvas.getByPlaceholderText(args.placeholder);
+
+    // Simulate user click to focus the input
+    await userEvent.click(input);
+
+    // Wait for the focus event to be emitted
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // Check if the focus event was emitted
+    expect(args.focus).toHaveBeenCalledOnce();
   },
 };

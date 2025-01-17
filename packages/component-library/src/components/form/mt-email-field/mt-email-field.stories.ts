@@ -96,6 +96,7 @@ export default {
   args: {
     label: "Emailfield",
     updateModelValue: fn(action("updateModelValue")),
+    change: fn(action("change")),
   },
 } as MtEmailFieldMeta;
 

@@ -1,5 +1,154 @@
 # Changelog
 
+## 4.0.1
+
+### Patch Changes
+
+- f3b0e2f: Fixed the Type generation for components like mt-text-editor or mt-tabs
+
+## 4.0.0
+
+### Major Changes
+
+- fc3c5a6: Reduce bundle size caused by font
+
+  # Upgrade guide
+
+  Previously you needed to only import one css file:
+
+  ```js
+  // Some JavaScript file: index.js
+  import "@shopware-ag/meteor-component-library/dist/styles.css";
+  ```
+
+  You now need to update that one import to the following two imports:
+
+  ```js
+  // Some JavaScript file: index.js
+  import "@shopware-ag/meteor-component-library/styles.css"; // Note: this path is different from the old one
+  import "@shopware-ag/meteor-component-library/font.css";
+  ```
+
+  If you want to load the font by yourself, you can do that.
+  Remove the second import and load the font the way you want.
+
+- eeb8c7f: Removed locale control from mt-theme-provider.
+
+  Controlling the local will still happen via vue-i18n
+
+- b2ef241: Making vue a peer dependency
+
+  This allows you to define the version of Vue you want to use. Before
+  you needed to use the exact vue version Meteor used. Now you can
+  define it by yourself, but it must meet the version requirements.
+
+- 50de30f: Require a minimum version of vue 3.5
+- b3039c1: # Add new Text Editor component
+
+  This change introduces a new Text Editor component to the Meteor Component Library.
+
+  # Updated i18n configuration
+
+  We change the 'legacy' mode of i18n to 'false' in the Meteor Component Library configuration to use the new i18n composable.
+
+### Minor Changes
+
+- ba4fdbd: Adds a new slot for custom content within the button, enabling more flexible button customization.
+- d9c26a2: Export mt-tooltip component
+- 7593d00: remove hero variant from mt-card
+- 9175c17: replace flatpickr with vue3datepicker
+- b5ed517: Add mt-tooltip component
+- b7423bb: remove mt-url-field
+
+### Patch Changes
+
+- ad10063: Hide inheritance toggle in card by default
+- 0dcb079: Improve reading order for card titles when using a screen reader
+- 54b5fa4: Add translation for mt-banner
+- a4b2203: Add focus styles for checkbox
+- 066da5c: Open tooltip when focusing disabled button
+- 51d6160: Migrate mt-select over to the custom built i18n composable
+- 85908bf: Migrate mt-data-table over to the custom built i18n composable
+- 824ee5a: Update focus style of inheritance toggle in card
+- d2480cf: Fixes a issue in the mt-modal that the toggling does not work when it is triggered outside the modal.
+  Fixes a issue in the mt-modal that it does not work inside transformed elements. This was fixed by moving the modal to the body element using the native Teleport feature of Vue 3.
+- 0280b80: Add missing translation for data table filters
+- 069a2ad: Do not announce mt-avatar for screen readers
+- daa8824: Add landmarks to card component for screen readers
+- ed03f65: Improve accessibility of mt-field-error
+- 893fba8: Increase contrast ratio in mt-avatar
+- 3b50452: Update focus style of switch
+- 4f9e73d: Migrate mt-data-table-settings over to the composition api
+- 893fba8: Increase color contrast in mt-avatar component
+- 45e2dc7: Make size propert on mt-loader optional
+- 235546f: Migrate mt-label to custom built i18n composable
+- 850107e: Fix emit focus event for mt-text-field component
+
+## 3.14.0
+
+### Minor Changes
+
+- 001adb3: Add external and internal variants for link component
+
+### Patch Changes
+
+- cc754b9: Deprecated the mt-url-field component
+- 47063ae: Deprecated mt-external link component
+- 62be382: move mt-loader over to plain css
+- 28f5cb1: remove default margin of banner component, hidden by future flag
+- 6d32afa: Improve a11y of help text
+- 936ccf3: Allow disabling individual tab items
+- 2f0a666: Remove default margin from base field, hidden by future flag
+- 07e243a: Migrate mt-loader over to the composition api
+
+## 3.13.0
+
+### Minor Changes
+
+- a438ea0: Add future flag for removing card max width
+- 3c1b5ad: Add mt-theme-provider component
+- 79f0b40: Remove default margin for tab component when using removeDefaultMargin future flag
+
+### Patch Changes
+
+- ec2aba1: Do not announce icon of empty state
+- 340f7af: fix the issue in the sw-number-field component when pressing the up or down arrow keys if a new value was typed
+- 5a5e797: Replace mt-popover-deprecated in mt-colorpicker
+- 307439b: Updated flatpickr dependency to the latest version to fix mt-datepicker issue when date typed manually
+- d0185b6: Deprecate hero card
+- 3ddcd26: Make buttons in number field accessible
+- cb83cca: Deprecate small prop on tabs component
+- 17bca01: Remove default margin from checkbox, hidden by future flag
+- c43799c: remove default margin from card component, hidden by future flag
+
+## 3.12.0
+
+### Minor Changes
+
+- ea49a5e: Disable next page and last page button in mt-pagination when data table is empty
+- ecf9d1a: Allow insetting of card footer
+- 627f2fb: Add mt-text component
+- ebf0a2a: Add mt-inset component
+
+### Patch Changes
+
+- da43c4e: Use semantic border radius tokens in card component
+- c412dd0: Change styling of card footer
+- 36e0812: Fixed missing emit definition and console warning
+- 4a59fcc: Replaced border radius tokens with tokens
+- 0630e58: Adjust padding of card header
+- 9ea8e15: Allow null label for mt-textarea
+- dc6ad1a: allow x-small as valid variant for button
+- 1321454: Add semantic border radius token for checkbox
+- 6371d3a: Use rem values instead of px values in card
+- 11d870a: Make toggle password button accessible
+- 099ca2b: Fix styling of card title
+- 8045090: Hide label with CSS in base-field component when empty
+- ebe7a33: Use semantic border radius token for overlays
+- bebea2e: Use button border radius token for buttons and segmented control
+- Updated dependencies [e644cef]
+  - @shopware-ag/meteor-tokens@0.3.0
+
 ## 3.11.0
 
 ### Minor Changes

@@ -82,6 +82,17 @@ export class Dictionary {
         ].reduce<undefined | string>((accumulator, remoteFile) => {
           if (accumulator) return accumulator;
 
+          const referencingVariableFromSameFile = !rawValue.id.includes('/');
+          if (referencingVariableFromSameFile) {
+            const resolvedVariable = Object.values(
+              remoteFile.meta.variables,
+            ).find((variable) => variable.id === rawValue.id);
+
+            if (!resolvedVariable) return undefined;
+
+            return kebabCase(resolvedVariable.name);
+          }
+
           const START_OF_KEY = 11;
           const END_OF_KEY = 51;
           const variableKey = rawValue.id.slice(START_OF_KEY, END_OF_KEY);

@@ -174,7 +174,7 @@ $mt-select-result-disabled-color-background: $color-gray-100;
 $mt-select-result-disabled-color-text: darken($color-gray-300, 15%);
 
 .mt-select-result {
-  padding: 12px 4px;
+  padding: var(--scale-size-12) var(--scale-size-4);
   cursor: pointer;
   display: grid;
   grid-template-columns: auto auto 1fr auto;
@@ -183,7 +183,7 @@ $mt-select-result-disabled-color-text: darken($color-gray-300, 15%);
 
   .mt-select-result__result-item-preview {
     order: 1;
-    margin-right: 10px;
+    margin-right: var(--scale-size-10);
     display: block;
   }
 
@@ -210,12 +210,12 @@ $mt-select-result-disabled-color-text: darken($color-gray-300, 15%);
     color: $color-gray-600;
     order: 3;
     line-height: 14px;
-    padding: 0 0 0 8px;
+    padding: 0 0 0 var(--scale-size-8);
   }
 
   > .mt-icon {
     color: var(--color-icon-primary-default);
-    margin-left: 4px;
+    margin-left: var(--scale-size-4);
     order: 4;
     justify-self: end;
   }
@@ -225,7 +225,7 @@ $mt-select-result-disabled-color-text: darken($color-gray-300, 15%);
 
     .mt-select-result__result-item-description {
       grid-column-start: 1;
-      padding: 8px 0 0;
+      padding: var(--scale-size-8) 0 0;
       order: 3;
     }
 

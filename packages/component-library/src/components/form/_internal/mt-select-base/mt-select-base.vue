@@ -22,7 +22,7 @@
         ref="selectWrapper"
         class="mt-select__selection"
         tabindex="0"
-        @click="expand"
+        @click.stop="expand"
         @focus="expand"
         @keydown.tab="collapse"
         @keydown.esc="collapse"
@@ -31,25 +31,32 @@
           name="mt-select-selection"
           v-bind="{ identification, error, disabled, size, expand, collapse }"
         />
-        <div class="mt-select__selection-indicators">
-          <mt-loader v-if="isLoading" class="mt-select__select-indicator" size="16px" />
+      </div>
 
-          <button
-            v-if="!disabled && showClearableButton"
-            class="mt-select__select-indicator-hitbox"
-            data-clearable-button
-            data-testid="select-clear-button"
-            @click.prevent.stop="emitClear"
-            @keydown.tab.stop="focusParentSelect"
-          >
-            <mt-icon
-              class="mt-select__select-indicator mt-select__select-indicator-clear"
-              name="regular-times-xxs"
-            />
-          </button>
+      <div class="mt-select__selection-indicators">
+        <mt-loader v-if="isLoading" class="mt-select__select-indicator" size="16px" />
 
-          <mt-icon class="mt-select__select-indicator" name="solid-chevron-down-xs" />
-        </div>
+        <button
+          v-if="!disabled && showClearableButton"
+          class="mt-select__select-indicator-hitbox"
+          data-clearable-button
+          data-testid="select-clear-button"
+          @click.prevent.stop="emitClear"
+          @keydown.tab.stop="focusParentSelect"
+        >
+          <mt-icon
+            class="mt-select__select-indicator mt-select__select-indicator-clear"
+            name="regular-times-xxs"
+          />
+        </button>
+
+        <mt-icon
+          class="mt-select__select-indicator"
+          data-testid="mt-select__select-indicator"
+          :class="{ 'mt-select__select-indicator-rotated': expanded }"
+          name="solid-chevron-down-xxs"
+          @click.stop="toggleExpand"
+        />
       </div>
 
       <template v-if="expanded">
@@ -296,11 +303,11 @@ $mt-select-focus-transition: all ease-in-out 0.2s;
   .mt-select__selection {
     width: 100%;
     position: relative;
-    padding: 0 8px;
+    padding: 0 var(--scale-size-8);
     border: none;
-    font-size: $font-size-small;
-    font-family: $font-family-default;
-    line-height: 22px;
+    font-size: var(--font-size-s);
+    line-height: var(--font-line-height-s);
+    font-family: var(--font-family-body);
     color: var(--color-icon-primary-default);
     outline: none;
     -webkit-appearance: none;
@@ -310,16 +317,16 @@ $mt-select-focus-transition: all ease-in-out 0.2s;
   .mt-select__selection-indicators {
     position: absolute;
     display: flex;
-    gap: 8px;
+    gap: var(--scale-size-8);
     top: 50%;
-    right: 16px;
+    right: var(--scale-size-16);
     transform: translate(0, -50%);
     z-index: 1;
   }
 
   .mt-select__selection-indicators .mt-loader {
-    width: 16px;
-    height: 16px;
+    width: var(--scale-size-16);
+    height: var(--scale-size-16);
     margin: 0;
     left: -24px;
     top: -4px;
@@ -335,7 +342,7 @@ $mt-select-focus-transition: all ease-in-out 0.2s;
     background-color: transparent;
     border: 0 solid transparent;
     color: var(--color-icon-primary-default);
-    padding: 0 4px;
+    padding: 0 var(--scale-size-4);
     cursor: pointer;
 
     .mt-select__select-indicator {
@@ -354,6 +361,11 @@ $mt-select-focus-transition: all ease-in-out 0.2s;
   .mt-select__select-indicator {
     flex-shrink: 0;
     cursor: pointer;
+    transition: all 0.3s ease-in-out;
+  }
+
+  .mt-select__select-indicator-rotated {
+    transform: rotate(180deg);
   }
 
   .mt-select__select-indicator-clear {
@@ -370,11 +382,11 @@ $mt-select-focus-transition: all ease-in-out 0.2s;
   }
 
   &.mt-field--medium .mt-select__selection {
-    padding: 4px 6px 0;
+    padding: var(--scale-size-4) var(--scale-size-6) 0;
   }
 
   &.mt-field--small .mt-select__selection {
-    padding: 4px 6px 0;
+    padding: var(--scale-size-4) var(--scale-size-6) 0;
   }
 
   &.is--disabled {
@@ -390,7 +402,7 @@ $mt-select-focus-transition: all ease-in-out 0.2s;
 
     .mt-select-selection-list--single .mt-label {
       cursor: pointer;
-      height: 18px;
+      height: var(--scale-size-18);
       padding-top: 1px;
     }
   }

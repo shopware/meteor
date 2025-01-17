@@ -34,6 +34,7 @@
         :disabled="disabled"
         :value="stringRepresentation"
         :placeholder="placeholder"
+        :class="numberAlignEnd ? 'mt-number-field__align-end' : ''"
         @input="onInput"
         @keydown.up="increaseNumberByStep"
         @keydown.down="decreaseNumberByStep"
@@ -42,18 +43,29 @@
         @blur="removeFocusClass"
       />
 
-      <div class="mt-field__controls" :class="controlClasses">
-        <mt-icon
-          name="regular-chevron-up-s"
-          data-testid="mt-number-field-increase-button"
+      <div class="mt-number-field__controls" :class="controlClasses">
+        <button
           @click="increaseNumberByStep"
-        />
+          :disabled="disabled"
+          :aria-label="t('increaseButton')"
+          data-testid="mt-number-field-increase-button"
+        >
+          <mt-icon size="10" name="regular-chevron-up-s" aria-hidden="true" />
+        </button>
 
-        <mt-icon
-          name="regular-chevron-down-s"
-          data-testid="mt-number-field-decrease-button"
+        <button
           @click="decreaseNumberByStep"
-        />
+          :disabled="disabled"
+          :aria-label="t('decreaseButton')"
+          data-testid="mt-number-field-decrease-button"
+        >
+          <mt-icon
+            style="margin-top: -3px"
+            size="10"
+            name="regular-chevron-down-s"
+            aria-hidden="true"
+          />
+        </button>
       </div>
     </template>
 
@@ -77,6 +89,7 @@ import type { PropType } from "vue";
 import { defineComponent } from "vue";
 import MtTextField from "../mt-text-field/mt-text-field.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
+import { useI18n } from "vue-i18n";
 
 export default defineComponent({
   name: "MtNumberField",
@@ -128,7 +141,7 @@ export default defineComponent({
     },
 
     /**
-     * The value of the field.
+     * The value of the number field.
      */
     modelValue: {
       type: Number as PropType<number | null>,
@@ -165,6 +178,15 @@ export default defineComponent({
      * Defines if the field can be empty.
      */
     allowEmpty: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    /**
+     * Defines if the number should be aligned to the end of the input field.
+     */
+    numberAlignEnd: {
       type: Boolean,
       required: false,
       default: false,
@@ -223,7 +245,6 @@ export default defineComponent({
           return;
         }
 
-        // @ts-expect-error - wrong type because of component extends
         this.computeValue(this.modelValue.toString());
       },
       immediate: true,
@@ -253,16 +274,13 @@ export default defineComponent({
           val = this.min;
         }
 
+        this.computeValue(val.toString());
         this.$emit("input-change", val);
       }
     },
 
     increaseNumberByStep() {
-      if (this.disabled) {
-        return;
-      }
-
-      this.computeValue((this.currentValue + this.realStep).toString());
+      this.computeValue((Number(this.currentValue) + this.realStep).toString());
 
       /** @deprecated tag: 5.0 - Will be removed use update:model-value instead */
       this.$emit("change", this.currentValue);
@@ -271,10 +289,6 @@ export default defineComponent({
     },
 
     decreaseNumberByStep() {
-      if (this.disabled) {
-        return;
-      }
-
       // @ts-expect-error - wrong type because of component extends
       this.computeValue((this.currentValue - this.realStep).toString());
 
@@ -349,42 +363,58 @@ export default defineComponent({
       return floor;
     },
   },
+
+  setup() {
+    const { t } = useI18n({
+      messages: {
+        en: {
+          increaseButton: "Increase",
+          decreaseButton: "Decrease",
+        },
+        de: {
+          increaseButton: "Erhöhen",
+          decreaseButton: "Verringern",
+        },
+      },
+    });
+
+    return { t };
+  },
 });
 </script>
 
-<style lang="scss">
-.mt-field {
-  &__controls {
-    background: var(--color-elevation-surface-raised);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    row-gap: 8px;
-    align-items: center;
-    width: 42px;
+<style scoped>
+.mt-number-field__controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 2.625rem;
 
-    &--disabled {
-      background: var(--color-background-primary-disabled);
-      cursor: default !important;
+  & button {
+    outline-color: var(--color-border-brand-selected);
+    padding-inline: 0.25rem;
+    border-radius: var(--border-radius-button);
+    transition: all 0.15s ease-out;
+    width: 100%;
+    flex: 1;
 
-      .mt-icon:hover {
-        cursor: default !important;
-      }
+    &:is(:hover, :focus-visible) {
+      background-color: var(--color-interaction-secondary-hover);
     }
 
-    &--has-error {
-      background: var(--color-background-critical-dark);
-    }
-
-    .mt-icon {
-      cursor: pointer;
-      color: var(--color-icon-primary-default);
-
-      & svg {
-        width: 12px !important;
-        height: 6px !important;
-      }
+    &:disabled {
+      cursor: default;
     }
   }
+}
+
+input.mt-number-field__align-end {
+  text-align: end;
+}
+</style>
+
+<style>
+.mt-number-field.is--disabled .mt-block-field__block {
+  background: var(--color-background-primary-disabled);
 }
 </style>

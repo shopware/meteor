@@ -1,5 +1,4 @@
-import { within } from "@storybook/test";
-import { expect } from "@storybook/test";
+import { expect, userEvent, within } from "@storybook/test";
 
 import meta, { type MtLinkMeta, type MtLinkStory } from "./mt-link.stories";
 
@@ -27,11 +26,25 @@ export const VisualTestRenderExternalLinkDisabled: MtLinkStory = {
   args: {
     disabled: true,
   },
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
 
-    const link = canvas.getByText("Link");
+    await userEvent.click(canvas.getByRole("link"));
 
-    expect(getComputedStyle(link).pointerEvents).toEqual("none");
+    expect(args.click).not.toHaveBeenCalled();
+  },
+};
+
+export const VisualTestRenderExternalLink: MtLinkStory = {
+  name: "Render external link",
+  args: {
+    type: "external",
+  },
+};
+
+export const VisualTestRenderInternalLink: MtLinkStory = {
+  name: "Render internal link",
+  args: {
+    type: "internal",
   },
 };

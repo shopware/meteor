@@ -5,6 +5,7 @@
       <div class="mt-data-table__toolbar">
         <mt-search
           v-if="disableSearch !== true"
+          class="mt-data-table__search"
           size="small"
           :model-value="searchValue"
           @change="emitSearchValueChange"
@@ -15,7 +16,7 @@
             <mt-button variant="secondary" @click="toggleFloatingUi">
               <mt-icon name="solid-filter-s" aria-hidden="true" />
 
-              <span>{{ $t("mt-data-table.filter.addFilter") }}</span>
+              <span>{{ t("filter.addFilter") }}</span>
             </mt-button>
           </template>
 
@@ -50,8 +51,8 @@
       <div v-if="appliedFilters.length > 0" class="mt-data-table__filter">
         <span>{{
           isLoading
-            ? $t("mt-data-table.filter.fetchingFilteredResults")
-            : $tc("mt-data-table.filter.numberOfResults", numberOfResults ?? 0)
+            ? t("filter.fetchingFilteredResults")
+            : t("filter.numberOfResults", { n: numberOfResults ?? 0 })
         }}</span>
 
         <div class="mt-data-table__filter-list">
@@ -71,7 +72,7 @@
             <button
               @click="toggleFloatingUi"
               class="mt-data-table__add-filter-button"
-              :aria-label="$t('mt-data-table.filter.addFilter')"
+              :aria-label="t('filter.addFilter')"
             >
               <mt-icon name="solid-plus-square-s" />
             </button>
@@ -238,7 +239,7 @@
                     <template #popover-items__base="{ toggleFloatingUi }">
                       <mt-popover-item
                         v-if="column.sortable"
-                        :label="$t('mt-data-table.columnSettings.sortAscending')"
+                        :label="t('columnSettings.sortAscending')"
                         icon="regular-long-arrow-up"
                         contextual-detail="A -> Z"
                         :on-label-click="
@@ -248,7 +249,7 @@
 
                       <mt-popover-item
                         v-if="column.sortable"
-                        :label="$t('mt-data-table.columnSettings.sortDescending')"
+                        :label="t('columnSettings.sortDescending')"
                         icon="regular-long-arrow-down"
                         contextual-detail="Z -> A"
                         :on-label-click="
@@ -259,7 +260,7 @@
 
                       <mt-popover-item
                         v-if="!isPrimaryColumn(column)"
-                        :label="$t('mt-data-table.columnSettings.hideColumn')"
+                        :label="t('columnSettings.hideColumn')"
                         icon="regular-eye-slash"
                         :on-label-click="() => changeColumnVisibility(column.property, false)"
                         border-top
@@ -275,7 +276,7 @@
                     :auto-update-options="{ animationFrame: true }"
                   >
                     <mt-popover
-                      :title="$t('mt-data-table.addColumnIndicator.popoverTitle')"
+                      :title="t('addColumnIndicator.popoverTitle')"
                       @update:isOpened="
                         (value) => {
                           if (value === false) {
@@ -288,7 +289,7 @@
                       <template #trigger="{ toggleFloatingUi }">
                         <mt-icon
                           v-tooltip="{
-                            message: $t('mt-data-table.addColumnIndicator.tooltipMessage'),
+                            message: t('addColumnIndicator.tooltipMessage'),
                             width: 'auto',
                           }"
                           name="solid-plus-square-s"
@@ -454,19 +455,19 @@
                   class="mt-data-table__table-context-button"
                 >
                   <a v-if="!disableEdit" href="#" @click.prevent="$emit('open-details', data)">
-                    {{ $t("mt-data-table.contextButtons.edit") }}
+                    {{ t("contextButtons.edit") }}
                   </a>
                   <mt-context-button v-if="!(disableDelete && disableEdit)">
                     <mt-context-menu-item
                       v-if="!disableEdit"
-                      :label="$t('mt-data-table.contextButtons.edit')"
+                      :label="t('contextButtons.edit')"
                       @click="$emit('open-details', data)"
                     />
 
                     <mt-context-menu-item
                       v-if="!disableDelete"
                       type="critical"
-                      :label="$t('mt-data-table.contextButtons.delete')"
+                      :label="t('contextButtons.delete')"
                       @click="$emit('item-delete', data)"
                     />
                   </mt-context-button>
@@ -478,8 +479,9 @@
               <div class="mt-data-table__empty-state">
                 <slot name="empty-state">
                   <mt-empty-state
-                    :headline="$t('mt-data-table.emptyState.headline')"
-                    :description="$t('mt-data-table.emptyState.description')"
+                    icon="solid-products"
+                    :headline="t('emptyState.headline')"
+                    :description="t('emptyState.description')"
                   />
                 </slot>
               </div>
@@ -507,41 +509,43 @@
     </template>
 
     <template #footer>
-      <div class="mt-data-table__footer-left">
-        <mt-select
-          small
-          hide-clearable-button
-          :options="paginationOptionsConverted"
-          :model-value="paginationLimit"
-          @change="emitPaginationLimitChange"
-        />
-        <span class="mt-data-table__pagination-info-text">
-          {{ $t("mt-data-table.itemsPerPage") }}
-        </span>
-      </div>
+      <mt-inset class="mt-data-table__footer-inset">
+        <div class="mt-data-table__footer-left">
+          <mt-select
+            small
+            hide-clearable-button
+            :options="paginationOptionsConverted"
+            :model-value="paginationLimit"
+            @change="emitPaginationLimitChange"
+          />
+          <span class="mt-data-table__pagination-info-text">
+            {{ t("itemsPerPage") }}
+          </span>
+        </div>
 
-      <div class="mt-data-table__footer-right">
-        <mt-pagination
-          :limit="paginationLimit"
-          :current-page="currentPage"
-          :total-items="paginationTotalItems"
-          @change-current-page="emitPaginationCurrentPageChange"
-        />
+        <div class="mt-data-table__footer-right">
+          <mt-pagination
+            :limit="paginationLimit"
+            :current-page="currentPage"
+            :total-items="paginationTotalItems"
+            @change-current-page="emitPaginationCurrentPageChange"
+          />
 
-        <mt-button
-          v-if="enableReload"
-          v-tooltip="{
-            message: $t('mt-data-table.reload.tooltip'),
-            width: 'auto',
-          }"
-          square
-          aria-label="reload-data"
-          variant="secondary"
-          @click="emitReload"
-        >
-          <mt-icon name="solid-undo-s" />
-        </mt-button>
-      </div>
+          <mt-button
+            v-if="enableReload"
+            v-tooltip="{
+              message: t('reload.tooltip'),
+              width: 'auto',
+            }"
+            square
+            aria-label="reload-data"
+            variant="secondary"
+            @click="emitReload"
+          >
+            <mt-icon name="solid-undo-s" />
+          </mt-button>
+        </div>
+      </mt-inset>
     </template>
   </mt-card>
 </template>
@@ -549,16 +553,7 @@
 <script lang="ts">
 import useScrollPossibilitiesClasses from "./composables/useScrollPossibilitiesClasses";
 import type { PropType, Ref } from "vue";
-import {
-  defineComponent,
-  computed,
-  onBeforeUpdate,
-  onMounted,
-  onBeforeUnmount,
-  ref,
-  getCurrentInstance,
-  onBeforeMount,
-} from "vue";
+import { defineComponent, computed, onBeforeUpdate, onMounted, onBeforeUnmount, ref } from "vue";
 import MtCard from "../../layout/mt-card/mt-card.vue";
 import MtButton from "../../form/mt-button/mt-button.vue";
 import MtSelect from "../../form/mt-select/mt-select.vue";
@@ -593,9 +588,11 @@ import MtEmptyState from "../../layout/mt-empty-state/mt-empty-state.vue";
 import StickyColumn from "../../../directives/stickyColumn.directive";
 import MtDataTableResetFilterButton from "./sub-components/mt-data-table-reset-filter-button/mt-data-table-reset-filter-button.vue";
 import MtDataTableFilter from "./sub-components/mt-data-table-filter/mt-data-table-filter.vue";
+import MtInset from "@/components/layout/mt-inset/mt-inset.vue";
 import { throttle } from "lodash-es";
 import { reactive } from "vue";
 import type { Filter } from "./mt-data-table.interfaces";
+import { useI18n } from "vue-i18n";
 
 export interface BaseColumnDefinition {
   label: string; // the label for the column
@@ -662,6 +659,7 @@ export default defineComponent({
     "mt-data-table-price-renderer": MtDataTablePriceRenderer,
     "mt-data-table-reset-filter-button": MtDataTableResetFilterButton,
     "mt-data-table-filter": MtDataTableFilter,
+    "mt-inset": MtInset,
   },
   props: {
     /**
@@ -977,10 +975,10 @@ export default defineComponent({
     "item-delete",
     "update:appliedFilters",
   ],
-  i18n: {
-    messages: {
-      en: {
-        "mt-data-table": {
+  setup(props, { emit }) {
+    const { t } = useI18n({
+      messages: {
+        en: {
           itemsPerPage: "Items per page",
           filter: {
             numberOfResults: "No results found for | One result found for | {n} results found for",
@@ -1014,9 +1012,7 @@ export default defineComponent({
             tooltip: "Reload",
           },
         },
-      },
-      de: {
-        "mt-data-table": {
+        de: {
           itemsPerPage: "Einträge pro Seite",
           filter: {
             numberOfResults:
@@ -1052,17 +1048,6 @@ export default defineComponent({
           },
         },
       },
-    },
-  },
-  setup(props, { emit }) {
-    /**
-     * hack for accessing i18n in legacy mode (https://github.com/intlify/vue-i18n-next/discussions/605#discussioncomment-2057136)
-     **/
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let i18n: any;
-
-    onBeforeMount(() => {
-      i18n = getCurrentInstance()?.proxy?.$i18n;
     });
 
     const filterChildViews = computed(() => {
@@ -1822,7 +1807,7 @@ export default defineComponent({
       const actions: SegmentedControlActionsProp = [
         {
           id: "item-selection-count",
-          label: i18n.tc("mt-data-table.bulkEdit.itemsSelected", props.selectedRows.length),
+          label: t("bulkEdit.itemsSelected", { n: props.selectedRows.length }),
           onClick: () => {
             emit("multiple-selection-change", {
               selections: props.selectedRows,
@@ -1838,7 +1823,7 @@ export default defineComponent({
       if (props.allowBulkEdit && !props.disableEdit) {
         actions.push({
           id: "edit",
-          label: i18n.t("mt-data-table.bulkEdit.edit"),
+          label: t("bulkEdit.edit"),
           onClick: () => emit("bulk-edit"),
         });
       }
@@ -1846,7 +1831,7 @@ export default defineComponent({
       if (props.allowBulkDelete && !props.disableDelete) {
         actions.push({
           id: "delete",
-          label: i18n.t("mt-data-table.bulkEdit.delete"),
+          label: t("bulkEdit.delete"),
           onClick: () => emit("bulk-delete"),
           isCritical: true,
         });
@@ -1855,7 +1840,7 @@ export default defineComponent({
       if (props.bulkEditMoreActions.length > 0) {
         actions.push({
           id: "more",
-          label: i18n.t("mt-data-table.bulkEdit.more"),
+          label: t("bulkEdit.more"),
           popover: {},
         });
       }
@@ -1897,6 +1882,7 @@ export default defineComponent({
     };
 
     return {
+      t,
       sortedColumns,
       isFirstVisibleColumn,
       addColumnOptions,
@@ -1960,15 +1946,6 @@ export default defineComponent({
 /**
 * Use inter-font instead of normal font for data-table. Also add the new variables to this file.
 */
-$font-family-default:
-  "Inter",
-  -apple-system,
-  BlinkMacSystemFont,
-  "San Francisco",
-  "Segoe UI",
-  Roboto,
-  "Helvetica Neue",
-  sans-serif;
 $font-family-variables:
   "Inter var",
   -apple-system,
@@ -1989,14 +1966,6 @@ $font-family-default-feature-settings:
   "cv06" on,
   "cv10" on,
   "cv11" on;
-
-$font-weight-medium: 500;
-
-$line-height-auto: auto;
-$line-height-xs: 18px;
-$line-height-sm: 20px;
-$line-height-md: 24px;
-$line-height-lg: 28px;
 
 $color-card-headline: #1c1c1c;
 $color-shopware-brand-vivacious-500: #0f76de;
@@ -2041,6 +2010,10 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     gap: 0;
   }
 
+  .mt-data-table__search {
+    flex: 1;
+  }
+
   .mt-card__content {
     height: auto;
     padding: 0;
@@ -2059,7 +2032,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
 
   // add new Inter font to data table
   * {
-    font-family: $font-family-default;
+    font-family: var(--font-family-body);
   }
 
   @supports (font-variation-settings: normal) {
@@ -2070,33 +2043,33 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   }
 
   // adjust font styling
-  font-size: $font-size-xs;
-  font-weight: $font-weight-regular;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-regular);
   color: $color-darkgray-300;
-  line-height: $line-height-sm;
+  line-height: var(--font-line-height-xs);
 
   .mt-data-table__toolbar {
     width: 100%;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: var(--scale-size-8);
   }
 
   // TODO: improve the name of this css selector
   .mt-data-table__filter {
     color: var(--color-text-primary-default);
-    padding-top: 16px;
+    padding-top: var(--scale-size-16);
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: var(--scale-size-12);
   }
 
   .mt-data-table__filter-list {
     display: flex;
     align-items: baseline;
     flex-wrap: wrap;
-    gap: 6px;
+    gap: var(--scale-size-6);
   }
 
   &__caption {
@@ -2264,8 +2237,8 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   }
 
   thead th {
-    font-weight: $font-weight-medium;
-    line-height: $line-height-xs;
+    font-weight: var(--font-weight-medium);
+    line-height: var(--line-height-2xs);
     background-color: var(--color-elevation-surface-sunken);
     color: var(--color-text-secondary-default);
     min-width: 50px;
@@ -2282,7 +2255,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
 
   // custom skeleton styling
   tbody td .mt-skeleton-bar {
-    height: 24px;
+    height: var(--scale-size-24);
   }
 
   // override default cursor when user is resizing the columns
@@ -2316,7 +2289,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     min-width: 67px;
     max-width: 67px;
     width: 67px;
-    padding-right: 8px;
+    padding-right: var(--scale-size-8);
     border-right: 0px;
     border-left-width: 0px;
   }
@@ -2367,7 +2340,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   .mt-data-table__table-select-row + td,
   .mt-data-table__table-selection-head + th {
     border-left: 0px;
-    padding-left: 8px;
+    padding-left: var(--scale-size-8);
   }
 
   .mt-data-table__table-select-row,
@@ -2378,7 +2351,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
       .mt-field--checkbox__content {
         display: flex;
         justify-content: center;
-        margin-top: 2px;
+        margin-top: var(--scale-size-2);
       }
 
       .mt-field {
@@ -2410,7 +2383,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     z-index: 10;
     cursor: col-resize;
     height: 100%;
-    width: 6px;
+    width: var(--scale-size-6);
     position: absolute;
     top: 0px;
   }
@@ -2431,8 +2404,8 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     top: 0;
     right: 0;
     transform: translate3d(50%, -150%, 0);
-    width: 14px;
-    height: 16px;
+    width: var(--scale-size-14);
+    height: var(--scale-size-16);
   }
 
   table.is--dragging-inside .mt-data-table__table-head-add-column-indicator {
@@ -2474,7 +2447,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   */
   .mt-data-table__table-head-column-settings {
     position: absolute;
-    top: 16px;
+    top: var(--scale-size-16);
     left: 0;
     width: 100%;
     height: calc(100% - 16px);
@@ -2511,8 +2484,8 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     width: $settingsColumnWidth;
 
     #meteor-icon-kit__solid-cog-s {
-      width: 10px;
-      height: 10px;
+      width: var(--scale-size-10);
+      height: var(--scale-size-10);
     }
   }
 
@@ -2529,10 +2502,11 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
       top: 1px;
       color: $color-shopware-brand-vivacious-500;
       text-decoration: none;
-      font-weight: $font-weight-semi-bold;
-      font-size: $font-size-xs;
-      line-height: $line-height-xs;
-      margin-right: 8px;
+      font-weight: var(--font-weight-semibold);
+      font-size: var(--font-size-xs);
+      line-height: var(--font-line-height-xs);
+      font-family: var(--font-family-body);
+      margin-right: var(--scale-size-8);
 
       &:hover {
         text-decoration: underline;
@@ -2557,11 +2531,17 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     }
   }
 
+  &__footer-inset {
+    display: flex;
+    width: calc(100% + var(--mt-card-footer-padding) * 2);
+    padding: 1rem var(--mt-card-footer-padding);
+  }
+
   &__footer-right {
     display: flex;
     flex-wrap: nowrap;
     align-items: center;
-    gap: 16px;
+    gap: var(--scale-size-16);
     margin-left: auto;
 
     .mt-button[aria-label="reload-data"] {
@@ -2570,15 +2550,17 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     }
 
     .mt-button #meteor-icon-kit__solid-undo-s {
-      width: 12px;
-      height: 12px;
+      width: var(--scale-size-12);
+      height: var(--scale-size-12);
     }
   }
 
   &__pagination-info-text {
     white-space: nowrap;
-    font-size: $font-size-xxs;
-    margin-left: 12px;
+    font-size: var(--font-size-2xs);
+    line-height: var(--font-line-height-2xs);
+    font-family: var(--font-family-body);
+    margin-left: var(--scale-size-12);
   }
 }
 
@@ -2588,7 +2570,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
 .mt-data-table__table-head-inner-wrapper {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: var(--scale-size-8);
 }
 
 /**
@@ -2604,7 +2586,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
 
     #meteor-icon-kit__solid-long-arrow-up,
     #meteor-icon-kit__solid-long-arrow-down {
-      height: 12px;
+      height: var(--scale-size-12);
     }
   }
 }
@@ -2618,23 +2600,23 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   opacity: 0.8;
 
   // set the normal table header cell styling
-  font-family: $font-family-default;
+  font-family: var(--font-family-body);
   @supports (font-variation-settings: normal) {
     font-family: $font-family-variables;
     font-feature-settings: $font-family-default-feature-settings;
   }
   text-align: left;
-  font-size: $font-size-xs;
+  font-size: var(--font-size-xs);
   padding: $tableCellPadding;
   border: 1px solid var(--color-border-brand-selected);
-  border-radius: $border-radius-default $border-radius-default 0 0;
+  border-radius: var(--border-radius-xs) var(--border-radius-xs) 0 0;
   border-top: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   vertical-align: top;
-  font-weight: $font-weight-medium;
-  line-height: $line-height-xs;
+  font-weight: var(--font-weight-medium);
+  line-height: var(--font-line-height-xs);
   background-color: var(--color-elevation-surface-sunken);
   color: var(--color-text-primary-default);
   min-width: 50px;
@@ -2652,7 +2634,7 @@ thead th.is--dragging {
   top: 0;
   left: 0;
   width: 100%;
-  height: 16px;
+  height: var(--scale-size-16);
   z-index: 1;
   cursor: grab;
 
@@ -2695,23 +2677,23 @@ table.is--dragging-inside {
   top: 0;
   left: 0;
   width: 100%;
-  height: 8px;
+  height: var(--scale-size-8);
   background-color: $color-shopware-brand-900;
-  border-radius: $border-radius-default $border-radius-default 0 0;
+  border-radius: var(--border-radius-xs) var(--border-radius-xs) 0 0;
   transition: transform 0.2s ease;
   transform-origin: top center;
 }
 
 .mt-data-table__table-head-dragzone-indicator {
   position: absolute;
-  width: 28px;
-  height: 16px;
+  width: var(--scale-size-28);
+  height: var(--scale-size-16);
   left: calc(50% - 14px);
   display: flex;
   justify-content: center;
   align-items: center;
   background-color: $color-shopware-brand-900;
-  border-radius: 0 0 $border-radius-default $border-radius-default;
+  border-radius: 0 0 var(--border-radius-xs) var(--border-radius-xs);
 
   #meteor-icon-kit__regular-grip-horizontal-s {
     color: $color-white;
@@ -2731,8 +2713,8 @@ table.is--dragging-inside {
       border-radius: 999px;
 
       #meteor-icon-kit__solid-plus-square-s {
-        width: 14px;
-        height: 14px;
+        width: var(--scale-size-14);
+        height: var(--scale-size-14);
       }
     }
   }
@@ -2747,7 +2729,7 @@ table.is--dragging-inside {
   min-width: 34px;
   cursor: pointer;
   outline: 0;
-  border-radius: $border-radius-default;
+  border-radius: var(--border-radius-xs);
 
   &:hover,
   &:focus-visible {

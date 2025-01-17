@@ -2,6 +2,7 @@ import MtTextField from "./mt-text-field.vue";
 import baseFieldArgTypes from "../_internal/mt-base-field/arg-types";
 import type { StoryObj } from "@storybook/vue3";
 import type { SlottedMeta } from "@/_internal/story-helper";
+import { fn } from "@storybook/test";
 
 export type MtTextFieldMeta = SlottedMeta<
   typeof MtTextField,
@@ -17,6 +18,7 @@ export type MtTextFieldMeta = SlottedMeta<
   | "inheritanceRestore"
   | "inheritanceRemove"
   | "isInherited"
+  | "focus"
 >;
 
 export default {
@@ -31,7 +33,8 @@ export default {
         @update:modelValue="onUpdateModelValue"
         @inheritance-restore="inheritanceRestoreWrapper"
         @inheritance-remove="inheritanceRemoveWrapper"
-        @change="onChange">
+        @change="onChange"
+        @focus="handleFocus">
           <template
             v-if="args.prefix"
             #prefix>
@@ -87,6 +90,10 @@ export default {
         args.change(value);
         this.currentValue = value;
       },
+
+      handleFocus() {
+        args.focus();
+      },
     },
     setup: () => {
       return {
@@ -95,10 +102,21 @@ export default {
     },
   }),
   argTypes: {
+    focus: {
+      action: "focus",
+      table: {
+        category: "Events",
+      },
+    },
     ...baseFieldArgTypes,
   },
   args: {
     label: "Textfield label",
+    change: fn(),
+    updateModelValue: fn(),
+    inheritanceRemove: fn(),
+    inheritanceRestore: fn(),
+    focus: fn(),
   },
 } as MtTextFieldMeta;
 
