@@ -2008,6 +2008,10 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   .mt-card__toolbar {
     flex-direction: column;
     gap: 0;
+
+    &:has(.mt-data-table__toolbar:empty) {
+      padding: 0;
+    }
   }
 
   .mt-data-table__search {
@@ -2053,6 +2057,10 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     display: flex;
     align-items: center;
     gap: var(--scale-size-8);
+
+    &:empty {
+      display: none;
+    }
   }
 
   // TODO: improve the name of this css selector
