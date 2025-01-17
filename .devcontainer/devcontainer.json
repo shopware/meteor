@@ -6,7 +6,10 @@
       "version": "lts"
     },
     "ghcr.io/devcontainers/features/git:1": {},
-    "ghcr.io/devcontainers/features/github-cli:1": {}
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/jakejarvis/devcontainer-features/volta:1": {
+      "version": "latest"
+    }
   },
   "customizations": {
     "vscode": {
@@ -24,7 +27,8 @@
   },
   "postCreateCommand": "pnpm install",
   "containerEnv": {
-    "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD": "true"
+    "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD": "true",
+    "VOLTA_FEATURE_PNPM": "1"
   },
   "remoteUser": "node"
 }
