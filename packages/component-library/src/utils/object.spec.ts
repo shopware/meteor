@@ -48,5 +48,20 @@ describe("utils/object", () => {
       // ASSERT
       expect(result).toBeUndefined();
     });
+
+    it("returns the value of the path when the path is a number", () => {
+      // ARRANGE
+      const object = {
+        1: "some-value",
+      };
+
+      const subject = get;
+
+      // ACT
+      const result = subject(object, 1);
+
+      // ASSERT
+      expect(result).toBe("some-value");
+    });
   });
 });

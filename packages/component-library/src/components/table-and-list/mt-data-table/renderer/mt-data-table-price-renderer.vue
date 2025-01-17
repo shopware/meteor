@@ -16,7 +16,7 @@
 <script lang="ts">
 import type { PropType } from "vue";
 import { defineComponent, computed } from "vue";
-import { get } from "lodash-es";
+import { get } from "@/utils/object";
 import { currency } from "../../../../utils/format";
 import type { BaseColumnDefinition } from "../mt-data-table.vue";
 
@@ -57,6 +57,7 @@ export default defineComponent({
         return "No currency id found";
       }
 
+      // @ts-expect-error
       const prices = get(props.data, props.columnDefinition.property);
 
       if (!prices) {
