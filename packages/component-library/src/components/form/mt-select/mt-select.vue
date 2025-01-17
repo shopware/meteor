@@ -118,7 +118,8 @@
 import type { PropType } from "vue";
 
 import { defineComponent } from "vue";
-import { debounce, get } from "lodash-es";
+import { debounce } from "@/utils/debounce";
+import { get } from "@/utils/object";
 import MtSelectBase from "../_internal/mt-select-base/mt-select-base.vue";
 import MtSelectResultList from "../_internal/mt-select-base/_internal/mt-select-result-list.vue";
 import MtSelectResult from "../_internal/mt-select-base/_internal/mt-select-result.vue";
@@ -520,6 +521,7 @@ export default defineComponent({
       this.limit += this.limit;
     },
 
+    // @ts-expect-error
     onSearchTermChange: debounce(function updateSearchTerm(term) {
       // @ts-expect-error - this context exists even here
       this.searchTerm = term;

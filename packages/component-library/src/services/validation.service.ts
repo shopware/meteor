@@ -1,5 +1,3 @@
-import { isObject } from "lodash-es";
-
 /**
  * Checks if a value is set based on its type.
  */
@@ -12,7 +10,7 @@ export function required(value: unknown): boolean {
     return value === true;
   }
 
-  if (isObject(value)) {
+  if (value instanceof Object) {
     return Object.keys(value).length > 0;
   }
 

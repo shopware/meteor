@@ -1,4 +1,4 @@
-import { debounce } from "lodash-es";
+import { debounce } from "@/utils/debounce";
 
 /**
  * The DeviceHelper provides methods to get device and browser information like the current viewport size.
