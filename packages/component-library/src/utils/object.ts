@@ -11,16 +11,10 @@ export function hasOwnProperty(scope: any, prop: string): boolean {
   return Object.prototype.hasOwnProperty.call(scope, prop);
 }
 
-type GetPath = string | (string | number)[];
+type GetPath = string | number | (string | number)[];
 
 /**
  * Safely retrieves a value from a nested object using a path.
- * @template T - The type of the source object
- * @template D - The type of the default value
- * @param obj - The source object to retrieve the value from
- * @param path - The path to the value as a dot notation string or array of keys
- * @param defValue - The default value to return if the path doesn't exist
- * @returns The value at the specified path or the default value
  */
 export const get = <T extends object, D = undefined>(
   obj: T | null | undefined,
@@ -31,7 +25,7 @@ export const get = <T extends object, D = undefined>(
   if (!path) return undefined;
   // Check if path is string or array. Regex : ensure that we do not have '.' and brackets.
   // Regex explained: https://regexr.com/58j0k
-  const pathArray = Array.isArray(path) ? path : path.match(/([^[.\]])+/g);
+  const pathArray = Array.isArray(path) ? path : String(path).match(/([^[.\]])+/g);
 
   if (!pathArray) return undefined;
 

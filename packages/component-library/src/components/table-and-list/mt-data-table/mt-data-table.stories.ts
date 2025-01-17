@@ -2,7 +2,7 @@ import MtDataTable from "./mt-data-table.vue";
 import MtButton from "../../form/mt-button/mt-button.vue";
 import MtBanner from "../../feedback-indicator/mt-banner/mt-banner.vue";
 import MtDataTableFixtures from "./mt-data-table.fixtures.json";
-import { get } from "lodash-es";
+import { get } from "@/utils/object";
 import type { StoryObj } from "@storybook/vue3";
 import type { SlottedMeta } from "@/_internal/story-helper";
 import { defineComponent } from "vue";
