@@ -12,7 +12,7 @@
             :disabled="isDisabled"
             :aria-checked="inputState"
             :aria-label="label"
-            role="switch"
+            role="checkbox"
             @change.stop="onChange"
           />
           <div class="mt-field__switch-state">
