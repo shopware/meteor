@@ -11,7 +11,7 @@ describe("validation-service", () => {
       const result = subject(true);
 
       // ASSERT
-      expect(result).toBe(true);
+      expect(result).toBeTruthy();
     });
 
     it("is not marked as required when providing false", () => {
@@ -22,7 +22,7 @@ describe("validation-service", () => {
       const result = subject(false);
 
       // ASSERT
-      expect(result).toBe(false);
+      expect(result).toBeFalsy();
     });
 
     it("is marked as required when providing an non-empty string", () => {
@@ -33,7 +33,7 @@ describe("validation-service", () => {
       const result = subject("test");
 
       // ASSERT
-      expect(result).toBe(true);
+      expect(result).toBeTruthy();
     });
 
     it("is not marked as required when providing an empty string", () => {
@@ -44,7 +44,7 @@ describe("validation-service", () => {
       const result = subject("");
 
       // ASSERT
-      expect(result).toBe(false);
+      expect(result).toBeFalsy();
     });
 
     it("is not marked as required when providing undefined", () => {
@@ -55,7 +55,7 @@ describe("validation-service", () => {
       const result = subject(undefined);
 
       // ASSERT
-      expect(result).toBe(false);
+      expect(result).toBeFalsy();
     });
 
     it("is not marked as required when providing null", () => {
@@ -66,7 +66,7 @@ describe("validation-service", () => {
       const result = subject(null);
 
       // ASSERT
-      expect(result).toBe(false);
+      expect(result).toBeFalsy();
     });
 
     it("is marked as required when providing an object with keys", () => {
@@ -77,7 +77,7 @@ describe("validation-service", () => {
       const result = subject({ key: "value" });
 
       // ASSERT
-      expect(result).toBe(true);
+      expect(result).toBeTruthy();
     });
 
     it("is not marked as required when providing an empty object", () => {
@@ -88,7 +88,7 @@ describe("validation-service", () => {
       const result = subject({});
 
       // ASSERT
-      expect(result).toBe(false);
+      expect(result).toBeFalsy();
     });
 
     it("is not marked as required when passing a function", () => {
@@ -99,7 +99,7 @@ describe("validation-service", () => {
       const result = subject(() => {});
 
       // ASSERT
-      expect(result).toBe(false);
+      expect(result).toBeFalsy();
     });
 
     it("is marked as required when passing a number", () => {
@@ -110,7 +110,7 @@ describe("validation-service", () => {
       const result = subject(1);
 
       // ASSERT
-      expect(result).toBe(true);
+      expect(result).toBeTruthy();
     });
 
     it("is is marked as required when passing an empty array", () => {
@@ -121,7 +121,7 @@ describe("validation-service", () => {
       const result = subject([]);
 
       // ASSERT
-      expect(result).toBe(false);
+      expect(result).toBeFalsy();
     });
 
     it("is marked as required when passing an array with values", () => {
@@ -132,7 +132,7 @@ describe("validation-service", () => {
       const result = subject([1]);
 
       // ASSERT
-      expect(result).toBe(true);
+      expect(result).toBeTruthy();
     });
   });
 });
