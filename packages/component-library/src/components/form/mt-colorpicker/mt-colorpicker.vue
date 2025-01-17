@@ -222,7 +222,7 @@
 import type { PropType } from "vue";
 
 import { defineComponent } from "vue";
-import { debounce } from "lodash-es";
+import { debounce } from "@/utils/debounce";
 import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
 import MtFloatingUi from "../../_internal/mt-floating-ui/mt-floating-ui.vue";
 import MtText from "@/components/content/mt-text/mt-text.vue";
