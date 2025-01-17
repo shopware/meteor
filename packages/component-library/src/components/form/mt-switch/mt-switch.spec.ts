@@ -21,10 +21,12 @@ describe("mt-switch", () => {
   it("should update checked state when checked", async () => {
     wrapper = await createWrapper();
     const checkbox = wrapper?.find('input[type="checkbox"]');
-    await wrapper?.setProps({ checked: true });
-    expect(checkbox?.element).toBeChecked();
-    await wrapper?.setProps({ checked: false });
-    expect(checkbox?.element).not.toBeChecked();
+
+    await wrapper.setProps({ checked: true });
+    expect(checkbox.element).toBeChecked();
+
+    await wrapper.setProps({ checked: false });
+    expect(checkbox.element).not.toBeChecked();
   });
 
   it("should have correct ARIA attributes", async () => {
