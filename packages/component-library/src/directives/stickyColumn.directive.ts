@@ -1,4 +1,4 @@
-import { throttle } from "lodash-es";
+import { throttle } from "@/utils/throttle";
 import type { Directive } from "vue";
 
 const getPreviousSibling = function (el: Element | undefined, selector: string) {

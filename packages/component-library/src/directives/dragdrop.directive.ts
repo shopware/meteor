@@ -1,5 +1,3 @@
-import isFunction from "lodash-es/isFunction";
-import isObject from "lodash-es/isObject";
 import type { Directive } from "vue";
 
 export interface DragConfig<DATA = unknown> {
@@ -218,7 +216,7 @@ function startDrag(el: HTMLElement, dragConfig: DragConfig, event: MouseEvent | 
 
   el.classList.add(dragConfig.draggingStateCls);
 
-  if (isFunction(currentDrag.dragConfig.onDragStart)) {
+  if (typeof currentDrag.dragConfig.onDragStart === "function") {
     currentDrag.dragConfig.onDragStart(currentDrag.dragConfig, el, dragElement);
   }
 
@@ -322,7 +320,7 @@ function stopDrag() {
   const validDrop = validateDrop();
 
   if (validDrag && currentDrag) {
-    if (isFunction(currentDrag.dragConfig.onDrop)) {
+    if (typeof currentDrag.dragConfig.onDrop === "function") {
       currentDrag.dragConfig.onDrop(
         currentDrag.dragConfig.data,
         validDrop ? currentDrop?.dropConfig?.data : null,
@@ -331,7 +329,7 @@ function stopDrag() {
   }
 
   if (validDrop && currentDrop) {
-    if (isFunction(currentDrop.dropConfig.onDrop)) {
+    if (typeof currentDrop.dropConfig.onDrop === "function") {
       currentDrop.dropConfig.onDrop(currentDrag?.dragConfig.data, currentDrop.dropConfig.data);
     }
   }
@@ -393,7 +391,7 @@ function enterDropZone(el: HTMLElement, dropConfig: DropConfig) {
     }
   }
 
-  if (isFunction(currentDrag.dragConfig.onDragEnter)) {
+  if (typeof currentDrag.dragConfig.onDragEnter === "function") {
     currentDrag.dragConfig.onDragEnter(
       currentDrag.dragConfig.data,
       currentDrop.dropConfig.data,
@@ -417,7 +415,7 @@ function leaveDropZone(el: HTMLElement, dropConfig: DropConfig) {
     return;
   }
 
-  if (isFunction(currentDrag.dragConfig.onDragLeave)) {
+  if (typeof currentDrag.dragConfig.onDragLeave === "function") {
     currentDrag.dragConfig.onDragLeave(currentDrag.dragConfig.data, currentDrop.dropConfig.data);
   }
 
@@ -451,7 +449,7 @@ function validateDrop(): boolean {
   }
 
   // Check the custom drag validate function.
-  if (currentDrag !== null && isFunction(currentDrag.dragConfig.validateDrop)) {
+  if (currentDrag !== null && typeof currentDrag.dragConfig.validateDrop === "function") {
     customDragValidation = currentDrag.dragConfig.validateDrop(
       currentDrag.dragConfig.data,
       currentDrop?.dropConfig.data,
@@ -459,7 +457,7 @@ function validateDrop(): boolean {
   }
 
   // Check the custom drop validate function.
-  if (currentDrop !== null && isFunction(currentDrop.dropConfig.validateDrop)) {
+  if (currentDrop !== null && typeof currentDrop.dropConfig.validateDrop === "function") {
     customDropValidation = currentDrop.dropConfig.validateDrop(
       currentDrag?.dragConfig.data,
       currentDrop.dropConfig.data,
@@ -482,7 +480,7 @@ function validateDrag(): boolean {
   }
 
   // Check the custom drag validate function.
-  if (currentDrag !== null && isFunction(currentDrag.dragConfig.validateDrag)) {
+  if (currentDrag !== null && typeof currentDrag.dragConfig.validateDrag === "function") {
     customDragValidation = currentDrag.dragConfig.validateDrag(
       currentDrag.dragConfig.data,
       currentDrop?.dropConfig.data,
@@ -495,7 +493,7 @@ function validateDrag(): boolean {
 function mergeConfigs(defaultConfig: DragConfig | DropConfig, binding: { value: unknown }) {
   const mergedConfig = { ...defaultConfig };
 
-  if (isObject(binding.value)) {
+  if (binding.value instanceof Object) {
     Object.assign(mergedConfig, binding.value);
   } else {
     Object.assign(mergedConfig, { data: binding.value });
@@ -601,7 +599,7 @@ export const droppable: Directive = {
   updated: (el, binding) => {
     const dropZone = dropZones.find((zone) => zone.el === el);
 
-    if (isObject(binding.value)) {
+    if (binding.value instanceof Object) {
       // @ts-expect-error - typescript support is missing here
       Object.assign(dropZone?.dropConfig, binding.value);
     } else {
