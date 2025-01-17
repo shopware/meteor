@@ -28,7 +28,6 @@
 </template>
 
 <script setup lang="ts">
-import cloneDeep from "lodash-es/cloneDeep";
 import MtIcon from "../mt-icon/mt-icon.vue";
 import { reactive, computed, onMounted, ref, watch, nextTick, type CSSProperties } from "vue";
 
@@ -98,7 +97,7 @@ const avatarImage = computed<CSSProperties>(() => {
     return {};
   }
 
-  const avatarMedia = cloneDeep(props.sourceContext.avatarMedia);
+  const avatarMedia = structuredClone(props.sourceContext.avatarMedia);
 
   const thumbnailImage = avatarMedia.thumbnails.sort((a, b) => a.width - b.width)[0];
   const previewImageUrl = thumbnailImage ? thumbnailImage.url : avatarMedia.url;
