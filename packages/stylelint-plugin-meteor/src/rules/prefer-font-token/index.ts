@@ -16,12 +16,15 @@ const meta = {
   url: "https://github.com/shopware/meteor/blob/main/packages/stylelint-plugin-meteor/src/rules/prefer-font-token/README.md",
 };
 
-const FONT_PROPERTIES: (string | RegExp)[] = [
+const FONT_PROPERTIES: string[] = [
+  "font",
   "line-height",
   "font-family",
   "font-weight",
   "font-size",
-  /^font-/,
+  "font-style",
+  "font-variant",
+  "font-kerning",
 ];
 
 const GLOBAL_KEYWORDS = [
@@ -44,11 +47,7 @@ const ruleFunction: Rule = (primary, secondaryOptions, context) => {
     if (!validOptions) return;
 
     root.walkDecls((ruleNode) => {
-      const isFontProperty = FONT_PROPERTIES.some((prop) =>
-        typeof prop === "string"
-          ? prop === ruleNode.prop
-          : prop.test(ruleNode.prop)
-      );
+      const isFontProperty = FONT_PROPERTIES.includes(ruleNode.prop);
       const usesVariable = /var\(--.*\)/.test(ruleNode.value);
       const isGlobalKeyword = GLOBAL_KEYWORDS.includes(ruleNode.value);
 

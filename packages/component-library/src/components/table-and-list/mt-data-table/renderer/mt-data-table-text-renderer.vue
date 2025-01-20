@@ -28,7 +28,7 @@
 import type { PropType } from "vue";
 import { defineComponent, computed } from "vue";
 import type { BaseColumnDefinition } from "../mt-data-table.vue";
-import { get } from "lodash-es";
+import { get } from "@/utils/object";
 
 export interface TextColumnDefinition extends BaseColumnDefinition {
   renderer: "text";
@@ -53,10 +53,12 @@ export default defineComponent({
 
   setup(props) {
     const renderPreviewImage = computed(() => {
+      // @ts-expect-error
       return get(props.data, props.columnDefinition.previewImage || "");
     });
 
     const renderString = computed(() => {
+      // @ts-expect-error
       return get(props.data, props.columnDefinition.property);
     });
 

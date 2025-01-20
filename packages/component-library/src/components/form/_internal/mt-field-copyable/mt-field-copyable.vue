@@ -22,7 +22,7 @@ import MtIcon from "../../../icons-media/mt-icon/mt-icon.vue";
 import MtTooltipDirective from "../../../../directives/tooltip.directive";
 import MtNotificationMixin from "../../../../mixins/notification.mixin";
 import { copyToClipboard as copyToClipboardUtil } from "../../../../utils/dom";
-import { useI18n } from "@/composables/useI18n";
+import { useI18n } from "vue-i18n";
 
 export default defineComponent({
   name: "MtFieldCopyable",

@@ -1,18 +1,32 @@
 import MtColorpicker from "./mt-colorpicker.vue";
 import type { StoryObj } from "@storybook/vue3";
 import type { SlottedMeta } from "@/_internal/story-helper";
+import { ref } from "vue";
+import { fn } from "@storybook/test";
 
-export type MtColorpickerMeta = SlottedMeta<typeof MtColorpicker, "default">;
+export type MtColorpickerMeta = SlottedMeta<typeof MtColorpicker, "default" | "updateModelValue">;
 
 export default {
   title: "Components/Form/mt-colorpicker",
   component: MtColorpicker,
   render: (args) => ({
     components: { MtColorpicker },
-    template: '<mt-colorpicker v-bind="args"></mt-colorpicker>',
+    template: `<mt-colorpicker 
+      v-bind="args"
+      :modelValue="currentModelValue"
+      @update:modelValue="onUpdateModelValue"
+    ></mt-colorpicker>`,
     setup: () => {
+      const currentModelValue = ref(args.modelValue);
+      const onUpdateModelValue = (value: string) => {
+        currentModelValue.value = value;
+        args.updateModelValue(value);
+      };
+
       return {
         args,
+        currentModelValue,
+        onUpdateModelValue,
       };
     },
   }),
@@ -30,6 +44,8 @@ export default {
     isInherited: false,
     isInheritanceField: false,
     disableInheritanceToggle: false,
+    compact: false,
+    updateModelValue: fn(),
   },
 } as MtColorpickerMeta;
 

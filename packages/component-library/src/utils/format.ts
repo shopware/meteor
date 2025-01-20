@@ -19,7 +19,7 @@ export function currency(
           maximumFractionDigits: 20,
         };
 
-  const opts = {
+  const opts: Intl.NumberFormatOptions = {
     style: "currency",
     currency: sign,
     ...decimalOpts,

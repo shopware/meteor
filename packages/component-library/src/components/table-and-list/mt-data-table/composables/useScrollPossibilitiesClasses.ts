@@ -1,6 +1,6 @@
 import type { Ref } from "vue";
 import { onUpdated, nextTick, onBeforeUnmount, onMounted } from "vue";
-import { throttle } from "lodash-es";
+import { throttle } from "@/utils/throttle";
 
 /**
  * This composable expect a Vue reference to an HTML element. It sets
