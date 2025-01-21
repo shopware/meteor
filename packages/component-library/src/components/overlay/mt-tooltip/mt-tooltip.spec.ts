@@ -1038,4 +1038,31 @@ describe("mt-tooltip", () => {
     // ASSERT
     expect(screen.getByRole("tooltip", { name: "Tooltip" })).toBeVisible();
   });
+
+  it("does show a tooltip when focusing a disabled link button", async () => {
+    // ARRANGE
+    render({
+      template: `
+<mt-tooltip content="Tooltip">
+  <template #default="params">
+    <mt-button v-bind="params" disabled link="https://www.shopware.com">Focus to open tooltip</mt-button>
+  </template>
+</mt-tooltip>
+`,
+      components: {
+        MtTooltip,
+        MtButton,
+      },
+    });
+
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime,
+    });
+
+    // ACT
+    await user.tab();
+
+    // ARRANGE
+    expect(screen.getByRole("tooltip", { name: "Tooltip" })).toBeVisible();
+  });
 });
