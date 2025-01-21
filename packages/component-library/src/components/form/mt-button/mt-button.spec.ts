@@ -4,6 +4,46 @@ import { vi } from "vitest";
 import { userEvent } from "@storybook/test";
 
 describe("mt-button", () => {
+  it("emits an focus event when focusing on a button", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtButton, {
+      props: {
+        // @ts-expect-error -- Event handler is not typed because they are inherited
+        onFocus: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.tab();
+
+    // ASSERT
+    expect(screen.getByRole("button")).toHaveFocus();
+    expect(handler).toHaveBeenCalledOnce();
+  });
+
+  it("emits an blur event when blurring a button", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtButton, {
+      props: {
+        // @ts-expect-error -- Event handler is not typed because they are inherited
+        onBlur: handler,
+      },
+    });
+
+    await userEvent.tab();
+
+    // ACT
+    await userEvent.tab();
+
+    // ASSERT
+    expect(screen.getByRole("button")).not.toHaveFocus();
+    expect(handler).toHaveBeenCalledOnce();
+  });
+
   it("performs an action when clicking on a button", async () => {
     // ARRANGE
     const handler = vi.fn();
