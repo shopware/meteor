@@ -62,6 +62,26 @@ describe("mt-button", () => {
     expect(handler).toHaveBeenCalledOnce();
   });
 
+  it("does not emit an event when clicking on a loading button", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtButton, {
+      props: {
+        // @ts-expect-error -- Event handler is not typed because they are inherited
+        onClick: handler,
+        isLoading: true,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("button"));
+
+    // ASSERT
+    expect(screen.getByRole("button")).toBeDisabled();
+    expect(handler).not.toHaveBeenCalled();
+  });
+
   it.each(["{Enter}", " "])('performs an action when pressing "%s" on a button', async (key) => {
     // ARRANGE
     const handler = vi.fn();
