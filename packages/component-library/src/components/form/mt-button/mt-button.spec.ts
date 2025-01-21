@@ -202,4 +202,34 @@ describe("mt-button", () => {
     // ASSERT
     expect(screen.getByRole("link")).not.toHaveFocus();
   });
+
+  it("is not possible to focus a disabled button", async () => {
+    // ARRANGE
+    render(MtButton, {
+      props: {
+        disabled: true,
+      },
+    });
+
+    // ACT
+    await userEvent.tab();
+
+    // ASSERT
+    expect(screen.getByRole("button")).not.toHaveFocus();
+  });
+
+  it("is not possible to focus a loading button", async () => {
+    // ARRANGE
+    render(MtButton, {
+      props: {
+        isLoading: true,
+      },
+    });
+
+    // ACT
+    await userEvent.tab();
+
+    // ASSERT
+    expect(screen.getByRole("button")).not.toHaveFocus();
+  });
 });
