@@ -1,10 +1,11 @@
 <template>
   <a
     v-if="link"
-    :href="!disabled ? link : ''"
+    :href="disabled || isLoading ? '' : link"
     target="_blank"
     rel="noopener"
     class="mt-button"
+    :tabindex="(disabled || isLoading) && !isInsideTooltip ? -1 : 0"
     :class="buttonClasses"
     v-bind="$attrs"
   >
