@@ -168,6 +168,11 @@ const bodyClasses = computed(() => ({
   border: 0 none;
   outline: none;
   cursor: pointer;
+  border-radius: var(--border-radius-xs);
+
+  &:focus-visible {
+    outline: 2px solid var(--color-border-brand-selected);
+  }
 }
 
 .mt-banner--info {
