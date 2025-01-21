@@ -232,4 +232,28 @@ describe("mt-button", () => {
     // ASSERT
     expect(screen.getByRole("button")).not.toHaveFocus();
   });
+
+  it.each(["{Enter}", " "])(
+    'does not perform an action when pressing "%s" on a loading button',
+    async (key) => {
+      // ARRANGE
+      const handler = vi.fn();
+
+      render(MtButton, {
+        props: {
+          // @ts-expect-error -- Event handler is not typed because they are inherited
+          onClick: handler,
+          isLoading: true,
+        },
+      });
+
+      await userEvent.tab();
+
+      // ACT
+      await userEvent.keyboard(key);
+
+      // ASSERT
+      expect(handler).not.toHaveBeenCalled();
+    },
+  );
 });
