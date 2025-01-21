@@ -1092,4 +1092,33 @@ describe("mt-tooltip", () => {
     // ARRANGE
     expect(screen.getByRole("tooltip", { name: "Tooltip" })).toBeVisible();
   });
+
+  it("shows the tooltip when hovering over the disabled link button", async () => {
+    // ARRANGE
+    render({
+      template: `
+<mt-tooltip content="Tooltip" delayDurationInMs="100" hideDelayDurationInMs="50">
+  <template #default="params">
+    <mt-button v-bind="params" link="https://www.shopware.com" disabled>Hover to open tooltip</mt-button>
+  </template>
+</mt-tooltip>`,
+      components: {
+        MtTooltip,
+        MtButton,
+      },
+    });
+
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime,
+    });
+
+    // ACT
+    await user.hover(screen.getByRole("link"));
+
+    vi.advanceTimersByTime(100);
+    await flushPromises();
+
+    // ASSERT
+    expect(screen.getByRole("tooltip", { name: "Tooltip" })).toBeVisible();
+  });
 });
