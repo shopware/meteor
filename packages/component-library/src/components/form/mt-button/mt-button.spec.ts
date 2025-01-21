@@ -173,4 +173,33 @@ describe("mt-button", () => {
     // ASSERT
     expect(screen.getByRole("link")).not.toHaveFocus();
   });
+
+  it("does not redirect when clicking on a loading link button", async () => {
+    // ARRANGE
+    render(MtButton, {
+      props: {
+        isLoading: true,
+        link: "https://storybook.js.org",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("link")).toHaveAttribute("href", "");
+  });
+
+  it("is not possible to focus a disabled link button", async () => {
+    // ARRANGE
+    render(MtButton, {
+      props: {
+        isLoading: true,
+        link: "https://storybook.js.org",
+      },
+    });
+
+    // ACT
+    await userEvent.tab();
+
+    // ASSERT
+    expect(screen.getByRole("link")).not.toHaveFocus();
+  });
 });
