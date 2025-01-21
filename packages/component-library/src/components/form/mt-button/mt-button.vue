@@ -5,7 +5,7 @@
     target="_blank"
     rel="noopener"
     class="mt-button"
-    :tabindex="(disabled && !isInsideTooltip) || isLoading ? -1 : 0"
+    :tabindex="(disabled || isLoading) && !isInsideTooltip ? -1 : 0"
     :class="buttonClasses"
     v-bind="$attrs"
   >
