@@ -144,4 +144,17 @@ describe("mt-button", () => {
       expect(handler).not.toHaveBeenCalled();
     },
   );
+
+  it("does not redirect when clicking on a disabled link button", async () => {
+    // ARRANGE
+    render(MtButton, {
+      props: {
+        disabled: true,
+        link: "https://storybook.js.org",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("link")).toHaveAttribute("href", "");
+  });
 });
