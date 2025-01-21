@@ -65,6 +65,10 @@ const props = withDefaults(
   },
 );
 
+defineEmits<{
+  close: [bannerIndex?: string];
+}>();
+
 const bannerIcon = computed(() => {
   if (props.icon) return props.icon;
 
