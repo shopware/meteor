@@ -157,4 +157,20 @@ describe("mt-button", () => {
     // ASSERT
     expect(screen.getByRole("link")).toHaveAttribute("href", "");
   });
+
+  it("is not possible to focus a disabled link button", async () => {
+    // ARRANGE
+    render(MtButton, {
+      props: {
+        disabled: true,
+        link: "https://storybook.js.org",
+      },
+    });
+
+    // ACT
+    await userEvent.tab();
+
+    // ASSERT
+    expect(screen.getByRole("link")).not.toHaveFocus();
+  });
 });

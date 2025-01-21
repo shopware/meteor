@@ -5,6 +5,7 @@
     target="_blank"
     rel="noopener"
     class="mt-button"
+    :tabindex="disabled ? -1 : 0"
     :class="buttonClasses"
     v-bind="$attrs"
   >
