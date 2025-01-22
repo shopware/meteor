@@ -10,7 +10,11 @@
       :placeholder="placeholder || t('placeholder')"
     />
 
-    <mt-icon name="regular-search-s" size="1rem" color="var(--color-icon-primary-default)" />
+    <mt-icon
+      name="regular-search-s"
+      size="var(--scale-size-16)"
+      color="var(--color-icon-primary-default)"
+    />
   </div>
 </template>
 
@@ -67,11 +71,11 @@ defineEmits<{
 }
 
 .mt-search--size-default {
-  padding: 0.75rem 1rem;
+  padding: var(--scale-size-12) var(--scale-size-16);
 }
 
 .mt-search--size-small {
-  padding: 0.25rem 1rem;
+  padding: var(--scale-size-4) var(--scale-size-16);
 }
 
 .mt-search__input {
