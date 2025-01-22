@@ -6,7 +6,7 @@
       @change="$emit('change', ($event.target as HTMLInputElement).value || '')"
       class="mt-search__input"
       :disabled="disabled"
-      type="text"
+      type="search"
       :placeholder="placeholder || t('placeholder')"
     />
 
@@ -91,6 +91,13 @@ defineEmits<{
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
+
+  &::-webkit-search-cancel-button,
+  &::-webkit-search-decoration,
+  &::-webkit-search-results-button,
+  &::-webkit-search-results-decoration {
+    display: none;
+  }
 
   &::placeholder {
     color: var(--color-text-secondary-default);
