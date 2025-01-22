@@ -8,8 +8,9 @@
         'mt-link--disabled': disabled,
       },
     ]"
+    :href="disabled ? undefined : to"
+    :role="as === 'a' ? 'link' : undefined"
     :aria-disabled="disabled"
-    role="link"
     :tabindex="disabled ? -1 : 0"
     v-bind="to ? { ...$attrs, to } : $attrs"
     @click="disabled ? undefined : $emit('click', $event)"
@@ -50,7 +51,7 @@ defineEmits<{
 <style scoped>
 .mt-link {
   display: inline-flex;
-  column-gap: 0.25rem;
+  column-gap: var(--scale-size-4);
   align-items: center;
   cursor: pointer;
   margin: 0;

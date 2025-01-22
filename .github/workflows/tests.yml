@@ -165,12 +165,6 @@ jobs:
           name: nuxt-app--playwright-test-results
           path: examples/nuxt-app/test-results/
 
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: meteor-admin-sdk--playwright-test-results
-          path: packages/admin-sdk/playwright-report/
-
   tested-versions:
     name: tested-versions
     runs-on: ubuntu-latest

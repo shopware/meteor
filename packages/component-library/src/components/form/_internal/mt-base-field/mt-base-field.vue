@@ -25,7 +25,12 @@
         <slot name="label" />
       </label>
 
-      <mt-help-text v-if="helpText" class="mt-field__help-text" :text="helpText" />
+      <mt-help-text
+        v-if="helpText"
+        class="mt-field__help-text"
+        :text="helpText"
+        placement="right"
+      />
     </div>
 
     <div class="mt-block-field__block">
