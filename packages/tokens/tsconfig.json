@@ -31,7 +31,7 @@
     "lib": ["es2022"]
   },
   "include": [
-    "./.eslintrc.cjs",
+    "./eslint.config.js",
     "./vitest.setup.ts",
     "./vitest.config.ts",
     "src",
