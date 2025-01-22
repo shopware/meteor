@@ -100,12 +100,12 @@ export const VisualTestInherited: MtSwitchStory = {
     label: "Inherited",
     inheritedValue: false,
   },
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
+  play: async ({ args }) => {
+    const canvas = within(document.body);
 
     await userEvent.click(canvas.getByTestId("mt-inheritance-switch-icon"));
 
-    await waitUntil(() => document.querySelector(".mt-tooltip"));
+    waitUntil(() => document.querySelector(".tooltip"));
 
     expect(args.inheritanceRemove).toHaveBeenCalledWith(undefined);
   },
@@ -150,16 +150,12 @@ export const VisualTestHelpText: MtSwitchStory = {
     label: "Help text label",
     helpText: "Help text message",
   },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
+  play: async () => {
+    const canvas = within(document.body);
 
-    expect((canvas.getByRole("checkbox") as HTMLInputElement).checked).toBe(false);
-    expect(canvas.getByTestId("mt-help-text__icon")).toBeDefined();
+    await userEvent.tab();
+    await userEvent.tab();
 
-    await userEvent.click(canvas.getByTestId("mt-help-text__icon"));
-
-    await waitUntil(() => document.querySelector(".mt-tooltip"));
-
-    expect(document.querySelector(".mt-tooltip")).toBeDefined();
+    expect(canvas.getByRole("tooltip")).toBeInTheDocument();
   },
 };

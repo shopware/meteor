@@ -3,7 +3,7 @@
     <slot name="customIcon">
       <mt-icon
         v-if="!hideIcon"
-        size="1.25rem"
+        size="var(--scale-size-20)"
         class="mt-banner__icon"
         :name="bannerIcon"
         decorative
@@ -65,6 +65,10 @@ const props = withDefaults(
   },
 );
 
+defineEmits<{
+  close: [bannerIndex?: string];
+}>();
+
 const bannerIcon = computed(() => {
   if (props.icon) return props.icon;
 
@@ -100,16 +104,19 @@ const bodyClasses = computed(() => ({
 
 <style scoped>
 .mt-banner {
-  --mt-banner-close-button-size: 2.5rem;
+  --mt-banner-close-button-size: var(--scale-size-40);
 
   border-width: 1px;
+  padding: var(--scale-size-24);
   border-style: solid;
   border-radius: var(--border-radius-xs);
-  position: relative;
-  margin: 0 auto 1.25rem;
+  margin: 0 auto var(--scale-size-20);
+  display: flex;
+  flex-direction: row;
+  gap: var(--scale-size-16);
 
   & ul {
-    padding: 0.5rem 0 0.5rem 1.25rem;
+    padding: var(--scale-size-8) 0 var(--scale-size-8) var(--scale-size-20);
   }
 }
 
@@ -122,48 +129,31 @@ const bodyClasses = computed(() => ({
 }
 
 .mt-banner__body {
-  padding: 1.5rem 3.75rem 1.5rem 1.5rem;
   font-family: var(--font-family-body);
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.25rem;
-}
-
-.mt-banner__body--icon {
-  padding: 1.5rem 3.75rem;
-}
-
-.mt-banner__body--closable {
-  padding-right: var(--mt-banner-close-button-size);
+  flex: 1;
+  gap: var(--scale-size-4);
 }
 
 .mt-banner__icon {
-  position: absolute;
-  display: block;
-  left: 1.625rem;
-  top: 1.75rem;
-  width: 1.25rem;
-  height: 1.25rem;
+  width: var(--scale-size-20);
+  height: var(--scale-size-20);
 }
 
 .mt-banner__close {
   width: var(--mt-banner-close-button-size);
   height: var(--mt-banner-close-button-size);
-  line-height: var(--mt-banner-close-button-size);
-  position: absolute;
-  display: block;
-  top: 0.75rem;
-  right: 0.75rem;
-  padding: 0;
-  margin: 0;
-  text-align: center;
-  background: none;
-  border: 0 none;
-  outline: none;
-  cursor: pointer;
+  border-radius: var(--border-radius-xs);
+  margin-top: calc(var(--scale-size-8) * -1);
+  margin-right: calc(var(--scale-size-8) * -1);
+
+  &:focus-visible {
+    outline: 2px solid var(--color-border-brand-selected);
+  }
 }
 
 .mt-banner--info {
