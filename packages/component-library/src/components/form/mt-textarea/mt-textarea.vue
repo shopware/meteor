@@ -153,7 +153,7 @@ defineProps<{
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
   color: var(--color-text-tertiary-default);
-  margin-top: 0.1875rem;
+  margin-top: var(--scale-size-4);
 }
 
 .mt-textarea__max-length {
@@ -163,6 +163,6 @@ defineProps<{
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
   color: var(--color-text-tertiary-default);
-  margin-top: 0.1875rem;
+  margin-top: var(--scale-size-4);
 }
 </style>
