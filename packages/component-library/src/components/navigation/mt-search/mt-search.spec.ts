@@ -3,6 +3,25 @@ import MtSearch from "./mt-search.vue";
 import { userEvent } from "@storybook/test";
 
 describe("mt-search", () => {
+  it("changes the value when typing in the search", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtSearch, {
+      props: {
+        modelValue: "",
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    // ACT
+    await userEvent.type(screen.getByRole("searchbox"), "Hello");
+
+    // ASSERT
+    expect(screen.getByRole("searchbox")).toHaveValue("Hello");
+    expect(handler).toHaveBeenCalledWith("Hello");
+  });
+
   it("has a default placeholder of search", async () => {
     // ARRANGE
     render(MtSearch);
