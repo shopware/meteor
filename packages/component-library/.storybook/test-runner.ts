@@ -1,3 +1,5 @@
+import type { TestRunnerConfig } from "@storybook/test-runner";
+
 const path = require("path");
 const { toMatchImageSnapshot } = require("jest-image-snapshot");
 
@@ -51,4 +53,4 @@ module.exports = {
       customReceivedDir: customReceivedDir,
     });
   },
-};
+} satisfies TestRunnerConfig;
