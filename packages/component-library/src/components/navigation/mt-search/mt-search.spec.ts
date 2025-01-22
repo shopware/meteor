@@ -9,4 +9,16 @@ describe("mt-search", () => {
     // ASSERT
     expect(screen.getByRole("searchbox")).toHaveAttribute("placeholder", "Search");
   });
+
+  it("has the specified placeholder", async () => {
+    // ARRANGE
+    render(MtSearch, {
+      props: {
+        placeholder: "Find me",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("searchbox")).toHaveAttribute("placeholder", "Find me");
+  });
 });
