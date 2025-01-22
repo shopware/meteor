@@ -250,11 +250,16 @@ export default defineComponent({
 
     .mt-field__label {
       margin-bottom: 0;
+      align-items: center;
 
       label {
         cursor: pointer;
         flex-grow: initial;
         padding: 15px 0 15px var(--scale-size-4);
+      }
+
+      .mt-help-text {
+        margin-left: var(--scale-size-8);
       }
     }
 
@@ -371,7 +376,7 @@ export default defineComponent({
       }
     }
 
-    &:has(:focus-visible) {
+    &:has(input:focus-visible) {
       .mt-field__switch-state {
         outline: 2px solid var(--color-border-brand-selected);
         outline-offset: 2px;
