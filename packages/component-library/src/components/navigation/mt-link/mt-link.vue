@@ -9,7 +9,6 @@
       },
     ]"
     :aria-disabled="disabled"
-    role="link"
     :tabindex="disabled ? -1 : 0"
     v-bind="to ? { ...$attrs, to } : $attrs"
     @click="disabled ? undefined : $emit('click', $event)"
