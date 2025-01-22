@@ -23,6 +23,11 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.head_ref }}
+        if: ${{ github.event.pull_request.head.repo.full_name == 'shopware/meteor' }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        if: ${{ github.event.pull_request.head.repo.full_name != 'shopware/meteor' }}
 
       - uses: pnpm/action-setup@v3
         with:
@@ -54,7 +59,7 @@ jobs:
         run: pnpx turbo run lint:types
 
       - name: Commit changes
-        if: always()
+        if: always() && ${{ github.event.pull_request.head.repo.full_name == 'shopware/meteor' }}
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Apply code formatting and fixable ESLint issues"
@@ -159,12 +164,6 @@ jobs:
         with:
           name: nuxt-app--playwright-test-results
           path: examples/nuxt-app/test-results/
-
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: meteor-admin-sdk--playwright-test-results
-          path: packages/admin-sdk/playwright-report/
 
   tested-versions:
     name: tested-versions
