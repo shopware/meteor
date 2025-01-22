@@ -51,7 +51,7 @@ defineEmits<{
 <style scoped>
 .mt-link {
   display: inline-flex;
-  column-gap: 0.25rem;
+  column-gap: var(--scale-size-4);
   align-items: center;
   cursor: pointer;
   margin: 0;
