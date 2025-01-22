@@ -285,6 +285,10 @@ export default defineComponent({
     & .mt-field__label {
       margin-bottom: 0;
       margin-left: var(--scale-size-4);
+
+      & .mt-help-text {
+        margin-left: var(--scale-size-8);
+      }
     }
 
     & .mt-field__checkbox {

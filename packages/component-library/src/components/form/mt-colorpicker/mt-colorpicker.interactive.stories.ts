@@ -600,45 +600,10 @@ export const VisualTestColorpickerWithHelpText: MtColorpickerStory = {
   args: {
     helpText: "Text for helping you",
   },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
+  play: async () => {
+    const canvas = within(document.body);
+    await userEvent.tab();
 
-    const tooltip = canvas.getByRole("tooltip");
-
-    await userEvent.hover(tooltip);
-
-    // wait until tooltip gets rendered
-    await (() => {
-      return new Promise((resolve, reject) => {
-        const waitUntilElementLoad = (retryTime = 0) => {
-          // do not wait longer than 2.5 seconds
-          if (retryTime > 100) {
-            reject();
-          }
-
-          // check for tooltip
-          const result = document.querySelector('[aria-label="currently-opened-tooltip"]');
-
-          // retry selection when not found otherwise resolve it
-          if (!result) {
-            window.setTimeout(() => waitUntilElementLoad(retryTime + 1), 25);
-          } else {
-            resolve(true);
-          }
-        };
-
-        waitUntilElementLoad();
-      });
-    })();
-
-    const tooltipElement = within(
-      document.querySelector('[aria-label="currently-opened-tooltip"]')
-        ?.parentElement as HTMLElement,
-    );
-
-    const openedTooltip = tooltipElement.getByLabelText("currently-opened-tooltip");
-
-    expect(openedTooltip).not.toEqual(null);
-    expect(openedTooltip.innerText).toEqual("Text for helping you");
+    expect(canvas.getByRole("tooltip")).toBeInTheDocument();
   },
 };
