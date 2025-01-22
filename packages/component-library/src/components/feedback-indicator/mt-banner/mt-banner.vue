@@ -114,6 +114,12 @@ const bodyClasses = computed(() => ({
   display: flex;
   flex-direction: row;
   gap: var(--scale-size-16);
+  border-color: var(--mt-banner__border-color);
+  background-color: var(--mt-banner__background-color);
+
+  & :is(.mt-banner__icon, .mt-banner__close) {
+    color: var(--mt-banner__icon-color);
+  }
 
   & ul {
     padding: var(--scale-size-8) 0 var(--scale-size-8) var(--scale-size-20);
@@ -157,56 +163,38 @@ const bodyClasses = computed(() => ({
 }
 
 .mt-banner--info {
-  border-color: var(--color-border-brand-selected);
-  background-color: var(--color-background-brand-default);
-
-  & :is(.mt-banner__icon, .mt-banner__close) {
-    color: var(--color-icon-brand-default);
-  }
+  --mt-banner__border-color: var(--color-border-brand-selected);
+  --mt-banner__background-color: var(--color-background-brand-default);
+  --mt-banner__icon-color: var(--color-icon-brand-default);
 }
 
 .mt-banner--attention {
-  border-color: var(--color-border-attention-default);
-  background-color: var(--color-background-attention-default);
-
-  & :is(.mt-banner__icon, .mt-banner__close) {
-    color: var(--color-icon-attention-default);
-  }
+  --mt-banner__border-color: var(--color-border-attention-default);
+  --mt-banner__background-color: var(--color-background-attention-default);
+  --mt-banner__icon-color: var(--color-icon-attention-default);
 }
 
 .mt-banner--critical {
-  border-color: var(--color-border-critical-default);
-  background-color: var(--color-background-critical-default);
-
-  & :is(.mt-banner__icon, .mt-banner__close) {
-    color: var(--color-icon-critical-default);
-  }
+  --mt-banner__border-color: var(--color-border-critical-default);
+  --mt-banner__background-color: var(--color-background-critical-default);
+  --mt-banner__icon-color: var(--color-icon-critical-default);
 }
 
 .mt-banner--positive {
-  border-color: var(--color-border-positive-default);
-  background-color: var(--color-background-positive-default);
-
-  & :is(.mt-banner__icon, .mt-banner__close) {
-    color: var(--color-icon-positive-default);
-  }
+  --mt-banner__border-color: var(--color-border-positive-default);
+  --mt-banner__background-color: var(--color-background-positive-default);
+  --mt-banner__icon-color: var(--color-icon-positive-default);
 }
 
 .mt-banner--inherited {
-  border-color: var(--color-border-accent-default);
-  background-color: var(--color-background-accent-default);
-
-  & :is(.mt-banner__icon, .mt-banner__close) {
-    color: var(--color-icon-accent-default);
-  }
+  --mt-banner__border-color: var(--color-border-accent-default);
+  --mt-banner__background-color: var(--color-background-accent-default);
+  --mt-banner__icon-color: var(--color-icon-accent-default);
 }
 
 .mt-banner--neutral {
-  border-color: var(--color-border-primary-default);
-  background-color: var(--color-elevation-surface-overlay);
-
-  & :is(.mt-banner__icon, .mt-banner__close) {
-    color: var(--color-icon-primary-default);
-  }
+  --mt-banner__border-color: var(--color-border-primary-default);
+  --mt-banner__background-color: var(--color-elevation-surface-overlay);
+  --mt-banner__icon-color: var(--color-icon-primary-default);
 }
 </style>
