@@ -3,7 +3,7 @@
     <input
       :value="modelValue"
       @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
-      @change="$emit('change', ($event.target as HTMLInputElement).value || '')"
+      @change="$emit('change', ($event.target as HTMLInputElement).value)"
       class="mt-search__input"
       :disabled="disabled"
       type="search"
