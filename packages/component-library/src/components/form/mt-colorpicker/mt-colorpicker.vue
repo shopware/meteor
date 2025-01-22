@@ -40,6 +40,10 @@
         :disabled="disabled"
         :readonly="readonly"
         @click="onClickInput"
+        @keyup.enter="toggleColorPicker"
+        @keyup.escape="outsideClick"
+        @focus="hasFocus = true"
+        @blur="hasFocus = false"
       />
 
       <mt-floating-ui
@@ -48,14 +52,19 @@
         :z-index="zIndex"
         :offset="-12"
       >
-        <div class="mt-colorpicker__colorpicker">
+        <div class="mt-colorpicker__colorpicker" ref="modal" @keyup.escape="outsideClick">
           <div
             ref="colorPicker"
             class="mt-colorpicker__colorpicker-selection"
             :style="{ backgroundColor: selectorBackground }"
             @mousedown="setDragging"
+            @keydown="keyMoveSelector"
           >
-            <div class="mt-colorpicker__colorpicker-selector" :style="selectorStyles" />
+            <div
+              class="mt-colorpicker__colorpicker-selector"
+              :style="selectorStyles"
+              tabindex="0"
+            />
           </div>
           <div class="mt-colorpicker__row">
             <div class="mt-colorpicker__sliders">
@@ -66,7 +75,8 @@
                 type="range"
                 min="0"
                 max="360"
-                step="1"
+                :step="hueStep"
+                @keydown="adjustHueStepSize"
               />
 
               <input
@@ -77,7 +87,8 @@
                 type="range"
                 min="0"
                 max="1"
-                step="0.01"
+                :step="alphaStep"
+                @keydown="adjustAlphaStepSize"
                 :style="{ backgroundImage: sliderBackground }"
               />
             </div>
@@ -226,6 +237,8 @@ import { debounce } from "@/utils/debounce";
 import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
 import MtFloatingUi from "../../_internal/mt-floating-ui/mt-floating-ui.vue";
 import MtText from "@/components/content/mt-text/mt-text.vue";
+import { createFocusTrap } from "focus-trap";
+import type { FocusTrap } from "focus-trap";
 import MtButton from "@/components/form/mt-button/mt-button.vue";
 import mtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import { useI18n } from "vue-i18n";
@@ -415,7 +428,6 @@ export default defineComponent({
       default: false,
     },
   },
-
   data(): {
     localValue:
       | string
@@ -428,6 +440,9 @@ export default defineComponent({
     hueValue: number;
     alphaValue: number;
     hasFocus: boolean;
+    trap: FocusTrap | null;
+    hueStep: number;
+    alphaStep: number;
   } {
     return {
       localValue: this.modelValue,
@@ -439,6 +454,9 @@ export default defineComponent({
       hueValue: 0,
       alphaValue: 1,
       hasFocus: false,
+      trap: null,
+      hueStep: 1,
+      alphaStep: 0.01,
     };
   },
 
@@ -720,6 +738,7 @@ export default defineComponent({
       }
 
       if (!visibleStatus) {
+        this.trap?.deactivate();
         return;
       }
 
@@ -776,6 +795,9 @@ export default defineComponent({
 
   beforeUnmount(): void {
     window.removeEventListener("mousedown", this.outsideClick);
+    if (this.trap) {
+      this.trap.deactivate();
+    }
   },
 
   methods: {
@@ -808,6 +830,11 @@ export default defineComponent({
       }
 
       this.visible = false;
+
+      if (this.trap) {
+        this.trap.deactivate();
+      }
+
       this.removeOutsideClickEvent();
     },
 
@@ -826,12 +853,25 @@ export default defineComponent({
 
       this.visible = !this.visible;
 
+      this.$nextTick(() => {
+        const modal = this.$refs.modal as HTMLElement | null;
+        if (modal) {
+          this.trap = createFocusTrap(modal, {
+            escapeDeactivates: true,
+            clickOutsideDeactivates: true,
+            initialFocus: false,
+            tabbableOptions: {
+              displayCheck: "none",
+            },
+          });
+          this.trap.activate();
+        }
+      });
+
       if (this.visible) {
         this.setOutsideClickEvent();
-
         return;
       }
-
       this.removeOutsideClickEvent();
     },
 
@@ -876,6 +916,39 @@ export default defineComponent({
 
       this.saturationValue = Math.floor(correctedXValue);
       this.luminanceValue = Math.floor(correctedYValue);
+    },
+
+    keyMoveSelector(event: KeyboardEvent) {
+      if (!["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)) {
+        return;
+      }
+
+      event.preventDefault();
+
+      const BASE_STEP = 1;
+      const multiplier = event.shiftKey && event.ctrlKey ? 10 : event.shiftKey ? 5 : 1;
+      const STEP_SIZE = BASE_STEP * multiplier;
+
+      let newSaturationValue = this.saturationValue;
+      let newLuminanceValue = this.luminanceValue;
+
+      switch (event.key) {
+        case "ArrowRight":
+          newSaturationValue = Math.min(100, newSaturationValue + STEP_SIZE);
+          break;
+        case "ArrowLeft":
+          newSaturationValue = Math.max(0, newSaturationValue - STEP_SIZE);
+          break;
+        case "ArrowUp":
+          newLuminanceValue = Math.min(100, newLuminanceValue + STEP_SIZE);
+          break;
+        case "ArrowDown":
+          newLuminanceValue = Math.max(0, newLuminanceValue - STEP_SIZE);
+          break;
+      }
+
+      this.saturationValue = newSaturationValue;
+      this.luminanceValue = newLuminanceValue;
     },
 
     setDragging(event: MouseEvent) {
@@ -1330,6 +1403,26 @@ export default defineComponent({
     removeFocusClass() {
       this.hasFocus = false;
     },
+
+    adjustHueStepSize(event: KeyboardEvent): void {
+      if (event.shiftKey && event.ctrlKey) {
+        this.hueStep = 10;
+      } else if (event.shiftKey) {
+        this.hueStep = 5;
+      } else {
+        this.hueStep = 1;
+      }
+    },
+
+    adjustAlphaStepSize(event: KeyboardEvent): void {
+      if (event.shiftKey && event.ctrlKey) {
+        this.alphaStep = 0.1;
+      } else if (event.shiftKey) {
+        this.alphaStep = 0.05;
+      } else {
+        this.alphaStep = 0.01;
+      }
+    },
   },
 });
 </script>
@@ -1505,6 +1598,12 @@ export default defineComponent({
       cursor: pointer;
     }
 
+    &-slider-range:focus::-webkit-slider-thumb {
+      outline: 2px solid var(--color-border-brand-selected);
+      outline-offset: 2px;
+      border-radius: var(--border-radius-checkbox);
+    }
+
     &-slider-range::-moz-range-thumb {
       height: var(--scale-size-26);
       width: var(--scale-size-8);
@@ -1512,6 +1611,12 @@ export default defineComponent({
       background: var(--color-icon-static-default);
       border-radius: var(--border-radius-xs);
       cursor: pointer;
+    }
+
+    &-slider-range:focus::-moz-range-thumb {
+      outline: 2px solid var(--color-border-brand-selected);
+      outline-offset: 2px;
+      border-radius: var(--border-radius-checkbox);
     }
 
     &-wrapper {
@@ -1626,6 +1731,12 @@ export default defineComponent({
       cursor: pointer;
     }
 
+    &:focus::-webkit-slider-thumb {
+      outline: 2px solid var(--color-border-brand-selected);
+      outline-offset: 2px;
+      border-radius: var(--border-radius-checkbox);
+    }
+
     &::-moz-range-thumb {
       height: var(--scale-size-26);
       width: var(--scale-size-8);
@@ -1633,6 +1744,12 @@ export default defineComponent({
       border-radius: var(--border-radius-xs);
 
       cursor: pointer;
+    }
+
+    &:focus::-moz-range-thumb {
+      outline: 2px solid var(--color-border-brand-selected);
+      outline-offset: 2px;
+      border-radius: var(--border-radius-checkbox);
     }
   }
 
