@@ -88,6 +88,7 @@ defineEmits<{
   line-height: var(--font-line-height-xs);
   color: var(--color-text-primary-default);
   outline: none;
+  appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
 
