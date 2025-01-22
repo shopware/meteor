@@ -17,9 +17,9 @@
       onMouseleave,
       onMousedown,
       onMouseup: () => setState({ isPressingTrigger: false }),
-      'aria-describedby': isVisible ? `mt-tooltip--${id}__tooltip` : null,
+      'aria-describedby': isVisible ? `mt-tooltip--${id}__tooltip` : undefined,
     }"
-  ></slot>
+  />
 
   <Transition>
     <div v-show="isVisible" :data-placement="calculatedPlacement" style="position: absolute">
@@ -36,7 +36,6 @@
       >
         <span>{{ content }}</span>
 
-        <!-- @vue-ignore -->
         <svg
           ref="arrowRef"
           width="8"
@@ -81,6 +80,8 @@ import { useId } from "@/composables/useId";
 import { useTooltipState } from "./composables/useTooltipState";
 import { useTimeout } from "@vueuse/core";
 import { TooltipContext } from "./composables/useIsInsideTooltip";
+
+export type { Placement } from "@floating-ui/vue";
 
 const props = withDefaults(
   defineProps<{
@@ -167,9 +168,7 @@ const {
   floatingStyles,
   middlewareData,
   placement: calculatedPlacement,
-  // @ts-ignore
 } = useFloating(triggerRef, tooltipRef, {
-  // @ts-ignore
   middleware: [offset(8), flip(), shift(), arrow({ element: arrowRef, padding: 8 })],
   whileElementsMounted: autoUpdate,
   placement: props.placement,
@@ -201,7 +200,7 @@ provide(TooltipContext, true);
   line-height: var(--line-height-2xs);
   background: var(--color-elevation-surface-floating);
   line-height: var(--font-family-line-height-2xs);
-  padding: 0.75rem;
+  padding: var(--scale-size-12);
   border-radius: var(--border-radius-overlay);
   width: max-content;
 }
@@ -227,21 +226,21 @@ provide(TooltipContext, true);
 
 .v-enter-from[data-placement="top"],
 .v-leave-to[data-placement="top"] {
-  margin-bottom: 0.25rem;
+  margin-bottom: var(--scale-size-5);
 }
 
 .v-enter-from[data-placement="bottom"],
 .v-leave-to[data-placement="bottom"] {
-  margin-top: 0.25rem;
+  margin-top: var(--scale-size-5);
 }
 
 .v-enter-from[data-placement="left"],
 .v-leave-to[data-placement="left"] {
-  margin-right: 0.25rem;
+  margin-right: var(--scale-size-5);
 }
 
 .v-enter-from[data-placement="right"],
 .v-leave-to[data-placement="right"] {
-  margin-left: 0.25rem;
+  margin-left: var(--scale-size-5);
 }
 </style>
