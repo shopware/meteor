@@ -8,6 +8,8 @@
         'mt-link--disabled': disabled,
       },
     ]"
+    :href="disabled ? undefined : to"
+    :role="as === 'a' ? 'link' : undefined"
     :aria-disabled="disabled"
     :tabindex="disabled ? -1 : 0"
     v-bind="to ? { ...$attrs, to } : $attrs"
