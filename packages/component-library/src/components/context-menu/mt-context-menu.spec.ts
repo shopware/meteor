@@ -79,4 +79,26 @@ describe("mt-context-menu", async () => {
       expect(screen.getByRole("dialog")).toBeVisible();
     },
   );
+
+  it("is possible to set a custom element for the button", async () => {
+    // ARRANGE
+    render(
+      defineComponent({
+        template: `
+<mt-context-button>
+    <template #button>
+        <button>Open context menu</button> 
+    </template>
+</mt-context-button>
+`,
+        components: {
+          MtContextButton,
+        },
+      }),
+    );
+
+    // ASSERT
+    expect(screen.getByRole("button")).toBeVisible();
+    expect(screen.getByRole("button")).toHaveTextContent("Open context menu");
+  });
 });
