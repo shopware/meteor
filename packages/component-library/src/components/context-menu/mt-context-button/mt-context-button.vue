@@ -61,6 +61,7 @@ withDefaults(
   line-height: var(--font-line-height-l);
   font-size: var(--font-size-l);
   font-family: var(--font-family-body);
+  transition: background-color 0.15s ease-out;
 
   &:focus-visible {
     outline: 2px solid var(--color-border-brand-selected);
