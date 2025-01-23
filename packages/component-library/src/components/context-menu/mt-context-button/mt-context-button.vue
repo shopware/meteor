@@ -32,9 +32,6 @@ withDefaults(
     menuHorizontalAlign?: "right" | "left";
     menuVerticalAlign?: "bottom" | "top";
     icon?: string;
-    disabled?: boolean;
-    hasError?: boolean;
-    autoClose?: boolean;
     title?: string;
     childViews?: View[];
   }>(),
