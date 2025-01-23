@@ -27,6 +27,19 @@ describe("mt-context-menu", async () => {
     expect(screen.getByRole("dialog")).toBeVisible();
   });
 
+  it("closes the context menu when clicking on the button a second time", async () => {
+    // ARRANGE
+    render(MtContextButton);
+
+    await userEvent.click(screen.getByRole("button"));
+
+    // ACT
+    await userEvent.click(screen.getByRole("button"));
+
+    // ASSERT
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
   it.each([" ", "{Enter}"])(
     'is possible to open the context menu by pressing "%s"',
     async (key) => {
