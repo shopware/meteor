@@ -101,4 +101,46 @@ describe("mt-context-menu", async () => {
     expect(screen.getByRole("button")).toBeVisible();
     expect(screen.getByRole("button")).toHaveTextContent("Open context menu");
   });
+
+  it("shows the ellipsis icon by default", async () => {
+    // ARRANGE
+    render(
+      defineComponent({
+        template: `
+<mt-context-button>
+    <template #button-text>
+        Open context menu
+    </template>
+</mt-context-button>
+        `,
+        components: {
+          MtContextButton,
+        },
+      }),
+    );
+
+    // ASSERT
+    expect(screen.getByTestId("mt-icon__solid-ellipsis-h-s")).toBeVisible();
+  });
+
+  it("shows an icon when specified", async () => {
+    // ARRANGE
+    render(
+      defineComponent({
+        template: `
+<mt-context-button icon="solid-times-s">
+    <template #button-text>
+        Open context menu
+    </template>
+</mt-context-button>
+        `,
+        components: {
+          MtContextButton,
+        },
+      }),
+    );
+
+    // ASSERT
+    expect(screen.getByTestId("mt-icon__solid-times-s")).toBeVisible();
+  });
 });
