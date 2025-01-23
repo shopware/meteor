@@ -105,24 +105,6 @@ export default defineComponent({
       default: () => [],
     },
   },
-
-  data() {
-    return {};
-  },
-
-  computed: {
-    contextClass(): {
-      "is--disabled": boolean;
-      "has--error": boolean;
-    } {
-      return {
-        "is--disabled": this.disabled,
-        "has--error": this.hasError,
-      };
-    },
-  },
-
-  methods: {},
 });
 </script>
 
@@ -133,23 +115,6 @@ $mt-context-button-color-border: var(--color-border-primary-default);
 $mt-context-button-color-disabled: var(--color-icon-primary-disabled);
 
 .mt-context-button {
-  &.is--disabled {
-    .mt-context-button__button {
-      color: var(--color-icon-primary-disabled);
-      cursor: initial;
-
-      &:hover {
-        border: none;
-      }
-    }
-  }
-
-  &.is--disabled.is--open {
-    .mt-context-button__button {
-      border: none;
-    }
-  }
-
   &.is--open .mt-context-button__button {
     border-color: $mt-context-button-color-border;
   }
@@ -169,16 +134,6 @@ $mt-context-button-color-disabled: var(--color-icon-primary-disabled);
 
     &:hover {
       border-color: $mt-context-button-color-border;
-    }
-  }
-
-  &.has--error {
-    .mt-context-button__button {
-      color: $color-crimson-300;
-
-      .mt-icon {
-        color: $mt-context-button-color-text;
-      }
     }
   }
 }
