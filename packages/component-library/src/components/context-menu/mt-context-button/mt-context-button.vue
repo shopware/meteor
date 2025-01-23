@@ -53,13 +53,14 @@ withDefaults(
 <style scoped>
 .mt-context-button__button {
   color: var(--color-icon-primary-default);
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: baseline;
   border-radius: var(--border-radius-xs);
   height: var(--scale-size-24);
+  gap: var(--scale-size-8);
   padding-inline: var(--scale-size-10);
-  line-height: var(--font-line-height-l);
-  font-size: var(--font-size-l);
+  line-height: var(--font-line-height-xs);
+  font-size: var(--font-size-xs);
   font-family: var(--font-family-body);
   transition: background-color 0.15s ease-out;
 
