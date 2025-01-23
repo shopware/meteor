@@ -101,6 +101,7 @@ export const VisualTestHidesTheLastThreeItems: StoryObj = {
 
     // We need to wait until the component updated itself
     await waitFor(() => expect(canvas.getByText("Item 1")).toHaveAttribute("aria-hidden", "false"));
+    await waitFor(() => expect(canvas.getByText("Item 10")).toHaveAttribute("aria-hidden", "true"));
 
     await expect(canvas.getByText("Item 1")).toHaveAttribute("aria-hidden", "false");
     await expect(canvas.getByText("Item 2")).toHaveAttribute("aria-hidden", "false");
