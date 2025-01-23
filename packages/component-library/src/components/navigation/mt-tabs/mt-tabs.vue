@@ -25,6 +25,8 @@
             v-if="item.hasError"
             class="mt-tabs__error-badge"
             name="solid-exclamation-circle"
+            size="var(--scale-size-12)"
+            color="var(--color-icon-critical-default)"
           />
 
           <mt-color-badge v-if="item.badge" :variant="item.badge" rounded />
@@ -474,13 +476,5 @@ export default defineComponent({
 
 .mt-tabs__error-badge {
   margin-left: var(--scale-size-2);
-  width: var(--scale-size-12);
-  height: var(--scale-size-12);
-  color: var(--color-icon-critical-default);
-
-  > svg {
-    width: 100% !important;
-    height: 100% !important;
-  }
 }
 </style>
