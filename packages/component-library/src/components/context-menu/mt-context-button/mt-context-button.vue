@@ -51,27 +51,25 @@ withDefaults(
 </script>
 
 <style>
-.mt-context-button {
-  &.is--open .mt-context-button__button {
-    border-color: var(--color-border-primary-default);
+.mt-context-button__button {
+  color: var(--color-icon-primary-default);
+  display: grid;
+  place-items: center;
+  border-radius: var(--border-radius-xs);
+  height: var(--scale-size-24);
+  padding-inline: var(--scale-size-10);
+  line-height: var(--font-line-height-l);
+  font-size: var(--font-size-l);
+  font-family: var(--font-family-body);
+
+  &:focus-visible {
+    outline: 2px solid var(--color-border-brand-selected);
+    outline-offset: 2px;
   }
 
-  & .mt-context-button__button {
-    position: relative;
-    color: var(--color-icon-primary-default);
-    background: 0 none;
-    border: 1px solid transparent;
-    border-radius: var(--border-radius-xs);
-    cursor: pointer;
-    height: var(--scale-size-24);
-    line-height: 20px;
-    padding: 0 var(--scale-size-8);
-    outline: none;
-    font-family: var(--font-family-body);
-
-    &:hover {
-      border-color: var(--color-border-primary-default);
-    }
+  &:hover,
+  &:focus-visible {
+    background-color: var(--color-interaction-secondary-hover);
   }
 }
 </style>
