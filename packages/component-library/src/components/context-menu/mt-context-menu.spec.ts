@@ -144,4 +144,29 @@ describe("mt-context-menu", async () => {
     // ASSERT
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
   });
+
+  it("does not emit a click event when clicking on a disabled context menu item", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(
+      defineComponent({
+        components: { MtContextButton, MtContextMenuItem },
+        setup: () => ({ handler }),
+        template: `
+<mt-context-button>
+    <mt-context-menu-item disabled @click="handler">Item 1</mt-context-menu-item>
+</mt-context-button>
+ `,
+      }),
+    );
+
+    await userEvent.click(screen.getByRole("button"));
+
+    // ACT
+    await userEvent.click(screen.getByRole("menuitem"));
+
+    // ASSERT
+    expect(handler).not.toHaveBeenCalled();
+  });
 });
