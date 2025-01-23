@@ -3,7 +3,6 @@
     <template #trigger="{ toggleFloatingUi }">
       <slot name="button">
         <button
-          role="button"
           aria-haspopup="menu"
           aria-label="Context menu"
           class="mt-context-button__button"
