@@ -118,7 +118,7 @@ describe("mt-context-menu", async () => {
     await userEvent.click(screen.getByRole("menuitem"));
 
     // ASSERT
-    expect(handler).toHaveBeenCalled();
+    expect(handler).toHaveBeenCalledWith();
   });
 
   it("closes the context menu when clicking on a context menu item", async () => {
