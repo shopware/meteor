@@ -1,25 +1,11 @@
 import { userEvent } from "@storybook/test";
 import { render, screen } from "@testing-library/vue";
-import { defineComponent } from "vue";
 import MtContextButton from "./mt-context-button/mt-context-button.vue";
 
 describe("mt-context-menu", async () => {
   it("is possible to focus the button that opens the context menu", async () => {
     // ARRANGE
-    render(
-      defineComponent({
-        template: `
-<mt-context-button>
-    <template #button-text>
-        Open context menu
-    </template>
-</mt-context-button>
-        `,
-        components: {
-          MtContextButton,
-        },
-      }),
-    );
+    render(MtContextButton);
 
     // ACT
     await userEvent.tab();
@@ -30,20 +16,7 @@ describe("mt-context-menu", async () => {
 
   it("is possible to open the context menu by clicking on the button", async () => {
     // ARRANGE
-    render(
-      defineComponent({
-        template: `
-<mt-context-button>
-    <template #button-text>
-        Open context menu
-    </template>
-</mt-context-button>
-        `,
-        components: {
-          MtContextButton,
-        },
-      }),
-    );
+    render(MtContextButton);
 
     // ACT
     await userEvent.click(screen.getByRole("button"));
@@ -56,20 +29,7 @@ describe("mt-context-menu", async () => {
     'is possible to open the context menu by pressing "%s"',
     async (key) => {
       // ARRANGE
-      render(
-        defineComponent({
-          template: `
-<mt-context-button>
-    <template #button-text>
-        Open context menu
-    </template>
-</mt-context-button>
-        `,
-          components: {
-            MtContextButton,
-          },
-        }),
-      );
+      render(MtContextButton);
 
       // ARRANGE
       await userEvent.tab();
@@ -82,20 +42,9 @@ describe("mt-context-menu", async () => {
 
   it("is possible to set a custom element for the button", async () => {
     // ARRANGE
-    render(
-      defineComponent({
-        template: `
-<mt-context-button>
-    <template #button>
-        <button>Open context menu</button> 
-    </template>
-</mt-context-button>
-`,
-        components: {
-          MtContextButton,
-        },
-      }),
-    );
+    render(MtContextButton, {
+      slots: { button: "<button>Open context menu</button>" },
+    });
 
     // ASSERT
     expect(screen.getByRole("button")).toBeVisible();
@@ -104,20 +53,7 @@ describe("mt-context-menu", async () => {
 
   it("shows the ellipsis icon by default", async () => {
     // ARRANGE
-    render(
-      defineComponent({
-        template: `
-<mt-context-button>
-    <template #button-text>
-        Open context menu
-    </template>
-</mt-context-button>
-        `,
-        components: {
-          MtContextButton,
-        },
-      }),
-    );
+    render(MtContextButton);
 
     // ASSERT
     expect(screen.getByTestId("mt-icon__solid-ellipsis-h-s")).toBeVisible();
@@ -125,20 +61,11 @@ describe("mt-context-menu", async () => {
 
   it("shows an icon when specified", async () => {
     // ARRANGE
-    render(
-      defineComponent({
-        template: `
-<mt-context-button icon="solid-times-s">
-    <template #button-text>
-        Open context menu
-    </template>
-</mt-context-button>
-        `,
-        components: {
-          MtContextButton,
-        },
-      }),
-    );
+    render(MtContextButton, {
+      props: {
+        icon: "solid-times-s",
+      },
+    });
 
     // ASSERT
     expect(screen.getByTestId("mt-icon__solid-times-s")).toBeVisible();
