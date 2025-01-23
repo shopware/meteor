@@ -392,7 +392,7 @@ export default defineComponent({
 
   & button {
     outline-color: var(--color-border-brand-selected);
-    padding-inline: 0.25rem;
+    padding-inline: var(--scale-size-4);
     border-radius: var(--border-radius-button);
     transition: all 0.15s ease-out;
     width: 100%;

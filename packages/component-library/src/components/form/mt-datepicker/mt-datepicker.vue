@@ -308,7 +308,7 @@ export default defineComponent({
 
 .dp__input {
   height: var(--scale-size-48);
-  padding-left: 1rem !important;
+  padding-left: var(--scale-size-16) !important;
   border-radius: var(--border-radius-xs);
   font: inherit;
   color: var(--color-text-secondary-default);
@@ -363,7 +363,7 @@ export default defineComponent({
 }
 
 .dp__instance_calendar {
-  padding: 0.5rem !important;
+  padding: var(--scale-size-8) !important;
 }
 
 .dp__menu_inner {

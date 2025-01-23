@@ -109,7 +109,7 @@ const isInsideTooltip = useIsInsideTooltip();
   display: grid;
   grid-auto-flow: column;
   align-items: center;
-  column-gap: 0.5rem;
+  column-gap: var(--scale-size-8);
 }
 
 .mt-button__content--hidden {
@@ -318,19 +318,19 @@ const isInsideTooltip = useIsInsideTooltip();
 }
 
 .mt-button--default {
-  padding-inline: 1rem;
+  padding-inline: var(--scale-size-16);
   font-size: var(--font-size-xs);
   min-height: 2.5rem;
 }
 
 .mt-button--default.mt-button-square {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: var(--scale-size-40);
+  height: var(--scale-size-40);
 }
 
 .mt-button--large {
-  padding-left: 1.75rem;
-  padding-right: 1.75rem;
+  padding-left: var(--scale-size-28);
+  padding-right: var(--scale-size-28);
   min-height: 3rem;
   font-size: var(--font-size-2xs);
 }
