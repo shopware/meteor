@@ -50,7 +50,7 @@ withDefaults(
 );
 </script>
 
-<style>
+<style scoped>
 .mt-context-button__button {
   color: var(--color-icon-primary-default);
   display: grid;
