@@ -98,7 +98,9 @@ const ruleFunction: Rule = (primary, secondaryOptions, context) => {
             : messages.hardCodedValue(value);
 
           function fix() {
-            const newValue = Number(value.replace("px", ""));
+            const newValue = isUsingRemValue
+              ? Number(value.replace("rem", "")) * 16
+              : Number(value.replace("px", ""));
 
             const isOutsideOfScale = !SPACING_SCALE.includes(newValue);
             if (isOutsideOfScale) return;
@@ -114,7 +116,10 @@ const ruleFunction: Rule = (primary, secondaryOptions, context) => {
             node: ruleNode,
             result,
             ruleName,
-            fix: usingPixelValue && isLargerThanOnePixel ? fix : undefined,
+            fix:
+              (usingPixelValue && isLargerThanOnePixel) || isUsingRemValue
+                ? fix
+                : undefined,
           });
         }
       });
