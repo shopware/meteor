@@ -50,23 +50,18 @@ withDefaults(
 );
 </script>
 
-<style lang="scss">
-$mt-context-button-color-text: var(--color-icon-primary-default);
-$mt-context-button-border-radius: var(--border-radius-xs);
-$mt-context-button-color-border: var(--color-border-primary-default);
-$mt-context-button-color-disabled: var(--color-icon-primary-disabled);
-
+<style>
 .mt-context-button {
   &.is--open .mt-context-button__button {
-    border-color: $mt-context-button-color-border;
+    border-color: var(--color-border-primary-default);
   }
 
-  .mt-context-button__button {
+  & .mt-context-button__button {
     position: relative;
-    color: $mt-context-button-color-text;
+    color: var(--color-icon-primary-default);
     background: 0 none;
     border: 1px solid transparent;
-    border-radius: $mt-context-button-border-radius;
+    border-radius: var(--border-radius-xs);
     cursor: pointer;
     height: var(--scale-size-24);
     line-height: 20px;
@@ -75,7 +70,7 @@ $mt-context-button-color-disabled: var(--color-icon-primary-disabled);
     font-family: var(--font-family-body);
 
     &:hover {
-      border-color: $mt-context-button-color-border;
+      border-color: var(--color-border-primary-default);
     }
   }
 }
