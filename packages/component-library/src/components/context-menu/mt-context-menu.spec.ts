@@ -51,6 +51,16 @@ describe("mt-context-menu", async () => {
     expect(screen.getByRole("button")).toHaveTextContent("Open context menu");
   });
 
+  it("is possible to set a custom text for the button", async () => {
+    // ARRANGE
+    render(MtContextButton, {
+      slots: { "button-text": "Open context menu" },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("button")).toHaveTextContent("Open context menu");
+  });
+
   it("shows the ellipsis icon by default", async () => {
     // ARRANGE
     render(MtContextButton);
