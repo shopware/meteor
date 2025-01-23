@@ -51,4 +51,32 @@ describe("mt-context-menu", async () => {
     // ASSERT
     expect(screen.getByRole("dialog")).toBeVisible();
   });
+
+  it.each([" ", "{Enter}"])(
+    'is possible to open the context menu by pressing "%s"',
+    async (key) => {
+      // ARRANGE
+      render(
+        defineComponent({
+          template: `
+<mt-context-button>
+    <template #button-text>
+        Open context menu
+    </template>
+</mt-context-button>
+        `,
+          components: {
+            MtContextButton,
+          },
+        }),
+      );
+
+      // ARRANGE
+      await userEvent.tab();
+      await userEvent.keyboard(key);
+
+      // ACT
+      expect(screen.getByRole("dialog")).toBeVisible();
+    },
+  );
 });

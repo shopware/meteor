@@ -8,7 +8,6 @@
           aria-label="Context menu"
           class="mt-context-button__button"
           @click="toggleFloatingUi"
-          @keyup.enter="toggleFloatingUi"
         >
           <mt-icon :name="icon" small decorative />
 
