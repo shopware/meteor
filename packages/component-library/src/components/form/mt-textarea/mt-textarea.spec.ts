@@ -69,7 +69,7 @@ describe("mt-textarea", async () => {
     // ASSERT
     expect(handler).not.toHaveBeenCalled();
     expect(screen.getByRole("textbox")).toHaveValue("");
-    expect(screen.getByRole("textbox")).toBeDisabled("");
+    expect(screen.getByRole("textbox")).toBeDisabled();
   });
 
   it("shows the specified placholder", async () => {
@@ -168,9 +168,12 @@ describe("mt-textarea", async () => {
       },
     });
 
+    // ACT
+    await userEvent.tab();
+
     // ASSERT
     expect(screen.getByRole("tooltip")).toBeVisible();
-    expect(screen.getByText("Helptext")).toBeVisible();
+    expect(screen.getByRole("tooltip")).toHaveTextContent("Helptext");
   });
 
   it("displays no helptext when none is specified", async () => {
