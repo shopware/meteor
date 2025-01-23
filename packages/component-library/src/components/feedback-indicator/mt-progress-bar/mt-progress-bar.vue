@@ -67,7 +67,7 @@ const fillWidth = computed<`${string}%`>(() => {
     "label progress"
     "track track"
     "error error";
-  row-gap: 0.5rem;
+  row-gap: var(--scale-size-8);
 }
 
 .mt-progress-bar__progress-label {
@@ -78,7 +78,7 @@ const fillWidth = computed<`${string}%`>(() => {
 
 .mt-progress-bar__track {
   border-radius: var(--border-radius-round);
-  height: 0.5rem;
+  height: var(--scale-size-8);
   width: 100%;
   background: var(--color-background-primary-disabled);
   grid-area: track;
