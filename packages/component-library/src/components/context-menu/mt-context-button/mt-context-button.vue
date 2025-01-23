@@ -54,7 +54,7 @@ withDefaults(
 .mt-context-button__button {
   color: var(--color-icon-primary-default);
   display: flex;
-  align-items: baseline;
+  align-items: center;
   border-radius: var(--border-radius-xs);
   height: var(--scale-size-24);
   gap: var(--scale-size-8);
