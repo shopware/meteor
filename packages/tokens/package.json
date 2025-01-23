@@ -49,6 +49,7 @@
     "prettier": "^3.2.4",
     "style-dictionary": "^3.9.2",
     "tsx": "^4.7.0",
-    "typescript-eslint": "^8.21.0"
+    "typescript-eslint": "^8.21.0",
+    "eslint-config-prettier": "^10.0.1"
   }
 }
