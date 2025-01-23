@@ -22,90 +22,32 @@
   </mt-popover>
 </template>
 
-<script lang="ts">
-import type { PropType } from "vue";
-
-import { defineComponent } from "vue";
+<script setup lang="ts">
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import type { View } from "../../overlay/mt-popover/mt-popover.interfaces";
 import MtPopover from "../../overlay/mt-popover/mt-popover.vue";
 
-export default defineComponent({
-  name: "MtContextButtonVue",
-
-  components: {
-    "mt-icon": MtIcon,
-    "mt-popover": MtPopover,
+withDefaults(
+  defineProps<{
+    menuWidth?: number;
+    menuHorizontalAlign?: "right" | "left";
+    menuVerticalAlign?: "bottom" | "top";
+    icon?: string;
+    disabled?: boolean;
+    hasError?: boolean;
+    autoClose?: boolean;
+    title?: string;
+    childViews?: View[];
+  }>(),
+  {
+    menuWidth: 220,
+    menuHorizontalAlign: "right",
+    menuVerticalAlign: "bottom",
+    icon: "solid-ellipsis-h-s",
+    title: "",
+    default: [],
   },
-
-  props: {
-    menuWidth: {
-      type: Number,
-      required: false,
-      default: 220,
-    },
-
-    menuHorizontalAlign: {
-      type: String as PropType<"right" | "left">,
-      required: false,
-      default: "right",
-      validator(value: string) {
-        if (!value.length) {
-          return true;
-        }
-        return ["right", "left"].includes(value);
-      },
-    },
-
-    menuVerticalAlign: {
-      type: String,
-      required: false,
-      default: "bottom",
-      validator(value: string) {
-        if (!value.length) {
-          return true;
-        }
-        return ["bottom", "top"].includes(value);
-      },
-    },
-
-    icon: {
-      type: String,
-      required: false,
-      default: "solid-ellipsis-h-s",
-    },
-
-    disabled: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    hasError: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    autoClose: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
-
-    title: {
-      type: String,
-      required: false,
-      default: "",
-    },
-
-    childViews: {
-      type: Array as PropType<View[]>,
-      required: false,
-      default: () => [],
-    },
-  },
-});
+);
 </script>
 
 <style lang="scss">
