@@ -4,68 +4,35 @@
     :label="label"
     :icon="icon"
     :disabled="disabled"
-    :on-label-click="handleLableClick"
+    :on-label-click="
+      () => {
+        if (disabled) return;
+
+        $emit('click');
+      }
+    "
     :type="type"
     :role="role"
   />
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import MtPopoverItem from "../../overlay/mt-popover-item/mt-popover-item.vue";
-import type { PropType } from "vue";
-import { defineComponent } from "vue";
 import { type TranslateResult } from "vue-i18n";
 
-export default defineComponent({
-  name: "MtContextMenuItem",
-
-  components: {
-    "mt-popover-item": MtPopoverItem,
+withDefaults(
+  defineProps<{
+    label: string | TranslateResult;
+    icon?: string;
+    disabled?: boolean;
+    type?: "default" | "active" | "critical";
+    role?: string;
+  }>(),
+  {
+    type: "default",
+    role: "menuitem",
   },
+);
 
-  props: {
-    label: {
-      type: String as PropType<string | TranslateResult>,
-      required: true,
-    },
-
-    icon: {
-      type: String,
-      required: false,
-      default: null,
-    },
-
-    disabled: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    type: {
-      type: String as PropType<"default" | "active" | "critical">,
-      required: false,
-      default: "default",
-    },
-
-    role: {
-      type: String,
-      required: false,
-      default: "menuitem",
-    },
-  },
-  emits: ["click"],
-  setup(props, { emit }) {
-    const handleLableClick = () => {
-      if (props.disabled) {
-        return;
-      }
-
-      emit("click");
-    };
-
-    return {
-      handleLableClick,
-    };
-  },
-});
+defineEmits<{ click: [] }>();
 </script>
