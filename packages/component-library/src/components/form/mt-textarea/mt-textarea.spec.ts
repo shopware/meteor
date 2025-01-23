@@ -303,4 +303,17 @@ describe("mt-textarea", async () => {
     // ASSERT
     expect(handler).toHaveBeenCalledOnce();
   });
+
+  it("disables the textarea when the inheritance is linked", async () => {
+    // ARRANGE
+    render(MtTextarea, {
+      props: {
+        isInheritanceField: true,
+        isInherited: true,
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toBeDisabled();
+  });
 });
