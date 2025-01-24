@@ -438,6 +438,30 @@ describe("mt-email-field", () => {
     expect(screen.getByRole("textbox")).toHaveValue("");
   });
 
+  it("it is possible to edit the value when the inheritance is unlinked", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtEmailField, {
+      props: {
+        isInheritanceField: true,
+        isInherited: false,
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime,
+    });
+
+    // ACT
+    await user.type(screen.getByRole("textbox"), "a");
+
+    // ASSERT
+    expect(handler).toHaveBeenCalledOnce();
+    expect(screen.getByRole("textbox")).toHaveValue("a");
+  });
+
   it("shows a tooltip when focusing the button to copy the input value", async () => {
     // ARRANGE
     render(MtEmailField, {
