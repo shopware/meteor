@@ -103,3 +103,21 @@ export const TestShouldCopyValue: MtEmailFieldStory = {
     await userEvent.keyboard("{Enter}");
   },
 };
+
+export const VisualTestLinkedInheritanec: MtEmailFieldStory = {
+  name: "Linked inheritance",
+  args: {
+    isInheritanceField: true,
+    isInherited: true,
+    modelValue: "test@shopware.com",
+  },
+};
+
+export const VisualTestUnlinkedInheritance: MtEmailFieldStory = {
+  name: "Unlinked inheritance",
+  args: {
+    isInheritanceField: true,
+    isInherited: false,
+    modelValue: "test@shopware.com",
+  },
+};
