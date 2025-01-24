@@ -42,7 +42,6 @@ withDefaults(
   justify-content: center;
   position: relative;
   border-radius: var(--border-radius-round);
-  height: min-content;
 
   &:focus-visible {
     outline-offset: 0.25rem;
