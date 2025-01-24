@@ -1,4 +1,4 @@
-import { within, userEvent } from "@storybook/test";
+import { within, userEvent, fn } from "@storybook/test";
 import { expect } from "@storybook/test";
 
 import meta, { type MtEmailFieldMeta, type MtEmailFieldStory } from "./mt-email-field.stories";
@@ -96,11 +96,12 @@ export const TestShouldCopyValue: MtEmailFieldStory = {
     modelValue: "test@shopware.com",
     copyable: true,
   },
-  async play() {
-    await userEvent.tab();
-    await userEvent.tab();
+  async play({ canvasElement }) {
+    window.navigator.clipboard.writeText = fn();
+    const canvas = within(canvasElement);
 
-    await userEvent.keyboard("{Enter}");
+    await userEvent.click(canvas.getByRole("button", { name: "Copy to clipboard" }));
+    expect(window.navigator.clipboard.writeText).toHaveBeenCalledOnce();
   },
 };
 
