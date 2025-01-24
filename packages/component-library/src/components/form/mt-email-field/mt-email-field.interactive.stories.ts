@@ -93,7 +93,13 @@ export const VisualTestSmall: MtEmailFieldStory = {
 export const TestShouldCopyValue: MtEmailFieldStory = {
   name: "Should copy value",
   args: {
-    modelValue: "Shopware",
+    modelValue: "test@shopware.com",
     copyable: true,
+  },
+  async play() {
+    await userEvent.tab();
+    await userEvent.tab();
+
+    await userEvent.keyboard("{Enter}");
   },
 };
