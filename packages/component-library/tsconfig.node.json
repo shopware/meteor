@@ -14,10 +14,7 @@
     "types": ["node"],
     "baseUrl": ".",
     "paths": {
-      "*": [
-        "./node_modules/*",
-        "../../node_modlues/*"
-      ]
+      "*": ["./node_modules/*", "../../node_modlues/*"]
     }
   }
 }
