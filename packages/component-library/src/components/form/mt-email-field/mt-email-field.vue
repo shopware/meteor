@@ -64,11 +64,7 @@
       <mt-tooltip v-if="copyable" :content="t('copyTooltip')">
         <template #default="params">
           <button
-            v-bind="{
-              ...params,
-              // This is to avoid the warning of aria-describedby being undefined
-              'aria-describedby': undefined,
-            }"
+            v-bind="params"
             class="mt-email-field__copy-button"
             :aria-label="
               copied ? t('copyButtonDescriptionValueCopied') : t('copyButtonDescription')
