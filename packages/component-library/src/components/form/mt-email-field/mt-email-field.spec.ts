@@ -168,11 +168,19 @@ describe("mt-email-field", () => {
       },
     });
 
-    // ASSERT
-    expect(screen.getByRole("tooltip", { name: "help-text" })).toBeVisible();
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime,
+    });
 
-    // TODO: only show tooltip when focusing the button, create separate test for this
-    expect(screen.getByText("Some helptext")).toBeVisible();
+    // ACT
+    await user.hover(screen.getByRole("button"));
+
+    vi.advanceTimersByTime(500);
+    await flushPromises();
+
+    // ASSERT
+    expect(screen.getByRole("tooltip")).toBeVisible();
+    expect(screen.getByRole("tooltip")).toHaveTextContent("Some helptext");
   });
 
   it("displays an error message when there is an error", async () => {
