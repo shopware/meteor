@@ -48,7 +48,7 @@
         ref="inputRef"
         :id="id"
         :required="required"
-        :disabled="disabled"
+        :disabled="disabled || isInherited"
         :name="name"
         :placeholder="placeholder"
         @change="$emit('change', ($event.target as HTMLInputElement).value)"

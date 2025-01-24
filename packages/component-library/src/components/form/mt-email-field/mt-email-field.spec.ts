@@ -412,6 +412,32 @@ describe("mt-email-field", () => {
     expect(handler).toHaveBeenCalledOnce();
   });
 
+  it("is disabled when the inheritance is linked", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtEmailField, {
+      props: {
+        isInheritanceField: true,
+        isInherited: true,
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime,
+    });
+
+    // ACT
+    await user.type(screen.getByRole("textbox"), "a");
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toBeDisabled();
+
+    expect(handler).not.toHaveBeenCalled();
+    expect(screen.getByRole("textbox")).toHaveValue("");
+  });
+
   it("shows a tooltip when focusing the button to copy the input value", async () => {
     // ARRANGE
     render(MtEmailField, {
