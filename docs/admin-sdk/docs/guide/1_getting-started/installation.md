@@ -44,12 +44,66 @@ can use the NPM package.
 ### Plugin:
 **Notice:** Plugins will work on self-hosted instances only. You won't be able to use a Shopware 6 cloud instance with plugins.
 
+#### For Shopware 6.7 and higher:
+Create the folder `custom/plugins/yourPlugin/src/Resources/app/meteor-app`. This is the base path for all new files
+for your extension.
+
+Create a new base `index.html` file. This file will be automatically injected as a hidden iFrame to the administration 
+when the plugin is activated. Then you need to create a JavaScript file in the subfolder `src/main.js` and
+add it to your `index.html`:
+
+```html
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Your extension</title>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
+```
+
+Then you initialize a new Node project with `npm init --yes` and install the SDK via NPM 
+with `npm i --save @shopware-ag/meteor-admin-sdk`.
+
+If you want to have a custom Vite configuration you can install Vite with `npm i --save vite` and
+create a `vite.config.js` file in the `meteor-app` folder with your custom configuration.
+
+This should result in a folder structure like this:
+```plaintext
+custom/plugins/yourPlugin/src/Resources/app/meteor-app
+├── index.html
+├── vite.config.js (optional)
+├── package.json
+├── package-lock.json
+├── src
+│   ├── main.js
+```
+
+#### For Shopware 6.6 and lower:
 Open the path `custom/plugins/yourPlugin/src/Resources/app/administration`. This is the base path for all new admin files.
 
-Create a new base `index.html` file. This file will be automatically injected to the administration when the plugin is activated. Then you need to create a JavaScript file in the subfolder `src/main.js`. This file will be automatically injected into the created HTML file.
+Create a new base `index.html` file. This file will be automatically injected to the administration when the plugin is 
+activated. Then you need to create a JavaScript file in the subfolder `src/main.js`. This file will be automatically 
+injected into the created HTML file.
 
 For plugins the best way is to install the SDK via NPM. But first you need to initialize a new NPM project in your plugin folder with
 `npm init --yes`.
+
+This should result in a folder structure like this:
+```plaintext
+custom/plugins/yourPlugin/src/Resources/app/administration
+├── index.html
+├── package.json
+├── package-lock.json
+├── src
+│   ├── main.js
+```
 
 ## Installing the SDK:
 
