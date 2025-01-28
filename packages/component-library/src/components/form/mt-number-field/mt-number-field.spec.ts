@@ -758,7 +758,7 @@ describe("mt-number-field", () => {
     });
 
     // ASSERT
-    expect(screen.getByRole("textbox")).toHaveValue("1.000");
+    expect(screen.getByRole("spinbutton")).toHaveValue(1.0);
   });
 
   it("emits an input-change event", async () => {
