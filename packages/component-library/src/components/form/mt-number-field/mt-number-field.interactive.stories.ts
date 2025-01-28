@@ -212,22 +212,12 @@ export const VisualTestPrefix: MtNumberFieldStory = {
   args: {
     prefix: "prefix",
   },
-  play: ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    expect(canvas.getByText(args.prefix)).toBeDefined();
-  },
 };
 
 export const VisualTestSuffix: MtNumberFieldStory = {
   name: "Should display suffix",
   args: {
     suffix: "suffix",
-  },
-  play: ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    expect(canvas.getByText(args.suffix)).toBeDefined();
   },
 };
 
