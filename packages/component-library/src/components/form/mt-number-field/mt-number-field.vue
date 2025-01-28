@@ -26,7 +26,7 @@
       @input="onInput"
       @blur="$emit('blur')"
       @focus="$emit('focus')"
-      @change="$emit('change', ($event.target as HTMLInputElement).value)"
+      @change="$emit('change', Number(($event.target as HTMLInputElement).value))"
     />
 
     <button
