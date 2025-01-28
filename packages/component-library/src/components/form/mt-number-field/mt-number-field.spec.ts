@@ -581,4 +581,19 @@ describe("mt-number-field", () => {
     // ASSERT
     expect(handler).toHaveBeenCalledWith(0);
   });
+
+  it("adds the missing decimal places if number less than required", async () => {
+    // ARRANGE
+    render(MtNumberField, {
+      props: {
+        fillDigits: true,
+        numberType: "float",
+        digits: 3,
+        modelValue: 1,
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("1.000");
+  });
 });
