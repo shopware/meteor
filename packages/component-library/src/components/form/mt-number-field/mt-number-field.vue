@@ -16,29 +16,40 @@
 
     <mt-help-text v-if="!!helpText" :text="helpText" />
 
-    <input
-      type="number"
-      :value="currentValue"
-      :id="id"
-      :required="required"
-      :name="name"
-      :disabled="disabled || isInherited"
-      @input="onInput"
-      @blur="$emit('blur')"
-      @focus="$emit('focus')"
-      @change="onChange"
-    />
+    <div class="mt-number-field__block">
+      <div v-if="$slots.prefix" class="mt-number-field__affix mt-number-field__affix--prefix">
+        <slot name="prefix" />
+      </div>
 
-    <button
-      @click="decreaseNumberByStep"
-      :disabled="disabled || isInherited"
-      :aria-label="t('decreaseButton')"
-    />
-    <button
-      @click="increaseNumberByStep"
-      :disabled="disabled || isInherited"
-      :aria-label="t('increaseButton')"
-    />
+      <input
+        type="number"
+        class="mt-number-field__input"
+        :value="currentValue"
+        :id="id"
+        :required="required"
+        :name="name"
+        :disabled="disabled || isInherited"
+        @input="onInput"
+        @blur="$emit('blur')"
+        @focus="$emit('focus')"
+        @change="onChange"
+      />
+
+      <button
+        @click="decreaseNumberByStep"
+        :disabled="disabled || isInherited"
+        :aria-label="t('decreaseButton')"
+      />
+      <button
+        @click="increaseNumberByStep"
+        :disabled="disabled || isInherited"
+        :aria-label="t('increaseButton')"
+      />
+
+      <div v-if="$slots.suffix" class="mt-number-field__affix mt-number-field__affix--suffix">
+        <slot name="suffix" />
+      </div>
+    </div>
   </div>
 </template>
 
@@ -340,3 +351,64 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+.mt-number-field__block {
+  --mt-number-field-border-radius: var(--border-radius-xs);
+
+  display: flex;
+
+  border: 1px solid var(--color-border-primary-default);
+  border-radius: var(--mt-number-field-border-radius);
+  background-color: var(--color-elevation-surface-raised);
+  min-height: var(--scale-size-48);
+  /* stylelint-disable-next-line meteor/prefer-sizing-token -- this is a trick so that the input field takes 100% of its parent's height */
+  height: 1px;
+}
+
+.mt-number-field__input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  outline: none;
+
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+  font-weight: var(--font-weight-regular);
+  color: var(--color-text-primary-default);
+  padding-inline: var(--scale-size-16);
+  height: 100%;
+  width: 100%;
+}
+
+.mt-number-field__affix {
+  display: grid;
+  place-items: center;
+  padding-inline: var(--scale-size-12);
+  color: var(--color-text-primary-default);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-2xs);
+  line-height: var(--line-height-2xs);
+  font-weight: var(--font-weight-medium);
+  background: var(--color-interaction-secondary-dark);
+  height: 100%;
+}
+
+.mt-number-field__affix--suffix {
+  border-inline-start: 1px solid var(--color-border-primary-default);
+  border-top-right-radius: var(--mt-number-field-border-radius);
+  border-bottom-right-radius: var(--mt-number-field-border-radius);
+}
+
+.mt-number-field__affix--prefix {
+  border-inline-end: 1px solid var(--color-border-primary-default);
+  border-top-left-radius: var(--mt-number-field-border-radius);
+  border-bottom-left-radius: var(--mt-number-field-border-radius);
+}
+</style>
