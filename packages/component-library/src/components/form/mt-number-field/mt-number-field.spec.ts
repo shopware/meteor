@@ -681,7 +681,7 @@ describe("mt-number-field", () => {
     });
 
     // ASSERT
-    expect(screen.getByRole("textbox")).toHaveValue("0.001");
+    expect(screen.getByRole("spinbutton")).toHaveValue(0.001);
   });
 
   it("emits null when value can be empty and typing gibberish", async () => {
