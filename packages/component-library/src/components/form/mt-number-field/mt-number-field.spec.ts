@@ -561,4 +561,24 @@ describe("mt-number-field", () => {
     // ASSERT
     expect(handler).toHaveBeenCalledWith(null);
   });
+
+  it("emits a 0 when input is empty and input is not allowed to be empty", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        modelValue: 0,
+        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
+        onChange: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.type(screen.getByRole("textbox"), "{Backspace}");
+    await userEvent.tab();
+
+    // ASSERT
+    expect(handler).toHaveBeenCalledWith(0);
+  });
 });
