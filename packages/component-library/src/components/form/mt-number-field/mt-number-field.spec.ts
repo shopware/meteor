@@ -628,6 +628,28 @@ describe("mt-number-field", () => {
     expect(handler).toHaveBeenCalledOnce();
   });
 
+  it("is possible to edit the value when inheritance is not linked", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        modelValue: 0,
+        isInheritanceField: true,
+        isInherited: false,
+        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
+        onInputChange: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.type(screen.getByRole("textbox"), "1");
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("1");
+    expect(handler).toHaveBeenCalledWith(1);
+  });
+
   it("shows two decimal places by default when the number type is float", async () => {
     // ARRANGE
     render(MtNumberField, {
