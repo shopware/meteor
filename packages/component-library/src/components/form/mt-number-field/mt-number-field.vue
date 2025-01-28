@@ -2,6 +2,8 @@
   <div>
     <mt-field-label :id="id" :required="required">{{ label }}</mt-field-label>
 
+    <mt-help-text :text="helpText" />
+
     <input
       :id="id"
       :required="required"
@@ -20,6 +22,7 @@ import { defineComponent, useId } from "vue";
 import MtTextField from "../mt-text-field/mt-text-field.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
+import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import { useI18n } from "vue-i18n";
 
 export default defineComponent({
@@ -28,6 +31,7 @@ export default defineComponent({
   components: {
     "mt-icon": MtIcon,
     MtFieldLabel,
+    MtHelpText,
   },
 
   extends: MtTextField,
