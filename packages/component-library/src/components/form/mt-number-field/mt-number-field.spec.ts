@@ -3,6 +3,31 @@ import MtNumberField from "./mt-number-field.vue";
 import { userEvent } from "@testing-library/user-event";
 
 describe("mt-number-field", () => {
+  it("cannot go below the specified mimimum value", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        modelValue: 0,
+        min: 0,
+        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
+        onChange: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("textbox"));
+    await userEvent.keyboard("{ArrowDown}");
+
+    await userEvent.tab();
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("0");
+    expect(handler).toHaveBeenCalledOnce();
+    expect(handler).toHaveBeenCalledWith(0);
+  });
+
   it("increases the number by 0.01 by default step when in float mode", async () => {
     // ARRANGE
     const handler = vi.fn();
