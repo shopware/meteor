@@ -14,7 +14,6 @@
     :help-text="helpText"
     :name="name"
     :size="size"
-    @inheritance-restore="$emit('inheritance-restore', $event)"
   >
     <template #label>
       {{ label }}
