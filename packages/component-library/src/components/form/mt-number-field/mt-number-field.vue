@@ -51,6 +51,10 @@
         <slot name="suffix" />
       </div>
     </div>
+
+    <div v-if="$slots.hint" class="mt-number-field__hint">
+      <slot name="hint" />
+    </div>
   </div>
 </template>
 
@@ -358,7 +362,8 @@ export default defineComponent({
   display: grid;
   grid-template-areas:
     "label help-text"
-    "input input";
+    "input input"
+    "hint hint";
   grid-template-columns: 1fr auto;
 }
 
@@ -438,5 +443,14 @@ export default defineComponent({
   border-inline-end: 1px solid var(--color-border-primary-default);
   border-top-left-radius: var(--mt-number-field-border-radius);
   border-bottom-left-radius: var(--mt-number-field-border-radius);
+}
+
+.mt-number-field__hint {
+  grid-area: hint;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+  color: var(--color-text-tertiary-default);
+  margin-top: 0.1875rem;
 }
 </style>

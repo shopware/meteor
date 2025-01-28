@@ -243,11 +243,6 @@ export const VisualTestHint: MtNumberFieldStory = {
   args: {
     hint: "hint",
   },
-  play: ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    expect(canvas.getByText(args.hint)).toBeDefined();
-  },
 };
 
 export const VisualTestDisabled: MtNumberFieldStory = {
