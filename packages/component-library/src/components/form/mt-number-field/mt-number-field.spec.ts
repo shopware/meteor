@@ -43,6 +43,25 @@ describe("mt-number-field", () => {
     expect(screen.getByRole("textbox")).toHaveAttribute("name", "some-name");
   });
 
+  it("emits a blur event when removing the focus from the input", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
+        onBlur: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("textbox"));
+    await userEvent.tab();
+
+    // ASSERT
+    expect(handler).toHaveBeenCalledOnce();
+  });
+
   it("does not update the value when the input is disabled", async () => {
     // ARRANGE
     const handler = vi.fn();
