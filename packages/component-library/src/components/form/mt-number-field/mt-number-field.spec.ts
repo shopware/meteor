@@ -609,8 +609,7 @@ describe("mt-number-field", () => {
     });
 
     // ACT
-    // TODO: Update selector to getByRole("button", { name: "Unlink inheritance" });
-    await userEvent.click(screen.getByTestId("mt-inheritance-switch-icon"));
+    await userEvent.click(screen.getByRole("button", { name: "Unlink inheritance" }));
 
     // ASSERT
     expect(handler).toHaveBeenCalledOnce();
@@ -630,8 +629,7 @@ describe("mt-number-field", () => {
     });
 
     // ACT
-    // TODO: Update selector to getByRole("button", { name: "Unlink inheritance" });
-    await userEvent.click(screen.getByTestId("mt-icon__regular-link-horizontal-slash"));
+    await userEvent.click(screen.getByRole("button", { name: "Link inheritance" }));
 
     // ASSERT
     expect(handler).toHaveBeenCalledOnce();
