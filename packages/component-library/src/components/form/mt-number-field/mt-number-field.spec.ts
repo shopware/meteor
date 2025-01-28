@@ -3,6 +3,31 @@ import MtNumberField from "./mt-number-field.vue";
 import { userEvent } from "@storybook/test";
 
 describe("mt-number-field", () => {
+  it("does not update the value when the input is disabled", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        modelValue: 0,
+        disabled: true,
+        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
+        onChange: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.type(screen.getByRole("textbox"), "1");
+
+    await userEvent.tab();
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toBeDisabled();
+
+    expect(screen.getByRole("textbox")).toHaveValue("0");
+    expect(handler).not.toHaveBeenCalled();
+  });
+
   it("cannot go above the specified maximum value", async () => {
     // ARRANGE
     const handler = vi.fn();
