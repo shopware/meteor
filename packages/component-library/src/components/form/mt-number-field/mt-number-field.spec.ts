@@ -286,13 +286,10 @@ describe("mt-number-field", () => {
     });
 
     // ACT
-    await userEvent.click(screen.getByRole("textbox"));
-    await userEvent.keyboard("{ArrowUp}");
-
-    await userEvent.tab();
+    await userEvent.click(screen.getByRole("button", { name: "Increase" }));
 
     // ASSERT
-    expect(screen.getByRole("textbox")).toHaveValue("0.01");
+    expect(screen.getByRole("spinbutton")).toHaveValue(0.01);
     expect(handler).toHaveBeenCalledWith(0.01);
   });
 
