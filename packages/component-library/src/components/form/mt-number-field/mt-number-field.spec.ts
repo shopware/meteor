@@ -62,6 +62,24 @@ describe("mt-number-field", () => {
     expect(handler).toHaveBeenCalledOnce();
   });
 
+  it("emits a focus event when focusing the input", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
+        onFocus: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("textbox"));
+
+    // ASSERT
+    expect(handler).toHaveBeenCalledOnce();
+  });
+
   it("does not update the value when the input is disabled", async () => {
     // ARRANGE
     const handler = vi.fn();
