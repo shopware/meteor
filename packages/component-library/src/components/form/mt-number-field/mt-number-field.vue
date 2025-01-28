@@ -14,6 +14,8 @@
       @blur="$emit('blur')"
       @focus="$emit('focus')"
     />
+
+    <button @click="decreaseNumberByStep" :disabled="disabled" :aria-label="t('decreaseButton')" />
   </div>
 </template>
 

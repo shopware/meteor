@@ -149,7 +149,7 @@ describe("mt-number-field", () => {
     await userEvent.click(screen.getByRole("button", { name: "Decrease" }));
 
     // ASSERT
-    expect(screen.getByRole("textbox")).toHaveValue("0");
+    expect(screen.getByRole("spinbutton")).toHaveValue(0);
     expect(handler).not.toHaveBeenCalled();
   });
 
