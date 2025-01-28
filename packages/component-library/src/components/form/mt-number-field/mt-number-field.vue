@@ -52,7 +52,15 @@
         "
       />
 
-      <div class="mt-number-field__controls" :class="controlClasses">
+      <div
+        :class="[
+          'mt-number-field__controls',
+          {
+            'mt-field__controls--disabled': disabled,
+            'mt-field__controls--has-error': !!error,
+          },
+        ]"
+      >
         <button
           @click="increaseNumberByStep"
           :disabled="disabled || isInherited"
@@ -235,13 +243,6 @@ export default defineComponent({
         ? // @ts-expect-error - wrong type because of component extends
           this.currentValue.toFixed(this.digits)
         : this.currentValue.toString();
-    },
-
-    controlClasses() {
-      return {
-        "mt-field__controls--disabled": this.disabled,
-        "mt-field__controls--has-error": !!this.error,
-      };
     },
   },
 
