@@ -33,7 +33,12 @@
 
       <input
         type="number"
-        class="mt-number-field__input"
+        :class="[
+          'mt-number-field__input',
+          {
+            'mt-number-field__input--align-end': numberAlignEnd,
+          },
+        ]"
         :value="currentValue"
         :id="id"
         :required="required"
@@ -442,6 +447,10 @@ export default defineComponent({
   padding-inline: var(--scale-size-16);
   height: 100%;
   width: 100%;
+}
+
+.mt-number-field__input--align-end {
+  text-align: end;
 }
 
 .mt-number-field__affix {
