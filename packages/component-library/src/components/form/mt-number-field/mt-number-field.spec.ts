@@ -40,7 +40,7 @@ describe("mt-number-field", () => {
     });
 
     // ASSERT
-    expect(screen.getByRole("textbox")).toHaveAttribute("name", "some-name");
+    expect(screen.getByRole("spinbutton")).toHaveAttribute("name", "some-name");
   });
 
   it("emits a blur event when removing the focus from the input", async () => {

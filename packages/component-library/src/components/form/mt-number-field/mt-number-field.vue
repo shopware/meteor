@@ -2,7 +2,7 @@
   <div>
     <mt-field-label :id="id" :required="required">{{ label }}</mt-field-label>
 
-    <input :id="id" :required="required" type="number" />
+    <input :id="id" :required="required" :name="name" type="number" />
   </div>
 </template>
 
