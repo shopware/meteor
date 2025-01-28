@@ -212,15 +212,14 @@ describe("mt-number-field", () => {
     });
 
     // ACT
-    await userEvent.click(screen.getByRole("textbox"));
+    await userEvent.click(screen.getByRole("spinbutton"));
     await userEvent.keyboard("{ArrowDown}");
 
     await userEvent.tab();
 
     // ASSERT
-    expect(screen.getByRole("textbox")).toHaveValue("0");
-    expect(handler).toHaveBeenCalledOnce();
-    expect(handler).toHaveBeenCalledWith(0);
+    expect(screen.getByRole("spinbutton")).toHaveValue(0);
+    expect(handler).not.toHaveBeenCalled();
   });
 
   it("only increments to the maximum value even though a step would exceed that limit", async () => {
