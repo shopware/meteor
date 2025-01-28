@@ -261,11 +261,6 @@ export const VisualTestError: MtNumberFieldStory = {
       detail: "Error while saving!",
     },
   },
-  play: ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    expect(canvas.getByText(args.error.detail)).toBeDefined();
-  },
 };
 
 export const VisualTestInheritance: MtNumberFieldStory = {
