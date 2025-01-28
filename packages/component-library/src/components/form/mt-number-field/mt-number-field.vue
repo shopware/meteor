@@ -1,6 +1,18 @@
 <template>
   <div>
-    <mt-field-label :id="id" :required="required">{{ label }}</mt-field-label>
+    <mt-field-label
+      :id="id"
+      :required="required"
+      :inheritance="!isInheritanceField ? 'none' : isInherited ? 'linked' : 'unlinked'"
+      @update:inheritance="
+        if (isInherited) {
+          $emit('inheritance-remove');
+        } else {
+          $emit('inheritance-restore');
+        }
+      "
+      >{{ label }}</mt-field-label
+    >
 
     <mt-help-text v-if="!!helpText" :text="helpText" />
 
