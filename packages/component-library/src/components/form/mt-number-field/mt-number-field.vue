@@ -40,7 +40,12 @@
         @keydown.up="increaseNumberByStep"
         @keydown.down="decreaseNumberByStep"
         @change="onChange"
-        @focus="setFocusClass"
+        @focus="
+          () => {
+            $emit('focus');
+            setFocusClass();
+          }
+        "
         @blur="
           () => {
             $emit('blur');
