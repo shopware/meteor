@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="mt-number-field">
     <mt-field-label
       :id="id"
       :required="required"
@@ -11,12 +11,13 @@
           $emit('inheritance-restore');
         }
       "
+      :style="{ marginBottom: 'var(--scale-size-2)' }"
       >{{ label }}</mt-field-label
     >
 
     <mt-help-text v-if="!!helpText" :text="helpText" />
 
-    <div class="mt-number-field__block">
+    <div :class="['mt-number-field__block', `mt-number-field--size-${size}`]">
       <div v-if="$slots.prefix" class="mt-number-field__affix mt-number-field__affix--prefix">
         <slot name="prefix" />
       </div>
@@ -361,9 +362,28 @@ export default defineComponent({
   border: 1px solid var(--color-border-primary-default);
   border-radius: var(--mt-number-field-border-radius);
   background-color: var(--color-elevation-surface-raised);
-  min-height: var(--scale-size-48);
   /* stylelint-disable-next-line meteor/prefer-sizing-token -- this is a trick so that the input field takes 100% of its parent's height */
   height: 1px;
+
+  & ::placeholder {
+    color: var(--color-text-secondary-default);
+  }
+
+  &:has(.mt-number-field__input:disabled) {
+    background-color: var(--color-background-primary-disabled);
+
+    & ::placeholder {
+      color: var(--color-text-secondary-disabled);
+    }
+  }
+}
+
+.mt-number-field--size-default {
+  min-height: var(--scale-size-48);
+}
+
+.mt-number-field--size-small {
+  min-height: var(--scale-size-32);
 }
 
 .mt-number-field__input {
