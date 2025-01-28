@@ -3,6 +3,30 @@ import MtNumberField from "./mt-number-field.vue";
 import { userEvent } from "@storybook/test";
 
 describe("mt-number-field", () => {
+  it("increases the number by default by 1 step when in integer mode", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        modelValue: 0,
+        numberType: "int",
+        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
+        onChange: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("textbox"));
+    await userEvent.keyboard("{ArrowUp}");
+
+    await userEvent.tab();
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("1");
+    expect(handler).toHaveBeenCalledWith(1);
+  });
+
   it("increases the number by 5 steps", async () => {
     // ARRANGE
     const handler = vi.fn();
