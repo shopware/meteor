@@ -23,6 +23,7 @@
       :required="required"
       :name="name"
       :disabled="disabled || isInherited"
+      @input="onInput"
       @blur="$emit('blur')"
       @focus="$emit('focus')"
       @change="$emit('change', ($event.target as HTMLInputElement).value)"
