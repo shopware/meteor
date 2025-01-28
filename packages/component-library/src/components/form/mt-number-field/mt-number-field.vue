@@ -1,8 +1,8 @@
 <template>
   <div>
-    <mt-field-label :id="id">{{ label }}</mt-field-label>
+    <mt-field-label :id="id" :required="required">{{ label }}</mt-field-label>
 
-    <input :id="id" type="number" />
+    <input :id="id" :required="required" type="number" />
   </div>
 </template>
 
