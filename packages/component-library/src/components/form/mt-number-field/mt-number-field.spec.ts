@@ -3,6 +3,31 @@ import MtNumberField from "./mt-number-field.vue";
 import { userEvent } from "@storybook/test";
 
 describe("mt-number-field", () => {
+  it("cannot go above the specified maximum value", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        modelValue: 5,
+        max: 5,
+        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
+        onChange: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("textbox"));
+    await userEvent.keyboard("{ArrowUp}");
+
+    await userEvent.tab();
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("5");
+    expect(handler).toHaveBeenCalledOnce();
+    expect(handler).toHaveBeenCalledWith(5);
+  });
+
   it("cannot go below the specified mimimum value", async () => {
     // ARRANGE
     const handler = vi.fn();
