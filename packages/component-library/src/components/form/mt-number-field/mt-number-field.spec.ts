@@ -80,6 +80,22 @@ describe("mt-number-field", () => {
     expect(handler).toHaveBeenCalledOnce();
   });
 
+  it("displays a help text when specified", async () => {
+    // ARRANGE
+    render(MtNumberField, {
+      props: {
+        helpText: "Some help text",
+      },
+    });
+
+    // ACT
+    await userEvent.tab();
+
+    // ASSERT
+    expect(screen.getByRole("tooltip")).toBeVisible();
+    expect(screen.getByRole("tooltip")).toHaveTextContent("Some help text");
+  });
+
   it("does not update the value when the input is disabled", async () => {
     // ARRANGE
     const handler = vi.fn();
