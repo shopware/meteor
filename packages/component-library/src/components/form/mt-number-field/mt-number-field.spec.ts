@@ -359,7 +359,7 @@ describe("mt-number-field", () => {
     expect(handler).toHaveBeenCalledWith(-0.42);
   });
 
-  it.only("increases the number by default by 1 step when in integer mode", async () => {
+  it("increases the number by default by 1 step when in integer mode", async () => {
     // ARRANGE
     const handler = vi.fn();
 
