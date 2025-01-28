@@ -31,6 +31,18 @@ describe("mt-number-field", () => {
     expect(screen.getByRole("textbox")).toBeRequired();
   });
 
+  it("has the specified name", async () => {
+    // ARRANGE
+    render(MtNumberField, {
+      props: {
+        name: "some-name",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveAttribute("name", "some-name");
+  });
+
   it("does not update the value when the input is disabled", async () => {
     // ARRANGE
     const handler = vi.fn();
