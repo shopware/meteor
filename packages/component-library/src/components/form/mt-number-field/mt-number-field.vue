@@ -41,7 +41,12 @@
         @keydown.down="decreaseNumberByStep"
         @change="onChange"
         @focus="setFocusClass"
-        @blur="removeFocusClass"
+        @blur="
+          () => {
+            $emit('blur');
+            removeFocusClass();
+          }
+        "
       />
 
       <div class="mt-number-field__controls" :class="controlClasses">
