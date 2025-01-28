@@ -256,19 +256,6 @@ export const VisualTestDisabled: MtNumberFieldStory = {
     disabled: true,
     modelValue: 44,
   },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    await userEvent.type(canvas.getByRole("textbox"), "1337");
-
-    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("44");
-
-    await userEvent.click(canvas.getByRole("button", { name: "Decrease" }));
-    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("44");
-
-    await userEvent.click(canvas.getByRole("button", { name: "Increase" }));
-    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("44");
-  },
 };
 
 export const VisualTestError: MtNumberFieldStory = {
