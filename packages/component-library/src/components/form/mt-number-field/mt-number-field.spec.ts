@@ -3,6 +3,30 @@ import MtNumberField from "./mt-number-field.vue";
 import { userEvent } from "@storybook/test";
 
 describe("mt-number-field", () => {
+  it.each([
+    ["1.5", 1.5],
+    ["1", 1.0],
+  ])("emits floating numbers when configured to", async (input, result) => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        modelValue: 0,
+        numberType: "float",
+        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
+        onChange: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.type(screen.getByRole("textbox"), input);
+    await userEvent.tab();
+
+    // ASSERT
+    expect(handler).toHaveBeenCalledWith(result);
+  });
+
   it("is not possible to change the value when inheritance is linked", async () => {
     // ARRANGE
     const handler = vi.fn();
