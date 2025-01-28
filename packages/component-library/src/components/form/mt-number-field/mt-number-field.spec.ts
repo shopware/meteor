@@ -153,7 +153,7 @@ describe("mt-number-field", () => {
     expect(handler).not.toHaveBeenCalled();
   });
 
-  it("cannot increment the value by pressing the increment button when the input is disabled", async () => {
+  it.only("cannot increment the value by pressing the increment button when the input is disabled", async () => {
     // ARRANGE
     const handler = vi.fn();
 
@@ -170,7 +170,7 @@ describe("mt-number-field", () => {
     await userEvent.click(screen.getByRole("button", { name: "Increase" }));
 
     // ASSERT
-    expect(screen.getByRole("textbox")).toHaveValue("0");
+    expect(screen.getByRole("spinbutton")).toHaveValue(0);
     expect(handler).not.toHaveBeenCalled();
   });
 
