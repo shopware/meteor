@@ -16,6 +16,7 @@
     />
 
     <button @click="decreaseNumberByStep" :disabled="disabled" :aria-label="t('decreaseButton')" />
+    <button @click="increaseNumberByStep" :disabled="disabled" :aria-label="t('increaseButton')" />
   </div>
 </template>
 
