@@ -16,7 +16,7 @@ describe("mt-number-field", () => {
     await userEvent.click(screen.getByText("Some label"));
 
     // ASSERT
-    expect(screen.getByRole("textbox")).toHaveFocus();
+    expect(screen.getByRole("spinbutton")).toHaveFocus();
   });
 
   it("can be marked as required", async () => {

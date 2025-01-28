@@ -1,111 +1,18 @@
 <template>
-  <mt-base-field
-    class="mt-number-field"
-    :class="$attrs.class"
-    :disabled="disabled || isInherited"
-    :required="required"
-    :is-inherited="isInherited"
-    :is-inheritance-field="isInheritanceField"
-    :disable-inheritance-toggle="disableInheritanceToggle"
-    :copyable="copyable"
-    :copyable-tooltip="copyableTooltip"
-    :copyable-text="stringRepresentation"
-    :has-focus="hasFocus"
-    :help-text="helpText"
-    :name="name"
-    :size="size"
-  >
-    <template #label>
-      {{ label }}
-    </template>
+  <div>
+    <mt-field-label :id="id">{{ label }}</mt-field-label>
 
-    <template #field-prefix>
-      <slot name="prefix" />
-    </template>
-
-    <template #element="{ identification }">
-      <!-- @vue-ignore -->
-      <input
-        :id="createInputId(identification)"
-        type="text"
-        :required="required"
-        :name="identification"
-        :disabled="disabled || isInherited"
-        :value="stringRepresentation"
-        :placeholder="placeholder"
-        :class="numberAlignEnd ? 'mt-number-field__align-end' : ''"
-        @input="onInput"
-        @keydown.up="increaseNumberByStep"
-        @keydown.down="decreaseNumberByStep"
-        @change="onChange"
-        @focus="
-          () => {
-            $emit('focus');
-            setFocusClass();
-          }
-        "
-        @blur="
-          () => {
-            $emit('blur');
-            removeFocusClass();
-          }
-        "
-      />
-
-      <div
-        :class="[
-          'mt-number-field__controls',
-          {
-            'mt-field__controls--disabled': disabled,
-            'mt-field__controls--has-error': !!error,
-          },
-        ]"
-      >
-        <button
-          @click="increaseNumberByStep"
-          :disabled="disabled || isInherited"
-          :aria-label="t('increaseButton')"
-          data-testid="mt-number-field-increase-button"
-        >
-          <mt-icon size="10" name="regular-chevron-up-s" aria-hidden="true" />
-        </button>
-
-        <button
-          @click="decreaseNumberByStep"
-          :disabled="disabled || isInherited"
-          :aria-label="t('decreaseButton')"
-          data-testid="mt-number-field-decrease-button"
-        >
-          <mt-icon
-            style="margin-top: -3px"
-            size="10"
-            name="regular-chevron-down-s"
-            aria-hidden="true"
-          />
-        </button>
-      </div>
-    </template>
-
-    <template #field-suffix>
-      <slot name="suffix" />
-    </template>
-
-    <template #error>
-      <mt-field-error v-if="error" :error="error" />
-    </template>
-
-    <template #field-hint>
-      <slot name="hint" />
-    </template>
-  </mt-base-field>
+    <input :id="id" type="number" />
+  </div>
 </template>
 
 <script lang="ts">
 import type { PropType } from "vue";
 
-import { defineComponent } from "vue";
+import { defineComponent, useId } from "vue";
 import MtTextField from "../mt-text-field/mt-text-field.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
+import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import { useI18n } from "vue-i18n";
 
 export default defineComponent({
@@ -113,6 +20,7 @@ export default defineComponent({
 
   components: {
     "mt-icon": MtIcon,
+    MtFieldLabel,
   },
 
   extends: MtTextField,
@@ -388,43 +296,9 @@ export default defineComponent({
       },
     });
 
-    return { t };
+    const id = useId();
+
+    return { t, id };
   },
 });
 </script>
-
-<style scoped>
-.mt-number-field__controls {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 2.625rem;
-
-  & button {
-    outline-color: var(--color-border-brand-selected);
-    padding-inline: var(--scale-size-4);
-    border-radius: var(--border-radius-button);
-    transition: all 0.15s ease-out;
-    width: 100%;
-    flex: 1;
-
-    &:is(:hover, :focus-visible) {
-      background-color: var(--color-interaction-secondary-hover);
-    }
-
-    &:disabled {
-      cursor: default;
-    }
-  }
-}
-
-input.mt-number-field__align-end {
-  text-align: end;
-}
-</style>
-
-<style>
-.mt-number-field.is--disabled .mt-block-field__block {
-  background: var(--color-background-primary-disabled);
-}
-</style>
