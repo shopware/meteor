@@ -836,7 +836,7 @@ describe("mt-number-field", () => {
     });
 
     // ACT
-    await userEvent.type(screen.getByRole("textbox"), "00");
+    await userEvent.type(screen.getByRole("spinbutton"), "00");
 
     // ASSERT
     expect(handler).toHaveBeenCalledTimes(2);
