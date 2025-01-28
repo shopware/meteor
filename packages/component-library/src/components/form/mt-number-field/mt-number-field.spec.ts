@@ -522,7 +522,7 @@ describe("mt-number-field", () => {
     });
 
     // ACT
-    await userEvent.type(screen.getByRole("textbox"), input);
+    await userEvent.type(screen.getByRole("spinbutton"), input);
     await userEvent.tab();
 
     // ASSERT
