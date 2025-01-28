@@ -505,4 +505,18 @@ describe("mt-number-field", () => {
     // ASSERT
     expect(screen.getByRole("textbox")).toHaveValue("0.01");
   });
+
+  it("shows three decimal places when input can show three digits", async () => {
+    // ARRANGE
+    render(MtNumberField, {
+      props: {
+        modelValue: 0.001,
+        numberType: "float",
+        digits: 3,
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("0.001");
+  });
 });
