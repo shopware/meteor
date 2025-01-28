@@ -815,4 +815,25 @@ describe("mt-number-field", () => {
     expect(handler).toHaveBeenCalledOnce();
     expect(handler).toHaveBeenCalledWith(3);
   });
+
+  it("emits a input change event every time the value changes", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        modelValue: 1,
+        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
+        onInputChange: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.type(screen.getByRole("textbox"), "00");
+
+    // ASSERT
+    expect(handler).toHaveBeenCalledTimes(2);
+    expect(handler).toHaveBeenNthCalledWith(1, 10);
+    expect(handler).toHaveBeenNthCalledWith(2, 100);
+  });
 });
