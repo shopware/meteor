@@ -18,7 +18,7 @@
 
     <input
       type="number"
-      :value="modelValue"
+      :value="currentValue"
       :id="id"
       :required="required"
       :name="name"
