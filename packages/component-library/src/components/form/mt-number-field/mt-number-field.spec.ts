@@ -3,6 +3,22 @@ import MtNumberField from "./mt-number-field.vue";
 import { userEvent } from "@storybook/test";
 
 describe("mt-number-field", () => {
+  it("focuses the input when clicking on the label", async () => {
+    // ARRANGE
+    render(MtNumberField, {
+      props: {
+        label: "Some label",
+        modelValue: 0,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByText("Some label"));
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveFocus();
+  });
+
   it("does not update the value when the input is disabled", async () => {
     // ARRANGE
     const handler = vi.fn();
