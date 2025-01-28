@@ -2,7 +2,7 @@
   <div>
     <mt-field-label :id="id" :required="required">{{ label }}</mt-field-label>
 
-    <input :id="id" :required="required" :name="name" type="number" />
+    <input :id="id" :required="required" :name="name" type="number" @blur="$emit('blur')" />
   </div>
 </template>
 
