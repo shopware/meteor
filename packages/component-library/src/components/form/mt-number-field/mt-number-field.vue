@@ -401,7 +401,7 @@ export default defineComponent({
     color: var(--color-text-secondary-default);
   }
 
-  &:not(.mt-number-field__block--error)&:has(.mt-email-field__input:focus-visible) {
+  &:not(.mt-number-field__block--error)&:has(.mt-number-field__input:focus-visible) {
     border-color: var(--color-border-brand-selected);
     box-shadow: 0px 0px 4px 0px rgba(24, 158, 255, 0.3);
   }
