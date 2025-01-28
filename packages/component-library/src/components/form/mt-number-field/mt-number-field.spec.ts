@@ -3,6 +3,26 @@ import MtNumberField from "./mt-number-field.vue";
 import { userEvent } from "@testing-library/user-event";
 
 describe("mt-number-field", () => {
+  it("emits the correct value when moving focus away from the input", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        modelValue: 0,
+        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
+        onChange: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.type(screen.getByRole("textbox"), "1");
+    await userEvent.tab();
+
+    // ASSERT
+    expect(handler).toHaveBeenCalledWith(1);
+  });
+
   it.each([
     ["1.5", 1.5],
     ["1", 1.0],
