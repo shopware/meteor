@@ -519,4 +519,46 @@ describe("mt-number-field", () => {
     // ASSERT
     expect(screen.getByRole("textbox")).toHaveValue("0.001");
   });
+
+  it("emits null when value can be empty and typing gibberish", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        modelValue: undefined,
+        allowEmpty: true,
+        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
+        onChange: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.type(screen.getByRole("textbox"), "asdf");
+    await userEvent.tab();
+
+    // ASSERT
+    expect(handler).toHaveBeenCalledWith(null);
+  });
+
+  it("emits null when value can be empty and deleting the value", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        modelValue: 0,
+        allowEmpty: true,
+        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
+        onChange: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.type(screen.getByRole("textbox"), "{Backspace}");
+    await userEvent.tab();
+
+    // ASSERT
+    expect(handler).toHaveBeenCalledWith(null);
+  });
 });
