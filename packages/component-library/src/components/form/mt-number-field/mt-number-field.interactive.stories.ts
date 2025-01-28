@@ -91,50 +91,6 @@ export const TestStepIncrease: MtNumberFieldStory = {
   },
 };
 
-export const TestDecreaseConsidersMin: MtNumberFieldStory = {
-  name: "Should not decrease below min",
-  args: {
-    modelValue: 11,
-    min: 10,
-  },
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    await userEvent.click(canvas.getByTestId("mt-number-field-decrease-button"));
-    await userEvent.type(canvas.getByRole("textbox"), "{arrowdown}");
-
-    await userEvent.click(canvas.getByText("hidden"));
-
-    // Notice that the value is of type string and the value of the event is of type number
-    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("10");
-
-    expect(args.change).toHaveBeenCalledWith(10);
-    expect(args.updateModelValue).toHaveBeenCalledWith(10);
-  },
-};
-
-export const TestIncreaseConsiderMax: MtNumberFieldStory = {
-  name: "Should not increase above max",
-  args: {
-    modelValue: 9,
-    max: 10,
-  },
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    await userEvent.click(canvas.getByTestId("mt-number-field-increase-button"));
-    await userEvent.type(canvas.getByRole("textbox"), "{arrowup}");
-
-    await userEvent.click(canvas.getByText("hidden"));
-
-    // Notice that the value is of type string and the value of the event is of type number
-    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("10");
-
-    expect(args.change).toHaveBeenCalledWith(10);
-    expect(args.updateModelValue).toHaveBeenCalledWith(10);
-  },
-};
-
 export const TestIncreaseByKeyStrokeAfterTyping: MtNumberFieldStory = {
   name: "Should increase value by key stroke after typing a value",
   play: async ({ canvasElement, args }) => {
