@@ -4,6 +4,7 @@
       :id="id"
       :required="required"
       :inheritance="!isInheritanceField ? 'none' : isInherited ? 'linked' : 'unlinked'"
+      :has-error="!!error"
       @update:inheritance="
         if (isInherited) {
           $emit('inheritance-remove');
@@ -17,7 +18,15 @@
 
     <mt-help-text v-if="!!helpText" :text="helpText" :style="{ gridArea: 'help-text' }" />
 
-    <div :class="['mt-number-field__block', `mt-number-field--size-${size}`]">
+    <div
+      :class="[
+        'mt-number-field__block',
+        `mt-number-field--size-${size}`,
+        {
+          'mt-number-field__block--error': !!error,
+        },
+      ]"
+    >
       <div v-if="$slots.prefix" class="mt-number-field__affix mt-number-field__affix--prefix">
         <slot name="prefix" />
       </div>
@@ -55,6 +64,8 @@
     <div v-if="$slots.hint" class="mt-number-field__hint">
       <slot name="hint" />
     </div>
+
+    <mt-field-error v-if="!!error" :error="error" :style="{ gridArea: 'error' }" />
   </div>
 </template>
 
@@ -67,6 +78,7 @@ import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import { useI18n } from "vue-i18n";
+import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 
 export default defineComponent({
   name: "MtNumberField",
@@ -75,6 +87,7 @@ export default defineComponent({
     "mt-icon": MtIcon,
     MtFieldLabel,
     MtHelpText,
+    MtFieldError,
   },
 
   extends: MtTextField,
@@ -363,6 +376,7 @@ export default defineComponent({
   grid-template-areas:
     "label help-text"
     "input input"
+    "error error"
     "hint hint";
   grid-template-columns: 1fr auto;
 }
@@ -382,6 +396,11 @@ export default defineComponent({
     color: var(--color-text-secondary-default);
   }
 
+  &:not(.mt-number-field__block--error)&:has(.mt-email-field__input:focus-visible) {
+    border-color: var(--color-border-brand-selected);
+    box-shadow: 0px 0px 4px 0px rgba(24, 158, 255, 0.3);
+  }
+
   &:has(.mt-number-field__input:disabled) {
     background-color: var(--color-background-primary-disabled);
 
@@ -389,6 +408,11 @@ export default defineComponent({
       color: var(--color-text-secondary-disabled);
     }
   }
+}
+
+.mt-number-field__block--error {
+  border-color: var(--color-border-critical-default);
+  background-color: var(--color-background-critical-dark);
 }
 
 .mt-number-field--size-default {
