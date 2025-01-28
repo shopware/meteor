@@ -16,7 +16,11 @@
       @change="$emit('change', ($event.target as HTMLInputElement).value)"
     />
 
-    <button @click="decreaseNumberByStep" :disabled="disabled" :aria-label="t('decreaseButton')" />
+    <button
+      @click="decreaseNumberByStep"
+      :disabled="disabled || isInherited"
+      :aria-label="t('decreaseButton')"
+    />
     <button
       @click="increaseNumberByStep"
       :disabled="disabled || isInherited"
