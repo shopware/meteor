@@ -49,6 +49,27 @@ describe("mt-number-field", () => {
     expect(handler).not.toHaveBeenCalled();
   });
 
+  it("cannot increment the value by pressing the increment button when the input is disabled", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        modelValue: 0,
+        disabled: true,
+        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
+        onChange: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("button", { name: "Increase" }));
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("0");
+    expect(handler).not.toHaveBeenCalled();
+  });
+
   it("cannot go above the specified maximum value", async () => {
     // ARRANGE
     const handler = vi.fn();
