@@ -836,4 +836,24 @@ describe("mt-number-field", () => {
     expect(handler).toHaveBeenNthCalledWith(1, 10);
     expect(handler).toHaveBeenNthCalledWith(2, 100);
   });
+
+  it("emits an input-change event when inserting a negative value", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        modelValue: 0,
+        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
+        onInputChange: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.type(screen.getByRole("textbox"), "{Backspace}-1");
+
+    // ASSERT
+    expect(handler).toHaveBeenCalledTimes(1);
+    expect(screen.getByRole("textbox")).toHaveValue("-1");
+  });
 });
