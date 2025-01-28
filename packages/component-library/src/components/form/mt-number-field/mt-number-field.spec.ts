@@ -27,6 +27,30 @@ describe("mt-number-field", () => {
     expect(handler).toHaveBeenCalledWith(5);
   });
 
+  it("decreases the number by 5 steps", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        modelValue: 0,
+        step: 5,
+        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
+        onChange: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("textbox"));
+    await userEvent.keyboard("{ArrowDown}");
+
+    await userEvent.tab();
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("-5");
+    expect(handler).toHaveBeenCalledWith(-5);
+  });
+
   it("emits the correct value when moving focus away from the input", async () => {
     // ARRANGE
     const handler = vi.fn();
