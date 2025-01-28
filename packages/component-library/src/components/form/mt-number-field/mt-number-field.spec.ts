@@ -794,4 +794,25 @@ describe("mt-number-field", () => {
     expect(handler).toHaveBeenCalledOnce();
     expect(handler).toHaveBeenCalledWith(5);
   });
+
+  it("emits an input-change event but does not go below the minimum value", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        modelValue: 5,
+        min: 3,
+        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
+        onInputChange: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.type(screen.getByRole("textbox"), "{Backspace}2");
+
+    // ASSERT
+    expect(handler).toHaveBeenCalledOnce();
+    expect(handler).toHaveBeenCalledWith(3);
+  });
 });
