@@ -121,14 +121,14 @@ describe("mt-number-field", () => {
     });
 
     // ACT
-    await userEvent.type(screen.getByRole("textbox"), "1");
+    await userEvent.type(screen.getByRole("spinbutton"), "1");
 
     await userEvent.tab();
 
     // ASSERT
-    expect(screen.getByRole("textbox")).toBeDisabled();
+    expect(screen.getByRole("spinbutton")).toBeDisabled();
 
-    expect(screen.getByRole("textbox")).toHaveValue("0");
+    expect(screen.getByRole("spinbutton")).toHaveValue(0);
     expect(handler).not.toHaveBeenCalled();
   });
 

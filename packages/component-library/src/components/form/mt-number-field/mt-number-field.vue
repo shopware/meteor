@@ -5,10 +5,12 @@
     <mt-help-text v-if="!!helpText" :text="helpText" />
 
     <input
+      type="number"
+      :value="modelValue"
       :id="id"
       :required="required"
       :name="name"
-      type="number"
+      :disabled="disabled"
       @blur="$emit('blur')"
       @focus="$emit('focus')"
     />
