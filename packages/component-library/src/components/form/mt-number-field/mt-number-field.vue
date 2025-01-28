@@ -11,11 +11,11 @@
           $emit('inheritance-restore');
         }
       "
-      :style="{ marginBottom: 'var(--scale-size-2)' }"
+      :style="{ marginBottom: 'var(--scale-size-2)', gridArea: 'label' }"
       >{{ label }}</mt-field-label
     >
 
-    <mt-help-text v-if="!!helpText" :text="helpText" />
+    <mt-help-text v-if="!!helpText" :text="helpText" :style="{ gridArea: 'help-text' }" />
 
     <div :class="['mt-number-field__block', `mt-number-field--size-${size}`]">
       <div v-if="$slots.prefix" class="mt-number-field__affix mt-number-field__affix--prefix">
@@ -354,11 +354,19 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.mt-number-field {
+  display: grid;
+  grid-template-areas:
+    "label help-text"
+    "input input";
+  grid-template-columns: 1fr auto;
+}
+
 .mt-number-field__block {
   --mt-number-field-border-radius: var(--border-radius-xs);
 
+  grid-area: input;
   display: flex;
-
   border: 1px solid var(--color-border-primary-default);
   border-radius: var(--mt-number-field-border-radius);
   background-color: var(--color-elevation-surface-raised);
