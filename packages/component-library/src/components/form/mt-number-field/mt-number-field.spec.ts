@@ -586,6 +586,27 @@ describe("mt-number-field", () => {
     expect(handler).not.toHaveBeenCalled();
   });
 
+  it("emits an inheritance-remove event when unlinking the inheritance", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        isInheritanceField: true,
+        isInherited: true,
+        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
+        onInheritanceRemove: handler,
+      },
+    });
+
+    // ACT
+    // TODO: Update selector to getByRole("button", { name: "Unlink inheritance" });
+    await userEvent.click(screen.getByTestId("mt-inheritance-switch-icon"));
+
+    // ASSERT
+    expect(handler).toHaveBeenCalledOnce();
+  });
+
   it("shows two decimal places by default when the number type is float", async () => {
     // ARRANGE
     render(MtNumberField, {

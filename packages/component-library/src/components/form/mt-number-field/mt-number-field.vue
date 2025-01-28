@@ -15,7 +15,6 @@
     :name="name"
     :size="size"
     @inheritance-restore="$emit('inheritance-restore', $event)"
-    @inheritance-remove="$emit('inheritance-remove', $event)"
   >
     <template #label>
       {{ label }}
