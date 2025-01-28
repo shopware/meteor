@@ -30,6 +30,7 @@
       <input
         :id="createInputId(identification)"
         type="text"
+        :required="required"
         :name="identification"
         :disabled="disabled || isInherited"
         :value="stringRepresentation"
