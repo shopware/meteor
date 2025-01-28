@@ -773,4 +773,25 @@ describe("mt-number-field", () => {
     expect(handler).toHaveBeenCalledOnce();
     expect(handler).toHaveBeenCalledWith(1);
   });
+
+  it("emits an input-change event but does not exceed the maximum value", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        modelValue: 0,
+        max: 5,
+        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
+        onInputChange: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.type(screen.getByRole("textbox"), "6");
+
+    // ASSERT
+    expect(handler).toHaveBeenCalledOnce();
+    expect(handler).toHaveBeenCalledWith(5);
+  });
 });
