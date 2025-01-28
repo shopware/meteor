@@ -51,6 +51,30 @@ describe("mt-number-field", () => {
     expect(handler).toHaveBeenCalledWith(-0.01);
   });
 
+  it("increase the number by 0.42 when the step is set to 0.42", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        modelValue: 0,
+        step: 0.42,
+        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
+        onChange: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("textbox"));
+    await userEvent.keyboard("{ArrowUp}");
+
+    await userEvent.tab();
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("0.42");
+    expect(handler).toHaveBeenCalledWith(0.42);
+  });
+
   it("increases the number by default by 1 step when in integer mode", async () => {
     // ARRANGE
     const handler = vi.fn();
