@@ -19,6 +19,18 @@ describe("mt-number-field", () => {
     expect(screen.getByRole("textbox")).toHaveFocus();
   });
 
+  it("can be marked as required", async () => {
+    // ARRANGE
+    render(MtNumberField, {
+      props: {
+        required: true,
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toBeRequired();
+  });
+
   it("does not update the value when the input is disabled", async () => {
     // ARRANGE
     const handler = vi.fn();
