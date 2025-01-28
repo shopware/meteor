@@ -221,11 +221,19 @@ export const VisualTestSuffix: MtNumberFieldStory = {
   },
 };
 
-export const VisualTestNumberAlignedEnd: MtNumberFieldStory = {
-  name: "Should align number to end",
+export const VisualTestLinkedInheritance: MtNumberFieldStory = {
+  name: "Should display link inheritance",
   args: {
-    numberAlignEnd: true,
-    modelValue: 42,
+    isInheritanceField: true,
+    isInherited: true,
+  },
+};
+
+export const VisualTestUnlinkedInheritance: MtNumberFieldStory = {
+  name: "Should display unlink inheritance",
+  args: {
+    isInheritanceField: true,
+    isInherited: false,
   },
 };
 
