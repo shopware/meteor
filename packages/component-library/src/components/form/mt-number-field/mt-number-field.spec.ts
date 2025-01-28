@@ -492,4 +492,17 @@ describe("mt-number-field", () => {
     expect(screen.getByRole("textbox")).toHaveValue("0");
     expect(handler).not.toHaveBeenCalled();
   });
+
+  it("shows two decimal places by default when the number type is float", async () => {
+    // ARRANGE
+    render(MtNumberField, {
+      props: {
+        modelValue: 0.01,
+        numberType: "float",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("0.01");
+  });
 });
