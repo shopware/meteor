@@ -296,6 +296,16 @@ export const VisualTestInheritance: MtNumberFieldStory = {
   },
 };
 
+export const VisualTestHelpText: MtNumberFieldStory = {
+  name: "Should display help text",
+  args: {
+    helpText: "Some help text",
+  },
+  async play() {
+    await userEvent.tab();
+  },
+};
+
 export const VisualTestSmall: MtNumberFieldStory = {
   name: "Should display small",
   args: {
