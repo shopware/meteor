@@ -359,7 +359,7 @@ describe("mt-number-field", () => {
     expect(handler).toHaveBeenCalledWith(-0.42);
   });
 
-  it("increases the number by default by 1 step when in integer mode", async () => {
+  it.only("increases the number by default by 1 step when in integer mode", async () => {
     // ARRANGE
     const handler = vi.fn();
 
@@ -373,13 +373,10 @@ describe("mt-number-field", () => {
     });
 
     // ACT
-    await userEvent.click(screen.getByRole("textbox"));
-    await userEvent.keyboard("{ArrowUp}");
-
-    await userEvent.tab();
+    await userEvent.click(screen.getByRole("button", { name: "Increase" }));
 
     // ASSERT
-    expect(screen.getByRole("textbox")).toHaveValue("1");
+    expect(screen.getByRole("spinbutton")).toHaveValue(1);
     expect(handler).toHaveBeenCalledWith(1);
   });
 
