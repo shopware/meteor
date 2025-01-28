@@ -27,6 +27,30 @@ describe("mt-number-field", () => {
     expect(handler).toHaveBeenCalledWith(0.01);
   });
 
+  it("decreases the number by 0.01 by default step when in float mode", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        modelValue: 0,
+        numberType: "float",
+        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
+        onChange: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("textbox"));
+    await userEvent.keyboard("{ArrowDown}");
+
+    await userEvent.tab();
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("-0.01");
+    expect(handler).toHaveBeenCalledWith(-0.01);
+  });
+
   it("increases the number by default by 1 step when in integer mode", async () => {
     // ARRANGE
     const handler = vi.fn();
