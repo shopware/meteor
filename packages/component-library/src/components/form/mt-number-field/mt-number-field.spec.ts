@@ -96,6 +96,17 @@ describe("mt-number-field", () => {
     expect(screen.getByRole("tooltip")).toHaveTextContent("Some help text");
   });
 
+  it("does not display a help text when none is specified", async () => {
+    // ARRANGE
+    render(MtNumberField);
+
+    // ACT
+    await userEvent.tab();
+
+    // ASSERT
+    expect(screen.queryByRole("tooltip")).not.toBeInTheDocument();
+  });
+
   it("does not update the value when the input is disabled", async () => {
     // ARRANGE
     const handler = vi.fn();
