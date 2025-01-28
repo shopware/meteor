@@ -667,7 +667,7 @@ describe("mt-number-field", () => {
     });
 
     // ASSERT
-    expect(screen.getByRole("textbox")).toHaveValue("0.01");
+    expect(screen.getByRole("spinbutton")).toHaveValue(0.01);
   });
 
   it("shows three decimal places when input can show three digits", async () => {
