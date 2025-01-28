@@ -53,6 +53,31 @@ describe("mt-number-field", () => {
     expect(handler).toHaveBeenCalledWith(0);
   });
 
+  it("only increments to the maximum value even though a step would exceed that limit", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        modelValue: 4,
+        max: 5,
+        step: 2,
+        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
+        onChange: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("textbox"));
+    await userEvent.keyboard("{ArrowUp}");
+
+    await userEvent.tab();
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("5");
+    expect(handler).toHaveBeenCalledWith(5);
+  });
+
   it("increases the number by 0.01 by default step when in float mode", async () => {
     // ARRANGE
     const handler = vi.fn();
