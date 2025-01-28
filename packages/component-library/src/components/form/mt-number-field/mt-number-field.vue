@@ -447,6 +447,16 @@ export default defineComponent({
   padding-inline: var(--scale-size-16);
   height: 100%;
   width: 100%;
+
+  appearance: none;
+  -moz-appearance: textfield;
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    /* display: none; <- Crashes Chrome on hover */
+    -webkit-appearance: none;
+    margin: 0; /* <-- Apparently some margin are still there even though it's hidden */
+  }
 }
 
 .mt-number-field__input--align-end {
