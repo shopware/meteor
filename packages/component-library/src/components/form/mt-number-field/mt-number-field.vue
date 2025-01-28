@@ -2,7 +2,7 @@
   <div>
     <mt-field-label :id="id" :required="required">{{ label }}</mt-field-label>
 
-    <mt-help-text :text="helpText" />
+    <mt-help-text v-if="!!helpText" :text="helpText" />
 
     <input
       :id="id"
