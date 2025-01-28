@@ -17,7 +17,11 @@
     />
 
     <button @click="decreaseNumberByStep" :disabled="disabled" :aria-label="t('decreaseButton')" />
-    <button @click="increaseNumberByStep" :disabled="disabled" :aria-label="t('increaseButton')" />
+    <button
+      @click="increaseNumberByStep"
+      :disabled="disabled || isInherited"
+      :aria-label="t('increaseButton')"
+    />
   </div>
 </template>
 

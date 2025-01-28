@@ -570,7 +570,7 @@ describe("mt-number-field", () => {
     // ACT
     await userEvent.click(screen.getByRole("button", { name: "Increase" }));
 
-    expect(screen.getByRole("textbox")).toHaveValue("0");
+    expect(screen.getByRole("spinbutton")).toHaveValue(0);
     expect(handler).not.toHaveBeenCalled();
   });
 
