@@ -13,6 +13,7 @@
       :disabled="disabled"
       @blur="$emit('blur')"
       @focus="$emit('focus')"
+      @change="$emit('change', ($event.target as HTMLInputElement).value)"
     />
 
     <button @click="decreaseNumberByStep" :disabled="disabled" :aria-label="t('decreaseButton')" />
