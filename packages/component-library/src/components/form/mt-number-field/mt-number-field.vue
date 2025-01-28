@@ -50,16 +50,35 @@
         @change="onChange"
       />
 
-      <button
-        @click="decreaseNumberByStep"
-        :disabled="disabled || isInherited"
-        :aria-label="t('decreaseButton')"
-      />
-      <button
-        @click="increaseNumberByStep"
-        :disabled="disabled || isInherited"
-        :aria-label="t('increaseButton')"
-      />
+      <div class="mt-number-field__controls">
+        <button
+          @click="decreaseNumberByStep"
+          :disabled="disabled || isInherited"
+          :aria-label="t('decreaseButton')"
+          tabindex="-1"
+        >
+          <mt-icon
+            name="regular-chevron-up-s"
+            color="var(--color-icon-primary-default)"
+            size="var(--scale-size-10)"
+            aria-hidden="true"
+          />
+        </button>
+
+        <button
+          @click="increaseNumberByStep"
+          :disabled="disabled || isInherited"
+          :aria-label="t('increaseButton')"
+          tabindex="-1"
+        >
+          <mt-icon
+            name="regular-chevron-down-s"
+            color="var(--color-icon-primary-default)"
+            size="var(--scale-size-10)"
+            aria-hidden="true"
+          />
+        </button>
+      </div>
 
       <div v-if="$slots.suffix" class="mt-number-field__affix mt-number-field__affix--suffix">
         <slot name="suffix" />
@@ -89,7 +108,7 @@ export default defineComponent({
   name: "MtNumberField",
 
   components: {
-    "mt-icon": MtIcon,
+    MtIcon,
     MtFieldLabel,
     MtHelpText,
     MtFieldError,
@@ -461,6 +480,29 @@ export default defineComponent({
 
 .mt-number-field__input--align-end {
   text-align: end;
+}
+
+.mt-number-field__controls {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: var(--scale-size-40);
+
+  & button {
+    padding-inline: var(--scale-size-4);
+    border-radius: var(--border-radius-button);
+    transition: all 0.15s ease-out;
+    width: 100%;
+    flex: 1;
+
+    &:hover {
+      background-color: var(--color-interaction-secondary-hover);
+    }
+
+    &:disabled {
+      cursor: default;
+    }
+  }
 }
 
 .mt-number-field__affix {
