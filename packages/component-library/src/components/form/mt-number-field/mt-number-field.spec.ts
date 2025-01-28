@@ -74,7 +74,7 @@ describe("mt-number-field", () => {
     });
 
     // ACT
-    await userEvent.click(screen.getByRole("textbox"));
+    await userEvent.click(screen.getByRole("spinbutton"));
 
     // ASSERT
     expect(handler).toHaveBeenCalledOnce();
