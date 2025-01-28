@@ -842,10 +842,10 @@ describe("mt-number-field", () => {
     });
 
     // ACT
-    await userEvent.type(screen.getByRole("textbox"), "{Backspace}-1");
+    await userEvent.type(screen.getByRole("spinbutton"), "{Backspace}-1");
 
     // ASSERT
     expect(handler).toHaveBeenCalledTimes(1);
-    expect(screen.getByRole("textbox")).toHaveValue("-1");
+    expect(screen.getByRole("spinbutton")).toHaveValue(-1);
   });
 });
