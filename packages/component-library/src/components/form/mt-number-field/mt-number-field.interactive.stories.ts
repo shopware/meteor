@@ -318,3 +318,10 @@ export const VisualTestInheritance: MtNumberFieldStory = {
     expect(canvas.getByTestId("mt-icon__regular-link-horizontal-slash")).toBeDefined();
   },
 };
+
+export const VisualTestSmall: MtNumberFieldStory = {
+  name: "Should display small",
+  args: {
+    size: "small",
+  },
+};
