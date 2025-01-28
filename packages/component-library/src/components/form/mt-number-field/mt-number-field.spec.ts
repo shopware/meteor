@@ -774,9 +774,13 @@ describe("mt-number-field", () => {
     });
 
     // ACT
-    await userEvent.type(screen.getByRole("textbox"), "6");
+    await userEvent.type(screen.getByRole("spinbutton"), "6");
+
+    await userEvent.tab();
 
     // ASSERT
+    expect(screen.getByRole("spinbutton")).toHaveValue(5);
+
     expect(handler).toHaveBeenCalledOnce();
     expect(handler).toHaveBeenCalledWith(5);
   });
