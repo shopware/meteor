@@ -10,7 +10,7 @@
       :id="id"
       :required="required"
       :name="name"
-      :disabled="disabled"
+      :disabled="disabled || isInherited"
       @blur="$emit('blur')"
       @focus="$emit('focus')"
       @change="$emit('change', ($event.target as HTMLInputElement).value)"
