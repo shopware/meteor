@@ -28,7 +28,7 @@ describe("mt-number-field", () => {
     });
 
     // ASSERT
-    expect(screen.getByRole("textbox")).toBeRequired();
+    expect(screen.getByRole("spinbutton")).toBeRequired();
   });
 
   it("has the specified name", async () => {
