@@ -174,4 +174,17 @@ describe("mt-switch", () => {
     expect(handler).toHaveBeenCalledOnce();
     expect(handler).toHaveBeenCalledWith(false);
   });
+
+  it("can be explictly required to be turned on", async () => {
+    // ARRANGE
+    render(MtSwitch, {
+      props: {
+        checked: false,
+        required: true,
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).toBeRequired();
+  });
 });

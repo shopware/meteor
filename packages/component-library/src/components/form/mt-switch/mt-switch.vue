@@ -11,6 +11,7 @@
             :checked="inputState"
             :disabled="isDisabled"
             :aria-checked="inputState"
+            :required="required"
             :aria-label="label"
             role="checkbox"
             @change.stop="onChange"
