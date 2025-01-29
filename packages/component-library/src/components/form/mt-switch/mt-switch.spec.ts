@@ -235,4 +235,30 @@ describe("mt-switch", () => {
     expect(screen.getByRole("checkbox")).toBeChecked();
     expect(handler).not.toHaveBeenCalled();
   });
+
+  it("can be turned on when it overrides the inherited value", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtSwitch, {
+      props: {
+        checked: false,
+        inheritedValue: false,
+        // @ts-expect-error -- Type is not defined, but accessed via this.$attrs
+        isInheritanceField: true,
+        isInherited: false,
+        onChange: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("checkbox"));
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).toBeChecked();
+
+    expect(screen.getByRole("checkbox")).not.toBeDisabled();
+    expect(handler).toHaveBeenCalledOnce();
+    expect(handler).toHaveBeenCalledWith(true);
+  });
 });
