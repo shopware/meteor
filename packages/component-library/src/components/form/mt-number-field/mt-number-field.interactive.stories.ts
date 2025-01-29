@@ -56,7 +56,6 @@ export const VisualTestError: MtNumberFieldStory = {
   name: "Should display error",
   args: {
     error: {
-      code: 500,
       detail: "Error while saving!",
     },
   },
