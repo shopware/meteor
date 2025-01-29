@@ -105,7 +105,6 @@
 import type { PropType } from "vue";
 
 import { defineComponent, useId } from "vue";
-import MtTextField from "../mt-text-field/mt-text-field.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
@@ -122,8 +121,6 @@ export default defineComponent({
     MtHelpText,
     MtFieldError,
   },
-
-  extends: MtTextField,
 
   props: {
     /**
@@ -216,9 +213,72 @@ export default defineComponent({
       required: false,
       default: false,
     },
+
+    error: {
+      type: Object as PropType<{ message: string }>,
+      required: false,
+      default: null,
+    },
+
+    name: {
+      type: String,
+      required: false,
+      default: null,
+    },
+
+    required: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    disabled: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    isInherited: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    isInheritanceField: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    helpText: {
+      type: String,
+      required: false,
+      default: null,
+    },
+
+    label: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
+
+    size: {
+      type: String,
+      required: false,
+      default: "default",
+      validator(value: string) {
+        return ["small", "default"].includes(value);
+      },
+    },
   },
 
   inheritAttrs: false,
+
+  data(): { currentValue: number | null } {
+    return {
+      currentValue: this.modelValue,
+    };
+  },
 
   computed: {
     realStep(): number {
@@ -250,8 +310,7 @@ export default defineComponent({
       }
 
       return this.fillDigits && this.numberType !== "int"
-        ? // @ts-expect-error - wrong type because of component extends
-          this.currentValue.toFixed(this.digits)
+        ? this.currentValue.toFixed(this.digits)
         : this.currentValue.toString();
     },
   },
@@ -260,7 +319,6 @@ export default defineComponent({
     modelValue: {
       handler() {
         if (this.modelValue === null || this.modelValue === undefined) {
-          // @ts-expect-error - defined in parent
           this.currentValue = null;
           return;
         }
