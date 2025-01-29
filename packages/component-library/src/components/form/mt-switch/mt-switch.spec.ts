@@ -114,4 +114,20 @@ describe("mt-switch", () => {
 
     expect(handler).not.toHaveBeenCalled();
   });
+
+  it("gets focused when clicking on the label", async () => {
+    // ARRANGE
+    render(MtSwitch, {
+      props: {
+        checked: false,
+        label: "Label",
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByText("Label"));
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).toHaveFocus();
+  });
 });
