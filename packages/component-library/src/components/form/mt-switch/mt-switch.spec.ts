@@ -199,4 +199,16 @@ describe("mt-switch", () => {
     // ASSERT
     expect(screen.getByRole("checkbox")).not.toBeRequired();
   });
+
+  it("has the defined name when submitting a form", async () => {
+    // ARRANGE
+    render(MtSwitch, {
+      props: {
+        name: "some-name",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).toHaveAttribute("name", "some-name");
+  });
 });
