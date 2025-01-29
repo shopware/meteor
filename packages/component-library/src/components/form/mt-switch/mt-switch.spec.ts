@@ -337,4 +337,21 @@ describe("mt-switch", () => {
     // ASSERT
     expect(screen.getByRole("checkbox")).not.toBeChecked();
   });
+
+  it("displays a help text when one is defined", async () => {
+    // ARRANGE
+    await render(MtSwitch, {
+      props: {
+        helpText: "Help text",
+      },
+    });
+
+    // ACT
+    await userEvent.tab();
+    await userEvent.tab();
+
+    // ASSERT
+    expect(screen.getByRole("button")).toHaveFocus();
+    expect(screen.getByRole("tooltip")).toBeVisible();
+  });
 });
