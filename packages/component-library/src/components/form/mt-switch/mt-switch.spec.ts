@@ -92,4 +92,26 @@ describe("mt-switch", () => {
 
     expect(handler).not.toHaveBeenCalled();
   });
+
+  it("cannot be turned on when it is disabled", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtSwitch, {
+      props: {
+        checked: false,
+        disabled: true,
+        // @ts-expect-error -- Type is not defined because of missing defineEmits
+        onChange: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("checkbox"));
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).not.toBeChecked();
+
+    expect(handler).not.toHaveBeenCalled();
+  });
 });
