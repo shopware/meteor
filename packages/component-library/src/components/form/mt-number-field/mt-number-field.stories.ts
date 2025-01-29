@@ -1,6 +1,7 @@
 import MtNumberField from "./mt-number-field.vue";
 import type { StoryObj } from "@storybook/vue3";
 import type { SlottedMeta } from "@/_internal/story-helper";
+import { fn } from "@storybook/test";
 
 export type MtNumberFieldMeta = SlottedMeta<
   typeof MtNumberField,
@@ -13,6 +14,8 @@ export default {
   args: {
     label: "Numberfield",
     numberType: "int",
+    onChange: fn(),
+    "onUpdate:modelValue": fn(),
   },
 } as MtNumberFieldMeta;
 
