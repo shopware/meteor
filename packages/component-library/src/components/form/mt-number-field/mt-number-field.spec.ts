@@ -694,6 +694,7 @@ describe("mt-number-field", () => {
     await userEvent.tab();
 
     // ASSERT
+    expect(handler).toHaveBeenCalledOnce();
     expect(handler).toHaveBeenCalledWith(null);
   });
 
