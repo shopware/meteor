@@ -1,5 +1,12 @@
 <template>
-  <div class="mt-number-field">
+  <div
+    :class="[
+      'mt-number-field',
+      {
+        'mt-number-field--future-no-default-margin': futureFlags.removeDefaultMargin,
+      },
+    ]"
+  >
     <mt-field-label
       :id="id"
       :required="required"
@@ -103,6 +110,7 @@ import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import { useI18n } from "vue-i18n";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
+import { useFutureFlags } from "@/composables/useFutureFlags";
 
 export default defineComponent({
   name: "MtNumberField",
@@ -389,7 +397,9 @@ export default defineComponent({
 
     const id = useId();
 
-    return { t, id };
+    const futureFlags = useFutureFlags();
+
+    return { t, id, futureFlags };
   },
 });
 </script>
@@ -403,6 +413,11 @@ export default defineComponent({
     "error error"
     "hint hint";
   grid-template-columns: 1fr auto;
+  margin-bottom: var(--scale-size-32);
+}
+
+.mt-number-field--future-no-default-margin {
+  margin-bottom: 0;
 }
 
 .mt-number-field__block {
