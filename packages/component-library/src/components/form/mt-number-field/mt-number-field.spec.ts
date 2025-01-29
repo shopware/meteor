@@ -654,7 +654,7 @@ describe("mt-number-field", () => {
     expect(screen.getByRole("spinbutton")).toHaveValue(0.001);
   });
 
-  it("emits null when value can be empty and typing gibberish", async () => {
+  it("is not possible to type alphabetical characters into the input field", async () => {
     // ARRANGE
     const handler = vi.fn();
 
@@ -668,11 +668,12 @@ describe("mt-number-field", () => {
     });
 
     // ACT
-    await userEvent.type(screen.getByRole("textbox"), "asdf");
+    await userEvent.type(screen.getByRole("spinbutton"), "asdf");
     await userEvent.tab();
 
     // ASSERT
-    expect(handler).toHaveBeenCalledWith(null);
+    expect(handler).not.toHaveBeenCalled();
+    expect(screen.getByRole("spinbutton")).not.toHaveValue();
   });
 
   it("emits null when value can be empty and deleting the value", async () => {
@@ -689,7 +690,7 @@ describe("mt-number-field", () => {
     });
 
     // ACT
-    await userEvent.type(screen.getByRole("textbox"), "{Backspace}");
+    await userEvent.type(screen.getByRole("spinbutton"), "{Backspace}");
     await userEvent.tab();
 
     // ASSERT
@@ -709,7 +710,7 @@ describe("mt-number-field", () => {
     });
 
     // ACT
-    await userEvent.type(screen.getByRole("textbox"), "{Backspace}");
+    await userEvent.type(screen.getByRole("spinbutton"), "{Backspace}");
     await userEvent.tab();
 
     // ASSERT
