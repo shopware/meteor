@@ -219,7 +219,7 @@ export default defineComponent({
     },
 
     error: {
-      type: Object as PropType<{ message: string }>,
+      type: Object as PropType<{ detail: string }>,
       required: false,
       default: null,
     },
