@@ -58,9 +58,9 @@
 
       <div class="mt-number-field__controls">
         <button
-          @click="decreaseNumberByStep"
+          @click="increaseNumberByStep"
           :disabled="disabled || isInherited"
-          :aria-label="t('decreaseButton')"
+          :aria-label="t('increaseButton')"
           tabindex="-1"
         >
           <mt-icon
@@ -72,9 +72,9 @@
         </button>
 
         <button
-          @click="increaseNumberByStep"
+          @click="decreaseNumberByStep"
           :disabled="disabled || isInherited"
-          :aria-label="t('increaseButton')"
+          :aria-label="t('decreaseButton')"
           tabindex="-1"
         >
           <mt-icon
