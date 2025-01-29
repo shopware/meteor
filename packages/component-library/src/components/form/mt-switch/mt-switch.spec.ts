@@ -153,4 +153,25 @@ describe("mt-switch", () => {
     expect(handler).toHaveBeenCalledOnce();
     expect(handler).toHaveBeenCalledWith(true);
   });
+
+  it("gets turned off when clicking on the label an it is turned on", async () => {
+    const handler = vi.fn();
+    render(MtSwitch, {
+      props: {
+        checked: true,
+        label: "Label",
+        // @ts-expect-error -- Type is not defined because of missing defineEmits
+        onChange: handler,
+      },
+    });
+
+    // ARRANGE
+    await userEvent.click(screen.getByText("Label"));
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).not.toBeChecked();
+
+    expect(handler).toHaveBeenCalledOnce();
+    expect(handler).toHaveBeenCalledWith(false);
+  });
 });
