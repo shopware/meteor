@@ -283,4 +283,26 @@ describe("mt-switch", () => {
     // ASSERT
     expect(handler).toHaveBeenCalledOnce();
   });
+
+  it("can be linked to its inherited value", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtSwitch, {
+      props: {
+        // @ts-expect-error -- Type is not defined
+        onInheritanceRestore: handler,
+        checked: false,
+        inheritedValue: false,
+        isInheritanceField: true,
+        isInherited: false,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByTestId("mt-icon__regular-link-horizontal-slash"));
+
+    // ASSERT
+    expect(handler).toHaveBeenCalledOnce();
+  });
 });

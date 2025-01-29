@@ -30,7 +30,6 @@
           :help-text="helpText"
           :is-inheritance-field="isInheritanceField"
           :is-inherited="isInherited"
-          @inheritance-restore="onInheritanceRestore($event)"
         >
           <template #label>
             {{ label }}
@@ -213,10 +212,6 @@ export default defineComponent({
     onChange(changeEvent: Event) {
       // @ts-expect-error - target exists on event
       this.$emit("change", changeEvent.target.checked);
-    },
-
-    onInheritanceRestore(event: Event) {
-      this.$emit("inheritance-restore", event);
     },
   },
 });
