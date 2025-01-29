@@ -487,20 +487,8 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
   }
 
   &__switch {
-    margin-top: var(--scale-size-4);
-
-    .mt-field--switch {
-      margin: 0;
-
-      .mt-field--switch__input {
-        height: var(--scale-size-16);
-        padding: 0;
-      }
-
-      .mt-field__label {
-        display: none;
-      }
-    }
+    margin: var(--scale-size-4) 0 0 0;
+    min-height: var(--scale-size-16);
   }
 
   &__visibility {
