@@ -187,4 +187,16 @@ describe("mt-switch", () => {
     // ASSERT
     expect(screen.getByRole("checkbox")).toBeRequired();
   });
+
+  it("is not required to be turned on by default", async () => {
+    // ARRANGE
+    render(MtSwitch, {
+      props: {
+        checked: false,
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).not.toBeRequired();
+  });
 });
