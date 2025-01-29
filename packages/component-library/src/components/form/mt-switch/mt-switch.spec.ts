@@ -305,4 +305,20 @@ describe("mt-switch", () => {
     // ASSERT
     expect(handler).toHaveBeenCalledOnce();
   });
+
+  it("shows the inherited value over its overriden value inheritance is linked", async () => {
+    // ARRANGE
+    render(MtSwitch, {
+      props: {
+        checked: false,
+        inheritedValue: true,
+        // @ts-expect-error -- Type is not defined, it is accessed via this.$attrs
+        isInheritanceField: true,
+        isInherited: true,
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).toBeChecked();
+  });
 });
