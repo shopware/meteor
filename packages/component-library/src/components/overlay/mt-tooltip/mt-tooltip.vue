@@ -37,6 +37,7 @@
         <span>{{ content }}</span>
 
         <svg
+          aria-hidden="true"
           ref="arrowRef"
           width="8"
           height="4"
