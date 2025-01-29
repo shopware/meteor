@@ -39,6 +39,7 @@
       </div>
 
       <input
+        v-bind="$attrs"
         type="number"
         :class="[
           'mt-number-field__input',
@@ -52,8 +53,6 @@
         :name="name"
         :disabled="disabled || isInherited"
         @input="onInput"
-        @blur="$emit('blur')"
-        @focus="$emit('focus')"
         @change="onChange"
       />
 
