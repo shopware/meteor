@@ -39,7 +39,11 @@
       </div>
 
       <input
-        v-bind="$attrs"
+        v-bind="{
+          ...$attrs,
+          onInput,
+          onChange,
+        }"
         type="number"
         :class="[
           'mt-number-field__input',
@@ -52,8 +56,6 @@
         :required="required"
         :name="name"
         :disabled="disabled || isInherited"
-        @input="onInput"
-        @change="onChange"
       />
 
       <div class="mt-number-field__controls">
@@ -215,6 +217,8 @@ export default defineComponent({
       default: false,
     },
   },
+
+  inheritAttrs: false,
 
   computed: {
     realStep(): number {
