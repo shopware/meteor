@@ -261,4 +261,26 @@ describe("mt-switch", () => {
     expect(handler).toHaveBeenCalledOnce();
     expect(handler).toHaveBeenCalledWith(true);
   });
+
+  it("can be unlinked from its inherited value", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtSwitch, {
+      props: {
+        // @ts-expect-error -- Type is not defined
+        onInheritanceRemove: handler,
+        checked: false,
+        inheritedValue: true,
+        isInheritanceField: true,
+        isInherited: true,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByTestId("mt-inheritance-switch-icon"));
+
+    // ASSERT
+    expect(handler).toHaveBeenCalledOnce();
+  });
 });
