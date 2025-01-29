@@ -28,7 +28,12 @@ export default defineConfig({
         "src/**/*.js",
         "src/**/*.json",
       ],
-      exclude: ["node_modules", "**/*.stories.ts", "**/*.spec.ts", "**/*.spec.js"],
+      exclude: [
+        "node_modules",
+        "**/*.stories.ts",
+        "**/*.spec.ts",
+        "**/*.spec.js",
+      ],
     }),
   ],
   resolve: {
@@ -50,7 +55,8 @@ export default defineConfig({
     lib: {
       entry: "src/index.ts",
       formats: ["es", "cjs"],
-      fileName: (format, entryName) => `${{ es: "esm", cjs: "common" }[format]}/${entryName}.js`,
+      fileName: (format, entryName) =>
+        `${{ es: "esm", cjs: "common" }[format]}/${entryName}.js`,
     },
     cssCodeSplit: true,
     rollupOptions: {
