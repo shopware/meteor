@@ -20,8 +20,9 @@
         }
       "
       :style="{ marginBottom: 'var(--scale-size-2)', gridArea: 'label' }"
-      >{{ label }}</mt-field-label
     >
+      {{ label }}
+    </mt-field-label>
 
     <mt-help-text v-if="!!helpText" :text="helpText" :style="{ gridArea: 'help-text' }" />
 
