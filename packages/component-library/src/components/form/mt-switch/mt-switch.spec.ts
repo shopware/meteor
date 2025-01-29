@@ -211,4 +211,28 @@ describe("mt-switch", () => {
     // ASSERT
     expect(screen.getByRole("checkbox")).toHaveAttribute("name", "some-name");
   });
+
+  it("cannot be turned off when it inherits a value", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtSwitch, {
+      props: {
+        inheritedValue: true,
+        // @ts-expect-error -- Type is not defined, but accessed via this.$attrs
+        isInheritanceField: true,
+        isInherited: true,
+        onChange: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("checkbox"));
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).toBeDisabled();
+
+    expect(screen.getByRole("checkbox")).toBeChecked();
+    expect(handler).not.toHaveBeenCalled();
+  });
 });
