@@ -1,4 +1,4 @@
-import { within, userEvent } from "@storybook/test";
+import { within, userEvent, expect } from "@storybook/test";
 
 import meta, {
   type MtPasswordFieldMeta,
@@ -28,6 +28,11 @@ export const VisualTestPrefix: MtPasswordFieldStory = {
   name: "Should display prefix",
   args: {
     prefix: "prefix",
+  },
+  async play({ canvasElement }) {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getByText("prefix")).toBeInTheDocument();
   },
 };
 
