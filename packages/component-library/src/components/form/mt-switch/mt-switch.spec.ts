@@ -48,4 +48,26 @@ describe("mt-switch", () => {
     expect(handler).toHaveBeenCalledOnce();
     expect(handler).toHaveBeenCalledWith(false);
   });
+
+  it("emits an event when turning on the switch", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtSwitch, {
+      props: {
+        checked: false,
+        // @ts-expect-error -- Type is not defined because of missing defineEmits
+        onChange: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("checkbox"));
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).toBeChecked();
+
+    expect(handler).toHaveBeenCalledOnce();
+    expect(handler).toHaveBeenCalledWith(true);
+  });
 });
