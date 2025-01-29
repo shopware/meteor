@@ -17,7 +17,7 @@
       onMouseleave,
       onMousedown,
       onMouseup: () => setState({ isPressingTrigger: false }),
-      'aria-describedby': isVisible ? `mt-tooltip--${id}__tooltip` : undefined,
+      'aria-describedby': `mt-tooltip--${id}__tooltip`,
     }"
   />
 

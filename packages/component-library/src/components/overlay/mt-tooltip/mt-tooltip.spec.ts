@@ -27,8 +27,8 @@ describe("mt-tooltip", () => {
 
     // ACT & ASSERT
     expect(screen.queryByRole("tooltip", { name: "Tooltip" })).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Open tooltip" })).not.toHaveAttribute(
-      "aria-describedby",
+    expect(screen.getByRole("button", { name: "Open tooltip" })).toHaveAccessibleDescription(
+      "Tooltip",
     );
   });
 
@@ -108,7 +108,7 @@ describe("mt-tooltip", () => {
     },
   );
 
-  it("does not announce the content of the tooltip when the tooltip is hidden", async () => {
+  it("does read out the tooltip content when focusing the trigger", async () => {
     // ARRANGE
     render(MtTooltip, {
       props: {
@@ -123,10 +123,10 @@ describe("mt-tooltip", () => {
     await flushPromises();
 
     // ACT & ASSERT
-    expect(screen.getByRole("button", { name: "Open tooltip" })).not.toHaveAccessibleDescription(
+    expect(screen.getByRole("button", { name: "Open tooltip" })).toHaveAccessibleDescription(
       "Tooltip",
     );
-    expect(screen.getByRole("button", { name: "Open tooltip" })).not.toHaveAttribute(
+    expect(screen.getByRole("button", { name: "Open tooltip" })).toHaveAttribute(
       "aria-describedby",
     );
   });
