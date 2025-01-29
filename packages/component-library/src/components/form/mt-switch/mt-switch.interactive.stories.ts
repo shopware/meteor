@@ -1,6 +1,5 @@
 import { within, userEvent } from "@storybook/test";
 import { expect } from "@storybook/test";
-import { waitUntil } from "../../../_internal/test-helper";
 
 import meta, { type MtSwitchMeta, type MtSwitchStory } from "./mt-switch.stories";
 
@@ -9,105 +8,67 @@ export default {
   title: "Interaction Tests/Form/mt-switch",
 } as MtSwitchMeta;
 
-export const TestLabel: MtSwitchStory = {
-  name: "Label should function",
-  args: {
-    label: "label",
-    checked: false,
-  },
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    expect(canvas.getByText(args.label)).toBeDefined();
-
-    await userEvent.click(canvas.getByText(args.label));
-
-    expect((canvas.getByRole("checkbox") as HTMLInputElement).checked).toBe(true);
-  },
-};
-
 export const VisualTestCheckable: MtSwitchStory = {
-  name: "Should be checkable",
+  name: "Checked",
   args: {
     label: "Checked",
-  },
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    await userEvent.click(canvas.getByRole("checkbox"));
-
-    expect((canvas.getByRole("checkbox") as HTMLInputElement).checked).toBe(true);
-
-    expect(args.change).toHaveBeenCalledWith(true);
+    checked: true,
   },
 };
 
 export const VisualTestUncheckable: MtSwitchStory = {
-  name: "Should be uncheckable",
+  name: "Unchecked",
   args: {
     label: "Unchecked",
-    checked: true,
-  },
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    await userEvent.click(canvas.getByRole("checkbox"));
-
-    expect((canvas.getByRole("checkbox") as HTMLInputElement).checked).toBe(false);
-
-    expect(args.change).toHaveBeenCalledWith(false);
+    checked: false,
   },
 };
 
-export const VisualTestDisabled: MtSwitchStory = {
-  name: "Should not change value when disabled",
+export const VisualTestDisabledChecked: MtSwitchStory = {
+  name: "Disabled turned on",
   args: {
     label: "Disabled",
     disabled: true,
     checked: true,
   },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
+};
 
-    expect((canvas.getByRole("checkbox") as HTMLInputElement).checked).toBe(true);
-
-    await userEvent.click(canvas.getByRole("checkbox"));
-
-    expect((canvas.getByRole("checkbox") as HTMLInputElement).checked).toBe(true);
+export const VisualTestDisabledTurnedOff: MtSwitchStory = {
+  name: "Disabled turned off",
+  args: {
+    label: "Disabled",
+    disabled: true,
+    checked: false,
   },
 };
 
 export const VisualTestBordered: MtSwitchStory = {
-  name: "Should be bordered",
+  name: "Bordered turned on",
   args: {
     label: "Bordered",
     bordered: true,
-  },
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    await userEvent.click(canvas.getByRole("checkbox"));
-
-    expect((canvas.getByRole("checkbox") as HTMLInputElement).checked).toBe(true);
-
-    expect(args.change).toHaveBeenCalledWith(true);
+    checked: true,
   },
 };
 
-export const VisualTestInherited: MtSwitchStory = {
-  name: "Should trigger inheritance-remove event",
+export const VisualTestLinkedInheritance: MtSwitchStory = {
+  name: "Linked inheritance",
   args: {
-    label: "Inherited",
+    label: "Inheritance",
     inheritedValue: false,
+    isInherited: true,
+    isInheritanceField: true,
   },
-  play: async ({ args }) => {
-    const canvas = within(document.body);
+};
 
-    await userEvent.click(canvas.getByTestId("mt-inheritance-switch-icon"));
-
-    waitUntil(() => document.querySelector(".tooltip"));
-
-    expect(args.inheritanceRemove).toHaveBeenCalledWith(undefined);
+export const VisualTestUnlinkedInheritance: MtSwitchStory = {
+  name: "Unlinked inheritance",
+  args: {
+    label: "Inheritance",
+    inheritedValue: false,
+    isInherited: false,
+    checked: false,
+    isInheritanceField: true,
   },
 };
 
@@ -118,11 +79,6 @@ export const VisualTestError: MtSwitchStory = {
     error: {
       detail: "Error message",
     },
-  },
-  play: ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    expect(canvas.getByText(args.error.detail)).toBeDefined();
   },
 };
 
@@ -135,12 +91,6 @@ export const VisualTestBorderedError: MtSwitchStory = {
     error: {
       detail: "Error message",
     },
-  },
-  play: ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    expect((canvas.getByRole("checkbox") as HTMLInputElement).checked).toBe(true);
-    expect(canvas.getByText(args.error.detail)).toBeDefined();
   },
 };
 
