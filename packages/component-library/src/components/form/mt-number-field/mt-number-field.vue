@@ -57,6 +57,9 @@
         :required="required"
         :name="name"
         :disabled="disabled || isInherited"
+        :max="realMaximum"
+        :min="realMinimum"
+        :step="realStep"
       />
 
       <div class="mt-number-field__controls">
@@ -290,16 +293,15 @@ export default defineComponent({
       return this.numberType === "int" ? Math.round(this.step) : this.step;
     },
 
-    realMinimum(): number | null {
-      if (this.min === null) {
-        return null;
-      }
+    realMinimum(): number | undefined {
+      if (this.min === null) return undefined;
+
       return this.numberType === "int" ? Math.ceil(this.min) : this.min;
     },
 
-    realMaximum(): number | null {
+    realMaximum(): number | undefined {
       if (this.max === null) {
-        return null;
+        return undefined;
       }
 
       return this.numberType === "int" ? Math.floor(this.max) : this.max;
@@ -397,11 +399,11 @@ export default defineComponent({
     },
 
     checkBoundaries(value: number) {
-      if (this.realMaximum !== null && value > this.realMaximum) {
+      if (this.realMaximum !== undefined && value > this.realMaximum) {
         value = this.realMaximum;
       }
 
-      if (this.realMinimum !== null && value < this.realMinimum) {
+      if (this.realMinimum !== undefined && value < this.realMinimum) {
         value = this.realMinimum;
       }
 
