@@ -321,4 +321,20 @@ describe("mt-switch", () => {
     // ASSERT
     expect(screen.getByRole("checkbox")).toBeChecked();
   });
+
+  it("shows the overriden value over its inherited value when inheritance is unlinked", async () => {
+    // ARRANGE
+    render(MtSwitch, {
+      props: {
+        checked: false,
+        inheritedValue: true,
+        // @ts-expect-error -- Type is not defined, it is accessed via this.$attrs
+        isInheritanceField: true,
+        isInherited: false,
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).not.toBeChecked();
+  });
 });
