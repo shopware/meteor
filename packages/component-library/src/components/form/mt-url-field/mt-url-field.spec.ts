@@ -127,4 +127,20 @@ describe("mt-url-field", async () => {
     // ASSERT
     expect(screen.getByRole("textbox")).toHaveAttribute("name", "url");
   });
+
+  it("has a helptext", async () => {
+    // ARRANGE
+    render(MtUrlField, {
+      props: {
+        helpText: "This is a helptext",
+      },
+    });
+
+    // ACT
+    await userEvent.tab();
+
+    // ASSERT
+    expect(screen.getByRole("tooltip")).toBeVisible();
+    expect(screen.getByRole("tooltip")).toHaveTextContent("This is a helptext");
+  });
 });
