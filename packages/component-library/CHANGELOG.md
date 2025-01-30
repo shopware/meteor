@@ -1,5 +1,32 @@
 # Changelog
 
+## 4.1.0
+
+### Minor Changes
+
+- 64c04bd: Make mt-search public
+- ab6cba0: feat(mt-colorpicker): Add keyboard navigation support
+
+### Patch Changes
+
+- 8434c25: Fix huge error badge in mt-tabs
+- 362941d: mt-textarea can now be a required form field
+- cf34b59: Turn scrollbar dark for dark mode
+- ed02b43: Show label for single-option mt-select in full width
+- 859c7f8: Open tooltip when focusing a loading link button with a tooltip
+- a8d3340: hide data table toolbar when it has no header
+- 11b05f5: Disable number field when value is inherited
+- eee3ecf: Do not redirect when clicking on a disabled link button
+- 045b002: Show search icon when mt-select has not results
+- fbca9df: Add aria attributes to mt-switch
+- eee3ecf: Do not allow focusing a loading link button
+- f4e2d6b: Open the context menu when pressing space or enter
+- 95edac4: Add focus state to banner close button
+- 26c8e2b: Show a tooltip when focusing a disabled link button with a tooltip
+- 8405f12: Do not allow focusing a disabled link button
+- 3863b64: Announce mt-search as a real search input
+- fab1a1d: Remove link role from mt-link when using custom component
+
 ## 4.0.1
 
 ### Patch Changes
