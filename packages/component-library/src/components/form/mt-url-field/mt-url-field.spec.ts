@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import MtUrlField from "./mt-url-field.vue";
 import { render, screen } from "@testing-library/vue";
 import userEvent from "@testing-library/user-event";
-import { availableParallelism } from "os";
 
 describe("mt-url-field", async () => {
   it("shows the domain to the user", async () => {
