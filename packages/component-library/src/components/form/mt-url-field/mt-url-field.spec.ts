@@ -171,6 +171,32 @@ describe("mt-url-field", async () => {
     expect(handler).toHaveBeenCalledOnce();
   });
 
+  it("cannot be switched to the http protocol when the field is disabled", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtUrlField, {
+      props: {
+        modelValue: "https://www.example.com",
+        disabled: true,
+        // @ts-expect-error -- Event is not typed, yet
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("button"));
+
+    // ARRANGE
+    // TODO: enable assertion once I migrated this to a button element
+    // expect(screen.getByRole("button")).toBeDisabled();
+    expect(screen.getByRole("button")).toHaveTextContent("https://");
+
+    // Event is called once when mounting the component
+    // this means the event is not called when the mode changes
+    expect(handler).toHaveBeenCalledOnce();
+  });
+
   it("updates the domain when the user types and then focuses another element", async () => {
     // ARRANGE
     const handler = vi.fn();
