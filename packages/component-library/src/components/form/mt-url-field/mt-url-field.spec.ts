@@ -88,4 +88,16 @@ describe("mt-url-field", async () => {
     // ASSERT
     expect(screen.getByRole("textbox")).not.toBeRequired();
   });
+
+  it("has the correct placeholder", async () => {
+    // ARRANGE
+    render(MtUrlField, {
+      props: {
+        placeholder: "www.example.com",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveAttribute("placeholder", "www.example.com");
+  });
 });
