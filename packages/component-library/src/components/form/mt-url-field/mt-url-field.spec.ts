@@ -115,4 +115,16 @@ describe("mt-url-field", async () => {
     // ASSERT
     expect(screen.getByRole("textbox")).toHaveFocus();
   });
+
+  it("can be identified on the server by its name when submitting a form", async () => {
+    // ARRANGE
+    render(MtUrlField, {
+      props: {
+        name: "url",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveAttribute("name", "url");
+  });
 });
