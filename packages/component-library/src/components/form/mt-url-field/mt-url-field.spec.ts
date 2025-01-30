@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import MtUrlField from "./mt-url-field.vue";
 import { render, screen } from "@testing-library/vue";
 import userEvent from "@testing-library/user-event";
+import { availableParallelism } from "os";
 
 describe("mt-url-field", async () => {
   it("shows the domain to the user", async () => {
@@ -66,5 +67,17 @@ describe("mt-url-field", async () => {
     // ASSERT
     expect(handler).toHaveBeenCalledOnce();
     expect(handler).toHaveBeenCalledWith("www.shopware.com");
+  });
+
+  it("can be marked as required", async () => {
+    // ARRANGE
+    render(MtUrlField, {
+      props: {
+        required: true,
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toBeRequired();
   });
 });

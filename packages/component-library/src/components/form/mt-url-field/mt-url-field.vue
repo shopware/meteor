@@ -45,6 +45,7 @@
         :name="identification"
         :value="unicodeUri(currentValue)"
         :placeholder="placeholder"
+        :required="required"
         :disabled="disabled"
         @focus="setFocusClass"
         @blur="
