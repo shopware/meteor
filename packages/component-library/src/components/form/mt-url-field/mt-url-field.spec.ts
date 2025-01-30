@@ -143,6 +143,34 @@ describe("mt-url-field", async () => {
     expect(screen.getByRole("tooltip")).toHaveTextContent("This is a helptext");
   });
 
+  it("does not change the value when the field is disabled and the user types", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtUrlField, {
+      props: {
+        modelValue: "www.example.com",
+        disabled: true,
+        // @ts-expect-error -- Event is not typed, yet
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    // ACT
+    await userEvent.type(screen.getByRole("textbox"), "www.shopware.com");
+
+    // Is needed to emit the "onUpdate:modelValue" event
+    await userEvent.tab();
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("www.example.com");
+    expect(screen.getByRole("textbox")).toBeDisabled();
+
+    // Event is called once when mounting the component
+    // this means the event is not called when the user types
+    expect(handler).toHaveBeenCalledOnce();
+  });
+
   it("updates the domain when the user types and then focuses another element", async () => {
     // ARRANGE
     const handler = vi.fn();
