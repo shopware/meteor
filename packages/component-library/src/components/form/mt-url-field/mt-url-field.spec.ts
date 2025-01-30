@@ -46,4 +46,25 @@ describe("mt-url-field", async () => {
     expect(screen.getByRole("textbox")).toHaveValue("www.shopware.com");
     expect(handler).toHaveBeenCalledTimes(1);
   });
+
+  it("updates the domain when the user types and then focuses another element", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtUrlField, {
+      props: {
+        modelValue: "",
+        // @ts-expect-error -- Event is not typed, yet
+        onChange: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.type(screen.getByRole("textbox"), "www.shopware.com");
+    await userEvent.tab();
+
+    // ASSERT
+    expect(handler).toHaveBeenCalledOnce();
+    expect(handler).toHaveBeenCalledWith("www.shopware.com");
+  });
 });
