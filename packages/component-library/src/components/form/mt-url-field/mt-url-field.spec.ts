@@ -80,4 +80,12 @@ describe("mt-url-field", async () => {
     // ASSERT
     expect(screen.getByRole("textbox")).toBeRequired();
   });
+
+  it("is not required to be filled out by default", async () => {
+    // ARRANGE
+    render(MtUrlField);
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).not.toBeRequired();
+  });
 });
