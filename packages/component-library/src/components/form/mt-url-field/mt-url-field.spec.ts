@@ -239,6 +239,18 @@ describe("mt-url-field", async () => {
     expect(handler).toHaveBeenNthCalledWith(2, "https://www.example.com");
   });
 
+  it("displays the http protocol when the url is a unsecure url", async () => {
+    // ARRANGE
+    render(MtUrlField, {
+      props: {
+        modelValue: "http://www.example.com",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("button")).toHaveTextContent("http://");
+  });
+
   it("updates the domain when the user types and then focuses another element", async () => {
     // ARRANGE
     const handler = vi.fn();
