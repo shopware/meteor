@@ -218,6 +218,27 @@ describe("mt-url-field", async () => {
     expect(handler).toHaveBeenNthCalledWith(2, "http://www.example.com");
   });
 
+  it("can be changed to the https protocol when the user clicks on the http protocol button", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+    render(MtUrlField, {
+      props: {
+        modelValue: "http://www.example.com",
+        // @ts-expect-error -- Event is not typed, yet
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("button"));
+
+    // ASSERT
+    expect(screen.getByRole("button")).toHaveTextContent("https://");
+
+    expect(handler).toHaveBeenCalledTimes(2);
+    expect(handler).toHaveBeenNthCalledWith(2, "https://www.example.com");
+  });
+
   it("updates the domain when the user types and then focuses another element", async () => {
     // ARRANGE
     const handler = vi.fn();
