@@ -100,4 +100,19 @@ describe("mt-url-field", async () => {
     // ASSERT
     expect(screen.getByRole("textbox")).toHaveAttribute("placeholder", "www.example.com");
   });
+
+  it("gets focused when the user clicks on the label", async () => {
+    // ARRANGE
+    render(MtUrlField, {
+      props: {
+        label: "URL",
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByText("URL"));
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveFocus();
+  });
 });
