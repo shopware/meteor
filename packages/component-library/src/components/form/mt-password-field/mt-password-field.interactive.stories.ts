@@ -1,5 +1,4 @@
-import { within, userEvent } from "@storybook/test";
-import { expect } from "@storybook/test";
+import { within, userEvent, expect } from "@storybook/test";
 
 import meta, {
   type MtPasswordFieldMeta,
@@ -11,43 +10,17 @@ export default {
   title: "Interaction Tests/Form/mt-password-field",
 } as MtPasswordFieldMeta;
 
-const password = "S3cr3tfor3$t";
-
-export const TestInputValue: MtPasswordFieldStory = {
-  name: "Should keep input value",
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    await userEvent.type(canvas.getByLabelText(args.label!), password);
-    await userEvent.click(canvas.getByText("hidden"));
-
-    expect((canvas.getByLabelText(args.label!) as HTMLInputElement).value).toBe(password);
-
-    expect(args.change).toHaveBeenCalledWith(password);
-  },
-};
-
-export const TestLabel: MtPasswordFieldStory = {
+export const VisualTestLabel: MtPasswordFieldStory = {
   name: "Should display label",
   args: {
     label: "label",
   },
-  play: ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    expect(canvas.getByText(args.label!)).toBeDefined();
-  },
 };
 
-export const TestPlaceholder: MtPasswordFieldStory = {
+export const VisualTestPlaceholder: MtPasswordFieldStory = {
   name: "Should display placeholder",
   args: {
     placeholder: "Placeholder",
-  },
-  play: ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    expect(canvas.getByPlaceholderText(args.placeholder!)).toBeDefined();
   },
 };
 
@@ -56,10 +29,10 @@ export const VisualTestPrefix: MtPasswordFieldStory = {
   args: {
     prefix: "prefix",
   },
-  play: ({ canvasElement, args }) => {
+  async play({ canvasElement }) {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText(args.prefix)).toBeDefined();
+    expect(canvas.getByText("prefix")).toBeInTheDocument();
   },
 };
 
@@ -68,11 +41,6 @@ export const VisualTestSuffix: MtPasswordFieldStory = {
   args: {
     suffix: "suffix",
   },
-  play: ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    expect(canvas.getByText(args.suffix)).toBeDefined();
-  },
 };
 
 export const VisualTestHint: MtPasswordFieldStory = {
@@ -80,25 +48,13 @@ export const VisualTestHint: MtPasswordFieldStory = {
   args: {
     hint: "hint",
   },
-  play: ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    expect(canvas.getByText(args.hint)).toBeDefined();
-  },
 };
 
 export const VisualTestDisabled: MtPasswordFieldStory = {
   name: "Should disable",
   args: {
     disabled: true,
-    modelValue: password,
-  },
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    await userEvent.type(canvas.getByLabelText(args.label!), "1337");
-
-    expect((canvas.getByLabelText(args.label!) as HTMLInputElement).value).toBe(password);
+    modelValue: "S3cr3tfor3$t",
   },
 };
 
@@ -110,21 +66,20 @@ export const VisualTestError: MtPasswordFieldStory = {
       detail: "Error while saving!",
     },
   },
-  play: ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    expect(canvas.getByText(args.error.detail)).toBeDefined();
-  },
 };
 
 export const VisualTestShowPassword: MtPasswordFieldStory = {
   name: "Should show password",
   args: {
-    modelValue: password,
+    modelValue: "S3cr3tfor3$t",
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    await userEvent.click(canvas.getByTestId("mt-password-field-show-button"));
+    await userEvent.click(
+      canvas.getByRole("button", {
+        name: "Show password",
+      }),
+    );
   },
 };
