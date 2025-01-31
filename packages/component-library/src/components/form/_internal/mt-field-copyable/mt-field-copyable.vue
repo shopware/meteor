@@ -1,19 +1,21 @@
 <template>
   <!-- eslint-disable-next-line vuejs-accessibility/mouse-events-have-key-events -->
-  <mt-icon
-    v-tooltip="{
-      message: tooltipText,
-      width: 220,
-      position: 'top',
-      showDelay: 300,
-      hideDelay: 0,
-    }"
-    class="mt-field-copyable"
-    name="regular-copy"
-    size="18"
-    @click="copyToClipboard"
-    @mouseleave="wasCopied = false"
-  />
+  <button>
+    <mt-icon
+      v-tooltip="{
+        message: tooltipText,
+        width: 220,
+        position: 'top',
+        showDelay: 300,
+        hideDelay: 0,
+      }"
+      class="mt-field-copyable"
+      name="regular-copy"
+      size="18"
+      @click="copyToClipboard"
+      @mouseleave="wasCopied = false"
+    />
+  </button>
 </template>
 
 <script lang="ts">

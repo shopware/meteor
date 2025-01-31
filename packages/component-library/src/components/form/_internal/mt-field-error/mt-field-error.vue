@@ -2,7 +2,7 @@
   <mt-text
     v-if="!!error"
     as="span"
-    size="2xs"
+    size="xs"
     color="color-text-critical-default"
     class="mt-field__error"
   >
