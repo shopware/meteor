@@ -218,7 +218,7 @@ export default defineComponent({
 }
 
 .mt-popover__content {
-  padding: 1rem;
+  padding: var(--scale-size-16);
   padding-top: var(--scale-size-4);
   padding-bottom: var(--scale-size-4);
   background-color: var(--color-elevation-surface-overlay);

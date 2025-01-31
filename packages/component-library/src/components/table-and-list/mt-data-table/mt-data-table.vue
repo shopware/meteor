@@ -2172,7 +2172,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   // custom table styling
   th,
   td {
-    padding: 0.25rem;
+    padding: var(--scale-size-4);
     text-align: left;
     border: 1px solid #ccc;
   }
@@ -2542,7 +2542,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   &__footer-inset {
     display: flex;
     width: calc(100% + var(--mt-card-footer-padding) * 2);
-    padding: 1rem var(--mt-card-footer-padding);
+    padding: var(--scale-size-16) var(--mt-card-footer-padding);
   }
 
   &__footer-right {

@@ -436,8 +436,8 @@ label {
   /* List styles */
   ul,
   ol {
-    padding: 0 1rem;
-    margin: 1.25rem 1rem 1.25rem 0.4rem;
+    padding: 0 var(--scale-size-16);
+    margin: var(--scale-size-20) var(--scale-size-16) var(--scale-size-20) 0.4rem;
 
     li p {
       margin-top: 0.25em;
@@ -613,7 +613,7 @@ label {
   }
 
   .tableWrapper {
-    margin: 1.5rem 0;
+    margin: var(--scale-size-24) 0;
     overflow-x: auto;
   }
 

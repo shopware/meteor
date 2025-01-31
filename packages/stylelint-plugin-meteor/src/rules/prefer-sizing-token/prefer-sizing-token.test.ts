@@ -67,7 +67,7 @@ testRule({
       column: 6,
       endLine: 1,
       endColumn: 19,
-      unfixable: true,
+      fixed: ".a { margin: var(--scale-size-16); }",
     },
     {
       code: ".a { padding: 3cap; }",
@@ -532,6 +532,38 @@ testRule({
         },
       ],
       fixed: ".a { padding: var(--scale-size-4) var(--scale-size-8); }",
+    },
+    {
+      code: ".a { padding: 1rem 0.5rem; }",
+      warnings: [
+        {
+          message:
+            'Unexpected hard-coded sizing of "1rem" (meteor/prefer-sizing-token)',
+          line: 1,
+          column: 6,
+          endLine: 1,
+          endColumn: 27,
+        },
+        {
+          message:
+            'Unexpected hard-coded sizing of "0.5rem" (meteor/prefer-sizing-token)',
+          line: 1,
+          column: 6,
+          endLine: 1,
+          endColumn: 27,
+        },
+      ],
+      fixed: ".a { padding: var(--scale-size-16) var(--scale-size-8); }",
+    },
+    {
+      code: ".a { margin: 2.125rem; }",
+      message:
+        'Unexpected hard-coded sizing of "2.125rem" (meteor/prefer-sizing-token)',
+      line: 1,
+      column: 6,
+      endLine: 1,
+      endColumn: 23,
+      unfixable: true,
     },
     {
       code: ".a { margin: $spacing-1; }",

@@ -469,7 +469,7 @@ $mt-field-transition:
   .mt-field__label .is--required::after {
     content: "*";
     color: var(--color-icon-brand-default);
-    margin-left: 0.25rem;
+    margin-left: var(--scale-size-4);
   }
 
   &.is--inherited {
