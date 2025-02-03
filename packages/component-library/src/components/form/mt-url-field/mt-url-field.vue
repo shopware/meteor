@@ -179,7 +179,7 @@ export default defineComponent({
       const validated = this.validateCurrentValue(inputValue);
 
       if (!validated) {
-        this.setInvalidUrlError();
+        console.log({ code: "INVALID_URL" });
       } else {
         this.currentValue = validated;
 
@@ -227,14 +227,10 @@ export default defineComponent({
 
         return new URL(url);
       } catch {
-        this.setInvalidUrlError();
+        console.error({ code: "INVALID_URL" });
 
         return null;
       }
-    },
-
-    setInvalidUrlError() {
-      console.error({ code: "INVALID_URL" });
     },
   },
 });
