@@ -472,4 +472,23 @@ describe("mt-url-field", async () => {
     expect(handler).toHaveBeenCalledOnce();
     expect(handler).toHaveBeenCalledWith("https://www.example.com");
   });
+
+  it("handles umlaute", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtUrlField, {
+      props: {
+        modelValue: "localhost/h%C3%A4ndler",
+        // @ts-expect-error -- Event is not typed, yet
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("localhost/händler");
+
+    expect(handler).toHaveBeenCalledOnce();
+    expect(handler).toHaveBeenCalledWith("https://localhost/h%C3%A4ndler");
+  });
 });
