@@ -176,7 +176,7 @@ export default defineComponent({
         this.sslActive = !!inputValue.match(URL_REGEX.SSL);
       }
 
-      const validated = this.validateCurrentValue(inputValue);
+      const validated = this.transformURL(inputValue);
 
       if (!validated) {
         console.log({ code: "INVALID_URL" });
@@ -187,7 +187,7 @@ export default defineComponent({
       }
     },
 
-    validateCurrentValue(value: string) {
+    transformURL(value: string) {
       const url = new URL(value.match(URL_REGEX.PROTOCOL) ? value : `${this.urlPrefix}${value}`);
 
       // If the input is invalid, no URL can be constructed
