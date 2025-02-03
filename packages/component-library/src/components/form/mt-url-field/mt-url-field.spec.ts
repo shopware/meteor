@@ -188,8 +188,7 @@ describe("mt-url-field", async () => {
     await userEvent.click(screen.getByRole("button"));
 
     // ARRANGE
-    // TODO: enable assertion once I migrated this to a button element
-    // expect(screen.getByRole("button")).toBeDisabled();
+    expect(screen.getByRole("button")).toBeDisabled();
     expect(screen.getByRole("button")).toHaveTextContent("https://");
 
     // Event is called once when mounting the component
@@ -374,6 +373,32 @@ describe("mt-url-field", async () => {
 
     expect(handler).toHaveBeenCalledTimes(2);
     expect(handler).toHaveBeenNthCalledWith(2, "https://www.shopware.com");
+  });
+
+  it("does not change the http protocol when the field's inheritance is linked", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtUrlField, {
+      props: {
+        isInheritanceField: true,
+        isInherited: true,
+        modelValue: "http://www.example.com",
+        // @ts-expect-error
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("button"));
+
+    // ASSERT
+    expect(screen.getByRole("button")).toHaveTextContent("http://");
+    expect(screen.getByRole("button")).toBeDisabled();
+
+    // Event is called once when mounting the component,
+    // meaning that the event is not called when the user types
+    expect(handler).toHaveBeenCalledOnce();
   });
 
   it("removes the URL search parameters", async () => {

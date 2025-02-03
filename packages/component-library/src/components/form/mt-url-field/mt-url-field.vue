@@ -21,19 +21,23 @@
     </template>
 
     <template #field-prefix>
-      <span
-        class="mt-field__url-input__prefix"
-        :class="prefixClass"
+      <button
+        :class="[
+          'mt-field__url-input__prefix',
+          {
+            'is--ssl': sslActive,
+          },
+        ]"
         aria-describedby="ssl-switch"
-        role="button"
-        @click="changeMode(disabled)"
+        :disabled="disabled || isInherited"
+        @click="changeMode"
       >
         <mt-icon v-if="sslActive" name="regular-lock" :small="true" />
         <mt-icon v-else name="regular-lock-open" :small="true" />
         <span aria-describedby="url-prefix">
           {{ urlPrefix }}
         </span>
-      </span>
+      </button>
     </template>
 
     <template #element="{ identification }">
@@ -49,10 +53,10 @@
         :disabled="disabled || isInherited"
         @focus="setFocusClass"
         @blur="
-          onBlur($event);
+          checkInput($event.target.value);
           removeFocusClass();
         "
-        @change.stop="onChange"
+        @change.stop="$emit('change', $event.target.value || '')"
       />
     </template>
 
@@ -70,7 +74,7 @@
 import { defineComponent } from "vue";
 import MtTextField from "../mt-text-field/mt-text-field.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
-import unicodeUriFilter from "../../../filters/unicode-uri.filter";
+import punycode from "punycode/";
 
 const URL_REGEX = {
   PROTOCOL: /([a-zA-Z0-9]+:\/\/)+/,
@@ -115,14 +119,6 @@ export default defineComponent({
   },
 
   computed: {
-    prefixClass(): string {
-      if (this.sslActive) {
-        return "is--ssl";
-      }
-
-      return "";
-    },
-
     urlPrefix(): string {
       if (this.sslActive) {
         return "https://";
@@ -140,11 +136,6 @@ export default defineComponent({
 
       return `${this.urlPrefix}${trimmedValue}`;
     },
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    combinedError(): any {
-      return this.errorUrl ?? this.error;
-    },
   },
 
   watch: {
@@ -155,47 +146,40 @@ export default defineComponent({
   },
 
   created() {
-    this.createdComponent();
+    // @ts-expect-error -- modelValue is always a string
+    this.checkInput(this.currentValue);
   },
 
   methods: {
-    createdComponent() {
-      // @ts-expect-error -- modelValue is always a string
-      this.checkInput(this.currentValue);
-    },
-
     unicodeUri(value: string) {
-      return unicodeUriFilter(value);
-    },
+      if (!value) {
+        return "";
+      }
 
-    onBlur(event: Event) {
-      // @ts-expect-error - target is defined
-      this.checkInput(event.target.value);
-    },
+      const unicode = punycode.toUnicode(value);
 
-    onChange(event: Event): void {
-      // @ts-expect-error - target is defined
-      this.$emit("change", event.target.value || "");
+      return decodeURI(unicode);
     },
 
     checkInput(inputValue: string) {
       this.errorUrl = null;
 
       if (!inputValue.length) {
-        this.handleEmptyUrl();
+        this.currentValue = "";
+        this.$emit("update:modelValue", "");
 
         return;
       }
 
       // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec
       if (inputValue.match(URL_REGEX.PROTOCOL_HTTP)) {
-        this.sslActive = this.getSSLMode(inputValue);
+        this.sslActive = !!inputValue.match(URL_REGEX.SSL);
       }
 
       const validated = this.validateCurrentValue(inputValue);
 
       if (!validated) {
-        this.setInvalidUrlError();
+        console.log({ code: "INVALID_URL" });
       } else {
         this.currentValue = validated;
 
@@ -203,14 +187,8 @@ export default defineComponent({
       }
     },
 
-    handleEmptyUrl() {
-      this.currentValue = "";
-
-      this.$emit("update:modelValue", "");
-    },
-
     validateCurrentValue(value: string) {
-      const url = this.getURLInstance(value);
+      const url = new URL(value.match(URL_REGEX.PROTOCOL) ? value : `${this.urlPrefix}${value}`);
 
       // If the input is invalid, no URL can be constructed
       if (!url) {
@@ -237,35 +215,9 @@ export default defineComponent({
         .replace(url.host, this.unicodeUri(url.host));
     },
 
-    changeMode(disabled: boolean) {
-      if (disabled) {
-        return;
-      }
-
+    changeMode() {
       this.sslActive = !this.sslActive;
       this.$emit("update:modelValue", this.url);
-    },
-
-    getURLInstance(value: string) {
-      try {
-        // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec
-        const url = value.match(URL_REGEX.PROTOCOL) ? value : `${this.urlPrefix}${value}`;
-
-        return new URL(url);
-      } catch {
-        this.setInvalidUrlError();
-
-        return null;
-      }
-    },
-
-    getSSLMode(value: string) {
-      // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec
-      return !!value.match(URL_REGEX.SSL);
-    },
-
-    setInvalidUrlError() {
-      console.error({ code: "INVALID_URL" });
     },
   },
 });
