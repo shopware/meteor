@@ -140,11 +140,6 @@ export default defineComponent({
 
       return `${this.urlPrefix}${trimmedValue}`;
     },
-
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    combinedError(): any {
-      return this.errorUrl ?? this.error;
-    },
   },
 
   watch: {
