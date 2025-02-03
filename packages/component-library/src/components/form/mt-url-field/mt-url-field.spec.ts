@@ -263,43 +263,45 @@ describe("mt-url-field", async () => {
     expect(screen.getByRole("button")).toHaveTextContent("https://");
   });
 
-<<<<<<< HEAD
   it("updates the domain when the user types and then focuses another element", async () => {
-=======
-  it("emits an inheritance-remove event when unlinking the inheritance", async () => {
->>>>>>> fcf19494 (test(component-library): emits an inheritance-remove event when unlinking inheritance)
     // ARRANGE
     const handler = vi.fn();
 
     render(MtUrlField, {
       props: {
-<<<<<<< HEAD
         modelValue: "",
         // @ts-expect-error -- Event is not typed, yet
         onChange: handler,
-=======
-        isInheritanceField: true,
-        isInherited: true,
-        // @ts-expect-error
-        "onInheritance-remove": handler,
->>>>>>> fcf19494 (test(component-library): emits an inheritance-remove event when unlinking inheritance)
       },
     });
 
     // ACT
-<<<<<<< HEAD
     await userEvent.type(screen.getByRole("textbox"), "www.shopware.com");
     await userEvent.tab();
 
     // ASSERT
     expect(handler).toHaveBeenCalledOnce();
     expect(handler).toHaveBeenCalledWith("www.shopware.com");
-=======
+  });
+
+  it("emits an inheritance-remove event when linking the inheritance", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtUrlField, {
+      props: {
+        isInheritanceField: true,
+        isInherited: true,
+        // @ts-expect-error
+        "onInheritance-remove": handler,
+      },
+    });
+
+    // ACT
     await userEvent.click(screen.getByTestId("mt-inheritance-switch-icon"));
 
     // ASSERT
     expect(handler).toHaveBeenCalledOnce();
->>>>>>> fcf19494 (test(component-library): emits an inheritance-remove event when unlinking inheritance)
   });
 
   it("emits an inheritance-restore event when linking the inheritance", async () => {
