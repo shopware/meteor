@@ -49,7 +49,7 @@
         :disabled="disabled || isInherited"
         @focus="setFocusClass"
         @blur="
-          onBlur($event);
+          checkInput($event.target.value);
           removeFocusClass();
         "
         @change.stop="$emit('change', $event.target.value || '')"
@@ -172,11 +172,6 @@ export default defineComponent({
       const unicode = punycode.toUnicode(value);
 
       return decodeURI(unicode);
-    },
-
-    onBlur(event: Event) {
-      // @ts-expect-error - target is defined
-      this.checkInput(event.target.value);
     },
 
     checkInput(inputValue: string) {
