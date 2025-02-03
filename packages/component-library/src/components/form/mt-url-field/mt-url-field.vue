@@ -118,12 +118,8 @@ export default defineComponent({
   },
 
   computed: {
-    urlPrefix(): string {
-      if (this.sslActive) {
-        return "https://";
-      }
-
-      return "http://";
+    urlPrefix() {
+      return this.sslActive ? "https://" : "http://";
     },
 
     url(): string {
