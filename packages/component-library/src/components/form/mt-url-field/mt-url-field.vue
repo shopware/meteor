@@ -129,9 +129,7 @@ export default defineComponent({
     url(): string {
       // @ts-expect-error -- modelValue is always a string
       const trimmedValue = this.currentValue.trim();
-      if (trimmedValue === "") {
-        return "";
-      }
+      if (!trimmedValue) return "";
 
       return `${this.urlPrefix}${trimmedValue}`;
     },
