@@ -152,12 +152,9 @@ export default defineComponent({
 
   methods: {
     unicodeUri(value: string) {
-      if (!value) {
-        return "";
-      }
+      if (!value) return "";
 
       const unicode = punycode.toUnicode(value);
-
       return decodeURI(unicode);
     },
 
