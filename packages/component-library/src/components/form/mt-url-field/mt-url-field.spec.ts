@@ -348,4 +348,29 @@ describe("mt-url-field", async () => {
     expect(handler).toHaveBeenCalledOnce();
     expect(screen.getByRole("textbox")).toHaveValue("www.example.com");
   });
+
+  it("does update the value when inheritance is unlinked", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtUrlField, {
+      props: {
+        isInheritanceField: true,
+        isInherited: false,
+        modelValue: "",
+        // @ts-expect-error
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    // ACT
+    await userEvent.type(screen.getByRole("textbox"), "www.shopware.com");
+    await userEvent.tab();
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).not.toBeDisabled();
+
+    expect(handler).toHaveBeenCalledTimes(2);
+    expect(handler).toHaveBeenNthCalledWith(2, "https://www.shopware.com");
+  });
 });
