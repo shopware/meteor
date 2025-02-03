@@ -21,7 +21,7 @@
     </template>
 
     <template #field-prefix>
-      <span
+      <button
         :class="[
           'mt-field__url-input__prefix',
           {
@@ -29,15 +29,15 @@
           },
         ]"
         aria-describedby="ssl-switch"
-        role="button"
-        @click="changeMode(disabled)"
+        :disabled="disabled"
+        @click="changeMode"
       >
         <mt-icon v-if="sslActive" name="regular-lock" :small="true" />
         <mt-icon v-else name="regular-lock-open" :small="true" />
         <span aria-describedby="url-prefix">
           {{ urlPrefix }}
         </span>
-      </span>
+      </button>
     </template>
 
     <template #element="{ identification }">
@@ -215,11 +215,7 @@ export default defineComponent({
         .replace(url.host, this.unicodeUri(url.host));
     },
 
-    changeMode(disabled: boolean) {
-      if (disabled) {
-        return;
-      }
-
+    changeMode() {
       this.sslActive = !this.sslActive;
       this.$emit("update:modelValue", this.url);
     },

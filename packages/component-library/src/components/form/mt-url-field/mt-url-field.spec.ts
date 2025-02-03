@@ -188,8 +188,7 @@ describe("mt-url-field", async () => {
     await userEvent.click(screen.getByRole("button"));
 
     // ARRANGE
-    // TODO: enable assertion once I migrated this to a button element
-    // expect(screen.getByRole("button")).toBeDisabled();
+    expect(screen.getByRole("button")).toBeDisabled();
     expect(screen.getByRole("button")).toHaveTextContent("https://");
 
     // Event is called once when mounting the component
