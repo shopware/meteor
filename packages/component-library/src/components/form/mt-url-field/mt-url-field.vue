@@ -79,7 +79,6 @@
 import { defineComponent } from "vue";
 import MtTextField from "../mt-text-field/mt-text-field.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
-import punycode from "punycode/";
 
 const URL_REGEX = {
   PROTOCOL: /([a-zA-Z0-9]+:\/\/)+/,
@@ -152,10 +151,7 @@ export default defineComponent({
 
   methods: {
     unicodeUri(value: string) {
-      if (!value) return "";
-
-      const unicode = punycode.toUnicode(value);
-      return decodeURI(unicode);
+      return decodeURI(value);
     },
 
     checkInput(inputValue: string) {
