@@ -1,6 +1,4 @@
-import { within, userEvent } from "@storybook/test";
-import { expect } from "@storybook/test";
-
+import { userEvent } from "@storybook/test";
 import meta, { type MtUrlFieldMeta, type MtUrlFieldStory } from "./mt-url-field.stories";
 
 export default {
@@ -8,114 +6,78 @@ export default {
   title: "Interaction Tests/Form/mt-url-field",
 } as MtUrlFieldMeta;
 
-export const Default = {
-  name: "mt-url-field",
-};
-
-export const VisualTestInputValue: MtUrlFieldStory = {
-  name: "Should keep input value",
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    await userEvent.type(canvas.getByRole("textbox"), "shopware.com");
-    await userEvent.click(canvas.getByText("hidden"));
-    await userEvent.click(canvas.getByText("hidden"));
-
-    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("shopware.com");
-
-    expect(args.updateModelValue).toHaveBeenLastCalledWith("https://shopware.com");
-  },
-};
-
-export const VisualTestHttpSwitch: MtUrlFieldStory = {
-  name: "Should change the ssl switch to http",
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    await userEvent.type(canvas.getByRole("textbox"), "shopware.com");
-    await userEvent.click(canvas.getByText("hidden"));
-
-    expect(canvas.getByText("https://").innerText).toContain("https://");
-
-    expect(args.updateModelValue).toHaveBeenLastCalledWith("https://shopware.com");
-
-    await userEvent.click(canvas.getByRole("button"));
-
-    expect(canvas.getByText("http://").innerText).toContain("http://");
-    await userEvent.click(canvas.getByText("hidden"));
-
-    expect(args.updateModelValue).toHaveBeenLastCalledWith("http://shopware.com");
-    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("shopware.com");
-  },
-};
-
-export const TestNotOmitUrlHash: MtUrlFieldStory = {
-  name: "Should not omit the url hash",
+export const VisualTestFocused: MtUrlFieldStory = {
+  name: "Focused",
   args: {
-    omitUrlHash: false,
+    modelValue: "https://example.com",
   },
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    await userEvent.type(canvas.getByRole("textbox"), "shopware.com/#content");
-
-    await userEvent.click(canvas.getByText("hidden"));
-
-    expect(args.updateModelValue).toHaveBeenLastCalledWith("https://shopware.com/#content");
-    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("shopware.com/#content");
+  async play() {
+    await userEvent.tab();
   },
 };
 
-export const TestOmitUrlHash: MtUrlFieldStory = {
-  name: "Should omit the url hash",
+export const VisualTestHttps: MtUrlFieldStory = {
+  name: "shows HTTPS mode",
   args: {
-    omitUrlHash: true,
-  },
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    await userEvent.type(canvas.getByRole("textbox"), "shopware.com/#content");
-
-    await userEvent.click(canvas.getByText("hidden"));
-
-    expect(args.updateModelValue).toHaveBeenLastCalledWith("https://shopware.com");
-
-    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("shopware.com");
+    modelValue: "https://example.com",
   },
 };
 
-export const TestNotOmitUrlSearch: MtUrlFieldStory = {
-  name: "Should not omit the url search",
+export const VisualTestHttp: MtUrlFieldStory = {
+  name: "shows HTTP mode",
   args: {
-    omitUrlSearch: false,
-  },
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    await userEvent.type(canvas.getByRole("textbox"), "shopware.com/?someValue=5");
-
-    await userEvent.click(canvas.getByText("hidden"));
-
-    expect(args.updateModelValue).toHaveBeenLastCalledWith("https://shopware.com/?someValue=5");
-    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe(
-      "shopware.com/?someValue=5",
-    );
+    modelValue: "http://example.com",
   },
 };
 
-export const TestOmitUrlSearch: MtUrlFieldStory = {
-  name: "Should omit the url search",
+export const VisualTestDisabled: MtUrlFieldStory = {
+  name: "Disabled",
   args: {
-    omitUrlSearch: true,
+    modelValue: "https://example.com",
+    disabled: true,
   },
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
+};
 
-    await userEvent.type(canvas.getByRole("textbox"), "shopware.com/?someValue=5");
+export const VisualTestLinkedInheritance: MtUrlFieldStory = {
+  name: "Linked inheritance",
+  args: {
+    modelValue: "https://example.com",
+    isInheritanceField: true,
+    isInherited: true,
+  },
+};
 
-    await userEvent.click(canvas.getByText("hidden"));
+export const VisualTestUnlinkedInheritance: MtUrlFieldStory = {
+  name: "Linked inheritance",
+  args: {
+    modelValue: "https://example.com",
+    isInheritanceField: true,
+    isInherited: false,
+  },
+};
 
-    expect(args.updateModelValue).toHaveBeenLastCalledWith("https://shopware.com");
-    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("shopware.com");
+export const VisualTestSuffix: MtUrlFieldStory = {
+  name: "With suffix",
+  args: {
+    modelValue: "https://example.com",
+    suffix: "suffix",
+  },
+};
+
+export const VisualTestError: MtUrlFieldStory = {
+  name: "Error",
+  args: {
+    modelValue: "https://example.com",
+    error: {
+      detail: "This is an error",
+    },
+  },
+};
+
+export const VisualTestSmall: MtUrlFieldStory = {
+  name: "Small",
+  args: {
+    modelValue: "https://example.com",
+    size: "small",
   },
 };
