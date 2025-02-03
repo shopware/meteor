@@ -22,8 +22,12 @@
 
     <template #field-prefix>
       <span
-        class="mt-field__url-input__prefix"
-        :class="prefixClass"
+        :class="[
+          'mt-field__url-input__prefix',
+          {
+            'is--ssl': sslActive,
+          },
+        ]"
         aria-describedby="ssl-switch"
         role="button"
         @click="changeMode(disabled)"
@@ -115,14 +119,6 @@ export default defineComponent({
   },
 
   computed: {
-    prefixClass(): string {
-      if (this.sslActive) {
-        return "is--ssl";
-      }
-
-      return "";
-    },
-
     urlPrefix(): string {
       if (this.sslActive) {
         return "https://";
