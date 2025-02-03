@@ -30,7 +30,12 @@
         ]"
         aria-describedby="ssl-switch"
         :disabled="disabled || isInherited"
-        @click="changeMode"
+        @click="
+          () => {
+            sslActive = !sslActive;
+            $emit('update:modelValue', url);
+          }
+        "
       >
         <mt-icon v-if="sslActive" name="regular-lock" :small="true" />
         <mt-icon v-else name="regular-lock-open" :small="true" />
@@ -206,11 +211,6 @@ export default defineComponent({
         .replace(URL_REGEX.PROTOCOL, "")
         .replace(removeTrailingSlash, "")
         .replace(url.host, this.unicodeUri(url.host));
-    },
-
-    changeMode() {
-      this.sslActive = !this.sslActive;
-      this.$emit("update:modelValue", this.url);
     },
   },
 });
