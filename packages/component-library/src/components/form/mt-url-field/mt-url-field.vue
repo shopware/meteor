@@ -282,15 +282,15 @@ $mt-field-color-secure: $color-emerald-500;
     cursor: pointer;
     user-select: none;
     margin: -12px -15px;
-    padding: 12px 15px;
+    padding: var(--scale-size-12) 15px;
 
     &.is--ssl {
       color: $mt-field-color-secure;
     }
 
     .mt-icon {
-      width: 8px;
-      margin-right: 4px;
+      width: var(--scale-size-8);
+      margin-right: var(--scale-size-4);
 
       > svg {
         width: 100% !important;
