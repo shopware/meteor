@@ -52,7 +52,7 @@
           onBlur($event);
           removeFocusClass();
         "
-        @change.stop="onChange"
+        @change.stop="$emit('change', $event.target.value || '')"
       />
     </template>
 
@@ -177,11 +177,6 @@ export default defineComponent({
     onBlur(event: Event) {
       // @ts-expect-error - target is defined
       this.checkInput(event.target.value);
-    },
-
-    onChange(event: Event): void {
-      // @ts-expect-error - target is defined
-      this.$emit("change", event.target.value || "");
     },
 
     checkInput(inputValue: string) {
