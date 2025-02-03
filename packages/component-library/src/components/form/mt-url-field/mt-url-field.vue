@@ -29,7 +29,7 @@
           },
         ]"
         aria-describedby="ssl-switch"
-        :disabled="disabled"
+        :disabled="disabled || isInherited"
         @click="changeMode"
       >
         <mt-icon v-if="sslActive" name="regular-lock" :small="true" />
