@@ -301,4 +301,24 @@ describe("mt-url-field", async () => {
     expect(handler).toHaveBeenCalledOnce();
 >>>>>>> fcf19494 (test(component-library): emits an inheritance-remove event when unlinking inheritance)
   });
+
+  it("emits an inheritance-restore event when linking the inheritance", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtUrlField, {
+      props: {
+        isInheritanceField: true,
+        isInherited: false,
+        // @ts-expect-error
+        "onInheritance-restore": handler,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByTestId("mt-icon__regular-link-horizontal-slash"));
+
+    // ASSERT
+    expect(handler).toHaveBeenCalledOnce();
+  });
 });
