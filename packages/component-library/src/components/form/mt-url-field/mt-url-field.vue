@@ -203,6 +203,7 @@ $mt-field-color-secure: $color-emerald-500;
 .mt-field {
   &__url-input__prefix {
     display: inline-flex;
+    align-items: center;
     cursor: pointer;
     user-select: none;
     margin: -12px -15px;
