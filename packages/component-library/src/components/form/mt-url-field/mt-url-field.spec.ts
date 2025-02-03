@@ -393,4 +393,23 @@ describe("mt-url-field", async () => {
     expect(handler).toHaveBeenCalledOnce();
     expect(handler).toHaveBeenCalledWith("https://www.example.com");
   });
+
+  it("does not remove the URL search parameters by default", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtUrlField, {
+      props: {
+        modelValue: "https://www.example.com?foo=bar",
+        // @ts-expect-error -- Event is not typed, yet
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("www.example.com/?foo=bar");
+
+    expect(handler).toHaveBeenCalledOnce();
+    expect(handler).toHaveBeenCalledWith("https://www.example.com/?foo=bar");
+  });
 });
