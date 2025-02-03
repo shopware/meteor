@@ -188,18 +188,10 @@ export default defineComponent({
     transformURL(value: string) {
       const url = new URL(value.match(URL_REGEX.PROTOCOL) ? value : `${this.urlPrefix}${value}`);
 
-      // If the input is invalid, no URL can be constructed
-      if (!url) {
-        return null;
-      }
+      if (!url) return null;
 
-      if (this.omitUrlSearch) {
-        url.search = "";
-      }
-
-      if (this.omitUrlHash) {
-        url.hash = "";
-      }
+      if (this.omitUrlSearch) url.search = "";
+      if (this.omitUrlHash) url.hash = "";
 
       // when a hash or search query is provided we want to allow trailing slash, eg a vue route `admin#/`
       const removeTrailingSlash =
