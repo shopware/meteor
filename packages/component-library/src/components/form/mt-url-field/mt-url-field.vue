@@ -132,6 +132,7 @@ export default defineComponent({
     },
 
     url(): string {
+      // @ts-expect-error -- modelValue is always a string
       const trimmedValue = this.currentValue.trim();
       if (trimmedValue === "") {
         return "";
@@ -148,6 +149,7 @@ export default defineComponent({
 
   watch: {
     modelValue() {
+      // @ts-expect-error -- modelValue is always a string
       this.checkInput(this.modelValue || "");
     },
   },
@@ -158,6 +160,7 @@ export default defineComponent({
 
   methods: {
     createdComponent() {
+      // @ts-expect-error -- modelValue is always a string
       this.checkInput(this.currentValue);
     },
 
