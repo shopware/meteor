@@ -412,4 +412,24 @@ describe("mt-url-field", async () => {
     expect(handler).toHaveBeenCalledOnce();
     expect(handler).toHaveBeenCalledWith("https://www.example.com/?foo=bar");
   });
+
+  it("omits the URL hash", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtUrlField, {
+      props: {
+        modelValue: "https://www.example.com#foo",
+        omitUrlHash: true,
+        // @ts-expect-error -- Event is not typed, yet
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("www.example.com");
+
+    expect(handler).toHaveBeenCalledOnce();
+    expect(handler).toHaveBeenCalledWith("https://www.example.com");
+  });
 });
