@@ -11,7 +11,8 @@ import type {
   contextModuleInformation,
   contextUserInformation,
   contextUserTimezone,
-} from './context/index';
+  contextCompareShopwareVersion,
+} from './context';
 import type { uiComponentSectionRenderer } from './ui/component-section/index';
 import type { uiTabsAddTabItem } from './ui/tabs';
 import type { uiModulePaymentOverviewCard } from './ui/module/payment/overview-card';
@@ -55,6 +56,7 @@ export interface ShopwareMessageTypes {
   contextLocale: contextLocale,
   contextCurrency: contextCurrency,
   contextShopwareVersion: contextShopwareVersion,
+  contextCompareShopwareVersion: contextCompareShopwareVersion,
   contextUserInformation: contextUserInformation,
   contextUserTimezone: contextUserTimezone,
   contextAppInformation: contextAppInformation,
