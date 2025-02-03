@@ -188,7 +188,7 @@ export default defineComponent({
     },
 
     validateCurrentValue(value: string) {
-      const url = this.getURLInstance(value);
+      const url = new URL(value.match(URL_REGEX.PROTOCOL) ? value : `${this.urlPrefix}${value}`);
 
       // If the input is invalid, no URL can be constructed
       if (!url) {
@@ -218,19 +218,6 @@ export default defineComponent({
     changeMode() {
       this.sslActive = !this.sslActive;
       this.$emit("update:modelValue", this.url);
-    },
-
-    getURLInstance(value: string) {
-      try {
-        // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec
-        const url = value.match(URL_REGEX.PROTOCOL) ? value : `${this.urlPrefix}${value}`;
-
-        return new URL(url);
-      } catch {
-        console.error({ code: "INVALID_URL" });
-
-        return null;
-      }
     },
   },
 });
