@@ -113,7 +113,6 @@ export default defineComponent({
     return {
       sslActive: true,
       currentValue: this.modelValue || "",
-      errorUrl: null,
       currentDebounce: null,
     };
   },
@@ -162,8 +161,6 @@ export default defineComponent({
     },
 
     checkInput(inputValue: string) {
-      this.errorUrl = null;
-
       if (!inputValue.length) {
         this.currentValue = "";
         this.$emit("update:modelValue", "");
