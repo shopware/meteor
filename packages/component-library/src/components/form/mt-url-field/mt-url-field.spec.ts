@@ -451,4 +451,23 @@ describe("mt-url-field", async () => {
     expect(handler).toHaveBeenCalledOnce();
     expect(handler).toHaveBeenCalledWith("https://www.example.com/#foo");
   });
+
+  it("trims trailing whitespace of the URL", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtUrlField, {
+      props: {
+        modelValue: "www.example.com  ",
+        // @ts-expect-error -- Event is not typed, yet
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("www.example.com");
+
+    expect(handler).toHaveBeenCalledOnce();
+    expect(handler).toHaveBeenCalledWith("https://www.example.com");
+  });
 });
