@@ -188,7 +188,8 @@ export default defineComponent({
       this.errorUrl = null;
 
       if (!inputValue.length) {
-        this.handleEmptyUrl();
+        this.currentValue = "";
+        this.$emit("update:modelValue", "");
 
         return;
       }
@@ -207,12 +208,6 @@ export default defineComponent({
 
         this.$emit("update:modelValue", this.url);
       }
-    },
-
-    handleEmptyUrl() {
-      this.currentValue = "";
-
-      this.$emit("update:modelValue", "");
     },
 
     validateCurrentValue(value: string) {
