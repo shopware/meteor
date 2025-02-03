@@ -373,4 +373,24 @@ describe("mt-url-field", async () => {
     expect(handler).toHaveBeenCalledTimes(2);
     expect(handler).toHaveBeenNthCalledWith(2, "https://www.shopware.com");
   });
+
+  it("removes the URL search parameters", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtUrlField, {
+      props: {
+        modelValue: "https://www.example.com?foo=bar",
+        omitUrlSearch: true,
+        // @ts-expect-error -- Event is not typed, yet
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("www.example.com");
+
+    expect(handler).toHaveBeenCalledOnce();
+    expect(handler).toHaveBeenCalledWith("https://www.example.com");
+  });
 });
