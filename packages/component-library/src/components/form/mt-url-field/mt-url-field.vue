@@ -155,15 +155,11 @@ export default defineComponent({
   },
 
   created() {
-    this.createdComponent();
+    // @ts-expect-error -- modelValue is always a string
+    this.checkInput(this.currentValue);
   },
 
   methods: {
-    createdComponent() {
-      // @ts-expect-error -- modelValue is always a string
-      this.checkInput(this.currentValue);
-    },
-
     unicodeUri(value: string) {
       if (!value) {
         return "";
