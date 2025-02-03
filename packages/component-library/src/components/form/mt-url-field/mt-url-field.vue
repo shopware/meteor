@@ -52,7 +52,7 @@
         type="url"
         class="mt-url-input-field__input"
         :name="identification"
-        :value="unicodeUri(currentValue)"
+        :value="decodeURI(currentValue)"
         :placeholder="placeholder"
         :required="required"
         :disabled="disabled || isInherited"
@@ -150,10 +150,6 @@ export default defineComponent({
   },
 
   methods: {
-    unicodeUri(value: string) {
-      return decodeURI(value);
-    },
-
     checkInput(inputValue: string) {
       if (!inputValue.length) {
         this.currentValue = "";
@@ -195,7 +191,7 @@ export default defineComponent({
         .toString()
         .replace(URL_REGEX.PROTOCOL, "")
         .replace(removeTrailingSlash, "")
-        .replace(url.host, this.unicodeUri(url.host));
+        .replace(url.host, decodeURI(url.host));
     },
   },
 });
