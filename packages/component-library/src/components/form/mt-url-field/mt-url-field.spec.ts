@@ -321,4 +321,31 @@ describe("mt-url-field", async () => {
     // ASSERT
     expect(handler).toHaveBeenCalledOnce();
   });
+
+  it("does not update the value when inheritance is linked", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtUrlField, {
+      props: {
+        isInheritanceField: true,
+        isInherited: true,
+        modelValue: "www.example.com",
+        // @ts-expect-error
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    // ACT
+    await userEvent.type(screen.getByRole("textbox"), "www.shopware.com");
+    await userEvent.tab();
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toBeDisabled();
+
+    // Event is called once when mounting the component,
+    // meaning that the event is not called when the user types
+    expect(handler).toHaveBeenCalledOnce();
+    expect(screen.getByRole("textbox")).toHaveValue("www.example.com");
+  });
 });
