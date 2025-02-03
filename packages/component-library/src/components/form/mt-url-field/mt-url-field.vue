@@ -196,7 +196,7 @@ export default defineComponent({
 
       // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec
       if (inputValue.match(URL_REGEX.PROTOCOL_HTTP)) {
-        this.sslActive = this.getSSLMode(inputValue);
+        this.sslActive = !!inputValue.match(URL_REGEX.SSL);
       }
 
       const validated = this.validateCurrentValue(inputValue);
@@ -258,11 +258,6 @@ export default defineComponent({
 
         return null;
       }
-    },
-
-    getSSLMode(value: string) {
-      // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec
-      return !!value.match(URL_REGEX.SSL);
     },
 
     setInvalidUrlError() {
