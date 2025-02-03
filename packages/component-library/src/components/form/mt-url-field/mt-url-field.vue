@@ -46,7 +46,7 @@
         :value="unicodeUri(currentValue)"
         :placeholder="placeholder"
         :required="required"
-        :disabled="disabled"
+        :disabled="disabled || isInherited"
         @focus="setFocusClass"
         @blur="
           onBlur($event);
