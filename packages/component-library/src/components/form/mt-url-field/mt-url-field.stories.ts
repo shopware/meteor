@@ -31,19 +31,19 @@ export default {
           @inheritance-restore="inheritanceRestoreWrapper"
           @inheritance-remove="inheritanceRemoveWrapper">
           <template
-            v-if="$props.prefix"
+            v-if="args.prefix"
             #prefix>
-            {{ $props.prefix }}
+            {{ args.prefix }}
           </template>
           <template
-            v-if="$props.suffix"
+            v-if="args.suffix"
             #suffix>
-            {{ $props.suffix }}
+            {{ args.suffix }}
           </template>
           <template
-            v-if="$props.hint"
+            v-if="args.hint"
             #hint>
-            {{ $props.hint }}
+            {{ args.hint }}
           </template>
         </mt-url-field>
   
