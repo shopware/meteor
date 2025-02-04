@@ -100,10 +100,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useId, type PropType } from "vue";
+import { defineComponent, useId, type PropType, computed, watch, ref } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
+import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 
 const URL_REGEX = {
   PROTOCOL: /([a-zA-Z0-9]+:\/\/)+/,
@@ -119,6 +120,7 @@ export default defineComponent({
     MtIcon,
     MtFieldLabel,
     MtHelpText,
+    MtFieldError,
   },
 
   props: {
@@ -199,68 +201,57 @@ export default defineComponent({
     },
   },
 
-  setup() {
+  setup(props) {
     const id = useId();
 
-    return { id };
-  },
+    const currentValue = ref(props.modelValue);
+    const sslActive = ref(true);
 
-  data() {
-    return {
-      sslActive: true,
-      currentValue: this.modelValue || "",
-    };
-  },
+    const urlPrefix = computed(() => {
+      return sslActive.value ? "https://" : "http://";
+    });
 
-  computed: {
-    urlPrefix() {
-      return this.sslActive ? "https://" : "http://";
-    },
-
-    url(): string {
-      const trimmedValue = this.currentValue.trim();
+    const url = computed(() => {
+      const trimmedValue = currentValue.value.trim();
       if (!trimmedValue) return "";
 
-      return `${this.urlPrefix}${trimmedValue}`;
-    },
-  },
+      return `${urlPrefix.value}${trimmedValue}`;
+    });
 
-  watch: {
-    modelValue: {
-      handler() {
-        const result = this.checkInput(this.currentValue);
+    watch(
+      () => props.modelValue,
+      () => {
+        const result = checkInput(currentValue.value);
 
-        this.currentValue = result;
+        currentValue.value = result;
       },
-      immediate: true,
-    },
-  },
+      { immediate: true },
+    );
 
-  methods: {
-    checkInput(inputValue: string) {
+    function checkInput(inputValue: string) {
       if (!inputValue.length) return "";
 
       // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec
       if (inputValue.match(URL_REGEX.PROTOCOL_HTTP)) {
-        this.sslActive = !!inputValue.match(URL_REGEX.SSL);
+        sslActive.value = !!inputValue.match(URL_REGEX.SSL);
       }
 
-      const validated = this.transformURL(inputValue);
+      const validated = transformURL(inputValue);
 
       if (!validated) {
         throw new Error("Invalid URL");
       } else {
         return validated;
       }
-    },
+    }
 
-    transformURL(value: string) {
-      const url = new URL(value.match(URL_REGEX.PROTOCOL) ? value : `${this.urlPrefix}${value}`);
+    function transformURL(value: string) {
+      const url = new URL(value.match(URL_REGEX.PROTOCOL) ? value : `${urlPrefix.value}${value}`);
 
       if (!url) return null;
 
-      if (this.omitUrlSearch) url.search = "";
-      if (this.omitUrlHash) url.hash = "";
+      if (props.omitUrlSearch) url.search = "";
+      if (props.omitUrlHash) url.hash = "";
 
       // when a hash or search query is provided we want to allow trailing slash, eg a vue route `admin#/`
       const removeTrailingSlash =
@@ -272,7 +263,9 @@ export default defineComponent({
         .replace(URL_REGEX.PROTOCOL, "")
         .replace(removeTrailingSlash, "")
         .replace(url.host, decodeURI(url.host));
-    },
+    }
+
+    return { id, sslActive, currentValue, url, urlPrefix, checkInput };
   },
 });
 </script>
