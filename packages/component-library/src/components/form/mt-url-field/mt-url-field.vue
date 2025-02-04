@@ -110,7 +110,7 @@ const URL_REGEX = {
   PROTOCOL_HTTP: /^https?:\/\//,
   SSL: /^\s*https:\/\//,
   TRAILING_SLASH: /\/+$/,
-};
+} as const;
 
 export default defineComponent({
   name: "MtUrlField",
