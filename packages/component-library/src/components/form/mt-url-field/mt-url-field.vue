@@ -146,11 +146,16 @@ export default defineComponent({
     },
   },
 
-  created() {
-    // @ts-expect-error -- modelValue is always a string
-    const result = this.checkInput(this.currentValue);
+  watch: {
+    modelValue: {
+      handler() {
+        // @ts-expect-error -- modelValue is always a string
+        const result = this.checkInput(this.currentValue);
 
-    this.currentValue = result;
+        this.currentValue = result;
+      },
+      immediate: true,
+    },
   },
 
   methods: {

@@ -4,6 +4,23 @@ import { render, screen } from "@testing-library/vue";
 import userEvent from "@testing-library/user-event";
 
 describe("mt-url-field", async () => {
+  it("hides the protcol in the input when re-rendering", async () => {
+    // ARRANGE
+    const { rerender } = render(MtUrlField, {
+      props: {
+        modelValue: "https://www.example.com",
+      },
+    });
+
+    // ACT
+    await rerender({
+      modelValue: "http://www.example.com",
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("www.example.com");
+  });
+
   it("shows the domain to the user", async () => {
     // ARRANGE
     render(MtUrlField, {
