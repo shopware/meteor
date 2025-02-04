@@ -49,7 +49,7 @@
       </div>
 
       <input
-        :value="modelValue"
+        :value="decodeURI(modelValue)"
         :id="id"
         type="url"
         :placeholder="placeholder"
