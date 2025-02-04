@@ -71,20 +71,19 @@
         class="mt-url-field__input"
         @input="
           (event) => {
-            const result = checkInput(event.target.value);
+            const result = checkInput((event.target as HTMLInputElement).value);
             currentValue = result;
             $emit('update:modelValue', url);
           }
         "
         @blur="
           (event) => {
-            const result = checkInput(event.target.value);
+            const result = checkInput((event.target as HTMLInputElement).value);
             currentValue = result;
             $emit('update:modelValue', url);
-            removeFocusClass();
           }
         "
-        @change.stop="$emit('change', $event.target.value || '')"
+        @change.stop="$emit('change', ($event.target as HTMLInputElement).value || '')"
       />
 
       <div v-if="$slots.suffix" class="mt-url-field__affix mt-url-field__affix--suffix">
@@ -101,8 +100,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useId } from "vue";
-import MtTextField from "../mt-text-field/mt-text-field.vue";
+import { defineComponent, useId, type PropType } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
@@ -123,8 +121,6 @@ export default defineComponent({
     MtHelpText,
   },
 
-  extends: MtTextField,
-
   props: {
     /**
      * If set to true then all url hashes will be removed
@@ -139,6 +135,67 @@ export default defineComponent({
     omitUrlSearch: {
       type: Boolean,
       default: false,
+    },
+
+    error: {
+      type: Object as PropType<{ detail: string; code?: number }>,
+      required: false,
+      default: undefined,
+    },
+
+    label: {
+      type: String,
+      required: false,
+    },
+
+    modelValue: {
+      type: String,
+      required: false,
+      default: "",
+    },
+
+    required: {
+      type: Boolean,
+      required: false,
+    },
+
+    isInheritanceField: {
+      type: Boolean,
+      required: false,
+    },
+
+    isInherited: {
+      type: Boolean,
+      required: false,
+    },
+
+    helpText: {
+      type: String,
+      required: false,
+    },
+
+    disabled: {
+      type: Boolean,
+      required: false,
+    },
+
+    placeholder: {
+      type: String,
+      required: false,
+    },
+
+    name: {
+      type: String,
+      required: false,
+    },
+
+    size: {
+      type: String,
+      required: false,
+      default: "default",
+      validator(value: string) {
+        return ["small", "default"].includes(value);
+      },
     },
   },
 
@@ -161,7 +218,6 @@ export default defineComponent({
     },
 
     url(): string {
-      // @ts-expect-error -- modelValue is always a string
       const trimmedValue = this.currentValue.trim();
       if (!trimmedValue) return "";
 
@@ -172,7 +228,6 @@ export default defineComponent({
   watch: {
     modelValue: {
       handler() {
-        // @ts-expect-error -- modelValue is always a string
         const result = this.checkInput(this.currentValue);
 
         this.currentValue = result;
