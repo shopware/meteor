@@ -58,8 +58,13 @@
         :disabled="disabled || isInherited"
         @focus="setFocusClass"
         @blur="
-          checkInput($event.target.value);
-          removeFocusClass();
+          (event) => {
+            const result = checkInput(event.target.value);
+            currentValue = result;
+            $emit('update:modelValue', url);
+
+            removeFocusClass();
+          }
         "
         @change.stop="$emit('change', $event.target.value || '')"
       />
@@ -138,22 +143,25 @@ export default defineComponent({
   watch: {
     modelValue() {
       // @ts-expect-error -- modelValue is always a string
-      this.checkInput(this.modelValue || "");
+      const result = this.checkInput(this.modelValue || "");
+
+      this.currentValue = result;
+      this.$emit("update:modelValue", this.url);
     },
   },
 
   created() {
     // @ts-expect-error -- modelValue is always a string
-    this.checkInput(this.currentValue);
+    const result = this.checkInput(this.currentValue);
+
+    this.currentValue = result;
+    this.$emit("update:modelValue", this.url);
   },
 
   methods: {
     checkInput(inputValue: string) {
       if (!inputValue.length) {
-        this.currentValue = "";
-        this.$emit("update:modelValue", "");
-
-        return;
+        return "";
       }
 
       // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec
@@ -164,11 +172,9 @@ export default defineComponent({
       const validated = this.transformURL(inputValue);
 
       if (!validated) {
-        console.log({ code: "INVALID_URL" });
+        throw new Error("Invalid URL");
       } else {
-        this.currentValue = validated;
-
-        this.$emit("update:modelValue", this.url);
+        return validated;
       }
     },
 
