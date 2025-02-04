@@ -38,7 +38,16 @@
           },
         ]"
       >
-        <button class="mt-url-field__protocol-toggle" :disabled="disabled || isInherited">
+        <button
+          class="mt-url-field__protocol-toggle"
+          :disabled="disabled || isInherited"
+          @click="
+            () => {
+              sslActive = !sslActive;
+              $emit('update:modelValue', url);
+            }
+          "
+        >
           <mt-icon
             :name="sslActive ? 'solid-lock' : 'solid-lock-open'"
             :color="
@@ -52,7 +61,7 @@
       </div>
 
       <input
-        :value="decodeURI(modelValue)"
+        :value="decodeURI(currentValue)"
         :id="id"
         type="url"
         :placeholder="placeholder"
@@ -60,6 +69,22 @@
         :required="required"
         :disabled="disabled || isInherited"
         class="mt-url-field__input"
+        @input="
+          (event) => {
+            const result = checkInput(event.target.value);
+            currentValue = result;
+            $emit('update:modelValue', url);
+          }
+        "
+        @blur="
+          (event) => {
+            const result = checkInput(event.target.value);
+            currentValue = result;
+            $emit('update:modelValue', url);
+            removeFocusClass();
+          }
+        "
+        @change.stop="$emit('change', $event.target.value || '')"
       />
 
       <div v-if="$slots.suffix" class="mt-url-field__affix mt-url-field__affix--suffix">

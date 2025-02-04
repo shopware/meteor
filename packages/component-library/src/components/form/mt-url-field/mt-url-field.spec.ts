@@ -305,6 +305,7 @@ describe("mt-url-field", async () => {
 
     render(MtUrlField, {
       props: {
+        label: "URL",
         isInheritanceField: true,
         isInherited: true,
         // @ts-expect-error
@@ -313,7 +314,7 @@ describe("mt-url-field", async () => {
     });
 
     // ACT
-    await userEvent.click(screen.getByTestId("mt-inheritance-switch-icon"));
+    await userEvent.click(screen.getByRole("button", { name: "Unlink inheritance" }));
 
     // ASSERT
     expect(handler).toHaveBeenCalledOnce();
@@ -325,6 +326,7 @@ describe("mt-url-field", async () => {
 
     render(MtUrlField, {
       props: {
+        label: "URL",
         isInheritanceField: true,
         isInherited: false,
         // @ts-expect-error
@@ -333,7 +335,7 @@ describe("mt-url-field", async () => {
     });
 
     // ACT
-    await userEvent.click(screen.getByTestId("mt-icon__regular-link-horizontal-slash"));
+    await userEvent.click(screen.getByRole("button", { name: "Link inheritance" }));
 
     // ASSERT
     expect(handler).toHaveBeenCalledOnce();
