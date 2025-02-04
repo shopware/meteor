@@ -1,96 +1,78 @@
 <template>
-  <mt-base-field
-    class="mt-field--url"
-    :disabled="disabled"
-    :required="required"
-    :is-inherited="isInherited"
-    :is-inheritance-field="isInheritanceField"
-    :disable-inheritance-toggle="disableInheritanceToggle"
-    :copyable="copyable"
-    :copyable-tooltip="copyableTooltip"
-    :copyable-text="url"
-    :has-focus="hasFocus"
-    :help-text="helpText"
-    :name="name"
-    :size="size"
-    @inheritance-restore="$emit('inheritance-restore', $event)"
-    @inheritance-remove="$emit('inheritance-remove', $event)"
-  >
-    <template #label>
+  <div class="mt-url-field">
+    <mt-field-label
+      v-if="!!label"
+      :id="id"
+      :has-error="!!error"
+      :required="required"
+      :inheritance="!isInheritanceField ? 'none' : isInherited ? 'linked' : 'unlinked'"
+      @update:inheritance="
+        if (isInherited) {
+          $emit('inheritance-remove');
+        } else {
+          $emit('inheritance-restore');
+        }
+      "
+    >
       {{ label }}
-    </template>
+    </mt-field-label>
 
-    <template #field-prefix>
-      <button
+    <div
+      :class="[
+        'mt-url-field__block',
+        `mt-url-field__block--size-${size}`,
+        {
+          'mt-url-field__block--error': !!error,
+        },
+      ]"
+    >
+      <div
         :class="[
-          'mt-field__url-input__prefix',
+          'mt-url-field__affix',
+          'mt-url-field__affix--prefix',
           {
-            'is--ssl': sslActive,
+            'mt-url-field__affix--disabled': disabled,
           },
         ]"
-        aria-describedby="ssl-switch"
-        :disabled="disabled || isInherited"
-        @click="
-          () => {
-            sslActive = !sslActive;
-            $emit('update:modelValue', url);
-          }
-        "
       >
-        <mt-icon v-if="sslActive" name="regular-lock" :small="true" />
-        <mt-icon v-else name="regular-lock-open" :small="true" />
-        <span aria-describedby="url-prefix">
-          {{ urlPrefix }}
-        </span>
-      </button>
-    </template>
+        <button class="mt-url-field__protocol-toggle" :disabled="disabled || isInherited">
+          <mt-icon
+            :name="sslActive ? 'solid-lock' : 'solid-lock-open'"
+            :color="
+              sslActive ? 'var(--color-icon-positive-default)' : 'var(--color-icon-primary-default)'
+            "
+            size="var(--scale-size-12)"
+            aria-hidden="true"
+          />
+          <span>{{ urlPrefix }}</span>
+        </button>
+      </div>
 
-    <template #element="{ identification }">
-      <!-- @vue-ignore -->
       <input
-        :id="identification"
+        :value="modelValue"
+        :id="id"
         type="url"
-        class="mt-url-input-field__input"
-        :name="identification"
-        :value="decodeURI(currentValue)"
         :placeholder="placeholder"
+        :name="name"
         :required="required"
         :disabled="disabled || isInherited"
-        @focus="setFocusClass"
-        @input="
-          (event) => {
-            const result = checkInput(event.target.value);
-            currentValue = result;
-            $emit('update:modelValue', url);
-          }
-        "
-        @blur="
-          (event) => {
-            const result = checkInput(event.target.value);
-            currentValue = result;
-            $emit('update:modelValue', url);
-
-            removeFocusClass();
-          }
-        "
-        @change.stop="$emit('change', $event.target.value || '')"
+        class="mt-url-field__input"
       />
-    </template>
 
-    <template #field-suffix>
-      <slot name="suffix" />
-    </template>
+      <div v-if="$slots.suffix" class="mt-url-field__affix mt-url-field__affix--suffix">
+        <slot name="suffix" />
+      </div>
+    </div>
 
-    <template #error>
-      <mt-field-error v-if="error" :error="error" />
-    </template>
-  </mt-base-field>
+    <mt-field-error :error="error" />
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, useId } from "vue";
 import MtTextField from "../mt-text-field/mt-text-field.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
+import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 
 const URL_REGEX = {
   PROTOCOL: /([a-zA-Z0-9]+:\/\/)+/,
@@ -103,7 +85,8 @@ export default defineComponent({
   name: "MtUrlField",
 
   components: {
-    "mt-icon": MtIcon,
+    MtIcon,
+    MtFieldLabel,
   },
 
   extends: MtTextField,
@@ -123,6 +106,12 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+  },
+
+  setup() {
+    const id = useId();
+
+    return { id };
   },
 
   data() {
@@ -199,33 +188,96 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-@import "../../assets/scss/variables";
+<style scoped>
+.mt-url-field__block {
+  display: flex;
+  /* stylelint-disable-next-line meteor/prefer-sizing-token -- A trick, so the input can take 100% of its parent */
+  height: 1px;
+  border: 1px solid var(--color-border-primary-default);
+  border-radius: var(--border-radius-xs);
+  background: var(--color-elevation-surface-raised);
 
-$mt-field-color-secure: $color-emerald-500;
+  &:has(.mt-url-field__input:focus-visible) {
+    border-color: var(--color-border-brand-selected);
+    box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
+  }
 
-.mt-field {
-  &__url-input__prefix {
-    display: inline-flex;
-    align-items: center;
-    cursor: pointer;
-    user-select: none;
-    margin: -12px -15px;
-    padding: var(--scale-size-12) 15px;
+  &:has(.mt-url-field__input:disabled) {
+    background: var(--color-background-primary-disabled);
+  }
+}
 
-    &.is--ssl {
-      color: $mt-field-color-secure;
-    }
+.mt-url-field__block--size-default {
+  min-height: var(--scale-size-48);
+}
 
-    .mt-icon {
-      width: var(--scale-size-8);
-      margin-right: var(--scale-size-4);
+.mt-url-field__block--size-small {
+  min-height: var(--scale-size-32);
+}
 
-      > svg {
-        width: 100% !important;
-        height: 100% !important;
-      }
-    }
+.mt-url-field__block--error {
+  border-color: var(--color-border-critical-default);
+  background: var(--color-background-critical-dark);
+}
+
+.mt-url-field__input {
+  all: unset;
+
+  height: 100%;
+  width: 100%;
+  color: var(--color-text-primary-default);
+  padding-inline: var(--scale-size-16);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+
+  &::placeholder {
+    color: var(--color-text-secondary-default);
+  }
+}
+
+.mt-url-field__affix {
+  display: grid;
+  place-items: center;
+  background: var(--color-interaction-secondary-default);
+  color: var(--color-text-primary-default);
+  font-weight: var(--font-weight-medium);
+  padding-inline: var(--scale-size-12);
+  background: var(--color-interaction-secondary-dark);
+}
+
+.mt-url-field__affix--disabled {
+  background: var(--color-interaction-secondary-disabled);
+}
+
+.mt-url-field__affix--prefix {
+  border-top-left-radius: var(--border-radius-xs);
+  border-bottom-left-radius: var(--border-radius-xs);
+  border-right: 1px solid var(--color-border-primary-default);
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+}
+
+.mt-url-field__affix--suffix {
+  border-top-right-radius: var(--border-radius-xs);
+  border-bottom-right-radius: var(--border-radius-xs);
+  border-left: 1px solid var(--color-border-primary-default);
+  font-size: var(--font-size-2xs);
+  line-height: var(--font-line-height-2xs);
+}
+
+.mt-url-field__protocol-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--scale-size-2);
+
+  &:focus-visible {
+    outline-offset: 4px;
+    outline: 2px solid var(--color-border-brand-selected);
+    border-radius: var(--border-radius-xs);
+  }
+
+  &:disabled {
+    cursor: default;
   }
 }
 </style>

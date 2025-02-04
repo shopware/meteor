@@ -18,6 +18,20 @@ export const VisualTestFocused: MtUrlFieldStory = {
   },
 };
 
+export const VisualTestPlaceholder: MtUrlFieldStory = {
+  name: "With placeholder",
+  args: {
+    placeholder: "Placeholder",
+  },
+};
+
+export const VisualTestRequired: MtUrlFieldStory = {
+  name: "Required",
+  args: {
+    required: true,
+  },
+};
+
 export const VisualTestHttps: MtUrlFieldStory = {
   name: "shows HTTPS mode",
   args: {
