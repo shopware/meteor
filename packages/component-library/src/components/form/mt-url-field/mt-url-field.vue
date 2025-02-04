@@ -1,112 +1,156 @@
 <template>
-  <mt-base-field
-    class="mt-field--url"
-    :disabled="disabled"
-    :required="required"
-    :is-inherited="isInherited"
-    :is-inheritance-field="isInheritanceField"
-    :disable-inheritance-toggle="disableInheritanceToggle"
-    :copyable="copyable"
-    :copyable-tooltip="copyableTooltip"
-    :copyable-text="url"
-    :has-focus="hasFocus"
-    :help-text="helpText"
-    :name="name"
-    :size="size"
-    @inheritance-restore="$emit('inheritance-restore', $event)"
-    @inheritance-remove="$emit('inheritance-remove', $event)"
-  >
-    <template #label>
+  <div class="mt-url-field">
+    <mt-field-label
+      v-if="!!label"
+      :id="id"
+      :style="{ marginBottom: 'var(--scale-size-2)', gridArea: 'label' }"
+      :has-error="!!error"
+      :required="required"
+      :inheritance="!isInheritanceField ? 'none' : isInherited ? 'linked' : 'unlinked'"
+      @update:inheritance="
+        if (isInherited) {
+          $emit('inheritance-remove');
+        } else {
+          $emit('inheritance-restore');
+        }
+      "
+    >
       {{ label }}
-    </template>
+    </mt-field-label>
 
-    <template #field-prefix>
-      <button
+    <mt-help-text v-if="!!helpText" :text="helpText" :style="{ gridArea: 'help-text' }" />
+
+    <div
+      :class="[
+        'mt-url-field__block',
+        `mt-url-field__block--size-${size}`,
+        {
+          'mt-url-field__block--error': !!error,
+        },
+      ]"
+    >
+      <div
         :class="[
-          'mt-field__url-input__prefix',
+          'mt-url-field__affix',
+          'mt-url-field__affix--prefix',
           {
-            'is--ssl': sslActive,
+            'mt-url-field__affix--disabled': disabled,
           },
         ]"
-        aria-describedby="ssl-switch"
-        :disabled="disabled || isInherited"
-        @click="
-          () => {
-            sslActive = !sslActive;
-            $emit('update:modelValue', url);
-          }
-        "
       >
-        <mt-icon v-if="sslActive" name="regular-lock" :small="true" />
-        <mt-icon v-else name="regular-lock-open" :small="true" />
-        <span aria-describedby="url-prefix">
-          {{ urlPrefix }}
-        </span>
-      </button>
-    </template>
+        <button
+          class="mt-url-field__protocol-toggle"
+          :disabled="disabled || isInherited"
+          @click="
+            () => {
+              sslActive = !sslActive;
+              $emit('update:modelValue', url);
+            }
+          "
+        >
+          <mt-icon
+            :name="sslActive ? 'solid-lock' : 'solid-lock-open'"
+            :color="
+              sslActive ? 'var(--color-icon-positive-default)' : 'var(--color-icon-primary-default)'
+            "
+            size="var(--scale-size-12)"
+            aria-hidden="true"
+          />
+          <span>{{ urlPrefix }}</span>
+        </button>
+      </div>
 
-    <template #element="{ identification }">
-      <!-- @vue-ignore -->
       <input
-        :id="identification"
-        type="url"
-        class="mt-url-input-field__input"
-        :name="identification"
         :value="decodeURI(currentValue)"
+        :id="id"
+        type="url"
         :placeholder="placeholder"
+        :name="name"
         :required="required"
         :disabled="disabled || isInherited"
-        @focus="setFocusClass"
+        class="mt-url-field__input"
         @input="
           (event) => {
-            const result = checkInput(event.target.value);
+            const result = checkInput((event.target as HTMLInputElement).value);
             currentValue = result;
             $emit('update:modelValue', url);
           }
         "
         @blur="
           (event) => {
-            const result = checkInput(event.target.value);
+            const result = checkInput((event.target as HTMLInputElement).value);
             currentValue = result;
             $emit('update:modelValue', url);
-
-            removeFocusClass();
           }
         "
-        @change.stop="$emit('change', $event.target.value || '')"
+        @change.stop="$emit('change', ($event.target as HTMLInputElement).value || '')"
       />
-    </template>
 
-    <template #field-suffix>
-      <slot name="suffix" />
-    </template>
+      <mt-tooltip :content="t('copyTooltip')">
+        <template #default="props">
+          <button
+            v-if="copyable"
+            v-bind="props"
+            class="mt-url-field__copy-button"
+            :aria-label="
+              copied ? t('copyButtonDescriptionValueCopied') : t('copyButtonDescription')
+            "
+            @click="
+              () => {
+                if (!currentValue) return;
+                copy(currentValue);
+              }
+            "
+          >
+            <mt-icon
+              :name="copied ? 'regular-checkmark' : 'regular-copy'"
+              size="var(--scale-size-18)"
+              color="var(--color-icon-primary-default)"
+            />
+          </button>
+        </template>
+      </mt-tooltip>
 
-    <template #error>
-      <mt-field-error v-if="error" :error="error" />
-    </template>
-  </mt-base-field>
+      <div v-if="$slots.suffix" class="mt-url-field__affix mt-url-field__affix--suffix">
+        <slot name="suffix" />
+      </div>
+    </div>
+
+    <mt-field-error :error="error" :style="{ gridArea: 'error' }" />
+
+    <div class="mt-url-field__hint" v-if="$slots.hint">
+      <slot name="hint" />
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import MtTextField from "../mt-text-field/mt-text-field.vue";
+import { defineComponent, useId, type PropType, computed, watch, ref } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
+import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
+import MtHelpText from "../mt-help-text/mt-help-text.vue";
+import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
+import MtTooltip from "../../overlay/mt-tooltip/mt-tooltip.vue";
+import { useClipboard } from "@vueuse/core";
+import { useI18n } from "vue-i18n";
 
 const URL_REGEX = {
   PROTOCOL: /([a-zA-Z0-9]+:\/\/)+/,
   PROTOCOL_HTTP: /^https?:\/\//,
   SSL: /^\s*https:\/\//,
   TRAILING_SLASH: /\/+$/,
-};
+} as const;
 
 export default defineComponent({
   name: "MtUrlField",
 
   components: {
-    "mt-icon": MtIcon,
+    MtIcon,
+    MtFieldLabel,
+    MtHelpText,
+    MtFieldError,
+    MtTooltip,
   },
-
-  extends: MtTextField,
 
   props: {
     /**
@@ -116,6 +160,13 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+
+    copyable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
     /**
      * If set to true then all query parameters will be removed
      */
@@ -123,66 +174,120 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
-  },
 
-  data() {
-    return {
-      sslActive: true,
-      currentValue: this.modelValue || "",
-    };
-  },
-
-  computed: {
-    urlPrefix() {
-      return this.sslActive ? "https://" : "http://";
+    error: {
+      type: Object as PropType<{ detail: string; code?: number }>,
+      required: false,
+      default: undefined,
     },
 
-    url(): string {
-      // @ts-expect-error -- modelValue is always a string
-      const trimmedValue = this.currentValue.trim();
+    label: {
+      type: String,
+      required: false,
+    },
+
+    modelValue: {
+      type: String,
+      required: false,
+      default: "",
+    },
+
+    required: {
+      type: Boolean,
+      required: false,
+    },
+
+    isInheritanceField: {
+      type: Boolean,
+      required: false,
+    },
+
+    isInherited: {
+      type: Boolean,
+      required: false,
+    },
+
+    helpText: {
+      type: String,
+      required: false,
+    },
+
+    disabled: {
+      type: Boolean,
+      required: false,
+    },
+
+    placeholder: {
+      type: String,
+      required: false,
+    },
+
+    name: {
+      type: String,
+      required: false,
+    },
+
+    size: {
+      type: String,
+      required: false,
+      default: "default",
+      validator(value: string) {
+        return ["small", "default"].includes(value);
+      },
+    },
+  },
+
+  setup(props) {
+    const id = useId();
+
+    const currentValue = ref(props.modelValue);
+    const sslActive = ref(true);
+
+    const urlPrefix = computed(() => {
+      return sslActive.value ? "https://" : "http://";
+    });
+
+    const url = computed(() => {
+      const trimmedValue = currentValue.value.trim();
       if (!trimmedValue) return "";
 
-      return `${this.urlPrefix}${trimmedValue}`;
-    },
-  },
+      return `${urlPrefix.value}${trimmedValue}`;
+    });
 
-  watch: {
-    modelValue: {
-      handler() {
-        // @ts-expect-error -- modelValue is always a string
-        const result = this.checkInput(this.currentValue);
+    watch(
+      () => props.modelValue,
+      () => {
+        const result = checkInput(currentValue.value);
 
-        this.currentValue = result;
+        currentValue.value = result;
       },
-      immediate: true,
-    },
-  },
+      { immediate: true },
+    );
 
-  methods: {
-    checkInput(inputValue: string) {
+    function checkInput(inputValue: string) {
       if (!inputValue.length) return "";
 
       // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec
       if (inputValue.match(URL_REGEX.PROTOCOL_HTTP)) {
-        this.sslActive = !!inputValue.match(URL_REGEX.SSL);
+        sslActive.value = !!inputValue.match(URL_REGEX.SSL);
       }
 
-      const validated = this.transformURL(inputValue);
+      const validated = transformURL(inputValue);
 
       if (!validated) {
         throw new Error("Invalid URL");
       } else {
         return validated;
       }
-    },
+    }
 
-    transformURL(value: string) {
-      const url = new URL(value.match(URL_REGEX.PROTOCOL) ? value : `${this.urlPrefix}${value}`);
+    function transformURL(value: string) {
+      const url = new URL(value.match(URL_REGEX.PROTOCOL) ? value : `${urlPrefix.value}${value}`);
 
       if (!url) return null;
 
-      if (this.omitUrlSearch) url.search = "";
-      if (this.omitUrlHash) url.hash = "";
+      if (props.omitUrlSearch) url.search = "";
+      if (props.omitUrlHash) url.hash = "";
 
       // when a hash or search query is provided we want to allow trailing slash, eg a vue route `admin#/`
       const removeTrailingSlash =
@@ -194,38 +299,158 @@ export default defineComponent({
         .replace(URL_REGEX.PROTOCOL, "")
         .replace(removeTrailingSlash, "")
         .replace(url.host, decodeURI(url.host));
-    },
+    }
+
+    const { copy, copied } = useClipboard();
+
+    const { t } = useI18n({
+      messages: {
+        de: {
+          copyTooltip: "URL in Zwischenablage kopieren",
+          copyButtonDescription: "URL in Zwischenablage kopieren",
+          copyButtonDescriptionValueCopied: "URL in Zwischenablage kopiert",
+        },
+        en: {
+          copyTooltip: "Copy URL to clipboard",
+          copyButtonDescription: "Copy URL to clipboard",
+          copyButtonDescriptionValueCopied: "Copied URL to clipboard",
+        },
+      },
+    });
+
+    return { id, t, sslActive, currentValue, url, urlPrefix, checkInput, copy, copied };
   },
 });
 </script>
 
-<style lang="scss">
-@import "../../assets/scss/variables";
+<style scoped>
+.mt-url-field {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "label help-text"
+    "input input"
+    "error error"
+    "hint hint";
+}
 
-$mt-field-color-secure: $color-emerald-500;
+.mt-url-field__block {
+  grid-area: input;
+  display: flex;
+  align-items: center;
+  /* stylelint-disable-next-line meteor/prefer-sizing-token -- A trick, so the input can take 100% of its parent */
+  height: 1px;
+  border: 1px solid var(--color-border-primary-default);
+  border-radius: var(--border-radius-xs);
+  background: var(--color-elevation-surface-raised);
 
-.mt-field {
-  &__url-input__prefix {
-    display: inline-flex;
-    align-items: center;
-    cursor: pointer;
-    user-select: none;
-    margin: -12px -15px;
-    padding: var(--scale-size-12) 15px;
-
-    &.is--ssl {
-      color: $mt-field-color-secure;
-    }
-
-    .mt-icon {
-      width: var(--scale-size-8);
-      margin-right: var(--scale-size-4);
-
-      > svg {
-        width: 100% !important;
-        height: 100% !important;
-      }
-    }
+  &:has(.mt-url-field__input:focus-visible) {
+    border-color: var(--color-border-brand-selected);
+    box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
   }
+
+  &:has(.mt-url-field__input:disabled) {
+    background: var(--color-background-primary-disabled);
+  }
+}
+
+.mt-url-field__block--size-default {
+  min-height: var(--scale-size-48);
+}
+
+.mt-url-field__block--size-small {
+  min-height: var(--scale-size-32);
+}
+
+.mt-url-field__block--error {
+  border-color: var(--color-border-critical-default);
+  background: var(--color-background-critical-dark);
+}
+
+.mt-url-field__input {
+  all: unset;
+
+  height: 100%;
+  width: 100%;
+  color: var(--color-text-primary-default);
+  padding-inline: var(--scale-size-16);
+  font-size: var(--font-size-xs);
+  line-height: var(--line-height-xs);
+
+  &::placeholder {
+    color: var(--color-text-secondary-default);
+  }
+}
+
+.mt-url-field__affix {
+  display: grid;
+  place-items: center;
+  height: 100%;
+  background: var(--color-interaction-secondary-default);
+  color: var(--color-text-primary-default);
+  font-weight: var(--font-weight-medium);
+  padding-inline: var(--scale-size-12);
+  background: var(--color-interaction-secondary-dark);
+}
+
+.mt-url-field__affix--disabled {
+  background: var(--color-interaction-secondary-disabled);
+}
+
+.mt-url-field__affix--prefix {
+  border-top-left-radius: var(--border-radius-xs);
+  border-bottom-left-radius: var(--border-radius-xs);
+  border-right: 1px solid var(--color-border-primary-default);
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+}
+
+.mt-url-field__affix--suffix {
+  border-top-right-radius: var(--border-radius-xs);
+  border-bottom-right-radius: var(--border-radius-xs);
+  border-left: 1px solid var(--color-border-primary-default);
+  font-size: var(--font-size-2xs);
+  line-height: var(--font-line-height-2xs);
+}
+
+.mt-url-field__protocol-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--scale-size-2);
+
+  &:focus-visible {
+    outline-offset: 4px;
+    outline: 2px solid var(--color-border-brand-selected);
+    border-radius: var(--border-radius-xs);
+  }
+
+  &:disabled {
+    cursor: default;
+  }
+}
+
+.mt-url-field__copy-button {
+  display: grid;
+  place-items: center;
+  padding: var(--scale-size-8);
+  border-radius: var(--border-radius-button);
+  transition: background-color 0.15s ease-out;
+  margin-inline-end: var(--scale-size-6);
+
+  &:is(:hover, :focus-visible) {
+    background-color: var(--color-interaction-secondary-hover);
+  }
+  &:focus-visible {
+    outline: 2px solid var(--color-border-brand-selected);
+  }
+}
+
+.mt-url-field__hint {
+  grid-area: hint;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+  color: var(--color-text-tertiary-default);
+  margin-top: 0.1875rem;
 }
 </style>
