@@ -122,7 +122,6 @@ export default defineComponent({
     return {
       sslActive: true,
       currentValue: this.modelValue || "",
-      currentDebounce: null,
     };
   },
 
