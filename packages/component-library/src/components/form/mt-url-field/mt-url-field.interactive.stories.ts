@@ -1,4 +1,4 @@
-import { userEvent } from "@storybook/test";
+import { userEvent, within } from "@storybook/test";
 import meta, { type MtUrlFieldMeta, type MtUrlFieldStory } from "./mt-url-field.stories";
 
 export default {
@@ -11,8 +11,10 @@ export const VisualTestFocused: MtUrlFieldStory = {
   args: {
     modelValue: "https://example.com",
   },
-  async play() {
-    await userEvent.tab();
+  async play({ canvasElement }) {
+    const canvas = within(canvasElement);
+
+    await userEvent.click(canvas.getByRole("textbox"));
   },
 };
 
