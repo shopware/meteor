@@ -41,13 +41,13 @@ describe("mt-url-field", async () => {
 
     // ACT
     await userEvent.type(screen.getByRole("textbox"), "www.shopware.com");
-    await userEvent.tab();
 
     // ASSERT
     expect(screen.getByRole("textbox")).toHaveValue("www.shopware.com");
 
-    expect(handler).toHaveBeenCalledTimes(1);
-    expect(handler).toHaveBeenCalledWith("https://www.shopware.com");
+    expect(handler).toHaveBeenCalledTimes(16);
+    expect(handler).toHaveBeenNthCalledWith(1, "https://w");
+    expect(handler).toHaveBeenNthCalledWith(16, "https://www.shopware.com");
   });
 
   it("updates the domain when the user types and then focuses another element", async () => {
@@ -363,13 +363,13 @@ describe("mt-url-field", async () => {
 
     // ACT
     await userEvent.type(screen.getByRole("textbox"), "www.shopware.com");
-    await userEvent.tab();
 
     // ASSERT
     expect(screen.getByRole("textbox")).not.toBeDisabled();
 
-    expect(handler).toHaveBeenCalledTimes(1);
-    expect(handler).toHaveBeenNthCalledWith(1, "https://www.shopware.com");
+    expect(handler).toHaveBeenCalledTimes(16);
+    expect(handler).toHaveBeenNthCalledWith(1, "https://w");
+    expect(handler).toHaveBeenNthCalledWith(16, "https://www.shopware.com");
   });
 
   it("does not change the http protocol when the field's inheritance is linked", async () => {

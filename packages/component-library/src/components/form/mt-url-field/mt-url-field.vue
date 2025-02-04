@@ -57,6 +57,13 @@
         :required="required"
         :disabled="disabled || isInherited"
         @focus="setFocusClass"
+        @input="
+          (event) => {
+            const result = checkInput(event.target.value);
+            currentValue = result;
+            $emit('update:modelValue', url);
+          }
+        "
         @blur="
           (event) => {
             const result = checkInput(event.target.value);
