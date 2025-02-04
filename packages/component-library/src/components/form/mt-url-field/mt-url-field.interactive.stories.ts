@@ -105,3 +105,10 @@ export const VisualTestHelpText: MtUrlFieldStory = {
     helpText: "This is help text",
   },
 };
+
+export const VisualTestHint: MtUrlFieldStory = {
+  name: "Hint",
+  args: {
+    hint: "This is a hint",
+  },
+};

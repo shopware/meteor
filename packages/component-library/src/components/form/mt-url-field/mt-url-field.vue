@@ -93,6 +93,10 @@
     </div>
 
     <mt-field-error :error="error" :style="{ gridArea: 'error' }" />
+
+    <div class="mt-url-field__hint" v-if="$slots.hint">
+      <slot name="hint" />
+    </div>
   </div>
 </template>
 
@@ -225,7 +229,8 @@ export default defineComponent({
   grid-template-areas:
     "label help-text"
     "input input"
-    "error error";
+    "error error"
+    "hint hint";
 }
 
 .mt-url-field__block {
@@ -319,5 +324,14 @@ export default defineComponent({
   &:disabled {
     cursor: default;
   }
+}
+
+.mt-url-field__hint {
+  grid-area: hint;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+  color: var(--color-text-tertiary-default);
+  margin-top: 0.1875rem;
 }
 </style>
