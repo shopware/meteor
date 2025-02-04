@@ -3,6 +3,7 @@
     <mt-field-label
       v-if="!!label"
       :id="id"
+      :style="{ marginBottom: 'var(--scale-size-2)', gridArea: 'label' }"
       :has-error="!!error"
       :required="required"
       :inheritance="!isInheritanceField ? 'none' : isInherited ? 'linked' : 'unlinked'"
@@ -16,6 +17,8 @@
     >
       {{ label }}
     </mt-field-label>
+
+    <mt-help-text v-if="!!helpText" :text="helpText" :style="{ gridArea: 'help-text' }" />
 
     <div
       :class="[
@@ -64,7 +67,7 @@
       </div>
     </div>
 
-    <mt-field-error :error="error" />
+    <mt-field-error :error="error" :style="{ gridArea: 'error' }" />
   </div>
 </template>
 
@@ -73,6 +76,7 @@ import { defineComponent, useId } from "vue";
 import MtTextField from "../mt-text-field/mt-text-field.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
+import MtHelpText from "../mt-help-text/mt-help-text.vue";
 
 const URL_REGEX = {
   PROTOCOL: /([a-zA-Z0-9]+:\/\/)+/,
@@ -87,6 +91,7 @@ export default defineComponent({
   components: {
     MtIcon,
     MtFieldLabel,
+    MtHelpText,
   },
 
   extends: MtTextField,
@@ -189,7 +194,17 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.mt-url-field {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "label help-text"
+    "input input"
+    "error error";
+}
+
 .mt-url-field__block {
+  grid-area: input;
   display: flex;
   /* stylelint-disable-next-line meteor/prefer-sizing-token -- A trick, so the input can take 100% of its parent */
   height: 1px;

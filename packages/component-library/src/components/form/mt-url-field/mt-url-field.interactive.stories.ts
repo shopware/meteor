@@ -97,3 +97,11 @@ export const VisualTestSmall: MtUrlFieldStory = {
     size: "small",
   },
 };
+
+export const VisualTestHelpText: MtUrlFieldStory = {
+  name: "Helptext",
+  args: {
+    modelValue: "https://example.com",
+    helpText: "This is help text",
+  },
+};
