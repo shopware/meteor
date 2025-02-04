@@ -144,7 +144,6 @@ export default defineComponent({
     const result = this.checkInput(this.currentValue);
 
     this.currentValue = result;
-    this.$emit("update:modelValue", this.url);
   },
 
   methods: {

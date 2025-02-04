@@ -28,7 +28,7 @@ describe("mt-url-field", async () => {
     expect(screen.getByRole("textbox")).toHaveValue("www.example.com");
   });
 
-  it("updates the domain when the use types", async () => {
+  it("updates the domain when the user types", async () => {
     // ARRANGE
     const handler = vi.fn();
     render(MtUrlField, {
@@ -41,10 +41,13 @@ describe("mt-url-field", async () => {
 
     // ACT
     await userEvent.type(screen.getByRole("textbox"), "www.shopware.com");
+    await userEvent.tab();
 
     // ASSERT
     expect(screen.getByRole("textbox")).toHaveValue("www.shopware.com");
+
     expect(handler).toHaveBeenCalledTimes(1);
+    expect(handler).toHaveBeenCalledWith("https://www.shopware.com");
   });
 
   it("updates the domain when the user types and then focuses another element", async () => {
@@ -166,9 +169,7 @@ describe("mt-url-field", async () => {
     expect(screen.getByRole("textbox")).toHaveValue("www.example.com");
     expect(screen.getByRole("textbox")).toBeDisabled();
 
-    // Event is called once when mounting the component
-    // this means the event is not called when the user types
-    expect(handler).toHaveBeenCalledOnce();
+    expect(handler).not.toHaveBeenCalled();
   });
 
   it("cannot be switched to the http protocol when the field is disabled", async () => {
@@ -191,9 +192,7 @@ describe("mt-url-field", async () => {
     expect(screen.getByRole("button")).toBeDisabled();
     expect(screen.getByRole("button")).toHaveTextContent("https://");
 
-    // Event is called once when mounting the component
-    // this means the event is not called when the mode changes
-    expect(handler).toHaveBeenCalledOnce();
+    expect(handler).not.toHaveBeenCalled();
   });
 
   it("can be changed to the http protocol when the user clicks on the https protocol button", async () => {
@@ -213,8 +212,8 @@ describe("mt-url-field", async () => {
     // ASSERT
     expect(screen.getByRole("button")).toHaveTextContent("http://");
 
-    expect(handler).toHaveBeenCalledTimes(2);
-    expect(handler).toHaveBeenNthCalledWith(2, "http://www.example.com");
+    expect(handler).toHaveBeenCalledOnce();
+    expect(handler).toHaveBeenNthCalledWith(1, "http://www.example.com");
   });
 
   it("can be changed to the https protocol when the user clicks on the http protocol button", async () => {
@@ -234,8 +233,8 @@ describe("mt-url-field", async () => {
     // ASSERT
     expect(screen.getByRole("button")).toHaveTextContent("https://");
 
-    expect(handler).toHaveBeenCalledTimes(2);
-    expect(handler).toHaveBeenNthCalledWith(2, "https://www.example.com");
+    expect(handler).toHaveBeenCalledOnce();
+    expect(handler).toHaveBeenNthCalledWith(1, "https://www.example.com");
   });
 
   it("displays the http protocol when the url is a unsecure url", async () => {
@@ -343,11 +342,9 @@ describe("mt-url-field", async () => {
 
     // ASSERT
     expect(screen.getByRole("textbox")).toBeDisabled();
-
-    // Event is called once when mounting the component,
-    // meaning that the event is not called when the user types
-    expect(handler).toHaveBeenCalledOnce();
     expect(screen.getByRole("textbox")).toHaveValue("www.example.com");
+
+    expect(handler).not.toHaveBeenCalled();
   });
 
   it("does update the value when inheritance is unlinked", async () => {
@@ -371,8 +368,8 @@ describe("mt-url-field", async () => {
     // ASSERT
     expect(screen.getByRole("textbox")).not.toBeDisabled();
 
-    expect(handler).toHaveBeenCalledTimes(2);
-    expect(handler).toHaveBeenNthCalledWith(2, "https://www.shopware.com");
+    expect(handler).toHaveBeenCalledTimes(1);
+    expect(handler).toHaveBeenNthCalledWith(1, "https://www.shopware.com");
   });
 
   it("does not change the http protocol when the field's inheritance is linked", async () => {
@@ -396,9 +393,7 @@ describe("mt-url-field", async () => {
     expect(screen.getByRole("button")).toHaveTextContent("http://");
     expect(screen.getByRole("button")).toBeDisabled();
 
-    // Event is called once when mounting the component,
-    // meaning that the event is not called when the user types
-    expect(handler).toHaveBeenCalledOnce();
+    expect(handler).not.toHaveBeenCalled();
   });
 
   it("removes the URL search parameters", async () => {
@@ -417,8 +412,7 @@ describe("mt-url-field", async () => {
     // ASSERT
     expect(screen.getByRole("textbox")).toHaveValue("www.example.com");
 
-    expect(handler).toHaveBeenCalledOnce();
-    expect(handler).toHaveBeenCalledWith("https://www.example.com");
+    expect(handler).not.toHaveBeenCalled();
   });
 
   it("does not remove the URL search parameters by default", async () => {
@@ -436,8 +430,7 @@ describe("mt-url-field", async () => {
     // ASSERT
     expect(screen.getByRole("textbox")).toHaveValue("www.example.com/?foo=bar");
 
-    expect(handler).toHaveBeenCalledOnce();
-    expect(handler).toHaveBeenCalledWith("https://www.example.com/?foo=bar");
+    expect(handler).not.toHaveBeenCalled();
   });
 
   it("omits the URL hash", async () => {
@@ -456,8 +449,7 @@ describe("mt-url-field", async () => {
     // ASSERT
     expect(screen.getByRole("textbox")).toHaveValue("www.example.com");
 
-    expect(handler).toHaveBeenCalledOnce();
-    expect(handler).toHaveBeenCalledWith("https://www.example.com");
+    expect(handler).not.toHaveBeenCalled();
   });
 
   it("does not remove the URL hash by default", async () => {
@@ -475,8 +467,7 @@ describe("mt-url-field", async () => {
     // ASSERT
     expect(screen.getByRole("textbox")).toHaveValue("www.example.com/#foo");
 
-    expect(handler).toHaveBeenCalledOnce();
-    expect(handler).toHaveBeenCalledWith("https://www.example.com/#foo");
+    expect(handler).not.toHaveBeenCalled();
   });
 
   it("trims trailing whitespace of the URL", async () => {
@@ -494,8 +485,7 @@ describe("mt-url-field", async () => {
     // ASSERT
     expect(screen.getByRole("textbox")).toHaveValue("www.example.com");
 
-    expect(handler).toHaveBeenCalledOnce();
-    expect(handler).toHaveBeenCalledWith("https://www.example.com");
+    expect(handler).not.toHaveBeenCalled();
   });
 
   it("handles umlaute", async () => {
@@ -513,7 +503,6 @@ describe("mt-url-field", async () => {
     // ASSERT
     expect(screen.getByRole("textbox")).toHaveValue("localhost/händler");
 
-    expect(handler).toHaveBeenCalledOnce();
-    expect(handler).toHaveBeenCalledWith("https://localhost/h%C3%A4ndler");
+    expect(handler).not.toHaveBeenCalled();
   });
 });
