@@ -183,7 +183,7 @@ const props = withDefaults(
 
 const id = useId();
 
-const currentValue = ref(props.modelValue);
+const currentValue = ref(modelValue.value);
 const sslActive = ref(true);
 
 const urlPrefix = computed(() => {
@@ -198,7 +198,7 @@ const url = computed(() => {
 });
 
 watch(
-  () => props.modelValue,
+  () => modelValue.value,
   () => {
     const result = checkInput(currentValue.value || "");
 
