@@ -5,9 +5,9 @@
     </mt-field-label>
 
     <div :class="['mt-password-field__block', { 'mt-password-field__block--error': !!error }]">
-      <div class="mt-password-field__affix mt-password-field__affix--prefix">
+      <mt-field-affix v-if="$slots.prefix" type="prefix">
         <slot name="prefix" />
-      </div>
+      </mt-field-affix>
 
       <input
         v-model="model"
@@ -35,9 +35,7 @@
         />
       </button>
 
-      <div class="mt-password-field__affix mt-password-field__affix--suffix">
-        <slot name="suffix" />
-      </div>
+      <mt-field-affix v-if="$slots.suffix" type="suffix"><slot name="suffix" /></mt-field-affix>
     </div>
 
     <mt-field-error v-if="!!error" :error="error" />
@@ -53,6 +51,7 @@ import { ref, useId } from "vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtIcon from "@/components/icons-media/mt-icon/mt-icon.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
+import MtFieldAffix from "../_internal/mt-field-affix/mt-field-affix.vue";
 import { useI18n } from "vue-i18n";
 
 const model = defineModel({
@@ -163,31 +162,6 @@ const { t } = useI18n({
   &:focus-visible {
     outline: 2px solid var(--color-border-brand-selected);
   }
-}
-
-.mt-password-field__affix {
-  padding-inline: var(--scale-size-16);
-  background: var(--color-interaction-secondary-dark);
-  height: 100%;
-  display: grid;
-  place-items: center;
-  color: var(--color-text-primary-default);
-
-  &:empty {
-    display: none;
-  }
-}
-
-.mt-password-field__affix--prefix {
-  border-top-left-radius: var(--border-radius-xs);
-  border-bottom-left-radius: var(--border-radius-xs);
-  border-right: 1px solid var(--color-border-primary-default);
-}
-
-.mt-password-field__affix--suffix {
-  border-top-right-radius: var(--border-radius-xs);
-  border-bottom-right-radius: var(--border-radius-xs);
-  border-left: 1px solid var(--color-border-primary-default);
 }
 
 .mt-password-field__hint {
