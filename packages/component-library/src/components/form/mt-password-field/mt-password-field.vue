@@ -145,15 +145,15 @@ export default defineComponent({
 }
 
 .mt-field--password--untoggable .mt-field__input input {
-  padding-right: 0.5rem;
+  padding-right: var(--scale-size-8);
 }
 
 .mt-field__toggle-password-visibility {
   position: absolute;
-  right: 0.5rem;
+  right: var(--scale-size-8);
   top: 50%;
   transform: translate(0, -50%);
-  padding: 0.5rem;
+  padding: var(--scale-size-8);
   border-radius: var(--border-radius-button);
   outline-color: var(--color-border-brand-selected);
   transition: all 0.15s ease-out;

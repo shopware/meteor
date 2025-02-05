@@ -6,14 +6,14 @@
 
 <style scoped>
 .mt-skeleton-bar {
-  height: 2rem;
+  height: var(--scale-size-32);
   width: 100%;
   background-color: var(--color-background-primary-disabled);
   overflow: hidden;
   border-radius: var(--border-radius-xs);
 
   &:not(:last-child) {
-    margin-bottom: 2rem;
+    margin-bottom: var(--scale-size-32);
   }
 }
 
