@@ -140,8 +140,8 @@ defineEmits<{
 }>();
 
 defineSlots<{
-  suffix(): void;
-  hint(): void;
+  suffix?(): void;
+  hint?(): void;
 }>();
 
 const modelValue = defineModel({
