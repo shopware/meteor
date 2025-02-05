@@ -76,20 +76,12 @@
             $emit('update:modelValue', url);
           }
         "
-        @blur="
-          (event) => {
-            const result = checkInput((event.target as HTMLInputElement).value);
-            currentValue = result;
-            $emit('update:modelValue', url);
-          }
-        "
         @change.stop="$emit('change', ($event.target as HTMLInputElement).value || '')"
       />
 
-      <mt-tooltip :content="t('copyTooltip')">
+      <mt-tooltip v-if="copyable" :content="t('copyTooltip')">
         <template #default="props">
           <button
-            v-if="copyable"
             v-bind="props"
             class="mt-url-field__copy-button"
             :aria-label="
