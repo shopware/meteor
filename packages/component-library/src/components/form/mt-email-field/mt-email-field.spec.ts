@@ -7,8 +7,6 @@ import { flushPromises } from "@vue/test-utils";
 describe("mt-email-field", () => {
   beforeEach(() => {
     vi.useFakeTimers();
-    // @ts-ignore
-    vi.spyOn(document, "execCommand").mockImplementation();
   });
 
   afterEach(() => {
