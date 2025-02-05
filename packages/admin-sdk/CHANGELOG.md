@@ -1,5 +1,41 @@
 # Changelog
 
+## 5.7.0
+
+### Minor Changes
+
+- 3428dfc: Add `contextCompareShopwareVersion` to sdk to compare the current Shopware version
+
+### Patch Changes
+
+- Updated dependencies [64c04bd]
+- Updated dependencies [ab6cba0]
+- Updated dependencies [4e96d91]
+- Updated dependencies [4e96d91]
+- Updated dependencies [4e96d91]
+- Updated dependencies [8434c25]
+- Updated dependencies [362941d]
+- Updated dependencies [cf34b59]
+- Updated dependencies [ed02b43]
+- Updated dependencies [4e96d91]
+- Updated dependencies [859c7f8]
+- Updated dependencies [4e96d91]
+- Updated dependencies [a8d3340]
+- Updated dependencies [4e96d91]
+- Updated dependencies [11b05f5]
+- Updated dependencies [eee3ecf]
+- Updated dependencies [045b002]
+- Updated dependencies [fbca9df]
+- Updated dependencies [4e96d91]
+- Updated dependencies [eee3ecf]
+- Updated dependencies [f4e2d6b]
+- Updated dependencies [95edac4]
+- Updated dependencies [26c8e2b]
+- Updated dependencies [8405f12]
+- Updated dependencies [3863b64]
+- Updated dependencies [fab1a1d]
+  - @shopware-ag/meteor-component-library@4.1.0
+
 ## 5.6.2
 
 ### Patch Changes
