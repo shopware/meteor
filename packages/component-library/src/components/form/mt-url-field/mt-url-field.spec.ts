@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import MtUrlField from "./mt-url-field.vue";
 import { render, screen } from "@testing-library/vue";
 import userEvent from "@testing-library/user-event";
-import { flushPromises } from "@vue/test-utils";
 
 describe("mt-url-field", async () => {
   it("hides the protcol in the input when re-rendering", async () => {
