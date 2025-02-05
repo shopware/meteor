@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import MtUrlField from "./mt-url-field.vue";
 import { render, screen } from "@testing-library/vue";
 import userEvent from "@testing-library/user-event";
+import { flushPromises } from "@vue/test-utils";
 
 describe("mt-url-field", async () => {
   it("hides the protcol in the input when re-rendering", async () => {
@@ -179,13 +180,30 @@ describe("mt-url-field", async () => {
     // ACT
     await userEvent.type(screen.getByRole("textbox"), "www.shopware.com");
 
-    // Is needed to emit the "onUpdate:modelValue" event
-    await userEvent.tab();
-
     // ASSERT
     expect(screen.getByRole("textbox")).toHaveValue("www.example.com");
     expect(screen.getByRole("textbox")).toBeDisabled();
 
+    expect(handler).not.toHaveBeenCalled();
+  });
+
+  it("does not emit an onUpdate:modelValue event when removing focus from the input", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtUrlField, {
+      props: {
+        modelValue: "www.example.com",
+        // @ts-expect-error -- Event is not typed, yet
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("textbox"));
+    await userEvent.tab();
+
+    // ASSERT
     expect(handler).not.toHaveBeenCalled();
   });
 
