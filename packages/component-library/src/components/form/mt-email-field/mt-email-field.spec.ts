@@ -7,6 +7,7 @@ import { flushPromises } from "@vue/test-utils";
 describe("mt-email-field", () => {
   beforeEach(() => {
     vi.useFakeTimers();
+    // @ts-ignore
     document.execCommand = vi.fn();
   });
 
