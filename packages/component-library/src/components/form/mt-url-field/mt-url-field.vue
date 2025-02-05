@@ -139,6 +139,11 @@ defineEmits<{
   "inheritance-restore": [];
 }>();
 
+defineSlots<{
+  suffix(): void;
+  hint(): void;
+}>();
+
 const modelValue = defineModel({
   type: String,
 });
