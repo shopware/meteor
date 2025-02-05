@@ -37,9 +37,9 @@
       ]"
       :style="{ gridArea: 'input' }"
     >
-      <div v-if="$slots.prefix" class="mt-email-field__affix mt-email-field__affix--prefix">
+      <mt-field-affix v-if="$slots.prefix" type="prefix">
         <slot name="prefix" />
-      </div>
+      </mt-field-affix>
 
       <input
         v-model="model"
@@ -86,9 +86,9 @@
         </template>
       </mt-tooltip>
 
-      <div v-else-if="$slots.suffix" class="mt-email-field__affix mt-email-field__affix--suffix">
+      <mt-field-affix type="suffix" v-else-if="$slots.suffix">
         <slot name="suffix" />
-      </div>
+      </mt-field-affix>
     </div>
 
     <mt-field-error
@@ -110,6 +110,7 @@ import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtTooltip from "@/components/overlay/mt-tooltip/mt-tooltip.vue";
+import MtFieldAffix from "../_internal/mt-field-affix/mt-field-affix.vue";
 import { useId } from "@/composables/useId";
 import { useI18n } from "vue-i18n";
 import { useClipboard } from "@vueuse/core";
@@ -255,31 +256,6 @@ const { t } = useI18n({
   padding-inline: var(--scale-size-16);
   height: 100%;
   width: 100%;
-}
-
-.mt-email-field__affix {
-  display: grid;
-  place-items: center;
-  padding-inline: var(--scale-size-12);
-  color: var(--color-text-primary-default);
-  font-family: var(--font-family-body);
-  font-size: var(--font-size-2xs);
-  line-height: var(--line-height-2xs);
-  font-weight: var(--font-weight-medium);
-  background: var(--color-interaction-secondary-dark);
-  height: 100%;
-}
-
-.mt-email-field__affix--suffix {
-  border-inline-start: 1px solid var(--color-border-primary-default);
-  border-top-right-radius: var(--mt-email-field-border-radius);
-  border-bottom-right-radius: var(--mt-email-field-border-radius);
-}
-
-.mt-email-field__affix--prefix {
-  border-inline-end: 1px solid var(--color-border-primary-default);
-  border-top-left-radius: var(--mt-email-field-border-radius);
-  border-bottom-left-radius: var(--mt-email-field-border-radius);
 }
 
 .mt-email-field__copy-button {
