@@ -51,7 +51,6 @@ describe("mt-url-field", async () => {
     render(MtUrlField, {
       props: {
         modelValue: "",
-        // @ts-expect-error -- Event is not typed, yet
         "onUpdate:modelValue": handler,
       },
     });
@@ -171,7 +170,6 @@ describe("mt-url-field", async () => {
       props: {
         modelValue: "www.example.com",
         disabled: true,
-        // @ts-expect-error -- Event is not typed, yet
         "onUpdate:modelValue": handler,
       },
     });
@@ -193,7 +191,6 @@ describe("mt-url-field", async () => {
     render(MtUrlField, {
       props: {
         modelValue: "www.example.com",
-        // @ts-expect-error -- Event is not typed, yet
         "onUpdate:modelValue": handler,
       },
     });
@@ -214,7 +211,6 @@ describe("mt-url-field", async () => {
       props: {
         modelValue: "https://www.example.com",
         disabled: true,
-        // @ts-expect-error -- Event is not typed, yet
         "onUpdate:modelValue": handler,
       },
     });
@@ -235,7 +231,6 @@ describe("mt-url-field", async () => {
     render(MtUrlField, {
       props: {
         modelValue: "https://www.example.com",
-        // @ts-expect-error -- Event is not typed, yet
         "onUpdate:modelValue": handler,
       },
     });
@@ -256,7 +251,6 @@ describe("mt-url-field", async () => {
     render(MtUrlField, {
       props: {
         modelValue: "http://www.example.com",
-        // @ts-expect-error -- Event is not typed, yet
         "onUpdate:modelValue": handler,
       },
     });
@@ -367,7 +361,6 @@ describe("mt-url-field", async () => {
         isInheritanceField: true,
         isInherited: true,
         modelValue: "www.example.com",
-        // @ts-expect-error
         "onUpdate:modelValue": handler,
       },
     });
@@ -392,7 +385,6 @@ describe("mt-url-field", async () => {
         isInheritanceField: true,
         isInherited: false,
         modelValue: "",
-        // @ts-expect-error
         "onUpdate:modelValue": handler,
       },
     });
@@ -417,7 +409,6 @@ describe("mt-url-field", async () => {
         isInheritanceField: true,
         isInherited: true,
         modelValue: "http://www.example.com",
-        // @ts-expect-error
         "onUpdate:modelValue": handler,
       },
     });
@@ -440,7 +431,6 @@ describe("mt-url-field", async () => {
       props: {
         modelValue: "https://www.example.com?foo=bar",
         omitUrlSearch: true,
-        // @ts-expect-error -- Event is not typed, yet
         "onUpdate:modelValue": handler,
       },
     });
@@ -458,7 +448,6 @@ describe("mt-url-field", async () => {
     render(MtUrlField, {
       props: {
         modelValue: "https://www.example.com?foo=bar",
-        // @ts-expect-error -- Event is not typed, yet
         "onUpdate:modelValue": handler,
       },
     });
@@ -477,7 +466,6 @@ describe("mt-url-field", async () => {
       props: {
         modelValue: "https://www.example.com#foo",
         omitUrlHash: true,
-        // @ts-expect-error -- Event is not typed, yet
         "onUpdate:modelValue": handler,
       },
     });
@@ -495,7 +483,6 @@ describe("mt-url-field", async () => {
     render(MtUrlField, {
       props: {
         modelValue: "https://www.example.com#foo",
-        // @ts-expect-error -- Event is not typed, yet
         "onUpdate:modelValue": handler,
       },
     });
@@ -513,7 +500,6 @@ describe("mt-url-field", async () => {
     render(MtUrlField, {
       props: {
         modelValue: "www.example.com  ",
-        // @ts-expect-error -- Event is not typed, yet
         "onUpdate:modelValue": handler,
       },
     });
@@ -531,7 +517,6 @@ describe("mt-url-field", async () => {
     render(MtUrlField, {
       props: {
         modelValue: "localhost/h%C3%A4ndler",
-        // @ts-expect-error -- Event is not typed, yet
         "onUpdate:modelValue": handler,
       },
     });

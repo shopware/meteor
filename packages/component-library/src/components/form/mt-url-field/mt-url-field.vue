@@ -44,7 +44,7 @@
           @click="
             () => {
               sslActive = !sslActive;
-              $emit('update:modelValue', url);
+              modelValue = url;
             }
           "
         >
@@ -73,7 +73,7 @@
           (event) => {
             const result = checkInput((event.target as HTMLInputElement).value);
             currentValue = result;
-            $emit('update:modelValue', url);
+            modelValue = url;
           }
         "
         @change.stop="$emit('change', ($event.target as HTMLInputElement).value || '')"
@@ -116,8 +116,8 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, useId, type PropType, computed, watch, ref } from "vue";
+<script setup lang="ts">
+import { useId, computed, watch, ref, defineProps } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
@@ -133,184 +133,109 @@ const URL_REGEX = {
   TRAILING_SLASH: /\/+$/,
 } as const;
 
-export default defineComponent({
-  name: "MtUrlField",
+const modelValue = defineModel({
+  type: String,
+});
 
-  components: {
-    MtIcon,
-    MtFieldLabel,
-    MtHelpText,
-    MtFieldError,
-    MtTooltip,
+const props = withDefaults(
+  defineProps<{
+    omitUrlHash?: boolean;
+    omitUrlSearch?: boolean;
+    copyable?: boolean;
+    error?: {
+      detail: string;
+    };
+    label?: string;
+    required?: boolean;
+    isInheritanceField?: boolean;
+    isInherited?: boolean;
+    helpText?: string;
+    disabled?: boolean;
+    placeholder?: string;
+    name?: string;
+    size?: "small" | "default";
+  }>(),
+  {
+    size: "default",
   },
+);
 
-  props: {
-    /**
-     * If set to true then all url hashes will be removed
-     */
-    omitUrlHash: {
-      type: Boolean,
-      default: false,
-    },
+const id = useId();
 
-    copyable: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
+const currentValue = ref(props.modelValue);
+const sslActive = ref(true);
 
-    /**
-     * If set to true then all query parameters will be removed
-     */
-    omitUrlSearch: {
-      type: Boolean,
-      default: false,
-    },
+const urlPrefix = computed(() => {
+  return sslActive.value ? "https://" : "http://";
+});
 
-    error: {
-      type: Object as PropType<{ detail: string; code?: number }>,
-      required: false,
-      default: undefined,
-    },
+const url = computed(() => {
+  const trimmedValue = currentValue.value.trim();
+  if (!trimmedValue) return "";
 
-    label: {
-      type: String,
-      required: false,
-    },
+  return `${urlPrefix.value}${trimmedValue}`;
+});
 
-    modelValue: {
-      type: String,
-      required: false,
-      default: "",
-    },
+watch(
+  () => props.modelValue,
+  () => {
+    const result = checkInput(currentValue.value || "");
 
-    required: {
-      type: Boolean,
-      required: false,
-    },
-
-    isInheritanceField: {
-      type: Boolean,
-      required: false,
-    },
-
-    isInherited: {
-      type: Boolean,
-      required: false,
-    },
-
-    helpText: {
-      type: String,
-      required: false,
-    },
-
-    disabled: {
-      type: Boolean,
-      required: false,
-    },
-
-    placeholder: {
-      type: String,
-      required: false,
-    },
-
-    name: {
-      type: String,
-      required: false,
-    },
-
-    size: {
-      type: String,
-      required: false,
-      default: "default",
-      validator(value: string) {
-        return ["small", "default"].includes(value);
-      },
-    },
+    currentValue.value = result;
   },
+  { immediate: true },
+);
 
-  setup(props) {
-    const id = useId();
+function checkInput(inputValue: string) {
+  if (!inputValue.length) return "";
 
-    const currentValue = ref(props.modelValue);
-    const sslActive = ref(true);
+  // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec
+  if (inputValue.match(URL_REGEX.PROTOCOL_HTTP)) {
+    sslActive.value = !!inputValue.match(URL_REGEX.SSL);
+  }
 
-    const urlPrefix = computed(() => {
-      return sslActive.value ? "https://" : "http://";
-    });
+  const validated = transformURL(inputValue);
 
-    const url = computed(() => {
-      const trimmedValue = currentValue.value.trim();
-      if (!trimmedValue) return "";
+  if (!validated) {
+    throw new Error("Invalid URL");
+  } else {
+    return validated;
+  }
+}
 
-      return `${urlPrefix.value}${trimmedValue}`;
-    });
+function transformURL(value: string) {
+  const url = new URL(value.match(URL_REGEX.PROTOCOL) ? value : `${urlPrefix.value}${value}`);
 
-    watch(
-      () => props.modelValue,
-      () => {
-        const result = checkInput(currentValue.value);
+  if (!url) return null;
 
-        currentValue.value = result;
-      },
-      { immediate: true },
-    );
+  if (props.omitUrlSearch) url.search = "";
+  if (props.omitUrlHash) url.hash = "";
 
-    function checkInput(inputValue: string) {
-      if (!inputValue.length) return "";
+  // when a hash or search query is provided we want to allow trailing slash, eg a vue route `admin#/`
+  const removeTrailingSlash = url.hash === "" && url.search === "" ? URL_REGEX.TRAILING_SLASH : "";
 
-      // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec
-      if (inputValue.match(URL_REGEX.PROTOCOL_HTTP)) {
-        sslActive.value = !!inputValue.match(URL_REGEX.SSL);
-      }
+  // build URL via native URL.toString() function instead by hand @see NEXT-15747
+  return url
+    .toString()
+    .replace(URL_REGEX.PROTOCOL, "")
+    .replace(removeTrailingSlash, "")
+    .replace(url.host, decodeURI(url.host));
+}
 
-      const validated = transformURL(inputValue);
+const { copy, copied } = useClipboard();
 
-      if (!validated) {
-        throw new Error("Invalid URL");
-      } else {
-        return validated;
-      }
-    }
-
-    function transformURL(value: string) {
-      const url = new URL(value.match(URL_REGEX.PROTOCOL) ? value : `${urlPrefix.value}${value}`);
-
-      if (!url) return null;
-
-      if (props.omitUrlSearch) url.search = "";
-      if (props.omitUrlHash) url.hash = "";
-
-      // when a hash or search query is provided we want to allow trailing slash, eg a vue route `admin#/`
-      const removeTrailingSlash =
-        url.hash === "" && url.search === "" ? URL_REGEX.TRAILING_SLASH : "";
-
-      // build URL via native URL.toString() function instead by hand @see NEXT-15747
-      return url
-        .toString()
-        .replace(URL_REGEX.PROTOCOL, "")
-        .replace(removeTrailingSlash, "")
-        .replace(url.host, decodeURI(url.host));
-    }
-
-    const { copy, copied } = useClipboard();
-
-    const { t } = useI18n({
-      messages: {
-        de: {
-          copyTooltip: "URL in Zwischenablage kopieren",
-          copyButtonDescription: "URL in Zwischenablage kopieren",
-          copyButtonDescriptionValueCopied: "URL in Zwischenablage kopiert",
-        },
-        en: {
-          copyTooltip: "Copy URL to clipboard",
-          copyButtonDescription: "Copy URL to clipboard",
-          copyButtonDescriptionValueCopied: "Copied URL to clipboard",
-        },
-      },
-    });
-
-    return { id, t, sslActive, currentValue, url, urlPrefix, checkInput, copy, copied };
+const { t } = useI18n({
+  messages: {
+    de: {
+      copyTooltip: "URL in Zwischenablage kopieren",
+      copyButtonDescription: "URL in Zwischenablage kopieren",
+      copyButtonDescriptionValueCopied: "URL in Zwischenablage kopiert",
+    },
+    en: {
+      copyTooltip: "Copy URL to clipboard",
+      copyButtonDescription: "Copy URL to clipboard",
+      copyButtonDescriptionValueCopied: "Copied URL to clipboard",
+    },
   },
 });
 </script>
