@@ -1,5 +1,12 @@
 <template>
-  <div class="mt-url-field">
+  <div
+    :class="[
+      'mt-url-field',
+      {
+        'mt-url-field--future-remove-default-margin': futureFlags.removeDefaultMargin,
+      },
+    ]"
+  >
     <mt-field-label
       v-if="!!label"
       :id="id"
@@ -125,6 +132,9 @@ import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtTooltip from "../../overlay/mt-tooltip/mt-tooltip.vue";
 import { useClipboard } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
+import { useFutureFlags } from "@/composables/useFutureFlags";
+
+const futureFlags = useFutureFlags();
 
 const URL_REGEX = {
   PROTOCOL: /([a-zA-Z0-9]+:\/\/)+/,
@@ -260,6 +270,11 @@ const { t } = useI18n({
     "input input"
     "error error"
     "hint hint";
+  margin-bottom: var(--scale-size-32);
+}
+
+.mt-url-field--future-remove-default-margin {
+  margin-bottom: 0;
 }
 
 .mt-url-field__block {
