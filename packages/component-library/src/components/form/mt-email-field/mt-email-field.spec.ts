@@ -8,7 +8,7 @@ describe("mt-email-field", () => {
   beforeEach(() => {
     vi.useFakeTimers();
     // @ts-ignore
-    document.execCommand = vi.fn();
+    vi.spyOn(document, "execCommand").mockImplementation();
   });
 
   afterEach(() => {
