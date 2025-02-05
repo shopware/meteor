@@ -17,7 +17,7 @@
       onMouseleave,
       onMousedown,
       onMouseup: () => setState({ isPressingTrigger: false }),
-      'aria-describedby': isVisible ? `mt-tooltip--${id}__tooltip` : undefined,
+      'aria-describedby': `mt-tooltip--${id}__tooltip`,
     }"
   />
 
@@ -37,6 +37,7 @@
         <span>{{ content }}</span>
 
         <svg
+          aria-hidden="true"
           ref="arrowRef"
           width="8"
           height="4"
@@ -66,7 +67,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, nextTick, computed, provide } from "vue";
+import { onMounted, ref, nextTick, computed, provide, useId } from "vue";
 import {
   autoUpdate,
   flip,
@@ -76,7 +77,6 @@ import {
   arrow,
   type Placement,
 } from "@floating-ui/vue";
-import { useId } from "@/composables/useId";
 import { useTooltipState } from "./composables/useTooltipState";
 import { useTimeout } from "@vueuse/core";
 import { TooltipContext } from "./composables/useIsInsideTooltip";
@@ -101,13 +101,11 @@ const id = useId();
 
 onMounted(() => {
   nextTick(() => {
-    const triggerDOMElement = document.querySelector<HTMLElement>(
-      `#mt-tooltip--${id.value}__trigger`,
-    );
+    const triggerDOMElement = document.querySelector<HTMLElement>(`#mt-tooltip--${id}__trigger`);
 
     if (!triggerDOMElement)
       throw new Error(
-        `Failed to render mt-tooltip; Could not find trigger element with id: "mt-tooltip-${id.value}__trigger"`,
+        `Failed to render mt-tooltip; Could not find trigger element with id: "mt-tooltip-${id}__trigger"`,
       );
 
     triggerRef.value = triggerDOMElement;
@@ -117,7 +115,7 @@ onMounted(() => {
 const { isVisible, show, hide, setState } = useTooltipState();
 
 function onBlur(event: FocusEvent) {
-  const clickedOnTooltip = (event?.relatedTarget as HTMLElement)?.closest(`#${id.value}`);
+  const clickedOnTooltip = (event?.relatedTarget as HTMLElement)?.closest(`#${id}`);
   if (clickedOnTooltip) {
     (event.target as HTMLElement).focus();
     return;
