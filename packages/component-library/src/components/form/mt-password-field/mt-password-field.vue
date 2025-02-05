@@ -79,9 +79,9 @@ defineEmits<{
 }>();
 
 defineSlots<{
-  prefix: void;
-  suffix: void;
-  hint: void;
+  prefix?: void;
+  suffix?: void;
+  hint?: void;
 }>();
 
 const id = useId();
