@@ -86,6 +86,31 @@
         @change.stop="$emit('change', ($event.target as HTMLInputElement).value || '')"
       />
 
+      <mt-tooltip :content="t('copyTooltip')">
+        <template #default="props">
+          <button
+            v-if="copyable"
+            v-bind="props"
+            class="mt-url-field__copy-button"
+            :aria-label="
+              copied ? t('copyButtonDescriptionValueCopied') : t('copyButtonDescription')
+            "
+            @click="
+              () => {
+                if (!currentValue) return;
+                copy(currentValue);
+              }
+            "
+          >
+            <mt-icon
+              :name="copied ? 'regular-checkmark' : 'regular-copy'"
+              size="var(--scale-size-18)"
+              color="var(--color-icon-primary-default)"
+            />
+          </button>
+        </template>
+      </mt-tooltip>
+
       <div v-if="$slots.suffix" class="mt-url-field__affix mt-url-field__affix--suffix">
         <slot name="suffix" />
       </div>
@@ -105,6 +130,9 @@ import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
+import MtTooltip from "../../overlay/mt-tooltip/mt-tooltip.vue";
+import { useClipboard } from "@vueuse/core";
+import { useI18n } from "vue-i18n";
 
 const URL_REGEX = {
   PROTOCOL: /([a-zA-Z0-9]+:\/\/)+/,
@@ -121,6 +149,7 @@ export default defineComponent({
     MtFieldLabel,
     MtHelpText,
     MtFieldError,
+    MtTooltip,
   },
 
   props: {
@@ -131,6 +160,13 @@ export default defineComponent({
       type: Boolean,
       default: false,
     },
+
+    copyable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
     /**
      * If set to true then all query parameters will be removed
      */
@@ -265,7 +301,24 @@ export default defineComponent({
         .replace(url.host, decodeURI(url.host));
     }
 
-    return { id, sslActive, currentValue, url, urlPrefix, checkInput };
+    const { copy, copied } = useClipboard();
+
+    const { t } = useI18n({
+      messages: {
+        de: {
+          copyTooltip: "URL in Zwischenablage kopieren",
+          copyButtonDescription: "URL in Zwischenablage kopieren",
+          copyButtonDescriptionValueCopied: "URL in Zwischenablage kopiert",
+        },
+        en: {
+          copyTooltip: "Copy URL to clipboard",
+          copyButtonDescription: "Copy URL to clipboard",
+          copyButtonDescriptionValueCopied: "Copied URL to clipboard",
+        },
+      },
+    });
+
+    return { id, t, sslActive, currentValue, url, urlPrefix, checkInput, copy, copied };
   },
 });
 </script>
@@ -284,6 +337,7 @@ export default defineComponent({
 .mt-url-field__block {
   grid-area: input;
   display: flex;
+  align-items: center;
   /* stylelint-disable-next-line meteor/prefer-sizing-token -- A trick, so the input can take 100% of its parent */
   height: 1px;
   border: 1px solid var(--color-border-primary-default);
@@ -331,6 +385,7 @@ export default defineComponent({
 .mt-url-field__affix {
   display: grid;
   place-items: center;
+  height: 100%;
   background: var(--color-interaction-secondary-default);
   color: var(--color-text-primary-default);
   font-weight: var(--font-weight-medium);
@@ -371,6 +426,22 @@ export default defineComponent({
 
   &:disabled {
     cursor: default;
+  }
+}
+
+.mt-url-field__copy-button {
+  display: grid;
+  place-items: center;
+  padding: var(--scale-size-8);
+  border-radius: var(--border-radius-button);
+  transition: background-color 0.15s ease-out;
+  margin-inline-end: var(--scale-size-6);
+
+  &:is(:hover, :focus-visible) {
+    background-color: var(--color-interaction-secondary-hover);
+  }
+  &:focus-visible {
+    outline: 2px solid var(--color-border-brand-selected);
   }
 }
 

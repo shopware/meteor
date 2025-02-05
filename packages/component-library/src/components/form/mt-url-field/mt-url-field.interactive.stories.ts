@@ -1,4 +1,4 @@
-import { userEvent, within } from "@storybook/test";
+import { fn, userEvent, within, expect } from "@storybook/test";
 import meta, { type MtUrlFieldMeta, type MtUrlFieldStory } from "./mt-url-field.stories";
 
 export default {
@@ -110,5 +110,24 @@ export const VisualTestHint: MtUrlFieldStory = {
   name: "Hint",
   args: {
     hint: "This is a hint",
+  },
+};
+
+export const VisualTestCopyToClipboard: MtUrlFieldStory = {
+  name: "Copy to clipboard",
+  args: {
+    modelValue: "https://www.example.com",
+    copyable: true,
+  },
+  async play({ canvasElement }) {
+    const handler = fn();
+    navigator.clipboard.writeText = handler;
+
+    const canvas = within(canvasElement);
+
+    await userEvent.click(canvas.getByRole("button", { name: "Copy URL to clipboard" }));
+
+    await expect(handler).toHaveBeenCalledOnce();
+    await expect(handler).toHaveBeenCalledWith("www.example.com");
   },
 };
