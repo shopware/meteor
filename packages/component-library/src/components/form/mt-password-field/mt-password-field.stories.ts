@@ -1,13 +1,8 @@
 import MtPasswordField from "./mt-password-field.vue";
-import baseFieldArgTypes from "../_internal/mt-base-field/arg-types";
-import type { StoryObj } from "@storybook/vue3";
-import type { SlottedMeta } from "@/_internal/story-helper";
+import type { Meta, StoryObj } from "@storybook/vue3";
 import { fn } from "@storybook/test";
 
-export type MtPasswordFieldMeta = SlottedMeta<
-  typeof MtPasswordField,
-  "default" | "hint" | "suffix" | "prefix"
->;
+export type MtPasswordFieldMeta = Meta<typeof MtPasswordField>;
 
 export default {
   title: "Components/Form/mt-password-field",
@@ -16,9 +11,6 @@ export default {
     label: "Passwordfield",
     onChange: fn(),
     "onUpdate:modelValue": fn(),
-  },
-  argTypes: {
-    ...baseFieldArgTypes,
   },
 } as MtPasswordFieldMeta;
 
