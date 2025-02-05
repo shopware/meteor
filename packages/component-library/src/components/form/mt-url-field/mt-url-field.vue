@@ -117,7 +117,7 @@
 </template>
 
 <script setup lang="ts">
-import { useId, computed, watch, ref, defineProps } from "vue";
+import { useId, computed, watch, ref, defineProps, defineEmits } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
@@ -132,6 +132,12 @@ const URL_REGEX = {
   SSL: /^\s*https:\/\//,
   TRAILING_SLASH: /\/+$/,
 } as const;
+
+defineEmits<{
+  change: [value: string];
+  "inheritance-remove": [];
+  "inheritance-restore": [];
+}>();
 
 const modelValue = defineModel({
   type: String,

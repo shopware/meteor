@@ -73,7 +73,6 @@ describe("mt-url-field", async () => {
     render(MtUrlField, {
       props: {
         modelValue: "",
-        // @ts-expect-error -- Event is not typed, yet
         onChange: handler,
       },
     });
@@ -296,7 +295,6 @@ describe("mt-url-field", async () => {
     render(MtUrlField, {
       props: {
         modelValue: "",
-        // @ts-expect-error -- Event is not typed, yet
         onChange: handler,
       },
     });
@@ -319,7 +317,6 @@ describe("mt-url-field", async () => {
         label: "URL",
         isInheritanceField: true,
         isInherited: true,
-        // @ts-expect-error
         "onInheritance-remove": handler,
       },
     });
@@ -340,7 +337,6 @@ describe("mt-url-field", async () => {
         label: "URL",
         isInheritanceField: true,
         isInherited: false,
-        // @ts-expect-error
         "onInheritance-restore": handler,
       },
     });
