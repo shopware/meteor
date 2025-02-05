@@ -191,7 +191,7 @@ const urlPrefix = computed(() => {
 });
 
 const url = computed(() => {
-  const trimmedValue = currentValue.value.trim();
+  const trimmedValue = currentValue.value?.trim();
   if (!trimmedValue) return "";
 
   return `${urlPrefix.value}${trimmedValue}`;
