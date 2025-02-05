@@ -1,6 +1,8 @@
 <template>
   <div class="mt-password-field">
-    <mt-field-label :id="id" :has-error="!!error">{{ label }}</mt-field-label>
+    <mt-field-label :id="id" :has-error="!!error" :style="{ marginBottom: 'var(--scale-size-2)' }">
+      {{ label }}
+    </mt-field-label>
 
     <div :class="['mt-password-field__block', { 'mt-password-field__block--error': !!error }]">
       <div class="mt-password-field__affix mt-password-field__affix--prefix">
