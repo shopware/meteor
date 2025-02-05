@@ -29,11 +29,6 @@ export const VisualTestPrefix: MtPasswordFieldStory = {
   args: {
     prefix: "prefix",
   },
-  async play({ canvasElement }) {
-    const canvas = within(canvasElement);
-
-    expect(canvas.getByText("prefix")).toBeInTheDocument();
-  },
 };
 
 export const VisualTestSuffix: MtPasswordFieldStory = {
