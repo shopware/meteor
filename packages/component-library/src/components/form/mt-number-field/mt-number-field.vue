@@ -2,7 +2,7 @@
   <mt-base-field
     class="mt-number-field"
     :class="$attrs.class"
-    :disabled="disabled"
+    :disabled="disabled || isInherited"
     :required="required"
     :is-inherited="isInherited"
     :is-inheritance-field="isInheritanceField"
@@ -31,7 +31,7 @@
         :id="createInputId(identification)"
         type="text"
         :name="identification"
-        :disabled="disabled"
+        :disabled="disabled || isInherited"
         :value="stringRepresentation"
         :placeholder="placeholder"
         :class="numberAlignEnd ? 'mt-number-field__align-end' : ''"
@@ -46,7 +46,7 @@
       <div class="mt-number-field__controls" :class="controlClasses">
         <button
           @click="increaseNumberByStep"
-          :disabled="disabled"
+          :disabled="disabled || isInherited"
           :aria-label="t('increaseButton')"
           data-testid="mt-number-field-increase-button"
         >
@@ -55,7 +55,7 @@
 
         <button
           @click="decreaseNumberByStep"
-          :disabled="disabled"
+          :disabled="disabled || isInherited"
           :aria-label="t('decreaseButton')"
           data-testid="mt-number-field-decrease-button"
         >
