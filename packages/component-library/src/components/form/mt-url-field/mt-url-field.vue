@@ -68,7 +68,7 @@
       </div>
 
       <input
-        :value="decodeURI(currentValue)"
+        :value="decodeURI(currentValue || '')"
         :id="id"
         type="url"
         :placeholder="placeholder"
