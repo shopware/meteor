@@ -104,14 +104,13 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, onMounted, ref, useTemplateRef } from "vue";
+import { defineProps, onMounted, ref, useTemplateRef, useId } from "vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtTooltip from "@/components/overlay/mt-tooltip/mt-tooltip.vue";
 import MtFieldAffix from "../_internal/mt-field-affix/mt-field-affix.vue";
-import { useId } from "@/composables/useId";
 import { useI18n } from "vue-i18n";
 import { useClipboard } from "@vueuse/core";
 import { useFutureFlags } from "@/composables/useFutureFlags";
