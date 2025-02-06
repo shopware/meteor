@@ -1,11 +1,11 @@
 <template>
-  <label for="id">{{ label }}</label>
+  <label :for="id">{{ label }}</label>
 
   <!-- @vue-expect-error -->
   <button
-    id="id"
+    :id="id"
     role="slider"
-    aria-labelledby="id"
+    :aria-labelledby="id"
     :aria-valuemin="min"
     :aria-valuemax="max"
     :aria-valuenow="modelValue"
@@ -14,7 +14,7 @@
 
 <script lang="ts">
 import type { PropType } from "vue";
-import { defineComponent } from "vue";
+import { defineComponent, useId } from "vue";
 
 export default defineComponent({
   name: "MtSlider",
@@ -96,6 +96,14 @@ export default defineComponent({
       required: false,
       default: 5,
     },
+  },
+
+  setup() {
+    const id = useId();
+
+    return {
+      id,
+    };
   },
 
   data() {
