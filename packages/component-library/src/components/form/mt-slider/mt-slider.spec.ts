@@ -43,4 +43,17 @@ describe("mt-slider", async () => {
     // ASSERT
     expect(screen.getByRole("slider")).toHaveAttribute("aria-valuemax", "20");
   });
+
+  it("announces the current value when the knob is focused", async () => {
+    // ARRANGE
+    render(MtSlider, {
+      props: {
+        label: "Some label",
+        modelValue: 15,
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("slider")).toHaveAttribute("aria-valuenow", "15");
+  });
 });

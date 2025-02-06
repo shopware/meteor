@@ -1,7 +1,14 @@
 <template>
   <label for="id">{{ label }}</label>
 
-  <button id="id" role="slider" :aria-valuemin="min" :aria-valuemax="max"></button>
+  <!-- @vue-expect-error -->
+  <button
+    id="id"
+    role="slider"
+    :aria-valuemin="min"
+    :aria-valuemax="max"
+    :aria-valuenow="modelValue"
+  ></button>
 </template>
 
 <script lang="ts">
