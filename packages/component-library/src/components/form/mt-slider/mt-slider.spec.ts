@@ -71,4 +71,25 @@ describe("mt-slider", async () => {
       screen.getByText("Some label").getAttribute("for"),
     );
   });
+
+  it("increments the value by one when pressing the arrow up key", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtSlider, {
+      props: {
+        label: "Some label",
+        modelValue: 10,
+        // @ts-expect-error -- Event is not typed, yet
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    // ACT
+    await userEvent.type(screen.getByRole("slider"), "{ArrowUp}");
+
+    // ASSERT
+    expect(handler).toHaveBeenCalledOnce();
+    expect(handler).toHaveBeenCalledWith(11);
+  });
 });
