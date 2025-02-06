@@ -56,4 +56,19 @@ describe("mt-slider", async () => {
     // ASSERT
     expect(screen.getByRole("slider")).toHaveAttribute("aria-valuenow", "15");
   });
+
+  it("announces the label when focusing the knob", async () => {
+    // ARRANGE
+    render(MtSlider, {
+      props: {
+        label: "Some label",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("slider")).toHaveAttribute(
+      "aria-labelledby",
+      screen.getByText("Some label").getAttribute("for"),
+    );
+  });
 });

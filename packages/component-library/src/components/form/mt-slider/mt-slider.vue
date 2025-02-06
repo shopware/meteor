@@ -5,6 +5,7 @@
   <button
     id="id"
     role="slider"
+    aria-labelledby="id"
     :aria-valuemin="min"
     :aria-valuemax="max"
     :aria-valuenow="modelValue"
