@@ -17,4 +17,17 @@ describe("mt-slider", async () => {
     // ASSERT
     expect(screen.getByRole("slider")).toHaveFocus();
   });
+
+  it("announces the min value when the knob is focused", async () => {
+    // ARRANGE
+    render(MtSlider, {
+      props: {
+        label: "Some label",
+        min: 10,
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("slider")).toHaveAttribute("aria-valuemin", "10");
+  });
 });
