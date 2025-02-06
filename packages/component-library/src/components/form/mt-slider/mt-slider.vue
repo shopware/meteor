@@ -15,7 +15,7 @@
           $emit('update:modelValue', modelValue + 1);
         }
 
-        if (event.key === 'ArrowDown') {
+        if (event.key === 'ArrowDown' || event.key === 'ArrowLeft') {
           $emit('update:modelValue', modelValue - 1);
         }
       }

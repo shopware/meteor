@@ -93,24 +93,27 @@ describe("mt-slider", async () => {
     expect(handler).toHaveBeenCalledWith(11);
   });
 
-  it("decrements the value by one when pressing the arrow down key", async () => {
-    // ARRANGE
-    const handler = vi.fn();
+  it.each(["{ArrowDown}", "{ArrowLeft}"])(
+    "decrements the value by one when pressing %s",
+    async (key) => {
+      // ARRANGE
+      const handler = vi.fn();
 
-    render(MtSlider, {
-      props: {
-        label: "Some label",
-        modelValue: 10,
-        // @ts-expect-error -- Event is not typed, yet
-        "onUpdate:modelValue": handler,
-      },
-    });
+      render(MtSlider, {
+        props: {
+          label: "Some label",
+          modelValue: 10,
+          // @ts-expect-error -- Event is not typed, yet
+          "onUpdate:modelValue": handler,
+        },
+      });
 
-    // ACT
-    await userEvent.type(screen.getByRole("slider"), "{ArrowDown}");
+      // ACT
+      await userEvent.type(screen.getByRole("slider"), key);
 
-    // ASSERT
-    expect(handler).toHaveBeenCalledOnce();
-    expect(handler).toHaveBeenCalledWith(9);
-  });
+      // ASSERT
+      expect(handler).toHaveBeenCalledOnce();
+      expect(handler).toHaveBeenCalledWith(9);
+    },
+  );
 });
