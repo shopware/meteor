@@ -19,6 +19,19 @@ describe("mt-number-field", () => {
     expect(screen.getByRole("spinbutton")).toHaveFocus();
   });
 
+  it("does not show increase and decrease buttons when it has the small", async () => {
+    // ARRANGE
+    await render(MtNumberField, {
+      props: {
+        size: "small",
+      },
+    });
+
+    // ASSERT
+    expect(screen.queryByRole("button", { name: "Decrease" })).not.toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "Increase" })).not.toBeInTheDocument();
+  });
+
   it("can be marked as required", async () => {
     // ARRANGE
     render(MtNumberField, {
