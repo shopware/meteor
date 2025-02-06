@@ -11,7 +11,7 @@
     :aria-valuenow="modelValue"
     @keydown="
       (event) => {
-        if (event.key === 'ArrowUp') {
+        if (event.key === 'ArrowUp' || event.key === 'ArrowRight') {
           $emit('update:modelValue', modelValue + 1);
         }
 

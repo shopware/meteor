@@ -72,26 +72,29 @@ describe("mt-slider", async () => {
     );
   });
 
-  it("increments the value by one when pressing the arrow up key", async () => {
-    // ARRANGE
-    const handler = vi.fn();
+  it.each(["{ArrowUp}", "{ArrowRight}"])(
+    "increments the value by one when pressing %s",
+    async (key) => {
+      // ARRANGE
+      const handler = vi.fn();
 
-    render(MtSlider, {
-      props: {
-        label: "Some label",
-        modelValue: 10,
-        // @ts-expect-error -- Event is not typed, yet
-        "onUpdate:modelValue": handler,
-      },
-    });
+      render(MtSlider, {
+        props: {
+          label: "Some label",
+          modelValue: 10,
+          // @ts-expect-error -- Event is not typed, yet
+          "onUpdate:modelValue": handler,
+        },
+      });
 
-    // ACT
-    await userEvent.type(screen.getByRole("slider"), "{ArrowUp}");
+      // ACT
+      await userEvent.type(screen.getByRole("slider"), key);
 
-    // ASSERT
-    expect(handler).toHaveBeenCalledOnce();
-    expect(handler).toHaveBeenCalledWith(11);
-  });
+      // ASSERT
+      expect(handler).toHaveBeenCalledOnce();
+      expect(handler).toHaveBeenCalledWith(11);
+    },
+  );
 
   it.each(["{ArrowDown}", "{ArrowLeft}"])(
     "decrements the value by one when pressing %s",
