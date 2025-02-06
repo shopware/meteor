@@ -14,6 +14,10 @@
         if (event.key === 'ArrowUp') {
           $emit('update:modelValue', modelValue + 1);
         }
+
+        if (event.key === 'ArrowDown') {
+          $emit('update:modelValue', modelValue - 1);
+        }
       }
     "
   ></button>

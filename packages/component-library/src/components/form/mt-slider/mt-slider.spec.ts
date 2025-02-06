@@ -92,4 +92,25 @@ describe("mt-slider", async () => {
     expect(handler).toHaveBeenCalledOnce();
     expect(handler).toHaveBeenCalledWith(11);
   });
+
+  it("decrements the value by one when pressing the arrow down key", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtSlider, {
+      props: {
+        label: "Some label",
+        modelValue: 10,
+        // @ts-expect-error -- Event is not typed, yet
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    // ACT
+    await userEvent.type(screen.getByRole("slider"), "{ArrowDown}");
+
+    // ASSERT
+    expect(handler).toHaveBeenCalledOnce();
+    expect(handler).toHaveBeenCalledWith(9);
+  });
 });
