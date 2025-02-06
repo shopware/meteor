@@ -18,6 +18,10 @@
         if (['ArrowDown', 'ArrowLeft'].includes(event.key)) {
           $emit('update:modelValue', modelValue - 1);
         }
+
+        if (event.key === 'Home') {
+          $emit('update:modelValue', min);
+        }
       }
     "
   ></button>

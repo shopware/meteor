@@ -119,4 +119,26 @@ describe("mt-slider", async () => {
       expect(handler).toHaveBeenCalledWith(9);
     },
   );
+
+  it("sets the value to the min value when pressing the Home key", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtSlider, {
+      props: {
+        label: "Some label",
+        modelValue: 10,
+        min: 5,
+        // @ts-expect-error -- Event is not typed, yet
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    // ACT
+    await userEvent.type(screen.getByRole("slider"), "{Home}");
+
+    // ASSERT
+    expect(handler).toHaveBeenCalledOnce();
+    expect(handler).toHaveBeenCalledWith(5);
+  });
 });
