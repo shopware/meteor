@@ -35,9 +35,9 @@
         },
       ]"
     >
-      <div v-if="$slots.prefix" class="mt-number-field__affix mt-number-field__affix--prefix">
+      <mt-field-affix v-if="$slots.prefix" type="prefix">
         <slot name="prefix" />
-      </div>
+      </mt-field-affix>
 
       <input
         v-bind="{
@@ -92,9 +92,9 @@
         </button>
       </div>
 
-      <div v-if="$slots.suffix" class="mt-number-field__affix mt-number-field__affix--suffix">
+      <mt-field-affix v-if="$slots.suffix" type="suffix">
         <slot name="suffix" />
-      </div>
+      </mt-field-affix>
     </div>
 
     <div v-if="$slots.hint" class="mt-number-field__hint">
@@ -114,6 +114,7 @@ import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import { useI18n } from "vue-i18n";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
+import MtFieldAffix from "../_internal/mt-field-affix/mt-field-affix.vue";
 import { useFutureFlags } from "@/composables/useFutureFlags";
 
 export default defineComponent({
@@ -124,6 +125,7 @@ export default defineComponent({
     MtFieldLabel,
     MtHelpText,
     MtFieldError,
+    MtFieldAffix,
   },
 
   props: {
@@ -582,31 +584,6 @@ export default defineComponent({
       cursor: default;
     }
   }
-}
-
-.mt-number-field__affix {
-  display: grid;
-  place-items: center;
-  padding-inline: var(--scale-size-12);
-  color: var(--color-text-primary-default);
-  font-family: var(--font-family-body);
-  font-size: var(--font-size-2xs);
-  line-height: var(--line-height-2xs);
-  font-weight: var(--font-weight-medium);
-  background: var(--color-interaction-secondary-dark);
-  height: 100%;
-}
-
-.mt-number-field__affix--suffix {
-  border-inline-start: 1px solid var(--color-border-primary-default);
-  border-top-right-radius: var(--mt-number-field-border-radius);
-  border-bottom-right-radius: var(--mt-number-field-border-radius);
-}
-
-.mt-number-field__affix--prefix {
-  border-inline-end: 1px solid var(--color-border-primary-default);
-  border-top-left-radius: var(--mt-number-field-border-radius);
-  border-bottom-left-radius: var(--mt-number-field-border-radius);
 }
 
 .mt-number-field__hint {
