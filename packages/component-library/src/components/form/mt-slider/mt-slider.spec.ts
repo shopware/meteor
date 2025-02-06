@@ -30,4 +30,17 @@ describe("mt-slider", async () => {
     // ASSERT
     expect(screen.getByRole("slider")).toHaveAttribute("aria-valuemin", "10");
   });
+
+  it("announces the max value when the knob is focused", async () => {
+    // ARRANGE
+    render(MtSlider, {
+      props: {
+        label: "Some label",
+        max: 20,
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("slider")).toHaveAttribute("aria-valuemax", "20");
+  });
 });

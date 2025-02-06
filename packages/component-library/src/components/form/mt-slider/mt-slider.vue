@@ -1,7 +1,7 @@
 <template>
   <label for="id">{{ label }}</label>
 
-  <button id="id" role="slider" :aria-valuemin="min"></button>
+  <button id="id" role="slider" :aria-valuemin="min" :aria-valuemax="max"></button>
 </template>
 
 <script lang="ts">
