@@ -141,4 +141,26 @@ describe("mt-slider", async () => {
     expect(handler).toHaveBeenCalledOnce();
     expect(handler).toHaveBeenCalledWith(5);
   });
+
+  it("sets the value to the max value when pressing the End key", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtSlider, {
+      props: {
+        label: "Some label",
+        modelValue: 10,
+        max: 15,
+        // @ts-expect-error -- Event is not typed, yet
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    // ACT
+    await userEvent.type(screen.getByRole("slider"), "{End}");
+
+    // ASSERT
+    expect(handler).toHaveBeenCalledOnce();
+    expect(handler).toHaveBeenCalledWith(15);
+  });
 });

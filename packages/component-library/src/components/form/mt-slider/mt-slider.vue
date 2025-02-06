@@ -22,12 +22,17 @@
         if (event.key === 'Home') {
           $emit('update:modelValue', min);
         }
+
+        if (event.key === 'End') {
+          $emit('update:modelValue', max);
+        }
       }
     "
   ></button>
 </template>
 
 <script lang="ts">
+import { it } from "node:test";
 import type { PropType } from "vue";
 import { defineComponent, useId } from "vue";
 
