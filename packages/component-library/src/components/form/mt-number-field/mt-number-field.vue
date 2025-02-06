@@ -62,7 +62,7 @@
         :step="realStep"
       />
 
-      <div class="mt-number-field__controls">
+      <div class="mt-number-field__controls" v-if="size !== 'small'">
         <button
           @click="increaseNumberByStep"
           :disabled="disabled || isInherited"
