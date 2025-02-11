@@ -209,10 +209,6 @@ export default defineComponent({
     isPartlyChecked(): boolean {
       return this.partial && !this.inputState;
     },
-
-    iconName(): string {
-      return this.isPartlyChecked ? "regular-minus-xxs" : "regular-checkmark-xxs";
-    },
   },
 
   methods: {
