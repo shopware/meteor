@@ -108,4 +108,23 @@ describe("mt-checkbox", () => {
     // ASSERT
     expect(screen.getByRole("checkbox")).toBeDisabled();
   });
+
+  it("does not emit an event when clicking on a disabled checkbox", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+    render(MtCheckbox, {
+      props: {
+        disabled: true,
+        // @ts-expect-error -- Event is not typed, yet
+        onChange: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("checkbox"));
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).not.toBeChecked();
+    expect(handler).not.toHaveBeenCalled();
+  });
 });
