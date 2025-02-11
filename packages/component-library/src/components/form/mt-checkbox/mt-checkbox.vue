@@ -1,30 +1,44 @@
 <template>
-  <input
-    type="checkbox"
-    :id="identification"
-    :checked="inputState"
-    :required="required"
-    :disabled="isDisabled"
-    :name="name"
-    :indeterminate.prop="partial"
-    @change.stop="onChange"
-  />
+  <div class="mt-checkbox__block">
+    <span style="position: relative; width: var(--scale-size-16); height: var(--scale-size-16)">
+      <input
+        type="checkbox"
+        :id="identification"
+        class="mt-checkbox__checkbox"
+        :checked="inputState"
+        :required="required"
+        :disabled="isDisabled"
+        :name="name"
+        :indeterminate.prop="partial"
+        @change.stop="onChange"
+      />
 
-  <mt-field-label
-    :id="identification"
-    :inheritance="!isInheritanceField ? 'none' : isInherited ? 'linked' : 'unlinked'"
-    @update:inheritance="
-      if (isInherited) {
-        $emit('inheritance-remove');
-      } else {
-        $emit('inheritance-restore');
-      }
-    "
-  >
-    {{ label }}
-  </mt-field-label>
+      <mt-icon
+        v-if="!!checked"
+        class="mt-checkbox__indicator"
+        name="solid-checkmark-xs"
+        size="var(--scale-size-10)"
+        color="var(--color-icon-static-default)"
+      />
+    </span>
 
-  <mt-help-text v-if="!!helpText" :text="helpText" />
+    <mt-field-label
+      class="mt-checkbox__label"
+      :id="identification"
+      :inheritance="!isInheritanceField ? 'none' : isInherited ? 'linked' : 'unlinked'"
+      @update:inheritance="
+        if (isInherited) {
+          $emit('inheritance-remove');
+        } else {
+          $emit('inheritance-restore');
+        }
+      "
+    >
+      {{ label }}
+    </mt-field-label>
+
+    <mt-help-text v-if="!!helpText" :text="helpText" />
+  </div>
 
   <mt-field-error v-if="hasError" :error="error" />
 </template>
@@ -32,7 +46,6 @@
 <script lang="ts">
 import { computed, defineComponent } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
-import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtFormFieldMixin from "../../../mixins/form-field.mixin";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
@@ -45,7 +58,6 @@ export default defineComponent({
 
   components: {
     "mt-icon": MtIcon,
-    "mt-base-field": MtBaseField,
     "mt-field-error": MtFieldError,
     MtFieldLabel,
     MtHelpText,
@@ -240,3 +252,45 @@ export default defineComponent({
   },
 });
 </script>
+
+<style scoped>
+.mt-checkbox__block {
+  display: flex;
+  align-items: center;
+  column-gap: var(--scale-size-4);
+}
+
+.mt-checkbox__checkbox {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+  border-radius: var(--border-radius-checkbox);
+  background: var(--color-elevation-surface-default);
+  border: 1px solid var(--color-border-primary-default);
+  height: var(--scale-size-16);
+  width: var(--scale-size-16);
+  cursor: pointer;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-border-brand-selected);
+    outline-offset: 2px;
+  }
+
+  &:checked,
+  &:indeterminate {
+    border-color: var(--color-interaction-primary-default);
+    background-color: var(--color-interaction-primary-default);
+  }
+}
+
+.mt-checkbox__label {
+  cursor: pointer;
+}
+
+.mt-checkbox__indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+</style>
