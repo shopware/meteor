@@ -194,22 +194,6 @@ export default defineComponent({
   },
 
   computed: {
-    MtCheckboxFieldClasses(): {
-      "has--error": boolean;
-      "is--disabled": boolean;
-      "is--inherited": boolean;
-      "is--bordered": boolean;
-      "is--partly-checked": boolean;
-    } {
-      return {
-        "has--error": !!this.hasError,
-        "is--disabled": this.disabled,
-        "is--inherited": !!this.isInherited,
-        "is--bordered": this.bordered,
-        "is--partly-checked": this.isPartlyChecked,
-      };
-    },
-
     identification(): string {
       return `mt-field--${this.id}`;
     },
