@@ -358,9 +358,8 @@ describe("mt-checkbox", () => {
   it.skip("is enabled when inheritance is unlinked", async () => {
     // ARRANGE
     const handler = vi.fn();
-    render(MtCheckbox, {
+    await render(MtCheckbox, {
       props: {
-        // @ts-expect-error
         isInheritanceField: true,
         isInherited: false,
         inheritedValue: true,
@@ -374,6 +373,8 @@ describe("mt-checkbox", () => {
 
     // ASSERT
     expect(screen.getByRole("checkbox")).not.toBeDisabled();
+
+    screen.debug();
 
     expect(screen.getByRole("checkbox")).not.toBeChecked();
     expect(handler).toHaveBeenCalledOnce();

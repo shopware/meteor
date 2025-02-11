@@ -18,7 +18,7 @@
             'mt-checkbox__checkbox--errored': !!error,
           },
         ]"
-        :checked="inputState"
+        :checked="isInherited ? inheritedValue : checked"
         :required="required"
         :disabled="disabled || isInherited"
         :name="name"
@@ -112,6 +112,18 @@ export default defineComponent({
       default: false,
     },
 
+    isInherited: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    isInheritanceField: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
     /**
      * Determines the checked state of the checkbox.
      */
@@ -184,30 +196,6 @@ export default defineComponent({
     return {
       id,
     };
-  },
-
-  computed: {
-    inputState(): boolean {
-      if (this.isInherited) {
-        return this.inheritedValue;
-      }
-
-      return this.checked || false;
-    },
-
-    isInheritanceField(): boolean {
-      if (this.$attrs.isInheritanceField) {
-        return true;
-      }
-      return this.inheritedValue !== null;
-    },
-
-    isInherited(): boolean {
-      if (this.$attrs.isInherited) {
-        return true;
-      }
-      return this.isInheritanceField && this.checked === null;
-    },
   },
 });
 </script>
