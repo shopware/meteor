@@ -201,10 +201,6 @@ export default defineComponent({
       }
       return this.isInheritanceField && this.checked === null;
     },
-
-    isPartlyChecked(): boolean {
-      return this.partial && !this.inputState;
-    },
   },
 
   methods: {
