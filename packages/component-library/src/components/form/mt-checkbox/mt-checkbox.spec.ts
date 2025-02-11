@@ -279,4 +279,23 @@ describe("mt-checkbox", () => {
     // ASSERT
     expect(handler).toHaveBeenCalledOnce();
   });
+
+  it("emits an inheritance-restore event when linking the inheritance", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+    render(MtCheckbox, {
+      props: {
+        // @ts-expect-error -- Event is not typed, yet
+        isInheritanceField: true,
+        isInherited: false,
+        "onInheritance-restore": handler,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByTestId("mt-icon__regular-link-horizontal-slash"));
+
+    // ASSERT
+    expect(handler).toHaveBeenCalledOnce();
+  });
 });
