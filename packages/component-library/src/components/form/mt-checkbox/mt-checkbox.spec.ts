@@ -298,4 +298,36 @@ describe("mt-checkbox", () => {
     // ASSERT
     expect(handler).toHaveBeenCalledOnce();
   });
+
+  it("shows the inherited value when it is inherited", async () => {
+    // ARRANGE
+    render(MtCheckbox, {
+      props: {
+        checked: false,
+        // @ts-expect-error
+        isInheritanceField: true,
+        isInherited: true,
+        inheritedValue: true,
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).toBeChecked();
+  });
+
+  it("shows the overridden value when it is not inherited", async () => {
+    // ARRANGE
+    render(MtCheckbox, {
+      props: {
+        checked: false,
+        // @ts-expect-error
+        isInheritanceField: true,
+        isInherited: false,
+        inheritedValue: true,
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).not.toBeChecked();
+  });
 });
