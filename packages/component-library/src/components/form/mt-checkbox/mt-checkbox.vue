@@ -1,10 +1,23 @@
 <template>
-  <div class="mt-checkbox__block">
+  <div
+    :class="[
+      'mt-checkbox__block',
+      {
+        'mt-checkbox__block--bordered': bordered,
+        'mt-checkbox__block--errored': hasError && bordered,
+      },
+    ]"
+  >
     <span style="position: relative; width: var(--scale-size-16); height: var(--scale-size-16)">
       <input
         type="checkbox"
         :id="identification"
-        class="mt-checkbox__checkbox"
+        :class="[
+          'mt-checkbox__checkbox',
+          {
+            'mt-checkbox__checkbox--errored': hasError,
+          },
+        ]"
         :checked="inputState"
         :required="required"
         :disabled="isDisabled"
@@ -14,16 +27,23 @@
       />
 
       <mt-icon
-        v-if="!!checked"
+        v-if="!!checked || !!partial"
         class="mt-checkbox__indicator"
-        name="solid-checkmark-xs"
+        :name="partial ? 'solid-minus-xs' : 'solid-checkmark-xs'"
         size="var(--scale-size-10)"
-        color="var(--color-icon-static-default)"
+        :color="
+          disabled ? 'var(--color-border-primary-default)' : 'var(--color-icon-static-default)'
+        "
       />
     </span>
 
     <mt-field-label
-      class="mt-checkbox__label"
+      :class="[
+        'mt-checkbox__label',
+        {
+          'mt-checkbox__label--disabled': disabled,
+        },
+      ]"
       :id="identification"
       :inheritance="!isInheritanceField ? 'none' : isInherited ? 'linked' : 'unlinked'"
       @update:inheritance="
@@ -33,6 +53,8 @@
           $emit('inheritance-restore');
         }
       "
+      :required="required"
+      :has-error="hasError"
     >
       {{ label }}
     </mt-field-label>
@@ -260,6 +282,18 @@ export default defineComponent({
   column-gap: var(--scale-size-4);
 }
 
+.mt-checkbox__block--bordered {
+  border: 1px solid var(--color-border-primary-default);
+  border-radius: var(--border-radius-xs);
+  padding-inline: var(--scale-size-16);
+  min-height: var(--scale-size-48);
+}
+
+.mt-checkbox__block--errored {
+  border-color: var(--color-border-critical-default);
+  background-color: var(--color-background-critical-dark);
+}
+
 .mt-checkbox__checkbox {
   -webkit-appearance: none;
   appearance: none;
@@ -281,10 +315,29 @@ export default defineComponent({
     border-color: var(--color-interaction-primary-default);
     background-color: var(--color-interaction-primary-default);
   }
+
+  &:disabled {
+    cursor: not-allowed;
+    background: var(--color-background-primary-disabled);
+    border-color: var(--color-border-primary-default);
+  }
+}
+
+.mt-checkbox__checkbox--errored {
+  border-color: var(--color-border-critical-default);
+
+  &:checked {
+    background-color: var(--color-interaction-critical-default);
+    border-color: var(--color-border-critical-default);
+  }
 }
 
 .mt-checkbox__label {
   cursor: pointer;
+}
+
+.mt-checkbox__label--disabled {
+  cursor: not-allowed;
 }
 
 .mt-checkbox__indicator {
@@ -292,5 +345,6 @@ export default defineComponent({
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  pointer-events: none;
 }
 </style>
