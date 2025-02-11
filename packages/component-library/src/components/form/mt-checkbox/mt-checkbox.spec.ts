@@ -15,4 +15,16 @@ describe("mt-checkbox", () => {
     // ASSERT
     expect(screen.getByRole("checkbox")).toBeChecked();
   });
+
+  it("does not show a checkmark when unchecked", async () => {
+    // ARRANGE
+    render(MtCheckbox, {
+      props: {
+        checked: false,
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).not.toBeChecked();
+  });
 });
