@@ -1,7 +1,14 @@
 <template>
   <label
     :for="id"
-    :class="classes"
+    :class="[
+      'mt-field-label',
+      {
+        'mt-field-label--with-error': props.hasError,
+        'mt-field-label--is-required': props.required,
+        'mt-field-label--has-linked-inheritance': props.inheritance === 'linked',
+      },
+    ]"
     @mousedown="
       (event) => {
         // only prevent text selection if clicking inside the label itself
@@ -33,7 +40,6 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
 import MtIcon from "@/components/icons-media/mt-icon/mt-icon.vue";
 import { useI18n } from "vue-i18n";
 
@@ -65,15 +71,6 @@ const props = withDefaults(
 defineEmits<{
   (e: "update:inheritance", value: "linked" | "unlinked"): void;
 }>();
-
-const classes = computed(() => [
-  "mt-field-label",
-  {
-    "mt-field-label--with-error": props.hasError,
-    "mt-field-label--is-required": props.required,
-    "mt-field-label--has-linked-inheritance": props.inheritance === "linked",
-  },
-]);
 </script>
 
 <style scoped>
