@@ -199,4 +199,44 @@ describe("mt-checkbox", () => {
     // ASSERT
     expect(screen.getByText("Error message")).toBeVisible();
   });
+
+  it("has an indeterminate state", async () => {
+    // ARRANGE
+    render(MtCheckbox, {
+      props: {
+        partial: true,
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).toBePartiallyChecked();
+  });
+
+  it("keeps its checked state when it is partially checked", async () => {
+    // ARRANGE
+    render(MtCheckbox, {
+      props: {
+        checked: true,
+        partial: true,
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).toBeChecked();
+    expect(screen.getByRole("checkbox")).toBePartiallyChecked();
+  });
+
+  it("keeps its unchecked state when it is partially checked", async () => {
+    // ARRANGE
+    render(MtCheckbox, {
+      props: {
+        checked: false,
+        partial: true,
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).not.toBeChecked();
+    expect(screen.getByRole("checkbox")).toBePartiallyChecked();
+  });
 });
