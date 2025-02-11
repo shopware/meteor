@@ -66,13 +66,12 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useId } from "vue";
+import { defineComponent, useId } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtFormFieldMixin from "../../../mixins/form-field.mixin";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
-import { createId } from "@/utils/id";
 import { useFutureFlags } from "@/composables/useFutureFlags";
 
 export default defineComponent({
@@ -170,12 +169,6 @@ export default defineComponent({
     },
   },
 
-  data() {
-    return {
-      currentValue: this.checked,
-    };
-  },
-
   setup() {
     const futureFlags = useFutureFlags();
 
@@ -192,7 +185,7 @@ export default defineComponent({
         return this.inheritedValue;
       }
 
-      return this.currentValue || false;
+      return this.checked || false;
     },
 
     isInheritanceField(): boolean {
@@ -206,7 +199,7 @@ export default defineComponent({
       if (this.$attrs.isInherited) {
         return true;
       }
-      return this.isInheritanceField && this.currentValue === null;
+      return this.isInheritanceField && this.checked === null;
     },
 
     isDisabled(): boolean {
@@ -219,15 +212,6 @@ export default defineComponent({
 
     iconName(): string {
       return this.isPartlyChecked ? "regular-minus-xxs" : "regular-checkmark-xxs";
-    },
-  },
-
-  watch: {
-    checked: {
-      handler() {
-        this.currentValue = this.checked;
-      },
-      immediate: true,
     },
   },
 
