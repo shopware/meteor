@@ -47,4 +47,27 @@ describe("mt-checkbox", () => {
     expect(handler).toHaveBeenCalledOnce();
     expect(handler).toHaveBeenCalledWith(true);
   });
+
+  it("checks the checkbox when clicking the label", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtCheckbox, {
+      props: {
+        checked: false,
+        // @ts-expect-error -- Event is not typed, yet
+        onChange: handler,
+        label: "Checkbox",
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByText("Checkbox"));
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).toBeChecked();
+
+    expect(handler).toHaveBeenCalledOnce();
+    expect(handler).toHaveBeenCalledWith(true);
+  });
 });
