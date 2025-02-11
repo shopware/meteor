@@ -159,4 +159,12 @@ describe("mt-checkbox", () => {
     // ASSERT
     expect(screen.getByRole("checkbox")).toBeRequired();
   });
+
+  it("is not required by default", async () => {
+    // ARRANGE
+    render(MtCheckbox);
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).not.toBeRequired();
+  });
 });
