@@ -96,4 +96,16 @@ describe("mt-checkbox", () => {
     // ASSERT
     expect(screen.getByRole("checkbox")).toHaveAttribute("name", "over-18");
   });
+
+  it("can be disabled", async () => {
+    // ARRANGE
+    render(MtCheckbox, {
+      props: {
+        disabled: true,
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).toBeDisabled();
+  });
 });
