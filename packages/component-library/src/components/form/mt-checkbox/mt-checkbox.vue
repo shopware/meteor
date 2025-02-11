@@ -8,6 +8,7 @@
             type="checkbox"
             :name="name"
             :checked="inputState"
+            :required="required"
             :disabled="isDisabled"
             :indeterminate.prop="partial"
             @change.stop="onChange"

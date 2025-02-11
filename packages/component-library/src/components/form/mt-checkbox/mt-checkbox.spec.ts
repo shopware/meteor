@@ -147,4 +147,16 @@ describe("mt-checkbox", () => {
     expect(screen.getByRole("checkbox")).not.toBeChecked();
     expect(handler).not.toHaveBeenCalled();
   });
+
+  it("can be required", async () => {
+    // ARRANGE
+    render(MtCheckbox, {
+      props: {
+        required: true,
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).toBeRequired();
+  });
 });
