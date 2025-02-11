@@ -11,7 +11,7 @@
     <span style="position: relative; width: var(--scale-size-16); height: var(--scale-size-16)">
       <input
         type="checkbox"
-        :id="identification"
+        :id="id"
         :class="[
           'mt-checkbox__checkbox',
           {
@@ -44,7 +44,7 @@
           'mt-checkbox__label--disabled': disabled,
         },
       ]"
-      :id="identification"
+      :id="id"
       :inheritance="!isInheritanceField ? 'none' : isInherited ? 'linked' : 'unlinked'"
       @update:inheritance="
         if (isInherited) {
@@ -66,7 +66,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "vue";
+import { computed, defineComponent, useId } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtFormFieldMixin from "../../../mixins/form-field.mixin";
@@ -170,15 +170,10 @@ export default defineComponent({
     },
   },
 
-  data(): { id: string | undefined; currentValue: boolean | undefined } {
+  data() {
     return {
       currentValue: this.checked,
-      id: undefined,
     };
-  },
-
-  mounted() {
-    this.id = createId();
   },
 
   setup() {
@@ -188,16 +183,15 @@ export default defineComponent({
       "mt-switch--future-remove-default-margin": futureFlags.removeDefaultMargin,
     }));
 
+    const id = useId();
+
     return {
       checkboxClasses,
+      id,
     };
   },
 
   computed: {
-    identification(): string {
-      return `mt-field--${this.id}`;
-    },
-
     inputState(): boolean {
       if (this.isInherited) {
         return this.inheritedValue;
