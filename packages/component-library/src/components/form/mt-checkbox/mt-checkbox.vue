@@ -4,7 +4,7 @@
       'mt-checkbox__block',
       {
         'mt-checkbox__block--bordered': bordered,
-        'mt-checkbox__block--errored': hasError && bordered,
+        'mt-checkbox__block--errored': !!error && bordered,
       },
     ]"
   >
@@ -15,7 +15,7 @@
         :class="[
           'mt-checkbox__checkbox',
           {
-            'mt-checkbox__checkbox--errored': hasError,
+            'mt-checkbox__checkbox--errored': !!error,
           },
         ]"
         :checked="inputState"
@@ -54,7 +54,7 @@
         }
       "
       :required="required"
-      :has-error="hasError"
+      :has-error="!!error"
     >
       {{ label }}
     </mt-field-label>
@@ -62,7 +62,7 @@
     <mt-help-text v-if="!!helpText" :text="helpText" />
   </div>
 
-  <mt-field-error v-if="hasError" :error="error" />
+  <mt-field-error v-if="!!error" :error="error" />
 </template>
 
 <script lang="ts">
@@ -196,10 +196,6 @@ export default defineComponent({
   computed: {
     identification(): string {
       return `mt-field--${this.id}`;
-    },
-
-    hasError(): boolean {
-      return this.error && this.error.code !== 0;
     },
 
     inputState(): boolean {
