@@ -70,4 +70,19 @@ describe("mt-checkbox", () => {
     expect(handler).toHaveBeenCalledOnce();
     expect(handler).toHaveBeenCalledWith(true);
   });
+
+  it("focuses the checkbox when clicking the label", async () => {
+    // ARRANGE
+    render(MtCheckbox, {
+      props: {
+        label: "Checkbox",
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByText("Checkbox"));
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).toHaveFocus();
+  });
 });
