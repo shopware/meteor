@@ -167,4 +167,22 @@ describe("mt-checkbox", () => {
     // ASSERT
     expect(screen.getByRole("checkbox")).not.toBeRequired();
   });
+
+  it("shows a help text when defined", async () => {
+    // ARRANGE
+    render(MtCheckbox, {
+      props: {
+        helpText: "Help text",
+      },
+    });
+
+    await userEvent.tab();
+    await userEvent.tab();
+
+    // ASSERT
+    expect(screen.getByRole("button")).toHaveFocus();
+    expect(screen.getByRole("button")).toHaveAccessibleDescription("Help text");
+
+    expect(screen.getByRole("tooltip")).toBeVisible();
+  });
 });
