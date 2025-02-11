@@ -23,7 +23,14 @@
         :disabled="disabled || isInherited"
         :name="name"
         :indeterminate.prop="partial"
-        @change.stop="onChange"
+        @change.stop="
+          (event) => {
+            $emit('update:checked', (event.target as HTMLInputElement).checked);
+
+            // @deprecated tag:4.0 - Will be removed. Use `update:checked` instead.
+            $emit('change', (event.target as HTMLInputElement).checked);
+          }
+        "
       />
 
       <mt-icon
@@ -200,17 +207,6 @@ export default defineComponent({
         return true;
       }
       return this.isInheritanceField && this.checked === null;
-    },
-  },
-
-  methods: {
-    onChange(changeEvent: Event) {
-      // @ts-expect-error - target is defined in the event
-      this.$emit("update:checked", changeEvent.target.checked);
-
-      // @ts-expect-error - target is defined in the event
-      // @deprecated tag:4.0 - Will be removed. Use `update:checked` instead.
-      this.$emit("change", changeEvent.target.checked);
     },
   },
 });
