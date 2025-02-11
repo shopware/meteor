@@ -6,7 +6,7 @@
           <input
             :id="identification"
             type="checkbox"
-            :name="identification"
+            :name="name"
             :checked="inputState"
             :disabled="isDisabled"
             :indeterminate.prop="partial"
