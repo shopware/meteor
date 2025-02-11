@@ -179,14 +179,9 @@ export default defineComponent({
   setup() {
     const futureFlags = useFutureFlags();
 
-    const checkboxClasses = computed(() => ({
-      "mt-switch--future-remove-default-margin": futureFlags.removeDefaultMargin,
-    }));
-
     const id = useId();
 
     return {
-      checkboxClasses,
       id,
     };
   },
