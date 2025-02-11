@@ -72,132 +72,39 @@
   <mt-field-error v-if="!!error" :error="error" />
 </template>
 
-<script lang="ts">
-import { defineComponent, useId } from "vue";
+<script setup lang="ts">
+import { useId } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
-import MtFormFieldMixin from "../../../mixins/form-field.mixin";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import { useFutureFlags } from "@/composables/useFutureFlags";
 
-export default defineComponent({
-  name: "MtCheckbox",
+defineProps<{
+  label?: string;
+  disabled?: boolean;
+  isInherited?: boolean;
+  isInheritanceField?: boolean;
+  checked?: boolean;
+  partial?: boolean;
+  inheritedValue?: boolean;
+  error?: { detail: string };
+  bordered?: boolean;
+  helpText?: string;
+  required?: boolean;
+  name?: string;
+}>();
 
-  components: {
-    "mt-icon": MtIcon,
-    "mt-field-error": MtFieldError,
-    MtFieldLabel,
-    MtHelpText,
-  },
+defineEmits<{
+  "update:checked": [value: boolean];
+  change: [value: boolean];
+  "inheritance-remove": [];
+  "inheritance-restore": [];
+}>();
 
-  mixins: [MtFormFieldMixin],
+const futureFlags = useFutureFlags();
 
-  props: {
-    /**
-     * A label for the checkbox.
-     */
-    label: {
-      type: String,
-      required: false,
-      default: undefined,
-    },
-
-    /**
-     * Toggles the disabled state of the checkbox.
-     */
-    disabled: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    isInherited: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    isInheritanceField: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    /**
-     * Determines the checked state of the checkbox.
-     */
-    checked: {
-      type: Boolean,
-      required: false,
-      default: undefined,
-    },
-
-    /**
-     * Determines if the field is partially checked.
-     */
-    partial: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    /**
-     * Inherited value from another SalesChannel.
-     */
-    inheritedValue: {
-      type: Boolean,
-      required: false,
-      default: null,
-    },
-
-    /**
-     * Error object for this field.
-     */
-    error: {
-      type: Object,
-      required: false,
-      default: null,
-    },
-
-    /**
-     * Determines if the field is surrounded by a border.
-     */
-    bordered: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    /**
-     * Help text with additional information for the field.
-     */
-    helpText: {
-      type: String,
-      required: false,
-      default: null,
-    },
-
-    /**
-     * Marks the field as required with an asterix.
-     */
-    required: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-  },
-
-  setup() {
-    const futureFlags = useFutureFlags();
-
-    const id = useId();
-
-    return {
-      id,
-    };
-  },
-});
+const id = useId();
 </script>
 
 <style scoped>

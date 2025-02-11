@@ -266,7 +266,6 @@ describe("mt-checkbox", () => {
     const handler = vi.fn();
     render(MtCheckbox, {
       props: {
-        // @ts-expect-error -- Event is not typed, yet
         isInheritanceField: true,
         isInherited: true,
         "onInheritance-remove": handler,
@@ -285,7 +284,6 @@ describe("mt-checkbox", () => {
     const handler = vi.fn();
     render(MtCheckbox, {
       props: {
-        // @ts-expect-error -- Event is not typed, yet
         isInheritanceField: true,
         isInherited: false,
         "onInheritance-restore": handler,
@@ -304,7 +302,6 @@ describe("mt-checkbox", () => {
     render(MtCheckbox, {
       props: {
         checked: false,
-        // @ts-expect-error
         isInheritanceField: true,
         isInherited: true,
         inheritedValue: true,
@@ -320,7 +317,6 @@ describe("mt-checkbox", () => {
     render(MtCheckbox, {
       props: {
         checked: false,
-        // @ts-expect-error
         isInheritanceField: true,
         isInherited: false,
         inheritedValue: true,
@@ -336,7 +332,6 @@ describe("mt-checkbox", () => {
     const handler = vi.fn();
     render(MtCheckbox, {
       props: {
-        // @ts-expect-error
         isInheritanceField: true,
         isInherited: true,
         inheritedValue: true,
