@@ -20,7 +20,7 @@
         ]"
         :checked="inputState"
         :required="required"
-        :disabled="isDisabled"
+        :disabled="disabled || isInherited"
         :name="name"
         :indeterminate.prop="partial"
         @change.stop="onChange"
@@ -200,10 +200,6 @@ export default defineComponent({
         return true;
       }
       return this.isInheritanceField && this.checked === null;
-    },
-
-    isDisabled(): boolean {
-      return this.disabled || this.isInherited;
     },
 
     isPartlyChecked(): boolean {
