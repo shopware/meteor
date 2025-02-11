@@ -260,4 +260,23 @@ describe("mt-checkbox", () => {
     expect(screen.getByRole("checkbox")).not.toBeChecked();
     expect(screen.getByRole("checkbox")).toBePartiallyChecked();
   });
+
+  it("emits an inheritance-remove event when unlinking the inheritance", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+    render(MtCheckbox, {
+      props: {
+        // @ts-expect-error -- Event is not typed, yet
+        isInheritanceField: true,
+        isInherited: true,
+        "onInheritance-remove": handler,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByTestId("mt-inheritance-switch-icon"));
+
+    // ASSERT
+    expect(handler).toHaveBeenCalledOnce();
+  });
 });
