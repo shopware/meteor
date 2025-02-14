@@ -1,75 +1,88 @@
 <template>
   <div
     :class="[
-      'mt-checkbox__block',
+      'mt-checkbox',
       {
-        'mt-checkbox__block--bordered': bordered,
-        'mt-checkbox__block--errored': !!error && bordered,
+        'mt-checkbox--future-no-default-margin': futureFlags.removeDefaultMargin,
       },
     ]"
   >
-    <span style="position: relative; width: var(--scale-size-16); height: var(--scale-size-16)">
-      <input
-        type="checkbox"
-        :id="id"
-        :class="[
-          'mt-checkbox__checkbox',
-          {
-            'mt-checkbox__checkbox--errored': !!error,
-          },
-        ]"
-        :checked="isInherited ? inheritedValue : checked"
-        :required="required"
-        :disabled="disabled || isInherited"
-        :name="name"
-        :indeterminate.prop="partial"
-        @change.stop="
-          (event) => {
-            $emit('update:checked', (event.target as HTMLInputElement).checked);
-
-            // @deprecated tag:4.0 - Will be removed. Use `update:checked` instead.
-            $emit('change', (event.target as HTMLInputElement).checked);
-          }
-        "
-      />
-
-      <mt-icon
-        v-if="!!checked || !!partial"
-        class="mt-checkbox__indicator"
-        :name="partial ? 'solid-minus-xs' : 'solid-checkmark-xs'"
-        size="var(--scale-size-10)"
-        :color="
-          disabled ? 'var(--color-border-primary-default)' : 'var(--color-icon-static-default)'
-        "
-      />
-    </span>
-
-    <mt-field-label
+    <div
       :class="[
-        'mt-checkbox__label',
+        'mt-checkbox__block',
         {
-          'mt-checkbox__label--disabled': disabled,
+          'mt-checkbox__block--bordered': bordered,
+          'mt-checkbox__block--errored': !!error && bordered,
         },
       ]"
-      :id="id"
-      :inheritance="!isInheritanceField ? 'none' : isInherited ? 'linked' : 'unlinked'"
-      @update:inheritance="
-        if (isInherited) {
-          $emit('inheritance-remove');
-        } else {
-          $emit('inheritance-restore');
-        }
-      "
-      :required="required"
-      :has-error="!!error"
     >
-      {{ label }}
-    </mt-field-label>
+      <span style="position: relative; width: var(--scale-size-16); height: var(--scale-size-16)">
+        <input
+          type="checkbox"
+          :id="id"
+          :class="[
+            'mt-checkbox__checkbox',
+            {
+              'mt-checkbox__checkbox--errored': !!error,
+            },
+          ]"
+          :checked="isInherited ? inheritedValue : checked"
+          :required="required"
+          :disabled="disabled || isInherited"
+          :name="name"
+          :indeterminate.prop="partial"
+          @change.stop="
+            (event) => {
+              $emit('update:checked', (event.target as HTMLInputElement).checked);
 
-    <mt-help-text v-if="!!helpText" :text="helpText" />
+              // @deprecated tag:4.0 - Will be removed. Use `update:checked` instead.
+              $emit('change', (event.target as HTMLInputElement).checked);
+            }
+          "
+        />
+
+        <mt-icon
+          v-if="!!checked || !!partial"
+          class="mt-checkbox__indicator"
+          :name="partial ? 'solid-minus-xs' : 'solid-checkmark-xs'"
+          size="var(--scale-size-10)"
+          :color="
+            disabled ? 'var(--color-border-primary-default)' : 'var(--color-icon-static-default)'
+          "
+        />
+      </span>
+
+      <mt-field-label
+        :class="[
+          'mt-checkbox__label',
+          {
+            'mt-checkbox__label--disabled': disabled,
+          },
+        ]"
+        :id="id"
+        :inheritance="!isInheritanceField ? 'none' : isInherited ? 'linked' : 'unlinked'"
+        @update:inheritance="
+          if (isInherited) {
+            $emit('inheritance-remove');
+          } else {
+            $emit('inheritance-restore');
+          }
+        "
+        :required="required"
+        :has-error="!!error"
+      >
+        {{ label }}
+      </mt-field-label>
+
+      <mt-help-text v-if="!!helpText" :text="helpText" />
+    </div>
+
+    <mt-field-error
+      v-if="!!error"
+      :error="error"
+      :style="{ marginTop: bordered ? 0 : undefined }"
+    />
   </div>
-
-  <mt-field-error v-if="!!error" :error="error" />
 </template>
 
 <script setup lang="ts">
@@ -108,6 +121,14 @@ const id = useId();
 </script>
 
 <style scoped>
+.mt-checkbox {
+  margin-bottom: var(--scale-size-22);
+}
+
+.mt-checkbox--no-default-margin {
+  margin: 0;
+}
+
 .mt-checkbox__block {
   display: flex;
   align-items: center;
