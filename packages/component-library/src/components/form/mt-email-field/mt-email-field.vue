@@ -51,6 +51,8 @@
         :disabled="disabled || isInherited"
         :name="name"
         :placeholder="placeholder"
+        :aria-invalid="!!errorMessage || !!error"
+        :aria-describedby="!!errorMessage || !!error ? errorId : undefined"
         @change="$emit('change', ($event.target as HTMLInputElement).value)"
         @focus="$emit('focus')"
         @blur="
@@ -93,6 +95,7 @@
 
     <mt-field-error
       v-if="error || errorMessage"
+      :id="errorId"
       :error="errorMessage || error"
       :style="{ gridArea: 'error' }"
     />
@@ -142,6 +145,8 @@ defineProps<{
 defineEmits(["change", "blur", "focus", "inheritance-restore", "inheritance-remove"]);
 
 const id = useId();
+
+const errorId = useId();
 
 onMounted(checkValidity);
 

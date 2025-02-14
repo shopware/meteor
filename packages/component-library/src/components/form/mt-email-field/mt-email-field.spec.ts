@@ -480,4 +480,52 @@ describe("mt-email-field", () => {
     // ASSERT
     expect(screen.getByRole("tooltip")).toBeVisible();
   });
+
+  it("announces itself as invalid to screen readers when the value is invalid", async () => {
+    // ARRANGE
+    await render(MtEmailField, {
+      props: {
+        modelValue: "asdf@",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveAttribute("aria-invalid", "true");
+  });
+
+  it("announces itself as invalid to screen readers when the field has an error", async () => {
+    // ARRANGE
+    await render(MtEmailField, {
+      props: {
+        error: {
+          detail: "Some error",
+        },
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveAttribute("aria-invalid", "true");
+  });
+
+  it("announces the error message to screen readers when the field has an error", async () => {
+    // ARRANGE
+    await render(MtEmailField, {
+      props: {
+        error: {
+          detail: "Some error",
+        },
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveAttribute(
+      "aria-describedby",
+      screen.getByText("Some error").id,
+    );
+
+    expect(screen.getByText("Some error")).toHaveAttribute(
+      "id",
+      screen.getByRole("textbox").getAttribute("aria-describedby"),
+    );
+  });
 });
