@@ -21,7 +21,7 @@ import MtTabs from "./components/navigation/mt-tabs/mt-tabs.vue";
 import MtDataTable from "./components/table-and-list/mt-data-table/mt-data-table.vue";
 import MtPagination from "./components/table-and-list/mt-pagination/mt-pagination.vue";
 import MtSkeletonBar from "./components/feedback-indicator/mt-skeleton-bar/mt-skeleton-bar.vue";
-import MtToast from "./components/feedback-indicator/mt-toast/mt-toast.vue";
+import MtToast, { type Toast } from "./components/feedback-indicator/mt-toast/mt-toast.vue";
 import MtPopover from "./components/overlay/mt-popover/mt-popover.vue";
 import MtPopoverItem from "./components/overlay/mt-popover-item/mt-popover-item.vue";
 import MtPopoverItemResult from "./components/overlay/mt-popover-item-result/mt-popover-item-result.vue";
@@ -136,4 +136,4 @@ export {
 };
 
 // Exporting types
-export type { Filter, Option };
+export type { Filter, Option, Toast };
