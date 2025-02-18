@@ -103,7 +103,7 @@ onMounted(() => {
   nextTick(() => {
     const triggerDOMElement = document.querySelector<HTMLElement>(`#mt-tooltip--${id}__trigger`);
 
-    if (!triggerDOMElement && process?.env?.NODE_ENV !== 'test') {
+    if (!triggerDOMElement && process?.env?.NODE_ENV !== "test") {
       throw new Error(
         `Failed to render mt-tooltip; Could not find trigger element with id: "mt-tooltip--${id}__trigger"`,
       );
@@ -187,7 +187,6 @@ const arrowOffset = computed<string>(() => {
 });
 
 provide(TooltipContext, true);
-
 </script>
 
 <style scoped>
