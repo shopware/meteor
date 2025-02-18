@@ -25,6 +25,8 @@
         :id="id"
         :disabled="disabled || isInherited"
         :required="required"
+        :aria-describedby="!!error ? errorId : undefined"
+        :aria-invalid="!!error || undefined"
         :name="name"
         @change.stop="
           () => {
@@ -53,7 +55,7 @@
       <mt-help-text v-if="!!helpText" :text="helpText" class="mt-switch__help-text" />
     </div>
 
-    <mt-field-error v-if="!!error" :error="error" />
+    <mt-field-error v-if="!!error" :error="error" :id="errorId" />
   </div>
 </template>
 
@@ -81,6 +83,7 @@ defineProps<{
 }>();
 
 const id = useId();
+const errorId = useId();
 const futureFlags = useFutureFlags();
 
 defineEmits<{

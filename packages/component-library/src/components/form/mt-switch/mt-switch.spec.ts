@@ -352,4 +352,45 @@ describe("mt-switch", () => {
     // ASSERT
     expect(screen.queryByRole("button")).not.toBeInTheDocument();
   });
+
+  it("announces the error message when it is invalid", async () => {
+    // ARRANGE
+    render(MtSwitch, {
+      props: {
+        checked: false,
+        required: true,
+        error: {
+          detail: "Some error message",
+        },
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).toHaveAttribute(
+      "aria-describedby",
+      screen.getByText("Some error message").getAttribute("id"),
+    );
+  });
+
+  it("announces the checkbox as invalid when it has an error", async () => {
+    // ARRANGE
+    render(MtSwitch, {
+      props: {
+        error: {
+          detail: "Some error message",
+        },
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).toBeInvalid();
+  });
+
+  it("is not invalid by default", async () => {
+    // ARRANGE
+    render(MtSwitch);
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).not.toBeInvalid();
+  });
 });
