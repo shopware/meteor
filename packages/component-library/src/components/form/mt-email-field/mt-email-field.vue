@@ -150,7 +150,7 @@ const errorId = useId();
 
 onMounted(checkValidity);
 
-const inputRef = useTemplateRef<HTMLInputElement>("inputRef");
+const inputRef = ref<HTMLInputElement | null>(null);
 
 const errorMessage = ref<
   | undefined
