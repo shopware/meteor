@@ -27,12 +27,7 @@
           />
           <mt-switch
             :label="t('mt-text-editor-toolbar-button-table.showHeader')"
-            :checked="tableShowHeader"
-            @change="
-              (checked) => {
-                tableShowHeader = checked;
-              }
-            "
+            v-model="tableShowHeader"
           />
         </div>
       </template>
