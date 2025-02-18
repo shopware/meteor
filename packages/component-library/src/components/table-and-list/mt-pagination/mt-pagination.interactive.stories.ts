@@ -1,7 +1,6 @@
 import { expect, userEvent } from "@storybook/test";
 
 import { Default } from "./mt-pagination.stories";
-import flushPromises from "flush-promises";
 import type MtPagination from "./mt-pagination.vue";
 import { defineStory } from "@/_internal/story-helper";
 
@@ -49,8 +48,6 @@ export const TestPageChange = defineStory<typeof MtPagination>(
     async play({ screen }) {
       const nextPageButton = screen.getByRole("button", { name: "Next page" });
       await userEvent.click(nextPageButton);
-
-      await flushPromises();
 
       const infoText = screen.getByText("26-50 of 100");
 
