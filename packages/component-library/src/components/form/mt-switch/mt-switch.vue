@@ -19,7 +19,7 @@
       ]"
     >
       <input
-        :checked="isInherited ? inheritedValue : checked"
+        :checked="isInherited ? inheritedValue : checked || modelValue"
         type="checkbox"
         :class="['mt-switch__switch', { 'mt-switch__switch--errored': !!error }]"
         :id="id"
@@ -31,7 +31,7 @@
         @change.stop="
           () => {
             $emit('change', !checked);
-            $emit('update:modelValue', !checked);
+            $emit('update:modelValue', !modelValue);
           }
         "
       />
