@@ -3,11 +3,11 @@ import MtSwitch from "./mt-switch.vue";
 import { render, screen } from "@testing-library/vue";
 
 describe("mt-switch", () => {
-  it("is turned on", async () => {
+  it.each(["checked", "modelValue"])("is turned on", async (valueProp) => {
     // ARRANGE
     render(MtSwitch, {
       props: {
-        checked: true,
+        [valueProp]: true,
       },
     });
 
@@ -15,11 +15,11 @@ describe("mt-switch", () => {
     expect(screen.getByRole("checkbox")).toBeChecked();
   });
 
-  it("is turned off", async () => {
+  it.each(["checked", "modelValue"])("is turned off", async (valueProp) => {
     // ARRANGE
     render(MtSwitch, {
       props: {
-        checked: false,
+        [valueProp]: false,
       },
     });
 
@@ -27,14 +27,17 @@ describe("mt-switch", () => {
     expect(screen.getByRole("checkbox")).not.toBeChecked();
   });
 
-  it("emits an event when turning off the switch", async () => {
+  it.each([
+    ["checked", "onChange"],
+    ["modelValue", "onUpdate:modelValue"],
+  ])("emits an event when turning off the switch: %s, %s", async (valueProp, handlerProp) => {
     // ARRANGE
     const handler = vi.fn();
 
     render(MtSwitch, {
       props: {
-        checked: true,
-        onChange: handler,
+        [valueProp]: true,
+        [handlerProp]: handler,
       },
     });
 
@@ -48,36 +51,42 @@ describe("mt-switch", () => {
     expect(handler).toHaveBeenCalledWith(false);
   });
 
-  it("emits an event when turning on the switch", async () => {
+  it.each([["checked", "onChange"]])(
+    "emits an event when turning on the switch: %s, %s",
+    async (valueProp, handlerProp) => {
+      // ARRANGE
+      const handler = vi.fn();
+
+      render(MtSwitch, {
+        props: {
+          [valueProp]: false,
+          [handlerProp]: handler,
+        },
+      });
+
+      // ACT
+      await userEvent.click(screen.getByRole("checkbox"));
+
+      // ASSERT
+      expect(screen.getByRole("checkbox")).toBeChecked();
+
+      expect(handler).toHaveBeenCalledOnce();
+      expect(handler).toHaveBeenCalledWith(true);
+    },
+  );
+
+  it.each([
+    ["checked", "onChange"],
+    ["modelValue", "onUpdate:modelValue"],
+  ])("cannot be turned off when it is disabled: %s, %s", async (valueProp, handlerProp) => {
     // ARRANGE
     const handler = vi.fn();
 
     render(MtSwitch, {
       props: {
-        checked: false,
-        onChange: handler,
-      },
-    });
-
-    // ACT
-    await userEvent.click(screen.getByRole("checkbox"));
-
-    // ASSERT
-    expect(screen.getByRole("checkbox")).toBeChecked();
-
-    expect(handler).toHaveBeenCalledOnce();
-    expect(handler).toHaveBeenCalledWith(true);
-  });
-
-  it("cannot be turned off when it is disabled", async () => {
-    // ARRANGE
-    const handler = vi.fn();
-
-    render(MtSwitch, {
-      props: {
-        checked: true,
+        [valueProp]: true,
         disabled: true,
-        onChange: handler,
+        [handlerProp]: handler,
       },
     });
 
@@ -90,15 +99,18 @@ describe("mt-switch", () => {
     expect(handler).not.toHaveBeenCalled();
   });
 
-  it("cannot be turned on when it is disabled", async () => {
+  it.each([
+    ["checked", "onChange"],
+    ["modelValue", "onUpdate:modelValue"],
+  ])("cannot be turned on when it is disabled: %s, %s", async (valueProp, handlerProp) => {
     // ARRANGE
     const handler = vi.fn();
 
     render(MtSwitch, {
       props: {
-        checked: false,
+        [valueProp]: false,
         disabled: true,
-        onChange: handler,
+        [handlerProp]: handler,
       },
     });
 
@@ -127,53 +139,65 @@ describe("mt-switch", () => {
     expect(screen.getByRole("checkbox")).toHaveFocus();
   });
 
-  it("gets turned on when clicking on the label an it is turned off", async () => {
-    // ARRANGE
-    const handler = vi.fn();
+  it.each([
+    ["checked", "onChange"],
+    ["modelValue", "onUpdate:modelValue"],
+  ])(
+    "gets turned on when clicking on the label an it is turned off: %s, %s",
+    async (valueProp, handlerProp) => {
+      // ARRANGE
+      const handler = vi.fn();
 
-    render(MtSwitch, {
-      props: {
-        checked: false,
-        label: "Label",
-        onChange: handler,
-      },
-    });
+      render(MtSwitch, {
+        props: {
+          [valueProp]: false,
+          label: "Label",
+          [handlerProp]: handler,
+        },
+      });
 
-    // ACT
-    await userEvent.click(screen.getByText("Label"));
+      // ACT
+      await userEvent.click(screen.getByText("Label"));
 
-    // ASSERT
-    expect(screen.getByRole("checkbox")).toBeChecked();
+      // ASSERT
+      expect(screen.getByRole("checkbox")).toBeChecked();
 
-    expect(handler).toHaveBeenCalledOnce();
-    expect(handler).toHaveBeenCalledWith(true);
-  });
+      expect(handler).toHaveBeenCalledOnce();
+      expect(handler).toHaveBeenCalledWith(true);
+    },
+  );
 
-  it("gets turned off when clicking on the label an it is turned on", async () => {
-    const handler = vi.fn();
-    render(MtSwitch, {
-      props: {
-        checked: true,
-        label: "Label",
-        onChange: handler,
-      },
-    });
+  it.each([
+    ["checked", "onChange"],
+    ["modelValue", "onUpdate:modelValue"],
+  ])(
+    "gets turned off when clicking on the label an it is turned on: %s, %s",
+    async (valueProp, handlerProp) => {
+      const handler = vi.fn();
 
-    // ARRANGE
-    await userEvent.click(screen.getByText("Label"));
+      render(MtSwitch, {
+        props: {
+          [valueProp]: true,
+          label: "Label",
+          [handlerProp]: handler,
+        },
+      });
 
-    // ASSERT
-    expect(screen.getByRole("checkbox")).not.toBeChecked();
+      // ARRANGE
+      await userEvent.click(screen.getByText("Label"));
 
-    expect(handler).toHaveBeenCalledOnce();
-    expect(handler).toHaveBeenCalledWith(false);
-  });
+      // ASSERT
+      expect(screen.getByRole("checkbox")).not.toBeChecked();
+
+      expect(handler).toHaveBeenCalledOnce();
+      expect(handler).toHaveBeenCalledWith(false);
+    },
+  );
 
   it("can be explictly required to be turned on", async () => {
     // ARRANGE
     render(MtSwitch, {
       props: {
-        checked: false,
         required: true,
       },
     });
@@ -182,17 +206,20 @@ describe("mt-switch", () => {
     expect(screen.getByRole("checkbox")).toBeRequired();
   });
 
-  it("is not required to be turned on by default", async () => {
-    // ARRANGE
-    render(MtSwitch, {
-      props: {
-        checked: false,
-      },
-    });
+  it.each(["checked", "modelValue"])(
+    "is not required to be turned on by default: %s",
+    async (valueProp) => {
+      // ARRANGE
+      render(MtSwitch, {
+        props: {
+          [valueProp]: false,
+        },
+      });
 
-    // ASSERT
-    expect(screen.getByRole("checkbox")).not.toBeRequired();
-  });
+      // ASSERT
+      expect(screen.getByRole("checkbox")).not.toBeRequired();
+    },
+  );
 
   it("has the defined name when submitting a form", async () => {
     // ARRANGE
@@ -229,30 +256,36 @@ describe("mt-switch", () => {
     expect(handler).not.toHaveBeenCalled();
   });
 
-  it("can be turned on when it overrides the inherited value", async () => {
-    // ARRANGE
-    const handler = vi.fn();
+  it.each([
+    ["checked", "onChange"],
+    ["modelValue", "onUpdate:modelValue"],
+  ])(
+    "can be turned on when it overrides the inherited value: %s, %s",
+    async (valueProp, handlerProp) => {
+      // ARRANGE
+      const handler = vi.fn();
 
-    render(MtSwitch, {
-      props: {
-        checked: false,
-        inheritedValue: false,
-        isInheritanceField: true,
-        isInherited: false,
-        onChange: handler,
-      },
-    });
+      render(MtSwitch, {
+        props: {
+          [valueProp]: false,
+          inheritedValue: false,
+          isInheritanceField: true,
+          isInherited: false,
+          [handlerProp]: handler,
+        },
+      });
 
-    // ACT
-    await userEvent.click(screen.getByRole("checkbox"));
+      // ACT
+      await userEvent.click(screen.getByRole("checkbox"));
 
-    // ASSERT
-    expect(screen.getByRole("checkbox")).toBeChecked();
+      // ASSERT
+      expect(screen.getByRole("checkbox")).toBeChecked();
 
-    expect(screen.getByRole("checkbox")).not.toBeDisabled();
-    expect(handler).toHaveBeenCalledOnce();
-    expect(handler).toHaveBeenCalledWith(true);
-  });
+      expect(screen.getByRole("checkbox")).not.toBeDisabled();
+      expect(handler).toHaveBeenCalledOnce();
+      expect(handler).toHaveBeenCalledWith(true);
+    },
+  );
 
   it("can be unlinked from its inherited value", async () => {
     // ARRANGE
@@ -298,35 +331,41 @@ describe("mt-switch", () => {
     expect(handler).toHaveBeenCalledOnce();
   });
 
-  it("shows the inherited value over its overriden value inheritance is linked", async () => {
-    // ARRANGE
-    render(MtSwitch, {
-      props: {
-        checked: false,
-        inheritedValue: true,
-        isInheritanceField: true,
-        isInherited: true,
-      },
-    });
+  it.each([["checked", "modelValue"]])(
+    "shows the inherited value over its overriden value inheritance is linked: %s",
+    async (valueProp) => {
+      // ARRANGE
+      render(MtSwitch, {
+        props: {
+          [valueProp]: false,
+          inheritedValue: true,
+          isInheritanceField: true,
+          isInherited: true,
+        },
+      });
 
-    // ASSERT
-    expect(screen.getByRole("checkbox")).toBeChecked();
-  });
+      // ASSERT
+      expect(screen.getByRole("checkbox")).toBeChecked();
+    },
+  );
 
-  it("shows the overriden value over its inherited value when inheritance is unlinked", async () => {
-    // ARRANGE
-    render(MtSwitch, {
-      props: {
-        checked: false,
-        inheritedValue: true,
-        isInheritanceField: true,
-        isInherited: false,
-      },
-    });
+  it.each(["checked", "modelValue"])(
+    "shows the overriden value over its inherited value when inheritance is unlinked: %s",
+    async (valueProp) => {
+      // ARRANGE
+      render(MtSwitch, {
+        props: {
+          [valueProp]: false,
+          inheritedValue: true,
+          isInheritanceField: true,
+          isInherited: false,
+        },
+      });
 
-    // ASSERT
-    expect(screen.getByRole("checkbox")).not.toBeChecked();
-  });
+      // ASSERT
+      expect(screen.getByRole("checkbox")).not.toBeChecked();
+    },
+  );
 
   it("displays a help text when one is defined", async () => {
     // ARRANGE
