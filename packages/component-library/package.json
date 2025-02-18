@@ -46,7 +46,7 @@
     "@shopware-ag/meteor-icon-kit": "workspace:*",
     "@shopware-ag/meteor-tokens": "workspace:*",
     "@storybook/addon-a11y": "^8.4.5",
-    "@testing-library/jest-dom": "^6.4.6",
+    "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/vue": "^8.1.0",
     "@tiptap/extension-bubble-menu": "^2.10.0",
     "@tiptap/extension-bullet-list": "^2.10.0",
