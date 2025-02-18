@@ -1,6 +1,5 @@
-import { mount } from "@vue/test-utils";
+import { mount, flushPromises } from "@vue/test-utils";
 import MtPopover from "./mt-popover.vue";
-import flushPromises from "flush-promises";
 
 // mock resizeOvserver
 global.ResizeObserver = class ResizeObserver {

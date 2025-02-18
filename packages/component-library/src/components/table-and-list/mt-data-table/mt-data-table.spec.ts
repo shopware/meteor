@@ -1,7 +1,6 @@
-import { mount } from "@vue/test-utils";
+import { mount, flushPromises } from "@vue/test-utils";
 import MtDataTable, { type ColumnDefinition } from "./mt-data-table.vue";
 import MtDataTableFixtures from "./mt-data-table.fixtures.json";
-import flushPromises from "flush-promises";
 import { get } from "@/utils/object";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { useI18n } from "vue-i18n";

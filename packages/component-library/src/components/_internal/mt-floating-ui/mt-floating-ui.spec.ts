@@ -1,6 +1,5 @@
-import { mount } from "@vue/test-utils";
+import { mount, flushPromises } from "@vue/test-utils";
 import MtFloatingUi from "./mt-floating-ui.vue";
-import flushPromises from "flush-promises";
 
 // mock resizeOvserver
 global.ResizeObserver = class ResizeObserver {

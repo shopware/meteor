@@ -493,9 +493,6 @@ importers:
       eslint-plugin-vue:
         specifier: ^9.17.0
         version: 9.26.0(eslint@8.57.0)
-      flush-promises:
-        specifier: ^1.0.2
-        version: 1.0.2
       http-server:
         specifier: ^14.1.1
         version: 14.1.1
