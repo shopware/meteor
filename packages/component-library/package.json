@@ -36,7 +36,8 @@
     "format": "prettier --write .",
     "storybook": "storybook dev -p 6006",
     "build:storybook": "storybook build",
-    "test:storybook": "test-storybook"
+    "test:storybook": "test-storybook",
+    "prepublish": "npm run build-only"
   },
   "dependencies": {
     "@codemirror/lang-html": "^6.4.9",
