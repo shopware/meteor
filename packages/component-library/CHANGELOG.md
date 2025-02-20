@@ -1,5 +1,21 @@
 # Changelog
 
+## 4.3.0
+
+### Minor Changes
+
+- 4893678: Add v-model support to mt-switch
+- ef58de6: chore: export type Toast
+
+### Patch Changes
+
+- 4893678: Stop emitting inheritance-restore event twice on switch field
+- 2fbc665: Stop selecting text when double clicking on label
+- 4893678: Stop emitting inheritance-remove event twice for switch
+- 4893678: Mark mt-switch as required if required prop is true
+- 0d00f6f: Do not show bottom shadow in modal when content is not scrollable
+- 8d1820d: Announce error of mt-switch to screenreaders
+
 ## 4.2.0
 
 ### Minor Changes
