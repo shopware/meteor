@@ -1,5 +1,22 @@
 # Changelog
 
+## 4.2.0
+
+### Minor Changes
+
+- 4536d2a: Emit change event on password field
+- d6c07d0: Add types for event of mt-url-field component
+
+### Patch Changes
+
+- a0c8266: Stop emitting onUpdate:modelValue event when blurring the mt-url-field
+- 4536d2a: Add name property to mt-password-field
+- 48134cd: Add types for slots for mt-url-field
+- c5471b3: Announce tooltip content when focusing tooltip trigger
+- cc6075f: Announce email field as invalid to screen readers when input has error
+- d8a289e: Fix some small bugs in mt-text-field, mt-email-field and mt-tooltip
+- 43305d9: Stop announcing tooltip triangle to screen readers
+
 ## 4.1.0
 
 ### Minor Changes

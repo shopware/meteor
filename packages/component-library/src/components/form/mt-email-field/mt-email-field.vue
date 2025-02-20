@@ -51,6 +51,8 @@
         :disabled="disabled || isInherited"
         :name="name"
         :placeholder="placeholder"
+        :aria-invalid="!!errorMessage || !!error"
+        :aria-describedby="!!errorMessage || !!error ? errorId : undefined"
         @change="$emit('change', ($event.target as HTMLInputElement).value)"
         @focus="$emit('focus')"
         @blur="
@@ -93,6 +95,7 @@
 
     <mt-field-error
       v-if="error || errorMessage"
+      :id="errorId"
       :error="errorMessage || error"
       :style="{ gridArea: 'error' }"
     />
@@ -143,9 +146,11 @@ defineEmits(["change", "blur", "focus", "inheritance-restore", "inheritance-remo
 
 const id = useId();
 
+const errorId = useId();
+
 onMounted(checkValidity);
 
-const inputRef = useTemplateRef<HTMLInputElement>("inputRef");
+const inputRef = ref<HTMLInputElement | null>(null);
 
 const errorMessage = ref<
   | undefined

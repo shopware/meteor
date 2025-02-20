@@ -8,7 +8,7 @@
   >
     <mt-icon name="solid-exclamation-circle" size="0.75rem" aria-hidden="true" />
 
-    <span>{{ errorMessage }}</span>
+    {{ errorMessage }}
   </mt-text>
 </template>
 
@@ -26,7 +26,7 @@ const errorMessage = computed(() => {
   if (!props.error) return "";
 
   if (!props.error.code) {
-    return t(props.error.detail);
+    return t(props.error?.detail ?? "");
   }
 
   const translation = t(props.error.code, props.error.parameters || {});
