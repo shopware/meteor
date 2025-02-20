@@ -432,4 +432,36 @@ describe("mt-switch", () => {
     // ASSERT
     expect(screen.getByRole("checkbox")).not.toBeInvalid();
   });
+
+  it("has a has an aria-label with the value of the label property", async () => {
+    // ARRANGE
+    render(MtSwitch, {
+      props: {
+        label: "Some label",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).toHaveAccessibleName("Some label");
+  });
+
+  it("has the correct aria-label", async () => {
+    // ARRANGE
+    render(MtSwitch, {
+      attrs: {
+        "aria-label": "Some label",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).toHaveAccessibleName("Some label");
+  });
+
+  it("has no aria-label by default", async () => {
+    // ARRANGE
+    render(MtSwitch);
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).not.toHaveAttribute("aria-label");
+  });
 });
