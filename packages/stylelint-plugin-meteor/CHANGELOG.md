@@ -1,5 +1,11 @@
 # @shopware-ag/stylelint-plugin-meteor
 
+## 0.2.0
+
+### Minor Changes
+
+- a87c41d: Add autofixer for hard-coded rem spacing
+
 ## 0.1.1
 
 ### Patch Changes
