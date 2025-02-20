@@ -1,436 +1,203 @@
 <template>
-  <div class="mt-field--checkbox__container">
-    <div class="mt-field--checkbox" :class="{ ...MtCheckboxFieldClasses, ...checkboxClasses }">
-      <div class="mt-field--checkbox__content">
-        <div class="mt-field__checkbox">
-          <input
-            :id="identification"
-            type="checkbox"
-            :name="identification"
-            :checked="inputState"
-            :disabled="isDisabled"
-            :indeterminate.prop="partial"
-            @change.stop="onChange"
-          />
-          <div class="mt-field__checkbox-state">
-            <mt-icon :name="iconName" />
-          </div>
-        </div>
-
-        <mt-base-field
-          :disabled="isDisabled"
-          :is-inheritance-field="isInheritanceField"
-          :is-inherited="isInherited"
-          :name="identification"
-          :has-focus="false"
-          :help-text="helpText"
+  <div
+    :class="[
+      'mt-checkbox',
+      {
+        'mt-checkbox--future-no-default-margin': futureFlags.removeDefaultMargin,
+      },
+    ]"
+  >
+    <div
+      :class="[
+        'mt-checkbox__block',
+        {
+          'mt-checkbox__block--bordered': bordered,
+          'mt-checkbox__block--errored': !!error && bordered,
+        },
+      ]"
+    >
+      <span style="position: relative; width: var(--scale-size-16); height: var(--scale-size-16)">
+        <input
+          type="checkbox"
+          :id="id"
+          :class="[
+            'mt-checkbox__checkbox',
+            {
+              'mt-checkbox__checkbox--errored': !!error,
+            },
+          ]"
+          :checked="isInherited ? inheritedValue : checked"
           :required="required"
-          @inheritance-restore="$emit('inheritance-restore', $event)"
-          @inheritance-remove="$emit('inheritance-remove', $event)"
-        >
-          <template #label>
-            {{ label }}
-          </template>
-        </mt-base-field>
-      </div>
+          :disabled="disabled || isInherited"
+          :name="name"
+          :indeterminate.prop="partial"
+          @change.stop="
+            (event) => {
+              $emit('update:checked', (event.target as HTMLInputElement).checked);
+
+              // @deprecated tag:4.0 - Will be removed. Use `update:checked` instead.
+              $emit('change', (event.target as HTMLInputElement).checked);
+            }
+          "
+        />
+
+        <mt-icon
+          v-if="!!checked || !!partial"
+          class="mt-checkbox__indicator"
+          :name="partial ? 'solid-minus-xs' : 'solid-checkmark-xs'"
+          size="var(--scale-size-10)"
+          :color="
+            disabled ? 'var(--color-border-primary-default)' : 'var(--color-icon-static-default)'
+          "
+        />
+      </span>
+
+      <mt-field-label
+        :class="[
+          'mt-checkbox__label',
+          {
+            'mt-checkbox__label--disabled': disabled,
+          },
+        ]"
+        :id="id"
+        :inheritance="!isInheritanceField ? 'none' : isInherited ? 'linked' : 'unlinked'"
+        @update:inheritance="
+          if (isInherited) {
+            $emit('inheritance-remove');
+          } else {
+            $emit('inheritance-restore');
+          }
+        "
+        :required="required"
+        :has-error="!!error"
+      >
+        {{ label }}
+      </mt-field-label>
+
+      <mt-help-text v-if="!!helpText" :text="helpText" />
     </div>
 
-    <mt-field-error :error="error" />
+    <mt-field-error
+      v-if="!!error"
+      :error="error"
+      :style="{ marginTop: bordered ? 0 : undefined }"
+    />
   </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent } from "vue";
+<script setup lang="ts">
+import { useId } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
-import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
-import MtFormFieldMixin from "../../../mixins/form-field.mixin";
-import { createId } from "../../../utils/id";
+import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
+import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import { useFutureFlags } from "@/composables/useFutureFlags";
 
-export default defineComponent({
-  name: "MtCheckbox",
+defineProps<{
+  label?: string;
+  disabled?: boolean;
+  isInherited?: boolean;
+  isInheritanceField?: boolean;
+  checked?: boolean;
+  partial?: boolean;
+  inheritedValue?: boolean;
+  error?: { detail: string };
+  bordered?: boolean;
+  helpText?: string;
+  required?: boolean;
+  name?: string;
+}>();
 
-  components: {
-    "mt-icon": MtIcon,
-    "mt-base-field": MtBaseField,
-    "mt-field-error": MtFieldError,
-  },
+defineEmits<{
+  "update:checked": [value: boolean];
+  change: [value: boolean];
+  "inheritance-remove": [];
+  "inheritance-restore": [];
+}>();
 
-  mixins: [MtFormFieldMixin],
+const futureFlags = useFutureFlags();
 
-  props: {
-    /**
-     * A label for the checkbox.
-     */
-    label: {
-      type: String,
-      required: false,
-      default: undefined,
-    },
-
-    /**
-     * Toggles the disabled state of the checkbox.
-     */
-    disabled: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    /**
-     * Determines the checked state of the checkbox.
-     */
-    checked: {
-      type: Boolean,
-      required: false,
-      default: undefined,
-    },
-
-    /**
-     * Determines if the field is partially checked.
-     */
-    partial: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    /**
-     * Inherited value from another SalesChannel.
-     */
-    inheritedValue: {
-      type: Boolean,
-      required: false,
-      default: null,
-    },
-
-    /**
-     * Error object for this field.
-     */
-    error: {
-      type: Object,
-      required: false,
-      default: null,
-    },
-
-    /**
-     * Determines if the field is surrounded by a border.
-     */
-    bordered: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    /**
-     * Help text with additional information for the field.
-     */
-    helpText: {
-      type: String,
-      required: false,
-      default: null,
-    },
-
-    /**
-     * Marks the field as required with an asterix.
-     */
-    required: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-  },
-
-  data(): { id: string | undefined; currentValue: boolean | undefined } {
-    return {
-      currentValue: this.checked,
-      id: undefined,
-    };
-  },
-
-  mounted() {
-    this.id = createId();
-  },
-
-  setup() {
-    const futureFlags = useFutureFlags();
-
-    const checkboxClasses = computed(() => ({
-      "mt-switch--future-remove-default-margin": futureFlags.removeDefaultMargin,
-    }));
-
-    return {
-      checkboxClasses,
-    };
-  },
-
-  computed: {
-    MtCheckboxFieldClasses(): {
-      "has--error": boolean;
-      "is--disabled": boolean;
-      "is--inherited": boolean;
-      "is--bordered": boolean;
-      "is--partly-checked": boolean;
-    } {
-      return {
-        "has--error": !!this.hasError,
-        "is--disabled": this.disabled,
-        "is--inherited": !!this.isInherited,
-        "is--bordered": this.bordered,
-        "is--partly-checked": this.isPartlyChecked,
-      };
-    },
-
-    identification(): string {
-      return `mt-field--${this.id}`;
-    },
-
-    hasError(): boolean {
-      return this.error && this.error.code !== 0;
-    },
-
-    inputState(): boolean {
-      if (this.isInherited) {
-        return this.inheritedValue;
-      }
-
-      return this.currentValue || false;
-    },
-
-    isInheritanceField(): boolean {
-      if (this.$attrs.isInheritanceField) {
-        return true;
-      }
-      return this.inheritedValue !== null;
-    },
-
-    isInherited(): boolean {
-      if (this.$attrs.isInherited) {
-        return true;
-      }
-      return this.isInheritanceField && this.currentValue === null;
-    },
-
-    isDisabled(): boolean {
-      return this.disabled || this.isInherited;
-    },
-
-    isPartlyChecked(): boolean {
-      return this.partial && !this.inputState;
-    },
-
-    iconName(): string {
-      return this.isPartlyChecked ? "regular-minus-xxs" : "regular-checkmark-xxs";
-    },
-  },
-
-  watch: {
-    checked: {
-      handler() {
-        this.currentValue = this.checked;
-      },
-      immediate: true,
-    },
-  },
-
-  methods: {
-    onChange(changeEvent: Event) {
-      // @ts-expect-error - target is defined in the event
-      this.$emit("update:checked", changeEvent.target.checked);
-
-      // @ts-expect-error - target is defined in the event
-      // @deprecated tag:4.0 - Will be removed. Use `update:checked` instead.
-      this.$emit("change", changeEvent.target.checked);
-    },
-  },
-});
+const id = useId();
 </script>
 
-<style>
-.mt-field--checkbox__container {
-  & .mt-field--checkbox {
-    margin-bottom: var(--scale-size-22);
+<style scoped>
+.mt-checkbox {
+  margin-bottom: var(--scale-size-22);
+}
 
-    &.mt-switch--future-remove-default-margin {
-      margin-bottom: 0;
-    }
+.mt-checkbox--no-default-margin {
+  margin: 0;
+}
 
-    & .mt-inheritance-switch {
-      &.mt-field__inheritance-icon {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-    }
+.mt-checkbox__block {
+  display: flex;
+  align-items: center;
+  column-gap: var(--scale-size-4);
+}
 
-    & .mt-field--checkbox__content {
-      display: grid;
-      grid-template-columns: 16px 1fr;
-      align-items: center;
-    }
+.mt-checkbox__block--bordered {
+  border: 1px solid var(--color-border-primary-default);
+  border-radius: var(--border-radius-xs);
+  padding-inline: var(--scale-size-16);
+  min-height: var(--scale-size-48);
+}
 
-    & .mt-field {
-      margin-bottom: 0;
+.mt-checkbox__block--errored {
+  border-color: var(--color-border-critical-default);
+  background-color: var(--color-background-critical-dark);
+}
 
-      & .mt-block-field__block {
-        border: none;
-      }
-    }
+.mt-checkbox__checkbox {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+  border-radius: var(--border-radius-checkbox);
+  background: var(--color-elevation-surface-default);
+  border: 1px solid var(--color-border-primary-default);
+  height: var(--scale-size-16);
+  width: var(--scale-size-16);
+  cursor: pointer;
 
-    & .mt-field--default {
-      display: flex;
-    }
-
-    & .mt-field__label {
-      margin-bottom: 0;
-      margin-left: var(--scale-size-4);
-
-      & .mt-help-text {
-        margin-left: var(--scale-size-8);
-      }
-    }
-
-    & .mt-field__checkbox {
-      width: var(--scale-size-16);
-      height: var(--scale-size-16);
-      position: relative;
-
-      &:has(:focus-visible) {
-        outline: 2px solid var(--color-border-brand-selected);
-        outline-offset: 2px;
-        border-radius: var(--border-radius-checkbox);
-      }
-
-      & input[type="checkbox"] {
-        opacity: 0;
-        display: block;
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-        border: 0 none;
-        background: none;
-        -webkit-appearance: none;
-        cursor: pointer;
-        z-index: 2;
-
-        &:disabled {
-          cursor: not-allowed;
-        }
-
-        &:disabled ~ .mt-field__checkbox-state {
-          background: var(--color-background-primary-disabled);
-          border-color: var(--color-border-primary-default);
-        }
-
-        &:checked ~ .mt-field__checkbox-state {
-          background: var(--color-interaction-primary-default);
-          border-color: var(--color-interaction-primary-default);
-
-          & .mt-icon {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            color: var(--color-icon-static-default);
-          }
-        }
-
-        &:checked:disabled ~ .mt-field__checkbox-state {
-          background: var(--color-background-primary-disabled);
-          border-color: var(--color-border-primary-default);
-
-          & .mt-icon {
-            color: var(--color-border-primary-default);
-          }
-        }
-
-        &:indeterminate ~ .mt-field__checkbox-state {
-          background-color: var(--color-interaction-primary-default);
-          border: 1px solid var(--color-interaction-primary-default);
-
-          & .mt-icon {
-            display: inline-block;
-            color: var(--color-icon-static-default);
-          }
-        }
-      }
-
-      & .mt-field__checkbox-state {
-        position: absolute;
-        width: 100%;
-        height: 100%;
-        z-index: 1;
-        text-align: center;
-        background: var(--color-background-primary-default);
-        color: var(--color-text-primary-default);
-        border: 1px solid var(--color-border-primary-default);
-        border-radius: var(--border-radius-checkbox);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-
-        & .mt-icon {
-          display: none;
-          color: var(--color-background-primary-default);
-        }
-      }
-    }
-
-    &.has--error {
-      margin-bottom: 0;
-
-      & .mt-field__checkbox-state {
-        border: 1px solid var(--color-interaction-critical-default);
-      }
-
-      & .mt-field__label {
-        color: var(--color-text-critical-default);
-      }
-
-      & input[type="checkbox"] {
-        &:disabled ~ .mt-field__checkbox-state {
-          border: 1px solid var(--color-interaction-critical-default);
-        }
-
-        &:checked ~ .mt-field__checkbox-state {
-          border: 1px solid var(--color-interaction-critical-default);
-          background-color: var(--color-interaction-critical-default);
-        }
-
-        &:checked:disabled ~ .mt-field__checkbox-state {
-          border: 1px solid var(--color-interaction-critical-default);
-        }
-      }
-    }
-
-    &.is--inherited {
-      & input[type="checkbox"] {
-        &:checked ~ .mt-field__checkbox-state {
-          border-color: var(--color-border-primary-default);
-          background: var(--color-background-primary-disabled);
-        }
-      }
-    }
-
-    &.is--bordered {
-      border-radius: 4px;
-      border: 1px solid var(--color-border-primary-default);
-      padding: var(--scale-size-16);
-
-      &.has--error {
-        border-color: var(--color-border-critical-default);
-      }
-    }
+  &:focus-visible {
+    outline: 2px solid var(--color-border-brand-selected);
+    outline-offset: 2px;
   }
 
-  & .mt-field__error {
-    margin-bottom: var(--scale-size-14);
-
-    &.checkbox-bordered {
-      margin-bottom: var(--scale-size-8);
-    }
+  &:checked,
+  &:indeterminate {
+    border-color: var(--color-interaction-primary-default);
+    background-color: var(--color-interaction-primary-default);
   }
+
+  &:disabled {
+    cursor: not-allowed;
+    background: var(--color-background-primary-disabled);
+    border-color: var(--color-border-primary-default);
+  }
+}
+
+.mt-checkbox__checkbox--errored {
+  border-color: var(--color-border-critical-default);
+
+  &:checked {
+    background-color: var(--color-interaction-critical-default);
+    border-color: var(--color-border-critical-default);
+  }
+}
+
+.mt-checkbox__label {
+  cursor: pointer;
+}
+
+.mt-checkbox__label--disabled {
+  cursor: not-allowed;
+}
+
+.mt-checkbox__indicator {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
 }
 </style>
