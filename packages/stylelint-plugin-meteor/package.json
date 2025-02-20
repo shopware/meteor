@@ -1,6 +1,10 @@
 {
   "name": "@shopware-ag/stylelint-plugin-meteor",
   "version": "0.2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:shopware/meteor.git"
+  },
   "main": "./dist/commonjs/index.js",
   "scripts": {
     "build": "tshy",
