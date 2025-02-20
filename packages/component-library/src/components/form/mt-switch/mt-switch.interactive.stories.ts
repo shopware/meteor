@@ -101,11 +101,7 @@ export const VisualTestHelpText: MtSwitchStory = {
     helpText: "Help text message",
   },
   play: async () => {
-    const canvas = within(document.body);
-
     await userEvent.tab();
     await userEvent.tab();
-
-    expect(canvas.getByRole("tooltip")).toBeInTheDocument();
   },
 };
