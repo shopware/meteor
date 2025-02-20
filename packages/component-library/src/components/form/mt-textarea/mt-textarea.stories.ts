@@ -45,6 +45,6 @@ export default {
 
 export type MtTextareaStory = StoryObj<MtTextareaMeta>;
 
-export const DefaultStory: MtTextareaStory = {
+export const Default: MtTextareaStory = {
   name: "mt-textarea",
 };
