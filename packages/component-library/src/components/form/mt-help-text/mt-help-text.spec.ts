@@ -49,7 +49,7 @@ describe("mt-help-text", () => {
     expect(screen.getByRole("tooltip")).toBeVisible();
   });
 
-  it("uses the overriden inline styles", async () => {
+  it("uses the overwritten inline styles", async () => {
     // ARRANGE
     render(MtHelpText, {
       props: { text: "Some text" },
