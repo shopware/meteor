@@ -18,6 +18,8 @@
         },
       ]"
     >
+      <!-- @vue-expect-error -->
+      <!-- @deprecated: v6.0.0 -- remove aria-label, it's there as a hot-fix.  First rule of aria do not use aria if not needed -->
       <input
         :checked="isInherited ? inheritedValue : checked || modelValue"
         type="checkbox"
@@ -27,6 +29,7 @@
         :required="required"
         :aria-describedby="!!error ? errorId : undefined"
         :aria-invalid="!!error || undefined"
+        :aria-label="label || $attrs['aria-label']"
         :name="name"
         @change.stop="
           () => {
