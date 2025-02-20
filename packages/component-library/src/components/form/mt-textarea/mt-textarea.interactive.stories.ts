@@ -119,3 +119,10 @@ export const VisualTestUnlinkedInheritance: MtTextareaStory = {
     isInherited: false,
   },
 };
+
+export const VisualTestHelpText: MtTextareaStory = {
+  name: "With help text",
+  args: {
+    helpText: "This is a help text",
+  },
+};
