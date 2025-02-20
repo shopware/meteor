@@ -48,4 +48,17 @@ describe("mt-help-text", () => {
     // ASSERT
     expect(screen.getByRole("tooltip")).toBeVisible();
   });
+
+  it("uses the overriden inline styles", async () => {
+    // ARRANGE
+    render(MtHelpText, {
+      props: { text: "Some text" },
+      attrs: {
+        style: "color: red",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("button")).toHaveStyle("color: rgb(255, 0, 0)");
+  });
 });
