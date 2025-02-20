@@ -189,7 +189,7 @@ watch(
   async () => {
     const isModalClosed = !isOpen.value;
     if (isModalClosed) {
-      showShadows.value = "top";
+      showShadows.value = "none";
 
       if (!modalContentRef.value) return;
       modalContentRef.value.removeEventListener("scroll", handleScroll);

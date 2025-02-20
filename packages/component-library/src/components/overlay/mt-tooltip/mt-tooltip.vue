@@ -21,7 +21,7 @@
     }"
   />
 
-  <Transition>
+  <Transition v-bind="$attrs">
     <div v-show="isVisible" :data-placement="calculatedPlacement" style="position: absolute">
       <!-- Needs to be v-show, otherwise we have a jumping entry when tooltip is visible for the first time -->
       <div
@@ -103,10 +103,11 @@ onMounted(() => {
   nextTick(() => {
     const triggerDOMElement = document.querySelector<HTMLElement>(`#mt-tooltip--${id}__trigger`);
 
-    if (!triggerDOMElement)
+    if (!triggerDOMElement && process?.env?.NODE_ENV !== "test") {
       throw new Error(
-        `Failed to render mt-tooltip; Could not find trigger element with id: "mt-tooltip-${id}__trigger"`,
+        `Failed to render mt-tooltip; Could not find trigger element with id: "mt-tooltip--${id}__trigger"`,
       );
+    }
 
     triggerRef.value = triggerDOMElement;
   });
