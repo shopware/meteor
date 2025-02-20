@@ -30,7 +30,6 @@
           :is-inheritance-field="isInheritanceField"
           :is-inherited="isInherited"
           @inheritance-restore="onInheritanceRestore($event)"
-          @inheritance-remove="$emit('inheritance-remove', $event)"
         >
           <template #label>
             {{ label }}
