@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.3.1
+
+### Patch Changes
+
+- f251c89: Fix alignment of help-text in mt-textarea component
+
 ## 4.3.0
 
 ### Minor Changes
