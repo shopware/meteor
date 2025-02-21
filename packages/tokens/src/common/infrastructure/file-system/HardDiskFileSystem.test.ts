@@ -4,10 +4,10 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 function cleanUp(pathToFile: string) {
-  fs.existsSync(pathToFile) && fs.unlinkSync(pathToFile);
+  if (fs.existsSync(pathToFile)) fs.unlinkSync(pathToFile);
 
   const directory = path.join(__dirname, './artifact');
-  fs.existsSync(directory) && fs.rmdirSync(directory);
+  if (fs.existsSync(directory)) fs.rmdirSync(directory);
 }
 
 test('creates a file that did not exist before', () => {
