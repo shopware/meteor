@@ -35,7 +35,7 @@
     "dotenv": "^16.4.1",
     "ora": "^8.0.1",
     "vitest": "^1.2.1",
-    "zod": "^3.22.4"
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
