@@ -154,6 +154,7 @@ export default defineComponent({
   computed: {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     activeDomItem(): any | undefined {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       this.refreshKey;
 
       // Access "this.activeItemName" before to react dynamically on changes
@@ -169,6 +170,7 @@ export default defineComponent({
     },
 
     sliderPosition(): number {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       this.refreshKey;
 
       if (!this.activeItem) {
@@ -191,6 +193,7 @@ export default defineComponent({
     },
 
     sliderLength(): number {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       this.refreshKey;
 
       if (!this.activeItem) {
@@ -218,6 +221,7 @@ export default defineComponent({
     },
 
     activeItem(): TabItem | undefined {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       this.refreshKey;
 
       return this.items.find((item) => {
@@ -226,6 +230,7 @@ export default defineComponent({
     },
 
     sliderClasses(): Record<string, boolean> {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       this.refreshKey;
 
       return {
@@ -235,6 +240,7 @@ export default defineComponent({
     },
 
     sliderStyle(): string {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       this.refreshKey;
 
       if (this.vertical) {

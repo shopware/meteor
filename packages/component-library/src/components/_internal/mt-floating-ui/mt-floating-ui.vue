@@ -47,6 +47,7 @@ const emit = defineEmits<{
   (e: "close"): void;
 }>();
 
+// eslint-disable-next-line prefer-const
 let floatingUiContent = ref<HTMLElement | null>(null);
 const floatingUiTrigger = ref<HTMLElement | null>(null);
 const floatingUiArrow = ref<HTMLElement | null>(null);

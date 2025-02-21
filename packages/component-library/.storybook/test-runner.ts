@@ -1,12 +1,11 @@
 import type { TestRunnerConfig } from "@storybook/test-runner";
-
-const path = require("path");
-const { toMatchImageSnapshot } = require("jest-image-snapshot");
+import { toMatchImageSnapshot } from "jest-image-snapshot";
+import path from "node:path";
 
 const customSnapshotsDir = path.resolve(path.join(__dirname, "..", "/__snapshots__"));
 const customReceivedDir = path.resolve(path.join(__dirname, "..", "/__snapshots__/__received__"));
 
-module.exports = {
+export default {
   setup() {
     expect.extend({ toMatchImageSnapshot });
   },
@@ -42,7 +41,6 @@ module.exports = {
       animations: "disabled",
     });
 
-    // @ts-expect-error
     expect(image).toMatchImageSnapshot({
       comparisonMethod: "ssim",
       customDiffConfig: { ssim: "fast" },

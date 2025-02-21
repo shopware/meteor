@@ -269,7 +269,6 @@ describe("mt-popover-item-result", () => {
     const allPopoverItems = wrapper.findAllComponents({ name: "MtPopoverItem" });
 
     allPopoverItems.forEach((popoverItem) => {
-      // eslint-disable-next-line vitest/no-conditional-tests, vitest/no-conditional-in-test
       if (popoverItem.props("label") === "Name") {
         return;
       }
@@ -367,12 +366,10 @@ describe("mt-popover-item-result", () => {
       },
     });
 
-    // @ts-expect-error
     wrapper.vm.dragConfig.onDragStart();
 
     expect(document.body.classList.contains("is-popover-item-result-dragging")).toBeTruthy();
 
-    // @ts-expect-error
     wrapper.vm.dragConfig.onDrop();
 
     expect(document.body.classList.contains("is-popover-item-result-dragging")).toBeFalsy();
@@ -403,9 +400,7 @@ describe("mt-popover-item-result", () => {
 
     // simulate drag and drop
 
-    // @ts-expect-error
     wrapper.vm.dragConfig.onDragStart();
-    // @ts-expect-error
     wrapper.vm.dragConfig.onDrop(dragConfigData, dropConfigData);
 
     await wrapper.vm.$nextTick();
