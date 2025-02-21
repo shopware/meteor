@@ -54,7 +54,7 @@ const styles = computed(() => {
   return styles;
 });
 
-function handleFailedImport(variant: string,  name: string, detail: string = "") {
+function handleFailedImport(variant: string, name: string, detail: string = "") {
   console.error(`The SVG file for the icon "${variant}-${name}" could not be found and loaded.`);
 
   if (detail) {
@@ -72,16 +72,18 @@ watch(
 
     import(
       `./../../../../node_modules/@shopware-ag/meteor-icon-kit/icons/${variant}/${iconName}.svg`
-    ).then((data) => {
-      if (data.default) {
-        iconSvgData.value = data.default;
-        return;
-      }
+    )
+      .then((data) => {
+        if (data.default) {
+          iconSvgData.value = data.default;
+          return;
+        }
 
-      handleFailedImport(variant, iconName);
-    }).catch((e) => {
-      handleFailedImport(variant, iconName, e);
-    });
+        handleFailedImport(variant, iconName);
+      })
+      .catch((e) => {
+        handleFailedImport(variant, iconName, e);
+      });
   },
   { immediate: true },
 );
