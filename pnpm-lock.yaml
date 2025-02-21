@@ -409,9 +409,6 @@ importers:
       '@csstools/stylelint-formatter-github':
         specifier: ^1.0.0
         version: 1.0.0(stylelint@16.10.0(typescript@5.7.3))
-      '@rushstack/eslint-patch':
-        specifier: ^1.3.3
-        version: 1.10.3
       '@shopware-ag/stylelint-plugin-meteor':
         specifier: workspace:*
         version: link:../stylelint-plugin-meteor
@@ -3493,9 +3490,6 @@ packages:
 
   '@rtsao/scc@1.1.0':
     resolution: {integrity: sha512-zt6OdqaDoOnJ1ZYsCYGt9YmWzDXl4vQdKTyJev62gFhRGKdx7mcT54V9KIjg+d2wi9EXsPvAPKe7i7WjfVWB8g==}
-
-  '@rushstack/eslint-patch@1.10.3':
-    resolution: {integrity: sha512-qC/xYId4NMebE6w/V33Fh9gWxLgURiNYgVNObbJl2LZv0GUUItCcCqC5axQSwRaAgaxl2mELq1rMzlswaQ0Zxg==}
 
   '@rushstack/node-core-library@5.10.2':
     resolution: {integrity: sha512-xOF/2gVJZTfjTxbo4BDj9RtQq/HFnrrKdtem4JkyRLnwsRz2UDTg8gA1/et10fBx5RxmZD9bYVGST69W8ME5OQ==}
@@ -18155,8 +18149,6 @@ snapshots:
     optional: true
 
   '@rtsao/scc@1.1.0': {}
-
-  '@rushstack/eslint-patch@1.10.3': {}
 
   '@rushstack/node-core-library@5.10.2(@types/node@18.19.36)':
     dependencies:
