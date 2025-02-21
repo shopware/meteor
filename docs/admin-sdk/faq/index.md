@@ -16,9 +16,9 @@ To access the Meteor Component Library, visit the following link: https://github
 
 ## How can I use snippets to translate my app?
 
-You can manage all texts rendered within your [locations](../4_concepts/locations.md) with a translation plugin of your choice. If you're utilizing Vue.js as your frontend framework, you can use the i18n plugin. Additionally, to ensure consistency between your app and the Shopware Administration, you can synchronize language changes by [subscribing to them through the context API](../2_api-reference/context.md#subscribe-on-language-changes).
+You can manage all texts rendered within your [locations](../concepts/locations.md) with a translation plugin of your choice. If you're utilizing Vue.js as your frontend framework, you can use the i18n plugin. Additionally, to ensure consistency between your app and the Shopware Administration, you can synchronize language changes by [subscribing to them through the context API](../api-reference/context.md#subscribe-on-language-changes).
 
-For text elements in native Shopware Administration components, such as titles within [component sections](../4_concepts/component-sections.md), you can employ snippet files within your app. This is supported since the Shopware Version 6.6. Here's a how to accomplish this:
+For text elements in native Shopware Administration components, such as titles within [component sections](../concepts/component-sections.md), you can employ snippet files within your app. This is supported since the Shopware Version 6.6. Here's a how to accomplish this:
 
 1. **Create Snippet Files:** Begin by generating a snippet file for each supported language within your app. These files should reside in the `Resources/app/administration/snippet` directory. Naming conventions follow the language code format, for instance, `en-GB.json` for English language support. The file structure mirrors that of administration snippets. However it is not impossible to overwrite Shopware Administration snippets.
 
