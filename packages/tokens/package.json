@@ -34,7 +34,7 @@
   "dependencies": {
     "dotenv": "^16.4.7",
     "ora": "^8.0.1",
-    "vitest": "^1.2.1",
+    "vitest": "^3.0.6",
     "zod": "^3.24.2"
   },
   "devDependencies": {
