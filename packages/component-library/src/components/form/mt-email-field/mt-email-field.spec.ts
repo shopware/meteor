@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { userEvent } from "@storybook/test";
+import { userEvent } from "@testing-library/user-event";
 import { render, screen } from "@testing-library/vue";
 import MtEmailField from "./mt-email-field.vue";
 import { flushPromises } from "@vue/test-utils";

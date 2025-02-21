@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/vue";
 import MtButton from "./mt-button.vue";
 import { vi } from "vitest";
-import { userEvent } from "@storybook/test";
+import { userEvent } from "@testing-library/user-event";
 
 describe("mt-button", () => {
   it("emits an focus event when focusing on a button", async () => {
