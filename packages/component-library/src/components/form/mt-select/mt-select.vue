@@ -370,6 +370,7 @@ export default defineComponent({
       }
 
       if (Array.isArray(this.currentValue)) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         this.currentValue.length;
       }
 
