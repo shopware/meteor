@@ -1,7 +1,7 @@
 # Get
 
 With `data.get` you can receive datasets from the Shopware administration.
-More information on how to find the unique identifiers can be found in [this guide](../../5_internals/datahandling.md).
+More information on how to find the unique identifiers can be found in [this guide](../../internals/datahandling.md).
 
 Compared to data.subscribe, data.get only gives you the current state of the data. If the data is not available yet,
 such as when opening a page, you won't receive any data. In these cases, it's better to subscribe to data changes instead.
@@ -29,4 +29,4 @@ data.get({
 #### Parameters
 | Name      | Required | Description                                                                                                          |
 | :-------- | :------- |:---------------------------------------------------------------------------------------------------------------------|
-| `options` | true     | Containing the unique `id` and optional `selectors`. Read more about selectors [here](../../4_concepts/selectors.md) |
+| `options` | true     | Containing the unique `id` and optional `selectors`. Read more about selectors [here](../../concepts/selectors.md) |
