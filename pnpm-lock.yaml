@@ -677,8 +677,8 @@ importers:
         specifier: ^2.1.5
         version: 2.3.1(typescript@5.7.3)
       prettier:
-        specifier: ^3.2.4
-        version: 3.2.5
+        specifier: ^3.5.1
+        version: 3.5.1
       tsx:
         specifier: ^4.7.0
         version: 4.15.6
@@ -10998,6 +10998,11 @@ packages:
     engines: {node: '>=14'}
     hasBin: true
 
+  prettier@3.5.1:
+    resolution: {integrity: sha512-hPpFQvHwL3Qv5AdRvBFMhnKo4tYxp0ReXiPn2bxkiohEX6mBeBwEpBSQTkD458RaaDKQMYSp4hX4UtfUTA5wDw==}
+    engines: {node: '>=14'}
+    hasBin: true
+
   pretty-bytes@6.1.1:
     resolution: {integrity: sha512-mQUvGU6aUFQ+rNvTIAcZuWGRT9a6f6Yrg9bHs4ImKF+HZCEK+plBvnAZYSIQztknZF2qnzNtr6F8s0+IuptdlQ==}
     engines: {node: ^14.13.1 || >=16.0.0}
@@ -18088,7 +18093,7 @@ snapshots:
       node-fetch: 2.7.0(encoding@0.1.13)
       picomatch: 2.3.1
       pkg-dir: 5.0.0
-      prettier-fallback: prettier@3.3.3
+      prettier-fallback: prettier@3.5.1
       pretty-hrtime: 1.0.3
       resolve-from: 5.0.0
       semver: 7.6.2
@@ -27790,6 +27795,8 @@ snapshots:
   prettier@3.2.5: {}
 
   prettier@3.3.3: {}
+
+  prettier@3.5.1: {}
 
   pretty-bytes@6.1.1: {}
 
