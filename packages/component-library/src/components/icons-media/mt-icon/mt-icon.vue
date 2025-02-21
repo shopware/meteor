@@ -54,6 +54,16 @@ const styles = computed(() => {
   return styles;
 });
 
+function handleFailedImport(variant: string,  name: string, detail: string = "") {
+  console.error(`The SVG file for the icon "${variant}-${name}" could not be found and loaded.`);
+
+  if (detail) {
+    console.error(detail);
+  }
+
+  iconSvgData.value = "";
+}
+
 watch(
   () => props.name,
   (newName) => {
@@ -68,8 +78,9 @@ watch(
         return;
       }
 
-      console.error(`The SVG file for the icon name ${newName} could not be found and loaded.`);
-      iconSvgData.value = "";
+      handleFailedImport(variant, iconName);
+    }).catch((e) => {
+      handleFailedImport(variant, iconName, e);
     });
   },
   { immediate: true },
