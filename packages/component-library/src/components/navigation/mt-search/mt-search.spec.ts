@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/vue";
 import MtSearch from "./mt-search.vue";
-import { userEvent } from "@storybook/test";
+import { userEvent } from "@testing-library/user-event";
 
 describe("mt-search", () => {
   it("changes the value when typing in the search", async () => {

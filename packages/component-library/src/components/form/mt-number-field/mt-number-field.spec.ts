@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/vue";
 import MtNumberField from "./mt-number-field.vue";
-import { userEvent } from "@storybook/test";
+import { userEvent } from "@testing-library/user-event";
 
 describe("mt-number-field", () => {
   it("is not possible to change the value when inheritance is linked", async () => {
