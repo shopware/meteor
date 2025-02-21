@@ -8,7 +8,7 @@ module.exports = {
     plugins: ["@typescript-eslint"],
     root: true,
     rules: {
-        quotes: ["error", "single", { allowTemplateLiterals: true }],
+        quotes: "off",
         "no-console": ["error", { allow: ["warn", "error"] }],
         "comma-dangle": ["error", "always-multiline"],
         "no-unused-vars": "warn",
