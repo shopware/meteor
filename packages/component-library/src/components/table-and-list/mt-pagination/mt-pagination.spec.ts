@@ -1,6 +1,6 @@
 import MtPagination from "./mt-pagination.vue";
 import { render, screen } from "@testing-library/vue";
-import { userEvent } from "@storybook/test";
+import { userEvent } from "@testing-library/user-event";
 
 describe("mt-pagination", () => {
   describe("should render the correct info text", () => {

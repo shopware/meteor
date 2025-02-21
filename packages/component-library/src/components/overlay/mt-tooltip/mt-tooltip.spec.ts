@@ -1,6 +1,6 @@
 import { fireEvent, render, screen } from "@testing-library/vue";
 import MtTooltip from "./mt-tooltip.vue";
-import { userEvent } from "@storybook/test";
+import { userEvent } from "@testing-library/user-event";
 import { flushPromises } from "@vue/test-utils";
 import MtButton from "@/components/form/mt-button/mt-button.vue";
 

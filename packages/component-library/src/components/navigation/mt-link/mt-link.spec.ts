@@ -1,6 +1,6 @@
 import { render, screen } from "@testing-library/vue";
 import MtLink from "./mt-link.vue";
-import { userEvent } from "@storybook/test";
+import { userEvent } from "@testing-library/user-event";
 
 describe("mt-link", async () => {
   it("renders a link", async () => {
