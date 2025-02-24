@@ -39,6 +39,7 @@
     "js-md5": "^0.7.3"
   },
   "devDependencies": {
+    "@eslint/js": "^9.20.0",
     "@supercharge/promise-pool": "^2.4.0",
     "@types/axios": "^0.14.0",
     "@types/cli-progress": "^3.9.2",
