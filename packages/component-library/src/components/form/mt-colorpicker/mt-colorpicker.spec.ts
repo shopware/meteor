@@ -26,11 +26,9 @@ describe("mt-datepicker", () => {
       },
     });
 
-    const user = userEvent.setup();
-
     // ACT
-    await user.tab();
-    await user.keyboard("{Enter}");
+    await userEvent.tab();
+    await userEvent.keyboard("{Enter}");
 
     // ACT
     expect(screen.getByTestId("mt-colorpicker-dialog")).toBeVisible();
