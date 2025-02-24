@@ -14,7 +14,7 @@ type FigmaFileResponse = {
 }
 
 type FigmaImageResponse = {
-    err: null | unknown,
+    err: unknown,
     images: {
         [nodeId: string]: string,
     },
