@@ -1,6 +1,7 @@
 import { mount } from "@vue/test-utils";
 import userEvent from "@testing-library/user-event";
 import MtColorpicker from "./mt-colorpicker.vue";
+import { render, screen } from "@testing-library/vue";
 
 async function createWrapper(customOptions = {}) {
   return mount(MtColorpicker, {
@@ -18,25 +19,21 @@ describe("mt-datepicker", () => {
   });
 
   it("opens with keyboard", async () => {
-    const user = userEvent.setup();
-    wrapper = await createWrapper({
+    // ARRANGE
+    render(MtColorpicker, {
       props: {
         modelValue: "#0fcff5",
       },
-      attachTo: document.body,
     });
 
-    // Simulate tabbing to focus the input element
+    const user = userEvent.setup();
+
+    // ACT
     await user.tab();
-    const colorPickerInput = wrapper.find(".mt-colorpicker__input");
-    const inputElement = colorPickerInput.element as HTMLInputElement;
-
-    expect(inputElement).toHaveFocus();
-
-    // Simulate pressing Enter to open modal
     await user.keyboard("{Enter}");
-    const dropdown = document.querySelector(".mt-floating-ui__content");
-    expect(dropdown).toBeDefined();
+
+    // ACT
+    expect(screen.getByTestId("mt-colorpicker-dialog")).toBeVisible();
   });
 
   it("allows value changes with keyboard", async () => {
