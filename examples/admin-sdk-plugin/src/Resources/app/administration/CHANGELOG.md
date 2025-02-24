@@ -1,5 +1,14 @@
 # administration
 
+## 1.0.6
+
+### Patch Changes
+
+- Updated dependencies [f251c89]
+- Updated dependencies [489997c]
+  - @shopware-ag/meteor-component-library@4.3.1
+  - @shopware-ag/meteor-admin-sdk@5.7.3
+
 ## 1.0.5
 
 ### Patch Changes

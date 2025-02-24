@@ -1,5 +1,13 @@
 # Changelog
 
+## 5.7.3
+
+### Patch Changes
+
+- Updated dependencies [f251c89]
+- Updated dependencies [489997c]
+  - @shopware-ag/meteor-component-library@4.3.1
+
 ## 5.7.2
 
 ### Patch Changes
