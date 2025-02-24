@@ -566,6 +566,9 @@ importers:
         specifier: ^0.7.3
         version: 0.7.3
     devDependencies:
+      '@eslint/js':
+        specifier: ^9.20.0
+        version: 9.21.0
       '@supercharge/promise-pool':
         specifier: ^2.4.0
         version: 2.4.0
