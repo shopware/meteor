@@ -34,6 +34,21 @@ describe("mt-datepicker", () => {
     expect(screen.getByTestId("mt-colorpicker-dialog")).toBeVisible();
   });
 
+  it("focuses the input when clicking on the label", async () => {
+    // ARRANGE
+    render(MtColorpicker, {
+      props: {
+        label: "Some label",
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByText("Some label"));
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveFocus();
+  });
+
   it("allows value changes with keyboard", async () => {
     const user = userEvent.setup();
     wrapper = await createWrapper({
