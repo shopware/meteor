@@ -57,4 +57,16 @@ describe("mt-datepicker", () => {
 
     expect(screen.getByRole("textbox", { name: "Some label" })).toHaveValue("#10cef4");
   });
+
+  it("has a placeholder", async () => {
+    // ARRANGE
+    render(MtColorpicker, {
+      props: {
+        placeholder: "Some placeholder",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveAttribute("placeholder", "Some placeholder");
+  });
 });
