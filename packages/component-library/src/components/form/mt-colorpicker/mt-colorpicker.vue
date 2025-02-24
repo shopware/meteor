@@ -31,12 +31,13 @@
       </div>
     </template>
 
-    <template #element>
+    <template #element="{ identification }">
       <input
         v-model="colorValue"
         aria-label="colorpicker-color-value"
         class="mt-colorpicker__input"
         :spellcheck="false"
+        :id="identification"
         :disabled="disabled"
         :readonly="readonly"
         @click="onClickInput"
