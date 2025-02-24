@@ -13,7 +13,7 @@
   "scripts": {
     "dev": "ts-node src/server.ts",
     "lint:all": "npm run lint:eslint && vue-tsc --noEmit",
-    "lint:eslint": "eslint --ext .js,.ts,.vue src",
+    "lint:eslint": "eslint .",
     "lint:types": "vue-tsc --noEmit"
   },
   "dependencies": {
