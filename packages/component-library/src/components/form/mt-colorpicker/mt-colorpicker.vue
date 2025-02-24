@@ -37,6 +37,7 @@
         class="mt-colorpicker__input"
         :spellcheck="false"
         :id="identification"
+        :placeholder="placeholder"
         :disabled="disabled"
         :readonly="readonly"
         @click="onClickInput"
@@ -342,6 +343,11 @@ export default defineComponent({
       type: Boolean,
       required: false,
       default: false,
+    },
+
+    placeholder: {
+      type: String,
+      required: false,
     },
 
     /**
