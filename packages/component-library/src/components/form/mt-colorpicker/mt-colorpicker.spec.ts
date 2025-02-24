@@ -50,28 +50,26 @@ describe("mt-datepicker", () => {
   });
 
   it("allows value changes with keyboard", async () => {
-    const user = userEvent.setup();
-    wrapper = await createWrapper({
+    // ARRANGE
+    render(MtColorpicker, {
       props: {
+        label: "Some label",
         modelValue: "#0fcff5",
       },
-      attachTo: document.body,
     });
 
-    // Simulate tabbing to focus the input element
-    await user.tab();
-    const colorPickerInput = wrapper.find(".mt-colorpicker__input");
-    const inputElement = colorPickerInput.element as HTMLInputElement;
+    const user = userEvent.setup();
 
-    // Simulate pressing Enter to open modal
+    // ACT
+    await user.tab();
     await user.keyboard("{Enter}");
 
     // Focus color slider
     await userEvent.keyboard("{Tab}");
 
     // Change value with arrow key
-    await userEvent.keyboard("{arrowleft}");
+    await userEvent.keyboard("{Arrowleft}");
 
-    expect(inputElement.value).toBe("#10cef4");
+    expect(screen.getByRole("textbox", { name: "Some label" })).toHaveValue("#10cef4");
   });
 });
