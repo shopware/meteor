@@ -1,23 +1,8 @@
-import { mount } from "@vue/test-utils";
 import userEvent from "@testing-library/user-event";
 import MtColorpicker from "./mt-colorpicker.vue";
 import { render, screen } from "@testing-library/vue";
 
-async function createWrapper(customOptions = {}) {
-  return mount(MtColorpicker, {
-    ...customOptions,
-  });
-}
-
 describe("mt-datepicker", () => {
-  let wrapper: undefined | Awaited<ReturnType<typeof createWrapper>>;
-
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.unmount();
-    }
-  });
-
   it("opens with keyboard", async () => {
     // ARRANGE
     render(MtColorpicker, {
