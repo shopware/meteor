@@ -8,7 +8,7 @@ async function createWrapper(customOptions = {}) {
   });
 }
 
-describe("src/app/component/form/mt-datepicker", () => {
+describe("mt-datepicker", () => {
   let wrapper: undefined | Awaited<ReturnType<typeof createWrapper>>;
 
   afterEach(() => {
