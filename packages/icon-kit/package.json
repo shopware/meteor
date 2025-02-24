@@ -28,7 +28,7 @@
     "docs:link": "../developer-portal/docs-cli link --src docs --dst resources/meteor-icon-kit --symlink",
     "docs:preview": "../developer-portal/docs-cli preview",
     "lint:all": "npm run lint:types && npm run lint:eslint",
-    "lint:eslint": "eslint ./src --ext .ts",
+    "lint:eslint": "eslint ./src",
     "lint:types": "tsc --noEmit",
     "prepublish": "npm run build",
     "start": "node dist",
