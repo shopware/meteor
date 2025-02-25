@@ -75,8 +75,7 @@ describe('Test the channel bridge from iFrame to admin', () => {
       done();
     })
 
-    // safety check if non-ts user aren't providing options
-    // @ts-expect-error
+    // @ts-expect-error -- safety check if non-ts user aren't providing options
     send('windowReload');
   });
 
@@ -259,7 +258,7 @@ describe('Test the channel bridge from iFrame to admin', () => {
     window.dispatchEvent(event)
 
     // Simulate a postMessage call from an iFrame
-    // @ts-expect-error
+    // @ts-expect-error -- origin is not a property of Event
     event.origin = url;
     window.dispatchEvent(event)
 

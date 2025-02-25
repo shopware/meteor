@@ -20,13 +20,13 @@ importers:
     dependencies:
       '@docusaurus/core':
         specifier: ^2.2.0
-        version: 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
+        version: 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
       '@docusaurus/preset-classic':
         specifier: ^2.2.0
-        version: 2.4.3(@algolia/client-search@4.23.3)(@types/react@18.3.3)(encoding@0.1.13)(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(search-insights@2.14.0)(typescript@4.9.5)(vue-template-compiler@2.7.16)
+        version: 2.4.3(@algolia/client-search@4.23.3)(@types/react@18.3.3)(encoding@0.1.13)(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(search-insights@2.14.0)(typescript@4.9.5)(vue-template-compiler@2.7.16)
       '@docusaurus/theme-search-algolia':
         specifier: ^2.2.0
-        version: 2.4.3(@algolia/client-search@4.23.3)(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(@types/react@18.3.3)(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(search-insights@2.14.0)(typescript@4.9.5)(vue-template-compiler@2.7.16)
+        version: 2.4.3(@algolia/client-search@4.23.3)(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(@types/react@18.3.3)(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(search-insights@2.14.0)(typescript@4.9.5)(vue-template-compiler@2.7.16)
       '@mdx-js/react':
         specifier: ^1.6.21
         version: 1.6.22(react@17.0.2)
@@ -180,7 +180,7 @@ importers:
         version: link:../../packages/component-library
       nuxt:
         specifier: ^3.10.3
-        version: 3.12.2(@opentelemetry/api@1.9.0)(@parcel/watcher@2.4.1)(@types/node@20.14.5)(@unocss/reset@0.61.0)(axios@1.7.2)(change-case@4.1.2)(encoding@0.1.13)(eslint@9.20.1(jiti@1.21.6))(floating-vue@5.2.2(@nuxt/kit@3.12.2(magicast@0.3.4)(rollup@4.18.0))(vue@3.5.0(typescript@5.7.3)))(ioredis@5.4.1)(magicast@0.3.4)(nprogress@0.2.0)(optionator@0.9.4)(rollup@4.18.0)(sass@1.77.6)(stylelint@16.10.0(typescript@5.7.3))(terser@5.31.1)(typescript@5.7.3)(unocss@0.61.0(postcss@8.4.49)(rollup@4.18.0)(vite@5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1)))(vite@5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1))(vue-tsc@2.2.0(typescript@5.7.3))
+        version: 3.12.2(@opentelemetry/api@1.9.0)(@parcel/watcher@2.4.1)(@types/node@20.14.5)(@unocss/reset@0.61.0)(axios@1.7.2)(change-case@4.1.2)(encoding@0.1.13)(eslint@9.21.0(jiti@1.21.6))(floating-vue@5.2.2(@nuxt/kit@3.12.2(magicast@0.3.4)(rollup@4.18.0))(vue@3.5.0(typescript@5.7.3)))(ioredis@5.4.1)(magicast@0.3.4)(nprogress@0.2.0)(optionator@0.9.4)(rollup@4.18.0)(sass@1.77.6)(stylelint@16.10.0(typescript@5.7.3))(terser@5.31.1)(typescript@5.7.3)(unocss@0.61.0(postcss@8.4.49)(rollup@4.18.0)(vite@5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1)))(vite@5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1))(vue-tsc@2.2.0(typescript@5.7.3))
       vue:
         specifier: ^3.5.0
         version: 3.5.0(typescript@5.7.3)
@@ -210,6 +210,9 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
     devDependencies:
+      '@eslint/js':
+        specifier: ^9.20.0
+        version: 9.21.0
       '@playwright/test':
         specifier: ^1.45.0
         version: 1.47.2
@@ -222,12 +225,6 @@ importers:
       '@types/node':
         specifier: ^18.11.17
         version: 18.19.36
-      '@typescript-eslint/eslint-plugin':
-        specifier: ^5.47.0
-        version: 5.62.0(@typescript-eslint/parser@5.62.0(eslint@8.57.0)(typescript@4.9.5))(eslint@8.57.0)(typescript@4.9.5)
-      '@typescript-eslint/parser':
-        specifier: ^5.47.0
-        version: 5.62.0(eslint@8.57.0)(typescript@4.9.5)
       chokidar-cli:
         specifier: ^3.0.0
         version: 3.0.0
@@ -235,14 +232,14 @@ importers:
         specifier: ^7.0.0
         version: 7.6.0
       eslint:
-        specifier: ^8.11.0
-        version: 8.57.0
+        specifier: ^9.21.0
+        version: 9.21.0(jiti@1.21.6)
       eslint-plugin-check-file:
-        specifier: ^2.7.0
-        version: 2.8.0(eslint@8.57.0)
+        specifier: ^3.1.0
+        version: 3.1.0(eslint@9.21.0(jiti@1.21.6))
       eslint-plugin-import:
         specifier: ^2.31.0
-        version: 2.31.0(@typescript-eslint/parser@5.62.0(eslint@8.57.0)(typescript@4.9.5))(eslint@8.57.0)
+        version: 2.31.0(eslint@9.21.0(jiti@1.21.6))
       flush-promises:
         specifier: ^1.0.2
         version: 1.0.2
@@ -264,6 +261,9 @@ importers:
       typescript:
         specifier: ^4.9.4
         version: 4.9.5
+      typescript-eslint:
+        specifier: ^8.24.1
+        version: 8.24.1(eslint@9.21.0(jiti@1.21.6))(typescript@4.9.5)
       vite:
         specifier: ^2.8.6
         version: 2.9.18(sass@1.77.6)
@@ -2389,12 +2389,20 @@ packages:
     resolution: {integrity: sha512-DWUB2pksgNEb6Bz2fggIy1wh6fGgZP4Xyy/Mt0QZPiloKKXerbqq9D3SBQTlCRYOrcRPu4vuz+CGjwdfqxnoWA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
+  '@eslint/core@0.12.0':
+    resolution: {integrity: sha512-cmrR6pytBuSMTaBweKoGMwu3EiHiEC+DoyupPmlZ0HxBJBtIxwe+j/E4XPIKNx+Q74c8lXKPwYawBf5glsTkHg==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
   '@eslint/eslintrc@2.1.4':
     resolution: {integrity: sha512-269Z39MS6wVJtsoUl10L60WdkhJVdPG24Q4eZTH3nnF6lpvSShEK3wQjDX9JRWAUPvPh7COouPpU9IrqaZFvtQ==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
   '@eslint/eslintrc@3.2.0':
     resolution: {integrity: sha512-grOjVNN8P3hjJn/eIETF1wwd12DdnwFDoyceUJLYYdkpbwq3nLi+4fqrTAONx7XDALqlL220wC/RHSC/QTI/0w==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@eslint/eslintrc@3.3.0':
+    resolution: {integrity: sha512-yaVPAiNAalnCZedKLdR21GOGILMLKPyqSLWaAjQFvYA2i/ciDi8ArYVr69Anohb6cH2Ukhqti4aFnYyPm8wdwQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   '@eslint/js@8.57.0':
@@ -2405,12 +2413,20 @@ packages:
     resolution: {integrity: sha512-iZA07H9io9Wn836aVTytRaNqh00Sad+EamwOVJT12GTLw1VGMFV/4JaME+JjLtr9fiGaoWgYnS54wrfWsSs4oQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
+  '@eslint/js@9.21.0':
+    resolution: {integrity: sha512-BqStZ3HX8Yz6LvsF5ByXYrtigrV5AXADWLAGc7PH/1SxOb7/FIYYMszZZWiUou/GB9P2lXWk2SV4d+Z8h0nknw==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
   '@eslint/object-schema@2.1.6':
     resolution: {integrity: sha512-RBMg5FRL0I0gs51M/guSAj5/e14VQ4tpZnQNWwuDT66P14I43ItmPfIZRhO9fUVIPOAQXU47atlywZ/czoqFPA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   '@eslint/plugin-kit@0.2.6':
     resolution: {integrity: sha512-+0TjwR1eAUdZtvv/ir1mGX+v0tUoR3VEPB8Up0LLJC+whRW0GgBBtpbOkg/a/U4Dxa6l5a3l9AJ1aWIQVyoWJA==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+
+  '@eslint/plugin-kit@0.2.7':
+    resolution: {integrity: sha512-JubJ5B2pJ4k4yGxaNLdbjrnk9d/iDz6/q8wOilpIowd6PJPgaxCuHBnBszq7Ce2TyMrywm5r4PnKm6V3iiZF+g==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
   '@fastify/busboy@2.1.1':
@@ -7359,11 +7375,11 @@ packages:
       eslint-import-resolver-webpack:
         optional: true
 
-  eslint-plugin-check-file@2.8.0:
-    resolution: {integrity: sha512-FvvafMTam2WJYH9uj+FuMxQ1y+7jY3Z6P9T4j2214cH0FBxNzTcmeCiGTj1Lxp3mI6kbbgsXvmgewvf+llKYyw==}
+  eslint-plugin-check-file@3.1.0:
+    resolution: {integrity: sha512-bBVjeQvG8ZMCjXr9mJEIZoNf7f5RT+cTqUr6QQq0xMKkWjLQpQtpqUXkBV/XncffOwvyTqjvKpqiQMCXL3mIDw==}
     engines: {node: '>=18'}
     peerDependencies:
-      eslint: '>=7.28.0'
+      eslint: '>=9.0.0'
 
   eslint-plugin-import@2.31.0:
     resolution: {integrity: sha512-ixmkI62Rbc2/w8Vfxyh1jQRTdRTF52VxwRVHl/ykPAmqG+Nb7/kNn+byLP0LxPgI7zWA16Jt82SybJInmMia3A==}
@@ -7458,6 +7474,16 @@ packages:
 
   eslint@9.20.1:
     resolution: {integrity: sha512-m1mM33o6dBUjxl2qb6wv6nGNwCAsns1eKtaQ4l/NPHeTvhiUPbtdfMyktxN4B3fgHIgsYh1VT3V9txblpQHq+g==}
+    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
+    hasBin: true
+    peerDependencies:
+      jiti: '*'
+    peerDependenciesMeta:
+      jiti:
+        optional: true
+
+  eslint@9.21.0:
+    resolution: {integrity: sha512-KjeihdFqTPhOMXTt7StsDxriV4n66ueuF/jfPNC3j/lduHwr/ijDwJMsF+wyMJethgiKi5wniIE243vi07d3pg==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     hasBin: true
     peerDependencies:
@@ -13635,8 +13661,8 @@ packages:
   vue-component-type-helpers@2.0.21:
     resolution: {integrity: sha512-3NaicyZ7N4B6cft4bfb7dOnPbE9CjLcx+6wZWAg5zwszfO4qXRh+U52dN5r5ZZfc6iMaxKCEcoH9CmxxoFZHLg==}
 
-  vue-component-type-helpers@2.2.2:
-    resolution: {integrity: sha512-6lLY+n2xz2kCYshl59mL6gy8OUUTmkscmDFMO8i7Lj+QKwgnIFUZmM1i/iTYObtrczZVdw7UakPqDTGwVSGaRg==}
+  vue-component-type-helpers@2.2.4:
+    resolution: {integrity: sha512-F66p0XLbAu92BRz6kakHyAcaUSF7HWpWX/THCqL0TxySSj7z/nok5UUMohfNkkCm1pZtawsdzoJ4p1cjNqCx0Q==}
 
   vue-demi@0.14.10:
     resolution: {integrity: sha512-nMZBOwuzabUO0nLgIcc6rycZEebF6eeUfaiQx9+WSk8e29IbLvPU9feI6tqW4kTo3hvoYAJkMh8n8D0fuISphg==}
@@ -15328,7 +15354,7 @@ snapshots:
       '@changesets/types': 6.0.0
       '@manypkg/get-packages': 1.1.3
       fs-extra: 7.0.1
-      micromatch: 4.0.7
+      micromatch: 4.0.8
 
   '@changesets/errors@0.2.0':
     dependencies:
@@ -15361,7 +15387,7 @@ snapshots:
       '@changesets/types': 6.0.0
       '@manypkg/get-packages': 1.1.3
       is-subdir: 1.2.0
-      micromatch: 4.0.7
+      micromatch: 4.0.8
       spawndamnit: 2.0.0
 
   '@changesets/logger@0.1.0':
@@ -15537,7 +15563,7 @@ snapshots:
     transitivePeerDependencies:
       - '@algolia/client-search'
 
-  '@docusaurus/core@2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)':
+  '@docusaurus/core@2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)':
     dependencies:
       '@babel/core': 7.24.7
       '@babel/generator': 7.24.7
@@ -15590,7 +15616,7 @@ snapshots:
       postcss-loader: 7.3.4(postcss@8.4.38)(typescript@4.9.5)(webpack@5.92.0)
       prompts: 2.4.2
       react: 17.0.2
-      react-dev-utils: 12.0.1(eslint@9.20.1(jiti@1.21.6))(typescript@4.9.5)(vue-template-compiler@2.7.16)(webpack@5.92.0)
+      react-dev-utils: 12.0.1(eslint@9.21.0(jiti@1.21.6))(typescript@4.9.5)(vue-template-compiler@2.7.16)(webpack@5.92.0)
       react-dom: 17.0.2(react@17.0.2)
       react-helmet-async: 1.3.0(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react-loadable: '@docusaurus/react-loadable@5.5.2(react@17.0.2)'
@@ -15690,9 +15716,9 @@ snapshots:
       - uglify-js
       - webpack-cli
 
-  '@docusaurus/plugin-content-blog@2.4.3(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)':
+  '@docusaurus/plugin-content-blog@2.4.3(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)':
     dependencies:
-      '@docusaurus/core': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
+      '@docusaurus/core': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
       '@docusaurus/logger': 2.4.3
       '@docusaurus/mdx-loader': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       '@docusaurus/types': 2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
@@ -15728,9 +15754,9 @@ snapshots:
       - vue-template-compiler
       - webpack-cli
 
-  '@docusaurus/plugin-content-docs@2.4.3(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)':
+  '@docusaurus/plugin-content-docs@2.4.3(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)':
     dependencies:
-      '@docusaurus/core': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
+      '@docusaurus/core': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
       '@docusaurus/logger': 2.4.3
       '@docusaurus/mdx-loader': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       '@docusaurus/module-type-aliases': 2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
@@ -15766,9 +15792,9 @@ snapshots:
       - vue-template-compiler
       - webpack-cli
 
-  '@docusaurus/plugin-content-pages@2.4.3(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)':
+  '@docusaurus/plugin-content-pages@2.4.3(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)':
     dependencies:
-      '@docusaurus/core': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
+      '@docusaurus/core': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
       '@docusaurus/mdx-loader': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       '@docusaurus/types': 2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       '@docusaurus/utils': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))
@@ -15796,9 +15822,9 @@ snapshots:
       - vue-template-compiler
       - webpack-cli
 
-  '@docusaurus/plugin-debug@2.4.3(@types/react@18.3.3)(encoding@0.1.13)(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)':
+  '@docusaurus/plugin-debug@2.4.3(@types/react@18.3.3)(encoding@0.1.13)(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)':
     dependencies:
-      '@docusaurus/core': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
+      '@docusaurus/core': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
       '@docusaurus/types': 2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       '@docusaurus/utils': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))
       fs-extra: 10.1.0
@@ -15826,9 +15852,9 @@ snapshots:
       - vue-template-compiler
       - webpack-cli
 
-  '@docusaurus/plugin-google-analytics@2.4.3(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)':
+  '@docusaurus/plugin-google-analytics@2.4.3(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)':
     dependencies:
-      '@docusaurus/core': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
+      '@docusaurus/core': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
       '@docusaurus/types': 2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       '@docusaurus/utils-validation': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))
       react: 17.0.2
@@ -15852,9 +15878,9 @@ snapshots:
       - vue-template-compiler
       - webpack-cli
 
-  '@docusaurus/plugin-google-gtag@2.4.3(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)':
+  '@docusaurus/plugin-google-gtag@2.4.3(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)':
     dependencies:
-      '@docusaurus/core': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
+      '@docusaurus/core': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
       '@docusaurus/types': 2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       '@docusaurus/utils-validation': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))
       react: 17.0.2
@@ -15878,9 +15904,9 @@ snapshots:
       - vue-template-compiler
       - webpack-cli
 
-  '@docusaurus/plugin-google-tag-manager@2.4.3(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)':
+  '@docusaurus/plugin-google-tag-manager@2.4.3(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)':
     dependencies:
-      '@docusaurus/core': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
+      '@docusaurus/core': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
       '@docusaurus/types': 2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       '@docusaurus/utils-validation': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))
       react: 17.0.2
@@ -15904,9 +15930,9 @@ snapshots:
       - vue-template-compiler
       - webpack-cli
 
-  '@docusaurus/plugin-sitemap@2.4.3(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)':
+  '@docusaurus/plugin-sitemap@2.4.3(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)':
     dependencies:
-      '@docusaurus/core': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
+      '@docusaurus/core': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
       '@docusaurus/logger': 2.4.3
       '@docusaurus/types': 2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       '@docusaurus/utils': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))
@@ -15935,20 +15961,20 @@ snapshots:
       - vue-template-compiler
       - webpack-cli
 
-  '@docusaurus/preset-classic@2.4.3(@algolia/client-search@4.23.3)(@types/react@18.3.3)(encoding@0.1.13)(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(search-insights@2.14.0)(typescript@4.9.5)(vue-template-compiler@2.7.16)':
+  '@docusaurus/preset-classic@2.4.3(@algolia/client-search@4.23.3)(@types/react@18.3.3)(encoding@0.1.13)(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(search-insights@2.14.0)(typescript@4.9.5)(vue-template-compiler@2.7.16)':
     dependencies:
-      '@docusaurus/core': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
-      '@docusaurus/plugin-content-blog': 2.4.3(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
-      '@docusaurus/plugin-content-docs': 2.4.3(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
-      '@docusaurus/plugin-content-pages': 2.4.3(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
-      '@docusaurus/plugin-debug': 2.4.3(@types/react@18.3.3)(encoding@0.1.13)(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
-      '@docusaurus/plugin-google-analytics': 2.4.3(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
-      '@docusaurus/plugin-google-gtag': 2.4.3(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
-      '@docusaurus/plugin-google-tag-manager': 2.4.3(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
-      '@docusaurus/plugin-sitemap': 2.4.3(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
-      '@docusaurus/theme-classic': 2.4.3(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
-      '@docusaurus/theme-common': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
-      '@docusaurus/theme-search-algolia': 2.4.3(@algolia/client-search@4.23.3)(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(@types/react@18.3.3)(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(search-insights@2.14.0)(typescript@4.9.5)(vue-template-compiler@2.7.16)
+      '@docusaurus/core': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
+      '@docusaurus/plugin-content-blog': 2.4.3(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
+      '@docusaurus/plugin-content-docs': 2.4.3(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
+      '@docusaurus/plugin-content-pages': 2.4.3(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
+      '@docusaurus/plugin-debug': 2.4.3(@types/react@18.3.3)(encoding@0.1.13)(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
+      '@docusaurus/plugin-google-analytics': 2.4.3(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
+      '@docusaurus/plugin-google-gtag': 2.4.3(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
+      '@docusaurus/plugin-google-tag-manager': 2.4.3(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
+      '@docusaurus/plugin-sitemap': 2.4.3(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
+      '@docusaurus/theme-classic': 2.4.3(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
+      '@docusaurus/theme-common': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
+      '@docusaurus/theme-search-algolia': 2.4.3(@algolia/client-search@4.23.3)(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(@types/react@18.3.3)(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(search-insights@2.14.0)(typescript@4.9.5)(vue-template-compiler@2.7.16)
       '@docusaurus/types': 2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       react: 17.0.2
       react-dom: 17.0.2(react@17.0.2)
@@ -15980,15 +16006,15 @@ snapshots:
       prop-types: 15.8.1
       react: 17.0.2
 
-  '@docusaurus/theme-classic@2.4.3(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)':
+  '@docusaurus/theme-classic@2.4.3(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)':
     dependencies:
-      '@docusaurus/core': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
+      '@docusaurus/core': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
       '@docusaurus/mdx-loader': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       '@docusaurus/module-type-aliases': 2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
-      '@docusaurus/plugin-content-blog': 2.4.3(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
-      '@docusaurus/plugin-content-docs': 2.4.3(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
-      '@docusaurus/plugin-content-pages': 2.4.3(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
-      '@docusaurus/theme-common': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
+      '@docusaurus/plugin-content-blog': 2.4.3(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
+      '@docusaurus/plugin-content-docs': 2.4.3(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
+      '@docusaurus/plugin-content-pages': 2.4.3(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
+      '@docusaurus/theme-common': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
       '@docusaurus/theme-translations': 2.4.3
       '@docusaurus/types': 2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       '@docusaurus/utils': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))
@@ -16027,13 +16053,13 @@ snapshots:
       - vue-template-compiler
       - webpack-cli
 
-  '@docusaurus/theme-common@2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)':
+  '@docusaurus/theme-common@2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)':
     dependencies:
       '@docusaurus/mdx-loader': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       '@docusaurus/module-type-aliases': 2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
-      '@docusaurus/plugin-content-blog': 2.4.3(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
-      '@docusaurus/plugin-content-docs': 2.4.3(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
-      '@docusaurus/plugin-content-pages': 2.4.3(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
+      '@docusaurus/plugin-content-blog': 2.4.3(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
+      '@docusaurus/plugin-content-docs': 2.4.3(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
+      '@docusaurus/plugin-content-pages': 2.4.3(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
       '@docusaurus/utils': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))
       '@docusaurus/utils-common': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))
       '@types/history': 4.7.11
@@ -16066,13 +16092,13 @@ snapshots:
       - vue-template-compiler
       - webpack-cli
 
-  '@docusaurus/theme-search-algolia@2.4.3(@algolia/client-search@4.23.3)(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(@types/react@18.3.3)(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(search-insights@2.14.0)(typescript@4.9.5)(vue-template-compiler@2.7.16)':
+  '@docusaurus/theme-search-algolia@2.4.3(@algolia/client-search@4.23.3)(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(@types/react@18.3.3)(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(search-insights@2.14.0)(typescript@4.9.5)(vue-template-compiler@2.7.16)':
     dependencies:
       '@docsearch/react': 3.6.0(@algolia/client-search@4.23.3)(@types/react@18.3.3)(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(search-insights@2.14.0)
-      '@docusaurus/core': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
+      '@docusaurus/core': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
       '@docusaurus/logger': 2.4.3
-      '@docusaurus/plugin-content-docs': 2.4.3(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
-      '@docusaurus/theme-common': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(eslint@9.20.1(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
+      '@docusaurus/plugin-content-docs': 2.4.3(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
+      '@docusaurus/theme-common': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))(eslint@9.21.0(jiti@1.21.6))(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(typescript@4.9.5)(vue-template-compiler@2.7.16)
       '@docusaurus/theme-translations': 2.4.3
       '@docusaurus/utils': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))
       '@docusaurus/utils-validation': 2.4.3(@docusaurus/types@2.4.3(react-dom@17.0.2(react@17.0.2))(react@17.0.2))
@@ -16164,7 +16190,7 @@ snapshots:
       gray-matter: 4.0.3
       js-yaml: 4.1.0
       lodash: 4.17.21
-      micromatch: 4.0.7
+      micromatch: 4.0.8
       resolve-pathname: 3.0.0
       shelljs: 0.8.5
       tslib: 2.6.3
@@ -16473,6 +16499,11 @@ snapshots:
       eslint: 9.20.1(jiti@1.21.6)
       eslint-visitor-keys: 3.4.3
 
+  '@eslint-community/eslint-utils@4.4.0(eslint@9.21.0(jiti@1.21.6))':
+    dependencies:
+      eslint: 9.21.0(jiti@1.21.6)
+      eslint-visitor-keys: 3.4.3
+
   '@eslint-community/regexpp@4.10.1': {}
 
   '@eslint-community/regexpp@4.12.1': {}
@@ -16486,6 +16517,10 @@ snapshots:
       - supports-color
 
   '@eslint/core@0.11.0':
+    dependencies:
+      '@types/json-schema': 7.0.15
+
+  '@eslint/core@0.12.0':
     dependencies:
       '@types/json-schema': 7.0.15
 
@@ -16517,15 +16552,36 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  '@eslint/eslintrc@3.3.0':
+    dependencies:
+      ajv: 6.12.6
+      debug: 4.4.0
+      espree: 10.3.0
+      globals: 14.0.0
+      ignore: 5.3.1
+      import-fresh: 3.3.0
+      js-yaml: 4.1.0
+      minimatch: 3.1.2
+      strip-json-comments: 3.1.1
+    transitivePeerDependencies:
+      - supports-color
+
   '@eslint/js@8.57.0': {}
 
   '@eslint/js@9.20.0': {}
+
+  '@eslint/js@9.21.0': {}
 
   '@eslint/object-schema@2.1.6': {}
 
   '@eslint/plugin-kit@0.2.6':
     dependencies:
       '@eslint/core': 0.11.0
+      levn: 0.4.1
+
+  '@eslint/plugin-kit@0.2.7':
+    dependencies:
+      '@eslint/core': 0.12.0
       levn: 0.4.1
 
   '@fastify/busboy@2.1.1': {}
@@ -16954,7 +17010,7 @@ snapshots:
       jest-haste-map: 27.5.1
       jest-regex-util: 27.5.1
       jest-util: 27.5.1
-      micromatch: 4.0.7
+      micromatch: 4.0.8
       pirates: 4.0.6
       slash: 3.0.0
       source-map: 0.6.1
@@ -17518,12 +17574,12 @@ snapshots:
 
   '@nuxt/devalue@2.0.2': {}
 
-  '@nuxt/devtools-kit@1.3.3(magicast@0.3.4)(nuxt@3.12.2(@opentelemetry/api@1.9.0)(@parcel/watcher@2.4.1)(@types/node@20.14.5)(@unocss/reset@0.61.0)(axios@1.7.2)(change-case@4.1.2)(encoding@0.1.13)(eslint@9.20.1(jiti@1.21.6))(floating-vue@5.2.2(@nuxt/kit@3.12.2(magicast@0.3.4)(rollup@4.18.0))(vue@3.5.0(typescript@5.7.3)))(ioredis@5.4.1)(magicast@0.3.4)(nprogress@0.2.0)(optionator@0.9.4)(rollup@4.18.0)(sass@1.77.6)(stylelint@16.10.0(typescript@5.7.3))(terser@5.31.1)(typescript@5.7.3)(unocss@0.61.0(postcss@8.4.49)(rollup@4.18.0)(vite@5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1)))(vite@5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1))(vue-tsc@2.2.0(typescript@5.7.3)))(rollup@4.18.0)(vite@5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1))':
+  '@nuxt/devtools-kit@1.3.3(magicast@0.3.4)(nuxt@3.12.2(@opentelemetry/api@1.9.0)(@parcel/watcher@2.4.1)(@types/node@20.14.5)(@unocss/reset@0.61.0)(axios@1.7.2)(change-case@4.1.2)(encoding@0.1.13)(eslint@9.21.0(jiti@1.21.6))(floating-vue@5.2.2(@nuxt/kit@3.12.2(magicast@0.3.4)(rollup@4.18.0))(vue@3.5.0(typescript@5.7.3)))(ioredis@5.4.1)(magicast@0.3.4)(nprogress@0.2.0)(optionator@0.9.4)(rollup@4.18.0)(sass@1.77.6)(stylelint@16.10.0(typescript@5.7.3))(terser@5.31.1)(typescript@5.7.3)(unocss@0.61.0(postcss@8.4.49)(rollup@4.18.0)(vite@5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1)))(vite@5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1))(vue-tsc@2.2.0(typescript@5.7.3)))(rollup@4.18.0)(vite@5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1))':
     dependencies:
       '@nuxt/kit': 3.12.2(magicast@0.3.4)(rollup@4.18.0)
       '@nuxt/schema': 3.12.2(rollup@4.18.0)
       execa: 7.2.0
-      nuxt: 3.12.2(@opentelemetry/api@1.9.0)(@parcel/watcher@2.4.1)(@types/node@20.14.5)(@unocss/reset@0.61.0)(axios@1.7.2)(change-case@4.1.2)(encoding@0.1.13)(eslint@9.20.1(jiti@1.21.6))(floating-vue@5.2.2(@nuxt/kit@3.12.2(magicast@0.3.4)(rollup@4.18.0))(vue@3.5.0(typescript@5.7.3)))(ioredis@5.4.1)(magicast@0.3.4)(nprogress@0.2.0)(optionator@0.9.4)(rollup@4.18.0)(sass@1.77.6)(stylelint@16.10.0(typescript@5.7.3))(terser@5.31.1)(typescript@5.7.3)(unocss@0.61.0(postcss@8.4.49)(rollup@4.18.0)(vite@5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1)))(vite@5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1))(vue-tsc@2.2.0(typescript@5.7.3))
+      nuxt: 3.12.2(@opentelemetry/api@1.9.0)(@parcel/watcher@2.4.1)(@types/node@20.14.5)(@unocss/reset@0.61.0)(axios@1.7.2)(change-case@4.1.2)(encoding@0.1.13)(eslint@9.21.0(jiti@1.21.6))(floating-vue@5.2.2(@nuxt/kit@3.12.2(magicast@0.3.4)(rollup@4.18.0))(vue@3.5.0(typescript@5.7.3)))(ioredis@5.4.1)(magicast@0.3.4)(nprogress@0.2.0)(optionator@0.9.4)(rollup@4.18.0)(sass@1.77.6)(stylelint@16.10.0(typescript@5.7.3))(terser@5.31.1)(typescript@5.7.3)(unocss@0.61.0(postcss@8.4.49)(rollup@4.18.0)(vite@5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1)))(vite@5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1))(vue-tsc@2.2.0(typescript@5.7.3))
       vite: 5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1)
     transitivePeerDependencies:
       - magicast
@@ -17543,10 +17599,10 @@ snapshots:
       rc9: 2.1.2
       semver: 7.6.2
 
-  '@nuxt/devtools@1.3.3(86c0e42abac1dc73e80fc2b125ee7167)':
+  '@nuxt/devtools@1.3.3(e2eca743e0bd78efefa47276b120eadb)':
     dependencies:
       '@antfu/utils': 0.7.8
-      '@nuxt/devtools-kit': 1.3.3(magicast@0.3.4)(nuxt@3.12.2(@opentelemetry/api@1.9.0)(@parcel/watcher@2.4.1)(@types/node@20.14.5)(@unocss/reset@0.61.0)(axios@1.7.2)(change-case@4.1.2)(encoding@0.1.13)(eslint@9.20.1(jiti@1.21.6))(floating-vue@5.2.2(@nuxt/kit@3.12.2(magicast@0.3.4)(rollup@4.18.0))(vue@3.5.0(typescript@5.7.3)))(ioredis@5.4.1)(magicast@0.3.4)(nprogress@0.2.0)(optionator@0.9.4)(rollup@4.18.0)(sass@1.77.6)(stylelint@16.10.0(typescript@5.7.3))(terser@5.31.1)(typescript@5.7.3)(unocss@0.61.0(postcss@8.4.49)(rollup@4.18.0)(vite@5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1)))(vite@5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1))(vue-tsc@2.2.0(typescript@5.7.3)))(rollup@4.18.0)(vite@5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1))
+      '@nuxt/devtools-kit': 1.3.3(magicast@0.3.4)(nuxt@3.12.2(@opentelemetry/api@1.9.0)(@parcel/watcher@2.4.1)(@types/node@20.14.5)(@unocss/reset@0.61.0)(axios@1.7.2)(change-case@4.1.2)(encoding@0.1.13)(eslint@9.21.0(jiti@1.21.6))(floating-vue@5.2.2(@nuxt/kit@3.12.2(magicast@0.3.4)(rollup@4.18.0))(vue@3.5.0(typescript@5.7.3)))(ioredis@5.4.1)(magicast@0.3.4)(nprogress@0.2.0)(optionator@0.9.4)(rollup@4.18.0)(sass@1.77.6)(stylelint@16.10.0(typescript@5.7.3))(terser@5.31.1)(typescript@5.7.3)(unocss@0.61.0(postcss@8.4.49)(rollup@4.18.0)(vite@5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1)))(vite@5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1))(vue-tsc@2.2.0(typescript@5.7.3)))(rollup@4.18.0)(vite@5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1))
       '@nuxt/devtools-wizard': 1.3.3
       '@nuxt/kit': 3.12.2(magicast@0.3.4)(rollup@4.18.0)
       '@vue/devtools-applet': 7.1.3(@unocss/reset@0.61.0)(axios@1.7.2)(change-case@4.1.2)(floating-vue@5.2.2(@nuxt/kit@3.12.2(magicast@0.3.4)(rollup@4.18.0))(vue@3.5.0(typescript@5.7.3)))(nprogress@0.2.0)(unocss@0.61.0(postcss@8.4.49)(rollup@4.18.0)(vite@5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1)))(vite@5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1))(vue@3.5.13(typescript@5.7.3))
@@ -17567,7 +17623,7 @@ snapshots:
       launch-editor: 2.7.0
       local-pkg: 0.5.0
       magicast: 0.3.4
-      nuxt: 3.12.2(@opentelemetry/api@1.9.0)(@parcel/watcher@2.4.1)(@types/node@20.14.5)(@unocss/reset@0.61.0)(axios@1.7.2)(change-case@4.1.2)(encoding@0.1.13)(eslint@9.20.1(jiti@1.21.6))(floating-vue@5.2.2(@nuxt/kit@3.12.2(magicast@0.3.4)(rollup@4.18.0))(vue@3.5.0(typescript@5.7.3)))(ioredis@5.4.1)(magicast@0.3.4)(nprogress@0.2.0)(optionator@0.9.4)(rollup@4.18.0)(sass@1.77.6)(stylelint@16.10.0(typescript@5.7.3))(terser@5.31.1)(typescript@5.7.3)(unocss@0.61.0(postcss@8.4.49)(rollup@4.18.0)(vite@5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1)))(vite@5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1))(vue-tsc@2.2.0(typescript@5.7.3))
+      nuxt: 3.12.2(@opentelemetry/api@1.9.0)(@parcel/watcher@2.4.1)(@types/node@20.14.5)(@unocss/reset@0.61.0)(axios@1.7.2)(change-case@4.1.2)(encoding@0.1.13)(eslint@9.21.0(jiti@1.21.6))(floating-vue@5.2.2(@nuxt/kit@3.12.2(magicast@0.3.4)(rollup@4.18.0))(vue@3.5.0(typescript@5.7.3)))(ioredis@5.4.1)(magicast@0.3.4)(nprogress@0.2.0)(optionator@0.9.4)(rollup@4.18.0)(sass@1.77.6)(stylelint@16.10.0(typescript@5.7.3))(terser@5.31.1)(typescript@5.7.3)(unocss@0.61.0(postcss@8.4.49)(rollup@4.18.0)(vite@5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1)))(vite@5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1))(vue-tsc@2.2.0(typescript@5.7.3))
       nypm: 0.3.8
       ohash: 1.1.3
       pacote: 18.0.6
@@ -17677,7 +17733,7 @@ snapshots:
       - rollup
       - supports-color
 
-  '@nuxt/vite-builder@3.12.2(@types/node@20.14.5)(eslint@9.20.1(jiti@1.21.6))(magicast@0.3.4)(optionator@0.9.4)(rollup@4.18.0)(sass@1.77.6)(stylelint@16.10.0(typescript@5.7.3))(terser@5.31.1)(typescript@5.7.3)(vue-tsc@2.2.0(typescript@5.7.3))(vue@3.5.13(typescript@5.7.3))':
+  '@nuxt/vite-builder@3.12.2(@types/node@20.14.5)(eslint@9.21.0(jiti@1.21.6))(magicast@0.3.4)(optionator@0.9.4)(rollup@4.18.0)(sass@1.77.6)(stylelint@16.10.0(typescript@5.7.3))(terser@5.31.1)(typescript@5.7.3)(vue-tsc@2.2.0(typescript@5.7.3))(vue@3.5.13(typescript@5.7.3))':
     dependencies:
       '@nuxt/kit': 3.12.2(magicast@0.3.4)(rollup@4.18.0)
       '@rollup/plugin-replace': 5.0.7(rollup@4.18.0)
@@ -17711,7 +17767,7 @@ snapshots:
       unplugin: 1.10.1
       vite: 5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1)
       vite-node: 1.6.0(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1)
-      vite-plugin-checker: 0.6.4(eslint@9.20.1(jiti@1.21.6))(optionator@0.9.4)(stylelint@16.10.0(typescript@5.7.3))(typescript@5.7.3)(vite@5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1))(vue-tsc@2.2.0(typescript@5.7.3))
+      vite-plugin-checker: 0.6.4(eslint@9.21.0(jiti@1.21.6))(optionator@0.9.4)(stylelint@16.10.0(typescript@5.7.3))(typescript@5.7.3)(vite@5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1))(vue-tsc@2.2.0(typescript@5.7.3))
       vue: 3.5.13(typescript@5.7.3)
       vue-bundle-renderer: 2.1.0
     transitivePeerDependencies:
@@ -17846,7 +17902,7 @@ snapshots:
   '@parcel/watcher-wasm@2.4.1':
     dependencies:
       is-glob: 4.0.3
-      micromatch: 4.0.7
+      micromatch: 4.0.8
 
   '@parcel/watcher-win32-arm64@2.4.1':
     optional: true
@@ -17861,7 +17917,7 @@ snapshots:
     dependencies:
       detect-libc: 1.0.3
       is-glob: 4.0.3
-      micromatch: 4.0.7
+      micromatch: 4.0.8
       node-addon-api: 7.1.0
     optionalDependencies:
       '@parcel/watcher-android-arm64': 2.4.1
@@ -17962,7 +18018,7 @@ snapshots:
 
   '@rollup/pluginutils@5.1.4(rollup@4.18.0)':
     dependencies:
-      '@types/estree': 1.0.5
+      '@types/estree': 1.0.6
       estree-walker: 2.0.2
       picomatch: 4.0.2
     optionalDependencies:
@@ -17970,7 +18026,7 @@ snapshots:
 
   '@rollup/pluginutils@5.1.4(rollup@4.30.1)':
     dependencies:
-      '@types/estree': 1.0.5
+      '@types/estree': 1.0.6
       estree-walker: 2.0.2
       picomatch: 4.0.2
     optionalDependencies:
@@ -18352,7 +18408,7 @@ snapshots:
       '@yarnpkg/fslib': 2.10.3
       '@yarnpkg/libzip': 2.3.0
       chalk: 4.1.2
-      cross-spawn: 7.0.3
+      cross-spawn: 7.0.6
       esbuild: 0.20.2
       esbuild-register: 3.5.0(esbuild@0.20.2)
       execa: 5.1.1
@@ -18541,7 +18597,7 @@ snapshots:
       ts-dedent: 2.2.0
       type-fest: 2.19.0
       vue: 3.5.13(typescript@5.7.3)
-      vue-component-type-helpers: 2.2.2
+      vue-component-type-helpers: 2.2.4
 
   '@supercharge/promise-pool@2.4.0': {}
 
@@ -19434,13 +19490,13 @@ snapshots:
 
   '@typescript-eslint/eslint-plugin@6.21.0(@typescript-eslint/parser@6.21.0(eslint@8.57.0)(typescript@5.7.3))(eslint@8.57.0)(typescript@5.7.3)':
     dependencies:
-      '@eslint-community/regexpp': 4.10.1
+      '@eslint-community/regexpp': 4.12.1
       '@typescript-eslint/parser': 6.21.0(eslint@8.57.0)(typescript@5.7.3)
       '@typescript-eslint/scope-manager': 6.21.0
       '@typescript-eslint/type-utils': 6.21.0(eslint@8.57.0)(typescript@5.7.3)
       '@typescript-eslint/utils': 6.21.0(eslint@8.57.0)(typescript@5.7.3)
       '@typescript-eslint/visitor-keys': 6.21.0
-      debug: 4.3.5
+      debug: 4.4.0
       eslint: 8.57.0
       graphemer: 1.4.0
       ignore: 5.3.1
@@ -19466,6 +19522,23 @@ snapshots:
       natural-compare: 1.4.0
       ts-api-utils: 2.0.1(typescript@5.7.3)
       typescript: 5.7.3
+    transitivePeerDependencies:
+      - supports-color
+
+  '@typescript-eslint/eslint-plugin@8.24.1(@typescript-eslint/parser@8.24.1(eslint@9.21.0(jiti@1.21.6))(typescript@4.9.5))(eslint@9.21.0(jiti@1.21.6))(typescript@4.9.5)':
+    dependencies:
+      '@eslint-community/regexpp': 4.12.1
+      '@typescript-eslint/parser': 8.24.1(eslint@9.21.0(jiti@1.21.6))(typescript@4.9.5)
+      '@typescript-eslint/scope-manager': 8.24.1
+      '@typescript-eslint/type-utils': 8.24.1(eslint@9.21.0(jiti@1.21.6))(typescript@4.9.5)
+      '@typescript-eslint/utils': 8.24.1(eslint@9.21.0(jiti@1.21.6))(typescript@4.9.5)
+      '@typescript-eslint/visitor-keys': 8.24.1
+      eslint: 9.21.0(jiti@1.21.6)
+      graphemer: 1.4.0
+      ignore: 5.3.1
+      natural-compare: 1.4.0
+      ts-api-utils: 2.0.1(typescript@4.9.5)
+      typescript: 4.9.5
     transitivePeerDependencies:
       - supports-color
 
@@ -19511,7 +19584,7 @@ snapshots:
       '@typescript-eslint/types': 6.21.0
       '@typescript-eslint/typescript-estree': 6.21.0(typescript@5.7.3)
       '@typescript-eslint/visitor-keys': 6.21.0
-      debug: 4.3.5
+      debug: 4.4.0
       eslint: 8.57.0
     optionalDependencies:
       typescript: 5.7.3
@@ -19527,6 +19600,18 @@ snapshots:
       debug: 4.4.0
       eslint: 9.20.1(jiti@1.21.6)
       typescript: 5.7.3
+    transitivePeerDependencies:
+      - supports-color
+
+  '@typescript-eslint/parser@8.24.1(eslint@9.21.0(jiti@1.21.6))(typescript@4.9.5)':
+    dependencies:
+      '@typescript-eslint/scope-manager': 8.24.1
+      '@typescript-eslint/types': 8.24.1
+      '@typescript-eslint/typescript-estree': 8.24.1(typescript@4.9.5)
+      '@typescript-eslint/visitor-keys': 8.24.1
+      debug: 4.4.0
+      eslint: 9.21.0(jiti@1.21.6)
+      typescript: 4.9.5
     transitivePeerDependencies:
       - supports-color
 
@@ -19611,6 +19696,17 @@ snapshots:
       eslint: 9.20.1(jiti@1.21.6)
       ts-api-utils: 2.0.1(typescript@5.7.3)
       typescript: 5.7.3
+    transitivePeerDependencies:
+      - supports-color
+
+  '@typescript-eslint/type-utils@8.24.1(eslint@9.21.0(jiti@1.21.6))(typescript@4.9.5)':
+    dependencies:
+      '@typescript-eslint/typescript-estree': 8.24.1(typescript@4.9.5)
+      '@typescript-eslint/utils': 8.24.1(eslint@9.21.0(jiti@1.21.6))(typescript@4.9.5)
+      debug: 4.4.0
+      eslint: 9.21.0(jiti@1.21.6)
+      ts-api-utils: 2.0.1(typescript@4.9.5)
+      typescript: 4.9.5
     transitivePeerDependencies:
       - supports-color
 
@@ -19724,6 +19820,20 @@ snapshots:
       ts-api-utils: 1.3.0(typescript@5.7.3)
     optionalDependencies:
       typescript: 5.7.3
+    transitivePeerDependencies:
+      - supports-color
+
+  '@typescript-eslint/typescript-estree@8.24.1(typescript@4.9.5)':
+    dependencies:
+      '@typescript-eslint/types': 8.24.1
+      '@typescript-eslint/visitor-keys': 8.24.1
+      debug: 4.4.0
+      fast-glob: 3.3.2
+      is-glob: 4.0.3
+      minimatch: 9.0.4
+      semver: 7.6.2
+      ts-api-utils: 2.0.1(typescript@4.9.5)
+      typescript: 4.9.5
     transitivePeerDependencies:
       - supports-color
 
@@ -19842,6 +19952,17 @@ snapshots:
       '@typescript-eslint/typescript-estree': 8.24.1(typescript@5.7.3)
       eslint: 9.20.1(jiti@1.21.6)
       typescript: 5.7.3
+    transitivePeerDependencies:
+      - supports-color
+
+  '@typescript-eslint/utils@8.24.1(eslint@9.21.0(jiti@1.21.6))(typescript@4.9.5)':
+    dependencies:
+      '@eslint-community/eslint-utils': 4.4.0(eslint@9.21.0(jiti@1.21.6))
+      '@typescript-eslint/scope-manager': 8.24.1
+      '@typescript-eslint/types': 8.24.1
+      '@typescript-eslint/typescript-estree': 8.24.1(typescript@4.9.5)
+      eslint: 9.21.0(jiti@1.21.6)
+      typescript: 4.9.5
     transitivePeerDependencies:
       - supports-color
 
@@ -20068,7 +20189,7 @@ snapshots:
       estree-walker: 2.0.2
       glob: 7.2.3
       graceful-fs: 4.2.11
-      micromatch: 4.0.7
+      micromatch: 4.0.8
       node-gyp-build: 4.8.1
       resolve-from: 5.0.0
     transitivePeerDependencies:
@@ -23107,11 +23228,20 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  eslint-plugin-check-file@2.8.0(eslint@8.57.0):
+  eslint-module-utils@2.12.0(eslint-import-resolver-node@0.3.9)(eslint@9.21.0(jiti@1.21.6)):
     dependencies:
-      eslint: 8.57.0
+      debug: 3.2.7(supports-color@5.5.0)
+    optionalDependencies:
+      eslint: 9.21.0(jiti@1.21.6)
+      eslint-import-resolver-node: 0.3.9
+    transitivePeerDependencies:
+      - supports-color
+
+  eslint-plugin-check-file@3.1.0(eslint@9.21.0(jiti@1.21.6)):
+    dependencies:
+      eslint: 9.21.0(jiti@1.21.6)
       is-glob: 4.0.3
-      micromatch: 4.0.7
+      micromatch: 4.0.8
 
   eslint-plugin-import@2.31.0(@typescript-eslint/parser@5.62.0(eslint@8.57.0)(typescript@4.9.5))(eslint@8.57.0):
     dependencies:
@@ -23137,6 +23267,33 @@ snapshots:
       tsconfig-paths: 3.15.0
     optionalDependencies:
       '@typescript-eslint/parser': 5.62.0(eslint@8.57.0)(typescript@4.9.5)
+    transitivePeerDependencies:
+      - eslint-import-resolver-typescript
+      - eslint-import-resolver-webpack
+      - supports-color
+
+  eslint-plugin-import@2.31.0(eslint@9.21.0(jiti@1.21.6)):
+    dependencies:
+      '@rtsao/scc': 1.1.0
+      array-includes: 3.1.8
+      array.prototype.findlastindex: 1.2.5
+      array.prototype.flat: 1.3.2
+      array.prototype.flatmap: 1.3.2
+      debug: 3.2.7(supports-color@5.5.0)
+      doctrine: 2.1.0
+      eslint: 9.21.0(jiti@1.21.6)
+      eslint-import-resolver-node: 0.3.9
+      eslint-module-utils: 2.12.0(eslint-import-resolver-node@0.3.9)(eslint@9.21.0(jiti@1.21.6))
+      hasown: 2.0.2
+      is-core-module: 2.16.1
+      is-glob: 4.0.3
+      minimatch: 3.1.2
+      object.fromentries: 2.0.8
+      object.groupby: 1.0.3
+      object.values: 1.2.0
+      semver: 6.3.1
+      string.prototype.trimend: 1.0.8
+      tsconfig-paths: 3.15.0
     transitivePeerDependencies:
       - eslint-import-resolver-typescript
       - eslint-import-resolver-webpack
@@ -23298,6 +23455,47 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
+  eslint@9.21.0(jiti@1.21.6):
+    dependencies:
+      '@eslint-community/eslint-utils': 4.4.0(eslint@9.21.0(jiti@1.21.6))
+      '@eslint-community/regexpp': 4.12.1
+      '@eslint/config-array': 0.19.2
+      '@eslint/core': 0.12.0
+      '@eslint/eslintrc': 3.3.0
+      '@eslint/js': 9.21.0
+      '@eslint/plugin-kit': 0.2.7
+      '@humanfs/node': 0.16.6
+      '@humanwhocodes/module-importer': 1.0.1
+      '@humanwhocodes/retry': 0.4.2
+      '@types/estree': 1.0.6
+      '@types/json-schema': 7.0.15
+      ajv: 6.12.6
+      chalk: 4.1.2
+      cross-spawn: 7.0.6
+      debug: 4.4.0
+      escape-string-regexp: 4.0.0
+      eslint-scope: 8.2.0
+      eslint-visitor-keys: 4.2.0
+      espree: 10.3.0
+      esquery: 1.5.0
+      esutils: 2.0.3
+      fast-deep-equal: 3.1.3
+      file-entry-cache: 8.0.0
+      find-up: 5.0.0
+      glob-parent: 6.0.2
+      ignore: 5.3.1
+      imurmurhash: 0.1.4
+      is-glob: 4.0.3
+      json-stable-stringify-without-jsonify: 1.0.1
+      lodash.merge: 4.6.2
+      minimatch: 3.1.2
+      natural-compare: 1.4.0
+      optionator: 0.9.4
+    optionalDependencies:
+      jiti: 1.21.6
+    transitivePeerDependencies:
+      - supports-color
+
   esm-resolve@1.0.11: {}
 
   espree@10.3.0:
@@ -23330,7 +23528,7 @@ snapshots:
 
   estree-walker@3.0.3:
     dependencies:
-      '@types/estree': 1.0.5
+      '@types/estree': 1.0.6
 
   esutils@2.0.3: {}
 
@@ -23351,7 +23549,7 @@ snapshots:
 
   execa@5.1.1:
     dependencies:
-      cross-spawn: 7.0.3
+      cross-spawn: 7.0.6
       get-stream: 6.0.1
       human-signals: 2.1.0
       is-stream: 2.0.1
@@ -23363,7 +23561,7 @@ snapshots:
 
   execa@7.2.0:
     dependencies:
-      cross-spawn: 7.0.3
+      cross-spawn: 7.0.6
       get-stream: 6.0.1
       human-signals: 4.3.1
       is-stream: 3.0.0
@@ -23375,7 +23573,7 @@ snapshots:
 
   execa@8.0.1:
     dependencies:
-      cross-spawn: 7.0.3
+      cross-spawn: 7.0.6
       get-stream: 8.0.1
       human-signals: 5.0.0
       is-stream: 3.0.0
@@ -23678,7 +23876,7 @@ snapshots:
 
   find-yarn-workspace-root2@1.2.16:
     dependencies:
-      micromatch: 4.0.7
+      micromatch: 4.0.8
       pkg-dir: 4.2.0
 
   flat-cache@3.2.0:
@@ -23735,15 +23933,15 @@ snapshots:
 
   foreground-child@2.0.0:
     dependencies:
-      cross-spawn: 7.0.3
+      cross-spawn: 7.0.6
       signal-exit: 3.0.7
 
   foreground-child@3.2.1:
     dependencies:
-      cross-spawn: 7.0.3
+      cross-spawn: 7.0.6
       signal-exit: 4.1.0
 
-  fork-ts-checker-webpack-plugin@6.5.3(eslint@9.20.1(jiti@1.21.6))(typescript@4.9.5)(vue-template-compiler@2.7.16)(webpack@5.92.0):
+  fork-ts-checker-webpack-plugin@6.5.3(eslint@9.21.0(jiti@1.21.6))(typescript@4.9.5)(vue-template-compiler@2.7.16)(webpack@5.92.0):
     dependencies:
       '@babel/code-frame': 7.24.7
       '@types/json-schema': 7.0.15
@@ -23761,7 +23959,7 @@ snapshots:
       typescript: 4.9.5
       webpack: 5.92.0
     optionalDependencies:
-      eslint: 9.20.1(jiti@1.21.6)
+      eslint: 9.21.0(jiti@1.21.6)
       vue-template-compiler: 2.7.16
 
   form-data@3.0.1:
@@ -24385,7 +24583,7 @@ snapshots:
       http-proxy: 1.18.1
       is-glob: 4.0.3
       is-plain-obj: 3.0.0
-      micromatch: 4.0.7
+      micromatch: 4.0.8
     optionalDependencies:
       '@types/express': 4.17.21
     transitivePeerDependencies:
@@ -24912,7 +25110,7 @@ snapshots:
   istanbul-lib-processinfo@2.0.3:
     dependencies:
       archy: 1.0.0
-      cross-spawn: 7.0.3
+      cross-spawn: 7.0.6
       istanbul-lib-coverage: 3.2.2
       p-map: 3.0.0
       rimraf: 3.0.2
@@ -25070,7 +25268,7 @@ snapshots:
       jest-runner: 27.5.1
       jest-util: 27.5.1
       jest-validate: 27.5.1
-      micromatch: 4.0.7
+      micromatch: 4.0.8
       parse-json: 5.2.0
       pretty-format: 27.5.1
       slash: 3.0.0
@@ -25205,7 +25403,7 @@ snapshots:
       jest-serializer: 27.5.1
       jest-util: 27.5.1
       jest-worker: 27.5.1
-      micromatch: 4.0.7
+      micromatch: 4.0.8
       walker: 1.0.8
     optionalDependencies:
       fsevents: 2.3.3
@@ -25299,7 +25497,7 @@ snapshots:
       '@types/stack-utils': 2.0.3
       chalk: 4.1.2
       graceful-fs: 4.2.11
-      micromatch: 4.0.7
+      micromatch: 4.0.8
       pretty-format: 27.5.1
       slash: 3.0.0
       stack-utils: 2.0.6
@@ -26906,14 +27104,14 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
-  nuxt@3.12.2(@opentelemetry/api@1.9.0)(@parcel/watcher@2.4.1)(@types/node@20.14.5)(@unocss/reset@0.61.0)(axios@1.7.2)(change-case@4.1.2)(encoding@0.1.13)(eslint@9.20.1(jiti@1.21.6))(floating-vue@5.2.2(@nuxt/kit@3.12.2(magicast@0.3.4)(rollup@4.18.0))(vue@3.5.0(typescript@5.7.3)))(ioredis@5.4.1)(magicast@0.3.4)(nprogress@0.2.0)(optionator@0.9.4)(rollup@4.18.0)(sass@1.77.6)(stylelint@16.10.0(typescript@5.7.3))(terser@5.31.1)(typescript@5.7.3)(unocss@0.61.0(postcss@8.4.49)(rollup@4.18.0)(vite@5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1)))(vite@5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1))(vue-tsc@2.2.0(typescript@5.7.3)):
+  nuxt@3.12.2(@opentelemetry/api@1.9.0)(@parcel/watcher@2.4.1)(@types/node@20.14.5)(@unocss/reset@0.61.0)(axios@1.7.2)(change-case@4.1.2)(encoding@0.1.13)(eslint@9.21.0(jiti@1.21.6))(floating-vue@5.2.2(@nuxt/kit@3.12.2(magicast@0.3.4)(rollup@4.18.0))(vue@3.5.0(typescript@5.7.3)))(ioredis@5.4.1)(magicast@0.3.4)(nprogress@0.2.0)(optionator@0.9.4)(rollup@4.18.0)(sass@1.77.6)(stylelint@16.10.0(typescript@5.7.3))(terser@5.31.1)(typescript@5.7.3)(unocss@0.61.0(postcss@8.4.49)(rollup@4.18.0)(vite@5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1)))(vite@5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1))(vue-tsc@2.2.0(typescript@5.7.3)):
     dependencies:
       '@nuxt/devalue': 2.0.2
-      '@nuxt/devtools': 1.3.3(86c0e42abac1dc73e80fc2b125ee7167)
+      '@nuxt/devtools': 1.3.3(e2eca743e0bd78efefa47276b120eadb)
       '@nuxt/kit': 3.12.2(magicast@0.3.4)(rollup@4.18.0)
       '@nuxt/schema': 3.12.2(rollup@4.18.0)
       '@nuxt/telemetry': 2.5.4(magicast@0.3.4)(rollup@4.18.0)
-      '@nuxt/vite-builder': 3.12.2(@types/node@20.14.5)(eslint@9.20.1(jiti@1.21.6))(magicast@0.3.4)(optionator@0.9.4)(rollup@4.18.0)(sass@1.77.6)(stylelint@16.10.0(typescript@5.7.3))(terser@5.31.1)(typescript@5.7.3)(vue-tsc@2.2.0(typescript@5.7.3))(vue@3.5.13(typescript@5.7.3))
+      '@nuxt/vite-builder': 3.12.2(@types/node@20.14.5)(eslint@9.21.0(jiti@1.21.6))(magicast@0.3.4)(optionator@0.9.4)(rollup@4.18.0)(sass@1.77.6)(stylelint@16.10.0(typescript@5.7.3))(terser@5.31.1)(typescript@5.7.3)(vue-tsc@2.2.0(typescript@5.7.3))(vue@3.5.13(typescript@5.7.3))
       '@unhead/dom': 1.9.13
       '@unhead/ssr': 1.9.13
       '@unhead/vue': 1.9.13(vue@3.5.13(typescript@5.7.3))
@@ -28473,7 +28671,7 @@ snapshots:
       lodash.flow: 3.5.0
       pure-color: 1.3.0
 
-  react-dev-utils@12.0.1(eslint@9.20.1(jiti@1.21.6))(typescript@4.9.5)(vue-template-compiler@2.7.16)(webpack@5.92.0):
+  react-dev-utils@12.0.1(eslint@9.21.0(jiti@1.21.6))(typescript@4.9.5)(vue-template-compiler@2.7.16)(webpack@5.92.0):
     dependencies:
       '@babel/code-frame': 7.24.7
       address: 1.2.2
@@ -28484,7 +28682,7 @@ snapshots:
       escape-string-regexp: 4.0.0
       filesize: 8.0.7
       find-up: 5.0.0
-      fork-ts-checker-webpack-plugin: 6.5.3(eslint@9.20.1(jiti@1.21.6))(typescript@4.9.5)(vue-template-compiler@2.7.16)(webpack@5.92.0)
+      fork-ts-checker-webpack-plugin: 6.5.3(eslint@9.21.0(jiti@1.21.6))(typescript@4.9.5)(vue-template-compiler@2.7.16)(webpack@5.92.0)
       global-modules: 2.0.0
       globby: 11.1.0
       gzip-size: 6.0.0
@@ -30030,6 +30228,10 @@ snapshots:
     dependencies:
       typescript: 5.7.3
 
+  ts-api-utils@2.0.1(typescript@4.9.5):
+    dependencies:
+      typescript: 4.9.5
+
   ts-api-utils@2.0.1(typescript@5.7.3):
     dependencies:
       typescript: 5.7.3
@@ -30314,6 +30516,16 @@ snapshots:
       '@typescript-eslint/utils': 8.24.1(eslint@9.20.1(jiti@1.21.6))(typescript@5.7.3)
       eslint: 9.20.1(jiti@1.21.6)
       typescript: 5.7.3
+    transitivePeerDependencies:
+      - supports-color
+
+  typescript-eslint@8.24.1(eslint@9.21.0(jiti@1.21.6))(typescript@4.9.5):
+    dependencies:
+      '@typescript-eslint/eslint-plugin': 8.24.1(@typescript-eslint/parser@8.24.1(eslint@9.21.0(jiti@1.21.6))(typescript@4.9.5))(eslint@9.21.0(jiti@1.21.6))(typescript@4.9.5)
+      '@typescript-eslint/parser': 8.24.1(eslint@9.21.0(jiti@1.21.6))(typescript@4.9.5)
+      '@typescript-eslint/utils': 8.24.1(eslint@9.21.0(jiti@1.21.6))(typescript@4.9.5)
+      eslint: 9.21.0(jiti@1.21.6)
+      typescript: 4.9.5
     transitivePeerDependencies:
       - supports-color
 
@@ -30823,7 +31035,7 @@ snapshots:
       - supports-color
       - terser
 
-  vite-plugin-checker@0.6.4(eslint@9.20.1(jiti@1.21.6))(optionator@0.9.4)(stylelint@16.10.0(typescript@5.7.3))(typescript@5.7.3)(vite@5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1))(vue-tsc@2.2.0(typescript@5.7.3)):
+  vite-plugin-checker@0.6.4(eslint@9.21.0(jiti@1.21.6))(optionator@0.9.4)(stylelint@16.10.0(typescript@5.7.3))(typescript@5.7.3)(vite@5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1))(vue-tsc@2.2.0(typescript@5.7.3)):
     dependencies:
       '@babel/code-frame': 7.24.7
       ansi-escapes: 4.3.2
@@ -30842,7 +31054,7 @@ snapshots:
       vscode-languageserver-textdocument: 1.0.11
       vscode-uri: 3.0.8
     optionalDependencies:
-      eslint: 9.20.1(jiti@1.21.6)
+      eslint: 9.21.0(jiti@1.21.6)
       optionator: 0.9.4
       stylelint: 16.10.0(typescript@5.7.3)
       typescript: 5.7.3
@@ -31099,7 +31311,7 @@ snapshots:
 
   vue-component-type-helpers@2.0.21: {}
 
-  vue-component-type-helpers@2.2.2: {}
+  vue-component-type-helpers@2.2.4: {}
 
   vue-demi@0.14.10(vue@3.5.13(typescript@5.7.3)):
     dependencies:

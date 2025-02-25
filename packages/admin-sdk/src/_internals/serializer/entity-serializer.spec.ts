@@ -20,6 +20,7 @@ describe('entity-serializer.ts', () => {
     };
 
     // @ts-expect-error - we know that this entity does not exist
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const association = new Entity('bar', 'jest-association', {...cloneDeep(originValues)}) as any;
     association.string = 'jest-is-more-fun';
     association.number = 1337;
@@ -30,6 +31,7 @@ describe('entity-serializer.ts', () => {
     const entity = new Entity('foo', 'jest', {
       ...cloneDeep(originValues),
       association,
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     }) as any;
     entity.string = 'jest-is-more-fun';
     entity.number = 1337;
@@ -186,13 +188,13 @@ describe('entity-serializer.ts', () => {
       ],
     };
 
-    // Introduce circular reference
-    // @ts-expect-error
+    // @ts-expect-error -- Introduce circular reference
     originValues.lineItems[0].children[0].parent = originValues.lineItems[0];
 
     // @ts-expect-error - we know that this entity does not exist
     const entity = new Entity('foo', 'jest', {
       ...cloneDeep(originValues),
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     }) as any;
 
     entity.string = 'jest-is-more-fun';

@@ -246,6 +246,7 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
     }
 
     // Send the data to the target window
+    // eslint-disable-next-line @typescript-eslint/no-unused-expressions -- Failed in Eslint v9, please update if you see this
     _targetWindow ? _targetWindow.postMessage(message, targetOrigin) : window.parent.postMessage(message, targetOrigin);
 
     // Send timeout when no one sends data back or handler freezes
@@ -470,9 +471,9 @@ export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
  * defined and can be hidden.
  */
 export function createHandler<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(messageType: MESSAGE_TYPE) {
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   return (method: (data: MessageDataType<MESSAGE_TYPE> & BaseMessageOptions, additionalInformation: {
     _event_: MessageEvent<string>,
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   }) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | ShopwareMessageTypes[MESSAGE_TYPE]['responseType']) => {
     return handle(messageType, method);
   };
