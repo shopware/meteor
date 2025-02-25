@@ -257,6 +257,41 @@ export const VisualTestDisabled: MtSelectStory = {
   },
 };
 
+export const VisualTestDisabledSingleOption: MtSelectStory = {
+  name: "Should disable a single option",
+  args: {
+    modelValue: ["a", "c"],
+    options: [
+      { id: 1, label: "Option A", value: "a", disabled: false },
+      { id: 2, label: "Option B", value: "b", disabled: true },
+      { id: 3, label: "Option C", value: "c", disabled: false },
+    ],
+    enableMultiSelection: true,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await userEvent.click(canvas.getByRole("textbox"));
+
+    const popover = document.querySelector(".mt-popover-deprecated__wrapper");
+    expect(popover).toBeVisible();
+
+    // Check if option A and C are enabled, option B is disabled
+    const optionA = document.querySelector('[data-testid="mt-select-option--a"]');
+    const optionB = document.querySelector('[data-testid="mt-select-option--b"]');
+    const optionC = document.querySelector('[data-testid="mt-select-option--c"]');
+
+    expect(optionA).toBeVisible();
+    expect(optionA).toHaveAttribute('aria-disabled', 'false');
+    
+    expect(optionB).toBeVisible();
+    expect(optionB).toHaveAttribute('aria-disabled', 'true');
+
+    expect(optionC).toBeVisible();
+    expect(optionC).toHaveAttribute('aria-disabled', 'false');
+  },
+};
+
 export const VisualTestError: MtSelectStory = {
   name: "Should display error",
   args: {

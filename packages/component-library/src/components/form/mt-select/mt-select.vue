@@ -79,6 +79,7 @@
               :data-testid="'mt-select-option--' + item.value"
               v-bind="{ item, index }"
               @item-select="addItem"
+              :disabled="item.disabled"
             >
               <slot
                 name="result-label-property"
