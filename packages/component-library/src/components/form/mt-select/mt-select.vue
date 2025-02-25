@@ -523,7 +523,6 @@ export default defineComponent({
       this.limit += this.limit;
     },
 
-    // @ts-expect-error
     onSearchTermChange: debounce(function updateSearchTerm(term) {
       // @ts-expect-error - this context exists even here
       this.searchTerm = term;
