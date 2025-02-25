@@ -639,6 +639,9 @@ importers:
         specifier: ^16.10.0
         version: 16.10.0(typescript@5.7.3)
     devDependencies:
+      '@shopware-ag/meteor-prettier-config':
+        specifier: workspace:*
+        version: link:../prettier-config
       prettier:
         specifier: ^3.5.2
         version: 3.5.2
@@ -18380,7 +18383,7 @@ snapshots:
       node-fetch: 2.7.0(encoding@0.1.13)
       picomatch: 2.3.1
       pkg-dir: 5.0.0
-      prettier-fallback: prettier@3.5.1
+      prettier-fallback: prettier@3.5.2
       pretty-hrtime: 1.0.3
       resolve-from: 5.0.0
       semver: 7.6.2
