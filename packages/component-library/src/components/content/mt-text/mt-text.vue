@@ -1,6 +1,6 @@
 <template>
   <component
-    :is="as ?? 'p'"
+    :is="as"
     :class="[`mt-text--size-${size}`, `mt-text--weight-${weight}`]"
     :style="{ color: `var(--${color})` }"
   >
@@ -22,6 +22,7 @@ withDefaults(
     size: "s",
     weight: "regular",
     color: "color-text-primary-default",
+    as: "p",
   },
 );
 </script>
