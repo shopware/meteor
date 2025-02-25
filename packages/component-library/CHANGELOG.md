@@ -1,5 +1,19 @@
 # Changelog
 
+## 4.4.0
+
+### Minor Changes
+
+- c235676: Make mt-url-field public
+
+## 4.3.1
+
+### Patch Changes
+
+- f251c89: Fix alignment of help-text in mt-textarea component
+- 489997c: Fix mt-popover-deprecated
+  - Previously the `mt-popover-deprecated` component was configured to have the name `MtPopover`. This caused issues with some compiler setups. Change the name to `MtPopoverDeprecated`.
+
 ## 4.3.0
 
 ### Minor Changes
