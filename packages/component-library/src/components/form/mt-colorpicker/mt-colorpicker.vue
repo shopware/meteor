@@ -31,12 +31,13 @@
       </div>
     </template>
 
-    <template #element>
+    <template #element="{ identification }">
       <input
         v-model="colorValue"
-        aria-label="colorpicker-color-value"
         class="mt-colorpicker__input"
         :spellcheck="false"
+        :id="identification"
+        :placeholder="placeholder"
         :disabled="disabled"
         :readonly="readonly"
         @click="onClickInput"
@@ -52,7 +53,12 @@
         :z-index="zIndex"
         :offset="-12"
       >
-        <div class="mt-colorpicker__colorpicker" ref="modal" @keyup.escape="outsideClick">
+        <div
+          class="mt-colorpicker__colorpicker"
+          data-testid="mt-colorpicker-dialog"
+          ref="modal"
+          @keyup.escape="outsideClick"
+        >
           <div
             ref="colorPicker"
             class="mt-colorpicker__colorpicker-selection"
@@ -337,6 +343,11 @@ export default defineComponent({
       type: Boolean,
       required: false,
       default: false,
+    },
+
+    placeholder: {
+      type: String,
+      required: false,
     },
 
     /**
@@ -1550,7 +1561,8 @@ export default defineComponent({
       height: 150px;
       border: 1px solid var(--color-border-primary-default);
       border-radius: var(--border-radius-xs);
-      background-image: linear-gradient(180deg, #fff, rgba(255, 255, 255, 0) 50%),
+      background-image:
+        linear-gradient(180deg, #fff, rgba(255, 255, 255, 0) 50%),
         linear-gradient(0deg, #000, rgba(0, 0, 0, 0) 50%),
         linear-gradient(90deg, #808080, rgba(128, 128, 128, 0) 100%);
     }

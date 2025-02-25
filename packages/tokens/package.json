@@ -32,20 +32,20 @@
     "build": "echo 'This is only used for turbo repo caching'"
   },
   "dependencies": {
-    "dotenv": "^16.4.1",
-    "ora": "^8.0.1",
-    "vitest": "^1.2.1",
-    "zod": "^3.22.4"
+    "dotenv": "^16.4.7",
+    "ora": "^8.2.0",
+    "vitest": "^3.0.6",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@types/node": "^20.11.8",
-    "@typescript-eslint/eslint-plugin": "^6.19.1",
-    "@typescript-eslint/parser": "^6.19.1",
-    "eslint": "^8.56.0",
-    "eslint-plugin-vitest": "^0.3.20",
-    "msw": "^2.1.5",
-    "prettier": "^3.2.4",
-    "style-dictionary": "^3.9.2",
-    "tsx": "^4.7.0"
+    "@eslint/eslintrc": "^3.2.0",
+    "@eslint/js": "^9.20.0",
+    "@types/node": "^22.13.4",
+    "eslint": "^9.20.1",
+    "eslint-plugin-vitest": "^0.5.4",
+    "msw": "^2.7.1",
+    "prettier": "^3.5.1",
+    "tsx": "^4.19.3",
+    "typescript-eslint": "^8.24.1"
   }
 }

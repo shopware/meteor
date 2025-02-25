@@ -1,6 +1,7 @@
 import { screen, render } from "@testing-library/vue";
 import MtCard from "./mt-card.vue";
-import { userEvent } from "@storybook/test";
+import { userEvent } from "@testing-library/user-event";
+
 describe("mt-card", () => {
   it("hides the inheritance toggle by default", () => {
     // ARRANGE

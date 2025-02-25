@@ -1,4 +1,4 @@
-import { userEvent } from "@storybook/test";
+import { userEvent } from "@testing-library/user-event";
 import MtSwitch from "./mt-switch.vue";
 import { render, screen } from "@testing-library/vue";
 

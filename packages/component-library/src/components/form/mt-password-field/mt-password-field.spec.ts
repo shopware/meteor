@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/vue";
 import { describe, it, expect } from "vitest";
 import MtPasswordField from "./mt-password-field.vue";
-import { userEvent } from "@storybook/test";
+import { userEvent } from "@testing-library/user-event";
 
 describe("mt-password-field", () => {
   it("has the correct name", async () => {

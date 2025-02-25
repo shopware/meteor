@@ -46,10 +46,10 @@ export class CSSDeliverable implements Deliverable {
 
         if (typeof resolvedValue === 'number') {
           if (!variableName.includes('weight')) {
-            return `--${variableName}: ${resolvedValue / 16}rem;`;
+            return `--${variableName}: ${(resolvedValue / 16).toString()}rem;`;
           }
 
-          return `--${variableName}: ${resolvedValue};`;
+          return `--${variableName}: ${resolvedValue.toString()};`;
         }
 
         return `--${variableName}: '${resolvedValue}';`;
