@@ -4,6 +4,7 @@
     :class="resultClasses"
     @mouseenter="onMouseEnter"
     @click.stop="onClickResult"
+    :aria-disabled="disabled"
   >
     <span class="mt-select-result__result-item-preview">
       <slot name="preview" />
