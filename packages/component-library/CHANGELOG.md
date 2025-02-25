@@ -1,5 +1,20 @@
 # Changelog
 
+## 4.4.1
+
+### Patch Changes
+
+- 1b0b620: Add missing placeholder to mt-colorpicker
+- 6cc3876: Focus colorpicker when clicking on its label
+- Updated dependencies [7abaa5a]
+  - @shopware-ag/meteor-tokens@1.0.0
+
+## 4.4.0
+
+### Minor Changes
+
+- c235676: Make mt-url-field public
+
 ## 4.3.1
 
 ### Patch Changes

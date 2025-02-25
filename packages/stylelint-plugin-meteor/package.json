@@ -1,6 +1,6 @@
 {
   "name": "@shopware-ag/stylelint-plugin-meteor",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com:shopware/meteor.git"
@@ -8,7 +8,9 @@
   "main": "./dist/commonjs/index.js",
   "scripts": {
     "build": "tshy",
-    "test:unit": "node --import tsx --test $(find . -name \"*.test.ts\")"
+    "test:unit": "node --import tsx --test $(find . -name \"*.test.ts\")",
+    "format:check": "prettier . --check",
+    "format": "prettier --write ."
   },
   "keywords": [],
   "license": "MIT",
@@ -18,9 +20,11 @@
     "stylelint": "^16.10.0"
   },
   "devDependencies": {
+    "prettier": "^3.5.2",
     "stylelint-test-rule-node": "^0.3.0",
     "tshy": "^3.0.2",
-    "tsx": "^4.7.0"
+    "tsx": "^4.7.0",
+    "@shopware-ag/meteor-prettier-config": "workspace:*"
   },
   "type": "module",
   "tshy": {
