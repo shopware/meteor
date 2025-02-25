@@ -115,7 +115,6 @@
 </template>
 
 <script lang="ts">
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { PropType } from "vue";
 
 import { defineComponent } from "vue";
