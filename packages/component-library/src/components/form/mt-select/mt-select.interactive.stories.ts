@@ -282,13 +282,13 @@ export const VisualTestDisabledSingleOption: MtSelectStory = {
     const optionC = document.querySelector('[data-testid="mt-select-option--c"]');
 
     expect(optionA).toBeVisible();
-    expect(optionA).toHaveAttribute('aria-disabled', 'false');
-    
+    expect(optionA).toHaveAttribute("aria-disabled", "false");
+
     expect(optionB).toBeVisible();
-    expect(optionB).toHaveAttribute('aria-disabled', 'true');
+    expect(optionB).toHaveAttribute("aria-disabled", "true");
 
     expect(optionC).toBeVisible();
-    expect(optionC).toHaveAttribute('aria-disabled', 'false');
+    expect(optionC).toHaveAttribute("aria-disabled", "false");
   },
 };
 
