@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.4.0
+
+### Minor Changes
+
+- c235676: Make mt-url-field public
+
 ## 4.3.1
 
 ### Patch Changes
