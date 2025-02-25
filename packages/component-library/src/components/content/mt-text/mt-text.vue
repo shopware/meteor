@@ -9,29 +9,21 @@
 </template>
 
 <script setup lang="ts">
-import type { Component, PropType } from "vue";
+import type { Component } from "vue";
 
-defineProps({
-  size: {
-    type: String as PropType<"2xs" | "xs" | "s" | "m" | "l" | "xl" | "2xl" | "3xl">,
-    required: false,
-    default: "s",
+withDefaults(
+  defineProps<{
+    size?: "2xs" | "xs" | "s" | "m" | "l" | "xl" | "2xl" | "3xl";
+    weight?: "bold" | "semibold" | "medium" | "regular";
+    color?: string;
+    as?: string | Component;
+  }>(),
+  {
+    size: "s",
+    weight: "regular",
+    color: "color-text-primary-default",
   },
-  weight: {
-    type: String as PropType<"bold" | "semibold" | "medium" | "regular">,
-    required: false,
-    default: "regular",
-  },
-  color: {
-    type: String,
-    required: false,
-    default: "color-text-primary-default",
-  },
-  as: {
-    type: String as PropType<string | Component>,
-    required: false,
-  },
-});
+);
 </script>
 
 <style scoped>
