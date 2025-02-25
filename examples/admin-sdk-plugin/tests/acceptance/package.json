@@ -10,8 +10,8 @@
   "main": "index.js",
   "scripts": {
     "format": "prettier ./tests --write",
-    "lint:eslint": "eslint . --ext .ts",
-    "lint:fix": "eslint . --ext .ts --fix",
+    "lint:eslint": "eslint .",
+    "lint:fix": "eslint . --fix",
     "test:ats": "playwright test",
     "test:ats:dev": "playwright test --ui"
   },
