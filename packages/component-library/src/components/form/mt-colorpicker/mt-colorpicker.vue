@@ -500,7 +500,6 @@ export default defineComponent({
     },
 
     sliderBackground(): string {
-      // eslint-disable-next-line max-len
       return `linear-gradient(90deg, hsla(${this.hueValue}, ${this.saturationValue}%, ${this.luminanceValue}%, 0), hsl(${this.hueValue}, ${this.saturationValue}%, ${this.luminanceValue}%)), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' width='100%25' height='100%25'%3E%3Crect width='10' height='10' x='00' y='00' fill='%23cdd5db' /%3E%3Crect width='10' height='10' x='10' y='10' fill='%23cdd5db' /%3E%3C/svg%3E")`;
     },
 
@@ -1560,7 +1559,8 @@ export default defineComponent({
       height: 150px;
       border: 1px solid var(--color-border-primary-default);
       border-radius: var(--border-radius-xs);
-      background-image: linear-gradient(180deg, #fff, rgba(255, 255, 255, 0) 50%),
+      background-image:
+        linear-gradient(180deg, #fff, rgba(255, 255, 255, 0) 50%),
         linear-gradient(0deg, #000, rgba(0, 0, 0, 0) 50%),
         linear-gradient(90deg, #808080, rgba(128, 128, 128, 0) 100%);
     }

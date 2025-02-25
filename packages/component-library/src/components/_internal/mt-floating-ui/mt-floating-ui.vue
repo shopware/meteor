@@ -54,7 +54,6 @@ const floatingUiArrow = ref<HTMLElement | null>(null);
 const floatingUi = ref<HTMLElement | null>(null);
 let cleanup: () => void;
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const bodyContainer = window.document.querySelector("body")!;
 const originalParentContainer = floatingUiContent.value?.parentElement;
 
