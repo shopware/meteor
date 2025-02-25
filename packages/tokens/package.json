@@ -1,6 +1,6 @@
 {
   "name": "@shopware-ag/meteor-tokens",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "description": "Design Tokens for the Meteor Design System used at shopware",
   "repository": {
     "type": "git",
