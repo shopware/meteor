@@ -15,7 +15,23 @@ withDefaults(
   defineProps<{
     size?: "2xs" | "xs" | "s" | "m" | "l" | "xl" | "2xl" | "3xl";
     weight?: "bold" | "semibold" | "medium" | "regular";
-    color?: string;
+    color?:
+      | "color-text-primary-default"
+      | "color-text-primary-disabled"
+      | "color-text-secondary-default"
+      | "color-text-tertiary-default"
+      | "color-text-brand-default"
+      | "color-text-brand-hover"
+      | "color-text-brand-disabled"
+      | "color-text-critical-default"
+      | "color-text-critical-disabled"
+      | "color-text-critical-dark"
+      | "color-text-attention-default"
+      | "color-text-positive-default"
+      | "color-text-accent-default"
+      | "color-text-static-default"
+      | "color-text-inverse-default"
+      | string;
     as?: string | Component;
   }>(),
   {
