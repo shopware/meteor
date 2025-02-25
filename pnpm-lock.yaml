@@ -639,6 +639,9 @@ importers:
         specifier: ^16.10.0
         version: 16.10.0(typescript@5.7.3)
     devDependencies:
+      prettier:
+        specifier: ^3.5.2
+        version: 3.5.2
       stylelint-test-rule-node:
         specifier: ^0.3.0
         version: 0.3.0(stylelint@16.10.0(typescript@5.7.3))
@@ -11173,6 +11176,11 @@ packages:
 
   prettier@3.5.1:
     resolution: {integrity: sha512-hPpFQvHwL3Qv5AdRvBFMhnKo4tYxp0ReXiPn2bxkiohEX6mBeBwEpBSQTkD458RaaDKQMYSp4hX4UtfUTA5wDw==}
+    engines: {node: '>=14'}
+    hasBin: true
+
+  prettier@3.5.2:
+    resolution: {integrity: sha512-lc6npv5PH7hVqozBR7lkBNOGXV9vMwROAPlumdBkX0wTbbzPu/U1hk5yL8p2pt4Xoc+2mkT8t/sow2YrV/M5qg==}
     engines: {node: '>=14'}
     hasBin: true
 
@@ -28118,6 +28126,8 @@ snapshots:
   prettier@3.3.3: {}
 
   prettier@3.5.1: {}
+
+  prettier@3.5.2: {}
 
   pretty-bytes@6.1.1: {}
 
