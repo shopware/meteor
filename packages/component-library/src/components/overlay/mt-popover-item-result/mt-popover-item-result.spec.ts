@@ -366,10 +366,12 @@ describe("mt-popover-item-result", () => {
       },
     });
 
+    // @ts-expect-error
     wrapper.vm.dragConfig.onDragStart();
 
     expect(document.body.classList.contains("is-popover-item-result-dragging")).toBeTruthy();
 
+    // @ts-expect-error
     wrapper.vm.dragConfig.onDrop();
 
     expect(document.body.classList.contains("is-popover-item-result-dragging")).toBeFalsy();
@@ -400,7 +402,9 @@ describe("mt-popover-item-result", () => {
 
     // simulate drag and drop
 
+    // @ts-expect-error
     wrapper.vm.dragConfig.onDragStart();
+    // @ts-expect-error
     wrapper.vm.dragConfig.onDrop(dragConfigData, dropConfigData);
 
     await wrapper.vm.$nextTick();
