@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-grid">
+  <div class="mt-grid" :style="{ '--_mt-grid-columns': `calc(100% / ${columns})` }">
     <slot />
   </div>
 </template>
@@ -19,9 +19,13 @@ defineSlots<{
 <style>
 .mt-grid {
   --_mt-grid-gap: 32px;
+  --_mt-grid-columns-without-gap: calc(var(--_mt-grid-columns) - var(--_mt-grid-gap));
 
   gap: var(--_mt-grid-gap);
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(max(calc(33% - var(--_mt-grid-gap)), 300px), 1fr));
+  grid-template-columns: repeat(
+    auto-fit,
+    minmax(max(var(--_mt-grid-columns-without-gap), 200px), 1fr)
+  );
 }
 </style>
