@@ -22,6 +22,7 @@ defineSlots<{
   --_mt-grid-columns-without-gap: calc(var(--_mt-grid-columns) - var(--_mt-grid-gap));
 
   gap: var(--_mt-grid-gap);
+  align-items: end;
   display: grid;
   grid-template-columns: repeat(
     auto-fit,
