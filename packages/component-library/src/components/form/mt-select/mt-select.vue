@@ -115,7 +115,6 @@
 </template>
 
 <script lang="ts">
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { PropType } from "vue";
 
 import { defineComponent } from "vue";
@@ -370,6 +369,7 @@ export default defineComponent({
       }
 
       if (Array.isArray(this.currentValue)) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         this.currentValue.length;
       }
 
@@ -522,7 +522,6 @@ export default defineComponent({
       this.limit += this.limit;
     },
 
-    // @ts-expect-error
     onSearchTermChange: debounce(function updateSearchTerm(term) {
       // @ts-expect-error - this context exists even here
       this.searchTerm = term;
