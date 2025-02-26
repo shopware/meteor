@@ -10,7 +10,7 @@
     ]"
     :style="styles"
     :aria-hidden="decorative"
-    :data-testid="'mt-icon__' + name"
+    :data-testid="`mt-icon__${/^(solid|regular)/.test(name) ? name : mode + '-' + name}`"
     v-bind="$attrs"
     v-html="iconSvgData"
   />
@@ -25,10 +25,12 @@ const props = withDefaults(
     color?: string;
     decorative?: boolean;
     size?: string;
+    mode?: "solid" | "regular";
   }>(),
   {
     decorative: false,
     size: undefined,
+    mode: "regular",
   },
 );
 
@@ -57,8 +59,10 @@ const styles = computed(() => {
 watch(
   () => props.name,
   (newName) => {
-    const [variant] = newName.split("-");
-    const iconName = newName.split("-").slice(1).join("-");
+    const variant = /^(solid|regular)/.test(newName) ? newName.split("-")[0] : props.mode;
+    const iconName = /^(solid|regular)/.test(newName)
+      ? newName.split("-").slice(1).join("-")
+      : newName;
 
     import(
       `./../../../../node_modules/@shopware-ag/meteor-icon-kit/icons/${variant}/${iconName}.svg`
