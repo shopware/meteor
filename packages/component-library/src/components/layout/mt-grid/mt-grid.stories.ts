@@ -3,6 +3,7 @@ import MtGrid from "./mt-grid.vue";
 import type { SlottedMeta } from "@/_internal/story-helper";
 import MtTextField from "@/components/form/mt-text-field/mt-text-field.vue";
 import MtCard from "../mt-card/mt-card.vue";
+import MtFutureFlag from "@/components/theme/mt-future-flag.vue";
 
 type MtGridMeta = SlottedMeta<typeof MtGrid, "default">;
 
@@ -12,16 +13,18 @@ export default {
   render(args) {
     return {
       setup: () => ({ args }),
-      components: { MtGrid, MtTextField, MtCard },
+      components: { MtGrid, MtTextField, MtCard, MtFutureFlag },
       template: `
-<mt-card title="Grid inside a card">
-  <mt-grid v-bind="args">
-    <MtTextField label="Item 1" />
-    <MtTextField label="Item 1" />
-    <MtTextField label="Item 1" />
-    <MtTextField label="Item 1" />
-  </mt-grid>
-</mt-card>
+<mt-future-flag remove-default-margin>
+  <mt-card title="Grid inside a card">
+    <mt-grid v-bind="args">
+      <MtTextField label="Item 1" />
+      <MtTextField label="Item 1" />
+      <MtTextField label="Item 1" />
+      <MtTextField label="Item 1" />
+    </mt-grid>
+  </mt-card>
+</mt-future-flag>
 `,
     };
   },
