@@ -41,6 +41,8 @@ import MtTextEditor from "./components/form/mt-text-editor/mt-text-editor.vue";
 import MtTextEditorToolbarButton from "./components/form/mt-text-editor/_internal/mt-text-editor-toolbar-button.vue";
 import MtSearch from "./components/navigation/mt-search/mt-search.vue";
 import MtUrlField from "./components/form/mt-url-field/mt-url-field.vue";
+import MtFutureFlag from "./components/theme/mt-future-flag.vue";
+import MtGrid from "./components/layout/mt-grid/mt-grid.vue";
 
 // Import SCSS for styling
 import "./components/assets/scss/all.scss";
@@ -93,6 +95,8 @@ export {
   MtSearch,
   MtUrlField,
   MtThemeProvider,
+  MtFutureFlag,
+  MtGrid,
   TooltipDirective,
   DeviceHelperPlugin,
   // @deprecated
