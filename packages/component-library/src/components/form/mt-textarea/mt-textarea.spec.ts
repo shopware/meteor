@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/vue";
 import { expect, describe, it, vi } from "vitest";
 import MtTextarea from "./mt-textarea.vue";
 
-describe("mt-textarea", async () => {
+describe("mt-textarea", () => {
   it("focuses the text area when clicking on the label", async () => {
     // ARRANGE
     render(MtTextarea, {

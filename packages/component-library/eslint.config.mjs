@@ -22,7 +22,7 @@ export default defineConfigWithVueTs([
     ],
   },
   {
-    files: ["**src/**/*.js", "**src/**/*.ts"],
+    files: ["**/src/**/*.{ts,js}"],
     languageOptions: {
       globals: globals.browser,
     },
@@ -47,8 +47,11 @@ export default defineConfigWithVueTs([
   },
   ...storybook.configs["flat/recommended"],
   {
-    files: ["**.spec.ts", "**.spec.js"],
+    files: ["**/*.spec.{ts,js}"],
     plugins: { vitest },
-    rules: vitest.configs.recommended.rules,
+    rules: {
+      ...vitest.configs.recommended.rules,
+      "no-restricted-imports": ["warn", "@vue/test-utils"],
+    },
   },
 ]);
