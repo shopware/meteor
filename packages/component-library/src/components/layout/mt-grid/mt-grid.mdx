@@ -1,0 +1,39 @@
+import { Primary, Meta } from "@storybook/blocks";
+import * as MtGrid from "./mt-grid.stories.ts";
+
+<Meta of={MtGrid} />
+
+# Grid
+
+> **Note:** The `mt-grid` is completely different from the old `sw-grid`.
+> If you're looking for a replacement for the `sw-grid` take a look at the
+> `mt-data-table` component.
+
+---
+
+The `mt-grid-component` can be used to create simple grid layouts. The most
+common use case for this component is to use it inside a `mt-card`.
+
+For more complex layouts you should create grids with CSS.
+
+## Usage
+
+```vue
+<template>
+  <mt-card>
+    <mt-grid :columns="3">
+      <mt-text-field />
+      <mt-text-field />
+      <mt-switch />
+      <mt-text-field />
+      <mt-text-field />
+      <mt-text-field />
+    </mt-grid>
+  </mt-card>
+</template>
+```
+
+<Primary />
+
+> **Note:** The `mt-grid` component is responsive by default. You don't need
+> to care about adding media or container queries to make it responsive

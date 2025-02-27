@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/vue3";
+import type { StoryObj } from "@storybook/vue3";
 import MtGrid from "./mt-grid.vue";
 import type { SlottedMeta } from "@/_internal/story-helper";
 import MtTextField from "@/components/form/mt-text-field/mt-text-field.vue";
@@ -9,7 +9,7 @@ import MtSwitch from "@/components/form/mt-switch/mt-switch.vue";
 type MtGridMeta = SlottedMeta<typeof MtGrid, "default">;
 
 export default {
-  title: "Components/Layout/MtGrid",
+  title: "Components/Layout/mt-grid",
   component: MtGrid,
   render(args) {
     return {
