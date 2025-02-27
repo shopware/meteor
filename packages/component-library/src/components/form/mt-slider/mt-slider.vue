@@ -425,6 +425,14 @@ $slider-bar-height: 8px;
     }
   }
 
+  .mt-number-field__controls {
+    display: none;
+  }
+
+  .mt-number-field .mt-block-field__block {
+    min-height: var(--scale-size-32);
+  }
+
   .mt-slider__slider {
     position: relative;
     width: 100%;

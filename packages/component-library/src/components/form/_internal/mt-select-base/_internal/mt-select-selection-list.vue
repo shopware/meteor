@@ -287,6 +287,7 @@ export default defineComponent({
 @import "../../../../assets/scss/variables";
 
 .mt-select-selection-list {
+  height: 100%;
   display: flex;
   flex-wrap: wrap;
   list-style: none;
@@ -339,6 +340,7 @@ export default defineComponent({
   }
 
   .mt-select-selection-list__input {
+    height: 100%;
     display: inline-block;
     min-height: 46px;
     padding: var(--scale-size-12) var(--scale-size-16) var(--scale-size-12) var(--scale-size-8);

@@ -32,7 +32,7 @@
       </div>
 
       <div class="mt-toast-notification__content-right">
-        <mt-button v-if="toast.action" @click="onActionClick" size="small">
+        <mt-button v-if="toast.action" @click="onActionClick" size="small" variant="action">
           {{ toast.action.label }}
         </mt-button>
       </div>

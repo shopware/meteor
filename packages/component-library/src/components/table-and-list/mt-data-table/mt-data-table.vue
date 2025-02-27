@@ -2532,6 +2532,10 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
       display: none;
     }
 
+    .mt-block-field__block {
+      min-height: initial;
+    }
+
     .mt-select {
       margin-bottom: 0;
       width: 100px;
