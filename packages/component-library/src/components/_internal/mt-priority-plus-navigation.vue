@@ -3,7 +3,6 @@
 </template>
 
 <script lang="ts">
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { PropType } from "vue";
 import { defineComponent } from "vue";
 
@@ -175,7 +174,6 @@ export default defineComponent({
     // Second iteration fixes the width of the container including the more button offset
     this.handleResize();
 
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     window.addEventListener("resize", this.handleResize);
   },
 
@@ -193,7 +191,6 @@ export default defineComponent({
   },
 
   beforeUnmount() {
-    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     window.removeEventListener("resize", this.handleResize);
   },
 
