@@ -38,6 +38,9 @@ export type windowReload = {
   responseType: void,
 }
 
+/**
+ * Get a unique identifier for the current window
+ */
 export type windowGetId = {
   responseType: string,
 }
