@@ -437,7 +437,7 @@ describe("mt-email-field", () => {
     expect(screen.getByRole("textbox")).toHaveValue("");
   });
 
-  it("it is possible to edit the value when the inheritance is unlinked", async () => {
+  it("is possible to edit the value when the inheritance is unlinked", async () => {
     // ARRANGE
     const handler = vi.fn();
 
