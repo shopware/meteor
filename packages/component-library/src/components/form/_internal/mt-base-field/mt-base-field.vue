@@ -301,6 +301,7 @@ $mt-field-transition:
   }
 
   .mt-block-field__block {
+    min-height: var(--scale-size-48);
     display: flex;
   }
 
