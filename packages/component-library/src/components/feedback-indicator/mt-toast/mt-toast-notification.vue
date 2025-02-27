@@ -144,8 +144,11 @@ const ariaLive = computed(() => {
 
 const { toast, quickDisplay, index } = toRefs(props);
 const toastEl = ref<HTMLElement | null>(null);
+// eslint-disable-next-line prefer-const
 let timeoutId = ref<number | undefined>(undefined);
+// eslint-disable-next-line prefer-const
 let timeoutStartTime = ref<number | undefined>(undefined);
+// eslint-disable-next-line prefer-const
 let remainingTimeOut = ref(quickDisplay.value ? 3700 : 10500);
 
 watch(
@@ -240,7 +243,7 @@ onBeforeUnmount(() => {
   margin-bottom: 17px;
   display: flex;
   flex-direction: column;
-  height: 56px;
+  height: var(--scale-size-56);
   box-shadow:
     0px 1px 3px 0px rgba(0, 0, 0, 0.1),
     0px 2px 1px 0px rgba(0, 0, 0, 0.06),
@@ -266,8 +269,8 @@ onBeforeUnmount(() => {
 
   &.mt-icon > svg {
     fill: black;
-    width: 20px !important;
-    height: 20px !important;
+    width: var(--scale-size-20) !important;
+    height: var(--scale-size-20) !important;
   }
 }
 
@@ -275,14 +278,14 @@ onBeforeUnmount(() => {
   display: flex;
   flex: 1;
   justify-content: flex-start;
-  margin-left: 16px;
+  margin-left: var(--scale-size-16);
   align-items: center;
 }
 
 .mt-toast-notification__content-right {
   display: flex;
   justify-content: flex-end;
-  margin-right: 16px;
+  margin-right: var(--scale-size-16);
   align-items: center;
 }
 
@@ -320,7 +323,7 @@ onBeforeUnmount(() => {
 }
 
 .mt-toast-notification__message-space {
-  padding-left: 8px;
+  padding-left: var(--scale-size-8);
 }
 
 .mt-toast-notification__content {
@@ -330,8 +333,8 @@ onBeforeUnmount(() => {
 
   &.mt-icon > svg {
     fill: #000;
-    width: 20px !important;
-    height: 20px !important;
+    width: var(--scale-size-20) !important;
+    height: var(--scale-size-20) !important;
   }
 }
 
@@ -339,14 +342,14 @@ onBeforeUnmount(() => {
   display: flex;
   flex: 1;
   justify-content: flex-start;
-  margin-left: 16px;
+  margin-left: var(--scale-size-16);
   align-items: center;
 }
 
 .mt-toast-notification__content-right {
   display: flex;
   justify-content: flex-end;
-  margin-right: 16px;
+  margin-right: var(--scale-size-16);
   align-items: center;
 }
 
@@ -367,7 +370,7 @@ onBeforeUnmount(() => {
   margin-left: auto;
   height: 100%;
   display: flex;
-  padding: 12px;
+  padding: var(--scale-size-12);
   justify-content: flex-end;
   align-items: center;
   cursor: pointer;

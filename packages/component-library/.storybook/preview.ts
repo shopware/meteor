@@ -1,5 +1,6 @@
 import type { Preview } from "@storybook/vue3";
 import "~/src/components/assets/scss/all.scss";
+import "~/src/components/assets/scss/font.scss";
 import { darkTheme, lightTheme } from "./shopwareTheme";
 import { setup } from "@storybook/vue3";
 import { createI18n } from "vue-i18n";
@@ -17,6 +18,7 @@ import "@shopware-ag/meteor-tokens/administration/dark.css";
 
 const i18n = createI18n({
   // something vue-i18n options here ...
+  legacy: false,
   globalInjection: true,
   locale: "en",
   fallbackLocale: "en",
@@ -54,6 +56,7 @@ const preview: Preview = {
       ],
     },
   },
+
   decorators: [
     ThemeProvider,
     () => ({
@@ -65,6 +68,8 @@ const preview: Preview = {
       `,
     }),
   ],
+
+  tags: ["autodocs"],
 };
 
 export default preview;

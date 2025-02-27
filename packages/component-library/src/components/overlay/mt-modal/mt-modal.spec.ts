@@ -3,6 +3,7 @@ import MtModalRoot from "./sub-components/mt-modal-root.vue";
 import MtModalTrigger from "./sub-components/mt-modal-trigger.vue";
 import MtModalAction from "./sub-components/mt-modal-action.vue";
 import { render, screen, fireEvent } from "@testing-library/vue";
+import { ref } from "vue";
 
 describe("mt-modal", () => {
   it("the modal is hidden by default", () => {
@@ -55,6 +56,34 @@ describe("mt-modal", () => {
   <mt-modal title='title'>mt-modal works!</mt-modal>
 </mt-modal-root>`,
     });
+
+    // WHEN
+    await fireEvent.click(screen.getByRole("button"));
+
+    // THEN
+    const modal = screen.queryByRole("dialog");
+    expect(modal).toBeInTheDocument();
+    expect(onChange).toHaveBeenNthCalledWith(1, true);
+  });
+
+  it("opens the modal when clicking the trigger when 'isOpen' gets changed", async () => {
+    // GIVEN
+    const onChange = vi.fn();
+
+    render({
+      components: { MtModal, MtModalRoot, MtModalTrigger },
+      setup() {
+        const isOpen = ref(false);
+        return { onChange, isOpen };
+      },
+      template: `
+      <button @click="isOpen = !isOpen">Toggle modal</button>
+<mt-modal-root @change="onChange" :isOpen="isOpen">
+  <mt-modal title='title'>mt-modal works!</mt-modal>
+</mt-modal-root>`,
+    });
+
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
 
     // WHEN
     await fireEvent.click(screen.getByRole("button"));

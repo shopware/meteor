@@ -188,6 +188,34 @@ string
 '6.4.0.0'
 ```
 
+
+## Shopware compare version
+
+### Compare current Shopware version with a given version
+
+#### Usage:  
+```ts
+const isRightVersion = await sw.context.compareShopwareVersion({version:'6.4.0', comparator: '>='})
+```
+
+#### Parameters
+| Name         | Description                                                                                                       |
+|:-------------|:------------------------------------------------------------------------------------------------------------------|
+| `version`    | The string with the version to compare                                                                            |
+| `comparator` | The operator to compare. Possible values: `'='` `'>'` `'<'` `'<='` `'>='`<br/> If not provided `'='` will be used |
+
+
+#### Return value:
+
+```ts
+boolean
+```
+
+#### Example value:
+```ts
+true
+```
+
 ## App information
 
 ### Get app information
@@ -327,7 +355,7 @@ Promise<{
     id: string,
     locationId: string
   }>
-}}>
+}>
 ```
 
 #### Example value:

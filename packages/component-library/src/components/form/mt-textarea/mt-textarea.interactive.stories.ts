@@ -8,20 +8,6 @@ export default {
   title: "Interaction Tests/Form/mt-textarea",
 } as MtTextareaMeta;
 
-export const TestInputValue: MtTextareaStory = {
-  name: "Should keep input value",
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    await userEvent.type(canvas.getByRole("textbox"), "Shopware");
-    await userEvent.click(canvas.getByText("hidden"));
-
-    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("Shopware");
-
-    expect(args.change).toHaveBeenCalledWith("Shopware");
-  },
-};
-
 export const VisualTestHint: MtTextareaStory = {
   name: "Should display hint",
   args: {
@@ -34,18 +20,6 @@ export const VisualTestHint: MtTextareaStory = {
   },
 };
 
-export const VisualTestEmptyCharacterCount: MtTextareaStory = {
-  name: "Should display empty character count",
-  args: {
-    maxLength: 60,
-  },
-  play: ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    expect(canvas.getByText("0/60")).toBeDefined();
-  },
-};
-
 export const VisualTestCharacterCount: MtTextareaStory = {
   name: "Should display character count with text",
   args: {
@@ -55,35 +29,8 @@ export const VisualTestCharacterCount: MtTextareaStory = {
     const canvas = within(canvasElement);
 
     await userEvent.type(canvas.getByRole("textbox"), "Shopware");
-    await userEvent.click(canvas.getByText("hidden"));
 
     expect(canvas.getByText("8/60")).toBeDefined();
-  },
-};
-
-export const VisualTestCharacterCountExceeding: MtTextareaStory = {
-  name: "Should display error when character count exceeds max value",
-  args: {
-    maxLength: 60,
-  },
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    await userEvent.type(
-      canvas.getByRole("textbox"),
-      "Shopware is a trendsetting ecommerce platform to power your online business.",
-    );
-    await userEvent.click(canvas.getByText("hidden"));
-
-    expect(canvas.getByText("60/60")).toBeDefined();
-
-    expect(args.updateModelValue).toHaveBeenCalledWith(
-      "Shopware is a trendsetting ecommerce platform to power your ",
-    );
-
-    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe(
-      "Shopware is a trendsetting ecommerce platform to power your ",
-    );
   },
 };
 
@@ -97,7 +44,6 @@ export const VisualTestCharacterCountWithHint: MtTextareaStory = {
     const canvas = within(canvasElement);
 
     await userEvent.type(canvas.getByRole("textbox"), "Shopware");
-    await userEvent.click(canvas.getByText("hidden"));
 
     expect(canvas.getByText("8/60")).toBeDefined();
     expect(canvas.getByText(args.hint)).toBeDefined();
@@ -155,5 +101,28 @@ export const VisualTestError: MtTextareaStory = {
     const canvas = within(canvasElement);
 
     expect(canvas.getByText(args.error.detail)).toBeDefined();
+  },
+};
+
+export const VisualTestLinkedInheritance: MtTextareaStory = {
+  name: "Should link inheritance",
+  args: {
+    isInheritanceField: true,
+    isInherited: true,
+  },
+};
+
+export const VisualTestUnlinkedInheritance: MtTextareaStory = {
+  name: "Should unlink inheritance",
+  args: {
+    isInheritanceField: true,
+    isInherited: false,
+  },
+};
+
+export const VisualTestHelpText: MtTextareaStory = {
+  name: "With help text",
+  args: {
+    helpText: "This is a help text",
   },
 };

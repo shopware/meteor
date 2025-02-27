@@ -1,5 +1,179 @@
 # Changelog
 
+## 4.4.1
+
+### Patch Changes
+
+- 1b0b620: Add missing placeholder to mt-colorpicker
+- 6cc3876: Focus colorpicker when clicking on its label
+- Updated dependencies [7abaa5a]
+  - @shopware-ag/meteor-tokens@1.0.0
+
+## 4.4.0
+
+### Minor Changes
+
+- c235676: Make mt-url-field public
+
+## 4.3.1
+
+### Patch Changes
+
+- f251c89: Fix alignment of help-text in mt-textarea component
+- 489997c: Fix mt-popover-deprecated
+  - Previously the `mt-popover-deprecated` component was configured to have the name `MtPopover`. This caused issues with some compiler setups. Change the name to `MtPopoverDeprecated`.
+
+## 4.3.0
+
+### Minor Changes
+
+- 4893678: Add v-model support to mt-switch
+- ef58de6: chore: export type Toast
+
+### Patch Changes
+
+- 4893678: Stop emitting inheritance-restore event twice on switch field
+- 2fbc665: Stop selecting text when double clicking on label
+- 4893678: Stop emitting inheritance-remove event twice for switch
+- 4893678: Mark mt-switch as required if required prop is true
+- 0d00f6f: Do not show bottom shadow in modal when content is not scrollable
+- 8d1820d: Announce error of mt-switch to screenreaders
+
+## 4.2.0
+
+### Minor Changes
+
+- 4536d2a: Emit change event on password field
+- d6c07d0: Add types for event of mt-url-field component
+
+### Patch Changes
+
+- a0c8266: Stop emitting onUpdate:modelValue event when blurring the mt-url-field
+- 4536d2a: Add name property to mt-password-field
+- 48134cd: Add types for slots for mt-url-field
+- c5471b3: Announce tooltip content when focusing tooltip trigger
+- cc6075f: Announce email field as invalid to screen readers when input has error
+- d8a289e: Fix some small bugs in mt-text-field, mt-email-field and mt-tooltip
+- 43305d9: Stop announcing tooltip triangle to screen readers
+
+## 4.1.0
+
+### Minor Changes
+
+- 64c04bd: Make mt-search public
+- ab6cba0: feat(mt-colorpicker): Add keyboard navigation support
+- 4e96d91: Add mt-url-field
+
+### Patch Changes
+
+- 4e96d91: Allow toggling the http protocol in mt-url-field using the keyboard
+- 4e96d91: Disable mt-url-field when inheritance is linked
+- 8434c25: Fix huge error badge in mt-tabs
+- 362941d: mt-textarea can now be a required form field
+- cf34b59: Turn scrollbar dark for dark mode
+- ed02b43: Show label for single-option mt-select in full width
+- 4e96d91: Stop emitting update:modelValue event when component gets created
+- 859c7f8: Open tooltip when focusing a loading link button with a tooltip
+- 4e96d91: Do not change the http protocol in mt-url-field when clicking the protocol button and the input field is inherited
+- a8d3340: hide data table toolbar when it has no header
+- 4e96d91: Allow mt-url-field to be required
+- 11b05f5: Disable number field when value is inherited
+- eee3ecf: Do not redirect when clicking on a disabled link button
+- 045b002: Show search icon when mt-select has not results
+- fbca9df: Add aria attributes to mt-switch
+- 4e96d91: emit update:modelValue every time the user types into the mt-url-field
+- eee3ecf: Do not allow focusing a loading link button
+- f4e2d6b: Open the context menu when pressing space or enter
+- 95edac4: Add focus state to banner close button
+- 26c8e2b: Show a tooltip when focusing a disabled link button with a tooltip
+- 8405f12: Do not allow focusing a disabled link button
+- 3863b64: Announce mt-search as a real search input
+- fab1a1d: Remove link role from mt-link when using custom component
+
+## 4.0.1
+
+### Patch Changes
+
+- f3b0e2f: Fixed the Type generation for components like mt-text-editor or mt-tabs
+
+## 4.0.0
+
+### Major Changes
+
+- fc3c5a6: Reduce bundle size caused by font
+
+  # Upgrade guide
+
+  Previously you needed to only import one css file:
+
+  ```js
+  // Some JavaScript file: index.js
+  import "@shopware-ag/meteor-component-library/dist/styles.css";
+  ```
+
+  You now need to update that one import to the following two imports:
+
+  ```js
+  // Some JavaScript file: index.js
+  import "@shopware-ag/meteor-component-library/styles.css"; // Note: this path is different from the old one
+  import "@shopware-ag/meteor-component-library/font.css";
+  ```
+
+  If you want to load the font by yourself, you can do that.
+  Remove the second import and load the font the way you want.
+
+- eeb8c7f: Removed locale control from mt-theme-provider.
+
+  Controlling the local will still happen via vue-i18n
+
+- b2ef241: Making vue a peer dependency
+
+  This allows you to define the version of Vue you want to use. Before
+  you needed to use the exact vue version Meteor used. Now you can
+  define it by yourself, but it must meet the version requirements.
+
+- 50de30f: Require a minimum version of vue 3.5
+- b3039c1: # Add new Text Editor component
+
+  This change introduces a new Text Editor component to the Meteor Component Library.
+
+  # Updated i18n configuration
+
+  We change the 'legacy' mode of i18n to 'false' in the Meteor Component Library configuration to use the new i18n composable.
+
+### Minor Changes
+
+- ba4fdbd: Adds a new slot for custom content within the button, enabling more flexible button customization.
+- d9c26a2: Export mt-tooltip component
+- 7593d00: remove hero variant from mt-card
+- 9175c17: replace flatpickr with vue3datepicker
+- b5ed517: Add mt-tooltip component
+- b7423bb: remove mt-url-field
+
+### Patch Changes
+
+- ad10063: Hide inheritance toggle in card by default
+- 0dcb079: Improve reading order for card titles when using a screen reader
+- 54b5fa4: Add translation for mt-banner
+- a4b2203: Add focus styles for checkbox
+- 066da5c: Open tooltip when focusing disabled button
+- 51d6160: Migrate mt-select over to the custom built i18n composable
+- 85908bf: Migrate mt-data-table over to the custom built i18n composable
+- 824ee5a: Update focus style of inheritance toggle in card
+- d2480cf: Fixes a issue in the mt-modal that the toggling does not work when it is triggered outside the modal.
+  Fixes a issue in the mt-modal that it does not work inside transformed elements. This was fixed by moving the modal to the body element using the native Teleport feature of Vue 3.
+- 0280b80: Add missing translation for data table filters
+- 069a2ad: Do not announce mt-avatar for screen readers
+- daa8824: Add landmarks to card component for screen readers
+- ed03f65: Improve accessibility of mt-field-error
+- 893fba8: Increase contrast ratio in mt-avatar
+- 3b50452: Update focus style of switch
+- 4f9e73d: Migrate mt-data-table-settings over to the composition api
+- 893fba8: Increase color contrast in mt-avatar component
+- 45e2dc7: Make size propert on mt-loader optional
+- 235546f: Migrate mt-label to custom built i18n composable
+- 850107e: Fix emit focus event for mt-text-field component
+
 ## 3.14.0
 
 ### Minor Changes

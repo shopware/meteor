@@ -16,9 +16,19 @@ export default defineConfig({
       outDir: ["dist/esm", "dist/common"],
       cleanVueFileName: true,
       copyDtsFiles: true,
+      tsconfigPath: path.resolve(__dirname, "tsconfig.vitest.json"),
       compilerOptions: {
-        moduleResolution: 99,
+        composite: false,
       },
+      include: [
+        "env.d.ts",
+        "src/**/*",
+        "src/**/*.vue",
+        "src/**/*.ts",
+        "src/**/*.js",
+        "src/**/*.json",
+      ],
+      exclude: ["node_modules", "**/*.stories.ts", "**/*.spec.ts", "**/*.spec.js"],
     }),
   ],
   resolve: {
@@ -42,8 +52,13 @@ export default defineConfig({
       formats: ["es", "cjs"],
       fileName: (format, entryName) => `${{ es: "esm", cjs: "common" }[format]}/${entryName}.js`,
     },
+    cssCodeSplit: true,
     rollupOptions: {
       external: ["vue"],
+      input: {
+        index: path.resolve(__dirname, "src/index.ts"),
+        fonts: path.resolve(__dirname, "src/fonts.ts"),
+      },
     },
   },
   css: {

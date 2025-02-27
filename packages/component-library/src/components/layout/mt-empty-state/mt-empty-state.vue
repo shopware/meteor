@@ -62,25 +62,25 @@ defineEmits(["button-click"]);
 
 .mt-empty-state__icon {
   display: inline-block;
-  padding: 0.75rem;
+  padding: var(--scale-size-12);
   border-radius: var(--border-radius-xs);
   background-color: var(--color-interaction-secondary-dark);
 }
 
 .mt-empty-state__headline {
-  margin-top: 1.5rem;
+  margin-top: var(--scale-size-24);
   margin-bottom: 0;
 }
 
 .mt-empty-state__description {
-  margin-top: 0.5rem;
+  margin-top: var(--scale-size-8);
 }
 
 .mt-empty-state__link {
-  margin-top: 0.5rem;
+  margin-top: var(--scale-size-8);
 }
 
 .mt-empty-state__button {
-  margin-top: 1.5rem;
+  margin-top: var(--scale-size-24);
 }
 </style>

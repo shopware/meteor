@@ -1,7 +1,8 @@
 import { fireEvent, render, screen } from "@testing-library/vue";
 import MtTooltip from "./mt-tooltip.vue";
-import { userEvent } from "@storybook/test";
+import { userEvent } from "@testing-library/user-event";
 import { flushPromises } from "@vue/test-utils";
+import MtButton from "@/components/form/mt-button/mt-button.vue";
 
 describe("mt-tooltip", () => {
   beforeEach(() => {
@@ -26,8 +27,8 @@ describe("mt-tooltip", () => {
 
     // ACT & ASSERT
     expect(screen.queryByRole("tooltip", { name: "Tooltip" })).not.toBeInTheDocument();
-    expect(screen.getByRole("button", { name: "Open tooltip" })).not.toHaveAttribute(
-      "aria-describedby",
+    expect(screen.getByRole("button", { name: "Open tooltip" })).toHaveAccessibleDescription(
+      "Tooltip",
     );
   });
 
@@ -107,7 +108,7 @@ describe("mt-tooltip", () => {
     },
   );
 
-  it("does not announce the content of the tooltip when the tooltip is hidden", async () => {
+  it("does read out the tooltip content when focusing the trigger", async () => {
     // ARRANGE
     render(MtTooltip, {
       props: {
@@ -122,10 +123,10 @@ describe("mt-tooltip", () => {
     await flushPromises();
 
     // ACT & ASSERT
-    expect(screen.getByRole("button", { name: "Open tooltip" })).not.toHaveAccessibleDescription(
+    expect(screen.getByRole("button", { name: "Open tooltip" })).toHaveAccessibleDescription(
       "Tooltip",
     );
-    expect(screen.getByRole("button", { name: "Open tooltip" })).not.toHaveAttribute(
+    expect(screen.getByRole("button", { name: "Open tooltip" })).toHaveAttribute(
       "aria-describedby",
     );
   });
@@ -919,5 +920,205 @@ describe("mt-tooltip", () => {
 
     // ASSERT
     expect(screen.queryByRole("tooltip", { name: "Tooltip" })).not.toBeInTheDocument();
+  });
+
+  it("opens the tooltip when tabbing on a disabled button", async () => {
+    // ARRANGE
+    render({
+      template: `
+<mt-tooltip content="Tooltip">
+  <template #default="params">
+    <mt-button v-bind="params" disabled>Focus to open tooltip</mt-button>
+  </template>
+</mt-tooltip>
+`,
+      components: {
+        MtTooltip,
+        MtButton,
+      },
+    });
+
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime,
+    });
+
+    // ACT
+    await user.tab();
+
+    // ASSERT
+    expect(screen.getByRole("tooltip", { name: "Tooltip" })).toBeVisible();
+  });
+
+  it("does not perform an action when clicking on the disabled button", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render({
+      template: `
+<mt-tooltip content="Tooltip">
+  <template #default="params">
+    <mt-button v-bind="params" @click="handler" disabled>Click to open tooltip</mt-button>
+  </template>
+</mt-tooltip>`,
+      components: {
+        MtTooltip,
+        MtButton,
+      },
+      setup: () => ({ handler }),
+    });
+
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime,
+    });
+
+    // ACT
+    await user.click(screen.getByRole("button"));
+
+    // ASSERT
+    expect(handler).not.toHaveBeenCalled();
+  });
+
+  it.each([" ", "{Enter}"])(
+    'does not perform an action when pressing "%s" on the disabled button',
+    async (key) => {
+      // ARRANGE
+      const handler = vi.fn();
+
+      render({
+        template: `
+<mt-tooltip content="Tooltip">
+  <template #default="params">
+    <mt-button v-bind="params" @click="handler" disabled>Click to open tooltip</mt-button>
+  </template>
+</mt-tooltip>`,
+        components: {
+          MtTooltip,
+          MtButton,
+        },
+        setup: () => ({ handler }),
+      });
+
+      const user = userEvent.setup({
+        advanceTimers: vi.advanceTimersByTime,
+      });
+
+      // ACT
+      await user.keyboard(key);
+
+      // ASSERT
+      expect(handler).not.toHaveBeenCalled();
+    },
+  );
+
+  it("shows the tooltip when hovering over the disabled button", async () => {
+    // ARRANGE
+    render({
+      template: `
+<mt-tooltip content="Tooltip" delayDurationInMs="100" hideDelayDurationInMs="50">
+  <template #default="params">
+    <mt-button v-bind="params" disabled>Hover to open tooltip</mt-button>
+  </template>
+</mt-tooltip>`,
+      components: {
+        MtTooltip,
+        MtButton,
+      },
+    });
+
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime,
+    });
+
+    // ACT
+    await user.hover(screen.getByRole("button"));
+
+    vi.advanceTimersByTime(100);
+    await flushPromises();
+
+    // ASSERT
+    expect(screen.getByRole("tooltip", { name: "Tooltip" })).toBeVisible();
+  });
+
+  it("does show a tooltip when focusing a disabled link button", async () => {
+    // ARRANGE
+    render({
+      template: `
+<mt-tooltip content="Tooltip">
+  <template #default="params">
+    <mt-button v-bind="params" disabled link="https://www.shopware.com">Focus to open tooltip</mt-button>
+  </template>
+</mt-tooltip>
+`,
+      components: {
+        MtTooltip,
+        MtButton,
+      },
+    });
+
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime,
+    });
+
+    // ACT
+    await user.tab();
+
+    // ARRANGE
+    expect(screen.getByRole("tooltip", { name: "Tooltip" })).toBeVisible();
+  });
+
+  it("shows a tooltip when focusing a loading link button", async () => {
+    // ARRANGE
+    render({
+      template: `
+<mt-tooltip content="Tooltip">
+  <template #default="params">
+    <mt-button v-bind="params" isLoading link="https://www.shopware.com">Focus to open tooltip</mt-button>
+  </template>
+</mt-tooltip>
+`,
+      components: {
+        MtTooltip,
+        MtButton,
+      },
+    });
+
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime,
+    });
+
+    // ACT
+    await user.tab();
+
+    // ARRANGE
+    expect(screen.getByRole("tooltip", { name: "Tooltip" })).toBeVisible();
+  });
+
+  it("shows the tooltip when hovering over the disabled link button", async () => {
+    // ARRANGE
+    render({
+      template: `
+<mt-tooltip content="Tooltip" delayDurationInMs="100" hideDelayDurationInMs="50">
+  <template #default="params">
+    <mt-button v-bind="params" link="https://www.shopware.com" disabled>Hover to open tooltip</mt-button>
+  </template>
+</mt-tooltip>`,
+      components: {
+        MtTooltip,
+        MtButton,
+      },
+    });
+
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime,
+    });
+
+    // ACT
+    await user.hover(screen.getByRole("link"));
+
+    vi.advanceTimersByTime(100);
+    await flushPromises();
+
+    // ASSERT
+    expect(screen.getByRole("tooltip", { name: "Tooltip" })).toBeVisible();
   });
 });

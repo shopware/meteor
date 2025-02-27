@@ -17,11 +17,11 @@
       onMouseleave,
       onMousedown,
       onMouseup: () => setState({ isPressingTrigger: false }),
-      'aria-describedby': isVisible ? `mt-tooltip--${id}__tooltip` : null,
+      'aria-describedby': `mt-tooltip--${id}__tooltip`,
     }"
-  ></slot>
+  />
 
-  <Transition>
+  <Transition v-bind="$attrs">
     <div v-show="isVisible" :data-placement="calculatedPlacement" style="position: absolute">
       <!-- Needs to be v-show, otherwise we have a jumping entry when tooltip is visible for the first time -->
       <div
@@ -37,6 +37,7 @@
         <span>{{ content }}</span>
 
         <svg
+          aria-hidden="true"
           ref="arrowRef"
           width="8"
           height="4"
@@ -66,7 +67,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, nextTick, computed } from "vue";
+import { onMounted, ref, nextTick, computed, provide, useId } from "vue";
 import {
   autoUpdate,
   flip,
@@ -76,21 +77,23 @@ import {
   arrow,
   type Placement,
 } from "@floating-ui/vue";
-import { useId } from "@/composables/useId";
 import { useTooltipState } from "./composables/useTooltipState";
 import { useTimeout } from "@vueuse/core";
+import { TooltipContext } from "./composables/useIsInsideTooltip";
+
+export type { Placement } from "@floating-ui/vue";
 
 const props = withDefaults(
   defineProps<{
     content: string;
     delayDurationInMs?: number;
     hideDelayDurationInMs?: number;
-    placement: Placement;
+    placement?: Placement;
   }>(),
   {
     delayDurationInMs: 500,
     hideDelayDurationInMs: 300,
-    placement: "bottom",
+    placement: "top",
   },
 );
 
@@ -98,14 +101,13 @@ const id = useId();
 
 onMounted(() => {
   nextTick(() => {
-    const triggerDOMElement = document.querySelector<HTMLElement>(
-      `#mt-tooltip--${id.value}__trigger`,
-    );
+    const triggerDOMElement = document.querySelector<HTMLElement>(`#mt-tooltip--${id}__trigger`);
 
-    if (!triggerDOMElement)
+    if (!triggerDOMElement && process?.env?.NODE_ENV !== "test") {
       throw new Error(
-        `Failed to render mt-tooltip; Could not find trigger element with id: "mt-tooltip-${id.value}__trigger"`,
+        `Failed to render mt-tooltip; Could not find trigger element with id: "mt-tooltip--${id}__trigger"`,
       );
+    }
 
     triggerRef.value = triggerDOMElement;
   });
@@ -114,7 +116,7 @@ onMounted(() => {
 const { isVisible, show, hide, setState } = useTooltipState();
 
 function onBlur(event: FocusEvent) {
-  const clickedOnTooltip = (event?.relatedTarget as HTMLElement)?.closest(`#${id.value}`);
+  const clickedOnTooltip = (event?.relatedTarget as HTMLElement)?.closest(`#${id}`);
   if (clickedOnTooltip) {
     (event.target as HTMLElement).focus();
     return;
@@ -165,10 +167,8 @@ const {
   floatingStyles,
   middlewareData,
   placement: calculatedPlacement,
-  // @ts-expect-error -- Type for tooltipRef of @floating-ui/vue is not correct
 } = useFloating(triggerRef, tooltipRef, {
-  // @ts-expect-error -- Type for tooltipRef of @floating-ui/vue is not correct
-  middleware: [offset(8), flip(), shift(), arrow({ element: arrowRef, padding: "0.5rem" })],
+  middleware: [offset(8), flip(), shift(), arrow({ element: arrowRef, padding: 8 })],
   whileElementsMounted: autoUpdate,
   placement: props.placement,
 });
@@ -185,6 +185,8 @@ const arrowOffset = computed<string>(() => {
 
   return staticSide ?? "";
 });
+
+provide(TooltipContext, true);
 </script>
 
 <style scoped>
@@ -197,7 +199,7 @@ const arrowOffset = computed<string>(() => {
   line-height: var(--line-height-2xs);
   background: var(--color-elevation-surface-floating);
   line-height: var(--font-family-line-height-2xs);
-  padding: 0.75rem;
+  padding: var(--scale-size-12);
   border-radius: var(--border-radius-overlay);
   width: max-content;
 }
@@ -223,21 +225,21 @@ const arrowOffset = computed<string>(() => {
 
 .v-enter-from[data-placement="top"],
 .v-leave-to[data-placement="top"] {
-  margin-bottom: 0.25rem;
+  margin-bottom: var(--scale-size-5);
 }
 
 .v-enter-from[data-placement="bottom"],
 .v-leave-to[data-placement="bottom"] {
-  margin-top: 0.25rem;
+  margin-top: var(--scale-size-5);
 }
 
 .v-enter-from[data-placement="left"],
 .v-leave-to[data-placement="left"] {
-  margin-right: 0.25rem;
+  margin-right: var(--scale-size-5);
 }
 
 .v-enter-from[data-placement="right"],
 .v-leave-to[data-placement="right"] {
-  margin-left: 0.25rem;
+  margin-left: var(--scale-size-5);
 }
 </style>

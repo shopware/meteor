@@ -100,16 +100,21 @@ import MtLoader from "../../feedback-indicator/mt-loader/mt-loader.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtText from "../../content/mt-text/mt-text.vue";
 import { useFutureFlags } from "@/composables/useFutureFlags";
-import { useI18n } from "@/composables/useI18n";
+import { useI18n } from "vue-i18n";
 
-const props = defineProps<{
-  title?: string;
-  subtitle?: string;
-  isLoading?: boolean;
-  // @deprecated v4.0.0 - will be removed without replacement
-  large?: boolean;
-  inheritance?: boolean;
-}>();
+const props = withDefaults(
+  defineProps<{
+    title?: string;
+    subtitle?: string;
+    isLoading?: boolean;
+    // @deprecated v4.0.0 - will be removed without replacement
+    large?: boolean;
+    inheritance?: boolean;
+  }>(),
+  {
+    inheritance: undefined,
+  },
+);
 
 defineEmits<{
   (e: "update:inheritance", value: boolean): void;
@@ -172,7 +177,7 @@ const cardClasses = computed(() => ({
 
 .mt-card {
   max-width: 60rem;
-  margin: 0 auto 2.5rem;
+  margin: 0 auto var(--scale-size-40);
   position: relative;
   background: var(--color-elevation-surface-raised);
   border: 1px solid var(--color-border-primary-default);
@@ -191,7 +196,7 @@ const cardClasses = computed(() => ({
 .mt-card__content {
   display: flow-root;
   flex-basis: 100%;
-  padding: 1.5rem;
+  padding: var(--scale-size-24);
   background-clip: padding-box;
   position: relative;
   color: var(--color-text-primary-default);
@@ -266,7 +271,7 @@ const cardClasses = computed(() => ({
 .mt-card__titles--has-inheritance-toggle {
   display: grid;
   grid-template-columns: min-content 1fr;
-  column-gap: 0.25rem;
+  column-gap: var(--scale-size-4);
   grid-template-areas:
     "inheritance title"
     "subtitle subtitle";
@@ -303,8 +308,8 @@ const cardClasses = computed(() => ({
   display: flex;
   flex-wrap: wrap;
   align-items: stretch;
-  gap: 0.75rem;
-  padding: 1.5rem;
+  gap: var(--scale-size-12);
+  padding: var(--scale-size-24);
   border-bottom: 1px solid var(--color-border-primary-default);
 }
 
@@ -315,8 +320,8 @@ const cardClasses = computed(() => ({
 .mt-card__toolbar {
   display: flex;
   flex-basis: auto;
-  gap: 0.5rem;
-  padding: 1.25rem 1.5rem 1rem 1.5rem;
+  gap: var(--scale-size-8);
+  padding: var(--scale-size-20) var(--scale-size-24) var(--scale-size-16) var(--scale-size-24);
 
   &:empty {
     display: none;
@@ -326,8 +331,8 @@ const cardClasses = computed(() => ({
 .mt-card__avatar {
   overflow: hidden;
   border-radius: var(--border-radius-xs);
-  width: 2.5rem;
-  height: 2.5rem;
+  width: var(--scale-size-40);
+  height: var(--scale-size-40);
 
   & img {
     width: 100%;

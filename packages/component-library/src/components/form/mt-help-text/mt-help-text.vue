@@ -1,75 +1,35 @@
 <template>
-  <button
-    v-tooltip="{
-      message: text,
-      width: width,
-      showDelay: showDelay,
-      hideDelay: hideDelay,
-    }"
-    class="mt-help-text"
-    role="tooltip"
-    aria-label="help-text"
-  >
-    <mt-icon data-testid="mt-help-text__icon" name="solid-question-circle-s" />
-
-    <span class="mt-help-text__tooltip-text">{{ text }}</span>
-  </button>
+  <mt-tooltip :content="text" :placement="placement">
+    <template #default="props">
+      <button v-bind="{ ...props, ...$attrs }" class="mt-help-text">
+        <mt-icon
+          aria-hidden="true"
+          data-testid="mt-help-text__icon"
+          name="solid-question-circle-s"
+        />
+      </button>
+    </template>
+  </mt-tooltip>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
-import MtTooltipDirective from "../../../directives/tooltip.directive";
+import MtTooltip, { type Placement } from "@/components/overlay/mt-tooltip/mt-tooltip.vue";
 
-/**
- * @internal
- */
-export default defineComponent({
-  name: "MtHelpText",
-
-  components: {
-    "mt-icon": MtIcon,
+withDefaults(
+  defineProps<{
+    text: string;
+    width?: number;
+    showDelay?: number;
+    hideDelay?: number;
+    placement?: Placement;
+  }>(),
+  {
+    width: 200,
+    showDelay: 100,
+    hideDelay: 100,
   },
-
-  directives: {
-    tooltip: MtTooltipDirective,
-  },
-
-  props: {
-    /**
-     * The text which gets rendered in the tooltip
-     */
-    text: {
-      type: String,
-      required: true,
-      default: "",
-    },
-    /**
-     * The width of the tooltip
-     */
-    width: {
-      type: Number,
-      required: false,
-      default: 200,
-    },
-    /**
-     * Choose the delay until the tooltip gets rendered when it gets hovered
-     */
-    showDelay: {
-      type: Number,
-      required: false,
-      default: 100,
-    },
-    /**
-     * Choose the delay until the tooltip gets removed the cursor leaves
-     */
-    hideDelay: {
-      type: Number,
-      required: false,
-      default: 100,
-    },
-  },
-});
+);
 </script>
 
 <style scoped>
@@ -77,6 +37,8 @@ export default defineComponent({
   color: var(--color-icon-brand-default);
   display: inline-flex;
   align-items: center;
+  height: var(--scale-size-16);
+  width: var(--scale-size-16);
   justify-content: center;
   position: relative;
   border-radius: var(--border-radius-round);
@@ -96,6 +58,7 @@ export default defineComponent({
   display: block;
   position: absolute;
   inset: 0;
+  scale: 0.9;
   background-color: var(--color-icon-static-default);
   z-index: -1;
   border-radius: var(--border-radius-round);

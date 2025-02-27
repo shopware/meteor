@@ -21,7 +21,7 @@ import MtTabs from "./components/navigation/mt-tabs/mt-tabs.vue";
 import MtDataTable from "./components/table-and-list/mt-data-table/mt-data-table.vue";
 import MtPagination from "./components/table-and-list/mt-pagination/mt-pagination.vue";
 import MtSkeletonBar from "./components/feedback-indicator/mt-skeleton-bar/mt-skeleton-bar.vue";
-import MtToast from "./components/feedback-indicator/mt-toast/mt-toast.vue";
+import MtToast, { type Toast } from "./components/feedback-indicator/mt-toast/mt-toast.vue";
 import MtPopover from "./components/overlay/mt-popover/mt-popover.vue";
 import MtPopoverItem from "./components/overlay/mt-popover-item/mt-popover-item.vue";
 import MtPopoverItemResult from "./components/overlay/mt-popover-item-result/mt-popover-item-result.vue";
@@ -36,6 +36,12 @@ import MtInset from "./components/layout/mt-inset/mt-inset.vue";
 import MtThemeProvider from "./components/theme/mt-theme-provider.vue";
 import TooltipDirective from "./directives/tooltip.directive";
 import DeviceHelperPlugin from "./plugin/device-helper.plugin";
+import MtTooltip from "./components/overlay/mt-tooltip/mt-tooltip.vue";
+import MtTextEditor from "./components/form/mt-text-editor/mt-text-editor.vue";
+import MtTextEditorToolbarButton from "./components/form/mt-text-editor/_internal/mt-text-editor-toolbar-button.vue";
+import MtSearch from "./components/navigation/mt-search/mt-search.vue";
+import MtUrlField from "./components/form/mt-url-field/mt-url-field.vue";
+
 // Import SCSS for styling
 import "./components/assets/scss/all.scss";
 
@@ -62,6 +68,8 @@ export {
   MtSwitch,
   MtTextField,
   MtTextarea,
+  MtTextEditor,
+  MtTextEditorToolbarButton,
   MtIcon,
   MtCard,
   MtEmptyState,
@@ -73,6 +81,7 @@ export {
   MtPopover,
   MtPopoverItem,
   MtPopoverItemResult,
+  MtTooltip,
   MtFloatingUi,
   MtModal,
   MtModalRoot,
@@ -81,6 +90,8 @@ export {
   MtModalAction,
   MtText,
   MtInset,
+  MtSearch,
+  MtUrlField,
   MtThemeProvider,
   TooltipDirective,
   DeviceHelperPlugin,
@@ -127,4 +138,4 @@ export {
 };
 
 // Exporting types
-export type { Filter, Option };
+export type { Filter, Option, Toast };

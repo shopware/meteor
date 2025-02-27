@@ -17,7 +17,7 @@
 import type { PropType } from "vue";
 import { defineComponent, computed } from "vue";
 import type { BaseColumnDefinition } from "../mt-data-table.vue";
-import { get } from "lodash-es";
+import { get } from "@/utils/object";
 
 export interface NumberColumnDefinition extends BaseColumnDefinition {
   renderer: "number";
@@ -41,6 +41,7 @@ export default defineComponent({
 
   setup(props) {
     const renderString = computed(() => {
+      // @ts-expect-error
       return String(Number(get(props.data, props.columnDefinition.property)));
     });
 

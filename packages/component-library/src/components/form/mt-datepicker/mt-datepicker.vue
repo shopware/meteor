@@ -1,744 +1,527 @@
 <template>
-  <mt-base-field
-    class="mt-field--datepicker"
-    :class="{ 'has--focus': isDatepickerOpen }"
-    v-bind="$attrs"
-    :required="required"
-    :name="formFieldName"
-    :disabled="disabled"
-    :has-focus="isDatepickerOpen"
-    @inheritance-restore="$emit('inheritance-restore', $event)"
-    @inheritance-remove="$emit('inheritance-remove', $event)"
-    v-on="additionalEventListeners"
-  >
-    <!-- eslint-disable-next-line vue/no-template-shadow -->
-    <template #element="{ identification, disabled }">
-      <!-- eslint-disable-next-line vuejs-accessibility/form-control-has-label -->
-      <input
-        :id="identification"
-        ref="flatpickrInput"
-        type="text"
-        autocomplete="off"
-        :name="identification"
-        :disabled="disabled"
-        :placeholder="placeholder"
-      />
-      <mt-icon
-        v-if="!required && timezoneFormattedValue && !disabled"
-        data-testid="mt-datepicker-clear-button"
-        class="mt-field--datepicker__button-reset-value"
-        name="regular-times-xs"
-        @click="unsetValue"
-      />
-    </template>
-
-    <template v-if="showTimeZoneHint" #field-hint>
-      <mt-icon name="solid-clock" />
-      {{ timeZone }}
-    </template>
-
-    <template #label>
+  <div class="wrapper">
+    <mt-field-label :style="{ gridArea: 'label' }" id="field-id">
       {{ label }}
+    </mt-field-label>
+
+    <vue-datepicker
+      ref="datepicker"
+      v-model="computedValue"
+      :style="{ gridArea: 'datepicker' }"
+      class="date-picker"
+      position="left"
+      @open="isDatepickerOpen = true"
+      @close="isDatepickerOpen = false"
+      :placeholder="placeholder"
+      :disabled="disabled"
+      :required="required"
+      :locale="locale"
+      :timezone="timeZone"
+      :open="isDatepickerOpen"
+      :teleport="true"
+      :show-cancel="true"
+      :clearable="false"
+      :auto-apply="true"
+      :range="range"
+      :format="formatDate"
+      :is-24="is24"
+      :type="dateType"
+      :enable-time-picker="dateType !== 'date'"
+      :exactMatch="dateType === 'date'"
+      time-picker-inline
+    >
+      <template #input-icon>
+        <mt-icon name="regular-calendar" class="regular-calendar" />
+      </template>
+
+      <template #calendar-icon>
+        <mt-icon name="regular-calendar" class="regular-calendar" />
+      </template>
+
+      <template #tp-inline-arrow-up>
+        <mt-icon name="regular-chevron-up-s" class="time-arrow-up-down" />
+      </template>
+
+      <template #tp-inline-arrow-down>
+        <mt-icon name="regular-chevron-down-s" class="time-arrow-up-down" />
+      </template>
+
+      <template #arrow-left>
+        <mt-icon name="regular-chevron-left-xs" class="month-control-arrow" />
+      </template>
+
+      <template #arrow-right>
+        <mt-icon name="regular-chevron-right-xs" class="month-control-arrow" />
+      </template>
+    </vue-datepicker>
+
+    <template v-if="isTimeHintVisible">
+      <div class="field-hint" data-test="time-zone-hint" :style="{ gridArea: 'hint' }">
+        <mt-icon name="solid-clock" class="field-hint-icon" />
+        <p>{{ timeZone || "UTC" }}</p>
+      </div>
     </template>
-  </mt-base-field>
+  </div>
 </template>
 
 <script lang="ts">
-import Flatpickr from "flatpickr";
-import "flatpickr/dist/l10n";
-import { zonedTimeToUtc, utcToZonedTime } from "date-fns-tz";
-import "flatpickr/dist/flatpickr.css";
-import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
-import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
-import MtFormFieldMixin from "../../../mixins/form-field.mixin";
 import { defineComponent } from "vue";
-import type { Instance as FlatpickrInstance } from "flatpickr/dist/types/instance";
-
-const allEvents = [
-  "onChange",
-  "onClose",
-  "onDestroy",
-  "onMonthChange",
-  "onOpen",
-  "onYearChange",
-  "onValueUpdate",
-  "onDayCreate",
-  "onParseConfig",
-  "onReady",
-  "onPreCalendarPosition",
-  "onKeyDown",
-];
+import type { PropType } from "vue";
+import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
+import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
+import DatePicker from "@vuepic/vue-datepicker";
+import "@vuepic/vue-datepicker/dist/main.css";
 
 export default defineComponent({
   name: "MtDatepicker",
 
   components: {
-    "mt-base-field": MtBaseField,
     "mt-icon": MtIcon,
+    "vue-datepicker": DatePicker,
+    "mt-field-label": MtFieldLabel,
   },
-
-  mixins: [MtFormFieldMixin],
 
   props: {
     /**
-     * A label for the datepicker.
+     * A label for your date picker field. It helps the user understand what this field is for.
      */
     label: {
-      type: String,
+      type: String as PropType<string | null>,
       required: false,
       default: null,
     },
 
     /**
-     * The locale of the datepicker.
+     * Defines the type of the date picker.
+     * Options: "date" (for selecting a date), or "datetime" (for selecting both).
      */
-    locale: {
-      type: String,
+    dateType: {
+      type: String as PropType<"date" | "datetime">,
       required: false,
-      default: "en",
+      default: "datetime",
     },
 
     /**
-     * The timezone of the datepicker.
+     * Sets the locale for the date picker.
+     * This affects things like the language used for month names and weekdays.
+     */
+    locale: {
+      type: String as PropType<string>,
+      required: false,
+      default: "de",
+    },
+
+    /**
+     * Defines the time zone for the date picker.
+     * Useful for adjusting date and time according to a specific timezone.
      */
     timeZone: {
-      type: String,
+      type: String as PropType<string>,
       required: false,
       default: "UTC",
     },
 
     /**
-     * The value of the datepicker.
+     * The value of the date picker. Can be a single string or an array of strings.
+     * This represents the currently selected date(s).
      */
     modelValue: {
-      type: String,
-      required: false,
+      type: [String, Array] as PropType<string | string[]>,
       default: null,
     },
 
     /**
-     * The configuration of the datepicker.
-     * For reference @see https://flatpickr.js.org/options/
+     * Placeholder text to show in the date picker input field when no date is selected.
      */
-    config: {
-      type: Object,
-      default() {
-        return {};
-      },
-    },
-
-    /**
-     * Configures the type of the datepicker.
-     */
-    dateType: {
-      type: String,
-      default: "date",
-      validValues: ["time", "date", "datetime"],
-      validator(value: string) {
-        return ["time", "date", "datetime"].includes(value);
-      },
-    },
-
-    /**
-     * A placeholder text for the datepicker.
-     */
-    placeholderText: {
-      type: String,
-      default: "",
+    placeholder: {
+      type: String as PropType<string>,
       required: false,
+      default: "Y-m-d ...",
     },
 
     /**
-     * Determines if the datepicker is required.
+     * Determines if the timepicker is in 24 or 12 hour format
+     */
+    is24: {
+      type: Boolean as PropType<boolean>,
+      required: false,
+      default: true,
+    },
+
+    /**
+     * Determines if the date picker field is required.
+     * If true, the user must select a value before submitting the form.
      */
     required: {
-      type: Boolean,
-      default: false,
+      type: Boolean as PropType<boolean>,
       required: false,
+      default: false,
     },
 
     /**
-     * Determines if the datepicker is disabled.
+     * Determines if the date picker field is disabled.
+     * If true, the user will not be able to interact with the field.
      */
     disabled: {
-      type: Boolean,
-      default: false,
+      type: Boolean as PropType<boolean>,
       required: false,
+      default: false,
     },
 
     /**
-     * Determines if the datepicker should show the timezone hint
+     * Enables the date range selection feature.
+     * If true, the user can select a start and end date.
      */
-    hideHint: {
-      type: Boolean,
-      default: false,
+    range: {
+      type: Boolean as PropType<boolean>,
       required: false,
+      default: false,
     },
   },
 
   data(): {
-    flatpickrInstance: FlatpickrInstance | null;
     isDatepickerOpen: boolean;
-    defaultConfig: Record<string, any>;
+    isTimeHintVisible: boolean;
   } {
     return {
-      flatpickrInstance: null,
       isDatepickerOpen: false,
-      defaultConfig: {},
+      isTimeHintVisible: true,
     };
   },
 
   computed: {
-    flatpickrInputRef() {
-      return this.$refs.flatpickrInput;
-    },
-
-    currentFlatpickrConfig() {
-      if (this.flatpickrInstance === null) {
-        return {};
-      }
-
-      return this.flatpickrInstance.config;
-    },
-
-    placeholder() {
-      if (this.placeholderText.length > 0) {
-        return this.placeholderText;
-      }
-
-      if (this.flatpickrInstance === null) {
-        return this.defaultConfig.altFormat;
-      }
-
-      return this.flatpickrInstance.config.altFormat;
-    },
-
-    noCalendar() {
-      return this.dateType === "time";
-    },
-
-    enableTime() {
-      return this.noCalendar || this.dateType === "datetime";
-    },
-
-    additionalEventListeners() {
-      const listeners: {
-        [key: string]: (...args: any[]) => void;
-      } = {};
-
-      /**
-       * Do not pass "change" or "input" event listeners to the form elements
-       * because the component implements its own listeners for this event types.
-       * The callback methods will emit the corresponding event to the parent.
-       */
-      Object.entries(this.$attrs).forEach(([key, value]) => {
-        // Just look for listeners
-        if (typeof value !== "function") {
-          return;
-        }
-
-        if (!["change", "update:modelValue"].includes(key)) {
-          // @ts-expect-error
-          listeners[key] = this.$attrs[key];
-        }
-      });
-
-      return listeners;
-    },
-
-    timezoneFormattedValue: {
-      get() {
-        if (!this.modelValue) {
-          return null;
-        }
-
-        if (["time", "date"].includes(this.dateType)) {
-          return this.modelValue;
-        }
-
-        // convert from UTC timezone to user timezone (represented as UTC)
-        const timeZoneDate = utcToZonedTime(this.modelValue, this.timeZone);
-
-        // get the time converted to the user timezone
-        return timeZoneDate.toISOString();
+    computedValue: {
+      get(): string | string[] {
+        return this.modelValue;
       },
-      set(newValue: string | null) {
-        if (newValue === null) {
-          this.$emit("update:modelValue", null);
+      set(newValue: Date | [Date, Date] | null) {
+        if (!newValue) return;
+
+        // Handle date conversion for 'date' type
+        if (this.dateType === "date") {
+          const isoFormattedDate = this.convertDateToIso(newValue);
+          this.$emit("update:modelValue", isoFormattedDate);
           return;
         }
 
-        if (["time", "date"].includes(this.dateType)) {
-          this.$emit("update:modelValue", newValue);
-          return;
-        }
-
-        // convert from user timezone (represented as UTC) to UTC timezone
-        const utcDate = zonedTimeToUtc(new Date(newValue), this.timeZone);
-
-        // emit the UTC time so that the v-model value always work in UTC time (which is needed for the server)
-        this.$emit("update:modelValue", utcDate.toISOString());
+        // Handle 'datetime' type: Convert to UTC
+        const isoValue = this.convertDateToIso(newValue);
+        this.$emit("update:modelValue", isoValue);
       },
-    },
-
-    showTimeZoneHint() {
-      return this.dateType === "datetime" && !this.hideHint;
     },
   },
 
   watch: {
-    config: {
-      deep: true,
-      handler() {
-        this.updateFlatpickrInstance();
-      },
+    dateType(newType) {
+      this.isTimeHintVisible = newType !== "date";
     },
-
-    dateType() {
-      this.createConfig();
-      this.updateFlatpickrInstance();
-    },
-
-    locale: {
-      immediate: true,
-      handler() {
-        this.defaultConfig.locale = this.locale;
-        this.updateFlatpickrInstance();
-      },
-    },
-
-    /**
-     * Watch for changes from parent component and update DOM
-     *
-     * @param newValue
-     */
-    timezoneFormattedValue(newValue) {
-      this.setDatepickerValue(newValue);
-    },
-
-    disabled(isDisabled) {
-      if (!this.flatpickrInstance) {
-        return;
-      }
-
-      this.flatpickrInstance._input.disabled = isDisabled;
-    },
-  },
-
-  created() {
-    this.createdComponent();
-  },
-
-  mounted() {
-    this.mountedComponent();
-  },
-
-  /**
-   * Free up memory
-   */
-  beforeUnmount() {
-    this.beforeDestroyComponent();
   },
 
   methods: {
-    createdComponent() {
-      this.createConfig();
-    },
-
-    mountedComponent() {
-      if (this.flatpickrInstance === null) {
-        this.createFlatpickrInstance();
-        return;
-      }
-      this.updateFlatpickrInstance();
-    },
-
-    /**
-     * Free up memory
-     */
-    beforeDestroyComponent() {
-      if (this.flatpickrInstance !== null) {
-        this.flatpickrInstance.destroy();
-        this.flatpickrInstance = null;
-      }
-    },
-
-    /**
-     * Update with the new value.
-     *
-     * @param value
-     */
-    setDatepickerValue(value: string | null) {
-      // Make sure we have a flatpickr instance
-      if (this.flatpickrInstance !== null) {
-        // Notify flatpickr instance that there is a change in value
-        this.flatpickrInstance.setDate(value!, false);
-      }
-    },
-
-    /**
-     * Merge the newConfig parameter with the defaultConfig and other options.
-     *
-     * @param newConfig
-     * @returns {any}
-     */
-    getMergedConfig(newConfig: any) {
-      if (newConfig.mode !== undefined) {
-        console.warn(
-          "[mt-datepicker] The only allowed mode is the default 'single' mode " +
-            "(the specified mode will be ignored!). " +
-            "The modes 'multiple' or 'range' are currently not supported",
-        );
-      }
-
-      return {
-        ...this.defaultConfig,
-        enableTime: this.enableTime,
-        noCalendar: this.noCalendar,
-        ...newConfig,
-        mode: "single",
+    formatDate(date: Date | [Date, Date]): string {
+      // Overide built-in format to y-m-d
+      const formatSingleDate = (d: Date) => {
+        const year = d.getFullYear();
+        const month = String(d.getMonth() + 1).padStart(2, "0");
+        const day = String(d.getDate()).padStart(2, "0");
+        const hours = String(d.getHours()).padStart(2, "0");
+        const minutes = String(d.getMinutes()).padStart(2, "0");
+        return this.dateType === "date"
+          ? `${year}/${month}/${day}`
+          : `${year}/${month}/${day}, ${hours}:${minutes}`;
       };
-    },
 
-    /**
-     * Update the flatpickr instance with a new config.
-     */
-    updateFlatpickrInstance() {
-      if (this.flatpickrInstance === null) {
-        return;
+      if (Array.isArray(date)) {
+        return date.map(formatSingleDate).join(" - ");
       }
 
-      const mergedConfig = this.getMergedConfig(this.config);
+      return formatSingleDate(date);
+    },
 
-      if (
-        mergedConfig.enableTime !== undefined &&
-        // @ts-expect-error
-        mergedConfig.enableTime !== this.currentFlatpickrConfig.enableTime
-      ) {
-        // The instance must be recreated for some config options to take effect like 'enableTime' changes.
-        // See https://github.com/flatpickr/flatpickr/issues/1108 for details.
-        // @ts-expect-error
-        this.createFlatpickrInstance(this.config);
-        return;
+    convertDateToIso(date: Date | [Date, Date]): string | string[] {
+      if (Array.isArray(date)) {
+        return date.map((d) => d.toISOString());
+      } else {
+        return date.toISOString();
       }
-      // Workaround: Don't allow to pass hooks to configs again otherwise
-      // previously registered hooks will stop working
-      // Notice: we are looping through all events
-      // This also means that new callbacks can not passed once component has been initialized
-      allEvents.forEach((hook) => {
-        delete mergedConfig[hook];
-      });
-
-      // Update the flatpickr config.
-      this.flatpickrInstance.set(mergedConfig);
-
-      // Workaround: Allow to change locale dynamically
-      ["locale", "showMonths"].forEach((name) => {
-        if (typeof mergedConfig[name] !== "undefined") {
-          // @ts-expect-error
-          this.flatpickrInstance.set(name, mergedConfig[name]);
-        }
-      });
     },
+  },
 
-    /**
-     * Create the flatpickr instance. If already one exists it will be recreated.
-     */
-    createFlatpickrInstance() {
-      if (this.flatpickrInstance !== null) {
-        this.flatpickrInstance.destroy();
-        this.flatpickrInstance = null;
-      }
-
-      const mergedConfig = this.getMergedConfig(this.config);
-
-      // Set event hooks in config.
-      this.getEventNames().forEach(({ kebabCase, camelCase }) => {
-        // @ts-expect-error
-        mergedConfig[camelCase] = (...args) => {
-          this.$emit(kebabCase, ...args);
-        };
-      });
-
-      // @ts-expect-error
-      // Init flatpickr only if it is not already loaded.
-      this.flatpickrInstance = new Flatpickr(
-        // @ts-expect-error
-        this.flatpickrInputRef,
-        mergedConfig,
-      ) as unknown as FlatpickrInstance;
-      this.flatpickrInstance.config.onOpen.push(() => {
-        this.isDatepickerOpen = true;
-      });
-
-      this.flatpickrInstance.config.onClose.push((...args) => {
-        this.emitValue(args[1]);
-        this.isDatepickerOpen = false;
-      });
-
-      this.flatpickrInstance.config.onChange.push((...args) => {
-        this.emitValue(args[1]);
-      });
-
-      // Set the right datepicker value from the property.
-      const initialValue = this.timezoneFormattedValue
-        ? this.timezoneFormattedValue
-        : new Date().toISOString();
-      this.setDatepickerValue(initialValue);
-    },
-
-    /**
-     * Convert the events for the date picker to another format:
-     * from: 'on-month-change' to: { camelCase: 'onMonthChange', kebabCase: 'on-month-change' }
-     * So this can be used as a parameter to flatpickr to specify which events will be thrown
-     * and also emit the right event from vue.
-     *
-     * @returns {Array}
-     */
-    getEventNames() {
-      const events: {
-        kebabCase: string;
-        camelCase: string;
-      }[] = [];
-
-      Object.keys(this.additionalEventListeners).forEach((event) => {
-        events.push({
-          kebabCase: event,
-          camelCase: this.kebabToCamel(event),
-        });
-      });
-
-      return events;
-    },
-
-    /**
-     * Opens the datepicker.
-     */
-    openDatepicker() {
-      this.$nextTick(() => {
-        // @ts-expect-error
-        this.flatpickrInstance.open();
-      });
-    },
-
-    /**
-     * Get a camel case ("camelCase") string from a kebab case ("kebab-case") string.
-     *
-     * @param string
-     * @returns {*}
-     */
-    kebabToCamel(string: string) {
-      return string.replace(/-([a-z])/g, (m, g1) => g1.toUpperCase());
-    },
-
-    unsetValue() {
-      this.$nextTick(() => {
-        this.emitValue(null);
-      });
-    },
-
-    emitValue(value: string | null) {
-      // Prevent emitting an empty date, to reset a date, null should be emitted
-      if (value === "") {
-        value = null;
-      }
-
-      // Prevent emit if value is already up to date
-      if (value === this.timezoneFormattedValue) {
-        return;
-      }
-
-      this.timezoneFormattedValue = value;
-    },
-
-    createConfig() {
-      let dateFormat = "Y-m-dTH:i:S";
-      let altFormat = "Y-m-d H:i";
-
-      if (this.dateType === "time") {
-        dateFormat = "H:i:S";
-        altFormat = "H:i";
-      }
-
-      if (this.dateType === "date") {
-        altFormat = "Y-m-d";
-      }
-
-      this.defaultConfig = {
-        time_24hr: true,
-        locale: this.locale,
-        dateFormat,
-        altInput: true,
-        altFormat,
-        allowInput: true,
-      };
-    },
+  mounted() {
+    this.isTimeHintVisible = this.dateType !== "date";
   },
 });
 </script>
 
-<style lang="scss">
-$mt-datepicker-color-border: $color-gray-300;
-$mt-datepicker-color-font: $color-darkgray-200;
-$mt-datepicker-color-disabled-font: #b3bfcc;
-$mt-datepicker-color-hover: $color-shopware-brand-500;
-$mt-datepicker-color-selected: #e6e6e6;
-$mt-datepicker-color-text-selected: $color-white;
-
-@mixin flatpickr-day-hovered {
-  color: $mt-datepicker-color-text-selected;
-  background-color: $mt-datepicker-color-hover;
-  border-color: $color-shopware-brand-500;
+<style lang="css">
+/* || Datepicker theme  */
+.dp__theme_light {
+  --dp-background-color: var(--color-elevation-surface-overlay);
+  --dp-text-color: var(--color-text-primary-default);
+  --dp-hover-color: var(--color-interaction-secondary-hover);
+  --dp-hover-text-color: var(--color-text-primary-default);
+  --dp-hover-icon-color: #959595;
+  --dp-primary-color: var(--color-interaction-primary-default);
+  --dp-primary-disabled-color: var(--color-background-critical-dark);
+  --dp-primary-text-color: var(--color-text-static-default);
+  --dp-secondary-color: var(--color-text-primary-disabled);
+  --dp-border-color: var(--color-border-primary-default);
+  --dp-menu-border-color: var(--color-border-primary-default);
+  --dp-border-color-hover: var(--color-border-primary-default);
+  --dp-border-color-focus: var(--color-border-brand-selected);
+  --dp-disabled-color: var(--color-background-primary-disabled);
+  --dp-scroll-bar-background: var(--color-elevation-surface-overlay);
+  --dp-scroll-bar-color: var(--color-interaction-secondary-dark);
+  --dp-success-color: #76d275;
+  --dp-success-color-disabled: #a3d9b1;
+  --dp-icon-color: var(--color-icon-primary-default);
+  --dp-danger-color: var(--color-border-critical-default);
+  --dp-marker-color: var(--color-border-critical-default);
+  --dp-tooltip-color: #fafafa;
+  --dp-disabled-color-text: #8e8e8e;
+  --dp-highlight-color: rgba(210, 25, 189, 0.867);
+  --dp-range-between-dates-background-color: var(--color-background-brand-default);
+  --dp-range-between-dates-text-color: var(--color-text-primary-default);
+  --dp-range-between-border-color: var(--color-background-brand-default);
 }
 
-.mt-field--datepicker {
-  .mt-field__hint {
-    svg#meteor-icon-kit__solid-clock {
-      width: 12px;
-      height: 12px;
-    }
-  }
-
-  .mt-block-field__block {
-    position: relative;
-  }
-
-  .mt-field--datepicker__button-reset-value {
-    position: absolute;
-    cursor: pointer;
-    right: 14px;
-    top: 19px;
-  }
-
-  &.mt-field--small {
-    .mt-field--datepicker__button-reset-value {
-      top: 7px;
-    }
-  }
-
-  &.mt-field--medium {
-    .mt-field--datepicker__button-reset-value {
-      top: 12px;
-    }
-  }
+.wrapper {
+  display: grid;
+  grid-template-areas:
+    "label"
+    "datepicker"
+    "hint";
+  row-gap: 0.4rem;
 }
 
-.flatpickr-calendar {
-  color: $mt-datepicker-color-font;
-  box-shadow: 0 3px 6px 0 rgba(120, 138, 155, 0.3);
-  border: 1px solid $mt-datepicker-color-border;
-  border-radius: 4px;
+/* || Datepicker  */
+.dp__main {
+  font-family: var(--font-family-body) !important;
+}
 
-  &::before,
-  &::after {
-    display: none;
-  }
+/* || Input wrapper */
+.dp__input_wrap {
+  font: inherit;
+  font-weight: var(--font-weight-regular) !important;
+  font-size: var(--font-size-xs) !important;
+}
 
-  .flatpickr-months {
-    padding-top: 8px;
-    padding-bottom: 16px;
+.dp__input {
+  height: var(--scale-size-48);
+  padding-left: var(--scale-size-16) !important;
+  border-radius: var(--border-radius-xs);
+  font: inherit;
+  color: var(--color-text-secondary-default);
+  background: var(--color-elevation-surface-raised);
+}
 
-    .flatpickr-monthDropdown-months {
-      padding-top: 2px;
-      padding-bottom: 4px;
-      font-weight: var(--font-weight-semi-bold);
-      color: $color-darkgray-200;
-      text-align: right;
-      -moz-appearance: none;
-      -webkit-appearance: none;
-      line-height: 1.2;
+.dp__input_icon {
+  position: absolute;
+  width: var(--scale-size-48);
+  height: 96%;
+  left: auto;
+  right: 1px;
+  text-align: center;
+  border-radius: 0 3px 3px 0;
+  padding: var(--scale-size-12);
+  border-left: 1px solid var(--color-border-primary-default);
+  background: var(--color-background-primary-disabled);
+}
 
-      option {
-        font-weight: var(--font-weight-regular);
-      }
-    }
+.dp__input_icon #meteor-icon-kit__regular-calendar {
+  color: var(--color-icon-primary-default);
+  width: 16.5px;
+  height: var(--scale-size-18);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 
-    .flatpickr-prev-month,
-    .flatpickr-next-month {
-      top: 8px;
+.dp__input_focus {
+  filter: drop-shadow(0px 0px 3px #189eff4d);
+}
 
-      &:hover {
-        svg {
-          fill: $color-shopware-brand-500;
-        }
-      }
-    }
+.dp__disabled {
+  background: var(--color-background-primary-disabled);
+}
 
-    .cur-year {
-      color: $color-darkgray-200;
-    }
-  }
+/* || Menu / calendar */
+.dp--menu-wrapper {
+  border-radius: var(--border-radius-s) !important;
+  font-family: inherit;
+  font-weight: inherit;
+  filter: drop-shadow(0px 1px 3px #0000000f);
+  filter: drop-shadow(0px 1px 3px #0000001a);
+  top: -7px;
+}
 
-  .flatpickr-current-month {
-    display: flex;
+.dp__arrow_top {
+  top: -0.5px;
+  left: var(--scale-size-24);
+  border-top-right-radius: 3px;
+}
 
-    .numInputWrapper,
-    .flatpickr-monthDropdown-months {
-      flex: 1;
-    }
-  }
+.dp__instance_calendar {
+  padding: var(--scale-size-8) !important;
+}
 
-  .flatpickr-weekday {
-    font-size: inherit;
-    color: inherit;
-    font-weight: 400;
-  }
+.dp__menu_inner {
+  padding: 0px;
+}
 
-  .flatpickr-day {
-    border-radius: 4px;
-    margin-bottom: 6px;
+.no-border-bottom {
+  padding-bottom: 0 !important;
+}
 
-    &:not(.flatpickr-disabled) {
-      color: $mt-datepicker-color-font;
-    }
+.dp--header-wrap {
+  font: inherit;
+  font-weight: var(--font-weight-semibold) !important;
+  font-size: var(--font-size-xs) !important;
+}
 
-    &:hover {
-      @include flatpickr-day-hovered;
-    }
+.dp__month_year_select {
+  color: var(--color-text-primary-default);
+}
 
-    &.selected {
-      background-color: $mt-datepicker-color-selected;
-      border-color: $mt-datepicker-color-border;
+.month-control-arrow {
+  color: var(--color-icon-primary-default);
+}
 
-      &:hover {
-        @include flatpickr-day-hovered;
-      }
-    }
+.dp__overlay {
+  border-radius: var(--border-radius-m);
+  font: inherit;
+  font-weight: var(--font-weight-regular) !important;
+  font-size: var(--font-size-xs) !important;
+}
 
-    &.prevMonthDay,
-    &.nextMonthDay {
-      &:not(.flatpickr-disabled) {
-        color: $mt-datepicker-color-disabled-font;
-      }
+.back-to-calendar svg {
+  width: 1.2rem !important;
+  color: var(--color-text-primary-default);
+}
 
-      &:hover {
-        @include flatpickr-day-hovered;
-      }
-    }
+.dp__calendar_header {
+  font: inherit;
+  color: var(--color-text-primary-default);
+  font-weight: var(--font-weight-medium) !important;
+  font-size: var(--font-size-xs) !important;
+}
 
-    &.today {
-      border-color: $color-gray-300;
+.dp__calendar_header_separator {
+  display: none;
+}
 
-      &:hover {
-        @include flatpickr-day-hovered;
-      }
+.dp__cell_inner {
+  font: inherit;
+  font-size: var(--font-size-xs) !important;
+  font-weight: var(--font-weight-regular) !important;
+}
 
-      &.selected {
-        background-color: $mt-datepicker-color-selected;
+.dp__cell_inner:hover {
+  background: var(--color-interaction-secondary-hover);
+  color: var(--color-text-primary-default);
+}
 
-        &:hover {
-          @include flatpickr-day-hovered;
-        }
-      }
-    }
+.dp__today {
+  border: 1px solid var(--color-border-primary-default);
+}
 
-    &.startRange {
-      border-radius: 4px 0 0 4px;
-    }
+/* || Time picker */
+.dp__time_picker_inline_container {
+  padding-top: 5px;
+}
 
-    &.endRange {
-      border-radius: 0 4px 4px 0;
-    }
-  }
+.dp__flex {
+  width: 100%;
+  border-top: 1px solid var(--color-border-primary-default) !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.dp__time_input {
+  width: 100%;
+  justify-content: space-between;
+  padding-left: 35px;
+  padding-right: 35px;
+}
+
+.dp__time_display {
+  font-family: var(--font-family-body) !important;
+  font-weight: var(--font-weight-regular) !important;
+  font-size: var(--font-size-xs) !important;
+}
+
+.dp__inc_dec_button_inline {
+  opacity: 0;
+  justify-content: center;
+}
+
+.dp__inc_dec_button_inline:hover {
+  opacity: 1;
+}
+
+.time-arrow-up-down {
+  color: var(--color-border-primary-default);
+}
+
+.dp__overlay {
+  font-family: var(--font-family-body) !important;
+  font-weight: var(--font-weight-regular) !important;
+  font-size: var(--font-size-xs) !important;
+}
+
+.dp__overlay_container {
+  font: inherit;
+}
+
+.dp--overlay-relative {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.dp__button.dp__overlay_action {
+  position: absolute;
+  bottom: 0;
+}
+
+.dp__button.dp__overlay_action span {
+  display: none;
+}
+
+.dp__icon {
+  display: none;
+}
+
+.dp__button.dp__overlay_action::before {
+  content: "+";
+  font: inherit;
+  font-weight: var(--font-weight-light) !important;
+  font-size: var(--font-size-xl) !important;
+  transform: rotate(45deg);
+  color: var(--color-text-secondary-default);
+}
+
+.dp--clear-btn {
+  display: absolute;
+  z-index: 9999;
+  background: red;
+}
+
+/* || Field hint */
+.field-hint {
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+  font-family: var(--font-family-body);
+  color: var(--color-text-tertiary-default);
+  display: flex;
+  align-items: center;
+  gap: var(--scale-size-8);
+}
+
+.field-hint .field-hint-icon svg#meteor-icon-kit__solid-clock {
+  width: var(--scale-size-12);
+  height: var(--scale-size-12);
 }
 </style>

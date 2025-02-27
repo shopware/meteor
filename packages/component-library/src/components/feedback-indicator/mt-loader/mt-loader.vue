@@ -16,7 +16,7 @@ import { computed } from "vue";
 
 const props = withDefaults(
   defineProps<{
-    size: `${string}px`;
+    size?: `${string}px`;
   }>(),
   {
     size: "50px",

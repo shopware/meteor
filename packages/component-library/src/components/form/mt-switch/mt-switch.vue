@@ -1,386 +1,209 @@
 <template>
-  <div class="mt-field--switch__container">
-    <div class="mt-field--switch" :class="MtSwitchFieldClasses">
-      <div class="mt-field--switch__content">
-        <div class="mt-field--switch__input">
-          <!-- eslint-disable-next-line vuejs-accessibility/form-control-has-label -->
-          <input
-            :id="identification"
-            type="checkbox"
-            :name="formFieldName || identification"
-            :checked="inputState"
-            :disabled="isDisabled"
-            @change.stop="onChange"
-          />
-          <div class="mt-field__switch-state">
-            <div class="mt-field__switch-state-knob" />
-          </div>
-        </div>
+  <div
+    :class="[
+      'mt-switch',
+      {
+        'mt-switch--no-top-margin': removeTopMargin,
+        'mt-switch--future-no-default-margin': !!futureFlags.removeDefaultMargin,
+        'mt-switch--not-bordered': !bordered,
+      },
+    ]"
+  >
+    <div
+      :class="[
+        'mt-switch__block',
+        {
+          'mt-switch__block--bordered': bordered,
+          'mt-switch__block--errored': !!error && !!bordered,
+        },
+      ]"
+    >
+      <!-- @vue-expect-error -->
+      <!-- @deprecated: v6.0.0 -- remove aria-label, it's there as a hot-fix.  First rule of aria do not use aria if not needed -->
+      <input
+        :checked="isInherited ? inheritedValue : checked || modelValue"
+        type="checkbox"
+        :class="['mt-switch__switch', { 'mt-switch__switch--errored': !!error }]"
+        :id="id"
+        :disabled="disabled || isInherited"
+        :required="required"
+        :aria-describedby="!!error ? errorId : undefined"
+        :aria-invalid="!!error || undefined"
+        :aria-label="label || $attrs['aria-label']"
+        :name="name"
+        @change.stop="
+          () => {
+            $emit('change', !checked);
+            $emit('update:modelValue', !modelValue);
+          }
+        "
+      />
 
-        <mt-base-field
-          v-bind="$attrs"
-          :disabled="disabled"
-          :required="required"
-          :name="identification"
-          :has-focus="false"
-          :help-text="helpText"
-          :is-inheritance-field="isInheritanceField"
-          :is-inherited="isInherited"
-          @inheritance-restore="onInheritanceRestore($event)"
-          @inheritance-remove="$emit('inheritance-remove', $event)"
-        >
-          <template #label>
-            {{ label }}
-          </template>
-        </mt-base-field>
-      </div>
+      <mt-field-label
+        :class="['mt-switch__label', { 'mt-switch__label--disabled': disabled }]"
+        :id="id"
+        :inheritance="!isInheritanceField ? 'none' : isInherited ? 'linked' : 'unlinked'"
+        :has-error="!!error"
+        :required="required"
+        @update:inheritance="
+          if (isInherited) {
+            $emit('inheritance-remove');
+          } else {
+            $emit('inheritance-restore');
+          }
+        "
+        >{{ label }}</mt-field-label
+      >
+
+      <mt-help-text v-if="!!helpText" :text="helpText" class="mt-switch__help-text" />
     </div>
-    <mt-field-error :error="error" :class="errorClasses" />
+
+    <mt-field-error v-if="!!error" :error="error" :id="errorId" />
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
+<script setup lang="ts">
+import { useId } from "vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
-import MtFormFieldMixin from "../../../mixins/form-field.mixin";
-import { createId } from "../../../utils/id";
+import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
+import MtHelpText from "../mt-help-text/mt-help-text.vue";
+import { useFutureFlags } from "@/composables/useFutureFlags";
 
-export default defineComponent({
-  name: "MtSwitch",
+defineProps<{
+  modelValue?: boolean;
+  label?: string;
+  isInherited?: boolean;
+  isInheritanceField?: boolean;
+  inheritedValue?: boolean;
+  required?: boolean;
+  disabled?: boolean;
+  checked?: boolean;
+  bordered?: boolean;
+  helpText?: string;
+  error?: { detail: string };
+  removeTopMargin?: boolean;
+  name?: string;
+}>();
 
-  components: {
-    "mt-base-field": MtBaseField,
-    "mt-field-error": MtFieldError,
-  },
+const id = useId();
+const errorId = useId();
+const futureFlags = useFutureFlags();
 
-  mixins: [MtFormFieldMixin],
-
-  props: {
-    label: {
-      type: String,
-      required: false,
-      default: "",
-    },
-    required: {
-      type: Boolean,
-      default: false,
-    },
-    disabled: {
-      type: Boolean,
-      default: false,
-    },
-
-    /**
-     * Determines the checked state of the checkbox.
-     */
-    checked: {
-      type: Boolean,
-      required: false,
-      default: null,
-    },
-
-    /**
-     * Determines if the field is surrounded by a border.
-     */
-    bordered: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    /**
-     * Inherited value from another SalesChannel.
-     */
-    inheritedValue: {
-      type: Boolean,
-      required: false,
-      default: null,
-    },
-
-    /**
-     * Help text with additional information for the field.
-     */
-    helpText: {
-      type: String,
-      required: false,
-      default: null,
-    },
-
-    /**
-     * Error object for this field.
-     */
-    error: {
-      type: Object,
-      required: false,
-      default: null,
-    },
-
-    removeTopMargin: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    /**
-     * Name of the form field.
-     */
-    name: {
-      type: String,
-      required: false,
-      default: "",
-    },
-  },
-
-  data(): { id: string | undefined; currentValue: boolean | undefined } {
-    return {
-      currentValue: this.checked,
-      id: undefined,
-    };
-  },
-
-  mounted() {
-    this.id = createId();
-  },
-
-  computed: {
-    identification(): string {
-      return `mt-field--${this.id}`;
-    },
-
-    inputState(): boolean {
-      if (this.isInherited) {
-        return this.inheritedValue;
-      }
-
-      return this.currentValue || false;
-    },
-
-    isInheritanceField(): boolean {
-      if (this.$attrs.isInheritanceField) {
-        return true;
-      }
-      return this.inheritedValue !== null;
-    },
-
-    isInherited(): boolean {
-      if (this.$attrs.isInherited) {
-        return true;
-      }
-      return this.isInheritanceField && this.currentValue === null;
-    },
-
-    hasError(): boolean {
-      return this.error && this.error.code !== 0;
-    },
-
-    MtSwitchFieldClasses(): Record<string, boolean>[] {
-      return [
-        {
-          "has--error": this.hasError,
-          "mt-field--switch-bordered": this.bordered,
-          "mt-field--switch-no-margin-top": this.removeTopMargin,
-          "mt-field--switch-no-margin-bottom": this.hasError,
-        },
-      ];
-    },
-
-    errorClasses(): {
-      "mt-field__error--move-up": boolean;
-    }[] {
-      return [
-        {
-          "mt-field__error--move-up": !this.bordered,
-        },
-      ];
-    },
-
-    isDisabled(): boolean {
-      return this.disabled || this.isInherited;
-    },
-  },
-
-  watch: {
-    checked() {
-      this.currentValue = this.checked;
-    },
-  },
-
-  methods: {
-    onChange(changeEvent: Event) {
-      // @ts-expect-error - target exists on event
-      this.$emit("change", changeEvent.target.checked);
-    },
-
-    onInheritanceRestore(event: Event) {
-      this.$emit("inheritance-restore", event);
-    },
-  },
-});
+defineEmits<{
+  change: [value: boolean];
+  "update:modelValue": [value: boolean];
+  "inheritance-remove": [];
+  "inheritance-restore": [];
+}>();
 </script>
 
-<style lang="scss">
-.mt-field--switch__container {
-  .mt-field--switch {
-    margin-top: 24px;
-    margin-bottom: 22px;
+<style>
+.mt-switch {
+  margin-top: var(--scale-size-24);
+  margin-bottom: var(--scale-size-22);
+}
 
-    &.mt-field--switch-no-margin-top {
-      margin-top: 0;
-    }
+.mt-switch--not-bordered {
+  min-height: var(--scale-size-48);
+}
 
-    &.mt-field--switch-no-margin-bottom {
-      margin-bottom: 0;
-    }
+.mt-switch--no-top-margin {
+  margin-top: 0;
+}
 
-    .mt-field__error {
-      margin-top: -14px;
-    }
+.mt-switch--future-no-default-margin {
+  margin: 0;
+}
 
-    .mt-field {
-      margin-bottom: 0;
+.mt-switch__block {
+  display: flex;
+  align-items: center;
+}
 
-      .mt-block-field__block {
-        border: none;
-      }
-    }
+.mt-switch__block--bordered {
+  min-height: var(--scale-size-48);
+  border: 1px solid var(--color-border-primary-default);
+  padding-inline: var(--scale-size-16);
+  border-radius: var(--border-radius-xs);
+  background: var(--color-elevation-surface-raised);
+}
 
-    .mt-field__label {
-      margin-bottom: 0;
+.mt-switch__block--errored {
+  border-color: var(--color-border-critical-default);
+  background: var(--color-background-critical-dark);
+}
 
-      label {
-        cursor: pointer;
-        flex-grow: initial;
-        padding: 15px 0 15px 4px;
-      }
-    }
+.mt-switch__switch {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
 
-    .mt-field--switch__content {
-      display: grid;
-      grid-template-columns: 24px 1fr auto;
-      align-items: center;
-    }
+  cursor: pointer;
+  border-radius: var(--border-radius-round);
+  height: var(--scale-size-16);
+  width: var(--scale-size-24);
+  background: var(--color-interaction-secondary-disabled);
+  position: relative;
 
-    &.mt-field--switch-bordered {
-      .mt-field__error {
-        padding: 0 16px;
-      }
-    }
+  &:disabled {
+    cursor: not-allowed;
+  }
 
-    &.mt-field--switch-bordered .mt-field--switch__content {
-      border-radius: 4px;
-      border: 1px solid var(--color-border-primary-default);
-      padding: 0 16px;
-    }
+  &::after {
+    content: "";
+    display: block;
+    width: var(--scale-size-10);
+    height: var(--scale-size-10);
+    border-radius: var(--border-radius-round);
+    background: var(--color-icon-static-default);
+    position: absolute;
+    top: 50%;
+    left: 3px;
+    transform: translateY(-50%);
+    transition: 200ms left cubic-bezier(0.23, 1, 0.32, 1);
+  }
 
-    .mt-field--switch__input {
-      position: relative;
-      padding: 15px 0;
-      width: 24px;
-      height: 100%;
+  &:focus-visible {
+    outline: 2px solid var(--color-border-brand-selected);
+    outline-offset: 2px;
+  }
 
-      input[type="checkbox"] {
-        opacity: 0;
-        display: block;
-        width: 100%;
-        height: 100%;
-        position: absolute;
-        top: 0;
-        left: 0;
-        border: 0 none;
-        background: none;
-        -webkit-appearance: none;
-        z-index: 2;
-        cursor: pointer;
+  &:checked::after {
+    left: calc(100% - var(--scale-size-10) - 3px);
+  }
 
-        &:disabled {
-          cursor: auto;
-        }
+  &:checked:not(.mt-switch__switch--errored) {
+    background: var(--color-interaction-primary-default);
 
-        &:disabled ~ .mt-field__switch-state {
-          background: var(--color-interaction-secondary-disabled);
-
-          .mt-field__switch-state-knob {
-            background: var(--color-icon-primary-disabled);
-          }
-        }
-
-        &:checked ~ .mt-field__switch-state {
-          background: var(--color-interaction-primary-default);
-
-          .mt-field__switch-state-knob {
-            left: 10px;
-          }
-        }
-
-        &:checked:disabled ~ .mt-field__switch-state {
-          background: var(--color-interaction-primary-disabled);
-
-          .mt-field__switch-state-knob {
-            background: var(--color-icon-static-default);
-          }
-        }
-      }
-
-      .mt-field__switch-state {
-        position: absolute;
-        width: 100%;
-        height: 16px;
-        z-index: 1;
-        text-align: center;
-        background: var(--color-interaction-secondary-disabled);
-        border-radius: 8px;
-
-        .mt-field__switch-state-knob {
-          transition: all 0.3s ease-in-out;
-          width: 10px;
-          height: 10px;
-          position: absolute;
-          top: 3px;
-          left: 3px;
-          background: var(--color-icon-static-default);
-          border-radius: 7px;
-        }
-      }
-    }
-
-    .mt-field__inheritance-icon {
-      display: flex;
-      align-items: center;
-      margin-left: 8px;
-      margin-right: 0;
-    }
-
-    &.has--error {
-      &.mt-field--switch-bordered {
-        .mt-field--switch__content {
-          border: 1px solid var(--color-border-critical-default);
-          background: var(--color-background-critical-dark);
-        }
-      }
-
-      .mt-field__switch-state {
-        background: var(--color-interaction-critical-default);
-      }
-
-      input[type="checkbox"]:checked ~ .mt-field__switch-state {
-        background: var(--color-interaction-critical-default);
-      }
-    }
-
-    &:has(:focus-visible) {
-      .mt-field__switch-state {
-        outline: 2px solid var(--color-border-brand-selected);
-        outline-offset: 2px;
-      }
+    &:disabled {
+      background-color: var(--color-interaction-primary-disabled);
     }
   }
 
-  .mt-field__error {
-    &--move-up {
-      transform: translateY(-15px);
-      margin-bottom: 21px;
+  &:disabled:not(:checked):not(.mt-switch__switch--errored) {
+    &::after {
+      background-color: var(--color-icon-primary-disabled);
     }
   }
+}
+
+.mt-switch__switch--errored {
+  background: var(--color-interaction-critical-default);
+}
+
+.mt-switch__label {
+  padding-left: var(--scale-size-4);
+  cursor: pointer;
+}
+
+.mt-switch__label--disabled {
+  cursor: not-allowed;
+}
+
+.mt-switch__help-text {
+  margin-left: var(--scale-size-8);
+  height: var(--scale-size-16);
+  display: grid;
+  place-items: center;
 }
 </style>

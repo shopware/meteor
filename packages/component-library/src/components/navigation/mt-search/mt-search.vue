@@ -3,19 +3,23 @@
     <input
       :value="modelValue"
       @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
-      @change="$emit('change', ($event.target as HTMLInputElement).value || '')"
+      @change="$emit('change', ($event.target as HTMLInputElement).value)"
       class="mt-search__input"
       :disabled="disabled"
-      type="text"
+      type="search"
       :placeholder="placeholder || t('placeholder')"
     />
 
-    <mt-icon name="regular-search-s" size="1rem" color="var(--color-icon-primary-default)" />
+    <mt-icon
+      name="regular-search-s"
+      size="var(--scale-size-16)"
+      color="var(--color-icon-primary-default)"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
-import { useI18n } from "@/composables/useI18n";
+import { useI18n } from "vue-i18n";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 
 withDefaults(
@@ -67,11 +71,11 @@ defineEmits<{
 }
 
 .mt-search--size-default {
-  padding: 0.75rem 1rem;
+  padding: var(--scale-size-12) var(--scale-size-16);
 }
 
 .mt-search--size-small {
-  padding: 0.25rem 1rem;
+  padding: var(--scale-size-4) var(--scale-size-16);
 }
 
 .mt-search__input {
@@ -84,8 +88,16 @@ defineEmits<{
   line-height: var(--font-line-height-xs);
   color: var(--color-text-primary-default);
   outline: none;
+  appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
+
+  &::-webkit-search-cancel-button,
+  &::-webkit-search-decoration,
+  &::-webkit-search-results-button,
+  &::-webkit-search-results-decoration {
+    display: none;
+  }
 
   &::placeholder {
     color: var(--color-text-secondary-default);

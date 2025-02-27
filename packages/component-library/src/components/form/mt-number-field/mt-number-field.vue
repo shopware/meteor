@@ -2,7 +2,7 @@
   <mt-base-field
     class="mt-number-field"
     :class="$attrs.class"
-    :disabled="disabled"
+    :disabled="disabled || isInherited"
     :required="required"
     :is-inherited="isInherited"
     :is-inheritance-field="isInheritanceField"
@@ -31,9 +31,10 @@
         :id="createInputId(identification)"
         type="text"
         :name="identification"
-        :disabled="disabled"
+        :disabled="disabled || isInherited"
         :value="stringRepresentation"
         :placeholder="placeholder"
+        :class="numberAlignEnd ? 'mt-number-field__align-end' : ''"
         @input="onInput"
         @keydown.up="increaseNumberByStep"
         @keydown.down="decreaseNumberByStep"
@@ -45,7 +46,7 @@
       <div class="mt-number-field__controls" :class="controlClasses">
         <button
           @click="increaseNumberByStep"
-          :disabled="disabled"
+          :disabled="disabled || isInherited"
           :aria-label="t('increaseButton')"
           data-testid="mt-number-field-increase-button"
         >
@@ -54,7 +55,7 @@
 
         <button
           @click="decreaseNumberByStep"
-          :disabled="disabled"
+          :disabled="disabled || isInherited"
           :aria-label="t('decreaseButton')"
           data-testid="mt-number-field-decrease-button"
         >
@@ -88,7 +89,7 @@ import type { PropType } from "vue";
 import { defineComponent } from "vue";
 import MtTextField from "../mt-text-field/mt-text-field.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
-import { useI18n } from "@/composables/useI18n";
+import { useI18n } from "vue-i18n";
 
 export default defineComponent({
   name: "MtNumberField",
@@ -140,7 +141,7 @@ export default defineComponent({
     },
 
     /**
-     * The value of the field.
+     * The value of the number field.
      */
     modelValue: {
       type: Number as PropType<number | null>,
@@ -177,6 +178,15 @@ export default defineComponent({
      * Defines if the field can be empty.
      */
     allowEmpty: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    /**
+     * Defines if the number should be aligned to the end of the input field.
+     */
+    numberAlignEnd: {
       type: Boolean,
       required: false,
       default: false,
@@ -235,7 +245,6 @@ export default defineComponent({
           return;
         }
 
-        // @ts-expect-error - wrong type because of component extends
         this.computeValue(this.modelValue.toString());
       },
       immediate: true,
@@ -271,7 +280,7 @@ export default defineComponent({
     },
 
     increaseNumberByStep() {
-      this.computeValue((this.currentValue + this.realStep).toString());
+      this.computeValue((Number(this.currentValue) + this.realStep).toString());
 
       /** @deprecated tag: 5.0 - Will be removed use update:model-value instead */
       this.$emit("change", this.currentValue);
@@ -295,7 +304,7 @@ export default defineComponent({
     },
 
     // @ts-expect-error - defined in parent
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     parseValue(value: any) {
       if (value === null || Number.isNaN(value) || !Number.isFinite(value)) {
         if (this.allowEmpty) {
@@ -320,7 +329,6 @@ export default defineComponent({
       return value;
     },
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getNumberFromString(value: any) {
       let splits = value.split("e").shift();
       splits = splits.replace(/,/g, ".").split(".");
@@ -383,7 +391,7 @@ export default defineComponent({
 
   & button {
     outline-color: var(--color-border-brand-selected);
-    padding-inline: 0.25rem;
+    padding-inline: var(--scale-size-4);
     border-radius: var(--border-radius-button);
     transition: all 0.15s ease-out;
     width: 100%;
@@ -397,6 +405,10 @@ export default defineComponent({
       cursor: default;
     }
   }
+}
+
+input.mt-number-field__align-end {
+  text-align: end;
 }
 </style>
 

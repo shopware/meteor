@@ -1,13 +1,13 @@
 import type { Ref } from "vue";
 import { onUpdated, nextTick, onBeforeUnmount, onMounted } from "vue";
-import { throttle } from "lodash-es";
+import { throttle } from "@/utils/throttle";
 
 /**
  * This composable expect a Vue reference to an HTML element. It sets
  * automatically the data attributes "data-scroll-(top|right|bottom|left)"
  * when the element is scrollable into this direction.
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
+
 export default function useScrollPossibilitiesClasses(refElement: Ref) {
   const setScrollPossibilitiesClasses = (elementOrEvent: Event | HTMLElement | undefined) => {
     // @ts-expect-error - check if event or not

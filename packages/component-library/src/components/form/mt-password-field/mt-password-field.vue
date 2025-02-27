@@ -1,170 +1,177 @@
 <template>
-  <mt-base-field
-    class="mt-field--password"
-    :disabled="disabled"
-    :required="required"
-    :is-inherited="isInherited"
-    :is-inheritance-field="isInheritanceField"
-    :disable-inheritance-toggle="disableInheritanceToggle"
-    :copyable="copyable"
-    :copyable-tooltip="copyableTooltip"
-    :copyable-text="currentValue"
-    :has-focus="hasFocus"
-    :help-text="helpText"
-    :name="name"
-    :size="size"
-    @inheritance-restore="$emit('inheritance-restore', $event)"
-    @inheritance-remove="$emit('inheritance-remove', $event)"
-  >
-    <template #label>
+  <div class="mt-password-field">
+    <mt-field-label :id="id" :has-error="!!error" :style="{ marginBottom: 'var(--scale-size-2)' }">
       {{ label }}
-    </template>
+    </mt-field-label>
 
-    <template #field-prefix>
-      <slot name="prefix" />
-    </template>
+    <div :class="['mt-password-field__block', { 'mt-password-field__block--error': !!error }]">
+      <mt-field-affix v-if="$slots.prefix" type="prefix">
+        <slot name="prefix" />
+      </mt-field-affix>
 
-    <template #element="{ identification, disabled }">
-      <div class="mt-field--password__container">
-        <input
-          :id="identification"
-          :type="showPassword ? 'text' : 'password'"
-          :name="identification"
-          :placeholder="passwordPlaceholder"
-          :disabled="disabled"
-          :value="currentValue"
-          :autocomplete="autocomplete"
-          @input.stop="onInput"
-          @change.stop="onChange"
-          @focus="setFocusClass"
-          @blur="removeFocusClass"
+      <input
+        v-model="model"
+        class="mt-password-field__input"
+        @change="$emit('change', model)"
+        :type="showPassword ? 'text' : 'password'"
+        :id="id"
+        :placeholder="placeholder"
+        :disabled="disabled"
+        :name="name"
+      />
+
+      <button
+        v-if="toggable"
+        @click="showPassword = !showPassword"
+        class="mt-password-field__visibility-toggle"
+        :aria-label="showPassword ? t('hidePassword') : t('showPassword')"
+        :disabled="disabled"
+      >
+        <mt-icon
+          :name="showPassword ? 'solid-eye-slash' : 'solid-eye'"
+          size="1.125rem"
+          aria-hidden="true"
+          color="var(--color-icon-primary-default)"
         />
-        <button
-          v-if="passwordToggleAble"
-          :disabled="disabled"
-          :aria-label="showPassword ? t('titleHidePassword') : t('titleShowPassword')"
-          class="mt-field__toggle-password-visibility"
-          @click="() => (showPassword = !showPassword)"
-        >
-          <mt-icon v-if="showPassword" name="solid-eye-slash" size="18" />
+      </button>
 
-          <mt-icon v-else data-testid="mt-password-field-show-button" name="solid-eye" size="18" />
-        </button>
-      </div>
-    </template>
+      <mt-field-affix v-if="$slots.suffix" type="suffix"><slot name="suffix" /></mt-field-affix>
+    </div>
 
-    <template #field-suffix>
-      <slot name="suffix" />
-    </template>
+    <mt-field-error v-if="!!error" :error="error" />
 
-    <template #error>
-      <mt-field-error v-if="error" :error="error" />
-    </template>
-
-    <template #field-hint>
+    <div class="mt-password-field__hint">
       <slot name="hint" />
-    </template>
-  </mt-base-field>
+    </div>
+  </div>
 </template>
 
-<script lang="ts">
-import { computed, defineComponent, ref } from "vue";
-import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
-import MtTextField from "../mt-text-field/mt-text-field.vue";
-import { useI18n } from "@/composables/useI18n";
+<script setup lang="ts">
+import { ref, useId } from "vue";
+import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
+import MtIcon from "@/components/icons-media/mt-icon/mt-icon.vue";
+import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
+import MtFieldAffix from "../_internal/mt-field-affix/mt-field-affix.vue";
+import { useI18n } from "vue-i18n";
 
-export default defineComponent({
-  name: "MtPasswordField",
+const model = defineModel({
+  type: String,
+});
 
-  components: {
-    "mt-icon": MtIcon,
+withDefaults(
+  defineProps<{
+    label?: string;
+    placeholder?: string;
+    disabled?: boolean;
+    error?: { code: number; detail: string } | null;
+    hint?: string;
+    toggable?: boolean;
+    name?: string;
+  }>(),
+  {
+    toggable: true,
   },
+);
 
-  extends: MtTextField,
+defineEmits<{
+  (e: "change", value: string | undefined): void;
+}>();
 
-  props: {
-    passwordToggleAble: {
-      type: Boolean,
-      required: false,
-      default: true,
+defineSlots<{
+  prefix?: void;
+  suffix?: void;
+  hint?: void;
+}>();
+
+const id = useId();
+
+const showPassword = ref(false);
+
+const { t } = useI18n({
+  messages: {
+    en: {
+      showPassword: "Show password",
+      hidePassword: "Hide password",
     },
-
-    placeholderIsPassword: {
-      type: Boolean,
-      required: false,
-      default: false,
+    de: {
+      showPassword: "Passwort anzeigen",
+      hidePassword: "Passwort verbergen",
     },
-
-    autocomplete: {
-      type: String,
-      required: false,
-      default: null,
-    },
-  },
-
-  setup(props) {
-    const showPassword = ref(false);
-
-    const passwordPlaceholder = computed(() =>
-      showPassword.value || !props.placeholderIsPassword
-        ? props.placeholder
-        : "*".repeat(props.placeholder.length ? props.placeholder.length : 6),
-    );
-
-    const { t } = useI18n({
-      messages: {
-        en: {
-          titleHidePassword: "Hide password",
-          titleShowPassword: "Show password",
-        },
-        de: {
-          titleHidePassword: "Passwort verbergen",
-          titleShowPassword: "Passwort anzeigen",
-        },
-      },
-    });
-
-    return {
-      t,
-      showPassword,
-      passwordPlaceholder,
-    };
   },
 });
 </script>
 
 <style scoped>
-.mt-field--password {
-  & input {
-    padding-right: 40px;
+.mt-password-field {
+  width: 100%;
+}
+
+.mt-password-field__block {
+  display: flex;
+  align-items: center;
+  min-height: var(--scale-size-48);
+  /* stylelint-disable-next-line meteor/prefer-sizing-token -- This is a trick, so the children can take 100% of it's parent height */
+  height: 1px;
+  border: 1px solid var(--color-border-primary-default);
+  border-radius: var(--border-radius-xs);
+  background-color: var(--color-elevation-surface-raised);
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+  font-family: var(--font-family-body);
+
+  &:not(.mt-password-field__block--error)&:has(.mt-password-field__input:focus-visible) {
+    border-color: var(--color-border-brand-selected);
+    box-shadow: 0px 0px 4px 0px rgba(24, 158, 255, 0.3);
   }
 
-  & .mt-icon {
-    color: var(--color-icon-primary-default);
+  &:has(input:disabled) {
+    background-color: var(--color-background-primary-disabled);
   }
 }
 
-.mt-field--password--untoggable .mt-field__input input {
-  padding-right: 0.5rem;
+.mt-password-field__block--error {
+  border-color: var(--color-border-critical-default);
+  background: var(--color-background-critical-default);
 }
 
-.mt-field__toggle-password-visibility {
-  position: absolute;
-  right: 0.5rem;
-  top: 50%;
-  transform: translate(0, -50%);
-  padding: 0.5rem;
-  border-radius: var(--border-radius-button);
-  outline-color: var(--color-border-brand-selected);
-  transition: all 0.15s ease-out;
+.mt-password-field__input {
+  all: unset;
+
+  flex: 1;
+  padding-inline: var(--scale-size-16);
+  color: var(--color-text-primary-default);
+  height: 100%;
+
+  &::placeholder {
+    color: var(--color-text-secondary-default);
+  }
+}
+
+.mt-password-field__visibility-toggle {
+  display: grid;
+  place-items: center;
+  border-radius: var(--border-radius-xs);
+  height: var(--scale-size-32);
+  width: var(--scale-size-32);
+  margin-right: var(--scale-size-8);
 
   &:is(:hover, :focus-visible) {
     background-color: var(--color-interaction-secondary-hover);
   }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-border-brand-selected);
+  }
 }
 
-.mt-field--password__container {
-  position: relative;
-  width: 100%;
+.mt-password-field__hint {
+  color: var(--color-text-tertiary-default);
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+  font-family: var(--font-family-body);
+
+  &:empty {
+    display: none;
+  }
 }
 </style>

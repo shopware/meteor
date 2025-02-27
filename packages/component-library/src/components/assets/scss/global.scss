@@ -6,6 +6,10 @@
   padding: 0;
 }
 
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
 body {
   font-family: $font-family-default;
   font-size: $font-size-default;

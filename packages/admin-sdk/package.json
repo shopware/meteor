@@ -1,6 +1,6 @@
 {
   "name": "@shopware-ag/meteor-admin-sdk",
-  "version": "5.6.0",
+  "version": "5.7.5",
   "description": "The Meteor SDK for the Shopware Administration.",
   "keywords": [
     "iframe",
@@ -101,7 +101,7 @@
     "concurrently": "^7.0.0",
     "eslint": "^8.11.0",
     "eslint-plugin-check-file": "^2.7.0",
-    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-import": "^2.31.0",
     "flush-promises": "^1.0.2",
     "http-server": "^14.1.0",
     "jest": "^27.5.1",

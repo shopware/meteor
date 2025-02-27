@@ -1,5 +1,18 @@
 <template>
-  <label :for="id" :class="classes">
+  <label
+    :for="id"
+    :class="classes"
+    @mousedown="
+      (event) => {
+        // only prevent text selection if clicking inside the label itself
+        const target = event.target as HTMLElement;
+        if (target.closest('button, input, select, textarea')) return;
+
+        // prevent text selection when double clicking label
+        if (!event.defaultPrevented && event.detail > 1) event.preventDefault();
+      }
+    "
+  >
     <button
       v-if="inheritance !== 'none'"
       class="mt-field-label__inheritance-switch"
@@ -22,7 +35,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import MtIcon from "@/components/icons-media/mt-icon/mt-icon.vue";
-import { useI18n } from "@/composables/useI18n";
+import { useI18n } from "vue-i18n";
 
 const { t } = useI18n({
   messages: {
@@ -66,7 +79,7 @@ const classes = computed(() => [
 <style scoped>
 .mt-field-label {
   display: flex;
-  column-gap: 0.25rem;
+  column-gap: var(--scale-size-4);
   align-items: center;
   color: var(--color-text-primary-default);
   font-family: var(--font-family-body);
@@ -89,7 +102,7 @@ const classes = computed(() => [
 }
 
 .mt-field-label__inheritance-switch {
-  margin-right: 0.25rem;
+  margin-right: var(--scale-size-4);
 
   &:focus-visible {
     outline-offset: 0.25rem;

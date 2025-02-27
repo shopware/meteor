@@ -1,10 +1,11 @@
 <template>
   <a
     v-if="link"
-    :href="!disabled ? link : ''"
+    :href="disabled || isLoading ? '' : link"
     target="_blank"
     rel="noopener"
     class="mt-button"
+    :tabindex="(disabled || isLoading) && !isInsideTooltip ? -1 : 0"
     :class="buttonClasses"
     v-bind="$attrs"
   >
@@ -17,137 +18,70 @@
     v-else
     class="mt-button"
     :class="buttonClasses"
-    :disabled="disabled || isLoading"
+    :disabled="(disabled && !isInsideTooltip) || isLoading"
+    :aria-disabled="disabled && isInsideTooltip"
+    @click="disabled && isInsideTooltip ? $event.stopImmediatePropagation() : null"
     v-bind="$attrs"
   >
     <mt-loader v-if="isLoading" size="16px" class="mt-button__loader" />
-    <span class="mt-button__content" :class="contentVisibilityClass">
+    <span
+      class="mt-button__content"
+      :class="{
+        'mt-button__content--hidden': isLoading,
+      }"
+    >
       <slot name="iconFront" :size="iconSize" v-if="$slots.iconFront" />
-      <slot></slot>
+      <slot />
       <slot name="iconBack" :size="iconSize" v-if="$slots.iconBack" />
     </span>
   </button>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { useIsInsideTooltip } from "@/components/overlay/mt-tooltip/composables/useIsInsideTooltip";
 import MtLoader from "../../feedback-indicator/mt-loader/mt-loader.vue";
-import type { PropType } from "vue";
+import { computed } from "vue";
 
-export default defineComponent({
-  name: "MtButton",
-
-  components: {
-    "mt-loader": MtLoader,
+const props = withDefaults(
+  defineProps<{
+    disabled?: boolean;
+    variant?: "primary" | "secondary" | "critical" | "action";
+    ghost?: boolean;
+    size?: "x-small" | "small" | "default" | "large";
+    square?: boolean;
+    block?: boolean;
+    link?: string;
+    isLoading?: boolean;
+  }>(),
+  {
+    // @ts-expect-error -- This is to keep the default behaviour
+    variant: "",
+    // TODO: Update default value to "default"
+    size: "small",
   },
+);
 
-  props: {
-    /**
-     * Disables the button
-     */
-    disabled: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    /**
-     * Change the look of the button
-     * Values: primary, secondary, critical, action
-     * @values primary, secondary, critical, action
-     */
-    variant: {
-      type: String as PropType<"primary" | "secondary" | "critical" | "action">,
-      required: false,
-      default: "",
-      validator(value: string) {
-        if (!value.length) {
-          return true;
-        }
-        return ["primary", "secondary", "critical", "action"].includes(value);
-      },
-    },
-    ghost: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    /**
-     * Change the size of the button
-     * @values x-small, small, default, large
-     */
-    size: {
-      type: String,
-      required: false,
-      default: "small",
-      validator(value: string) {
-        if (!value.length) {
-          return true;
-        }
-        return ["x-small", "small", "default", "large"].includes(value);
-      },
-    },
-    /**
-     * The button will be rendered as a square. You need to consider the text length
-     * if you activate this property.
-     */
-    square: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    /**
-     * Renders the button as a block element instead of an inline-block element. The button
-     * fills up all horizontal space.
-     */
-    block: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    /**
-     * If a link is provided then the user gets redirected to a new tab on a click.
-     */
-    link: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    /**
-     * Shows a loading indicator instead of the text.
-     */
-    isLoading: {
-      type: Boolean,
-      default: false,
-      required: false,
-    },
-  },
+defineSlots<{
+  default: null;
+  iconFront: { size: number };
+  iconBack: { size: number };
+}>();
 
-  computed: {
-    buttonClasses() {
-      return {
-        [`mt-button--${this.variant}${this.allowGhostVariant ? "-ghost" : ""}`]: !!this.variant,
-        [`mt-button--${this.size}`]: !!this.size,
-        "mt-button--block": this.block,
-        "mt-button--disabled": this.disabled,
-        "mt-button--square": this.square,
-      };
-    },
+const allowGhostVariant = computed(() => props.ghost && props.variant !== "secondary");
 
-    allowGhostVariant() {
-      return this.ghost && this.variant !== "secondary";
-    },
-
-    contentVisibilityClass() {
-      return {
-        "mt-button__content--hidden": this.isLoading,
-      };
-    },
-
-    iconSize() {
-      return this.size === "x-small" ? 8 : this.size === "large" ? 12 : 10;
-    },
-  },
+const buttonClasses = computed(() => {
+  return {
+    [`mt-button--${props.variant}${allowGhostVariant.value ? "-ghost" : ""}`]: !!props.variant,
+    [`mt-button--${props.size}`]: !!props.size,
+    "mt-button--block": props.block,
+    "mt-button--disabled": props.disabled,
+    "mt-button--square": props.square,
+  };
 });
+
+const iconSize = computed(() => (props.size === "x-small" ? 8 : props.size === "large" ? 12 : 10));
+
+const isInsideTooltip = useIsInsideTooltip();
 </script>
 
 <style lang="css" scoped>
@@ -155,7 +89,7 @@ export default defineComponent({
   transition: all 0.15s ease-out;
   display: inline-block;
   border-radius: var(--border-radius-button);
-  padding: 2px 24px;
+  padding: var(--scale-size-2) var(--scale-size-24);
   font-size: var(--font-size-xs);
   border: 1px solid transparent;
   outline: none;
@@ -175,7 +109,7 @@ export default defineComponent({
   display: grid;
   grid-auto-flow: column;
   align-items: center;
-  column-gap: 0.5rem;
+  column-gap: var(--scale-size-8);
 }
 
 .mt-button__content--hidden {
@@ -356,18 +290,19 @@ export default defineComponent({
   width: 100%;
   display: flex;
   justify-content: center;
+  align-items: center;
 }
 
 .mt-button--x-small {
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: var(--scale-size-10);
+  padding-right: var(--scale-size-10);
   font-size: var(--font-size-2xs);
   min-height: 24px;
 }
 
 .mt-button--x-small.mt-button--square {
-  width: 24px;
-  height: 24px;
+  width: var(--scale-size-24);
+  height: var(--scale-size-24);
 }
 
 .mt-button--small {
@@ -378,36 +313,36 @@ export default defineComponent({
 }
 
 .mt-button--small.mt-button--square {
-  width: 32px;
-  height: 32px;
+  width: var(--scale-size-32);
+  height: var(--scale-size-32);
 }
 
 .mt-button--default {
-  padding-inline: 1rem;
+  padding-inline: var(--scale-size-16);
   font-size: var(--font-size-xs);
   min-height: 2.5rem;
 }
 
 .mt-button--default.mt-button-square {
-  width: 2.5rem;
-  height: 2.5rem;
+  width: var(--scale-size-40);
+  height: var(--scale-size-40);
 }
 
 .mt-button--large {
-  padding-left: 1.75rem;
-  padding-right: 1.75rem;
+  padding-left: var(--scale-size-28);
+  padding-right: var(--scale-size-28);
   min-height: 3rem;
   font-size: var(--font-size-2xs);
 }
 
 .mt-button--large.mt-button--square {
-  width: 48px;
-  height: 48px;
+  width: var(--scale-size-48);
+  height: var(--scale-size-48);
 }
 
 .mt-button--square {
-  width: 40px;
-  height: 40px;
+  width: var(--scale-size-40);
+  height: var(--scale-size-40);
   padding-left: 0;
   padding-right: 0;
   text-align: center;

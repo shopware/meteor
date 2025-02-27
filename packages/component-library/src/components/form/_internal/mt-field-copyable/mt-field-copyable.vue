@@ -1,19 +1,21 @@
 <template>
   <!-- eslint-disable-next-line vuejs-accessibility/mouse-events-have-key-events -->
-  <mt-icon
-    v-tooltip="{
-      message: tooltipText,
-      width: 220,
-      position: 'top',
-      showDelay: 300,
-      hideDelay: 0,
-    }"
-    class="mt-field-copyable"
-    name="regular-copy"
-    size="18"
-    @click="copyToClipboard"
-    @mouseleave="wasCopied = false"
-  />
+  <button>
+    <mt-icon
+      v-tooltip="{
+        message: tooltipText,
+        width: 220,
+        position: 'top',
+        showDelay: 300,
+        hideDelay: 0,
+      }"
+      class="mt-field-copyable"
+      name="regular-copy"
+      size="18"
+      @click="copyToClipboard"
+      @mouseleave="wasCopied = false"
+    />
+  </button>
 </template>
 
 <script lang="ts">
@@ -22,7 +24,7 @@ import MtIcon from "../../../icons-media/mt-icon/mt-icon.vue";
 import MtTooltipDirective from "../../../../directives/tooltip.directive";
 import MtNotificationMixin from "../../../../mixins/notification.mixin";
 import { copyToClipboard as copyToClipboardUtil } from "../../../../utils/dom";
-import { useI18n } from "@/composables/useI18n";
+import { useI18n } from "vue-i18n";
 
 export default defineComponent({
   name: "MtFieldCopyable",

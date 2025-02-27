@@ -50,7 +50,7 @@
         :options="visibleResults"
         :is-loading="isLoading"
         :empty-message="t('messageNoResults', { term: searchTerm })"
-        :focus-el="$refs.selectionList.getFocusEl()"
+        :focus-el="getFocusElement()"
         @paginate="$emit('paginate')"
         @item-select="addItem"
       >
@@ -79,6 +79,7 @@
               :data-testid="'mt-select-option--' + item.value"
               v-bind="{ item, index }"
               @item-select="addItem"
+              :disabled="item.disabled"
             >
               <slot
                 name="result-label-property"
@@ -114,17 +115,17 @@
 </template>
 
 <script lang="ts">
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { PropType } from "vue";
 
 import { defineComponent } from "vue";
-import { debounce, get } from "lodash-es";
+import { debounce } from "@/utils/debounce";
+import { get } from "@/utils/object";
 import MtSelectBase from "../_internal/mt-select-base/mt-select-base.vue";
 import MtSelectResultList from "../_internal/mt-select-base/_internal/mt-select-result-list.vue";
 import MtSelectResult from "../_internal/mt-select-base/_internal/mt-select-result.vue";
 import MtSelectSelectionList from "../_internal/mt-select-base/_internal/mt-select-selection-list.vue";
 import MtHighlightText from "../../_internal/mt-highlight-text.vue";
-import { useI18n } from "@/composables/useI18n";
+import { useI18n } from "vue-i18n";
 
 export default defineComponent({
   name: "MtSelect",
@@ -368,6 +369,7 @@ export default defineComponent({
       }
 
       if (Array.isArray(this.currentValue)) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         this.currentValue.length;
       }
 
@@ -555,6 +557,11 @@ export default defineComponent({
 
     onClearSelection() {
       this.currentValue = [];
+    },
+
+    getFocusElement() {
+      // @ts-expect-error - ref exists
+      return this.$refs.selectionList.getFocusEl() as HTMLElement;
     },
   },
 });

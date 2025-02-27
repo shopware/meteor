@@ -39,7 +39,7 @@ Returns a string with the name of the current location.
 
 ### Check if current location is inside iFrame
 
-Useful for hybrid extensions which are using plugin and Extension SDK functionalities together. You can use this 
+Useful for hybrid extensions which are using plugin and Extension SDK functionalities together (Shopware 6.6 and lower). You can use this 
 check to separate code which should be executed inside the Extension SDK context and the plugin context.
 
 #### Usage:

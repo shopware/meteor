@@ -73,7 +73,7 @@
 <script setup lang="ts">
 import { computed, watch } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
-import { useI18n } from "@/composables/useI18n";
+import { useI18n } from "vue-i18n";
 
 const props = defineProps<{
   currentPage: number;
@@ -146,7 +146,7 @@ const lastVisibleItemNumber = computed(() => {
 .mt-pagination {
   display: flex;
   align-items: baseline;
-  gap: 12px;
+  gap: var(--scale-size-12);
 
   & :last-child {
     border-top-right-radius: var(--border-radius-xs);
@@ -175,8 +175,8 @@ const lastVisibleItemNumber = computed(() => {
 .mt-pagination__button {
   border-right: 1px solid var(--color-border-primary-default);
   color: var(--color-icon-primary-default);
-  height: 2rem;
-  width: 2.5rem;
+  height: var(--scale-size-32);
+  width: var(--scale-size-40);
   display: grid;
   place-items: center;
   transition: all 0.15s ease-out;
@@ -204,7 +204,7 @@ const lastVisibleItemNumber = computed(() => {
   all: unset;
   width: auto;
   border-right: 1px solid var(--color-border-primary-default);
-  padding: 0 12px;
+  padding: 0 var(--scale-size-12);
   color: var(--color-text-primary-default);
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);

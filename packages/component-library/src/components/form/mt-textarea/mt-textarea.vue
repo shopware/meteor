@@ -1,202 +1,168 @@
 <template>
-  <mt-base-field
-    class="mt-field--textarea"
-    v-bind="$attrs"
-    :name="formFieldName"
-    :has-focus="hasFocus"
-    :required="required"
-    :disabled="disabled"
-    :help-text="helpText"
-    :is-inheritance-field="isInheritanceField"
-    :is-inherited="isInherited"
-    @inheritance-restore="$emit('inheritance-restore', $event)"
-    @inheritance-remove="$emit('inheritance-remove', $event)"
-  >
-    <template #label v-if="label">
+  <div class="mt-textarea">
+    <mt-field-label
+      v-if="!!label"
+      :id="id"
+      :required="required"
+      :has-error="!!error && !!error.detail"
+      :inheritance="!isInheritanceField ? 'none' : isInherited ? 'linked' : 'unlinked'"
+      :style="{
+        gridArea: 'label',
+        marginBottom: 'var(--scale-size-2)',
+      }"
+      @update:inheritance="
+        if (isInherited) {
+          $emit('inheritance-remove');
+        } else {
+          $emit('inheritance-restore');
+        }
+      "
+    >
       {{ label }}
-    </template>
+    </mt-field-label>
 
-    <!-- eslint-disable-next-line vue/no-template-shadow,vue/no-unused-vars -->
-    <template #element="{ identification, helpText, error, disabled }">
-      <!-- eslint-disable-next-line vuejs-accessibility/form-control-has-label -->
-      <textarea
-        :id="identification"
-        :name="identification"
-        :placeholder="placeholder"
-        :disabled="disabled"
-        :value="inputState"
-        :maxlength="maxLength"
-        @change.stop="onChange"
-        @input.stop="onInput"
-        @focus="setFocus"
-        @blur="removeFocus"
-      />
-    </template>
+    <mt-help-text
+      v-if="!!helpText"
+      :text="helpText"
+      :style="{ gridArea: 'help-text', justifySelf: 'end' }"
+    />
 
-    <template #error>
-      <mt-field-error v-if="error" :error="error" />
-    </template>
+    <textarea
+      v-model="model"
+      :class="[
+        'mt-textarea__textarea',
+        {
+          'mt-textarea__textarea--error': !!error && !!error.detail,
+        },
+      ]"
+      @change="$emit('change', model)"
+      @focus="$emit('focus')"
+      @blur="$emit('blur')"
+      :id="id"
+      :required="required"
+      :disabled="disabled || isInherited"
+      :name="name"
+      :placeholder="placeholder"
+      :maxlength="maxLength"
+    />
 
-    <template #field-hint>
+    <mt-field-error
+      v-if="!!error && !!error.detail"
+      :error="error"
+      :style="{ gridArea: 'error' }"
+    />
+
+    <div v-if="!!$slots.hint" class="mt-textarea__hint">
       <slot name="hint" />
-    </template>
+    </div>
 
-    <template v-if="maxLength" #field-hint-right>
-      {{ modelValue?.length ?? 0 }}/{{ maxLength }}
-    </template>
-  </mt-base-field>
+    <span v-if="!!maxLength" class="mt-textarea__max-length"
+      >{{ model?.length ?? 0 }}/{{ maxLength }}</span
+    >
+  </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-import MtFormFieldMixin from "../../../mixins/form-field.mixin";
-import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
+<script setup lang="ts">
+import { useId } from "@/composables/useId";
+import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
+import MtHelpText from "../mt-help-text/mt-help-text.vue";
 
-export default defineComponent({
-  name: "MtTextarea",
-
-  components: {
-    "mt-base-field": MtBaseField,
-    "mt-field-error": MtFieldError,
-  },
-
-  mixins: [MtFormFieldMixin],
-
-  props: {
-    modelValue: {
-      type: String,
-      required: false,
-      default: null,
-    },
-
-    /**
-     * Inherited value from another SalesChannel.
-     */
-    inheritedValue: {
-      type: String,
-      required: false,
-      default: null,
-    },
-
-    label: {
-      type: String,
-      required: false,
-      default: null,
-    },
-
-    placeholder: {
-      type: String,
-      required: false,
-      default: null,
-    },
-
-    helpText: {
-      type: String,
-      required: false,
-      default: null,
-    },
-
-    required: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    disabled: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    error: {
-      type: Object,
-      required: false,
-      default: null,
-    },
-
-    /**
-     * If set to a value a character counter will be displayed.
-     */
-    maxLength: {
-      type: Number,
-      required: false,
-      default: undefined,
-    },
-  },
-
-  data() {
-    return {
-      currentValue: this.modelValue,
-      hasFocus: false,
-    };
-  },
-
-  computed: {
-    inputState(): string {
-      if (this.isInherited) {
-        return this.inheritedValue;
-      }
-
-      return this.currentValue || "";
-    },
-
-    isInheritanceField(): boolean {
-      if (this.$attrs.isInheritanceField) {
-        return true;
-      }
-      return this.inheritedValue !== null;
-    },
-
-    isInherited(): boolean {
-      if (this.$attrs.isInherited) {
-        return true;
-      }
-
-      return this.isInheritanceField && this.currentValue === null;
-    },
-  },
-
-  watch: {
-    modelValue() {
-      this.currentValue = this.modelValue;
-    },
-  },
-
-  methods: {
-    onInput(event: Event) {
-      // @ts-expect-error - target is defined
-      this.$emit("update:modelValue", event.target.value);
-    },
-
-    onChange(event: Event) {
-      // @ts-expect-error - target is defined
-      this.$emit("change", event.target.value);
-    },
-
-    setFocus() {
-      this.hasFocus = true;
-    },
-    removeFocus() {
-      this.hasFocus = false;
-    },
-  },
+const model = defineModel({
+  type: String,
 });
+
+const id = useId();
+
+defineEmits<{
+  change: [typeof model.value];
+  "inheritance-remove": void;
+  "inheritance-restore": void;
+  focus: void;
+  blur: void;
+}>();
+
+defineProps<{
+  required?: boolean;
+  disabled?: boolean;
+  name?: string;
+  label?: string;
+  placeholder?: string;
+  error?: {
+    detail: string;
+  };
+  helpText?: string;
+  maxLength?: number;
+  isInherited?: boolean;
+  isInheritanceField?: boolean;
+}>();
 </script>
 
-<style lang="scss">
-.mt-field--textarea {
-  textarea {
-    line-height: 22px;
-    min-height: 125px;
-    max-height: 300px;
-    resize: vertical;
+<style scoped>
+.mt-textarea {
+  display: grid;
+  grid-template-areas:
+    "label help-text"
+    "textarea textarea"
+    "error error"
+    "hint max-length";
+  grid-template-columns: auto auto;
+  justify-content: space-between;
+}
+
+.mt-textarea__textarea {
+  resize: vertical;
+  width: 100%;
+  border: 1px solid var(--color-border-primary-default);
+  line-height: var(--font-line-height-xs);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-primary-default);
+  min-height: 125px;
+  max-height: 300px;
+  border-radius: var(--border-radius-xs);
+  padding: var(--scale-size-12) var(--scale-size-16);
+  grid-area: textarea;
+  background-color: var(--color-elevation-surface-raised);
+  outline: none;
+
+  &:focus-visible:not(.mt-textarea__textarea--error) {
+    border-color: var(--color-border-brand-selected);
+    box-shadow: 0px 0px 4px 0px rgba(24, 158, 255, 0.3);
   }
 
-  &.has--error {
-    textarea {
-      background: var(--color-background-critical-dark);
-    }
+  &::placeholder {
+    color: var(--color-text-secondary-default);
   }
+
+  &:disabled {
+    color: var(--color-text-primary-disabled);
+    background-color: var(--color-background-primary-disabled);
+    cursor: not-allowed;
+  }
+}
+
+.mt-textarea__textarea--error {
+  border-color: var(--color-border-critical-default);
+  background-color: var(--color-background-critical-dark);
+}
+
+.mt-textarea__hint {
+  grid-area: hint;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+  color: var(--color-text-tertiary-default);
+  margin-top: var(--scale-size-4);
+}
+
+.mt-textarea__max-length {
+  grid-area: max-length;
+  justify-self: end;
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+  color: var(--color-text-tertiary-default);
+  margin-top: var(--scale-size-4);
 }
 </style>

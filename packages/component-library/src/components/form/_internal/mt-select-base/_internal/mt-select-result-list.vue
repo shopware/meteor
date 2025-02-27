@@ -6,12 +6,15 @@
       :z-index="1100"
       :resize-width="popoverResizeWidth"
     >
+      <!-- @vue-expect-error -->
       <div
         ref="popoverContent"
-        class="mt-select-result-list__content"
-        :class="{
-          'mt-select-result-list__content_empty': isLoading && (!options || options.length <= 0),
-        }"
+        :class="[
+          'mt-select-result-list__content',
+          {
+            'mt-select-result-list__content_empty': isLoading && (!options || options.length <= 0),
+          },
+        ]"
         @scroll="onScroll"
       >
         <slot name="before-item-list" />
@@ -28,7 +31,11 @@
           v-if="!isLoading && options && options.length < 1"
           class="mt-select-result-list__empty"
         >
-          <mt-icon name="default-action-search" size="20px" />
+          <mt-icon
+            name="regular-search"
+            size="var(--scale-size-16)"
+            style="margin-right: var(--scale-size-4)"
+          />
           {{ emptyMessage || t("messageNoResults") }}
         </div>
       </div>
@@ -50,7 +57,7 @@ import {
   MtSelectResultRemoveItemSelectByKeyboardListener,
 } from "@/helper/provideInjectKeys";
 import { ref } from "vue";
-import { useI18n } from "@/composables/useI18n";
+import { useI18n } from "vue-i18n";
 
 export default defineComponent({
   name: "MtSelectResultList",
@@ -362,7 +369,7 @@ $mt-select-result-list-transition: all ease-in-out 0.2s;
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
   font-family: var(--font-family-body);
-  padding: 8px;
+  padding: var(--scale-size-8);
   border-radius: 4px;
 
   .mt-select-result-list__item-list {
@@ -370,7 +377,7 @@ $mt-select-result-list-transition: all ease-in-out 0.2s;
   }
 
   .mt-select-result-list__empty {
-    padding: 10px 16px;
+    padding: var(--scale-size-10) var(--scale-size-16);
     color: var(--color-text-primary-default);
   }
 }
