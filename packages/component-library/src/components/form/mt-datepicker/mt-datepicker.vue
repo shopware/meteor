@@ -291,7 +291,7 @@ export default defineComponent({
     "label"
     "datepicker"
     "hint";
-  row-gap: 0.4rem;
+  row-gap: 2px;
 }
 
 /* || Datepicker  */
