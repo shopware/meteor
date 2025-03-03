@@ -101,7 +101,6 @@ const isInsideTooltip = useIsInsideTooltip();
   text-decoration: none;
   cursor: pointer;
   user-select: none;
-  margin: 0;
   position: relative;
 }
 
