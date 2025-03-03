@@ -13,7 +13,7 @@ A modal is a dialog box, displayed on top of the current page.
 In 99% of the cases you'll open a modal through a button. We
 designed the component in a way to make this as easy as possible.
 
-```vue
+```html
 <template>
   <mt-modal-root>
     <mt-modal title="Some random title">
@@ -34,7 +34,7 @@ designed the component in a way to make this as easy as possible.
 If you need to do something before you close the modal, you can use
 the `mt-modal-action` component like this:
 
-```vue
+```html
 <template>
   <!-- mt-modal-root and mt-modal are the same as above -->
   <template #footer>
@@ -61,7 +61,7 @@ the `mt-modal-action` component like this:
 Sometimes, you want to open a modal through something else than a button.
 In this case, you can use the `isOpen` prop to control the modal state.
 
-```vue
+```html
 <template>
   <mt-modal-root :is-open="isOpen">
     <mt-modal title="Some random title">
@@ -77,12 +77,12 @@ In this case, you can use the `isOpen` prop to control the modal state.
 </template>
 
 <script setup>
-const isOpen = ref(false);
+  const isOpen = ref(false);
 
-onMounted(() => {
-  setTimeout(() => {
-    isOpen.value = true;
-  }, 1_000);
-});
+  onMounted(() => {
+    setTimeout(() => {
+      isOpen.value = true;
+    }, 1_000);
+  });
 </script>
 ```
