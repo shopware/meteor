@@ -1,6 +1,6 @@
 <template>
   <component
-    :is="as ?? 'p'"
+    :is="as"
     :class="[`mt-text--size-${size}`, `mt-text--weight-${weight}`]"
     :style="{ color: `var(--${color})` }"
   >
@@ -9,29 +9,38 @@
 </template>
 
 <script setup lang="ts">
-import type { Component, PropType } from "vue";
+import type { Component } from "vue";
 
-defineProps({
-  size: {
-    type: String as PropType<"2xs" | "xs" | "s" | "m" | "l" | "xl" | "2xl" | "3xl">,
-    required: false,
-    default: "s",
+withDefaults(
+  defineProps<{
+    size?: "2xs" | "xs" | "s" | "m" | "l" | "xl" | "2xl" | "3xl";
+    weight?: "bold" | "semibold" | "medium" | "regular";
+    color?:
+      | "color-text-primary-default"
+      | "color-text-primary-disabled"
+      | "color-text-secondary-default"
+      | "color-text-tertiary-default"
+      | "color-text-brand-default"
+      | "color-text-brand-hover"
+      | "color-text-brand-disabled"
+      | "color-text-critical-default"
+      | "color-text-critical-disabled"
+      | "color-text-critical-dark"
+      | "color-text-attention-default"
+      | "color-text-positive-default"
+      | "color-text-accent-default"
+      | "color-text-static-default"
+      | "color-text-inverse-default"
+      | string;
+    as?: string | Component;
+  }>(),
+  {
+    size: "s",
+    weight: "regular",
+    color: "color-text-primary-default",
+    as: "p",
   },
-  weight: {
-    type: String as PropType<"bold" | "semibold" | "medium" | "regular">,
-    required: false,
-    default: "regular",
-  },
-  color: {
-    type: String,
-    required: false,
-    default: "color-text-primary-default",
-  },
-  as: {
-    type: String as PropType<string | Component>,
-    required: false,
-  },
-});
+);
 </script>
 
 <style scoped>
