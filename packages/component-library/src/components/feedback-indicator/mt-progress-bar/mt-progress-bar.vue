@@ -6,9 +6,11 @@
     :aria-valuemax="maxValue"
     aria-label="Current progress"
   >
-    <mt-field-label id="some-id" :style="{ gridArea: 'label' }">{{ label }}</mt-field-label>
+    <mt-field-label v-if="!!label" id="some-id" :style="{ gridArea: 'label' }">
+      {{ label }}
+    </mt-field-label>
 
-    <mt-text class="mt-progress-bar__progress-label" as="span" size="xs">
+    <mt-text v-if="!!label" class="mt-progress-bar__progress-label" as="span" size="xs">
       {{ progressLabel }}
     </mt-text>
 
