@@ -22,8 +22,8 @@ npm i @shopware-ag/meteor-component-library
 Import the `style.css` for general styling and `font.css` for the Inter font in the root file of your application or in you root styling file.
 
 ```js
-import "@shopware-ag/meteor-component-library/style.css";
-import "@shopware-ag/meteot-component-library/font.css";
+import "@shopware-ag/meteor-component-library/styles.css";
+import "@shopware-ag/meteor-component-library/font.css";
 ```
 
 Each component works independently and can be imported directly from the root like this:
