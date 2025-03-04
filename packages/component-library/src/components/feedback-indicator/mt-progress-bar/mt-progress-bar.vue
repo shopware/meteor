@@ -6,7 +6,7 @@
     :aria-valuemax="maxValue"
     aria-label="Current progress"
   >
-    <mt-field-label v-if="!!label" id="some-id" :style="{ gridArea: 'label' }">
+    <mt-field-label v-if="!!label" id="some-id">
       {{ label }}
     </mt-field-label>
 
@@ -21,7 +21,7 @@
       ></div>
     </div>
 
-    <mt-field-error v-if="error" :error="error" :style="{ marginTop: 0, gridArea: 'error' }" />
+    <mt-field-error v-if="error" :error="error" :style="{ marginTop: 0 }" />
   </div>
 </template>
 
@@ -65,16 +65,13 @@ const fillWidth = computed<`${string}%`>(() => {
 <style scoped>
 .mt-progress-bar {
   display: grid;
-  grid-template-areas:
-    "label progress"
-    "track track"
-    "error error";
+  grid-template-columns: 1fr auto;
+  grid-template-rows: repeat(auto-fit, auto);
   row-gap: var(--scale-size-8);
 }
 
 .mt-progress-bar__progress-label {
   color: var(--color-text-secondary);
-  grid-area: progress;
   justify-self: end;
 }
 
@@ -83,7 +80,7 @@ const fillWidth = computed<`${string}%`>(() => {
   height: var(--scale-size-8);
   width: 100%;
   background: var(--color-background-primary-disabled);
-  grid-area: track;
+  grid-column: 1 / 3;
 }
 
 .mt-progress-bar__fill {
