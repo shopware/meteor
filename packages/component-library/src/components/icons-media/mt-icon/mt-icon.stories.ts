@@ -21,6 +21,11 @@ const meta: MtIconMeta = {
     color: "#3498db",
     decorative: false,
   },
+  argTypes: {
+    style: {
+      control: "object",
+    },
+  },
 };
 
 export default meta;
