@@ -1,20 +1,28 @@
 <template>
-  <div
-    class="mt-progress-bar"
-    role="progressbar"
-    :aria-valuenow="model"
-    :aria-valuemax="maxValue"
-    aria-label="Current progress"
-  >
+  <div class="mt-progress-bar">
     <mt-field-label v-if="!!label" for="some-id">
       {{ label }}
     </mt-field-label>
 
-    <mt-text v-if="!!label" class="mt-progress-bar__progress-label" as="span" size="xs">
+    <mt-text
+      v-if="!!label"
+      class="mt-progress-bar__progress-label"
+      as="span"
+      size="xs"
+      aria-hidden="true"
+      aria-labelledby="some-id"
+    >
       {{ progressLabel }}
     </mt-text>
 
-    <div class="mt-progress-bar__track">
+    <div
+      class="mt-progress-bar__track"
+      role="progressbar"
+      :aria-valuenow="model"
+      :aria-valuemax="maxValue"
+      :aria-valuemin="0"
+      aria-labelledby="some-id"
+    >
       <div
         :class="['mt-progress-bar__fill', { 'mt-progress-bar__fill--with-error': !!error }]"
         :style="{ width: fillWidth }"
