@@ -6,7 +6,7 @@
     :aria-valuemax="maxValue"
     aria-label="Current progress"
   >
-    <mt-field-label v-if="!!label" id="some-id">
+    <mt-field-label v-if="!!label" for="some-id">
       {{ label }}
     </mt-field-label>
 

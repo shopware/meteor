@@ -1,6 +1,6 @@
 <template>
   <label
-    :for="id"
+    :for="props.for"
     :class="classes"
     @mousedown="
       (event) => {
@@ -52,7 +52,7 @@ const { t } = useI18n({
 
 const props = withDefaults(
   defineProps<{
-    id: string;
+    for: string;
     hasError?: boolean;
     required?: boolean;
     inheritance?: "linked" | "unlinked" | "none";
