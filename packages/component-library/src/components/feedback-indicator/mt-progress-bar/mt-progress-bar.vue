@@ -1,6 +1,6 @@
 <template>
   <div class="mt-progress-bar">
-    <mt-field-label v-if="!!label" for="some-id">
+    <mt-field-label v-if="!!label" :for="id">
       {{ label }}
     </mt-field-label>
 
@@ -10,7 +10,6 @@
       as="span"
       size="xs"
       aria-hidden="true"
-      aria-labelledby="some-id"
     >
       {{ progressLabel }}
     </mt-text>
@@ -21,7 +20,7 @@
       :aria-valuenow="model"
       :aria-valuemax="maxValue"
       :aria-valuemin="0"
-      aria-labelledby="some-id"
+      :aria-labelledby="id"
     >
       <div
         :class="['mt-progress-bar__fill', { 'mt-progress-bar__fill--with-error': !!error }]"
@@ -37,7 +36,7 @@
 import MtFieldLabel from "@/components/form/_internal/mt-field-label/mt-field-label.vue";
 import MtFieldError from "@/components/form/_internal/mt-field-error/mt-field-error.vue";
 import MtText from "@/components/content/mt-text/mt-text.vue";
-import { computed } from "vue";
+import { computed, useId } from "vue";
 
 const model = defineModel<number>();
 
@@ -68,6 +67,8 @@ const fillWidth = computed<`${string}%`>(() => {
 
   return `${percentage}%`;
 });
+
+const id = useId();
 </script>
 
 <style scoped>
