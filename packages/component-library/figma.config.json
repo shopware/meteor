@@ -1,0 +1,8 @@
+{
+  "codeConnect": {
+    "parser": "html",
+    "label": "Vue",
+    "include": ["src/**/*.connect.ts"],
+    "exclude": ["test/**", "docs/**", "build/**"]
+  }
+}
