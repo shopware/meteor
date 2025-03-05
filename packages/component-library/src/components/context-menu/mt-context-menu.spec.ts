@@ -2,7 +2,7 @@ import { userEvent } from "@testing-library/user-event";
 import { render, screen } from "@testing-library/vue";
 import MtContextButton from "./mt-context-button/mt-context-button.vue";
 
-describe("mt-context-menu", async () => {
+describe("mt-context-menu", () => {
   it("is possible to focus the button that opens the context menu", async () => {
     // ARRANGE
     render(MtContextButton);
