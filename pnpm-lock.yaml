@@ -388,8 +388,8 @@ importers:
         specifier: 3.2.0
         version: 3.2.0(date-fns@4.1.0)
       focus-trap:
-        specifier: ^7.5.4
-        version: 7.5.4
+        specifier: ^7.6.4
+        version: 7.6.4
       inter-ui:
         specifier: ^3.19.3
         version: 3.19.3
@@ -7864,8 +7864,8 @@ packages:
     peerDependencies:
       react: ^15.0.2 || ^16.0.0 || ^17.0.0
 
-  focus-trap@7.5.4:
-    resolution: {integrity: sha512-N7kHdlgsO/v+iD/dMoJKtsSqs5Dz/dXZVebRgJw23LDk+jMi/974zyiOYDziY2JPp8xivq9BmUGwIJMiuSBi7w==}
+  focus-trap@7.6.4:
+    resolution: {integrity: sha512-xx560wGBk7seZ6y933idtjJQc1l+ck+pI3sKvhKozdBV1dRZoKhkW5xoCaFv9tQiX5RH1xfSxjuNu6g+lmN/gw==}
 
   follow-redirects@1.15.6:
     resolution: {integrity: sha512-wWN62YITEaOpSK584EZXJafH1AGpO8RVgElfkuXbTOrPX4fIfOyEpW/CsiNd8JdYrAoOvafRTOEnvsO++qCqFA==}
@@ -20638,10 +20638,10 @@ snapshots:
       '@vue/devtools-shared': 7.3.1
       '@vueuse/components': 10.11.0(vue@3.5.13(typescript@5.7.3))
       '@vueuse/core': 10.11.0(vue@3.5.13(typescript@5.7.3))
-      '@vueuse/integrations': 10.11.0(axios@1.7.2)(change-case@4.1.2)(focus-trap@7.5.4)(nprogress@0.2.0)(vue@3.5.13(typescript@5.7.3))
+      '@vueuse/integrations': 10.11.0(axios@1.7.2)(change-case@4.1.2)(focus-trap@7.6.4)(nprogress@0.2.0)(vue@3.5.13(typescript@5.7.3))
       colord: 2.9.3
       floating-vue: 5.2.2(@nuxt/kit@3.12.2(magicast@0.3.4)(rollup@4.18.0))(vue@3.5.0(typescript@5.7.3))
-      focus-trap: 7.5.4
+      focus-trap: 7.6.4
       unocss: 0.61.0(postcss@8.4.49)(rollup@4.18.0)(vite@5.3.1(@types/node@20.14.5)(sass@1.77.6)(terser@5.31.1))
       vue: 3.5.13(typescript@5.7.3)
     transitivePeerDependencies:
@@ -20822,7 +20822,7 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  '@vueuse/integrations@10.11.0(axios@1.7.2)(change-case@4.1.2)(focus-trap@7.5.4)(nprogress@0.2.0)(vue@3.5.13(typescript@5.7.3))':
+  '@vueuse/integrations@10.11.0(axios@1.7.2)(change-case@4.1.2)(focus-trap@7.6.4)(nprogress@0.2.0)(vue@3.5.13(typescript@5.7.3))':
     dependencies:
       '@vueuse/core': 10.11.0(vue@3.5.13(typescript@5.7.3))
       '@vueuse/shared': 10.11.0(vue@3.5.13(typescript@5.7.3))
@@ -20830,7 +20830,7 @@ snapshots:
     optionalDependencies:
       axios: 1.7.2
       change-case: 4.1.2
-      focus-trap: 7.5.4
+      focus-trap: 7.6.4
       nprogress: 0.2.0
     transitivePeerDependencies:
       - '@vue/composition-api'
@@ -23990,7 +23990,7 @@ snapshots:
     transitivePeerDependencies:
       - encoding
 
-  focus-trap@7.5.4:
+  focus-trap@7.6.4:
     dependencies:
       tabbable: 6.2.0
 
