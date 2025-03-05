@@ -42,7 +42,7 @@
   "dependencies": {
     "@codemirror/lang-html": "^6.4.9",
     "@floating-ui/dom": "^1.4.3",
-    "@floating-ui/vue": "^1.1.5",
+    "@floating-ui/vue": "^1.1.6",
     "@shopware-ag/meteor-icon-kit": "workspace:*",
     "@shopware-ag/meteor-tokens": "workspace:*",
     "@storybook/addon-a11y": "^8.4.5",
