@@ -1,20 +1,16 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "ES2022",
+    "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "target": "es6",
     "noImplicitAny": true,
+    "skipLibCheck": true,
     "moduleResolution": "node",
     "outDir": "dist",
     "baseUrl": ".",
-    "paths": {
-      "*": [
-        "node_modules/*"
-      ]
-    }
+    "allowJs": true
   },
-  "include": [
-    "src/**/*"
-  ]
+  "include": ["src/**/*", "./eslint.config.mjs"]
 }

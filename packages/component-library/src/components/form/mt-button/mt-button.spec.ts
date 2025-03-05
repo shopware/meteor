@@ -187,7 +187,7 @@ describe("mt-button", () => {
     expect(screen.getByRole("link")).toHaveAttribute("href", "");
   });
 
-  it("is not possible to focus a disabled link button", async () => {
+  it("is not possible to focus a loading link button", async () => {
     // ARRANGE
     render(MtButton, {
       props: {

@@ -106,7 +106,7 @@ function setElementPosition(
   });
 
   // add inline styling
-  element.style.position = "absolute";
+  element.style.position = "fixed";
   element.style.top = `${elementPosition.top - targetPosition.top + originElement.clientHeight}px`;
   element.style.left = `${elementPosition.left - targetPosition.left}px`;
 }
@@ -140,7 +140,7 @@ function registerVirtualScrollingElement(
   config: PopoverConfig,
 ) {
   // @ts-expect-error - _uid exists on the context but is private
-  const uid = vnodeContext?._uid;
+  const uid = vnodeContext?._?.uid;
 
   if (!uid) {
     return;

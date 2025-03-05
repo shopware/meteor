@@ -210,7 +210,6 @@ watch(
 function checkInput(inputValue: string) {
   if (!inputValue.length) return "";
 
-  // eslint-disable-next-line @typescript-eslint/prefer-regexp-exec
   if (inputValue.match(URL_REGEX.PROTOCOL_HTTP)) {
     sslActive.value = !!inputValue.match(URL_REGEX.SSL);
   }

@@ -1,5 +1,11 @@
 # @shopware-ag/meteor-tokens
 
+## 1.0.0
+
+### Major Changes
+
+- 7abaa5a: Mark tokens as stable
+
 ## 0.3.0
 
 ### Minor Changes

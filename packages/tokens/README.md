@@ -1,9 +1,5 @@
 This repository contains the Design Tokens for the Meteor Design System at shopware.
 
-> ⚠️ This package is still in early development. It's possible that we release breaking
-> changes in minor or patch version. Once the package is stable we'll release a 1.0.0
-> version and conform to the semver versioning.
-
 ## Installation
 
 ```sh

@@ -1118,19 +1118,17 @@ export default defineComponent({
      */
     const resetAllChanges = () => {
       Object.keys(props.columnChanges).forEach((key) => {
-        // eslint-disable-next-line vue/no-mutating-props
         props.columnChanges[key] = {};
       });
     };
 
     const addToColumnChanges = (columnProperty: string, columnChanges: ColumnChanges) => {
       if (!props.columnChanges[columnProperty]) {
-        // eslint-disable-next-line vue/no-mutating-props
         props.columnChanges[columnProperty] = {};
       }
 
       // save new width to columnChanges to make changes permanent
-      // eslint-disable-next-line vue/no-mutating-props
+
       props.columnChanges[columnProperty] = {
         ...props.columnChanges[columnProperty],
         ...columnChanges,

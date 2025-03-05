@@ -104,9 +104,9 @@ client.getFile().then(async (response) => {
 
   scssFileContent += '}\n';
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/restrict-template-expressions
+   
   fse.outputFileSync(`${__dirname}/../icons/meteor-icon-kit-${md5(styling)}.css`, cssFileContent);
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/restrict-template-expressions
+   
   fse.outputFileSync(`${__dirname}/../icons/meteor-icon-kit.scss`, scssFileContent);
 
   console.log(chalk.green('Writing metadata'));
