@@ -13,7 +13,14 @@ figma.connect(
       ghost: figma.boolean("ghost"),
     },
     example: ({ text, size, disabled, ghost }) =>
-      html`<mt-button variant="primary" ghost="${ghost}" size="${size}" disabled="${disabled}" @click="() => {}">${text}</mt-button>`,
+      html`<mt-button
+        variant="primary"
+        ghost="${ghost}"
+        size="${size}"
+        disabled="${disabled}"
+        @click="() => {}"
+        >${text}</mt-button
+      >`,
     imports: ["import { MtButton } from '@shopware-ag/meteor-component-library';"],
   },
 );
