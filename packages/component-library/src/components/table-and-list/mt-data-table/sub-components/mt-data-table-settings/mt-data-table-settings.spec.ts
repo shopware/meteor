@@ -1,6 +1,6 @@
 import { mount } from "@vue/test-utils";
 import MtDataTableSettings from "./mt-data-table-settings.vue";
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
+
 import flushPromises from "flush-promises";
 
 // mock resizeOvserver

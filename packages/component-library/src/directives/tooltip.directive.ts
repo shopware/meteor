@@ -8,7 +8,6 @@ type Placements = "top" | "right" | "bottom" | "left";
 
 const availableTooltipPlacements: Placements[] = ["top", "right", "bottom", "left"];
 
-// eslint-disable-next-line no-use-before-define
 const tooltipRegistry = new Map<string, Tooltip>();
 
 /**
@@ -528,7 +527,6 @@ export default {
   },
 
   updated: (el: HTMLElement, binding) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     createOrUpdateTooltip(el, binding);
   },
 
@@ -538,7 +536,7 @@ export default {
   mounted: (el: HTMLElement) => {
     if (el.hasAttribute("tooltip-id")) {
       const tooltip = tooltipRegistry.get(el.getAttribute("tooltip-id")!);
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+
       tooltip!.init();
     }
   },

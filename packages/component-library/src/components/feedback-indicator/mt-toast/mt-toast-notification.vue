@@ -144,8 +144,11 @@ const ariaLive = computed(() => {
 
 const { toast, quickDisplay, index } = toRefs(props);
 const toastEl = ref<HTMLElement | null>(null);
+// eslint-disable-next-line prefer-const
 let timeoutId = ref<number | undefined>(undefined);
+// eslint-disable-next-line prefer-const
 let timeoutStartTime = ref<number | undefined>(undefined);
+// eslint-disable-next-line prefer-const
 let remainingTimeOut = ref(quickDisplay.value ? 3700 : 10500);
 
 watch(

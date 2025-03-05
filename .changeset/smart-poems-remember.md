@@ -2,4 +2,4 @@
 "@shopware-ag/meteor-component-library": patch
 ---
 
-Add missing placeholder to mt-colorpicker
+Add auto-completion for color prop of mt-text component

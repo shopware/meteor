@@ -304,7 +304,7 @@ export default defineComponent({
     },
 
     // @ts-expect-error - defined in parent
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
     parseValue(value: any) {
       if (value === null || Number.isNaN(value) || !Number.isFinite(value)) {
         if (this.allowEmpty) {
@@ -329,7 +329,6 @@ export default defineComponent({
       return value;
     },
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     getNumberFromString(value: any) {
       let splits = value.split("e").shift();
       splits = splits.replace(/,/g, ".").split(".");

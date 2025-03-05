@@ -152,13 +152,13 @@ export default defineComponent({
   },
 
   computed: {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     activeDomItem(): any | undefined {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       this.refreshKey;
 
       // Access "this.activeItemName" before to react dynamically on changes
       const activeItemName = this.activeItemName;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
       const domItems = this.$refs.items ? (this.$refs.items as any[]) : [];
 
       const activeDomItem = domItems.find((item) => {
@@ -169,6 +169,7 @@ export default defineComponent({
     },
 
     sliderPosition(): number {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       this.refreshKey;
 
       if (!this.activeItem) {
@@ -177,7 +178,6 @@ export default defineComponent({
 
       // Handle the case when the active item is hidden
       if (!this.activeDomItem && this.$refs["more-items-button"]) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return (this.$refs["more-items-button"] as any).$el?.offsetLeft;
       }
 
@@ -191,6 +191,7 @@ export default defineComponent({
     },
 
     sliderLength(): number {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       this.refreshKey;
 
       if (!this.activeItem) {
@@ -199,12 +200,10 @@ export default defineComponent({
 
       // Handle the case when the active item is hidden
       if (!this.activeDomItem && this.$refs["more-items-button"]) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return (this.$refs["more-items-button"] as any).$el?.offsetWidth;
       }
 
       if (this.activeItem?.hidden && this.$refs["more-items-button"]) {
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         return (this.$refs["more-items-button"] as any).$el?.offsetWidth;
       }
 
@@ -218,6 +217,7 @@ export default defineComponent({
     },
 
     activeItem(): TabItem | undefined {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       this.refreshKey;
 
       return this.items.find((item) => {
@@ -226,6 +226,7 @@ export default defineComponent({
     },
 
     sliderClasses(): Record<string, boolean> {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       this.refreshKey;
 
       return {
@@ -235,6 +236,7 @@ export default defineComponent({
     },
 
     sliderStyle(): string {
+      // eslint-disable-next-line @typescript-eslint/no-unused-expressions
       this.refreshKey;
 
       if (this.vertical) {
@@ -345,7 +347,7 @@ export default defineComponent({
     handleResize() {
       if (this.$refs.priorityPlus) {
         this.refreshKey = !this.refreshKey;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+
         (this.$refs.priorityPlus as any).handleResize().then(() => {
           this.refreshKey = !this.refreshKey;
         });

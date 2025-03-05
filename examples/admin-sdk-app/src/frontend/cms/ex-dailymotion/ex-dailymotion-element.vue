@@ -64,7 +64,7 @@ onBeforeMount(async () => {
 
   data.subscribe(
     dataId.value,
-    // @ts-expect-error
+    // @ts-expect-error -- TS doesn't know about the subscriber
     elementSubscriber,
   {
     selectors: dataSelectors,

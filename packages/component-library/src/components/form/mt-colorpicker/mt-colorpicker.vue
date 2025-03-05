@@ -500,7 +500,6 @@ export default defineComponent({
     },
 
     sliderBackground(): string {
-      // eslint-disable-next-line max-len
       return `linear-gradient(90deg, hsla(${this.hueValue}, ${this.saturationValue}%, ${this.luminanceValue}%, 0), hsl(${this.hueValue}, ${this.saturationValue}%, ${this.luminanceValue}%)), url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' width='100%25' height='100%25'%3E%3Crect width='10' height='10' x='00' y='00' fill='%23cdd5db' /%3E%3Crect width='10' height='10' x='10' y='10' fill='%23cdd5db' /%3E%3C/svg%3E")`;
     },
 
@@ -650,7 +649,6 @@ export default defineComponent({
         const newHexValue = newValue;
         const validHexCharacters = /^#[0-9a-f]{3,8}/i;
 
-        // eslint-disable-next-line vitest/no-conditional-tests
         if (!validHexCharacters.test(newHexValue)) {
           return;
         }

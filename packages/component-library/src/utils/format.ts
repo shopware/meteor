@@ -26,6 +26,5 @@ export function currency(
     ...additionalOptions,
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument
   return val.toLocaleString(additionalOptions.language ?? "en-US", opts);
 }

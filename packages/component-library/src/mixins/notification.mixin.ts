@@ -2,7 +2,6 @@ import { defineComponent } from "vue";
 
 export default defineComponent({
   methods: {
-    // eslint-disable-next-line no-unused-vars
     createNotification() {
       // TODO: Implement a general notification system
       // return Shopware.State.dispatch('notification/createNotification', notification);

@@ -10,7 +10,7 @@
     ]"
     :style="styles"
     :aria-hidden="decorative"
-    :data-testid="'mt-icon__' + name"
+    :data-testid="`mt-icon__${iconInformation.mode}-${iconInformation.name}`"
     v-bind="$attrs"
     v-html="iconSvgData"
   />
@@ -25,10 +25,12 @@ const props = withDefaults(
     color?: string;
     decorative?: boolean;
     size?: string;
+    mode?: "solid" | "regular";
   }>(),
   {
     decorative: false,
     size: undefined,
+    mode: "regular",
   },
 );
 
@@ -54,21 +56,36 @@ const styles = computed(() => {
   return styles;
 });
 
-watch(
-  () => props.name,
-  (newName) => {
-    const [variant] = newName.split("-");
-    const iconName = newName.split("-").slice(1).join("-");
+const iconInformation = computed(() => {
+  const isModeInNameIncluded = props.name.startsWith("solid-") || props.name.startsWith("regular-");
 
+  if (isModeInNameIncluded) {
+    return {
+      mode: props.name.split("-")[0] as "solid" | "regular",
+      name: props.name.split("-").slice(1).join("-"),
+    };
+  }
+
+  return {
+    mode: props.mode,
+    name: props.name,
+  };
+});
+
+watch(
+  iconInformation,
+  () => {
     import(
-      `./../../../../node_modules/@shopware-ag/meteor-icon-kit/icons/${variant}/${iconName}.svg`
+      `./../../../../node_modules/@shopware-ag/meteor-icon-kit/icons/${iconInformation.value.mode}/${iconInformation.value.name}.svg`
     ).then((data) => {
       if (data.default) {
         iconSvgData.value = data.default;
         return;
       }
 
-      console.error(`The SVG file for the icon name ${newName} could not be found and loaded.`);
+      console.error(
+        `The SVG file for the icon name ${iconInformation.value.mode} could not be found and loaded.`,
+      );
       iconSvgData.value = "";
     });
   },

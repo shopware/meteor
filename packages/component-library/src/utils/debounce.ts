@@ -1,7 +1,11 @@
-export function debounce<T extends Function>(func: T, delay: number): (...args: any[]) => void {
+export function debounce<T extends (...args: any[]) => void>(
+  func: T,
+  delay: number,
+): (...args: any[]) => void {
   let timeoutId: ReturnType<typeof setTimeout>;
 
   return function (this: any, ...args: any[]) {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
     const context = this;
     clearTimeout(timeoutId);
 

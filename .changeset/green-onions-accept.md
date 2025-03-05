@@ -2,4 +2,4 @@
 "@shopware-ag/meteor-component-library": patch
 ---
 
-Focus colorpicker when clicking on its label
+Allow setting a margin on an `mt-button` component

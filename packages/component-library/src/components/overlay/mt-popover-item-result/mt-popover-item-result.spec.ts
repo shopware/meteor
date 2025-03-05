@@ -269,7 +269,6 @@ describe("mt-popover-item-result", () => {
     const allPopoverItems = wrapper.findAllComponents({ name: "MtPopoverItem" });
 
     allPopoverItems.forEach((popoverItem) => {
-      // eslint-disable-next-line vitest/no-conditional-tests, vitest/no-conditional-in-test
       if (popoverItem.props("label") === "Name") {
         return;
       }
