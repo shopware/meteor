@@ -31,7 +31,7 @@ const locations = {
 };
 
 const app = createApp({
-  // @ts-expect-error
+  // @ts-expect-error -- TS does not know about the location object
   render: () => h(locations[location.get()]),
 });
 
