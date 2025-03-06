@@ -10,9 +10,15 @@
     v-bind="$attrs"
   >
     <span class="mt-button__content">
-      <slot name="iconFront" :size="iconSize" v-if="$slots.iconFront" />
+      <span v-if="$slots.iconFront">
+        <slot name="iconFront" :size="iconSize" />
+      </span>
+
       <slot />
-      <slot name="iconBack" :size="iconSize" v-if="$slots.iconBack" />
+
+      <span v-if="$slots.iconBack">
+        <slot name="iconBack" :size="iconSize" />
+      </span>
     </span>
   </a>
 
@@ -63,7 +69,7 @@ const props = withDefaults(
   },
 );
 
-defineSlots<{
+const slots = defineSlots<{
   default: null;
   iconFront: { size: number };
   iconBack: { size: number };
@@ -89,7 +95,9 @@ const isInsideTooltip = useIsInsideTooltip();
 <style lang="css" scoped>
 .mt-button {
   transition: all 0.15s ease-out;
-  display: inline-block;
+  display: grid;
+  place-items: center;
+  width: max-content;
   border-radius: var(--border-radius-button);
   padding: var(--scale-size-2) var(--scale-size-24);
   font-size: var(--font-size-xs);

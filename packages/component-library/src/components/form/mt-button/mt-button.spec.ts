@@ -256,4 +256,21 @@ describe("mt-button", () => {
       expect(handler).not.toHaveBeenCalled();
     },
   );
+
+  it("displays icons when the component is a link", async () => {
+    // ARRANGE
+    render(MtButton, {
+      props: {
+        link: "https://storybook.js.org",
+      },
+      slots: {
+        iconFront: "Front icon",
+        iconBack: "Back icon",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByText("Front icon")).toBeVisible();
+    expect(screen.getByText("Back icon")).toBeVisible();
+  });
 });

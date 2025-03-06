@@ -200,7 +200,6 @@ export const LinkButton: MtButtonStory = {
     const canvas = within(canvasElement);
 
     await userEvent.click(canvas.getByRole("link"));
-
-    // TODO: check redirects is currently not supported
+    expect(canvas.getByRole("link")).toHaveAttribute("href", "https://www.shopware.com");
   },
 };
