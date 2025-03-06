@@ -29,7 +29,7 @@
         :id="`mt-tooltip--${id}__tooltip`"
         class="tooltip"
         ref="tooltipRef"
-        :style="floatingStyles"
+        :style="{ ...floatingStyles, maxWidth: `${props.maxWidth}px` }"
         tabindex="-1"
         @mouseover="setState({ isHoveringTooltip: true })"
         @mouseleave="onMouseLeaveTooltip"
@@ -89,6 +89,7 @@ const props = withDefaults(
     delayDurationInMs?: number;
     hideDelayDurationInMs?: number;
     placement?: Placement;
+    maxWidth?: number;
   }>(),
   {
     delayDurationInMs: 500,
