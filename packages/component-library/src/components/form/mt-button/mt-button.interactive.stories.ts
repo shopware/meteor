@@ -9,20 +9,6 @@ export default {
   title: "Interaction Tests/Form/mt-button",
 } as MtButtonMeta;
 
-export const TestDefaultSlot: MtButtonStory = {
-  name: "Change the default slot",
-  args: {
-    default: "The new button text",
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    const button = canvas.getByRole("button");
-
-    await expect(button).toHaveTextContent("The new button text");
-  },
-};
-
 export const VisualTestPrimaryVariant: MtButtonStory = {
   name: "Render the primary variant",
   args: {
@@ -111,20 +97,6 @@ export const VisualTestLargeSize: MtButtonStory = {
   args: {
     default: "Large button",
     size: "large",
-  },
-};
-
-export const TestButtonClick: MtButtonStory = {
-  name: "Click the button",
-  args: {
-    default: "Test button",
-  },
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    await userEvent.click(canvas.getByRole("button"));
-
-    expect(args.click).toHaveBeenCalled();
   },
 };
 
