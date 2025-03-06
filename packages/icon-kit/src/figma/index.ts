@@ -55,6 +55,7 @@ export type Meta = {
 }
 
 export default class FigmaApiClient {
+  // @ts-expect-error -- TODO: add types for axios
   httpClient = Axios.create({
     baseURL: 'https://api.figma.com/v1',
   });
@@ -83,6 +84,7 @@ export default class FigmaApiClient {
 
   public downloadImage(url: string): AxiosPromise
   {
+    // @ts-expect-error -- TODO: add types for axios
     return Axios({
       url,
       method: 'GET',
@@ -101,6 +103,7 @@ export default class FigmaApiClient {
 
   private getHeaders(): AxiosRequestHeaders {
     return {
+      // @ts-expect-error -- TODO: add types for axios
       'X-Figma-Token': process.env.FIGMA_TOKEN,
     };
   }
