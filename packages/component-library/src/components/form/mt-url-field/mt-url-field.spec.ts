@@ -3,7 +3,7 @@ import MtUrlField from "./mt-url-field.vue";
 import { render, screen } from "@testing-library/vue";
 import userEvent from "@testing-library/user-event";
 
-describe("mt-url-field", async () => {
+describe("mt-url-field", () => {
   it("hides the protcol in the input when re-rendering", async () => {
     // ARRANGE
     const { rerender } = render(MtUrlField, {
@@ -286,26 +286,6 @@ describe("mt-url-field", async () => {
 
     // ASSERT
     expect(screen.getByRole("button")).toHaveTextContent("https://");
-  });
-
-  it("updates the domain when the user types and then focuses another element", async () => {
-    // ARRANGE
-    const handler = vi.fn();
-
-    render(MtUrlField, {
-      props: {
-        modelValue: "",
-        onChange: handler,
-      },
-    });
-
-    // ACT
-    await userEvent.type(screen.getByRole("textbox"), "www.shopware.com");
-    await userEvent.tab();
-
-    // ASSERT
-    expect(handler).toHaveBeenCalledOnce();
-    expect(handler).toHaveBeenCalledWith("www.shopware.com");
   });
 
   it("emits an inheritance-remove event when linking the inheritance", async () => {

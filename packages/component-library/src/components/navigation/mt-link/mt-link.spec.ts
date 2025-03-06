@@ -2,7 +2,7 @@ import { render, screen } from "@testing-library/vue";
 import MtLink from "./mt-link.vue";
 import { userEvent } from "@testing-library/user-event";
 
-describe("mt-link", async () => {
+describe("mt-link", () => {
   it("renders a link", async () => {
     // ARRANGE
     render(MtLink, {
