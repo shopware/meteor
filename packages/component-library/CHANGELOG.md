@@ -1,5 +1,37 @@
 # Changelog
 
+## 4.5.0
+
+### Minor Changes
+
+- 6de3f71: Allow setting an icon without specifing the mode like regular or solid
+
+  You can now define an icon without explicitly defining the mode for it like this:
+
+  ```vue
+  <!-- Before -->
+  <mt-icon name="regular-3d" />
+
+  <!-- After -->
+  <mt-icon name="3d" />
+  ```
+
+  By default we use regular icons, however you can use solid icons as follows:
+
+  ```vue
+  <!-- Old way, still works, but prefer using the new way -->
+  <mt-icon name="solid-3d" />
+
+  <!-- New, preferred way -->
+  <mt-icon name="3d" mode="solid" />
+  ```
+
+### Patch Changes
+
+- ee0a4ad: Allow setting a margin on an `mt-button` component
+- a57d22e: fix: update wrong position of mt-select popover
+- d988d78: Add auto-completion for color prop of mt-text component
+
 ## 4.4.1
 
 ### Patch Changes
