@@ -25,7 +25,6 @@ withDefaults(
     placement?: Placement;
   }>(),
   {
-    width: 200,
     showDelay: 100,
     hideDelay: 100,
   },
