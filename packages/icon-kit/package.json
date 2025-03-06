@@ -31,6 +31,8 @@
     "lint:all": "npm run lint:types && npm run lint:eslint",
     "lint:eslint": "eslint ./src",
     "lint:types": "tsc --noEmit",
+    "format:check": "prettier . --check",
+    "format": "prettier --write .",
     "prepublish": "npm run build",
     "start": "node dist",
     "start:dev": "ts-node src"
