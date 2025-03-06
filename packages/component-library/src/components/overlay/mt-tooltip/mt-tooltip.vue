@@ -95,6 +95,7 @@ const props = withDefaults(
     delayDurationInMs: 500,
     hideDelayDurationInMs: 300,
     placement: "top",
+    maxWidth: 240,
   },
 );
 
