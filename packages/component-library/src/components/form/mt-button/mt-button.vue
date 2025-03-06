@@ -10,7 +10,9 @@
     v-bind="$attrs"
   >
     <span class="mt-button__content">
+      <slot name="iconFront" :size="iconSize" v-if="$slots.iconFront" />
       <slot />
+      <slot name="iconBack" :size="iconSize" v-if="$slots.iconBack" />
     </span>
   </a>
 
