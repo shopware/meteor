@@ -202,6 +202,7 @@ provide(TooltipContext, true);
   padding: var(--scale-size-12);
   border-radius: var(--border-radius-overlay);
   width: max-content;
+  overflow-wrap: break-word;
 }
 
 .v-enter-active,
