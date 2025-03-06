@@ -46,6 +46,7 @@ export const VisualTestTooltipLeft = {
 export const VisualTestWrapText = {
   name: "Tooltip wraps text",
   args: {
+    maxWidth: 300,
     content:
       'This is a long tooltip. [THISISAVERYVERYVERYLONGTOOLTIPTHATSHOULDWRAP]. If you can\'t see the "[" and "]" then the tooltip is not wrapping correctly',
   },
