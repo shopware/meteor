@@ -190,7 +190,7 @@ export const IsLoadingButton: MtButtonStory = {
   },
 };
 
-export const LinkButton: MtButtonStory = {
+export const VisualTestLinkButton: MtButtonStory = {
   name: "Redirect to the link",
   args: {
     default: "Go to Shopware",
