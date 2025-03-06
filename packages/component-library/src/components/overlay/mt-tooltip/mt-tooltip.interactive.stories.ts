@@ -1,4 +1,4 @@
-import { userEvent, within } from "@storybook/test";
+import { userEvent } from "@storybook/test";
 import type { MtTooltipMeta } from "./mt-tooltip.stories";
 import MtTooltipStory from "./mt-tooltip.stories";
 
