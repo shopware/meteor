@@ -56,6 +56,7 @@ export type Meta = {
 
 export default class FigmaApiClient {
   // @ts-expect-error -- TODO: add types for axios
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
   httpClient = Axios.create({
     baseURL: 'https://api.figma.com/v1',
   });
@@ -65,6 +66,7 @@ export default class FigmaApiClient {
       key = process.env.FIGMA_FILE;
     }
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     return this.httpClient.get<FigmaFileResponse>(
       `/files/${key}`,
       {
@@ -74,6 +76,7 @@ export default class FigmaApiClient {
   }
 
   public getImages(ids: string[]): Promise<AxiosResponse<FigmaImageResponse>> {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     return this.httpClient.get<FigmaImageResponse>(
       `/images/${process.env.FIGMA_FILE}?format=svg&ids=${ids.join(',')}`,
       {
@@ -85,6 +88,7 @@ export default class FigmaApiClient {
   public downloadImage(url: string): AxiosPromise
   {
     // @ts-expect-error -- TODO: add types for axios
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return Axios({
       url,
       method: 'GET',
@@ -93,6 +97,7 @@ export default class FigmaApiClient {
   }
 
   public getNodeInfo(ids: string[]): Promise<AxiosPromise<FigmaNodeResponse>> {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     return this.httpClient.get(
       `/files/${process.env.FIGMA_FILE}?ids=${ids.join(',')}`,
       {
