@@ -69,7 +69,7 @@ const props = withDefaults(
   },
 );
 
-const slots = defineSlots<{
+defineSlots<{
   default: null;
   iconFront: { size: number };
   iconBack: { size: number };
