@@ -56,7 +56,7 @@ client.getFile().then(async (response) => {
 
       // Remove width/height from SVGs
       const optimizedSvgResult = optimize(svg, {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+         
         plugins: [
           {name: 'removeDimensions'},
           {
