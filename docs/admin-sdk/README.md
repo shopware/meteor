@@ -1,33 +1,31 @@
-# Website
+# Shopware release notes
 
-This website is built using [Docusaurus 2](https://docusaurus.io/), a modern static website generator.
+*This repository is embedded into [developer-portal](https://github.com/shopware/developer-portal) under the [/resources/admin-extension-sdk/](https://developer.shopware.com/resources/admin-extension-sdk). This repository is also connected to the Shopware Dev Docs connector GitHub app which manages commit status checks in PRs and triggers production deployments.*
 
-### Installation
+## Development
 
-```
-$ yarn
-```
-
-### Local Development
+1. Clone this repository
 
 ```
-$ yarn start
+cd /www/
+git clone git@github.com:shopware/meteor.git
+cd meteor/packages/admin-sdk
 ```
 
-This command starts a local development server and opens up a browser window. Most changes are reflected live without having to restart the server.
-
-### Build
+2. Make sure you have your local copy of the `developer-portal` repository in the same parent directory.
 
 ```
-$ yarn build
+pnpm docs:env
 ```
 
-This command generates static content into the `build` directory and can be served using any static contents hosting service.
-
-### Deployment
+3. Link articles from your local copy of the `meteor` into the `developer-portal`.
 
 ```
-$ GIT_USER=<Your GitHub username> USE_SSH=true yarn deploy
+pnpm docs:link
 ```
 
-If you are using GitHub pages for hosting, this command is a convenient way to build the website and push to the `gh-pages` branch.
+4. Start the development server.
+
+```
+pnpm docs:preview
+```
