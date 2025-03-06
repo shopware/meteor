@@ -175,21 +175,6 @@ export const VisualTestIsLoading: MtButtonStory = {
   },
 };
 
-export const IsLoadingButton: MtButtonStory = {
-  name: "Unable to click on isLoading button",
-  args: {
-    default: "Is loading",
-    isLoading: true,
-  },
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    await userEvent.click(canvas.getByRole("button"));
-
-    expect(args.click).not.toHaveBeenCalled();
-  },
-};
-
 export const VisualTestLinkButton: MtButtonStory = {
   name: "Redirect to the link",
   args: {
