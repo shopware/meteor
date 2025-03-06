@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.5.1
+
+### Patch Changes
+
+- 6372237: Center content of mt-button when it's a link
+- 55832a9: Show icons when mt-button is a link
+
 ## 4.5.0
 
 ### Minor Changes
