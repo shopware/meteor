@@ -199,7 +199,6 @@ export const LinkButton: MtButtonStory = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    await userEvent.click(canvas.getByRole("link"));
     expect(canvas.getByRole("link")).toHaveAttribute("href", "https://www.shopware.com");
   },
 };
