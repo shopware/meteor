@@ -2,4 +2,4 @@
 "@shopware-ag/meteor-component-library": patch
 ---
 
-Allow setting a margin on an `mt-button` component
+Show icons when mt-button is a link

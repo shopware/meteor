@@ -1,0 +1,114 @@
+import { Meta } from "@storybook/blocks";
+
+import * as ModalStories from "./mt-modal.stories";
+
+<Meta of={ModalStories} />
+
+# mt-modal
+
+A modal is a dialog box, displayed on top of the current page.
+
+## How to use
+
+In 99% of the cases you'll open a modal through a button. We
+designed the component in a way to make this as easy as possible.
+
+> **Note:** You need to wrap the modal components in a `mt-modal-root` component.
+
+```html
+<template>
+  <mt-modal-root>
+    <mt-modal title="Some random title">
+      <template #default>This is my modal</template>
+
+      <template #footer>
+        <mt-button-close :as="MtButton" variant="secondary">
+          Close
+        </mt-button-close>
+      </template>
+    </mt-modal>
+
+    <mt-modal-trigger :as="MtButton">Open modal</mt-modal-trigger>
+  </mt-modal-root>
+</template>
+```
+
+If you need to do something before you close the modal, you can use
+the `mt-modal-action` component like this:
+
+```html
+<template>
+  <!-- mt-modal-root and mt-modal are the same as above -->
+  <template #footer>
+    <mt-modal-action
+      :as="MtButton"
+      variant="primary"
+      @click="
+        (done) => {
+          // Do something like a network request
+
+          // Call `done` to close the modal
+          done();
+        }
+      "
+    >
+      Confirm action
+    </mt-modal-action>
+  </template>
+</template>
+```
+
+## Controled state
+
+Sometimes, you want to open a modal through something else than a button.
+In this case, you can use the `isOpen` prop to control the modal state.
+
+```html
+<template>
+  <mt-modal-root :is-open="isOpen">
+    <mt-modal title="Some random title">
+      <template #default>This is my modal</template>
+
+      <template #footer>
+        <mt-button variant="secondary" @click="() => (isOpen = false)"
+          >Close</mt-button
+        >
+      </template>
+    </mt-modal>
+  </mt-modal-root>
+</template>
+
+<script setup>
+  const isOpen = ref(false);
+
+  onMounted(() => {
+    setTimeout(() => {
+      isOpen.value = true;
+    }, 1_000);
+  });
+</script>
+```
+
+## API Reference
+
+### `mt-modal-root`
+
+The root component that wraps all related modal components.
+It takes care of controlling if the modal is visible or not.
+
+### `mt-modal`
+
+The actual modal component.
+
+### `mt-trigger`
+
+An element that opens the modal, when clicked.
+
+### `mt-modal-action`
+
+Allows you to perform an action before closing the modal,
+most of the time, this is used for a confirm action.
+
+### `mt-modal-close`
+
+Closes the button when clicked.
