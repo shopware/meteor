@@ -25,7 +25,9 @@
       {{ label }}
     </mt-field-label>
 
-    <mt-help-text v-if="!!helpText" :text="helpText" :style="{ gridArea: 'help-text' }" />
+    <mt-help-text v-if="!!helpText || $slots.helpText" :text="helpText" :style="{ gridArea: 'help-text' }">
+      <slot name="helpText" />
+    </mt-help-text>
 
     <div
       :class="[
@@ -149,9 +151,10 @@ defineEmits<{
   "inheritance-restore": [];
 }>();
 
-defineSlots<{
+const slots = defineSlots<{
   suffix?(): void;
   hint?(): void;
+  helpText?(): void;
 }>();
 
 const modelValue = defineModel({
