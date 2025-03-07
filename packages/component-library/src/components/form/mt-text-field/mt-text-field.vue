@@ -20,6 +20,10 @@
       {{ label }}
     </template>
 
+    <template #helpText>
+      <slot name="helpText" />
+    </template>
+
     <template #field-prefix>
       <slot name="prefix" />
     </template>

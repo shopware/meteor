@@ -18,4 +18,22 @@ describe("mt-text-field", () => {
     // ASSERT
     expect(screen.getByRole("tooltip")).toBeVisible();
   });
+
+  it("displays a helptext with html content", async () => {
+    // ARRANGE
+    render(MtTextField, {
+      slots: {
+        helpText: "<p data-testid='tooltip-content'>Some text</p>",
+      },
+    });
+
+    // ACT
+    await userEvent.tab();
+
+    // ASSERT
+    expect(screen.getByRole("tooltip")).toBeVisible();
+    expect(screen.getByRole("tooltip")).toHaveTextContent("Some text");
+
+    expect(screen.getByTestId("tooltip-content")).toBeVisible();
+  });
 });
