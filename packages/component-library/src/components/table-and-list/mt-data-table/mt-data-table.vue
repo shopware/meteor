@@ -2534,6 +2534,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
 
     .mt-select {
       margin-bottom: 0;
+      width: 100px;
     }
   }
 

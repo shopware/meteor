@@ -40,6 +40,7 @@ export type MtSelectMeta = SlottedMeta<
   | "display-values-expand"
   | "error"
   | "isInherited"
+  | "_wrapperWidth"
 >;
 
 export default {
@@ -47,7 +48,7 @@ export default {
   component: MtSelect,
   render: (args) => ({
     template: `
-      <div>
+      <div class="mt-select-story-wrapper" :style="{ width: args._wrapperWidth ?? 'auto' }">
         <mt-select
           v-bind="args"
           :modelValue="currentValue"
