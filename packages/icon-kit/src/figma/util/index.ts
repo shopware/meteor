@@ -1,5 +1,5 @@
-import type {Icon, IconMode, Meta, node} from '../index';
-import FigmaApiClient, {IconSize} from '../index';
+import type {Icon, IconMode, Meta, node} from '../index.js';
+import FigmaApiClient, {IconSize} from '../index.js';
 
 export default class FigmaUtil {
   public async buildIconMap(document: node): Promise<Map<string, Icon>> {
@@ -19,7 +19,9 @@ export default class FigmaUtil {
       Object.keys(svgs.images).forEach((nodeId) => {
         const node = chunk.find(n => n.id === nodeId);
 
+        // @ts-expect-error - we know that node is defined
         iconMap.set(node.name, {
+          // @ts-expect-error - we know that value is defined
           image: svgs.images[nodeId],
           nodeId: nodeId,
         });
@@ -30,6 +32,7 @@ export default class FigmaUtil {
 
     const components: node[] = (await client.getNodeInfo(nodeIds)).data.components;
     Object.values(components).forEach((component: node) => {
+      // @ts-expect-error - we know that value is defined
       iconMap.set(component.name, {
         ...iconMap.get(component.name),
         description: component.description,
@@ -44,7 +47,9 @@ export default class FigmaUtil {
     const sizes = ['s', 'xs', 'xxs'];
     const modes = ['regular', 'solid'];
     Array.from(iconMap.keys()).forEach(key => {
+      // @ts-expect-error - we know that key.split('/')[2] is defined
       const name: string = key.split('/')[2];
+      // @ts-expect-error - we know that key.split('/')[1] is defined
       const mode: string = key.split('/')[1];
       let size: string = IconSize.DEFAULT;
       let basename: string = name;
@@ -60,6 +65,7 @@ export default class FigmaUtil {
       });
 
       // Extract tags from the description
+      // @ts-expect-error -- we know that iconMap.get(key) is defined
       const description: string = (iconMap.get(key).description.split('🔎')[1] || '').split('\n')[0].trim();
       let tags: string[] = [];
       if (description.startsWith('[') && description.endsWith(']')) {
@@ -103,12 +109,15 @@ export default class FigmaUtil {
     metas.forEach((meta: Meta, key: number) => {
       meta.tags.forEach((tag: string) => {
         metas.forEach((secondMeta: Meta, secondKey: number) => {
+          // @ts-expect-error - we know that metas[key].tags is defined
           if (metas[secondKey].tags.includes(tag)) {
+            // @ts-expect-error - we know that metas[key].related is defined
             metas[key].related.push(secondMeta.name);
           }
         });
       });
       // Make unique items
+      // @ts-expect-error - we know that related is defined
       metas[key].related = [...new Set(metas[key].related)];
     });
 

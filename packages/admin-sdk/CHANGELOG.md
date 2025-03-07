@@ -1,5 +1,14 @@
 # Changelog
 
+## 5.7.7
+
+### Patch Changes
+
+- 13ce32a: feat (NEXT-40858): Add message type windowGetId
+- Updated dependencies [6372237]
+- Updated dependencies [55832a9]
+  - @shopware-ag/meteor-component-library@4.5.1
+
 ## 5.7.6
 
 ### Patch Changes

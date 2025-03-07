@@ -1,12 +1,13 @@
-import type {Icon} from './figma';
-import FigmaApiClient from './figma';
-import FigmaUtil from './figma/util';
+import type {Icon} from './figma/index.js';
+import FigmaApiClient from './figma/index.js';
+import FigmaUtil from './figma/util/index.js';
 import * as fse from 'fs-extra';
 import chalk from 'chalk';
 import * as cliProgress from 'cli-progress';
 import type {OptimizedSvg} from 'svgo';
 import {optimize} from 'svgo';
 import md5 from 'js-md5';
+import fs from 'node:fs';
 import {PromisePool} from '@supercharge/promise-pool';
 // @ts-expect-error - this dependency has no type definitions
 import * as svgoAutocrop from 'svgo-autocrop';
@@ -19,14 +20,16 @@ const util = new FigmaUtil();
 
 console.log(chalk.green('Clean up...'));
 
-fse.removeSync(`${__dirname}/../icons`);
+fs.rmSync(`${import.meta.dirname}/../icons`, {recursive: true, force: true});
 
 console.log(chalk.green('Fetching Figma file stand by...'));
 
 client.getFile().then(async (response) => {
+  // @ts-expect-error -- TODO: add types for figma response
   const iconOverview = response.data.document.children.find(node => node.id === '217:6');
 
   console.log(chalk.green('Gathering icons...'));
+  // @ts-expect-error -- TODO: add types for iconMap
   const iconMap = await util.buildIconMap(iconOverview);
   const meta = util.buildMeta(iconMap);
 
@@ -45,6 +48,7 @@ client.getFile().then(async (response) => {
       bar.update(pool.processedItems().length);
     })
     .process(async (iconName: string) => {
+      // @ts-expect-error -- TODO: add types for iconMap
       const icon: Icon = iconMap.get(iconName);
 
       const result = await client.downloadImage(icon.image);
@@ -52,7 +56,7 @@ client.getFile().then(async (response) => {
 
       // Remove width/height from SVGs
       const optimizedSvgResult = optimize(svg, {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+         
         plugins: [
           {name: 'removeDimensions'},
           {
@@ -77,14 +81,16 @@ client.getFile().then(async (response) => {
 
         styling.push({
           name: className,
+          // @ts-expect-error - we know that viewBox is defined
           width,
+          // @ts-expect-error - we know that viewBox is defined
           height,
         });
       } else {
         console.log(chalk.red(`Could not find viewBox for ${iconName}`));
       }
 
-      fse.outputFileSync(`${__dirname}/../${iconName}.svg`, optimizedSvg);
+      fse.outputFileSync(`${import.meta.dirname}/../${iconName}.svg`, optimizedSvg);
     });
 
   bar.stop();
@@ -105,12 +111,12 @@ client.getFile().then(async (response) => {
   scssFileContent += '}\n';
 
    
-  fse.outputFileSync(`${__dirname}/../icons/meteor-icon-kit-${md5(styling)}.css`, cssFileContent);
+  fse.outputFileSync(`${import.meta.dirname}/../icons/meteor-icon-kit-${md5(styling)}.css`, cssFileContent);
    
-  fse.outputFileSync(`${__dirname}/../icons/meteor-icon-kit.scss`, scssFileContent);
+  fse.outputFileSync(`${import.meta.dirname}/../icons/meteor-icon-kit.scss`, scssFileContent);
 
   console.log(chalk.green('Writing metadata'));
-  fse.outputFileSync(`${__dirname}/../icons/meta.json`, JSON.stringify(meta));
+  fse.outputFileSync(`${import.meta.dirname}/../icons/meta.json`, JSON.stringify(meta));
 
   console.log(chalk.green('All done!'));
   //});
