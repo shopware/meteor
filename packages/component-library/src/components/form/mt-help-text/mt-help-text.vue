@@ -9,6 +9,10 @@
         />
       </button>
     </template>
+
+    <template #content>
+      <slot />
+    </template>
   </mt-tooltip>
 </template>
 
@@ -30,6 +34,10 @@ withDefaults(
     hideDelay: 100,
   },
 );
+
+defineSlots<{
+  default?(): any
+}>()
 </script>
 
 <style scoped>
