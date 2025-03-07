@@ -340,7 +340,6 @@ export default defineComponent({
 
   .mt-select-selection-list__input {
     display: inline-block;
-    min-width: 200px;
     min-height: 46px;
     padding: var(--scale-size-12) var(--scale-size-16) var(--scale-size-12) var(--scale-size-8);
 
