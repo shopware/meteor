@@ -95,7 +95,7 @@ const isInsideTooltip = useIsInsideTooltip();
 <style lang="css" scoped>
 .mt-button {
   transition: all 0.15s ease-out;
-  display: grid;
+  display: inline-grid;
   place-items: center;
   width: max-content;
   border-radius: var(--border-radius-button);
