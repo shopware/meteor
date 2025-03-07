@@ -176,6 +176,24 @@ describe("mt-textarea", () => {
     expect(screen.getByRole("tooltip")).toHaveTextContent("Helptext");
   });
 
+  it("displays a helptext with html content", async () => {
+    // ARRANGE
+    render(MtTextarea, {
+      slots: {
+        helpText: "<p data-testid='tooltip-content'>Some text</p>",
+      },
+    });
+
+    // ACT
+    await userEvent.tab();
+
+    // ASSERT
+    expect(screen.getByRole("tooltip")).toBeVisible();
+    expect(screen.getByRole("tooltip")).toHaveTextContent("Some text");
+
+    expect(screen.getByTestId("tooltip-content")).toBeVisible();
+  });
+
   it("displays no helptext when none is specified", async () => {
     // ARRANGE
     render(MtTextarea);

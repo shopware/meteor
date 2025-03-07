@@ -22,10 +22,12 @@
     </mt-field-label>
 
     <mt-help-text
-      v-if="!!helpText"
+      v-if="!!helpText || $slots.helpText"
       :text="helpText"
       :style="{ gridArea: 'help-text', justifySelf: 'end' }"
-    />
+    >
+      <slot name="helpText" />
+    </mt-help-text>
 
     <textarea
       v-model="model"
@@ -95,6 +97,11 @@ defineProps<{
   maxLength?: number;
   isInherited?: boolean;
   isInheritanceField?: boolean;
+}>();
+
+const slots = defineSlots<{
+  helpText?(): any;
+  hint?(): any;
 }>();
 </script>
 
