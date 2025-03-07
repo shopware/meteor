@@ -161,6 +161,24 @@ describe("mt-url-field", () => {
     expect(screen.getByRole("tooltip")).toHaveTextContent("This is a helptext");
   });
 
+  it("renders a helptext with html content", async () => {
+    // ARRANGE
+    render(MtUrlField, {
+      slots: {
+        helpText: "<p data-testid='tooltip-content'>Some text</p>",
+      },
+    });
+
+    // ACT
+    await userEvent.tab();
+
+    // ASSERT
+    expect(screen.getByRole("tooltip")).toBeVisible();
+    expect(screen.getByRole("tooltip")).toHaveTextContent("Some text");
+
+    expect(screen.getByTestId("tooltip-content")).toBeVisible();
+  });
+
   it("does not change the value when the field is disabled and the user types", async () => {
     // ARRANGE
     const handler = vi.fn();

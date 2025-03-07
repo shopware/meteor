@@ -26,11 +26,13 @@
       </label>
 
       <mt-help-text
-        v-if="helpText"
+        v-if="helpText || $slots.helpText"
         class="mt-field__help-text"
         :text="helpText"
         placement="right"
-      />
+      >
+        <slot name="helpText" />
+      </mt-help-text>
     </div>
 
     <div class="mt-block-field__block">
