@@ -363,7 +363,7 @@ export default defineComponent({
         height: 100%;
         z-index: 1;
         text-align: center;
-        background: var(--color-background-primary-default);
+        background: var(--color-elevation-surface-raised);
         color: var(--color-text-primary-default);
         border: 1px solid var(--color-border-primary-default);
         border-radius: var(--border-radius-checkbox);

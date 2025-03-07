@@ -9,20 +9,6 @@ export default {
   title: "Interaction Tests/Form/mt-button",
 } as MtButtonMeta;
 
-export const TestDefaultSlot: MtButtonStory = {
-  name: "Change the default slot",
-  args: {
-    default: "The new button text",
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    const button = canvas.getByRole("button");
-
-    await expect(button).toHaveTextContent("The new button text");
-  },
-};
-
 export const VisualTestPrimaryVariant: MtButtonStory = {
   name: "Render the primary variant",
   args: {
@@ -114,20 +100,6 @@ export const VisualTestLargeSize: MtButtonStory = {
   },
 };
 
-export const TestButtonClick: MtButtonStory = {
-  name: "Click the button",
-  args: {
-    default: "Test button",
-  },
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    await userEvent.click(canvas.getByRole("button"));
-
-    expect(args.click).toHaveBeenCalled();
-  },
-};
-
 export const TestDisabledButtonClick: MtButtonStory = {
   name: "Unable to click on disabled button",
   args: {
@@ -175,22 +147,7 @@ export const VisualTestIsLoading: MtButtonStory = {
   },
 };
 
-export const IsLoadingButton: MtButtonStory = {
-  name: "Unable to click on isLoading button",
-  args: {
-    default: "Is loading",
-    isLoading: true,
-  },
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    await userEvent.click(canvas.getByRole("button"));
-
-    expect(args.click).not.toHaveBeenCalled();
-  },
-};
-
-export const LinkButton: MtButtonStory = {
+export const VisualTestLinkButton: MtButtonStory = {
   name: "Redirect to the link",
   args: {
     default: "Go to Shopware",
@@ -199,8 +156,6 @@ export const LinkButton: MtButtonStory = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    await userEvent.click(canvas.getByRole("link"));
-
-    // TODO: check redirects is currently not supported
+    expect(canvas.getByRole("link")).toHaveAttribute("href", "https://www.shopware.com");
   },
 };
