@@ -34,7 +34,9 @@
         @mouseover="setState({ isHoveringTooltip: true })"
         @mouseleave="onMouseLeaveTooltip"
       >
-        <span>{{ content }}</span>
+        <span v-if="content">{{ content }}</span>
+
+        <slot v-else name="content" />
 
         <svg
           aria-hidden="true"

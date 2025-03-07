@@ -42,3 +42,10 @@ export const VisualTestTooltipLeft = {
     placement: "left",
   },
 };
+
+export const VisualTestTooltipCustomHTML = {
+  name: "Tooltip with custom HTML",
+  args: {
+    content: "<p style='text-decoration: underline;'>This is a custom tooltip</p>",
+  },
+};

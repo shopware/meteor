@@ -1121,4 +1121,69 @@ describe("mt-tooltip", () => {
     // ASSERT
     expect(screen.getByRole("tooltip", { name: "Tooltip" })).toBeVisible();
   });
+
+  it("shows the content via a slot", async () => {
+    // ARRANGE
+    render({
+      template: `
+<mt-tooltip>
+  <template #default="params">
+    <mt-button v-bind="params">Open tooltip</mt-button>
+  </template>
+
+  <template #content>
+    <p data-testid="tooltip-content">This is a custom tooltip</p>
+  </template>
+</mt-tooltip>`,
+      components: {
+        MtTooltip,
+        MtButton,
+      },
+    });
+
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime,
+    });
+
+    // ACT
+    await user.tab();
+
+    // ASSERT
+    expect(screen.getByRole("tooltip")).toBeVisible();
+
+    expect(screen.getByTestId("tooltip-content")).toBeVisible();
+  });
+
+  it("shows prefers the content of the prop over the slot", async () => {
+    // ARRANGE
+    render({
+        template: `
+<mt-tooltip content="Tooltip">
+  <template #default="params">
+    <mt-button v-bind="params">Open tooltip</mt-button>
+  </template>
+
+  <template #content>
+    <p data-testid="tooltip-content">This is a custom tooltip</p>
+  </template>
+</mt-tooltip>`,
+      components: {
+        MtTooltip,
+        MtButton,
+      },
+    });
+
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime,
+    });
+
+    // ACT
+    await user.tab();
+
+    // ASSERT
+    expect(screen.getByRole("tooltip")).toBeVisible();
+
+    expect(screen.queryByTestId("tooltip-content")).not.toBeInTheDocument();
+  });
 });
+
