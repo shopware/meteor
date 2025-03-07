@@ -158,7 +158,7 @@ export const VisualTestSingleSelectionSmall: MtSelectStory = {
         label: "A very long long text",
         value: "Longer value text",
       },
-    ]
+    ],
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
