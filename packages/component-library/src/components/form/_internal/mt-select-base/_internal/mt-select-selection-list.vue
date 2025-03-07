@@ -46,7 +46,11 @@
       </slot>
     </li>
 
-    <li v-if="!disableInput" class="mt-select-selection-list__input-wrapper" :class="inputWrapperClasses">
+    <li
+      v-if="!disableInput"
+      class="mt-select-selection-list__input-wrapper"
+      :class="inputWrapperClasses"
+    >
       <slot name="input" v-bind="{ placeholder, searchTerm, onSearchTermChange, onKeyDownDelete }">
         <!-- eslint-disable-next-line vuejs-accessibility/form-control-has-label -->
         <input
@@ -162,7 +166,7 @@ export default defineComponent({
   data() {
     return {
       inputInFocus: false,
-    }
+    };
   },
 
   computed: {
@@ -200,7 +204,7 @@ export default defineComponent({
       }
 
       return this.currentValue;
-    }
+    },
   },
 
   methods: {
