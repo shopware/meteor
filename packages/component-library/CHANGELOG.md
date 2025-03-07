@@ -1,5 +1,32 @@
 # Changelog
 
+## 4.6.0
+
+### Minor Changes
+
+- 3af841b: Allow setting the max width of a tooltip
+
+  ```html
+  <template>
+    <mt-tooltip content="My content" :max-width="200">
+      <template #default="props">
+        <button v-bind="props">Open tooltip</button>
+      </template>
+    </mt-tooltip>
+  </template>
+  ```
+
+- 7498dc5: Fix single select truncation
+
+### Patch Changes
+
+- ba9a202: Allow setting the max width of helptexts
+- 611a1d9: Set default max-width of help texts to 240px
+- c0166e8: Change display mode of mt-button to inline-grid
+- b0d74e7: Teleport tooltips to body
+- b3d2b03: Set default max-width of tooltips to 240px
+- 67c1cf8: Wrap tooltip content for mt-tooltip component
+
 ## 4.5.1
 
 ### Patch Changes
