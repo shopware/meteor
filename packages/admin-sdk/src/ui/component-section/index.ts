@@ -17,7 +17,7 @@ export type uiComponentSectionRenderer =
    src?: string,
  } &
  (
-   cardComponentRender
+   cardComponentRender | divElementRender
    /**
     * Here you can add multiple component types. Add with "|" so that only one will get used.
     */
@@ -38,3 +38,10 @@ interface cardTabRenderer {
   label: string,
   locationId: string,
 }
+
+interface divElementRender {
+    component: 'div',
+    props: {
+      locationId: string,
+    },
+  }
