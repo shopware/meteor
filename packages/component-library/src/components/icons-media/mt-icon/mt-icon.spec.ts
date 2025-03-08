@@ -50,4 +50,40 @@ describe("mt-icon", () => {
     // ASSERT
     expect(screen.getByTestId(`mt-icon__${mode}-3d`)).toBeVisible();
   });
+
+  it("merges the style prop with the internal styles", () => {
+    // ARRANGE
+    render(MtIcon, {
+      props: {
+        name: "3d",
+        size: "10rem",
+        style: {
+          color: "blue",
+        },
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByTestId("mt-icon__regular-3d")).toHaveStyle("color: rgb(0, 0, 255)");
+
+    expect(screen.getByTestId("mt-icon__regular-3d")).toHaveStyle("width: 10rem");
+    expect(screen.getByTestId("mt-icon__regular-3d")).toHaveStyle("height: 10rem");
+  });
+
+  it("sizes itself according to the style prop", () => {
+    // ARRANGE
+    render(MtIcon, {
+      props: {
+        name: "3d",
+        style: {
+          width: "2rem",
+          height: "2rem",
+        },
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByTestId("mt-icon__regular-3d")).toHaveStyle("height: 2rem");
+    expect(screen.getByTestId("mt-icon__regular-3d")).toHaveStyle("width: 2rem");
+  });
 });
