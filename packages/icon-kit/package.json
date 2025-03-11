@@ -56,7 +56,7 @@
     "svgo": "^2.8.0",
     "svgo-autocrop": "1.1.1",
     "ts-node": "^10.8.1",
-    "typescript": "^5.7.0",
+    "typescript": "^5.8.2",
     "typescript-eslint": "^8.24.1"
   }
 }
