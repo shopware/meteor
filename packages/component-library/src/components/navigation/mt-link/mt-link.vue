@@ -6,6 +6,7 @@
       `mt-link--${variant}`,
       {
         'mt-link--disabled': disabled,
+        [`mt-link--${type}`]: type !== undefined
       },
     ]"
     :href="disabled ? undefined : to"
@@ -19,7 +20,7 @@
 
     <mt-icon
       v-if="type"
-      size="0.75rem"
+      size="0.75em"
       :name="type === 'external' ? 'regular-external-link-s' : 'regular-long-arrow-right'"
     />
   </component>
@@ -51,14 +52,11 @@ defineEmits<{
 <style scoped>
 .mt-link {
   display: inline-flex;
-  column-gap: var(--scale-size-4);
+  column-gap: 0.25em;
   align-items: center;
   cursor: pointer;
   margin: 0;
   font-family: var(--font-family-body);
-  font-size: var(--font-size-xs);
-  line-height: var(--font-line-height-xs);
-  font-weight: var(--font-weight-medium);
   text-decoration: underline;
 
   &:focus-visible {
