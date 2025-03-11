@@ -82,8 +82,8 @@ Congratulation 🎉 You just created your first interaction with the Administrat
 ```
 
 2. Start the Shopware 6 Administration watcher using the following command: 
-```
-./psh.phar administration:watch
+```bash
+$ composer run watch:admin
 ```
 
 After all files have been compiled, a new browser window should open, in which you should see the Administration. After logging in, you should see the notification from your plugin.
