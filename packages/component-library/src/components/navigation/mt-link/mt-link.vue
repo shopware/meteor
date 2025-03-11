@@ -6,7 +6,7 @@
       `mt-link--${variant}`,
       {
         'mt-link--disabled': disabled,
-        [`mt-link--${type}`]: type !== undefined
+        [`mt-link--${type}`]: type !== undefined,
       },
     ]"
     :href="disabled ? undefined : to"
