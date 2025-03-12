@@ -105,6 +105,7 @@ defineEmits<{
 
 .mt-switch--not-bordered {
   min-height: var(--scale-size-48);
+  display: flex;
 }
 
 .mt-switch--no-top-margin {
