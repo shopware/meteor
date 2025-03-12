@@ -88,6 +88,7 @@
   "dependencies": {
     "localforage": "^1.10.0",
     "lodash": "^4.17.21",
+    "semver": "^7.7.1",
     "@shopware-ag/meteor-component-library": "workspace:*"
   },
   "devDependencies": {
