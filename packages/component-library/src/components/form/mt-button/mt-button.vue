@@ -24,6 +24,7 @@
 
   <button
     v-else
+    type="button"
     class="mt-button"
     :class="buttonClasses"
     :disabled="(disabled && !isInsideTooltip) || isLoading"

@@ -22,6 +22,7 @@
 
       <button
         v-if="toggable"
+        type="button"
         @click="showPassword = !showPassword"
         class="mt-password-field__visibility-toggle"
         :aria-label="showPassword ? t('hidePassword') : t('showPassword')"
