@@ -12,6 +12,7 @@
 
     <div class="mt-pagination__controls">
       <button
+        type="button"
         class="mt-pagination__button"
         :disabled="isOnFirstPage"
         @click="$emit('change-current-page', 1)"
@@ -23,6 +24,7 @@
       </button>
 
       <button
+        type="button"
         class="mt-pagination__button"
         :disabled="isOnFirstPage"
         @click="$emit('change-current-page', currentPage - 1)"
@@ -46,6 +48,7 @@
       />
 
       <button
+        type="button"
         class="mt-pagination__button"
         :disabled="isOnLastPage"
         @click="$emit('change-current-page', currentPage + 1)"
@@ -57,6 +60,7 @@
       </button>
 
       <button
+        type="button"
         class="mt-pagination__button"
         :disabled="isOnLastPage"
         @click="$emit('change-current-page', totalPages)"
