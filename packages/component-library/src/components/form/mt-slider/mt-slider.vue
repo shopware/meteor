@@ -393,7 +393,7 @@ export default defineComponent({
     inputFieldWidth(): string {
       const chars = Math.max(this.max.toFixed(0).length, this.min.toFixed(0).length) + 2;
       return `${chars + this.decimalPlaces}ch`;
-    }
+    },
   },
 
   methods: {
