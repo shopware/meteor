@@ -9,4 +9,5 @@ export type iapCheckout = {
     responseType: unknown,
 
     identifier: string,
+    variant?: 'monthly' | 'yearly' | 'consumable' | 'non-consumable',
 }
