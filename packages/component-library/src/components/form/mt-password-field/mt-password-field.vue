@@ -42,7 +42,7 @@
 
     <mt-field-error v-if="!!error" :error="error" />
 
-    <div class="mt-password-field__hint">
+    <div v-if="$slots.hint" class="mt-password-field__hint">
       <slot name="hint" />
     </div>
   </div>
@@ -81,9 +81,9 @@ defineEmits<{
 }>();
 
 defineSlots<{
-  prefix?;
-  suffix?;
-  hint?;
+  prefix?: unknown;
+  suffix?: unknown;
+  hint?: unknown;
 }>();
 
 const id = useId();
