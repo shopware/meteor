@@ -10,7 +10,12 @@ import type { Constructor } from "type-fest";
 export type SlottedMeta<
   TComponent extends abstract new (...args: unknown[]) => unknown,
   TSlots extends string,
-> = Meta<DefineComponent<(InstanceType<TComponent> & { $props: Record<string, unknown> })["$props"] & Record<TSlots, unknown>>>;
+> = Meta<
+  DefineComponent<
+    (InstanceType<TComponent> & { $props: Record<string, unknown> })["$props"] &
+      Record<TSlots, unknown>
+  >
+>;
 
 type ComponentPropsOrProps<TCmpOrArgs> =
   TCmpOrArgs extends Constructor<unknown>
@@ -40,7 +45,10 @@ export function defineStory<T>(
       if (!config.play) return () => void 0;
 
       const screen = within(document.body);
-      await config.play({ ...context, screen } as PlayFunctionContext<VueRenderer, ComponentPropsOrProps<T>> & { screen: BoundFunctions<typeof queries> });
+      await config.play({ ...context, screen } as PlayFunctionContext<
+        VueRenderer,
+        ComponentPropsOrProps<T>
+      > & { screen: BoundFunctions<typeof queries> });
     },
   } as unknown as StoryObj<T>;
 }

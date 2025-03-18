@@ -64,7 +64,7 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
-        api: 'modern-compiler',
+        api: "modern-compiler",
         additionalData: `
           @use "sass:math";
           @use "${path.resolve(__dirname, "src/components/assets/scss/variables.scss")}";
