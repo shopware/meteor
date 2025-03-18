@@ -1,8 +1,7 @@
-@import "variables";
-@import "typography";
-@import "global.scss";
-@import "directives/tooltip";
-@import "directives/dragdrop";
-@import "@shopware-ag/meteor-tokens/administration/light.css";
-@import "@shopware-ag/meteor-tokens/administration/dark.css";
-@import "@shopware-ag/meteor-tokens/primitives.css";
+@use "typography";
+@use "global";
+@use "directives/tooltip";
+@use "directives/dragdrop";
+@use "@shopware-ag/meteor-tokens/administration/light.css";
+@use "@shopware-ag/meteor-tokens/administration/dark.css";
+@use "@shopware-ag/meteor-tokens/primitives.css";

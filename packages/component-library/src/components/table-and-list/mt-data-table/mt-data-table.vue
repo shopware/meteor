@@ -2047,7 +2047,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   // adjust font styling
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-regular);
-  color: $color-darkgray-300;
+  color: variables.$color-darkgray-300;
   line-height: var(--font-line-height-xs);
 
   .mt-data-table__toolbar {
@@ -2440,12 +2440,12 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   .mt-data-table__table-head-dropzone-before {
     left: 0;
     box-shadow: inset $dropzone-highlight-width 0px $dropzone-highlight-width
-      $dropzone-highlight-negative-width $color-shopware-brand-900;
+      $dropzone-highlight-negative-width variables.$color-shopware-brand-900;
   }
   .mt-data-table__table-head-dropzone-after {
     right: 0;
     box-shadow: inset $dropzone-highlight-negative-width 0px $dropzone-highlight-width
-      $dropzone-highlight-negative-width $color-shopware-brand-900;
+      $dropzone-highlight-negative-width variables.$color-shopware-brand-900;
   }
 
   /**
@@ -2685,7 +2685,7 @@ table.is--dragging-inside {
   left: 0;
   width: 100%;
   height: var(--scale-size-8);
-  background-color: $color-shopware-brand-900;
+  background-color: variables.$color-shopware-brand-900;
   border-radius: var(--border-radius-xs) var(--border-radius-xs) 0 0;
   transition: transform 0.2s ease;
   transform-origin: top center;
@@ -2699,11 +2699,11 @@ table.is--dragging-inside {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: $color-shopware-brand-900;
+  background-color: variables.$color-shopware-brand-900;
   border-radius: 0 0 var(--border-radius-xs) var(--border-radius-xs);
 
   #meteor-icon-kit__regular-grip-horizontal-s {
-    color: $color-white;
+    color: variables.$color-white;
     width: 9px;
   }
 }

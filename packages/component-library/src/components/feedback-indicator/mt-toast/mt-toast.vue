@@ -129,7 +129,7 @@ function onMouseLeave() {
 
     .mt-toast-notification {
       display: flex;
-      z-index: $z-index-toasts;
+      z-index: variables.$z-index-toasts;
       position: absolute;
       height: 51px;
       color: white;
@@ -164,7 +164,7 @@ function onMouseLeave() {
     .mt-toast-notification {
       display: flex;
       transition: all 0.7s ease;
-      z-index: $z-index-toasts;
+      z-index: variables.$z-index-toasts;
       position: absolute;
       height: 51px;
       color: white;
@@ -203,7 +203,7 @@ function onMouseLeave() {
   &--collapsed {
     .mt-toast--bottom-right {
       .mt-toast-notification:nth-child(1) {
-        z-index: $z-index-toasts - 1;
+        z-index: variables.$z-index-toasts - 1;
       }
 
       .mt-toast-notification:nth-child(2) {

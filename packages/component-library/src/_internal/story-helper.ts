@@ -8,14 +8,14 @@ import type { PlayFunctionContext } from "@storybook/types";
 import type { Constructor } from "type-fest";
 
 export type SlottedMeta<
-  TComponent extends abstract new (...args: any) => any,
+  TComponent extends abstract new (...args: unknown[]) => unknown,
   TSlots extends string,
-> = Meta<DefineComponent<InstanceType<TComponent>["$props"] & Record<TSlots, any>>>;
+> = Meta<DefineComponent<(InstanceType<TComponent> & { $props: Record<string, unknown> })["$props"] & Record<TSlots, unknown>>>;
 
 type ComponentPropsOrProps<TCmpOrArgs> =
-  TCmpOrArgs extends Constructor<any>
+  TCmpOrArgs extends Constructor<unknown>
     ? ComponentPropsAndSlots<TCmpOrArgs>
-    : TCmpOrArgs extends FunctionalComponent<any>
+    : TCmpOrArgs extends FunctionalComponent<Record<string, unknown>>
       ? ComponentPropsAndSlots<TCmpOrArgs>
       : TCmpOrArgs;
 
@@ -40,7 +40,7 @@ export function defineStory<T>(
       if (!config.play) return () => void 0;
 
       const screen = within(document.body);
-      await config.play({ ...context, screen });
+      await config.play({ ...context, screen } as PlayFunctionContext<VueRenderer, ComponentPropsOrProps<T>> & { screen: BoundFunctions<typeof queries> });
     },
   } as unknown as StoryObj<T>;
 }

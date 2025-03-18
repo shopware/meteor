@@ -284,8 +284,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "../../../../assets/scss/variables";
-
 .mt-select-selection-list {
   display: flex;
   flex-wrap: wrap;
@@ -344,7 +342,7 @@ export default defineComponent({
     padding: var(--scale-size-12) var(--scale-size-16) var(--scale-size-12) var(--scale-size-8);
 
     &::placeholder {
-      color: lighten($color-darkgray-200, 25%);
+      color: lighten(variables.$color-darkgray-200, 25%);
       white-space: break-spaces;
     }
   }

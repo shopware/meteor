@@ -56,11 +56,11 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-$mt-color-badge-color-fallback: $color-gray-300;
-$mt-color-badge-color-warning: $color-pumpkin-spice-500;
-$mt-color-badge-color-critical: $color-crimson-500;
-$mt-color-badge-color-positive: $color-emerald-500;
-$mt-color-badge-color-info: $color-shopware-brand-500;
+$mt-color-badge-color-fallback: variables.$color-gray-300;
+$mt-color-badge-color-warning: variables.$color-pumpkin-spice-500;
+$mt-color-badge-color-critical: variables.$color-crimson-500;
+$mt-color-badge-color-positive: variables.$color-emerald-500;
+$mt-color-badge-color-info: variables.$color-shopware-brand-500;
 
 .mt-color-badge {
   display: inline-block;
@@ -98,24 +98,24 @@ $mt-color-badge-color-info: $color-shopware-brand-500;
     border-radius: 8px;
 
     &.is--warning {
-      background-color: $color-pumpkin-spice-50;
-      color: $color-pumpkin-spice-900;
+      background-color: variables.$color-pumpkin-spice-50;
+      color: variables.$color-pumpkin-spice-900;
     }
 
     &.is--critical,
     &.is--danger {
-      background-color: $color-crimson-50;
-      color: $color-crimson-900;
+      background-color: variables.$color-crimson-50;
+      color: variables.$color-crimson-900;
     }
 
     &.is--positive {
-      background-color: $color-emerald-50;
-      color: $color-emerald-900;
+      background-color: variables.$color-emerald-50;
+      color: variables.$color-emerald-900;
     }
 
     &.is--info {
-      background-color: $color-shopware-brand-50;
-      color: $color-shopware-brand-900;
+      background-color: variables.$color-shopware-brand-50;
+      color: variables.$color-shopware-brand-900;
     }
   }
 }

@@ -64,10 +64,11 @@ export default defineConfig({
   css: {
     preprocessorOptions: {
       scss: {
+        api: 'modern-compiler',
         additionalData: `
           @use "sass:math";
-          @import "${path.resolve(__dirname, "src/components/assets/scss/variables.scss")}";
-          @import "${path.resolve(__dirname, "src/components/assets/scss/mixins.scss")}";
+          @use "${path.resolve(__dirname, "src/components/assets/scss/variables.scss")}";
+          @use "${path.resolve(__dirname, "src/components/assets/scss/mixins.scss")}";
         `,
       },
     },

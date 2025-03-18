@@ -289,11 +289,11 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
     cursor: pointer;
 
     &:hover {
-      color: $color-shopware-brand-800;
+      color: variables.$color-shopware-brand-800;
     }
 
     &:active {
-      color: $color-shopware-brand-900;
+      color: variables.$color-shopware-brand-900;
     }
   }
 
@@ -321,13 +321,13 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
   &__option_drop_before {
     top: 0;
     box-shadow: inset 0px $dropzone-highlight-width $dropzone-highlight-width
-      $dropzone-highlight-negative-width $color-shopware-brand-900;
+      $dropzone-highlight-negative-width variables.$color-shopware-brand-900;
   }
 
   &__option_drop_after {
     bottom: 0;
     box-shadow: inset 0px $dropzone-highlight-negative-width $dropzone-highlight-width
-      $dropzone-highlight-negative-width $color-shopware-brand-900;
+      $dropzone-highlight-negative-width variables.$color-shopware-brand-900;
   }
 
   .mt-popover-item {
