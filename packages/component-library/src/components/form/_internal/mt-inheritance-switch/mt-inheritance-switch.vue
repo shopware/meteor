@@ -13,6 +13,7 @@
             'mt-inheritance-switch--is-not-inherited': !isInherited,
           },
         ]"
+        :disabled="disabled"
         @click="isInherited ? $emit('inheritance-remove') : $emit('inheritance-restore')"
       >
         <mt-icon
