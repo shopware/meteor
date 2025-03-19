@@ -26,9 +26,6 @@
 
         <mt-icon
           v-else
-          :class="{
-            'is--clickable': !disabled,
-          }"
           :multicolor="true"
           name="regular-link-horizontal-slash"
           size="14"
