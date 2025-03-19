@@ -29,6 +29,7 @@ describe("mt-checkbox", () => {
         label: "Inherited",
         inheritedValue: true,
         isInherited: true,
+        // @ts-expect-error
         onInheritanceRemove: handler,
       },
     });
@@ -48,6 +49,7 @@ describe("mt-checkbox", () => {
         label: "Inherited",
         inheritedValue: false,
         isInherited: false,
+        // @ts-expect-error
         onInheritanceRestore: handler,
       },
     });
