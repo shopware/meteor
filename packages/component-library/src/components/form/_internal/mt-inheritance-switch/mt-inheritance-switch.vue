@@ -13,7 +13,7 @@
             'mt-inheritance-switch--is-not-inherited': !isInherited,
           },
         ]"
-        @click="isInherited ? onClickRemoveInheritance() : onClickRestoreInheritance()"
+        @click="isInherited ? $emit('inheritance-remove') : $emit('inheritance-restore')"
       >
         <mt-icon
           v-if="isInherited"
@@ -69,7 +69,7 @@ export default defineComponent({
     },
   },
 
-  setup(props, { emit }) {
+  setup() {
     const { t } = useI18n({
       messages: {
         en: {
@@ -83,19 +83,7 @@ export default defineComponent({
       },
     });
 
-    function onClickRestoreInheritance() {
-      if (props.disabled) return;
-
-      emit("inheritance-restore");
-    }
-
-    function onClickRemoveInheritance() {
-      if (props.disabled) return;
-
-      emit("inheritance-remove");
-    }
-
-    return { t, onClickRemoveInheritance, onClickRestoreInheritance };
+    return { t };
   },
 });
 </script>
