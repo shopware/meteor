@@ -35,19 +35,10 @@ import MtIcon from "../../../icons-media/mt-icon/mt-icon.vue";
 import MtTooltip from "@/components/overlay/mt-tooltip/mt-tooltip.vue";
 import { useI18n } from "vue-i18n";
 
-defineProps({
-  isInherited: {
-    type: Boolean,
-    required: true,
-    default: false,
-  },
-
-  disabled: {
-    type: Boolean,
-    required: false,
-    default: false,
-  },
-});
+defineProps<{
+  isInherited: boolean;
+  disabled?: boolean;
+}>();
 
 const { t } = useI18n({
   messages: {
