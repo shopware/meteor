@@ -15,7 +15,7 @@ You need a working **Vue 3 application** with the **i18n plugin** for the transl
 
 Add this package to your project:
 
-```
+```cli
 npm i @shopware-ag/meteor-component-library
 ```
 
@@ -46,37 +46,37 @@ These guides are useful if you want to contribute this component library.
 
 ### Project setup
 
-```
+```shell
 pnpm install
 ```
 
 #### Compiles and hot-reloads for development
 
-```
+```shell
 pnpm run storybook
 ```
 
 #### Compiles and minifies for production
 
-```
+```shell
 pnpm run build:storybook
 ```
 
 #### Run your interaction tests (running Storybook instance is needed)
 
-```
+```shell
 pnpm run test:storybook
 ```
 
 #### Lints and fixes files
 
-```
+```shell
 pnpm run lint:all
 ```
 
 #### Build the bundled component library
 
-```
+```shell
 pnpm run build
 ```
 
