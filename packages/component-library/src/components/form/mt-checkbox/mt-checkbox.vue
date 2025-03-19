@@ -106,6 +106,15 @@ export default defineComponent({
     },
 
     /**
+     * Determines if the field is inherited.
+     */
+    isInherited: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    /**
      * Error object for this field.
      */
     error: {
