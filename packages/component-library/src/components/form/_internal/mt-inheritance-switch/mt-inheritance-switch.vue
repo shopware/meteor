@@ -14,7 +14,7 @@
           },
         ]"
         :disabled="disabled"
-        @click="isInherited ? $emit('inheritance-remove') : $emit('inheritance-restore')"
+        @click="isInherited ? $emit('inheritanceRemove') : $emit('inheritanceRestore')"
       >
         <mt-icon
           v-if="isInherited"
