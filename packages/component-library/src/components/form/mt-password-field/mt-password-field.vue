@@ -13,6 +13,7 @@
         v-model="model"
         class="mt-password-field__input"
         @change="$emit('change', model)"
+        @keyup.enter="$emit('submit')"
         :type="showPassword ? 'text' : 'password'"
         :id="id"
         :placeholder="placeholder"
@@ -23,7 +24,7 @@
       <button
         v-if="toggable"
         type="button"
-        @click="showPassword = !showPassword"
+        @click.prevent="showPassword = !showPassword"
         class="mt-password-field__visibility-toggle"
         :aria-label="showPassword ? t('hidePassword') : t('showPassword')"
         :disabled="disabled"
@@ -41,7 +42,7 @@
 
     <mt-field-error v-if="!!error" :error="error" />
 
-    <div class="mt-password-field__hint">
+    <div v-if="$slots.hint" class="mt-password-field__hint">
       <slot name="hint" />
     </div>
   </div>
@@ -76,12 +77,13 @@ withDefaults(
 
 defineEmits<{
   (e: "change", value: string | undefined): void;
+  (e: "submit"): void;
 }>();
 
 defineSlots<{
-  prefix?: void;
-  suffix?: void;
-  hint?: void;
+  prefix?: unknown;
+  suffix?: unknown;
+  hint?: unknown;
 }>();
 
 const id = useId();
