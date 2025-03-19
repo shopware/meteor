@@ -52,6 +52,11 @@ const { t } = useI18n({
     },
   },
 });
+
+defineEmits<{
+  inheritanceRemove: [];
+  inheritanceRestore: [];
+}>();
 </script>
 
 <style scoped>
