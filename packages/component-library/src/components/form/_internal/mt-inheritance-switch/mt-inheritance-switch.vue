@@ -41,49 +41,35 @@
   </mt-tooltip>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
 import MtIcon from "../../../icons-media/mt-icon/mt-icon.vue";
 import MtTooltip from "@/components/overlay/mt-tooltip/mt-tooltip.vue";
 import { useI18n } from "vue-i18n";
 
-export default defineComponent({
-  name: "MtInheritanceSwitch",
-
-  components: {
-    "mt-icon": MtIcon,
-    MtTooltip,
+defineProps({
+  isInherited: {
+    type: Boolean,
+    required: true,
+    default: false,
   },
 
-  props: {
-    isInherited: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
-
-    disabled: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
+  disabled: {
+    type: Boolean,
+    required: false,
+    default: false,
   },
+});
 
-  setup() {
-    const { t } = useI18n({
-      messages: {
-        en: {
-          tooltipRemoveInheritance: "Remove inheritance",
-          tooltipRestoreInheritance: "Restore inheritance",
-        },
-        de: {
-          tooltipRemoveInheritance: "Vererbung entfernen",
-          tooltipRestoreInheritance: "Vererbung wiederherstellen",
-        },
-      },
-    });
-
-    return { t };
+const { t } = useI18n({
+  messages: {
+    en: {
+      tooltipRemoveInheritance: "Remove inheritance",
+      tooltipRestoreInheritance: "Restore inheritance",
+    },
+    de: {
+      tooltipRemoveInheritance: "Vererbung entfernen",
+      tooltipRestoreInheritance: "Vererbung wiederherstellen",
+    },
   },
 });
 </script>
