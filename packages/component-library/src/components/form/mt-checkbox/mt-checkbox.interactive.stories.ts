@@ -1,6 +1,5 @@
 import { within, userEvent } from "@storybook/test";
 import { expect } from "@storybook/test";
-import { waitUntil } from "../../../_internal/test-helper";
 
 import meta, { type MtCheckboxMeta, type MtCheckboxStory } from "./mt-checkbox.stories";
 
