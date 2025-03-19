@@ -17,7 +17,6 @@
       >
         <mt-icon
           v-if="isInherited"
-          key="inherit-icon"
           data-testid="mt-inheritance-switch-icon"
           :multicolor="true"
           name="regular-link-horizontal"
@@ -27,7 +26,6 @@
 
         <mt-icon
           v-else
-          key="uninherit-icon"
           :class="{
             'is--clickable': !disabled,
           }"
