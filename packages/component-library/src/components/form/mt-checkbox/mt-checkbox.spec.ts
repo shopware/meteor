@@ -20,4 +20,42 @@ describe("mt-checkbox", () => {
     expect(screen.getByRole("button")).toHaveFocus();
     expect(screen.getByRole("tooltip")).toBeVisible();
   });
+
+  it("emits an inheritance-remove event when unlinking the inheritance", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+    render(MtCheckbox, {
+      props: {
+        label: "Inherited",
+        inheritedValue: true,
+        isInherited: true,
+        onInheritanceRemove: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("button"));
+
+    // ASSERT
+    expect(handler).toHaveBeenCalledOnce();
+  });
+
+  it("emits an inheritance-restore event when restoring the inheritance", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+    render(MtCheckbox, {
+      props: {
+        label: "Inherited",
+        inheritedValue: false,
+        isInherited: false,
+        onInheritanceRestore: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("button"));
+
+    // ASSERT
+    expect(handler).toHaveBeenCalledOnce();
+  });
 });
