@@ -48,4 +48,38 @@ describe("mt-inheritance-switch", () => {
     // ASSERT
     expect(screen.getByRole("tooltip")).toHaveTextContent("Restore inheritance");
   });
+
+  it("emits a inheritance-remove event when unlinking the inheritance", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+    render(MtInheritanceSwitch, {
+      props: {
+        isInherited: true,
+        onInheritanceRemove: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("button"));
+
+    // ASSERT
+    expect(handler).toHaveBeenCalledOnce();
+  });
+
+  it("emits a inheritance-restore event when restoring the inheritance", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+    render(MtInheritanceSwitch, {
+      props: {
+        isInherited: false,
+        onInheritanceRestore: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("button"));
+
+    // ASSERT
+    expect(handler).toHaveBeenCalledOnce();
+  });
 });

@@ -13,6 +13,7 @@
             'mt-inheritance-switch--is-not-inherited': !isInherited,
           },
         ]"
+        @click="isInherited ? onClickRemoveInheritance() : onClickRestoreInheritance()"
       >
         <mt-icon
           v-if="isInherited"
