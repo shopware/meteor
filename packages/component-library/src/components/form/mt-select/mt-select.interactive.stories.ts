@@ -659,3 +659,25 @@ export const VisualTestEnsureSelectionOpensViaIndicators: MtSelectStory = {
     expect(document.querySelector(".mt-popover-deprecated__wrapper")).toBeNull();
   },
 };
+
+export const VisualTestMultipleSelectsOnOnePage: MtSelectStory = {
+  name: "Should close other selects when opening a new one",
+  args: {
+    _secondSelect: true,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Open the second select below the first one
+    const secondSelect = canvas.getAllByRole("textbox").at(1);
+    expect(secondSelect).toBeDefined();
+    // @ts-ignore - secondSelect is a HTMLElement
+    await userEvent.click(secondSelect);
+
+    // Open the primary select above the second one
+    const primary = canvas.getAllByRole("textbox").at(0);
+    expect(primary).toBeDefined();
+    // @ts-ignore - primary is a HTMLElement
+    await userEvent.click(primary);
+  },
+};

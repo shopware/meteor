@@ -22,7 +22,7 @@
         ref="selectWrapper"
         class="mt-select__selection"
         tabindex="0"
-        @click.stop="expand"
+        @click="expand"
         @focus="expand"
         @keydown.tab="collapse"
         @keydown.esc="collapse"
