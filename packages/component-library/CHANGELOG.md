@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.7.0
+
+### Minor Changes
+
+- 8d89449: Fix password flickering and add submit event for `mt-password-field.vue` component.
+
 ## 4.6.0
 
 ### Minor Changes
