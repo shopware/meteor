@@ -21,16 +21,9 @@
           :multicolor="true"
           name="regular-link-horizontal"
           size="14"
-          @click="onClickRemoveInheritance"
         />
 
-        <mt-icon
-          v-else
-          :multicolor="true"
-          name="regular-link-horizontal-slash"
-          size="14"
-          @click="onClickRestoreInheritance"
-        />
+        <mt-icon v-else :multicolor="true" name="regular-link-horizontal-slash" size="14" />
       </button>
     </template>
   </mt-tooltip>
