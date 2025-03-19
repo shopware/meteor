@@ -29,7 +29,9 @@
           @inheritance-remove="$emit('inheritance-remove', $event)"
         >
           <template #label>
-            {{ label }}
+            <slot name="label">
+              {{ label }}
+            </slot>
           </template>
         </mt-base-field>
       </div>
