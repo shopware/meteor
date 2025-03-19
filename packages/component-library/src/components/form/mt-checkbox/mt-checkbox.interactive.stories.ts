@@ -99,8 +99,6 @@ export const VisualTestInherited: MtCheckboxStory = {
 
     await userEvent.click(canvas.getByTestId("mt-inheritance-switch-icon"));
 
-    waitUntil(() => document.querySelector(".tooltip"));
-
     await expect(args.inheritanceRemove).toHaveBeenCalledWith(undefined);
   },
 };
