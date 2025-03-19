@@ -249,11 +249,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-$mt-field-transition: border-color 0.3s ease-out;
-$mt-field-transition:
-  border-color 0.3s ease-out,
-  background 0.3s ease;
-
 .mt-field {
   width: 100%;
   margin-bottom: var(--scale-size-32);
@@ -297,7 +292,7 @@ $mt-field-transition:
   }
 
   input:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0 1000px $color-white inset;
+    -webkit-box-shadow: 0 0 0 1000px #fff inset;
   }
 
   .mt-block-field__block {
@@ -317,7 +312,9 @@ $mt-field-transition:
     font-size: var(--font-size-xs);
     font-family: var(--font-size-body);
     line-height: 1;
-    transition: $mt-field-transition;
+    transition:
+      border-color 0.3s ease-out,
+      background 0.3s ease;
     color: var(--color-text-primary-default);
     outline: none;
     -webkit-appearance: none;
@@ -331,7 +328,7 @@ $mt-field-transition:
 
     &:disabled {
       background: var(--color-background-primary-disabled);
-      border-color: $color-gray-300;
+      border-color: #d1d9e0;
       cursor: default !important;
     }
 
@@ -378,7 +375,7 @@ $mt-field-transition:
 
   &.has--error.has--focus {
     .mt-block-field__block {
-      box-shadow: 0 0 4px lighten($color-crimson-500, 30%);
+      box-shadow: 0 0 4px lighten(#de294c, 30%);
     }
   }
 
@@ -410,7 +407,9 @@ $mt-field-transition:
     line-height: var(--font-line-height-xs);
     font-family: var(--font-family-body);
     color: var(--color-text-primary-default);
-    transition: $mt-field-transition;
+    transition:
+      border-color 0.3s ease-out,
+      background 0.3s ease;
 
     &:empty {
       display: none;
@@ -439,7 +438,7 @@ $mt-field-transition:
   }
 
   .mt-field__button-restore {
-    color: $color-darkgray-200;
+    color: #52667a;
     padding: 0 var(--scale-size-8);
     border: none;
     background: none;
