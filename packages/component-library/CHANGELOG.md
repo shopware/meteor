@@ -1,5 +1,17 @@
 # Changelog
 
+## 4.8.0
+
+### Minor Changes
+
+- c6017dd: Added label slot to mt-checkbox
+
+## 4.7.1
+
+### Patch Changes
+
+- 55b219b: - Remove stop propagation for `mt-select-base` click handler
+
 ## 4.7.0
 
 ### Minor Changes
