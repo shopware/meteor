@@ -297,7 +297,7 @@ $mt-field-transition:
   }
 
   input:-webkit-autofill {
-    -webkit-box-shadow: 0 0 0 1000px $color-white inset;
+    -webkit-box-shadow: 0 0 0 1000px variables.$color-white inset;
   }
 
   .mt-block-field__block {
@@ -330,7 +330,7 @@ $mt-field-transition:
 
     &:disabled {
       background: var(--color-background-primary-disabled);
-      border-color: $color-gray-300;
+      border-color: variables.$color-gray-300;
       cursor: default !important;
     }
 
@@ -377,7 +377,7 @@ $mt-field-transition:
 
   &.has--error.has--focus {
     .mt-block-field__block {
-      box-shadow: 0 0 4px lighten($color-crimson-500, 30%);
+      box-shadow: 0 0 4px lighten(variables.$color-crimson-500, 30%);
     }
   }
 
@@ -438,7 +438,7 @@ $mt-field-transition:
   }
 
   .mt-field__button-restore {
-    color: $color-darkgray-200;
+    color: variables.$color-darkgray-200;
     padding: 0 var(--scale-size-8);
     border: none;
     background: none;

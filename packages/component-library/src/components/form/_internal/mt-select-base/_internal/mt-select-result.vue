@@ -166,13 +166,13 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-$mt-select-result-active-color-background: lighten($color-shopware-brand-500, 40%);
-$mt-select-result-active-color-text: $color-shopware-brand-500;
-$mt-select-result-color-border: $color-gray-300;
-$mt-select-result-color-icon: darken($color-gray-100, 20%);
+$mt-select-result-active-color-background: lighten(variables.$color-shopware-brand-500, 40%);
+$mt-select-result-active-color-text: variables.$color-shopware-brand-500;
+$mt-select-result-color-border: variables.$color-gray-300;
+$mt-select-result-color-icon: darken(variables.$color-gray-100, 20%);
 $mt-select-result-transition-item-icon: all ease-in-out 0.15s;
-$mt-select-result-disabled-color-background: $color-gray-100;
-$mt-select-result-disabled-color-text: darken($color-gray-300, 15%);
+$mt-select-result-disabled-color-background: variables.$color-gray-100;
+$mt-select-result-disabled-color-text: darken(variables.$color-gray-300, 15%);
 
 .mt-select-result {
   padding: var(--scale-size-12) var(--scale-size-4);
@@ -208,7 +208,7 @@ $mt-select-result-disabled-color-text: darken($color-gray-300, 15%);
 
   .mt-select-result__result-item-description {
     width: 100%;
-    color: $color-gray-600;
+    color: variables.$color-gray-600;
     order: 3;
     line-height: 14px;
     padding: 0 0 0 var(--scale-size-8);

@@ -119,7 +119,7 @@ const labelClasses = computed(() => {
   cursor: default;
 
   .mt-label__caption {
-    @include truncate();
+    @include mixins.truncate();
 
     display: inline-block;
     width: 100%;
@@ -157,8 +157,8 @@ const labelClasses = computed(() => {
     height: 100%;
     right: var(--scale-size-10);
     top: 0;
-    color: $color-darkgray-200;
-    background-color: $color-gray-50;
+    color: variables.$color-darkgray-200;
+    background-color: variables.$color-gray-50;
     border: 0 none;
     cursor: pointer;
     outline: none;
@@ -171,7 +171,7 @@ const labelClasses = computed(() => {
 
   &.mt-label--ghost {
     background: transparent;
-    border-color: $color-gray-300;
+    border-color: variables.$color-gray-300;
   }
 
   &.mt-label--appearance-badged {
@@ -230,55 +230,55 @@ const labelClasses = computed(() => {
 
   &.mt-label--info:not(&--appearance-badged) {
     @include mt-label-variant(
-      $color-shopware-brand-50,
-      $color-shopware-brand-500,
-      $color-shopware-brand-500,
-      $color-shopware-brand-100
+      variables.$color-shopware-brand-50,
+      variables.$color-shopware-brand-500,
+      variables.$color-shopware-brand-500,
+      variables.$color-shopware-brand-100
     );
   }
 
   &.mt-label--success:not(&--appearance-badged) {
     @include mt-label-variant(
-      $color-emerald-50,
-      $color-emerald-500,
-      $color-emerald-500,
-      $color-emerald-100
+      variables.$color-emerald-50,
+      variables.$color-emerald-500,
+      variables.$color-emerald-500,
+      variables.$color-emerald-100
     );
   }
 
   &.mt-label--danger:not(&--appearance-badged) {
     @include mt-label-variant(
-      $color-crimson-50,
-      $color-crimson-500,
-      $color-crimson-500,
-      $color-crimson-100
+      variables.$color-crimson-50,
+      variables.$color-crimson-500,
+      variables.$color-crimson-500,
+      variables.$color-crimson-100
     );
   }
 
   &.mt-label--warning:not(&--appearance-badged) {
     @include mt-label-variant(
-      $color-pumpkin-spice-50,
-      $color-pumpkin-spice-500,
-      $color-pumpkin-spice-500,
-      $color-pumpkin-spice-100
+      variables.$color-pumpkin-spice-50,
+      variables.$color-pumpkin-spice-500,
+      variables.$color-pumpkin-spice-500,
+      variables.$color-pumpkin-spice-100
     );
   }
 
   &.mt-label--neutral:not(&--appearance-badged) {
     @include mt-label-variant(
-      $color-gray-50,
-      $color-darkgray-200,
-      $color-gray-300,
-      $color-gray-100
+      variables.$color-gray-50,
+      variables.$color-darkgray-200,
+      variables.$color-gray-300,
+      variables.$color-gray-100
     );
   }
 
   &.mt-label--primary:not(&--appearance-badged) {
     @include mt-label-variant(
-      $color-shopware-brand-500,
-      $color-shopware-brand-50,
-      $color-shopware-brand-500,
-      $color-shopware-brand-100
+      variables.$color-shopware-brand-500,
+      variables.$color-shopware-brand-50,
+      variables.$color-shopware-brand-500,
+      variables.$color-shopware-brand-100
     );
   }
 }

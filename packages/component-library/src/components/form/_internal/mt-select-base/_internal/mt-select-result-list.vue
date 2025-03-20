@@ -90,9 +90,9 @@ export default defineComponent({
     const itemSelectByKeyboardListeners = ref<Array<(index: number) => void>>([]);
 
     const emitActiveItemIndex = () => {
-      activeItemChangeListeners.value.forEach((listener) => {
+      for (const listener of activeItemChangeListeners.value) {
         listener(activeItemIndex.value);
-      });
+      }
     };
 
     const setActiveItemIndex = (index: number) => {
@@ -318,9 +318,9 @@ export default defineComponent({
       // choose on their own if they are selected
       this.$emit("item-select-by-keyboard", this.activeItemIndex);
 
-      this.itemSelectByKeyboardListeners.forEach((listener) => {
+      for (const listener of this.itemSelectByKeyboardListeners) {
         listener(this.activeItemIndex);
-      });
+      }
     },
 
     onScroll(event: UIEvent) {
@@ -340,8 +340,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-@import "../../../../assets/scss/variables";
-
 $mt-select-result-list-transition: all ease-in-out 0.2s;
 
 .mt-select-result-list,
@@ -364,7 +362,7 @@ $mt-select-result-list-transition: all ease-in-out 0.2s;
   overflow-x: hidden;
   overflow-y: auto;
   border: 1px solid var(--color-border-primary-default);
-  box-shadow: 0 3px 6px 0 $color-gray-300;
+  box-shadow: 0 3px 6px 0 variables.$color-gray-300;
   background-color: var(--color-elevation-surface-overlay);
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
