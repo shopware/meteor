@@ -35,7 +35,8 @@
     "start": "node dist",
     "start:dev": "ts-node src",
     "format": "prettier --write .",
-    "format:check": "prettier --check ."
+    "format:check": "prettier --check .",
+    "test:unit": "vitest"
   },
   "prettier": "@shopware-ag/meteor-prettier-config",
   "dependencies": {
