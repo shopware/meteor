@@ -66,6 +66,7 @@
     "svgo": "^2.8.0",
     "svgo-autocrop": "1.1.1",
     "ts-node": "^10.8.1",
+    "tsx": "^4.19.3",
     "typescript": "^5.7.0",
     "typescript-eslint": "^8.24.1",
     "vite": "^6.2.2",
