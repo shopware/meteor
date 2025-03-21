@@ -40,6 +40,7 @@
     "js-md5": "^0.7.3"
   },
   "devDependencies": {
+    "@shopware-ag/meteor-prettier-config": "workspace:*",
     "@eslint/js": "^9.20.0",
     "@supercharge/promise-pool": "^2.4.0",
     "@types/axios": "^0.14.0",
