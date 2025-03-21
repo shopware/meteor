@@ -63,7 +63,6 @@ client
 
     spinner.text = `Optimized ${0} out of ${iconMap.size} icons`;
 
-    //Const promises: Promise<void>[] = [];
     const styling = [] as { name: string; width: string; height: string }[];
 
     await PromisePool.for(Array.from(iconMap.keys()))
