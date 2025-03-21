@@ -571,6 +571,9 @@ importers:
       js-md5:
         specifier: ^0.7.3
         version: 0.7.3
+      ora:
+        specifier: ^8.2.0
+        version: 8.2.0
       winston:
         specifier: ^3.17.0
         version: 3.17.0
