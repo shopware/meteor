@@ -33,7 +33,9 @@
     "lint:types": "tsc --noEmit",
     "prepublish": "npm run build",
     "start": "node dist",
-    "start:dev": "ts-node src"
+    "start:dev": "ts-node src",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "dotenv": "^16.4.1",
