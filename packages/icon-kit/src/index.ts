@@ -139,7 +139,6 @@ client
     );
 
     console.log(chalk.green("All done!"));
-    //});
   })
   .catch((e) => {
     console.error(e);
