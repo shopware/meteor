@@ -1,7 +1,6 @@
 import type { Icon } from "./figma/index.js";
 import FigmaApiClient from "./figma/index.js";
 import FigmaUtil from "./figma/util/index.js";
-import * as cliProgress from "cli-progress";
 import type { OptimizedSvg } from "svgo";
 import { optimize } from "svgo";
 import md5 from "js-md5";
@@ -47,23 +46,22 @@ spinner.text = "Fetching icon data";
 client
   .getFile()
   .then(async (response) => {
+    spinner.succeed("Fetched icon data");
+
     // @ts-expect-error -- TODO: add types for figma response
     const iconOverview = response.data.document.children.find(
       (node) => node.id === "217:6"
     );
 
-    spinner.text = "Gathering icons";
+    spinner.start("Gathering icons");
     // @ts-expect-error -- TODO: add types for iconMap
     const iconMap = await util.buildIconMap(iconOverview);
     const meta = util.buildMeta(iconMap);
 
-    spinner.text = "Optimizing icons";
-    const bar = new cliProgress.SingleBar(
-      {},
-      cliProgress.Presets.shades_classic
-    );
+    spinner.succeed("Gathered icons");
+    spinner.start("Optimizing icons");
 
-    bar.start(iconMap.size, 0);
+    spinner.text = `Optimized ${0} out of ${iconMap.size} icons`;
 
     //Const promises: Promise<void>[] = [];
     const styling = [] as { name: string; width: string; height: string }[];
@@ -71,7 +69,7 @@ client
     await PromisePool.for(Array.from(iconMap.keys()))
       .withConcurrency(25)
       .onTaskFinished((iconName, pool) => {
-        bar.update(pool.processedItems().length);
+        spinner.text = `Optimized ${pool.processedCount()} out of ${iconMap.size} icons`;
       })
       .handleError((error) => {
         console.log(error);
@@ -147,7 +145,6 @@ client
         });
       });
 
-    bar.stop();
     spinner.text = "Finished writing icons to filesystem";
 
     spinner.text = "Creating stylesheet";
@@ -185,7 +182,7 @@ client
 
     logger.info("Finished syncing icons");
 
-    spinner.succeed("Finished syncing icons!");
+    spinner.succeed(`Finished syncing ${iconMap.size} icons!`);
   })
   .catch((e) => {
     throw e;
