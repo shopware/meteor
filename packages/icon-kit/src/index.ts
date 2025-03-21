@@ -28,6 +28,17 @@ const iconDirectory = path.resolve(import.meta.dirname, "../icons");
 fs.rmSync(iconDirectory, { recursive: true, force: true });
 logger.info(`Removing directory: ${iconDirectory}`);
 
+fs.mkdirSync(iconDirectory);
+logger.info(`Creating directory: ${iconDirectory}`);
+
+const regularIconDirectory = path.join(iconDirectory, "regular");
+fs.mkdirSync(regularIconDirectory);
+logger.info(`Creating directory: ${regularIconDirectory}`);
+
+const solidIconDirectory = path.join(iconDirectory, "solid");
+fs.mkdirSync(solidIconDirectory);
+logger.info(`Creating directory: ${solidIconDirectory}`);
+
 console.log(chalk.green("Fetching Figma file stand by..."));
 
 client
@@ -58,6 +69,9 @@ client
       .withConcurrency(25)
       .onTaskFinished((iconName, pool) => {
         bar.update(pool.processedItems().length);
+      })
+      .handleError((error) => {
+        console.log(error);
       })
       .process(async (iconName: string) => {
         // @ts-expect-error -- TODO: add types for iconMap
@@ -118,7 +132,10 @@ client
           });
         }
 
-        const pathToIcon = path.resolve(iconDirectory, `${iconName}.svg`);
+        const pathToIcon = path.resolve(
+          iconDirectory,
+          `${iconName.replace("icons/", "")}.svg`
+        );
 
         fs.writeFileSync(pathToIcon, optimizedSvg);
         logger.info(`Created icon: "${iconName}"`, {
@@ -144,9 +161,6 @@ client
     });
 
     scssFileContent += "}\n";
-
-    fs.mkdirSync(iconDirectory);
-    logger.info(`Creating directory: ${iconDirectory}`);
 
     const pathToStyleFile = path.resolve(
       iconDirectory,
