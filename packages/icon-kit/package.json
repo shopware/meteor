@@ -40,11 +40,12 @@
   "prettier": "@shopware-ag/meteor-prettier-config",
   "dependencies": {
     "dotenv": "^16.4.1",
-    "js-md5": "^0.7.3"
+    "js-md5": "^0.7.3",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
-    "@shopware-ag/meteor-prettier-config": "workspace:*",
     "@eslint/js": "^9.20.0",
+    "@shopware-ag/meteor-prettier-config": "workspace:*",
     "@supercharge/promise-pool": "^2.4.0",
     "@types/axios": "^0.14.0",
     "@types/cli-progress": "^3.9.2",
