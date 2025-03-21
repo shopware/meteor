@@ -23,8 +23,6 @@
     "icons"
   ],
   "scripts": {
-    "build": "tsc",
-    "debug": "ts-node src/debug.ts",
     "docs:copy": "../developer-portal/docs-cli link --src docs --dst resources/meteor-icon-kit",
     "docs:link": "../developer-portal/docs-cli link --src docs --dst resources/meteor-icon-kit --symlink",
     "docs:preview": "../developer-portal/docs-cli preview",
@@ -32,8 +30,7 @@
     "lint:eslint": "eslint ./src",
     "lint:types": "tsc --noEmit",
     "prepublish": "npm run build",
-    "start": "node dist",
-    "start:dev": "ts-node src",
+    "start": "tsx ./src/index.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test:unit": "vitest"
