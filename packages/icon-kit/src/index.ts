@@ -11,6 +11,7 @@ import { PromisePool } from "@supercharge/promise-pool";
 // @ts-expect-error - this dependency has no type definitions
 import * as svgoAutocrop from "svgo-autocrop";
 import dotenv from "dotenv";
+import path from "node:path";
 
 dotenv.config();
 
@@ -18,7 +19,8 @@ const client = new FigmaApiClient();
 const util = new FigmaUtil();
 
 console.log(chalk.green("Clean up..."));
-fs.rmSync(`${import.meta.dirname}/../icons`, { recursive: true, force: true });
+const iconDirectory = path.resolve(import.meta.dirname, "../icons");
+fs.rmSync(iconDirectory, { recursive: true, force: true });
 
 console.log(chalk.green("Fetching Figma file stand by..."));
 
