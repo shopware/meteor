@@ -35,3 +35,16 @@ test("reads a file", () => {
   // ASSERT
   expect(result).toBe("Hello, world");
 });
+
+test("returns undefined when reading a non-existing file", () => {
+  // ARRANGE
+  const subject = new NodeFilesystem();
+  // @ts-expect-error -- fix later
+  vi.spyOn(fs, "readFileSync").mockReturnValue(undefined);
+
+  // ACT
+  const result = subject.readFile("./foo.txt");
+
+  // ASSERT
+  expect(result).toBe(undefined);
+});
