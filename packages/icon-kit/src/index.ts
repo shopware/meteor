@@ -21,6 +21,8 @@ dotenv.config();
 const client = new FigmaApiClient();
 const util = new FigmaUtil();
 
+logger.info("Starting to sync icons");
+
 console.log(chalk.green("Clean up..."));
 const iconDirectory = path.resolve(import.meta.dirname, "../icons");
 fs.rmSync(iconDirectory, { recursive: true, force: true });
@@ -63,8 +65,13 @@ client
 
         const result = await client.downloadImage(icon.image);
         const svg = result.data as string;
+        logger.info("Received icon data", {
+          icon: icon.image,
+          svg,
+        });
 
         // Remove width/height from SVGs
+        logger.info(`Optimizing icon: ${icon.image}`);
         const optimizedSvgResult = optimize(svg, {
           plugins: [
             { name: "removeDimensions" },
@@ -78,6 +85,10 @@ client
         }) as OptimizedSvg;
 
         let optimizedSvg = optimizedSvgResult.data;
+        logger.info("Received optimized icon", {
+          icon: icon.image,
+          svg: optimizedSvg,
+        });
 
         const viewBox = optimizedSvg.match(/viewBox="(\d*) (\d*) (\d*) (\d*)"/);
         if (viewBox) {
@@ -98,14 +109,23 @@ client
             // @ts-expect-error - we know that viewBox is defined
             height,
           });
+
+          logger.info(`Added className "${className}" to style map`);
+          throw new Error("sf");
         } else {
           console.log(chalk.red(`Could not find viewBox for ${iconName}`));
+          logger.info(`Failed to further optimize icon: "${iconName}"`, {
+            icon: icon.image,
+          });
         }
 
-        fs.writeFileSync(
-          `${import.meta.dirname}/../${iconName}.svg`,
-          optimizedSvg
-        );
+        const pathToIcon = path.resolve(iconDirectory, `${iconName}.svg`);
+
+        fs.writeFileSync(pathToIcon, optimizedSvg);
+        logger.info(`Created icon: "${iconName}"`, {
+          path: pathToIcon,
+          svg: optimizedSvg,
+        });
       });
 
     bar.stop();
@@ -126,12 +146,16 @@ client
 
     scssFileContent += "}\n";
 
-    fs.mkdirSync(`${import.meta.dirname}/../icons`);
+    fs.mkdirSync(iconDirectory);
+    logger.info(`Creating directory: ${iconDirectory}`);
 
-    fs.writeFileSync(
-      `${import.meta.dirname}/../icons/meteor-icon-kit-${md5(styling)}.css`,
-      cssFileContent
+    const pathToStyleFile = path.resolve(
+      iconDirectory,
+      `meteor-icon-kit-${md5(styling)}.css`
     );
+
+    fs.writeFileSync(pathToStyleFile, cssFileContent);
+    logger.info(`Created file: ${pathToStyleFile}`);
 
     fs.writeFileSync(
       `${import.meta.dirname}/../icons/meteor-icon-kit.scss`,
@@ -139,13 +163,13 @@ client
     );
 
     console.log(chalk.green("Writing metadata"));
-    fs.writeFileSync(
-      `${import.meta.dirname}/../icons/meta.json`,
-      JSON.stringify(meta)
-    );
+    const pathToMetaFile = path.resolve(iconDirectory, "meta.json");
+    fs.writeFileSync(pathToMetaFile, JSON.stringify(meta));
+    logger.info(`Created file: ${pathToMetaFile}`);
 
     console.log(chalk.green("All done!"));
+    logger.info("Finished syncing icons");
   })
   .catch((e) => {
-    console.error(e);
+    throw e;
   });
