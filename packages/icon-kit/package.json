@@ -37,6 +37,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check ."
   },
+  "prettier": "@shopware-ag/meteor-prettier-config",
   "dependencies": {
     "dotenv": "^16.4.1",
     "js-md5": "^0.7.3"
