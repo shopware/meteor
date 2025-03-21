@@ -8,6 +8,6 @@ export class InMemoryFilesystem implements Filesystem {
   }
 
   readFile(path: string) {
-    return this.files[path] as string;
+    return this.files[path];
   }
 }
