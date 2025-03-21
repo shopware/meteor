@@ -1,5 +1,6 @@
 import type { AxiosPromise, AxiosRequestHeaders, AxiosResponse } from "axios";
 import Axios from "axios";
+import { env } from "../env.js";
 
 export type node = {
   id: string;
@@ -63,7 +64,7 @@ export default class FigmaApiClient {
 
   public getFile(key?: string): Promise<AxiosResponse<FigmaFileResponse>> {
     if (!key) {
-      key = process.env.FIGMA_FILE;
+      key = env.FIGMA_FILE;
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
@@ -75,7 +76,7 @@ export default class FigmaApiClient {
   public getImages(ids: string[]): Promise<AxiosResponse<FigmaImageResponse>> {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     return this.httpClient.get<FigmaImageResponse>(
-      `/images/${process.env.FIGMA_FILE}?format=svg&ids=${ids.join(",")}`,
+      `/images/${env.FIGMA_FILE}?format=svg&ids=${ids.join(",")}`,
       {
         headers: this.getHeaders(),
       }
@@ -95,7 +96,7 @@ export default class FigmaApiClient {
   public getNodeInfo(ids: string[]): Promise<AxiosPromise<FigmaNodeResponse>> {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
     return this.httpClient.get(
-      `/files/${process.env.FIGMA_FILE}?ids=${ids.join(",")}`,
+      `/files/${env.FIGMA_FILE}?ids=${ids.join(",")}`,
       {
         headers: this.getHeaders(),
       }
@@ -104,8 +105,7 @@ export default class FigmaApiClient {
 
   private getHeaders(): AxiosRequestHeaders {
     return {
-      // @ts-expect-error -- TODO: add types for axios
-      "X-Figma-Token": process.env.FIGMA_TOKEN,
+      "X-Figma-Token": env.FIGMA_TOKEN,
     };
   }
 }

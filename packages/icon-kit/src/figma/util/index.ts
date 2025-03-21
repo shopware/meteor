@@ -68,12 +68,11 @@ export default class FigmaUtil {
       });
 
       // Extract tags from the description
-      // @ts-expect-error -- we know that iconMap.get(key) is defined
-      const description: string = (
-        iconMap.get(key).description.split("🔎")[1] || ""
-      )
-        .split("\n")[0]
-        .trim();
+      const description: string =
+        // @ts-expect-error -- we know that iconMap.get(key) is defined
+        (iconMap.get(key).description.split("🔎")[1] || "")
+          .split("\n")[0]
+          .trim();
       let tags: string[] = [];
       if (description.startsWith("[") && description.endsWith("]")) {
         tags = description
