@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.8.1
+
+### Patch Changes
+
+- 32b1d35: Added `type=button` to all buttons to prevent default `type=submit` behaviour
+
 ## 4.8.0
 
 ### Minor Changes
