@@ -111,7 +111,6 @@ client
           });
 
           logger.info(`Added className "${className}" to style map`);
-          throw new Error("sf");
         } else {
           console.log(chalk.red(`Could not find viewBox for ${iconName}`));
           logger.info(`Failed to further optimize icon: "${iconName}"`, {
