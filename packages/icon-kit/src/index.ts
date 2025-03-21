@@ -1,7 +1,6 @@
 import type { Icon } from "./figma/index.js";
 import FigmaApiClient from "./figma/index.js";
 import FigmaUtil from "./figma/util/index.js";
-import * as fse from "fs-extra";
 import chalk from "chalk";
 import * as cliProgress from "cli-progress";
 import type { OptimizedSvg } from "svgo";
@@ -19,7 +18,6 @@ const client = new FigmaApiClient();
 const util = new FigmaUtil();
 
 console.log(chalk.green("Clean up..."));
-
 fs.rmSync(`${import.meta.dirname}/../icons`, { recursive: true, force: true });
 
 console.log(chalk.green("Fetching Figma file stand by..."));
@@ -98,7 +96,7 @@ client
           console.log(chalk.red(`Could not find viewBox for ${iconName}`));
         }
 
-        fse.outputFileSync(
+        fs.writeFileSync(
           `${import.meta.dirname}/../${iconName}.svg`,
           optimizedSvg
         );
@@ -122,18 +120,20 @@ client
 
     scssFileContent += "}\n";
 
-    fse.outputFileSync(
+    fs.mkdirSync(`${import.meta.dirname}/../icons`);
+
+    fs.writeFileSync(
       `${import.meta.dirname}/../icons/meteor-icon-kit-${md5(styling)}.css`,
       cssFileContent
     );
 
-    fse.outputFileSync(
+    fs.writeFileSync(
       `${import.meta.dirname}/../icons/meteor-icon-kit.scss`,
       scssFileContent
     );
 
     console.log(chalk.green("Writing metadata"));
-    fse.outputFileSync(
+    fs.writeFileSync(
       `${import.meta.dirname}/../icons/meta.json`,
       JSON.stringify(meta)
     );
