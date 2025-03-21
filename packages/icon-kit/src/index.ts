@@ -12,6 +12,9 @@ import { PromisePool } from "@supercharge/promise-pool";
 import * as svgoAutocrop from "svgo-autocrop";
 import dotenv from "dotenv";
 import path from "node:path";
+import { WinstonLogger } from "./logger/winston-logger.js";
+
+const logger = new WinstonLogger();
 
 dotenv.config();
 
@@ -21,6 +24,7 @@ const util = new FigmaUtil();
 console.log(chalk.green("Clean up..."));
 const iconDirectory = path.resolve(import.meta.dirname, "../icons");
 fs.rmSync(iconDirectory, { recursive: true, force: true });
+logger.info(`Removing directory: ${iconDirectory}`);
 
 console.log(chalk.green("Fetching Figma file stand by..."));
 
