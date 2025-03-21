@@ -405,6 +405,10 @@ $mt-select-focus-transition: all ease-in-out 0.2s;
       height: var(--scale-size-18);
       padding-top: 1px;
     }
+
+    .mt-block-field__block {
+      min-height: unset;
+    }
   }
 }
 

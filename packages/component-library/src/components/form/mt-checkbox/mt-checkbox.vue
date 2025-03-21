@@ -434,5 +434,9 @@ export default defineComponent({
       margin-bottom: var(--scale-size-8);
     }
   }
+
+  & .mt-block-field__block {
+    min-height: unset;
+  }
 }
 </style>

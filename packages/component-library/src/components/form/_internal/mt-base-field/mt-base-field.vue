@@ -302,6 +302,7 @@ $mt-field-transition:
 
   .mt-block-field__block {
     display: flex;
+    min-height: var(--scale-size-48);
   }
 
   input,
