@@ -2,7 +2,7 @@
   <div class="mt-textarea">
     <mt-field-label
       v-if="!!label"
-      :id="id"
+      :for="id"
       :required="required"
       :has-error="!!error && !!error.detail"
       :inheritance="!isInheritanceField ? 'none' : isInherited ? 'linked' : 'unlinked'"
