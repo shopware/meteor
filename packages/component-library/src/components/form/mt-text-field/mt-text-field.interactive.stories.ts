@@ -1,4 +1,4 @@
-import { within, userEvent, fireEvent } from "@storybook/test";
+import { within, userEvent } from "@storybook/test";
 import { expect } from "@storybook/test";
 
 import meta, { type MtTextFieldMeta, type MtTextFieldStory } from "./mt-text-field.stories";
@@ -19,6 +19,13 @@ export const TestInputValue: MtTextFieldStory = {
     expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("Shopware");
 
     expect(args.change).toHaveBeenCalledWith("Shopware");
+  },
+};
+
+export const VisualTestSmall: MtTextFieldStory = {
+  name: "Should display small",
+  args: {
+    size: "small",
   },
 };
 

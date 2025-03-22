@@ -301,7 +301,12 @@ $mt-field-transition:
   }
 
   .mt-block-field__block {
+    min-height: var(--scale-size-48);
     display: flex;
+  }
+
+  &.mt-field--small .mt-block-field__block {
+    min-height: var(--scale-size-32);
   }
 
   input,
@@ -453,8 +458,12 @@ $mt-field-transition:
     display: flex;
     line-height: 16px;
     font-size: 14px;
-    margin-bottom: var(--scale-size-8);
+    margin-bottom: var(--scale-size-2);
     color: var(--color-text-primary-default);
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-regular);
+    line-height: var(--font-line-height-xs);
 
     label {
       flex-grow: 1;

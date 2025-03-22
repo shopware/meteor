@@ -276,6 +276,7 @@ export default defineComponent({
       margin-bottom: 0;
 
       & .mt-block-field__block {
+        min-height: initial;
         border: none;
       }
     }

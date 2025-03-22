@@ -1780,6 +1780,7 @@ export default defineComponent({
 
     .mt-block-field__block {
       width: fit-content;
+      min-height: initial;
       border: none;
     }
 
