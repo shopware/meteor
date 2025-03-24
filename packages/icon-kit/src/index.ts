@@ -1,125 +1,188 @@
-import type {Icon} from './figma/index.js';
-import FigmaApiClient from './figma/index.js';
-import FigmaUtil from './figma/util/index.js';
-import * as fse from 'fs-extra';
-import chalk from 'chalk';
-import * as cliProgress from 'cli-progress';
-import type {OptimizedSvg} from 'svgo';
-import {optimize} from 'svgo';
-import md5 from 'js-md5';
-import fs from 'node:fs';
-import {PromisePool} from '@supercharge/promise-pool';
+import type { Icon } from "./figma/index.js";
+import FigmaApiClient from "./figma/index.js";
+import FigmaUtil from "./figma/util/index.js";
+import chalk from "chalk";
+import * as cliProgress from "cli-progress";
+import type { OptimizedSvg } from "svgo";
+import { optimize } from "svgo";
+import md5 from "js-md5";
+import fs from "node:fs";
+import { PromisePool } from "@supercharge/promise-pool";
 // @ts-expect-error - this dependency has no type definitions
-import * as svgoAutocrop from 'svgo-autocrop';
-import dotenv from 'dotenv';
+import * as svgoAutocrop from "svgo-autocrop";
+import dotenv from "dotenv";
+import path from "node:path";
+import { WinstonLogger } from "./logger/winston-logger.js";
+
+const logger = new WinstonLogger();
 
 dotenv.config();
 
 const client = new FigmaApiClient();
 const util = new FigmaUtil();
 
-console.log(chalk.green('Clean up...'));
+logger.info("Starting to sync icons");
 
-fs.rmSync(`${import.meta.dirname}/../icons`, {recursive: true, force: true});
+console.log(chalk.green("Clean up..."));
+const iconDirectory = path.resolve(import.meta.dirname, "../icons");
+fs.rmSync(iconDirectory, { recursive: true, force: true });
+logger.info(`Removing directory: ${iconDirectory}`);
 
-console.log(chalk.green('Fetching Figma file stand by...'));
+fs.mkdirSync(iconDirectory);
+logger.info(`Creating directory: ${iconDirectory}`);
 
-client.getFile().then(async (response) => {
-  // @ts-expect-error -- TODO: add types for figma response
-  const iconOverview = response.data.document.children.find(node => node.id === '217:6');
+const regularIconDirectory = path.join(iconDirectory, "regular");
+fs.mkdirSync(regularIconDirectory);
+logger.info(`Creating directory: ${regularIconDirectory}`);
 
-  console.log(chalk.green('Gathering icons...'));
-  // @ts-expect-error -- TODO: add types for iconMap
-  const iconMap = await util.buildIconMap(iconOverview);
-  const meta = util.buildMeta(iconMap);
+const solidIconDirectory = path.join(iconDirectory, "solid");
+fs.mkdirSync(solidIconDirectory);
+logger.info(`Creating directory: ${solidIconDirectory}`);
 
-  console.log(chalk.green('Downloading and optimizing icons...'));
-  const bar = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
+console.log(chalk.green("Fetching Figma file stand by..."));
 
-  bar.start(iconMap.size, 0);
+client
+  .getFile()
+  .then(async (response) => {
+    // @ts-expect-error -- TODO: add types for figma response
+    const iconOverview = response.data.document.children.find(
+      (node) => node.id === "217:6"
+    );
 
-  //Const promises: Promise<void>[] = [];
-  const styling = [] as { name: string, width: string, height: string }[];
+    console.log(chalk.green("Gathering icons..."));
+    // @ts-expect-error -- TODO: add types for iconMap
+    const iconMap = await util.buildIconMap(iconOverview);
+    const meta = util.buildMeta(iconMap);
 
-  await PromisePool
-    .for(Array.from(iconMap.keys()))
-    .withConcurrency(25)
-    .onTaskFinished((iconName, pool) => {
-      bar.update(pool.processedItems().length);
-    })
-    .process(async (iconName: string) => {
-      // @ts-expect-error -- TODO: add types for iconMap
-      const icon: Icon = iconMap.get(iconName);
+    console.log(chalk.green("Downloading and optimizing icons..."));
+    const bar = new cliProgress.SingleBar(
+      {},
+      cliProgress.Presets.shades_classic
+    );
 
-      const result = await client.downloadImage(icon.image);
-      const svg = result.data as string;
+    bar.start(iconMap.size, 0);
 
-      // Remove width/height from SVGs
-      const optimizedSvgResult = optimize(svg, {
-         
-        plugins: [
-          {name: 'removeDimensions'},
-          {
-            ...svgoAutocrop,
-            params: {
-              disableTranslateWarning: true,
-            },
-          },
-        ],
-      }) as OptimizedSvg;
+    //Const promises: Promise<void>[] = [];
+    const styling = [] as { name: string; width: string; height: string }[];
 
-      let optimizedSvg = optimizedSvgResult.data;
+    await PromisePool.for(Array.from(iconMap.keys()))
+      .withConcurrency(25)
+      .onTaskFinished((iconName, pool) => {
+        bar.update(pool.processedItems().length);
+      })
+      .handleError((error) => {
+        console.log(error);
+      })
+      .process(async (iconName: string) => {
+        // @ts-expect-error -- TODO: add types for iconMap
+        const icon: Icon = iconMap.get(iconName);
 
-      const viewBox = optimizedSvg.match(/viewBox="(\d*) (\d*) (\d*) (\d*)"/);
-      if (viewBox) {
-        const width = viewBox[3];
-        const height = viewBox[4];
-        const className = iconName.replace(/icons\//, '').replace(/\//g, '-');
-
-        // Add class name to SVG
-        optimizedSvg = optimizedSvg.replace(/<svg/, `<svg id="meteor-icon-kit__${className}"`);
-
-        styling.push({
-          name: className,
-          // @ts-expect-error - we know that viewBox is defined
-          width,
-          // @ts-expect-error - we know that viewBox is defined
-          height,
+        const result = await client.downloadImage(icon.image);
+        const svg = result.data as string;
+        logger.info("Received icon data", {
+          icon: icon.image,
+          svg,
         });
-      } else {
-        console.log(chalk.red(`Could not find viewBox for ${iconName}`));
-      }
 
-      fse.outputFileSync(`${import.meta.dirname}/../${iconName}.svg`, optimizedSvg);
+        // Remove width/height from SVGs
+        logger.info(`Optimizing icon: ${icon.image}`);
+        const optimizedSvgResult = optimize(svg, {
+          plugins: [
+            { name: "removeDimensions" },
+            {
+              ...svgoAutocrop,
+              params: {
+                disableTranslateWarning: true,
+              },
+            },
+          ],
+        }) as OptimizedSvg;
+
+        let optimizedSvg = optimizedSvgResult.data;
+        logger.info("Received optimized icon", {
+          icon: icon.image,
+          svg: optimizedSvg,
+        });
+
+        const viewBox = optimizedSvg.match(/viewBox="(\d*) (\d*) (\d*) (\d*)"/);
+        if (viewBox) {
+          const width = viewBox[3];
+          const height = viewBox[4];
+          const className = iconName.replace(/icons\//, "").replace(/\//g, "-");
+
+          // Add class name to SVG
+          optimizedSvg = optimizedSvg.replace(
+            /<svg/,
+            `<svg id="meteor-icon-kit__${className}"`
+          );
+
+          styling.push({
+            name: className,
+            // @ts-expect-error - we know that viewBox is defined
+            width,
+            // @ts-expect-error - we know that viewBox is defined
+            height,
+          });
+
+          logger.info(`Added className "${className}" to style map`);
+        } else {
+          console.log(chalk.red(`Could not find viewBox for ${iconName}`));
+          logger.info(`Failed to further optimize icon: "${iconName}"`, {
+            icon: icon.image,
+          });
+        }
+
+        const pathToIcon = path.resolve(
+          iconDirectory,
+          `${iconName.replace("icons/", "")}.svg`
+        );
+
+        fs.writeFileSync(pathToIcon, optimizedSvg);
+        logger.info(`Created icon: "${iconName}"`, {
+          path: pathToIcon,
+          svg: optimizedSvg,
+        });
+      });
+
+    bar.stop();
+    console.log(chalk.green("All icons written!"));
+
+    console.log(chalk.green("Writing styling..."));
+
+    let cssFileContent =
+      "/* This file is auto-generated by meteor-icon-kit. */\n";
+    let scssFileContent = cssFileContent;
+
+    scssFileContent += "#meteor-icon-kit {";
+
+    styling.forEach(({ name, width, height }) => {
+      cssFileContent += `#meteor-icon-kit__${name}{width:${width}px;height:${height}px;}`;
+      scssFileContent += `\n  &__${name} {\n    width: ${width}px;\n    height: ${height}px;\n  }\n`;
     });
 
-  bar.stop();
-  console.log(chalk.green('All icons written!'));
+    scssFileContent += "}\n";
 
-  console.log(chalk.green('Writing styling...'));
+    const pathToStyleFile = path.resolve(
+      iconDirectory,
+      `meteor-icon-kit-${md5(styling)}.css`
+    );
 
-  let cssFileContent = '/* This file is auto-generated by meteor-icon-kit. */\n';
-  let scssFileContent = cssFileContent;
+    fs.writeFileSync(pathToStyleFile, cssFileContent);
+    logger.info(`Created file: ${pathToStyleFile}`);
 
-  scssFileContent += '#meteor-icon-kit {';
+    fs.writeFileSync(
+      `${import.meta.dirname}/../icons/meteor-icon-kit.scss`,
+      scssFileContent
+    );
 
-  styling.forEach(({name, width, height}) => {
-    cssFileContent += `#meteor-icon-kit__${name}{width:${width}px;height:${height}px;}`;
-    scssFileContent += `\n  &__${name} {\n    width: ${width}px;\n    height: ${height}px;\n  }\n`;
+    console.log(chalk.green("Writing metadata"));
+    const pathToMetaFile = path.resolve(iconDirectory, "meta.json");
+    fs.writeFileSync(pathToMetaFile, JSON.stringify(meta));
+    logger.info(`Created file: ${pathToMetaFile}`);
+
+    console.log(chalk.green("All done!"));
+    logger.info("Finished syncing icons");
+  })
+  .catch((e) => {
+    throw e;
   });
-
-  scssFileContent += '}\n';
-
-   
-  fse.outputFileSync(`${import.meta.dirname}/../icons/meteor-icon-kit-${md5(styling)}.css`, cssFileContent);
-   
-  fse.outputFileSync(`${import.meta.dirname}/../icons/meteor-icon-kit.scss`, scssFileContent);
-
-  console.log(chalk.green('Writing metadata'));
-  fse.outputFileSync(`${import.meta.dirname}/../icons/meta.json`, JSON.stringify(meta));
-
-  console.log(chalk.green('All done!'));
-  //});
-}).catch((e) => {
-  console.error(e);
-});

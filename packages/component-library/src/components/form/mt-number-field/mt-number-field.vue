@@ -45,6 +45,7 @@
 
       <div class="mt-number-field__controls" :class="controlClasses">
         <button
+          type="button"
           @click="increaseNumberByStep"
           :disabled="disabled || isInherited"
           :aria-label="t('increaseButton')"
@@ -54,6 +55,7 @@
         </button>
 
         <button
+          type="button"
           @click="decreaseNumberByStep"
           :disabled="disabled || isInherited"
           :aria-label="t('decreaseButton')"

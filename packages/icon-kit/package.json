@@ -33,14 +33,21 @@
     "lint:types": "tsc --noEmit",
     "prepublish": "npm run build",
     "start": "node dist",
-    "start:dev": "ts-node src"
+    "start:dev": "ts-node src",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
+  "prettier": "@shopware-ag/meteor-prettier-config",
   "dependencies": {
+    "@t3-oss/env-core": "^0.12.0",
     "dotenv": "^16.4.1",
-    "js-md5": "^0.7.3"
+    "js-md5": "^0.7.3",
+    "winston": "^3.17.0",
+    "zod": "^3.24.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.20.0",
+    "@shopware-ag/meteor-prettier-config": "workspace:*",
     "@supercharge/promise-pool": "^2.4.0",
     "@types/axios": "^0.14.0",
     "@types/cli-progress": "^3.9.2",
@@ -53,6 +60,7 @@
     "cli-progress": "^3.10.0",
     "eslint": "^9.21.0",
     "fs-extra": "^10.0.1",
+    "prettier": "^3.5.3",
     "svgo": "^2.8.0",
     "svgo-autocrop": "1.1.1",
     "ts-node": "^10.8.1",

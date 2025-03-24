@@ -1,5 +1,31 @@
 # Changelog
 
+## 5.8.2
+
+### Patch Changes
+
+- Updated dependencies [c6017dd]
+  - @shopware-ag/meteor-component-library@4.8.0
+
+## 5.8.1
+
+### Patch Changes
+
+- Updated dependencies [55b219b]
+  - @shopware-ag/meteor-component-library@4.7.1
+
+## 5.8.0
+
+### Minor Changes
+
+- 8dac4d1: - Changed name of `context.compareShopwareVersion` to `context.compareIsShopwareVersion`
+  - Changed order of parameters of `context.compareIsShopwareVersion`
+
+### Patch Changes
+
+- Updated dependencies [8d89449]
+  - @shopware-ag/meteor-component-library@4.7.0
+
 ## 5.7.8
 
 ### Patch Changes
