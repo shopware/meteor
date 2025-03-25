@@ -4,7 +4,6 @@ import FigmaUtil from "./figma/util/index.js";
 import type { OptimizedSvg } from "svgo";
 import { optimize } from "svgo";
 import md5 from "js-md5";
-import fs from "node:fs";
 import { PromisePool } from "@supercharge/promise-pool";
 // @ts-expect-error - this dependency has no type definitions
 import * as svgoAutocrop from "svgo-autocrop";
@@ -21,7 +20,6 @@ const client = new FigmaApiClient();
 const util = new FigmaUtil();
 
 const spinner = ora("Syncing icons...").start();
-
 logger.info("Starting to sync icons");
 
 spinner.text = "Clearing icons/ directory";
@@ -29,8 +27,8 @@ spinner.text = "Clearing icons/ directory";
 const fileSystem = new NodeFilesystem(logger);
 
 const iconDirectory = path.resolve(import.meta.dirname, "../icons");
-fs.rmSync(iconDirectory, { recursive: true, force: true });
-logger.info(`Removing directory: ${iconDirectory}`);
+
+fileSystem.removeDirectory(iconDirectory);
 
 fileSystem.createDirectory(iconDirectory);
 fileSystem.createDirectory(path.join(iconDirectory, "regular"));
