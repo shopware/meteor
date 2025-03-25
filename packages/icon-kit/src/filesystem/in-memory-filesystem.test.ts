@@ -34,3 +34,11 @@ test("returns undefined when reading a non-existing file", () => {
   // ASSERT
   expect(result).toBeUndefined();
 });
+
+test("creates a directory", () => {
+  // ARRANGE
+  const subject = new InMemoryFilesystem();
+
+  // ACT
+  subject.createDirectory("./foo");
+});
