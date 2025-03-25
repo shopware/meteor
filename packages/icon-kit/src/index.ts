@@ -106,6 +106,11 @@ client
         if (viewBox) {
           const width = viewBox[3];
           const height = viewBox[4];
+          if (!width || !height) {
+            throw new Error(
+              `Failed to optimize icon: ${iconName}; Could not extract width and height from viewBox`
+            );
+          }
           const className = iconName.replace(/icons\//, "").replace(/\//g, "-");
 
           // Add class name to SVG
@@ -116,9 +121,7 @@ client
 
           styling.push({
             name: className,
-            // @ts-expect-error - we know that viewBox is defined
             width,
-            // @ts-expect-error - we know that viewBox is defined
             height,
           });
 
