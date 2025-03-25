@@ -1,5 +1,23 @@
 # Changelog
 
+## 4.8.0
+
+### Minor Changes
+
+- c6017dd: Added label slot to mt-checkbox
+
+## 4.7.1
+
+### Patch Changes
+
+- 55b219b: - Remove stop propagation for `mt-select-base` click handler
+
+## 4.7.0
+
+### Minor Changes
+
+- 8d89449: Fix password flickering and add submit event for `mt-password-field.vue` component.
+
 ## 4.6.0
 
 ### Minor Changes

@@ -1,5 +1,5 @@
-import type {Icon, IconMode, Meta, node} from '../index.js';
-import FigmaApiClient, {IconSize} from '../index.js';
+import type { Icon, IconMode, Meta, node } from "../index.js";
+import FigmaApiClient, { IconSize } from "../index.js";
 
 export default class FigmaUtil {
   public async buildIconMap(document: node): Promise<Map<string, Icon>> {
@@ -7,17 +7,17 @@ export default class FigmaUtil {
     const iconNodes = this.getIconNodes(document);
     const iconMap: Map<string, Icon> = new Map();
 
-    while(iconNodes.length) {
+    while (iconNodes.length) {
       // Get svgs in 300 chunks max
       const chunk = iconNodes.splice(0, 300);
-      const svgs = (await client.getImages(chunk.map(node => node.id))).data;
+      const svgs = (await client.getImages(chunk.map((node) => node.id))).data;
 
       if (svgs.err) {
         console.error(svgs.err);
       }
 
       Object.keys(svgs.images).forEach((nodeId) => {
-        const node = chunk.find(n => n.id === nodeId);
+        const node = chunk.find((n) => n.id === nodeId);
 
         // @ts-expect-error - we know that node is defined
         iconMap.set(node.name, {
@@ -28,9 +28,12 @@ export default class FigmaUtil {
       });
     }
 
-    const nodeIds: string[] = Array.from(iconMap.values()).map(({nodeId}) => nodeId);
+    const nodeIds: string[] = Array.from(iconMap.values()).map(
+      ({ nodeId }) => nodeId
+    );
 
-    const components: node[] = (await client.getNodeInfo(nodeIds)).data.components;
+    const components: node[] = (await client.getNodeInfo(nodeIds)).data
+      .components;
     Object.values(components).forEach((component: node) => {
       // @ts-expect-error - we know that value is defined
       iconMap.set(component.name, {
@@ -43,18 +46,18 @@ export default class FigmaUtil {
   }
 
   public buildMeta(iconMap: Map<string, Icon>): Meta[] {
-    const metas:Meta[] = [];
-    const sizes = ['s', 'xs', 'xxs'];
-    const modes = ['regular', 'solid'];
-    Array.from(iconMap.keys()).forEach(key => {
+    const metas: Meta[] = [];
+    const sizes = ["s", "xs", "xxs"];
+    const modes = ["regular", "solid"];
+    Array.from(iconMap.keys()).forEach((key) => {
       // @ts-expect-error - we know that key.split('/')[2] is defined
-      const name: string = key.split('/')[2];
+      const name: string = key.split("/")[2];
       // @ts-expect-error - we know that key.split('/')[1] is defined
-      const mode: string = key.split('/')[1];
+      const mode: string = key.split("/")[1];
       let size: string = IconSize.DEFAULT;
       let basename: string = name;
 
-      sizes.forEach(mySize => {
+      sizes.forEach((mySize) => {
         const suffix = `-${mySize}`;
         if (!name.endsWith(suffix)) {
           return;
@@ -65,29 +68,35 @@ export default class FigmaUtil {
       });
 
       // Extract tags from the description
-      // @ts-expect-error -- we know that iconMap.get(key) is defined
-      const description: string = (iconMap.get(key).description.split('🔎')[1] || '').split('\n')[0].trim();
+      const description: string =
+        // @ts-expect-error -- we know that iconMap.get(key) is defined
+        (iconMap.get(key).description.split("🔎")[1] || "")
+          .split("\n")[0]
+          .trim();
       let tags: string[] = [];
-      if (description.startsWith('[') && description.endsWith(']')) {
-        tags = description.substring(1, description.length - 1).split(',').map(tag => tag.trim());
+      if (description.startsWith("[") && description.endsWith("]")) {
+        tags = description
+          .substring(1, description.length - 1)
+          .split(",")
+          .map((tag) => tag.trim());
       }
 
       const mySizes: string[] = [];
       const myModes: string[] = [];
 
       if (iconMap.has(`icons/${mode}/${basename}`)) {
-        mySizes.push('');
+        mySizes.push("");
       }
 
       // Find all available sizes
-      sizes.forEach(size => {
+      sizes.forEach((size) => {
         if (iconMap.has(`icons/${mode}/${basename}-${size}`)) {
           mySizes.push(size);
         }
       });
 
       // Find all available modes
-      modes.forEach(mode => {
+      modes.forEach((mode) => {
         if (iconMap.has(`icons/${mode}/${name}`)) {
           myModes.push(mode);
         }
@@ -141,9 +150,11 @@ export default class FigmaUtil {
 
     const icons: node[] = [];
 
-    icons.push(...document.children.filter(node => node.name.startsWith('icons/')));
+    icons.push(
+      ...document.children.filter((node) => node.name.startsWith("icons/"))
+    );
 
-    document.children.forEach(node => {
+    document.children.forEach((node) => {
       icons.push(...this.getIconNodes(node));
     });
 

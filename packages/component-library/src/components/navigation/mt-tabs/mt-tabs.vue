@@ -6,6 +6,7 @@
       <template v-if="!vertical">
         <button
           v-for="item in mainItems"
+          type="button"
           :key="item.name"
           :data-priority-plus="item.name"
           ref="items"
