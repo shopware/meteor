@@ -4,4 +4,6 @@ export interface Filesystem {
   readFile(path: string): string | undefined;
 
   createDirectory(path: string): void;
+
+  removeDirectory(path: string): void;
 }
