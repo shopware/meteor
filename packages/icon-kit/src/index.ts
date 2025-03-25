@@ -14,6 +14,7 @@ import { WinstonLogger } from "./logger/winston-logger.js";
 import ora from "ora";
 import { CSSFile } from "./domain/css-file.js";
 import { SCSSFile } from "./domain/scss-file.js";
+import { NodeFilesystem } from "./filesystem/node-filesystem.js";
 
 const logger = new WinstonLogger();
 
@@ -28,20 +29,15 @@ logger.info("Starting to sync icons");
 
 spinner.text = "Clearing icons/ directory";
 
+const fileSystem = new NodeFilesystem(logger);
+
 const iconDirectory = path.resolve(import.meta.dirname, "../icons");
 fs.rmSync(iconDirectory, { recursive: true, force: true });
 logger.info(`Removing directory: ${iconDirectory}`);
 
-fs.mkdirSync(iconDirectory);
-logger.info(`Creating directory: ${iconDirectory}`);
-
-const regularIconDirectory = path.join(iconDirectory, "regular");
-fs.mkdirSync(regularIconDirectory);
-logger.info(`Creating directory: ${regularIconDirectory}`);
-
-const solidIconDirectory = path.join(iconDirectory, "solid");
-fs.mkdirSync(solidIconDirectory);
-logger.info(`Creating directory: ${solidIconDirectory}`);
+fileSystem.createDirectory(iconDirectory);
+fileSystem.createDirectory(path.join(iconDirectory, "regular"));
+fileSystem.createDirectory(path.join(iconDirectory, "solid"));
 
 spinner.text = "Fetching icon data";
 
@@ -139,7 +135,7 @@ client
           `${iconName.replace("icons/", "")}.svg`
         );
 
-        fs.writeFileSync(pathToIcon, optimizedSvg);
+        fileSystem.createFile(pathToIcon, optimizedSvg);
         logger.info(`Created icon: "${iconName}"`, {
           path: pathToIcon,
           svg: optimizedSvg,
@@ -147,7 +143,6 @@ client
       });
 
     spinner.text = "Finished writing icons to filesystem";
-
     spinner.text = "Creating stylesheet";
 
     const css = new CSSFile();
@@ -165,23 +160,21 @@ client
       });
     });
 
-    const pathToStyleFile = path.resolve(
-      iconDirectory,
-      `meteor-icon-kit-${md5(styling)}.css`
+    fileSystem.createFile(
+      path.resolve(iconDirectory, `meteor-icon-kit-${md5(styling)}.css`),
+      css.toString()
     );
 
-    fs.writeFileSync(pathToStyleFile, css.toString());
-    logger.info(`Created file: ${pathToStyleFile}`);
-
-    fs.writeFileSync(
+    fileSystem.createFile(
       `${import.meta.dirname}/../icons/meteor-icon-kit.scss`,
       scss.toString()
     );
 
     spinner.text = "Creating meta data";
-    const pathToMetaFile = path.resolve(iconDirectory, "meta.json");
-    fs.writeFileSync(pathToMetaFile, JSON.stringify(meta));
-    logger.info(`Created file: ${pathToMetaFile}`);
+    fileSystem.createFile(
+      path.resolve(iconDirectory, "meta.json"),
+      JSON.stringify(meta)
+    );
 
     logger.info("Finished syncing icons");
 
