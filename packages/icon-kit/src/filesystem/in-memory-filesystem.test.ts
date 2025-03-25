@@ -42,3 +42,15 @@ test("creates a directory", () => {
   // ACT
   subject.createDirectory("./foo");
 });
+
+test("removes a directory", () => {
+  // ARRANGE
+  const subject = new InMemoryFilesystem();
+  subject.createDirectory("./foo");
+
+  // ACT
+  subject.removeDirectory("./foo");
+
+  // ASSERT
+  expect(subject.readFile("./foo.txt")).toBeUndefined();
+});

@@ -33,4 +33,8 @@ export class InMemoryFilesystem implements Filesystem {
       type: "directory",
     };
   }
+
+  removeDirectory(path: string) {
+    delete this.files[path];
+  }
 }

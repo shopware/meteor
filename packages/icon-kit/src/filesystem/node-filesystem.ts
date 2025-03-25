@@ -20,4 +20,10 @@ export class NodeFilesystem implements Filesystem {
 
     this.logger.info(`Create directory: ${path}`);
   }
+
+  removeDirectory(path: string): void {
+    fs.rmSync(path, { recursive: true, force: true });
+
+    this.logger.info(`Remove directory: ${path}`);
+  }
 }
