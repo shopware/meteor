@@ -3,7 +3,6 @@ import FigmaApiClient from "./figma/index.js";
 import FigmaUtil from "./figma/util/index.js";
 import type { OptimizedSvg } from "svgo";
 import { optimize } from "svgo";
-import md5 from "js-md5";
 import { PromisePool } from "@supercharge/promise-pool";
 // @ts-expect-error - this dependency has no type definitions
 import * as svgoAutocrop from "svgo-autocrop";
@@ -13,6 +12,7 @@ import ora from "ora";
 import { CSSFile } from "./domain/css-file.js";
 import { SCSSFile } from "./domain/scss-file.js";
 import { NodeFilesystem } from "./filesystem/node-filesystem.js";
+import { md5 } from "./utils.js";
 
 const logger = new WinstonLogger();
 
