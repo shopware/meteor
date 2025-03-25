@@ -45,6 +45,9 @@ jobs:
       - name: Build storybook
         run: pnpm --filter @shopware-ag/meteor-component-library run build:storybook --test
 
+      - name: Clear snapshot directory
+        run: rm -rf ./packages/component-library/__snapshots__/*
+
       - name: Run Tests
         if: ${{ github.event_name != 'workflow_dispatch' }}
         run: |
