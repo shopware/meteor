@@ -1,4 +1,3 @@
-import type { Icon } from "./figma/index.js";
 import FigmaApiClient from "./figma/index.js";
 import FigmaUtil from "./figma/util/index.js";
 import type { OptimizedSvg } from "svgo";
@@ -67,8 +66,12 @@ client
         console.log(error);
       })
       .process(async (iconName: string) => {
-        // @ts-expect-error -- TODO: add types for iconMap
-        const icon: Icon = iconMap.get(iconName);
+        const icon = iconMap.get(iconName);
+        if (!icon) {
+          throw new Error(
+            `Failed to optimize icon: ${iconName}; Icon does not exist`
+          );
+        }
 
         const result = await client.downloadImage(icon.image);
         const svg = result.data as string;
