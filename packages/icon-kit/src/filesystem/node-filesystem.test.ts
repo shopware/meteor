@@ -9,6 +9,7 @@ vi.mock("node:fs", () => {
       writeFileSync: () => null,
       readFileSync: () => null,
       mkdirSync: () => null,
+      rmSync: () => null,
     },
   };
 });
@@ -61,4 +62,19 @@ test("creates a directory", () => {
 
   // ASSERT
   expect(spy).toHaveBeenCalledExactlyOnceWith("./foo");
+});
+
+test("removes a directory", () => {
+  // ARRANGE
+  const subject = new NodeFilesystem(new NoOpLogger());
+  const spy = vi.spyOn(fs, "rmSync");
+
+  // ACT
+  subject.removeDirectory("./foo");
+
+  // ASSERT
+  expect(spy).toHaveBeenCalledExactlyOnceWith("./foo", {
+    recursive: true,
+    force: true,
+  });
 });
