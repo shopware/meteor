@@ -166,7 +166,7 @@ client
     );
 
     fileSystem.createFile(
-      `${import.meta.dirname}/../icons/meteor-icon-kit.scss`,
+      path.join(iconDirectory, "meteor-icon-kit.scss"),
       scss.toString()
     );
 
