@@ -16,6 +16,7 @@
       >
         <template #trigger="{ toggleFloatingUi }">
           <button
+            type="button"
             class="mt-segmented-control__action"
             :class="getActionClass(action)"
             :aria-pressed="action.isPressed"

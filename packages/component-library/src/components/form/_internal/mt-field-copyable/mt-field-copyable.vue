@@ -1,6 +1,6 @@
 <template>
   <!-- eslint-disable-next-line vuejs-accessibility/mouse-events-have-key-events -->
-  <button>
+  <button type="button">
     <mt-icon
       v-tooltip="{
         message: tooltipText,
