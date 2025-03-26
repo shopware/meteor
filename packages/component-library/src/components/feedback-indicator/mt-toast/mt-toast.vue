@@ -108,7 +108,7 @@ function onMouseLeave() {
 }
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .mt-toast {
   display: flex;
   position: fixed;
@@ -117,130 +117,114 @@ function onMouseLeave() {
   left: 0;
   width: 100%;
   text-align: center;
+}
 
-  &--bottom-left {
-    flex: 1;
-  }
+.mt-toast--bottom-left {
+  flex: 1;
+}
 
-  &--bottom-center {
-    flex: 1;
-    display: flex;
-    justify-content: center;
+.mt-toast--bottom-center {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
 
-    .mt-toast-notification {
-      display: flex;
-      z-index: 1600;
-      position: absolute;
-      height: 51px;
-      color: white;
-      text-align: center;
-      box-shadow:
-        0px 1px 3px 0px rgba(0, 0, 0, 0.1),
-        0px 2px 1px 0px rgba(0, 0, 0, 0.06),
-        0px 1px 1px 0px rgba(0, 0, 0, 0.08);
-    }
+.mt-toast--bottom-center .mt-toast-notification {
+  display: flex;
+  z-index: 1600;
+  position: absolute;
+  height: 51px;
+  color: white;
+  text-align: center;
+  box-shadow:
+    0px 1px 3px 0px rgba(0, 0, 0, 0.1),
+    0px 2px 1px 0px rgba(0, 0, 0, 0.06),
+    0px 1px 1px 0px rgba(0, 0, 0, 0.08);
+}
 
-    .quick-toasts-enter-active,
-    .quick-toasts-leave-active {
-      transition: opacity 0.5s ease;
-    }
+.mt-toast--bottom-center .quick-toasts-enter-active,
+.mt-toast--bottom-center .quick-toasts-leave-active {
+  transition: opacity 0.5s ease;
+}
 
-    .quick-toasts-enter-from,
-    .quick-toasts-leave-to {
-      opacity: 0;
-    }
+.mt-toast--bottom-center .quick-toasts-enter-from,
+.mt-toast--bottom-center .quick-toasts-leave-to {
+  opacity: 0;
+}
 
-    .quick-toasts-enter-active {
-      transition-delay: 0.5s;
-    }
-  }
+.mt-toast--bottom-center .quick-toasts-enter-active {
+  transition-delay: 0.5s;
+}
 
-  &--bottom-right {
-    flex: 1;
-    display: flex;
-    justify-content: flex-end;
-    padding-right: var(--scale-size-16);
+.mt-toast--bottom-right {
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  padding-right: var(--scale-size-16);
+}
 
-    .mt-toast-notification {
-      display: flex;
-      transition: all 0.7s ease;
-      z-index: 1600;
-      position: absolute;
-      height: 51px;
-      color: white;
-      width: 376px;
-      text-align: center;
-      transform: translateY(0);
-    }
+.mt-toast--bottom-right .mt-toast-notification {
+  display: flex;
+  transition: all 0.7s ease;
+  z-index: 1600;
+  position: absolute;
+  height: 51px;
+  color: white;
+  width: 376px;
+  text-align: center;
+  transform: translateY(0);
+}
 
-    .toasts-enter-from {
-      transform: translateY(50px) !important;
-      opacity: 0;
-      z-index: 0;
-    }
+.mt-toast--bottom-right .toasts-enter-from {
+  transform: translateY(50px) !important;
+  opacity: 0;
+  z-index: 0;
+}
 
-    .toasts-leave-to {
-      transform: scale(0.9, 0.4) !important;
-      transform-origin: top;
-      opacity: 0;
-      z-index: 0;
-    }
+.mt-toast--bottom-right .toasts-leave-to {
+  transform: scale(0.9, 0.4) !important;
+  transform-origin: top;
+  opacity: 0;
+  z-index: 0;
+}
 
-    .toasts-enter-active,
-    .toasts-leave-active {
-      transition: all 0.7s ease;
-    }
-  }
+.mt-toast--bottom-right .toasts-enter-active,
+.mt-toast--bottom-right .toasts-leave-active {
+  transition: all 0.7s ease;
+}
 
-  &--expanded {
-    .mt-toast--bottom-right {
-      .mt-toast-notification:nth-child(n + 2) {
-        transform: translateY(calc(var(--num) * -68px));
-      }
-    }
-  }
+.mt-toast--expanded .mt-toast--bottom-right .mt-toast-notification:nth-child(n + 2) {
+  transform: translateY(calc(var(--num) * -68px));
+}
 
-  &--collapsed {
-    .mt-toast--bottom-right {
-      .mt-toast-notification:nth-child(1) {
-        z-index: 1599;
-      }
+.mt-toast--collapsed .mt-toast--bottom-right .mt-toast-notification:nth-child(1) {
+  z-index: 1599;
+}
 
-      .mt-toast-notification:nth-child(2) {
-        transform: translateY(-33px) scale(0.95, 0.18);
+.mt-toast--collapsed .mt-toast--bottom-right .mt-toast-notification:nth-child(2) {
+  transform: translateY(-33px) scale(0.95, 0.18);
+  border-top-left-radius: calc(4px / 0.95) calc(4px / 0.18);
+  border-top-right-radius: calc(4px / 0.95) calc(4px / 0.18);
+  border-bottom-left-radius: calc(2px / 0.95) calc(2px / 0.18);
+  border-bottom-right-radius: calc(2px / 0.95) calc(2px / 0.18);
+}
 
-        // Eliptical border radius because we use scale for animations
-        border-top-left-radius: calc(4px / 0.95) calc(4px / 0.18);
-        border-top-right-radius: calc(4px / 0.95) calc(4px / 0.18);
-        border-bottom-left-radius: calc(2px / 0.95) calc(2px / 0.18);
-        border-bottom-right-radius: calc(2px / 0.95) calc(2px / 0.18);
-      }
+.mt-toast--collapsed .mt-toast--bottom-right .mt-toast-notification:nth-child(3) {
+  transform: translateY(-45px) scale(0.9, 0.18);
+  border-top-left-radius: calc(4px / 0.9) calc(4px / 0.18);
+  border-top-right-radius: calc(4px / 0.9) calc(4px / 0.18);
+  border-bottom-left-radius: calc(2px / 0.9) calc(2px / 0.18);
+  border-bottom-right-radius: calc(2px / 0.9) calc(2px / 0.18);
+}
 
-      .mt-toast-notification:nth-child(3) {
-        transform: translateY(-45px) scale(0.9, 0.18);
-
-        // Eliptical border radius because we use scale for animations
-        border-top-left-radius: calc(4px / 0.9) calc(4px / 0.18);
-        border-top-right-radius: calc(4px / 0.9) calc(4px / 0.18);
-        border-bottom-left-radius: calc(2px / 0.9) calc(2px / 0.18);
-        border-bottom-right-radius: calc(2px / 0.9) calc(2px / 0.18);
-      }
-
-      .mt-toast-notification:nth-child(n + 4) {
-        transform: translateY(-58px) scale(0.8, 0.1);
-        opacity: 0;
-      }
-    }
-  }
+.mt-toast--collapsed .mt-toast--bottom-right .mt-toast-notification:nth-child(n + 4) {
+  transform: translateY(-58px) scale(0.8, 0.1);
+  opacity: 0;
 }
 </style>
 
-<style lang="scss">
-.mt-toast--collapsed {
-  .mt-toast-notification:nth-child(n + 2) {
-    .mt-toast-notification__content {
-      opacity: 0;
-    }
-  }
+<style>
+.mt-toast--collapsed .mt-toast-notification:nth-child(n + 2) .mt-toast-notification__content {
+  opacity: 0;
 }
 </style>
