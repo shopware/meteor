@@ -10,7 +10,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style>
 .mt_context_menu_divider {
   border: none;
   border-bottom: 1px solid #d1d9e0;
