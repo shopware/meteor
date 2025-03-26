@@ -392,15 +392,12 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-$slider-dot-size: 20px;
-$slider-bar-height: 8px;
-
 .mt-slider {
   width: 100%;
 
   & > .mt-block-field__block {
     border: none;
-    padding: var(--scale-size-4) var(--scale-size-4) calc($slider-dot-size / 2);
+    padding: var(--scale-size-4) var(--scale-size-4) calc(20px / 2);
     gap: var(--scale-size-16);
     overflow: visible;
   }
@@ -435,7 +432,7 @@ $slider-bar-height: 8px;
       justify-content: space-between;
       font-size: 14px;
       user-select: none;
-      padding: 0 calc($slider-dot-size / 2);
+      padding: 0 calc(20px / 2);
       height: var(--scale-size-20);
     }
 
@@ -445,7 +442,6 @@ $slider-bar-height: 8px;
       text-align: center;
 
       &__label {
-        // This is used to center the text in the middle of the mark
         margin: 0 -50px;
         text-align: center;
       }
@@ -465,9 +461,9 @@ $slider-bar-height: 8px;
 
     .mt-slider__bar {
       position: relative;
-      height: $slider-bar-height;
+      height: 8px;
       background-color: var(--color-background-primary-disabled);
-      border-radius: calc($slider-bar-height / 2);
+      border-radius: calc(8px / 2);
       width: 100%;
       margin-top: var(--scale-size-4);
     }
@@ -476,15 +472,15 @@ $slider-bar-height: 8px;
       position: absolute;
       height: 100%;
       background-color: var(--color-interaction-primary-default);
-      border-radius: calc($slider-bar-height / 2);
+      border-radius: calc(8px / 2);
     }
 
     .mt-slider__input-slider {
       -webkit-appearance: none;
       position: relative;
       padding: 0;
-      height: $slider-bar-height;
-      margin-top: -$slider-bar-height;
+      height: 8px;
+      margin-top: -8px;
       background: transparent;
     }
 
@@ -531,8 +527,8 @@ $slider-bar-height: 8px;
 
     .mt-slider__input-slider::-webkit-slider-thumb {
       -webkit-appearance: none;
-      width: $slider-dot-size;
-      height: $slider-dot-size;
+      width: 20px;
+      height: 20px;
       background-color: var(--color-background-primary-default);
       border: 1px solid var(--color-border-primary-default);
       border-radius: 50%;
@@ -542,8 +538,8 @@ $slider-bar-height: 8px;
     }
 
     .mt-slider__input-slider::-moz-range-thumb {
-      width: $slider-dot-size;
-      height: $slider-dot-size;
+      width: 20px;
+      height: 20px;
       background-color: var(--color-background-primary-default);
       border: 1px solid var(--color-border-primary-default);
       border-radius: 50%;
@@ -552,8 +548,8 @@ $slider-bar-height: 8px;
     }
 
     .mt-slider__input-slider::-ms-thumb {
-      width: $slider-dot-size;
-      height: $slider-dot-size;
+      width: 20px;
+      height: 20px;
       background-color: var(--color-background-primary-default);
       border: 1px solid var(--color-border-primary-default);
       border-radius: 50%;
