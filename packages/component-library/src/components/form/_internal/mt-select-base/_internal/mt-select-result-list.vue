@@ -339,7 +339,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style>
 .mt-select-result-list,
 .mt-select-result-list-popover {
   position: absolute;
@@ -367,15 +367,15 @@ export default defineComponent({
   font-family: var(--font-family-body);
   padding: var(--scale-size-8);
   border-radius: 4px;
+}
 
-  .mt-select-result-list__item-list {
-    list-style: none;
-  }
+.mt-select-result-list__content .mt-select-result-list__item-list {
+  list-style: none;
+}
 
-  .mt-select-result-list__empty {
-    padding: var(--scale-size-10) var(--scale-size-16);
-    color: var(--color-text-primary-default);
-  }
+.mt-select-result-list__content .mt-select-result-list__empty {
+  padding: var(--scale-size-10) var(--scale-size-16);
+  color: var(--color-text-primary-default);
 }
 
 .mt-select-result-list__content_empty {
