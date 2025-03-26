@@ -234,7 +234,7 @@ export default defineComponent({
         return {
           id: column.property,
           label: column.label,
-          parentGroup: (column.visible ?? true) ? "visible" : "hidden",
+          parentGroup: column.visible ?? true ? "visible" : "hidden",
           position: column.position,
           isVisible: column.visible ?? true,
           isHidable: isPrimaryColumn(column) ? false : true,
@@ -302,8 +302,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style lang="scss">
-.mt-data-table-settings {
-}
-</style>
