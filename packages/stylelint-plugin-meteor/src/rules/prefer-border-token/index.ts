@@ -1,4 +1,5 @@
-import stylelint, { Rule } from "stylelint";
+import stylelint, { Rule, PostcssResult } from "stylelint";
+import { Declaration } from "postcss";
 
 const {
   createPlugin,
@@ -16,6 +17,28 @@ const messages = ruleMessages(ruleName, {
 
 const meta = {
   url: "https://github.com/shopware/meteor/blob/main/packages/stylelint-plugin-meteor/src/rules/prefer-border-token/README.md",
+  fixable: true,
+};
+
+const pxToTokenMap = {
+  "0": "var(--border-radius-none)",
+  "0px": "var(--border-radius-none)",
+  "2px": "var(--border-radius-2xs)",
+  "4px": "var(--border-radius-xs)",
+  "6px": "var(--border-radius-s)",
+  "8px": "var(--border-radius-m)",
+  "12px": "var(--border-radius-l)",
+  "16px": "var(--border-radius-xl)",
+  "20px": "var(--border-radius-2xl)",
+  "24px": "var(--border-radius-3xl)",
+  "32px": "var(--border-radius-4xl)",
+  "50%": "var(--border-radius-round)",
+  "$border-radius-default": "var(--border-radius-xs)",
+  "$border-radius-sm": "var(--border-radius-s)",
+  "$border-radius-md": "var(--border-radius-m)",
+  "$border-radius-lg": "var(--border-radius-m)",
+  "$border-radius-xl": "var(--border-radius-m)",
+  "$border-radius-pill": "var(--border-radius-round)",
 };
 
 const BORDER_COLOR_PROPERTIES: (string | RegExp)[] = [
@@ -68,11 +91,16 @@ const isValidColorValue = (value: string): boolean => {
 };
 
 const isValidRadiusValue = (value: string): boolean => {
+  if (value === "50%" || value === "0" || value === "0px") {
+    return false;
+  }
+
   return (
     globalValues.includes(value.toLowerCase()) ||
     /var\(--.*\)/.test(value) ||
     /^calc\(.*\)$/.test(value) ||
-    /^var\(--.*\)\s*[-+]?\d+(\.\d+)?$/.test(value)
+    /^var\(--.*\)\s*[-+]?\d+(\.\d+)?$/.test(value) ||
+    /^\d+%$/.test(value)
   );
 };
 
@@ -134,6 +162,21 @@ const ruleFunction: Rule = (primary, secondaryOptions, context) => {
               node: ruleNode,
               result,
               ruleName,
+              ...(context.fix
+                ? {
+                    fix: () => {
+                      const isReplaceable =
+                        pxToTokenMap[value as keyof typeof pxToTokenMap];
+
+                      if (isReplaceable) {
+                        ruleNode.value = ruleNode.value.replace(
+                          value,
+                          isReplaceable
+                        );
+                      }
+                    },
+                  }
+                : { unfixable: true }),
             });
           }
         });
