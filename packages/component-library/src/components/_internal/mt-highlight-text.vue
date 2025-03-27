@@ -51,11 +51,9 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-.mt-highlight-text {
-  .mt-highlight-text__highlight {
-    color: $color-shopware-brand-500;
-    font-weight: bold;
-  }
+<style>
+.mt-highlight-text__highlight {
+  color: var(--color-text-brand-default);
+  font-weight: var(--font-weight-bold);
 }
 </style>
