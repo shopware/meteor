@@ -269,3 +269,42 @@ export const TestDisabledDoesNotOpenDatepicker: MtDatepickerStory = {
     expect((canvas.getByRole("textbox") as HTMLInputElement).disabled).toBe(true);
   },
 };
+
+export const TestCustomFormat: MtDatepickerStory = {
+  name: "Should use custom format",
+  args: {
+    // Render it  as "Year: 2024, Month: 11, Day: 13"
+    format: (date: any) => {
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+      return `Year: ${year}, Month: ${month}, Day: ${day}`;
+    }
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Open datepicker by clicking the input wrapper
+    await userEvent.click(canvas.getByRole("textbox"));
+    await waitUntil(() => document.getElementsByClassName("dp__menu").length > 0);
+
+    await userEvent.click(
+      document.querySelector('[data-test-id="year-toggle-overlay-0"]') as HTMLInputElement,
+    );
+
+    await userEvent.click(document.querySelector('[data-test-id="2024"]') as HTMLInputElement);
+
+    await userEvent.click(
+      document.querySelector('[data-test-id="month-toggle-overlay-0"]') as HTMLInputElement,
+    );
+
+    await userEvent.click(document.querySelector('[data-test-id="Nov"]') as HTMLInputElement);
+
+    // Access the calendar and click the date
+    await userEvent.click(document.getElementById("2024-11-13") as HTMLInputElement);
+
+    // Check that the input value matches the date chosen
+    const input = document.querySelector('[data-test-id="dp-input"]') as HTMLInputElement;
+    expect(input.value).toContain("Year: 2024, Month: 11, Day: 13");
+  },
+};

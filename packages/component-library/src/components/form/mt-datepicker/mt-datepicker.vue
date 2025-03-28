@@ -69,7 +69,7 @@ import { defineComponent } from "vue";
 import type { PropType } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
-import DatePicker from "@vuepic/vue-datepicker";
+import DatePicker, { type VueDatePickerProps } from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 
 export default defineComponent({
@@ -109,6 +109,16 @@ export default defineComponent({
       type: String as PropType<string>,
       required: false,
       default: "de",
+    },
+
+    /**
+     * The format of the date picker.
+     * You can use a string or a function to format the date.
+     */
+    format: {
+      type: Function as PropType<Omit<VueDatePickerProps["format"], "string">>,
+      required: false,
+      default: undefined,
     },
 
     /**
@@ -218,7 +228,11 @@ export default defineComponent({
   },
 
   methods: {
-    formatDate(date: Date | [Date, Date]): string {
+    formatDate(date: Date | Date[]): string {
+      if (typeof this.format === "function") {
+        return this.format(date as Date & Date[]);
+      }
+
       // Overide built-in format to y-m-d
       const formatSingleDate = (d: Date) => {
         const year = d.getFullYear();
