@@ -1,5 +1,11 @@
 # @shopware-ag/stylelint-plugin-meteor
 
+## 1.0.1
+
+### Patch Changes
+
+- 187413b: Include dist directory in package
+
 ## 1.0.0
 
 ### Patch Changes

@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.8.1
+
+### Patch Changes
+
+- 34d33d9: Add missing isInherited prop to mt-checkbox
+- 3a8e1d5: - Align form component heights
+- e440678: - Fix tooltip z-index position
+- 32b1d35: Added `type=button` to all buttons to prevent default `type=submit` behaviour
+
 ## 4.8.0
 
 ### Minor Changes
