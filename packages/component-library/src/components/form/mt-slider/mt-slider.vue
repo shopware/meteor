@@ -32,7 +32,9 @@
         :disabled="disabled"
         size="small"
         :number-type="step % 1 === 0 ? 'int' : 'float'"
+        :digits="decimalPlaces"
         data-testid="left-number-field"
+        :style="{ width: inputFieldWidth }"
       />
       <div class="mt-slider__slider">
         <div class="mt-slider__marks">
@@ -96,7 +98,9 @@
         :disabled="disabled"
         size="small"
         :number-type="step % 1 === 0 ? 'int' : 'float'"
+        :digits="decimalPlaces"
         data-testid="right-number-field"
+        :style="{ width: inputFieldWidth }"
       />
     </template>
 
@@ -381,6 +385,15 @@ export default defineComponent({
             transform: "translateX(50%)",
           };
     },
+
+    decimalPlaces(): number {
+      return this.step.toString().split(".")[1]?.length || 0;
+    },
+
+    inputFieldWidth(): string {
+      const chars = Math.max(this.max.toFixed(0).length, this.min.toFixed(0).length) + 2;
+      return `${chars + this.decimalPlaces}ch`;
+    },
   },
 
   methods: {
@@ -403,10 +416,10 @@ $slider-bar-height: 8px;
     padding: var(--scale-size-4) var(--scale-size-4) calc($slider-dot-size / 2);
     gap: var(--scale-size-16);
     overflow: visible;
+    align-items: flex-end;
   }
 
   .mt-field--small {
-    width: 5ch;
     flex-grow: 0;
     flex-shrink: 0;
 
@@ -414,14 +427,13 @@ $slider-bar-height: 8px;
       margin-bottom: 0;
     }
 
-    .mt-field__controls {
+    .mt-number-field__controls {
       display: none;
     }
 
     input {
       text-align: center;
-      padding-left: var(--scale-size-4);
-      padding-right: var(--scale-size-4);
+      padding: var(--scale-size-8);
     }
   }
 
