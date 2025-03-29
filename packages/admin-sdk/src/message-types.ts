@@ -22,6 +22,7 @@ import type { settingsItemAdd } from './ui/settings';
 import type { mainModuleAdd } from './ui/main-module';
 import type { smartBarButtonAdd, smartBarHide } from './ui/main-module';
 import type { uiModalOpen, uiModalClose } from './ui/modal/index';
+import type { uiSidebarOpen, uiSidebarClose } from './ui/sidebar';
 import type { actionButtonAdd } from './ui/action-button';
 import type { actionExecute } from './app/action';
 import type Criteria from './data/Criteria';
@@ -77,6 +78,8 @@ export interface ShopwareMessageTypes {
   smartBarHide: smartBarHide,
   uiModalOpen: uiModalOpen,
   uiModalClose: uiModalClose,
+  uiSidebarOpen: uiSidebarOpen,
+  uiSidebarClose: uiSidebarClose,
   actionButtonAdd: actionButtonAdd,
   actionExecute: actionExecute,
   /* eslint-disable @typescript-eslint/no-explicit-any */
