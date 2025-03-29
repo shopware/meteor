@@ -99,3 +99,37 @@ export const VisualTestRenderIconInCustomSizeSmall: MtIconStory = {
     expect(canvas.findByTestId("mt-icon__regular-fingerprint")).toBeDefined();
   },
 };
+
+export const VisualTestRenderIconUsingStylesProp: MtIconStory = {
+  name: "Render icon using styles prop",
+  args: {
+    style: {
+      width: "200px",
+      height: "200px",
+    },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // wait until icon is loaded and rendered
+    await waitUntil(() => document.getElementById("meteor-icon-kit__regular-products"));
+
+    expect(canvas.findByTestId("mt-icon__regular-products")).toBeDefined();
+  },
+};
+
+export const VisualTestRenderIconAtDefaultSizeWhenStylePropDoesNotIncludeWithOrHeight: MtIconStory =
+  {
+    name: "Render icon at default size when style prop does not include width or height",
+    args: {
+      style: {
+        color: "red",
+      },
+    },
+    play: async () => {
+      // wait until icon is loaded and rendered
+      await waitUntil(() => document.getElementById("meteor-icon-kit__regular-products"));
+
+      expect(document.getElementById("meteor-icon-kit__regular-products")).toBeDefined();
+    },
+  };

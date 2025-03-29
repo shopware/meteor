@@ -5,7 +5,10 @@
     :class="[
       `icon--${props.name}`,
       {
-        'mt-icon--custom-size': !!props.size,
+        'mt-icon--custom-size':
+          !!props.size ||
+          !!($attrs.style as CSSProperties | undefined)?.width ||
+          !!($attrs.style as CSSProperties | undefined)?.height,
       },
     ]"
     :style="styles"
