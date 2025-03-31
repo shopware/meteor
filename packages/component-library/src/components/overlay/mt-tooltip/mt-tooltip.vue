@@ -23,7 +23,7 @@
 
   <Teleport to="body">
     <Transition v-bind="$attrs">
-      <div v-show="isVisible" :data-placement="calculatedPlacement" style="position: absolute; z-index: 2100;">
+      <div v-show="isVisible" :data-placement="calculatedPlacement" style="position: absolute; z-index: 1100;">
         <!-- Needs to be v-show, otherwise we have a jumping entry when tooltip is visible for the first time -->
         <div
           role="tooltip"
