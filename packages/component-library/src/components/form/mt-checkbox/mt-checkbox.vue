@@ -29,7 +29,9 @@
           @inheritance-remove="$emit('inheritance-remove', $event)"
         >
           <template #label>
-            {{ label }}
+            <slot name="label">
+              {{ label }}
+            </slot>
           </template>
         </mt-base-field>
       </div>
@@ -103,6 +105,15 @@ export default defineComponent({
       type: Boolean,
       required: false,
       default: null,
+    },
+
+    /**
+     * Determines if the field is inherited.
+     */
+    isInherited: {
+      type: Boolean,
+      required: false,
+      default: false,
     },
 
     /**
@@ -431,6 +442,10 @@ export default defineComponent({
     &.checkbox-bordered {
       margin-bottom: var(--scale-size-8);
     }
+  }
+
+  & .mt-block-field__block {
+    min-height: unset;
   }
 }
 </style>

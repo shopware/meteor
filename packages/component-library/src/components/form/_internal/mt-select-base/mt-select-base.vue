@@ -22,7 +22,7 @@
         ref="selectWrapper"
         class="mt-select__selection"
         tabindex="0"
-        @click.stop="expand"
+        @click="expand"
         @focus="expand"
         @keydown.tab="collapse"
         @keydown.esc="collapse"
@@ -404,6 +404,10 @@ $mt-select-focus-transition: all ease-in-out 0.2s;
       cursor: pointer;
       height: var(--scale-size-18);
       padding-top: 1px;
+    }
+
+    .mt-block-field__block {
+      min-height: unset;
     }
   }
 }
