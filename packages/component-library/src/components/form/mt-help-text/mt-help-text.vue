@@ -1,7 +1,7 @@
 <template>
-  <mt-tooltip :content="text" :placement="placement">
+  <mt-tooltip :content="text" :placement="placement" :max-width="width">
     <template #default="props">
-      <button v-bind="{ ...props, ...$attrs }" class="mt-help-text">
+      <button type="button" v-bind="{ ...props, ...$attrs }" class="mt-help-text">
         <mt-icon
           aria-hidden="true"
           data-testid="mt-help-text__icon"
@@ -25,7 +25,6 @@ withDefaults(
     placement?: Placement;
   }>(),
   {
-    width: 200,
     showDelay: 100,
     hideDelay: 100,
   },

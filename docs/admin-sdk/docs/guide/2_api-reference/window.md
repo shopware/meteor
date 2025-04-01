@@ -65,3 +65,34 @@ No parameters required.
 
 #### Return value:
 Returns a promise without data.
+
+### Get an unique identifier for the window
+
+> Available since Shopware v6.7.1.0
+
+When it comes to session handling it can be useful to have a unique identifier for your window.
+
+### Usage:
+```ts
+sw.window.getId() 
+```
+
+### Parameters
+No parameters required
+
+### Return value:
+A `string` representing an unique identifier for the current window
+
+### Example
+In this example we check if the `sessionStorage` contains data from a former window. This can happen if a user uses the *Duplicate Tab* feature of some browsers.
+
+```ts
+const windowId = sw.window.getId();
+const storedWindowId = globalThis.sessionStorage.getItem('window-id');
+
+if (windowId !== storedWindowId) {
+    globalThis.sessionStorage.clear();
+    globalThis.sessionStorage.setItem('window-id', windowId);
+}
+
+```

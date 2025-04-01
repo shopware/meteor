@@ -1,5 +1,5 @@
 <template>
-  <div class="IconSelection_bg" @click.prevent="$emit('switch', null)"/>
+  <div class="IconSelection_bg" @click.prevent="$emit('switch', null)" />
   <div class="IconSelection" v-bind="$attrs">
     <div class="IconSelection_sidebar-bg">
       <!--<a class="IconSelection_close" href="#"
@@ -20,7 +20,11 @@
 
     <h1 @click.prevent="copyIconName">{{ icon.name }}</h1>
     <div class="IconSelection_tags" v-if="icon.tags.length">
-      <span class="IconSelection_tag btn --subtle --xs --with-border" v-for="tag in icon.tags">{{ tag }}</span>
+      <span
+        class="IconSelection_tag btn --subtle --xs --with-border"
+        v-for="tag in icon.tags"
+        >{{ tag }}</span
+      >
     </div>
 
     <!--<div>
@@ -58,14 +62,14 @@
       <h2>Related icons</h2>
       <div class="IconSelection_list">
         <IconDisplay
-            v-for="icon in icons.slice(0, 4)"
-            :key="icon"
-            :icon="icon"
-            mode="inline"
-            @select="$emit('switch', icon)"/>
+          v-for="icon in icons.slice(0, 4)"
+          :key="icon"
+          :icon="icon"
+          mode="inline"
+          @select="$emit('switch', icon)"
+        />
       </div>
     </div>
-
   </div>
 </template>
 
@@ -92,7 +96,7 @@
   &_sidebar-bg {
     @apply p-6 bg-[var(--sw-c-gray-50)];
     .dark & {
-      @apply bg-[var(--sw-c-gray-dark-700)]
+      @apply bg-[var(--sw-c-gray-dark-700)];
     }
   }
 
@@ -120,7 +124,7 @@
 
     &_bg {
       position: fixed;
-      content: '';
+      content: "";
       display: block;
       background: rgba(0, 0, 0, 0.333);
       inset: 0;
@@ -139,27 +143,35 @@
 </style>
 
 <script setup>
-import {computed} from "vue";
-import IconDisplay from "./IconDisplay.vue"
+import { computed } from "vue";
+import IconDisplay from "./IconDisplay.vue";
 
 const props = defineProps({
   icon: {},
-  icons: {}
+  icons: {},
 });
 
-const exampleHTML = computed(() => props.icon ? `<sw-icon name="${props.icon.mode}-${props.icon.name}" />` : null);
-const exampleVue2 = computed(() => props.icon ? `<sw-icon name="${props.icon.mode}-${props.icon.name}" />` : null);
-const exampleVue3 = computed(() => props.icon ? `<sw-icon name="${props.icon.mode}-${props.icon.name}" />` : null);
-const exampleReact = computed(() => props.icon ? `<sw-icon name="${props.icon.mode}-${props.icon.name}" />` : null);
+const exampleHTML = computed(() =>
+  props.icon ? `<sw-icon name="${props.icon.mode}-${props.icon.name}" />` : null
+);
+const exampleVue2 = computed(() =>
+  props.icon ? `<sw-icon name="${props.icon.mode}-${props.icon.name}" />` : null
+);
+const exampleVue3 = computed(() =>
+  props.icon ? `<sw-icon name="${props.icon.mode}-${props.icon.name}" />` : null
+);
+const exampleReact = computed(() =>
+  props.icon ? `<sw-icon name="${props.icon.mode}-${props.icon.name}" />` : null
+);
 
 const copyIconName = () => {
-  const tempTextArea = document.createElement('textarea');
-  tempTextArea.value = `${props.icon.regular ? 'regular-' : 'solid-'}${props.icon.name}`;
+  const tempTextArea = document.createElement("textarea");
+  tempTextArea.value = `${props.icon.regular ? "regular-" : "solid-"}${props.icon.name}`;
   document.body.appendChild(tempTextArea);
   tempTextArea.select();
-  document.execCommand('copy');
+  document.execCommand("copy");
   document.body.removeChild(tempTextArea);
-}
+};
 
-const embedPoint = '/resources/meteor-icon-kit/public/icons/';
+const embedPoint = "/resources/meteor-icon-kit/public/icons/";
 </script>

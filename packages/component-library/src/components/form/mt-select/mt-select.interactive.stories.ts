@@ -63,6 +63,174 @@ export const VisualTestSingleSelection: MtSelectStory = {
   name: "Should single select",
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("textbox"));
+    await userEvent.clear(canvas.getByRole("textbox"));
+    await userEvent.type(canvas.getByRole("textbox"), "A");
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
+    let popover = within(document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement);
+    await waitUntil(() => popover.getByTestId("mt-select-option--a"));
+    await userEvent.click(popover.getByTestId("mt-select-option--a"));
+
+    expect(args.itemAdd).toHaveBeenCalledWith({
+      id: 1,
+      value: "a",
+      label: "Option A",
+    });
+
+    expect(args.change).toHaveBeenCalledWith("a");
+    await userEvent.click(canvas.getByText("hidden"));
+    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("Option A");
+
+    await userEvent.click(canvas.getByRole("textbox"));
+    await userEvent.clear(canvas.getByRole("textbox"));
+    await userEvent.type(canvas.getByRole("textbox"), "F");
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    popover = within(document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement);
+
+    await waitUntil(() => popover.getByTestId("mt-select-option--f"));
+    await userEvent.click(popover.getByTestId("mt-select-option--f"));
+
+    expect(args.itemAdd).toHaveBeenCalledWith({
+      id: 6,
+      value: "f",
+      label: "Option F",
+    });
+
+    expect(args.change).toHaveBeenCalledWith("f");
+    await userEvent.click(canvas.getByText("hidden"));
+    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("Option F");
+
+    // Only 'FF' is selected
+    await userEvent.click(canvas.getByRole("textbox"));
+    await userEvent.clear(canvas.getByRole("textbox"));
+    await userEvent.type(canvas.getByRole("textbox"), "FF");
+    popover = within(document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement);
+
+    await waitUntil(() => popover.getByTestId("mt-select-option--ff"));
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    await userEvent.click(popover.getByTestId("mt-select-option--ff"));
+
+    expect(args.itemAdd).toHaveBeenCalledWith({
+      id: 7,
+      value: "ff",
+      label: "Option FF",
+    });
+
+    expect(args.change).toHaveBeenCalledWith("ff");
+    await userEvent.click(canvas.getByText("hidden"));
+    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("Option FF");
+  },
+};
+
+export const VisualTestSingleSelectionSmall: MtSelectStory = {
+  name: "Should single select in small",
+  args: {
+    small: true,
+    options: [
+      {
+        id: 1,
+        label: "A very long A",
+        value: "a",
+      },
+      {
+        id: 2,
+        label: "A very long B",
+        value: "b",
+      },
+      {
+        id: 3,
+        label: "A very long C",
+        value: "c",
+      },
+      {
+        id: 6,
+        label: "A very long F",
+        value: "f",
+      },
+      {
+        id: 7,
+        label: "A very long FF",
+        value: "ff",
+      },
+      {
+        id: 8,
+        label: "A very long long text",
+        value: "Longer value text",
+      },
+    ],
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("textbox"));
+    await userEvent.clear(canvas.getByRole("textbox"));
+    await userEvent.type(canvas.getByRole("textbox"), "A");
+    await new Promise((resolve) => setTimeout(resolve, 300));
+
+    let popover = within(document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement);
+    await waitUntil(() => popover.getByTestId("mt-select-option--a"));
+    await userEvent.click(popover.getByTestId("mt-select-option--a"));
+
+    expect(args.itemAdd).toHaveBeenCalledWith({
+      id: 1,
+      value: "a",
+      label: "A very long A",
+    });
+
+    expect(args.change).toHaveBeenCalledWith("a");
+    await userEvent.click(canvas.getByText("hidden"));
+    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("A very long A");
+
+    await userEvent.click(canvas.getByRole("textbox"));
+    await userEvent.clear(canvas.getByRole("textbox"));
+    await userEvent.type(canvas.getByRole("textbox"), "F");
+    await new Promise((resolve) => setTimeout(resolve, 300));
+    popover = within(document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement);
+
+    await waitUntil(() => popover.getByTestId("mt-select-option--f"));
+    await userEvent.click(popover.getByTestId("mt-select-option--f"));
+
+    expect(args.itemAdd).toHaveBeenCalledWith({
+      id: 6,
+      value: "f",
+      label: "A very long F",
+    });
+
+    expect(args.change).toHaveBeenCalledWith("f");
+    await userEvent.click(canvas.getByText("hidden"));
+    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("A very long F");
+
+    // Only 'FF' is selected
+    await userEvent.click(canvas.getByRole("textbox"));
+    await userEvent.clear(canvas.getByRole("textbox"));
+    await userEvent.type(canvas.getByRole("textbox"), "FF");
+    popover = within(document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement);
+
+    await waitUntil(() => popover.getByTestId("mt-select-option--ff"));
+    await new Promise((resolve) => setTimeout(resolve, 200));
+    await userEvent.click(popover.getByTestId("mt-select-option--ff"));
+
+    expect(args.itemAdd).toHaveBeenCalledWith({
+      id: 7,
+      value: "ff",
+      label: "A very long FF",
+    });
+
+    expect(args.change).toHaveBeenCalledWith("ff");
+    await userEvent.click(canvas.getByText("hidden"));
+    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("A very long FF");
+  },
+};
+
+export const VisualTestSingleSelectionLongInSmallWidth: MtSelectStory = {
+  name: "Should single select long option in small width",
+  args: {
+    _wrapperWidth: "200px",
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("textbox"));
+    await userEvent.clear(canvas.getByRole("textbox"));
     await userEvent.type(canvas.getByRole("textbox"), "A");
     await new Promise((resolve) => setTimeout(resolve, 300));
 
@@ -78,8 +246,11 @@ export const VisualTestSingleSelection: MtSelectStory = {
 
     expect(args.change).toHaveBeenCalledWith("a");
     await new Promise((resolve) => setTimeout(resolve, 300));
-    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("");
+    await userEvent.click(canvas.getByText("hidden"));
+    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("Option A");
 
+    await userEvent.click(canvas.getByRole("textbox"));
+    await userEvent.clear(canvas.getByRole("textbox"));
     await userEvent.type(canvas.getByRole("textbox"), "F");
     await new Promise((resolve) => setTimeout(resolve, 300));
     popover = within(document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement);
@@ -94,13 +265,17 @@ export const VisualTestSingleSelection: MtSelectStory = {
     });
 
     expect(args.change).toHaveBeenCalledWith("f");
-    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("");
+    await userEvent.click(canvas.getByText("hidden"));
+    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("Option F");
 
     // Only 'FF' is selected
+    await userEvent.click(canvas.getByRole("textbox"));
+    await userEvent.clear(canvas.getByRole("textbox"));
     await userEvent.type(canvas.getByRole("textbox"), "FF");
     popover = within(document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement);
 
     await waitUntil(() => popover.getByTestId("mt-select-option--ff"));
+    await new Promise((resolve) => setTimeout(resolve, 200));
     await userEvent.click(popover.getByTestId("mt-select-option--ff"));
 
     expect(args.itemAdd).toHaveBeenCalledWith({
@@ -110,7 +285,11 @@ export const VisualTestSingleSelection: MtSelectStory = {
     });
 
     expect(args.change).toHaveBeenCalledWith("ff");
-    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("");
+    await userEvent.click(canvas.getByText("hidden"));
+    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("Option FF");
+
+    // Click outside to close popover
+    await userEvent.click(canvas.getByText("hidden"));
   },
 };
 
@@ -231,9 +410,11 @@ export const VisualTestHint: MtSelectStory = {
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
     await waitUntil(() => {
-      // Check if selection list item contains "Option B"
-      const selectionListItem = document.querySelector(".mt-select-selection-list__item");
-      return selectionListItem?.textContent === "Option B";
+      // Check if input item contains "Option B"
+      const selectionListItem = document.querySelector(
+        ".mt-select-selection-list__input",
+      ) as HTMLInputElement;
+      return selectionListItem?.value === "Option B";
     });
 
     expect(canvas.getByText(args.hint)).toBeDefined();
@@ -304,9 +485,11 @@ export const VisualTestError: MtSelectStory = {
     const canvas = within(canvasElement);
 
     await waitUntil(() => {
-      // Check if selection list item contains "Option B"
-      const selectionListItem = document.querySelector(".mt-select-selection-list__item");
-      return selectionListItem?.textContent === "Option B";
+      // Check if input item contains "Option B"
+      const selectionListItem = document.querySelector(
+        ".mt-select-selection-list__input",
+      ) as HTMLInputElement;
+      return selectionListItem?.value === "Option B";
     });
 
     expect(canvas.getByText(args.error.detail)).toBeDefined();
@@ -363,10 +546,15 @@ export const VisualTestEnsureSingleSelectionWithoutLoadMore: MtSelectStory = {
   name: "Should not show load more",
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
-    await waitUntil(() =>
-      document.querySelector('.mt-select-selection-list__item[title="Option B"]'),
-    );
+    await waitUntil(() => {
+      // Check if input item contains "Option B"
+      const selectionListItem = document.querySelector(
+        ".mt-select-selection-list__input",
+      ) as HTMLInputElement;
+      return selectionListItem?.value === "Option B";
+    });
 
+    await userEvent.clear(canvas.getByRole("textbox"));
     await userEvent.type(canvas.getByRole("textbox"), "Option long text");
     await waitUntil(() => {
       // Check if highlight text contains the search term
@@ -386,7 +574,9 @@ export const VisualTestEnsureSingleSelectionWithoutLoadMore: MtSelectStory = {
     });
 
     expect(args.change).toHaveBeenCalledWith("Longer value text");
-    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("");
+    // Click outside to trigger blur
+    await userEvent.click(canvas.getByText("hidden"));
+    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("Option long text");
     expect(canvas.queryByText("+12")).toBeNull();
   },
 };
@@ -447,9 +637,13 @@ export const VisualTestEnsureSelectionOpensViaIndicators: MtSelectStory = {
   name: "Should open selection via indicators",
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    await waitUntil(() =>
-      document.querySelector('.mt-select-selection-list__item[title="Option B"]'),
-    );
+    await waitUntil(() => {
+      // Check if input item contains "Option B"
+      const selectionListItem = document.querySelector(
+        ".mt-select-selection-list__input",
+      ) as HTMLInputElement;
+      return selectionListItem?.value === "Option B";
+    });
 
     // open selection via indicator
     await userEvent.click(canvas.getByTestId("mt-select__select-indicator"));
@@ -463,5 +657,27 @@ export const VisualTestEnsureSelectionOpensViaIndicators: MtSelectStory = {
     // close selection via indicator
     await userEvent.click(canvas.getByTestId("mt-select__select-indicator"));
     expect(document.querySelector(".mt-popover-deprecated__wrapper")).toBeNull();
+  },
+};
+
+export const VisualTestMultipleSelectsOnOnePage: MtSelectStory = {
+  name: "Should close other selects when opening a new one",
+  args: {
+    _secondSelect: true,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Open the second select below the first one
+    const secondSelect = canvas.getAllByRole("textbox").at(1);
+    expect(secondSelect).toBeDefined();
+    // @ts-ignore - secondSelect is a HTMLElement
+    await userEvent.click(secondSelect);
+
+    // Open the primary select above the second one
+    const primary = canvas.getAllByRole("textbox").at(0);
+    expect(primary).toBeDefined();
+    // @ts-ignore - primary is a HTMLElement
+    await userEvent.click(primary);
   },
 };

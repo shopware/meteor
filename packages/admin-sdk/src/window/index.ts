@@ -3,6 +3,7 @@ import { createSender } from '../channel';
 export const redirect = createSender('windowRedirect');
 export const routerPush = createSender('windowRouterPush');
 export const reload = createSender('windowReload', {});
+export const getId = createSender('windowGetId');
 
 /**
  * Redirect to another URL
@@ -35,4 +36,11 @@ export type windowRouterPush = {
  */
 export type windowReload = {
   responseType: void,
+}
+
+/**
+ * Get a unique identifier for the current window
+ */
+export type windowGetId = {
+  responseType: string,
 }

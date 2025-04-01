@@ -70,6 +70,7 @@
         <mt-popover title="Filters" :child-views="filterChildViews">
           <template #trigger="{ toggleFloatingUi }">
             <button
+              type="button"
               @click="toggleFloatingUi"
               class="mt-data-table__add-filter-button"
               :aria-label="t('filter.addFilter')"
@@ -2534,6 +2535,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
 
     .mt-select {
       margin-bottom: 0;
+      width: 100px;
     }
   }
 

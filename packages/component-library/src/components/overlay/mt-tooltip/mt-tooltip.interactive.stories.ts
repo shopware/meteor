@@ -1,4 +1,4 @@
-import { userEvent, within } from "@storybook/test";
+import { userEvent } from "@storybook/test";
 import type { MtTooltipMeta } from "./mt-tooltip.stories";
 import MtTooltipStory from "./mt-tooltip.stories";
 
@@ -40,5 +40,14 @@ export const VisualTestTooltipLeft = {
   name: "Tooltip is to the left of the trigger",
   args: {
     placement: "left",
+  },
+};
+
+export const VisualTestWrapText = {
+  name: "Tooltip wraps text",
+  args: {
+    maxWidth: 300,
+    content:
+      'This is a long tooltip. [THISISAVERYVERYVERYLONGTOOLTIPTHATSHOULDWRAP]. If you can\'t see the "[" and "]" then the tooltip is not wrapping correctly',
   },
 };

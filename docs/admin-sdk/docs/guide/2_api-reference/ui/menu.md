@@ -2,6 +2,8 @@
 
 ### Toggle menu
 
+> Available since Shopware v6.6.2.0
+
 The Admin SDK allows you to manipulate the Admin menu of your application. One of the features it provides is the ability to toggle the Admin menu. This is done using the `collapseMenu` and `expandMenu` methods.
 
 #### Usage:

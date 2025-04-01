@@ -1,5 +1,89 @@
 # Changelog
 
+## 4.8.0
+
+### Minor Changes
+
+- c6017dd: Added label slot to mt-checkbox
+
+## 4.7.1
+
+### Patch Changes
+
+- 55b219b: - Remove stop propagation for `mt-select-base` click handler
+
+## 4.7.0
+
+### Minor Changes
+
+- 8d89449: Fix password flickering and add submit event for `mt-password-field.vue` component.
+
+## 4.6.0
+
+### Minor Changes
+
+- 3af841b: Allow setting the max width of a tooltip
+
+  ```html
+  <template>
+    <mt-tooltip content="My content" :max-width="200">
+      <template #default="props">
+        <button v-bind="props">Open tooltip</button>
+      </template>
+    </mt-tooltip>
+  </template>
+  ```
+
+- 7498dc5: Fix single select truncation
+
+### Patch Changes
+
+- ba9a202: Allow setting the max width of helptexts
+- 611a1d9: Set default max-width of help texts to 240px
+- c0166e8: Change display mode of mt-button to inline-grid
+- b0d74e7: Teleport tooltips to body
+- b3d2b03: Set default max-width of tooltips to 240px
+- 67c1cf8: Wrap tooltip content for mt-tooltip component
+
+## 4.5.1
+
+### Patch Changes
+
+- 6372237: Center content of mt-button when it's a link
+- 55832a9: Show icons when mt-button is a link
+
+## 4.5.0
+
+### Minor Changes
+
+- 6de3f71: Allow setting an icon without specifing the mode like regular or solid
+
+  You can now define an icon without explicitly defining the mode for it like this:
+
+  ```vue
+  <!-- Before -->
+  <mt-icon name="regular-3d" />
+
+  <!-- After -->
+  <mt-icon name="3d" />
+  ```
+
+  By default we use regular icons, however you can use solid icons as follows:
+
+  ```vue
+  <!-- Old way, still works, but prefer using the new way -->
+  <mt-icon name="solid-3d" />
+
+  <!-- New, preferred way -->
+  <mt-icon name="3d" mode="solid" />
+  ```
+
+### Patch Changes
+
+- ee0a4ad: Allow setting a margin on an `mt-button` component
+- a57d22e: fix: update wrong position of mt-select popover
+- d988d78: Add auto-completion for color prop of mt-text component
+
 ## 4.4.1
 
 ### Patch Changes

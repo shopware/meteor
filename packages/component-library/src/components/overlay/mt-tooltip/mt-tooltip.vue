@@ -21,49 +21,51 @@
     }"
   />
 
-  <Transition v-bind="$attrs">
-    <div v-show="isVisible" :data-placement="calculatedPlacement" style="position: absolute">
-      <!-- Needs to be v-show, otherwise we have a jumping entry when tooltip is visible for the first time -->
-      <div
-        role="tooltip"
-        :id="`mt-tooltip--${id}__tooltip`"
-        class="tooltip"
-        ref="tooltipRef"
-        :style="floatingStyles"
-        tabindex="-1"
-        @mouseover="setState({ isHoveringTooltip: true })"
-        @mouseleave="onMouseLeaveTooltip"
-      >
-        <span>{{ content }}</span>
-
-        <svg
-          aria-hidden="true"
-          ref="arrowRef"
-          width="8"
-          height="4"
-          viewBox="0 0 8 4"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          :style="{
-            background: 'var(--color-elevation-surface-floating)',
-            height: '0.5rem',
-            width: '0.5rem',
-            borderRadius: '2px',
-            position: 'absolute',
-            left: middlewareData.arrow?.x != null ? `${middlewareData.arrow.x}px` : '',
-            top: middlewareData.arrow?.y != null ? `${middlewareData.arrow.y}px` : '',
-            rotate: '45deg',
-            [arrowOffset]: '-0.125rem',
-          }"
+  <Teleport to="body">
+    <Transition v-bind="$attrs">
+      <div v-show="isVisible" :data-placement="calculatedPlacement" style="position: absolute; z-index: 2100;">
+        <!-- Needs to be v-show, otherwise we have a jumping entry when tooltip is visible for the first time -->
+        <div
+          role="tooltip"
+          :id="`mt-tooltip--${id}__tooltip`"
+          class="tooltip"
+          ref="tooltipRef"
+          :style="{ ...floatingStyles, maxWidth: `${props.maxWidth}px` }"
+          tabindex="-1"
+          @mouseover="setState({ isHoveringTooltip: true })"
+          @mouseleave="onMouseLeaveTooltip"
         >
-          <path
-            d="M8 0L4.70711 3.29289C4.31658 3.68342 3.68342 3.68342 3.29289 3.29289L0 0H8Z"
-            fill="var(--color-elevation-surface-floating)"
-          />
-        </svg>
+          <span>{{ content }}</span>
+
+          <svg
+            aria-hidden="true"
+            ref="arrowRef"
+            width="8"
+            height="4"
+            viewBox="0 0 8 4"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            :style="{
+              background: 'var(--color-elevation-surface-floating)',
+              height: '0.5rem',
+              width: '0.5rem',
+              borderRadius: '2px',
+              position: 'absolute',
+              left: middlewareData.arrow?.x != null ? `${middlewareData.arrow.x}px` : '',
+              top: middlewareData.arrow?.y != null ? `${middlewareData.arrow.y}px` : '',
+              rotate: '45deg',
+              [arrowOffset]: '-0.125rem',
+            }"
+          >
+            <path
+              d="M8 0L4.70711 3.29289C4.31658 3.68342 3.68342 3.68342 3.29289 3.29289L0 0H8Z"
+              fill="var(--color-elevation-surface-floating)"
+            />
+          </svg>
+        </div>
       </div>
-    </div>
-  </Transition>
+    </Transition>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
@@ -89,11 +91,13 @@ const props = withDefaults(
     delayDurationInMs?: number;
     hideDelayDurationInMs?: number;
     placement?: Placement;
+    maxWidth?: number;
   }>(),
   {
     delayDurationInMs: 500,
     hideDelayDurationInMs: 300,
     placement: "top",
+    maxWidth: 240,
   },
 );
 
@@ -202,6 +206,7 @@ provide(TooltipContext, true);
   padding: var(--scale-size-12);
   border-radius: var(--border-radius-overlay);
   width: max-content;
+  overflow-wrap: break-word;
 }
 
 .v-enter-active,

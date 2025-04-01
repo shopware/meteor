@@ -6,6 +6,9 @@
     "url": "git+ssh://git@github.com:shopware/meteor.git"
   },
   "main": "./dist/commonjs/index.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tshy",
     "test:unit": "node --import tsx --test $(find . -name \"*.test.ts\")",

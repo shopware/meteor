@@ -1,4 +1,5 @@
 import { createSender, createSubscriber } from '../channel';
+import getCompareIsShopwareVersion from './compare-version';
 
 export const getLanguage = createSender('contextLanguage', {});
 export const subscribeLanguage = createSubscriber('contextLanguage');
@@ -7,7 +8,7 @@ export const getLocale = createSender('contextLocale', {});
 export const subscribeLocale = createSubscriber('contextLocale');
 export const getCurrency = createSender('contextCurrency', {});
 export const getShopwareVersion = createSender('contextShopwareVersion', {});
-export const compareShopwareVersion = createSender('contextCompareShopwareVersion', {});
+export const compareIsShopwareVersion = getCompareIsShopwareVersion(getShopwareVersion);
 export const getUserInformation = createSender('contextUserInformation', {});
 export const getUserTimezone = createSender('contextUserTimezone', {});
 export const getAppInformation = createSender('contextAppInformation', {});
@@ -56,14 +57,6 @@ export type contextCurrency = {
 export type contextShopwareVersion = {
   responseType: string,
 }
-/**
- * Get the current Shopware version comparison
- */
-export type contextCompareShopwareVersion = {
-  responseType: boolean,
-  version: string,
-  comparator?: '=' | '>'| '<'|'<=' | '>=',
-};
 
 /**
  * Get the current app information

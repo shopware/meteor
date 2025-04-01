@@ -1,5 +1,64 @@
 # Changelog
 
+## 5.8.2
+
+### Patch Changes
+
+- Updated dependencies [c6017dd]
+  - @shopware-ag/meteor-component-library@4.8.0
+
+## 5.8.1
+
+### Patch Changes
+
+- Updated dependencies [55b219b]
+  - @shopware-ag/meteor-component-library@4.7.1
+
+## 5.8.0
+
+### Minor Changes
+
+- 8dac4d1: - Changed name of `context.compareShopwareVersion` to `context.compareIsShopwareVersion`
+  - Changed order of parameters of `context.compareIsShopwareVersion`
+
+### Patch Changes
+
+- Updated dependencies [8d89449]
+  - @shopware-ag/meteor-component-library@4.7.0
+
+## 5.7.8
+
+### Patch Changes
+
+- Updated dependencies [ba9a202]
+- Updated dependencies [3af841b]
+- Updated dependencies [7498dc5]
+- Updated dependencies [611a1d9]
+- Updated dependencies [c0166e8]
+- Updated dependencies [b0d74e7]
+- Updated dependencies [b3d2b03]
+- Updated dependencies [67c1cf8]
+  - @shopware-ag/meteor-component-library@4.6.0
+
+## 5.7.7
+
+### Patch Changes
+
+- 13ce32a: feat (NEXT-40858): Add message type windowGetId
+- Updated dependencies [6372237]
+- Updated dependencies [55832a9]
+  - @shopware-ag/meteor-component-library@4.5.1
+
+## 5.7.6
+
+### Patch Changes
+
+- Updated dependencies [ee0a4ad]
+- Updated dependencies [6de3f71]
+- Updated dependencies [a57d22e]
+- Updated dependencies [d988d78]
+  - @shopware-ag/meteor-component-library@4.5.0
+
 ## 5.7.5
 
 ### Patch Changes
