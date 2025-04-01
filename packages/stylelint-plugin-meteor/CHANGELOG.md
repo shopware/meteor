@@ -1,5 +1,16 @@
 # @shopware-ag/stylelint-plugin-meteor
 
+## 1.1.0
+
+### Minor Changes
+
+- 16f8c74: Add auto-fixer for border-radius values
+- 2b2afba: Add auto-fixer for font-weight properties
+
+### Patch Changes
+
+- 187413b: Include dist directory in package
+
 ## 1.0.0
 
 ### Patch Changes
