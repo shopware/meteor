@@ -13,7 +13,7 @@ testRule({
   fix: true,
 
   accept: [
-    { code: ".a { border: 1px solid var(--border-color)); }" },
+    { code: ".a { border: 1px solid var(--border-color); }" },
     { code: ".a { border: 1px solid var(--color-border-brand-selected); }" },
     { code: ".a { border: 0; }" },
     { code: ".a { border-color: var(--color-border-brand-selected); }" },
