@@ -475,9 +475,6 @@ importers:
       '@vitest/ui':
         specifier: ^3.0.5
         version: 3.0.5(vitest@3.0.5)
-      '@vue/eslint-config-typescript':
-        specifier: ^14.4.0
-        version: 14.4.0(eslint-plugin-vue@9.32.0(eslint@9.21.0(jiti@1.21.7)))(eslint@9.21.0(jiti@1.21.7))(typescript@5.7.3)
       '@vue/test-utils':
         specifier: ^2.4.2
         version: 2.4.6
@@ -5217,17 +5214,6 @@ packages:
       floating-vue: '>=2.0.0-0'
       unocss: '>=0.50.0-0'
       vue: '>=3.0.0-0'
-
-  '@vue/eslint-config-typescript@14.4.0':
-    resolution: {integrity: sha512-daU+eAekEeVz3CReE4PRW25fe+OJDKwE28jHN6LimDEnuFMbJ6H4WGogEpNof276wVP6UvzOeJQfLFjB5mW29A==}
-    engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
-    peerDependencies:
-      eslint: ^9.10.0
-      eslint-plugin-vue: ^9.28.0
-      typescript: '>=4.8.4'
-    peerDependenciesMeta:
-      typescript:
-        optional: true
 
   '@vue/language-core@2.0.21':
     resolution: {integrity: sha512-vjs6KwnCK++kIXT+eI63BGpJHfHNVJcUCr3RnvJsccT3vbJnZV5IhHR2puEkoOkIbDdp0Gqi1wEnv3hEd3WsxQ==}
@@ -20896,19 +20882,6 @@ snapshots:
       - qrcode
       - sortablejs
       - universal-cookie
-
-  '@vue/eslint-config-typescript@14.4.0(eslint-plugin-vue@9.32.0(eslint@9.21.0(jiti@1.21.7)))(eslint@9.21.0(jiti@1.21.7))(typescript@5.7.3)':
-    dependencies:
-      '@typescript-eslint/utils': 8.24.1(eslint@9.21.0(jiti@1.21.7))(typescript@5.7.3)
-      eslint: 9.21.0(jiti@1.21.7)
-      eslint-plugin-vue: 9.32.0(eslint@9.21.0(jiti@1.21.7))
-      fast-glob: 3.3.3
-      typescript-eslint: 8.24.1(eslint@9.21.0(jiti@1.21.7))(typescript@5.7.3)
-      vue-eslint-parser: 9.4.3(eslint@9.21.0(jiti@1.21.7))
-    optionalDependencies:
-      typescript: 5.7.3
-    transitivePeerDependencies:
-      - supports-color
 
   '@vue/language-core@2.0.21(typescript@5.7.3)':
     dependencies:
