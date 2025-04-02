@@ -1,5 +1,27 @@
 # Changelog
 
+## 4.9.1
+
+### Patch Changes
+
+- 466f306: Get rid of duplicate isInherited in mt-checkbox
+
+## 4.9.0
+
+### Minor Changes
+
+- fd48763: Add custom format prop for mt-datepicker and add dateType "time" to mt-datepicker
+- 3ff2753: add catch to dynamic icon import in mt-icon.vue
+
+### Patch Changes
+
+- 5c20ef8: Fix the `mt-email-field` showing the error message on its init instead after interacting with it.
+- 34d33d9: Add missing isInherited prop to mt-checkbox
+- 3a8e1d5: - Align form component heights
+- e440678: - Fix tooltip z-index position
+- 32b1d35: Added `type=button` to all buttons to prevent default `type=submit` behaviour
+- 371c286: Fix overflow of colorpicker in mt-text-editor
+
 ## 4.8.0
 
 ### Minor Changes
