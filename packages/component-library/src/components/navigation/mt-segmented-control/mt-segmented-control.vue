@@ -217,14 +217,27 @@ export default defineComponent({
   border: 1px solid var(--color-border-primary-default);
   border-radius: var(--border-radius-button);
   padding: var(--scale-size-2);
-}
 
-.mt-segmented-control .mt-floating-ui {
-  display: flex;
-}
+  & .mt-floating-ui {
+    display: flex;
+  }
 
-.mt-segmented-control .mt-floating-ui__trigger {
-  display: flex;
+  & .mt-floating-ui__trigger {
+    display: flex;
+  }
+
+  & .mt-field__label,
+  & .mt-field__label label {
+    cursor: pointer;
+    font-family: inherit;
+    font-size: inherit;
+    font-weight: inherit;
+    color: inherit;
+  }
+
+  & .mt-field--checkbox__container .mt-field__label {
+    margin-left: var(--scale-size-8);
+  }
 }
 
 .mt-segmented-control__action {
@@ -246,25 +259,39 @@ export default defineComponent({
     0.15s color ease;
   justify-content: center;
   text-align: center;
-}
 
-.mt-segmented-control__action:focus-visible {
-  outline: 2px solid var(--color-border-brand-selected);
-  box-shadow: 0px 0px 4px 0px rgba(24, 158, 255, 0.3);
-}
+  &:focus-visible {
+    outline: 2px solid var(--color-border-brand-selected);
+    box-shadow: 0px 0px 4px 0px rgba(24, 158, 255, 0.3);
+  }
 
-.mt-segmented-control__action .mt-field--checkbox {
-  margin-bottom: 0;
+  &:hover,
+  &:focus-visible {
+    background-color: var(--color-interaction-secondary-hover);
+  }
+
+  &:active {
+    background-color: var(--color-interaction-secondary-dark);
+  }
+
+  & .mt-field--checkbox {
+    margin-bottom: 0;
+  }
+
+  & .mt-field__checkbox #meteor-icon-kit__regular-checkmark-xxs {
+    width: var(--scale-size-8) !important;
+    height: var(--scale-size-6) !important;
+  }
 }
 
 .mt-segmented-control__action-icon.mt-icon {
   width: var(--scale-size-12);
   height: var(--scale-size-12);
-}
 
-.mt-segmented-control__action-icon.mt-icon > svg {
-  width: 100% !important;
-  height: 100% !important;
+  & > svg {
+    width: 100% !important;
+    height: 100% !important;
+  }
 }
 
 .mt-segmented-control__action-options-icon.mt-icon {
@@ -273,60 +300,46 @@ export default defineComponent({
   height: 5px;
 }
 
-.mt-segmented-control__action .mt-field__checkbox #meteor-icon-kit__regular-checkmark-xxs {
-  width: var(--scale-size-8) !important;
-  height: var(--scale-size-6) !important;
-}
-
-.mt-segmented-control__action:hover,
-.mt-segmented-control__action:focus-visible {
-  background-color: var(--color-interaction-secondary-hover);
-}
-
-.mt-segmented-control__action:active {
-  background-color: var(--color-interaction-secondary-dark);
-}
-
 .mt-segmented-control__action--pressed:not(.mt-segmented-control__action--critical) {
   color: var(--color-text-static-default);
   background-color: var(--color-interaction-primary-default);
+
+  &:hover,
+  &:focus-visible {
+    background-color: var(--color-interaction-primary-hover);
+  }
+
+  &:active {
+    background-color: var(--color-interaction-primary-pressed);
+  }
 }
 
-.mt-segmented-control__action--pressed:not(.mt-segmented-control__action--critical):hover,
-.mt-segmented-control__action--pressed:not(.mt-segmented-control__action--critical):focus-visible {
-  background-color: var(--color-interaction-primary-hover);
-}
+.mt-segmented-control__action--critical {
+  color: var(--color-text-critical-default);
 
-.mt-segmented-control__action--pressed:not(.mt-segmented-control__action--critical):active {
-  background-color: var(--color-interaction-primary-pressed);
+  &:hover,
+  &:focus-visible {
+    background-color: var(--color-background-critical-dark);
+  }
+
+  &:active {
+    color: var(--color-text-static-default);
+    background-color: var(--color-interaction-critical-pressed);
+  }
 }
 
 .mt-segmented-control__action--critical.mt-segmented-control__action--pressed {
   color: var(--color-text-static-default);
   background-color: var(--color-interaction-critical-default);
-}
 
-.mt-segmented-control__action--critical.mt-segmented-control__action--pressed:hover,
-.mt-segmented-control__action--critical.mt-segmented-control__action--pressed:focus-visible {
-  background-color: var(--color-interaction-critical-hover);
-}
+  &:hover,
+  &:focus-visible {
+    background-color: var(--color-interaction-critical-hover);
+  }
 
-.mt-segmented-control__action--critical.mt-segmented-control__action--pressed:active {
-  background-color: var(--color-interaction-critical-pressed);
-}
-
-.mt-segmented-control__action--critical {
-  color: var(--color-text-critical-default);
-}
-
-.mt-segmented-control__action--critical:hover,
-.mt-segmented-control__action--critical:focus-visible {
-  background-color: var(--color-background-critical-dark);
-}
-
-.mt-segmented-control__action--critical:active {
-  color: var(--color-text-static-default);
-  background-color: var(--color-interaction-critical-pressed);
+  &:active {
+    background-color: var(--color-interaction-critical-pressed);
+  }
 }
 
 .mt-segmented-control__action--disabled {
@@ -349,35 +362,22 @@ export default defineComponent({
 .mt-segmented-control--disabled-context {
   padding: 0px;
   gap: 0;
-}
 
-.mt-segmented-control--disabled-context .mt-floating-ui .mt-segmented-control__action {
-  border-radius: var(--border-radius-none);
-  border-right: 1px solid var(--color-border-primary-default);
-}
+  & .mt-floating-ui .mt-segmented-control__action {
+    border-radius: var(--border-radius-none);
+    border-right: 1px solid var(--color-border-primary-default);
+  }
 
-.mt-segmented-control--disabled-context .mt-floating-ui:first-child .mt-segmented-control__action {
-  border-top-left-radius: calc(var(--border-radius-xs) - 1px);
-  border-bottom-left-radius: calc(var(--border-radius-xs) - 1px);
-  border-left: none;
-}
+  & .mt-floating-ui:first-child .mt-segmented-control__action {
+    border-top-left-radius: calc(var(--border-radius-xs) - 1px);
+    border-bottom-left-radius: calc(var(--border-radius-xs) - 1px);
+    border-left: none;
+  }
 
-.mt-segmented-control--disabled-context .mt-floating-ui:last-child .mt-segmented-control__action {
-  border-top-right-radius: calc(var(--border-radius-xs) - 1px);
-  border-bottom-right-radius: calc(var(--border-radius-xs) - 1px);
-  border-right: none;
-}
-
-.mt-segmented-control .mt-field__label,
-.mt-segmented-control .mt-field__label label {
-  cursor: pointer;
-  font-family: inherit;
-  font-size: inherit;
-  font-weight: inherit;
-  color: inherit;
-}
-
-.mt-segmented-control .mt-field--checkbox__container .mt-field__label {
-  margin-left: var(--scale-size-8);
+  & .mt-floating-ui:last-child .mt-segmented-control__action {
+    border-top-right-radius: calc(var(--border-radius-xs) - 1px);
+    border-bottom-right-radius: calc(var(--border-radius-xs) - 1px);
+    border-right: none;
+  }
 }
 </style>
