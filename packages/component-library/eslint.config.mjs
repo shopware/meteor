@@ -2,15 +2,12 @@
 
 import eslint from "@eslint/js";
 import storybook from "eslint-plugin-storybook";
-import {
-  defineConfigWithVueTs,
-  vueTsConfigs,
-} from "@vue/eslint-config-typescript";
 import tseslint from "typescript-eslint";
 import vitest from "eslint-plugin-vitest";
 import globals from "globals";
+import pluginVue from "eslint-plugin-vue";
 
-export default defineConfigWithVueTs([
+export default tseslint.config([
   {
     ignores: [
       "*.d.ts",
@@ -27,10 +24,21 @@ export default defineConfigWithVueTs([
       globals: globals.browser,
     },
   },
-  eslint.configs.recommended,
-  ...tseslint.configs.recommended,
-  vueTsConfigs.recommended,
   {
+    extends: [
+      eslint.configs.recommended,
+      ...tseslint.configs.recommended,
+      ...pluginVue.configs["flat/recommended"],
+    ],
+    files: ["**/*.{ts,js,vue}"],
+    languageOptions: {
+      ecmaVersion: "latest",
+      sourceType: "module",
+      globals: globals.browser,
+      parserOptions: {
+        parser: tseslint.parser,
+      },
+    },
     rules: {
       // Those rules are only temporarily enabled. Once we migrated the config we're going
       //  to make this config stricter and stricter. Disabling some rules makes transitioning
