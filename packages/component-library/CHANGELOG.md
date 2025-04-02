@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.9.1
+
+### Patch Changes
+
+- 466f306: Get rid of duplicate isInherited in mt-checkbox
+
 ## 4.9.0
 
 ### Minor Changes
