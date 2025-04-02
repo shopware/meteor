@@ -6,6 +6,7 @@ import tseslint from "typescript-eslint";
 import vitest from "eslint-plugin-vitest";
 import globals from "globals";
 import pluginVue from "eslint-plugin-vue";
+import eslintConfigPrettier from "eslint-config-prettier";
 
 export default tseslint.config([
   {
@@ -62,4 +63,5 @@ export default tseslint.config([
       "no-restricted-imports": ["warn", "@vue/test-utils"],
     },
   },
+  eslintConfigPrettier,
 ]);
