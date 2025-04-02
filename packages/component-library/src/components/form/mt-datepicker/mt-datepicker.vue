@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div class="mt-datepicker">
     <mt-field-label :style="{ gridArea: 'label' }" id="field-id">
       {{ label }}
     </mt-field-label>
@@ -335,7 +335,7 @@ export default defineComponent({
   --dp-range-between-border-color: var(--color-background-brand-default);
 }
 
-.wrapper {
+.mt-datepicker {
   display: grid;
   grid-template-areas:
     "label"
