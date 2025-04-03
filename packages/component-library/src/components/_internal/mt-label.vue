@@ -14,7 +14,7 @@
       @click.prevent.stop="$emit('dismiss')"
     >
       <slot name="dismiss-icon">
-        <mt-icon data-testid="dismiss-label" name="regular-times-xxs" />
+        <mt-icon data-testid="dismiss-label" name="regular-times-xxs" size="var(--scale-size-12)" />
       </slot>
     </button>
   </span>
@@ -135,11 +135,6 @@ const labelClasses = computed(() => {
   border: 0 none;
   cursor: pointer;
   outline: none;
-}
-
-.mt-label__dismiss .mt-icon {
-  width: var(--scale-size-12);
-  height: var(--scale-size-12);
 }
 
 .mt-label.mt-label--ghost {
