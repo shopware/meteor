@@ -11,6 +11,7 @@ import * as settings from './ui/settings';
 import * as mainModule from './ui/main-module';
 import * as module from './ui/module';
 import * as modal from './ui/modal';
+import * as sidebar from './ui/sidebar';
 import * as actionButton from './ui/action-button';
 import * as webhook from './app/action';
 import * as data from './data';
@@ -32,6 +33,7 @@ const ui = {
   module,
   modal,
   actionButton,
+  sidebar,
 };
 
 /**
