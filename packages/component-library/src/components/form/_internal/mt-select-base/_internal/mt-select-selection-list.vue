@@ -283,100 +283,94 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-@import "../../../../assets/scss/variables";
-
+<style>
 .mt-select-selection-list {
   display: flex;
   flex-wrap: wrap;
   list-style: none;
   width: calc(100% - 30px);
+}
 
-  &:has(.mt-select-selection-list--single) {
-    flex-wrap: nowrap;
+.mt-select-selection-list:has(.mt-select-selection-list--single) {
+  flex-wrap: nowrap;
+}
 
-    .mt-select-selection-list--single {
-      min-width: 0;
-      max-width: 100%;
-    }
-  }
+.mt-select-selection-list:has(.mt-select-selection-list--single) .mt-select-selection-list--single {
+  min-width: 0;
+  max-width: 100%;
+}
 
-  &--single {
-    .mt-label {
-      border: none;
-      background: unset;
-    }
-  }
+.mt-select-selection-list--single .mt-label {
+  border: none;
+  background: unset;
+}
 
-  .mt-select-selection-list__item-holder {
-    max-width: 220px;
-    line-height: 0;
-    margin: var(--scale-size-8) var(--scale-size-6) 0 0;
-  }
+.mt-select-selection-list .mt-select-selection-list__item-holder {
+  max-width: 220px;
+  line-height: 0;
+  margin: var(--scale-size-8) var(--scale-size-6) 0 0;
+}
 
-  .mt-select-selection-list__load-more {
-    margin: var(--scale-size-8) var(--scale-size-6) 0 0;
-  }
+.mt-select-selection-list .mt-select-selection-list__load-more {
+  margin: var(--scale-size-8) var(--scale-size-6) 0 0;
+}
 
-  button.mt-select-selection-list__load-more-button {
-    padding: var(--scale-size-8) var(--scale-size-12);
-    margin: 0 var(--scale-size-6) 0 0;
-    color: var(--color-text-brand-default);
-    font-size: 12px;
-    line-height: 14px;
-    border-radius: 2px;
-    height: unset;
-    border-color: var(--color-border-primary-default);
-  }
+.mt-select-selection-list button.mt-select-selection-list__load-more-button {
+  padding: var(--scale-size-8) var(--scale-size-12);
+  margin: 0 var(--scale-size-6) 0 0;
+  color: var(--color-text-brand-default);
+  font-size: 12px;
+  line-height: 14px;
+  border-radius: 2px;
+  height: unset;
+  border-color: var(--color-border-primary-default);
+}
 
-  .mt-select-selection-list__input-wrapper {
-    flex: 1 1 0;
-  }
+.mt-select-selection-list .mt-select-selection-list__input-wrapper {
+  flex: 1 1 0;
+}
 
-  .mt-select-selection-list__input-wrapper--small .mt-select-selection-list__input {
-    min-height: 32px;
-    padding: var(--scale-size-4) var(--scale-size-16) var(--scale-size-4) var(--scale-size-8);
-  }
-
+.mt-select-selection-list
+  .mt-select-selection-list__input-wrapper--small
   .mt-select-selection-list__input {
-    display: inline-block;
-    min-height: 46px;
-    padding: var(--scale-size-12) var(--scale-size-16) var(--scale-size-12) var(--scale-size-8);
-
-    &::placeholder {
-      color: var(--color-text-secondary-default);
-      white-space: break-spaces;
-    }
-  }
+  min-height: 32px;
+  padding: var(--scale-size-4) var(--scale-size-16) var(--scale-size-4) var(--scale-size-8);
 }
 
-.mt-field--medium .mt-select-selection-list {
-  .mt-select-selection-list__item-holder .mt-label {
-    margin: var(--scale-size-4) var(--scale-size-6) 0 0;
-  }
-
-  input {
-    padding: var(--scale-size-4) var(--scale-size-16) var(--scale-size-8) var(--scale-size-8);
-  }
-
-  .mt-select-selection-list__load-more-button {
-    padding: var(--scale-size-4) var(--scale-size-12);
-    margin: var(--scale-size-4) var(--scale-size-6) 0 0;
-  }
+.mt-select-selection-list .mt-select-selection-list__input {
+  display: inline-block;
+  min-height: 46px;
+  padding: var(--scale-size-12) var(--scale-size-16) var(--scale-size-12) var(--scale-size-8);
 }
 
-.mt-field--small .mt-select-selection-list {
-  .mt-select-selection-list__item-holder .mt-label {
-    margin: var(--scale-size-4) var(--scale-size-6) 0 0;
-  }
+.mt-select-selection-list .mt-select-selection-list__input::placeholder {
+  color: var(--color-text-secondary-default);
+  white-space: break-spaces;
+}
 
-  input {
-    padding: var(--scale-size-2) var(--scale-size-16) var(--scale-size-4) var(--scale-size-8);
-  }
+.mt-field--medium .mt-select-selection-list .mt-select-selection-list__item-holder .mt-label {
+  margin: var(--scale-size-4) var(--scale-size-6) 0 0;
+}
 
-  .mt-select-selection-list__load-more-button {
-    padding: 0 var(--scale-size-8);
-    margin: -1px var(--scale-size-6) 0 0;
-  }
+.mt-field--medium .mt-select-selection-list input {
+  padding: var(--scale-size-4) var(--scale-size-16) var(--scale-size-8) var(--scale-size-8);
+}
+
+.mt-field--medium .mt-select-selection-list .mt-select-selection-list__load-more-button {
+  padding: var(--scale-size-4) var(--scale-size-12);
+  margin: var(--scale-size-4) var(--scale-size-6) 0 0;
+}
+
+.mt-field--small .mt-select-selection-list .mt-select-selection-list__item-holder .mt-label {
+  margin: var(--scale-size-4) var(--scale-size-6) 0 0;
+}
+
+.mt-field--small .mt-select-selection-list input {
+  padding: var(--scale-size-2) var(--scale-size-16) var(--scale-size-4) var(--scale-size-8);
+}
+
+.mt-field--small .mt-select-selection-list .mt-select-selection-list__load-more-button {
+  padding: 0 var(--scale-size-8);
+  margin: -1px var(--scale-size-6) 0 0;
 }
 </style>
