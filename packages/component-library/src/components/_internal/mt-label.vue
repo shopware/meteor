@@ -88,7 +88,7 @@ const labelClasses = computed(() => {
   font-family: var(--font-family-body);
   font-size: var(--font-size-xs);
   color: var(--color-text-primary-default);
-  border-radius: 4px;
+  border-radius: var(--border-radius-xs);
   cursor: default;
 
   .mt-label__caption {
@@ -168,7 +168,7 @@ const labelClasses = computed(() => {
     border-radius: 100%;
     padding: var(--scale-size-4);
     border: 0;
-    min-width: 24px;
+    min-width: var(--scale-size-24);
   }
 
   &.mt-label--caps {
