@@ -159,7 +159,7 @@ const labelClasses = computed(() => {
   }
 
   &.mt-label--appearance-pill {
-    border-radius: 99999px;
+    border-radius: var(--border-radius-round);
   }
 
   &.mt-label--appearance-circle {
