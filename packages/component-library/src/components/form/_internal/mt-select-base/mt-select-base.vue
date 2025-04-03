@@ -286,136 +286,130 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-$mt-select-focus-transition: all ease-in-out 0.2s;
-
+<style>
 .mt-select {
   position: relative;
   min-width: 100px;
-
-  .mt-block-field__block {
-    transition: $mt-select-focus-transition;
-    background-color: var(--color-elevation-surface-raised);
-    position: relative;
-    overflow: hidden;
-  }
-
-  .mt-select__selection {
-    width: 100%;
-    position: relative;
-    padding: 0 var(--scale-size-8);
-    border: none;
-    font-size: var(--font-size-s);
-    line-height: var(--font-line-height-s);
-    font-family: var(--font-family-body);
-    color: var(--color-icon-primary-default);
-    outline: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-  }
-
-  .mt-select__selection-indicators {
-    position: absolute;
-    display: flex;
-    gap: var(--scale-size-8);
-    top: 50%;
-    right: var(--scale-size-16);
-    transform: translate(0, -50%);
-    z-index: 1;
-  }
-
-  .mt-select__selection-indicators .mt-loader {
-    width: var(--scale-size-16);
-    height: var(--scale-size-16);
-    margin: 0;
-    left: -24px;
-    top: -4px;
-
-    .mt-loader__container {
-      transform: none;
-      left: 0;
-      top: 0;
-    }
-  }
-
-  .mt-select__select-indicator-hitbox {
-    background-color: transparent;
-    border: 0 solid transparent;
-    color: var(--color-icon-primary-default);
-    padding: 0 var(--scale-size-4);
-    cursor: pointer;
-
-    .mt-select__select-indicator {
-      display: block;
-    }
-
-    &:focus {
-      .mt-select__select-indicator-clear {
-        opacity: 1;
-        pointer-events: all;
-        cursor: pointer;
-      }
-    }
-  }
-
-  .mt-select__select-indicator {
-    flex-shrink: 0;
-    cursor: pointer;
-    transition: all 0.3s ease-in-out;
-  }
-
-  .mt-select__select-indicator-rotated {
-    transform: rotate(180deg);
-  }
-
-  .mt-select__select-indicator-clear {
-    transition: 0.1s opacity ease;
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  &:hover .mt-select__select-indicator-clear,
-  &.has--focus .mt-select__select-indicator-clear {
-    opacity: 1;
-    pointer-events: all;
-    cursor: pointer;
-  }
-
-  &.mt-field--medium .mt-select__selection {
-    padding: var(--scale-size-4) var(--scale-size-6) 0;
-  }
-
-  &.mt-field--small .mt-select__selection {
-    padding: var(--scale-size-4) var(--scale-size-6) 0;
-  }
-
-  &.is--disabled {
-    .mt-block-field__block,
-    .mt-label,
-    input {
-      background-color: var(--color-background-primary-disabled);
-    }
-  }
-
-  &--small {
-    cursor: pointer;
-
-    .mt-select-selection-list--single .mt-label {
-      cursor: pointer;
-      height: var(--scale-size-18);
-      padding-top: 1px;
-    }
-
-    .mt-block-field__block {
-      min-height: unset;
-    }
-  }
 }
 
-// Vue.js transitions
+.mt-select .mt-block-field__block {
+  transition: all ease-in-out 0.2s;
+  background-color: var(--color-elevation-surface-raised);
+  position: relative;
+  overflow: hidden;
+}
+
+.mt-select .mt-select__selection {
+  width: 100%;
+  position: relative;
+  padding: 0 var(--scale-size-8);
+  border: none;
+  font-size: var(--font-size-s);
+  line-height: var(--font-line-height-s);
+  font-family: var(--font-family-body);
+  color: var(--color-icon-primary-default);
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.mt-select .mt-select__selection-indicators {
+  position: absolute;
+  display: flex;
+  gap: var(--scale-size-8);
+  top: 50%;
+  right: var(--scale-size-16);
+  transform: translate(0, -50%);
+  z-index: 1;
+}
+
+.mt-select .mt-select__selection-indicators .mt-loader {
+  width: var(--scale-size-16);
+  height: var(--scale-size-16);
+  margin: 0;
+  left: -24px;
+  top: -4px;
+}
+
+.mt-select .mt-select__selection-indicators .mt-loader .mt-loader__container {
+  transform: none;
+  left: 0;
+  top: 0;
+}
+
+.mt-select .mt-select__select-indicator-hitbox {
+  background-color: transparent;
+  border: 0 solid transparent;
+  color: var(--color-icon-primary-default);
+  padding: 0 var(--scale-size-4);
+  cursor: pointer;
+}
+
+.mt-select .mt-select__select-indicator-hitbox .mt-select__select-indicator {
+  display: block;
+}
+
+.mt-select .mt-select__select-indicator-hitbox:focus .mt-select__select-indicator-clear {
+  opacity: 1;
+  pointer-events: all;
+  cursor: pointer;
+}
+
+.mt-select .mt-select__select-indicator {
+  flex-shrink: 0;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.mt-select .mt-select__select-indicator-rotated {
+  transform: rotate(180deg);
+}
+
+.mt-select .mt-select__select-indicator-clear {
+  transition: 0.1s opacity ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.mt-select:hover .mt-select__select-indicator-clear,
+.mt-select.has--focus .mt-select__select-indicator-clear {
+  opacity: 1;
+  pointer-events: all;
+  cursor: pointer;
+}
+
+.mt-select.mt-field--medium .mt-select__selection {
+  padding: var(--scale-size-4) var(--scale-size-6) 0;
+}
+
+.mt-select.mt-field--small .mt-select__selection {
+  padding: var(--scale-size-4) var(--scale-size-6) 0;
+}
+
+.mt-select.is--disabled .mt-block-field__block,
+.mt-select.is--disabled .mt-label,
+.mt-select.is--disabled input {
+  background-color: var(--color-background-primary-disabled);
+}
+
+.mt-select--small {
+  cursor: pointer;
+}
+
+.mt-select--small .mt-select-selection-list--single .mt-label {
+  cursor: pointer;
+  height: var(--scale-size-18);
+  padding-top: 1px;
+}
+
+.mt-select--small .mt-block-field__block {
+  min-height: unset;
+}
+
+/* Vue.js transitions */
 .mt-select-result-list-fade-down-enter-active,
 .mt-select-result-list-fade-down-leave-active {
-  transition: $mt-select-focus-transition;
+  transition: all ease-in-out 0.2s;
   transform: translateY(0);
 }
 
