@@ -187,7 +187,7 @@ export default defineComponent({
       return {
         "has--error": !!this.hasError,
         "is--disabled": this.disabled,
-        "is--inherited": !!this.isInherited,
+        "is--inherited": !!this.isInheritedComputed,
         "is--bordered": this.bordered,
         "is--partly-checked": this.isPartlyChecked,
       };
@@ -202,7 +202,7 @@ export default defineComponent({
     },
 
     inputState(): boolean {
-      if (this.isInherited) {
+      if (this.isInheritedComputed) {
         return this.inheritedValue;
       }
 
@@ -216,15 +216,16 @@ export default defineComponent({
       return this.inheritedValue !== null;
     },
 
-    isInherited(): boolean {
-      if (this.$attrs.isInherited) {
+    isInheritedComputed(): boolean {
+      if (this.isInherited) {
         return true;
       }
+
       return this.isInheritanceField && this.currentValue === null;
     },
 
     isDisabled(): boolean {
-      return this.disabled || this.isInherited;
+      return this.disabled || this.isInheritedComputed;
     },
 
     isPartlyChecked(): boolean {
