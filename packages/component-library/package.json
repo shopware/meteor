@@ -96,6 +96,7 @@
     "@storybook/test": "^8.6.12",
     "@storybook/test-runner": "^0.22.0",
     "@storybook/theming": "^8.6.12",
+    "@storybook/types": "^8.6.12",
     "@storybook/vue3": "^8.6.12",
     "@storybook/vue3-vite": "^8.6.12",
     "@testing-library/user-event": "^14.6.1",
