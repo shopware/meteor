@@ -71,7 +71,7 @@ describe("mt-email-field", () => {
     expect(handler).toHaveBeenNthCalledWith(1, "a");
   });
 
-  it("displays an error when the input appears and the provided value is invalid", async () => {
+  it("displays an error when the input is blurred and the provided value is invalid", async () => {
     // ARRANGE
     render(MtEmailField, {
       props: {
@@ -82,7 +82,31 @@ describe("mt-email-field", () => {
     await flushPromises();
 
     // ASSERT
+    expect(screen.queryByText(/Constraints/)).not.toBeInTheDocument();
+
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime,
+    });
+
+    // ACT
+    await user.tab();
+    await user.tab();
+
     expect(screen.getByText(/Constraints/)).toHaveTextContent("Constraints not satisfied");
+  });
+
+  it("does not display the error when the input appears and the provided value is invalid", async () => {
+    // ARRANGE
+    render(MtEmailField, {
+      props: {
+        modelValue: "asdf@",
+      },
+    });
+
+    await flushPromises();
+
+    // ASSERT
+    expect(screen.queryByText(/Constraints/)).not.toBeInTheDocument();
   });
 
   it("displays an error when typing an invalid value and then moving the focus to another element", async () => {
@@ -118,6 +142,14 @@ describe("mt-email-field", () => {
     });
 
     await flushPromises();
+
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime,
+    });
+
+    // ACT
+    await user.tab();
+    await user.tab();
 
     // ASSERT
     expect(screen.getByText(/Constraints/)).toHaveTextContent("Constraints not satisfied");
@@ -488,6 +520,14 @@ describe("mt-email-field", () => {
         modelValue: "asdf@",
       },
     });
+
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime,
+    });
+
+    // ACT
+    await user.tab();
+    await user.tab();
 
     // ASSERT
     expect(screen.getByRole("textbox")).toHaveAttribute("aria-invalid", "true");

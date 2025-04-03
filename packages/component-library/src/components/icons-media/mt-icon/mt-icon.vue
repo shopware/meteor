@@ -72,6 +72,16 @@ const iconInformation = computed(() => {
   };
 });
 
+function handleFailedImport(detail: string = "") {
+  console.error(`The SVG file for the icon "${iconInformation.value.mode}-${iconInformation.value.name}" could not be found and loaded.`);
+
+  if (detail) {
+    console.error(detail);
+  }
+
+  iconSvgData.value = "";
+}
+
 watch(
   iconInformation,
   () => {
@@ -83,11 +93,8 @@ watch(
         return;
       }
 
-      console.error(
-        `The SVG file for the icon name ${iconInformation.value.mode} could not be found and loaded.`,
-      );
-      iconSvgData.value = "";
-    });
+      handleFailedImport();
+    }).catch(handleFailedImport);
   },
   { immediate: true },
 );
