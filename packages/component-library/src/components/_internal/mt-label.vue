@@ -92,8 +92,9 @@ const labelClasses = computed(() => {
   cursor: default;
 
   .mt-label__caption {
-    @include truncate();
-
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
     display: inline-block;
     width: 100%;
   }
