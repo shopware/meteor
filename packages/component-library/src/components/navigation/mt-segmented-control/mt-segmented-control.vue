@@ -208,7 +208,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style>
 .mt-segmented-control {
   display: flex;
   gap: var(--scale-size-2);
@@ -218,159 +218,16 @@ export default defineComponent({
   border-radius: var(--border-radius-button);
   padding: var(--scale-size-2);
 
-  .mt-floating-ui {
+  & .mt-floating-ui {
     display: flex;
   }
 
-  .mt-floating-ui__trigger {
+  & .mt-floating-ui__trigger {
     display: flex;
   }
 
-  &__action {
-    display: flex;
-    align-items: center;
-    gap: var(--scale-size-8);
-    position: relative;
-    cursor: pointer;
-    border: none;
-    border-radius: var(--border-radius-button);
-    padding: var(--scale-size-6) var(--scale-size-12);
-    font-family: var(--font-family-body);
-    font-size: var(--font-size-2xs);
-    line-height: var(--font-line-height-2xs);
-    font-weight: var(--font-weight-semibold);
-    color: var(--color-text-primary-default);
-    transition:
-      0.15s background ease,
-      0.15s color ease;
-    justify-content: center;
-    text-align: center;
-
-    &:focus-visible {
-      outline: 2px solid var(--color-border-brand-selected);
-      box-shadow: 0px 0px 4px 0px rgba(24, 158, 255, 0.3);
-    }
-
-    .mt-field--checkbox {
-      margin-bottom: 0;
-    }
-
-    &-icon {
-      &.mt-icon {
-        width: var(--scale-size-12);
-        height: var(--scale-size-12);
-      }
-
-      &.mt-icon > svg {
-        width: 100% !important;
-        height: 100% !important;
-      }
-    }
-
-    &-options-icon.mt-icon {
-      margin-top: 1px;
-      width: var(--scale-size-8);
-      height: 5px;
-    }
-
-    .mt-field__checkbox #meteor-icon-kit__regular-checkmark-xxs {
-      width: var(--scale-size-8) !important;
-      height: var(--scale-size-6) !important;
-    }
-
-    &:hover,
-    &:focus-visible {
-      background-color: var(--color-interaction-secondary-hover);
-    }
-
-    &:active {
-      background-color: var(--color-interaction-secondary-dark);
-    }
-
-    &--pressed:not(&--critical) {
-      color: var(--color-text-static-default);
-      background-color: var(--color-interaction-primary-default);
-
-      &:hover,
-      &:focus-visible {
-        background-color: var(--color-interaction-primary-hover);
-      }
-
-      &:active {
-        background-color: var(--color-interaction-primary-pressed);
-      }
-    }
-
-    &--critical.mt-segmented-control__action--pressed {
-      color: var(--color-text-static-default);
-      background-color: var(--color-interaction-critical-default);
-
-      &:hover,
-      &:focus-visible {
-        background-color: var(--color-interaction-critical-hover);
-      }
-
-      &:active {
-        background-color: var(--color-interaction-critical-pressed);
-      }
-    }
-
-    &--critical {
-      color: var(--color-text-critical-default);
-
-      &:hover,
-      &:focus-visible {
-        background-color: var(--color-background-critical-dark);
-      }
-
-      &:active {
-        color: var(--color-text-static-default);
-        background-color: var(--color-interaction-critical-pressed);
-      }
-    }
-
-    &--disabled {
-      color: var(--color-text-primary-disabled);
-      cursor: default;
-      pointer-events: none;
-    }
-
-    &--min-square {
-      min-width: 30px;
-    }
-  }
-
-  &__divider {
-    background-color: var(--color-border-primary-default);
-    width: 1px;
-    margin-top: var(--scale-size-4);
-    margin-bottom: var(--scale-size-4);
-  }
-
-  &--disabled-context {
-    padding: 0px;
-    gap: 0;
-
-    .mt-floating-ui .mt-segmented-control__action {
-      border-radius: var(--border-radius-none);
-      border-right: 1px solid var(--color-border-primary-default);
-    }
-
-    .mt-floating-ui:first-child .mt-segmented-control__action {
-      border-top-left-radius: var(--border-radius-xs) - 1;
-      border-bottom-left-radius: var(--border-radius-xs) - 1;
-      border-left: none;
-    }
-
-    .mt-floating-ui:last-child .mt-segmented-control__action {
-      border-top-right-radius: var(--border-radius-xs) - 1;
-      border-bottom-right-radius: var(--border-radius-xs) - 1;
-      border-right: none;
-    }
-  }
-
-  .mt-field__label,
-  .mt-field__label label {
+  & .mt-field__label,
+  & .mt-field__label label {
     cursor: pointer;
     font-family: inherit;
     font-size: inherit;
@@ -378,8 +235,149 @@ export default defineComponent({
     color: inherit;
   }
 
-  .mt-field--checkbox__container .mt-field__label {
+  & .mt-field--checkbox__container .mt-field__label {
     margin-left: var(--scale-size-8);
+  }
+}
+
+.mt-segmented-control__action {
+  display: flex;
+  align-items: center;
+  gap: var(--scale-size-8);
+  position: relative;
+  cursor: pointer;
+  border: none;
+  border-radius: var(--border-radius-button);
+  padding: var(--scale-size-6) var(--scale-size-12);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-2xs);
+  line-height: var(--font-line-height-2xs);
+  font-weight: var(--font-weight-semibold);
+  color: var(--color-text-primary-default);
+  transition:
+    0.15s background ease,
+    0.15s color ease;
+  justify-content: center;
+  text-align: center;
+
+  &:focus-visible {
+    outline: 2px solid var(--color-border-brand-selected);
+    box-shadow: 0px 0px 4px 0px rgba(24, 158, 255, 0.3);
+  }
+
+  &:hover,
+  &:focus-visible {
+    background-color: var(--color-interaction-secondary-hover);
+  }
+
+  &:active {
+    background-color: var(--color-interaction-secondary-dark);
+  }
+
+  & .mt-field--checkbox {
+    margin-bottom: 0;
+  }
+
+  & .mt-field__checkbox #meteor-icon-kit__regular-checkmark-xxs {
+    width: var(--scale-size-8) !important;
+    height: var(--scale-size-6) !important;
+  }
+}
+
+.mt-segmented-control__action-icon.mt-icon {
+  width: var(--scale-size-12);
+  height: var(--scale-size-12);
+
+  & > svg {
+    width: 100% !important;
+    height: 100% !important;
+  }
+}
+
+.mt-segmented-control__action-options-icon.mt-icon {
+  margin-top: 1px;
+  width: var(--scale-size-8);
+  height: 5px;
+}
+
+.mt-segmented-control__action--pressed:not(.mt-segmented-control__action--critical) {
+  color: var(--color-text-static-default);
+  background-color: var(--color-interaction-primary-default);
+
+  &:hover,
+  &:focus-visible {
+    background-color: var(--color-interaction-primary-hover);
+  }
+
+  &:active {
+    background-color: var(--color-interaction-primary-pressed);
+  }
+}
+
+.mt-segmented-control__action--critical {
+  color: var(--color-text-critical-default);
+
+  &:hover,
+  &:focus-visible {
+    background-color: var(--color-background-critical-dark);
+  }
+
+  &:active {
+    color: var(--color-text-static-default);
+    background-color: var(--color-interaction-critical-pressed);
+  }
+}
+
+.mt-segmented-control__action--critical.mt-segmented-control__action--pressed {
+  color: var(--color-text-static-default);
+  background-color: var(--color-interaction-critical-default);
+
+  &:hover,
+  &:focus-visible {
+    background-color: var(--color-interaction-critical-hover);
+  }
+
+  &:active {
+    background-color: var(--color-interaction-critical-pressed);
+  }
+}
+
+.mt-segmented-control__action--disabled {
+  color: var(--color-text-primary-disabled);
+  cursor: default;
+  pointer-events: none;
+}
+
+.mt-segmented-control__action--min-square {
+  min-width: 30px;
+}
+
+.mt-segmented-control__divider {
+  background-color: var(--color-border-primary-default);
+  width: 1px;
+  margin-top: var(--scale-size-4);
+  margin-bottom: var(--scale-size-4);
+}
+
+.mt-segmented-control--disabled-context {
+  padding: 0px;
+  gap: 0;
+
+  & .mt-floating-ui .mt-segmented-control__action {
+    border-radius: var(--border-radius-none);
+    border-right: 1px solid var(--color-border-primary-default);
+  }
+
+  & .mt-floating-ui:first-child .mt-segmented-control__action {
+    border-top-left-radius: calc(var(--border-radius-xs) - 1px);
+    border-bottom-left-radius: calc(var(--border-radius-xs) - 1px);
+    border-left: none;
+  }
+
+  & .mt-floating-ui:last-child .mt-segmented-control__action {
+    border-top-right-radius: calc(var(--border-radius-xs) - 1px);
+    border-bottom-right-radius: calc(var(--border-radius-xs) - 1px);
+    border-right: none;
   }
 }
 </style>
