@@ -92,7 +92,7 @@ const labelClasses = computed(() => {
   cursor: default;
 }
 
-.mt-label .mt-label__caption {
+.mt-label__caption {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
@@ -126,7 +126,7 @@ const labelClasses = computed(() => {
   padding: 0 var(--scale-size-8);
 }
 
-.mt-label .mt-label__dismiss {
+.mt-label__dismiss {
   display: none;
   position: absolute;
   height: 100%;
@@ -137,7 +137,7 @@ const labelClasses = computed(() => {
   outline: none;
 }
 
-.mt-label .mt-label__dismiss .mt-icon {
+.mt-label__dismiss .mt-icon {
   width: var(--scale-size-12);
   height: var(--scale-size-12);
 }
