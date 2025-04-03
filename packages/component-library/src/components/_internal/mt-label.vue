@@ -130,8 +130,6 @@ const labelClasses = computed(() => {
     height: 100%;
     right: var(--scale-size-10);
     top: 0;
-    color: $color-darkgray-200;
-    background-color: $color-gray-50;
     border: 0 none;
     cursor: pointer;
     outline: none;
@@ -144,7 +142,7 @@ const labelClasses = computed(() => {
 
   &.mt-label--ghost {
     background: transparent;
-    border-color: $color-gray-300;
+    border-color: var(--color-border-primary-default);
   }
 
   &.mt-label--appearance-badged {
