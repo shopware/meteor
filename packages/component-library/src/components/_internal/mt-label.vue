@@ -14,7 +14,7 @@
       @click.prevent.stop="$emit('dismiss')"
     >
       <slot name="dismiss-icon">
-        <mt-icon data-testid="dismiss-label" name="regular-times-xxs" size="var(--scale-size-12)" />
+        <mt-icon data-testid="dismiss-label" name="regular-times-xxs" size="var(--scale-size-10)" />
       </slot>
     </button>
   </span>
@@ -110,10 +110,9 @@ const labelClasses = computed(() => {
 }
 
 .mt-label.mt-label--dismissable:hover .mt-label__dismiss {
-  display: inline-block;
+  visibility: visible;
   color: var(--color-icon-brand-default);
   background: transparent;
-  transform: translateY(1px);
 }
 
 .mt-label.mt-label--size-medium {
@@ -127,7 +126,9 @@ const labelClasses = computed(() => {
 }
 
 .mt-label__dismiss {
-  display: none;
+  visibility: hidden;
+  display: grid;
+  place-items: center;
   position: absolute;
   height: 100%;
   right: var(--scale-size-10);
