@@ -73,7 +73,7 @@ const labelClasses = computed(() => {
 });
 </script>
 
-<style lang="scss">
+<style>
 .mt-label {
   display: inline-block;
   position: relative;
@@ -90,89 +90,89 @@ const labelClasses = computed(() => {
   color: var(--color-text-primary-default);
   border-radius: var(--border-radius-xs);
   cursor: default;
+}
 
-  .mt-label__caption {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    display: inline-block;
-    width: 100%;
-  }
+.mt-label .mt-label__caption {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: inline-block;
+  width: 100%;
+}
 
-  &.mt-label--dismissable:hover {
-    background-color: var(--color-background-brand-default);
-    border-color: var(--color-border-brand-selected);
+.mt-label.mt-label--dismissable:hover {
+  background-color: var(--color-background-brand-default);
+  border-color: var(--color-border-brand-selected);
+}
 
-    .mt-label__caption {
-      width: calc(100% - 15px);
-    }
+.mt-label.mt-label--dismissable:hover .mt-label__caption {
+  width: calc(100% - 15px);
+}
 
-    .mt-label__dismiss {
-      display: inline-block;
-      color: var(--color-icon-brand-default);
-      background: transparent;
-      transform: translateY(1px);
-    }
-  }
+.mt-label.mt-label--dismissable:hover .mt-label__dismiss {
+  display: inline-block;
+  color: var(--color-icon-brand-default);
+  background: transparent;
+  transform: translateY(1px);
+}
 
-  &.mt-label--size-medium {
-    height: var(--scale-size-24);
-    padding: var(--scale-size-4) var(--scale-size-12);
-  }
+.mt-label.mt-label--size-medium {
+  height: var(--scale-size-24);
+  padding: var(--scale-size-4) var(--scale-size-12);
+}
 
-  &.mt-label--size-small {
-    height: var(--scale-size-16);
-    padding: 0 var(--scale-size-8);
-  }
+.mt-label.mt-label--size-small {
+  height: var(--scale-size-16);
+  padding: 0 var(--scale-size-8);
+}
 
-  .mt-label__dismiss {
-    display: none;
-    position: absolute;
-    height: 100%;
-    right: var(--scale-size-10);
-    top: 0;
-    border: 0 none;
-    cursor: pointer;
-    outline: none;
+.mt-label .mt-label__dismiss {
+  display: none;
+  position: absolute;
+  height: 100%;
+  right: var(--scale-size-10);
+  top: 0;
+  border: 0 none;
+  cursor: pointer;
+  outline: none;
+}
 
-    .mt-icon {
-      width: var(--scale-size-12);
-      height: var(--scale-size-12);
-    }
-  }
+.mt-label .mt-label__dismiss .mt-icon {
+  width: var(--scale-size-12);
+  height: var(--scale-size-12);
+}
 
-  &.mt-label--ghost {
-    background: transparent;
-    border-color: var(--color-border-primary-default);
-  }
+.mt-label.mt-label--ghost {
+  background: transparent;
+  border-color: var(--color-border-primary-default);
+}
 
-  &.mt-label--appearance-badged {
-    background: transparent;
-    border: 0;
-    font-size: var(--font-size-s);
-    padding: var(--scale-size-4) 0;
-    line-height: 22px;
+.mt-label.mt-label--appearance-badged {
+  background: transparent;
+  border: 0;
+  font-size: var(--font-size-s);
+  padding: var(--scale-size-4) 0;
+  line-height: 22px;
+}
 
-    .mt-color-badge {
-      margin: 0 var(--scale-size-8) var(--scale-size-6) 0;
-    }
-  }
+.mt-label.mt-label--appearance-badged .mt-color-badge {
+  margin: 0 var(--scale-size-8) var(--scale-size-6) 0;
+}
 
-  &.mt-label--appearance-pill {
-    border-radius: var(--border-radius-round);
-  }
+.mt-label.mt-label--appearance-pill {
+  border-radius: var(--border-radius-round);
+}
 
-  &.mt-label--appearance-circle {
-    width: var(--scale-size-24);
-    height: var(--scale-size-24);
-    border-radius: 100%;
-    padding: var(--scale-size-4);
-    border: 0;
-    min-width: var(--scale-size-24);
-  }
+.mt-label.mt-label--appearance-circle {
+  width: var(--scale-size-24);
+  height: var(--scale-size-24);
+  border-radius: 100%;
+  padding: var(--scale-size-4);
+  border: 0;
+  min-width: var(--scale-size-24);
+}
 
-  &.mt-label--caps {
-    text-transform: uppercase;
-  }
+.mt-label.mt-label--caps {
+  text-transform: uppercase;
 }
 </style>
