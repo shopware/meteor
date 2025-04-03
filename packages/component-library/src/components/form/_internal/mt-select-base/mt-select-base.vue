@@ -287,14 +287,12 @@ export default defineComponent({
 </script>
 
 <style lang="scss">
-$mt-select-focus-transition: all ease-in-out 0.2s;
-
 .mt-select {
   position: relative;
   min-width: 100px;
 
   .mt-block-field__block {
-    transition: $mt-select-focus-transition;
+    transition: all ease-in-out 0.2s;
     background-color: var(--color-elevation-surface-raised);
     position: relative;
     overflow: hidden;
@@ -415,7 +413,7 @@ $mt-select-focus-transition: all ease-in-out 0.2s;
 // Vue.js transitions
 .mt-select-result-list-fade-down-enter-active,
 .mt-select-result-list-fade-down-leave-active {
-  transition: $mt-select-focus-transition;
+  transition: all ease-in-out 0.2s;
   transform: translateY(0);
 }
 
