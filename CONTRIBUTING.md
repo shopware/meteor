@@ -98,3 +98,14 @@ When your pull request gets merged a GitHub Action looks at your changes. If it 
 If you decide to release a new version, merge the release branch. Changesets will now take over. It updates the changelog files, bumps up the version numbers and it publishes the packages to npm.
 
 That's it there is nothing more you have to do.
+
+### Updating the visual tests
+
+1. Copy the name of your branch
+2. Go to the [actions tab](https://github.com/shopware/meteor/actions)
+3. Click on [Visual Tests](https://github.com/shopware/meteor/actions) in the left sidebar
+4. You then see a blue bar with a button that says `Run workflow`, click on that
+5. Select your branch from the dropdown menu
+6. Click on the `Run workflow` button
+7. Wait...
+8. Go back to your branch overview
