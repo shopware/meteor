@@ -55,40 +55,34 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-$mt-color-badge-color-fallback: $color-gray-300;
-$mt-color-badge-color-warning: $color-pumpkin-spice-500;
-$mt-color-badge-color-critical: $color-crimson-500;
-$mt-color-badge-color-positive: $color-emerald-500;
-$mt-color-badge-color-info: $color-shopware-brand-500;
-
+<style>
 .mt-color-badge {
   display: inline-block;
   height: var(--scale-size-8);
   width: var(--scale-size-8);
   margin: 0 0 1px var(--scale-size-10);
   border-radius: 2px;
-  background-color: $mt-color-badge-color-fallback;
+  background-color: #d1d9e0;
 
   &.is--rounded {
     border-radius: 100%;
   }
 
   &.is--warning {
-    background-color: $mt-color-badge-color-warning;
+    background-color: #ff9800;
   }
 
   &.is--critical,
   &.is--danger {
-    background-color: $mt-color-badge-color-critical;
+    background-color: #de294c;
   }
 
   &.is--positive {
-    background-color: $mt-color-badge-color-positive;
+    background-color: #37d046;
   }
 
   &.is--info {
-    background-color: $mt-color-badge-color-info;
+    background-color: #189eff;
   }
 
   &.has--text {
@@ -98,24 +92,24 @@ $mt-color-badge-color-info: $color-shopware-brand-500;
     border-radius: 8px;
 
     &.is--warning {
-      background-color: $color-pumpkin-spice-50;
-      color: $color-pumpkin-spice-900;
+      background-color: #fff3e0;
+      color: #e65100;
     }
 
     &.is--critical,
     &.is--danger {
-      background-color: $color-crimson-50;
-      color: $color-crimson-900;
+      background-color: #fbe5ea;
+      color: #c80f24;
     }
 
     &.is--positive {
-      background-color: $color-emerald-50;
-      color: $color-emerald-900;
+      background-color: #e7f9e9;
+      color: #16b320;
     }
 
     &.is--info {
-      background-color: $color-shopware-brand-50;
-      color: $color-shopware-brand-900;
+      background-color: #e3f3ff;
+      color: #0870ff;
     }
   }
 }
