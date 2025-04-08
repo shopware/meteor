@@ -55,7 +55,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
+<style>
 .mt-color-badge {
   display: inline-block;
   height: var(--scale-size-8);
