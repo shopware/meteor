@@ -1,5 +1,18 @@
 # Changelog
 
+## 4.10.0
+
+### Minor Changes
+
+- 243ffd8: Changed z-index of mt-modal and mt-tooltip
+
+### Patch Changes
+
+- 9b0cc45: \* Remove duplicated external link icon
+  - Removed fixed 16px font-size for `mt-link`
+  - Changed gap and icon size to be relative to current font size
+- adb59f8: Allow sanitized HTML values inside tooltip
+
 ## 4.9.1
 
 ### Patch Changes
