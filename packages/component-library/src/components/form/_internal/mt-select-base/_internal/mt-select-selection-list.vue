@@ -35,14 +35,13 @@
 
     <li v-if="invisibleCount > 0 && !hideLabels" class="mt-select-selection-list__load-more">
       <slot name="invisible-count" v-bind="{ invisibleCount, onClickInvisibleCount }">
-        <mt-button
-          variant="secondary"
+        <button
+          type="button"
           class="mt-select-selection-list__load-more-button"
           @click.stop="onClickInvisibleCount"
-          tabindex="0"
         >
           +{{ invisibleCount }}
-        </mt-button>
+        </button>
       </slot>
     </li>
 
@@ -315,15 +314,20 @@ export default defineComponent({
   margin: var(--scale-size-8) var(--scale-size-6) 0 0;
 }
 
-.mt-select-selection-list button.mt-select-selection-list__load-more-button {
-  padding: var(--scale-size-8) var(--scale-size-12);
-  margin: 0 var(--scale-size-6) 0 0;
+.mt-select-selection-list__load-more-button {
   color: var(--color-text-brand-default);
-  font-size: 12px;
-  line-height: 14px;
-  border-radius: 2px;
-  height: unset;
-  border-color: var(--color-border-primary-default);
+  font-size: var(--font-size-xs);
+  padding: var(--scale-size-8) var(--scale-size-12);
+  height: var(--scale-size-32);
+  line-height: 1.1;
+  border: 1px solid var(--color-border-primary-default);
+  border-radius: var(--border-radius-xs);
+  background: var(--color-background-primary-default);
+
+  &:hover {
+    background-color: var(--color-background-brand-default);
+    border-color: var(--color-border-brand-selected);
+  }
 }
 
 .mt-select-selection-list .mt-select-selection-list__input-wrapper {
@@ -333,13 +337,13 @@ export default defineComponent({
 .mt-select-selection-list
   .mt-select-selection-list__input-wrapper--small
   .mt-select-selection-list__input {
-  min-height: 32px;
+  min-height: var(--scale-size-32);
   padding: var(--scale-size-4) var(--scale-size-16) var(--scale-size-4) var(--scale-size-8);
 }
 
 .mt-select-selection-list .mt-select-selection-list__input {
   display: inline-block;
-  min-height: 46px;
+  min-height: calc(var(--scale-size-48) - var(--scale-size-2));
   padding: var(--scale-size-12) var(--scale-size-16) var(--scale-size-12) var(--scale-size-8);
 }
 
@@ -356,21 +360,11 @@ export default defineComponent({
   padding: var(--scale-size-4) var(--scale-size-16) var(--scale-size-8) var(--scale-size-8);
 }
 
-.mt-field--medium .mt-select-selection-list .mt-select-selection-list__load-more-button {
-  padding: var(--scale-size-4) var(--scale-size-12);
-  margin: var(--scale-size-4) var(--scale-size-6) 0 0;
-}
-
 .mt-field--small .mt-select-selection-list .mt-select-selection-list__item-holder .mt-label {
   margin: var(--scale-size-4) var(--scale-size-6) 0 0;
 }
 
 .mt-field--small .mt-select-selection-list input {
   padding: var(--scale-size-2) var(--scale-size-16) var(--scale-size-4) var(--scale-size-8);
-}
-
-.mt-field--small .mt-select-selection-list .mt-select-selection-list__load-more-button {
-  padding: 0 var(--scale-size-8);
-  margin: -1px var(--scale-size-6) 0 0;
 }
 </style>
