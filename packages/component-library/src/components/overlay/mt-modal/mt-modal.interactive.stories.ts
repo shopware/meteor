@@ -9,7 +9,6 @@ import { defineStory } from "@/_internal/story-helper";
 import { expect, within, userEvent } from "@storybook/test";
 import MtNumberField from "@/components/form/mt-number-field/mt-number-field.vue";
 import { waitUntil } from "../../../_internal/test-helper";
-import { wait } from "@testing-library/user-event/dist/cjs/utils/index.js";
 
 export default {
   ...meta,
@@ -254,11 +253,11 @@ export const VisualTestTooltipInModal = defineStory({
     const modal = body.getByRole("dialog");
     const modalContainer = within(modal);
 
-    const popoverToggle = modalContainer.getByTestId('mt-help-text__icon');
+    const popoverToggle = modalContainer.getByTestId("mt-help-text__icon");
     await userEvent.hover(popoverToggle);
 
     await waitUntil(() => body.getByText("Foo"));
     // Add additional delay after the element is found
-    await new Promise(resolve => setTimeout(resolve, 200));
+    await new Promise((resolve) => setTimeout(resolve, 200));
   },
 });
