@@ -69,6 +69,7 @@
           />
         </button>
       </div>
+      <slot name="_unit-suffix" />
     </template>
 
     <template #field-suffix>
