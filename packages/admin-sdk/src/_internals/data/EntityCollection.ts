@@ -1,36 +1,20 @@
 import Criteria from '../../data/Criteria';
 import type { Entity } from './Entity';
+import type { ApiContext } from '../../context';
 
-type ApiAuthToken = {
-    access: string,
-    expiry: number,
-    refresh: string,
-}
+/**
+ * @deprecated Use {@link ApiContext} instead.
+ */
+interface DeprecatedApiContext extends ApiContext {};
+
+export type { DeprecatedApiContext as ApiContext };
 
 type Aggregations = {
   [key: string]: {
     name: string,
     [key: string]: unknown,
   },
-}
-
-export interface ApiContext {
-    apiPath: null | string,
-    apiResourcePath: null | string,
-    assetsPath: null | string,
-    authToken: null | ApiAuthToken,
-    basePath: null | string,
-    pathInfo: null | string,
-    inheritance: null | boolean,
-    installationPath: null | string,
-    languageId: null | string,
-    language: null | {
-        name: string,
-    },
-    apiVersion: null | string,
-    liveVersionId: null | string,
-    systemLanguageId: null | string,
-}
+};
 
 type Entities = EntitySchema.Entities;
 
