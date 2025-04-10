@@ -8,6 +8,8 @@ vi.mock("node:fs", () => {
     default: {
       writeFileSync: () => null,
       readFileSync: () => null,
+      mkdirSync: () => null,
+      rmSync: () => null,
     },
   };
 });
@@ -48,4 +50,31 @@ test("returns undefined when reading a non-existing file", () => {
 
   // ASSERT
   expect(result).toBe(undefined);
+});
+
+test("creates a directory", () => {
+  // ARRANGE
+  const subject = new NodeFilesystem(new NoOpLogger());
+  const spy = vi.spyOn(fs, "mkdirSync");
+
+  // ACT
+  subject.createDirectory("./foo");
+
+  // ASSERT
+  expect(spy).toHaveBeenCalledExactlyOnceWith("./foo");
+});
+
+test("removes a directory", () => {
+  // ARRANGE
+  const subject = new NodeFilesystem(new NoOpLogger());
+  const spy = vi.spyOn(fs, "rmSync");
+
+  // ACT
+  subject.removeDirectory("./foo");
+
+  // ASSERT
+  expect(spy).toHaveBeenCalledExactlyOnceWith("./foo", {
+    recursive: true,
+    force: true,
+  });
 });
