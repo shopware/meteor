@@ -565,7 +565,7 @@ export default defineComponent({
     },
 
     onClearSelection() {
-      this.currentValue = [];
+      this.currentValue = null;
     },
 
     getFocusElement() {
