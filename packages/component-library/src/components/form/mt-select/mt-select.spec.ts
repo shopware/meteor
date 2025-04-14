@@ -79,4 +79,39 @@ describe("mt-select", () => {
     expect(itemHolder).toHaveLength(1);
     expect((itemHolder.at(0)?.element as HTMLInputElement).value).toBe("Id 0");
   });
+
+  it("should return null when input is cleared", async () => {
+    const wrapper = await createWrapper();
+
+    await wrapper.setProps({
+      modelValue: "becky",
+      options: [
+        {
+          id: 1,
+          label: "Option Alfred",
+          value: "alfred",
+        },
+        {
+          id: 2,
+          label: "Option Becky",
+          value: "becky",
+        },
+        {
+          id: 3,
+          label: "Option Jane",
+          value: "jane",
+        },
+      ],
+    });
+
+    // Verify starting values
+    const itemHolder = wrapper.findAll(".mt-select-selection-list__input");
+    expect(itemHolder).toHaveLength(1);
+
+    // Click the clear button
+    const clearButton = wrapper.find('[data-testid="select-clear-button"]');
+    await clearButton.trigger("click");
+
+    expect(wrapper.emitted("update:modelValue")?.[0]).toEqual([null]);
+  });
 });
