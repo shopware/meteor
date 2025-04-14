@@ -55,7 +55,7 @@ export const TestClearSelections: MtSelectStory = {
 
     await userEvent.click(canvas.getByTestId("select-clear-button"));
 
-    expect(args.change).toHaveBeenCalledWith([]);
+    expect(args.change).toHaveBeenCalledWith(null);
   },
 };
 
