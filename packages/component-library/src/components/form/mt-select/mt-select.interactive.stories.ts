@@ -352,6 +352,35 @@ export const VisualTestMultiSelect: MtSelectStory = {
   },
 };
 
+export const VisualTestMultiSelectWithInitialValue: MtSelectStory = {
+  name: "Should multi select with initial value",
+  args: {
+    modelValue: "a",
+    enableMultiSelection: true,
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    // open selection
+    await userEvent.click(canvas.getByRole("textbox"));
+
+    const popover = within(
+      document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement,
+    );
+    await userEvent.click(popover.getByTestId("mt-select-option--b"));
+
+    expect(args.itemAdd).toHaveBeenCalledWith({
+      id: 2,
+      value: "b",
+      label: "Option B",
+    });
+
+    expect(args.change).toHaveBeenCalledWith(["a", "b"]);
+
+    await userEvent.click(canvas.getByText("hidden"));
+    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("");
+  },
+};
+
 export const VisualTestPrefix: MtSelectStory = {
   name: "Should display prefix",
   args: {
