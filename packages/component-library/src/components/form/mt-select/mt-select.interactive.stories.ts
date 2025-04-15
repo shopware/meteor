@@ -296,6 +296,7 @@ export const VisualTestSingleSelectionLongInSmallWidth: MtSelectStory = {
 export const VisualTestMultiSelect: MtSelectStory = {
   name: "Should multi select",
   args: {
+    modelValue: undefined,
     enableMultiSelection: true,
   },
   play: async ({ canvasElement, args }) => {
