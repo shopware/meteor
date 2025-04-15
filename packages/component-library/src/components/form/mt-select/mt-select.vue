@@ -488,7 +488,7 @@ export default defineComponent({
       if (this.enableMultiSelection) {
         if (Array.isArray(this.currentValue)) {
           this.currentValue = [...this.currentValue, identifier];
-        } else if (this.currentValue !== undefined || this.currentValue !== null) {
+        } else if (this.currentValue === null || this.currentValue === undefined) {
           this.currentValue = [identifier];
         } else {
           this.currentValue = [this.currentValue, identifier];
