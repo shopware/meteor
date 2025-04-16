@@ -565,7 +565,12 @@ export default defineComponent({
     },
 
     onClearSelection() {
-      this.currentValue = [];
+      // If multiSelection enabled return empty array otherwise null
+      if (this.enableMultiSelection) {
+        this.currentValue = [];
+      } else {
+        this.currentValue = null;
+      }
     },
 
     getFocusElement() {

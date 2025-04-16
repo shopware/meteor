@@ -79,4 +79,75 @@ describe("mt-select", () => {
     expect(itemHolder).toHaveLength(1);
     expect((itemHolder.at(0)?.element as HTMLInputElement).value).toBe("Id 0");
   });
+
+  it("should return null when single selection is cleared", async () => {
+    const wrapper = await createWrapper();
+
+    await wrapper.setProps({
+      modelValue: "becky",
+      options: [
+        {
+          id: 1,
+          label: "Option Alfred",
+          value: "alfred",
+        },
+        {
+          id: 2,
+          label: "Option Becky",
+          value: "becky",
+        },
+        {
+          id: 3,
+          label: "Option Jane",
+          value: "jane",
+        },
+      ],
+    });
+
+    // Verify starting values
+    const itemHolder = wrapper.findAll(".mt-select-selection-list__input");
+    expect(itemHolder).toHaveLength(1);
+
+    // Click the clear button
+    const clearButton = wrapper.find('[data-testid="select-clear-button"]');
+    await clearButton.trigger("click");
+
+    expect(wrapper.emitted("update:modelValue")?.[0]).toEqual([null]);
+  });
+
+  it("should render multiple selections correctly", async () => {
+    const wrapper = await createWrapper();
+
+    await wrapper.setProps({
+      modelValue: ["alfred", "becky", "jane"],
+      enableMultiSelection: true,
+      options: [
+        {
+          id: 1,
+          label: "Option Alfred",
+          value: "alfred",
+        },
+        {
+          id: 2,
+          label: "Option Becky",
+          value: "becky",
+        },
+        {
+          id: 3,
+          label: "Option Jane",
+          value: "jane",
+        },
+      ],
+    });
+
+    const itemHolders = wrapper.findAll(".mt-select-selection-list__item-holder");
+    expect(itemHolders).toHaveLength(3);
+
+    // Click the clear button
+    const clearButton = wrapper.find('[data-testid="select-clear-button"]');
+    await clearButton.trigger("click");
+
+    // Verify that an empty array is emitted
+    expect(wrapper.emitted("update:modelValue")?.[0]).toEqual([[]]);
+  });
 });
