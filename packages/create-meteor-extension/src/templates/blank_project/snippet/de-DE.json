@@ -1,0 +1,12 @@
+{
+    "global": {
+        "error-codes": {
+            "ADVANCED_SEARCH_BOOSTING_NAME_DUPLICATED": "Boostingname existiert bereits",
+            "ADVANCED_SEARCH_BOOSTING_BOOST_INVALID": "Die Boost-Nummer muss ein positiver Wert sein",
+            "ADVANCED_SEARCH_BOOSTING_VALID_TO_INVALID": "Das Aktivierungsdatum sollte in der Zukunft liegen",
+            "ADVANCED_SEARCH_ACTION_VALID_TO_INVALID": "Das Aktivierungsdatum sollte in der Zukunft liegen",
+            "ADVANCED_SEARCH_ACTION_SEARCH_TERM_DUPLICATED": "Der Suchbegriff \"{term}\" wird schon verwendet",
+            "ADVANCED_SEARCH_ACTION_NAME_DUPLICATED": "Dieser Name wird bereits in einer anderen Aktion verwendet"
+        }
+    }
+}
