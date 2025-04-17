@@ -339,11 +339,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-@import "../../../../assets/scss/variables";
-
-$mt-select-result-list-transition: all ease-in-out 0.2s;
-
+<style>
 .mt-select-result-list,
 .mt-select-result-list-popover {
   position: absolute;
@@ -364,22 +360,22 @@ $mt-select-result-list-transition: all ease-in-out 0.2s;
   overflow-x: hidden;
   overflow-y: auto;
   border: 1px solid var(--color-border-primary-default);
-  box-shadow: 0 3px 6px 0 $color-gray-300;
+  box-shadow: 0 3px 6px 0 rgba(142, 142, 147, 0.16);
   background-color: var(--color-elevation-surface-overlay);
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
   font-family: var(--font-family-body);
   padding: var(--scale-size-8);
   border-radius: 4px;
+}
 
-  .mt-select-result-list__item-list {
-    list-style: none;
-  }
+.mt-select-result-list__content .mt-select-result-list__item-list {
+  list-style: none;
+}
 
-  .mt-select-result-list__empty {
-    padding: var(--scale-size-10) var(--scale-size-16);
-    color: var(--color-text-primary-default);
-  }
+.mt-select-result-list__content .mt-select-result-list__empty {
+  padding: var(--scale-size-10) var(--scale-size-16);
+  color: var(--color-text-primary-default);
 }
 
 .mt-select-result-list__content_empty {
