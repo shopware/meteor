@@ -25,6 +25,6 @@ export type buttonProps = {
   method: () => void,
   label: string,
   variant?: 'primary'|'secondary'|'critical'|'action',
-  size?: 'x-small'|'small'|'large',
+  size?: 'x-small'|'small'|'default'|'large',
   square?: boolean,
 }
