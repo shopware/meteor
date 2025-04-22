@@ -10,8 +10,20 @@ data.subscribe(
     ({id, data}) => {
         console.log(data);
     },
-    selectors: ['name', 'manufacturer.name'],
+    {
+        selectors: ['name', 'manufacturer.name']
+    },
 );
+```
+
+#### Output:
+```json
+{
+  "name": "Ergonomic Copper Mr. Frenzy",
+  "manufacturer": {
+    "name": "Turcotte, Rempel and Padberg"
+  }
+}
 ```
 
 #### Parameters
@@ -19,4 +31,4 @@ data.subscribe(
 | :---------- | :------- |:------------------------------------------------------------------------------------------------------|
 | `id`        | true     | The unique id of the dataset you want to receive                                                      |
 | `callback`  | true     | A callback function which will be called every time the Shopware Administration publishes the dataset |
-| `selectors` | false    | Read more about selectors [here](../../4_concepts/selectors.md)                                       |
+| `options` | false    | Allows to specify `selectors`. Read more about selectors [here](../../4_concepts/selectors.md)                                       |
