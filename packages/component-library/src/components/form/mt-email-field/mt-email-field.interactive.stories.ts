@@ -95,13 +95,33 @@ export const TestShouldCopyValue: MtEmailFieldStory = {
   args: {
     modelValue: "test@shopware.com",
     copyable: true,
+    _showSecondTextField: true,
   },
   async play({ canvasElement }) {
-    window.navigator.clipboard.writeText = fn();
-    const canvas = within(canvasElement);
+    // Mock the clipboard API
+    let clipboardValue = "";
+    const mockClipboard = {
+      writeText: (text: string) => {
+        clipboardValue = text;
+        return Promise.resolve();
+      },
+    };
+    Object.defineProperty(navigator, "clipboard", {
+      value: mockClipboard,
+      writable: true,
+    });
 
+    const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole("button", { name: "Copy to clipboard" }));
-    expect(window.navigator.clipboard.writeText).toHaveBeenCalledOnce();
+
+    // Get the second text field
+    const secondTextField = canvas.getByRole("textbox", { name: "Textfield for testing" });
+    // Click on the input field of the second text field
+    await userEvent.click(secondTextField);
+    // Paste the copied value into the second text field
+    await userEvent.type(secondTextField, clipboardValue);
+    // Check if the value of the second text field is equal to the value of the first text field
+    expect((secondTextField as HTMLInputElement).value).toBe("test@shopware.com");
   },
 };
 
