@@ -24,7 +24,7 @@ export type uiModalClose =
 export type buttonProps = {
   method: () => void,
   label: string,
-  variant?: 'primary'|'ghost'|'danger'|'ghost-danger'|'contrast'|'context',
+  variant?: 'primary'|'secondary'|'critical'|'action',
   size?: 'x-small'|'small'|'large',
   square?: boolean,
 }
