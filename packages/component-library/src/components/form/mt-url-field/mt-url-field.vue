@@ -46,6 +46,7 @@
         ]"
       >
         <button
+          type="button"
           class="mt-url-field__protocol-toggle"
           :disabled="disabled || isInherited"
           @click="
@@ -89,6 +90,7 @@
       <mt-tooltip v-if="copyable" :content="t('copyTooltip')">
         <template #default="props">
           <button
+            type="button"
             v-bind="props"
             class="mt-url-field__copy-button"
             :aria-label="

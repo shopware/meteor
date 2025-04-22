@@ -51,36 +51,43 @@ $ yarn add @shopware-ag/meteor-icon-kit
 
 Start by importing/using the provided styling.
 Either utilizing sass/scss:
+
 ```scss
-@import '@shopware-ag/meteor-icon-kit/icons/meteor-icon-kit.scss';
+@import "@shopware-ag/meteor-icon-kit/icons/meteor-icon-kit.scss";
 ```
 
 Or classic via the css file:
 
 ```html
-<link rel="stylesheet" href="your-asset-folder/meteor-icon-kit-8e350007463127dbe9f66c60cd6896ca.css">
+<link
+  rel="stylesheet"
+  href="your-asset-folder/meteor-icon-kit-8e350007463127dbe9f66c60cd6896ca.css"
+/>
 ```
 
 Then, you can use the icons:
+
 ```js
-import wallet from '@shopware-ag/meteor-icon-kit/icons/regular/wallet.svg';
+import wallet from "@shopware-ag/meteor-icon-kit/icons/regular/wallet.svg";
 ```
 
 ### Dynamic colors
 
 Take this pseudo html:
+
 ```html
 <span class="icon-example">
-    <wallet />
+  <wallet />
 </span>
 ```
 
 By defining the following class structure in `CSS` you can change the color of the svg dynamically:
+
 ```CSS
 .icon-example {
   display: block;
   color: green;
-  
+
   svg {
     fill: currentColor;
 
@@ -98,27 +105,28 @@ Following is an example for a Vue3 project using Vite as a bundler.
 We are using the `vite-svg-loader` to load the svg files.
 
 In your `vite.config.js` add the following:
+
 ```js
 //...
-import svgLoader from 'vite-svg-loader';
+import svgLoader from "vite-svg-loader";
 
 export default {
   plugins: [
     //...
-    svgLoader()
+    svgLoader(),
   ],
 };
-
 ```
 
 This way you can import your svg files as components:
+
 ```vue
 <template>
   <ActivityIcon />
 </template>
 
 <script setup>
-import ActivityIcon from '@shopware-ag/meteor-icon-kit/icons/regular/activity.svg';
+import ActivityIcon from "@shopware-ag/meteor-icon-kit/icons/regular/activity.svg";
 </script>
 ```
 
@@ -126,16 +134,17 @@ You can find this example as a CodeSandbox template [here](https://codesandbox.i
 
 ## Built With
 
-* Typescript
-* Figma API
-* VS-Code
-* Love :blue_heart: :blue_heart: :blue_heart:
+- Typescript
+- Figma API
+- VS-Code
+- Love :blue_heart: :blue_heart: :blue_heart:
 
 ## Figma library
+
 Meteor Icon Kit is available as a [Figma library](https://www.figma.com/community/file/1032564947404478461/Meteor-Icon-Kit-%E2%80%93-Shopware) through the Figma Community. To use the icons, log in to your Figma account and duplicate the file to your drafts.
 
 ## License
 
-See the [LICENSE](LICENSE.md) file for license rights and limitations (MIT). 
+See the [LICENSE](LICENSE.md) file for license rights and limitations (MIT).
 
 2024 © shopware AG

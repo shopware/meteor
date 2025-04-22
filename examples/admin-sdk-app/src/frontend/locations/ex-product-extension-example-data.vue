@@ -74,7 +74,6 @@ onMounted(() => {
     id: 'sw-product-detail__product',
     selectors: ['name']
   }).then((data) => {
-      console.log('product', data)
       product.value = data as EntitySchema.Entity<'product'>;
   });
 

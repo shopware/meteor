@@ -1,5 +1,11 @@
 # @shopware-ag/meteor-tokens
 
+## 1.1.0
+
+### Minor Changes
+
+- f4ed7d0: Add `color-border-secondary-default` token
+
 ## 1.0.0
 
 ### Major Changes

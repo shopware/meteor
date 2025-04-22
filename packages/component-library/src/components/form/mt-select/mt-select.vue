@@ -23,11 +23,11 @@
     <template #mt-select-selection="{ size }">
       <mt-select-selection-list
         ref="selectionList"
-        :disable-input="small"
         :multi-selection="enableMultiSelection"
         :selections="visibleValues"
         :invisible-count="invisibleValueCount"
         v-bind="{ size, valueProperty, labelProperty, placeholder, searchTerm, disabled }"
+        :size="small ? 'small' : 'default'"
         @total-count-click="expandValueLimit"
         @item-remove="remove"
         @last-item-delete="removeLastItem"
@@ -139,6 +139,15 @@ export default defineComponent({
   },
 
   inheritAttrs: false,
+
+  emits: [
+    "update:modelValue",
+    "change",
+    "item-add",
+    "item-remove",
+    "display-values-expand",
+    "paginate",
+  ],
 
   props: {
     /**

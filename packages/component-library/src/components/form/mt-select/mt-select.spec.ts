@@ -40,10 +40,10 @@ describe("mt-select", () => {
   it("should render only one single select result with type string", async () => {
     const wrapper = await createWrapper();
 
-    const itemHolder = wrapper.findAll(".mt-select-selection-list__item-holder");
+    const itemHolder = wrapper.findAll(".mt-select-selection-list__input");
 
     expect(itemHolder).toHaveLength(1);
-    expect(itemHolder.at(0)?.text()).toBe("Option Becky");
+    expect((itemHolder.at(0)?.element as HTMLInputElement).value).toBe("Option Becky");
   });
 
   it("should render only one single select result with type number", async () => {
@@ -58,10 +58,10 @@ describe("mt-select", () => {
       ],
     });
 
-    const itemHolder = wrapper.findAll(".mt-select-selection-list__item-holder");
+    const itemHolder = wrapper.findAll(".mt-select-selection-list__input");
 
     expect(itemHolder).toHaveLength(1);
-    expect(itemHolder.at(0)?.text()).toBe("25");
+    expect((itemHolder.at(0)?.element as HTMLInputElement).value).toBe("25");
   });
 
   it("should render a label for option with id 0", async () => {
@@ -74,9 +74,9 @@ describe("mt-select", () => {
       ],
     });
 
-    const itemHolder = wrapper.findAll(".mt-select-selection-list__item-holder");
+    const itemHolder = wrapper.findAll(".mt-select-selection-list__input");
 
     expect(itemHolder).toHaveLength(1);
-    expect(itemHolder.at(0)?.text()).toBe("Id 0");
+    expect((itemHolder.at(0)?.element as HTMLInputElement).value).toBe("Id 0");
   });
 });

@@ -29,6 +29,7 @@
       :enable-time-picker="dateType !== 'date'"
       :exactMatch="dateType === 'date'"
       time-picker-inline
+      :time-picker="dateType === 'time'"
     >
       <template #input-icon>
         <mt-icon name="regular-calendar" class="regular-calendar" />
@@ -69,7 +70,7 @@ import { defineComponent } from "vue";
 import type { PropType } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
-import DatePicker from "@vuepic/vue-datepicker";
+import DatePicker, { type VueDatePickerProps } from "@vuepic/vue-datepicker";
 import "@vuepic/vue-datepicker/dist/main.css";
 
 export default defineComponent({
@@ -96,7 +97,7 @@ export default defineComponent({
      * Options: "date" (for selecting a date), or "datetime" (for selecting both).
      */
     dateType: {
-      type: String as PropType<"date" | "datetime">,
+      type: String as PropType<"date" | "datetime" | "time">,
       required: false,
       default: "datetime",
     },
@@ -109,6 +110,16 @@ export default defineComponent({
       type: String as PropType<string>,
       required: false,
       default: "de",
+    },
+
+    /**
+     * The format of the date picker.
+     * You can use a string or a function to format the date.
+     */
+    format: {
+      type: Function as PropType<Omit<VueDatePickerProps["format"], "string">>,
+      required: false,
+      default: undefined,
     },
 
     /**
@@ -192,10 +203,35 @@ export default defineComponent({
   computed: {
     computedValue: {
       get(): string | string[] {
+        if (this.dateType === "time") {
+          // Convert ISO string to object with hours, minutes, seconds
+          const date = new Date(this.modelValue as string);
+
+          const time = {
+            hours: date.getHours(),
+            minutes: date.getMinutes(),
+            seconds: date.getSeconds(),
+          };
+
+          return time as unknown as string;
+        }
+
         return this.modelValue;
       },
       set(newValue: Date | [Date, Date] | null) {
         if (!newValue) return;
+
+        // Handle date conversion for 'time' type
+        if (this.dateType === "time") {
+          const isoFormattedDate = this.convertTimeToIso(newValue as unknown as {
+            hours: number;
+            minutes: number;
+            seconds: number;
+          });
+
+          this.$emit("update:modelValue", isoFormattedDate);
+          return;
+        }
 
         // Handle date conversion for 'date' type
         if (this.dateType === "date") {
@@ -218,7 +254,11 @@ export default defineComponent({
   },
 
   methods: {
-    formatDate(date: Date | [Date, Date]): string {
+    formatDate(date: Date | Date[]): string {
+      if (typeof this.format === "function") {
+        return this.format(date as Date & Date[]);
+      }
+
       // Overide built-in format to y-m-d
       const formatSingleDate = (d: Date) => {
         const year = d.getFullYear();
@@ -244,6 +284,16 @@ export default defineComponent({
       } else {
         return date.toISOString();
       }
+    },
+
+    convertTimeToIso(time: {
+      hours: number;
+      minutes: number;
+      seconds: number;
+    }): string {
+      const date = new Date();
+      date.setHours(time.hours, time.minutes, time.seconds);
+      return date.toISOString();
     },
   },
 

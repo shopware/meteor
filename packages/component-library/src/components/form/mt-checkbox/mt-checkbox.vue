@@ -29,7 +29,9 @@
           @inheritance-remove="$emit('inheritance-remove', $event)"
         >
           <template #label>
-            {{ label }}
+            <slot name="label">
+              {{ label }}
+            </slot>
           </template>
         </mt-base-field>
       </div>
@@ -106,6 +108,15 @@ export default defineComponent({
     },
 
     /**
+     * Determines if the field is inherited.
+     */
+    isInherited: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    /**
      * Error object for this field.
      */
     error: {
@@ -176,7 +187,7 @@ export default defineComponent({
       return {
         "has--error": !!this.hasError,
         "is--disabled": this.disabled,
-        "is--inherited": !!this.isInherited,
+        "is--inherited": !!this.isInheritedComputed,
         "is--bordered": this.bordered,
         "is--partly-checked": this.isPartlyChecked,
       };
@@ -191,7 +202,7 @@ export default defineComponent({
     },
 
     inputState(): boolean {
-      if (this.isInherited) {
+      if (this.isInheritedComputed) {
         return this.inheritedValue;
       }
 
@@ -205,15 +216,16 @@ export default defineComponent({
       return this.inheritedValue !== null;
     },
 
-    isInherited(): boolean {
-      if (this.$attrs.isInherited) {
+    isInheritedComputed(): boolean {
+      if (this.isInherited) {
         return true;
       }
+
       return this.isInheritanceField && this.currentValue === null;
     },
 
     isDisabled(): boolean {
-      return this.disabled || this.isInherited;
+      return this.disabled || this.isInheritedComputed;
     },
 
     isPartlyChecked(): boolean {
@@ -363,7 +375,7 @@ export default defineComponent({
         height: 100%;
         z-index: 1;
         text-align: center;
-        background: var(--color-background-primary-default);
+        background: var(--color-elevation-surface-raised);
         color: var(--color-text-primary-default);
         border: 1px solid var(--color-border-primary-default);
         border-radius: var(--border-radius-checkbox);
@@ -431,6 +443,10 @@ export default defineComponent({
     &.checkbox-bordered {
       margin-bottom: var(--scale-size-8);
     }
+  }
+
+  & .mt-block-field__block {
+    min-height: unset;
   }
 }
 </style>

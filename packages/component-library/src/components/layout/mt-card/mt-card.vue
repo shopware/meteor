@@ -38,6 +38,7 @@
 
         <button
           v-if="inheritance !== undefined"
+          type="button"
           class="mt-card__inheritance-toggle"
           :aria-label="!!inheritance ? t('disableInheritance') : t('enableInheritance')"
           style="grid-area: inheritance"

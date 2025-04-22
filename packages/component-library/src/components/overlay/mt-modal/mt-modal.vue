@@ -217,7 +217,7 @@ onUnmounted(() => {
   top: 50%;
   left: 50%;
   translate: -50% -50%;
-  z-index: 2000;
+  z-index: 1001;
   background-color: var(--color-elevation-surface-raised);
   border-radius: var(--border-radius-card);
   overflow: hidden;

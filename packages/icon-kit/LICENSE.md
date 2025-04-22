@@ -15,11 +15,11 @@ THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRI
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
 TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
---------------------------------------------------------------------------------
+---
 
 # Brand Icons
 
 All brand icons are trademarks of their respective owners. The use of these
-trademarks does not indicate endorsement of the trademark holder by Shopware, nor vice versa. 
+trademarks does not indicate endorsement of the trademark holder by Shopware, nor vice versa.
 **Please do not use brand logos for any purpose except
 to represent the company, product, or service to which they refer.**

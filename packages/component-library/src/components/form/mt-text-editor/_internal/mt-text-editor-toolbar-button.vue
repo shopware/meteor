@@ -1,5 +1,6 @@
 <template>
   <button
+    type="button"
     @click="handleButtonClick()"
     :class="buttonClass(button)"
     v-tooltip="{

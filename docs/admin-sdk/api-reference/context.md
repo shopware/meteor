@@ -188,22 +188,31 @@ string
 '6.4.0.0'
 ```
 
-
-## Shopware compare version
-
 ### Compare current Shopware version with a given version
+
+In many cases you have to make sure that the shop you are communicating with has a certain Shopware version. For this purpose the Meteor Admin SDK provides the `context.compareIsShopwareVersion` function.
+
+The function always treats the current Shopware version of a shop as the left hand operator of the comparison. That means a call like `context.compareIsShopwareVersion('>=', '7.0.0')` can be read as "*Compare: is Shopware version equal or greater than 7.0.0*"
 
 #### Usage:  
 ```ts
-const isRightVersion = await sw.context.compareShopwareVersion({version:'6.4.0', comparator: '>='})
+const isRightVersion = await sw.context.compareShopwareVersion('>=', '7.0.0')
 ```
 
 #### Parameters
 | Name         | Description                                                                                                       |
 |:-------------|:------------------------------------------------------------------------------------------------------------------|
-| `version`    | The string with the version to compare                                                                            |
-| `comparator` | The operator to compare. Possible values: `'='` `'>'` `'<'` `'<='` `'>='`<br/> If not provided `'='` will be used |
+| `comparator` | The operator to compare. Possible values: `'='` `'!='` `'>'` `'<'` `'<='` `'>='`|
+| `version`    | The string with the version to compare
 
+
+The function supports both, Shopware's four-digit version number and semver versions. The following calls are equivalent:
+
+```ts
+await sw.context.compareShopwareVersion('>=', '6.6.4.0');
+
+await sw.context.compareShopwareVersion('>=', '6.4.0');
+```
 
 #### Return value:
 
@@ -370,4 +379,28 @@ Promise<{
     }
   ]
 }
+```
+
+## ShopId
+
+### Get the shopId
+
+> Available since Shopware v6.7.1.0
+
+Get the shop's shop-id used by Shopware's app system
+
+#### Usage
+
+```ts
+ const shopId = await sw.context.getShopId();
+```
+
+#### Parameters
+
+no parameters needed
+
+#### Return value:
+
+```ts
+Promise<string>
 ```

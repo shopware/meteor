@@ -2,6 +2,7 @@ import { render, screen } from "@testing-library/vue";
 import { describe, it, expect } from "vitest";
 import MtPasswordField from "./mt-password-field.vue";
 import { userEvent } from "@testing-library/user-event";
+import { defineComponent } from "vue";
 
 describe("mt-password-field", () => {
   it("has the correct name", async () => {
@@ -161,5 +162,66 @@ describe("mt-password-field", () => {
     // ASSERT
     expect(screen.queryByRole("button", { name: "Show password" })).not.toBeInTheDocument();
     expect(screen.queryByRole("button", { name: "Hide password" })).not.toBeInTheDocument();
+  });
+
+  it("emits a change submit event when pressing enter", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+    render(MtPasswordField, {
+      props: {
+        label: "Password",
+        onSubmit: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.type(screen.getByLabelText("Password"), "new-password");
+    await userEvent.keyboard("{Enter}");
+
+    // ASSERT
+    expect(handler).toHaveBeenCalledOnce();
+  });
+
+  it("does not emit a submit event when pressing enter on the password toggle button", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+    render(MtPasswordField, {
+      props: {
+        label: "Password",
+        onSubmit: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("button", { name: "Show password" }));
+    await userEvent.keyboard("{Enter}");
+
+    // ASSERT
+    expect(handler).not.toHaveBeenCalled();
+  });
+
+  it("does not submit a form when pressing enter on the password toggle button", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+    const wrapper = defineComponent({
+      components: {
+        MtPasswordField,
+      },
+      template: "<form @submit='handler'><mt-password-field label='Password' /></form>",
+      setup: () => ({ handler }),
+    });
+
+    render(wrapper);
+
+    // ACT
+    await userEvent.tab();
+    await userEvent.tab();
+
+    expect(screen.getByRole("button", { name: "Show password" })).toHaveFocus();
+
+    await userEvent.keyboard("{Enter}");
+
+    // ASSERT
+    expect(handler).not.toHaveBeenCalled();
   });
 });

@@ -1,5 +1,5 @@
 <template>
-  <button class="mt-data-table-reset-filter-button">
+  <button type="button" class="mt-data-table-reset-filter-button">
     {{ t("label", { n: numberOfAppliedFilters }) }}
   </button>
 </template>
