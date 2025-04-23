@@ -21,8 +21,8 @@ if (location.is(sw.location.MAIN_HIDDEN)) {
 | Name                 | Required | Description                                                                                                |
 | :------------------- | :------- | :--------------------------------------------------------------------------------------------------------- |
 | `action`             | true     | A unique name of your action                                                                               |
-| `entity`             | true     | The entity this action is for possible values: `product`, `order`, `category`, `promotion` or `customer`   |
-| `view`               | true     | Determines if the action button appears on the listing or detail page, possible values: `detail` or `list` |
+| `entity`             | true     | The entity this action is for possible values: `product`, `order`, `category`, `promotion`, `customer` or `media`. Value `media` is available in version 6.7.1   |
+| `view`               | true     | Determines if the action button appears on the listing or detail page, possible values: `detail`,`list` or item. View `item` is only used for entity `media` and in version 6.7.1 |
 | `label`              | true     | The label of your action button                                                                            |
 | `callback`           | true     | The callback function where you receive the entity and the entityIds for further processing                |
 
