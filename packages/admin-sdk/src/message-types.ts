@@ -41,6 +41,7 @@ import type {
   repositoryCreate,
 } from './data/repository';
 import type { iapCheckout } from './iap';
+import { TrackingTrack, TrackingPage } from './tracking';
 
 /**
  * Contains all shopware send types.
@@ -101,6 +102,8 @@ export interface ShopwareMessageTypes {
   datasetUpdate: datasetUpdate,
   datasetGet: datasetGet,
   iapCheckout: iapCheckout,
+  trackingPage: TrackingPage,
+  trackingEvent: TrackingTrack,
   __function__: __function__,
   __registerWindow__: __registerWindow__,
   _multiply: _multiply,

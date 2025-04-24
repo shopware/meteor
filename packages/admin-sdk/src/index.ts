@@ -16,9 +16,19 @@ import * as actionButton from './ui/action-button';
 import * as webhook from './app/action';
 import * as data from './data';
 import * as iap from './iap';
+import * as tracking from './tracking';
 import type EntityCollectionType from './_internals/data/EntityCollection';
 import type { Entity as EntityType } from './_internals/data/Entity';
 import composables from './data/composables';
+export type { 
+  TrackingEventName,
+  TrackingContext,
+  TrackEventParameters,
+  TrackPageParameters,
+  PageEvent,
+  TrackEvent,
+  IdentifyEvent,  
+} from './tracking';
 
 const app = {
   webhook,
@@ -51,6 +61,7 @@ export {
   data,
   composables,
   iap,
+  tracking,
 };
 
 /**
