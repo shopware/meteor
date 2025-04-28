@@ -681,3 +681,33 @@ export const VisualTestMultipleSelectsOnOnePage: MtSelectStory = {
     await userEvent.click(primary);
   },
 };
+
+export const VisualTestPlaceholderBehavior: MtSelectStory = {
+  name: "Should show placeholder when alwaysShowPlaceholder is true",
+  args: {
+    placeholder: "Select an option",
+    modelValue: undefined,
+    enableMultiSelection: true,
+    alwaysShowPlaceholder: true,
+  },
+  play: ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getAllByPlaceholderText(args.placeholder!)).toBeDefined();
+  },
+};
+
+export const VisualTestPlaceholderBehaviorFalse: MtSelectStory = {
+  name: "Should not show placeholder when alwaysShowPlaceholder is false",
+  args: {
+    placeholder: "Select an option",
+    modelValue: undefined,
+    enableMultiSelection: true,
+    alwaysShowPlaceholder: false,
+  },
+  play: ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.queryByPlaceholderText(args.placeholder!)).toBeNull();
+  },
+};

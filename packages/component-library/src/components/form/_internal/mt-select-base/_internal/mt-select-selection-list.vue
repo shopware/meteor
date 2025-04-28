@@ -73,8 +73,8 @@
 
 <script lang="ts">
 import type { PropType } from "vue";
-
 import { defineComponent } from "vue";
+import { useI18n } from "vue-i18n";
 import MtLabel from "../../../../_internal/mt-label.vue";
 import MtButton from "../../../mt-button/mt-button.vue";
 
@@ -120,7 +120,7 @@ export default defineComponent({
     alwaysShowPlaceholder: {
       type: Boolean,
       required: false,
-      default: false,
+      default: true,
     },
     placeholder: {
       type: String,
@@ -163,6 +163,23 @@ export default defineComponent({
     },
   },
 
+  setup() {
+    const { t } = useI18n({
+      messages: {
+        de: {
+          "select-placeholder": "Auswählen...",
+        },
+        en: {
+          "select-placeholder": "Select...",
+        },
+      },
+    });
+
+    return {
+      t,
+    };
+  },
+
   data() {
     return {
       inputInFocus: false,
@@ -183,11 +200,19 @@ export default defineComponent({
     },
 
     showPlaceholder(): string {
-      if (this.inputInFocus) {
+      if (this.disabled) {
+        return "";
+      }
+
+      if (!this.multiSelection && this.selections.length > 0) {
         return this.currentValue;
       }
 
-      return this.alwaysShowPlaceholder || this.selections.length === 0 ? this.placeholder : "";
+      return this.alwaysShowPlaceholder
+        ? this.placeholder
+          ? this.placeholder
+          : this.t("select-placeholder")
+        : "";
     },
 
     currentValue(): string {
@@ -330,7 +355,8 @@ export default defineComponent({
   }
 
   .mt-select-selection-list__input-wrapper {
-    flex: 1 1 0;
+    flex: 1 1 auto;
+    min-width: 120px;
   }
 
   .mt-select-selection-list__input-wrapper--small .mt-select-selection-list__input {

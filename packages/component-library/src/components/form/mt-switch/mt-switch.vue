@@ -6,6 +6,7 @@
         'mt-switch--no-top-margin': removeTopMargin,
         'mt-switch--future-no-default-margin': !!futureFlags.removeDefaultMargin,
         'mt-switch--not-bordered': !bordered,
+        'mt-switch--disabled': disabled,
       },
     ]"
   >

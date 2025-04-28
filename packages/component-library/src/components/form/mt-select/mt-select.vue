@@ -26,6 +26,7 @@
         :multi-selection="enableMultiSelection"
         :selections="visibleValues"
         :invisible-count="invisibleValueCount"
+        :always-show-placeholder="alwaysShowPlaceholder"
         v-bind="{ size, valueProperty, labelProperty, placeholder, searchTerm, disabled }"
         :size="small ? 'small' : 'default'"
         @total-count-click="expandValueLimit"
@@ -222,6 +223,15 @@ export default defineComponent({
       type: String,
       required: false,
       default: "",
+    },
+
+    /**
+     * Determines if the placeholder should be shown even when there are no selections.
+     */
+    alwaysShowPlaceholder: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
 
     /**
