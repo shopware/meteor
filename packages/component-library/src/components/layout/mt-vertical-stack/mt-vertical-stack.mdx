@@ -1,0 +1,39 @@
+# Vertical Stack
+
+The `mt-vertical-stack` component can be used to align and add spacing
+between elements. Common use cases are adding multiple cards below each other
+or adding multiple rows of input fields.
+
+## Usage
+
+```vue
+<template>
+  <mt-vertical-stack>
+    <mt-card><!-- Your card content --></mt-card>
+    <mt-card><!-- Your card content --></mt-card>
+    <mt-card><!-- Your card content --></mt-card>
+  </mt-vertical-stack>
+</template>
+
+<script setup>
+import { MtVerticalStack } from "@shopware-ag/meteor-component-library";
+</script>
+```
+
+## Controlling the spacing
+
+To control the spacing between the elements, you can use the `size`
+property.
+
+To control the spacing you need to use a spacing tokens.
+The always start with `scale-size-` followed by a number. You can see
+a list of all available tokens in the [spacing documentation](https://github.com/shopware/meteor/blob/main/packages/tokens/deliverables/foundation/primitives.css#L149).
+
+```vue
+<template>
+  <mt-vertical-stack size="scale-size-4">
+    <div>Element 1</div>
+    <div>Element 2</div>
+  </mt-vertical-stack>
+</template>
+```
