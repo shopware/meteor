@@ -296,6 +296,7 @@ export const VisualTestSingleSelectionLongInSmallWidth: MtSelectStory = {
 export const VisualTestMultiSelect: MtSelectStory = {
   name: "Should multi select",
   args: {
+    modelValue: undefined,
     enableMultiSelection: true,
   },
   play: async ({ canvasElement, args }) => {
@@ -345,6 +346,35 @@ export const VisualTestMultiSelect: MtSelectStory = {
     });
 
     expect(args.change).toHaveBeenCalledWith(["a", "b", "c", "e"]);
+
+    await userEvent.click(canvas.getByText("hidden"));
+    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("");
+  },
+};
+
+export const VisualTestMultiSelectWithInitialValue: MtSelectStory = {
+  name: "Should multi select with initial value",
+  args: {
+    modelValue: "a",
+    enableMultiSelection: true,
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    // open selection
+    await userEvent.click(canvas.getByRole("textbox"));
+
+    const popover = within(
+      document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement,
+    );
+    await userEvent.click(popover.getByTestId("mt-select-option--b"));
+
+    expect(args.itemAdd).toHaveBeenCalledWith({
+      id: 2,
+      value: "b",
+      label: "Option B",
+    });
+
+    expect(args.change).toHaveBeenCalledWith(["a", "b"]);
 
     await userEvent.click(canvas.getByText("hidden"));
     expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("");
