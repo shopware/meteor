@@ -1,7 +1,6 @@
 import { render, screen } from "@testing-library/vue";
 import MtUnitField from "./mt-unit-field.vue";
 import { userEvent } from "@testing-library/user-event";
-import type { Unit } from "convert-units";
 
 describe("mt-unit-field", () => {
   it("is not possible to change the value when inheritance is linked", async () => {
@@ -11,7 +10,7 @@ describe("mt-unit-field", () => {
     render(MtUnitField, {
       props: {
         modelValue: 0,
-        defaultUnit: "mm" as Unit,
+        defaultUnit: "mm",
         isInheritanceField: true,
         isInherited: true,
         "onUpdate:modelValue": handler,
@@ -35,7 +34,7 @@ describe("mt-unit-field", () => {
     render(MtUnitField, {
       props: {
         modelValue: 1,
-        defaultUnit: "m" as Unit,
+        defaultUnit: "m",
         measurementType: "length",
         digits: 3,
         "onUpdate:modelValue": modelValueHandler,
@@ -61,7 +60,7 @@ describe("mt-unit-field", () => {
     render(MtUnitField, {
       props: {
         modelValue: 1,
-        defaultUnit: "g" as Unit,
+        defaultUnit: "g",
         measurementType: "mass",
       },
     });
@@ -83,7 +82,7 @@ describe("mt-unit-field", () => {
     render(MtUnitField, {
       props: {
         modelValue: 100,
-        defaultUnit: "mm" as Unit,
+        defaultUnit: "mm",
         measurementType: "length",
         "onUpdate:modelValue": modelValueHandler,
         "onUpdate:defaultUnit": unitHandler,
