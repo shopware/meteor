@@ -1,13 +1,12 @@
 <template>
   <div class="wrapper">
-    <mt-field-label id="field-id" :style="{ gridArea: 'label' }" class="mt-datepicker__label">
+    <mt-field-label id="field-id" class="mt-datepicker__label">
       {{ label }}
     </mt-field-label>
 
     <vue-datepicker
       ref="datepicker"
       v-model="computedValue"
-      :style="{ gridArea: 'datepicker' }"
       class="date-picker"
       position="left"
       @open="isDatepickerOpen = true"
@@ -58,7 +57,7 @@
 
     <template v-if="isTimeHintVisible">
       <!-- @deprecated tag:v5 remove field-hint class -->
-      <div class="mt-datepicker__hint field-hint" data-test="time-zone-hint" :style="{ gridArea: 'hint' }">
+      <div class="mt-datepicker__hint field-hint" data-test="time-zone-hint">
         <mt-icon name="solid-clock" class="mt-datepicker__hint-icon" size="12" />
         <p>{{ timeZone || "UTC" }}</p>
       </div>
