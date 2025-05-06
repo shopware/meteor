@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <mt-field-label :style="{ gridArea: 'label' }" id="field-id">
+    <mt-field-label id="field-id" :style="{ gridArea: 'label' }" class="mt-datepicker__label">
       {{ label }}
     </mt-field-label>
 
@@ -59,7 +59,7 @@
     <template v-if="isTimeHintVisible">
       <!-- @deprecated tag:v5 remove field-hint class -->
       <div class="mt-datepicker__hint field-hint" data-test="time-zone-hint" :style="{ gridArea: 'hint' }">
-        <mt-icon name="solid-clock" class="mt-datepicker__hint-icon" />
+        <mt-icon name="solid-clock" class="mt-datepicker__hint-icon" size="12" />
         <p>{{ timeZone || "UTC" }}</p>
       </div>
     </template>
@@ -336,13 +336,9 @@ export default defineComponent({
   --dp-range-between-border-color: var(--color-background-brand-default);
 }
 
-.wrapper {
-  display: grid;
-  grid-template-areas:
-    "label"
-    "datepicker"
-    "hint";
-  row-gap: 0.4rem;
+.mt-datepicker__label {
+  line-height: 16px !important;
+  margin-bottom: var(--scale-size-8);
 }
 
 /* || Datepicker  */
@@ -561,6 +557,7 @@ export default defineComponent({
 }
 
 .mt-datepicker__hint {
+  margin-top: var(--scale-size-8);
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
   font-family: var(--font-family-body);
@@ -568,10 +565,5 @@ export default defineComponent({
   display: flex;
   align-items: center;
   gap: var(--scale-size-8);
-}
-
-.mt-datepicker__hint-icon svg#meteor-icon-kit__solid-clock {
-  width: var(--scale-size-12);
-  height: var(--scale-size-12);
 }
 </style>
