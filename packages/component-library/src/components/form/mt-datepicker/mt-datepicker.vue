@@ -223,11 +223,13 @@ export default defineComponent({
 
         // Handle date conversion for 'time' type
         if (this.dateType === "time") {
-          const isoFormattedDate = this.convertTimeToIso(newValue as unknown as {
-            hours: number;
-            minutes: number;
-            seconds: number;
-          });
+          const isoFormattedDate = this.convertTimeToIso(
+            newValue as unknown as {
+              hours: number;
+              minutes: number;
+              seconds: number;
+            },
+          );
 
           this.$emit("update:modelValue", isoFormattedDate);
           return;
@@ -286,11 +288,7 @@ export default defineComponent({
       }
     },
 
-    convertTimeToIso(time: {
-      hours: number;
-      minutes: number;
-      seconds: number;
-    }): string {
+    convertTimeToIso(time: { hours: number; minutes: number; seconds: number }): string {
       const date = new Date();
       date.setHours(time.hours, time.minutes, time.seconds);
       return date.toISOString();
@@ -347,13 +345,15 @@ export default defineComponent({
 
 /* || Input wrapper */
 .dp__input_wrap {
+  min-height: var(--scale-size-48);
   font: inherit;
   font-weight: var(--font-weight-regular) !important;
   font-size: var(--font-size-xs) !important;
+  display: flex;
 }
 
 .dp__input {
-  height: var(--scale-size-48);
+  flex: 1;
   padding-left: var(--scale-size-16) !important;
   border-radius: var(--border-radius-xs);
   font: inherit;
