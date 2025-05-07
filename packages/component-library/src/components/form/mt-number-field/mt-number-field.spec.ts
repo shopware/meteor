@@ -49,6 +49,42 @@ describe("mt-number-field", () => {
     expect(screen.getByRole("textbox")).toHaveValue("1000");
   });
 
+  it("does not emit a change event when clicking the increment button", async () => {
+    const handler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        modelValue: 10,
+        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
+        onChange: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("button", { name: "Increase" }));
+
+    // ASSERT
+    expect(handler).not.toHaveBeenCalled();
+  });
+
+  it("does not emit a change event when clicking the decrement button", async () => {
+    const handler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        modelValue: 10,
+        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
+        onChange: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("button", { name: "Decrease" }));
+
+    // ASSERT
+    expect(handler).not.toHaveBeenCalled();
+  });
+
   it("is not possible to increment the value by pressing the increment button when inheritance is linked", async () => {
     // ASSERT
     const handler = vi.fn();
