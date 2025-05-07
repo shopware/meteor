@@ -259,9 +259,6 @@ export default defineComponent({
       // @ts-expect-error - target exists
       this.computeValue(event.target.value);
 
-      /** @deprecated tag: 5.0 - Will be removed use update:model-value instead */
-      this.$emit("change", this.currentValue);
-
       this.$emit("update:modelValue", this.currentValue);
     },
 
