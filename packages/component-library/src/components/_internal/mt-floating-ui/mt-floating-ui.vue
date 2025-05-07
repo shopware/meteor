@@ -35,13 +35,15 @@ import {
 import { vOnClickOutside } from "@vueuse/components";
 import { defineProps, defineEmits } from "vue";
 
-const props = defineProps<{
+export type MtFloatingUiProps = {
   isOpened: boolean;
   floatingUiOptions?: Partial<ComputePositionConfig>;
   showArrow?: boolean;
   offset?: number;
   autoUpdateOptions?: Partial<AutoUpdateOptions>;
-}>();
+};
+
+const props = defineProps<MtFloatingUiProps>();
 
 const emit = defineEmits<{
   (e: "close"): void;
