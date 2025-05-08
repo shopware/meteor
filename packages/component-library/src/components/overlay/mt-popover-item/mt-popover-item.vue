@@ -3,11 +3,11 @@
     <div class="mt-popover-item__top-row">
       <mt-checkbox
         v-if="showCheckbox"
+        :id="id"
         class="mt-popover-item__checkbox"
         :checked="checkboxChecked"
         :partial="checkboxPartial"
-        :id="id"
-        @change="emitChangeCheckbox"
+        @change="handleLableClick"
       />
 
       <slot name="extension-logo" />
@@ -51,7 +51,7 @@
           v-if="showSwitch"
           :checked="switchValue"
           class="mt-popover-item__switch"
-          @change="emitChangeSwitch"
+          @change="handleLableClick"
         />
 
         <template v-if="showVisibility">
@@ -85,6 +85,7 @@ import MtCheckbox from "../../form/mt-checkbox/mt-checkbox.vue";
 import MtSwitch from "../../form/mt-switch/mt-switch.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import { createId } from "../../../utils/id";
+import { useDebounceFn } from "@vueuse/core";
 
 export type MtPopoverItemType = "default" | "critical" | "active";
 
@@ -204,7 +205,7 @@ export default defineComponent({
       default: false,
     },
   },
-  emits: ["change-checkbox", "change-switch", "change-visibility", "click-options"],
+  emits: ["change-checkbox", "change-switch", "change-visibility", "click-options", 'close'],
   setup(props, { emit }) {
     const id = createId();
 
@@ -259,7 +260,8 @@ export default defineComponent({
       return props.onLabelClick ? 0 : -1;
     });
 
-    const handleLableClick = () => {
+    // Debounce the label click to prevent too many calls
+    const handleLableClick = useDebounceFn(() => {
       if (props.onLabelClick) {
         props.onLabelClick();
         return;
@@ -279,7 +281,7 @@ export default defineComponent({
         emitChangeCheckbox(!props.checkboxChecked);
         return;
       }
-    };
+    }, 16);
 
     const iconClasses = computed(() => {
       return {
