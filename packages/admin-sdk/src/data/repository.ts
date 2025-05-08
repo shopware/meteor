@@ -6,6 +6,17 @@ import type { Entity } from '../_internals/data/Entity';
 
 type Entities = EntitySchema.Entities;
 
+export type Repository<EntityName extends keyof Entities> = {
+  search: (criteria: Criteria, context?: ApiContext) => Promise<EntityCollection<EntityName> | null>,
+  get: (id: string, context?: ApiContext, criteria?: Criteria) => Promise<Entity<EntityName> | null>,
+  save: (entity: Entity<EntityName>, context?: ApiContext) => Promise<void | null>,
+  clone: (entityId: string, context?: ApiContext, behavior?: any) => Promise<unknown | null>,
+  hasChanges: (entity: Entity<EntityName>) => Promise<boolean | null>,
+  saveAll: (entities: EntityCollection<EntityName>, context?: ApiContext) => Promise<unknown | null>,
+  delete: (entityId: string, context?: ApiContext) => Promise<void | null>,
+  create: (context?: ApiContext, entityId?: string) => Promise<Entity<EntityName> | null>,
+};
+
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default <EntityName extends keyof Entities>(entityName: EntityName) => ({
   search: (criteria: Criteria, context?: ApiContext): Promise<EntityCollection<EntityName> | null> => {

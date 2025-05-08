@@ -48,6 +48,10 @@
       "import": "./es/_internals/data/EntityCollection.js",
       "require": "./umd/_internals/data/EntityCollection.js"
     },
+    "./es/data/Repository": {
+      "import": "./es/data/Repository.js",
+      "require": "./umd/data/Repository.js"
+    },
     ".": {
       "import": "./es/index.js",
       "require": "./umd/index.js"
