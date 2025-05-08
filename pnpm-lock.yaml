@@ -580,9 +580,6 @@ importers:
       dotenv:
         specifier: ^16.4.1
         version: 16.4.5
-      js-md5:
-        specifier: ^0.7.3
-        version: 0.7.3
       ora:
         specifier: ^8.2.0
         version: 8.2.0
@@ -605,12 +602,6 @@ importers:
       '@types/axios':
         specifier: ^0.14.0
         version: 0.14.0
-      '@types/fs-extra':
-        specifier: ^9.0.13
-        version: 9.0.13
-      '@types/js-md5':
-        specifier: ^0.4.3
-        version: 0.4.3
       '@types/node':
         specifier: ^20.14.9
         version: 20.17.19
@@ -623,9 +614,6 @@ importers:
       eslint:
         specifier: ^9.21.0
         version: 9.21.0(jiti@1.21.7)
-      fs-extra:
-        specifier: ^10.0.1
-        version: 10.1.0
       prettier:
         specifier: ^3.5.3
         version: 3.5.3
@@ -4527,9 +4515,6 @@ packages:
   '@types/express@4.17.21':
     resolution: {integrity: sha512-ejlPM315qwLpaQlQDTjPdsUFSc6ZsP4AN6AlWnogPjQ7CVi7PYF3YVz+CY3jE2pwYf7E/7HlDAN0rV2GxTG0HQ==}
 
-  '@types/fs-extra@9.0.13':
-    resolution: {integrity: sha512-nEnwB++1u5lVDM2UI4c1+5R+FYaKfaAzS4OococimjVm3nQw3TuzH5UNsocrcTBbhnerblyHj4A49qXbIiZdpA==}
-
   '@types/graceful-fs@4.1.9':
     resolution: {integrity: sha512-olP3sd1qOEe5dXTSaFvQG+02VdRXcdytWLAZsAq1PecU8uqQAhkrnbli7DagjtXKW/Bl7YJbUsa8MPcuc8LHEQ==}
 
@@ -4559,9 +4544,6 @@ packages:
 
   '@types/jest@27.5.2':
     resolution: {integrity: sha512-mpT8LJJ4CMeeahobofYWIjFo0xonRS/HfxnVEPMPFSQdGUt1uHCnoPT7Zhb+sjDU2wz0oKV0OLUR0WzrHNgfeA==}
-
-  '@types/js-md5@0.4.3':
-    resolution: {integrity: sha512-BIga/WEqTi35ccnGysOuO4RmwVnpajv9oDB/sDQSY2b7/Ac7RyYR30bv7otZwByMvOJV9Vqq6/O1DFAnOzE4Pg==}
 
   '@types/jsdom@21.1.7':
     resolution: {integrity: sha512-yOriVnggzrnQ3a9OKOCxaVuSug3w3/SbOj5i7VwXWZEyUNl3bLF9V3MfxGbZKuwqJOQyRfqXyROBB1CoZLFWzA==}
@@ -9415,9 +9397,6 @@ packages:
   js-cookie@3.0.5:
     resolution: {integrity: sha512-cEiJEAEoIbWfCZYKWhVwFuvPX1gETRYPw6LlaTKoxD3s2AkXzkCjnp6h0V77ozyqj0jakteJ4YqDJT830+lVGw==}
     engines: {node: '>=14'}
-
-  js-md5@0.7.3:
-    resolution: {integrity: sha512-ZC41vPSTLKGwIRjqDh8DfXoCrdQIyBgspJVPXHBGu4nZlAEvG3nf+jO9avM9RmLiGakg7vz974ms99nEV0tmTQ==}
 
   js-priority-queue@0.1.5:
     resolution: {integrity: sha512-2dPmJT4GbXUpob7AZDR1wFMKz3Biy6oW69mwt5PTtdeoOgDin1i0p5gUV9k0LFeUxDpwkfr+JGMZDpcprjiY5w==}
@@ -19653,10 +19632,6 @@ snapshots:
       '@types/qs': 6.9.15
       '@types/serve-static': 1.15.7
 
-  '@types/fs-extra@9.0.13':
-    dependencies:
-      '@types/node': 18.19.36
-
   '@types/graceful-fs@4.1.9':
     dependencies:
       '@types/node': 18.19.36
@@ -19689,8 +19664,6 @@ snapshots:
     dependencies:
       jest-matcher-utils: 27.5.1
       pretty-format: 27.5.1
-
-  '@types/js-md5@0.4.3': {}
 
   '@types/jsdom@21.1.7':
     dependencies:
@@ -26146,8 +26119,6 @@ snapshots:
       nopt: 7.2.1
 
   js-cookie@3.0.5: {}
-
-  js-md5@0.7.3: {}
 
   js-priority-queue@0.1.5: {}
 
