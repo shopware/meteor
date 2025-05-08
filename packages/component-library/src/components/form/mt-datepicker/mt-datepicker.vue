@@ -57,8 +57,9 @@
     </vue-datepicker>
 
     <template v-if="isTimeHintVisible">
-      <div class="field-hint" data-test="time-zone-hint" :style="{ gridArea: 'hint' }">
-        <mt-icon name="solid-clock" class="field-hint-icon" />
+      <!-- @deprecated tag:v5 remove field-hint class -->
+      <div class="mt-datepicker__hint field-hint" data-test="time-zone-hint" :style="{ gridArea: 'hint' }">
+        <mt-icon name="solid-clock" class="mt-datepicker__hint-icon" />
         <p>{{ timeZone || "UTC" }}</p>
       </div>
     </template>
@@ -559,8 +560,7 @@ export default defineComponent({
   background: red;
 }
 
-/* || Field hint */
-.field-hint {
+.mt-datepicker__hint {
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
   font-family: var(--font-family-body);
@@ -570,7 +570,7 @@ export default defineComponent({
   gap: var(--scale-size-8);
 }
 
-.field-hint .field-hint-icon svg#meteor-icon-kit__solid-clock {
+.mt-datepicker__hint-icon svg#meteor-icon-kit__solid-clock {
   width: var(--scale-size-12);
   height: var(--scale-size-12);
 }

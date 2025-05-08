@@ -1,5 +1,17 @@
 # Changelog
 
+## 4.10.1
+
+### Patch Changes
+
+- 269bf4a: Add mt-switch--disabled class to mt-switch
+- c47c136: Update alignment of close icon in mt-label
+- Updated dependencies [f4ed7d0]
+- Updated dependencies [0f5575d]
+- Updated dependencies [a1c2414]
+  - @shopware-ag/meteor-tokens@1.1.0
+  - @shopware-ag/meteor-icon-kit@5.5.0
+
 ## 4.10.0
 
 ### Minor Changes

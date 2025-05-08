@@ -530,6 +530,11 @@
   height: 18;
 }
 
+#meteor-icon-kit__regular-crop {
+  width: 24;
+  height: 24;
+}
+
 #meteor-icon-kit__regular-crosshair {
   width: 24;
   height: 24;
@@ -2763,6 +2768,11 @@
 #meteor-icon-kit__solid-credit-card {
   width: 24;
   height: 18;
+}
+
+#meteor-icon-kit__solid-crop {
+  width: 24;
+  height: 24;
 }
 
 #meteor-icon-kit__solid-crosshair {

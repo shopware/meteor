@@ -1,5 +1,12 @@
 # @shopware-ag/stylelint-plugin-meteor
 
+## 2.0.0
+
+### Patch Changes
+
+- Updated dependencies [f4ed7d0]
+  - @shopware-ag/meteor-tokens@1.1.0
+
 ## 1.1.0
 
 ### Minor Changes
