@@ -459,18 +459,26 @@
                     {{ t("contextButtons.edit") }}
                   </a>
                   <mt-context-button v-if="!(disableDelete && disableEdit)">
-                    <mt-context-menu-item
-                      v-if="!disableEdit"
-                      :label="t('contextButtons.edit')"
-                      @click="$emit('open-details', data)"
-                    />
+                    <template #default="{ toggleFloatingUi }">
+                      <mt-context-menu-item
+                        v-if="!disableEdit"
+                        :label="t('contextButtons.edit')"
+                        @click="() => {
+                          toggleFloatingUi();
+                          $emit('open-details', data)
+                        }"
+                      />
 
-                    <mt-context-menu-item
-                      v-if="!disableDelete"
-                      type="critical"
-                      :label="t('contextButtons.delete')"
-                      @click="$emit('item-delete', data)"
-                    />
+                      <mt-context-menu-item
+                        v-if="!disableDelete"
+                        type="critical"
+                        :label="t('contextButtons.delete')"
+                        @click="() => {
+                          $emit('item-delete', data)
+                          toggleFloatingUi();
+                        }"
+                        />
+                    </template>
                   </mt-context-button>
                 </td>
               </tr>
@@ -2273,7 +2281,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
 
   thead th {
     font-weight: var(--font-weight-medium);
-    line-height: var(--line-height-2xs);
+    line-height: var(--font-line-height-2xs);
     background-color: var(--color-elevation-surface-sunken);
     color: var(--color-text-secondary-default);
     min-width: 50px;
