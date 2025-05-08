@@ -48,6 +48,14 @@
       "import": "./es/_internals/data/EntityCollection.js",
       "require": "./umd/_internals/data/EntityCollection.js"
     },
+    "./es/data/Repository": {
+      "import": "./es/data/Repository.js",
+      "require": "./umd/data/Repository.js"
+    },
+    "./es/data/data-table-filter.helper": {
+      "import": "./es/data/data-table-filter.helper.js",
+      "require": "./umd/data/data-table-filter.helper.js"
+    },
     "./es/data/composables": {
       "import": "./es/data/composables/index.js",
       "require": "./umd/data/composables/index.js"

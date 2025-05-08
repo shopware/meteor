@@ -8,9 +8,15 @@ export type uiModalOpen =
  {
    responseType: void,
    title?: string,
-   // Use the locationId to render the modal in the iframe
+   /**
+    * If a locationId is provided, the modal will
+    * be rendered and the content renders the location.
+    */
    locationId?: string,
-   // Use the textContent when no locationId is provided
+   /**
+    * If no locationId is provided, the textContent will be rendered in the modal.
+    * Only simple text is supported.
+    */
    textContent?: string,
    variant?: 'default'|'small'|'large'|'full',
    showHeader?: boolean,

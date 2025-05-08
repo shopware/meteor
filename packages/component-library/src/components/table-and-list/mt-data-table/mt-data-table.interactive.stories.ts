@@ -1363,3 +1363,30 @@ export const VisualTestShouldHideTheLastColumnWithViaDisableContextMenuAndSettin
       await expect(canvas.queryByLabelText("Toggle view settings")).toBeNull();
     },
   };
+
+export const VisualTestBulkEdit: MtDataTableStory = {
+  name: "Should show the bulk edit bar when items are selected",
+  args: {
+    allowBulkEdit: true,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // Wait for the table to be loaded
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+    // Wait until "Awesome Concrete Chair" is visible
+    await waitUntil(() => canvas.getByText("Awesome Concrete Chair"));
+
+    // Select the checkbox of the first and second row in table body
+    const firstRow = canvas.getAllByRole("row")[1];
+    const checkbox = within(firstRow).getByRole("checkbox");
+    await userEvent.click(checkbox);
+
+    const secondRow = canvas.getAllByRole("row")[2];
+    const checkbox2 = within(secondRow).getByRole("checkbox");
+    await userEvent.click(checkbox2);
+
+    // Check if the bulk edit bar is visible
+    const bulkEditBar = canvas.getByLabelText('2 items selected')
+    expect(bulkEditBar).toBeInTheDocument();
+  },
+};
