@@ -1,5 +1,20 @@
 # Changelog
 
+## 4.11.0
+
+### Minor Changes
+
+- 36bf822: Add mt-unit-field component
+
+### Patch Changes
+
+- be9c623: fixed unnecessary whitespace select
+- 74772d6: fixed multiple select handling
+- bed29f0: Only emit change event when using `@change` on `mt-number-field`
+- 2cd3eff: Do not emit change event when pressing increment and decrement buttons on `mt-number-field`
+- e77fada: fixed hint class naming datepicker
+- 828c6dc: fixed popover width resizing
+
 ## 4.10.1
 
 ### Patch Changes
