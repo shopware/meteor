@@ -1,4 +1,4 @@
-import { isObject, hasType } from '../utils';
+import { hasType, isEntity } from '../utils';
 import EntityClass from '../data/Entity';
 import type { SerializerFactory } from '.';
 
@@ -7,7 +7,7 @@ const EntitySerializerFactory: SerializerFactory = () => ({
   name: 'entity',
 
   serialize: ({ value, customizerMethod, seen, path }): any => {
-    if (!isObject(value) || typeof value.__identifier__ !== 'function' || value.__identifier__() !== 'Entity') {
+    if(!isEntity(value)) {
       return;
     }
 

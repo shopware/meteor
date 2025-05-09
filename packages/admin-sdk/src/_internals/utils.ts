@@ -1,5 +1,6 @@
 import has from 'lodash/has';
 import type { extension } from './privileges';
+import type { Entity } from './data/Entity';
 
 export function generateUniqueId(): string {
   return String(Date.now().toString(36) + Math.random().toString(36).substr(2));
@@ -17,29 +18,32 @@ export function getLocationId():string|null {
 }
 
 export function getWindowSrc():string {
-    const location = window.location as Location;
-    const urlObject = new URL(location.pathname, location.origin);
+  const location = window.location ;
+  const urlObject = new URL(location.pathname, location.origin);
 
-    return urlObject.toString();
+  return urlObject.toString();
 }
 
-export function hasType(type: string, obj: any): boolean {
-  return isObject(obj) && obj.__type__ && obj.__type__ === type;
+export function hasType(type: string, obj: unknown): boolean {
+  return isObject(obj) && '__type__' in obj && obj.__type__ === type;
 }
 
 export function hasOwnProperty(obj: any, path: string): boolean {
   return has(obj, path);
 }
 
+export function isEntity(obj: unknown): obj is Entity<any> {
+  return isObject(obj) && typeof (obj as Entity<any>).__identifier__ === 'function' && (obj as Entity<any>).__identifier__() === 'Entity';
+}
 
-export function traverseObject(this: any, traversableObject: any, processor: (parentEntry: any, key: string, value: any, previousKey: string) => void, previousKey = 'root') {
-  for (let index in traversableObject) {
+export function traverseObject(this: any, traversableObject: any, processor: (parentEntry: any, key: string, value: any, previousKey: string) => void, previousKey = 'root'): void {
+  for (const index in traversableObject) {
     const currentEntry = traversableObject[index];
 
     processor.apply(this, [traversableObject, index, currentEntry, previousKey]);
 
     if (isObject(currentEntry)) {
-      let pk = previousKey + '.' + index;
+      const pk = previousKey + '.' + index;
       traverseObject(currentEntry, processor, pk);
     }
   }
@@ -60,38 +64,38 @@ export function removeRoot(path: string | number): string | number {
   return path.replace(/^root\./, '');
 }
 
- export function findExtensionByBaseUrl(baseUrl?: string): extension | undefined {
-   if (typeof baseUrl !== 'string') {
-   return undefined;
-   }
+export function findExtensionByBaseUrl(baseUrl?: string): extension | undefined {
+  if (typeof baseUrl !== 'string') {
+    return undefined;
+  }
  
-   if (baseUrl === '') {
-   return undefined;
-   }
+  if (baseUrl === '') {
+    return undefined;
+  }
  
-   const comparedBaseUrl = new URL(baseUrl);
+  const comparedBaseUrl = new URL(baseUrl);
  
-   /*
-  * Check if baseUrl is the same as the current window location
-  * If so, return the dummy extension with all privileges available
-  */
-   if (comparedBaseUrl.origin === window.location.origin) {
-   return {
-     baseUrl: comparedBaseUrl.hostname,
-     permissions: {
-     additional: ['*'],
-     create: ['*'],
-     read: ['*'],
-     update: ['*'],
-     delete: ['*'],
-     },
-   };
-   }
+  /*
+   * Check if baseUrl is the same as the current window location
+   * If so, return the dummy extension with all privileges available
+   */
+  if (comparedBaseUrl.origin === window.location.origin) {
+    return {
+      baseUrl: comparedBaseUrl.hostname,
+      permissions: {
+        additional: ['*'],
+        create: ['*'],
+        read: ['*'],
+        update: ['*'],
+        delete: ['*'],
+      },
+    };
+  }
  
-   return Object.values(window._swsdk.adminExtensions)
-     .find((ext) => {
-     const extensionBaseUrl = new URL(ext.baseUrl);
+  return Object.values(window._swsdk.adminExtensions)
+    .find((ext) => {
+      const extensionBaseUrl = new URL(ext.baseUrl);
  
-     return extensionBaseUrl.hostname === comparedBaseUrl.hostname;
-     });
- }
+      return extensionBaseUrl.hostname === comparedBaseUrl.hostname;
+    });
+}
