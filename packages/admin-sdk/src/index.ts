@@ -13,6 +13,7 @@ import * as module from './ui/module';
 import * as modal from './ui/modal';
 import * as sidebar from './ui/sidebar';
 import * as actionButton from './ui/action-button';
+import * as mediaModal from './ui/media-modal';
 import * as webhook from './app/action';
 import * as data from './data';
 import * as iap from './iap';
@@ -34,6 +35,7 @@ const ui = {
   modal,
   actionButton,
   sidebar,
+  mediaModal,
 };
 
 /**
