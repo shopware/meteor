@@ -1,6 +1,17 @@
 import type { SerializerFactory } from '.';
 import { isObject, generateUniqueId } from '../utils';
 
+type SerializedFunction = {
+  id: string,
+  __type__: '__function__',
+  origin: string,
+}
+
+function isSerializedFunction(obj: unknown): obj is SerializedFunction {
+  return isObject(obj) && '__type__' in obj && obj.__type__ === '__function__'
+    && 'id' in obj && typeof obj.id === 'string';
+}
+
 /* eslint-disable */
 const FunctionSerializerFactory: SerializerFactory = ({ send, handle }) => {
   // only available on sender side
@@ -45,11 +56,7 @@ const FunctionSerializerFactory: SerializerFactory = ({ send, handle }) => {
       const targetWindow: Window = event?.source ?? window;
   
       // when object is containing a method wrapper
-      if (isObject(value)
-          && value['__type__']
-          && value['__type__'] === '__function__'
-          && typeof value['id'] === 'string'
-      ) {
+      if (isSerializedFunction(value)) {
         const id = value['id'];
         const origin = value['origin'];
   
