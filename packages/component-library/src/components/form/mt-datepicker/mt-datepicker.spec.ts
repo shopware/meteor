@@ -76,5 +76,5 @@ describe("src/app/component/form/mt-datepicker", () => {
     const timeZoneHint = wrapper.find('[data-test="time-zone-hint"]');
     expect(timeZoneHint.exists()).toBeTruthy();
     expect(timeZoneHint.text()).toBe("Europe/Berlin");
-  });  
+  });
 });

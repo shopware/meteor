@@ -6,7 +6,15 @@ import { MtTextField } from "@/index";
 
 export type MtEmailFieldMeta = SlottedMeta<
   typeof MtEmailField,
-  "default" | "updateModelValue" | "change" | "hint" | "suffix" | "prefix" | "placeholder" | "error" | "_showSecondTextField"
+  | "default"
+  | "updateModelValue"
+  | "change"
+  | "hint"
+  | "suffix"
+  | "prefix"
+  | "placeholder"
+  | "error"
+  | "_showSecondTextField"
 >;
 
 export default {
