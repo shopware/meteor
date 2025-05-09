@@ -6,7 +6,7 @@ import EX_DAILYMOTION_CONSTANTS from "../cms/ex-dailymotion/ex-dailymotion-const
  */
 ui.componentSection.add({
   component: "card",
-  positionId: "sw-chart-card__before",
+  positionId: "sw-dashboard__before-content",
   props: {
     title: "Meteor Admin SDK",
     subtitle: "Welcome to the example",
