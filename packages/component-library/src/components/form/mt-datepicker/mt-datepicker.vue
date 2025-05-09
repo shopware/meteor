@@ -1,13 +1,12 @@
 <template>
   <div class="wrapper">
-    <mt-field-label :style="{ gridArea: 'label' }" id="field-id">
+    <mt-field-label id="field-id" class="mt-datepicker__label">
       {{ label }}
     </mt-field-label>
 
     <vue-datepicker
       ref="datepicker"
       v-model="computedValue"
-      :style="{ gridArea: 'datepicker' }"
       class="date-picker"
       position="left"
       @open="isDatepickerOpen = true"
@@ -58,8 +57,8 @@
 
     <template v-if="isTimeHintVisible">
       <!-- @deprecated tag:v5 remove field-hint class -->
-      <div class="mt-datepicker__hint field-hint" data-test="time-zone-hint" :style="{ gridArea: 'hint' }">
-        <mt-icon name="solid-clock" class="mt-datepicker__hint-icon" />
+      <div class="mt-datepicker__hint field-hint" data-test="time-zone-hint">
+        <mt-icon name="solid-clock" class="mt-datepicker__hint-icon" size="12" />
         <p>{{ timeZone || "UTC" }}</p>
       </div>
     </template>
@@ -224,11 +223,13 @@ export default defineComponent({
 
         // Handle date conversion for 'time' type
         if (this.dateType === "time") {
-          const isoFormattedDate = this.convertTimeToIso(newValue as unknown as {
-            hours: number;
-            minutes: number;
-            seconds: number;
-          });
+          const isoFormattedDate = this.convertTimeToIso(
+            newValue as unknown as {
+              hours: number;
+              minutes: number;
+              seconds: number;
+            },
+          );
 
           this.$emit("update:modelValue", isoFormattedDate);
           return;
@@ -287,11 +288,7 @@ export default defineComponent({
       }
     },
 
-    convertTimeToIso(time: {
-      hours: number;
-      minutes: number;
-      seconds: number;
-    }): string {
+    convertTimeToIso(time: { hours: number; minutes: number; seconds: number }): string {
       const date = new Date();
       date.setHours(time.hours, time.minutes, time.seconds);
       return date.toISOString();
@@ -336,13 +333,9 @@ export default defineComponent({
   --dp-range-between-border-color: var(--color-background-brand-default);
 }
 
-.wrapper {
-  display: grid;
-  grid-template-areas:
-    "label"
-    "datepicker"
-    "hint";
-  row-gap: 0.4rem;
+.mt-datepicker__label {
+  line-height: 16px !important;
+  margin-bottom: var(--scale-size-8);
 }
 
 /* || Datepicker  */
@@ -352,13 +345,15 @@ export default defineComponent({
 
 /* || Input wrapper */
 .dp__input_wrap {
+  min-height: var(--scale-size-48);
   font: inherit;
   font-weight: var(--font-weight-regular) !important;
   font-size: var(--font-size-xs) !important;
+  display: flex;
 }
 
 .dp__input {
-  height: var(--scale-size-48);
+  flex: 1;
   padding-left: var(--scale-size-16) !important;
   border-radius: var(--border-radius-xs);
   font: inherit;
@@ -561,6 +556,7 @@ export default defineComponent({
 }
 
 .mt-datepicker__hint {
+  margin-top: var(--scale-size-8);
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
   font-family: var(--font-family-body);
@@ -568,10 +564,5 @@ export default defineComponent({
   display: flex;
   align-items: center;
   gap: var(--scale-size-8);
-}
-
-.mt-datepicker__hint-icon svg#meteor-icon-kit__solid-clock {
-  width: var(--scale-size-12);
-  height: var(--scale-size-12);
 }
 </style>
