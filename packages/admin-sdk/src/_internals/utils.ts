@@ -6,7 +6,7 @@ export function generateUniqueId(): string {
 }
 
 /* eslint-disable */
-export function isObject(value: unknown): value is any {
+export function isObject(value: unknown): value is object {
   return value !== null && typeof value === 'object';
 }
 
