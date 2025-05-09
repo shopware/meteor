@@ -1,7 +1,7 @@
 {
   "ts-node": {
     "transpileOnly": true,
-    "files": true,
+    "files": true
   },
   "compilerOptions": {
     "target": "es2016",
@@ -9,7 +9,7 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
-    "skipLibCheck": true,
+    "skipLibCheck": true
   },
   "exclude": ["node_modules"],
   "include": ["src", "./eslint.config.mjs"]
