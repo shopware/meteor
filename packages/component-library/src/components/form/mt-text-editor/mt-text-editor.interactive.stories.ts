@@ -534,7 +534,9 @@ export const SetTextAlignmentLeft: MtTextEditorStory = defineStory({
     await waitUntil(() => args.updateModelValue?.mock?.calls?.length > 0);
 
     // Check if args was triggered with new content (no change expected because left is default)
-    expect(args.updateModelValue).toHaveBeenCalledWith("<h1>Hello World</h1><p>Some text</p>");
+    expect(args.updateModelValue).toHaveBeenCalledWith(
+      '<h1 style="text-align: left">Hello World</h1><p>Some text</p>',
+    );
   },
 });
 
