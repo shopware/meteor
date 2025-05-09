@@ -410,9 +410,8 @@ export default defineComponent({
     currentValue: {
       get(): string | number | boolean | unknown[] | null | undefined {
         if (this.modelValue === null || this.modelValue === undefined) {
-          return [];
+          return this.enableMultiSelection ? [] : null;
         }
-
         return this.modelValue;
       },
       set(newValue: string | number | boolean | unknown[] | null | undefined) {
@@ -575,7 +574,8 @@ export default defineComponent({
     },
 
     onClearSelection() {
-      this.currentValue = [];
+      // If multiSelection enabled return empty array otherwise null
+      this.currentValue = this.enableMultiSelection ? [] : null;
     },
 
     getFocusElement() {
