@@ -95,6 +95,9 @@ importers:
       '@eslint/js':
         specifier: ^9.20.0
         version: 9.21.0
+      '@shopware-ag/meteor-prettier-config':
+        specifier: workspace:*
+        version: link:../../packages/prettier-config
       '@types/express':
         specifier: ^4.17.21
         version: 4.17.21
@@ -104,12 +107,18 @@ importers:
       eslint:
         specifier: ^9.21.0
         version: 9.21.0(jiti@1.21.7)
+      eslint-config-prettier:
+        specifier: ^9.1.0
+        version: 9.1.0(eslint@9.21.0(jiti@1.21.7))
       eslint-plugin-vue:
         specifier: ^9.32.0
         version: 9.32.0(eslint@9.21.0(jiti@1.21.7))
       nodemon:
         specifier: ^2.0.22
         version: 2.0.22
+      prettier:
+        specifier: ^3.2.5
+        version: 3.5.3
       ts-node:
         specifier: ^10.9.2
         version: 10.9.2(@swc/core@1.6.1)(@types/node@18.19.36)(typescript@5.4.5)
@@ -7481,6 +7490,12 @@ packages:
 
   eslint-config-prettier@10.1.1:
     resolution: {integrity: sha512-4EQQr6wXwS+ZJSzaR5ZCrYgLxqvUjdXctaEtBqHcbkW944B1NQyO4qpdHQbXBONfwxXdkAY81HH4+LUfrg+zPw==}
+    hasBin: true
+    peerDependencies:
+      eslint: '>=7.0.0'
+
+  eslint-config-prettier@9.1.0:
+    resolution: {integrity: sha512-NSWl5BFQWEPi1j4TjVNItzYV7dZXZ+wP6I6ZhrBGpChQhZRUaElihE9uRRkcbRnNb76UMKDF3r+WTmNcGPKsqw==}
     hasBin: true
     peerDependencies:
       eslint: '>=7.0.0'
@@ -23474,6 +23489,10 @@ snapshots:
       source-map: 0.6.1
 
   eslint-config-prettier@10.1.1(eslint@9.21.0(jiti@1.21.7)):
+    dependencies:
+      eslint: 9.21.0(jiti@1.21.7)
+
+  eslint-config-prettier@9.1.0(eslint@9.21.0(jiti@1.21.7)):
     dependencies:
       eslint: 9.21.0(jiti@1.21.7)
 

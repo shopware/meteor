@@ -4,6 +4,7 @@ import eslint from "@eslint/js";
 import eslintPluginVue from "eslint-plugin-vue";
 import globals from "globals";
 import typescriptEslint from "typescript-eslint";
+import eslintConfigPrettier from "eslint-config-prettier";
 
 export default typescriptEslint.config(
   { ignores: ["*.d.ts", "**/coverage", "**/dist", "**/node_modules"] },
@@ -22,5 +23,6 @@ export default typescriptEslint.config(
         parser: typescriptEslint.parser,
       },
     },
-  }
+  },
+  eslintConfigPrettier,
 );
