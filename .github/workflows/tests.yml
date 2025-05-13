@@ -151,7 +151,7 @@ jobs:
         run: npx turbo run build
 
       - name: Run e2e tests
-        run: pnpx turbo run test:e2e
+        run: pnpm --filter nuxt-app run test:e2e
 
       - uses: actions/upload-artifact@v4
         if: always()
