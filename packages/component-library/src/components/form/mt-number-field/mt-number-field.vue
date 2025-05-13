@@ -94,9 +94,9 @@
         </button>
       </div>
 
-      <mt-field-affix v-if="$slots['_unit-suffix']" type="unit-suffix">
+      <div v-if="$slots['_unit-suffix']" class="mt-number-field__unit-suffix">
         <slot name="_unit-suffix" />
-      </mt-field-affix>
+      </div>
 
       <mt-field-affix v-if="$slots.suffix" type="suffix">
         <slot name="suffix" />
@@ -589,5 +589,9 @@ export default defineComponent({
   line-height: var(--font-line-height-xs);
   color: var(--color-text-tertiary-default);
   margin-top: 0.1875rem;
+}
+
+.mt-number-field__unit-suffix {
+  display: flex;
 }
 </style>
