@@ -38,4 +38,28 @@ describe("mt-text-field", () => {
     expect(handler).toHaveBeenCalledExactlyOnceWith(expect.any(FocusEvent));
     expect(screen.getByRole("textbox")).toHaveFocus();
   });
+
+  it("emits a change event when blurring the input", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtTextField, {
+      props: {
+        modelValue: "Hello",
+      },
+      attrs: {
+        onChange: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.type(screen.getByRole("textbox"), ", world!");
+    await userEvent.tab();
+
+    // ASSERT
+    expect(handler).toHaveBeenCalledWith("Hello, world!");
+
+    // the value resets after blur, because the input is controlled
+    expect(screen.getByRole("textbox")).toHaveValue("Hello");
+  });
 });

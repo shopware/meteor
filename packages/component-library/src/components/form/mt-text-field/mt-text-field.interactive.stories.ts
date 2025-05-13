@@ -1,4 +1,4 @@
-import { within, userEvent, fireEvent } from "@storybook/test";
+import { within, userEvent } from "@storybook/test";
 import { expect } from "@storybook/test";
 
 import meta, { type MtTextFieldMeta, type MtTextFieldStory } from "./mt-text-field.stories";
@@ -7,20 +7,6 @@ export default {
   ...meta,
   title: "Interaction Tests/Form/mt-text-field",
 } as MtTextFieldMeta;
-
-export const TestInputValue: MtTextFieldStory = {
-  name: "Should keep input value",
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    await userEvent.type(canvas.getByRole("textbox"), "Shopware");
-    await userEvent.click(canvas.getByText("hidden"));
-
-    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("Shopware");
-
-    expect(args.change).toHaveBeenCalledWith("Shopware");
-  },
-};
 
 export const VisualTestPrefix: MtTextFieldStory = {
   name: "Should display prefix",
