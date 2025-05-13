@@ -6,8 +6,8 @@
 </template>
 
 <script setup lang="ts">
-import ExContextCard from './ex-context-card.vue';
-import ExCmsCard from './ex-cms-card.vue';
+import ExContextCard from "./ex-context-card.vue";
+import ExCmsCard from "./ex-cms-card.vue";
 </script>
 
 <style scoped>

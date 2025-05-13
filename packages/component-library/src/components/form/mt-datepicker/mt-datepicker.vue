@@ -58,7 +58,11 @@
 
     <template v-if="isTimeHintVisible">
       <!-- @deprecated tag:v5 remove field-hint class -->
-      <div class="mt-datepicker__hint field-hint" data-test="time-zone-hint" :style="{ gridArea: 'hint' }">
+      <div
+        class="mt-datepicker__hint field-hint"
+        data-test="time-zone-hint"
+        :style="{ gridArea: 'hint' }"
+      >
         <mt-icon name="solid-clock" class="mt-datepicker__hint-icon" />
         <p>{{ timeZone || "UTC" }}</p>
       </div>
@@ -224,11 +228,13 @@ export default defineComponent({
 
         // Handle date conversion for 'time' type
         if (this.dateType === "time") {
-          const isoFormattedDate = this.convertTimeToIso(newValue as unknown as {
-            hours: number;
-            minutes: number;
-            seconds: number;
-          });
+          const isoFormattedDate = this.convertTimeToIso(
+            newValue as unknown as {
+              hours: number;
+              minutes: number;
+              seconds: number;
+            },
+          );
 
           this.$emit("update:modelValue", isoFormattedDate);
           return;
@@ -287,11 +293,7 @@ export default defineComponent({
       }
     },
 
-    convertTimeToIso(time: {
-      hours: number;
-      minutes: number;
-      seconds: number;
-    }): string {
+    convertTimeToIso(time: { hours: number; minutes: number; seconds: number }): string {
       const date = new Date();
       date.setHours(time.hours, time.minutes, time.seconds);
       return date.toISOString();
