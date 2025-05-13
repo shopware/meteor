@@ -47,6 +47,7 @@
           <mt-icon
             class="mt-select__select-indicator mt-select__select-indicator-clear"
             name="regular-times-xxs"
+            color="var(--color-icon-primary-default)"
           />
         </button>
 
@@ -55,6 +56,7 @@
           data-testid="mt-select__select-indicator"
           :class="{ 'mt-select__select-indicator-rotated': expanded }"
           name="solid-chevron-down-xxs"
+          color="var(--color-icon-primary-default)"
           @click.stop="toggleExpand"
         />
       </div>
