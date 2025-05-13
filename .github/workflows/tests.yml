@@ -265,14 +265,9 @@ jobs:
         working-directory: meteor/examples/admin-sdk-app/
         run: pnpm run test:e2e
 
-      # - uses: actions/upload-artifact@v4
-      #   if: always()
-      #   with:
-      #     name: ats-test-results-${{ matrix.project }}
-      #     path: meteor/examples/admin-sdk-plugin/tests/acceptance/test-results/
-
-      # - uses: actions/upload-artifact@v4
-      #   if: always()
-      #   with:
-      #     name: ats-report-${{ matrix.project }}
-      #     path: meteor/examples/admin-sdk-plugin/tests/acceptance/playwright-report/
+      - name: Upload trace
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ats-trace-${{ matrix.project }}
+          path: meteor/examples/admin-sdk-app/test-results/
