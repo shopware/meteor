@@ -388,6 +388,7 @@ export default defineComponent({
   flex-direction: column;
   align-items: center;
   width: 2.625rem;
+  flex-shrink: 0;
 
   & button {
     outline-color: var(--color-border-brand-selected);
