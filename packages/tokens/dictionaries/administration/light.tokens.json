@@ -229,6 +229,12 @@
           "$type": "color"
         }
       },
+      "secondary": {
+        "default": {
+          "$value": "{color.zinc.100}",
+          "$type": "color"
+        }
+      },
       "brand": {
         "selected": {
           "$value": "{color.brand.500}",

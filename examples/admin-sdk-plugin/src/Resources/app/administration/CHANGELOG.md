@@ -1,5 +1,30 @@
 # administration
 
+## 1.0.19
+
+### Patch Changes
+
+- Updated dependencies [be9c623]
+- Updated dependencies [36bf822]
+- Updated dependencies [74772d6]
+- Updated dependencies [bed29f0]
+- Updated dependencies [2cd3eff]
+- Updated dependencies [e77fada]
+- Updated dependencies [828c6dc]
+  - @shopware-ag/meteor-component-library@4.11.0
+  - @shopware-ag/meteor-admin-sdk@5.9.1
+
+## 1.0.18
+
+### Patch Changes
+
+- Updated dependencies [af86b12]
+- Updated dependencies [269bf4a]
+- Updated dependencies [c47c136]
+- Updated dependencies [9ff9cc4]
+  - @shopware-ag/meteor-admin-sdk@5.9.0
+  - @shopware-ag/meteor-component-library@4.10.1
+
 ## 1.0.17
 
 ### Patch Changes
