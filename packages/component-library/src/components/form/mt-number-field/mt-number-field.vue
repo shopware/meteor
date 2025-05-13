@@ -94,6 +94,10 @@
         </button>
       </div>
 
+      <mt-field-affix v-if="$slots['_unit-suffix']" type="unit-suffix">
+        <slot name="_unit-suffix" />
+      </mt-field-affix>
+
       <mt-field-affix v-if="$slots.suffix" type="suffix">
         <slot name="suffix" />
       </mt-field-affix>
