@@ -66,6 +66,7 @@
       <mt-tooltip v-if="copyable" :content="t('copyTooltip')">
         <template #default="params">
           <button
+            type="button"
             v-bind="params"
             class="mt-email-field__copy-button"
             :aria-label="
@@ -147,8 +148,6 @@ defineEmits(["change", "blur", "focus", "inheritance-restore", "inheritance-remo
 const id = useId();
 
 const errorId = useId();
-
-onMounted(checkValidity);
 
 const inputRef = ref<HTMLInputElement | null>(null);
 

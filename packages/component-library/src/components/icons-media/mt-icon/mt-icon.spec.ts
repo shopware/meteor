@@ -50,4 +50,27 @@ describe("mt-icon", () => {
     // ASSERT
     expect(screen.getByTestId(`mt-icon__${mode}-3d`)).toBeVisible();
   });
+
+  it('does not throw a runtime exception if icon import fails', async () => {
+    vi.useFakeTimers();
+
+    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+    const iconName = 'regular-does-not-exist';
+
+    render(MtIcon, {
+      props: {
+        name: iconName,
+      },
+    });
+
+    await vi.runAllTimers();
+    await vi.runAllTicks();
+
+    expect(screen.getByTestId(`mt-icon__${iconName}`)).not.toBeNull();
+    expect(consoleSpy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        message: 'Unknown variable dynamic import: ../../../../node_modules/@shopware-ag/meteor-icon-kit/icons/regular/does-not-exist.svg'
+      })
+    );
+  });
 });

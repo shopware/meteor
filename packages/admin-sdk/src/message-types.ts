@@ -11,6 +11,7 @@ import type {
   contextModuleInformation,
   contextUserInformation,
   contextUserTimezone,
+  contextShopId,
 } from './context';
 import type { uiComponentSectionRenderer } from './ui/component-section/index';
 import type { uiTabsAddTabItem } from './ui/tabs';
@@ -22,6 +23,7 @@ import type { settingsItemAdd } from './ui/settings';
 import type { mainModuleAdd } from './ui/main-module';
 import type { smartBarButtonAdd, smartBarHide } from './ui/main-module';
 import type { uiModalOpen, uiModalClose } from './ui/modal/index';
+import type { uiSidebarAdd, uiSidebarClose, uiSidebarRemove } from './ui/sidebar';
 import type { actionButtonAdd } from './ui/action-button';
 import type { actionExecute } from './app/action';
 import type Criteria from './data/Criteria';
@@ -60,6 +62,7 @@ export interface ShopwareMessageTypes {
   contextUserTimezone: contextUserTimezone,
   contextAppInformation: contextAppInformation,
   contextModuleInformation: contextModuleInformation,
+  contextShopId: contextShopId
   getPageTitle: getPageTitle,
   uiComponentSectionRenderer: uiComponentSectionRenderer,
   uiTabsAddTabItem: uiTabsAddTabItem,
@@ -77,6 +80,9 @@ export interface ShopwareMessageTypes {
   smartBarHide: smartBarHide,
   uiModalOpen: uiModalOpen,
   uiModalClose: uiModalClose,
+  uiSidebarAdd: uiSidebarAdd,
+  uiSidebarClose: uiSidebarClose,
+  uiSidebarRemove: uiSidebarRemove,
   actionButtonAdd: actionButtonAdd,
   actionExecute: actionExecute,
   /* eslint-disable @typescript-eslint/no-explicit-any */

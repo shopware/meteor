@@ -14,7 +14,7 @@
       @click.prevent.stop="$emit('dismiss')"
     >
       <slot name="dismiss-icon">
-        <mt-icon data-testid="dismiss-label" name="regular-times-xxs" />
+        <mt-icon data-testid="dismiss-label" name="regular-times-xxs" size="var(--scale-size-10)" />
       </slot>
     </button>
   </span>
@@ -73,34 +73,7 @@ const labelClasses = computed(() => {
 });
 </script>
 
-<style lang="scss">
-@mixin mt-label-variant($color-background, $color-text, $color-border, $color-border-normal) {
-  background-color: $color-background;
-  border-color: $color-border-normal;
-  color: $color-text;
-
-  &.mt-label--small::before {
-    background: $color-border;
-  }
-
-  .mt-label__dismiss {
-    color: $color-text;
-
-    .mt-icon {
-      color: $color-text;
-    }
-  }
-
-  &.mt-label--ghost {
-    background: transparent;
-    border-color: $color-border;
-  }
-
-  &.mt-label--dismissable:hover {
-    border-color: $color-border;
-  }
-}
-
+<style>
 .mt-label {
   display: inline-block;
   position: relative;
@@ -115,171 +88,87 @@ const labelClasses = computed(() => {
   font-family: var(--font-family-body);
   font-size: var(--font-size-xs);
   color: var(--color-text-primary-default);
-  border-radius: 4px;
+  border-radius: var(--border-radius-xs);
   cursor: default;
+}
 
-  .mt-label__caption {
-    @include truncate();
+.mt-label__caption {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  display: inline-block;
+  width: 100%;
+}
 
-    display: inline-block;
-    width: 100%;
-  }
+.mt-label.mt-label--dismissable:hover {
+  background-color: var(--color-background-brand-default);
+  border-color: var(--color-border-brand-selected);
+}
 
-  &.mt-label--dismissable:hover {
-    background-color: var(--color-background-brand-default);
-    border-color: var(--color-border-brand-selected);
+.mt-label.mt-label--dismissable:hover .mt-label__caption {
+  width: calc(100% - 15px);
+}
 
-    .mt-label__caption {
-      width: calc(100% - 15px);
-    }
+.mt-label.mt-label--dismissable:hover .mt-label__dismiss {
+  visibility: visible;
+  color: var(--color-icon-brand-default);
+  background: transparent;
+}
 
-    .mt-label__dismiss {
-      display: inline-block;
-      color: var(--color-icon-brand-default);
-      background: transparent;
-      transform: translateY(1px);
-    }
-  }
+.mt-label.mt-label--size-medium {
+  height: var(--scale-size-24);
+  padding: var(--scale-size-4) var(--scale-size-12);
+}
 
-  &.mt-label--size-medium {
-    height: var(--scale-size-24);
-    padding: var(--scale-size-4) var(--scale-size-12);
-  }
+.mt-label.mt-label--size-small {
+  height: var(--scale-size-16);
+  padding: 0 var(--scale-size-8);
+}
 
-  &.mt-label--size-small {
-    height: var(--scale-size-16);
-    padding: 0 var(--scale-size-8);
-  }
+.mt-label__dismiss {
+  visibility: hidden;
+  display: grid;
+  place-items: center;
+  position: absolute;
+  height: 100%;
+  right: var(--scale-size-10);
+  top: 0;
+  border: 0 none;
+  cursor: pointer;
+  outline: none;
+}
 
-  .mt-label__dismiss {
-    display: none;
-    position: absolute;
-    height: 100%;
-    right: var(--scale-size-10);
-    top: 0;
-    color: $color-darkgray-200;
-    background-color: $color-gray-50;
-    border: 0 none;
-    cursor: pointer;
-    outline: none;
+.mt-label.mt-label--ghost {
+  background: transparent;
+  border-color: var(--color-border-primary-default);
+}
 
-    .mt-icon {
-      width: var(--scale-size-12);
-      height: var(--scale-size-12);
-    }
-  }
+.mt-label.mt-label--appearance-badged {
+  background: transparent;
+  border: 0;
+  font-size: var(--font-size-s);
+  padding: var(--scale-size-4) 0;
+  line-height: 22px;
+}
 
-  &.mt-label--ghost {
-    background: transparent;
-    border-color: $color-gray-300;
-  }
+.mt-label.mt-label--appearance-badged .mt-color-badge {
+  margin: 0 var(--scale-size-8) var(--scale-size-6) 0;
+}
 
-  &.mt-label--appearance-badged {
-    background: transparent;
-    border: 0;
-    font-size: var(--font-size-s);
-    padding: var(--scale-size-4) 0;
-    line-height: 22px;
+.mt-label.mt-label--appearance-pill {
+  border-radius: var(--border-radius-round);
+}
 
-    .mt-color-badge {
-      margin: 0 var(--scale-size-8) var(--scale-size-6) 0;
-    }
-  }
+.mt-label.mt-label--appearance-circle {
+  width: var(--scale-size-24);
+  height: var(--scale-size-24);
+  border-radius: 100%;
+  padding: var(--scale-size-4);
+  border: 0;
+  min-width: var(--scale-size-24);
+}
 
-  &.mt-label--appearance-pill {
-    border-radius: 99999px;
-  }
-
-  &.mt-label--appearance-circle {
-    width: var(--scale-size-24);
-    height: var(--scale-size-24);
-    border-radius: 100%;
-    padding: var(--scale-size-4);
-    border: 0;
-    min-width: 24px;
-  }
-
-  &.mt-label--caps {
-    text-transform: uppercase;
-  }
-
-  &.mt-label--info,
-  &.mt-label--danger,
-  &.mt-label--success,
-  &.mt-label--warning,
-  &.mt-label--neutral {
-    &.mt-label--small {
-      font-weight: 600;
-      line-height: 14px;
-      font-size: 12px;
-      padding: 0 5px;
-      padding-left: 15px;
-      height: var(--scale-size-16);
-    }
-
-    &.mt-label--small::before {
-      content: "";
-      display: block;
-      height: var(--scale-size-6);
-      width: var(--scale-size-6);
-      position: absolute;
-      top: var(--scale-size-4);
-      left: 5px;
-    }
-  }
-
-  &.mt-label--info:not(&--appearance-badged) {
-    @include mt-label-variant(
-      $color-shopware-brand-50,
-      $color-shopware-brand-500,
-      $color-shopware-brand-500,
-      $color-shopware-brand-100
-    );
-  }
-
-  &.mt-label--success:not(&--appearance-badged) {
-    @include mt-label-variant(
-      $color-emerald-50,
-      $color-emerald-500,
-      $color-emerald-500,
-      $color-emerald-100
-    );
-  }
-
-  &.mt-label--danger:not(&--appearance-badged) {
-    @include mt-label-variant(
-      $color-crimson-50,
-      $color-crimson-500,
-      $color-crimson-500,
-      $color-crimson-100
-    );
-  }
-
-  &.mt-label--warning:not(&--appearance-badged) {
-    @include mt-label-variant(
-      $color-pumpkin-spice-50,
-      $color-pumpkin-spice-500,
-      $color-pumpkin-spice-500,
-      $color-pumpkin-spice-100
-    );
-  }
-
-  &.mt-label--neutral:not(&--appearance-badged) {
-    @include mt-label-variant(
-      $color-gray-50,
-      $color-darkgray-200,
-      $color-gray-300,
-      $color-gray-100
-    );
-  }
-
-  &.mt-label--primary:not(&--appearance-badged) {
-    @include mt-label-variant(
-      $color-shopware-brand-500,
-      $color-shopware-brand-50,
-      $color-shopware-brand-500,
-      $color-shopware-brand-100
-    );
-  }
+.mt-label.mt-label--caps {
+  text-transform: uppercase;
 }
 </style>

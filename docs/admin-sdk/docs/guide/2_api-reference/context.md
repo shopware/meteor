@@ -380,3 +380,27 @@ Promise<{
   ]
 }
 ```
+
+## ShopId
+
+### Get the shopId
+
+> Available since Shopware v6.7.1.0
+
+Get the shop's shop-id used by Shopware's app system
+
+#### Usage
+
+```ts
+ const shopId = await sw.context.getShopId();
+```
+
+#### Parameters
+
+no parameters needed
+
+#### Return value:
+
+```ts
+Promise<string>
+```

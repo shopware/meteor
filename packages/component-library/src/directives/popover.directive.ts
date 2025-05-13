@@ -117,10 +117,12 @@ function setElementPosition(
 
 function startVirtualScrolling() {
   window.addEventListener("scroll", virtualScrollingHandler, true);
+  window.addEventListener("resize", virtualScrollingHandler, true);
 }
 
 function stopVirtualScrolling() {
   window.removeEventListener("scroll", virtualScrollingHandler, true);
+  window.removeEventListener("resize", virtualScrollingHandler, true);
 }
 
 function virtualScrollingHandler() {
@@ -131,6 +133,10 @@ function virtualScrollingHandler() {
 
   virtualScrollingElements.forEach((entry) => {
     setElementPosition(entry.el, entry.ref, entry.config);
+
+    if (entry.config.resizeWidth) {
+      entry.el.style.width = `${entry.ref.clientWidth}px`;
+    }
   });
 }
 

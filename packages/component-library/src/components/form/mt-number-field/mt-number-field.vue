@@ -64,6 +64,7 @@
 
       <div class="mt-number-field__controls" v-if="size !== 'small'">
         <button
+          type="button"
           @click="increaseNumberByStep"
           :disabled="disabled || isInherited"
           :aria-label="t('increaseButton')"
@@ -78,6 +79,7 @@
         </button>
 
         <button
+          type="button"
           @click="decreaseNumberByStep"
           :disabled="disabled || isInherited"
           :aria-label="t('decreaseButton')"
@@ -339,9 +341,6 @@ export default defineComponent({
       // @ts-expect-error - target exists
       this.computeValue(event.target.value);
 
-      /** @deprecated tag: 5.0 - Will be removed use update:model-value instead */
-      this.$emit("change", this.currentValue);
-
       this.$emit("update:modelValue", this.currentValue);
     },
 
@@ -365,18 +364,12 @@ export default defineComponent({
     increaseNumberByStep() {
       this.computeValue((Number(this.currentValue) + this.realStep).toString());
 
-      /** @deprecated tag: 5.0 - Will be removed use update:model-value instead */
-      this.$emit("change", this.currentValue);
-
       this.$emit("update:modelValue", this.currentValue);
     },
 
     decreaseNumberByStep() {
       // @ts-expect-error - wrong type because of component extends
       this.computeValue((this.currentValue - this.realStep).toString());
-
-      /** @deprecated tag: 5.0 - Will be removed use update:model-value instead */
-      this.$emit("change", this.currentValue);
 
       this.$emit("update:modelValue", this.currentValue);
     },

@@ -24,6 +24,7 @@
 
           <button
             v-if="group.actionLabel"
+            type="button"
             class="mt-popover-item-result__group-action"
             @click="() => $emit('click-group-action', group.id)"
           >

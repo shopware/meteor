@@ -44,10 +44,10 @@ export default {
     expect(image).toMatchImageSnapshot({
       comparisonMethod: "ssim",
       customDiffConfig: { ssim: "fast" },
-      failureThreshold: 0.01,
-      failureThresholdType: "percent",
+      failureThreshold: 10,
+      failureThresholdType: "pixel",
       customSnapshotsDir,
-      blur: 0.001,
+      blur: 0,
       customSnapshotIdentifier: context.id + "-snap",
       storeReceivedOnFailure: true,
       customReceivedDir: customReceivedDir,

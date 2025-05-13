@@ -6,8 +6,12 @@ More information on how to find the unique identifiers can be found in [this gui
 #### Usage:  
 ```ts
 data.update({
-    id: 'sw-example-component__string',
-    data: 'your-value',
+    id: 'sw-product-detail__product',
+    data: {
+        name: 'My updated name',
+    },
+}).then(() => {
+    console.log('success');
 });
 ```
 

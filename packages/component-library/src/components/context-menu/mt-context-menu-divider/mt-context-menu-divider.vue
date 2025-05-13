@@ -10,12 +10,10 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-$mt-context-menu-color-border: $color-gray-300;
-
+<style>
 .mt_context_menu_divider {
   border: none;
-  border-bottom: 1px solid $mt-context-menu-color-border;
+  border-bottom: 1px solid #d1d9e0;
   margin: 5px -10px;
 }
 </style>

@@ -1,5 +1,23 @@
 # CHANGELOG.md
 
+## 5.5.0
+
+### Minor Changes
+
+- 0f5575d: Add icons
+
+  - Add `face-confused`
+  - Add `face-frown-slight`
+  - Add `face-meh-blank`
+  - Add `face-meh`
+  - Add `face-smile-relaxed`
+  - Add `face-smile-upside-down`
+  - Add `face-smile`
+  - Add `face-smirking`
+  - Add `face-unamused`
+
+- a1c2414: Add crop icon
+
 ## 5.4.0
 
 ### Minor Changes

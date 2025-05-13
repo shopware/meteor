@@ -1,20 +1,29 @@
 <template>
-  <a href="#" class="IconDisplay" :class="mode ? `--mode-${mode}` : null" @click.prevent.stop="$emit('select')">
+  <a
+    href="#"
+    class="IconDisplay"
+    :class="mode ? `--mode-${mode}` : null"
+    @click.prevent.stop="$emit('select')"
+  >
     <div class="IconDisplay_wrap">
       <SwagIcon class="IconDisplay_icon" :icon="icon.name" :type="icon.mode" />
-      <span v-if="mode === 'inline'" class="IconDisplay_name">{{ icon.name }}</span>
+      <span v-if="mode === 'inline'" class="IconDisplay_name">{{
+        icon.name
+      }}</span>
     </div>
-    <span v-if="mode !== 'inline'" class="IconDisplay_name">{{ icon.name }}</span>
+    <span v-if="mode !== 'inline'" class="IconDisplay_name">{{
+      icon.name
+    }}</span>
   </a>
 </template>
 
 <script setup>
-import {computed} from 'vue';
+import { computed } from "vue";
 
 const props = defineProps({
   icon: Object,
-  mode: Object
-})
+  mode: Object,
+});
 
 const id = computed(() => {
   return `meteor-icon-kit__${props.icon.mode}-${props.icon.name}`;
@@ -28,7 +37,7 @@ const id = computed(() => {
   justify-content: center;
   align-items: center;
   flex-direction: column;
-  gap: .5rem;
+  gap: 0.5rem;
   color: var(--vp-c-text);
   &_name,
   &_icon {

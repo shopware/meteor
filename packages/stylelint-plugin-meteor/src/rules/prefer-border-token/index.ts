@@ -1,4 +1,5 @@
-import stylelint, { Rule } from "stylelint";
+import stylelint, { Rule, PostcssResult } from "stylelint";
+import { Declaration } from "postcss";
 
 const {
   createPlugin,
@@ -16,6 +17,14 @@ const messages = ruleMessages(ruleName, {
 
 const meta = {
   url: "https://github.com/shopware/meteor/blob/main/packages/stylelint-plugin-meteor/src/rules/prefer-border-token/README.md",
+  fixable: true,
+};
+
+const pxToTokenMap = {
+  "0": "var(--border-radius-none)",
+  "0px": "var(--border-radius-none)",
+  "50%": "var(--border-radius-round)",
+  "$border-radius-pill": "var(--border-radius-round)",
 };
 
 const BORDER_COLOR_PROPERTIES: (string | RegExp)[] = [
@@ -68,11 +77,16 @@ const isValidColorValue = (value: string): boolean => {
 };
 
 const isValidRadiusValue = (value: string): boolean => {
+  if (value === "50%" || value === "0" || value === "0px") {
+    return false;
+  }
+
   return (
     globalValues.includes(value.toLowerCase()) ||
     /var\(--.*\)/.test(value) ||
     /^calc\(.*\)$/.test(value) ||
-    /^var\(--.*\)\s*[-+]?\d+(\.\d+)?$/.test(value)
+    /^var\(--.*\)\s*[-+]?\d+(\.\d+)?$/.test(value) ||
+    /^\d+%$/.test(value)
   );
 };
 
@@ -134,6 +148,21 @@ const ruleFunction: Rule = (primary, secondaryOptions, context) => {
               node: ruleNode,
               result,
               ruleName,
+              ...(context.fix
+                ? {
+                    fix: () => {
+                      const isReplaceable =
+                        pxToTokenMap[value as keyof typeof pxToTokenMap];
+
+                      if (isReplaceable) {
+                        ruleNode.value = ruleNode.value.replace(
+                          value,
+                          isReplaceable
+                        );
+                      }
+                    },
+                  }
+                : { unfixable: true }),
             });
           }
         });

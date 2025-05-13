@@ -2,24 +2,27 @@
   <div class="SearchResult">
     <div class="SearchResult_list">
       <IconDisplay
-          v-for="icon in resultIcons"
-          :icon="icon"
-          :key="icon"
-          @select="selectedIcon = icon"/>
+        v-for="icon in resultIcons"
+        :icon="icon"
+        :key="icon"
+        @select="selectedIcon = icon"
+      />
     </div>
 
     <div v-if="selectedIcon" class="SearchResult_sidebar">
-      <IconSelection :icon="selectedIcon"
-                     @switch="switchSelectedIcon"
-                     :icons="icons"/>
+      <IconSelection
+        :icon="selectedIcon"
+        @switch="switchSelectedIcon"
+        :icons="icons"
+      />
     </div>
   </div>
 </template>
 
 <script setup>
-import IconDisplay from './IconDisplay.vue';
-import {ref, computed} from "vue";
-import Fuse from 'fuse.js'
+import IconDisplay from "./IconDisplay.vue";
+import { ref, computed } from "vue";
+import Fuse from "fuse.js";
 import IconSelection from "./IconSelection.vue";
 
 // context of the developer portal
@@ -31,32 +34,35 @@ const selectedIcon = ref(null);
 
 const props = defineProps({
   phrase: String,
-  mode: 'solid' | 'regular',
-})
+  mode: "solid" | "regular",
+});
 
 const resultIcons = computed(() => {
-  const filteredIcons = icons.value.filter(i => i.mode === props.mode);
+  const filteredIcons = icons.value.filter((i) => i.mode === props.mode);
   if (props.phrase.length <= 0) {
     return filteredIcons;
   }
 
   const fuse = new Fuse(filteredIcons, {
-    keys: ['name']
+    keys: ["name"],
   });
 
   const searchResult = fuse.search(props.phrase);
 
-  return searchResult.map(r => r.item);
-})
+  return searchResult.map((r) => r.item);
+});
 
 const switchSelectedIcon = (data) => {
   if (!data) {
     selectedIcon.value = null;
     return;
   }
-  const {basename, size, mode} = data;
-  selectedIcon.value = icons.value.find(icon => icon.basename === basename && icon.size === size && icon.mode === mode)
-}
+  const { basename, size, mode } = data;
+  selectedIcon.value = icons.value.find(
+    (icon) =>
+      icon.basename === basename && icon.size === size && icon.mode === mode
+  );
+};
 </script>
 
 <style lang="scss">
