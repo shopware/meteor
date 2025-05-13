@@ -347,7 +347,7 @@ export default defineComponent({
 .mt-field select:disabled,
 .mt-field textarea:disabled {
   background: var(--color-background-primary-disabled);
-  border-color: #d1d9e0;
+  border-color: var(--color-border-primary-default);
   cursor: default !important;
 }
 
