@@ -26,6 +26,7 @@
 
     <template #element="{ identification }">
       <input
+        v-bind="$attrs"
         :id="createInputId(identification)"
         type="text"
         :name="identification"
@@ -260,8 +261,7 @@ export default defineComponent({
       this.$emit("update:modelValue", event.target.value);
     },
 
-    handleFocus(event: Event): void {
-      this.$emit("focus", event);
+    handleFocus(): void {
       this.setFocusClass();
     },
 
