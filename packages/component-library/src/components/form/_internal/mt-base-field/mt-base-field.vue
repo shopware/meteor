@@ -301,8 +301,13 @@ export default defineComponent({
   display: flex;
   min-height: var(--scale-size-48);
   border: 1px solid var(--color-border-primary-default);
+  background: var(--color-elevation-surface-raised);
   border-radius: var(--border-radius-xs);
   overflow: hidden;
+}
+
+.mt-field.is--disabled .mt-block-field__block {
+  background: var(--color-background-primary-disabled);
 }
 
 .mt-field input,

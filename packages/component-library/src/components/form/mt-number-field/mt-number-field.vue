@@ -51,7 +51,12 @@
           :aria-label="t('increaseButton')"
           data-testid="mt-number-field-increase-button"
         >
-          <mt-icon size="10" name="regular-chevron-up-s" aria-hidden="true" />
+          <mt-icon
+            color="var(--color-icon-primary-default)"
+            size="10"
+            name="regular-chevron-up-s"
+            aria-hidden="true"
+          />
         </button>
 
         <button
@@ -63,6 +68,7 @@
         >
           <mt-icon
             style="margin-top: -3px"
+            color="var(--color-icon-primary-default)"
             size="10"
             name="regular-chevron-down-s"
             aria-hidden="true"
@@ -403,11 +409,5 @@ export default defineComponent({
 
 input.mt-number-field__align-end {
   text-align: end;
-}
-</style>
-
-<style>
-.mt-number-field.is--disabled .mt-block-field__block {
-  background: var(--color-background-primary-disabled);
 }
 </style>
