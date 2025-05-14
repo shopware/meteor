@@ -302,7 +302,6 @@ onUnmounted(() => {
   margin-top: -0.25rem;
   filter: blur(3px);
   background-color: var(--color-elevation-shadow-default);
-  opacity: 0.1;
 }
 
 .mt-modal__scroll-shadow--top {
