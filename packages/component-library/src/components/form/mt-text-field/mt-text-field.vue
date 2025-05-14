@@ -26,7 +26,6 @@
 
     <template #element="{ identification }">
       <input
-        v-bind="$attrs"
         :id="createInputId(identification)"
         type="text"
         :name="identification"
@@ -261,8 +260,8 @@ export default defineComponent({
       this.$emit("update:modelValue", event.target.value);
     },
 
-    handleFocus(): void {
-      this.setFocusClass();
+    handleFocus(event: FocusEvent): void {
+      this.setFocusClass(event);
     },
 
     restoreInheritance(): void {
@@ -277,11 +276,13 @@ export default defineComponent({
       return `${identification}-${this.idSuffix}`;
     },
 
-    setFocusClass(): void {
+    setFocusClass(event: FocusEvent): void {
+      this.$emit("focus", event);
       this.hasFocus = true;
     },
 
-    removeFocusClass(): void {
+    removeFocusClass(event: FocusEvent): void {
+      this.$emit("blur", event);
       this.hasFocus = false;
     },
   },
