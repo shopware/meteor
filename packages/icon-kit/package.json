@@ -1,6 +1,6 @@
 {
   "name": "@shopware-ag/meteor-icon-kit",
-  "version": "5.4.0",
+  "version": "5.5.0",
   "description": "An icon library and toolkit that follows a minimal, yet highly expressive style perfectly aligned with Shopware's product language",
   "keywords": [
     "svg",
@@ -29,7 +29,6 @@
     "lint:all": "npm run lint:types && npm run lint:eslint",
     "lint:eslint": "eslint ./src",
     "lint:types": "tsc --noEmit",
-    "prepublish": "npm run build",
     "start": "tsx ./src/index.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
@@ -39,7 +38,6 @@
   "dependencies": {
     "@t3-oss/env-core": "^0.12.0",
     "dotenv": "^16.4.1",
-    "js-md5": "^0.7.3",
     "ora": "^8.2.0",
     "winston": "^3.17.0",
     "zod": "^3.24.2"
@@ -49,13 +47,10 @@
     "@shopware-ag/meteor-prettier-config": "workspace:*",
     "@supercharge/promise-pool": "^2.4.0",
     "@types/axios": "^0.14.0",
-    "@types/fs-extra": "^9.0.13",
-    "@types/js-md5": "^0.4.3",
     "@types/node": "^20.14.9",
     "@types/svgo": "^2.6.3",
     "axios": "^0.26.1",
     "eslint": "^9.21.0",
-    "fs-extra": "^10.0.1",
     "prettier": "^3.5.3",
     "svgo": "^2.8.0",
     "svgo-autocrop": "1.1.1",

@@ -16,6 +16,16 @@ data.get({
 });
 ```
 
+#### Output:
+```json
+{
+  "name": "Ergonomic Copper Mr. Frenzy",
+  "manufacturer": {
+    "name": "Turcotte, Rempel and Padberg"
+  }
+}
+```
+
 #### Parameters
 | Name      | Required | Description                                                                                                          |
 | :-------- | :------- |:---------------------------------------------------------------------------------------------------------------------|

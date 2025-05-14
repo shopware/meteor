@@ -2,4 +2,4 @@
 "@shopware-ag/meteor-component-library": patch
 ---
 
-- Fix tooltip z-index position
+Emit a blur event when blurring the `mt-text-field`

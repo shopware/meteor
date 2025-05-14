@@ -40,6 +40,7 @@ export function defineStory<T>(
       if (!config.play) return () => void 0;
 
       const screen = within(document.body);
+      // @ts-expect-error
       await config.play({ ...context, screen });
     },
   } as unknown as StoryObj<T>;

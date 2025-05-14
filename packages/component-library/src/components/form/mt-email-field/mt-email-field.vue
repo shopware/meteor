@@ -149,8 +149,6 @@ const id = useId();
 
 const errorId = useId();
 
-onMounted(checkValidity);
-
 const inputRef = ref<HTMLInputElement | null>(null);
 
 const errorMessage = ref<

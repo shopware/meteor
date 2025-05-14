@@ -23,7 +23,11 @@
 
   <Teleport to="body">
     <Transition v-bind="$attrs">
-      <div v-show="isVisible" :data-placement="calculatedPlacement" style="position: absolute; z-index: 2100;">
+      <div
+        v-show="isVisible"
+        :data-placement="calculatedPlacement"
+        style="position: absolute; z-index: 1100"
+      >
         <!-- Needs to be v-show, otherwise we have a jumping entry when tooltip is visible for the first time -->
         <div
           role="tooltip"
@@ -35,7 +39,7 @@
           @mouseover="setState({ isHoveringTooltip: true })"
           @mouseleave="onMouseLeaveTooltip"
         >
-          <span>{{ content }}</span>
+          <span class="mt-tooltip__content" v-html="sanitizedContent" data-theme="dark" />
 
           <svg
             aria-hidden="true"
@@ -69,7 +73,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, nextTick, computed, provide, useId } from "vue";
+import { onMounted, ref, nextTick, computed, provide, useId, type ComputedRef } from "vue";
 import {
   autoUpdate,
   flip,
@@ -82,7 +86,7 @@ import {
 import { useTooltipState } from "./composables/useTooltipState";
 import { useTimeout } from "@vueuse/core";
 import { TooltipContext } from "./composables/useIsInsideTooltip";
-
+import DOMPurify from "dompurify";
 export type { Placement } from "@floating-ui/vue";
 
 const props = withDefaults(
@@ -100,6 +104,8 @@ const props = withDefaults(
     maxWidth: 240,
   },
 );
+
+const sanitizedContent = useSanitizedHtml(props.content);
 
 const id = useId();
 
@@ -191,6 +197,19 @@ const arrowOffset = computed<string>(() => {
 });
 
 provide(TooltipContext, true);
+
+/**
+ * This composable uses DOMPurify to sanitize HTML content.
+ * It returns the value as a computed read-only property.
+ * The sanitization is done using the `sanitize` function from DOMPurify.
+ */
+function useSanitizedHtml(html: string): ComputedRef<string> {
+  return computed(() => {
+    return DOMPurify.sanitize(html, {
+      ALLOWED_TAGS: ["a", "b", "i", "u", "s", "li", "ul", "img", "svg"],
+    });
+  });
+}
 </script>
 
 <style scoped>
@@ -207,6 +226,10 @@ provide(TooltipContext, true);
   border-radius: var(--border-radius-overlay);
   width: max-content;
   overflow-wrap: break-word;
+}
+
+.mt-tooltip__content ul {
+  list-style-position: inside;
 }
 
 .v-enter-active,

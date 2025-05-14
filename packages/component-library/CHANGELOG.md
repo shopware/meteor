@@ -1,5 +1,67 @@
 # Changelog
 
+## 4.11.0
+
+### Minor Changes
+
+- 36bf822: Add mt-unit-field component
+
+### Patch Changes
+
+- be9c623: fixed unnecessary whitespace select
+- 74772d6: fixed multiple select handling
+- bed29f0: Only emit change event when using `@change` on `mt-number-field`
+- 2cd3eff: Do not emit change event when pressing increment and decrement buttons on `mt-number-field`
+- e77fada: fixed hint class naming datepicker
+- 828c6dc: fixed popover width resizing
+
+## 4.10.1
+
+### Patch Changes
+
+- 269bf4a: Add mt-switch--disabled class to mt-switch
+- c47c136: Update alignment of close icon in mt-label
+- Updated dependencies [f4ed7d0]
+- Updated dependencies [0f5575d]
+- Updated dependencies [a1c2414]
+  - @shopware-ag/meteor-tokens@1.1.0
+  - @shopware-ag/meteor-icon-kit@5.5.0
+
+## 4.10.0
+
+### Minor Changes
+
+- 243ffd8: Changed z-index of mt-modal and mt-tooltip
+
+### Patch Changes
+
+- 9b0cc45: \* Remove duplicated external link icon
+  - Removed fixed 16px font-size for `mt-link`
+  - Changed gap and icon size to be relative to current font size
+- adb59f8: Allow sanitized HTML values inside tooltip
+
+## 4.9.1
+
+### Patch Changes
+
+- 466f306: Get rid of duplicate isInherited in mt-checkbox
+
+## 4.9.0
+
+### Minor Changes
+
+- fd48763: Add custom format prop for mt-datepicker and add dateType "time" to mt-datepicker
+- 3ff2753: add catch to dynamic icon import in mt-icon.vue
+
+### Patch Changes
+
+- 5c20ef8: Fix the `mt-email-field` showing the error message on its init instead after interacting with it.
+- 34d33d9: Add missing isInherited prop to mt-checkbox
+- 3a8e1d5: - Align form component heights
+- e440678: - Fix tooltip z-index position
+- 32b1d35: Added `type=button` to all buttons to prevent default `type=submit` behaviour
+- 371c286: Fix overflow of colorpicker in mt-text-editor
+
 ## 4.8.0
 
 ### Minor Changes

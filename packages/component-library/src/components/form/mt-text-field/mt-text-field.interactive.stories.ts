@@ -1,4 +1,4 @@
-import { within, userEvent, fireEvent } from "@storybook/test";
+import { within, userEvent } from "@storybook/test";
 import { expect } from "@storybook/test";
 
 import meta, { type MtTextFieldMeta, type MtTextFieldStory } from "./mt-text-field.stories";

@@ -296,6 +296,7 @@ export const VisualTestSingleSelectionLongInSmallWidth: MtSelectStory = {
 export const VisualTestMultiSelect: MtSelectStory = {
   name: "Should multi select",
   args: {
+    modelValue: undefined,
     enableMultiSelection: true,
   },
   play: async ({ canvasElement, args }) => {
@@ -345,6 +346,35 @@ export const VisualTestMultiSelect: MtSelectStory = {
     });
 
     expect(args.change).toHaveBeenCalledWith(["a", "b", "c", "e"]);
+
+    await userEvent.click(canvas.getByText("hidden"));
+    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("");
+  },
+};
+
+export const VisualTestMultiSelectWithInitialValue: MtSelectStory = {
+  name: "Should multi select with initial value",
+  args: {
+    modelValue: "a",
+    enableMultiSelection: true,
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    // open selection
+    await userEvent.click(canvas.getByRole("textbox"));
+
+    const popover = within(
+      document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement,
+    );
+    await userEvent.click(popover.getByTestId("mt-select-option--b"));
+
+    expect(args.itemAdd).toHaveBeenCalledWith({
+      id: 2,
+      value: "b",
+      label: "Option B",
+    });
+
+    expect(args.change).toHaveBeenCalledWith(["a", "b"]);
 
     await userEvent.click(canvas.getByText("hidden"));
     expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("");
@@ -679,5 +709,35 @@ export const VisualTestMultipleSelectsOnOnePage: MtSelectStory = {
     expect(primary).toBeDefined();
     // @ts-ignore - primary is a HTMLElement
     await userEvent.click(primary);
+  },
+};
+
+export const VisualTestPlaceholderBehavior: MtSelectStory = {
+  name: "Should show placeholder when alwaysShowPlaceholder is true",
+  args: {
+    placeholder: "Select an option",
+    modelValue: undefined,
+    enableMultiSelection: true,
+    alwaysShowPlaceholder: true,
+  },
+  play: ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getAllByPlaceholderText(args.placeholder!)).toBeDefined();
+  },
+};
+
+export const VisualTestPlaceholderBehaviorFalse: MtSelectStory = {
+  name: "Should not show placeholder when alwaysShowPlaceholder is false",
+  args: {
+    placeholder: "Select an option",
+    modelValue: undefined,
+    enableMultiSelection: true,
+    alwaysShowPlaceholder: false,
+  },
+  play: ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.queryByPlaceholderText(args.placeholder!)).toBeNull();
   },
 };

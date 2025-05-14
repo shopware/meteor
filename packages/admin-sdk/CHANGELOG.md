@@ -1,5 +1,61 @@
 # Changelog
 
+## 5.9.1
+
+### Patch Changes
+
+- Updated dependencies [be9c623]
+- Updated dependencies [36bf822]
+- Updated dependencies [74772d6]
+- Updated dependencies [bed29f0]
+- Updated dependencies [2cd3eff]
+- Updated dependencies [e77fada]
+- Updated dependencies [828c6dc]
+  - @shopware-ag/meteor-component-library@4.11.0
+
+## 5.9.0
+
+### Minor Changes
+
+- af86b12: Added context.getShopId
+- 9ff9cc4: Add sidebar message types
+
+### Patch Changes
+
+- Updated dependencies [269bf4a]
+- Updated dependencies [c47c136]
+  - @shopware-ag/meteor-component-library@4.10.1
+
+## 5.8.5
+
+### Patch Changes
+
+- Updated dependencies [243ffd8]
+- Updated dependencies [9b0cc45]
+- Updated dependencies [adb59f8]
+  - @shopware-ag/meteor-component-library@4.10.0
+
+## 5.8.4
+
+### Patch Changes
+
+- Updated dependencies [466f306]
+  - @shopware-ag/meteor-component-library@4.9.1
+
+## 5.8.3
+
+### Patch Changes
+
+- Updated dependencies [fd48763]
+- Updated dependencies [5c20ef8]
+- Updated dependencies [34d33d9]
+- Updated dependencies [3a8e1d5]
+- Updated dependencies [e440678]
+- Updated dependencies [3ff2753]
+- Updated dependencies [32b1d35]
+- Updated dependencies [371c286]
+  - @shopware-ag/meteor-component-library@4.9.0
+
 ## 5.8.2
 
 ### Patch Changes

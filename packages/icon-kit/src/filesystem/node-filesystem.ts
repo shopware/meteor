@@ -14,4 +14,16 @@ export class NodeFilesystem implements Filesystem {
   readFile(path: string): string {
     return fs.readFileSync(path, "utf-8");
   }
+
+  createDirectory(path: string): void {
+    fs.mkdirSync(path);
+
+    this.logger.info(`Create directory: ${path}`);
+  }
+
+  removeDirectory(path: string): void {
+    fs.rmSync(path, { recursive: true, force: true });
+
+    this.logger.info(`Remove directory: ${path}`);
+  }
 }

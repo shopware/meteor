@@ -2,4 +2,4 @@
 "@shopware-ag/meteor-component-library": patch
 ---
 
-- Align form component heights
+Style icons in mt-select to work in dark mode
