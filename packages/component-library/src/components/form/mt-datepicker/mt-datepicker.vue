@@ -195,8 +195,8 @@ export default defineComponent({
     },
 
     /**
-     * Enables the date range selection feature.
-     * If true, the user can select a start and end date.
+     * Enables the clear button.
+     * If true, the user can clear the date picker value.
      */
     clearable: {
       type: Boolean as PropType<boolean>,
