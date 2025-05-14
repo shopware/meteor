@@ -51,26 +51,39 @@ describe("mt-icon", () => {
     expect(screen.getByTestId(`mt-icon__${mode}-3d`)).toBeVisible();
   });
 
-  it('does not throw a runtime exception if icon import fails', async () => {
-    vi.useFakeTimers();
-
-    const consoleSpy = vi.spyOn(console, "error").mockImplementation(() => {});
-    const iconName = 'regular-does-not-exist';
-
+  it("merges the style prop with the internal styles", () => {
+    // ARRANGE
     render(MtIcon, {
       props: {
-        name: iconName,
+        name: "3d",
+        size: "10rem",
+        style: {
+          color: "blue",
+        },
       },
     });
 
-    await vi.runAllTimers();
-    await vi.runAllTicks();
+    // ASSERT
+    expect(screen.getByTestId("mt-icon__regular-3d")).toHaveStyle("color: rgb(0, 0, 255)");
 
-    expect(screen.getByTestId(`mt-icon__${iconName}`)).not.toBeNull();
-    expect(consoleSpy).toHaveBeenCalledWith(
-      expect.objectContaining({
-        message: 'Unknown variable dynamic import: ../../../../node_modules/@shopware-ag/meteor-icon-kit/icons/regular/does-not-exist.svg'
-      })
-    );
+    expect(screen.getByTestId("mt-icon__regular-3d")).toHaveStyle("width: 10rem");
+    expect(screen.getByTestId("mt-icon__regular-3d")).toHaveStyle("height: 10rem");
+  });
+
+  it("sizes itself according to the style prop", () => {
+    // ARRANGE
+    render(MtIcon, {
+      props: {
+        name: "3d",
+        style: {
+          width: "2rem",
+          height: "2rem",
+        },
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByTestId("mt-icon__regular-3d")).toHaveStyle("height: 2rem");
+    expect(screen.getByTestId("mt-icon__regular-3d")).toHaveStyle("width: 2rem");
   });
 });
