@@ -51,6 +51,11 @@ import type {
   Option,
 } from "./components/table-and-list/mt-data-table/mt-data-table.interfaces";
 
+import type {
+  MtButtonVariant,
+  MtButtonSize
+} from "./components/form/mt-button/mt-button-types";
+
 export {
   MtBanner,
   MtLoader,
@@ -138,4 +143,4 @@ export {
 };
 
 // Exporting types
-export type { Filter, Option, Toast };
+export type { Filter, Option, Toast, MtButtonVariant, MtButtonSize };

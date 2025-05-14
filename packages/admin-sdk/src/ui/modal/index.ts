@@ -1,4 +1,5 @@
 import { createSender } from '../../channel';
+import type { MtButtonSize, MtButtonVariant } from '@shopware-ag/meteor-component-library';
 
 export const open = createSender('uiModalOpen');
 export const close = createSender('uiModalClose');
@@ -24,7 +25,7 @@ export type uiModalClose =
 export type buttonProps = {
   method: () => void,
   label: string,
-  variant?: 'primary'|'secondary'|'critical'|'action',
-  size?: 'x-small'|'small'|'default'|'large',
+  variant?: MtButtonVariant,
+  size?: MtButtonSize,
   square?: boolean,
 }
