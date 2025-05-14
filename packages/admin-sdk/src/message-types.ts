@@ -1,6 +1,6 @@
 import type { notificationDispatch } from './notification/index';
 import type { toastDispatch } from './toast';
-import type { windowRedirect, windowReload, windowRouterPush } from './window/index';
+import type { windowRedirect, windowReload, windowRouterPush, windowGetId } from './window/index';
 import type {
   contextLanguage,
   contextEnvironment,
@@ -11,7 +11,7 @@ import type {
   contextModuleInformation,
   contextUserInformation,
   contextUserTimezone,
-  contextCompareShopwareVersion,
+  contextShopId,
 } from './context';
 import type { uiComponentSectionRenderer } from './ui/component-section/index';
 import type { uiTabsAddTabItem } from './ui/tabs';
@@ -23,6 +23,7 @@ import type { settingsItemAdd } from './ui/settings';
 import type { mainModuleAdd } from './ui/main-module';
 import type { smartBarButtonAdd, smartBarHide } from './ui/main-module';
 import type { uiModalOpen, uiModalClose } from './ui/modal/index';
+import type { uiSidebarAdd, uiSidebarClose, uiSidebarRemove } from './ui/sidebar';
 import type { actionButtonAdd } from './ui/action-button';
 import type { actionExecute } from './app/action';
 import type Criteria from './data/Criteria';
@@ -51,16 +52,17 @@ export interface ShopwareMessageTypes {
   windowRedirect: windowRedirect,
   windowRouterPush: windowRouterPush,
   windowReload: windowReload,
+  windowGetId: windowGetId,
   contextLanguage: contextLanguage,
   contextEnvironment: contextEnvironment,
   contextLocale: contextLocale,
   contextCurrency: contextCurrency,
   contextShopwareVersion: contextShopwareVersion,
-  contextCompareShopwareVersion: contextCompareShopwareVersion,
   contextUserInformation: contextUserInformation,
   contextUserTimezone: contextUserTimezone,
   contextAppInformation: contextAppInformation,
   contextModuleInformation: contextModuleInformation,
+  contextShopId: contextShopId
   getPageTitle: getPageTitle,
   uiComponentSectionRenderer: uiComponentSectionRenderer,
   uiTabsAddTabItem: uiTabsAddTabItem,
@@ -78,6 +80,9 @@ export interface ShopwareMessageTypes {
   smartBarHide: smartBarHide,
   uiModalOpen: uiModalOpen,
   uiModalClose: uiModalClose,
+  uiSidebarAdd: uiSidebarAdd,
+  uiSidebarClose: uiSidebarClose,
+  uiSidebarRemove: uiSidebarRemove,
   actionButtonAdd: actionButtonAdd,
   actionExecute: actionExecute,
   /* eslint-disable @typescript-eslint/no-explicit-any */

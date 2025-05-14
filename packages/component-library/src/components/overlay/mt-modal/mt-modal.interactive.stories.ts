@@ -6,7 +6,9 @@ import MtModalTrigger from "./sub-components/mt-modal-trigger.vue";
 import MtButton from "@/components/form/mt-button/mt-button.vue";
 import { ref } from "vue";
 import { defineStory } from "@/_internal/story-helper";
-import { expect, within } from "@storybook/test";
+import { expect, within, userEvent } from "@storybook/test";
+import MtNumberField from "@/components/form/mt-number-field/mt-number-field.vue";
+import { waitUntil } from "../../../_internal/test-helper";
 
 export default {
   ...meta,
@@ -230,3 +232,32 @@ export const VisualTestFullWidthModal = {
       "<mt-modal-root isOpen><mt-modal v-bind='args'><template #default><mt-text>Lorem ipsum dolor sit amet</mt-text></template><template #footer><div style='width: 100%; display: flex; justify-content: flex-end;'><mt-button variant='primary'>Continue</mt-button></div></template></mt-modal></mt-modal-root>",
   }),
 };
+
+export const VisualTestTooltipInModal = defineStory({
+  name: "Renders a tooltip in the modal",
+  render: (args: unknown) => ({
+    components: { MtModal, MtModalRoot, MtNumberField },
+    setup() {
+      return {
+        args,
+      };
+    },
+    template:
+      "<mt-modal-root isOpen><mt-modal v-bind='args'><template #default><mt-number-field label='Number' help-text='Foo'/></template></mt-modal></mt-modal-root>",
+  }),
+  play: async () => {
+    // Get body as a within element because the modal is rendered in a portal
+    const body = within(document.querySelector("body") as HTMLElement);
+
+    // Get the modal
+    const modal = body.getByRole("dialog");
+    const modalContainer = within(modal);
+
+    const popoverToggle = modalContainer.getByTestId("mt-help-text__icon");
+    await userEvent.hover(popoverToggle);
+
+    await waitUntil(() => body.getByText("Foo"));
+    // Add additional delay after the element is found
+    await new Promise((resolve) => setTimeout(resolve, 200));
+  },
+});

@@ -23,11 +23,12 @@
     <template #mt-select-selection="{ size }">
       <mt-select-selection-list
         ref="selectionList"
-        :disable-input="small"
         :multi-selection="enableMultiSelection"
         :selections="visibleValues"
         :invisible-count="invisibleValueCount"
+        :always-show-placeholder="alwaysShowPlaceholder"
         v-bind="{ size, valueProperty, labelProperty, placeholder, searchTerm, disabled }"
+        :size="small ? 'small' : 'default'"
         @total-count-click="expandValueLimit"
         @item-remove="remove"
         @last-item-delete="removeLastItem"
@@ -140,6 +141,15 @@ export default defineComponent({
 
   inheritAttrs: false,
 
+  emits: [
+    "update:modelValue",
+    "change",
+    "item-add",
+    "item-remove",
+    "display-values-expand",
+    "paginate",
+  ],
+
   props: {
     /**
      * An array of objects with the labelProperty and valueProperty.
@@ -213,6 +223,15 @@ export default defineComponent({
       type: String,
       required: false,
       default: "",
+    },
+
+    /**
+     * Determines if the placeholder should be shown even when there are no selections.
+     */
+    alwaysShowPlaceholder: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
 
     /**
@@ -469,7 +488,7 @@ export default defineComponent({
       if (this.enableMultiSelection) {
         if (Array.isArray(this.currentValue)) {
           this.currentValue = [...this.currentValue, identifier];
-        } else if (this.currentValue !== undefined || this.currentValue !== null) {
+        } else if (this.currentValue === null || this.currentValue === undefined) {
           this.currentValue = [identifier];
         } else {
           this.currentValue = [this.currentValue, identifier];

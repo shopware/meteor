@@ -2,4 +2,4 @@
 "@shopware-ag/meteor-component-library": patch
 ---
 
-Allow setting a margin on an `mt-button` component
+Style icons in mt-select to work in dark mode

@@ -70,6 +70,7 @@
         <mt-popover title="Filters" :child-views="filterChildViews">
           <template #trigger="{ toggleFloatingUi }">
             <button
+              type="button"
               @click="toggleFloatingUi"
               class="mt-data-table__add-filter-button"
               :aria-label="t('filter.addFilter')"
@@ -1118,17 +1119,20 @@ export default defineComponent({
      */
     const resetAllChanges = () => {
       Object.keys(props.columnChanges).forEach((key) => {
+        // eslint-disable-next-line vue/no-mutating-props
         props.columnChanges[key] = {};
       });
     };
 
     const addToColumnChanges = (columnProperty: string, columnChanges: ColumnChanges) => {
       if (!props.columnChanges[columnProperty]) {
+        // eslint-disable-next-line vue/no-mutating-props
         props.columnChanges[columnProperty] = {};
       }
 
       // save new width to columnChanges to make changes permanent
 
+      // eslint-disable-next-line vue/no-mutating-props
       props.columnChanges[columnProperty] = {
         ...props.columnChanges[columnProperty],
         ...columnChanges,
@@ -2534,6 +2538,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
 
     .mt-select {
       margin-bottom: 0;
+      width: 100px;
     }
   }
 

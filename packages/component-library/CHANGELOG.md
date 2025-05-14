@@ -1,5 +1,151 @@
 # Changelog
 
+## 4.11.0
+
+### Minor Changes
+
+- 36bf822: Add mt-unit-field component
+
+### Patch Changes
+
+- be9c623: fixed unnecessary whitespace select
+- 74772d6: fixed multiple select handling
+- bed29f0: Only emit change event when using `@change` on `mt-number-field`
+- 2cd3eff: Do not emit change event when pressing increment and decrement buttons on `mt-number-field`
+- e77fada: fixed hint class naming datepicker
+- 828c6dc: fixed popover width resizing
+
+## 4.10.1
+
+### Patch Changes
+
+- 269bf4a: Add mt-switch--disabled class to mt-switch
+- c47c136: Update alignment of close icon in mt-label
+- Updated dependencies [f4ed7d0]
+- Updated dependencies [0f5575d]
+- Updated dependencies [a1c2414]
+  - @shopware-ag/meteor-tokens@1.1.0
+  - @shopware-ag/meteor-icon-kit@5.5.0
+
+## 4.10.0
+
+### Minor Changes
+
+- 243ffd8: Changed z-index of mt-modal and mt-tooltip
+
+### Patch Changes
+
+- 9b0cc45: \* Remove duplicated external link icon
+  - Removed fixed 16px font-size for `mt-link`
+  - Changed gap and icon size to be relative to current font size
+- adb59f8: Allow sanitized HTML values inside tooltip
+
+## 4.9.1
+
+### Patch Changes
+
+- 466f306: Get rid of duplicate isInherited in mt-checkbox
+
+## 4.9.0
+
+### Minor Changes
+
+- fd48763: Add custom format prop for mt-datepicker and add dateType "time" to mt-datepicker
+- 3ff2753: add catch to dynamic icon import in mt-icon.vue
+
+### Patch Changes
+
+- 5c20ef8: Fix the `mt-email-field` showing the error message on its init instead after interacting with it.
+- 34d33d9: Add missing isInherited prop to mt-checkbox
+- 3a8e1d5: - Align form component heights
+- e440678: - Fix tooltip z-index position
+- 32b1d35: Added `type=button` to all buttons to prevent default `type=submit` behaviour
+- 371c286: Fix overflow of colorpicker in mt-text-editor
+
+## 4.8.0
+
+### Minor Changes
+
+- c6017dd: Added label slot to mt-checkbox
+
+## 4.7.1
+
+### Patch Changes
+
+- 55b219b: - Remove stop propagation for `mt-select-base` click handler
+
+## 4.7.0
+
+### Minor Changes
+
+- 8d89449: Fix password flickering and add submit event for `mt-password-field.vue` component.
+
+## 4.6.0
+
+### Minor Changes
+
+- 3af841b: Allow setting the max width of a tooltip
+
+  ```html
+  <template>
+    <mt-tooltip content="My content" :max-width="200">
+      <template #default="props">
+        <button v-bind="props">Open tooltip</button>
+      </template>
+    </mt-tooltip>
+  </template>
+  ```
+
+- 7498dc5: Fix single select truncation
+
+### Patch Changes
+
+- ba9a202: Allow setting the max width of helptexts
+- 611a1d9: Set default max-width of help texts to 240px
+- c0166e8: Change display mode of mt-button to inline-grid
+- b0d74e7: Teleport tooltips to body
+- b3d2b03: Set default max-width of tooltips to 240px
+- 67c1cf8: Wrap tooltip content for mt-tooltip component
+
+## 4.5.1
+
+### Patch Changes
+
+- 6372237: Center content of mt-button when it's a link
+- 55832a9: Show icons when mt-button is a link
+
+## 4.5.0
+
+### Minor Changes
+
+- 6de3f71: Allow setting an icon without specifing the mode like regular or solid
+
+  You can now define an icon without explicitly defining the mode for it like this:
+
+  ```vue
+  <!-- Before -->
+  <mt-icon name="regular-3d" />
+
+  <!-- After -->
+  <mt-icon name="3d" />
+  ```
+
+  By default we use regular icons, however you can use solid icons as follows:
+
+  ```vue
+  <!-- Old way, still works, but prefer using the new way -->
+  <mt-icon name="solid-3d" />
+
+  <!-- New, preferred way -->
+  <mt-icon name="3d" mode="solid" />
+  ```
+
+### Patch Changes
+
+- ee0a4ad: Allow setting a margin on an `mt-button` component
+- a57d22e: fix: update wrong position of mt-select popover
+- d988d78: Add auto-completion for color prop of mt-text component
+
 ## 4.4.1
 
 ### Patch Changes
