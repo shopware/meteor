@@ -97,7 +97,7 @@
       },
       "shadow": {
         "default": {
-          "$value": "{color.zinc.975}",
+          "$value": "#10101300",
           "$type": "color"
         }
       }
