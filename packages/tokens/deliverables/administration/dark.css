@@ -20,7 +20,7 @@
   --color-elevation-surface-frame: #1e1e24;
   --color-elevation-surface-backdrop: #101013;
   --color-elevation-surface-floating: #ffffff;
-  --color-elevation-shadow-default: #101013;
+  --color-elevation-shadow-default: #10101300;
   --color-background-primary-default: #1e1e24;
   --color-background-primary-disabled: #2d2e32;
   --color-background-brand-default: #00296a;
@@ -62,11 +62,11 @@
   --color-text-brand-default: #0870ff;
   --color-text-brand-hover: #0042a0;
   --color-text-brand-disabled: #76aaff;
+  --color-text-attention-default: #fff3e3;
   --color-text-critical-default: #fc4945;
   --color-text-critical-hover: #90000e;
   --color-text-critical-disabled: #ff7f74;
   --color-text-critical-dark: #ffcfc9;
-  --color-text-attention-default: #fff3e3;
   --color-text-positive-default: #e1ffe0;
   --color-text-accent-default: #b5a8ff;
   --color-text-static-default: #ffffff;

@@ -97,7 +97,7 @@
       },
       "shadow": {
         "default": {
-          "$value": "{color.zinc.975}",
+          "$value": "#10101300",
           "$type": "color"
         }
       }
@@ -323,6 +323,12 @@
           "$type": "color"
         }
       },
+      "attention": {
+        "default": {
+          "$value": "{color.orange.800}",
+          "$type": "color"
+        }
+      },
       "critical": {
         "default": {
           "$value": "{color.red.500}",
@@ -338,12 +344,6 @@
         },
         "dark": {
           "$value": "{color.red.800}",
-          "$type": "color"
-        }
-      },
-      "attention": {
-        "default": {
-          "$value": "{color.orange.800}",
           "$type": "color"
         }
       },
