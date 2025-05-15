@@ -221,38 +221,61 @@ export default defineComponent({
         if (!this.modelValue) return null;
 
         if (this.dateType === "time") {
-          // Convert ISO string to object with hours, minutes, seconds
-          const date = new Date(this.modelValue as string);
+          if (this.range) {
+            return this.modelValue.map((timeStr) => {
+              const date = new Date(timeStr);
+              return {
+                hours: date.getHours(),
+                minutes: date.getMinutes(),
+                seconds: date.getSeconds(),
+              };
+            }) as unknown as string[];
+          } else {
+            // Convert ISO string to object with hours, minutes, seconds
+            const date = new Date(this.modelValue as string);
 
-          const time = {
-            hours: date.getHours(),
-            minutes: date.getMinutes(),
-            seconds: date.getSeconds(),
-          };
+            const time = {
+              hours: date.getHours(),
+              minutes: date.getMinutes(),
+              seconds: date.getSeconds(),
+            };
 
-          return time as unknown as string;
+            return time as unknown as string;
+          }
         }
 
         return this.modelValue;
       },
       set(newValue: Date | [Date, Date] | null) {
         // Emit null if there is no value
-        if (!newValue ) {
+        if (!newValue) {
           this.$emit("update:modelValue", null);
           return;
         }
 
         // Handle date conversion for 'time' type
         if (this.dateType === "time") {
-          const isoFormattedDate = this.convertTimeToIso(
-            newValue as unknown as {
-              hours: number;
-              minutes: number;
-              seconds: number;
-            },
-          );
-
-          this.$emit("update:modelValue", isoFormattedDate);
+          if (this.range) {
+            const isoFormattedDates = newValue.map((time) =>
+              this.convertTimeToIso(
+                time as unknown as {
+                  hours: number;
+                  minutes: number;
+                  seconds: number;
+                },
+              ),
+            );
+            this.$emit("update:modelValue", isoFormattedDates);
+          } else {
+            const isoFormattedDate = this.convertTimeToIso(
+              newValue as unknown as {
+                hours: number;
+                minutes: number;
+                seconds: number;
+              },
+            );
+            this.$emit("update:modelValue", isoFormattedDate);
+          }
           return;
         }
 
