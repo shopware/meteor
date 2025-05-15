@@ -372,6 +372,53 @@ export const TestClearableInput: MtDatepickerStory = {
 
     // Verify updateModelValue was called with null
     expect(args.updateModelValue).toHaveBeenCalledWith(null);
+  },
+};
 
+export const TestTimeRangeEmitsArray: MtDatepickerStory = {
+  name: "Should emit array when dateType is time and range is true",
+  args: {
+    label: "Time range",
+    dateType: "time",
+    range: true,
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    // Open datepicker by clicking the input wrapper
+    await userEvent.click(canvas.getByRole("textbox"));
+    await waitUntil(() => document.getElementsByClassName("dp__menu").length > 0);
+
+    // Set hours for first time
+    await userEvent.click(
+      document.querySelector('[data-test-id="hours-toggle-overlay-btn-0"]') as HTMLInputElement,
+    );
+    await userEvent.click(document.querySelector('[data-test-id="09"]') as HTMLInputElement);
+
+    // Set minutes for first time
+    await userEvent.click(
+      document.querySelector('[data-test-id="minutes-toggle-overlay-btn-0"]') as HTMLInputElement,
+    );
+    await userEvent.click(document.querySelector('[data-test-id="15"]') as HTMLInputElement);
+
+    // Set hours for second time
+    await userEvent.click(
+      document.querySelector('[data-test-id="hours-toggle-overlay-btn-1"]') as HTMLInputElement,
+    );
+    await waitUntil(() => document.querySelector('[data-test-id="14"]') !== null);
+    await userEvent.click(document.querySelector('[data-test-id="14"]') as HTMLInputElement);
+
+    // Set minutes for second time
+    await userEvent.click(
+      document.querySelector('[data-test-id="minutes-toggle-overlay-btn-1"]') as HTMLInputElement,
+    );
+    await waitUntil(() => document.querySelector('[data-test-id="30"]') !== null);
+    await userEvent.click(document.querySelector('[data-test-id="30"]') as HTMLInputElement);
+
+    // Verify updateModelValue was called with an array (
+    expect(args.updateModelValue).toHaveBeenCalled();
+    const updateValue = args.updateModelValue.mock.calls[0][0];
+    expect(Array.isArray(updateValue)).toBe(true);
+    expect(updateValue.length).toBe(2);
   },
 };
