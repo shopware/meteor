@@ -101,7 +101,7 @@ export const VisualTestDateTimeInputValue: MtDatepickerStory = {
     );
 
     // Wait 500ms, element checking is not always reliable
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     // Select an hour
     await userEvent.click(document.querySelector('[data-test-id="12"]') as HTMLInputElement);
@@ -112,7 +112,7 @@ export const VisualTestDateTimeInputValue: MtDatepickerStory = {
     );
 
     // Wait 500ms, element checking is not always reliable
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     // Select minute
     const selectedMin = document.querySelector('[data-test-id="40"]') as HTMLInputElement;
@@ -126,7 +126,7 @@ export const VisualTestDateTimeInputValue: MtDatepickerStory = {
     expect(input.value).toEqual("2024/11/13, 12:40");
 
     // Expect updatemodelvalue to have been called with date
-    expect(args.updateModelValue).toHaveBeenCalledWith('2024-11-13T12:40:00.000Z');
+    expect(args.updateModelValue).toHaveBeenCalledWith("2024-11-13T12:40:00.000Z");
   },
 };
 
@@ -216,12 +216,14 @@ export const VisualTestDateTimeRangeValue: MtDatepickerStory = {
     await userEvent.click(selectedMinute1);
 
     // Set hours for second date
-    await userEvent.click(document.querySelector('[data-test-id="hours-toggle-overlay-btn-1"]') as HTMLInputElement);
+    await userEvent.click(
+      document.querySelector('[data-test-id="hours-toggle-overlay-btn-1"]') as HTMLInputElement,
+    );
     // Wait until dialog with "hours overlay" is open
     await expect(document.querySelector('[aria-label="hours overlay"]')).toBeInTheDocument();
     await expect(document.querySelector('[data-test-id="11"]')).toBeInTheDocument();
     // Wait 500ms, element checking is not always reliable
-    await new Promise(resolve => setTimeout(resolve, 500));
+    await new Promise((resolve) => setTimeout(resolve, 500));
     await userEvent.click(document.querySelector('[data-test-id="11"]') as HTMLInputElement);
 
     // Set minutes for second date
@@ -230,7 +232,9 @@ export const VisualTestDateTimeRangeValue: MtDatepickerStory = {
     ) as HTMLInputElement;
     await userEvent.click(minuteButton2);
 
-    await waitUntil(() => document.querySelector('[data-test-id="30"]') as HTMLInputElement !== null);
+    await waitUntil(
+      () => (document.querySelector('[data-test-id="30"]') as HTMLInputElement) !== null,
+    );
     await expect(document.querySelector('[data-test-id="30"]')).toBeInTheDocument();
     await userEvent.click(document.querySelector('[data-test-id="30"]') as HTMLInputElement);
 
@@ -244,12 +248,12 @@ export const VisualTestDateTimeRangeValue: MtDatepickerStory = {
 
     // Check that the input value matches the dates and times chosen
     const input = document.querySelector('[data-test-id="dp-input"]') as HTMLInputElement;
-    expect(input.value).toEqual('2024/11/13, 12:40 - 2024/11/16, 11:30');
+    expect(input.value).toEqual("2024/11/13, 12:40 - 2024/11/16, 11:30");
 
     // Expect updatemodelvalue to have been called with array of ISO formatted dates
     expect(args.updateModelValue).toHaveBeenCalledWith([
-      '2024-11-13T12:40:00.000Z',
-      '2024-11-16T11:30:00.000Z',
+      "2024-11-13T12:40:00.000Z",
+      "2024-11-16T11:30:00.000Z",
     ]);
   },
 };
@@ -280,7 +284,7 @@ export const VisualTestTestCustomFormat: MtDatepickerStory = {
       const month = date.getMonth() + 1;
       const day = date.getDate();
       return `Year: ${year}, Month: ${month}, Day: ${day}`;
-    }
+    },
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -319,7 +323,7 @@ export const VisualTestTimeType: MtDatepickerStory = {
       const hours = date.getHours();
       const minutes = date.getMinutes();
       return `${hours}:${minutes}`;
-    }
+    },
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -343,5 +347,78 @@ export const VisualTestTimeType: MtDatepickerStory = {
     // Check that the input value matches the date chosen
     const input = document.querySelector('[data-test-id="dp-input"]') as HTMLInputElement;
     expect(input.value).toContain("7:35");
+  },
+};
+
+export const TestClearableInput: MtDatepickerStory = {
+  name: "Should clear input when clearable button is clicked",
+  args: {
+    modelValue: new Date(Date.UTC(2023, 5, 15)).toISOString(),
+    dateType: "time",
+    clearable: true,
+    label: "Clearable date",
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    // Verify initial value is shown
+    const input = canvas.getByRole("textbox");
+    expect(input).toHaveValue();
+
+    // Find and click the clear button
+    const clearButton = document.querySelector(".dp--clear-btn") as HTMLElement;
+    expect(clearButton).toBeInTheDocument();
+    await userEvent.click(clearButton);
+
+    // Verify updateModelValue was called with null
+    expect(args.updateModelValue).toHaveBeenCalledWith(null);
+  },
+};
+
+export const TestTimeRangeEmitsArray: MtDatepickerStory = {
+  name: "Should emit array when dateType is time and range is true",
+  args: {
+    label: "Time range",
+    dateType: "time",
+    range: true,
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    // Open datepicker by clicking the input wrapper
+    await userEvent.click(canvas.getByRole("textbox"));
+    await waitUntil(() => document.getElementsByClassName("dp__menu").length > 0);
+
+    // Set hours for first time
+    await userEvent.click(
+      document.querySelector('[data-test-id="hours-toggle-overlay-btn-0"]') as HTMLInputElement,
+    );
+    await userEvent.click(document.querySelector('[data-test-id="09"]') as HTMLInputElement);
+
+    // Set minutes for first time
+    await userEvent.click(
+      document.querySelector('[data-test-id="minutes-toggle-overlay-btn-0"]') as HTMLInputElement,
+    );
+    await userEvent.click(document.querySelector('[data-test-id="15"]') as HTMLInputElement);
+
+    // Set hours for second time
+    await userEvent.click(
+      document.querySelector('[data-test-id="hours-toggle-overlay-btn-1"]') as HTMLInputElement,
+    );
+    await waitUntil(() => document.querySelector('[data-test-id="14"]') !== null);
+    await userEvent.click(document.querySelector('[data-test-id="14"]') as HTMLInputElement);
+
+    // Set minutes for second time
+    await userEvent.click(
+      document.querySelector('[data-test-id="minutes-toggle-overlay-btn-1"]') as HTMLInputElement,
+    );
+    await waitUntil(() => document.querySelector('[data-test-id="30"]') !== null);
+    await userEvent.click(document.querySelector('[data-test-id="30"]') as HTMLInputElement);
+
+    // Verify updateModelValue was called with an array (
+    expect(args.updateModelValue).toHaveBeenCalled();
+    const updateValue = args.updateModelValue.mock.calls[0][0];
+    expect(Array.isArray(updateValue)).toBe(true);
+    expect(updateValue.length).toBe(2);
   },
 };
