@@ -221,7 +221,7 @@ export default defineComponent({
         if (!this.modelValue) return null;
 
         if (this.dateType === "time") {
-          if (this.range) {
+          if (this.range && Array.isArray(this.modelValue)) {
             return this.modelValue.map((timeStr) => {
               const date = new Date(timeStr);
               return {
@@ -255,8 +255,8 @@ export default defineComponent({
 
         // Handle date conversion for 'time' type
         if (this.dateType === "time") {
-          if (this.range) {
-            const isoFormattedDates = newValue.map((time) =>
+          if (this.range && Array.isArray(newValue)) {
+            const isoFormattedDates = newValue.map((time: Date) =>
               this.convertTimeToIso(
                 time as unknown as {
                   hours: number;
