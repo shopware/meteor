@@ -1,6 +1,33 @@
 import { createSender, createSubscriber } from '../channel';
 import getCompareIsShopwareVersion from './compare-version';
 
+export type ApiAuthToken = {
+  access: string,
+  expiry: number,
+  refresh: string,
+}
+
+export interface ApiContext {
+  apiPath: null | string,
+  apiResourcePath: null | string,
+  assetsPath: null | string,
+  authToken: null | ApiAuthToken,
+  basePath: null | string,
+  pathInfo: null | string,
+  inheritance: null | boolean,
+  installationPath: null | string,
+  languageId: null | string,
+  language: null | {
+      name: string,
+      parentId?: string,
+  },
+  apiVersion: null | string,
+  liveVersionId: null | string,
+  systemLanguageId: null | string,
+  currencyId: null | string,
+  versionId: null | string,
+}
+
 export const getLanguage = createSender('contextLanguage', {});
 export const subscribeLanguage = createSubscriber('contextLanguage');
 export const getEnvironment = createSender('contextEnvironment', {});
