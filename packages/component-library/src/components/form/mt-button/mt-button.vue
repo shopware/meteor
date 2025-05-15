@@ -50,13 +50,14 @@
 import { useIsInsideTooltip } from "@/components/overlay/mt-tooltip/composables/useIsInsideTooltip";
 import MtLoader from "../../feedback-indicator/mt-loader/mt-loader.vue";
 import { computed } from "vue";
+import type { MtButtonSize, MtButtonVariant } from "@/components/form/mt-button/mt-button-types.ts";
 
 const props = withDefaults(
   defineProps<{
     disabled?: boolean;
-    variant?: "primary" | "secondary" | "critical" | "action";
+    variant?: MtButtonVariant;
     ghost?: boolean;
-    size?: "x-small" | "small" | "default" | "large";
+    size?: MtButtonSize;
     square?: boolean;
     block?: boolean;
     link?: string;
