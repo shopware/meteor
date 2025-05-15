@@ -32,7 +32,7 @@
         :aria-invalid="!!error || undefined"
         :aria-label="label || $attrs['aria-label']"
         :name="name"
-        @change.stop="
+        @change.stop.prevent="
           () => {
             $emit('change', !checked);
             $emit('update:modelValue', !modelValue);
