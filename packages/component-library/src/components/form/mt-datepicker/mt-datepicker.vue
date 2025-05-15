@@ -201,7 +201,7 @@ export default defineComponent({
     clearable: {
       type: Boolean as PropType<boolean>,
       required: false,
-      default: true,
+      default: false,
     },
   },
 
