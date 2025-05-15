@@ -20,7 +20,7 @@
       :open="isDatepickerOpen"
       :teleport="true"
       :show-cancel="true"
-      :clearable="true"
+      :clearable="clearable"
       :auto-apply="true"
       :range="range"
       :format="formatDate"
