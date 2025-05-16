@@ -315,7 +315,6 @@ export default defineComponent({
 </script>
 
 <style lang="css">
-/* || Datepicker theme  */
 .dp__theme_light {
   --dp-background-color: var(--color-elevation-surface-overlay);
   --dp-text-color: var(--color-text-primary-default);
@@ -351,12 +350,10 @@ export default defineComponent({
   margin-bottom: var(--scale-size-8);
 }
 
-/* || Datepicker  */
 .dp__main {
   font-family: var(--font-family-body) !important;
 }
 
-/* || Input wrapper */
 .dp__input_wrap {
   min-height: var(--scale-size-48);
   font: inherit;
@@ -409,7 +406,6 @@ export default defineComponent({
   background: var(--color-background-primary-disabled);
 }
 
-/* || Menu / calendar */
 .dp--menu-wrapper {
   border-radius: var(--border-radius-s) !important;
   font-family: inherit;
@@ -489,7 +485,6 @@ export default defineComponent({
   border: 1px solid var(--color-border-primary-default);
 }
 
-/* || Time picker */
 .dp__time_picker_inline_container {
   padding-top: 5px;
 }
