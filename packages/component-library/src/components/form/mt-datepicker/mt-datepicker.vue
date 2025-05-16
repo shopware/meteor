@@ -1,5 +1,8 @@
 <template>
-  <div class="mt-datepicker__wrapper wrapper" :class="{ 'mt-datepicker__wrapper--small': size === 'small' }">
+  <div
+    class="mt-datepicker__wrapper wrapper"
+    :class="{ 'mt-datepicker__wrapper--small': size === 'small' }"
+  >
     <mt-field-label id="field-id" class="mt-datepicker__label">
       {{ label }}
     </mt-field-label>
@@ -378,7 +381,7 @@ export default defineComponent({
 .dp__input_icon {
   position: absolute;
   width: var(--scale-size-48);
-  height: 96%;
+  height: calc(100% - 2px);
   left: auto;
   right: 1px;
   text-align: center;
@@ -572,7 +575,7 @@ export default defineComponent({
 .mt-datepicker__hint {
   margin-top: var(--scale-size-8);
   font-size: var(--font-size-xs);
-  line-height: var(--font-line-height-xs);
+  line-height: 0;
   font-family: var(--font-family-body);
   color: var(--color-text-tertiary-default);
   display: flex;
