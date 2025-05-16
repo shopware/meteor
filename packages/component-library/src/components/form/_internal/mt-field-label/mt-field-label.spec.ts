@@ -7,7 +7,7 @@ describe("mt-field-label", () => {
   it("does not select the text when double clicking on it", async () => {
     // ARRANGE
     render(MtFieldLabel, {
-      props: { id: "my-id" },
+      props: { for: "my-id" },
       slots: { default: "My label" },
     });
 

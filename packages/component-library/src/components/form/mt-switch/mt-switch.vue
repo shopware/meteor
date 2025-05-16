@@ -42,7 +42,7 @@
 
       <mt-field-label
         :class="['mt-switch__label', { 'mt-switch__label--disabled': disabled }]"
-        :id="id"
+        :for="id"
         :inheritance="!isInheritanceField ? 'none' : isInherited ? 'linked' : 'unlinked'"
         :has-error="!!error"
         :required="required"
