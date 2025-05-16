@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div class="mt-datepicker__wrapper wrapper" :class="{ 'mt-datepicker__wrapper--small': size === 'small' }">
     <mt-field-label id="field-id" class="mt-datepicker__label">
       {{ label }}
     </mt-field-label>
@@ -188,6 +188,16 @@ export default defineComponent({
       required: false,
       default: false,
     },
+
+    /**
+     * Sets the size of the date picker.
+     * Options: "small" or "default".
+     */
+    size: {
+      type: String as PropType<"small" | "default">,
+      required: false,
+      default: "default",
+    },
   },
 
   data(): {
@@ -350,6 +360,10 @@ export default defineComponent({
   font-weight: var(--font-weight-regular) !important;
   font-size: var(--font-size-xs) !important;
   display: flex;
+}
+
+.mt-datepicker__wrapper--small .dp__input_wrap {
+  min-height: var(--scale-size-32);
 }
 
 .dp__input {
