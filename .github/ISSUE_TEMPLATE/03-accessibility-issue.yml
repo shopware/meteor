@@ -83,12 +83,16 @@ body:
       description: 'Does this violate a specific WCAG 2.1 checkpoint?'
       placeholder: e.g Success Criteria 1.1 Text Alternatives
 
-  - type: input
+  - type: textarea
     id: reproduce
     attributes:
       label: Steps to reproduce
-      description:
-        'How can we reproduce the accessibility issue you described?'
+      description: |
+        What do we need to do after opening your repo in order to reproduce the accessibility issue?
+        Clear and concise reproduction instructions are important for us to be able to
+        triage your issue in a timely manner. Note that you can use [Markdown](https://guides.github.com/features/mastering-markdown/)
+        to format lists and code.
+      placeholder: Steps to reproduce
     validations:
       required: true
 
