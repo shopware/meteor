@@ -1,0 +1,16 @@
+name: Task
+description: Work that does not directly result in code development, such as documentation, research, deployments, setup, enablement, or configuration work.
+type: Task
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to share your idea with us!
+
+  - type: textarea
+    id: todo
+    attributes:
+      label: To Do
+      description: Please describe what we need to do and why.
+    validations:
+      required: true
