@@ -42,7 +42,9 @@ const DefaultTemplate: StoryFn = (args) => ({
     return { args };
   },
   template: `
+  <div style="height: 100vh; display: flex; justify-content: center; align-items: center;">
     <mt-empty-state v-bind="args" />
+  </div>
   `,
 });
 
@@ -59,7 +61,9 @@ const ExtendedTemplate: StoryFn = (args) => ({
     return { args };
   },
   template: `
+  <div style="height: 100vh; display: flex; justify-content: center; align-items: center;">
     <mt-empty-state v-bind="args" @button-click="args.onButtonClick" />
+  </div>
   `,
 });
 

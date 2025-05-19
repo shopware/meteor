@@ -62,9 +62,11 @@ defineEmits(["button-click"]);
 
 <style scoped>
 .mt-empty-state {
+  max-width: 560px;
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  text-align: center;
 }
 
 .mt-empty-state__icon {
