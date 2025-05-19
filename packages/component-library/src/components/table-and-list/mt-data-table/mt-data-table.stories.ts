@@ -44,6 +44,11 @@ export type MtDataTableMeta = SlottedMeta<
 export default {
   title: "Components/Table and list/mt-data-table",
   component: MtDataTable,
+  decorators: [
+    () => ({
+      template: '<div style="height: calc(100vh - 2rem);"><story/></div>',
+    }),
+  ],
   argTypes: {
     // TODO: can be removed when component is not experimental anymore
     _storybook_internal_show_experimental_warning_: {
@@ -755,6 +760,6 @@ export const Default: MtDataTableStory = {
 export const Full = {
   args: {
     layout: "full",
-    _storybook_internal_show_experimental_warning_: true,
+    _storybook_internal_show_experimental_warning_: false,
   },
 };
