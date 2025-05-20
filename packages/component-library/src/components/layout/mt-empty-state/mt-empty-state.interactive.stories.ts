@@ -1,7 +1,9 @@
-import type { Meta, StoryFn } from "@storybook/vue3";
+import type { Meta, StoryFn, StoryObj } from "@storybook/vue3";
 import { within, expect } from "@storybook/test";
 import MtEmptyState from "./mt-empty-state.vue";
 import meta, { Default, Extended } from "./mt-empty-state.stories";
+import { h } from "vue";
+import MtButton from "@/components/form/mt-button/mt-button.vue";
 
 export default {
   ...meta,
@@ -38,4 +40,12 @@ VisualTestExtendedPage.play = async ({ canvasElement }) => {
 
   expect(canvas.getByText(Extended.args?.linkText)).toBeVisible();
   expect(canvas.getByText(Extended.args?.buttonText)).toBeVisible();
+};
+
+export const VisualTestExtendedWithSlot: StoryObj<typeof MtEmptyState> = {
+  args: {
+    ...Extended.args,
+    buttonText: undefined,
+    button: () => h(MtButton, { variant: "primary" }, "This is a custom button"),
+  },
 };
