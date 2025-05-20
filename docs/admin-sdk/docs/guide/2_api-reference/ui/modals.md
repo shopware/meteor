@@ -6,13 +6,16 @@ We recommend that no modal gets opened without context. As an example, it would 
 in and directly see some modals (e.g. changelogs of extensions) which all need to be closed manually.
 
 ### Open modal
-Open a new modal in the current view. The content of the modal is determined by your `locationId`.
+Open a new modal in the current view. The content of the modal is determined by your `locationId` or by using plain text with `textContent`.
 
 #### Usage:
 ```ts
 ui.modal.open({
     title: 'Your modal title',
+    // Use locationId for rendering custom content inside modal
     locationId: 'your-location-id',
+    // Use textContent when no locationId is needed
+    textContent: 'Do you really want to dispatch a notification?',
     variant: 'large',
     showHeader: true,
     showFooter: false,
@@ -41,15 +44,16 @@ ui.modal.open({
 ```
 
 #### Parameters
-| Name         | Required | Default   | Description                                                                                                                                    | Available at Shopware |
-| :----------- | :------- | :-------- | :--------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------|
-| `title`      | true     |           | The title of the modal                                                                                                                         |                       |
-| `locationId` | true     |           | The id for the content of the modal                                                                                                            |                       |
-| `variant`    | false    | 'default' | Determine the size of the modal. Possible values are 'default', 'small', 'large' and 'full'                                                    |                       |
-| `showHeader` | false    | true      | Enable the header in the modal which contains the title                                                                                        |                       |
-| `showFooter` | false    | true      | Enable the modal footer                                                                                                                        | v6.5.8                |
-| `closable`   | false    | true      | If this is set to `false` then the modal can only be closed programmatically                                                                   |                       |
-| `buttons`    | false    | []        | This array contains button configurations which will render buttons in the footer of the modal |                       |
+| Name          | Required | Default   | Description                                                                                    | Available at Shopware |
+|:--------------|:---------|:----------|:-----------------------------------------------------------------------------------------------|:----------------------|
+| `title`       | true     |           | The title of the modal                                                                         |                       |
+| `locationId`  | false    |           | The id for the content of the modal. If not provided it will render the `textContent`          |                       |
+| `textContent` | false    |           | The plain text content of the modal. Will only be rendered if no `locationId` is given         | v.6.7.1               |
+| `variant`     | false    | 'default' | Determine the size of the modal. Possible values are 'default', 'small', 'large' and 'full'    |                       |
+| `showHeader`  | false    | true      | Enable the header in the modal which contains the title                                        |                       |
+| `showFooter`  | false    | true      | Enable the modal footer                                                                        | v6.5.8                |
+| `closable`    | false    | true      | If this is set to `false` then the modal can only be closed programmatically                   |                       |
+| `buttons`     | false    | []        | This array contains button configurations which will render buttons in the footer of the modal |                       |
 
 #### Example
 ![Menu item example](./assets/modal-example.png)
@@ -81,7 +85,7 @@ ui.modal.open({
 ```
 
 ### Close modal
-Closes an opened modal. You need use the correct `locationId` of the modal which should get closed.
+Closes an opened modal. You need use the correct `locationId` of the modal which should get closed. If you don't provide a `locationId` the last modal without a `locationId` gets closed.
 
 #### Usage:
 ```ts
@@ -89,6 +93,6 @@ ui.modal.close({ locationId: 'your-location-id' })
 ```
 
 #### Parameters
-| Name         | Required | Default | Description                                         |
-| :----------- | :------- | :------ | :-------------------------------------------------- |
-| `locationId` | true     |         | The locationId of the modal which should get closed |
+| Name         | Required | Default | Description                                                                                                               |
+|:-------------|:---------|:--------|:--------------------------------------------------------------------------------------------------------------------------|
+| `locationId` | false    |         | The locationId of the modal which should get closed. If not provided, the last modal without a locationId will be closed. |
