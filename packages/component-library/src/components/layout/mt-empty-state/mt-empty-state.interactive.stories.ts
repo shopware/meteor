@@ -2,7 +2,6 @@ import type { Meta, StoryFn, StoryObj } from "@storybook/vue3";
 import { within, expect } from "@storybook/test";
 import MtEmptyState from "./mt-empty-state.vue";
 import meta, { Default, Extended } from "./mt-empty-state.stories";
-import { h } from "vue";
 import MtButton from "@/components/form/mt-button/mt-button.vue";
 
 export default {
@@ -45,7 +44,18 @@ VisualTestExtendedPage.play = async ({ canvasElement }) => {
 export const VisualTestExtendedWithSlot: StoryObj<typeof MtEmptyState> = {
   args: {
     ...Extended.args,
-    buttonText: undefined,
-    button: () => h(MtButton, { variant: "primary" }, "This is a custom button"),
   },
+  render: () => ({
+    components: { MtEmptyState, MtButton },
+    template: `
+      <mt-empty-state
+        icon="solid-chart-line-arrow"
+        headline="Hello, world"
+        description="This is some custom description"
+      >
+        <template #button>
+          <mt-button variant="primary">This is a custom button</mt-button>
+        </template>
+      </mt-empty-state>`,
+  }),
 };
