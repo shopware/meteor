@@ -1,5 +1,5 @@
 name: Task
-description: Work that does not directly result in code development, such as documentation, research, deployments, setup, enablement, or configuration work.
+description: Non-coding tasks like documentation, research, setup, or configuration.
 type: Task
 body:
   - type: markdown

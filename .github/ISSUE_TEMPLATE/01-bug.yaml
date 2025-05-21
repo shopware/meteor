@@ -1,5 +1,5 @@
 name: Bug
-description: Issues caused by errors or flaws in the code, leading to incorrect or unexpected behavior.
+description: Issue that results in incorrect or unexpected behavior.
 type: Bug
 body:
   - type: markdown

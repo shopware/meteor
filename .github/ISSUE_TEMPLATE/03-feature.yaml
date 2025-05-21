@@ -1,5 +1,5 @@
-name: Story
-description: Development of a new feature. Can include sub-issues (tasks, bugs, improvements) and with defined acceptance criteria.
+name: New Feature
+description: Development of a new feature.
 type: Story
 body:
   - type: markdown
