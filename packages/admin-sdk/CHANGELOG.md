@@ -1,5 +1,21 @@
 # Changelog
 
+## 6.0.0
+
+### Major Changes
+
+- 0e794ae: Add `uiMediaModalOpen` method
+  Add `media` option for parameter `entity`, `view` option for parameter `view` of actionButton method
+
+### Minor Changes
+
+- 9956281: Add textContent property to modal triggering instead of only locationId
+
+### Patch Changes
+
+- Updated dependencies [a85dee7]
+  - @shopware-ag/meteor-component-library@4.11.2
+
 ## 5.9.2
 
 ### Patch Changes
