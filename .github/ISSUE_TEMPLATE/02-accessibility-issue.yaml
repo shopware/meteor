@@ -1,5 +1,5 @@
 name: Accessibility Issue
-description: Accessibility issues caused by errors or flaws in the code, leading to incorrect or unexpected behavior.
+description: Accessibility issue that results in incorrect or unexpected behavior.
 type: Bug
 labels: ["area/accessibility"]
 body:

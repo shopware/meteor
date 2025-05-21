@@ -1,5 +1,5 @@
-name: Improvement / Refactor
-description: Non-feature-related enhancements, such as code refactoring, adding unit tests, improving performance, or other technical optimizations.
+name: Technical Improvement / Refactor
+description: Technical improvements like refactoring, testing, or performance tuning.
 type: Improvement
 body:
   - type: markdown

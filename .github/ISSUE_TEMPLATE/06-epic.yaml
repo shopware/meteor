@@ -1,5 +1,5 @@
 name: Epic
-description: A large body of work that usually takes 1-3 months to complete. It's divided into multiple smaller user stories and tasks.
+description: A substantial project, typically lasting 1–3 months, broken into smaller features and tasks.
 type: Epic
 body:
   - type: markdown
