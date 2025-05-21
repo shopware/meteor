@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.12.0
+
+### Minor Changes
+
+- 215eec6: Added button slot to mt-empty-state
+
 ## 4.11.2
 
 ### Patch Changes
