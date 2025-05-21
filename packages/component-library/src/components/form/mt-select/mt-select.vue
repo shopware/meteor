@@ -173,8 +173,8 @@ export default defineComponent({
      * Dependent on multiSelection, either a single value or an array of values.
      */
     modelValue: {
-      type: [String, Number, Boolean, Array, null, undefined] as PropType<
-        string | number | boolean | unknown[] | null | undefined
+      type: [String, Number, Boolean, Array, Object, null, undefined] as PropType<
+        string | number | boolean | unknown[] | null | object | undefined
       >,
       required: false,
       default: null,
@@ -408,7 +408,7 @@ export default defineComponent({
     },
 
     currentValue: {
-      get(): string | number | boolean | unknown[] | null | undefined {
+      get(): string | number | boolean | unknown[] | object | null | undefined {
         if (this.modelValue === null || this.modelValue === undefined) {
           return [];
         }
@@ -571,6 +571,10 @@ export default defineComponent({
     },
 
     getKey(object: any, keyPath: string, defaultValue?: any) {
+      if (!keyPath) {
+        return object;
+      }
+
       return get(object, keyPath, defaultValue);
     },
 
