@@ -14,7 +14,7 @@ You need to have an working [app](https://developer.shopware.com/docs/guides/plu
 ### App:
 
 You need to create a HTML page with an JS file for your app. This page needs to be served by your app-server as it needs to be accesible via URL.
-For development purposes you can use [App server sdk](https://github.com/FriendsOfShopware/app-server-sdk-js).
+For development purposes you can use [App server sdk](https://github.com/shopware/app-sdk-js).
 
 Once you got the registration/ handshake working you need to add the `<base-app-url>` field to the `<admin>` section of the [manifest](https://developer.shopware.com/docs/guides/plugins/apps/app-base-guide#manifest-file) file. This field should contain the public URL of your app. Let's assume your app HTML page is served under `http://localhost/my-example-app.html`:
 
