@@ -123,10 +123,16 @@ watch(
 
     if (!modalRef.value) return;
     if (isModalOpen) {
-      trap = focusTrap.createFocusTrap(modalRef.value as HTMLElement, {
-        tabbableOptions: { displayCheck: "none" },
-        allowOutsideClick: true,
-      });
+      trap = focusTrap.createFocusTrap(
+        [
+          modalRef.value as HTMLElement,
+          ...(document.querySelectorAll(".sw-popover__wrapper") as NodeListOf<HTMLElement>),
+        ],
+        {
+          tabbableOptions: { displayCheck: "none" },
+          allowOutsideClick: true,
+        },
+      );
 
       trap.activate();
 
