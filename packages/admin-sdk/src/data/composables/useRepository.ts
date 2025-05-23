@@ -1,52 +1,36 @@
-import {
-  createRepositoryAdapter,
-  type RepositorySource,
-  type SDKRepository,
-} from '../repository-adapter';
-import { inject } from 'vue';
+import { computed, inject, unref } from 'vue';
+import type { ComputedRef, Ref } from 'vue';
+import { getRepository } from './getRepository';
+import type { RepositorySource, SDKRepository } from '../repository-adapter';
 
+type MaybeRef<T> = T | Ref<T>;
+
+/**
+ * Reactive wrapper around getRepository that updates when dependencies change.
+ * Takes reactive references to entityName and/or repositoryFactory and returns
+ * a computed repository that updates when these inputs change.
+ */
 export function useRepository<EntityName extends keyof EntitySchema.Entities>(
-  entityName: EntityName,
-  propRepositoryFactory?: (
-    entityName: EntityName
-  ) => RepositorySource<EntityName>
-): SDKRepository<EntityName> {
-  if (propRepositoryFactory) {
-    return createRepositoryAdapter(propRepositoryFactory(entityName));
-  }
-
+  entityNameRef: MaybeRef<EntityName>,
+  repositoryFactoryRef?: MaybeRef<
+    ((entityName: EntityName) => RepositorySource<EntityName>) | undefined
+  >
+): ComputedRef<SDKRepository<EntityName>> {
   const injectedFactory = inject<{
     create: (entityName: EntityName) => RepositorySource<EntityName>,
       }>('repositoryFactory');
 
-  if (injectedFactory) {
-    return createRepositoryAdapter(injectedFactory.create(entityName));
-  }
+  return computed(() => {
+    const entityName = unref(entityNameRef);
+    const repositoryFactory = unref(repositoryFactoryRef);
 
-  /*
-   * The use of a Proxy delays the import of the repository until the first method is called.
-   * This avoids side effects from the repository import and prevents returning a Promise
-   * from this composable, which would force components using it to be async.
-   */
-  let lazyDataRepository: SDKRepository<EntityName>;
-
-  return new Proxy(
-    {},
-    {
-      get(_, property: keyof SDKRepository<EntityName>) {
-        return async function (...args: unknown[]) {
-          if (!lazyDataRepository) {
-            lazyDataRepository = (await import('../repository')).default(
-              entityName
-            );
-          }
-
-          const method = lazyDataRepository[property] as (
-            ...args: unknown[]
-          ) => Promise<unknown>;
-          return method(...args);
-        };
-      },
-    }
-  ) as SDKRepository<EntityName>;
+    return getRepository(
+      entityName,
+      repositoryFactory ??
+        (injectedFactory
+        // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+          ? (entityName: EntityName) => injectedFactory.create(entityName)
+          : undefined)
+    );
+  });
 }
