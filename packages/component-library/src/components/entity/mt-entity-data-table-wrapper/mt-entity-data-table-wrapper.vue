@@ -88,7 +88,8 @@
 import EntityCollection from '@shopware-ag/meteor-admin-sdk/es/_internals/data/EntityCollection';
 import type Repository from '@shopware-ag/meteor-admin-sdk/es/data/Repository';
 import Criteria from '@shopware-ag/meteor-admin-sdk/es/data/Criteria';
-import { ui } from '@shopware-ag/meteor-admin-sdk';
+import { useRepository } from '@shopware-ag/meteor-admin-sdk/es/data/composables/useRepository';
+import { getRepository } from '@shopware-ag/meteor-admin-sdk/es/data/composables/getRepository';
 import MtDataTable, { type ColumnChanges, type ColumnDefinition } from '../../table-and-list/mt-data-table/mt-data-table.vue';
 import { computed, onMounted, ref, shallowRef, watch, type ComputedRef, type Ref } from 'vue';
 import { computedAsync, watchOnce } from '@vueuse/core';
@@ -103,7 +104,7 @@ import MtLoader from '@/components/feedback-indicator/mt-loader/mt-loader.vue';
 
 const props = defineProps<{
     // Props needed for the data handling
-    entity: string;
+    entity: keyof EntitySchema.Entities;
 
     // Optional props for the data handling
     repository?: typeof Repository;
@@ -177,7 +178,7 @@ const { t } = useI18n({
 });
 
 // Required props for the mt-data-table component
-const dataSource: Ref<[] | EntityCollection<string>> = ref([]);
+const dataSource: Ref<[] | EntityCollection<keyof EntitySchema.Entities>> = ref([]);
 const currentPage = ref(1);
 const paginationLimit = ref(25);
 const paginationTotalItems = ref(0);
@@ -197,21 +198,8 @@ const isDeleteModalOpen = ref(false);
 const itemToDelete = ref<string | null>(null);
 const isDeletingEntity = ref(false);
 
-const getRepository = async (entity: string) => {
-    if (!props.repository) {
-        // Import the repository from the meteor-admin-sdk dynamically if not provided
-        const { data } = await import('@shopware-ag/meteor-admin-sdk');
-
-        // Fallback to the meteor-admin-sdk's repository if no repository is provided
-        return data.repository(entity);
-    }
-
-    return props.repository(entity);
-}
-
-const repository = computedAsync(async () => {
-    return getRepository(props.entity);
-}, null);
+// @ts-expect-error - The repository is not typed exactly the same
+const repository = useRepository(props.entity, props.repository);
 
 const generatedFilters: Ref<Filter[]> = computedAsync(async () => {
     // Fetch the available options for each filter
@@ -238,7 +226,8 @@ const generatedFilters: Ref<Filter[]> = computedAsync(async () => {
         }
 
         // Get the repository for the filter id
-        const repository = await getRepository(filter.id);
+        // @ts-expect-error - The repository is not typed exactly the same
+        const repository = await getRepository(filter.id as keyof EntitySchema.Entities, props.repository);
 
         // Fetch the available options for the filter
         const optionCriteria = new Criteria(1, 500);
@@ -255,7 +244,7 @@ const generatedFilters: Ref<Filter[]> = computedAsync(async () => {
                 id: 'options',
                 options: options?.map(option => ({
                     id: option.id,
-                    label: option.name,
+                    label: option?.name ?? '',
                 })),
             },
         } as Filter;
@@ -307,7 +296,7 @@ const fetchData = async () => {
             addDataTableFilters(criteria, appliedFilters.value);
         }
 
-        const data = await repository.value?.search(criteria);
+        const data = await repository.value.search(criteria);
 
         if (data) {
             dataSource.value = data;
@@ -321,15 +310,6 @@ const fetchData = async () => {
     }
 };
 
-// Fetch the data when the repository is ready (needed when the sdk repository is used)
-watch(repository, (newValue) => {
-    if (!newValue) {
-        return;
-    }
-
-    fetchData();
-}, { immediate: true });
-
 // Fetch the data when something changes
 watch([
     currentPage,
@@ -339,6 +319,11 @@ watch([
     searchValue,
     appliedFilters
 ], () => {
+    fetchData();
+});
+
+// Fetch the data on mounted
+onMounted(() => {
     fetchData();
 });
 
@@ -473,7 +458,7 @@ const handleItemDeleteConfirm = async () => {
         isDeletingEntity.value = true;
 
         if (itemToDelete.value) {
-            await repository.value?.delete(itemToDelete.value);
+            await repository.value.delete(itemToDelete.value);
         }
     } catch (error) {
         console.error(error);
