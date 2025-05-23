@@ -48,6 +48,14 @@
       "import": "./es/_internals/data/EntityCollection.js",
       "require": "./umd/_internals/data/EntityCollection.js"
     },
+    "./es/data/Repository": {
+      "import": "./es/data/Repository.js",
+      "require": "./umd/data/Repository.js"
+    },
+    "./es/data/data-table-filter.helper": {
+      "import": "./es/data/data-table-filter.helper.js",
+      "require": "./umd/data/data-table-filter.helper.js"
+    },
     ".": {
       "import": "./es/index.js",
       "require": "./umd/index.js"
@@ -88,8 +96,7 @@
   "dependencies": {
     "localforage": "^1.10.0",
     "lodash": "^4.17.21",
-    "semver": "^7.7.1",
-    "@shopware-ag/meteor-component-library": "workspace:*"
+    "semver": "^7.7.1"
   },
   "devDependencies": {
     "@playwright/test": "^1.45.0",
