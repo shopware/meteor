@@ -200,9 +200,6 @@ importers:
 
   packages/admin-sdk:
     dependencies:
-      '@shopware-ag/meteor-component-library':
-        specifier: workspace:*
-        version: link:../component-library
       localforage:
         specifier: ^1.10.0
         version: 1.10.0
