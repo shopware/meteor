@@ -344,7 +344,7 @@ export const VisualTestTimeType: MtDatepickerStory = {
     );
 
     await userEvent.click(canvas.getByRole("textbox"));
-    
+
     // Check that the input value matches the date chosen
     const input = document.querySelector('[data-test-id="dp-input"]') as HTMLInputElement;
     expect(input.value).toBe("08:16");

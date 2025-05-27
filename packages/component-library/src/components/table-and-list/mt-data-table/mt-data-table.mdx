@@ -19,6 +19,7 @@ As a dumb component, `mt-data-table` follows these principles:
 This means that as a developer implementing this component, you need to:
 
 1. **Handle Data Loading**: Implement the logic to fetch and manage data, including:
+
    - Initial data loading
    - Pagination
    - Sorting
@@ -26,6 +27,7 @@ This means that as a developer implementing this component, you need to:
    - Search functionality
 
 2. **Manage State**: Maintain the state of:
+
    - Current page
    - Items per page
    - Sort column and direction
@@ -57,74 +59,75 @@ Here's a basic example of implementing the component with proper data management
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+  import { ref, onMounted } from "vue";
 
-// State management
-const dataSource = ref([]);
-const limit = ref(10);
-const currentPage = ref(1);
-const totalItems = ref(0);
-const isLoading = ref(false);
-const appliedFilters = ref([]);
-const sortBy = ref({ property: '', direction: '' });
-const searchTerm = ref('');
+  // State management
+  const dataSource = ref([]);
+  const limit = ref(10);
+  const currentPage = ref(1);
+  const totalItems = ref(0);
+  const isLoading = ref(false);
+  const appliedFilters = ref([]);
+  const sortBy = ref({ property: "", direction: "" });
+  const searchTerm = ref("");
 
-// Data fetching
-const fetchData = async () => {
-  isLoading.value = true;
-  try {
-    const response = await api.fetchData({
-      page: currentPage.value,
-      limit: limit.value,
-      sort: sortBy.value,
-      filters: appliedFilters.value,
-      search: searchTerm.value,
-    });
-    
-    dataSource.value = response.data;
-    totalItems.value = response.total;
-  } finally {
-    isLoading.value = false;
-  }
-};
+  // Data fetching
+  const fetchData = async () => {
+    isLoading.value = true;
+    try {
+      const response = await api.fetchData({
+        page: currentPage.value,
+        limit: limit.value,
+        sort: sortBy.value,
+        filters: appliedFilters.value,
+        search: searchTerm.value,
+      });
 
-// Event handlers
-const handleLimitChange = (newLimit) => {
-  limit.value = newLimit;
-  currentPage.value = 1; // Reset to first page
-  fetchData();
-};
+      dataSource.value = response.data;
+      totalItems.value = response.total;
+    } finally {
+      isLoading.value = false;
+    }
+  };
 
-const handlePageChange = (newPage) => {
-  currentPage.value = newPage;
-  fetchData();
-};
+  // Event handlers
+  const handleLimitChange = (newLimit) => {
+    limit.value = newLimit;
+    currentPage.value = 1; // Reset to first page
+    fetchData();
+  };
 
-const handleSortChange = ({ property, direction }) => {
-  sortBy.value = { property, direction };
-  fetchData();
-};
+  const handlePageChange = (newPage) => {
+    currentPage.value = newPage;
+    fetchData();
+  };
 
-const handleSearchChange = (term) => {
-  searchTerm.value = term;
-  currentPage.value = 1; // Reset to first page
-  fetchData();
-};
+  const handleSortChange = ({ property, direction }) => {
+    sortBy.value = { property, direction };
+    fetchData();
+  };
 
-const handleFilterChange = (newFilters) => {
-  appliedFilters.value = newFilters;
-  currentPage.value = 1; // Reset to first page
-  fetchData();
-};
+  const handleSearchChange = (term) => {
+    searchTerm.value = term;
+    currentPage.value = 1; // Reset to first page
+    fetchData();
+  };
 
-// Initial data load
-onMounted(() => {
-  fetchData();
-});
+  const handleFilterChange = (newFilters) => {
+    appliedFilters.value = newFilters;
+    currentPage.value = 1; // Reset to first page
+    fetchData();
+  };
+
+  // Initial data load
+  onMounted(() => {
+    fetchData();
+  });
 </script>
 ```
 
 This implementation pattern ensures:
+
 - Clear separation of concerns
 - Predictable data flow
 - Flexibility in data source and business logic
@@ -166,82 +169,82 @@ Here's an example of creating a reusable wrapper component:
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+  import { ref, onMounted } from "vue";
 
-const props = defineProps({
-  // Forward all mt-data-table props
-  fetchDataFn: {
-    type: Function,
-    required: true
-  },
-  defaultSort: {
-    type: Object,
-    default: () => ({ property: '', direction: '' })
-  },
-  // ... other props
-});
+  const props = defineProps({
+    // Forward all mt-data-table props
+    fetchDataFn: {
+      type: Function,
+      required: true,
+    },
+    defaultSort: {
+      type: Object,
+      default: () => ({ property: "", direction: "" }),
+    },
+    // ... other props
+  });
 
-// State management
-const dataSource = ref([]);
-const limit = ref(10);
-const currentPage = ref(1);
-const totalItems = ref(0);
-const isLoading = ref(false);
-const appliedFilters = ref([]);
-const sortBy = ref(props.defaultSort);
-const searchTerm = ref('');
+  // State management
+  const dataSource = ref([]);
+  const limit = ref(10);
+  const currentPage = ref(1);
+  const totalItems = ref(0);
+  const isLoading = ref(false);
+  const appliedFilters = ref([]);
+  const sortBy = ref(props.defaultSort);
+  const searchTerm = ref("");
 
-// Data fetching
-const fetchData = async () => {
-  isLoading.value = true;
-  try {
-    const response = await props.fetchDataFn({
-      page: currentPage.value,
-      limit: limit.value,
-      sort: sortBy.value,
-      filters: appliedFilters.value,
-      search: searchTerm.value,
-    });
-    
-    dataSource.value = response.data;
-    totalItems.value = response.total;
-  } finally {
-    isLoading.value = false;
-  }
-};
+  // Data fetching
+  const fetchData = async () => {
+    isLoading.value = true;
+    try {
+      const response = await props.fetchDataFn({
+        page: currentPage.value,
+        limit: limit.value,
+        sort: sortBy.value,
+        filters: appliedFilters.value,
+        search: searchTerm.value,
+      });
 
-// Event handlers
-const handleLimitChange = (newLimit) => {
-  limit.value = newLimit;
-  currentPage.value = 1; // Reset to first page
-  fetchData();
-};
+      dataSource.value = response.data;
+      totalItems.value = response.total;
+    } finally {
+      isLoading.value = false;
+    }
+  };
 
-const handlePageChange = (newPage) => {
-  currentPage.value = newPage;
-  fetchData();
-};
+  // Event handlers
+  const handleLimitChange = (newLimit) => {
+    limit.value = newLimit;
+    currentPage.value = 1; // Reset to first page
+    fetchData();
+  };
 
-const handleSortChange = ({ property, direction }) => {
-  sortBy.value = { property, direction };
-  fetchData();
-};
+  const handlePageChange = (newPage) => {
+    currentPage.value = newPage;
+    fetchData();
+  };
 
-const handleSearchChange = (term) => {
-  searchTerm.value = term;
-  currentPage.value = 1; // Reset to first page
-  fetchData();
-};
+  const handleSortChange = ({ property, direction }) => {
+    sortBy.value = { property, direction };
+    fetchData();
+  };
 
-const handleFilterChange = (newFilters) => {
-  appliedFilters.value = newFilters;
-  currentPage.value = 1; // Reset to first page
-  fetchData();
-};
+  const handleSearchChange = (term) => {
+    searchTerm.value = term;
+    currentPage.value = 1; // Reset to first page
+    fetchData();
+  };
 
-onMounted(() => {
-  fetchData();
-});
+  const handleFilterChange = (newFilters) => {
+    appliedFilters.value = newFilters;
+    currentPage.value = 1; // Reset to first page
+    fetchData();
+  };
+
+  onMounted(() => {
+    fetchData();
+  });
 </script>
 ```
 
@@ -258,36 +261,38 @@ Now you can use this wrapper component with much less boilerplate:
 </template>
 
 <script setup>
-import { ref } from 'vue';
-import DataTableWrapper from './DataTableWrapper.vue';
+  import { ref } from "vue";
+  import DataTableWrapper from "./DataTableWrapper.vue";
 
-const columns = [
-  {
-    label: 'Name',
-    property: 'name',
-    sortable: true,
-    position: 100
-  },
-  // ... other columns
-];
+  const columns = [
+    {
+      label: "Name",
+      property: "name",
+      sortable: true,
+      position: 100,
+    },
+    // ... other columns
+  ];
 
-const fetchUsers = async (params) => {
-  const response = await api.users.list(params);
-  return {
-    data: response.users,
-    total: response.total
+  const fetchUsers = async (params) => {
+    const response = await api.users.list(params);
+    return {
+      data: response.users,
+      total: response.total,
+    };
   };
-};
 </script>
 ```
 
 This wrapper approach is particularly useful when you:
+
 - Have multiple tables in your application
 - Need consistent data handling across tables
 - Want to share common functionality (error handling, loading states, etc.)
 - Need to maintain the same API integration pattern
 
 You can extend the wrapper component to include additional features like:
+
 - Error handling and retry logic
 - Data caching
 - Custom filtering logic
@@ -327,38 +332,38 @@ Here's a simple example of how to use the `mt-data-table` component:
 </template>
 
 <script setup>
-import { ref } from 'vue';
+  import { ref } from "vue";
 
-const dataSource = ref([
-  { id: '1', name: 'John Doe', email: 'john@example.com' },
-  { id: '2', name: 'Jane Smith', email: 'jane@example.com' },
-  // ... more data
-]);
+  const dataSource = ref([
+    { id: "1", name: "John Doe", email: "john@example.com" },
+    { id: "2", name: "Jane Smith", email: "jane@example.com" },
+    // ... more data
+  ]);
 
-const columns = [
-  {
-    label: 'Name',
-    property: 'name',
-    sortable: true,
-    position: 100
-  },
-  {
-    label: 'Email',
-    property: 'email',
-    sortable: true,
-    position: 200
-  }
-];
+  const columns = [
+    {
+      label: "Name",
+      property: "name",
+      sortable: true,
+      position: 100,
+    },
+    {
+      label: "Email",
+      property: "email",
+      sortable: true,
+      position: 200,
+    },
+  ];
 
-const isLoading = ref(false);
+  const isLoading = ref(false);
 
-const handleLimitChange = (limit) => {
-  // Handle page size change
-};
+  const handleLimitChange = (limit) => {
+    // Handle page size change
+  };
 
-const handlePageChange = (page) => {
-  // Handle page change
-};
+  const handlePageChange = (page) => {
+    // Handle page change
+  };
 </script>
 ```
 
@@ -370,21 +375,21 @@ Columns are defined through a configuration object that specifies how each colum
 
 ```typescript
 interface ColumnDefinition {
-  label: string;              // Column header label
-  property: string;           // Property path in data source object
-  renderer?: string;          // How to render the cell ('text'|'number'|'price')
-  position: number;           // Column order (use increments of 100)
-  sortable?: boolean;         // Enable/disable sorting (default: true)
-  width?: number;            // Fixed column width
-  allowResize?: boolean;     // Allow column resizing
-  visible?: boolean;         // Show/hide column
+  label: string; // Column header label
+  property: string; // Property path in data source object
+  renderer?: string; // How to render the cell ('text'|'number'|'price')
+  position: number; // Column order (use increments of 100)
+  sortable?: boolean; // Enable/disable sorting (default: true)
+  width?: number; // Fixed column width
+  allowResize?: boolean; // Allow column resizing
+  visible?: boolean; // Show/hide column
 }
 ```
 
 ## Props
 
 <Markdown>
-{`
+  {`
 | Prop Name | Type | Default | Description |
 |-----------|------|---------|-------------|
 | dataSource | Array | [] | Array of objects containing the data to display |
@@ -413,7 +418,7 @@ interface ColumnDefinition {
 ## Events
 
 <Markdown>
-{`
+  {`
 | Event Name | Payload | Description |
 |------------|---------|-------------|
 | paginationLimitChange | number | Emitted when page size changes |
@@ -435,7 +440,7 @@ interface ColumnDefinition {
 ## Slots
 
 <Markdown>
-{`
+  {`
 | Slot Name | Props | Description |
 |-----------|-------|-------------|
 | toolbar | - | Additional content for the toolbar area |
@@ -475,24 +480,24 @@ Example of setting up filters:
 </template>
 
 <script setup>
-const filters = [
-  {
-    id: 'status',
-    label: 'Status',
-    type: {
-      id: 'select',
-      options: [
-        { id: 'active', label: 'Active' },
-        { id: 'inactive', label: 'Inactive' }
-      ]
-    }
-  }
-];
+  const filters = [
+    {
+      id: "status",
+      label: "Status",
+      type: {
+        id: "select",
+        options: [
+          { id: "active", label: "Active" },
+          { id: "inactive", label: "Inactive" },
+        ],
+      },
+    },
+  ];
 
-const appliedFilters = ref([]);
-const updateFilters = (newFilters) => {
-  appliedFilters.value = newFilters;
-};
+  const appliedFilters = ref([]);
+  const updateFilters = (newFilters) => {
+    appliedFilters.value = newFilters;
+  };
 </script>
 ```
 
@@ -510,16 +515,16 @@ The data table provides built-in loading state handling with skeleton loading:
 </template>
 
 <script setup>
-const isLoading = ref(false);
+  const isLoading = ref(false);
 
-const fetchData = async () => {
-  isLoading.value = true;
-  try {
-    // Fetch your data
-  } finally {
-    isLoading.value = false;
-  }
-};
+  const fetchData = async () => {
+    isLoading.value = true;
+    try {
+      // Fetch your data
+    } finally {
+      isLoading.value = false;
+    }
+  };
 </script>
 ```
 

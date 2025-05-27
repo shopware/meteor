@@ -205,7 +205,7 @@ export default defineComponent({
       default: false,
     },
   },
-  emits: ["change-checkbox", "change-switch", "change-visibility", "click-options", 'close'],
+  emits: ["change-checkbox", "change-switch", "change-visibility", "click-options", "close"],
   setup(props, { emit }) {
     const id = createId();
 
