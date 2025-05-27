@@ -1386,7 +1386,7 @@ export const VisualTestBulkEdit: MtDataTableStory = {
     await userEvent.click(checkbox2);
 
     // Check if the bulk edit bar is visible
-    const bulkEditBar = canvas.getByLabelText('2 items selected')
+    const bulkEditBar = canvas.getByLabelText("2 items selected");
     expect(bulkEditBar).toBeInTheDocument();
   },
 };

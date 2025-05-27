@@ -1,7 +1,13 @@
 import { mount } from "@vue/test-utils";
 import MtDataTableSettings from "./mt-data-table-settings.vue";
-
 import flushPromises from "flush-promises";
+
+// Mock "useDebounceFn" from "@vueuse/core"
+vi.mock("@vueuse/core", () => ({
+  useDebounceFn: (method: () => void) => {
+    return method;
+  },
+}));
 
 // mock resizeOvserver
 global.ResizeObserver = class ResizeObserver {

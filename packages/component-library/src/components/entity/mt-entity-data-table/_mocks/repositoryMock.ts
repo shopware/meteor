@@ -3,19 +3,21 @@
  * the whole repository with a mock implementation.
  * This is necessary because the repository is not
  * available in the storybook story.
- * 
+ *
  * See original implementation in:
  * meteor/packages/admin-sdk/src/data/repository.ts
  */
 
-import Criteria from '@shopware-ag/meteor-admin-sdk/es/data/Criteria';
-import type { Repository } from '@shopware-ag/meteor-admin-sdk/es/data/Repository';
-import type { Entity } from '@shopware-ag/meteor-admin-sdk/es/_internals/data/Entity';
-import EntityCollection, { type ApiContext } from '@shopware-ag/meteor-admin-sdk/es/_internals/data/EntityCollection';
-import productFixtures from '../../../table-and-list/mt-data-table/mt-data-table.fixtures.json';
+import Criteria from "@shopware-ag/meteor-admin-sdk/es/data/Criteria";
+import type { Repository } from "@shopware-ag/meteor-admin-sdk/es/data/Repository";
+import type { Entity } from "@shopware-ag/meteor-admin-sdk/es/_internals/data/Entity";
+import EntityCollection, {
+  type ApiContext,
+} from "@shopware-ag/meteor-admin-sdk/es/_internals/data/EntityCollection";
+import productFixtures from "../../../table-and-list/mt-data-table/mt-data-table.fixtures.json";
 
 // Create the manufacturer fixtures from the product fixtures
-const manufacturerFixtures = productFixtures.map(product => ({
+const manufacturerFixtures = productFixtures.map((product) => ({
   id: product.manufacturer.id,
   name: product.manufacturer.name,
   translated: {
@@ -23,11 +25,18 @@ const manufacturerFixtures = productFixtures.map(product => ({
   },
 }));
 
-
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-export default <EntityName extends keyof EntitySchema.Entities>(entityName: EntityName): Repository<EntityName> => {
+ 
+export default <EntityName extends keyof EntitySchema.Entities>(
+  entityName: EntityName,
+): Repository<EntityName> => {
   // Simulate a database
-  const entities: Entity<EntityName>[] = entityName === 'product' ? productFixtures as Entity<EntityName>[] : manufacturerFixtures as Entity<EntityName>[];
+  const entities: Entity<EntityName>[] =
+    // @ts-expect-error - This is a mock
+    entityName === "product"
+      ? // @ts-expect-error - This is a mock
+        (productFixtures as Entity<EntityName>[])
+      : // @ts-expect-error - This is a mock
+        (manufacturerFixtures as Entity<EntityName>[]);
   const mockApiContext: ApiContext = {
     apiPath: null,
     apiResourcePath: null,
@@ -37,7 +46,7 @@ export default <EntityName extends keyof EntitySchema.Entities>(entityName: Enti
     pathInfo: null,
     inheritance: null,
     installationPath: null,
-    languageId: '2fbb5fe2e29a4d70aa5854ce7ce3e20b',
+    languageId: "2fbb5fe2e29a4d70aa5854ce7ce3e20b",
     language: null,
     apiVersion: null,
     liveVersionId: null,
@@ -52,7 +61,7 @@ export default <EntityName extends keyof EntitySchema.Entities>(entityName: Enti
       const term = criteria.term;
       if (term) {
         filteredEntities = filteredEntities.filter((entity) => {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+           
           const name = (entity as any)?.name ?? (entity as any)?.translated?.name;
           return name?.toLowerCase().includes(term.toLowerCase());
         });
@@ -60,23 +69,23 @@ export default <EntityName extends keyof EntitySchema.Entities>(entityName: Enti
 
       // Handle filters
       if (criteria.filters && criteria.filters.length > 0) {
-        filteredEntities = filteredEntities.filter(entity => {
-          return (criteria.filters as any[]).every(filter => {
-            const { field, type, value } = filter as { field: string, type: string, value: any };
+        filteredEntities = filteredEntities.filter((entity) => {
+          return (criteria.filters as any[]).every((filter) => {
+            const { field, type, value } = filter as { field: string; type: string; value: any };
 
             // Helper to get potentially nested entity values
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const entityValue = field.split('.').reduce((o, i) => o?.[i], entity as any);
+             
+            const entityValue = field.split(".").reduce((o, i) => o?.[i], entity as any);
 
-            if (type === 'equals') {
+            if (type === "equals") {
               // Handle boolean values that might come as strings 'true'/'false' from filter UI
-              if (typeof entityValue === 'boolean' && (value === 'true' || value === 'false')) {
-                return entityValue === (value === 'true');
+              if (typeof entityValue === "boolean" && (value === "true" || value === "false")) {
+                return entityValue === (value === "true");
               }
               return entityValue === value;
             }
 
-            if (type === 'equalsAny') {
+            if (type === "equalsAny") {
               if (Array.isArray(value) && value.length > 0) {
                 return value.includes(entityValue);
               }
@@ -99,15 +108,15 @@ export default <EntityName extends keyof EntitySchema.Entities>(entityName: Enti
 
       if (sortSettings?.field) {
         const sortBy = sortSettings.field;
-        const sortOrder = sortSettings.order || 'ASC'; // Default to ASC
+        const sortOrder = sortSettings.order || "ASC"; // Default to ASC
 
         filteredEntities = filteredEntities.sort((a, b) => {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const valA = sortBy.split('.').reduce((o, i) => o?.[i], a as any);
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const valB = sortBy.split('.').reduce((o, i) => o?.[i], b as any);
+           
+          const valA = sortBy.split(".").reduce((o, i) => o?.[i], a as any);
+           
+          const valB = sortBy.split(".").reduce((o, i) => o?.[i], b as any);
 
-          console.log('Sorting', valA, valB);
+          console.log("Sorting", valA, valB);
 
           // Handle null or undefined values by pushing them to the end
           if (valA == null && valB == null) return 0;
@@ -117,16 +126,16 @@ export default <EntityName extends keyof EntitySchema.Entities>(entityName: Enti
           if (valB == null) return -1;
 
           let comparison = 0;
-          if (typeof valA === 'number' && typeof valB === 'number') {
+          if (typeof valA === "number" && typeof valB === "number") {
             comparison = valA - valB;
-          } else if (typeof valA === 'string' && typeof valB === 'string') {
+          } else if (typeof valA === "string" && typeof valB === "string") {
             comparison = valA.localeCompare(valB);
           } else {
             // Fallback for other types or mixed types: convert to string and compare
             comparison = String(valA).localeCompare(String(valB));
           }
 
-          return sortOrder === 'DESC' ? comparison * -1 : comparison;
+          return sortOrder === "DESC" ? comparison * -1 : comparison;
         });
       }
 
@@ -152,12 +161,12 @@ export default <EntityName extends keyof EntitySchema.Entities>(entityName: Enti
         criteria,
         paginatedEntities,
         filteredEntities.length, // Total count of filtered (pre-pagination) entities
-        {} // Mock aggregations, can be expanded if needed
+        {}, // Mock aggregations, can be expanded if needed
       );
     },
 
     get: async (id: string): Promise<Entity<EntityName> | null> => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       const entity = entities.find((e: any) => e.id === id);
 
       // Wait for 200-500ms to simulate a real API call
@@ -174,7 +183,7 @@ export default <EntityName extends keyof EntitySchema.Entities>(entityName: Enti
       return Promise.resolve();
     },
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+     
     clone: async (): Promise<unknown | null> => {
       // Wait for 200-500ms to simulate a real API call
       await new Promise((resolve) => setTimeout(resolve, Math.random() * 300 + 200));
@@ -203,7 +212,7 @@ export default <EntityName extends keyof EntitySchema.Entities>(entityName: Enti
       // Wait for 200-500ms to simulate a real API call
       await new Promise((resolve) => setTimeout(resolve, Math.random() * 300 + 200));
 
-      console.log('Mock delete operation triggered');
+      console.log("Mock delete operation triggered");
 
       // Mock delete operation
       return Promise.resolve();

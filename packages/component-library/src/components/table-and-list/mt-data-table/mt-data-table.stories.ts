@@ -331,6 +331,11 @@ export default {
   render: (args) =>
     defineComponent({
       components: { MtDataTable, MtButton, MtBanner },
+      setup: () => {
+        return {
+          args,
+        };
+      },
       data(): {
         paginationLimitValue: number;
         currentPageValue: number;
@@ -702,11 +707,6 @@ export default {
         </template>
       </mt-data-table>
     `,
-      setup: () => {
-        return {
-          args,
-        };
-      },
     }),
 } as MtDataTableMeta;
 

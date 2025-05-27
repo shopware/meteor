@@ -8,7 +8,7 @@
           class="mt-data-table__search"
           size="small"
           :model-value="searchValue"
-          @update:modelValue="handleSearchUpdate"
+          @update:model-value="handleSearchUpdate"
         />
 
         <mt-popover v-if="filters.length > 0" title="Filters" :child-views="filterChildViews">
@@ -71,9 +71,9 @@
           <template #trigger="{ toggleFloatingUi }">
             <button
               type="button"
-              @click="toggleFloatingUi"
               class="mt-data-table__add-filter-button"
               :aria-label="t('filter.addFilter')"
+              @click="toggleFloatingUi"
             >
               <mt-icon name="solid-plus-square-s" />
             </button>
@@ -278,7 +278,7 @@
                   >
                     <mt-popover
                       :title="t('addColumnIndicator.popoverTitle')"
-                      @update:isOpened="
+                      @update:is-opened="
                         (value) => {
                           if (value === false) {
                             forceHighlightedColumn = false;
@@ -463,21 +463,25 @@
                       <mt-context-menu-item
                         v-if="!disableEdit"
                         :label="t('contextButtons.edit')"
-                        @click="() => {
-                          toggleFloatingUi();
-                          $emit('open-details', data)
-                        }"
+                        @click="
+                          () => {
+                            toggleFloatingUi();
+                            $emit('open-details', data);
+                          }
+                        "
                       />
 
                       <mt-context-menu-item
                         v-if="!disableDelete"
                         type="critical"
                         :label="t('contextButtons.delete')"
-                        @click="() => {
-                          $emit('item-delete', data)
-                          toggleFloatingUi();
-                        }"
-                        />
+                        @click="
+                          () => {
+                            $emit('item-delete', data);
+                            toggleFloatingUi();
+                          }
+                        "
+                      />
                     </template>
                   </mt-context-button>
                 </td>
@@ -603,21 +607,7 @@ import { throttle } from "@/utils/throttle";
 import { reactive } from "vue";
 import type { Filter } from "./mt-data-table.interfaces";
 import { useI18n } from "vue-i18n";
-
-// Simple debounce utility function
-function debounce<T extends (...args: any[]) => void>(func: T, wait: number): (...args: Parameters<T>) => void {
-  let timeout: ReturnType<typeof setTimeout> | null = null;
-  return function executedFunction(...args: Parameters<T>) {
-    const later = () => {
-      timeout = null;
-      func(...args);
-    };
-    if (timeout !== null) {
-      clearTimeout(timeout);
-    }
-    timeout = setTimeout(later, wait);
-  };
-}
+import { useDebounceFn } from "@vueuse/core";
 
 export interface BaseColumnDefinition {
   label: string; // the label for the column
@@ -1489,12 +1479,12 @@ export default defineComponent({
       emit("search-value-change", searchValue);
     };
 
-    const debouncedEmitSearchValueChange = debounce((value: string) => {
-        emitSearchValueChange(value);
+    const debouncedEmitSearchValueChange = useDebounceFn((value: string) => {
+      emitSearchValueChange(value);
     }, 300); // 300ms debounce delay
 
     const handleSearchUpdate = (value: string) => {
-        debouncedEmitSearchValueChange(value);
+      debouncedEmitSearchValueChange(value);
     };
 
     const paginationOptionsConverted = computed(() => {
