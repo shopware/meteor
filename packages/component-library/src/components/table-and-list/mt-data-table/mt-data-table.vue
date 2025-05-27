@@ -463,21 +463,25 @@
                       <mt-context-menu-item
                         v-if="!disableEdit"
                         :label="t('contextButtons.edit')"
-                        @click="() => {
-                          toggleFloatingUi();
-                          $emit('open-details', data)
-                        }"
+                        @click="
+                          () => {
+                            toggleFloatingUi();
+                            $emit('open-details', data);
+                          }
+                        "
                       />
 
                       <mt-context-menu-item
                         v-if="!disableDelete"
                         type="critical"
                         :label="t('contextButtons.delete')"
-                        @click="() => {
-                          $emit('item-delete', data)
-                          toggleFloatingUi();
-                        }"
-                        />
+                        @click="
+                          () => {
+                            $emit('item-delete', data);
+                            toggleFloatingUi();
+                          }
+                        "
+                      />
                     </template>
                   </mt-context-button>
                 </td>
@@ -605,7 +609,10 @@ import type { Filter } from "./mt-data-table.interfaces";
 import { useI18n } from "vue-i18n";
 
 // Simple debounce utility function
-function debounce<T extends (...args: any[]) => void>(func: T, wait: number): (...args: Parameters<T>) => void {
+function debounce<T extends (...args: any[]) => void>(
+  func: T,
+  wait: number,
+): (...args: Parameters<T>) => void {
   let timeout: ReturnType<typeof setTimeout> | null = null;
   return function executedFunction(...args: Parameters<T>) {
     const later = () => {
@@ -1490,11 +1497,11 @@ export default defineComponent({
     };
 
     const debouncedEmitSearchValueChange = debounce((value: string) => {
-        emitSearchValueChange(value);
+      emitSearchValueChange(value);
     }, 300); // 300ms debounce delay
 
     const handleSearchUpdate = (value: string) => {
-        debouncedEmitSearchValueChange(value);
+      debouncedEmitSearchValueChange(value);
     };
 
     const paginationOptionsConverted = computed(() => {
