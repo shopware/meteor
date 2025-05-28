@@ -120,7 +120,7 @@ import type { PropType } from "vue";
 
 import { defineComponent } from "vue";
 import { debounce } from "@/utils/debounce";
-import { get } from "@/utils/object";
+import { getPropertyValue } from "@/utils/object";
 import MtSelectBase from "../_internal/mt-select-base/mt-select-base.vue";
 import MtSelectResultList from "../_internal/mt-select-base/_internal/mt-select-result-list.vue";
 import MtSelectResult from "../_internal/mt-select-base/_internal/mt-select-result.vue";
@@ -148,6 +148,7 @@ export default defineComponent({
     "item-remove",
     "display-values-expand",
     "paginate",
+    "search-term-change",
   ],
 
   props: {
@@ -181,10 +182,11 @@ export default defineComponent({
     },
 
     /**
-     * The object key of the label property.
+     * The object key of the label property. Can be a single string or an array of strings.
+     * If an array is provided, the first property that has a non-empty value will be used.
      */
     labelProperty: {
-      type: String,
+      type: [String, Array] as PropType<string | string[]>,
       required: false,
       default: "label",
     },
@@ -277,17 +279,33 @@ export default defineComponent({
     searchFunction: {
       type: Function,
       required: false,
-      default({
+      default: ({
         options,
         labelProperty,
         searchTerm,
       }: {
         options: any;
-        labelProperty: string;
+        labelProperty: string | string[];
         searchTerm: string;
-      }) {
+      }) => {
         return options.filter((option: any) => {
-          const label = get(option, labelProperty);
+          // If labelProperty is an array, check each property
+          if (Array.isArray(labelProperty)) {
+            for (const property of labelProperty) {
+              const label = getPropertyValue(option, property);
+              if (
+                label &&
+                typeof label === "string" &&
+                label.toLowerCase().includes(searchTerm.toLowerCase())
+              ) {
+                return true;
+              }
+            }
+            return false;
+          }
+
+          // Original behavior for string labelProperty
+          const label = getPropertyValue(option, labelProperty);
           if (!label) {
             return false;
           }
@@ -375,6 +393,15 @@ export default defineComponent({
           .slice(0, this.limit);
       }
 
+      if (this.currentValue && typeof this.currentValue === "object") {
+        const property = this.valueProperty || ("id" in this.currentValue ? "id" : undefined);
+        if (property) {
+          return this.options.filter(
+            (item) => this.getKey(item, property) === this.getKey(this.currentValue, property),
+          );
+        }
+      }
+
       return this.options.filter((item) => this.isSelected(item)).slice(0, this.limit);
     },
 
@@ -457,6 +484,7 @@ export default defineComponent({
 
     return {
       t,
+      getKey: getPropertyValue,
     };
   },
 
@@ -469,10 +497,17 @@ export default defineComponent({
   methods: {
     isSelected(item: any) {
       if (this.enableMultiSelection && Array.isArray(this.currentValue)) {
-        return this.currentValue.includes(this.getKey(item, this.valueProperty));
+        return this.currentValue.find(
+          (item) =>
+            this.getKey(item, [...this.valueProperty, ...this.labelProperty]) ===
+            this.getKey(item, [...this.valueProperty, ...this.labelProperty]),
+        );
       }
 
-      return this.currentValue === this.getKey(item, this.valueProperty);
+      return (
+        this.getKey(this.currentValue, [...this.valueProperty, ...this.labelProperty]) ===
+        this.getKey(item, [...this.valueProperty, ...this.labelProperty])
+      );
     },
 
     addItem(item: any) {
@@ -568,14 +603,6 @@ export default defineComponent({
       this.searchTerm = "";
       // @ts-expect-error - ref exists
       this.$refs.selectionList.blur();
-    },
-
-    getKey(object: any, keyPath: string, defaultValue?: any) {
-      if (!keyPath) {
-        return object;
-      }
-
-      return get(object, keyPath, defaultValue);
     },
 
     onClearSelection() {
