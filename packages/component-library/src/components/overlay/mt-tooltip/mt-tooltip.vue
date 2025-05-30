@@ -98,7 +98,7 @@ const props = withDefaults(
     maxWidth?: number;
   }>(),
   {
-    delayDurationInMs: 500,
+    delayDurationInMs: 300,
     hideDelayDurationInMs: 300,
     placement: "top",
     maxWidth: 240,
@@ -239,11 +239,11 @@ function useSanitizedHtml(html: string): ComputedRef<string> {
 }
 
 .v-enter-active {
-  transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .v-leave-active {
-  transition-timing-function: cubic-bezier(0.55, 0.085, 0.68, 0.53);
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .v-enter-from,
