@@ -1,0 +1,16 @@
+name: Task
+description: Non-coding tasks like documentation, research, setup, or configuration.
+type: Task
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to share your idea with us!
+
+  - type: textarea
+    id: todo
+    attributes:
+      label: To Do
+      description: Please describe what we need to do and why.
+    validations:
+      required: true
