@@ -87,13 +87,16 @@ describe("mt-empty-state", () => {
   });
 
   it("should not render default button when custom button slot is provided", async () => {
-    wrapper = await createWrapper({
-      slots: {
-        button: '<button class="custom-button">Custom Button</button>',
+    wrapper = await createWrapper(
+      {
+        slots: {
+          button: '<button class="custom-button">Custom Button</button>',
+        },
       },
-    }, {
-      buttonText: "Default Button",
-    });
+      {
+        buttonText: "Default Button",
+      },
+    );
     expect(wrapper.find(".custom-button").exists()).toBeTruthy();
     expect(wrapper.text()).not.toContain("Default Button");
   });
