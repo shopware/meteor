@@ -79,4 +79,39 @@ describe("mt-select", () => {
     expect(itemHolder).toHaveLength(1);
     expect((itemHolder.at(0)?.element as HTMLInputElement).value).toBe("Id 0");
   });
+
+  it("should select an object value by id", async () => {
+    const wrapper = await createWrapper();
+    await wrapper.setProps({
+      modelValue: { id: 2, label: "Option Becky", value: "becky" },
+      options: [
+        { id: 1, label: "Option Alfred", value: "alfred" },
+        { id: 2, label: "Option Becky", value: "becky" },
+        { id: 3, label: "Option C", value: "c" },
+      ],
+    });
+
+    const itemHolder = wrapper.findAll(".mt-select-selection-list__input");
+
+    expect(itemHolder).toHaveLength(1);
+    expect((itemHolder.at(0)?.element as HTMLInputElement).value).toBe("Option Becky");
+  });
+
+  it("should select an object value by value property prop", async () => {
+    const wrapper = await createWrapper();
+    await wrapper.setProps({
+      modelValue: { id: 2, label: "Option Becky", value: "becky" },
+      valueProperty: "label",
+      options: [
+        { id: 1, label: "Option Alfred", value: "alfred" },
+        { id: 2, label: "Option Becky", value: "becky" },
+        { id: 3, label: "Option C", value: "c" },
+      ],
+    });
+
+    const itemHolder = wrapper.findAll(".mt-select-selection-list__input");
+
+    expect(itemHolder).toHaveLength(1);
+    expect((itemHolder.at(0)?.element as HTMLInputElement).value).toBe("Option Becky");
+  });
 });
