@@ -2,7 +2,7 @@ import { defineComponent } from "vue";
 import MtEntityDataTable from "./mt-entity-data-table.vue";
 import type { Meta, StoryObj } from "@storybook/vue3";
 import repositoryMock from "./_mocks/repositoryMock";
-import type Repository from "@shopware-ag/meteor-admin-sdk/es/data/Repository";
+import type Repository from "@shopware-ag/meteor-admin-sdk/es/data/repository";
 import type { ColumnDefinition } from "@/components/table-and-list/mt-data-table/mt-data-table.vue";
 import { get } from "@/utils/object";
 import type { SlottedMeta } from "@/_internal/story-helper";

@@ -9,7 +9,7 @@
  */
 
 import Criteria from "@shopware-ag/meteor-admin-sdk/es/data/Criteria";
-import type { Repository } from "@shopware-ag/meteor-admin-sdk/es/data/Repository";
+import type { Repository } from "@shopware-ag/meteor-admin-sdk/es/data/repository";
 import type { Entity } from "@shopware-ag/meteor-admin-sdk/es/_internals/data/Entity";
 import EntityCollection, {
   type ApiContext,

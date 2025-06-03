@@ -4,7 +4,7 @@ import { within, userEvent, waitFor, expect, fn, screen } from "@storybook/test"
 import { waitUntil } from "../../../_internal/test-helper";
 import EntityCollection from "@shopware-ag/meteor-admin-sdk/es/_internals/data/EntityCollection";
 import Criteria from "@shopware-ag/meteor-admin-sdk/es/data/Criteria";
-import type Repository from "@shopware-ag/meteor-admin-sdk/es/data/Repository";
+import type Repository from "@shopware-ag/meteor-admin-sdk/es/data/repository";
 import repositoryMockData from "./_mocks/repositoryMock";
 import productFixtures from "../../table-and-list/mt-data-table/mt-data-table.fixtures.json";
 

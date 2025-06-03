@@ -64,7 +64,7 @@ export const VisualTestRenderSegmentedControlWithPopoverSecondLevel: MtSegmented
     const goToSecondLevel = await popover.getByText("Go to second level");
     await userEvent.click(goToSecondLevel);
 
-    const secondLevel = await popover.getByText("Second level");
+    const secondLevel = await popover.findByText("Second level");
     await expect(secondLevel).toBeInTheDocument();
 
     const goToThirdLevel = await popover.getByText("Go to third level");

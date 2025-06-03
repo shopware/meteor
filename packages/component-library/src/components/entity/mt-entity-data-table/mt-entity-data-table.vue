@@ -89,7 +89,7 @@
  * The fallback uses the meteor-admin-sdk's find method to fetch the data. But the developer
  * can also provide a custom repository to use their own data fetching logic.
  */
-import type Repository from "@shopware-ag/meteor-admin-sdk/es/data/Repository";
+import type Repository from "@shopware-ag/meteor-admin-sdk/es/data/repository";
 import Criteria from "@shopware-ag/meteor-admin-sdk/es/data/Criteria";
 import { useRepository } from "@shopware-ag/meteor-admin-sdk/es/data/composables/useRepository";
 import { getRepository } from "@shopware-ag/meteor-admin-sdk/es/data/composables/getRepository";
