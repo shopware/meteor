@@ -275,18 +275,17 @@ function moveDrag(event: MouseEvent | TouchEvent) {
     // save new x value to dataset
     dragElement.dataset.translateX = newX.toString();
   }
+ if (event.type === "touchmove") {
+   const foundZone = dropZones.find((zone) => isEventOverElement(event, zone.el));
 
-  if (event.type === "touchmove") {
-    dropZones.forEach((zone) => {
-      if (isEventOverElement(event, zone.el)) {
-        if (currentDrop === null || zone.el !== currentDrop.el) {
-          enterDropZone(zone.el, zone.dropConfig);
-        }
-      } else if (currentDrop !== null && zone.el === currentDrop.el) {
-        leaveDropZone(zone.el, zone.dropConfig);
-      }
-    });
-  }
+   clearAllDropZoneHighlights();
+
+   if (foundZone) {
+     enterDropZone(foundZone.el, foundZone.dropConfig);
+   } else if (currentDrop) {
+     leaveDropZone(currentDrop.el, currentDrop.dropConfig);
+   }
+ }
 }
 
 /**
@@ -608,3 +607,10 @@ export const droppable: Directive = {
     }
   },
 };
+
+function clearAllDropZoneHighlights() {
+  dropZones.forEach((zone) => {
+    zone.el.classList.remove(zone.dropConfig.validDropCls);
+    zone.el.classList.remove(zone.dropConfig.invalidDropCls);
+  });
+}

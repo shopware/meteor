@@ -1,5 +1,5 @@
 import { waitUntil } from "../../../_internal/test-helper";
-import { within, userEvent } from "@storybook/test";
+import { within, userEvent, fireEvent } from "@storybook/test";
 import { expect } from "@storybook/test";
 
 import meta, { type MtPopoverMeta, type MtPopoverStory } from "./mt-popover.stories";
@@ -58,5 +58,76 @@ export const VisualTestRenderWithoutFloat: MtPopoverStory = {
     await waitUntil(() => document.body.textContent?.includes("Popover example"));
 
     expect(canvas.getByText("Popover example")).toBeInTheDocument();
+  },
+};
+
+export const VisualTestDragAndDrop: MtPopoverStory = {
+  name: "Should only allow one drop zone to be highlighted at a time",
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Open the popover
+    const popoverToggle = canvas.getByText("Toggle popover");
+    await userEvent.click(popoverToggle);
+
+    // Navigate to the column order view
+    const columnButton = document.querySelector(".mt-popover-item");
+    await expect(columnButton).toBeInTheDocument();
+    await userEvent.click(columnButton as Element);
+    // Check view has changed
+    await expect(document.querySelector(".mt-popover__items")).toBeInTheDocument();
+
+    // Look for draggable items with 'is--draggable' class
+    const popoverItemResult = document.querySelector(".mt-popover-item-result");
+    const draggableItems = popoverItemResult?.querySelectorAll(".mt-popover-item.is--draggable");
+    const draggableItem = draggableItems?.[1] as HTMLElement;
+    await expect(draggableItem).toBeInTheDocument();
+
+    // Start dragging the column
+    fireEvent.mouseDown(draggableItem as Element, {
+      buttons: 1,
+    });
+
+    // // Wait for the drag delay (200ms) and then check if dragging has started
+    await new Promise((resolve) => setTimeout(resolve, 250));
+
+    // Check if dragging has started
+    const elementHasDraggingClass = draggableItem.classList.contains("is--dragging");
+    expect(elementHasDraggingClass).toBe(true);
+
+    // Drag the item to a drop zone
+    const dropZones = popoverItemResult?.querySelectorAll(
+      ".mt-popover-item-result__option_drop_before, .mt-popover-item-result__option_drop_after",
+    );
+
+    // Use the first drop zone
+    const targetDropZone = dropZones?.[0] as HTMLElement;
+
+    // Simulate dragging over the drop zone
+    fireEvent.mouseEnter(targetDropZone);
+
+    // Wait before dropping
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    const allDropZones = popoverItemResult?.querySelectorAll(
+      ".mt-popover-item-result__option_drop_before, .mt-popover-item-result__option_drop_after",
+    );
+    const highlightedDropZones = Array.from(allDropZones as NodeListOf<Element>).filter((zone) =>
+      zone.classList.contains("is--valid-drop"),
+    );
+
+    // Only one drop zone should be highlighted at a time
+    expect(highlightedDropZones.length).toBe(1);
+    expect(highlightedDropZones[0]).toBe(targetDropZone);
+
+    // Drop the item
+    fireEvent.mouseUp(targetDropZone);
+
+    // Wait for the drop to complete
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    // Verify that dragging has stopped
+    const elementStillDragging = draggableItem.classList.contains("is--dragging");
+    expect(elementStillDragging).toBe(false);
   },
 };
