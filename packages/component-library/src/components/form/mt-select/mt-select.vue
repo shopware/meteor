@@ -121,6 +121,7 @@ import type { PropType } from "vue";
 import { defineComponent } from "vue";
 import { debounce } from "@/utils/debounce";
 import { getPropertyValue } from "@/utils/object";
+import { isPromise } from "@/utils/promise";
 import MtSelectBase from "../_internal/mt-select-base/mt-select-base.vue";
 import MtSelectResultList from "../_internal/mt-select-base/_internal/mt-select-result-list.vue";
 import MtSelectResult from "../_internal/mt-select-base/_internal/mt-select-result.vue";
@@ -366,6 +367,7 @@ export default defineComponent({
     return {
       searchTerm: "",
       limit: this.valueLimit,
+      searchResults: [],
     };
   },
 
@@ -452,12 +454,7 @@ export default defineComponent({
 
     visibleResults(): any[] {
       if (this.searchTerm) {
-        return this.searchFunction({
-          options: this.options,
-          labelProperty: this.labelProperty,
-          valueProperty: this.valueProperty,
-          searchTerm: this.searchTerm,
-        });
+        return this.searchResults;
       }
 
       return this.options;
@@ -491,6 +488,30 @@ export default defineComponent({
   watch: {
     valueLimit(value) {
       this.limit = value;
+    },
+
+    searchTerm(newSearchTerm) {
+      this.searchResults = [];
+      if (newSearchTerm) {
+        const result = this.searchFunction({
+          options: this.options,
+          labelProperty: this.labelProperty,
+          valueProperty: this.valueProperty,
+          searchTerm: this.searchTerm,
+        });
+
+        if (isPromise(result)) {
+          result.then((res: any) => {
+            if (res) {
+              this.searchResults = res;
+            }
+          });
+        } else {
+          if (result) {
+            this.searchResults = result;
+          }
+        }
+      }
     },
   },
 
