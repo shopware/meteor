@@ -1,0 +1,557 @@
+import { Canvas, Meta, Markdown } from "@storybook/blocks";
+import * as DataTableStories from "./mt-data-table.stories";
+import * as DataTableInteractiveStories from "./mt-data-table.interactive.stories";
+
+<Meta of={DataTableStories} />
+
+# mt-data-table
+
+The `mt-data-table` is a powerful and flexible data table component designed to handle large datasets with features like pagination, sorting, filtering, and more. It's implemented as a "dumb" component, which means it focuses solely on rendering and user interactions, while delegating all data management and business logic to the parent component.
+
+## Understanding the Dumb Component Pattern
+
+As a dumb component, `mt-data-table` follows these principles:
+
+1. **No Internal State Management**: The component doesn't maintain its own data state. All data must be provided through props and updated by the parent component.
+2. **Event-Based Communication**: When user interactions occur (sorting, filtering, pagination, etc.), the component emits events. The parent component must listen to these events and handle the data updates accordingly.
+3. **Prop-Driven Updates**: Any changes to the data or UI state must be driven by prop changes from the parent component.
+
+This means that as a developer implementing this component, you need to:
+
+1. **Handle Data Loading**: Implement the logic to fetch and manage data, including:
+
+   - Initial data loading
+   - Pagination
+   - Sorting
+   - Filtering
+   - Search functionality
+
+2. **Manage State**: Maintain the state of:
+
+   - Current page
+   - Items per page
+   - Sort column and direction
+   - Applied filters
+   - Search term
+   - Selected rows
+   - Loading states
+
+3. **Respond to Events**: Listen to and handle all relevant events to update your data and state.
+
+Here's a basic example of implementing the component with proper data management:
+
+```html
+<template>
+  <mt-data-table
+    :data-source="dataSource"
+    :columns="columns"
+    :pagination-limit="limit"
+    :pagination-current-page="currentPage"
+    :pagination-total-items="totalItems"
+    :is-loading="isLoading"
+    :applied-filters="appliedFilters"
+    @pagination-limit-change="handleLimitChange"
+    @pagination-current-page-change="handlePageChange"
+    @sort-change="handleSortChange"
+    @search-value-change="handleSearchChange"
+    @update:appliedFilters="handleFilterChange"
+  />
+</template>
+
+<script setup>
+  import { ref, onMounted } from "vue";
+
+  // State management
+  const dataSource = ref([]);
+  const limit = ref(10);
+  const currentPage = ref(1);
+  const totalItems = ref(0);
+  const isLoading = ref(false);
+  const appliedFilters = ref([]);
+  const sortBy = ref({ property: "", direction: "" });
+  const searchTerm = ref("");
+
+  // Data fetching
+  const fetchData = async () => {
+    isLoading.value = true;
+    try {
+      const response = await api.fetchData({
+        page: currentPage.value,
+        limit: limit.value,
+        sort: sortBy.value,
+        filters: appliedFilters.value,
+        search: searchTerm.value,
+      });
+
+      dataSource.value = response.data;
+      totalItems.value = response.total;
+    } finally {
+      isLoading.value = false;
+    }
+  };
+
+  // Event handlers
+  const handleLimitChange = (newLimit) => {
+    limit.value = newLimit;
+    currentPage.value = 1; // Reset to first page
+    fetchData();
+  };
+
+  const handlePageChange = (newPage) => {
+    currentPage.value = newPage;
+    fetchData();
+  };
+
+  const handleSortChange = ({ property, direction }) => {
+    sortBy.value = { property, direction };
+    fetchData();
+  };
+
+  const handleSearchChange = (term) => {
+    searchTerm.value = term;
+    currentPage.value = 1; // Reset to first page
+    fetchData();
+  };
+
+  const handleFilterChange = (newFilters) => {
+    appliedFilters.value = newFilters;
+    currentPage.value = 1; // Reset to first page
+    fetchData();
+  };
+
+  // Initial data load
+  onMounted(() => {
+    fetchData();
+  });
+</script>
+```
+
+This implementation pattern ensures:
+
+- Clear separation of concerns
+- Predictable data flow
+- Flexibility in data source and business logic
+- Reusability across different data scenarios
+
+## Creating a Wrapper Component
+
+Since the data management logic can be repetitive across different tables in your application, it often makes sense to create a wrapper component that encapsulates this logic. This approach can:
+
+- Reduce boilerplate code
+- Ensure consistent data handling
+- Centralize API integration
+- Make table implementations more maintainable
+
+Here's an example of creating a reusable wrapper component:
+
+```html
+<!-- DataTableWrapper.vue -->
+<template>
+  <mt-data-table
+    v-bind="$props"
+    :data-source="dataSource"
+    :pagination-limit="limit"
+    :pagination-current-page="currentPage"
+    :pagination-total-items="totalItems"
+    :is-loading="isLoading"
+    :applied-filters="appliedFilters"
+    v-on="$listeners"
+    @pagination-limit-change="handleLimitChange"
+    @pagination-current-page-change="handlePageChange"
+    @sort-change="handleSortChange"
+    @search-value-change="handleSearchChange"
+    @update:appliedFilters="handleFilterChange"
+  >
+    <template v-for="(_, slot) in $slots" #[slot]>
+      <slot :name="slot" />
+    </template>
+  </mt-data-table>
+</template>
+
+<script setup>
+  import { ref, onMounted } from "vue";
+
+  const props = defineProps({
+    // Forward all mt-data-table props
+    fetchDataFn: {
+      type: Function,
+      required: true,
+    },
+    defaultSort: {
+      type: Object,
+      default: () => ({ property: "", direction: "" }),
+    },
+    // ... other props
+  });
+
+  // State management
+  const dataSource = ref([]);
+  const limit = ref(10);
+  const currentPage = ref(1);
+  const totalItems = ref(0);
+  const isLoading = ref(false);
+  const appliedFilters = ref([]);
+  const sortBy = ref(props.defaultSort);
+  const searchTerm = ref("");
+
+  // Data fetching
+  const fetchData = async () => {
+    isLoading.value = true;
+    try {
+      const response = await props.fetchDataFn({
+        page: currentPage.value,
+        limit: limit.value,
+        sort: sortBy.value,
+        filters: appliedFilters.value,
+        search: searchTerm.value,
+      });
+
+      dataSource.value = response.data;
+      totalItems.value = response.total;
+    } finally {
+      isLoading.value = false;
+    }
+  };
+
+  // Event handlers
+  const handleLimitChange = (newLimit) => {
+    limit.value = newLimit;
+    currentPage.value = 1; // Reset to first page
+    fetchData();
+  };
+
+  const handlePageChange = (newPage) => {
+    currentPage.value = newPage;
+    fetchData();
+  };
+
+  const handleSortChange = ({ property, direction }) => {
+    sortBy.value = { property, direction };
+    fetchData();
+  };
+
+  const handleSearchChange = (term) => {
+    searchTerm.value = term;
+    currentPage.value = 1; // Reset to first page
+    fetchData();
+  };
+
+  const handleFilterChange = (newFilters) => {
+    appliedFilters.value = newFilters;
+    currentPage.value = 1; // Reset to first page
+    fetchData();
+  };
+
+  onMounted(() => {
+    fetchData();
+  });
+</script>
+```
+
+Now you can use this wrapper component with much less boilerplate:
+
+```html
+<!-- YourPage.vue -->
+<template>
+  <data-table-wrapper
+    :columns="columns"
+    :fetch-data-fn="fetchUsers"
+    :default-sort="{ property: 'name', direction: 'asc' }"
+  />
+</template>
+
+<script setup>
+  import { ref } from "vue";
+  import DataTableWrapper from "./DataTableWrapper.vue";
+
+  const columns = [
+    {
+      label: "Name",
+      property: "name",
+      sortable: true,
+      position: 100,
+    },
+    // ... other columns
+  ];
+
+  const fetchUsers = async (params) => {
+    const response = await api.users.list(params);
+    return {
+      data: response.users,
+      total: response.total,
+    };
+  };
+</script>
+```
+
+This wrapper approach is particularly useful when you:
+
+- Have multiple tables in your application
+- Need consistent data handling across tables
+- Want to share common functionality (error handling, loading states, etc.)
+- Need to maintain the same API integration pattern
+
+You can extend the wrapper component to include additional features like:
+
+- Error handling and retry logic
+- Data caching
+- Custom filtering logic
+- Export functionality
+- Bulk action handling
+- Persistent table state
+
+## Key Features
+
+- **Data Rendering**: Displays data in a tabular format with customizable columns
+- **Pagination**: Built-in pagination support with customizable page sizes
+- **Sorting**: Column-based sorting with customizable sort directions
+- **Filtering**: Flexible filtering system with various filter types
+- **Search**: Global search functionality (can be disabled)
+- **Row Selection**: Single and multiple row selection with bulk actions
+- **Column Management**: Drag-and-drop column reordering and resizing
+- **Loading States**: Built-in loading state handling with skeletons
+- **Empty States**: Customizable empty state display
+- **Responsive**: Adapts to different screen sizes with horizontal/vertical scrolling
+
+## Basic Usage
+
+Here's a simple example of how to use the `mt-data-table` component:
+
+```html
+<template>
+  <mt-data-table
+    :data-source="dataSource"
+    :columns="columns"
+    :pagination-limit="10"
+    :pagination-current-page="1"
+    :pagination-total-items="100"
+    :is-loading="isLoading"
+    @pagination-limit-change="handleLimitChange"
+    @pagination-current-page-change="handlePageChange"
+  />
+</template>
+
+<script setup>
+  import { ref } from "vue";
+
+  const dataSource = ref([
+    { id: "1", name: "John Doe", email: "john@example.com" },
+    { id: "2", name: "Jane Smith", email: "jane@example.com" },
+    // ... more data
+  ]);
+
+  const columns = [
+    {
+      label: "Name",
+      property: "name",
+      sortable: true,
+      position: 100,
+    },
+    {
+      label: "Email",
+      property: "email",
+      sortable: true,
+      position: 200,
+    },
+  ];
+
+  const isLoading = ref(false);
+
+  const handleLimitChange = (limit) => {
+    // Handle page size change
+  };
+
+  const handlePageChange = (page) => {
+    // Handle page change
+  };
+</script>
+```
+
+<Canvas of={DataTableInteractiveStories.VisualTestRenderTable} />
+
+## Column Configuration
+
+Columns are defined through a configuration object that specifies how each column should be rendered and behave:
+
+```typescript
+interface ColumnDefinition {
+  label: string; // Column header label
+  property: string; // Property path in data source object
+  renderer?: string; // How to render the cell ('text'|'number'|'price')
+  position: number; // Column order (use increments of 100)
+  sortable?: boolean; // Enable/disable sorting (default: true)
+  width?: number; // Fixed column width
+  allowResize?: boolean; // Allow column resizing
+  visible?: boolean; // Show/hide column
+}
+```
+
+## Props
+
+<Markdown>
+  {`
+| Prop Name | Type | Default | Description |
+|-----------|------|---------|-------------|
+| dataSource | Array | [] | Array of objects containing the data to display |
+| columns | Array | [] | Array of column definitions |
+| paginationLimit | Number | 10 | Number of items per page |
+| paginationCurrentPage | Number | 1 | Current active page |
+| paginationTotalItems | Number | 0 | Total number of items |
+| isLoading | Boolean | false | Shows loading state when true |
+| disableSearch | Boolean | false | Disable search functionality |
+| title | String | undefined | Table title |
+| subtitle | String | undefined | Table subtitle |
+| caption | String | undefined | Table caption for accessibility |
+| showOutlines | Boolean | true | Show cell outlines |
+| showStripes | Boolean | false | Show alternating row stripes |
+| enableOutlineFraming | Boolean | false | Enable outline framing |
+| enableRowNumbering | Boolean | false | Show row numbers |
+| allowRowSelection | Boolean | false | Enable row selection |
+| selectedRows | Array | [] | Array of selected row IDs |
+| filters | Array | [] | Array of filter definitions |
+| appliedFilters | Array | [] | Array of currently applied filters |
+| layout | String | 'default' | Table layout ('default' or 'full') |
+| enableReload | Boolean | false | Show reload button |
+`}
+</Markdown>
+
+## Events
+
+<Markdown>
+  {`
+| Event Name | Payload | Description |
+|------------|---------|-------------|
+| paginationLimitChange | number | Emitted when page size changes |
+| paginationCurrentPageChange | number | Emitted when current page changes |
+| searchValueChange | string | Emitted when search value changes |
+| sortChange | { property: string, direction: string } | Emitted when sort changes |
+| selectionChange | { id: string, value: boolean } | Emitted when single row selection changes |
+| multipleSelectionChange | { selections: string[], value: boolean } | Emitted when multiple selection changes |
+| bulkEdit | string[] | Emitted when bulk edit is triggered |
+| bulkDelete | string[] | Emitted when bulk delete is triggered |
+| reload | void | Emitted when reload button is clicked |
+| changeShowOutlines | boolean | Emitted when outline visibility changes |
+| changeShowStripes | boolean | Emitted when stripe visibility changes |
+| changeOutlineFraming | boolean | Emitted when outline framing changes |
+| changeEnableRowNumbering | boolean | Emitted when row numbering changes |
+`}
+</Markdown>
+
+## Slots
+
+<Markdown>
+  {`
+| Slot Name | Props | Description |
+|-----------|-------|-------------|
+| toolbar | - | Additional content for the toolbar area |
+| empty-state | - | Custom empty state content when no data is available |
+`}
+</Markdown>
+
+## Filtering
+
+The data table supports a flexible filtering system. Filters can be defined using the following structure:
+
+```typescript
+interface Filter {
+  id: string;
+  label: string;
+  type: {
+    id: string;
+    options: Array<{
+      id: string;
+      label: string;
+    }>;
+  };
+}
+```
+
+Example of setting up filters:
+
+```html
+<template>
+  <mt-data-table
+    :data-source="dataSource"
+    :columns="columns"
+    :filters="filters"
+    :applied-filters="appliedFilters"
+    @update:appliedFilters="updateFilters"
+  />
+</template>
+
+<script setup>
+  const filters = [
+    {
+      id: "status",
+      label: "Status",
+      type: {
+        id: "select",
+        options: [
+          { id: "active", label: "Active" },
+          { id: "inactive", label: "Inactive" },
+        ],
+      },
+    },
+  ];
+
+  const appliedFilters = ref([]);
+  const updateFilters = (newFilters) => {
+    appliedFilters.value = newFilters;
+  };
+</script>
+```
+
+## Loading States
+
+The data table provides built-in loading state handling with skeleton loading:
+
+```html
+<template>
+  <mt-data-table
+    :data-source="dataSource"
+    :columns="columns"
+    :is-loading="isLoading"
+  />
+</template>
+
+<script setup>
+  const isLoading = ref(false);
+
+  const fetchData = async () => {
+    isLoading.value = true;
+    try {
+      // Fetch your data
+    } finally {
+      isLoading.value = false;
+    }
+  };
+</script>
+```
+
+## Best Practices
+
+1. **Column Positioning**: Use increments of 100 for column positions to leave room for inserting new columns later.
+2. **Data Source**: Always provide a unique `id` field for each row in your data source.
+3. **Performance**: Keep the data source size reasonable for the current page. Use server-side pagination for large datasets.
+4. **Sorting**: Enable sorting only for columns where it makes sense.
+5. **Filters**: Keep filter options concise and relevant to improve user experience.
+6. **Loading States**: Always show loading state during data fetching to provide good UX.
+7. **Accessibility**: Use the `caption` prop to provide a descriptive table summary for screen readers.
+
+## Examples
+
+### Basic Table
+
+<Canvas of={DataTableInteractiveStories.VisualTestRenderTable} />
+
+### Full Width Table
+
+<Canvas of={DataTableInteractiveStories.VisualTestRenderFullTable} />
+
+### Empty State
+
+<Canvas of={DataTableInteractiveStories.VisualTestRenderEmptyState} />
+
+### With Sticky Header
+
+<Canvas of={DataTableInteractiveStories.VisualTestRenderTableStickyHeader} />

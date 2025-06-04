@@ -44,6 +44,7 @@ export function getRepository<EntityName extends keyof EntitySchema.Entities>(
           const method = lazyDataRepository[property] as (
             ...args: unknown[]
           ) => Promise<unknown>;
+
           return method(...args);
         };
       },

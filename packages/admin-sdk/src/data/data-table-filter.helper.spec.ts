@@ -1,4 +1,4 @@
-import Criteria from './Criteria';
+import Criteria from './criteria';
 import { addDataTableFilters } from './data-table-filter.helper';
 
 describe('src/app/service/criteria-helper.service.ts', () => {
