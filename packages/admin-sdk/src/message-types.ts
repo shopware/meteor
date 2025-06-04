@@ -1,6 +1,11 @@
 import type { notificationDispatch } from './notification/index';
 import type { toastDispatch } from './toast';
-import type { windowRedirect, windowReload, windowRouterPush, windowGetId } from './window/index';
+import type {
+  windowRedirect,
+  windowReload,
+  windowRouterPush,
+  windowGetId,
+} from './window/index';
 import type {
   contextLanguage,
   contextEnvironment,
@@ -24,13 +29,23 @@ import type { mainModuleAdd } from './ui/main-module';
 import type { smartBarButtonAdd, smartBarHide } from './ui/main-module';
 import type { uiModalOpen, uiModalClose } from './ui/modal/index';
 import type { uiMediaModalOpen } from './ui/media-modal';
-import type { uiSidebarAdd, uiSidebarClose, uiSidebarRemove } from './ui/sidebar';
+import type {
+  uiSidebarAdd,
+  uiSidebarClose,
+  uiSidebarRemove,
+} from './ui/sidebar';
 import type { actionButtonAdd } from './ui/action-button';
 import type { actionExecute } from './app/action';
-import type Criteria from './data/Criteria';
-import type { datasetRegistration, datasetUpdate, datasetGet, datasetSubscribe, datasetSubscribeRegistration } from './data';
-import type EntityCollection from './_internals/data/EntityCollection';
-import type { Entity } from './_internals/data/Entity';
+import type Criteria from './data/criteria';
+import type {
+  datasetRegistration,
+  datasetUpdate,
+  datasetGet,
+  datasetSubscribe,
+  datasetSubscribeRegistration,
+} from './data';
+import type EntityCollection from './_internals/data/entity-collection';
+import type { Entity } from './_internals/data/entity';
 import type {
   repositoryGet,
   repositorySearch,
@@ -63,7 +78,7 @@ export interface ShopwareMessageTypes {
   contextUserTimezone: contextUserTimezone,
   contextAppInformation: contextAppInformation,
   contextModuleInformation: contextModuleInformation,
-  contextShopId: contextShopId
+  contextShopId: contextShopId,
   getPageTitle: getPageTitle,
   uiComponentSectionRenderer: uiComponentSectionRenderer,
   uiTabsAddTabItem: uiTabsAddTabItem,
@@ -120,7 +135,7 @@ export interface ShopwareMessageTypes {
  */
 export type getPageTitle = {
   responseType: string,
-}
+};
 
 /**
  * @private
@@ -130,17 +145,17 @@ export type _multiply = {
   responseType: number,
   firstNumber: number,
   secondNumber: number,
-}
+};
 
 export type _subtract = {
   responseType: number,
   firstNumber: number,
   secondNumber: number,
-}
+};
 
 export type _privileges = {
   responseType: void,
-}
+};
 
 export type _criteriaTest = {
   responseType: {
@@ -149,7 +164,7 @@ export type _criteriaTest = {
   },
   title: string,
   myCriteria: Criteria,
-}
+};
 
 export type _collectionTest = {
   responseType: {
@@ -160,7 +175,7 @@ export type _collectionTest = {
   title: string,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   collection: EntityCollection<any>,
-}
+};
 
 export type _entityTest = {
   responseType: {
@@ -171,17 +186,17 @@ export type _entityTest = {
   title: string,
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   entity: Entity<any>,
-}
+};
 
 export type __function__ = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   responseType: any,
   args: unknown[],
   id: string,
-}
+};
 
 export type __registerWindow__ = {
   responseType: void,
 
   sdkVersion: string,
-}
+};

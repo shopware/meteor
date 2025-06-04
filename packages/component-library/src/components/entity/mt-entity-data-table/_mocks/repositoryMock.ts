@@ -8,12 +8,13 @@
  * meteor/packages/admin-sdk/src/data/repository.ts
  */
 
-import Criteria from "@shopware-ag/meteor-admin-sdk/es/data/Criteria";
-import type { Repository } from "@shopware-ag/meteor-admin-sdk/es/data/Repository";
 import type { Entity } from "@shopware-ag/meteor-admin-sdk/es/_internals/data/Entity";
-import EntityCollection, {
+import {
+  type Repository,
+  Criteria,
   type ApiContext,
-} from "@shopware-ag/meteor-admin-sdk/es/_internals/data/EntityCollection";
+  EntityCollection,
+} from "@shopware-ag/meteor-admin-sdk/internal";
 import productFixtures from "../../../table-and-list/mt-data-table/mt-data-table.fixtures.json";
 
 // Create the manufacturer fixtures from the product fixtures
@@ -25,7 +26,6 @@ const manufacturerFixtures = productFixtures.map((product) => ({
   },
 }));
 
- 
 export default <EntityName extends keyof EntitySchema.Entities>(
   entityName: EntityName,
 ): Repository<EntityName> => {
@@ -61,7 +61,6 @@ export default <EntityName extends keyof EntitySchema.Entities>(
       const term = criteria.term;
       if (term) {
         filteredEntities = filteredEntities.filter((entity) => {
-           
           const name = (entity as any)?.name ?? (entity as any)?.translated?.name;
           return name?.toLowerCase().includes(term.toLowerCase());
         });
@@ -74,7 +73,7 @@ export default <EntityName extends keyof EntitySchema.Entities>(
             const { field, type, value } = filter as { field: string; type: string; value: any };
 
             // Helper to get potentially nested entity values
-             
+
             const entityValue = field.split(".").reduce((o, i) => o?.[i], entity as any);
 
             if (type === "equals") {
@@ -111,9 +110,8 @@ export default <EntityName extends keyof EntitySchema.Entities>(
         const sortOrder = sortSettings.order || "ASC"; // Default to ASC
 
         filteredEntities = filteredEntities.sort((a, b) => {
-           
           const valA = sortBy.split(".").reduce((o, i) => o?.[i], a as any);
-           
+
           const valB = sortBy.split(".").reduce((o, i) => o?.[i], b as any);
 
           console.log("Sorting", valA, valB);
@@ -166,7 +164,6 @@ export default <EntityName extends keyof EntitySchema.Entities>(
     },
 
     get: async (id: string): Promise<Entity<EntityName> | null> => {
-       
       const entity = entities.find((e: any) => e.id === id);
 
       // Wait for 200-500ms to simulate a real API call
@@ -183,7 +180,6 @@ export default <EntityName extends keyof EntitySchema.Entities>(
       return Promise.resolve();
     },
 
-     
     clone: async (): Promise<unknown | null> => {
       // Wait for 200-500ms to simulate a real API call
       await new Promise((resolve) => setTimeout(resolve, Math.random() * 300 + 200));

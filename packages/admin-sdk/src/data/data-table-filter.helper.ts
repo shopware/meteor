@@ -1,17 +1,17 @@
-import Criteria from './Criteria';
+import Criteria from './criteria';
 
 interface Filter {
-  id: string;
-  label: string;
+  id: string,
+  label: string,
   type: {
-    id: string;
-    options: Option[];
-  };
+    id: string,
+    options: Option[],
+  },
 }
 
 export interface Option {
-  id: string;
-  label: string;
+  id: string,
+  label: string,
 }
 
 export function addDataTableFilters(

@@ -1,4 +1,4 @@
-import Criteria, { setDefaultValues } from "./Criteria";
+import Criteria, { setDefaultValues } from './criteria';
 
 describe('Test Criteria class', () => {
   it('should default to page===1 & limit===0', () => {
@@ -9,7 +9,7 @@ describe('Test Criteria class', () => {
   });
 
   it('should respect altered default values', () => {
-    setDefaultValues({limit: 42});
+    setDefaultValues({ limit: 42 });
     const criteria = new Criteria();
 
     expect(criteria.getLimit()).toBe(42);

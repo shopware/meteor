@@ -1,32 +1,34 @@
-import type RepositoryFactory from './repository';
-import type { Entity } from '../_internals/data/Entity';
-import type EntityCollection from '../_internals/data/EntityCollection';
-import type { ApiContext } from '../_internals/data/EntityCollection';
-import type Criteria from './Criteria';
+import type RepositoryFactory from "./repository";
+import type { Entity } from "../_internals/data/entity";
+import type EntityCollection from "../_internals/data/entity-collection";
+import type { ApiContext } from "../_internals/data/entity-collection";
+import type Criteria from "./criteria";
 
-export type SDKRepository<EntityName extends keyof EntitySchema.Entities> = ReturnType<
-  typeof RepositoryFactory<EntityName>
->;
+export type SDKRepository<EntityName extends keyof EntitySchema.Entities> =
+  ReturnType<typeof RepositoryFactory<EntityName>>;
 
-export type RepositorySource<EntityName extends keyof EntitySchema.Entities> = Pick<
-  SDKRepository<EntityName>,
-  'search' | 'get' | 'save' | 'clone' | 'saveAll' | 'delete'
-> & {
-  hasChanges: (entity: Entity<EntityName>) => Promise<boolean | null> | boolean,
-  create: (
-    context?: ApiContext,
-    entityId?: string | null
-  ) => Promise<Entity<EntityName> | null> | Entity<EntityName>,
-};
+export type RepositorySource<EntityName extends keyof EntitySchema.Entities> =
+  Pick<
+    SDKRepository<EntityName>,
+    "search" | "get" | "save" | "clone" | "saveAll" | "delete"
+  > & {
+    hasChanges: (
+      entity: Entity<EntityName>
+    ) => Promise<boolean | null> | boolean;
+    create: (
+      context?: ApiContext,
+      entityId?: string | null
+    ) => Promise<Entity<EntityName> | null> | Entity<EntityName>;
+  };
 
 function isPromise<T>(value: unknown): value is Promise<T> {
   return (
     !!value &&
-    typeof value === 'object' &&
-    'then' in value &&
-    typeof value.then === 'function' &&
-    'catch' in value &&
-    typeof value.catch === 'function'
+    typeof value === "object" &&
+    "then" in value &&
+    typeof value.then === "function" &&
+    "catch" in value &&
+    typeof value.catch === "function"
   );
 }
 
@@ -34,7 +36,8 @@ function isPromise<T>(value: unknown): value is Promise<T> {
  * Repository adapter that can wrap different source implementations
  * and provide a consistent interface
  */
-export class RepositoryAdapter<EntityName extends keyof EntitySchema.Entities> implements SDKRepository<EntityName>
+export class RepositoryAdapter<EntityName extends keyof EntitySchema.Entities>
+  implements SDKRepository<EntityName>
 {
   // eslint-disable-next-line no-empty-function,no-useless-constructor
   constructor(private sourceRepository: RepositorySource<EntityName>) {}
@@ -95,7 +98,7 @@ export class RepositoryAdapter<EntityName extends keyof EntitySchema.Entities> i
 }
 
 export function createRepositoryAdapter<
-  EntityName extends keyof EntitySchema.Entities,
+  EntityName extends keyof EntitySchema.Entities
 >(source: RepositorySource<EntityName>): SDKRepository<EntityName> {
   return new RepositoryAdapter(source);
 }

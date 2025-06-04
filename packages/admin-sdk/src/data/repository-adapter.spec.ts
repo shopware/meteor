@@ -1,15 +1,15 @@
 import {
   RepositoryAdapter,
   createRepositoryAdapter,
-} from './repository-adapter';
-import type { RepositorySource } from './repository-adapter';
-import type EntityCollection from '../_internals/data/EntityCollection';
-import type { ApiContext } from '../_internals/data/EntityCollection';
-import Criteria from './Criteria';
-import type { Entity } from '../_internals/data/Entity';
+} from "./repository-adapter";
+import type { RepositorySource } from "./repository-adapter";
+import type EntityCollection from "../_internals/data/entity-collection";
+import type { ApiContext } from "../_internals/data/entity-collection";
+import type Criteria from "./criteria";
+import type { Entity } from "../_internals/data/entity";
 
 // Mock types to make testing easier
-type TestEntityName = 'product';
+type TestEntityName = "product";
 interface TestEntity extends Entity<TestEntityName> {
   id: string;
   name: string;
@@ -26,18 +26,18 @@ declare global {
   }
 }
 
-describe('RepositoryAdapter', () => {
+describe("RepositoryAdapter", () => {
   // Mock repository source
-  const mockEntity = { id: '123', name: 'Test Product' } as TestEntity;
+  const mockEntity = { id: "123", name: "Test Product" } as TestEntity;
   const mockEntityCollection = {
     length: 1,
   } as EntityCollection<TestEntityName>;
-  const mockContext = { languageId: 'en-US' } as ApiContext;
+  const mockContext = { languageId: "en-US" } as ApiContext;
   const mockAsyncSource: RepositorySource<TestEntityName> = {
     search: jest.fn().mockResolvedValue(mockEntityCollection),
     get: jest.fn().mockResolvedValue(mockEntity),
     save: jest.fn().mockResolvedValue(undefined),
-    clone: jest.fn().mockResolvedValue({ id: '456', name: 'Cloned Product' }),
+    clone: jest.fn().mockResolvedValue({ id: "456", name: "Cloned Product" }),
     saveAll: jest.fn().mockResolvedValue(undefined),
     delete: jest.fn().mockResolvedValue(undefined),
     hasChanges: jest.fn().mockResolvedValue(true),
@@ -47,7 +47,7 @@ describe('RepositoryAdapter', () => {
     search: jest.fn().mockResolvedValue(mockEntityCollection),
     get: jest.fn().mockResolvedValue(mockEntity),
     save: jest.fn().mockResolvedValue(undefined),
-    clone: jest.fn().mockResolvedValue({ id: '456', name: 'Cloned Product' }),
+    clone: jest.fn().mockResolvedValue({ id: "456", name: "Cloned Product" }),
     saveAll: jest.fn().mockResolvedValue(undefined),
     delete: jest.fn().mockResolvedValue(undefined),
     hasChanges: jest.fn().mockReturnValue(true),
@@ -62,8 +62,8 @@ describe('RepositoryAdapter', () => {
     jest.clearAllMocks();
   });
 
-  describe('async repository', () => {
-    it('should call source.search with provided parameters', async () => {
+  describe("async repository", () => {
+    it("should call source.search with provided parameters", async () => {
       const criteria = { limit: 10 } as Criteria;
 
       const result = await asyncRepositoryAdapter.search(criteria, mockContext);
@@ -75,8 +75,8 @@ describe('RepositoryAdapter', () => {
       expect(result).toBe(mockEntityCollection);
     });
 
-    it('should call source.get with provided parameters', async () => {
-      const id = '123';
+    it("should call source.get with provided parameters", async () => {
+      const id = "123";
       const criteria = { limit: 1 } as Criteria;
 
       const result = await asyncRepositoryAdapter.get(
@@ -93,7 +93,7 @@ describe('RepositoryAdapter', () => {
       expect(result).toBe(mockEntity);
     });
 
-    it('should call source.save with provided parameters', async () => {
+    it("should call source.save with provided parameters", async () => {
       await asyncRepositoryAdapter.save(mockEntity, mockContext);
 
       expect(mockAsyncSource.save).toHaveBeenCalledWith(
@@ -102,8 +102,8 @@ describe('RepositoryAdapter', () => {
       );
     });
 
-    it('should call source.clone with provided parameters', async () => {
-      const entityId = '123';
+    it("should call source.clone with provided parameters", async () => {
+      const entityId = "123";
       const behavior = { deep: true };
 
       const result = await asyncRepositoryAdapter.clone(
@@ -117,10 +117,10 @@ describe('RepositoryAdapter', () => {
         behavior,
         mockContext
       );
-      expect(result).toEqual({ id: '456', name: 'Cloned Product' });
+      expect(result).toEqual({ id: "456", name: "Cloned Product" });
     });
 
-    it('should handle Promise return from source.hasChanges', async () => {
+    it("should handle Promise return from source.hasChanges", async () => {
       mockAsyncSource.hasChanges = jest.fn().mockResolvedValue(true);
 
       const result = await asyncRepositoryAdapter.hasChanges(mockEntity);
@@ -129,7 +129,7 @@ describe('RepositoryAdapter', () => {
       expect(result).toBe(true);
     });
 
-    it('should handle boolean return from source.hasChanges', async () => {
+    it("should handle boolean return from source.hasChanges", async () => {
       mockAsyncSource.hasChanges = jest.fn().mockReturnValue(false);
 
       const result = await asyncRepositoryAdapter.hasChanges(mockEntity);
@@ -138,7 +138,7 @@ describe('RepositoryAdapter', () => {
       expect(result).toBe(false);
     });
 
-    it('should call source.saveAll with provided parameters', async () => {
+    it("should call source.saveAll with provided parameters", async () => {
       await asyncRepositoryAdapter.saveAll(mockEntityCollection, mockContext);
 
       expect(mockAsyncSource.saveAll).toHaveBeenCalledWith(
@@ -147,8 +147,8 @@ describe('RepositoryAdapter', () => {
       );
     });
 
-    it('should call source.delete with provided parameters', async () => {
-      const entityId = '123';
+    it("should call source.delete with provided parameters", async () => {
+      const entityId = "123";
 
       await asyncRepositoryAdapter.delete(entityId, mockContext);
 
@@ -158,9 +158,9 @@ describe('RepositoryAdapter', () => {
       );
     });
 
-    it('should handle Promise return from source.create', async () => {
+    it("should handle Promise return from source.create", async () => {
       mockAsyncSource.create = jest.fn().mockResolvedValue(mockEntity);
-      const entityId = '123';
+      const entityId = "123";
 
       const result = await asyncRepositoryAdapter.create(mockContext, entityId);
 
@@ -171,9 +171,9 @@ describe('RepositoryAdapter', () => {
       expect(result).toBe(mockEntity);
     });
 
-    it('should handle direct return from source.create', async () => {
+    it("should handle direct return from source.create", async () => {
       mockAsyncSource.create = jest.fn().mockReturnValue(mockEntity);
-      const entityId = '123';
+      const entityId = "123";
 
       const result = await asyncRepositoryAdapter.create(mockContext, entityId);
 
@@ -185,21 +185,18 @@ describe('RepositoryAdapter', () => {
     });
   });
 
-  describe('sync repository', () => {
-    it('should call source.search with provided parameters', async () => {
+  describe("sync repository", () => {
+    it("should call source.search with provided parameters", async () => {
       const criteria = { limit: 10 } as Criteria;
 
       const result = await syncRepositoryAdapter.search(criteria, mockContext);
 
-      expect(mockSyncSource.search).toHaveBeenCalledWith(
-        criteria,
-        mockContext
-      );
+      expect(mockSyncSource.search).toHaveBeenCalledWith(criteria, mockContext);
       expect(result).toBe(mockEntityCollection);
     });
 
-    it('should call source.get with provided parameters', async () => {
-      const id = '123';
+    it("should call source.get with provided parameters", async () => {
+      const id = "123";
       const criteria = { limit: 1 } as Criteria;
 
       const result = await syncRepositoryAdapter.get(id, mockContext, criteria);
@@ -212,17 +209,14 @@ describe('RepositoryAdapter', () => {
       expect(result).toBe(mockEntity);
     });
 
-    it('should call source.save with provided parameters', async () => {
+    it("should call source.save with provided parameters", async () => {
       await syncRepositoryAdapter.save(mockEntity, mockContext);
 
-      expect(mockSyncSource.save).toHaveBeenCalledWith(
-        mockEntity,
-        mockContext
-      );
+      expect(mockSyncSource.save).toHaveBeenCalledWith(mockEntity, mockContext);
     });
 
-    it('should call source.clone with provided parameters', async () => {
-      const entityId = '123';
+    it("should call source.clone with provided parameters", async () => {
+      const entityId = "123";
       const behavior = { deep: true };
 
       const result = await syncRepositoryAdapter.clone(
@@ -236,10 +230,10 @@ describe('RepositoryAdapter', () => {
         behavior,
         mockContext
       );
-      expect(result).toEqual({ id: '456', name: 'Cloned Product' });
+      expect(result).toEqual({ id: "456", name: "Cloned Product" });
     });
 
-    it('should handle Promise return from source.hasChanges', async () => {
+    it("should handle Promise return from source.hasChanges", async () => {
       mockSyncSource.hasChanges = jest.fn().mockResolvedValue(true);
 
       const result = await syncRepositoryAdapter.hasChanges(mockEntity);
@@ -248,7 +242,7 @@ describe('RepositoryAdapter', () => {
       expect(result).toBe(true);
     });
 
-    it('should handle boolean return from source.hasChanges', async () => {
+    it("should handle boolean return from source.hasChanges", async () => {
       mockSyncSource.hasChanges = jest.fn().mockReturnValue(false);
 
       const result = await syncRepositoryAdapter.hasChanges(mockEntity);
@@ -257,7 +251,7 @@ describe('RepositoryAdapter', () => {
       expect(result).toBe(false);
     });
 
-    it('should call source.saveAll with provided parameters', async () => {
+    it("should call source.saveAll with provided parameters", async () => {
       await syncRepositoryAdapter.saveAll(mockEntityCollection, mockContext);
 
       expect(mockSyncSource.saveAll).toHaveBeenCalledWith(
@@ -266,46 +260,37 @@ describe('RepositoryAdapter', () => {
       );
     });
 
-    it('should call source.delete with provided parameters', async () => {
-      const entityId = '123';
+    it("should call source.delete with provided parameters", async () => {
+      const entityId = "123";
 
       await syncRepositoryAdapter.delete(entityId, mockContext);
 
-      expect(mockSyncSource.delete).toHaveBeenCalledWith(
-        entityId,
-        mockContext
-      );
+      expect(mockSyncSource.delete).toHaveBeenCalledWith(entityId, mockContext);
     });
 
-    it('should handle Promise return from source.create', async () => {
+    it("should handle Promise return from source.create", async () => {
       mockSyncSource.create = jest.fn().mockResolvedValue(mockEntity);
-      const entityId = '123';
+      const entityId = "123";
 
       const result = await syncRepositoryAdapter.create(mockContext, entityId);
 
-      expect(mockSyncSource.create).toHaveBeenCalledWith(
-        mockContext,
-        entityId
-      );
+      expect(mockSyncSource.create).toHaveBeenCalledWith(mockContext, entityId);
       expect(result).toBe(mockEntity);
     });
 
-    it('should handle direct return from source.create', async () => {
+    it("should handle direct return from source.create", async () => {
       mockSyncSource.create = jest.fn().mockReturnValue(mockEntity);
-      const entityId = '123';
+      const entityId = "123";
 
       const result = await syncRepositoryAdapter.create(mockContext, entityId);
 
-      expect(mockSyncSource.create).toHaveBeenCalledWith(
-        mockContext,
-        entityId
-      );
+      expect(mockSyncSource.create).toHaveBeenCalledWith(mockContext, entityId);
       expect(result).toBe(mockEntity);
     });
   });
 
-  it('should create a repository adapter instance', () => {
-    const mockSource = {} as RepositorySource<'product'>;
+  it("should create a repository adapter instance", () => {
+    const mockSource = {} as RepositorySource<"product">;
     const adapter = createRepositoryAdapter(mockSource);
 
     expect(adapter).toBeInstanceOf(RepositoryAdapter);

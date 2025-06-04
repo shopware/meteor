@@ -1,8 +1,8 @@
-import Entity from '../data/Entity';
+import Entity from '../data/entity';
 import SerializerFactory from './index';
 import { handle, send } from '../../channel';
-import EntityCollection from '../data/EntityCollection';
-import Criteria from '../../data/Criteria';
+import EntityCollection from '../data/entity-collection';
+import Criteria from '../../data/criteria';
 
 const { serialize, deserialize } = SerializerFactory({
   handle: handle,

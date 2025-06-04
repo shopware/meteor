@@ -16,6 +16,10 @@
   },
   "license": "MIT",
   "exports": {
+    "./internal": {
+      "import": "./es/internal.js",
+      "require": "./umd/internal.js"
+    },
     "./es/channel": {
       "import": "./es/channel.js",
       "require": "./umd/channel.js"
@@ -44,9 +48,9 @@
       "import": "./es/_internals/data/Entity.js",
       "require": "./umd/_internals/data/Entity.js"
     },
-    "./es/_internals/data/EntityCollection": {
-      "import": "./es/_internals/data/EntityCollection.js",
-      "require": "./umd/_internals/data/EntityCollection.js"
+    "./es/_internals/data/entity-collection": {
+      "import": "./es/_internals/data/entity-collection.js",
+      "require": "./umd/_internals/data/entity-collection.js"
     },
     "./es/data/Repository": {
       "import": "./es/data/Repository.js",

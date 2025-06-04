@@ -89,10 +89,7 @@
  * The fallback uses the meteor-admin-sdk's find method to fetch the data. But the developer
  * can also provide a custom repository to use their own data fetching logic.
  */
-import type Repository from "@shopware-ag/meteor-admin-sdk/es/data/Repository";
-import Criteria from "@shopware-ag/meteor-admin-sdk/es/data/Criteria";
-import { useRepository } from "@shopware-ag/meteor-admin-sdk/es/data/composables/useRepository";
-import { getRepository } from "@shopware-ag/meteor-admin-sdk/es/data/composables/getRepository";
+import { type Repository, Criteria, getRepository } from "@shopware-ag/meteor-admin-sdk/internal";
 import MtDataTable, {
   type ColumnChanges,
   type ColumnDefinition,
@@ -113,7 +110,7 @@ const props = defineProps<{
   entity: keyof EntitySchema.Entities;
 
   // Optional props for the data handling
-  repository?: typeof Repository;
+  repository?: Repository<any>;
 
   // Optional props for the modal
   forceRealModal?: boolean;
