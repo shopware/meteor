@@ -75,4 +75,26 @@ describe("mt-empty-state", () => {
     await wrapper.find("button").trigger("click");
     expect(wrapper.emitted("button-click")).toBeTruthy();
   });
+
+  it("should render custom button content when slot is provided", async () => {
+    wrapper = await createWrapper({
+      slots: {
+        button: '<button class="custom-button">Custom Button</button>',
+      },
+    });
+    expect(wrapper.find(".custom-button").exists()).toBeTruthy();
+    expect(wrapper.find(".custom-button").text()).toBe("Custom Button");
+  });
+
+  it("should not render default button when custom button slot is provided", async () => {
+    wrapper = await createWrapper({
+      slots: {
+        button: '<button class="custom-button">Custom Button</button>',
+      },
+    }, {
+      buttonText: "Default Button",
+    });
+    expect(wrapper.find(".custom-button").exists()).toBeTruthy();
+    expect(wrapper.text()).not.toContain("Default Button");
+  });
 });
