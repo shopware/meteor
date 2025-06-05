@@ -22,16 +22,16 @@
       {{ linkText }}
     </mt-link>
 
-    <mt-button
-      v-if="buttonText"
-      class="mt-empty-state__button"
-      variant="primary"
-      @click="$emit('button-click')"
-    >
-      <mt-icon name="solid-plus-circle-s" />
-      {{ buttonText }}
-      <mt-icon name="solid-long-arrow-right" size="16px" />
-    </mt-button>
+    <div v-if="buttonText || $slots.button" class="mt-empty-state__button">
+      <!-- @slot Slot for replacing default button. -->
+      <slot name="button">
+        <mt-button variant="primary" @click="$emit('button-click')">
+          <mt-icon name="solid-plus-circle-s" />
+          {{ buttonText }}
+          <mt-icon name="solid-long-arrow-right" size="16px" />
+        </mt-button>
+      </slot>
+    </div>
   </div>
 </template>
 

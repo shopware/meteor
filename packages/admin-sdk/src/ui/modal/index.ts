@@ -7,7 +7,10 @@ export type uiModalOpen =
  {
    responseType: void,
    title: string,
-   locationId: string,
+   // Use the locationId to render the modal in the iframe
+   locationId?: string,
+   // Use the textContent when no locationId is provided
+   textContent?: string,
    variant?: 'default'|'small'|'large'|'full',
    showHeader?: boolean,
    showFooter?: boolean,
@@ -18,7 +21,11 @@ export type uiModalOpen =
 export type uiModalClose =
  {
    responseType: void,
-   locationId: string,
+   /*
+    * Define the locationId of the modal to close. If no locationId is provided, 
+    * the last opened modal without a locationId will be closed.
+    */
+   locationId?: string,
  }
 
 export type buttonProps = {

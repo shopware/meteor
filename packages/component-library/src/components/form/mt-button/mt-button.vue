@@ -63,8 +63,7 @@ const props = withDefaults(
     isLoading?: boolean;
   }>(),
   {
-    // @ts-expect-error -- This is to keep the default behaviour
-    variant: "",
+    variant: "secondary",
     // TODO: Update default value to "default"
     size: "small",
   },
