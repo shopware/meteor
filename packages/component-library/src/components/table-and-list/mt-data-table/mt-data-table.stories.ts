@@ -760,6 +760,6 @@ export const Default: MtDataTableStory = {
 export const Full = {
   args: {
     layout: "full",
-    _storybook_internal_show_experimental_warning_: false,
+    _storybook_internal_show_experimental_warning_: true,
   },
 };
