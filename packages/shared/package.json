@@ -1,40 +1,17 @@
 {
-  "name": "@shopware-ag/meteor-admin-sdk",
-  "version": "6.0.2",
-  "description": "The Meteor SDK for the Shopware Administration.",
-  "keywords": [
-    "iframe",
-    "shopware",
-    "admin",
-    "bridge",
-    "app",
-    "sdk"
-  ],
+  "name": "@shopware-ag/shared",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Shared code for the Meteor packages.",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com:shopware/meteor.git"
   },
   "license": "MIT",
   "exports": {
-    "./es/channel": {
-      "import": "./es/channel.js",
-      "require": "./umd/channel.js"
-    },
     "./es/data": {
       "import": "./es/data/index.js",
       "require": "./umd/data/index.js"
-    },
-    "./es/location": {
-      "import": "./es/location/index.js",
-      "require": "./umd/location/index.js"
-    },
-    "./es/_internals/privileges/missing-privileges-error": {
-      "import": "./es/_internals/privileges/missing-privileges-error.js",
-      "require": "./umd/_internals/privileges/missing-privileges-error.js"
-    },
-    "./es/_internals/data/selectData": {
-      "import": "./es/_internals/data/selectData.js",
-      "require": "./umd/_internals/data/selectData.js"
     },
     "./es/data/Criteria": {
       "import": "./es/data/Criteria.js",
@@ -47,14 +24,6 @@
     "./es/_internals/data/EntityCollection": {
       "import": "./es/_internals/data/EntityCollection.js",
       "require": "./umd/_internals/data/EntityCollection.js"
-    },
-    "./es/data/composables": {
-      "import": "./es/data/composables/index.js",
-      "require": "./umd/data/composables/index.js"
-    },
-    "./es/data/composables/useSharedState": {
-      "import": "./es/data/composables/useSharedState.js",
-      "require": "./umd/data/composables/useSharedState.js"
     },
     "./es/data/composables/useRepository": {
       "import": "./es/data/composables/useRepository.js",
@@ -104,9 +73,7 @@
   "dependencies": {
     "localforage": "^1.10.0",
     "lodash": "^4.17.21",
-    "semver": "^7.7.1",
-    "@shopware-ag/meteor-component-library": "workspace:*",
-    "@shopware-ag/shared": "workspace:*"
+    "semver": "^7.7.1"
   },
   "devDependencies": {
     "@playwright/test": "^1.45.0",

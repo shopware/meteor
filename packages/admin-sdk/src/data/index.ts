@@ -1,6 +1,6 @@
 import { createHandler, createSender, processDataRegistration, send, subscribe as createSubscriber } from '../channel';
 import MissingPrivilegesError from '../_internals/privileges/missing-privileges-error';
-import Criteria from './Criteria';
+import Criteria from '@shopware-ag/shared';
 import Entity from '../_internals/data/Entity';
 import EntityCollection from '../_internals/data/EntityCollection';
 import repository from './repository';
