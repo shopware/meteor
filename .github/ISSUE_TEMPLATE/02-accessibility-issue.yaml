@@ -5,9 +5,7 @@ labels: ["area/accessibility"]
 body:
   - type: markdown
     attributes:
-      value: Thanks for taking the time to fill out this accessibility report!
-        At Shopware, we firmly believe that software and e-commerce, in general, should be accessible to everyone.
-        We are committed to following and complying with accessibility best practices.
+      value: Thanks for taking the time to fill out this accessibility issue report!
 
   - type: dropdown
     id: package
@@ -22,6 +20,13 @@ body:
         - "@meteor/tokens"
     validations:
       required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Package version
+      description: "Which version(s) are you using?"
+      placeholder: e.g. 5.2.1
 
   - type: dropdown
     id: browser
@@ -47,15 +52,6 @@ body:
         - Other
 
   - type: input
-    id: version
-    attributes:
-      label: Package version
-      description: "Which version(s) are you using?"
-      placeholder: e.g. 5.2.1
-    validations:
-      required: true
-
-  - type: input
     id: technology
     attributes:
       label: Assistive technology
@@ -63,11 +59,31 @@ body:
       placeholder: e.g. MacOS VoiceOver, JAWS
 
   - type: textarea
-    id: description
+    id: steps-to-reproduce
     attributes:
-      label: Description
-      description: "Tell us more about the accessibility issue that you're experiencing"
-      placeholder: What did you expect to happen? What happened instead?
+      label: Steps to reproduce
+      description: |
+        What do we need to do in order to reproduce the accessibility issue?
+        Clear and concise reproduction instructions are important for us to be able to
+        triage your issue in a timely manner. Note that you can use [Markdown](https://guides.github.com/features/mastering-markdown/)
+        to format lists and code.
+      placeholder: Steps to reproduce
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual-behavior
+    attributes:
+      label: Actual behavior
+      placeholder: Actual behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected-behavior
+    attributes:
+      label: Expected behavior
+      placeholder: Expected behavior
     validations:
       required: true
 
@@ -77,16 +93,3 @@ body:
       label: WCAG 2.1 Violation
       description: "Does this violate a specific WCAG 2.1 checkpoint?"
       placeholder: e.g Success Criteria 1.1 Text Alternatives
-
-  - type: textarea
-    id: reproduce
-    attributes:
-      label: Steps to reproduce
-      description: |
-        What do we need to do after opening your repo in order to reproduce the accessibility issue?
-        Clear and concise reproduction instructions are important for us to be able to
-        triage your issue in a timely manner. Note that you can use [Markdown](https://guides.github.com/features/mastering-markdown/)
-        to format lists and code.
-      placeholder: Steps to reproduce
-    validations:
-      required: true

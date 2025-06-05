@@ -26,8 +26,29 @@ body:
       label: Package version
       description: "Which version(s) are you using?"
       placeholder: e.g. 5.2.1
-    validations:
-      required: true
+
+  - type: dropdown
+    id: browser
+    attributes:
+      label: Browser
+      description: Which browser(s) are you experiencing the issue?
+      multiple: true
+      options:
+        - Chrome
+        - Safari
+        - Firefox
+        - Edge
+
+  - type: dropdown
+    id: os
+    attributes:
+      label: Operating System
+      description: Which operating system are you using?
+      multiple: true
+      options:
+        - Windows
+        - MacOS
+        - Other
 
   - type: input
     id: reproduction-link
@@ -44,7 +65,7 @@ body:
     attributes:
       label: Steps to reproduce
       description: |
-        What do we need to do after opening your repo in order to make the bug happen?
+        What do we need to do in order to make the bug happen?
         Clear and concise reproduction instructions are important for us to be able to
         triage your issue in a timely manner. Note that you can use [Markdown](https://guides.github.com/features/mastering-markdown/)
         to format lists and code.
@@ -67,17 +88,3 @@ body:
       placeholder: Expected behavior
     validations:
       required: true
-
-  - type: textarea
-    id: system-info
-    attributes:
-      label: System Info
-      description: Output of `npx envinfo --system --binaries --browsers`
-      render: shell
-      placeholder: Operating system, Binaries, Browsers
-
-  - type: textarea
-    id: additional-comments
-    attributes:
-      label: Any additional comments?
-      description: e.g. some background/context of how you ran into this bug.
