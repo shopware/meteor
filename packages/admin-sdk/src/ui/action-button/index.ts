@@ -16,14 +16,14 @@ export type actionButtonAdd = {
     /**
      * Defines which entity you're working on.
      */
-    entity: 'product' | 'order' | 'category' | 'promotion' | 'customer',
+    entity: 'product' | 'order' | 'category' | 'promotion' | 'customer' | 'media',
 
     /**
      * Where the button should be added to.
      * "detail" for the detail page
      * "list" for the entity listing
      */
-    view: 'detail' | 'list',
+    view: 'detail' | 'list' | 'item',
 
     /**
      * Label of your action button.
