@@ -32,7 +32,7 @@ body:
     id: browser
     attributes:
       label: Browser
-      description: Which browser(s) are you experiencing the issue?
+      description: In which browser(s) does the issue occur?
       multiple: true
       options:
         - Chrome
