@@ -13,19 +13,19 @@
       >
         <slot
           name="selected-option"
-          v-bind="{ selection, defaultLabel: selection[labelProperty], disabled }"
+          v-bind="{ selection, defaultLabel: getKey(selection, labelProperty), disabled }"
         >
           <mt-label
             :dismissable="!isSelectionDisabled(selection)"
             :size="size"
             @dismiss="onClickDismiss(selection)"
           >
-            <span class="mt-select-selection-list__item" :title="selection[labelProperty]">
+            <span class="mt-select-selection-list__item" :title="getKey(selection, labelProperty)">
               <slot
                 name="label-property"
                 v-bind="{ item: selection, index, labelProperty, valueProperty }"
               >
-                {{ selection[labelProperty] }}
+                {{ getKey(selection, labelProperty) }}
               </slot>
             </span>
           </mt-label>
@@ -77,6 +77,7 @@ import { defineComponent } from "vue";
 import { useI18n } from "vue-i18n";
 import MtLabel from "../../../../_internal/mt-label.vue";
 import MtButton from "../../../mt-button/mt-button.vue";
+import { getPropertyValue } from "@/utils/object";
 
 export default defineComponent({
   name: "MtSelectSelectionList",
@@ -93,7 +94,7 @@ export default defineComponent({
       default: () => [],
     },
     labelProperty: {
-      type: String,
+      type: [String, Array] as PropType<string | string[]>,
       required: false,
       default: "label",
     },
@@ -177,6 +178,7 @@ export default defineComponent({
 
     return {
       t,
+      getKey: getPropertyValue,
     };
   },
 
@@ -216,7 +218,7 @@ export default defineComponent({
     },
 
     currentValue(): string {
-      return this.selections?.[0]?.[this.labelProperty];
+      return this.getKey(this.selections?.[0], this.labelProperty);
     },
 
     inputValue(): string {
