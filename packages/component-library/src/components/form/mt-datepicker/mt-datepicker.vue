@@ -20,7 +20,7 @@
       :open="isDatepickerOpen"
       :teleport="true"
       :show-cancel="true"
-      :clearable="false"
+      :clearable="clearable"
       :auto-apply="true"
       :range="range"
       :format="formatDate"
@@ -58,7 +58,11 @@
 
     <template v-if="isTimeHintVisible">
       <!-- @deprecated tag:v5 remove field-hint class -->
-      <div class="mt-datepicker__hint field-hint" data-test="time-zone-hint" :style="{ gridArea: 'hint' }">
+      <div
+        class="mt-datepicker__hint field-hint"
+        data-test="time-zone-hint"
+        :style="{ gridArea: 'hint' }"
+      >
         <mt-icon name="solid-clock" class="mt-datepicker__hint-icon" />
         <p>{{ timeZone || "UTC" }}</p>
       </div>
@@ -189,6 +193,16 @@ export default defineComponent({
       required: false,
       default: false,
     },
+
+    /**
+     * Enables the clear button.
+     * If true, the user can clear the date picker value.
+     */
+    clearable: {
+      type: Boolean as PropType<boolean>,
+      required: false,
+      default: false,
+    },
   },
 
   data(): {
@@ -203,34 +217,65 @@ export default defineComponent({
 
   computed: {
     computedValue: {
-      get(): string | string[] {
+      get(): string | string[] | null {
+        if (!this.modelValue) return null;
+
         if (this.dateType === "time") {
-          // Convert ISO string to object with hours, minutes, seconds
-          const date = new Date(this.modelValue as string);
+          if (this.range && Array.isArray(this.modelValue)) {
+            return this.modelValue.map((timeStr) => {
+              const date = new Date(timeStr);
+              return {
+                hours: date.getHours(),
+                minutes: date.getMinutes(),
+                seconds: date.getSeconds(),
+              };
+            }) as unknown as string[];
+          } else {
+            // Convert ISO string to object with hours, minutes, seconds
+            const date = new Date(this.modelValue as string);
 
-          const time = {
-            hours: date.getHours(),
-            minutes: date.getMinutes(),
-            seconds: date.getSeconds(),
-          };
+            const time = {
+              hours: date.getHours(),
+              minutes: date.getMinutes(),
+              seconds: date.getSeconds(),
+            };
 
-          return time as unknown as string;
+            return time as unknown as string;
+          }
         }
 
         return this.modelValue;
       },
       set(newValue: Date | [Date, Date] | null) {
-        if (!newValue) return;
+        // Emit null if there is no value
+        if (!newValue) {
+          this.$emit("update:modelValue", null);
+          return;
+        }
 
         // Handle date conversion for 'time' type
         if (this.dateType === "time") {
-          const isoFormattedDate = this.convertTimeToIso(newValue as unknown as {
-            hours: number;
-            minutes: number;
-            seconds: number;
-          });
-
-          this.$emit("update:modelValue", isoFormattedDate);
+          if (this.range && Array.isArray(newValue)) {
+            const isoFormattedDates = newValue.map((time: Date) =>
+              this.convertTimeToIso(
+                time as unknown as {
+                  hours: number;
+                  minutes: number;
+                  seconds: number;
+                },
+              ),
+            );
+            this.$emit("update:modelValue", isoFormattedDates);
+          } else {
+            const isoFormattedDate = this.convertTimeToIso(
+              newValue as unknown as {
+                hours: number;
+                minutes: number;
+                seconds: number;
+              },
+            );
+            this.$emit("update:modelValue", isoFormattedDate);
+          }
           return;
         }
 
@@ -287,11 +332,7 @@ export default defineComponent({
       }
     },
 
-    convertTimeToIso(time: {
-      hours: number;
-      minutes: number;
-      seconds: number;
-    }): string {
+    convertTimeToIso(time: { hours: number; minutes: number; seconds: number }): string {
       const date = new Date();
       date.setHours(time.hours, time.minutes, time.seconds);
       return date.toISOString();
@@ -541,7 +582,7 @@ export default defineComponent({
   display: none;
 }
 
-.dp__icon {
+.dp__button.dp__overlay_action svg {
   display: none;
 }
 
@@ -555,9 +596,7 @@ export default defineComponent({
 }
 
 .dp--clear-btn {
-  display: absolute;
-  z-index: 9999;
-  background: red;
+  right: var(--scale-size-48);
 }
 
 .mt-datepicker__hint {
