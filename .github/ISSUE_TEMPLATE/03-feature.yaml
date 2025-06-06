@@ -19,6 +19,6 @@ body:
     id: acceptance-criteria
     attributes:
       label: Acceptance criteria
-      description: Please share acceptance criteria—at least one indicator (a metric, condition, etc.) that would help us to validate that we've successfully fulfilled this request.
+      description: Please share acceptance criteria — at least one indicator (a metric, condition, etc.) that would help us to validate that we've successfully fulfilled this request.
     validations:
       required: true
