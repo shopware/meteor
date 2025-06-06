@@ -1,6 +1,6 @@
 {
   "name": "@shopware-ag/meteor-admin-sdk",
-  "version": "5.9.2",
+  "version": "6.0.2",
   "description": "The Meteor SDK for the Shopware Administration.",
   "keywords": [
     "iframe",
@@ -47,6 +47,22 @@
     "./es/_internals/data/EntityCollection": {
       "import": "./es/_internals/data/EntityCollection.js",
       "require": "./umd/_internals/data/EntityCollection.js"
+    },
+    "./es/data/composables": {
+      "import": "./es/data/composables/index.js",
+      "require": "./umd/data/composables/index.js"
+    },
+    "./es/data/composables/useSharedState": {
+      "import": "./es/data/composables/useSharedState.js",
+      "require": "./umd/data/composables/useSharedState.js"
+    },
+    "./es/data/composables/useRepository": {
+      "import": "./es/data/composables/useRepository.js",
+      "require": "./umd/data/composables/useRepository.js"
+    },
+    "./es/data/composables/getRepository": {
+      "import": "./es/data/composables/getRepository.js",
+      "require": "./umd/data/composables/getRepository.js"
     },
     ".": {
       "import": "./es/index.js",

@@ -33,8 +33,36 @@ export const get = <T extends object, D = undefined>(
   return result === undefined ? defValue : result;
 };
 
+/**
+ * Retrieves a value from an object using a property path, with support for fallback paths.
+ * When given an array of paths, returns the first non-empty value found.
+ *
+ * @param object - The source object to extract the value from
+ * @param propertyPath - Either a single string path or an array of string paths to try in order
+ * @param defaultValue - Value to return if no non-empty value is found
+ * @returns The first non-empty value found, or the default value if none found
+ */
+export function getPropertyValue(object: any, propertyPath: string | string[], defaultValue?: any) {
+  if (!propertyPath) {
+    return object;
+  }
+
+  if (Array.isArray(propertyPath)) {
+    for (const path of propertyPath) {
+      const value = get(object, path, "");
+      if (value !== undefined && value !== null && value !== "") {
+        return value;
+      }
+    }
+    return defaultValue;
+  }
+
+  return get(object, propertyPath, defaultValue);
+}
+
 export default {
   deepCopyObject,
   hasOwnProperty,
   get,
+  getPropertyValue,
 };

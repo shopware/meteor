@@ -2,4 +2,4 @@
 "@shopware-ag/meteor-component-library": patch
 ---
 
-Add opacity to shadow token
+Add wrapper value to mt-data-table story

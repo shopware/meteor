@@ -1,5 +1,23 @@
 # Changelog
 
+## 4.12.1
+
+### Patch Changes
+
+- 1147b22: Set default variant of `mt-button` to `secondary`
+
+## 4.12.0
+
+### Minor Changes
+
+- 215eec6: Added button slot to mt-empty-state
+
+## 4.11.2
+
+### Patch Changes
+
+- a85dee7: Add opacity to shadow token
+
 ## 4.11.1
 
 ### Patch Changes
