@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <mt-field-label :style="{ gridArea: 'label' }" id="field-id">
+    <mt-field-label :style="{ gridArea: 'label' }" for="field-id">
       {{ label }}
     </mt-field-label>
 
