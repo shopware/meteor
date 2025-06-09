@@ -277,15 +277,20 @@ function moveDrag(event: MouseEvent | TouchEvent) {
   }
 
   if (event.type === "touchmove") {
+    let foundZone = null;
     dropZones.forEach((zone) => {
       if (isEventOverElement(event, zone.el)) {
-        if (currentDrop === null || zone.el !== currentDrop.el) {
-          enterDropZone(zone.el, zone.dropConfig);
-        }
-      } else if (currentDrop !== null && zone.el === currentDrop.el) {
-        leaveDropZone(zone.el, zone.dropConfig);
+        foundZone = zone;
       }
     });
+
+    clearAllDropZoneHighlights();
+
+    if (foundZone) {
+      enterDropZone(foundZone.el, foundZone.dropConfig);
+    } else if (currentDrop) {
+      leaveDropZone(currentDrop.el, currentDrop.dropConfig);
+    }
   }
 }
 
@@ -608,3 +613,10 @@ export const droppable: Directive = {
     }
   },
 };
+
+function clearAllDropZoneHighlights() {
+  dropZones.forEach((zone) => {
+    zone.el.classList.remove(zone.dropConfig.validDropCls);
+    zone.el.classList.remove(zone.dropConfig.invalidDropCls);
+  });
+}
