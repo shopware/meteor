@@ -1,5 +1,11 @@
 <template>
-  <mt-tooltip :content="text" :placement="placement" :max-width="width">
+  <mt-tooltip
+    :content="text"
+    :placement="placement"
+    :max-width="width"
+    :delay-duration-in-ms="showDelay"
+    :hide-delay-duration-in-ms="hideDelay"
+  >
     <template #default="props">
       <button type="button" v-bind="{ ...props, ...$attrs }" class="mt-help-text">
         <mt-icon
@@ -25,8 +31,8 @@ withDefaults(
     placement?: Placement;
   }>(),
   {
-    showDelay: 100,
-    hideDelay: 100,
+    showDelay: 0,
+    hideDelay: 150,
   },
 );
 </script>

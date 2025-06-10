@@ -1,0 +1,24 @@
+name: New Feature
+description: Development of a new feature.
+type: Story
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to share your idea with us!
+
+  - type: textarea
+    id: user-story
+    attributes:
+      label: User story
+      description: Tell us about your desired feature/functionality, following this format and filling in the elements in brackets with your own content. ==> As a [user persona], I would like to [goal], so that I can [benefit in some way].
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance criteria
+      description: Please share acceptance criteria — at least one indicator (a metric, condition, etc.) that would help us to validate that we've successfully fulfilled this request.
+    validations:
+      required: true

@@ -1,0 +1,40 @@
+name: Technical Improvement / Refactor
+description: Technical improvements like refactoring, testing, or performance tuning.
+type: Improvement
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to share your idea with us!
+
+  - type: dropdown
+    id: package
+    attributes:
+      label: Package(s)
+      description: Which package(s) are affected?
+      multiple: true
+      options:
+        - "@meteor/admin-sdk"
+        - "@meteor/component-library"
+        - "@meteor/icon-kit"
+        - "@meteor/tokens"
+    validations:
+      required: true
+
+  - type: textarea
+    id: current-situation
+    attributes:
+      label: Current Situation
+      description: Describe the current behavior, implementation, or structure that could be improved.
+      placeholder: What is the current state and why does it need improvement?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposed-change
+    attributes:
+      label: Proposed Improvement
+      description: Outline the proposed improvement or refactor.
+      placeholder: What would you like to change or optimize?
+    validations:
+      required: true
