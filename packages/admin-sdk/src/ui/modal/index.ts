@@ -2,11 +2,12 @@ import { createSender } from '../../channel';
 
 export const open = createSender('uiModalOpen');
 export const close = createSender('uiModalClose');
+export const update = createSender('uiModalUpdate');
 
 export type uiModalOpen =
  {
    responseType: void,
-   title: string,
+   title?: string,
    // Use the locationId to render the modal in the iframe
    locationId?: string,
    // Use the textContent when no locationId is provided
@@ -27,6 +28,21 @@ export type uiModalClose =
     */
    locationId?: string,
  }
+
+/**
+ * Update the modal with the given locationId.
+ * Can be used to update the modal from every location
+ * after it has been opened.
+ */
+export type uiModalUpdate = {
+  responseType: void,
+  locationId: string,
+  title?: string,
+  showHeader?: boolean,
+  showFooter?: boolean,
+  closable?: boolean,
+  buttons?: buttonProps[],
+}
 
 export type buttonProps = {
   method: () => void,
