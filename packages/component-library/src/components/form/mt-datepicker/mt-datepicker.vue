@@ -58,7 +58,11 @@
 
     <template v-if="isTimeHintVisible">
       <!-- @deprecated tag:v5 remove field-hint class -->
-      <div class="mt-datepicker__hint field-hint" data-test="time-zone-hint" :style="{ gridArea: 'hint' }">
+      <div
+        class="mt-datepicker__hint field-hint"
+        data-test="time-zone-hint"
+        :style="{ gridArea: 'hint' }"
+      >
         <mt-icon name="solid-clock" class="mt-datepicker__hint-icon" />
         <p>{{ timeZone || "UTC" }}</p>
       </div>
@@ -203,45 +207,42 @@ export default defineComponent({
 
   computed: {
     computedValue: {
-      get(): string | string[] {
+      get(): string | string[] | { hours: number; minutes: number } {
         if (this.dateType === "time") {
-          // Convert ISO string to object with hours, minutes, seconds
-          const date = new Date(this.modelValue as string);
+          if (typeof this.modelValue !== "string") return "";
 
-          const time = {
-            hours: date.getHours(),
-            minutes: date.getMinutes(),
-            seconds: date.getSeconds(),
-          };
-
-          return time as unknown as string;
+          if (this.modelValue.includes("T")) {
+            // ISO string
+            const date = new Date(this.modelValue);
+            return {
+              hours: date.getHours(),
+              minutes: date.getMinutes(),
+            };
+          } else {
+            // Time string (HH:mm)
+            const [hours, minutes] = this.modelValue.split(":").map(Number);
+            return {
+              hours,
+              minutes,
+            };
+          }
         }
 
         return this.modelValue;
       },
-      set(newValue: Date | [Date, Date] | null) {
+      set(newValue: Date | [Date, Date] | { hours: number; minutes: number } | null) {
         if (!newValue) return;
 
         // Handle date conversion for 'time' type
         if (this.dateType === "time") {
-          const isoFormattedDate = this.convertTimeToIso(newValue as unknown as {
-            hours: number;
-            minutes: number;
-            seconds: number;
-          });
-
-          this.$emit("update:modelValue", isoFormattedDate);
+          const time = newValue as { hours: number; minutes: number };
+          const hours = String(time.hours).padStart(2, "0");
+          const minutes = String(time.minutes).padStart(2, "0");
+          this.$emit("update:modelValue", `${hours}:${minutes}`);
           return;
         }
 
-        // Handle date conversion for 'date' type
-        if (this.dateType === "date") {
-          const isoFormattedDate = this.convertDateToIso(newValue);
-          this.$emit("update:modelValue", isoFormattedDate);
-          return;
-        }
-
-        // Handle 'datetime' type: Convert to UTC
+        // Handle both 'date' and 'datetime' types
         const isoValue = this.convertDateToIso(newValue);
         this.$emit("update:modelValue", isoValue);
       },
@@ -258,6 +259,13 @@ export default defineComponent({
     formatDate(date: Date | Date[]): string {
       if (typeof this.format === "function") {
         return this.format(date as Date & Date[]);
+      }
+
+      if (this.dateType === "time") {
+        const timeDate = date as Date;
+        const hours = String(timeDate.getHours()).padStart(2, "0");
+        const minutes = String(timeDate.getMinutes()).padStart(2, "0");
+        return `${hours}:${minutes}`;
       }
 
       // Overide built-in format to y-m-d
@@ -279,22 +287,25 @@ export default defineComponent({
       return formatSingleDate(date);
     },
 
-    convertDateToIso(date: Date | [Date, Date]): string | string[] {
+    convertDateToIso(
+      date: Date | [Date, Date] | { hours: number; minutes: number },
+    ): string | string[] {
       if (Array.isArray(date)) {
         return date.map((d) => d.toISOString());
-      } else {
+      } else if (date instanceof Date) {
         return date.toISOString();
+      } else {
+        // Handle time object case
+        const hours = String(date.hours).padStart(2, "0");
+        const minutes = String(date.minutes).padStart(2, "0");
+        return `${hours}:${minutes}`;
       }
     },
 
-    convertTimeToIso(time: {
-      hours: number;
-      minutes: number;
-      seconds: number;
-    }): string {
-      const date = new Date();
-      date.setHours(time.hours, time.minutes, time.seconds);
-      return date.toISOString();
+    convertTimeToIso(time: { hours: number; minutes: number }): string {
+      const hours = String(time.hours).padStart(2, "0");
+      const minutes = String(time.minutes).padStart(2, "0");
+      return `${hours}:${minutes}`;
     },
   },
 
@@ -441,7 +452,7 @@ export default defineComponent({
 
 .dp__overlay {
   border-radius: var(--border-radius-m);
-  font: inherit;
+  font-family: inherit;
   font-weight: var(--font-weight-regular) !important;
   font-size: var(--font-size-xs) !important;
 }
