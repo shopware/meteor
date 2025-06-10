@@ -5,6 +5,7 @@
     "name": "Fantastic Cotton Sausages",
     "manufacturer": {
       "name": "McDermott, Walsh and McGlynn",
+      "id": "mcdermott-walsh-and-mcglynn",
       "translated": {
         "name": "McDermott, Walsh and McGlynn"
       }
@@ -28,6 +29,7 @@
     "active": false,
     "name": "Intelligent Plastic Pants",
     "manufacturer": {
+      "id": "rice-schoen",
       "name": "Rice - Schoen",
       "translated": {
         "name": "Rice - Schoen"
@@ -52,6 +54,7 @@
     "active": false,
     "name": "Rustic Wooden Chips",
     "manufacturer": {
+      "id": "bauch-group",
       "name": "Bauch Group",
       "translated": {
         "name": "Bauch Group"
@@ -77,6 +80,7 @@
     "name": "Intelligent Concrete Pants",
     "manufacturer": {
       "name": "Skiles - Nikolaus",
+      "id": "skiles-nikolaus",
       "translated": {
         "name": "Skiles - Nikolaus"
       }
@@ -101,6 +105,7 @@
     "name": "Practical Concrete Pizza",
     "manufacturer": {
       "name": "Dare, Effertz and Kulas",
+      "id": "dare-effertz-and-kulas",
       "translated": {
         "name": "Dare, Effertz and Kulas"
       }
@@ -125,6 +130,7 @@
     "name": "Awesome Concrete Chair",
     "manufacturer": {
       "name": "Emard, Schmidt and Bailey",
+      "id": "emard-schmidt-and-bailey",
       "translated": {
         "name": "Emard, Schmidt and Bailey"
       }
@@ -149,6 +155,7 @@
     "name": "Small Cotton Mouse",
     "manufacturer": {
       "name": "Beer - Toy",
+      "id": "beer-toy",
       "translated": {
         "name": "Beer - Toy"
       }
@@ -173,6 +180,7 @@
     "name": "Handcrafted Frozen Chips",
     "manufacturer": {
       "name": "Herman, Kilback and Spencer",
+      "id": "herman-kilback-and-spencer",
       "translated": {
         "name": "Herman, Kilback and Spencer"
       }
@@ -196,6 +204,7 @@
     "active": false,
     "name": "Sleek Frozen Shoes",
     "manufacturer": {
+      "id": "emmerich-inc",
       "name": "Emmerich Inc",
       "translated": {
         "name": "Emmerich Inc"
@@ -223,7 +232,8 @@
       "name": "Lesch - Denesik",
       "translated": {
         "name": "Lesch - Denesik"
-      }
+      },
+      "id": "lesch-denesik"
     },
     "price": [
       {
@@ -247,7 +257,8 @@
       "name": "Bashirian LLC",
       "translated": {
         "name": "Bashirian LLC"
-      }
+      },
+      "id": "bashirian-llc"
     },
     "price": [
       {
@@ -271,7 +282,8 @@
       "name": "Walter, Auer and Hessel",
       "translated": {
         "name": "Walter, Auer and Hessel"
-      }
+      },
+      "id": "walter-auer-and-hessel"
     },
     "price": [
       {
@@ -295,7 +307,8 @@
       "name": "Turcotte, Fay and Oberbrunner",
       "translated": {
         "name": "Turcotte, Fay and Oberbrunner"
-      }
+      },
+      "id": "turcotte-fay-and-oberbrunner"
     },
     "price": [
       {
@@ -319,7 +332,8 @@
       "name": "Bradtke, Orn and Stehr",
       "translated": {
         "name": "Bradtke, Orn and Stehr"
-      }
+      },
+      "id": "bradtke-orn-and-stehr"
     },
     "price": [
       {
@@ -343,7 +357,8 @@
       "name": "Leannon - Turner",
       "translated": {
         "name": "Leannon - Turner"
-      }
+      },
+      "id": "leannon-turner"
     },
     "price": [
       {
@@ -367,7 +382,8 @@
       "name": "Auer, Langworth and Mayert",
       "translated": {
         "name": "Auer, Langworth and Mayert"
-      }
+      },
+      "id": "auer-langworth-and-mayert"
     },
     "price": [
       {
@@ -391,7 +407,8 @@
       "name": "Mills Inc",
       "translated": {
         "name": "Mills Inc"
-      }
+      },
+      "id": "mills-inc"
     },
     "price": [
       {
@@ -415,7 +432,8 @@
       "name": "Grady, Lemke and Reichert",
       "translated": {
         "name": "Grady, Lemke and Reichert"
-      }
+      },
+      "id": "grady-lemke-and-reichert"
     },
     "price": [
       {
@@ -439,7 +457,8 @@
       "name": "Mayer and Sons",
       "translated": {
         "name": "Mayer and Sons"
-      }
+      },
+      "id": "mayer-and-sons"
     },
     "price": [
       {
@@ -463,7 +482,8 @@
       "name": "Thompson, Reichert and Effertz",
       "translated": {
         "name": "Thompson, Reichert and Effertz"
-      }
+      },
+      "id": "thompson-reichert-and-effertz"
     },
     "price": [
       {
@@ -487,7 +507,8 @@
       "name": "Wehner - Ritchie",
       "translated": {
         "name": "Wehner - Ritchie"
-      }
+      },
+      "id": "wehner-ritchie"
     },
     "price": [
       {
@@ -511,7 +532,8 @@
       "name": "Corwin - Stokes",
       "translated": {
         "name": "Corwin - Stokes"
-      }
+      },
+      "id": "corwin-stokes"
     },
     "price": [
       {
@@ -535,7 +557,8 @@
       "name": "Daniel, Emmerich and Bruen",
       "translated": {
         "name": "Daniel, Emmerich and Bruen"
-      }
+      },
+      "id": "daniel-emmerich-and-bruen"
     },
     "price": [
       {
@@ -559,7 +582,8 @@
       "name": "Doyle, Kerluke and Jerde",
       "translated": {
         "name": "Doyle, Kerluke and Jerde"
-      }
+      },
+      "id": "doyle-kerluke-and-jerde"
     },
     "price": [
       {
@@ -583,7 +607,8 @@
       "name": "Medhurst, Corwin and Murray",
       "translated": {
         "name": "Medhurst, Corwin and Murray"
-      }
+      },
+      "id": "medhurst-corwin-and-murray"
     },
     "price": [
       {
@@ -607,7 +632,8 @@
       "name": "Conroy - Gorczany",
       "translated": {
         "name": "Conroy - Gorczany"
-      }
+      },
+      "id": "conroy-gorczany"
     },
     "price": [
       {
@@ -631,7 +657,8 @@
       "name": "Kunde Group",
       "translated": {
         "name": "Kunde Group"
-      }
+      },
+      "id": "kunde-group"
     },
     "price": [
       {
@@ -655,7 +682,8 @@
       "name": "Kautzer - Bergnaum",
       "translated": {
         "name": "Kautzer - Bergnaum"
-      }
+      },
+      "id": "kautzer-bergnaum"
     },
     "price": [
       {
@@ -679,7 +707,8 @@
       "name": "Berge Group",
       "translated": {
         "name": "Berge Group"
-      }
+      },
+      "id": "berge-group"
     },
     "price": [
       {
@@ -703,7 +732,8 @@
       "name": "Senger LLC",
       "translated": {
         "name": "Senger LLC"
-      }
+      },
+      "id": "senger-llc"
     },
     "price": [
       {
@@ -727,7 +757,8 @@
       "name": "Romaguera - DuBuque",
       "translated": {
         "name": "Romaguera - DuBuque"
-      }
+      },
+      "id": "romaguera-dubuque"
     },
     "price": [
       {
@@ -751,7 +782,8 @@
       "name": "Reilly, Streich and Zieme",
       "translated": {
         "name": "Reilly, Streich and Zieme"
-      }
+      },
+      "id": "reilly-streich-and-zieme"
     },
     "price": [
       {
@@ -775,7 +807,8 @@
       "name": "Reinger, Price and Beier",
       "translated": {
         "name": "Reinger, Price and Beier"
-      }
+      },
+      "id": "reinger-price-and-beier"
     },
     "price": [
       {
@@ -799,7 +832,8 @@
       "name": "Keeling LLC",
       "translated": {
         "name": "Keeling LLC"
-      }
+      },
+      "id": "keeling-llc"
     },
     "price": [
       {
@@ -823,7 +857,8 @@
       "name": "Bode LLC",
       "translated": {
         "name": "Bode LLC"
-      }
+      },
+      "id": "bode-llc"
     },
     "price": [
       {
@@ -847,7 +882,8 @@
       "name": "Kihn Inc",
       "translated": {
         "name": "Kihn Inc"
-      }
+      },
+      "id": "kihn-inc"
     },
     "price": [
       {
@@ -871,7 +907,8 @@
       "name": "Pfeffer - Gaylord",
       "translated": {
         "name": "Pfeffer - Gaylord"
-      }
+      },
+      "id": "pfeffer-gaylord"
     },
     "price": [
       {
@@ -895,7 +932,8 @@
       "name": "Flatley and Sons",
       "translated": {
         "name": "Flatley and Sons"
-      }
+      },
+      "id": "flatley-and-sons"
     },
     "price": [
       {
@@ -919,7 +957,8 @@
       "name": "Rowe, Ernser and Hodkiewicz",
       "translated": {
         "name": "Rowe, Ernser and Hodkiewicz"
-      }
+      },
+      "id": "rowe-ernser-and-hodkiewicz"
     },
     "price": [
       {
@@ -943,7 +982,8 @@
       "name": "Hyatt and Sons",
       "translated": {
         "name": "Hyatt and Sons"
-      }
+      },
+      "id": "hyatt-and-sons"
     },
     "price": [
       {
@@ -967,7 +1007,8 @@
       "name": "Bartell, Bayer and Champlin",
       "translated": {
         "name": "Bartell, Bayer and Champlin"
-      }
+      },
+      "id": "bartell-bayer-and-champlin"
     },
     "price": [
       {
@@ -991,7 +1032,8 @@
       "name": "Blick, Prosacco and Durgan",
       "translated": {
         "name": "Blick, Prosacco and Durgan"
-      }
+      },
+      "id": "blick-prosacco-and-durgan"
     },
     "price": [
       {
@@ -1015,7 +1057,8 @@
       "name": "Botsford, Kiehn and Turner",
       "translated": {
         "name": "Botsford, Kiehn and Turner"
-      }
+      },
+      "id": "botsford-kiehn-and-turner"
     },
     "price": [
       {
@@ -1039,7 +1082,8 @@
       "name": "Satterfield - Halvorson",
       "translated": {
         "name": "Satterfield - Halvorson"
-      }
+      },
+      "id": "satterfield-halvorson"
     },
     "price": [
       {
@@ -1063,7 +1107,8 @@
       "name": "Schoen - Leannon",
       "translated": {
         "name": "Schoen - Leannon"
-      }
+      },
+      "id": "schoen-leannon"
     },
     "price": [
       {
@@ -1087,7 +1132,8 @@
       "name": "Cassin, Batz and Weimann",
       "translated": {
         "name": "Cassin, Batz and Weimann"
-      }
+      },
+      "id": "cassin-batz-and-weimann"
     },
     "price": [
       {
@@ -1111,7 +1157,8 @@
       "name": "Little - Flatley",
       "translated": {
         "name": "Little - Flatley"
-      }
+      },
+      "id": "little-flatley"
     },
     "price": [
       {
@@ -1135,7 +1182,8 @@
       "name": "Runolfsson - Herman",
       "translated": {
         "name": "Runolfsson - Herman"
-      }
+      },
+      "id": "runolfsson-herman"
     },
     "price": [
       {
@@ -1159,7 +1207,8 @@
       "name": "Hamill - Marvin",
       "translated": {
         "name": "Hamill - Marvin"
-      }
+      },
+      "id": "hamill-marvin"
     },
     "price": [
       {
@@ -1183,7 +1232,8 @@
       "name": "Rice - Feeney",
       "translated": {
         "name": "Rice - Feeney"
-      }
+      },
+      "id": "rice-feeney"
     },
     "price": [
       {
@@ -1207,7 +1257,8 @@
       "name": "Goyette Group",
       "translated": {
         "name": "Goyette Group"
-      }
+      },
+      "id": "goyette-group"
     },
     "price": [
       {
@@ -1231,7 +1282,8 @@
       "name": "Hoppe, Leuschke and Kemmer",
       "translated": {
         "name": "Hoppe, Leuschke and Kemmer"
-      }
+      },
+      "id": "hoppe-leuschke-and-kemmer"
     },
     "price": [
       {
@@ -1255,7 +1307,8 @@
       "name": "Sanford - Cronin",
       "translated": {
         "name": "Sanford - Cronin"
-      }
+      },
+      "id": "sanford-cronin"
     },
     "price": [
       {
@@ -1279,7 +1332,8 @@
       "name": "Runolfsdottir and Sons",
       "translated": {
         "name": "Runolfsdottir and Sons"
-      }
+      },
+      "id": "runolfsdottir-and-sons"
     },
     "price": [
       {
@@ -1303,7 +1357,8 @@
       "name": "Okuneva and Sons",
       "translated": {
         "name": "Okuneva and Sons"
-      }
+      },
+      "id": "okuneva-and-sons"
     },
     "price": [
       {
@@ -1327,7 +1382,8 @@
       "name": "Dooley and Sons",
       "translated": {
         "name": "Dooley and Sons"
-      }
+      },
+      "id": "dooley-and-sons"
     },
     "price": [
       {
@@ -1351,7 +1407,8 @@
       "name": "Mann - Kunde",
       "translated": {
         "name": "Mann - Kunde"
-      }
+      },
+      "id": "mann-kunde"
     },
     "price": [
       {
@@ -1375,7 +1432,8 @@
       "name": "Maggio, Haag and Berge",
       "translated": {
         "name": "Maggio, Haag and Berge"
-      }
+      },
+      "id": "maggio-haag-and-berge"
     },
     "price": [
       {
@@ -1399,7 +1457,8 @@
       "name": "Hahn and Sons",
       "translated": {
         "name": "Hahn and Sons"
-      }
+      },
+      "id": "hahn-and-sons"
     },
     "price": [
       {
@@ -1423,7 +1482,8 @@
       "name": "Fadel - Gerhold",
       "translated": {
         "name": "Fadel - Gerhold"
-      }
+      },
+      "id": "fadel-gerhold"
     },
     "price": [
       {
@@ -1447,7 +1507,8 @@
       "name": "Kovacek, Cartwright and Collier",
       "translated": {
         "name": "Kovacek, Cartwright and Collier"
-      }
+      },
+      "id": "kovacek-cartwright-and-collier"
     },
     "price": [
       {
@@ -1471,7 +1532,8 @@
       "name": "Gusikowski, Bauch and Watsica",
       "translated": {
         "name": "Gusikowski, Bauch and Watsica"
-      }
+      },
+      "id": "gusikowski-bauch-and-watsica"
     },
     "price": [
       {
@@ -1495,7 +1557,8 @@
       "name": "VonRueden LLC",
       "translated": {
         "name": "VonRueden LLC"
-      }
+      },
+      "id": "vonrueden-llc"
     },
     "price": [
       {
@@ -1519,7 +1582,8 @@
       "name": "Willms - Waelchi",
       "translated": {
         "name": "Willms - Waelchi"
-      }
+      },
+      "id": "willms-waelchi"
     },
     "price": [
       {
@@ -1543,7 +1607,8 @@
       "name": "Shanahan, Klocko and Herzog",
       "translated": {
         "name": "Shanahan, Klocko and Herzog"
-      }
+      },
+      "id": "shanahan-klocko-and-herzog"
     },
     "price": [
       {
@@ -1567,7 +1632,8 @@
       "name": "Dietrich Inc",
       "translated": {
         "name": "Dietrich Inc"
-      }
+      },
+      "id": "dietrich-inc"
     },
     "price": [
       {
@@ -1591,7 +1657,8 @@
       "name": "Schmeler - Kassulke",
       "translated": {
         "name": "Schmeler - Kassulke"
-      }
+      },
+      "id": "schmeler-kassulke"
     },
     "price": [
       {
@@ -1615,7 +1682,8 @@
       "name": "Ortiz Group",
       "translated": {
         "name": "Ortiz Group"
-      }
+      },
+      "id": "ortiz-group"
     },
     "price": [
       {
@@ -1639,7 +1707,8 @@
       "name": "Hettinger Inc",
       "translated": {
         "name": "Hettinger Inc"
-      }
+      },
+      "id": "hettinger-inc"
     },
     "price": [
       {
@@ -1663,7 +1732,8 @@
       "name": "Buckridge - Morar",
       "translated": {
         "name": "Buckridge - Morar"
-      }
+      },
+      "id": "buckridge-morar"
     },
     "price": [
       {
@@ -1687,7 +1757,8 @@
       "name": "Kuvalis Group",
       "translated": {
         "name": "Kuvalis Group"
-      }
+      },
+      "id": "kuvalis-group"
     },
     "price": [
       {
@@ -1711,7 +1782,8 @@
       "name": "King - Smitham",
       "translated": {
         "name": "King - Smitham"
-      }
+      },
+      "id": "king-smitham"
     },
     "price": [
       {
@@ -1735,7 +1807,8 @@
       "name": "Sporer and Sons",
       "translated": {
         "name": "Sporer and Sons"
-      }
+      },
+      "id": "sporer-and-sons"
     },
     "price": [
       {
@@ -1759,7 +1832,8 @@
       "name": "Greenfelder Inc",
       "translated": {
         "name": "Greenfelder Inc"
-      }
+      },
+      "id": "greenfelder-inc"
     },
     "price": [
       {
@@ -1783,7 +1857,8 @@
       "name": "Anderson and Sons",
       "translated": {
         "name": "Anderson and Sons"
-      }
+      },
+      "id": "anderson-and-sons"
     },
     "price": [
       {
@@ -1807,7 +1882,8 @@
       "name": "Trantow and Sons",
       "translated": {
         "name": "Trantow and Sons"
-      }
+      },
+      "id": "trantow-and-sons"
     },
     "price": [
       {
@@ -1831,7 +1907,8 @@
       "name": "Gibson - Predovic",
       "translated": {
         "name": "Gibson - Predovic"
-      }
+      },
+      "id": "gibson-predovic"
     },
     "price": [
       {
@@ -1855,7 +1932,8 @@
       "name": "O'Kon - Bernhard",
       "translated": {
         "name": "O'Kon - Bernhard"
-      }
+      },
+      "id": "o-kon-bernhard"
     },
     "price": [
       {
@@ -1879,7 +1957,8 @@
       "name": "Rosenbaum Group",
       "translated": {
         "name": "Rosenbaum Group"
-      }
+      },
+      "id": "rosenbaum-group"
     },
     "price": [
       {
@@ -1903,7 +1982,8 @@
       "name": "Quitzon LLC",
       "translated": {
         "name": "Quitzon LLC"
-      }
+      },
+      "id": "quitzon-llc"
     },
     "price": [
       {
@@ -1927,7 +2007,8 @@
       "name": "Heathcote, Collins and Champlin",
       "translated": {
         "name": "Heathcote, Collins and Champlin"
-      }
+      },
+      "id": "heathcote-collins-and-champlin"
     },
     "price": [
       {
@@ -1951,7 +2032,8 @@
       "name": "Kunze - Aufderhar",
       "translated": {
         "name": "Kunze - Aufderhar"
-      }
+      },
+      "id": "kunze-aufderhar"
     },
     "price": [
       {
@@ -1975,7 +2057,8 @@
       "name": "Greenholt and Sons",
       "translated": {
         "name": "Greenholt and Sons"
-      }
+      },
+      "id": "greenholt-and-sons"
     },
     "price": [
       {
@@ -1999,7 +2082,8 @@
       "name": "Walsh, Lueilwitz and Carter",
       "translated": {
         "name": "Walsh, Lueilwitz and Carter"
-      }
+      },
+      "id": "walsh-lueilwitz-and-carter"
     },
     "price": [
       {
@@ -2023,7 +2107,8 @@
       "name": "Keebler - Mohr",
       "translated": {
         "name": "Keebler - Mohr"
-      }
+      },
+      "id": "keebler-mohr"
     },
     "price": [
       {
@@ -2047,7 +2132,8 @@
       "name": "Homenick, Thiel and Schaden",
       "translated": {
         "name": "Homenick, Thiel and Schaden"
-      }
+      },
+      "id": "homenick-thiel-and-schaden"
     },
     "price": [
       {
@@ -2071,7 +2157,8 @@
       "name": "Ledner and Sons",
       "translated": {
         "name": "Ledner and Sons"
-      }
+      },
+      "id": "ledner-and-sons"
     },
     "price": [
       {
@@ -2095,7 +2182,8 @@
       "name": "Bechtelar and Sons",
       "translated": {
         "name": "Bechtelar and Sons"
-      }
+      },
+      "id": "bechtelar-and-sons"
     },
     "price": [
       {
@@ -2119,7 +2207,8 @@
       "name": "Cole, Sanford and Bogan",
       "translated": {
         "name": "Cole, Sanford and Bogan"
-      }
+      },
+      "id": "cole-sanford-and-bogan"
     },
     "price": [
       {
@@ -2143,7 +2232,8 @@
       "name": "Mertz, Simonis and Gutmann",
       "translated": {
         "name": "Mertz, Simonis and Gutmann"
-      }
+      },
+      "id": "mertz-simonis-and-gutmann"
     },
     "price": [
       {

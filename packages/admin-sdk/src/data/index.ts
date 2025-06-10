@@ -1,35 +1,48 @@
-import { createHandler, createSender, processDataRegistration, send, subscribe as createSubscriber } from '../channel';
-import MissingPrivilegesError from '../_internals/privileges/missing-privileges-error';
-import Criteria from './Criteria';
-import Entity from '../_internals/data/Entity';
-import EntityCollection from '../_internals/data/EntityCollection';
-import repository from './repository';
+import {
+  createHandler,
+  createSender,
+  processDataRegistration,
+  send,
+  subscribe as createSubscriber,
+} from "../channel";
+import MissingPrivilegesError from "../_internals/privileges/missing-privileges-error";
+import Criteria from "./criteria";
+import Entity from "../_internals/data/entity";
+import EntityCollection from "../_internals/data/entity-collection";
+import repository from "./repository";
 
 // Internal function to create a filterable subscriber
-function createFilteredSubscriber(type: 'datasetSubscribe' | 'datasetUpdate') {
+function createFilteredSubscriber(type: "datasetSubscribe" | "datasetUpdate") {
   return (
     id: string,
-    callback: (data: {id: string, data: unknown}) => void | Promise<unknown>,
+    callback: (data: { id: string; data: unknown }) => void | Promise<unknown>,
     options?: {
-      selectors?: string[],
+      selectors?: string[];
     }
   ): unknown => {
-    if (type === 'datasetSubscribe') {
+    if (type === "datasetSubscribe") {
       // Send message to admin that this window wants to subscribe to a dataset
-      void send('datasetSubscribeRegistration', {
+      void send("datasetSubscribeRegistration", {
         id,
         selectors: options?.selectors,
       });
     }
 
-    const wrapper = (data: {id: string, data: unknown, selectors?: string[]}): void => {
+    const wrapper = (data: {
+      id: string;
+      data: unknown;
+      selectors?: string[];
+    }): void => {
       if (data?.id !== id) {
         return;
       }
 
       if (data.selectors && data.selectors.length > 0) {
         // Compare if the selectors match independent of the order
-        if (options?.selectors?.sort().join(',') !== data.selectors.sort().join(',')) {
+        if (
+          options?.selectors?.sort().join(",") !==
+          data.selectors.sort().join(",")
+        ) {
           return;
         }
       }
@@ -47,87 +60,87 @@ function createFilteredSubscriber(type: 'datasetSubscribe' | 'datasetUpdate') {
       }
     };
 
-    return createSubscriber(type, wrapper as (data: unknown) => void | Promise<unknown>);
+    return createSubscriber(
+      type,
+      wrapper as (data: unknown) => void | Promise<unknown>
+    );
   };
 }
 
 /**
  * Methods used by extension developers to get and update data
  */
-export const subscribe = createFilteredSubscriber('datasetSubscribe');
-export const get = createSender('datasetGet');
-export const update = createSender('datasetUpdate');
+export const subscribe = createFilteredSubscriber("datasetSubscribe");
+export const get = createSender("datasetGet");
+export const update = createSender("datasetUpdate");
 
 /**
  * Internal methods used by the administration
  */
 export const register = processDataRegistration;
-export const updateSubscriber = createFilteredSubscriber('datasetUpdate');
-export const handleGet = createHandler('datasetGet');
+export const updateSubscriber = createFilteredSubscriber("datasetUpdate");
+export const handleGet = createHandler("datasetGet");
 
 // Register sends message to all registered
 export type datasetRegistration = {
   responseType: {
-    id: string,
-    data: unknown,
-  },
+    id: string;
+    data: unknown;
+  };
 
-  id: string,
+  id: string;
 
-  data: unknown,
-}
+  data: unknown;
+};
 
 export type datasetSubscribe = {
-  responseType: unknown,
+  responseType: unknown;
 
-  id: string,
+  id: string;
 
-  data: unknown,
+  data: unknown;
 
-  selectors?: string[],
-}
+  selectors?: string[];
+};
 
 /**
- * Will be used for giving the admin the information that 
+ * Will be used for giving the admin the information that
  * a window wants to subscribe to a dataset
  */
 export type datasetSubscribeRegistration = {
-  responseType: unknown,
+  responseType: unknown;
 
-  id: string,
+  id: string;
 
-  selectors?: string[],
-}
+  selectors?: string[];
+};
 
 export type datasetUpdate = {
-  responseType: unknown,
+  responseType: unknown;
 
-  id: string,
+  id: string;
 
-  data: unknown,
-}
+  data: unknown;
+};
 
 export type datasetGet = {
-  responseType: unknown,
+  responseType: unknown;
 
-  id: string,
+  id: string;
 
-  data?: unknown,
+  data?: unknown;
 
-  selectors?: string[],
-}
+  selectors?: string[];
+};
 
 const Classes: {
-  Criteria: typeof Criteria,
-  Entity: typeof Entity,
-  EntityCollection: typeof EntityCollection,
+  Criteria: typeof Criteria;
+  Entity: typeof Entity;
+  EntityCollection: typeof EntityCollection;
 } = {
   Criteria,
   Entity: Entity,
   EntityCollection,
 };
 
-export {
-  repository,
-  Classes,
-};
+export { repository, Classes };
