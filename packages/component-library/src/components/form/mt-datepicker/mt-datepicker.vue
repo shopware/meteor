@@ -249,11 +249,6 @@ export default defineComponent({
         this.$emit("update:modelValue", isoValue);
       },
     },
-    cssVars() {
-      return {
-        "--menu-border-opacity": this.dateType === "date" ? "0" : "1",
-      };
-    },
   },
 
   watch: {

@@ -36,6 +36,7 @@ export const VisualTestDateInputValue: MtDatepickerStory = {
   args: {
     label: "Date value",
     dateType: "date",
+    locale: "en-US",
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
@@ -75,6 +76,7 @@ export const VisualTestDateTimeInputValue: MtDatepickerStory = {
   args: {
     label: "Date value",
     dateType: "datetime",
+    locale: "en-US",
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
@@ -100,8 +102,7 @@ export const VisualTestDateTimeInputValue: MtDatepickerStory = {
       document.querySelector('[data-test-id="hours-toggle-overlay-btn-0"]') as HTMLInputElement,
     );
 
-    // Wait 500ms, element checking is not always reliable
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    await waitUntil(() => !document.querySelector('.calendar-header'));
 
     // Select an hour
     await userEvent.click(document.querySelector('[data-test-id="12"]') as HTMLInputElement);
@@ -136,6 +137,7 @@ export const VisualTestDateRangeValue: MtDatepickerStory = {
     label: "Date value",
     dateType: "date",
     range: true,
+    locale: "en-US",
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -176,6 +178,7 @@ export const VisualTestDateTimeRangeValue: MtDatepickerStory = {
     dateType: "datetime",
     range: true,
     timeZone: "UTC",
+    locale: "en-US",
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
@@ -222,8 +225,12 @@ export const VisualTestDateTimeRangeValue: MtDatepickerStory = {
     // Wait until dialog with "hours overlay" is open
     await expect(document.querySelector('[aria-label="hours overlay"]')).toBeInTheDocument();
     await expect(document.querySelector('[data-test-id="11"]')).toBeInTheDocument();
-    // Wait 500ms, element checking is not always reliable
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    await expect(document.querySelector('[aria-label="Toggle overlay"]')).toBeInTheDocument();
+
+    // await new Promise((resolve) => setTimeout(resolve, 500000));
+    await waitUntil(() => !document.querySelector('.dp-slide-down-enter-active'));
+    await waitUntil(() => document.querySelector('[aria-label="Toggle overlay"]'));
+
     await userEvent.click(document.querySelector('[data-test-id="11"]') as HTMLInputElement);
 
     // Set minutes for second date
