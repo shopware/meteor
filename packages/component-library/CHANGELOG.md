@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.12.2
+
+### Patch Changes
+
+- de166a0: Add wrapper value to mt-data-table story
+- 0f57146: Reduced animation delay in mt-tool-tip
+
 ## 4.12.1
 
 ### Patch Changes
