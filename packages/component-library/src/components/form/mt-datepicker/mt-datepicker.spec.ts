@@ -101,4 +101,17 @@ describe("src/app/component/form/mt-datepicker", () => {
     const datepickerInput = wrapper.find(".dp__input");
     expect(datepickerInput.attributes().value).toBe("14:30");
   });
+
+  it("should add has-error class to wrapper when error prop is provided", async () => {
+    wrapper = await createWrapper({
+      props: {
+        error: {
+          code: 500,
+          detail: "Error message"
+        }
+      }
+    });
+
+    expect(wrapper.classes()).toContain("has-error");
+  });
 });
