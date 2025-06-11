@@ -30,6 +30,8 @@
       :exactMatch="dateType === 'date'"
       time-picker-inline
       :time-picker="dateType === 'time'"
+      :no-hours-overlay="dateType === 'time'"
+      :no-minutes-overlay="dateType === 'time'"
     >
       <template #input-icon>
         <mt-icon name="regular-calendar" class="regular-calendar" />
@@ -247,15 +249,31 @@ export default defineComponent({
         this.$emit("update:modelValue", isoValue);
       },
     },
+    cssVars() {
+      return {
+        "--menu-border-opacity": this.dateType === "date" ? "0" : "1",
+      };
+    },
   },
 
   watch: {
-    dateType(newType) {
-      this.isTimeHintVisible = newType !== "date";
+    dateType() {
+      this.isTimeHintVisible = this.dateType !== "date";
+      this.updateOpacitySettings();
     },
   },
 
   methods: {
+    updateOpacitySettings() {
+      document.documentElement.style.setProperty(
+        "--menu-border-opacity",
+        this.dateType === "datetime" ? "1" : "0",
+      );
+      document.documentElement.style.setProperty(
+        "--time-inc-dec-opacity",
+        this.dateType === "time" ? "1" : "0",
+      );
+    },
     formatDate(date: Date | Date[]): string {
       if (typeof this.format === "function") {
         return this.format(date as Date & Date[]);
@@ -311,11 +329,17 @@ export default defineComponent({
 
   mounted() {
     this.isTimeHintVisible = this.dateType !== "date";
+    this.updateOpacitySettings();
   },
 });
 </script>
 
 <style lang="css">
+:root {
+  --menu-border-opacity: 1;
+  --time-inc-dec-opacity: 0;
+}
+
 /* || Datepicker theme  */
 .dp__theme_light {
   --dp-background-color: var(--color-elevation-surface-overlay);
@@ -418,6 +442,10 @@ export default defineComponent({
   top: -7px;
 }
 
+.dp__calendar {
+  padding-bottom: var(--scale-size-4);
+}
+
 .dp__arrow_top {
   top: -0.5px;
   left: var(--scale-size-24);
@@ -488,17 +516,26 @@ export default defineComponent({
   border: 1px solid var(--color-border-primary-default);
 }
 
+.dp--overlay-relative {
+  height: auto !important;
+}
+
 /* || Time picker */
-.dp__time_picker_inline_container {
-  padding-top: 5px;
+.dp__menu_inner::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 0px;
+  border-top: 1px solid var(--color-border-primary-default);
+  opacity: var(--menu-border-opacity);
 }
 
 .dp__flex {
   width: 100%;
-  border-top: 1px solid var(--color-border-primary-default) !important;
   display: flex;
   flex-direction: column;
   align-items: center;
+  padding-top: var(--scale-size-2);
 }
 
 .dp__time_input {
@@ -515,16 +552,14 @@ export default defineComponent({
 }
 
 .dp__inc_dec_button_inline {
-  opacity: 0;
+  opacity: var(--time-inc-dec-opacity, 1);
+  color: var(--color-border-primary-default);
   justify-content: center;
 }
 
 .dp__inc_dec_button_inline:hover {
   opacity: 1;
-}
-
-.time-arrow-up-down {
-  color: var(--color-border-primary-default);
+  color: var(--color-icon-primary-default);
 }
 
 .dp__overlay {
