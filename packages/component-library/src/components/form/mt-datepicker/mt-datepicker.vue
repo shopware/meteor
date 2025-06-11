@@ -1,5 +1,5 @@
 <template>
-  <div class="wrapper">
+  <div class="wrapper" :class="{ 'has-error': error }">
     <mt-field-label :style="{ gridArea: 'label' }" id="field-id">
       {{ label }}
     </mt-field-label>
@@ -64,7 +64,9 @@
       </template>
     </vue-datepicker>
 
-    <template v-if="isTimeHintVisible">
+    <mt-field-error v-if="error" :error="error" />
+
+    <template v-else-if="isTimeHintVisible">
       <!-- @deprecated tag:v5 remove field-hint class -->
       <div
         class="mt-datepicker__hint field-hint"
@@ -84,6 +86,7 @@ import type { PropType } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import DatePicker, { type VueDatePickerProps } from "@vuepic/vue-datepicker";
+import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import "@vuepic/vue-datepicker/dist/main.css";
 
 export default defineComponent({
@@ -93,6 +96,7 @@ export default defineComponent({
     "mt-icon": MtIcon,
     "vue-datepicker": DatePicker,
     "mt-field-label": MtFieldLabel,
+    "mt-field-error": MtFieldError,
   },
 
   props: {
@@ -200,6 +204,20 @@ export default defineComponent({
       type: Boolean as PropType<boolean>,
       required: false,
       default: false,
+    },
+
+    /**
+     * An error in your business logic related to this field.
+     *
+     * For example: {"code": 500, "detail": "Error while saving"}
+     */
+    error: {
+      type: Object as PropType<{
+        code?: number;
+        detail?: string;
+      } | null>,
+      required: false,
+      default: null,
     },
   },
 
@@ -646,5 +664,14 @@ export default defineComponent({
 .mt-datepicker__hint-icon svg#meteor-icon-kit__solid-clock {
   width: var(--scale-size-12);
   height: var(--scale-size-12);
+}
+
+.wrapper.has-error .dp__input {
+  border: 1px solid var(--color-border-critical-default);
+  background: var(--color-background-critical-light);
+}
+
+.wrapper.has-error .dp__input:focus {
+  filter: drop-shadow(0px 0px 3px #ff4d4d4d);
 }
 </style>

@@ -102,7 +102,7 @@ export const VisualTestDateTimeInputValue: MtDatepickerStory = {
       document.querySelector('[data-test-id="hours-toggle-overlay-btn-0"]') as HTMLInputElement,
     );
 
-    await waitUntil(() => !document.querySelector(".calendar-header"));
+    await waitUntil(() => !document.querySelector('.calendar-header'));
 
     // Select an hour
     await userEvent.click(document.querySelector('[data-test-id="12"]') as HTMLInputElement);
@@ -228,7 +228,7 @@ export const VisualTestDateTimeRangeValue: MtDatepickerStory = {
     await expect(document.querySelector('[aria-label="Toggle overlay"]')).toBeInTheDocument();
 
     // await new Promise((resolve) => setTimeout(resolve, 500000));
-    await waitUntil(() => !document.querySelector(".dp-slide-down-enter-active"));
+    await waitUntil(() => !document.querySelector('.dp-slide-down-enter-active'));
     await waitUntil(() => document.querySelector('[aria-label="Toggle overlay"]'));
 
     await userEvent.click(document.querySelector('[data-test-id="11"]') as HTMLInputElement);
@@ -364,5 +364,56 @@ export const VisualTestClearButton: MtDatepickerStory = {
     const canvas = within(canvasElement);
 
     expect(canvas.getByRole("button", { name: "Clear value" })).toBeVisible();
+  },
+};
+
+export const VisualTestErrorStateRendering: MtDatepickerStory = {
+  name: "Should display error",
+  args: {
+    error: {
+      code: 500,
+      detail: "Error while saving!",
+    },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const errorMessage = canvas.getByText("Error while saving!");
+    expect(errorMessage).toBeInTheDocument();
+
+    const errorIcon = document.querySelector("#meteor-icon-kit__solid-exclamation-circle");
+    expect(errorIcon).toBeInTheDocument();
+
+    expect(canvasElement.firstElementChild).toHaveClass("has-error");
+  },
+};
+
+export const VisualTestMinDateDisabledDays: MtDatepickerStory = {
+  name: "Should only select the day from min-date",
+  args: {
+    label: "Date value",
+    minDate: "today",
+    locale: "en-US",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await userEvent.click(canvas.getByRole("textbox"));
+    await waitUntil(() => document.getElementsByClassName("dp__menu").length > 0);
+
+    const disabledDays = document.querySelectorAll(".dp__calendar .dp__cell.dp__disabled");
+    expect(disabledDays.length).toBeGreaterThan(0);
+    const today = new Date();
+    disabledDays.forEach((el) => {
+      const dateAttr = el.getAttribute("id");
+      if (dateAttr) {
+        const date = new Date(dateAttr);
+        expect(date < today).toBe(true);
+      }
+    });
+
+    const todayId = today.toISOString().slice(0, 10);
+    const todayElement = document.getElementById(todayId);
+    expect(todayElement).not.toHaveClass("dp__disabled");
   },
 };

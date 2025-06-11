@@ -127,4 +127,17 @@ describe("mt-datepicker", () => {
     expect(screen.getByRole("textbox")).toHaveValue("");
     expect(handler).toHaveBeenCalledExactlyOnceWith(null);
   });
+
+  it("should add has-error class to wrapper when error prop is provided", async () => {
+    wrapper = await createWrapper({
+      props: {
+        error: {
+          code: 500,
+          detail: "Error message"
+        }
+      }
+    });
+
+    expect(wrapper.classes()).toContain("has-error");
+  });
 });
