@@ -37,6 +37,7 @@ watch(
 
 function setIsOpen(state: boolean) {
   isOpen.value = state;
+  emit("change", state);
 }
 
 provide(DialogContext, {
