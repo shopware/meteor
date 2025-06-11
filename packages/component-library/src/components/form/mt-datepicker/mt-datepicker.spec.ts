@@ -76,5 +76,29 @@ describe("src/app/component/form/mt-datepicker", () => {
     const timeZoneHint = wrapper.find('[data-test="time-zone-hint"]');
     expect(timeZoneHint.exists()).toBeTruthy();
     expect(timeZoneHint.text()).toBe("Europe/Berlin");
-  });  
+  });
+
+  it("should output time only when dateType is time", async () => {
+    wrapper = await createWrapper({
+      props: {
+        dateType: "time",
+        modelValue: "14:30",
+      },
+    });
+
+    const datepickerInput = wrapper.find(".dp__input");
+    expect(datepickerInput.attributes().value).toBe("14:30");
+  });
+
+  it("should output time only when ISO string is provided and in time mode", async () => {
+    wrapper = await createWrapper({
+      props: {
+        dateType: "time",
+        modelValue: "2024-03-20T14:30:00Z",
+      },
+    });
+
+    const datepickerInput = wrapper.find(".dp__input");
+    expect(datepickerInput.attributes().value).toBe("14:30");
+  });
 });
