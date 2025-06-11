@@ -353,3 +353,24 @@ export const VisualTestTimeType: MtDatepickerStory = {
     expect(args.updateModelValue).toHaveBeenCalledWith("08:16");
   },
 };
+
+export const TestErrorStateRendering: MtDatepickerStory = {
+  name: "Should display error",
+  args: {
+    error: {
+      code: 500,
+      detail: "Error while saving!",
+    },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const errorMessage = canvas.getByText("Error while saving!");
+    expect(errorMessage).toBeInTheDocument();
+
+    const errorIcon = document.querySelector("#meteor-icon-kit__solid-exclamation-circle");
+    expect(errorIcon).toBeInTheDocument();
+
+    expect(canvasElement.firstElementChild).toHaveClass("has-error");
+  },
+};
