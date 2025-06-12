@@ -1,5 +1,5 @@
 import { send } from '../channel';
-import type Criteria from './Criteria';
+import type { Criteria } from '@shopware-ag/shared';
 import type { ApiContext } from '../_internals/data/EntityCollection';
 import type EntityCollection from '../_internals/data/EntityCollection';
 import type { Entity } from '../_internals/data/Entity';
