@@ -19,7 +19,7 @@ ui.modal.open({
     variant: 'large',
     showHeader: true,
     showFooter: false,
-    closable: true
+    closable: true,
     buttons: [
         {
             label: 'Dispatch notification',
@@ -83,6 +83,40 @@ ui.modal.open({
     ]
 })
 ```
+
+### Update modal
+> Available since Shopware 6.7.1.0
+
+Updates an existing modal with the given `locationId`. This can be used to modify the modal's properties after it has been opened, such as changing the title, buttons, or visibility of header/footer from inside the modal.
+
+#### Usage:
+```ts
+ui.modal.update({
+    locationId: 'your-location-id',
+    title: 'Updated modal title',
+    showHeader: true,
+    showFooter: true,
+    closable: true,
+    buttons: [
+        {
+            label: 'New button',
+            method: () => {
+                // Your method here
+            }
+        }
+    ]
+})
+```
+
+#### Parameters
+| Name         | Required | Default | Description                                                                                    |
+|:-------------|:---------|:--------|:-----------------------------------------------------------------------------------------------|
+| `locationId` | true     |         | The id of the modal which should be updated                                                    |
+| `title`      | false    |         | The new title of the modal                                                                     |
+| `showHeader` | false    |         | Enable or disable the header in the modal                                                      |
+| `showFooter` | false    |         | Enable or disable the modal footer                                                             |
+| `closable`   | false    |         | If set to `false` then the modal can only be closed programmatically                           |
+| `buttons`    | false    |         | Array of button configurations which will render buttons in the footer of the modal            |
 
 ### Close modal
 Closes an opened modal. You need use the correct `locationId` of the modal which should get closed. If you don't provide a `locationId` the last modal without a `locationId` gets closed.
