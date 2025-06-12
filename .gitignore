@@ -9,3 +9,5 @@ chrome/
 .direnv
 .devenv*
 devenv.local.nix
+.docusaurus
+docs/admin-sdk/build
