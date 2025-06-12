@@ -1,5 +1,16 @@
 # Changelog
 
+## 4.13.0
+
+### Minor Changes
+
+- 794edcc: Add mt-entity-data-table component
+
+### Patch Changes
+
+- Updated dependencies [5e34e6d]
+  - @shopware-ag/meteor-admin-sdk@6.1.0
+
 ## 4.12.2
 
 ### Patch Changes
