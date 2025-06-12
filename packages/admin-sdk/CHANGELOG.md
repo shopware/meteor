@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.1.0
+
+### Minor Changes
+
+- 5e34e6d: Add "modal.update" method
+
 ## 6.0.3
 
 ### Patch Changes
