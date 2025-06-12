@@ -420,6 +420,16 @@ export default defineComponent({
   display: none;
 }
 
+.mt-field .mt-field__addition:has(button) {
+  padding: 0;
+
+  & > button {
+    width: 100%;
+    height: 100%;
+    padding: var(--scale-size-12) 15px;
+  }
+}
+
 .mt-field .mt-field__addition.is--prefix {
   border-right: 1px solid var(--color-border-primary-default);
   border-left: none;
