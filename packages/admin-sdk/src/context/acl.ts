@@ -1,7 +1,7 @@
 import type { contextAppInformation } from './index';
 import type { privileges } from '../_internals/privileges';
 
-export default function getCan(
+export default function createPermissionChecker(
   getContextAppInformation: () => Promise<contextAppInformation>
 ) {
   return async (privilege: string): Promise<boolean> => {
@@ -20,7 +20,9 @@ function flattenPrivileges(acl: privileges): string[] {
   const flattened: string[] = [];
 
   Object.keys(acl).forEach((key) => {
-    const privileges = acl[key] as string[];
+    const privileges = acl[key as keyof privileges];
+
+    if (!privileges) return;
 
     if (key === 'additional') {
       flattened.push(...privileges);
