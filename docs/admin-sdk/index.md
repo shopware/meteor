@@ -28,7 +28,7 @@ Go to [Installation](./getting-started/installation.md) to get started. Or check
 Understand the Shopware Extension SDK by learning how to throw a notification.
 
 Requirements for this quick start guide are:
-- [development Shopware 6 instance](https://developer.shopware.com/docs/guides/installation) or a [Shopware 6 cloud instance](https://www.shopware.com/en/shopware-cloud/)
+- [Shopware 6 self-hosted instance](https://developer.shopware.com/docs/guides/installation) or a [Shopware 6 cloud instance](https://www.shopware.com/en/shopware-cloud/)
 - [clean Shopware 6 Plugin or App](https://developer.shopware.com/docs/guides/plugins/overview) which is activated
 
 ### App
