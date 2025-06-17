@@ -1,6 +1,11 @@
 <template>
-  <div class="wrapper" :class="{ 'has-error': error }">
-    <mt-field-label :style="{ gridArea: 'label' }" id="field-id">
+  <div class="wrapper" :class="{ 'has-error': error || errorMessage }">
+    <mt-field-label 
+      :style="{ gridArea: 'label' }" 
+      id="field-id"
+      :has-error="!!error || !!errorMessage"
+      :required="required"
+    >
       {{ label }}
     </mt-field-label>
 
@@ -11,7 +16,10 @@
       class="date-picker"
       position="left"
       @open="isDatepickerOpen = true"
-      @close="isDatepickerOpen = false"
+      @close="() => {
+        isDatepickerOpen = false;
+        checkValidity();
+      }"
       :placeholder="placeholder"
       :disabled="disabled"
       :required="required"
@@ -32,6 +40,9 @@
       :time-picker="dateType === 'time'"
       :no-hours-overlay="dateType === 'time'"
       :no-minutes-overlay="dateType === 'time'"
+      :min-date="minDate"
+      :aria-invalid="!!errorMessage || !!error"
+      :aria-describedby="!!errorMessage || !!error ? errorId : undefined"
     >
       <template #input-icon>
         <mt-icon name="regular-calendar" class="regular-calendar" />
@@ -58,9 +69,14 @@
       </template>
     </vue-datepicker>
 
-    <mt-field-error v-if="error" :error="error" />
+    <mt-field-error 
+      v-if="error || errorMessage" 
+      :error="errorMessage || error"
+      :id="errorId"
+      :style="{ gridArea: 'error' }" 
+    />
 
-    <template v-else-if="isTimeHintVisible">
+    <template v-if="isTimeHintVisible">
       <!-- @deprecated tag:v5 remove field-hint class -->
       <div
         class="mt-datepicker__hint field-hint"
@@ -75,13 +91,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import type { PropType } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import DatePicker, { type VueDatePickerProps } from "@vuepic/vue-datepicker";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import "@vuepic/vue-datepicker/dist/main.css";
+import { useId } from "vue";
 
 export default defineComponent({
   name: "MtDatepicker",
@@ -99,7 +116,7 @@ export default defineComponent({
      */
     label: {
       type: String as PropType<string | null>,
-      required: false,
+      required: true,
       default: null,
     },
 
@@ -213,6 +230,28 @@ export default defineComponent({
       required: false,
       default: null,
     },
+
+    /**
+     * The minimum selectable date. Can be a Date object or an ISO string.
+     * Any date before this will be disabled in the calendar.
+     */
+    minDate: {
+      type: [Date, String] as PropType<Date | string>,
+      required: false,
+      default: undefined,
+    },
+  },
+
+  setup() {
+    const errorId = useId();
+    const errorMessage = ref<{ detail: string } | undefined>(undefined);
+    const datepicker = ref<InstanceType<typeof DatePicker> | null>(null);
+
+    return {
+      errorId,
+      errorMessage,
+      datepicker
+    };
   },
 
   data(): {
@@ -274,6 +313,12 @@ export default defineComponent({
       this.isTimeHintVisible = this.dateType !== "date";
       this.updateOpacitySettings();
     },
+    modelValue: {
+      immediate: true,
+      handler() {
+        this.checkValidity();
+      }
+    }
   },
 
   methods: {
@@ -338,6 +383,21 @@ export default defineComponent({
       const minutes = String(time.minutes).padStart(2, "0");
       return `${hours}:${minutes}`;
     },
+
+    checkValidity() {
+      if (!this.required) {
+        this.errorMessage = undefined;
+        return;
+      }
+
+      if (!this.modelValue) {
+        this.errorMessage = {
+          detail: "This field is required"
+        };
+      } else {
+        this.errorMessage = undefined;
+      }
+    },
   },
 
   mounted() {
@@ -389,6 +449,7 @@ export default defineComponent({
   grid-template-areas:
     "label"
     "datepicker"
+    "error"
     "hint";
   row-gap: 0.4rem;
 }
