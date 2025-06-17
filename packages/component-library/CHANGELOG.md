@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.13.1
+
+### Patch Changes
+
+- Updated dependencies [e44cf07]
+  - @shopware-ag/meteor-admin-sdk@6.2.0
+
 ## 4.13.0
 
 ### Minor Changes
