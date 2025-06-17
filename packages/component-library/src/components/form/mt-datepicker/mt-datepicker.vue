@@ -621,6 +621,10 @@ export default defineComponent({
   &:focus-visible {
     background: var(--color-interaction-secondary-hover);
   }
+
+  & .mt-icon {
+    margin-bottom: var(--scale-size-2);
+  }
 }
 
 .mt-datepicker__hint {
