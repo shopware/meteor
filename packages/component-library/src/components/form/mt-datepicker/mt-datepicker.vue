@@ -405,6 +405,11 @@ export default defineComponent({
   font: inherit;
   color: var(--color-text-secondary-default);
   background: var(--color-elevation-surface-raised);
+  color: var(--color-text-primary-default);
+
+  &::placeholder {
+    color: var(--color-text-secondary-default);
+  }
 }
 
 .dp__input_icon {
