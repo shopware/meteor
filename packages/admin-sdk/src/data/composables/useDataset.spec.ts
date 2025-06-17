@@ -83,7 +83,7 @@ describe('useDataset composable', () => {
 
   it('should subscribe to data changes and update the state', async () => {
     let subscribeCallback: (data: { data: any }) => void = () => {};
-    subscribeMock.mockImplementation((id, callback) => {
+    subscribeMock.mockImplementation((_, callback) => {
       subscribeCallback = callback;
       return () => {};
     });
@@ -117,7 +117,7 @@ describe('useDataset composable', () => {
 
   it('should not call update when data is updated via subscribe', async () => {
     let subscribeCallback: (data: { data: any }) => void = () => {};
-    subscribeMock.mockImplementation((id, callback) => {
+    subscribeMock.mockImplementation((_, callback) => {
       subscribeCallback = callback;
       return () => {};
     });
