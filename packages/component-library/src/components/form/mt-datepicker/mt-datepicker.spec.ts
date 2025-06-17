@@ -140,4 +140,17 @@ describe("mt-datepicker", () => {
 
     expect(wrapper.classes()).toContain("has-error");
   });
+
+  it("should accept minDate as ISO string", async () => {
+    const minDate = "2024-03-20T00:00:00.000Z";
+    wrapper = await createWrapper({
+      props: {
+        dateType: "date",
+        locale: "en-US",
+        minDate: minDate
+      }
+    });
+
+    expect(wrapper.props().minDate).toEqual(minDate);
+  });
 });
