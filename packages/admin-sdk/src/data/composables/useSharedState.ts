@@ -1,7 +1,7 @@
 import SerializerFactory from './../../_internals/serializer';
 import localforage from 'localforage';
-import type { UnwrapRef, WatchStopHandle } from 'vue';
-import { reactive, watch, onBeforeUnmount } from 'vue';
+import type { UnwrapRef, WatchStopHandle, Ref } from 'vue';
+import { reactive, watch, onBeforeUnmount, ref } from 'vue';
 import { handle, send } from '../../channel';
 
 const { serialize, deserialize } = SerializerFactory({
@@ -79,11 +79,11 @@ function setRemoteValue<INITIAL_VALUE>({
   sharedValue: {
     value: UnwrapRef<INITIAL_VALUE>,
   },
-}): void {
+}): Promise<void> {
   setPendingValue(true);
   removeWatcher();
 
-  store.getItem<INITIAL_VALUE>(key)
+  return store.getItem<INITIAL_VALUE>(key)
     .then((value) => {
       if (value === null) {
         return;
@@ -100,14 +100,15 @@ function setRemoteValue<INITIAL_VALUE>({
 }
 
 /**
- * 
- * @param key - Shared state key
- * @param initalValue - Initial value
- * @returns 
+ * @internal
+ * @private
  */
-export function useSharedState<INITIAL_VALUE>(key: string, initalValue: INITIAL_VALUE): {
-  value: UnwrapRef<INITIAL_VALUE>,
+export function _useSharedState<INITIAL_VALUE>(key: string, initalValue: INITIAL_VALUE): {
+  state: { value: UnwrapRef<INITIAL_VALUE> },
+  isReady: Ref<boolean>,
+  ready: Promise<void>,
 } {
+  const isReady = ref(false);
   let isPending = false;
 
   const getPendingValue = (): boolean => isPending;
@@ -160,7 +161,7 @@ export function useSharedState<INITIAL_VALUE>(key: string, initalValue: INITIAL_
       return;
     }
 
-    setRemoteValue({
+    void setRemoteValue({
       setPendingValue,
       removeWatcher,
       setWatcher,
@@ -178,7 +179,7 @@ export function useSharedState<INITIAL_VALUE>(key: string, initalValue: INITIAL_
   });
 
   // Get initial value from remote
-  setRemoteValue({
+  const remoteValuePromise = setRemoteValue({
     setPendingValue,
     removeWatcher,
     setWatcher,
@@ -188,7 +189,7 @@ export function useSharedState<INITIAL_VALUE>(key: string, initalValue: INITIAL_
   });
 
   // Set inital value when remote value is not available
-  persistentSharedValueStore.getItem<INITIAL_VALUE>(key)
+  const initialValuePromise = persistentSharedValueStore.getItem<INITIAL_VALUE>(key)
     .then(async (value) => {
       if (value !== null) {
         return;
@@ -205,5 +206,28 @@ export function useSharedState<INITIAL_VALUE>(key: string, initalValue: INITIAL_
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     .catch(() => {});
 
-  return sharedValue;
+  const ready = Promise.all([
+    remoteValuePromise,
+    initialValuePromise,
+  ]).then(() => {
+    isReady.value = true;
+  });
+
+  return {
+    state: sharedValue,
+    isReady,
+    ready,
+  };
+}
+
+/**
+ *
+ * @param key - Shared state key
+ * @param initalValue - Initial value
+ * @returns
+ */
+export function useSharedState<INITIAL_VALUE>(key: string, initalValue: INITIAL_VALUE): {
+  value: UnwrapRef<INITIAL_VALUE>,
+} {
+  return _useSharedState(key, initalValue).state;
 }
