@@ -1,6 +1,6 @@
 {
   "name": "@shopware-ag/meteor-admin-sdk",
-  "version": "6.1.0",
+  "version": "6.2.0",
   "description": "The Meteor SDK for the Shopware Administration.",
   "keywords": [
     "iframe",

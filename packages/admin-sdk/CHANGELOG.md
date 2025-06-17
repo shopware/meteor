@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.2.0
+
+### Minor Changes
+
+- e44cf07: Add `useDataset` and `useAsyncSharedState` composables
+
 ## 6.1.0
 
 ### Minor Changes
