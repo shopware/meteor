@@ -611,6 +611,8 @@ export default defineComponent({
 }
 
 .mt-datepicker__clear-button {
+  display: grid;
+  place-items: center;
   height: var(--scale-size-32);
   aspect-ratio: 1/1;
   border-radius: var(--border-radius-button);
@@ -620,10 +622,6 @@ export default defineComponent({
   &:hover,
   &:focus-visible {
     background: var(--color-interaction-secondary-hover);
-  }
-
-  & .mt-icon {
-    margin-bottom: var(--scale-size-2);
   }
 }
 
