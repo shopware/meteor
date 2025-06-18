@@ -45,8 +45,7 @@ describe("mt-number-field", () => {
     await userEvent.click(document.body);
 
     // ASSERT
-    expect(handler).toHaveBeenCalledOnce();
-    expect(handler).toHaveBeenCalledWith(expect.any(Event));
+    expect(handler).toHaveBeenCalledExactlyOnceWith(expect.any(Event));
     expect(screen.getByRole("textbox")).toHaveValue("1000");
   });
 
