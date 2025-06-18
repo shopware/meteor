@@ -9,3 +9,11 @@ const i18n = createI18n({
 
 // Install a plugin onto VueWrapper
 config.global.plugins = [...(config.global.plugins || []), i18n];
+
+beforeEach(() => {
+  vi.stubEnv("TZ", "UTC");
+});
+
+afterEach(() => {
+  vi.unstubAllEnvs();
+});

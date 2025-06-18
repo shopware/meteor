@@ -20,7 +20,7 @@
       :open="isDatepickerOpen"
       :teleport="true"
       :show-cancel="true"
-      :clearable="false"
+      :clearable="true"
       :auto-apply="true"
       :range="range"
       :format="formatDate"
@@ -33,6 +33,12 @@
       :no-hours-overlay="dateType === 'time'"
       :no-minutes-overlay="dateType === 'time'"
     >
+      <template #clear-icon="{ clear }">
+        <button class="mt-datepicker__clear-button" aria-label="Clear value" @click="clear">
+          <mt-icon name="regular-times-xxs" size="var(--scale-size-10)" aria-hidden="true" />
+        </button>
+      </template>
+
       <template #input-icon>
         <mt-icon name="regular-calendar" class="regular-calendar" />
       </template>
@@ -197,6 +203,8 @@ export default defineComponent({
     },
   },
 
+  emits: ["update:modelValue"],
+
   data(): {
     isDatepickerOpen: boolean;
     isTimeHintVisible: boolean;
@@ -233,7 +241,10 @@ export default defineComponent({
         return this.modelValue;
       },
       set(newValue: Date | [Date, Date] | { hours: number; minutes: number } | null) {
-        if (!newValue) return;
+        if (!newValue) {
+          this.$emit("update:modelValue", null);
+          return;
+        }
 
         // Handle date conversion for 'time' type
         if (this.dateType === "time") {
@@ -394,6 +405,11 @@ export default defineComponent({
   font: inherit;
   color: var(--color-text-secondary-default);
   background: var(--color-elevation-surface-raised);
+  color: var(--color-text-primary-default);
+
+  &::placeholder {
+    color: var(--color-text-secondary-default);
+  }
 }
 
 .dp__input_icon {
@@ -596,9 +612,22 @@ export default defineComponent({
 }
 
 .dp--clear-btn {
-  display: absolute;
-  z-index: 9999;
-  background: red;
+  padding-right: var(--scale-size-56);
+}
+
+.mt-datepicker__clear-button {
+  display: grid;
+  place-items: center;
+  height: var(--scale-size-32);
+  aspect-ratio: 1/1;
+  border-radius: var(--border-radius-button);
+  outline-color: var(--color-border-brand-selected);
+  transition: background 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+
+  &:hover,
+  &:focus-visible {
+    background: var(--color-interaction-secondary-hover);
+  }
 }
 
 .mt-datepicker__hint {
