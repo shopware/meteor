@@ -70,7 +70,7 @@ describe("utils/object", () => {
       // ARRANGE
       const object = {
         name: "John Doe",
-        age: 30
+        age: 30,
       };
 
       // ACT
@@ -84,7 +84,7 @@ describe("utils/object", () => {
       // ARRANGE
       const object = {
         username: "johndoe",
-        email: "john@example.com"
+        email: "john@example.com",
       };
 
       // ACT
@@ -99,7 +99,7 @@ describe("utils/object", () => {
       const object = {
         name: "",
         username: "johndoe",
-        email: "john@example.com"
+        email: "john@example.com",
       };
 
       // ACT
@@ -114,7 +114,7 @@ describe("utils/object", () => {
       const object = {
         name: null,
         username: "johndoe",
-        email: "john@example.com"
+        email: "john@example.com",
       };
 
       // ACT
@@ -128,7 +128,7 @@ describe("utils/object", () => {
       // ARRANGE
       const object = {
         username: "",
-        email: ""
+        email: "",
       };
 
       // ACT
@@ -143,7 +143,7 @@ describe("utils/object", () => {
       const object = {
         name: "",
         username: null,
-        email: ""
+        email: "",
       };
 
       // ACT
@@ -159,9 +159,9 @@ describe("utils/object", () => {
         user: {
           profile: {
             firstName: "John",
-            lastName: "Doe"
-          }
-        }
+            lastName: "Doe",
+          },
+        },
       };
 
       // ACT

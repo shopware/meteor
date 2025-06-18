@@ -133,7 +133,7 @@ describe("mt-select", () => {
   });
 
   it("should search in all properties of the labelProperty array", async () => {
-    vi.useFakeTimers()
+    vi.useFakeTimers();
     const wrapper = await createWrapper();
     await wrapper.setProps({
       labelProperty: ["name", "username", "email"],

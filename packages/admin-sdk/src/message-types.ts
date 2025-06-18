@@ -63,7 +63,7 @@ export interface ShopwareMessageTypes {
   contextUserTimezone: contextUserTimezone,
   contextAppInformation: contextAppInformation,
   contextModuleInformation: contextModuleInformation,
-  contextShopId: contextShopId
+  contextShopId: contextShopId,
   getPageTitle: getPageTitle,
   uiComponentSectionRenderer: uiComponentSectionRenderer,
   uiTabsAddTabItem: uiTabsAddTabItem,
