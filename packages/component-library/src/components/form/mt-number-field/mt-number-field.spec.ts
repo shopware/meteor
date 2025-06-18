@@ -126,4 +126,211 @@ describe("mt-number-field", () => {
     expect(screen.getByRole("textbox")).toHaveValue("0");
     expect(handler).not.toHaveBeenCalled();
   });
+
+  it("updates the value when min prop changes and current value is below new minimum", async () => {
+    const handler = vi.fn();
+
+    const { rerender } = render(MtNumberField, {
+      props: {
+        modelValue: 5,
+        min: 0,
+        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    expect(screen.getByRole("textbox")).toHaveValue("5");
+
+    // ACT - Update min to be higher than current value
+    await rerender({
+      modelValue: 5,
+      min: 10,
+      "onUpdate:modelValue": handler,
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("10");
+  });
+
+  it("does not update the value when min prop changes and current value is above new minimum", async () => {
+    const handler = vi.fn();
+
+    const { rerender } = render(MtNumberField, {
+      props: {
+        modelValue: 15,
+        min: 0,
+        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    expect(screen.getByRole("textbox")).toHaveValue("15");
+
+    // ACT - Update min to be lower than current value
+    await rerender({
+      modelValue: 15,
+      min: 10,
+      "onUpdate:modelValue": handler,
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("15");
+  });
+
+  it("does not update the value when min prop changes and current value is null", async () => {
+    const handler = vi.fn();
+
+    const { rerender } = render(MtNumberField, {
+      props: {
+        modelValue: undefined,
+        min: 0,
+        allowEmpty: true,
+        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    expect(screen.getByRole("textbox")).toHaveValue("");
+
+    // ACT - Update min
+    await rerender({
+      modelValue: undefined,
+      min: 10,
+      allowEmpty: true,
+      "onUpdate:modelValue": handler,
+    });
+
+    // ASSERT
+    expect(handler).not.toHaveBeenCalled();
+    expect(screen.getByRole("textbox")).toHaveValue("");
+  });
+
+  it("does not update the value when min prop is set to null", async () => {
+    const handler = vi.fn();
+
+    const { rerender } = render(MtNumberField, {
+      props: {
+        modelValue: 5,
+        min: 10,
+        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    expect(screen.getByRole("textbox")).toHaveValue("10");
+    handler.mockClear();
+
+    // ACT - Set min to null
+    await rerender({
+      modelValue: 5,
+      min: null,
+      "onUpdate:modelValue": handler,
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("10");
+  });
+
+  it("updates the value when max prop changes and current value is above new maximum", async () => {
+    const handler = vi.fn();
+
+    const { rerender } = render(MtNumberField, {
+      props: {
+        modelValue: 5,
+        max: 10,
+        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    expect(screen.getByRole("textbox")).toHaveValue("5");
+
+    // ACT - Update min to be higher than current value
+    await rerender({
+      modelValue: 5,
+      max: 0,
+      "onUpdate:modelValue": handler,
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("0");
+  });
+
+  it("does not update the value when max prop changes and current value is below new maximum", async () => {
+    const handler = vi.fn();
+
+    const { rerender } = render(MtNumberField, {
+      props: {
+        modelValue: 15,
+        max: 20,
+        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    expect(screen.getByRole("textbox")).toHaveValue("15");
+
+    // ACT - Update min to be lower than current value
+    await rerender({
+      modelValue: 15,
+      max: 30,
+      "onUpdate:modelValue": handler,
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("15");
+  });
+
+  it("does not update the value when max prop changes and current value is null", async () => {
+    const handler = vi.fn();
+
+    const { rerender } = render(MtNumberField, {
+      props: {
+        modelValue: undefined,
+        max: 10,
+        allowEmpty: true,
+        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    expect(screen.getByRole("textbox")).toHaveValue("");
+
+    // ACT - Update min
+    await rerender({
+      modelValue: undefined,
+      max: 20,
+      allowEmpty: true,
+      "onUpdate:modelValue": handler,
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("");
+  });
+
+  it("does not update the value when max prop is set to null", async () => {
+    const handler = vi.fn();
+
+    const { rerender } = render(MtNumberField, {
+      props: {
+        modelValue: 15,
+        max: 10,
+        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    expect(screen.getByRole("textbox")).toHaveValue("10");
+    handler.mockClear();
+
+    // ACT - Set min to null
+    await rerender({
+      modelValue: 15,
+      max: null,
+      "onUpdate:modelValue": handler,
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("10");
+  });
 });
