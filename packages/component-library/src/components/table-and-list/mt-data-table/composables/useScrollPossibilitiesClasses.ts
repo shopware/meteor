@@ -1,5 +1,5 @@
 import type { Ref } from "vue";
-import { onUpdated, nextTick, onBeforeUnmount, onMounted } from "vue";
+import { onUpdated, nextTick, onBeforeUnmount, onMounted, watch } from "vue";
 import { throttle } from "@/utils/throttle";
 
 /**
@@ -8,7 +8,10 @@ import { throttle } from "@/utils/throttle";
  * when the element is scrollable into this direction.
  */
 
-export default function useScrollPossibilitiesClasses(refElement: Ref) {
+export default function useScrollPossibilitiesClasses(
+  refElement: Ref,
+  showScrollIndicators: Ref<boolean>,
+) {
   const setScrollPossibilitiesClasses = (elementOrEvent: Event | HTMLElement | undefined) => {
     // @ts-expect-error - check if event or not
     const element = (elementOrEvent?.target ? elementOrEvent.target : elementOrEvent) as
@@ -16,6 +19,17 @@ export default function useScrollPossibilitiesClasses(refElement: Ref) {
       | undefined;
 
     if (!element) return;
+
+    const hideShadows = !showScrollIndicators.value;
+    if (hideShadows) {
+      element.parentElement?.style.removeProperty("--scrollbar-width");
+      element.parentElement?.style.removeProperty("--scrollbar-height");
+      delete element.dataset.scrollTop;
+      delete element.dataset.scrollBottom;
+      delete element.dataset.scrollRight;
+      delete element.dataset.scrollLeft;
+      return;
+    }
 
     const pufferPx = 5;
 
@@ -83,6 +97,24 @@ export default function useScrollPossibilitiesClasses(refElement: Ref) {
   const refElementResizeObserver = new ResizeObserver(() => {
     nextTick().then(updateSetScrollPossibiltiesClasses);
   });
+
+  watch(
+    () => showScrollIndicators,
+    (shouldShowScrollIndicators) => {
+      if (shouldShowScrollIndicators) return;
+
+      refElement.value?.parentElement?.style.removeProperty("--scrollbar-width");
+      refElement.value?.parentElement?.style.removeProperty("--scrollbar-height");
+
+      delete refElement.value?.dataset.scrollTop;
+      delete refElement.value?.dataset.scrollBottom;
+      delete refElement.value?.dataset.scrollRight;
+      delete refElement.value?.dataset.scrollLeft;
+    },
+    {
+      immediate: true,
+    },
+  );
 
   onUpdated(() => {
     nextTick().then(updateSetScrollPossibiltiesClasses);

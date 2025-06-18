@@ -1718,11 +1718,17 @@ export default defineComponent({
       return !!filterInUse.type.options.find((option) => option.id === optionId);
     }
 
+    const showData = computed(() => {
+      console.log(props.dataSource.length, props.isLoading);
+
+      return props.dataSource.length > 0 || props.isLoading;
+    });
+
     /***
      * Add scroll possibilities to tableWrapper
      */
     const tableWrapper = ref();
-    useScrollPossibilitiesClasses(tableWrapper);
+    useScrollPossibilitiesClasses(tableWrapper, showData);
 
     /**
      * General classes for whole data table
