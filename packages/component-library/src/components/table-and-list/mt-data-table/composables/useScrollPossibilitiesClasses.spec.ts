@@ -1,6 +1,6 @@
 import useScrollPossibilitiesClasses from "./useScrollPossibilitiesClasses";
 import { mount } from "@vue/test-utils";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed, toRef } from "vue";
 
 // mock throttle
 vi.mock("@/utils/throttle", () => ({
@@ -71,7 +71,7 @@ const createWrapper = async ({
         vi.spyOn(window, "addEventListener").mockImplementation(() => {});
       });
 
-      useScrollPossibilitiesClasses(exampleElement);
+      useScrollPossibilitiesClasses(exampleElement, toRef(true));
 
       return { exampleElement, parentElement };
     },
