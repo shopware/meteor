@@ -171,7 +171,6 @@ describe("mt-number-field", () => {
     await rerender({
       modelValue: 15,
       min: 10,
-      // @ts-expect-error -- Event exist, but type is not defined via TypeScript
       "onUpdate:modelValue": handler,
     });
 
@@ -200,7 +199,6 @@ describe("mt-number-field", () => {
       modelValue: undefined,
       min: 10,
       allowEmpty: true,
-      // @ts-expect-error -- Event exist, but type is not defined via TypeScript
       "onUpdate:modelValue": handler,
     });
 
@@ -228,7 +226,6 @@ describe("mt-number-field", () => {
     await rerender({
       modelValue: 5,
       min: null,
-      // @ts-expect-error -- Event exist, but type is not defined via TypeScript
       "onUpdate:modelValue": handler,
     });
 
