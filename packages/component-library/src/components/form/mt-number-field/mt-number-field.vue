@@ -252,6 +252,22 @@ export default defineComponent({
       },
       immediate: true,
     },
+
+    min: {
+      handler(newMin: number | null) {
+        // If there's no current value, nothing to update
+        if (this.currentValue === null || this.currentValue === undefined) {
+          return;
+        }
+
+        // If new minimum is higher than current value, update the value
+        const currentNumericValue = Number(this.currentValue);
+        if (newMin !== null && !Number.isNaN(currentNumericValue) && currentNumericValue < newMin) {
+          this.computeValue(newMin.toString());
+          this.$emit("update:modelValue", this.currentValue);
+        }
+      },
+    },
   },
 
   methods: {
