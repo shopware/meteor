@@ -229,9 +229,11 @@ true
 
 ### Get app information
 
+> The permissions property will be available with Shopware v6.7.1.0 and higher
+
 #### Usage:  
 ```ts
-const { name, version, type } = await sw.context.getAppInformation();
+const { name, version, type, permissions } = await sw.context.getAppInformation();
 ```
 
 #### Parameters
@@ -239,7 +241,7 @@ No parameters needed.
 
 #### Return value:
 ```ts
-Promise<{ name: string ; version: string ; type: 'app' | 'plugin' }>
+Promise<{ name: string ; version: string ; type: 'app' | 'plugin', permissions: Permissions }>
 ```
 
 #### Example value:
@@ -248,6 +250,11 @@ Promise<{ name: string ; version: string ; type: 'app' | 'plugin' }>
   name: 'my-extension',
   version: '1.2.3',
   type: 'app'
+  permissions: {
+    read: [ 'product', 'customer' ],
+    write: [ 'product' ],
+    additional: [ 'system.cache_clear' ]
+  }
 }
 ```
 
@@ -392,7 +399,7 @@ Get the shop's shop-id used by Shopware's app system
 #### Usage
 
 ```ts
- const shopId = await sw.context.getShopId();
+const shopId = await sw.context.getShopId();
 ```
 
 #### Parameters
@@ -403,4 +410,25 @@ no parameters needed
 
 ```ts
 Promise<string>
+```
+
+## Check available permission
+
+> vailable since Shopware v6.7.1.0
+
+This lets you check if a specific permission is granted for your app
+
+#### Usage
+
+```ts
+const isAllowed: boolean = await sw.context.can('read:product');
+```
+
+#### Parameters
+No parameters needed.
+
+#### Return value
+
+```ts
+boolean
 ```
