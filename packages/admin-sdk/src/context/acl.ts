@@ -22,7 +22,9 @@ function flattenPrivileges(acl: privileges): string[] {
   Object.keys(acl).forEach((key) => {
     const privileges = acl[key as keyof privileges];
 
-    if (!privileges) return;
+    if (!privileges) {
+      return;
+    }
 
     if (key === 'additional') {
       flattened.push(...privileges);

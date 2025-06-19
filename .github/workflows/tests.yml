@@ -46,11 +46,11 @@ jobs:
       - name: Build packages
         run: npx turbo run build
 
-      - name: Lint code
-        run: pnpx turbo run lint:eslint -- --fix
+      - name: Lint all
+        run: pnpx turbo run lint:all
 
       - name: Lint css
-        run: pnpx turbo run lint:css -- --fix --custom-formatter @csstools/stylelint-formatter-github
+        run: pnpx turbo run lint:css -- --custom-formatter @csstools/stylelint-formatter-github
 
       - name: Check formatting
         run: pnpx turbo run format
