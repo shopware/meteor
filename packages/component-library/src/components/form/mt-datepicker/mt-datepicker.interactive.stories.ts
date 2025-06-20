@@ -353,3 +353,54 @@ export const VisualTestTimeType: MtDatepickerStory = {
     expect(args.updateModelValue).toHaveBeenCalledWith("08:16");
   },
 };
+
+export const VisualTestErrorStateRendering: MtDatepickerStory = {
+  name: "Should display error",
+  args: {
+    error: {
+      code: 500,
+      detail: "Error while saving!",
+    },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const errorMessage = canvas.getByText("Error while saving!");
+    expect(errorMessage).toBeInTheDocument();
+
+    const errorIcon = document.querySelector("#meteor-icon-kit__solid-exclamation-circle");
+    expect(errorIcon).toBeInTheDocument();
+
+    expect(canvasElement.firstElementChild).toHaveClass("has-error");
+  },
+};
+
+export const VisualTestMinDateDisabledDays: MtDatepickerStory = {
+  name: "Should only select the day from min-date",
+  args: {
+    label: "Date value",
+    minDate: "today",
+    locale: "en-US",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await userEvent.click(canvas.getByRole("textbox"));
+    await waitUntil(() => document.getElementsByClassName("dp__menu").length > 0);
+
+    const disabledDays = document.querySelectorAll(".dp__calendar .dp__cell.dp__disabled");
+    expect(disabledDays.length).toBeGreaterThan(0);
+    const today = new Date();
+    disabledDays.forEach((el) => {
+      const dateAttr = el.getAttribute("id");
+      if (dateAttr) {
+        const date = new Date(dateAttr);
+        expect(date < today).toBe(true);
+      }
+    });
+
+    const todayId = today.toISOString().slice(0, 10);
+    const todayElement = document.getElementById(todayId);
+    expect(todayElement).not.toHaveClass("dp__disabled");
+  },
+};

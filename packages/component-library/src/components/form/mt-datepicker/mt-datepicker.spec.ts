@@ -101,4 +101,30 @@ describe("src/app/component/form/mt-datepicker", () => {
     const datepickerInput = wrapper.find(".dp__input");
     expect(datepickerInput.attributes().value).toBe("14:30");
   });
+
+  it("should add has-error class to wrapper when error prop is provided", async () => {
+    wrapper = await createWrapper({
+      props: {
+        error: {
+          code: 500,
+          detail: "Error message"
+        }
+      }
+    });
+
+    expect(wrapper.classes()).toContain("has-error");
+  });
+
+  it("should accept minDate as ISO string", async () => {
+    const minDate = "2024-03-20T00:00:00.000Z";
+    wrapper = await createWrapper({
+      props: {
+        dateType: "date",
+        locale: "en-US",
+        minDate: minDate
+      }
+    });
+
+    expect(wrapper.props().minDate).toEqual(minDate);
+  });
 });
