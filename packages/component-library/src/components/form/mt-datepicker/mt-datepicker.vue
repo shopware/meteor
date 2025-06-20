@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper" :class="{ 'has-error': error || errorMessage }">
-    <mt-field-label 
-      :style="{ gridArea: 'label' }" 
+    <mt-field-label
+      :style="{ gridArea: 'label' }"
       id="field-id"
       :has-error="!!error || !!errorMessage"
       :required="required"
@@ -122,7 +122,7 @@ export default defineComponent({
      */
     label: {
       type: String as PropType<string | null>,
-      required: true,
+      required: false,
       default: null,
     },
 
@@ -240,6 +240,7 @@ export default defineComponent({
     /**
      * The minimum selectable date. Can be a Date object or an ISO string.
      * Any date before this will be disabled in the calendar.
+     * For example: "today"
      */
     minDate: {
       type: [Date, String] as PropType<Date | string>,
@@ -729,7 +730,7 @@ export default defineComponent({
 
 .wrapper.has-error .dp__input {
   border: 1px solid var(--color-border-critical-default);
-  background: var(--color-background-critical-light);
+  background: var(--color-background-critical-dark);
 }
 
 .wrapper.has-error .dp__input:focus {
