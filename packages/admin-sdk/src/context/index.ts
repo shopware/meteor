@@ -1,6 +1,6 @@
 import { createSender, createSubscriber } from '../channel';
 import getCompareIsShopwareVersion from './compare-version';
-import createPermissionChecker from './acl';
+import createACLHelper from './acl';
 import type { privileges } from '../_internals/privileges';
 
 export const getLanguage = createSender('contextLanguage', {});
@@ -14,7 +14,7 @@ export const compareIsShopwareVersion = getCompareIsShopwareVersion(getShopwareV
 export const getUserInformation = createSender('contextUserInformation', {});
 export const getUserTimezone = createSender('contextUserTimezone', {});
 export const getAppInformation = createSender('contextAppInformation', {});
-export const can = createPermissionChecker(getAppInformation);
+export const can = createACLHelper(getAppInformation);
 export const getModuleInformation = createSender('contextModuleInformation', {});
 export const getShopId = createSender('contextShopId', {});
 

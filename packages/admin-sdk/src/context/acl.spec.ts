@@ -1,6 +1,6 @@
-import createPermissionChecker from './acl';
+import createACLHelper from './acl';
 
-describe('createPermissionChecker', () => {
+describe('createACLHelper', () => {
   it('returns true if the crud privilege is granted', async () => {
     const mockGetAppInformation = jest.fn().mockResolvedValue({
       privileges: {
@@ -8,7 +8,7 @@ describe('createPermissionChecker', () => {
       },
     });
 
-    const can = createPermissionChecker(mockGetAppInformation);
+    const can = createACLHelper(mockGetAppInformation);
     const result = await can('product:read');
 
     expect(result).toBe(true);
@@ -21,7 +21,7 @@ describe('createPermissionChecker', () => {
       },
     });
 
-    const can = createPermissionChecker(mockGetAppInformation);
+    const can = createACLHelper(mockGetAppInformation);
     const result = await can('order:read');
 
     expect(result).toBe(false);
@@ -34,7 +34,7 @@ describe('createPermissionChecker', () => {
       },
     });
 
-    const can = createPermissionChecker(mockGetAppInformation);
+    const can = createACLHelper(mockGetAppInformation);
     const result = await can('api_service_toggle');
 
     expect(result).toBe(true);
@@ -47,7 +47,7 @@ describe('createPermissionChecker', () => {
       },
     });
 
-    const can = createPermissionChecker(mockGetAppInformation);
+    const can = createACLHelper(mockGetAppInformation);
     const result = await can('order:read');
 
     expect(result).toBe(false);

@@ -3,4 +3,4 @@
 ---
 
 Added context.can
-Added `permissions` to `contextAppInformation`
+Added `privileges` to `contextAppInformation`

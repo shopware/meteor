@@ -1,7 +1,7 @@
 import type { contextAppInformation } from './index';
 import type { privileges } from '../_internals/privileges';
 
-export default function createPermissionChecker(
+export default function createACLHelper(
   getContextAppInformation: () => Promise<contextAppInformation['responseType']>
 ) {
   return async (privilege: string): Promise<boolean> => {
