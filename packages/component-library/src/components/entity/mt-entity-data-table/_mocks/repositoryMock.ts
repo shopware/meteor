@@ -113,8 +113,6 @@ export default <EntityName extends keyof EntitySchema.Entities>(
 
           const valB = sortBy.split(".").reduce((o, i) => o?.[i], b as any);
 
-          console.log("Sorting", valA, valB);
-
           // Handle null or undefined values by pushing them to the end
           if (valA == null && valB == null) return 0;
           // If sortOrder is ASC, nulls go last. If DESC, nulls go first (after reversing).
@@ -206,8 +204,6 @@ export default <EntityName extends keyof EntitySchema.Entities>(
     delete: async (): Promise<void | null> => {
       // Wait for 200-500ms to simulate a real API call
       await new Promise((resolve) => setTimeout(resolve, Math.random() * 300 + 200));
-
-      console.log("Mock delete operation triggered");
 
       // Mock delete operation
       return Promise.resolve();

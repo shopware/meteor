@@ -1,6 +1,7 @@
 import { within, userEvent } from "@storybook/test";
 import { expect } from "@storybook/test";
 import { waitUntil } from "../../../_internal/test-helper";
+import { screen } from "@storybook/test";
 
 import meta, { type MtSelectMeta, type MtSelectStory } from "./mt-select.stories";
 
@@ -129,6 +130,13 @@ export const VisualTestSingleSelectionOptionAsValue: MtSelectStory = {
     valueProperty: "",
   },
   play: async ({ canvasElement, args }) => {
+    function findByHighlightText(text: string) {
+      return (_, element) => {
+        const isHighlightText = element?.classList.contains("mt-highlight-text");
+        return element?.textContent === text && isHighlightText;
+      };
+    }
+
     const canvas = within(canvasElement);
     await userEvent.click(canvas.getByRole("textbox"));
     await userEvent.clear(canvas.getByRole("textbox"));
@@ -136,8 +144,8 @@ export const VisualTestSingleSelectionOptionAsValue: MtSelectStory = {
     await new Promise((resolve) => setTimeout(resolve, 300));
 
     let popover = within(document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement);
-    await waitUntil(() => popover.getByTestId("mt-select-option--a"));
-    await userEvent.click(popover.getByTestId("mt-select-option--a"));
+    await waitUntil(() => popover.getByText(findByHighlightText("Option A")));
+    await userEvent.click(popover.getByText(findByHighlightText("Option A")));
 
     expect(args.change).toHaveBeenCalledWith({
       id: 1,
@@ -154,8 +162,8 @@ export const VisualTestSingleSelectionOptionAsValue: MtSelectStory = {
     await new Promise((resolve) => setTimeout(resolve, 300));
     popover = within(document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement);
 
-    await waitUntil(() => popover.getByTestId("mt-select-option--f"));
-    await userEvent.click(popover.getByTestId("mt-select-option--f"));
+    await waitUntil(() => popover.getByText(findByHighlightText("Option F")));
+    await userEvent.click(popover.getByText(findByHighlightText("Option F")));
 
     expect(args.change).toHaveBeenCalledWith({
       id: 6,
@@ -172,9 +180,9 @@ export const VisualTestSingleSelectionOptionAsValue: MtSelectStory = {
     await userEvent.type(canvas.getByRole("textbox"), "FF");
     popover = within(document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement);
 
-    await waitUntil(() => popover.getByTestId("mt-select-option--ff"));
+    await waitUntil(() => popover.getByText(findByHighlightText("Option FF")));
     await new Promise((resolve) => setTimeout(resolve, 200));
-    await userEvent.click(popover.getByTestId("mt-select-option--ff"));
+    await userEvent.click(popover.getByText(findByHighlightText("Option FF")));
 
     expect(args.change).toHaveBeenCalledWith({
       id: 7,
@@ -431,7 +439,7 @@ export const VisualTestMultiSelectOptionAsValue: MtSelectStory = {
     const popover = within(
       document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement,
     );
-    await userEvent.click(popover.getByTestId("mt-select-option--a"));
+    await userEvent.click(popover.getByText("Option A"));
 
     expect(args.change).toHaveBeenCalledWith([
       {
@@ -441,7 +449,7 @@ export const VisualTestMultiSelectOptionAsValue: MtSelectStory = {
       },
     ]);
 
-    await userEvent.click(popover.getByTestId("mt-select-option--b"));
+    await userEvent.click(popover.getByText("Option B"));
 
     expect(args.change).toHaveBeenCalledWith([
       {
@@ -456,7 +464,7 @@ export const VisualTestMultiSelectOptionAsValue: MtSelectStory = {
       },
     ]);
 
-    await userEvent.click(popover.getByTestId("mt-select-option--c"));
+    await userEvent.click(popover.getByText("Option C"));
 
     expect(args.change).toHaveBeenCalledWith([
       {
@@ -476,7 +484,7 @@ export const VisualTestMultiSelectOptionAsValue: MtSelectStory = {
       },
     ]);
 
-    await userEvent.click(popover.getByTestId("mt-select-option--e"));
+    await userEvent.click(popover.getByText("Option E"));
 
     expect(args.change).toHaveBeenCalledWith([
       {
@@ -691,6 +699,15 @@ export const VisualTestHighlightSearchTerm: MtSelectStory = {
 
     // wait until only one result is rendered
     await waitUntil(() => document.getElementsByClassName("mt-select-result").length === 1);
+
+    // emulate arrow up key press
+    await userEvent.keyboard("{ArrowUp}");
+
+    // wait until "mt-select-result" has "is--active" class
+    await waitUntil(() => {
+      const result = document.querySelector(".mt-select-result");
+      return result?.classList.contains("is--active");
+    });
 
     const popover = within(
       document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement,

@@ -186,10 +186,7 @@ export const InteractionTestSorting: MtEntityDataTableStory = {
     const settingsTriggerManufacturer = canvas.getByTestId(
       "column-settings-trigger__manufacturer.name",
     );
-    console.log(
-      "Attempting to click 'Manufacturer' column settings trigger:",
-      settingsTriggerManufacturer,
-    );
+
     await userEvent.click(settingsTriggerManufacturer);
 
     // Popover interaction
@@ -248,9 +245,8 @@ export const InteractionTestApplyBooleanFilter: MtEntityDataTableStory = {
     await userEvent.click(addFilterButton);
 
     // Open "Active" filter in the opened dialog
-    const dialog = await waitFor(() => document.querySelector('[role="dialog"]'));
+    await waitFor(() => document.querySelector('[role="dialog"]'));
     const dialogContent = within(document.querySelector('[role="dialog"]') as HTMLElement);
-    console.log("Dialog content:", dialogContent);
     const activeFilter = await dialogContent.findByText("Active");
     await userEvent.click(activeFilter);
 

@@ -6,9 +6,12 @@
     :is-loading="isLoading"
     :label-property="props.labelProperty"
     :value-property="props.valueProperty"
+    :enable-multi-selection="props.enableMultiSelection"
+    :disabled="props.disabled"
+    :search-function="fetchSearchData"
     @update:model-value="emit('update:modelValue', $event)"
-    @search-term-change="onSearchTermChange"
     @paginate="fetchNextPage"
+    @item-add="onItemAdd"
   >
     <!-- Pass through all slots -->
     <template v-for="(_, name) in $slots" #[name]="scope">
@@ -71,11 +74,13 @@ const total = ref(0);
 // @ts-expect-error - The repository is not typed exactly the same
 const repo = useRepository(props.entity, props.repository);
 
-const getPage = async () => {
-  const criteria = new Criteria(currentPage.value, limit.value);
+const getPage = async (page: number, term?: string) => {
+  const criteria = new Criteria(page, limit.value);
 
-  if (searchTerm.value) {
-    criteria.setTerm(searchTerm.value);
+  const currentSearchTerm = term || searchTerm.value;
+
+  if (currentSearchTerm) {
+    criteria.setTerm(currentSearchTerm);
   }
 
   if (typeof props.labelProperty === "string") {
@@ -98,21 +103,36 @@ const getPage = async () => {
   return [];
 };
 
-const fetchData = async (append = false) => {
+const fetchData = async (append = false, term?: string, disableOptionsUpdate = false) => {
   isLoading.value = true;
-  const newOptions = await getPage();
-  if (append) {
-    options.value.push(...newOptions);
-  } else {
+  const newOptions = await getPage(currentPage.value, term);
+  isLoading.value = false;
+
+  if (append && !disableOptionsUpdate) {
+    // Iterate through all new options, if they are already in the options array, remove the
+    // old one and add the new one
+    newOptions.forEach((newOption) => {
+      const index = options.value.findIndex(
+        (option) =>
+          // @ts-expect-error - The value property is not typed exactly the same
+          option[props.valueProperty as string] === newOption[props.valueProperty as string],
+      );
+      if (index !== -1) {
+        options.value.splice(index, 1);
+      }
+      options.value.push(newOption);
+    });
+  } else if (!disableOptionsUpdate) {
     options.value = newOptions;
   }
-  isLoading.value = false;
+
+  return newOptions;
 };
 
 const fetchSelectedEntities = async () => {
-  const ids = (
-    Array.isArray(props.modelValue) ? props.modelValue : [props.modelValue]
-  ).filter((v) => !!v);
+  const ids = (Array.isArray(props.modelValue) ? props.modelValue : [props.modelValue]).filter(
+    (v) => !!v,
+  );
 
   if (ids.length === 0) {
     return [];
@@ -133,7 +153,7 @@ const fetchSelectedEntities = async () => {
 onMounted(async () => {
   isLoading.value = true;
 
-  const pagePromise = getPage();
+  const pagePromise = getPage(currentPage.value);
   let selectedPromise = Promise.resolve<any[]>([]);
 
   const hasValue =
@@ -146,10 +166,7 @@ onMounted(async () => {
     selectedPromise = fetchSelectedEntities();
   }
 
-  const [pageEntities, selectedEntities] = await Promise.all([
-    pagePromise,
-    selectedPromise,
-  ]);
+  const [pageEntities, selectedEntities] = await Promise.all([pagePromise, selectedPromise]);
 
   const combined = [...selectedEntities, ...pageEntities];
   const unique = combined.reduce((acc, current) => {
@@ -159,24 +176,31 @@ onMounted(async () => {
     return acc;
   }, [] as any[]);
 
-  // sort options by labelProperty
-  if (typeof props.labelProperty === "string") {
-    unique.sort((a: any, b: any) => {
-      const aValue = a[props.labelProperty as string] ?? "";
-      const bValue = b[props.labelProperty as string] ?? "";
-      return aValue.localeCompare(bValue);
-    });
-  }
-
   options.value = unique;
 
   isLoading.value = false;
 });
 
-const onSearchTermChange = (newSearchTerm: string) => {
-  searchTerm.value = newSearchTerm;
+const onItemAdd = (item: { [key: string]: any }) => {
+  if (!props.valueProperty) {
+    return;
+  }
+
+  const itemExists = options.value.some(
+    (option) => option[props.valueProperty as string] === item[props.valueProperty as string],
+  );
+
+  if (!itemExists) {
+    options.value.push(item);
+  }
+};
+
+const fetchSearchData = async ({ searchTerm: newSearchTerm }: { searchTerm: string }) => {
   currentPage.value = 1;
-  fetchData(false);
+  searchTerm.value = newSearchTerm;
+
+  // We need to set the options here, so the search result is actually displayed
+  return fetchData(false, newSearchTerm, true);
 };
 
 const fetchNextPage = () => {

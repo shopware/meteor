@@ -1,38 +1,37 @@
 import { within, userEvent } from "@storybook/test";
 import { expect, fn } from "@storybook/test";
+import { screen } from "@storybook/test";
 import { waitUntil } from "../../../_internal/test-helper";
-import meta, {
-  type MtEntitySelectStory,
-} from "./mt-entity-select.stories";
+import meta, { type MtEntitySelectStory } from "./mt-entity-select.stories";
 
 export default {
   ...meta,
   title: "Interaction Tests/Entity/mt-entity-select",
 };
 
-export const TestSingleSelection: MtEntitySelectStory = {
+export const VisualTestSingleSelection: MtEntitySelectStory = {
   name: "should select a single item",
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
 
     // wait for data to be loaded
-    await waitUntil(() => !!canvas.queryByText(/Manufacturer \d+/));
+    await canvas.findByText("Manufacturers");
 
-    // open the select
-    await userEvent.click(canvas.getByRole("combobox"));
+    // open the select by clicking on text input
+    await canvas.getByRole("textbox").click();
 
     // wait for options to appear
-    await waitUntil(() => canvas.queryAllByText(/Manufacturer \d+/).length > 0);
+    await screen.findByText("Manufacturer 2 with a long name to test wrapping");
 
     // click an option
-    await userEvent.click(canvas.getByText("Manufacturer 2"));
+    await userEvent.click(screen.getByText("Manufacturer 2 with a long name to test wrapping"));
 
     // check if the value has been updated
     expect(args["onUpdate:modelValue"]).toHaveBeenCalledWith("manufacturer-2");
   },
 };
 
-export const TestMultiSelection: MtEntitySelectStory = {
+export const VisualTestMultiSelection: MtEntitySelectStory = {
   name: "should select multiple items",
   args: {
     enableMultiSelection: true,
@@ -41,18 +40,18 @@ export const TestMultiSelection: MtEntitySelectStory = {
     const canvas = within(canvasElement);
 
     // wait for data to be loaded
-    await waitUntil(() => !!canvas.queryByText(/Manufacturer \d+/));
+    await canvas.findByText("Manufacturers");
 
-    // open the select
-    await userEvent.click(canvas.getByRole("combobox"));
+    // open the select by clicking on text input
+    await canvas.getByRole("textbox").click();
 
     // wait for options to appear
-    await waitUntil(() => canvas.queryAllByText(/Manufacturer \d+/).length > 0);
+    await screen.findByText("Manufacturer 2 with a long name to test wrapping");
 
     // click a few options
-    await userEvent.click(canvas.getByText("Manufacturer 2"));
-    await userEvent.click(canvas.getByText("Manufacturer 5"));
-    await userEvent.click(canvas.getByText("Manufacturer 8"));
+    await userEvent.click(screen.getByText("Manufacturer 2 with a long name to test wrapping"));
+    await userEvent.click(screen.getByText("Manufacturer 5 with a long name to test wrapping"));
+    await userEvent.click(screen.getByText("Manufacturer 8 with a long name to test wrapping"));
 
     // check if the value has been updated
     expect(args["onUpdate:modelValue"]).toHaveBeenLastCalledWith([
@@ -62,7 +61,10 @@ export const TestMultiSelection: MtEntitySelectStory = {
     ]);
 
     // remove one selection
-    await userEvent.click(canvas.getByText("Manufacturer 5"));
+    const popover = await within(
+      document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement,
+    );
+    await userEvent.click(popover.getByText("Manufacturer 5 with a long name to test wrapping"));
     expect(args["onUpdate:modelValue"]).toHaveBeenLastCalledWith([
       "manufacturer-2",
       "manufacturer-8",
@@ -70,55 +72,100 @@ export const TestMultiSelection: MtEntitySelectStory = {
   },
 };
 
-export const TestSearch: MtEntitySelectStory = {
+export const VisualTestSearch: MtEntitySelectStory = {
   name: "should search for items",
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
 
     // wait for data to be loaded
-    await waitUntil(() => !!canvas.queryByText(/Manufacturer \d+/));
+    await canvas.findByText("Manufacturers");
 
     // open the select and type a search term
-    await userEvent.type(canvas.getByRole("combobox"), "Manufacturer 10");
+    await userEvent.type(canvas.getByRole("textbox"), "Manufacturer 10");
 
     // wait for search results
-    await waitUntil(
-      () =>
-        canvas.queryAllByText(/Manufacturer 10\d*/).length > 0 &&
-        canvas.queryAllByText(/Manufacturer 1\d*/).length === 1
-    );
+    await screen.findByTestId("mt-select-option--manufacturer-101");
 
-    // check if only matching options are visible
-    const options = canvas.getAllByRole("option");
-    expect(options.every((o) => o.textContent?.includes("Manufacturer 10"))).toBe(
-      true
+    // click on 101
+    await userEvent.click(screen.getByTestId("mt-select-option--manufacturer-101"));
+
+    // check if the value has been updated
+    expect(args["onUpdate:modelValue"]).toHaveBeenCalledWith("manufacturer-101");
+
+    // check if input placeholder contains the selected item
+    expect(canvas.getByRole("textbox")).toHaveAttribute(
+      "placeholder",
+      "Manufacturer 101 with a long name to test wrapping",
     );
   },
 };
 
-export const TestPagination: MtEntitySelectStory = {
+export const VisualTestSearchMultiple: MtEntitySelectStory = {
+  name: "should search for items with multiple selection",
+  args: {
+    enableMultiSelection: true,
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    // wait for data to be loaded
+    await canvas.findByText("Manufacturers");
+
+    // open the select and type a search term
+    await userEvent.type(canvas.getByRole("textbox"), "Manufacturer 10");
+
+    // wait for search results
+    await screen.findByTestId("mt-select-option--manufacturer-101");
+
+    // click on 101
+    await userEvent.click(screen.getByTestId("mt-select-option--manufacturer-101"));
+
+    // check if the value has been updated
+    expect(args["onUpdate:modelValue"]).toHaveBeenCalledWith(["manufacturer-101"]);
+
+    // Click outside to close the select
+    await userEvent.click(document.body);
+
+    // wait 400ms until the close animation is complete
+    await new Promise((resolve) => setTimeout(resolve, 400));
+
+    // check if selected value has an option holder (li with data-id="manufacturer-10")
+    const optionHolder = await canvas.findByText(
+      "Manufacturer 101 with a long name to test wrapping",
+    );
+    expect(optionHolder).toBeInTheDocument();
+  },
+};
+
+export const VisualTestPagination: MtEntitySelectStory = {
   name: "should paginate to load more items",
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
     // wait for data to be loaded
-    await waitUntil(() => !!canvas.queryByText(/Manufacturer \d+/));
+    await canvas.findByText("Manufacturers");
 
     // open the select
-    await userEvent.click(canvas.getByRole("combobox"));
+    await userEvent.click(canvas.getByRole("textbox"));
 
     // wait for options to appear
-    await waitUntil(() => canvas.queryAllByText(/Manufacturer \d+/).length > 0);
+    await screen.findByText("Manufacturer 5 with a long name to test wrapping");
 
     // scroll to the bottom of the results list
-    const resultsList = document.querySelector(".mt-select-result-list");
+    let resultsList = document.querySelector(".mt-select-result-list__content");
     resultsList?.scrollTo(0, resultsList.scrollHeight);
 
     // wait for more options to be loaded
-    await waitUntil(() => canvas.queryAllByText(/Manufacturer 5\d+/).length > 0);
+    await screen.findByText("Manufacturer 50 with a long name to test wrapping");
 
-    // check that we have more than the initial 50 options
-    const options = canvas.getAllByRole("option");
-    expect(options.length).toBeGreaterThan(50);
+    // scroll again to the bottom of the results list
+    resultsList = document.querySelector(".mt-select-result-list__content");
+    resultsList?.scrollTo(0, resultsList.scrollHeight);
+
+    // wait for more options to be loaded
+    await screen.findByText("Manufacturer 99 with a long name to test wrapping");
+
+    // wait 500ms until the pagination is complete for snapshot
+    await new Promise((resolve) => setTimeout(resolve, 500));
   },
-}; 
+};
