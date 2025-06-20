@@ -1125,8 +1125,6 @@ describe("mt-data-table", () => {
       await searchInput.setValue("My new search value");
       await searchInput.trigger("change");
 
-      console.log(wrapper.emitted());
-
       expect(wrapper.emitted()["search-value-change"]).toBeTruthy();
       // @ts-expect-error - only needed values are set
       expect(wrapper.emitted()["search-value-change"][0][0]).toBe("My new search value");
