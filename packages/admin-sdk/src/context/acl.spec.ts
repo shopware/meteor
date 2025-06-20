@@ -3,10 +3,8 @@ import createPermissionChecker from './acl';
 describe('createPermissionChecker', () => {
   it('returns true if the crud privilege is granted', async () => {
     const mockGetAppInformation = jest.fn().mockResolvedValue({
-      responseType: {
-        permissions: {
-          read: ['product'],
-        },
+      privileges: {
+        read: ['product'],
       },
     });
 
@@ -18,10 +16,8 @@ describe('createPermissionChecker', () => {
 
   it('returns false if the crud privilege is not granted', async () => {
     const mockGetAppInformation = jest.fn().mockResolvedValue({
-      responseType: {
-        permissions: {
-          read: ['product'],
-        },
+      privileges: {
+        read: ['product'],
       },
     });
 
@@ -33,10 +29,8 @@ describe('createPermissionChecker', () => {
 
   it('returns true if the additional privilege is granted', async () => {
     const mockGetAppInformation = jest.fn().mockResolvedValue({
-      responseType: {
-        permissions: {
-          additional: ['api_service_toggle'],
-        },
+      privileges: {
+        additional: ['api_service_toggle'],
       },
     });
 
@@ -48,10 +42,8 @@ describe('createPermissionChecker', () => {
 
   it('returns false if the additional privilege is not granted', async () => {
     const mockGetAppInformation = jest.fn().mockResolvedValue({
-      responseType: {
-        permissions: {
-          additional: ['system.plugin_maintain']
-        },
+      privileges: {
+        additional: ['system.plugin_maintain']
       },
     });
 

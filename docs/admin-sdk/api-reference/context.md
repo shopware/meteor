@@ -250,7 +250,7 @@ Promise<{ name: string ; version: string ; type: 'app' | 'plugin', permissions: 
   name: 'my-extension',
   version: '1.2.3',
   type: 'app'
-  permissions: {
+  privileges: {
     read: [ 'product', 'customer' ],
     write: [ 'product' ],
     additional: [ 'system.cache_clear' ]
@@ -414,14 +414,14 @@ Promise<string>
 
 ## Check available permission
 
-> vailable since Shopware v6.7.1.0
+> Available since Shopware 6.7.1.0
 
 This lets you check if a specific permission is granted for your app
 
 #### Usage
 
 ```ts
-const isAllowed: boolean = await sw.context.can('read:product');
+const isAllowed: boolean = await sw.context.can('product:read');
 ```
 
 #### Parameters

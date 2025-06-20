@@ -14,7 +14,7 @@ export const compareIsShopwareVersion = getCompareIsShopwareVersion(getShopwareV
 export const getUserInformation = createSender('contextUserInformation', {});
 export const getUserTimezone = createSender('contextUserTimezone', {});
 export const getAppInformation = createSender('contextAppInformation', {});
-export const can = createPermissionChecker(() => getAppInformation().then(data => ({ responseType: data })));
+export const can = createPermissionChecker(getAppInformation);
 export const getModuleInformation = createSender('contextModuleInformation', {});
 export const getShopId = createSender('contextShopId', {});
 
@@ -70,7 +70,7 @@ export type contextAppInformation = {
     name: string,
     version: string,
     type: 'app'|'plugin',
-    permissions: privileges,
+    privileges: privileges,
   },
 }
 

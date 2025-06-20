@@ -2,11 +2,11 @@ import type { contextAppInformation } from './index';
 import type { privileges } from '../_internals/privileges';
 
 export default function createPermissionChecker(
-  getContextAppInformation: () => Promise<contextAppInformation>
+  getContextAppInformation: () => Promise<contextAppInformation['responseType']>
 ) {
   return async (privilege: string): Promise<boolean> => {
     const appInformation = await getContextAppInformation();
-    const appPrivileges = appInformation.responseType.permissions;
+    const appPrivileges = appInformation.privileges;
 
     return can(privilege, flattenPrivileges(appPrivileges));
   };
