@@ -344,6 +344,10 @@ export default defineComponent({
 
 $mt-select-result-list-transition: all ease-in-out 0.2s;
 
+.mt-select-result-list {
+  pointer-events: none;
+}
+
 .mt-select-result-list,
 .mt-select-result-list-popover {
   position: absolute;

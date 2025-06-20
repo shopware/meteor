@@ -265,11 +265,10 @@ export default defineComponent({
     },
 
     clearSearchTerm() {
-      this.inputInFocus = false;
-
-      if (this.searchTerm.length > 0) {
-        this.$emit("search-term-change", "");
-      }
+      // this.inputInFocus = false;
+      // if (this.searchTerm.length > 0) {
+      //   this.$emit("search-term-change", "");
+      // }
     },
 
     onKeyDownDelete() {

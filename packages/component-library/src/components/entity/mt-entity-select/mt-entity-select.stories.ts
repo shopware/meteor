@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/vue3";
 import MtEntitySelect from "./mt-entity-select.vue";
 import { fn } from "@storybook/test";
+import { ref } from "vue";
 
 // Fixtures
 const manufacturers = Array.from(Array(150).keys()).map((i) => {
@@ -63,18 +64,25 @@ export default {
     entity: "product_manufacturer" as any,
     repository: mockManufacturerRepository as any,
     label: "Manufacturers",
+    labelProperty: "name",
+    valueProperty: "id",
     "onUpdate:modelValue": fn(),
   },
   render: (args) => ({
     components: { MtEntitySelect },
     template: `
-          <div style="width: 300px">
-              <mt-entity-select v-bind="args" />
+          <div style="width: 600px">
+              <mt-entity-select
+                v-bind="args"
+                v-model="currentModelValue"
+              />
               <div id="hidden-box" style="height: 400px; width: 100%"></div>
           </div>
       `,
     setup() {
-      return { args };
+      const currentModelValue = ref(args.modelValue);
+
+      return { args, currentModelValue };
     },
   }),
 } as Meta<typeof MtEntitySelect>;
@@ -82,7 +90,7 @@ export default {
 export type MtEntitySelectStory = StoryObj<typeof MtEntitySelect>;
 
 export const Default: MtEntitySelectStory = {
-  name: "Default",
+  name: "Default (single selection)",
   args: {},
 };
 
@@ -114,4 +122,4 @@ export const Disabled: MtEntitySelectStory = {
     disabled: true,
     modelValue: "manufacturer-5",
   },
-}; 
+};

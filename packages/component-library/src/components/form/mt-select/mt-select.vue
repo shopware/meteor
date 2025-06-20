@@ -49,7 +49,7 @@
       <mt-select-result-list
         ref="MtSelectResultList"
         :options="visibleResults"
-        :is-loading="isLoading"
+        :is-loading="isLoading || isSearchResultsLoading"
         :empty-message="t('messageNoResults', { term: searchTerm })"
         :focus-el="getFocusElement()"
         @paginate="$emit('paginate')"
@@ -76,8 +76,8 @@
           >
             <mt-select-result
               :selected="isSelected(item)"
-              :class="'mt-select-option--' + item.value"
-              :data-testid="'mt-select-option--' + item.value"
+              :class="'mt-select-option--' + getKey(item, valueProperty)"
+              :data-testid="'mt-select-option--' + getKey(item, valueProperty)"
               v-bind="{ item, index }"
               @item-select="addItem"
               :disabled="item.disabled"
@@ -141,16 +141,6 @@ export default defineComponent({
   },
 
   inheritAttrs: false,
-
-  emits: [
-    "update:modelValue",
-    "change",
-    "item-add",
-    "item-remove",
-    "display-values-expand",
-    "paginate",
-    "search-term-change",
-  ],
 
   props: {
     /**
@@ -363,11 +353,40 @@ export default defineComponent({
     },
   },
 
+  emits: [
+    "update:modelValue",
+    "change",
+    "item-add",
+    "item-remove",
+    "display-values-expand",
+    "paginate",
+    "search-term-change",
+  ],
+
+  setup() {
+    const { t } = useI18n({
+      messages: {
+        en: {
+          messageNoResults: 'No results found for "{term}".',
+        },
+        de: {
+          messageNoResults: 'Es wurden keine Ergebnisse für "{term}" gefunden.',
+        },
+      },
+    });
+
+    return {
+      t,
+      getKey: getPropertyValue,
+    };
+  },
+
   data() {
     return {
       searchTerm: "",
       limit: this.valueLimit,
       searchResults: [],
+      isSearchResultsLoading: false,
     };
   },
 
@@ -391,7 +410,9 @@ export default defineComponent({
         }
 
         return this.options
-          .filter((item) => value.includes(this.getKey(item, this.valueProperty)))
+          .filter((item) => {
+            return value.includes(this.getKey(item, this.valueProperty));
+          })
           .slice(0, this.limit);
       }
 
@@ -467,51 +488,13 @@ export default defineComponent({
     },
   },
 
-  setup() {
-    const { t } = useI18n({
-      messages: {
-        en: {
-          messageNoResults: 'No results found for "{term}".',
-        },
-        de: {
-          messageNoResults: 'Es wurden keine Ergebnisse für "{term}" gefunden.',
-        },
-      },
-    });
-
-    return {
-      t,
-      getKey: getPropertyValue,
-    };
-  },
-
   watch: {
     valueLimit(value) {
       this.limit = value;
     },
 
     searchTerm(newSearchTerm) {
-      this.searchResults = [];
-      if (newSearchTerm) {
-        const result = this.searchFunction({
-          options: this.options,
-          labelProperty: this.labelProperty,
-          valueProperty: this.valueProperty,
-          searchTerm: this.searchTerm,
-        });
-
-        if (isPromise(result)) {
-          result.then((res: any) => {
-            if (res) {
-              this.searchResults = res;
-            }
-          });
-        } else {
-          if (result) {
-            this.searchResults = result;
-          }
-        }
-      }
+      this.searchTermDebounced(newSearchTerm);
     },
   },
 
@@ -603,13 +586,54 @@ export default defineComponent({
       this.limit += this.limit;
     },
 
-    onSearchTermChange: debounce(function updateSearchTerm(term) {
-      // @ts-expect-error - this context exists even here
+    onSearchTermChange(term: string) {
       this.searchTerm = term;
-      // @ts-expect-error - this context exists even here
-      this.$emit("search-term-change", this.searchTerm);
-      // @ts-expect-error - this context exists even here
+    },
+
+    searchTermDebounced: debounce(function searchTermDebounced(newSearchTerm: string) {
+      // @ts-expect-error - this context will always be available
+      this.$emit("search-term-change", newSearchTerm);
+      // @ts-expect-error - this context will always be available
       this.resetActiveItem();
+
+      // @ts-expect-error - this context will always be available
+      this.searchResults = [];
+
+      if (newSearchTerm !== undefined && newSearchTerm !== null) {
+        // @ts-expect-error - this context will always be available
+        this.isSearchResultsLoading = true;
+        // @ts-expect-error - this context will always be available
+        const result = this.searchFunction({
+          // @ts-expect-error - this context will always be available
+          options: this.options,
+          // @ts-expect-error - this context will always be available
+          labelProperty: this.labelProperty,
+          // @ts-expect-error - this context will always be available
+          valueProperty: this.valueProperty,
+          // @ts-expect-error - this context will always be available
+          searchTerm: this.searchTerm,
+        });
+
+        if (isPromise(result)) {
+          result.then((res: any) => {
+            if (res) {
+              // @ts-expect-error - this context will always be available
+              this.searchResults = res;
+            }
+
+            // @ts-expect-error - this context will always be available
+            this.isSearchResultsLoading = false;
+          });
+        } else {
+          if (result) {
+            // @ts-expect-error - this context will always be available
+            this.searchResults = result;
+          }
+
+          // @ts-expect-error - this context will always be available
+          this.isSearchResultsLoading = false;
+        }
+      }
     }, 100),
 
     resetActiveItem() {

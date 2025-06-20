@@ -254,6 +254,20 @@ export default defineComponent({
         path = this.computePath(event);
       }
 
+      // Check if path contains a "mt-popover-deprecated" or "mt-popover-deprecated__wrapper"
+      if (
+        path.find((element: any) => {
+          const containsMtPopoverDeprecated = element.classList.contains("mt-popover-deprecated");
+          const containsMtPopoverDeprecatedWrapper = element.classList.contains(
+            "mt-popover-deprecated__wrapper",
+          );
+
+          return containsMtPopoverDeprecated || containsMtPopoverDeprecatedWrapper;
+        })
+      ) {
+        return;
+      }
+
       // @ts-expect-error - path contains elements
       if (!path.find((element) => element === this.$el)) {
         this.collapse();
