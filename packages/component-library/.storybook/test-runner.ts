@@ -12,8 +12,6 @@ export default {
   async preRender(page, context) {
     await page.setViewportSize({ width: 850, height: 650 });
 
-    console.log("context.id", context.id);
-
     // use bigger viewport for data-table and toasts
     if (
       context.id.startsWith("interaction-tests-table-and-list") ||
