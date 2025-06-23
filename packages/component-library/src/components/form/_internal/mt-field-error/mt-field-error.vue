@@ -29,13 +29,27 @@ const errorMessage = computed(() => {
     return t(props.error?.detail ?? "");
   }
 
-  const translation = t(props.error.code, props.error.parameters || {});
-  const noTranslationFound = translation === props.error.code.toString();
+  // Try multiple translation namespaces with fallback
+  const translationKeys = [
+    `global.error-codes.${props.error.code}`,
+    `mt-field-error.${props.error.code}`,
+  ];
 
-  return noTranslationFound ? props.error.detail : translation;
+  for (const key of translationKeys) {
+    const translation = t(key, props.error.parameters || {});
+    const noTranslationFound = translation === key;
+
+    if (!noTranslationFound) {
+      return translation;
+    }
+  }
+
+  // Fallback to error detail if no translation found
+  return props.error.detail;
 });
 
 const { t } = useI18n({
+  useScope: "global",
   messages: {
     en: {
       "mt-field-error": {
