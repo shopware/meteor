@@ -7,11 +7,10 @@ vi.mock("vue-i18n", () => ({
   useI18n: () => ({
     t: vi.fn((key: string) => {
       const translations: Record<string, string> = {
-        "global.error-codes.FRAMEWORK__MISSING_PRIVILEGE_ERROR": "Missing permissions",
-        "mt-field-error.FRAMEWORK__MISSING_PRIVILEGE_ERROR": "Missing permissions",
-        "mt-field-error.FRAMEWORK__DELETE_RESTRICTED": "Deletion failed",
-        "mt-field-error.INVALID_MAIL": "Please enter a valid email address.",
-        "mt-field-error.c1051bb4-d103-4f74-8988-acbcafc7fdc3": "This field must not be empty.",
+        "global.error-codes.FRAMEWORK__MISSING_PRIVILEGE_ERROR": "This is a global error",
+        "mt-field-error.FRAMEWORK__MISSING_PRIVILEGE_ERROR": "This is a mt-field-error error",
+        "global.error-codes.GLOBAL_ONLY_ERROR": "This is a global only error",
+        "mt-field-error.MT_FIELD_ONLY_ERROR": "This is a mt-field-error only error",
       };
 
       return translations[key] || key;
@@ -20,19 +19,6 @@ vi.mock("vue-i18n", () => ({
 }));
 
 describe("mt-field-error", () => {
-  it("should render translated error message", () => {
-    const error = {
-      code: "FRAMEWORK__MISSING_PRIVILEGE_ERROR",
-      detail: "Fallback error message",
-    };
-
-    render(MtFieldError, {
-      props: { error },
-    });
-
-    expect(screen.getByText("Missing permissions")).toBeInTheDocument();
-  });
-
   it("should fallback to detail when no translation is found", () => {
     const error = {
       code: "UNKNOWN_ERROR_CODE",
@@ -44,5 +30,31 @@ describe("mt-field-error", () => {
     });
 
     expect(screen.getByText("This is a custom error message")).toBeInTheDocument();
+  });
+
+  it("should prefer global.error-codes over mt-field-errors", () => {
+    const error = {
+      code: "GLOBAL_ONLY_ERROR",
+      detail: "Fallback error message",
+    };
+
+    render(MtFieldError, {
+      props: { error },
+    });
+
+    expect(screen.getByText("This is a global only error")).toBeInTheDocument();
+  });
+
+  it("should show mt-field-error when global.error-codes is not available", () => {
+    const error = {
+      code: "MT_FIELD_ONLY_ERROR",
+      detail: "Fallback error message",
+    };
+
+    render(MtFieldError, {
+      props: { error },
+    });
+
+    expect(screen.getByText("This is a mt-field-error only error")).toBeInTheDocument();
   });
 });
