@@ -104,7 +104,7 @@ export const VisualTestRenderFullLayout: MtEntityDataTableStory = {
   },
 };
 
-export const VisualTestRenderEmptyState: MtEntityDataTableStory = {
+export const TestRenderEmptyState: MtEntityDataTableStory = {
   name: "Should render the empty state when repository returns no data",
   args: {
     repository: fn(emptyRepositoryFactory) as unknown as typeof Repository,
