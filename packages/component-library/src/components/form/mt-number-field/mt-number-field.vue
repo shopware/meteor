@@ -46,20 +46,20 @@
       <div class="mt-number-field__controls" :class="controlClasses">
         <button
           type="button"
-          @click="increaseNumberByStep"
           :disabled="disabled || isInherited"
           :aria-label="t('increaseButton')"
           data-testid="mt-number-field-increase-button"
+          @click="increaseNumberByStep"
         >
           <mt-icon size="10" name="regular-chevron-up-s" aria-hidden="true" />
         </button>
 
         <button
           type="button"
-          @click="decreaseNumberByStep"
           :disabled="disabled || isInherited"
           :aria-label="t('decreaseButton')"
           data-testid="mt-number-field-decrease-button"
+          @click="decreaseNumberByStep"
         >
           <mt-icon
             style="margin-top: -3px"
@@ -196,6 +196,23 @@ export default defineComponent({
     },
   },
 
+  setup() {
+    const { t } = useI18n({
+      messages: {
+        en: {
+          increaseButton: "Increase",
+          decreaseButton: "Decrease",
+        },
+        de: {
+          increaseButton: "Erhöhen",
+          decreaseButton: "Verringern",
+        },
+      },
+    });
+
+    return { t };
+  },
+
   computed: {
     realStep(): number {
       if (this.step === null) {
@@ -251,6 +268,28 @@ export default defineComponent({
         this.computeValue(this.modelValue.toString());
       },
       immediate: true,
+    },
+
+    min() {
+      if (this.currentValue === null || this.currentValue === undefined) {
+        return;
+      }
+
+      if (!Number.isNaN(Number(this.currentValue))) {
+        this.computeValue(this.currentValue.toString());
+        this.$emit("update:modelValue", this.currentValue);
+      }
+    },
+
+    max() {
+      if (this.currentValue === null || this.currentValue === undefined) {
+        return;
+      }
+
+      if (!Number.isNaN(Number(this.currentValue))) {
+        this.computeValue(this.currentValue.toString());
+        this.$emit("update:modelValue", this.currentValue);
+      }
     },
   },
 
@@ -355,23 +394,6 @@ export default defineComponent({
       }
       return floor;
     },
-  },
-
-  setup() {
-    const { t } = useI18n({
-      messages: {
-        en: {
-          increaseButton: "Increase",
-          decreaseButton: "Decrease",
-        },
-        de: {
-          increaseButton: "Erhöhen",
-          decreaseButton: "Verringern",
-        },
-      },
-    });
-
-    return { t };
   },
 });
 </script>
