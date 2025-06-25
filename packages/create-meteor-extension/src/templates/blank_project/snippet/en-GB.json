@@ -1,0 +1,349 @@
+{
+    "global": {
+        "error-codes": {
+            "ADVANCED_SEARCH_BOOSTING_NAME_DUPLICATED": "Boosting name already exists",
+            "ADVANCED_SEARCH_BOOSTING_BOOST_INVALID": "The boost number must be a positive value",
+            "ADVANCED_SEARCH_BOOSTING_VALID_TO_INVALID": "The activation date should be set in the future",
+            "ADVANCED_SEARCH_ACTION_VALID_TO_INVALID": "The activation date should be set in the future",
+            "ADVANCED_SEARCH_ACTION_SEARCH_TERM_DUPLICATED": "The search term \"{term}\" is already in use",
+            "ADVANCED_SEARCH_ACTION_NAME_DUPLICATED": "This name has already been used in another action"
+        }
+    },
+    "sw-advanced-search": {
+        "generalTab": {
+            "labelEnableAdvancedSearch": "Enable Advanced Search",
+            "helpTextEnableAdvancedSearch": "When disable Advanced Search, the search configuration will be language-based instead of sales channel based.",
+            "labelInfoCrossSearch": "When enabling each advanced search config field here, the search will do an extra query to the OpenSearch server, making the search speed a little slower.",
+            "resetConfirm": "Are you sure you want to reset these configurations?"
+        },
+        "boostingTab": {
+            "title": "Boostings",
+            "subtitle": "Prioritize products, manufacturers, or categories during search.",
+            "addBoosting": "Add Boosting",
+            "placeholderSearch": "Search boostings...",
+            "messageEmptyTitle": "No boostings yet",
+            "messageEmptySubline": "Manage boostings here.",
+            "type": {
+                "product_stream": "Product Stream",
+                "entity_stream": "Entity Stream"
+            },
+            "column": {
+                "name": "Name",
+                "type": "Type",
+                "boost": "Boost",
+                "active": "Active",
+                "validFrom": "Active from",
+                "validTo": "Active to"
+            },
+            "columnContent": {
+                "active": {
+                    "active": "Active",
+                    "inactive": "Inactive"
+                }
+            },
+            "detail": {
+                "name": "Name",
+                "boost": "Relevance",
+                "active": "Active",
+                "validFrom": "Active from",
+                "validTo": "Active to",
+                "productStream": "Dynamic product group",
+                "entityStream": "Entity",
+                "category": "Category",
+                "manufacturer": "Manufacturer",
+                "cancelModal": "Cancel",
+                "streamType": "Stream type",
+                "type": "Entity",
+                "typeId": "Stream",
+                "newBoosting": "New boosting",
+                "placeholderName": "Enter boosting name...",
+                "placeholderBoost": "Set relevance...",
+                "helpTextBoost": "The relevance determines how strongly a boosting impacts search results. Higher values prioritize it more, while lower values have a milder effect.",
+                "placeholderStreamType": "Select stream type...",
+                "placeholderType": "Select an entity...",
+                "placeholderTypeId": "Select a dynamic product group"
+            },
+            "filter": {
+                "placeholderFieldSelect": "Choose a property",
+                "placeholderOperatorSelect": "Choose an operator"
+            },
+            "notification": {
+                "createSuccess": {
+                    "title": "Boosting created",
+                    "message": "The boosting has been created successfully."
+                },
+                "updateSuccess": {
+                    "title": "Boosting updated",
+                    "message": "The boosting has been updated successfully."
+                }
+            }
+        },
+        "actionTab": {
+            "title": "Actions",
+            "subtitle": "Forward customers to a product, category or URL when they search for specific terms.",
+            "addAction": "Add Action",
+            "placeholderSearch": "Search actions...",
+            "messageEmptyTitle": "No actions yet",
+            "messageEmptySubline": "Manage actions here.",
+            "column": {
+                "name": "Name",
+                "type": "Type",
+                "active": "Active",
+                "validFrom": "Active from",
+                "validTo": "Active to"
+            },
+            "detail": {
+                "action": "Action",
+                "searchTerms": "Search terms",
+                "enterSearchTerms": "Enter search terms...",
+                "name": "Name",
+                "placeholderName": "Enter action name...",
+                "active": "Active",
+                "validFrom": "Active from",
+                "validTo": "Active to",
+                "forwardTo": "Forward to",
+                "placeholderType": "Select destination...",
+                "cancelModal": "Cancel",
+                "newAction": "New Action"
+            },
+            "type": {
+                "forwardUrl": {
+                    "title": "URL",
+                    "url": "URL",
+                    "placeholderForwardUrl": "Enter URL..."
+                },
+                "forwardProduct": {
+                    "title": "Product",
+                    "product": "Product",
+                    "placeholderForwardProduct": "Select product..."
+                },
+                "forwardCategory": {
+                    "title": "Category",
+                    "category": "Category",
+                    "placeholderForwardCategory": "Select category..."
+                }
+            },
+            "notification": {
+                "createSuccess": {
+                    "title": "Action created",
+                    "message": "The action has been created successfully."
+                },
+                "updateSuccess": {
+                    "title": "Action updated",
+                    "message": "The action has been updated successfully."
+                }
+            }
+        },
+        "synonymTab": {
+            "title": "Synonyms",
+            "subtitle": "Use synonyms to help customers find the right products based on their search terms.",
+            "buttonAddSynonym": "Add Synonym Rule",
+            "placeholderSearch": "Search synonym...",
+            "messageEmptyTitle": "No synonyms yet",
+            "messageEmptySubline": "Manage synonyms here.",
+            "messageEquivalence": "Equivalent",
+            "table": {
+                "columnSearchTerms": "Search terms",
+                "columnSynonyms": "Synonyms",
+                "columnLanguage": "Language"
+            },
+            "modal": {
+                "title": "Synonym",
+                "type": {
+                    "title": "Synonym rule",
+                    "mapping": {
+                        "title": "Explicit Mapping",
+                        "description": "Match the search terms to a group of synonyms."
+                    },
+                    "equivalence": {
+                        "title": "Equivalence",
+                        "description": "Define search terms that are equivalent."
+                    }
+                },
+                "searchTerms": "Search terms",
+                "synonyms": "Match to",
+                "language": "Language",
+                "placeholderSearchTerms": "Enter search terms...",
+                "placeholderSynonyms": "Enter synonyms...",
+                "placeholderLanguage": "All languages"
+            },
+            "notification": {
+                "createSuccess": {
+                    "title": "Synonym rule created",
+                    "message": "The synonym rule has been created successfully."
+                },
+                "updateSuccess": {
+                    "title": "Synonym rule updated",
+                    "message": "The synonym rule has been updated successfully."
+                }
+            }
+        },
+        "previewTab": {
+            "title": "Preview",
+            "placeholderSearch": "Enter search term...",
+            "messageEmptyTitle": "No results",
+            "messageEmptySubline": "Check your search configurations.",
+            "relevance": "Relevance",
+            "boosting": "Boosting",
+            "field": "Field",
+            "term": "Term",
+            "value": "Value",
+            "name": "Name",
+            "boost": "Boost",
+            "score": "Score",
+            "crossSearch": "Cross search",
+            "crossEntity": "Searches in",
+            "ranking": "Ranking"
+        },
+        "entity": {
+            "category": "Category",
+            "product": "Product",
+            "product_manufacturer": "Manufacturer"
+        },
+        "hitCount": {
+            "appearance": {
+                "title": "Search results",
+                "subtitle": "Define the number of search results displayed to buyers during quick search and on the results page.",
+                "quickSearchTitle": "Quicksearch",
+                "resultsPageTitle": "Results page",
+                "allResults": "Show all results"
+            }
+        },
+        "advancedSearchConfigField": {
+            "product": {
+                "availableStock": "Available stock",
+                "categories": {
+                    "name": "Categories name"
+                },
+                "crossSellings": {
+                    "name": "Cross selling name",
+                    "type": "Cross selling type"
+                },
+                "customSearchKeywords": "Custom search keywords",
+                "description": "Description",
+                "ean": "GTIN/EAN",
+                "height": "Height",
+                "keywords": "Keywords",
+                "length": "Length",
+                "manufacturer": {
+                    "name": "Manufacturer name"
+                },
+                "manufacturerNumber": "Manufacturer product number",
+                "metaDescription": "Meta description",
+                "metaTitle": "Meta title",
+                "name": "Name",
+                "options": {
+                    "name": "Variant values"
+                },
+                "packUnit": "Packing unit",
+                "packUnitPlural": "Packing unit plural",
+                "productNumber": "Product number",
+                "maxPurchase": "Max purchase",
+                "minPurchase": "Min purchase",
+                "properties": {
+                    "name": "Property values"
+                },
+                "purchasePrices": {
+                    "gross": "Purchase prices (gross)",
+                    "net": "Purchase prices (net)"
+                },
+                "purchaseUnit": "Purchase unit",
+                "referenceUnit": "Reference unit",
+                "sales": "Sales",
+                "stock": "Stock",
+                "tags": {
+                    "name": "Tags"
+                },
+                "unit": {
+                    "name": "Unit name",
+                    "shortCode": "Unit short code"
+                },
+                "weight": "Weight",
+                "width": "Width"
+            },
+            "category": {
+                "description": "Description",
+                "keywords": "Keywords",
+                "metaDescription": "Meta description",
+                "metaTitle": "Meta title",
+                "name": "Name",
+                "tags": {
+                    "name": "Tags"
+                },
+                "type": "Type",
+                "products": {
+                    "customSearchKeywords": "Product custom search keywords",
+                    "description": "Product description",
+                    "ean": "Product GTIN/EAN",
+                    "keywords": "Product keywords",
+                    "manufacturerNumber": "Product manufacturer number",
+                    "metaDescription": "Product meta description",
+                    "metaTitle": "Product meta title",
+                    "productNumber": "Product number",
+                    "name": "Product name",
+                    "states": "Product states"
+                }
+            },
+            "product_manufacturer": {
+                "description": "Description",
+                "name": "Name",
+                "products": {
+                    "customSearchKeywords": "Product custom search keywords",
+                    "description": "Product description",
+                    "ean": "Product GTIN/EAN",
+                    "keywords": "Product keywords",
+                    "manufacturerNumber": "Product manufacturer number",
+                    "metaDescription": "Product meta description",
+                    "metaTitle": "Product meta title",
+                    "name": "Product name",
+                    "productNumber": "Product number",
+                    "states": "Product states"
+                }
+            }
+        },
+        "searchConfigField": {
+            "name": "Product name",
+            "description": "Product description",
+            "productNumber": "Product number",
+            "manufacturerNumber": "Manufacturer number",
+            "ean": "GTIN/EAN",
+            "customSearchKeywords": "Custom search terms",
+            "manufacturer": {
+                "customFields": "Manufacturer custom fields",
+                "name": "Manufacturer name"
+            },
+            "categories": {
+                "customFields": "Category custom fields",
+                "name": "Category name"
+            },
+            "tags": {
+                "name": "Product tag"
+            },
+            "metaTitle": "Product meta title",
+            "metaDescription": "Product meta description",
+            "properties": {
+                "name": "Property values"
+            },
+            "options": {
+                "name": "Variant values"
+            }
+        },
+        "entityStream": {
+            "filter": {
+                "type": {
+                    "equals": "Is equal to",
+                    "equalsAny": "Is equal to any of",
+                    "contains": "Contains",
+                    "greaterThan": "Is greater than",
+                    "lessThan": "Is less than",
+                    "greaterThanEquals": "Is greater than/equal to",
+                    "lessThanEquals": "Is less than/equal to",
+                    "notEquals": "Is not equal to",
+                    "notEqualsAny": "Is not equal to any of",
+                    "notContains": "Does not contain",
+                    "range": "Range"
+                }
+            }
+        }
+    }
+}
