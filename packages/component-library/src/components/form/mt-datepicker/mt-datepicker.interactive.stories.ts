@@ -353,3 +353,16 @@ export const VisualTestTimeType: MtDatepickerStory = {
     expect(args.updateModelValue).toHaveBeenCalledWith("08:16");
   },
 };
+
+export const VisualTestClearButton: MtDatepickerStory = {
+  name: "Shows clear button when the value is set",
+  args: {
+    modelValue: "07:15",
+    dateType: "time",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getByRole("button", { name: "Clear value" })).toBeVisible();
+  },
+};
