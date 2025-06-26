@@ -102,7 +102,7 @@ export const VisualTestDateTimeInputValue: MtDatepickerStory = {
       document.querySelector('[data-test-id="hours-toggle-overlay-btn-0"]') as HTMLInputElement,
     );
 
-    await waitUntil(() => !document.querySelector('.calendar-header'));
+    await waitUntil(() => !document.querySelector(".calendar-header"));
 
     // Select an hour
     await userEvent.click(document.querySelector('[data-test-id="12"]') as HTMLInputElement);
@@ -228,7 +228,7 @@ export const VisualTestDateTimeRangeValue: MtDatepickerStory = {
     await expect(document.querySelector('[aria-label="Toggle overlay"]')).toBeInTheDocument();
 
     // await new Promise((resolve) => setTimeout(resolve, 500000));
-    await waitUntil(() => !document.querySelector('.dp-slide-down-enter-active'));
+    await waitUntil(() => !document.querySelector(".dp-slide-down-enter-active"));
     await waitUntil(() => document.querySelector('[aria-label="Toggle overlay"]'));
 
     await userEvent.click(document.querySelector('[data-test-id="11"]') as HTMLInputElement);

@@ -25,7 +25,6 @@ const manufacturerFixtures = productFixtures.map((product) => ({
   },
 }));
 
- 
 export default <EntityName extends keyof EntitySchema.Entities>(
   entityName: EntityName,
 ): Repository<EntityName> => {
@@ -61,7 +60,6 @@ export default <EntityName extends keyof EntitySchema.Entities>(
       const term = criteria.term;
       if (term) {
         filteredEntities = filteredEntities.filter((entity) => {
-           
           const name = (entity as any)?.name ?? (entity as any)?.translated?.name;
           return name?.toLowerCase().includes(term.toLowerCase());
         });
@@ -74,7 +72,7 @@ export default <EntityName extends keyof EntitySchema.Entities>(
             const { field, type, value } = filter as { field: string; type: string; value: any };
 
             // Helper to get potentially nested entity values
-             
+
             const entityValue = field.split(".").reduce((o, i) => o?.[i], entity as any);
 
             if (type === "equals") {
@@ -111,12 +109,9 @@ export default <EntityName extends keyof EntitySchema.Entities>(
         const sortOrder = sortSettings.order || "ASC"; // Default to ASC
 
         filteredEntities = filteredEntities.sort((a, b) => {
-           
           const valA = sortBy.split(".").reduce((o, i) => o?.[i], a as any);
-           
-          const valB = sortBy.split(".").reduce((o, i) => o?.[i], b as any);
 
-          console.log("Sorting", valA, valB);
+          const valB = sortBy.split(".").reduce((o, i) => o?.[i], b as any);
 
           // Handle null or undefined values by pushing them to the end
           if (valA == null && valB == null) return 0;
@@ -166,7 +161,6 @@ export default <EntityName extends keyof EntitySchema.Entities>(
     },
 
     get: async (id: string): Promise<Entity<EntityName> | null> => {
-       
       const entity = entities.find((e: any) => e.id === id);
 
       // Wait for 200-500ms to simulate a real API call
@@ -183,7 +177,6 @@ export default <EntityName extends keyof EntitySchema.Entities>(
       return Promise.resolve();
     },
 
-     
     clone: async (): Promise<unknown | null> => {
       // Wait for 200-500ms to simulate a real API call
       await new Promise((resolve) => setTimeout(resolve, Math.random() * 300 + 200));
@@ -211,8 +204,6 @@ export default <EntityName extends keyof EntitySchema.Entities>(
     delete: async (): Promise<void | null> => {
       // Wait for 200-500ms to simulate a real API call
       await new Promise((resolve) => setTimeout(resolve, Math.random() * 300 + 200));
-
-      console.log("Mock delete operation triggered");
 
       // Mock delete operation
       return Promise.resolve();

@@ -1,4 +1,4 @@
-import { mount } from "@vue/test-utils";
+import { flushPromises, mount } from "@vue/test-utils";
 import MtSelect from "../mt-select/mt-select.vue";
 
 async function createWrapper() {
@@ -29,6 +29,11 @@ async function createWrapper() {
 
   return wrapper;
 }
+
+// mock debounce from '@/utils/debounce'
+vi.mock("@/utils/debounce", () => ({
+  debounce: (fn: (...args: any[]) => void) => fn,
+}));
 
 describe("mt-select", () => {
   it("should render the select component", async () => {
@@ -133,7 +138,7 @@ describe("mt-select", () => {
   });
 
   it("should search in all properties of the labelProperty array", async () => {
-    vi.useFakeTimers()
+    vi.useFakeTimers();
     const wrapper = await createWrapper();
     await wrapper.setProps({
       labelProperty: ["name", "username", "email"],
@@ -146,8 +151,7 @@ describe("mt-select", () => {
 
     // Simulate a search
     wrapper.vm.onSearchTermChange("test");
-    await vi.runAllTimers();
-    await wrapper.vm.$nextTick();
+    await flushPromises();
 
     // Check that the search found the item with 'test' in the email field
     expect(wrapper.vm.visibleResults.length).toBe(1);

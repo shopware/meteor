@@ -31,7 +31,7 @@ jobs:
 
       - uses: pnpm/action-setup@v3
         with:
-          version: 10
+          version: 10.12.3
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -46,11 +46,11 @@ jobs:
       - name: Build packages
         run: npx turbo run build
 
-      - name: Lint code
-        run: pnpx turbo run lint:eslint -- --fix
+      - name: Lint all
+        run: pnpx turbo run lint:all
 
       - name: Lint css
-        run: pnpx turbo run lint:css -- --fix --custom-formatter @csstools/stylelint-formatter-github
+        run: pnpx turbo run lint:css -- --custom-formatter @csstools/stylelint-formatter-github
 
       - name: Check formatting
         run: pnpx turbo run format
@@ -73,12 +73,12 @@ jobs:
 
       - uses: pnpm/action-setup@v3
         with:
-          version: 9
+          version: 10.12.3
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           cache: "pnpm"
           cache-dependency-path: "**/pnpm-lock.yaml"
 
@@ -100,7 +100,7 @@ jobs:
 
       - uses: pnpm/action-setup@v3
         with:
-          version: 9
+          version: 10.12.3
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -132,12 +132,12 @@ jobs:
 
       - uses: pnpm/action-setup@v3
         with:
-          version: 9
+          version: 10.12.3
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           cache: "pnpm"
           cache-dependency-path: "**/pnpm-lock.yaml"
 
