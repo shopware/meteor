@@ -1,5 +1,23 @@
 # Changelog
 
+## 4.14.0
+
+### Minor Changes
+
+- 333ac4c: Add mt-entity-select component
+
+### Patch Changes
+
+- d09f56f: Do not show the timezone when displaying a date in mt-datepicker
+- 2dfd85a: Define emits on `mt-datepicker`
+- 2dfd85a: Update text colors in datepicker
+- cf0626a: Add reactivity to `min`/`max` changes in `mt-number-field` to prevent invalid values.
+- 2dfd85a: Allow clearing value of `mt-datepicker`
+- e78c40a: fix: validator errors mt-field-error
+- Updated dependencies [802233c]
+- Updated dependencies [e44cf07]
+  - @shopware-ag/meteor-admin-sdk@6.2.0
+
 ## 4.13.0
 
 ### Minor Changes
