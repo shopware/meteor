@@ -68,7 +68,7 @@
       <!-- @deprecated tag:v5 remove field-hint class -->
       <div
         class="mt-datepicker__hint field-hint"
-        data-test="time-zone-hint"
+        data-testid="time-zone-hint"
         :style="{ gridArea: 'hint' }"
       >
         <mt-icon name="solid-clock" class="mt-datepicker__hint-icon" />
@@ -263,9 +263,12 @@ export default defineComponent({
   },
 
   watch: {
-    dateType() {
-      this.isTimeHintVisible = this.dateType !== "date";
-      this.updateOpacitySettings();
+    dateType: {
+      handler() {
+        this.isTimeHintVisible = this.dateType !== "date";
+        this.updateOpacitySettings();
+      },
+      immediate: true,
     },
   },
 

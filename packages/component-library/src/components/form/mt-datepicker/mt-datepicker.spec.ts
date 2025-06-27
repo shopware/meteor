@@ -67,7 +67,7 @@ describe("mt-datepicker", () => {
     });
 
     // ASSERT
-    expect(screen.getByRole("textbox")).toHaveValue("14:30");
+    expect(screen.getByTestId("time-zone-hint")).toBeVisible();
   });
 
   it("shows the time only when providing a time and in time mode", async () => {
