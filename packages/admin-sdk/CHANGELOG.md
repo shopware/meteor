@@ -1,5 +1,13 @@
 # Changelog
 
+## 6.2.0
+
+### Minor Changes
+
+- 802233c: Added context.can
+  Added `privileges` to `contextAppInformation`
+- e44cf07: Add `useDataset` and `useAsyncSharedState` composables
+
 ## 6.1.0
 
 ### Minor Changes
