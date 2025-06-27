@@ -70,6 +70,19 @@ describe("mt-datepicker", () => {
     expect(screen.getByTestId("time-zone-hint")).toBeVisible();
   });
 
+  it("shows the timezone when displaying a datetime", async () => {
+    // ARRANGE
+    await render(MtDatepicker, {
+      props: {
+        dateType: "datetime",
+        modelValue: "2024-03-20T14:30:00Z",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByTestId("time-zone-hint")).toBeVisible();
+  });
+
   it("shows the time only when providing a time and in time mode", async () => {
     // ARRANGE
     await render(MtDatepicker, {
