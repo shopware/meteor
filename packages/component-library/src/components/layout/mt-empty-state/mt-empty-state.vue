@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-empty-state">
+  <div class="mt-empty-state" :class="{ 'mt-empty-state--centered': centered }">
     <div class="mt-empty-state__icon">
       <mt-icon :name="icon" color="var(--color-icon-primary-default)" aria-hidden="true" />
     </div>
@@ -48,6 +48,7 @@ defineProps<{
   linkHref?: string;
   linkText?: string;
   buttonText?: string;
+  centered?: boolean;
 }>();
 
 defineEmits(["button-click"]);
@@ -58,6 +59,12 @@ defineEmits(["button-click"]);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
+}
+
+.mt-empty-state--centered {
+  align-items: center;
+  text-align: center;
+  max-width: 560px;
 }
 
 .mt-empty-state__icon {
