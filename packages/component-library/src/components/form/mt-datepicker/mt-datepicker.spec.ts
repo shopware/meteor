@@ -70,6 +70,19 @@ describe("mt-datepicker", () => {
     expect(screen.getByRole("textbox")).toHaveValue("14:30");
   });
 
+  it("shows the time only when providing a time and in time mode", async () => {
+    // ARRANGE
+    await render(MtDatepicker, {
+      props: {
+        dateType: "time",
+        modelValue: "14:30",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("14:30");
+  });
+
   it("shows the time only when ISO string is provided and in time mode", async () => {
     // ARRANGE
     await render(MtDatepicker, {
