@@ -1,8 +1,8 @@
 <template>
   <div class="wrapper" :class="{ 'has-error': error || errorMessage }">
     <mt-field-label
-      :style="{ gridArea: 'label' }"
       id="field-id"
+      :style="{ gridArea: 'label' }"
       :has-error="!!error || !!errorMessage"
       :required="required"
     >
@@ -15,11 +15,7 @@
       :style="{ gridArea: 'datepicker' }"
       class="date-picker"
       position="left"
-      @open="isDatepickerOpen = true"
-      @close="() => {
-        isDatepickerOpen = false;
-        checkValidity();
-      }"
+      time-picker-inline
       :placeholder="placeholder"
       :disabled="disabled"
       :required="required"
@@ -35,14 +31,20 @@
       :is-24="is24"
       :type="dateType"
       :enable-time-picker="dateType !== 'date'"
-      :exactMatch="dateType === 'date'"
-      time-picker-inline
+      :exact-match="dateType === 'date'"
       :time-picker="dateType === 'time'"
       :no-hours-overlay="dateType === 'time'"
       :no-minutes-overlay="dateType === 'time'"
       :min-date="minDate"
       :aria-invalid="!!errorMessage || !!error"
       :aria-describedby="!!errorMessage || !!error ? errorId : undefined"
+      @open="isDatepickerOpen = true"
+      @close="
+        () => {
+          isDatepickerOpen = false;
+          checkValidity();
+        }
+      "
     >
       <template #clear-icon="{ clear }">
         <button class="mt-datepicker__clear-button" aria-label="Clear value" @click="clear">
@@ -75,11 +77,11 @@
       </template>
     </vue-datepicker>
 
-    <mt-field-error 
-      v-if="error || errorMessage" 
-      :error="errorMessage || error"
+    <mt-field-error
+      v-if="error || errorMessage"
       :id="errorId"
-      :style="{ gridArea: 'error' }" 
+      :style="{ gridArea: 'error' }"
+      :error="errorMessage || error"
     />
 
     <template v-if="isTimeHintVisible">
@@ -249,6 +251,8 @@ export default defineComponent({
     },
   },
 
+  emits: ["update:modelValue"],
+
   setup() {
     const errorId = useId();
     const errorMessage = ref<{ detail: string } | undefined>(undefined);
@@ -257,11 +261,9 @@ export default defineComponent({
     return {
       errorId,
       errorMessage,
-      datepicker
+      datepicker,
     };
   },
-
-  emits: ["update:modelValue"],
 
   data(): {
     isDatepickerOpen: boolean;
@@ -332,8 +334,13 @@ export default defineComponent({
       immediate: true,
       handler() {
         this.checkValidity();
-      }
-    }
+      },
+    },
+  },
+
+  mounted() {
+    this.isTimeHintVisible = this.dateType !== "date";
+    this.updateOpacitySettings();
   },
 
   methods: {
@@ -407,17 +414,12 @@ export default defineComponent({
 
       if (!this.modelValue) {
         this.errorMessage = {
-          detail: "This field is required"
+          detail: "This field is required",
         };
       } else {
         this.errorMessage = undefined;
       }
     },
-  },
-
-  mounted() {
-    this.isTimeHintVisible = this.dateType !== "date";
-    this.updateOpacitySettings();
   },
 });
 </script>
