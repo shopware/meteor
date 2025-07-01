@@ -1,6 +1,6 @@
 import MtPasswordField from "./mt-password-field.vue";
-import type { Meta, StoryObj } from "@storybook/vue3";
-import { fn } from "@storybook/test";
+import type { Meta, StoryObj } from "@storybook/vue3-vite";
+import { fn } from "storybook/test";
 
 export type MtPasswordFieldMeta = Meta<typeof MtPasswordField>;
 

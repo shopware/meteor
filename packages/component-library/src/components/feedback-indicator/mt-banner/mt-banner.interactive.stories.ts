@@ -1,5 +1,5 @@
-import { within, userEvent } from "@storybook/test";
-import { expect } from "@storybook/test";
+import { within, userEvent } from "storybook/test";
+import { expect } from "storybook/test";
 
 import meta, { type MtBannerMeta, type MtBannerStory } from "./mt-banner.stories";
 

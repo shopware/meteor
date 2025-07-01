@@ -1,5 +1,5 @@
 import MtIcon from "./mt-icon.vue";
-import type { StoryObj } from "@storybook/vue3";
+import type { StoryObj } from "@storybook/vue3-vite";
 import type { SlottedMeta } from "@/_internal/story-helper";
 
 export type MtIconMeta = SlottedMeta<typeof MtIcon, "default">;

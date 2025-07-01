@@ -1,5 +1,5 @@
-import { within, userEvent, screen } from "@storybook/test";
-import { expect } from "@storybook/test";
+import { within, userEvent, screen } from "storybook/test";
+import { expect } from "storybook/test";
 
 import meta, { type MtUnitFieldMeta, type MtUnitFieldStory } from "./mt-unit-field.stories";
 

@@ -1,8 +1,8 @@
-import { action } from "@storybook/addon-actions";
+import { action } from "storybook/actions";
 import MtCheckbox from "./mt-checkbox.vue";
-import type { StoryObj } from "@storybook/vue3";
+import type { StoryObj } from "@storybook/vue3-vite";
 import type { SlottedMeta } from "@/_internal/story-helper";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 
 export type MtCheckboxMeta = SlottedMeta<
   typeof MtCheckbox,
