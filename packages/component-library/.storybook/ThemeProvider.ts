@@ -1,4 +1,4 @@
-import { useGlobals, useEffect } from "@storybook/preview-api";
+import { useGlobals, useEffect } from "storybook/preview-api";
 
 type BackgroundsGlobal = null | {
   value: string;

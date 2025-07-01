@@ -1,4 +1,4 @@
-import { expect, userEvent } from "@storybook/test";
+import { expect, userEvent } from "storybook/test";
 
 import { Default } from "./mt-pagination.stories";
 import flushPromises from "flush-promises";

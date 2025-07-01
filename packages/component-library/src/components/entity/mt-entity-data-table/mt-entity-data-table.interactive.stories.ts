@@ -1,6 +1,6 @@
 import meta, { type MtEntityDataTableMeta } from "./mt-entity-data-table.stories";
-import type { StoryObj } from "@storybook/vue3";
-import { within, userEvent, waitFor, expect, fn, screen } from "@storybook/test";
+import type { StoryObj } from "@storybook/vue3-vite";
+import { within, userEvent, waitFor, expect, fn, screen } from "storybook/test";
 import { waitUntil } from "../../../_internal/test-helper";
 import EntityCollection from "@shopware-ag/meteor-admin-sdk/es/_internals/data/EntityCollection";
 import Criteria from "@shopware-ag/meteor-admin-sdk/es/data/Criteria";

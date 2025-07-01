@@ -1,0 +1,614 @@
+[15:54:00.218] [INFO] Storybook Upgrade - v9.0.15
+[15:54:00.234] [INFO] detect-projects-spinner-start: Detecting projects...
+[15:54:00.237] [DEBUG] Finding Storybook projects...
+[15:54:00.317] [DEBUG] Found 1 Storybook projects
+[15:54:00.318] [INFO] detect-projects-spinner: Detecting projects: 1 projects
+[15:54:00.318] [DEBUG] Getting Storybook data...
+[15:54:00.318] [DEBUG] Getting Storybook info...
+[15:54:00.319] [DEBUG] Loading main config...
+[15:54:00.468] [DEBUG] Getting stories paths...
+[15:54:00.497] [DEBUG] Getting package manager...
+[15:54:00.856] [DEBUG] Getting Storybook version...
+[15:54:00.858] [DEBUG] /packages/component-library/.storybook - Validating before version... 8.6.12
+[15:54:00.858] [DEBUG] /packages/component-library/.storybook - Validating upgrade compatibility...
+[15:54:00.858] [DEBUG] /packages/component-library/.storybook - Fetching NPM version information...
+[15:54:00.858] [DEBUG] Getting CLI versions from NPM for storybook...
+[15:54:00.860] [DEBUG] Getting CLI versions from NPM for storybook@next...
+[15:54:01.706] [DEBUG] /packages/component-library/.storybook - Evaluating blockers...
+[15:54:01.715] [DEBUG] Getting installed version for @storybook/experimental-addon-test...
+[15:54:02.038] [INFO] detect-projects-spinner-stop: 1 project detected
+[15:54:02.038] [DEBUG] Found 1 valid projects and 0 error projects
+[15:54:02.038] [INFO] Upgrading from 8.6.12 to 9.0.15
+[15:54:02.045] [INFO] upgrade-dependencies-task-start: Fetching versions to update package.json files..
+[15:54:02.045] [DEBUG] Updating dependencies in /packages/component-library/.storybook...
+[15:54:02.050] [INFO] upgrade-dependencies-task: /packages/component-library/package.json
+/package.json
+[15:54:02.050] [DEBUG] Getting CLI versions from NPM for @storybook/test-runner...
+[15:54:02.692] [DEBUG] {
+  "upgradedDependencies": [
+    "@storybook/addon-a11y@^9.0.15"
+  ]
+}
+[15:54:02.692] [DEBUG] {
+  "upgradedDevDependencies": [
+    "@storybook/addon-links@^9.0.15",
+    "@storybook/vue3@^9.0.15",
+    "@storybook/vue3-vite@^9.0.15",
+    "eslint-plugin-storybook@^9.0.15",
+    "storybook@^9.0.15",
+    "@storybook/test-runner@^0.23.0"
+  ]
+}
+[15:54:02.692] [DEBUG] {
+  "upgradedPeerDependencies": []
+}
+[15:54:02.693] [DEBUG] Getting CLI versions from NPM for @storybook/addon-a11y...
+[15:54:03.433] [DEBUG] Getting CLI versions from NPM for @storybook/addon-links...
+[15:54:04.227] [DEBUG] Getting CLI versions from NPM for @storybook/vue3...
+[15:54:04.851] [DEBUG] Getting CLI versions from NPM for @storybook/vue3-vite...
+[15:54:05.498] [DEBUG] Getting CLI versions from NPM for eslint-plugin-storybook...
+[15:54:06.083] [DEBUG] Using cached version for storybook...
+[15:54:06.083] [DEBUG] Using cached version for @storybook/test-runner...
+[15:54:06.089] [DEBUG] {
+  "upgradedDependencies": []
+}
+[15:54:06.089] [DEBUG] {
+  "upgradedDevDependencies": []
+}
+[15:54:06.089] [DEBUG] {
+  "upgradedPeerDependencies": []
+}
+[15:54:06.092] [INFO] upgrade-dependencies-task-success: Updated package versions in package.json files
+[15:54:06.092] [INFO] detect-automigrations-task-start: Detecting automigrations...
+[15:54:06.092] [DEBUG] Starting automigration collection across 1 projects and 15 fixes...
+[15:54:06.099] [INFO] detect-automigrations-task: Checking automigrations for /packages/component-library/.storybook...
+[15:54:06.099] [DEBUG] Processing project: /packages/component-library/.storybook
+[15:54:06.099] [DEBUG] Checking fix eslintPlugin for project /packages/component-library/.storybook...
+[15:54:06.102] [DEBUG] Checking fix addon-mdx-gfm-remove for project /packages/component-library/.storybook...
+[15:54:06.102] [DEBUG] Checking fix addon-storysource-code-panel for project /packages/component-library/.storybook...
+[15:54:06.102] [DEBUG] Checking fix upgrade-storybook-related-dependencies for project /packages/component-library/.storybook...
+[15:54:06.102] [DEBUG] Checking for incompatible storybook packages...
+[15:54:06.108] [DEBUG] Getting installed version for @storybook/addon-essentials...
+[15:54:06.109] [DEBUG] Getting installed version for @storybook/addon-interactions...
+[15:54:06.109] [DEBUG] Getting installed version for @storybook/blocks...
+[15:54:06.109] [DEBUG] Getting installed version for @storybook/manager-api...
+[15:54:06.110] [DEBUG] Getting installed version for @storybook/preview-api...
+[15:54:06.110] [DEBUG] Getting installed version for @storybook/test...
+[15:54:06.110] [DEBUG] Getting installed version for @storybook/theming...
+[15:54:06.111] [DEBUG] Getting installed version for @storybook/types...
+[15:54:06.112] [DEBUG] Getting installed version for storybook-dark-mode...
+[15:54:06.112] [DEBUG] Getting installed version for @storybook/test-runner...
+[15:54:06.795] [DEBUG] Getting CLI versions from NPM for @storybook/blocks...
+[15:54:06.800] [DEBUG] Getting CLI versions from NPM for @storybook/test...
+[15:54:06.808] [DEBUG] Getting CLI versions from NPM for @storybook/theming...
+[15:54:06.809] [DEBUG] Getting CLI versions from NPM for storybook-dark-mode...
+[15:54:06.811] [DEBUG] Getting CLI versions from NPM for @storybook/manager-api...
+[15:54:06.812] [DEBUG] Using cached version for @storybook/test-runner...
+[15:54:06.813] [DEBUG] Getting CLI versions from NPM for @storybook/addon-essentials...
+[15:54:06.819] [DEBUG] Getting CLI versions from NPM for @storybook/addon-interactions...
+[15:54:06.828] [DEBUG] Getting CLI versions from NPM for @storybook/preview-api...
+[15:54:06.838] [DEBUG] Getting CLI versions from NPM for @storybook/types...
+[15:54:08.156] [DEBUG] Checking fix initial-globals for project /packages/component-library/.storybook...
+[15:54:08.171] [DEBUG] Checking fix addon-a11y-addon-test for project /packages/component-library/.storybook...
+[15:54:08.172] [DEBUG] Checking fix consolidated-imports for project /packages/component-library/.storybook...
+[15:54:08.172] [DEBUG] Checking fix addon-experimental-test for project /packages/component-library/.storybook...
+[15:54:08.172] [DEBUG] Using cached installed version for @storybook/experimental-addon-test...
+[15:54:08.172] [DEBUG] Checking fix rnstorybook-config for project /packages/component-library/.storybook...
+[15:54:08.172] [DEBUG] Checking fix remove-addon-interactions for project /packages/component-library/.storybook...
+[15:54:08.172] [DEBUG] Checking fix renderer-to-framework for project /packages/component-library/.storybook...
+[15:54:08.173] [DEBUG] Checking fix remove-essential-addons for project /packages/component-library/.storybook...
+[15:54:08.173] [DEBUG] Checking fix addon-a11y-parameters for project /packages/component-library/.storybook...
+[15:54:08.179] [DEBUG] Checking fix remove-docs-autodocs for project /packages/component-library/.storybook...
+[15:54:08.181] [DEBUG] Checking fix wrap-require for project /packages/component-library/.storybook...
+[15:54:08.189] [INFO] detect-automigrations-task: 
+Automigrations detected:
+[15:54:08.196] [INFO] detect-automigrations-task: ✔ upgrade-storybook-related-dependencies
+[15:54:08.201] [INFO] detect-automigrations-task: ✔ consolidated-imports
+[15:54:08.206] [INFO] detect-automigrations-task: ✔ remove-addon-interactions
+[15:54:08.211] [INFO] detect-automigrations-task: ✔ renderer-to-framework
+[15:54:08.216] [INFO] detect-automigrations-task: ✔ remove-essential-addons
+[15:54:08.221] [INFO] detect-automigrations-task: ✔ wrap-require
+[15:54:08.221] [INFO] detect-automigrations-task-success: 6 automigration(s) detected
+[15:55:18.973] [PROMPT] Select automigrations to run {"choice":["upgrade-storybook-related-dependencies","consolidated-imports","remove-addon-interactions","renderer-to-framework","remove-essential-addons","wrap-require"]}
+[15:55:18.973] [INFO] automigrate-/packages/component-library/.storybook-task-start: Running automigrations for /packages/component-library/.storybook
+[15:55:18.980] [INFO] automigrate-/packages/component-library/.storybook-task: ✔ upgrade-storybook-related-dependencies
+[15:55:19.003] [INFO] automigrate-/packages/component-library/.storybook-task: ✔ consolidated-imports
+[15:55:19.006] [DEBUG] Uninstalling @storybook/addon-interactions
+[15:55:19.008] [DEBUG] Removing '@storybook/addon-interactions' from main.js addons field.
+[15:55:19.020] [INFO] automigrate-/packages/component-library/.storybook-task: ✔ remove-addon-interactions
+[15:55:19.020] [DEBUG] 
+Migrating @storybook/vue3 to @storybook/vue3-vite
+[15:55:19.035] [DEBUG] Updating package.json files...
+[15:55:19.042] [INFO] automigrate-/packages/component-library/.storybook-task: ✔ renderer-to-framework
+[15:55:19.043] [DEBUG] Uninstalling @storybook/addon-essentials
+[15:55:19.044] [DEBUG] Removing '@storybook/addon-essentials' from main.js addons field.
+[15:55:19.050] [DEBUG] Getting Storybook info...
+[15:55:19.050] [DEBUG] Loading main config...
+[15:55:19.054] [DEBUG] Getting stories paths...
+[15:55:19.054] [DEBUG] Getting package manager...
+[15:55:19.164] [DEBUG] Getting Storybook version...
+[15:55:19.171] [INFO] automigrate-/packages/component-library/.storybook-task: Verifying @storybook/addon-docs
+[15:55:19.176] [INFO] automigrate-/packages/component-library/.storybook-task: Installing @storybook/addon-docs@^9.0.15
+[15:55:19.176] [DEBUG] Getting CLI versions from NPM for @storybook/addon-docs...
+[15:55:20.016] [INFO] automigrate-/packages/component-library/.storybook-task: Adding '@storybook/addon-docs' to the "addons" field in
+/Users/N.Haberkamp/Code/meteor/packages/component-library/.storybook/main.ts
+[15:55:20.031] [INFO] automigrate-/packages/component-library/.storybook-task: ✔ remove-essential-addons
+[15:55:20.044] [INFO] automigrate-/packages/component-library/.storybook-task: ✔ wrap-require
+[15:55:20.044] [INFO] automigrate-/packages/component-library/.storybook-task-success: Completed automigrations for /packages/component-library/.storybook
+[15:55:20.044] [INFO] Installing dependencies...
+[15:55:20.044] [INFO] install-dependencies-task-start: Installing dependencies...
+[15:55:20.242] [INFO] Scope: all 11 workspace projects
+[15:55:20.251] [INFO] install-dependencies-task: Scope: all 11 workspace projects
+[15:55:20.622] [INFO] ../..                                    | Progress: resolved 1, reused 0, downloaded 0, added 0
+[15:55:20.629] [INFO] install-dependencies-task: ../..                                    | Progress: resolved 1, reused 0,
+downloaded 0, added 0
+[15:55:20.818] [INFO] ../../examples/admin-sdk-app             |  WARN  deprecated shopware-app-server-sdk@0.0.15
+[15:55:20.824] [INFO] install-dependencies-task: ../../examples/admin-sdk-app             |  WARN  deprecated
+shopware-app-server-sdk@0.0.15
+[15:55:20.939] [INFO] ../admin-sdk                             |  WARN  deprecated eslint@8.57.0
+[15:55:20.946] [INFO] install-dependencies-task: ../admin-sdk                             |  WARN  deprecated eslint@8.57.0
+[15:55:21.217] [INFO] ../admin-sdk                             |  WARN  deprecated vue@2.7.16
+[15:55:21.223] [INFO] install-dependencies-task: ../admin-sdk                             |  WARN  deprecated vue@2.7.16
+[15:55:21.629] [INFO] ../..                                    | Progress: resolved 53, reused 0, downloaded 0, added 0
+[15:55:21.636] [INFO] install-dependencies-task: ../..                                    | Progress: resolved 53, reused 0,
+downloaded 0, added 0
+[15:55:22.378] [INFO] ../icon-kit                              |  WARN  deprecated @types/axios@0.14.0
+[15:55:22.384] [INFO] install-dependencies-task: ../icon-kit                              |  WARN  deprecated @types/axios@0.14.0
+[15:55:22.631] [INFO] ../..                                    | Progress: resolved 153, reused 0, downloaded 0, added 0
+[15:55:22.637] [INFO] install-dependencies-task: ../..                                    | Progress: resolved 153, reused 0,
+downloaded 0, added 0
+[15:55:23.634] [INFO] ../..                                    | Progress: resolved 518, reused 0, downloaded 0, added 0
+[15:55:23.640] [INFO] install-dependencies-task: ../..                                    | Progress: resolved 518, reused 0,
+downloaded 0, added 0
+[15:55:24.633] [INFO] ../..                                    | Progress: resolved 1088, reused 0, downloaded 0, added 0
+[15:55:24.641] [INFO] install-dependencies-task: ../..                                    | Progress: resolved 1088, reused 0,
+downloaded 0, added 0
+[15:55:25.634] [INFO] ../..                                    | Progress: resolved 1510, reused 0, downloaded 0, added 0
+[15:55:25.640] [INFO] install-dependencies-task: ../..                                    | Progress: resolved 1510, reused 0,
+downloaded 0, added 0
+[15:55:26.633] [INFO] ../..                                    | Progress: resolved 2027, reused 0, downloaded 0, added 0
+[15:55:26.639] [INFO] install-dependencies-task: ../..                                    | Progress: resolved 2027, reused 0,
+downloaded 0, added 0
+[15:55:27.635] [INFO] ../..                                    | Progress: resolved 2548, reused 0, downloaded 0, added 0
+[15:55:27.641] [INFO] install-dependencies-task: ../..                                    | Progress: resolved 2548, reused 0,
+downloaded 0, added 0
+[15:55:28.487] [INFO] WARN  17 deprecated subdependencies found: @humanwhocodes/config-array@0.11.14, @humanwhocodes/object-schema@2.0.3, abab@2.0.6, are-we-there-yet@2.0.0, domexception@2.0.1, flatten@1.0.3, gauge@3.0.2, glob@7.2.3, glob@8.1.0, inflight@1.0.6, npmlog@5.0.1, phin@2.9.3, puppeteer@12.0.1, rimraf@2.7.1, rimraf@3.0.2, stable@0.1.8, w3c-hr-time@1.0.2
+[15:55:28.494] [INFO] install-dependencies-task: WARN  17 deprecated subdependencies found: @humanwhocodes/config-array@0.11.14,
+@humanwhocodes/object-schema@2.0.3, abab@2.0.6, are-we-there-yet@2.0.0,
+domexception@2.0.1, flatten@1.0.3, gauge@3.0.2, glob@7.2.3, glob@8.1.0,
+inflight@1.0.6, npmlog@5.0.1, phin@2.9.3, puppeteer@12.0.1, rimraf@2.7.1,
+rimraf@3.0.2, stable@0.1.8, w3c-hr-time@1.0.2
+[15:55:28.605] [INFO] WARN  Issues with peer dependencies found
+examples/admin-sdk-plugin/tests/acceptance
+└─┬ typescript-eslint 8.24.1
+  ├── ✕ unmet peer typescript@">=4.8.4 <5.8.0": found 5.8.3
+  ├─┬ @typescript-eslint/parser 8.24.1
+  │ ├── ✕ unmet peer typescript@">=4.8.4 <5.8.0": found 5.8.3
+  │ └─┬ @typescript-eslint/typescript-estree 8.24.1
+  │   └── ✕ unmet peer typescript@">=4.8.4 <5.8.0": found 5.8.3
+  └─┬ @typescript-eslint/eslint-plugin 8.24.1
+    ├── ✕ unmet peer typescript@">=4.8.4 <5.8.0": found 5.8.3
+    ├─┬ @typescript-eslint/utils 8.24.1
+    │ └── ✕ unmet peer typescript@">=4.8.4 <5.8.0": found 5.8.3
+    └─┬ @typescript-eslint/type-utils 8.24.1
+      └── ✕ unmet peer typescript@">=4.8.4 <5.8.0": found 5.8.3
+
+examples/nuxt-app
+└─┬ nuxt 3.12.2
+  └─┬ nitropack 2.9.6
+    └─┬ @netlify/functions 2.7.0
+      └─┬ @netlify/serverless-functions-api 1.18.1
+        └─┬ @opentelemetry/otlp-transformer 0.50.0
+          ├── ✕ unmet peer @opentelemetry/api@">=1.3.0 <1.9.0": found 1.9.0
+          ├─┬ @opentelemetry/sdk-logs 0.50.0
+          │ ├── ✕ unmet peer @opentelemetry/api@">=1.4.0 <1.9.0": found 1.9.0
+          │ ├─┬ @opentelemetry/core 1.23.0
+          │ │ └── ✕ unmet peer @opentelemetry/api@">=1.0.0 <1.9.0": found 1.9.0
+          │ └─┬ @opentelemetry/resources 1.23.0
+          │   └── ✕ unmet peer @opentelemetry/api@">=1.0.0 <1.9.0": found 1.9.0
+          ├─┬ @opentelemetry/sdk-metrics 1.23.0
+          │ └── ✕ unmet peer @opentelemetry/api@">=1.3.0 <1.9.0": found 1.9.0
+          └─┬ @opentelemetry/sdk-trace-base 1.23.0
+            └── ✕ unmet peer @opentelemetry/api@">=1.0.0 <1.9.0": found 1.9.0
+
+packages/component-library
+├─┬ vite 7.0.0
+│ └── ✕ unmet peer @types/node@"^20.19.0 || >=22.12.0": found 18.19.36
+├─┬ eslint-plugin-vitest 0.5.4
+│ └─┬ @typescript-eslint/utils 7.13.1
+│   └── ✕ unmet peer eslint@^8.56.0: found 9.21.0
+└─┬ storybook-dark-mode 4.0.2
+  ├─┬ @storybook/components 8.4.6
+  │ └── ✕ unmet peer storybook@"^8.2.0 || ^8.3.0-0 || ^8.4.0-0 || ^8.5.0-0 || ^8.6.0-0": found 9.0.15
+  ├─┬ @storybook/manager-api 8.6.12
+  │ └── ✕ unmet peer storybook@"^8.2.0 || ^8.3.0-0 || ^8.4.0-0 || ^8.5.0-0 || ^8.6.0-0": found 9.0.15
+  └─┬ @storybook/theming 8.6.12
+    └── ✕ unmet peer storybook@"^8.2.0 || ^8.3.0-0 || ^8.4.0-0 || ^8.5.0-0 || ^8.6.0-0": found 9.0.15
+
+packages/tokens
+├─┬ eslint-plugin-vitest 0.5.4
+│ └─┬ @typescript-eslint/utils 7.13.1
+│   └── ✕ unmet peer eslint@^8.56.0: found 9.20.1
+└─┬ typescript-eslint 8.24.1
+  ├── ✕ unmet peer typescript@">=4.8.4 <5.8.0": found 5.8.3
+  ├─┬ @typescript-eslint/parser 8.24.1
+  │ └── ✕ unmet peer typescript@">=4.8.4 <5.8.0": found 5.8.3
+  └─┬ @typescript-eslint/eslint-plugin 8.24.1
+    ├── ✕ unmet peer typescript@">=4.8.4 <5.8.0": found 5.8.3
+    ├─┬ @typescript-eslint/utils 8.24.1
+    │ └── ✕ unmet peer typescript@">=4.8.4 <5.8.0": found 5.8.3
+    └─┬ @typescript-eslint/type-utils 8.24.1
+      └── ✕ unmet peer typescript@">=4.8.4 <5.8.0": found 5.8.3
+[15:55:28.614] [INFO] install-dependencies-task: WARN  Issues with peer dependencies found
+examples/admin-sdk-plugin/tests/acceptance
+└─┬ typescript-eslint 8.24.1
+├── ✕ unmet peer typescript@">=4.8.4 <5.8.0": found 5.8.3
+├─┬ @typescript-eslint/parser 8.24.1
+│ ├── ✕ unmet peer typescript@">=4.8.4 <5.8.0": found 5.8.3
+│ └─┬ @typescript-eslint/typescript-estree 8.24.1
+│   └── ✕ unmet peer typescript@">=4.8.4 <5.8.0": found 5.8.3
+└─┬ @typescript-eslint/eslint-plugin 8.24.1
+├── ✕ unmet peer typescript@">=4.8.4 <5.8.0": found 5.8.3
+├─┬ @typescript-eslint/utils 8.24.1
+│ └── ✕ unmet peer typescript@">=4.8.4 <5.8.0": found 5.8.3
+└─┬ @typescript-eslint/type-utils 8.24.1
+└── ✕ unmet peer typescript@">=4.8.4 <5.8.0": found 5.8.3
+
+examples/nuxt-app
+└─┬ nuxt 3.12.2
+└─┬ nitropack 2.9.6
+└─┬ @netlify/functions 2.7.0
+└─┬ @netlify/serverless-functions-api 1.18.1
+└─┬ @opentelemetry/otlp-transformer 0.50.0
+├── ✕ unmet peer @opentelemetry/api@">=1.3.0 <1.9.0": found 1.9.0
+├─┬ @opentelemetry/sdk-logs 0.50.0
+│ ├── ✕ unmet peer @opentelemetry/api@">=1.4.0 <1.9.0": found 1.9.0
+│ ├─┬ @opentelemetry/core 1.23.0
+│ │ └── ✕ unmet peer @opentelemetry/api@">=1.0.0 <1.9.0": found 1.9.0
+│ └─┬ @opentelemetry/resources 1.23.0
+│   └── ✕ unmet peer @opentelemetry/api@">=1.0.0 <1.9.0": found 1.9.0
+├─┬ @opentelemetry/sdk-metrics 1.23.0
+│ └── ✕ unmet peer @opentelemetry/api@">=1.3.0 <1.9.0": found 1.9.0
+└─┬ @opentelemetry/sdk-trace-base 1.23.0
+└── ✕ unmet peer @opentelemetry/api@">=1.0.0 <1.9.0": found 1.9.0
+
+packages/component-library
+├─┬ vite 7.0.0
+│ └── ✕ unmet peer @types/node@"^20.19.0 || >=22.12.0": found 18.19.36
+├─┬ eslint-plugin-vitest 0.5.4
+│ └─┬ @typescript-eslint/utils 7.13.1
+│   └── ✕ unmet peer eslint@^8.56.0: found 9.21.0
+└─┬ storybook-dark-mode 4.0.2
+├─┬ @storybook/components 8.4.6
+│ └── ✕ unmet peer storybook@"^8.2.0 || ^8.3.0-0 || ^8.4.0-0 || ^8.5.0-0 ||
+^8.6.0-0": found 9.0.15
+├─┬ @storybook/manager-api 8.6.12
+│ └── ✕ unmet peer storybook@"^8.2.0 || ^8.3.0-0 || ^8.4.0-0 || ^8.5.0-0 ||
+^8.6.0-0": found 9.0.15
+└─┬ @storybook/theming 8.6.12
+└── ✕ unmet peer storybook@"^8.2.0 || ^8.3.0-0 || ^8.4.0-0 || ^8.5.0-0 ||
+^8.6.0-0": found 9.0.15
+
+packages/tokens
+├─┬ eslint-plugin-vitest 0.5.4
+│ └─┬ @typescript-eslint/utils 7.13.1
+│   └── ✕ unmet peer eslint@^8.56.0: found 9.20.1
+└─┬ typescript-eslint 8.24.1
+├── ✕ unmet peer typescript@">=4.8.4 <5.8.0": found 5.8.3
+├─┬ @typescript-eslint/parser 8.24.1
+│ └── ✕ unmet peer typescript@">=4.8.4 <5.8.0": found 5.8.3
+└─┬ @typescript-eslint/eslint-plugin 8.24.1
+├── ✕ unmet peer typescript@">=4.8.4 <5.8.0": found 5.8.3
+├─┬ @typescript-eslint/utils 8.24.1
+│ └── ✕ unmet peer typescript@">=4.8.4 <5.8.0": found 5.8.3
+└─┬ @typescript-eslint/type-utils 8.24.1
+└── ✕ unmet peer typescript@">=4.8.4 <5.8.0": found 5.8.3
+[15:55:28.614] [INFO] 
+[15:55:28.621] [INFO] install-dependencies-task: 
+[15:55:28.768] [INFO] ../..                                    | Progress: resolved 2577, reused 0, downloaded 0, added 0
+[15:55:28.776] [INFO] install-dependencies-task: ../..                                    | Progress: resolved 2577, reused 0,
+downloaded 0, added 0
+[15:55:29.809] [INFO] ../..                                    | Progress: resolved 2577, reused 233, downloaded 0, added 0
+[15:55:29.817] [INFO] install-dependencies-task: ../..                                    | Progress: resolved 2577, reused 233,
+downloaded 0, added 0
+[15:55:29.970] [INFO] ../..                                    | +115 -477 +++++----------------------
+[15:55:29.977] [INFO] install-dependencies-task: ../..                                    | +115 -477 +++++----------------------
+[15:55:30.809] [INFO] ../..                                    | Progress: resolved 2577, reused 284, downloaded 10, added 0
+[15:55:30.819] [INFO] install-dependencies-task: ../..                                    | Progress: resolved 2577, reused 284,
+downloaded 10, added 0
+[15:55:31.810] [INFO] ../..                                    | Progress: resolved 2577, reused 284, downloaded 11, added 26
+[15:55:31.818] [INFO] install-dependencies-task: ../..                                    | Progress: resolved 2577, reused 284,
+downloaded 11, added 26
+[15:55:32.811] [INFO] ../..                                    | Progress: resolved 2577, reused 284, downloaded 11, added 69
+[15:55:32.819] [INFO] install-dependencies-task: ../..                                    | Progress: resolved 2577, reused 284,
+downloaded 11, added 69
+[15:55:33.812] [INFO] ../..                                    | Progress: resolved 2577, reused 284, downloaded 11, added 109
+[15:55:33.831] [INFO] install-dependencies-task: ../..                                    | Progress: resolved 2577, reused 284,
+downloaded 11, added 109
+[15:55:34.199] [INFO] WARN  Failed to create bin at /Users/N.Haberkamp/Code/meteor/node_modules/.bin/svgo-autocrop. ENOENT: no such file or directory, chmod '/Users/N.Haberkamp/Code/meteor/node_modules/svgo-autocrop/bin/svgo'
+[15:55:34.207] [INFO] install-dependencies-task: WARN  Failed to create bin at
+/Users/N.Haberkamp/Code/meteor/node_modules/.bin/svgo-autocrop. ENOENT: no such
+file or directory, chmod
+'/Users/N.Haberkamp/Code/meteor/node_modules/svgo-autocrop/bin/svgo'
+[15:55:34.310] [INFO] ../..                                    | Progress: resolved 2577, reused 284, downloaded 11, added 115, done
+[15:55:34.316] [INFO] install-dependencies-task: ../..                                    | Progress: resolved 2577, reused 284,
+downloaded 11, added 115, done
+[15:55:34.541] [INFO] WARN  Failed to create bin at /Users/N.Haberkamp/Code/meteor/node_modules/.bin/svgo-autocrop. ENOENT: no such file or directory, chmod '/Users/N.Haberkamp/Code/meteor/node_modules/svgo-autocrop/bin/svgo'
+[15:55:34.549] [INFO] install-dependencies-task: WARN  Failed to create bin at
+/Users/N.Haberkamp/Code/meteor/node_modules/.bin/svgo-autocrop. ENOENT: no such
+file or directory, chmod
+'/Users/N.Haberkamp/Code/meteor/node_modules/svgo-autocrop/bin/svgo'
+[15:55:34.856] [INFO] WARN  Failed to create bin at /Users/N.Haberkamp/Code/meteor/node_modules/.bin/svgo-autocrop. ENOENT: no such file or directory, chmod '/Users/N.Haberkamp/Code/meteor/node_modules/svgo-autocrop/bin/svgo'
+[15:55:34.871] [INFO] install-dependencies-task: WARN  Failed to create bin at
+/Users/N.Haberkamp/Code/meteor/node_modules/.bin/svgo-autocrop. ENOENT: no such
+file or directory, chmod
+'/Users/N.Haberkamp/Code/meteor/node_modules/svgo-autocrop/bin/svgo'
+[15:55:34.890] [INFO] ../../examples/nuxt-app postinstall$ nuxt prepare
+[15:55:34.896] [INFO] install-dependencies-task: ../../examples/nuxt-app postinstall$ nuxt prepare
+[15:55:36.425] [INFO] ../../examples/nuxt-app postinstall: ✔ Types generated in .nuxt
+[15:55:36.436] [INFO] install-dependencies-task: ../../examples/nuxt-app postinstall: ✔ Types generated in .nuxt
+[15:55:36.436] [INFO] ../../examples/nuxt-app postinstall: Done
+[15:55:36.443] [INFO] install-dependencies-task: ../../examples/nuxt-app postinstall: Done
+[15:55:36.443] [INFO] Done in 16.3s using pnpm v10.12.3
+[15:55:36.449] [INFO] install-dependencies-task: Done in 16.3s using pnpm v10.12.3
+[15:55:36.482] [INFO] Dependencies installed
+[15:55:36.482] [INFO] install-dependencies-task-success: Dependencies installed
+[15:55:36.482] [WARN] Since you are in a monorepo, we advise you to deduplicate your dependencies. We can do this for you but it might take some time.
+[15:55:39.872] [PROMPT] Execute pnpm run dedupe? {"choice":true}
+[15:55:39.873] [INFO] Deduplicating dependencies...
+[15:55:39.873] [INFO] dedupe-dependencies-task-start: Deduplicating dependencies...
+[15:55:40.367] [INFO] ../../examples/admin-sdk-app             |  WARN  deprecated shopware-app-server-sdk@0.0.15
+[15:55:40.373] [INFO] dedupe-dependencies-task: ../../examples/admin-sdk-app             |  WARN  deprecated
+shopware-app-server-sdk@0.0.15
+[15:55:40.373] [INFO] ../..                                    | Progress: resolved 1, reused 0, downloaded 0, added 0
+[15:55:40.379] [INFO] dedupe-dependencies-task: ../..                                    | Progress: resolved 1, reused 0,
+downloaded 0, added 0
+[15:55:40.701] [INFO] ../admin-sdk                             |  WARN  deprecated eslint@8.57.0
+[15:55:40.708] [INFO] dedupe-dependencies-task: ../admin-sdk                             |  WARN  deprecated eslint@8.57.0
+[15:55:40.990] [INFO] ../admin-sdk                             |  WARN  deprecated vue@2.7.16
+[15:55:41.001] [INFO] dedupe-dependencies-task: ../admin-sdk                             |  WARN  deprecated vue@2.7.16
+[15:55:41.367] [INFO] ../..                                    | Progress: resolved 58, reused 0, downloaded 0, added 0
+[15:55:41.373] [INFO] dedupe-dependencies-task: ../..                                    | Progress: resolved 58, reused 0,
+downloaded 0, added 0
+[15:55:42.139] [INFO] ../icon-kit                              |  WARN  deprecated @types/axios@0.14.0
+[15:55:42.146] [INFO] dedupe-dependencies-task: ../icon-kit                              |  WARN  deprecated @types/axios@0.14.0
+[15:55:42.367] [INFO] ../..                                    | Progress: resolved 144, reused 0, downloaded 0, added 0
+[15:55:42.373] [INFO] dedupe-dependencies-task: ../..                                    | Progress: resolved 144, reused 0,
+downloaded 0, added 0
+[15:55:43.373] [INFO] ../..                                    | Progress: resolved 376, reused 0, downloaded 0, added 0
+[15:55:43.381] [INFO] dedupe-dependencies-task: ../..                                    | Progress: resolved 376, reused 0,
+downloaded 0, added 0
+[15:55:44.373] [INFO] ../..                                    | Progress: resolved 566, reused 0, downloaded 0, added 0
+[15:55:44.379] [INFO] dedupe-dependencies-task: ../..                                    | Progress: resolved 566, reused 0,
+downloaded 0, added 0
+[15:55:45.373] [INFO] ../..                                    | Progress: resolved 710, reused 0, downloaded 0, added 0
+[15:55:45.380] [INFO] dedupe-dependencies-task: ../..                                    | Progress: resolved 710, reused 0,
+downloaded 0, added 0
+[15:55:46.373] [INFO] ../..                                    | Progress: resolved 871, reused 0, downloaded 0, added 0
+[15:55:46.379] [INFO] dedupe-dependencies-task: ../..                                    | Progress: resolved 871, reused 0,
+downloaded 0, added 0
+[15:55:47.372] [INFO] ../..                                    | Progress: resolved 1128, reused 0, downloaded 0, added 0
+[15:55:47.379] [INFO] dedupe-dependencies-task: ../..                                    | Progress: resolved 1128, reused 0,
+downloaded 0, added 0
+[15:55:48.386] [INFO] ../..                                    | Progress: resolved 1423, reused 0, downloaded 0, added 0
+[15:55:48.394] [INFO] dedupe-dependencies-task: ../..                                    | Progress: resolved 1423, reused 0,
+downloaded 0, added 0
+[15:55:49.388] [INFO] ../..                                    | Progress: resolved 1696, reused 0, downloaded 0, added 0
+[15:55:49.394] [INFO] dedupe-dependencies-task: ../..                                    | Progress: resolved 1696, reused 0,
+downloaded 0, added 0
+[15:55:50.389] [INFO] ../..                                    | Progress: resolved 1849, reused 0, downloaded 0, added 0
+[15:55:50.397] [INFO] dedupe-dependencies-task: ../..                                    | Progress: resolved 1849, reused 0,
+downloaded 0, added 0
+[15:55:51.389] [INFO] ../..                                    | Progress: resolved 2125, reused 0, downloaded 0, added 0
+[15:55:51.395] [INFO] dedupe-dependencies-task: ../..                                    | Progress: resolved 2125, reused 0,
+downloaded 0, added 0
+[15:55:52.390] [INFO] ../..                                    | Progress: resolved 2358, reused 0, downloaded 0, added 0
+[15:55:52.411] [INFO] dedupe-dependencies-task: ../..                                    | Progress: resolved 2358, reused 0,
+downloaded 0, added 0
+[15:55:53.347] [INFO] WARN  17 deprecated subdependencies found: @humanwhocodes/config-array@0.11.14, @humanwhocodes/object-schema@2.0.3, abab@2.0.6, are-we-there-yet@2.0.0, domexception@2.0.1, flatten@1.0.3, gauge@3.0.2, glob@7.2.3, glob@8.1.0, inflight@1.0.6, npmlog@5.0.1, phin@2.9.3, puppeteer@12.0.1, rimraf@2.7.1, rimraf@3.0.2, stable@0.1.8, w3c-hr-time@1.0.2
+[15:55:53.355] [INFO] dedupe-dependencies-task: WARN  17 deprecated subdependencies found: @humanwhocodes/config-array@0.11.14,
+@humanwhocodes/object-schema@2.0.3, abab@2.0.6, are-we-there-yet@2.0.0,
+domexception@2.0.1, flatten@1.0.3, gauge@3.0.2, glob@7.2.3, glob@8.1.0,
+inflight@1.0.6, npmlog@5.0.1, phin@2.9.3, puppeteer@12.0.1, rimraf@2.7.1,
+rimraf@3.0.2, stable@0.1.8, w3c-hr-time@1.0.2
+[15:55:53.424] [INFO] ../..                                    | Progress: resolved 2418, reused 0, downloaded 0, added 0
+[15:55:53.430] [INFO] dedupe-dependencies-task: ../..                                    | Progress: resolved 2418, reused 0,
+downloaded 0, added 0
+[15:55:53.458] [INFO] WARN  Issues with peer dependencies found
+examples/admin-sdk-plugin/tests/acceptance
+└─┬ typescript-eslint 8.24.1
+  ├── ✕ unmet peer typescript@">=4.8.4 <5.8.0": found 5.8.3
+  ├─┬ @typescript-eslint/parser 8.24.1
+  │ ├── ✕ unmet peer typescript@">=4.8.4 <5.8.0": found 5.8.3
+  │ └─┬ @typescript-eslint/typescript-estree 8.24.1
+  │   └── ✕ unmet peer typescript@">=4.8.4 <5.8.0": found 5.8.3
+  └─┬ @typescript-eslint/eslint-plugin 8.24.1
+    ├── ✕ unmet peer typescript@">=4.8.4 <5.8.0": found 5.8.3
+    ├─┬ @typescript-eslint/utils 8.24.1
+    │ └── ✕ unmet peer typescript@">=4.8.4 <5.8.0": found 5.8.3
+    └─┬ @typescript-eslint/type-utils 8.24.1
+      └── ✕ unmet peer typescript@">=4.8.4 <5.8.0": found 5.8.3
+
+examples/nuxt-app
+└─┬ nuxt 3.12.2
+  └─┬ nitropack 2.9.6
+    └─┬ @netlify/functions 2.7.0
+      └─┬ @netlify/serverless-functions-api 1.18.1
+        └─┬ @opentelemetry/otlp-transformer 0.50.0
+          ├── ✕ unmet peer @opentelemetry/api@">=1.3.0 <1.9.0": found 1.9.0
+          ├─┬ @opentelemetry/core 1.23.0
+          │ └── ✕ unmet peer @opentelemetry/api@">=1.0.0 <1.9.0": found 1.9.0
+          ├─┬ @opentelemetry/sdk-logs 0.50.0
+          │ ├── ✕ unmet peer @opentelemetry/api@">=1.4.0 <1.9.0": found 1.9.0
+          │ └─┬ @opentelemetry/resources 1.23.0
+          │   └── ✕ unmet peer @opentelemetry/api@">=1.0.0 <1.9.0": found 1.9.0
+          ├─┬ @opentelemetry/sdk-metrics 1.23.0
+          │ └── ✕ unmet peer @opentelemetry/api@">=1.3.0 <1.9.0": found 1.9.0
+          └─┬ @opentelemetry/sdk-trace-base 1.23.0
+            └── ✕ unmet peer @opentelemetry/api@">=1.0.0 <1.9.0": found 1.9.0
+
+packages/component-library
+├─┬ @vitest/ui 3.0.5
+│ └── ✕ unmet peer vitest@3.0.5: found 3.0.9
+├─┬ vite 7.0.0
+│ └── ✕ unmet peer @types/node@"^20.19.0 || >=22.12.0": found 18.19.36
+├─┬ vitest 3.0.9
+│ └── ✕ unmet peer @vitest/ui@3.0.9: found 3.0.5
+├─┬ eslint-plugin-vitest 0.5.4
+│ └─┬ @typescript-eslint/utils 7.13.1
+│   └── ✕ unmet peer eslint@^8.56.0: found 9.21.0
+└─┬ storybook-dark-mode 4.0.2
+  ├─┬ @storybook/manager-api 8.6.12
+  │ └── ✕ unmet peer storybook@"^8.2.0 || ^8.3.0-0 || ^8.4.0-0 || ^8.5.0-0 || ^8.6.0-0": found 9.0.15
+  ├─┬ @storybook/theming 8.6.12
+  │ └── ✕ unmet peer storybook@"^8.2.0 || ^8.3.0-0 || ^8.4.0-0 || ^8.5.0-0 || ^8.6.0-0": found 9.0.15
+  └─┬ @storybook/components 8.4.6
+    └── ✕ unmet peer storybook@"^8.2.0 || ^8.3.0-0 || ^8.4.0-0 || ^8.5.0-0 || ^8.6.0-0": found 9.0.15
+
+packages/tokens
+└─┬ eslint-plugin-vitest 0.5.4
+  └─┬ @typescript-eslint/utils 7.13.1
+    └── ✕ unmet peer eslint@^8.56.0: found 9.21.0
+[15:55:53.466] [INFO] dedupe-dependencies-task: WARN  Issues with peer dependencies found
+examples/admin-sdk-plugin/tests/acceptance
+└─┬ typescript-eslint 8.24.1
+├── ✕ unmet peer typescript@">=4.8.4 <5.8.0": found 5.8.3
+├─┬ @typescript-eslint/parser 8.24.1
+│ ├── ✕ unmet peer typescript@">=4.8.4 <5.8.0": found 5.8.3
+│ └─┬ @typescript-eslint/typescript-estree 8.24.1
+│   └── ✕ unmet peer typescript@">=4.8.4 <5.8.0": found 5.8.3
+└─┬ @typescript-eslint/eslint-plugin 8.24.1
+├── ✕ unmet peer typescript@">=4.8.4 <5.8.0": found 5.8.3
+├─┬ @typescript-eslint/utils 8.24.1
+│ └── ✕ unmet peer typescript@">=4.8.4 <5.8.0": found 5.8.3
+└─┬ @typescript-eslint/type-utils 8.24.1
+└── ✕ unmet peer typescript@">=4.8.4 <5.8.0": found 5.8.3
+
+examples/nuxt-app
+└─┬ nuxt 3.12.2
+└─┬ nitropack 2.9.6
+└─┬ @netlify/functions 2.7.0
+└─┬ @netlify/serverless-functions-api 1.18.1
+└─┬ @opentelemetry/otlp-transformer 0.50.0
+├── ✕ unmet peer @opentelemetry/api@">=1.3.0 <1.9.0": found 1.9.0
+├─┬ @opentelemetry/core 1.23.0
+│ └── ✕ unmet peer @opentelemetry/api@">=1.0.0 <1.9.0": found 1.9.0
+├─┬ @opentelemetry/sdk-logs 0.50.0
+│ ├── ✕ unmet peer @opentelemetry/api@">=1.4.0 <1.9.0": found 1.9.0
+│ └─┬ @opentelemetry/resources 1.23.0
+│   └── ✕ unmet peer @opentelemetry/api@">=1.0.0 <1.9.0": found 1.9.0
+├─┬ @opentelemetry/sdk-metrics 1.23.0
+│ └── ✕ unmet peer @opentelemetry/api@">=1.3.0 <1.9.0": found 1.9.0
+└─┬ @opentelemetry/sdk-trace-base 1.23.0
+└── ✕ unmet peer @opentelemetry/api@">=1.0.0 <1.9.0": found 1.9.0
+
+packages/component-library
+├─┬ @vitest/ui 3.0.5
+│ └── ✕ unmet peer vitest@3.0.5: found 3.0.9
+├─┬ vite 7.0.0
+│ └── ✕ unmet peer @types/node@"^20.19.0 || >=22.12.0": found 18.19.36
+├─┬ vitest 3.0.9
+│ └── ✕ unmet peer @vitest/ui@3.0.9: found 3.0.5
+├─┬ eslint-plugin-vitest 0.5.4
+│ └─┬ @typescript-eslint/utils 7.13.1
+│   └── ✕ unmet peer eslint@^8.56.0: found 9.21.0
+└─┬ storybook-dark-mode 4.0.2
+├─┬ @storybook/manager-api 8.6.12
+│ └── ✕ unmet peer storybook@"^8.2.0 || ^8.3.0-0 || ^8.4.0-0 || ^8.5.0-0 ||
+^8.6.0-0": found 9.0.15
+├─┬ @storybook/theming 8.6.12
+│ └── ✕ unmet peer storybook@"^8.2.0 || ^8.3.0-0 || ^8.4.0-0 || ^8.5.0-0 ||
+^8.6.0-0": found 9.0.15
+└─┬ @storybook/components 8.4.6
+└── ✕ unmet peer storybook@"^8.2.0 || ^8.3.0-0 || ^8.4.0-0 || ^8.5.0-0 ||
+^8.6.0-0": found 9.0.15
+
+packages/tokens
+└─┬ eslint-plugin-vitest 0.5.4
+└─┬ @typescript-eslint/utils 7.13.1
+└── ✕ unmet peer eslint@^8.56.0: found 9.21.0
+[15:55:53.466] [INFO] 
+[15:55:53.473] [INFO] dedupe-dependencies-task: 
+[15:55:54.426] [INFO] ../..                                    | Progress: resolved 2418, reused 228, downloaded 0, added 0
+[15:55:54.437] [INFO] dedupe-dependencies-task: ../..                                    | Progress: resolved 2418, reused 228,
+downloaded 0, added 0
+[15:55:54.811] [INFO] ../..                                    | +212 -699 ++++++---------------------
+[15:55:54.823] [INFO] dedupe-dependencies-task: ../..                                    | +212 -699 ++++++---------------------
+[15:55:55.426] [INFO] ../..                                    | Progress: resolved 2418, reused 370, downloaded 0, added 0
+[15:55:55.434] [INFO] dedupe-dependencies-task: ../..                                    | Progress: resolved 2418, reused 370,
+downloaded 0, added 0
+[15:55:56.847] [INFO] ../..                                    | Progress: resolved 2418, reused 370, downloaded 0, added 1
+[15:55:56.855] [INFO] dedupe-dependencies-task: ../..                                    | Progress: resolved 2418, reused 370,
+downloaded 0, added 1
+[15:55:57.848] [INFO] ../..                                    | Progress: resolved 2418, reused 370, downloaded 0, added 81
+[15:55:57.858] [INFO] dedupe-dependencies-task: ../..                                    | Progress: resolved 2418, reused 370,
+downloaded 0, added 81
+[15:55:58.849] [INFO] ../..                                    | Progress: resolved 2418, reused 370, downloaded 0, added 123
+[15:55:58.859] [INFO] dedupe-dependencies-task: ../..                                    | Progress: resolved 2418, reused 370,
+downloaded 0, added 123
+[15:55:59.849] [INFO] ../..                                    | Progress: resolved 2418, reused 370, downloaded 0, added 203
+[15:55:59.858] [INFO] dedupe-dependencies-task: ../..                                    | Progress: resolved 2418, reused 370,
+downloaded 0, added 203
+[15:56:00.207] [INFO] WARN  Failed to create bin at /Users/N.Haberkamp/Code/meteor/node_modules/.bin/svgo-autocrop. ENOENT: no such file or directory, chmod '/Users/N.Haberkamp/Code/meteor/node_modules/svgo-autocrop/bin/svgo'
+[15:56:00.223] [INFO] dedupe-dependencies-task: WARN  Failed to create bin at
+/Users/N.Haberkamp/Code/meteor/node_modules/.bin/svgo-autocrop. ENOENT: no such
+file or directory, chmod
+'/Users/N.Haberkamp/Code/meteor/node_modules/svgo-autocrop/bin/svgo'
+[15:56:00.252] [INFO] ../..                                    | Progress: resolved 2418, reused 370, downloaded 0, added 212, done
+[15:56:00.259] [INFO] dedupe-dependencies-task: ../..                                    | Progress: resolved 2418, reused 370,
+downloaded 0, added 212, done
+[15:56:00.478] [INFO] WARN  Failed to create bin at /Users/N.Haberkamp/Code/meteor/node_modules/.bin/svgo-autocrop. ENOENT: no such file or directory, chmod '/Users/N.Haberkamp/Code/meteor/node_modules/svgo-autocrop/bin/svgo'
+[15:56:00.486] [INFO] dedupe-dependencies-task: WARN  Failed to create bin at
+/Users/N.Haberkamp/Code/meteor/node_modules/.bin/svgo-autocrop. ENOENT: no such
+file or directory, chmod
+'/Users/N.Haberkamp/Code/meteor/node_modules/svgo-autocrop/bin/svgo'
+[15:56:00.808] [INFO] WARN  Failed to create bin at /Users/N.Haberkamp/Code/meteor/node_modules/.bin/svgo-autocrop. ENOENT: no such file or directory, chmod '/Users/N.Haberkamp/Code/meteor/node_modules/svgo-autocrop/bin/svgo'
+[15:56:00.816] [INFO] dedupe-dependencies-task: WARN  Failed to create bin at
+/Users/N.Haberkamp/Code/meteor/node_modules/.bin/svgo-autocrop. ENOENT: no such
+file or directory, chmod
+'/Users/N.Haberkamp/Code/meteor/node_modules/svgo-autocrop/bin/svgo'
+[15:56:00.829] [INFO] ../../examples/nuxt-app postinstall$ nuxt prepare
+[15:56:00.838] [INFO] dedupe-dependencies-task: ../../examples/nuxt-app postinstall$ nuxt prepare
+[15:56:03.440] [INFO] ../../examples/nuxt-app postinstall: ✔ Types generated in .nuxt
+[15:56:03.453] [INFO] dedupe-dependencies-task: ../../examples/nuxt-app postinstall: ✔ Types generated in .nuxt
+[15:56:03.453] [INFO] ../../examples/nuxt-app postinstall: Done
+[15:56:03.460] [INFO] dedupe-dependencies-task: ../../examples/nuxt-app postinstall: Done
+[15:56:03.506] [INFO] Dependencies deduplicated
+[15:56:03.506] [INFO] dedupe-dependencies-task-success: Dependencies deduplicated
+[15:56:03.506] [INFO] Checking the health of your project(s)..
+[15:56:03.838] [WARN] /packages/component-library/.storybook: 1 issue found
+[15:56:03.844] [INFO] You are currently using Storybook 9.0.15 but you have packages which are incompatible with it:
+
+- storybook-dark-mode@4.0.2 which depends on ^8.0.0
+
+Please consider updating your packages or contacting the maintainers for compatibility details.
+
+For more on Storybook 9 compatibility, see the linked GitHub issue:
+https://github.com/storybookjs/storybook/issues/30944
+[15:56:03.844] [INFO] Incompatible Packages
+[15:56:03.850] [INFO] You are currently using Storybook 9.0.15 but you have packages which are incompatible with it:
+
+- storybook-dark-mode@4.0.2 which depends on ^8.0.0
+
+Please consider updating your packages or contacting the maintainers for compatibility details.
+
+For more on Storybook 9 compatibility, see the linked GitHub issue:
+https://github.com/storybookjs/storybook/issues/30944
+[15:56:03.855] [INFO] Storybook doctor is complete!
+[15:56:03.861] [INFO] You can always recheck the health of your project(s) by running:
+npx storybook doctor
+[15:56:03.867] [INFO] The upgrade is complete!
+[15:56:03.872] [INFO] Your project(s) have been upgraded successfully, but some issues were found which need your attention, please check Storybook doctor logs above.
+[15:56:03.906] [INFO] If you want to learn more about the automigrations that executed in your project(s), please check the following links:
+
+• upgrade-storybook-related-dependencies
+• consolidated-imports
+• remove-addon-interactions
+• renderer-to-framework
+• remove-essential-addons
+• wrap-require
+[15:56:03.912] [INFO] For a full list of changes, please check our migration guide: https://storybook.js.org/docs/migration-guide
+[15:56:03.917] [INFO] Attention: Storybook now collects completely anonymous telemetry regarding usage. This information is used to shape Storybook's roadmap and prioritize features.
+[15:56:03.922] [INFO] You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+[15:56:03.928] [INFO] https://storybook.js.org/telemetry
+[15:56:03.933] [INFO] 

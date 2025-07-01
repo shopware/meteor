@@ -1,6 +1,6 @@
 import meta from "./tooltip.stories";
-import { within, userEvent } from "@storybook/test";
-import { expect } from "@storybook/test";
+import { within, userEvent } from "storybook/test";
+import { expect } from "storybook/test";
 import { waitUntil } from "../_internal/test-helper";
 
 export default {

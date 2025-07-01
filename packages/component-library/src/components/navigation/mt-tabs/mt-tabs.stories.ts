@@ -1,5 +1,5 @@
 import MtTabs from "./mt-tabs.vue";
-import type { StoryObj } from "@storybook/vue3";
+import type { StoryObj } from "@storybook/vue3-vite";
 import type { SlottedMeta } from "@/_internal/story-helper";
 
 const tabItems = [

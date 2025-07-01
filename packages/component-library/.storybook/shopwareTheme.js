@@ -1,5 +1,5 @@
-import { create } from "@storybook/theming";
-import { color, typography, background } from "@storybook/theming";
+import { create } from "storybook/theming";
+import { color, typography, background } from "storybook/theming";
 
 export const darkTheme = create({
   base: "dark",
