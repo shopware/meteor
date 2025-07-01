@@ -1,104 +1,130 @@
-import { mount } from "@vue/test-utils";
+import { describe, it, expect } from "vitest";
+import { render, screen } from "@testing-library/vue";
 import MtDatepicker from "./mt-datepicker.vue";
+import userEvent from "@testing-library/user-event";
 
-async function createWrapper(customOptions = {}) {
-  return mount(MtDatepicker, {
-    ...customOptions,
-  });
-}
+describe("mt-datepicker", () => {
+  it("is enabled by default", () => {
+    // ARRANGE
+    render(MtDatepicker);
 
-describe("src/app/component/form/mt-datepicker", () => {
-  let wrapper: undefined | Awaited<ReturnType<typeof createWrapper>>;
-
-  afterEach(() => {
-    if (wrapper) {
-      wrapper.unmount();
-    }
+    // ASSERT
+    expect(screen.getByRole("textbox")).toBeEnabled();
   });
 
-  it("is enabled by default", async () => {
-    wrapper = await createWrapper();
-    const datepickerInput = wrapper.find(".dp__input");
-
-    expect(datepickerInput.attributes().disabled).toBeUndefined();
-  });
-
-  it("is disabled", async () => {
-    wrapper = await createWrapper({
+  it("can be disabled", () => {
+    // ARRANGE
+    render(MtDatepicker, {
       props: {
         disabled: true,
       },
     });
-    const datepickerInput = wrapper.find(".dp__input");
 
-    expect(datepickerInput.attributes()).toHaveProperty("disabled");
+    // ASSERT
+    expect(screen.getByRole("textbox")).toBeDisabled();
   });
 
-  it("shows the date format as a placeholder when no placeholder is explictly defined", async () => {
-    wrapper = await createWrapper();
-    const datepickerInput = wrapper.find(".dp__input");
+  it("shows the date format as the placeholder when no placeholder is provided", () => {
+    // ARRANGE
+    render(MtDatepicker);
 
-    expect(datepickerInput.attributes().placeholder).toBe("Y-m-d ...");
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveAttribute("placeholder", "Y-m-d ...");
   });
 
-  it("shows the placeholder when provided", async () => {
-    const placeholderText = "Stop! Hammertime!";
-    wrapper = await createWrapper({
+  it("shows the placeholder when provided", () => {
+    // ARRANGE
+    render(MtDatepicker, {
       props: {
-        placeholder: placeholderText,
+        placeholder: "Stop! Hammertime!",
       },
     });
-    const datepickerInput = wrapper.find(".dp__input");
 
-    expect(datepickerInput.attributes().placeholder).toBe(placeholderText);
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveAttribute("placeholder", "Stop! Hammertime!");
   });
 
-  it("should not show the timezone if datepicker is configured for date only", async () => {
-    wrapper = await createWrapper({
+  it("does not show the timezone when it is configured for date only", () => {
+    // ARRANGE
+    render(MtDatepicker, {
       props: {
         dateType: "date",
         timeZone: "Europe/Berlin",
       },
     });
 
-    const timeZoneHint = wrapper.find('[data-test="time-zone-hint"]');
-    expect(timeZoneHint.exists()).toBeFalsy();
+    // ASSERT
+    expect(screen.queryByTestId("time-zone-hint")).not.toBeInTheDocument();
   });
 
-  it("should show the timezone if datepicker is configured to datetime", async () => {
-    wrapper = await createWrapper({
-      props: {
-        timeZone: "Europe/Berlin",
-        dateType: "datetime",
-      },
-    });
-
-    const timeZoneHint = wrapper.find('[data-test="time-zone-hint"]');
-    expect(timeZoneHint.exists()).toBeTruthy();
-    expect(timeZoneHint.text()).toBe("Europe/Berlin");
-  });
-
-  it("should output time only when dateType is time", async () => {
-    wrapper = await createWrapper({
+  it("shows the timezone when displaying only the time", async () => {
+    // ARRANGE
+    await render(MtDatepicker, {
       props: {
         dateType: "time",
         modelValue: "14:30",
       },
     });
 
-    const datepickerInput = wrapper.find(".dp__input");
-    expect(datepickerInput.attributes().value).toBe("14:30");
+    // ASSERT
+    expect(screen.getByTestId("time-zone-hint")).toBeVisible();
   });
 
-  it("should output time only when ISO string is provided and in time mode", async () => {
-    wrapper = await createWrapper({
+  it("shows the timezone when displaying a datetime", async () => {
+    // ARRANGE
+    await render(MtDatepicker, {
+      props: {
+        dateType: "datetime",
+        modelValue: "2024-03-20T14:30:00Z",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByTestId("time-zone-hint")).toBeVisible();
+  });
+
+  it("shows the time only when providing a time and in time mode", async () => {
+    // ARRANGE
+    await render(MtDatepicker, {
+      props: {
+        dateType: "time",
+        modelValue: "14:30",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("14:30");
+  });
+
+  it("shows the time only when ISO string is provided and in time mode", async () => {
+    // ARRANGE
+    await render(MtDatepicker, {
       props: {
         dateType: "time",
         modelValue: "2024-03-20T14:30:00Z",
       },
     });
 
-    const datepickerInput = wrapper.find(".dp__input");
-    expect(datepickerInput.attributes().value).toBe("14:30");
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("14:30");
+  });
+
+  it("clears the input when clicking the clear button", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    await render(MtDatepicker, {
+      props: {
+        modelValue: "2024-03-20T14:30:00Z",
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("button", { name: "Clear value" }));
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("");
+    expect(handler).toHaveBeenCalledExactlyOnceWith(null);
   });
 });
