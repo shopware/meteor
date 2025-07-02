@@ -228,7 +228,7 @@ function useSanitizedHtml(html: string): ComputedRef<string> {
   overflow-wrap: break-word;
 }
 
-.mt-tooltip__content ul {
+.mt-tooltip__content :deep(ul) {
   list-style-position: inside;
 }
 
