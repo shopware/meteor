@@ -120,7 +120,7 @@
     "globals": "^16.0.0",
     "http-server": "^14.1.1",
     "jest-image-snapshot": "^6.4.0",
-    "jsdom": "^22.1.0",
+    "jsdom": "^26.1.0",
     "npm-run-all2": "^6.1.1",
     "postcss-html": "^1.7.0",
     "prettier": "3.2.5",
