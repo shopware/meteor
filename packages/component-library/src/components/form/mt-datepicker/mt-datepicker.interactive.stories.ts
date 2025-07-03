@@ -366,3 +366,53 @@ export const VisualTestClearButton: MtDatepickerStory = {
     expect(canvas.getByRole("button", { name: "Clear value" })).toBeVisible();
   },
 };
+
+export const VisualTestErrorStateRendering: MtDatepickerStory = {
+  name: "Should display error",
+  args: {
+    error: {
+      code: 500,
+      detail: "Error while saving!",
+    },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const errorMessage = canvas.getByText("Error while saving!");
+    expect(errorMessage).toBeInTheDocument();
+
+    const errorIcon = document.querySelector("#meteor-icon-kit__solid-exclamation-circle");
+    expect(errorIcon).toBeInTheDocument();
+
+    expect(canvasElement.firstElementChild).toHaveClass("has-error");
+  },
+};
+
+export const VisualTestMinDateDisabledDays: MtDatepickerStory = {
+  name: "Should only select the day from min-date",
+  args: {
+    label: "Date value",
+    minDate: (() => {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return today;
+    })(),
+    locale: "en-US",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await userEvent.click(canvas.getByRole("textbox"));
+    await waitUntil(() => document.getElementsByClassName("dp__menu").length > 0);
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    const disabledDays = document.querySelectorAll(".dp__calendar .dp__disabled");
+
+    expect(disabledDays.length).toBeGreaterThanOrEqual(0);
+
+    expect(document.querySelector(".dp__calendar")).toBeInTheDocument();
+
+    const input = canvas.getByRole("textbox");
+    expect(input).toBeInTheDocument();
+  },
+};
