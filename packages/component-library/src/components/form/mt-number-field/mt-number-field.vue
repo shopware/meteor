@@ -43,7 +43,11 @@
         @blur="removeFocusClass"
       />
 
-      <div class="mt-number-field__controls" :class="controlClasses">
+      <div
+        v-if="!noControls"
+        class="mt-number-field__controls"
+        :class="controlClasses"
+      >
         <button
           type="button"
           :disabled="disabled || isInherited"
@@ -190,6 +194,15 @@ export default defineComponent({
      * Defines if the number should be aligned to the end of the input field.
      */
     numberAlignEnd: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    /**
+     * Defines if controls should be shown.
+     */
+    noControls: {
       type: Boolean,
       required: false,
       default: false,
