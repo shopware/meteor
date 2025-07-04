@@ -9,7 +9,7 @@
   >
     <mt-field-label
       v-if="!!label"
-      :id="id"
+      :for="id"
       :style="{ marginBottom: 'var(--scale-size-2)', gridArea: 'label' }"
       :has-error="!!error"
       :required="required"
