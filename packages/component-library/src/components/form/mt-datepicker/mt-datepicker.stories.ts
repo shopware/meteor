@@ -1,8 +1,8 @@
-import { action } from "@storybook/addon-actions";
+import { action } from "storybook/actions";
 import MtDatepicker from "./mt-datepicker.vue";
-import type { StoryObj } from "@storybook/vue3";
+import type { StoryObj } from "@storybook/vue3-vite";
 import type { SlottedMeta } from "@/_internal/story-helper";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 
 export type MtDatepickerMeta = SlottedMeta<
   typeof MtDatepicker,

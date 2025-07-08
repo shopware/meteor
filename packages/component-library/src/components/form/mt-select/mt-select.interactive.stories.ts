@@ -1,7 +1,7 @@
-import { within, userEvent } from "@storybook/test";
-import { expect } from "@storybook/test";
+import { within, userEvent } from "storybook/test";
+import { expect } from "storybook/test";
 import { waitUntil } from "../../../_internal/test-helper";
-import { screen } from "@storybook/test";
+import { screen } from "storybook/test";
 
 import meta, { type MtSelectMeta, type MtSelectStory } from "./mt-select.stories";
 

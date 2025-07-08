@@ -1,10 +1,10 @@
 import type { Meta } from "@storybook/vue3";
 import type { DefineComponent } from "vue";
-import { within } from "@storybook/test";
+import { within } from "storybook/test";
 import type { ComponentPropsAndSlots, StoryObj, VueRenderer } from "@storybook/vue3";
 import type { BoundFunctions, queries } from "@testing-library/vue";
 import type { FunctionalComponent } from "vue";
-import type { PlayFunctionContext } from "@storybook/types";
+import type { PlayFunctionContext } from "storybook/internal/types";
 import type { Constructor } from "type-fest";
 
 export type SlottedMeta<

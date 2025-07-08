@@ -1,4 +1,4 @@
-import { expect, within, userEvent, fireEvent } from "@storybook/test";
+import { expect, within, userEvent, fireEvent } from "storybook/test";
 import meta, { type MtSliderMeta, type MtSliderStory } from "./mt-slider.stories";
 
 export default {

@@ -1,5 +1,5 @@
-import type { Meta, StoryFn, StoryObj } from "@storybook/vue3";
-import { within, expect } from "@storybook/test";
+import type { Meta, StoryFn, StoryObj } from "@storybook/vue3-vite";
+import { within, expect } from "storybook/test";
 import MtEmptyState from "./mt-empty-state.vue";
 import meta, { Default, Extended } from "./mt-empty-state.stories";
 import MtButton from "@/components/form/mt-button/mt-button.vue";

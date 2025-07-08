@@ -1,8 +1,8 @@
-import type { Preview } from "@storybook/vue3";
+import type { Preview } from "@storybook/vue3-vite";
 import "~/src/components/assets/scss/all.scss";
 import "~/src/components/assets/scss/font.scss";
 import { darkTheme, lightTheme } from "./shopwareTheme";
-import { setup } from "@storybook/vue3";
+import { setup } from "@storybook/vue3-vite";
 import { createI18n } from "vue-i18n";
 import DeviceHelperPlugin from "./../src/plugin/device-helper.plugin";
 import MtThemeProvider from "../src/components/theme/mt-theme-provider.vue";

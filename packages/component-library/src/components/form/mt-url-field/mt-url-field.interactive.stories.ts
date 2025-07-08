@@ -1,4 +1,4 @@
-import { fn, userEvent, within } from "@storybook/test";
+import { fn, userEvent, within } from "storybook/test";
 import meta, { type MtUrlFieldMeta, type MtUrlFieldStory } from "./mt-url-field.stories";
 
 export default {

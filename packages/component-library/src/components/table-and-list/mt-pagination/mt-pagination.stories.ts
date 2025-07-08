@@ -1,8 +1,8 @@
 import MtPagination from "./mt-pagination.vue";
-import { action } from "@storybook/addon-actions";
+import { action } from "storybook/actions";
 import { type SlottedMeta, defineStory } from "@/_internal/story-helper";
 import { ref } from "vue";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 
 export default {
   title: "Components/Table and list/mt-pagination",

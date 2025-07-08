@@ -1,8 +1,8 @@
 import MtNumberField from "./mt-number-field.vue";
 import baseFieldArgTypes from "../_internal/mt-base-field/arg-types";
-import type { StoryObj } from "@storybook/vue3";
+import type { StoryObj } from "@storybook/vue3-vite";
 import type { SlottedMeta } from "@/_internal/story-helper";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 
 export type MtNumberFieldMeta = SlottedMeta<
   typeof MtNumberField,

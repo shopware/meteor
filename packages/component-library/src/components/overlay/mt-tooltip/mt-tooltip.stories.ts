@@ -1,6 +1,6 @@
 import type { SlottedMeta } from "@/_internal/story-helper";
 import MtTooltip from "./mt-tooltip.vue";
-import type { StoryObj } from "@storybook/vue3";
+import type { StoryObj } from "@storybook/vue3-vite";
 import MtButton from "@/components/form/mt-button/mt-button.vue";
 
 export type MtTooltipMeta = SlottedMeta<typeof MtTooltip, "default">;
