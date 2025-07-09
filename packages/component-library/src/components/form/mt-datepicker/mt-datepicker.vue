@@ -1,13 +1,16 @@
 <template>
-  <div class="wrapper">
-    <mt-field-label :style="{ gridArea: 'label' }" for="field-id">
+  <!-- @deprecated tag:v5 remove wrapper class -->
+  <div
+    class="mt-datepicker__wrapper wrapper"
+    :class="{ 'mt-datepicker__wrapper--small': size === 'small' }"
+  >
+    <mt-field-label class="mt-datepicker__label" for="field-id">
       {{ label }}
     </mt-field-label>
 
     <vue-datepicker
       ref="datepicker"
       v-model="computedValue"
-      :style="{ gridArea: 'datepicker' }"
       class="date-picker"
       position="left"
       @open="isDatepickerOpen = true"
@@ -66,12 +69,8 @@
 
     <template v-if="isTimeHintVisible">
       <!-- @deprecated tag:v5 remove field-hint class -->
-      <div
-        class="mt-datepicker__hint field-hint"
-        data-testid="time-zone-hint"
-        :style="{ gridArea: 'hint' }"
-      >
-        <mt-icon name="solid-clock" class="mt-datepicker__hint-icon" />
+      <div class="mt-datepicker__hint field-hint" data-testid="time-zone-hint">
+        <mt-icon name="solid-clock" class="mt-datepicker__hint-icon" size="12" />
         <p>{{ timeZone || "UTC" }}</p>
       </div>
     </template>
@@ -200,6 +199,16 @@ export default defineComponent({
       type: Boolean as PropType<boolean>,
       required: false,
       default: false,
+    },
+
+    /**
+     * Sets the size of the datepicker.
+     * Options: "small" or "default".
+     */
+    size: {
+      type: String as PropType<"small" | "default">,
+      required: false,
+      default: "default",
     },
   },
 
@@ -380,16 +389,13 @@ export default defineComponent({
   --dp-range-between-border-color: var(--color-background-brand-default);
 }
 
-.wrapper {
-  display: grid;
-  grid-template-areas:
-    "label"
-    "datepicker"
-    "hint";
-  row-gap: 0.4rem;
+/* || Datepicker  */
+.mt-datepicker__label {
+  line-height: var(--font-line-height-xs) !important;
+  margin-bottom: var(--scale-size-2);
+  font-size: var(--font-size-xs);
 }
 
-/* || Datepicker  */
 .dp__main {
   font-family: var(--font-family-body) !important;
 }
@@ -402,7 +408,8 @@ export default defineComponent({
 }
 
 .dp__input {
-  height: var(--scale-size-48);
+  min-height: var(--scale-size-48);
+  height: 1px;
   padding-left: var(--scale-size-16) !important;
   border-radius: var(--border-radius-xs);
   font: inherit;
@@ -413,6 +420,10 @@ export default defineComponent({
   &::placeholder {
     color: var(--color-text-secondary-default);
   }
+}
+
+.mt-datepicker__wrapper--small .dp__input {
+  min-height: var(--scale-size-32);
 }
 
 .dp__input_icon {
@@ -634,17 +645,13 @@ export default defineComponent({
 }
 
 .mt-datepicker__hint {
-  font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
+  margin-top: var(--scale-size-4);
+  font-size: var(--font-size-xs);
   font-family: var(--font-family-body);
   color: var(--color-text-tertiary-default);
   display: flex;
   align-items: center;
-  gap: var(--scale-size-8);
-}
-
-.mt-datepicker__hint-icon svg#meteor-icon-kit__solid-clock {
-  width: var(--scale-size-12);
-  height: var(--scale-size-12);
+  gap: var(--scale-size-4);
 }
 </style>
