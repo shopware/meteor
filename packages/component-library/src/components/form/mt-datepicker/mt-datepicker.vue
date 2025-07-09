@@ -466,9 +466,16 @@ export default defineComponent({
   grid-template-areas:
     "label"
     "datepicker"
-    "error"
     "hint";
   row-gap: 0.4rem;
+}
+
+.wrapper.has-error {
+  grid-template-areas:
+    "label"
+    "datepicker"
+    "error"
+    "hint";
 }
 
 /* || Datepicker  */

@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-restricted-imports
 import { describe, it, expect } from "vitest";
 import { render, screen } from "@testing-library/vue";
 import MtDatepicker from "./mt-datepicker.vue";
