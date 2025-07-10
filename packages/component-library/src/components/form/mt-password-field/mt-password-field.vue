@@ -1,6 +1,6 @@
 <template>
   <div class="mt-password-field">
-    <mt-field-label :id="id" :has-error="!!error" :style="{ marginBottom: 'var(--scale-size-2)' }">
+    <mt-field-label :for="id" :has-error="!!error" :style="{ marginBottom: 'var(--scale-size-2)' }">
       {{ label }}
     </mt-field-label>
 
