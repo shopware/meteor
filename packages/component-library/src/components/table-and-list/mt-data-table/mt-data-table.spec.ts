@@ -6,6 +6,13 @@ import { get } from "@/utils/object";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { useI18n } from "vue-i18n";
 
+// Mock "useDebounceFn" from "@vueuse/core"
+vi.mock("@vueuse/core", () => ({
+  useDebounceFn: (method: () => void) => {
+    return method;
+  },
+}));
+
 vi.mock("vue-i18n", () => ({
   useI18n: vi.fn(() => {
     return {

@@ -1,5 +1,27 @@
 # Changelog
 
+## 6.2.0
+
+### Minor Changes
+
+- 802233c: Added context.can
+  Added `privileges` to `contextAppInformation`
+- e44cf07: Add `useDataset` and `useAsyncSharedState` composables
+
+## 6.1.0
+
+### Minor Changes
+
+- 5e34e6d: Add "modal.update" method
+
+## 6.0.3
+
+### Patch Changes
+
+- Updated dependencies [de166a0]
+- Updated dependencies [0f57146]
+  - @shopware-ag/meteor-component-library@4.12.2
+
 ## 6.0.2
 
 ### Patch Changes

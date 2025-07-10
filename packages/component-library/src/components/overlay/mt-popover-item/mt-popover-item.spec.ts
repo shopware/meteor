@@ -1,5 +1,13 @@
-import { mount } from "@vue/test-utils";
+import { flushPromises, mount } from "@vue/test-utils";
 import MtPopoverItem from "./mt-popover-item.vue";
+import { nextTick } from "vue";
+
+// Mock "useDebounceFn" from "@vueuse/core"
+vi.mock("@vueuse/core", () => ({
+  useDebounceFn: (method: () => void) => {
+    return method;
+  },
+}));
 
 function createWrapper() {
   return mount(MtPopoverItem, {

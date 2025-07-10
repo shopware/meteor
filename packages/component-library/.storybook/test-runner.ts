@@ -15,6 +15,7 @@ export default {
     // use bigger viewport for data-table and toasts
     if (
       context.id.startsWith("interaction-tests-table-and-list") ||
+      context.id.startsWith("interaction-tests-entity-mt-entity-data-table") ||
       context.id.startsWith("interaction-tests-feedback-indicator-mt-toast")
     ) {
       await page.setViewportSize({ width: 1600, height: 900 });

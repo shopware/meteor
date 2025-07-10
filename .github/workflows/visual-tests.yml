@@ -24,12 +24,12 @@ jobs:
 
       - uses: pnpm/action-setup@v3
         with:
-          version: 9
+          version: 10.12.3
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           cache: "pnpm"
           cache-dependency-path: "**/pnpm-lock.yaml"
 
@@ -41,6 +41,9 @@ jobs:
 
       - name: Install Playwright
         run: pnpm dlx playwright@1.47.2 install
+
+      - name: Build dependencies
+        run: npx turbo run build --filter=@shopware-ag/meteor-component-library
 
       - name: Build storybook
         run: pnpm --filter @shopware-ag/meteor-component-library run build:storybook --test

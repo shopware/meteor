@@ -392,7 +392,7 @@ export const VisualTestDataSortingInColumnSettings: MtDataTableStory = {
 
     await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
 
-    const rowContentName = await canvas.getAllByText("Unbranded Steel Bike");
+    const rowContentName = await canvas.findAllByText("Unbranded Steel Bike");
     await expect(rowContentName.length).toBeGreaterThan(0);
   },
 };
@@ -492,6 +492,8 @@ export const VisualTestAddNewColumn: MtDataTableStory = {
 
     await userEvent.click(stockOption);
 
+    await waitUntil(() => document.querySelector("[data-testid='column-settings-trigger__stock']"));
+
     const columnSettingsTriggerStock = await canvas.getByTestId("column-settings-trigger__stock");
 
     await waitUntil(
@@ -576,6 +578,7 @@ export const EmitOpenDetailsEventOnClickingEdit: MtDataTableStory = {
       active: false,
       name: "Awesome Concrete Chair",
       manufacturer: {
+        id: "emard-schmidt-and-bailey",
         name: "Emard, Schmidt and Bailey",
         translated: {
           name: "Emard, Schmidt and Bailey",
@@ -636,11 +639,14 @@ export const EmitItemDeleteEventOnClickingDelete: MtDataTableStory = {
 
     await userEvent.click(deleteOption);
 
+    await waitUntil(() => args.itemDelete.mock.calls.length > 0);
+
     await expect(args.itemDelete).toHaveBeenCalledWith({
       id: "4f683593-13f1-4767-91c6-8e154d68a22d",
       active: false,
       name: "Awesome Concrete Chair",
       manufacturer: {
+        id: "emard-schmidt-and-bailey",
         name: "Emard, Schmidt and Bailey",
         translated: {
           name: "Emard, Schmidt and Bailey",
@@ -701,7 +707,9 @@ export const VisualTestAddFilterViaFilterMenu: MtDataTableStory = {
 
     await userEvent.click(popover.getByText("Manufacturer"));
 
-    await userEvent.click(popover.getByText("Schmidt and Bailey"));
+    await userEvent.click(await popover.findByText("Schmidt and Bailey"));
+
+    await waitUntil(() => document.querySelector(".mt-data-table-filter"));
 
     expect(canvas.getAllByTestId("mt-data-table-filter")).toHaveLength(1);
     expect(args["onUpdate:appliedFilters"]).toHaveBeenNthCalledWith(1, [
@@ -774,9 +782,12 @@ export const VisualTestRemoveFilterViaFilterMenu: MtDataTableStory = {
 
     await userEvent.click(popover.getByText("Manufacturer"));
 
-    await userEvent.click(popover.getByText("Schmidt and Bailey"));
+    await userEvent.click(await popover.findByText("Schmidt and Bailey"));
+
+    await waitUntil(() => !document.querySelector(".mt-data-table-filter"));
 
     expect(canvas.queryAllByTestId("mt-data-table-filter")).toHaveLength(0);
+
     expect(args["onUpdate:appliedFilters"]).toHaveBeenNthCalledWith(1, []);
   },
 };
@@ -833,9 +844,14 @@ export const VisualTestAddFilterViaIconButton: MtDataTableStory = {
 
     await userEvent.click(popover.getByText("Manufacturer"));
 
-    await userEvent.click(popover.getByText("Little - Flatley"));
+    await userEvent.click(await popover.findByText("Little - Flatley"));
 
+    await waitUntil(() => document.querySelector(".mt-data-table-filter"));
     expect(canvas.getAllByTestId("mt-data-table-filter")).toHaveLength(1);
+
+    // @ts-expect-error - Wait until args["onUpdate:appliedFilters"] is called
+    await waitUntil(() => args?.["onUpdate:appliedFilters"].mock.calls.length > 0);
+
     expect(args["onUpdate:appliedFilters"]).toHaveBeenNthCalledWith(1, [
       {
         id: "manufacturer",
@@ -906,7 +922,9 @@ export const VisualTestRemoveFilterViaIconButton: MtDataTableStory = {
 
     await userEvent.click(popover.getByText("Manufacturer"));
 
-    await userEvent.click(popover.getByText("Schmidt and Bailey"));
+    await userEvent.click(await popover.findByText("Schmidt and Bailey"));
+
+    await waitUntil(() => !document.querySelector(".mt-data-table-filter"));
 
     expect(canvas.queryAllByTestId("mt-data-table-filter")).toHaveLength(0);
     expect(args["onUpdate:appliedFilters"]).toHaveBeenNthCalledWith(1, []);
@@ -962,6 +980,9 @@ export const VisualTestAddOptionViaTheFilterEditMenu: MtDataTableStory = {
     const popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
 
     await userEvent.click(popover.getByText("Little - Flatley"));
+
+    // @ts-expect-error - Wait until the args["onUpdate:appliedFilters"] is called
+    await waitUntil(() => args?.["onUpdate:appliedFilters"].mock.calls.length > 0);
 
     expect(canvas.getAllByTestId("mt-data-table-filter")).toHaveLength(1);
     expect(args["onUpdate:appliedFilters"]).toHaveBeenNthCalledWith(1, [
@@ -1043,6 +1064,10 @@ export const VisualTestRemoveOptionViaTheFilterEditMenu: MtDataTableStory = {
     await userEvent.click(popover.getByText("Little - Flatley"));
 
     expect(canvas.getAllByTestId("mt-data-table-filter")).toHaveLength(1);
+
+    // @ts-expect-error - Wait until the args["onUpdate:appliedFilters"] is called
+    await waitUntil(() => args?.["onUpdate:appliedFilters"].mock.calls.length > 0);
+
     expect(args["onUpdate:appliedFilters"]).toHaveBeenNthCalledWith(1, [
       {
         id: "manufacturer",
@@ -1363,3 +1388,30 @@ export const VisualTestShouldHideTheLastColumnWithViaDisableContextMenuAndSettin
       await expect(canvas.queryByLabelText("Toggle view settings")).toBeNull();
     },
   };
+
+export const VisualTestBulkEdit: MtDataTableStory = {
+  name: "Should show the bulk edit bar when items are selected",
+  args: {
+    allowBulkEdit: true,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    // Wait for the table to be loaded
+    await waitUntil(() => document.querySelectorAll(".mt-skeleton-bar").length === 0);
+    // Wait until "Awesome Concrete Chair" is visible
+    await waitUntil(() => canvas.getByText("Awesome Concrete Chair"));
+
+    // Select the checkbox of the first and second row in table body
+    const firstRow = canvas.getAllByRole("row")[1];
+    const checkbox = within(firstRow).getByRole("checkbox");
+    await userEvent.click(checkbox);
+
+    const secondRow = canvas.getAllByRole("row")[2];
+    const checkbox2 = within(secondRow).getByRole("checkbox");
+    await userEvent.click(checkbox2);
+
+    // Check if the bulk edit bar is visible
+    const bulkEditBar = canvas.getByLabelText("2 items selected");
+    expect(bulkEditBar).toBeInTheDocument();
+  },
+};

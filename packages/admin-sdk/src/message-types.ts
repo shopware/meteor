@@ -22,7 +22,7 @@ import type { menuCollapse, menuExpand, menuItemAdd } from './ui/menu';
 import type { settingsItemAdd } from './ui/settings';
 import type { mainModuleAdd } from './ui/main-module';
 import type { smartBarButtonAdd, smartBarHide } from './ui/main-module';
-import type { uiModalOpen, uiModalClose } from './ui/modal/index';
+import type { uiModalOpen, uiModalClose, uiModalUpdate } from './ui/modal/index';
 import type { uiMediaModalOpen } from './ui/media-modal';
 import type { uiSidebarAdd, uiSidebarClose, uiSidebarRemove } from './ui/sidebar';
 import type { actionButtonAdd } from './ui/action-button';
@@ -63,7 +63,7 @@ export interface ShopwareMessageTypes {
   contextUserTimezone: contextUserTimezone,
   contextAppInformation: contextAppInformation,
   contextModuleInformation: contextModuleInformation,
-  contextShopId: contextShopId
+  contextShopId: contextShopId,
   getPageTitle: getPageTitle,
   uiComponentSectionRenderer: uiComponentSectionRenderer,
   uiTabsAddTabItem: uiTabsAddTabItem,
@@ -81,6 +81,7 @@ export interface ShopwareMessageTypes {
   smartBarHide: smartBarHide,
   uiModalOpen: uiModalOpen,
   uiModalClose: uiModalClose,
+  uiModalUpdate: uiModalUpdate,
   uiMediaModalOpen: uiMediaModalOpen,
   uiSidebarAdd: uiSidebarAdd,
   uiSidebarClose: uiSidebarClose,

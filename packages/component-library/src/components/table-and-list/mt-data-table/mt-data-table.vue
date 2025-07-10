@@ -8,7 +8,7 @@
           class="mt-data-table__search"
           size="small"
           :model-value="searchValue"
-          @change="emitSearchValueChange"
+          @update:model-value="handleSearchUpdate"
         />
 
         <mt-popover v-if="filters.length > 0" title="Filters" :child-views="filterChildViews">
@@ -71,9 +71,9 @@
           <template #trigger="{ toggleFloatingUi }">
             <button
               type="button"
-              @click="toggleFloatingUi"
               class="mt-data-table__add-filter-button"
               :aria-label="t('filter.addFilter')"
+              @click="toggleFloatingUi"
             >
               <mt-icon name="solid-plus-square-s" />
             </button>
@@ -278,7 +278,7 @@
                   >
                     <mt-popover
                       :title="t('addColumnIndicator.popoverTitle')"
-                      @update:isOpened="
+                      @update:is-opened="
                         (value) => {
                           if (value === false) {
                             forceHighlightedColumn = false;
@@ -459,18 +459,30 @@
                     {{ t("contextButtons.edit") }}
                   </a>
                   <mt-context-button v-if="!(disableDelete && disableEdit)">
-                    <mt-context-menu-item
-                      v-if="!disableEdit"
-                      :label="t('contextButtons.edit')"
-                      @click="$emit('open-details', data)"
-                    />
+                    <template #default="{ toggleFloatingUi }">
+                      <mt-context-menu-item
+                        v-if="!disableEdit"
+                        :label="t('contextButtons.edit')"
+                        @click="
+                          () => {
+                            toggleFloatingUi();
+                            $emit('open-details', data);
+                          }
+                        "
+                      />
 
-                    <mt-context-menu-item
-                      v-if="!disableDelete"
-                      type="critical"
-                      :label="t('contextButtons.delete')"
-                      @click="$emit('item-delete', data)"
-                    />
+                      <mt-context-menu-item
+                        v-if="!disableDelete"
+                        type="critical"
+                        :label="t('contextButtons.delete')"
+                        @click="
+                          () => {
+                            $emit('item-delete', data);
+                            toggleFloatingUi();
+                          }
+                        "
+                      />
+                    </template>
                   </mt-context-button>
                 </td>
               </tr>
@@ -517,6 +529,7 @@
             hide-clearable-button
             :options="paginationOptionsConverted"
             :model-value="paginationLimit"
+            :aria-label="t('itemsPerPage')"
             @change="emitPaginationLimitChange"
           />
           <span class="mt-data-table__pagination-info-text">
@@ -594,6 +607,7 @@ import { throttle } from "@/utils/throttle";
 import { reactive } from "vue";
 import type { Filter } from "./mt-data-table.interfaces";
 import { useI18n } from "vue-i18n";
+import { useDebounceFn } from "@vueuse/core";
 
 export interface BaseColumnDefinition {
   label: string; // the label for the column
@@ -1465,6 +1479,14 @@ export default defineComponent({
       emit("search-value-change", searchValue);
     };
 
+    const debouncedEmitSearchValueChange = useDebounceFn((value: string) => {
+      emitSearchValueChange(value);
+    }, 300); // 300ms debounce delay
+
+    const handleSearchUpdate = (value: string) => {
+      debouncedEmitSearchValueChange(value);
+    };
+
     const paginationOptionsConverted = computed(() => {
       return props.paginationOptions.map((paginationNumber) => ({
         id: paginationNumber,
@@ -1696,11 +1718,17 @@ export default defineComponent({
       return !!filterInUse.type.options.find((option) => option.id === optionId);
     }
 
+    const showData = computed(() => {
+      console.log(props.dataSource.length, props.isLoading);
+
+      return props.dataSource.length > 0 || props.isLoading;
+    });
+
     /***
      * Add scroll possibilities to tableWrapper
      */
     const tableWrapper = ref();
-    useScrollPossibilitiesClasses(tableWrapper);
+    useScrollPossibilitiesClasses(tableWrapper, showData);
 
     /**
      * General classes for whole data table
@@ -1939,6 +1967,7 @@ export default defineComponent({
       addOption,
       removeOption,
       isOptionSelected,
+      handleSearchUpdate: handleSearchUpdate, // Use explicit assignment
     };
   },
 });
@@ -2248,7 +2277,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
 
   thead th {
     font-weight: var(--font-weight-medium);
-    line-height: var(--line-height-2xs);
+    line-height: var(--font-line-height-2xs);
     background-color: var(--color-elevation-surface-sunken);
     color: var(--color-text-secondary-default);
     min-width: 50px;
