@@ -206,7 +206,7 @@ provide(TooltipContext, true);
 function useSanitizedHtml(html: string): ComputedRef<string> {
   return computed(() => {
     return DOMPurify.sanitize(html, {
-      ALLOWED_TAGS: ["a", "b", "i", "u", "s", "li", "ul", "img", "svg"],
+      ALLOWED_TAGS: ["a", "b", "strong", "i", "em", "u", "s", "li", "ul", "img", "svg"],
     });
   });
 }
@@ -228,7 +228,7 @@ function useSanitizedHtml(html: string): ComputedRef<string> {
   overflow-wrap: break-word;
 }
 
-.mt-tooltip__content ul {
+.mt-tooltip__content :deep(ul) {
   list-style-position: inside;
 }
 
