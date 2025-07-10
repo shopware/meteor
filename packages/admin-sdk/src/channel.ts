@@ -13,8 +13,8 @@ import sdkVersion from './_internals/sdkVersion';
 const packageVersion = sdkVersion as string;
 
 const { serialize, deserialize } = SerializerFactory({
-  handle: handle,
-  send: send,
+  handle,
+  send,
 });
 
 export type extensions = {

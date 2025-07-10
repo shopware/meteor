@@ -2,6 +2,7 @@ import MtModal from "./mt-modal.vue";
 import MtModalRoot from "./sub-components/mt-modal-root.vue";
 import MtModalTrigger from "./sub-components/mt-modal-trigger.vue";
 import MtButton from "../../form/mt-button/mt-button.vue";
+import MtNumberField from "../../form/mt-number-field/mt-number-field.vue";
 import MtText from "@/components/content/mt-text/mt-text.vue";
 
 export default {
@@ -13,7 +14,7 @@ export default {
     default: "Modal content",
   },
   render: (args: unknown) => ({
-    components: { MtModal, MtModalRoot, MtModalTrigger, MtButton, MtText },
+    components: { MtModal, MtModalRoot, MtModalTrigger, MtButton, MtText, MtNumberField },
     setup() {
       return {
         args,

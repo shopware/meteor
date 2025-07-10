@@ -1,6 +1,6 @@
 {
   "name": "@shopware-ag/meteor-admin-sdk",
-  "version": "5.4.6",
+  "version": "6.2.0",
   "description": "The Meteor SDK for the Shopware Administration.",
   "keywords": [
     "iframe",
@@ -48,6 +48,30 @@
       "import": "./es/_internals/data/EntityCollection.js",
       "require": "./umd/_internals/data/EntityCollection.js"
     },
+    "./es/data/repository": {
+      "import": "./es/data/repository.js",
+      "require": "./umd/data/repository.js"
+    },
+    "./es/data/data-table-filter.helper": {
+      "import": "./es/data/data-table-filter.helper.js",
+      "require": "./umd/data/data-table-filter.helper.js"
+    },
+    "./es/data/composables": {
+      "import": "./es/data/composables/index.js",
+      "require": "./umd/data/composables/index.js"
+    },
+    "./es/data/composables/useSharedState": {
+      "import": "./es/data/composables/useSharedState.js",
+      "require": "./umd/data/composables/useSharedState.js"
+    },
+    "./es/data/composables/useRepository": {
+      "import": "./es/data/composables/useRepository.js",
+      "require": "./umd/data/composables/useRepository.js"
+    },
+    "./es/data/composables/getRepository": {
+      "import": "./es/data/composables/getRepository.js",
+      "require": "./umd/data/composables/getRepository.js"
+    },
     ".": {
       "import": "./es/index.js",
       "require": "./umd/index.js"
@@ -71,9 +95,9 @@
     "dev": "concurrently \"npm run dev:build-watch\" \"npm run dev:serve -- --port=8181\" \"npm run dev:serve -- --port=8182\"",
     "dev:build-watch": "vite build --watch --mode example --emptyOutDir",
     "dev:serve": "http-server testpageDist --silent",
-    "doc": "cd docs && npm run build",
-    "doc:dev": "cd docs && npm run start",
-    "doc:install-dependencies": "cd ./docs && npm ci",
+    "docs:env": "[ -d \"../../../developer-portal\" ] && ../../../developer-portal/docs-cli.cjs pull || (git clone git@github.com:shopware/developer-portal.git ../../../developer-portal && pnpm i -C ../../../developer-portal)",
+    "docs:link": "../../../developer-portal/docs-cli.cjs link --src ../../docs/admin-sdk --dst resources/admin-extension-sdk --symlink",
+    "docs:preview": "../../../developer-portal/docs-cli.cjs preview",
     "lint:all": "npm run lint:types && npm run lint:eslint",
     "lint:eslint": "eslint ./src --ext .ts",
     "lint:types": "tsc --noEmit",
@@ -88,20 +112,20 @@
   "dependencies": {
     "localforage": "^1.10.0",
     "lodash": "^4.17.21",
-    "@shopware-ag/meteor-component-library": "workspace:*"
+    "semver": "^7.7.1"
   },
   "devDependencies": {
-    "@playwright/test": "^1.44.0",
+    "@playwright/test": "^1.45.0",
     "@types/jest": "^27.4.1",
     "@types/lodash": "^4.14.191",
     "@types/node": "^18.11.17",
     "@typescript-eslint/eslint-plugin": "^5.47.0",
-    "@typescript-eslint/parser": "^5.47.0",
+    "@typescript-eslint/parser": "^8.36.0",
     "chokidar-cli": "^3.0.0",
     "concurrently": "^7.0.0",
     "eslint": "^8.11.0",
     "eslint-plugin-check-file": "^2.7.0",
-    "eslint-plugin-import": "^2.25.4",
+    "eslint-plugin-import": "^2.31.0",
     "flush-promises": "^1.0.2",
     "http-server": "^14.1.0",
     "jest": "^27.5.1",

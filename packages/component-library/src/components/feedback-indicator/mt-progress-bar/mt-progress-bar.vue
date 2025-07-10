@@ -1,166 +1,104 @@
 <template>
-  <mt-base-field
-    class="mt-progress-bar"
-    role="progressbar"
-    :aria-valuenow="modelValue"
-    :aria-valuemax="maxValue"
-    aria-label="Current progress"
-    :has-focus="false"
-  >
-    <template #label>
+  <div class="mt-progress-bar">
+    <mt-field-label v-if="!!label" :for="id">
       {{ label }}
+    </mt-field-label>
 
-      <span class="mt-progress-bar__progress-label">
-        {{ progressLabel }}
-      </span>
-    </template>
+    <mt-text
+      v-if="!!label"
+      class="mt-progress-bar__progress-label"
+      as="span"
+      size="xs"
+      aria-hidden="true"
+    >
+      {{ progressLabel }}
+    </mt-text>
 
-    <template #element>
-      <div class="mt-progress-bar__total">
-        <div
-          class="mt-progress-bar__value"
-          data-testid="progress-bar-value"
-          :style="{ width: styleWidth }"
-          :class="progressClasses"
-        />
-      </div>
-    </template>
+    <div
+      class="mt-progress-bar__track"
+      role="progressbar"
+      :aria-valuenow="model"
+      :aria-valuemax="maxValue"
+      :aria-valuemin="0"
+      :aria-labelledby="id"
+    >
+      <div
+        :class="['mt-progress-bar__fill', { 'mt-progress-bar__fill--with-error': !!error }]"
+        :style="{ width: fillWidth }"
+      ></div>
+    </div>
 
-    <template #error>
-      <mt-field-error v-if="error" :error="error" />
-    </template>
-  </mt-base-field>
+    <mt-field-error v-if="error" :error="error" :style="{ marginTop: 0 }" />
+  </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-import MtBaseField from "../../form/_internal/mt-base-field/mt-base-field.vue";
-import MtFieldError from "../../form/_internal/mt-field-error/mt-field-error.vue";
+<script setup lang="ts">
+import MtFieldLabel from "@/components/form/_internal/mt-field-label/mt-field-label.vue";
+import MtFieldError from "@/components/form/_internal/mt-field-error/mt-field-error.vue";
+import MtText from "@/components/content/mt-text/mt-text.vue";
+import { computed, useId } from "vue";
 
-export default defineComponent({
-  name: "MtProgressBar",
+const model = defineModel<number>();
 
-  components: {
-    "mt-base-field": MtBaseField,
-    "mt-field-error": MtFieldError,
+const props = withDefaults(
+  defineProps<{
+    label: string;
+    maxValue: number;
+    error?: { detail: string; code: number } | null;
+    progressLabelType?: string;
+  }>(),
+  {
+    progressLabelType: "percent",
   },
+);
 
-  props: {
-    /**
-     * The current value which is used for showing the current progress.
-     */
-    modelValue: {
-      type: Number,
-      default: 0,
-    },
-    /**
-     * The max value sets the value where the progress will be finished.
-     */
-    maxValue: {
-      type: Number,
-      default: 100,
-      required: false,
-    },
-    /**
-     * A label for the progress bar. Usually used to guide the user what value kind of activity is currently running.
-     */
-    label: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    /**
-     * Change how the progress label looks like. Examples are "kb", "mb", "items" or more. For percentage just use "percentage"
-     * @example "kb"
-     */
-    progressLabelType: {
-      type: String,
-      required: false,
-      default: "percent",
-    },
-    /**
-     * An error in your business logic related to this field.
-     *
-     * @example {"code": 500, "detail": "Error while loading"}
-     */
-    error: {
-      type: Object,
-      required: false,
-      default: null,
-    },
-  },
+const progressLabel = computed<string>(() => {
+  if (props.progressLabelType === "percent") return fillWidth.value;
 
-  computed: {
-    progressLabel(): string {
-      if (!this.progressLabelType || this.progressLabelType === "percent") {
-        return this.styleWidth;
-      }
-
-      return `${this.modelValue} ${this.progressLabelType} / ${this.maxValue} ${this.progressLabelType}`;
-    },
-
-    styleWidth(): string {
-      // @ts-expect-error - vue can't detect value correctly
-      let percentage = parseInt((this.modelValue / this.maxValue) * 100);
-
-      if (percentage > 100) {
-        percentage = 100;
-      }
-
-      if (percentage < 0) {
-        percentage = 0;
-      }
-
-      return `${percentage}%`;
-    },
-
-    progressClasses() {
-      return {
-        "mt-progress-bar__value--no-transition":
-          this.modelValue < 1 || this.modelValue >= this.maxValue,
-        "mt-progress-bar__value--has-error": !!this.error,
-      };
-    },
-  },
+  return `${model.value} ${props.progressLabelType} / ${props.maxValue} ${props.progressLabelType}`;
 });
+
+const fillWidth = computed<`${string}%`>(() => {
+  if (!model.value) return "0%";
+
+  const percentage = Math.floor((model.value / props.maxValue) * 100);
+  if (percentage > 100) return "100%";
+  if (percentage < 0) return "0%";
+
+  return `${percentage}%`;
+});
+
+const id = useId();
 </script>
 
-<style lang="scss">
+<style scoped>
 .mt-progress-bar {
-  .mt-block-field__block {
-    border: none;
-  }
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: repeat(auto-fit, auto);
+  row-gap: var(--scale-size-8);
+}
 
-  label {
-    display: flex;
-  }
+.mt-progress-bar__progress-label {
+  color: var(--color-text-secondary);
+  justify-self: end;
+}
 
-  &__progress-label {
-    display: flex;
-    margin-left: auto;
-  }
+.mt-progress-bar__track {
+  border-radius: var(--border-radius-round);
+  height: var(--scale-size-8);
+  width: 100%;
+  background: var(--color-background-primary-disabled);
+  grid-column: 1 / 3;
+}
 
-  .mt-progress-bar__total {
-    width: 100%;
-    height: 8px;
-    background-color: var(--color-background-primary-disabled);
-    border-radius: var(--border-radius-round);
-  }
+.mt-progress-bar__fill {
+  border-radius: var(--border-radius-round);
+  height: 100%;
+  background: var(--color-interaction-primary-default);
+}
 
-  .mt-progress-bar__value {
-    transition: 1s width linear;
-    height: 100%;
-    background-color: var(--color-interaction-primary-default);
-    border-radius: var(--border-radius-round);
-
-    &--no-transition {
-      transition: 0s width linear;
-    }
-
-    &--has-error {
-      transition: 0s width linear;
-      background-color: var(--color-interaction-critical-default);
-    }
-  }
+.mt-progress-bar__fill--with-error {
+  background: var(--color-interaction-critical-default);
 }
 </style>

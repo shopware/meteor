@@ -23,11 +23,12 @@
     <template #mt-select-selection="{ size }">
       <mt-select-selection-list
         ref="selectionList"
-        :disable-input="small"
         :multi-selection="enableMultiSelection"
         :selections="visibleValues"
         :invisible-count="invisibleValueCount"
+        :always-show-placeholder="alwaysShowPlaceholder"
         v-bind="{ size, valueProperty, labelProperty, placeholder, searchTerm, disabled }"
+        :size="small ? 'small' : 'default'"
         @total-count-click="expandValueLimit"
         @item-remove="remove"
         @last-item-delete="removeLastItem"
@@ -48,9 +49,9 @@
       <mt-select-result-list
         ref="MtSelectResultList"
         :options="visibleResults"
-        :is-loading="isLoading"
-        :empty-message="$t('mt-select.messageNoResults', { term: searchTerm })"
-        :focus-el="$refs.selectionList.getFocusEl()"
+        :is-loading="isLoading || isSearchResultsLoading"
+        :empty-message="t('messageNoResults', { term: searchTerm })"
+        :focus-el="getFocusElement()"
         @paginate="$emit('paginate')"
         @item-select="addItem"
       >
@@ -75,10 +76,11 @@
           >
             <mt-select-result
               :selected="isSelected(item)"
-              :class="'mt-select-option--' + item.value"
-              :data-testid="'mt-select-option--' + item.value"
+              :class="'mt-select-option--' + getKey(item, valueProperty)"
+              :data-testid="'mt-select-option--' + getKey(item, valueProperty)"
               v-bind="{ item, index }"
               @item-select="addItem"
+              :disabled="item.disabled"
             >
               <slot
                 name="result-label-property"
@@ -114,34 +116,21 @@
 </template>
 
 <script lang="ts">
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import type { PropType } from "vue";
 
 import { defineComponent } from "vue";
-import { debounce, get } from "lodash-es";
+import { debounce } from "@/utils/debounce";
+import { getPropertyValue } from "@/utils/object";
+import { isPromise } from "@/utils/promise";
 import MtSelectBase from "../_internal/mt-select-base/mt-select-base.vue";
 import MtSelectResultList from "../_internal/mt-select-base/_internal/mt-select-result-list.vue";
 import MtSelectResult from "../_internal/mt-select-base/_internal/mt-select-result.vue";
 import MtSelectSelectionList from "../_internal/mt-select-base/_internal/mt-select-selection-list.vue";
 import MtHighlightText from "../../_internal/mt-highlight-text.vue";
+import { useI18n } from "vue-i18n";
 
 export default defineComponent({
   name: "MtSelect",
-
-  i18n: {
-    messages: {
-      en: {
-        "mt-select": {
-          messageNoResults: 'No results found for "{term}".',
-        },
-      },
-      de: {
-        "mt-select": {
-          messageNoResults: 'Es wurden keine Ergebnisse für "{term}" gefunden.',
-        },
-      },
-    },
-  },
 
   components: {
     "mt-select-base": MtSelectBase,
@@ -176,18 +165,19 @@ export default defineComponent({
      * Dependent on multiSelection, either a single value or an array of values.
      */
     modelValue: {
-      type: [String, Number, Boolean, Array, null, undefined] as PropType<
-        string | number | boolean | unknown[] | null | undefined
+      type: [String, Number, Boolean, Array, Object, null, undefined] as PropType<
+        string | number | boolean | unknown[] | null | object | undefined
       >,
       required: false,
       default: null,
     },
 
     /**
-     * The object key of the label property.
+     * The object key of the label property. Can be a single string or an array of strings.
+     * If an array is provided, the first property that has a non-empty value will be used.
      */
     labelProperty: {
-      type: String,
+      type: [String, Array] as PropType<string | string[]>,
       required: false,
       default: "label",
     },
@@ -226,6 +216,15 @@ export default defineComponent({
       type: String,
       required: false,
       default: "",
+    },
+
+    /**
+     * Determines if the placeholder should be shown even when there are no selections.
+     */
+    alwaysShowPlaceholder: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
 
     /**
@@ -271,17 +270,33 @@ export default defineComponent({
     searchFunction: {
       type: Function,
       required: false,
-      default({
+      default: ({
         options,
         labelProperty,
         searchTerm,
       }: {
         options: any;
-        labelProperty: string;
+        labelProperty: string | string[];
         searchTerm: string;
-      }) {
+      }) => {
         return options.filter((option: any) => {
-          const label = get(option, labelProperty);
+          // If labelProperty is an array, check each property
+          if (Array.isArray(labelProperty)) {
+            for (const property of labelProperty) {
+              const label = getPropertyValue(option, property);
+              if (
+                label &&
+                typeof label === "string" &&
+                label.toLowerCase().includes(searchTerm.toLowerCase())
+              ) {
+                return true;
+              }
+            }
+            return false;
+          }
+
+          // Original behavior for string labelProperty
+          const label = getPropertyValue(option, labelProperty);
           if (!label) {
             return false;
           }
@@ -338,10 +353,40 @@ export default defineComponent({
     },
   },
 
+  emits: [
+    "update:modelValue",
+    "change",
+    "item-add",
+    "item-remove",
+    "display-values-expand",
+    "paginate",
+    "search-term-change",
+  ],
+
+  setup() {
+    const { t } = useI18n({
+      messages: {
+        en: {
+          messageNoResults: 'No results found for "{term}".',
+        },
+        de: {
+          messageNoResults: 'Es wurden keine Ergebnisse für "{term}" gefunden.',
+        },
+      },
+    });
+
+    return {
+      t,
+      getKey: getPropertyValue,
+    };
+  },
+
   data() {
     return {
       searchTerm: "",
       limit: this.valueLimit,
+      searchResults: [],
+      isSearchResultsLoading: false,
     };
   },
 
@@ -365,8 +410,19 @@ export default defineComponent({
         }
 
         return this.options
-          .filter((item) => value.includes(this.getKey(item, this.valueProperty)))
+          .filter((item) => {
+            return value.includes(this.getKey(item, this.valueProperty));
+          })
           .slice(0, this.limit);
+      }
+
+      if (this.currentValue && typeof this.currentValue === "object") {
+        const property = this.valueProperty || ("id" in this.currentValue ? "id" : undefined);
+        if (property) {
+          return this.options.filter(
+            (item) => this.getKey(item, property) === this.getKey(this.currentValue, property),
+          );
+        }
       }
 
       return this.options.filter((item) => this.isSelected(item)).slice(0, this.limit);
@@ -382,6 +438,7 @@ export default defineComponent({
       }
 
       if (Array.isArray(this.currentValue)) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-expressions
         this.currentValue.length;
       }
 
@@ -401,7 +458,7 @@ export default defineComponent({
     },
 
     currentValue: {
-      get(): string | number | boolean | unknown[] | null | undefined {
+      get(): string | number | boolean | unknown[] | object | null | undefined {
         if (this.modelValue === null || this.modelValue === undefined) {
           return [];
         }
@@ -418,12 +475,7 @@ export default defineComponent({
 
     visibleResults(): any[] {
       if (this.searchTerm) {
-        return this.searchFunction({
-          options: this.options,
-          labelProperty: this.labelProperty,
-          valueProperty: this.valueProperty,
-          searchTerm: this.searchTerm,
-        });
+        return this.searchResults;
       }
 
       return this.options;
@@ -440,15 +492,32 @@ export default defineComponent({
     valueLimit(value) {
       this.limit = value;
     },
+
+    searchTerm(newSearchTerm) {
+      this.searchTermDebounced(newSearchTerm);
+    },
   },
 
   methods: {
     isSelected(item: any) {
       if (this.enableMultiSelection && Array.isArray(this.currentValue)) {
-        return this.currentValue.includes(this.getKey(item, this.valueProperty));
+        if (this.valueProperty) {
+          return this.currentValue.includes(this.getKey(item, this.valueProperty));
+        }
+
+        return this.currentValue.find(
+          (currentItem) =>
+            this.getKey(currentItem, this.labelProperty) === this.getKey(item, this.labelProperty),
+        );
       }
 
-      return this.currentValue === this.getKey(item, this.valueProperty);
+      if (this.valueProperty) {
+        return this.getKey(item, this.valueProperty) === this.currentValue;
+      }
+
+      return (
+        this.getKey(item, this.labelProperty) === this.getKey(this.currentValue, this.labelProperty)
+      );
     },
 
     addItem(item: any) {
@@ -464,7 +533,7 @@ export default defineComponent({
       if (this.enableMultiSelection) {
         if (Array.isArray(this.currentValue)) {
           this.currentValue = [...this.currentValue, identifier];
-        } else if (this.currentValue !== undefined || this.currentValue !== null) {
+        } else if (this.currentValue === null || this.currentValue === undefined) {
           this.currentValue = [identifier];
         } else {
           this.currentValue = [this.currentValue, identifier];
@@ -517,13 +586,54 @@ export default defineComponent({
       this.limit += this.limit;
     },
 
-    onSearchTermChange: debounce(function updateSearchTerm(term) {
-      // @ts-expect-error - this context exists even here
+    onSearchTermChange(term: string) {
       this.searchTerm = term;
-      // @ts-expect-error - this context exists even here
-      this.$emit("search-term-change", this.searchTerm);
-      // @ts-expect-error - this context exists even here
+    },
+
+    searchTermDebounced: debounce(function searchTermDebounced(newSearchTerm: string) {
+      // @ts-expect-error - this context will always be available
+      this.$emit("search-term-change", newSearchTerm);
+      // @ts-expect-error - this context will always be available
       this.resetActiveItem();
+
+      // @ts-expect-error - this context will always be available
+      this.searchResults = [];
+
+      if (newSearchTerm !== undefined && newSearchTerm !== null) {
+        // @ts-expect-error - this context will always be available
+        this.isSearchResultsLoading = true;
+        // @ts-expect-error - this context will always be available
+        const result = this.searchFunction({
+          // @ts-expect-error - this context will always be available
+          options: this.options,
+          // @ts-expect-error - this context will always be available
+          labelProperty: this.labelProperty,
+          // @ts-expect-error - this context will always be available
+          valueProperty: this.valueProperty,
+          // @ts-expect-error - this context will always be available
+          searchTerm: this.searchTerm,
+        });
+
+        if (isPromise(result)) {
+          result.then((res: any) => {
+            if (res) {
+              // @ts-expect-error - this context will always be available
+              this.searchResults = res;
+            }
+
+            // @ts-expect-error - this context will always be available
+            this.isSearchResultsLoading = false;
+          });
+        } else {
+          if (result) {
+            // @ts-expect-error - this context will always be available
+            this.searchResults = result;
+          }
+
+          // @ts-expect-error - this context will always be available
+          this.isSearchResultsLoading = false;
+        }
+      }
     }, 100),
 
     resetActiveItem() {
@@ -546,12 +656,13 @@ export default defineComponent({
       this.$refs.selectionList.blur();
     },
 
-    getKey(object: any, keyPath: string, defaultValue?: any) {
-      return get(object, keyPath, defaultValue);
+    onClearSelection() {
+      this.currentValue = this.enableMultiSelection ? [] : null;
     },
 
-    onClearSelection() {
-      this.currentValue = [];
+    getFocusElement() {
+      // @ts-expect-error - ref exists
+      return this.$refs.selectionList.getFocusEl() as HTMLElement;
     },
   },
 });

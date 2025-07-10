@@ -1,0 +1,34 @@
+{
+  "name": "Meteor Monorepo",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:0-20",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts"
+    },
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/jakejarvis/devcontainer-features/volta:1": {
+      "version": "latest"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "Vue.volar",
+        "stylelint.vscode-stylelint"
+      ],
+      "settings": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "stylelint.validate": ["css", "postcss", "vue"]
+      }
+    }
+  },
+  "postCreateCommand": "pnpm install",
+  "containerEnv": {
+    "PUPPETEER_SKIP_CHROMIUM_DOWNLOAD": "true",
+    "VOLTA_FEATURE_PNPM": "1"
+  },
+  "remoteUser": "node"
+}

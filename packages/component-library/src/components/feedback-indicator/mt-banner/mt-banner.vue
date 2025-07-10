@@ -1,16 +1,16 @@
 <template>
-  <div class="mt-banner" :class="bannerClasses" role="banner">
+  <div :class="classes" role="banner">
     <slot name="customIcon">
       <mt-icon
         v-if="!hideIcon"
-        size="1.25rem"
+        size="var(--scale-size-20)"
         class="mt-banner__icon"
         :name="bannerIcon"
         decorative
       />
     </slot>
 
-    <div class="mt-banner__body" :class="bannerBodyClasses">
+    <div class="mt-banner__body" :class="bodyClasses">
       <mt-text v-if="title" as="h3" weight="bold" size="xs" class="mt-banner__title">
         {{ title }}
       </mt-text>
@@ -23,8 +23,7 @@
     <button
       v-if="closable"
       class="mt-banner__close"
-      aria-label="Schließen"
-      title="Schließen"
+      :aria-label="t('close')"
       @click.prevent="$emit('close', bannerIndex)"
     >
       <mt-icon name="solid-times-s" />
@@ -32,134 +31,97 @@
   </div>
 </template>
 
-<script lang="ts">
-import type { PropType } from "vue";
-
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { computed } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtText from "@/components/content/mt-text/mt-text.vue";
+import { useFutureFlags } from "@/composables/useFutureFlags";
+import { useI18n } from "vue-i18n";
 
-type CssClasses = (string | Record<string, boolean>)[] | Record<string, boolean>;
-type BannerType = "neutral" | "info" | "attention" | "critical" | "positive" | "inherited";
-
-export default defineComponent({
-  name: "MtBanner",
-
-  components: {
-    MtIcon,
-    MtText,
-  },
-
-  props: {
-    /**
-     * Change the variant of the banner
-     * @values neutral, info, attention, critical, positive, inherited
-     */
-    variant: {
-      type: String as PropType<BannerType>,
-      required: false,
-      default: "neutral",
-      validator(value: string): boolean {
-        return ["neutral", "info", "attention", "critical", "positive", "inherited"].includes(
-          value,
-        );
-      },
+const { t } = useI18n({
+  messages: {
+    de: {
+      close: "Schließen",
     },
-    /**
-     * The general title of the banner
-     */
-    title: {
-      type: String,
-      required: false,
-      default: "",
-    },
-    /**
-     * Hide the icon if needed
-     */
-    hideIcon: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    /**
-     * If set to true then you can close the banner directly
-     */
-    closable: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-    /**
-     * This index will get emitted when a user closes the banner.
-     * It is needed for removing the correct banner
-     */
-    bannerIndex: {
-      type: String,
-      required: false,
-      default: null,
-    },
-    /**
-     * Change the default icon for the banner
-     */
-    icon: {
-      type: String,
-      required: false,
-      default: null,
-    },
-  },
-
-  computed: {
-    bannerIcon(): string {
-      if (this.icon) {
-        return this.icon;
-      }
-
-      const iconConfig: Record<string, string> = {
-        neutral: "solid-info-circle",
-        info: "solid-info-circle",
-        attention: "solid-exclamation-triangle",
-        critical: "solid-exclamation-circle",
-        positive: "solid-check-circle",
-        inherited: "solid-link",
-      };
-
-      return iconConfig[this.variant] || "solid-info-circle";
-    },
-
-    bannerClasses(): CssClasses {
-      return [
-        `mt-banner--${this.variant}`,
-        {
-          "mt-banner--icon": !this.hideIcon,
-          "mt-banner--no-icon": this.hideIcon,
-          "mt-banner--closable": this.closable,
-        },
-      ];
-    },
-
-    bannerBodyClasses(): CssClasses {
-      return {
-        "mt-banner__body--icon": !this.hideIcon,
-        "mt-banner__body--closable": this.closable,
-      };
+    en: {
+      close: "Close",
     },
   },
 });
+
+const props = withDefaults(
+  defineProps<{
+    variant?: "neutral" | "info" | "attention" | "critical" | "positive" | "inherited";
+    title?: string;
+    hideIcon?: boolean;
+    closable?: boolean;
+    bannerIndex?: string;
+    icon?: string;
+  }>(),
+  {
+    variant: "neutral",
+    hideIcon: false,
+    closable: false,
+  },
+);
+
+defineEmits<{
+  close: [bannerIndex?: string];
+}>();
+
+const bannerIcon = computed(() => {
+  if (props.icon) return props.icon;
+
+  const iconConfig = {
+    neutral: "solid-info-circle",
+    info: "solid-info-circle",
+    attention: "solid-exclamation-triangle",
+    critical: "solid-exclamation-circle",
+    positive: "solid-check-circle",
+    inherited: "solid-link",
+  };
+
+  return iconConfig[props.variant] || "solid-info-circle";
+});
+
+const future = useFutureFlags();
+
+const classes = computed(() => [
+  "mt-banner",
+  `mt-banner--${props.variant}`,
+  {
+    "mt-banner--future-remove-default-margin": future.removeDefaultMargin,
+    "mt-banner--icon": !props.hideIcon,
+    "mt-banner--closable": props.closable,
+  },
+]);
+
+const bodyClasses = computed(() => ({
+  "mt-banner__body--icon": !props.hideIcon,
+  "mt-banner__body--closable": props.closable,
+}));
 </script>
 
 <style scoped>
 .mt-banner {
-  --mt-banner-close-button-size: 2.5rem;
+  --mt-banner-close-button-size: var(--scale-size-40);
 
   border-width: 1px;
+  padding: var(--scale-size-24);
   border-style: solid;
   border-radius: var(--border-radius-xs);
-  position: relative;
-  margin: 0 auto 1.25rem;
+  margin: 0 auto var(--scale-size-20);
+  display: flex;
+  flex-direction: row;
+  gap: var(--scale-size-16);
 
   & ul {
-    padding: 0.5rem 0 0.5rem 1.25rem;
+    padding: var(--scale-size-8) 0 var(--scale-size-8) var(--scale-size-20);
   }
+}
+
+.mt-banner--future-remove-default-margin {
+  margin-block-end: 0;
 }
 
 .mt-banner__title {
@@ -167,48 +129,31 @@ export default defineComponent({
 }
 
 .mt-banner__body {
-  padding: 1.5rem 3.75rem 1.5rem 1.5rem;
   font-family: var(--font-family-body);
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.25rem;
-}
-
-.mt-banner__body--icon {
-  padding: 1.5rem 3.75rem;
-}
-
-.mt-banner__body--closable {
-  padding-right: var(--mt-banner-close-button-size);
+  flex: 1;
+  gap: var(--scale-size-4);
 }
 
 .mt-banner__icon {
-  position: absolute;
-  display: block;
-  left: 1.625rem;
-  top: 1.75rem;
-  width: 1.25rem;
-  height: 1.25rem;
+  width: var(--scale-size-20);
+  height: var(--scale-size-20);
 }
 
 .mt-banner__close {
   width: var(--mt-banner-close-button-size);
   height: var(--mt-banner-close-button-size);
-  line-height: var(--mt-banner-close-button-size);
-  position: absolute;
-  display: block;
-  top: 0.75rem;
-  right: 0.75rem;
-  padding: 0;
-  margin: 0;
-  text-align: center;
-  background: none;
-  border: 0 none;
-  outline: none;
-  cursor: pointer;
+  border-radius: var(--border-radius-xs);
+  margin-top: calc(var(--scale-size-8) * -1);
+  margin-right: calc(var(--scale-size-8) * -1);
+
+  &:focus-visible {
+    outline: 2px solid var(--color-border-brand-selected);
+  }
 }
 
 .mt-banner--info {

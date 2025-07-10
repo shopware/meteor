@@ -1,4 +1,7 @@
 import { createSender, createSubscriber } from '../channel';
+import getCompareIsShopwareVersion from './compare-version';
+import createACLHelper from './acl';
+import type { privileges } from '../_internals/privileges';
 
 export const getLanguage = createSender('contextLanguage', {});
 export const subscribeLanguage = createSubscriber('contextLanguage');
@@ -7,10 +10,13 @@ export const getLocale = createSender('contextLocale', {});
 export const subscribeLocale = createSubscriber('contextLocale');
 export const getCurrency = createSender('contextCurrency', {});
 export const getShopwareVersion = createSender('contextShopwareVersion', {});
+export const compareIsShopwareVersion = getCompareIsShopwareVersion(getShopwareVersion);
 export const getUserInformation = createSender('contextUserInformation', {});
 export const getUserTimezone = createSender('contextUserTimezone', {});
 export const getAppInformation = createSender('contextAppInformation', {});
+export const can = createACLHelper(getAppInformation);
 export const getModuleInformation = createSender('contextModuleInformation', {});
+export const getShopId = createSender('contextShopId', {});
 
 /**
  * Get the current content language
@@ -64,6 +70,7 @@ export type contextAppInformation = {
     name: string,
     version: string,
     type: 'app'|'plugin',
+    privileges: privileges,
   },
 }
 
@@ -111,4 +118,8 @@ export type contextModuleInformation = {
       locationId: string,
     }>,
   },
+}
+
+export type contextShopId = {
+  responseType: string|null,
 }

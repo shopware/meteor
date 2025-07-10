@@ -1,6 +1,4 @@
-import { within, userEvent } from "@storybook/test";
-import { expect } from "@storybook/test";
-
+import { fn, userEvent, within } from "@storybook/test";
 import meta, { type MtUrlFieldMeta, type MtUrlFieldStory } from "./mt-url-field.stories";
 
 export default {
@@ -8,114 +6,125 @@ export default {
   title: "Interaction Tests/Form/mt-url-field",
 } as MtUrlFieldMeta;
 
-export const Default = {
-  name: "mt-url-field",
-};
-
-export const VisualTestInputValue: MtUrlFieldStory = {
-  name: "Should keep input value",
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    await userEvent.type(canvas.getByRole("textbox"), "shopware.com");
-    await userEvent.click(canvas.getByText("hidden"));
-    await userEvent.click(canvas.getByText("hidden"));
-
-    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("shopware.com");
-
-    expect(args.updateModelValue).toHaveBeenLastCalledWith("https://shopware.com");
-  },
-};
-
-export const VisualTestHttpSwitch: MtUrlFieldStory = {
-  name: "Should change the ssl switch to http",
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    await userEvent.type(canvas.getByRole("textbox"), "shopware.com");
-    await userEvent.click(canvas.getByText("hidden"));
-
-    expect(canvas.getByText("https://").innerText).toContain("https://");
-
-    expect(args.updateModelValue).toHaveBeenLastCalledWith("https://shopware.com");
-
-    await userEvent.click(canvas.getByRole("button"));
-
-    expect(canvas.getByText("http://").innerText).toContain("http://");
-    await userEvent.click(canvas.getByText("hidden"));
-
-    expect(args.updateModelValue).toHaveBeenLastCalledWith("http://shopware.com");
-    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("shopware.com");
-  },
-};
-
-export const TestNotOmitUrlHash: MtUrlFieldStory = {
-  name: "Should not omit the url hash",
+export const VisualTestFocused: MtUrlFieldStory = {
+  name: "Focused",
   args: {
-    omitUrlHash: false,
+    modelValue: "https://example.com",
   },
-  play: async ({ canvasElement, args }) => {
+  async play({ canvasElement }) {
     const canvas = within(canvasElement);
 
-    await userEvent.type(canvas.getByRole("textbox"), "shopware.com/#content");
-
-    await userEvent.click(canvas.getByText("hidden"));
-
-    expect(args.updateModelValue).toHaveBeenLastCalledWith("https://shopware.com/#content");
-    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("shopware.com/#content");
+    await userEvent.click(canvas.getByRole("textbox"));
   },
 };
 
-export const TestOmitUrlHash: MtUrlFieldStory = {
-  name: "Should omit the url hash",
+export const VisualTestPlaceholder: MtUrlFieldStory = {
+  name: "With placeholder",
   args: {
-    omitUrlHash: true,
-  },
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    await userEvent.type(canvas.getByRole("textbox"), "shopware.com/#content");
-
-    await userEvent.click(canvas.getByText("hidden"));
-
-    expect(args.updateModelValue).toHaveBeenLastCalledWith("https://shopware.com");
-
-    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("shopware.com");
+    placeholder: "Placeholder",
   },
 };
 
-export const TestNotOmitUrlSearch: MtUrlFieldStory = {
-  name: "Should not omit the url search",
+export const VisualTestRequired: MtUrlFieldStory = {
+  name: "Required",
   args: {
-    omitUrlSearch: false,
-  },
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    await userEvent.type(canvas.getByRole("textbox"), "shopware.com/?someValue=5");
-
-    await userEvent.click(canvas.getByText("hidden"));
-
-    expect(args.updateModelValue).toHaveBeenLastCalledWith("https://shopware.com/?someValue=5");
-    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe(
-      "shopware.com/?someValue=5",
-    );
+    required: true,
   },
 };
 
-export const TestOmitUrlSearch: MtUrlFieldStory = {
-  name: "Should omit the url search",
+export const VisualTestHttps: MtUrlFieldStory = {
+  name: "shows HTTPS mode",
   args: {
-    omitUrlSearch: true,
+    modelValue: "https://example.com",
   },
-  play: async ({ canvasElement, args }) => {
+};
+
+export const VisualTestHttp: MtUrlFieldStory = {
+  name: "shows HTTP mode",
+  args: {
+    modelValue: "http://example.com",
+  },
+};
+
+export const VisualTestDisabled: MtUrlFieldStory = {
+  name: "Disabled",
+  args: {
+    modelValue: "https://example.com",
+    disabled: true,
+  },
+};
+
+export const VisualTestLinkedInheritance: MtUrlFieldStory = {
+  name: "Linked inheritance",
+  args: {
+    modelValue: "https://example.com",
+    isInheritanceField: true,
+    isInherited: true,
+  },
+};
+
+export const VisualTestUnlinkedInheritance: MtUrlFieldStory = {
+  name: "Linked inheritance",
+  args: {
+    modelValue: "https://example.com",
+    isInheritanceField: true,
+    isInherited: false,
+  },
+};
+
+export const VisualTestSuffix: MtUrlFieldStory = {
+  name: "With suffix",
+  args: {
+    modelValue: "https://example.com",
+    suffix: "suffix",
+  },
+};
+
+export const VisualTestError: MtUrlFieldStory = {
+  name: "Error",
+  args: {
+    modelValue: "https://example.com",
+    error: {
+      detail: "This is an error",
+    },
+  },
+};
+
+export const VisualTestSmall: MtUrlFieldStory = {
+  name: "Small",
+  args: {
+    modelValue: "https://example.com",
+    size: "small",
+  },
+};
+
+export const VisualTestHelpText: MtUrlFieldStory = {
+  name: "Helptext",
+  args: {
+    modelValue: "https://example.com",
+    helpText: "This is help text",
+  },
+};
+
+export const VisualTestHint: MtUrlFieldStory = {
+  name: "Hint",
+  args: {
+    hint: "This is a hint",
+  },
+};
+
+export const VisualTestCopyToClipboard: MtUrlFieldStory = {
+  name: "Copy to clipboard",
+  args: {
+    modelValue: "https://www.example.com",
+    copyable: true,
+  },
+  async play({ canvasElement }) {
+    const handler = fn();
+    navigator.clipboard.writeText = handler;
+
     const canvas = within(canvasElement);
 
-    await userEvent.type(canvas.getByRole("textbox"), "shopware.com/?someValue=5");
-
-    await userEvent.click(canvas.getByText("hidden"));
-
-    expect(args.updateModelValue).toHaveBeenLastCalledWith("https://shopware.com");
-    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("shopware.com");
+    await userEvent.click(canvas.getByRole("button", { name: "Copy URL to clipboard" }));
   },
 };

@@ -1,6 +1,6 @@
 <template>
   <div class="mt-loader">
-    <div class="mt-loader__container" :style="loaderSize">
+    <div class="mt-loader__container" :style="{ width: size, height: size }">
       <div class="mt-loader-element">
         <div :style="{ borderWidth: borderWidth }" />
         <div :style="{ borderWidth: borderWidth }" />
@@ -11,61 +11,27 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
+<script setup lang="ts">
+import { computed } from "vue";
 
-export default defineComponent({
-  name: "MtLoader",
-
-  props: {
-    /**
-     * Define the size of the loader. Should be a string containing "${yourNumber}px"
-     */
-    size: {
-      type: String,
-      required: false,
-      default: "50px",
-      validator(value: string) {
-        return value.endsWith("px");
-      },
-    },
+const props = withDefaults(
+  defineProps<{
+    size?: `${string}px`;
+  }>(),
+  {
+    size: "50px",
   },
+);
 
-  computed: {
-    loaderSize(): {
-      width: string;
-      height: string;
-    } {
-      return {
-        width: `${this.numericSize}px`,
-        height: `${this.numericSize}px`,
-      };
-    },
-    numericSize(): number {
-      const numericSize = parseInt(this.size, 10);
+const borderWidth = computed(() => {
+  const numericSize = Number(props.size.replace("px", ""));
+  const borderWith = Number(numericSize / 12).toPrecision(2);
 
-      if (Number.isNaN(numericSize)) {
-        return 50;
-      }
-
-      return numericSize;
-    },
-
-    borderWidth(): string {
-      const borderWith = Number(this.numericSize / 12).toPrecision(2);
-
-      return `${borderWith}px`;
-    },
-  },
+  return `${borderWith}px`;
 });
 </script>
 
-<style lang="scss">
-$mt-loader-color-overlay: var(--color-background-primary-disabled);
-$mt-loader-element-color: var(--color-border-brand-selected);
-$mt-loader-rotate-duration: 1.4s;
-$mt-loader-z-index: $z-index-loader;
-
+<style scoped>
 .mt-loader {
   width: 100%;
   height: 100%;
@@ -75,53 +41,53 @@ $mt-loader-z-index: $z-index-loader;
   left: 0;
   right: 0;
   margin: auto;
-  z-index: $mt-loader-z-index;
-  background: $mt-loader-color-overlay;
+  z-index: 400;
+  background: var(--color-background-primary-disabled);
   opacity: 0.8;
+}
 
-  .mt-loader__container {
-    display: grid;
-    grid-auto-columns: auto;
-    text-align: center;
-    position: relative;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-  }
+.mt-loader-element {
+  & div {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border-width: 4px;
+    border-style: solid;
+    border-radius: 50%;
+    border-color: var(--color-border-brand-selected) transparent transparent transparent;
+    animation: mt-loader-rotator 1.4s cubic-bezier(0.5, 0, 0.5, 1) infinite;
 
-  .mt-loader-element {
-    div {
-      position: absolute;
-      width: 100%;
-      height: 100%;
-      border-width: 4px;
-      border-style: solid;
-      border-radius: 50%;
-      border-color: $mt-loader-element-color transparent transparent transparent;
-      animation: mt-loader-rotator $mt-loader-rotate-duration cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    &:nth-child(1) {
+      animation-delay: -0.45s;
+    }
 
-      &:nth-child(1) {
-        animation-delay: -0.45s;
-      }
+    &:nth-child(2) {
+      animation-delay: -0.3s;
+    }
 
-      &:nth-child(2) {
-        animation-delay: -0.3s;
-      }
-
-      &:nth-child(3) {
-        animation-delay: -0.15s;
-      }
+    &:nth-child(3) {
+      animation-delay: -0.15s;
     }
   }
+}
 
-  @keyframes mt-loader-rotator {
-    0% {
-      transform: rotate(0deg);
-    }
+.mt-loader__container {
+  display: grid;
+  grid-auto-columns: auto;
+  text-align: center;
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
 
-    100% {
-      transform: rotate(360deg);
-    }
+@keyframes mt-loader-rotator {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
   }
 }
 </style>

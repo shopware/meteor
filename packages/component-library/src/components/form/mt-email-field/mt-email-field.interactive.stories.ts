@@ -1,4 +1,4 @@
-import { within, userEvent } from "@storybook/test";
+import { within, userEvent, fn } from "@storybook/test";
 import { expect } from "@storybook/test";
 
 import meta, { type MtEmailFieldMeta, type MtEmailFieldStory } from "./mt-email-field.stories";
@@ -7,25 +7,6 @@ export default {
   ...meta,
   title: "Interaction Tests/Form/mt-email-field",
 } as MtEmailFieldMeta;
-
-export const TestInputValue: MtEmailFieldStory = {
-  name: "Should keep input value",
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-    const TEST_EMAIL = "admin@shopware.com";
-
-    await userEvent.type(canvas.getByRole("textbox"), TEST_EMAIL);
-    await userEvent.click(canvas.getByText("hidden"));
-
-    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe(TEST_EMAIL);
-
-    // Input to be called once for each letter
-
-    expect(args.updateModelValue).toHaveBeenCalledTimes(18);
-
-    expect(args.change).toHaveBeenCalledWith(TEST_EMAIL);
-  },
-};
 
 export const VisualTestPrefix: MtEmailFieldStory = {
   name: "Should display prefix",
@@ -60,18 +41,6 @@ export const VisualTestHint: MtEmailFieldStory = {
     const canvas = within(canvasElement);
 
     expect(canvas.getByText(args.hint)).toBeDefined();
-  },
-};
-
-export const TestLabel: MtEmailFieldStory = {
-  name: "Should display label",
-  args: {
-    label: "label",
-  },
-  play: ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    expect(canvas.getByText(args.label!)).toBeDefined();
   },
 };
 
@@ -114,16 +83,62 @@ export const VisualTestError: MtEmailFieldStory = {
   },
 };
 
-export const VisualTestValidationError: MtEmailFieldStory = {
-  name: "Should validate email",
+export const VisualTestSmall: MtEmailFieldStory = {
+  name: "Should display small",
   args: {
-    modelValue: "admin@",
+    small: true,
   },
-  play: ({ canvasElement }) => {
-    const canvas = within(canvasElement);
+};
 
-    expect(
-      canvas.getByText("Please enter a part following '@'. 'admin@' is incomplete."),
-    ).toBeDefined();
+export const TestShouldCopyValue: MtEmailFieldStory = {
+  name: "Should copy value",
+  args: {
+    modelValue: "test@shopware.com",
+    copyable: true,
+    _showSecondTextField: true,
+  },
+  async play({ canvasElement }) {
+    // Mock the clipboard API
+    let clipboardValue = "";
+    const mockClipboard = {
+      writeText: (text: string) => {
+        clipboardValue = text;
+        return Promise.resolve();
+      },
+    };
+    Object.defineProperty(navigator, "clipboard", {
+      value: mockClipboard,
+      writable: true,
+    });
+
+    const canvas = within(canvasElement);
+    await userEvent.click(canvas.getByRole("button", { name: "Copy to clipboard" }));
+
+    // Get the second text field
+    const secondTextField = canvas.getByRole("textbox", { name: "Textfield for testing" });
+    // Click on the input field of the second text field
+    await userEvent.click(secondTextField);
+    // Paste the copied value into the second text field
+    await userEvent.type(secondTextField, clipboardValue);
+    // Check if the value of the second text field is equal to the value of the first text field
+    expect((secondTextField as HTMLInputElement).value).toBe("test@shopware.com");
+  },
+};
+
+export const VisualTestLinkedInheritanec: MtEmailFieldStory = {
+  name: "Linked inheritance",
+  args: {
+    isInheritanceField: true,
+    isInherited: true,
+    modelValue: "test@shopware.com",
+  },
+};
+
+export const VisualTestUnlinkedInheritance: MtEmailFieldStory = {
+  name: "Unlinked inheritance",
+  args: {
+    isInheritanceField: true,
+    isInherited: false,
+    modelValue: "test@shopware.com",
   },
 };

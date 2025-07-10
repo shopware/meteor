@@ -15,14 +15,15 @@ You need a working **Vue 3 application** with the **i18n plugin** for the transl
 
 Add this package to your project:
 
-```
+```cli
 npm i @shopware-ag/meteor-component-library
 ```
 
-Import the `style.css` for general styling like fonts, etc. in the root file of your application or in you root styling file.
+Import the `style.css` for general styling and `font.css` for the Inter font in the root file of your application or in you root styling file.
 
 ```js
-import "@shopware-ag/meteor-component-library/dist/style.css";
+import "@shopware-ag/meteor-component-library/styles.css";
+import "@shopware-ag/meteor-component-library/font.css";
 ```
 
 Each component works independently and can be imported directly from the root like this:
@@ -45,37 +46,37 @@ These guides are useful if you want to contribute this component library.
 
 ### Project setup
 
-```
+```shell
 pnpm install
 ```
 
 #### Compiles and hot-reloads for development
 
-```
+```shell
 pnpm run storybook
 ```
 
 #### Compiles and minifies for production
 
-```
+```shell
 pnpm run build:storybook
 ```
 
 #### Run your interaction tests (running Storybook instance is needed)
 
-```
+```shell
 pnpm run test:storybook
 ```
 
 #### Lints and fixes files
 
-```
+```shell
 pnpm run lint:all
 ```
 
 #### Build the bundled component library
 
-```
+```shell
 pnpm run build
 ```
 

@@ -2,9 +2,16 @@ import { mount } from "@vue/test-utils";
 import MtDataTable, { type ColumnDefinition } from "./mt-data-table.vue";
 import MtDataTableFixtures from "./mt-data-table.fixtures.json";
 import flushPromises from "flush-promises";
-import { get } from "lodash-es";
+import { get } from "@/utils/object";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { useI18n } from "vue-i18n";
+
+// Mock "useDebounceFn" from "@vueuse/core"
+vi.mock("@vueuse/core", () => ({
+  useDebounceFn: (method: () => void) => {
+    return method;
+  },
+}));
 
 vi.mock("vue-i18n", () => ({
   useI18n: vi.fn(() => {
@@ -34,6 +41,7 @@ const columnsFixture: ColumnDefinition[] = [
     renderer: "badge",
     rendererOptions: {
       renderItemBadge: (data, columnDefinition) => {
+        // @ts-expect-error
         const value = get(data, columnDefinition.property);
 
         return value

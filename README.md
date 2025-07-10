@@ -8,7 +8,7 @@ accessible experiences. There are no limits to your imagination.
 
 This repository contains all project related to the Meteor Design System used and maintained by shopware and it's contributors.
 
-```
+```shell
 meteor/
 ├── docs
 │   └── admin-sdk               # Documentation about the Meteor Admin SDK

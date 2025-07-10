@@ -1,6 +1,6 @@
 {
   "extends": "./tsconfig.app.json",
-  "exclude": [],
+  "exclude": ["node_modules", "**/*.stories.ts"],
   "include": [
     "env.d.ts",
     "src/**/*",
@@ -12,7 +12,6 @@
   ],
   "compilerOptions": {
     "composite": true,
-    "lib": [],
     "types": ["node", "jsdom", "vitest/globals"]
   }
 }

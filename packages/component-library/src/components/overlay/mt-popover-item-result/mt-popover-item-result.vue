@@ -24,6 +24,7 @@
 
           <button
             v-if="group.actionLabel"
+            type="button"
             class="mt-popover-item-result__group-action"
             @click="() => $emit('click-group-action', group.id)"
           >
@@ -268,8 +269,8 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 4px;
-    margin-top: 8px;
+    margin-bottom: var(--scale-size-4);
+    margin-top: var(--scale-size-8);
   }
 
   &__group-label {
@@ -332,8 +333,8 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
 
   .mt-popover-item {
     transition: 0.3s all ease;
-    padding-top: 4px;
-    padding-bottom: 4px;
+    padding-top: var(--scale-size-4);
+    padding-bottom: var(--scale-size-4);
 
     &.is--dragging {
       opacity: 0.25;

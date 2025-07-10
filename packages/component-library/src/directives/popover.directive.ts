@@ -106,7 +106,7 @@ function setElementPosition(
   });
 
   // add inline styling
-  element.style.position = "absolute";
+  element.style.position = "fixed";
   element.style.top = `${elementPosition.top - targetPosition.top + originElement.clientHeight}px`;
   element.style.left = `${elementPosition.left - targetPosition.left}px`;
 }
@@ -117,10 +117,12 @@ function setElementPosition(
 
 function startVirtualScrolling() {
   window.addEventListener("scroll", virtualScrollingHandler, true);
+  window.addEventListener("resize", virtualScrollingHandler, true);
 }
 
 function stopVirtualScrolling() {
   window.removeEventListener("scroll", virtualScrollingHandler, true);
+  window.removeEventListener("resize", virtualScrollingHandler, true);
 }
 
 function virtualScrollingHandler() {
@@ -131,6 +133,10 @@ function virtualScrollingHandler() {
 
   virtualScrollingElements.forEach((entry) => {
     setElementPosition(entry.el, entry.ref, entry.config);
+
+    if (entry.config.resizeWidth) {
+      entry.el.style.width = `${entry.ref.clientWidth}px`;
+    }
   });
 }
 
@@ -140,7 +146,7 @@ function registerVirtualScrollingElement(
   config: PopoverConfig,
 ) {
   // @ts-expect-error - _uid exists on the context but is private
-  const uid = vnodeContext?._uid;
+  const uid = vnodeContext?._?.uid;
 
   if (!uid) {
     return;
@@ -201,6 +207,7 @@ const PopoverDirective: Directive = {
     }
 
     // append to target element
+    // @ts-expect-error
     calculateOutsideEdges(element, binding.instance!);
 
     // @ts-expect-error

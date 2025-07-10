@@ -20,7 +20,7 @@ import MtPopoverDirective from "../../../directives/popover.directive";
  * @deprecated - Use `mt-floating-ui` instead
  */
 export default defineComponent({
-  name: "MtPopover",
+  name: "MtPopoverDeprecated",
 
   directives: {
     popover: MtPopoverDirective,
@@ -60,14 +60,10 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-.mt-popover-deprecated {
-  .mt-popover-deprecated__wrapper {
-    position: inherit;
-  }
-}
-
+<style>
 .mt-popover-deprecated__wrapper {
+  position: inherit;
+
   &.--placement-bottom-outside {
     transform: translate(0, calc(-100% - 57px));
   }

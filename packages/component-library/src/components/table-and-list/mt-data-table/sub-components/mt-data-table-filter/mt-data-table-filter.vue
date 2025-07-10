@@ -4,13 +4,13 @@
       {{ filter.label }}
     </mt-text>
 
-    <mt-text size="2xs" color="color-text-secondary-default" class="mt-data-table-filter__rule"
-      >is</mt-text
-    >
+    <mt-text size="2xs" color="color-text-secondary-default" class="mt-data-table-filter__rule">
+      {{ t("is") }}
+    </mt-text>
 
     <mt-popover class="mt-data-table-filter__option" title="Manufactuer">
       <template #trigger="{ toggleFloatingUi }">
-        <button @keydown.delete="$emit('removeFilter')" @click="toggleFloatingUi">
+        <button type="button" @keydown.delete="$emit('removeFilter')" @click="toggleFloatingUi">
           {{ appliedOptions.map((option) => option.label).join(", ") }}
         </button>
       </template>
@@ -33,8 +33,9 @@
     </mt-popover>
 
     <button
+      type="button"
       class="mt-data-table-filter__remove-button"
-      :aria-label="$t('mt-data-table-filter.remove-button')"
+      :aria-label="t('removeButton')"
       @keydown.delete="$emit('removeFilter')"
       @click="$emit('removeFilter')"
     >
@@ -43,130 +44,117 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import MtIcon from "@/components/icons-media/mt-icon/mt-icon.vue";
 import MtPopover from "@/components/overlay/mt-popover/mt-popover.vue";
 import MtPopoverItem from "@/components/overlay/mt-popover-item/mt-popover-item.vue";
-import { defineComponent, type PropType } from "vue";
 import type { Filter, Option } from "../../mt-data-table.interfaces";
 import MtText from "@/components/content/mt-text/mt-text.vue";
+import { useI18n } from "vue-i18n";
 
-export default defineComponent({
-  name: "MtDataTableFilter",
+defineEmits<{
+  (e: "removeOption", filterId: string, optionId: string): void;
+  (e: "addOption", filterId: string, optionId: string): void;
+  (e: "removeFilter"): void;
+}>();
 
-  components: {
-    "mt-icon": MtIcon,
-    "mt-popover": MtPopover,
-    "mt-popover-item": MtPopoverItem,
-    "mt-text": MtText,
-  },
-  i18n: {
-    messages: {
-      en: {
-        "mt-data-table-filter.remove-button": "Remove filter",
-      },
-      de: {
-        "mt-data-table-filter.remove-button": "Filter entfernen",
-      },
-    },
-  },
-  emits: ["removeOption", "addOption", "removeFilter"],
-  props: {
-    filter: {
-      type: Object as PropType<Filter>,
-      required: true,
-    },
-    appliedOptions: {
-      type: Array as PropType<Option[]>,
-      required: true,
-    },
-  },
-  setup(props) {
-    function isOptionSelected(optionId: string) {
-      return !!props.appliedOptions.find((option) => option.id === optionId);
-    }
+const props = defineProps<{
+  filter: Filter;
+  appliedOptions: Option[];
+}>();
 
-    return {
-      isOptionSelected,
-    };
+function isOptionSelected(optionId: string) {
+  return !!props.appliedOptions.find((option) => option.id === optionId);
+}
+
+const { t } = useI18n({
+  messages: {
+    en: {
+      is: "is",
+      removeButton: "Remove filter",
+    },
+    de: {
+      is: "ist",
+      removeButton: "Filter entfernen",
+    },
   },
 });
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
 .mt-data-table-filter {
   display: inline-flex;
 
   & > * {
-    height: 24px;
+    height: var(--scale-size-24);
     display: grid;
     place-items: center;
   }
+}
 
-  .mt-data-table-filter__property {
-    border: 1px solid var(--color-border-primary-default);
-    border-right: 0 none;
-    border-top-left-radius: var(--border-radius-xs);
-    border-bottom-left-radius: var(--border-radius-xs);
-    color: var(--color-text-primary-default);
-    padding-inline: 8px;
-  }
+.mt-data-table-filter__property {
+  border: 1px solid var(--color-border-primary-default);
+  border-right: 0 none;
+  border-top-left-radius: var(--border-radius-xs);
+  border-bottom-left-radius: var(--border-radius-xs);
+  color: var(--color-text-primary-default);
+  padding-inline: var(--scale-size-8);
+}
 
-  .mt-data-table-filter__rule {
-    border-top: 1px solid var(--color-border-primary-default);
-    border-bottom: 1px solid var(--color-border-primary-default);
-    padding-right: 4px;
-  }
+.mt-data-table-filter__rule {
+  border-top: 1px solid var(--color-border-primary-default);
+  border-bottom: 1px solid var(--color-border-primary-default);
+  padding-right: var(--scale-size-4);
+}
 
-  .mt-data-table-filter__option {
-    color: var(--color-text-primary-default);
-    font-size: var(--font-size-2xs);
-    font-family: var(--font-family-body);
-    line-height: var(--font-line-height-2xs);
-    border-top: 1px solid var(--color-border-primary-default);
-    border-bottom: 1px solid var(--color-border-primary-default);
-    padding-inline: 4px 8px;
+.mt-data-table-filter__option {
+  color: var(--color-text-primary-default);
+  font-size: var(--font-size-2xs);
+  font-family: var(--font-family-body);
+  line-height: var(--font-line-height-2xs);
+  border-top: 1px solid var(--color-border-primary-default);
+  border-bottom: 1px solid var(--color-border-primary-default);
+  padding-inline: var(--scale-size-4) var(--scale-size-8);
 
-    button {
-      outline: 0 none;
-    }
-
-    &:has(button:hover) {
-      background-color: var(--color-interaction-secondary-hover);
-    }
-
-    &:has(button:focus-visible) {
-      background-color: var(--color-background-brand-default);
-      outline: var(--color-border-brand-selected) solid 1px;
-      outline-offset: -1px;
-    }
-  }
-
-  .mt-data-table-filter__remove-button {
-    color: var(--color-icon-primary-default);
-    border-top-right-radius: var(--border-radius-xs);
-    border-bottom-right-radius: var(--border-radius-xs);
-    border: 1px solid var(--color-border-primary-default);
+  & button {
     outline: 0 none;
-    position: relative;
-    height: 24px;
-    width: 24px;
+  }
 
-    .mt-icon {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-    }
+  &:has(button:hover) {
+    background-color: var(--color-interaction-secondary-hover);
+  }
 
-    &:focus-visible {
-      background-color: var(--color-background-brand-default);
-      border-color: var(--color-border-brand-selected);
-    }
+  &:has(button:focus-visible) {
+    background-color: var(--color-background-brand-default);
+    outline: var(--color-border-brand-selected) solid 1px;
+    outline-offset: -1px;
+  }
+}
 
-    &:hover {
-      background-color: var(--color-interaction-secondary-hover);
-    }
+.mt-data-table-filter__remove-button {
+  color: var(--color-icon-primary-default);
+  border-top-right-radius: var(--border-radius-xs);
+  border-bottom-right-radius: var(--border-radius-xs);
+  border: 1px solid var(--color-border-primary-default);
+  outline: 0 none;
+  position: relative;
+  height: var(--scale-size-24);
+  width: var(--scale-size-24);
+
+  & .mt-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+
+  &:focus-visible {
+    background-color: var(--color-background-brand-default);
+    border-color: var(--color-border-brand-selected);
+  }
+
+  &:hover {
+    background-color: var(--color-interaction-secondary-hover);
   }
 }
 </style>

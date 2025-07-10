@@ -6,6 +6,17 @@ import type { Entity } from '../_internals/data/Entity';
 
 type Entities = EntitySchema.Entities;
 
+export type Repository<EntityName extends keyof Entities> = {
+  search: (criteria: Criteria, context?: ApiContext) => Promise<EntityCollection<EntityName> | null>,
+  get: (id: string, context?: ApiContext, criteria?: Criteria) => Promise<Entity<EntityName> | null>,
+  save: (entity: Entity<EntityName>, context?: ApiContext) => Promise<void | null>,
+  clone: (entityId: string, context?: ApiContext, behavior?: any) => Promise<unknown | null>,
+  hasChanges: (entity: Entity<EntityName>) => Promise<boolean | null>,
+  saveAll: (entities: EntityCollection<EntityName>, context?: ApiContext) => Promise<unknown | null>,
+  delete: (entityId: string, context?: ApiContext) => Promise<void | null>,
+  create: (context?: ApiContext, entityId?: string) => Promise<Entity<EntityName> | null>,
+};
+
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
 export default <EntityName extends keyof Entities>(entityName: EntityName) => ({
   search: (criteria: Criteria, context?: ApiContext): Promise<EntityCollection<EntityName> | null> => {
@@ -19,7 +30,21 @@ export default <EntityName extends keyof Entities>(entityName: EntityName) => ({
     return send('repositorySave', { entityName, entity, context });
   },
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  clone: (entityId: string, context?: ApiContext, behavior?: any): Promise<unknown | null> => {
+  clone: (entityId: string, contextOrBehavior?: any, behaviorOrContext?: any): Promise<unknown | null> => {
+    let context: ApiContext;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    let behavior: any;
+    if(isApiContext(contextOrBehavior)) {
+      context = contextOrBehavior;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      behavior = behaviorOrContext;
+    } else if (isApiContext(behaviorOrContext)) {
+      context = behaviorOrContext;
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+      behavior = contextOrBehavior;
+    } else {
+      throw new Error('Invalid arguments for clone method');
+    }
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     return send('repositoryClone', { entityName, entityId, context, behavior });
   },
@@ -37,6 +62,30 @@ export default <EntityName extends keyof Entities>(entityName: EntityName) => ({
     return send('repositoryCreate', { entityName, entityId, context });
   },
 });
+
+function isApiContext(value: unknown): value is ApiContext {
+  const listOfApiContextProperties = [
+    'apiPath',
+    'apiResourcePath',
+    'assetsPath',
+    'authToken',
+    'basePath',
+    'pathInfo',
+    'inheritance',
+    'installationPath',
+    'languageId',
+    'language',
+    'apiVersion',
+    'liveVersionId',
+    'systemLanguageId',
+  ];
+
+  return (
+    !!value &&
+    typeof value === 'object' &&
+        listOfApiContextProperties.some(propertyKey => propertyKey in value)
+  );
+}
 
 export type repositoryGet<EntityName extends keyof Entities> = {
   responseType: Entity<EntityName> | null,

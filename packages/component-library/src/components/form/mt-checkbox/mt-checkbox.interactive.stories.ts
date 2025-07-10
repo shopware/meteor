@@ -1,6 +1,5 @@
 import { within, userEvent } from "@storybook/test";
 import { expect } from "@storybook/test";
-import { waitUntil } from "../../../_internal/test-helper";
 
 import meta, { type MtCheckboxMeta, type MtCheckboxStory } from "./mt-checkbox.stories";
 
@@ -94,12 +93,10 @@ export const VisualTestInherited: MtCheckboxStory = {
     inheritedValue: false,
     isInherited: true,
   },
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
+  play: async ({ args }) => {
+    const canvas = within(document.body);
 
     await userEvent.click(canvas.getByTestId("mt-inheritance-switch-icon"));
-
-    await waitUntil(() => document.querySelector(".mt-tooltip"));
 
     await expect(args.inheritanceRemove).toHaveBeenCalledWith(undefined);
   },
@@ -144,15 +141,12 @@ export const VisualTestHelpText: MtCheckboxStory = {
     label: "Help text label",
     helpText: "Help text message",
   },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
+  play: async () => {
+    const canvas = within(document.body);
+    await userEvent.tab();
+    await userEvent.tab();
 
-    expect((canvas.getByRole("checkbox") as HTMLInputElement).checked).toBe(false);
-    expect(canvas.getByTestId("mt-help-text__icon")).toBeDefined();
-
-    await userEvent.click(canvas.getByTestId("mt-help-text__icon"));
-
-    await waitUntil(() => document.querySelector(".mt-tooltip"));
+    expect(canvas.getByRole("tooltip")).toBeInTheDocument();
   },
 };
 

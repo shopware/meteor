@@ -83,17 +83,6 @@ export const VisualTestError: MtProgressBarStory = {
       detail: "Error while sending variants",
     },
   },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    const errorMessage = canvas.getByLabelText("Error message");
-
-    expect(errorMessage).toBeDefined();
-    expect(errorMessage.innerText).toContain("Error while sending variants");
-
-    const progressBar = canvas.getByTestId("progress-bar-value");
-    expect(window.getComputedStyle(progressBar).backgroundColor).toEqual("rgb(226, 38, 42)");
-  },
 };
 
 export const VisualTestLabel: MtProgressBarStory = {

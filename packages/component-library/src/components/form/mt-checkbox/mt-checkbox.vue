@@ -1,6 +1,6 @@
 <template>
   <div class="mt-field--checkbox__container">
-    <div class="mt-field--checkbox" :class="MtCheckboxFieldClasses">
+    <div class="mt-field--checkbox" :class="{ ...MtCheckboxFieldClasses, ...checkboxClasses }">
       <div class="mt-field--checkbox__content">
         <div class="mt-field__checkbox">
           <input
@@ -29,7 +29,9 @@
           @inheritance-remove="$emit('inheritance-remove', $event)"
         >
           <template #label>
-            {{ label }}
+            <slot name="label">
+              {{ label }}
+            </slot>
           </template>
         </mt-base-field>
       </div>
@@ -40,12 +42,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { computed, defineComponent } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtFormFieldMixin from "../../../mixins/form-field.mixin";
 import { createId } from "../../../utils/id";
+import { useFutureFlags } from "@/composables/useFutureFlags";
 
 export default defineComponent({
   name: "MtCheckbox",
@@ -105,6 +108,15 @@ export default defineComponent({
     },
 
     /**
+     * Determines if the field is inherited.
+     */
+    isInherited: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    /**
      * Error object for this field.
      */
     error: {
@@ -152,6 +164,18 @@ export default defineComponent({
     this.id = createId();
   },
 
+  setup() {
+    const futureFlags = useFutureFlags();
+
+    const checkboxClasses = computed(() => ({
+      "mt-switch--future-remove-default-margin": futureFlags.removeDefaultMargin,
+    }));
+
+    return {
+      checkboxClasses,
+    };
+  },
+
   computed: {
     MtCheckboxFieldClasses(): {
       "has--error": boolean;
@@ -163,7 +187,7 @@ export default defineComponent({
       return {
         "has--error": !!this.hasError,
         "is--disabled": this.disabled,
-        "is--inherited": !!this.isInherited,
+        "is--inherited": !!this.isInheritedComputed,
         "is--bordered": this.bordered,
         "is--partly-checked": this.isPartlyChecked,
       };
@@ -178,7 +202,7 @@ export default defineComponent({
     },
 
     inputState(): boolean {
-      if (this.isInherited) {
+      if (this.isInheritedComputed) {
         return this.inheritedValue;
       }
 
@@ -192,15 +216,16 @@ export default defineComponent({
       return this.inheritedValue !== null;
     },
 
-    isInherited(): boolean {
-      if (this.$attrs.isInherited) {
+    isInheritedComputed(): boolean {
+      if (this.isInherited) {
         return true;
       }
+
       return this.isInheritanceField && this.currentValue === null;
     },
 
     isDisabled(): boolean {
-      return this.disabled || this.isInherited;
+      return this.disabled || this.isInheritedComputed;
     },
 
     isPartlyChecked(): boolean {
@@ -237,7 +262,11 @@ export default defineComponent({
 <style>
 .mt-field--checkbox__container {
   & .mt-field--checkbox {
-    margin-bottom: 22px;
+    margin-bottom: var(--scale-size-22);
+
+    &.mt-switch--future-remove-default-margin {
+      margin-bottom: 0;
+    }
 
     & .mt-inheritance-switch {
       &.mt-field__inheritance-icon {
@@ -267,13 +296,23 @@ export default defineComponent({
 
     & .mt-field__label {
       margin-bottom: 0;
-      margin-left: 4px;
+      margin-left: var(--scale-size-4);
+
+      & .mt-help-text {
+        margin-left: var(--scale-size-8);
+      }
     }
 
     & .mt-field__checkbox {
-      width: 16px;
-      height: 16px;
+      width: var(--scale-size-16);
+      height: var(--scale-size-16);
       position: relative;
+
+      &:has(:focus-visible) {
+        outline: 2px solid var(--color-border-brand-selected);
+        outline-offset: 2px;
+        border-radius: var(--border-radius-checkbox);
+      }
 
       & input[type="checkbox"] {
         opacity: 0;
@@ -336,7 +375,7 @@ export default defineComponent({
         height: 100%;
         z-index: 1;
         text-align: center;
-        background: var(--color-background-primary-default);
+        background: var(--color-elevation-surface-raised);
         color: var(--color-text-primary-default);
         border: 1px solid var(--color-border-primary-default);
         border-radius: var(--border-radius-checkbox);
@@ -390,7 +429,7 @@ export default defineComponent({
     &.is--bordered {
       border-radius: 4px;
       border: 1px solid var(--color-border-primary-default);
-      padding: 16px;
+      padding: var(--scale-size-16);
 
       &.has--error {
         border-color: var(--color-border-critical-default);
@@ -399,11 +438,15 @@ export default defineComponent({
   }
 
   & .mt-field__error {
-    margin-bottom: 14px;
+    margin-bottom: var(--scale-size-14);
 
     &.checkbox-bordered {
-      margin-bottom: 8px;
+      margin-bottom: var(--scale-size-8);
     }
+  }
+
+  & .mt-block-field__block {
+    min-height: unset;
   }
 }
 </style>

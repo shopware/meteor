@@ -1,162 +1,118 @@
 <template>
-  <mt-base-field class="mt-search" :disabled="disabled" :has-focus="hasFocus" :size="size">
-    <template #element="{ identification }">
-      <mt-icon name="regular-search-s" />
+  <div :class="['mt-search', `mt-search--size-${size}`, { 'mt-search--disabled': disabled }]">
+    <input
+      :value="modelValue"
+      @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
+      @change="$emit('change', ($event.target as HTMLInputElement).value)"
+      class="mt-search__input"
+      :disabled="disabled"
+      type="search"
+      :placeholder="placeholder || t('placeholder')"
+    />
 
-      <input
-        :id="identification"
-        class="mt-search__text-input"
-        type="text"
-        :name="identification"
-        :disabled="disabled"
-        :value="currentValue"
-        :placeholder="
-          $t(placeholder)
-            ? $t(placeholder).toString()
-            : $t('mt-search.searchPlaceholder').toString()
-        "
-        @input="onInput"
-        @change="onChange"
-        @focus="setFocusClass"
-        @blur="removeFocusClass"
-      />
-    </template>
-  </mt-base-field>
+    <mt-icon
+      name="regular-search-s"
+      size="var(--scale-size-16)"
+      color="var(--color-icon-primary-default)"
+    />
+  </div>
 </template>
 
-<script lang="ts">
-import MtBaseField from "../../form/_internal/mt-base-field/mt-base-field.vue";
+<script setup lang="ts">
+import { useI18n } from "vue-i18n";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
-import { defineComponent, ref, watch } from "vue";
 
-export default defineComponent({
-  components: {
-    "mt-base-field": MtBaseField,
-    "mt-icon": MtIcon,
+withDefaults(
+  defineProps<{
+    modelValue?: string;
+    placeholder?: string;
+    size?: "small" | "default";
+    disabled?: boolean;
+  }>(),
+  {
+    size: "default",
   },
+);
 
-  props: {
-    /**
-     * The value of the search field.
-     */
-    modelValue: {
-      type: String,
-      required: false,
-      default: "",
+const { t } = useI18n({
+  messages: {
+    en: {
+      placeholder: "Search",
     },
-
-    /**
-     * A placeholder text being displayed if no value is set.
-     */
-    placeholder: {
-      type: String,
-      required: false,
-      default: "",
+    de: {
+      placeholder: "Suchen",
     },
-
-    /**
-     * The size of the search field.
-     *
-     * @values small, default
-     */
-    size: {
-      type: String,
-      required: false,
-      default: "default",
-      validator: (value: string) => {
-        return ["small", "default"].includes(value);
-      },
-    },
-
-    /**
-     * Determines if the field is disabled.
-     */
-    disabled: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-  },
-  i18n: {
-    messages: {
-      en: {
-        "mt-search": {
-          searchPlaceholder: "Search",
-        },
-      },
-      de: {
-        "mt-search": {
-          searchPlaceholder: "Suchen",
-        },
-      },
-    },
-  },
-  emits: ["change", "update:modelValue"],
-  setup(props, { emit }) {
-    const hasFocus = ref(false);
-    const currentValue = ref(props.modelValue);
-
-    watch(
-      () => props.modelValue,
-      (value) => {
-        currentValue.value = value;
-      },
-    );
-
-    const onChange = (event: Event) => {
-      // @ts-expect-error - target is defined
-      emit("change", event.target.value || "");
-    };
-
-    const onInput = (event: Event) => {
-      // @ts-expect-error - target is defined
-      emit("update:modelValue", event.target.value);
-    };
-
-    const setFocusClass = () => {
-      hasFocus.value = true;
-    };
-
-    const removeFocusClass = () => {
-      hasFocus.value = false;
-    };
-
-    return {
-      hasFocus,
-      setFocusClass,
-      removeFocusClass,
-      onChange,
-      onInput,
-      currentValue,
-    };
   },
 });
+
+defineEmits<{
+  (e: "change", value: string): void;
+  (e: "update:modelValue", value: string): void;
+}>();
 </script>
 
-<style lang="scss">
-.mt-search.mt-field {
-  .icon--regular-search-s {
-    transition: 0.3s all ease;
-    color: var(--color-icon-primary-default);
-    display: flex;
-    align-items: center;
-    padding-left: 12px;
-    background: var(--color-elevation-surface-raised);
+<style scoped>
+.mt-search {
+  background: var(--color-elevation-surface-raised);
+  border: 1px solid var(--color-border-primary-default);
+  border-radius: var(--border-radius-xs);
+  color: var(--color-text-primary-default);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--font-line-height-xs);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
 
-    #meteor-icon-kit__regular-search-s {
-      width: 10px;
-      height: 10px;
+  &:focus-within {
+    border-color: var(--color-border-brand-selected);
+    box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
+  }
+}
+
+.mt-search--size-default {
+  padding: var(--scale-size-12) var(--scale-size-16);
+}
+
+.mt-search--size-small {
+  padding: var(--scale-size-4) var(--scale-size-16);
+}
+
+.mt-search__input {
+  display: block;
+  width: 100%;
+  border: none;
+  background: transparent;
+  font-size: var(--font-size-xs);
+  font-family: var(--font-size-body);
+  line-height: var(--font-line-height-xs);
+  color: var(--color-text-primary-default);
+  outline: none;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  &::-webkit-search-cancel-button,
+  &::-webkit-search-decoration,
+  &::-webkit-search-results-button,
+  &::-webkit-search-results-decoration {
+    display: none;
+  }
+
+  &::placeholder {
+    color: var(--color-text-secondary-default);
+  }
+
+  &:disabled {
+    color: var(--color-text-primary-disabled);
+
+    &::placeholder {
+      color: var(--color-text-secondary-disabled);
     }
   }
+}
 
-  .mt-search__text-input {
-    padding-left: 8px;
-  }
-
-  &.is--disabled {
-    .icon--regular-search-s {
-      background-color: var(--color-background-primary-disabled);
-    }
-  }
+.mt-search--disabled {
+  background-color: var(--color-background-primary-disabled);
 }
 </style>

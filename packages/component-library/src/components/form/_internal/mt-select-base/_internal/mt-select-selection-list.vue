@@ -3,7 +3,7 @@
     <!-- eslint-disable vue/no-use-v-if-with-v-for -->
     <template v-for="(selection, index) in selections" :key="selection[valueProperty]">
       <li
-        v-if="!hideLabels"
+        v-if="!hideLabels && multiSelection"
         :class="[
           'mt-select-selection-list__item-holder--' + index,
           'mt-select-selection-list__item-holder',
@@ -13,19 +13,19 @@
       >
         <slot
           name="selected-option"
-          v-bind="{ selection, defaultLabel: selection[labelProperty], disabled }"
+          v-bind="{ selection, defaultLabel: getKey(selection, labelProperty), disabled }"
         >
           <mt-label
             :dismissable="!isSelectionDisabled(selection)"
             :size="size"
             @dismiss="onClickDismiss(selection)"
           >
-            <span class="mt-select-selection-list__item" :title="selection[labelProperty]">
+            <span class="mt-select-selection-list__item" :title="getKey(selection, labelProperty)">
               <slot
                 name="label-property"
                 v-bind="{ item: selection, index, labelProperty, valueProperty }"
               >
-                {{ selection[labelProperty] }}
+                {{ getKey(selection, labelProperty) }}
               </slot>
             </span>
           </mt-label>
@@ -46,7 +46,11 @@
       </slot>
     </li>
 
-    <li v-if="!disableInput" class="mt-select-selection-list__input-wrapper">
+    <li
+      v-if="!disableInput"
+      class="mt-select-selection-list__input-wrapper"
+      :class="inputWrapperClasses"
+    >
       <slot name="input" v-bind="{ placeholder, searchTerm, onSearchTermChange, onKeyDownDelete }">
         <!-- eslint-disable-next-line vuejs-accessibility/form-control-has-label -->
         <input
@@ -56,9 +60,11 @@
           :disabled="disabled"
           :readonly="!enableSearch"
           :placeholder="showPlaceholder"
-          :value="searchTerm"
+          :value="inputValue"
           @input="onSearchTermChange"
           @keydown.delete="onKeyDownDelete"
+          @blur="clearSearchTerm"
+          @focus="onInputFocus"
         />
       </slot>
     </li>
@@ -67,10 +73,11 @@
 
 <script lang="ts">
 import type { PropType } from "vue";
-
 import { defineComponent } from "vue";
+import { useI18n } from "vue-i18n";
 import MtLabel from "../../../../_internal/mt-label.vue";
 import MtButton from "../../../mt-button/mt-button.vue";
+import { getPropertyValue } from "@/utils/object";
 
 export default defineComponent({
   name: "MtSelectSelectionList",
@@ -87,7 +94,7 @@ export default defineComponent({
       default: () => [],
     },
     labelProperty: {
-      type: String,
+      type: [String, Array] as PropType<string | string[]>,
       required: false,
       default: "label",
     },
@@ -114,7 +121,7 @@ export default defineComponent({
     alwaysShowPlaceholder: {
       type: Boolean,
       required: false,
-      default: false,
+      default: true,
     },
     placeholder: {
       type: String,
@@ -157,6 +164,30 @@ export default defineComponent({
     },
   },
 
+  setup() {
+    const { t } = useI18n({
+      messages: {
+        de: {
+          "select-placeholder": "Auswählen...",
+        },
+        en: {
+          "select-placeholder": "Select...",
+        },
+      },
+    });
+
+    return {
+      t,
+      getKey: getPropertyValue,
+    };
+  },
+
+  data() {
+    return {
+      inputInFocus: false,
+    };
+  },
+
   computed: {
     classBindings(): { "mt-select-selection-list--single": boolean } {
       return {
@@ -164,8 +195,42 @@ export default defineComponent({
       };
     },
 
+    inputWrapperClasses(): { "mt-select-selection-list__input-wrapper--small": boolean } {
+      return {
+        "mt-select-selection-list__input-wrapper--small": this.size === "small",
+      };
+    },
+
     showPlaceholder(): string {
-      return this.alwaysShowPlaceholder || this.selections.length === 0 ? this.placeholder : "";
+      if (this.disabled) {
+        return "";
+      }
+
+      if (!this.multiSelection && this.selections.length > 0) {
+        return this.currentValue;
+      }
+
+      return this.alwaysShowPlaceholder
+        ? this.placeholder
+          ? this.placeholder
+          : this.t("select-placeholder")
+        : "";
+    },
+
+    currentValue(): string {
+      return this.getKey(this.selections?.[0], this.labelProperty);
+    },
+
+    inputValue(): string {
+      if (this.multiSelection) {
+        return this.searchTerm;
+      }
+
+      if (this.inputInFocus) {
+        return this.searchTerm;
+      }
+
+      return this.currentValue;
     },
   },
 
@@ -195,13 +260,20 @@ export default defineComponent({
       this.$emit("search-term-change", event.target.value, event);
     },
 
+    async onInputFocus() {
+      this.inputInFocus = true;
+    },
+
+    clearSearchTerm() {
+      this.inputInFocus = false;
+    },
+
     onKeyDownDelete() {
-      if (this.searchTerm.length < 1) {
+      if (this.searchTerm.length < 1 && this.multiSelection) {
         this.$emit("last-item-delete");
       }
     },
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     onClickDismiss(item: any) {
       this.$emit("item-remove", item);
     },
@@ -243,6 +315,15 @@ export default defineComponent({
   list-style: none;
   width: calc(100% - 30px);
 
+  &:has(.mt-select-selection-list--single) {
+    flex-wrap: nowrap;
+
+    .mt-select-selection-list--single {
+      min-width: 0;
+      max-width: 100%;
+    }
+  }
+
   &--single {
     .mt-label {
       border: none;
@@ -253,16 +334,16 @@ export default defineComponent({
   .mt-select-selection-list__item-holder {
     max-width: 220px;
     line-height: 0;
-    margin: 8px 6px 0 0;
+    margin: var(--scale-size-8) var(--scale-size-6) 0 0;
   }
 
   .mt-select-selection-list__load-more {
-    margin: 8px 6px 0 0;
+    margin: var(--scale-size-8) var(--scale-size-6) 0 0;
   }
 
   button.mt-select-selection-list__load-more-button {
-    padding: 8px 12px;
-    margin: 0 6px 0 0;
+    padding: var(--scale-size-8) var(--scale-size-12);
+    margin: 0 var(--scale-size-6) 0 0;
     color: var(--color-text-brand-default);
     font-size: 12px;
     line-height: 14px;
@@ -272,12 +353,19 @@ export default defineComponent({
   }
 
   .mt-select-selection-list__input-wrapper {
-    flex: 1 1 0;
+    flex: 1 1 auto;
+    min-width: 120px;
   }
+
+  .mt-select-selection-list__input-wrapper--small .mt-select-selection-list__input {
+    min-height: 32px;
+    padding: var(--scale-size-4) var(--scale-size-16) var(--scale-size-4) var(--scale-size-8);
+  }
+
   .mt-select-selection-list__input {
     display: inline-block;
-    min-width: 200px;
-    padding: 12px 16px 12px 8px;
+    min-height: 46px;
+    padding: var(--scale-size-12) var(--scale-size-16) var(--scale-size-12) var(--scale-size-8);
 
     &::placeholder {
       color: lighten($color-darkgray-200, 25%);
@@ -288,31 +376,31 @@ export default defineComponent({
 
 .mt-field--medium .mt-select-selection-list {
   .mt-select-selection-list__item-holder .mt-label {
-    margin: 4px 6px 0 0;
+    margin: var(--scale-size-4) var(--scale-size-6) 0 0;
   }
 
   input {
-    padding: 4px 16px 8px 8px;
+    padding: var(--scale-size-4) var(--scale-size-16) var(--scale-size-8) var(--scale-size-8);
   }
 
   .mt-select-selection-list__load-more-button {
-    padding: 4px 12px;
-    margin: 4px 6px 0 0;
+    padding: var(--scale-size-4) var(--scale-size-12);
+    margin: var(--scale-size-4) var(--scale-size-6) 0 0;
   }
 }
 
 .mt-field--small .mt-select-selection-list {
   .mt-select-selection-list__item-holder .mt-label {
-    margin: 4px 6px 0 0;
+    margin: var(--scale-size-4) var(--scale-size-6) 0 0;
   }
 
   input {
-    padding: 2px 16px 4px 8px;
+    padding: var(--scale-size-2) var(--scale-size-16) var(--scale-size-4) var(--scale-size-8);
   }
 
   .mt-select-selection-list__load-more-button {
-    padding: 0 8px;
-    margin: -1px 6px 0 0;
+    padding: 0 var(--scale-size-8);
+    margin: -1px var(--scale-size-6) 0 0;
   }
 }
 </style>

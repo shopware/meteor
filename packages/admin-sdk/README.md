@@ -4,7 +4,7 @@
 
 The `meteor-admin-sdk` is a JavaScript library for all [Shopware 6](https://github.com/shopware/platform) App and Plugin developer which want an easy way to extend and customize the administration.
 
-[See Documentation](https://shopware.github.io/meteor-admin-sdk/)
+[See Documentation](https://developer.shopware.com/resources/admin-extension-sdk/)
 
 ## Installation
 #### Using NPM:
@@ -75,4 +75,4 @@ sw.context.subscribeLocale(({ locale }) => {
 })
 ```
 
-See more examples in the [Documentation](https://shopware.github.io/meteor-admin-sdk/).
+See more examples in the [Documentation](https://developer.shopware.com/resources/admin-extension-sdk/).

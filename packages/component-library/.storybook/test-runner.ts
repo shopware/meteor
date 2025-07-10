@@ -1,10 +1,11 @@
-const path = require("path");
-const { toMatchImageSnapshot } = require("jest-image-snapshot");
+import type { TestRunnerConfig } from "@storybook/test-runner";
+import { toMatchImageSnapshot } from "jest-image-snapshot";
+import path from "node:path";
 
 const customSnapshotsDir = path.resolve(path.join(__dirname, "..", "/__snapshots__"));
 const customReceivedDir = path.resolve(path.join(__dirname, "..", "/__snapshots__/__received__"));
 
-module.exports = {
+export default {
   setup() {
     expect.extend({ toMatchImageSnapshot });
   },
@@ -14,6 +15,7 @@ module.exports = {
     // use bigger viewport for data-table and toasts
     if (
       context.id.startsWith("interaction-tests-table-and-list") ||
+      context.id.startsWith("interaction-tests-entity-mt-entity-data-table") ||
       context.id.startsWith("interaction-tests-feedback-indicator-mt-toast")
     ) {
       await page.setViewportSize({ width: 1600, height: 900 });
@@ -40,15 +42,16 @@ module.exports = {
       animations: "disabled",
     });
 
-    // @ts-expect-error
     expect(image).toMatchImageSnapshot({
-      comparisonMethod: "pixelmatch",
-      failureThreshold: 0.005,
-      failureThresholdType: "percent",
+      comparisonMethod: "ssim",
+      customDiffConfig: { ssim: "fast" },
+      failureThreshold: 10,
+      failureThresholdType: "pixel",
       customSnapshotsDir,
+      blur: 0,
       customSnapshotIdentifier: context.id + "-snap",
       storeReceivedOnFailure: true,
       customReceivedDir: customReceivedDir,
     });
   },
-};
+} satisfies TestRunnerConfig;

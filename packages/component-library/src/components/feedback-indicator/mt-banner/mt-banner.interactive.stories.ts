@@ -66,6 +66,6 @@ export const VisualTestCloseBannerBox: MtBannerStory = {
 
     await userEvent.click(canvas.getByRole("button"));
 
-    expect(args.close).toHaveBeenCalledWith(null);
+    expect(args.close).toHaveBeenCalledOnce();
   },
 };

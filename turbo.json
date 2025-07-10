@@ -7,6 +7,7 @@
       "env": ["API_KEY"]
     },
     "@shopware-ag/meteor-component-library#build:storybook": {
+      "dependsOn": ["^build"],
       "outputs": ["storybook-static/**"],
       "env": ["SHOW_INTERACTIONS"]
     },
@@ -24,7 +25,11 @@
     "lint:eslint": {
       "outputs": []
     },
+    "lint:css": {
+      "outputs": []
+    },
     "format:check": {},
+    "format": {},
     "test:unit": {
       "env": [
         "FIGMA_TOKEN",

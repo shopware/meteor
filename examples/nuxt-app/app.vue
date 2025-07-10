@@ -250,7 +250,8 @@
 </template>
 
 <script setup lang="ts">
-import "@shopware-ag/meteor-component-library/dist/style.css";
+import "@shopware-ag/meteor-component-library/styles.css";
+import "@shopware-ag/meteor-component-library/font.css";
 import {
   SwCard,
   SwButton,

@@ -1,119 +1,75 @@
 <template>
-  <div
-    class="mt-inheritance-switch"
-    :class="{
-      'mt-inheritance-switch--disabled': disabled,
-      'mt-inheritance-switch--is-inherited': isInherited,
-      'mt-inheritance-switch--is-not-inherited': !isInherited,
-    }"
+  <mt-tooltip
+    :content="isInherited ? t('tooltipRemoveInheritance') : t('tooltipRestoreInheritance')"
   >
-    <mt-icon
-      v-if="isInherited"
-      key="inherit-icon"
-      v-tooltip="{
-        message: $tc('mt-inheritance-switch.tooltipRemoveInheritance'),
-        disabled: disabled,
-      }"
-      data-testid="mt-inheritance-switch-icon"
-      :multicolor="true"
-      name="regular-link-horizontal"
-      size="14"
-      @click="onClickRemoveInheritance"
-    />
-    <mt-icon
-      v-else
-      key="uninherit-icon"
-      v-tooltip="{
-        message: $tc('mt-inheritance-switch.tooltipRestoreInheritance'),
-        disabled: disabled,
-      }"
-      :class="unInheritClasses"
-      :multicolor="true"
-      name="regular-link-horizontal-slash"
-      size="14"
-      @click="onClickRestoreInheritance"
-    />
-  </div>
+    <template #default="props">
+      <button
+        v-bind="props"
+        :class="[
+          'mt-inheritance-switch',
+          {
+            'mt-inheritance-switch--disabled': disabled,
+            'mt-inheritance-switch--is-inherited': isInherited,
+            'mt-inheritance-switch--is-not-inherited': !isInherited,
+          },
+        ]"
+        :disabled="disabled"
+        @click="isInherited ? $emit('inheritanceRemove') : $emit('inheritanceRestore')"
+      >
+        <mt-icon
+          v-if="isInherited"
+          data-testid="mt-inheritance-switch-icon"
+          :multicolor="true"
+          name="regular-link-horizontal"
+          size="14"
+        />
+
+        <mt-icon v-else :multicolor="true" name="regular-link-horizontal-slash" size="14" />
+      </button>
+    </template>
+  </mt-tooltip>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-import MtTooltipDirective from "../../../../directives/tooltip.directive";
+<script setup lang="ts">
 import MtIcon from "../../../icons-media/mt-icon/mt-icon.vue";
+import MtTooltip from "@/components/overlay/mt-tooltip/mt-tooltip.vue";
+import { useI18n } from "vue-i18n";
 
-export default defineComponent({
-  name: "MtInheritanceSwitch",
+defineProps<{
+  isInherited: boolean;
+  disabled?: boolean;
+}>();
 
-  i18n: {
-    messages: {
-      en: {
-        "mt-inheritance-switch": {
-          tooltipRemoveInheritance: "Remove inheritance",
-          tooltipRestoreInheritance: "Restore inheritance",
-        },
-      },
-      de: {
-        "mt-inheritance-switch": {
-          tooltipRemoveInheritance: "Vererbung entfernen",
-          tooltipRestoreInheritance: "Vererbung wiederherstellen",
-        },
-      },
+const { t } = useI18n({
+  messages: {
+    en: {
+      tooltipRemoveInheritance: "Remove inheritance",
+      tooltipRestoreInheritance: "Restore inheritance",
     },
-  },
-
-  components: {
-    "mt-icon": MtIcon,
-  },
-
-  directives: {
-    tooltip: MtTooltipDirective,
-  },
-
-  props: {
-    isInherited: {
-      type: Boolean,
-      required: true,
-      default: false,
-    },
-
-    disabled: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-  },
-
-  computed: {
-    unInheritClasses(): { "is--clickable": boolean } {
-      return { "is--clickable": !this.disabled };
-    },
-  },
-
-  methods: {
-    onClickRestoreInheritance() {
-      if (this.disabled) {
-        return;
-      }
-      this.$emit("inheritance-restore");
-    },
-
-    onClickRemoveInheritance() {
-      if (this.disabled) {
-        return;
-      }
-      this.$emit("inheritance-remove");
+    de: {
+      tooltipRemoveInheritance: "Vererbung entfernen",
+      tooltipRestoreInheritance: "Vererbung wiederherstellen",
     },
   },
 });
+
+defineEmits<{
+  inheritanceRemove: [];
+  inheritanceRestore: [];
+}>();
 </script>
 
-<style lang="scss">
+<style scoped>
 .mt-inheritance-switch {
   cursor: pointer;
   margin-top: -1px;
 
-  &.mt-inheritance-switch--disabled {
-    cursor: default;
-  }
+  outline-width: var(--scale-size-2);
+  outline-color: var(--color-border-brand-selected);
+  outline-offset: var(--scale-size-2);
+}
+
+.mt-inheritance-switch--disabled {
+  cursor: default;
 }
 </style>

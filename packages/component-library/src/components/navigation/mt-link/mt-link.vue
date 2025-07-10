@@ -1,105 +1,73 @@
 <template>
   <component
     :is="as"
-    class="mt-link"
-    :class="linkClasses"
+    :class="[
+      'mt-link',
+      `mt-link--${variant}`,
+      {
+        'mt-link--disabled': disabled,
+        [`mt-link--${type}`]: type !== undefined,
+      },
+    ]"
+    :href="disabled ? undefined : to"
+    :role="as === 'a' ? 'link' : undefined"
     :aria-disabled="disabled"
     :tabindex="disabled ? -1 : 0"
     v-bind="to ? { ...$attrs, to } : $attrs"
-    @click="onClick"
+    @click="disabled ? undefined : $emit('click', $event)"
   >
     <slot />
+
+    <mt-icon
+      v-if="type"
+      size="0.75em"
+      :name="type === 'external' ? 'regular-external-link-s' : 'regular-long-arrow-right'"
+    />
   </component>
 </template>
 
-<script lang="ts">
-import { defineComponent } from "vue";
-import type { PropType } from "vue";
+<script setup lang="ts">
+import MtIcon from "@/components/icons-media/mt-icon/mt-icon.vue";
 
-export default defineComponent({
-  name: "MtLink",
-
-  props: {
-    /**
-     * Set the element type of the link
-     */
-    as: {
-      type: String,
-      required: false,
-      default: "router-link",
-    },
-
-    /**
-     * Set the to prop of the router/nuxt-link
-     */
-    to: {
-      type: String,
-      required: false,
-      default: undefined,
-    },
-
-    /**
-     * Render the link in various styles
-     */
-    variant: {
-      type: String as PropType<"primary" | "critical">,
-      required: false,
-      default: "primary",
-      validator(value: string) {
-        if (!value.length) {
-          return true;
-        }
-        return ["primary", "critical"].includes(value);
-      },
-    },
-
-    /**
-     * Make the link unclickable
-     */
-    disabled: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
+withDefaults(
+  defineProps<{
+    to?: string;
+    as?: string;
+    variant?: "primary" | "critical";
+    disabled?: boolean;
+    type?: "external" | "internal";
+  }>(),
+  {
+    as: "router-link",
+    variant: "primary",
+    disabled: false,
   },
-  computed: {
-    linkClasses() {
-      return {
-        [`mt-link--${this.variant}`]: !!this.variant,
-        "mt-link--disabled": this.disabled,
-      };
-    },
-  },
+);
 
-  methods: {
-    onClick(event: MouseEvent) {
-      if (this.disabled) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        return;
-      }
-
-      this.$emit("click", event);
-    },
-  },
-});
+defineEmits<{
+  (e: "click", event: MouseEvent): void;
+}>();
 </script>
 
 <style scoped>
 .mt-link {
-  display: inline-block;
+  display: inline-flex;
+  column-gap: 0.25em;
+  align-items: center;
   cursor: pointer;
   margin: 0;
   font-family: var(--font-family-body);
-  font-size: var(--font-size-xs);
-  line-height: var(--font-line-height-xs);
-  font-weight: var(--font-weight-medium);
   text-decoration: underline;
+
+  &:focus-visible {
+    outline-offset: 2px;
+    outline: 2px solid var(--color-border-brand-selected);
+    border-radius: var(--border-radius-xs);
+  }
 }
 
 .mt-link:is(:disabled, .mt-link--disabled) {
   cursor: not-allowed;
-  pointer-events: none;
 }
 
 .mt-link--primary {

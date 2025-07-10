@@ -6,7 +6,6 @@ import MtButton from "./components/form/mt-button/mt-button.vue";
 import MtCheckbox from "./components/form/mt-checkbox/mt-checkbox.vue";
 import MtColorpicker from "./components/form/mt-colorpicker/mt-colorpicker.vue";
 import MtEmailField from "./components/form/mt-email-field/mt-email-field.vue";
-import MtExternalLink from "./components/form/mt-external-link/mt-external-link.vue";
 import MtLink from "./components/navigation/mt-link/mt-link.vue";
 import MtNumberField from "./components/form/mt-number-field/mt-number-field.vue";
 import MtPasswordField from "./components/form/mt-password-field/mt-password-field.vue";
@@ -15,7 +14,6 @@ import MtSlider from "@/components/form/mt-slider/mt-slider.vue";
 import MtSwitch from "./components/form/mt-switch/mt-switch.vue";
 import MtTextField from "./components/form/mt-text-field/mt-text-field.vue";
 import MtTextarea from "./components/form/mt-textarea/mt-textarea.vue";
-import MtUrlField from "./components/form/mt-url-field/mt-url-field.vue";
 import MtIcon from "./components/icons-media/mt-icon/mt-icon.vue";
 import MtCard from "./components/layout/mt-card/mt-card.vue";
 import MtEmptyState from "./components/layout/mt-empty-state/mt-empty-state.vue";
@@ -23,7 +21,7 @@ import MtTabs from "./components/navigation/mt-tabs/mt-tabs.vue";
 import MtDataTable from "./components/table-and-list/mt-data-table/mt-data-table.vue";
 import MtPagination from "./components/table-and-list/mt-pagination/mt-pagination.vue";
 import MtSkeletonBar from "./components/feedback-indicator/mt-skeleton-bar/mt-skeleton-bar.vue";
-import MtToast from "./components/feedback-indicator/mt-toast/mt-toast.vue";
+import MtToast, { type Toast } from "./components/feedback-indicator/mt-toast/mt-toast.vue";
 import MtPopover from "./components/overlay/mt-popover/mt-popover.vue";
 import MtPopoverItem from "./components/overlay/mt-popover-item/mt-popover-item.vue";
 import MtPopoverItemResult from "./components/overlay/mt-popover-item-result/mt-popover-item-result.vue";
@@ -35,8 +33,18 @@ import MtModalTrigger from "./components/overlay/mt-modal/sub-components/mt-moda
 import MtModalAction from "./components/overlay/mt-modal/sub-components/mt-modal-action.vue";
 import MtText from "./components/content/mt-text/mt-text.vue";
 import MtInset from "./components/layout/mt-inset/mt-inset.vue";
+import MtThemeProvider from "./components/theme/mt-theme-provider.vue";
 import TooltipDirective from "./directives/tooltip.directive";
 import DeviceHelperPlugin from "./plugin/device-helper.plugin";
+import MtTooltip from "./components/overlay/mt-tooltip/mt-tooltip.vue";
+import MtTextEditor from "./components/form/mt-text-editor/mt-text-editor.vue";
+import MtTextEditorToolbarButton from "./components/form/mt-text-editor/_internal/mt-text-editor-toolbar-button.vue";
+import MtSearch from "./components/navigation/mt-search/mt-search.vue";
+import MtUrlField from "./components/form/mt-url-field/mt-url-field.vue";
+import MtUnitField from "./components/form/mt-unit-field/mt-unit-field.vue";
+import MtEntityDataTable from "./components/entity/mt-entity-data-table/mt-entity-data-table.vue";
+import MtEntitySelect from "./components/entity/mt-entity-select/mt-entity-select.vue";
+
 // Import SCSS for styling
 import "./components/assets/scss/all.scss";
 
@@ -55,7 +63,6 @@ export {
   MtColorpicker,
   MtDatepicker,
   MtEmailField,
-  MtExternalLink,
   MtLink,
   MtNumberField,
   MtPasswordField,
@@ -64,7 +71,8 @@ export {
   MtSwitch,
   MtTextField,
   MtTextarea,
-  MtUrlField,
+  MtTextEditor,
+  MtTextEditorToolbarButton,
   MtIcon,
   MtCard,
   MtEmptyState,
@@ -76,6 +84,7 @@ export {
   MtPopover,
   MtPopoverItem,
   MtPopoverItemResult,
+  MtTooltip,
   MtFloatingUi,
   MtModal,
   MtModalRoot,
@@ -84,6 +93,12 @@ export {
   MtModalAction,
   MtText,
   MtInset,
+  MtSearch,
+  MtUrlField,
+  MtThemeProvider,
+  MtUnitField,
+  MtEntityDataTable,
+  MtEntitySelect,
   TooltipDirective,
   DeviceHelperPlugin,
   // @deprecated
@@ -103,8 +118,6 @@ export {
   // @deprecated
   MtEmailField as SwEmailField,
   // @deprecated
-  MtExternalLink as SwExternalLink,
-  // @deprecated
   MtNumberField as SwNumberField,
   // @deprecated
   MtPasswordField as SwPasswordField,
@@ -116,8 +129,6 @@ export {
   MtTextField as SwTextField,
   // @deprecated
   MtTextarea as SwTextarea,
-  // @deprecated
-  MtUrlField as SwUrlField,
   // @deprecated
   MtIcon as SwIcon,
   // @deprecated
@@ -133,4 +144,4 @@ export {
 };
 
 // Exporting types
-export type { Filter, Option };
+export type { Filter, Option, Toast };

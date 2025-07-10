@@ -9,7 +9,7 @@ export default {
   title: "Interaction Tests/Form/mt-datepicker",
 } as MtDatepickerMeta;
 
-export const VisualTestDatepickerShouldOpen: MtDatepickerStory = {
+export const TestDatepickerShouldOpen: MtDatepickerStory = {
   name: "Should open datepicker",
   args: {
     modelValue: new Date(Date.UTC(2012, 1, 21)).toISOString(),
@@ -17,13 +17,14 @@ export const VisualTestDatepickerShouldOpen: MtDatepickerStory = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // Open datepicker
+    // Open datepicker by clicking the input wrapper
     await userEvent.click(canvas.getByRole("textbox"));
-    await waitUntil(() => document.getElementsByClassName("flatpickr-calendar").length > 0);
 
-    const calendar = within(
-      document.getElementsByClassName("flatpickr-calendar")[0] as HTMLElement,
-    );
+    // Wait until the datepicker's dropdown menu appears in the DOM
+    await waitUntil(() => document.getElementsByClassName("dp__menu").length > 0);
+
+    // Once the datepicker menu is detected, look for it within the document
+    const calendar = within(document.getElementsByClassName("dp__menu")[0] as HTMLElement);
 
     // Expect input event is triggered
     expect(calendar).toBeDefined();
@@ -35,126 +36,237 @@ export const VisualTestDateInputValue: MtDatepickerStory = {
   args: {
     label: "Date value",
     dateType: "date",
-    modelValue: new Date(Date.UTC(2024, 4, 22, 22, 22)).toISOString(),
+    locale: "en-US",
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
 
-    const calendar = within(
-      document.getElementsByClassName("flatpickr-calendar")[0] as HTMLElement,
+    // Open datepicker by clicking the input wrapper
+    await userEvent.click(canvas.getByRole("textbox"));
+    await waitUntil(() => document.getElementsByClassName("dp__menu").length > 0);
+
+    await userEvent.click(
+      document.querySelector('[data-test-id="year-toggle-overlay-0"]') as HTMLInputElement,
     );
 
-    // Open datepicker
-    await userEvent.click(canvas.getByRole("textbox"));
-    await waitUntil(() => document.getElementsByClassName("flatpickr-calendar").length > 0);
+    await userEvent.click(document.querySelector('[data-test-id="2024"]') as HTMLInputElement);
 
-    // Click the 24th of month XYZ
-    await userEvent.click(calendar.getByText("24"));
+    await userEvent.click(
+      document.querySelector('[data-test-id="month-toggle-overlay-0"]') as HTMLInputElement,
+    );
 
-    // Click label to close datepicker
-    await userEvent.click(canvas.getByText(args.label!));
+    await userEvent.click(document.querySelector('[data-test-id="Nov"]') as HTMLInputElement);
 
-    // Expect input value to be the 24th of month XYZ
-    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toMatch(/\d{4}-\d{2}-24/);
+    // Access the calendar and click the date
+    await userEvent.click(document.getElementById("2024-11-13") as HTMLInputElement);
 
-    // Expect input event is triggered
-    expect(args.updateModelValue).toHaveBeenCalled();
+    // Check that the input value matches the date chosen
+    const input = document.querySelector('[data-test-id="dp-input"]') as HTMLInputElement;
+    expect(input.value).toContain("2024/11/13");
+
+    // Expect updatemodelvalue to have been called with date
+    expect(args.updateModelValue).toHaveBeenCalledWith(
+      expect.stringMatching(/^2024-11-13T\d{2}:\d{2}:\d{2}.\d{3}Z$/),
+    );
   },
 };
 
 export const VisualTestDateTimeInputValue: MtDatepickerStory = {
   name: "Should input datetime value",
   args: {
-    modelValue: new Date(Date.UTC(2024, 4, 22, 22, 22)).toISOString(),
     label: "Date value",
     dateType: "datetime",
+    locale: "en-US",
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
-    const calendar = within(
-      document.getElementsByClassName("flatpickr-calendar")[0] as HTMLElement,
+
+    // Open datepicker by clicking the input wrapper
+    await userEvent.click(canvas.getByRole("textbox"));
+    await waitUntil(() => document.getElementsByClassName("dp__menu").length > 0);
+
+    await userEvent.click(
+      document.querySelector('[data-test-id="year-toggle-overlay-0"]') as HTMLInputElement,
     );
 
-    // Open datepicker
-    await userEvent.click(canvas.getByRole("textbox"));
-    await waitUntil(() => document.getElementsByClassName("flatpickr-calendar").length > 0);
+    await userEvent.click(document.querySelector('[data-test-id="2024"]') as HTMLInputElement);
 
-    // Enter 22 as hour
-    const hourInput = calendar.getByLabelText("Hour");
-    await userEvent.clear(hourInput);
-    await userEvent.type(hourInput, "22");
-
-    // Enter 22 as minute
-    const minuteInput = calendar.getByLabelText("Minute");
-    await userEvent.clear(minuteInput);
-    await userEvent.type(minuteInput, "22");
-
-    // Click label to close datepicker
-    await userEvent.click(canvas.getByText(args.label!));
-
-    // Expect input value to be the 24th of month XYZ
-    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toContain("22:22");
-  },
-};
-
-export const VisualTestTimeInputValue: MtDatepickerStory = {
-  name: "Should input time value",
-  args: {
-    label: "Time value",
-    dateType: "time",
-    config: {
-      time_24hr: true,
-    },
-  },
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-    const calendar = within(
-      document.getElementsByClassName("flatpickr-calendar")[0] as HTMLElement,
+    await userEvent.click(
+      document.querySelector('[data-test-id="month-toggle-overlay-0"]') as HTMLInputElement,
     );
 
-    // Open datepicker
-    await userEvent.click(canvas.getByRole("textbox"));
-    await waitUntil(() => document.getElementsByClassName("flatpickr-calendar").length > 0);
+    await userEvent.click(document.querySelector('[data-test-id="Nov"]') as HTMLInputElement);
 
-    // Enter 22 as hour
-    await userEvent.clear(calendar.getByLabelText("Hour"));
-    await userEvent.type(calendar.getByLabelText("Hour"), "22");
+    // Open the hours panel
+    await userEvent.click(
+      document.querySelector('[data-test-id="hours-toggle-overlay-btn-0"]') as HTMLInputElement,
+    );
 
-    // Enter 22 as minute
-    await userEvent.clear(calendar.getByLabelText("Minute"));
-    await userEvent.type(calendar.getByLabelText("Minute"), "22");
+    await waitUntil(() => !document.querySelector(".calendar-header"));
 
-    // Click label to close datepicker
-    await userEvent.click(canvas.getByText(args.label!));
+    // Select an hour
+    await userEvent.click(document.querySelector('[data-test-id="12"]') as HTMLInputElement);
 
-    // Expect input value to be the 24th of month XYZ
-    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("22:22");
+    // Open the minutes panel
+    await userEvent.click(
+      document.querySelector('[data-test-id="minutes-toggle-overlay-btn-0"]') as HTMLInputElement,
+    );
+
+    // Wait 500ms, element checking is not always reliable
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    // Select minute
+    const selectedMin = document.querySelector('[data-test-id="40"]') as HTMLInputElement;
+    await userEvent.click(selectedMin);
+
+    // Click date within calendar
+    await userEvent.click(document.getElementById("2024-11-13") as HTMLInputElement);
+
+    // Check that the input value matches the date chosen
+    const input = document.querySelector('[data-test-id="dp-input"]') as HTMLInputElement;
+    expect(input.value).toEqual("2024/11/13, 12:40");
+
+    // Expect updatemodelvalue to have been called with date
+    expect(args.updateModelValue).toHaveBeenCalledWith("2024-11-13T12:40:00.000Z");
   },
 };
 
-export const TestClearInputValue: MtDatepickerStory = {
-  name: "Should clear input value",
+export const VisualTestDateRangeValue: MtDatepickerStory = {
+  name: "Should input date range",
   args: {
-    label: "Datepicker",
-    modelValue: new Date(Date.UTC(2012, 1, 21)).toISOString(),
+    label: "Date value",
+    dateType: "date",
+    range: true,
+    locale: "en-US",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Open datepicker by clicking the input wrapper
+    await userEvent.click(canvas.getByRole("textbox"));
+    await waitUntil(() => document.getElementsByClassName("dp__menu").length > 0);
+
+    await userEvent.click(
+      document.querySelector('[data-test-id="year-toggle-overlay-0"]') as HTMLInputElement,
+    );
+
+    await userEvent.click(document.querySelector('[data-test-id="2024"]') as HTMLInputElement);
+
+    await userEvent.click(
+      document.querySelector('[data-test-id="month-toggle-overlay-0"]') as HTMLInputElement,
+    );
+
+    await userEvent.click(document.querySelector('[data-test-id="Nov"]') as HTMLInputElement);
+
+    // Click first date on calendar
+    await userEvent.click(document.getElementById("2024-11-13") as HTMLInputElement);
+
+    // Click second date on calendar
+    await userEvent.click(document.getElementById("2024-11-16") as HTMLInputElement);
+
+    // Check that the input value matches the dates chosen
+    const input = document.querySelector('[data-test-id="dp-input"]') as HTMLInputElement;
+    const dateRange = input.value.split(" - ").map((date) => date.split(",")[0].trim());
+    expect(dateRange).toEqual(["2024/11/13", "2024/11/16"]);
+  },
+};
+
+export const VisualTestDateTimeRangeValue: MtDatepickerStory = {
+  name: "Should input datetime range",
+  args: {
+    label: "Date value",
+    dateType: "datetime",
+    range: true,
+    timeZone: "UTC",
+    locale: "en-US",
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
 
-    // The 21st of February 2012 is correct because the Date constructor takes the month as 0-based
-    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("2012-02-21");
+    // Open datepicker by clicking the input wrapper
+    await userEvent.click(canvas.getByRole("textbox"));
+    await waitUntil(() => document.getElementsByClassName("dp__menu").length > 0);
 
-    await userEvent.click(canvas.getByTestId("mt-datepicker-clear-button"));
+    await userEvent.click(
+      document.querySelector('[data-test-id="year-toggle-overlay-0"]') as HTMLInputElement,
+    );
 
-    // We need to loose focus
-    await userEvent.click(canvas.getByText(args.label!));
+    await userEvent.click(document.querySelector('[data-test-id="2024"]') as HTMLInputElement);
 
-    expect((canvas.getByRole("textbox") as HTMLInputElement).value).toBe("");
+    await userEvent.click(
+      document.querySelector('[data-test-id="month-toggle-overlay-0"]') as HTMLInputElement,
+    );
+
+    await userEvent.click(document.querySelector('[data-test-id="Nov"]') as HTMLInputElement);
+
+    // Set hours for first date
+    await userEvent.click(
+      document.querySelector('[data-test-id="hours-toggle-overlay-btn-0"]') as HTMLInputElement,
+    );
+
+    const selectedHour1 = document.querySelector('[data-test-id="12"]') as HTMLInputElement;
+    await waitUntil(() => selectedHour1 !== null);
+    await userEvent.click(selectedHour1);
+
+    // Set minutes for first date
+    const minuteButton1 = document.querySelector(
+      '[data-test-id="minutes-toggle-overlay-btn-0"]',
+    ) as HTMLInputElement;
+    await userEvent.click(minuteButton1);
+
+    const selectedMinute1 = document.querySelector('[data-test-id="40"]') as HTMLInputElement;
+    await waitUntil(() => selectedMinute1 !== null);
+    await userEvent.click(selectedMinute1);
+
+    // Set hours for second date
+    await userEvent.click(
+      document.querySelector('[data-test-id="hours-toggle-overlay-btn-1"]') as HTMLInputElement,
+    );
+    // Wait until dialog with "hours overlay" is open
+    await expect(document.querySelector('[aria-label="hours overlay"]')).toBeInTheDocument();
+    await expect(document.querySelector('[data-test-id="11"]')).toBeInTheDocument();
+    await expect(document.querySelector('[aria-label="Toggle overlay"]')).toBeInTheDocument();
+
+    // await new Promise((resolve) => setTimeout(resolve, 500000));
+    await waitUntil(() => !document.querySelector(".dp-slide-down-enter-active"));
+    await waitUntil(() => document.querySelector('[aria-label="Toggle overlay"]'));
+
+    await userEvent.click(document.querySelector('[data-test-id="11"]') as HTMLInputElement);
+
+    // Set minutes for second date
+    const minuteButton2 = document.querySelector(
+      '[data-test-id="minutes-toggle-overlay-btn-1"]',
+    ) as HTMLInputElement;
+    await userEvent.click(minuteButton2);
+
+    await waitUntil(
+      () => (document.querySelector('[data-test-id="30"]') as HTMLInputElement) !== null,
+    );
+    await expect(document.querySelector('[data-test-id="30"]')).toBeInTheDocument();
+    await userEvent.click(document.querySelector('[data-test-id="30"]') as HTMLInputElement);
+
+    // Click first date on calendar
+    const firstDate = document.getElementById("2024-11-13") as HTMLInputElement;
+    await userEvent.click(firstDate);
+
+    // Click second date on calendar
+    const secondDate = document.getElementById("2024-11-16") as HTMLInputElement;
+    await userEvent.click(secondDate);
+
+    // Check that the input value matches the dates and times chosen
+    const input = document.querySelector('[data-test-id="dp-input"]') as HTMLInputElement;
+    expect(input.value).toEqual("2024/11/13, 12:40 - 2024/11/16, 11:30");
+
+    // Expect updatemodelvalue to have been called with array of ISO formatted dates
+    expect(args.updateModelValue).toHaveBeenCalledWith([
+      "2024-11-13T12:40:00.000Z",
+      "2024-11-16T11:30:00.000Z",
+    ]);
   },
 };
 
-export const TestDisabledDoesNotOpenFlatpickr: MtDatepickerStory = {
-  name: "Should not open flatpickr when disabled",
+export const TestDisabledDoesNotOpenDatepicker: MtDatepickerStory = {
+  name: "Should not open datepicker when disabled",
   args: {
     label: "Disabled",
     disabled: true,
@@ -165,6 +277,92 @@ export const TestDisabledDoesNotOpenFlatpickr: MtDatepickerStory = {
     // Try to open datepicker
     await userEvent.click(canvas.getByRole("textbox"));
 
+    // Expect the datepciker input to be disabled
     expect((canvas.getByRole("textbox") as HTMLInputElement).disabled).toBe(true);
+  },
+};
+
+export const VisualTestTestCustomFormat: MtDatepickerStory = {
+  name: "Should use custom format",
+  args: {
+    // Render it  as "Year: 2024, Month: 11, Day: 13"
+    format: (date: any) => {
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
+      return `Year: ${year}, Month: ${month}, Day: ${day}`;
+    },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Open datepicker by clicking the input wrapper
+    await userEvent.click(canvas.getByRole("textbox"));
+    await waitUntil(() => document.getElementsByClassName("dp__menu").length > 0);
+
+    await userEvent.click(
+      document.querySelector('[data-test-id="year-toggle-overlay-0"]') as HTMLInputElement,
+    );
+
+    await userEvent.click(document.querySelector('[data-test-id="2024"]') as HTMLInputElement);
+
+    await userEvent.click(
+      document.querySelector('[data-test-id="month-toggle-overlay-0"]') as HTMLInputElement,
+    );
+
+    await userEvent.click(document.querySelector('[data-test-id="Nov"]') as HTMLInputElement);
+
+    // Access the calendar and click the date
+    await userEvent.click(document.getElementById("2024-11-13") as HTMLInputElement);
+
+    // Check that the input value matches the date chosen
+    const input = document.querySelector('[data-test-id="dp-input"]') as HTMLInputElement;
+    expect(input.value).toContain("Year: 2024, Month: 11, Day: 13");
+  },
+};
+
+export const VisualTestTimeType: MtDatepickerStory = {
+  name: "Should render just the time",
+  args: {
+    dateType: "time",
+    placeholder: "Select time",
+    modelValue: "07:15",
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    // Open datepicker by clicking the input wrapper
+    await userEvent.click(canvas.getByRole("textbox"));
+    await waitUntil(() => document.getElementsByClassName("dp__menu").length > 0);
+
+    await userEvent.click(
+      document.querySelector('[data-test-id="hours-time-inc-btn-0"]') as HTMLInputElement,
+    );
+
+    await userEvent.click(
+      document.querySelector('[data-test-id="minutes-time-inc-btn-0"]') as HTMLInputElement,
+    );
+
+    await userEvent.click(canvas.getByRole("textbox"));
+
+    // Check that the input value matches the date chosen
+    const input = document.querySelector('[data-test-id="dp-input"]') as HTMLInputElement;
+    expect(input.value).toBe("08:16");
+
+    // Check that the modelvalue is the correct time string
+    expect(args.updateModelValue).toHaveBeenCalledWith("08:16");
+  },
+};
+
+export const VisualTestClearButton: MtDatepickerStory = {
+  name: "Shows clear button when the value is set",
+  args: {
+    modelValue: "07:15",
+    dateType: "time",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getByRole("button", { name: "Clear value" })).toBeVisible();
   },
 };

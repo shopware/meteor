@@ -13,21 +13,30 @@ jobs:
   static-analysis:
     name: Static Analysis
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     env:
       TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+        if: ${{ github.event.pull_request.head.repo.full_name == 'shopware/meteor' }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        if: ${{ github.event.pull_request.head.repo.full_name != 'shopware/meteor' }}
 
       - uses: pnpm/action-setup@v3
         with:
-          version: 9
+          version: 10.12.3
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           cache: "pnpm"
           cache-dependency-path: "**/pnpm-lock.yaml"
 
@@ -37,14 +46,17 @@ jobs:
       - name: Build packages
         run: npx turbo run build
 
+      - name: Lint all
+        run: pnpx turbo run lint:all
+
+      - name: Lint css
+        run: pnpx turbo run lint:css -- --custom-formatter @csstools/stylelint-formatter-github
+
       - name: Check formatting
-        run: pnpx turbo run format:check
+        run: pnpx turbo run format
 
       - name: Perform typecheck
         run: pnpx turbo run lint:types
-
-      - name: Lint code
-        run: pnpx turbo run lint:eslint
 
   unit-tests:
     name: Unit tests
@@ -61,12 +73,12 @@ jobs:
 
       - uses: pnpm/action-setup@v3
         with:
-          version: 9
+          version: 10.12.3
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           cache: "pnpm"
           cache-dependency-path: "**/pnpm-lock.yaml"
 
@@ -88,7 +100,7 @@ jobs:
 
       - uses: pnpm/action-setup@v3
         with:
-          version: 9
+          version: 10.12.3
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -120,12 +132,12 @@ jobs:
 
       - uses: pnpm/action-setup@v3
         with:
-          version: 9
+          version: 10.12.3
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           cache: "pnpm"
           cache-dependency-path: "**/pnpm-lock.yaml"
 
@@ -147,8 +159,114 @@ jobs:
           name: nuxt-app--playwright-test-results
           path: examples/nuxt-app/test-results/
 
-      - uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: meteor-admin-sdk--playwright-test-results
-          path: packages/admin-sdk/playwright-report/
+  tested-versions:
+    name: tested-versions
+    runs-on: ubuntu-latest
+    outputs:
+      first-version: ${{ steps.versions.outputs.first-version }}
+      latest-version: ${{ steps.versions.outputs.latest-version }}
+      lts-first-version: ${{ steps.versions.outputs.lts-first-version }}
+      lts-latest-version: ${{ steps.versions.outputs.lts-latest-version }}
+    steps:
+      - name: Generate versions
+        id: versions
+        uses: shopware/github-actions/versions@main
+
+  # ats:
+  #   name: Acceptance tests
+  #   timeout-minutes: 20
+  #   runs-on: ubuntu-latest
+  #   needs:
+  #     - circular-dependencies
+  #     - unit-tests
+  #     - static-analysis
+  #     - tested-versions
+  #   env:
+  #     TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+  #     TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+  #     TZ: Europe/Berlin
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       shopware-version:
+  #         # TODO: add again with next major, does not work right now because 6.5 does not support vue3
+  #         # - ${{ needs.tested-versions.outputs.lts-latest-version }}
+  #         - ${{ needs.tested-versions.outputs.first-version }}
+  #         - trunk
+  #   steps:
+  #     - name: Setup shopware
+  #       uses: shopware/setup-shopware@main
+  #       with:
+  #         path: shopware/
+  #         install: "true"
+  #         install-admin: "true"
+  #         install-storefront: "true"
+  #         shopware-version: "${{ matrix.shopware-version }}"
+  #         env: dev
+
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #       with:
+  #         path: meteor/
+
+  #     - name: Symlink plugin
+  #       working-directory: shopware/custom/plugins/
+  #       run: ln -s ../../../meteor/examples/admin-sdk-plugin TestPlugin
+
+  #     - name: Activate TestPlugin
+  #       working-directory: shopware/
+  #       run: |
+  #         bin/console plugin:refresh
+  #         bin/console plugin:install --activate TestPlugin
+  #         bin/console cache:clear
+
+  #     - uses: pnpm/action-setup@v3
+  #       with:
+  #         version: 9
+
+  #     - name: Setup Node.js
+  #       uses: actions/setup-node@v4
+  #       with:
+  #         node-version: "20"
+  #         cache: "pnpm"
+  #         cache-dependency-path: "**/pnpm-lock.yaml"
+
+  #     - name: Install dependencies
+  #       working-directory: meteor/
+  #       run: pnpm install --frozen-lockfile --prefer-offline
+
+  #     - name: Build packages
+  #       working-directory: meteor/
+  #       run: npx turbo run build
+
+  #     - name: Build assets
+  #       working-directory: shopware/
+  #       run: |
+  #         composer run build:js
+  #         bin/console assets:install
+
+  #     - name: Start webserver
+  #       working-directory: shopware/
+  #       run: symfony server:start --allow-http --no-tls --port=8000 -d
+
+  #     - name: Install playwright
+  #       working-directory: meteor/examples/admin-sdk-plugin/tests/acceptance/
+  #       run: |
+  #         pnpm install --frozen-lockfile --prefer-offline
+  #         npx playwright install --with-deps
+
+  #     - name: Run Playwrigth
+  #       working-directory: meteor/examples/admin-sdk-plugin/tests/acceptance/
+  #       run: npx playwright test --retries=2 --reporter=github --trace=on-first-retry --project chromium
+
+  #     - uses: actions/upload-artifact@v4
+  #       if: always()
+  #       with:
+  #         name: ats-test-results-${{ matrix.project }}
+  #         path: meteor/examples/admin-sdk-plugin/tests/acceptance/test-results/
+
+  #     - uses: actions/upload-artifact@v4
+  #       if: always()
+  #       with:
+  #         name: ats-report-${{ matrix.project }}
+  #         path: meteor/examples/admin-sdk-plugin/tests/acceptance/playwright-report/

@@ -1,5 +1,18 @@
 import Criteria from './Criteria';
-import { type Filter } from '@shopware-ag/meteor-component-library';
+
+interface Filter {
+  id: string,
+  label: string,
+  type: {
+    id: string,
+    options: Option[],
+  },
+}
+
+export interface Option {
+  id: string,
+  label: string,
+}
 
 export function addDataTableFilters(
   criteria: Criteria,

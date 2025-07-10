@@ -19,13 +19,12 @@ export function currency(
           maximumFractionDigits: 20,
         };
 
-  const opts = {
+  const opts: Intl.NumberFormatOptions = {
     style: "currency",
     currency: sign,
     ...decimalOpts,
     ...additionalOptions,
   };
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-argument
   return val.toLocaleString(additionalOptions.language ?? "en-US", opts);
 }

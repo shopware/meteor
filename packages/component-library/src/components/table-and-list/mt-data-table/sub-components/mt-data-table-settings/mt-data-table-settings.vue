@@ -1,19 +1,19 @@
 <template>
   <mt-popover
     class="mt-data-table-settings"
-    :title="t('mt-data-table-settings.title')"
+    :title="t('title')"
     :child-views="tableSettingsChildViews"
     width="large"
   >
     <template #trigger="{ toggleFloatingUi }">
       <mt-button
         v-tooltip="{
-          message: t('mt-data-table-settings.tooltip'),
+          message: t('tooltip'),
           width: 'auto',
         }"
         variant="secondary"
         square
-        :aria-label="t('mt-data-table-settings.aria-toggle-table-settings')"
+        :aria-label="t('aria-toggle-table-settings')"
         @click="toggleFloatingUi"
       >
         <mt-icon name="solid-cog-s" />
@@ -22,7 +22,7 @@
 
     <template #popover-items__base="{ changeView }">
       <mt-popover-item
-        :label="t('mt-data-table-settings.columnOrder.title')"
+        :label="t('columnOrder.title')"
         border-bottom
         show-options
         :on-label-click="() => changeView('columnOrder')"
@@ -31,7 +31,7 @@
       />
 
       <mt-popover-item
-        :label="t('mt-data-table-settings.showNumberedColumn')"
+        :label="t('showNumberedColumn')"
         show-switch
         :switch-value="enableRowNumbering"
         icon="solid-hashtag"
@@ -39,7 +39,7 @@
       />
 
       <mt-popover-item
-        :label="t('mt-data-table-settings.showStripedRows')"
+        :label="t('showStripedRows')"
         show-switch
         :switch-value="showStripes"
         icon="solid-bars"
@@ -48,7 +48,7 @@
 
       <!-- TODO: the icon in figma solid-grip-lines was rotated and is not available -->
       <mt-popover-item
-        :label="t('mt-data-table-settings.showOutlines')"
+        :label="t('showOutlines')"
         show-switch
         :switch-value="showOutlines"
         icon="solid-table"
@@ -56,8 +56,8 @@
       />
 
       <mt-popover-item
-        :label="t('mt-data-table-settings.frameOutlines')"
-        :meta-copy="t('mt-data-table-settings.frameOutlinesMetaCopy')"
+        :label="t('frameOutlines')"
+        :meta-copy="t('frameOutlinesMetaCopy')"
         show-switch
         :switch-value="enableOutlineFraming"
         icon="solid-highlight"
@@ -70,7 +70,7 @@
       -->
 
       <mt-popover-item
-        :label="t('mt-data-table-settings.resetAllChanges')"
+        :label="t('resetAllChanges')"
         border-top
         icon="solid-undo"
         :on-label-click="resetAllChanges"
@@ -152,10 +152,10 @@ export default defineComponent({
     "change-outline-framing",
     "change-enable-row-numbering",
   ],
-  i18n: {
-    messages: {
-      en: {
-        "mt-data-table-settings": {
+  setup(props, { emit }) {
+    const { t } = useI18n({
+      messages: {
+        en: {
           title: "Settings",
           resetAllChanges: "Reset all changes",
           columnOrder: {
@@ -175,9 +175,7 @@ export default defineComponent({
           tooltip: "View settings",
           "aria-toggle-table-settings": "Toggle view settings",
         },
-      },
-      de: {
-        "mt-data-table-settings": {
+        de: {
           title: "Einstellungen",
           resetAllChanges: "Alle Änderungen zurücksetzen",
           columnOrder: {
@@ -199,10 +197,7 @@ export default defineComponent({
           "aria-toggle-table-settings": "Tabelleneinstellungen umschalten",
         },
       },
-    },
-  },
-  setup(props, { emit }) {
-    const { t } = useI18n();
+    });
 
     /***
      * Table settings
@@ -211,7 +206,7 @@ export default defineComponent({
       return [
         {
           name: "columnOrder",
-          title: t("mt-data-table-settings.columnOrder.title"),
+          title: t("columnOrder.title"),
         },
       ];
     });
@@ -223,17 +218,13 @@ export default defineComponent({
       return [
         {
           id: "visible",
-          label: t("mt-data-table-settings.columnOrder.columnGroups.labelShown") as string,
-          actionLabel: t(
-            "mt-data-table-settings.columnOrder.columnGroups.actionLabelShown",
-          ) as string,
+          label: t("columnOrder.columnGroups.labelShown"),
+          actionLabel: t("columnOrder.columnGroups.actionLabelShown"),
         },
         {
           id: "hidden",
-          label: t("mt-data-table-settings.columnOrder.columnGroups.labelHidden") as string,
-          actionLabel: t(
-            "mt-data-table-settings.columnOrder.columnGroups.actionLabelHidden",
-          ) as string,
+          label: t("columnOrder.columnGroups.labelHidden"),
+          actionLabel: t("columnOrder.columnGroups.actionLabelHidden"),
         },
       ];
     });
@@ -311,8 +302,3 @@ export default defineComponent({
   },
 });
 </script>
-
-<style lang="scss">
-.mt-data-table-settings {
-}
-</style>

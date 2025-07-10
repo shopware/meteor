@@ -6,12 +6,15 @@
       :z-index="1100"
       :resize-width="popoverResizeWidth"
     >
+      <!-- @vue-expect-error -->
       <div
         ref="popoverContent"
-        class="mt-select-result-list__content"
-        :class="{
-          'mt-select-result-list__content_empty': isLoading && (!options || options.length <= 0),
-        }"
+        :class="[
+          'mt-select-result-list__content',
+          {
+            'mt-select-result-list__content_empty': isLoading && (!options || options.length <= 0),
+          },
+        ]"
         @scroll="onScroll"
       >
         <slot name="before-item-list" />
@@ -28,8 +31,12 @@
           v-if="!isLoading && options && options.length < 1"
           class="mt-select-result-list__empty"
         >
-          <mt-icon name="default-action-search" size="20px" />
-          {{ emptyMessageText }}
+          <mt-icon
+            name="regular-search"
+            size="var(--scale-size-16)"
+            style="margin-right: var(--scale-size-4)"
+          />
+          {{ emptyMessage || t("messageNoResults") }}
         </div>
       </div>
     </mt-popover-deprecated>
@@ -50,24 +57,10 @@ import {
   MtSelectResultRemoveItemSelectByKeyboardListener,
 } from "@/helper/provideInjectKeys";
 import { ref } from "vue";
+import { useI18n } from "vue-i18n";
 
 export default defineComponent({
   name: "MtSelectResultList",
-
-  i18n: {
-    messages: {
-      en: {
-        "mt-select-result-list": {
-          messageNoResults: "No results found.",
-        },
-      },
-      de: {
-        "mt-select-result-list": {
-          messageNoResults: "Es wurden keine Ergebnisse gefunden.",
-        },
-      },
-    },
-  },
 
   components: {
     "mt-popover-deprecated": MtPopoverDeprecated,
@@ -81,6 +74,17 @@ export default defineComponent({
   },
 
   setup() {
+    const { t } = useI18n({
+      messages: {
+        en: {
+          messageNoResults: "No results found.",
+        },
+        de: {
+          messageNoResults: "Es wurden keine Ergebnisse gefunden.",
+        },
+      },
+    });
+
     const activeItemIndex = ref(0);
     const activeItemChangeListeners = ref<Array<(index: number) => void>>([]);
     const itemSelectByKeyboardListeners = ref<Array<(index: number) => void>>([]);
@@ -122,6 +126,7 @@ export default defineComponent({
     provide(MtSelectResultRemoveItemSelectByKeyboardListener, removeItemSelectByKeyboardListener);
 
     return {
+      t,
       activeItemIndex,
       emitActiveItemIndex,
       setActiveItemIndex,
@@ -187,10 +192,6 @@ export default defineComponent({
   },
 
   computed: {
-    emptyMessageText(): string {
-      return this.emptyMessage || this.$tc("mt-select-result-list.messageNoResults");
-    },
-
     popoverClass(): string[] {
       return [...this.popoverClasses, "mt-select-result-list-popover-wrapper"];
     },
@@ -343,6 +344,10 @@ export default defineComponent({
 
 $mt-select-result-list-transition: all ease-in-out 0.2s;
 
+.mt-select-result-list {
+  pointer-events: none;
+}
+
 .mt-select-result-list,
 .mt-select-result-list-popover {
   position: absolute;
@@ -368,7 +373,7 @@ $mt-select-result-list-transition: all ease-in-out 0.2s;
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
   font-family: var(--font-family-body);
-  padding: 8px;
+  padding: var(--scale-size-8);
   border-radius: 4px;
 
   .mt-select-result-list__item-list {
@@ -376,7 +381,7 @@ $mt-select-result-list-transition: all ease-in-out 0.2s;
   }
 
   .mt-select-result-list__empty {
-    padding: 10px 16px;
+    padding: var(--scale-size-10) var(--scale-size-16);
     color: var(--color-text-primary-default);
   }
 }

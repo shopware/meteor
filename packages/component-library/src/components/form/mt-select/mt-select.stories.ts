@@ -1,6 +1,7 @@
 import MtSelect from "./mt-select.vue";
 import type { StoryObj } from "@storybook/vue3";
 import type { SlottedMeta } from "@/_internal/story-helper";
+import { fn } from "@storybook/test";
 
 export type MtSelectMeta = SlottedMeta<
   typeof MtSelect,
@@ -39,6 +40,8 @@ export type MtSelectMeta = SlottedMeta<
   | "display-values-expand"
   | "error"
   | "isInherited"
+  | "_wrapperWidth"
+  | "_secondSelect"
 >;
 
 export default {
@@ -46,11 +49,76 @@ export default {
   component: MtSelect,
   render: (args) => ({
     template: `
-      <div>
+      <div class="mt-select-story-wrapper" :style="{ width: args._wrapperWidth ?? 'auto' }">
         <mt-select
           v-bind="args"
           :modelValue="currentValue"
           :label="args.label"
+          @change="onChange"
+          @item-add="args.itemAdd"
+          @item-remove="args.itemRemove"
+          @paginate="args.paginate"
+          @display-values-expand="args.displayValuesExpand"
+          @search-term-change="args.searchTermChange"
+          @inheritance-restore="inheritanceRestoreWrapper"
+          @inheritance-remove="inheritanceRemoveWrapper"
+        >
+          <template
+              v-if="args.prefix"
+            #prefix
+          >
+            {{ args.prefix }}
+          </template>
+          <template
+              v-if="args.suffix"
+              #suffix
+          >
+            {{ args.suffix }}
+          </template>
+          <template
+              v-if="args.hint"
+              #hint
+          >
+            {{ args.hint }}
+          </template>
+          <template
+              v-if="args.beforeItemList"
+              #before-item-list
+          >
+            {{ args.beforeItemList }}
+          </template>
+          <template
+              v-if="args.selectionLabelProperty"
+              #selection-label-property
+          >
+            {{ args.selectionLabelProperty }}
+          </template>
+          <template
+              v-if="args.resultItem"
+              #result-item
+          >
+            {{ args.resultItem }}
+          </template>
+          <template
+              v-if="args.resultLabelProperty"
+              #result-label-property
+          >
+            {{ args.resultLabelProperty }}
+          </template>
+          <template
+              v-if="args.afterItemList"
+              #after-item-list
+          >
+            {{ args.afterItemList }}
+          </template>
+        </mt-select>
+
+        <mt-select
+          v-if="args._secondSelect"
+          v-bind="args"
+          :modelValue="currentValue"
+          label="Second Select"
+          style="margin-top: 250px;"
           @change="onChange"
           @item-add="args.itemAdd"
           @item-remove="args.itemRemove"
@@ -153,6 +221,9 @@ export default {
   args: {
     label: "Select",
     modelValue: "b",
+    change: fn(),
+    itemAdd: fn(),
+    inheritanceRemove: fn(),
     options: [
       {
         id: 1,

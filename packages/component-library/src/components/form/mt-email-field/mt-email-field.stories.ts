@@ -1,13 +1,20 @@
-import { action } from "@storybook/addon-actions";
 import MtEmailField from "./mt-email-field.vue";
 import baseFieldArgTypes from "../_internal/mt-base-field/arg-types";
 import type { StoryObj } from "@storybook/vue3";
 import type { SlottedMeta } from "@/_internal/story-helper";
-import { fn } from "@storybook/test";
+import { MtTextField } from "@/index";
 
 export type MtEmailFieldMeta = SlottedMeta<
   typeof MtEmailField,
-  "default" | "updateModelValue" | "change" | "hint" | "suffix" | "prefix" | "placeholder" | "error"
+  | "default"
+  | "updateModelValue"
+  | "change"
+  | "hint"
+  | "suffix"
+  | "prefix"
+  | "placeholder"
+  | "error"
+  | "_showSecondTextField"
 >;
 
 export default {
@@ -41,11 +48,16 @@ export default {
           {{args.hint}}
         </template>
       </mt-email-field>
+
+      <mt-text-field
+        v-if="args._showSecondTextField"
+        label="Textfield for testing"
+      ></mt-text-field>
       
       <!-- Helper element to loose focus -->
       <h4 style="display: none;">hidden</h4>
     </div>`,
-    components: { MtEmailField },
+    components: { MtEmailField, MtTextField },
     data() {
       return {
         currentValue: args.modelValue,
@@ -74,13 +86,11 @@ export default {
         args.change(e);
       },
 
-      inheritanceRemoveWrapper(a: any) {
-        this.inheritanceRemove(...a);
+      inheritanceRemoveWrapper() {
         this.isInherited = false;
       },
 
-      inheritanceRestoreWrapper(a: any) {
-        this.inheritanceRestore(...a);
+      inheritanceRestoreWrapper() {
         this.isInherited = true;
       },
     },
@@ -95,7 +105,6 @@ export default {
   },
   args: {
     label: "Emailfield",
-    updateModelValue: fn(action("updateModelValue")),
   },
 } as MtEmailFieldMeta;
 

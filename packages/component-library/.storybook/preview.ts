@@ -1,9 +1,11 @@
 import type { Preview } from "@storybook/vue3";
 import "~/src/components/assets/scss/all.scss";
+import "~/src/components/assets/scss/font.scss";
 import { darkTheme, lightTheme } from "./shopwareTheme";
 import { setup } from "@storybook/vue3";
 import { createI18n } from "vue-i18n";
 import DeviceHelperPlugin from "./../src/plugin/device-helper.plugin";
+import MtThemeProvider from "../src/components/theme/mt-theme-provider.vue";
 import {
   DARK_THEME_BACKGROUND_VALUE,
   LIGHT_THEME_BACKGROUND_VALUE,
@@ -16,6 +18,7 @@ import "@shopware-ag/meteor-tokens/administration/dark.css";
 
 const i18n = createI18n({
   // something vue-i18n options here ...
+  legacy: false,
   globalInjection: true,
   locale: "en",
   fallbackLocale: "en",
@@ -53,7 +56,20 @@ const preview: Preview = {
       ],
     },
   },
-  decorators: [ThemeProvider],
+
+  decorators: [
+    ThemeProvider,
+    () => ({
+      components: { MtThemeProvider },
+      template: `
+        <mt-theme-provider>
+          <story />
+        </mt-theme-provider>
+      `,
+    }),
+  ],
+
+  tags: ["autodocs"],
 };
 
 export default preview;

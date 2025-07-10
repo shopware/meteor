@@ -1,6 +1,6 @@
 import type { notificationDispatch } from './notification/index';
 import type { toastDispatch } from './toast';
-import type { windowRedirect, windowReload, windowRouterPush } from './window/index';
+import type { windowRedirect, windowReload, windowRouterPush, windowGetId } from './window/index';
 import type {
   contextLanguage,
   contextEnvironment,
@@ -11,7 +11,8 @@ import type {
   contextModuleInformation,
   contextUserInformation,
   contextUserTimezone,
-} from './context/index';
+  contextShopId,
+} from './context';
 import type { uiComponentSectionRenderer } from './ui/component-section/index';
 import type { uiTabsAddTabItem } from './ui/tabs';
 import type { uiModulePaymentOverviewCard } from './ui/module/payment/overview-card';
@@ -20,8 +21,10 @@ import type { locationUpdateHeight, locationUpdateUrl } from './location/index';
 import type { menuCollapse, menuExpand, menuItemAdd } from './ui/menu';
 import type { settingsItemAdd } from './ui/settings';
 import type { mainModuleAdd } from './ui/main-module';
-import type { smartBarButtonAdd } from './ui/main-module';
-import type { uiModalOpen, uiModalClose } from './ui/modal/index';
+import type { smartBarButtonAdd, smartBarHide } from './ui/main-module';
+import type { uiModalOpen, uiModalClose, uiModalUpdate } from './ui/modal/index';
+import type { uiMediaModalOpen } from './ui/media-modal';
+import type { uiSidebarAdd, uiSidebarClose, uiSidebarRemove } from './ui/sidebar';
 import type { actionButtonAdd } from './ui/action-button';
 import type { actionExecute } from './app/action';
 import type Criteria from './data/Criteria';
@@ -38,6 +41,7 @@ import type {
   repositoryDelete,
   repositoryCreate,
 } from './data/repository';
+import type { iapCheckout } from './iap';
 
 /**
  * Contains all shopware send types.
@@ -49,6 +53,7 @@ export interface ShopwareMessageTypes {
   windowRedirect: windowRedirect,
   windowRouterPush: windowRouterPush,
   windowReload: windowReload,
+  windowGetId: windowGetId,
   contextLanguage: contextLanguage,
   contextEnvironment: contextEnvironment,
   contextLocale: contextLocale,
@@ -58,6 +63,7 @@ export interface ShopwareMessageTypes {
   contextUserTimezone: contextUserTimezone,
   contextAppInformation: contextAppInformation,
   contextModuleInformation: contextModuleInformation,
+  contextShopId: contextShopId,
   getPageTitle: getPageTitle,
   uiComponentSectionRenderer: uiComponentSectionRenderer,
   uiTabsAddTabItem: uiTabsAddTabItem,
@@ -72,8 +78,14 @@ export interface ShopwareMessageTypes {
   settingsItemAdd: settingsItemAdd,
   mainModuleAdd: mainModuleAdd,
   smartBarButtonAdd: smartBarButtonAdd,
+  smartBarHide: smartBarHide,
   uiModalOpen: uiModalOpen,
   uiModalClose: uiModalClose,
+  uiModalUpdate: uiModalUpdate,
+  uiMediaModalOpen: uiMediaModalOpen,
+  uiSidebarAdd: uiSidebarAdd,
+  uiSidebarClose: uiSidebarClose,
+  uiSidebarRemove: uiSidebarRemove,
   actionButtonAdd: actionButtonAdd,
   actionExecute: actionExecute,
   /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -91,6 +103,7 @@ export interface ShopwareMessageTypes {
   datasetSubscribeRegistration: datasetSubscribeRegistration,
   datasetUpdate: datasetUpdate,
   datasetGet: datasetGet,
+  iapCheckout: iapCheckout,
   __function__: __function__,
   __registerWindow__: __registerWindow__,
   _multiply: _multiply,

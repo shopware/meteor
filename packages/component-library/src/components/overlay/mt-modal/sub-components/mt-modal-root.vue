@@ -2,13 +2,15 @@
   <slot />
 
   <transition name="fade">
-    <div
-      class="mt-modal-root__backdrop"
-      v-if="isOpen"
-      aria-hidden
-      data-testid="modal-backdrop"
-      @click="() => setIsOpen(false)"
-    />
+    <Teleport to="body">
+      <div
+        class="mt-modal-root__backdrop"
+        v-if="isOpen"
+        aria-hidden
+        data-testid="modal-backdrop"
+        @click="() => setIsOpen(false)"
+      />
+    </Teleport>
   </transition>
 </template>
 
@@ -25,6 +27,13 @@ const isOpen = ref(props.isOpen);
 watch(isOpen, () => {
   emit("change", isOpen.value);
 });
+
+watch(
+  () => props.isOpen,
+  (value) => {
+    isOpen.value = value;
+  },
+);
 
 function setIsOpen(state: boolean) {
   isOpen.value = state;
