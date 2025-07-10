@@ -169,3 +169,29 @@ export const VisualTestMinimalPageWithCustomFooter: MtCardStory = {
     </mt-card>`,
   }),
 };
+
+export const VisualTestMinimalPageWithInsetContent: MtCardStory = {
+  ...MinimalStory,
+  name: "Render a minimal card with inset content",
+  args: {
+    ...MinimalStory.args,
+  },
+  render: (args) => ({
+    components: { MtCard, MtText, MtInset },
+    setup() {
+      return { args };
+    },
+    template: `
+    <mt-card v-bind="args">
+      <mt-inset>
+        <mt-text as="h3" size="m" weight="bold">Headline</mt-text>
+
+        <mt-text>
+          vel illum dolore eu feugiat nulla facilisis at vero eros et accumsan.
+          is at vero eros et accumsan et iusto odio dignissim qui blandit praesent
+          luptatum zzril delenit augue duis dolore te feugait nulla facilisi.
+        </mt-text>
+      </mt-inset>
+    </mt-card>`,
+  }),
+};
