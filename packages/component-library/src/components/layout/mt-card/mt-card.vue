@@ -195,9 +195,15 @@ const cardClasses = computed(() => ({
 }
 
 .mt-card__content {
+  --mt-card-content-padding: var(--scale-size-24);
+  --mt-inset-block-start: var(--mt-card-content-padding);
+  --mt-inset-block-end: var(--mt-card-content-padding);
+  --mt-inset-inline-start: var(--mt-card-content-padding);
+  --mt-inset-inline-end: var(--mt-card-content-padding);
+
   display: flow-root;
   flex-basis: 100%;
-  padding: var(--scale-size-24);
+  padding: var(--mt-card-content-padding);
   background-clip: padding-box;
   position: relative;
   color: var(--color-text-primary-default);
