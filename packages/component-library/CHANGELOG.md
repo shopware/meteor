@@ -1,5 +1,16 @@
 # Changelog
 
+## 4.14.1
+
+### Patch Changes
+
+- 0f4c732: Properly announce mt-progress-bar to screen readers
+- 27cf4bf: Add inset values for mt-card content
+- 0f4c732: Remove unnecessary vertical spacing for mt-progress-bar
+- 8e13247: Make clear button in mt-select bigger
+- 0f4c732: Correctly announce multiple mt-progress-bars
+- 0f4c732: Hide progress label if none is defined
+
 ## 4.14.0
 
 ### Minor Changes
