@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper" :class="{ 'has-error': error || errorMessage }">
     <mt-field-label
-      id="field-id"
+      for="field-id"
       :style="{ gridArea: 'label' }"
       :has-error="!!error || !!errorMessage"
       :required="required"

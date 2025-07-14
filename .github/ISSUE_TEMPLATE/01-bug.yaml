@@ -56,7 +56,7 @@ body:
       label: Link to minimal reproduction
       description: |
         The easiest way to provide a reproduction is by creating a new project
-        in [StackBlitz](https://vite.new/vue). If this is not suitable, you can always provide a GitHub repository. The reproduction should be **minimal** - i.e. it should contain only the
+        in [StackBlitz](https://stackblitz.com/edit/meteor?file=src%2FApp.vue). If this is not suitable, you can always provide a GitHub repository. The reproduction should be **minimal** - i.e. it should contain only the
         bare minimum amount of code needed to show the bug.
       placeholder: Reproduction Link
 

@@ -333,6 +333,7 @@ export default defineComponent({
   position: absolute;
   display: flex;
   gap: var(--scale-size-8);
+  align-items: center;
   top: 50%;
   right: var(--scale-size-16);
   transform: translate(0, -50%);
@@ -359,6 +360,18 @@ export default defineComponent({
   color: var(--color-icon-primary-default);
   padding: 0 var(--scale-size-4);
   cursor: pointer;
+  width: var(--scale-size-32);
+  height: var(--scale-size-32);
+  border-radius: var(--border-radius-xs);
+
+  &:hover,
+  &:focus-visible {
+    background-color: var(--color-interaction-secondary-hover);
+  }
+
+  &:focus-visible {
+    outline: var(--scale-size-2) solid var(--color-border-brand-selected);
+  }
 }
 
 .mt-select .mt-select__select-indicator-hitbox .mt-select__select-indicator {
