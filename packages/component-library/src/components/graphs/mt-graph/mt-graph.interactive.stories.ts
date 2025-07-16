@@ -7,7 +7,6 @@ import meta, { type MtGraphStory, type MtGraphMeta } from "./mt-graph.stories";
 export default {
   ...meta,
   title: "Interaction Tests/Graphs/mt-graph",
-  tags: ["mt-graph"],
 } as MtGraphMeta;
 
 export const VisualTestRenderGraph: MtGraphStory = {

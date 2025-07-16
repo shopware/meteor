@@ -17,9 +17,11 @@ import { getDefaultOptions } from "./mt-graph-default-options";
 import { deepCopyObject, deepMergeObjects } from "@/utils/object";
 import { defineProps, computed } from "vue";
 
+export type GraphOptions = ApexOptions;
+
 const props = defineProps<{
   series: any[];
-  options?: ApexOptions;
+  options?: GraphOptions;
   type?: string;
   width?: string | number;
   height?: string | number;
