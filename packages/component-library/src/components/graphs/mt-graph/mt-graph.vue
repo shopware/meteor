@@ -6,59 +6,34 @@
     :width="width"
     :height="height"
     :class="`mt-graph-${type}`"
+    data-testid="mt-graph"
   />
 </template>
 
-<script lang="ts">
-import VueApexCharts from "vue3-apexcharts";
+<script setup lang="ts">
+import apexchart from "vue3-apexcharts";
 import type { ApexOptions } from "apexcharts";
-import defaultOptions from "./mt-graph-default-options";
+import { getDefaultOptions } from "./mt-graph-default-options";
+import { deepCopyObject, deepMergeObjects } from "@/utils/object";
+import { defineProps, computed } from "vue";
 
-function merge<T extends object>(defaultObj: T, customObj: Partial<T>): T {
-  for (const key in customObj) {
-    if (customObj[key] instanceof Object && key in defaultObj) {
-      defaultObj[key] = merge<any>(defaultObj[key], customObj[key]);
-    } else {
-      defaultObj[key] = customObj[key] as any;
-    }
+const props = defineProps<{
+  series: any[];
+  options?: ApexOptions;
+  type?: string;
+  width?: string | number;
+  height?: string | number;
+}>();
+
+const chartOptions = computed<ApexOptions>(() => {
+  const type = props.type ?? "area";
+  const options = props.options;
+  const defaultOptions = getDefaultOptions(type);
+  const defaultOptionsCopy = deepCopyObject(defaultOptions);
+
+  if (!options || !(options instanceof Object)) {
+    return defaultOptionsCopy;
   }
-  return defaultObj;
-}
-
-export default {
-  name: "MtGraph",
-
-  components: {
-    apexchart: VueApexCharts,
-  },
-
-  props: {
-    series: {
-      type: Array,
-      required: true,
-    },
-    options: {
-      type: Object as ApexOptions,
-    },
-    type: {
-      type: String,
-      default: "area",
-    },
-    width: {
-      type: [String, Number],
-    },
-    height: {
-      type: [String, Number],
-    },
-  },
-
-  computed: {
-    chartOptions(): ApexOptions {
-      // @ts-ignore
-      const defaultOptionsCopy = JSON.parse(JSON.stringify(defaultOptions[this.type] || {}));
-      // @ts-ignore
-      return merge<ApexOptions>(defaultOptionsCopy, this.options);
-    },
-  },
-};
+  return deepMergeObjects<ApexOptions>(defaultOptionsCopy, options);
+});
 </script>
