@@ -1,7 +1,19 @@
 import type { ApexOptions } from "apexcharts";
 
-const defaultOptions: { [key: string]: ApexOptions } = {
-  area: {
+const optionsMap: Record<string, () => ApexOptions> = {
+  area: getDefaultAreaOptions,
+};
+
+export function getDefaultOptions(type: string): ApexOptions {
+  const getOptions = optionsMap[type];
+  if (getOptions) {
+    return getOptions();
+  }
+  return {};
+}
+
+function getDefaultAreaOptions(): ApexOptions {
+  return {
     noData: {
       align: "center",
       verticalAlign: "middle",
@@ -41,8 +53,5 @@ const defaultOptions: { [key: string]: ApexOptions } = {
       },
     },
     dataLabels: { enabled: false },
-  },
-  // Add default options for other chart types once needed
-};
-
-export default defaultOptions;
+  };
+}
