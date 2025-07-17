@@ -94,7 +94,9 @@ const isInsideTooltip = useIsInsideTooltip();
 
 <style lang="css" scoped>
 .mt-button {
-  transition: all 0.15s ease-out;
+  transition-property: color, background-color, border-color;
+  transition-duration: 0.15s;
+  transition-timing-function: ease-out;
   display: inline-grid;
   place-items: center;
   width: max-content;
@@ -112,6 +114,11 @@ const isInsideTooltip = useIsInsideTooltip();
   cursor: pointer;
   user-select: none;
   position: relative;
+
+  &:focus-visible {
+    outline: var(--scale-size-2) solid var(--color-border-brand-selected);
+    outline-offset: var(--scale-size-2);
+  }
 }
 
 .mt-button__content {
@@ -142,11 +149,6 @@ const isInsideTooltip = useIsInsideTooltip();
   border-color: var(--color-interaction-primary-hover);
 }
 
-.mt-button--primary:focus-visible {
-  border-color: var(--color-border-brand-selected);
-  box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
-}
-
 .mt-button--primary:disabled,
 .mt-button--primary.mt-button--disabled {
   background: var(--color-interaction-primary-disabled);
@@ -163,10 +165,6 @@ const isInsideTooltip = useIsInsideTooltip();
 
 .mt-button--primary-ghost:is(:hover, :focus-visible, :active) {
   background: var(--color-background-brand-default);
-}
-
-.mt-button--primary-ghost:focus-visible {
-  box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
 }
 
 .mt-button--primary-ghost:disabled,
@@ -193,11 +191,6 @@ const isInsideTooltip = useIsInsideTooltip();
 
 .mt-button--secondary:is(:hover, :focus-visible, :active) {
   background: var(--color-interaction-secondary-hover);
-}
-
-.mt-button--secondary:focus-visible {
-  border-color: var(--color-border-brand-selected);
-  box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
 }
 
 .mt-button--secondary:disabled,
@@ -227,11 +220,6 @@ const isInsideTooltip = useIsInsideTooltip();
   border-color: var(--color-interaction-critical-hover);
 }
 
-.mt-button--critical:focus-visible {
-  border-color: var(--color-border-brand-selected);
-  box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
-}
-
 .mt-button--critical:disabled,
 .mt-button--critical.mt-button--disabled {
   background: var(--color-interaction-critical-disabled);
@@ -252,11 +240,6 @@ const isInsideTooltip = useIsInsideTooltip();
 
 .mt-button--critical-ghost:is(:hover, :focus-visible, :active) {
   background-color: var(--color-background-critical-dark);
-}
-
-.mt-button--critical-ghost:focus-visible {
-  border-color: var(--color-border-brand-selected);
-  box-shadow: 0 0 4px 0 rgba(255, 0, 0, 0.3);
 }
 
 .mt-button--critical-ghost:disabled,
