@@ -120,7 +120,6 @@ const timeoutId = ref<number | undefined>(undefined);
 const timeoutStartTime = ref<number | undefined>(undefined);
 const remainingTimeOut = ref(snackbar.value.duration || 5000);
 
-// Start timer for auto-dismiss
 watch(
   () => snackbar.value.duration,
   (newDuration) => {
