@@ -1,5 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/vue3";
 import MtSnackbar from "./mt-snackbar.vue";
+import MtButton from "@/components/form/mt-button/mt-button.vue";
 import { useSnackbar } from "./composables/use-snackbar";
 
 const meta: Meta<typeof MtSnackbar> = {
@@ -12,7 +13,7 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => ({
-    components: { MtSnackbar },
+    components: { MtSnackbar, MtButton },
     setup() {
       const { addSnackbar } = useSnackbar();
 
@@ -47,15 +48,15 @@ export const Default: Story = {
     template: `
       <div>
         <div style="padding: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
-          <button @click="addDefaultSnackbar" style="padding: 8px 16px; background: #6b7280; color: white; border: none; border-radius: 4px; cursor: pointer;">
+          <mt-button @click="addDefaultSnackbar" variant="secondary">
             Default Snackbar
-          </button>
-          <button @click="addSuccessSnackbar" style="padding: 8px 16px; background: #10b981; color: white; border: none; border-radius: 4px; cursor: pointer;">
+          </mt-button>
+          <mt-button @click="addSuccessSnackbar" variant="primary">
             Success Snackbar
-          </button>
-          <button @click="addErrorSnackbar" style="padding: 8px 16px; background: #ef4444; color: white; border: none; border-radius: 4px; cursor: pointer;">
+          </mt-button>
+          <mt-button @click="addErrorSnackbar" variant="critical">
             Error Snackbar
-          </button>
+          </mt-button>
         </div>
         <MtSnackbar />
       </div>
