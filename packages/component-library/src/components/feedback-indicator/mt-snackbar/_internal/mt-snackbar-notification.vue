@@ -51,10 +51,6 @@
         <mt-icon name="solid-times-circle" size="20px" />
       </div>
     </div>
-
-    <div v-if="showTimer" class="mt-snackbar-notification__timer">
-      <div class="mt-snackbar-notification__timer-loader"></div>
-    </div>
   </div>
 </template>
 
@@ -103,15 +99,6 @@ const messageClasses = computed(() => {
   };
 });
 
-const showTimer = computed(() => {
-  // Don't show timer for dismissible snackbars or if duration is 0
-  if (snackbar.value.dismissible || snackbar.value.duration === 0) {
-    return false;
-  }
-
-  return true;
-});
-
 const role = computed(() => {
   switch (snackbar.value.type) {
     case "error":
@@ -137,21 +124,22 @@ const ariaLive = computed(() => {
   }
 });
 
-const { snackbar, index } = toRefs(props);
+const { snackbar } = toRefs(props);
 const snackbarEl = ref<HTMLElement | null>(null);
 const timeoutId = ref<number | undefined>(undefined);
 const timeoutStartTime = ref<number | undefined>(undefined);
 const remainingTimeOut = ref(snackbar.value.duration || 5000);
 
+// Start timer if snackbar has duration and is not dismissible
 watch(
-  showTimer,
-  (newValue) => {
-    // Stop timer?
-    if (!newValue) {
+  () => snackbar.value.duration,
+  (newDuration) => {
+    // Stop timer if dismissible or duration is 0
+    if (snackbar.value.dismissible || newDuration === 0) {
       if (timeoutId.value) {
         window.clearTimeout(timeoutId.value);
         timeoutId.value = undefined;
-        remainingTimeOut.value = snackbar.value.duration || 5000;
+        remainingTimeOut.value = newDuration || 5000;
       }
       return;
     }
@@ -180,7 +168,7 @@ function pauseTimer() {
 }
 
 function resumeTimer() {
-  if (!showTimer.value) {
+  if (snackbar.value.dismissible || snackbar.value.duration === 0) {
     return;
   }
 
@@ -286,21 +274,6 @@ onBeforeUnmount(() => {
   color: var(--color-text-primary);
 }
 
-.mt-snackbar-notification__timer {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  background: var(--color-border-default);
-}
-
-.mt-snackbar-notification__timer-loader {
-  height: 100%;
-  background: var(--color-primary-500);
-  animation: snackbar-timer 5s linear;
-}
-
 /* Type-specific styles */
 .mt-snackbar-notification--success {
   border-left: 4px solid var(--color-success-500);
@@ -308,10 +281,6 @@ onBeforeUnmount(() => {
 
 .mt-snackbar-notification--success .mt-snackbar-notification__icon {
   color: var(--color-success-500);
-}
-
-.mt-snackbar-notification--success .mt-snackbar-notification__timer-loader {
-  background: var(--color-success-500);
 }
 
 .mt-snackbar-notification--error {
@@ -322,10 +291,6 @@ onBeforeUnmount(() => {
   color: var(--color-danger-500);
 }
 
-.mt-snackbar-notification--error .mt-snackbar-notification__timer-loader {
-  background: var(--color-danger-500);
-}
-
 .mt-snackbar-notification--warning {
   border-left: 4px solid var(--color-warning-500);
 }
@@ -334,28 +299,11 @@ onBeforeUnmount(() => {
   color: var(--color-warning-500);
 }
 
-.mt-snackbar-notification--warning .mt-snackbar-notification__timer-loader {
-  background: var(--color-warning-500);
-}
-
 .mt-snackbar-notification--info {
   border-left: 4px solid var(--color-info-500);
 }
 
 .mt-snackbar-notification--info .mt-snackbar-notification__icon {
   color: var(--color-info-500);
-}
-
-.mt-snackbar-notification--info .mt-snackbar-notification__timer-loader {
-  background: var(--color-info-500);
-}
-
-@keyframes snackbar-timer {
-  from {
-    width: 100%;
-  }
-  to {
-    width: 0%;
-  }
 }
 </style>
