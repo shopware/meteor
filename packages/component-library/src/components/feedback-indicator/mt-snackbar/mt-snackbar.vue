@@ -32,24 +32,27 @@ const { snackbars, removeSnackbar } = useSnackbar();
   flex-direction: column;
   gap: var(--scale-size-8);
   pointer-events: none;
-}
 
-.mt-snackbar .snackbars-enter-from {
-  transform: translateX(100%);
-  opacity: 0;
-}
+  .snackbars-enter-from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
 
-.mt-snackbar .snackbars-leave-to {
-  transform: translateX(100%);
-  opacity: 0;
-}
+  .snackbars-leave-to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
 
-.mt-snackbar .snackbars-enter-active,
-.mt-snackbar .snackbars-leave-active {
-  transition: all 0.3s ease;
-}
+  .snackbars-enter-active {
+    transition: all 0.3s ease;
+  }
 
-.mt-snackbar .snackbars-move {
-  transition: transform 0.3s ease;
+  .snackbars-leave-active {
+    transition: all 0.3s ease;
+  }
+
+  .snackbars-move {
+    transition: transform 0.3s ease;
+  }
 }
 </style>
