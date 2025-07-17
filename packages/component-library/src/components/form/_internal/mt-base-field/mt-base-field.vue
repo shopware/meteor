@@ -353,8 +353,8 @@ export default defineComponent({
 }
 
 .mt-field.has--focus .mt-block-field__block {
-  border-color: var(--color-border-brand-selected);
-  box-shadow: 0px 0px 4px 0px rgba(24, 158, 255, 0.3);
+  outline: var(--scale-size-2) solid var(--color-border-brand-selected);
+  outline-offset: var(--scale-size-2);
 }
 
 .mt-field.has--error label {
@@ -377,10 +377,6 @@ export default defineComponent({
 .mt-field.has--error .mt-block-field__block {
   background: var(--color-background-critical-dark);
   border-color: var(--color-border-critical-default);
-}
-
-.mt-field.has--error.has--focus .mt-block-field__block {
-  box-shadow: 0 0 4px lighten(#de294c, 30%);
 }
 
 .mt-field .mt-field--select__options .mt-icon {

@@ -372,7 +372,7 @@ export default defineComponent({
   --dp-border-color: var(--color-border-primary-default);
   --dp-menu-border-color: var(--color-border-primary-default);
   --dp-border-color-hover: var(--color-border-primary-default);
-  --dp-border-color-focus: var(--color-border-brand-selected);
+  --dp-border-color-focus: var(--color-border-primary-default);
   --dp-disabled-color: var(--color-background-primary-disabled);
   --dp-scroll-bar-background: var(--color-elevation-surface-overlay);
   --dp-scroll-bar-color: var(--color-interaction-secondary-dark);
@@ -450,7 +450,8 @@ export default defineComponent({
 }
 
 .dp__input_focus {
-  filter: drop-shadow(0px 0px 3px #189eff4d);
+  outline: var(--scale-size-2) solid var(--color-border-brand-selected);
+  outline-offset: var(--scale-size-2);
 }
 
 .dp__disabled {

@@ -127,8 +127,8 @@ defineProps<{
   outline: none;
 
   &:focus-visible:not(.mt-textarea__textarea--error) {
-    border-color: var(--color-border-brand-selected);
-    box-shadow: 0px 0px 4px 0px rgba(24, 158, 255, 0.3);
+    outline: var(--scale-size-2) solid var(--color-border-brand-selected);
+    outline-offset: var(--scale-size-2);
   }
 
   &::placeholder {

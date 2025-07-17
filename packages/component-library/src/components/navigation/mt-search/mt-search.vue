@@ -65,8 +65,8 @@ defineEmits<{
   align-items: center;
 
   &:focus-within {
-    border-color: var(--color-border-brand-selected);
-    box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
+    outline: var(--scale-size-2) solid var(--color-border-brand-selected);
+    outline-offset: var(--scale-size-2);
   }
 }
 

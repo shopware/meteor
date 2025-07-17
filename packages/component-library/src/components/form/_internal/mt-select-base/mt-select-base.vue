@@ -309,7 +309,6 @@ export default defineComponent({
 }
 
 .mt-select .mt-block-field__block {
-  transition: all ease-in-out 0.2s;
   background-color: var(--color-elevation-surface-raised);
   position: relative;
   overflow: hidden;

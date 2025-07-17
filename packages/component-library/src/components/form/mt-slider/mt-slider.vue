@@ -493,19 +493,22 @@ export default defineComponent({
 .mt-slider .mt-slider__slider .mt-slider__input-slider:hover::-webkit-slider-thumb,
 .mt-slider .mt-slider__slider .mt-slider__input-slider:focus::-webkit-slider-thumb {
   background-color: var(--color-interaction-secondary-default);
-  border-color: var(--color-border-brand-selected);
+  outline-offset: var(--scale-size-2);
+  outline: var(--scale-size-2) solid var(--color-border-brand-selected);
 }
 
 .mt-slider .mt-slider__slider .mt-slider__input-slider:hover::-moz-range-thumb,
 .mt-slider .mt-slider__slider .mt-slider__input-slider:focus::-moz-range-thumb {
   background-color: var(--color-interaction-secondary-default);
-  border-color: var(--color-border-brand-selected);
+  outline-offset: var(--scale-size-2);
+  outline: var(--scale-size-2) solid var(--color-border-brand-selected);
 }
 
 .mt-slider .mt-slider__slider .mt-slider__input-slider:hover::-ms-thumb,
 .mt-slider .mt-slider__slider .mt-slider__input-slider:focus::-ms-thumb {
   background-color: var(--color-interaction-secondary-default);
-  border-color: var(--color-border-brand-selected);
+  outline-offset: var(--scale-size-2);
+  outline: var(--scale-size-2) solid var(--color-border-brand-selected);
 }
 
 .mt-slider .mt-slider__slider .mt-slider__input-slider:disabled {

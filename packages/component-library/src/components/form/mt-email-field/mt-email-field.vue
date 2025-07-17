@@ -222,8 +222,8 @@ const { t } = useI18n({
   }
 
   &:not(.mt-email-field__block--error)&:has(.mt-email-field__input:focus-visible) {
-    border-color: var(--color-border-brand-selected);
-    box-shadow: 0px 0px 4px 0px rgba(24, 158, 255, 0.3);
+    outline: var(--scale-size-2) solid var(--color-border-brand-selected);
+    outline-offset: var(--scale-size-2);
   }
 
   &:has(.mt-email-field__input:disabled) {
