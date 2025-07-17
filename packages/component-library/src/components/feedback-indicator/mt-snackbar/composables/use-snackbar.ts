@@ -1,3 +1,4 @@
+import { createId } from "@/utils/id";
 import { ref, type Ref } from "vue";
 
 export interface Snackbar {
@@ -17,7 +18,7 @@ const globalSnackbars = ref<Snackbar[]>([]);
 
 export function useSnackbar() {
   function addSnackbar(snackbarData: Omit<Snackbar, "id">) {
-    const id = `snackbar-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    const id = createId(); // auto generated at the sdk
     const snackbar: Snackbar = {
       id,
       duration: 5000,
