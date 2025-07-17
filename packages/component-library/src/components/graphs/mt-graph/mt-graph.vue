@@ -64,8 +64,8 @@ const chartOptions = computed<ApexOptions>(() => {
   const options = props.options;
   const defaultOptions = getDefaultOptions(props.type);
 
-  let mergedOptions = deepCopyObject(defaultOptions);
-  mergedOptions = deepMergeObjects<ApexOptions>(mergedOptions, options);
+  const mergedOptions = deepMergeObjects<ApexOptions>(defaultOptions, options);
+
   return {
     ...mergedOptions,
     chart: {
