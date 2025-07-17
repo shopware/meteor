@@ -183,10 +183,13 @@ const lastVisibleItemNumber = computed(() => {
   width: var(--scale-size-40);
   display: grid;
   place-items: center;
-  transition: all 0.15s ease-out;
+  transition-property: background-color, color, border-color;
+  transition-duration: 0.15s;
+  transition-timing-function: ease-out;
 
   &:focus-visible {
-    outline: 1px solid var(--color-border-brand-selected);
+    outline: var(--scale-size-2) solid var(--color-border-brand-selected);
+    outline-offset: var(--scale-size-2);
     background-color: var(--color-interaction-secondary-hover);
   }
 
