@@ -159,3 +159,17 @@ export const VisualTestLinkButton: MtButtonStory = {
     expect(canvas.getByRole("link")).toHaveAttribute("href", "https://www.shopware.com");
   },
 };
+
+export const VisualTestFocusRing: MtButtonStory = {
+  name: "Render the focus ring",
+  args: {
+    default: "Focus ring",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await userEvent.tab();
+
+    await expect(canvas.getByRole("button")).toHaveFocus();
+  },
+};
