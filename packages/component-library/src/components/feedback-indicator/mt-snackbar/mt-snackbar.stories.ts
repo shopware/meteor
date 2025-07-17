@@ -5,14 +5,6 @@ import { useSnackbar } from "./composables/use-snackbar";
 const meta: Meta<typeof MtSnackbar> = {
   title: "Components/Feedback Indicator/mt-snackbar",
   component: MtSnackbar,
-  parameters: {
-    docs: {
-      description: {
-        component:
-          "A snackbar component for displaying notifications at the bottom right of the screen.",
-      },
-    },
-  },
 };
 
 export default meta;
@@ -26,7 +18,7 @@ export const Default: Story = {
 
       const addDefaultSnackbar = () => {
         addSnackbar({
-          message: "This is a default snackbar notification.",
+          message: "This is a default snackbar.",
         });
       };
 
