@@ -46,7 +46,7 @@ export const Default: Story = {
       };
     },
     template: `
-        <h2>Spawn some toasts 🍞</h2>
+        <h2>Spawn some snackbars 🍞</h2>
         <div style="display: flex; gap: 10px;">
           <mt-button @click="addDefaultSnackbar" variant="secondary">
             Default Snackbar
