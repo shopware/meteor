@@ -243,42 +243,41 @@ onBeforeUnmount(() => {
   font-size: var(--font-size-sm);
   text-decoration: underline;
   color: var(--color-primary-500);
+
+  &:hover {
+    color: var(--color-primary-600);
+  }
 }
 
-.mt-snackbar-notification__link:hover {
-  color: var(--color-primary-600);
-}
-
-/* Type-specific styles */
 .mt-snackbar-notification--success {
   border-left: 4px solid var(--color-success-500);
-}
 
-.mt-snackbar-notification--success .mt-snackbar-notification__icon {
-  color: var(--color-success-500);
+  .mt-snackbar-notification__icon {
+    color: var(--color-success-500);
+  }
 }
 
 .mt-snackbar-notification--error {
   border-left: 4px solid var(--color-danger-500);
-}
 
-.mt-snackbar-notification--error .mt-snackbar-notification__icon {
-  color: var(--color-danger-500);
+  .mt-snackbar-notification__icon {
+    color: var(--color-danger-500);
+  }
 }
 
 .mt-snackbar-notification--warning {
   border-left: 4px solid var(--color-warning-500);
-}
 
-.mt-snackbar-notification--warning .mt-snackbar-notification__icon {
-  color: var(--color-warning-500);
+  .mt-snackbar-notification__icon {
+    color: var(--color-warning-500);
+  }
 }
 
 .mt-snackbar-notification--info {
   border-left: 4px solid var(--color-info-500);
-}
 
-.mt-snackbar-notification--info .mt-snackbar-notification__icon {
-  color: var(--color-info-500);
+  .mt-snackbar-notification__icon {
+    color: var(--color-info-500);
+  }
 }
 </style>
