@@ -40,16 +40,6 @@
           </mt-link>
         </div>
       </div>
-
-      <div
-        v-if="snackbar.dismissible === true"
-        class="mt-snackbar-notification__close-action"
-        aria-hidden="true"
-        data-testid="dismiss-snackbar"
-        @click="onRemoveSnackbar"
-      >
-        <mt-icon name="solid-times-circle" size="20px" />
-      </div>
     </div>
   </div>
 </template>
@@ -130,12 +120,12 @@ const timeoutId = ref<number | undefined>(undefined);
 const timeoutStartTime = ref<number | undefined>(undefined);
 const remainingTimeOut = ref(snackbar.value.duration || 5000);
 
-// Start timer if snackbar has duration and is not dismissible
+// Start timer for auto-dismiss
 watch(
   () => snackbar.value.duration,
   (newDuration) => {
-    // Stop timer if dismissible or duration is 0
-    if (snackbar.value.dismissible || newDuration === 0) {
+    // Stop timer if duration is 0 (infinite)
+    if (newDuration === 0) {
       if (timeoutId.value) {
         window.clearTimeout(timeoutId.value);
         timeoutId.value = undefined;
@@ -168,7 +158,7 @@ function pauseTimer() {
 }
 
 function resumeTimer() {
-  if (snackbar.value.dismissible || snackbar.value.duration === 0) {
+  if (snackbar.value.duration === 0) {
     return;
   }
 
@@ -258,20 +248,6 @@ onBeforeUnmount(() => {
 
 .mt-snackbar-notification__link:hover {
   color: var(--color-primary-600);
-}
-
-.mt-snackbar-notification__close-action {
-  flex-shrink: 0;
-  cursor: pointer;
-  padding: var(--scale-size-4);
-  border-radius: var(--border-radius-sm);
-  color: var(--color-text-secondary);
-  transition: all 0.2s ease;
-}
-
-.mt-snackbar-notification__close-action:hover {
-  background: var(--color-background-secondary);
-  color: var(--color-text-primary);
 }
 
 /* Type-specific styles */

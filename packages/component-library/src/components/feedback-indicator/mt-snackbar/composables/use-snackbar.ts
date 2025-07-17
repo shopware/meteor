@@ -10,7 +10,6 @@ export interface Snackbar {
     url: string;
   };
   duration?: number;
-  dismissible?: boolean;
 }
 
 // Global snackbars state
@@ -22,7 +21,6 @@ export function useSnackbar() {
     const snackbar: Snackbar = {
       id,
       duration: 5000,
-      dismissible: false,
       ...snackbarData,
     };
 
