@@ -20,7 +20,6 @@ import MtSnackbarNotification from "./_internal/mt-snackbar-notification.vue";
 import { useSnackbar } from "./composables/use-snackbar";
 
 const { snackbars, removeSnackbar } = useSnackbar();
-
 </script>
 
 <style scoped>
