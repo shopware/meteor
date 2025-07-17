@@ -147,11 +147,11 @@ jobs:
       - name: Install Playwright
         run: npx playwright install
 
-      - name: Build packages
-        run: npx turbo run build
+      # - name: Build packages
+      #   run: npx turbo run build --force
 
       - name: Run e2e tests
-        run: pnpx turbo run test:e2e
+        run: npx turbo run test:e2e --force
 
       - uses: actions/upload-artifact@v4
         if: always()

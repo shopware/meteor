@@ -1,4 +1,4 @@
-import { get, getPropertyValue } from "./object";
+import { deepMergeObjects, get, getPropertyValue } from "./object";
 
 describe("utils/object", () => {
   describe("get", () => {
@@ -180,6 +180,68 @@ describe("utils/object", () => {
 
       // ASSERT
       expect(result).toBe(object);
+    });
+  });
+
+  describe("deepMergeObjects", () => {
+    it("overwrites primitive values in the target with source values", () => {
+      // ARRANGE
+      const target = { a: 1, b: 2 };
+      const source = { a: 3, b: 4 };
+
+      // ACT
+      const result = deepMergeObjects<any>(target, source);
+
+      // ASSERT
+      expect(result).toEqual({ a: 3, b: 4 });
+    });
+
+    it("merges nested objects recursively", () => {
+      // ARRANGE
+      const target = { a: { b: 1, c: 2 } };
+      const source = { a: { c: 3, d: 4 } };
+
+      // ACT
+      const result = deepMergeObjects<any>(target, source);
+
+      // ASSERT
+      expect(result).toEqual({ a: { b: 1, c: 3, d: 4 } });
+    });
+
+    it("adds new properties from the source to the target", () => {
+      // ARRANGE
+      const target = { a: 1 };
+      const source = { b: 2, c: 3 };
+
+      // ACT
+      const result = deepMergeObjects<any>(target, source);
+
+      // ASSERT
+      expect(result).toEqual({ a: 1, b: 2, c: 3 });
+    });
+
+    it("does not modify the target object if the source is empty", () => {
+      // ARRANGE
+      const target = { a: 1, b: 2 };
+      const source = {};
+
+      // ACT
+      const result = deepMergeObjects<any>(target, source);
+
+      // ASSERT
+      expect(result).toEqual({ a: 1, b: 2 });
+    });
+
+    it("handles arrays as properties correctly", () => {
+      // ARRANGE
+      const target = { a: [1, 2], b: { c: 3 } };
+      const source = { a: [3, 4], b: { d: 5 } };
+
+      // ACT
+      const result = deepMergeObjects<any>(target, source);
+
+      // ASSERT
+      expect(result).toEqual({ a: [3, 4], b: { c: 3, d: 5 } });
     });
   });
 });
