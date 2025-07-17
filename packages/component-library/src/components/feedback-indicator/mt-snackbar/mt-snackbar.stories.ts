@@ -46,8 +46,8 @@ export const Default: Story = {
       };
     },
     template: `
-      <div>
-        <div style="padding: 20px; display: flex; gap: 10px; flex-wrap: wrap;">
+        <h2>Spawn some toasts 🍞</h2>
+        <div style="display: flex; gap: 10px;">
           <mt-button @click="addDefaultSnackbar" variant="secondary">
             Default Snackbar
           </mt-button>
@@ -59,7 +59,6 @@ export const Default: Story = {
           </mt-button>
         </div>
         <MtSnackbar />
-      </div>
     `,
   }),
 };
