@@ -1,14 +1,14 @@
 <template>
   <Teleport to="body">
-    <div class="mt-snackbar" :class="classes">
+    <div class="mt-snackbar">
       <TransitionGroup name="snackbars">
         <mt-snackbar-notification
           v-for="(snackbar, index) in snackbars"
           :key="snackbar.id"
           :snackbar="snackbar"
-          @remove-snackbar="removeSnackbar"
           :style="{ '--num': index }"
           :index="index"
+          @remove-snackbar="removeSnackbar"
         />
       </TransitionGroup>
     </div>
@@ -16,17 +16,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
 import MtSnackbarNotification from "./_internal/mt-snackbar-notification.vue";
-import { useSnackbar, type Snackbar } from "./composables/use-snackbar";
+import { useSnackbar } from "./composables/use-snackbar";
 
 const { snackbars, removeSnackbar } = useSnackbar();
 
-const classes = computed(() => {
-  return {
-    "mt-snackbar--has-snackbars": snackbars.value.length > 0,
-  };
-});
 </script>
 
 <style scoped>
@@ -39,10 +33,6 @@ const classes = computed(() => {
   flex-direction: column;
   gap: var(--scale-size-8);
   pointer-events: none;
-}
-
-.mt-snackbar--has-snackbars {
-  pointer-events: auto;
 }
 
 .mt-snackbar .snackbars-enter-from {
