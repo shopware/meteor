@@ -371,9 +371,6 @@ importers:
       vue-smooth-reflow:
         specifier: ^0.1.12
         version: 0.1.12(vue@3.5.13(typescript@5.7.3))
-      vue3-apexcharts:
-        specifier: ^1.8.0
-        version: 1.8.0(apexcharts@5.2.0)(vue@3.5.13(typescript@5.7.3))
     devDependencies:
       '@csstools/stylelint-formatter-github':
         specifier: ^1.0.0
@@ -461,7 +458,7 @@ importers:
         version: 0.11.3(eslint@9.21.0(jiti@1.21.7))(typescript@5.7.3)
       eslint-plugin-vitest:
         specifier: ^0.5.4
-        version: 0.5.4(eslint@9.21.0(jiti@1.21.7))(typescript@5.7.3)(vitest@3.0.5(@types/node@18.19.36)(@vitest/ui@3.0.5)(jsdom@26.1.0)(msw@2.7.1(@types/node@18.19.36)(typescript@5.7.3))(sass@1.77.6)(terser@5.31.1))
+        version: 0.5.4(eslint@9.21.0(jiti@1.21.7))(typescript@5.7.3)(vitest@3.0.5)
       eslint-plugin-vue:
         specifier: ^9.32.0
         version: 9.32.0(eslint@9.21.0(jiti@1.21.7))
@@ -11619,12 +11616,6 @@ packages:
     peerDependencies:
       vue: ^3.2.0
 
-  vue3-apexcharts@1.8.0:
-    resolution: {integrity: sha512-5tSD4mXTBbIJ9ir+58qHE6oNtIe0RNgqIRYMKpcsIaxkKtwUww4JhvPkpUFlmiW4OJbbdklgjleXq1lfcM4gdA==}
-    peerDependencies:
-      apexcharts: '>=4.0.0'
-      vue: '>=3.0.0'
-
   vue@2.7.16:
     resolution: {integrity: sha512-4gCtFXaAA3zYZdTp5s4Hl2sozuySsgz4jy1EnpBHNfpMa9dK1ZCG7viqBPCwXtmgc8nHqUsAu3G4gtmXkkY3Sw==}
     deprecated: Vue 2 has reached EOL and is no longer actively maintained. See https://v2.vuejs.org/eol/ for more details.
@@ -13973,8 +13964,8 @@ snapshots:
 
   '@jridgewell/source-map@0.3.6':
     dependencies:
-      '@jridgewell/gen-mapping': 0.3.8
-      '@jridgewell/trace-mapping': 0.3.25
+      '@jridgewell/gen-mapping': 0.3.12
+      '@jridgewell/trace-mapping': 0.3.29
 
   '@jridgewell/sourcemap-codec@1.4.15': {}
 
@@ -13995,7 +13986,7 @@ snapshots:
   '@jridgewell/trace-mapping@0.3.9':
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
-      '@jridgewell/sourcemap-codec': 1.5.0
+      '@jridgewell/sourcemap-codec': 1.5.4
 
   '@kwsites/file-exists@1.1.1':
     dependencies:
@@ -17003,7 +16994,7 @@ snapshots:
 
   acorn-walk@8.3.3:
     dependencies:
-      acorn: 8.12.0
+      acorn: 8.14.0
 
   acorn@7.4.1: {}
 
@@ -18138,6 +18129,10 @@ snapshots:
     dependencies:
       ms: 2.0.0
 
+  debug@3.2.7:
+    dependencies:
+      ms: 2.1.3
+
   debug@3.2.7(supports-color@5.5.0):
     dependencies:
       ms: 2.1.3
@@ -18898,7 +18893,7 @@ snapshots:
       - supports-color
       - typescript
 
-  eslint-plugin-vitest@0.5.4(eslint@9.21.0(jiti@1.21.7))(typescript@5.7.3)(vitest@3.0.5(@types/node@18.19.36)(@vitest/ui@3.0.5)(jsdom@26.1.0)(msw@2.7.1(@types/node@18.19.36)(typescript@5.7.3))(sass@1.77.6)(terser@5.31.1)):
+  eslint-plugin-vitest@0.5.4(eslint@9.21.0(jiti@1.21.7))(typescript@5.7.3)(vitest@3.0.5):
     dependencies:
       '@typescript-eslint/utils': 7.13.1(eslint@9.21.0(jiti@1.21.7))(typescript@5.7.3)
       eslint: 9.21.0(jiti@1.21.7)
@@ -22012,7 +22007,7 @@ snapshots:
       path-to-regexp: 6.3.0
       picocolors: 1.1.1
       strict-event-emitter: 0.5.1
-      type-fest: 4.35.0
+      type-fest: 4.41.0
       yargs: 17.7.2
     optionalDependencies:
       typescript: 5.7.3
@@ -22922,7 +22917,7 @@ snapshots:
   portfinder@1.0.32:
     dependencies:
       async: 2.6.4
-      debug: 3.2.7(supports-color@5.5.0)
+      debug: 3.2.7
       mkdirp: 0.5.6
     transitivePeerDependencies:
       - supports-color
@@ -24718,7 +24713,7 @@ snapshots:
       '@tsconfig/node14': 1.0.3
       '@tsconfig/node16': 1.0.4
       '@types/node': 18.19.36
-      acorn: 8.12.0
+      acorn: 8.14.0
       acorn-walk: 8.3.3
       arg: 4.1.3
       create-require: 1.1.1
@@ -25782,11 +25777,6 @@ snapshots:
       vue: 3.5.13(typescript@5.7.3)
       vue-observe-visibility: 2.0.0-alpha.1(vue@3.5.13(typescript@5.7.3))
       vue-resize: 2.0.0-alpha.1(vue@3.5.13(typescript@5.7.3))
-
-  vue3-apexcharts@1.8.0(apexcharts@5.2.0)(vue@3.5.13(typescript@5.7.3)):
-    dependencies:
-      apexcharts: 5.2.0
-      vue: 3.5.13(typescript@5.7.3)
 
   vue@2.7.16:
     dependencies:
