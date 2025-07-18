@@ -47,6 +47,26 @@ describe("mt-checkbox", () => {
     expect(handler).toHaveBeenCalledWith(true);
   });
 
+  it("emits an event when toggling it with the space key", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+    render(MtCheckbox, {
+      props: {
+        // @ts-expect-error -- Event is not typed, yet
+        onChange: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.type(screen.getByRole("checkbox"), "{Space}");
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).toBeChecked();
+
+    expect(handler).toHaveBeenCalledOnce();
+    expect(handler).toHaveBeenCalledWith(true);
+  });
+
   it("shows as tooltip when focusing the inheritance switch", async () => {
     // ARRANGE
     render(MtCheckbox, {
