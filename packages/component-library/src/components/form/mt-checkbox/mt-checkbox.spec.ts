@@ -116,6 +116,18 @@ describe("mt-checkbox", () => {
     expect(screen.getByRole("checkbox")).toHaveAttribute("name", "over-18");
   });
 
+  it("can be disabled", async () => {
+    // ARRANGE
+    render(MtCheckbox, {
+      props: {
+        disabled: true,
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).toBeDisabled();
+  });
+
   it("shows as tooltip when focusing the inheritance switch", async () => {
     // ARRANGE
     render(MtCheckbox, {
