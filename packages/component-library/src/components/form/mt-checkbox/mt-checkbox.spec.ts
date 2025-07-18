@@ -185,6 +185,20 @@ describe("mt-checkbox", () => {
     expect(screen.getByRole("tooltip")).toBeVisible();
   });
 
+  it("displays an error message when defined", async () => {
+    // ARRANGE
+    render(MtCheckbox, {
+      props: {
+        error: {
+          detail: "Error message",
+        },
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByText("Error message")).toBeVisible();
+  });
+
   it("shows as tooltip when focusing the inheritance switch", async () => {
     // ARRANGE
     render(MtCheckbox, {
