@@ -74,6 +74,7 @@ defineEmits(["button-click"]);
 
 .mt-empty-state__description {
   margin-top: var(--scale-size-8);
+  text-wrap: pretty;
 }
 
 .mt-empty-state__link {
