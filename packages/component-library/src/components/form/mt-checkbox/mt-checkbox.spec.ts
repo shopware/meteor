@@ -105,6 +105,17 @@ describe("mt-checkbox", () => {
     expect(screen.getByRole("checkbox")).toHaveFocus();
   });
 
+  it("has the correct name when submitting a form", async () => {
+    await render(MtCheckbox, {
+      props: {
+        name: "over-18",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).toHaveAttribute("name", "over-18");
+  });
+
   it("shows as tooltip when focusing the inheritance switch", async () => {
     // ARRANGE
     render(MtCheckbox, {

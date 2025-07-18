@@ -63,6 +63,15 @@ export default defineComponent({
 
   props: {
     /**
+     * The name of the input field when submitting a form.
+     */
+    name: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
+
+    /**
      * A label for the checkbox.
      */
     label: {
@@ -194,7 +203,7 @@ export default defineComponent({
     },
 
     identification(): string {
-      return `mt-field--${this.id}`;
+      return this.name || `mt-field--${this.id}`;
     },
 
     hasError(): boolean {
