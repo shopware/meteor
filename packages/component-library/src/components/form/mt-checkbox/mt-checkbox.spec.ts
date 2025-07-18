@@ -147,6 +147,26 @@ describe("mt-checkbox", () => {
     expect(handler).not.toHaveBeenCalled();
   });
 
+  it("can be required", async () => {
+    // ARRANGE
+    render(MtCheckbox, {
+      props: {
+        required: true,
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).toBeRequired();
+  });
+
+  it("is not required by default", async () => {
+    // ARRANGE
+    render(MtCheckbox);
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).not.toBeRequired();
+  });
+
   it("shows as tooltip when focusing the inheritance switch", async () => {
     // ARRANGE
     render(MtCheckbox, {
