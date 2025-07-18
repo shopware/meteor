@@ -61,8 +61,10 @@ defineEmits(["button-click"]);
 }
 
 .mt-empty-state__icon {
-  display: inline-block;
-  padding: var(--scale-size-12);
+  width: var(--scale-size-48);
+  height: var(--scale-size-48);
+  display: grid;
+  place-items: center;
   border-radius: var(--border-radius-xs);
   background-color: var(--color-interaction-secondary-dark);
 }
