@@ -15,6 +15,18 @@ describe("mt-checkbox", () => {
     expect(screen.getByRole("checkbox")).toBeChecked();
   });
 
+  it("does not show a checkmark when unchecked", async () => {
+    // ARRANGE
+    render(MtCheckbox, {
+      props: {
+        checked: false,
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).not.toBeChecked();
+  });
+
   it("shows as tooltip when focusing the inheritance switch", async () => {
     // ARRANGE
     render(MtCheckbox, {
