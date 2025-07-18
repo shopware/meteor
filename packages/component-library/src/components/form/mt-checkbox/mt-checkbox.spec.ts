@@ -349,4 +349,28 @@ describe("mt-checkbox", () => {
     // ASSERT
     expect(screen.getByRole("checkbox")).not.toBeChecked();
   });
+
+  it("is disabled when inheritance is linked", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+    render(MtCheckbox, {
+      props: {
+        // @ts-expect-error -- isInheritanceField is not typed, yet
+        isInheritanceField: true,
+        isInherited: true,
+        inheritedValue: true,
+        checked: false,
+        onChange: handler,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("checkbox"));
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).toBeDisabled();
+
+    expect(screen.getByRole("checkbox")).toBeChecked();
+    expect(handler).not.toHaveBeenCalled();
+  });
 });
