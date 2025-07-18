@@ -199,6 +199,18 @@ describe("mt-checkbox", () => {
     expect(screen.getByText("Error message")).toBeVisible();
   });
 
+  it("has an indeterminate state", async () => {
+    // ARRANGE
+    render(MtCheckbox, {
+      props: {
+        partial: true,
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).toBePartiallyChecked();
+  });
+
   it("shows as tooltip when focusing the inheritance switch", async () => {
     // ARRANGE
     render(MtCheckbox, {
