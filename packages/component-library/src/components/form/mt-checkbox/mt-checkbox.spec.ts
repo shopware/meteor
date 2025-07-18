@@ -246,6 +246,20 @@ describe("mt-checkbox", () => {
     expect(handler).toHaveBeenCalledWith(false);
   });
 
+  it("keeps its unchecked state when it is partially checked", async () => {
+    // ARRANGE
+    render(MtCheckbox, {
+      props: {
+        checked: false,
+        partial: true,
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).not.toBeChecked();
+    expect(screen.getByRole("checkbox")).toBePartiallyChecked();
+  });
+
   it("shows as tooltip when focusing the inheritance switch", async () => {
     // ARRANGE
     render(MtCheckbox, {
