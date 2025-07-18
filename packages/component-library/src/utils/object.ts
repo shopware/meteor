@@ -60,6 +60,36 @@ export function getPropertyValue(object: any, propertyPath: string | string[], d
   return get(object, propertyPath, defaultValue);
 }
 
+/**
+ * Takes two objects and merges them deeply.
+ * If a property exists in both objects and is an object itself, it will merge them recursively.
+ * If a property exists in the source object but not in the target, it will be added to the target.
+ * If a property exists in the target but not in the source, it will remain unchanged.
+ * If a property exists in both objects but is not an object, the source value will overwrite the target value.
+ *
+ * @param target - The target object to merge into
+ * @param source - The source object to merge from
+ * @return The merged object
+ */
+export function deepMergeObjects<T extends object>(target: T, source: Partial<T>): T {
+  for (const key in source) {
+    const targetValue = target[key];
+    const sourceValue = source[key];
+
+    if (
+      sourceValue instanceof Object &&
+      !Array.isArray(sourceValue) &&
+      targetValue instanceof Object &&
+      !Array.isArray(targetValue)
+    ) {
+      target[key] = deepMergeObjects(targetValue as any, sourceValue as any);
+    } else {
+      target[key] = sourceValue as any;
+    }
+  }
+  return target;
+}
+
 export default {
   deepCopyObject,
   hasOwnProperty,
