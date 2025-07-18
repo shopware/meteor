@@ -1,5 +1,23 @@
 # Changelog
 
+## 4.14.1
+
+### Patch Changes
+
+- 0f4c732: Properly announce mt-progress-bar to screen readers
+- 6cc0aab: Allow setting name for `mt-checkbox` for form submition
+- 87cf138: Allow setting `mt-checkbox` as required
+- 27cf4bf: Add inset values for mt-card content
+- 0f4c732: Remove unnecessary vertical spacing for mt-progress-bar
+- 8e13247: Make clear button in mt-select bigger
+- 68c05cf: Update focus styles for form components
+- 0f4c732: Correctly announce multiple mt-progress-bars
+- 4092483: Update focus styles of mt-button
+- 0f4c732: Hide progress label if none is defined
+- 8aadd9d: Corrected datepicker alignment
+- Updated dependencies [19ca0a3]
+  - @shopware-ag/meteor-tokens@1.2.0
+
 ## 4.14.0
 
 ### Minor Changes
