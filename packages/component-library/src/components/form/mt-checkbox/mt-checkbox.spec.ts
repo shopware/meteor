@@ -333,4 +333,20 @@ describe("mt-checkbox", () => {
     // ASSERT
     expect(screen.getByRole("checkbox")).toBeChecked();
   });
+
+  it("shows the overridden value when it is not inherited", async () => {
+    // ARRANGE
+    render(MtCheckbox, {
+      props: {
+        checked: false,
+        // @ts-expect-error -- isInheritanceField is not typed, yet
+        isInheritanceField: true,
+        isInherited: false,
+        inheritedValue: true,
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).not.toBeChecked();
+  });
 });
