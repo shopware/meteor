@@ -22,7 +22,8 @@
     </span>
   </a>
 
-  <button
+  <component
+    :is="is"
     v-else
     type="button"
     class="mt-button"
@@ -43,29 +44,33 @@
       <slot />
       <slot name="iconBack" :size="iconSize" v-if="$slots.iconBack" />
     </span>
-  </button>
+  </component>
 </template>
 
 <script setup lang="ts">
 import { useIsInsideTooltip } from "@/components/overlay/mt-tooltip/composables/useIsInsideTooltip";
 import MtLoader from "../../feedback-indicator/mt-loader/mt-loader.vue";
-import { computed } from "vue";
+import { computed, type Component } from "vue";
 
 const props = withDefaults(
   defineProps<{
+    is?: Component | string;
     disabled?: boolean;
     variant?: "primary" | "secondary" | "critical" | "action";
     ghost?: boolean;
     size?: "x-small" | "small" | "default" | "large";
     square?: boolean;
     block?: boolean;
+    // @deprecated: use is="a" & href="MY_URL" instead
     link?: string;
     isLoading?: boolean;
   }>(),
   {
+    is: "button",
     variant: "secondary",
     // TODO: Update default value to "default"
     size: "small",
+    link: undefined,
   },
 );
 
