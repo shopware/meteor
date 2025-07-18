@@ -317,4 +317,20 @@ describe("mt-checkbox", () => {
     // ASSERT
     expect(handler).toHaveBeenCalledOnce();
   });
+
+  it("shows the inherited value when it is inherited", async () => {
+    // ARRANGE
+    render(MtCheckbox, {
+      props: {
+        checked: false,
+        // @ts-expect-error -- isInheritanceField is not typed, yet
+        isInheritanceField: true,
+        isInherited: true,
+        inheritedValue: true,
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("checkbox")).toBeChecked();
+  });
 });
