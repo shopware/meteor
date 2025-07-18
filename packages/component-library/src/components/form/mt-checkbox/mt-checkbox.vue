@@ -10,6 +10,7 @@
             :checked="inputState"
             :disabled="isDisabled"
             :indeterminate.prop="partial"
+            :required="required"
             @change.stop="onChange"
           />
           <div class="mt-field__checkbox-state">
