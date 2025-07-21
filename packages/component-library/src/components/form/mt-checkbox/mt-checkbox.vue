@@ -10,6 +10,7 @@
             :checked="inputState"
             :disabled="isDisabled"
             :indeterminate.prop="partial"
+            :required="required"
             @change.stop="onChange"
           />
           <div class="mt-field__checkbox-state">
@@ -62,6 +63,15 @@ export default defineComponent({
   mixins: [MtFormFieldMixin],
 
   props: {
+    /**
+     * The name of the input field when submitting a form.
+     */
+    name: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
+
     /**
      * A label for the checkbox.
      */
@@ -194,7 +204,7 @@ export default defineComponent({
     },
 
     identification(): string {
-      return `mt-field--${this.id}`;
+      return this.name || `mt-field--${this.id}`;
     },
 
     hasError(): boolean {
