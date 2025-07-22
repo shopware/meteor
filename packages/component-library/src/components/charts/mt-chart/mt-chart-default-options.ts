@@ -36,7 +36,7 @@ function createOptions(): Record<string, ApexOptions> {
       },
       grid: {
         show: true,
-        borderColor: "#cdced4",
+        borderColor: "var(--color-border-primary-default)",
       },
       colors: ["#0870ff"],
       fill: {

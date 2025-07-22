@@ -101,17 +101,22 @@ watch([() => props.type, () => props.width, () => props.height], init);
 </script>
 
 <style scoped>
+.mt-chart :deep(.apexcharts-text) {
+  fill: var(--color-text-secondary-default) !important;
+}
+
 .mt-chart-area :deep(.apexcharts-tooltip) {
   background-color: var(--color-elevation-surface-overlay);
   border: 1px solid var(--color-border-primary-default);
   border-radius: var(--border-radius-l);
   box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 10%);
+  color: var(--color-text-primary-default);
 
   .apexcharts-tooltip-title {
     font-family: var(--font-family-body) !important;
     font-size: var(--font-size-xs) !important;
     font-weight: var(--font-weight-bold);
-    background: var(--color-text-static-default) !important;
+    background: var(--color-interaction-secondary-default) !important;
     border-bottom: 1px solid var(--color-border-primary-default);
     padding: 10px 16px;
     margin-bottom: 0;
