@@ -2,15 +2,15 @@ import { within } from "@storybook/test";
 import { expect } from "@storybook/test";
 import { waitUntil } from "@/_internal/test-helper";
 
-import meta, { type MtGraphStory, type MtGraphMeta } from "./mt-graph.stories";
+import meta, { type MtChartStory, type MtChartMeta } from "./mt-chart.stories";
 
 export default {
   ...meta,
-  title: "Interaction Tests/Graphs/mt-graph",
-} as MtGraphMeta;
+  title: "Interaction Tests/Charts/mt-chart",
+} as MtChartMeta;
 
-export const VisualTestRenderGraph: MtGraphStory = {
-  name: "Render graph",
+export const VisualTestRenderChart: MtChartStory = {
+  name: "Render chart",
   args: {
     options: {
       chart: {
@@ -23,15 +23,15 @@ export const VisualTestRenderGraph: MtGraphStory = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // wait until graph is loaded and rendered
+    // wait until chart is loaded and rendered
     await waitUntil(() => document.querySelector(".apexcharts-canvas"));
 
-    expect(canvas.findByTestId("mt-graph")).toBeDefined();
+    expect(canvas.findByTestId("mt-chart")).toBeDefined();
   },
 };
 
-export const VisualTestRenderGraphWithCorrectSize: MtGraphStory = {
-  name: "Render graph",
+export const VisualTestRenderChartWithCorrectSize: MtChartStory = {
+  name: "Render chart",
   args: {
     width: "300px",
     height: "200px",
@@ -46,15 +46,15 @@ export const VisualTestRenderGraphWithCorrectSize: MtGraphStory = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // wait until graph is loaded and rendered
+    // wait until chart is loaded and rendered
     await waitUntil(() => document.querySelector(".apexcharts-canvas"));
 
-    expect(canvas.findByTestId("mt-graph")).toBeDefined();
+    expect(canvas.findByTestId("mt-chart")).toBeDefined();
   },
 };
 
-export const VisualTestRenderGraphWithSeries: MtGraphStory = {
-  name: "Render graph",
+export const VisualTestRenderChartWithSeries: MtChartStory = {
+  name: "Render chart",
   args: {
     series: [
       {
@@ -73,15 +73,15 @@ export const VisualTestRenderGraphWithSeries: MtGraphStory = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // wait until graph is loaded and rendered
+    // wait until chart is loaded and rendered
     await waitUntil(() => document.querySelector(".apexcharts-canvas"));
 
-    expect(canvas.findByTestId("mt-graph")).toBeDefined();
+    expect(canvas.findByTestId("mt-chart")).toBeDefined();
   },
 };
 
-export const VisualTestRenderGraphWithMergedOptions: MtGraphStory = {
-  name: "Render graph",
+export const VisualTestRenderChartWithMergedOptions: MtChartStory = {
+  name: "Render chart",
   args: {
     options: {
       chart: {
@@ -98,9 +98,9 @@ export const VisualTestRenderGraphWithMergedOptions: MtGraphStory = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // wait until graph is loaded and rendered
+    // wait until chart is loaded and rendered
     await waitUntil(() => document.querySelector(".apexcharts-canvas"));
 
-    expect(canvas.findByTestId("mt-graph")).toBeDefined();
+    expect(canvas.findByTestId("mt-chart")).toBeDefined();
   },
 };

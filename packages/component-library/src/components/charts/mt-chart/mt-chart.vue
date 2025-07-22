@@ -1,24 +1,24 @@
 <template>
   <div
     ref="chartContainer"
-    :class="`mt-graph mt-graph-${props.type}`"
+    :class="`mt-chart mt-chart-${props.type}`"
     :style="{ width: props.width, height: props.height }"
   ></div>
 </template>
 
 <script setup lang="ts">
 import type { ApexOptions } from "apexcharts";
-import { getDefaultOptions } from "./mt-graph-default-options";
-import { deepCopyObject, deepMergeObjects } from "@/utils/object";
+import { getDefaultOptions } from "./mt-chart-default-options";
+import { deepMergeObjects } from "@/utils/object";
 import { computed, defineProps, onMounted, ref, watch, onBeforeUnmount } from "vue";
 import { templateRef } from "@vueuse/core";
 
-export type GraphOptions = ApexOptions;
+export type ChartOptions = ApexOptions;
 
 const props = withDefaults(
   defineProps<{
     series: any[];
-    options?: GraphOptions;
+    options?: ChartOptions;
     type?: ApexChart["type"];
     width?: string | number;
     height?: string | number;
@@ -101,7 +101,7 @@ watch([() => props.type, () => props.width, () => props.height], init);
 </script>
 
 <style scoped>
-.mt-graph-area :deep(.apexcharts-tooltip) {
+.mt-chart-area :deep(.apexcharts-tooltip) {
   background-color: var(--color-elevation-surface-overlay);
   border: 1px solid var(--color-border-primary-default);
   border-radius: var(--border-radius-l);
