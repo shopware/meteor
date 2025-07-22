@@ -87,15 +87,14 @@
           {{ toolTipText }}
         </span>
       </div>
-      <!-- @vue-ignore -->
-      <mt-number-field
+      <input
         v-model="rangeRightValue"
+        type="number"
+        class="mt-slider__input"
         :min="isRange ? min + minDistance : min"
         :max="max"
         :step="step"
         :disabled="disabled"
-        size="small"
-        :number-type="step % 1 === 0 ? 'int' : 'float'"
         data-testid="right-number-field"
       />
     </template>
@@ -401,6 +400,7 @@ export default defineComponent({
   padding: var(--scale-size-4) var(--scale-size-4) calc(20px / 2);
   gap: var(--scale-size-16);
   overflow: visible;
+  align-items: end;
 }
 
 .mt-slider .mt-field--small {
@@ -568,5 +568,37 @@ export default defineComponent({
   padding: var(--scale-size-8);
   min-width: 4ch;
   text-align: center;
+}
+</style>
+
+<style scoped>
+.mt-slider__input {
+  width: max-content;
+  height: var(--scale-size-32);
+  color: var(--color-text-primary-default);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-xs);
+  font-family: var(--font-family-body);
+  padding-inline: var(--scale-size-12);
+  border-radius: var(--border-radius-xs);
+  border: 1px solid var(--color-border-primary-default);
+  background-color: var(--color-background-primary-default);
+
+  &:focus-visible {
+    outline: var(--scale-size-2) solid var(--color-border-brand-selected);
+    outline-offset: var(--scale-size-2);
+  }
+}
+
+/* Hide browser spinners for number inputs */
+.mt-slider__input::-webkit-outer-spin-button,
+.mt-slider__input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.mt-slider__input[type="number"] {
+  -moz-appearance: textfield;
 }
 </style>

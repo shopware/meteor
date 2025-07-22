@@ -21,7 +21,7 @@ export const VisualTestNumberInput: MtSliderStory = {
 
     await setNumberFieldValue(rightInput, 50, canvas);
 
-    expect(rightInput).toHaveValue("50");
+    expect(rightInput).toHaveValue(50);
     expect(rightSlider).toHaveValue("50");
     expect(args.modelValue).toBe(50);
   },
@@ -38,7 +38,7 @@ export const VisualTestSliderInput: MtSliderStory = {
 
     await setSliderValue(rightSlider, 50);
 
-    expect(rightInput).toHaveValue("50");
+    expect(rightInput).toHaveValue(50);
     expect(rightSlider).toHaveValue("50");
     expect(args.modelValue).toBe(50);
   },
@@ -59,7 +59,7 @@ export const VisualTestDisabled: MtSliderStory = {
     expect(rightInput).toBeDisabled();
     await increaseNumberFieldValue(rightInput, canvas);
 
-    expect(rightInput).toHaveValue("0");
+    expect(rightInput).toHaveValue(0);
     expect(rightSlider).toHaveValue("0");
     expect(args.modelValue).toBe(0);
   },
@@ -82,13 +82,13 @@ export const VisualTestMinMax: MtSliderStory = {
 
     await setNumberFieldValue(rightInput, 11, canvas);
 
-    expect(rightInput).toHaveValue("10");
+    expect(rightInput).toHaveValue(10);
     expect(rightSlider).toHaveValue("10");
     expect(args.modelValue).toBe(10);
 
     await setNumberFieldValue(rightInput, -1, canvas);
 
-    expect(rightInput).toHaveValue("0");
+    expect(rightInput).toHaveValue(0);
     expect(rightSlider).toHaveValue("0");
     expect(args.modelValue).toBe(0);
   },
@@ -134,7 +134,7 @@ export const VisualTestRangeInputValue: MtSliderStory = {
 
     await setNumberFieldValue(rightInput, 50, canvas);
 
-    expect(rightInput).toHaveValue("50");
+    expect(rightInput).toHaveValue(50);
     expect(rightSlider).toHaveValue("50");
     expect(args.modelValue).toEqual([0, 50]);
 
@@ -158,7 +158,7 @@ export const VisualTestRangeSliderValue: MtSliderStory = {
 
     await setSliderValue(rightSlider, 50);
 
-    expect(rightInput).toHaveValue("50");
+    expect(rightInput).toHaveValue(50);
     expect(rightSlider).toHaveValue("50");
     expect(args.modelValue).toEqual([0, 50]);
 
@@ -192,7 +192,7 @@ export const VisualTestRangeDisabled: MtSliderStory = {
 
     await increaseNumberFieldValue(rightInput, canvas);
 
-    expect(rightInput).toHaveValue("0");
+    expect(rightInput).toHaveValue(0);
     expect(rightSlider).toHaveValue("0");
     expect(args.modelValue).toEqual([0, 0]);
   },
@@ -407,7 +407,7 @@ function extractElements(canvas: any) {
   return {
     leftInput: canvas.queryByTestId("left-number-field")?.getElementsByTagName("input")[0],
     leftSlider: canvas.queryByTestId("left-slider"),
-    rightInput: canvas.getByTestId("right-number-field").getElementsByTagName("input")[0],
+    rightInput: canvas.getByTestId("right-number-field"),
     rightSlider: canvas.getByTestId("right-slider"),
   };
 }
