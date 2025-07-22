@@ -121,3 +121,9 @@ watch(
   },
 );
 </script>
+
+<style>
+.mt-unit-field .mt-block-field__block {
+  overflow: visible;
+}
+</style>

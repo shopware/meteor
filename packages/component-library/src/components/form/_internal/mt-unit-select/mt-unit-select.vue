@@ -199,7 +199,7 @@ onUnmounted(() => {
   background-color: var(--color-elevation-surface-overlay);
   color: var(--color-text-primary);
   font-size: var(--font-size-xs);
-  box-shadow: 0 3px 6px 0 #d1d9e0;
+  box-shadow: 0 3px 6px 0 var(--color-elevation-shadow-default);
 }
 
 .mt-unit-select ul {
@@ -215,9 +215,14 @@ onUnmounted(() => {
   padding-left: var(--scale-size-12);
   padding-right: var(--scale-size-12);
   background: var(--color-interaction-secondary-hover);
-  border: 3px solid var(--color-elevation-surface-overlay);
+  border: 3px solid var(--color-elevation-surface-raised);
   border-radius: var(--border-radius-s);
   cursor: pointer;
+  color: var(--color-text-primary-default);
+
+  &:focus-visible {
+    outline: var(--scale-size-2) solid var(--color-border-brand-default);
+  }
 }
 
 .mt-unit-select__trigger:disabled {
