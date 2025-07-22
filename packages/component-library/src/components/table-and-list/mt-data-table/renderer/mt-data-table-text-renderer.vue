@@ -86,7 +86,7 @@ export default defineComponent({
   flex-shrink: 0;
 }
 
-img.mt-data-table-preview-image-renderer {
+.mt-data-table-preview-image-renderer-item {
   position: absolute;
   left: 50%;
   top: 50%;
