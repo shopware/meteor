@@ -50,7 +50,7 @@
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
             :style="{
-              background: 'var(--color-elevation-surface-floating)',
+              background: 'var(--color-elevation-floating-default)',
               height: '0.5rem',
               width: '0.5rem',
               borderRadius: '2px',
@@ -63,7 +63,7 @@
           >
             <path
               d="M8 0L4.70711 3.29289C4.31658 3.68342 3.68342 3.68342 3.29289 3.29289L0 0H8Z"
-              fill="var(--color-elevation-surface-floating)"
+              fill="var(--color-elevation-floating-default)"
             />
           </svg>
         </div>
@@ -214,16 +214,16 @@ function useSanitizedHtml(html: string): ComputedRef<string> {
 
 <style scoped>
 .tooltip {
-  color: var(--color-text-inverse-default);
+  color: var(--color-text-primary-inverse);
   font-feature-settings: "ss01" on;
   font-family: var(--font-family-body);
   font-size: var(--font-size-2xs);
   font-weight: var(--font-weight-regular);
   line-height: var(--line-height-2xs);
-  background: var(--color-elevation-surface-floating);
+  background: var(--color-elevation-floating-default);
   line-height: var(--font-family-line-height-2xs);
   padding: var(--scale-size-12);
-  border-radius: var(--border-radius-overlay);
+  border-radius: var(--border-radius-xs);
   width: max-content;
   overflow-wrap: break-word;
 }

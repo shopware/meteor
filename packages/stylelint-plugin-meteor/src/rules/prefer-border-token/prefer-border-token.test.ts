@@ -14,13 +14,13 @@ testRule({
 
   accept: [
     { code: ".a { border: 1px solid var(--border-color); }" },
-    { code: ".a { border: 1px solid var(--color-border-brand-selected); }" },
+    { code: ".a { border: 1px solid var(--color-border-brand-default); }" },
     { code: ".a { border: 0; }" },
-    { code: ".a { border-color: var(--color-border-brand-selected); }" },
+    { code: ".a { border-color: var(--color-border-brand-default); }" },
     { code: ".a { border-radius: var(--border-radius-xs); }" },
     { code: ".a { border-radius: var(--some-custom-css-var); }" },
     { code: ".a { border-radius: 25%; }" },
-    { code: ".a { border-right-color: var(--color-border-brand-selected); }" },
+    { code: ".a { border-right-color: var(--color-border-brand-default); }" },
     { code: ".a { border: 1px solid transparent; }" },
     { code: ".a { border: none; }" },
     {

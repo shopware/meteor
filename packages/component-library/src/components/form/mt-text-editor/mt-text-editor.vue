@@ -520,7 +520,7 @@ label {
     content: '"';
     font-size: 40px;
     line-height: 16px;
-    color: var(--color-text-tertiary-default);
+    color: var(--color-text-secondary-default);
     position: absolute;
     top: var(--scale-size-10);
     left: -24px;
@@ -549,7 +549,7 @@ label {
     margin-left: auto;
     margin-right: auto;
     margin-top: var(--scale-size-16);
-    border: 2px solid var(--color-background-primary-disabled);
+    border: 2px solid var(--color-border-secondary-default);
   }
 
   > *:first-child {
@@ -580,7 +580,7 @@ label {
   }
 
   table th {
-    background-color: var(--color-background-primary-default);
+    background-color: var(--color-background-tertiary-default);
     font-weight: bold;
     text-align: left;
   }
@@ -590,7 +590,7 @@ label {
   }
 
   table .selectedCell::after {
-    background: var(--color-background-primary-disabled);
+    background: var(--color-background-tertiary-default);
     content: "";
     left: 0;
     right: 0;
@@ -629,7 +629,7 @@ label {
   justify-content: space-between;
   padding: 0 var(--scale-size-16);
   height: var(--scale-size-36);
-  background-color: var(--color-background-primary-disabled);
+  background-color: var(--color-background-tertiary-default);
   border-top: 1px solid var(--color-border-primary-default);
   border-radius: 0 0 var(--border-radius-xs) var(--border-radius-xs);
   transition: transform 0.2s ease-in-out;
@@ -667,7 +667,7 @@ label {
 }
 
 .mt-text-editor--disabled .mt-text-editor__content {
-  background-color: var(--color-background-primary-disabled);
+  background-color: var(--color-background-tertiary-default);
 }
 
 :deep(.mt-text-editor__content-editor p.is-editor-empty:first-child::before) {
@@ -683,7 +683,7 @@ label {
 }
 
 .mt-text-editor--error .mt-text-editor__content {
-  background-color: var(--color-background-critical-dark);
+  background-color: var(--color-background-critical-default);
 }
 
 .mt-text-editor--error label {

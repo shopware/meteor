@@ -411,7 +411,7 @@ export default defineComponent({
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-border-brand-selected);
+    outline: 2px solid var(--color-border-brand-default);
     outline-offset: 2px;
     border-radius: var(--border-radius-xs);
   }
@@ -450,7 +450,7 @@ export default defineComponent({
   bottom: 0;
   left: 0;
   height: var(--scale-size-2);
-  background-color: var(--color-border-brand-selected);
+  background-color: var(--color-border-brand-default);
   z-index: 1;
 }
 

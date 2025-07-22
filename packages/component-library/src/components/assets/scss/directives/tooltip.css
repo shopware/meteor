@@ -4,9 +4,9 @@
 }
 
 .mt-tooltip--dark {
-  background-color: var(--color-elevation-surface-floating);
-  border-radius: var(--border-radius-overlay);
-  color: var(--color-text-inverse-default);
+  background-color: var(--color-elevation-floating-default);
+  border-radius: var(--border-radius-xs);
+  color: var(--color-text-primary-inverse);
   padding: 12px 16px;
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
@@ -19,7 +19,7 @@
     height: 8px;
     width: 8px;
     transform: rotate(45deg);
-    background: var(--color-elevation-surface-floating);
+    background: var(--color-elevation-floating-default);
   }
 
   &.mt-tooltip--top::before {

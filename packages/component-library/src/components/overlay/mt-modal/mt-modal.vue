@@ -372,7 +372,7 @@ onUnmounted(() => {
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-border-brand-selected);
+    outline: 2px solid var(--color-border-brand-default);
     box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
   }
 }

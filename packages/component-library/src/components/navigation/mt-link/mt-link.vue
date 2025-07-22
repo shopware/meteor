@@ -61,7 +61,7 @@ defineEmits<{
 
   &:focus-visible {
     outline-offset: 2px;
-    outline: 2px solid var(--color-border-brand-selected);
+    outline: 2px solid var(--color-border-brand-default);
     border-radius: var(--border-radius-xs);
   }
 }

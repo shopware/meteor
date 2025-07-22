@@ -108,7 +108,7 @@ const classes = computed(() => [
   &:focus-visible {
     outline-offset: 0.25rem;
     border-radius: var(--border-radius-2xs);
-    outline-color: var(--color-border-brand-selected);
+    outline-color: var(--color-border-brand-default);
   }
 }
 </style>

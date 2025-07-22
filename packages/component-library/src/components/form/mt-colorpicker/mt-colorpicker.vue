@@ -1525,9 +1525,9 @@ export default defineComponent({
   width: 260px;
   padding: var(--scale-size-10);
   border: 1px solid var(--color-border-primary-default);
-  background-color: var(--color-elevation-surface-overlay);
-  border-radius: var(--border-radius-overlay);
-  box-shadow: 0 3px 6px 0 rgba(120, 138, 155, 0.5);
+  background-color: var(--color-background-primary-default);
+  border-radius: var(--border-radius-xs);
+  box-shadow: 0 3px 6px 0 var(--color-elevation-shadow-default);
 }
 
 .mt-colorpicker__colorpicker::before {
@@ -1540,7 +1540,7 @@ export default defineComponent({
   border: 1px solid var(--color-border-primary-default);
   border-bottom: none;
   border-right: none;
-  background: var(--color-elevation-surface-overlay);
+  background: var(--color-background-primary-default);
   transform: rotate(45deg);
 }
 
@@ -1571,7 +1571,7 @@ export default defineComponent({
   position: relative;
   width: var(--scale-size-18);
   height: var(--scale-size-18);
-  border: 3px solid var(--color-icon-static-default);
+  border: 3px solid var(--color-static-white);
   border-radius: 50%;
   filter: drop-shadow(0px 0px 8px rgba(0, 0, 0, 0.25));
   cursor: grab;
@@ -1579,6 +1579,11 @@ export default defineComponent({
 
 .mt-colorpicker__colorpicker-selector:active {
   cursor: grabbing;
+}
+
+.mt-colorpicker__colorpicker-selector:focus-visible {
+  outline: 2px solid var(--color-border-brand-default);
+  outline-offset: 2px;
 }
 
 .mt-colorpicker__colorpicker-slider-range {
@@ -1604,14 +1609,14 @@ export default defineComponent({
   width: var(--scale-size-8);
   border-radius: var(--border-radius-xs);
   border: 1px solid var(--color-border-primary-default);
-  background: var(--color-icon-static-default);
+  background: var(--color-static-white);
   -webkit-appearance: none;
   cursor: pointer;
 }
 
-.mt-colorpicker__colorpicker-slider-range:focus::-webkit-slider-thumb {
-  outline: 2px solid var(--color-border-brand-selected);
-  outline-offset: 2px;
+.mt-colorpicker__colorpicker-slider-range:focus-visible::-webkit-slider-thumb {
+  outline: 2px solid var(--color-border-brand-default);
+  outline-offset: 1px;
   border-radius: var(--border-radius-checkbox);
 }
 
@@ -1619,14 +1624,14 @@ export default defineComponent({
   height: var(--scale-size-26);
   width: var(--scale-size-8);
   border: 1px solid var(--color-border-primary-default);
-  background: var(--color-icon-static-default);
+  background: var(--color-static-white);
   border-radius: var(--border-radius-xs);
   cursor: pointer;
 }
 
-.mt-colorpicker__colorpicker-slider-range:focus::-moz-range-thumb {
-  outline: 2px solid var(--color-border-brand-selected);
-  outline-offset: 2px;
+.mt-colorpicker__colorpicker-slider-range:focus-visible::-moz-range-thumb {
+  outline: 2px solid var(--color-border-brand-default);
+  outline-offset: 1px;
   border-radius: var(--border-radius-checkbox);
 }
 
@@ -1685,7 +1690,7 @@ export default defineComponent({
 }
 
 .mt-colorpicker__colorpicker-input {
-  background: var(--color-elevation-surface-raised);
+  background: var(--color-background-primary-default);
   width: 100%;
   min-width: 0;
   height: var(--scale-size-32);
@@ -1716,9 +1721,9 @@ export default defineComponent({
   flex: 1;
 }
 
-.mt-colorpicker__colorpicker-input:focus {
-  border-color: var(--color-border-brand-selected);
-  box-shadow: 0px 0px 4px 0px rgba(24, 158, 255, 0.3);
+.mt-colorpicker__colorpicker-input:focus-visible {
+  outline: 2px solid var(--color-border-brand-default);
+  outline-offset: 1px;
 }
 
 .mt-colorpicker__alpha-slider {
@@ -1737,27 +1742,27 @@ export default defineComponent({
   width: var(--scale-size-8);
   border-radius: var(--border-radius-xs);
   border: 1px solid var(--color-border-primary-default);
-  background: var(--color-icon-static-default);
+  background: var(--color-static-white);
   -webkit-appearance: none;
   cursor: pointer;
 }
 
-.mt-colorpicker__alpha-slider:focus::-webkit-slider-thumb {
-  outline: 2px solid var(--color-border-brand-selected);
-  outline-offset: 2px;
+.mt-colorpicker__alpha-slider:focus-visible::-webkit-slider-thumb {
+  outline: 2px solid var(--color-border-brand-default);
+  outline-offset: 1px;
   border-radius: var(--border-radius-checkbox);
 }
 
 .mt-colorpicker__alpha-slider::-moz-range-thumb {
   height: var(--scale-size-26);
   width: var(--scale-size-8);
-  border: 1px solid var(--color-border-brand-selected);
+  border: 1px solid var(--color-border-brand-default);
   border-radius: var(--border-radius-xs);
   cursor: pointer;
 }
 
-.mt-colorpicker__alpha-slider:focus::-moz-range-thumb {
-  outline: 2px solid var(--color-border-brand-selected);
+.mt-colorpicker__alpha-slider:focus-visible::-moz-range-thumb {
+  outline: 2px solid var(--color-border-brand-default);
   outline-offset: 2px;
   border-radius: var(--border-radius-checkbox);
 }

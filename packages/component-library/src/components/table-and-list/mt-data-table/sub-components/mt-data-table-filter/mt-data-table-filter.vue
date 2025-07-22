@@ -126,7 +126,7 @@ const { t } = useI18n({
 
   &:has(button:focus-visible) {
     background-color: var(--color-background-brand-default);
-    outline: var(--color-border-brand-selected) solid 1px;
+    outline: var(--color-border-brand-default) solid 1px;
     outline-offset: -1px;
   }
 }
@@ -150,7 +150,7 @@ const { t } = useI18n({
 
   &:focus-visible {
     background-color: var(--color-background-brand-default);
-    border-color: var(--color-border-brand-selected);
+    border-color: var(--color-border-brand-default);
   }
 
   &:hover {

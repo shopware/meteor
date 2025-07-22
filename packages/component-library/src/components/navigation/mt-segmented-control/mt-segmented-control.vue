@@ -213,7 +213,7 @@ export default defineComponent({
   display: flex;
   gap: var(--scale-size-2);
   width: max-content;
-  background-color: var(--color-elevation-surface-overlay);
+  background-color: var(--color-interaction-secondary-default);
   border: 1px solid var(--color-border-primary-default);
   border-radius: var(--border-radius-button);
   padding: var(--scale-size-2);
@@ -261,7 +261,7 @@ export default defineComponent({
   text-align: center;
 
   &:focus-visible {
-    outline: 2px solid var(--color-border-brand-selected);
+    outline: 2px solid var(--color-border-brand-default);
     box-shadow: 0px 0px 4px 0px rgba(24, 158, 255, 0.3);
   }
 
@@ -271,7 +271,7 @@ export default defineComponent({
   }
 
   &:active {
-    background-color: var(--color-interaction-secondary-dark);
+    background-color: var(--color-interaction-secondary-pressed);
   }
 
   & .mt-field--checkbox {
@@ -301,7 +301,7 @@ export default defineComponent({
 }
 
 .mt-segmented-control__action--pressed:not(.mt-segmented-control__action--critical) {
-  color: var(--color-text-static-default);
+  color: var(--color-static-white);
   background-color: var(--color-interaction-primary-default);
 
   &:hover,
@@ -319,17 +319,17 @@ export default defineComponent({
 
   &:hover,
   &:focus-visible {
-    background-color: var(--color-background-critical-dark);
+    background-color: var(--color-background-critical-default);
   }
 
   &:active {
-    color: var(--color-text-static-default);
+    color: var(--color-static-white);
     background-color: var(--color-interaction-critical-pressed);
   }
 }
 
 .mt-segmented-control__action--critical.mt-segmented-control__action--pressed {
-  color: var(--color-text-static-default);
+  color: var(--color-static-white);
   background-color: var(--color-interaction-critical-default);
 
   &:hover,

@@ -58,7 +58,7 @@ testRule({
       code: "a { margin: var(--scale-size-4) var(--scale-size-8); }",
     },
     {
-      code: "a { border: 1px solid var(--color-border-brand-selected); }",
+      code: "a { border: 1px solid var(--color-border-brand-default); }",
     },
     {
       code: "a { --foo: var(--scale-size-4); }",

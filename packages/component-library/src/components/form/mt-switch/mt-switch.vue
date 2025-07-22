@@ -126,12 +126,12 @@ defineEmits<{
   border: 1px solid var(--color-border-primary-default);
   padding-inline: var(--scale-size-16);
   border-radius: var(--border-radius-xs);
-  background: var(--color-elevation-surface-raised);
+  background: var(--color-background-primary-default);
 }
 
 .mt-switch__block--errored {
   border-color: var(--color-border-critical-default);
-  background: var(--color-background-critical-dark);
+  background: var(--color-background-critical-default);
 }
 
 .mt-switch__switch {
@@ -156,7 +156,7 @@ defineEmits<{
     width: var(--scale-size-10);
     height: var(--scale-size-10);
     border-radius: var(--border-radius-round);
-    background: var(--color-icon-static-default);
+    background: var(--color-static-white);
     position: absolute;
     top: 50%;
     left: 3px;
@@ -165,7 +165,7 @@ defineEmits<{
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-border-brand-selected);
+    outline: 2px solid var(--color-border-brand-default);
     outline-offset: 2px;
   }
 
