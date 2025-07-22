@@ -100,45 +100,43 @@ watch(
 watch([() => props.type, () => props.width, () => props.height], init);
 </script>
 
-<style>
-.mt-graph-area {
-  .apexcharts-tooltip {
-    background-color: var(--color-elevation-surface-overlay);
-    border: 1px solid var(--color-border-primary-default);
-    border-radius: var(--border-radius-l);
-    box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 10%);
+<style scoped>
+.mt-graph-area :deep(.apexcharts-tooltip) {
+  background-color: var(--color-elevation-surface-overlay);
+  border: 1px solid var(--color-border-primary-default);
+  border-radius: var(--border-radius-l);
+  box-shadow: 0 4px 12px -4px rgba(0, 0, 0, 10%);
 
-    .apexcharts-tooltip-title {
-      font-family: var(--font-family-body) !important;
-      font-size: var(--font-size-xs) !important;
-      font-weight: var(--font-weight-bold);
-      background: var(--color-text-static-default) !important;
-      border-bottom: 1px solid var(--color-border-primary-default);
-      padding: 10px 16px;
-      margin-bottom: 0;
-    }
+  .apexcharts-tooltip-title {
+    font-family: var(--font-family-body) !important;
+    font-size: var(--font-size-xs) !important;
+    font-weight: var(--font-weight-bold);
+    background: var(--color-text-static-default) !important;
+    border-bottom: 1px solid var(--color-border-primary-default);
+    padding: 10px 16px;
+    margin-bottom: 0;
+  }
 
-    .apexcharts-tooltip-series-group {
-      padding: 10px 16px;
-    }
+  .apexcharts-tooltip-series-group {
+    padding: 10px 16px;
+  }
 
-    .apexcharts-tooltip-marker {
-      margin-right: 0;
-    }
+  .apexcharts-tooltip-marker {
+    margin-right: 0;
+  }
 
-    .apexcharts-tooltip-text-y-label {
-      display: none;
-    }
+  .apexcharts-tooltip-text-y-label {
+    display: none;
+  }
 
-    .apexcharts-tooltip-text-y-value {
-      font-family: var(--font-family-body);
-      font-size: var(--font-size-xs);
-      font-weight: var(--font-weight-medium);
-    }
+  .apexcharts-tooltip-text-y-value {
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-medium);
+  }
 
-    .apexcharts-tooltip-y-group {
-      padding: 0;
-    }
+  .apexcharts-tooltip-y-group {
+    padding: 0;
   }
 }
 </style>
