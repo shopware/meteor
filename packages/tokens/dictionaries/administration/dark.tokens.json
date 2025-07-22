@@ -101,7 +101,7 @@
       },
       "backdrop": {
         "default": {
-          "$value": "#10101301",
+          "$value": "#10101399",
           "$type": "color"
         }
       },
@@ -113,7 +113,7 @@
       },
       "shadow": {
         "default": {
-          "$value": "#10101300",
+          "$value": "#1010131a",
           "$type": "color"
         }
       }
