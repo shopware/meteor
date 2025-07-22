@@ -20,6 +20,7 @@ function createOptions(): Record<string, ApexOptions> {
       chart: {
         toolbar: { show: false },
         zoom: { enabled: false },
+        animations: { enabled: false },
       },
       xaxis: {
         tooltip: { enabled: false },
