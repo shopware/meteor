@@ -42,7 +42,7 @@ const borderWidth = computed(() => {
   right: 0;
   margin: auto;
   z-index: 400;
-  background: var(--color-background-primary-disabled);
+  background: var(--color-background-tertiary-default);
   opacity: 0.8;
 }
 
@@ -54,7 +54,7 @@ const borderWidth = computed(() => {
     border-width: 4px;
     border-style: solid;
     border-radius: 50%;
-    border-color: var(--color-border-brand-selected) transparent transparent transparent;
+    border-color: var(--color-border-brand-default) transparent transparent transparent;
     animation: mt-loader-rotator 1.4s cubic-bezier(0.5, 0, 0.5, 1) infinite;
 
     &:nth-child(1) {

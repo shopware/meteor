@@ -52,7 +52,7 @@ provide(DialogContext, {
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: var(--color-elevation-surface-backdrop, #101013);
+  background-color: var(--color-elevation-backdrop-default);
   z-index: 1000;
   opacity: 0.6;
 }

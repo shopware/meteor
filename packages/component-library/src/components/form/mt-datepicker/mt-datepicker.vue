@@ -360,22 +360,22 @@ export default defineComponent({
 
 /* || Datepicker theme  */
 .dp__theme_light {
-  --dp-background-color: var(--color-elevation-surface-overlay);
+  --dp-background-color: var(--color-background-primary-default);
   --dp-text-color: var(--color-text-primary-default);
   --dp-hover-color: var(--color-interaction-secondary-hover);
   --dp-hover-text-color: var(--color-text-primary-default);
   --dp-hover-icon-color: #959595;
   --dp-primary-color: var(--color-interaction-primary-default);
-  --dp-primary-disabled-color: var(--color-background-critical-dark);
-  --dp-primary-text-color: var(--color-text-static-default);
+  --dp-primary-disabled-color: var(--color-background-critical-default);
+  --dp-primary-text-color: var(--color-static-white);
   --dp-secondary-color: var(--color-text-primary-disabled);
   --dp-border-color: var(--color-border-primary-default);
   --dp-menu-border-color: var(--color-border-primary-default);
   --dp-border-color-hover: var(--color-border-primary-default);
   --dp-border-color-focus: var(--color-border-primary-default);
-  --dp-disabled-color: var(--color-background-primary-disabled);
-  --dp-scroll-bar-background: var(--color-elevation-surface-overlay);
-  --dp-scroll-bar-color: var(--color-interaction-secondary-dark);
+  --dp-disabled-color: var(--color-background-tertiary-default);
+  --dp-scroll-bar-background: var(--color-background-primary-default);
+  --dp-scroll-bar-color: var(--color-border-secondary-default);
   --dp-success-color: #76d275;
   --dp-success-color-disabled: #a3d9b1;
   --dp-icon-color: var(--color-icon-primary-default);
@@ -414,7 +414,7 @@ export default defineComponent({
   border-radius: var(--border-radius-xs);
   font: inherit;
   color: var(--color-text-secondary-default);
-  background: var(--color-elevation-surface-raised);
+  background: var(--color-background-primary-default);
   color: var(--color-text-primary-default);
 
   &::placeholder {
@@ -436,7 +436,7 @@ export default defineComponent({
   border-radius: 0 3px 3px 0;
   padding: var(--scale-size-12);
   border-left: 1px solid var(--color-border-primary-default);
-  background: var(--color-background-primary-disabled);
+  background: var(--color-background-tertiary-default);
 }
 
 .dp__input_icon #meteor-icon-kit__regular-calendar {
@@ -450,12 +450,12 @@ export default defineComponent({
 }
 
 .dp__input_focus {
-  outline: var(--scale-size-2) solid var(--color-border-brand-selected);
+  outline: var(--scale-size-2) solid var(--color-border-brand-default);
   outline-offset: var(--scale-size-2);
 }
 
 .dp__disabled {
-  background: var(--color-background-primary-disabled);
+  background: var(--color-background-tertiary-default);
 }
 
 /* || Menu / calendar */
@@ -636,7 +636,7 @@ export default defineComponent({
   height: var(--scale-size-32);
   aspect-ratio: 1/1;
   border-radius: var(--border-radius-button);
-  outline-color: var(--color-border-brand-selected);
+  outline-color: var(--color-border-brand-default);
   transition: background 0.2s cubic-bezier(0.23, 1, 0.32, 1);
 
   &:hover,
@@ -650,7 +650,7 @@ export default defineComponent({
   margin-top: var(--scale-size-4);
   font-size: var(--font-size-xs);
   font-family: var(--font-family-body);
-  color: var(--color-text-tertiary-default);
+  color: var(--color-text-secondary-default);
   display: flex;
   align-items: center;
   gap: var(--scale-size-4);

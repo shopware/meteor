@@ -28,7 +28,7 @@ const { t } = useI18n({
   color: var(--color-text-brand-default);
   text-decoration: underline;
   outline-offset: 4px;
-  outline-color: var(--color-border-brand-selected);
+  outline-color: var(--color-border-brand-default);
 
   &:hover,
   &:focus-visible {

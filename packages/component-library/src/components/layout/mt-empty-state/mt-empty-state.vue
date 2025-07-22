@@ -64,7 +64,7 @@ defineEmits(["button-click"]);
   display: inline-block;
   padding: var(--scale-size-12);
   border-radius: var(--border-radius-xs);
-  background-color: var(--color-interaction-secondary-dark);
+  background-color: var(--color-background-tertiary-default);
 }
 
 .mt-empty-state__headline {

@@ -170,7 +170,7 @@ const lastVisibleItemNumber = computed(() => {
 }
 
 .mt-pagination__info-text {
-  color: var(--color-text-tertiary-default);
+  color: var(--color-text-secondary-default);
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
   font-family: var(--font-family-body);
@@ -188,7 +188,7 @@ const lastVisibleItemNumber = computed(() => {
   transition-timing-function: ease-out;
 
   &:focus-visible {
-    outline: var(--scale-size-2) solid var(--color-border-brand-selected);
+    outline: var(--scale-size-2) solid var(--color-border-brand-default);
     outline-offset: var(--scale-size-2);
     background-color: var(--color-interaction-secondary-hover);
   }

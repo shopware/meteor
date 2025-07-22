@@ -117,18 +117,18 @@ const { t } = useI18n({
   height: 1px;
   border: 1px solid var(--color-border-primary-default);
   border-radius: var(--border-radius-xs);
-  background-color: var(--color-elevation-surface-raised);
+  background-color: var(--color-background-primary-default);
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
   font-family: var(--font-family-body);
 
   &:not(.mt-password-field__block--error)&:has(.mt-password-field__input:focus-visible) {
-    outline: var(--scale-size-2) solid var(--color-border-brand-selected);
+    outline: var(--scale-size-2) solid var(--color-border-brand-default);
     outline-offset: var(--scale-size-2);
   }
 
   &:has(input:disabled) {
-    background-color: var(--color-background-primary-disabled);
+    background-color: var(--color-background-tertiary-default);
   }
 }
 
@@ -163,12 +163,12 @@ const { t } = useI18n({
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-border-brand-selected);
+    outline: 2px solid var(--color-border-brand-default);
   }
 }
 
 .mt-password-field__hint {
-  color: var(--color-text-tertiary-default);
+  color: var(--color-text-secondary-default);
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
   font-family: var(--font-family-body);

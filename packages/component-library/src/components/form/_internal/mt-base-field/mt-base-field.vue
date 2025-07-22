@@ -278,7 +278,7 @@ export default defineComponent({
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
   font-family: var(--font-family-body);
-  color: var(--color-text-tertiary-default);
+  color: var(--color-text-secondary-default);
   display: flex;
   align-items: center;
   gap: var(--scale-size-8);
@@ -313,7 +313,7 @@ export default defineComponent({
   min-width: 0;
   padding: 13px var(--scale-size-16);
   border: none;
-  background: var(--color-elevation-surface-raised);
+  background: var(--color-background-primary-default);
   font-size: var(--font-size-xs);
   font-family: var(--font-size-body);
   line-height: 1;
@@ -341,7 +341,7 @@ export default defineComponent({
 .mt-field input:disabled,
 .mt-field select:disabled,
 .mt-field textarea:disabled {
-  background: var(--color-background-primary-disabled);
+  background: var(--color-background-tertiary-default);
   border-color: #d1d9e0;
   cursor: default !important;
 }
@@ -353,7 +353,7 @@ export default defineComponent({
 }
 
 .mt-field.has--focus .mt-block-field__block {
-  outline: var(--scale-size-2) solid var(--color-border-brand-selected);
+  outline: var(--scale-size-2) solid var(--color-border-brand-default);
   outline-offset: var(--scale-size-2);
 }
 
@@ -362,7 +362,7 @@ export default defineComponent({
 }
 
 .mt-field.has--error.mt-field input {
-  background-color: var(--color-background-critical-dark);
+  background-color: var(--color-background-critical-default);
 }
 
 .mt-field.has--error .mt-field__addition {
@@ -375,7 +375,7 @@ export default defineComponent({
 }
 
 .mt-field.has--error .mt-block-field__block {
-  background: var(--color-background-critical-dark);
+  background: var(--color-background-critical-default);
   border-color: var(--color-border-critical-default);
 }
 
@@ -399,7 +399,7 @@ export default defineComponent({
   justify-content: center;
   align-items: center;
   min-width: 50px;
-  background: var(--color-interaction-secondary-dark);
+  background: var(--color-background-tertiary-default);
   border-left: 1px solid var(--color-border-primary-default);
   border-right: none;
   padding: var(--scale-size-12) 15px;

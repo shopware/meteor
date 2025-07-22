@@ -88,7 +88,7 @@ const id = useId();
   border-radius: var(--border-radius-round);
   height: var(--scale-size-8);
   width: 100%;
-  background: var(--color-background-primary-disabled);
+  background: var(--color-background-tertiary-default);
   grid-column: 1 / 3;
 }
 

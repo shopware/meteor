@@ -406,9 +406,10 @@ export default defineComponent({
   width: 2.625rem;
 
   & button {
-    outline-color: var(--color-border-brand-selected);
+    outline-color: var(--color-border-brand-default);
     padding-inline: var(--scale-size-4);
     border-radius: var(--border-radius-button);
+    color: var(--color-icon-primary-default);
     transition: all 0.15s ease-out;
     width: 100%;
     flex: 1;
@@ -429,7 +430,11 @@ input.mt-number-field__align-end {
 </style>
 
 <style>
+.mt-number-field .mt-block-field__block {
+  background: var(--color-background-primary-default);
+}
+
 .mt-number-field.is--disabled .mt-block-field__block {
-  background: var(--color-background-primary-disabled);
+  background: var(--color-background-tertiary-default);
 }
 </style>

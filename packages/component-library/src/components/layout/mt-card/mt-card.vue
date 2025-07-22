@@ -28,7 +28,7 @@
         <slot name="subtitle">
           <MtText
             v-if="subtitle"
-            color="color-text-tertiary-default"
+            color="color-text-secondary-default"
             size="xs"
             class="mt-card__subtitle"
           >
@@ -355,11 +355,11 @@ const cardClasses = computed(() => ({
 .mt-card__inheritance-toggle {
   cursor: pointer;
   outline-offset: 2px;
-  outline-color: var(--color-border-brand-selected);
+  outline-color: var(--color-border-brand-default);
   color: var(--color-icon-primary-default);
 
   &:focus-visible {
-    outline: 2px solid var(--color-border-brand-selected);
+    outline: 2px solid var(--color-border-brand-default);
     outline-offset: 2px;
     border-radius: var(--border-radius-button);
   }

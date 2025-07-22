@@ -309,7 +309,7 @@ export default defineComponent({
 }
 
 .mt-select .mt-block-field__block {
-  background-color: var(--color-elevation-surface-raised);
+  background-color: var(--color-background-primary-default);
   position: relative;
   overflow: hidden;
 }
@@ -369,7 +369,7 @@ export default defineComponent({
   }
 
   &:focus-visible {
-    outline: var(--scale-size-2) solid var(--color-border-brand-selected);
+    outline: var(--scale-size-2) solid var(--color-border-brand-default);
   }
 }
 
@@ -417,7 +417,7 @@ export default defineComponent({
 .mt-select.is--disabled .mt-block-field__block,
 .mt-select.is--disabled .mt-label,
 .mt-select.is--disabled input {
-  background-color: var(--color-background-primary-disabled);
+  background-color: var(--color-background-tertiary-default);
 }
 
 .mt-select--small {
