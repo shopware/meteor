@@ -370,7 +370,7 @@ export default defineComponent({
   --dp-primary-text-color: var(--color-static-white);
   --dp-secondary-color: var(--color-text-primary-disabled);
   --dp-border-color: var(--color-border-primary-default);
-  --dp-menu-border-color: var(--color-border-primary-default);
+  --dp-menu-border-color: var(--color-border-secondary-default);
   --dp-border-color-hover: var(--color-border-primary-default);
   --dp-border-color-focus: var(--color-border-primary-default);
   --dp-disabled-color: var(--color-background-tertiary-default);

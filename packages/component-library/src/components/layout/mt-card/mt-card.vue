@@ -181,7 +181,7 @@ const cardClasses = computed(() => ({
   margin: 0 auto var(--scale-size-40);
   position: relative;
   background: var(--color-elevation-surface-raised);
-  border: 1px solid var(--color-border-primary-default);
+  border: 1px solid var(--color-border-secondary-default);
   border-radius: var(--border-radius-card); /* Added here */
   overflow: hidden;
 
@@ -317,7 +317,7 @@ const cardClasses = computed(() => ({
   align-items: stretch;
   gap: var(--scale-size-12);
   padding: var(--scale-size-24);
-  border-bottom: 1px solid var(--color-border-primary-default);
+  border-bottom: 1px solid var(--color-border-secondary-default);
 }
 
 .mt-card__title {
@@ -380,7 +380,7 @@ const cardClasses = computed(() => ({
 
   display: flex;
   padding: var(--mt-card-footer-padding);
-  border-top: 1px solid var(--color-border-primary-default);
+  border-top: 1px solid var(--color-secondary-primary-default);
   color: var(--color-text-secondary-default);
 
   &:empty {

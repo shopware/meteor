@@ -2223,8 +2223,8 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
 
   &.mt-data-table__outlines td,
   &.mt-data-table__outlines th {
-    border-right-color: var(--color-border-primary-default);
-    border-left-color: var(--color-border-primary-default);
+    border-right-color: var(--color-border-secondary-default);
+    border-left-color: var(--color-border-secondary-default);
   }
 
   td,
@@ -2232,7 +2232,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     position: relative;
     padding: $tableCellPadding;
     // border needs to be half the size because they are getting combined with other cells
-    border: 0.5px solid var(--color-border-primary-default);
+    border: 0.5px solid var(--color-border-secondary-default);
     border-right-color: transparent;
     border-left-color: transparent;
     white-space: nowrap;
@@ -2409,7 +2409,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     display: flex;
     align-items: center;
     padding: $tableCellPadding;
-    border: 1px solid var(--color-border-primary-default);
+    border: 1px solid var(--color-border-secondary-default);
     border-top: none;
     border-right: none;
     z-index: 120;
