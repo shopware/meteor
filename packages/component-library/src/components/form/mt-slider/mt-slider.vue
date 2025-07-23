@@ -413,6 +413,10 @@ export default defineComponent({
   margin-bottom: 0;
 }
 
+.mt-slider .mt-number-field__controls {
+  flex-shrink: 1;
+}
+
 .mt-slider .mt-field--small .mt-field__controls {
   display: none;
 }
