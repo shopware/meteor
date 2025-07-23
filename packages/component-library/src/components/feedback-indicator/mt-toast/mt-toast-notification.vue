@@ -21,7 +21,7 @@
 
         <mt-text
           class="mt-toast-notification__message"
-          color="color-text-static-default"
+          color="color-static-white"
           weight="bold"
           size="xs"
           :class="messageClasses"
@@ -257,7 +257,7 @@ onBeforeUnmount(() => {
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-border-brand-selected);
+    outline: 2px solid var(--color-border-brand-default);
     border: 2px solid #fff;
   }
 }

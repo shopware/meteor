@@ -222,7 +222,7 @@ onUnmounted(() => {
   border-radius: var(--border-radius-card);
   overflow: hidden;
   width: min(var(--mt-modal-width), calc(100vw - 2rem));
-  border: 1px solid var(--color-border-primary-default);
+  border: 1px solid var(--color-border-secondary-default);
   max-height: calc(100dvh - 2rem);
   display: flex;
   flex-direction: column;
@@ -339,12 +339,12 @@ onUnmounted(() => {
 
 .mt-modal__footer {
   padding: var(--scale-size-24);
-  border-top: 1px solid var(--color-border-primary-default);
+  border-top: 1px solid var(--color-border-secondary-default);
 }
 
 .mt-modal__header {
   padding: var(--scale-size-24);
-  border-bottom: 1px solid var(--color-border-primary-default);
+  border-bottom: 1px solid var(--color-border-secondary-default);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -372,7 +372,7 @@ onUnmounted(() => {
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-border-brand-selected);
+    outline: 2px solid var(--color-border-brand-default);
     box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
   }
 }

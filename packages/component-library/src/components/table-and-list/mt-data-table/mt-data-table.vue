@@ -2223,8 +2223,8 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
 
   &.mt-data-table__outlines td,
   &.mt-data-table__outlines th {
-    border-right-color: var(--color-border-primary-default);
-    border-left-color: var(--color-border-primary-default);
+    border-right-color: var(--color-border-secondary-default);
+    border-left-color: var(--color-border-secondary-default);
   }
 
   td,
@@ -2232,7 +2232,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     position: relative;
     padding: $tableCellPadding;
     // border needs to be half the size because they are getting combined with other cells
-    border: 0.5px solid var(--color-border-primary-default);
+    border: 0.5px solid var(--color-border-secondary-default);
     border-right-color: transparent;
     border-left-color: transparent;
     white-space: nowrap;
@@ -2241,7 +2241,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     vertical-align: top;
 
     &.--highlighted {
-      border-right: 1px solid var(--color-border-brand-selected);
+      border-right: 1px solid var(--color-border-brand-default);
       padding-right: calc($tableCellPaddingRight - 0.5px);
     }
   }
@@ -2253,13 +2253,13 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
 
   &__column-outline-framing-active th.--hovered,
   &__column-outline-framing-active td.--hovered {
-    border-right-color: var(--color-border-brand-selected);
-    border-left-color: var(--color-border-brand-selected);
+    border-right-color: var(--color-border-brand-default);
+    border-left-color: var(--color-border-brand-default);
   }
 
   &__column-outline-framing-active tr.--hovered td {
-    border-top-color: var(--color-border-brand-selected);
-    border-bottom-color: var(--color-border-brand-selected);
+    border-top-color: var(--color-border-brand-default);
+    border-bottom-color: var(--color-border-brand-default);
   }
 
   &.mt-data-table__stripes tr:nth-child(even) {
@@ -2303,7 +2303,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   }
 
   tr {
-    background-color: var(--color-elevation-surface-raised);
+    background-color: var(--color-background-primary-default);
   }
 
   /**
@@ -2409,7 +2409,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     display: flex;
     align-items: center;
     padding: $tableCellPadding;
-    border: 1px solid var(--color-border-primary-default);
+    border: 1px solid var(--color-border-secondary-default);
     border-top: none;
     border-right: none;
     z-index: 120;
@@ -2648,7 +2648,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   text-align: left;
   font-size: var(--font-size-xs);
   padding: $tableCellPadding;
-  border: 1px solid var(--color-border-brand-selected);
+  border: 1px solid var(--color-border-brand-default);
   border-radius: var(--border-radius-xs) var(--border-radius-xs) 0 0;
   border-top: 0;
   white-space: nowrap;
@@ -2748,8 +2748,8 @@ table.is--dragging-inside {
 
     .mt-icon {
       display: block;
-      color: var(--color-elevation-surface-floating);
-      background: var(--color-icon-inverse-default);
+      color: var(--color-elevation-floating-default);
+      background: var(--color-icon-primary-inverse);
       border-radius: 999px;
 
       #meteor-icon-kit__solid-plus-square-s {
@@ -2773,7 +2773,7 @@ table.is--dragging-inside {
 
   &:hover,
   &:focus-visible {
-    background-color: var(--color-background-primary-disabled);
+    background-color: var(--color-background-tertiary-default);
     color: var(--color-icon-primary-hover);
   }
 }

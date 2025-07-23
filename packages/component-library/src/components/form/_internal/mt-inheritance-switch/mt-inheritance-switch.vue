@@ -65,7 +65,7 @@ defineEmits<{
   margin-top: -1px;
 
   outline-width: var(--scale-size-2);
-  outline-color: var(--color-border-brand-selected);
+  outline-color: var(--color-border-brand-default);
   outline-offset: var(--scale-size-2);
 }
 

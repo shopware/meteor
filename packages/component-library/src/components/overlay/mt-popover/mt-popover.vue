@@ -221,13 +221,13 @@ export default defineComponent({
   padding: var(--scale-size-16);
   padding-top: var(--scale-size-4);
   padding-bottom: var(--scale-size-4);
-  background-color: var(--color-elevation-surface-overlay);
+  background-color: var(--color-background-primary-default);
   overflow: auto;
-  border-radius: var(--border-radius-overlay);
+  border-radius: var(--border-radius-xs);
   box-shadow:
-    0 1px 1px rgba(0, 0, 0, 8%),
-    0 2px 1px rgba(0, 0, 0, 6%),
-    0 1px 3px rgba(0, 0, 0, 10%);
+    0 1px 1px var(--color-elevation-shadow-default),
+    0 2px 1px var(--color-elevation-shadow-default),
+    0 1px 3px var(--color-elevation-shadow-default);
   overflow-x: hidden;
   scroll-behavior: smooth;
 
