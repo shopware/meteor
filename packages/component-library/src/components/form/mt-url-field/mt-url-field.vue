@@ -36,37 +36,28 @@
         },
       ]"
     >
-      <div
-        :class="[
-          'mt-url-field__affix',
-          'mt-url-field__affix--prefix',
-          {
-            'mt-url-field__affix--disabled': disabled,
-          },
-        ]"
+      <button
+        type="button"
+        class="mt-url-field__protocol-toggle"
+        :disabled="disabled || isInherited"
+        :data-size="size"
+        @click="
+          () => {
+            sslActive = !sslActive;
+            modelValue = url;
+          }
+        "
       >
-        <button
-          type="button"
-          class="mt-url-field__protocol-toggle"
-          :disabled="disabled || isInherited"
-          @click="
-            () => {
-              sslActive = !sslActive;
-              modelValue = url;
-            }
+        <mt-icon
+          :name="sslActive ? 'solid-lock' : 'solid-lock-open'"
+          :color="
+            sslActive ? 'var(--color-icon-positive-default)' : 'var(--color-icon-primary-default)'
           "
-        >
-          <mt-icon
-            :name="sslActive ? 'solid-lock' : 'solid-lock-open'"
-            :color="
-              sslActive ? 'var(--color-icon-positive-default)' : 'var(--color-icon-primary-default)'
-            "
-            size="var(--scale-size-12)"
-            aria-hidden="true"
-          />
-          <span>{{ urlPrefix }}</span>
-        </button>
-      </div>
+          size="var(--scale-size-12)"
+          aria-hidden="true"
+        />
+        <span>{{ urlPrefix }}</span>
+      </button>
 
       <input
         :id="id"
@@ -288,6 +279,10 @@ const { t } = useI18n({
   border-radius: var(--border-radius-xs);
   background: var(--color-elevation-surface-raised);
 
+  &:has(input:disabled) {
+    cursor: not-allowed;
+  }
+
   &:has(.mt-url-field__input:focus-visible) {
     outline: var(--scale-size-2) solid var(--color-border-brand-selected);
     outline-offset: var(--scale-size-2);
@@ -317,7 +312,7 @@ const { t } = useI18n({
   height: 100%;
   width: 100%;
   color: var(--color-text-primary-default);
-  padding-inline: var(--scale-size-16);
+  padding-inline: var(--scale-size-8) var(--scale-size-16);
   font-size: var(--font-size-xs);
   line-height: var(--line-height-xs);
 
@@ -361,15 +356,38 @@ const { t } = useI18n({
   display: flex;
   align-items: center;
   gap: var(--scale-size-2);
+  padding-inline: var(--scale-size-8);
+  border-radius: var(--border-radius-button);
+  transition: background-color 0.15s ease-out;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--font-line-height-xs);
+  color: var(--color-text-primary-default);
+  background-color: var(--color-interaction-secondary-default);
+  border: 1px solid var(--color-border-primary-default);
+
+  &[data-size="small"] {
+    height: var(--scale-size-24);
+    margin-inline-start: 3px;
+  }
+
+  &[data-size="default"] {
+    margin-inline-start: 7px;
+    height: var(--scale-size-32);
+  }
+
+  &:is(:hover, :focus-visible) {
+    background-color: var(--color-interaction-secondary-hover);
+  }
 
   &:focus-visible {
-    outline-offset: 4px;
-    outline: 2px solid var(--color-border-brand-selected);
-    border-radius: var(--border-radius-xs);
+    outline: var(--scale-size-2) solid var(--color-border-brand-selected);
+    outline-offset: var(--scale-size-2);
   }
 
   &:disabled {
-    cursor: default;
+    background-color: var(--color-interaction-secondary-disabled);
+    cursor: not-allowed;
   }
 }
 
@@ -384,8 +402,10 @@ const { t } = useI18n({
   &:is(:hover, :focus-visible) {
     background-color: var(--color-interaction-secondary-hover);
   }
+
   &:focus-visible {
-    outline: 2px solid var(--color-border-brand-selected);
+    outline: var(--scale-size-2) solid var(--color-border-brand-selected);
+    outline-offset: var(--scale-size-2);
   }
 }
 
