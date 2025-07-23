@@ -2,9 +2,17 @@
   <!-- @deprecated tag:v5 remove wrapper class -->
   <div
     class="mt-datepicker__wrapper wrapper"
-    :class="{ 'mt-datepicker__wrapper--small': size === 'small' }"
+    :class="{
+      'mt-datepicker__wrapper--small': size === 'small',
+      'has-error': error,
+    }"
   >
-    <mt-field-label class="mt-datepicker__label" for="field-id">
+    <mt-field-label
+      class="mt-datepicker__label"
+      for="field-id"
+      :has-error="!!error || !!errorMessage"
+      :required="required"
+    >
       {{ label }}
     </mt-field-label>
 
@@ -13,8 +21,6 @@
       v-model="computedValue"
       class="date-picker"
       position="left"
-      @open="isDatepickerOpen = true"
-      @close="isDatepickerOpen = false"
       :placeholder="placeholder"
       :disabled="disabled"
       :required="required"
@@ -35,6 +41,16 @@
       :time-picker="dateType === 'time'"
       :no-hours-overlay="dateType === 'time'"
       :no-minutes-overlay="dateType === 'time'"
+      :min-date="minDate"
+      :aria-invalid="!!errorMessage || !!error"
+      :aria-describedby="!!errorMessage || !!error ? errorId : undefined"
+      @open="isDatepickerOpen = true"
+      @close="
+        () => {
+          isDatepickerOpen = false;
+          checkValidity();
+        }
+      "
     >
       <template #clear-icon="{ clear }">
         <button class="mt-datepicker__clear-button" aria-label="Clear value" @click="clear">
@@ -67,6 +83,8 @@
       </template>
     </vue-datepicker>
 
+    <mt-field-error v-if="error || errorMessage" :id="errorId" :error="errorMessage || error" />
+
     <template v-if="isTimeHintVisible">
       <!-- @deprecated tag:v5 remove field-hint class -->
       <div class="mt-datepicker__hint field-hint" data-testid="time-zone-hint">
@@ -78,12 +96,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import type { PropType } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import DatePicker, { type VueDatePickerProps } from "@vuepic/vue-datepicker";
+import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import "@vuepic/vue-datepicker/dist/main.css";
+import { useId } from "vue";
 
 export default defineComponent({
   name: "MtDatepicker",
@@ -92,6 +112,7 @@ export default defineComponent({
     "mt-icon": MtIcon,
     "vue-datepicker": DatePicker,
     "mt-field-label": MtFieldLabel,
+    "mt-field-error": MtFieldError,
   },
 
   props: {
@@ -210,9 +231,46 @@ export default defineComponent({
       required: false,
       default: "default",
     },
+
+    /**
+     * An error in your business logic related to this field.
+     *
+     * For example: {"code": 500, "detail": "Error while saving"}
+     */
+    error: {
+      type: Object as PropType<{
+        code?: number;
+        detail?: string;
+      } | null>,
+      required: false,
+      default: null,
+    },
+
+    /**
+     * The minimum selectable date. Can be a Date object or an ISO string.
+     * Any date before this will be disabled in the calendar.
+     * For example: "today"
+     */
+    minDate: {
+      type: [Date, String] as PropType<Date | string>,
+      required: false,
+      default: undefined,
+    },
   },
 
   emits: ["update:modelValue"],
+
+  setup() {
+    const errorId = useId();
+    const errorMessage = ref<{ detail: string } | undefined>(undefined);
+    const datepicker = ref<InstanceType<typeof DatePicker> | null>(null);
+
+    return {
+      errorId,
+      errorMessage,
+      datepicker,
+    };
+  },
 
   data(): {
     isDatepickerOpen: boolean;
@@ -279,6 +337,17 @@ export default defineComponent({
       },
       immediate: true,
     },
+    modelValue: {
+      immediate: true,
+      handler() {
+        this.checkValidity();
+      },
+    },
+  },
+
+  mounted() {
+    this.isTimeHintVisible = this.dateType !== "date";
+    this.updateOpacitySettings();
   },
 
   methods: {
@@ -343,11 +412,21 @@ export default defineComponent({
       const minutes = String(time.minutes).padStart(2, "0");
       return `${hours}:${minutes}`;
     },
-  },
 
-  mounted() {
-    this.isTimeHintVisible = this.dateType !== "date";
-    this.updateOpacitySettings();
+    checkValidity() {
+      if (!this.required) {
+        this.errorMessage = undefined;
+        return;
+      }
+
+      if (!this.modelValue) {
+        this.errorMessage = {
+          detail: "This field is required",
+        };
+      } else {
+        this.errorMessage = undefined;
+      }
+    },
   },
 });
 </script>
@@ -654,5 +733,14 @@ export default defineComponent({
   display: flex;
   align-items: center;
   gap: var(--scale-size-4);
+}
+
+.mt-datepicker__wrapper.has-error .dp__input {
+  border: 1px solid var(--color-border-critical-default);
+  background: var(--color-background-critical-dark);
+}
+
+.mt-datepicker__wrapper.has-error .dp__input:focus {
+  filter: drop-shadow(0px 0px 3px #ff4d4d4d);
 }
 </style>
