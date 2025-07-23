@@ -33,6 +33,12 @@ function createOptions(): Record<string, ApexOptions> {
             dashArray: 0,
           },
         },
+        axisBorder: {
+          color: "var(--color-border-primary-default)",
+        },
+        axisTicks: {
+          color: "var(--color-border-primary-default)",
+        },
       },
       grid: {
         show: true,
