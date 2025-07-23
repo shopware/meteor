@@ -366,7 +366,7 @@ export default defineComponent({
 .mt-tabs {
   display: flex;
   position: relative;
-  box-shadow: inset 0 -1px 0 var(--color-border-primary-default);
+  box-shadow: inset 0 -1px 0 var(--color-border-secondary-default);
 }
 
 .mt-tabs--small {
@@ -384,7 +384,7 @@ export default defineComponent({
 
   & li {
     border-bottom: none;
-    border-left: 1px solid var(--color-border-primary-default);
+    border-left: 1px solid var(--color-border-secondary-default);
   }
 
   & .mt-tabs__slider {
@@ -396,7 +396,7 @@ export default defineComponent({
 
 .mt-tabs__item {
   display: inline-block;
-  border-bottom: 1px solid var(--color-border-primary-default);
+  border-bottom: 1px solid var(--color-border-secondary-default);
   padding: var(--scale-size-10) var(--scale-size-16);
   white-space: nowrap;
   font-family: var(--font-family-body);
@@ -465,7 +465,7 @@ export default defineComponent({
 .mt-context-button {
   display: flex;
   align-items: center;
-  border-bottom: 1px solid var(--color-border-primary-default);
+  border-bottom: 1px solid var(--color-border-secondary-default);
 
   & button {
     display: flex;

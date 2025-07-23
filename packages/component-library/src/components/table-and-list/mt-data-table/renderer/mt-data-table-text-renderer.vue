@@ -80,7 +80,7 @@ export default defineComponent({
   position: relative;
   width: 34px;
   height: var(--scale-size-24);
-  border: 1px solid var(--color-border-primary-default);
+  border: 1px solid var(--color-border-secondary-default);
   border-radius: var(--border-radius-xs);
   margin-right: 15px;
   flex-shrink: 0;

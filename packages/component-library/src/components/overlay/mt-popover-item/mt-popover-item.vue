@@ -423,12 +423,12 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
   }
 
   &--border-top {
-    border-top: 1px solid var(--color-border-primary-default);
+    border-top: 1px solid var(--color-border-secondary-default);
     margin-top: -1px;
   }
 
   &--border-bottom {
-    border-bottom: 1px solid var(--color-border-primary-default);
+    border-bottom: 1px solid var(--color-border-secondary-default);
     margin-bottom: -1px;
   }
 

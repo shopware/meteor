@@ -1524,7 +1524,7 @@ export default defineComponent({
 .mt-colorpicker__colorpicker {
   width: 260px;
   padding: var(--scale-size-10);
-  border: 1px solid var(--color-border-primary-default);
+  border: 1px solid var(--color-border-secondary-default);
   background-color: var(--color-background-primary-default);
   border-radius: var(--border-radius-xs);
   box-shadow: 0 3px 6px 0 var(--color-elevation-shadow-default);
@@ -1537,7 +1537,7 @@ export default defineComponent({
   height: var(--scale-size-12);
   top: -6px;
   left: var(--scale-size-20);
-  border: 1px solid var(--color-border-primary-default);
+  border: 1px solid var(--color-border-secondary-default);
   border-bottom: none;
   border-right: none;
   background: var(--color-background-primary-default);
@@ -1559,7 +1559,7 @@ export default defineComponent({
   display: block;
   width: 238px;
   height: 150px;
-  border: 1px solid var(--color-border-primary-default);
+  border: 1px solid var(--color-border-secondary-default);
   border-radius: var(--border-radius-xs);
   background-image: linear-gradient(180deg, #fff, rgba(255, 255, 255, 0) 50%),
     linear-gradient(0deg, #000, rgba(0, 0, 0, 0) 50%),
@@ -1664,7 +1664,7 @@ export default defineComponent({
   display: inline-block;
   width: 58px;
   height: 58px;
-  border: 1px solid var(--color-border-primary-default);
+  border: 1px solid var(--color-border-secondary-default);
   border-radius: var(--border-radius-xs);
   z-index: 1;
 }
@@ -1730,7 +1730,7 @@ export default defineComponent({
   width: 100%;
   height: var(--scale-size-20);
   margin-top: var(--scale-size-10);
-  border: 1px solid var(--color-border-primary-default);
+  border: 1px solid var(--color-border-secondary-default);
   border-radius: var(--border-radius-xs);
   background-image: url("data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' width='100%25' height='100%25'%3E%3Crect width='10' height='10' x='00' y='00' fill='%23cdd5db' /%3E%3Crect width='10' height='10' x='10' y='10' fill='%23cdd5db' /%3E%3C/svg%3E");
   outline: none;
