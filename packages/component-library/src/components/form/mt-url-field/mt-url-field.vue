@@ -78,7 +78,7 @@
         :disabled="disabled || isInherited"
         class="mt-url-field__input"
         @input="
-          (event) => {
+          (event: Event) => {
             const result = checkInput((event.target as HTMLInputElement).value);
             currentValue = result;
             modelValue = url;
