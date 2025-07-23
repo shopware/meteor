@@ -69,8 +69,8 @@
       </div>
 
       <input
-        :value="decodeURI(currentValue || '')"
         :id="id"
+        :value="decodeURI(currentValue || '')"
         type="url"
         :placeholder="placeholder"
         :name="name"
@@ -119,7 +119,7 @@
 
     <mt-field-error :error="error" :style="{ gridArea: 'error' }" />
 
-    <div class="mt-url-field__hint" v-if="$slots.hint">
+    <div v-if="$slots.hint" class="mt-url-field__hint">
       <slot name="hint" />
     </div>
   </div>
