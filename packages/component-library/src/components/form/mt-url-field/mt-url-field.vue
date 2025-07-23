@@ -88,10 +88,10 @@
       />
 
       <mt-tooltip v-if="copyable" :content="t('copyTooltip')">
-        <template #default="props">
+        <template #default="params">
           <button
             type="button"
-            v-bind="props"
+            v-bind="params"
             class="mt-url-field__copy-button"
             :aria-label="
               copied ? t('copyButtonDescriptionValueCopied') : t('copyButtonDescription')
