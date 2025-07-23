@@ -333,4 +333,36 @@ describe("mt-number-field", () => {
     // ASSERT
     expect(screen.getByRole("textbox")).toHaveValue("10");
   });
+
+  it("is not possible to tab to the increment button", async () => {
+    // ARRANGE
+    render(MtNumberField, {
+      props: {
+        modelValue: 10,
+      },
+    });
+
+    await userEvent.tab();
+    await userEvent.tab();
+
+    // ASSERT
+    expect(screen.getByRole("button", { name: "Increase" })).not.toHaveFocus();
+  });
+
+  it("is not possible to tab to the decrement button", async () => {
+    // ARRANGE
+    render(MtNumberField, {
+      props: {
+        modelValue: 10,
+      },
+    });
+
+    // ACT
+    await userEvent.tab();
+    await userEvent.tab();
+    await userEvent.tab();
+
+    // ASSERT
+    expect(screen.getByRole("button", { name: "Decrease" })).not.toHaveFocus();
+  });
 });
