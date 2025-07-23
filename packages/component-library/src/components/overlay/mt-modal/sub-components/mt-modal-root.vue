@@ -54,7 +54,6 @@ provide(DialogContext, {
   bottom: 0;
   background-color: var(--color-elevation-backdrop-default);
   z-index: 1000;
-  opacity: 0.6;
 }
 
 .fade-enter-active {
