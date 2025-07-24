@@ -49,6 +49,7 @@
           :disabled="disabled || isInherited"
           :aria-label="t('increaseButton')"
           data-testid="mt-number-field-increase-button"
+          tabindex="-1"
           @click="increaseNumberByStep"
         >
           <mt-icon size="10" name="regular-chevron-up-s" aria-hidden="true" />
@@ -59,6 +60,7 @@
           :disabled="disabled || isInherited"
           :aria-label="t('decreaseButton')"
           data-testid="mt-number-field-decrease-button"
+          tabindex="-1"
           @click="decreaseNumberByStep"
         >
           <mt-icon
@@ -404,6 +406,7 @@ export default defineComponent({
   flex-direction: column;
   align-items: center;
   width: 2.625rem;
+  flex-shrink: 0;
 
   & button {
     outline-color: var(--color-border-brand-selected);

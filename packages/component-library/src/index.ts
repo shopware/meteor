@@ -3,6 +3,7 @@ import MtBanner from "./components/feedback-indicator/mt-banner/mt-banner.vue";
 import MtLoader from "./components/feedback-indicator/mt-loader/mt-loader.vue";
 import MtProgressBar from "./components/feedback-indicator/mt-progress-bar/mt-progress-bar.vue";
 import MtButton from "./components/form/mt-button/mt-button.vue";
+import MtChart, { type ChartOptions } from "./components/charts/mt-chart/mt-chart.vue";
 import MtCheckbox from "./components/form/mt-checkbox/mt-checkbox.vue";
 import MtColorpicker from "./components/form/mt-colorpicker/mt-colorpicker.vue";
 import MtEmailField from "./components/form/mt-email-field/mt-email-field.vue";
@@ -63,6 +64,7 @@ export {
   MtColorpicker,
   MtDatepicker,
   MtEmailField,
+  MtChart,
   MtLink,
   MtNumberField,
   MtPasswordField,
@@ -144,4 +146,4 @@ export {
 };
 
 // Exporting types
-export type { Filter, Option, Toast };
+export type { Filter, Option, Toast, ChartOptions };
