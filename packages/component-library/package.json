@@ -73,6 +73,7 @@
     "@vuepic/vue-datepicker": "^10.0.0",
     "@vueuse/components": "^12.4.0",
     "@vueuse/core": "^13.1.0",
+    "apexcharts": "^5.2.0",
     "codemirror": "^6.0.1",
     "convert-units": "^2.3.4",
     "date-fns": "4.1.0",
