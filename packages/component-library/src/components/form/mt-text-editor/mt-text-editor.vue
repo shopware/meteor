@@ -402,7 +402,6 @@ const slots = useSlots() as Record<string, unknown>;
 .mt-text-editor {
   display: flex;
   flex-direction: column;
-  background-color: var(--color-elevation-surface-default);
 }
 
 label {
@@ -416,6 +415,10 @@ label {
 .mt-text-editor__box {
   border: 1px solid var(--color-border-primary-default);
   border-radius: var(--border-radius-xs);
+}
+
+.mt-text-editor:not(.mt-text-editor--inline-edit) .mt-text-editor__box {
+  background: var(--color-background-primary-default);
 }
 
 .mt-text-editor__content,
@@ -633,6 +636,7 @@ label {
   border-top: 1px solid var(--color-border-primary-default);
   border-radius: 0 0 var(--border-radius-xs) var(--border-radius-xs);
   transition: transform 0.2s ease-in-out;
+  color: var(--color-text-secondary-default);
 }
 
 .mt-text-editor__footer-left {
