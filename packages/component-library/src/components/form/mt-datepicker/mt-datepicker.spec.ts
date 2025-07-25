@@ -127,4 +127,35 @@ describe("mt-datepicker", () => {
     expect(screen.getByRole("textbox")).toHaveValue("");
     expect(handler).toHaveBeenCalledExactlyOnceWith(null);
   });
+
+  it("should add has-error class to wrapper when error prop is provided", () => {
+    // ARRANGE
+    const { container } = render(MtDatepicker, {
+      props: {
+        error: {
+          code: 500,
+          detail: "Error message",
+        },
+      },
+    });
+
+    // ASSERT
+    expect(container.firstElementChild).toHaveClass("has-error");
+    expect(screen.getByText("Error message")).toBeInTheDocument();
+  });
+
+  it("should accept minDate as ISO string", () => {
+    // ARRANGE
+    const minDate = "2024-03-20T00:00:00.000Z";
+    render(MtDatepicker, {
+      props: {
+        dateType: "date",
+        locale: "en-US",
+        minDate: minDate,
+      },
+    });
+
+    // ASSERT - Check that the component renders without errors when minDate is provided
+    expect(screen.getByRole("textbox")).toBeInTheDocument();
+  });
 });
