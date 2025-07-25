@@ -126,6 +126,11 @@ const isInsideTooltip = useIsInsideTooltip();
   }
 }
 
+.mt-button:disabled,
+.mt-button.mt-button--disabled {
+  cursor: not-allowed;
+}
+
 .mt-button__content {
   display: grid;
   grid-auto-flow: column;
@@ -148,7 +153,6 @@ const isInsideTooltip = useIsInsideTooltip();
 }
 
 .mt-button--primary:hover,
-.mt-button--primary:focus-visible,
 .mt-button--primary:active {
   background: var(--color-interaction-primary-hover);
   border-color: var(--color-interaction-primary-hover);
@@ -158,7 +162,11 @@ const isInsideTooltip = useIsInsideTooltip();
 .mt-button--primary.mt-button--disabled {
   background: var(--color-interaction-primary-disabled);
   border-color: var(--color-interaction-primary-disabled);
-  cursor: not-allowed;
+}
+
+.mt-button--primary:disabled .mt-button__content,
+.mt-button--primary.mt-button--disabled .mt-button__content {
+  opacity: 0.4;
 }
 
 .mt-button--primary-ghost {
@@ -168,7 +176,7 @@ const isInsideTooltip = useIsInsideTooltip();
   color: var(--color-text-brand-default);
 }
 
-.mt-button--primary-ghost:is(:hover, :focus-visible, :active) {
+.mt-button--primary-ghost:is(:hover, :active):not(:disabled) {
   background: var(--color-background-brand-default);
 }
 
@@ -194,7 +202,7 @@ const isInsideTooltip = useIsInsideTooltip();
   color: var(--color-text-primary-default);
 }
 
-.mt-button--secondary:is(:hover, :focus-visible, :active) {
+.mt-button--secondary:is(:hover, :active) {
   background: var(--color-interaction-secondary-hover);
 }
 
@@ -202,7 +210,6 @@ const isInsideTooltip = useIsInsideTooltip();
 .mt-button--secondary.mt-button--disabled {
   color: var(--color-text-primary-disabled);
   background: var(--color-interaction-secondary-disabled);
-  cursor: not-allowed;
 }
 
 .mt-button--secondary:disabled .mt-icon,
@@ -220,7 +227,7 @@ const isInsideTooltip = useIsInsideTooltip();
   border: 1px solid var(--color-interaction-critical-default);
 }
 
-.mt-button--critical:is(:hover, :focus-visible, :active) {
+.mt-button--critical:is(:hover, :active) {
   background: var(--color-interaction-critical-hover);
   border-color: var(--color-interaction-critical-hover);
 }
@@ -237,13 +244,18 @@ const isInsideTooltip = useIsInsideTooltip();
   color: var(--color-static-white);
 }
 
+.mt-button--critical:disabled .mt-button__content,
+.mt-button--critical.mt-button--disabled .mt-button__content {
+  opacity: 0.4;
+}
+
 .mt-button--critical-ghost {
   background: transparent;
   border: 1px solid var(--color-border-critical-default);
   color: var(--color-text-critical-default);
 }
 
-.mt-button--critical-ghost:is(:hover, :focus-visible, :active) {
+.mt-button--critical-ghost:is(:hover, :active):not(:disabled) {
   background-color: var(--color-background-critical-default);
 }
 
