@@ -48,6 +48,7 @@ defineProps<{
   linkHref?: string;
   linkText?: string;
   buttonText?: string;
+  centered?: boolean;
 }>();
 
 defineEmits(["button-click"]);
@@ -57,7 +58,9 @@ defineEmits(["button-click"]);
 .mt-empty-state {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: center;
+  text-align: center;
+  max-width: 560px;
 }
 
 .mt-empty-state__icon {
