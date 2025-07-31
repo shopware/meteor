@@ -1,5 +1,59 @@
 # Changelog
 
+## 4.15.0
+
+### Minor Changes
+
+- 06fe48f: Add is prop to `mt-button`
+
+  Note: We've deprecated the `link` prop in favor of the `is` prop.
+
+  Old:
+
+  ```vue
+  <mt-button href="https://storybook.js.org">Link</mt-button>
+  ```
+
+  New:
+
+  ```vue
+  <mt-button is="a" href="https://storybook.js.org">Link</mt-button>
+  ```
+
+  ## Why?
+
+  The new API improves the user experience.
+
+  The old API always used a standard HTML anchor tag. This caused
+  the page to always do a full page reload.
+
+  With this new API you can also use the `RouterLink` component of the
+  Vue Router package. The router can intercept the page and
+  do a typical SPA navigation.
+
+### Patch Changes
+
+- 0f4c732: Properly announce mt-progress-bar to screen readers
+- 6cc0aab: Allow setting name for `mt-checkbox` for form submition
+- 87cf138: Allow setting `mt-checkbox` as required
+- 47c4e16: improve keyboard experience for `mt-number-field`
+- 27cf4bf: Add inset values for mt-card content
+- bc745ce: stop shrinking increment and decrement buttons of number field when it gets smaller
+- 0f4c732: Remove unnecessary vertical spacing for mt-progress-bar
+- 8e13247: Make clear button in mt-select bigger
+- 68c05cf: Update focus styles for form components
+- 50a3ab1: Fix: Updated CSS selector for preview images in `mt-data-table-text-renderer` to apply correct styles
+- 0f4c732: Correctly announce multiple mt-progress-bars
+- c0ec385: Update color tokens
+- ce4f3a2: Improve UX of http method toggle in mt-url-field
+- 2620d2c: Improve text-wrapping for empty state descriptions
+- 6b1a724: Set fixed dimensions for icon in mt-empty-state regardless which icon is used
+- 4092483: Update focus styles of mt-button
+- 0f4c732: Hide progress label if none is defined
+- 8aadd9d: Corrected datepicker alignment
+- Updated dependencies [19ca0a3]
+  - @shopware-ag/meteor-tokens@1.2.0
+
 ## 4.14.0
 
 ### Minor Changes
