@@ -22,7 +22,7 @@ withDefaults(
       | "color-text-secondary-default"
       | "color-text-secondary-disabled"
       | "color-text-secondary-inverse"
-      | "color-text-tertiary-default" // @deprecated
+      | "color-text-tertiary-default" // @deprecated tag:v5
       | "color-text-brand-default"
       | "color-text-brand-hover"
       | "color-text-brand-pressed"
@@ -32,9 +32,9 @@ withDefaults(
       | "color-text-critical-hover"
       | "color-text-critical-pressed"
       | "color-text-critical-disabled"
-      | "color-text-critical-dark" // @deprecated
-      | "color-text-attention-default" // @deprecated
-      | "color-text-positive-default" // @deprecated
+      | "color-text-critical-dark" // @deprecated tag:v5
+      | "color-text-attention-default" // @deprecated tag:v5
+      | "color-text-positive-default" // @deprecated tag:v5
       | "color-text-accent-default"
       | "color-text-static-default" // @deprecated
       | "color-text-inverse-default" // @deprecated
