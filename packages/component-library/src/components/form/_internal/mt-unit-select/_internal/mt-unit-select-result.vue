@@ -7,8 +7,9 @@
       :aria-label="`Select ${unitLabel.plural} (${unit})`"
       :data-testid="`unit-select-option-${unit}`"
     >
-      <span>{{ unitLabel.plural }}</span>
-      {{ unit }}
+      <span class="mt-unit-select-result__label">{{ unitLabel.plural }}</span>
+
+      <span class="mt-unit-select-result__unit">{{ unit }}</span>
     </button>
   </li>
 </template>
@@ -28,7 +29,7 @@ const emit = defineEmits<{
 
 <style lang="css" scoped>
 .mt-unit-select-result {
-  min-width: 170px;
+  min-width: var(--scale-size-160);
   padding: var(--scale-size-10) var(--scale-size-16);
   display: grid;
   grid-template-columns: auto 1fr;
@@ -41,8 +42,17 @@ const emit = defineEmits<{
   cursor: pointer;
 }
 
-.mt-unit-select-result span {
-  color: var(--color-slate-700);
+.mt-unit-select-result:focus-visible {
+  outline: var(--scale-size-2) solid var(--color-border-brand-default);
+  outline-offset: 2px;
+}
+
+.mt-unit-select-result__label {
+  color: var(--color-text-primary-default);
+}
+
+.mt-unit-select-result__unit {
+  color: var(--color-text-secondary-default);
 }
 
 .mt-unit-select-result:hover {

@@ -194,12 +194,12 @@ onUnmounted(() => {
 <style lang="css" scoped>
 .mt-unit-select {
   padding: var(--scale-size-8);
-  border: 1px solid var(--color-border-primary-default);
+  border: 1px solid var(--color-border-secondary-default);
   border-radius: var(--border-radius-button);
-  background-color: var(--color-elevation-surface-overlay);
-  color: var(--color-text-primary);
+  background-color: var(--color-background-primary-default);
+  color: var(--color-text-primary-default);
   font-size: var(--font-size-xs);
-  box-shadow: 0 3px 6px 0 #d1d9e0;
+  box-shadow: 0 3px 6px 0 var(--color-elevation-shadow-default);
 }
 
 .mt-unit-select ul {
@@ -207,21 +207,38 @@ onUnmounted(() => {
 }
 
 .mt-unit-select__trigger {
-  height: 100%;
+  --_trigger-margin: var(--scale-size-6);
+  height: calc(100% - var(--_trigger-margin));
+  margin: calc(var(--_trigger-margin) / 2);
   display: grid;
   grid-auto-flow: column;
   align-items: center;
   column-gap: var(--scale-size-8);
   padding-left: var(--scale-size-12);
   padding-right: var(--scale-size-12);
-  background: var(--color-interaction-secondary-hover);
-  border: 3px solid var(--color-elevation-surface-overlay);
-  border-radius: var(--border-radius-s);
+  background-color: var(--color-interaction-secondary-default);
+  border: 1px solid var(--color-border-primary-default);
+  border-radius: var(--border-radius-xs);
+  color: var(--color-text-primary-default);
   cursor: pointer;
+  transition: background-color 0.1s ease;
+}
+
+.mt-unit-select__trigger:hover {
+  background-color: var(--color-interaction-secondary-hover);
+}
+
+.mt-unit-select__trigger:active,
+.mt-unit-select__trigger[aria-expanded="true"] {
+  background-color: var(--color-interaction-secondary-pressed);
+}
+
+.mt-unit-select__trigger:focus-visible {
+  outline: var(--scale-size-2) solid var(--color-border-brand-default);
 }
 
 .mt-unit-select__trigger:disabled {
-  background-color: var(--color-background-primary-disabled);
-  border: 3px solid var(--color-background-primary-disabled);
+  background-color: var(--color-background-tertiary-default);
+  border-color: var(--color-background-tertiary-default);
 }
 </style>

@@ -319,7 +319,7 @@ export default defineComponent({
       position: relative;
 
       &:has(:focus-visible) {
-        outline: 2px solid var(--color-border-brand-selected);
+        outline: 2px solid var(--color-border-brand-default);
         outline-offset: 2px;
         border-radius: var(--border-radius-checkbox);
       }
@@ -343,7 +343,7 @@ export default defineComponent({
         }
 
         &:disabled ~ .mt-field__checkbox-state {
-          background: var(--color-background-primary-disabled);
+          background: var(--color-background-tertiary-default);
           border-color: var(--color-border-primary-default);
         }
 
@@ -355,12 +355,12 @@ export default defineComponent({
             display: flex;
             justify-content: center;
             align-items: center;
-            color: var(--color-icon-static-default);
+            color: var(--color-static-white);
           }
         }
 
         &:checked:disabled ~ .mt-field__checkbox-state {
-          background: var(--color-background-primary-disabled);
+          background: var(--color-background-tertiary-default);
           border-color: var(--color-border-primary-default);
 
           & .mt-icon {
@@ -374,7 +374,7 @@ export default defineComponent({
 
           & .mt-icon {
             display: inline-block;
-            color: var(--color-icon-static-default);
+            color: var(--color-static-white);
           }
         }
       }
@@ -385,7 +385,7 @@ export default defineComponent({
         height: 100%;
         z-index: 1;
         text-align: center;
-        background: var(--color-elevation-surface-raised);
+        background: var(--color-background-primary-default);
         color: var(--color-text-primary-default);
         border: 1px solid var(--color-border-primary-default);
         border-radius: var(--border-radius-checkbox);
@@ -431,7 +431,7 @@ export default defineComponent({
       & input[type="checkbox"] {
         &:checked ~ .mt-field__checkbox-state {
           border-color: var(--color-border-primary-default);
-          background: var(--color-background-primary-disabled);
+          background: var(--color-background-tertiary-default);
         }
       }
     }

@@ -50,7 +50,7 @@ withDefaults(
 
   &:focus-visible {
     outline-offset: 0.25rem;
-    outline: 2px solid var(--color-border-brand-selected);
+    outline: 2px solid var(--color-border-brand-default);
   }
 
   &:where(:hover, :focus-visible) {
@@ -64,7 +64,7 @@ withDefaults(
   position: absolute;
   inset: 0;
   scale: 0.9;
-  background-color: var(--color-icon-static-default);
+  background-color: var(--color-static-white);
   z-index: -1;
   border-radius: var(--border-radius-round);
 }

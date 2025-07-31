@@ -22,7 +22,7 @@ button {
 
 ```css
 button {
-  border: 1px solid var(--color-border-brand-selected);
+  border: 1px solid var(--color-border-brand-default);
 }
 ```
 

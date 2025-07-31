@@ -8,7 +8,7 @@
 .mt-skeleton-bar {
   height: var(--scale-size-32);
   width: 100%;
-  background-color: var(--color-background-primary-disabled);
+  background-color: var(--color-background-tertiary-default);
   overflow: hidden;
   border-radius: var(--border-radius-xs);
 
@@ -21,9 +21,9 @@
   height: 100%;
   background-image: linear-gradient(
     89.17deg,
-    var(--color-background-primary-disabled) 0.8%,
-    var(--color-elevation-surface-sunken) 50.09%,
-    var(--color-background-primary-disabled) 96.31%
+    var(--color-background-tertiary-default) 0.8%,
+    var(--color-background-primary-default) 50.09%,
+    var(--color-background-tertiary-default) 96.31%
   );
   background-size: 100%;
   background-repeat: no-repeat;
