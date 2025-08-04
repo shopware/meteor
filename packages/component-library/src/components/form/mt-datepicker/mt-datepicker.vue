@@ -13,8 +13,6 @@
       v-model="computedValue"
       class="date-picker"
       position="left"
-      @open="isDatepickerOpen = true"
-      @close="isDatepickerOpen = false"
       :placeholder="placeholder"
       :disabled="disabled"
       :required="required"
@@ -39,6 +37,8 @@
       :max-date="maxDate"
       :hours-increment="hoursIncrement"
       :minutes-increment="minutesIncrement"
+      @open="isDatepickerOpen = true"
+      @close="isDatepickerOpen = false"
     >
       <template #clear-icon="{ clear }">
         <button class="mt-datepicker__clear-button" aria-label="Clear value" @click="clear">
