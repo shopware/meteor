@@ -37,6 +37,8 @@
       :no-minutes-overlay="dateType === 'time'"
       :min-date="minDate"
       :max-date="maxDate"
+      :hours-increment="hoursIncrement"
+      :minutes-increment="minutesIncrement"
     >
       <template #clear-icon="{ clear }">
         <button class="mt-datepicker__clear-button" aria-label="Clear value" @click="clear">
@@ -229,6 +231,24 @@ export default defineComponent({
       type: Date as PropType<Date>,
       required: false,
       default: undefined,
+    },
+
+    /**
+     * Sets the increment for the hours in the time picker.
+     */
+    hoursIncrement: {
+      type: Number as PropType<number>,
+      required: false,
+      default: 1,
+    },
+
+    /**
+     * Sets the increment for the minutes in the time picker.
+     */
+    minutesIncrement: {
+      type: Number as PropType<number>,
+      required: false,
+      default: 1,
     },
   },
 
