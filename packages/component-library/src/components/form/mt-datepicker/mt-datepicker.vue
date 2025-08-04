@@ -35,6 +35,8 @@
       :time-picker="dateType === 'time'"
       :no-hours-overlay="dateType === 'time'"
       :no-minutes-overlay="dateType === 'time'"
+      :min-date="minDate"
+      :max-date="maxDate"
     >
       <template #clear-icon="{ clear }">
         <button class="mt-datepicker__clear-button" aria-label="Clear value" @click="clear">
@@ -209,6 +211,24 @@ export default defineComponent({
       type: String as PropType<"small" | "default">,
       required: false,
       default: "default",
+    },
+
+    /**
+     * Sets the minimum date that can be selected.
+     */
+    minDate: {
+      type: Date as PropType<Date>,
+      required: false,
+      default: undefined,
+    },
+
+    /**
+     * Sets the maximum date that can be selected.
+     */
+    maxDate: {
+      type: Date as PropType<Date>,
+      required: false,
+      default: undefined,
     },
   },
 
