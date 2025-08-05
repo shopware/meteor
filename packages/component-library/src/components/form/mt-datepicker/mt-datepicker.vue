@@ -739,8 +739,4 @@ export default defineComponent({
   border: 1px solid var(--color-border-critical-default);
   background: var(--color-background-critical-dark);
 }
-
-.mt-datepicker__wrapper.has-error .dp__input:focus {
-  filter: drop-shadow(0px 0px 3px #ff4d4d4d);
-}
 </style>
