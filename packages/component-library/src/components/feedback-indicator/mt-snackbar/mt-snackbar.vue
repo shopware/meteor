@@ -44,15 +44,18 @@ const { snackbars, removeSnackbar } = useSnackbar();
   }
 
   .snackbars-enter-active {
-    transition: all 0.3s ease;
+    transition: all 0.3s;
+    transition-timing-function: cubic-bezier(0.7, 0.1, 0.45, 0.9);
   }
 
   .snackbars-leave-active {
-    transition: all 0.3s ease;
+    transition: all 0.3s;
+    transition-timing-function: cubic-bezier(0.7, 0.1, 0.45, 0.9);
   }
 
   .snackbars-move {
-    transition: transform 0.3s ease;
+    transition: transform 0.3s;
+    transition-timing-function: cubic-bezier(0.7, 0.1, 0.45, 0.9);
   }
 }
 </style>
