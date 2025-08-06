@@ -56,6 +56,7 @@ test('creates a dictionary out of Figma Variables', () => {
     blue: {
       $type: 'color',
       $value: '#0000ff',
+      $description: '',
     },
   });
 });
@@ -116,6 +117,7 @@ test('creates a dictionary with nested Tokens out of Figma Variables', () => {
         50: {
           $type: 'color',
           $value: '#f9fafb',
+          $description: '',
         },
       },
     },
@@ -195,6 +197,7 @@ test('creates a dictionary containing an aliased Token out of Figma Variables', 
         50: {
           $type: 'color',
           $value: '#0000ff',
+          $description: '',
         },
       },
     },
@@ -203,6 +206,7 @@ test('creates a dictionary containing an aliased Token out of Figma Variables', 
         default: {
           $type: 'color',
           $value: '{neutrals.gray.50}',
+          $description: '',
         },
       },
     },
@@ -305,6 +309,7 @@ test('creates a dictionary containing aliased Tokens that reference Design Token
           overlay: {
             $type: 'color',
             $value: '{gray.50}',
+            $description: '',
           },
         },
       },
@@ -365,7 +370,8 @@ test('return a JSON representation of the dictionary', () => {
     "{
       "blue": {
         "$value": "#0000ff",
-        "$type": "color"
+        "$type": "color",
+        "$description": ""
       }
     }
     "
@@ -601,6 +607,7 @@ test('creates a dictionary with string tokens', () => {
         headings: {
           $type: 'string',
           $value: 'Inter',
+          $description: '',
         },
       },
     },
@@ -658,6 +665,7 @@ test('creates a dictionary with number tokens', () => {
         200: {
           $type: 'float',
           $value: 200,
+          $description: '',
         },
       },
     },
@@ -775,10 +783,12 @@ test('Creates a dictionary with variable aliases from the same file', () => {
       m: {
         $type: 'float',
         $value: '{scale.size.8}',
+        $description: '',
       },
       card: {
         $type: 'float',
         $value: '{border-radius.m}',
+        $description: '',
       },
     },
   });
