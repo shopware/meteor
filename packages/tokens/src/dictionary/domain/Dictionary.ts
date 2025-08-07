@@ -6,6 +6,7 @@ import { Color } from './Color.js';
 type DictionaryValue = {
   $value: string;
   $type: string;
+  $description?: string;
 };
 
 type DictionaryTree = {
@@ -46,6 +47,7 @@ export class Dictionary {
         set(accumulator, kebabCase(variable.name), {
           $value: rawValue,
           $type: variable.resolvedType.toLocaleLowerCase(),
+          $description: variable.description,
         });
       }
 
@@ -54,6 +56,7 @@ export class Dictionary {
         set(accumulator, kebabCase(variable.name), {
           $value: rawValue,
           $type: variable.resolvedType.toLocaleLowerCase(),
+          $description: variable.description,
         });
       }
 
@@ -71,6 +74,7 @@ export class Dictionary {
             rawValue.a,
           ).toHex(),
           $type: variable.resolvedType.toLocaleLowerCase(),
+          $description: variable.description,
         });
       }
 
@@ -114,6 +118,7 @@ export class Dictionary {
         set(accumulator, kebabCase(variable.name), {
           $value: `{${pathToAliasedToken}}`,
           $type: variable.resolvedType.toLocaleLowerCase(),
+          $description: variable.description,
         });
       }
 

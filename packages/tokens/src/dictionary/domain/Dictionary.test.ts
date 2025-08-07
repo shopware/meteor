@@ -56,6 +56,7 @@ test('creates a dictionary out of Figma Variables', () => {
     blue: {
       $type: 'color',
       $value: '#0000ff',
+      $description: '',
     },
   });
 });
@@ -116,6 +117,7 @@ test('creates a dictionary with nested Tokens out of Figma Variables', () => {
         50: {
           $type: 'color',
           $value: '#f9fafb',
+          $description: '',
         },
       },
     },
@@ -195,6 +197,7 @@ test('creates a dictionary containing an aliased Token out of Figma Variables', 
         50: {
           $type: 'color',
           $value: '#0000ff',
+          $description: '',
         },
       },
     },
@@ -203,6 +206,7 @@ test('creates a dictionary containing an aliased Token out of Figma Variables', 
         default: {
           $type: 'color',
           $value: '{neutrals.gray.50}',
+          $description: '',
         },
       },
     },
@@ -305,6 +309,7 @@ test('creates a dictionary containing aliased Tokens that reference Design Token
           overlay: {
             $type: 'color',
             $value: '{gray.50}',
+            $description: '',
           },
         },
       },
@@ -365,7 +370,8 @@ test('return a JSON representation of the dictionary', () => {
     "{
       "blue": {
         "$value": "#0000ff",
-        "$type": "color"
+        "$type": "color",
+        "$description": ""
       }
     }
     "
@@ -601,6 +607,7 @@ test('creates a dictionary with string tokens', () => {
         headings: {
           $type: 'string',
           $value: 'Inter',
+          $description: '',
         },
       },
     },
@@ -658,6 +665,7 @@ test('creates a dictionary with number tokens', () => {
         200: {
           $type: 'float',
           $value: 200,
+          $description: '',
         },
       },
     },
@@ -775,10 +783,77 @@ test('Creates a dictionary with variable aliases from the same file', () => {
       m: {
         $type: 'float',
         $value: '{scale.size.8}',
+        $description: '',
       },
       card: {
         $type: 'float',
         $value: '{border-radius.m}',
+        $description: '',
+      },
+    },
+  });
+});
+
+test('creates a dictionary with a token that has a description', () => {
+  // GIVEN
+  const response: FigmaApiResponse = {
+    status: 200,
+    error: false,
+    meta: {
+      variables: {
+        'VariableID:11953:115880': {
+          id: 'VariableID:11953:115880',
+          name: 'Primary / Blue / 500',
+          key: 'db9aa5d3b7c6f03b4cddb78e045b566fae112d17',
+          variableCollectionId: 'VariableCollectionId:11953:115879',
+          resolvedType: 'COLOR',
+          valuesByMode: {
+            '11953:0': {
+              r: 0.2,
+              g: 0.4,
+              b: 0.8,
+              a: 1,
+            },
+          },
+          remote: false,
+          description:
+            'Primary brand color used for main actions and highlights',
+          hiddenFromPublishing: false,
+          scopes: ['ALL_SCOPES'],
+        },
+      },
+      variableCollections: {
+        'VariableCollectionId:11953:115879': {
+          id: 'VariableCollectionId:11953:115879',
+          name: '.Design Tokens',
+          key: '9130479ef323598b1ccfb32e7b16dc80fcb30f14',
+          modes: [{ modeId: '11953:0', name: 'Default' }],
+          defaultModeId: '11953:0',
+          remote: false,
+          hiddenFromPublishing: true,
+          variableIds: ['VariableID:11953:115880'],
+        },
+      },
+    },
+  };
+
+  const subject = Dictionary;
+
+  // WHEN
+  const result = subject.fromFigmaApiResponse(response, {
+    mode: 'Default',
+  }).value;
+
+  // THEN
+  expect(result).toStrictEqual({
+    primary: {
+      blue: {
+        500: {
+          $type: 'color',
+          $value: '#3366cc',
+          $description:
+            'Primary brand color used for main actions and highlights',
+        },
       },
     },
   });

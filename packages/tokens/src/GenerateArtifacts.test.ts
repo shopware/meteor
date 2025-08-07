@@ -147,11 +147,13 @@ test('creates a Dictionary in form of a JSON file for the primitive Design Token
         "zinc": {
           "50": {
             "$value": "#fafbfe",
-            "$type": "color"
+            "$type": "color",
+            "$description": ""
           },
           "900": {
             "$value": "#1e1e24",
-            "$type": "color"
+            "$type": "color",
+            "$description": ""
           }
         }
       }
@@ -301,7 +303,8 @@ test('creates a Dictionary in form of a JSON file for the admin light mode token
             "surface": {
               "default": {
                 "$value": "{zinc.50}",
-                "$type": "color"
+                "$type": "color",
+                "$description": ""
               }
             }
           }
@@ -453,7 +456,8 @@ test('creates a Dictionary in form of a JSON file for the admin dark mode tokens
             "surface": {
               "default": {
                 "$value": "{zinc.900}",
-                "$type": "color"
+                "$type": "color",
+                "$description": ""
               }
             }
           }
