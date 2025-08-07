@@ -793,3 +793,68 @@ test('Creates a dictionary with variable aliases from the same file', () => {
     },
   });
 });
+
+test('creates a dictionary with a token that has a description', () => {
+  // GIVEN
+  const response: FigmaApiResponse = {
+    status: 200,
+    error: false,
+    meta: {
+      variables: {
+        'VariableID:11953:115880': {
+          id: 'VariableID:11953:115880',
+          name: 'Primary / Blue / 500',
+          key: 'db9aa5d3b7c6f03b4cddb78e045b566fae112d17',
+          variableCollectionId: 'VariableCollectionId:11953:115879',
+          resolvedType: 'COLOR',
+          valuesByMode: {
+            '11953:0': {
+              r: 0.2,
+              g: 0.4,
+              b: 0.8,
+              a: 1,
+            },
+          },
+          remote: false,
+          description:
+            'Primary brand color used for main actions and highlights',
+          hiddenFromPublishing: false,
+          scopes: ['ALL_SCOPES'],
+        },
+      },
+      variableCollections: {
+        'VariableCollectionId:11953:115879': {
+          id: 'VariableCollectionId:11953:115879',
+          name: '.Design Tokens',
+          key: '9130479ef323598b1ccfb32e7b16dc80fcb30f14',
+          modes: [{ modeId: '11953:0', name: 'Default' }],
+          defaultModeId: '11953:0',
+          remote: false,
+          hiddenFromPublishing: true,
+          variableIds: ['VariableID:11953:115880'],
+        },
+      },
+    },
+  };
+
+  const subject = Dictionary;
+
+  // WHEN
+  const result = subject.fromFigmaApiResponse(response, {
+    mode: 'Default',
+  }).value;
+
+  // THEN
+  expect(result).toStrictEqual({
+    primary: {
+      blue: {
+        500: {
+          $type: 'color',
+          $value: '#3366cc',
+          $description:
+            'Primary brand color used for main actions and highlights',
+        },
+      },
+    },
+  });
+});
