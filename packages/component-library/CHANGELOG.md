@@ -1,5 +1,20 @@
 # Changelog
 
+## 4.16.0
+
+### Minor Changes
+
+- 67fa32b: - Add error handling for mt-datepicker component
+  - Add minDate handling for mt-datepicker component
+
+### Patch Changes
+
+- 6e30862: Moved ellipsis animation from mixins to global
+- Updated dependencies [9a63888]
+- Updated dependencies [4954036]
+  - @shopware-ag/meteor-tokens@1.3.0
+  - @shopware-ag/meteor-admin-sdk@6.2.1
+
 ## 4.15.0
 
 ### Minor Changes

@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.2.1
+
+### Patch Changes
+
+- 4954036: - Add resizable option to sidebar config
+
 ## 6.2.0
 
 ### Minor Changes
