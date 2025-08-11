@@ -6,7 +6,9 @@
   "description": "The monorepo that contains all Meteor related projects",
   "keywords": [],
   "license": "MIT",
-  "scripts": {},
+  "scripts": {
+    "validate:changesets": "node scripts/validate-changesets.js"
+  },
   "dependencies": {
     "@changesets/cli": "^2.27.1"
   },
