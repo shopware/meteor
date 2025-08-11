@@ -282,7 +282,7 @@ function moveDrag(event: MouseEvent | TouchEvent) {
         if (currentDrop === null || zone.el !== currentDrop.el) {
           enterDropZone(zone.el, zone.dropConfig);
         }
-      } else if (currentDrop !== null && zone.el === currentDrop.el) {
+      } else if (currentDrop !== null) {
         leaveDropZone(zone.el, zone.dropConfig);
       }
     });
@@ -426,8 +426,9 @@ function leaveDropZone(el: HTMLElement, dropConfig: DropConfig) {
     dragElement.classList.remove(currentDrag.dragConfig.validDragCls);
     dragElement.classList.remove(currentDrag.dragConfig.invalidDragCls);
   }
-
-  currentDrop = null;
+  if (el === currentDrop.el) {
+    currentDrop = null;
+  }
 }
 
 /**
