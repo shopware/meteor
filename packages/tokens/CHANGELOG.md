@@ -1,5 +1,11 @@
 # @shopware-ag/meteor-tokens
 
+## 1.3.0
+
+### Minor Changes
+
+- 9a63888: Add description to all Design Tokens
+
 ## 1.2.0
 
 ### Minor Changes
