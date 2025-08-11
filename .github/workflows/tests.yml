@@ -43,6 +43,9 @@ jobs:
       - name: Install dependencies
         run: pnpm i --frozen-lockfile --prefer-offline
 
+      - name: Validate changesets package names
+        run: pnpm run validate:changesets
+
       - name: Build packages
         run: npx turbo run build
 
