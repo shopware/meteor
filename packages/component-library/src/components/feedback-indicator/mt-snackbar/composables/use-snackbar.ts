@@ -1,16 +1,17 @@
 import { createId } from "@/utils/id";
-import { ref, type Ref } from "vue";
+import { ref, reactive, readonly, type Ref } from "vue";
 
 export interface Snackbar {
   id: string;
   message: string;
-  type?: "success" | "error" | "warning" | "info";
+  type?: "success" | "error" | "warning" | "upload";
   icon?: string;
   link?: {
     text: string;
     url: string;
   };
   duration?: number;
+  progressPercentage?: number;
 }
 
 // Global snackbars state
@@ -18,14 +19,15 @@ const globalSnackbars = ref<Snackbar[]>([]);
 
 export function useSnackbar() {
   function addSnackbar(snackbarData: Omit<Snackbar, "id">) {
-    const id = createId(); // auto generated at the sdk
-    const snackbar: Snackbar = {
-      id,
+    const snackbar = reactive({
+      id: createId(),
       duration: 5000,
       ...snackbarData,
-    };
+    });
 
-    globalSnackbars.value.unshift(snackbar);
+    globalSnackbars.value.push(snackbar);
+
+    return snackbar;
   }
 
   function removeSnackbar(id: string) {
@@ -36,7 +38,7 @@ export function useSnackbar() {
   }
 
   return {
-    snackbars: globalSnackbars as Ref<Snackbar[]>,
+    snackbars: readonly(globalSnackbars) as Ref<Snackbar[]>,
     addSnackbar,
     removeSnackbar,
   };
