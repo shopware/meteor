@@ -30,16 +30,17 @@ const { snackbars, removeSnackbar } = useSnackbar();
   z-index: 1600;
   display: flex;
   flex-direction: column;
-  gap: var(--scale-size-8);
+  align-items: flex-end;
+  gap: var(--scale-size-16);
   pointer-events: none;
 
   .snackbars-enter-from {
-    transform: translateX(100%);
+    transform: translateY(100%);
     opacity: 0;
   }
 
   .snackbars-leave-to {
-    transform: translateX(100%);
+    transform: translateY(200%);
     opacity: 0;
   }
 
@@ -49,8 +50,10 @@ const { snackbars, removeSnackbar } = useSnackbar();
   }
 
   .snackbars-leave-active {
-    transition: all 0.3s;
-    transition-timing-function: cubic-bezier(0.7, 0.1, 0.45, 0.9);
+    transition:
+      opacity 0.1s,
+      transform 0.8s;
+    transition-timing-function: linear;
   }
 
   .snackbars-move {
