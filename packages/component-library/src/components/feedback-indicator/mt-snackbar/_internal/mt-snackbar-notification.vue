@@ -32,9 +32,9 @@
           <mt-link
             v-if="snackbar.link"
             class="mt-snackbar-notification__link"
-            :href="snackbar.link.url"
-            target="_blank"
-            rel="noopener noreferrer"
+            as="a"
+            variant="primary"
+            :to="snackbar.link.url"
           >
             {{ snackbar.link.text }}
           </mt-link>
@@ -188,24 +188,22 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .mt-snackbar-notification {
-  display: flex;
-  flex-direction: column;
   background: var(--color-background-default);
-  border: 1px solid var(--color-border-default);
-  border-radius: var(--border-radius-lg);
+  border: 1px solid var(--color-border-secondary-default);
+  border-radius: var(--border-radius-m);
   box-shadow:
     0px 4px 6px -2px rgba(0, 0, 0, 0.05),
     0px 10px 15px -3px rgba(0, 0, 0, 0.1);
-  min-width: 300px;
   max-width: 400px;
   position: relative;
   overflow: hidden;
+  pointer-events: auto;
 }
 
 .mt-snackbar-notification__content {
   display: flex;
   align-items: flex-start;
-  padding: var(--scale-size-12) var(--scale-size-16);
+  padding: var(--scale-size-12);
   gap: var(--scale-size-12);
 }
 
@@ -213,6 +211,7 @@ onBeforeUnmount(() => {
   display: flex;
   align-items: flex-start;
   gap: var(--scale-size-8);
+  border: 1px solid red;
   flex: 1;
   min-width: 0;
 }
@@ -223,9 +222,11 @@ onBeforeUnmount(() => {
 }
 
 .mt-snackbar-notification__text-content {
+  border: 1px solid blue;
   display: flex;
-  flex-direction: column;
-  gap: var(--scale-size-4);
+  flex-direction: row;
+  justify-content: space-between;
+  gap: var(--scale-size-8);
   min-width: 0;
   flex: 1;
 }
@@ -239,15 +240,17 @@ onBeforeUnmount(() => {
   margin-left: 0;
 }
 
-.mt-snackbar-notification__link {
+/* .mt-snackbar-notification__link {
   font-size: var(--font-size-sm);
   text-decoration: underline;
   color: var(--color-primary-500);
+  cursor: pointer;
+  align-self: flex-start;
 
   &:hover {
     color: var(--color-primary-600);
   }
-}
+} */
 
 .mt-snackbar-notification--success {
   border-left: 4px solid var(--color-success-500);
