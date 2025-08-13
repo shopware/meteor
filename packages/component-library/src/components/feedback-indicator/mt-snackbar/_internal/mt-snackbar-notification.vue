@@ -10,7 +10,7 @@
     @mouseleave="resumeTimer"
   >
     <div class="mt-snackbar-notification__content">
-      <div class="mt-snackbar-notification__content-left">
+      <div class="mt-snackbar-notification__text-content">
         <mt-icon
           v-if="snackbar.icon"
           class="mt-snackbar-notification__icon"
@@ -18,28 +18,25 @@
           size="20px"
         />
 
-        <div class="mt-snackbar-notification__text-content">
-          <mt-text
-            class="mt-snackbar-notification__message"
-            color="color-text-primary"
-            weight="medium"
-            size="s"
-            :class="messageClasses"
-          >
-            {{ snackbar.message }}
-          </mt-text>
-
-          <mt-link
-            v-if="snackbar.link"
-            class="mt-snackbar-notification__link"
-            as="a"
-            variant="primary"
-            :to="snackbar.link.url"
-          >
-            {{ snackbar.link.text }}
-          </mt-link>
-        </div>
+        <mt-text
+          class="mt-snackbar-notification__message"
+          color="color-text-primary"
+          weight="medium"
+          size="s"
+          :class="messageClasses"
+        >
+          {{ snackbar.message }}
+        </mt-text>
       </div>
+      <mt-link
+        v-if="snackbar.link"
+        class="mt-snackbar-notification__link"
+        as="a"
+        variant="primary"
+        :to="snackbar.link.url"
+      >
+        {{ snackbar.link.text }}
+      </mt-link>
     </div>
   </div>
 </template>
@@ -188,99 +185,64 @@ onBeforeUnmount(() => {
 
 <style scoped>
 .mt-snackbar-notification {
+  max-width: 360px;
+  position: relative;
+  overflow: hidden;
   background: var(--color-background-default);
   border: 1px solid var(--color-border-secondary-default);
   border-radius: var(--border-radius-m);
   box-shadow:
-    0px 4px 6px -2px rgba(0, 0, 0, 0.05),
-    0px 10px 15px -3px rgba(0, 0, 0, 0.1);
-  max-width: 400px;
-  position: relative;
-  overflow: hidden;
+    0px 8px 20px 0px var(--color-elevation-shadow-default),
+    0px 8px 20px 0px var(--color-elevation-shadow-default);
   pointer-events: auto;
+  padding: var(--scale-size-12);
 }
 
 .mt-snackbar-notification__content {
   display: flex;
-  align-items: flex-start;
-  padding: var(--scale-size-12);
+  flex-direction: row;
+  justify-content: space-between;
   gap: var(--scale-size-12);
 }
 
-.mt-snackbar-notification__content-left {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--scale-size-8);
-  border: 1px solid red;
-  flex: 1;
-  min-width: 0;
-}
-
-.mt-snackbar-notification__icon {
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
 .mt-snackbar-notification__text-content {
-  border: 1px solid blue;
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+  align-items: center;
   gap: var(--scale-size-8);
-  min-width: 0;
-  flex: 1;
 }
 
-.mt-snackbar-notification__message {
+.mt-snackbar-notification__icon {
+  margin-top: 1px;
+}
+
+/* .mt-snackbar-notification__message {
   line-height: 1.4;
   word-wrap: break-word;
-}
-
-.mt-snackbar-notification__message--with-icon {
-  margin-left: 0;
-}
-
-/* .mt-snackbar-notification__link {
-  font-size: var(--font-size-sm);
-  text-decoration: underline;
-  color: var(--color-primary-500);
-  cursor: pointer;
-  align-self: flex-start;
-
-  &:hover {
-    color: var(--color-primary-600);
-  }
 } */
 
 .mt-snackbar-notification--success {
-  border-left: 4px solid var(--color-success-500);
-
   .mt-snackbar-notification__icon {
-    color: var(--color-success-500);
+    color: var(--color-icon-positive-default);
   }
 }
 
 .mt-snackbar-notification--error {
-  border-left: 4px solid var(--color-danger-500);
-
   .mt-snackbar-notification__icon {
-    color: var(--color-danger-500);
+    color: var(--color-icon-critical-default);
   }
 }
 
 .mt-snackbar-notification--warning {
-  border-left: 4px solid var(--color-warning-500);
-
   .mt-snackbar-notification__icon {
-    color: var(--color-warning-500);
+    color: var(--color-icon-warning-default);
   }
 }
 
 .mt-snackbar-notification--info {
-  border-left: 4px solid var(--color-info-500);
-
   .mt-snackbar-notification__icon {
-    color: var(--color-info-500);
+    color: var(--color-icon-info-default);
   }
 }
 </style>
