@@ -75,8 +75,6 @@ const classes = computed(() => {
   return {
     "mt-snackbar-notification--success": snackbar.value.type === "success",
     "mt-snackbar-notification--error": snackbar.value.type === "error",
-    "mt-snackbar-notification--warning": snackbar.value.type === "warning",
-    "mt-snackbar-notification--info": snackbar.value.type === "info",
   };
 });
 
@@ -90,10 +88,8 @@ const role = computed(() => {
   switch (snackbar.value.type) {
     case "error":
       return "alert";
-    case "warning":
-      return "alert";
     case "success":
-    case "info":
+      return "log";
     default:
       return "log";
   }
@@ -217,10 +213,10 @@ onBeforeUnmount(() => {
   margin-top: 1px;
 }
 
-/* .mt-snackbar-notification__message {
+.mt-snackbar-notification__message {
   line-height: 1.4;
   word-wrap: break-word;
-} */
+}
 
 .mt-snackbar-notification--success {
   .mt-snackbar-notification__icon {
@@ -231,18 +227,6 @@ onBeforeUnmount(() => {
 .mt-snackbar-notification--error {
   .mt-snackbar-notification__icon {
     color: var(--color-icon-critical-default);
-  }
-}
-
-.mt-snackbar-notification--warning {
-  .mt-snackbar-notification__icon {
-    color: var(--color-icon-warning-default);
-  }
-}
-
-.mt-snackbar-notification--info {
-  .mt-snackbar-notification__icon {
-    color: var(--color-icon-info-default);
   }
 }
 </style>
