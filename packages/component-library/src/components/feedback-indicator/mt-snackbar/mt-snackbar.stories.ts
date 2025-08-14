@@ -1,7 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/vue3";
 import MtSnackbar from "./mt-snackbar.vue";
 import MtButton from "@/components/form/mt-button/mt-button.vue";
+import MtCheckbox from "@/components/form/mt-checkbox/mt-checkbox.vue";
+import MtTextField from "@/components/form/mt-text-field/mt-text-field.vue";
 import { useSnackbar } from "./composables/use-snackbar";
+import { computed, ref } from "vue";
 
 const meta: Meta<typeof MtSnackbar> = {
   title: "Components/Feedback Indicator/mt-snackbar",
@@ -13,29 +16,41 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   render: () => ({
-    components: { MtSnackbar, MtButton },
+    components: { MtSnackbar, MtButton, MtCheckbox, MtTextField },
     setup() {
       const { addSnackbar } = useSnackbar();
+      const msg = ref("This is a snackbar");
+      const action = ref(false);
+
+      const linkValue = computed(() => {
+        return action.value
+          ? {
+              text: "Action",
+              url: "/",
+            }
+          : undefined;
+      });
 
       const addDefaultSnackbar = () => {
         addSnackbar({
-          message: "This is a default snackbar.",
+          message: msg.value,
+          link: linkValue.value,
         });
       };
 
       const addSuccessSnackbar = () => {
         addSnackbar({
-          message: "Success! Your action was completed successfully.",
+          message: msg.value,
           type: "success",
-          icon: "solid-check-circle",
+          link: linkValue.value,
         });
       };
 
       const addErrorSnackbar = () => {
         addSnackbar({
-          message: "Error! Something went wrong. Please try again.",
+          message: msg.value,
           type: "error",
-          icon: "solid-exclamation-triangle",
+          link: linkValue.value,
         });
       };
 
@@ -43,19 +58,27 @@ export const Default: Story = {
         addDefaultSnackbar,
         addSuccessSnackbar,
         addErrorSnackbar,
+        msg,
+        action,
       };
     },
     template: `
         <h2>Spawn some snackbars 🍞</h2>
+        <div style="width: 420px;">
+          <mt-text-field label="ToastMessage" v-model="msg" />
+          <div style="display: flex; gap: 12px;">
+            <mt-checkbox label="Add action" v-model:checked="action" />
+          </div>
+        </div>
         <div style="display: flex; gap: 10px;">
           <mt-button @click="addDefaultSnackbar" variant="secondary">
-            Default Snackbar
+          Default Snackbar
           </mt-button>
           <mt-button @click="addSuccessSnackbar" variant="primary">
-            Success Snackbar
+          Success Snackbar
           </mt-button>
           <mt-button @click="addErrorSnackbar" variant="critical">
-            Error Snackbar
+          Error Snackbar
           </mt-button>
         </div>
         <MtSnackbar />
