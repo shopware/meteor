@@ -11,12 +11,7 @@
   >
     <div class="mt-snackbar-notification__content">
       <div class="mt-snackbar-notification__text-content">
-        <mt-icon
-          v-if="snackbar.icon"
-          class="mt-snackbar-notification__icon"
-          :name="snackbar.icon"
-          size="20px"
-        />
+        <mt-icon v-if="icon" class="mt-snackbar-notification__icon" :name="icon" size="20px" />
 
         <mt-text
           class="mt-snackbar-notification__message"
@@ -78,9 +73,20 @@ const classes = computed(() => {
   };
 });
 
+const icon = computed(() => {
+  switch (snackbar.value.type) {
+    case "error":
+      return "solid-exclamation-circle";
+    case "success":
+      return "solid-check-circle";
+    default:
+      return undefined;
+  }
+});
+
 const messageClasses = computed(() => {
   return {
-    "mt-snackbar-notification__message--with-icon": !!snackbar.value.icon,
+    "mt-snackbar-notification__message--with-icon": !!icon.value,
   };
 });
 
