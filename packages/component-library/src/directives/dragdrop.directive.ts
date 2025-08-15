@@ -275,17 +275,17 @@ function moveDrag(event: MouseEvent | TouchEvent) {
     // save new x value to dataset
     dragElement.dataset.translateX = newX.toString();
   }
- if (event.type === "touchmove") {
-   const foundZone = dropZones.find((zone) => isEventOverElement(event, zone.el));
+  if (event.type === "touchmove") {
+    const foundZone = dropZones.find((zone) => isEventOverElement(event, zone.el));
 
-   clearAllDropZoneHighlights();
+    clearAllDropZoneHighlights();
 
-   if (foundZone) {
-     enterDropZone(foundZone.el, foundZone.dropConfig);
-   } else if (currentDrop) {
-     leaveDropZone(currentDrop.el, currentDrop.dropConfig);
-   }
- }
+    if (foundZone) {
+      enterDropZone(foundZone.el, foundZone.dropConfig);
+    } else if (currentDrop) {
+      leaveDropZone(currentDrop.el, currentDrop.dropConfig);
+    }
+  }
 }
 
 /**
