@@ -88,19 +88,21 @@
               @click-options="() => changeView(filter.id)"
             />
           </template>
-
+         
           <template v-for="filter in filters" :key="filter.id" #[`popover-items__${filter.id}`]>
-            <mt-popover-item
-              v-for="option in filter.type.options"
-              :key="option.id"
-              :label="option.label"
-              show-checkbox
-              :checkbox-checked="isOptionSelected(filter.id, option.id)"
-              @change-checkbox="
-                (isChecked) =>
-                  isChecked ? addOption(filter.id, option.id) : removeOption(filter.id, option.id)
-              "
-            />
+            <slot :name="`popover-items__${filter.id}`" v-bind="{ filter }">
+              <mt-popover-item
+                v-for="option in filter.type.options"
+                :key="option.id"
+                :label="option.label"
+                show-checkbox
+                :checkbox-checked="isOptionSelected(filter.id, option.id)"
+                @change-checkbox="
+                  (isChecked) =>
+                    isChecked ? addOption(filter.id, option.id) : removeOption(filter.id, option.id)
+                "
+              />
+            </slot>
           </template>
         </mt-popover>
 
