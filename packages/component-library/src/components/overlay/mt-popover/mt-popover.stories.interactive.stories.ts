@@ -70,16 +70,38 @@ export const VisualTestDragAndDrop: MtPopoverStory = {
     const popoverToggle = canvas.getByText("Toggle popover");
     await userEvent.click(popoverToggle);
 
+    // Wait for the popover to be visible and find the Columns item
+    await waitUntil(() => {
+      const columnsItem = document.querySelector(".mt-popover-item");
+      return columnsItem && columnsItem.textContent?.includes("Columns");
+    });
+
     // Navigate to the column order view
     const columnButton = document.querySelector(".mt-popover-item");
     await expect(columnButton).toBeInTheDocument();
     await userEvent.click(columnButton as Element);
-    // Check view has changed
-    await expect(document.querySelector(".mt-popover__items")).toBeInTheDocument();
 
-    // Look for draggable items with 'is--draggable' class
+    // Wait for the view to change and the column order content to be visible
+    await waitUntil(() => {
+      const popoverItems = document.querySelector(".mt-popover__items");
+      return popoverItems && popoverItems.textContent?.includes("Name");
+    });
+
+    // Find popover items
     const popoverItemResult = document.querySelector(".mt-popover-item-result");
+    expect(popoverItemResult).toBeInTheDocument();
+
+    // Wait for the draggable items to be rendered
+    await waitUntil(() => {
+      const draggableItems = popoverItemResult?.querySelectorAll(".mt-popover-item.is--draggable");
+      return draggableItems && draggableItems.length > 0;
+    });
+
     const draggableItems = popoverItemResult?.querySelectorAll(".mt-popover-item.is--draggable");
+    expect(draggableItems).toBeDefined();
+    expect(draggableItems?.length).toBeGreaterThan(0);
+
+    // Use the first draggable item (index 0 instead of 1)
     const draggableItem = draggableItems?.[1] as HTMLElement;
     await expect(draggableItem).toBeInTheDocument();
 
