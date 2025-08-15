@@ -101,7 +101,7 @@ export const VisualTestDragAndDrop: MtPopoverStory = {
     expect(draggableItems).toBeDefined();
     expect(draggableItems?.length).toBeGreaterThan(0);
 
-    // Use the first draggable item (index 0 instead of 1)
+    // Use the first draggable item
     const draggableItem = draggableItems?.[1] as HTMLElement;
     await expect(draggableItem).toBeInTheDocument();
 
@@ -110,7 +110,7 @@ export const VisualTestDragAndDrop: MtPopoverStory = {
       buttons: 1,
     });
 
-    // // Wait for the drag delay (200ms) and then check if dragging has started
+    // Wait for the drag delay (200ms)
     await new Promise((resolve) => setTimeout(resolve, 250));
 
     // Check if dragging has started
