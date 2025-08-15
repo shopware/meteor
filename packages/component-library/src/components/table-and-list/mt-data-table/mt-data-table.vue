@@ -88,7 +88,6 @@
               @click-options="() => changeView(filter.id)"
             />
           </template>
-         
           <template v-for="filter in filters" :key="filter.id" #[`popover-items__${filter.id}`]>
             <slot :name="`popover-items__${filter.id}`" v-bind="{ filter }">
               <mt-popover-item
