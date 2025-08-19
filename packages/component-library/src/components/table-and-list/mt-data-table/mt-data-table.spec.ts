@@ -101,7 +101,7 @@ global.ResizeObserver = class ResizeObserver {
   }
 };
 
-function createWrapper() {
+function createWrapper(options?: { slots?: Record<string, string> }) {
   return mount(MtDataTable, {
     attachTo: document.body,
     props: {
@@ -121,6 +121,7 @@ function createWrapper() {
         "mt-icon": true,
       },
     },
+    ...options
   });
 }
 
@@ -567,26 +568,7 @@ describe("mt-data-table", () => {
     });
 
     it("should render table cell when using slot column", async () => {
-      // const wrapper = createWrapper();
-      const wrapper = mount(MtDataTable, {
-        attachTo: document.body,
-        props: {
-          dataSource: MtDataTableFixtures,
-          columns: columnsFixture,
-          title: "Data table",
-          subtitle: "This is the subline",
-          currentPage: 1,
-          paginationTotalItems: 182,
-          paginationLimit: 25,
-        },
-        global: {
-          mocks: {
-            $t: (v: string) => v,
-          },
-          stubs: {
-            "mt-icon": true,
-          },
-        },
+      const wrapper = createWrapper({
         slots: {
           'column-name': 'My custom name',
         },
