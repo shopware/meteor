@@ -565,6 +565,43 @@ describe("mt-data-table", () => {
       expect(wrapper.find(".mt-data-table__table-context-button").exists()).toBeFalsy();
       expect(wrapper.find(".mt-data-table__table-settings-button").exists()).toBeFalsy();
     });
+
+    it("should render table cell when using slot column", async () => {
+      // const wrapper = createWrapper();
+      const wrapper = mount(MtDataTable, {
+        attachTo: document.body,
+        props: {
+          dataSource: MtDataTableFixtures,
+          columns: columnsFixture,
+          title: "Data table",
+          subtitle: "This is the subline",
+          currentPage: 1,
+          paginationTotalItems: 182,
+          paginationLimit: 25,
+        },
+        global: {
+          mocks: {
+            $t: (v: string) => v,
+          },
+          stubs: {
+            "mt-icon": true,
+          },
+        },
+        slots: {
+          'column-name': 'My custom name',
+        },
+      });
+
+      await wrapper.setProps({
+        ...wrapper.props(),
+      });
+
+      const dataCellName = wrapper.findAll('[data-cell-column-property="name"]');
+
+      expect(dataCellName[0].html()).toContain(
+        `My custom name`,
+      );
+    });
   });
 
   it("should render table data cells with an image inside", async () => {
