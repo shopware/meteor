@@ -65,9 +65,7 @@ const columnsFixture: ColumnDefinition[] = [
     renderer: "price",
     position: 300,
     rendererOptions: {
-      currencyId: "b7d2554b0ce847cd82f3ac9bd1c0dfca",
       currencyISOCode: "EUR",
-      source: "net",
     },
   },
   {
@@ -573,14 +571,20 @@ describe("mt-data-table", () => {
           "column-name": "My custom name",
         },
       });
+      const dataCellName = wrapper.findAll('[data-cell-column-property="name"]');
 
+      expect(dataCellName[0].html()).toContain(`My custom name`);
+    });
+
+    it("should render table cell correctly when renderer is price", async () => {
+      const wrapper = createWrapper();
       await wrapper.setProps({
         ...wrapper.props(),
       });
 
-      const dataCellName = wrapper.findAll('[data-cell-column-property="name"]');
+      const dataCellPrice = wrapper.findAll('[data-cell-column-property="price"]');
 
-      expect(dataCellName[0].html()).toContain(`My custom name`);
+      expect(dataCellPrice[0].html()).toContain(`€${MtDataTableFixtures[0].price}`);
     });
   });
 

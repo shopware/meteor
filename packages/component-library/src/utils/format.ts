@@ -19,12 +19,10 @@ export function currency(
           maximumFractionDigits: 20,
         };
 
-  const opts: Intl.NumberFormatOptions = {
+  return new Intl.NumberFormat(additionalOptions.language ?? "en-US", {
     style: "currency",
     currency: sign,
     ...decimalOpts,
     ...additionalOptions,
-  };
-
-  return val.toLocaleString(additionalOptions.language ?? "en-US", opts);
+  }).format(+val);
 }

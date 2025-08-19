@@ -47,9 +47,7 @@ async function createWrapper({ disableInitialOpen = false } = {}) {
           property: "price",
           renderer: "price",
           rendererOptions: {
-            currencyId: "b7d2554b0ce847cd82f3ac9bd1c0dfca",
             currencyISOCode: "EUR",
-            source: "gross",
           },
           position: 300,
           cellWrap: "nowrap",
