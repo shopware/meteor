@@ -419,7 +419,11 @@
                     </template>
 
                     <template v-else>
-                      <slot :name="`column-${column.property}`" :data="data" :column-definition="column">
+                      <slot
+                        :name="`column-${column.property}`"
+                        :data="data"
+                        :column-definition="column"
+                      >
                         <!-- Use the correct renderer for the column -->
                         <mt-data-table-number-renderer
                           v-if="column.renderer === 'number'"

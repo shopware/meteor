@@ -121,7 +121,7 @@ function createWrapper(options?: { slots?: Record<string, string> }) {
         "mt-icon": true,
       },
     },
-    ...options
+    ...options,
   });
 }
 
@@ -570,7 +570,7 @@ describe("mt-data-table", () => {
     it("should render table cell when using slot column", async () => {
       const wrapper = createWrapper({
         slots: {
-          'column-name': 'My custom name',
+          "column-name": "My custom name",
         },
       });
 
@@ -580,9 +580,7 @@ describe("mt-data-table", () => {
 
       const dataCellName = wrapper.findAll('[data-cell-column-property="name"]');
 
-      expect(dataCellName[0].html()).toContain(
-        `My custom name`,
-      );
+      expect(dataCellName[0].html()).toContain(`My custom name`);
     });
   });
 
