@@ -552,6 +552,7 @@ test.describe('Privilege tests', () => {
     expect(result.message.includes('Your app is missing the privileges product:read for action "repositorySearch".')).toBe(true);
   });
 
+  // TODO: this test is failing - we need to find a different way to get a new hostname
   test('should not accept entity data without correct privileges (create,read,update,delete)', async ({ page }) => {
     const { mainFrame, subFrame } = await setup({ page });
 

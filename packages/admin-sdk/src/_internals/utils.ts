@@ -75,7 +75,7 @@ export function removeRoot(path: string | number): string | number {
   * Check if baseUrl is the same as the current window location
   * If so, return the dummy extension with all privileges available
   */
-   if (comparedBaseUrl.origin === window.location.origin) {
+   if (comparedBaseUrl.hostname === window.location.hostname) {
    return {
      baseUrl: comparedBaseUrl.hostname,
      permissions: {
