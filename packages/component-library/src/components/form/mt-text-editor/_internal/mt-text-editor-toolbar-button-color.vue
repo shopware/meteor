@@ -4,9 +4,9 @@
       class="mt-text-editor-toolbar-button-color__colorpicker"
       compact
       :model-value="getTextColor()"
-      @update:modelValue="onUpdateModelValue"
       :disabled="button.disabled ? button.disabled(props.editor, disabled) : disabled"
       apply-mode
+      @update:model-value="onUpdateModelValue"
     />
   </div>
 </template>

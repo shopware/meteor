@@ -15,8 +15,8 @@
         type="button"
         class="mt-pagination__button"
         :disabled="isOnFirstPage"
-        @click="$emit('change-current-page', 1)"
         data-testid="mt-pagination-first-page-button"
+        @click="$emit('change-current-page', 1)"
       >
         <span class="visually-hidden">{{ t("firstPage") }}</span>
 
@@ -27,8 +27,8 @@
         type="button"
         class="mt-pagination__button"
         :disabled="isOnFirstPage"
-        @click="$emit('change-current-page', currentPage - 1)"
         data-testid="mt-pagination-previous-page-button"
+        @click="$emit('change-current-page', currentPage - 1)"
       >
         <span class="visually-hidden">{{ t("previousPage") }}</span>
 
@@ -42,17 +42,17 @@
         step="1"
         :style="{ width: inputLength }"
         :value="currentPage"
-        @input="onChangeInput"
         :aria-label="`Page ${currentPage}`"
         data-testid="mt-pagination-current-page-input"
+        @input="onChangeInput"
       />
 
       <button
         type="button"
         class="mt-pagination__button"
         :disabled="isOnLastPage"
-        @click="$emit('change-current-page', currentPage + 1)"
         data-testid="mt-pagination-next-page-button"
+        @click="$emit('change-current-page', currentPage + 1)"
       >
         <span class="visually-hidden">{{ t("nextPage") }}</span>
 
@@ -63,8 +63,8 @@
         type="button"
         class="mt-pagination__button"
         :disabled="isOnLastPage"
-        @click="$emit('change-current-page', totalPages)"
         data-testid="mt-pagination-last-page-button"
+        @click="$emit('change-current-page', totalPages)"
       >
         <span class="visually-hidden">{{ t("lastPage") }}</span>
 

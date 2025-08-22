@@ -1,8 +1,8 @@
 <template>
   <div
+    ref="toastEl"
     class="mt-toast-notification"
     :class="classes"
-    ref="toastEl"
     :role="role"
     :aria-live="ariaLive"
     tabindex="0"
@@ -32,7 +32,7 @@
       </div>
 
       <div class="mt-toast-notification__content-right">
-        <mt-button v-if="toast.action" @click="onActionClick" size="small">
+        <mt-button v-if="toast.action" size="small" @click="onActionClick">
           {{ toast.action.label }}
         </mt-button>
       </div>

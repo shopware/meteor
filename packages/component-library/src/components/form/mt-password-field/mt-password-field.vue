@@ -10,24 +10,24 @@
       </mt-field-affix>
 
       <input
+        :id="id"
         v-model="model"
         class="mt-password-field__input"
-        @change="$emit('change', model)"
-        @keyup.enter="$emit('submit')"
         :type="showPassword ? 'text' : 'password'"
-        :id="id"
         :placeholder="placeholder"
         :disabled="disabled"
         :name="name"
+        @change="$emit('change', model)"
+        @keyup.enter="$emit('submit')"
       />
 
       <button
         v-if="toggable"
         type="button"
-        @click.prevent="showPassword = !showPassword"
         class="mt-password-field__visibility-toggle"
         :aria-label="showPassword ? t('hidePassword') : t('showPassword')"
         :disabled="disabled"
+        @click.prevent="showPassword = !showPassword"
       >
         <mt-icon
           :name="showPassword ? 'solid-eye-slash' : 'solid-eye'"

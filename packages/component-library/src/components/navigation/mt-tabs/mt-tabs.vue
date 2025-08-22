@@ -1,15 +1,15 @@
 <template>
-  <priority-plus ref="priorityPlus" #default="{ mainItems, moreItems }" :list="items">
+  <priority-plus ref="priorityPlus" v-slot="{ mainItems, moreItems }" :list="items">
     <div :class="tabClasses" role="tablist">
       <span class="mt-tabs__slider" :class="sliderClasses" :style="sliderStyle" />
 
       <template v-if="!vertical">
         <button
           v-for="item in mainItems"
-          type="button"
           :key="item.name"
-          :data-priority-plus="item.name"
           ref="items"
+          type="button"
+          :data-priority-plus="item.name"
           class="mt-tabs__item"
           :data-text="item.label"
           :class="getItemClasses(item)"
@@ -112,8 +112,6 @@ export default defineComponent({
     "mt-icon": MtIcon,
   },
 
-  emits: ["new-item-active"],
-
   props: {
     items: {
       type: Array as PropType<TabItem[]>,
@@ -140,6 +138,27 @@ export default defineComponent({
       required: false,
       default: "",
     },
+  },
+
+  emits: ["new-item-active"],
+
+  setup(props) {
+    const futureFlags = useFutureFlags();
+
+    const tabClasses = computed(() => {
+      return [
+        "mt-tabs",
+        {
+          "mt-tabs--vertical": props.vertical,
+          "mt-tabs--small": props.small,
+          "mt-tabs--future-remove-default-margin": futureFlags.removeDefaultMargin,
+        },
+      ];
+    });
+
+    return {
+      tabClasses,
+    };
   },
 
   data() {
@@ -252,25 +271,6 @@ export default defineComponent({
         width: ${this.sliderLength}px;
     `;
     },
-  },
-
-  setup(props) {
-    const futureFlags = useFutureFlags();
-
-    const tabClasses = computed(() => {
-      return [
-        "mt-tabs",
-        {
-          "mt-tabs--vertical": props.vertical,
-          "mt-tabs--small": props.small,
-          "mt-tabs--future-remove-default-margin": futureFlags.removeDefaultMargin,
-        },
-      ];
-    });
-
-    return {
-      tabClasses,
-    };
   },
 
   watch: {

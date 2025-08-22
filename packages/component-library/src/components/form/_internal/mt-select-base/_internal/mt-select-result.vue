@@ -2,9 +2,9 @@
   <li
     class="mt-select-result"
     :class="resultClasses"
+    :aria-disabled="disabled"
     @mouseenter="onMouseEnter"
     @click.stop="onClickResult"
-    :aria-disabled="disabled"
   >
     <span class="mt-select-result__result-item-preview">
       <slot name="preview" />
@@ -71,6 +71,22 @@ export default defineComponent({
     },
   },
 
+  setup() {
+    const addActiveItemListener = inject(MtSelectResultAddActiveItemListener);
+    const removeActiveItemListener = inject(MtSelectResultRemoveActiveItemListener);
+    const addItemSelectByKeyboardListener = inject(MtSelectResultAddItemSelectByKeyboardListener);
+    const removeItemSelectByKeyboardListener = inject(
+      MtSelectResultRemoveItemSelectByKeyboardListener,
+    );
+
+    return {
+      addActiveItemListener,
+      removeActiveItemListener,
+      addItemSelectByKeyboardListener,
+      removeItemSelectByKeyboardListener,
+    };
+  },
+
   data() {
     return {
       active: false,
@@ -101,22 +117,6 @@ export default defineComponent({
     hasDescriptionSlot(): boolean {
       return !!this.$slots.description;
     },
-  },
-
-  setup() {
-    const addActiveItemListener = inject(MtSelectResultAddActiveItemListener);
-    const removeActiveItemListener = inject(MtSelectResultRemoveActiveItemListener);
-    const addItemSelectByKeyboardListener = inject(MtSelectResultAddItemSelectByKeyboardListener);
-    const removeItemSelectByKeyboardListener = inject(
-      MtSelectResultRemoveItemSelectByKeyboardListener,
-    );
-
-    return {
-      addActiveItemListener,
-      removeActiveItemListener,
-      addItemSelectByKeyboardListener,
-      removeItemSelectByKeyboardListener,
-    };
   },
 
   created() {

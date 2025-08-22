@@ -36,7 +36,7 @@
       :is-24="is24"
       :type="dateType"
       :enable-time-picker="dateType !== 'date'"
-      :exactMatch="dateType === 'date'"
+      :exact-match="dateType === 'date'"
       time-picker-inline
       :time-picker="dateType === 'time'"
       :no-hours-overlay="dateType === 'time'"

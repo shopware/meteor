@@ -30,8 +30,8 @@
     :class="buttonClasses"
     :disabled="(disabled && !isInsideTooltip) || isLoading"
     :aria-disabled="disabled && isInsideTooltip"
-    @click="disabled && isInsideTooltip ? $event.stopImmediatePropagation() : null"
     v-bind="$attrs"
+    @click="disabled && isInsideTooltip ? $event.stopImmediatePropagation() : null"
   >
     <mt-loader v-if="isLoading" size="16px" class="mt-button__loader" />
     <span
@@ -40,9 +40,9 @@
         'mt-button__content--hidden': isLoading,
       }"
     >
-      <slot name="iconFront" :size="iconSize" v-if="$slots.iconFront" />
+      <slot v-if="$slots.iconFront" name="iconFront" :size="iconSize" />
       <slot />
-      <slot name="iconBack" :size="iconSize" v-if="$slots.iconBack" />
+      <slot v-if="$slots.iconBack" name="iconBack" :size="iconSize" />
     </span>
   </component>
 </template>

@@ -73,6 +73,50 @@ export default defineComponent({
     };
   },
 
+  props: {
+    options: {
+      type: Array,
+      required: false,
+      default() {
+        return [];
+      },
+    },
+
+    emptyMessage: {
+      type: String,
+      required: false,
+      default: null,
+    },
+
+    focusEl: {
+      type: [Object] as PropType<HTMLDocument | HTMLElement>,
+      required: false,
+      default() {
+        return document;
+      },
+    },
+
+    isLoading: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    popoverClasses: {
+      type: Array as PropType<string[]>,
+      required: false,
+      default() {
+        return [];
+      },
+    },
+
+    popoverResizeWidth: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+  },
+
   setup() {
     const { t } = useI18n({
       messages: {
@@ -135,50 +179,6 @@ export default defineComponent({
       addToItemSelectByKeyboardListeners,
       removeItemSelectByKeyboardListener,
     };
-  },
-
-  props: {
-    options: {
-      type: Array,
-      required: false,
-      default() {
-        return [];
-      },
-    },
-
-    emptyMessage: {
-      type: String,
-      required: false,
-      default: null,
-    },
-
-    focusEl: {
-      type: [Object] as PropType<HTMLDocument | HTMLElement>,
-      required: false,
-      default() {
-        return document;
-      },
-    },
-
-    isLoading: {
-      type: Boolean,
-      required: false,
-      default: false,
-    },
-
-    popoverClasses: {
-      type: Array as PropType<string[]>,
-      required: false,
-      default() {
-        return [];
-      },
-    },
-
-    popoverResizeWidth: {
-      type: Boolean,
-      required: false,
-      default: true,
-    },
   },
 
   data(): {

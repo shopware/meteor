@@ -14,8 +14,8 @@
     "
   >
     <button
-      type="button"
       v-if="inheritance !== 'none'"
+      type="button"
       class="mt-field-label__inheritance-switch"
       :aria-label="inheritance === 'linked' ? t('unlinkInheritance') : t('linkInheritance')"
       @click="$emit('update:inheritance', inheritance === 'linked' ? 'unlinked' : 'linked')"

@@ -70,6 +70,11 @@ export default {
         MtFloatingUi,
         MtButton,
       },
+      setup: () => {
+        return {
+          args,
+        };
+      },
       data() {
         return {
           itemVisible: true,
@@ -149,12 +154,12 @@ export default {
           openContentInPeekMode: false,
         };
       },
-      watch: {},
       computed: {
         console() {
           return console;
         },
       },
+      watch: {},
       methods: {
         onColumnChangeVisibility(itemId: string) {
           const item = this.columnOrderOptions.find((i) => i.id === itemId);
@@ -343,11 +348,6 @@ export default {
         </mt-popover>
       </div>
     `,
-      setup: () => {
-        return {
-          args,
-        };
-      },
     }),
 } as MtPopoverMeta;
 

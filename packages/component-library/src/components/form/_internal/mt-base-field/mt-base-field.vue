@@ -197,14 +197,20 @@ export default defineComponent({
     },
   },
 
+  setup() {
+    const { hasSlotContent } = useEmptySlotCheck();
+    const future = useFutureFlags();
+
+    return {
+      hasSlotContent,
+      future,
+    };
+  },
+
   data(): { id: string | undefined } {
     return {
       id: undefined,
     };
-  },
-
-  mounted() {
-    this.id = createId();
   },
 
   computed: {
@@ -236,14 +242,8 @@ export default defineComponent({
     },
   },
 
-  setup() {
-    const { hasSlotContent } = useEmptySlotCheck();
-    const future = useFutureFlags();
-
-    return {
-      hasSlotContent,
-      future,
-    };
+  mounted() {
+    this.id = createId();
   },
 });
 </script>

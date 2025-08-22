@@ -42,11 +42,11 @@
       </mt-field-affix>
 
       <input
+        :id="id"
+        ref="inputRef"
         v-model="model"
         class="mt-email-field__input"
         type="email"
-        ref="inputRef"
-        :id="id"
         :required="required"
         :disabled="disabled || isInherited"
         :name="name"
@@ -89,7 +89,7 @@
         </template>
       </mt-tooltip>
 
-      <mt-field-affix type="suffix" v-else-if="$slots.suffix">
+      <mt-field-affix v-else-if="$slots.suffix" type="suffix">
         <slot name="suffix" />
       </mt-field-affix>
     </div>

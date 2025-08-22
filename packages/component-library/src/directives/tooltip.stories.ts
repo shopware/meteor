@@ -21,6 +21,11 @@ const meta: SlottedMeta<
       directives: {
         tooltip: TooltipDirective,
       },
+      setup: () => {
+        return {
+          args,
+        };
+      },
       template: `<div>
       <mt-icon
         name="regular-question-circle"
@@ -29,11 +34,6 @@ const meta: SlottedMeta<
         }">
       </mt-icon>
     </div>`,
-      setup: () => {
-        return {
-          args,
-        };
-      },
     }),
   args: {
     message: "Help text",

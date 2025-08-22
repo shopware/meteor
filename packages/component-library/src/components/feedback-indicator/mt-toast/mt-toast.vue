@@ -7,10 +7,10 @@
       <Transition name="quick-toasts">
         <mt-toast-notification
           v-if="quickToast"
-          :toast="quickToast"
-          @remove-toast="$emit('remove-toast', quickToast.id)"
-          :quick-display="true"
           :key="quickToast.id"
+          :toast="quickToast"
+          :quick-display="true"
+          @remove-toast="$emit('remove-toast', quickToast.id)"
         />
       </Transition>
     </div>
@@ -21,9 +21,9 @@
           v-for="(toast, index) in rightToasts"
           :key="toast.id"
           :toast="toast"
-          @remove-toast="$emit('remove-toast', toast.id)"
           :style="{ '--num': index }"
           :index="index"
+          @remove-toast="$emit('remove-toast', toast.id)"
         />
       </TransitionGroup>
     </div>
