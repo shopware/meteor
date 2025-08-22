@@ -30,7 +30,7 @@ jobs:
         run: pnpm install --frozen-lockfile --prefer-offline
 
       - name: Install puppeteer
-        run: npx @puppeteer/browsers install chrome
+        run: npx @puppeteer/browsers install chrome@115
 
       - name: Update icons
         run: pnpm --filter @shopware-ag/meteor-icon-kit run start
