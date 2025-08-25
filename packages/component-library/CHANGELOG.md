@@ -1,5 +1,14 @@
 # Changelog
 
+## 4.16.1
+
+### Patch Changes
+
+- 3f0a32c: fix dragdrop behaviour mt-popover
+- 9c4350b: change global color of headings and paragraphs
+- Updated dependencies [809847f]
+  - @shopware-ag/meteor-icon-kit@5.6.0
+
 ## 4.16.0
 
 ### Minor Changes
