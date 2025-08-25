@@ -22,6 +22,7 @@ sw.ui.sidebar.add({
 | `title` | true | The title of the sidebar | 6.7 |
 | `locationId` | true | The id for the content of the sidebar | 6.7 |
 | `icon` | true | The icon to display in the sidebar. You can use any icon from the Shopware icon library | 6.7 |
+| `resizable` | false | Enables horizontal resizing of the sidebar | 6.7.2.0 |
 
 #### Example
 ![Menu item example](../assets/sidebar-example.png)
