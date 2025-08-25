@@ -33,10 +33,10 @@
 
     <template #element="{ identification }">
       <input
+        :id="identification"
         v-model="colorValue"
         class="mt-colorpicker__input"
         :spellcheck="false"
-        :id="identification"
         :placeholder="placeholder"
         :disabled="disabled"
         :readonly="readonly"
@@ -48,15 +48,15 @@
       />
 
       <mt-floating-ui
-        :isOpened="visible"
+        :is-opened="visible"
         class="mt-colorpicker__colorpicker-position"
         :z-index="zIndex"
         :offset="-12"
       >
         <div
+          ref="modal"
           class="mt-colorpicker__colorpicker"
           data-testid="mt-colorpicker-dialog"
-          ref="modal"
           @keyup.escape="outsideClick"
         >
           <div
@@ -94,8 +94,8 @@
                 min="0"
                 max="1"
                 :step="alphaStep"
-                @keydown="adjustAlphaStepSize"
                 :style="{ backgroundImage: sliderBackground }"
+                @keydown="adjustAlphaStepSize"
               />
             </div>
 
@@ -251,26 +251,6 @@ import { useI18n } from "vue-i18n";
 
 export default defineComponent({
   name: "MtColorpicker",
-
-  setup() {
-    const { t } = useI18n({
-      messages: {
-        en: {
-          "mt-colorpicker": {
-            apply: "Apply",
-          },
-        },
-        de: {
-          "mt-colorpicker": {
-            apply: "Anwenden",
-          },
-        },
-      },
-    });
-    return {
-      t,
-    };
-  },
 
   components: {
     "mt-base-field": MtBaseField,
@@ -438,6 +418,26 @@ export default defineComponent({
       required: false,
       default: false,
     },
+  },
+
+  setup() {
+    const { t } = useI18n({
+      messages: {
+        en: {
+          "mt-colorpicker": {
+            apply: "Apply",
+          },
+        },
+        de: {
+          "mt-colorpicker": {
+            apply: "Anwenden",
+          },
+        },
+      },
+    });
+    return {
+      t,
+    };
   },
   data(): {
     localValue:

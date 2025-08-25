@@ -163,17 +163,6 @@ export default defineComponent({
     },
   },
 
-  data(): { id: string | undefined; currentValue: boolean | undefined } {
-    return {
-      currentValue: this.checked,
-      id: undefined,
-    };
-  },
-
-  mounted() {
-    this.id = createId();
-  },
-
   setup() {
     const futureFlags = useFutureFlags();
 
@@ -183,6 +172,13 @@ export default defineComponent({
 
     return {
       checkboxClasses,
+    };
+  },
+
+  data(): { id: string | undefined; currentValue: boolean | undefined } {
+    return {
+      currentValue: this.checked,
+      id: undefined,
     };
   },
 
@@ -254,6 +250,10 @@ export default defineComponent({
       },
       immediate: true,
     },
+  },
+
+  mounted() {
+    this.id = createId();
   },
 
   methods: {

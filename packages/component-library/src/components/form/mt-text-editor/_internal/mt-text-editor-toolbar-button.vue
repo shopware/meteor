@@ -1,16 +1,16 @@
 <template>
   <button
-    type="button"
-    @click="handleButtonClick()"
-    :class="buttonClass(button)"
     v-tooltip="{
       disabled: !translatedLabel,
       message: translatedLabel,
       position: 'top',
       hideDelay: 0,
     }"
+    type="button"
+    :class="buttonClass(button)"
     :aria-label="translatedLabel"
     :disabled="button.disabled ? button.disabled(props.editor, disabled) : disabled"
+    @click="handleButtonClick()"
   >
     <mt-icon v-if="button.icon" :name="button.icon" />
     <span v-else>{{ translatedLabel }}</span>

@@ -1,5 +1,5 @@
 <template>
-  <slot :mainItems="mainItems" :moreItems="moreItems" />
+  <slot :main-items="mainItems" :more-items="moreItems" />
 </template>
 
 <script lang="ts">
@@ -164,19 +164,6 @@ export default defineComponent({
     },
   },
 
-  async mounted() {
-    await this.$nextTick();
-
-    this.storeItemWidths();
-
-    // First iteration marks the correct items as hidden
-    this.handleResize();
-    // Second iteration fixes the width of the container including the more button offset
-    this.handleResize();
-
-    window.addEventListener("resize", this.handleResize);
-  },
-
   watch: {
     /**
      * Watch the list for changes and recalculate the item widths.
@@ -188,6 +175,19 @@ export default defineComponent({
       },
       deep: true,
     },
+  },
+
+  async mounted() {
+    await this.$nextTick();
+
+    this.storeItemWidths();
+
+    // First iteration marks the correct items as hidden
+    this.handleResize();
+    // Second iteration fixes the width of the container including the more button offset
+    this.handleResize();
+
+    window.addEventListener("resize", this.handleResize);
   },
 
   beforeUnmount() {
