@@ -26,11 +26,18 @@ const props = withDefaults(
 const borderWidth = computed(() => {
   const numericSize = Number(props.size.replace("px", ""));
 
+  let calculatedWidth;
+
+  // Breakpoints for border width.
   if (numericSize <= 16) {
-    return `${numericSize / 5}px`;
+    calculatedWidth = numericSize / 6;
+  } else if (numericSize <= 32) {
+    calculatedWidth = numericSize / 8;
+  } else {
+    calculatedWidth = numericSize / 12;
   }
 
-  return `${numericSize / 12}px`;
+  return `${calculatedWidth}px`;
 });
 </script>
 
