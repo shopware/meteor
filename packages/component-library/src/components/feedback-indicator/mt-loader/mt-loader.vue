@@ -25,9 +25,12 @@ const props = withDefaults(
 
 const borderWidth = computed(() => {
   const numericSize = Number(props.size.replace("px", ""));
-  const borderWith = Number(numericSize / 12).toPrecision(2);
 
-  return `${borderWith}px`;
+  if (numericSize <= 16) {
+    return `${numericSize / 5}px`;
+  }
+
+  return `${numericSize / 12}px`;
 });
 </script>
 
