@@ -6,6 +6,7 @@ import { Color } from './Color.js';
 type DictionaryValue = {
   $value: string;
   $type: string;
+  $description?: string;
 };
 
 type DictionaryTree = {
@@ -33,13 +34,31 @@ export class Dictionary {
 
     if (!modeId)
       throw new Error(
-        `Failed to create Dictionary; Could not find mode with the name "${modeId}"`,
+        `Failed to create Dictionary; Could not find mode with the name "${options.mode}"`,
       );
 
     const variables = Object.values(
       response.meta.variables,
     ).reduce<DictionaryTree>((accumulator, variable) => {
       const rawValue = variable.valuesByMode[modeId];
+
+      const isStringValue = variable.resolvedType === 'STRING';
+      if (isStringValue) {
+        set(accumulator, kebabCase(variable.name), {
+          $value: rawValue,
+          $type: variable.resolvedType.toLocaleLowerCase(),
+          $description: variable.description,
+        });
+      }
+
+      const isFloatValue = variable.resolvedType === 'FLOAT';
+      if (isFloatValue) {
+        set(accumulator, kebabCase(variable.name), {
+          $value: rawValue,
+          $type: variable.resolvedType.toLocaleLowerCase(),
+          $description: variable.description,
+        });
+      }
 
       const isColorValue =
         variable.resolvedType === 'COLOR' &&
@@ -55,6 +74,7 @@ export class Dictionary {
             rawValue.a,
           ).toHex(),
           $type: variable.resolvedType.toLocaleLowerCase(),
+          $description: variable.description,
         });
       }
 
@@ -65,6 +85,17 @@ export class Dictionary {
           ...(options.remoteFiles ?? []),
         ].reduce<undefined | string>((accumulator, remoteFile) => {
           if (accumulator) return accumulator;
+
+          const referencingVariableFromSameFile = !rawValue.id.includes('/');
+          if (referencingVariableFromSameFile) {
+            const resolvedVariable = Object.values(
+              remoteFile.meta.variables,
+            ).find((variable) => variable.id === rawValue.id);
+
+            if (!resolvedVariable) return undefined;
+
+            return kebabCase(resolvedVariable.name);
+          }
 
           const START_OF_KEY = 11;
           const END_OF_KEY = 51;
@@ -87,6 +118,7 @@ export class Dictionary {
         set(accumulator, kebabCase(variable.name), {
           $value: `{${pathToAliasedToken}}`,
           $type: variable.resolvedType.toLocaleLowerCase(),
+          $description: variable.description,
         });
       }
 
@@ -105,7 +137,7 @@ export class Dictionary {
   public flat() {
     function getToken(
       input: unknown,
-      accumulator: Record<string, string>,
+      accumulator: Record<string, string | number>,
       path?: string,
     ) {
       if (isObject(input)) {
@@ -123,7 +155,7 @@ export class Dictionary {
           if (
             key === '$value' &&
             typeof path === 'string' &&
-            typeof value === 'string'
+            (typeof value === 'string' || typeof value === 'number')
           ) {
             accumulator[path] = value;
           }

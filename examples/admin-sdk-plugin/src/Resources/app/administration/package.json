@@ -1,0 +1,22 @@
+{
+  "name": "administration",
+  "version": "1.0.29",
+  "private": true,
+  "description": "",
+  "license": "MIT",
+  "author": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@shopware-ag/meteor-admin-sdk": "workspace:*",
+    "@shopware-ag/meteor-component-library": "workspace:*",
+    "regenerator-runtime": "^0.14.1",
+    "vue": "^3.5.0",
+    "vue-router": "4.4.5"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.2"
+  }
+}

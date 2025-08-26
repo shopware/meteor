@@ -1,56 +1,98 @@
-import isFunction from 'lodash-es/isFunction';
-import isObject from 'lodash-es/isObject';
-import type { DirectiveOptions } from 'vue';
+import type { Directive } from "vue";
 
 export interface DragConfig<DATA = unknown> {
-  delay: number,
-  dragGroup: number|string,
-  draggableCls: string,
-  draggingStateCls: string,
-  dragElementCls: string,
-  validDragCls: string,
-  invalidDragCls: string,
-  preventEvent: boolean,
-  validateDrop: null|((dragConfigData: DragConfig<DATA>['data'],dropConfigData: DropConfig<DATA>['data']) => boolean),
-  validateDrag: null|((dragConfigData: DragConfig<DATA>['data'],dropConfigData: DropConfig<DATA>['data']) => boolean),
-  validateDragStart: null|((dragConfigData: DragConfig<DATA>['data'],el: HTMLElement, event: MouseEvent|TouchEvent) => boolean),
-  onDragStart: null|((dragConfig: DragConfig<DATA>, el: HTMLElement, dragElement: HTMLElement) => void),
-  onDragEnter: null|((dragConfigData: DragConfig<DATA>['data'],dropConfigData: DropConfig<DATA>['data'], valid: boolean) => void),
-  onDragLeave: null|((dragConfigData: DragConfig<DATA>['data'],dropConfigData: DropConfig<DATA>['data']) => void),
-  onDrop: null|((dragConfigData: DragConfig<DATA>['data'], dropConfigData: DropConfig<DATA>['data']) => void),
-  data: null|DATA,
-  disabled: boolean,
+  delay: number;
+  dragGroup: number | string;
+  draggableCls: string;
+  draggingStateCls: string;
+  dragElementCls: string;
+  validDragCls: string;
+  invalidDragCls: string;
+  preventEvent: boolean;
+  validateDrop:
+    | null
+    | ((
+        dragConfigData: DragConfig<DATA>["data"],
+        dropConfigData: DropConfig<DATA>["data"],
+      ) => boolean);
+  validateDrag:
+    | null
+    | ((
+        dragConfigData: DragConfig<DATA>["data"],
+        dropConfigData: DropConfig<DATA>["data"],
+      ) => boolean);
+  validateDragStart:
+    | null
+    | ((
+        dragConfigData: DragConfig<DATA>["data"],
+        el: HTMLElement,
+        event: MouseEvent | TouchEvent,
+      ) => boolean);
+  onDragStart:
+    | null
+    | ((dragConfig: DragConfig<DATA>, el: HTMLElement, dragElement: HTMLElement) => void);
+  onDragEnter:
+    | null
+    | ((
+        dragConfigData: DragConfig<DATA>["data"],
+        dropConfigData: DropConfig<DATA>["data"],
+        valid: boolean,
+      ) => void);
+  onDragLeave:
+    | null
+    | ((
+        dragConfigData: DragConfig<DATA>["data"],
+        dropConfigData: DropConfig<DATA>["data"],
+      ) => void);
+  onDrop:
+    | null
+    | ((
+        dragConfigData: DragConfig<DATA>["data"],
+        dropConfigData: DropConfig<DATA>["data"],
+      ) => void);
+  data: null | DATA;
+  disabled: boolean;
 }
 
 export interface DropConfig<DATA = unknown> {
-  dragGroup: number|string,
-  droppableCls: string,
-  validDropCls: string,
-  invalidDropCls: string,
-  validateDrop: null|((dragConfigData: DragConfig<DATA>['data'],dropConfigData: DropConfig<DATA>['data']) => boolean),
-  onDrop: null|((dragConfigData: DragConfig<DATA>['data'], dropConfigData: DropConfig<DATA>['data']) => void),
-  data: null|DATA,
+  dragGroup: number | string;
+  droppableCls: string;
+  validDropCls: string;
+  invalidDropCls: string;
+  validateDrop:
+    | null
+    | ((
+        dragConfigData: DragConfig<DATA>["data"],
+        dropConfigData: DropConfig<DATA>["data"],
+      ) => boolean);
+  onDrop:
+    | null
+    | ((
+        dragConfigData: DragConfig<DATA>["data"],
+        dropConfigData: DropConfig<DATA>["data"],
+      ) => void);
+  data: null | DATA;
 }
 
 export interface DropZone {
-  el: HTMLElement,
-  dropConfig: DropConfig,
+  el: HTMLElement;
+  dropConfig: DropConfig;
 }
 
 /**
  * @description An object representing the current drag element and config.
  */
-let currentDrag: { el: HTMLElement, dragConfig: DragConfig }|null = null;
+let currentDrag: { el: HTMLElement; dragConfig: DragConfig } | null = null;
 
 /**
  * @description An object representing the current drop zone element and config.
  */
-let currentDrop: { el: HTMLElement, dropConfig: DropConfig }|null = null;
+let currentDrop: { el: HTMLElement; dropConfig: DropConfig } | null = null;
 
 /**
  * @description The proxy element which is used to display the moved element.
  */
-let dragElement: HTMLElement|null = null;
+let dragElement: HTMLElement | null = null;
 
 /**
  * @description The x offset of the mouse position inside the dragged element.
@@ -65,7 +107,7 @@ let dragMouseOffsetY = 0;
 /**
  * @description The timeout managing the delayed drag start.
  */
-let delayTimeout: number|null = null;
+let delayTimeout: number | null = null;
 
 /**
  * @description A registry of all drop zones.
@@ -78,11 +120,11 @@ const dropZones: DropZone[] = [];
 const defaultDragConfig: DragConfig = {
   delay: 100,
   dragGroup: 1,
-  draggableCls: 'is--draggable',
-  draggingStateCls: 'is--dragging',
-  dragElementCls: 'is--drag-element',
-  validDragCls: 'is--valid-drag',
-  invalidDragCls: 'is--invalid-drag',
+  draggableCls: "is--draggable",
+  draggingStateCls: "is--dragging",
+  dragElementCls: "is--drag-element",
+  validDragCls: "is--valid-drag",
+  invalidDragCls: "is--invalid-drag",
   preventEvent: true,
   validateDrop: null,
   validateDrag: null,
@@ -100,9 +142,9 @@ const defaultDragConfig: DragConfig = {
  */
 const defaultDropConfig: DropConfig = {
   dragGroup: 1,
-  droppableCls: 'is--droppable',
-  validDropCls: 'is--valid-drop',
-  invalidDropCls: 'is--invalid-drop',
+  droppableCls: "is--droppable",
+  validDropCls: "is--valid-drop",
+  invalidDropCls: "is--invalid-drop",
   validateDrop: null,
   onDrop: null,
   data: null,
@@ -111,7 +153,7 @@ const defaultDropConfig: DropConfig = {
 /**
  * Fired by event callback when the user starts dragging an element.
  */
-function onDrag(el: HTMLElement, dragConfig: DragConfig, event: MouseEvent|TouchEvent): boolean {
+function onDrag(el: HTMLElement, dragConfig: DragConfig, event: MouseEvent | TouchEvent): boolean {
   if (event instanceof MouseEvent && event.buttons !== 1) {
     return false;
   }
@@ -120,7 +162,7 @@ function onDrag(el: HTMLElement, dragConfig: DragConfig, event: MouseEvent|Touch
     event.preventDefault();
     event.stopPropagation();
   }
-  
+
   if (dragConfig.delay === null || dragConfig.delay <= 0) {
     startDrag(el, dragConfig, event);
   } else {
@@ -128,8 +170,8 @@ function onDrag(el: HTMLElement, dragConfig: DragConfig, event: MouseEvent|Touch
     delayTimeout = window.setTimeout(startDrag.bind({}, el, dragConfig, event), dragConfig.delay);
   }
 
-  document.addEventListener('mouseup', stopDrag);
-  document.addEventListener('touchend', stopDrag);
+  document.addEventListener("mouseup", stopDrag);
+  document.addEventListener("touchend", stopDrag);
 
   return true;
 }
@@ -137,16 +179,15 @@ function onDrag(el: HTMLElement, dragConfig: DragConfig, event: MouseEvent|Touch
 /**
  * Initializes the drag state for the current drag action.
  */
-function startDrag(el: HTMLElement, dragConfig: DragConfig, event: MouseEvent|TouchEvent) {
+function startDrag(el: HTMLElement, dragConfig: DragConfig, event: MouseEvent | TouchEvent) {
   // check if starting drag is valid
   if (
-    dragConfig.validateDragStart !== null
-    &&
+    dragConfig.validateDragStart !== null &&
     !dragConfig.validateDragStart(dragConfig.data, el, event)
-    ) {
+  ) {
     return;
   }
- 
+
   delayTimeout = null;
 
   if (currentDrag !== null) {
@@ -157,14 +198,10 @@ function startDrag(el: HTMLElement, dragConfig: DragConfig, event: MouseEvent|To
 
   const elBoundingBox = el.getBoundingClientRect();
 
-  const pageX = (
-    event instanceof MouseEvent && event.pageX ||
-    event instanceof TouchEvent && event.touches[0].pageX
-  ) as number;
-  const pageY = (
-    event instanceof MouseEvent && event.pageY ||
-    event instanceof TouchEvent && event.touches[0].pageY
-  ) as number;
+  const pageX = ((event instanceof MouseEvent && event.pageX) ||
+    (event instanceof TouchEvent && event.touches[0].pageX)) as number;
+  const pageY = ((event instanceof MouseEvent && event.pageY) ||
+    (event instanceof TouchEvent && event.touches[0].pageY)) as number;
 
   dragMouseOffsetX = pageX - elBoundingBox.left;
   dragMouseOffsetY = pageY - elBoundingBox.top;
@@ -173,18 +210,18 @@ function startDrag(el: HTMLElement, dragConfig: DragConfig, event: MouseEvent|To
   dragElement.classList.add(dragConfig.dragElementCls);
   dragElement.style.width = `${elBoundingBox.width}px`;
   dragElement.style.translate = `${pageX - dragMouseOffsetX}px ${pageY - dragMouseOffsetY}px`;
-  dragElement.style.left = '0';
-  dragElement.style.top = '0';
+  dragElement.style.left = "0";
+  dragElement.style.top = "0";
   document.body.appendChild(dragElement);
 
   el.classList.add(dragConfig.draggingStateCls);
 
-  if (isFunction(currentDrag.dragConfig.onDragStart)) {
+  if (typeof currentDrag.dragConfig.onDragStart === "function") {
     currentDrag.dragConfig.onDragStart(currentDrag.dragConfig, el, dragElement);
   }
 
-  document.addEventListener('mousemove', moveDrag);
-  document.addEventListener('touchmove', moveDrag);
+  document.addEventListener("mousemove", moveDrag);
+  document.addEventListener("touchmove", moveDrag);
 }
 
 let rotationTimeout = 0;
@@ -192,33 +229,29 @@ let rotationTimeout = 0;
 /**
  * Calculate the rotation based on movement direction.
  */
-function calculateRotation(oldX: number, newX: number):string {
+function calculateRotation(oldX: number, newX: number): string {
   if (oldX && Math.abs(newX - oldX) > 2) {
-    const moveRight = (newX - oldX) > 0;
+    const moveRight = newX - oldX > 0;
 
     return `${moveRight ? 5 : -5}deg`;
   }
 
-  return '';
+  return "";
 }
 
 /**
  * Fired by event callback when the user moves the dragged element.
  */
-function moveDrag(event: MouseEvent|TouchEvent) {
+function moveDrag(event: MouseEvent | TouchEvent) {
   if (currentDrag === null) {
     stopDrag();
     return;
   }
 
-  const pageX = (
-    event instanceof MouseEvent && event.pageX ||
-    event instanceof TouchEvent && event.touches[0].pageX
-  ) as number;
-  const pageY = (
-    event instanceof MouseEvent && event.pageY ||
-    event instanceof TouchEvent && event.touches[0].pageY
-  ) as number;
+  const pageX = ((event instanceof MouseEvent && event.pageX) ||
+    (event instanceof TouchEvent && event.touches[0].pageX)) as number;
+  const pageY = ((event instanceof MouseEvent && event.pageY) ||
+    (event instanceof TouchEvent && event.touches[0].pageY)) as number;
 
   if (dragElement) {
     // get the old value from dataset
@@ -233,7 +266,7 @@ function moveDrag(event: MouseEvent|TouchEvent) {
     // use timeout for resetting the rotation after movement stops
     clearTimeout(rotationTimeout);
     rotationTimeout = window.setTimeout(() => {
-      if (dragElement) dragElement.style.rotate = '0deg';
+      if (dragElement) dragElement.style.rotate = "0deg";
     }, 100);
 
     // set translate value
@@ -242,17 +275,16 @@ function moveDrag(event: MouseEvent|TouchEvent) {
     // save new x value to dataset
     dragElement.dataset.translateX = newX.toString();
   }
+  if (event.type === "touchmove") {
+    const foundZone = dropZones.find((zone) => isEventOverElement(event, zone.el));
 
-  if (event.type === 'touchmove') {
-    dropZones.forEach((zone) => {
-      if (isEventOverElement(event, zone.el)) {
-        if (currentDrop === null || zone.el !== currentDrop.el) {
-          enterDropZone(zone.el, zone.dropConfig);
-        }
-      } else if (currentDrop !== null && zone.el === currentDrop.el) {
-        leaveDropZone(zone.el, zone.dropConfig);
-      }
-    });
+    clearAllDropZoneHighlights();
+
+    if (foundZone) {
+      enterDropZone(foundZone.el, foundZone.dropConfig);
+    } else if (currentDrop) {
+      leaveDropZone(currentDrop.el, currentDrop.dropConfig);
+    }
   }
 }
 
@@ -260,20 +292,17 @@ function moveDrag(event: MouseEvent|TouchEvent) {
  * Helper method for detecting if the current event position
  * is in the boundaries of an existing drop zone element.
  */
-function isEventOverElement(event: MouseEvent|TouchEvent, el: HTMLElement): boolean {
-  const pageX = (
-    event instanceof MouseEvent && event.pageX ||
-    event instanceof TouchEvent && event.touches[0].pageX
-  ) as number;
-  const pageY = (
-    event instanceof MouseEvent && event.pageY ||
-    event instanceof TouchEvent && event.touches[0].pageY
-  ) as number;
+function isEventOverElement(event: MouseEvent | TouchEvent, el: HTMLElement): boolean {
+  const pageX = ((event instanceof MouseEvent && event.pageX) ||
+    (event instanceof TouchEvent && event.touches[0].pageX)) as number;
+  const pageY = ((event instanceof MouseEvent && event.pageY) ||
+    (event instanceof TouchEvent && event.touches[0].pageY)) as number;
 
   const box = el.getBoundingClientRect();
 
-  return pageX >= box.x && pageX <= (box.x + box.width)
-    && pageY >= box.y && pageY <= (box.y + box.height);
+  return (
+    pageX >= box.x && pageX <= box.x + box.width && pageY >= box.y && pageY <= box.y + box.height
+  );
 }
 
 /**
@@ -290,7 +319,7 @@ function stopDrag() {
   const validDrop = validateDrop();
 
   if (validDrag && currentDrag) {
-    if (isFunction(currentDrag.dragConfig.onDrop)) {
+    if (typeof currentDrag.dragConfig.onDrop === "function") {
       currentDrag.dragConfig.onDrop(
         currentDrag.dragConfig.data,
         validDrop ? currentDrop?.dropConfig?.data : null,
@@ -299,16 +328,16 @@ function stopDrag() {
   }
 
   if (validDrop && currentDrop) {
-    if (isFunction(currentDrop.dropConfig.onDrop)) {
+    if (typeof currentDrop.dropConfig.onDrop === "function") {
       currentDrop.dropConfig.onDrop(currentDrag?.dragConfig.data, currentDrop.dropConfig.data);
     }
   }
 
-  document.removeEventListener('mousemove', moveDrag);
-  document.removeEventListener('touchmove', moveDrag);
+  document.removeEventListener("mousemove", moveDrag);
+  document.removeEventListener("touchmove", moveDrag);
 
-  document.removeEventListener('mouseup', stopDrag);
-  document.removeEventListener('touchend', stopDrag);
+  document.removeEventListener("mouseup", stopDrag);
+  document.removeEventListener("touchend", stopDrag);
 
   if (dragElement !== null) {
     dragElement.remove();
@@ -346,7 +375,7 @@ function enterDropZone(el: HTMLElement, dropConfig: DropConfig) {
   if (valid) {
     el.classList.add(dropConfig.validDropCls);
     el.classList.remove(dropConfig.invalidDropCls);
-    
+
     if (dragElement) {
       dragElement.classList.add(currentDrag.dragConfig.validDragCls);
       dragElement.classList.remove(currentDrag.dragConfig.invalidDragCls);
@@ -361,8 +390,12 @@ function enterDropZone(el: HTMLElement, dropConfig: DropConfig) {
     }
   }
 
-  if (isFunction(currentDrag.dragConfig.onDragEnter)) {
-    currentDrag.dragConfig.onDragEnter(currentDrag.dragConfig.data, currentDrop.dropConfig.data, valid);
+  if (typeof currentDrag.dragConfig.onDragEnter === "function") {
+    currentDrag.dragConfig.onDragEnter(
+      currentDrag.dragConfig.data,
+      currentDrop.dropConfig.data,
+      valid,
+    );
   }
 }
 
@@ -381,7 +414,7 @@ function leaveDropZone(el: HTMLElement, dropConfig: DropConfig) {
     return;
   }
 
-  if (isFunction(currentDrag.dragConfig.onDragLeave)) {
+  if (typeof currentDrag.dragConfig.onDragLeave === "function") {
     currentDrag.dragConfig.onDragLeave(currentDrag.dragConfig.data, currentDrop.dropConfig.data);
   }
 
@@ -406,22 +439,29 @@ function validateDrop(): boolean {
   let customDropValidation = true;
 
   // Validate if the drag and drop are using the same drag group.
-  if (currentDrag === null
-    || currentDrop === null
-    || currentDrop.dropConfig.dragGroup !== currentDrag.dragConfig.dragGroup) {
+  if (
+    currentDrag === null ||
+    currentDrop === null ||
+    currentDrop.dropConfig.dragGroup !== currentDrag.dragConfig.dragGroup
+  ) {
     valid = false;
   }
 
   // Check the custom drag validate function.
-  if (currentDrag !== null && isFunction(currentDrag.dragConfig.validateDrop)) {
-    customDragValidation = currentDrag.dragConfig.validateDrop(currentDrag.dragConfig.data, currentDrop?.dropConfig.data);
+  if (currentDrag !== null && typeof currentDrag.dragConfig.validateDrop === "function") {
+    customDragValidation = currentDrag.dragConfig.validateDrop(
+      currentDrag.dragConfig.data,
+      currentDrop?.dropConfig.data,
+    );
   }
 
   // Check the custom drop validate function.
-  if (currentDrop !== null && isFunction(currentDrop.dropConfig.validateDrop)) {
-    customDropValidation = currentDrop.dropConfig.validateDrop(currentDrag?.dragConfig.data, currentDrop.dropConfig.data);
+  if (currentDrop !== null && typeof currentDrop.dropConfig.validateDrop === "function") {
+    customDropValidation = currentDrop.dropConfig.validateDrop(
+      currentDrag?.dragConfig.data,
+      currentDrop.dropConfig.data,
+    );
   }
-
 
   return valid && customDragValidation && customDropValidation;
 }
@@ -439,17 +479,20 @@ function validateDrag(): boolean {
   }
 
   // Check the custom drag validate function.
-  if (currentDrag !== null && isFunction(currentDrag.dragConfig.validateDrag)) {
-    customDragValidation = currentDrag.dragConfig.validateDrag(currentDrag.dragConfig.data, currentDrop?.dropConfig.data);
+  if (currentDrag !== null && typeof currentDrag.dragConfig.validateDrag === "function") {
+    customDragValidation = currentDrag.dragConfig.validateDrag(
+      currentDrag.dragConfig.data,
+      currentDrop?.dropConfig.data,
+    );
   }
 
   return valid && customDragValidation;
 }
 
-function mergeConfigs(defaultConfig: DragConfig|DropConfig, binding: { value: unknown }) {
+function mergeConfigs(defaultConfig: DragConfig | DropConfig, binding: { value: unknown }) {
   const mergedConfig = { ...defaultConfig };
 
-  if (isObject(binding.value)) {
+  if (binding.value instanceof Object) {
     Object.assign(mergedConfig, binding.value);
   } else {
     Object.assign(mergedConfig, { data: binding.value });
@@ -471,20 +514,20 @@ interface DragHTMLElement extends HTMLElement {
  *
  * See the {DragConfig} for all possible config options.
  */
-export const draggable: DirectiveOptions = {
-  inserted(el: DragHTMLElement, binding) {
+export const draggable: Directive = {
+  mounted(el: DragHTMLElement, binding) {
     const dragConfig = mergeConfigs(defaultDragConfig, binding as { value: unknown }) as DragConfig;
     el.dragConfig = dragConfig;
     el.boundDragListener = onDrag.bind(this, el, el.dragConfig);
 
     if (!dragConfig.disabled) {
       el.classList.add(dragConfig.draggableCls);
-      el.addEventListener('mousedown', el.boundDragListener);
-      el.addEventListener('touchstart', el.boundDragListener);
+      el.addEventListener("mousedown", el.boundDragListener);
+      el.addEventListener("touchstart", el.boundDragListener);
     }
   },
 
-  update(el: DragHTMLElement, binding) {
+  updated(el: DragHTMLElement, binding) {
     const dragConfig = mergeConfigs(defaultDragConfig, binding as { value: unknown }) as DragConfig;
 
     if (el.dragConfig && el.dragConfig.disabled !== dragConfig.disabled) {
@@ -492,14 +535,14 @@ export const draggable: DirectiveOptions = {
         el.classList.remove(el.dragConfig.draggableCls);
         el.classList.add(dragConfig.draggableCls);
         if (el.boundDragListener) {
-          el.addEventListener('mousedown', el.boundDragListener);
-          el.addEventListener('touchstart', el.boundDragListener);
+          el.addEventListener("mousedown", el.boundDragListener);
+          el.addEventListener("touchstart", el.boundDragListener);
         }
       } else {
         el.classList.remove(el.dragConfig.draggableCls);
         if (el.boundDragListener) {
-          el.removeEventListener('mousedown', el.boundDragListener);
-          el.removeEventListener('touchstart', el.boundDragListener);
+          el.removeEventListener("mousedown", el.boundDragListener);
+          el.removeEventListener("touchstart", el.boundDragListener);
         }
       }
     }
@@ -508,14 +551,14 @@ export const draggable: DirectiveOptions = {
     Object.assign(el.dragConfig, dragConfig);
   },
 
-  unbind(el: DragHTMLElement, binding) {
+  unmounted(el: DragHTMLElement, binding) {
     const dragConfig = mergeConfigs(defaultDragConfig, binding as { value: unknown }) as DragConfig;
 
     el.classList.remove(dragConfig.draggableCls);
 
     if (el.boundDragListener) {
-      el.removeEventListener('mousedown', el.boundDragListener);
-      el.removeEventListener('touchstart', el.boundDragListener);
+      el.removeEventListener("mousedown", el.boundDragListener);
+      el.removeEventListener("touchstart", el.boundDragListener);
     }
   },
 };
@@ -528,31 +571,34 @@ export const draggable: DirectiveOptions = {
  *
  * See the {dropConfig} for all possible config options.
  */
-export const droppable: DirectiveOptions = {
-  inserted(el, binding) {
+export const droppable: Directive = {
+  mounted(el, binding) {
     const dropConfig = mergeConfigs(defaultDropConfig, binding as { value: unknown }) as DropConfig;
 
     dropZones.push({ el, dropConfig });
 
     el.classList.add(dropConfig.droppableCls);
-    el.addEventListener('mouseenter', enterDropZone.bind(this, el, dropConfig));
-    el.addEventListener('mouseleave', leaveDropZone.bind(this, el, dropConfig));
+    el.addEventListener("mouseenter", enterDropZone.bind(this, el, dropConfig));
+    el.addEventListener("mouseleave", leaveDropZone.bind(this, el, dropConfig));
   },
 
-  unbind(el, binding) {
+  unmounted(el, binding) {
     const dropConfig = mergeConfigs(defaultDropConfig, binding as { value: unknown }) as DropConfig;
 
-    dropZones.splice(dropZones.findIndex((zone) => zone.el === el), 1);
+    dropZones.splice(
+      dropZones.findIndex((zone) => zone.el === el),
+      1,
+    );
 
     el.classList.remove(dropConfig.droppableCls);
-    el.removeEventListener('mouseenter', enterDropZone.bind(this, el, dropConfig));
-    el.removeEventListener('mouseleave', leaveDropZone.bind(this, el, dropConfig));
+    el.removeEventListener("mouseenter", enterDropZone.bind(this, el, dropConfig));
+    el.removeEventListener("mouseleave", leaveDropZone.bind(this, el, dropConfig));
   },
 
-  update: (el, binding) => {
+  updated: (el, binding) => {
     const dropZone = dropZones.find((zone) => zone.el === el);
 
-    if (isObject(binding.value)) {
+    if (binding.value instanceof Object) {
       // @ts-expect-error - typescript support is missing here
       Object.assign(dropZone?.dropConfig, binding.value);
     } else {
@@ -561,3 +607,10 @@ export const droppable: DirectiveOptions = {
     }
   },
 };
+
+function clearAllDropZoneHighlights() {
+  dropZones.forEach((zone) => {
+    zone.el.classList.remove(zone.dropConfig.validDropCls);
+    zone.el.classList.remove(zone.dropConfig.invalidDropCls);
+  });
+}

@@ -1,7 +1,7 @@
-export function set<TValue>(
+export function set(
   target: Record<string, unknown>,
   path: string,
-  value: TValue,
+  value: unknown,
 ) {
   const keys = path.split('.');
   let currentObj = target;

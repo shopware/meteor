@@ -1,29 +1,28 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import type { ShopwareMessageTypes } from './messages.types';
+import type { ShopwareMessageTypes } from './message-types';
 import { generateUniqueId } from './_internals/utils';
-import type { extension } from './privileges/privilege-resolver';
-import { sendPrivileged, handlePrivileged } from './privileges/privilege-resolver';
-import { ShopwareMessageTypePrivileges } from './privileges';
-import MissingPrivilegesError from './privileges/missing-privileges-error';
+import type { extension, privilegeString } from './_internals/privileges';
+import MissingPrivilegesError from './_internals/privileges/missing-privileges-error';
 import SerializerFactory from './_internals/serializer';
 import createError from './_internals/error-handling/error-factory';
-import validate from './_internals/validator/index';
+import validate from './_internals/validator';
 import type { datasetRegistration } from './data';
-import { selectData } from './data/_internals/selectData';
+import { selectData } from './_internals/data/selectData';
 import sdkVersion from './_internals/sdkVersion';
 
 const packageVersion = sdkVersion as string;
 
 const { serialize, deserialize } = SerializerFactory({
-  handle: handle,
-  send: send,
+  handle,
+  send,
 });
 
 export type extensions = {
   [key: string]: extension,
 }
 
-export const adminExtensions: extensions = {};
+// This can't be exported and used in other files as it leads to circular dependencies. Use window._swsdk.adminExtensions instead
+const adminExtensions: extensions = {};
 
 export function setExtensions(extensions: extensions): void {
   Object.entries(extensions).forEach(([key, value]) => {
@@ -44,6 +43,11 @@ export function setExtensions(extensions: extensions): void {
  */
 
 /**
+ * Resembles the options that are available on any ShopwareMessageType.
+ */
+export type BaseMessageOptions = { privileges?: privilegeString[] }
+
+/**
  * This type contains the data of the type without the responseType
  * @internal
  */
@@ -55,7 +59,7 @@ export type MessageDataType<TYPE extends keyof ShopwareMessageTypes> = Omit<Shop
  */
 export type ShopwareMessageSendData<MESSAGE_TYPE extends keyof ShopwareMessageTypes> = {
   _type: MESSAGE_TYPE,
-  _data: MessageDataType<MESSAGE_TYPE>,
+  _data: MessageDataType<MESSAGE_TYPE> & BaseMessageOptions,
   _callbackId: string,
 }
 
@@ -102,18 +106,11 @@ const subscriberRegistry: Set<{
  */
 export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
   type: MESSAGE_TYPE,
-  data: MessageDataType<MESSAGE_TYPE>,
+  data: MessageDataType<MESSAGE_TYPE> & BaseMessageOptions,
   _targetWindow?: Window,
   _origin?: string
 ): Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType'] | null> {
-  const missingPriviliges = sendPrivileged(type);
-  if (missingPriviliges !== null) {
-    const missingPrivilegesError = new MissingPrivilegesError(type, missingPriviliges);
-
-    return Promise.reject(missingPrivilegesError);
-  }
-
-  // Generate a unique callback ID. This here is only for simple demonstration purposes
+  // Generate a unique callback ID used to match the response for this request
   const callbackId = generateUniqueId();
 
   // Set fallback data when no data is defined
@@ -126,6 +123,7 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
     _callbackId: callbackId,
   };
 
+  // Serialize the message data to transform Entity, EntityCollection, Criteria etc. to a JSON serializable format
   let serializedData = serialize(messageData) as ShopwareMessageSendData<MESSAGE_TYPE>;
 
   // Validate if send value contains entity data where the app has no privileges for
@@ -175,6 +173,7 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
   let isResolved = false;
   const timeoutMs = 7000;
 
+  // Return a promise which resolves when the response is received
   return new Promise((resolve, reject) => {
     const callbackHandler = function(event: MessageEvent<string>):void {
       if (typeof event.data !== 'string') {
@@ -187,7 +186,7 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
       }
 
       let shopwareResponseData;
-      // Try to parse the json file
+      // Try to parse the json response
       try {
         shopwareResponseData = JSON.parse(event.data) as unknown;
       } catch {
@@ -261,6 +260,11 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
   });
 }
 
+export type HandleMethod<MESSAGE_TYPE extends keyof ShopwareMessageTypes> = (
+  data: MessageDataType<MESSAGE_TYPE> & BaseMessageOptions,
+  additionalInformation: { _event_: MessageEvent<string> }
+) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | ShopwareMessageTypes[MESSAGE_TYPE]['responseType'];
+
 /**
  * @param type Choose a type of action from the {@link send-types}
  * @param method This method should return the response value
@@ -269,23 +273,11 @@ export function send<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
 export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
 (
   type: MESSAGE_TYPE,
-  method: (data: MessageDataType<MESSAGE_TYPE>, additionalInformation: { _event_: MessageEvent<string>}) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | ShopwareMessageTypes[MESSAGE_TYPE]['responseType']
+  method: HandleMethod<MESSAGE_TYPE>
 )
   : () => void
 {
   const handleListener = async function(event: MessageEvent<string>): Promise<void> {
-    // Message type needs privileges to be handled
-    if (ShopwareMessageTypePrivileges[type] && Object.keys(ShopwareMessageTypePrivileges[type]).length) {
-      if (!adminExtensions) {
-        return;
-      }
-
-      const missingPrivileges = handlePrivileged(type, event.origin);
-      if (missingPrivileges !== null) {
-        return;
-      }
-    }
-
     if (typeof event.data !== 'string') {
       return;
     }
@@ -323,6 +315,7 @@ export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
         '_collectionTest',
       ];
 
+      // Message type is not dataset related so just execute the method
       if (!responseValidationTypes.includes(type)) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         return method(
@@ -342,6 +335,7 @@ export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
         privilegesToCheck: ['create', 'delete', 'update', 'read'],
       });
 
+      // If validation errors exists then return them as the response value
       if (validationErrors) {
         return validationErrors;
       }
@@ -418,7 +412,7 @@ export function publish<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
     source: Window,
     origin: string,
     sdkVersion: string | undefined,
-  }[] = [...sourceRegistry].map(({source, origin, sdkVersion}) => ({
+  }[] = [...sourceRegistry].map(({ source, origin, sdkVersion }) => ({
     source,
     origin,
     sdkVersion,
@@ -449,25 +443,25 @@ export function subscribe<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(
 // SENDER WITH OPTIONAL ARGUMENTS (WHEN ALL BASE ARGUMENTS ARE DEFINED)
 export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
 (messageType: MESSAGE_TYPE, baseMessageOptions: MessageDataType<MESSAGE_TYPE>)
-:(messageOptions?: MessageDataType<MESSAGE_TYPE>) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']>
+:(messageOptions?: MessageDataType<MESSAGE_TYPE> & BaseMessageOptions) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']>
 
 // SENDER WITH PARTIAL ARGUMENTS (ARGUMENTS DEFINED IN BASE OPTIONS ARE OMITTED)
 export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes, BASE_OPTIONS extends Partial<MessageDataType<MESSAGE_TYPE>>>
 (messageType: MESSAGE_TYPE, baseMessageOptions: BASE_OPTIONS)
-:(messageOptions: Omit<MessageDataType<MESSAGE_TYPE>, keyof BASE_OPTIONS>) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']>
+:(messageOptions: Omit<MessageDataType<MESSAGE_TYPE>, keyof BASE_OPTIONS> & BaseMessageOptions) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']>
 
 // SENDER WITH FULL ARGUMENTS (WHEN NO BASE ARGUMENTS ARE DEFINED)
 export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
 (messageType: MESSAGE_TYPE)
-:(messageOptions: MessageDataType<MESSAGE_TYPE>) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']>
+:(messageOptions: MessageDataType<MESSAGE_TYPE> & BaseMessageOptions) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']>
 
 // MAIN FUNCTION WHICH INCLUDES ALL POSSIBILITES
 export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
 (messageType: MESSAGE_TYPE, baseMessageOptions?: MessageDataType<MESSAGE_TYPE>)
 {
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  return (messageOptions: MessageDataType<MESSAGE_TYPE>) => {
-    return send(messageType, { ...baseMessageOptions, ...messageOptions});
+  return (messageOptions: MessageDataType<MESSAGE_TYPE> & BaseMessageOptions) => {
+    return send(messageType, { ...baseMessageOptions, ...messageOptions });
   };
 }
 
@@ -477,7 +471,7 @@ export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
  */
 export function createHandler<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(messageType: MESSAGE_TYPE) {
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-  return (method: (data: MessageDataType<MESSAGE_TYPE>, additionalInformation: {
+  return (method: (data: MessageDataType<MESSAGE_TYPE> & BaseMessageOptions, additionalInformation: {
     _event_: MessageEvent<string>,
   }) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | ShopwareMessageTypes[MESSAGE_TYPE]['responseType']) => {
     return handle(messageType, method);
@@ -485,7 +479,7 @@ export function createHandler<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(m
 }
 
 /**
- * Factory method which creates a handler so that the type don't need to be
+ * Factory method which creates a handler so that the type doesn't need to be
  * defined and can be hidden.
  */
 export function createSubscriber<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(messageType: MESSAGE_TYPE) {
@@ -557,7 +551,7 @@ const datasets = new Map<string, unknown>();
     const dataset = datasets.get(data.id);
 
     if (dataset) {
-      const selectedData = selectData(dataset, data.selectors, 'datasetSubscribe', origin);
+      const selectedData = selectData(dataset as Record<string|number, unknown>, data.selectors, 'datasetSubscribe', origin);
 
       if (selectedData instanceof MissingPrivilegesError) {
         console.error(selectedData);
@@ -582,18 +576,13 @@ const datasets = new Map<string, unknown>();
 export async function processDataRegistration(data: Omit<datasetRegistration, 'responseType'>): Promise<void> {
   datasets.set(data.id, data.data);
 
-  // Only publish whole data to sources that don't have a sdkVersion (for backwards compatibility)
-  publish('datasetSubscribe', data, [
-    ...[...sourceRegistry].filter(({ sdkVersion }) => !sdkVersion),
-  ]);
-
   // Publish selected data to sources that are inside the subscriberRegistry
   subscriberRegistry.forEach(({ id, selectors, source, origin }) => {
     if (id !== data.id) {
       return;
     }
 
-    const selectedData = selectData(data.data, selectors, 'datasetSubscribe', origin);
+    const selectedData = selectData(data.data as Record<string|number, unknown>, selectors, 'datasetSubscribe', origin);
 
     if (selectedData instanceof MissingPrivilegesError) {
       console.error(selectedData);

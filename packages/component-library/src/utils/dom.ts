@@ -3,10 +3,14 @@
  */
 export function getScrollbarHeight(element: HTMLElement): number {
   if (!(element instanceof HTMLElement)) {
-    console.warn('DOM Utilities', 'The provided element needs to be an instance of "HTMLElement".', element);
+    console.warn(
+      "DOM Utilities",
+      'The provided element needs to be an instance of "HTMLElement".',
+      element,
+    );
     return 0;
   }
-  return (element.offsetHeight - element.clientHeight);
+  return element.offsetHeight - element.clientHeight;
 }
 
 /**
@@ -14,21 +18,25 @@ export function getScrollbarHeight(element: HTMLElement): number {
  */
 export function getScrollbarWidth(element: HTMLElement): number {
   if (!(element instanceof HTMLElement)) {
-    console.warn('DOM Utilities', 'The provided element needs to be an instance of "HTMLElement".', element);
+    console.warn(
+      "DOM Utilities",
+      'The provided element needs to be an instance of "HTMLElement".',
+      element,
+    );
     return 0;
   }
-  return (element.offsetWidth - element.clientWidth);
+  return element.offsetWidth - element.clientWidth;
 }
 
 /**
  * uses the browser's copy function to copy a string
  */
 export function copyToClipboard(stringToCopy: string): void {
-  const tempTextArea = document.createElement('textarea');
+  const tempTextArea = document.createElement("textarea");
   tempTextArea.value = stringToCopy;
   document.body.appendChild(tempTextArea);
   tempTextArea.select();
-  document.execCommand('copy');
+  document.execCommand("copy");
   document.body.removeChild(tempTextArea);
 }
 

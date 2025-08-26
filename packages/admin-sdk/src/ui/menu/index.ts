@@ -1,6 +1,16 @@
 import { createSender } from '../../channel';
 
+export const collapseMenu = createSender('menuCollapse');
+export const expandMenu = createSender('menuExpand');
 export const addMenuItem = createSender('menuItemAdd');
+
+export type menuCollapse = {
+  responseType: void,
+}
+
+export type menuExpand = {
+  responseType: void,
+}
 
 export type menuItemAdd = {
   responseType: void,
@@ -20,6 +30,12 @@ export type menuItemAdd = {
    * Defaults to true.
    */
   displaySearchBar?: boolean,
+
+  /**
+   * Toggles the sw-page smart bar on/off.
+   * Defaults to true.
+   */
+  displaySmartBar?: boolean,
 
   /**
    * Determines under which main menu entry your item is displayed.

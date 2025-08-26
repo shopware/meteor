@@ -1,0 +1,30 @@
+{
+  "name": "@shopware-ag/meteor-admin-sdk-example-plugin",
+  "version": "1.0.0",
+  "private": true,
+  "description": "",
+  "keywords": [],
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "format": "prettier ./tests --write",
+    "lint:eslint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "test:ats": "playwright test",
+    "test:ats:dev": "playwright test --ui"
+  },
+  "dependencies": {
+    "@shopware-ag/acceptance-test-suite": "^3.8.4"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.20.0",
+    "@playwright/test": "^1.45.0",
+    "@types/node": "^22.5.5",
+    "eslint": "^9.21.0",
+    "eslint-plugin-playwright": "^2.2.0",
+    "prettier": "3.3.3",
+    "typescript-eslint": "^8.24.1"
+  }
+}

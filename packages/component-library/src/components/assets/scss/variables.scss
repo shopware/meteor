@@ -210,9 +210,32 @@ $gradient-action-button: linear-gradient(to bottom, #7793ae 0%, #6a849c 100%);
  * 6. Typography
  * ------------------------------------ */
 
-$font-family-default: "Inter", -apple-system, BlinkMacSystemFont, "San Francisco", "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-$font-family-variables: "Inter var", -apple-system, BlinkMacSystemFont, "San Francisco", "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
-$font-family-default-feature-settings: "cv10" on, "cv05" on, "cv02" on, "cv07" on, "cv09" on, "cv04" on, "cv03" on;
+$font-family-default:
+  "Inter",
+  -apple-system,
+  BlinkMacSystemFont,
+  "San Francisco",
+  "Segoe UI",
+  Roboto,
+  "Helvetica Neue",
+  sans-serif;
+$font-family-variables:
+  "Inter var",
+  -apple-system,
+  BlinkMacSystemFont,
+  "San Francisco",
+  "Segoe UI",
+  Roboto,
+  "Helvetica Neue",
+  sans-serif;
+$font-family-default-feature-settings:
+  "cv10" on,
+  "cv05" on,
+  "cv02" on,
+  "cv07" on,
+  "cv09" on,
+  "cv04" on,
+  "cv03" on;
 
 $font-size-xxs: 12px;
 $font-size-xs: 14px;
@@ -243,12 +266,6 @@ $line-height-lg: 28px;
  * 7. Miscellaneous
  * ------------------------------------ */
 
-$border-radius-sm: 6px;
-$border-radius-default: 4px;
-$border-radius-md: 6px;
-$border-radius-lg: 8px;
-$border-radius-xl: 8px;
-$border-radius-pill: 100vh;
 $transparent-background-url: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQAgMAAABinRfyAAAACVBMVEX39/f////+/v66RnnUAAAAM0lEQVQIHQXBwQ3AMAgEMC95SPRPpQxENuiete2HCqZRhWlkcV4kIIPb6MUWZpEHN+j9ARNGDXV0xoICAAAAAElFTkSuQmCC");
 $asset-base-url: "/administration/static/";
 
@@ -266,15 +283,10 @@ $z-index-select-results: 600;
 $z-index-flyout: 700;
 $z-index-off-canvas: 750;
 $z-index-search-bar-results: 800;
-$z-index-sw-page-search-bar: 650;
+$z-index-mt-page-search-bar: 650;
 $z-index-modal: 1000;
 $z-index-context-menu: 1100;
-$z-index-tooltip: 1100;
 $z-index-notifications: 1200;
 $z-index-hover-image: 1300;
 $z-index-dragdrop: 1400;
-
-/* ------------------------------------
- * 8. Global widths
- * ------------------------------------ */
-$content-width: 960px;
+$z-index-toasts: 1600;

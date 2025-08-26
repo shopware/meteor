@@ -5,7 +5,9 @@ on:
     branches:
       - main
     paths:
-      - 'packages/component-library/**'
+      - "packages/component-library/**"
+
+  pull_request:
 
   workflow_dispatch:
 
@@ -14,42 +16,61 @@ jobs:
     name: Storybook Tests
     timeout-minutes: 60
     runs-on: ubuntu-latest
-    env:
-        TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
-        TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
+    permissions:
+      contents: write
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@v3
         with:
-          version: 8
+          version: 10.12.3
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'pnpm'
-          cache-dependency-path: '**/pnpm-lock.yaml'
+          node-version: "22"
+          cache: "pnpm"
+          cache-dependency-path: "**/pnpm-lock.yaml"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
 
+      - name: Install Playwright dependencies
+        run: pnpm dlx playwright install-deps
+
       - name: Install Playwright
-        run: pnpm dlx playwright install
-      
+        run: pnpm dlx playwright@1.47.2 install
+
+      - name: Build dependencies
+        run: npx turbo run build --filter=@shopware-ag/meteor-component-library
+
       - name: Build storybook
-        run: pnpx turbo run build:storybook --filter=@shopware-ag/meteor-component-library
+        run: pnpm --filter @shopware-ag/meteor-component-library run build:storybook --test
 
       - name: Run Tests
+        if: ${{ github.event_name != 'workflow_dispatch' }}
         run: |
-          npx concurrently --kill-others --success first --names "SB,TEST" --prefix-colors "magenta,blue" \
-          "pnpm --filter @shopware-ag/meteor-component-library run start:storybook" \
-          "wait-on http://127.0.0.1:6006 && pnpx turbo run test:storybook --filter=@shopware-ag/meteor-component-library"
+          npx concurrently --kill-others --success first --names "SB,TEST"  --hide "SB" --prefix-colors "magenta,blue" \
+          "http-server ./packages/component-library/storybook-static -a 127.0.0.1 --port 6006" \
+          "wait-on http://127.0.0.1:6006 && pnpm --filter=@shopware-ag/meteor-component-library run test:storybook"
+
+      - name: Run tests and update snapshots
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        run: |
+          npx concurrently --kill-others --success first --names "SB,TEST"  --hide "SB" --prefix-colors "magenta,blue" \
+          "http-server ./packages/component-library/storybook-static -a 127.0.0.1 --port 6006" \
+          "wait-on http://127.0.0.1:6006 && pnpm --filter=@shopware-ag/meteor-component-library run test:storybook -u"
 
       - name: Archive visual test diffs
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         if: always()
         with:
           name: visual-test-diffs
           path: ./packages/component-library/__snapshots__
+
+      - name: Commit update snapshots
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "update snapshots"

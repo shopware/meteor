@@ -1,5 +1,52 @@
 # CHANGELOG.md
 
+## 5.6.0
+
+### Minor Changes
+
+- 809847f: Add multiple icons:
+
+  - `regular-bolt`
+  - `solid-bolt`
+  - `regular-database-alt`
+  - `solid-database-alt`
+  - `regular-flame`
+  - `solid-flame`
+  - `regular-snowflake`
+  - `solid-snowflake`
+  - `regular-upscale`
+  - `solid-upscale`
+
+## 5.5.0
+
+### Minor Changes
+
+- 0f5575d: Add icons
+
+  - Add `face-confused`
+  - Add `face-frown-slight`
+  - Add `face-meh-blank`
+  - Add `face-meh`
+  - Add `face-smile-relaxed`
+  - Add `face-smile-upside-down`
+  - Add `face-smile`
+  - Add `face-smirking`
+  - Add `face-unamused`
+
+- a1c2414: Add crop icon
+
+## 5.4.0
+
+### Minor Changes
+
+- ec91cce: Add solid and regular "plans" icon
+
+## 5.3.0
+
+### Minor Changes
+
+- e15e23a: Add share icon
+
 ## 5.2.1
 
 ### Patch Changes

@@ -2,3 +2,12 @@ node_modules/
 .turbo
 .env
 chrome/
+.idea/
+.DS_Store
+.pnpm-store/
+# Devenv
+.direnv
+.devenv*
+devenv.local.nix
+.docusaurus
+docs/admin-sdk/build

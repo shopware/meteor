@@ -10,14 +10,20 @@ declare global {
   }
 }
 
+let pageConsoleCheck = (msg) => {}
+
 // Fail on console errors
 test.beforeEach(({ page }, testInfo) => {
-  page.on('console', (msg) => {
+  pageConsoleCheck = (msg) => {
     console.log('LOG IN PAGE: ', msg.text());
 
     if (msg.type() === 'error') {
       expect(msg.text()).toBeUndefined();
     }
+  }
+  
+  page.on('console', (msg) => {
+    pageConsoleCheck(msg);
   })
 })
 
@@ -546,40 +552,6 @@ test.describe('Privilege tests', () => {
     expect(result.message.includes('Your app is missing the privileges product:read for action "repositorySearch".')).toBe(true);
   });
 
-  test('should not handle callback with missing privileges', async ({ page }) => {
-    const { mainFrame, subFrame } = await setup({ page });
-
-    await mainFrame.evaluate(() => {
-      window.sw_internal.setExtensions({
-        foo: {
-          baseUrl: 'http://localhost:8182',
-          permissions: {
-            create: ['notification']
-          }
-        }
-      });
-
-      window.sw_internal.handle('_privileges', () => {})
-    })
-
-    const response = await subFrame.evaluate(() => {
-      return window.sw_internal.send('_privileges', {})
-        .then((response) => ({
-          response: response,
-          errorMessage: 'No error happened',
-          isMissingPrivilesErrorInstance: false,
-        }))
-        .catch((error) => ({
-          response: error,
-          errorMessage: error.toString(),
-          isMissingPrivilesErrorInstance: error instanceof window.sw_internal.MissingPrivilegesError
-        }))
-    });
-
-    expect(response.errorMessage).toEqual(`Error: Your app is missing the privileges additional:not_entity_related, create:user, read:user, update:user, delete:user for action "_privileges".`);
-    expect(response.isMissingPrivilesErrorInstance).toBe(true);
-  });
-
   test('should not accept entity data without correct privileges (create,read,update,delete)', async ({ page }) => {
     const { mainFrame, subFrame } = await setup({ page });
 
@@ -800,15 +772,21 @@ test.describe('Privilege tests', () => {
     expect(response.isMissingPrivilesErrorInstance).toBe(true);
   });
 
-  test('should not send entity data without correct privileges in data handling (read)', async ({ page }) => {
+  test('should not send entity data without correct privileges in data handling (read)', async ({ page, browserName }) => {
     const { mainFrame, subFrame } = await setup({ page });
+
+    // Disable console check
+    pageConsoleCheck = () => {}
+
+    // Check manually for console error
+    const waitForConsoleError = page.waitForEvent('console');
 
     // subscribe to dataset publish
     await subFrame.evaluate(async () => {
       await window.sw.data.subscribe('e2e-test', (data) => {
         // @ts-expect-error
         window.result = { data: data.data };
-      });
+      })
     })
 
     // publish dataset
@@ -842,6 +820,13 @@ test.describe('Privilege tests', () => {
         errorText: window.result.data.toString(),
       };
     })
+
+    // Firefox doesn't support logging out the text directly in playwright
+    if (browserName !== 'firefox') {
+      // Expect console error to be thrown
+      const consoleError = await waitForConsoleError;
+      expect(consoleError.text()).toContain('Your app is missing the privileges read:product for action "datasetSubscribe".');
+    }
 
     // check if receiving value matches
     expect(result.isError).toBe(true);

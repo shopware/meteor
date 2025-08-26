@@ -1,13 +1,34 @@
 import SerializerFactory from './../../_internals/serializer';
 import localforage from 'localforage';
-import type { UnwrapRef, WatchStopHandle } from 'vue';
-import { reactive, watch, onBeforeUnmount } from 'vue';
+import type { UnwrapRef, WatchStopHandle, Ref } from 'vue';
+import { reactive, watch, onBeforeUnmount, ref } from 'vue';
 import { handle, send } from '../../channel';
 
 const { serialize, deserialize } = SerializerFactory({
   handle: handle,
   send: send,
 });
+
+async function setItem<INITIAL_VALUE>({
+  key,
+  newValue,
+  persistentSharedValueStore,
+  persistentSharedValueStoreBroadcast,
+}: {
+  key: string,
+  newValue: INITIAL_VALUE,
+  persistentSharedValueStore: LocalForage,
+  persistentSharedValueStoreBroadcast: BroadcastChannel,
+}): Promise<void>
+{
+  const serializedValue = serialize(newValue) as UnwrapRef<INITIAL_VALUE>;
+  await persistentSharedValueStore.setItem(key, serializedValue);
+
+  persistentSharedValueStoreBroadcast.postMessage({
+    type: 'store-change',
+    key: key,
+  });
+}
 
 function createValueWatcher<INITIAL_VALUE>({
   key,
@@ -31,12 +52,11 @@ function createValueWatcher<INITIAL_VALUE>({
         return;
       }
 
-      const serializedValue = serialize(newValue) as UnwrapRef<INITIAL_VALUE>;
-      await persistentSharedValueStore.setItem(key, serializedValue);
-
-      persistentSharedValueStoreBroadcast.postMessage({
-        type: 'store-change',
-        key: key,
+      await setItem<UnwrapRef<INITIAL_VALUE>>({
+        key,
+        newValue,
+        persistentSharedValueStore,
+        persistentSharedValueStoreBroadcast,
       });
     },
     { deep: true }
@@ -59,11 +79,11 @@ function setRemoteValue<INITIAL_VALUE>({
   sharedValue: {
     value: UnwrapRef<INITIAL_VALUE>,
   },
-}): void {
+}): Promise<void> {
   setPendingValue(true);
   removeWatcher();
 
-  store.getItem<INITIAL_VALUE>(key)
+  return store.getItem<INITIAL_VALUE>(key)
     .then((value) => {
       if (value === null) {
         return;
@@ -80,14 +100,15 @@ function setRemoteValue<INITIAL_VALUE>({
 }
 
 /**
- * 
- * @param key - Shared state key
- * @param initalValue - Initial value
- * @returns 
+ * @internal
+ * @private
  */
-export function useSharedState<INITIAL_VALUE>(key: string, initalValue: INITIAL_VALUE): {
-  value: UnwrapRef<INITIAL_VALUE>,
+export function _useSharedState<INITIAL_VALUE>(key: string, initalValue: INITIAL_VALUE): {
+  state: { value: UnwrapRef<INITIAL_VALUE> },
+  isReady: Ref<boolean>,
+  ready: Promise<void>,
 } {
+  const isReady = ref(false);
   let isPending = false;
 
   const getPendingValue = (): boolean => isPending;
@@ -140,7 +161,7 @@ export function useSharedState<INITIAL_VALUE>(key: string, initalValue: INITIAL_
       return;
     }
 
-    setRemoteValue({
+    void setRemoteValue({
       setPendingValue,
       removeWatcher,
       setWatcher,
@@ -158,7 +179,7 @@ export function useSharedState<INITIAL_VALUE>(key: string, initalValue: INITIAL_
   });
 
   // Get initial value from remote
-  setRemoteValue({
+  const remoteValuePromise = setRemoteValue({
     setPendingValue,
     removeWatcher,
     setWatcher,
@@ -167,5 +188,46 @@ export function useSharedState<INITIAL_VALUE>(key: string, initalValue: INITIAL_
     sharedValue,
   });
 
-  return sharedValue;
+  // Set inital value when remote value is not available
+  const initialValuePromise = persistentSharedValueStore.getItem<INITIAL_VALUE>(key)
+    .then(async (value) => {
+      if (value !== null) {
+        return;
+      }
+
+      await setItem<INITIAL_VALUE>({
+        key,
+        newValue: initalValue,
+        persistentSharedValueStore,
+        persistentSharedValueStoreBroadcast,
+      });
+    })
+    // Handle error silently because the broadcast channel could be closed
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    .catch(() => {});
+
+  const ready = Promise.all([
+    remoteValuePromise,
+    initialValuePromise,
+  ]).then(() => {
+    isReady.value = true;
+  });
+
+  return {
+    state: sharedValue,
+    isReady,
+    ready,
+  };
+}
+
+/**
+ *
+ * @param key - Shared state key
+ * @param initalValue - Initial value
+ * @returns
+ */
+export function useSharedState<INITIAL_VALUE>(key: string, initalValue: INITIAL_VALUE): {
+  value: UnwrapRef<INITIAL_VALUE>,
+} {
+  return _useSharedState(key, initalValue).state;
 }

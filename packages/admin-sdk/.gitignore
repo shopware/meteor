@@ -6,7 +6,6 @@ dist-example
 *.local
 .idea
 coverage
-docs/docs/api
 es
 umd
 example-dist
@@ -17,7 +16,3 @@ playwright-report/
 testpageDist
 dependency-graph.png
 .vscode
-# Devenv
-.devenv*
-devenv.local.nix
-

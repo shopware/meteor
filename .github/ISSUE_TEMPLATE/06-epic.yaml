@@ -1,0 +1,56 @@
+name: Epic
+description: A substantial project, typically lasting 1–3 months, broken into smaller features and tasks.
+type: Epic
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to share your idea with us!
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem we must solve
+      description: Please provide a clear and concise description of the feature you're interested in.
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem-why
+    attributes:
+      label: WHY we need to solve it
+      description: Now please tell us why we should solve this problem.
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Solution to the problem
+      description: If you have ideas for how we can solve the problem, please add them below.
+    validations:
+      required: false
+
+  - type: textarea
+    id: solution-who
+    attributes:
+      label: WHO benefits
+      description: Who are we solving the problem for — developers, merchants, etc.?
+    validations:
+      required: false
+
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Out of scope
+      description: Please add any details here that you think are essential for us to clarify scope.
+    validations:
+      required: false
+
+  - type: textarea
+    id: acceptance-criteria
+    attributes:
+      label: Acceptance criteria
+      description: Please share acceptance criteria — at least one indicator (a metric, condition, etc.) that would help us to validate that we've successfully fulfilled this request.
+    validations:
+      required: true

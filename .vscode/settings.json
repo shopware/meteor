@@ -1,0 +1,8 @@
+{
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "github.copilot.chat.testGeneration.instructions": [
+    {
+      "file": ".github/copilot/custom-instructions/test-style-guide.md"
+    }
+  ]
+}

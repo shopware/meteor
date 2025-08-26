@@ -1,0 +1,19 @@
+{
+  "name": "@shopware-ag/meteor-prettier-config",
+  "version": "1.0.0",
+  "description": "Prettier configuration for Shopware projects",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/shopware/meteor"
+  },
+  "type": "module",
+  "exports": "./index.js",
+  "license": "MIT",
+  "private": false,
+  "peerDependencies": {
+    "prettier": ">=3.0.0"
+  },
+  "devDependencies": {
+    "prettier": "^3.0.0"
+  }
+}

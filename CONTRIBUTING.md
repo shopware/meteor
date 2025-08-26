@@ -24,7 +24,7 @@ Please take a look at the [existing issues](https://github.com/shopware/meteor/i
 before creating a new one. That way keep the number of duplicate issues low.
 Complete the issue template as much as possible when creating a new issue.
 
-To get your bug fixed faster, add a link to a 
+To get your bug fixed faster, add a link to a
 [project with the bug](https://stackblitz.com/edit/vitejs-vite-emem8b?file=index.html&terminal=dev)
 for us to reproduce in the issue's description.
 
@@ -36,6 +36,16 @@ can up-vote that issue. This helps us to see what the community wants the most.
 
 If there does not already exist a feature request for your idea,
 you can [request a feature](https://github.com/shopware/meteor/issues/new).
+
+## Local development
+
+For local development we use `yalc` to publish packages into a virtual store and use them in other projects.
+You can find yalc [here](https://github.com/wclr/yalc) on GitHub.
+The workflow looks something like this:
+
+1. Make changes for the desired package/s
+2. Publish packages with `yalc publish --private --workspace --pure` from the package root folder `e.g <meteorRoot>/packages/admin-sdk`
+3. Link package in the Shopware Administration folder with `yalc link <package-name@package-version>`
 
 ## Creating a pull request
 
@@ -52,7 +62,7 @@ To execute scripts defined in the packages.json file of each package you have th
 
 1. Or you use turbo: `npx turbo run <TASK_NAME>`
 2. You run the script from the root with `pnpm --filter <PACKAGE_NAME> run <SCRIPT_NAME>`
-3. You cd into the package directory and run the script 
+3. You cd into the package directory and run the script
 
 You can find the available turbo tasks in the turbo.json file
 
@@ -72,7 +82,7 @@ After completing all the tests you can submit your pull request.
 We create and manage our changelogs with changesets. Follow these steps
 to create a changelog:
 
-1. Run `npx changesets add`
+1. Run `npx changeset add`
 2. Select the package you updated
 3. Define your version bump for this package
 4. Write a meaningful changelog message
@@ -88,3 +98,14 @@ When your pull request gets merged a GitHub Action looks at your changes. If it 
 If you decide to release a new version, merge the release branch. Changesets will now take over. It updates the changelog files, bumps up the version numbers and it publishes the packages to npm.
 
 That's it there is nothing more you have to do.
+
+### Updating the visual tests
+
+1. Copy the name of your branch
+2. Go to the [actions tab](https://github.com/shopware/meteor/actions)
+3. Click on [Visual Tests](https://github.com/shopware/meteor/actions) in the left sidebar
+4. You then see a blue bar with a button that says `Run workflow`, click on that
+5. Select your branch from the dropdown menu
+6. Click on the `Run workflow` button
+7. Wait...
+8. Go back to your branch overview

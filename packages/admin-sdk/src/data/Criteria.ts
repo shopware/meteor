@@ -105,17 +105,24 @@ interface Aggregations {
         name: string,
         field: string,
     },
+    entity: {
+        type: 'entity',
+        name: string,
+        field: string,
+        definition: keyof EntitySchema.Entities,
+    },
+    filter: {
+        type: 'filter',
+        name: string,
+        filter: SingleFilter[],
+        aggregation: Aggregation,
+    },
 }
 
 type ValueOf<T> = T[keyof T]
 type SingleFilter = ValueOf<Filters>;
 type Aggregation = ValueOf<Aggregations>;
-interface Filter {
-    type: 'filter',
-    name: string,
-    filter: SingleFilter[],
-    aggregation: Aggregation[],
-}
+
 interface Include {
     [entityName: string]: string[],
 }
@@ -126,7 +133,7 @@ interface Association {
 interface Query {
     score: number,
     query: SingleFilter,
-    [scoreField: string]: unknown,
+    scoreField?: string,
 }
 interface Sorting {
     field: string,
@@ -169,6 +176,8 @@ export function setDefaultValues(options: { page?: number|null, limit?: number|n
 }
 
 export default class Criteria {
+  title: string | null;
+
   page: number | null;
 
   limit: number | null;
@@ -203,6 +212,7 @@ export default class Criteria {
     this.page = page;
     this.limit = limit;
     this.term = null;
+    this.title = null;
     this.filters = [];
     this.includes = null;
     this.ids = [];
@@ -282,6 +292,17 @@ export default class Criteria {
     return params;
   }
 
+  /**
+   * Allows to provide a title for the criteria. This title will be shown in the `repository.search` request url so it can be used for debugging in network's tab
+   */
+  setTitle(title: string): this {
+    this.title = title;
+    return this;
+  }
+
+  getTitle(): string|null {
+    return this.title;
+  }
   /**
    * Allows to provide a list of ids which are used as a filter
    */
@@ -366,7 +387,7 @@ export default class Criteria {
     const query: Query = { score: score, query: filter };
 
     if (scoreField) {
-      query[scoreField] = scoreField;
+      query.scoreField = scoreField;
     }
 
     this.queries.push(query);
@@ -474,6 +495,7 @@ export default class Criteria {
       page: Criteria['page'],
       limit: Criteria['limit'],
       term: Criteria['term'],
+      title: Criteria['title'],
       filters: Criteria['filters'],
       ids: Criteria['ids'],
       queries: Criteria['queries'],
@@ -491,6 +513,7 @@ export default class Criteria {
       page: this.page,
       limit: this.limit,
       term: this.term,
+      title: this.title,
       filters: this.filters,
       ids: this.ids,
       queries: this.queries,
@@ -582,10 +605,18 @@ export default class Criteria {
   }
 
   /**
+   * @see \Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Metric\EntityAggregation
+   * Allows to filter an aggregation result
+   */
+  static entityAggregation(name: string, field: string, definition: keyof EntitySchema.Entities): Aggregations['entity'] {
+    return { type: 'entity', name, field, definition };
+  }
+
+  /**
    * @see \Shopware\Core\Framework\DataAbstractionLayer\Search\Aggregation\Bucket\FilterAggregation
    * Allows to filter an aggregation result
    */
-  static filter(name: string, filter: SingleFilter[], aggregation: Aggregation[]): Filter {
+  static filter(name: string, filter: SingleFilter[], aggregation: Aggregation): Aggregations['filter'] {
     return { type: 'filter', name, filter, aggregation };
   }
 

@@ -1,0 +1,18 @@
+# yaml-language-server: $schema=https://json.schemastore.org/dependabot-2.0.json
+# To get started with Dependabot version updates, you'll need to specify which
+# package ecosystems to update and where the package manifests are located.
+
+version: 2
+updates:
+  - package-ecosystem: "npm" # See documentation for possible values
+    directory: "/" # Location of package manifests
+    schedule:
+      interval: "weekly"
+    groups:
+      storybook: # Group all storybook updates into a single PR
+        patterns:
+          - "storybook" # Storybook itself
+          - "@storybook/*" # All official storybook packages
+      tiptap: # Group all tiptap packages into a single PR
+        patterns:
+          - "@tiptap/*" # All official tiptap packages

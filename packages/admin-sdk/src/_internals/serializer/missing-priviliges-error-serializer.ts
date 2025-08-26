@@ -1,6 +1,6 @@
 import type { SerializerFactory } from './index';
 import { hasType } from '../utils';
-import MissingPrivilegesError from '../../privileges/missing-privileges-error';
+import MissingPrivilegesError from '../privileges/missing-privileges-error';
 
 /* eslint-disable */
 const MissingPrivilegesErrorSerializer: SerializerFactory = () => ({

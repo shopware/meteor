@@ -8,6 +8,7 @@ module.exports = {
   plugins: [
     '@typescript-eslint',
     'import',
+    'check-file'
   ],
   extends: [
     'eslint:recommended',
@@ -76,5 +77,8 @@ module.exports = {
     ],
     quotes: ['error', 'single'],
     'eol-last': ['error', 'always'],
+    'object-curly-spacing': ['error', 'always'],
+    'check-file/folder-naming-convention': ['error', { 'src/!(_internals)/**/': 'KEBAB_CASE' }],
+    'check-file/filename-naming-convention': ['error', { 'src/*.*': 'KEBAB_CASE' }],
   },
 };

@@ -1,7 +1,8 @@
 import { createHandler, createSender, processDataRegistration, send, subscribe as createSubscriber } from '../channel';
+import MissingPrivilegesError from '../_internals/privileges/missing-privileges-error';
 import Criteria from './Criteria';
-import Entity from './_internals/Entity';
-import EntityCollection from './_internals/EntityCollection';
+import Entity from '../_internals/data/Entity';
+import EntityCollection from '../_internals/data/EntityCollection';
 import repository from './repository';
 
 // Internal function to create a filterable subscriber
@@ -31,6 +32,11 @@ function createFilteredSubscriber(type: 'datasetSubscribe' | 'datasetUpdate') {
         if (options?.selectors?.sort().join(',') !== data.selectors.sort().join(',')) {
           return;
         }
+      }
+
+      // Check if data.data is an error and log it
+      if (data?.data instanceof MissingPrivilegesError) {
+        console.error(data.data);
       }
 
       const returnValue = callback(data);
