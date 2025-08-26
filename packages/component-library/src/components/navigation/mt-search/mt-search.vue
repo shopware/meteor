@@ -107,7 +107,7 @@ defineEmits<{
     color: var(--color-text-primary-disabled);
 
     &::placeholder {
-      color: var(--color-text-secondary-disabled);
+      color: var(--color-text-secondary-default);
     }
   }
 }
