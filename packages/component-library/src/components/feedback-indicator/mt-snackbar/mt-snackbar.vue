@@ -1,7 +1,7 @@
 <template>
   <Teleport to="body">
     <div class="mt-snackbar">
-      <TransitionGroup name="snackbars" :move-class="'snackbars-move'">
+      <TransitionGroup name="snackbars">
         <mt-snackbar-notification
           v-for="(snackbar, index) in snackbars"
           :key="snackbar.id"
@@ -24,6 +24,7 @@ const { snackbars, removeSnackbar } = useSnackbar();
 
 <style scoped>
 .mt-snackbar {
+  width: 360px;
   position: fixed;
   bottom: var(--scale-size-16);
   right: var(--scale-size-16);
@@ -34,50 +35,24 @@ const { snackbars, removeSnackbar } = useSnackbar();
   gap: var(--scale-size-16);
   pointer-events: none;
 
-  /* Initial enter state (position & opacity) */
-  .snackbars-enter-from {
-    transform: translateY(100%);
-    opacity: 0;
-  }
-
-  /* Final state when snackbar leaves (position & opacity) */
-  .snackbars-leave-to {
-    transform: translateX(200%);
-    opacity: 0;
-  }
-
-  /* Moving state during enter animation (timing & easing) */
-  .snackbars-enter-active {
-    transition: all 0.3s;
-    transition-timing-function: cubic-bezier(0.7, 0.1, 0.45, 0.9);
-  }
-
-  /* Moving state during leave animation (timing & easing) */
-  .snackbars-leave-active {
-    transition:
-      opacity 0.1s,
-      transform 0.8s;
-    transition-timing-function: linear;
-  }
-
-  /* Enter and leave states (timing & easing) */
-  .snackbars-enter,
-  .snackbars-leave-to {
-    transition: all 0.3s;
-    transition-timing-function: cubic-bezier(0.7, 0.1, 0.45, 0.9);
-  }
-
-  /* Active states for both enter and leave (timing & easing) */
+  .snackbars-move,
   .snackbars-enter-active,
   .snackbars-leave-active {
-    transition: all 0.3s;
-    transition-timing-function: cubic-bezier(0.7, 0.1, 0.45, 0.9);
+    transition: all 0.5s cubic-bezier(0.55, 0, 0.1, 1);
   }
 
-  /* Move animation when snackbars reorder - smooth position transitions */
-  .snackbars-move {
-    transition: transform 0.3s;
-    transition-timing-function: cubic-bezier(0.7, 0.1, 0.45, 0.9);
+  .snackbars-enter-from {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+
+  .snackbars-leave-to {
+    opacity: 0;
+    transform: translateX(100%);
+  }
+
+  .snackbars-leave-active {
+    position: absolute;
   }
 }
 </style>

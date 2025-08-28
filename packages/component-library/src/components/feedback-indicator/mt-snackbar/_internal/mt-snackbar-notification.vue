@@ -170,9 +170,7 @@ watch(
   () => snackbar.value.progressPercentage,
   (newProgress) => {
     if (snackbar.value.type === "upload" && newProgress === 100) {
-      setTimeout(() => {
-        onRemoveSnackbar();
-      }, 50);
+      onRemoveSnackbar();
     }
   },
 );
