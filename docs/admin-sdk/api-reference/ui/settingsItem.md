@@ -11,6 +11,7 @@ ui.settings.addSettingsItem({
     locationId: 'settings-location-id',
     icon: 'regular-AR',
     displaySearchBar: true,
+    displaySmartBar: false,
     tab: 'plugins',
 });
 ```
@@ -22,6 +23,7 @@ ui.settings.addSettingsItem({
 | `locationId`         | true     |                | The id for the content of the settings item module            |
 | `icon`               | true     |                | The icon to display in your settings item                     |
 | `displaySearchBar`   | false    | true           | Toggles the sw-page search bar on/off                         |
+| `displaySmartBar`    | false    | true           | Toggles the sw-page smart bar on/off                          |
 | `tab`                | false    | 'plugins'      | Determines in which tab your settings item will be displayed  |
 
 ### Getting the right icon
