@@ -172,7 +172,7 @@ watch(
     if (snackbar.value.type === "upload" && newProgress === 100) {
       setTimeout(() => {
         onRemoveSnackbar();
-      }, 500);
+      }, 50);
     }
   },
 );
