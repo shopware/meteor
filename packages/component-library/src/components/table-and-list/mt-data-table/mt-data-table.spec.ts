@@ -65,9 +65,7 @@ const columnsFixture: ColumnDefinition[] = [
     renderer: "price",
     position: 300,
     rendererOptions: {
-      currencyId: "b7d2554b0ce847cd82f3ac9bd1c0dfca",
       currencyISOCode: "EUR",
-      source: "net",
     },
   },
   {
@@ -564,6 +562,17 @@ describe("mt-data-table", () => {
 
       expect(wrapper.find(".mt-data-table__table-context-button").exists()).toBeFalsy();
       expect(wrapper.find(".mt-data-table__table-settings-button").exists()).toBeFalsy();
+    });
+
+    it("should render table cell correctly when renderer is price", async () => {
+      const wrapper = createWrapper();
+      await wrapper.setProps({
+        ...wrapper.props(),
+      });
+
+      const dataCellPrice = wrapper.findAll('[data-cell-column-property="price"]');
+
+      expect(dataCellPrice[0].html()).toContain(`€${MtDataTableFixtures[0].price}`);
     });
   });
 
