@@ -21,7 +21,7 @@ export const Default: Story = {
       const { addSnackbar } = useSnackbar();
       const msg = ref("This is a snackbar");
       const action = ref(false);
-      const uploadSnackbar = ref<any>(null);
+      const uploadSnackbars = ref<any[]>([]); // Changed from single ref to array
 
       const linkValue = computed(() => {
         return action.value
@@ -56,18 +56,19 @@ export const Default: Story = {
       };
 
       const addUploadSnackbar = () => {
-        uploadSnackbar.value = addSnackbar({
+        const newUploadSnackbar = addSnackbar({
           message: msg.value,
           type: "upload",
           link: linkValue.value,
           progressPercentage: 0,
         });
 
-        simulateUploadProgress();
+        uploadSnackbars.value.push(newUploadSnackbar);
+        simulateUploadProgress(newUploadSnackbar);
       };
 
-      // function to simulate upload progress
-      const simulateUploadProgress = () => {
+      // function to simulate upload progress for a specific snackbar
+      const simulateUploadProgress = (snackbar: any) => {
         let currentProgress = 0;
 
         const interval = setInterval(() => {
@@ -76,10 +77,14 @@ export const Default: Story = {
           if (currentProgress >= 100) {
             currentProgress = 100;
             clearInterval(interval);
+            const index = uploadSnackbars.value.indexOf(snackbar);
+            if (index > -1) {
+              uploadSnackbars.value.splice(index, 1);
+            }
           }
 
-          if (uploadSnackbar.value) {
-            uploadSnackbar.value.progressPercentage = Math.round(currentProgress);
+          if (snackbar) {
+            snackbar.progressPercentage = Math.round(currentProgress);
           }
         }, 200);
       };
