@@ -70,9 +70,5 @@ export const VisualTestErrorState: MtUnitFieldStory = {
 
     // Verify the error detail text matches exactly
     expect(errorMessage).toHaveTextContent(errorDetail);
-
-    // Verify correct classes are applied
-    const fieldContainer = document.querySelector(".mt-field.has--error");
-    expect(fieldContainer).toBeDefined();
   },
 };
