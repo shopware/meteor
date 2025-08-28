@@ -1,5 +1,15 @@
 # Changelog
 
+## 4.17.0
+
+### Minor Changes
+
+- 70666f2: Fine tune mt-loader size scaling
+
+### Patch Changes
+
+- 3f8428c: fix error state unit field
+
 ## 4.16.1
 
 ### Patch Changes
