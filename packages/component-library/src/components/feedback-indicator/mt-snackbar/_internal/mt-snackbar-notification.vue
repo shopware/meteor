@@ -2,14 +2,17 @@
   <div
     ref="snackbarEl"
     class="mt-snackbar-notification"
-    :class="classes"
+    :class="[classes, { leaving: isLeaving }]"
     :role="role"
     :aria-live="ariaLive"
     tabindex="0"
   >
     <div class="mt-snackbar-notification__content">
       <div class="mt-snackbar-notification__text-content">
-        <div class="mt-snackbar-notification__symbol-container">
+        <div
+          v-if="icon || snackbar.type === 'upload'"
+          class="mt-snackbar-notification__symbol-container"
+        >
           <mt-loader
             v-if="snackbar.type === 'upload'"
             class="mt-snackbar-notification__loader"
@@ -27,8 +30,7 @@
           class="mt-snackbar-notification__message"
           color="color-text-primary"
           weight="medium"
-          size="s"
-          :class="messageClasses"
+          size="xs"
         >
           {{ snackbar.message }}
         </mt-text>
@@ -54,16 +56,7 @@ import MtIcon from "@/components/icons-media/mt-icon/mt-icon.vue";
 import MtText from "@/components/content/mt-text/mt-text.vue";
 import MtLink from "@/components/navigation/mt-link/mt-link.vue";
 import MtLoader from "@/components/feedback-indicator/mt-loader/mt-loader.vue";
-import {
-  defineProps,
-  toRefs,
-  type PropType,
-  computed,
-  watch,
-  ref,
-  onBeforeUnmount,
-  onMounted,
-} from "vue";
+import { toRefs, type PropType, computed, watch, ref, onBeforeUnmount, onMounted } from "vue";
 import type { Snackbar } from "../composables/use-snackbar";
 
 const emit = defineEmits(["remove-snackbar"]);
@@ -73,12 +66,9 @@ const props = defineProps({
     type: Object as PropType<Snackbar>,
     required: true,
   },
-  index: {
-    type: Number,
-    required: false,
-    default: 0,
-  },
 });
+
+const isLeaving = ref(false);
 
 const classes = computed(() => {
   return {
@@ -101,13 +91,6 @@ const icon = computed(() => {
     default:
       return undefined;
   }
-});
-
-const messageClasses = computed(() => {
-  return {
-    "mt-snackbar-notification__message--with-icon":
-      !!icon.value || snackbar.value.type === "upload",
-  };
 });
 
 const role = computed(() => {
@@ -136,7 +119,6 @@ const ariaLive = computed(() => {
 const { snackbar } = toRefs(props);
 const snackbarEl = ref<HTMLElement | null>(null);
 const timeoutId = ref<number | undefined>(undefined);
-const timeoutStartTime = ref<number | undefined>(undefined);
 const remainingTimeOut = ref(snackbar.value.duration || 5000);
 
 watch(
@@ -158,7 +140,6 @@ watch(
     }
 
     // Start timer
-    timeoutStartTime.value = Date.now();
     timeoutId.value = window.setTimeout(() => {
       onRemoveSnackbar();
     }, remainingTimeOut.value);
@@ -170,15 +151,17 @@ watch(
   () => snackbar.value.progressPercentage,
   (newProgress) => {
     if (snackbar.value.type === "upload" && newProgress === 100) {
-      setTimeout(() => {
-        onRemoveSnackbar();
-      }, 500);
+      onRemoveSnackbar();
     }
   },
 );
 
 function onRemoveSnackbar() {
-  emit("remove-snackbar", snackbar.value.id);
+  isLeaving.value = true;
+  // Wait for animation to complete before removing
+  setTimeout(() => {
+    emit("remove-snackbar", snackbar.value.id);
+  }, 300); // Match the CSS animation duration
 }
 
 onMounted(() => {
@@ -198,44 +181,38 @@ onBeforeUnmount(() => {
 .mt-snackbar-notification {
   max-width: 360px;
   width: fit-content;
-  position: relative;
-  overflow: hidden;
-  background: var(--color-elevation-surface-raised);
+  padding: var(--scale-size-12);
   border: 1px solid var(--color-border-secondary-default);
   border-radius: var(--border-radius-m);
-  box-shadow: 0px 8px 20px 0px var(--color-elevation-shadow-default);
   pointer-events: auto;
-  padding: var(--scale-size-12);
+  background: var(--color-elevation-surface-raised);
+  box-shadow: 0px 8px 20px 0px var(--color-elevation-shadow-default);
 }
 
 .mt-snackbar-notification__content {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto;
   gap: var(--scale-size-12);
+  align-items: center;
 }
 
 .mt-snackbar-notification__text-content {
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-medium);
-  line-height: var(--font-line-height-xs);
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  flex-shrink: 0;
+}
+
+.mt-snackbar-notification__link {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
 }
 
 .mt-snackbar-notification__icon {
-  margin-top: 1px;
-}
-
-.mt-snackbar-notification__loader {
-  margin-top: 1px;
+  margin-bottom: 2px; /* Fix icon alignment */
 }
 
 .mt-snackbar-notification__message {
-  line-height: 1.4;
   word-wrap: break-word;
 }
 
@@ -254,6 +231,7 @@ onBeforeUnmount(() => {
 .mt-snackbar-notification__symbol-container {
   flex-shrink: 0;
   margin-right: var(--scale-size-8);
+
   .mt-snackbar-notification__loader {
     position: relative;
     background: none;
@@ -266,5 +244,7 @@ onBeforeUnmount(() => {
   width: var(--scale-size-48);
   margin-left: var(--scale-size-6);
   color: var(--color-text-secondary-default);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
 }
 </style>
