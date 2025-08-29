@@ -9,7 +9,10 @@
   >
     <div class="mt-snackbar-notification__content">
       <div class="mt-snackbar-notification__text-content">
-        <div class="mt-snackbar-notification__symbol-container">
+        <div
+          v-if="icon || snackbar.type === 'upload'"
+          class="mt-snackbar-notification__symbol-container"
+        >
           <mt-loader
             v-if="snackbar.type === 'upload'"
             class="mt-snackbar-notification__loader"
@@ -27,8 +30,7 @@
           class="mt-snackbar-notification__message"
           color="color-text-primary"
           weight="medium"
-          size="s"
-          :class="messageClasses"
+          size="xs"
         >
           {{ snackbar.message }}
         </mt-text>
@@ -101,13 +103,6 @@ const icon = computed(() => {
     default:
       return undefined;
   }
-});
-
-const messageClasses = computed(() => {
-  return {
-    "mt-snackbar-notification__message--with-icon":
-      !!icon.value || snackbar.value.type === "upload",
-  };
 });
 
 const role = computed(() => {
@@ -197,43 +192,38 @@ onBeforeUnmount(() => {
   max-width: 360px;
   width: fit-content;
   position: relative;
-  overflow: hidden;
-  background: var(--color-elevation-surface-raised);
+  padding: var(--scale-size-12);
   border: 1px solid var(--color-border-secondary-default);
   border-radius: var(--border-radius-m);
-  box-shadow: 0px 8px 20px 0px var(--color-elevation-shadow-default);
   pointer-events: auto;
-  padding: var(--scale-size-12);
+  background: var(--color-elevation-surface-raised);
+  box-shadow: 0px 8px 20px 0px var(--color-elevation-shadow-default);
 }
 
 .mt-snackbar-notification__content {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 1fr auto;
   gap: var(--scale-size-12);
+  align-items: center;
 }
 
 .mt-snackbar-notification__text-content {
-  font-size: var(--font-size-xs);
-  font-weight: var(--font-weight-medium);
-  line-height: var(--font-line-height-xs);
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  flex-shrink: 0;
+}
+
+.mt-snackbar-notification__link {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
 }
 
 .mt-snackbar-notification__icon {
-  margin-top: 1px;
-}
-
-.mt-snackbar-notification__loader {
-  margin-top: 1px;
+  margin-bottom: 2px; /* Fix icon alignment */
 }
 
 .mt-snackbar-notification__message {
-  line-height: 1.4;
   word-wrap: break-word;
 }
 
@@ -252,6 +242,7 @@ onBeforeUnmount(() => {
 .mt-snackbar-notification__symbol-container {
   flex-shrink: 0;
   margin-right: var(--scale-size-8);
+
   .mt-snackbar-notification__loader {
     position: relative;
     background: none;
@@ -264,5 +255,7 @@ onBeforeUnmount(() => {
   width: var(--scale-size-48);
   margin-left: var(--scale-size-6);
   color: var(--color-text-secondary-default);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
 }
 </style>
