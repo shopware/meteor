@@ -1719,8 +1719,6 @@ export default defineComponent({
     }
 
     const showData = computed(() => {
-      console.log(props.dataSource.length, props.isLoading);
-
       return props.dataSource.length > 0 || props.isLoading;
     });
 
