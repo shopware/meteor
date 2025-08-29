@@ -17,6 +17,7 @@
       :href="linkHref"
       class="mt-empty-state__link"
       type="external"
+      target="_blank"
       as="a"
     >
       {{ linkText }}
