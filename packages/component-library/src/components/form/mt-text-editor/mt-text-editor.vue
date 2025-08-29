@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-text-editor" :class="componentClasses" v-if="editor">
+  <div v-if="editor" class="mt-text-editor" :class="componentClasses">
     <label v-if="label">
       {{ label }}
     </label>
@@ -7,19 +7,19 @@
     <div class="mt-text-editor__box">
       <component
         :is="toolbarWrapperComponent"
+        :key="isInlineEdit"
         :editor="editor"
-        :tippyOptions="{
+        :tippy-options="{
           maxWidth: 'none',
           zIndex: 1000,
         }"
-        :key="isInlineEdit"
       >
         <mt-text-editor-toolbar
           :editor="editor"
           :custom-buttons="mergedCustomButtons"
           :disabled="globalToolbarButtonDisabled"
-          @updateContextualButtons="updateContextualButtons"
-          :excludedButtons="excludedButtons"
+          :excluded-buttons="excludedButtons"
+          @update-contextual-buttons="updateContextualButtons"
         >
           <!-- Special buttons -->
           <template #button_text-color="{ editor, disabled, button }">
@@ -47,7 +47,7 @@
           </template>
 
           <!-- Dynamically pass all slots -->
-          <template #[name]="bindings" v-for="(_, name) in slots">
+          <template v-for="(_, name) in slots" #[name]="bindings">
             <slot :name="name" v-bind="bindings"> </slot>
           </template>
         </mt-text-editor-toolbar>
@@ -57,12 +57,12 @@
       <code-mirror
         v-else
         :lang="lang"
-        :modelValue="modelValue"
-        @update:modelValue="emit('update:modelValue', $event)"
+        :model-value="modelValue"
         class="mt-text-editor__code-editor"
         wrap
         basic
         :disabled="disabled"
+        @update:model-value="emit('update:modelValue', $event)"
       />
 
       <div class="mt-text-editor__footer">
@@ -79,8 +79,8 @@
                   <mt-text-editor-toolbar-button
                     :button="button"
                     :editor="editor"
-                    @click="toggleFloatingUi"
                     :disabled="globalToolbarButtonDisabled"
+                    @click="toggleFloatingUi"
                   />
                 </template>
 
@@ -91,7 +91,7 @@
                     :label="child.label"
                     :icon="child.icon"
                     :type="child.isActive && child.isActive(editor) ? 'active' : 'default'"
-                    :onLabelClick="
+                    :on-label-click="
                       () => {
                         button.action?.(editor!);
                         toggleFloatingUi();
@@ -131,7 +131,24 @@
 <script setup lang="ts">
 // BubbleMenu is used in <component :is> in the template
 import { EditorContent, BubbleMenu, useEditor } from "@tiptap/vue-3";
-import StarterKit from "@tiptap/starter-kit";
+// Import individual StarterKit extensions instead of the bundle
+import Document from "@tiptap/extension-document";
+import Paragraph from "@tiptap/extension-paragraph";
+import Text from "@tiptap/extension-text";
+import Heading from "@tiptap/extension-heading";
+import Bold from "@tiptap/extension-bold";
+import Italic from "@tiptap/extension-italic";
+import Strike from "@tiptap/extension-strike";
+import Code from "@tiptap/extension-code";
+import CodeBlock from "@tiptap/extension-code-block";
+import Blockquote from "@tiptap/extension-blockquote";
+import HorizontalRule from "@tiptap/extension-horizontal-rule";
+import BulletList from "@tiptap/extension-bullet-list";
+import OrderedList from "@tiptap/extension-ordered-list";
+import Dropcursor from "@tiptap/extension-dropcursor";
+import Gapcursor from "@tiptap/extension-gapcursor";
+import History from "@tiptap/extension-history";
+import HardBreak from "@tiptap/extension-hard-break";
 import Underline from "@tiptap/extension-underline";
 import Subscript from "@tiptap/extension-subscript";
 import Superscript from "@tiptap/extension-superscript";
@@ -145,6 +162,15 @@ import TableCell from "@tiptap/extension-table-cell";
 import TableHeader from "@tiptap/extension-table-header";
 import TableRow from "@tiptap/extension-table-row";
 import Placeholder from "@tiptap/extension-placeholder";
+import Image from "@tiptap/extension-image";
+import CustomListItem from "./_internal/mt-text-editor-list-item";
+import enhanceExtensionsWithAttributes from "./_internal/mt-text-editor-extension-enhancer";
+import {
+  GenericContainer,
+  DivContainer,
+  SemanticElements,
+  FigcaptionElement,
+} from "./_internal/mt-text-editor-html-preserving-extensions";
 import mtTextEditorToolbar, { type CustomButton } from "./_internal/mt-text-editor-toolbar.vue";
 import mtTextEditorToolbarButtonColor, {
   colorButton,
@@ -276,8 +302,28 @@ const componentClasses = computed(() => {
  */
 const editor = useEditor({
   ...props.tipTapConfig,
-  extensions: [
-    StarterKit,
+  extensions: enhanceExtensionsWithAttributes([
+    // Use individual StarterKit extensions instead of the bundle
+    Document,
+    Paragraph,
+    Text,
+    Heading,
+    Bold,
+    Italic,
+    Strike,
+    Code,
+    CodeBlock,
+    Blockquote,
+    HorizontalRule,
+    BulletList,
+    OrderedList,
+    // Skip ListItem since we use our CustomListItem
+    Dropcursor,
+    Gapcursor,
+    History,
+    HardBreak,
+    // Add our custom ListItem that doesn't wrap content in <p> tags
+    CustomListItem,
     Underline,
     Subscript,
     Superscript,
@@ -288,6 +334,11 @@ const editor = useEditor({
     TextStyle,
     Link.configure({
       openOnClick: false,
+      HTMLAttributes: {
+        // Don't automatically add rel attributes - we'll handle this manually in the link button
+        rel: null,
+        target: null, // Don't set target by default
+      },
     }),
     CharacterCount.configure({}),
     Table.configure({
@@ -300,8 +351,16 @@ const editor = useEditor({
       placeholder: props.placeholder,
       showOnlyWhenEditable: true,
     }),
+    Image.configure({
+      allowBase64: true,
+    }),
+    // Add HTML preserving extensions for span, div, and semantic elements
+    GenericContainer,
+    DivContainer,
+    SemanticElements,
+    FigcaptionElement,
     ...(props.tipTapConfig.extensions ?? []),
-  ],
+  ]),
   content: props.modelValue,
   editorProps: {
     attributes: {
