@@ -54,6 +54,7 @@
     "@tiptap/extension-character-count": "^2.22.3",
     "@tiptap/extension-color": "^2.22.3",
     "@tiptap/extension-highlight": "^2.22.3",
+    "@tiptap/extension-image": "^3.2.1",
     "@tiptap/extension-link": "^2.22.3",
     "@tiptap/extension-list-item": "^2.22.3",
     "@tiptap/extension-ordered-list": "^2.22.3",
