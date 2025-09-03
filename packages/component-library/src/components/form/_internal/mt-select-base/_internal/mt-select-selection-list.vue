@@ -366,7 +366,7 @@ export default defineComponent({
     padding: var(--scale-size-12) var(--scale-size-16) var(--scale-size-12) var(--scale-size-8);
 
     &::placeholder {
-      color: lighten($color-darkgray-200, 25%);
+      color: var(--color-text-secondary-default);
       white-space: break-spaces;
     }
   }
