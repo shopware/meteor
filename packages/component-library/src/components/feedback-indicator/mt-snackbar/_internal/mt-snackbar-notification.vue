@@ -62,6 +62,10 @@ const props = defineProps({
     type: Object as PropType<Snackbar>,
     required: true,
   },
+  isHovered: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const isLeaving = ref(false);
@@ -143,11 +147,81 @@ const ariaLive = computed(() => {
   }
 });
 
-const { snackbar } = toRefs(props);
+const { snackbar, isHovered } = toRefs(props);
 const snackbarEl = ref<HTMLElement | null>(null);
 const timeoutId = ref<number | undefined>(undefined);
 const successTimeoutId = ref<number | undefined>(undefined);
 const remainingTimeOut = ref(snackbar.value.duration || 5000);
+const pausedAt = ref<number | null>(null);
+const isPaused = ref(false);
+const successPausedAt = ref<number | null>(null);
+const isSuccessPaused = ref(false);
+
+function pauseTimer() {
+  if (timeoutId.value && !isPaused.value) {
+    window.clearTimeout(timeoutId.value);
+    timeoutId.value = undefined;
+    pausedAt.value = Date.now();
+    isPaused.value = true;
+  }
+}
+
+function resumeTimer() {
+  if (isPaused.value && pausedAt.value) {
+    const elapsed = Date.now() - pausedAt.value;
+    const newRemainingTime = Math.max(0, remainingTimeOut.value - elapsed);
+    remainingTimeOut.value = newRemainingTime;
+
+    if (newRemainingTime > 0) {
+      timeoutId.value = window.setTimeout(() => {
+        onRemoveSnackbar();
+      }, newRemainingTime);
+    } else {
+      onRemoveSnackbar();
+    }
+
+    pausedAt.value = null;
+    isPaused.value = false;
+  }
+}
+
+function pauseSuccessTimer() {
+  if (successTimeoutId.value && !isSuccessPaused.value) {
+    window.clearTimeout(successTimeoutId.value);
+    successTimeoutId.value = undefined;
+    successPausedAt.value = Date.now();
+    isSuccessPaused.value = true;
+  }
+}
+
+function resumeSuccessTimer() {
+  if (isSuccessPaused.value && successPausedAt.value) {
+    const elapsed = Date.now() - successPausedAt.value;
+    const newRemainingTime = Math.max(0, 2000 - elapsed);
+
+    if (newRemainingTime > 0) {
+      successTimeoutId.value = window.setTimeout(() => {
+        onRemoveSnackbar();
+      }, newRemainingTime);
+    } else {
+      onRemoveSnackbar();
+    }
+
+    successPausedAt.value = null;
+    isSuccessPaused.value = false;
+  }
+}
+
+// Watch for hover state changes
+watch(isHovered, (newIsHovered) => {
+  if (newIsHovered) {
+    pauseTimer();
+    pauseSuccessTimer();
+  } else {
+    resumeTimer();
+    resumeSuccessTimer();
+  }
+});
 
 watch(
   () => snackbar.value.duration,
@@ -167,10 +241,12 @@ watch(
       return;
     }
 
-    // Start timer
-    timeoutId.value = window.setTimeout(() => {
-      onRemoveSnackbar();
-    }, remainingTimeOut.value);
+    // Start timer only if not paused
+    if (!isPaused.value) {
+      timeoutId.value = window.setTimeout(() => {
+        onRemoveSnackbar();
+      }, remainingTimeOut.value);
+    }
   },
   { immediate: true },
 );
@@ -182,9 +258,12 @@ watch(
       snackbar.value.type === "upload" &&
       (newUploadState === "success" || newUploadState === "error")
     ) {
-      successTimeoutId.value = window.setTimeout(() => {
-        onRemoveSnackbar();
-      }, 2000);
+      // Start success timer only if not paused
+      if (!isSuccessPaused.value) {
+        successTimeoutId.value = window.setTimeout(() => {
+          onRemoveSnackbar();
+        }, 2000);
+      }
     }
   },
 );
@@ -210,6 +289,11 @@ onBeforeUnmount(() => {
   if (successTimeoutId.value) {
     window.clearTimeout(successTimeoutId.value);
   }
+  // Reset pause states
+  isPaused.value = false;
+  isSuccessPaused.value = false;
+  pausedAt.value = null;
+  successPausedAt.value = null;
 });
 </script>
 

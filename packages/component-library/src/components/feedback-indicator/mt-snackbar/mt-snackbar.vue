@@ -1,11 +1,12 @@
 <template>
   <Teleport to="body">
-    <div class="mt-snackbar">
+    <div class="mt-snackbar" @mouseenter="onMouseEnter" @mouseleave="onMouseLeave">
       <mt-snackbar-notification
         v-for="(snackbar, index) in snackbars"
         :key="snackbar.id"
         :ref="(el) => setNotificationRef(el, index)"
         :snackbar="snackbar"
+        :is-hovered="isHovered"
         @remove-snackbar="removeSnackbar"
       />
     </div>
@@ -21,6 +22,17 @@ const { snackbars, removeSnackbar } = useSnackbar();
 
 // Store references to snackbar notifications to calculate heights
 const notificationRefs = ref<(HTMLElement | null)[]>([]);
+
+// Hover state for pausing timers
+const isHovered = ref(false);
+
+function onMouseEnter() {
+  isHovered.value = true;
+}
+
+function onMouseLeave() {
+  isHovered.value = false;
+}
 
 // Observer to handle dynamic height changes
 let resizeObserver: ResizeObserver | null = null;
