@@ -21,7 +21,6 @@ export const Default: Story = {
       const { addSnackbar } = useSnackbar();
       const msg = ref("This is a snackbar");
       const action = ref(false);
-      const uploadSnackbars = ref<any[]>([]); // Changed from single ref to array
 
       const linkValue = computed(() => {
         return action.value
@@ -61,13 +60,14 @@ export const Default: Story = {
           type: "upload",
           link: linkValue.value,
           progressPercentage: 0,
+          successMessage: "File uploaded successfully",
+          errorMessage: "Upload failed. Please try again",
         });
 
-        uploadSnackbars.value.push(newUploadSnackbar);
         simulateUploadProgress(newUploadSnackbar);
       };
 
-      // function to simulate upload progress for a specific snackbar
+      // function to simulate upload progress
       const simulateUploadProgress = (snackbar: any) => {
         let currentProgress = 0;
 
@@ -77,10 +77,8 @@ export const Default: Story = {
           if (currentProgress >= 100) {
             currentProgress = 100;
             clearInterval(interval);
-            const index = uploadSnackbars.value.indexOf(snackbar);
-            if (index > -1) {
-              uploadSnackbars.value.splice(index, 1);
-            }
+            snackbar.uploadState = "success";
+            snackbar.progressPercentage = 100;
           }
 
           if (snackbar) {
@@ -107,7 +105,7 @@ export const Default: Story = {
           </div>
 
         </div>
-        <div style="display: flex; gap: 10px;">
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
           <mt-button @click="addDefaultSnackbar" variant="secondary">
           Default Snackbar
           </mt-button>

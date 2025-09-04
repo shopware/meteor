@@ -12,6 +12,9 @@ export interface Snackbar {
   };
   duration?: number;
   progressPercentage?: number;
+  uploadState?: "success" | "error";
+  successMessage?: string;
+  errorMessage?: string;
 }
 
 // Global snackbars state
