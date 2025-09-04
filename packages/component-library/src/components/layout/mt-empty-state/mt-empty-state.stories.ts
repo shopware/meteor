@@ -25,6 +25,10 @@ export default {
       control: "text",
       description: "The text of the link",
     },
+    linkType: {
+      control: { type: "select", options: ["external", "internal"] },
+      description: "The type of the link, determines if it opens in a new tab or not",
+    },
     buttonText: {
       control: "text",
       description: "The text of the action button",

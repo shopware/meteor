@@ -2,4 +2,4 @@
 "@shopware-ag/meteor-component-library": patch
 ---
 
-Add target attribute for mt-empty-state's link
+Added prop `linktType` to `mt-empty-state` to control the behaviour of the displayed link.
