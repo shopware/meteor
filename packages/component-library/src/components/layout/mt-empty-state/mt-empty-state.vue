@@ -57,7 +57,6 @@ withDefaults(
   },
 );
 
-
 defineEmits(["button-click"]);
 </script>
 
