@@ -13,11 +13,7 @@
           v-if="icon || snackbar.type === 'upload'"
           class="mt-snackbar-notification__symbol-container"
         >
-          <mt-loader
-            v-if="snackbar.type === 'upload'"
-            class="mt-snackbar-notification__loader"
-            size="16px"
-          />
+          <mt-loader v-if="isUploading" class="mt-snackbar-notification__loader" size="16px" />
           <mt-icon
             v-else-if="icon"
             class="mt-snackbar-notification__icon"
@@ -28,13 +24,13 @@
 
         <mt-text
           class="mt-snackbar-notification__message"
-          color="color-text-primary"
+          color="color-text-primary-default"
           weight="medium"
           size="xs"
         >
-          {{ snackbar.message }}
+          {{ displayMessage }}
         </mt-text>
-        <div v-if="snackbar.type === 'upload'" class="mt-snackbar-notification__progress">
+        <div v-if="isUploading" class="mt-snackbar-notification__progress">
           <span>{{ progressPercentage }}</span>
         </div>
       </div>
@@ -72,8 +68,9 @@ const isLeaving = ref(false);
 
 const classes = computed(() => {
   return {
-    "mt-snackbar-notification--success": snackbar.value.type === "success",
-    "mt-snackbar-notification--error": snackbar.value.type === "error",
+    "mt-snackbar-notification--success":
+      snackbar.value.type === "success" || isUploadComplete.value,
+    "mt-snackbar-notification--error": snackbar.value.type === "error" || isUploadError.value,
     "mt-snackbar-notification--upload": snackbar.value.type === "upload",
   };
 });
@@ -82,12 +79,42 @@ const progressPercentage = computed(() => {
   return `(${snackbar.value.progressPercentage || 0}%)`;
 });
 
+const isUploadComplete = computed(() => {
+  return snackbar.value.type === "upload" && snackbar.value.uploadState === "success";
+});
+
+const isUploadError = computed(() => {
+  return snackbar.value.type === "upload" && snackbar.value.uploadState === "error";
+});
+
+const isUploading = computed(() => {
+  return snackbar.value.type === "upload" && !snackbar.value.uploadState;
+});
+
+const displayMessage = computed(() => {
+  if (isUploadComplete.value) {
+    return snackbar.value.successMessage || "Upload completed";
+  }
+  if (isUploadError.value) {
+    return snackbar.value.errorMessage || "Upload failed";
+  }
+  return snackbar.value.message;
+});
+
 const icon = computed(() => {
   switch (snackbar.value.type) {
     case "error":
       return "solid-exclamation-circle";
     case "success":
       return "solid-check-circle";
+    case "upload":
+      if (isUploadComplete.value) {
+        return "solid-check-circle";
+      }
+      if (isUploadError.value) {
+        return "solid-exclamation-circle";
+      }
+      return undefined;
     default:
       return undefined;
   }
@@ -119,12 +146,13 @@ const ariaLive = computed(() => {
 const { snackbar } = toRefs(props);
 const snackbarEl = ref<HTMLElement | null>(null);
 const timeoutId = ref<number | undefined>(undefined);
+const successTimeoutId = ref<number | undefined>(undefined);
 const remainingTimeOut = ref(snackbar.value.duration || 5000);
 
 watch(
   () => snackbar.value.duration,
   (newDuration) => {
-    // Exclude upload type snackbars
+    // Upload snackbars have their own timer
     if (snackbar.value.type === "upload") {
       return;
     }
@@ -148,10 +176,15 @@ watch(
 );
 
 watch(
-  () => snackbar.value.progressPercentage,
-  (newProgress) => {
-    if (snackbar.value.type === "upload" && newProgress === 100) {
-      onRemoveSnackbar();
+  () => snackbar.value.uploadState,
+  (newUploadState) => {
+    if (
+      snackbar.value.type === "upload" &&
+      (newUploadState === "success" || newUploadState === "error")
+    ) {
+      successTimeoutId.value = window.setTimeout(() => {
+        onRemoveSnackbar();
+      }, 2000);
     }
   },
 );
@@ -161,7 +194,7 @@ function onRemoveSnackbar() {
   // Wait for animation to complete before removing
   setTimeout(() => {
     emit("remove-snackbar", snackbar.value.id);
-  }, 300); // Match the CSS animation duration
+  }, 300);
 }
 
 onMounted(() => {
@@ -173,6 +206,9 @@ onMounted(() => {
 onBeforeUnmount(() => {
   if (timeoutId.value) {
     window.clearTimeout(timeoutId.value);
+  }
+  if (successTimeoutId.value) {
+    window.clearTimeout(successTimeoutId.value);
   }
 });
 </script>

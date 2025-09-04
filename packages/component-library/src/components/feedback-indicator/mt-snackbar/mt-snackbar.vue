@@ -19,8 +19,11 @@ import { ref, nextTick, watch, onMounted, onBeforeUnmount } from "vue";
 
 const { snackbars, removeSnackbar } = useSnackbar();
 
-// Store references to notification elements to calculate heights
+// Store references to snackbar notifications to calculate heights
 const notificationRefs = ref<(HTMLElement | null)[]>([]);
+
+// Observer to handle dynamic height changes
+let resizeObserver: ResizeObserver | null = null;
 
 function setNotificationRef(el: any, index: number) {
   if (el && el.$el) {
@@ -29,14 +32,13 @@ function setNotificationRef(el: any, index: number) {
     notificationRefs.value[index] = el;
   }
 
-  // Observe the new element for size changes
+  // Observe the new notification for size changes
   if (resizeObserver && el) {
     const elementToObserve = el.$el || el;
     resizeObserver.observe(elementToObserve);
   }
 }
 
-// Calculate cumulative heights for positioning
 function calculateNotificationPosition(index: number): number {
   let totalHeight = 0;
 
@@ -44,7 +46,7 @@ function calculateNotificationPosition(index: number): number {
   for (let i = 0; i < index; i++) {
     const ref = notificationRefs.value[i];
     if (ref) {
-      totalHeight += ref.offsetHeight + 16; // 16px gap between notifications
+      totalHeight += ref.offsetHeight + 16;
     }
   }
 
@@ -56,7 +58,6 @@ watch(
   snackbars,
   async () => {
     await nextTick();
-    // Clean up refs for removed notifications
     notificationRefs.value = notificationRefs.value.slice(0, snackbars.value.length);
     updateNotificationPositions();
   },
@@ -72,14 +73,11 @@ function updateNotificationPositions() {
   });
 }
 
-// Initial position update after mount
 nextTick(() => {
   updateNotificationPositions();
 });
 
-// Set up resize observer to handle dynamic height changes
-let resizeObserver: ResizeObserver | null = null;
-
+// Observe snackbar notifications for size changes
 onMounted(() => {
   if (typeof ResizeObserver !== "undefined") {
     resizeObserver = new ResizeObserver(() => {
@@ -116,13 +114,12 @@ onBeforeUnmount(() => {
   z-index: 1;
 }
 
-/* Dynamic positioning using calculated heights */
+/* Position snackbar based on height */
 .mt-snackbar :deep(.mt-snackbar-notification) {
   transform: translateY(calc(-1 * var(--y-offset, 0px)));
   opacity: 1;
 }
 
-/* Entrance animation for new notifications */
 .mt-snackbar :deep(.mt-snackbar-notification) {
   animation: slideInFromRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
@@ -138,7 +135,6 @@ onBeforeUnmount(() => {
   }
 }
 
-/* Exit animation for leaving notifications */
 .mt-snackbar :deep(.mt-snackbar-notification.leaving) {
   animation: slideOutDown 0.5s cubic-bezier(0.66, 0, 0.34, 1) forwards;
 }
