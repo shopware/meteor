@@ -1,6 +1,6 @@
 import type { notificationDispatch } from './notification/index';
 import type { toastDispatch } from './toast';
-import type { windowRedirect, windowReload, windowRouterPush, windowGetId } from './window/index';
+import type { windowRedirect, windowReload, windowRouterPush, windowGetId, windowRouterGetPath } from './window/index';
 import type {
   contextLanguage,
   contextEnvironment,
@@ -53,6 +53,7 @@ export interface ShopwareMessageTypes {
   windowRedirect: windowRedirect,
   windowRouterPush: windowRouterPush,
   windowReload: windowReload,
+  windowRouterGetPath: windowRouterGetPath,
   windowGetId: windowGetId,
   contextLanguage: contextLanguage,
   contextEnvironment: contextEnvironment,
