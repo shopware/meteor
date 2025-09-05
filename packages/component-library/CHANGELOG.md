@@ -1,5 +1,16 @@
 # Changelog
 
+## 4.17.0
+
+### Minor Changes
+
+- 70666f2: Fine tune mt-loader size scaling
+
+### Patch Changes
+
+- 8959aec: Added prop `linkType` to `mt-empty-state` to control the behaviour of the displayed link.
+- 3f8428c: fix error state unit field
+
 ## 4.16.1
 
 ### Patch Changes
