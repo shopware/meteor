@@ -16,7 +16,8 @@
       v-if="linkHref && linkText"
       :href="linkHref"
       class="mt-empty-state__link"
-      type="external"
+      :type="linkType"
+      :target="linkType === 'external' ? '_blank' : '_self'"
       as="a"
     >
       {{ linkText }}
@@ -41,14 +42,20 @@ import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtText from "@/components/content/mt-text/mt-text.vue";
 import MtLink from "@/components/navigation/mt-link/mt-link.vue";
 
-defineProps<{
-  headline: string;
-  description: string;
-  icon: string;
-  linkHref?: string;
-  linkText?: string;
-  buttonText?: string;
-}>();
+withDefaults(
+  defineProps<{
+    headline: string;
+    description: string;
+    icon: string;
+    linkHref?: string;
+    linkText?: string;
+    linkType?: "external" | "internal";
+    buttonText?: string;
+  }>(),
+  {
+    linkType: "internal",
+  },
+);
 
 defineEmits(["button-click"]);
 </script>
