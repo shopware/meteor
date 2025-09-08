@@ -31,6 +31,11 @@ export type actionButtonAdd = {
     label: string,
 
     /**
+     * Meteor icon of your action button.
+     */
+    meteorIcon?: string,
+
+    /**
      * Callback function which will be called once the action button is clicked.
      */
     callback: (entity: string, entityIdList: string[]) => void,
