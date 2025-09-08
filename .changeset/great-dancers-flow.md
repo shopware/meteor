@@ -1,5 +1,5 @@
 ---
-"@shopware-ag/meteor-admin-sdk": patch
+"@shopware-ag/meteor-admin-sdk": minor
 ---
 
-feat: add ability to control smart bar when adding setting item
+Add ability to control smart bar when adding setting item
