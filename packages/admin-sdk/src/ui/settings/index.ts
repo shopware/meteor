@@ -32,4 +32,10 @@ export type settingsItemAdd = {
      * Defaults to true.
      */
     displaySearchBar?: boolean,
+
+    /**
+     * Toggles the sw-page smart bar on/off.
+     * Defaults to true.
+     */
+    displaySmartBar?: boolean,
 }
