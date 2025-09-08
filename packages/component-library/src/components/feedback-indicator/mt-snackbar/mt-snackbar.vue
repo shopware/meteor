@@ -1,13 +1,14 @@
 <template>
   <Teleport to="body">
-    <div class="mt-snackbar" @mouseenter="onMouseEnter" @mouseleave="onMouseLeave">
+    <div class="mt-snackbar" @mouseenter="isHovered = true" @mouseleave="isHovered = false">
       <mt-snackbar-notification
-        v-for="(snackbar, index) in snackbars"
+        v-for="snackbar in snackbars"
         :key="snackbar.id"
-        :ref="(el) => setNotificationRef(el, index)"
         :snackbar="snackbar"
         :is-hovered="isHovered"
-        @remove-snackbar="removeSnackbar"
+        :heights="heights"
+        @remove-snackbar="removeSnackbarWithHeightCleanup"
+        @update:height="updateHeight"
       />
     </div>
   </Teleport>
@@ -15,94 +16,42 @@
 
 <script setup lang="ts">
 import MtSnackbarNotification from "./_internal/mt-snackbar-notification.vue";
-import { useSnackbar } from "./composables/use-snackbar";
-import { ref, nextTick, watch, onMounted, onBeforeUnmount } from "vue";
+import { useSnackbar, type Snackbar } from "./composables/use-snackbar";
+import { ref } from "vue";
+
+export interface HeightT {
+  height: number;
+  snackbarId: string;
+}
 
 const { snackbars, removeSnackbar } = useSnackbar();
 
-// Store references to snackbar notifications to calculate heights
-const notificationRefs = ref<(HTMLElement | null)[]>([]);
-
-// Hover state for pausing timers
+const heights = ref<HeightT[]>([]);
 const isHovered = ref(false);
 
-function onMouseEnter() {
-  isHovered.value = true;
-}
-
-function onMouseLeave() {
-  isHovered.value = false;
-}
-
-// Observer to handle dynamic height changes
-let resizeObserver: ResizeObserver | null = null;
-
-function setNotificationRef(el: any, index: number) {
-  if (el && el.$el) {
-    notificationRefs.value[index] = el.$el;
-  } else if (el && el.offsetHeight) {
-    notificationRefs.value[index] = el;
-  }
-
-  // Observe the new notification for size changes
-  if (resizeObserver && el) {
-    const elementToObserve = el.$el || el;
-    resizeObserver.observe(elementToObserve);
+function updateHeight(h: HeightT) {
+  // Find the index of the snackbar in the heights array
+  const index = heights.value.findIndex((item) => item.snackbarId === h.snackbarId);
+  // If the snackbar is found, update its height
+  if (index !== -1) {
+    heights.value[index] = h;
+  } else {
+    // If the snackbar is not found, add it to the heights array
+    heights.value.unshift(h);
   }
 }
 
-function calculateNotificationPosition(index: number): number {
-  let totalHeight = 0;
+function removeSnackbarWithHeightCleanup(snackbarToRemove: Snackbar) {
+  // Remove the snackbar from the snackbars array
+  removeSnackbar(snackbarToRemove.id);
 
-  // Sum up the heights of all previous notifications plus gaps
-  for (let i = 0; i < index; i++) {
-    const ref = notificationRefs.value[i];
-    if (ref) {
-      totalHeight += ref.offsetHeight + 16;
+  // Delay cleaning heights to give animation time to complete
+  setTimeout(() => {
+    if (!snackbars.value.find((s) => s.id === snackbarToRemove.id)) {
+      heights.value = heights.value.filter((h) => h.snackbarId !== snackbarToRemove.id);
     }
-  }
-
-  return totalHeight;
+  }, 250);
 }
-
-// Update positions when snackbars change
-watch(
-  snackbars,
-  async () => {
-    await nextTick();
-    notificationRefs.value = notificationRefs.value.slice(0, snackbars.value.length);
-    updateNotificationPositions();
-  },
-  { deep: true },
-);
-
-function updateNotificationPositions() {
-  notificationRefs.value.forEach((ref, index) => {
-    if (ref) {
-      const yOffset = calculateNotificationPosition(index);
-      ref.style.setProperty("--y-offset", `${yOffset}px`);
-    }
-  });
-}
-
-nextTick(() => {
-  updateNotificationPositions();
-});
-
-// Observe snackbar notifications for size changes
-onMounted(() => {
-  if (typeof ResizeObserver !== "undefined") {
-    resizeObserver = new ResizeObserver(() => {
-      updateNotificationPositions();
-    });
-  }
-});
-
-onBeforeUnmount(() => {
-  if (resizeObserver) {
-    resizeObserver.disconnect();
-  }
-});
 </script>
 
 <style scoped>
@@ -113,58 +62,55 @@ onBeforeUnmount(() => {
   right: var(--scale-size-16);
   z-index: 1600;
   pointer-events: none;
-  height: 400px;
-  overflow: visible;
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .mt-snackbar :deep(.mt-snackbar-notification) {
+  --y: translateY(100%);
+  --lift: -1;
   position: absolute;
-  bottom: 0;
-  right: 0;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: var(--y);
+  bottom: var(--scale-size-0);
+  right: var(--scale-size-0);
+  opacity: 0;
+  touch-action: none;
   pointer-events: auto;
-  z-index: 1;
+  transition:
+    transform 300ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 300ms cubic-bezier(0.16, 1, 0.3, 1),
+    height 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  animation: slideInFromRight 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Position snackbar based on height */
-.mt-snackbar :deep(.mt-snackbar-notification) {
-  transform: translateY(calc(-1 * var(--y-offset, 0px)));
+.mt-snackbar :deep(.mt-snackbar-notification[data-mounted="true"]) {
+  --y: translateY(calc(var(--lift) * var(--offset)));
   opacity: 1;
 }
 
-.mt-snackbar :deep(.mt-snackbar-notification) {
-  animation: slideInFromRight 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+/* Exit animation */
+.mt-snackbar :deep(.mt-snackbar-notification[data-removed="true"]) {
+  animation: slideOutToBottom 0.3s cubic-bezier(0.4, 0, 1, 1) forwards;
 }
 
 @keyframes slideInFromRight {
   0% {
-    transform: translateX(100%) translateY(calc(-1 * var(--y-offset, 0px)));
+    transform: translateX(100%) var(--y);
     opacity: 0;
   }
   100% {
-    transform: translateX(0) translateY(calc(-1 * var(--y-offset, 0px)));
+    transform: translateX(0) var(--y);
     opacity: 1;
   }
 }
 
-.mt-snackbar :deep(.mt-snackbar-notification.leaving) {
-  animation: slideOutDown 0.5s cubic-bezier(0.66, 0, 0.34, 1) forwards;
-}
-
-@keyframes slideOutDown {
+@keyframes slideOutToBottom {
   0% {
-    transform: translateX(0) translateY(calc(-1 * var(--y-offset, 0px)));
+    transform: translateY(0) var(--y);
     opacity: 1;
-    z-index: 1;
-  }
-  75% {
-    opacity: 0;
-    z-index: -1;
   }
   100% {
-    transform: translateX(0) translateY(calc(-1 * var(--y-offset, 0px) + 64px));
+    transform: translateY(100%) var(--y);
     opacity: 0;
-    z-index: -1;
   }
 }
 </style>

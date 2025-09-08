@@ -2,10 +2,15 @@
   <div
     ref="snackbarEl"
     class="mt-snackbar-notification"
-    :class="[classes, { leaving: isLeaving }]"
+    :class="classes"
     :role="role"
     :aria-live="ariaLive"
     tabindex="0"
+    :data-mounted="mounted"
+    :data-removed="removed"
+    :style="{
+      '--offset': `${removed ? offsetBeforeRemove : offset}px`,
+    }"
   >
     <div class="mt-snackbar-notification__content">
       <div class="mt-snackbar-notification__text-content">
@@ -54,8 +59,12 @@ import MtLink from "@/components/navigation/mt-link/mt-link.vue";
 import MtLoader from "@/components/feedback-indicator/mt-loader/mt-loader.vue";
 import { toRefs, type PropType, computed, watch, ref, onBeforeUnmount, onMounted } from "vue";
 import type { Snackbar } from "../composables/use-snackbar";
+import type { HeightT } from "../mt-snackbar.vue";
 
-const emit = defineEmits(["remove-snackbar"]);
+const emit = defineEmits<{
+  (e: "remove-snackbar", snackbar: Snackbar): void;
+  (e: "update:height", height: HeightT): void;
+}>();
 
 const props = defineProps({
   snackbar: {
@@ -66,9 +75,15 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  heights: {
+    type: Array as PropType<HeightT[]>,
+    default: () => [],
+  },
 });
 
-const isLeaving = ref(false);
+const mounted = ref(false);
+const removed = ref(false);
+const offsetBeforeRemove = ref(0);
 
 const classes = computed(() => {
   return {
@@ -78,6 +93,26 @@ const classes = computed(() => {
     "mt-snackbar-notification--upload": snackbar.value.type === "upload",
   };
 });
+
+const heightIndex = computed(() => {
+  // Find the position of this snackbar in the heights array
+  const index = props.heights.findIndex((height) => height.snackbarId === props.snackbar.id);
+  return index >= 0 ? index : 0;
+});
+
+const toastsHeightBefore = computed(() => {
+  // Calculate the total height of all snackbars that appear above this snackbar
+  return props.heights.reduce((prev, curr, reducerIndex) => {
+    // Calculate offset up until current snackbar
+    if (reducerIndex >= heightIndex.value) {
+      return prev;
+    }
+
+    return prev + curr.height;
+  }, 0);
+});
+
+const offset = computed(() => heightIndex.value * 16 + toastsHeightBefore.value || 0);
 
 const progressPercentage = computed(() => {
   return `(${snackbar.value.progressPercentage || 0}%)`;
@@ -157,63 +192,25 @@ const isPaused = ref(false);
 const successPausedAt = ref<number | null>(null);
 const isSuccessPaused = ref(false);
 
-function pauseTimer() {
-  if (timeoutId.value && !isPaused.value) {
-    window.clearTimeout(timeoutId.value);
-    timeoutId.value = undefined;
-    pausedAt.value = Date.now();
-    isPaused.value = true;
-  }
-}
+watch(mounted, () => {
+  // If the snackbar is not mounted or the snackbar element is not found
+  if (!mounted.value || !snackbarEl.value) return;
 
-function resumeTimer() {
-  if (isPaused.value && pausedAt.value) {
-    const elapsed = Date.now() - pausedAt.value;
-    const newRemainingTime = Math.max(0, remainingTimeOut.value - elapsed);
-    remainingTimeOut.value = newRemainingTime;
+  const snackbarNode = snackbarEl.value;
+  const originalHeight = snackbarNode.style.height;
+  snackbarNode.style.height = "auto";
+  const newHeight = snackbarNode.getBoundingClientRect().height;
+  snackbarNode.style.height = originalHeight as string;
 
-    if (newRemainingTime > 0) {
-      timeoutId.value = window.setTimeout(() => {
-        onRemoveSnackbar();
-      }, newRemainingTime);
-    } else {
-      onRemoveSnackbar();
-    }
+  // Update the height of the snackbar
+  emit("update:height", {
+    snackbarId: props.snackbar.id,
+    height: newHeight,
+  });
+});
 
-    pausedAt.value = null;
-    isPaused.value = false;
-  }
-}
-
-function pauseSuccessTimer() {
-  if (successTimeoutId.value && !isSuccessPaused.value) {
-    window.clearTimeout(successTimeoutId.value);
-    successTimeoutId.value = undefined;
-    successPausedAt.value = Date.now();
-    isSuccessPaused.value = true;
-  }
-}
-
-function resumeSuccessTimer() {
-  if (isSuccessPaused.value && successPausedAt.value) {
-    const elapsed = Date.now() - successPausedAt.value;
-    const newRemainingTime = Math.max(0, 2000 - elapsed);
-
-    if (newRemainingTime > 0) {
-      successTimeoutId.value = window.setTimeout(() => {
-        onRemoveSnackbar();
-      }, newRemainingTime);
-    } else {
-      onRemoveSnackbar();
-    }
-
-    successPausedAt.value = null;
-    isSuccessPaused.value = false;
-  }
-}
-
-// Watch for hover state changes
 watch(isHovered, (newIsHovered) => {
+  // If the snackbar is hovered, pause the timer
   if (newIsHovered) {
     pauseTimer();
     pauseSuccessTimer();
@@ -268,15 +265,81 @@ watch(
   },
 );
 
+function pauseTimer() {
+  // If the timer is not paused, pause it
+  if (timeoutId.value && !isPaused.value) {
+    window.clearTimeout(timeoutId.value);
+    timeoutId.value = undefined;
+    pausedAt.value = Date.now();
+    isPaused.value = true;
+  }
+}
+
+function resumeTimer() {
+  // If the timer is paused, resume it
+  if (isPaused.value && pausedAt.value) {
+    const elapsed = Date.now() - pausedAt.value;
+    const newRemainingTime = Math.max(0, remainingTimeOut.value - elapsed);
+    remainingTimeOut.value = newRemainingTime;
+
+    if (newRemainingTime > 0) {
+      timeoutId.value = window.setTimeout(() => {
+        onRemoveSnackbar();
+      }, newRemainingTime);
+    } else {
+      onRemoveSnackbar();
+    }
+
+    pausedAt.value = null;
+    isPaused.value = false;
+  }
+}
+
+function pauseSuccessTimer() {
+  // If the success timer is not paused, pause it
+  if (successTimeoutId.value && !isSuccessPaused.value) {
+    window.clearTimeout(successTimeoutId.value);
+    successTimeoutId.value = undefined;
+    successPausedAt.value = Date.now();
+    isSuccessPaused.value = true;
+  }
+}
+
+function resumeSuccessTimer() {
+  // If the success timer is paused, resume it
+  if (isSuccessPaused.value && successPausedAt.value) {
+    const elapsed = Date.now() - successPausedAt.value;
+    const newRemainingTime = Math.max(0, 2000 - elapsed);
+
+    // If the success timer has remaining time, resume it
+    if (newRemainingTime > 0) {
+      successTimeoutId.value = window.setTimeout(() => {
+        onRemoveSnackbar();
+      }, newRemainingTime);
+    } else {
+      onRemoveSnackbar();
+    }
+
+    successPausedAt.value = null;
+    isSuccessPaused.value = false;
+  }
+}
+
 function onRemoveSnackbar() {
-  isLeaving.value = true;
-  // Wait for animation to complete before removing
+  removed.value = true;
+  // Set the offset before the snackbar is removed
+  offsetBeforeRemove.value = offset.value;
+
+  // Remove the snackbar after the animation duration
   setTimeout(() => {
-    emit("remove-snackbar", snackbar.value.id);
-  }, 300);
+    emit("remove-snackbar", props.snackbar);
+  }, 300); // Match the CSS animation duration
 }
 
 onMounted(() => {
+  mounted.value = true;
+
+  // If the snackbar element is found, focus it
   if (snackbarEl.value) {
     snackbarEl.value.focus();
   }

@@ -3,7 +3,7 @@ import MtSnackbar from "./mt-snackbar.vue";
 import MtButton from "@/components/form/mt-button/mt-button.vue";
 import MtCheckbox from "@/components/form/mt-checkbox/mt-checkbox.vue";
 import MtTextField from "@/components/form/mt-text-field/mt-text-field.vue";
-import { useSnackbar } from "./composables/use-snackbar";
+import { useSnackbar, type Snackbar } from "./composables/use-snackbar";
 import { computed, ref } from "vue";
 
 const meta: Meta<typeof MtSnackbar> = {
@@ -68,7 +68,7 @@ export const Default: Story = {
       };
 
       // function to simulate upload progress
-      const simulateUploadProgress = (snackbar: any) => {
+      const simulateUploadProgress = (snackbar: Snackbar) => {
         let currentProgress = 0;
 
         const interval = setInterval(() => {
