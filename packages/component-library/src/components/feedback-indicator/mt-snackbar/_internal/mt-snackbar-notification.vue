@@ -339,7 +339,7 @@ function onRemoveSnackbar() {
 onMounted(() => {
   mounted.value = true;
 
-  // If the snackbar element is found, focus it
+  // If the snackbar element is found then focus it
   if (snackbarEl.value) {
     snackbarEl.value.focus();
   }
@@ -429,5 +429,6 @@ onBeforeUnmount(() => {
   color: var(--color-text-secondary-default);
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-medium);
+  flex-shrink: 0;
 }
 </style>
