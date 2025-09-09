@@ -5,6 +5,9 @@ import MtCheckbox from "@/components/form/mt-checkbox/mt-checkbox.vue";
 import MtTextField from "@/components/form/mt-text-field/mt-text-field.vue";
 import { useSnackbar, type Snackbar } from "./composables/use-snackbar";
 import { computed, ref } from "vue";
+import type { SlottedMeta } from "@/_internal/story-helper";
+
+export type MtSnackbarMeta = SlottedMeta<typeof MtSnackbar, "">;
 
 const meta: Meta<typeof MtSnackbar> = {
   title: "Components/Feedback Indicator/mt-snackbar",
@@ -12,9 +15,9 @@ const meta: Meta<typeof MtSnackbar> = {
 };
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+export type MtSnackbarStory = StoryObj<MtSnackbarMeta>;
 
-export const Default: Story = {
+export const Default: MtSnackbarStory = {
   render: () => ({
     components: { MtSnackbar, MtButton, MtCheckbox, MtTextField },
     setup() {
