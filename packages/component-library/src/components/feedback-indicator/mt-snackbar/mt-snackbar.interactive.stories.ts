@@ -16,6 +16,11 @@ export const VisualTestDefault: MtSnackbarStory = {
   play: async () => {
     const { addSnackbar } = useSnackbar();
 
+    // Clear all snackbars
+    document.querySelectorAll(".mt-snackbar-notification").forEach((snackbar) => {
+      snackbar.remove();
+    });
+
     // Add different snackbars
     addSnackbar({
       message: "Default snackbar message",
@@ -40,10 +45,10 @@ export const VisualTestDefault: MtSnackbarStory = {
     await waitUntil(() => document.querySelectorAll('[role="alert"], [role="log"]').length >= 4);
 
     // Check snackbars contain the correct text
-    const defaultSnackbar = document.querySelector('.mt-snackbar-notification');
-    const alertSnackbar = document.querySelector('.mt-snackbar-notification--success');
-    const errorSnackbar = document.querySelector('.mt-snackbar-notification--error');
-    const uploadSnackbar = document.querySelector('.mt-snackbar-notification--upload');
+    const defaultSnackbar = document.querySelector(".mt-snackbar-notification");
+    const alertSnackbar = document.querySelector(".mt-snackbar-notification--success");
+    const errorSnackbar = document.querySelector(".mt-snackbar-notification--error");
+    const uploadSnackbar = document.querySelector(".mt-snackbar-notification--upload");
 
     expect(defaultSnackbar?.textContent).toBe("Default snackbar message");
     expect(alertSnackbar?.textContent).toBe("Success snackbar message");
@@ -57,6 +62,11 @@ export const TestTimer: MtSnackbarStory = {
   play: async () => {
     const { addSnackbar } = useSnackbar();
 
+    // clear all snackbars
+    document.querySelectorAll(".mt-snackbar-notification").forEach((snackbar) => {
+      snackbar.remove();
+    });
+
     // Spawn a snackbar
     addSnackbar({
       message: "Timer test snackbar",
@@ -64,14 +74,16 @@ export const TestTimer: MtSnackbarStory = {
     });
 
     // Check if it is rendered (snackbars are teleported to body)
-    await waitUntil(() => document.querySelector('.mt-snackbar-notification'));
-    expect(document.querySelector('.mt-snackbar-notification')?.textContent).toBe("Timer test snackbar");
+    await waitUntil(() => document.querySelector(".mt-snackbar-notification"));
+    expect(document.querySelector(".mt-snackbar-notification")?.textContent).toBe(
+      "Timer test snackbar",
+    );
 
     // Wait for the timeout
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
     // Expect the snackbar to be removed
-    expect(document.querySelector('.mt-snackbar-notification')).toBe(null);
+    expect(document.querySelector(".mt-snackbar-notification")).toBe(null);
   },
 };
 
@@ -79,6 +91,11 @@ export const TestAction: MtSnackbarStory = {
   name: "Snackbars should have action link",
   play: async () => {
     const { addSnackbar } = useSnackbar();
+
+    // clear all snackbars
+    document.querySelectorAll(".mt-snackbar-notification").forEach((snackbar) => {
+      snackbar.remove();
+    });
 
     // Spawn a snackbar with an action link
     addSnackbar({
@@ -104,6 +121,11 @@ export const TestUploadProgress: MtSnackbarStory = {
   play: async () => {
     const { addSnackbar } = useSnackbar();
 
+    // clear all snackbars
+    document.querySelectorAll(".mt-snackbar-notification").forEach((snackbar) => {
+      snackbar.remove();
+    });
+
     // Spawn an upload snackbar
     const uploadSnackbar = addSnackbar({
       message: "Upload test snackbar",
@@ -114,10 +136,10 @@ export const TestUploadProgress: MtSnackbarStory = {
     });
 
     // Check if snackbar is rendered
-    await waitUntil(() => document.querySelector('.mt-snackbar-notification--upload'));
+    await waitUntil(() => document.querySelector(".mt-snackbar-notification--upload"));
 
     // Check snackbar contains the correct text
-    const uploadSnackbarEl = document.querySelector('.mt-snackbar-notification--upload');
+    const uploadSnackbarEl = document.querySelector(".mt-snackbar-notification--upload");
     expect(uploadSnackbarEl?.textContent).toContain("Upload test snackbar");
     expect(uploadSnackbarEl?.textContent).toContain("(0%)");
 
@@ -154,6 +176,11 @@ export const TestHoverPause: MtSnackbarStory = {
   name: "Hover should pause timer",
   play: async () => {
     const { addSnackbar } = useSnackbar();
+
+    // clear all snackbars
+    document.querySelectorAll(".mt-snackbar-notification").forEach((snackbar) => {
+      snackbar.remove();
+    });
 
     // Spawn a snackbar
     addSnackbar({
