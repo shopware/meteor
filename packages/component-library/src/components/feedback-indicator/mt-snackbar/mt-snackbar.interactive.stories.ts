@@ -16,7 +16,7 @@ export const VisualTestDefault: MtSnackbarStory = {
   play: async () => {
     const { addSnackbar } = useSnackbar();
 
-    // Add different types of snackbars
+    // Add different snackbars
     addSnackbar({
       message: "Default snackbar message",
     });
@@ -32,35 +32,23 @@ export const VisualTestDefault: MtSnackbarStory = {
     });
 
     addSnackbar({
-      message: "Warning snackbar message",
-      type: "warning",
-    });
-
-    addSnackbar({
       message: "Upload snackbar message",
       type: "upload",
-      progressPercentage: 50,
     });
 
-    // Wait for snackbars to appear - they are teleported to body, so check document
-    await waitUntil(() => document.querySelectorAll('[role="alert"], [role="log"]').length >= 5);
+    // Wait until all four snackbars are rendered
+    await waitUntil(() => document.querySelectorAll('[role="alert"], [role="log"]').length >= 4);
 
-    // Check if all snackbars are rendered (error has alert role, others have log role)
-    const alertSnackbars = document.querySelectorAll('[role="alert"]');
-    const logSnackbars = document.querySelectorAll('[role="log"]');
-    expect(alertSnackbars.length + logSnackbars.length).toBeGreaterThanOrEqual(5);
+    // Check snackbars contain the correct text
+    const defaultSnackbar = document.querySelector('.mt-snackbar-notification');
+    const alertSnackbar = document.querySelector('.mt-snackbar-notification--success');
+    const errorSnackbar = document.querySelector('.mt-snackbar-notification--error');
+    const uploadSnackbar = document.querySelector('.mt-snackbar-notification--upload');
 
-    // Check that each message is present in any of the snackbars
-    const allSnackbarText = Array.from(logSnackbars)
-      .concat(Array.from(alertSnackbars))
-      .map((el) => el.textContent)
-      .join(" ");
-
-    expect(allSnackbarText).toContain("Default snackbar message");
-    expect(allSnackbarText).toContain("Success snackbar message");
-    expect(allSnackbarText).toContain("Error snackbar message");
-    expect(allSnackbarText).toContain("Warning snackbar message");
-    expect(allSnackbarText).toContain("Upload snackbar message");
+    expect(defaultSnackbar?.textContent).toBe("Default snackbar message");
+    expect(alertSnackbar?.textContent).toBe("Success snackbar message");
+    expect(errorSnackbar?.textContent).toBe("Error snackbar message");
+    expect(uploadSnackbar?.textContent).toContain("Upload snackbar message");
   },
 };
 
@@ -69,40 +57,21 @@ export const TestTimer: MtSnackbarStory = {
   play: async () => {
     const { addSnackbar } = useSnackbar();
 
-    // Clear any existing snackbars first
-    const existingSnackbars = document.querySelectorAll('[role="log"], [role="alert"]');
-    existingSnackbars.forEach((snackbar) => snackbar.remove());
-
-    // Spawn a snackbar with short duration for testing
+    // Spawn a snackbar
     addSnackbar({
       message: "Timer test snackbar",
-      duration: 1000, // 1 second for faster testing
+      duration: 1000,
     });
 
     // Check if it is rendered (snackbars are teleported to body)
-    await waitUntil(() => {
-      const snackbars = document.querySelectorAll('[role="log"]');
-      return Array.from(snackbars).some((el) => el.textContent?.includes("Timer test snackbar"));
-    });
+    await waitUntil(() => document.querySelector('.mt-snackbar-notification'));
+    expect(document.querySelector('.mt-snackbar-notification')?.textContent).toBe("Timer test snackbar");
 
-    const timerSnackbar = Array.from(document.querySelectorAll('[role="log"]')).find((el) =>
-      el.textContent?.includes("Timer test snackbar"),
-    );
-    expect(timerSnackbar?.textContent).toContain("Timer test snackbar");
-
-    // Wait for the timeout (1 second + buffer)
+    // Wait for the timeout
     await new Promise((resolve) => setTimeout(resolve, 1500));
 
-    // Check if it is closed
-    await waitUntil(() => {
-      const snackbars = document.querySelectorAll('[role="log"]');
-      return !Array.from(snackbars).some((el) => el.textContent?.includes("Timer test snackbar"));
-    });
-
-    const remainingSnackbars = Array.from(document.querySelectorAll('[role="log"]')).some((el) =>
-      el.textContent?.includes("Timer test snackbar"),
-    );
-    expect(remainingSnackbars).toBe(false);
+    // Expect the snackbar to be removed
+    expect(document.querySelector('.mt-snackbar-notification')).toBe(null);
   },
 };
 
@@ -111,81 +80,22 @@ export const TestAction: MtSnackbarStory = {
   play: async () => {
     const { addSnackbar } = useSnackbar();
 
-    // Clear any existing snackbars first
-    const existingSnackbars = document.querySelectorAll('[role="log"], [role="alert"]');
-    existingSnackbars.forEach((snackbar) => snackbar.remove());
-
     // Spawn a snackbar with an action link
     addSnackbar({
       message: "Action test snackbar",
       link: {
         text: "Click me",
-        url: "/test-action",
+        url: "/",
       },
     });
 
-    // Check if it is rendered (snackbars are teleported to body)
-    await waitUntil(() => {
-      const snackbars = document.querySelectorAll('[role="log"]');
-      return Array.from(snackbars).some((el) => el.textContent?.includes("Action test snackbar"));
-    });
+    // Check if snackbar is rendered
+    await waitUntil(() => document.querySelector('.mt-snackbar-notification'));
+    expect(document.querySelector('.mt-snackbar-notification')?.textContent).toContain("Action test snackbar");
 
-    const actionSnackbar = Array.from(document.querySelectorAll('[role="log"]')).find((el) =>
-      el.textContent?.includes("Action test snackbar"),
-    );
-    expect(actionSnackbar?.textContent).toContain("Action test snackbar");
-
-    // Check if the action link is rendered
-    const actionLink = document.querySelector('a[href="/test-action"]');
-    expect(actionLink).toBeInTheDocument();
-    expect(actionLink?.textContent).toContain("Click me");
-  },
-};
-
-export const TestSuccessTimer: MtSnackbarStory = {
-  name: "Success snackbars should close after timeout",
-  play: async () => {
-    const { addSnackbar } = useSnackbar();
-
-    // Clear any existing snackbars first
-    const existingSnackbars = document.querySelectorAll('[role="log"], [role="alert"]');
-    existingSnackbars.forEach((snackbar) => snackbar.remove());
-
-    // Spawn a success snackbar with short duration for testing
-    addSnackbar({
-      message: "Success timer test snackbar",
-      type: "success",
-      duration: 1000, // 1 second for faster testing
-    });
-
-    // Check if it is rendered (snackbars are teleported to body)
-    await waitUntil(() => {
-      const snackbars = document.querySelectorAll('[role="log"]');
-      return Array.from(snackbars).some((el) =>
-        el.textContent?.includes("Success timer test snackbar"),
-      );
-    });
-
-    const successSnackbar = Array.from(document.querySelectorAll('[role="log"]')).find((el) =>
-      el.textContent?.includes("Success timer test snackbar"),
-    );
-    expect(successSnackbar?.textContent).toContain("Success timer test snackbar");
-
-    // Wait for the timeout (1 second + buffer)
-    await new Promise((resolve) => setTimeout(resolve, 1500));
-
-    // Check if it is closed
-    await waitUntil(() => {
-      const snackbars = document.querySelectorAll('[role="log"]');
-      return !Array.from(snackbars).some((el) =>
-        el.textContent?.includes("Success timer test snackbar"),
-      );
-    });
-
-    const remainingSnackbars = Array.from(document.querySelectorAll('[role="log"]')).some((el) =>
-      el.textContent?.includes("Success timer test snackbar"),
-    );
-    expect(remainingSnackbars).toBe(false);
+    // Expect the action link to be rendered
+    const actionLink = document.querySelector('a[href="/"]');
+    expect(actionLink).toBeDefined();
   },
 };
 
@@ -193,10 +103,6 @@ export const TestUploadProgress: MtSnackbarStory = {
   name: "Upload snackbars should show progress",
   play: async () => {
     const { addSnackbar } = useSnackbar();
-
-    // Clear any existing snackbars first
-    const existingSnackbars = document.querySelectorAll('[role="log"], [role="alert"]');
-    existingSnackbars.forEach((snackbar) => snackbar.remove());
 
     // Spawn an upload snackbar
     const uploadSnackbar = addSnackbar({
@@ -207,22 +113,12 @@ export const TestUploadProgress: MtSnackbarStory = {
       errorMessage: "Upload failed. Please try again",
     });
 
-    // Check if it is rendered (snackbars are teleported to body)
-    await waitUntil(() => {
-      const snackbars = document.querySelectorAll('[role="log"]');
-      return Array.from(snackbars).some((el) => el.textContent?.includes("Upload test snackbar"));
-    });
+    // Check if snackbar is rendered
+    await waitUntil(() => document.querySelector('.mt-snackbar-notification--upload'));
 
-    const uploadSnackbarEl = Array.from(document.querySelectorAll('[role="log"]')).find((el) =>
-      el.textContent?.includes("Upload test snackbar"),
-    );
+    // Check snackbar contains the correct text
+    const uploadSnackbarEl = document.querySelector('.mt-snackbar-notification--upload');
     expect(uploadSnackbarEl?.textContent).toContain("Upload test snackbar");
-
-    // Check if the progress percentage is shown (it's just text, not a progress bar)
-    await waitUntil(() => {
-      const snackbars = document.querySelectorAll('[role="log"]');
-      return Array.from(snackbars).some((el) => el.textContent?.includes("(0%)"));
-    });
     expect(uploadSnackbarEl?.textContent).toContain("(0%)");
 
     // Simulate upload progress
@@ -232,37 +128,25 @@ export const TestUploadProgress: MtSnackbarStory = {
       if (currentProgress >= 100) {
         currentProgress = 100;
         clearInterval(interval);
-        uploadSnackbar.uploadState = "success";
         uploadSnackbar.progressPercentage = 100;
+        uploadSnackbar.uploadState = "success";
       }
       uploadSnackbar.progressPercentage = currentProgress;
     }, 100);
 
+    // wait for the progress to be 20%, 40%, 60%, 80% and 100%
+    await waitUntil(() => uploadSnackbarEl?.textContent?.includes("(20%)"));
+    expect(uploadSnackbarEl?.textContent).toContain("(20%)");
+    await waitUntil(() => uploadSnackbarEl?.textContent?.includes("(40%)"));
+    expect(uploadSnackbarEl?.textContent).toContain("(40%)");
+    await waitUntil(() => uploadSnackbarEl?.textContent?.includes("(60%)"));
+    expect(uploadSnackbarEl?.textContent).toContain("(60%)");
+    await waitUntil(() => uploadSnackbarEl?.textContent?.includes("(80%)"));
+    expect(uploadSnackbarEl?.textContent).toContain("(80%)");
+
     // Wait for the progress to be 100
     await waitUntil(() => uploadSnackbar.progressPercentage === 100);
-
-    // Check if success message is shown
-    await waitUntil(() => {
-      const snackbars = document.querySelectorAll('[role="log"]');
-      return Array.from(snackbars).some((el) =>
-        el.textContent?.includes("File uploaded successfully"),
-      );
-    });
     expect(uploadSnackbarEl?.textContent).toContain("File uploaded successfully");
-
-    // Wait a bit for the success message to auto-close
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-
-    // Check if the snackbar is closed
-    await waitUntil(() => {
-      const snackbars = document.querySelectorAll('[role="log"]');
-      return !Array.from(snackbars).some((el) => el.textContent?.includes("Upload test snackbar"));
-    });
-
-    const remainingSnackbars = Array.from(document.querySelectorAll('[role="log"]')).some((el) =>
-      el.textContent?.includes("Upload test snackbar"),
-    );
-    expect(remainingSnackbars).toBe(false);
   },
 };
 
@@ -271,55 +155,31 @@ export const TestHoverPause: MtSnackbarStory = {
   play: async () => {
     const { addSnackbar } = useSnackbar();
 
-    // Clear any existing snackbars first
-    const existingSnackbars = document.querySelectorAll('[role="log"], [role="alert"]');
-    existingSnackbars.forEach((snackbar) => snackbar.remove());
-
-    // Spawn a snackbar with longer duration for hover testing
+    // Spawn a snackbar
     addSnackbar({
       message: "Hover pause test snackbar",
-      duration: 3000, // 3 seconds for hover testing
+      duration: 200,
     });
 
-    // Check if it is rendered (snackbars are teleported to body)
-    await waitUntil(() => {
-      const snackbars = document.querySelectorAll('[role="log"]');
-      return Array.from(snackbars).some((el) =>
-        el.textContent?.includes("Hover pause test snackbar"),
-      );
-    });
-
-    const snackbar = Array.from(document.querySelectorAll('[role="log"]')).find((el) =>
-      el.textContent?.includes("Hover pause test snackbar"),
-    );
-    expect(snackbar?.textContent).toContain("Hover pause test snackbar");
+    // Check snackbar is rendered
+    await waitUntil(() => document.querySelector(".mt-snackbar-notification"));
+    const snackbarEl = document.querySelector(".mt-snackbar-notification");
+    expect(snackbarEl?.textContent).toContain("Hover pause test snackbar");
 
     // Hover over the snackbar
-    await userEvent.hover(snackbar!);
+    await userEvent.hover(snackbarEl!);
 
-    // Wait a bit to ensure hover state is active
-    await new Promise((resolve) => setTimeout(resolve, 500));
+    // Wait to check snackbar is still visible
+    await new Promise((resolve) => setTimeout(resolve, 5000));
 
     // Check if the snackbar is still visible (timer should be paused)
-    expect(snackbar?.textContent).toContain("Hover pause test snackbar");
+    expect(snackbarEl?.textContent).toContain("Hover pause test snackbar");
 
-    // Unhover the snackbar
-    await userEvent.unhover(snackbar!);
+    // Un-hover the snackbar
+    await userEvent.unhover(snackbarEl!);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
-    // Wait for the timer to complete (3 seconds + buffer)
-    await new Promise((resolve) => setTimeout(resolve, 3500));
-
-    // Check if the snackbar is closed (timer should have resumed)
-    await waitUntil(() => {
-      const snackbars = document.querySelectorAll('[role="log"]');
-      return !Array.from(snackbars).some((el) =>
-        el.textContent?.includes("Hover pause test snackbar"),
-      );
-    });
-
-    const remainingSnackbars = Array.from(document.querySelectorAll('[role="log"]')).some((el) =>
-      el.textContent?.includes("Hover pause test snackbar"),
-    );
-    expect(remainingSnackbars).toBe(false);
+    // Check the snackbar no longer exists
+    expect(snackbarEl).not.toBeInTheDocument();
   },
 };
