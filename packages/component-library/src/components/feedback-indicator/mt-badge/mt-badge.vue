@@ -1,7 +1,7 @@
 <template>
   <span class="mt-badge" :class="badgeClasses" v-bind="$attrs">
-    <span v-if="statusIndicator" class="mt-badge__indicator"></span>
-    <slot name="iconFront" :size="iconSize" />
+    <span v-if="statusIndicator" class="mt-badge__indicator" />
+    <slot v-if="$slots.icon" name="icon" :size="iconSize" />
     <slot />
   </span>
 </template>
@@ -24,10 +24,10 @@ const props = withDefaults(
 
 defineSlots<{
   default: null;
-  iconFront: { size: number };
+  icon: { size: number };
 }>();
 
-const iconSize = computed(() => (props.size === "s" ? 8 : props.size === "m" ? 10 : 12));
+const iconSize = computed(() => (props.size === "s" ? 10 : props.size === "m" ? 12 : 14));
 
 const badgeClasses = computed(() => [
   `mt-badge--variant-${props.variant}`,
@@ -49,24 +49,24 @@ const badgeClasses = computed(() => [
 }
 
 .mt-badge--size-s {
-  padding: 0.125rem 0.375rem;
+  padding-left: var(--scale-size-8);
+  padding-right: var(--scale-size-8);
   font-size: var(--font-size-2xs);
   line-height: var(--font-line-height-2xs);
-  min-height: 1.25rem;
 }
 
 .mt-badge--size-m {
-  padding: 0.25rem 0.5rem;
+  padding-left: var(--scale-size-10);
+  padding-right: var(--scale-size-10);
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
-  min-height: 1.5rem;
 }
 
 .mt-badge--size-l {
-  padding: 0.375rem 0.75rem;
+  padding-left: var(--scale-size-12);
+  padding-right: var(--scale-size-12);
   font-size: var(--font-size-s);
   line-height: var(--font-line-height-s);
-  min-height: 1.75rem;
 }
 
 .mt-badge--variant-neutral {
