@@ -1,5 +1,7 @@
 <template>
   <span class="mt-badge" :class="badgeClasses" v-bind="$attrs">
+    <span v-if="statusIndicator" class="mt-badge__indicator"></span>
+    <slot name="iconFront" :size="iconSize" />
     <slot />
   </span>
 </template>
@@ -7,19 +9,25 @@
 <script setup lang="ts">
 import { computed } from "vue";
 
-export type MtBadgeVariant = "neutral" | "info" | "attention" | "critical" | "positive";
-export type MtBadgeSize = "s" | "m" | "l";
-
 const props = withDefaults(
   defineProps<{
-    variant?: MtBadgeVariant;
-    size?: MtBadgeSize;
+    variant?: "neutral" | "info" | "attention" | "critical" | "positive";
+    size?: "s" | "m" | "l";
+    statusIndicator?: boolean;
   }>(),
   {
     variant: "neutral",
-    size: "m",
+    size: "s",
+    statusIndicator: false,
   },
 );
+
+defineSlots<{
+  default: null;
+  iconFront: { size: number };
+}>();
+
+const iconSize = computed(() => (props.size === "s" ? 8 : props.size === "m" ? 10 : 12));
 
 const badgeClasses = computed(() => [
   `mt-badge--variant-${props.variant}`,
@@ -32,14 +40,14 @@ const badgeClasses = computed(() => [
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  gap: var(--scale-size-4);
   font-family: var(--font-family-body);
   font-weight: var(--font-weight-medium);
-  border-radius: var(--border-radius-s);
+  color: var(--color-text-primary-default);
+  border-radius: var(--border-radius-round);
   white-space: nowrap;
-  vertical-align: middle;
 }
 
-/* Size variants */
 .mt-badge--size-s {
   padding: 0.125rem 0.375rem;
   font-size: var(--font-size-2xs);
@@ -61,34 +69,54 @@ const badgeClasses = computed(() => [
   min-height: 1.75rem;
 }
 
-/* Color variants */
 .mt-badge--variant-neutral {
   background-color: var(--color-background-secondary-default);
-  color: var(--color-text-secondary-default);
   border: 1px solid var(--color-border-secondary-default);
+
+  .mt-badge__indicator {
+    background-color: var(--color-icon-primary-disabled);
+  }
 }
 
 .mt-badge--variant-info {
   background-color: var(--color-background-brand-default);
-  color: var(--color-text-brand-default);
   border: 1px solid var(--color-border-brand-default);
+
+  .mt-badge__indicator {
+    background-color: var(--color-icon-brand-default);
+  }
 }
 
 .mt-badge--variant-attention {
   background-color: var(--color-background-attention-default);
-  color: var(--color-text-attention-default);
   border: 1px solid var(--color-border-attention-default);
+
+  .mt-badge__indicator {
+    background-color: var(--color-icon-attention-default);
+  }
 }
 
 .mt-badge--variant-critical {
   background-color: var(--color-background-critical-default);
-  color: var(--color-text-critical-default);
   border: 1px solid var(--color-border-critical-default);
+
+  .mt-badge__indicator {
+    background-color: var(--color-icon-critical-default);
+  }
 }
 
 .mt-badge--variant-positive {
   background-color: var(--color-background-positive-default);
-  color: var(--color-text-positive-default);
   border: 1px solid var(--color-border-positive-default);
+
+  .mt-badge__indicator {
+    background-color: var(--color-icon-positive-default);
+  }
+}
+
+.mt-badge__indicator {
+  width: var(--scale-size-8);
+  height: var(--scale-size-8);
+  border-radius: var(--border-radius-l);
 }
 </style>
