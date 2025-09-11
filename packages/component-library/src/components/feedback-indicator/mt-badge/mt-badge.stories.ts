@@ -10,7 +10,7 @@ const meta: MtBadgeMeta = {
   args: {
     default: "Badge",
     variant: "neutral",
-    size: "m",
+    size: "s",
   },
   argTypes: {
     variant: {
