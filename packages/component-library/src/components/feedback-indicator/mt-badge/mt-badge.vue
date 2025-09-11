@@ -1,6 +1,6 @@
 <template>
   <span class="mt-badge" :class="badgeClasses" v-bind="$attrs">
-    <span v-if="statusIndicator" class="mt-badge__indicator" />
+    <span v-if="statusIndicator" class="mt-badge__indicator" aria-hidden="true" />
     <slot v-if="$slots.icon" name="icon" :size="iconSize" />
     <slot />
   </span>
