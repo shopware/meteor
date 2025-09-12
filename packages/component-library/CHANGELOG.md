@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.17.1
+
+### Patch Changes
+
+- b8b71dd: Fix that overflowed elements like popovers aren't visible inside mt-card
+
 ## 4.17.0
 
 ### Minor Changes
