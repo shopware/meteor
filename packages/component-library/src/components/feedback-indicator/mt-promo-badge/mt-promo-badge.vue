@@ -2,12 +2,14 @@
   <span class="mt-promo-badge" :class="variantClass" v-bind="$attrs">
     <mt-icon
       :name="badgeIcon"
-      size="var(--scale-size-16)"
+      size="var(--scale-size-10)"
       class="mt-promo-badge__icon"
       :color="iconColor"
       decorative
     />
-    <slot />
+    <span class="mt-promo-badge__text">
+      {{ promoText }}
+    </span>
   </span>
 </template>
 
@@ -25,6 +27,15 @@ const props = withDefaults(
     size: "medium",
   },
 );
+
+const promoText = computed(() => {
+  const textConfig = {
+    new: "New",
+    beta: "Beta",
+    "shopware-ai": "Shopware AI",
+  };
+  return textConfig[props.variant];
+});
 
 const badgeIcon = computed(() => {
   const iconConfig = {
