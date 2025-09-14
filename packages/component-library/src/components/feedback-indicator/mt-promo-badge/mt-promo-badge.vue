@@ -4,6 +4,7 @@
       :name="badgeIcon"
       size="var(--scale-size-16)"
       class="mt-promo-badge__icon"
+      :color="iconColor"
       decorative
     />
     <slot />
@@ -38,6 +39,15 @@ const variantClass = computed(() => [
   `mt-promo-badge--${props.variant}`,
   `mt-promo-badge--${props.size}`,
 ]);
+
+const iconColor = computed(() => {
+  const colorConfig = {
+    new: "var(--color-icon-primary-default)",
+    beta: "var(--color-icon-primary-default)",
+    "shopware-ai": "var(--color-icon-brand-default)",
+  };
+  return colorConfig[props.variant];
+});
 </script>
 
 <style scoped>
@@ -48,55 +58,49 @@ const variantClass = computed(() => [
   gap: var(--scale-size-4);
   font-family: var(--font-family-body);
   font-weight: var(--font-weight-medium);
-  border-radius: var(--border-radius-xs);
+  border-radius: var(--border-radius-round);
   white-space: nowrap;
   user-select: none;
   transition: all 0.2s ease-in-out;
 }
 
-/* Size variants */
 .mt-promo-badge--small {
-  padding: var(--scale-size-4) var(--scale-size-8);
+  padding: 0 var(--scale-size-8);
   font-size: var(--font-size-xxs);
   line-height: var(--font-line-height-xs);
-  min-height: var(--scale-size-20);
 }
 
 .mt-promo-badge--medium {
-  padding: var(--scale-size-6) var(--scale-size-12);
+  padding: 0 var(--scale-size-8);
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
-  min-height: var(--scale-size-24);
 }
 
 .mt-promo-badge--large {
-  padding: var(--scale-size-8) var(--scale-size-16);
+  padding: 0 var(--scale-size-8);
   font-size: var(--font-size-s);
   line-height: var(--font-line-height-sm);
-  min-height: var(--scale-size-32);
 }
 
-/* Icon styling */
 .mt-promo-badge__icon {
   flex-shrink: 0;
 }
 
-/* Color variants */
 .mt-promo-badge--new {
   background-color: var(--color-background-positive-default);
-  color: var(--color-text-positive-default);
+  color: var(--color-text-primary-default);
   border: 1px solid var(--color-border-positive-default);
 }
 
 .mt-promo-badge--beta {
   background-color: var(--color-background-brand-default);
-  color: var(--color-text-brand-default);
+  color: var(--color-text-primary-default);
   border: 1px solid var(--color-border-brand-default);
 }
 
 .mt-promo-badge--shopware-ai {
   background-color: var(--color-background-secondary-default);
-  color: var(--color-text-brand-default);
+  color: var(--color-text-primary-default);
   border: 1px solid var(--color-border-primary-default);
 }
 </style>
