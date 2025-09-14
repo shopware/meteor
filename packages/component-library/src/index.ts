@@ -23,6 +23,7 @@ import MtDataTable from "./components/table-and-list/mt-data-table/mt-data-table
 import MtPagination from "./components/table-and-list/mt-pagination/mt-pagination.vue";
 import MtSkeletonBar from "./components/feedback-indicator/mt-skeleton-bar/mt-skeleton-bar.vue";
 import MtToast, { type Toast } from "./components/feedback-indicator/mt-toast/mt-toast.vue";
+import MtPromoBadge from "./components/feedback-indicator/mt-promo-badge/mt-promo-badge.vue";
 import MtPopover from "./components/overlay/mt-popover/mt-popover.vue";
 import MtPopoverItem from "./components/overlay/mt-popover-item/mt-popover-item.vue";
 import MtPopoverItemResult from "./components/overlay/mt-popover-item-result/mt-popover-item-result.vue";
@@ -83,6 +84,7 @@ export {
   MtPagination,
   MtSkeletonBar,
   MtToast,
+  MtPromoBadge,
   MtPopover,
   MtPopoverItem,
   MtPopoverItemResult,
