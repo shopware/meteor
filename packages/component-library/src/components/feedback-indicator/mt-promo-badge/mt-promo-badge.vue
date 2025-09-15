@@ -1,21 +1,18 @@
 <template>
-  <span class="mt-promo-badge" :class="variantClass" v-bind="$attrs">
-    <mt-icon
-      :name="badgeIcon"
-      size="var(--scale-size-10)"
-      class="mt-promo-badge__icon"
-      :color="iconColor"
-      decorative
-    />
-    <span class="mt-promo-badge__text">
+  <span class="mt-promo-badge">
+    <mt-badge :variant="badgeVariant" :size="badgeSize">
       {{ promoText }}
-    </span>
+      <template #icon>
+        <mt-icon :name="badgeIcon" size="var(--scale-size-10)" :color="iconColor" />
+      </template>
+    </mt-badge>
   </span>
 </template>
 
 <script setup lang="ts">
 import { computed } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
+import MtBadge from "../mt-badge/mt-badge.vue";
 
 const props = withDefaults(
   defineProps<{
@@ -27,6 +24,20 @@ const props = withDefaults(
     size: "medium",
   },
 );
+
+const badgeSize = computed(() => {
+  if (props.size === "small") return "s";
+  if (props.size === "medium") return "m";
+  if (props.size === "large") return "l";
+  return "s";
+});
+
+const badgeVariant = computed(() => {
+  if (props.variant === "new") return "positive";
+  if (props.variant === "beta") return "info";
+  if (props.variant === "shopware-ai") return "neutral";
+  return "neutral";
+});
 
 const promoText = computed(() => {
   const textConfig = {
@@ -46,11 +57,6 @@ const badgeIcon = computed(() => {
   return iconConfig[props.variant];
 });
 
-const variantClass = computed(() => [
-  `mt-promo-badge--${props.variant}`,
-  `mt-promo-badge--${props.size}`,
-]);
-
 const iconColor = computed(() => {
   const colorConfig = {
     new: "var(--color-icon-primary-default)",
@@ -62,7 +68,7 @@ const iconColor = computed(() => {
 </script>
 
 <style scoped>
-.mt-promo-badge {
+/* .mt-promo-badge {
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -113,5 +119,5 @@ const iconColor = computed(() => {
   background-color: var(--color-background-secondary-default);
   color: var(--color-text-primary-default);
   border: 1px solid var(--color-border-primary-default);
-}
+} */
 </style>
