@@ -333,7 +333,7 @@ function onRemoveSnackbar() {
   // Remove the snackbar after the animation duration
   setTimeout(() => {
     emit("remove-snackbar", props.snackbar);
-  }, 300); // Match the CSS animation duration
+  }, 500); // Match the CSS animation duration
 }
 
 onMounted(() => {
