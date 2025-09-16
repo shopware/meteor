@@ -221,7 +221,7 @@ export default defineComponent({
       emit("change-visibility", changeValue);
     };
 
-    const emitClickOptions = (e) => {
+    const emitClickOptions = (e: MouseEvent | KeyboardEvent) => {
       emit("click-options", e);
     };
 
