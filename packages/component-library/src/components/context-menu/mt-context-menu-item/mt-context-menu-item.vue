@@ -55,7 +55,7 @@ export default defineComponent({
   },
   emits: ["click"],
   setup(props, { emit }) {
-    const handleLabelClick = (e: MouseEvent | KeyboardEvent) => {
+    const handleLabelClick = (e: MouseEvent | KeyboardEvent | boolean) => {
       if (props.disabled) {
         return;
       }

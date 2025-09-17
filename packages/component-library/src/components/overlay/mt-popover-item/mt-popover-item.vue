@@ -130,7 +130,7 @@ export default defineComponent({
       default: "",
     },
     onLabelClick: {
-      type: Function as PropType<((e: MouseEvent | KeyboardEvent) => void) | undefined>,
+      type: Function as PropType<((e: MouseEvent | KeyboardEvent | boolean) => void) | undefined>,
       required: false,
       default: undefined,
     },
@@ -221,7 +221,7 @@ export default defineComponent({
       emit("change-visibility", changeValue);
     };
 
-    const emitClickOptions = (e: MouseEvent | KeyboardEvent) => {
+    const emitClickOptions = (e: MouseEvent | KeyboardEvent | boolean) => {
       emit("click-options", e);
     };
 
@@ -261,7 +261,7 @@ export default defineComponent({
     });
 
     // Debounce the label click to prevent too many calls
-    const handleLabelClick = useDebounceFn((e: MouseEvent | KeyboardEvent) => {
+    const handleLabelClick = useDebounceFn((e: MouseEvent | KeyboardEvent | boolean) => {
       if (props.onLabelClick) {
         props.onLabelClick(e);
         return;
