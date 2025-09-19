@@ -1,5 +1,18 @@
 # Changelog
 
+## 4.18.0
+
+### Minor Changes
+
+- e50a2f8: feat: make center alignment default mt-empty-state
+
+### Patch Changes
+
+- b8b71dd: Fix that overflowed elements like popovers aren't visible inside mt-card
+- Updated dependencies [9726930]
+- Updated dependencies [92c09da]
+  - @shopware-ag/meteor-admin-sdk@6.4.0
+
 ## 4.17.0
 
 ### Minor Changes
