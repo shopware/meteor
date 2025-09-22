@@ -1875,7 +1875,7 @@ export default defineComponent({
     };
 
     const onRowSelect = (dataId: string) => {
-      if (props.allowRowSelection) {
+      if (props.allowRowSelection && !props.disableRowSelect.includes(dataId)) {
         const previousValue = getSelectionValue(dataId);
 
         emit("selection-change", {
