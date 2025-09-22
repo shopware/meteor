@@ -18,11 +18,11 @@ export const VisualTestRenderTable: MtDataTableStory = {
     disableEdit: true,
     additionalContextButtons: [
       {
-        label: 'Set Price',
-        key: 'set-price' 
-      }
-    ]
-  }
+        label: "Set Price",
+        key: "set-price",
+      },
+    ],
+  },
 };
 
 export const VisualTestRenderFullTable: MtDataTableStory = {

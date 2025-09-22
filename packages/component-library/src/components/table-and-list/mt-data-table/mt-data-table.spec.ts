@@ -1237,17 +1237,19 @@ describe("mt-data-table", () => {
         disableEdit: true,
         additionalContextButtons: [
           {
-            label: 'Set Price',
-            key: 'set-price' 
-          }
-        ]
+            label: "Set Price",
+            key: "set-price",
+          },
+        ],
       });
-      const contextButton = wrapper.find(".mt-data-table__table-context-button .mt-context-button button");
+      const contextButton = wrapper.find(
+        ".mt-data-table__table-context-button .mt-context-button button",
+      );
       expect(contextButton.exists()).toBeTruthy();
-      await contextButton.trigger('click');
+      await contextButton.trigger("click");
       const menuItem: any = document.querySelector(".mt-context-menu-item");
       menuItem?.click();
-      expect((wrapper.emitted('context-select')?.[0]?.[0] as any)?.key).toEqual('set-price');
+      expect((wrapper.emitted("context-select")?.[0]?.[0] as any)?.key).toEqual("set-price");
     });
   });
 });
