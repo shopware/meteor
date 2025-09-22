@@ -1226,5 +1226,28 @@ describe("mt-data-table", () => {
 
       expect(wrapper.find(".mt-data-table-settings").exists()).toBeFalsy();
     });
+
+    it("should not disable settings table when there is an additonal context menu", async () => {
+      const wrapper = createWrapper();
+
+      await wrapper.setProps({
+        ...wrapper.props(),
+        disableSettingsTable: true,
+        disableDelete: true,
+        disableEdit: true,
+        additionalContextButtons: [
+          {
+            label: 'Set Price',
+            key: 'set-price' 
+          }
+        ]
+      });
+      const contextButton = wrapper.find(".mt-data-table__table-context-button .mt-context-button button");
+      expect(contextButton.exists()).toBeTruthy();
+      await contextButton.trigger('click');
+      const menuItem: any = document.querySelector(".mt-context-menu-item");
+      menuItem?.click();
+      expect((wrapper.emitted('context-select')?.[0]?.[0] as any)?.key).toEqual('set-price');
+    });
   });
 });
