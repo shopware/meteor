@@ -19,7 +19,7 @@ const props = withDefaults(
   defineProps<{
     variant?: "neutral" | "info" | "attention" | "critical" | "positive";
     icon?: string;
-    size?: "s" | "m" | "l" | "S" | "M" | "L";
+    size?: "s" | "m" | "l";
     statusIndicator?: boolean;
   }>(),
   {
