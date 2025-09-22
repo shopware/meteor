@@ -582,6 +582,18 @@ describe("mt-data-table", () => {
 
       expect(dataCellName[0].html()).toContain(`My custom name`);
     });
+
+    it("should render table data with disabled row selection", async () => {
+      const wrapper = createWrapper();
+
+      await wrapper.setProps({
+        ...wrapper.props(),
+        allowRowSelection: true,
+        disableRowSelect: ['4f683593-13f1-4767-91c6-8e154d68a22d'],
+      });
+      const dataSelectRow = wrapper.findAll('.mt-data-table__table-select-row .mt-field--checkbox .is--disabled');
+      expect(dataSelectRow[0].exists()).toBeTruthy();
+    });
   });
 
   it("should render table data cells with an image inside", async () => {
