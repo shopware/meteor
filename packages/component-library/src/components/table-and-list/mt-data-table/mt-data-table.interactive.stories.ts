@@ -14,14 +14,14 @@ export const VisualTestRenderTable: MtDataTableStory = {
   name: "Should render the Table",
   args: {
     disableSettingsTable: true,
-        disableDelete: true,
-        disableEdit: true,
-        additionalContextButtons: [
-          {
-            label: 'Set Price',
-            key: 'set-price' 
-          }
-        ]
+    disableDelete: true,
+    disableEdit: true,
+    additionalContextButtons: [
+      {
+        label: 'Set Price',
+        key: 'set-price' 
+      }
+    ]
   }
 };
 
