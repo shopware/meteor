@@ -19,7 +19,7 @@ const props = withDefaults(
   defineProps<{
     variant?: "neutral" | "info" | "attention" | "critical" | "positive";
     icon?: string;
-    size?: "s" | "m" | "l";
+    size?: "s" | "m" | "l" | "S" | "M" | "L";
     statusIndicator?: boolean;
   }>(),
   {
@@ -35,11 +35,16 @@ defineSlots<{
   icon: { size: number };
 }>();
 
-const iconSize = computed(() => (props.size === "l" ? "12" : "10"));
+const size = computed(() => {
+  const normalizedSize = String(props.size ?? "s").toLowerCase();
+  return ["s", "m", "l"].includes(normalizedSize) ? normalizedSize : "s";
+});
+
+const iconSize = computed(() => (size.value === "l" ? "12" : "10"));
 
 const badgeClasses = computed(() => [
   `mt-badge--variant-${props.variant}`,
-  `mt-badge--size-${props.size}`,
+  `mt-badge--size-${size.value}`,
 ]);
 </script>
 
