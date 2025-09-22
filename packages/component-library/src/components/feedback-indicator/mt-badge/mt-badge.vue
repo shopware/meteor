@@ -95,7 +95,7 @@ const badgeClasses = computed(() => [
 
 .mt-badge--variant-neutral {
   background-color: var(--color-background-secondary-default);
-  border: 1px solid var(--color-border-secondary-default);
+  border: 1px solid var(--color-border-primary-default);
 
   .mt-badge__indicator {
     background-color: var(--color-icon-primary-disabled);
