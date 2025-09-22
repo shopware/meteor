@@ -1936,7 +1936,9 @@ export default defineComponent({
 
     const handleSelectAll = () => {
       emit("multiple-selection-change", {
-        selections: props.dataSource.filter(r => !props.disableRowSelect.includes(r.id)).map((r) => r.id),
+        selections: props.dataSource
+          .filter((r) => !props.disableRowSelect.includes(r.id))
+          .map((r) => r.id),
         value: true,
       });
     };
