@@ -20,13 +20,13 @@ const meta: Meta<typeof MtPromoBadge> = {
     },
     size: {
       control: { type: "select" },
-      options: ["small", "medium", "large"],
+      options: ["s", "m", "l"],
       description: "The size of the badge",
     },
   },
   args: {
     variant: "new",
-    size: "medium",
+    size: "s",
   },
 };
 
