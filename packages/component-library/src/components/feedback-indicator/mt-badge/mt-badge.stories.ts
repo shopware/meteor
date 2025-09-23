@@ -3,14 +3,7 @@ import MtBadge from "./mt-badge.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import type { SlottedMeta } from "@/_internal/story-helper";
 
-export type MtBadgeMeta = SlottedMeta<typeof MtBadge, "default"> & {
-  args: {
-    showIcon?: boolean;
-  };
-  argTypes: {
-    showIcon?: any;
-  };
-};
+export type MtBadgeMeta = SlottedMeta<typeof MtBadge, "default">;
 
 const meta: MtBadgeMeta = {
   title: "Components/Feedback Indicator/mt-badge",
@@ -19,7 +12,6 @@ const meta: MtBadgeMeta = {
     default: "Badge",
     variant: "neutral",
     size: "s",
-    showIcon: false,
   },
   argTypes: {
     variant: {
@@ -33,8 +25,8 @@ const meta: MtBadgeMeta = {
     statusIndicator: {
       control: { type: "boolean" },
     },
-    showIcon: {
-      control: { type: "boolean" },
+    icon: {
+      control: { type: "text" },
     },
   },
   render: (args) => ({
@@ -49,13 +41,8 @@ const meta: MtBadgeMeta = {
         :variant="args.variant"
         :size="args.size"
         :status-indicator="args.statusIndicator"
+        :icon="args.icon"
       >
-        <template v-if="args.showIcon" #icon="slotProps">
-          <mt-icon
-            name="solid-party-horn"
-            size="10"
-          />
-        </template>
         {{ args.default }}
       </mt-badge>`,
   }),

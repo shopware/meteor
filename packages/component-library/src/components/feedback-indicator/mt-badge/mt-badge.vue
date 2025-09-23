@@ -1,23 +1,31 @@
 <template>
   <span class="mt-badge" :class="badgeClasses" v-bind="$attrs">
-    <span v-if="statusIndicator" class="mt-badge__indicator" aria-hidden="true" />
-    <slot v-if="$slots.icon" name="icon" :size="iconSize" />
+    <span
+      v-if="statusIndicator"
+      class="mt-badge__indicator"
+      aria-hidden="true"
+      data-testid="mt-badge__indicator"
+    />
+    <mt-icon v-if="icon" :name="icon" :size="iconSize" />
     <slot />
   </span>
 </template>
 
 <script setup lang="ts">
 import { computed } from "vue";
+import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 
 const props = withDefaults(
   defineProps<{
     variant?: "neutral" | "info" | "attention" | "critical" | "positive";
+    icon?: string;
     size?: "s" | "m" | "l";
     statusIndicator?: boolean;
   }>(),
   {
     variant: "neutral",
     size: "s",
+    icon: undefined,
     statusIndicator: false,
   },
 );
@@ -27,11 +35,16 @@ defineSlots<{
   icon: { size: number };
 }>();
 
-const iconSize = computed(() => (props.size === "s" ? 10 : props.size === "m" ? 12 : 14));
+const size = computed(() => {
+  const normalizedSize = String(props.size ?? "s").toLowerCase();
+  return ["s", "m", "l"].includes(normalizedSize) ? normalizedSize : "s";
+});
+
+const iconSize = computed(() => (size.value === "l" ? "12" : "10"));
 
 const badgeClasses = computed(() => [
   `mt-badge--variant-${props.variant}`,
-  `mt-badge--size-${props.size}`,
+  `mt-badge--size-${size.value}`,
 ]);
 </script>
 
@@ -39,39 +52,55 @@ const badgeClasses = computed(() => [
 .mt-badge {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  gap: var(--scale-size-4);
+  border-radius: var(--border-radius-round);
+  flex-shrink: 0;
   font-family: var(--font-family-body);
   font-weight: var(--font-weight-medium);
   color: var(--color-text-primary-default);
-  border-radius: var(--border-radius-round);
-  white-space: nowrap;
 }
 
 .mt-badge--size-s {
-  padding-left: var(--scale-size-8);
-  padding-right: var(--scale-size-8);
+  height: var(--scale-size-20);
+  padding: 0 var(--scale-size-8);
+  gap: var(--scale-size-4);
   font-size: var(--font-size-2xs);
   line-height: var(--font-line-height-2xs);
+
+  .mt-badge__indicator {
+    width: var(--scale-size-8);
+    height: var(--scale-size-8);
+  }
 }
 
 .mt-badge--size-m {
-  padding-left: var(--scale-size-10);
-  padding-right: var(--scale-size-10);
+  height: var(--scale-size-24);
+  padding: 0 var(--scale-size-10);
+  gap: var(--scale-size-4);
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
+
+  .mt-badge__indicator {
+    width: var(--scale-size-8);
+    height: var(--scale-size-8);
+  }
 }
 
 .mt-badge--size-l {
-  padding-left: var(--scale-size-12);
-  padding-right: var(--scale-size-12);
+  height: var(--scale-size-28);
+  padding: 0 var(--scale-size-12);
+  gap: var(--scale-size-6);
   font-size: var(--font-size-s);
   line-height: var(--font-line-height-s);
+
+  .mt-badge__indicator {
+    width: var(--scale-size-10);
+    height: var(--scale-size-10);
+  }
 }
 
 .mt-badge--variant-neutral {
   background-color: var(--color-background-secondary-default);
-  border: 1px solid var(--color-border-secondary-default);
+  border: 1px solid var(--color-border-primary-default);
 
   .mt-badge__indicator {
     background-color: var(--color-icon-primary-disabled);
