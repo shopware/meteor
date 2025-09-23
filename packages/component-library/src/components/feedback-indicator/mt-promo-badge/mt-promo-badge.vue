@@ -1,17 +1,13 @@
 <template>
-  <span class="mt-promo-badge">
-    <mt-badge :variant="badgeVariant" :size="size">
+  <span class="mt-promo-badge" :style="{ '--mt-promo-badge-icon-color': iconColor }">
+    <mt-badge :variant="badgeVariant" :size="size" :icon="badgeIcon">
       {{ promoText }}
-      <template #icon>
-        <mt-icon :name="badgeIcon" size="var(--scale-size-10)" :color="iconColor" />
-      </template>
     </mt-badge>
   </span>
 </template>
 
 <script setup lang="ts">
 import { computed } from "vue";
-import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtBadge from "../mt-badge/mt-badge.vue";
 
 const props = withDefaults(
@@ -38,29 +34,27 @@ const badgeVariant = computed(() => {
 });
 
 const promoText = computed(() => {
-  const textConfig = {
-    new: "New",
-    beta: "Beta",
-    "shopware-ai": "Shopware AI",
-  };
-  return textConfig[props.variant];
+  if (props.variant === "new") return "New";
+  if (props.variant === "beta") return "Beta";
+  if (props.variant === "shopware-ai") return "Shopware AI";
+  return "New";
 });
 
 const badgeIcon = computed(() => {
-  const iconConfig = {
-    new: "solid-party-horn",
-    beta: "solid-code",
-    "shopware-ai": "solid-sparkles",
-  };
-  return iconConfig[props.variant];
+  if (props.variant === "beta") return "solid-code";
+  if (props.variant === "shopware-ai") return "solid-sparkles";
+  return "solid-party-horn";
 });
 
 const iconColor = computed(() => {
-  const colorConfig = {
-    new: "var(--color-icon-primary-default)",
-    beta: "var(--color-icon-primary-default)",
-    "shopware-ai": "var(--color-icon-brand-default)",
-  };
-  return colorConfig[props.variant];
+  if (props.variant === "beta") return "var(--color-icon-primary-default)";
+  if (props.variant === "shopware-ai") return "var(--color-icon-brand-default)";
+  return "var(--color-icon-primary-default)";
 });
 </script>
+
+<style scoped>
+.mt-promo-badge :deep(.mt-icon) {
+  color: var(--mt-promo-badge-icon-color);
+}
+</style>
