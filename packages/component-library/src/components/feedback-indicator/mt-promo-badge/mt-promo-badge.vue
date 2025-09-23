@@ -26,31 +26,27 @@ const size = computed(() => {
   return ["s", "m", "l"].includes(normalizedSize) ? normalizedSize : "s";
 });
 
-const badgeVariant = computed(() => {
-  if (props.variant === "new") return "positive";
-  if (props.variant === "beta") return "info";
-  if (props.variant === "shopware-ai") return "neutral";
-  return "neutral";
-});
+const badgeVariant = computed(() =>
+  props.variant === "shopware-ai" ? "neutral" : props.variant === "beta" ? "info" : "positive",
+);
 
-const promoText = computed(() => {
-  if (props.variant === "new") return "New";
-  if (props.variant === "beta") return "Beta";
-  if (props.variant === "shopware-ai") return "Shopware AI";
-  return "New";
-});
+const promoText = computed(() =>
+  props.variant === "shopware-ai" ? "Shopware AI" : props.variant === "new" ? "New" : "Beta",
+);
 
-const badgeIcon = computed(() => {
-  if (props.variant === "beta") return "solid-code";
-  if (props.variant === "shopware-ai") return "solid-sparkles";
-  return "solid-party-horn";
-});
+const badgeIcon = computed(() =>
+  props.variant === "beta"
+    ? "solid-code"
+    : props.variant === "shopware-ai"
+      ? "solid-sparkles"
+      : "solid-party-horn",
+);
 
-const iconColor = computed(() => {
-  if (props.variant === "beta") return "var(--color-icon-primary-default)";
-  if (props.variant === "shopware-ai") return "var(--color-icon-brand-default)";
-  return "var(--color-icon-primary-default)";
-});
+const iconColor = computed(() =>
+  props.variant === "shopware-ai"
+    ? "var(--color-icon-brand-default)"
+    : "var(--color-icon-primary-default)",
+);
 </script>
 
 <style scoped>
