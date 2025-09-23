@@ -1,6 +1,6 @@
 <template>
   <span class="mt-promo-badge">
-    <mt-badge :variant="badgeVariant" :size="badgeSize">
+    <mt-badge :variant="badgeVariant" :size="size">
       {{ promoText }}
       <template #icon>
         <mt-icon :name="badgeIcon" size="var(--scale-size-10)" :color="iconColor" />
@@ -17,19 +17,17 @@ import MtBadge from "../mt-badge/mt-badge.vue";
 const props = withDefaults(
   defineProps<{
     variant?: "new" | "beta" | "shopware-ai";
-    size?: "small" | "medium" | "large";
+    size?: "s" | "m" | "l";
   }>(),
   {
     variant: "new",
-    size: "medium",
+    size: "s",
   },
 );
 
-const badgeSize = computed(() => {
-  if (props.size === "small") return "s";
-  if (props.size === "medium") return "m";
-  if (props.size === "large") return "l";
-  return "s";
+const size = computed(() => {
+  const normalizedSize = String(props.size ?? "s").toLowerCase();
+  return ["s", "m", "l"].includes(normalizedSize) ? normalizedSize : "s";
 });
 
 const badgeVariant = computed(() => {
