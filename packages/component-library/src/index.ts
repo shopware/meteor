@@ -1,5 +1,6 @@
 import MtDatepicker from "./components/form/mt-datepicker/mt-datepicker.vue";
 import MtBanner from "./components/feedback-indicator/mt-banner/mt-banner.vue";
+import MtBadge from "./components/feedback-indicator/mt-badge/mt-badge.vue";
 import MtLoader from "./components/feedback-indicator/mt-loader/mt-loader.vue";
 import MtProgressBar from "./components/feedback-indicator/mt-progress-bar/mt-progress-bar.vue";
 import MtButton from "./components/form/mt-button/mt-button.vue";
@@ -57,6 +58,7 @@ import type {
 
 export {
   MtBanner,
+  MtBadge,
   MtLoader,
   MtProgressBar,
   MtButton,
