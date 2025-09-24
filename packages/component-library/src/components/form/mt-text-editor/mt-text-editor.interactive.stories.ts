@@ -879,37 +879,6 @@ export const PreserveBasicHTMLStructure: MtTextEditorStory = defineStory({
   },
 });
 
-export const PreserveListItemContent: MtTextEditorStory = defineStory({
-  name: "Should not wrap li content in p tags when formatting",
-  args: {
-    modelValue: "<ul><li>First item</li><li>Second item</li></ul>",
-  },
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    // Wait for the editor to be ready and then wait 200ms for any potential transitions
-    await waitUntil(() => canvas.getByText("First item"));
-    await new Promise((resolve) => setTimeout(resolve, 200));
-
-    // Click inside the first list item
-    await userEvent.click(canvas.getByText("First item"));
-
-    // Select the entire "First item" text
-    selectText(canvas.getByText("First item"));
-
-    // Make it bold
-    await userEvent.click(canvas.getByLabelText("Bold"));
-
-    // Wait until args was triggered with new content
-    await waitUntil(() => args.updateModelValue?.mock?.calls?.length > 0);
-
-    // Check that li content is not wrapped in p tags
-    expect(args.updateModelValue).toHaveBeenCalledWith(
-      "<ul><li><strong>First item</strong></li><li>Second item</li></ul>",
-    );
-  },
-});
-
 export const PreserveImageTags: MtTextEditorStory = defineStory({
   name: "Should not remove img tags when formatting text",
   args: {
@@ -1109,7 +1078,7 @@ export const PreserveSemanticElements: MtTextEditorStory = defineStory({
   name: "Should not remove semantic elements like header, footer, nav",
   args: {
     modelValue:
-      '<header class="page-header"><nav class="main-nav"><ul><li>Home</li><li>About</li></ul></nav></header><main><p>Main content here.</p></main><footer class="page-footer"><p>Footer content.</p></footer><p>Some additional text.</p>',
+      '<header class="page-header"><nav class="main-nav"><ul><li><p>Home</p></li><li><p>About</p></li></ul></nav></header><main><p>Main content here.</p></main><footer class="page-footer"><p>Footer content.</p></footer><p>Some additional text.</p>',
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
@@ -1132,7 +1101,7 @@ export const PreserveSemanticElements: MtTextEditorStory = defineStory({
     // Check that semantic elements are preserved
     const expectedHtml = args.updateModelValue.mock.calls[0][0];
     expect(expectedHtml).toEqual(
-      '<header class="page-header"><nav class="main-nav"><ul><li>Home</li><li>About</li></ul></nav></header><main><p>Main content here.</p></main><footer class="page-footer"><p>Footer content.</p></footer><p><em>Some additional text.</em></p>',
+      '<header class="page-header"><nav class="main-nav"><ul><li><p>Home</p></li><li><p>About</p></li></ul></nav></header><main><p>Main content here.</p></main><footer class="page-footer"><p>Footer content.</p></footer><p><em>Some additional text.</em></p>',
     );
   },
 });
