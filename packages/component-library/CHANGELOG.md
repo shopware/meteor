@@ -1,5 +1,29 @@
 # Changelog
 
+## 4.17.0
+
+### Minor Changes
+
+- 70666f2: Fine tune mt-loader size scaling
+
+### Patch Changes
+
+- faac8e2: add slot for customize the cell content
+- 8959aec: Added prop `linkType` to `mt-empty-state` to control the behaviour of the displayed link.
+- 3f8428c: fix error state unit field
+- Updated dependencies [2f985e4]
+- Updated dependencies [033631c]
+  - @shopware-ag/meteor-admin-sdk@6.3.0
+
+## 4.16.1
+
+### Patch Changes
+
+- 3f0a32c: fix dragdrop behaviour mt-popover
+- 9c4350b: change global color of headings and paragraphs
+- Updated dependencies [809847f]
+  - @shopware-ag/meteor-icon-kit@5.6.0
+
 ## 4.16.0
 
 ### Minor Changes

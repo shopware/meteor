@@ -163,7 +163,6 @@ import TableHeader from "@tiptap/extension-table-header";
 import TableRow from "@tiptap/extension-table-row";
 import Placeholder from "@tiptap/extension-placeholder";
 import Image from "@tiptap/extension-image";
-import CustomListItem from "./_internal/mt-text-editor-list-item";
 import enhanceExtensionsWithAttributes from "./_internal/mt-text-editor-extension-enhancer";
 import {
   GenericContainer,
@@ -189,6 +188,7 @@ import CodeMirror from "vue-codemirror6";
 import { computed, h, reactive, ref, useSlots, watch, type PropType } from "vue";
 import { html } from "@codemirror/lang-html";
 import { useI18n } from "vue-i18n";
+import ListItem from "@tiptap/extension-list-item";
 
 const { t } = useI18n({
   useScope: "global",
@@ -317,13 +317,11 @@ const editor = useEditor({
     HorizontalRule,
     BulletList,
     OrderedList,
-    // Skip ListItem since we use our CustomListItem
     Dropcursor,
     Gapcursor,
     History,
     HardBreak,
-    // Add our custom ListItem that doesn't wrap content in <p> tags
-    CustomListItem,
+    ListItem,
     Underline,
     Subscript,
     Superscript,

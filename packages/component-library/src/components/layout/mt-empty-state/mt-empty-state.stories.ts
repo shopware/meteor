@@ -25,6 +25,10 @@ export default {
       control: "text",
       description: "The text of the link",
     },
+    linkType: {
+      control: { type: "select", options: ["external", "internal"] },
+      description: "The type of the link, determines if it opens in a new tab or not",
+    },
     buttonText: {
       control: "text",
       description: "The text of the action button",
@@ -38,7 +42,9 @@ const DefaultTemplate: StoryFn = (args) => ({
     return { args };
   },
   template: `
+  <div style="height: 100vh; display: flex; justify-content: center; align-items: center;">
     <mt-empty-state v-bind="args" />
+  </div>
   `,
 });
 
@@ -55,7 +61,9 @@ const ExtendedTemplate: StoryFn = (args) => ({
     return { args };
   },
   template: `
+  <div style="height: 100vh; display: flex; justify-content: center; align-items: center;">
     <mt-empty-state v-bind="args" @button-click="args.onButtonClick" />
+  </div>
   `,
 });
 

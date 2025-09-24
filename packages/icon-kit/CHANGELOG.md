@@ -1,5 +1,22 @@
 # CHANGELOG.md
 
+## 5.6.0
+
+### Minor Changes
+
+- 809847f: Add multiple icons:
+
+  - `regular-bolt`
+  - `solid-bolt`
+  - `regular-database-alt`
+  - `solid-database-alt`
+  - `regular-flame`
+  - `solid-flame`
+  - `regular-snowflake`
+  - `solid-snowflake`
+  - `regular-upscale`
+  - `solid-upscale`
+
 ## 5.5.0
 
 ### Minor Changes
