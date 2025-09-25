@@ -125,6 +125,7 @@ export const Default: MtSnackbarStory = {
           Progress Snackbar
           </mt-button>
         </div>
+        
         <mt-button @click="clearSnackbars">
           <template #iconFront>
             <mt-icon name="regular-trash" size="14px"/>

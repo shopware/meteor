@@ -212,3 +212,61 @@ export const TestHoverPause: MtSnackbarStory = {
     expect(snackbarEl).not.toBeInTheDocument();
   },
 };
+
+export const TestClearAllSnackbars: MtSnackbarStory = {
+  name: "Clear all snackbars should remove all snackbars",
+  play: async () => {
+    const { addSnackbar, clearSnackbars } = useSnackbar();
+
+    // Clear all snackbars first
+    clearSnackbars();
+    document.querySelectorAll(".mt-snackbar-notification").forEach((snackbar) => {
+      snackbar.remove();
+    });
+
+    // Add multiple snackbars
+    addSnackbar({
+      message: "First snackbar",
+      variant: "success",
+    });
+
+    addSnackbar({
+      message: "Second snackbar",
+      variant: "error",
+    });
+
+    addSnackbar({
+      message: "Third snackbar",
+      variant: "warning",
+    });
+
+    addSnackbar({
+      message: "Fourth snackbar",
+      variant: "progress",
+    });
+
+    // Wait until all snackbars are rendered
+    await waitUntil(() => document.querySelectorAll(".mt-snackbar-notification").length >= 4);
+
+    // Verify all snackbars are present
+    const snackbars = document.querySelectorAll(".mt-snackbar-notification");
+    expect(snackbars).toHaveLength(4);
+    expect(snackbars[0]?.textContent).toContain("First snackbar");
+    expect(snackbars[1]?.textContent).toContain("Second snackbar");
+    expect(snackbars[2]?.textContent).toContain("Third snackbar");
+    expect(snackbars[3]?.textContent).toContain("Fourth snackbar");
+
+    //wait for 1 second
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+
+    // Clear all snackbars
+    clearSnackbars();
+
+    // Wait for snackbars to be removed from DOM
+    await waitUntil(() => document.querySelectorAll(".mt-snackbar-notification").length === 0);
+
+    // Verify all snackbars are removed
+    const remainingSnackbars = document.querySelectorAll(".mt-snackbar-notification");
+    expect(remainingSnackbars).toHaveLength(0);
+  },
+};
