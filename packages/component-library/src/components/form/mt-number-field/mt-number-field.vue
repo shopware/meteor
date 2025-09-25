@@ -417,7 +417,7 @@ export default defineComponent({
     width: 100%;
     flex: 1;
 
-    &:is(:hover, :focus-visible) {
+    &:is(:hover, :focus-visible):not(:disabled) {
       background-color: var(--color-interaction-secondary-hover);
     }
 
