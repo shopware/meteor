@@ -22,6 +22,7 @@
       :name="name"
       :size="size"
       :label="label"
+      :error="error"
       @update:model-value="$emit('update:modelValue', $event)"
       @inheritance-restore="$emit('inheritance-restore')"
       @inheritance-remove="$emit('inheritance-remove')"

@@ -419,34 +419,40 @@
                     </template>
 
                     <template v-else>
-                      <!-- Use the correct renderer for the column -->
-                      <mt-data-table-number-renderer
-                        v-if="column.renderer === 'number'"
+                      <slot
+                        :name="`column-${column.property}`"
                         :data="data"
                         :column-definition="column"
-                        @click="$emit('open-details', data)"
-                      />
+                      >
+                        <!-- Use the correct renderer for the column -->
+                        <mt-data-table-number-renderer
+                          v-if="column.renderer === 'number'"
+                          :data="data"
+                          :column-definition="column"
+                          @click="$emit('open-details', data)"
+                        />
 
-                      <mt-data-table-text-renderer
-                        v-else-if="column.renderer === 'text'"
-                        :data="data"
-                        :column-definition="column"
-                        @click="$emit('open-details', data)"
-                      />
+                        <mt-data-table-text-renderer
+                          v-else-if="column.renderer === 'text'"
+                          :data="data"
+                          :column-definition="column"
+                          @click="$emit('open-details', data)"
+                        />
 
-                      <mt-data-table-badge-renderer
-                        v-else-if="column.renderer === 'badge'"
-                        :data="data"
-                        :column-definition="column"
-                        @click="$emit('open-details', data)"
-                      />
+                        <mt-data-table-badge-renderer
+                          v-else-if="column.renderer === 'badge'"
+                          :data="data"
+                          :column-definition="column"
+                          @click="$emit('open-details', data)"
+                        />
 
-                      <mt-data-table-price-renderer
-                        v-else-if="column.renderer === 'price'"
-                        :data="data"
-                        :column-definition="column"
-                        @click="$emit('open-details', data)"
-                      />
+                        <mt-data-table-price-renderer
+                          v-else-if="column.renderer === 'price'"
+                          :data="data"
+                          :column-definition="column"
+                          @click="$emit('open-details', data)"
+                        />
+                      </slot>
                     </template>
                   </td>
                 </template>
@@ -1719,8 +1725,6 @@ export default defineComponent({
     }
 
     const showData = computed(() => {
-      console.log(props.dataSource.length, props.isLoading);
-
       return props.dataSource.length > 0 || props.isLoading;
     });
 
