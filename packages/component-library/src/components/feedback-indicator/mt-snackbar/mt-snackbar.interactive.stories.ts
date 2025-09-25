@@ -214,7 +214,7 @@ export const TestHoverPause: MtSnackbarStory = {
 };
 
 export const TestClearAllSnackbars: MtSnackbarStory = {
-  name: "Clear all snackbars should remove all snackbars",
+  name: "Clear all should remove all snackbars",
   play: async () => {
     const { addSnackbar, clearSnackbars } = useSnackbar();
 
