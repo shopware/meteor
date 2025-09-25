@@ -7,25 +7,25 @@
   />
 
   <!-- Link modal -->
-  <mt-modal-root :isOpen="showLinkModal" @change="($event) => (showLinkModal = $event)">
+  <mt-modal-root :is-open="showLinkModal" @change="($event) => (showLinkModal = $event)">
     <mt-modal width="s" :title="t('mt-text-editor-toolbar-button-link.modalTitle')">
       <template #default>
         <div class="mt-text-editor__link-modal">
           <mt-text-field
-            :label="t('mt-text-editor-toolbar-button-link.linkUrl')"
             v-model="linkHref"
+            :label="t('mt-text-editor-toolbar-button-link.linkUrl')"
             placeholder="https://example.com"
             required
           />
           <mt-switch
             :label="t('mt-text-editor-toolbar-button-link.openInNewTab')"
             :checked="linkTarget === '_blank'"
+            :aria-label="t('mt-text-editor-toolbar-button-link.openInNewTab')"
             @change="
               (checked) => {
                 linkTarget = checked ? '_blank' : '';
               }
             "
-            :aria-label="t('mt-text-editor-toolbar-button-link.openInNewTab')"
           />
         </div>
       </template>
@@ -39,12 +39,21 @@
             variant="primary"
             @click="
               () => {
-                editor
-                  .chain()
-                  .focus()
-                  .extendMarkRange('link')
-                  .setLink({ href: linkHref, target: linkTarget })
-                  .run();
+                const linkAttributes: { href: string; target?: string; rel?: string } = {
+                  href: linkHref,
+                };
+
+                // Only add target attribute if it's explicitly set and not empty
+                if (linkTarget && linkTarget.trim() !== '') {
+                  linkAttributes.target = linkTarget;
+
+                  // Only add rel attribute for _blank targets
+                  if (linkTarget === '_blank') {
+                    linkAttributes.rel = 'noopener noreferrer nofollow';
+                  }
+                }
+
+                editor.chain().focus().extendMarkRange('link').setLink(linkAttributes).run();
                 showLinkModal = false;
               }
             "
