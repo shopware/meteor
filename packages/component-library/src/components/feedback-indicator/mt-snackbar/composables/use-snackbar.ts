@@ -40,9 +40,14 @@ export function useSnackbar() {
     }
   }
 
+  function clearSnackbars() {
+    globalSnackbars.value = [];
+  }
+
   return {
     snackbars: readonly(globalSnackbars) as Ref<Snackbar[]>,
     addSnackbar,
     removeSnackbar,
+    clearSnackbars,
   };
 }
