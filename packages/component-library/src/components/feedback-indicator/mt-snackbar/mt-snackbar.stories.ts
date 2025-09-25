@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/vue3";
 import MtSnackbar from "./mt-snackbar.vue";
 import MtButton from "@/components/form/mt-button/mt-button.vue";
+import MtIcon from "@/components/icons-media/mt-icon/mt-icon.vue";
 import MtCheckbox from "@/components/form/mt-checkbox/mt-checkbox.vue";
 import MtTextField from "@/components/form/mt-text-field/mt-text-field.vue";
 import { useSnackbar, type Snackbar } from "./composables/use-snackbar";
@@ -19,9 +20,9 @@ export type MtSnackbarStory = StoryObj<MtSnackbarMeta>;
 
 export const Default: MtSnackbarStory = {
   render: () => ({
-    components: { MtSnackbar, MtButton, MtCheckbox, MtTextField },
+    components: { MtSnackbar, MtButton, MtCheckbox, MtTextField, MtIcon },
     setup() {
-      const { addSnackbar } = useSnackbar();
+      const { addSnackbar, clearSnackbars } = useSnackbar();
       const msg = ref("This is a snackbar");
       const action = ref(false);
 
@@ -95,20 +96,22 @@ export const Default: MtSnackbarStory = {
         addSuccessSnackbar,
         addErrorSnackbar,
         addProgressSnackbar,
+        clearSnackbars,
         msg,
         action,
       };
     },
     template: `
-        <h2>Spawn some snackbars 🍞</h2>
+        <h2>Spawn some snackbars</h2>
         <div style="width: 420px;">
           <mt-text-field label="ToastMessage" v-model="msg" />
-          <div style="display: flex; gap: 12px;">
-            <mt-checkbox label="Add action" v-model:checked="action" />
-          </div>
-
         </div>
-        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+
+        <div style="display: flex; flex-direction: row; gap: 12px; align-items: center;">
+          <mt-checkbox label="Add action" v-model:checked="action" />
+        </div>
+
+        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px;">
           <mt-button @click="addDefaultSnackbar" variant="secondary">
           Default Snackbar
           </mt-button>
@@ -122,6 +125,12 @@ export const Default: MtSnackbarStory = {
           Progress Snackbar
           </mt-button>
         </div>
+        <mt-button @click="clearSnackbars">
+          <template #iconFront>
+            <mt-icon name="regular-trash" size="14px"/>
+          </template>
+            Clear all
+        </mt-button>
         <MtSnackbar />
     `,
   }),
