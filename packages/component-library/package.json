@@ -1,6 +1,6 @@
 {
   "name": "@shopware-ag/meteor-component-library",
-  "version": "4.16.1",
+  "version": "4.17.0",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com:shopware/meteor.git"
@@ -54,6 +54,7 @@
     "@tiptap/extension-character-count": "^2.22.3",
     "@tiptap/extension-color": "^2.22.3",
     "@tiptap/extension-highlight": "^2.22.3",
+    "@tiptap/extension-image": "^3.2.1",
     "@tiptap/extension-link": "^2.22.3",
     "@tiptap/extension-list-item": "^2.22.3",
     "@tiptap/extension-ordered-list": "^2.22.3",

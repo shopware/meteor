@@ -101,7 +101,7 @@ global.ResizeObserver = class ResizeObserver {
   }
 };
 
-function createWrapper() {
+function createWrapper(options?: { slots?: Record<string, string> }) {
   return mount(MtDataTable, {
     attachTo: document.body,
     props: {
@@ -121,6 +121,7 @@ function createWrapper() {
         "mt-icon": true,
       },
     },
+    ...options,
   });
 }
 
@@ -564,6 +565,22 @@ describe("mt-data-table", () => {
 
       expect(wrapper.find(".mt-data-table__table-context-button").exists()).toBeFalsy();
       expect(wrapper.find(".mt-data-table__table-settings-button").exists()).toBeFalsy();
+    });
+
+    it("should render table cell when using slot column", async () => {
+      const wrapper = createWrapper({
+        slots: {
+          "column-name": "My custom name",
+        },
+      });
+
+      await wrapper.setProps({
+        ...wrapper.props(),
+      });
+
+      const dataCellName = wrapper.findAll('[data-cell-column-property="name"]');
+
+      expect(dataCellName[0].html()).toContain(`My custom name`);
     });
   });
 

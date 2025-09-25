@@ -96,3 +96,20 @@ if (windowId !== storedWindowId) {
 }
 
 ```
+
+### Get the view router path
+
+> Available since Shopware v6.7.3.0
+
+You can get the view router full path.
+
+#### Usage:  
+```ts
+sw.window.getPath()
+```
+
+#### Parameters:
+No parameters required.
+
+#### Return value:
+A `string` with the full path, or empty if router not found.

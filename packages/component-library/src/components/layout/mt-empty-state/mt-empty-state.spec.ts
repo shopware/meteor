@@ -57,6 +57,19 @@ describe("mt-empty-state", () => {
       linkText: "Learn more",
     });
     const link = wrapper.find("a");
+    expect(link.attributes("target")).toBe("_self");
+    expect(link.attributes("href")).toBe("https://storybook.js.org");
+    expect(link.text()).toBe("Learn more");
+  });
+
+  it("shows an external link when linkType is 'external'", async () => {
+    wrapper = await createWrapper(undefined, {
+      linkHref: "https://storybook.js.org",
+      linkText: "Learn more",
+      linkType: "external",
+    });
+    const link = wrapper.find("a");
+    expect(link.attributes("target")).toBe("_blank");
     expect(link.attributes("href")).toBe("https://storybook.js.org");
     expect(link.text()).toBe("Learn more");
   });
