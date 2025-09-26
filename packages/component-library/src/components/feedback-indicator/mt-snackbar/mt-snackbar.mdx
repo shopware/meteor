@@ -1,0 +1,27 @@
+import { Canvas, Meta, Markdown } from "@storybook/blocks";
+
+# Snackbars
+
+Snackbars are lightweight notifications that provide quick, contextual feedback in response to user actions. They appear in the bottom-right corner of the application, stay visible for only a few seconds, and then disappear automatically, keeping the flow of work uninterrupted. Unlike banners or modals, snackbars are temporary and non-intrusive.
+
+Snackbars should never interrupt the user’s experience. They are best suited for confirming actions, showing temporary updates, or signaling non-critical events.
+
+There is one exception: progress snackbar. Progress snackbars remain on the screen until the action is completed or canceled. They should always be followed by a success or error snackbar to finalize the feedback.
+
+### ✅ Do's
+
+- Keep it short and clear. Use concise, affirmative messages (for example, “Product saved”).
+- Use sentence case. Avoid unnecessary punctuation unless multiple sentences are needed.
+- Confirm actions. Use snackbars to acknowledge user actions or show temporary updates.
+- Provide progress feedback. Use a progress snackbar for ongoing actions, followed by a success or error snackbar.
+- Use neutral, generic language. Avoid filenames or personal details.
+- Apply appropriate variants. Use success, error and progress consistently.
+
+### ❌ Don'ts
+
+- Don’t use for critical alerts. Errors requiring immediate attention belong in banners or modals.
+- Don’t overuse. Too many snackbars reduce usability and cause alert fatigue.
+- Don’t overload with actions. Allow only one optional action (for example, “Undo”).
+- Don’t use for persistent issues. Show banners for errors the user can resolve.
+- Don't rely solely on snackbars. Always provide an alternative way to access the action. For example, “Undo” often appears alongside “Delete”.
+- Don’t use vague language. Skip unclear messages like “Something happened”
