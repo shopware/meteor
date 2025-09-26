@@ -139,6 +139,10 @@ const bodyClasses = computed(() => ({
   gap: var(--scale-size-4);
 }
 
+.mt-banner__message {
+  color: var(--color-text-primary-default);
+}
+
 .mt-banner__icon {
   width: var(--scale-size-20);
   height: var(--scale-size-20);
