@@ -582,6 +582,32 @@ describe("mt-data-table", () => {
 
       expect(dataCellName[0].html()).toContain(`My custom name`);
     });
+
+    it("should render table data with disabled row selection", async () => {
+      const wrapper = createWrapper();
+
+      await wrapper.setProps({
+        ...wrapper.props(),
+        allowRowSelection: true,
+        disableRowSelect: ["4f683593-13f1-4767-91c6-8e154d68a22d"], // product id of "Awesome Concrete Chair"
+      });
+      const rows = wrapper.findAll("tr");
+      const disabledRowIndex = rows.findIndex((row) =>
+        row.text().includes("Awesome Concrete Chair"),
+      );
+      const allowRowIndex = rows.findIndex((row) => !row.text().includes("Awesome Concrete Chair"));
+
+      expect(
+        rows[disabledRowIndex]
+          .find(".mt-data-table__table-select-row .mt-field--checkbox .is--disabled")
+          .exists(),
+      ).toBeTruthy();
+      expect(
+        rows[allowRowIndex]
+          .find(".mt-data-table__table-select-row .mt-field--checkbox .is--disabled")
+          .exists(),
+      ).toBeFalsy();
+    });
   });
 
   it("should render table data cells with an image inside", async () => {
