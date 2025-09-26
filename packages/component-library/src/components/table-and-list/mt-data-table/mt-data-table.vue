@@ -344,7 +344,14 @@
               </template>
 
               <th
-                v-if="!(disableSettingsTable && disableEdit && disableDelete)"
+                v-if="
+                  !(
+                    disableSettingsTable &&
+                    disableEdit &&
+                    disableDelete &&
+                    !additionalContextButtons.length
+                  )
+                "
                 class="mt-data-table__table-settings-button"
                 scope="col"
               >
@@ -458,13 +465,22 @@
                 </template>
 
                 <td
-                  v-if="!(disableSettingsTable && disableEdit && disableDelete)"
+                  v-if="
+                    !(
+                      disableSettingsTable &&
+                      disableEdit &&
+                      disableDelete &&
+                      !additionalContextButtons?.length
+                    )
+                  "
                   class="mt-data-table__table-context-button"
                 >
                   <a v-if="!disableEdit" href="#" @click.prevent="$emit('open-details', data)">
                     {{ t("contextButtons.edit") }}
                   </a>
-                  <mt-context-button v-if="!(disableDelete && disableEdit)">
+                  <mt-context-button
+                    v-if="!(disableDelete && disableEdit && !additionalContextButtons?.length)"
+                  >
                     <template #default="{ toggleFloatingUi }">
                       <mt-context-menu-item
                         v-if="!disableEdit"
@@ -473,6 +489,19 @@
                           () => {
                             toggleFloatingUi();
                             $emit('open-details', data);
+                          }
+                        "
+                      />
+
+                      <mt-context-menu-item
+                        v-for="action in additionalContextButtons"
+                        :key="action.key"
+                        :type="action.type ?? 'default'"
+                        :label="action.label"
+                        @click="
+                          () => {
+                            $emit('context-select', { key: action.key, data });
+                            toggleFloatingUi();
                           }
                         "
                       />
@@ -977,6 +1006,21 @@ export default defineComponent({
       required: false,
       default: undefined,
     },
+
+    /**
+     * Additional context buttons to show in the context menu
+     */
+    additionalContextButtons: {
+      type: Array as PropType<
+        Array<{
+          type?: "default" | "active" | "critical";
+          label: string;
+          key: string;
+        }>
+      >,
+      required: false,
+      default: () => [],
+    },
   },
   emits: [
     "reload",
@@ -995,6 +1039,7 @@ export default defineComponent({
     "change-enable-row-numbering",
     "item-delete",
     "update:appliedFilters",
+    "context-select",
   ],
   setup(props, { emit }) {
     const { t } = useI18n({
