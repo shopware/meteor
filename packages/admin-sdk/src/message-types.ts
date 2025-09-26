@@ -23,7 +23,7 @@ import type { settingsItemAdd } from './ui/settings';
 import type { mainModuleAdd } from './ui/main-module';
 import type { smartBarButtonAdd, smartBarHide } from './ui/main-module';
 import type { uiModalOpen, uiModalClose, uiModalUpdate } from './ui/modal/index';
-import type { uiMediaModalOpen } from './ui/media-modal';
+import type { uiMediaModalOpen, uiMediaModalOpenSaveMedia } from './ui/media-modal';
 import type { uiSidebarAdd, uiSidebarClose, uiSidebarRemove } from './ui/sidebar';
 import type { actionButtonAdd } from './ui/action-button';
 import type { actionExecute } from './app/action';
@@ -84,6 +84,7 @@ export interface ShopwareMessageTypes {
   uiModalClose: uiModalClose,
   uiModalUpdate: uiModalUpdate,
   uiMediaModalOpen: uiMediaModalOpen,
+  uiMediaModalOpenSaveMedia: uiMediaModalOpenSaveMedia,
   uiSidebarAdd: uiSidebarAdd,
   uiSidebarClose: uiSidebarClose,
   uiSidebarRemove: uiSidebarRemove,
