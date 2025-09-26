@@ -1,6 +1,6 @@
 {
   "name": "@shopware-ag/meteor-component-library",
-  "version": "4.17.0",
+  "version": "4.18.0",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com:shopware/meteor.git"
