@@ -112,7 +112,7 @@
   "dependencies": {
     "localforage": "^1.10.0",
     "lodash": "^4.17.21",
-    "semver": "^7.7.1"
+    "semver": "^7.7.2"
   },
   "devDependencies": {
     "@playwright/test": "^1.45.0",
