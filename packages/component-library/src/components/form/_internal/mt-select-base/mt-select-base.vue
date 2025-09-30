@@ -174,6 +174,8 @@ export default defineComponent({
     },
   },
 
+  emits: ["select-expanded", "select-collapsed", "clear"],
+
   data() {
     return {
       expanded: false,
@@ -315,7 +317,8 @@ export default defineComponent({
 }
 
 .mt-select .mt-select__selection {
-  width: 100%;
+  flex: 1 1 auto;
+  min-width: 0;
   position: relative;
   padding: 0 var(--scale-size-8);
   border: none;
@@ -326,25 +329,20 @@ export default defineComponent({
   outline: none;
   -webkit-appearance: none;
   -moz-appearance: none;
+  appearance: none;
 }
 
 .mt-select .mt-select__selection-indicators {
-  position: absolute;
   display: flex;
   gap: var(--scale-size-8);
   align-items: center;
-  top: 50%;
-  right: var(--scale-size-16);
-  transform: translate(0, -50%);
-  z-index: 1;
+  padding-right: var(--scale-size-16);
 }
 
 .mt-select .mt-select__selection-indicators .mt-loader {
   width: var(--scale-size-16);
   height: var(--scale-size-16);
   margin: 0;
-  left: -24px;
-  top: -4px;
 }
 
 .mt-select .mt-select__selection-indicators .mt-loader .mt-loader__container {
