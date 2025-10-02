@@ -197,14 +197,20 @@ export default defineComponent({
     },
   },
 
+  setup() {
+    const { hasSlotContent } = useEmptySlotCheck();
+    const future = useFutureFlags();
+
+    return {
+      hasSlotContent,
+      future,
+    };
+  },
+
   data(): { id: string | undefined } {
     return {
       id: undefined,
     };
-  },
-
-  mounted() {
-    this.id = createId();
   },
 
   computed: {
@@ -236,14 +242,8 @@ export default defineComponent({
     },
   },
 
-  setup() {
-    const { hasSlotContent } = useEmptySlotCheck();
-    const future = useFutureFlags();
-
-    return {
-      hasSlotContent,
-      future,
-    };
+  mounted() {
+    this.id = createId();
   },
 });
 </script>
@@ -299,10 +299,17 @@ export default defineComponent({
 
 .mt-field .mt-block-field__block {
   display: flex;
-  min-height: var(--scale-size-48);
   border: 1px solid var(--color-border-primary-default);
   border-radius: var(--border-radius-xs);
   overflow: hidden;
+}
+
+.mt-field--default .mt-block-field__block {
+  min-height: var(--scale-size-48);
+}
+
+.mt-field--small .mt-block-field__block {
+  min-height: var(--scale-size-32);
 }
 
 .mt-field input,

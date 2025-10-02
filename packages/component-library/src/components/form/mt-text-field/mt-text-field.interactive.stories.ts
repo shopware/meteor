@@ -249,3 +249,10 @@ export const VisualTestHandleFocus: MtTextFieldStory = {
     expect(args.focus).toHaveBeenCalledOnce();
   },
 };
+
+export const VisualTestSmallSize: MtTextFieldStory = {
+  name: "Should display small size",
+  args: {
+    size: "small",
+  },
+};
