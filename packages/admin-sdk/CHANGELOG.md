@@ -1,5 +1,12 @@
 # Changelog
 
+## 6.4.0
+
+### Minor Changes
+
+- 9726930: Add meteorIcon parameter for action button
+- 92c09da: Add save media modal type
+
 ## 6.3.0
 
 ### Minor Changes
