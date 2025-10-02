@@ -1,5 +1,27 @@
 # Changelog
 
+## 4.18.0
+
+### Minor Changes
+
+- e50a2f8: feat: make center alignment default mt-empty-state
+- 864b75a: feat: implement mt-promo-badge component
+- a1a8ee8: implement snackbar component
+- 350639a: Add more support for different HTML elements for the mt-text-editor
+- 3360706: feat: implement badge component
+- a375c4c: Add ability to append more context button for each row of mt-data-table
+
+### Patch Changes
+
+- 324a662: Add color for banner content
+- b183cb8: Pass `Event` to the `onLabelClick` handler
+- b8b71dd: Fix that overflowed elements like popovers aren't visible inside mt-card
+- 2846d01: Align colors of placeholders for all input fields
+- e7491e2: stop showing hover styles for disabled number field controls
+- Updated dependencies [9726930]
+- Updated dependencies [92c09da]
+  - @shopware-ag/meteor-admin-sdk@6.4.0
+
 ## 4.17.0
 
 ### Minor Changes
