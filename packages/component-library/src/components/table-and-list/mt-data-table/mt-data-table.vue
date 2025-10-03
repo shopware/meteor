@@ -402,6 +402,7 @@
                 <td v-if="allowRowSelection" v-stickyColumn class="mt-data-table__table-select-row">
                   <mt-checkbox
                     :checked="getSelectionValue(data.id)"
+                    :disabled="disableRowSelect.includes(data.id)"
                     @change="onRowSelect(data.id)"
                   />
                 </td>
@@ -864,6 +865,12 @@ export default defineComponent({
       type: Boolean,
       required: false,
       default: false,
+    },
+
+    disableRowSelect: {
+      type: Array as PropType<string[]>,
+      required: false,
+      default: () => [],
     },
 
     selectedRows: {
@@ -1868,7 +1875,7 @@ export default defineComponent({
     };
 
     const onRowSelect = (dataId: string) => {
-      if (props.allowRowSelection) {
+      if (props.allowRowSelection && !props.disableRowSelect.includes(dataId)) {
         const previousValue = getSelectionValue(dataId);
 
         emit("selection-change", {
@@ -1929,7 +1936,9 @@ export default defineComponent({
 
     const handleSelectAll = () => {
       emit("multiple-selection-change", {
-        selections: props.dataSource.map((r) => r.id),
+        selections: props.dataSource
+          .filter((r) => !props.disableRowSelect.includes(r.id))
+          .map((r) => r.id),
         value: true,
       });
     };
