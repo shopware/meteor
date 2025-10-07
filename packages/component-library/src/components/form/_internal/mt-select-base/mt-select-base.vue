@@ -33,7 +33,7 @@
         />
       </div>
 
-      <div class="mt-select__selection-indicators">
+      <div class="mt-select__selection-indicators" :style="{ right: selectionIndicatorsRight }">
         <mt-loader v-if="isLoading" class="mt-select__select-indicator" size="16px" />
 
         <button
@@ -177,6 +177,7 @@ export default defineComponent({
   data() {
     return {
       expanded: false,
+      suffixWidth: 0,
     };
   },
 
@@ -184,9 +185,42 @@ export default defineComponent({
     mtFieldClasses(): { "has--focus": boolean } {
       return { "has--focus": this.expanded };
     },
+
+    selectionIndicatorsRight(): string {
+      const baseRightPx = 16;
+      const rightPx = baseRightPx + (this.suffixWidth || 0);
+      return `${rightPx}px`;
+    },
+  },
+
+  mounted() {
+    this.$nextTick(() => this.updateSuffixWidth());
+    if (typeof window !== "undefined") {
+      window.addEventListener("resize", this.updateSuffixWidth, { passive: true });
+    }
+  },
+
+  beforeUnmount() {
+    if (typeof window !== "undefined") {
+      window.removeEventListener("resize", this.updateSuffixWidth);
+    }
   },
 
   methods: {
+    updateSuffixWidth() {
+      // Find the suffix container to get width
+      const suffixElement = (this.$el as HTMLElement)?.querySelector(
+        ".mt-block-field__block > .mt-field__addition:not(.is--prefix)",
+      ) as HTMLElement | null;
+
+      if (!suffixElement) {
+        this.suffixWidth = 0;
+        return;
+      }
+
+      this.suffixWidth = suffixElement.offsetWidth || 0;
+    },
+
     toggleExpand() {
       if (!this.expanded) {
         this.expand();
