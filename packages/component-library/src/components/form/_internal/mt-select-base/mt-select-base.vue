@@ -195,30 +195,26 @@ export default defineComponent({
 
   mounted() {
     this.$nextTick(() => this.updateSuffixWidth());
-    if (typeof window !== "undefined") {
-      window.addEventListener("resize", this.updateSuffixWidth, { passive: true });
-    }
+    window.addEventListener("resize", this.updateSuffixWidth, { passive: true });
   },
 
   beforeUnmount() {
-    if (typeof window !== "undefined") {
-      window.removeEventListener("resize", this.updateSuffixWidth);
-    }
+    window.removeEventListener("resize", this.updateSuffixWidth);
   },
 
   methods: {
     updateSuffixWidth() {
-      // Find the suffix container to get width
-      const suffixElement = (this.$el as HTMLElement)?.querySelector(
+      // Find the suffix container to get the width
+      const suffixElement = this.$el?.querySelector(
         ".mt-block-field__block > .mt-field__addition:not(.is--prefix)",
-      ) as HTMLElement | null;
+      );
 
       if (!suffixElement) {
         this.suffixWidth = 0;
         return;
       }
 
-      this.suffixWidth = suffixElement.offsetWidth || 0;
+      this.suffixWidth = suffixElement.offsetWidth;
     },
 
     toggleExpand() {
