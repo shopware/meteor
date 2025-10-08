@@ -1,5 +1,15 @@
 # Changelog
 
+## 4.19.0
+
+### Minor Changes
+
+- eadd0c4: Add ability to disable the selection of specific row in mt-data-table
+
+### Patch Changes
+
+- 462f4db: fix: mt-select button alignment
+
 ## 4.18.0
 
 ### Minor Changes
