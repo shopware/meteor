@@ -23,7 +23,7 @@ const props = withDefaults(
 
 const size = computed(() => {
   const normalizedSize = String(props.size ?? "s").toLowerCase();
-  return ["s", "m", "l"].includes(normalizedSize) ? normalizedSize : "s";
+  return (["s", "m", "l"].includes(normalizedSize) ? normalizedSize : "s") as "s" | "m" | "l";
 });
 
 const badgeVariant = computed(() =>
