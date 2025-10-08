@@ -8,6 +8,7 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
+import { useI18n } from "vue-i18n";
 import MtBadge from "../mt-badge/mt-badge.vue";
 
 const props = withDefaults(
@@ -21,6 +22,25 @@ const props = withDefaults(
   },
 );
 
+const { t } = useI18n({
+  messages: {
+    en: {
+      "mt-promo-badge": {
+        new: "New",
+        beta: "Beta",
+        shopwareAi: "Shopware AI",
+      },
+    },
+    de: {
+      "mt-promo-badge": {
+        new: "Neu",
+        beta: "Beta",
+        shopwareAi: "Shopware AI",
+      },
+    },
+  },
+});
+
 const size = computed(() => {
   const normalizedSize = String(props.size ?? "s").toLowerCase();
   return (["s", "m", "l"].includes(normalizedSize) ? normalizedSize : "s") as "s" | "m" | "l";
@@ -31,7 +51,11 @@ const badgeVariant = computed(() =>
 );
 
 const promoText = computed(() =>
-  props.variant === "shopware-ai" ? "Shopware AI" : props.variant === "new" ? "New" : "Beta",
+  props.variant === "shopware-ai"
+    ? t("mt-promo-badge.shopwareAi")
+    : props.variant === "new"
+      ? t("mt-promo-badge.new")
+      : t("mt-promo-badge.beta"),
 );
 
 const badgeIcon = computed(() =>
