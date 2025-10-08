@@ -42,8 +42,8 @@ const { t } = useI18n({
 });
 
 const size = computed(() => {
-  const normalizedSize = String(props.size ?? "s").toLowerCase();
-  return (["s", "m", "l"].includes(normalizedSize) ? normalizedSize : "s") as "s" | "m" | "l";
+  const n = String(props.size ?? "s").toLowerCase();
+  return n === "s" ? "s" : n === "m" ? "m" : n === "l" ? "l" : "s";
 });
 
 const badgeVariant = computed(() =>
