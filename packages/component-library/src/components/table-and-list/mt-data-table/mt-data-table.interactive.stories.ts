@@ -108,14 +108,7 @@ export const VisualTestRenderTableWithScrollShadows: MtDataTableStory = {
         translated: {
           name: "Aa Render scroll shadows",
         },
-        price: [
-          {
-            currencyId: '"b7d2554b0ce847cd82f3ac9bd1c0dfca"',
-            gross: 774261,
-            net: 609992,
-            linked: true,
-          },
-        ],
+        price: 774261,
         stock: 409278,
         available: 202164,
       },
@@ -585,14 +578,7 @@ export const EmitOpenDetailsEventOnClickingEdit: MtDataTableStory = {
           name: "Emard, Schmidt and Bailey",
         },
       },
-      price: [
-        {
-          currencyId: "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-          gross: "835.00",
-          net: "681.00",
-          linked: false,
-        },
-      ],
+      price: 835,
       stock: 9458,
       available: 12822,
       translated: {
@@ -653,14 +639,7 @@ export const EmitItemDeleteEventOnClickingDelete: MtDataTableStory = {
           name: "Emard, Schmidt and Bailey",
         },
       },
-      price: [
-        {
-          currencyId: "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-          gross: "835.00",
-          net: "681.00",
-          linked: false,
-        },
-      ],
+      price: 835,
       stock: 9458,
       available: 12822,
       translated: {
@@ -1227,14 +1206,7 @@ export const VisualTestRenderTableWithAnImageInCellTable: MtDataTableStory = {
         translated: {
           name: "Aa Render scroll shadows",
         },
-        price: [
-          {
-            currencyId: "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-            gross: "835.00",
-            net: "681.00",
-            linked: false,
-          },
-        ],
+        price: 835,
         stock: 409278,
         available: 202164,
       },
@@ -1252,14 +1224,7 @@ export const VisualTestRenderTableWithAnImageInCellTable: MtDataTableStory = {
         translated: {
           name: "Aa Render scroll shadows",
         },
-        price: [
-          {
-            currencyId: "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-            gross: "972.00",
-            net: "681.00",
-            linked: false,
-          },
-        ],
+        price: 972,
         stock: 409278,
         available: 202164,
       },
@@ -1277,14 +1242,7 @@ export const VisualTestRenderTableWithAnImageInCellTable: MtDataTableStory = {
         translated: {
           name: "Aa Render scroll shadows",
         },
-        price: [
-          {
-            currencyId: "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-            gross: "972.00",
-            net: "681.00",
-            linked: false,
-          },
-        ],
+        price: 972,
         stock: 409278,
         available: 202164,
       },
@@ -1302,14 +1260,7 @@ export const VisualTestRenderTableWithAnImageInCellTable: MtDataTableStory = {
         translated: {
           name: "Aa Render scroll shadows",
         },
-        price: [
-          {
-            currencyId: "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-            gross: "972.00",
-            net: "681.00",
-            linked: false,
-          },
-        ],
+        price: 972,
         stock: 409278,
         available: 202164,
       },
@@ -1327,14 +1278,7 @@ export const VisualTestRenderTableWithAnImageInCellTable: MtDataTableStory = {
         translated: {
           name: "Aa Render scroll shadows",
         },
-        price: [
-          {
-            currencyId: "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-            gross: "972.00",
-            net: "681.00",
-            linked: false,
-          },
-        ],
+        price: 972,
         stock: 409278,
         available: 202164,
       },

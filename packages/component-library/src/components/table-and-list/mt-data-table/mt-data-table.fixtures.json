@@ -10,14 +10,7 @@
         "name": "McDermott, Walsh and McGlynn"
       }
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "708.00",
-        "net": "171.00",
-        "linked": true
-      }
-    ],
+    "price": 708.0,
     "stock": 94480,
     "available": 2067,
     "translated": {
@@ -35,14 +28,7 @@
         "name": "Rice - Schoen"
       }
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "187.00",
-        "net": "117.00",
-        "linked": false
-      }
-    ],
+    "price": 187.0,
     "stock": 43070,
     "available": 51172,
     "translated": {
@@ -60,14 +46,7 @@
         "name": "Bauch Group"
       }
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "369.00",
-        "net": "708.00",
-        "linked": true
-      }
-    ],
+    "price": 369.0,
     "stock": 27912,
     "available": 83939,
     "translated": {
@@ -85,14 +64,7 @@
         "name": "Skiles - Nikolaus"
       }
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "856.00",
-        "net": "283.00",
-        "linked": false
-      }
-    ],
+    "price": 856.0,
     "stock": 34758,
     "available": 66289,
     "translated": {
@@ -110,14 +82,7 @@
         "name": "Dare, Effertz and Kulas"
       }
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "386.00",
-        "net": "615.00",
-        "linked": false
-      }
-    ],
+    "price": 386.0,
     "stock": 1982,
     "available": 72204,
     "translated": {
@@ -135,14 +100,7 @@
         "name": "Emard, Schmidt and Bailey"
       }
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "835.00",
-        "net": "681.00",
-        "linked": false
-      }
-    ],
+    "price": 835.0,
     "stock": 9458,
     "available": 12822,
     "translated": {
@@ -160,14 +118,7 @@
         "name": "Beer - Toy"
       }
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "15.00",
-        "net": "449.00",
-        "linked": false
-      }
-    ],
+    "price": 15.0,
     "stock": 52271,
     "available": 28272,
     "translated": {
@@ -185,14 +136,7 @@
         "name": "Herman, Kilback and Spencer"
       }
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "981.00",
-        "net": "683.00",
-        "linked": false
-      }
-    ],
+    "price": 981.0,
     "stock": 68847,
     "available": 82412,
     "translated": {
@@ -210,14 +154,7 @@
         "name": "Emmerich Inc"
       }
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "630.00",
-        "net": "40.00",
-        "linked": true
-      }
-    ],
+    "price": 630.0,
     "stock": 68409,
     "available": 92713,
     "translated": {
@@ -235,14 +172,7 @@
       },
       "id": "lesch-denesik"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "504.00",
-        "net": "190.00",
-        "linked": true
-      }
-    ],
+    "price": 504.0,
     "stock": 44274,
     "available": 17765,
     "translated": {
@@ -260,14 +190,7 @@
       },
       "id": "bashirian-llc"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "148.00",
-        "net": "845.00",
-        "linked": true
-      }
-    ],
+    "price": 148.0,
     "stock": 57617,
     "available": 7904,
     "translated": {
@@ -285,14 +208,7 @@
       },
       "id": "walter-auer-and-hessel"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "415.00",
-        "net": "779.00",
-        "linked": false
-      }
-    ],
+    "price": 415.0,
     "stock": 36655,
     "available": 86429,
     "translated": {
@@ -310,14 +226,7 @@
       },
       "id": "turcotte-fay-and-oberbrunner"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "954.00",
-        "net": "662.00",
-        "linked": false
-      }
-    ],
+    "price": 954.0,
     "stock": 51533,
     "available": 92764,
     "translated": {
@@ -335,14 +244,7 @@
       },
       "id": "bradtke-orn-and-stehr"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "704.00",
-        "net": "826.00",
-        "linked": false
-      }
-    ],
+    "price": 704.0,
     "stock": 76756,
     "available": 23295,
     "translated": {
@@ -360,14 +262,7 @@
       },
       "id": "leannon-turner"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "686.00",
-        "net": "672.00",
-        "linked": true
-      }
-    ],
+    "price": 686.0,
     "stock": 76913,
     "available": 1353,
     "translated": {
@@ -385,14 +280,7 @@
       },
       "id": "auer-langworth-and-mayert"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "439.00",
-        "net": "505.00",
-        "linked": false
-      }
-    ],
+    "price": 439.0,
     "stock": 39752,
     "available": 90744,
     "translated": {
@@ -410,14 +298,7 @@
       },
       "id": "mills-inc"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "419.00",
-        "net": "732.00",
-        "linked": false
-      }
-    ],
+    "price": 419.0,
     "stock": 63484,
     "available": 5621,
     "translated": {
@@ -435,14 +316,7 @@
       },
       "id": "grady-lemke-and-reichert"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "582.00",
-        "net": "321.00",
-        "linked": false
-      }
-    ],
+    "price": 582.0,
     "stock": 52561,
     "available": 93340,
     "translated": {
@@ -460,14 +334,7 @@
       },
       "id": "mayer-and-sons"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "514.00",
-        "net": "562.00",
-        "linked": true
-      }
-    ],
+    "price": 514.0,
     "stock": 7609,
     "available": 80109,
     "translated": {
@@ -485,14 +352,7 @@
       },
       "id": "thompson-reichert-and-effertz"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "385.00",
-        "net": "825.00",
-        "linked": false
-      }
-    ],
+    "price": 385.0,
     "stock": 60918,
     "available": 15696,
     "translated": {
@@ -510,14 +370,7 @@
       },
       "id": "wehner-ritchie"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "259.00",
-        "net": "871.00",
-        "linked": false
-      }
-    ],
+    "price": 259.0,
     "stock": 55550,
     "available": 59720,
     "translated": {
@@ -535,14 +388,7 @@
       },
       "id": "corwin-stokes"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "315.00",
-        "net": "283.00",
-        "linked": true
-      }
-    ],
+    "price": 315.0,
     "stock": 82191,
     "available": 39352,
     "translated": {
@@ -560,14 +406,7 @@
       },
       "id": "daniel-emmerich-and-bruen"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "660.00",
-        "net": "929.00",
-        "linked": false
-      }
-    ],
+    "price": 660.0,
     "stock": 17075,
     "available": 73698,
     "translated": {
@@ -585,14 +424,7 @@
       },
       "id": "doyle-kerluke-and-jerde"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "224.00",
-        "net": "524.00",
-        "linked": false
-      }
-    ],
+    "price": 224.0,
     "stock": 94614,
     "available": 44946,
     "translated": {
@@ -610,14 +442,7 @@
       },
       "id": "medhurst-corwin-and-murray"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "401.00",
-        "net": "719.00",
-        "linked": true
-      }
-    ],
+    "price": 401.0,
     "stock": 52704,
     "available": 32622,
     "translated": {
@@ -635,14 +460,7 @@
       },
       "id": "conroy-gorczany"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "766.00",
-        "net": "702.00",
-        "linked": true
-      }
-    ],
+    "price": 766.0,
     "stock": 4801,
     "available": 44072,
     "translated": {
@@ -660,14 +478,7 @@
       },
       "id": "kunde-group"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "586.00",
-        "net": "185.00",
-        "linked": false
-      }
-    ],
+    "price": 586.0,
     "stock": 7848,
     "available": 35713,
     "translated": {
@@ -685,14 +496,7 @@
       },
       "id": "kautzer-bergnaum"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "309.00",
-        "net": "921.00",
-        "linked": false
-      }
-    ],
+    "price": 309.0,
     "stock": 28980,
     "available": 26891,
     "translated": {
@@ -710,14 +514,7 @@
       },
       "id": "berge-group"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "281.00",
-        "net": "775.00",
-        "linked": true
-      }
-    ],
+    "price": 281.0,
     "stock": 84043,
     "available": 42414,
     "translated": {
@@ -735,14 +532,7 @@
       },
       "id": "senger-llc"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "11.00",
-        "net": "560.00",
-        "linked": true
-      }
-    ],
+    "price": 11.0,
     "stock": 2304,
     "available": 90690,
     "translated": {
@@ -760,14 +550,7 @@
       },
       "id": "romaguera-dubuque"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "194.00",
-        "net": "75.00",
-        "linked": true
-      }
-    ],
+    "price": 194.0,
     "stock": 18252,
     "available": 81478,
     "translated": {
@@ -785,14 +568,7 @@
       },
       "id": "reilly-streich-and-zieme"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "710.00",
-        "net": "432.00",
-        "linked": true
-      }
-    ],
+    "price": 710.0,
     "stock": 88536,
     "available": 10213,
     "translated": {
@@ -810,14 +586,7 @@
       },
       "id": "reinger-price-and-beier"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "687.00",
-        "net": "974.00",
-        "linked": false
-      }
-    ],
+    "price": 687.0,
     "stock": 67601,
     "available": 625,
     "translated": {
@@ -835,14 +604,7 @@
       },
       "id": "keeling-llc"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "338.00",
-        "net": "345.00",
-        "linked": false
-      }
-    ],
+    "price": 338.0,
     "stock": 88361,
     "available": 18196,
     "translated": {
@@ -860,14 +622,7 @@
       },
       "id": "bode-llc"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "218.00",
-        "net": "625.00",
-        "linked": false
-      }
-    ],
+    "price": 218.0,
     "stock": 90159,
     "available": 55332,
     "translated": {
@@ -885,14 +640,7 @@
       },
       "id": "kihn-inc"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "249.00",
-        "net": "580.00",
-        "linked": true
-      }
-    ],
+    "price": 249.0,
     "stock": 98952,
     "available": 75731,
     "translated": {
@@ -910,14 +658,7 @@
       },
       "id": "pfeffer-gaylord"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "673.00",
-        "net": "980.00",
-        "linked": true
-      }
-    ],
+    "price": 673.0,
     "stock": 80915,
     "available": 43155,
     "translated": {
@@ -935,14 +676,7 @@
       },
       "id": "flatley-and-sons"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "399.00",
-        "net": "838.00",
-        "linked": true
-      }
-    ],
+    "price": 399.0,
     "stock": 93643,
     "available": 52184,
     "translated": {
@@ -960,14 +694,7 @@
       },
       "id": "rowe-ernser-and-hodkiewicz"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "186.00",
-        "net": "510.00",
-        "linked": true
-      }
-    ],
+    "price": 186.0,
     "stock": 2890,
     "available": 70639,
     "translated": {
@@ -985,14 +712,7 @@
       },
       "id": "hyatt-and-sons"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "630.00",
-        "net": "586.00",
-        "linked": false
-      }
-    ],
+    "price": 630.0,
     "stock": 39016,
     "available": 13761,
     "translated": {
@@ -1010,14 +730,7 @@
       },
       "id": "bartell-bayer-and-champlin"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "830.00",
-        "net": "277.00",
-        "linked": true
-      }
-    ],
+    "price": 830.0,
     "stock": 86556,
     "available": 200,
     "translated": {
@@ -1035,14 +748,7 @@
       },
       "id": "blick-prosacco-and-durgan"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "764.00",
-        "net": "447.00",
-        "linked": false
-      }
-    ],
+    "price": 764.0,
     "stock": 6011,
     "available": 4907,
     "translated": {
@@ -1060,14 +766,7 @@
       },
       "id": "botsford-kiehn-and-turner"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "440.00",
-        "net": "877.00",
-        "linked": true
-      }
-    ],
+    "price": 440.0,
     "stock": 55610,
     "available": 19277,
     "translated": {
@@ -1085,14 +784,7 @@
       },
       "id": "satterfield-halvorson"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "221.00",
-        "net": "346.00",
-        "linked": true
-      }
-    ],
+    "price": 221.0,
     "stock": 69284,
     "available": 68261,
     "translated": {
@@ -1110,14 +802,7 @@
       },
       "id": "schoen-leannon"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "675.00",
-        "net": "792.00",
-        "linked": true
-      }
-    ],
+    "price": 675.0,
     "stock": 12573,
     "available": 27840,
     "translated": {
@@ -1135,14 +820,7 @@
       },
       "id": "cassin-batz-and-weimann"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "629.00",
-        "net": "355.00",
-        "linked": true
-      }
-    ],
+    "price": 629.0,
     "stock": 35941,
     "available": 65136,
     "translated": {
@@ -1160,14 +838,7 @@
       },
       "id": "little-flatley"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "296.00",
-        "net": "781.00",
-        "linked": false
-      }
-    ],
+    "price": 296.0,
     "stock": 93759,
     "available": 72125,
     "translated": {
@@ -1185,14 +856,7 @@
       },
       "id": "runolfsson-herman"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "679.00",
-        "net": "483.00",
-        "linked": true
-      }
-    ],
+    "price": 679.0,
     "stock": 40586,
     "available": 93119,
     "translated": {
@@ -1210,14 +874,7 @@
       },
       "id": "hamill-marvin"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "712.00",
-        "net": "437.00",
-        "linked": false
-      }
-    ],
+    "price": 712.0,
     "stock": 20403,
     "available": 89946,
     "translated": {
@@ -1235,14 +892,7 @@
       },
       "id": "rice-feeney"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "690.00",
-        "net": "807.00",
-        "linked": true
-      }
-    ],
+    "price": 690.0,
     "stock": 98988,
     "available": 16799,
     "translated": {
@@ -1260,14 +910,7 @@
       },
       "id": "goyette-group"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "213.00",
-        "net": "356.00",
-        "linked": true
-      }
-    ],
+    "price": 213.0,
     "stock": 67466,
     "available": 70052,
     "translated": {
@@ -1285,14 +928,7 @@
       },
       "id": "hoppe-leuschke-and-kemmer"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "972.00",
-        "net": "40.00",
-        "linked": false
-      }
-    ],
+    "price": 972.0,
     "stock": 85780,
     "available": 80992,
     "translated": {
@@ -1310,14 +946,7 @@
       },
       "id": "sanford-cronin"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "717.00",
-        "net": "342.00",
-        "linked": true
-      }
-    ],
+    "price": 717.0,
     "stock": 11575,
     "available": 25191,
     "translated": {
@@ -1335,14 +964,7 @@
       },
       "id": "runolfsdottir-and-sons"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "635.00",
-        "net": "945.00",
-        "linked": true
-      }
-    ],
+    "price": 635.0,
     "stock": 76430,
     "available": 12866,
     "translated": {
@@ -1360,14 +982,7 @@
       },
       "id": "okuneva-and-sons"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "461.00",
-        "net": "116.00",
-        "linked": true
-      }
-    ],
+    "price": 461.0,
     "stock": 13376,
     "available": 97015,
     "translated": {
@@ -1385,14 +1000,7 @@
       },
       "id": "dooley-and-sons"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "410.00",
-        "net": "761.00",
-        "linked": true
-      }
-    ],
+    "price": 410.0,
     "stock": 28938,
     "available": 85668,
     "translated": {
@@ -1410,14 +1018,7 @@
       },
       "id": "mann-kunde"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "757.00",
-        "net": "387.00",
-        "linked": true
-      }
-    ],
+    "price": 757.0,
     "stock": 90116,
     "available": 67862,
     "translated": {
@@ -1435,14 +1036,7 @@
       },
       "id": "maggio-haag-and-berge"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "909.00",
-        "net": "201.00",
-        "linked": true
-      }
-    ],
+    "price": 909.0,
     "stock": 53544,
     "available": 88480,
     "translated": {
@@ -1460,14 +1054,7 @@
       },
       "id": "hahn-and-sons"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "625.00",
-        "net": "27.00",
-        "linked": false
-      }
-    ],
+    "price": 625.0,
     "stock": 93046,
     "available": 201,
     "translated": {
@@ -1485,14 +1072,7 @@
       },
       "id": "fadel-gerhold"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "369.00",
-        "net": "787.00",
-        "linked": false
-      }
-    ],
+    "price": 369.0,
     "stock": 43797,
     "available": 30743,
     "translated": {
@@ -1510,14 +1090,7 @@
       },
       "id": "kovacek-cartwright-and-collier"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "425.00",
-        "net": "399.00",
-        "linked": true
-      }
-    ],
+    "price": 425.0,
     "stock": 34187,
     "available": 52751,
     "translated": {
@@ -1535,14 +1108,7 @@
       },
       "id": "gusikowski-bauch-and-watsica"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "28.00",
-        "net": "718.00",
-        "linked": true
-      }
-    ],
+    "price": 28.0,
     "stock": 69937,
     "available": 68387,
     "translated": {
@@ -1560,14 +1126,7 @@
       },
       "id": "vonrueden-llc"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "990.00",
-        "net": "378.00",
-        "linked": false
-      }
-    ],
+    "price": 990.0,
     "stock": 97822,
     "available": 94935,
     "translated": {
@@ -1585,14 +1144,7 @@
       },
       "id": "willms-waelchi"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "211.00",
-        "net": "349.00",
-        "linked": true
-      }
-    ],
+    "price": 211.0,
     "stock": 55664,
     "available": 9871,
     "translated": {
@@ -1610,14 +1162,7 @@
       },
       "id": "shanahan-klocko-and-herzog"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "809.00",
-        "net": "321.00",
-        "linked": true
-      }
-    ],
+    "price": 809.0,
     "stock": 31506,
     "available": 9881,
     "translated": {
@@ -1635,14 +1180,7 @@
       },
       "id": "dietrich-inc"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "607.00",
-        "net": "339.00",
-        "linked": false
-      }
-    ],
+    "price": 607.0,
     "stock": 85875,
     "available": 69404,
     "translated": {
@@ -1660,14 +1198,7 @@
       },
       "id": "schmeler-kassulke"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "485.00",
-        "net": "79.00",
-        "linked": false
-      }
-    ],
+    "price": 485.0,
     "stock": 91630,
     "available": 48882,
     "translated": {
@@ -1685,14 +1216,7 @@
       },
       "id": "ortiz-group"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "271.00",
-        "net": "779.00",
-        "linked": true
-      }
-    ],
+    "price": 271.0,
     "stock": 66418,
     "available": 10569,
     "translated": {
@@ -1710,14 +1234,7 @@
       },
       "id": "hettinger-inc"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "268.00",
-        "net": "857.00",
-        "linked": true
-      }
-    ],
+    "price": 268.0,
     "stock": 5744,
     "available": 49947,
     "translated": {
@@ -1735,14 +1252,7 @@
       },
       "id": "buckridge-morar"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "291.00",
-        "net": "930.00",
-        "linked": true
-      }
-    ],
+    "price": 291.0,
     "stock": 68954,
     "available": 69036,
     "translated": {
@@ -1760,14 +1270,7 @@
       },
       "id": "kuvalis-group"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "937.00",
-        "net": "1000.00",
-        "linked": false
-      }
-    ],
+    "price": 937.0,
     "stock": 52824,
     "available": 20285,
     "translated": {
@@ -1785,14 +1288,7 @@
       },
       "id": "king-smitham"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "901.00",
-        "net": "11.00",
-        "linked": false
-      }
-    ],
+    "price": 901.0,
     "stock": 58855,
     "available": 88825,
     "translated": {
@@ -1810,14 +1306,7 @@
       },
       "id": "sporer-and-sons"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "600.00",
-        "net": "721.00",
-        "linked": false
-      }
-    ],
+    "price": 600.0,
     "stock": 51799,
     "available": 13963,
     "translated": {
@@ -1835,14 +1324,7 @@
       },
       "id": "greenfelder-inc"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "92.00",
-        "net": "592.00",
-        "linked": true
-      }
-    ],
+    "price": 92.0,
     "stock": 41204,
     "available": 86823,
     "translated": {
@@ -1860,14 +1342,7 @@
       },
       "id": "anderson-and-sons"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "736.00",
-        "net": "768.00",
-        "linked": false
-      }
-    ],
+    "price": 736.0,
     "stock": 18276,
     "available": 91837,
     "translated": {
@@ -1885,14 +1360,7 @@
       },
       "id": "trantow-and-sons"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "210.00",
-        "net": "573.00",
-        "linked": true
-      }
-    ],
+    "price": 210.0,
     "stock": 51846,
     "available": 27651,
     "translated": {
@@ -1910,14 +1378,7 @@
       },
       "id": "gibson-predovic"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "103.00",
-        "net": "273.00",
-        "linked": true
-      }
-    ],
+    "price": 103.0,
     "stock": 19702,
     "available": 57586,
     "translated": {
@@ -1935,14 +1396,7 @@
       },
       "id": "o-kon-bernhard"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "340.00",
-        "net": "231.00",
-        "linked": false
-      }
-    ],
+    "price": 340.0,
     "stock": 41843,
     "available": 57557,
     "translated": {
@@ -1960,14 +1414,7 @@
       },
       "id": "rosenbaum-group"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "784.00",
-        "net": "337.00",
-        "linked": true
-      }
-    ],
+    "price": 784.0,
     "stock": 41985,
     "available": 78060,
     "translated": {
@@ -1985,14 +1432,7 @@
       },
       "id": "quitzon-llc"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "841.00",
-        "net": "924.00",
-        "linked": false
-      }
-    ],
+    "price": 841.0,
     "stock": 69309,
     "available": 12608,
     "translated": {
@@ -2010,14 +1450,7 @@
       },
       "id": "heathcote-collins-and-champlin"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "489.00",
-        "net": "758.00",
-        "linked": false
-      }
-    ],
+    "price": 489.0,
     "stock": 15112,
     "available": 37671,
     "translated": {
@@ -2035,14 +1468,7 @@
       },
       "id": "kunze-aufderhar"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "736.00",
-        "net": "130.00",
-        "linked": true
-      }
-    ],
+    "price": 736.0,
     "stock": 88363,
     "available": 35945,
     "translated": {
@@ -2060,14 +1486,7 @@
       },
       "id": "greenholt-and-sons"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "978.00",
-        "net": "368.00",
-        "linked": true
-      }
-    ],
+    "price": 978.0,
     "stock": 40002,
     "available": 2971,
     "translated": {
@@ -2085,14 +1504,7 @@
       },
       "id": "walsh-lueilwitz-and-carter"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "436.00",
-        "net": "605.00",
-        "linked": true
-      }
-    ],
+    "price": 436.0,
     "stock": 4070,
     "available": 32729,
     "translated": {
@@ -2110,14 +1522,7 @@
       },
       "id": "keebler-mohr"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "902.00",
-        "net": "650.00",
-        "linked": true
-      }
-    ],
+    "price": 902.0,
     "stock": 66548,
     "available": 55455,
     "translated": {
@@ -2135,14 +1540,7 @@
       },
       "id": "homenick-thiel-and-schaden"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "248.00",
-        "net": "432.00",
-        "linked": false
-      }
-    ],
+    "price": 248.0,
     "stock": 95231,
     "available": 93049,
     "translated": {
@@ -2160,14 +1558,7 @@
       },
       "id": "ledner-and-sons"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "472.00",
-        "net": "191.00",
-        "linked": true
-      }
-    ],
+    "price": 472.0,
     "stock": 67508,
     "available": 48532,
     "translated": {
@@ -2185,14 +1576,7 @@
       },
       "id": "bechtelar-and-sons"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "131.00",
-        "net": "101.00",
-        "linked": false
-      }
-    ],
+    "price": 131.0,
     "stock": 96574,
     "available": 52279,
     "translated": {
@@ -2210,14 +1594,7 @@
       },
       "id": "cole-sanford-and-bogan"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "745.00",
-        "net": "899.00",
-        "linked": false
-      }
-    ],
+    "price": 745.0,
     "stock": 7715,
     "available": 27985,
     "translated": {
@@ -2235,14 +1612,7 @@
       },
       "id": "mertz-simonis-and-gutmann"
     },
-    "price": [
-      {
-        "currencyId": "b7d2554b0ce847cd82f3ac9bd1c0dfca",
-        "gross": "510.00",
-        "net": "663.00",
-        "linked": true
-      }
-    ],
+    "price": 510.0,
     "stock": 93162,
     "available": 75231,
     "translated": {
