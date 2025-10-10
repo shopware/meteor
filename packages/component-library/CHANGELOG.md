@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.19.1
+
+### Patch Changes
+
+- 8537be0: feat: add translation to promo badge
+
 ## 4.19.0
 
 ### Minor Changes
