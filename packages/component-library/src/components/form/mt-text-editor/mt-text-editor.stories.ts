@@ -15,7 +15,7 @@ export default {
   title: "Components/Form/mt-text-editor",
   component: MtTextEditor,
   args: {
-    modelValue: `<h1><span style="color: rgb(5, 220, 235)">Hello</span> <span style="color: rgb(43, 235, 5)">World</span></h1><p><strong>Some</strong> text</p><ol><li><a target="_blank" rel="noopener noreferrer nofollow" href="https://www.shopware.com">Lorem</a></li><li>Ipsum</li></ol><table style="min-width: 75px"><colgroup><col style="min-width: 25px"><col style="min-width: 25px"><col style="min-width: 25px"></colgroup><tbody><tr><th colspan="1" rowspan="1"><p>First</p></th><th colspan="1" rowspan="1"><p>Second</p></th><th colspan="1" rowspan="1"><p>Third</p></th></tr><tr><td colspan="1" rowspan="1"><p>Lorem</p></td><td colspan="1" rowspan="1"><p>Ipsum</p></td><td colspan="1" rowspan="1"><p>non</p></td></tr><tr><td colspan="1" rowspan="1"><p>dolor</p></td><td colspan="1" rowspan="1"><p>sit</p></td><td colspan="1" rowspan="1"><p>amet</p></td></tr></tbody></table><p>After table</p>`,
+    modelValue: `<h1><span style="color: rgb(5, 220, 235)">Hello</span> <span style="color: rgb(43, 235, 5)">World</span></h1><p><strong>Some</strong> text</p><ol><li><p><a target="_blank" rel="noopener noreferrer nofollow" href="https://www.shopware.com">Lorem</a></p></li><li><p>Ipsum</p></li></ol><table style="min-width: 75px"><colgroup><col style="min-width: 25px"><col style="min-width: 25px"><col style="min-width: 25px"></colgroup><tbody><tr><th colspan="1" rowspan="1"><p>First</p></th><th colspan="1" rowspan="1"><p>Second</p></th><th colspan="1" rowspan="1"><p>Third</p></th></tr><tr><td colspan="1" rowspan="1"><p>Lorem</p></td><td colspan="1" rowspan="1"><p>Ipsum</p></td><td colspan="1" rowspan="1"><p>non</p></td></tr><tr><td colspan="1" rowspan="1"><p>dolor</p></td><td colspan="1" rowspan="1"><p>sit</p></td><td colspan="1" rowspan="1"><p>amet</p></td></tr></tbody></table><p>After table</p>`,
     updateModelValue: fn(),
     label: "My Text editor",
   },
@@ -78,4 +78,42 @@ export const CustomButtonsStory: MtTextEditorStory = {
       },
     ],
   },
+};
+
+export const DiffModalStory: MtTextEditorStory = {
+  name: "mt-text-editor (diff modal)",
+  args: {
+    modelValue: '<div class="box" data-custom="123">\n  <p>Content</p>\n</div>',
+    updateModelValue: fn(),
+    label: "My Text editor",
+  },
+  render: (args) => ({
+    components: { MtTextEditor },
+    setup() {
+      const currentModelValue = ref(args.modelValue);
+      const onUpdateModelValue = (value: string) => {
+        currentModelValue.value = value;
+        args.updateModelValue(value);
+      };
+
+      return {
+        args,
+        currentModelValue,
+        onUpdateModelValue,
+      };
+    },
+    template: `
+<div class="wrapper">
+  <mt-text-editor
+    v-bind="args"
+    :modelValue="currentModelValue"
+    @update:modelValue="onUpdateModelValue"
+  />
+  <p style="margin-top: 16px; color: var(--color-text-secondary-default);">
+    The given HTML contains a custom attribute (data-custom="123"). When the user
+    starts to edit, the content would be changed. Therefore this overlay is shown
+    to the user. Same check is done also when switching from code to WYSIWYG mode.
+  </p>
+</div>`,
+  }),
 };

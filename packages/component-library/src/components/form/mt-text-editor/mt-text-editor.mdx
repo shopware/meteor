@@ -443,3 +443,7 @@ const customButtons = [
 ## Code Editor Mode
 
 The `mt-text-editor` includes a code editor mode for editing raw HTML. This mode is powered by [CodeMirror](https://codemirror.net/). Use the `toggle-code` button to switch between WYSIWYG mode and code mode.
+
+### Diff Review on Switch
+
+When switching from Code → WYSIWYG, the editor performs a dry-run parse with TipTap and compares the HTML. If changes are detected (e.g., unsupported attributes removed), a modal shows a side-by-side diff. You can accept to switch with the modified HTML or stay in code mode.
