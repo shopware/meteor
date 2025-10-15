@@ -145,9 +145,9 @@
     
     <mt-text-editor-diff-modal
       :is-open="showDiffModal"
-      @change-open="onChangeOpenDiffModal"
       :original-html="diffOriginalHtml"
       :parsed-html="diffParsedHtml"
+      @change-open="onChangeOpenDiffModal"
       @accept="handleDiffAccept"
       @cancel="handleDiffCancel"
     />
@@ -216,7 +216,7 @@ import { html } from "@codemirror/lang-html";
 import { useI18n } from "vue-i18n";
 import ListItem from "@tiptap/extension-list-item";
 import mtTextEditorDiffModal from "./_internal/mt-text-editor-diff-modal.vue";
-import { parseWithTiptap } from "./_internal/parse-with-tiptap";
+import { getHtmlParseDiff } from "./_internal/html-parse-diff";
 import mtButton from "@/components/form/mt-button/mt-button.vue";
 
 const { t } = useI18n({
@@ -509,24 +509,6 @@ const diffParsedHtml = ref("");
 // Raw parsed HTML to apply on acceptance (beautified only for display)
 const parsedHtmlRaw = ref("");
 
-async function formatHtmlForDiff(input: string): Promise<string> {
-  const src = input ?? "";
-  if (!src) return "";
-  try {
-    const mod: any = await import("js-beautify");
-    const beautifyHtml = mod.html as (s: string, o?: Record<string, unknown>) => string;
-    return beautifyHtml(src, {
-      indent_size: 2,
-      preserve_newlines: true,
-      content_unformatted: ["pre", "code", "textarea", "script", "style"],
-      wrap_line_length: 0,
-      end_with_newline: false,
-      extra_liners: [],
-    });
-  } catch {
-    return src;
-  }
-}
 
 const onToggleCodeClick = async () => {
   // Switching to Code view directly
@@ -535,18 +517,15 @@ const onToggleCodeClick = async () => {
     return;
   }
 
-  // Switching from Code to WYSIWYG: dry-run parse and compare
-  const parsed = await parseWithTiptap(props.modelValue, editorExtensions);
-  const hasDiff = props.modelValue !== parsed;
-
-  if (!hasDiff) {
+  // Switching from Code to WYSIWYG: dry-run parse and compare using util
+  const diff = await getHtmlParseDiff(props.modelValue, editorExtensions, { parseFromBeautified: false });
+  if (!diff.hasDiff) {
     showCodeEditor.value = false;
     return;
   }
-
-  diffOriginalHtml.value = await formatHtmlForDiff(props.modelValue);
-  diffParsedHtml.value = await formatHtmlForDiff(parsed);
-  parsedHtmlRaw.value = parsed;
+  diffOriginalHtml.value = diff.originalBeautified;
+  diffParsedHtml.value = diff.parsedBeautified;
+  parsedHtmlRaw.value = diff.parsedRaw;
   showDiffModal.value = true;
 };
 
@@ -597,14 +576,12 @@ onMounted(async () => {
   if (showCodeEditor.value) return; // Only relevant in WYSIWYG
   // Wait for editor to be ready
   await Promise.resolve();
-  const original = await formatHtmlForDiff(props.modelValue);
-  const parsed = await formatHtmlForDiff(await parseWithTiptap(original, editorExtensions));
-  const hasDiff = original !== parsed;
-  if (hasDiff) {
+  const diff = await getHtmlParseDiff(props.modelValue, editorExtensions, { parseFromBeautified: true });
+  if (diff.hasDiff) {
     gateActive.value = true;
-    diffOriginalHtml.value = original
-    diffParsedHtml.value = parsed
-    parsedHtmlRaw.value = parsed;
+    diffOriginalHtml.value = diff.originalBeautified
+    diffParsedHtml.value = diff.parsedBeautified
+    parsedHtmlRaw.value = diff.parsedRaw;
     editor.value?.setEditable(false);
   }
   // Allow subsequent updates to emit after initial gate check
