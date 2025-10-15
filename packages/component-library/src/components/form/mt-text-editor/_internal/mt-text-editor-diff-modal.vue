@@ -1,5 +1,5 @@
 <template>
-  <mt-modal-root :is-open="isOpen">
+  <mt-modal-root :is-open="isOpen" @change="onChangeOpen">
     <mt-modal :title="t('mt-text-editor.diff.title')" width="l">
       <template #default>
         <div class="mt-text-editor__diff-info">
@@ -52,6 +52,7 @@ const props = defineProps<{
 const emit = defineEmits<{
   (e: 'accept'): void;
   (e: 'cancel'): void;
+  (e: 'changeOpen', value: boolean): void;
 }>();
 
 const { t } = useI18n({ useScope: 'global' });
@@ -62,6 +63,10 @@ const emitAccept = () => {
 
 const emitCancel = () => {
   emit('cancel');
+};
+
+const onChangeOpen = (value: boolean) => {
+  emit('changeOpen', value);
 };
 
 const diffHunks = computed(() => {

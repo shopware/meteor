@@ -365,6 +365,9 @@ importers:
       inter-ui:
         specifier: ^3.19.3
         version: 3.19.3
+      js-beautify:
+        specifier: ^1.15.1
+        version: 1.15.1
       nanoid:
         specifier: ^5.0.7
         version: 5.0.7
