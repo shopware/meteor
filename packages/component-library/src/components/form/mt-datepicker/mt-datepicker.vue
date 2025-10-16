@@ -36,7 +36,7 @@
       :is-24="is24"
       :type="dateType"
       :enable-time-picker="dateType !== 'date'"
-      :exactMatch="dateType === 'date'"
+      :exact-match="dateType === 'date'"
       time-picker-inline
       :time-picker="dateType === 'time'"
       :no-hours-overlay="dateType === 'time'"
@@ -104,6 +104,7 @@ import DatePicker, { type VueDatePickerProps } from "@vuepic/vue-datepicker";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import "@vuepic/vue-datepicker/dist/main.css";
 import { useId } from "vue";
+import { fromZonedTime } from "date-fns-tz";
 
 export default defineComponent({
   name: "MtDatepicker",
@@ -396,15 +397,27 @@ export default defineComponent({
       date: Date | [Date, Date] | { hours: number; minutes: number },
     ): string | string[] {
       if (Array.isArray(date)) {
-        return date.map((d) => d.toISOString());
+        return date.map((d) => this.formatDateInTimezone(d));
       } else if (date instanceof Date) {
-        return date.toISOString();
+        return this.formatDateInTimezone(date);
       } else {
         // Handle time object case
         const hours = String(date.hours).padStart(2, "0");
         const minutes = String(date.minutes).padStart(2, "0");
         return `${hours}:${minutes}`;
       }
+    },
+
+    formatDateInTimezone(date: Date): string {
+      // If timezone is UTC, use toISOString() directly
+      if (this.timeZone === "UTC") {
+        return date.toISOString();
+      }
+
+      // For other timezones, convert the local date to UTC treating it as if it were in the specified timezone
+      // This ensures that "December 2nd, 00:00" in Berlin time stays "December 2nd, 00:00" when stored
+      const utcDate = fromZonedTime(date, this.timeZone);
+      return utcDate.toISOString();
     },
 
     convertTimeToIso(time: { hours: number; minutes: number }): string {
