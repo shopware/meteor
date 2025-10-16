@@ -827,8 +827,8 @@ export const VisualTestRenderCodeView: MtTextEditorStory = defineStory({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // Click on button with aria-label "Toggle code"
-    await userEvent.click(canvas.getByLabelText("Toggle code"));
+    // Click on button with aria-label "Switch to code mode"
+    await userEvent.click(canvas.getByLabelText("Switch to code mode"));
 
     // Expect the code view to be rendered
     const codeEditor = canvas.getByRole("textbox");
@@ -893,7 +893,7 @@ export const PreserveImageTags: MtTextEditorStory = defineStory({
     await new Promise((resolve) => setTimeout(resolve, 200));
 
     // Click on text using a more flexible matcher
-    const textElement = canvas.getByText((content, element) => {
+    const textElement = canvas.getByText((content, _element) => {
       return content.includes("and some text");
     });
     await userEvent.click(textElement);
@@ -1252,8 +1252,7 @@ export const VisualTestGateOnInitialUnsupportedHTML: MtTextEditorStory = defineS
     await waitUntil(() => !!document.querySelector(".mt-text-editor__gate"));
 
     // Assert gate actions are visible
-    expect(canvas.getByText("Show Diff")).toBeDefined();
-    expect(canvas.getByText("Stay in Code")).toBeDefined();
+    expect(canvas.getByText("View unsupported code")).toBeDefined();
   },
 });
 
@@ -1266,7 +1265,7 @@ export const AcceptUnsupportedHtmlDiff_AppliesParsedCode: MtTextEditorStory = de
     const canvas = within(canvasElement);
 
     // Go to code view
-    await userEvent.click(canvas.getByLabelText("Toggle code"));
+    await userEvent.click(canvas.getByLabelText("Switch to code mode"));
 
     // Replace code with unsupported HTML (data-custom)
     const codeEditor = canvas.getByRole("textbox") as HTMLElement;
@@ -1274,18 +1273,18 @@ export const AcceptUnsupportedHtmlDiff_AppliesParsedCode: MtTextEditorStory = de
     await userEvent.type(codeEditor, "{selectall}{backspace}<div class=\"box\" data-custom=\"123\"><p>Content</p></div>");
 
     // Switch back to WYSIWYG (triggers diff modal)
-    await userEvent.click(canvas.getByLabelText("Toggle code"));
+    await userEvent.click(canvas.getByLabelText("Switch to visual mode"));
 
     // Wait for diff modal
     await waitUntil(() => document.body.querySelector("div[role='dialog']"));
     const body = within(document.body);
-    expect(body.getByText("Review HTML Changes")).toBeDefined();
+    expect(body.getByText("Unsupported code")).toBeDefined();
 
     // Accept changes
-    await userEvent.click(body.getByText("Accept Changes & Switch"));
+    await userEvent.click(body.getByText("Remove unsupported code"));
 
     // Open code view again
-    await userEvent.click(canvas.getByLabelText("Toggle code"));
+    await userEvent.click(canvas.getByLabelText("Switch to code mode"));
 
     const updatedEditor = canvas.getByRole("textbox") as HTMLElement;
 
@@ -1305,7 +1304,7 @@ export const CancelUnsupportedHtmlDiff_StaysInCode: MtTextEditorStory = defineSt
     const canvas = within(canvasElement);
 
     // Go to code view
-    await userEvent.click(canvas.getByLabelText("Toggle code"));
+    await userEvent.click(canvas.getByLabelText("Switch to code mode"));
 
     // Replace code with unsupported HTML (data-custom)
     const codeEditor = canvas.getByRole("textbox") as HTMLElement;
@@ -1313,15 +1312,15 @@ export const CancelUnsupportedHtmlDiff_StaysInCode: MtTextEditorStory = defineSt
     await userEvent.type(codeEditor, "{selectall}{backspace}<div class=\"box\" data-custom=\"123\"><p>Content</p></div>");
 
     // Switch back to WYSIWYG (triggers diff modal)
-    await userEvent.click(canvas.getByLabelText("Toggle code"));
+    await userEvent.click(canvas.getByLabelText("Switch to visual mode"));
 
     // Wait for diff modal
     await waitUntil(() => document.body.querySelector("div[role='dialog']"));
     const body = within(document.body);
-    expect(body.getByText("Review HTML Changes")).toBeDefined();
+    expect(body.getByText("Unsupported code")).toBeDefined();
 
     // Cancel: stay in code editor
-    await userEvent.click(body.getByText("Stay in Code Editor"));
+    await userEvent.click(body.getByText("Continue editing in code mode"));
 
     // Wait until modal is closed
     await waitUntil(() => !document.body.querySelector("div[role='dialog']"));
@@ -1342,7 +1341,7 @@ export const VisualTestDiffModalShownAfterEditingUnsupportedHTML: MtTextEditorSt
     const canvas = within(canvasElement);
 
     // Go to code view
-    await userEvent.click(canvas.getByLabelText("Toggle code"));
+    await userEvent.click(canvas.getByLabelText("Switch to code mode"));
 
     // Replace code with unsupported HTML (data-custom)
     const codeEditor = canvas.getByRole("textbox") as HTMLElement;
@@ -1350,13 +1349,13 @@ export const VisualTestDiffModalShownAfterEditingUnsupportedHTML: MtTextEditorSt
     await userEvent.type(codeEditor, "{selectall}{backspace}<div class=\"box\" data-custom=\"123\"><p>Content</p></div>");
 
     // Switch back to WYSIWYG (triggers diff modal)
-    await userEvent.click(canvas.getByLabelText("Toggle code"));
+    await userEvent.click(canvas.getByLabelText("Switch to visual mode"));
 
     // Wait for diff modal and assert basic elements
     await waitUntil(() => document.body.querySelector("div[role='dialog']"));
     const body = within(document.body);
-    expect(body.getByText("Review HTML Changes")).toBeDefined();
-    expect(body.getByText("Stay in Code Editor")).toBeDefined();
-    expect(body.getByText("Accept Changes & Switch")).toBeDefined();
+    expect(body.getByText("Unsupported code")).toBeDefined();
+    expect(body.getByText("Continue editing in code mode")).toBeDefined();
+    expect(body.getByText("Remove unsupported code")).toBeDefined();
   },
 });

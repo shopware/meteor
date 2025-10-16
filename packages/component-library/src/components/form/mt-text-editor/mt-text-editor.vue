@@ -75,9 +75,6 @@
             <mt-button variant="primary" @click="showDiffModal = true">
               {{ t('mt-text-editor.gate.showDiff') }}
             </mt-button>
-            <mt-button variant="secondary" @click="showCodeEditor = true">
-              {{ t('mt-text-editor.gate.stayInCode') }}
-            </mt-button>
           </div>
         </div>
       </div>
@@ -225,7 +222,8 @@ const { t } = useI18n({
     en: {
       "mt-text-editor": {
         buttons: {
-          "toggle-code": "Toggle code",
+          "switch-to-code": "Switch to code mode",
+          "switch-to-visual": "Switch to visual mode",
         },
         footer: {
           characters: "{characters} characters",
@@ -245,7 +243,8 @@ const { t } = useI18n({
     de: {
       "mt-text-editor": {
         buttons: {
-          "toggle-code": "Codeansicht umschalten",
+          "switch-to-code": "In den Code-Modus wechseln",
+          "switch-to-visual": "In den visuellen Modus wechseln",
         },
         footer: {
           characters: "{characters} Zeichen",
@@ -467,7 +466,7 @@ const mergedCustomButtons = computed<CustomButton[]>(() => {
     tableButton,
     {
       name: "toggle-code",
-      label: "mt-text-editor.buttons.toggle-code",
+      label: showCodeEditor.value ? "mt-text-editor.buttons.switch-to-visual" : "mt-text-editor.buttons.switch-to-code",
       icon: "regular-code-xs",
       action: () => onToggleCodeClick(),
       alignment: "right",

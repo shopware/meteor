@@ -23,7 +23,7 @@
           <mt-button variant="secondary" @click="emitCancel">
             {{ t('mt-text-editor.diff.cancel') }}
           </mt-button>
-          <mt-button variant="primary" @click="emitAccept">
+          <mt-button variant="critical" @click="emitAccept">
             {{ t('mt-text-editor.diff.accept') }}
           </mt-button>
         </div>
