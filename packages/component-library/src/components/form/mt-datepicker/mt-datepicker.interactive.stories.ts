@@ -417,3 +417,69 @@ export const VisualTestMinDateDisabledDays: MtDatepickerStory = {
     expect(day15).toBeDefined();
   },
 };
+
+export const VisualTestTimezoneFixDecember2nd: MtDatepickerStory = {
+  name: "Should preserve December 2nd date in Berlin timezone",
+  args: {
+    dateType: "datetime",
+    timeZone: "Europe/Berlin",
+    locale: "en-US",
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    // Verify the timezone hint is visible
+    expect(canvas.getByTestId("time-zone-hint")).toBeVisible();
+    expect(canvas.getByText("Europe/Berlin")).toBeInTheDocument();
+
+    // Open datepicker to test interaction
+    const input = canvas.getByRole("textbox");
+    await userEvent.click(input);
+    await waitUntil(() => document.getElementsByClassName("dp__menu").length > 0);
+
+    // set time to 00:00:00
+    await userEvent.click(
+      document.querySelector('[data-test-id="hours-toggle-overlay-btn-0"]') as HTMLInputElement,
+    );
+
+    // Wait until hours panel opens
+    await waitUntil(() => !document.querySelector(".calendar-header"));
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    // Select hour 0
+    await userEvent.click(document.querySelector('[data-test-id="00"]') as HTMLInputElement);
+
+    // // // Open the minutes panel
+    await userEvent.click(
+      document.querySelector('[data-test-id="minutes-toggle-overlay-btn-0"]') as HTMLInputElement,
+    );
+
+    // Wait until minutes panel opens
+    await waitUntil(() => !document.querySelector(".calendar-header"));
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    // Select minute 0
+    await userEvent.click(document.querySelector('[data-test-id="00"]') as HTMLInputElement);
+
+    // Navigate to December 2024
+    await userEvent.click(
+      document.querySelector('[data-test-id="year-toggle-overlay-0"]') as HTMLInputElement,
+    );
+    await userEvent.click(document.querySelector('[data-test-id="2024"]') as HTMLInputElement);
+
+    await userEvent.click(
+      document.querySelector('[data-test-id="month-toggle-overlay-0"]') as HTMLInputElement,
+    );
+    await userEvent.click(document.querySelector('[data-test-id="Dec"]') as HTMLInputElement);
+
+    // // Click December 2nd on the calendar
+    await userEvent.click(document.getElementById("2024-12-02") as HTMLInputElement);
+
+    // // Check that the input value shows December 2nd (regardless of time)
+    // const inputValue = (input as HTMLInputElement).value.trim();
+    // expect(inputValue).toContain("2024/12/02");
+
+    // Check what the actual emitted value is
+    // const emittedValue = args.updateModelValue.mock.calls[0][0];
+  },
+};

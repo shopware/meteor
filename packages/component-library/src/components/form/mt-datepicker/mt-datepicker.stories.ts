@@ -37,10 +37,34 @@ export default {
       };
     },
   }),
+  argTypes: {
+    timeZone: {
+      control: { type: "select" },
+      options: [
+        "UTC",
+        "America/New_York",
+        "America/Chicago",
+        "America/Denver",
+        "America/Los_Angeles",
+        "Europe/London",
+        "Europe/Paris",
+        "Europe/Berlin",
+        "Europe/Rome",
+        "Europe/Madrid",
+        "Asia/Tokyo",
+        "Asia/Shanghai",
+        "Asia/Kolkata",
+        "Australia/Sydney",
+        "Australia/Melbourne",
+        "Pacific/Auckland",
+      ],
+    },
+  },
   args: {
     label: "Datepicker",
     updateModelValue: fn(action("update:modelValue")),
     modelValue: null,
+    timeZone: "UTC",
   },
 } as MtDatepickerMeta;
 

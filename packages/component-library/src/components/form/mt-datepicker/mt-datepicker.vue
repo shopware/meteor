@@ -25,7 +25,6 @@
       :disabled="disabled"
       :required="required"
       :locale="locale"
-      :timezone="timeZone"
       :open="isDatepickerOpen"
       :teleport="true"
       :show-cancel="true"
@@ -36,7 +35,7 @@
       :is-24="is24"
       :type="dateType"
       :enable-time-picker="dateType !== 'date'"
-      :exact-match="dateType === 'date'"
+      :exact-match="true"
       time-picker-inline
       :time-picker="dateType === 'time'"
       :no-hours-overlay="dateType === 'time'"
@@ -51,6 +50,7 @@
           checkValidity();
         }
       "
+      @update:model-value="handleDateChange"
     >
       <template #clear-icon="{ clear }">
         <button class="mt-datepicker__clear-button" aria-label="Clear value" @click="clear">
@@ -104,7 +104,6 @@ import DatePicker, { type VueDatePickerProps } from "@vuepic/vue-datepicker";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import "@vuepic/vue-datepicker/dist/main.css";
 import { useId } from "vue";
-import { fromZonedTime } from "date-fns-tz";
 
 export default defineComponent({
   name: "MtDatepicker",
@@ -167,11 +166,11 @@ export default defineComponent({
     },
 
     /**
-     * The value of the date picker. Can be a single string or an array of strings.
+     * The value of the date picker. Can be a single string, Date object, or an array of strings/Date objects.
      * This represents the currently selected date(s).
      */
     modelValue: {
-      type: [String, Array] as PropType<string | string[]>,
+      type: [String, Array, Date] as PropType<string | string[] | Date | Date[]>,
       default: null,
     },
 
@@ -285,12 +284,12 @@ export default defineComponent({
 
   computed: {
     computedValue: {
-      get(): string | string[] | { hours: number; minutes: number } {
+      get(): Date | Date[] | { hours: number; minutes: number } | null {
         if (this.dateType === "time") {
-          if (typeof this.modelValue !== "string") return "";
+          if (typeof this.modelValue !== "string") return null;
 
           if (this.modelValue.includes("T")) {
-            // ISO string
+            // ISO string - extract time
             const date = new Date(this.modelValue);
             return {
               hours: date.getHours(),
@@ -306,7 +305,16 @@ export default defineComponent({
           }
         }
 
-        return this.modelValue;
+        // For date and datetime, handle both strings and Date objects
+        if (this.modelValue instanceof Date) {
+          return this.modelValue;
+        }
+
+        if (typeof this.modelValue === "string" && this.modelValue.includes("T")) {
+          return new Date(this.modelValue);
+        }
+
+        return null;
       },
       set(newValue: Date | [Date, Date] | { hours: number; minutes: number } | null) {
         if (!newValue) {
@@ -323,9 +331,18 @@ export default defineComponent({
           return;
         }
 
-        // Handle both 'date' and 'datetime' types
-        const isoValue = this.convertDateToIso(newValue);
-        this.$emit("update:modelValue", isoValue);
+        // Emit Date objects directly - no conversion
+        if (newValue instanceof Date) {
+          console.log("🔍 Emitting Date object:", newValue);
+          this.$emit("update:modelValue", newValue);
+        } else if (Array.isArray(newValue)) {
+          console.log("🔍 Emitting array of Date objects:", newValue);
+          this.$emit("update:modelValue", newValue);
+        } else if (typeof newValue === "string") {
+          // Fallback for string values
+          console.log("🔍 Emitting string:", newValue);
+          this.$emit("update:modelValue", newValue);
+        }
       },
     },
   },
@@ -352,6 +369,11 @@ export default defineComponent({
   },
 
   methods: {
+    handleDateChange(newValue: Date | Date[] | { hours: number; minutes: number } | null) {
+      // Just pass it through to the setter - no conversion
+      this.computedValue = newValue;
+    },
+
     updateOpacitySettings() {
       document.documentElement.style.setProperty(
         "--menu-border-opacity",
@@ -374,7 +396,6 @@ export default defineComponent({
         return `${hours}:${minutes}`;
       }
 
-      // Overide built-in format to y-m-d
       const formatSingleDate = (d: Date) => {
         const year = d.getFullYear();
         const month = String(d.getMonth() + 1).padStart(2, "0");
@@ -391,33 +412,6 @@ export default defineComponent({
       }
 
       return formatSingleDate(date);
-    },
-
-    convertDateToIso(
-      date: Date | [Date, Date] | { hours: number; minutes: number },
-    ): string | string[] {
-      if (Array.isArray(date)) {
-        return date.map((d) => this.formatDateInTimezone(d));
-      } else if (date instanceof Date) {
-        return this.formatDateInTimezone(date);
-      } else {
-        // Handle time object case
-        const hours = String(date.hours).padStart(2, "0");
-        const minutes = String(date.minutes).padStart(2, "0");
-        return `${hours}:${minutes}`;
-      }
-    },
-
-    formatDateInTimezone(date: Date): string {
-      // If timezone is UTC, use toISOString() directly
-      if (this.timeZone === "UTC") {
-        return date.toISOString();
-      }
-
-      // For other timezones, convert the local date to UTC treating it as if it were in the specified timezone
-      // This ensures that "December 2nd, 00:00" in Berlin time stays "December 2nd, 00:00" when stored
-      const utcDate = fromZonedTime(date, this.timeZone);
-      return utcDate.toISOString();
     },
 
     convertTimeToIso(time: { hours: number; minutes: number }): string {
