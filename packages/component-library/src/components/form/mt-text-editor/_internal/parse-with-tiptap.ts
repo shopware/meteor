@@ -6,7 +6,6 @@ import { Editor as CoreEditor, type Extension } from '@tiptap/core';
  * No DOM attachment is required; the instance is created and destroyed in memory.
  */
 export async function parseWithTiptap(html: string, extensions: Extension[]): Promise<string> {
-  // Avoid creating the editor if content is empty; TipTap still wraps with <p></p> sometimes.
   const initialContent = html ?? '';
 
   const temp = new CoreEditor({
