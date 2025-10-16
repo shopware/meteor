@@ -1270,7 +1270,10 @@ export const AcceptUnsupportedHtmlDiff_AppliesParsedCode: MtTextEditorStory = de
     // Replace code with unsupported HTML (data-custom)
     const codeEditor = canvas.getByRole("textbox") as HTMLElement;
     await userEvent.click(codeEditor);
-    await userEvent.type(codeEditor, "{selectall}{backspace}<div class=\"box\" data-custom=\"123\"><p>Content</p></div>");
+    await userEvent.type(
+      codeEditor,
+      '{selectall}{backspace}<div class="box" data-custom="123"><p>Content</p></div>',
+    );
 
     // Switch back to WYSIWYG (triggers diff modal)
     await userEvent.click(canvas.getByLabelText("Switch to visual mode"));
@@ -1290,7 +1293,7 @@ export const AcceptUnsupportedHtmlDiff_AppliesParsedCode: MtTextEditorStory = de
 
     // Assert unsupported attribute removed, structure retained
     expect(updatedEditor.innerText).not.toContain("data-custom");
-    expect(updatedEditor.innerText).toContain("<div class=\"box\"");
+    expect(updatedEditor.innerText).toContain('<div class="box"');
     expect(updatedEditor.innerText).toContain("<p>Content</p>");
   },
 });
@@ -1309,7 +1312,10 @@ export const CancelUnsupportedHtmlDiff_StaysInCode: MtTextEditorStory = defineSt
     // Replace code with unsupported HTML (data-custom)
     const codeEditor = canvas.getByRole("textbox") as HTMLElement;
     await userEvent.click(codeEditor);
-    await userEvent.type(codeEditor, "{selectall}{backspace}<div class=\"box\" data-custom=\"123\"><p>Content</p></div>");
+    await userEvent.type(
+      codeEditor,
+      '{selectall}{backspace}<div class="box" data-custom="123"><p>Content</p></div>',
+    );
 
     // Switch back to WYSIWYG (triggers diff modal)
     await userEvent.click(canvas.getByLabelText("Switch to visual mode"));
@@ -1346,7 +1352,10 @@ export const VisualTestDiffModalShownAfterEditingUnsupportedHTML: MtTextEditorSt
     // Replace code with unsupported HTML (data-custom)
     const codeEditor = canvas.getByRole("textbox") as HTMLElement;
     await userEvent.click(codeEditor);
-    await userEvent.type(codeEditor, "{selectall}{backspace}<div class=\"box\" data-custom=\"123\"><p>Content</p></div>");
+    await userEvent.type(
+      codeEditor,
+      '{selectall}{backspace}<div class="box" data-custom="123"><p>Content</p></div>',
+    );
 
     // Switch back to WYSIWYG (triggers diff modal)
     await userEvent.click(canvas.getByLabelText("Switch to visual mode"));

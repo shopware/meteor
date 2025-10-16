@@ -3,7 +3,7 @@
     <mt-modal :title="t('mt-text-editor.diff.title')" width="l">
       <template #default>
         <div class="mt-text-editor__diff-info">
-          {{ t('mt-text-editor.diff.subtitle') }}
+          {{ t("mt-text-editor.diff.subtitle") }}
         </div>
 
         <div class="mt-text-editor__diff-container">
@@ -11,7 +11,7 @@
             :data="{
               oldFile: { fileName: 'Code', fileLang: 'html', content: originalHtml },
               newFile: { fileName: 'WYSIWYG', fileLang: 'html', content: parsedHtml },
-              hunks: diffHunks
+              hunks: diffHunks,
             }"
             :diff-view-mode="DiffModeEnum.SplitGitHub"
             :diff-view-theme="'light'"
@@ -21,59 +21,58 @@
       <template #footer>
         <div class="mt-text-editor__diff-footer">
           <mt-button variant="secondary" @click="emitCancel">
-            {{ t('mt-text-editor.diff.cancel') }}
+            {{ t("mt-text-editor.diff.cancel") }}
           </mt-button>
           <mt-button variant="critical" @click="emitAccept">
-            {{ t('mt-text-editor.diff.accept') }}
+            {{ t("mt-text-editor.diff.accept") }}
           </mt-button>
         </div>
       </template>
     </mt-modal>
   </mt-modal-root>
-  
 </template>
 
 <script setup lang="ts">
-import { ref, watch, defineProps, defineEmits, computed } from 'vue';
-import { useI18n } from 'vue-i18n';
+import { ref, watch, defineProps, defineEmits, computed } from "vue";
+import { useI18n } from "vue-i18n";
 import "@git-diff-view/vue/styles/diff-view.css";
-import { DiffView, DiffModeEnum } from '@git-diff-view/vue';
-import MtModal from '@/components/overlay/mt-modal/mt-modal.vue';
-import MtModalRoot from '@/components/overlay/mt-modal/sub-components/mt-modal-root.vue';
-import MtButton from '@/components/form/mt-button/mt-button.vue';
-import { createTwoFilesPatch } from 'diff';
+import { DiffView, DiffModeEnum } from "@git-diff-view/vue";
+import MtModal from "@/components/overlay/mt-modal/mt-modal.vue";
+import MtModalRoot from "@/components/overlay/mt-modal/sub-components/mt-modal-root.vue";
+import MtButton from "@/components/form/mt-button/mt-button.vue";
+import { createTwoFilesPatch } from "diff";
 
-const props = defineProps<{ 
+const props = defineProps<{
   isOpen: boolean;
   originalHtml: string;
   parsedHtml: string;
 }>();
 
 const emit = defineEmits<{
-  (e: 'accept'): void;
-  (e: 'cancel'): void;
-  (e: 'changeOpen', value: boolean): void;
+  (e: "accept"): void;
+  (e: "cancel"): void;
+  (e: "changeOpen", value: boolean): void;
 }>();
 
-const { t } = useI18n({ useScope: 'global' });
+const { t } = useI18n({ useScope: "global" });
 
 const emitAccept = () => {
-  emit('accept');
+  emit("accept");
 };
 
 const emitCancel = () => {
-  emit('cancel');
+  emit("cancel");
 };
 
 const onChangeOpen = (value: boolean) => {
-  emit('changeOpen', value);
+  emit("changeOpen", value);
 };
 
 const diffHunks = computed(() => {
   try {
-    const oldStr = props.originalHtml ?? '';
-    const newStr = props.parsedHtml ?? '';
-    const patch = createTwoFilesPatch('Code', 'WYSIWYG', oldStr, newStr, '', '', { context: 3 });
+    const oldStr = props.originalHtml ?? "";
+    const newStr = props.parsedHtml ?? "";
+    const patch = createTwoFilesPatch("Code", "WYSIWYG", oldStr, newStr, "", "", { context: 3 });
     return [patch];
   } catch {
     return [] as string[];
@@ -101,5 +100,3 @@ const diffHunks = computed(() => {
   width: 100%;
 }
 </style>
-
-

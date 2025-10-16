@@ -1,4 +1,4 @@
-import { Editor as CoreEditor, type Extension } from '@tiptap/core';
+import { Editor as CoreEditor, type Extension } from "@tiptap/core";
 
 /**
  * Dry-run parse HTML through a temporary TipTap Editor instance and return serialized HTML.
@@ -6,7 +6,7 @@ import { Editor as CoreEditor, type Extension } from '@tiptap/core';
  * No DOM attachment is required; the instance is created and destroyed in memory.
  */
 export async function parseWithTiptap(html: string, extensions: Extension[]): Promise<string> {
-  const initialContent = html ?? '';
+  const initialContent = html ?? "";
 
   const temp = new CoreEditor({
     extensions,
@@ -19,5 +19,3 @@ export async function parseWithTiptap(html: string, extensions: Extension[]): Pr
     temp.destroy();
   }
 }
-
-

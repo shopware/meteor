@@ -23,27 +23,15 @@
         >
           <!-- Special buttons -->
           <template #button_text-color="{ editor: e, disabled: d, button }">
-            <mt-text-editor-toolbar-button-color
-              :editor="e"
-              :disabled="d"
-              :button="button"
-            />
+            <mt-text-editor-toolbar-button-color :editor="e" :disabled="d" :button="button" />
           </template>
 
           <template #button_link="{ editor: e, disabled: d, button }">
-            <mt-text-editor-toolbar-button-link
-              :editor="e"
-              :disabled="d"
-              :button="button"
-            />
+            <mt-text-editor-toolbar-button-link :editor="e" :disabled="d" :button="button" />
           </template>
 
           <template #button_table="{ editor: e, disabled: d, button }">
-            <mt-text-editor-toolbar-button-table
-              :editor="e"
-              :disabled="d"
-              :button="button"
-            />
+            <mt-text-editor-toolbar-button-table :editor="e" :disabled="d" :button="button" />
           </template>
 
           <!-- Dynamically pass all slots -->
@@ -69,11 +57,11 @@
       <div v-if="!showCodeEditor && gateActive" class="mt-text-editor__gate">
         <div class="mt-text-editor__gate-content">
           <p class="mt-text-editor__gate-text">
-            {{ t('mt-text-editor.gate.message') }}
+            {{ t("mt-text-editor.gate.message") }}
           </p>
           <div class="mt-text-editor__gate-actions">
             <mt-button variant="primary" @click="showDiffModal = true">
-              {{ t('mt-text-editor.gate.showDiff') }}
+              {{ t("mt-text-editor.gate.showDiff") }}
             </mt-button>
           </div>
         </div>
@@ -139,7 +127,7 @@
     </div>
 
     <mt-field-error v-if="error" :error="error" />
-    
+
     <mt-text-editor-diff-modal
       :is-open="showDiffModal"
       :original-html="diffOriginalHtml"
@@ -208,7 +196,17 @@ import mtPopoverItem from "@/components/overlay/mt-popover-item/mt-popover-item.
 import mtPopover from "@/components/overlay/mt-popover/mt-popover.vue";
 import mtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import CodeMirror from "vue-codemirror6";
-import { computed, h, reactive, ref, useSlots, watch, onMounted, nextTick, type PropType } from "vue";
+import {
+  computed,
+  h,
+  reactive,
+  ref,
+  useSlots,
+  watch,
+  onMounted,
+  nextTick,
+  type PropType,
+} from "vue";
 import { html } from "@codemirror/lang-html";
 import { useI18n } from "vue-i18n";
 import ListItem from "@tiptap/extension-list-item";
@@ -230,12 +228,14 @@ const { t } = useI18n({
         },
         diff: {
           title: "Unsupported code",
-          subtitle: "Switching to visual mode will remove any parts of your code that are not supported.",
+          subtitle:
+            "Switching to visual mode will remove any parts of your code that are not supported.",
           accept: "Remove unsupported code",
           cancel: "Continue editing in code mode",
         },
         gate: {
-          message: "This editor contains custom code that isn’t supported in visual mode. Editing in visual mode will remove the code.",
+          message:
+            "This editor contains custom code that isn’t supported in visual mode. Editing in visual mode will remove the code.",
           showDiff: "View unsupported code",
         },
       },
@@ -251,12 +251,14 @@ const { t } = useI18n({
         },
         diff: {
           title: "Nicht unterstützter Code",
-          subtitle: "Beim Wechsel in den visuellen Modus werden alle Teile deines Codes entfernt, die nicht unterstützt werden.",
+          subtitle:
+            "Beim Wechsel in den visuellen Modus werden alle Teile deines Codes entfernt, die nicht unterstützt werden.",
           accept: "Nicht unterstützten Code entfernen",
           cancel: "Weiter im Code-Modus bearbeiten",
         },
         gate: {
-          message: "Dieser Editor enthält benutzerdefinierten Code, der im visuellen Modus nicht unterstützt wird. Arbeiten im visuellen Modus entfernt diesen Code.",
+          message:
+            "Dieser Editor enthält benutzerdefinierten Code, der im visuellen Modus nicht unterstützt wird. Arbeiten im visuellen Modus entfernt diesen Code.",
           showDiff: "Nicht unterstützten Code anzeigen",
         },
       },
@@ -466,7 +468,9 @@ const mergedCustomButtons = computed<CustomButton[]>(() => {
     tableButton,
     {
       name: "toggle-code",
-      label: showCodeEditor.value ? "mt-text-editor.buttons.switch-to-visual" : "mt-text-editor.buttons.switch-to-code",
+      label: showCodeEditor.value
+        ? "mt-text-editor.buttons.switch-to-visual"
+        : "mt-text-editor.buttons.switch-to-code",
       icon: "regular-code-xs",
       action: () => onToggleCodeClick(),
       alignment: "right",
@@ -506,7 +510,6 @@ const diffParsedHtml = ref("");
 // Raw parsed HTML to apply on acceptance (beautified only for display)
 const parsedHtmlRaw = ref("");
 
-
 const onToggleCodeClick = async () => {
   // Switching to Code view directly
   if (!showCodeEditor.value) {
@@ -515,7 +518,9 @@ const onToggleCodeClick = async () => {
   }
 
   // Switching from Code to WYSIWYG: dry-run parse and compare using util
-  const diff = await getHtmlParseDiff(props.modelValue, editorExtensions, { parseFromBeautified: false });
+  const diff = await getHtmlParseDiff(props.modelValue, editorExtensions, {
+    parseFromBeautified: false,
+  });
   if (!diff.hasDiff) {
     showCodeEditor.value = false;
     return;
@@ -573,11 +578,13 @@ onMounted(async () => {
   if (showCodeEditor.value) return; // Only relevant in WYSIWYG
   // Wait for editor to be ready
   await Promise.resolve();
-  const diff = await getHtmlParseDiff(props.modelValue, editorExtensions, { parseFromBeautified: true });
+  const diff = await getHtmlParseDiff(props.modelValue, editorExtensions, {
+    parseFromBeautified: true,
+  });
   if (diff.hasDiff) {
     gateActive.value = true;
-    diffOriginalHtml.value = diff.originalBeautified
-    diffParsedHtml.value = diff.parsedBeautified
+    diffOriginalHtml.value = diff.originalBeautified;
+    diffParsedHtml.value = diff.parsedBeautified;
     parsedHtmlRaw.value = diff.parsedRaw;
     editor.value?.setEditable(false);
   }
