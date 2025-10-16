@@ -25,6 +25,7 @@
       :disabled="disabled"
       :required="required"
       :locale="locale"
+      :timezone="timeZone"
       :open="isDatepickerOpen"
       :teleport="true"
       :show-cancel="true"
@@ -33,9 +34,10 @@
       :range="range"
       :format="formatDate"
       :is-24="is24"
+      :time-zone="timeZone"
       :type="dateType"
       :enable-time-picker="dateType !== 'date'"
-      :exact-match="true"
+      :exact-match="false"
       time-picker-inline
       :time-picker="dateType === 'time'"
       :no-hours-overlay="dateType === 'time'"
@@ -104,6 +106,7 @@ import DatePicker, { type VueDatePickerProps } from "@vuepic/vue-datepicker";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import "@vuepic/vue-datepicker/dist/main.css";
 import { useId } from "vue";
+import { fromZonedTime, toZonedTime } from "date-fns-tz";
 
 export default defineComponent({
   name: "MtDatepicker",
@@ -258,7 +261,7 @@ export default defineComponent({
     },
   },
 
-  emits: ["update:modelValue"],
+  emits: ["update:modelValue", "isoChange"],
 
   setup() {
     const errorId = useId();
@@ -305,7 +308,7 @@ export default defineComponent({
           }
         }
 
-        // For date and datetime, handle both strings and Date objects
+        // For date and datetime, let vue-datepicker handle timezone conversion
         if (this.modelValue instanceof Date) {
           return this.modelValue;
         }
@@ -331,17 +334,28 @@ export default defineComponent({
           return;
         }
 
-        // Emit Date objects directly - no conversion
+        // Do not mutate the picked value; emit it as-is. Emit ISO separately.
         if (newValue instanceof Date) {
-          console.log("🔍 Emitting Date object:", newValue);
+          console.log("🔼 emit update:modelValue (Date):", newValue);
           this.$emit("update:modelValue", newValue);
+          const iso = this.convertDateToTimezoneIso(newValue);
+          console.log("🔼 emit isoChange (tz-aware ISO):", iso, "tz:", this.timeZone);
+          this.$emit("isoChange", iso);
         } else if (Array.isArray(newValue)) {
-          console.log("🔍 Emitting array of Date objects:", newValue);
+          console.log("🔼 emit update:modelValue (Date[]):", newValue);
           this.$emit("update:modelValue", newValue);
+          const tz = this.timeZone || "UTC";
+          const isoList = newValue.map((d) =>
+            d instanceof Date ? this.convertDateToTimezoneIso(d, tz) : String(d),
+          );
+          console.log("🔼 emit isoChange (tz-aware ISO[]):", isoList);
+          this.$emit("isoChange", isoList);
         } else if (typeof newValue === "string") {
-          // Fallback for string values
-          console.log("🔍 Emitting string:", newValue);
+          console.log("🔼 emit update:modelValue (string):", newValue);
           this.$emit("update:modelValue", newValue);
+          // If string looks like date, also emit as-is for ISO channel
+          console.log("🔼 emit isoChange (string):", newValue);
+          this.$emit("isoChange", newValue);
         }
       },
     },
@@ -418,6 +432,11 @@ export default defineComponent({
       const hours = String(time.hours).padStart(2, "0");
       const minutes = String(time.minutes).padStart(2, "0");
       return `${hours}:${minutes}`;
+    },
+
+    convertDateToTimezoneIso(date: Date, timezone?: string): string {
+      const tz = timezone || this.timeZone || "UTC";
+      return fromZonedTime(date, tz).toISOString();
     },
 
     checkValidity() {
