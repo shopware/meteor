@@ -644,6 +644,16 @@ label {
     }
   }
 
+  ol {
+    list-style: decimal;
+    list-style-position: outside;
+  }
+
+  ul {
+    list-style: disc;
+    list-style-position: outside;
+  }
+
   /* WYSIWYG styles */
   outline: 0 solid transparent;
 
