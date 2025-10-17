@@ -927,8 +927,8 @@ label {
   inset: 0;
   background: var(--color-elevation-backdrop-default);
   z-index: 2;
-  border: 1px solid var(--color-border-primary-default);
-  border-radius: var(--border-radius-xs);
+  border-radius: var(--border-radius-2xs);
+  backdrop-filter: blur(6px);
 }
 
 .mt-text-editor__gate-content {
