@@ -1252,7 +1252,7 @@ export const VisualTestGateOnInitialUnsupportedHTML: MtTextEditorStory = defineS
     await waitUntil(() => !!document.querySelector(".mt-text-editor__gate"));
 
     // Assert gate actions are visible
-    expect(canvas.getByText("View unsupported code")).toBeDefined();
+    expect(canvas.getByText("View code")).toBeDefined();
   },
 });
 
@@ -1281,10 +1281,10 @@ export const AcceptUnsupportedHtmlDiff_AppliesParsedCode: MtTextEditorStory = de
     // Wait for diff modal
     await waitUntil(() => document.body.querySelector("div[role='dialog']"));
     const body = within(document.body);
-    expect(body.getByText("Unsupported code")).toBeDefined();
+    expect(body.getByText("Code changes required")).toBeDefined();
 
     // Accept changes
-    await userEvent.click(body.getByText("Remove unsupported code"));
+    await userEvent.click(body.getByText("Apply changes"));
 
     // Open code view again
     await userEvent.click(canvas.getByLabelText("Switch to code mode"));
@@ -1323,10 +1323,10 @@ export const CancelUnsupportedHtmlDiff_StaysInCode: MtTextEditorStory = defineSt
     // Wait for diff modal
     await waitUntil(() => document.body.querySelector("div[role='dialog']"));
     const body = within(document.body);
-    expect(body.getByText("Unsupported code")).toBeDefined();
+    expect(body.getByText("Code changes required")).toBeDefined();
 
     // Cancel: stay in code editor
-    await userEvent.click(body.getByText("Continue editing in code mode"));
+    await userEvent.click(body.getByText("Continue in code mode"));
 
     // Wait until modal is closed
     await waitUntil(() => !document.body.querySelector("div[role='dialog']"));
@@ -1363,8 +1363,8 @@ export const VisualTestDiffModalShownAfterEditingUnsupportedHTML: MtTextEditorSt
     // Wait for diff modal and assert basic elements
     await waitUntil(() => document.body.querySelector("div[role='dialog']"));
     const body = within(document.body);
-    expect(body.getByText("Unsupported code")).toBeDefined();
-    expect(body.getByText("Continue editing in code mode")).toBeDefined();
-    expect(body.getByText("Remove unsupported code")).toBeDefined();
+    expect(body.getByText("Code changes required")).toBeDefined();
+    expect(body.getByText("Continue in code mode")).toBeDefined();
+    expect(body.getByText("Apply changes")).toBeDefined();
   },
 });

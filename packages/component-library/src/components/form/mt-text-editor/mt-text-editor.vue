@@ -232,10 +232,13 @@ const { t } = useI18n({
             "Editing in visual mode requires changes to your code. Some parts may be removed or new code may be added to ensure compatibility.",
           accept: "Apply changes",
           cancel: "Continue in code mode",
+          headlines: {
+            current: "Your code",
+            new: "With changes applied",
+          },
         },
         gate: {
-          message:
-            "This editor contains custom code that isn’t fully supported in visual mode.",
+          message: "This editor contains custom code that isn’t fully supported in visual mode.",
           showDiff: "View code",
         },
       },
@@ -255,6 +258,10 @@ const { t } = useI18n({
             "Das Bearbeiten im visuellen Modus erfordert Änderungen an deinem Code. Einige Teile können entfernt oder neuer Code hinzugefügt werden, um die Kompatibilität sicherzustellen.",
           accept: "Änderungen anwenden",
           cancel: "Im Code-Modus fortfahren",
+          headlines: {
+            current: "Dein Code",
+            new: "Mit angewandten Änderungen",
+          },
         },
         gate: {
           message:
@@ -617,6 +624,10 @@ label {
   background: var(--color-background-primary-default);
 }
 
+.mt-text-editor__code-editor {
+  background: var(--color-static-white);
+}
+
 .mt-text-editor__content,
 .mt-text-editor__code-editor {
   height: 260px;
@@ -933,7 +944,7 @@ label {
 }
 
 .mt-text-editor__gate-text {
-  color: var(--color-text-primary-inverse);
+  color: var(--color-static-white);
   margin-bottom: var(--scale-size-16);
 }
 

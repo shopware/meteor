@@ -6,6 +6,15 @@
           {{ t("mt-text-editor.diff.subtitle") }}
         </div>
 
+        <div class="mt-text-editor__diff-headlines">
+          <h3 class="mt-text-editor__diff-headline-current">
+            {{ t("mt-text-editor.diff.headlines.current") }}
+          </h3>
+          <h3 class="mt-text-editor__diff-headline-new">
+            {{ t("mt-text-editor.diff.headlines.new") }}
+          </h3>
+        </div>
+
         <div class="mt-text-editor__diff-container">
           <DiffView
             :data="{
@@ -14,7 +23,7 @@
               hunks: diffHunks,
             }"
             :diff-view-mode="DiffModeEnum.SplitGitHub"
-            :diff-view-theme="'light'"
+            :diff-view-theme="diffViewTheme"
           />
         </div>
       </template>
@@ -33,7 +42,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, defineProps, defineEmits, computed } from "vue";
+import { defineProps, defineEmits, computed, ref, onMounted, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import "@git-diff-view/vue/styles/diff-view.css";
 import { DiffView, DiffModeEnum } from "@git-diff-view/vue";
@@ -78,12 +87,46 @@ const diffHunks = computed(() => {
     return [] as string[];
   }
 });
+
+const isDark = ref(false);
+
+watch(
+  () => props.isOpen,
+  () => {
+    isDark.value = document.body.getAttribute("data-theme") === "dark";
+  },
+);
+
+const diffViewTheme = computed(() => {
+  return isDark.value ? "dark" : "light";
+});
 </script>
 
 <style scoped>
 .mt-text-editor__diff-info {
   margin-bottom: var(--scale-size-16);
   color: var(--color-text-primary-default);
+}
+
+.mt-text-editor__diff-headlines {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--scale-size-16);
+  align-items: center;
+  margin-bottom: var(--scale-size-2);
+}
+
+.mt-text-editor__diff-headline-current,
+.mt-text-editor__diff-headline-new {
+  font-size: var(--font-size-2xs);
+  line-height: var(--font-line-height-2xs);
+  color: var(--color-text-secondary-default);
+  font-weight: var(--font-weight-regular);
+  margin: 0;
+}
+
+.mt-text-editor__diff-headline-new {
+  text-align: right;
 }
 
 .mt-text-editor__diff-container {
