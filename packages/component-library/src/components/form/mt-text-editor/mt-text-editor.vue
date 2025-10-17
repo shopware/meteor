@@ -227,16 +227,16 @@ const { t } = useI18n({
           characters: "{characters} characters",
         },
         diff: {
-          title: "Unsupported code",
+          title: "Code changes required",
           subtitle:
-            "Switching to visual mode will remove any parts of your code that are not supported.",
-          accept: "Remove unsupported code",
-          cancel: "Continue editing in code mode",
+            "Editing in visual mode requires changes to your code. Some parts may be removed or new code may be added to ensure compatibility.",
+          accept: "Apply changes",
+          cancel: "Continue in code mode",
         },
         gate: {
           message:
-            "This editor contains custom code that isn’t supported in visual mode. Editing in visual mode will remove the code.",
-          showDiff: "View unsupported code",
+            "This editor contains custom code that isn’t fully supported in visual mode.",
+          showDiff: "View code",
         },
       },
     },
@@ -250,16 +250,16 @@ const { t } = useI18n({
           characters: "{characters} Zeichen",
         },
         diff: {
-          title: "Nicht unterstützter Code",
+          title: "Codeänderungen erforderlich",
           subtitle:
-            "Beim Wechsel in den visuellen Modus werden alle Teile deines Codes entfernt, die nicht unterstützt werden.",
-          accept: "Nicht unterstützten Code entfernen",
-          cancel: "Weiter im Code-Modus bearbeiten",
+            "Das Bearbeiten im visuellen Modus erfordert Änderungen an deinem Code. Einige Teile können entfernt oder neuer Code hinzugefügt werden, um die Kompatibilität sicherzustellen.",
+          accept: "Änderungen anwenden",
+          cancel: "Im Code-Modus fortfahren",
         },
         gate: {
           message:
-            "Dieser Editor enthält benutzerdefinierten Code, der im visuellen Modus nicht unterstützt wird. Arbeiten im visuellen Modus entfernt diesen Code.",
-          showDiff: "Nicht unterstützten Code anzeigen",
+            "Dieser Editor enthält benutzerdefinierten Code, der im visuellen Modus nicht vollständig unterstützt wird.",
+          showDiff: "Code anzeigen",
         },
       },
     },
