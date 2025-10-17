@@ -338,23 +338,6 @@ export default defineComponent({
         if (newValue instanceof Date) {
           console.log("🔼 emit update:modelValue (Date):", newValue);
           this.$emit("update:modelValue", newValue);
-          const iso = this.convertDateToTimezoneIso(newValue);
-          console.log("🔼 emit isoChange (tz-aware ISO):", iso, "tz:", this.timeZone);
-          this.$emit("isoChange", iso);
-        } else if (Array.isArray(newValue)) {
-          console.log("🔼 emit update:modelValue (Date[]):", newValue);
-          this.$emit("update:modelValue", newValue);
-          const tz = this.timeZone || "UTC";
-          const isoList = newValue.map((d) =>
-            d instanceof Date ? this.convertDateToTimezoneIso(d, tz) : String(d),
-          );
-          console.log("🔼 emit isoChange (tz-aware ISO[]):", isoList);
-          this.$emit("isoChange", isoList);
-        } else if (typeof newValue === "string") {
-          console.log("🔼 emit update:modelValue (string):", newValue);
-          this.$emit("update:modelValue", newValue);
-          // If string looks like date, also emit as-is for ISO channel
-          console.log("🔼 emit isoChange (string):", newValue);
           this.$emit("isoChange", newValue);
         }
       },
