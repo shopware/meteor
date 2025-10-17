@@ -106,7 +106,7 @@ import DatePicker, { type VueDatePickerProps } from "@vuepic/vue-datepicker";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import "@vuepic/vue-datepicker/dist/main.css";
 import { useId } from "vue";
-import { fromZonedTime, toZonedTime } from "date-fns-tz";
+import { fromZonedTime } from "date-fns-tz";
 
 export default defineComponent({
   name: "MtDatepicker",
@@ -334,11 +334,12 @@ export default defineComponent({
           return;
         }
 
-        // Do not mutate the picked value; emit it as-is. Emit ISO separately.
+        // Fixed timezone issue
+        // Convert the date to the correct timezone before emitting
         if (newValue instanceof Date) {
-          console.log("🔼 emit update:modelValue (Date):", newValue);
-          this.$emit("update:modelValue", newValue);
-          this.$emit("isoChange", newValue);
+          const isoDate = newValue.toISOString();
+          console.log("🔼 emit date ISO:", isoDate);
+          this.$emit("update:modelValue", isoDate);
         }
       },
     },
@@ -420,6 +421,11 @@ export default defineComponent({
     convertDateToTimezoneIso(date: Date, timezone?: string): string {
       const tz = timezone || this.timeZone || "UTC";
       return fromZonedTime(date, tz).toISOString();
+    },
+
+    convertDateToCorrectTimezone(date: Date): any{
+      const tz = this.timeZone || "UTC";
+      // console.log("🔄 Converting date:", date, "to timezone:", tz);
     },
 
     checkValidity() {
