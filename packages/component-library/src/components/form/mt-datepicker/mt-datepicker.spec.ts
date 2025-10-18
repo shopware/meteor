@@ -181,16 +181,108 @@ describe("mt-datepicker", () => {
     expect(input.value).toBe("2024/11/13, 05:30");
   });
 
-  it("should show the time in the correct timezone", async () => {
+  it("should emit an iso string with the correct converted time", async () => {
+    const handler = vi.fn();
     // ARRANGE
     render(MtDatepicker, {
       props: {
         dateType: "datetime",
-        timeZone: "Europe/Berlin",
+        timeZone: "America/New_York",
+        modelValue: "2023-07-18T09:15:00.000Z",
+        "onUpdate:modelValue": handler,
       },
     });
 
-    // ASSERT
-    expect(screen.getByRole("textbox")).toHaveValue("10:30");
+    // ACT - select a datetime
+    await userEvent.click(screen.getByRole("textbox"));
+    await waitUntil(() => document.getElementsByClassName("dp__menu").length > 0);
+    await waitUntil(() => document.getElementsByClassName("dp__time_input") !== null);
+
+    // Set the hours
+    await userEvent.click(
+      document.querySelector('[data-test-id="hours-toggle-overlay-btn-0"]') as HTMLElement,
+    );
+    await waitUntil(() => document.querySelector(".dp__overlay") !== null);
+    await userEvent.click(document.querySelector('[data-test-id="15"]') as HTMLElement);
+    await waitUntil(() => !document.querySelector(".dp__overlay"));
+    await waitUntil(() =>
+      expect(
+        document.querySelector('[data-test-id="hours-toggle-overlay-btn-0"]'),
+      ).toHaveTextContent("15"),
+    );
+
+    // Set the minutes
+    await userEvent.click(
+      document.querySelector('[data-test-id="minutes-toggle-overlay-btn-0"]') as HTMLElement,
+    );
+    await waitUntil(() => document.querySelector(".dp__overlay") !== null);
+    await userEvent.click(document.querySelector('[data-test-id="00"]') as HTMLElement);
+    await waitUntil(() => !document.querySelector(".dp__overlay"));
+    expect(
+      document.querySelector('[data-test-id="minutes-toggle-overlay-btn-0"]'),
+    ).toHaveTextContent("00");
+
+    // Set the month
+    await userEvent.click(
+      document.querySelector('[data-test-id="month-toggle-overlay-0"]') as HTMLElement,
+    );
+    await waitUntil(() => document.querySelector(".dp__overlay") !== null);
+    await userEvent.click(document.querySelector('[data-test-id="Okt"]') as HTMLElement);
+    await waitUntil(() => !document.querySelector(".dp__overlay"));
+    expect(document.querySelector('[data-test-id="month-toggle-overlay-0"]')).toHaveTextContent(
+      "Okt",
+    );
+
+    // Set the year
+    await userEvent.click(
+      document.querySelector('[data-test-id="year-toggle-overlay-0"]') as HTMLElement,
+    );
+    await waitUntil(() => document.querySelector(".dp__overlay") !== null);
+    await userEvent.click(document.querySelector('[data-test-id="2025"]') as HTMLElement);
+    await waitUntil(() => !document.querySelector(".dp__overlay"));
+
+    // Set the day
+    await waitUntil(() => document.getElementById("2025-10-10") !== null);
+    const dayElement = document.getElementById("2025-10-10") as HTMLElement;
+
+    await userEvent.click(dayElement);
+
+    // Wait a bit and check if menu closed
+    await new Promise((resolve) => setTimeout(resolve, 100));
+    await waitUntil(() => !document.querySelector(".dp__menu")); // is closed
+
+    // ASSERT - The handler was called with the correct date "2025-10-10T19:00:00.000Z"
+    // because the input is "2025-10-10 15:00" and timeZone is "America/New_York" so the utcOffset is "-04:00"
+    expect(handler).toHaveBeenLastCalledWith("2025-10-10T19:00:00.000Z");
   });
+
+  // Mock values
+  // [
+  //   {
+  //     input: "2025-10-10 15:00",
+  //     timeZone: "America/New_York",
+  //     utcOffset: "-04:00",
+  //     isoString: "2025-10-10T19:00:00.000Z",
+  //   },
+  //   {
+  //     input: "2025-10-10 21:30",
+  //     timeZone: "Europe/London",
+  //     isoString: "2025-10-10T20:30:00.000Z",
+  //   },
+  //   {
+  //     input: "2025-10-11 08:15",
+  //     timeZone: "Asia/Tokyo",
+  //     isoString: "2025-10-10T23:15:00.000Z",
+  //   },
+  //   {
+  //     input: "2025-10-11 03:00",
+  //     timeZone: "Asia/Singapore",
+  //     isoString: "2025-10-10T19:00:00.000Z",
+  //   },
+  //   {
+  //     input: "2025-10-10 12:00",
+  //     timeZone: "America/Los_Angeles",
+  //     isoString: "2025-10-10T19:00:00.000Z",
+  //   },
+  // ];
 });
