@@ -52,7 +52,6 @@
           checkValidity();
         }
       "
-      @update:model-value="handleDateChange"
     >
       <template #clear-icon="{ clear }">
         <button class="mt-datepicker__clear-button" aria-label="Clear value" @click="clear">
@@ -172,7 +171,7 @@ export default defineComponent({
      * This represents the currently selected date(s).
      */
     modelValue: {
-      type: [String, Array, Date] as PropType<string | string[] | Date | Date[]>,
+      type: [String, Array] as PropType<string | string[]>,
       default: null,
     },
 
@@ -260,7 +259,7 @@ export default defineComponent({
     },
   },
 
-  emits: ["update:modelValue", "isoChange"],
+  emits: ["update:modelValue"],
 
   setup() {
     const errorId = useId();
@@ -286,7 +285,8 @@ export default defineComponent({
 
   computed: {
     computedValue: {
-      get(): Date | Date[] | { hours: number; minutes: number } | null {
+      get(): string | string[] | { hours: number; minutes: number } | null {
+        // internal type is Date
         if (this.dateType === "time") {
           if (typeof this.modelValue !== "string") return null;
 
@@ -307,18 +307,9 @@ export default defineComponent({
           }
         }
 
-        // For date and datetime, let vue-datepicker handle timezone conversion  - CHANGED!
-        if (this.modelValue instanceof Date) {
-          return this.modelValue;
-        }
-
-        if (typeof this.modelValue === "string" && this.modelValue.includes("T")) {
-          return new Date(this.modelValue);
-        }
-
-        return null;
+        return this.modelValue;
       },
-      set(newValue: Date | [Date, Date] | { hours: number; minutes: number } | null) {
+      set(newValue: Date | Date[] | { hours: number; minutes: number } | null) {
         if (!newValue) {
           this.$emit("update:modelValue", null);
           return;
@@ -335,11 +326,9 @@ export default defineComponent({
 
         // Fixed timezone issue // CHANGED !
         // Convert the date to the correct timezone before emitting
-        if (newValue instanceof Date) {
-          const isoDate = newValue.toISOString();
-          // console.log("🔼 emit date ISO:", isoDate);
-          this.$emit("update:modelValue", isoDate);
-        }
+        const isoDate = this.convertDateToIso(newValue);
+        console.log("🔼 emit date ISO:", isoDate);
+        this.$emit("update:modelValue", isoDate);
       },
     },
   },
@@ -366,10 +355,6 @@ export default defineComponent({
   },
 
   methods: {
-    handleDateChange(newValue: Date | Date[] | { hours: number; minutes: number } | null) { // CHANGED !
-      this.computedValue = newValue;
-    },
-
     updateOpacitySettings() {
       document.documentElement.style.setProperty(
         "--menu-border-opacity",
@@ -408,6 +393,19 @@ export default defineComponent({
       }
 
       return formatSingleDate(date);
+    },
+
+    convertDateToIso(date: Date | Date[] | { hours: number; minutes: number }): string | string[] {
+      if (Array.isArray(date)) {
+        return date.map((d) => d.toISOString());
+      } else if (date instanceof Date) {
+        return date.toISOString();
+      } else {
+        // Handle time object case
+        const hours = String(date.hours).padStart(2, "0");
+        const minutes = String(date.minutes).padStart(2, "0");
+        return `${hours}:${minutes}`;
+      }
     },
 
     convertTimeToIso(time: { hours: number; minutes: number }): string {

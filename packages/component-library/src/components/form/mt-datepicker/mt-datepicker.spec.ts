@@ -170,7 +170,7 @@ describe("mt-datepicker", () => {
       props: {
         dateType: "datetime",
         timeZone: "UTC",
-        modelValue: new Date("2024-11-13T10:30:00Z"),
+        modelValue: "2024-11-13T10:30:00Z",
       },
     });
 
