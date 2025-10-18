@@ -338,7 +338,7 @@ export default defineComponent({
         // Convert the date to the correct timezone before emitting
         if (newValue instanceof Date) {
           const isoDate = newValue.toISOString();
-          console.log("🔼 emit date ISO:", isoDate);
+          // console.log("🔼 emit date ISO:", isoDate);
           this.$emit("update:modelValue", isoDate);
         }
       },

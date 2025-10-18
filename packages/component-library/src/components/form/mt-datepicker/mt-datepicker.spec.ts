@@ -1,10 +1,14 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { render, screen } from "@testing-library/vue";
 import MtDatepicker from "./mt-datepicker.vue";
 import userEvent from "@testing-library/user-event";
 import { waitUntil } from "@/_internal/test-helper";
 
 describe("mt-datepicker", () => {
+  beforeEach(() => {
+    // Set system time to ensure consistent test results
+    vi.setSystemTime(new Date("2024-07-15T09:00:00Z"));
+  });
   it("is enabled by default", () => {
     // ARRANGE
     render(MtDatepicker);
@@ -110,24 +114,24 @@ describe("mt-datepicker", () => {
     expect(screen.getByRole("textbox")).toHaveValue("14:30");
   });
 
-  // it("clears the input when clicking the clear button", async () => {
-  //   // ARRANGE
-  //   const handler = vi.fn();
+  it("clears the input when clicking the clear button", async () => {
+    // ARRANGE
+    const handler = vi.fn();
 
-  //   await render(MtDatepicker, {
-  //     props: {
-  //       modelValue: "2024-03-20T14:30:00Z",
-  //       "onUpdate:modelValue": handler,
-  //     },
-  //   });
+    await render(MtDatepicker, {
+      props: {
+        modelValue: "2024-03-20T14:30:00Z",
+        "onUpdate:modelValue": handler,
+      },
+    });
 
-  //   // ACT
-  //   await userEvent.click(screen.getByRole("button", { name: "Clear value" }));
+    // ACT
+    await userEvent.click(screen.getByRole("button", { name: "Clear value" }));
 
-  //   // ASSERT
-  //   expect(screen.getByRole("textbox")).toHaveValue("");
-  //   expect(handler).toHaveBeenCalledExactlyOnceWith(null);
-  // });
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("");
+    expect(handler).toHaveBeenCalledExactlyOnceWith(null);
+  });
 
   it("should add has-error class to wrapper when error prop is provided", () => {
     // ARRANGE
@@ -244,45 +248,14 @@ describe("mt-datepicker", () => {
     // Set the day
     await waitUntil(() => document.getElementById("2025-10-10") !== null);
     const dayElement = document.getElementById("2025-10-10") as HTMLElement;
-
     await userEvent.click(dayElement);
 
-    // Wait a bit and check if menu closed
+    // Wait and check if menu closed
     await new Promise((resolve) => setTimeout(resolve, 100));
-    await waitUntil(() => !document.querySelector(".dp__menu")); // is closed
+    await waitUntil(() => !document.querySelector(".dp__menu"));
 
     // ASSERT - The handler was called with the correct date "2025-10-10T19:00:00.000Z"
-    // because the input is "2025-10-10 15:00" and timeZone is "America/New_York" so the utcOffset is "-04:00"
+    // The input is "2025-10-10 15:00" and timeZone is "America/New_York" so the utcOffset is "-04:00"
     expect(handler).toHaveBeenLastCalledWith("2025-10-10T19:00:00.000Z");
   });
-
-  // Mock values
-  // [
-  //   {
-  //     input: "2025-10-10 15:00",
-  //     timeZone: "America/New_York",
-  //     utcOffset: "-04:00",
-  //     isoString: "2025-10-10T19:00:00.000Z",
-  //   },
-  //   {
-  //     input: "2025-10-10 21:30",
-  //     timeZone: "Europe/London",
-  //     isoString: "2025-10-10T20:30:00.000Z",
-  //   },
-  //   {
-  //     input: "2025-10-11 08:15",
-  //     timeZone: "Asia/Tokyo",
-  //     isoString: "2025-10-10T23:15:00.000Z",
-  //   },
-  //   {
-  //     input: "2025-10-11 03:00",
-  //     timeZone: "Asia/Singapore",
-  //     isoString: "2025-10-10T19:00:00.000Z",
-  //   },
-  //   {
-  //     input: "2025-10-10 12:00",
-  //     timeZone: "America/Los_Angeles",
-  //     isoString: "2025-10-10T19:00:00.000Z",
-  //   },
-  // ];
 });
