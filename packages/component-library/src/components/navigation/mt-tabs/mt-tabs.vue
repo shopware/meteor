@@ -277,6 +277,7 @@ export default defineComponent({
     items: "handleResize",
     vertical: "handleResize",
     small: "handleResize",
+    defaultItem: "setDefault",
   },
 
   mounted() {
@@ -304,6 +305,10 @@ export default defineComponent({
   },
 
   methods: {
+    setDefault(): void {
+      this.setActiveItem(this.defaultItem)
+    },
+
     handleClick(itemName: string): void {
       this.setActiveItem(itemName);
       this.$emit("new-item-active", itemName);
