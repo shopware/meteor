@@ -306,7 +306,7 @@ export default defineComponent({
 
   methods: {
     setDefault(): void {
-      this.setActiveItem(this.defaultItem)
+      this.setActiveItem(this.defaultItem);
     },
 
     handleClick(itemName: string): void {
