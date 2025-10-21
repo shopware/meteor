@@ -63,7 +63,7 @@ export const VisualTestRenderPlaceholder: MtTextEditorStory = defineStory({
   name: "Should render the placeholder inside text editor",
   args: {
     placeholder: "Type something...",
-    modelValue: "",
+    modelValue: "<p></p>",
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -827,8 +827,8 @@ export const VisualTestRenderCodeView: MtTextEditorStory = defineStory({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // Click on button with aria-label "Toggle code"
-    await userEvent.click(canvas.getByLabelText("Toggle code"));
+    // Click on button with aria-label "Switch to code mode"
+    await userEvent.click(canvas.getByLabelText("Switch to code mode"));
 
     // Expect the code view to be rendered
     const codeEditor = canvas.getByRole("textbox");
@@ -883,7 +883,7 @@ export const PreserveImageTags: MtTextEditorStory = defineStory({
   name: "Should not remove img tags when formatting text",
   args: {
     modelValue:
-      '<p>Here is an image:</p><img class="responsive-img" style="max-width: 100%;" src="https://placehold.co/200x50" alt="Test image"><p> and some text.</p>',
+      '<p>Here is an image:</p><img src="https://placehold.co/200x50" alt="Test image" class="responsive-img" style="max-width: 100%;"> <p>and some text.</p>',
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
@@ -893,7 +893,7 @@ export const PreserveImageTags: MtTextEditorStory = defineStory({
     await new Promise((resolve) => setTimeout(resolve, 200));
 
     // Click on text using a more flexible matcher
-    const textElement = canvas.getByText((content, element) => {
+    const textElement = canvas.getByText((content, _element) => {
       return content.includes("and some text");
     });
     await userEvent.click(textElement);
@@ -920,7 +920,7 @@ export const PreserveLinkAttributesInternal: MtTextEditorStory = defineStory({
   name: "Should not add target and rel attributes to internal links",
   args: {
     modelValue:
-      '<p>Visit our <a href="/internal-page" target="_self">internal page</a> for more info.</p><p>Some additional text.</p>',
+      '<p>Visit our <a target="_self" href="/internal-page">internal page</a> for more info.</p><p>Some additional text.</p>',
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
@@ -1046,7 +1046,7 @@ export const PreserveDivTags: MtTextEditorStory = defineStory({
   name: "Should not remove or modify div tags",
   args: {
     modelValue:
-      '<div class="container" id="foo" style="max-width: 900px; margin: 0 auto;"><h2>Title</h2><p>Content goes here.</p></div><p>Additional text.</p>',
+      '<div class="container" style="max-width: 900px; margin: 0 auto;" id="foo"> <h2>Title</h2> <p>Content goes here.</p> </div> <p>Additional text.</p>',
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
@@ -1110,7 +1110,7 @@ export const PreserveFigureAndFigcaption: MtTextEditorStory = defineStory({
   name: "Should not remove figure and figcaption tags",
   args: {
     modelValue:
-      '<figure class="image-figure" style="text-align: center;"><img src="/chart.png" alt="Sales Chart" /><figcaption>Sales data for Q1 2024</figcaption></figure><p>Analysis below.</p>',
+      '<figure class="image-figure" style="text-align: center;"><img src="/chart.png" alt="Sales Chart"><figcaption>Sales data for Q1 2024</figcaption></figure><p>Analysis below.</p>',
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
@@ -1142,7 +1142,7 @@ export const PreserveCSSStylesInTables: MtTextEditorStory = defineStory({
   name: "Should not remove CSS styles from tables",
   args: {
     modelValue:
-      '<table class="data-table" style="width: 100%; border-collapse: collapse;"><thead><tr style="background-color: #f5f5f5;"><th style="padding: 10px; border: 1px solid #ccc;">Name</th><th style="padding: 10px; border: 1px solid #ccc;">Value</th></tr></thead><tbody><tr><td style="padding: 10px; border: 1px solid #ccc;">Item 1</td><td style="padding: 10px; border: 1px solid #ccc;">100</td></tr></tbody></table><p>Some additional text.</p>',
+      '<table class="data-table" style="width: 100%; border-collapse: collapse; min-width: 50px"> <colgroup> <col style="min-width: 25px"> <col style="min-width: 25px"> </colgroup> <tbody> <tr style="background-color: #f5f5f5;"> <th colspan="1" rowspan="1" style="padding: 10px; border: 1px solid #ccc;"> <p>Name</p> </th> <th colspan="1" rowspan="1" style="padding: 10px; border: 1px solid #ccc;"> <p>Value</p> </th> </tr> <tr> <td colspan="1" rowspan="1" style="padding: 10px; border: 1px solid #ccc;"> <p>Item 1</p> </td> <td colspan="1" rowspan="1" style="padding: 10px; border: 1px solid #ccc;"> <p>100</p> </td> </tr> </tbody> </table> <p>Some additional text.</p>',
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
@@ -1208,7 +1208,7 @@ export const PreserveComplexHTMLStructure: MtTextEditorStory = defineStory({
   name: "Should preserve complex HTML structure when formatting text",
   args: {
     modelValue:
-      '<div style="max-width: 900px; margin: 0 auto;"><h2 class="display-5" style="text-align: center; margin-bottom: 2rem;">Placeholder Headline Text</h2></div><div style="max-width: 900px; margin: 0 auto;"><p style="font-size: 1rem; text-align: center;">Placeholder paragraph text with a <a href="/sample-link" target="_self">sample link</a> and more placeholder text to demonstrate formatting effects.</p></div><p>Some additional text.</p>',
+      '<div style="max-width: 900px; margin: 0 auto;"> <h2 style="text-align: center; margin-bottom: 2rem" class="display-5">Placeholder Headline Text</h2> </div> <div style="max-width: 900px; margin: 0 auto;"> <p style="text-align: center; font-size: 1rem">Placeholder paragraph text with a <a target="_self" href="/sample-link">sample link</a> and more placeholder text to demonstrate formatting effects.</p> </div> <p>Some additional text.</p>',
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
@@ -1233,5 +1233,138 @@ export const PreserveComplexHTMLStructure: MtTextEditorStory = defineStory({
     expect(expectedHtml).toEqual(
       '<div style="max-width: 900px; margin: 0 auto;"><h2 style="text-align: center; margin-bottom: 2rem" class="display-5">Placeholder Headline Text</h2></div><div style="max-width: 900px; margin: 0 auto;"><p style="text-align: center; font-size: 1rem">Placeholder paragraph text with a <a target="_self" href="/sample-link">sample link</a> and more placeholder text to demonstrate formatting effects.</p></div><p><em>Some additional text.</em></p>',
     );
+  },
+});
+
+// ------------------------------
+// Gate & Diff modal scenarios
+// ------------------------------
+
+export const VisualTestGateOnInitialUnsupportedHTML: MtTextEditorStory = defineStory({
+  name: "Should show gate overlay for unsupported HTML on mount",
+  args: {
+    modelValue: '<div class="box" data-custom="123"><p>Content</p></div>',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Wait until the gate overlay is rendered
+    await waitUntil(() => !!document.querySelector(".mt-text-editor__gate"));
+
+    // Assert gate actions are visible
+    expect(canvas.getByText("View code")).toBeDefined();
+  },
+});
+
+export const AcceptUnsupportedHtmlDiff_AppliesParsedCode: MtTextEditorStory = defineStory({
+  name: "Should accept diff and apply parsed HTML when switching back",
+  args: {
+    modelValue: "<p>Hello</p>",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Go to code view
+    await userEvent.click(canvas.getByLabelText("Switch to code mode"));
+
+    // Replace code with unsupported HTML (data-custom)
+    const codeEditor = canvas.getByRole("textbox") as HTMLElement;
+    await userEvent.click(codeEditor);
+    await userEvent.type(
+      codeEditor,
+      '{selectall}{backspace}<div class="box" data-custom="123"><p>Content</p></div>',
+    );
+
+    // Switch back to WYSIWYG (triggers diff modal)
+    await userEvent.click(canvas.getByLabelText("Switch to visual mode"));
+
+    // Wait for diff modal
+    await waitUntil(() => document.body.querySelector("div[role='dialog']"));
+    const body = within(document.body);
+    expect(body.getByText("Code changes required")).toBeDefined();
+
+    // Accept changes
+    await userEvent.click(body.getByText("Apply changes"));
+
+    // Open code view again
+    await userEvent.click(canvas.getByLabelText("Switch to code mode"));
+
+    const updatedEditor = canvas.getByRole("textbox") as HTMLElement;
+
+    // Assert unsupported attribute removed, structure retained
+    expect(updatedEditor.innerText).not.toContain("data-custom");
+    expect(updatedEditor.innerText).toContain('<div class="box"');
+    expect(updatedEditor.innerText).toContain("<p>Content</p>");
+  },
+});
+
+export const CancelUnsupportedHtmlDiff_StaysInCode: MtTextEditorStory = defineStory({
+  name: "Should cancel diff and remain in code view with original code",
+  args: {
+    modelValue: "<p>Hello</p>",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Go to code view
+    await userEvent.click(canvas.getByLabelText("Switch to code mode"));
+
+    // Replace code with unsupported HTML (data-custom)
+    const codeEditor = canvas.getByRole("textbox") as HTMLElement;
+    await userEvent.click(codeEditor);
+    await userEvent.type(
+      codeEditor,
+      '{selectall}{backspace}<div class="box" data-custom="123"><p>Content</p></div>',
+    );
+
+    // Switch back to WYSIWYG (triggers diff modal)
+    await userEvent.click(canvas.getByLabelText("Switch to visual mode"));
+
+    // Wait for diff modal
+    await waitUntil(() => document.body.querySelector("div[role='dialog']"));
+    const body = within(document.body);
+    expect(body.getByText("Code changes required")).toBeDefined();
+
+    // Cancel: stay in code editor
+    await userEvent.click(body.getByText("Continue in code mode"));
+
+    // Wait until modal is closed
+    await waitUntil(() => !document.body.querySelector("div[role='dialog']"));
+
+    // Ensure we are in code editor and the original unsupported code remains
+    const stillCodeEditor = canvas.getByRole("textbox") as HTMLElement;
+    expect(stillCodeEditor).toBeDefined();
+    expect(stillCodeEditor.innerText).toContain("data-custom");
+  },
+});
+
+export const VisualTestDiffModalShownAfterEditingUnsupportedHTML: MtTextEditorStory = defineStory({
+  name: "Should show diff modal after editing unsupported HTML in code",
+  args: {
+    modelValue: "<p>Hello</p>",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Go to code view
+    await userEvent.click(canvas.getByLabelText("Switch to code mode"));
+
+    // Replace code with unsupported HTML (data-custom)
+    const codeEditor = canvas.getByRole("textbox") as HTMLElement;
+    await userEvent.click(codeEditor);
+    await userEvent.type(
+      codeEditor,
+      '{selectall}{backspace}<div class="box" data-custom="123"><p>Content</p></div>',
+    );
+
+    // Switch back to WYSIWYG (triggers diff modal)
+    await userEvent.click(canvas.getByLabelText("Switch to visual mode"));
+
+    // Wait for diff modal and assert basic elements
+    await waitUntil(() => document.body.querySelector("div[role='dialog']"));
+    const body = within(document.body);
+    expect(body.getByText("Code changes required")).toBeDefined();
+    expect(body.getByText("Continue in code mode")).toBeDefined();
+    expect(body.getByText("Apply changes")).toBeDefined();
   },
 });

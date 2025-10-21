@@ -16,6 +16,8 @@ The `mt-text-editor` component is a powerful and flexible rich text editor built
 - **Character Count**: Displays a live character count at the bottom.
 - **Inline Editing**: Option to enable inline editing with a floating toolbar.
 - **Contextual Buttons**: Provides custom buttons for the footer of the editor that change contextually based on the current cursor position.
+- **Security Gate on Initial Load**: Blocks WYSIWYG editing if the initial HTML would change; review a diff first.
+- **Diff Review on Switch**: When switching from Code → WYSIWYG, shows a diff and requires acceptance if changes are detected.
 
 ---
 
@@ -440,6 +442,32 @@ const customButtons = [
 
 ---
 
+## Security & Integrity Checks
+
+### Gate on Initial Unsupported HTML
+
+When the editor mounts in WYSIWYG, it dry-runs a TipTap parse and compares the HTML. If it differs (for example, unsupported attributes are removed), an overlay blocks editing. You can:
+
+- Show Diff: open a modal with side-by-side diff
+- Stay in Code: switch to code view
+
+Accepting the diff applies the parsed HTML and enables WYSIWYG editing.
+
+<Canvas of={TextEditorStories.DiffModalStory} />
+
+#### Behavior
+
+- No additional props required; enabled by default.
+- `update:modelValue` emits are suppressed while the gate is active.
+- UI texts are localized via `mt-text-editor.gate.*` and `mt-text-editor.diff.*`.
+
 ## Code Editor Mode
 
 The `mt-text-editor` includes a code editor mode for editing raw HTML. This mode is powered by [CodeMirror](https://codemirror.net/). Use the `toggle-code` button to switch between WYSIWYG mode and code mode.
+
+### Diff Review on Switch
+
+When switching from Code → WYSIWYG, the editor compares the code with TipTap’s parsed output. If changes are detected, a modal shows a side-by-side diff. You can:
+
+- Accept Changes & Switch: apply the parsed HTML and switch to WYSIWYG
+- Stay in Code Editor: keep editing in code view

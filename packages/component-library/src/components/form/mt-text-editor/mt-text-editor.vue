@@ -22,28 +22,16 @@
           @update-contextual-buttons="updateContextualButtons"
         >
           <!-- Special buttons -->
-          <template #button_text-color="{ editor, disabled, button }">
-            <mt-text-editor-toolbar-button-color
-              :editor="editor"
-              :disabled="disabled"
-              :button="button"
-            />
+          <template #button_text-color="{ editor: e, disabled: d, button }">
+            <mt-text-editor-toolbar-button-color :editor="e" :disabled="d" :button="button" />
           </template>
 
-          <template #button_link="{ editor, disabled, button }">
-            <mt-text-editor-toolbar-button-link
-              :editor="editor"
-              :disabled="disabled"
-              :button="button"
-            />
+          <template #button_link="{ editor: e, disabled: d, button }">
+            <mt-text-editor-toolbar-button-link :editor="e" :disabled="d" :button="button" />
           </template>
 
-          <template #button_table="{ editor, disabled, button }">
-            <mt-text-editor-toolbar-button-table
-              :editor="editor"
-              :disabled="disabled"
-              :button="button"
-            />
+          <template #button_table="{ editor: e, disabled: d, button }">
+            <mt-text-editor-toolbar-button-table :editor="e" :disabled="d" :button="button" />
           </template>
 
           <!-- Dynamically pass all slots -->
@@ -64,6 +52,20 @@
         :disabled="disabled"
         @update:model-value="emit('update:modelValue', $event)"
       />
+
+      <!-- WYSIWYG approval gate overlay -->
+      <div v-if="!showCodeEditor && gateActive" class="mt-text-editor__gate">
+        <div class="mt-text-editor__gate-content">
+          <p class="mt-text-editor__gate-text">
+            {{ t("mt-text-editor.gate.message") }}
+          </p>
+          <div class="mt-text-editor__gate-actions">
+            <mt-button variant="primary" @click="showDiffModal = true">
+              {{ t("mt-text-editor.gate.showDiff") }}
+            </mt-button>
+          </div>
+        </div>
+      </div>
 
       <div class="mt-text-editor__footer">
         <div class="mt-text-editor__footer-left">
@@ -125,6 +127,15 @@
     </div>
 
     <mt-field-error v-if="error" :error="error" />
+
+    <mt-text-editor-diff-modal
+      :is-open="showDiffModal"
+      :original-html="diffOriginalHtml"
+      :parsed-html="diffParsedHtml"
+      @change-open="onChangeOpenDiffModal"
+      @accept="handleDiffAccept"
+      @cancel="handleDiffCancel"
+    />
   </div>
 </template>
 
@@ -185,10 +196,23 @@ import mtPopoverItem from "@/components/overlay/mt-popover-item/mt-popover-item.
 import mtPopover from "@/components/overlay/mt-popover/mt-popover.vue";
 import mtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import CodeMirror from "vue-codemirror6";
-import { computed, h, reactive, ref, useSlots, watch, type PropType } from "vue";
+import {
+  computed,
+  h,
+  reactive,
+  ref,
+  useSlots,
+  watch,
+  onMounted,
+  nextTick,
+  type PropType,
+} from "vue";
 import { html } from "@codemirror/lang-html";
 import { useI18n } from "vue-i18n";
 import ListItem from "@tiptap/extension-list-item";
+import mtTextEditorDiffModal from "./_internal/mt-text-editor-diff-modal.vue";
+import { getHtmlParseDiff } from "./_internal/html-parse-diff";
+import mtButton from "@/components/form/mt-button/mt-button.vue";
 
 const { t } = useI18n({
   useScope: "global",
@@ -196,20 +220,53 @@ const { t } = useI18n({
     en: {
       "mt-text-editor": {
         buttons: {
-          "toggle-code": "Toggle code",
+          "switch-to-code": "Switch to code mode",
+          "switch-to-visual": "Switch to visual mode",
         },
         footer: {
           characters: "{characters} characters",
+        },
+        diff: {
+          title: "Code changes required",
+          subtitle:
+            "Editing in visual mode requires changes to your code. Some parts may be removed or new code may be added to ensure compatibility.",
+          accept: "Apply changes",
+          cancel: "Continue in code mode",
+          headlines: {
+            current: "Your code",
+            new: "With changes applied",
+          },
+        },
+        gate: {
+          message: "This editor contains custom code that isn’t fully supported in visual mode.",
+          showDiff: "View code",
         },
       },
     },
     de: {
       "mt-text-editor": {
         buttons: {
-          "toggle-code": "Codeansicht umschalten",
+          "switch-to-code": "In den Code-Modus wechseln",
+          "switch-to-visual": "In den visuellen Modus wechseln",
         },
         footer: {
           characters: "{characters} Zeichen",
+        },
+        diff: {
+          title: "Codeänderungen erforderlich",
+          subtitle:
+            "Das Bearbeiten im visuellen Modus erfordert Änderungen an deinem Code. Einige Teile können entfernt oder neuer Code hinzugefügt werden, um die Kompatibilität sicherzustellen.",
+          accept: "Änderungen anwenden",
+          cancel: "Im Code-Modus fortfahren",
+          headlines: {
+            current: "Dein Code",
+            new: "Mit angewandten Änderungen",
+          },
+        },
+        gate: {
+          message:
+            "Dieser Editor enthält benutzerdefinierten Code, der im visuellen Modus nicht vollständig unterstützt wird.",
+          showDiff: "Code anzeigen",
         },
       },
     },
@@ -300,65 +357,73 @@ const componentClasses = computed(() => {
 /**
  * Editor
  */
+const editorExtensions = enhanceExtensionsWithAttributes([
+  // Use individual StarterKit extensions instead of the bundle
+  Document,
+  Paragraph,
+  Text,
+  Heading,
+  Bold,
+  Italic,
+  Strike,
+  Code,
+  CodeBlock,
+  Blockquote,
+  HorizontalRule,
+  BulletList,
+  OrderedList,
+  Dropcursor,
+  Gapcursor,
+  History,
+  HardBreak,
+  ListItem,
+  Underline,
+  Subscript,
+  Superscript,
+  TextAlign.configure({
+    types: ["paragraph", "heading"],
+  }),
+  Color,
+  TextStyle,
+  Link.configure({
+    openOnClick: false,
+    HTMLAttributes: {
+      // Don't automatically add rel attributes - we'll handle this manually in the link button
+      rel: null,
+      target: null, // Don't set target by default
+    },
+  }),
+  CharacterCount.configure({}),
+  Table.configure({
+    resizable: true,
+  }),
+  TableRow,
+  TableHeader,
+  TableCell,
+  Placeholder.configure({
+    placeholder: props.placeholder,
+    showOnlyWhenEditable: true,
+  }),
+  Image.configure({
+    allowBase64: true,
+  }),
+  // Add HTML preserving extensions for span, div, and semantic elements
+  GenericContainer,
+  DivContainer,
+  SemanticElements,
+  FigcaptionElement,
+  ...(props.tipTapConfig.extensions ?? []),
+]);
+
+// WYSIWYG approval gate state (declare early so editor callbacks can read it)
+const gateActive = ref(false);
+
+// Suppress emits during init and controlled updates
+const suppressUpdates = ref(true);
+
 const editor = useEditor({
   ...props.tipTapConfig,
-  extensions: enhanceExtensionsWithAttributes([
-    // Use individual StarterKit extensions instead of the bundle
-    Document,
-    Paragraph,
-    Text,
-    Heading,
-    Bold,
-    Italic,
-    Strike,
-    Code,
-    CodeBlock,
-    Blockquote,
-    HorizontalRule,
-    BulletList,
-    OrderedList,
-    Dropcursor,
-    Gapcursor,
-    History,
-    HardBreak,
-    ListItem,
-    Underline,
-    Subscript,
-    Superscript,
-    TextAlign.configure({
-      types: ["paragraph", "heading"],
-    }),
-    Color,
-    TextStyle,
-    Link.configure({
-      openOnClick: false,
-      HTMLAttributes: {
-        // Don't automatically add rel attributes - we'll handle this manually in the link button
-        rel: null,
-        target: null, // Don't set target by default
-      },
-    }),
-    CharacterCount.configure({}),
-    Table.configure({
-      resizable: true,
-    }),
-    TableRow,
-    TableHeader,
-    TableCell,
-    Placeholder.configure({
-      placeholder: props.placeholder,
-      showOnlyWhenEditable: true,
-    }),
-    Image.configure({
-      allowBase64: true,
-    }),
-    // Add HTML preserving extensions for span, div, and semantic elements
-    GenericContainer,
-    DivContainer,
-    SemanticElements,
-    FigcaptionElement,
-    ...(props.tipTapConfig.extensions ?? []),
-  ]),
+  extensions: editorExtensions,
   content: props.modelValue,
   editorProps: {
     attributes: {
@@ -366,6 +431,7 @@ const editor = useEditor({
     },
   },
   onUpdate: ({ editor }) => {
+    if (suppressUpdates.value || gateActive.value) return;
     emit("update:modelValue", editor.getHTML());
   },
   editable: !props.disabled,
@@ -409,9 +475,11 @@ const mergedCustomButtons = computed<CustomButton[]>(() => {
     tableButton,
     {
       name: "toggle-code",
-      label: "mt-text-editor.buttons.toggle-code",
+      label: showCodeEditor.value
+        ? "mt-text-editor.buttons.switch-to-visual"
+        : "mt-text-editor.buttons.switch-to-code",
       icon: "regular-code-xs",
-      action: () => (showCodeEditor.value = !showCodeEditor.value),
+      action: () => onToggleCodeClick(),
       alignment: "right",
       position: 3000,
       disabled: () => false,
@@ -442,17 +510,94 @@ const toolbarWrapperComponent = computed(() => {
 const showCodeEditor = ref(false);
 const lang = html();
 
+// Diff modal state
+const showDiffModal = ref(false);
+const diffOriginalHtml = ref("");
+const diffParsedHtml = ref("");
+// Raw parsed HTML to apply on acceptance (beautified only for display)
+const parsedHtmlRaw = ref("");
+
+const onToggleCodeClick = async () => {
+  // Switching to Code view directly
+  if (!showCodeEditor.value) {
+    showCodeEditor.value = true;
+    return;
+  }
+
+  // Switching from Code to WYSIWYG: dry-run parse and compare using util
+  const diff = await getHtmlParseDiff(props.modelValue, editorExtensions, {
+    parseFromBeautified: false,
+  });
+  if (!diff.hasDiff) {
+    showCodeEditor.value = false;
+    return;
+  }
+  diffOriginalHtml.value = diff.originalBeautified;
+  diffParsedHtml.value = diff.parsedBeautified;
+  parsedHtmlRaw.value = diff.parsedRaw;
+  showDiffModal.value = true;
+};
+
+const handleDiffAccept = async () => {
+  const applied = parsedHtmlRaw.value;
+  emit("update:modelValue", applied);
+  showCodeEditor.value = false;
+  suppressUpdates.value = true;
+  editor.value?.commands.setContent(applied, false);
+  await nextTick();
+  suppressUpdates.value = false;
+  showDiffModal.value = false;
+  if (gateActive.value) {
+    gateActive.value = false;
+    editor.value?.setEditable(!props.disabled);
+  }
+};
+
+const handleDiffCancel = () => {
+  // Open code editor, if not already open
+  showCodeEditor.value = true;
+  // Stay in code editor
+  showDiffModal.value = false;
+};
+
+const onChangeOpenDiffModal = (value: boolean) => {
+  showDiffModal.value = value;
+};
+
 watch(
   () => showCodeEditor.value,
   (newValue, oldValue) => {
     // When switching from code editor to WYSIWYG editor, update the content
     if (!newValue && oldValue) {
+      suppressUpdates.value = true;
       editor.value?.commands.setContent(props.modelValue, false);
+      Promise.resolve().then(() => {
+        suppressUpdates.value = false;
+      });
     }
   },
 );
 
 const slots = useSlots() as Record<string, unknown>;
+
+// Initial gate check when component mounts in WYSIWYG
+onMounted(async () => {
+  if (showCodeEditor.value) return; // Only relevant in WYSIWYG
+  // Wait for editor to be ready
+  await Promise.resolve();
+  const diff = await getHtmlParseDiff(props.modelValue, editorExtensions, {
+    parseFromBeautified: true,
+  });
+  if (diff.hasDiff) {
+    gateActive.value = true;
+    diffOriginalHtml.value = diff.originalBeautified;
+    diffParsedHtml.value = diff.parsedBeautified;
+    parsedHtmlRaw.value = diff.parsedRaw;
+    editor.value?.setEditable(false);
+  }
+  // Allow subsequent updates to emit after initial gate check
+  suppressUpdates.value = false;
+});
 </script>
 
 <style scoped>
@@ -470,12 +615,17 @@ label {
 }
 
 .mt-text-editor__box {
+  position: relative;
   border: 1px solid var(--color-border-primary-default);
   border-radius: var(--border-radius-xs);
 }
 
 .mt-text-editor:not(.mt-text-editor--inline-edit) .mt-text-editor__box {
   background: var(--color-background-primary-default);
+}
+
+.mt-text-editor__code-editor {
+  background: var(--color-static-white);
 }
 
 .mt-text-editor__content,
@@ -503,6 +653,16 @@ label {
       margin-top: 0.25em;
       margin-bottom: 0.25em;
     }
+  }
+
+  ol {
+    list-style: decimal;
+    list-style-position: outside;
+  }
+
+  ul {
+    list-style: disc;
+    list-style-position: outside;
   }
 
   /* WYSIWYG styles */
@@ -749,5 +909,47 @@ label {
 
 .mt-text-editor--error label {
   color: var(--color-text-critical-default);
+}
+
+/* Gate overlay */
+.mt-text-editor__gate {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 3;
+}
+
+.mt-text-editor__gate::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: var(--color-elevation-backdrop-default);
+  z-index: 2;
+  border-radius: var(--border-radius-2xs);
+  backdrop-filter: blur(6px);
+}
+
+.mt-text-editor__gate-content {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--scale-size-24);
+  text-align: center;
+  z-index: 3;
+}
+
+.mt-text-editor__gate-text {
+  color: var(--color-static-white);
+  margin-bottom: var(--scale-size-16);
+}
+
+.mt-text-editor__gate-actions {
+  display: flex;
+  gap: var(--scale-size-8);
 }
 </style>
