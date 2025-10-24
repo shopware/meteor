@@ -70,7 +70,9 @@ describe("src/app/component/navigation/mt-tabs", () => {
       });
 
       expect(wrapper.vm.activeItemName).toBe("bar");
-      expect(wrapper.find('.mt-tabs__item[data-item-name="bar"]').classes()).toContain("mt-tabs__item--active");
+      expect(wrapper.find('.mt-tabs__item[data-item-name="bar"]').classes()).toContain(
+        "mt-tabs__item--active",
+      );
     });
 
     it("should update active item when default-item prop changes", async () => {
@@ -80,7 +82,9 @@ describe("src/app/component/navigation/mt-tabs", () => {
 
       // Initially should be set to foo
       expect(wrapper.vm.activeItemName).toBe("foo");
-      expect(wrapper.find('.mt-tabs__item[data-item-name="foo"]').classes()).toContain("mt-tabs__item--active");
+      expect(wrapper.find('.mt-tabs__item[data-item-name="foo"]').classes()).toContain(
+        "mt-tabs__item--active",
+      );
 
       // Change defaultItem prop
       await wrapper.setProps({ defaultItem: "bar" });
@@ -88,8 +92,12 @@ describe("src/app/component/navigation/mt-tabs", () => {
 
       // Should now be set to bar
       expect(wrapper.vm.activeItemName).toBe("bar");
-      expect(wrapper.find('.mt-tabs__item[data-item-name="bar"]').classes()).toContain("mt-tabs__item--active");
-      expect(wrapper.find('.mt-tabs__item[data-item-name="foo"]').classes()).not.toContain("mt-tabs__item--active");
+      expect(wrapper.find('.mt-tabs__item[data-item-name="bar"]').classes()).toContain(
+        "mt-tabs__item--active",
+      );
+      expect(wrapper.find('.mt-tabs__item[data-item-name="foo"]').classes()).not.toContain(
+        "mt-tabs__item--active",
+      );
     });
   });
 });
