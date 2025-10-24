@@ -193,7 +193,7 @@ const url = computed(() => {
 watch(
   () => modelValue.value,
   () => {
-    const result = checkInput(currentValue.value || "");
+    const result = checkInput(modelValue.value || "");
 
     currentValue.value = result;
   },

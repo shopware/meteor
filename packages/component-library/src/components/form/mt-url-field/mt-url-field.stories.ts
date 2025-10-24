@@ -25,6 +25,7 @@ export default {
 </mt-url-field>`,
   }),
   args: {
+    modelValue: "https://shopware.com",
     label: "Url field",
     size: "default",
   },

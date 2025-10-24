@@ -26,9 +26,7 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import MtIcon from "@/components/icons-media/mt-icon/mt-icon.vue";
 import mtInheritanceSwitch from "../mt-inheritance-switch/mt-inheritance-switch.vue";
-import { useI18n } from "vue-i18n";
 
 const props = withDefaults(
   defineProps<{
