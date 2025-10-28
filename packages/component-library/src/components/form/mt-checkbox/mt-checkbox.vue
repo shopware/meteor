@@ -100,6 +100,15 @@ export default defineComponent({
     },
 
     /**
+     * v-model binding for the checkbox value.
+     */
+    modelValue: {
+      type: Boolean,
+      required: false,
+      default: undefined,
+    },
+
+    /**
      * Determines if the field is partially checked.
      */
     partial: {
@@ -163,16 +172,14 @@ export default defineComponent({
     },
   },
 
-  data(): { id: string | undefined; currentValue: boolean | undefined } {
-    return {
-      currentValue: this.checked,
-      id: undefined,
-    };
-  },
-
-  mounted() {
-    this.id = createId();
-  },
+  emits: [
+    "update:modelValue",
+    "update:checked",
+    // @deprecated - Will be removed. Use `update:modelValue` instead.
+    "change",
+    "inheritance-remove",
+    "inheritance-restore",
+  ],
 
   setup() {
     const futureFlags = useFutureFlags();
@@ -183,6 +190,13 @@ export default defineComponent({
 
     return {
       checkboxClasses,
+    };
+  },
+
+  data(): { id: string | undefined; currentValue: boolean | undefined } {
+    return {
+      currentValue: this.checked,
+      id: undefined,
     };
   },
 
@@ -216,7 +230,15 @@ export default defineComponent({
         return this.inheritedValue;
       }
 
-      return this.currentValue || false;
+      if (this.checked !== undefined) {
+        return this.currentValue ?? false;
+      }
+
+      if (this.modelValue !== undefined) {
+        return this.modelValue;
+      }
+
+      return this.currentValue ?? false;
     },
 
     isInheritanceField(): boolean {
@@ -254,16 +276,38 @@ export default defineComponent({
       },
       immediate: true,
     },
+
+    modelValue: {
+      handler() {
+        if (this.checked === undefined) {
+          // only sync from modelValue when not explicitly controlled by `checked`
+          this.currentValue = (this as any).modelValue as boolean | undefined;
+        }
+      },
+      immediate: true,
+    },
+  },
+
+  mounted() {
+    this.id = createId();
+
+    if (this.checked !== undefined) {
+      // @deprecated - Will be removed. Use `v-model` (modelValue / update:modelValue) instead.
+      console.warn(
+        "[MtCheckbox] The `checked` prop is deprecated and will be removed. Please use v-model (modelValue/update:modelValue) instead.",
+      );
+    }
   },
 
   methods: {
     onChange(changeEvent: Event) {
-      // @ts-expect-error - target is defined in the event
-      this.$emit("update:checked", changeEvent.target.checked);
+      const target = changeEvent.target as HTMLInputElement;
+      const next = target.checked as boolean;
 
-      // @ts-expect-error - target is defined in the event
-      // @deprecated tag:4.0 - Will be removed. Use `update:checked` instead.
-      this.$emit("change", changeEvent.target.checked);
+      this.$emit("update:modelValue", next);
+      this.$emit("update:checked", next);
+      // @deprecated - Will be removed. Use `update:checked` instead.
+      this.$emit("change", next);
     },
   },
 });
