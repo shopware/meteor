@@ -215,6 +215,8 @@ export default defineComponent({
     return { t };
   },
 
+  emits: ["update:modelValue", "input-change", "inheritance-restore", "inheritance-remove"],
+
   computed: {
     realStep(): number {
       if (this.step === null) {
