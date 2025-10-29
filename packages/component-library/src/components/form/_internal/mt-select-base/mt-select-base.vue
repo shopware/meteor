@@ -7,6 +7,8 @@
     :is-inherited="isInherited"
     :is-inheritance-field="isInheritanceField"
     :disable-inheritance-toggle="disableInheritanceToggle"
+    @inheritance-restore="$emit('inheritance-restore', $event)"
+    @inheritance-remove="$emit('inheritance-remove', $event)"
   >
     <template #label>
       {{ label }}
@@ -201,6 +203,14 @@ export default defineComponent({
   beforeUnmount() {
     window.removeEventListener("resize", this.updateSuffixWidth);
   },
+
+  emits: [
+    "select-expanded",
+    "select-collapsed",
+    "clear",
+    "inheritance-restore",
+    "inheritance-remove",
+  ],
 
   methods: {
     updateSuffixWidth() {
