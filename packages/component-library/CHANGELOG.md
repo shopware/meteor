@@ -1,5 +1,19 @@
 # Changelog
 
+## 4.20.0
+
+### Minor Changes
+
+- 863d58e: Add diff-view to mt-text-editor when using unsupported markup
+
+### Patch Changes
+
+- 0623c6b: Add v-model to mt-checkbox
+- 0623c6b: Refactor mt-password-field so that it uses mt-base-field and supports inheritance logic. Also fixes hint prop
+- 0623c6b: Use the mt-inheritance-switch inside the mt-field-label instead of a manual implementation
+- 8537be0: feat: add translation to promo badge
+- 0623c6b: Fix missing inheritance events in mt-colorpicker
+
 ## 4.19.0
 
 ### Minor Changes
