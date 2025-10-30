@@ -32,7 +32,6 @@ describe("mt-checkbox", () => {
     const handler = vi.fn();
     render(MtCheckbox, {
       props: {
-        // @ts-expect-error -- Event is not typed, yet
         onChange: handler,
       },
     });
@@ -52,7 +51,6 @@ describe("mt-checkbox", () => {
     const handler = vi.fn();
     render(MtCheckbox, {
       props: {
-        // @ts-expect-error -- Event is not typed, yet
         onChange: handler,
       },
     });
@@ -74,7 +72,6 @@ describe("mt-checkbox", () => {
     render(MtCheckbox, {
       props: {
         checked: false,
-        // @ts-expect-error -- Event is not typed, yet
         onChange: handler,
         label: "Checkbox",
       },
@@ -134,7 +131,6 @@ describe("mt-checkbox", () => {
     render(MtCheckbox, {
       props: {
         disabled: true,
-        // @ts-expect-error -- Event is not typed, yet
         onChange: handler,
       },
     });
@@ -231,7 +227,6 @@ describe("mt-checkbox", () => {
     render(MtCheckbox, {
       props: {
         checked: true,
-        // @ts-expect-error -- Event is not typed, yet
         "onUpdate:checked": handler,
       },
     });
