@@ -1,5 +1,6 @@
-import { fn, userEvent, within } from "@storybook/test";
+import { expect, fn, userEvent, within } from "@storybook/test";
 import meta, { type MtUrlFieldMeta, type MtUrlFieldStory } from "./mt-url-field.stories";
+import { waitUntil } from "@/_internal/test-helper";
 
 export default {
   ...meta,
@@ -126,5 +127,24 @@ export const VisualTestCopyToClipboard: MtUrlFieldStory = {
     const canvas = within(canvasElement);
 
     await userEvent.click(canvas.getByRole("button", { name: "Copy URL to clipboard" }));
+  },
+};
+
+export const changeModelValueFromOutside: MtUrlFieldStory = {
+  name: "Change modelValue from outside",
+  args: {
+    modelValue: "https://initial.com",
+  },
+  async play({ args, canvasElement }) {
+    const canvas = within(canvasElement);
+
+    // Verify initial value
+    const input = canvas.getByRole("textbox") as HTMLInputElement;
+    expect(input.value).toBe("initial.com");
+
+    // Change the modelValue from outside
+    args.modelValue = "https://changed.com";
+    await waitUntil(() => input.value === "changed.com");
+    expect(input.value).toBe("changed.com");
   },
 };

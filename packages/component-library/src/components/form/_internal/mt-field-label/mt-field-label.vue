@@ -13,43 +13,20 @@
       }
     "
   >
-    <button
-      type="button"
+    <mt-inheritance-switch
       v-if="inheritance !== 'none'"
-      class="mt-field-label__inheritance-switch"
-      :aria-label="inheritance === 'linked' ? t('unlinkInheritance') : t('linkInheritance')"
-      @click="$emit('update:inheritance', inheritance === 'linked' ? 'unlinked' : 'linked')"
-    >
-      <mt-icon
-        size="1rem"
-        aria-hidden="true"
-        :name="
-          inheritance === 'linked' ? 'regular-link-horizontal' : 'regular-link-horizontal-slash'
-        "
-      />
-    </button>
-
+      :is-inherited="inheritance === 'linked'"
+      :disabled="disabled"
+      @inheritance-remove="$emit('update:inheritance', 'unlinked')"
+      @inheritance-restore="$emit('update:inheritance', 'linked')"
+    />
     <slot />
   </label>
 </template>
 
 <script setup lang="ts">
 import { computed } from "vue";
-import MtIcon from "@/components/icons-media/mt-icon/mt-icon.vue";
-import { useI18n } from "vue-i18n";
-
-const { t } = useI18n({
-  messages: {
-    en: {
-      linkInheritance: "Link inheritance",
-      unlinkInheritance: "Unlink inheritance",
-    },
-    de: {
-      linkInheritance: "Vererbung verknüpfen",
-      unlinkInheritance: "Vererbung trennen",
-    },
-  },
-});
+import mtInheritanceSwitch from "../mt-inheritance-switch/mt-inheritance-switch.vue";
 
 const props = withDefaults(
   defineProps<{
@@ -57,6 +34,7 @@ const props = withDefaults(
     hasError?: boolean;
     required?: boolean;
     inheritance?: "linked" | "unlinked" | "none";
+    disabled?: boolean;
   }>(),
   {
     inheritance: "none",

@@ -33,7 +33,6 @@ describe("mt-number-field", () => {
     render(MtNumberField, {
       props: {
         modelValue: 10,
-        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
         onChange: handler,
       },
     });
@@ -55,7 +54,6 @@ describe("mt-number-field", () => {
     render(MtNumberField, {
       props: {
         modelValue: 10,
-        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
         onChange: handler,
       },
     });
@@ -73,7 +71,6 @@ describe("mt-number-field", () => {
     render(MtNumberField, {
       props: {
         modelValue: 10,
-        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
         onChange: handler,
       },
     });
@@ -94,7 +91,6 @@ describe("mt-number-field", () => {
         modelValue: 0,
         isInheritanceField: true,
         isInherited: true,
-        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
         "onUpdate:modelValue": handler,
       },
     });
@@ -115,7 +111,6 @@ describe("mt-number-field", () => {
         modelValue: 0,
         isInheritanceField: true,
         isInherited: true,
-        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
         "onUpdate:modelValue": handler,
       },
     });
@@ -134,7 +129,6 @@ describe("mt-number-field", () => {
       props: {
         modelValue: 5,
         min: 0,
-        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
         "onUpdate:modelValue": handler,
       },
     });
@@ -159,7 +153,6 @@ describe("mt-number-field", () => {
       props: {
         modelValue: 15,
         min: 0,
-        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
         "onUpdate:modelValue": handler,
       },
     });
@@ -185,7 +178,6 @@ describe("mt-number-field", () => {
         modelValue: undefined,
         min: 0,
         allowEmpty: true,
-        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
         "onUpdate:modelValue": handler,
       },
     });
@@ -212,7 +204,6 @@ describe("mt-number-field", () => {
       props: {
         modelValue: 5,
         min: 10,
-        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
         "onUpdate:modelValue": handler,
       },
     });
@@ -238,7 +229,6 @@ describe("mt-number-field", () => {
       props: {
         modelValue: 5,
         max: 10,
-        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
         "onUpdate:modelValue": handler,
       },
     });
@@ -263,7 +253,6 @@ describe("mt-number-field", () => {
       props: {
         modelValue: 15,
         max: 20,
-        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
         "onUpdate:modelValue": handler,
       },
     });
@@ -289,7 +278,6 @@ describe("mt-number-field", () => {
         modelValue: undefined,
         max: 10,
         allowEmpty: true,
-        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
         "onUpdate:modelValue": handler,
       },
     });
@@ -315,7 +303,6 @@ describe("mt-number-field", () => {
       props: {
         modelValue: 15,
         max: 10,
-        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
         "onUpdate:modelValue": handler,
       },
     });

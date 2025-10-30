@@ -198,6 +198,14 @@ export default defineComponent({
     },
   },
 
+  emits: [
+    "update:modelValue",
+    "input-change",
+    "inheritance-restore",
+    "inheritance-remove",
+    "change",
+  ],
+
   setup() {
     const { t } = useI18n({
       messages: {
@@ -300,6 +308,7 @@ export default defineComponent({
       // @ts-expect-error - target exists
       this.computeValue(event.target.value);
 
+      this.$emit("change", event);
       this.$emit("update:modelValue", this.currentValue);
     },
 
