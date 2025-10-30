@@ -423,11 +423,7 @@ export default defineComponent({
     },
   },
 
-  emits: [
-    "update:modelValue",
-    "inheritance-restore",
-    "inheritance-remove",
-  ],
+  emits: ["update:modelValue", "inheritance-restore", "inheritance-remove"],
 
   setup() {
     const { t } = useI18n({

@@ -198,6 +198,8 @@ export default defineComponent({
     },
   },
 
+  emits: ["update:modelValue", "input-change", "inheritance-restore", "inheritance-remove"],
+
   setup() {
     const { t } = useI18n({
       messages: {
@@ -214,8 +216,6 @@ export default defineComponent({
 
     return { t };
   },
-
-  emits: ["update:modelValue", "input-change", "inheritance-restore", "inheritance-remove"],
 
   computed: {
     realStep(): number {
@@ -299,6 +299,7 @@ export default defineComponent({
 
   methods: {
     onChange(event: Event) {
+      console.log("onChange", event);
       // @ts-expect-error - target exists
       this.computeValue(event.target.value);
 

@@ -281,7 +281,7 @@ export default defineComponent({
       handler() {
         if (this.checked === undefined) {
           // only sync from modelValue when not explicitly controlled by `checked`
-          this.currentValue = (this as any).modelValue as boolean | undefined;
+          this.currentValue = this.modelValue;
         }
       },
       immediate: true,

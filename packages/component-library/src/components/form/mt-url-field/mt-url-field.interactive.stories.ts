@@ -142,7 +142,6 @@ export const changeModelValueFromOutside: MtUrlFieldStory = {
     const input = canvas.getByRole("textbox") as HTMLInputElement;
     expect(input.value).toBe("initial.com");
 
-    console.log("Before changing modelValue:", args.modelValue);
     // Change the modelValue from outside
     args.modelValue = "https://changed.com";
     await waitUntil(() => input.value === "changed.com");

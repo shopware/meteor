@@ -46,7 +46,11 @@
         :disabled="disabled || isInherited"
         @click.prevent="showPassword = !showPassword"
       >
-        <mt-icon :name="showPassword ? 'solid-eye-slash' : 'solid-eye'" size="1.125rem" aria-hidden="true" />
+        <mt-icon
+          :name="showPassword ? 'solid-eye-slash' : 'solid-eye'"
+          size="1.125rem"
+          aria-hidden="true"
+        />
       </button>
     </template>
 
@@ -130,13 +134,13 @@ const showPassword = ref(false);
 const hasFocus = ref(false);
 
 function onInput(event: Event) {
-  // @ts-expect-error - target is defined on event
-  emit("update:modelValue", event.target?.value);
+  const target = event.target as HTMLInputElement | null;
+  emit("update:modelValue", target?.value);
 }
 
 function onChange(event: Event) {
-  // @ts-expect-error - target is defined on event
-  emit("change", event.target?.value);
+  const target = event.target as HTMLInputElement | null;
+  emit("change", target?.value);
 }
 
 function setFocus() {
