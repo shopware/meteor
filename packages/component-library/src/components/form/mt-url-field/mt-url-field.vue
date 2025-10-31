@@ -208,6 +208,7 @@ function checkInput(inputValue: string) {
   }
 
   const validated = transformURL(inputValue);
+  // keep cursor position after validation
 
   if (!validated) {
     throw new Error("Invalid URL");
@@ -217,7 +218,24 @@ function checkInput(inputValue: string) {
 }
 
 function transformURL(value: string) {
+  console.log("value", value);
+
+  // Normalize input to string and trim
+  let normalized = String(value);
+
+  // Expand IPv4 shorthand (e.g., "1", "1.2", "1.2.3") to 4 parts
+  if (/^[0-9.]+$/.test(normalized)) {
+    const parts = normalized.split(".");
+    if (parts.length > 0 && parts.length < 4) {
+      parts.push(...Array(4 - parts.length).fill("0"));
+      normalized = parts.join(".");
+    }
+    console.log("normalized", normalized);
+    return `${urlPrefix.value}${normalized}`;
+  }
+
   const url = new URL(value.match(URL_REGEX.PROTOCOL) ? value : `${urlPrefix.value}${value}`);
+  // console.log("url after", url.toString());
 
   if (!url) return null;
 
