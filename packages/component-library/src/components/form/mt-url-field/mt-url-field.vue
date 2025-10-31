@@ -229,8 +229,21 @@ function checkInput(inputValue: string) {
   }
 }
 
+function finalizeUrl(url: URL, decodeHost: boolean) {
+  if (props.omitUrlSearch) url.search = "";
+  if (props.omitUrlHash) url.hash = "";
+
+  // when a hash or search query is provided we want to allow trailing slash, eg a vue route `admin#/`
+  const removeTrailingSlash =
+    url.hash === "" && url.search === "" ? URL_REGEX.TRAILING_SLASH : "";
+
+  // build URL via native URL.toString() function instead by hand @see NEXT-15747
+  const base = url.toString().replace(URL_REGEX.PROTOCOL, "").replace(removeTrailingSlash, "");
+  return decodeHost ? base.replace(url.host, decodeURI(url.host)) : base;
+}
+
 function transformURL(value: string) {
-  // If IPv4 address-like input, pad to 4 octets without using a temp variable
+  // If IPv4 address-like input, pad to 4 octets
   if (/^[0-9.]+$/.test(value)) {
     const parts = value.split(".");
     const host =
@@ -241,36 +254,14 @@ function transformURL(value: string) {
 
     if (!url) return null;
 
-    if (props.omitUrlSearch) url.search = "";
-    if (props.omitUrlHash) url.hash = "";
-
-    // when a hash or search query is provided we want to allow trailing slash, eg a vue route `admin#/`
-    const removeTrailingSlash =
-      url.hash === "" && url.search === "" ? URL_REGEX.TRAILING_SLASH : "";
-
-    // build URL via native URL.toString() function instead by hand @see NEXT-15747
-    return url
-      .toString()
-      .replace(URL_REGEX.PROTOCOL, "")
-      .replace(removeTrailingSlash, "")
+    return finalizeUrl(url, false);
   }
 
   const url = new URL(value.match(URL_REGEX.PROTOCOL) ? value : `${urlPrefix.value}${value}`);
 
   if (!url) return null;
 
-  if (props.omitUrlSearch) url.search = "";
-  if (props.omitUrlHash) url.hash = "";
-
-  // when a hash or search query is provided we want to allow trailing slash, eg a vue route `admin#/`
-  const removeTrailingSlash = url.hash === "" && url.search === "" ? URL_REGEX.TRAILING_SLASH : "";
-
-  // build URL via native URL.toString() function instead by hand @see NEXT-15747
-  return url
-    .toString()
-    .replace(URL_REGEX.PROTOCOL, "")
-    .replace(removeTrailingSlash, "")
-    .replace(url.host, decodeURI(url.host));
+  return finalizeUrl(url, true);
 }
 
 const { copy, copied } = useClipboard();
