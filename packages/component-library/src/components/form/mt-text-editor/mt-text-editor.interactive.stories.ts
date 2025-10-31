@@ -1373,7 +1373,7 @@ export const VisualTestDiffModalShownAfterEditingUnsupportedHTML: MtTextEditorSt
 // showToolbar prop tests
 // ------------------------------
 
-export const VisualTestHiddenToolbar: MtTextEditorStory = defineStory({
+export const TestHiddenToolbar: MtTextEditorStory = defineStory({
   name: "Should not render toolbar when showToolbar is false",
   args: {
     modelValue: "<p>Editor without toolbar</p>",
@@ -1394,7 +1394,7 @@ export const VisualTestHiddenToolbar: MtTextEditorStory = defineStory({
   },
 });
 
-export const VisualTestShowToolbar: MtTextEditorStory = defineStory({
+export const TestShowToolbar: MtTextEditorStory = defineStory({
   name: "Should render toolbar when showToolbar is true (default)",
   args: {
     modelValue: "<p>Editor with toolbar</p>",
@@ -1417,7 +1417,7 @@ export const VisualTestShowToolbar: MtTextEditorStory = defineStory({
 // codeMode prop tests
 // ------------------------------
 
-export const VisualTestCodeModeDefault: MtTextEditorStory = defineStory({
+export const TestCodeModeDefault: MtTextEditorStory = defineStory({
   name: "Should start in code mode when codeMode is true",
   args: {
     modelValue: "<p>Hello World</p>",
@@ -1439,7 +1439,7 @@ export const VisualTestCodeModeDefault: MtTextEditorStory = defineStory({
   },
 });
 
-export const VisualTestCodeModeFalse: MtTextEditorStory = defineStory({
+export const TestCodeModeFalse: MtTextEditorStory = defineStory({
   name: "Should start in WYSIWYG mode when codeMode is false (default)",
   args: {
     modelValue: "<p>Hello World</p>",
