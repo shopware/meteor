@@ -502,4 +502,54 @@ describe("mt-url-field", () => {
 
     expect(handler).not.toHaveBeenCalled();
   });
+
+  it("handles full IPv4 address input and emission", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtUrlField, {
+      props: {
+        modelValue: "",
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    // ACT
+    await userEvent.type(screen.getByRole("textbox"), "192.168.1.1");
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("192.168.1.1");
+    expect(handler).toHaveBeenLastCalledWith("https://192.168.1.1");
+  });
+
+  it("pads partial IPv4 address and emits correctly", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtUrlField, {
+      props: {
+        modelValue: "",
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    // ACT
+    await userEvent.type(screen.getByRole("textbox"), "192");
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("192.0.0.0");
+    expect(handler).toHaveBeenLastCalledWith("https://192.0.0.0");
+  });
+
+  it("displays IPv4 address without protocol prefix", async () => {
+    // ARRANGE
+    render(MtUrlField, {
+      props: {
+        modelValue: "https://192.168.1.1",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("192.168.1.1");
+  });
 });
