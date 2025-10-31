@@ -1368,3 +1368,93 @@ export const VisualTestDiffModalShownAfterEditingUnsupportedHTML: MtTextEditorSt
     expect(body.getByText("Apply changes")).toBeDefined();
   },
 });
+
+// ------------------------------
+// showToolbar prop tests
+// ------------------------------
+
+export const VisualTestHiddenToolbar: MtTextEditorStory = defineStory({
+  name: "Should not render toolbar when showToolbar is false",
+  args: {
+    modelValue: "<p>Editor without toolbar</p>",
+    showToolbar: false,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Wait for editor to render
+    await waitUntil(() => canvas.getByText("Editor without toolbar"));
+
+    // Assert toolbar is not present
+    const toolbar = canvasElement.querySelector(".mt-text-editor-toolbar");
+    expect(toolbar).toBeNull();
+
+    // Assert editor content is still rendered
+    expect(canvas.getByText("Editor without toolbar")).toBeDefined();
+  },
+});
+
+export const VisualTestShowToolbar: MtTextEditorStory = defineStory({
+  name: "Should render toolbar when showToolbar is true (default)",
+  args: {
+    modelValue: "<p>Editor with toolbar</p>",
+    showToolbar: true,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Wait for editor to render
+    await waitUntil(() => canvas.getByText("Editor with toolbar"));
+
+    // Assert toolbar buttons are present
+    expect(canvas.getByLabelText("Format")).toBeDefined();
+    expect(canvas.getByLabelText("Bold")).toBeDefined();
+    expect(canvas.getByLabelText("Italic")).toBeDefined();
+  },
+});
+
+// ------------------------------
+// codeMode prop tests
+// ------------------------------
+
+export const VisualTestCodeModeDefault: MtTextEditorStory = defineStory({
+  name: "Should start in code mode when codeMode is true",
+  args: {
+    modelValue: "<p>Hello World</p>",
+    codeMode: true,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Wait for code editor to be rendered
+    await waitUntil(() => canvas.getByRole("textbox"));
+
+    // Expect the code editor to be rendered
+    const codeEditor = canvas.getByRole("textbox");
+    expect(codeEditor).toBeDefined();
+    expect(codeEditor.innerText).toBe("<p>Hello World</p>");
+
+    // Expect the toggle button to show "Switch to visual mode"
+    expect(canvas.getByLabelText("Switch to visual mode")).toBeDefined();
+  },
+});
+
+export const VisualTestCodeModeFalse: MtTextEditorStory = defineStory({
+  name: "Should start in WYSIWYG mode when codeMode is false (default)",
+  args: {
+    modelValue: "<p>Hello World</p>",
+    codeMode: false,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Wait for WYSIWYG editor to be rendered
+    await waitUntil(() => canvas.getByText("Hello World"));
+
+    // Expect the WYSIWYG content to be rendered
+    expect(canvas.getByText("Hello World")).toBeDefined();
+
+    // Expect the toggle button to show "Switch to code mode"
+    expect(canvas.getByLabelText("Switch to code mode")).toBeDefined();
+  },
+});

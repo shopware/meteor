@@ -117,3 +117,73 @@ export const DiffModalStory: MtTextEditorStory = {
 </div>`,
   }),
 };
+
+export const HiddenToolbarStory: MtTextEditorStory = {
+  name: "mt-text-editor (hidden toolbar)",
+  args: {
+    modelValue: `<h1>Editor without toolbar</h1><p>The toolbar is completely hidden in this example. This is useful when you want a simpler editing experience or want to implement your own custom toolbar.</p>`,
+    showToolbar: false,
+    label: "Editor without toolbar",
+  },
+};
+
+export const CodeModeStory: MtTextEditorStory = {
+  name: "mt-text-editor (code mode by default)",
+  args: {
+    modelValue: `<h1>Starting in code mode</h1><p>This editor starts in code mode by default. You can toggle to WYSIWYG using the toggle button.</p>`,
+    codeMode: true,
+    label: "Code mode editor",
+  },
+};
+
+export const CodeModeTwoWayBindingStory: MtTextEditorStory = {
+  name: "mt-text-editor (code mode two-way binding)",
+  args: {
+    modelValue: `<h1>Programmatic mode control</h1><p>Use the button above to toggle between code and WYSIWYG mode programmatically.</p>`,
+    updateModelValue: fn(),
+    label: "Controlled mode editor",
+  },
+  render: (args) => ({
+    components: { MtTextEditor },
+    setup() {
+      const currentModelValue = ref(args.modelValue);
+      const isCodeMode = ref(false);
+      
+      const onUpdateModelValue = (value: string) => {
+        currentModelValue.value = value;
+        args.updateModelValue(value);
+      };
+
+      const toggleMode = () => {
+        isCodeMode.value = !isCodeMode.value;
+      };
+
+      return {
+        args,
+        currentModelValue,
+        isCodeMode,
+        onUpdateModelValue,
+        toggleMode,
+      };
+    },
+    template: `
+<div class="wrapper">
+  <button 
+    @click="toggleMode" 
+    style="margin-bottom: 16px; padding: 8px 16px; cursor: pointer;"
+  >
+    Toggle Mode (Currently: {{ isCodeMode ? 'Code' : 'WYSIWYG' }})
+  </button>
+  <mt-text-editor
+    v-bind="args"
+    :modelValue="currentModelValue"
+    v-model:code-mode="isCodeMode"
+    @update:modelValue="onUpdateModelValue"
+  />
+  <p style="margin-top: 16px; color: var(--color-text-secondary-default);">
+    The editor mode can be controlled programmatically using v-model:code-mode.
+    Click the button above to toggle between modes.
+  </p>
+</div>`,
+  }),
+};
