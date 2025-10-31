@@ -94,9 +94,9 @@ To use the `mt-text-editor` component in your project, import it and provide the
 ```html
 <template>
   <div>
-    <button @click="isCodeMode = !isCodeMode">
+    <mt-button @click="isCodeMode = !isCodeMode">
       Toggle Mode (Currently: {{ isCodeMode ? 'Code' : 'WYSIWYG' }})
-    </button>
+    </mt-button>
     <mt-text-editor v-model="content" v-model:code-mode="isCodeMode" />
   </div>
 </template>

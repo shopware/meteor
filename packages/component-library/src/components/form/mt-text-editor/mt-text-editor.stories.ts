@@ -2,6 +2,7 @@ import type { StoryObj } from "@storybook/vue3";
 import MtTextEditor from "./mt-text-editor.vue";
 import type { SlottedMeta } from "@/_internal/story-helper";
 import MtTextEditorToolbarButtonColor from "./_internal/mt-text-editor-toolbar-button-color.vue";
+import MtButton from "../mt-button/mt-button.vue";
 import { ref } from "vue";
 import Highlight from "@tiptap/extension-highlight";
 import { fn } from "@storybook/test";
@@ -144,7 +145,7 @@ export const CodeModeTwoWayBindingStory: MtTextEditorStory = {
     label: "Controlled mode editor",
   },
   render: (args) => ({
-    components: { MtTextEditor },
+    components: { MtTextEditor, MtButton },
     setup() {
       const currentModelValue = ref(args.modelValue);
       const isCodeMode = ref(false);
@@ -168,12 +169,12 @@ export const CodeModeTwoWayBindingStory: MtTextEditorStory = {
     },
     template: `
 <div class="wrapper">
-  <button 
+  <mt-button 
     @click="toggleMode" 
-    style="margin-bottom: 16px; padding: 8px 16px; cursor: pointer;"
+    style="margin-bottom: 16px;"
   >
     Toggle Mode (Currently: {{ isCodeMode ? 'Code' : 'WYSIWYG' }})
-  </button>
+  </mt-button>
   <mt-text-editor
     v-bind="args"
     :modelValue="currentModelValue"
