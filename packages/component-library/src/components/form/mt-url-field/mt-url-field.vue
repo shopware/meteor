@@ -234,8 +234,7 @@ function finalizeUrl(url: URL, decodeHost: boolean) {
   if (props.omitUrlHash) url.hash = "";
 
   // when a hash or search query is provided we want to allow trailing slash, eg a vue route `admin#/`
-  const removeTrailingSlash =
-    url.hash === "" && url.search === "" ? URL_REGEX.TRAILING_SLASH : "";
+  const removeTrailingSlash = url.hash === "" && url.search === "" ? URL_REGEX.TRAILING_SLASH : "";
 
   // build URL via native URL.toString() function instead by hand @see NEXT-15747
   const base = url.toString().replace(URL_REGEX.PROTOCOL, "").replace(removeTrailingSlash, "");
@@ -243,17 +242,15 @@ function finalizeUrl(url: URL, decodeHost: boolean) {
 }
 
 function transformURL(value: string) {
-  // If IPv4 address-like input, pad to 4 octets
+  // If IPv4 address pad to 4 octets
   if (/^[0-9.]+$/.test(value)) {
-    const parts = value.split(".");
-    const host =
-      parts.length > 0 && parts.length < 4
-        ? [...parts, ...Array(4 - parts.length).fill("0")].join(".")
-        : value;
-    const url = new URL(`${urlPrefix.value}${host}`);
+    const octets = value.split(".").filter(Boolean).slice(0, 4);
+    const hostname =
+      octets.length > 0 ? [...octets, ...Array(4 - octets.length).fill("0")].join(".") : "";
 
-    if (!url) return null;
+    if (!hostname) return null;
 
+    const url = new URL(`${urlPrefix.value}${hostname}`);
     return finalizeUrl(url, false);
   }
 
