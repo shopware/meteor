@@ -60,6 +60,7 @@
       </button>
 
       <input
+        ref="inputRef"
         :id="id"
         :value="decodeURI(currentValue || '')"
         type="url"
@@ -68,13 +69,7 @@
         :required="required"
         :disabled="disabled || isInherited"
         class="mt-url-field__input"
-        @input="
-          (event: Event) => {
-            const result = checkInput((event.target as HTMLInputElement).value);
-            currentValue = result;
-            modelValue = url;
-          }
-        "
+        @input="handleInput"
         @change.stop="$emit('change', ($event.target as HTMLInputElement).value || '')"
       />
 
@@ -117,7 +112,7 @@
 </template>
 
 <script setup lang="ts">
-import { useId, computed, watch, ref, defineProps, defineEmits } from "vue";
+import { useId, computed, watch, ref, defineProps, defineEmits, nextTick } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
@@ -178,6 +173,7 @@ const id = useId();
 
 const currentValue = ref(modelValue.value);
 const sslActive = ref(true);
+const inputRef = ref<HTMLInputElement | null>(null);
 
 const urlPrefix = computed(() => {
   return sslActive.value ? "https://" : "http://";
@@ -200,6 +196,23 @@ watch(
   { immediate: true },
 );
 
+function handleInput(event: Event) {
+  const el = event.target as HTMLInputElement;
+  const prevStart = el.selectionStart ?? 0;
+  const prevEnd = el.selectionEnd ?? prevStart;
+  const result = checkInput(el.value);
+  currentValue.value = result;
+  modelValue.value = url.value;
+  nextTick(() => {
+    const input = inputRef.value;
+    if (!input || typeof input.setSelectionRange !== "function") return;
+    const newLen = input.value.length;
+    const newStart = Math.min(prevStart, newLen);
+    const newEnd = Math.min(prevEnd, newLen);
+    input.setSelectionRange(newStart, newEnd);
+  });
+}
+
 function checkInput(inputValue: string) {
   if (!inputValue.length) return "";
 
@@ -208,7 +221,6 @@ function checkInput(inputValue: string) {
   }
 
   const validated = transformURL(inputValue);
-  // keep cursor position after validation
 
   if (!validated) {
     throw new Error("Invalid URL");
@@ -218,24 +230,32 @@ function checkInput(inputValue: string) {
 }
 
 function transformURL(value: string) {
-  console.log("value", value);
+  // If IPv4 address-like input, pad to 4 octets without using a temp variable
+  if (/^[0-9.]+$/.test(value)) {
+    const parts = value.split(".");
+    const host =
+      parts.length > 0 && parts.length < 4
+        ? [...parts, ...Array(4 - parts.length).fill("0")].join(".")
+        : value;
+    const url = new URL(`${urlPrefix.value}${host}`);
 
-  // Normalize input to string and trim
-  let normalized = String(value);
+    if (!url) return null;
 
-  // Expand IPv4 shorthand (e.g., "1", "1.2", "1.2.3") to 4 parts
-  if (/^[0-9.]+$/.test(normalized)) {
-    const parts = normalized.split(".");
-    if (parts.length > 0 && parts.length < 4) {
-      parts.push(...Array(4 - parts.length).fill("0"));
-      normalized = parts.join(".");
-    }
-    console.log("normalized", normalized);
-    return `${urlPrefix.value}${normalized}`;
+    if (props.omitUrlSearch) url.search = "";
+    if (props.omitUrlHash) url.hash = "";
+
+    // when a hash or search query is provided we want to allow trailing slash, eg a vue route `admin#/`
+    const removeTrailingSlash =
+      url.hash === "" && url.search === "" ? URL_REGEX.TRAILING_SLASH : "";
+
+    // build URL via native URL.toString() function instead by hand @see NEXT-15747
+    return url
+      .toString()
+      .replace(URL_REGEX.PROTOCOL, "")
+      .replace(removeTrailingSlash, "")
   }
 
   const url = new URL(value.match(URL_REGEX.PROTOCOL) ? value : `${urlPrefix.value}${value}`);
-  // console.log("url after", url.toString());
 
   if (!url) return null;
 
