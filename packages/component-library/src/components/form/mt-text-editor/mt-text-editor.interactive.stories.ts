@@ -1373,7 +1373,7 @@ export const VisualTestDiffModalShownAfterEditingUnsupportedHTML: MtTextEditorSt
 // showToolbar prop tests
 // ------------------------------
 
-export const TestHiddenToolbar: MtTextEditorStory = defineStory({
+export const VisualTestHiddenToolbar: MtTextEditorStory = defineStory({
   name: "Should not render toolbar when showToolbar is false",
   args: {
     modelValue: "<p>Editor without toolbar</p>",
