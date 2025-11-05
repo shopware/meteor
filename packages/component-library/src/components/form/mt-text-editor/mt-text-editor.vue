@@ -6,8 +6,8 @@
 
     <div class="mt-text-editor__box">
       <component
-        v-if="showToolbar"
         :is="toolbarWrapperComponent"
+        v-if="showToolbar"
         :key="isInlineEdit"
         :editor="editor"
         :tippy-options="{
