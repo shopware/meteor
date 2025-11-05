@@ -593,7 +593,7 @@ watch(
   (newValue, oldValue) => {
     // Emit codeMode change
     emit("update:codeMode", newValue);
-    
+
     // When switching from code editor to WYSIWYG editor, update the content
     if (!newValue && oldValue) {
       suppressUpdates.value = true;

@@ -149,7 +149,7 @@ export const CodeModeTwoWayBindingStory: MtTextEditorStory = {
     setup() {
       const currentModelValue = ref(args.modelValue);
       const isCodeMode = ref(false);
-      
+
       const onUpdateModelValue = (value: string) => {
         currentModelValue.value = value;
         args.updateModelValue(value);
