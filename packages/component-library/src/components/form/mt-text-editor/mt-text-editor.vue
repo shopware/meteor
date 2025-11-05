@@ -7,6 +7,7 @@
     <div class="mt-text-editor__box">
       <component
         :is="toolbarWrapperComponent"
+        v-if="showToolbar"
         :key="isInlineEdit"
         :editor="editor"
         :tippy-options="{
@@ -273,7 +274,7 @@ const { t } = useI18n({
   },
 });
 
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue", "update:codeMode"]);
 
 const props = defineProps({
   modelValue: {
@@ -343,6 +344,22 @@ const props = defineProps({
     type: String,
     required: false,
     default: null,
+  },
+
+  /**
+   * Control toolbar visibility. Set to false to hide the toolbar completely.
+   */
+  showToolbar: {
+    type: Boolean,
+    default: true,
+  },
+
+  /**
+   * Control code editor mode. Set to true to show the code editor instead of WYSIWYG.
+   */
+  codeMode: {
+    type: Boolean,
+    default: false,
   },
 });
 
@@ -461,6 +478,13 @@ watch(
   },
 );
 
+watch(
+  () => props.codeMode,
+  (newValue) => {
+    showCodeEditor.value = newValue;
+  },
+);
+
 const globalToolbarButtonDisabled = computed(() => {
   return props.disabled || showCodeEditor.value;
 });
@@ -507,7 +531,7 @@ const toolbarWrapperComponent = computed(() => {
 /**
  * Code Editor
  */
-const showCodeEditor = ref(false);
+const showCodeEditor = ref(props.codeMode);
 const lang = html();
 
 // Diff modal state
@@ -567,6 +591,9 @@ const onChangeOpenDiffModal = (value: boolean) => {
 watch(
   () => showCodeEditor.value,
   (newValue, oldValue) => {
+    // Emit codeMode change
+    emit("update:codeMode", newValue);
+
     // When switching from code editor to WYSIWYG editor, update the content
     if (!newValue && oldValue) {
       suppressUpdates.value = true;
