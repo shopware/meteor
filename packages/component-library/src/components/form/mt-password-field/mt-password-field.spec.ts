@@ -207,8 +207,8 @@ describe("mt-password-field", () => {
       components: {
         MtPasswordField,
       },
-      template: "<form @submit='handler'><mt-password-field label='Password' /></form>",
       setup: () => ({ handler }),
+      template: "<form @submit='handler'><mt-password-field label='Password' /></form>",
     });
 
     render(wrapper);

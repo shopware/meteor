@@ -1,6 +1,6 @@
 <template>
   <div class="mt-popover-item-result">
-    <mt-search v-if="!hideSearch" size="small" @update:modelValue="$emit('search', $event)" />
+    <mt-search v-if="!hideSearch" size="small" @update:model-value="$emit('search', $event)" />
 
     <template
       v-for="group in [undefined, ...groups]"

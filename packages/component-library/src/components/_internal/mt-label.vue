@@ -1,6 +1,6 @@
 <template>
   <!-- eslint-disable-next-line vuejs-accessibility/click-events-have-key-events -->
-  <span class="mt-label" :class="labelClasses" @click.stop="$emit('selected')" tabindex="0">
+  <span class="mt-label" :class="labelClasses" tabindex="0" @click.stop="$emit('selected')">
     <mt-color-badge v-if="appearance === 'badged'" :variant="variant" :rounded="true" />
 
     <span class="mt-label__caption">
