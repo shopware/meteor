@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.20.1
+
+### Patch Changes
+
+- Updated dependencies [e14b1ea]
+  - @shopware-ag/meteor-tokens@1.3.1
+
 ## 4.20.0
 
 ### Minor Changes
