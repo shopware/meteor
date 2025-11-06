@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.21.0
+
+### Minor Changes
+
+- 502e096: Added br-tag to mt-tooltip allowlist
+- a7d05e5: Fix timezone issue in `mt-datepicker`
+
 ## 4.20.1
 
 ### Patch Changes
