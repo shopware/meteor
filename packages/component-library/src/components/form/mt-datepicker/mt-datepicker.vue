@@ -494,6 +494,7 @@ export default defineComponent({
     "error error"
     "hint hint";
   grid-template-columns: 1fr auto;
+  align-content: start;
 }
 
 .mt-datepicker__label {
