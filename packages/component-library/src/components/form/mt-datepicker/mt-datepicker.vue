@@ -12,15 +12,19 @@
       for="field-id"
       :has-error="!!error || !!errorMessage"
       :required="required"
+      :style="{ gridArea: 'label' }"
     >
       {{ label }}
     </mt-field-label>
 
+    <mt-help-text v-if="!!helpText" :text="helpText" :style="{ gridArea: 'help-text' }" />
+
     <vue-datepicker
       ref="datepicker"
-      v-model="computedValue"
+      :model-value="dateValue"
       class="date-picker"
       position="left"
+      :style="{ gridArea: 'input' }"
       :placeholder="placeholder"
       :disabled="disabled"
       :required="required"
@@ -31,19 +35,26 @@
       :show-cancel="true"
       :clearable="true"
       :auto-apply="true"
+      :text-input="textInput"
       :range="range"
-      :format="formatDate"
+      :format="
+        format ??
+        (dateType === 'date' ? 'yyyy/MM/dd' : dateType === 'time' ? 'HH:mm' : 'yyyy/MM/dd, HH:mm')
+      "
       :is-24="is24"
       :type="dateType"
       :enable-time-picker="dateType !== 'date'"
-      :exactMatch="dateType === 'date'"
+      :exact-match="dateType === 'date'"
       time-picker-inline
       :time-picker="dateType === 'time'"
       :no-hours-overlay="dateType === 'time'"
       :no-minutes-overlay="dateType === 'time'"
       :min-date="minDate"
+      :hours-grid-increment="hourIncrement"
+      :minutes-grid-increment="minuteIncrement"
       :aria-invalid="!!errorMessage || !!error"
       :aria-describedby="!!errorMessage || !!error ? errorId : undefined"
+      @update:model-value="onDateValueChange"
       @open="isDatepickerOpen = true"
       @close="
         () => {
@@ -83,11 +94,20 @@
       </template>
     </vue-datepicker>
 
-    <mt-field-error v-if="error || errorMessage" :id="errorId" :error="errorMessage || error" />
+    <mt-field-error
+      v-if="error || errorMessage"
+      :id="errorId"
+      :error="errorMessage || error"
+      :style="{ gridArea: 'error' }"
+    />
 
     <template v-if="isTimeHintVisible">
       <!-- @deprecated tag:v5 remove field-hint class -->
-      <div class="mt-datepicker__hint field-hint" data-testid="time-zone-hint">
+      <div
+        class="mt-datepicker__hint field-hint"
+        data-testid="time-zone-hint"
+        :style="{ gridArea: 'hint' }"
+      >
         <mt-icon name="solid-clock" class="mt-datepicker__hint-icon" size="12" />
         <p>{{ timeZone || "UTC" }}</p>
       </div>
@@ -99,11 +119,17 @@
 import { defineComponent, ref } from "vue";
 import type { PropType } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
+import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import DatePicker, { type VueDatePickerProps } from "@vuepic/vue-datepicker";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import "@vuepic/vue-datepicker/dist/main.css";
 import { useId } from "vue";
+
+interface Time {
+  hours: number;
+  minutes: number;
+}
 
 export default defineComponent({
   name: "MtDatepicker",
@@ -113,6 +139,7 @@ export default defineComponent({
     "vue-datepicker": DatePicker,
     "mt-field-label": MtFieldLabel,
     "mt-field-error": MtFieldError,
+    "mt-help-text": MtHelpText,
   },
 
   props: {
@@ -150,7 +177,7 @@ export default defineComponent({
      * You can use a string or a function to format the date.
      */
     format: {
-      type: Function as PropType<Omit<VueDatePickerProps["format"], "string">>,
+      type: [String, Function] as PropType<VueDatePickerProps["format"]>,
       required: false,
       default: undefined,
     },
@@ -170,7 +197,7 @@ export default defineComponent({
      * This represents the currently selected date(s).
      */
     modelValue: {
-      type: [String, Array] as PropType<string | string[]>,
+      type: [String, Array, Date] as PropType<string | string[] | Date | Date[]>,
       default: null,
     },
 
@@ -247,6 +274,15 @@ export default defineComponent({
     },
 
     /**
+     * Help text for the date picker.
+     */
+    helpText: {
+      type: String as PropType<string>,
+      required: false,
+      default: undefined,
+    },
+
+    /**
      * The minimum selectable date. Can be a Date object or an ISO string.
      * Any date before this will be disabled in the calendar.
      * For example: "today"
@@ -255,6 +291,35 @@ export default defineComponent({
       type: [Date, String] as PropType<Date | string>,
       required: false,
       default: undefined,
+    },
+
+    /**
+     * The increment for hours in the time picker grid.
+     * Controls how many hours are skipped when navigating through the hours overlay.
+     */
+    hourIncrement: {
+      type: Number as PropType<number>,
+      required: false,
+      default: 1,
+    },
+
+    /**
+     * The increment for minutes in the time picker grid.
+     * Controls how many minutes are skipped when navigating through the minutes overlay.
+     */
+    minuteIncrement: {
+      type: Number as PropType<number>,
+      required: false,
+      default: 1,
+    },
+
+    /**
+     * Enables typing directly into the input field.
+     */
+    textInput: {
+      type: Boolean as PropType<boolean>,
+      required: false,
+      default: false,
     },
   },
 
@@ -283,52 +348,34 @@ export default defineComponent({
   },
 
   computed: {
-    computedValue: {
-      get(): string | string[] | { hours: number; minutes: number } {
-        if (this.dateType === "time") {
-          if (typeof this.modelValue !== "string") return "";
+    dateValue(): Date | [Date, Date] | Time | null {
+      if (!this.modelValue) return null;
 
-          if (this.modelValue.includes("T")) {
-            // ISO string
-            const date = new Date(this.modelValue);
-            return {
-              hours: date.getHours(),
-              minutes: date.getMinutes(),
-            };
-          } else {
-            // Time string (HH:mm)
-            const [hours, minutes] = this.modelValue.split(":").map(Number);
-            return {
-              hours,
-              minutes,
-            };
-          }
-        }
+      if (this.dateType === "time") {
+        // check if modelValue is type Time
+        if (
+          typeof this.modelValue === "object" &&
+          "hours" in this.modelValue &&
+          "minutes" in this.modelValue
+        )
+          return this.modelValue as Time;
 
-        return this.modelValue;
-      },
-      set(newValue: Date | [Date, Date] | { hours: number; minutes: number } | null) {
-        if (!newValue) {
-          this.$emit("update:modelValue", null);
-          return;
-        }
+        // if modelValue is not type Time, convert it to Time
+        const timePart =
+          typeof this.modelValue === "string" && this.modelValue.includes("T")
+            ? this.modelValue.split("T")[1].split(/[Z.+-]/)[0]
+            : (this.modelValue as string);
 
-        // Handle date conversion for 'time' type
-        if (this.dateType === "time") {
-          const time = newValue as { hours: number; minutes: number };
-          const hours = String(time.hours).padStart(2, "0");
-          const minutes = String(time.minutes).padStart(2, "0");
-          this.$emit("update:modelValue", `${hours}:${minutes}`);
-          return;
-        }
+        const [hours, minutes] = timePart.split(":").map(Number);
+        return { hours, minutes };
+      }
 
-        // Handle both 'date' and 'datetime' types
-        const isoValue = this.convertDateToIso(newValue);
-        this.$emit("update:modelValue", isoValue);
-      },
+      // Handle datetime mode
+      return Array.isArray(this.modelValue)
+        ? [new Date(this.modelValue[0]), new Date(this.modelValue[1])]
+        : new Date(this.modelValue);
     },
   },
-
   watch: {
     dateType: {
       handler() {
@@ -351,6 +398,28 @@ export default defineComponent({
   },
 
   methods: {
+    onDateValueChange(newValue: Date | [Date, Date] | Time | null) {
+      if (!newValue) {
+        this.$emit("update:modelValue", null);
+        return;
+      }
+
+      // Handle time mode
+      if (typeof newValue === "object" && "hours" in newValue && "minutes" in newValue) {
+        const hours = String(newValue.hours).padStart(2, "0");
+        const minutes = String(newValue.minutes).padStart(2, "0");
+        this.$emit("update:modelValue", `${hours}:${minutes}`);
+        return;
+      }
+
+      // Handle datetime or date mode
+      const formatted = Array.isArray(newValue)
+        ? [newValue[0].toISOString(), newValue[1].toISOString()]
+        : newValue.toISOString();
+      this.$emit("update:modelValue", formatted);
+      return;
+    },
+
     updateOpacitySettings() {
       document.documentElement.style.setProperty(
         "--menu-border-opacity",
@@ -360,57 +429,6 @@ export default defineComponent({
         "--time-inc-dec-opacity",
         this.dateType === "time" ? "1" : "0",
       );
-    },
-    formatDate(date: Date | Date[]): string {
-      if (typeof this.format === "function") {
-        return this.format(date as Date & Date[]);
-      }
-
-      if (this.dateType === "time") {
-        const timeDate = date as Date;
-        const hours = String(timeDate.getHours()).padStart(2, "0");
-        const minutes = String(timeDate.getMinutes()).padStart(2, "0");
-        return `${hours}:${minutes}`;
-      }
-
-      // Overide built-in format to y-m-d
-      const formatSingleDate = (d: Date) => {
-        const year = d.getFullYear();
-        const month = String(d.getMonth() + 1).padStart(2, "0");
-        const day = String(d.getDate()).padStart(2, "0");
-        const hours = String(d.getHours()).padStart(2, "0");
-        const minutes = String(d.getMinutes()).padStart(2, "0");
-        return this.dateType === "date"
-          ? `${year}/${month}/${day}`
-          : `${year}/${month}/${day}, ${hours}:${minutes}`;
-      };
-
-      if (Array.isArray(date)) {
-        return date.map(formatSingleDate).join(" - ");
-      }
-
-      return formatSingleDate(date);
-    },
-
-    convertDateToIso(
-      date: Date | [Date, Date] | { hours: number; minutes: number },
-    ): string | string[] {
-      if (Array.isArray(date)) {
-        return date.map((d) => d.toISOString());
-      } else if (date instanceof Date) {
-        return date.toISOString();
-      } else {
-        // Handle time object case
-        const hours = String(date.hours).padStart(2, "0");
-        const minutes = String(date.minutes).padStart(2, "0");
-        return `${hours}:${minutes}`;
-      }
-    },
-
-    convertTimeToIso(time: { hours: number; minutes: number }): string {
-      const hours = String(time.hours).padStart(2, "0");
-      const minutes = String(time.minutes).padStart(2, "0");
-      return `${hours}:${minutes}`;
     },
 
     checkValidity() {
@@ -468,7 +486,16 @@ export default defineComponent({
   --dp-range-between-border-color: var(--color-background-brand-default);
 }
 
-/* || Datepicker  */
+.mt-datepicker__wrapper {
+  display: grid;
+  grid-template-areas:
+    "label help-text"
+    "input input"
+    "error error"
+    "hint hint";
+  grid-template-columns: 1fr auto;
+}
+
 .mt-datepicker__label {
   line-height: var(--font-line-height-xs) !important;
   margin-bottom: var(--scale-size-2);
@@ -479,7 +506,6 @@ export default defineComponent({
   font-family: var(--font-family-body) !important;
 }
 
-/* || Input wrapper */
 .dp__input_wrap {
   font: inherit;
   font-weight: var(--font-weight-regular) !important;
@@ -498,6 +524,7 @@ export default defineComponent({
 
   &::placeholder {
     color: var(--color-text-secondary-default);
+    opacity: 1 !important;
   }
 }
 
@@ -537,7 +564,6 @@ export default defineComponent({
   background: var(--color-background-tertiary-default);
 }
 
-/* || Menu / calendar */
 .dp--menu-wrapper {
   border-radius: var(--border-radius-s) !important;
   font-family: inherit;
@@ -625,7 +651,6 @@ export default defineComponent({
   height: auto !important;
 }
 
-/* || Time picker */
 .dp__menu_inner::after {
   content: "";
   display: block;
