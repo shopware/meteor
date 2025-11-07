@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.21.1
+
+### Patch Changes
+
+- 66de384: Add watcher on the `default-item` prop in `mt-tabs`
+- 3c80718: Fixed wrapper spacing in `mt-datepicker`
+
 ## 4.21.0
 
 ### Minor Changes
