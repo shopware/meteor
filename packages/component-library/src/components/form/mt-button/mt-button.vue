@@ -52,11 +52,16 @@ import { useIsInsideTooltip } from "@/components/overlay/mt-tooltip/composables/
 import MtLoader from "../../feedback-indicator/mt-loader/mt-loader.vue";
 import { computed, type Component } from "vue";
 
+/**
+ * @deprecated Will be removed in the next major version. Use the "secondary" variant instead.
+ */
+type actionVariant = "action";
+
 const props = withDefaults(
   defineProps<{
     is?: Component | string;
     disabled?: boolean;
-    variant?: "primary" | "secondary" | "critical" | "action";
+    variant?: "primary" | "secondary" | "tertiary" | "critical" | actionVariant;
     ghost?: boolean;
     size?: "x-small" | "small" | "default" | "large";
     square?: boolean;
@@ -80,7 +85,9 @@ defineSlots<{
   iconBack: { size: number };
 }>();
 
-const allowGhostVariant = computed(() => props.ghost && props.variant !== "secondary");
+const allowGhostVariant = computed(
+  () => props.ghost && props.variant !== "secondary" && props.variant !== "tertiary",
+);
 
 const buttonClasses = computed(() => {
   return {
@@ -218,6 +225,35 @@ const isInsideTooltip = useIsInsideTooltip();
 }
 
 .mt-button--secondary .mt-icon {
+  color: var(--color-icon-primary-default);
+}
+
+.mt-button--tertiary {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--color-text-primary-default);
+}
+
+.mt-button--tertiary:hover {
+  background: var(--color-interaction-secondary-hover);
+}
+
+.mt-button--tertiary:active {
+  background: var(--color-interaction-secondary-pressed);
+}
+
+.mt-button--tertiary:disabled,
+.mt-button--tertiary.mt-button--disabled {
+  color: var(--color-text-primary-disabled);
+  background: transparent;
+}
+
+.mt-button--tertiary:disabled .mt-icon,
+.mt-button--tertiary.mt-button--disabled .mt-icon {
+  color: var(--color-icon-primary-disabled);
+}
+
+.mt-button--tertiary .mt-icon {
   color: var(--color-icon-primary-default);
 }
 
