@@ -314,18 +314,24 @@ export default defineComponent({
 
     onInput(event: Event) {
       // @ts-expect-error - target exists
-      let val = Number.parseFloat(event.target.value);
+      const inputValue = event.target.value;
+
+      if (inputValue === "" && this.allowEmpty) {
+        // @ts-expect-error - defined in parent
+        this.currentValue = null;
+        this.$emit("input-change", null);
+        return;
+      }
+
+      const val = Number.parseFloat(inputValue);
 
       if (!Number.isNaN(val)) {
-        if (this.max && val > this.max) {
-          val = this.max;
-        }
-        if (this.min && val < this.min) {
-          val = this.min;
-        }
-
-        this.computeValue(val.toString());
+        this.computeValue(val.toString(), true);
         this.$emit("input-change", val);
+      } else if (inputValue === "" || inputValue === "-" || inputValue === ".") {
+        // @ts-expect-error - defined in parent
+        this.currentValue = null;
+        this.$emit("input-change", null);
       }
     },
 
@@ -342,23 +348,24 @@ export default defineComponent({
       this.$emit("update:modelValue", this.currentValue);
     },
 
-    computeValue(stringRepresentation: string) {
+    computeValue(stringRepresentation: string, skipBoundaries = false) {
       const value = this.getNumberFromString(stringRepresentation);
-      this.currentValue = this.parseValue(value);
+      this.currentValue = this.parseValue(value, skipBoundaries);
     },
 
     // @ts-expect-error - defined in parent
 
-    parseValue(value: any) {
+    parseValue(value: any, skipBoundaries = false) {
       if (value === null || Number.isNaN(value) || !Number.isFinite(value)) {
         if (this.allowEmpty) {
           return null;
         }
 
-        return this.parseValue(0);
+        return this.parseValue(0, skipBoundaries);
       }
 
-      return this.checkForInteger(this.checkBoundaries(value));
+      const processedValue = skipBoundaries ? value : this.checkBoundaries(value);
+      return this.checkForInteger(processedValue);
     },
 
     checkBoundaries(value: number) {
