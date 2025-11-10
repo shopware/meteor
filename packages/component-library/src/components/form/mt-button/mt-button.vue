@@ -53,7 +53,7 @@ import MtLoader from "../../feedback-indicator/mt-loader/mt-loader.vue";
 import { computed, type Component } from "vue";
 
 /**
- * @deprecated Will be removed in the next major version. Use the "secondary" variant instead.
+ * @deprecated tag:v5 - Will be removed in the next major version. Use the "secondary" variant instead.
  */
 type actionVariant = "action";
 
