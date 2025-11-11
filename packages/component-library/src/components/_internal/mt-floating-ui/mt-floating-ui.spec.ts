@@ -138,4 +138,59 @@ describe("mt-floating-ui", () => {
     expect(floatingUi).toBeNull();
     expect(floatingUiContent).toBeNull();
   });
+
+  it("should match reference width when matchReferenceWidth prop is true", async () => {
+    wrapper = createWrapper();
+
+    // Set a specific width for the trigger element to test against
+    const triggerElement = wrapper.find(".mt-floating-ui__trigger").element as HTMLElement;
+    triggerElement.style.width = "200px";
+    // Mock getBoundingClientRect to return the expected width
+    triggerElement.getBoundingClientRect = vi.fn(() => ({
+      width: 200,
+      height: 50,
+      top: 0,
+      left: 0,
+      bottom: 50,
+      right: 200,
+      x: 0,
+      y: 0,
+      toJSON: vi.fn(),
+    }));
+
+    await wrapper.setProps({
+      isOpened: true,
+      matchReferenceWidth: true,
+    });
+
+    await flushPromises();
+
+    // Give some time for floating-ui to compute
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
+    const floatingUiContent = document.querySelector(".mt-floating-ui__content") as HTMLElement;
+
+    expect(floatingUiContent).toBeTruthy();
+    expect(floatingUiContent.style.width).toBe("200px");
+  });
+
+  it("should not set width when matchReferenceWidth prop is false or not set", async () => {
+    wrapper = createWrapper();
+
+    // Set a specific width for the trigger element
+    const triggerElement = wrapper.find(".mt-floating-ui__trigger").element as HTMLElement;
+    triggerElement.style.width = "200px";
+
+    await wrapper.setProps({
+      isOpened: true,
+      matchReferenceWidth: false,
+    });
+
+    await flushPromises();
+
+    const floatingUiContent = document.querySelector(".mt-floating-ui__content") as HTMLElement;
+
+    expect(floatingUiContent).toBeTruthy();
+    expect(floatingUiContent.style.width).toBe("");
+  });
 });
