@@ -341,7 +341,7 @@ const isInsideTooltip = useIsInsideTooltip();
   padding-left: var(--scale-size-28);
   padding-right: var(--scale-size-28);
   min-height: 3rem;
-  font-size: var(--font-size-2xs);
+  font-size: var(--font-size-xs);
 }
 
 .mt-button--large.mt-button--square {
