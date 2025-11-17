@@ -60,6 +60,7 @@
       </button>
 
       <input
+        ref="inputRef"
         :id="id"
         :value="decodeURI(currentValue || '')"
         type="url"
@@ -68,13 +69,7 @@
         :required="required"
         :disabled="disabled || isInherited"
         class="mt-url-field__input"
-        @input="
-          (event: Event) => {
-            const result = checkInput((event.target as HTMLInputElement).value);
-            currentValue = result;
-            modelValue = url;
-          }
-        "
+        @input="handleInput"
         @change.stop="$emit('change', ($event.target as HTMLInputElement).value || '')"
       />
 
@@ -117,7 +112,7 @@
 </template>
 
 <script setup lang="ts">
-import { useId, computed, watch, ref, defineProps, defineEmits } from "vue";
+import { useId, computed, watch, ref, defineProps, defineEmits, nextTick } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
@@ -178,6 +173,7 @@ const id = useId();
 
 const currentValue = ref(modelValue.value);
 const sslActive = ref(true);
+const inputRef = ref<HTMLInputElement | null>(null);
 
 const urlPrefix = computed(() => {
   return sslActive.value ? "https://" : "http://";
@@ -200,6 +196,23 @@ watch(
   { immediate: true },
 );
 
+function handleInput(event: Event) {
+  const el = event.target as HTMLInputElement;
+  const prevStart = el.selectionStart ?? 0;
+  const prevEnd = el.selectionEnd ?? prevStart;
+  const result = checkInput(el.value);
+  currentValue.value = result;
+  modelValue.value = url.value;
+  nextTick(() => {
+    const input = inputRef.value;
+    if (!input || typeof input.setSelectionRange !== "function") return;
+    const newLen = input.value.length;
+    const newStart = Math.min(prevStart, newLen);
+    const newEnd = Math.min(prevEnd, newLen);
+    input.setSelectionRange(newStart, newEnd);
+  });
+}
+
 function checkInput(inputValue: string) {
   if (!inputValue.length) return "";
 
@@ -216,11 +229,7 @@ function checkInput(inputValue: string) {
   }
 }
 
-function transformURL(value: string) {
-  const url = new URL(value.match(URL_REGEX.PROTOCOL) ? value : `${urlPrefix.value}${value}`);
-
-  if (!url) return null;
-
+function finalizeUrl(url: URL, decodeHost: boolean) {
   if (props.omitUrlSearch) url.search = "";
   if (props.omitUrlHash) url.hash = "";
 
@@ -228,11 +237,28 @@ function transformURL(value: string) {
   const removeTrailingSlash = url.hash === "" && url.search === "" ? URL_REGEX.TRAILING_SLASH : "";
 
   // build URL via native URL.toString() function instead by hand @see NEXT-15747
-  return url
-    .toString()
-    .replace(URL_REGEX.PROTOCOL, "")
-    .replace(removeTrailingSlash, "")
-    .replace(url.host, decodeURI(url.host));
+  const base = url.toString().replace(URL_REGEX.PROTOCOL, "").replace(removeTrailingSlash, "");
+  return decodeHost ? base.replace(url.host, decodeURI(url.host)) : base;
+}
+
+function transformURL(value: string) {
+  // If IPv4 address pad to 4 octets
+  if (/^[0-9.]+$/.test(value)) {
+    const octets = value.split(".").filter(Boolean).slice(0, 4);
+    const hostname =
+      octets.length > 0 ? [...octets, ...Array(4 - octets.length).fill("0")].join(".") : "";
+
+    if (!hostname) return null;
+
+    const url = new URL(`${urlPrefix.value}${hostname}`);
+    return finalizeUrl(url, false);
+  }
+
+  const url = new URL(value.match(URL_REGEX.PROTOCOL) ? value : `${urlPrefix.value}${value}`);
+
+  if (!url) return null;
+
+  return finalizeUrl(url, true);
 }
 
 const { copy, copied } = useClipboard();
