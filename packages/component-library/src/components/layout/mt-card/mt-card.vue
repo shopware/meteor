@@ -379,7 +379,7 @@ const cardClasses = computed(() => ({
 
   display: flex;
   padding: var(--mt-card-footer-padding);
-  border-top: 1px solid var(--color-secondary-primary-default);
+  border-top: 1px solid var(--color-border-primary-default);
   color: var(--color-text-secondary-default);
 
   &:empty {
