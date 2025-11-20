@@ -1,5 +1,18 @@
 # Changelog
 
+## 4.22.0
+
+### Minor Changes
+
+- 9aa19e4: Add exports for `mt-snackbar` and `useSnackbar`
+- 6467a01: Add `tertiary` variant to `mt-button`
+  Deprecated `action` variant on `mt-button`. Use `secondary` instead.
+- efce046: Add "matchReferenceWidth" prop to "mt-floating-ui" to match the width of the reference element
+
+### Patch Changes
+
+- 3e475a8: Fix font size of `large` variant of `mt-button`
+
 ## 4.21.1
 
 ### Patch Changes
