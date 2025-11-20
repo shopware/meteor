@@ -8,7 +8,11 @@
         v-if="isOpen"
         aria-hidden
         data-testid="modal-backdrop"
-        @click="() => setIsOpen(false)"
+        @click="
+          () => {
+            if (closable) setIsOpen(false);
+          }
+        "
       />
     </Teleport>
   </transition>
@@ -18,11 +22,14 @@
 import { provide, ref, watch } from "vue";
 import { DialogContext } from "../composables/useModalContext";
 
-const props = defineProps<{ isOpen?: boolean }>();
+const props = withDefaults(defineProps<{ isOpen?: boolean; closable?: boolean }>(), {
+  closable: true,
+});
 
 const emit = defineEmits(["change"]);
 
 const isOpen = ref(props.isOpen);
+const closable = ref(props.closable);
 
 watch(isOpen, () => {
   emit("change", isOpen.value);
@@ -35,6 +42,13 @@ watch(
   },
 );
 
+watch(
+  () => props.closable,
+  (value) => {
+    closable.value = value ?? true;
+  },
+);
+
 function setIsOpen(state: boolean) {
   isOpen.value = state;
 }
@@ -42,6 +56,7 @@ function setIsOpen(state: boolean) {
 provide(DialogContext, {
   isOpen,
   setIsOpen,
+  closable,
 });
 </script>
 
