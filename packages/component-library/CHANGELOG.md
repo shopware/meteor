@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.23.0
+
+### Minor Changes
+
+- 43795ed: fix(mt-number-field): allow typing intermediate values below min/max during input
+
 ## 4.22.0
 
 ### Minor Changes
