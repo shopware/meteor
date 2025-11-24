@@ -56,7 +56,7 @@ withDefaults(
   }>(),
   {
     linkType: "internal",
-    // @deprecated tag:v5 remove centered prop and class
+    /** @deprecated tag:v5 remove centered prop and class */
     centered: false,
   },
 );
