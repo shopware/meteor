@@ -45,7 +45,7 @@ export const VisualTestDefaultPageCentered: StoryFn = Default.bind({});
 VisualTestDefaultPageCentered.storyName = "Render a default empty state centered";
 VisualTestDefaultPageCentered.args = {
   ...Default.args,
-  leftAligned: false,
+  centered: true,
 };
 
 export const VisualTestExtendedWithSlot: StoryObj<typeof MtEmptyState> = {

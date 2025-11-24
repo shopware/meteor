@@ -33,9 +33,9 @@ export default {
       control: "text",
       description: "The text of the action button",
     },
-    leftAligned: {
+    centered: {
       control: "boolean",
-      description: "Whether the empty state is left aligned",
+      description: "Whether the empty state is centered",
     },
   },
 } as Meta;
