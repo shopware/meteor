@@ -1,5 +1,6 @@
 <template>
-  <div class="mt-empty-state">
+  <!-- @deprecated tag:v5 remove leftAligned class -->
+  <div class="mt-empty-state" :class="{ 'mt-empty-state--left-aligned': leftAligned }">
     <div class="mt-empty-state__icon">
       <mt-icon :name="icon" color="var(--color-icon-primary-default)" aria-hidden="true" />
     </div>
@@ -51,9 +52,11 @@ withDefaults(
     linkText?: string;
     linkType?: "external" | "internal";
     buttonText?: string;
+    leftAligned?: boolean;
   }>(),
   {
     linkType: "internal",
+    leftAligned: true,
   },
 );
 
@@ -64,7 +67,16 @@ defineEmits(["button-click"]);
 .mt-empty-state {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  max-width: 560px;
+  text-align: center;
+}
+
+/* @deprecated tag:v5 remove leftAligned class */
+.mt-empty-state--left-aligned {
   align-items: flex-start;
+  max-width: none;
+  text-align: left;
 }
 
 .mt-empty-state__icon {
