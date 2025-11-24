@@ -33,6 +33,10 @@ export default {
       control: "text",
       description: "The text of the action button",
     },
+    leftAligned: {
+      control: "boolean",
+      description: "Whether the empty state is left aligned",
+    },
   },
 } as Meta;
 
@@ -42,7 +46,9 @@ const DefaultTemplate: StoryFn = (args) => ({
     return { args };
   },
   template: `
-    <mt-empty-state v-bind="args" />
+    <div :style="!args.leftAligned ? { height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' } : {}">
+      <mt-empty-state v-bind="args" />
+    </div>
   `,
 });
 
@@ -59,7 +65,9 @@ const ExtendedTemplate: StoryFn = (args) => ({
     return { args };
   },
   template: `
-    <mt-empty-state v-bind="args" @button-click="args.onButtonClick" />
+    <div :style="!args.leftAligned ? { height: '100vh', display: 'flex', justifyContent: 'center', alignItems: 'center' } : {}">
+      <mt-empty-state v-bind="args" @button-click="args.onButtonClick" />
+    </div>
   `,
 });
 
