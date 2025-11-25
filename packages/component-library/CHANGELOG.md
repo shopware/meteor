@@ -1,5 +1,16 @@
 # Changelog
 
+## 4.23.0
+
+### Minor Changes
+
+- 43795ed: fix(mt-number-field): allow typing intermediate values below min/max during input
+- d209cdc: feat: add centered prop to `mt-empty-state`
+
+### Patch Changes
+
+- bb08d97: revert default center `mt-empty-state`
+
 ## 4.22.0
 
 ### Minor Changes
