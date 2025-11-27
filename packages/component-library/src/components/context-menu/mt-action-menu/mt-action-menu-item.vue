@@ -1,17 +1,19 @@
 <template>
-    <dropdown-menu-item :class="['mt-action-menu-item', `mt-action-menu-item--variant-${variant}`]" :disabled="disabled">
+    <component :is="isSubTrigger ? DropdownMenuSubTrigger : DropdownMenuItem" :class="['mt-action-menu-item', `mt-action-menu-item--variant-${variant}`]" :disabled="disabled">
         <mt-icon v-if="!!icon" :name="icon" size="16" mode="solid" />
 
         <slot name="default" />
 
-        <span v-if="shortcutText" class="mt-action-menu-item__shortcut">
+        <span v-if="shortcutText && !isSubTrigger" :class="['mt-action-menu-item__shortcut', { 'mt-action-menu-item__shortcut--disabled': disabled }]">
             {{ shortcutText }}
         </span>
-    </dropdown-menu-item>
+
+        <mt-icon v-if="isSubTrigger" name="chevron-right-s" size="10" color="var(--color-icon-primary-default)" mode="solid" class="mt-action-menu-item__arrow" />
+    </component>
 </template>
 
 <script setup lang="ts">
-import { DropdownMenuItem } from 'reka-ui';
+import { DropdownMenuItem, DropdownMenuSubTrigger } from 'reka-ui';
 import MtIcon from '../../icons-media/mt-icon/mt-icon.vue';
 import { computed } from 'vue';
 
@@ -23,6 +25,7 @@ const props = withDefaults(defineProps<{
         pc: string;
         mac: string;
     };
+    isSubTrigger?: boolean;
 }>(), {
     variant: 'default',
     disabled: false,
@@ -87,5 +90,13 @@ const shortcutText = computed(() => {
     font-family: var(--font-family-body);
     line-height: var(--font-line-height-xs);
     font-weight: var(--font-weight-regular);
+}
+
+.mt-action-menu-item__shortcut--disabled {
+    color: var(--color-text-secondary-disabled);
+}
+
+.mt-action-menu-item__arrow {
+    margin-left: auto;
 }
 </style>

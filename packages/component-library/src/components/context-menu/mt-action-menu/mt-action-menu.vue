@@ -1,11 +1,17 @@
 <template>
-    <dropdown-menu-content class="mt-action-menu" :side-offset="8" align="start">
+    <component :is="isSubMenu ? DropdownMenuSubContent : DropdownMenuContent" class="mt-action-menu" :side-offset="8" :align-offset="isSubMenu ? -5 : undefined" align="start">
         <slot name="default" />
-    </dropdown-menu-content>
+    </component>
 </template> 
 
 <script setup lang="ts">
-import { DropdownMenuContent } from 'reka-ui';
+import { DropdownMenuContent, DropdownMenuSubContent } from 'reka-ui';
+
+withDefaults(defineProps<{
+    isSubMenu?: boolean;
+}>(), {
+    isSubMenu: false,
+});
 </script>
 
 <style>
