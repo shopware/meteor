@@ -91,6 +91,7 @@ watch(
   iconInformation,
   () => {
     import(
+      // `@shopware-ag/meteor-icon-kit/icons/${iconInformation.value.mode}/${iconInformation.value.name}.svg`
       `./../../../../node_modules/@shopware-ag/meteor-icon-kit/icons/${iconInformation.value.mode}/${iconInformation.value.name}.svg`
     )
       .then((data) => {

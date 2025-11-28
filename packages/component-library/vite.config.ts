@@ -54,11 +54,28 @@ export default defineConfig({
     },
     cssCodeSplit: true,
     rollupOptions: {
-      external: ["vue"],
+      external: (id) => {
+        const externalPkgs = [
+          'vue',
+          // '@shopware-ag/meteor-icon-kit'
+        ];
+
+        return (
+          externalPkgs.includes(id) ||
+          id.startsWith('@vue/')
+        );
+      },
       input: {
         index: path.resolve(__dirname, "src/index.ts"),
         fonts: path.resolve(__dirname, "src/fonts.ts"),
       },
+      output: {
+        preserveModules: true,
+        preserveModulesRoot: path.resolve(__dirname, "src"),
+        globals: {
+          vue: "Vue",
+        }
+      }
     },
   },
   css: {
