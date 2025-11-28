@@ -14,8 +14,8 @@
       "types": "./dist/esm/index.d.ts",
       "import": "./dist/esm/index.js"
     },
-    "./styles.css": "./dist/index.css",
-    "./font.css": "./dist/fonts.css"
+    "./styles.css": "./dist/all.css",
+    "./font.css": "./dist/font.css"
   },
   "files": [
     "src",
@@ -152,6 +152,7 @@
     "typescript-eslint": "^8.24.1",
     "vite": "^4.4.11",
     "vite-plugin-dts": "^4.5.0",
+    "vite-plugin-inspect": "^0.8.4",
     "vite-plugin-svgstring": "^1.0.0",
     "vitest": "^3.0.5",
     "vue-tsc": "^2.2.4"

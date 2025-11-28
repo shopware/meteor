@@ -6,6 +6,14 @@ import vue from "@vitejs/plugin-vue";
 // @ts-expect-error - not typed
 import svg from "vite-plugin-svgstring";
 import dts from "vite-plugin-dts";
+import Inspect from 'vite-plugin-inspect'
+import fs from 'fs'
+
+// Get all dependencies from package.json
+const pkg = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'package.json'), 'utf-8'));
+const dependencies = Object.keys(pkg.dependencies || {});
+const peerDependencies = Object.keys(pkg.peerDependencies || {});
+const allExternalPackages = [...dependencies, ...peerDependencies];
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -30,6 +38,10 @@ export default defineConfig({
       ],
       exclude: ["node_modules", "**/*.stories.ts", "**/*.spec.ts", "**/*.spec.js"],
     }),
+    Inspect({
+      build: true,
+      outputDir: '.vite-inspect'
+    })
   ],
   resolve: {
     alias: [
@@ -48,22 +60,21 @@ export default defineConfig({
     sourcemap: true,
     cssMinify: false,
     lib: {
-      entry: "src/index.ts",
-      formats: ["es", "cjs"],
+      entry: {
+        index: path.resolve(__dirname, "src/index.ts"),
+        fonts: path.resolve(__dirname, "src/fonts.ts"),
+      },
+      formats: ["es"],
       fileName: (format, entryName) => `${{ es: "esm", cjs: "common" }[format]}/${entryName}.js`,
     },
     cssCodeSplit: true,
     rollupOptions: {
-      external: (id) => {
-        const externalPkgs = [
-          'vue',
-          // '@shopware-ag/meteor-icon-kit'
-        ];
+      external: (id: string) => {
+        // 4. Check if the ID starts with any known package name OR is a Vue internal path
+        const isExternalPackage = allExternalPackages.some(pkgName => id.startsWith(pkgName));
+        const isVueInternal = id.startsWith('vue') || id.startsWith('@vue/');
 
-        return (
-          externalPkgs.includes(id) ||
-          id.startsWith('@vue/')
-        );
+        return isExternalPackage || isVueInternal;
       },
       input: {
         index: path.resolve(__dirname, "src/index.ts"),
@@ -74,7 +85,7 @@ export default defineConfig({
         preserveModulesRoot: path.resolve(__dirname, "src"),
         globals: {
           vue: "Vue",
-        }
+        },
       }
     },
   },
