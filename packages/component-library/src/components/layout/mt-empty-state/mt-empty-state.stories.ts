@@ -33,6 +33,10 @@ export default {
       control: "text",
       description: "The text of the action button",
     },
+    centered: {
+      control: "boolean",
+      description: "Whether the empty state is centered",
+    },
   },
 } as Meta;
 
@@ -42,9 +46,7 @@ const DefaultTemplate: StoryFn = (args) => ({
     return { args };
   },
   template: `
-  <div style="height: 100vh; display: flex; justify-content: center; align-items: center;">
-    <mt-empty-state v-bind="args" />
-  </div>
+      <mt-empty-state v-bind="args" />
   `,
 });
 
@@ -61,9 +63,7 @@ const ExtendedTemplate: StoryFn = (args) => ({
     return { args };
   },
   template: `
-  <div style="height: 100vh; display: flex; justify-content: center; align-items: center;">
-    <mt-empty-state v-bind="args" @button-click="args.onButtonClick" />
-  </div>
+      <mt-empty-state v-bind="args" @button-click="args.onButtonClick" />
   `,
 });
 

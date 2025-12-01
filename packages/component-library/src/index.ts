@@ -24,6 +24,11 @@ import MtDataTable from "./components/table-and-list/mt-data-table/mt-data-table
 import MtPagination from "./components/table-and-list/mt-pagination/mt-pagination.vue";
 import MtSkeletonBar from "./components/feedback-indicator/mt-skeleton-bar/mt-skeleton-bar.vue";
 import MtToast, { type Toast } from "./components/feedback-indicator/mt-toast/mt-toast.vue";
+import MtSnackbar from "./components/feedback-indicator/mt-snackbar/mt-snackbar.vue";
+import {
+  useSnackbar,
+  type Snackbar,
+} from "./components/feedback-indicator/mt-snackbar/composables/use-snackbar";
 import MtPromoBadge from "./components/feedback-indicator/mt-promo-badge/mt-promo-badge.vue";
 import MtPopover from "./components/overlay/mt-popover/mt-popover.vue";
 import MtPopoverItem from "./components/overlay/mt-popover-item/mt-popover-item.vue";
@@ -86,6 +91,7 @@ export {
   MtPagination,
   MtSkeletonBar,
   MtToast,
+  MtSnackbar,
   MtPromoBadge,
   MtPopover,
   MtPopoverItem,
@@ -107,6 +113,7 @@ export {
   MtEntitySelect,
   TooltipDirective,
   DeviceHelperPlugin,
+  useSnackbar,
   // @deprecated
   MtBanner as SwBanner,
   // @deprecated
@@ -150,4 +157,4 @@ export {
 };
 
 // Exporting types
-export type { Filter, Option, Toast, ChartOptions };
+export type { Filter, Option, Toast, Snackbar, ChartOptions };
