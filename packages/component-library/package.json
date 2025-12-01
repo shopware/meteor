@@ -14,17 +14,17 @@
       "types": "./dist/esm/index.d.ts",
       "import": "./dist/esm/index.js"
     },
-    "./styles.css": "./dist/all.css",
-    "./font.css": "./dist/font.css"
+    "./styles.css": "./dist/index.css",
+    "./font.css": "./dist/fonts.css"
   },
   "files": [
     "src",
     "dist"
   ],
   "sideEffects": [
-    "*.css",
+    "*.vue",
     "*.scss",
-    "*.vue"
+    "*.css"
   ],
   "scripts": {
     "build": "run-p lint:types \"build-only {@}\" --",

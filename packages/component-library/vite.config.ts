@@ -8,12 +8,16 @@ import svg from "vite-plugin-svgstring";
 import dts from "vite-plugin-dts";
 import Inspect from 'vite-plugin-inspect'
 import fs from 'fs'
+import { getAllComponents, libInjectCss } from "./build/helper";
 
 // Get all dependencies from package.json
 const pkg = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'package.json'), 'utf-8'));
 const dependencies = Object.keys(pkg.dependencies || {});
 const peerDependencies = Object.keys(pkg.peerDependencies || {});
 const allExternalPackages = [...dependencies, ...peerDependencies];
+
+// Get all components and their paths
+const allComponents = getAllComponents();
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -38,10 +42,7 @@ export default defineConfig({
       ],
       exclude: ["node_modules", "**/*.stories.ts", "**/*.spec.ts", "**/*.spec.js"],
     }),
-    Inspect({
-      build: true,
-      outputDir: '.vite-inspect'
-    })
+    libInjectCss(),
   ],
   resolve: {
     alias: [
@@ -63,29 +64,18 @@ export default defineConfig({
       entry: {
         index: path.resolve(__dirname, "src/index.ts"),
         fonts: path.resolve(__dirname, "src/fonts.ts"),
+        ...allComponents,
       },
-      formats: ["es"],
+      formats: ["es", "cjs"],
       fileName: (format, entryName) => `${{ es: "esm", cjs: "common" }[format]}/${entryName}.js`,
     },
     cssCodeSplit: true,
     rollupOptions: {
-      external: (id: string) => {
-        // 4. Check if the ID starts with any known package name OR is a Vue internal path
-        const isExternalPackage = allExternalPackages.some(pkgName => id.startsWith(pkgName));
-        const isVueInternal = id.startsWith('vue') || id.startsWith('@vue/');
-
-        return isExternalPackage || isVueInternal;
-      },
-      input: {
-        index: path.resolve(__dirname, "src/index.ts"),
-        fonts: path.resolve(__dirname, "src/fonts.ts"),
-      },
+      external: ["vue", "apexcharts"],
       output: {
-        preserveModules: true,
-        preserveModulesRoot: path.resolve(__dirname, "src"),
         globals: {
           vue: "Vue",
-        },
+        }
       }
     },
   },
