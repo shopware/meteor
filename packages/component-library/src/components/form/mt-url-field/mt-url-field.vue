@@ -61,6 +61,7 @@
 
       <input
         :id="id"
+        ref="inputRef"
         :value="decodeURI(currentValue || '')"
         type="url"
         :placeholder="placeholder"
@@ -70,9 +71,28 @@
         class="mt-url-field__input"
         @input="
           (event: Event) => {
-            const result = checkInput((event.target as HTMLInputElement).value);
-            currentValue = result;
-            modelValue = url;
+            const inputValue = (event.target as HTMLInputElement).value;
+            if (!inputValue.length) {
+              currentValue = '';
+              return;
+            }
+            if (inputValue.match(URL_REGEX.PROTOCOL_HTTP)) {
+              sslActive = !!inputValue.match(URL_REGEX.SSL);
+            }
+            currentValue = inputValue.replace(URL_REGEX.PROTOCOL, '');
+          }
+        "
+        @blur="
+          () => {
+            if (inputRef) {
+              try {
+                const result = checkInput(inputRef.value);
+                currentValue = result;
+                modelValue = url;
+              } catch {
+                // Validation failed - let parent handle error via error prop
+              }
+            }
           }
         "
         @change.stop="$emit('change', ($event.target as HTMLInputElement).value || '')"
@@ -176,6 +196,8 @@ const props = withDefaults(
 
 const id = useId();
 
+const inputRef = ref<HTMLInputElement | null>(null);
+
 const currentValue = ref(modelValue.value);
 const sslActive = ref(true);
 
@@ -193,9 +215,16 @@ const url = computed(() => {
 watch(
   () => modelValue.value,
   () => {
-    const result = checkInput(modelValue.value || "");
-
-    currentValue.value = result;
+    try {
+      const result = checkInput(modelValue.value || "");
+      currentValue.value = result;
+    } catch {
+      const inputValue = modelValue.value || "";
+      if (inputValue.match(URL_REGEX.PROTOCOL_HTTP)) {
+        sslActive.value = !!inputValue.match(URL_REGEX.SSL);
+      }
+      currentValue.value = inputValue.replace(URL_REGEX.PROTOCOL, "");
+    }
   },
   { immediate: true },
 );
