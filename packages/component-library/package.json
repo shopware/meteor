@@ -12,10 +12,22 @@
   "exports": {
     ".": {
       "types": "./dist/esm/index.d.ts",
-      "import": "./dist/esm/index.js"
+      "import": "./dist/esm/index.js",
+      "require": "./dist/common/index.js"
     },
     "./styles.css": "./dist/index.css",
-    "./font.css": "./dist/fonts.css"
+    "./font.css": "./dist/fonts.css",
+    "./fonts": {
+      "types": "./dist/esm/fonts.d.ts",
+      "import": "./dist/esm/fonts.js",
+      "require": "./dist/common/fonts.js"
+    },
+    "./dist/*": "./dist/*",
+    "./*": {
+      "types": "./dist/esm/*.d.ts",
+      "import": "./dist/esm/*.js",
+      "require": "./dist/common/*.js"
+    }
   },
   "files": [
     "src",

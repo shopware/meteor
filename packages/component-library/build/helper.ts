@@ -135,3 +135,15 @@ export function libInjectCss(): Plugin {
     // };
   };
 }
+
+// Helper to convert kebab-case to PascalCase
+export function toPascalCase(str: string): string {
+    return str
+      .replace(/([-_][a-z])/gi, (group) =>
+        group
+          .toUpperCase()
+          .replace('-', '')
+          .replace('_', '')
+      )
+      .replace(/^[a-z]/, (firstChar) => firstChar.toUpperCase());
+  }
