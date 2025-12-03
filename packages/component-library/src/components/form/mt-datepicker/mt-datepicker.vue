@@ -379,7 +379,7 @@ export default defineComponent({
   watch: {
     dateType: {
       handler() {
-        this.isTimeHintVisible = this.dateType !== "date";
+        this.isTimeHintVisible = this.dateType === "datetime";
         this.updateOpacitySettings();
       },
       immediate: true,
@@ -393,7 +393,7 @@ export default defineComponent({
   },
 
   mounted() {
-    this.isTimeHintVisible = this.dateType !== "date";
+    this.isTimeHintVisible = this.dateType === "datetime";
     this.updateOpacitySettings();
   },
 
