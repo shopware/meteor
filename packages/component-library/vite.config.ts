@@ -14,10 +14,15 @@ import { getAllComponents, libInjectCss, toPascalCase } from "./build/helper";
 const pkg = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'package.json'), 'utf-8'));
 const dependencies = Object.keys(pkg.dependencies || {});
 const peerDependencies = Object.keys(pkg.peerDependencies || {});
-const allExternalPackages = [...dependencies, ...peerDependencies];
 
 // Get all components and their paths
 const allComponents = getAllComponents();
+
+export const external = [
+  'vue',
+  'apexcharts',
+  'vue-i18n',
+]
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -99,7 +104,7 @@ export default defineConfig({
     },
     cssCodeSplit: true,
     rollupOptions: {
-      external: ["vue", "apexcharts"],
+      external: external,
       output: {
         globals: {
           vue: "Vue",

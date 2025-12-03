@@ -1,16 +1,12 @@
 import type { SizeLimitConfig } from 'size-limit'
+import { external } from './vite.config'
 
-const ignore = [
-  "vue",
-  // "@vue/",
-  // "@shopware-ag/meteor-icon-kit",
-  // "packages/icon-kit/icons/"
-];
+const ignore = [...external];
 
 module.exports = [
   {
     path: "dist/esm/index.js",
-    limit: "1100 kb",
+    limit: "950 kb",
     name: "index.js",
     ignore: ignore
   },
@@ -31,13 +27,13 @@ module.exports = [
     path: "dist/esm/index.js",
     import: "{ MtCard }",
     name: "MtCard",
-    limit: "250 kb",
+    limit: "240 kb",
     ignore: ignore
   },
   {
     path: "dist/esm/MtCard.js",
     name: "MtCard direct import",
-    limit: "230 kb",
+    limit: "210 kb",
     ignore: ignore
   },
   {
@@ -51,14 +47,14 @@ module.exports = [
     path: "dist/esm/index.js",
     import: "{ MtTextEditor }",
     name: "MtTextEditor",
-    limit: "810 kb",
+    limit: "800 kb",
     ignore: ignore
   },
   {
     path: "dist/esm/index.js",
     import: "{ MtDataTable }",
     name: "MtDataTable",
-    limit: "270 kb",
+    limit: "260 kb",
     ignore: ignore
   }
 ] satisfies SizeLimitConfig
