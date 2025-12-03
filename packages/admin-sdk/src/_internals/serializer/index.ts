@@ -5,7 +5,9 @@ import CriteriaSerializer from './criteria-serializer';
 import EntitySerializer from './entity-serializer';
 import EntityCollectionSerializer from './entity-collection-serializer';
 import HandleErrorSerializer from './handle-error-serializer';
-import { cloneDeepWith, get, set } from 'lodash';
+import cloneDeepWith from 'lodash-es/cloneDeepWith';
+import get from 'lodash-es/get';
+import set from 'lodash-es/set';
 import MissingPrivilegesErrorSerializer from './missing-priviliges-error-serializer';
 import { isPrimitive, traverseObject, removeRoot } from '../utils';
 

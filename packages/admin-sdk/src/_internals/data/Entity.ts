@@ -1,4 +1,4 @@
-import cloneDeep from 'lodash/cloneDeep';
+import cloneDeep from 'lodash-es/cloneDeep';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let setterMethod = (draft: Record<any, any>, property: string, value: unknown): void => {

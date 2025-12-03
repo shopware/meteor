@@ -1,4 +1,4 @@
-import cloneDeep from 'lodash/cloneDeep';
+import cloneDeep from 'lodash-es/cloneDeep';
 
 export const enum TotalCountMode {
     /* No total count will be selected. Should be used if no pagination required (fastest) */
