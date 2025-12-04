@@ -2,25 +2,25 @@
   <span
     :class="[
       'mt-avatar',
+      `mt-avatar--size-${props.size}`,
       `mt-avatar--color-${color}`,
       {
-        'mt-avatar--square': variant === 'square',
+        'mt-avatar--square': props.variant === 'square',
       },
     ]"
     :style="{
-      '--avatar-size': size,
-      'background-image': imageUrl ? `url('${imageUrl}')` : undefined,
+      'background-image': props.imageUrl ? `url('${props.imageUrl}')` : undefined,
     }"
     role="img"
     alt=""
   >
     <slot>
-      <span v-if="!placeholder && !imageUrl" data-testid="mt-avatar-initials">
+      <span v-if="!props.placeholder && !props.imageUrl" data-testid="mt-avatar-initials">
         {{ avatarInitials }}
       </span>
 
       <mt-icon
-        v-if="placeholder && !imageUrl"
+        v-if="props.placeholder && !props.imageUrl"
         aria-hidden
         name="regular-user"
         data-testid="mt-avatar-placeholder"
@@ -35,42 +35,66 @@ import { computed } from "vue";
 
 const colors = ["orange", "pink", "yellow", "purple", "red", "blue", "emerald"] as const;
 
-const { size, firstName, lastName, imageUrl, placeholder, variant } = defineProps<{
-  size?: string;
-  firstName?: string;
-  lastName?: string;
-  imageUrl?: string;
-  placeholder?: boolean;
-  variant?: "circle" | "square";
-}>();
+const props = withDefaults(
+  defineProps<{
+    size?: "xs" | "s" | "m" | "l";
+    firstName?: string;
+    lastName?: string;
+    imageUrl?: string;
+    placeholder?: boolean;
+    variant?: "circle" | "square";
+  }>(),
+  {
+    size: "m",
+    firstName: undefined,
+    lastName: undefined,
+    imageUrl: undefined,
+    placeholder: false,
+    variant: "circle",
+  },
+);
 
 const avatarInitials = computed(() => {
-  return (firstName?.[0] ?? "") + (lastName?.[0] ?? "");
+  return (props.firstName?.[0] ?? "") + (props.lastName?.[0] ?? "");
 });
 
 const color = computed(() => {
-  const nameLength = (firstName?.length ?? 0) + (lastName?.length ?? 0);
+  const nameLength = (props.firstName?.length ?? 0) + (props.lastName?.length ?? 0);
   return colors[nameLength % colors.length];
 });
 </script>
 
 <style scoped>
 .mt-avatar {
-  --avatar-size: var(--scale-size-40);
-
   display: inline-grid;
   place-items: center;
-  width: var(--avatar-size);
-  height: var(--avatar-size);
+  width: var(--mt-avatar-size);
+  height: var(--mt-avatar-size);
   border-radius: var(--border-radius-round);
   background-size: cover;
-  font-size: calc(var(--avatar-size) * 0.4);
+  font-size: calc(var(--mt-avatar-size) * 0.4);
   font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
   user-select: none;
 
   color: var(--mt-avatar--color-primary);
   background-color: var(--mt-avatar--color-secondary);
+}
+
+.mt-avatar--size-xs {
+  --mt-avatar-size: var(--scale-size-24);
+}
+
+.mt-avatar--size-s {
+  --mt-avatar-size: var(--scale-size-32);
+}
+
+.mt-avatar--size-m {
+  --mt-avatar-size: var(--scale-size-40);
+}
+
+.mt-avatar--size-l {
+  --mt-avatar-size: var(--scale-size-48);
 }
 
 [data-theme="dark"] .mt-avatar {
