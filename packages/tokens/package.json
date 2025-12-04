@@ -14,7 +14,8 @@
     "./administration/light.css": "./deliverables/administration/light.css",
     "./administration/dark.css": "./deliverables/administration/dark.css",
     "./foundation/primitives.json": "./dictionaries/foundation/primitives.tokens.json",
-    "./tailwind": "./deliverables/tailwind.css"
+    "./tailwind": "./deliverables/tailwind.css",
+    "./tailwind/administration": "./deliverables/tailwind-administration.css"
   },
   "main": "index.js",
   "files": [
