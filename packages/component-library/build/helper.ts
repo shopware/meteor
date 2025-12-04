@@ -50,7 +50,9 @@ export function getAllComponents() {
 export function libInjectCss(): Plugin {
   return {
     name: "lib-inject-css",
-    apply: "build",
+    apply: (config, { command }) => {
+      return command === 'build' && !!config.build?.lib;
+    },
     enforce: "post",
     generateBundle(options, bundle) {
       for (const key in bundle) {
