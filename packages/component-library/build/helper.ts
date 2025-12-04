@@ -100,31 +100,6 @@ export function libInjectCss(): Plugin {
         }
       }
     },
-    // return {
-    //   name: 'lib-inject-css',
-    //   apply: 'build',
-    //   renderChunk(code, chunk) {
-    //     // Check if this chunk has any CSS files associated with it
-    //     if (!chunk.viteMetadata || !chunk.viteMetadata.importedCss.size) {
-    //       return null;
-    //     }
-
-    //     // Get the CSS filenames
-    //     const cssFiles = Array.from(chunk.viteMetadata.importedCss);
-
-    //     // Create the import statements
-    //     // We assume the CSS file is in the same directory as the JS file
-    //     const imports = cssFiles
-    //       .map(cssFile => `import './${path.basename(cssFile)}';`)
-    //       .join('\n');
-
-    //     // Inject imports at the top of the file
-    //     return {
-    //       code: `${imports}\n${code}`,
-    //       map: null // sourcemap handling if needed
-    //     };
-    //   }
-    // };
   };
 }
 
