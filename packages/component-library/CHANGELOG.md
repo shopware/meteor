@@ -1,5 +1,111 @@
 # Changelog
 
+## 4.23.0
+
+### Minor Changes
+
+- 43795ed: fix(mt-number-field): allow typing intermediate values below min/max during input
+- d209cdc: feat: add centered prop to `mt-empty-state`
+
+### Patch Changes
+
+- bb08d97: revert default center `mt-empty-state`
+
+## 4.22.0
+
+### Minor Changes
+
+- 9aa19e4: Add exports for `mt-snackbar` and `useSnackbar`
+- 6467a01: Add `tertiary` variant to `mt-button`
+  Deprecated `action` variant on `mt-button`. Use `secondary` instead.
+- efce046: Add "matchReferenceWidth" prop to "mt-floating-ui" to match the width of the reference element
+
+### Patch Changes
+
+- 3e475a8: Fix font size of `large` variant of `mt-button`
+
+## 4.21.1
+
+### Patch Changes
+
+- 66de384: Add watcher on the `default-item` prop in `mt-tabs`
+- 3c80718: Fixed wrapper spacing in `mt-datepicker`
+
+## 4.21.0
+
+### Minor Changes
+
+- 502e096: Added br-tag to mt-tooltip allowlist
+- a7d05e5: Fix timezone issue in `mt-datepicker`
+
+## 4.20.1
+
+### Patch Changes
+
+- Updated dependencies [e14b1ea]
+  - @shopware-ag/meteor-tokens@1.3.1
+
+## 4.20.0
+
+### Minor Changes
+
+- 863d58e: Add diff-view to mt-text-editor when using unsupported markup
+
+### Patch Changes
+
+- 0623c6b: Add v-model to mt-checkbox
+- 0623c6b: Refactor mt-password-field so that it uses mt-base-field and supports inheritance logic. Also fixes hint prop
+- 0623c6b: Use the mt-inheritance-switch inside the mt-field-label instead of a manual implementation
+- 8537be0: feat: add translation to promo badge
+- 0623c6b: Fix missing inheritance events in mt-colorpicker
+
+## 4.19.0
+
+### Minor Changes
+
+- eadd0c4: Add ability to disable the selection of specific row in mt-data-table
+
+### Patch Changes
+
+- 462f4db: fix: mt-select button alignment
+
+## 4.18.0
+
+### Minor Changes
+
+- e50a2f8: feat: make center alignment default mt-empty-state
+- 864b75a: feat: implement mt-promo-badge component
+- a1a8ee8: implement snackbar component
+- 350639a: Add more support for different HTML elements for the mt-text-editor
+- 3360706: feat: implement badge component
+- a375c4c: Add ability to append more context button for each row of mt-data-table
+
+### Patch Changes
+
+- 324a662: Add color for banner content
+- b183cb8: Pass `Event` to the `onLabelClick` handler
+- b8b71dd: Fix that overflowed elements like popovers aren't visible inside mt-card
+- 2846d01: Align colors of placeholders for all input fields
+- e7491e2: stop showing hover styles for disabled number field controls
+- Updated dependencies [9726930]
+- Updated dependencies [92c09da]
+  - @shopware-ag/meteor-admin-sdk@6.4.0
+
+## 4.17.0
+
+### Minor Changes
+
+- 70666f2: Fine tune mt-loader size scaling
+
+### Patch Changes
+
+- faac8e2: add slot for customize the cell content
+- 8959aec: Added prop `linkType` to `mt-empty-state` to control the behaviour of the displayed link.
+- 3f8428c: fix error state unit field
+- Updated dependencies [2f985e4]
+- Updated dependencies [033631c]
+  - @shopware-ag/meteor-admin-sdk@6.3.0
+
 ## 4.16.1
 
 ### Patch Changes

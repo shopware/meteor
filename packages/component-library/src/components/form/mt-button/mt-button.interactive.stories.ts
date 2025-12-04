@@ -43,6 +43,14 @@ export const VisualTestSecondaryGhostVariant: MtButtonStory = {
   },
 };
 
+export const VisualTestTertiaryVariant: MtButtonStory = {
+  name: "Render tertiary variant",
+  args: {
+    default: "Tertiary button",
+    variant: "tertiary",
+  },
+};
+
 export const VisualTestCriticalVariant: MtButtonStory = {
   name: "Render the critical variant",
   args: {

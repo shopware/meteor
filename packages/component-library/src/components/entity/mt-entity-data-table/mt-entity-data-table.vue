@@ -140,6 +140,11 @@ const props = defineProps<{
   disableEdit?: boolean;
   disableSearch?: boolean;
   disableSettingsTable?: boolean;
+  additionalContextButtons?: {
+    type?: "default" | "active" | "critical";
+    label: string;
+    key: string;
+  }[];
   caption?: string;
   paginationOptions?: number[];
   availableFilters?: AvailableFilter[];

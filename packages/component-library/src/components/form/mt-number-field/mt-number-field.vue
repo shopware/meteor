@@ -198,6 +198,14 @@ export default defineComponent({
     },
   },
 
+  emits: [
+    "update:modelValue",
+    "input-change",
+    "inheritance-restore",
+    "inheritance-remove",
+    "change",
+  ],
+
   setup() {
     const { t } = useI18n({
       messages: {
@@ -300,23 +308,30 @@ export default defineComponent({
       // @ts-expect-error - target exists
       this.computeValue(event.target.value);
 
+      this.$emit("change", event);
       this.$emit("update:modelValue", this.currentValue);
     },
 
     onInput(event: Event) {
       // @ts-expect-error - target exists
-      let val = Number.parseFloat(event.target.value);
+      const inputValue = event.target.value;
+
+      if (inputValue === "" && this.allowEmpty) {
+        // @ts-expect-error - defined in parent
+        this.currentValue = null;
+        this.$emit("input-change", null);
+        return;
+      }
+
+      const val = Number.parseFloat(inputValue);
 
       if (!Number.isNaN(val)) {
-        if (this.max && val > this.max) {
-          val = this.max;
-        }
-        if (this.min && val < this.min) {
-          val = this.min;
-        }
-
-        this.computeValue(val.toString());
+        this.computeValue(val.toString(), true);
         this.$emit("input-change", val);
+      } else if (inputValue === "" || inputValue === "-" || inputValue === ".") {
+        // @ts-expect-error - defined in parent
+        this.currentValue = null;
+        this.$emit("input-change", null);
       }
     },
 
@@ -333,23 +348,24 @@ export default defineComponent({
       this.$emit("update:modelValue", this.currentValue);
     },
 
-    computeValue(stringRepresentation: string) {
+    computeValue(stringRepresentation: string, skipBoundaries = false) {
       const value = this.getNumberFromString(stringRepresentation);
-      this.currentValue = this.parseValue(value);
+      this.currentValue = this.parseValue(value, skipBoundaries);
     },
 
     // @ts-expect-error - defined in parent
 
-    parseValue(value: any) {
+    parseValue(value: any, skipBoundaries = false) {
       if (value === null || Number.isNaN(value) || !Number.isFinite(value)) {
         if (this.allowEmpty) {
           return null;
         }
 
-        return this.parseValue(0);
+        return this.parseValue(0, skipBoundaries);
       }
 
-      return this.checkForInteger(this.checkBoundaries(value));
+      const processedValue = skipBoundaries ? value : this.checkBoundaries(value);
+      return this.checkForInteger(processedValue);
     },
 
     checkBoundaries(value: number) {
@@ -417,7 +433,7 @@ export default defineComponent({
     width: 100%;
     flex: 1;
 
-    &:is(:hover, :focus-visible) {
+    &:is(:hover, :focus-visible):not(:disabled) {
       background-color: var(--color-interaction-secondary-hover);
     }
 

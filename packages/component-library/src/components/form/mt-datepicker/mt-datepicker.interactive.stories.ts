@@ -9,6 +9,13 @@ export default {
   title: "Interaction Tests/Form/mt-datepicker",
 } as MtDatepickerMeta;
 
+export const VisualTestDatepickerDefault: MtDatepickerStory = {
+  name: "Render datepicker",
+  args: {
+    label: "Datepicker",
+  },
+};
+
 export const TestDatepickerShouldOpen: MtDatepickerStory = {
   name: "Should open datepicker",
   args: {
@@ -415,5 +422,19 @@ export const VisualTestMinDateDisabledDays: MtDatepickerStory = {
 
     const day15 = dayCells.find((d) => d.textContent === "15");
     expect(day15).toBeDefined();
+  },
+};
+
+export const VisualTestHelpText: MtDatepickerStory = {
+  name: "Should display help text",
+  args: {
+    label: "Datepicker",
+    helpText: "This is a help text",
+  },
+  play: async () => {
+    const canvas = within(document.body);
+    await userEvent.tab();
+
+    expect(canvas.getByRole("tooltip")).toBeInTheDocument();
   },
 };

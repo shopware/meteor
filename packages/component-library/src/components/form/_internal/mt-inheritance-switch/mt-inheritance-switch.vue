@@ -14,6 +14,7 @@
           },
         ]"
         :disabled="disabled"
+        :aria-label="isInherited ? t('unlinkInheritance') : t('linkInheritance')"
         @click="isInherited ? $emit('inheritanceRemove') : $emit('inheritanceRestore')"
       >
         <mt-icon
@@ -45,10 +46,14 @@ const { t } = useI18n({
     en: {
       tooltipRemoveInheritance: "Remove inheritance",
       tooltipRestoreInheritance: "Restore inheritance",
+      linkInheritance: "Link inheritance",
+      unlinkInheritance: "Unlink inheritance",
     },
     de: {
       tooltipRemoveInheritance: "Vererbung entfernen",
       tooltipRestoreInheritance: "Vererbung wiederherstellen",
+      linkInheritance: "Vererbung verknüpfen",
+      unlinkInheritance: "Vererbung trennen",
     },
   },
 });

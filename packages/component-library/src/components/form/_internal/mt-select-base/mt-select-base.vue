@@ -7,6 +7,8 @@
     :is-inherited="isInherited"
     :is-inheritance-field="isInheritanceField"
     :disable-inheritance-toggle="disableInheritanceToggle"
+    @inheritance-restore="$emit('inheritance-restore', $event)"
+    @inheritance-remove="$emit('inheritance-remove', $event)"
   >
     <template #label>
       {{ label }}
@@ -33,7 +35,7 @@
         />
       </div>
 
-      <div class="mt-select__selection-indicators">
+      <div class="mt-select__selection-indicators" :style="{ right: selectionIndicatorsRight }">
         <mt-loader v-if="isLoading" class="mt-select__select-indicator" size="16px" />
 
         <button
@@ -177,6 +179,7 @@ export default defineComponent({
   data() {
     return {
       expanded: false,
+      suffixWidth: 0,
     };
   },
 
@@ -184,9 +187,46 @@ export default defineComponent({
     mtFieldClasses(): { "has--focus": boolean } {
       return { "has--focus": this.expanded };
     },
+
+    selectionIndicatorsRight(): string {
+      const baseRightPx = 16;
+      const rightPx = baseRightPx + (this.suffixWidth || 0);
+      return `${rightPx}px`;
+    },
   },
 
+  mounted() {
+    this.$nextTick(() => this.updateSuffixWidth());
+    window.addEventListener("resize", this.updateSuffixWidth, { passive: true });
+  },
+
+  beforeUnmount() {
+    window.removeEventListener("resize", this.updateSuffixWidth);
+  },
+
+  emits: [
+    "select-expanded",
+    "select-collapsed",
+    "clear",
+    "inheritance-restore",
+    "inheritance-remove",
+  ],
+
   methods: {
+    updateSuffixWidth() {
+      // Find the suffix container to get the width
+      const suffixElement = this.$el?.querySelector(
+        ".mt-block-field__block > .mt-field__addition:not(.is--prefix)",
+      );
+
+      if (!suffixElement) {
+        this.suffixWidth = 0;
+        return;
+      }
+
+      this.suffixWidth = suffixElement.offsetWidth;
+    },
+
     toggleExpand() {
       if (!this.expanded) {
         this.expand();

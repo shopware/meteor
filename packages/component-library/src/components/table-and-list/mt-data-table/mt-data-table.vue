@@ -344,7 +344,14 @@
               </template>
 
               <th
-                v-if="!(disableSettingsTable && disableEdit && disableDelete)"
+                v-if="
+                  !(
+                    disableSettingsTable &&
+                    disableEdit &&
+                    disableDelete &&
+                    !additionalContextButtons.length
+                  )
+                "
                 class="mt-data-table__table-settings-button"
                 scope="col"
               >
@@ -395,6 +402,7 @@
                 <td v-if="allowRowSelection" v-stickyColumn class="mt-data-table__table-select-row">
                   <mt-checkbox
                     :checked="getSelectionValue(data.id)"
+                    :disabled="disableRowSelect.includes(data.id)"
                     @change="onRowSelect(data.id)"
                   />
                 </td>
@@ -419,46 +427,61 @@
                     </template>
 
                     <template v-else>
-                      <!-- Use the correct renderer for the column -->
-                      <mt-data-table-number-renderer
-                        v-if="column.renderer === 'number'"
+                      <slot
+                        :name="`column-${column.property}`"
                         :data="data"
                         :column-definition="column"
-                        @click="$emit('open-details', data)"
-                      />
+                      >
+                        <!-- Use the correct renderer for the column -->
+                        <mt-data-table-number-renderer
+                          v-if="column.renderer === 'number'"
+                          :data="data"
+                          :column-definition="column"
+                          @click="$emit('open-details', data)"
+                        />
 
-                      <mt-data-table-text-renderer
-                        v-else-if="column.renderer === 'text'"
-                        :data="data"
-                        :column-definition="column"
-                        @click="$emit('open-details', data)"
-                      />
+                        <mt-data-table-text-renderer
+                          v-else-if="column.renderer === 'text'"
+                          :data="data"
+                          :column-definition="column"
+                          @click="$emit('open-details', data)"
+                        />
 
-                      <mt-data-table-badge-renderer
-                        v-else-if="column.renderer === 'badge'"
-                        :data="data"
-                        :column-definition="column"
-                        @click="$emit('open-details', data)"
-                      />
+                        <mt-data-table-badge-renderer
+                          v-else-if="column.renderer === 'badge'"
+                          :data="data"
+                          :column-definition="column"
+                          @click="$emit('open-details', data)"
+                        />
 
-                      <mt-data-table-price-renderer
-                        v-else-if="column.renderer === 'price'"
-                        :data="data"
-                        :column-definition="column"
-                        @click="$emit('open-details', data)"
-                      />
+                        <mt-data-table-price-renderer
+                          v-else-if="column.renderer === 'price'"
+                          :data="data"
+                          :column-definition="column"
+                          @click="$emit('open-details', data)"
+                        />
+                      </slot>
                     </template>
                   </td>
                 </template>
 
                 <td
-                  v-if="!(disableSettingsTable && disableEdit && disableDelete)"
+                  v-if="
+                    !(
+                      disableSettingsTable &&
+                      disableEdit &&
+                      disableDelete &&
+                      !additionalContextButtons?.length
+                    )
+                  "
                   class="mt-data-table__table-context-button"
                 >
                   <a v-if="!disableEdit" href="#" @click.prevent="$emit('open-details', data)">
                     {{ t("contextButtons.edit") }}
                   </a>
-                  <mt-context-button v-if="!(disableDelete && disableEdit)">
+                  <mt-context-button
+                    v-if="!(disableDelete && disableEdit && !additionalContextButtons?.length)"
+                  >
                     <template #default="{ toggleFloatingUi }">
                       <mt-context-menu-item
                         v-if="!disableEdit"
@@ -467,6 +490,19 @@
                           () => {
                             toggleFloatingUi();
                             $emit('open-details', data);
+                          }
+                        "
+                      />
+
+                      <mt-context-menu-item
+                        v-for="action in additionalContextButtons"
+                        :key="action.key"
+                        :type="action.type ?? 'default'"
+                        :label="action.label"
+                        @click="
+                          () => {
+                            $emit('context-select', { key: action.key, data });
+                            toggleFloatingUi();
                           }
                         "
                       />
@@ -831,6 +867,12 @@ export default defineComponent({
       default: false,
     },
 
+    disableRowSelect: {
+      type: Array as PropType<string[]>,
+      required: false,
+      default: () => [],
+    },
+
     selectedRows: {
       type: Array as PropType<string[]>,
       required: false,
@@ -971,6 +1013,21 @@ export default defineComponent({
       required: false,
       default: undefined,
     },
+
+    /**
+     * Additional context buttons to show in the context menu
+     */
+    additionalContextButtons: {
+      type: Array as PropType<
+        Array<{
+          type?: "default" | "active" | "critical";
+          label: string;
+          key: string;
+        }>
+      >,
+      required: false,
+      default: () => [],
+    },
   },
   emits: [
     "reload",
@@ -989,6 +1046,7 @@ export default defineComponent({
     "change-enable-row-numbering",
     "item-delete",
     "update:appliedFilters",
+    "context-select",
   ],
   setup(props, { emit }) {
     const { t } = useI18n({
@@ -1719,8 +1777,6 @@ export default defineComponent({
     }
 
     const showData = computed(() => {
-      console.log(props.dataSource.length, props.isLoading);
-
       return props.dataSource.length > 0 || props.isLoading;
     });
 
@@ -1819,7 +1875,7 @@ export default defineComponent({
     };
 
     const onRowSelect = (dataId: string) => {
-      if (props.allowRowSelection) {
+      if (props.allowRowSelection && !props.disableRowSelect.includes(dataId)) {
         const previousValue = getSelectionValue(dataId);
 
         emit("selection-change", {
@@ -1880,7 +1936,9 @@ export default defineComponent({
 
     const handleSelectAll = () => {
       emit("multiple-selection-change", {
-        selections: props.dataSource.map((r) => r.id),
+        selections: props.dataSource
+          .filter((r) => !props.disableRowSelect.includes(r.id))
+          .map((r) => r.id),
         value: true,
       });
     };

@@ -33,7 +33,6 @@ describe("mt-number-field", () => {
     render(MtNumberField, {
       props: {
         modelValue: 10,
-        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
         onChange: handler,
       },
     });
@@ -55,7 +54,6 @@ describe("mt-number-field", () => {
     render(MtNumberField, {
       props: {
         modelValue: 10,
-        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
         onChange: handler,
       },
     });
@@ -73,7 +71,6 @@ describe("mt-number-field", () => {
     render(MtNumberField, {
       props: {
         modelValue: 10,
-        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
         onChange: handler,
       },
     });
@@ -94,7 +91,6 @@ describe("mt-number-field", () => {
         modelValue: 0,
         isInheritanceField: true,
         isInherited: true,
-        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
         "onUpdate:modelValue": handler,
       },
     });
@@ -115,7 +111,6 @@ describe("mt-number-field", () => {
         modelValue: 0,
         isInheritanceField: true,
         isInherited: true,
-        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
         "onUpdate:modelValue": handler,
       },
     });
@@ -134,7 +129,6 @@ describe("mt-number-field", () => {
       props: {
         modelValue: 5,
         min: 0,
-        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
         "onUpdate:modelValue": handler,
       },
     });
@@ -159,7 +153,6 @@ describe("mt-number-field", () => {
       props: {
         modelValue: 15,
         min: 0,
-        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
         "onUpdate:modelValue": handler,
       },
     });
@@ -185,7 +178,6 @@ describe("mt-number-field", () => {
         modelValue: undefined,
         min: 0,
         allowEmpty: true,
-        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
         "onUpdate:modelValue": handler,
       },
     });
@@ -212,7 +204,6 @@ describe("mt-number-field", () => {
       props: {
         modelValue: 5,
         min: 10,
-        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
         "onUpdate:modelValue": handler,
       },
     });
@@ -238,7 +229,6 @@ describe("mt-number-field", () => {
       props: {
         modelValue: 5,
         max: 10,
-        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
         "onUpdate:modelValue": handler,
       },
     });
@@ -263,7 +253,6 @@ describe("mt-number-field", () => {
       props: {
         modelValue: 15,
         max: 20,
-        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
         "onUpdate:modelValue": handler,
       },
     });
@@ -289,7 +278,6 @@ describe("mt-number-field", () => {
         modelValue: undefined,
         max: 10,
         allowEmpty: true,
-        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
         "onUpdate:modelValue": handler,
       },
     });
@@ -315,7 +303,6 @@ describe("mt-number-field", () => {
       props: {
         modelValue: 15,
         max: 10,
-        // @ts-expect-error -- Event exist, but type is not defined via TypeScript
         "onUpdate:modelValue": handler,
       },
     });
@@ -364,5 +351,41 @@ describe("mt-number-field", () => {
 
     // ASSERT
     expect(screen.getByRole("button", { name: "Decrease" })).not.toHaveFocus();
+  });
+
+  it("allows typing values below the minimum value and validates on blur", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        modelValue: 10,
+        min: 8,
+        max: 80,
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    const input = screen.getByRole("textbox");
+
+    // ACT - Type '7' (below minimum value)
+    await userEvent.clear(input);
+    await userEvent.type(input, "7");
+
+    // ASSERT - '7' should be displayed not fixed to '8'
+    expect(input).toHaveValue("7");
+
+    // ACT - Continue typing '75' to make '775' (invalid value)
+    await userEvent.type(input, "75");
+
+    // ASSERT - "775" should be displayed
+    expect(input).toHaveValue("775");
+
+    // ACT - Blur the field to trigger validation
+    await userEvent.click(document.body);
+
+    // ASSERT - Value '775' is invalid, so it should be clamped to '80'
+    expect(input).toHaveValue("80");
+    expect(handler).toHaveBeenCalledWith(80);
   });
 });

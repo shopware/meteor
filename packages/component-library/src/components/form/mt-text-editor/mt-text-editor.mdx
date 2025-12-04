@@ -11,11 +11,13 @@ The `mt-text-editor` component is a powerful and flexible rich text editor built
 ## Features
 
 - **Rich Text Editing**: Includes common formatting options like bold, italic, underline, and more, with support for text alignment, bullet lists, ordered lists, and more.
-- **Customizable Toolbar**: Add or exclude toolbar buttons as per your requirements.
-- **Code Editor Mode**: Toggle between WYSIWYG editing and raw HTML editing with CodeMirror integration.
+- **Customizable Toolbar**: Add or exclude toolbar buttons as per your requirements, or hide the toolbar completely.
+- **Code Editor Mode**: Toggle between WYSIWYG editing and raw HTML editing with CodeMirror integration. Can be controlled programmatically or set to start in code mode by default.
 - **Character Count**: Displays a live character count at the bottom.
 - **Inline Editing**: Option to enable inline editing with a floating toolbar.
 - **Contextual Buttons**: Provides custom buttons for the footer of the editor that change contextually based on the current cursor position.
+- **Security Gate on Initial Load**: Blocks WYSIWYG editing if the initial HTML would change; review a diff first.
+- **Diff Review on Switch**: When switching from Code → WYSIWYG, shows a diff and requires acceptance if changes are detected.
 
 ---
 
@@ -54,6 +56,60 @@ To use the `mt-text-editor` component in your project, import it and provide the
 ```
 
 <Canvas of={TextEditorStories.InlineEditStory} />
+
+### Hide Toolbar
+
+```html
+<template>
+  <mt-text-editor v-model="content" :show-toolbar="false" />
+</template>
+
+<script setup>
+  import { ref } from "vue";
+
+  const content = ref("<p>Editor without toolbar</p>");
+</script>
+```
+
+<Canvas of={TextEditorStories.HiddenToolbarStory} />
+
+### Start in Code Mode
+
+```html
+<template>
+  <mt-text-editor v-model="content" :code-mode="true" />
+</template>
+
+<script setup>
+  import { ref } from "vue";
+
+  const content = ref("<p>Editor starting in code mode</p>");
+</script>
+```
+
+<Canvas of={TextEditorStories.CodeModeStory} />
+
+### Two-way Code Mode Binding
+
+```html
+<template>
+  <div>
+    <mt-button @click="isCodeMode = !isCodeMode">
+      Toggle Mode (Currently: {{ isCodeMode ? 'Code' : 'WYSIWYG' }})
+    </mt-button>
+    <mt-text-editor v-model="content" v-model:code-mode="isCodeMode" />
+  </div>
+</template>
+
+<script setup>
+  import { ref } from "vue";
+
+  const content = ref("<p>Toggle between modes programmatically</p>");
+  const isCodeMode = ref(false);
+</script>
+```
+
+<Canvas of={TextEditorStories.CodeModeTwoWayBindingStory} />
 
 ### Custom Toolbar Buttons
 
@@ -101,6 +157,25 @@ To use the `mt-text-editor` component in your project, import it and provide the
 | tipTapConfig    | Object  | {}      | Custom configuration for the tiptap editor.                             |
 | customButtons   | Array   | []      | Array of custom buttons to add to the toolbar.                          |
 | excludedButtons | Array   | []      | Array of button names to exclude from the toolbar.                      |
+| disabled        | Boolean | 'false' | Disables the editor and all toolbar buttons.                            |
+| placeholder     | String  | ''      | Placeholder text shown when the editor is empty.                        |
+| error           | Object  | null    | Error object to display validation errors.                              |
+| label           | String  | null    | Label text displayed above the editor.                                  |
+| showToolbar     | Boolean | 'true'  | Controls toolbar visibility. Set to false to hide the toolbar completely. |
+| codeMode        | Boolean | 'false' | Controls code editor mode. Set to true to show code editor instead of WYSIWYG. Supports v-model:codeMode for two-way binding. |
+`}
+</Markdown>
+
+---
+
+## Events
+
+<Markdown>
+  {`
+| Event Name         | Payload | Description                                                                     |
+| ------------------ | ------- | ------------------------------------------------------------------------------- |
+| update:modelValue  | String  | Emitted when the editor content changes. Contains the HTML string.              |
+| update:codeMode    | Boolean | Emitted when the editor mode changes between WYSIWYG and code editor.          |
 `}
 </Markdown>
 
@@ -440,6 +515,32 @@ const customButtons = [
 
 ---
 
+## Security & Integrity Checks
+
+### Gate on Initial Unsupported HTML
+
+When the editor mounts in WYSIWYG, it dry-runs a TipTap parse and compares the HTML. If it differs (for example, unsupported attributes are removed), an overlay blocks editing. You can:
+
+- Show Diff: open a modal with side-by-side diff
+- Stay in Code: switch to code view
+
+Accepting the diff applies the parsed HTML and enables WYSIWYG editing.
+
+<Canvas of={TextEditorStories.DiffModalStory} />
+
+#### Behavior
+
+- No additional props required; enabled by default.
+- `update:modelValue` emits are suppressed while the gate is active.
+- UI texts are localized via `mt-text-editor.gate.*` and `mt-text-editor.diff.*`.
+
 ## Code Editor Mode
 
 The `mt-text-editor` includes a code editor mode for editing raw HTML. This mode is powered by [CodeMirror](https://codemirror.net/). Use the `toggle-code` button to switch between WYSIWYG mode and code mode.
+
+### Diff Review on Switch
+
+When switching from Code → WYSIWYG, the editor compares the code with TipTap’s parsed output. If changes are detected, a modal shows a side-by-side diff. You can:
+
+- Accept Changes & Switch: apply the parsed HTML and switch to WYSIWYG
+- Stay in Code Editor: keep editing in code view
