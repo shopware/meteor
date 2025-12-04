@@ -6,23 +6,17 @@ import vue from "@vitejs/plugin-vue";
 // @ts-expect-error - not typed
 import svg from "vite-plugin-svgstring";
 import dts from "vite-plugin-dts";
-import Inspect from 'vite-plugin-inspect'
-import fs from 'fs'
+import Inspect from "vite-plugin-inspect";
+import fs from "fs";
 import { getAllComponents, libInjectCss, toPascalCase } from "./build/helper";
 
 // Get all dependencies from package.json
-const pkg = JSON.parse(fs.readFileSync(path.resolve(__dirname, 'package.json'), 'utf-8'));
-const dependencies = Object.keys(pkg.dependencies || {});
-const peerDependencies = Object.keys(pkg.peerDependencies || {});
+const pkg = JSON.parse(fs.readFileSync(path.resolve(__dirname, "package.json"), "utf-8"));
 
 // Get all components and their paths
 const allComponents = getAllComponents();
 
-export const external = [
-  'vue',
-  'apexcharts',
-  'vue-i18n',
-]
+export const external = ["vue", "apexcharts", "vue-i18n"];
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -49,26 +43,26 @@ export default defineConfig({
       beforeWriteFile: (filePath, content) => {
         // Check if this is a component .d.ts file that needs to be flattened
         // filePath is an absolute path, so we need to handle it accordingly
-        if (!filePath.endsWith('.d.ts')) return;
-        
+        if (!filePath.endsWith(".d.ts")) return;
+
         // Check if it's in esm or common directory
         const esmMatch = filePath.match(/\/dist\/esm\/(.+)\.d\.ts$/);
         const commonMatch = filePath.match(/\/dist\/common\/(.+)\.d\.ts$/);
-        
+
         if (!esmMatch && !commonMatch) return;
-        
+
         const match = esmMatch || commonMatch;
-        const format = esmMatch ? 'esm' : 'common';
+        const format = esmMatch ? "esm" : "common";
         const relativePath = match?.[1]; // e.g., "components/form/mt-button/mt-button"
-        
+
         // Extract the component file name (e.g., "mt-button" from "components/form/mt-button/mt-button")
-        const fileName = relativePath ? path.basename(relativePath) : '';
+        const fileName = relativePath ? path.basename(relativePath) : "";
         const pascalCaseName = toPascalCase(fileName);
-        
+
         // Check if this component is in our allComponents entries
         if (allComponents[pascalCaseName]) {
           // Transform to flat structure: /absolute/path/dist/esm/MtButton.d.ts
-          const distIndex = filePath.indexOf('/dist/');
+          const distIndex = filePath.indexOf("/dist/");
           const basePath = filePath.substring(0, distIndex);
           const newFilePath = `${basePath}/dist/${format}/${pascalCaseName}.d.ts`;
           return { filePath: newFilePath };
@@ -108,8 +102,8 @@ export default defineConfig({
       output: {
         globals: {
           vue: "Vue",
-        }
-      }
+        },
+      },
     },
   },
   css: {
