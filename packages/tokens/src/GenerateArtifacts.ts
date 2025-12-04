@@ -1,6 +1,7 @@
 import type { FileSystem } from './common/domain/file-system/FileSystem.js';
 import { Dictionary } from './dictionary/domain/Dictionary.js';
 import { CSSDeliverable } from './deliverable/domain/CSSDeliverable.js';
+import { TailwindDeliverable } from './deliverable/domain/TailwindDeliverable.js';
 import { FigmaApi } from './figma/infrastructure/FigmaApi.js';
 import { env } from './env.js';
 
@@ -38,6 +39,14 @@ export class GenerateArtifacts {
     this.fileSystem.saveFile(
       './deliverables/foundation/primitives.css',
       primitiveCSSDeliverable.toString(),
+    );
+
+    const primitiveTailwindDeliverable =
+      TailwindDeliverable.fromDictionary(primitiveDictionary);
+
+    this.fileSystem.saveFile(
+      './deliverables/tailwind.css',
+      primitiveTailwindDeliverable.toString(),
     );
 
     const adminLightModeDictionary = Dictionary.fromFigmaApiResponse(
