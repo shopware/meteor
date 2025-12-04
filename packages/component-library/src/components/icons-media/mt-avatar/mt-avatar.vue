@@ -39,7 +39,6 @@ const props = defineProps<{
   lastName?: string;
   imageUrl?: string;
   placeholder?: boolean;
-  sourceContext?: { avatarMedia: { url: string; thumbnails: { width: number; url: string }[] } };
   variant?: "circle" | "square";
 }>();
 
@@ -93,16 +92,7 @@ const avatarImage = computed<CSSProperties>(() => {
     return { "background-image": `url('${props.imageUrl}')` };
   }
 
-  if (!props.sourceContext?.avatarMedia?.url) {
-    return {};
-  }
-
-  const avatarMedia = structuredClone(props.sourceContext.avatarMedia);
-
-  const thumbnailImage = avatarMedia.thumbnails.sort((a, b) => a.width - b.width)[0];
-  const previewImageUrl = thumbnailImage ? thumbnailImage.url : avatarMedia.url;
-
-  return { "background-image": `url('${previewImageUrl}')` };
+  return {};
 });
 
 const hasAvatarImage = computed(() => {
