@@ -2,6 +2,13 @@ import path from "path";
 import fs from "fs";
 import type { Plugin } from "vite";
 
+// Helper to convert kebab-case to PascalCase
+export function toPascalCase(str: string): string {
+  return str
+    .replace(/([-_][a-z])/gi, (group) => group.toUpperCase().replace("-", "").replace("_", ""))
+    .replace(/^[a-z]/, (firstChar) => firstChar.toUpperCase());
+}
+
 /**
  * This method searches for all .vue components
  * in the src directory recursively and returns them as an
@@ -14,13 +21,6 @@ import type { Plugin } from "vite";
 export function getAllComponents() {
   const componentsDir = path.resolve(__dirname, "../src");
   const components: Record<string, string> = {};
-
-  // Helper to convert string to PascalCase
-  function toPascalCase(str: string): string {
-    return str
-      .replace(/([-_][a-z])/gi, (group) => group.toUpperCase().replace("-", "").replace("_", ""))
-      .replace(/^[a-z]/, (firstChar) => firstChar.toUpperCase());
-  }
 
   function walk(dir: string) {
     const files = fs.readdirSync(dir);
@@ -101,11 +101,4 @@ export function libInjectCss(): Plugin {
       }
     },
   };
-}
-
-// Helper to convert kebab-case to PascalCase
-export function toPascalCase(str: string): string {
-  return str
-    .replace(/([-_][a-z])/gi, (group) => group.toUpperCase().replace("-", "").replace("_", ""))
-    .replace(/^[a-z]/, (firstChar) => firstChar.toUpperCase());
 }

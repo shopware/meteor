@@ -6,12 +6,7 @@ import vue from "@vitejs/plugin-vue";
 // @ts-expect-error - not typed
 import svg from "vite-plugin-svgstring";
 import dts from "vite-plugin-dts";
-import Inspect from "vite-plugin-inspect";
-import fs from "fs";
 import { getAllComponents, libInjectCss, toPascalCase } from "./build/helper";
-
-// Get all dependencies from package.json
-const pkg = JSON.parse(fs.readFileSync(path.resolve(__dirname, "package.json"), "utf-8"));
 
 // Get all components and their paths
 const allComponents = getAllComponents();
