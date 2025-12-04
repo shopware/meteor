@@ -13,7 +13,8 @@
     "./primitives.css": "./deliverables/foundation/primitives.css",
     "./administration/light.css": "./deliverables/administration/light.css",
     "./administration/dark.css": "./deliverables/administration/dark.css",
-    "./foundation/primitives.json": "./dictionaries/foundation/primitives.tokens.json"
+    "./foundation/primitives.json": "./dictionaries/foundation/primitives.tokens.json",
+    "./tailwind": "./deliverables/tailwind.css"
   },
   "main": "index.js",
   "files": [
