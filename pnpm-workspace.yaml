@@ -1,7 +1,10 @@
 packages:
-  - 'packages/*'
-  - 'examples/*'
-  - 'examples/admin-sdk-plugin/src/Resources/app/administration'
-  - 'examples/admin-sdk-plugin/tests/acceptance'
-  - 'docs/*'
-  - 'apps/*'
+  - packages/*
+  - examples/*
+  - examples/admin-sdk-plugin/src/Resources/app/administration
+  - examples/admin-sdk-plugin/tests/acceptance
+  - docs/*
+  - apps/*
+
+onlyBuiltDependencies:
+  - esbuild

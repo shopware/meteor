@@ -15,5 +15,8 @@ module.exports = {
     '<rootDir>/src/**/*.spec.js',
     '<rootDir>/src/**/*.spec.ts',
   ],
+  transformIgnorePatterns: [
+    'node_modules/(?!lodash-es)/',
+  ],
   setupFilesAfterEnv: ['<rootDir>/jest.afterEnv.js']
 };
