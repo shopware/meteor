@@ -19,6 +19,18 @@ const meta: MtAvatarMeta = {
   args: {
     firstName: "John",
     lastName: "Doe",
+    size: "m",
+    variant: "circle",
+  },
+  argTypes: {
+    size: {
+      control: "select",
+      options: ["2xs", "xs", "s", "m", "l"],
+    },
+    variant: {
+      control: "select",
+      options: ["circle", "square"],
+    },
   },
 };
 

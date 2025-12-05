@@ -37,7 +37,7 @@ const colors = ["orange", "pink", "yellow", "purple", "red", "blue", "emerald"] 
 
 const props = withDefaults(
   defineProps<{
-    size?: "xs" | "s" | "m" | "l";
+    size?: "2xs" | "xs" | "s" | "m" | "l";
     firstName?: string;
     lastName?: string;
     imageUrl?: string;
@@ -79,6 +79,10 @@ const color = computed(() => {
 
   color: var(--mt-avatar--color-primary);
   background-color: var(--mt-avatar--color-secondary);
+}
+
+.mt-avatar--size-2xs {
+  --mt-avatar-size: var(--scale-size-16);
 }
 
 .mt-avatar--size-xs {
