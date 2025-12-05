@@ -22,66 +22,58 @@ export const VisualTestAvatarSquare: MtAvatarStory = {
   },
 };
 
-export const VisualTestAvatarPlaceholder: MtAvatarStory = {
-  name: "Render avatar with placeholder",
-  args: {
-    placeholder: true,
-  },
-};
-
 export const VisualTestAvatarImage: MtAvatarStory = {
   name: "Render avatar with image",
   args: {
-    imageUrl: "/avatar.png",
+    imageUrl: "/avatar.jpg",
   },
 };
 
 export const VisualTestColorOrange: MtAvatarStory = {
   name: "Render avatar with orange color",
   args: {
-    firstName: "John",
-    lastName: "Doe",
+    firstName: "Jane",
   },
 };
 
 export const VisualTestColorPink: MtAvatarStory = {
   name: "Render avatar with pink color",
   args: {
-    firstName: "A",
+    firstName: "James",
   },
 };
 
 export const VisualTestColorYellow: MtAvatarStory = {
   name: "Render avatar with yellow color",
   args: {
-    firstName: "Jo",
+    firstName: "Amanda",
   },
 };
 
 export const VisualTestColorPurple: MtAvatarStory = {
   name: "Render avatar with purple color",
   args: {
-    firstName: "Joe",
+    firstName: "Abigail",
   },
 };
 
 export const VisualTestColorRed: MtAvatarStory = {
   name: "Render avatar with red color",
   args: {
-    firstName: "Jane",
+    firstName: "A",
   },
 };
 
 export const VisualTestColorBlue: MtAvatarStory = {
   name: "Render avatar with blue color",
   args: {
-    firstName: "James",
+    firstName: "Jo",
   },
 };
 
 export const VisualTestColorEmerald: MtAvatarStory = {
-  name: "Render avatar with emerald color",
+  name: "Render avatar with green color",
   args: {
-    firstName: "Amanda",
+    firstName: "Joe",
   },
 };

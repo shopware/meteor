@@ -15,25 +15,17 @@
     alt=""
   >
     <slot>
-      <span v-if="!props.placeholder && !props.imageUrl" data-testid="mt-avatar-initials">
+      <span v-if="!props.imageUrl" data-testid="mt-avatar-initials">
         {{ avatarInitials }}
       </span>
-
-      <mt-icon
-        v-if="props.placeholder && !props.imageUrl"
-        aria-hidden
-        name="regular-user"
-        data-testid="mt-avatar-placeholder"
-      />
     </slot>
   </span>
 </template>
 
 <script setup lang="ts">
-import MtIcon from "../mt-icon/mt-icon.vue";
 import { computed } from "vue";
 
-const colors = ["orange", "pink", "yellow", "purple", "red", "blue", "emerald"] as const;
+const colors = ["orange", "pink", "yellow", "purple", "red", "blue", "green"] as const;
 
 const props = withDefaults(
   defineProps<{
@@ -41,7 +33,6 @@ const props = withDefaults(
     firstName?: string;
     lastName?: string;
     imageUrl?: string;
-    placeholder?: boolean;
     variant?: "circle" | "square";
   }>(),
   {
@@ -49,7 +40,6 @@ const props = withDefaults(
     firstName: undefined,
     lastName: undefined,
     imageUrl: undefined,
-    placeholder: false,
     variant: "circle",
   },
 );
@@ -115,7 +105,7 @@ const color = computed(() => {
   --mt-avatar--color-secondary: #fff2ec;
 }
 
-.mt-avatar--color-emerald {
+.mt-avatar--color-green {
   --mt-avatar--color-primary: #007e4e;
   --mt-avatar--color-secondary: #ddffea;
 }
