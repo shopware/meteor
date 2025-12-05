@@ -71,7 +71,7 @@ export const VisualTestColorBlue: MtAvatarStory = {
   },
 };
 
-export const VisualTestColorEmerald: MtAvatarStory = {
+export const VisualTestColorGreen: MtAvatarStory = {
   name: "Render avatar with green color",
   args: {
     firstName: "Joe",
