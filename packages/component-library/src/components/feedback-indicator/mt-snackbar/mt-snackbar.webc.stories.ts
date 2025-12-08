@@ -33,15 +33,6 @@ const meta = {
         }
       };
 
-      onMounted(() => {
-        // Add a default snackbar on mount to demonstrate
-        setTimeout(() => {
-          if (snackbarElement.value) {
-            snackbarElement.value.addSnackbar("Welcome! Click the buttons to add more snackbars.");
-          }
-        }, 500);
-      });
-
       return {
         args,
         snackbarElement,
@@ -53,19 +44,19 @@ const meta = {
     },
     template: `
       <div>
-        <h2>Spawn some snackbars</h2>
+        <h1>Spawn some snackbars</h1>
         <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px;">
           <button @click="addDefaultSnackbar" style="padding: 8px 16px; background: #e0e0e0; border: none; border-radius: 4px; cursor: pointer;">
             Default Snackbar
           </button>
-          <button @click="addSuccessSnackbar" style="padding: 8px 16px; background: #4caf50; color: white; border: none; border-radius: 4px; cursor: pointer;">
+          <button @click="addSuccessSnackbar" style="padding: 8px 16px; background: #e0e0e0; border: none; border-radius: 4px; cursor: pointer;">
             Success Snackbar
           </button>
-          <button @click="addErrorSnackbar" style="padding: 8px 16px; background: #f44336; color: white; border: none; border-radius: 4px; cursor: pointer;">
+          <button @click="addErrorSnackbar" style="padding: 8px 16px; background:#e0e0e0; border: none; border-radius: 4px; cursor: pointer;">
             Error Snackbar
           </button>
         </div>
-        <button @click="clearSnackbars" style="padding: 8px 16px; background: #ff9800; color: white; border: none; border-radius: 4px; cursor: pointer;">
+        <button @click="clearSnackbars" style="padding: 8px 16px; background: #e0e0e0; border: none; border-radius: 4px; cursor: pointer;">
           Clear all
         </button>
         <mt-snackbar ref="snackbarElement"></mt-snackbar>
