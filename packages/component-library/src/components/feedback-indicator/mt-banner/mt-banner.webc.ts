@@ -1,3 +1,7 @@
+// Import needed to register the mt-icon custom element
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import MtIcon from "../../icons-media/mt-icon/mt-icon.webc";
+
 const styles = `
 .mt-banner {
   --mt-banner-close-button-size: var(--scale-size-40);
