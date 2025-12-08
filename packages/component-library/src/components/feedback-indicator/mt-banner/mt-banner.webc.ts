@@ -17,6 +17,7 @@ const styles = `
 }
 
 .mt-banner__title {
+  margin-block-start: 0;
   margin-block-end: 0;
   font-family: var(--font-family-body);
   font-size: var(--font-size-xs);
@@ -33,14 +34,6 @@ const styles = `
   align-items: flex-start;
   flex: 1;
   gap: var(--scale-size-4);
-}
-
-.mt-banner__body--icon {
-  /* Additional styling if needed */
-}
-
-.mt-banner__body--closable {
-  /* Additional styling if needed */
 }
 
 .mt-banner__message {
