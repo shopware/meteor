@@ -1,6 +1,5 @@
 import type { StoryObj } from "@storybook/vue3";
 import MtButtonWebComponent from "./mt-button.webc";
-// Import needed to register the mt-icon custom element
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import MtIcon from "@/components/icons-media/mt-icon/mt-icon.webc";
 

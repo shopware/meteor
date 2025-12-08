@@ -1,4 +1,3 @@
-// Import needed to register the mt-icon custom element
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import MtIcon from "../../icons-media/mt-icon/mt-icon.webc";
 
@@ -254,7 +253,6 @@ class MtBanner extends HTMLElement {
 
     let iconHtml = "";
     if (!hideIcon) {
-      // Note: This assumes mt-icon web component exists
       iconHtml = `<mt-icon size="var(--scale-size-20)" class="mt-banner__icon" name="${bannerIcon}" decorative></mt-icon>`;
     }
 

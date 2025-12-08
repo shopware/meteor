@@ -150,7 +150,6 @@ class MtBadge extends HTMLElement {
 
     let iconHtml = "";
     if (icon) {
-      // Note: This assumes mt-icon web component exists or you'll need to handle icons differently
       iconHtml = `<mt-icon name="${icon}" size="${iconSize}"></mt-icon>`;
     }
 

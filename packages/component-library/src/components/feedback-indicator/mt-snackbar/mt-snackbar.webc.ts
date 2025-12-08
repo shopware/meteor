@@ -1,4 +1,3 @@
-// Import needed to register the notification custom element
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import MtSnackbarNotification from "./_internal/mt-snackbar-notification.webc";
 
@@ -80,7 +79,6 @@ class MtSnackbar extends HTMLElement {
     if (container) {
       const notification = container.querySelector(`mt-snackbar-notification[data-id="${id}"]`);
       if (notification) {
-        // Remove after animation completes (500ms + small buffer)
         setTimeout(() => {
           if (notification.parentNode) {
             notification.remove();
@@ -94,7 +92,6 @@ class MtSnackbar extends HTMLElement {
       this.removingIds.delete(id);
     }
 
-    // Re-render to update offsets of remaining notifications
     this.render();
   }
 
@@ -121,7 +118,6 @@ class MtSnackbar extends HTMLElement {
 
     // Update or create notifications
     this.snackbars.forEach((snackbar, index) => {
-      // Skip if this notification is being removed
       if (this.removingIds.has(snackbar.id)) {
         return;
       }
@@ -141,7 +137,6 @@ class MtSnackbar extends HTMLElement {
         }
         notification.setAttribute("data-offset", offset.toString());
 
-        // Attach event listener (only once)
         notification.addEventListener("remove-notification", (e: Event) => {
           const customEvent = e as CustomEvent;
           this.removeSnackbar(customEvent.detail.id);
@@ -150,10 +145,8 @@ class MtSnackbar extends HTMLElement {
         container.appendChild(notification);
       } else {
         // Only update offset if notification is not being removed
-        // This prevents interrupting the removal animation
         if (!notification.hasAttribute("data-removing") && !this.removingIds.has(snackbar.id)) {
           const currentOffset = parseInt(notification.getAttribute("data-offset") || "0", 10);
-          // Only update if offset actually changed to avoid unnecessary attribute changes
           if (currentOffset !== offset) {
             notification.setAttribute("data-offset", offset.toString());
           }
@@ -162,11 +155,9 @@ class MtSnackbar extends HTMLElement {
     });
 
     // Remove notifications that are no longer in the array
-    // (Notifications being removed will be handled by removeSnackbar method)
     existingNotifications.forEach((notification) => {
       const id = notification.getAttribute("data-id");
       if (!this.snackbars.find((s) => s.id === id) && !notification.hasAttribute("data-removing")) {
-        // Only remove if not currently animating out (handled by removeSnackbar)
         notification.remove();
       }
     });

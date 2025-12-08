@@ -1,4 +1,3 @@
-// Import needed to register the mt-loader custom element
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import MtLoader from "../../feedback-indicator/mt-loader/mt-loader.webc";
 
@@ -402,7 +401,26 @@ class MtButton extends HTMLElement {
       e.stopImmediatePropagation();
       return false;
     }
-    // Let the event bubble naturally
+
+    e.stopPropagation();
+
+    const isLink = this.getLink() !== null;
+    if (!isLink) {
+      e.preventDefault();
+    }
+
+    const clickEvent = new MouseEvent("click", {
+      bubbles: true,
+      composed: true,
+      cancelable: true,
+      detail: (e as MouseEvent).detail,
+      button: (e as MouseEvent).button,
+      buttons: (e as MouseEvent).buttons,
+      clientX: (e as MouseEvent).clientX,
+      clientY: (e as MouseEvent).clientY,
+    });
+    this.dispatchEvent(clickEvent);
+
     return true;
   };
 
@@ -429,7 +447,6 @@ class MtButton extends HTMLElement {
     const classes = this.getButtonClasses();
     const is = this.getIs();
 
-    // For link buttons, render as <a>
     if (link) {
       const href = disabled || isLoading ? "" : link;
       const tabindex = disabled || isLoading ? "-1" : "0";
@@ -451,9 +468,6 @@ class MtButton extends HTMLElement {
         </a>
       `;
     } else {
-      // For regular buttons, render as button or custom element
-      // Note: Custom elements via 'is' attribute are limited in web components
-      // We'll use createElement for better control
       const buttonTag = is === "button" ? "button" : is;
       const disabledAttr = disabled && !isLoading ? "disabled" : "";
       const ariaDisabled = disabled && isLoading ? 'aria-disabled="true"' : "";
@@ -479,7 +493,6 @@ class MtButton extends HTMLElement {
       `;
     }
 
-    // Re-attach event listeners after render
     this.attachEventListeners();
   }
 }

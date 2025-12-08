@@ -1,4 +1,3 @@
-// Import needed to register the mt-icon custom element
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import MtIcon from "../../../icons-media/mt-icon/mt-icon.webc";
 
@@ -135,8 +134,6 @@ class MtSnackbarNotification extends HTMLElement {
   }
 
   attributeChangedCallback() {
-    // Don't re-render if the notification is being removed
-    // This prevents flickering when parent re-renders during removal animation
     if (this.mounted && !this.removed) {
       this.render();
     }
@@ -166,7 +163,6 @@ class MtSnackbarNotification extends HTMLElement {
 
   private startAutoRemove() {
     const props = this.getProps();
-    // Auto-remove after 5 seconds (unless it's progress)
     if (props.variant !== "progress") {
       this.timeoutId = window.setTimeout(() => {
         this.remove();
@@ -175,25 +171,20 @@ class MtSnackbarNotification extends HTMLElement {
   }
 
   public remove() {
-    // Don't do anything if already removed
     if (this.removed) {
       return;
     }
 
     this.removed = true;
-    // Mark the custom element as removing so parent can skip updates
     this.setAttribute("data-removing", "true");
 
-    // Update the DOM to trigger removal animation without full re-render
     const innerDiv = this.shadowRoot!.querySelector(".mt-snackbar-notification");
     if (innerDiv) {
       innerDiv.setAttribute("data-removed", "true");
     } else {
-      // Fallback to full render if element doesn't exist
       this.render();
     }
 
-    // Dispatch event to parent after animation completes
     setTimeout(() => {
       // Only dispatch if we're still connected to the DOM
       if (this.isConnected) {
@@ -204,7 +195,7 @@ class MtSnackbarNotification extends HTMLElement {
           }),
         );
       }
-    }, 500); // Match the CSS animation duration
+    }, 500);
   }
 
   private render() {

@@ -1,6 +1,8 @@
 import type { StoryObj } from "@storybook/vue3";
 import MtSnackbarWebComponent from "./mt-snackbar.webc";
-import { ref, onMounted } from "vue";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import MtButton from "@/components/form/mt-button/mt-button.webc";
+import { ref } from "vue";
 
 const meta = {
   title: "Components/Feedback Indicator/mt-snackbar (Web Component)",
@@ -27,6 +29,12 @@ const meta = {
         }
       };
 
+      const addProgressSnackbar = () => {
+        if (snackbarElement.value) {
+          snackbarElement.value.addSnackbar("This is a progress snackbar", "progress");
+        }
+      };
+
       const clearSnackbars = () => {
         if (snackbarElement.value) {
           snackbarElement.value.clearSnackbars();
@@ -39,26 +47,30 @@ const meta = {
         addDefaultSnackbar,
         addSuccessSnackbar,
         addErrorSnackbar,
+        addProgressSnackbar,
         clearSnackbars,
       };
     },
     template: `
       <div>
-        <h1>Spawn some snackbars</h1>
+        <h2 style="font-size: 1.5em; color: var(--color-text-primary-default); font-weight: var(--font-weight-semibold); margin-block-end: var(--scale-size-20);">Spawn some snackbars</h2>
         <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px;">
-          <button @click="addDefaultSnackbar" style="padding: 8px 16px; background: #e0e0e0; border: none; border-radius: 4px; cursor: pointer;">
+          <mt-button variant="secondary" @click="addDefaultSnackbar">
             Default Snackbar
-          </button>
-          <button @click="addSuccessSnackbar" style="padding: 8px 16px; background: #e0e0e0; border: none; border-radius: 4px; cursor: pointer;">
+          </mt-button>
+          <mt-button variant="primary" @click="addSuccessSnackbar">
             Success Snackbar
-          </button>
-          <button @click="addErrorSnackbar" style="padding: 8px 16px; background:#e0e0e0; border: none; border-radius: 4px; cursor: pointer;">
+          </mt-button>
+          <mt-button variant="critical" @click="addErrorSnackbar">
             Error Snackbar
-          </button>
+          </mt-button>
+          <mt-button variant="secondary" @click="addProgressSnackbar">
+            Progress Snackbar
+          </mt-button>
         </div>
-        <button @click="clearSnackbars" style="padding: 8px 16px; background: #e0e0e0; border: none; border-radius: 4px; cursor: pointer;">
+        <mt-button @click="clearSnackbars">
           Clear all
-        </button>
+        </mt-button>
         <mt-snackbar ref="snackbarElement"></mt-snackbar>
       </div>
     `,
