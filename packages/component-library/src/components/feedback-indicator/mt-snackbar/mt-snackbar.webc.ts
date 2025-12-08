@@ -1,7 +1,3 @@
-// Note: This is a simplified vanilla JS web component version
-// The full implementation would require the snackbar notification component
-// and composable logic. This provides a basic structure.
-
 const styles = `
 .mt-snackbar {
   width: 360px;
@@ -28,6 +24,17 @@ const styles = `
     opacity 500ms cubic-bezier(0.16, 1, 0.3, 1),
     height 500ms cubic-bezier(0.16, 1, 0.3, 1);
   animation: slideInFromRight 0.5s cubic-bezier(0.66, 0, 0.34, 1);
+  max-width: 360px;
+  width: fit-content;
+  padding: var(--scale-size-12);
+  border: 1px solid var(--color-border-secondary-default);
+  border-radius: var(--border-radius-m);
+  background: var(--color-elevation-surface-raised);
+  box-shadow: 0px 8px 20px 0px var(--color-elevation-shadow-default);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-xs);
+  color: var(--color-text-primary-default);
+  margin-bottom: var(--scale-size-16);
 }
 
 .mt-snackbar-notification[data-mounted="true"] {
@@ -37,6 +44,14 @@ const styles = `
 
 .mt-snackbar-notification[data-removed="true"] {
   animation: slideOutToBottom 0.4s cubic-bezier(0.32, 0, 0.67, 0) forwards;
+}
+
+.mt-snackbar-notification--success {
+  border-color: var(--color-border-positive-default);
+}
+
+.mt-snackbar-notification--error {
+  border-color: var(--color-border-critical-default);
 }
 
 @keyframes slideInFromRight {
@@ -65,8 +80,14 @@ const styles = `
 }
 `;
 
+interface SnackbarData {
+  id: string;
+  message: string;
+  variant?: "success" | "error" | "warning" | "progress";
+}
+
 class MtSnackbar extends HTMLElement {
-  private snackbars: Array<{ id: string; message: string }> = [];
+  private snackbars: SnackbarData[] = [];
   private isHovered: boolean = false;
 
   constructor() {
@@ -97,10 +118,21 @@ class MtSnackbar extends HTMLElement {
   }
 
   // Public API to add snackbars
-  public addSnackbar(message: string, variant: string = "default"): string {
+  public addSnackbar(
+    message: string,
+    variant?: "success" | "error" | "warning" | "progress",
+  ): string {
     const id = `snackbar-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-    this.snackbars.push({ id, message });
+    this.snackbars.push({ id, message, variant });
     this.render();
+
+    // Auto-remove after 5 seconds (unless it's progress)
+    if (variant !== "progress") {
+      setTimeout(() => {
+        this.removeSnackbar(id);
+      }, 5000);
+    }
+
     return id;
   }
 
@@ -118,15 +150,18 @@ class MtSnackbar extends HTMLElement {
     const snackbarsHtml = this.snackbars
       .map((snackbar, index) => {
         const offset = index * 68;
+        const variantClass = snackbar.variant
+          ? `mt-snackbar-notification--${snackbar.variant}`
+          : "";
         return `
-          <div class="mt-snackbar-notification" data-mounted="true" style="--offset: ${offset}px;">
+          <div class="mt-snackbar-notification ${variantClass}" data-mounted="true" style="--offset: ${offset}px;">
             ${snackbar.message}
           </div>
         `;
       })
       .join("");
 
-    this.shadowRoot.innerHTML = `
+    this.shadowRoot!.innerHTML = `
       <style>${styles}</style>
       <div class="mt-snackbar">
         ${snackbarsHtml}
