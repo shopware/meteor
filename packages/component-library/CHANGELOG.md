@@ -1,5 +1,20 @@
 # Changelog
 
+## 4.24.0
+
+### Minor Changes
+
+- bca848a: Add header-left slot to `mt-modal`
+  Add header-right slot to `mt-modal`
+  Add headerHide prop to `mt-modal`
+  Add closeable prop to `mt-modal-root`
+- b4909d0: add mt-avatar component
+
+### Patch Changes
+
+- 9b3b208: fix: hide time hint in `mt-datepicker`
+- e14e664: fix border-top color on mt-card footer
+
 ## 4.23.0
 
 ### Minor Changes
