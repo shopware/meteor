@@ -499,7 +499,7 @@ export default defineComponent({
     }
   }
 
-  & .mt-block-field__block {
+  & .mt-field .mt-block-field__block {
     min-height: unset;
   }
 }
