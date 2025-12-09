@@ -1,146 +1,94 @@
 <template>
   <span
-    ref="avatarRef"
     :class="[
       'mt-avatar',
+      `mt-avatar--size-${props.size}`,
       `mt-avatar--color-${color}`,
       {
         'mt-avatar--square': props.variant === 'square',
       },
     ]"
-    :style="[avatarImage, avatarSize, avatarInitialsSize]"
+    :style="{
+      'background-image': props.imageUrl ? `url('${props.imageUrl}')` : undefined,
+    }"
     role="img"
     alt=""
   >
     <slot>
-      <span v-if="showInitials" data-testid="mt-avatar-initials">
+      <span v-if="!props.imageUrl" data-testid="mt-avatar-initials">
         {{ avatarInitials }}
       </span>
-
-      <mt-icon
-        v-if="showPlaceholder"
-        aria-hidden
-        name="regular-user"
-        data-testid="mt-avatar-placeholder"
-      />
     </slot>
   </span>
 </template>
 
 <script setup lang="ts">
-import MtIcon from "../mt-icon/mt-icon.vue";
-import { reactive, computed, onMounted, ref, watch, nextTick, type CSSProperties } from "vue";
+import { computed } from "vue";
 
-const colors = ["orange", "pink", "yellow", "purple", "red", "blue", "emerald"] as const;
+const colors = ["orange", "pink", "yellow", "purple", "red", "blue", "green"] as const;
 
-const props = defineProps<{
-  size?: string;
-  firstName?: string;
-  lastName?: string;
-  imageUrl?: string;
-  placeholder?: boolean;
-  sourceContext?: { avatarMedia: { url: string; thumbnails: { width: number; url: string }[] } };
-  variant?: "circle" | "square";
-}>();
-
-const sizes = reactive({
-  fontSize: 16,
-  lineHeight: 16,
-});
-
-const avatarSize = computed(() => ({
-  width: props.size,
-  height: props.size,
-}));
-
-const avatarInitials = computed(() => {
-  const firstNameLetter = props.firstName ? props.firstName[0] : "";
-  const lastNameLetter = props.lastName ? props.lastName[0] : "";
-
-  return firstNameLetter + lastNameLetter;
-});
-
-const avatarInitialsSize = computed(() => ({
-  "font-size": `${sizes.fontSize / 16}rem`,
-  "line-height": `${sizes.lineHeight / 16}rem`,
-}));
-
-const avatarRef = ref<HTMLElement | null>(null);
-function generateAvatarInitialsSize() {
-  if (!avatarRef.value) return;
-
-  const avatarSize = avatarRef.value.offsetHeight;
-
-  sizes.fontSize = Math.round(avatarSize * 0.4);
-  sizes.lineHeight = Math.round(avatarSize * 0.98);
-}
-
-onMounted(() => {
-  generateAvatarInitialsSize();
-});
-
-watch(
-  () => props.size,
-  () => {
-    nextTick(() => {
-      generateAvatarInitialsSize();
-    });
+const props = withDefaults(
+  defineProps<{
+    size?: "2xs" | "xs" | "s" | "m" | "l";
+    firstName?: string;
+    lastName?: string;
+    imageUrl?: string;
+    variant?: "circle" | "square";
+  }>(),
+  {
+    size: "m",
+    firstName: undefined,
+    lastName: undefined,
+    imageUrl: undefined,
+    variant: "circle",
   },
 );
 
-const avatarImage = computed<CSSProperties>(() => {
-  if (props.imageUrl) {
-    return { "background-image": `url('${props.imageUrl}')` };
-  }
-
-  if (!props.sourceContext?.avatarMedia?.url) {
-    return {};
-  }
-
-  const avatarMedia = structuredClone(props.sourceContext.avatarMedia);
-
-  const thumbnailImage = avatarMedia.thumbnails.sort((a, b) => a.width - b.width)[0];
-  const previewImageUrl = thumbnailImage ? thumbnailImage.url : avatarMedia.url;
-
-  return { "background-image": `url('${previewImageUrl}')` };
-});
-
-const hasAvatarImage = computed(() => {
-  return !!avatarImage.value && !!avatarImage.value["background-image"];
-});
-
-const showPlaceholder = computed(() => {
-  return props.placeholder && !hasAvatarImage.value;
-});
-
-const showInitials = computed(() => {
-  return !props.placeholder && !hasAvatarImage.value;
+const avatarInitials = computed(() => {
+  return (props.firstName?.[0] ?? "") + (props.lastName?.[0] ?? "");
 });
 
 const color = computed(() => {
-  const firstNameLength = props.firstName ? props.firstName.length : 0;
-  const lastNameLength = props.lastName ? props.lastName.length : 0;
-
-  const nameLength = firstNameLength + lastNameLength;
-
+  const nameLength = (props.firstName?.length ?? 0) + (props.lastName?.length ?? 0);
   return colors[nameLength % colors.length];
 });
 </script>
 
 <style scoped>
 .mt-avatar {
-  display: inline-block;
-  width: var(--scale-size-40);
-  height: var(--scale-size-40);
+  display: inline-grid;
+  place-items: center;
+  width: var(--mt-avatar-size);
+  height: var(--mt-avatar-size);
   border-radius: var(--border-radius-round);
   background-size: cover;
-  text-align: center;
+  font-size: calc(var(--mt-avatar-size) * 0.4);
   font-weight: var(--font-weight-semibold);
   text-transform: uppercase;
   user-select: none;
 
   color: var(--mt-avatar--color-primary);
   background-color: var(--mt-avatar--color-secondary);
+}
+
+.mt-avatar--size-2xs {
+  --mt-avatar-size: var(--scale-size-16);
+}
+
+.mt-avatar--size-xs {
+  --mt-avatar-size: var(--scale-size-24);
+}
+
+.mt-avatar--size-s {
+  --mt-avatar-size: var(--scale-size-32);
+}
+
+.mt-avatar--size-m {
+  --mt-avatar-size: var(--scale-size-40);
+}
+
+.mt-avatar--size-l {
+  --mt-avatar-size: var(--scale-size-48);
 }
 
 [data-theme="dark"] .mt-avatar {
@@ -157,7 +105,7 @@ const color = computed(() => {
   --mt-avatar--color-secondary: #fff2ec;
 }
 
-.mt-avatar--color-emerald {
+.mt-avatar--color-green {
   --mt-avatar--color-primary: #007e4e;
   --mt-avatar--color-secondary: #ddffea;
 }
