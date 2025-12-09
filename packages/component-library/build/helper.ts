@@ -51,7 +51,7 @@ export function libInjectCss(): Plugin {
   return {
     name: "lib-inject-css",
     apply: (config, { command }) => {
-      return command === 'build' && !!config.build?.lib;
+      return command === "build" && !!config.build?.lib;
     },
     enforce: "post",
     generateBundle(options, bundle) {
