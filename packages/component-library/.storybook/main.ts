@@ -1,4 +1,6 @@
 import type { StorybookConfig } from "@storybook/vue3-vite";
+import { mergeConfig } from "vite";
+import path from "path";
 
 const config: StorybookConfig = {
   stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
@@ -14,5 +16,15 @@ const config: StorybookConfig = {
     options: {},
   },
   docs: {},
+  async viteFinal(config) {
+    return mergeConfig(config, {
+      resolve: {
+        alias: {
+          // Ensure /node_modules/ paths resolve correctly in both dev and build
+          "/node_modules": path.resolve(__dirname, "../node_modules"),
+        },
+      },
+    });
+  },
 };
 export default config;

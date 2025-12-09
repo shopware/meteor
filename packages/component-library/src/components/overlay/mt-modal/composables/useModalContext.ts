@@ -3,6 +3,7 @@ import { inject, type InjectionKey, type Ref } from "vue";
 interface StateDefinition {
   isOpen: Ref<boolean>;
   setIsOpen: (value: boolean) => void;
+  closable: Ref<boolean>;
 }
 
 export const DialogContext = Symbol("DialogContext") as InjectionKey<StateDefinition>;
