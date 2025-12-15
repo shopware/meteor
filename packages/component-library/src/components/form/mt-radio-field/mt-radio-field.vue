@@ -31,40 +31,22 @@
         :aria-disabled="disabled || undefined"
         :aria-describedby="error ? errorId : undefined"
       >
-        <div
+        <MtRadioButton
           v-for="(option, index) in options"
+          :id="`${identification}-${index}`"
           :key="`${identification}-${index}-${String(option.value)}`"
-          class="mt-radio-field__option"
-          :class="{
-            'mt-radio-field__option--disabled': isElementDisabled || option.disabled,
-          }"
-          @click="() => !(isElementDisabled || option.disabled) && onChange(option.value)"
-        >
-          <input
-            :id="`${identification}-${index}`"
-            :name="identification"
-            class="mt-radio-field__input"
-            type="radio"
-            :value="option.value"
-            :checked="option.value === currentValue"
-            :disabled="isElementDisabled || option.disabled"
-            :required="required && index === 0"
-            :aria-invalid="!!error || undefined"
-            :aria-describedby="error ? errorId : undefined"
-          />
-          <span class="mt-radio-field__control" aria-hidden="true" />
-          <label class="mt-radio-field__text" :for="`${identification}-${index}`">
-            <span class="mt-radio-field__label">{{ option.label }}</span>
-            <mt-help-text
-              v-if="option.helpText"
-              :text="option.helpText"
-              class="mt-radio-field__option-help-text"
-            />
-            <span v-if="option.description" class="mt-radio-field__description">
-              {{ option.description }}
-            </span>
-          </label>
-        </div>
+          :name="identification"
+          :label="option.label"
+          :value="option.value"
+          :checked="option.value === currentValue"
+          :disabled="isElementDisabled || option.disabled"
+          :required="required && index === 0"
+          :aria-described-by="error ? errorId : undefined"
+          :error="!!error"
+          :help-text="option.helpText"
+          :description="option.description"
+          @change="onChange(option.value)"
+        />
       </div>
     </template>
 
@@ -77,8 +59,8 @@
 <script setup lang="ts">
 import { computed, useId } from "vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
-import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
+import MtRadioButton from "./_internal/mt-radio-button/mt-radio-button.vue";
 
 export type MtRadioFieldOption = {
   label: string;
@@ -229,118 +211,6 @@ function onChange(value: string | number | boolean | null) {
 .mt-radio-field--inline .mt-radio-field__options {
   flex-direction: row;
   flex-wrap: wrap;
-}
-
-.mt-radio-field__option {
-  display: grid;
-  grid-template-columns: var(--scale-size-16) 1fr;
-  gap: var(--scale-size-8);
-  align-items: center;
-  margin-bottom: var(--scale-size-12);
-}
-
-.mt-radio-field__option:hover:not(.mt-radio-field__option--disabled) .mt-radio-field__control {
-  border-color: var(--color-border-brand-default);
-}
-
-.mt-radio-field__option:hover:not(.mt-radio-field__option--disabled) {
-  cursor: pointer;
-}
-
-.mt-radio-field__option--disabled {
-  background: var(--color-background-tertiary-default);
-  border-color: var(--color-border-primary-default);
-  color: var(--color-text-secondary-default);
-  cursor: not-allowed;
-}
-
-.mt-radio-field__option--disabled:hover {
-  cursor: not-allowed;
-}
-
-.mt-radio-field__input {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.mt-radio-field__control {
-  width: var(--scale-size-16);
-  height: var(--scale-size-16);
-  border-radius: var(--border-radius-round);
-  border: 1px solid var(--color-border-primary-default);
-  background: var(--color-background-primary-default);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  transition:
-    border-color 0.2s ease,
-    background-color 0.2s ease;
-}
-
-.mt-radio-field__control::after {
-  content: "";
-  width: var(--scale-size-8);
-  height: var(--scale-size-8);
-  border-radius: var(--border-radius-round);
-  background: var(--color-static-white);
-  transform: scale(0);
-  transition: transform 0.15s ease-out;
-}
-
-.mt-radio-field__input:focus-visible + .mt-radio-field__control {
-  outline: 2px solid var(--color-border-brand-default);
-  outline-offset: 2px;
-}
-
-.mt-radio-field__input:checked + .mt-radio-field__control {
-  border-color: var(--color-interaction-primary-default);
-  background: var(--color-interaction-primary-default);
-}
-
-.mt-radio-field__input:checked + .mt-radio-field__control::after {
-  transform: scale(1);
-}
-
-.mt-radio-field__input:disabled + .mt-radio-field__control {
-  background: var(--color-background-tertiary-default);
-  border-color: var(--color-border-primary-default);
-}
-
-.mt-radio-field__input:checked:disabled + .mt-radio-field__control {
-  background: var(--color-background-tertiary-default);
-  border-color: var(--color-border-primary-default);
-}
-
-.mt-radio-field__input:checked:disabled + .mt-radio-field__control::after {
-  background: var(--color-icon-primary-disabled);
-  transform: scale(1);
-}
-
-.mt-radio-field__text {
-  display: flex;
-  flex-direction: column;
-  gap: var(--scale-size-4);
-}
-
-.mt-radio-field__option-help-text {
-  margin-top: var(--scale-size-2);
-}
-
-.mt-radio-field__label {
-  color: var(--color-text-primary-default);
-  font-family: var(--font-family-body);
-  font-size: var(--font-size-xs);
-  line-height: var(--font-line-height-xs);
-  font-weight: var(--font-weight-semibold);
-}
-
-.mt-radio-field__description {
-  color: var(--color-text-secondary-default);
-  font-family: var(--font-family-body);
-  font-size: var(--font-size-2xs);
-  line-height: var(--font-line-height-2xs);
 }
 
 .mt-radio-field--bordered .mt-radio-field__options {
