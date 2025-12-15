@@ -55,6 +55,11 @@
         <span class="mt-radio-field__control" aria-hidden="true" />
         <span class="mt-radio-field__text">
           <span class="mt-radio-field__label">{{ option.label }}</span>
+          <mt-help-text
+            v-if="option.helpText"
+            :text="option.helpText"
+            class="mt-radio-field__option-help-text"
+          />
           <span v-if="option.description" class="mt-radio-field__description">
             {{ option.description }}
           </span>
@@ -77,6 +82,7 @@ export type MtRadioFieldOption = {
   value: string | number | boolean;
   description?: string;
   disabled?: boolean;
+  helpText?: string;
 };
 
 const props = withDefaults(
@@ -297,6 +303,10 @@ function onInheritanceUpdate(value: "linked" | "unlinked") {
   display: flex;
   flex-direction: column;
   gap: var(--scale-size-4);
+}
+
+.mt-radio-field__option-help-text {
+  margin-top: var(--scale-size-2);
 }
 
 .mt-radio-field__label {
