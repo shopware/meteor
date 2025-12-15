@@ -51,7 +51,7 @@
             :aria-describedby="error ? errorId : undefined"
           />
           <span class="mt-radio-field__control" aria-hidden="true" />
-          <span class="mt-radio-field__text">
+          <label class="mt-radio-field__text" :for="`${identification}-${index}`">
             <span class="mt-radio-field__label">{{ option.label }}</span>
             <mt-help-text
               v-if="option.helpText"
@@ -61,7 +61,7 @@
             <span v-if="option.description" class="mt-radio-field__description">
               {{ option.description }}
             </span>
-          </span>
+          </label>
         </div>
       </div>
     </template>
