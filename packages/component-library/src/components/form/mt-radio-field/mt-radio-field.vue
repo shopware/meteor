@@ -6,6 +6,8 @@
       'mt-radio-field--disabled': isGroupDisabled,
       'mt-radio-field--errored': !!error,
       'mt-radio-field--inherited': isInherited,
+      'mt-radio-field--bordered': bordered,
+      'mt-radio-field--block': block,
     }"
     :disabled="isGroupDisabled"
     :required="required"
@@ -105,6 +107,18 @@ const props = withDefaults(
      */
     helpText?: string;
     /**
+     * Draw a border around the radio group.
+     *
+     * Mirrors the legacy `sw-field--radio-bordered` style.
+     */
+    bordered?: boolean;
+    /**
+     * Render each option as a bordered block.
+     *
+     * Mirrors the legacy `sw-field--radio-block` style.
+     */
+    block?: boolean;
+    /**
      * Display options horizontally.
      */
     inline?: boolean;
@@ -142,6 +156,8 @@ const props = withDefaults(
     options: () => [],
     label: "",
     helpText: "",
+    bordered: false,
+    block: false,
     inline: false,
     disabled: false,
     required: false,
@@ -206,6 +222,10 @@ function onChange(value: string | number | boolean | null) {
   gap: var(--scale-size-8);
 }
 
+.mt-radio-field :deep(.mt-block-field__block) {
+  border: none;
+}
+
 .mt-radio-field--inline .mt-radio-field__options {
   flex-direction: row;
   flex-wrap: wrap;
@@ -213,10 +233,10 @@ function onChange(value: string | number | boolean | null) {
 
 .mt-radio-field__option {
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: var(--scale-size-16) 1fr;
   gap: var(--scale-size-8);
   align-items: center;
-  padding: var(--scale-size-10) var(--scale-size-12);
+  margin-bottom: var(--scale-size-12);
 }
 
 .mt-radio-field__option:hover:not(.mt-radio-field__option--disabled) .mt-radio-field__control {
@@ -224,13 +244,17 @@ function onChange(value: string | number | boolean | null) {
 }
 
 .mt-radio-field__option:hover:not(.mt-radio-field__option--disabled) {
-  border-color: var(--color-border-brand-default);
+  cursor: pointer;
 }
 
 .mt-radio-field__option--disabled {
   background: var(--color-background-tertiary-default);
   border-color: var(--color-border-primary-default);
   color: var(--color-text-secondary-default);
+  cursor: not-allowed;
+}
+
+.mt-radio-field__option--disabled:hover {
   cursor: not-allowed;
 }
 
@@ -245,6 +269,7 @@ function onChange(value: string | number | boolean | null) {
   height: var(--scale-size-16);
   border-radius: var(--border-radius-round);
   border: 1px solid var(--color-border-primary-default);
+  background: var(--color-background-primary-default);
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -259,7 +284,7 @@ function onChange(value: string | number | boolean | null) {
   width: var(--scale-size-8);
   height: var(--scale-size-8);
   border-radius: var(--border-radius-round);
-  background: var(--color-interaction-primary-default);
+  background: var(--color-static-white);
   transform: scale(0);
   transition: transform 0.15s ease-out;
 }
@@ -271,6 +296,7 @@ function onChange(value: string | number | boolean | null) {
 
 .mt-radio-field__input:checked + .mt-radio-field__control {
   border-color: var(--color-interaction-primary-default);
+  background: var(--color-interaction-primary-default);
 }
 
 .mt-radio-field__input:checked + .mt-radio-field__control::after {
@@ -280,6 +306,16 @@ function onChange(value: string | number | boolean | null) {
 .mt-radio-field__input:disabled + .mt-radio-field__control {
   background: var(--color-background-tertiary-default);
   border-color: var(--color-border-primary-default);
+}
+
+.mt-radio-field__input:checked:disabled + .mt-radio-field__control {
+  background: var(--color-background-tertiary-default);
+  border-color: var(--color-border-primary-default);
+}
+
+.mt-radio-field__input:checked:disabled + .mt-radio-field__control::after {
+  background: var(--color-icon-primary-disabled);
+  transform: scale(1);
 }
 
 .mt-radio-field__text {
@@ -305,6 +341,39 @@ function onChange(value: string | number | boolean | null) {
   font-family: var(--font-family-body);
   font-size: var(--font-size-2xs);
   line-height: var(--font-line-height-2xs);
+}
+
+.mt-radio-field--bordered .mt-radio-field__options {
+  border-radius: var(--border-radius-xs);
+  border: 1px solid var(--color-border-primary-default);
+  padding: var(--scale-size-12) var(--scale-size-16);
+  margin-bottom: 0;
+}
+
+.mt-radio-field--block .mt-radio-field__option {
+  transition: border-color 100ms ease-in;
+  border: 1px solid var(--color-border-primary-default);
+  border-radius: var(--border-radius-xs);
+  padding: var(--scale-size-12) var(--scale-size-18);
+  margin-bottom: var(--scale-size-12);
+}
+
+.mt-radio-field--block .mt-radio-field__option:hover:not(.mt-radio-field__option--disabled) {
+  border-color: var(--color-interaction-primary-hover);
+}
+
+.mt-radio-field--block .mt-radio-field__label {
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--font-line-height-xs);
+}
+
+.mt-radio-field--block .mt-radio-field__control {
+  margin-top: var(--scale-size-4);
+}
+
+.mt-radio-field--errored.mt-radio-field--block .mt-radio-field__option {
+  border-color: var(--color-border-critical-default);
 }
 
 .mt-radio-field--disabled .mt-radio-field__label {
