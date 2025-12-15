@@ -1,81 +1,82 @@
 <template>
-  <div
-    :class="[
-      'mt-radio-field',
-      {
-        'mt-radio-field--inline': inline,
-        'mt-radio-field--disabled': isGroupDisabled,
-        'mt-radio-field--errored': !!error,
-        'mt-radio-field--inherited': isInherited,
-      },
-    ]"
-    role="radiogroup"
-    :aria-required="required || undefined"
-    :aria-disabled="isGroupDisabled || undefined"
-    :aria-describedby="error ? errorId : undefined"
+  <mt-base-field
+    class="mt-radio-field"
+    :class="{
+      'mt-radio-field--inline': inline,
+      'mt-radio-field--disabled': isGroupDisabled,
+      'mt-radio-field--errored': !!error,
+      'mt-radio-field--inherited': isInherited,
+    }"
+    :disabled="isGroupDisabled"
+    :required="required"
+    :is-inherited="isInherited"
+    :is-inheritance-field="isInheritanceField"
+    :name="name"
+    :help-text="helpText"
+    :has-focus="false"
+    @inheritance-restore="emit('inheritance-restore')"
+    @inheritance-remove="emit('inheritance-remove')"
   >
-    <div v-if="label || isInheritanceField || helpText" class="mt-radio-field__header">
-      <mt-field-label
-        v-if="label || isInheritanceField"
-        :for="`${nameValue}-0`"
-        :required="required"
-        :disabled="isGroupDisabled"
-        :has-error="!!error"
-        :inheritance="inheritanceState"
-        @update:inheritance="onInheritanceUpdate"
-      >
-        {{ label }}
-      </mt-field-label>
+    <template #label>
+      {{ label }}
+    </template>
 
-      <mt-help-text v-if="helpText" :text="helpText" class="mt-radio-field__help-text" />
-    </div>
-
-    <div class="mt-radio-field__options">
+    <template #element="{ disabled: isElementDisabled, identification }">
       <div
-        v-for="(option, index) in options"
-        :key="`${nameValue}-${index}-${String(option.value)}`"
-        class="mt-radio-field__option"
-        :class="{
-          'mt-radio-field__option--disabled': isGroupDisabled || option.disabled,
-        }"
-        @click="() => !(isGroupDisabled || option.disabled) && onChange(option.value)"
+        class="mt-radio-field__options"
+        role="radiogroup"
+        :aria-required="required || undefined"
+        :aria-disabled="disabled || undefined"
+        :aria-describedby="error ? errorId : undefined"
       >
-        <input
-          :id="`${nameValue}-${index}`"
-          :name="nameValue"
-          class="mt-radio-field__input"
-          type="radio"
-          :value="option.value"
-          :checked="option.value === currentValue"
-          :disabled="isGroupDisabled || option.disabled"
-          :required="required && index === 0"
-          :aria-invalid="!!error || undefined"
-          :aria-describedby="error ? errorId : undefined"
-        />
-        <span class="mt-radio-field__control" aria-hidden="true" />
-        <span class="mt-radio-field__text">
-          <span class="mt-radio-field__label">{{ option.label }}</span>
-          <mt-help-text
-            v-if="option.helpText"
-            :text="option.helpText"
-            class="mt-radio-field__option-help-text"
+        <div
+          v-for="(option, index) in options"
+          :key="`${identification}-${index}-${String(option.value)}`"
+          class="mt-radio-field__option"
+          :class="{
+            'mt-radio-field__option--disabled': isElementDisabled || option.disabled,
+          }"
+          @click="() => !(isElementDisabled || option.disabled) && onChange(option.value)"
+        >
+          <input
+            :id="`${identification}-${index}`"
+            :name="identification"
+            class="mt-radio-field__input"
+            type="radio"
+            :value="option.value"
+            :checked="option.value === currentValue"
+            :disabled="isElementDisabled || option.disabled"
+            :required="required && index === 0"
+            :aria-invalid="!!error || undefined"
+            :aria-describedby="error ? errorId : undefined"
           />
-          <span v-if="option.description" class="mt-radio-field__description">
-            {{ option.description }}
+          <span class="mt-radio-field__control" aria-hidden="true" />
+          <span class="mt-radio-field__text">
+            <span class="mt-radio-field__label">{{ option.label }}</span>
+            <mt-help-text
+              v-if="option.helpText"
+              :text="option.helpText"
+              class="mt-radio-field__option-help-text"
+            />
+            <span v-if="option.description" class="mt-radio-field__description">
+              {{ option.description }}
+            </span>
           </span>
-        </span>
+        </div>
       </div>
-    </div>
+    </template>
 
-    <mt-field-error v-if="error" :error="error" :id="errorId" />
-  </div>
+    <template #error>
+      <mt-field-error v-if="error" :id="errorId" :error="error" />
+    </template>
+  </mt-base-field>
 </template>
 
 <script setup lang="ts">
 import { computed, useId } from "vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
-import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
+import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
 
 export type MtRadioFieldOption = {
   label: string;
@@ -159,32 +160,14 @@ const emit = defineEmits<{
   "inheritance-restore": [];
 }>();
 
-const baseId = useId();
 const errorId = useId();
 
-const nameValue = computed(() => props.name ?? `mt-radio-${baseId}`);
 const currentValue = computed(() => (props.isInherited ? props.inheritedValue : props.modelValue));
 const isGroupDisabled = computed(() => props.disabled || props.isInherited);
-const inheritanceState = computed(() => {
-  if (!props.isInheritanceField) {
-    return "none";
-  }
-
-  return props.isInherited ? "linked" : "unlinked";
-});
 
 function onChange(value: string | number | boolean | null) {
   emit("update:modelValue", value);
   emit("change", value);
-}
-
-function onInheritanceUpdate(value: "linked" | "unlinked") {
-  if (value === "linked") {
-    emit("inheritance-restore");
-    return;
-  }
-
-  emit("inheritance-remove");
 }
 </script>
 
