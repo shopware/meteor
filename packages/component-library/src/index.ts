@@ -6,6 +6,7 @@ import MtProgressBar from "./components/feedback-indicator/mt-progress-bar/mt-pr
 import MtButton from "./components/form/mt-button/mt-button.vue";
 import MtChart, { type ChartOptions } from "./components/charts/mt-chart/mt-chart.vue";
 import MtCheckbox from "./components/form/mt-checkbox/mt-checkbox.vue";
+import MtRadioField from "./components/form/mt-radio-field/mt-radio-field.vue";
 import MtColorpicker from "./components/form/mt-colorpicker/mt-colorpicker.vue";
 import MtEmailField from "./components/form/mt-email-field/mt-email-field.vue";
 import MtLink from "./components/navigation/mt-link/mt-link.vue";
@@ -70,6 +71,7 @@ export {
   MtProgressBar,
   MtButton,
   MtCheckbox,
+  MtRadioField,
   MtColorpicker,
   MtDatepicker,
   MtEmailField,
@@ -140,6 +142,8 @@ export {
   MtSelect as SwSelect,
   // @deprecated
   MtSwitch as SwSwitch,
+  // @deprecated
+  MtRadioField as SwRadioField,
   // @deprecated
   MtTextField as SwTextField,
   // @deprecated
