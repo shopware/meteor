@@ -7,6 +7,7 @@ import MtButton from "./components/form/mt-button/mt-button.vue";
 import MtChart, { type ChartOptions } from "./components/charts/mt-chart/mt-chart.vue";
 import MtCheckbox from "./components/form/mt-checkbox/mt-checkbox.vue";
 import MtRadioField from "./components/form/mt-radio-field/mt-radio-field.vue";
+import MtRadioButton from "./components/form/mt-radio-field/_internal/mt-radio-button/mt-radio-button.vue";
 import MtColorpicker from "./components/form/mt-colorpicker/mt-colorpicker.vue";
 import MtEmailField from "./components/form/mt-email-field/mt-email-field.vue";
 import MtLink from "./components/navigation/mt-link/mt-link.vue";
@@ -72,6 +73,7 @@ export {
   MtButton,
   MtCheckbox,
   MtRadioField,
+  MtRadioButton,
   MtColorpicker,
   MtDatepicker,
   MtEmailField,
