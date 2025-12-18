@@ -1,42 +1,51 @@
 import type { Meta, StoryObj } from "@storybook/vue3";
-import { DropdownMenuRoot, DropdownMenuPortal, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger, DropdownMenuSub, DropdownMenuSubTrigger, DropdownMenuSubContent } from 'reka-ui'
+import {
+  DropdownMenuRoot,
+  DropdownMenuPortal,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
+} from "reka-ui";
 import MtButton from "../../form/mt-button/mt-button.vue";
 import MtActionMenu from "./mt-action-menu.vue";
 import MtActionMenuItem from "./mt-action-menu-item.vue";
 import MtActionMenuDivider from "./mt-action-menu-divider.vue";
 
 export default {
-    component: DropdownMenuRoot,
-    title: "Components/Context Menu/mt-action-menu",
-    subcomponents: {
-        DropdownMenuPortal,
-        DropdownMenuContent,
-        DropdownMenuItem,
-        MtActionMenuItem,
-        MtActionMenu,
-        MtActionMenuDivider,
-        DropdownMenuSub,
-        DropdownMenuSubTrigger,
-        DropdownMenuSubContent
+  component: DropdownMenuRoot,
+  title: "Components/Context Menu/mt-action-menu",
+  subcomponents: {
+    DropdownMenuPortal,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    MtActionMenuItem,
+    MtActionMenu,
+    MtActionMenuDivider,
+    DropdownMenuSub,
+    DropdownMenuSubTrigger,
+    DropdownMenuSubContent,
+  },
+  render: (args) => ({
+    components: {
+      DropdownMenuRoot,
+      DropdownMenuPortal,
+      MtActionMenuItem,
+      MtActionMenu,
+      DropdownMenuItem,
+      DropdownMenuTrigger,
+      MtButton,
+      MtActionMenuDivider,
+      DropdownMenuSub,
+      DropdownMenuSubTrigger,
+      DropdownMenuSubContent,
     },
-    render: (args) => ({
-        components: {
-            DropdownMenuRoot,
-            DropdownMenuPortal,
-            MtActionMenuItem,
-            MtActionMenu,
-            DropdownMenuItem,
-            DropdownMenuTrigger,
-            MtButton,
-            MtActionMenuDivider,
-            DropdownMenuSub,
-            DropdownMenuSubTrigger,
-            DropdownMenuSubContent
-        },
-        setup() {
-            return { args }
-        },
-        template: `
+    setup() {
+      return { args };
+    },
+    template: `
 <dropdown-menu-root open>
     <dropdown-menu-trigger asChild>
         <mt-button>Open menu</mt-button>
@@ -88,8 +97,8 @@ export default {
         </mt-action-menu>
     </dropdown-menu-portal>
 </dropdown-menu-root>
-`
-    }),
+`,
+  }),
 } satisfies Meta;
 
-export const Default: StoryObj = {}
+export const Default: StoryObj = {};
