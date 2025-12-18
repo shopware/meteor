@@ -59,10 +59,6 @@ const shortcutText = computed(() => {
         background-color: var(--color-interaction-secondary-hover);
         outline: none;
     }
-
-    &:active:not([data-disabled]) {
-        background: var(--color-interaction-secondary-pressed);
-    }
 }
 
 .mt-action-menu-item--variant-default {
