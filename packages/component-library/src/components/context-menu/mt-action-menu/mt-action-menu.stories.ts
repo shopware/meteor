@@ -85,7 +85,7 @@ export default {
                     <mt-action-menu-item icon="right-circle">
                         Right
                     </mt-action-menu-item>
-                </dropdown-menu-sub-content>
+                </mt-action-menu>
             </dropdown-menu-sub-portal>
           </dropdown-menu-sub>
 
