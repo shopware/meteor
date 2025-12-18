@@ -1,4 +1,4 @@
-import has from 'lodash/has';
+import has from 'lodash-es/has';
 import type { extension } from './privileges';
 
 export function generateUniqueId(): string {

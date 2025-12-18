@@ -1,5 +1,31 @@
 # Changelog
 
+## 4.24.0
+
+### Minor Changes
+
+- bca848a: Add header-left slot to `mt-modal`
+  Add header-right slot to `mt-modal`
+  Add headerHide prop to `mt-modal`
+  Add closeable prop to `mt-modal-root`
+- b4909d0: add mt-avatar component
+
+### Patch Changes
+
+- 9b3b208: fix: hide time hint in `mt-datepicker`
+- e14e664: fix border-top color on mt-card footer
+
+## 4.23.0
+
+### Minor Changes
+
+- 43795ed: fix(mt-number-field): allow typing intermediate values below min/max during input
+- d209cdc: feat: add centered prop to `mt-empty-state`
+
+### Patch Changes
+
+- bb08d97: revert default center `mt-empty-state`
+
 ## 4.22.0
 
 ### Minor Changes

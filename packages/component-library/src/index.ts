@@ -25,6 +25,7 @@ import MtPagination from "./components/table-and-list/mt-pagination/mt-paginatio
 import MtSkeletonBar from "./components/feedback-indicator/mt-skeleton-bar/mt-skeleton-bar.vue";
 import MtToast, { type Toast } from "./components/feedback-indicator/mt-toast/mt-toast.vue";
 import MtSnackbar from "./components/feedback-indicator/mt-snackbar/mt-snackbar.vue";
+import MtAvatar from "./components/icons-media/mt-avatar/mt-avatar.vue";
 import {
   useSnackbar,
   type Snackbar,
@@ -112,6 +113,7 @@ export {
   MtEntityDataTable,
   MtEntitySelect,
   TooltipDirective,
+  MtAvatar,
   DeviceHelperPlugin,
   useSnackbar,
   // @deprecated

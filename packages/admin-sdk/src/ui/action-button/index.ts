@@ -36,6 +36,11 @@ export type actionButtonAdd = {
     meteorIcon?: string,
 
     /**
+     * Media file types you want the action button to be displayed for.
+     */
+    fileTypes?: string[],
+
+    /**
      * Callback function which will be called once the action button is clicked.
      */
     callback: (entity: string, entityIdList: string[]) => void,

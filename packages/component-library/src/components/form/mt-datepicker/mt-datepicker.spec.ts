@@ -63,7 +63,7 @@ describe("mt-datepicker", () => {
     expect(screen.queryByTestId("time-zone-hint")).not.toBeInTheDocument();
   });
 
-  it("shows the timezone when displaying only the time", async () => {
+  it("does not show the timezone when displaying only the time", async () => {
     // ARRANGE
     await render(MtDatepicker, {
       props: {
@@ -73,7 +73,7 @@ describe("mt-datepicker", () => {
     });
 
     // ASSERT
-    expect(screen.getByTestId("time-zone-hint")).toBeVisible();
+    expect(screen.queryByTestId("time-zone-hint")).not.toBeInTheDocument();
   });
 
   it("shows the timezone when displaying a datetime", async () => {
