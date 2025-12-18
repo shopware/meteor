@@ -34,4 +34,10 @@ withDefaults(
 
   min-width: 320px;
 }
+
+/* When any item has an icon, add left padding to items without icons to align text */
+.mt-action-menu:has([data-has-icon]) .mt-action-menu-item:not([data-has-icon]) {
+  /* 16px icon + 8px gap */
+  padding-inline-start: calc(var(--scale-size-10) + 16px + var(--scale-size-8));
+}
 </style>

@@ -3,6 +3,7 @@
     :is="isSubTrigger ? DropdownMenuSubTrigger : DropdownMenuItem"
     :class="['mt-action-menu-item', `mt-action-menu-item--variant-${variant}`]"
     :disabled="disabled"
+    :data-has-icon="!!icon || undefined"
   >
     <mt-icon v-if="!!icon" :name="icon" size="16" mode="solid" />
 
@@ -106,6 +107,7 @@ const shortcutText = computed(() => {
   font-family: var(--font-family-body);
   line-height: var(--font-line-height-xs);
   font-weight: var(--font-weight-regular);
+  user-select: none;
 }
 
 .mt-action-menu-item__shortcut--disabled {

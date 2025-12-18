@@ -2,57 +2,41 @@ import type { Meta, StoryObj } from "@storybook/vue3";
 import {
   DropdownMenuRoot,
   DropdownMenuPortal,
-  DropdownMenuContent,
-  DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuSub,
-  DropdownMenuSubTrigger,
-  DropdownMenuSubContent,
 } from "reka-ui";
 import MtButton from "../../form/mt-button/mt-button.vue";
 import MtActionMenu from "./mt-action-menu.vue";
 import MtActionMenuItem from "./mt-action-menu-item.vue";
 import MtActionMenuDivider from "./mt-action-menu-divider.vue";
 
-export default {
-  component: DropdownMenuRoot,
+export type MtActionMenuMeta = Meta<typeof MtActionMenu>;
+
+const meta: MtActionMenuMeta = {
   title: "Components/Context Menu/mt-action-menu",
-  subcomponents: {
-    DropdownMenuPortal,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    MtActionMenuItem,
-    MtActionMenu,
-    MtActionMenuDivider,
-    DropdownMenuSub,
-    DropdownMenuSubTrigger,
-    DropdownMenuSubContent,
-  },
+  component: MtActionMenu,
   render: (args) => ({
     components: {
       DropdownMenuRoot,
       DropdownMenuPortal,
       MtActionMenuItem,
       MtActionMenu,
-      DropdownMenuItem,
       DropdownMenuTrigger,
       MtButton,
       MtActionMenuDivider,
       DropdownMenuSub,
-      DropdownMenuSubTrigger,
-      DropdownMenuSubContent,
     },
     setup() {
       return { args };
     },
     template: `
 <dropdown-menu-root open>
-    <dropdown-menu-trigger asChild>
+    <dropdown-menu-trigger as-child>
         <mt-button>Open menu</mt-button>
     </dropdown-menu-trigger>
 
     <dropdown-menu-portal>
-        <mt-action-menu>
+        <mt-action-menu v-bind="args">
           <mt-action-menu-item icon="file-text">
             Documentation
           </mt-action-menu-item>
@@ -61,12 +45,12 @@ export default {
             Duplicate
           </mt-action-menu-item>
 
-            <dropdown-menu-sub>
+          <dropdown-menu-sub>
             <mt-action-menu-item is-sub-trigger icon="arrows">
                 Move
             </mt-action-menu-item>
 
-            <dropdown-menu-sub-portal>
+            <dropdown-menu-portal>
                 <mt-action-menu is-sub-menu>
                     <mt-action-menu-item icon="up-circle">
                         Up
@@ -86,7 +70,7 @@ export default {
                         Right
                     </mt-action-menu-item>
                 </mt-action-menu>
-            </dropdown-menu-sub-portal>
+            </dropdown-menu-portal>
           </dropdown-menu-sub>
 
           <mt-action-menu-divider />
@@ -99,6 +83,17 @@ export default {
 </dropdown-menu-root>
 `,
   }),
-} satisfies Meta;
+  argTypes: {
+    isSubMenu: {
+      control: { type: "boolean" },
+      description: "Determines if this menu is rendered as a submenu",
+    },
+  },
+};
 
-export const Default: StoryObj = {};
+export default meta;
+export type MtActionMenuStory = StoryObj<MtActionMenuMeta>;
+
+export const Default: MtActionMenuStory = {
+  name: "mt-action-menu",
+};
