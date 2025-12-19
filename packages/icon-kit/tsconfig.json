@@ -1,5 +1,8 @@
 {
   "compilerOptions": {
+    /* Prevent auto-discovery of @types packages */
+    "types": [],
+
     /* Base Options: */
     "esModuleInterop": true,
     "skipLibCheck": true,

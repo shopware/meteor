@@ -1,4 +1,4 @@
-import type { AxiosPromise, AxiosRequestHeaders, AxiosResponse } from "axios";
+import type { AxiosPromise, AxiosResponse } from "axios";
 import Axios from "axios";
 import { env } from "../env.js";
 
@@ -56,7 +56,6 @@ export type Meta = {
 };
 
 export default class FigmaApiClient {
-  // @ts-expect-error -- TODO: add types for axios
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
   httpClient = Axios.create({
     baseURL: "https://api.figma.com/v1",
@@ -84,7 +83,6 @@ export default class FigmaApiClient {
   }
 
   public downloadImage(url: string): AxiosPromise {
-    // @ts-expect-error -- TODO: add types for axios
     // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return Axios({
       url,
@@ -103,7 +101,7 @@ export default class FigmaApiClient {
     );
   }
 
-  private getHeaders(): AxiosRequestHeaders {
+  private getHeaders(): Record<string, string> {
     return {
       "X-Figma-Token": env.FIGMA_TOKEN,
     };
