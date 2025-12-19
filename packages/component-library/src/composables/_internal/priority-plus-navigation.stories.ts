@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from "@storybook/vue3";
+import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import { ref } from "vue";
 import { usePriorityPlusNavigation } from "./usePriorityPlusNavigation";
-import { within, expect, waitFor } from "@storybook/test";
+import { within, expect, waitFor } from "storybook/test";
 
 const meta: Meta = {
   title: "Composables / Internal / usePriorityPlusNavigation",

@@ -5,7 +5,7 @@ import MtFloatingUi from "../../_internal/mt-floating-ui/mt-floating-ui.vue";
 import MtButton from "../../form/mt-button/mt-button.vue";
 import type { SlottedMeta } from "@/_internal/story-helper";
 import { defineComponent } from "vue";
-import type { StoryObj } from "@storybook/vue3";
+import type { StoryObj } from "@storybook/vue3-vite";
 
 export type MtPopoverMeta = SlottedMeta<
   typeof MtPopover,

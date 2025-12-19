@@ -1,6 +1,6 @@
 import { waitUntil } from "../../../_internal/test-helper";
-import { within, userEvent, fireEvent } from "@storybook/test";
-import { expect } from "@storybook/test";
+import { within, userEvent, fireEvent } from "storybook/test";
+import { expect } from "storybook/test";
 
 import meta, { type MtPopoverMeta, type MtPopoverStory } from "./mt-popover.stories";
 

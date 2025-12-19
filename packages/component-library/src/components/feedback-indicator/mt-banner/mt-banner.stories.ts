@@ -1,8 +1,8 @@
-import type { StoryObj } from "@storybook/vue3";
-import { action } from "@storybook/addon-actions";
+import type { StoryObj } from "@storybook/vue3-vite";
+import { action } from "storybook/actions";
 import MtBanner from "./mt-banner.vue";
 import type { SlottedMeta } from "@/_internal/story-helper";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 import MtText from "@/components/content/mt-text/mt-text.vue";
 
 export type MtBannerMeta = SlottedMeta<typeof MtBanner, "default" | "close">;

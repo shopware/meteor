@@ -1,7 +1,7 @@
 import MtSwitch from "./mt-switch.vue";
-import type { StoryObj } from "@storybook/vue3";
+import type { StoryObj } from "@storybook/vue3-vite";
 import type { SlottedMeta } from "@/_internal/story-helper";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 
 export type MtSwitchMeta = SlottedMeta<typeof MtSwitch, "default">;
 

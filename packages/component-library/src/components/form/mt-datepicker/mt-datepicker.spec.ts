@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/vue";
 import MtDatepicker from "./mt-datepicker.vue";
 import userEvent from "@testing-library/user-event";
 import { waitUntil } from "@/_internal/test-helper";
-import { getByRole } from "@storybook/test";
+import { getByRole } from "storybook/test";
 
 describe("mt-datepicker", () => {
   beforeEach(() => {

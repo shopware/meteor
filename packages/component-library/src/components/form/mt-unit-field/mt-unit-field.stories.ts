@@ -1,8 +1,8 @@
 import MtUnitField from "./mt-unit-field.vue";
 import baseFieldArgTypes from "../_internal/mt-base-field/arg-types";
-import type { Meta, StoryObj } from "@storybook/vue3";
+import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import type { SlottedMeta } from "@/_internal/story-helper";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 
 export type MtUnitFieldMeta = SlottedMeta<
   typeof MtUnitField,

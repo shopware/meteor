@@ -1,6 +1,6 @@
 import type { SlottedMeta } from "@/_internal/story-helper";
 import MtText from "./mt-text.vue";
-import type { StoryObj } from "@storybook/vue3";
+import type { StoryObj } from "@storybook/vue3-vite";
 
 type MtTextSlots = "default";
 

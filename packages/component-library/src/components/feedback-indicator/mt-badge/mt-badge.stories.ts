@@ -1,4 +1,4 @@
-import type { StoryObj } from "@storybook/vue3";
+import type { StoryObj } from "@storybook/vue3-vite";
 import MtBadge from "./mt-badge.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import type { SlottedMeta } from "@/_internal/story-helper";

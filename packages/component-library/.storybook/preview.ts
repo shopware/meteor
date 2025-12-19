@@ -1,8 +1,8 @@
-import type { Preview } from "@storybook/vue3";
+import type { Preview } from "@storybook/vue3-vite";
 import "~/src/components/assets/scss/all.scss";
 import "~/src/components/assets/scss/font.scss";
 import { darkTheme, lightTheme } from "./shopwareTheme";
-import { setup } from "@storybook/vue3";
+import { setup } from "@storybook/vue3-vite";
 import { createI18n } from "vue-i18n";
 import DeviceHelperPlugin from "./../src/plugin/device-helper.plugin";
 import MtThemeProvider from "../src/components/theme/mt-theme-provider.vue";
@@ -49,11 +49,10 @@ const preview: Preview = {
       light: { ...lightTheme },
     },
     backgrounds: {
-      default: "light",
-      values: [
-        { name: "light", value: LIGHT_THEME_BACKGROUND_VALUE },
-        { name: "dark", value: DARK_THEME_BACKGROUND_VALUE },
-      ],
+      options: {
+        light: { name: "light", value: LIGHT_THEME_BACKGROUND_VALUE },
+        dark: { name: "dark", value: DARK_THEME_BACKGROUND_VALUE }
+      }
     },
   },
 
@@ -70,6 +69,12 @@ const preview: Preview = {
   ],
 
   tags: ["autodocs"],
+
+  initialGlobals: {
+    backgrounds: {
+      value: "light"
+    }
+  }
 };
 
 export default preview;

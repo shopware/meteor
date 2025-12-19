@@ -3,10 +3,10 @@ import MtButton from "../../form/mt-button/mt-button.vue";
 import MtBanner from "../../feedback-indicator/mt-banner/mt-banner.vue";
 import MtDataTableFixtures from "./mt-data-table.fixtures.json";
 import { get } from "@/utils/object";
-import type { StoryObj } from "@storybook/vue3";
+import type { StoryObj } from "@storybook/vue3-vite";
 import type { SlottedMeta } from "@/_internal/story-helper";
 import { defineComponent } from "vue";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 
 export type MtDataTableMeta = SlottedMeta<
   typeof MtDataTable,

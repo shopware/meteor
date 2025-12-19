@@ -1,6 +1,6 @@
 import MtSegmentedControl from "./mt-segmented-control.vue";
 import MtPopoverItem from "../../overlay/mt-popover-item/mt-popover-item.vue";
-import type { StoryObj } from "@storybook/vue3";
+import type { StoryObj } from "@storybook/vue3-vite";
 import type { SlottedMeta } from "@/_internal/story-helper";
 
 export type MtSegmentedControlMeta = SlottedMeta<typeof MtSegmentedControl, "default">;

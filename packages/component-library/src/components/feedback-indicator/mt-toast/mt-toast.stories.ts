@@ -4,7 +4,7 @@ import MtSelect from "@/components/form/mt-select/mt-select.vue";
 import MtTextField from "@/components/form/mt-text-field/mt-text-field.vue";
 import MtCheckbox from "@/components/form/mt-checkbox/mt-checkbox.vue";
 import type { Toast } from "./mt-toast.vue";
-import type { StoryObj } from "@storybook/vue3";
+import type { StoryObj } from "@storybook/vue3-vite";
 import type { SlottedMeta } from "@/_internal/story-helper";
 import { createId } from "@/utils/id";
 

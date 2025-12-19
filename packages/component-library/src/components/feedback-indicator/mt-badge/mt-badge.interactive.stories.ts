@@ -1,5 +1,5 @@
-import { within } from "@storybook/test";
-import { expect } from "@storybook/test";
+import { within } from "storybook/test";
+import { expect } from "storybook/test";
 
 import meta, { type MtBadgeMeta, type MtBadgeStory } from "./mt-badge.stories";
 

@@ -1,4 +1,4 @@
-import { fn, userEvent, expect } from "@storybook/test";
+import { fn, userEvent, expect } from "storybook/test";
 import meta, { type MtDataTableFilterMeta } from "./mt-data-table-filter.stories";
 import { defineStory } from "@/_internal/story-helper";
 import MtDataTableFilter from "./mt-data-table-filter.vue";

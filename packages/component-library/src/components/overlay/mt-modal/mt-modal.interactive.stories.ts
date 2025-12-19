@@ -6,7 +6,7 @@ import MtModalTrigger from "./sub-components/mt-modal-trigger.vue";
 import MtButton from "@/components/form/mt-button/mt-button.vue";
 import { ref } from "vue";
 import { defineStory } from "@/_internal/story-helper";
-import { expect, within, userEvent } from "@storybook/test";
+import { expect, within, userEvent } from "storybook/test";
 import MtNumberField from "@/components/form/mt-number-field/mt-number-field.vue";
 import { waitUntil } from "../../../_internal/test-helper";
 

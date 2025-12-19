@@ -3,10 +3,10 @@ import MtButton from "../../form/mt-button/mt-button.vue";
 import MtContextMenuItem from "../../context-menu/mt-context-menu-item/mt-context-menu-item.vue";
 import MtTabs from "../../navigation/mt-tabs/mt-tabs.vue";
 import MtAvatar from "../../icons-media/mt-avatar/mt-avatar.vue";
-import { fn } from "@storybook/test";
-import { action } from "@storybook/addon-actions";
+import { fn } from "storybook/test";
+import { action } from "storybook/actions";
 import type { SlottedMeta } from "@/_internal/story-helper";
-import type { StoryObj } from "@storybook/vue3";
+import type { StoryObj } from "@storybook/vue3-vite";
 import MtText from "@/components/content/mt-text/mt-text.vue";
 
 type MtCardSlots =

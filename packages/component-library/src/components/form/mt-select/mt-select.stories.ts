@@ -1,7 +1,7 @@
 import MtSelect from "./mt-select.vue";
-import type { StoryObj } from "@storybook/vue3";
+import type { StoryObj } from "@storybook/vue3-vite";
 import type { SlottedMeta } from "@/_internal/story-helper";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 
 export type MtSelectMeta = SlottedMeta<
   typeof MtSelect,

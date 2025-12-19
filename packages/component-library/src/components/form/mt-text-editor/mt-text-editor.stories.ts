@@ -1,11 +1,11 @@
-import type { StoryObj } from "@storybook/vue3";
+import type { StoryObj } from "@storybook/vue3-vite";
 import MtTextEditor from "./mt-text-editor.vue";
 import type { SlottedMeta } from "@/_internal/story-helper";
 import MtTextEditorToolbarButtonColor from "./_internal/mt-text-editor-toolbar-button-color.vue";
 import MtButton from "../mt-button/mt-button.vue";
 import { ref } from "vue";
 import Highlight from "@tiptap/extension-highlight";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 
 export type MtTextEditorMeta = SlottedMeta<
   typeof MtTextEditor,

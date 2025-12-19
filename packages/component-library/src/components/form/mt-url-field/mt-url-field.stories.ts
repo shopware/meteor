@@ -1,5 +1,5 @@
 import MtUrlField from "./mt-url-field.vue";
-import type { Meta, StoryObj } from "@storybook/vue3";
+import type { Meta, StoryObj } from "@storybook/vue3-vite";
 
 export type MtUrlFieldMeta = Meta<typeof MtUrlField>;
 

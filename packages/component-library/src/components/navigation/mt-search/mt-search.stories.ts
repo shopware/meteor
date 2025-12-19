@@ -1,9 +1,9 @@
 import MtSearch from "./mt-search.vue";
-import { action } from "@storybook/addon-actions";
-import type { StoryObj } from "@storybook/vue3";
+import { action } from "storybook/actions";
+import type { StoryObj } from "@storybook/vue3-vite";
 import { ref } from "vue";
 import type { SlottedMeta } from "@/_internal/story-helper";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 
 export type MtSearchMeta = SlottedMeta<typeof MtSearch, "default" | "change" | "updateModelValue">;
 

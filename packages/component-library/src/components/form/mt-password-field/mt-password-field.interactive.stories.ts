@@ -1,4 +1,4 @@
-import { within, userEvent, expect } from "@storybook/test";
+import { within, userEvent, expect } from "storybook/test";
 
 import meta, {
   type MtPasswordFieldMeta,
