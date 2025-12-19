@@ -11,6 +11,7 @@
   "exclude": ["src/**/__tests__/*", "**/*.spec.ts"],
   "compilerOptions": {
     "composite": true,
+    "moduleResolution": "bundler",
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
