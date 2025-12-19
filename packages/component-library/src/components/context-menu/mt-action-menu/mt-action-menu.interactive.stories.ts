@@ -9,7 +9,7 @@ import {
 import MtButton from "../../form/mt-button/mt-button.vue";
 import MtActionMenu from "./mt-action-menu.vue";
 import MtActionMenuItem from "./mt-action-menu-item.vue";
-import MtActionMenuDivider from "./mt-action-menu-divider.vue";
+import MtActionMenuGroup from "./mt-action-menu-group.vue";
 
 import meta, { type MtActionMenuMeta, type MtActionMenuStory } from "./mt-action-menu.stories";
 
@@ -59,7 +59,7 @@ export const VisualTestNestedItemsVisible: MtActionMenuStory = {
       MtActionMenu,
       DropdownMenuTrigger,
       MtButton,
-      MtActionMenuDivider,
+      MtActionMenuGroup,
       DropdownMenuSub,
     },
     template: `
@@ -205,7 +205,7 @@ export const VisualTestTwoGroupsWithIcons: MtActionMenuStory = {
       MtActionMenu,
       DropdownMenuTrigger,
       MtButton,
-      MtActionMenuDivider,
+      MtActionMenuGroup,
     },
     template: `
 <dropdown-menu-root open>
@@ -215,23 +215,25 @@ export const VisualTestTwoGroupsWithIcons: MtActionMenuStory = {
 
     <dropdown-menu-portal>
         <mt-action-menu>
-          <mt-action-menu-item icon="file-text">
-            Documentation
-          </mt-action-menu-item>
+          <mt-action-menu-group>
+            <mt-action-menu-item icon="file-text">
+              Documentation
+            </mt-action-menu-item>
 
-          <mt-action-menu-item icon="duplicate">
-            Duplicate
-          </mt-action-menu-item>
+            <mt-action-menu-item icon="duplicate">
+              Duplicate
+            </mt-action-menu-item>
+          </mt-action-menu-group>
 
-          <mt-action-menu-divider />
+          <mt-action-menu-group>
+            <mt-action-menu-item icon="settings">
+              Settings
+            </mt-action-menu-item>
 
-          <mt-action-menu-item icon="settings">
-            Settings
-          </mt-action-menu-item>
-
-          <mt-action-menu-item icon="user">
-            Profile
-          </mt-action-menu-item>
+            <mt-action-menu-item icon="user">
+              Profile
+            </mt-action-menu-item>
+          </mt-action-menu-group>
         </mt-action-menu>
     </dropdown-menu-portal>
 </dropdown-menu-root>
@@ -250,7 +252,7 @@ export const VisualTestTwoGroupsNoIcons: MtActionMenuStory = {
       MtActionMenu,
       DropdownMenuTrigger,
       MtButton,
-      MtActionMenuDivider,
+      MtActionMenuGroup,
     },
     template: `
 <dropdown-menu-root open>
@@ -260,23 +262,25 @@ export const VisualTestTwoGroupsNoIcons: MtActionMenuStory = {
 
     <dropdown-menu-portal>
         <mt-action-menu>
-          <mt-action-menu-item>
-            Documentation
-          </mt-action-menu-item>
+          <mt-action-menu-group>
+            <mt-action-menu-item>
+              Documentation
+            </mt-action-menu-item>
 
-          <mt-action-menu-item>
-            Duplicate
-          </mt-action-menu-item>
+            <mt-action-menu-item>
+              Duplicate
+            </mt-action-menu-item>
+          </mt-action-menu-group>
 
-          <mt-action-menu-divider />
+          <mt-action-menu-group>
+            <mt-action-menu-item>
+              Settings
+            </mt-action-menu-item>
 
-          <mt-action-menu-item>
-            Settings
-          </mt-action-menu-item>
-
-          <mt-action-menu-item>
-            Profile
-          </mt-action-menu-item>
+            <mt-action-menu-item>
+              Profile
+            </mt-action-menu-item>
+          </mt-action-menu-group>
         </mt-action-menu>
     </dropdown-menu-portal>
 </dropdown-menu-root>
@@ -295,7 +299,7 @@ export const VisualTestTwoGroupsMixedIcons: MtActionMenuStory = {
       MtActionMenu,
       DropdownMenuTrigger,
       MtButton,
-      MtActionMenuDivider,
+      MtActionMenuGroup,
     },
     template: `
 <dropdown-menu-root open>
@@ -305,31 +309,33 @@ export const VisualTestTwoGroupsMixedIcons: MtActionMenuStory = {
 
     <dropdown-menu-portal>
         <mt-action-menu>
-          <mt-action-menu-item icon="file-text">
-            Documentation
-          </mt-action-menu-item>
+          <mt-action-menu-group>
+            <mt-action-menu-item icon="file-text">
+              Documentation
+            </mt-action-menu-item>
 
-          <mt-action-menu-item icon="duplicate">
-            Duplicate
-          </mt-action-menu-item>
+            <mt-action-menu-item icon="duplicate">
+              Duplicate
+            </mt-action-menu-item>
+          </mt-action-menu-group>
 
-          <mt-action-menu-divider />
+          <mt-action-menu-group>
+            <mt-action-menu-item icon="settings">
+              Settings
+            </mt-action-menu-item>
 
-          <mt-action-menu-item icon="settings">
-            Settings
-          </mt-action-menu-item>
+            <mt-action-menu-item>
+              Help Center
+            </mt-action-menu-item>
 
-          <mt-action-menu-item>
-            Help Center
-          </mt-action-menu-item>
+            <mt-action-menu-item icon="user">
+              Profile
+            </mt-action-menu-item>
 
-          <mt-action-menu-item icon="user">
-            Profile
-          </mt-action-menu-item>
-
-          <mt-action-menu-item>
-            About
-          </mt-action-menu-item>
+            <mt-action-menu-item>
+              About
+            </mt-action-menu-item>
+          </mt-action-menu-group>
         </mt-action-menu>
     </dropdown-menu-portal>
 </dropdown-menu-root>
@@ -348,7 +354,7 @@ export const VisualTestAllStates: MtActionMenuStory = {
       MtActionMenu,
       DropdownMenuTrigger,
       MtButton,
-      MtActionMenuDivider,
+      MtActionMenuGroup,
       DropdownMenuSub,
     },
     template: `
@@ -359,72 +365,226 @@ export const VisualTestAllStates: MtActionMenuStory = {
 
     <dropdown-menu-portal>
         <mt-action-menu>
-          <!-- Default variant -->
-          <mt-action-menu-item icon="file-text">
-            Default item with icon
-          </mt-action-menu-item>
-
-          <mt-action-menu-item>
-            Default item without icon
-          </mt-action-menu-item>
-
-          <mt-action-menu-item icon="duplicate" :shortcut="{ pc: 'Ctrl + D', mac: '⌘ + D' }">
-            Default with shortcut
-          </mt-action-menu-item>
-
-          <!-- Disabled states -->
-          <mt-action-menu-item disabled icon="lock">
-            Disabled with icon
-          </mt-action-menu-item>
-
-          <mt-action-menu-item disabled>
-            Disabled without icon
-          </mt-action-menu-item>
-
-          <mt-action-menu-item disabled icon="copy" :shortcut="{ pc: 'Ctrl + C', mac: '⌘ + C' }">
-            Disabled with shortcut
-          </mt-action-menu-item>
-
-          <mt-action-menu-divider />
-
-          <!-- Critical variant -->
-          <mt-action-menu-item icon="warning" variant="critical">
-            Critical item with icon
-          </mt-action-menu-item>
-
-          <mt-action-menu-item variant="critical">
-            Critical item without icon
-          </mt-action-menu-item>
-
-          <mt-action-menu-item icon="trash" variant="critical" :shortcut="{ pc: 'Del', mac: '⌫' }">
-            Critical with shortcut
-          </mt-action-menu-item>
-
-          <!-- Critical disabled -->
-          <mt-action-menu-item disabled icon="trash" variant="critical">
-            Critical disabled with icon
-          </mt-action-menu-item>
-
-          <mt-action-menu-item disabled variant="critical">
-            Critical disabled without icon
-          </mt-action-menu-item>
-
-          <mt-action-menu-divider />
-
-          <!-- Sub trigger -->
-          <dropdown-menu-sub>
-            <mt-action-menu-item is-sub-trigger icon="arrows">
-                Sub menu trigger
+          <mt-action-menu-group>
+            <!-- Default variant -->
+            <mt-action-menu-item icon="file-text">
+              Default item with icon
             </mt-action-menu-item>
 
-            <dropdown-menu-portal>
-                <mt-action-menu is-sub-menu>
-                    <mt-action-menu-item icon="check">
-                        Nested item
-                    </mt-action-menu-item>
-                </mt-action-menu>
-            </dropdown-menu-portal>
-          </dropdown-menu-sub>
+            <mt-action-menu-item>
+              Default item without icon
+            </mt-action-menu-item>
+
+            <mt-action-menu-item icon="duplicate" :shortcut="{ pc: 'Ctrl + D', mac: '⌘ + D' }">
+              Default with shortcut
+            </mt-action-menu-item>
+
+            <!-- Disabled states -->
+            <mt-action-menu-item disabled icon="lock">
+              Disabled with icon
+            </mt-action-menu-item>
+
+            <mt-action-menu-item disabled>
+              Disabled without icon
+            </mt-action-menu-item>
+
+            <mt-action-menu-item disabled icon="copy" :shortcut="{ pc: 'Ctrl + C', mac: '⌘ + C' }">
+              Disabled with shortcut
+            </mt-action-menu-item>
+          </mt-action-menu-group>
+
+          <mt-action-menu-group>
+            <!-- Critical variant -->
+            <mt-action-menu-item icon="warning" variant="critical">
+              Critical item with icon
+            </mt-action-menu-item>
+
+            <mt-action-menu-item variant="critical">
+              Critical item without icon
+            </mt-action-menu-item>
+
+            <mt-action-menu-item icon="trash" variant="critical" :shortcut="{ pc: 'Del', mac: '⌫' }">
+              Critical with shortcut
+            </mt-action-menu-item>
+
+            <!-- Critical disabled -->
+            <mt-action-menu-item disabled icon="trash" variant="critical">
+              Critical disabled with icon
+            </mt-action-menu-item>
+
+            <mt-action-menu-item disabled variant="critical">
+              Critical disabled without icon
+            </mt-action-menu-item>
+          </mt-action-menu-group>
+
+          <mt-action-menu-group>
+            <!-- Sub trigger -->
+            <dropdown-menu-sub>
+              <mt-action-menu-item is-sub-trigger icon="arrows">
+                  Sub menu trigger
+              </mt-action-menu-item>
+
+              <dropdown-menu-portal>
+                  <mt-action-menu is-sub-menu>
+                      <mt-action-menu-item>
+                          Nested item
+                      </mt-action-menu-item>
+                  </mt-action-menu>
+              </dropdown-menu-portal>
+            </dropdown-menu-sub>
+          </mt-action-menu-group>
+        </mt-action-menu>
+    </dropdown-menu-portal>
+</dropdown-menu-root>
+`,
+  }),
+};
+
+// 9. Two groups: first with icons, second without
+export const VisualTestTwoGroupsFirstWithIconsSecondWithout: MtActionMenuStory = {
+  name: "Two groups - first with icons, second without",
+  render: () => ({
+    components: {
+      DropdownMenuRoot,
+      DropdownMenuPortal,
+      MtActionMenuItem,
+      MtActionMenu,
+      DropdownMenuTrigger,
+      MtButton,
+      MtActionMenuGroup,
+    },
+    template: `
+<dropdown-menu-root open>
+    <dropdown-menu-trigger as-child>
+        <mt-button>Open menu</mt-button>
+    </dropdown-menu-trigger>
+
+    <dropdown-menu-portal>
+        <mt-action-menu>
+          <mt-action-menu-group>
+            <mt-action-menu-item icon="file-text">
+              Documentation
+            </mt-action-menu-item>
+
+            <mt-action-menu-item icon="duplicate">
+              Duplicate
+            </mt-action-menu-item>
+          </mt-action-menu-group>
+
+          <mt-action-menu-group>
+            <mt-action-menu-item>
+              Settings
+            </mt-action-menu-item>
+
+            <mt-action-menu-item>
+              Profile
+            </mt-action-menu-item>
+          </mt-action-menu-group>
+        </mt-action-menu>
+    </dropdown-menu-portal>
+</dropdown-menu-root>
+`,
+  }),
+};
+
+// 10. Four levels of nesting
+export const VisualTestFourLevelsNested: MtActionMenuStory = {
+  name: "Four levels of nested submenus",
+  render: () => ({
+    components: {
+      DropdownMenuRoot,
+      DropdownMenuPortal,
+      MtActionMenuItem,
+      MtActionMenu,
+      DropdownMenuTrigger,
+      MtButton,
+      MtActionMenuGroup,
+      DropdownMenuSub,
+    },
+    template: `
+<dropdown-menu-root open>
+    <dropdown-menu-trigger as-child>
+        <mt-button>Open menu</mt-button>
+    </dropdown-menu-trigger>
+
+    <dropdown-menu-portal>
+        <mt-action-menu>
+          <mt-action-menu-group>
+            <mt-action-menu-item icon="home">
+              Home
+            </mt-action-menu-item>
+
+            <!-- Level 1 -> Level 2 -->
+            <dropdown-menu-sub open>
+              <mt-action-menu-item is-sub-trigger icon="folder">
+                  Documents
+              </mt-action-menu-item>
+
+              <dropdown-menu-portal>
+                  <mt-action-menu is-sub-menu>
+                      <mt-action-menu-item icon="file-text">
+                          README.md
+                      </mt-action-menu-item>
+
+                      <!-- Level 2 -> Level 3 -->
+                      <dropdown-menu-sub open>
+                        <mt-action-menu-item is-sub-trigger icon="folder">
+                            Projects
+                        </mt-action-menu-item>
+
+                        <dropdown-menu-portal>
+                            <mt-action-menu is-sub-menu>
+                                <mt-action-menu-item icon="file-text">
+                                    notes.txt
+                                </mt-action-menu-item>
+
+                                <!-- Level 3 -> Level 4 -->
+                                <dropdown-menu-sub open>
+                                  <mt-action-menu-item is-sub-trigger icon="folder">
+                                      Frontend
+                                  </mt-action-menu-item>
+
+                                  <dropdown-menu-portal>
+                                      <mt-action-menu is-sub-menu>
+                                          <mt-action-menu-group>
+                                            <mt-action-menu-item icon="file-text">
+                                                index.html
+                                            </mt-action-menu-item>
+
+                                            <mt-action-menu-item icon="file-text">
+                                                styles.css
+                                            </mt-action-menu-item>
+                                          </mt-action-menu-group>
+
+                                          <mt-action-menu-group>
+                                            <mt-action-menu-item icon="file-text">
+                                                app.js
+                                            </mt-action-menu-item>
+                                          </mt-action-menu-group>
+                                      </mt-action-menu>
+                                  </dropdown-menu-portal>
+                                </dropdown-menu-sub>
+
+                                <mt-action-menu-item icon="folder">
+                                    Backend
+                                </mt-action-menu-item>
+                            </mt-action-menu>
+                        </dropdown-menu-portal>
+                      </dropdown-menu-sub>
+
+                      <mt-action-menu-item icon="file-text">
+                          config.json
+                      </mt-action-menu-item>
+                  </mt-action-menu>
+              </dropdown-menu-portal>
+            </dropdown-menu-sub>
+          </mt-action-menu-group>
+
+          <mt-action-menu-group>
+            <mt-action-menu-item>
+              Settings
+            </mt-action-menu-item>
+          </mt-action-menu-group>
         </mt-action-menu>
     </dropdown-menu-portal>
 </dropdown-menu-root>
