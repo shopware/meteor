@@ -8,7 +8,7 @@ import {
 import MtButton from "../../form/mt-button/mt-button.vue";
 import MtActionMenu from "./mt-action-menu.vue";
 import MtActionMenuItem from "./mt-action-menu-item.vue";
-import MtActionMenuDivider from "./mt-action-menu-divider.vue";
+import MtActionMenuGroup from "./mt-action-menu-group.vue";
 
 export type MtActionMenuMeta = Meta<typeof MtActionMenu>;
 
@@ -23,7 +23,7 @@ const meta: MtActionMenuMeta = {
       MtActionMenu,
       DropdownMenuTrigger,
       MtButton,
-      MtActionMenuDivider,
+      MtActionMenuGroup,
       DropdownMenuSub,
     },
     setup() {
@@ -37,47 +37,51 @@ const meta: MtActionMenuMeta = {
 
     <dropdown-menu-portal>
         <mt-action-menu v-bind="args">
-          <mt-action-menu-item icon="file-text">
-            Documentation
-          </mt-action-menu-item>
-
-          <mt-action-menu-item disabled icon="duplicate" :shortcut="{ pc: 'Ctrl + D', mac: '⌘ + D' }">
-            Duplicate
-          </mt-action-menu-item>
-
-          <dropdown-menu-sub>
-            <mt-action-menu-item is-sub-trigger icon="arrows">
-                Move
+          <mt-action-menu-group>
+            <mt-action-menu-item icon="file-text">
+              Documentation
             </mt-action-menu-item>
 
-            <dropdown-menu-portal>
-                <mt-action-menu is-sub-menu>
-                    <mt-action-menu-item icon="up-circle">
-                        Up
-                    </mt-action-menu-item>
+            <mt-action-menu-item disabled icon="duplicate" :shortcut="{ pc: 'Ctrl + D', mac: '⌘ + D' }">
+              Duplicate
+            </mt-action-menu-item>
 
-                    <mt-action-menu-item icon="down-circle">
-                        Down
-                    </mt-action-menu-item>
+            <dropdown-menu-sub>
+              <mt-action-menu-item is-sub-trigger icon="arrows">
+                  Move
+              </mt-action-menu-item>
 
-                    <mt-action-menu-divider />
+              <dropdown-menu-portal>
+                  <mt-action-menu is-sub-menu>
+                      <mt-action-menu-group>
+                        <mt-action-menu-item icon="up-circle">
+                            Up
+                        </mt-action-menu-item>
 
-                    <mt-action-menu-item icon="left-circle">
-                        Left
-                    </mt-action-menu-item>
+                        <mt-action-menu-item icon="down-circle">
+                            Down
+                        </mt-action-menu-item>
+                      </mt-action-menu-group>
 
-                    <mt-action-menu-item icon="right-circle">
-                        Right
-                    </mt-action-menu-item>
-                </mt-action-menu>
-            </dropdown-menu-portal>
-          </dropdown-menu-sub>
+                      <mt-action-menu-group>
+                        <mt-action-menu-item icon="left-circle">
+                            Left
+                        </mt-action-menu-item>
 
-          <mt-action-menu-divider />
+                        <mt-action-menu-item icon="right-circle">
+                            Right
+                        </mt-action-menu-item>
+                      </mt-action-menu-group>
+                  </mt-action-menu>
+              </dropdown-menu-portal>
+            </dropdown-menu-sub>
+          </mt-action-menu-group>
 
-          <mt-action-menu-item icon="trash" variant="critical">
-            Delete
-          </mt-action-menu-item> 
+          <mt-action-menu-group>
+            <mt-action-menu-item icon="trash" variant="critical">
+              Delete
+            </mt-action-menu-item>
+          </mt-action-menu-group>
         </mt-action-menu>
     </dropdown-menu-portal>
 </dropdown-menu-root>

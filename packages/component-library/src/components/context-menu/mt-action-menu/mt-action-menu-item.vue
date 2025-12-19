@@ -33,12 +33,12 @@
 <script setup lang="ts">
 import { DropdownMenuItem, DropdownMenuSubTrigger } from "reka-ui";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
-import { computed } from "vue";
+import { computed, inject, onMounted } from "vue";
 
 const props = withDefaults(
   defineProps<{
     variant?: "default" | "critical";
-    icon: string;
+    icon?: string;
     disabled?: boolean;
     shortcut?: {
       pc: string;
@@ -48,10 +48,19 @@ const props = withDefaults(
   }>(),
   {
     variant: "default",
+    icon: undefined,
     disabled: false,
     shortcut: undefined,
   },
 );
+
+const group = inject<{ registerItem: (hasIcon: boolean) => void } | null>("mt-action-menu-group", null);
+
+onMounted(() => {
+  if (group) {
+    group.registerItem(!!props.icon);
+  }
+});
 
 const isMac = typeof navigator !== "undefined" && /Mac|iPod|iPhone|iPad/.test(navigator.platform);
 
@@ -75,6 +84,7 @@ const shortcutText = computed(() => {
   padding-inline: var(--scale-size-10);
   border-radius: var(--border-radius-s);
   cursor: pointer;
+  user-select: none;
 
   &[data-highlighted] {
     background-color: var(--color-interaction-secondary-hover);
