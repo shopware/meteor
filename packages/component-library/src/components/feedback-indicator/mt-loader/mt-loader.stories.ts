@@ -1,5 +1,5 @@
 import MtLoader from "./mt-loader.vue";
-import type { StoryObj } from "@storybook/vue3";
+import type { StoryObj } from "@storybook/vue3-vite";
 import type { SlottedMeta } from "@/_internal/story-helper";
 
 export type MtLoaderMeta = SlottedMeta<typeof MtLoader, "default">;

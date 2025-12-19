@@ -1,5 +1,5 @@
 import meta from "./mt-promo-badge.stories";
-import type { StoryObj } from "@storybook/vue3";
+import type { StoryObj } from "@storybook/vue3-vite";
 
 type MtPromoBadgeMeta = typeof meta;
 type MtPromoBadgeStory = StoryObj<MtPromoBadgeMeta>;

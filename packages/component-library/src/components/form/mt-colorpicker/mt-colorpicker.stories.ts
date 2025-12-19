@@ -1,8 +1,8 @@
 import MtColorpicker from "./mt-colorpicker.vue";
-import type { StoryObj } from "@storybook/vue3";
+import type { StoryObj } from "@storybook/vue3-vite";
 import type { SlottedMeta } from "@/_internal/story-helper";
 import { ref } from "vue";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 
 export type MtColorpickerMeta = SlottedMeta<typeof MtColorpicker, "default" | "updateModelValue">;
 

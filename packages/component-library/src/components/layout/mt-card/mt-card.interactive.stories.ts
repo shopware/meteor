@@ -1,5 +1,5 @@
-import { within, userEvent } from "@storybook/test";
-import { expect } from "@storybook/test";
+import { within, userEvent } from "storybook/test";
+import { expect } from "storybook/test";
 import MtCard from "./mt-card.vue";
 import MtInset from "../mt-inset/mt-inset.vue";
 import MtText from "@/components/content/mt-text/mt-text.vue";

@@ -1,6 +1,6 @@
-import type { StoryObj } from "@storybook/vue3";
-import { action } from "@storybook/addon-actions";
-import { fn } from "@storybook/test";
+import type { StoryObj } from "@storybook/vue3-vite";
+import { action } from "storybook/actions";
+import { fn } from "storybook/test";
 import MtButton from "./mt-button.vue";
 import MtIcon from "@/components/icons-media/mt-icon/mt-icon.vue";
 import type { SlottedMeta } from "@/_internal/story-helper";

@@ -1,4 +1,4 @@
-import { useGlobals, useEffect } from "@storybook/preview-api";
+import { useGlobals, useEffect } from "storybook/preview-api";
 
 type BackgroundsGlobal = null | {
   value: string;
@@ -24,8 +24,10 @@ export function ThemeProvider(Story) {
 
 function useThemeStyle(value: string | undefined): "dark" | "light" | "auto" {
   switch (value) {
+    case "dark":
     case DARK_THEME_BACKGROUND_VALUE:
       return "dark";
+    case "light":
     case LIGHT_THEME_BACKGROUND_VALUE:
       return "light";
     default:

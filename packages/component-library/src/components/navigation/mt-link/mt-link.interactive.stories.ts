@@ -1,4 +1,4 @@
-import { expect, userEvent, within } from "@storybook/test";
+import { expect, userEvent, within } from "storybook/test";
 
 import meta, { type MtLinkMeta, type MtLinkStory } from "./mt-link.stories";
 

@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from "@storybook/vue3";
+import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import MtEntitySelect from "./mt-entity-select.vue";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 import { ref } from "vue";
 
 // Fixtures

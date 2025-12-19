@@ -1,6 +1,6 @@
 import type { SlottedMeta } from "@/_internal/story-helper";
 import MtAvatar from "./mt-avatar.vue";
-import type { StoryObj } from "@storybook/vue3";
+import type { StoryObj } from "@storybook/vue3-vite";
 
 export type MtAvatarMeta = SlottedMeta<typeof MtAvatar, "default">;
 

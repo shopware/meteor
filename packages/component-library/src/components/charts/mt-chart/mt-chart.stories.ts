@@ -1,4 +1,4 @@
-import type { StoryObj } from "@storybook/vue3";
+import type { StoryObj } from "@storybook/vue3-vite";
 import MtChart from "./mt-chart.vue";
 import { type SlottedMeta } from "@/_internal/story-helper";
 

@@ -2,6 +2,8 @@ import type { TestRunnerConfig } from "@storybook/test-runner";
 import { toMatchImageSnapshot } from "jest-image-snapshot";
 import path from "node:path";
 
+const __dirname = path.resolve();
+
 const customSnapshotsDir = path.resolve(path.join(__dirname, "..", "/__snapshots__"));
 const customReceivedDir = path.resolve(path.join(__dirname, "..", "/__snapshots__/__received__"));
 

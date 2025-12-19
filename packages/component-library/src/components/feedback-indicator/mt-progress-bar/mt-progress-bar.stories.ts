@@ -1,5 +1,5 @@
 import MtProgressBar from "./mt-progress-bar.vue";
-import type { StoryObj } from "@storybook/vue3";
+import type { StoryObj } from "@storybook/vue3-vite";
 import type { SlottedMeta } from "@/_internal/story-helper";
 
 export type MtProgressBarMeta = SlottedMeta<typeof MtProgressBar, "error">;

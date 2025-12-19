@@ -1,6 +1,6 @@
-import type { StoryObj } from "@storybook/vue3";
+import type { StoryObj } from "@storybook/vue3-vite";
 import MtDataTableFilter from "./mt-data-table-filter.vue";
-import { action } from "@storybook/addon-actions";
+import { action } from "storybook/actions";
 import type { SlottedMeta } from "@/_internal/story-helper";
 
 export type MtDataTableFilterMeta = SlottedMeta<

@@ -1,6 +1,6 @@
 import { defineStory } from "@/_internal/story-helper";
 import MtHelpText from "./mt-help-text.vue";
-import type { Meta } from "@storybook/vue3";
+import type { Meta } from "@storybook/vue3-vite";
 
 type MtHelpTextMeta = Meta<typeof MtHelpText>;
 

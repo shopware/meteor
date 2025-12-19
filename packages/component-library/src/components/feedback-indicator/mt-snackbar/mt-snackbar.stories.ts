@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/vue3";
+import type { Meta, StoryObj } from "@storybook/vue3-vite";
 import MtSnackbar from "./mt-snackbar.vue";
 import MtButton from "@/components/form/mt-button/mt-button.vue";
 import MtIcon from "@/components/icons-media/mt-icon/mt-icon.vue";
