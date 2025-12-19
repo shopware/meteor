@@ -1,14 +1,15 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import type { ShopwareMessageTypes } from './message-types';
-import { generateUniqueId } from './_internals/utils';
+
+import { selectData } from './_internals/data/selectData';
+import createError from './_internals/error-handling/error-factory';
 import type { extension, privilegeString } from './_internals/privileges';
 import MissingPrivilegesError from './_internals/privileges/missing-privileges-error';
+import sdkVersion from './_internals/sdkVersion';
 import SerializerFactory from './_internals/serializer';
-import createError from './_internals/error-handling/error-factory';
+import { generateUniqueId } from './_internals/utils';
 import validate from './_internals/validator';
 import type { datasetRegistration } from './data';
-import { selectData } from './_internals/data/selectData';
-import sdkVersion from './_internals/sdkVersion';
+import type { ShopwareMessageTypes } from './message-types';
 
 const packageVersion = sdkVersion as string;
 
@@ -470,10 +471,10 @@ export function createSender<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
  * defined and can be hidden.
  */
 export function createHandler<MESSAGE_TYPE extends keyof ShopwareMessageTypes>(messageType: MESSAGE_TYPE) {
-  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
   return (method: (data: MessageDataType<MESSAGE_TYPE> & BaseMessageOptions, additionalInformation: {
     _event_: MessageEvent<string>,
-  }) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | ShopwareMessageTypes[MESSAGE_TYPE]['responseType']) => {
+    // eslint-disable-next-line @typescript-eslint/explicit-function-return-type
+  }) => Promise<ShopwareMessageTypes[MESSAGE_TYPE]['responseType']> | ShopwareMessageTypes[MESSAGE_TYPE]['responseType']): ReturnType<typeof handle> => {
     return handle(messageType, method);
   };
 }

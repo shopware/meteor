@@ -1,12 +1,12 @@
-/** @type {import('ts-jest/dist/types').InitialOptionsTsJest} */
 module.exports = {
-  preset: 'ts-jest/presets/js-with-ts',
   testEnvironment: 'jsdom',
-  globals: {
-    'ts-jest': {
-      diagnostics: false,
-      isolatedModules: true
-    }
+  transform: {
+    '^.+\\.[tj]sx?$': [
+      'ts-jest',
+      {
+        diagnostics: false,
+      },
+    ],
   },
   modulePathIgnorePatterns: [
     '<rootDir>/cypress/',
@@ -20,3 +20,4 @@ module.exports = {
   ],
   setupFilesAfterEnv: ['<rootDir>/jest.afterEnv.js']
 };
+

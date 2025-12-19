@@ -322,7 +322,7 @@ export default class Criteria {
       this.totalCountMode = null;
     }
 
-    this.totalCountMode = (mode < 0 || mode > 2) ? null : mode;
+    this.totalCountMode = (mode < TotalCountMode.NO_TOTAL_COUNT || mode > TotalCountMode.PAGINATION_TOTAL_COUNT) ? null : mode;
     return this;
   }
 

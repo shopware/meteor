@@ -1,5 +1,6 @@
 module.exports = {
   root: true,
+  ignorePatterns: ['*.config.js', '*.config.cjs', '.eslintrc.cjs', 'jest.afterEnv.js'],
   parser: '@typescript-eslint/parser',
   parserOptions: {
     tsconfigRootDir: __dirname,
@@ -82,3 +83,4 @@ module.exports = {
     'check-file/filename-naming-convention': ['error', { 'src/*.*': 'KEBAB_CASE' }],
   },
 };
+
