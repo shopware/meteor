@@ -51,8 +51,8 @@ const preview: Preview = {
     backgrounds: {
       options: {
         light: { name: "light", value: LIGHT_THEME_BACKGROUND_VALUE },
-        dark: { name: "dark", value: DARK_THEME_BACKGROUND_VALUE }
-      }
+        dark: { name: "dark", value: DARK_THEME_BACKGROUND_VALUE },
+      },
     },
   },
 
@@ -72,9 +72,9 @@ const preview: Preview = {
 
   initialGlobals: {
     backgrounds: {
-      value: "light"
-    }
-  }
+      value: "light",
+    },
+  },
 };
 
 export default preview;
