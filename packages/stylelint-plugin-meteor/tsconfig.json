@@ -13,7 +13,8 @@
     "skipLibCheck": true,
     "sourceMap": true,
     "strict": true,
-    "target": "es2022"
+    "target": "es2022",
+    "types": []
   },
   "exclude": ["node_modules", "dist"],
   "include": ["src"]

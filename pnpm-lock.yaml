@@ -191,6 +191,9 @@ importers:
       '@types/node':
         specifier: ^18.11.17
         version: 18.19.36
+      '@types/semver':
+        specifier: ^7.7.0
+        version: 7.7.1
       '@typescript-eslint/eslint-plugin':
         specifier: ^8.36.0
         version: 8.50.0(@typescript-eslint/parser@8.50.0(eslint@8.57.0)(typescript@5.7.3))(eslint@8.57.0)(typescript@5.7.3)
@@ -4064,6 +4067,9 @@ packages:
 
   '@types/resolve@1.20.2':
     resolution: {integrity: sha512-60BCwRFOZCQhDncwQdxxeOEEkbc5dIMccYLwbxsS4TUNeVECQ/pBJ0j09mrHOl/JJvpRPGwO9SvE4nR2Nb/a4Q==}
+
+  '@types/semver@7.7.1':
+    resolution: {integrity: sha512-FmgJfu+MOcQ370SD0ev7EI8TlCAfKYU+B4m5T3yXc1CiRN94g/SZPtsCkk506aUDtlMnFZvasDwHHUcZUEaYuA==}
 
   '@types/send@0.17.4':
     resolution: {integrity: sha512-x2EM6TJOybec7c52BX0ZspPodMsQUd5L6PRwOunVyVUhXiBSKf3AezDL8Dgvgt5o0UfKNfuA0eMLr2wLT4AiBA==}
@@ -15531,6 +15537,8 @@ snapshots:
       csstype: 3.2.3
 
   '@types/resolve@1.20.2': {}
+
+  '@types/semver@7.7.1': {}
 
   '@types/send@0.17.4':
     dependencies:

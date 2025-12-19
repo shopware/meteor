@@ -1,6 +1,4 @@
-
-import semverCmp from 'semver/functions/cmp';
-import valid from 'semver/functions/valid';
+import { cmp as semverCmp, valid } from 'semver';
 
 type Comparator = '=' | '!=' | '<' | '>' | '<=' | '>=';
 
