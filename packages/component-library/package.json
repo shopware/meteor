@@ -66,9 +66,6 @@
     "@shopware-ag/meteor-admin-sdk": "workspace:*",
     "@shopware-ag/meteor-icon-kit": "workspace:*",
     "@shopware-ag/meteor-tokens": "workspace:*",
-    "@storybook/addon-a11y": "^8.6.12",
-    "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/vue": "^8.1.0",
     "@tiptap/extension-bubble-menu": "^2.22.3",
     "@tiptap/extension-bullet-list": "^2.22.3",
     "@tiptap/extension-character-count": "^2.22.3",
@@ -110,6 +107,9 @@
     "vue-smooth-reflow": "^0.1.12"
   },
   "devDependencies": {
+    "@storybook/addon-a11y": "^8.6.12",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/vue": "^8.1.0",
     "@csstools/stylelint-formatter-github": "^1.0.0",
     "@eslint/js": "^9.20.0",
     "@shopware-ag/stylelint-plugin-meteor": "workspace:*",
