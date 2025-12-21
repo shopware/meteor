@@ -31,7 +31,7 @@
     :disabled="(disabled && !isInsideTooltip) || isLoading"
     :aria-disabled="disabled && isInsideTooltip"
     v-bind="$attrs"
-    @click="disabled && isInsideTooltip ? $event.stopImmediatePropagation() : null"
+    @click.capture="disabled && isInsideTooltip ? $event.stopImmediatePropagation() : null"
   >
     <mt-loader v-if="isLoading" size="16px" class="mt-button__loader" />
     <span
