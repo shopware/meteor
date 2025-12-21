@@ -56,7 +56,7 @@ export type Meta = {
 };
 
 export default class FigmaApiClient {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+   
   httpClient = Axios.create({
     baseURL: "https://api.figma.com/v1",
   });
@@ -66,14 +66,14 @@ export default class FigmaApiClient {
       key = env.FIGMA_FILE;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+     
     return this.httpClient.get<FigmaFileResponse>(`/files/${key}`, {
       headers: this.getHeaders(),
     });
   }
 
   public getImages(ids: string[]): Promise<AxiosResponse<FigmaImageResponse>> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+     
     return this.httpClient.get<FigmaImageResponse>(
       `/images/${env.FIGMA_FILE}?format=svg&ids=${ids.join(",")}`,
       {
@@ -83,7 +83,7 @@ export default class FigmaApiClient {
   }
 
   public downloadImage(url: string): AxiosPromise {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+     
     return Axios({
       url,
       method: "GET",
@@ -92,7 +92,7 @@ export default class FigmaApiClient {
   }
 
   public getNodeInfo(ids: string[]): Promise<AxiosPromise<FigmaNodeResponse>> {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+     
     return this.httpClient.get(
       `/files/${env.FIGMA_FILE}?ids=${ids.join(",")}`,
       {

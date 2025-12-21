@@ -176,6 +176,14 @@ export default defineComponent({
     },
   },
 
+  emits: [
+    "select-expanded",
+    "select-collapsed",
+    "clear",
+    "inheritance-restore",
+    "inheritance-remove",
+  ],
+
   data() {
     return {
       expanded: false,
@@ -203,14 +211,6 @@ export default defineComponent({
   beforeUnmount() {
     window.removeEventListener("resize", this.updateSuffixWidth);
   },
-
-  emits: [
-    "select-expanded",
-    "select-collapsed",
-    "clear",
-    "inheritance-restore",
-    "inheritance-remove",
-  ],
 
   methods: {
     updateSuffixWidth() {

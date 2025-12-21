@@ -17,8 +17,8 @@
       <transition name="popoverTransition">
         <template v-if="isOpened">
           <slot
-            :referenceElementWidth="referenceElementWidth"
-            :referenceElementHeight="referenceElementHeight"
+            :reference-element-width="referenceElementWidth"
+            :reference-element-height="referenceElementHeight"
           />
         </template>
       </transition>

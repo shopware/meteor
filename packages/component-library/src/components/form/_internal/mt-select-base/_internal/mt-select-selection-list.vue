@@ -38,8 +38,8 @@
         <mt-button
           variant="secondary"
           class="mt-select-selection-list__load-more-button"
-          @click.stop="onClickInvisibleCount"
           tabindex="0"
+          @click.stop="onClickInvisibleCount"
         >
           +{{ invisibleCount }}
         </mt-button>

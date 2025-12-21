@@ -16,11 +16,11 @@
             <div class="mt-modal__header-content-title">
               <mt-text
                 v-if="title"
+                :id="id"
                 as="h2"
                 class="mt-modal__title"
                 size="m"
                 weight="semibold"
-                :id="id"
               >
                 {{ title }}
               </mt-text>
@@ -40,7 +40,7 @@
           </mt-modal-close>
         </div>
 
-        <div class="mt-modal__content" ref="modalContentRef">
+        <div ref="modalContentRef" class="mt-modal__content">
           <transition name="shadow-fade">
             <div
               v-if="['bottom', 'middle'].includes(showShadows)"

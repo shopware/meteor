@@ -20,8 +20,8 @@
             class="mt-segmented-control__action"
             :class="getActionClass(action)"
             :aria-pressed="action.isPressed"
-            @click="() => handleClick(action, toggleFloatingUi)"
             :disabled="action.disabled"
+            @click="() => handleClick(action, toggleFloatingUi)"
           >
             <mt-icon
               v-if="action.iconName"

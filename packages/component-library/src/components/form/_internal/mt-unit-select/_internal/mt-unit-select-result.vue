@@ -2,10 +2,10 @@
   <li role="option" :aria-selected="false">
     <button
       class="mt-unit-select-result"
-      @click="emit('click', unit)"
       type="button"
       :aria-label="`Select ${unitLabel.plural} (${unit})`"
       :data-testid="`unit-select-option-${unit}`"
+      @click="emit('click', unit)"
     >
       <span class="mt-unit-select-result__label">{{ unitLabel.plural }}</span>
 

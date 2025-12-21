@@ -113,8 +113,7 @@ describe("mt-password-field", () => {
     await userEvent.tab();
 
     // ASSERT
-    expect(handler).toHaveBeenCalledOnce();
-    expect(handler).toHaveBeenCalledWith("new-password");
+    expect(handler).toHaveBeenCalledExactlyOnceWith("new-password");
   });
 
   it("v-model updates when typing into the password field", async () => {
@@ -207,8 +206,8 @@ describe("mt-password-field", () => {
       components: {
         MtPasswordField,
       },
-      template: "<form @submit='handler'><mt-password-field label='Password' /></form>",
       setup: () => ({ handler }),
+      template: "<form @submit='handler'><mt-password-field label='Password' /></form>",
     });
 
     render(wrapper);
