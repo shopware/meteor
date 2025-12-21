@@ -31,7 +31,8 @@
       "playwright": "^1.55.1",
       "test-exclude": "^7.0.1",
       "wait-on": "^8.0.0",
-      "nyc": "^17.1.0"
+      "nyc": "^17.1.0",
+      "@swc/core": "^1.10.0"
     }
   },
   "packageManager": "pnpm@10.12.3",
