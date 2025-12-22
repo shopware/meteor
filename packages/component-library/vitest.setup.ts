@@ -7,7 +7,8 @@ const i18n = createI18n({
   locale: "en",
 });
 
-// Install a plugin onto VueWrapper
+// Install i18n plugin onto VueWrapper
+// @ts-expect-error - vue-i18n types don't perfectly match Vue's Plugin type but it works at runtime
 config.global.plugins = [...(config.global.plugins || []), i18n];
 
 beforeEach(() => {

@@ -32,7 +32,7 @@ export default defineComponent({
     createNotificationWarning(config: any) {
       const notification = {
         variant: "warning",
-        title: this.$tc("global.default.warning"),
+        title: "global.default.warning",
         ...config,
       };
 

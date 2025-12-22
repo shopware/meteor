@@ -4,6 +4,8 @@
     "files": true,
   },
   "compilerOptions": {
+    /* Prevent auto-discovery of @types packages */
+    "types": ["node"],
     "target": "es2016",
     "module": "commonjs",
     "esModuleInterop": true,

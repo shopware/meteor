@@ -1,17 +1,20 @@
+import type { Entity } from '../_internals/data/Entity';
+import type EntityCollection from '../_internals/data/EntityCollection';
+import type { ApiContext } from '../_internals/data/EntityCollection';
 import { send } from '../channel';
 import type Criteria from './Criteria';
-import type { ApiContext } from '../_internals/data/EntityCollection';
-import type EntityCollection from '../_internals/data/EntityCollection';
-import type { Entity } from '../_internals/data/Entity';
 
 type Entities = EntitySchema.Entities;
 
+// eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
 export type Repository<EntityName extends keyof Entities> = {
   search: (criteria: Criteria, context?: ApiContext) => Promise<EntityCollection<EntityName> | null>,
   get: (id: string, context?: ApiContext, criteria?: Criteria) => Promise<Entity<EntityName> | null>,
   save: (entity: Entity<EntityName>, context?: ApiContext) => Promise<void | null>,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-redundant-type-constituents
   clone: (entityId: string, context?: ApiContext, behavior?: any) => Promise<unknown | null>,
   hasChanges: (entity: Entity<EntityName>) => Promise<boolean | null>,
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   saveAll: (entities: EntityCollection<EntityName>, context?: ApiContext) => Promise<unknown | null>,
   delete: (entityId: string, context?: ApiContext) => Promise<void | null>,
   create: (context?: ApiContext, entityId?: string) => Promise<Entity<EntityName> | null>,
@@ -29,28 +32,26 @@ export default <EntityName extends keyof Entities>(entityName: EntityName) => ({
   save: (entity: Entity<EntityName>, context?: ApiContext): Promise<void | null> => {
     return send('repositorySave', { entityName, entity, context });
   },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-redundant-type-constituents
   clone: (entityId: string, contextOrBehavior?: any, behaviorOrContext?: any): Promise<unknown | null> => {
-    let context: ApiContext;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let behavior: any;
-    if(isApiContext(contextOrBehavior)) {
+    let context: ApiContext | undefined;
+    let behavior: unknown;
+    if (isApiContext(contextOrBehavior)) {
       context = contextOrBehavior;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       behavior = behaviorOrContext;
     } else if (isApiContext(behaviorOrContext)) {
       context = behaviorOrContext;
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       behavior = contextOrBehavior;
     } else {
-      throw new Error('Invalid arguments for clone method');
+      context = undefined;
+      behavior = contextOrBehavior;
     }
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     return send('repositoryClone', { entityName, entityId, context, behavior });
   },
   hasChanges: (entity: Entity<EntityName>): Promise<boolean | null> => {
     return send('repositoryHasChanges', { entityName, entity });
   },
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   saveAll: (entities: EntityCollection<EntityName>, context?: ApiContext): Promise<unknown | null> => {
     return send('repositorySaveAll', { entityName, entities, context });
   },

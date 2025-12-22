@@ -13,8 +13,8 @@
               <mt-text-editor-toolbar-button
                 :button="button"
                 :editor="props.editor"
-                @click="toggleFloatingUi"
                 :disabled="disabled"
+                @click="toggleFloatingUi"
               />
             </template>
 
@@ -25,7 +25,7 @@
                 :label="t(child.label)"
                 :icon="child.icon"
                 :type="child.isActive && child.isActive(props.editor) ? 'active' : 'default'"
-                :onLabelClick="
+                :on-label-click="
                   () => {
                     handleButtonClick(child);
                     toggleFloatingUi();
@@ -61,8 +61,8 @@
               <mt-text-editor-toolbar-button
                 :button="button"
                 :editor="props.editor"
-                @click="toggleFloatingUi"
                 :disabled="disabled"
+                @click="toggleFloatingUi"
               />
             </template>
 
@@ -73,7 +73,7 @@
                 :label="t(child.label)"
                 :icon="child.icon"
                 :type="child.isActive && child.isActive(props.editor) ? 'active' : 'default'"
-                :onLabelClick="() => handleButtonClick(child)"
+                :on-label-click="() => handleButtonClick(child)"
               />
             </template>
           </mt-popover>
@@ -82,8 +82,8 @@
             v-else
             :button="button"
             :editor="props.editor"
-            @click="handleButtonClick(button)"
             :disabled="disabled"
+            @click="handleButtonClick(button)"
           />
         </slot>
       </template>

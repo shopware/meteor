@@ -7,27 +7,27 @@
   />
 
   <!-- Table modal -->
-  <mt-modal-root :isOpen="showTableModal" @change="($event) => (showTableModal = $event)">
+  <mt-modal-root :is-open="showTableModal" @change="($event) => (showTableModal = $event)">
     <mt-modal :title="t('mt-text-editor-toolbar-button-table.modalTitle')" width="s">
       <template #default>
         <div class="mt-text-editor__table-modal">
           <mt-number-field
-            :label="t('mt-text-editor-toolbar-button-table.columns')"
             v-model="tableColumns"
+            :label="t('mt-text-editor-toolbar-button-table.columns')"
             type="number"
             :min="1"
-            numberType="int"
+            number-type="int"
           />
           <mt-number-field
-            :label="t('mt-text-editor-toolbar-button-table.rows')"
             v-model="tableRows"
+            :label="t('mt-text-editor-toolbar-button-table.rows')"
             type="number"
             :min="1"
-            numberType="int"
+            number-type="int"
           />
           <mt-switch
-            :label="t('mt-text-editor-toolbar-button-table.showHeader')"
             v-model="tableShowHeader"
+            :label="t('mt-text-editor-toolbar-button-table.showHeader')"
           />
         </div>
       </template>

@@ -16,8 +16,7 @@ describe("mt-banner", () => {
     await userEvent.click(screen.getByRole("button", { name: /close/i }));
 
     // ASSERT
-    expect(closeHandler).toHaveBeenCalledOnce();
-    expect(closeHandler).toHaveBeenCalledWith(undefined);
+    expect(closeHandler).toHaveBeenCalledExactlyOnceWith(undefined);
   });
 
   it("emits a close event with the bannerIndex when clicking on the close button", async () => {
@@ -36,7 +35,6 @@ describe("mt-banner", () => {
     await userEvent.click(screen.getByRole("button", { name: /close/i }));
 
     // ASSERT
-    expect(closeHandler).toHaveBeenCalledOnce();
-    expect(closeHandler).toHaveBeenCalledWith("some-banner-index");
+    expect(closeHandler).toHaveBeenCalledExactlyOnceWith("some-banner-index");
   });
 });

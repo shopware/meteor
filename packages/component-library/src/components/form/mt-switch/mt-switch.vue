@@ -22,10 +22,10 @@
       <!-- @vue-expect-error -->
       <!-- @deprecated: v6.0.0 -- remove aria-label, it's there as a hot-fix.  First rule of aria do not use aria if not needed -->
       <input
+        :id="id"
         :checked="isInherited ? inheritedValue : checked || modelValue"
         type="checkbox"
         :class="['mt-switch__switch', { 'mt-switch__switch--errored': !!error }]"
-        :id="id"
         :disabled="disabled || isInherited"
         :required="required"
         :aria-describedby="!!error ? errorId : undefined"
@@ -60,7 +60,7 @@
       <mt-help-text v-if="!!helpText" :text="helpText" class="mt-switch__help-text" />
     </div>
 
-    <mt-field-error v-if="!!error" :error="error" :id="errorId" />
+    <mt-field-error v-if="!!error" :id="errorId" :error="error" />
   </div>
 </template>
 

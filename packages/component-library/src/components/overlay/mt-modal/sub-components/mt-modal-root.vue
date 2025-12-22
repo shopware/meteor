@@ -4,8 +4,8 @@
   <transition name="fade">
     <Teleport to="body">
       <div
-        class="mt-modal-root__backdrop"
         v-if="isOpen"
+        class="mt-modal-root__backdrop"
         aria-hidden
         data-testid="modal-backdrop"
         @click="

@@ -81,8 +81,8 @@
               :class="'mt-select-option--' + getKey(item, valueProperty)"
               :data-testid="'mt-select-option--' + getKey(item, valueProperty)"
               v-bind="{ item, index }"
-              @item-select="addItem"
               :disabled="item.disabled"
+              @item-select="addItem"
             >
               <slot
                 name="result-label-property"

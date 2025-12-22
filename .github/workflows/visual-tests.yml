@@ -36,11 +36,8 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
 
-      - name: Install Playwright dependencies
-        run: pnpm dlx playwright install-deps
-
-      - name: Install Playwright
-        run: pnpm dlx playwright@1.47.2 install
+      - name: Install Playwright browsers
+        run: pnpm exec playwright install --with-deps chromium
 
       - name: Build dependencies
         run: npx turbo run build --filter=@shopware-ag/meteor-component-library

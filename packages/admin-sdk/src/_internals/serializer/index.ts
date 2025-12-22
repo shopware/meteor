@@ -1,15 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import type { send, handle } from '../../channel';
-import FunctionSerializer from './function-serializer';
-import CriteriaSerializer from './criteria-serializer';
-import EntitySerializer from './entity-serializer';
-import EntityCollectionSerializer from './entity-collection-serializer';
-import HandleErrorSerializer from './handle-error-serializer';
+
 import cloneDeepWith from 'lodash-es/cloneDeepWith';
 import get from 'lodash-es/get';
 import set from 'lodash-es/set';
+import type { handle, send } from '../../channel';
+import { isPrimitive, removeRoot, traverseObject } from '../utils';
+import CriteriaSerializer from './criteria-serializer';
+import EntityCollectionSerializer from './entity-collection-serializer';
+import EntitySerializer from './entity-serializer';
+import FunctionSerializer from './function-serializer';
+import HandleErrorSerializer from './handle-error-serializer';
 import MissingPrivilegesErrorSerializer from './missing-priviliges-error-serializer';
-import { isPrimitive, traverseObject, removeRoot } from '../utils';
 
 interface SerializerDependencies {
   send: typeof send,
@@ -19,7 +20,7 @@ interface SerializerDependencies {
 interface customizerProperties {
   value: any,
   key: number | string | undefined,
-  object: any | undefined,
+  object: any,
   stack: any,
   event?: MessageEvent<string>,
   customizerMethod: (messageData: any, seen: Map<any, any>, path: string, event?: MessageEvent<string>) => any,

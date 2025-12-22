@@ -30,8 +30,8 @@
     :class="buttonClasses"
     :disabled="(disabled && !isInsideTooltip) || isLoading"
     :aria-disabled="disabled && isInsideTooltip"
-    @click="disabled && isInsideTooltip ? $event.stopImmediatePropagation() : null"
     v-bind="$attrs"
+    @click.capture="disabled && isInsideTooltip ? $event.stopImmediatePropagation() : null"
   >
     <mt-loader v-if="isLoading" size="16px" class="mt-button__loader" />
     <span
@@ -40,17 +40,17 @@
         'mt-button__content--hidden': isLoading,
       }"
     >
-      <slot name="iconFront" :size="iconSize" v-if="$slots.iconFront" />
+      <slot v-if="$slots.iconFront" name="iconFront" :size="iconSize" />
       <slot />
-      <slot name="iconBack" :size="iconSize" v-if="$slots.iconBack" />
+      <slot v-if="$slots.iconBack" name="iconBack" :size="iconSize" />
     </span>
   </component>
 </template>
 
 <script setup lang="ts">
+import { type Component, computed } from "vue";
 import { useIsInsideTooltip } from "@/components/overlay/mt-tooltip/composables/useIsInsideTooltip";
 import MtLoader from "../../feedback-indicator/mt-loader/mt-loader.vue";
-import { computed, type Component } from "vue";
 
 /**
  * @deprecated tag:v5 - Will be removed in the next major version. Use the "secondary" variant instead.

@@ -14,13 +14,13 @@
   },
   "dependencies": {
     "@shopware-ag/meteor-component-library": "workspace:*",
-    "nuxt": "^3.10.3",
+    "nuxt": "^3.16.1",
     "vue": "^3.5.0",
     "vue-router": "^4.3.0",
-    "vue-i18n": "^9.9.1"
+    "vue-i18n": "^9.14.3"
   },
   "devDependencies": {
-    "@playwright/test": "^1.45.0",
-    "@types/node": "^20.11.28"
+    "@playwright/test": "^1.55.1",
+    "@types/node": "^22.15.0"
   }
 }

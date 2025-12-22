@@ -82,8 +82,7 @@ describe("mt-url-field", () => {
     await userEvent.tab();
 
     // ASSERT
-    expect(handler).toHaveBeenCalledOnce();
-    expect(handler).toHaveBeenCalledWith("www.shopware.com");
+    expect(handler).toHaveBeenCalledExactlyOnceWith("www.shopware.com");
   });
 
   it("can be marked as required", async () => {

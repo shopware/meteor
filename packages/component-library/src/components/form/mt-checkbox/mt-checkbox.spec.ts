@@ -42,8 +42,7 @@ describe("mt-checkbox", () => {
     // ASSERT
     expect(screen.getByRole("checkbox")).toBeChecked();
 
-    expect(handler).toHaveBeenCalledOnce();
-    expect(handler).toHaveBeenCalledWith(true);
+    expect(handler).toHaveBeenCalledExactlyOnceWith(true);
   });
 
   it("emits an event when toggling it with the space key", async () => {
@@ -61,8 +60,7 @@ describe("mt-checkbox", () => {
     // ASSERT
     expect(screen.getByRole("checkbox")).toBeChecked();
 
-    expect(handler).toHaveBeenCalledOnce();
-    expect(handler).toHaveBeenCalledWith(true);
+    expect(handler).toHaveBeenCalledExactlyOnceWith(true);
   });
 
   it("checks the checkbox when clicking the label", async () => {
@@ -83,8 +81,7 @@ describe("mt-checkbox", () => {
     // ASSERT
     expect(screen.getByRole("checkbox")).toBeChecked();
 
-    expect(handler).toHaveBeenCalledOnce();
-    expect(handler).toHaveBeenCalledWith(true);
+    expect(handler).toHaveBeenCalledExactlyOnceWith(true);
   });
 
   it("focuses the checkbox when clicking the label", async () => {
@@ -237,8 +234,7 @@ describe("mt-checkbox", () => {
     // ASSERT
     expect(screen.getByRole("checkbox")).not.toBeChecked();
 
-    expect(handler).toHaveBeenCalledOnce();
-    expect(handler).toHaveBeenCalledWith(false);
+    expect(handler).toHaveBeenCalledExactlyOnceWith(false);
   });
 
   it("keeps its unchecked state when it is partially checked", async () => {

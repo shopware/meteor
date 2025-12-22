@@ -47,8 +47,7 @@ describe("mt-switch", () => {
     // ASSERT
     expect(screen.getByRole("checkbox")).not.toBeChecked();
 
-    expect(handler).toHaveBeenCalledOnce();
-    expect(handler).toHaveBeenCalledWith(false);
+    expect(handler).toHaveBeenCalledExactlyOnceWith(false);
   });
 
   it.each([["checked", "onChange"]])(
@@ -70,8 +69,7 @@ describe("mt-switch", () => {
       // ASSERT
       expect(screen.getByRole("checkbox")).toBeChecked();
 
-      expect(handler).toHaveBeenCalledOnce();
-      expect(handler).toHaveBeenCalledWith(true);
+      expect(handler).toHaveBeenCalledExactlyOnceWith(true);
     },
   );
 
@@ -162,8 +160,7 @@ describe("mt-switch", () => {
       // ASSERT
       expect(screen.getByRole("checkbox")).toBeChecked();
 
-      expect(handler).toHaveBeenCalledOnce();
-      expect(handler).toHaveBeenCalledWith(true);
+      expect(handler).toHaveBeenCalledExactlyOnceWith(true);
     },
   );
 
@@ -189,8 +186,7 @@ describe("mt-switch", () => {
       // ASSERT
       expect(screen.getByRole("checkbox")).not.toBeChecked();
 
-      expect(handler).toHaveBeenCalledOnce();
-      expect(handler).toHaveBeenCalledWith(false);
+      expect(handler).toHaveBeenCalledExactlyOnceWith(false);
     },
   );
 
@@ -282,8 +278,7 @@ describe("mt-switch", () => {
       expect(screen.getByRole("checkbox")).toBeChecked();
 
       expect(screen.getByRole("checkbox")).not.toBeDisabled();
-      expect(handler).toHaveBeenCalledOnce();
-      expect(handler).toHaveBeenCalledWith(true);
+      expect(handler).toHaveBeenCalledExactlyOnceWith(true);
     },
   );
 

@@ -24,8 +24,8 @@
     <template #element="{ identification }">
       <!-- @vue-ignore -->
       <mt-number-field
-        v-model="rangeLeftValue as any"
         v-if="isRange"
+        v-model="rangeLeftValue as any"
         :min="min"
         :max="max - minDistance"
         :step="step"
@@ -42,7 +42,7 @@
             </span>
           </div>
         </div>
-        <div class="mt-slider__bar" ref="sliderBar">
+        <div ref="sliderBar" class="mt-slider__bar">
           <div
             class="mt-slider__value"
             :style="{ left: styleStartPosition, right: styleEndPosition }"
@@ -51,6 +51,7 @@
         <!-- eslint-disable-next-line vuejs-accessibility/form-control-has-label -->
         <input
           v-if="isRange"
+          v-model.number="rangeLeftValue"
           type="range"
           class="mt-slider__input-slider mt-slider__input-slider__double"
           aria-label="Left range slider"
@@ -58,14 +59,14 @@
           :max="max"
           :step="step"
           :disabled="disabled"
-          v-model.number="rangeLeftValue"
+          data-testid="left-slider"
           @mouseenter="activeSlider = 'left'"
           @mouseleave="activeSlider = null"
-          data-testid="left-slider"
         />
         <!-- eslint-disable-next-line vuejs-accessibility/form-control-has-label -->
         <input
           :id="identification"
+          v-model.number="rangeRightValue"
           type="range"
           class="mt-slider__input-slider"
           :class="{ 'mt-slider__input-slider__double': isRange }"
@@ -74,10 +75,9 @@
           :max="max"
           :step="step"
           :disabled="disabled"
-          v-model.number="rangeRightValue"
+          data-testid="right-slider"
           @mouseenter="activeSlider = 'right'"
           @mouseleave="activeSlider = null"
-          data-testid="right-slider"
         />
 
         <span
@@ -214,6 +214,67 @@ export default defineComponent({
     };
   },
 
+  computed: {
+    stringRepresentation(): string {
+      return this.modelValue.toString();
+    },
+
+    styleStartPosition(): string {
+      if (!this.isRange) {
+        return "0%";
+      }
+
+      const SLIDER_PADDING = 10;
+
+      const totalLength = this.max - this.min;
+      const factor = (this.rangeLeftValue - this.min) / totalLength;
+
+      const percentage = factor * 100;
+      const left = (1 - factor * 2) * SLIDER_PADDING;
+
+      return `calc(${percentage}% + ${left}px)`;
+    },
+
+    styleEndPosition(): string {
+      const SLIDER_PADDING = 10;
+
+      const totalLength = this.max - this.min;
+      const factor = (this.max - this.rangeRightValue) / totalLength;
+
+      const percentage = factor * 100;
+      const right = (1 - factor * 2) * SLIDER_PADDING;
+
+      return `calc(${percentage}% + ${right}px)`;
+    },
+
+    markStep(): number {
+      return (this.max - this.min) / (this.markCount - 1);
+    },
+
+    toolTipText(): string {
+      if (!this.activeSlider) return "";
+      return this.activeSlider === "left"
+        ? this.rangeLeftValue.toString()
+        : this.rangeRightValue.toString();
+    },
+
+    toolTipStyle() {
+      if (!this.activeSlider)
+        return {
+          display: "none",
+        };
+      return this.activeSlider === "left"
+        ? {
+            left: this.styleStartPosition,
+            transform: "translateX(-50%)",
+          }
+        : {
+            right: this.styleEndPosition,
+            transform: "translateX(50%)",
+          };
+    },
+  },
+
   watch: {
     modelValue: {
       handler(value) {
@@ -319,67 +380,6 @@ export default defineComponent({
         }
       },
       immediate: true,
-    },
-  },
-
-  computed: {
-    stringRepresentation(): string {
-      return this.modelValue.toString();
-    },
-
-    styleStartPosition(): string {
-      if (!this.isRange) {
-        return "0%";
-      }
-
-      const SLIDER_PADDING = 10;
-
-      const totalLength = this.max - this.min;
-      const factor = (this.rangeLeftValue - this.min) / totalLength;
-
-      const percentage = factor * 100;
-      const left = (1 - factor * 2) * SLIDER_PADDING;
-
-      return `calc(${percentage}% + ${left}px)`;
-    },
-
-    styleEndPosition(): string {
-      const SLIDER_PADDING = 10;
-
-      const totalLength = this.max - this.min;
-      const factor = (this.max - this.rangeRightValue) / totalLength;
-
-      const percentage = factor * 100;
-      const right = (1 - factor * 2) * SLIDER_PADDING;
-
-      return `calc(${percentage}% + ${right}px)`;
-    },
-
-    markStep(): number {
-      return (this.max - this.min) / (this.markCount - 1);
-    },
-
-    toolTipText(): string {
-      if (!this.activeSlider) return "";
-      return this.activeSlider === "left"
-        ? this.rangeLeftValue.toString()
-        : this.rangeRightValue.toString();
-    },
-
-    toolTipStyle() {
-      if (!this.activeSlider)
-        return {
-          display: "none",
-        };
-      return this.activeSlider === "left"
-        ? {
-            left: this.styleStartPosition,
-            transform: "translateX(-50%)",
-          }
-        : {
-            right: this.styleEndPosition,
-            transform: "translateX(50%)",
-          };
     },
   },
 
