@@ -37,7 +37,7 @@ export class TailwindThemedDeliverable implements Deliverable {
     const darkTokens = this.darkDictionary.flat();
 
     const variables = Object.entries(lightTokens).map(([key, lightValue]) => {
-      const variableName = key.replace(/\./g, '-');
+      const variableName = key.replace(/\./g, '-').replace(/^border-radius-/, 'radius-');
       const darkValue = darkTokens[key];
 
       if (darkValue === undefined) {
@@ -59,6 +59,13 @@ export class TailwindThemedDeliverable implements Deliverable {
         resolvedLightValue,
         variableName,
       );
+
+      const isColorToken = variableName.startsWith('color-');
+
+      if (!isColorToken) {
+        return `--${variableName}: ${formattedLightValue};`;
+      }
+
       const formattedDarkValue = this.formatValue(
         resolvedDarkValue,
         variableName,

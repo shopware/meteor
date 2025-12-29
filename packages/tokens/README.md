@@ -43,6 +43,39 @@ a DOM element as far up in the DOM tree as possible.
 </body>
 ```
 
+## Usage with Tailwind CSS v4
+
+Tailwind CSS v4 uses a CSS-first configuration. Meteor Tokens provides pre-configured CSS files that use the new `@theme` block to automatically register utility classes.
+
+### Configuration
+
+In your main CSS entry point, import the Tailwind-ready CSS files after the `@import "tailwindcss";` directive:
+
+```css
+@import "tailwindcss";
+@import "@shopware-ag/meteor-tokens/tailwind";
+@import "@shopware-ag/meteor-tokens/tailwind/administration";
+```
+
+### Usage
+
+Once imported, the tokens are automatically available as utility classes. For example:
+
+```html
+<button class="bg-interaction-primary-default text-text-primary-inverse px-scale-size-16 py-scale-size-8 rounded-border-radius-button">
+  Click me
+</button>
+```
+
+### Source Detection
+
+Tailwind v4 automatically scans your project for class names but ignores `node_modules` by default. If you are using these tokens in an external library or a monorepo setup, you may need to [explicitly register the package as a source](https://tailwindcss.com/docs/detecting-classes-in-source-files#explicitly-registering-sources) to ensure all utility classes are detected:
+
+```css
+@import "tailwindcss";
+@source "../node_modules/@shopware-ag/meteor-tokens";
+```
+
 ## License
 
 Shopware 6 is completely free and released under the [MIT License](./LICENSE.md).

@@ -535,7 +535,7 @@ test('handles numeric tokens with rem conversion', () => {
   // THEN
   expect(result).toMatchInlineSnapshot(`
     "@theme {
-      --spacing-default: light-dark(0.5rem, 1rem);
+      --spacing-default: 0.5rem;
     }
 
     :root {
@@ -680,7 +680,7 @@ test('preserves font-weight as unitless number', () => {
   // THEN
   expect(result).toMatchInlineSnapshot(`
     "@theme {
-      --font-weight-body: light-dark(400, 700);
+      --font-weight-body: 400;
     }
 
     :root {
@@ -825,7 +825,7 @@ test('handles string tokens with quotes', () => {
   // THEN
   expect(result).toMatchInlineSnapshot(`
     "@theme {
-      --font-family-body: light-dark('Inter', 'Fira Code');
+      --font-family-body: 'Inter';
     }
 
     :root {
