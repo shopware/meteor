@@ -33,7 +33,7 @@ export class CSSDeliverable implements Deliverable {
 
     const variables = Object.entries(this.dictionary.flat()).map(
       ([key, value]) => {
-        const variableName = key.replace(/\./g, '-');
+        const variableName = key.replace(/\./g, '-').replace(/^border-radius-/, 'radius-');
 
         const resolvedValue = this.resolveAliasedTokenValue(value, allTokens);
 

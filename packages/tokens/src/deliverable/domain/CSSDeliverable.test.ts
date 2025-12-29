@@ -622,7 +622,7 @@ test('resolves an aliased token to a number value', () => {
   // THEN
   expect(result).toMatchInlineSnapshot(`
   ":root {
-    --border-radius-l: 1rem;
+    --radius-l: 1rem;
   }
   "
 `);
@@ -748,8 +748,8 @@ test('resolves an aliased token from the same dictionary', () => {
   // THEN
   expect(result).toMatchInlineSnapshot(`
   ":root {
-    --border-radius-m: 0.5rem;
-    --border-radius-card: 0.5rem;
+    --radius-m: 0.5rem;
+    --radius-card: 0.5rem;
   }
   "
 `);

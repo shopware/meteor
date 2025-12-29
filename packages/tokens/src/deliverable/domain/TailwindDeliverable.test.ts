@@ -352,7 +352,7 @@ test('creates a TailwindDeliverable with aliased tokens resolved', () => {
   // THEN
   expect(result).toMatchInlineSnapshot(`
     "@theme {
-      --border-radius-m: 0.5rem;
+      --radius-m: 0.5rem;
     }
     "
   `);
