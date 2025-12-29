@@ -1,4 +1,5 @@
-import { ui, location } from '../index';
+import * as modal from '../ui/modal';
+import * as location from '../location';
 
 export const enum MESSAGE_EVENT_TYPE {
   PAYMENT_CLOSE = 'payment_close',
@@ -67,7 +68,7 @@ export const buildIframe = (
       location.startAutoResizer();
     } else if (event.data.type === MESSAGE_EVENT_TYPE.PAYMENT_CLOSE) {
       window.removeEventListener('message', handleEvent);
-      void ui.modal.close({
+      void modal.close({
         locationId: servicePaymentModalLocationId,
       });
     } else if ([MESSAGE_EVENT_TYPE.PAYMENT_SUCCESS].includes(event.data.type as MESSAGE_EVENT_TYPE)){
@@ -86,7 +87,7 @@ export const buildIframe = (
 };
 
 export const startPaymentFlow = async (): Promise<Flow> => {
-  await ui.modal.open({
+  await modal.open({
     locationId: servicePaymentModalLocationId,
     variant: 'small',
     showHeader: false,
