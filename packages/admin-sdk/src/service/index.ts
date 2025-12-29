@@ -7,14 +7,27 @@ export const enum MESSAGE_EVENT_TYPE {
   SYNC_HEIGHT = 'sync_height',
 }
 
+type EventData = {
+  type: string,
+  payload: unknown,
+}
+
+type Flow = {
+  subscribe: (eventType: MESSAGE_EVENT_TYPE, callback: () => void) => {
+    unsubscribe: () => void,
+  },
+}
+
 const channel = new BroadcastChannel('payment');
 
 const servicePaymentModalLocationId = 'sw-service-payment-modal';
 
-const _createFlow = () => {
+const _createFlow = (): Flow => {
   return {
-    subscribe: (eventType: MESSAGE_EVENT_TYPE, callback: () => void) => {
-      const func = (event: MessageEvent) => {
+    subscribe: (eventType: MESSAGE_EVENT_TYPE, callback: () => void): {
+      unsubscribe: () => void,
+    } => {
+      const func = (event: MessageEvent<EventData>): void => {
         if (event.data.type === eventType) {
           callback();
         }
@@ -22,7 +35,7 @@ const _createFlow = () => {
       channel.addEventListener('message', func);
 
       return {
-        unsubscribe: () => {
+        unsubscribe: (): void => {
           channel.removeEventListener('message', func);
         },
       };
@@ -30,13 +43,16 @@ const _createFlow = () => {
   };
 };
 
-const paymentDomain = process.env['IFRAME_URL'];
+const paymentDomain = process.env['IFRAME_URL'] ?? '';
 
 export const buildIframe = (
   shopUrl: string,
   swVersion: string,
   swUserLanguage: string,
-) => {
+): {
+  el: HTMLIFrameElement,
+  unmount: () => void,
+} => {
   const link = `${paymentDomain}/payment?shop-url=${shopUrl}&sw-version=${swVersion}&sw-user-language=${swUserLanguage}`;
   const iframeEl = document.createElement('iframe');
   iframeEl.width = '100%';
@@ -45,23 +61,23 @@ export const buildIframe = (
   iframeEl.style.border = 'none';
   iframeEl.style.borderRadius = 'var(--border-radius-card)';
 
-  const handleEvent = (event: MessageEvent) => {
+  const handleEvent = (event: MessageEvent<EventData>): void => {
     if (event.data.type === MESSAGE_EVENT_TYPE.SYNC_HEIGHT) {
-      iframeEl.style.height = `${event.data.payload}px`;
+      iframeEl.style.height = `${event.data.payload as number}px`;
       location.startAutoResizer();
     } else if (event.data.type === MESSAGE_EVENT_TYPE.PAYMENT_CLOSE) {
       window.removeEventListener('message', handleEvent);
-      ui.modal.close({
+      void ui.modal.close({
         locationId: servicePaymentModalLocationId,
       });
-    } else if ([MESSAGE_EVENT_TYPE.PAYMENT_SUCCESS].includes(event.data.type)){
+    } else if ([MESSAGE_EVENT_TYPE.PAYMENT_SUCCESS].includes(event.data.type as MESSAGE_EVENT_TYPE)){
       channel.postMessage(event.data);
     }
   };
 
   window.addEventListener('message', handleEvent);
 
-  const unmount = () => {
+  const unmount = (): void => {
     window.removeEventListener('message', handleEvent);
     channel.close();
   };
@@ -69,8 +85,8 @@ export const buildIframe = (
   return { el: iframeEl, unmount };
 };
 
-export const startPaymentFlow = () => {
-  ui.modal.open({
+export const startPaymentFlow = async (): Promise<Flow> => {
+  await ui.modal.open({
     locationId: servicePaymentModalLocationId,
     variant: 'small',
     showHeader: false,
