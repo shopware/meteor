@@ -92,7 +92,7 @@ export default defineConfig({
       formats: ["es", "cjs"],
       fileName: (format, entryName) => `${{ es: "esm", cjs: "common" }[format]}/${entryName}.js`,
     },
-    cssCodeSplit: true,
+    cssCodeSplit: false,
     rollupOptions: {
       external: external,
       output: {
