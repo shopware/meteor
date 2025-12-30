@@ -11,7 +11,7 @@ import { getAllComponents, libInjectCss, toPascalCase } from "./build/helper";
 // Get all components and their paths
 const allComponents = getAllComponents();
 
-export const external = ["vue", "apexcharts", "vue-i18n"];
+export const external = ["vue", "apexcharts"];
 
 // https://vitejs.dev/config/
 export default defineConfig({
