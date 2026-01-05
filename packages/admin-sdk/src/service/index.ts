@@ -1,5 +1,6 @@
 import * as modal from '../ui/modal';
 import * as location from '../location';
+import * as context from '../context';
 
 export const enum MESSAGE_EVENT_TYPE {
   PAYMENT_CLOSE = 'payment_close',
@@ -44,17 +45,20 @@ const _createFlow = (): Flow => {
   };
 };
 
-const paymentDomain = process.env['IFRAME_URL'] ?? '';
-
-export const buildIframe = (
-  shopUrl: string,
-  swVersion: string,
-  swUserLanguage: string,
-): {
-  el: HTMLIFrameElement,
+export const addPaymentIframe = async (
+  el: HTMLElement,
+  baseUrl: string,
+  options: {
+    shopUrl: string,
+    swVersion: string,
+    swUserLanguage: string,
+  },
+): Promise<{
+  iframeEl: HTMLIFrameElement,
   unmount: () => void,
-} => {
-  const link = `${paymentDomain}/payment?shop-url=${shopUrl}&sw-version=${swVersion}&sw-user-language=${swUserLanguage}`;
+}> => {
+  const { name, version } = await context.getAppInformation();
+  const link = `${baseUrl}/payment?service-name=${name}&service-version=${version}&shop-url=${options.shopUrl}&sw-version=${options.swVersion}&sw-user-language=${options.swUserLanguage}`;
   const iframeEl = document.createElement('iframe');
   iframeEl.width = '100%';
   iframeEl.height = '100%';
@@ -83,7 +87,9 @@ export const buildIframe = (
     channel.close();
   };
 
-  return { el: iframeEl, unmount };
+  el.appendChild(iframeEl);
+
+  return { iframeEl, unmount };
 };
 
 export const startPaymentFlow = async (): Promise<Flow> => {
