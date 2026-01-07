@@ -15,7 +15,7 @@ import meta, { type MtActionMenuMeta, type MtActionMenuStory } from "./mt-action
 
 export default {
   ...meta,
-  title: "Interaction Tests/Context Menu/mt-action-menu",
+  title: "Interaction Tests/Action Menu/mt-action-menu",
 } as MtActionMenuMeta;
 
 // 1. Closed
