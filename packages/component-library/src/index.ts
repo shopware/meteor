@@ -56,7 +56,12 @@ import MtEntitySelect from "./components/entity/mt-entity-select/mt-entity-selec
 import MtActionMenu from "./components/action-menu/mt-action-menu/mt-action-menu.vue";
 import MtActionMenuItem from "./components/action-menu/mt-action-menu-item/mt-action-menu-item.vue";
 import MtActionMenuGroup from "./components/action-menu/mt-action-menu-group/mt-action-menu-group.vue";
-import { DropdownMenuRoot, DropdownMenuPortal, DropdownMenuTrigger, DropdownMenuSub } from 'reka-ui'
+import {
+  DropdownMenuRoot,
+  DropdownMenuPortal,
+  DropdownMenuTrigger,
+  DropdownMenuSub,
+} from "reka-ui";
 
 // Import SCSS for styling
 import "./components/assets/scss/all.scss";

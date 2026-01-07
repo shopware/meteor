@@ -56,4 +56,3 @@ provide("mt-action-menu-group", {
   padding-inline-start: calc(var(--scale-size-10) + 16px + var(--scale-size-8));
 }
 </style>
-

@@ -54,7 +54,10 @@ const props = withDefaults(
   },
 );
 
-const group = inject<{ registerItem: (hasIcon: boolean) => void } | null>("mt-action-menu-group", null);
+const group = inject<{ registerItem: (hasIcon: boolean) => void } | null>(
+  "mt-action-menu-group",
+  null,
+);
 
 onMounted(() => {
   if (group) {

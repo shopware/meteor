@@ -40,7 +40,10 @@ withDefaults(
   add left padding to items without icons to align text.
   Only applies when there's at least one item WITH icon AND one WITHOUT.
 */
-.mt-action-menu:has(> .mt-action-menu-item[data-has-icon]):has(> .mt-action-menu-item:not([data-has-icon])) > .mt-action-menu-item:not([data-has-icon]) {
+.mt-action-menu:has(> .mt-action-menu-item[data-has-icon]):has(
+    > .mt-action-menu-item:not([data-has-icon])
+  )
+  > .mt-action-menu-item:not([data-has-icon]) {
   /* 16px icon + 8px gap */
   padding-inline-start: calc(var(--scale-size-10) + 16px + var(--scale-size-8));
 }
