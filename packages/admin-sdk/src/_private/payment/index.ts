@@ -1,6 +1,6 @@
-import * as modal from '../ui/modal';
-import * as location from '../location';
-import * as context from '../context';
+import * as modal from '../../ui/modal';
+import * as location from '../../location';
+import * as context from '../../context';
 
 export const enum MESSAGE_EVENT_TYPE {
   PAYMENT_CLOSE = 'payment_close',

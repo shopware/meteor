@@ -17,7 +17,7 @@ import * as mediaModal from './ui/media-modal';
 import * as webhook from './app/action';
 import * as data from './data';
 import * as iap from './iap';
-import * as service from './service';
+import * as payment from './_private/payment';
 import type EntityCollectionType from './_internals/data/EntityCollection';
 import type { Entity as EntityType } from './_internals/data/Entity';
 import composables from './data/composables';
@@ -39,6 +39,10 @@ const ui = {
   mediaModal,
 };
 
+const _private = {
+  payment,
+};
+
 /**
  * The main export which will be available by direct imports.
  */
@@ -54,7 +58,7 @@ export {
   data,
   composables,
   iap,
-  service,
+  _private,
 };
 
 /**
