@@ -127,7 +127,12 @@ Use `mt-action-menu-group` to visually separate related actions:
 
 ## Keyboard shortcuts
 
-Display keyboard shortcuts alongside menu items using the `shortcut` prop:
+Display keyboard shortcuts alongside menu items using the `shortcut` prop. The shortcut is defined using a structured object with `modifiers` and a `key`:
+
+**Available modifiers:** `'mod'`, `'ctrl'`, `'alt'`, `'shift'`, `'meta'`
+
+- Use `'mod'` for cross-platform shortcuts (maps to ⌘ on Mac, Ctrl on Windows)
+- Use `'meta'` specifically for the Windows key on PC or Command on Mac
 
 ```html
 <template>
@@ -140,14 +145,14 @@ Display keyboard shortcuts alongside menu items using the `shortcut` prop:
       <mt-action-menu>
         <mt-action-menu-item
           icon="duplicate"
-          :shortcut="{ pc: 'Ctrl + D', mac: '⌘ + D' }"
+          :shortcut="{ modifiers: ['mod'], key: 'd' }"
         >
           Duplicate
         </mt-action-menu-item>
 
         <mt-action-menu-item
           icon="copy"
-          :shortcut="{ pc: 'Ctrl + C', mac: '⌘ + C' }"
+          :shortcut="{ modifiers: ['mod'], key: 'c' }"
         >
           Copy
         </mt-action-menu-item>
@@ -156,6 +161,12 @@ Display keyboard shortcuts alongside menu items using the `shortcut` prop:
   </mt-dropdown-menu-root>
 </template>
 ```
+
+The component automatically formats shortcuts based on the user's platform:
+- **Mac**: `⌘D`, `⌘C` (uses symbols, no separators)
+- **PC**: `Ctrl + D`, `Ctrl + C` (uses labels with `+` separator)
+
+**Available special keys:** `'enter'`, `'esc'`, `'tab'`, `'space'`, `'backspace'`, `'delete'`, `'up'`, `'down'`, `'left'`, `'right'`.
 
 ## Critical actions
 
@@ -181,7 +192,7 @@ Use the `variant="critical"` prop for destructive actions like delete or remove:
           <mt-action-menu-item
             icon="trash"
             variant="critical"
-            :shortcut="{ pc: 'Del', mac: '⌫' }"
+            :shortcut="{ key: 'backspace' }"
           >
             Delete
           </mt-action-menu-item>

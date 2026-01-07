@@ -42,7 +42,7 @@ const meta: MtActionMenuMeta = {
               Documentation
             </mt-action-menu-item>
 
-            <mt-action-menu-item disabled icon="duplicate" :shortcut="{ pc: 'Ctrl + D', mac: '⌘ + D' }">
+            <mt-action-menu-item disabled icon="duplicate" :shortcut="{ modifiers: ['mod'], key: 'd' }">
               Duplicate
             </mt-action-menu-item>
 

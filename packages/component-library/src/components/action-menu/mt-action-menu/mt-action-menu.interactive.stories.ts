@@ -375,7 +375,7 @@ export const VisualTestAllStates: MtActionMenuStory = {
               Default item without icon
             </mt-action-menu-item>
 
-            <mt-action-menu-item icon="duplicate" :shortcut="{ pc: 'Ctrl + D', mac: '⌘ + D' }">
+            <mt-action-menu-item icon="duplicate" :shortcut="{ modifiers: ['mod'], key: 'd' }">
               Default with shortcut
             </mt-action-menu-item>
 
@@ -388,7 +388,7 @@ export const VisualTestAllStates: MtActionMenuStory = {
               Disabled without icon
             </mt-action-menu-item>
 
-            <mt-action-menu-item disabled icon="copy" :shortcut="{ pc: 'Ctrl + C', mac: '⌘ + C' }">
+            <mt-action-menu-item disabled icon="copy" :shortcut="{ modifiers: ['mod'], key: 'c' }">
               Disabled with shortcut
             </mt-action-menu-item>
           </mt-action-menu-group>
@@ -403,7 +403,7 @@ export const VisualTestAllStates: MtActionMenuStory = {
               Critical item without icon
             </mt-action-menu-item>
 
-            <mt-action-menu-item icon="trash" variant="critical" :shortcut="{ pc: 'Del', mac: '⌫' }">
+            <mt-action-menu-item icon="trash" variant="critical" :shortcut="{ key: 'backspace' }">
               Critical with shortcut
             </mt-action-menu-item>
 

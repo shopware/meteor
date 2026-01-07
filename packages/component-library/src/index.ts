@@ -62,7 +62,6 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSub,
 } from "reka-ui";
-
 // Import SCSS for styling
 import "./components/assets/scss/all.scss";
 
