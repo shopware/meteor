@@ -186,12 +186,20 @@ const getKeyLabel = (key: ModifierKey | SpecialKey, forMac: boolean): string => 
 
 const formatShortcut = (def: ShortcutDefinition): { pc: string[]; mac: string[] } => {
   const { modifiers = [], key } = def;
-  const sortedModifiers = [...modifiers].sort((a, b) => MODIFIER_PRIORITY[a] - MODIFIER_PRIORITY[b]);
+  const sortedModifiers = [...modifiers].sort(
+    (a, b) => MODIFIER_PRIORITY[a] - MODIFIER_PRIORITY[b],
+  );
   const isSpecial = SPECIAL_KEYS.includes(key as SpecialKey);
 
   return {
-    pc: [...sortedModifiers.map((m) => getKeyLabel(m, false)), isSpecial ? getKeyLabel(key as SpecialKey, false) : key.toUpperCase()],
-    mac: [...sortedModifiers.map((m) => getKeyLabel(m, true)), isSpecial ? getKeyLabel(key as SpecialKey, true) : key.toUpperCase()],
+    pc: [
+      ...sortedModifiers.map((m) => getKeyLabel(m, false)),
+      isSpecial ? getKeyLabel(key as SpecialKey, false) : key.toUpperCase(),
+    ],
+    mac: [
+      ...sortedModifiers.map((m) => getKeyLabel(m, true)),
+      isSpecial ? getKeyLabel(key as SpecialKey, true) : key.toUpperCase(),
+    ],
   };
 };
 
@@ -204,7 +212,9 @@ const shortcutKeys = computed(() => {
 const ariaKeyShortcuts = computed(() => {
   if (!props.shortcut) return undefined;
   const { modifiers = [], key } = props.shortcut;
-  const sortedModifiers = [...modifiers].sort((a, b) => MODIFIER_PRIORITY[a] - MODIFIER_PRIORITY[b]);
+  const sortedModifiers = [...modifiers].sort(
+    (a, b) => MODIFIER_PRIORITY[a] - MODIFIER_PRIORITY[b],
+  );
   const platform = isMac ? "mac" : "pc";
 
   const parts = sortedModifiers.map((m) => ARIA_MODIFIER_KEYS[m][platform]);
