@@ -262,29 +262,3 @@ Create nested menus using `MtDropdownMenuSub` for hierarchical navigation:
   </mt-dropdown-menu-root>
 </template>
 ```
-
-## API Reference
-
-### `MtActionMenu`
-
-The menu container component.
-
-| Prop        | Type      | Default | Description                                          |
-| ----------- | --------- | ------- | ---------------------------------------------------- |
-| `isSubMenu` | `boolean` | `false` | Set to `true` when used inside a `MtDropdownMenuSub` |
-
-### `MtActionMenuItem`
-
-Individual menu items.
-
-| Prop           | Type                          | Default     | Description                                  |
-| -------------- | ----------------------------- | ----------- | -------------------------------------------- |
-| `icon`         | `string`                      | `undefined` | Icon name to display before the label        |
-| `variant`      | `'default' \| 'critical'`     | `'default'` | Visual variant for the item                  |
-| `disabled`     | `boolean`                     | `false`     | Whether the item is disabled                 |
-| `shortcut`     | `{ pc: string, mac: string }` | `undefined` | Keyboard shortcut to display                 |
-| `isSubTrigger` | `boolean`                     | `false`     | Set to `true` when this item opens a submenu |
-
-### `MtActionMenuGroup`
-
-Groups related menu items with a visual divider.
