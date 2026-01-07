@@ -7,8 +7,8 @@ import {
 } from "reka-ui";
 import MtButton from "../../form/mt-button/mt-button.vue";
 import MtActionMenu from "./mt-action-menu.vue";
-import MtActionMenuItem from "./mt-action-menu-item.vue";
-import MtActionMenuGroup from "./mt-action-menu-group.vue";
+import MtActionMenuItem from "../mt-action-menu-item/mt-action-menu-item.vue";
+import MtActionMenuGroup from "../mt-action-menu-group/mt-action-menu-group.vue";
 
 export type MtActionMenuMeta = Meta<typeof MtActionMenu>;
 
