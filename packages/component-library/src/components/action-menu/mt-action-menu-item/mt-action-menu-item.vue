@@ -10,7 +10,7 @@
     :data-has-icon="!!icon || undefined"
     :aria-keyshortcuts="ariaKeyShortcuts"
   >
-    <mt-icon v-if="!!icon" :name="icon" size="16" mode="solid" />
+    <mt-icon v-if="!!icon" :name="icon" size="14" mode="solid" />
 
     <slot name="default" />
 
@@ -25,23 +25,29 @@
       <span v-for="(key, index) in shortcutKeys" :key="index">{{ key }}</span>
     </kbd>
 
-    <mt-icon
+    <div 
       v-if="isSubTrigger && !link"
-      name="chevron-right-s"
-      size="14"
-      color="var(--color-icon-primary-default)"
-      mode="solid"
       class="mt-action-menu-item__arrow"
-    />
+    >
+      <mt-icon
+        name="chevron-right-s"
+        size="10"
+        color="var(--color-icon-primary-default)"
+        mode="regular"
+      />
+    </div>
 
-    <mt-icon
+    <div
       v-if="link"
-      name="external-link-s"
-      size="20"
-      color="var(--color-icon-primary-default)"
-      mode="regular"
       class="mt-action-menu-item__external-link"
-    />
+    >
+      <mt-icon
+        name="external-link-s"
+        size="10"
+        color="var(--color-icon-secondary-default)"
+        mode="regular"
+      />
+    </div>
   </component>
 </template>
 
@@ -303,10 +309,14 @@ const ariaKeyShortcuts = computed(() => {
 .mt-action-menu-item__arrow {
   margin-left: auto;
   padding-left: var(--scale-size-24);
+  display: grid;
+  place-items: center;
 }
 
 .mt-action-menu-item__external-link {
   margin-left: auto;
   padding-left: var(--scale-size-24);
+  display: grid;
+  place-items: center;
 }
 </style>
