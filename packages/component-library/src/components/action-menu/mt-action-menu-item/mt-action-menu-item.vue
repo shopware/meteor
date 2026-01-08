@@ -25,10 +25,7 @@
       <span v-for="(key, index) in shortcutKeys" :key="index">{{ key }}</span>
     </kbd>
 
-    <div 
-      v-if="isSubTrigger && !link"
-      class="mt-action-menu-item__arrow"
-    >
+    <div v-if="isSubTrigger && !link" class="mt-action-menu-item__arrow">
       <mt-icon
         name="chevron-right-s"
         size="10"
@@ -37,10 +34,7 @@
       />
     </div>
 
-    <div
-      v-if="link"
-      class="mt-action-menu-item__external-link"
-    >
+    <div v-if="link" class="mt-action-menu-item__external-link">
       <mt-icon
         name="external-link-s"
         size="10"

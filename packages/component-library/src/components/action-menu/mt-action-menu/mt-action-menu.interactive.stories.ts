@@ -10,8 +10,11 @@ import MtButton from "../../form/mt-button/mt-button.vue";
 import MtActionMenu from "./mt-action-menu.vue";
 import MtActionMenuItem from "../mt-action-menu-item/mt-action-menu-item.vue";
 import MtActionMenuGroup from "../mt-action-menu-group/mt-action-menu-group.vue";
+import MtAvatar from "../../icons-media/mt-avatar/mt-avatar.vue";
+import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 
 import meta, { type MtActionMenuMeta, type MtActionMenuStory } from "./mt-action-menu.stories";
+import MtText from "@/components/content/mt-text/mt-text.vue";
 
 export default {
   ...meta,
@@ -634,6 +637,73 @@ export const VisualTestExternalLinks: MtActionMenuStory = {
 
             <mt-action-menu-item icon="user">
               Profile (no link)
+            </mt-action-menu-item>
+          </mt-action-menu-group>
+        </mt-action-menu>
+    </dropdown-menu-portal>
+</dropdown-menu-root>
+`,
+  }),
+};
+
+// 12. User profile trigger with matchTriggerWidth
+export const VisualTestUserProfileTrigger: MtActionMenuStory = {
+  name: "User profile trigger with matchTriggerWidth",
+  render: () => ({
+    components: {
+      DropdownMenuRoot,
+      DropdownMenuPortal,
+      MtActionMenuItem,
+      MtActionMenu,
+      DropdownMenuTrigger,
+      MtActionMenuGroup,
+      MtAvatar,
+      MtIcon,
+      MtText,
+    },
+    template: `
+<dropdown-menu-root open>
+    <dropdown-menu-trigger as-child>
+        <button style="display: flex; align-items: center;" class="user-profile-trigger">
+          <mt-avatar 
+            first-name="John" 
+            last-name="Doe" 
+            size="s"
+          />
+
+          <div style="padding-left: var(--scale-size-14);" />
+
+          <div style="text-align: left;">
+            <mt-text>John Doe</mt-text>
+
+            <mt-text size="xs" color="color-text-secondary-default" style="margin-top: -4px;">john.doe@example.com</mt-text>
+          </div>
+
+          <div style="padding-left: var(--scale-size-32);" />
+
+          <mt-icon 
+            name="chevron-down-s" 
+            size="12" 
+            color="var(--color-icon-primary-default)"
+          />
+        </button>
+    </dropdown-menu-trigger>
+
+    <dropdown-menu-portal>
+        <mt-action-menu match-trigger-width>
+          <mt-action-menu-group>
+            <mt-action-menu-item icon="user">
+              Profile
+            </mt-action-menu-item>
+
+            <mt-action-menu-item icon="cog">
+              Settings
+            </mt-action-menu-item>
+          </mt-action-menu-group>
+
+          <mt-action-menu-group>
+            <mt-action-menu-item icon="sign-out" variant="critical">
+              Sign out
             </mt-action-menu-item>
           </mt-action-menu-group>
         </mt-action-menu>

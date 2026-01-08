@@ -1,7 +1,7 @@
 <template>
   <component
     :is="isSubMenu ? DropdownMenuSubContent : DropdownMenuContent"
-    class="mt-action-menu"
+    :class="['mt-action-menu', { 'mt-action-menu--match-trigger-width': matchTriggerWidth }]"
     :side-offset="8"
     :align-offset="isSubMenu ? -5 : undefined"
     align="start"
@@ -16,9 +16,15 @@ import { DropdownMenuContent, DropdownMenuSubContent } from "reka-ui";
 withDefaults(
   defineProps<{
     isSubMenu?: boolean;
+    /**
+     * When enabled, the menu content will match the trigger's width using Reka UI's CSS variables.
+     * Also constrains max-height to available viewport space.
+     */
+    matchTriggerWidth?: boolean;
   }>(),
   {
     isSubMenu: false,
+    matchTriggerWidth: false,
   },
 );
 </script>
@@ -32,6 +38,11 @@ withDefaults(
   border-radius: var(--border-radius-m);
   padding: var(--scale-size-4);
   min-width: 200px;
+}
+
+.mt-action-menu--match-trigger-width {
+  width: var(--reka-dropdown-menu-trigger-width);
+  max-height: var(--reka-dropdown-menu-content-available-height);
 }
 
 /* 
