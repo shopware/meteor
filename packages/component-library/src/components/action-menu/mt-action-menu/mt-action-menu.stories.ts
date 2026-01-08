@@ -13,7 +13,7 @@ import MtActionMenuGroup from "../mt-action-menu-group/mt-action-menu-group.vue"
 export type MtActionMenuMeta = Meta<typeof MtActionMenu>;
 
 const meta: MtActionMenuMeta = {
-  title: "Components/Action Menu/mt-action-menu",
+  title: "Components/Form/mt-action-menu",
   component: MtActionMenu,
   render: (args) => ({
     components: {

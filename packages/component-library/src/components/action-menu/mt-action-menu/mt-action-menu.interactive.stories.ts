@@ -15,7 +15,7 @@ import meta, { type MtActionMenuMeta, type MtActionMenuStory } from "./mt-action
 
 export default {
   ...meta,
-  title: "Interaction Tests/Action Menu/mt-action-menu",
+  title: "Interaction Tests/Components/Form/mt-action-menu",
 } as MtActionMenuMeta;
 
 // 1. Closed
@@ -100,7 +100,7 @@ export const VisualTestNestedItemsVisible: MtActionMenuStory = {
             </dropdown-menu-portal>
           </dropdown-menu-sub>
 
-          <mt-action-menu-item icon="settings">
+          <mt-action-menu-item icon="cog">
             Settings
           </mt-action-menu-item>
         </mt-action-menu>
@@ -226,7 +226,7 @@ export const VisualTestTwoGroupsWithIcons: MtActionMenuStory = {
           </mt-action-menu-group>
 
           <mt-action-menu-group>
-            <mt-action-menu-item icon="settings">
+            <mt-action-menu-item icon="cog">
               Settings
             </mt-action-menu-item>
 
@@ -320,7 +320,7 @@ export const VisualTestTwoGroupsMixedIcons: MtActionMenuStory = {
           </mt-action-menu-group>
 
           <mt-action-menu-group>
-            <mt-action-menu-item icon="settings">
+            <mt-action-menu-item icon="cog">
               Settings
             </mt-action-menu-item>
 
@@ -583,6 +583,57 @@ export const VisualTestFourLevelsNested: MtActionMenuStory = {
           <mt-action-menu-group>
             <mt-action-menu-item>
               Settings
+            </mt-action-menu-item>
+          </mt-action-menu-group>
+        </mt-action-menu>
+    </dropdown-menu-portal>
+</dropdown-menu-root>
+`,
+  }),
+};
+
+// 11. External link items
+export const VisualTestExternalLinks: MtActionMenuStory = {
+  name: "Items with external links",
+  render: () => ({
+    components: {
+      DropdownMenuRoot,
+      DropdownMenuPortal,
+      MtActionMenuItem,
+      MtActionMenu,
+      DropdownMenuTrigger,
+      MtButton,
+      MtActionMenuGroup,
+    },
+    template: `
+<dropdown-menu-root open>
+    <dropdown-menu-trigger as-child>
+        <mt-button>Open menu</mt-button>
+    </dropdown-menu-trigger>
+
+    <dropdown-menu-portal>
+        <mt-action-menu>
+          <mt-action-menu-group>
+            <mt-action-menu-item icon="file-text" link="https://docs.example.com">
+              Documentation
+            </mt-action-menu-item>
+
+            <mt-action-menu-item icon="help" link="https://support.example.com">
+              Help Center
+            </mt-action-menu-item>
+
+            <mt-action-menu-item link="https://example.com">
+              External link without icon
+            </mt-action-menu-item>
+          </mt-action-menu-group>
+
+          <mt-action-menu-group>
+            <mt-action-menu-item icon="cog">
+              Settings (no link)
+            </mt-action-menu-item>
+
+            <mt-action-menu-item icon="user">
+              Profile (no link)
             </mt-action-menu-item>
           </mt-action-menu-group>
         </mt-action-menu>

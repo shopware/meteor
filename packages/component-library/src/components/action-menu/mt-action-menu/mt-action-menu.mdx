@@ -116,7 +116,7 @@ Use `mt-action-menu-group` to visually separate related actions:
         </mt-action-menu-group>
 
         <mt-action-menu-group>
-          <mt-action-menu-item icon="settings">Settings</mt-action-menu-item>
+          <mt-action-menu-item icon="cog">Settings</mt-action-menu-item>
           <mt-action-menu-item icon="user">Profile</mt-action-menu-item>
         </mt-action-menu-group>
       </mt-action-menu>
@@ -164,8 +164,10 @@ Display keyboard shortcuts alongside menu items using the `shortcut` prop. The s
 
 The component automatically formats shortcuts based on the user's platform:
 
-- **Mac**: `⌘D`, `⌘C` (uses symbols, no separators)
-- **PC**: `Ctrl + D`, `Ctrl + C` (uses labels with `+` separator)
+- **Mac**: Uses symbols (`⌘`, `⌥`, `⌃`)
+- **PC**: Uses text labels (`Ctrl`, `Shift`, `Alt`)
+
+**Available modifier keys:** `'mod'` (⌘ on Mac, Ctrl on PC), `'ctrl'`, `'alt'`, `'shift'`, `'meta'`.
 
 **Available special keys:** `'enter'`, `'esc'`, `'tab'`, `'space'`, `'backspace'`, `'delete'`, `'up'`, `'down'`, `'left'`, `'right'`.
 
@@ -268,7 +270,7 @@ Create nested menus using `MtDropdownMenuSub` for hierarchical navigation:
           </mt-dropdown-menu-portal>
         </mt-dropdown-menu-sub>
 
-        <mt-action-menu-item icon="settings">Settings</mt-action-menu-item>
+        <mt-action-menu-item icon="cog">Settings</mt-action-menu-item>
       </mt-action-menu>
     </mt-dropdown-menu-portal>
   </mt-dropdown-menu-root>

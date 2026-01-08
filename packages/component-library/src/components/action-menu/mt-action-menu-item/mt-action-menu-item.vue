@@ -1,6 +1,10 @@
 <template>
   <component
     :is="isSubTrigger ? DropdownMenuSubTrigger : DropdownMenuItem"
+    :as="link ? 'a' : as"
+    :href="link"
+    :target="link ? '_blank' : undefined"
+    :rel="link ? 'noopener noreferrer' : undefined"
     :class="['mt-action-menu-item', `mt-action-menu-item--variant-${variant}`]"
     :disabled="disabled"
     :data-has-icon="!!icon || undefined"
@@ -11,7 +15,7 @@
     <slot name="default" />
 
     <kbd
-      v-if="shortcutKeys.length && !isSubTrigger"
+      v-if="shortcutKeys.length && !isSubTrigger && !link"
       aria-hidden="true"
       :class="[
         'mt-action-menu-item__shortcut',
@@ -22,12 +26,21 @@
     </kbd>
 
     <mt-icon
-      v-if="isSubTrigger"
+      v-if="isSubTrigger && !link"
       name="chevron-right-s"
-      size="10"
+      size="14"
       color="var(--color-icon-primary-default)"
       mode="solid"
       class="mt-action-menu-item__arrow"
+    />
+
+    <mt-icon
+      v-if="link"
+      name="external-link-s"
+      size="20"
+      color="var(--color-icon-primary-default)"
+      mode="regular"
+      class="mt-action-menu-item__external-link"
     />
   </component>
 </template>
@@ -155,12 +168,16 @@ const props = withDefaults(
     disabled?: boolean;
     shortcut?: ShortcutDefinition;
     isSubTrigger?: boolean;
+    as?: string;
+    link?: string;
   }>(),
   {
     variant: "default",
     icon: undefined,
     disabled: false,
     shortcut: undefined,
+    as: undefined,
+    link: undefined,
   },
 );
 
@@ -240,6 +257,7 @@ const ariaKeyShortcuts = computed(() => {
   border-radius: var(--border-radius-s);
   cursor: pointer;
   user-select: none;
+  text-decoration: none;
 
   &[data-highlighted] {
     background-color: var(--color-interaction-secondary-hover);
@@ -283,6 +301,11 @@ const ariaKeyShortcuts = computed(() => {
 }
 
 .mt-action-menu-item__arrow {
+  margin-left: auto;
+  padding-left: var(--scale-size-8);
+}
+
+.mt-action-menu-item__external-link {
   margin-left: auto;
   padding-left: var(--scale-size-8);
 }
