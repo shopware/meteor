@@ -293,7 +293,7 @@ const ariaKeyShortcuts = computed(() => {
   line-height: var(--font-line-height-xs);
   font-weight: var(--font-weight-regular);
   user-select: none;
-  padding-left: var(--scale-size-8);
+  padding-left: var(--scale-size-24);
 }
 
 .mt-action-menu-item__shortcut--disabled {
@@ -302,11 +302,11 @@ const ariaKeyShortcuts = computed(() => {
 
 .mt-action-menu-item__arrow {
   margin-left: auto;
-  padding-left: var(--scale-size-8);
+  padding-left: var(--scale-size-24);
 }
 
 .mt-action-menu-item__external-link {
   margin-left: auto;
-  padding-left: var(--scale-size-8);
+  padding-left: var(--scale-size-24);
 }
 </style>
