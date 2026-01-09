@@ -53,7 +53,15 @@ import MtUrlField from "./components/form/mt-url-field/mt-url-field.vue";
 import MtUnitField from "./components/form/mt-unit-field/mt-unit-field.vue";
 import MtEntityDataTable from "./components/entity/mt-entity-data-table/mt-entity-data-table.vue";
 import MtEntitySelect from "./components/entity/mt-entity-select/mt-entity-select.vue";
-
+import MtActionMenu from "./components/action-menu/mt-action-menu/mt-action-menu.vue";
+import MtActionMenuItem from "./components/action-menu/mt-action-menu-item/mt-action-menu-item.vue";
+import MtActionMenuGroup from "./components/action-menu/mt-action-menu-group/mt-action-menu-group.vue";
+import {
+  DropdownMenuRoot,
+  DropdownMenuPortal,
+  DropdownMenuTrigger,
+  DropdownMenuSub,
+} from "reka-ui";
 // Import SCSS for styling
 import "./components/assets/scss/all.scss";
 
@@ -114,6 +122,13 @@ export {
   MtEntitySelect,
   TooltipDirective,
   MtAvatar,
+  MtActionMenu,
+  MtActionMenuItem,
+  MtActionMenuGroup,
+  DropdownMenuRoot as MtDropdownMenuRoot,
+  DropdownMenuPortal as MtDropdownMenuPortal,
+  DropdownMenuTrigger as MtDropdownMenuTrigger,
+  DropdownMenuSub as MtDropdownMenuSub,
   DeviceHelperPlugin,
   useSnackbar,
   // @deprecated
