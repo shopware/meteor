@@ -299,10 +299,17 @@ export default defineComponent({
 
 .mt-field .mt-block-field__block {
   display: flex;
-  min-height: var(--scale-size-48);
   border: 1px solid var(--color-border-primary-default);
   border-radius: var(--border-radius-xs);
   overflow: hidden;
+}
+
+.mt-field--default .mt-block-field__block {
+  min-height: var(--scale-size-48);
+}
+
+.mt-field--small .mt-block-field__block {
+  min-height: var(--scale-size-32);
 }
 
 .mt-field input,
