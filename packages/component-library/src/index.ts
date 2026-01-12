@@ -8,6 +8,7 @@ import MtChart, { type ChartOptions } from "./components/charts/mt-chart/mt-char
 import MtCheckbox from "./components/form/mt-checkbox/mt-checkbox.vue";
 import MtColorpicker from "./components/form/mt-colorpicker/mt-colorpicker.vue";
 import MtEmailField from "./components/form/mt-email-field/mt-email-field.vue";
+import MtHelpText from "./components/form/mt-help-text/mt-help-text.vue";
 import MtLink from "./components/navigation/mt-link/mt-link.vue";
 import MtNumberField from "./components/form/mt-number-field/mt-number-field.vue";
 import MtPasswordField from "./components/form/mt-password-field/mt-password-field.vue";
@@ -95,6 +96,7 @@ export {
   MtIcon,
   MtCard,
   MtEmptyState,
+  MtHelpText,
   MtTabs,
   MtDataTable,
   MtPagination,
