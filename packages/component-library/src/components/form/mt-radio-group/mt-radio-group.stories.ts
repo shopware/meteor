@@ -19,6 +19,36 @@ const meta: Meta = {
     hint: "",
     change: fn(),
   },
+  parameters: {
+    docs: {
+      description: {
+        component: `The \`mt-radio-group\` component allows users to select a single option from a list of mutually exclusive choices. Radio groups are ideal when users need to make exactly one selection from multiple options.
+
+## ✅ Do's
+
+- Use for mutually exclusive options where only one selection is allowed
+- Provide clear, concise labels for each option
+- Use a descriptive group label that explains what the user is selecting
+- Include help text or hint when the selection needs additional context
+- Use the \`error\` prop to display validation errors when needed
+- Ensure each radio item has a unique \`id\` and \`value\`
+- Use \`MtRadioGroupList\` to wrap multiple \`MtRadioGroupItem\` components for proper spacing
+- Use \`MtRadioGroupCustomItem\` when you need custom-styled radio options (e.g., pricing plans, feature cards)
+- Keep the number of options manageable (typically 2-7 options work best)
+
+## ❌ Don'ts
+
+- Don't use for multiple selections (use checkboxes instead)
+- Don't use a single radio button (radio groups require at least two options)
+- Don't omit labels - always provide clear labels for accessibility and usability
+- Don't use radio groups for yes/no questions with only two options if a toggle or checkbox would be more appropriate
+- Don't create radio groups with too many options (consider a select dropdown for 8+ options)
+- Don't nest radio groups or use them within other interactive elements
+- Don't use the same \`value\` for multiple items within the same group
+- Don't forget to handle the \`v-model\` binding to track the selected value`,
+      },
+    },
+  },
 };
 
 export default meta;
