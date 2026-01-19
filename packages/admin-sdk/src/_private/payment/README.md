@@ -17,10 +17,6 @@ Production: https://app.swagpurchaseinterface.services.shopware.io
 
 ## 3. API Documentation
 
-### Events
-- **`PAYMENT_CLOSE`** (`'payment_close'`): Event sent when the payment process should be closed
-- **`PAYMENT_SUCCESS`** (`'payment_success'`): Event sent when the payment process completes successfully
-- **`PAYMENT_ERROR`** (`'payment_error'`): Event sent when an error occurs during the payment process
 
 ### Functions
 
@@ -96,3 +92,19 @@ type Flow = {
     // unsubscribe when don't need to listen anymore
     subscription.unsubscribe();
 ```
+
+### Events
+- **`PAYMENT_CLOSE`** (`'payment_close'`): Event sent when the payment process should be closed
+- **`PAYMENT_SUCCESS`** (`'payment_success'`): Event sent when the payment process completes successfully
+- **`PAYMENT_ERROR`** (`'payment_error'`): Event sent when an error occurs during the payment process
+
+**Event Handling**: You can subscribe to multiple event types if needed:
+  ```typescript
+  const successSub = flow.subscribe(MESSAGE_EVENT_TYPE.PAYMENT_SUCCESS, () => { /* ... */ });
+  const errorSub = flow.subscribe(MESSAGE_EVENT_TYPE.PAYMENT_ERROR, () => { /* ... */ });
+  const closeSub = flow.subscribe(MESSAGE_EVENT_TYPE.PAYMENT_CLOSE, () => { /* ... */ });
+  ```
+
+### Notes
+- **Environment Setup**: Make sure to configure iframe url in your environment variables (see [Environments](#2-environments))
+- **Cleanup**: Always call `unmount()` and `unsubscribe()` when component unmount to prevent memory leaks
