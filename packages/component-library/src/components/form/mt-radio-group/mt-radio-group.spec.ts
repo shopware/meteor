@@ -5,13 +5,12 @@ import MtRadioGroupList from "./mt-radio-group-list.vue";
 import MtRadioGroupItem from "./mt-radio-group-item.vue";
 import { userEvent } from "@testing-library/user-event";
 
-// Mock vue-i18n to return the key if translation is not found
 vi.mock("vue-i18n", async () => {
   const actual = await vi.importActual("vue-i18n");
   return {
     ...actual,
     useI18n: () => ({
-      t: (key: string) => key, // Return the key as-is when translation not found
+      t: (key: string) => key,
     }),
   };
 });

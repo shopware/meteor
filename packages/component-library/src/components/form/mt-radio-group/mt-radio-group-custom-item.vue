@@ -12,18 +12,19 @@
 
 <script setup lang="ts">
 import { computed, inject } from "vue";
+import type { RadioGroupContext } from "./_internal/mt-radio-group-context";
 
 const props = defineProps<{
   value: string | number | boolean;
 }>();
 
-const radioGroup = inject<{
-  selectedValue: { value: string | number | boolean | null | undefined };
-  selectOption: (value: string | number | boolean) => void;
-  disabled: { value: boolean };
-}>("radioGroupContext");
+const radioGroup = inject<RadioGroupContext>("radioGroupContext");
 
-const radioGroupContext = radioGroup!;
+if (!radioGroup) {
+  throw new Error("MtRadioGroupCustomItem must be used within MtRadioGroupRoot");
+}
+
+const radioGroupContext = radioGroup;
 
 const isDisabled = computed(() => radioGroupContext.disabled.value);
 

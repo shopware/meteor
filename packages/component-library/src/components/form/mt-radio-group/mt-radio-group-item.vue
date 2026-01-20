@@ -25,6 +25,7 @@
 <script setup lang="ts">
 import { computed, inject } from "vue";
 import MtRadioGroupIndicator from "./mt-radio-group-indicator.vue";
+import type { RadioGroupContext } from "./_internal/mt-radio-group-context";
 
 const props = withDefaults(
   defineProps<{
@@ -42,14 +43,13 @@ const props = withDefaults(
   },
 );
 
-const radioGroup = inject<{
-  selectedValue: { value: string | number | boolean | null | undefined };
-  selectOption: (value: string | number | boolean) => void;
-  disabled: { value: boolean };
-  name: { value: string };
-}>("radioGroupContext");
+const radioGroup = inject<RadioGroupContext>("radioGroupContext");
 
-const radioGroupContext = radioGroup!;
+if (!radioGroup) {
+  throw new Error("MtRadioGroupItem must be used within MtRadioGroupRoot");
+}
+
+const radioGroupContext = radioGroup;
 
 const name = computed(() => radioGroupContext.name.value);
 
