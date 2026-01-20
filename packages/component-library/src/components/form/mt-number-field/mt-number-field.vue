@@ -181,11 +181,12 @@ export default defineComponent({
 
     /**
      * Defines if the field can be empty.
+     * @deprecated tag:v5
      */
     allowEmpty: {
       type: Boolean,
       required: false,
-      default: false,
+      default: undefined, // will internally be true
     },
 
     /**
@@ -264,6 +265,11 @@ export default defineComponent({
         "mt-field__controls--has-error": !!this.error,
       };
     },
+
+    // @deprecated tag:v5
+    allowEmptyWithDefault() {
+      return this.allowEmpty ?? false;
+    },
   },
 
   watch: {
@@ -301,6 +307,20 @@ export default defineComponent({
         this.$emit("update:modelValue", this.currentValue);
       }
     },
+
+    // @deprecated tag:v5
+    allowEmpty: {
+      handler(value: boolean) {
+        if (value === undefined) {
+          return;
+        }
+
+        console.warn(
+          "[MtNumberField] The `allowEmpty` prop is deprecated and will be removed. There will be no replacement.",
+        );
+      },
+      immediate: true,
+    },
   },
 
   methods: {
@@ -316,7 +336,7 @@ export default defineComponent({
       // @ts-expect-error - target exists
       const inputValue = event.target.value;
 
-      if (inputValue === "" && this.allowEmpty) {
+      if (inputValue === "" && this.allowEmptyWithDefault) {
         // @ts-expect-error - defined in parent
         this.currentValue = null;
         this.$emit("input-change", null);
@@ -357,7 +377,7 @@ export default defineComponent({
 
     parseValue(value: any, skipBoundaries = false) {
       if (value === null || Number.isNaN(value) || !Number.isFinite(value)) {
-        if (this.allowEmpty) {
+        if (this.allowEmptyWithDefault) {
           return null;
         }
 
