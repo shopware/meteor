@@ -9,6 +9,7 @@
       :max="max"
       :digits="digits"
       :fill-digits="fillDigits"
+      :allow-empty="allowEmpty"
       :number-align-end="numberAlignEnd"
       :disabled="disabled"
       :required="required"
@@ -63,6 +64,7 @@ const props = withDefaults(
     max?: number;
     digits?: number;
     fillDigits?: boolean;
+    allowEmpty?: boolean; // @deprecated tag:v5
     numberAlignEnd?: boolean;
     label?: string;
     error?: object;
