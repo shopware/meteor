@@ -30,7 +30,6 @@
         :max="max - minDistance"
         :step="step"
         :disabled="disabled"
-        size="small"
         :number-type="step % 1 === 0 ? 'int' : 'float'"
         data-testid="left-number-field"
       />
@@ -94,7 +93,6 @@
         :max="max"
         :step="step"
         :disabled="disabled"
-        size="small"
         :number-type="step % 1 === 0 ? 'int' : 'float'"
         data-testid="right-number-field"
       />
@@ -403,13 +401,13 @@ export default defineComponent({
   overflow: visible;
 }
 
-.mt-slider .mt-field--small {
+.mt-slider .mt-field--default {
   width: 5ch;
   flex-grow: 0;
   flex-shrink: 0;
 }
 
-.mt-slider .mt-field--small > .mt-field__label {
+.mt-slider .mt-field--default > .mt-field__label {
   margin-bottom: 0;
 }
 
@@ -417,11 +415,11 @@ export default defineComponent({
   flex-shrink: 1;
 }
 
-.mt-slider .mt-field--small .mt-field__controls {
+.mt-slider .mt-field--default .mt-field__controls {
   display: none;
 }
 
-.mt-slider .mt-field--small input {
+.mt-slider .mt-field--default input {
   text-align: center;
   padding-left: var(--scale-size-4);
   padding-right: var(--scale-size-4);

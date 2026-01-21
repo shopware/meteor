@@ -387,6 +387,10 @@ export default defineComponent({
   margin-bottom: 0;
 }
 
+.mt-field.mt-field--small .mt-block-field__block {
+  min-height: var(--scale-size-32);
+}
+
 .mt-field.mt-field--small input,
 .mt-field.mt-field--small textarea,
 .mt-field.mt-field--small select {
