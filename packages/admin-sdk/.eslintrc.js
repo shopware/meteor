@@ -78,7 +78,7 @@ module.exports = {
     quotes: ['error', 'single'],
     'eol-last': ['error', 'always'],
     'object-curly-spacing': ['error', 'always'],
-    'check-file/folder-naming-convention': ['error', { 'src/!(_internals)/**/': 'KEBAB_CASE' }],
+    'check-file/folder-naming-convention': ['error', { 'src/!(_internals|_private)/**/': 'KEBAB_CASE' }],
     'check-file/filename-naming-convention': ['error', { 'src/*.*': 'KEBAB_CASE' }],
   },
 };
