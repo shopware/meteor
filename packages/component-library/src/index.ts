@@ -6,6 +6,11 @@ import MtProgressBar from "./components/feedback-indicator/mt-progress-bar/mt-pr
 import MtButton from "./components/form/mt-button/mt-button.vue";
 import MtChart, { type ChartOptions } from "./components/charts/mt-chart/mt-chart.vue";
 import MtCheckbox from "./components/form/mt-checkbox/mt-checkbox.vue";
+import MtRadioGroupRoot from "./components/form/mt-radio-group/mt-radio-group-root.vue";
+import MtRadioGroupIndicator from "./components/form/mt-radio-group/mt-radio-group-indicator.vue";
+import MtRadioGroupList from "./components/form/mt-radio-group/mt-radio-group-list.vue";
+import MtRadioGroupItem from "./components/form/mt-radio-group/mt-radio-group-item.vue";
+import MtRadioGroupCustomItem from "./components/form/mt-radio-group/mt-radio-group-custom-item.vue";
 import MtColorpicker from "./components/form/mt-colorpicker/mt-colorpicker.vue";
 import MtEmailField from "./components/form/mt-email-field/mt-email-field.vue";
 import MtHelpText from "./components/form/mt-help-text/mt-help-text.vue";
@@ -79,6 +84,11 @@ export {
   MtProgressBar,
   MtButton,
   MtCheckbox,
+  MtRadioGroupRoot,
+  MtRadioGroupIndicator,
+  MtRadioGroupList,
+  MtRadioGroupItem,
+  MtRadioGroupCustomItem,
   MtColorpicker,
   MtDatepicker,
   MtEmailField,
