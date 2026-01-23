@@ -43,7 +43,7 @@
         @blur="removeFocusClass"
       />
 
-      <div class="mt-number-field__controls" :class="controlClasses">
+      <div v-if="showControls" class="mt-number-field__controls" :class="controlClasses">
         <button
           type="button"
           :disabled="disabled || isInherited"
@@ -196,6 +196,14 @@ export default defineComponent({
       type: Boolean,
       required: false,
       default: false,
+    },
+    /**
+     * Defines if the control arrows should be visible.
+     */
+    showControls: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
   },
 
