@@ -3,6 +3,14 @@ import MtNumberField from "./mt-number-field.vue";
 import { userEvent } from "@testing-library/user-event";
 
 describe("mt-number-field", () => {
+  afterEach(() => {
+    // @ts-expect-error - mock was set from vitest
+    if (console.warn.mockRestore) {
+      // @ts-expect-error - mock was set from vitest
+      console.warn.mockRestore();
+    }
+  });
+
   it("is not possible to change the value when inheritance is linked", async () => {
     // ARRANGE
     const handler = vi.fn();
@@ -177,7 +185,6 @@ describe("mt-number-field", () => {
       props: {
         modelValue: undefined,
         min: 0,
-        allowEmpty: true,
         "onUpdate:modelValue": handler,
       },
     });
@@ -188,7 +195,6 @@ describe("mt-number-field", () => {
     await rerender({
       modelValue: undefined,
       min: 10,
-      allowEmpty: true,
       "onUpdate:modelValue": handler,
     });
 
@@ -277,7 +283,6 @@ describe("mt-number-field", () => {
       props: {
         modelValue: undefined,
         max: 10,
-        allowEmpty: true,
         "onUpdate:modelValue": handler,
       },
     });
@@ -288,7 +293,6 @@ describe("mt-number-field", () => {
     await rerender({
       modelValue: undefined,
       max: 20,
-      allowEmpty: true,
       "onUpdate:modelValue": handler,
     });
 
@@ -387,5 +391,58 @@ describe("mt-number-field", () => {
     // ASSERT - Value '775' is invalid, so it should be clamped to '80'
     expect(input).toHaveValue("80");
     expect(handler).toHaveBeenCalledWith(80);
+  });
+
+  it("warns when allowEmpty is set to false", () => {
+    // ARRANGE
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    // ACT
+    render(MtNumberField, {
+      props: {
+        modelValue: 10,
+        allowEmpty: false,
+      },
+    });
+
+    // ASSERT
+    // @ts-expect-error - mock was set from vitest
+    expect(console.warn.mock.calls[0][0]).toContain(
+      "[MtNumberField] The `allowEmpty` prop is deprecated and will be removed. There will be no replacement.",
+    );
+  });
+
+  it("warns when allowEmpty is set to true", () => {
+    // ARRANGE
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    // ACT
+    render(MtNumberField, {
+      props: {
+        modelValue: 10,
+        allowEmpty: true,
+      },
+    });
+
+    // ASSERT
+    // @ts-expect-error - mock was set from vitest
+    expect(console.warn.mock.calls[0][0]).toContain(
+      "[MtNumberField] The `allowEmpty` prop is deprecated and will be removed. There will be no replacement.",
+    );
+  });
+
+  it("does not warn when allowEmpty is not set", () => {
+    // ARRANGE
+    vi.spyOn(console, "warn").mockImplementation(() => {});
+
+    // ACT
+    render(MtNumberField, {
+      props: {
+        modelValue: 10,
+      },
+    });
+
+    // ASSERT
+    expect(console.warn).not.toHaveBeenCalled();
   });
 });

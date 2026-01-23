@@ -64,7 +64,7 @@ const props = withDefaults(
     max?: number;
     digits?: number;
     fillDigits?: boolean;
-    allowEmpty?: boolean;
+    allowEmpty?: boolean; // @deprecated tag:v5
     numberAlignEnd?: boolean;
     label?: string;
     error?: object;
