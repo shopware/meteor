@@ -470,6 +470,14 @@ export default defineComponent({
       cursor: default;
     }
   }
+
+  &.mt-field__controls--small button {
+    max-height: var(--scale-size-16);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
 }
 
 input.mt-number-field__align-end {
