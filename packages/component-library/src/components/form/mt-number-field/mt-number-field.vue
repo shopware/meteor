@@ -64,7 +64,7 @@
           @click="decreaseNumberByStep"
         >
           <mt-icon
-            :style="{ marginTop: size === 'small' ? '-3px' : '0' }"
+            :style="{ marginTop: size === 'small' ? '0' : '-3px' }"
             size="10"
             name="regular-chevron-down-s"
             aria-hidden="true"
