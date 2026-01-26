@@ -64,7 +64,7 @@
           @click="decreaseNumberByStep"
         >
           <mt-icon
-            style="margin-top: -3px"
+            :style="{ marginTop: size === 'small' ? '-3px' : '0' }"
             size="10"
             name="regular-chevron-down-s"
             aria-hidden="true"
@@ -271,6 +271,7 @@ export default defineComponent({
       return {
         "mt-field__controls--disabled": this.disabled,
         "mt-field__controls--has-error": !!this.error,
+        "mt-field__controls--small": this.size === "small",
       };
     },
 
