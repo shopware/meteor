@@ -306,3 +306,15 @@ export const VisualTestInheritance: MtNumberFieldStory = {
     expect(canvas.getByTestId("mt-icon__regular-link-horizontal-slash")).toBeDefined();
   },
 };
+
+export const VisualTestHideControls: MtNumberFieldStory = {
+  name: "Should hide controls",
+  args: {
+    showControls: false,
+  },
+  play: ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    expect(canvas.queryByTestId("mt-number-field-increase-button")).not.toBeInTheDocument();
+    expect(canvas.queryByTestId("mt-number-field-decrease-button")).not.toBeInTheDocument();
+  },
+};
