@@ -874,16 +874,7 @@ export default defineComponent({
       // Manually emit the color value
       this.$emit("update:modelValue", this.colorValue);
       // Close the colorpicker
-      this.closeColorPicker();
-    },
-
-    /**
-     * Close the colorpicker modal and clean up
-     */
-    closeColorPicker() {
       this.visible = false;
-      this.removeOutsideClickEvent();
-      // Note: releaseFocusTrap is called by the visible watcher
     },
 
     moveSelector(event: MouseEvent) {
@@ -1463,36 +1454,8 @@ export default defineComponent({
 
     /**
      * Handle Tab keydown to trap focus within the modal
-     * Also handles Escape and Enter to exit the trap
      */
     handleFocusTrap(event: KeyboardEvent): void {
-      // Handle Escape to close the modal
-      if (event.key === "Escape") {
-        event.preventDefault();
-        event.stopPropagation();
-        this.closeColorPicker();
-        return;
-      }
-
-      // Handle Enter to close the modal (but not when actively editing inputs)
-      if (event.key === "Enter") {
-        const activeElement = document.activeElement as HTMLElement;
-        // Don't close if the active element is an input or textarea (allow normal editing)
-        if (
-          activeElement &&
-          (activeElement.tagName === "INPUT" || activeElement.tagName === "TEXTAREA")
-        ) {
-          // Allow normal Enter behavior in inputs
-          return;
-        }
-        // Close the modal when Enter is pressed on other elements
-        event.preventDefault();
-        event.stopPropagation();
-        this.closeColorPicker();
-        return;
-      }
-
-      // Handle Tab key for focus trapping
       if (event.key !== "Tab") {
         return;
       }
