@@ -157,7 +157,9 @@ watch(
         onPause: () => {
           // a new modal is being opened, pausing the current trap
           inForeground.value = false;
-          console.warn("[MtModal] It is not recommended to stack multiple modals on top of each other.")
+          console.warn(
+            "[MtModal] It is not recommended to stack multiple modals on top of each other.",
+          );
         },
         onUnpause: () => {
           // the current trap is being resumed (the newest modal is being closed, we are now in the foreground)
