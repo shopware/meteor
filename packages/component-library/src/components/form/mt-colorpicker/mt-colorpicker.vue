@@ -246,8 +246,6 @@ import { debounce } from "@/utils/debounce";
 import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
 import MtFloatingUi from "../../_internal/mt-floating-ui/mt-floating-ui.vue";
 import MtText from "@/components/content/mt-text/mt-text.vue";
-import { createFocusTrap } from "focus-trap";
-import type { FocusTrap } from "focus-trap";
 import MtButton from "@/components/form/mt-button/mt-button.vue";
 import mtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import { useI18n } from "vue-i18n";
@@ -456,7 +454,6 @@ export default defineComponent({
     hueValue: number;
     alphaValue: number;
     hasFocus: boolean;
-    trap: FocusTrap | null;
     hueStep: number;
     alphaStep: number;
   } {
@@ -470,7 +467,6 @@ export default defineComponent({
       hueValue: 0,
       alphaValue: 1,
       hasFocus: false,
-      trap: null,
       hueStep: 1,
       alphaStep: 0.01,
     };
@@ -752,7 +748,6 @@ export default defineComponent({
       }
 
       if (!visibleStatus) {
-        this.trap?.deactivate();
         return;
       }
 
@@ -809,9 +804,6 @@ export default defineComponent({
 
   beforeUnmount(): void {
     window.removeEventListener("mousedown", this.outsideClick);
-    if (this.trap) {
-      this.trap.deactivate();
-    }
   },
 
   methods: {
@@ -844,11 +836,6 @@ export default defineComponent({
       }
 
       this.visible = false;
-
-      if (this.trap) {
-        this.trap.deactivate();
-      }
-
       this.removeOutsideClickEvent();
     },
 
@@ -866,21 +853,6 @@ export default defineComponent({
       }
 
       this.visible = !this.visible;
-
-      this.$nextTick(() => {
-        const modal = this.$refs.modal as HTMLElement | null;
-        if (modal) {
-          this.trap = createFocusTrap(modal, {
-            escapeDeactivates: true,
-            clickOutsideDeactivates: true,
-            initialFocus: false,
-            tabbableOptions: {
-              displayCheck: "none",
-            },
-          });
-          this.trap.activate();
-        }
-      });
 
       if (this.visible) {
         this.setOutsideClickEvent();
