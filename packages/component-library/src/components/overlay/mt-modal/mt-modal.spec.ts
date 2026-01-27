@@ -2,7 +2,7 @@ import MtModal from "./mt-modal.vue";
 import MtModalRoot from "./sub-components/mt-modal-root.vue";
 import MtModalTrigger from "./sub-components/mt-modal-trigger.vue";
 import MtModalAction from "./sub-components/mt-modal-action.vue";
-import { render, screen, fireEvent } from "@testing-library/vue";
+import { render, screen, fireEvent, waitFor } from "@testing-library/vue";
 import { ref } from "vue";
 
 describe("mt-modal", () => {
@@ -191,5 +191,112 @@ describe("mt-modal", () => {
 
     // THEN
     expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  describe("modal stacking", () => {
+    it("prints a warning when opening a second modal on top of the first one", async () => {
+      // GIVEN
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
+      render({
+        components: { MtModal, MtModalRoot, MtModalTrigger },
+        template: `
+<mt-modal-root>
+  <mt-modal-trigger as='button'>Open first modal</mt-modal-trigger>
+
+  <mt-modal title='First Modal'>
+    <mt-modal-root>
+      <mt-modal-trigger as='button'>Open second modal</mt-modal-trigger>
+
+      <mt-modal title='Second Modal'>Second modal content</mt-modal>
+    </mt-modal-root>
+  </mt-modal>
+</mt-modal-root>`,
+      });
+
+      // WHEN
+      await fireEvent.click(screen.getByRole("button", { name: "Open first modal" }));
+      await fireEvent.click(screen.getByRole("button", { name: "Open second modal" }));
+
+      // THEN
+      expect(warnSpy).toHaveBeenCalledWith(
+        "[MtModal] It is not recommended to stack multiple modals on top of each other.",
+      );
+
+      warnSpy.mockRestore();
+    });
+
+    it("hides the first modal when a second modal is opened on top", async () => {
+      // GIVEN
+      render({
+        components: { MtModal, MtModalRoot, MtModalTrigger },
+        template: `
+<mt-modal-root>
+  <mt-modal-trigger as='button'>Open first modal</mt-modal-trigger>
+
+  <mt-modal title='First Modal'>
+    <mt-modal-root>
+      <mt-modal-trigger as='button'>Open second modal</mt-modal-trigger>
+
+      <mt-modal title='Second Modal'>Second modal content</mt-modal>
+    </mt-modal-root>
+  </mt-modal>
+</mt-modal-root>`,
+      });
+
+      await fireEvent.click(screen.getByRole("button", { name: "Open first modal" }));
+      const firstModal = screen.getByRole("dialog");
+      expect(firstModal).toBeVisible();
+
+      // WHEN
+      await fireEvent.click(screen.getByRole("button", { name: "Open second modal" }));
+
+      // THEN - wait for the focus trap to pause and update inForeground
+      await waitFor(() => {
+        const dialogs = screen.getAllByRole("dialog", { hidden: true });
+        const firstModalAfterOpen = dialogs.find((dialog) =>
+          dialog.textContent?.includes("First Modal"),
+        );
+        const secondModal = dialogs.find((dialog) => dialog.textContent?.includes("Second Modal"));
+
+        expect(firstModalAfterOpen).toHaveStyle({ display: "none" });
+        expect(secondModal).toBeVisible();
+      });
+    });
+
+    it("shows the first modal again when the second modal is closed", async () => {
+      // GIVEN
+      render({
+        components: { MtModal, MtModalRoot, MtModalTrigger },
+        template: `
+<mt-modal-root>
+  <mt-modal-trigger as='button'>Open first modal</mt-modal-trigger>
+
+  <mt-modal title='First Modal'>
+    <mt-modal-root>
+      <mt-modal-trigger as='button'>Open second modal</mt-modal-trigger>
+
+      <mt-modal title='Second Modal'>Second modal content</mt-modal>
+    </mt-modal-root>
+  </mt-modal>
+</mt-modal-root>`,
+      });
+
+      await fireEvent.click(screen.getByRole("button", { name: "Open first modal" }));
+      await fireEvent.click(screen.getByRole("button", { name: "Open second modal" }));
+
+      // Verify second modal is open and first is hidden
+      const dialogsBeforeClose = screen.getAllByRole("dialog", { hidden: true });
+      expect(dialogsBeforeClose).toHaveLength(2);
+
+      // WHEN - close the second modal using the Close button
+      const closeButtons = screen.getAllByRole("button", { name: "Close" });
+      await fireEvent.click(closeButtons[closeButtons.length - 1]); // Click the last close button (second modal's)
+
+      // THEN - first modal should be visible again
+      const remainingDialogs = screen.getAllByRole("dialog");
+      expect(remainingDialogs).toHaveLength(1);
+      expect(remainingDialogs[0]).toBeVisible();
+    });
   });
 });
