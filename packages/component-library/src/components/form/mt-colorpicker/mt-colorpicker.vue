@@ -61,6 +61,7 @@
           class="mt-colorpicker__colorpicker"
           data-testid="mt-colorpicker-dialog"
           @keyup.escape="outsideClick"
+          @keydown="handleFocusTrap"
         >
           <div
             ref="colorPicker"
@@ -456,6 +457,7 @@ export default defineComponent({
     hasFocus: boolean;
     hueStep: number;
     alphaStep: number;
+    previousActiveElement: HTMLElement | null;
   } {
     return {
       localValue: this.modelValue,
@@ -469,6 +471,7 @@ export default defineComponent({
       hasFocus: false,
       hueStep: 1,
       alphaStep: 0.01,
+      previousActiveElement: null,
     };
   },
 
@@ -748,8 +751,13 @@ export default defineComponent({
       }
 
       if (!visibleStatus) {
+        // Clean up focus trap when modal closes
+        this.releaseFocusTrap();
         return;
       }
+
+      // Set up focus trap when modal opens
+      this.setupFocusTrap();
 
       const color = this.colorValue;
 
@@ -804,6 +812,7 @@ export default defineComponent({
 
   beforeUnmount(): void {
     window.removeEventListener("mousedown", this.outsideClick);
+    this.releaseFocusTrap();
   },
 
   methods: {
@@ -865,7 +874,16 @@ export default defineComponent({
       // Manually emit the color value
       this.$emit("update:modelValue", this.colorValue);
       // Close the colorpicker
+      this.closeColorPicker();
+    },
+
+    /**
+     * Close the colorpicker modal and clean up
+     */
+    closeColorPicker() {
       this.visible = false;
+      this.removeOutsideClickEvent();
+      // Note: releaseFocusTrap is called by the visible watcher
     },
 
     moveSelector(event: MouseEvent) {
@@ -1408,6 +1426,129 @@ export default defineComponent({
       } else {
         this.alphaStep = 0.01;
       }
+    },
+
+    /**
+     * Get all focusable elements within the modal
+     */
+    getFocusableElements(): HTMLElement[] {
+      const modal = this.$refs.modal as HTMLElement;
+      if (!modal) {
+        return [];
+      }
+
+      // Selector for focusable elements
+      const focusableSelectors = [
+        "a[href]",
+        "button:not([disabled])",
+        "textarea:not([disabled])",
+        "input:not([disabled])",
+        "select:not([disabled])",
+        '[tabindex]:not([tabindex="-1"])',
+      ].join(", ");
+
+      const focusableElements = Array.from(modal.querySelectorAll<HTMLElement>(focusableSelectors));
+
+      // Filter out elements that are not visible or have display: none
+      return focusableElements.filter((element) => {
+        const style = window.getComputedStyle(element);
+        return (
+          style.display !== "none" &&
+          style.visibility !== "hidden" &&
+          !element.hasAttribute("disabled") &&
+          (element.getAttribute("tabindex") === null || element.getAttribute("tabindex") !== "-1")
+        );
+      });
+    },
+
+    /**
+     * Handle Tab keydown to trap focus within the modal
+     * Also handles Escape and Enter to exit the trap
+     */
+    handleFocusTrap(event: KeyboardEvent): void {
+      // Handle Escape to close the modal
+      if (event.key === "Escape") {
+        event.preventDefault();
+        event.stopPropagation();
+        this.closeColorPicker();
+        return;
+      }
+
+      // Handle Enter to close the modal (but not when actively editing inputs)
+      if (event.key === "Enter") {
+        const activeElement = document.activeElement as HTMLElement;
+        // Don't close if the active element is an input or textarea (allow normal editing)
+        if (
+          activeElement &&
+          (activeElement.tagName === "INPUT" || activeElement.tagName === "TEXTAREA")
+        ) {
+          // Allow normal Enter behavior in inputs
+          return;
+        }
+        // Close the modal when Enter is pressed on other elements
+        event.preventDefault();
+        event.stopPropagation();
+        this.closeColorPicker();
+        return;
+      }
+
+      // Handle Tab key for focus trapping
+      if (event.key !== "Tab") {
+        return;
+      }
+
+      const focusableElements = this.getFocusableElements();
+      if (focusableElements.length === 0) {
+        return;
+      }
+
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+      const activeElement = document.activeElement as HTMLElement;
+
+      // If Shift+Tab is pressed
+      if (event.shiftKey) {
+        // If currently focused on the first element, wrap to the last
+        if (activeElement === firstElement || !focusableElements.includes(activeElement)) {
+          event.preventDefault();
+          lastElement.focus();
+        }
+      } else {
+        // If Tab is pressed
+        // If currently focused on the last element, wrap to the first
+        if (activeElement === lastElement || !focusableElements.includes(activeElement)) {
+          event.preventDefault();
+          firstElement.focus();
+        }
+      }
+    },
+
+    /**
+     * Set up the focus trap when the modal opens
+     */
+    setupFocusTrap(): void {
+      // Store the previously focused element
+      this.previousActiveElement = document.activeElement as HTMLElement;
+
+      // Use nextTick to ensure the modal is rendered before focusing
+      this.$nextTick(() => {
+        const focusableElements = this.getFocusableElements();
+        if (focusableElements.length > 0) {
+          // Focus the first focusable element
+          focusableElements[0].focus();
+        }
+      });
+    },
+
+    /**
+     * Release the focus trap when the modal closes
+     */
+    releaseFocusTrap(): void {
+      // Restore focus to the previously focused element if it still exists
+      if (this.previousActiveElement && document.body.contains(this.previousActiveElement)) {
+        this.previousActiveElement.focus();
+      }
+      this.previousActiveElement = null;
     },
   },
 });
