@@ -477,7 +477,6 @@ export default defineComponent({
     align-items: center;
     justify-content: center;
   }
-
 }
 
 input.mt-number-field__align-end {
