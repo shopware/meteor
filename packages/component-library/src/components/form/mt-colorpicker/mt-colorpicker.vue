@@ -60,7 +60,7 @@
           ref="modal"
           class="mt-colorpicker__colorpicker"
           data-testid="mt-colorpicker-dialog"
-          @keyup.escape="outsideClick"
+          @keydown.escape="handleEscapeKey"
           @keydown="handleFocusTrap"
         >
           <div
@@ -1450,6 +1450,17 @@ export default defineComponent({
           (element.getAttribute("tabindex") === null || element.getAttribute("tabindex") !== "-1")
         );
       });
+    },
+
+    /**
+     * Handle Escape keydown to close the modal
+     */
+    handleEscapeKey(event: KeyboardEvent): void {
+      event.preventDefault();
+      event.stopPropagation();
+      this.visible = false;
+      this.removeOutsideClickEvent();
+      // Focus trap will be released automatically via the watcher when visible becomes false
     },
 
     /**
