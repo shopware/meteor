@@ -119,7 +119,7 @@
           <slot name="footer-right" :editor="editor">
             {{
               t("mt-text-editor.footer.characters", {
-                characters: editor?.storage.characterCount.characters(),
+                characters: characterCount,
               })
             }}
           </slot>
@@ -435,6 +435,21 @@ const editorExtensions = enhanceExtensionsWithAttributes([
 // WYSIWYG approval gate state (declare early so editor callbacks can read it)
 const gateActive = ref(false);
 
+const characterCount = ref(0);
+
+// Read directly from the document to keep the WYSIWYG counter reactive.
+const updateCharacterCountFromEditor = (currentEditor: Editor | null) => {
+  characterCount.value = currentEditor?.state?.doc?.textContent?.length ?? 0;
+};
+
+const updateCharacterCountFromModelValue = (value: string) => {
+  characterCount.value = value.length;
+};
+
+const handleEditorTransaction = ({ editor }: { editor: Editor }) => {
+  updateCharacterCountFromEditor(editor);
+};
+
 // Suppress emits during init and controlled updates
 const suppressUpdates = ref(true);
 
@@ -447,9 +462,18 @@ const editor = useEditor({
       class: "mt-text-editor__content-editor",
     },
   },
+  onCreate: ({ editor }) => {
+    updateCharacterCountFromEditor(editor);
+    editor.on("transaction", handleEditorTransaction);
+  },
   onUpdate: ({ editor }) => {
+    updateCharacterCountFromEditor(editor);
+
     if (suppressUpdates.value || gateActive.value) return;
     emit("update:modelValue", editor.getHTML());
+  },
+  onDestroy: ({ editor }) => {
+    editor.off("transaction", handleEditorTransaction);
   },
   editable: !props.disabled,
 });
@@ -457,6 +481,10 @@ const editor = useEditor({
 watch(
   () => props.modelValue,
   (newValue) => {
+    if (showCodeEditor.value) {
+      updateCharacterCountFromModelValue(newValue);
+    }
+
     if (showCodeEditor.value) {
       return;
     }
@@ -468,6 +496,7 @@ watch(
     }
 
     editor.value?.commands.setContent(newValue, false);
+    updateCharacterCountFromEditor(editor.value);
   },
 );
 
@@ -593,6 +622,10 @@ watch(
   (newValue, oldValue) => {
     // Emit codeMode change
     emit("update:codeMode", newValue);
+
+    if (newValue) {
+      updateCharacterCountFromModelValue(props.modelValue);
+    }
 
     // When switching from code editor to WYSIWYG editor, update the content
     if (!newValue && oldValue) {

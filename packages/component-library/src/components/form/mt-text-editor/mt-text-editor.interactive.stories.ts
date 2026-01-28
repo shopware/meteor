@@ -25,6 +25,15 @@ function selectText(element: HTMLElement) {
   selection?.addRange(range);
 }
 
+function getCharacterCount(canvasElement: HTMLElement) {
+  const counter = within(canvasElement).getByText(/characters$/);
+  const match = counter.textContent?.match(/(\d+) characters/);
+  if (!match) {
+    throw new Error("Character count not found");
+  }
+  return Number.parseInt(match[1], 10);
+}
+
 export const VisualTestRenderEditor: MtTextEditorStory = defineStory({
   name: "Should render the text editor",
   args: {},
@@ -84,6 +93,44 @@ export const VisualTestRenderError: MtTextEditorStory = defineStory({
     const canvas = within(canvasElement);
 
     expect(canvas.getByText("82 characters")).toBeDefined();
+  },
+});
+
+export const VisualTestCharacterCountWysiwyg: MtTextEditorStory = defineStory({
+  name: "Should update the character count in WYSIWYG mode",
+  args: {
+    modelValue: "<p></p>",
+  },
+  play: async ({ canvasElement }) => {
+    const editor = canvasElement.querySelector(
+      ".mt-text-editor__content-editor",
+    ) as HTMLElement | null;
+
+    expect(editor).toBeDefined();
+
+    await userEvent.click(editor!);
+    await userEvent.type(editor!, "Hello");
+
+    await waitUntil(() => getCharacterCount(canvasElement) === 5);
+    expect(getCharacterCount(canvasElement)).toBe(5);
+  },
+});
+
+export const VisualTestCharacterCountCodeMode: MtTextEditorStory = defineStory({
+  name: "Should update the character count in code mode",
+  args: {
+    codeMode: true,
+    modelValue: "",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const codeEditor = canvas.getByRole("textbox");
+
+    await userEvent.click(codeEditor);
+    await userEvent.type(codeEditor, "abc");
+
+    await waitUntil(() => getCharacterCount(canvasElement) === 3);
+    expect(getCharacterCount(canvasElement)).toBe(3);
   },
 });
 
