@@ -1,5 +1,24 @@
 # Changelog
 
+## 4.25.0
+
+### Minor Changes
+
+- [#1032](https://github.com/shopware/meteor/pull/1032) [`869b2fc`](https://github.com/shopware/meteor/commit/869b2fc1c5cf05ad4911180093743c1fe5aa503d) Thanks [@gweiermann](https://github.com/gweiermann)! - Deprecate `mt-number-field`s property `allowEmpty` and make its default to `true` instead of `false`.
+
+- [#1002](https://github.com/shopware/meteor/pull/1002) [`ed55526`](https://github.com/shopware/meteor/commit/ed5552636ed84efed65274672ec5f7e3f7baaeeb) Thanks [@alastair-simon](https://github.com/alastair-simon)! - add `mt-radio-group` component
+
+- [#1037](https://github.com/shopware/meteor/pull/1037) [`72586a8`](https://github.com/shopware/meteor/commit/72586a81aac5544b4e8c733e0d88aa4be560793b) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Add `showControls` prop to `mt-number-field`
+
+- [#1033](https://github.com/shopware/meteor/pull/1033) [`69815ad`](https://github.com/shopware/meteor/commit/69815adc3af6badc5f4bad1fad331cca2c101124) Thanks [@alastair-simon](https://github.com/alastair-simon)! - fix size `small` for `mt-base-field`
+
+### Patch Changes
+
+- [#1021](https://github.com/shopware/meteor/pull/1021) [`20ecb82`](https://github.com/shopware/meteor/commit/20ecb8238c11ff548ea5f8fa91d12195dd6d02fe) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Export `mt-help-text` from component library
+
+- Updated dependencies [[`481e01d`](https://github.com/shopware/meteor/commit/481e01d2f55f66700139bda63c71071cc63078e9)]:
+  - @shopware-ag/meteor-admin-sdk@6.5.0
+
 ## 4.24.0
 
 ### Minor Changes

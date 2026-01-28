@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.5.0
+
+### Minor Changes
+
+- [#1010](https://github.com/shopware/meteor/pull/1010) [`481e01d`](https://github.com/shopware/meteor/commit/481e01d2f55f66700139bda63c71071cc63078e9) Thanks [@quando1910](https://github.com/quando1910)! - add the service payment integration
+
 ## 6.4.0
 
 ### Minor Changes
