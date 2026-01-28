@@ -1474,6 +1474,7 @@ export default defineComponent({
         // If currently focused on the first element, wrap to the last
         if (activeElement === firstElement || !focusableElements.includes(activeElement)) {
           event.preventDefault();
+          event.stopPropagation(); // Prevent event from bubbling to parent modal's focus trap
           lastElement.focus();
         }
       } else {
@@ -1481,6 +1482,7 @@ export default defineComponent({
         // If currently focused on the last element, wrap to the first
         if (activeElement === lastElement || !focusableElements.includes(activeElement)) {
           event.preventDefault();
+          event.stopPropagation(); // Prevent event from bubbling to parent modal's focus trap
           firstElement.focus();
         }
       }
