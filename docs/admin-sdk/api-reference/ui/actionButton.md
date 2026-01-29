@@ -24,7 +24,7 @@ if (location.is(sw.location.MAIN_HIDDEN)) {
 | `entity`             | true     | The entity this action is for possible values: `product`, `order`, `category`, `promotion`, `customer` or `media`. Value `media` is available in Shopware version 6.7.1   |
 | `view`               | true     | Determines if the action button appears on the listing or detail page, possible values: `detail`,`list` or item. View `item` is only used for entity `media` and in version 6.7.1 |
 | `label`              | true     | The label of your action button                                                                            |
-| `meteorIcon`         | false    | Meteor icon before label, will be available in Shopware version 6.7.3.0 . Check icon name on https://developer.shopware.com/resources/meteor-icon-kit/ |
+| `meteorIcon`         | false    | Meteor icon before label, will be available in Shopware version 6.7.4.0 . Check icon name on https://developer.shopware.com/resources/meteor-icon-kit/ |
 | `fileTypes`          | false    | Media file types you want the action button to be displayed for. Will be available in Shopware version 6.7.6.                                          |
 | `callback`           | true     | The callback function where you receive the entity and the entityIds for further processing                |
 
