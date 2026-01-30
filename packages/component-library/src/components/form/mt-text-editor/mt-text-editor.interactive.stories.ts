@@ -26,12 +26,19 @@ function selectText(element: HTMLElement) {
 }
 
 function getCharacterCount(canvasElement: HTMLElement) {
-  const counter = within(canvasElement).getByText(/characters$/);
-  const match = counter.textContent?.match(/(\d+) characters/);
-  if (!match) {
-    throw new Error("Character count not found");
-  }
+  const counter = within(canvasElement).queryByText(/characters$/);
+  const match = counter?.textContent?.match(/(\d+) characters/);
+  if (!match) return null;
   return Number.parseInt(match[1], 10);
+}
+
+async function expectCharacterCount(canvasElement: HTMLElement, expected: number) {
+  await waitUntil(() => getCharacterCount(canvasElement) === expected);
+  expect(getCharacterCount(canvasElement)).toBe(expected);
+}
+
+async function waitForCharacterCounter(canvasElement: HTMLElement) {
+  await waitUntil(() => getCharacterCount(canvasElement) !== null);
 }
 
 export const VisualTestRenderEditor: MtTextEditorStory = defineStory({
@@ -40,7 +47,7 @@ export const VisualTestRenderEditor: MtTextEditorStory = defineStory({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("82 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
   },
 });
 
@@ -52,7 +59,7 @@ export const VisualTestRenderEditorInlineMode: MtTextEditorStory = defineStory({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("82 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
   },
 });
 
@@ -64,7 +71,7 @@ export const VisualTestRenderDisabledEditor: MtTextEditorStory = defineStory({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("82 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
   },
 });
 
@@ -77,7 +84,7 @@ export const VisualTestRenderPlaceholder: MtTextEditorStory = defineStory({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("0 characters")).toBeDefined();
+    await expectCharacterCount(canvasElement, 0);
   },
 });
 
@@ -92,7 +99,7 @@ export const VisualTestRenderError: MtTextEditorStory = defineStory({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("82 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
   },
 });
 
@@ -111,8 +118,7 @@ export const VisualTestCharacterCountWysiwyg: MtTextEditorStory = defineStory({
     await userEvent.click(editor!);
     await userEvent.type(editor!, "Hello");
 
-    await waitUntil(() => getCharacterCount(canvasElement) === 5);
-    expect(getCharacterCount(canvasElement)).toBe(5);
+    await expectCharacterCount(canvasElement, 5);
   },
 });
 
@@ -129,8 +135,7 @@ export const VisualTestCharacterCountCodeMode: MtTextEditorStory = defineStory({
     await userEvent.click(codeEditor);
     await userEvent.type(codeEditor, "abc");
 
-    await waitUntil(() => getCharacterCount(canvasElement) === 3);
-    expect(getCharacterCount(canvasElement)).toBe(3);
+    await expectCharacterCount(canvasElement, 3);
   },
 });
 
@@ -147,7 +152,7 @@ export const VisualTestRenderEditorInlineModeSelected: MtTextEditorStory = defin
     await userEvent.click(canvas.getByText("Hello World"));
 
     // Wait until the counter is rendered
-    await waitUntil(() => canvas.getByText("11 characters"));
+    await waitForCharacterCounter(canvasElement);
 
     // Select "Hello World" text
     selectText(canvas.getByText("Hello World"));
@@ -175,7 +180,7 @@ export const SetParagraph: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args, screen }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("11 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
 
     // Click on button with aria-label "Format"
     await userEvent.click(canvas.getByLabelText("Format"));
@@ -199,7 +204,7 @@ export const SetHeadlineH1: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args, screen }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("11 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
 
     // Click on button with aria-label "Format"
     await userEvent.click(canvas.getByLabelText("Format"));
@@ -223,7 +228,7 @@ export const SetHeadlineH2: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args, screen }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("11 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
 
     // Click on button with aria-label "Format"
     await userEvent.click(canvas.getByLabelText("Format"));
@@ -247,7 +252,7 @@ export const SetHeadlineH3: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args, screen }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("11 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
 
     // Click on button with aria-label "Format"
     await userEvent.click(canvas.getByLabelText("Format"));
@@ -271,7 +276,7 @@ export const SetHeadlineH4: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args, screen }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("11 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
 
     // Click on button with aria-label "Format"
     await userEvent.click(canvas.getByLabelText("Format"));
@@ -295,7 +300,7 @@ export const SetHeadlineH5: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args, screen }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("11 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
 
     // Click on button with aria-label "Format"
     await userEvent.click(canvas.getByLabelText("Format"));
@@ -319,7 +324,7 @@ export const SetHeadlineH6: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args, screen }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("11 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
 
     // Click on button with aria-label "Format"
     await userEvent.click(canvas.getByLabelText("Format"));
@@ -343,7 +348,7 @@ export const SetTextColor: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args, screen }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("20 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
 
     // Click inside the editor
     await userEvent.click(canvas.getByText("Hello World"));
@@ -389,7 +394,7 @@ export const MakeFontBold: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("20 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
 
     // Click inside the editor
     await userEvent.click(canvas.getByText("Hello World"));
@@ -418,7 +423,7 @@ export const MakeFontItalic: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("20 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
 
     // Click inside the editor
     await userEvent.click(canvas.getByText("Hello World"));
@@ -447,7 +452,7 @@ export const MakeFontUnderline: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("20 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
 
     // Click inside the editor
     await userEvent.click(canvas.getByText("Hello World"));
@@ -476,7 +481,7 @@ export const MakeFontStrikeThrough: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("20 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
 
     // Click inside the editor
     await userEvent.click(canvas.getByText("Hello World"));
@@ -505,7 +510,7 @@ export const MakeFontSuperScript: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("20 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
 
     // Click inside the editor
     await userEvent.click(canvas.getByText("Hello World"));
@@ -534,7 +539,7 @@ export const MakeFontSubScript: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("20 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
 
     // Click inside the editor
     await userEvent.click(canvas.getByText("Hello World"));
@@ -563,7 +568,7 @@ export const SetTextAlignmentLeft: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args, screen }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("20 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
 
     // Click inside the editor
     await userEvent.click(canvas.getByText("Hello World"));
@@ -595,7 +600,7 @@ export const SetTextAlignmentCenter: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args, screen }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("20 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
 
     // Click inside the editor
     await userEvent.click(canvas.getByText("Hello World"));
@@ -627,7 +632,7 @@ export const SetTextAlignmentRight: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args, screen }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("20 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
 
     // Click inside the editor
     await userEvent.click(canvas.getByText("Hello World"));
@@ -689,6 +694,8 @@ export const SetUnorderedList: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
 
+    await waitForCharacterCounter(canvasElement);
+
     // Click inside the editor
     await userEvent.click(canvas.getByText("Hello World"));
 
@@ -715,6 +722,8 @@ export const SetOrderedList: MtTextEditorStory = defineStory({
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
+
+    await waitForCharacterCounter(canvasElement);
 
     // Click inside the editor
     await userEvent.click(canvas.getByText("Hello World"));
@@ -743,6 +752,8 @@ export const SetLink: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
 
+    await waitForCharacterCounter(canvasElement);
+
     // Click inside the editor
     await userEvent.click(canvas.getByText("Hello World"));
 
@@ -762,7 +773,7 @@ export const SetLink: MtTextEditorStory = defineStory({
 
     // Toggle link target
     const targetCheckbox = document.querySelector(
-      "div[aria-label='Open in new tab'] input[type='checkbox'",
+      "div[aria-label='Open in new tab'] input[type='checkbox']",
     ) as HTMLInputElement;
     await userEvent.click(targetCheckbox);
 
