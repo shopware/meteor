@@ -1,5 +1,11 @@
 # Changelog
 
+## 4.25.1
+
+### Patch Changes
+
+- [#1040](https://github.com/shopware/meteor/pull/1040) [`196bfdc`](https://github.com/shopware/meteor/commit/196bfdcbd9b0a94e596dc62175d4a6aaffa926ca) Thanks [@alastair-simon](https://github.com/alastair-simon)! - fix size small in `mt-number-field`
+
 ## 4.25.0
 
 ### Minor Changes
