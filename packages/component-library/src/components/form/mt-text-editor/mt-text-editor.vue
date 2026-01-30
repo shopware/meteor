@@ -143,6 +143,7 @@
 <script setup lang="ts">
 // BubbleMenu is used in <component :is> in the template
 import { EditorContent, BubbleMenu, useEditor } from "@tiptap/vue-3";
+import type { Editor } from "@tiptap/core";
 // Import individual StarterKit extensions instead of the bundle
 import Document from "@tiptap/extension-document";
 import Paragraph from "@tiptap/extension-paragraph";
@@ -472,8 +473,8 @@ const editor = useEditor({
     if (suppressUpdates.value || gateActive.value) return;
     emit("update:modelValue", editor.getHTML());
   },
-  onDestroy: ({ editor }) => {
-    editor.off("transaction", handleEditorTransaction);
+  onDestroy: () => {
+    editor.value?.off("transaction", handleEditorTransaction);
   },
   editable: !props.disabled,
 });
@@ -496,7 +497,7 @@ watch(
     }
 
     editor.value?.commands.setContent(newValue, false);
-    updateCharacterCountFromEditor(editor.value);
+    updateCharacterCountFromEditor(editor.value ?? null);
   },
 );
 
