@@ -5,7 +5,7 @@ This method allows an app to interact with the Administration's media modal, whi
 Functionality of each modal:
 - The Media modal is used for selecting existing media from the media library or uploading new media. This functionality has been available since version 6.7.1.
 
-- The Save media modal is used to choose a specific location to save the media, and this feature will be implemented in version 6.7.3.
+- The Save media modal is used to choose a specific location to save the media, and this feature will be implemented in version 6.7.5.
 
 ## Media modal
 
@@ -65,7 +65,7 @@ ui.mediaModal.openSaveMedia({
   initialFolderId: "initialFolderId",
   initialFileName: "New Image",
   fileType: "png",
-  callback: ({ fileName, folderId }) => {},
+  callback: ({ fileName, folderId, mediaId }) => {},
 });
 ```
 
@@ -88,6 +88,6 @@ All parameters are similar to `sw-media-save-modal` component's props
 ui.mediaModal.openSaveMedia({
   initialFileName: "images",
   fileType: "png",
-  callback: ({ fileName, folderId }) => {},
+  callback: ({ fileName, folderId, mediaId }) => {},
 });
 ```
