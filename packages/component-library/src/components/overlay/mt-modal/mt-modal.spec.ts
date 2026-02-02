@@ -194,109 +194,211 @@ describe("mt-modal", () => {
   });
 
   describe("modal stacking", () => {
-    it("prints a warning when opening a second modal on top of the first one", async () => {
-      // GIVEN
+    const STACKING_WARNING =
+      "[MtModal] It is not recommended to stack multiple modals on top of each other.";
+
+    /**
+     * Returns the order of modal roots (backdrops) and modals in the body as 'root' | 'modal'.
+     * Expected visual hierarchy: each root (backdrop) is followed by its corresponding modal.
+     */
+    function getBodyStackOrder(): ("root" | "modal")[] {
+      const elements = document.body.querySelectorAll(
+        '.mt-modal-root__backdrop, .mt-modal',
+      );
+      return Array.from(elements).map((el) => el.classList.contains("mt-modal") ? "modal" : "root");
+    }
+
+    it("does not show stacking warning when only one modal is open", async () => {
+      // GIVEN a single modal root
       const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
       render({
         components: { MtModal, MtModalRoot, MtModalTrigger },
         template: `
-<mt-modal-root>
-  <mt-modal-trigger as='button'>Open first modal</mt-modal-trigger>
-
-  <mt-modal title='First Modal'>
-    <mt-modal-root>
-      <mt-modal-trigger as='button'>Open second modal</mt-modal-trigger>
-
-      <mt-modal title='Second Modal'>Second modal content</mt-modal>
-    </mt-modal-root>
-  </mt-modal>
-</mt-modal-root>`,
+          <mt-modal-root>
+            <mt-modal-trigger as="button">Open</mt-modal-trigger>
+            <mt-modal title="Single">Content</mt-modal>
+          </mt-modal-root>
+        `,
       });
 
-      // WHEN
-      await fireEvent.click(screen.getByRole("button", { name: "Open first modal" }));
-      await fireEvent.click(screen.getByRole("button", { name: "Open second modal" }));
+      // WHEN opening the modal
+      await fireEvent.click(screen.getByRole("button", { name: "Open" }));
 
-      // THEN
-      expect(warnSpy).toHaveBeenCalledWith(
-        "[MtModal] It is not recommended to stack multiple modals on top of each other.",
-      );
+      await waitFor(() => {
+        expect(screen.getByRole("dialog")).toBeInTheDocument();
+      });
 
+      // THEN no stacking warning is shown
+      expect(warnSpy).not.toHaveBeenCalledWith(STACKING_WARNING);
       warnSpy.mockRestore();
     });
 
-    it("hides the first modal when a second modal is opened on top", async () => {
-      // GIVEN
+    it("shows stacking warning when opening a second modal", async () => {
+      // GIVEN two modal roots
+      const warnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
+
       render({
         components: { MtModal, MtModalRoot, MtModalTrigger },
+        setup() {
+          const open1 = ref(false);
+          const open2 = ref(false);
+          return { open1, open2 };
+        },
         template: `
-<mt-modal-root>
-  <mt-modal-trigger as='button'>Open first modal</mt-modal-trigger>
-
-  <mt-modal title='First Modal'>
-    <mt-modal-root>
-      <mt-modal-trigger as='button'>Open second modal</mt-modal-trigger>
-
-      <mt-modal title='Second Modal'>Second modal content</mt-modal>
-    </mt-modal-root>
-  </mt-modal>
-</mt-modal-root>`,
+          <mt-modal-root :isOpen="open1" @change="(v) => (open1 = v)">
+            <mt-modal-trigger as="button">Open 1</mt-modal-trigger>
+            <mt-modal title="Modal 1">Content 1</mt-modal>
+          </mt-modal-root>
+          <mt-modal-root :isOpen="open2" @change="(v) => (open2 = v)">
+            <mt-modal-trigger as="button">Open 2</mt-modal-trigger>
+            <mt-modal title="Modal 2">Content 2</mt-modal>
+          </mt-modal-root>
+        `,
       });
 
-      await fireEvent.click(screen.getByRole("button", { name: "Open first modal" }));
-      const firstModal = screen.getByRole("dialog");
-      expect(firstModal).toBeVisible();
-
-      // WHEN
-      await fireEvent.click(screen.getByRole("button", { name: "Open second modal" }));
-
-      // THEN - wait for the focus trap to pause and update inForeground
+      // WHEN opening the first modal
+      await fireEvent.click(screen.getByRole("button", { name: "Open 1" }));
       await waitFor(() => {
-        const dialogs = screen.getAllByRole("dialog", { hidden: true });
-        const firstModalAfterOpen = dialogs.find((dialog) =>
-          dialog.textContent?.includes("First Modal"),
-        );
-        const secondModal = dialogs.find((dialog) => dialog.textContent?.includes("Second Modal"));
-
-        expect(firstModalAfterOpen).toHaveStyle({ display: "none" });
-        expect(secondModal).toBeVisible();
+        expect(screen.getByRole("dialog")).toBeInTheDocument();
       });
+      expect(warnSpy).not.toHaveBeenCalledWith(STACKING_WARNING);
+
+      // WHEN opening the second modal
+      await fireEvent.click(screen.getByRole("button", { name: "Open 2" }));
+      await waitFor(() => {
+        expect(screen.getAllByRole("dialog")).toHaveLength(2);
+      });
+
+      // THEN stacking warning is shown
+      expect(warnSpy).toHaveBeenCalledWith(STACKING_WARNING);
+      warnSpy.mockRestore();
     });
 
-    it("shows the first modal again when the second modal is closed", async () => {
-      // GIVEN
+    it("orders modal-root before mt-modal for each pair when opening two modals", async () => {
+      // GIVEN two modal roots with modals
       render({
         components: { MtModal, MtModalRoot, MtModalTrigger },
+        setup() {
+          const open1 = ref(false);
+          const open2 = ref(false);
+          return { open1, open2 };
+        },
         template: `
-<mt-modal-root>
-  <mt-modal-trigger as='button'>Open first modal</mt-modal-trigger>
-
-  <mt-modal title='First Modal'>
-    <mt-modal-root>
-      <mt-modal-trigger as='button'>Open second modal</mt-modal-trigger>
-
-      <mt-modal title='Second Modal'>Second modal content</mt-modal>
-    </mt-modal-root>
-  </mt-modal>
-</mt-modal-root>`,
+          <mt-modal-root :isOpen="open1" @change="(v) => (open1 = v)">
+            <mt-modal-trigger as="button">Open 1</mt-modal-trigger>
+            <mt-modal title="Modal 1">Content 1</mt-modal>
+          </mt-modal-root>
+          <mt-modal-root :isOpen="open2" @change="(v) => (open2 = v)">
+            <mt-modal-trigger as="button">Open 2</mt-modal-trigger>
+            <mt-modal title="Modal 2">Content 2</mt-modal>
+          </mt-modal-root>
+        `,
       });
 
-      await fireEvent.click(screen.getByRole("button", { name: "Open first modal" }));
-      await fireEvent.click(screen.getByRole("button", { name: "Open second modal" }));
+      // WHEN opening first modal, then second
+      await fireEvent.click(screen.getByRole("button", { name: "Open 1" }));
+      await fireEvent.click(screen.getByRole("button", { name: "Open 2" }));
 
-      // Verify second modal is open and first is hidden
-      const dialogsBeforeClose = screen.getAllByRole("dialog", { hidden: true });
-      expect(dialogsBeforeClose).toHaveLength(2);
+      await waitFor(() => {
+        expect(screen.getAllByRole("dialog")).toHaveLength(2);
+      });
 
-      // WHEN - close the second modal using the Close button
+      // THEN order in body is root > modal for each pair (visual hierarchy)
+      expect(getBodyStackOrder()).toEqual(["root", "modal", "root", "modal"]);
+    });
+
+    it("orders modal-root before mt-modal for each pair when opening three modals", async () => {
+      // GIVEN three modal roots with modals
+      render({
+        components: { MtModal, MtModalRoot, MtModalTrigger },
+        setup() {
+          const open1 = ref(false);
+          const open2 = ref(false);
+          const open3 = ref(false);
+          return { open1, open2, open3 };
+        },
+        template: `
+          <mt-modal-root :isOpen="open1" @change="(v) => (open1 = v)">
+            <mt-modal-trigger as="button">Open 1</mt-modal-trigger>
+            <mt-modal title="Modal 1">Content 1</mt-modal>
+          </mt-modal-root>
+          <mt-modal-root :isOpen="open2" @change="(v) => (open2 = v)">
+            <mt-modal-trigger as="button">Open 2</mt-modal-trigger>
+            <mt-modal title="Modal 2">Content 2</mt-modal>
+          </mt-modal-root>
+          <mt-modal-root :isOpen="open3" @change="(v) => (open3 = v)">
+            <mt-modal-trigger as="button">Open 3</mt-modal-trigger>
+            <mt-modal title="Modal 3">Content 3</mt-modal>
+          </mt-modal-root>
+        `,
+      });
+
+      // WHEN opening all three in sequence
+      await fireEvent.click(screen.getByRole("button", { name: "Open 1" }));
+      await fireEvent.click(screen.getByRole("button", { name: "Open 2" }));
+      await fireEvent.click(screen.getByRole("button", { name: "Open 3" }));
+
+      await waitFor(() => {
+        expect(screen.getAllByRole("dialog")).toHaveLength(3);
+      });
+
+      // THEN order in body is root > modal for each pair
+      expect(getBodyStackOrder()).toEqual([
+        "root",
+        "modal",
+        "root",
+        "modal",
+        "root",
+        "modal",
+      ]);
+    });
+
+    it("keeps root-before-modal order after closing a modal and opening it again", async () => {
+      // GIVEN two modal roots with modals
+      render({
+        components: { MtModal, MtModalRoot, MtModalTrigger },
+        setup() {
+          const open1 = ref(false);
+          const open2 = ref(false);
+          return { open1, open2 };
+        },
+        template: `
+          <mt-modal-root :isOpen="open1" @change="(v) => (open1 = v)">
+            <mt-modal-trigger as="button">Open 1</mt-modal-trigger>
+            <mt-modal title="Modal 1">Content 1</mt-modal>
+          </mt-modal-root>
+          <mt-modal-root :isOpen="open2" @change="(v) => (open2 = v)">
+            <mt-modal-trigger as="button">Open 2</mt-modal-trigger>
+            <mt-modal title="Modal 2">Content 2</mt-modal>
+          </mt-modal-root>
+        `,
+      });
+
+      // WHEN open first, then second, then close first, then open first again
+      await fireEvent.click(screen.getByRole("button", { name: "Open 1" }));
+      await fireEvent.click(screen.getByRole("button", { name: "Open 2" }));
+
+      await waitFor(() => {
+        expect(screen.getAllByRole("dialog")).toHaveLength(2);
+      });
+      expect(getBodyStackOrder()).toEqual(["root", "modal", "root", "modal"]);
+
       const closeButtons = screen.getAllByRole("button", { name: "Close" });
-      await fireEvent.click(closeButtons[closeButtons.length - 1]); // Click the last close button (second modal's)
+      await fireEvent.click(closeButtons[0]);
 
-      // THEN - first modal should be visible again
-      const remainingDialogs = screen.getAllByRole("dialog");
-      expect(remainingDialogs).toHaveLength(1);
-      expect(remainingDialogs[0]).toBeVisible();
+      await waitFor(() => {
+        expect(screen.getAllByRole("dialog")).toHaveLength(1);
+      });
+
+      await fireEvent.click(screen.getByRole("button", { name: "Open 1" }));
+
+      await waitFor(() => {
+        expect(screen.getAllByRole("dialog")).toHaveLength(2);
+      });
+
+      // THEN order in body is still root > modal for each pair
+      expect(getBodyStackOrder()).toEqual(["root", "modal", "root", "modal"]);
     });
   });
 });
