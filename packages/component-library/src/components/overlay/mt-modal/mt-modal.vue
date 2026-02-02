@@ -1,6 +1,6 @@
 <template>
   <transition name="modal">
-    <Teleport to="body" defer>
+    <Teleport to="body">
       <div
         v-if="isOpen"
         ref="modalRef"
