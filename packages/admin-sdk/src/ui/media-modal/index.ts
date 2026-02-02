@@ -42,9 +42,8 @@ export type uiMediaModalOpen = {
 
 export type uiMediaModalOpenSaveMedia = {
   responseType: void,
-
   initialFolderId?: string,
   initialFileName?: string,
   fileType?: string,
-  callback: (params: { fileName: string, folderId: string }) => void,
+  callback: (params: { fileName: string, folderId: string, mediaId?: string }) => void,
 }
