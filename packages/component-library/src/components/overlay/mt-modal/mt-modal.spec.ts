@@ -198,14 +198,14 @@ describe("mt-modal", () => {
       "[MtModal] It is not recommended to stack multiple modals on top of each other.";
 
     /**
-     * Returns the order of modal roots (backdrops) and modals in the body as 'root' | 'modal'.
-     * Expected visual hierarchy: each root (backdrop) is followed by its corresponding modal.
+     * Returns the order of backdrops and modals in the body as 'backdrop' | 'modal'.
+     * Expected visual hierarchy: each backdrop is followed by its corresponding modal.
      */
-    function getBodyStackOrder(): ("root" | "modal")[] {
+    function getBodyStackOrder(): ("backdrop" | "modal")[] {
       const elements = document.body.querySelectorAll(
         '.mt-modal-root__backdrop, .mt-modal',
       );
-      return Array.from(elements).map((el) => el.classList.contains("mt-modal") ? "modal" : "root");
+      return Array.from(elements).map((el) => el.classList.contains("mt-modal") ? "modal" : "backdrop");
     }
 
     it("does not show stacking warning when only one modal is open", async () => {
@@ -304,8 +304,8 @@ describe("mt-modal", () => {
         expect(screen.getAllByRole("dialog")).toHaveLength(2);
       });
 
-      // THEN order in body is root > modal for each pair (visual hierarchy)
-      expect(getBodyStackOrder()).toEqual(["root", "modal", "root", "modal"]);
+      // THEN order in body is backdrop > modal for each pair (visual hierarchy)
+      expect(getBodyStackOrder()).toEqual(["backdrop", "modal", "backdrop", "modal"]);
     });
 
     it("orders modal-root before mt-modal for each pair when opening three modals", async () => {
@@ -343,13 +343,13 @@ describe("mt-modal", () => {
         expect(screen.getAllByRole("dialog")).toHaveLength(3);
       });
 
-      // THEN order in body is root > modal for each pair
+      // THEN order in body is backdrop > modal for each pair
       expect(getBodyStackOrder()).toEqual([
-        "root",
+        "backdrop",
         "modal",
-        "root",
+        "backdrop",
         "modal",
-        "root",
+        "backdrop",
         "modal",
       ]);
     });
@@ -382,7 +382,7 @@ describe("mt-modal", () => {
       await waitFor(() => {
         expect(screen.getAllByRole("dialog")).toHaveLength(2);
       });
-      expect(getBodyStackOrder()).toEqual(["root", "modal", "root", "modal"]);
+      expect(getBodyStackOrder()).toEqual(["backdrop", "modal", "backdrop", "modal"]);
 
       const closeButtons = screen.getAllByRole("button", { name: "Close" });
       await fireEvent.click(closeButtons[0]);
@@ -397,8 +397,43 @@ describe("mt-modal", () => {
         expect(screen.getAllByRole("dialog")).toHaveLength(2);
       });
 
-      // THEN order in body is still root > modal for each pair
-      expect(getBodyStackOrder()).toEqual(["root", "modal", "root", "modal"]);
+      // THEN order in body is still backdrop > modal for each pair
+      expect(getBodyStackOrder()).toEqual(["backdrop", "modal", "backdrop", "modal"]);
+    });
+
+    it("orders modal-root before mt-modal for nested modals", async () => {
+      // GIVEN a modal with a nested modal inside
+      render({
+        components: { MtModal, MtModalRoot, MtModalTrigger },
+        template: `
+          <mt-modal-root>
+            <mt-modal-trigger as="button">Open Outer</mt-modal-trigger>
+            <mt-modal title="Outer Modal">
+              <mt-modal-root>
+                <mt-modal-trigger as="button">Open Inner</mt-modal-trigger>
+                <mt-modal title="Inner Modal">Inner Content</mt-modal>
+              </mt-modal-root>
+            </mt-modal>
+          </mt-modal-root>
+        `,
+      });
+
+      // WHEN opening the outer modal
+      await fireEvent.click(screen.getByRole("button", { name: "Open Outer" }));
+
+      await waitFor(() => {
+        expect(screen.getByRole("dialog")).toBeInTheDocument();
+      });
+
+      // WHEN opening the inner modal
+      await fireEvent.click(screen.getByRole("button", { name: "Open Inner" }));
+
+      await waitFor(() => {
+        expect(screen.getAllByRole("dialog")).toHaveLength(2);
+      });
+
+      // THEN order in body is backdrop > modal for each pair
+      expect(getBodyStackOrder()).toEqual(["backdrop", "modal", "backdrop", "modal"]);
     });
   });
 });
