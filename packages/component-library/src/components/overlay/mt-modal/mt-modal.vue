@@ -1,9 +1,8 @@
 <template>
   <transition name="modal">
-    <Teleport to="body">
+    <Teleport to="body" defer>
       <div
         v-if="isOpen"
-        v-show="inForeground"
         ref="modalRef"
         :class="['mt-modal', `mt-modal--width-${width}`]"
         role="dialog"
@@ -141,7 +140,6 @@ onUnmounted(() => {
 
 const modalRef = ref<HTMLElement | null>(null);
 let trap: ReturnType<typeof focusTrap.createFocusTrap> | undefined;
-const inForeground = ref(true);
 
 watch(
   isOpen,
@@ -156,14 +154,12 @@ watch(
         allowOutsideClick: true,
         onPause: () => {
           // a new modal is being opened, pausing the current trap
-          inForeground.value = false;
           console.warn(
             "[MtModal] It is not recommended to stack multiple modals on top of each other.",
           );
         },
         onUnpause: () => {
           // the current trap is being resumed (the newest modal is being closed, we are now in the foreground)
-          inForeground.value = true;
         },
       });
 
@@ -256,7 +252,7 @@ onUnmounted(() => {
   top: 50%;
   left: 50%;
   translate: -50% -50%;
-  z-index: 1001;
+  z-index: 1000;
   background-color: var(--color-elevation-surface-raised);
   border-radius: var(--border-radius-card);
   overflow: hidden;
