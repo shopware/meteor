@@ -60,6 +60,7 @@ export default tseslint.config([
     plugins: { vitest },
     rules: {
       ...vitest.configs.recommended.rules,
+      "vitest/prefer-called-exactly-once-with": "off",
       "no-restricted-imports": ["warn", "@vue/test-utils"],
     },
   },
