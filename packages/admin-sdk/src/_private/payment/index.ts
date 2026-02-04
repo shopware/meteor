@@ -5,7 +5,7 @@ import * as data from '../../data';
 import Criteria from '../../data/Criteria';
 import { jwtDecode } from 'jwt-decode';
 
-export const enum MESSAGE_EVENT_TYPE {
+export enum MESSAGE_EVENT_TYPE {
   PAYMENT_CLOSE = 'payment_close',
   PAYMENT_SUCCESS = 'payment_success',
   PAYMENT_ERROR = 'payment_error',
