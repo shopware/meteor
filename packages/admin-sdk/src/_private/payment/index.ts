@@ -136,7 +136,7 @@ export const decodeLicense = async (): Promise<TokenPayload | null> => {
     const value = res?.first() as { configurationValue: string } | undefined;
 
     const token: string = value?.configurationValue || '';
-    const decoded = jwtDecode<TokenPayload>(token) as TokenPayload;
+    const decoded = jwtDecode<TokenPayload>(token);
     return decoded;
   } catch {
     return null;
