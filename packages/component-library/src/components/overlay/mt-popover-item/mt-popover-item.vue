@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-popover-item" :class="componentClasses" @click="handleLableClick">
+  <div class="mt-popover-item" :class="componentClasses" @click="handleLabelClick">
     <div class="mt-popover-item__top-row">
       <mt-checkbox
         v-if="showCheckbox"
@@ -7,7 +7,7 @@
         class="mt-popover-item__checkbox"
         :checked="checkboxChecked"
         :partial="checkboxPartial"
-        @change="handleLableClick"
+        @change="handleLabelClick"
       />
 
       <slot name="extension-logo" />
@@ -18,8 +18,8 @@
         :class="iconClasses"
         :tabindex="onLabelClickTabIndex"
         :name="icon"
-        @click="handleLableClick"
-        @keyup.enter="handleLableClick"
+        @click="handleLabelClick"
+        @keyup.enter="handleLabelClick"
       />
 
       <label
@@ -28,8 +28,8 @@
         :tabindex="onLabelClickTabIndex"
         :role="role"
         :for="id"
-        @click.stop.prevent="handleLableClick"
-        @keyup.enter="handleLableClick"
+        @click.stop.prevent="handleLabelClick"
+        @keyup.enter="handleLabelClick"
       >
         {{ label }}
 
@@ -51,7 +51,7 @@
           v-if="showSwitch"
           :checked="switchValue"
           class="mt-popover-item__switch"
-          @change="handleLableClick"
+          @change="handleLabelClick"
         />
 
         <template v-if="showVisibility">
@@ -130,7 +130,7 @@ export default defineComponent({
       default: "",
     },
     onLabelClick: {
-      type: Function as PropType<(() => void) | undefined>,
+      type: Function as PropType<((e: MouseEvent | KeyboardEvent | boolean) => void) | undefined>,
       required: false,
       default: undefined,
     },
@@ -221,8 +221,8 @@ export default defineComponent({
       emit("change-visibility", changeValue);
     };
 
-    const emitClickOptions = () => {
-      emit("click-options");
+    const emitClickOptions = (e: MouseEvent | KeyboardEvent | boolean) => {
+      emit("click-options", e);
     };
 
     const isClickable = computed(() => {
@@ -261,14 +261,14 @@ export default defineComponent({
     });
 
     // Debounce the label click to prevent too many calls
-    const handleLableClick = useDebounceFn(() => {
+    const handleLabelClick = useDebounceFn((e: MouseEvent | KeyboardEvent | boolean) => {
       if (props.onLabelClick) {
-        props.onLabelClick();
+        props.onLabelClick(e);
         return;
       }
 
       if (props.showOptions) {
-        emitClickOptions();
+        emitClickOptions(e);
         return;
       }
 
@@ -297,7 +297,7 @@ export default defineComponent({
       componentClasses,
       labelClasses,
       onLabelClickTabIndex,
-      handleLableClick,
+      handleLabelClick,
       isClickable,
       iconClasses,
       id,
@@ -423,12 +423,12 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
   }
 
   &--border-top {
-    border-top: 1px solid var(--color-border-primary-default);
+    border-top: 1px solid var(--color-border-secondary-default);
     margin-top: -1px;
   }
 
   &--border-bottom {
-    border-bottom: 1px solid var(--color-border-primary-default);
+    border-bottom: 1px solid var(--color-border-secondary-default);
     margin-bottom: -1px;
   }
 

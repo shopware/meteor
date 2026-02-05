@@ -4,6 +4,7 @@ export const redirect = createSender('windowRedirect');
 export const routerPush = createSender('windowRouterPush');
 export const reload = createSender('windowReload', {});
 export const getId = createSender('windowGetId');
+export const getPath = createSender('windowRouterGetPath');
 
 /**
  * Redirect to another URL
@@ -42,5 +43,12 @@ export type windowReload = {
  * Get a unique identifier for the current window
  */
 export type windowGetId = {
+  responseType: string,
+}
+
+/** 
+ * Get the current router full path
+ */
+export type windowRouterGetPath = {
   responseType: string,
 }

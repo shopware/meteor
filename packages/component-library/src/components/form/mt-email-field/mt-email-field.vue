@@ -9,7 +9,7 @@
   >
     <mt-field-label
       v-if="label"
-      :id="id ?? ''"
+      :for="id ?? ''"
       :has-error="!!error || !!errorMessage"
       :required="required"
       :style="{ gridArea: 'label', marginBottom: 'var(--scale-size-2)' }"
@@ -212,7 +212,7 @@ const { t } = useI18n({
   align-items: center;
   border: 1px solid var(--color-border-primary-default);
   border-radius: var(--mt-email-field-border-radius);
-  background-color: var(--color-elevation-surface-raised);
+  background-color: var(--color-background-primary-default);
   min-height: var(--scale-size-48);
   /* stylelint-disable-next-line meteor/prefer-sizing-token -- this is a trick so that the input field take 100% of its parent's height */
   height: 1px;
@@ -222,12 +222,12 @@ const { t } = useI18n({
   }
 
   &:not(.mt-email-field__block--error)&:has(.mt-email-field__input:focus-visible) {
-    border-color: var(--color-border-brand-selected);
-    box-shadow: 0px 0px 4px 0px rgba(24, 158, 255, 0.3);
+    outline: var(--scale-size-2) solid var(--color-border-brand-default);
+    outline-offset: var(--scale-size-2);
   }
 
   &:has(.mt-email-field__input:disabled) {
-    background-color: var(--color-background-primary-disabled);
+    background-color: var(--color-background-tertiary-default);
 
     & ::placeholder {
       color: var(--color-text-secondary-disabled);
@@ -237,7 +237,7 @@ const { t } = useI18n({
 
 .mt-email-field__block--error {
   border-color: var(--color-border-critical-default);
-  background-color: var(--color-background-critical-dark);
+  background-color: var(--color-background-critical-default);
 }
 
 .mt-email-field__input {
@@ -277,7 +277,7 @@ const { t } = useI18n({
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-border-brand-selected);
+    outline: 2px solid var(--color-border-brand-default);
   }
 }
 
@@ -285,7 +285,7 @@ const { t } = useI18n({
   font-family: var(--font-family-body);
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
-  color: var(--color-text-tertiary-default);
+  color: var(--color-text-secondary-default);
   margin-top: 0.1875rem;
 }
 

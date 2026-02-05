@@ -20,43 +20,42 @@ jobs:
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           ref: ${{ github.head_ref }}
         if: ${{ github.event.pull_request.head.repo.full_name == 'shopware/meteor' }}
 
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         if: ${{ github.event.pull_request.head.repo.full_name != 'shopware/meteor' }}
 
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 10
+      - uses: pnpm/action-setup@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: "22"
+          node-version: "24"
           cache: "pnpm"
-          cache-dependency-path: "**/pnpm-lock.yaml"
 
       - name: Install dependencies
         run: pnpm i --frozen-lockfile --prefer-offline
 
+      - name: Validate changesets package names
+        run: pnpm run validate:changesets
+
       - name: Build packages
-        run: npx turbo run build
+        run: pnpm turbo run build
 
       - name: Lint all
-        run: pnpx turbo run lint:all
+        run: pnpm turbo run lint:all
 
       - name: Lint css
-        run: pnpx turbo run lint:css -- --custom-formatter @csstools/stylelint-formatter-github
+        run: pnpm turbo run lint:css -- --custom-formatter @csstools/stylelint-formatter-github
 
       - name: Check formatting
-        run: pnpx turbo run format
+        run: pnpm turbo run format
 
       - name: Perform typecheck
-        run: pnpx turbo run lint:types
+        run: pnpm turbo run lint:types
 
   unit-tests:
     name: Unit tests
@@ -68,25 +67,21 @@ jobs:
       ADMIN_TOKENS_FILE_KEY: "ADMIN_TOKENS_FILE_KEY"
       PRIMITIVE_TOKENS_FILE_KEY: "PRIMITIVE_TOKENS_FILE_KEY"
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - name: Checkout Repo
+        uses: actions/checkout@v6
 
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 9
+      - uses: pnpm/action-setup@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: "20"
+          node-version: "24"
           cache: "pnpm"
-          cache-dependency-path: "**/pnpm-lock.yaml"
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
 
       - name: unit
-        run: pnpx turbo run test:unit
+        run: pnpm turbo run test:unit
 
   circular-dependencies:
     name: Check for circular dependencies (Madge)
@@ -96,21 +91,17 @@ jobs:
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 9
+      - uses: pnpm/action-setup@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: "20"
+          node-version: "24"
           cache: "pnpm"
-          cache-dependency-path: "**/pnpm-lock.yaml"
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile --prefer-offline
+        run: pnpm i --frozen-lockfile --prefer-offline
 
       - name: madge
         run: pnpm --filter @shopware-ag/meteor-admin-sdk run circular-dependencies
@@ -128,32 +119,28 @@ jobs:
       TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 9
+      - uses: pnpm/action-setup@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: "20"
+          node-version: "24"
           cache: "pnpm"
-          cache-dependency-path: "**/pnpm-lock.yaml"
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile --prefer-offline
+        run: pnpm i --frozen-lockfile --prefer-offline
 
       - name: Install Playwright
         run: npx playwright install
 
       - name: Build packages
-        run: npx turbo run build
+        run: pnpm turbo run build
 
       - name: Run e2e tests
-        run: pnpx turbo run test:e2e
+        run: pnpm turbo run test:e2e
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v6
         if: always()
         with:
           name: nuxt-app--playwright-test-results

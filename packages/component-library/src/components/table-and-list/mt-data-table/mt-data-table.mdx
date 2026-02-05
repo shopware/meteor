@@ -408,10 +408,12 @@ interface ColumnDefinition {
 | enableRowNumbering | Boolean | false | Show row numbers |
 | allowRowSelection | Boolean | false | Enable row selection |
 | selectedRows | Array | [] | Array of selected row IDs |
+| disableRowSelect | Array | [] | Array of row IDs which is disabled selection |
 | filters | Array | [] | Array of filter definitions |
 | appliedFilters | Array | [] | Array of currently applied filters |
 | layout | String | 'default' | Table layout ('default' or 'full') |
 | enableReload | Boolean | false | Show reload button |
+| additionalContextButtons | Array | [] | Additional context buttons to show in the context menu |
 `}
 </Markdown>
 
@@ -434,6 +436,7 @@ interface ColumnDefinition {
 | changeShowStripes | boolean | Emitted when stripe visibility changes |
 | changeOutlineFraming | boolean | Emitted when outline framing changes |
 | changeEnableRowNumbering | boolean | Emitted when row numbering changes |
+| contextSelect | { key: string, data: any } | Emitted when select a context menu item |
 `}
 </Markdown>
 

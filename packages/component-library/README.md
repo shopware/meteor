@@ -13,10 +13,10 @@ You need a working **Vue 3 application** with the **i18n plugin** for the transl
 
 ## Installation
 
-Add this package to your project:
+Add these packages to your project:
 
 ```cli
-npm i @shopware-ag/meteor-component-library
+npm i @shopware-ag/meteor-component-library vue-i18n
 ```
 
 Import the `style.css` for general styling and `font.css` for the Inter font in the root file of your application or in you root styling file.
@@ -24,6 +24,16 @@ Import the `style.css` for general styling and `font.css` for the Inter font in 
 ```js
 import "@shopware-ag/meteor-component-library/styles.css";
 import "@shopware-ag/meteor-component-library/font.css";
+```
+
+Now, configure the i18n plugin for Vue.
+
+```js
+const i18n = createI18n({
+  legacy: false,
+});
+
+app.use(i18n);
 ```
 
 Each component works independently and can be imported directly from the root like this:

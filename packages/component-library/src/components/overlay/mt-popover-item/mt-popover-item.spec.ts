@@ -199,7 +199,7 @@ describe("mt-popover-item", () => {
 
     await label.trigger("click");
 
-    expect(onLabelClick).toHaveBeenCalledWith();
+    expect(onLabelClick).toHaveBeenCalled();
   });
 
   it("should render the metaCopy", async () => {

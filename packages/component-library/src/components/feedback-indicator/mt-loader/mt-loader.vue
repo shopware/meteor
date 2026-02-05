@@ -25,9 +25,19 @@ const props = withDefaults(
 
 const borderWidth = computed(() => {
   const numericSize = Number(props.size.replace("px", ""));
-  const borderWith = Number(numericSize / 12).toPrecision(2);
 
-  return `${borderWith}px`;
+  let calculatedWidth;
+
+  // Breakpoints for border width.
+  if (numericSize <= 16) {
+    calculatedWidth = numericSize / 6;
+  } else if (numericSize <= 32) {
+    calculatedWidth = numericSize / 8;
+  } else {
+    calculatedWidth = numericSize / 12;
+  }
+
+  return `${calculatedWidth}px`;
 });
 </script>
 
@@ -42,7 +52,7 @@ const borderWidth = computed(() => {
   right: 0;
   margin: auto;
   z-index: 400;
-  background: var(--color-background-primary-disabled);
+  background: var(--color-background-tertiary-default);
   opacity: 0.8;
 }
 
@@ -54,7 +64,7 @@ const borderWidth = computed(() => {
     border-width: 4px;
     border-style: solid;
     border-radius: 50%;
-    border-color: var(--color-border-brand-selected) transparent transparent transparent;
+    border-color: var(--color-border-brand-default) transparent transparent transparent;
     animation: mt-loader-rotator 1.4s cubic-bezier(0.5, 0, 0.5, 1) infinite;
 
     &:nth-child(1) {

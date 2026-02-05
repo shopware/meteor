@@ -7,6 +7,8 @@
     :is-inherited="isInherited"
     :is-inheritance-field="isInheritanceField"
     :disable-inheritance-toggle="disableInheritanceToggle"
+    @inheritance-restore="$emit('inheritance-restore', $event)"
+    @inheritance-remove="$emit('inheritance-remove', $event)"
   >
     <template #label>
       {{ label }}
@@ -33,7 +35,7 @@
         />
       </div>
 
-      <div class="mt-select__selection-indicators">
+      <div class="mt-select__selection-indicators" :style="{ right: selectionIndicatorsRight }">
         <mt-loader v-if="isLoading" class="mt-select__select-indicator" size="16px" />
 
         <button
@@ -177,6 +179,7 @@ export default defineComponent({
   data() {
     return {
       expanded: false,
+      suffixWidth: 0,
     };
   },
 
@@ -184,9 +187,46 @@ export default defineComponent({
     mtFieldClasses(): { "has--focus": boolean } {
       return { "has--focus": this.expanded };
     },
+
+    selectionIndicatorsRight(): string {
+      const baseRightPx = 16;
+      const rightPx = baseRightPx + (this.suffixWidth || 0);
+      return `${rightPx}px`;
+    },
   },
 
+  mounted() {
+    this.$nextTick(() => this.updateSuffixWidth());
+    window.addEventListener("resize", this.updateSuffixWidth, { passive: true });
+  },
+
+  beforeUnmount() {
+    window.removeEventListener("resize", this.updateSuffixWidth);
+  },
+
+  emits: [
+    "select-expanded",
+    "select-collapsed",
+    "clear",
+    "inheritance-restore",
+    "inheritance-remove",
+  ],
+
   methods: {
+    updateSuffixWidth() {
+      // Find the suffix container to get the width
+      const suffixElement = this.$el?.querySelector(
+        ".mt-block-field__block > .mt-field__addition:not(.is--prefix)",
+      );
+
+      if (!suffixElement) {
+        this.suffixWidth = 0;
+        return;
+      }
+
+      this.suffixWidth = suffixElement.offsetWidth;
+    },
+
     toggleExpand() {
       if (!this.expanded) {
         this.expand();
@@ -309,8 +349,7 @@ export default defineComponent({
 }
 
 .mt-select .mt-block-field__block {
-  transition: all ease-in-out 0.2s;
-  background-color: var(--color-elevation-surface-raised);
+  background-color: var(--color-background-primary-default);
   position: relative;
   overflow: hidden;
 }
@@ -333,6 +372,7 @@ export default defineComponent({
   position: absolute;
   display: flex;
   gap: var(--scale-size-8);
+  align-items: center;
   top: 50%;
   right: var(--scale-size-16);
   transform: translate(0, -50%);
@@ -359,6 +399,18 @@ export default defineComponent({
   color: var(--color-icon-primary-default);
   padding: 0 var(--scale-size-4);
   cursor: pointer;
+  width: var(--scale-size-32);
+  height: var(--scale-size-32);
+  border-radius: var(--border-radius-xs);
+
+  &:hover,
+  &:focus-visible {
+    background-color: var(--color-interaction-secondary-hover);
+  }
+
+  &:focus-visible {
+    outline: var(--scale-size-2) solid var(--color-border-brand-default);
+  }
 }
 
 .mt-select .mt-select__select-indicator-hitbox .mt-select__select-indicator {
@@ -405,7 +457,7 @@ export default defineComponent({
 .mt-select.is--disabled .mt-block-field__block,
 .mt-select.is--disabled .mt-label,
 .mt-select.is--disabled input {
-  background-color: var(--color-background-primary-disabled);
+  background-color: var(--color-background-tertiary-default);
 }
 
 .mt-select--small {

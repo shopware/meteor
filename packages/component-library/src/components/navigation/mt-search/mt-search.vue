@@ -53,7 +53,7 @@ defineEmits<{
 
 <style scoped>
 .mt-search {
-  background: var(--color-elevation-surface-raised);
+  background: var(--color-background-primary-default);
   border: 1px solid var(--color-border-primary-default);
   border-radius: var(--border-radius-xs);
   color: var(--color-text-primary-default);
@@ -65,8 +65,8 @@ defineEmits<{
   align-items: center;
 
   &:focus-within {
-    border-color: var(--color-border-brand-selected);
-    box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
+    outline: var(--scale-size-2) solid var(--color-border-brand-default);
+    outline-offset: var(--scale-size-2);
   }
 }
 
@@ -107,12 +107,12 @@ defineEmits<{
     color: var(--color-text-primary-disabled);
 
     &::placeholder {
-      color: var(--color-text-secondary-disabled);
+      color: var(--color-text-secondary-default);
     }
   }
 }
 
 .mt-search--disabled {
-  background-color: var(--color-background-primary-disabled);
+  background-color: var(--color-background-tertiary-default);
 }
 </style>

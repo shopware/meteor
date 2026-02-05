@@ -15,6 +15,8 @@
     @select-expanded="onSelectExpanded"
     @select-collapsed="onSelectCollapsed"
     @clear="onClearSelection"
+    @inheritance-restore="$emit('inheritance-restore', $event)"
+    @inheritance-remove="$emit('inheritance-remove', $event)"
   >
     <template #mt-select-prefix>
       <slot name="prefix" />
@@ -361,6 +363,8 @@ export default defineComponent({
     "display-values-expand",
     "paginate",
     "search-term-change",
+    "inheritance-restore",
+    "inheritance-remove",
   ],
 
   setup() {

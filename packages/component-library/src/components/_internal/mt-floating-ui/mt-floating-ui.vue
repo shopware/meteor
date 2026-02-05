@@ -10,12 +10,16 @@
       class="mt-floating-ui__content"
       :data-show="isOpened"
       tabindex="0"
+      :style="contentStyles"
     >
       <div v-if="showArrow" ref="floatingUiArrow" class="mt-floating-ui__arrow" data-popper-arrow />
 
       <transition name="popoverTransition">
         <template v-if="isOpened">
-          <slot />
+          <slot
+            :referenceElementWidth="referenceElementWidth"
+            :referenceElementHeight="referenceElementHeight"
+          />
         </template>
       </transition>
     </div>
@@ -23,7 +27,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onBeforeUnmount, watch, nextTick } from "vue";
+import { ref, onBeforeUnmount, watch, nextTick, computed } from "vue";
 import type { AutoUpdateOptions, ComputePositionConfig } from "@floating-ui/dom";
 import {
   computePosition,
@@ -31,6 +35,7 @@ import {
   offset as floatingUiOffset,
   arrow,
   flip,
+  size,
 } from "@floating-ui/dom";
 import { vOnClickOutside } from "@vueuse/components";
 import { defineProps, defineEmits } from "vue";
@@ -41,6 +46,10 @@ export type MtFloatingUiProps = {
   showArrow?: boolean;
   offset?: number;
   autoUpdateOptions?: Partial<AutoUpdateOptions>;
+  /**
+   * If true, the floating UI content will match the width of the reference element.
+   */
+  matchReferenceWidth?: boolean;
 };
 
 const props = defineProps<MtFloatingUiProps>();
@@ -54,10 +63,22 @@ let floatingUiContent = ref<HTMLElement | null>(null);
 const floatingUiTrigger = ref<HTMLElement | null>(null);
 const floatingUiArrow = ref<HTMLElement | null>(null);
 const floatingUi = ref<HTMLElement | null>(null);
+const referenceElementHeight = ref<number>(0);
+const referenceElementWidth = ref<number>(0);
 let cleanup: () => void;
 
 const bodyContainer = window.document.querySelector("body")!;
 const originalParentContainer = floatingUiContent.value?.parentElement;
+
+const contentStyles = computed(() => {
+  const styles: Record<string, string> = {};
+
+  if (props.matchReferenceWidth) {
+    styles.width = `${referenceElementWidth.value}px`;
+  }
+
+  return styles;
+});
 
 const createFloatingUi = () => {
   if (!floatingUiTrigger.value || !floatingUiContent.value) {
@@ -94,6 +115,12 @@ const createFloatingUi = () => {
           })(),
           flip(),
           ...(props.floatingUiOptions?.middleware ?? []),
+          size({
+            apply({ rects }) {
+              referenceElementWidth.value = rects.reference.width ?? 0;
+              referenceElementHeight.value = rects.reference.height ?? 0;
+            },
+          }),
         ],
         ...props.floatingUiOptions,
       }).then(({ x, y, middlewareData, placement }) => {

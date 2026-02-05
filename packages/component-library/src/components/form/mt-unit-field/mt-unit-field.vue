@@ -22,6 +22,7 @@
       :name="name"
       :size="size"
       :label="label"
+      :error="error"
       @update:model-value="$emit('update:modelValue', $event)"
       @inheritance-restore="$emit('inheritance-restore')"
       @inheritance-remove="$emit('inheritance-remove')"
@@ -63,7 +64,7 @@ const props = withDefaults(
     max?: number;
     digits?: number;
     fillDigits?: boolean;
-    allowEmpty?: boolean;
+    allowEmpty?: boolean; // @deprecated tag:v5
     numberAlignEnd?: boolean;
     label?: string;
     error?: object;

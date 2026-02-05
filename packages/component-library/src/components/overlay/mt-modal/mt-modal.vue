@@ -9,16 +9,33 @@
         aria-modal="true"
         :aria-labelledby="id"
       >
-        <div class="mt-modal__header">
-          <div class="mt-modal__header-content">
-            <mt-text as="h2" class="mt-modal__title" size="m" weight="semibold" :id="id">
-              {{ title }}
-            </mt-text>
+        <div v-if="!hideHeader" class="mt-modal__header">
+          <slot name="header-left" />
 
-            <slot name="title-after" />
+          <div class="mt-modal__header-content">
+            <div class="mt-modal__header-content-title">
+              <mt-text
+                v-if="title"
+                as="h2"
+                class="mt-modal__title"
+                size="m"
+                weight="semibold"
+                :id="id"
+              >
+                {{ title }}
+              </mt-text>
+
+              <slot name="title-after" />
+            </div>
+
+            <span v-if="subtitle" class="mt-modal__subtitle">
+              {{ subtitle }}
+            </span>
           </div>
 
-          <mt-modal-close class="mt-modal__close-button" aria-label="Close">
+          <slot name="header-right" />
+
+          <mt-modal-close v-if="closable" class="mt-modal__close-button" aria-label="Close">
             <mt-icon aria-hidden name="regular-times-xs" />
           </mt-modal-close>
         </div>
@@ -66,7 +83,13 @@ import * as focusTrap from "focus-trap";
 defineProps({
   title: {
     type: String,
-    required: true,
+    required: false,
+    default: undefined,
+  },
+  subtitle: {
+    type: String,
+    required: false,
+    default: undefined,
   },
   width: {
     type: String as PropType<"s" | "m" | "l" | "xl" | "full">,
@@ -78,11 +101,16 @@ defineProps({
     required: false,
     default: false,
   },
+  hideHeader: {
+    type: Boolean,
+    required: false,
+    default: false,
+  },
 });
 
 const id = `mt-modal--${createId()}`;
 
-const { isOpen, setIsOpen } = useModalContext("mt-modal");
+const { isOpen, setIsOpen, closable } = useModalContext("mt-modal");
 
 let closeOnEscapeEventListener: ((event: KeyboardEvent) => void) | undefined = undefined;
 
@@ -91,9 +119,7 @@ watch(
   (value) => {
     if (value) {
       closeOnEscapeEventListener = (event: KeyboardEvent) => {
-        if (event.key === "Escape") {
-          setIsOpen(false);
-        }
+        if (event.key === "Escape" && closable.value) setIsOpen(false);
       };
 
       document.addEventListener("keydown", closeOnEscapeEventListener);
@@ -222,7 +248,7 @@ onUnmounted(() => {
   border-radius: var(--border-radius-card);
   overflow: hidden;
   width: min(var(--mt-modal-width), calc(100vw - 2rem));
-  border: 1px solid var(--color-border-primary-default);
+  border: 1px solid var(--color-border-secondary-default);
   max-height: calc(100dvh - 2rem);
   display: flex;
   flex-direction: column;
@@ -279,6 +305,12 @@ onUnmounted(() => {
 
 .mt-modal__title {
   margin-block-end: 0;
+}
+
+.mt-modal__subtitle {
+  font-size: var(--font-size-s);
+  font-weight: var(--font-weight-regular);
+  line-height: var(--line-height-md);
 }
 
 .mt-modal__content {
@@ -339,21 +371,30 @@ onUnmounted(() => {
 
 .mt-modal__footer {
   padding: var(--scale-size-24);
-  border-top: 1px solid var(--color-border-primary-default);
+  border-top: 1px solid var(--color-border-secondary-default);
 }
 
 .mt-modal__header {
   padding: var(--scale-size-24);
-  border-bottom: 1px solid var(--color-border-primary-default);
+  border-bottom: 1px solid var(--color-border-secondary-default);
   display: flex;
-  justify-content: space-between;
+  flex-direction: row;
   align-items: center;
+  gap: var(--scale-size-12);
 }
 
 .mt-modal__header-content {
   display: flex;
+  flex-direction: column;
+  gap: var(--scale-size-2);
+  flex: 1;
+  min-width: 0; /* allow content to shrink within flex container */
+}
+
+.mt-modal__header-content-title {
+  display: flex;
   flex-direction: row;
-  align-items: baseline;
+  align-items: center;
   column-gap: var(--scale-size-8);
 }
 
@@ -364,7 +405,7 @@ onUnmounted(() => {
   width: var(--scale-size-32);
   height: var(--scale-size-32);
 
-  /* prevents hover stlyes from being applied to non-hoverable devices */
+  /* prevents hover styles from being applied to non-hoverable devices */
   @media (hover: hover) {
     &:hover {
       background-color: var(--color-interaction-secondary-hover);
@@ -372,7 +413,7 @@ onUnmounted(() => {
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-border-brand-selected);
+    outline: 2px solid var(--color-border-brand-default);
     box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
   }
 }

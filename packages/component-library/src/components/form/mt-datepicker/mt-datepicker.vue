@@ -1,17 +1,30 @@
 <template>
-  <div class="wrapper">
-    <mt-field-label :style="{ gridArea: 'label' }" id="field-id">
+  <!-- @deprecated tag:v5 remove wrapper class -->
+  <div
+    class="mt-datepicker__wrapper wrapper"
+    :class="{
+      'mt-datepicker__wrapper--small': size === 'small',
+      'has-error': error,
+    }"
+  >
+    <mt-field-label
+      class="mt-datepicker__label"
+      for="field-id"
+      :has-error="!!error || !!errorMessage"
+      :required="required"
+      :style="{ gridArea: 'label' }"
+    >
       {{ label }}
     </mt-field-label>
 
+    <mt-help-text v-if="!!helpText" :text="helpText" :style="{ gridArea: 'help-text' }" />
+
     <vue-datepicker
       ref="datepicker"
-      v-model="computedValue"
-      :style="{ gridArea: 'datepicker' }"
+      :model-value="dateValue"
       class="date-picker"
       position="left"
-      @open="isDatepickerOpen = true"
-      @close="isDatepickerOpen = false"
+      :style="{ gridArea: 'input' }"
       :placeholder="placeholder"
       :disabled="disabled"
       :required="required"
@@ -20,19 +33,42 @@
       :open="isDatepickerOpen"
       :teleport="true"
       :show-cancel="true"
-      :clearable="false"
+      :clearable="true"
       :auto-apply="true"
+      :text-input="textInput"
       :range="range"
-      :format="formatDate"
+      :format="
+        format ??
+        (dateType === 'date' ? 'yyyy/MM/dd' : dateType === 'time' ? 'HH:mm' : 'yyyy/MM/dd, HH:mm')
+      "
       :is-24="is24"
       :type="dateType"
       :enable-time-picker="dateType !== 'date'"
-      :exactMatch="dateType === 'date'"
+      :exact-match="dateType === 'date'"
       time-picker-inline
       :time-picker="dateType === 'time'"
       :no-hours-overlay="dateType === 'time'"
       :no-minutes-overlay="dateType === 'time'"
+      :min-date="minDate"
+      :hours-grid-increment="hourIncrement"
+      :minutes-grid-increment="minuteIncrement"
+      :aria-invalid="!!errorMessage || !!error"
+      :aria-describedby="!!errorMessage || !!error ? errorId : undefined"
+      @update:model-value="onDateValueChange"
+      @open="isDatepickerOpen = true"
+      @close="
+        () => {
+          isDatepickerOpen = false;
+          checkValidity();
+        }
+      "
     >
+      <template #clear-icon="{ clear }">
+        <button class="mt-datepicker__clear-button" aria-label="Clear value" @click="clear">
+          <mt-icon name="regular-times-xxs" size="var(--scale-size-10)" aria-hidden="true" />
+        </button>
+      </template>
+
       <template #input-icon>
         <mt-icon name="regular-calendar" class="regular-calendar" />
       </template>
@@ -58,14 +94,21 @@
       </template>
     </vue-datepicker>
 
+    <mt-field-error
+      v-if="error || errorMessage"
+      :id="errorId"
+      :error="errorMessage || error"
+      :style="{ gridArea: 'error' }"
+    />
+
     <template v-if="isTimeHintVisible">
       <!-- @deprecated tag:v5 remove field-hint class -->
       <div
         class="mt-datepicker__hint field-hint"
-        data-test="time-zone-hint"
+        data-testid="time-zone-hint"
         :style="{ gridArea: 'hint' }"
       >
-        <mt-icon name="solid-clock" class="mt-datepicker__hint-icon" />
+        <mt-icon name="solid-clock" class="mt-datepicker__hint-icon" size="12" />
         <p>{{ timeZone || "UTC" }}</p>
       </div>
     </template>
@@ -73,12 +116,20 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, ref } from "vue";
 import type { PropType } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
+import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import DatePicker, { type VueDatePickerProps } from "@vuepic/vue-datepicker";
+import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import "@vuepic/vue-datepicker/dist/main.css";
+import { useId } from "vue";
+
+interface Time {
+  hours: number;
+  minutes: number;
+}
 
 export default defineComponent({
   name: "MtDatepicker",
@@ -87,6 +138,8 @@ export default defineComponent({
     "mt-icon": MtIcon,
     "vue-datepicker": DatePicker,
     "mt-field-label": MtFieldLabel,
+    "mt-field-error": MtFieldError,
+    "mt-help-text": MtHelpText,
   },
 
   props: {
@@ -124,7 +177,7 @@ export default defineComponent({
      * You can use a string or a function to format the date.
      */
     format: {
-      type: Function as PropType<Omit<VueDatePickerProps["format"], "string">>,
+      type: [String, Function] as PropType<VueDatePickerProps["format"]>,
       required: false,
       default: undefined,
     },
@@ -144,7 +197,7 @@ export default defineComponent({
      * This represents the currently selected date(s).
      */
     modelValue: {
-      type: [String, Array] as PropType<string | string[]>,
+      type: [String, Array, Date] as PropType<string | string[] | Date | Date[]>,
       default: null,
     },
 
@@ -195,6 +248,93 @@ export default defineComponent({
       required: false,
       default: false,
     },
+
+    /**
+     * Sets the size of the datepicker.
+     * Options: "small" or "default".
+     */
+    size: {
+      type: String as PropType<"small" | "default">,
+      required: false,
+      default: "default",
+    },
+
+    /**
+     * An error in your business logic related to this field.
+     *
+     * For example: {"code": 500, "detail": "Error while saving"}
+     */
+    error: {
+      type: Object as PropType<{
+        code?: number;
+        detail?: string;
+      } | null>,
+      required: false,
+      default: null,
+    },
+
+    /**
+     * Help text for the date picker.
+     */
+    helpText: {
+      type: String as PropType<string>,
+      required: false,
+      default: undefined,
+    },
+
+    /**
+     * The minimum selectable date. Can be a Date object or an ISO string.
+     * Any date before this will be disabled in the calendar.
+     * For example: "today"
+     */
+    minDate: {
+      type: [Date, String] as PropType<Date | string>,
+      required: false,
+      default: undefined,
+    },
+
+    /**
+     * The increment for hours in the time picker grid.
+     * Controls how many hours are skipped when navigating through the hours overlay.
+     */
+    hourIncrement: {
+      type: Number as PropType<number>,
+      required: false,
+      default: 1,
+    },
+
+    /**
+     * The increment for minutes in the time picker grid.
+     * Controls how many minutes are skipped when navigating through the minutes overlay.
+     */
+    minuteIncrement: {
+      type: Number as PropType<number>,
+      required: false,
+      default: 1,
+    },
+
+    /**
+     * Enables typing directly into the input field.
+     */
+    textInput: {
+      type: Boolean as PropType<boolean>,
+      required: false,
+      default: false,
+    },
+  },
+
+  emits: ["update:modelValue"],
+
+  setup() {
+    const errorId = useId();
+    const errorMessage = ref<{ detail: string } | undefined>(undefined);
+    const datepicker = ref<InstanceType<typeof DatePicker> | null>(null);
+
+    return {
+      errorId,
+      errorMessage,
+      datepicker,
+    };
   },
 
   data(): {
@@ -208,57 +348,78 @@ export default defineComponent({
   },
 
   computed: {
-    computedValue: {
-      get(): string | string[] | { hours: number; minutes: number } {
-        if (this.dateType === "time") {
-          if (typeof this.modelValue !== "string") return "";
+    dateValue(): Date | [Date, Date] | Time | null {
+      if (!this.modelValue) return null;
 
-          if (this.modelValue.includes("T")) {
-            // ISO string
-            const date = new Date(this.modelValue);
-            return {
-              hours: date.getHours(),
-              minutes: date.getMinutes(),
-            };
-          } else {
-            // Time string (HH:mm)
-            const [hours, minutes] = this.modelValue.split(":").map(Number);
-            return {
-              hours,
-              minutes,
-            };
-          }
-        }
+      if (this.dateType === "time") {
+        // check if modelValue is type Time
+        if (
+          typeof this.modelValue === "object" &&
+          "hours" in this.modelValue &&
+          "minutes" in this.modelValue
+        )
+          return this.modelValue as Time;
 
-        return this.modelValue;
+        // if modelValue is not type Time, convert it to Time
+        const timePart =
+          typeof this.modelValue === "string" && this.modelValue.includes("T")
+            ? this.modelValue.split("T")[1].split(/[Z.+-]/)[0]
+            : (this.modelValue as string);
+
+        const [hours, minutes] = timePart.split(":").map(Number);
+        return { hours, minutes };
+      }
+
+      // Handle datetime mode
+      return Array.isArray(this.modelValue)
+        ? [new Date(this.modelValue[0]), new Date(this.modelValue[1])]
+        : new Date(this.modelValue);
+    },
+  },
+  watch: {
+    dateType: {
+      handler() {
+        this.isTimeHintVisible = this.dateType === "datetime";
+        this.updateOpacitySettings();
       },
-      set(newValue: Date | [Date, Date] | { hours: number; minutes: number } | null) {
-        if (!newValue) return;
-
-        // Handle date conversion for 'time' type
-        if (this.dateType === "time") {
-          const time = newValue as { hours: number; minutes: number };
-          const hours = String(time.hours).padStart(2, "0");
-          const minutes = String(time.minutes).padStart(2, "0");
-          this.$emit("update:modelValue", `${hours}:${minutes}`);
-          return;
-        }
-
-        // Handle both 'date' and 'datetime' types
-        const isoValue = this.convertDateToIso(newValue);
-        this.$emit("update:modelValue", isoValue);
+      immediate: true,
+    },
+    modelValue: {
+      immediate: true,
+      handler() {
+        this.checkValidity();
       },
     },
   },
 
-  watch: {
-    dateType() {
-      this.isTimeHintVisible = this.dateType !== "date";
-      this.updateOpacitySettings();
-    },
+  mounted() {
+    this.isTimeHintVisible = this.dateType === "datetime";
+    this.updateOpacitySettings();
   },
 
   methods: {
+    onDateValueChange(newValue: Date | [Date, Date] | Time | null) {
+      if (!newValue) {
+        this.$emit("update:modelValue", null);
+        return;
+      }
+
+      // Handle time mode
+      if (typeof newValue === "object" && "hours" in newValue && "minutes" in newValue) {
+        const hours = String(newValue.hours).padStart(2, "0");
+        const minutes = String(newValue.minutes).padStart(2, "0");
+        this.$emit("update:modelValue", `${hours}:${minutes}`);
+        return;
+      }
+
+      // Handle datetime or date mode
+      const formatted = Array.isArray(newValue)
+        ? [newValue[0].toISOString(), newValue[1].toISOString()]
+        : newValue.toISOString();
+      this.$emit("update:modelValue", formatted);
+      return;
+    },
+
     updateOpacitySettings() {
       document.documentElement.style.setProperty(
         "--menu-border-opacity",
@@ -269,62 +430,21 @@ export default defineComponent({
         this.dateType === "time" ? "1" : "0",
       );
     },
-    formatDate(date: Date | Date[]): string {
-      if (typeof this.format === "function") {
-        return this.format(date as Date & Date[]);
+
+    checkValidity() {
+      if (!this.required) {
+        this.errorMessage = undefined;
+        return;
       }
 
-      if (this.dateType === "time") {
-        const timeDate = date as Date;
-        const hours = String(timeDate.getHours()).padStart(2, "0");
-        const minutes = String(timeDate.getMinutes()).padStart(2, "0");
-        return `${hours}:${minutes}`;
-      }
-
-      // Overide built-in format to y-m-d
-      const formatSingleDate = (d: Date) => {
-        const year = d.getFullYear();
-        const month = String(d.getMonth() + 1).padStart(2, "0");
-        const day = String(d.getDate()).padStart(2, "0");
-        const hours = String(d.getHours()).padStart(2, "0");
-        const minutes = String(d.getMinutes()).padStart(2, "0");
-        return this.dateType === "date"
-          ? `${year}/${month}/${day}`
-          : `${year}/${month}/${day}, ${hours}:${minutes}`;
-      };
-
-      if (Array.isArray(date)) {
-        return date.map(formatSingleDate).join(" - ");
-      }
-
-      return formatSingleDate(date);
-    },
-
-    convertDateToIso(
-      date: Date | [Date, Date] | { hours: number; minutes: number },
-    ): string | string[] {
-      if (Array.isArray(date)) {
-        return date.map((d) => d.toISOString());
-      } else if (date instanceof Date) {
-        return date.toISOString();
+      if (!this.modelValue) {
+        this.errorMessage = {
+          detail: "This field is required",
+        };
       } else {
-        // Handle time object case
-        const hours = String(date.hours).padStart(2, "0");
-        const minutes = String(date.minutes).padStart(2, "0");
-        return `${hours}:${minutes}`;
+        this.errorMessage = undefined;
       }
     },
-
-    convertTimeToIso(time: { hours: number; minutes: number }): string {
-      const hours = String(time.hours).padStart(2, "0");
-      const minutes = String(time.minutes).padStart(2, "0");
-      return `${hours}:${minutes}`;
-    },
-  },
-
-  mounted() {
-    this.isTimeHintVisible = this.dateType !== "date";
-    this.updateOpacitySettings();
   },
 });
 </script>
@@ -337,22 +457,22 @@ export default defineComponent({
 
 /* || Datepicker theme  */
 .dp__theme_light {
-  --dp-background-color: var(--color-elevation-surface-overlay);
+  --dp-background-color: var(--color-background-primary-default);
   --dp-text-color: var(--color-text-primary-default);
   --dp-hover-color: var(--color-interaction-secondary-hover);
   --dp-hover-text-color: var(--color-text-primary-default);
   --dp-hover-icon-color: #959595;
   --dp-primary-color: var(--color-interaction-primary-default);
-  --dp-primary-disabled-color: var(--color-background-critical-dark);
-  --dp-primary-text-color: var(--color-text-static-default);
+  --dp-primary-disabled-color: var(--color-background-critical-default);
+  --dp-primary-text-color: var(--color-static-white);
   --dp-secondary-color: var(--color-text-primary-disabled);
   --dp-border-color: var(--color-border-primary-default);
-  --dp-menu-border-color: var(--color-border-primary-default);
+  --dp-menu-border-color: var(--color-border-secondary-default);
   --dp-border-color-hover: var(--color-border-primary-default);
-  --dp-border-color-focus: var(--color-border-brand-selected);
-  --dp-disabled-color: var(--color-background-primary-disabled);
-  --dp-scroll-bar-background: var(--color-elevation-surface-overlay);
-  --dp-scroll-bar-color: var(--color-interaction-secondary-dark);
+  --dp-border-color-focus: var(--color-border-primary-default);
+  --dp-disabled-color: var(--color-background-tertiary-default);
+  --dp-scroll-bar-background: var(--color-background-primary-default);
+  --dp-scroll-bar-color: var(--color-border-secondary-default);
   --dp-success-color: #76d275;
   --dp-success-color-disabled: #a3d9b1;
   --dp-icon-color: var(--color-icon-primary-default);
@@ -366,21 +486,27 @@ export default defineComponent({
   --dp-range-between-border-color: var(--color-background-brand-default);
 }
 
-.wrapper {
+.mt-datepicker__wrapper {
   display: grid;
   grid-template-areas:
-    "label"
-    "datepicker"
-    "hint";
-  row-gap: 0.4rem;
+    "label help-text"
+    "input input"
+    "error error"
+    "hint hint";
+  grid-template-columns: 1fr auto;
+  align-content: start;
 }
 
-/* || Datepicker  */
+.mt-datepicker__label {
+  line-height: var(--font-line-height-xs) !important;
+  margin-bottom: var(--scale-size-2);
+  font-size: var(--font-size-xs);
+}
+
 .dp__main {
   font-family: var(--font-family-body) !important;
 }
 
-/* || Input wrapper */
 .dp__input_wrap {
   font: inherit;
   font-weight: var(--font-weight-regular) !important;
@@ -388,12 +514,23 @@ export default defineComponent({
 }
 
 .dp__input {
-  height: var(--scale-size-48);
+  min-height: var(--scale-size-48);
+  height: 1px;
   padding-left: var(--scale-size-16) !important;
   border-radius: var(--border-radius-xs);
   font: inherit;
   color: var(--color-text-secondary-default);
-  background: var(--color-elevation-surface-raised);
+  background: var(--color-background-primary-default);
+  color: var(--color-text-primary-default);
+
+  &::placeholder {
+    color: var(--color-text-secondary-default);
+    opacity: 1 !important;
+  }
+}
+
+.mt-datepicker__wrapper--small .dp__input {
+  min-height: var(--scale-size-32);
 }
 
 .dp__input_icon {
@@ -406,7 +543,7 @@ export default defineComponent({
   border-radius: 0 3px 3px 0;
   padding: var(--scale-size-12);
   border-left: 1px solid var(--color-border-primary-default);
-  background: var(--color-background-primary-disabled);
+  background: var(--color-background-tertiary-default);
 }
 
 .dp__input_icon #meteor-icon-kit__regular-calendar {
@@ -420,14 +557,14 @@ export default defineComponent({
 }
 
 .dp__input_focus {
-  filter: drop-shadow(0px 0px 3px #189eff4d);
+  outline: var(--scale-size-2) solid var(--color-border-brand-default);
+  outline-offset: var(--scale-size-2);
 }
 
 .dp__disabled {
-  background: var(--color-background-primary-disabled);
+  background: var(--color-background-tertiary-default);
 }
 
-/* || Menu / calendar */
 .dp--menu-wrapper {
   border-radius: var(--border-radius-s) !important;
   font-family: inherit;
@@ -515,7 +652,6 @@ export default defineComponent({
   height: auto !important;
 }
 
-/* || Time picker */
 .dp__menu_inner::after {
   content: "";
   display: block;
@@ -596,23 +732,37 @@ export default defineComponent({
 }
 
 .dp--clear-btn {
-  display: absolute;
-  z-index: 9999;
-  background: red;
+  padding-right: var(--scale-size-56);
+}
+
+.mt-datepicker__clear-button {
+  display: grid;
+  place-items: center;
+  height: var(--scale-size-32);
+  aspect-ratio: 1/1;
+  border-radius: var(--border-radius-button);
+  outline-color: var(--color-border-brand-default);
+  transition: background 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+
+  &:hover,
+  &:focus-visible {
+    background: var(--color-interaction-secondary-hover);
+  }
 }
 
 .mt-datepicker__hint {
-  font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
+  margin-top: var(--scale-size-4);
+  font-size: var(--font-size-xs);
   font-family: var(--font-family-body);
-  color: var(--color-text-tertiary-default);
+  color: var(--color-text-secondary-default);
   display: flex;
   align-items: center;
-  gap: var(--scale-size-8);
+  gap: var(--scale-size-4);
 }
 
-.mt-datepicker__hint-icon svg#meteor-icon-kit__solid-clock {
-  width: var(--scale-size-12);
-  height: var(--scale-size-12);
+.mt-datepicker__wrapper.has-error .dp__input {
+  border: 1px solid var(--color-border-critical-default);
+  background: var(--color-background-critical-dark);
 }
 </style>

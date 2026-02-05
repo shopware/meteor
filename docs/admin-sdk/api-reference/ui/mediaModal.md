@@ -1,6 +1,13 @@
 # Media modal
 
-The purpose of this method is to enable the app to interact with the Administration's media modal, specifically to open the modal and select media from it. This method is available in version 6.7.1
+This method allows an app to interact with the Administration's media modal, which includes the Media modal and the Save media modal.
+
+Functionality of each modal:
+- The Media modal is used for selecting existing media from the media library or uploading new media. This functionality has been available since version 6.7.1.
+
+- The Save media modal is used to choose a specific location to save the media, and this feature will be implemented in version 6.7.5.
+
+## Media modal
 
 ### Open modal
 
@@ -42,5 +49,45 @@ ui.mediaModal.open({
   allowMultiSelect: false,
   selectors: ["fileName", "id", "url"],
   callback: ({ fileName, id, url }) => {},
+});
+```
+
+## Save media modal
+
+### Open save media modal
+
+Open save media modal in the current view.
+
+#### Usage:
+
+```ts
+ui.mediaModal.openSaveMedia({
+  initialFolderId: "initialFolderId",
+  initialFileName: "New Image",
+  fileType: "png",
+  callback: ({ fileName, folderId, mediaId }) => {},
+});
+```
+
+#### Parameters
+
+All parameters are similar to `sw-media-save-modal` component's props
+
+| Name               | Required | Default                   | Description                                                                          |
+| :----------------- | :------- | :------------------------ | :----------------------------------------------------------------------------------- |
+| `initialFolderId`  | false    | null                      | Initial folder id where the media modal will open                                    |
+| `initialFileName`  | false    | null                      | Initial file name of media to set as initial value of file name input                                    |
+| `fileType`  | false    | null                      | File extension of media to display on file name input's suffix                                    |
+| `callback`         | true     |                           | This callback function is triggered when the "Save media" button is clicked. It returns the updated file name and the folderId where the media is stored.              |
+
+#### Example
+
+![Menu item example](./assets/save-media-modal.png)
+
+```ts
+ui.mediaModal.openSaveMedia({
+  initialFileName: "images",
+  fileType: "png",
+  callback: ({ fileName, folderId, mediaId }) => {},
 });
 ```

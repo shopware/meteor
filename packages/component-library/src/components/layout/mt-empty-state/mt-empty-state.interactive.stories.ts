@@ -41,6 +41,13 @@ VisualTestExtendedPage.play = async ({ canvasElement }) => {
   expect(canvas.getByText(Extended.args?.buttonText)).toBeVisible();
 };
 
+export const VisualTestDefaultPageCentered: StoryFn = Default.bind({});
+VisualTestDefaultPageCentered.storyName = "Render a default empty state centered";
+VisualTestDefaultPageCentered.args = {
+  ...Default.args,
+  centered: true,
+};
+
 export const VisualTestExtendedWithSlot: StoryObj<typeof MtEmptyState> = {
   args: {
     ...Extended.args,

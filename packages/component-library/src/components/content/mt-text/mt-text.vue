@@ -18,19 +18,28 @@ withDefaults(
     color?:
       | "color-text-primary-default"
       | "color-text-primary-disabled"
+      | "color-text-primary-inverse"
       | "color-text-secondary-default"
-      | "color-text-tertiary-default"
+      | "color-text-secondary-disabled"
+      | "color-text-secondary-inverse"
+      | "color-text-tertiary-default" // @deprecated tag:v5
       | "color-text-brand-default"
       | "color-text-brand-hover"
+      | "color-text-brand-pressed"
       | "color-text-brand-disabled"
+      | "color-text-brand-inverse"
       | "color-text-critical-default"
+      | "color-text-critical-hover"
+      | "color-text-critical-pressed"
       | "color-text-critical-disabled"
-      | "color-text-critical-dark"
-      | "color-text-attention-default"
-      | "color-text-positive-default"
+      | "color-text-critical-dark" // @deprecated tag:v5
+      | "color-text-attention-default" // @deprecated tag:v5
+      | "color-text-positive-default" // @deprecated tag:v5
       | "color-text-accent-default"
-      | "color-text-static-default"
-      | "color-text-inverse-default"
+      | "color-text-static-default" // @deprecated
+      | "color-text-inverse-default" // @deprecated
+      | "color-static-white"
+      | "color-static-black"
       | string;
     as?: string | Component;
   }>(),

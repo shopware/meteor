@@ -1,5 +1,164 @@
 # nuxt-app
 
+## 0.0.55
+
+### Patch Changes
+
+- Updated dependencies [[`20ecb82`](https://github.com/shopware/meteor/commit/20ecb8238c11ff548ea5f8fa91d12195dd6d02fe), [`869b2fc`](https://github.com/shopware/meteor/commit/869b2fc1c5cf05ad4911180093743c1fe5aa503d), [`ed55526`](https://github.com/shopware/meteor/commit/ed5552636ed84efed65274672ec5f7e3f7baaeeb), [`72586a8`](https://github.com/shopware/meteor/commit/72586a81aac5544b4e8c733e0d88aa4be560793b), [`69815ad`](https://github.com/shopware/meteor/commit/69815adc3af6badc5f4bad1fad331cca2c101124)]:
+  - @shopware-ag/meteor-component-library@4.25.0
+
+## 0.0.54
+
+### Patch Changes
+
+- Updated dependencies [bca848a]
+- Updated dependencies [9b3b208]
+- Updated dependencies [e14e664]
+- Updated dependencies [b4909d0]
+  - @shopware-ag/meteor-component-library@4.24.0
+
+## 0.0.53
+
+### Patch Changes
+
+- Updated dependencies [43795ed]
+- Updated dependencies [d209cdc]
+- Updated dependencies [bb08d97]
+  - @shopware-ag/meteor-component-library@4.23.0
+
+## 0.0.52
+
+### Patch Changes
+
+- Updated dependencies [9aa19e4]
+- Updated dependencies [3e475a8]
+- Updated dependencies [6467a01]
+- Updated dependencies [efce046]
+  - @shopware-ag/meteor-component-library@4.22.0
+
+## 0.0.51
+
+### Patch Changes
+
+- Updated dependencies [66de384]
+- Updated dependencies [3c80718]
+  - @shopware-ag/meteor-component-library@4.21.1
+
+## 0.0.50
+
+### Patch Changes
+
+- Updated dependencies [502e096]
+- Updated dependencies [a7d05e5]
+  - @shopware-ag/meteor-component-library@4.21.0
+
+## 0.0.49
+
+### Patch Changes
+
+- @shopware-ag/meteor-component-library@4.20.1
+
+## 0.0.48
+
+### Patch Changes
+
+- Updated dependencies [0623c6b]
+- Updated dependencies [863d58e]
+- Updated dependencies [0623c6b]
+- Updated dependencies [0623c6b]
+- Updated dependencies [8537be0]
+- Updated dependencies [0623c6b]
+  - @shopware-ag/meteor-component-library@4.20.0
+
+## 0.0.47
+
+### Patch Changes
+
+- Updated dependencies [eadd0c4]
+- Updated dependencies [462f4db]
+  - @shopware-ag/meteor-component-library@4.19.0
+
+## 0.0.46
+
+### Patch Changes
+
+- Updated dependencies [e50a2f8]
+- Updated dependencies [324a662]
+- Updated dependencies [864b75a]
+- Updated dependencies [a1a8ee8]
+- Updated dependencies [b183cb8]
+- Updated dependencies [350639a]
+- Updated dependencies [b8b71dd]
+- Updated dependencies [2846d01]
+- Updated dependencies [3360706]
+- Updated dependencies [e7491e2]
+- Updated dependencies [a375c4c]
+  - @shopware-ag/meteor-component-library@4.18.0
+
+## 0.0.45
+
+### Patch Changes
+
+- Updated dependencies [70666f2]
+- Updated dependencies [faac8e2]
+- Updated dependencies [8959aec]
+- Updated dependencies [3f8428c]
+  - @shopware-ag/meteor-component-library@4.17.0
+
+## 0.0.44
+
+### Patch Changes
+
+- Updated dependencies [3f0a32c]
+- Updated dependencies [9c4350b]
+  - @shopware-ag/meteor-component-library@4.16.1
+
+## 0.0.43
+
+### Patch Changes
+
+- Updated dependencies [67fa32b]
+- Updated dependencies [6e30862]
+  - @shopware-ag/meteor-component-library@4.16.0
+
+## 0.0.42
+
+### Patch Changes
+
+- Updated dependencies [0f4c732]
+- Updated dependencies [6cc0aab]
+- Updated dependencies [87cf138]
+- Updated dependencies [47c4e16]
+- Updated dependencies [06fe48f]
+- Updated dependencies [27cf4bf]
+- Updated dependencies [bc745ce]
+- Updated dependencies [0f4c732]
+- Updated dependencies [8e13247]
+- Updated dependencies [68c05cf]
+- Updated dependencies [50a3ab1]
+- Updated dependencies [0f4c732]
+- Updated dependencies [c0ec385]
+- Updated dependencies [ce4f3a2]
+- Updated dependencies [2620d2c]
+- Updated dependencies [6b1a724]
+- Updated dependencies [4092483]
+- Updated dependencies [0f4c732]
+- Updated dependencies [8aadd9d]
+  - @shopware-ag/meteor-component-library@4.15.0
+
+## 0.0.41
+
+### Patch Changes
+
+- Updated dependencies [d09f56f]
+- Updated dependencies [2dfd85a]
+- Updated dependencies [2dfd85a]
+- Updated dependencies [cf0626a]
+- Updated dependencies [333ac4c]
+- Updated dependencies [2dfd85a]
+- Updated dependencies [e78c40a]
+  - @shopware-ag/meteor-component-library@4.14.0
+
 ## 0.0.40
 
 ### Patch Changes

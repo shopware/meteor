@@ -233,6 +233,23 @@ export const VisualTestFullWidthModal = {
   }),
 };
 
+export const VisualTestHideHeader = {
+  name: "Render the modal with hidden header",
+  args: {
+    hideHeader: true,
+  },
+  render: (args: unknown) => ({
+    components: { MtModal, MtModalRoot, MtButton, MtText },
+    setup() {
+      return {
+        args,
+      };
+    },
+    template:
+      "<mt-modal-root isOpen><mt-modal v-bind='args'><template #default><mt-text>Lorem ipsum dolor sit amet</mt-text></template><template #footer><div style='width: 100%; display: flex; justify-content: flex-end;'><mt-button variant='primary'>Continue</mt-button></div></template></mt-modal></mt-modal-root>",
+  }),
+};
+
 export const VisualTestTooltipInModal = defineStory({
   name: "Renders a tooltip in the modal",
   render: (args: unknown) => ({

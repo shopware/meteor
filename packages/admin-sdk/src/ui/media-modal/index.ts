@@ -1,6 +1,7 @@
 import { createSender } from '../../channel';
 
 export const open = createSender('uiMediaModalOpen');
+export const openSaveMedia = createSender('uiMediaModalOpenSaveMedia');
 
 export type uiMediaModalOpen = {
     responseType: void,
@@ -37,4 +38,12 @@ export type uiMediaModalOpen = {
      * Callback function which will be called once the media item is selected.
      */
     callback: (mediaSelections: unknown[]) => void,
+}
+
+export type uiMediaModalOpenSaveMedia = {
+  responseType: void,
+  initialFolderId?: string,
+  initialFileName?: string,
+  fileType?: string,
+  callback: (params: { fileName: string, folderId: string, mediaId?: string }) => void,
 }

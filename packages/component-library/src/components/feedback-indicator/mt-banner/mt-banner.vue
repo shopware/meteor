@@ -139,6 +139,10 @@ const bodyClasses = computed(() => ({
   gap: var(--scale-size-4);
 }
 
+.mt-banner__message {
+  color: var(--color-text-primary-default);
+}
+
 .mt-banner__icon {
   width: var(--scale-size-20);
   height: var(--scale-size-20);
@@ -152,12 +156,12 @@ const bodyClasses = computed(() => ({
   margin-right: calc(var(--scale-size-8) * -1);
 
   &:focus-visible {
-    outline: 2px solid var(--color-border-brand-selected);
+    outline: 2px solid var(--color-border-brand-default);
   }
 }
 
 .mt-banner--info {
-  border-color: var(--color-border-brand-selected);
+  border-color: var(--color-border-brand-default);
   background-color: var(--color-background-brand-default);
 
   & :is(.mt-banner__icon, .mt-banner__close) {
@@ -203,7 +207,7 @@ const bodyClasses = computed(() => ({
 
 .mt-banner--neutral {
   border-color: var(--color-border-primary-default);
-  background-color: var(--color-elevation-surface-overlay);
+  background-color: var(--color-background-secondary-default);
 
   & :is(.mt-banner__icon, .mt-banner__close) {
     color: var(--color-icon-primary-default);

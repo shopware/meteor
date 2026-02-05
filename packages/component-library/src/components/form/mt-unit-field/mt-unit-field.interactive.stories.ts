@@ -50,3 +50,25 @@ export const VisualTestUnitConversion: MtUnitFieldStory = {
     expect(input.value).toBe("100");
   },
 };
+
+export const VisualTestErrorState: MtUnitFieldStory = {
+  name: "Should display error state",
+  args: {
+    label: "Unit field with error",
+    error: { code: 500, detail: "Error while saving" },
+    modelValue: 100,
+    defaultUnit: "mm",
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    const errorDetail = (args.error as { detail: string }).detail;
+
+    // Check that the error message is visible
+    const errorMessage = canvas.getByText(errorDetail);
+    expect(errorMessage).toBeVisible();
+
+    // Verify the error detail text matches exactly
+    expect(errorMessage).toHaveTextContent(errorDetail);
+  },
+};

@@ -135,6 +135,57 @@ export const VisualTestBorderedError: MtCheckboxStory = {
   },
 };
 
+export const VisualTestModelCheckable: MtCheckboxStory = {
+  name: "Should emit update:modelValue when checking",
+  args: {
+    label: "Model checkable",
+    modelValue: false,
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    await userEvent.click(canvas.getByRole("checkbox"));
+
+    expect((canvas.getByRole("checkbox") as HTMLInputElement).checked).toBe(true);
+    expect((args as any).updateModelValue).toHaveBeenCalledWith(true);
+  },
+};
+
+export const VisualTestModelUncheckable: MtCheckboxStory = {
+  name: "Should emit update:modelValue when unchecking",
+  args: {
+    label: "Model uncheckable",
+    modelValue: true,
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    await userEvent.click(canvas.getByRole("checkbox"));
+
+    expect((canvas.getByRole("checkbox") as HTMLInputElement).checked).toBe(false);
+    expect((args as any).updateModelValue).toHaveBeenCalledWith(false);
+  },
+};
+
+export const VisualTestModelDisabled: MtCheckboxStory = {
+  name: "Should not emit update:modelValue when disabled",
+  args: {
+    label: "Model disabled",
+    modelValue: true,
+    disabled: true,
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    expect((canvas.getByRole("checkbox") as HTMLInputElement).checked).toBe(true);
+
+    await userEvent.click(canvas.getByRole("checkbox"));
+
+    expect((canvas.getByRole("checkbox") as HTMLInputElement).checked).toBe(true);
+    expect((args as any).updateModelValue).not.toHaveBeenCalled();
+  },
+};
+
 export const VisualTestHelpText: MtCheckboxStory = {
   name: "Help text should be displayed",
   args: {

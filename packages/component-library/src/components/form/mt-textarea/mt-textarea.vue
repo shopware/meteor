@@ -2,7 +2,7 @@
   <div class="mt-textarea">
     <mt-field-label
       v-if="!!label"
-      :id="id"
+      :for="id"
       :required="required"
       :has-error="!!error && !!error.detail"
       :inheritance="!isInheritanceField ? 'none' : isInherited ? 'linked' : 'unlinked'"
@@ -123,12 +123,12 @@ defineProps<{
   border-radius: var(--border-radius-xs);
   padding: var(--scale-size-12) var(--scale-size-16);
   grid-area: textarea;
-  background-color: var(--color-elevation-surface-raised);
+  background-color: var(--color-background-primary-default);
   outline: none;
 
   &:focus-visible:not(.mt-textarea__textarea--error) {
-    border-color: var(--color-border-brand-selected);
-    box-shadow: 0px 0px 4px 0px rgba(24, 158, 255, 0.3);
+    outline: var(--scale-size-2) solid var(--color-border-brand-default);
+    outline-offset: var(--scale-size-2);
   }
 
   &::placeholder {
@@ -137,14 +137,14 @@ defineProps<{
 
   &:disabled {
     color: var(--color-text-primary-disabled);
-    background-color: var(--color-background-primary-disabled);
+    background-color: var(--color-background-tertiary-default);
     cursor: not-allowed;
   }
 }
 
 .mt-textarea__textarea--error {
   border-color: var(--color-border-critical-default);
-  background-color: var(--color-background-critical-dark);
+  background-color: var(--color-background-critical-default);
 }
 
 .mt-textarea__hint {
@@ -152,7 +152,7 @@ defineProps<{
   font-family: var(--font-family-body);
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
-  color: var(--color-text-tertiary-default);
+  color: var(--color-text-secondary-default);
   margin-top: var(--scale-size-4);
 }
 
@@ -162,7 +162,7 @@ defineProps<{
   font-family: var(--font-family-body);
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
-  color: var(--color-text-tertiary-default);
+  color: var(--color-text-secondary-default);
   margin-top: var(--scale-size-4);
 }
 </style>

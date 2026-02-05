@@ -28,7 +28,7 @@
         <slot name="subtitle">
           <MtText
             v-if="subtitle"
-            color="color-text-tertiary-default"
+            color="color-text-secondary-default"
             size="xs"
             class="mt-card__subtitle"
           >
@@ -181,9 +181,8 @@ const cardClasses = computed(() => ({
   margin: 0 auto var(--scale-size-40);
   position: relative;
   background: var(--color-elevation-surface-raised);
-  border: 1px solid var(--color-border-primary-default);
+  border: 1px solid var(--color-border-secondary-default);
   border-radius: var(--border-radius-card); /* Added here */
-  overflow: hidden;
 
   &:not(:has(.mt-card__tabs:empty)) .mt-card__header {
     border-bottom: none;
@@ -195,9 +194,15 @@ const cardClasses = computed(() => ({
 }
 
 .mt-card__content {
+  --mt-card-content-padding: var(--scale-size-24);
+  --mt-inset-block-start: var(--mt-card-content-padding);
+  --mt-inset-block-end: var(--mt-card-content-padding);
+  --mt-inset-inline-start: var(--mt-card-content-padding);
+  --mt-inset-inline-end: var(--mt-card-content-padding);
+
   display: flow-root;
   flex-basis: 100%;
-  padding: var(--scale-size-24);
+  padding: var(--mt-card-content-padding);
   background-clip: padding-box;
   position: relative;
   color: var(--color-text-primary-default);
@@ -311,7 +316,7 @@ const cardClasses = computed(() => ({
   align-items: stretch;
   gap: var(--scale-size-12);
   padding: var(--scale-size-24);
-  border-bottom: 1px solid var(--color-border-primary-default);
+  border-bottom: 1px solid var(--color-border-secondary-default);
 }
 
 .mt-card__title {
@@ -349,11 +354,11 @@ const cardClasses = computed(() => ({
 .mt-card__inheritance-toggle {
   cursor: pointer;
   outline-offset: 2px;
-  outline-color: var(--color-border-brand-selected);
+  outline-color: var(--color-border-brand-default);
   color: var(--color-icon-primary-default);
 
   &:focus-visible {
-    outline: 2px solid var(--color-border-brand-selected);
+    outline: 2px solid var(--color-border-brand-default);
     outline-offset: 2px;
     border-radius: var(--border-radius-button);
   }
@@ -374,7 +379,6 @@ const cardClasses = computed(() => ({
 
   display: flex;
   padding: var(--mt-card-footer-padding);
-  border-top: 1px solid var(--color-border-primary-default);
   color: var(--color-text-secondary-default);
 
   &:empty {

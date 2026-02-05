@@ -4,101 +4,142 @@
       "primary": {
         "default": {
           "$value": "{color.brand.500}",
-          "$type": "color"
+          "$type": "color",
+          "$description": "Use for resting primary interactive elements."
         },
         "hover": {
-          "$value": "{color.brand.700}",
-          "$type": "color"
-        },
-        "disabled": {
-          "$value": "{color.brand.300}",
-          "$type": "color"
+          "$value": "{color.brand.600}",
+          "$type": "color",
+          "$description": "Use for hovered primary interactive elements."
         },
         "pressed": {
-          "$value": "{color.brand.600}",
-          "$type": "color"
+          "$value": "{color.brand.700}",
+          "$type": "color",
+          "$description": "Use for pressed (active) primary interactive elements."
+        },
+        "disabled": {
+          "$value": "{color.brand.800}",
+          "$type": "color",
+          "$description": "Use for disabled primary interactive elements."
         }
       },
       "secondary": {
         "default": {
-          "$value": "{color.zinc.850}",
-          "$type": "color"
+          "$value": "{color.zinc.900}",
+          "$type": "color",
+          "$description": "Use for resting secondary interactive elements."
         },
         "hover": {
+          "$value": "{color.zinc.850}",
+          "$type": "color",
+          "$description": "Use for hovered secondary interactive elements."
+        },
+        "pressed": {
           "$value": "{color.zinc.800}",
-          "$type": "color"
+          "$type": "color",
+          "$description": "Use for pressed (active) secondary interactive elements."
         },
         "disabled": {
           "$value": "{color.zinc.700}",
-          "$type": "color"
+          "$type": "color",
+          "$description": "Use for disabled secondary interactive elements."
         },
         "dark": {
           "$value": "{color.zinc.800}",
-          "$type": "color"
+          "$type": "color",
+          "$description": "Deprecated: Please use `color/interaction/secondary/default` for interactive elements and `color/background/tertiary/default` for non-interactive elements instead."
         }
       },
       "critical": {
         "default": {
           "$value": "{color.red.500}",
-          "$type": "color"
+          "$type": "color",
+          "$description": "Use for resting critical interactive elements."
         },
         "hover": {
-          "$value": "{color.red.700}",
-          "$type": "color"
-        },
-        "disabled": {
-          "$value": "{color.red.200}",
-          "$type": "color"
+          "$value": "{color.red.600}",
+          "$type": "color",
+          "$description": "Use for hovered critical interactive elements."
         },
         "pressed": {
-          "$value": "{color.red.600}",
-          "$type": "color"
+          "$value": "{color.red.700}",
+          "$type": "color",
+          "$description": "Use for pressed (active) critical interactive elements."
+        },
+        "disabled": {
+          "$value": "{color.red.800}",
+          "$type": "color",
+          "$description": "Use for disabled critical interactive elements."
         }
       }
     },
     "elevation": {
       "surface": {
         "sunken": {
-          "$value": "{color.zinc.975}",
-          "$type": "color"
+          "$value": "{color.zinc.1000}",
+          "$type": "color",
+          "$description": "Use for surfaces of visually sunken elements like highlighted or separated areas within other surfaces."
         },
         "default": {
-          "$value": "{color.zinc.950}",
-          "$type": "color"
+          "$value": "{color.zinc.975}",
+          "$type": "color",
+          "$description": "Use for main application or page backgrounds."
         },
         "selected": {
           "$value": "{color.zinc.800}",
-          "$type": "color"
+          "$type": "color",
+          "$description": "Deprecated: There is no direct replacement."
         },
         "hover": {
           "$value": "{color.zinc.700}",
-          "$type": "color"
+          "$type": "color",
+          "$description": "Deprecated: There is no direct replacement."
         },
         "raised": {
-          "$value": "{color.zinc.900}",
-          "$type": "color"
+          "$value": "{color.zinc.950}",
+          "$type": "color",
+          "$description": "Use for surfaces of visually raised elements like cards or similar."
         },
         "overlay": {
           "$value": "{color.zinc.850}",
-          "$type": "color"
+          "$type": "color",
+          "$description": "Deprecated: Please use `color/elevation/surface/raised` for large elements and `color/background/primary/default` for small and form elements instead."
         },
         "frame": {
           "$value": "{color.zinc.900}",
-          "$type": "color"
+          "$type": "color",
+          "$description": "Deprecated: There is no direct replacement."
         },
         "backdrop": {
           "$value": "{color.zinc.975}",
-          "$type": "color"
+          "$type": "color",
+          "$description": "Deprecated: Please use `color/elevation/backdrop/default` instead."
         },
         "floating": {
-          "$value": "#ffffff",
-          "$type": "color"
+          "$value": "{color.elevation.floating.default}",
+          "$type": "color",
+          "$description": "Deprecated: Please use `color/elevation/floating/default` instead."
+        }
+      },
+      "backdrop": {
+        "default": {
+          "$value": "#10101399",
+          "$type": "color",
+          "$description": "Use for elements that overlay large portions of the application while a modal or similar is open."
+        }
+      },
+      "floating": {
+        "default": {
+          "$value": "{color.zinc.0}",
+          "$type": "color",
+          "$description": "Use for floating elements such as tooltips that require high emphasis against the application colors."
         }
       },
       "shadow": {
         "default": {
-          "$value": "{color.zinc.975}",
-          "$type": "color"
+          "$value": "#1010131a",
+          "$type": "color",
+          "$description": "Use for shadow of elevated elements like modals, popovers or similar."
         }
       }
     },
@@ -106,119 +147,182 @@
       "primary": {
         "default": {
           "$value": "{color.zinc.900}",
-          "$type": "color"
+          "$type": "color",
+          "$description": "Use for background of neutral elements."
         },
         "disabled": {
+          "$value": "{color.background.tertiary.default}",
+          "$type": "color",
+          "$description": "Deprecated: Please use `color/background/tertiary/default` instead."
+        }
+      },
+      "secondary": {
+        "default": {
+          "$value": "{color.zinc.850}",
+          "$type": "color",
+          "$description": "Use for background of neutral elements."
+        }
+      },
+      "tertiary": {
+        "default": {
           "$value": "{color.zinc.800}",
-          "$type": "color"
+          "$type": "color",
+          "$description": "Use for background of neutral elements or for elements in a disabled state."
         }
       },
       "brand": {
         "default": {
-          "$value": "{color.brand.800}",
-          "$type": "color"
+          "$value": "{color.brand.900}",
+          "$type": "color",
+          "$description": "Use for background of elements in an information state."
         }
       },
       "critical": {
         "default": {
-          "$value": "{color.red.800}",
-          "$type": "color"
+          "$value": "{color.red.900}",
+          "$type": "color",
+          "$description": "Use for background of elements in critical or error states."
         },
         "dark": {
-          "$value": "{color.red.900}",
-          "$type": "color"
+          "$value": "{color.background.critical.default}",
+          "$type": "color",
+          "$description": "Deprecated: Please use `color/background/critical/default` instead."
         }
       },
       "attention": {
         "default": {
-          "$value": "{color.orange.800}",
-          "$type": "color"
+          "$value": "{color.orange.900}",
+          "$type": "color",
+          "$description": "Use for background of elements in attention or warning states."
         }
       },
       "positive": {
         "default": {
-          "$value": "{color.green.800}",
-          "$type": "color"
+          "$value": "{color.green.900}",
+          "$type": "color",
+          "$description": "Use for background of elements in positive or success states."
         }
       },
       "accent": {
         "default": {
-          "$value": "{color.purple.800}",
-          "$type": "color"
+          "$value": "{color.purple.900}",
+          "$type": "color",
+          "$description": "Use for background of elements indicating Shopware’s inheritance behavior."
         }
       }
     },
     "icon": {
       "primary": {
         "default": {
-          "$value": "{color.zinc.100}",
-          "$type": "color"
+          "$value": "{color.zinc.50}",
+          "$type": "color",
+          "$description": "Use for icons."
         },
         "disabled": {
-          "$value": "{color.zinc.500}",
-          "$type": "color"
+          "$value": "{color.zinc.600}",
+          "$type": "color",
+          "$description": "Use for disabled icons."
+        },
+        "inverse": {
+          "$value": "{color.zinc.900}",
+          "$type": "color",
+          "$description": "Use for icons on inverse backgrounds."
+        }
+      },
+      "secondary": {
+        "default": {
+          "$value": "{color.zinc.400}",
+          "$type": "color",
+          "$description": "Use for secondary icons."
+        },
+        "disabled": {
+          "$value": "{color.zinc.600}",
+          "$type": "color",
+          "$description": "Use for disabled secondary icons."
+        },
+        "inverse": {
+          "$value": "{color.zinc.600}",
+          "$type": "color",
+          "$description": "Use for secondary icons on inverse backgrounds."
         }
       },
       "brand": {
         "default": {
           "$value": "{color.brand.500}",
-          "$type": "color"
+          "$type": "color",
+          "$description": "Use for icons indicating an information state."
         },
         "hover": {
+          "$value": "{color.brand.600}",
+          "$type": "color",
+          "$description": "Use for icons indicating a hovered information state."
+        },
+        "pressed": {
           "$value": "{color.brand.700}",
-          "$type": "color"
+          "$type": "color",
+          "$description": "Use for icons indicating a pressed (active) information state."
         },
         "disabled": {
-          "$value": "{color.brand.300}",
-          "$type": "color"
+          "$value": "{color.brand.700}",
+          "$type": "color",
+          "$description": "Use for icons indicating a disabled information state."
         }
       },
       "critical": {
         "default": {
-          "$value": "{color.red.400}",
-          "$type": "color"
+          "$value": "{color.red.500}",
+          "$type": "color",
+          "$description": "Use for icons indicating critical or error states."
         },
         "hover": {
-          "$value": "{color.red.700}",
-          "$type": "color"
+          "$value": "{color.red.600}",
+          "$type": "color",
+          "$description": "Deprecated: There is no direct replacement. Icons in links should use the corresponding text color."
         },
         "disabled": {
-          "$value": "{color.red.300}",
-          "$type": "color"
+          "$value": "{color.red.800}",
+          "$type": "color",
+          "$description": "Use for icons indicating disabled, critical or error states."
         }
       },
       "attention": {
         "default": {
           "$value": "{color.orange.400}",
-          "$type": "color"
+          "$type": "color",
+          "$description": "Use for icons indicating attention or warning states."
         }
       },
       "positive": {
         "default": {
           "$value": "{color.green.400}",
-          "$type": "color"
+          "$type": "color",
+          "$description": "Use for icons indicating positive or success states."
         }
       },
       "accent": {
         "default": {
           "$value": "{color.purple.400}",
-          "$type": "color"
+          "$type": "color",
+          "$description": "Use for icons indicating Shopware’s inheritance behavior."
         }
       },
       "static": {
         "default": {
-          "$value": "{color.zinc.100}",
-          "$type": "color"
+          "$value": "{color.static.white}",
+          "$type": "color",
+          "$description": "Deprecated: Please use `color/static/white` instead."
         },
         "dark": {
-          "$value": "{color.zinc.975}",
-          "$type": "color"
+          "$value": "{color.static.black}",
+          "$type": "color",
+          "$description": "Deprecated: Please use `color/static/black` instead."
         }
       },
       "inverse": {
         "default": {
-          "$value": "{color.zinc.850}",
-          "$type": "color"
+          "$value": "{color.icon.primary.inverse}",
+          "$type": "color",
+          "$description": "Deprecated: Please use `color/icon/primary/inverse` instead."
         }
       }
     },
@@ -226,154 +330,220 @@
       "primary": {
         "default": {
           "$value": "{color.zinc.700}",
-          "$type": "color"
+          "$type": "color",
+          "$description": "Use for border of elements with high emphasis like secondary buttons, form fields or similar."
         }
       },
       "secondary": {
         "default": {
-          "$value": "{color.zinc.800}",
-          "$type": "color"
+          "$value": "{color.zinc.850}",
+          "$type": "color",
+          "$description": "Use for border of elements with low emphasis like sections dividers, cards, sidebars or similar."
         }
       },
       "brand": {
         "selected": {
-          "$value": "{color.brand.500}",
-          "$type": "color"
+          "$value": "{color.border.brand.default}",
+          "$type": "color",
+          "$description": "Deprecated: Please use `color/border/brand/default` instead."
         },
         "default": {
-          "$value": "{color.brand.800}",
-          "$type": "color"
+          "$value": "{color.brand.500}",
+          "$type": "color",
+          "$description": "Use for border of focused, selected or brand-highlighted elements."
         },
         "disabled": {
-          "$value": "{color.brand.300}",
-          "$type": "color"
+          "$value": "{color.brand.700}",
+          "$type": "color",
+          "$description": "Use for border of disabled brand-highlighted elements."
         }
       },
       "critical": {
         "default": {
-          "$value": "{color.red.400}",
-          "$type": "color"
+          "$value": "{color.red.500}",
+          "$type": "color",
+          "$description": "Use for border of elements in critical or error states."
         },
         "dark": {
           "$value": "{color.red.800}",
-          "$type": "color"
+          "$type": "color",
+          "$description": "Deprecated: Please use `color/border/critical/default` instead."
         },
         "disabled": {
-          "$value": "{color.red.300}",
-          "$type": "color"
+          "$value": "{color.red.700}",
+          "$type": "color",
+          "$description": "Use for border of elements in disabled, critical or error states."
         }
       },
       "attention": {
         "default": {
-          "$value": "{color.orange.500}",
-          "$type": "color"
+          "$value": "{color.orange.600}",
+          "$type": "color",
+          "$description": "Use for border of elements in attention or warning states."
         }
       },
       "positive": {
         "default": {
-          "$value": "{color.green.500}",
-          "$type": "color"
+          "$value": "{color.green.600}",
+          "$type": "color",
+          "$description": "Use for border of elements in positive or success states."
         }
       },
       "accent": {
         "default": {
-          "$value": "{color.purple.500}",
-          "$type": "color"
+          "$value": "{color.purple.600}",
+          "$type": "color",
+          "$description": "Use for border of elements indicating Shopware’s inheritance behavior."
         }
       }
     },
     "text": {
       "primary": {
         "default": {
-          "$value": "{color.zinc.100}",
-          "$type": "color"
+          "$value": "{color.zinc.50}",
+          "$type": "color",
+          "$description": "Use for high-emphasis text like body copy and headlines."
         },
         "disabled": {
-          "$value": "{color.zinc.500}",
-          "$type": "color"
+          "$value": "{color.zinc.600}",
+          "$type": "color",
+          "$description": "Use for text indicating disabled states of parent elements."
+        },
+        "inverse": {
+          "$value": "{color.zinc.900}",
+          "$type": "color",
+          "$description": "Use for text on inverse backgrounds."
         }
       },
       "secondary": {
         "default": {
           "$value": "{color.zinc.400}",
-          "$type": "color"
+          "$type": "color",
+          "$description": "Use for supporting or secondary text content."
         },
         "disabled": {
-          "$value": "{color.zinc.500}",
-          "$type": "color"
+          "$value": "{color.zinc.600}",
+          "$type": "color",
+          "$description": "Use for supporting or secondary text content in disabled parent elements."
+        },
+        "inverse": {
+          "$value": "{color.zinc.600}",
+          "$type": "color",
+          "$description": "Use for secondary text on inverse backgrounds."
         }
       },
       "tertiary": {
         "default": {
-          "$value": "{color.zinc.300}",
-          "$type": "color"
+          "$value": "{color.text.secondary.default}",
+          "$type": "color",
+          "$description": "Deprecated: Please use `color/text/secondary/default` instead."
         }
       },
       "brand": {
         "default": {
-          "$value": "{color.brand.500}",
-          "$type": "color"
+          "$value": "{color.brand.400}",
+          "$type": "color",
+          "$description": "Use for text indicating a link or action."
         },
         "hover": {
-          "$value": "{color.brand.700}",
-          "$type": "color"
+          "$value": "{color.brand.500}",
+          "$type": "color",
+          "$description": "Use for hovered text indicating a link or action."
+        },
+        "pressed": {
+          "$value": "{color.brand.600}",
+          "$type": "color",
+          "$description": "Use for pressed (active) text indicating a link or action."
         },
         "disabled": {
-          "$value": "{color.brand.300}",
-          "$type": "color"
+          "$value": "{color.brand.700}",
+          "$type": "color",
+          "$description": "Use for disabled text indicating a link or action."
+        },
+        "inverse": {
+          "$value": "{color.brand.500}",
+          "$type": "color",
+          "$description": "Use for text indicating a link or interaction on inverse backgrounds."
         }
       },
       "critical": {
         "default": {
           "$value": "{color.red.400}",
-          "$type": "color"
+          "$type": "color",
+          "$description": "Use for text indicating critical or error states or an action."
         },
         "hover": {
-          "$value": "{color.red.700}",
-          "$type": "color"
+          "$value": "{color.red.500}",
+          "$type": "color",
+          "$description": "Use for hovered text indicating critical or error states or an action."
+        },
+        "pressed": {
+          "$value": "{color.red.600}",
+          "$type": "color",
+          "$description": "Use for pressed (active) text indicating critical or error states or an action."
         },
         "disabled": {
-          "$value": "{color.red.300}",
-          "$type": "color"
+          "$value": "{color.red.700}",
+          "$type": "color",
+          "$description": "Use for disabled text indicating critical or error states or an action."
         },
         "dark": {
-          "$value": "{color.red.100}",
-          "$type": "color"
+          "$value": "{color.text.critical.default}",
+          "$type": "color",
+          "$description": "Deprecated: Please use `color/text/critical/default` instead."
         }
       },
       "attention": {
         "default": {
           "$value": "{color.orange.50}",
-          "$type": "color"
+          "$type": "color",
+          "$description": "Deprecated: There is no direct replacement."
         }
       },
       "positive": {
         "default": {
           "$value": "{color.green.50}",
-          "$type": "color"
+          "$type": "color",
+          "$description": "Deprecated: There is no direct replacement."
         }
       },
       "accent": {
         "default": {
           "$value": "{color.purple.400}",
-          "$type": "color"
+          "$type": "color",
+          "$description": "Use for text indicating Shopware’s inheritance behavior."
         }
       },
       "static": {
         "default": {
-          "$value": "{color.zinc.0}",
-          "$type": "color"
+          "$value": "{color.static.white}",
+          "$type": "color",
+          "$description": "Deprecated: Please use `color/static/white` instead."
         },
         "dark": {
-          "$value": "{color.zinc.975}",
-          "$type": "color"
+          "$value": "{color.static.black}",
+          "$type": "color",
+          "$description": "Deprecated: Please use `color/static/black` instead."
         }
       },
       "inverse": {
         "default": {
-          "$value": "{color.zinc.850}",
-          "$type": "color"
+          "$value": "{color.text.primary.inverse}",
+          "$type": "color",
+          "$description": "Deprecated: Please use `color/text/primary/inverse` instead."
         }
+      }
+    },
+    "static": {
+      "white": {
+        "$value": "{color.zinc.0}",
+        "$type": "color",
+        "$description": "Use for elements unaffected by theme changes with white color."
+      },
+      "black": {
+        "$value": "{color.zinc.1000}",
+        "$type": "color",
+        "$description": "Use for elements unaffected by theme changes with almost black color."
       }
     }
   },
@@ -381,160 +551,197 @@
     "family": {
       "headings": {
         "$value": "Inter",
-        "$type": "string"
+        "$type": "string",
+        "$description": "Use for headings."
       },
       "body": {
         "$value": "Inter",
-        "$type": "string"
+        "$type": "string",
+        "$description": "Use for body text."
       }
     },
     "size": {
       "2xs": {
         "$value": "{scale.size.12}",
-        "$type": "float"
+        "$type": "float",
+        "$description": "Use for supporting text content."
       },
       "xs": {
         "$value": "{scale.size.14}",
-        "$type": "float"
+        "$type": "float",
+        "$description": "Use for body copy."
       },
       "s": {
         "$value": "{scale.size.16}",
-        "$type": "float"
+        "$type": "float",
+        "$description": "Use for slightly larger body copy or small headlines."
       },
       "m": {
         "$value": "{scale.size.18}",
-        "$type": "float"
+        "$type": "float",
+        "$description": "Use for headlines separating content sections from each other like cards or similar."
       },
       "l": {
         "$value": "{scale.size.20}",
-        "$type": "float"
+        "$type": "float",
+        "$description": "Use for headlines introducing pages or larger groups of content."
       },
       "xl": {
         "$value": "{scale.size.24}",
-        "$type": "float"
+        "$type": "float",
+        "$description": "Use for headlines in larger marketing elements."
       },
       "2xl": {
         "$value": "{scale.size.28}",
-        "$type": "float"
+        "$type": "float",
+        "$description": "Use for headlines in larger marketing elements."
       },
       "3xl": {
         "$value": "{scale.size.32}",
-        "$type": "float"
+        "$type": "float",
+        "$description": "Use for headlines in larger marketing elements."
       }
     },
     "weight": {
       "regular": {
         "$value": "{font.weight.400}",
-        "$type": "float"
+        "$type": "float",
+        "$description": "Use for text with default emphasis."
       },
       "medium": {
         "$value": "{font.weight.500}",
-        "$type": "float"
+        "$type": "float",
+        "$description": "Use for text with slightly higher emphasis."
       },
       "semibold": {
         "$value": "{font.weight.600}",
-        "$type": "float"
+        "$type": "float",
+        "$description": "Use for text with high emphasis."
       },
       "bold": {
         "$value": "{font.weight.700}",
-        "$type": "float"
+        "$type": "float",
+        "$description": "Use for text with highest emphasis."
       }
     },
     "line-height": {
       "2xs": {
         "$value": "{scale.size.18}",
-        "$type": "float"
+        "$type": "float",
+        "$description": "Use for the line height for text size 2xs."
       },
       "xs": {
         "$value": "{scale.size.22}",
-        "$type": "float"
+        "$type": "float",
+        "$description": "Use for the line height for text size xs."
       },
       "s": {
         "$value": "{scale.size.26}",
-        "$type": "float"
+        "$type": "float",
+        "$description": "Use for the line height for text size s."
       },
       "m": {
         "$value": "{scale.size.28}",
-        "$type": "float"
+        "$type": "float",
+        "$description": "Use for the line height for text size m."
       },
       "l": {
         "$value": "{scale.size.30}",
-        "$type": "float"
+        "$type": "float",
+        "$description": "Use for the line height for text size l."
       },
       "xl": {
         "$value": "{scale.size.32}",
-        "$type": "float"
+        "$type": "float",
+        "$description": "Use for the line height for text size xl."
       },
       "2xl": {
         "$value": "{scale.size.36}",
-        "$type": "float"
+        "$type": "float",
+        "$description": "Use for the line height for text size 2xl."
       },
       "3xl": {
         "$value": "{scale.size.40}",
-        "$type": "float"
+        "$type": "float",
+        "$description": "Use for the line height for text size 3xl."
       }
     }
   },
   "border-radius": {
     "card": {
       "$value": "{border-radius.m}",
-      "$type": "float"
+      "$type": "float",
+      "$description": "Use for border radius of cards or similar."
     },
     "overlay": {
       "$value": "{border-radius.xs}",
-      "$type": "float"
+      "$type": "float",
+      "$description": "Deprecated: Please use `border radius/xs` instead."
     },
     "button": {
       "$value": "{border-radius.xs}",
-      "$type": "float"
+      "$type": "float",
+      "$description": "Use for border radius of buttons or similar."
     },
     "checkbox": {
       "$value": "{border-radius.xs}",
-      "$type": "float"
+      "$type": "float",
+      "$description": "Use for border radius of checkboxes or similar."
     },
     "none": {
       "$value": "{scale.size.0}",
-      "$type": "float"
+      "$type": "float",
+      "$description": "Use for elements that should not have a border radius applied."
     },
     "2xs": {
       "$value": "{scale.size.2}",
-      "$type": "float"
+      "$type": "float",
+      "$description": "Use for border radius of extra small elements."
     },
     "xs": {
       "$value": "{scale.size.4}",
-      "$type": "float"
+      "$type": "float",
+      "$description": "Use for border radius of small elements."
     },
     "s": {
       "$value": "{scale.size.6}",
-      "$type": "float"
+      "$type": "float",
+      "$description": "Use for border radius of larger elements."
     },
     "m": {
       "$value": "{scale.size.8}",
-      "$type": "float"
+      "$type": "float",
+      "$description": "Use for border radius of medium sized elements."
     },
     "l": {
       "$value": "{scale.size.12}",
-      "$type": "float"
+      "$type": "float",
+      "$description": "Use for border radius of large elements."
     },
     "xl": {
       "$value": "{scale.size.16}",
-      "$type": "float"
+      "$type": "float",
+      "$description": "Use for border radius of extra large elements."
     },
     "2xl": {
       "$value": "{scale.size.20}",
-      "$type": "float"
+      "$type": "float",
+      "$description": "Use for border radius of extra large elements."
     },
     "3xl": {
       "$value": "{scale.size.24}",
-      "$type": "float"
+      "$type": "float",
+      "$description": "Use for border radius of extra large elements."
     },
     "4xl": {
       "$value": "{scale.size.32}",
-      "$type": "float"
+      "$type": "float",
+      "$description": "Use for border radius of extra large elements."
     },
     "round": {
       "$value": "{scale.size.9999}",
-      "$type": "float"
+      "$type": "float",
+      "$description": "Use for border radius of fully rounded elements like pills or similar."
     }
   }
 }

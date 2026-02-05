@@ -4,6 +4,22 @@ import { vi } from "vitest";
 import { userEvent } from "@testing-library/user-event";
 
 describe("mt-button", () => {
+  it("can be used as a link", () => {
+    // ARRANGE
+    render(MtButton, {
+      props: {
+        is: "a",
+      },
+      attrs: {
+        href: "https://storybook.js.org",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("link")).toBeVisible();
+    expect(screen.getByRole("link")).toHaveAttribute("href", "https://storybook.js.org");
+  });
+
   it("emits an focus event when focusing on a button", async () => {
     // ARRANGE
     const handler = vi.fn();

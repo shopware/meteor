@@ -1,25 +1,34 @@
 <template>
-  <div
-    class="mt-progress-bar"
-    role="progressbar"
-    :aria-valuenow="model"
-    :aria-valuemax="maxValue"
-    aria-label="Current progress"
-  >
-    <mt-field-label id="some-id" :style="{ gridArea: 'label' }">{{ label }}</mt-field-label>
+  <div class="mt-progress-bar">
+    <mt-field-label v-if="!!label" :for="id">
+      {{ label }}
+    </mt-field-label>
 
-    <mt-text class="mt-progress-bar__progress-label" as="span" size="xs">
+    <mt-text
+      v-if="!!label"
+      class="mt-progress-bar__progress-label"
+      as="span"
+      size="xs"
+      aria-hidden="true"
+    >
       {{ progressLabel }}
     </mt-text>
 
-    <div class="mt-progress-bar__track">
+    <div
+      class="mt-progress-bar__track"
+      role="progressbar"
+      :aria-valuenow="model"
+      :aria-valuemax="maxValue"
+      :aria-valuemin="0"
+      :aria-labelledby="id"
+    >
       <div
         :class="['mt-progress-bar__fill', { 'mt-progress-bar__fill--with-error': !!error }]"
         :style="{ width: fillWidth }"
       ></div>
     </div>
 
-    <mt-field-error v-if="error" :error="error" :style="{ marginTop: 0, gridArea: 'error' }" />
+    <mt-field-error v-if="error" :error="error" :style="{ marginTop: 0 }" />
   </div>
 </template>
 
@@ -27,7 +36,7 @@
 import MtFieldLabel from "@/components/form/_internal/mt-field-label/mt-field-label.vue";
 import MtFieldError from "@/components/form/_internal/mt-field-error/mt-field-error.vue";
 import MtText from "@/components/content/mt-text/mt-text.vue";
-import { computed } from "vue";
+import { computed, useId } from "vue";
 
 const model = defineModel<number>();
 
@@ -58,21 +67,20 @@ const fillWidth = computed<`${string}%`>(() => {
 
   return `${percentage}%`;
 });
+
+const id = useId();
 </script>
 
 <style scoped>
 .mt-progress-bar {
   display: grid;
-  grid-template-areas:
-    "label progress"
-    "track track"
-    "error error";
+  grid-template-columns: 1fr auto;
+  grid-template-rows: repeat(auto-fit, auto);
   row-gap: var(--scale-size-8);
 }
 
 .mt-progress-bar__progress-label {
   color: var(--color-text-secondary);
-  grid-area: progress;
   justify-self: end;
 }
 
@@ -80,8 +88,8 @@ const fillWidth = computed<`${string}%`>(() => {
   border-radius: var(--border-radius-round);
   height: var(--scale-size-8);
   width: 100%;
-  background: var(--color-background-primary-disabled);
-  grid-area: track;
+  background: var(--color-background-tertiary-default);
+  grid-column: 1 / 3;
 }
 
 .mt-progress-bar__fill {

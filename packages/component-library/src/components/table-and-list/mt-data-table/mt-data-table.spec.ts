@@ -101,7 +101,7 @@ global.ResizeObserver = class ResizeObserver {
   }
 };
 
-function createWrapper() {
+function createWrapper(options?: { slots?: Record<string, string> }) {
   return mount(MtDataTable, {
     attachTo: document.body,
     props: {
@@ -121,6 +121,7 @@ function createWrapper() {
         "mt-icon": true,
       },
     },
+    ...options,
   });
 }
 
@@ -564,6 +565,48 @@ describe("mt-data-table", () => {
 
       expect(wrapper.find(".mt-data-table__table-context-button").exists()).toBeFalsy();
       expect(wrapper.find(".mt-data-table__table-settings-button").exists()).toBeFalsy();
+    });
+
+    it("should render table cell when using slot column", async () => {
+      const wrapper = createWrapper({
+        slots: {
+          "column-name": "My custom name",
+        },
+      });
+
+      await wrapper.setProps({
+        ...wrapper.props(),
+      });
+
+      const dataCellName = wrapper.findAll('[data-cell-column-property="name"]');
+
+      expect(dataCellName[0].html()).toContain(`My custom name`);
+    });
+
+    it("should render table data with disabled row selection", async () => {
+      const wrapper = createWrapper();
+
+      await wrapper.setProps({
+        ...wrapper.props(),
+        allowRowSelection: true,
+        disableRowSelect: ["4f683593-13f1-4767-91c6-8e154d68a22d"], // product id of "Awesome Concrete Chair"
+      });
+      const rows = wrapper.findAll("tr");
+      const disabledRowIndex = rows.findIndex((row) =>
+        row.text().includes("Awesome Concrete Chair"),
+      );
+      const allowRowIndex = rows.findIndex((row) => !row.text().includes("Awesome Concrete Chair"));
+
+      expect(
+        rows[disabledRowIndex]
+          .find(".mt-data-table__table-select-row .mt-field--checkbox .is--disabled")
+          .exists(),
+      ).toBeTruthy();
+      expect(
+        rows[allowRowIndex]
+          .find(".mt-data-table__table-select-row .mt-field--checkbox .is--disabled")
+          .exists(),
+      ).toBeFalsy();
     });
   });
 
@@ -1208,6 +1251,31 @@ describe("mt-data-table", () => {
       });
 
       expect(wrapper.find(".mt-data-table-settings").exists()).toBeFalsy();
+    });
+
+    it("should not disable settings table when there is an additonal context menu", async () => {
+      const wrapper = createWrapper();
+
+      await wrapper.setProps({
+        ...wrapper.props(),
+        disableSettingsTable: true,
+        disableDelete: true,
+        disableEdit: true,
+        additionalContextButtons: [
+          {
+            label: "Set Price",
+            key: "set-price",
+          },
+        ],
+      });
+      const contextButton = wrapper.find(
+        ".mt-data-table__table-context-button .mt-context-button button",
+      );
+      expect(contextButton.exists()).toBeTruthy();
+      await contextButton.trigger("click");
+      const menuItem: any = document.querySelector(".mt-context-menu-item");
+      menuItem?.click();
+      expect((wrapper.emitted("context-select")?.[0]?.[0] as any)?.key).toEqual("set-price");
     });
   });
 });

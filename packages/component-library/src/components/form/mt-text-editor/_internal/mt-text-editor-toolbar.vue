@@ -446,8 +446,8 @@ watch(
   height: var(--scale-size-36);
   user-select: none;
   width: 100%;
-  background: var(--color-background-primary-disabled);
-  border-bottom: 1px solid var(--color-icon-primary-disabled);
+  background: var(--color-background-tertiary-default);
+  border-bottom: 1px solid var(--color-border-primary-default);
   color: var(--color-text-secondary-default);
   display: flex;
 }
@@ -476,8 +476,8 @@ watch(
   border: none;
   border-radius: var(--border-radius-xs);
   box-shadow:
-    0 1px 1px rgba(0, 0, 0, 8%),
-    0 2px 1px rgba(0, 0, 0, 6%),
-    0 1px 3px rgba(0, 0, 0, 10%);
+    0 1px 1px var(--color-elevation-shadow-default),
+    0 2px 1px var(--color-elevation-shadow-default),
+    0 1px 3px var(--color-elevation-shadow-default);
 }
 </style>

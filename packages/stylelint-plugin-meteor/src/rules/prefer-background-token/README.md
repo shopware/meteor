@@ -7,13 +7,13 @@ This rules only allows using semantic tokens for background colors.
 ### Incorrect
 
 ```css
-a {
+div {
   background: red;
 }
 ```
 
 ```css
-a {
+div {
   background-color: #ff9d49;
 }
 ```
@@ -21,8 +21,14 @@ a {
 ### Correct
 
 ```css
-a {
-  color: var(--color-elevation-surface-overlay);
+div {
+  background: var(--color-background-primary-default);
+}
+```
+
+```css
+div {
+  background-color: var(--color-elevation-surface-default);
 }
 ```
 

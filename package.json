@@ -6,16 +6,17 @@
   "description": "The monorepo that contains all Meteor related projects",
   "keywords": [],
   "license": "MIT",
-  "scripts": {},
-  "dependencies": {
-    "@changesets/cli": "^2.27.1"
+  "scripts": {
+    "validate:changesets": "node scripts/validate-changesets.js"
   },
   "devDependencies": {
-    "turbo": "^2.0.1"
+    "@changesets/cli": "2.29.8",
+    "@changesets/changelog-github": "0.5.2",
+    "turbo": "^2.5.4"
   },
-  "packageManager": "pnpm@10.0.0",
+  "packageManager": "pnpm@10.12.3",
   "volta": {
     "node": "22.13.0",
-    "pnpm": "10.0.0"
+    "pnpm": "10.12.3"
   }
 }

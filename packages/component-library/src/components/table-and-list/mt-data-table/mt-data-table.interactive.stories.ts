@@ -18,6 +18,7 @@ export const VisualTestRenderFullTable: MtDataTableStory = {
   name: "Should render the full Table",
   args: {
     layout: "full",
+    disableRowSelect: ["4f683593-13f1-4767-91c6-8e154d68a22d"],
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);

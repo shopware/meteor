@@ -10,6 +10,7 @@ export type uiSidebarAdd =
    title: string,
    locationId: string,
    icon: string,
+   resizable?: boolean,
  }
 
 export type uiSidebarClose =

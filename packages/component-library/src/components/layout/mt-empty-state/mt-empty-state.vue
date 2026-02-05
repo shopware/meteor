@@ -1,5 +1,6 @@
 <template>
-  <div class="mt-empty-state">
+  <!-- @deprecated tag:v5 remove leftAligned class -->
+  <div class="mt-empty-state" :class="{ 'mt-empty-state--left-aligned': !centered }">
     <div class="mt-empty-state__icon">
       <mt-icon :name="icon" color="var(--color-icon-primary-default)" aria-hidden="true" />
     </div>
@@ -16,7 +17,8 @@
       v-if="linkHref && linkText"
       :href="linkHref"
       class="mt-empty-state__link"
-      type="external"
+      :type="linkType"
+      :target="linkType === 'external' ? '_blank' : '_self'"
       as="a"
     >
       {{ linkText }}
@@ -41,14 +43,23 @@ import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtText from "@/components/content/mt-text/mt-text.vue";
 import MtLink from "@/components/navigation/mt-link/mt-link.vue";
 
-defineProps<{
-  headline: string;
-  description: string;
-  icon: string;
-  linkHref?: string;
-  linkText?: string;
-  buttonText?: string;
-}>();
+withDefaults(
+  defineProps<{
+    headline: string;
+    description: string;
+    icon: string;
+    linkHref?: string;
+    linkText?: string;
+    linkType?: "external" | "internal";
+    buttonText?: string;
+    centered?: boolean;
+  }>(),
+  {
+    linkType: "internal",
+    /** @deprecated tag:v5 remove centered prop and class */
+    centered: false,
+  },
+);
 
 defineEmits(["button-click"]);
 </script>
@@ -57,14 +68,25 @@ defineEmits(["button-click"]);
 .mt-empty-state {
   display: flex;
   flex-direction: column;
+  align-items: center;
+  max-width: 560px;
+  text-align: center;
+}
+
+/* @deprecated tag:v5 remove leftAligned class */
+.mt-empty-state--left-aligned {
   align-items: flex-start;
+  max-width: none;
+  text-align: left;
 }
 
 .mt-empty-state__icon {
-  display: inline-block;
-  padding: var(--scale-size-12);
+  width: var(--scale-size-48);
+  height: var(--scale-size-48);
+  display: grid;
+  place-items: center;
   border-radius: var(--border-radius-xs);
-  background-color: var(--color-interaction-secondary-dark);
+  background-color: var(--color-background-tertiary-default);
 }
 
 .mt-empty-state__headline {
@@ -74,6 +96,7 @@ defineEmits(["button-click"]);
 
 .mt-empty-state__description {
   margin-top: var(--scale-size-8);
+  text-wrap: pretty;
 }
 
 .mt-empty-state__link {

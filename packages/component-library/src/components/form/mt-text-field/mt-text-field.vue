@@ -225,6 +225,15 @@ export default defineComponent({
     },
   },
 
+  emits: [
+    "update:modelValue",
+    "change",
+    "focus",
+    "blur",
+    "inheritance-restore",
+    "inheritance-remove",
+  ],
+
   data() {
     return {
       currentValue: this.modelValue,

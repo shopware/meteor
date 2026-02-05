@@ -1,83 +1,127 @@
 <template>
-  <div class="mt-password-field">
-    <mt-field-label :id="id" :has-error="!!error" :style="{ marginBottom: 'var(--scale-size-2)' }">
+  <mt-base-field
+    class="mt-password-field"
+    :disabled="disabled"
+    :required="required"
+    :is-inherited="isInherited"
+    :is-inheritance-field="isInheritanceField"
+    :disable-inheritance-toggle="disableInheritanceToggle"
+    :has-focus="hasFocus"
+    :help-text="helpText"
+    :name="name"
+    :size="size"
+    @inheritance-restore="$emit('inheritance-restore', $event)"
+    @inheritance-remove="$emit('inheritance-remove', $event)"
+  >
+    <template #label>
       {{ label }}
-    </mt-field-label>
+    </template>
 
-    <div :class="['mt-password-field__block', { 'mt-password-field__block--error': !!error }]">
-      <mt-field-affix v-if="$slots.prefix" type="prefix">
-        <slot name="prefix" />
-      </mt-field-affix>
+    <template #field-prefix>
+      <slot name="prefix" />
+    </template>
 
+    <template #element="{ identification }">
       <input
-        v-model="model"
-        class="mt-password-field__input"
-        @change="$emit('change', model)"
-        @keyup.enter="$emit('submit')"
+        :id="createInputId(identification)"
         :type="showPassword ? 'text' : 'password'"
-        :id="id"
+        :name="identification"
         :placeholder="placeholder"
-        :disabled="disabled"
-        :name="name"
+        :disabled="disabled || isInherited"
+        :value="model ?? ''"
+        :aria-label="label || undefined"
+        class="mt-password-field__input"
+        @input="onInput"
+        @change.stop="onChange"
+        @keyup.enter="$emit('submit')"
+        @focus="setFocus"
+        @blur="removeFocus"
       />
 
       <button
         v-if="toggable"
         type="button"
-        @click.prevent="showPassword = !showPassword"
         class="mt-password-field__visibility-toggle"
         :aria-label="showPassword ? t('hidePassword') : t('showPassword')"
-        :disabled="disabled"
+        :disabled="disabled || isInherited"
+        @click.prevent="showPassword = !showPassword"
       >
         <mt-icon
           :name="showPassword ? 'solid-eye-slash' : 'solid-eye'"
           size="1.125rem"
           aria-hidden="true"
-          color="var(--color-icon-primary-default)"
         />
       </button>
+    </template>
 
-      <mt-field-affix v-if="$slots.suffix" type="suffix"><slot name="suffix" /></mt-field-affix>
-    </div>
+    <template #field-suffix>
+      <slot name="suffix" />
+    </template>
 
-    <mt-field-error v-if="!!error" :error="error" />
+    <template #error>
+      <mt-field-error v-if="!!error" :error="error" />
+    </template>
 
-    <div v-if="$slots.hint" class="mt-password-field__hint">
-      <slot name="hint" />
-    </div>
-  </div>
+    <template #field-hint>
+      <slot name="hint">
+        {{ hint }}
+      </slot>
+    </template>
+  </mt-base-field>
 </template>
 
 <script setup lang="ts">
-import { ref, useId } from "vue";
-import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
-import MtIcon from "@/components/icons-media/mt-icon/mt-icon.vue";
+import { ref } from "vue";
+import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
-import MtFieldAffix from "../_internal/mt-field-affix/mt-field-affix.vue";
+import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import { useI18n } from "vue-i18n";
 
-const model = defineModel({
-  type: String,
-});
+const model = defineModel<string | undefined>();
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
-    label?: string;
+    label?: string | null;
     placeholder?: string;
     disabled?: boolean;
     error?: { code: number; detail: string } | null;
-    hint?: string;
+    // @deprecated - use slot "hint" instead
+    hint?: string | null;
     toggable?: boolean;
-    name?: string;
+    name?: string | undefined;
+    // additions to align with base-field
+    required?: boolean;
+    helpText?: string;
+    size?: "small" | "default";
+    isInherited?: boolean;
+    isInheritanceField?: boolean;
+    disableInheritanceToggle?: boolean;
+    idSuffix?: string;
   }>(),
   {
+    label: null,
+    placeholder: "",
     toggable: true,
+    error: null,
+    // @deprecated - use slot "hint" instead
+    hint: null,
+    required: false,
+    helpText: "",
+    size: "default",
+    isInherited: false,
+    isInheritanceField: false,
+    disableInheritanceToggle: false,
+    idSuffix: "",
+    name: undefined,
   },
 );
 
-defineEmits<{
+const emit = defineEmits<{
   (e: "change", value: string | undefined): void;
   (e: "submit"): void;
+  (e: "inheritance-restore", value: unknown): void;
+  (e: "inheritance-remove", value: unknown): void;
+  (e: "update:modelValue", value: string | undefined): void;
 }>();
 
 defineSlots<{
@@ -86,9 +130,33 @@ defineSlots<{
   hint?: unknown;
 }>();
 
-const id = useId();
-
 const showPassword = ref(false);
+const hasFocus = ref(false);
+
+function onInput(event: Event) {
+  const target = event.target as HTMLInputElement | null;
+  emit("update:modelValue", target?.value);
+}
+
+function onChange(event: Event) {
+  const target = event.target as HTMLInputElement | null;
+  emit("change", target?.value);
+}
+
+function setFocus() {
+  hasFocus.value = true;
+}
+
+function removeFocus() {
+  hasFocus.value = false;
+}
+
+function createInputId(identification: string): string {
+  if (!props.idSuffix || props.idSuffix.length <= 0) {
+    return identification;
+  }
+  return `${identification}-${props.idSuffix}`;
+}
 
 const { t } = useI18n({
   messages: {
@@ -105,52 +173,14 @@ const { t } = useI18n({
 </script>
 
 <style scoped>
-.mt-password-field {
-  width: 100%;
-}
-
-.mt-password-field__block {
-  display: flex;
-  align-items: center;
-  min-height: var(--scale-size-48);
-  /* stylelint-disable-next-line meteor/prefer-sizing-token -- This is a trick, so the children can take 100% of it's parent height */
-  height: 1px;
-  border: 1px solid var(--color-border-primary-default);
-  border-radius: var(--border-radius-xs);
-  background-color: var(--color-elevation-surface-raised);
-  font-size: var(--font-size-xs);
-  line-height: var(--font-line-height-xs);
-  font-family: var(--font-family-body);
-
-  &:not(.mt-password-field__block--error)&:has(.mt-password-field__input:focus-visible) {
-    border-color: var(--color-border-brand-selected);
-    box-shadow: 0px 0px 4px 0px rgba(24, 158, 255, 0.3);
-  }
-
+.mt-password-field :deep(.mt-block-field__block) {
   &:has(input:disabled) {
-    background-color: var(--color-background-primary-disabled);
-  }
-}
-
-.mt-password-field__block--error {
-  border-color: var(--color-border-critical-default);
-  background: var(--color-background-critical-default);
-}
-
-.mt-password-field__input {
-  all: unset;
-
-  flex: 1;
-  padding-inline: var(--scale-size-16);
-  color: var(--color-text-primary-default);
-  height: 100%;
-
-  &::placeholder {
-    color: var(--color-text-secondary-default);
+    background-color: var(--color-background-tertiary-default);
   }
 }
 
 .mt-password-field__visibility-toggle {
+  align-self: center;
   display: grid;
   place-items: center;
   border-radius: var(--border-radius-xs);
@@ -163,18 +193,7 @@ const { t } = useI18n({
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-border-brand-selected);
-  }
-}
-
-.mt-password-field__hint {
-  color: var(--color-text-tertiary-default);
-  font-size: var(--font-size-xs);
-  line-height: var(--font-line-height-xs);
-  font-family: var(--font-family-body);
-
-  &:empty {
-    display: none;
+    outline: 2px solid var(--color-border-brand-default);
   }
 }
 </style>

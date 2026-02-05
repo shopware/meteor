@@ -1,6 +1,6 @@
 {
   "name": "@shopware-ag/meteor-icon-kit",
-  "version": "5.5.0",
+  "version": "5.6.0",
   "description": "An icon library and toolkit that follows a minimal, yet highly expressive style perfectly aligned with Shopware's product language",
   "keywords": [
     "svg",
@@ -40,7 +40,7 @@
     "dotenv": "^16.4.1",
     "ora": "^8.2.0",
     "winston": "^3.17.0",
-    "zod": "^3.24.2"
+    "zod": "^3.25.75"
   },
   "devDependencies": {
     "@eslint/js": "^9.20.0",

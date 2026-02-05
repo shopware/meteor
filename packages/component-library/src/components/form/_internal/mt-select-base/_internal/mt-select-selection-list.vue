@@ -344,10 +344,8 @@ export default defineComponent({
   button.mt-select-selection-list__load-more-button {
     padding: var(--scale-size-8) var(--scale-size-12);
     margin: 0 var(--scale-size-6) 0 0;
-    color: var(--color-text-brand-default);
     font-size: 12px;
     line-height: 14px;
-    border-radius: 2px;
     height: unset;
     border-color: var(--color-border-primary-default);
   }
@@ -368,7 +366,7 @@ export default defineComponent({
     padding: var(--scale-size-12) var(--scale-size-16) var(--scale-size-12) var(--scale-size-8);
 
     &::placeholder {
-      color: lighten($color-darkgray-200, 25%);
+      color: var(--color-text-secondary-default);
       white-space: break-spaces;
     }
   }

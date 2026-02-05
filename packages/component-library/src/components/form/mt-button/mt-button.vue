@@ -22,7 +22,8 @@
     </span>
   </a>
 
-  <button
+  <component
+    :is="is"
     v-else
     type="button"
     class="mt-button"
@@ -43,29 +44,38 @@
       <slot />
       <slot name="iconBack" :size="iconSize" v-if="$slots.iconBack" />
     </span>
-  </button>
+  </component>
 </template>
 
 <script setup lang="ts">
 import { useIsInsideTooltip } from "@/components/overlay/mt-tooltip/composables/useIsInsideTooltip";
 import MtLoader from "../../feedback-indicator/mt-loader/mt-loader.vue";
-import { computed } from "vue";
+import { computed, type Component } from "vue";
+
+/**
+ * @deprecated tag:v5 - Will be removed in the next major version. Use the "secondary" variant instead.
+ */
+type actionVariant = "action";
 
 const props = withDefaults(
   defineProps<{
+    is?: Component | string;
     disabled?: boolean;
-    variant?: "primary" | "secondary" | "critical" | "action";
+    variant?: "primary" | "secondary" | "tertiary" | "critical" | actionVariant;
     ghost?: boolean;
     size?: "x-small" | "small" | "default" | "large";
     square?: boolean;
     block?: boolean;
+    // @deprecated: use is="a" & href="MY_URL" instead
     link?: string;
     isLoading?: boolean;
   }>(),
   {
+    is: "button",
     variant: "secondary",
     // TODO: Update default value to "default"
     size: "small",
+    link: undefined,
   },
 );
 
@@ -75,7 +85,9 @@ defineSlots<{
   iconBack: { size: number };
 }>();
 
-const allowGhostVariant = computed(() => props.ghost && props.variant !== "secondary");
+const allowGhostVariant = computed(
+  () => props.ghost && props.variant !== "secondary" && props.variant !== "tertiary",
+);
 
 const buttonClasses = computed(() => {
   return {
@@ -94,7 +106,9 @@ const isInsideTooltip = useIsInsideTooltip();
 
 <style lang="css" scoped>
 .mt-button {
-  transition: all 0.15s ease-out;
+  transition-property: color, background-color, border-color;
+  transition-duration: 0.15s;
+  transition-timing-function: ease-out;
   display: inline-grid;
   place-items: center;
   width: max-content;
@@ -112,6 +126,16 @@ const isInsideTooltip = useIsInsideTooltip();
   cursor: pointer;
   user-select: none;
   position: relative;
+
+  &:focus-visible {
+    outline: var(--scale-size-2) solid var(--color-border-brand-default);
+    outline-offset: var(--scale-size-2);
+  }
+}
+
+.mt-button:disabled,
+.mt-button.mt-button--disabled {
+  cursor: not-allowed;
 }
 
 .mt-button__content {
@@ -127,46 +151,40 @@ const isInsideTooltip = useIsInsideTooltip();
 
 .mt-button--primary {
   background: var(--color-interaction-primary-default);
-  color: var(--color-text-static-default);
+  color: var(--color-static-white);
   border-color: var(--color-interaction-primary-default);
 }
 
 .mt-button--primary .mt-icon {
-  color: var(--color-icon-static-default);
+  color: var(--color-static-white);
 }
 
 .mt-button--primary:hover,
-.mt-button--primary:focus-visible,
 .mt-button--primary:active {
   background: var(--color-interaction-primary-hover);
   border-color: var(--color-interaction-primary-hover);
-}
-
-.mt-button--primary:focus-visible {
-  border-color: var(--color-border-brand-selected);
-  box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
 }
 
 .mt-button--primary:disabled,
 .mt-button--primary.mt-button--disabled {
   background: var(--color-interaction-primary-disabled);
   border-color: var(--color-interaction-primary-disabled);
-  cursor: not-allowed;
+}
+
+.mt-button--primary:disabled .mt-button__content,
+.mt-button--primary.mt-button--disabled .mt-button__content {
+  opacity: 0.4;
 }
 
 .mt-button--primary-ghost {
   background: transparent;
-  border: 1px solid var(--color-border-brand-selected);
-  border-color: var(--color-border-brand-selected);
+  border: 1px solid var(--color-border-brand-default);
+  border-color: var(--color-border-brand-default);
   color: var(--color-text-brand-default);
 }
 
-.mt-button--primary-ghost:is(:hover, :focus-visible, :active) {
+.mt-button--primary-ghost:is(:hover, :active):not(:disabled) {
   background: var(--color-background-brand-default);
-}
-
-.mt-button--primary-ghost:focus-visible {
-  box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
 }
 
 .mt-button--primary-ghost:disabled,
@@ -191,20 +209,14 @@ const isInsideTooltip = useIsInsideTooltip();
   color: var(--color-text-primary-default);
 }
 
-.mt-button--secondary:is(:hover, :focus-visible, :active) {
+.mt-button--secondary:is(:hover, :active) {
   background: var(--color-interaction-secondary-hover);
-}
-
-.mt-button--secondary:focus-visible {
-  border-color: var(--color-border-brand-selected);
-  box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
 }
 
 .mt-button--secondary:disabled,
 .mt-button--secondary.mt-button--disabled {
   color: var(--color-text-primary-disabled);
   background: var(--color-interaction-secondary-disabled);
-  cursor: not-allowed;
 }
 
 .mt-button--secondary:disabled .mt-icon,
@@ -216,20 +228,44 @@ const isInsideTooltip = useIsInsideTooltip();
   color: var(--color-icon-primary-default);
 }
 
+.mt-button--tertiary {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--color-text-primary-default);
+}
+
+.mt-button--tertiary:hover {
+  background: var(--color-interaction-secondary-hover);
+}
+
+.mt-button--tertiary:active {
+  background: var(--color-interaction-secondary-pressed);
+}
+
+.mt-button--tertiary:disabled,
+.mt-button--tertiary.mt-button--disabled {
+  color: var(--color-text-primary-disabled);
+  background: transparent;
+}
+
+.mt-button--tertiary:disabled .mt-icon,
+.mt-button--tertiary.mt-button--disabled .mt-icon {
+  color: var(--color-icon-primary-disabled);
+}
+
+.mt-button--tertiary .mt-icon {
+  color: var(--color-icon-primary-default);
+}
+
 .mt-button--critical {
   background: var(--color-interaction-critical-default);
-  color: var(--color-text-static-default);
+  color: var(--color-static-white);
   border: 1px solid var(--color-interaction-critical-default);
 }
 
-.mt-button--critical:is(:hover, :focus-visible, :active) {
+.mt-button--critical:is(:hover, :active) {
   background: var(--color-interaction-critical-hover);
   border-color: var(--color-interaction-critical-hover);
-}
-
-.mt-button--critical:focus-visible {
-  border-color: var(--color-border-brand-selected);
-  box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
 }
 
 .mt-button--critical:disabled,
@@ -241,7 +277,12 @@ const isInsideTooltip = useIsInsideTooltip();
 .mt-button--critical:disabled .mt-icon,
 .mt-button--critical.mt-button--disabled .mt-icon,
 .mt-button--critical .mt-icon {
-  color: var(--color-icon-static-default);
+  color: var(--color-static-white);
+}
+
+.mt-button--critical:disabled .mt-button__content,
+.mt-button--critical.mt-button--disabled .mt-button__content {
+  opacity: 0.4;
 }
 
 .mt-button--critical-ghost {
@@ -250,13 +291,8 @@ const isInsideTooltip = useIsInsideTooltip();
   color: var(--color-text-critical-default);
 }
 
-.mt-button--critical-ghost:is(:hover, :focus-visible, :active) {
-  background-color: var(--color-background-critical-dark);
-}
-
-.mt-button--critical-ghost:focus-visible {
-  border-color: var(--color-border-brand-selected);
-  box-shadow: 0 0 4px 0 rgba(255, 0, 0, 0.3);
+.mt-button--critical-ghost:is(:hover, :active):not(:disabled) {
+  background-color: var(--color-background-critical-default);
 }
 
 .mt-button--critical-ghost:disabled,
@@ -341,7 +377,7 @@ const isInsideTooltip = useIsInsideTooltip();
   padding-left: var(--scale-size-28);
   padding-right: var(--scale-size-28);
   min-height: 3rem;
-  font-size: var(--font-size-2xs);
+  font-size: var(--font-size-xs);
 }
 
 .mt-button--large.mt-button--square {

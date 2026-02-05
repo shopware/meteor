@@ -1,5 +1,39 @@
 # Changelog
 
+## 6.5.0
+
+### Minor Changes
+
+- [#1010](https://github.com/shopware/meteor/pull/1010) [`481e01d`](https://github.com/shopware/meteor/commit/481e01d2f55f66700139bda63c71071cc63078e9) Thanks [@quando1910](https://github.com/quando1910)! - add the service payment integration
+
+## 6.4.0
+
+### Minor Changes
+
+- 9726930: Add meteorIcon parameter for action button
+- 92c09da: Add save media modal type
+
+## 6.3.0
+
+### Minor Changes
+
+- 2f985e4: feat: Add message type windowRouterGetPath
+- 033631c: Add ability to control smart bar when adding setting item
+
+## 6.2.1
+
+### Patch Changes
+
+- 4954036: - Add resizable option to sidebar config
+
+## 6.2.0
+
+### Minor Changes
+
+- 802233c: Added context.can
+  Added `privileges` to `contextAppInformation`
+- e44cf07: Add `useDataset` and `useAsyncSharedState` composables
+
 ## 6.1.0
 
 ### Minor Changes

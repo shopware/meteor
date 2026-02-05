@@ -1,6 +1,6 @@
 {
   "name": "@shopware-ag/meteor-admin-sdk",
-  "version": "6.1.0",
+  "version": "6.5.0",
   "description": "The Meteor SDK for the Shopware Administration.",
   "keywords": [
     "iframe",
@@ -111,16 +111,16 @@
   },
   "dependencies": {
     "localforage": "^1.10.0",
-    "lodash": "^4.17.21",
+    "lodash-es": "^4.17.21",
     "semver": "^7.7.1"
   },
   "devDependencies": {
     "@playwright/test": "^1.45.0",
     "@types/jest": "^27.4.1",
-    "@types/lodash": "^4.14.191",
+    "@types/lodash-es": "^4.17.12",
     "@types/node": "^18.11.17",
     "@typescript-eslint/eslint-plugin": "^5.47.0",
-    "@typescript-eslint/parser": "^5.47.0",
+    "@typescript-eslint/parser": "^8.36.0",
     "chokidar-cli": "^3.0.0",
     "concurrently": "^7.0.0",
     "eslint": "^8.11.0",

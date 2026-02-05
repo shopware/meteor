@@ -83,7 +83,7 @@ const labelClasses = computed(() => {
   padding: var(--scale-size-8) var(--scale-size-12);
   height: var(--scale-size-32);
   border: 1px solid var(--color-border-primary-default);
-  background: var(--color-background-primary-default);
+  background: var(--color-background-secondary-default);
   line-height: 1.1;
   font-family: var(--font-family-body);
   font-size: var(--font-size-xs);
@@ -102,7 +102,7 @@ const labelClasses = computed(() => {
 
 .mt-label.mt-label--dismissable:hover {
   background-color: var(--color-background-brand-default);
-  border-color: var(--color-border-brand-selected);
+  border-color: var(--color-border-brand-default);
 }
 
 .mt-label.mt-label--dismissable:hover .mt-label__caption {

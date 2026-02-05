@@ -1,4 +1,4 @@
-import { within, userEvent } from "@storybook/test";
+import { within, userEvent, screen } from "@storybook/test";
 import { expect } from "@storybook/test";
 
 import meta, { type MtDatepickerMeta, type MtDatepickerStory } from "./mt-datepicker.stories";
@@ -8,6 +8,13 @@ export default {
   ...meta,
   title: "Interaction Tests/Form/mt-datepicker",
 } as MtDatepickerMeta;
+
+export const VisualTestDatepickerDefault: MtDatepickerStory = {
+  name: "Render datepicker",
+  args: {
+    label: "Datepicker",
+  },
+};
 
 export const TestDatepickerShouldOpen: MtDatepickerStory = {
   name: "Should open datepicker",
@@ -351,5 +358,83 @@ export const VisualTestTimeType: MtDatepickerStory = {
 
     // Check that the modelvalue is the correct time string
     expect(args.updateModelValue).toHaveBeenCalledWith("08:16");
+  },
+};
+
+export const VisualTestClearButton: MtDatepickerStory = {
+  name: "Shows clear button when the value is set",
+  args: {
+    modelValue: "07:15",
+    dateType: "time",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getByRole("button", { name: "Clear value" })).toBeVisible();
+  },
+};
+
+export const VisualTestErrorStateRendering: MtDatepickerStory = {
+  name: "Should display error",
+  args: {
+    error: {
+      code: 500,
+      detail: "Error while saving!",
+    },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const errorMessage = canvas.getByText("Error while saving!");
+    expect(errorMessage).toBeInTheDocument();
+
+    const errorIcon = document.querySelector("#meteor-icon-kit__solid-exclamation-circle");
+    expect(errorIcon).toBeInTheDocument();
+
+    expect(canvasElement.firstElementChild).toHaveClass("has-error");
+  },
+};
+
+export const VisualTestMinDateDisabledDays: MtDatepickerStory = {
+  name: "Should disable days before a fixed min-date",
+  args: {
+    label: "Date value",
+    modelValue: "2025-06-15T12:00:00.000Z",
+    minDate: "2025-06-15T00:00:00.000Z",
+    locale: "en-US",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await userEvent.click(canvas.getByRole("textbox"));
+    const menu = await screen.findByRole("dialog");
+
+    await within(menu).findByText("Jun");
+    await within(menu).findByText("2025");
+
+    const calendarGrid = within(menu).getByRole("grid");
+    const dayCells = within(calendarGrid)
+      .getAllByRole("gridcell")
+      .filter((cell) => !cell.classList.contains("dp__cell_offset"));
+
+    const day14 = dayCells.find((d) => d.textContent === "14");
+    expect(day14).toHaveAttribute("aria-disabled", "true");
+
+    const day15 = dayCells.find((d) => d.textContent === "15");
+    expect(day15).toBeDefined();
+  },
+};
+
+export const VisualTestHelpText: MtDatepickerStory = {
+  name: "Should display help text",
+  args: {
+    label: "Datepicker",
+    helpText: "This is a help text",
+  },
+  play: async () => {
+    const canvas = within(document.body);
+    await userEvent.tab();
+
+    expect(canvas.getByRole("tooltip")).toBeInTheDocument();
   },
 };

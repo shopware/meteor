@@ -1,5 +1,5 @@
 import Entity from '../data/Entity';
-import cloneDeep from 'lodash/cloneDeep';
+import cloneDeep from 'lodash-es/cloneDeep';
 import SerializerFactory from './index';
 import { handle, send } from '../../channel';
 

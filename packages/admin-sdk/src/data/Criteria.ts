@@ -1,4 +1,4 @@
-import cloneDeep from 'lodash/cloneDeep';
+import cloneDeep from 'lodash-es/cloneDeep';
 
 export const enum TotalCountMode {
     /* No total count will be selected. Should be used if no pagination required (fastest) */
@@ -133,7 +133,7 @@ interface Association {
 interface Query {
     score: number,
     query: SingleFilter,
-    [scoreField: string]: unknown,
+    scoreField?: string,
 }
 interface Sorting {
     field: string,
@@ -387,7 +387,7 @@ export default class Criteria {
     const query: Query = { score: score, query: filter };
 
     if (scoreField) {
-      query[scoreField] = scoreField;
+      query.scoreField = scoreField;
     }
 
     this.queries.push(query);

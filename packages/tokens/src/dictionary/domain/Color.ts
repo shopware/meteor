@@ -35,6 +35,6 @@ export class Color {
     ].join('');
 
     const containsAlpha = this.value.alpha !== 1;
-    return `#${hex}` + (containsAlpha ? toHex(this.value.alpha) : '');
+    return `#${hex}` + (containsAlpha ? toHex(this.value.alpha * 255) : '');
   }
 }

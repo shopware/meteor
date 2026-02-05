@@ -9,7 +9,7 @@
   >
     <mt-field-label
       v-if="!!label"
-      :id="id"
+      :for="id"
       :style="{ marginBottom: 'var(--scale-size-2)', gridArea: 'label' }"
       :has-error="!!error"
       :required="required"
@@ -36,41 +36,32 @@
         },
       ]"
     >
-      <div
-        :class="[
-          'mt-url-field__affix',
-          'mt-url-field__affix--prefix',
-          {
-            'mt-url-field__affix--disabled': disabled,
-          },
-        ]"
+      <button
+        type="button"
+        class="mt-url-field__protocol-toggle"
+        :disabled="disabled || isInherited"
+        :data-size="size"
+        @click="
+          () => {
+            sslActive = !sslActive;
+            modelValue = url;
+          }
+        "
       >
-        <button
-          type="button"
-          class="mt-url-field__protocol-toggle"
-          :disabled="disabled || isInherited"
-          @click="
-            () => {
-              sslActive = !sslActive;
-              modelValue = url;
-            }
+        <mt-icon
+          :name="sslActive ? 'solid-lock' : 'solid-lock-open'"
+          :color="
+            sslActive ? 'var(--color-icon-positive-default)' : 'var(--color-icon-primary-default)'
           "
-        >
-          <mt-icon
-            :name="sslActive ? 'solid-lock' : 'solid-lock-open'"
-            :color="
-              sslActive ? 'var(--color-icon-positive-default)' : 'var(--color-icon-primary-default)'
-            "
-            size="var(--scale-size-12)"
-            aria-hidden="true"
-          />
-          <span>{{ urlPrefix }}</span>
-        </button>
-      </div>
+          size="var(--scale-size-12)"
+          aria-hidden="true"
+        />
+        <span>{{ urlPrefix }}</span>
+      </button>
 
       <input
-        :value="decodeURI(currentValue || '')"
         :id="id"
+        :value="decodeURI(currentValue || '')"
         type="url"
         :placeholder="placeholder"
         :name="name"
@@ -78,7 +69,7 @@
         :disabled="disabled || isInherited"
         class="mt-url-field__input"
         @input="
-          (event) => {
+          (event: Event) => {
             const result = checkInput((event.target as HTMLInputElement).value);
             currentValue = result;
             modelValue = url;
@@ -88,10 +79,10 @@
       />
 
       <mt-tooltip v-if="copyable" :content="t('copyTooltip')">
-        <template #default="props">
+        <template #default="params">
           <button
             type="button"
-            v-bind="props"
+            v-bind="params"
             class="mt-url-field__copy-button"
             :aria-label="
               copied ? t('copyButtonDescriptionValueCopied') : t('copyButtonDescription')
@@ -119,7 +110,7 @@
 
     <mt-field-error :error="error" :style="{ gridArea: 'error' }" />
 
-    <div class="mt-url-field__hint" v-if="$slots.hint">
+    <div v-if="$slots.hint" class="mt-url-field__hint">
       <slot name="hint" />
     </div>
   </div>
@@ -202,7 +193,7 @@ const url = computed(() => {
 watch(
   () => modelValue.value,
   () => {
-    const result = checkInput(currentValue.value || "");
+    const result = checkInput(modelValue.value || "");
 
     currentValue.value = result;
   },
@@ -286,15 +277,19 @@ const { t } = useI18n({
   height: 1px;
   border: 1px solid var(--color-border-primary-default);
   border-radius: var(--border-radius-xs);
-  background: var(--color-elevation-surface-raised);
+  background: var(--color-background-primary-default);
+
+  &:has(input:disabled) {
+    cursor: not-allowed;
+  }
 
   &:has(.mt-url-field__input:focus-visible) {
-    border-color: var(--color-border-brand-selected);
-    box-shadow: 0 0 4px 0 rgba(24, 158, 255, 0.3);
+    outline: var(--scale-size-2) solid var(--color-border-brand-default);
+    outline-offset: var(--scale-size-2);
   }
 
   &:has(.mt-url-field__input:disabled) {
-    background: var(--color-background-primary-disabled);
+    background: var(--color-background-tertiary-default);
   }
 }
 
@@ -308,7 +303,7 @@ const { t } = useI18n({
 
 .mt-url-field__block--error {
   border-color: var(--color-border-critical-default);
-  background: var(--color-background-critical-dark);
+  background: var(--color-background-critical-default);
 }
 
 .mt-url-field__input {
@@ -317,7 +312,7 @@ const { t } = useI18n({
   height: 100%;
   width: 100%;
   color: var(--color-text-primary-default);
-  padding-inline: var(--scale-size-16);
+  padding-inline: var(--scale-size-8) var(--scale-size-16);
   font-size: var(--font-size-xs);
   line-height: var(--line-height-xs);
 
@@ -334,7 +329,6 @@ const { t } = useI18n({
   color: var(--color-text-primary-default);
   font-weight: var(--font-weight-medium);
   padding-inline: var(--scale-size-12);
-  background: var(--color-interaction-secondary-dark);
 }
 
 .mt-url-field__affix--disabled {
@@ -361,15 +355,38 @@ const { t } = useI18n({
   display: flex;
   align-items: center;
   gap: var(--scale-size-2);
+  padding-inline: var(--scale-size-8);
+  border-radius: var(--border-radius-button);
+  transition: background-color 0.15s ease-out;
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-medium);
+  line-height: var(--font-line-height-xs);
+  color: var(--color-text-primary-default);
+  background-color: var(--color-interaction-secondary-default);
+  border: 1px solid var(--color-border-primary-default);
+
+  &[data-size="small"] {
+    height: var(--scale-size-24);
+    margin-inline-start: 3px;
+  }
+
+  &[data-size="default"] {
+    margin-inline-start: 7px;
+    height: var(--scale-size-32);
+  }
+
+  &:is(:hover, :focus-visible) {
+    background-color: var(--color-interaction-secondary-hover);
+  }
 
   &:focus-visible {
-    outline-offset: 4px;
-    outline: 2px solid var(--color-border-brand-selected);
-    border-radius: var(--border-radius-xs);
+    outline: var(--scale-size-2) solid var(--color-border-brand-default);
+    outline-offset: var(--scale-size-2);
   }
 
   &:disabled {
-    cursor: default;
+    background-color: var(--color-interaction-secondary-disabled);
+    cursor: not-allowed;
   }
 }
 
@@ -384,8 +401,10 @@ const { t } = useI18n({
   &:is(:hover, :focus-visible) {
     background-color: var(--color-interaction-secondary-hover);
   }
+
   &:focus-visible {
-    outline: 2px solid var(--color-border-brand-selected);
+    outline: var(--scale-size-2) solid var(--color-border-brand-default);
+    outline-offset: var(--scale-size-2);
   }
 }
 
@@ -394,7 +413,7 @@ const { t } = useI18n({
   font-family: var(--font-family-body);
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
-  color: var(--color-text-tertiary-default);
+  color: var(--color-text-secondary-default);
   margin-top: 0.1875rem;
 }
 </style>

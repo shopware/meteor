@@ -277,6 +277,7 @@ export default defineComponent({
     items: "handleResize",
     vertical: "handleResize",
     small: "handleResize",
+    defaultItem: "setDefault",
   },
 
   mounted() {
@@ -304,6 +305,10 @@ export default defineComponent({
   },
 
   methods: {
+    setDefault(): void {
+      this.setActiveItem(this.defaultItem);
+    },
+
     handleClick(itemName: string): void {
       this.setActiveItem(itemName);
       this.$emit("new-item-active", itemName);
@@ -366,7 +371,7 @@ export default defineComponent({
 .mt-tabs {
   display: flex;
   position: relative;
-  box-shadow: inset 0 -1px 0 var(--color-border-primary-default);
+  box-shadow: inset 0 -1px 0 var(--color-border-secondary-default);
 }
 
 .mt-tabs--small {
@@ -384,7 +389,7 @@ export default defineComponent({
 
   & li {
     border-bottom: none;
-    border-left: 1px solid var(--color-border-primary-default);
+    border-left: 1px solid var(--color-border-secondary-default);
   }
 
   & .mt-tabs__slider {
@@ -396,7 +401,7 @@ export default defineComponent({
 
 .mt-tabs__item {
   display: inline-block;
-  border-bottom: 1px solid var(--color-border-primary-default);
+  border-bottom: 1px solid var(--color-border-secondary-default);
   padding: var(--scale-size-10) var(--scale-size-16);
   white-space: nowrap;
   font-family: var(--font-family-body);
@@ -411,7 +416,7 @@ export default defineComponent({
   }
 
   &:focus-visible {
-    outline: 2px solid var(--color-border-brand-selected);
+    outline: 2px solid var(--color-border-brand-default);
     outline-offset: 2px;
     border-radius: var(--border-radius-xs);
   }
@@ -450,7 +455,7 @@ export default defineComponent({
   bottom: 0;
   left: 0;
   height: var(--scale-size-2);
-  background-color: var(--color-border-brand-selected);
+  background-color: var(--color-border-brand-default);
   z-index: 1;
 }
 
@@ -465,7 +470,7 @@ export default defineComponent({
 .mt-context-button {
   display: flex;
   align-items: center;
-  border-bottom: 1px solid var(--color-border-primary-default);
+  border-bottom: 1px solid var(--color-border-secondary-default);
 
   & button {
     display: flex;

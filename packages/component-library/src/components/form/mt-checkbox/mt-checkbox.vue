@@ -10,6 +10,7 @@
             :checked="inputState"
             :disabled="isDisabled"
             :indeterminate.prop="partial"
+            :required="required"
             @change.stop="onChange"
           />
           <div class="mt-field__checkbox-state">
@@ -63,6 +64,15 @@ export default defineComponent({
 
   props: {
     /**
+     * The name of the input field when submitting a form.
+     */
+    name: {
+      type: String,
+      required: false,
+      default: undefined,
+    },
+
+    /**
      * A label for the checkbox.
      */
     label: {
@@ -84,6 +94,15 @@ export default defineComponent({
      * Determines the checked state of the checkbox.
      */
     checked: {
+      type: Boolean,
+      required: false,
+      default: undefined,
+    },
+
+    /**
+     * v-model binding for the checkbox value.
+     */
+    modelValue: {
       type: Boolean,
       required: false,
       default: undefined,
@@ -153,16 +172,14 @@ export default defineComponent({
     },
   },
 
-  data(): { id: string | undefined; currentValue: boolean | undefined } {
-    return {
-      currentValue: this.checked,
-      id: undefined,
-    };
-  },
-
-  mounted() {
-    this.id = createId();
-  },
+  emits: [
+    "update:modelValue",
+    "update:checked",
+    // @deprecated - Will be removed. Use `update:modelValue` instead.
+    "change",
+    "inheritance-remove",
+    "inheritance-restore",
+  ],
 
   setup() {
     const futureFlags = useFutureFlags();
@@ -173,6 +190,13 @@ export default defineComponent({
 
     return {
       checkboxClasses,
+    };
+  },
+
+  data(): { id: string | undefined; currentValue: boolean | undefined } {
+    return {
+      currentValue: this.checked,
+      id: undefined,
     };
   },
 
@@ -194,7 +218,7 @@ export default defineComponent({
     },
 
     identification(): string {
-      return `mt-field--${this.id}`;
+      return this.name || `mt-field--${this.id}`;
     },
 
     hasError(): boolean {
@@ -206,7 +230,15 @@ export default defineComponent({
         return this.inheritedValue;
       }
 
-      return this.currentValue || false;
+      if (this.checked !== undefined) {
+        return this.currentValue ?? false;
+      }
+
+      if (this.modelValue !== undefined) {
+        return this.modelValue;
+      }
+
+      return this.currentValue ?? false;
     },
 
     isInheritanceField(): boolean {
@@ -244,16 +276,38 @@ export default defineComponent({
       },
       immediate: true,
     },
+
+    modelValue: {
+      handler() {
+        if (this.checked === undefined) {
+          // only sync from modelValue when not explicitly controlled by `checked`
+          this.currentValue = this.modelValue;
+        }
+      },
+      immediate: true,
+    },
+  },
+
+  mounted() {
+    this.id = createId();
+
+    if (this.checked !== undefined) {
+      // @deprecated - Will be removed. Use `v-model` (modelValue / update:modelValue) instead.
+      console.warn(
+        "[MtCheckbox] The `checked` prop is deprecated and will be removed. Please use v-model (modelValue/update:modelValue) instead.",
+      );
+    }
   },
 
   methods: {
     onChange(changeEvent: Event) {
-      // @ts-expect-error - target is defined in the event
-      this.$emit("update:checked", changeEvent.target.checked);
+      const target = changeEvent.target as HTMLInputElement;
+      const next = target.checked as boolean;
 
-      // @ts-expect-error - target is defined in the event
-      // @deprecated tag:4.0 - Will be removed. Use `update:checked` instead.
-      this.$emit("change", changeEvent.target.checked);
+      this.$emit("update:modelValue", next);
+      this.$emit("update:checked", next);
+      // @deprecated - Will be removed. Use `update:checked` instead.
+      this.$emit("change", next);
     },
   },
 });
@@ -309,7 +363,7 @@ export default defineComponent({
       position: relative;
 
       &:has(:focus-visible) {
-        outline: 2px solid var(--color-border-brand-selected);
+        outline: 2px solid var(--color-border-brand-default);
         outline-offset: 2px;
         border-radius: var(--border-radius-checkbox);
       }
@@ -333,7 +387,7 @@ export default defineComponent({
         }
 
         &:disabled ~ .mt-field__checkbox-state {
-          background: var(--color-background-primary-disabled);
+          background: var(--color-background-tertiary-default);
           border-color: var(--color-border-primary-default);
         }
 
@@ -345,12 +399,12 @@ export default defineComponent({
             display: flex;
             justify-content: center;
             align-items: center;
-            color: var(--color-icon-static-default);
+            color: var(--color-static-white);
           }
         }
 
         &:checked:disabled ~ .mt-field__checkbox-state {
-          background: var(--color-background-primary-disabled);
+          background: var(--color-background-tertiary-default);
           border-color: var(--color-border-primary-default);
 
           & .mt-icon {
@@ -364,7 +418,7 @@ export default defineComponent({
 
           & .mt-icon {
             display: inline-block;
-            color: var(--color-icon-static-default);
+            color: var(--color-static-white);
           }
         }
       }
@@ -375,7 +429,7 @@ export default defineComponent({
         height: 100%;
         z-index: 1;
         text-align: center;
-        background: var(--color-elevation-surface-raised);
+        background: var(--color-background-primary-default);
         color: var(--color-text-primary-default);
         border: 1px solid var(--color-border-primary-default);
         border-radius: var(--border-radius-checkbox);
@@ -421,7 +475,7 @@ export default defineComponent({
       & input[type="checkbox"] {
         &:checked ~ .mt-field__checkbox-state {
           border-color: var(--color-border-primary-default);
-          background: var(--color-background-primary-disabled);
+          background: var(--color-background-tertiary-default);
         }
       }
     }
@@ -445,7 +499,7 @@ export default defineComponent({
     }
   }
 
-  & .mt-block-field__block {
+  & .mt-field .mt-block-field__block {
     min-height: unset;
   }
 }

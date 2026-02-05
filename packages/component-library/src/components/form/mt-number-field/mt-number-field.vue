@@ -43,26 +43,28 @@
         @blur="removeFocusClass"
       />
 
-      <div class="mt-number-field__controls" :class="controlClasses">
+      <div v-if="showControls" class="mt-number-field__controls" :class="controlClasses">
         <button
           type="button"
-          @click="increaseNumberByStep"
           :disabled="disabled || isInherited"
           :aria-label="t('increaseButton')"
           data-testid="mt-number-field-increase-button"
+          tabindex="-1"
+          @click="increaseNumberByStep"
         >
           <mt-icon size="10" name="regular-chevron-up-s" aria-hidden="true" />
         </button>
 
         <button
           type="button"
-          @click="decreaseNumberByStep"
           :disabled="disabled || isInherited"
           :aria-label="t('decreaseButton')"
           data-testid="mt-number-field-decrease-button"
+          tabindex="-1"
+          @click="decreaseNumberByStep"
         >
           <mt-icon
-            style="margin-top: -3px"
+            :style="{ marginTop: size === 'small' ? '0' : '-3px' }"
             size="10"
             name="regular-chevron-down-s"
             aria-hidden="true"
@@ -179,11 +181,12 @@ export default defineComponent({
 
     /**
      * Defines if the field can be empty.
+     * @deprecated tag:v5
      */
     allowEmpty: {
       type: Boolean,
       required: false,
-      default: false,
+      default: undefined, // will internally be true
     },
 
     /**
@@ -194,6 +197,39 @@ export default defineComponent({
       required: false,
       default: false,
     },
+    /**
+     * Defines if the control arrows should be visible.
+     */
+    showControls: {
+      type: Boolean,
+      required: false,
+      default: true,
+    },
+  },
+
+  emits: [
+    "update:modelValue",
+    "input-change",
+    "inheritance-restore",
+    "inheritance-remove",
+    "change",
+  ],
+
+  setup() {
+    const { t } = useI18n({
+      messages: {
+        en: {
+          increaseButton: "Increase",
+          decreaseButton: "Decrease",
+        },
+        de: {
+          increaseButton: "Erhöhen",
+          decreaseButton: "Verringern",
+        },
+      },
+    });
+
+    return { t };
   },
 
   computed: {
@@ -235,7 +271,13 @@ export default defineComponent({
       return {
         "mt-field__controls--disabled": this.disabled,
         "mt-field__controls--has-error": !!this.error,
+        "mt-field__controls--small": this.size === "small",
       };
+    },
+
+    // @deprecated tag:v5
+    allowEmptyWithDefault() {
+      return this.allowEmpty ?? false;
     },
   },
 
@@ -252,6 +294,42 @@ export default defineComponent({
       },
       immediate: true,
     },
+
+    min() {
+      if (this.currentValue === null || this.currentValue === undefined) {
+        return;
+      }
+
+      if (!Number.isNaN(Number(this.currentValue))) {
+        this.computeValue(this.currentValue.toString());
+        this.$emit("update:modelValue", this.currentValue);
+      }
+    },
+
+    max() {
+      if (this.currentValue === null || this.currentValue === undefined) {
+        return;
+      }
+
+      if (!Number.isNaN(Number(this.currentValue))) {
+        this.computeValue(this.currentValue.toString());
+        this.$emit("update:modelValue", this.currentValue);
+      }
+    },
+
+    // @deprecated tag:v5
+    allowEmpty: {
+      handler(value: boolean) {
+        if (value === undefined) {
+          return;
+        }
+
+        console.warn(
+          "[MtNumberField] The `allowEmpty` prop is deprecated and will be removed. There will be no replacement.",
+        );
+      },
+      immediate: true,
+    },
   },
 
   methods: {
@@ -259,23 +337,30 @@ export default defineComponent({
       // @ts-expect-error - target exists
       this.computeValue(event.target.value);
 
+      this.$emit("change", event);
       this.$emit("update:modelValue", this.currentValue);
     },
 
     onInput(event: Event) {
       // @ts-expect-error - target exists
-      let val = Number.parseFloat(event.target.value);
+      const inputValue = event.target.value;
+
+      if (inputValue === "" && this.allowEmptyWithDefault) {
+        // @ts-expect-error - defined in parent
+        this.currentValue = null;
+        this.$emit("input-change", null);
+        return;
+      }
+
+      const val = Number.parseFloat(inputValue);
 
       if (!Number.isNaN(val)) {
-        if (this.max && val > this.max) {
-          val = this.max;
-        }
-        if (this.min && val < this.min) {
-          val = this.min;
-        }
-
-        this.computeValue(val.toString());
+        this.computeValue(val.toString(), true);
         this.$emit("input-change", val);
+      } else if (inputValue === "" || inputValue === "-" || inputValue === ".") {
+        // @ts-expect-error - defined in parent
+        this.currentValue = null;
+        this.$emit("input-change", null);
       }
     },
 
@@ -292,23 +377,24 @@ export default defineComponent({
       this.$emit("update:modelValue", this.currentValue);
     },
 
-    computeValue(stringRepresentation: string) {
+    computeValue(stringRepresentation: string, skipBoundaries = false) {
       const value = this.getNumberFromString(stringRepresentation);
-      this.currentValue = this.parseValue(value);
+      this.currentValue = this.parseValue(value, skipBoundaries);
     },
 
     // @ts-expect-error - defined in parent
 
-    parseValue(value: any) {
+    parseValue(value: any, skipBoundaries = false) {
       if (value === null || Number.isNaN(value) || !Number.isFinite(value)) {
-        if (this.allowEmpty) {
+        if (this.allowEmptyWithDefault) {
           return null;
         }
 
-        return this.parseValue(0);
+        return this.parseValue(0, skipBoundaries);
       }
 
-      return this.checkForInteger(this.checkBoundaries(value));
+      const processedValue = skipBoundaries ? value : this.checkBoundaries(value);
+      return this.checkForInteger(processedValue);
     },
 
     checkBoundaries(value: number) {
@@ -356,23 +442,6 @@ export default defineComponent({
       return floor;
     },
   },
-
-  setup() {
-    const { t } = useI18n({
-      messages: {
-        en: {
-          increaseButton: "Increase",
-          decreaseButton: "Decrease",
-        },
-        de: {
-          increaseButton: "Erhöhen",
-          decreaseButton: "Verringern",
-        },
-      },
-    });
-
-    return { t };
-  },
 });
 </script>
 
@@ -382,22 +451,31 @@ export default defineComponent({
   flex-direction: column;
   align-items: center;
   width: 2.625rem;
+  flex-shrink: 0;
 
   & button {
-    outline-color: var(--color-border-brand-selected);
+    outline-color: var(--color-border-brand-default);
     padding-inline: var(--scale-size-4);
     border-radius: var(--border-radius-button);
+    color: var(--color-icon-primary-default);
     transition: all 0.15s ease-out;
     width: 100%;
     flex: 1;
 
-    &:is(:hover, :focus-visible) {
+    &:is(:hover, :focus-visible):not(:disabled) {
       background-color: var(--color-interaction-secondary-hover);
     }
 
     &:disabled {
       cursor: default;
     }
+  }
+
+  &.mt-field__controls--small button {
+    max-height: var(--scale-size-16);
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 }
 
@@ -407,7 +485,11 @@ input.mt-number-field__align-end {
 </style>
 
 <style>
+.mt-number-field .mt-block-field__block {
+  background: var(--color-background-primary-default);
+}
+
 .mt-number-field.is--disabled .mt-block-field__block {
-  background: var(--color-background-primary-disabled);
+  background: var(--color-background-tertiary-default);
 }
 </style>

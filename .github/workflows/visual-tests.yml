@@ -20,21 +20,17 @@ jobs:
       contents: write
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
-      - uses: pnpm/action-setup@v3
-        with:
-          version: 9
+      - uses: pnpm/action-setup@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v6
         with:
-          node-version: "20"
+          node-version: "24"
           cache: "pnpm"
-          cache-dependency-path: "**/pnpm-lock.yaml"
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile --prefer-offline
+        run: pnpm i --frozen-lockfile --prefer-offline
 
       - name: Install Playwright dependencies
         run: pnpm dlx playwright install-deps
@@ -43,7 +39,7 @@ jobs:
         run: pnpm dlx playwright@1.47.2 install
 
       - name: Build dependencies
-        run: npx turbo run build --filter=@shopware-ag/meteor-component-library
+        run: pnpm turbo run build --filter=@shopware-ag/meteor-component-library
 
       - name: Build storybook
         run: pnpm --filter @shopware-ag/meteor-component-library run build:storybook --test
@@ -63,7 +59,7 @@ jobs:
           "wait-on http://127.0.0.1:6006 && pnpm --filter=@shopware-ag/meteor-component-library run test:storybook -u"
 
       - name: Archive visual test diffs
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         if: always()
         with:
           name: visual-test-diffs

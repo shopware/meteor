@@ -9,6 +9,8 @@
     :has-focus="hasFocus"
     :help-text="helpText"
     :name="name"
+    @inheritance-restore="$emit('inheritance-restore', $event)"
+    @inheritance-remove="$emit('inheritance-remove', $event)"
   >
     <template #label>
       {{ label }}
@@ -33,13 +35,14 @@
 
     <template #element="{ identification }">
       <input
+        :id="identification"
         v-model="colorValue"
         class="mt-colorpicker__input"
         :spellcheck="false"
-        :id="identification"
         :placeholder="placeholder"
         :disabled="disabled"
         :readonly="readonly"
+        type="text"
         @click="onClickInput"
         @keyup.enter="toggleColorPicker"
         @keyup.escape="outsideClick"
@@ -48,15 +51,15 @@
       />
 
       <mt-floating-ui
-        :isOpened="visible"
+        :is-opened="visible"
         class="mt-colorpicker__colorpicker-position"
         :z-index="zIndex"
         :offset="-12"
       >
         <div
+          ref="modal"
           class="mt-colorpicker__colorpicker"
           data-testid="mt-colorpicker-dialog"
-          ref="modal"
           @keyup.escape="outsideClick"
         >
           <div
@@ -94,8 +97,8 @@
                 min="0"
                 max="1"
                 :step="alphaStep"
-                @keydown="adjustAlphaStepSize"
                 :style="{ backgroundImage: sliderBackground }"
+                @keydown="adjustAlphaStepSize"
               />
             </div>
 
@@ -251,26 +254,6 @@ import { useI18n } from "vue-i18n";
 
 export default defineComponent({
   name: "MtColorpicker",
-
-  setup() {
-    const { t } = useI18n({
-      messages: {
-        en: {
-          "mt-colorpicker": {
-            apply: "Apply",
-          },
-        },
-        de: {
-          "mt-colorpicker": {
-            apply: "Anwenden",
-          },
-        },
-      },
-    });
-    return {
-      t,
-    };
-  },
 
   components: {
     "mt-base-field": MtBaseField,
@@ -438,6 +421,28 @@ export default defineComponent({
       required: false,
       default: false,
     },
+  },
+
+  emits: ["update:modelValue", "inheritance-restore", "inheritance-remove"],
+
+  setup() {
+    const { t } = useI18n({
+      messages: {
+        en: {
+          "mt-colorpicker": {
+            apply: "Apply",
+          },
+        },
+        de: {
+          "mt-colorpicker": {
+            apply: "Anwenden",
+          },
+        },
+      },
+    });
+    return {
+      t,
+    };
   },
   data(): {
     localValue:
@@ -1524,10 +1529,10 @@ export default defineComponent({
 .mt-colorpicker__colorpicker {
   width: 260px;
   padding: var(--scale-size-10);
-  border: 1px solid var(--color-border-primary-default);
-  background-color: var(--color-elevation-surface-overlay);
-  border-radius: var(--border-radius-overlay);
-  box-shadow: 0 3px 6px 0 rgba(120, 138, 155, 0.5);
+  border: 1px solid var(--color-border-secondary-default);
+  background-color: var(--color-background-primary-default);
+  border-radius: var(--border-radius-xs);
+  box-shadow: 0 3px 6px 0 var(--color-elevation-shadow-default);
 }
 
 .mt-colorpicker__colorpicker::before {
@@ -1537,10 +1542,10 @@ export default defineComponent({
   height: var(--scale-size-12);
   top: -6px;
   left: var(--scale-size-20);
-  border: 1px solid var(--color-border-primary-default);
+  border: 1px solid var(--color-border-secondary-default);
   border-bottom: none;
   border-right: none;
-  background: var(--color-elevation-surface-overlay);
+  background: var(--color-background-primary-default);
   transform: rotate(45deg);
 }
 
@@ -1559,7 +1564,7 @@ export default defineComponent({
   display: block;
   width: 238px;
   height: 150px;
-  border: 1px solid var(--color-border-primary-default);
+  border: 1px solid var(--color-border-secondary-default);
   border-radius: var(--border-radius-xs);
   background-image: linear-gradient(180deg, #fff, rgba(255, 255, 255, 0) 50%),
     linear-gradient(0deg, #000, rgba(0, 0, 0, 0) 50%),
@@ -1571,7 +1576,7 @@ export default defineComponent({
   position: relative;
   width: var(--scale-size-18);
   height: var(--scale-size-18);
-  border: 3px solid var(--color-icon-static-default);
+  border: 3px solid var(--color-static-white);
   border-radius: 50%;
   filter: drop-shadow(0px 0px 8px rgba(0, 0, 0, 0.25));
   cursor: grab;
@@ -1579,6 +1584,11 @@ export default defineComponent({
 
 .mt-colorpicker__colorpicker-selector:active {
   cursor: grabbing;
+}
+
+.mt-colorpicker__colorpicker-selector:focus-visible {
+  outline: 2px solid var(--color-border-brand-default);
+  outline-offset: 2px;
 }
 
 .mt-colorpicker__colorpicker-slider-range {
@@ -1604,14 +1614,14 @@ export default defineComponent({
   width: var(--scale-size-8);
   border-radius: var(--border-radius-xs);
   border: 1px solid var(--color-border-primary-default);
-  background: var(--color-icon-static-default);
+  background: var(--color-static-white);
   -webkit-appearance: none;
   cursor: pointer;
 }
 
-.mt-colorpicker__colorpicker-slider-range:focus::-webkit-slider-thumb {
-  outline: 2px solid var(--color-border-brand-selected);
-  outline-offset: 2px;
+.mt-colorpicker__colorpicker-slider-range:focus-visible::-webkit-slider-thumb {
+  outline: 2px solid var(--color-border-brand-default);
+  outline-offset: 1px;
   border-radius: var(--border-radius-checkbox);
 }
 
@@ -1619,14 +1629,14 @@ export default defineComponent({
   height: var(--scale-size-26);
   width: var(--scale-size-8);
   border: 1px solid var(--color-border-primary-default);
-  background: var(--color-icon-static-default);
+  background: var(--color-static-white);
   border-radius: var(--border-radius-xs);
   cursor: pointer;
 }
 
-.mt-colorpicker__colorpicker-slider-range:focus::-moz-range-thumb {
-  outline: 2px solid var(--color-border-brand-selected);
-  outline-offset: 2px;
+.mt-colorpicker__colorpicker-slider-range:focus-visible::-moz-range-thumb {
+  outline: 2px solid var(--color-border-brand-default);
+  outline-offset: 1px;
   border-radius: var(--border-radius-checkbox);
 }
 
@@ -1659,7 +1669,7 @@ export default defineComponent({
   display: inline-block;
   width: 58px;
   height: 58px;
-  border: 1px solid var(--color-border-primary-default);
+  border: 1px solid var(--color-border-secondary-default);
   border-radius: var(--border-radius-xs);
   z-index: 1;
 }
@@ -1685,7 +1695,7 @@ export default defineComponent({
 }
 
 .mt-colorpicker__colorpicker-input {
-  background: var(--color-elevation-surface-raised);
+  background: var(--color-background-primary-default);
   width: 100%;
   min-width: 0;
   height: var(--scale-size-32);
@@ -1716,16 +1726,16 @@ export default defineComponent({
   flex: 1;
 }
 
-.mt-colorpicker__colorpicker-input:focus {
-  border-color: var(--color-border-brand-selected);
-  box-shadow: 0px 0px 4px 0px rgba(24, 158, 255, 0.3);
+.mt-colorpicker__colorpicker-input:focus-visible {
+  outline: 2px solid var(--color-border-brand-default);
+  outline-offset: 1px;
 }
 
 .mt-colorpicker__alpha-slider {
   width: 100%;
   height: var(--scale-size-20);
   margin-top: var(--scale-size-10);
-  border: 1px solid var(--color-border-primary-default);
+  border: 1px solid var(--color-border-secondary-default);
   border-radius: var(--border-radius-xs);
   background-image: url("data:image/svg+xml, %3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' width='100%25' height='100%25'%3E%3Crect width='10' height='10' x='00' y='00' fill='%23cdd5db' /%3E%3Crect width='10' height='10' x='10' y='10' fill='%23cdd5db' /%3E%3C/svg%3E");
   outline: none;
@@ -1737,27 +1747,27 @@ export default defineComponent({
   width: var(--scale-size-8);
   border-radius: var(--border-radius-xs);
   border: 1px solid var(--color-border-primary-default);
-  background: var(--color-icon-static-default);
+  background: var(--color-static-white);
   -webkit-appearance: none;
   cursor: pointer;
 }
 
-.mt-colorpicker__alpha-slider:focus::-webkit-slider-thumb {
-  outline: 2px solid var(--color-border-brand-selected);
-  outline-offset: 2px;
+.mt-colorpicker__alpha-slider:focus-visible::-webkit-slider-thumb {
+  outline: 2px solid var(--color-border-brand-default);
+  outline-offset: 1px;
   border-radius: var(--border-radius-checkbox);
 }
 
 .mt-colorpicker__alpha-slider::-moz-range-thumb {
   height: var(--scale-size-26);
   width: var(--scale-size-8);
-  border: 1px solid var(--color-border-brand-selected);
+  border: 1px solid var(--color-border-brand-default);
   border-radius: var(--border-radius-xs);
   cursor: pointer;
 }
 
-.mt-colorpicker__alpha-slider:focus::-moz-range-thumb {
-  outline: 2px solid var(--color-border-brand-selected);
+.mt-colorpicker__alpha-slider:focus-visible::-moz-range-thumb {
+  outline: 2px solid var(--color-border-brand-default);
   outline-offset: 2px;
   border-radius: var(--border-radius-checkbox);
 }

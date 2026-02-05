@@ -63,7 +63,7 @@ export const VisualTestRenderPlaceholder: MtTextEditorStory = defineStory({
   name: "Should render the placeholder inside text editor",
   args: {
     placeholder: "Type something...",
-    modelValue: "",
+    modelValue: "<p></p>",
   },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -827,12 +827,634 @@ export const VisualTestRenderCodeView: MtTextEditorStory = defineStory({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // Click on button with aria-label "Toggle code"
-    await userEvent.click(canvas.getByLabelText("Toggle code"));
+    // Click on button with aria-label "Switch to code mode"
+    await userEvent.click(canvas.getByLabelText("Switch to code mode"));
 
     // Expect the code view to be rendered
     const codeEditor = canvas.getByRole("textbox");
     expect(codeEditor).toBeDefined();
     expect(codeEditor.innerText).toBe("<h1>Hello World</h1><p>Some text</p>");
+  },
+});
+
+/**
+ * Tests to check that the given HTML content is rendered correctly
+ * in the text editor. And that custom HTML tags are not removed.
+ *
+ * These tests address issues mentioned in:
+ * - https://github.com/shopware/shopware/discussions/11570
+ * - https://github.com/shopware/shopware/issues/11216
+ *
+ * The tests verify that when formatting text in the editor,
+ * the HTML structure, CSS classes, inline styles, and semantic
+ * elements are preserved and not modified by the editor.
+ */
+
+export const PreserveBasicHTMLStructure: MtTextEditorStory = defineStory({
+  name: "Should preserve basic HTML structure when formatting text",
+  args: {
+    modelValue:
+      '<p>This is a <span class="highlight">highlighted</span> text.</p><p>Another paragraph.</p>',
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    // Click on the text
+    await userEvent.click(canvas.getByText("Another paragraph."));
+
+    // Select the text
+    selectText(canvas.getByText("Another paragraph."));
+
+    // Make it bold
+    await userEvent.click(canvas.getByLabelText("Bold"));
+
+    // Wait until args was triggered with new content
+    await waitUntil(() => args.updateModelValue?.mock?.calls?.length > 0);
+
+    // Check that the span with class is preserved
+    const expectedHtml = args.updateModelValue.mock.calls[0][0];
+    expect(expectedHtml).toEqual(
+      '<p>This is a <span class="highlight">highlighted</span> text.</p><p><strong>Another paragraph.</strong></p>',
+    );
+  },
+});
+
+export const PreserveImageTags: MtTextEditorStory = defineStory({
+  name: "Should not remove img tags when formatting text",
+  args: {
+    modelValue:
+      '<p>Here is an image:</p><img src="https://placehold.co/200x50" alt="Test image" class="responsive-img" style="max-width: 100%;"> <p>and some text.</p>',
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    // Wait for the editor to be ready and then wait 200ms for any potential transitions
+    await waitUntil(() => canvas.getByText("Here is an image:"));
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
+    // Click on text using a more flexible matcher
+    const textElement = canvas.getByText((content, _element) => {
+      return content.includes("and some text");
+    });
+    await userEvent.click(textElement);
+
+    // Select the text element
+    selectText(textElement);
+
+    // Make it bold
+    await userEvent.click(canvas.getByLabelText("Bold"));
+
+    // Wait until args was triggered with new content
+    await waitUntil(() => args.updateModelValue?.mock?.calls?.length > 0);
+
+    // Check that img tag is preserved with all attributes
+    const result = args.updateModelValue.mock.calls[0][0];
+    const expectedHtml =
+      '<p>Here is an image:</p><img src="https://placehold.co/200x50" alt="Test image" class="responsive-img" style="max-width: 100%;"><p><strong>and some text.</strong></p>';
+
+    expect(result).toEqual(expectedHtml);
+  },
+});
+
+export const PreserveLinkAttributesInternal: MtTextEditorStory = defineStory({
+  name: "Should not add target and rel attributes to internal links",
+  args: {
+    modelValue:
+      '<p>Visit our <a target="_self" href="/internal-page">internal page</a> for more info.</p><p>Some additional text.</p>',
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    // Wait for the editor to be ready and then wait 200ms for any potential transitions
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
+    // Click inside the editor
+    await userEvent.click(canvas.getByText("Some additional text."));
+
+    // Select the additional text
+    selectText(canvas.getByText("Some additional text."));
+
+    // Make it italic
+    await userEvent.click(canvas.getByLabelText("Italic"));
+
+    // Wait until args was triggered with new content
+    await waitUntil(() => args.updateModelValue?.mock?.calls?.length > 0);
+
+    // Check that link attributes are preserved and no unwanted attributes are added
+    expect(args.updateModelValue).toHaveBeenCalledWith(
+      '<p>Visit our <a target="_self" href="/internal-page">internal page</a> for more info.</p><p><em>Some additional text.</em></p>',
+    );
+  },
+});
+
+export const PreserveLinkAttributesUnknown: MtTextEditorStory = defineStory({
+  name: "Should not add target and rel attributes to unknown links",
+  args: {
+    modelValue:
+      '<p>Visit our <a href="/normal-link">normal link</a> for more info.</p><p>Some additional text.</p>',
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    // Wait for the editor to be ready and then wait 200ms for any potential transitions
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
+    // Click inside the editor
+    await userEvent.click(canvas.getByText("Some additional text."));
+
+    // Select the additional text
+    selectText(canvas.getByText("Some additional text."));
+
+    // Make it italic
+    await userEvent.click(canvas.getByLabelText("Italic"));
+
+    // Wait until args was triggered with new content
+    await waitUntil(() => args.updateModelValue?.mock?.calls?.length > 0);
+
+    // Check that link attributes are preserved and no unwanted attributes are added
+    expect(args.updateModelValue).toHaveBeenCalledWith(
+      '<p>Visit our <a href="/normal-link">normal link</a> for more info.</p><p><em>Some additional text.</em></p>',
+    );
+  },
+});
+
+export const PreserveLinkAttributesExternal: MtTextEditorStory = defineStory({
+  name: "Should not add target and rel attributes to external links",
+  args: {
+    modelValue:
+      '<p>Visit our <a target="_blank" href="/external-link">external link</a> for more info.</p><p>Some additional text.</p>',
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    // Wait for the editor to be ready and then wait 200ms for any potential transitions
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
+    // Click inside the editor
+    await userEvent.click(canvas.getByText("Some additional text."));
+
+    // Select the additional text
+    selectText(canvas.getByText("Some additional text."));
+
+    // Make it italic
+    await userEvent.click(canvas.getByLabelText("Italic"));
+
+    // Wait until args was triggered with new content
+    await waitUntil(() => args.updateModelValue?.mock?.calls?.length > 0);
+
+    // Check that link attributes are preserved and no unwanted attributes are added
+    expect(args.updateModelValue).toHaveBeenCalledWith(
+      '<p>Visit our <a target="_blank" href="/external-link">external link</a> for more info.</p><p><em>Some additional text.</em></p>',
+    );
+  },
+});
+
+export const PreserveSpanTags: MtTextEditorStory = defineStory({
+  name: "Should not remove or modify span tags",
+  args: {
+    modelValue:
+      '<p>This is <span class="highlight" style="background-color: yellow;">highlighted text</span> in a paragraph.</p><p>Another paragraph.</p>',
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    // Wait for the editor to be ready and then wait 200ms for any potential transitions
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
+    // Click on "Another paragraph." text
+    await userEvent.click(canvas.getByText("Another paragraph."));
+
+    // Select "Another paragraph." text
+    selectText(canvas.getByText("Another paragraph."));
+
+    // Make it bold
+    await userEvent.click(canvas.getByLabelText("Bold"));
+
+    // Wait until args was triggered with new content
+    await waitUntil(() => args.updateModelValue?.mock?.calls?.length > 0);
+
+    // Check that span tag with its attributes is preserved
+    const expectedHtml = args.updateModelValue.mock.calls[0][0];
+
+    expect(expectedHtml).toEqual(
+      '<p>This is <span class="highlight" style="background-color: yellow;">highlighted text</span> in a paragraph.</p><p><strong>Another paragraph.</strong></p>',
+    );
+  },
+});
+
+export const PreserveDivTags: MtTextEditorStory = defineStory({
+  name: "Should not remove or modify div tags",
+  args: {
+    modelValue:
+      '<div class="container" style="max-width: 900px; margin: 0 auto;" id="foo"> <h2>Title</h2> <p>Content goes here.</p> </div> <p>Additional text.</p>',
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    // Wait for the editor to be ready and then wait 200ms for any potential transitions
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
+    // Click on "Additional text." text
+    await userEvent.click(canvas.getByText("Additional text."));
+
+    // Select "Additional text." text
+    selectText(canvas.getByText("Additional text."));
+
+    // Make it bold
+    await userEvent.click(canvas.getByLabelText("Bold"));
+
+    // Wait until args was triggered with new content
+    await waitUntil(() => args.updateModelValue?.mock?.calls?.length > 0);
+
+    // Check that div tag with its attributes is preserved
+    const expectedHtml = args.updateModelValue.mock.calls[0][0];
+    expect(expectedHtml).toEqual(
+      '<div class="container" style="max-width: 900px; margin: 0 auto;" id="foo"><h2>Title</h2><p>Content goes here.</p></div><p><strong>Additional text.</strong></p>',
+    );
+  },
+});
+
+export const PreserveSemanticElements: MtTextEditorStory = defineStory({
+  name: "Should not remove semantic elements like header, footer, nav",
+  args: {
+    modelValue:
+      '<header class="page-header"><nav class="main-nav"><ul><li><p>Home</p></li><li><p>About</p></li></ul></nav></header><main><p>Main content here.</p></main><footer class="page-footer"><p>Footer content.</p></footer><p>Some additional text.</p>',
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    // Wait for the editor to be ready and then wait 200ms for any potential transitions
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
+    // Click on "Some additional text." text
+    await userEvent.click(canvas.getByText("Some additional text."));
+
+    // Select "Some additional text." text
+    selectText(canvas.getByText("Some additional text."));
+
+    // Make it italic
+    await userEvent.click(canvas.getByLabelText("Italic"));
+
+    // Wait until args was triggered with new content
+    await waitUntil(() => args.updateModelValue?.mock?.calls?.length > 0);
+
+    // Check that semantic elements are preserved
+    const expectedHtml = args.updateModelValue.mock.calls[0][0];
+    expect(expectedHtml).toEqual(
+      '<header class="page-header"><nav class="main-nav"><ul><li><p>Home</p></li><li><p>About</p></li></ul></nav></header><main><p>Main content here.</p></main><footer class="page-footer"><p>Footer content.</p></footer><p><em>Some additional text.</em></p>',
+    );
+  },
+});
+
+export const PreserveFigureAndFigcaption: MtTextEditorStory = defineStory({
+  name: "Should not remove figure and figcaption tags",
+  args: {
+    modelValue:
+      '<figure class="image-figure" style="text-align: center;"><img src="/chart.png" alt="Sales Chart"><figcaption>Sales data for Q1 2024</figcaption></figure><p>Analysis below.</p>',
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    // Wait for the editor to be ready and then wait 200ms for any potential transitions
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
+    // Click on "Analysis below." text
+    await userEvent.click(canvas.getByText("Analysis below."));
+
+    // Select "Analysis below." text
+    selectText(canvas.getByText("Analysis below."));
+
+    // Make it italic
+    await userEvent.click(canvas.getByLabelText("Italic"));
+
+    // Wait until args was triggered with new content
+    await waitUntil(() => args.updateModelValue?.mock?.calls?.length > 0);
+
+    // Check that figure and figcaption tags are preserved without automatic p tags
+    const expectedHtml = args.updateModelValue.mock.calls[0][0];
+    expect(expectedHtml).toEqual(
+      '<figure class="image-figure" style="text-align: center;"><img src="/chart.png" alt="Sales Chart"><figcaption>Sales data for Q1 2024</figcaption></figure><p><em>Analysis below.</em></p>',
+    );
+  },
+});
+
+export const PreserveCSSStylesInTables: MtTextEditorStory = defineStory({
+  name: "Should not remove CSS styles from tables",
+  args: {
+    modelValue:
+      '<table class="data-table" style="width: 100%; border-collapse: collapse; min-width: 50px"> <colgroup> <col style="min-width: 25px"> <col style="min-width: 25px"> </colgroup> <tbody> <tr style="background-color: #f5f5f5;"> <th colspan="1" rowspan="1" style="padding: 10px; border: 1px solid #ccc;"> <p>Name</p> </th> <th colspan="1" rowspan="1" style="padding: 10px; border: 1px solid #ccc;"> <p>Value</p> </th> </tr> <tr> <td colspan="1" rowspan="1" style="padding: 10px; border: 1px solid #ccc;"> <p>Item 1</p> </td> <td colspan="1" rowspan="1" style="padding: 10px; border: 1px solid #ccc;"> <p>100</p> </td> </tr> </tbody> </table> <p>Some additional text.</p>',
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    // Wait for the editor to be ready and then wait 200ms for any potential transitions
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
+    // Click on "Some additional text." text
+    await userEvent.click(canvas.getByText("Some additional text."));
+
+    // Select "Some additional text." text
+    selectText(canvas.getByText("Some additional text."));
+
+    // Make it italic
+    await userEvent.click(canvas.getByLabelText("Italic"));
+
+    // Wait until args was triggered with new content
+    await waitUntil(() => args.updateModelValue?.mock?.calls?.length > 0);
+
+    // Check that table CSS styles are preserved
+    const expectedHtml = args.updateModelValue.mock.calls[0][0];
+    expect(expectedHtml).toEqual(
+      '<table class="data-table" style="width: 100%; border-collapse: collapse; min-width: 50px"><colgroup><col style="min-width: 25px"><col style="min-width: 25px"></colgroup><tbody><tr style="background-color: #f5f5f5;"><th colspan="1" rowspan="1" style="padding: 10px; border: 1px solid #ccc;"><p>Name</p></th><th colspan="1" rowspan="1" style="padding: 10px; border: 1px solid #ccc;"><p>Value</p></th></tr><tr><td colspan="1" rowspan="1" style="padding: 10px; border: 1px solid #ccc;"><p>Item 1</p></td><td colspan="1" rowspan="1" style="padding: 10px; border: 1px solid #ccc;"><p>100</p></td></tr></tbody></table><p><em>Some additional text.</em></p>',
+    );
+  },
+});
+
+export const PreserveCSSClasses: MtTextEditorStory = defineStory({
+  name: "Should not remove CSS classes from elements",
+  args: {
+    modelValue:
+      '<div class="content-wrapper custom-layout"><h2 class="section-title primary-color">Section Title</h2><p class="text-content large-text">This is important content.</p></div>',
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    // Wait for the editor to be ready and then wait 200ms for any potential transitions
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
+    // Click on the text content
+    await userEvent.click(canvas.getByText("This is important content."));
+
+    // Select the text content
+    selectText(canvas.getByText("This is important content."));
+
+    // Make it italic
+    await userEvent.click(canvas.getByLabelText("Italic"));
+
+    // Wait until args was triggered with new content
+    await waitUntil(() => args.updateModelValue?.mock?.calls?.length > 0);
+
+    // Check that CSS classes are preserved
+    const expectedHtml = args.updateModelValue.mock.calls[0][0];
+
+    // Verify the structure and classes are preserved
+    expect(expectedHtml).toEqual(
+      '<div class="content-wrapper custom-layout"><h2 class="section-title primary-color">Section Title</h2><p class="text-content large-text"><em>This is important content.</em></p></div>',
+    );
+  },
+});
+
+export const PreserveComplexHTMLStructure: MtTextEditorStory = defineStory({
+  name: "Should preserve complex HTML structure when formatting text",
+  args: {
+    modelValue:
+      '<div style="max-width: 900px; margin: 0 auto;"> <h2 style="text-align: center; margin-bottom: 2rem" class="display-5">Placeholder Headline Text</h2> </div> <div style="max-width: 900px; margin: 0 auto;"> <p style="text-align: center; font-size: 1rem">Placeholder paragraph text with a <a target="_self" href="/sample-link">sample link</a> and more placeholder text to demonstrate formatting effects.</p> </div> <p>Some additional text.</p>',
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    // Wait for the editor to be ready and then wait 200ms for any potential transitions
+    await new Promise((resolve) => setTimeout(resolve, 200));
+
+    // Click on "Some additional text." text
+    await userEvent.click(canvas.getByText("Some additional text."));
+
+    // Select "Some additional text." text
+    selectText(canvas.getByText("Some additional text."));
+
+    // Make it italic
+    await userEvent.click(canvas.getByLabelText("Italic"));
+
+    // Wait until args was triggered with new content
+    await waitUntil(() => args.updateModelValue?.mock?.calls?.length > 0);
+
+    // Check that the complex HTML structure is preserved
+    const expectedHtml = args.updateModelValue.mock.calls[0][0];
+    expect(expectedHtml).toEqual(
+      '<div style="max-width: 900px; margin: 0 auto;"><h2 style="text-align: center; margin-bottom: 2rem" class="display-5">Placeholder Headline Text</h2></div><div style="max-width: 900px; margin: 0 auto;"><p style="text-align: center; font-size: 1rem">Placeholder paragraph text with a <a target="_self" href="/sample-link">sample link</a> and more placeholder text to demonstrate formatting effects.</p></div><p><em>Some additional text.</em></p>',
+    );
+  },
+});
+
+// ------------------------------
+// Gate & Diff modal scenarios
+// ------------------------------
+
+export const VisualTestGateOnInitialUnsupportedHTML: MtTextEditorStory = defineStory({
+  name: "Should show gate overlay for unsupported HTML on mount",
+  args: {
+    modelValue: '<div class="box" data-custom="123"><p>Content</p></div>',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Wait until the gate overlay is rendered
+    await waitUntil(() => !!document.querySelector(".mt-text-editor__gate"));
+
+    // Assert gate actions are visible
+    expect(canvas.getByText("View code")).toBeDefined();
+  },
+});
+
+export const AcceptUnsupportedHtmlDiff_AppliesParsedCode: MtTextEditorStory = defineStory({
+  name: "Should accept diff and apply parsed HTML when switching back",
+  args: {
+    modelValue: "<p>Hello</p>",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Go to code view
+    await userEvent.click(canvas.getByLabelText("Switch to code mode"));
+
+    // Replace code with unsupported HTML (data-custom)
+    const codeEditor = canvas.getByRole("textbox") as HTMLElement;
+    await userEvent.click(codeEditor);
+    await userEvent.type(
+      codeEditor,
+      '{selectall}{backspace}<div class="box" data-custom="123"><p>Content</p></div>',
+    );
+
+    // Switch back to WYSIWYG (triggers diff modal)
+    await userEvent.click(canvas.getByLabelText("Switch to visual mode"));
+
+    // Wait for diff modal
+    await waitUntil(() => document.body.querySelector("div[role='dialog']"));
+    const body = within(document.body);
+    expect(body.getByText("Code changes required")).toBeDefined();
+
+    // Accept changes
+    await userEvent.click(body.getByText("Apply changes"));
+
+    // Open code view again
+    await userEvent.click(canvas.getByLabelText("Switch to code mode"));
+
+    const updatedEditor = canvas.getByRole("textbox") as HTMLElement;
+
+    // Assert unsupported attribute removed, structure retained
+    expect(updatedEditor.innerText).not.toContain("data-custom");
+    expect(updatedEditor.innerText).toContain('<div class="box"');
+    expect(updatedEditor.innerText).toContain("<p>Content</p>");
+  },
+});
+
+export const CancelUnsupportedHtmlDiff_StaysInCode: MtTextEditorStory = defineStory({
+  name: "Should cancel diff and remain in code view with original code",
+  args: {
+    modelValue: "<p>Hello</p>",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Go to code view
+    await userEvent.click(canvas.getByLabelText("Switch to code mode"));
+
+    // Replace code with unsupported HTML (data-custom)
+    const codeEditor = canvas.getByRole("textbox") as HTMLElement;
+    await userEvent.click(codeEditor);
+    await userEvent.type(
+      codeEditor,
+      '{selectall}{backspace}<div class="box" data-custom="123"><p>Content</p></div>',
+    );
+
+    // Switch back to WYSIWYG (triggers diff modal)
+    await userEvent.click(canvas.getByLabelText("Switch to visual mode"));
+
+    // Wait for diff modal
+    await waitUntil(() => document.body.querySelector("div[role='dialog']"));
+    const body = within(document.body);
+    expect(body.getByText("Code changes required")).toBeDefined();
+
+    // Cancel: stay in code editor
+    await userEvent.click(body.getByText("Continue in code mode"));
+
+    // Wait until modal is closed
+    await waitUntil(() => !document.body.querySelector("div[role='dialog']"));
+
+    // Ensure we are in code editor and the original unsupported code remains
+    const stillCodeEditor = canvas.getByRole("textbox") as HTMLElement;
+    expect(stillCodeEditor).toBeDefined();
+    expect(stillCodeEditor.innerText).toContain("data-custom");
+  },
+});
+
+export const VisualTestDiffModalShownAfterEditingUnsupportedHTML: MtTextEditorStory = defineStory({
+  name: "Should show diff modal after editing unsupported HTML in code",
+  args: {
+    modelValue: "<p>Hello</p>",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Go to code view
+    await userEvent.click(canvas.getByLabelText("Switch to code mode"));
+
+    // Replace code with unsupported HTML (data-custom)
+    const codeEditor = canvas.getByRole("textbox") as HTMLElement;
+    await userEvent.click(codeEditor);
+    await userEvent.type(
+      codeEditor,
+      '{selectall}{backspace}<div class="box" data-custom="123"><p>Content</p></div>',
+    );
+
+    // Switch back to WYSIWYG (triggers diff modal)
+    await userEvent.click(canvas.getByLabelText("Switch to visual mode"));
+
+    // Wait for diff modal and assert basic elements
+    await waitUntil(() => document.body.querySelector("div[role='dialog']"));
+    const body = within(document.body);
+    expect(body.getByText("Code changes required")).toBeDefined();
+    expect(body.getByText("Continue in code mode")).toBeDefined();
+    expect(body.getByText("Apply changes")).toBeDefined();
+  },
+});
+
+// ------------------------------
+// showToolbar prop tests
+// ------------------------------
+
+export const VisualTestHiddenToolbar: MtTextEditorStory = defineStory({
+  name: "Should not render toolbar when showToolbar is false",
+  args: {
+    modelValue: "<p>Editor without toolbar</p>",
+    showToolbar: false,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Wait for editor to render
+    await waitUntil(() => canvas.getByText("Editor without toolbar"));
+
+    // Assert toolbar is not present
+    const toolbar = canvasElement.querySelector(".mt-text-editor-toolbar");
+    expect(toolbar).toBeNull();
+
+    // Assert editor content is still rendered
+    expect(canvas.getByText("Editor without toolbar")).toBeDefined();
+  },
+});
+
+export const TestShowToolbar: MtTextEditorStory = defineStory({
+  name: "Should render toolbar when showToolbar is true (default)",
+  args: {
+    modelValue: "<p>Editor with toolbar</p>",
+    showToolbar: true,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Wait for editor to render
+    await waitUntil(() => canvas.getByText("Editor with toolbar"));
+
+    // Assert toolbar buttons are present
+    expect(canvas.getByLabelText("Format")).toBeDefined();
+    expect(canvas.getByLabelText("Bold")).toBeDefined();
+    expect(canvas.getByLabelText("Italic")).toBeDefined();
+  },
+});
+
+// ------------------------------
+// codeMode prop tests
+// ------------------------------
+
+export const TestCodeModeDefault: MtTextEditorStory = defineStory({
+  name: "Should start in code mode when codeMode is true",
+  args: {
+    modelValue: "<p>Hello World</p>",
+    codeMode: true,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Wait for code editor to be rendered
+    await waitUntil(() => canvas.getByRole("textbox"));
+
+    // Expect the code editor to be rendered
+    const codeEditor = canvas.getByRole("textbox");
+    expect(codeEditor).toBeDefined();
+    expect(codeEditor.innerText).toBe("<p>Hello World</p>");
+
+    // Expect the toggle button to show "Switch to visual mode"
+    expect(canvas.getByLabelText("Switch to visual mode")).toBeDefined();
+  },
+});
+
+export const TestCodeModeFalse: MtTextEditorStory = defineStory({
+  name: "Should start in WYSIWYG mode when codeMode is false (default)",
+  args: {
+    modelValue: "<p>Hello World</p>",
+    codeMode: false,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Wait for WYSIWYG editor to be rendered
+    await waitUntil(() => canvas.getByText("Hello World"));
+
+    // Expect the WYSIWYG content to be rendered
+    expect(canvas.getByText("Hello World")).toBeDefined();
+
+    // Expect the toggle button to show "Switch to code mode"
+    expect(canvas.getByLabelText("Switch to code mode")).toBeDefined();
   },
 });

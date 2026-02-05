@@ -8,16 +8,21 @@ jobs:
   approved:
     if: github.event.review.state == 'APPROVED'
     runs-on: ubuntu-latest
+    env:
+      TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
+      TURBO_TEAM: ${{ secrets.TURBO_TEAM }}
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-      - run: npm i -g --force corepack && corepack enable
-      - uses: actions/setup-node@v4
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v6
         with:
-          node-version: 20
+          node-version: "24"
           cache: "pnpm"
       - name: Install dependencies
-        run: pnpm install
+        run: pnpm i --frozen-lockfile --prefer-offline
       - name: Build
-        run: npx turbo run build
+        run: pnpm turbo run build
       - run: pnpx pkg-pr-new publish './packages/*'

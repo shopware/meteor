@@ -4,7 +4,7 @@
     :label="label"
     :icon="icon"
     :disabled="disabled"
-    :on-label-click="handleLableClick"
+    :on-label-click="handleLabelClick"
     :type="type"
     :role="role"
   />
@@ -55,16 +55,16 @@ export default defineComponent({
   },
   emits: ["click"],
   setup(props, { emit }) {
-    const handleLableClick = () => {
+    const handleLabelClick = (e: MouseEvent | KeyboardEvent | boolean) => {
       if (props.disabled) {
         return;
       }
 
-      emit("click");
+      emit("click", e);
     };
 
     return {
-      handleLableClick,
+      handleLabelClick,
     };
   },
 });

@@ -31,6 +31,7 @@ const props = withDefaults(
     mode?: "solid" | "regular";
   }>(),
   {
+    color: undefined,
     decorative: false,
     size: undefined,
     mode: "regular",
@@ -87,28 +88,38 @@ function handleFailedImport(detail: string = "") {
   iconSvgData.value = "";
 }
 
+const icons = import.meta.glob("/node_modules/@shopware-ag/meteor-icon-kit/icons/**/*.svg", {
+  import: "default",
+  eager: false,
+});
+
 watch(
   iconInformation,
   () => {
-    import(
-      `./../../../../node_modules/@shopware-ag/meteor-icon-kit/icons/${iconInformation.value.mode}/${iconInformation.value.name}.svg`
-    )
-      .then((data) => {
-        if (data.default) {
-          iconSvgData.value = data.default;
-          return;
-        }
+    const iconPath = `/node_modules/@shopware-ag/meteor-icon-kit/icons/${iconInformation.value.mode}/${iconInformation.value.name}.svg`;
+    const loader = icons[iconPath];
 
-        handleFailedImport();
-      })
-      .catch(handleFailedImport);
+    if (loader) {
+      loader()
+        .then((data) => {
+          if (data) {
+            iconSvgData.value = data as string;
+            return;
+          }
+
+          handleFailedImport();
+        })
+        .catch(handleFailedImport);
+    } else {
+      handleFailedImport();
+    }
   },
   { immediate: true },
 );
 </script>
 
 <style lang="scss">
-@import "node_modules/@shopware-ag/meteor-icon-kit/icons/meteor-icon-kit.scss";
+@import "@shopware-ag/meteor-icon-kit/icons/meteor-icon-kit.scss";
 
 .mt-icon {
   display: inline-block;
