@@ -36,9 +36,6 @@ jobs:
           node-version: "24"
           cache: "pnpm"
 
-      - name: Enable Corepack
-        run: corepack enable
-
       - name: Install dependencies
         run: pnpm i --frozen-lockfile --prefer-offline
 
