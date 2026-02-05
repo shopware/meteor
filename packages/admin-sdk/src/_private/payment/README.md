@@ -93,6 +93,36 @@ type Flow = {
     subscription.unsubscribe();
 ```
 
+#### `decodeLicense`
+
+Decodes the shop license JWT from system config and returns the payload.
+
+Reads the license key from `core.store.licenseKey` in system config, decodes the JWT, and returns the token payload containing plan information and license toggles. Returns `null` if no license is stored, the token is invalid, or any error occurs.
+
+##### Returns
+
+A promise that resolves to the decoded license payload or `null`:
+
+- **Success**: An object with at least:
+  - **`plan-name`** (`string`): The plan name (e.g. `'premium'`)
+  - **`plan-usage`** (`string`): Usage type (e.g. `'commercial'`)
+  - **`plan-variant`** (`string`): Plan variant
+  - **`license-toggles`** (`Record<string, boolean>`): Feature toggles from the license
+  - **`aud`**, **`exp`**, **`iat`**, **`iss`**, **`nbf`**, **`swemp`**: Standard JWT and Shopware fields
+- **Failure**: `null` (no config, invalid token, or error)
+
+##### Example
+
+```typescript
+const license = await decodeLicense();
+if (license) {
+  console.log(license['plan-name']);
+  console.log(license['license-toggles']);
+} else {
+  console.log('No valid license');
+}
+```
+
 ### Events
 - **`PAYMENT_CLOSE`** (`'payment_close'`): Event sent when the payment process should be closed
 - **`PAYMENT_SUCCESS`** (`'payment_success'`): Event sent when the payment process completes successfully
