@@ -202,10 +202,10 @@ describe("mt-modal", () => {
      * Expected visual hierarchy: each backdrop is followed by its corresponding modal.
      */
     function getBodyStackOrder(): ("backdrop" | "modal")[] {
-      const elements = document.body.querySelectorAll(
-        '.mt-modal-root__backdrop, .mt-modal',
+      const elements = document.body.querySelectorAll(".mt-modal-root__backdrop, .mt-modal");
+      return Array.from(elements).map((el) =>
+        el.classList.contains("mt-modal") ? "modal" : "backdrop",
       );
-      return Array.from(elements).map((el) => el.classList.contains("mt-modal") ? "modal" : "backdrop");
     }
 
     it("does not show stacking warning when only one modal is open", async () => {
