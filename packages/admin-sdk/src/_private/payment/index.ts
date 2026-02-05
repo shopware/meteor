@@ -136,7 +136,6 @@ export const decodeLicense = async (): Promise<TokenPayload | null> => {
     const value = res?.first() as { configurationValue: string } | undefined;
 
     const token: string = value?.configurationValue || '';
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     const decoded = jwtDecode<TokenPayload>(token) as TokenPayload;
     return decoded;
   } catch {
