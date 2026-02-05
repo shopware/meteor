@@ -10,7 +10,7 @@ export default function bootstrap() {
    * Tabs
    */
   ui.tabs('sw-product-detail').addTabItem({
-    label: 'example-meteor-app.productTab.title',
+    label: '<%= name %>.productTab.title',
     componentSectionId: exampleProductTab,
   })
 
@@ -23,8 +23,8 @@ export default function bootstrap() {
     positionId: 'sw-dashboard__before-content',
     component: 'card',
     props: {
-      title: 'example-meteor-app.dashboardCard.title',
-      subtitle: 'example-meteor-app.dashboardCard.subtitle',
+      title: '<%= name %>.dashboardCard.title',
+      subtitle: '<%= name %>.dashboardCard.subtitle',
       locationId: exampleDashboard,
     }
   })
@@ -35,8 +35,8 @@ export default function bootstrap() {
     positionId: exampleProductTab,
     component: 'card',
     props: {
-      title: 'example-meteor-app.productCard.title',
-      subtitle: 'example-meteor-app.productCard.subtitle',
+      title: '<%= name %>.productCard.title',
+      subtitle: '<%= name %>.productCard.subtitle',
       locationId: exampleProductTab,
     }
   });

@@ -1,7 +1,7 @@
 import { GluegunCommand, GluegunToolbox } from 'gluegun'
 
 const command: GluegunCommand = {
-  name: 'create-meteor-extension',
+  name: '@shopware-ag/create-meteor-extension',
   run: async (toolbox: GluegunToolbox) => {
     const {
       template: { generate },
@@ -33,63 +33,107 @@ const command: GluegunCommand = {
     })
 
     // Define the source and destination directories
-    const sourceDir = filesystem.path('./src/templates/blank_project')
+    const sourceDir = filesystem.path(__dirname, '..', 'templates', 'blank_project')
     const destinationDir = filesystem.path(filesystem.cwd(), name)
 
-    // Ensure that the source directory exists
+    // Validate source directory structure
     if (!filesystem.exists(sourceDir)) {
-      print.error(`Source directory ${sourceDir} does not exist`)
+      print.error(`Error: Template directory not found at ${sourceDir}`)
+      print.error('Please ensure the package is installed correctly.')
       return
+    }
+
+    // Validate that source directory has expected structure
+    const requiredFiles = ['package.json.ejs', 'vite.config.ts', 'tsconfig.json']
+    for (const file of requiredFiles) {
+      const filePath = filesystem.path(sourceDir, file)
+      if (!filesystem.exists(filePath)) {
+        print.error(`Error: Required template file missing: ${file}`)
+        print.error('Please ensure the package is installed correctly.')
+        return
+      }
     }
 
     // Check if the destination directory already exists
     if (filesystem.exists(destinationDir)) {
-      print.error(`Destination directory ${destinationDir} already exists`)
+      print.error(`Error: Directory "${name}" already exists in the current location.`)
+      print.info('Please choose a different name or remove the existing directory.')
       return
     }
 
-    // Copy the template files from the source directory to the destination directory
-    filesystem.copy(sourceDir, destinationDir, {
-      overwrite: true,
-    })
-
-    // Look for all .ejs files in the destination directory
-    const files = filesystem.find(destinationDir, {
-      matching: '*.ejs',
-      directories: false,
-    })
-
-    // Generate files from the templates
-    const generationPromises = files.map(async (file) => {
-      const destinationFile = file.replace(/\.ejs$/, '')
-
-      await generate({
-        // Go to the parent directory of the destination file because the destination file contains the name of the extension
-        directory: filesystem.path(destinationDir, '..'),
-        template: file,
-        target: destinationFile,
-        props: {
-          name,
-        },
+    try {
+      // Copy the template files from the source directory to the destination directory
+      print.info(`Creating extension "${name}"...`)
+      
+      filesystem.copy(sourceDir, destinationDir, {
+        overwrite: true,
       })
 
-      // Remove the original .ejs file
-      filesystem.removeAsync(file)
-    })
+      // Look for all .ejs files in the destination directory
+      const files = filesystem.find(destinationDir, {
+        matching: '**/*.ejs',
+        directories: false,
+      })
 
-    // Wait for all file generation to complete
-    await Promise.all(generationPromises)
+      if (files.length === 0) {
+        throw new Error('No template files (.ejs) found in the project structure')
+      }
 
-    // Print a success message
-    print.newline()
-    print.success(`Meteor extension "${name}" created successfully!`)
-    print.newline()
-    print.info(`To get started, run the following commands:
+      // Generate files from the templates
+      print.info('Processing templates...')
+      const generationPromises = files.map(async (file) => {
+        const destinationFile = file.replace(/\.ejs$/, '')
+
+        try {
+          await generate({
+            // Go to the parent directory of the destination file because the destination file contains the name of the extension
+            directory: filesystem.path(destinationDir, '..'),
+            template: file,
+            target: destinationFile,
+            props: {
+              name,
+            },
+          })
+
+          // Remove the original .ejs file
+          await filesystem.removeAsync(file)
+        } catch (error) {
+          throw new Error(`Failed to process template ${file}: ${error.message}`)
+        }
+      })
+
+      // Wait for all file generation to complete
+      await Promise.all(generationPromises)
+
+      // Print a success message
+      print.newline()
+      print.success(`Meteor extension "${name}" created successfully!`)
+      print.newline()
+      print.info(`To get started, run the following commands:
 
 cd ${name}
 npm install
 npm run dev
 `)
+    } catch (error) {
+      // Rollback: remove the destination directory if it was created
+      print.newline()
+      print.error(`Error creating extension: ${error.message}`)
+      
+      if (filesystem.exists(destinationDir)) {
+        print.info('Rolling back changes...')
+        try {
+          await filesystem.removeAsync(destinationDir)
+          print.info('Cleanup completed.')
+        } catch (cleanupError) {
+          print.warning(`Warning: Could not clean up directory ${destinationDir}`)
+          print.warning('You may need to remove it manually.')
+        }
+      }
+      
+      print.newline()
+      print.error('Extension creation failed. Please try again.')
+    }
   },
 }
 

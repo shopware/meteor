@@ -6,10 +6,10 @@ import { build } from 'gluegun'
 async function run(argv) {
   // create a CLI runtime
   const cli = build()
-    .brand('create-meteor-extension')
+    .brand('@shopware-ag/create-meteor-extension')
     .src(__dirname)
     .plugins('./node_modules', {
-      matching: 'create-meteor-extension-*',
+      matching: '@shopware-ag/create-meteor-extension-*',
       hidden: true,
     })
     .help() // provides default for help, h, --help, -h

@@ -1,26 +1,124 @@
-# create-meteor-extension CLI
+# @shopware-ag/create-meteor-extension
 
-A CLI for create-meteor-extension.
+A CLI tool for scaffolding new Meteor Admin SDK extensions for Shopware 6. This tool generates a complete project setup with Vue 3, TypeScript, and Vite, allowing you to quickly start building custom extensions for the Shopware Administration.
 
-## Customizing your CLI
+## What is Meteor?
 
-Check out the documentation at https://github.com/infinitered/gluegun/tree/master/docs.
+Meteor is Shopware's Admin SDK that enables developers to extend the Shopware Administration with custom UI components and functionality without modifying the core. Extensions built with Meteor run in isolated iframes and communicate with the Shopware Administration through a secure messaging system.
 
-## Publishing to NPM
+## Features
 
-To package your CLI up for NPM, do this:
+- **Modern Stack**: Vue 3, TypeScript, and Vite for fast development and optimal performance
+- **Ready-to-use Template**: Includes example locations (dashboard card and product tab) to get started
+- **Pre-configured Development Environment**: ESLint, Prettier, and TypeScript configuration out of the box
+- **Hot Module Replacement**: Vite development server with instant updates
+- **Internationalization**: Built-in i18n support with example translations (German and English)
+- **Component Library**: Integrates `@shopware-ag/meteor-component-library` for consistent UI
 
-```shell
-$ npm login
-$ npm whoami
-$ npm test
+## Usage
 
-$ npm run build
+You can run the CLI directly using npx (recommended) or install it globally:
 
-$ npm publish
+```bash
+# Using npx (recommended - always uses latest version)
+npx @shopware-ag/create-meteor-extension
+
+# Or install globally
+npm install -g @shopware-ag/create-meteor-extension
+create-meteor-extension
 ```
 
-# License
+The CLI will interactively prompt you for:
+- **Extension name**: Must contain only lowercase letters, numbers, and hyphens (e.g., `my-awesome-extension`)
+
+## What Gets Created
+
+The CLI generates a complete project structure:
+
+```
+my-extension/
+├── src/
+│   ├── locations/           # Vue components for different admin locations
+│   │   ├── exampleDashboard.vue
+│   │   └── exampleProductTab.vue
+│   ├── assets/              # Styles and static assets
+│   ├── app.ts               # Application entry point
+│   ├── bootstrap.ts         # SDK initialization
+│   ├── locations.ts         # Location configuration
+│   └── main.ts              # Main entry point
+├── snippet/                 # Translation files
+│   ├── de-DE.json
+│   └── en-GB.json
+├── public/                  # Static assets
+├── package.json             # Dependencies and scripts
+├── vite.config.ts           # Vite configuration
+├── tsconfig.json            # TypeScript configuration
+└── eslint.config.ts         # ESLint configuration
+```
+
+### Key Dependencies
+
+- **@shopware-ag/meteor-admin-sdk**: Core SDK for Shopware Admin extensions
+- **@shopware-ag/meteor-component-library**: UI component library matching Shopware's design system
+- **Vue 3**: Progressive JavaScript framework
+- **Vue Router**: Client-side routing
+- **Vite**: Next-generation frontend tooling
+
+## Getting Started
+
+After creating your extension:
+
+```bash
+# TODO after finishing
+```
+
+### Development Workflow
+
+TODO after finishing
+
+### Available Scripts
+
+TODO after finishing
+
+## Extension Locations
+
+The generated template includes two example locations:
+
+1. **Dashboard Card** (`example-dashboard-before-content`): Appears on the Shopware dashboard
+2. **Product Tab** (`example-product-tab`): Adds a custom tab to product detail pages
+
+You can easily add more locations by:
+1. Creating a new Vue component in `src/locations/`
+2. Registering it in `src/locations.ts`
+3. Configuring the location in `src/bootstrap.ts`
+
+## Requirements
+
+- Node.js 18+
+- npm or pnpm
+- Shopware 6 instance for testing your extension
+
+## CLI Development
+
+To work on the CLI itself:
+
+```bash
+# Run locally without building
+./packages/create-meteor-extension/bin/create-meteor-extension [arguments]
+
+# Build the CLI
+npm run build
+
+# Run tests
+npm test
+```
+
+The CLI automatically detects development mode and runs TypeScript files directly using `ts-node`, so no build step is required during development.
+
+## Technical Details
+
+This CLI is built with [Gluegun](https://github.com/infinitered/gluegun), a toolkit for building command-line apps. It uses EJS templates to generate customized project files based on your input.
+
+## License
 
 MIT - see LICENSE
-

@@ -1,0 +1,111 @@
+# <%= name %>
+
+A Meteor Admin SDK extension for Shopware 6.
+
+## What is Meteor?
+
+Meteor is Shopware's Admin SDK that enables developers to extend the Shopware Administration with custom UI components and functionality without modifying the core. Extensions built with Meteor run in isolated iframes and communicate with the Shopware Administration through a secure messaging system.
+
+## Project Setup
+
+This extension is built with Vue 3, TypeScript, and Vite.
+
+### Install Dependencies
+
+```sh
+npm install
+```
+
+### Development
+
+Start the development server with hot module replacement:
+
+```sh
+npm run dev
+```
+
+The development server will run on `http://localhost:5173` by default.
+
+### Connecting to Shopware
+
+To test your extension in Shopware:
+
+1. Make sure your development server is running (`npm run dev`)
+2. In your Shopware Administration, navigate to Settings → System → Apps
+3. Add your extension by configuring it to point to `http://localhost:5173`
+4. The extension will appear in the locations defined in `src/bootstrap.ts`
+
+### Build for Production
+
+Type-check, compile and minify for production:
+
+```sh
+npm run build
+```
+
+The built files will be in the `dist` directory.
+
+### Linting
+
+Run ESLint to check and fix code style:
+
+```sh
+npm run lint
+```
+
+### Formatting
+
+Format code with Prettier:
+
+```sh
+npm run format
+```
+
+## Project Structure
+
+```
+<%= name %>/
+├── src/
+│   ├── locations/           # Vue components for different admin locations
+│   │   ├── exampleDashboard.vue
+│   │   └── exampleProductTab.vue
+│   ├── assets/              # Styles and static assets
+│   ├── app.ts               # Application entry point
+│   ├── bootstrap.ts         # SDK initialization and location registration
+│   ├── locations.ts         # Location ID exports
+│   └── main.ts              # Main entry point
+├── snippet/                 # Translation files
+│   ├── de-DE.json           # German translations
+│   └── en-GB.json           # English translations
+├── public/                  # Static assets
+└── dist/                    # Production build output (generated)
+```
+
+## Extension Locations
+
+This template includes two example locations:
+
+1. **Dashboard Card**: Appears on the Shopware dashboard
+2. **Product Tab**: Adds a custom tab to product detail pages
+
+### Adding New Locations
+
+To add a new location:
+
+1. Create a Vue component in `src/locations/`
+2. Export its ID in `src/locations.ts`
+3. Register it in `src/bootstrap.ts` using the Meteor Admin SDK
+
+## Documentation
+
+- [Meteor Admin SDK Documentation](https://shopware.github.io/meteor/docs/admin-sdk/)
+- [Meteor Component Library](https://shopware.github.io/meteor/docs/component-library/)
+- [Available Locations](https://shopware.github.io/meteor/docs/admin-sdk/concepts/locations.html)
+
+## Recommended IDE Setup
+
+[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (disable Vetur if installed).
+
+## License
+
+MIT

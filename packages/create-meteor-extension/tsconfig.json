@@ -15,14 +15,14 @@
     "noImplicitAny": false,
     "noImplicitThis": true,
     "noUnusedLocals": true,
-    "sourceMap": true,
     "inlineSourceMap": true,
     "outDir": "build",
     "strict": false,
     "target": "es5",
     "declaration": true,
-    "declarationDir": "build/types"
+    "declarationDir": "build/types",
+    "skipLibCheck": true
   },
   "include": ["src/**/*"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules", "src/templates/**/*"]
 }
