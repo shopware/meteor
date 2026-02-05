@@ -225,7 +225,6 @@ const { t } = useI18n({
         buttons: {
           "switch-to-code": "Switch to code mode",
           "switch-to-visual": "Switch to visual mode",
-          "format-code": "Format HTML",
         },
         footer: {
           characters: "{characters} characters",
@@ -252,7 +251,6 @@ const { t } = useI18n({
         buttons: {
           "switch-to-code": "In den Code-Modus wechseln",
           "switch-to-visual": "In den visuellen Modus wechseln",
-          "format-code": "HTML formatieren",
         },
         footer: {
           characters: "{characters} Zeichen",
@@ -515,14 +513,6 @@ const handleCodeEditorUpdate = (value?: string | CodeMirrorText) => {
   emit("update:modelValue", nextValue);
 };
 
-const formatCodeEditor = async () => {
-  const formatted = await formatHtmlForDiff(codeEditorValue.value);
-  if (formatted === codeEditorValue.value) return;
-  codeEditorValue.value = formatted;
-  updateCharacterCountFromModelValue(formatted);
-  emit("update:modelValue", formatted);
-};
-
 watch(
   () => props.disabled,
   (newValue) => {
@@ -549,19 +539,6 @@ const mergedCustomButtons = computed<CustomButton[]>(() => {
     colorButton,
     linkButton,
     tableButton,
-    ...(showCodeEditor.value
-      ? [
-          {
-            name: "format-code",
-            label: "mt-text-editor.buttons.format-code",
-            icon: "regular-style-xs",
-            action: () => formatCodeEditor(),
-            alignment: "right" as const,
-            position: 2900,
-            disabled: () => props.disabled,
-          },
-        ]
-      : []),
     {
       name: "toggle-code",
       label: showCodeEditor.value
@@ -569,9 +546,9 @@ const mergedCustomButtons = computed<CustomButton[]>(() => {
         : "mt-text-editor.buttons.switch-to-code",
       icon: "regular-code-xs",
       action: () => onToggleCodeClick(),
-      alignment: "right" as const,
+      alignment: "right",
       position: 3000,
-      disabled: () => props.disabled,
+      disabled: () => false,
     },
   ];
 
@@ -610,23 +587,6 @@ const diffParsedHtml = ref("");
 // Raw parsed HTML to apply on acceptance (beautified only for display)
 const parsedHtmlRaw = ref("");
 
-const normalizeForWhitespaceDiff = (value: string) => {
-  const src = value ?? "";
-  if (!src) return "";
-
-  if (typeof DOMParser !== "undefined") {
-    const doc = new DOMParser().parseFromString(src, "text/html");
-    return doc.body.innerHTML.replace(/>\s+</g, "><").trim();
-  }
-
-  return src
-    .split("\n")
-    .map((line) => line.trim())
-    .filter((line) => line !== "")
-    .join("\n")
-    .replace(/>\s+</g, "><");
-};
-
 const onToggleCodeClick = async () => {
   // Switching to Code view directly
   if (!showCodeEditor.value) {
@@ -634,28 +594,9 @@ const onToggleCodeClick = async () => {
     return;
   }
 
-  const formattedCodeEditorValue = await formatHtmlForDiff(codeEditorValue.value);
-  const formattedCodeEditorOriginalValue = await formatHtmlForDiff(
-    codeEditorOriginalValue.value,
-  );
-  const formattedModelValue = await formatHtmlForDiff(props.modelValue);
-  const formattedOriginalModelValue = await formatHtmlForDiff(codeEditorOriginalModelValue.value);
-
-  const whitespaceOnlyChange =
-    normalizeForWhitespaceDiff(formattedCodeEditorValue) ===
-    normalizeForWhitespaceDiff(formattedCodeEditorOriginalValue);
-  const whitespaceOnlyModelChange =
-    normalizeForWhitespaceDiff(formattedModelValue) ===
-    normalizeForWhitespaceDiff(formattedOriginalModelValue);
-  if (whitespaceOnlyChange || whitespaceOnlyModelChange) {
-    showCodeEditor.value = false;
-    return;
-  }
-
   // Switching from Code to WYSIWYG: dry-run parse and compare using util
   const diff = await getHtmlParseDiff(props.modelValue, editorExtensions, {
     parseFromBeautified: true,
-    ignoreBlankLines: true,
   });
   if (!diff.hasDiff) {
     showCodeEditor.value = false;
@@ -695,30 +636,36 @@ const onChangeOpenDiffModal = (value: boolean) => {
 
 watch(
   () => showCodeEditor.value,
-  async (newValue, oldValue) => {
-    // Emit codeMode change
-    emit("update:codeMode", newValue);
+  async (isCodeMode, wasCodeMode) => {
+    emit("update:codeMode", isCodeMode);
 
-    if (newValue) {
-      updateCharacterCountFromModelValue(props.modelValue);
+    if (isCodeMode) {
       suppressCodeMirrorUpdates.value = true;
-      codeEditorOriginalModelValue.value = props.modelValue;
-      codeEditorValue.value = await formatHtmlForDiff(props.modelValue);
-      codeEditorOriginalValue.value = codeEditorValue.value;
-      await nextTick();
-      suppressCodeMirrorUpdates.value = false;
-    }
+      try {
+        updateCharacterCountFromModelValue(props.modelValue);
+        codeEditorOriginalModelValue.value = props.modelValue;
 
-    // When switching from code editor to WYSIWYG editor, update the content
-    if (!newValue && oldValue) {
+        const formatted = await formatHtmlForDiff(props.modelValue);
+
+        if (showCodeEditor.value) {
+          codeEditorValue.value = formatted;
+          codeEditorOriginalValue.value = formatted;
+        }
+      } finally {
+        await nextTick();
+        suppressCodeMirrorUpdates.value = false;
+      }
+    } else if (wasCodeMode) {
       suppressUpdates.value = true;
-      editor.value?.commands.setContent(props.modelValue, false);
-      Promise.resolve().then(() => {
+      try {
+        editor.value?.commands.setContent(props.modelValue, false);
+      } finally {
+        await nextTick();
         suppressUpdates.value = false;
-      });
+      }
     }
   },
-  { immediate: true },
+  { immediate: true }
 );
 
 const slots = useSlots() as Record<string, unknown>;
@@ -730,7 +677,6 @@ onMounted(async () => {
   await Promise.resolve();
   const diff = await getHtmlParseDiff(props.modelValue, editorExtensions, {
     parseFromBeautified: true,
-    ignoreBlankLines: true,
   });
   if (diff.hasDiff) {
     gateActive.value = true;
