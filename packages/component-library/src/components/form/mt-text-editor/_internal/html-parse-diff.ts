@@ -31,16 +31,13 @@ function normalizeHtmlForDiff(input: string): string {
   const src = input ?? "";
   if (!src) return "";
 
-  const withoutEmptyParagraphs = src.replace(
-    /<p>(?:\s|<br\s*\/?>)*<\/p>/gi,
-    "",
-  );
+  const withoutEmptyParagraphs = src.replace(/<p>(?:\s|<br\s*\/?>)*<\/p>/gi, "");
   const compacted = withoutEmptyParagraphs.replace(/\n\s*\n+/g, "\n");
 
   if (typeof DOMParser === "undefined") {
     return compacted
       .split("\n")
-      .map((line) => line.trim().length === 0 ? "" : line)
+      .map((line) => (line.trim().length === 0 ? "" : line))
       .filter((line) => line.length > 0)
       .join("\n");
   }

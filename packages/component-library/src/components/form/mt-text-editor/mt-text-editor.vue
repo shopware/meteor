@@ -496,7 +496,7 @@ const updateCharacterCountFromModelValue = (value: string) => {
 };
 
 const codeModeCountDebounceMs = 120;
-const codeModeCountTimeout = ref<number | null>(null);
+const codeModeCountTimeout = ref<ReturnType<typeof setTimeout> | null>(null);
 
 const scheduleCharacterCountFromModelValue = (value: string) => {
   if (codeModeCountTimeout.value !== null) {
@@ -725,7 +725,7 @@ watch(
       }
     }
   },
-  { immediate: true }
+  { immediate: true },
 );
 
 const slots = useSlots() as Record<string, unknown>;
