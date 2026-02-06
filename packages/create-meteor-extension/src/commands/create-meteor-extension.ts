@@ -39,7 +39,8 @@ const command: GluegunCommand = {
       'templates',
       'blank_project',
     )
-    const destinationDir = filesystem.path(filesystem.cwd(), name)
+    // The destination directory is always "meteor-app" for Shopware 6.7+ plugin structure
+    const destinationDir = filesystem.path(filesystem.cwd(), 'meteor-app')
 
     // Validate source directory structure
     if (!filesystem.exists(sourceDir)) {
@@ -66,10 +67,10 @@ const command: GluegunCommand = {
     // Check if the destination directory already exists
     if (filesystem.exists(destinationDir)) {
       print.error(
-        `Error: Directory "${name}" already exists in the current location.`,
+        `Error: Directory "meteor-app" already exists in the current location.`,
       )
       print.info(
-        'Please choose a different name or remove the existing directory.',
+        'Please remove the existing directory or run this command in a different location.',
       )
       return
     }
@@ -124,11 +125,11 @@ const command: GluegunCommand = {
 
       // Print a success message
       print.newline()
-      print.success(`Meteor extension "${name}" created successfully!`)
+      print.success(`Meteor extension "${name}" created successfully in "meteor-app" folder!`)
       print.newline()
       print.info(`To get started, run the following commands:
 
-cd ${name}
+cd meteor-app
 npm install
 npm run dev
 `)

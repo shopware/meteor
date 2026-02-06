@@ -31,12 +31,14 @@ create-meteor-extension
 The CLI will interactively prompt you for:
 - **Extension name**: Must contain only lowercase letters, numbers, and hyphens (e.g., `my-awesome-extension`)
 
+**Note**: The CLI will always create a folder named `meteor-app` (as required by Shopware 6.7+ plugin structure), but the extension name you provide will be used in `package.json`, README, and other configuration files.
+
 ## What Gets Created
 
-The CLI generates a complete project structure:
+The CLI generates a complete project structure in a folder named `meteor-app`:
 
 ```
-my-extension/
+meteor-app/
 ├── src/
 │   ├── locations/           # Vue components for different admin locations
 │   │   ├── exampleDashboard.vue
@@ -55,6 +57,8 @@ my-extension/
 ├── tsconfig.json            # TypeScript configuration
 └── eslint.config.ts         # ESLint configuration
 ```
+
+For Shopware 6.7+ plugins, this should be placed in `custom/plugins/yourPlugin/src/Resources/app/meteor-app`.
 
 ### Key Dependencies
 
