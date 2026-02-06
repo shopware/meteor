@@ -3,7 +3,7 @@
 import eslint from "@eslint/js";
 import storybook from "eslint-plugin-storybook";
 import tseslint from "typescript-eslint";
-import vitest from "@vitest/eslint-plugin";
+import vitest from "eslint-plugin-vitest";
 import globals from "globals";
 import pluginVue from "eslint-plugin-vue";
 import eslintConfigPrettier from "eslint-config-prettier";
@@ -60,7 +60,6 @@ export default tseslint.config([
     plugins: { vitest },
     rules: {
       ...vitest.configs.recommended.rules,
-      "vitest/prefer-called-exactly-once-with": "off",
       "no-restricted-imports": ["warn", "@vue/test-utils"],
     },
   },

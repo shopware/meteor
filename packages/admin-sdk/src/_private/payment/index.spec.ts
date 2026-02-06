@@ -1,11 +1,25 @@
 import * as modal from '../../ui/modal';
 import * as location from '../../location';
 import * as context from '../../context';
+import * as data from '../../data';
+import { jwtDecode } from 'jwt-decode';
 
 /* Mock dependencies */
 jest.mock('../../ui/modal');
 jest.mock('../../location');
 jest.mock('../../context');
+jest.mock('../../data', () => ({
+  repository: jest.fn(),
+  Classes: {
+    Criteria: jest.fn().mockImplementation(function (this: { addFilter: jest.Mock }) {
+      this.addFilter = jest.fn();
+      return this;
+    }),
+  },
+}));
+jest.mock('jwt-decode', () => ({
+  jwtDecode: jest.fn(),
+}));
 
 /* Set up BroadcastChannel mock before importing the module */
 const mockBroadcastChannelInstance = {
@@ -20,7 +34,7 @@ const mockBroadcastChannelInstance = {
   return mockBroadcastChannelInstance;
 });
 
-import { addPaymentIframe, MESSAGE_EVENT_TYPE, startPaymentFlow } from './index';
+import { addPaymentIframe, decodeLicense, MESSAGE_EVENT_TYPE, startPaymentFlow } from './index';
 
 describe('Private Service Payment', () => {
   let mockModalClose: jest.Mock;
@@ -92,6 +106,7 @@ describe('Private Service Payment', () => {
         shopUrl: 'https://shop.example.com',
         swVersion: '6.5.0',
         swUserLanguage: 'en-GB',
+        shopPlan: 'beyond',
       };
 
       beforeEach(() => {
@@ -111,7 +126,7 @@ describe('Private Service Payment', () => {
         expect(mockGetAppInformation).toHaveBeenCalledTimes(1);
         expect(result.iframeEl).toBeInstanceOf(HTMLIFrameElement);
         expect(result.iframeEl.src).toBe(
-          'https://example.com/payment?service-name=test-app&service-version=1.0.0&shop-url=https://shop.example.com&sw-version=6.5.0&sw-user-language=en-GB'
+          'https://example.com/payment?service-name=test-app&service-version=1.0.0&shop-url=https://shop.example.com&sw-version=6.5.0&sw-user-language=en-GB&shop-plan=beyond'
         );
         expect(container.contains(result.iframeEl)).toBe(true);
       });
@@ -535,17 +550,17 @@ describe('Private Service Payment', () => {
       it('should allow multiple subscriptions to the same event type', () => {
         const callback1 = jest.fn();
         const callback2 = jest.fn();
-  
+
         const { unsubscribe: unsubscribe1 } = flow.subscribe(
           MESSAGE_EVENT_TYPE.PAYMENT_SUCCESS,
           callback1
         );
-  
+
         const { unsubscribe: unsubscribe2 } = flow.subscribe(
           MESSAGE_EVENT_TYPE.PAYMENT_SUCCESS,
           callback2
         );
-  
+
         const mockCalls = mockBroadcastChannelInstance.addEventListener.mock.calls;
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         if (!mockCalls[0] || !mockCalls[0][1]) {
@@ -559,25 +574,107 @@ describe('Private Service Payment', () => {
         }
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         const eventHandler2 = mockCalls[1][1] as (event: { data: { type: string, payload: unknown } }) => void;
-  
+
         const mockEvent = {
           data: {
             type: MESSAGE_EVENT_TYPE.PAYMENT_SUCCESS,
             payload: null,
           },
         };
-  
+
         eventHandler1(mockEvent);
         eventHandler2(mockEvent);
-  
+
         expect(callback1).toHaveBeenCalledTimes(1);
         expect(callback2).toHaveBeenCalledTimes(1);
-  
+
         unsubscribe1();
         unsubscribe2();
       });
     });
   });
-  
+
+  describe('decodeLicense', () => {
+    const mockTokenPayload = {
+      'license-toggles': { 'feature-a': true },
+      'plan-name': 'beyond',
+      'plan-usage': 'commercial',
+      'plan-variant': 'default',
+      aud: 'https://shop.example.com',
+      exp: 9999999999,
+      iat: 1000000000,
+      iss: 'shopware',
+      nbf: 1000000000,
+      swemp: 'example',
+    };
+
+    beforeEach(() => {
+      const mockSearch = jest.fn().mockResolvedValue({
+        first: () => ({ configurationValue: 'valid-jwt-token' }),
+      });
+      const mockRepository = { search: mockSearch };
+      (data.repository as jest.Mock).mockReturnValue(mockRepository);
+      (jwtDecode as jest.Mock).mockReturnValue(mockTokenPayload);
+    });
+
+    it('should return decoded token when system config has license key and token is valid', async () => {
+      const result = await decodeLicense();
+
+      expect(data.repository).toHaveBeenCalledWith('system_config');
+      expect(result).toEqual(mockTokenPayload);
+      expect(jwtDecode).toHaveBeenCalledWith('valid-jwt-token');
+    });
+
+    it('should return null when no license key in system config (empty token)', async () => {
+      const mockSearch = jest.fn().mockResolvedValue({
+        first: () => ({ configurationValue: '' }),
+      });
+      (data.repository as jest.Mock).mockReturnValue({ search: mockSearch });
+      (jwtDecode as jest.Mock).mockImplementation(() => {
+        throw new Error('Invalid token');
+      });
+
+      const result = await decodeLicense();
+
+      expect(jwtDecode).toHaveBeenCalledWith('');
+      expect(result).toBeNull();
+    });
+
+    it('should return null when repository search throws', async () => {
+      const mockSearch = jest.fn().mockRejectedValue(new Error('Network error'));
+      (data.repository as jest.Mock).mockReturnValue({ search: mockSearch });
+
+      const result = await decodeLicense();
+
+      expect(result).toBeNull();
+      expect(jwtDecode).not.toHaveBeenCalled();
+    });
+
+    it('should return null when res.first() returns undefined (no config found)', async () => {
+      const mockSearch = jest.fn().mockResolvedValue({
+        first: () => undefined,
+      });
+      (data.repository as jest.Mock).mockReturnValue({ search: mockSearch });
+      (jwtDecode as jest.Mock).mockImplementation(() => {
+        throw new Error('Invalid token');
+      });
+
+      const result = await decodeLicense();
+
+      expect(jwtDecode).toHaveBeenCalledWith('');
+      expect(result).toBeNull();
+    });
+
+    it('should return null when jwtDecode throws (invalid token)', async () => {
+      (jwtDecode as jest.Mock).mockImplementation(() => {
+        throw new Error('Invalid token');
+      });
+
+      const result = await decodeLicense();
+
+      expect(result).toBeNull();
+    });
+  });
+
 });
 

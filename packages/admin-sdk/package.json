@@ -110,6 +110,7 @@
     "test:unit:watch": "npm run circular-dependencies && jest --watch"
   },
   "dependencies": {
+    "jwt-decode": "^4.0.0",
     "localforage": "^1.10.0",
     "lodash-es": "^4.17.21",
     "semver": "^7.7.1"

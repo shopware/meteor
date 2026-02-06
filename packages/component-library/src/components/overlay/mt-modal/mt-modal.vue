@@ -152,6 +152,15 @@ watch(
       trap = focusTrap.createFocusTrap(modalRef.value as HTMLElement, {
         tabbableOptions: { displayCheck: "none" },
         allowOutsideClick: true,
+        onPause: () => {
+          // a new modal is being opened, pausing the current trap
+          console.warn(
+            "[MtModal] It is not recommended to stack multiple modals on top of each other.",
+          );
+        },
+        onUnpause: () => {
+          // the current trap is being resumed (the newest modal is being closed, we are now in the foreground)
+        },
       });
 
       trap.activate();
@@ -243,7 +252,7 @@ onUnmounted(() => {
   top: 50%;
   left: 50%;
   translate: -50% -50%;
-  z-index: 1001;
+  z-index: 1000;
   background-color: var(--color-elevation-surface-raised);
   border-radius: var(--border-radius-card);
   overflow: hidden;
