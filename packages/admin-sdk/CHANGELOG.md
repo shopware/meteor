@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.5.1
+
+### Patch Changes
+
+- [#1048](https://github.com/shopware/meteor/pull/1048) [`8bcae42`](https://github.com/shopware/meteor/commit/8bcae42bd8337af2f74123b1cb8555ca82c3092a) Thanks [@quando1910](https://github.com/quando1910)! - add shop plan into query params when execute addPaymentIframe
+
 ## 6.5.0
 
 ### Minor Changes
