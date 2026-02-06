@@ -49,7 +49,7 @@
     @bulk-edit="handleBulkEdit"
     @item-delete="handleItemDelete"
   >
-    <template v-for="(_, name) in $slots" #[name]="scope">
+    <template v-for="(_, name) in slots" #[name]="scope">
       <slot :name v-bind="scope ?? {}" />
     </template>
   </mt-data-table>
@@ -97,7 +97,7 @@ import MtDataTable, {
   type ColumnChanges,
   type ColumnDefinition,
 } from "../../table-and-list/mt-data-table/mt-data-table.vue";
-import { onMounted, ref, watch, type Ref } from "vue";
+import { onMounted, ref, watch, useSlots, type Ref } from "vue";
 import { computedAsync } from "@vueuse/core";
 import type { MtPopoverItemType } from "@/components/overlay/mt-popover-item/mt-popover-item.vue";
 import type { Filter } from "@/components/table-and-list/mt-data-table/mt-data-table.interfaces";
@@ -149,6 +149,8 @@ const props = defineProps<{
   paginationOptions?: number[];
   availableFilters?: AvailableFilter[];
 }>();
+
+const slots = useSlots() as Record<string, unknown>;
 
 const emit = defineEmits<{
   (

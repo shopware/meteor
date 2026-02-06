@@ -14,7 +14,7 @@
     @item-add="onItemAdd"
   >
     <!-- Pass through all slots -->
-    <template v-for="(_, name) in $slots" #[name]="scope">
+    <template v-for="(_, name) in slots" #[name]="scope">
       <slot :name="name" v-bind="scope ?? {}"></slot>
     </template>
   </mt-select>
@@ -34,7 +34,7 @@
  * The fallback uses the meteor-admin-sdk's find method to fetch the data. But the developer
  * can also provide a custom repository to use their own data fetching logic.
  */
-import { ref, onMounted } from "vue";
+import { ref, onMounted, useSlots } from "vue";
 import type { PropType } from "vue";
 import MtSelect from "@/components/form/mt-select/mt-select.vue";
 import type Repository from "@shopware-ag/meteor-admin-sdk/es/data/repository";
@@ -63,6 +63,8 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits<{
   (e: "update:modelValue", value: any): void;
 }>();
+
+const slots = useSlots() as Record<string, unknown>;
 
 const options = ref<any[]>([]);
 const isLoading = ref(false);

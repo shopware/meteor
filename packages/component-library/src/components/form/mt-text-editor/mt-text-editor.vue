@@ -46,12 +46,12 @@
       <code-mirror
         v-else
         :lang="lang"
-        :model-value="modelValue"
+        :model-value="codeEditorValue"
         class="mt-text-editor__code-editor"
         wrap
         basic
         :disabled="disabled"
-        @update:model-value="emit('update:modelValue', $event)"
+        @update:model-value="handleCodeEditorUpdate"
       />
 
       <!-- WYSIWYG approval gate overlay -->
@@ -119,7 +119,7 @@
           <slot name="footer-right" :editor="editor">
             {{
               t("mt-text-editor.footer.characters", {
-                characters: editor?.storage.characterCount.characters(),
+                characters: characterCount,
               })
             }}
           </slot>
@@ -143,6 +143,7 @@
 <script setup lang="ts">
 // BubbleMenu is used in <component :is> in the template
 import { EditorContent, BubbleMenu, useEditor } from "@tiptap/vue-3";
+import type { Editor } from "@tiptap/core";
 // Import individual StarterKit extensions instead of the bundle
 import Document from "@tiptap/extension-document";
 import Paragraph from "@tiptap/extension-paragraph";
@@ -205,14 +206,16 @@ import {
   useSlots,
   watch,
   onMounted,
+  onBeforeUnmount,
   nextTick,
   type PropType,
 } from "vue";
 import { html } from "@codemirror/lang-html";
+import type { Text as CodeMirrorText } from "@codemirror/state";
 import { useI18n } from "vue-i18n";
 import ListItem from "@tiptap/extension-list-item";
 import mtTextEditorDiffModal from "./_internal/mt-text-editor-diff-modal.vue";
-import { getHtmlParseDiff } from "./_internal/html-parse-diff";
+import { formatHtmlForDiff, getHtmlParseDiff } from "./_internal/html-parse-diff";
 import mtButton from "@/components/form/mt-button/mt-button.vue";
 
 const { t } = useI18n({
@@ -435,6 +438,80 @@ const editorExtensions = enhanceExtensionsWithAttributes([
 // WYSIWYG approval gate state (declare early so editor callbacks can read it)
 const gateActive = ref(false);
 
+const characterCount = ref(0);
+
+// Read directly from the document to keep the WYSIWYG counter reactive.
+const updateCharacterCountFromEditor = (currentEditor: Editor | null) => {
+  characterCount.value = currentEditor?.state?.doc?.textContent?.length ?? 0;
+};
+
+const decodeHtmlEntities = (value: string): string => {
+  return value.replace(
+    /&(#x[0-9a-fA-F]+|#\d+|amp|lt|gt|quot|apos|nbsp);/g,
+    (match, entity: string) => {
+      if (entity === "amp") return "&";
+      if (entity === "lt") return "<";
+      if (entity === "gt") return ">";
+      if (entity === "quot") return '"';
+      if (entity === "apos") return "'";
+      if (entity === "nbsp") return " ";
+      if (entity.startsWith("#x")) {
+        const code = Number.parseInt(entity.slice(2), 16);
+        return Number.isNaN(code) ? match : String.fromCodePoint(code);
+      }
+      if (entity.startsWith("#")) {
+        const code = Number.parseInt(entity.slice(1), 10);
+        return Number.isNaN(code) ? match : String.fromCodePoint(code);
+      }
+      return match;
+    },
+  );
+};
+
+const getTextContentLengthFromHtml = (value: string): number => {
+  if (!value) return 0;
+
+  if (typeof window === "undefined" || typeof DOMParser === "undefined") {
+    return decodeHtmlEntities(value.replace(/<[^>]*>/g, "")).length;
+  }
+
+  const doc = new DOMParser().parseFromString(value, "text/html");
+  const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT);
+  let length = 0;
+  let node = walker.nextNode();
+
+  while (node) {
+    const content = node.nodeValue ?? "";
+    if (content.trim().length > 0) {
+      length += content.length;
+    }
+    node = walker.nextNode();
+  }
+
+  return length;
+};
+
+const updateCharacterCountFromModelValue = (value: string) => {
+  characterCount.value = getTextContentLengthFromHtml(value);
+};
+
+const codeModeCountDebounceMs = 120;
+const codeModeCountTimeout = ref<ReturnType<typeof setTimeout> | null>(null);
+
+const scheduleCharacterCountFromModelValue = (value: string) => {
+  if (codeModeCountTimeout.value !== null) {
+    globalThis.clearTimeout(codeModeCountTimeout.value);
+  }
+  codeModeCountTimeout.value = globalThis.setTimeout(() => {
+    updateCharacterCountFromModelValue(value);
+    codeModeCountTimeout.value = null;
+  }, codeModeCountDebounceMs);
+};
+
+const handleEditorTransaction = ({ editor }: { editor: Editor }) => {
+  updateCharacterCountFromEditor(editor);
+};
+
 // Suppress emits during init and controlled updates
 const suppressUpdates = ref(true);
 
@@ -447,9 +524,18 @@ const editor = useEditor({
       class: "mt-text-editor__content-editor",
     },
   },
+  onCreate: ({ editor }) => {
+    updateCharacterCountFromEditor(editor);
+    editor.on("transaction", handleEditorTransaction);
+  },
   onUpdate: ({ editor }) => {
+    updateCharacterCountFromEditor(editor);
+
     if (suppressUpdates.value || gateActive.value) return;
     emit("update:modelValue", editor.getHTML());
+  },
+  onDestroy: () => {
+    editor.value?.off("transaction", handleEditorTransaction);
   },
   editable: !props.disabled,
 });
@@ -457,6 +543,13 @@ const editor = useEditor({
 watch(
   () => props.modelValue,
   (newValue) => {
+    if (showCodeEditor.value) {
+      scheduleCharacterCountFromModelValue(newValue);
+      if (!suppressCodeMirrorUpdates.value && newValue !== codeEditorValue.value) {
+        codeEditorValue.value = newValue;
+      }
+    }
+
     if (showCodeEditor.value) {
       return;
     }
@@ -468,8 +561,17 @@ watch(
     }
 
     editor.value?.commands.setContent(newValue, false);
+    updateCharacterCountFromEditor(editor.value ?? null);
   },
 );
+
+const handleCodeEditorUpdate = (value?: string | CodeMirrorText) => {
+  const nextValue = typeof value === "string" ? value : value?.toString() ?? "";
+  codeEditorValue.value = nextValue;
+  scheduleCharacterCountFromModelValue(nextValue);
+  if (suppressCodeMirrorUpdates.value) return;
+  emit("update:modelValue", nextValue);
+};
 
 watch(
   () => props.disabled,
@@ -533,6 +635,10 @@ const toolbarWrapperComponent = computed(() => {
  */
 const showCodeEditor = ref(props.codeMode);
 const lang = html();
+const codeEditorValue = ref(props.modelValue);
+const suppressCodeMirrorUpdates = ref(false);
+const codeEditorOriginalValue = ref(props.modelValue);
+const codeEditorOriginalModelValue = ref(props.modelValue);
 
 // Diff modal state
 const showDiffModal = ref(false);
@@ -590,22 +696,45 @@ const onChangeOpenDiffModal = (value: boolean) => {
 
 watch(
   () => showCodeEditor.value,
-  (newValue, oldValue) => {
-    // Emit codeMode change
-    emit("update:codeMode", newValue);
+  async (isCodeMode, wasCodeMode) => {
+    emit("update:codeMode", isCodeMode);
 
-    // When switching from code editor to WYSIWYG editor, update the content
-    if (!newValue && oldValue) {
+    if (isCodeMode) {
+      suppressCodeMirrorUpdates.value = true;
+      try {
+        updateCharacterCountFromModelValue(props.modelValue);
+        codeEditorOriginalModelValue.value = props.modelValue;
+
+        const formatted = await formatHtmlForDiff(props.modelValue);
+
+        if (showCodeEditor.value) {
+          codeEditorValue.value = formatted;
+          codeEditorOriginalValue.value = formatted;
+        }
+      } finally {
+        await nextTick();
+        suppressCodeMirrorUpdates.value = false;
+      }
+    } else if (wasCodeMode) {
       suppressUpdates.value = true;
-      editor.value?.commands.setContent(props.modelValue, false);
-      Promise.resolve().then(() => {
+      try {
+        editor.value?.commands.setContent(props.modelValue, false);
+      } finally {
+        await nextTick();
         suppressUpdates.value = false;
-      });
+      }
     }
   },
+  { immediate: true },
 );
 
 const slots = useSlots() as Record<string, unknown>;
+
+onBeforeUnmount(() => {
+  if (codeModeCountTimeout.value !== null) {
+    globalThis.clearTimeout(codeModeCountTimeout.value);
+  }
+});
 
 // Initial gate check when component mounts in WYSIWYG
 onMounted(async () => {
