@@ -206,6 +206,7 @@ import {
   useSlots,
   watch,
   onMounted,
+  onBeforeUnmount,
   nextTick,
   type PropType,
 } from "vue";
@@ -444,11 +445,34 @@ const updateCharacterCountFromEditor = (currentEditor: Editor | null) => {
   characterCount.value = currentEditor?.state?.doc?.textContent?.length ?? 0;
 };
 
+const decodeHtmlEntities = (value: string): string => {
+  return value.replace(
+    /&(#x[0-9a-fA-F]+|#\d+|amp|lt|gt|quot|apos|nbsp);/g,
+    (match, entity: string) => {
+      if (entity === "amp") return "&";
+      if (entity === "lt") return "<";
+      if (entity === "gt") return ">";
+      if (entity === "quot") return '"';
+      if (entity === "apos") return "'";
+      if (entity === "nbsp") return " ";
+      if (entity.startsWith("#x")) {
+        const code = Number.parseInt(entity.slice(2), 16);
+        return Number.isNaN(code) ? match : String.fromCodePoint(code);
+      }
+      if (entity.startsWith("#")) {
+        const code = Number.parseInt(entity.slice(1), 10);
+        return Number.isNaN(code) ? match : String.fromCodePoint(code);
+      }
+      return match;
+    },
+  );
+};
+
 const getTextContentLengthFromHtml = (value: string): number => {
   if (!value) return 0;
 
   if (typeof window === "undefined" || typeof DOMParser === "undefined") {
-    return value.replace(/<[^>]*>/g, "").length;
+    return decodeHtmlEntities(value.replace(/<[^>]*>/g, "")).length;
   }
 
   const doc = new DOMParser().parseFromString(value, "text/html");
@@ -469,6 +493,19 @@ const getTextContentLengthFromHtml = (value: string): number => {
 
 const updateCharacterCountFromModelValue = (value: string) => {
   characterCount.value = getTextContentLengthFromHtml(value);
+};
+
+const codeModeCountDebounceMs = 120;
+const codeModeCountTimeout = ref<number | null>(null);
+
+const scheduleCharacterCountFromModelValue = (value: string) => {
+  if (codeModeCountTimeout.value !== null) {
+    globalThis.clearTimeout(codeModeCountTimeout.value);
+  }
+  codeModeCountTimeout.value = globalThis.setTimeout(() => {
+    updateCharacterCountFromModelValue(value);
+    codeModeCountTimeout.value = null;
+  }, codeModeCountDebounceMs);
 };
 
 const handleEditorTransaction = ({ editor }: { editor: Editor }) => {
@@ -507,7 +544,7 @@ watch(
   () => props.modelValue,
   (newValue) => {
     if (showCodeEditor.value) {
-      updateCharacterCountFromModelValue(newValue);
+      scheduleCharacterCountFromModelValue(newValue);
       if (!suppressCodeMirrorUpdates.value && newValue !== codeEditorValue.value) {
         codeEditorValue.value = newValue;
       }
@@ -531,7 +568,7 @@ watch(
 const handleCodeEditorUpdate = (value?: string | CodeMirrorText) => {
   const nextValue = typeof value === "string" ? value : value?.toString() ?? "";
   codeEditorValue.value = nextValue;
-  updateCharacterCountFromModelValue(nextValue);
+  scheduleCharacterCountFromModelValue(nextValue);
   if (suppressCodeMirrorUpdates.value) return;
   emit("update:modelValue", nextValue);
 };
@@ -692,6 +729,12 @@ watch(
 );
 
 const slots = useSlots() as Record<string, unknown>;
+
+onBeforeUnmount(() => {
+  if (codeModeCountTimeout.value !== null) {
+    globalThis.clearTimeout(codeModeCountTimeout.value);
+  }
+});
 
 // Initial gate check when component mounts in WYSIWYG
 onMounted(async () => {

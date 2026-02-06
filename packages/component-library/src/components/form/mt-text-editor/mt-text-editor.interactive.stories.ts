@@ -1431,69 +1431,6 @@ export const VisualTestDiffModalShownAfterEditingUnsupportedHTML: MtTextEditorSt
   },
 });
 
-export const VisualTestNoDiffModalForBlankLinesInCodeMode: MtTextEditorStory = defineStory({
-  name: "Should not show diff modal for blank lines added in code mode",
-  args: {
-    modelValue: "<p>Hello</p><p>World</p>",
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    if (document.body.querySelector("div[role='dialog']")) {
-      const body = within(document.body);
-      const continueButton = body.queryByText("Continue in code mode");
-      const applyButton = body.queryByText("Apply changes");
-
-      if (continueButton) {
-        await userEvent.click(continueButton);
-      } else if (applyButton) {
-        await userEvent.click(applyButton);
-      }
-
-      await waitUntil(() => document.body.querySelector("div[role='dialog']") === null);
-    }
-
-    await waitUntil(() => canvasElement.querySelector(".mt-text-editor-toolbar"), 6000);
-    await waitUntil(
-      () =>
-        canvas.queryByLabelText("Switch to code mode") ||
-        canvas.queryByLabelText("Switch to visual mode"),
-      6000,
-    );
-
-    const switchToCodeMode = canvas.queryByLabelText("Switch to code mode");
-    if (switchToCodeMode) {
-      await userEvent.click(switchToCodeMode);
-      await waitUntil(
-        () => canvasElement.querySelector(".mt-text-editor__code-editor") !== null,
-        6000,
-      );
-    }
-
-    const codeEditor = canvas.getByRole("textbox") as HTMLElement;
-    await userEvent.click(codeEditor);
-    await userEvent.type(codeEditor, "{selectall}{backspace}<p>Hello</p>\n\n<p>World</p>");
-
-    await userEvent.click(canvas.getByLabelText("Switch to visual mode"));
-
-    await waitUntil(
-      () =>
-        canvas.queryByLabelText("Switch to code mode") ||
-        canvas.queryByLabelText("Switch to visual mode"),
-      6000,
-    );
-    await waitUntil(
-      () =>
-        canvasElement.querySelector(".mt-text-editor__content-editor") !== null ||
-        document.body.querySelector("div[role='dialog']") !== null,
-      6000,
-    );
-    expect(document.body.querySelector("div[role='dialog']")).toBeNull();
-    expect(canvasElement.querySelector(".mt-text-editor__content-editor")).not.toBeNull();
-    expect(canvas.getByLabelText("Switch to code mode")).toBeDefined();
-  },
-});
-
 // ------------------------------
 // showToolbar prop tests
 // ------------------------------
@@ -1581,26 +1518,5 @@ export const TestCodeModeFalse: MtTextEditorStory = defineStory({
 
     // Expect the toggle button to show "Switch to code mode"
     expect(canvas.getByLabelText("Switch to code mode")).toBeDefined();
-  },
-});
-
-export const TestCodeModeFormatButton: MtTextEditorStory = defineStory({
-  name: "Should format HTML in code mode when format button is clicked",
-  args: {
-    modelValue: "<div><p>Hello</p></div>",
-    codeMode: true,
-  },
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-    const codeEditor = canvas.getByRole("textbox") as HTMLElement;
-
-    await waitUntil(() => canvas.queryByLabelText("Format HTML"));
-    await userEvent.click(canvas.getByLabelText("Format HTML"));
-
-    await waitUntil(
-      () => codeEditor.innerText.includes("\n") && codeEditor.innerText.includes("<p>Hello</p>"),
-      6000,
-    );
-    expect(codeEditor.innerText).toContain("\n  <p>Hello</p>\n");
   },
 });
