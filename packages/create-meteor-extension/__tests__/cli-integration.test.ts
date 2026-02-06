@@ -5,29 +5,29 @@ const src = filesystem.path(__dirname, '..')
 test('outputs version', async () => {
   const { run } = require(filesystem.path(src, 'src', 'cli'))
   const toolbox = await run(['--version'])
-  
+
   expect(toolbox).toBeDefined()
 })
 
 test('outputs help', async () => {
   const { run } = require(filesystem.path(src, 'src', 'cli'))
   const toolbox = await run(['--help'])
-  
+
   expect(toolbox).toBeDefined()
 })
 
 test('validates extension name - rejects uppercase', async () => {
   const extensionName = 'TestExtension'
   const testDir = filesystem.path(src, '__tests__', 'tmp', extensionName)
-  
+
   // Ensure test directory doesn't exist
   if (filesystem.exists(testDir)) {
     filesystem.remove(testDir)
   }
-  
+
   // Mock prompt to simulate user input with uppercase
   const { run } = require(filesystem.path(src, 'src', 'cli'))
-  
+
   // Note: This test would need proper mocking of the prompt
   // For now, we're just validating the regex pattern
   const regex = /^[a-z0-9-]+$/

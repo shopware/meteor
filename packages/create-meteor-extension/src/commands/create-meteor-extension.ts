@@ -33,7 +33,12 @@ const command: GluegunCommand = {
     })
 
     // Define the source and destination directories
-    const sourceDir = filesystem.path(__dirname, '..', 'templates', 'blank_project')
+    const sourceDir = filesystem.path(
+      __dirname,
+      '..',
+      'templates',
+      'blank_project',
+    )
     const destinationDir = filesystem.path(filesystem.cwd(), name)
 
     // Validate source directory structure
@@ -44,7 +49,11 @@ const command: GluegunCommand = {
     }
 
     // Validate that source directory has expected structure
-    const requiredFiles = ['package.json.ejs', 'vite.config.ts', 'tsconfig.json']
+    const requiredFiles = [
+      'package.json.ejs',
+      'vite.config.ts',
+      'tsconfig.json',
+    ]
     for (const file of requiredFiles) {
       const filePath = filesystem.path(sourceDir, file)
       if (!filesystem.exists(filePath)) {
@@ -56,15 +65,19 @@ const command: GluegunCommand = {
 
     // Check if the destination directory already exists
     if (filesystem.exists(destinationDir)) {
-      print.error(`Error: Directory "${name}" already exists in the current location.`)
-      print.info('Please choose a different name or remove the existing directory.')
+      print.error(
+        `Error: Directory "${name}" already exists in the current location.`,
+      )
+      print.info(
+        'Please choose a different name or remove the existing directory.',
+      )
       return
     }
 
     try {
       // Copy the template files from the source directory to the destination directory
       print.info(`Creating extension "${name}"...`)
-      
+
       filesystem.copy(sourceDir, destinationDir, {
         overwrite: true,
       })
@@ -76,7 +89,9 @@ const command: GluegunCommand = {
       })
 
       if (files.length === 0) {
-        throw new Error('No template files (.ejs) found in the project structure')
+        throw new Error(
+          'No template files (.ejs) found in the project structure',
+        )
       }
 
       // Generate files from the templates
@@ -98,7 +113,9 @@ const command: GluegunCommand = {
           // Remove the original .ejs file
           await filesystem.removeAsync(file)
         } catch (error) {
-          throw new Error(`Failed to process template ${file}: ${error.message}`)
+          throw new Error(
+            `Failed to process template ${file}: ${error.message}`,
+          )
         }
       })
 
@@ -119,18 +136,20 @@ npm run dev
       // Rollback: remove the destination directory if it was created
       print.newline()
       print.error(`Error creating extension: ${error.message}`)
-      
+
       if (filesystem.exists(destinationDir)) {
         print.info('Rolling back changes...')
         try {
           await filesystem.removeAsync(destinationDir)
           print.info('Cleanup completed.')
         } catch (cleanupError) {
-          print.warning(`Warning: Could not clean up directory ${destinationDir}`)
+          print.warning(
+            `Warning: Could not clean up directory ${destinationDir}`,
+          )
           print.warning('You may need to remove it manually.')
         }
       }
-      
+
       print.newline()
       print.error('Extension creation failed. Please try again.')
     }
