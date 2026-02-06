@@ -1,6 +1,4 @@
 <template>
-  <slot />
-
   <transition name="fade">
     <Teleport to="body">
       <div
@@ -16,6 +14,8 @@
       />
     </Teleport>
   </transition>
+
+  <slot />
 </template>
 
 <script setup lang="ts">
