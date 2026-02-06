@@ -444,8 +444,31 @@ const updateCharacterCountFromEditor = (currentEditor: Editor | null) => {
   characterCount.value = currentEditor?.state?.doc?.textContent?.length ?? 0;
 };
 
+const getTextContentLengthFromHtml = (value: string): number => {
+  if (!value) return 0;
+
+  if (typeof window === "undefined" || typeof DOMParser === "undefined") {
+    return value.replace(/<[^>]*>/g, "").length;
+  }
+
+  const doc = new DOMParser().parseFromString(value, "text/html");
+  const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT);
+  let length = 0;
+  let node = walker.nextNode();
+
+  while (node) {
+    const content = node.nodeValue ?? "";
+    if (content.trim().length > 0) {
+      length += content.length;
+    }
+    node = walker.nextNode();
+  }
+
+  return length;
+};
+
 const updateCharacterCountFromModelValue = (value: string) => {
-  characterCount.value = value.length;
+  characterCount.value = getTextContentLengthFromHtml(value);
 };
 
 const handleEditorTransaction = ({ editor }: { editor: Editor }) => {
@@ -596,7 +619,7 @@ const onToggleCodeClick = async () => {
 
   // Switching from Code to WYSIWYG: dry-run parse and compare using util
   const diff = await getHtmlParseDiff(props.modelValue, editorExtensions, {
-    parseFromBeautified: true,
+    parseFromBeautified: false,
   });
   if (!diff.hasDiff) {
     showCodeEditor.value = false;
