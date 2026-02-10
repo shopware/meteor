@@ -1,6 +1,8 @@
 name: create-meteor-extension Integration Tests
 
 on:
+  pull_request:
+    
   push:
     branches:
       - main
