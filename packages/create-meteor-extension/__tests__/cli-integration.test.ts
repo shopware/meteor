@@ -60,20 +60,23 @@ test('non-interactive mode - creates extension with --name flag', async () => {
 
   // Create temp directory and run CLI in non-interactive mode
   filesystem.dir(testDir)
-  
+
   // Change to test directory
   const originalCwd = process.cwd()
   process.chdir(testDir)
 
   try {
     const toolbox = await run(['--name', testName])
-    
+
     // Check that meteor-app directory was created
     const meteorAppDir = filesystem.path(testDir, 'meteor-app')
     expect(filesystem.exists(meteorAppDir)).toBe(true)
-    
+
     // Check that package.json was created with correct name
-    const packageJson = filesystem.read(filesystem.path(meteorAppDir, 'package.json'), 'json')
+    const packageJson = filesystem.read(
+      filesystem.path(meteorAppDir, 'package.json'),
+      'json',
+    )
     expect(packageJson.name).toBe(testName)
   } finally {
     // Clean up
@@ -97,20 +100,28 @@ test('non-interactive mode - creates extension with custom --output-dir', async 
 
   // Create temp directory and run CLI in non-interactive mode
   filesystem.dir(testDir)
-  
+
   // Change to test directory
   const originalCwd = process.cwd()
   process.chdir(testDir)
 
   try {
-    const toolbox = await run(['--name', testName, '--output-dir', customOutputDir])
-    
+    const toolbox = await run([
+      '--name',
+      testName,
+      '--output-dir',
+      customOutputDir,
+    ])
+
     // Check that custom output directory was created
     const customDir = filesystem.path(testDir, customOutputDir)
     expect(filesystem.exists(customDir)).toBe(true)
-    
+
     // Check that package.json was created with correct name
-    const packageJson = filesystem.read(filesystem.path(customDir, 'package.json'), 'json')
+    const packageJson = filesystem.read(
+      filesystem.path(customDir, 'package.json'),
+      'json',
+    )
     expect(packageJson.name).toBe(testName)
   } finally {
     // Clean up

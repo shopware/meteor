@@ -4,12 +4,7 @@ import * as ejs from 'ejs'
 const command: GluegunCommand = {
   name: '@shopware-ag/create-meteor-extension',
   run: async (toolbox: GluegunToolbox) => {
-    const {
-      print,
-      prompt,
-      parameters,
-      filesystem,
-    } = toolbox
+    const { print, prompt, parameters, filesystem } = toolbox
 
     // Helper function to validate extension name
     const validateName = (input: string): string | true => {
@@ -136,7 +131,9 @@ const command: GluegunCommand = {
 
       // Print a success message
       print.newline()
-      print.success(`Meteor extension "${name}" created successfully in "${outputDir}" folder!`)
+      print.success(
+        `Meteor extension "${name}" created successfully in "${outputDir}" folder!`,
+      )
       print.newline()
       print.info(`To get started, run the following commands:
 

@@ -1,22 +1,22 @@
-import { defineConfig, devices } from '@playwright/test';
-import dotenv from 'dotenv';
+import { defineConfig, devices } from '@playwright/test'
+import dotenv from 'dotenv'
 
 // Read from default ".env" file.
-dotenv.config();
+dotenv.config()
 
 process.env['SHOPWARE_ADMIN_USERNAME'] =
-  process.env['SHOPWARE_ADMIN_USERNAME'] || 'admin';
+  process.env['SHOPWARE_ADMIN_USERNAME'] || 'admin'
 process.env['SHOPWARE_ADMIN_PASSWORD'] =
-  process.env['SHOPWARE_ADMIN_PASSWORD'] || 'shopware';
+  process.env['SHOPWARE_ADMIN_PASSWORD'] || 'shopware'
 
-process.env['APP_URL'] = process.env['APP_URL'] ?? 'http://localhost:8000';
+process.env['APP_URL'] = process.env['APP_URL'] ?? 'http://localhost:8000'
 
 // make sure APP_URL ends with a slash
-process.env['APP_URL'] = process.env['APP_URL'].replace(/\/+$/, '') + '/';
+process.env['APP_URL'] = process.env['APP_URL'].replace(/\/+$/, '') + '/'
 if (process.env['ADMIN_URL']) {
-  process.env['ADMIN_URL'] = process.env['ADMIN_URL'].replace(/\/+$/, '') + '/';
+  process.env['ADMIN_URL'] = process.env['ADMIN_URL'].replace(/\/+$/, '') + '/'
 } else {
-  process.env['ADMIN_URL'] = process.env['APP_URL'] + 'admin/';
+  process.env['ADMIN_URL'] = process.env['APP_URL'] + 'admin/'
 }
 
 /**
@@ -76,4 +76,4 @@ export default defineConfig({
 
   /* Folder for test artifacts such as screenshots, videos, traces, etc. */
   outputDir: './test-results/playwright-output/',
-});
+})
