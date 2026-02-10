@@ -88,7 +88,7 @@ jobs:
       - name: Change admin user password
         working-directory: shopware/
         run: |
-          bin/console user:change-password admin --password=shopware123!
+          bin/console user:change-password admin --password=shopware12345
           bin/console cache:clear
 
       # 11. Build Shopware admin assets
@@ -126,7 +126,7 @@ jobs:
         env:
           APP_URL: http://localhost:8000
           SHOPWARE_ADMIN_USERNAME: admin
-          SHOPWARE_ADMIN_PASSWORD: shopware123!
+          SHOPWARE_ADMIN_PASSWORD: shopware12345
           CI: true
         run: npx playwright test --reporter=github --trace=on-first-retry
 
