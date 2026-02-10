@@ -1,7 +1,7 @@
 /**
- * Helper to create test products via Shopware API
+ * Helper to get or create test products via Shopware API
  */
-import { randomBytes } from 'crypto';
+import { randomUUID } from 'crypto';
 
 interface Product {
   id: string;
@@ -9,24 +9,54 @@ interface Product {
 }
 
 /**
- * Generate a UUID v4 using Node.js crypto module
+ * Try to find an existing product first, fallback to creation
+ */
+async function findExistingProduct(token: string, appUrl: string): Promise<Product | null> {
+  try {
+    const searchResponse = await fetch(`${appUrl}api/search/product`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        limit: 1,
+        filter: [
+          {
+            type: 'equals',
+            field: 'active',
+            value: true,
+          },
+        ],
+      }),
+    });
+
+    if (searchResponse.ok) {
+      const data = await searchResponse.json();
+      if (data.data && data.data.length > 0) {
+        const product = data.data[0];
+        console.log('Found existing product:', product.id, product.name);
+        return {
+          id: product.id,
+          name: product.name,
+        };
+      }
+    }
+  } catch (error) {
+    console.warn('Failed to search for existing product:', error);
+  }
+  return null;
+}
+
+/**
+ * Generate a UUID v4 using Node.js built-in crypto module
+ * Shopware stores UUIDs as hex strings without dashes
  */
 function generateUUID(): string {
-  const bytes = randomBytes(16);
-  
-  // Set version (4) and variant bits according to RFC 4122
-  bytes[6] = (bytes[6] & 0x0f) | 0x40; // Version 4
-  bytes[8] = (bytes[8] & 0x3f) | 0x80; // Variant 10
-  
-  // Convert to hex string with dashes
-  const hex = bytes.toString('hex');
-  return [
-    hex.substring(0, 8),
-    hex.substring(8, 12),
-    hex.substring(12, 16),
-    hex.substring(16, 20),
-    hex.substring(20, 32),
-  ].join('-');
+  const uuid = randomUUID();
+  const hexUuid = uuid.replace(/-/g, '');
+  console.log('Generated UUID:', hexUuid);
+  return hexUuid;
 }
 
 /**
@@ -60,11 +90,19 @@ async function getAuthToken(): Promise<string> {
 }
 
 /**
- * Create a basic test product
+ * Get or create a basic test product
  */
 export async function createBasicProduct(): Promise<Product> {
   const appUrl = process.env.APP_URL || 'http://localhost:8000';
   const token = await getAuthToken();
+
+  // Try to find an existing product first
+  const existingProduct = await findExistingProduct(token, appUrl);
+  if (existingProduct) {
+    return existingProduct;
+  }
+
+  console.log('No existing product found, creating a new one...');
 
   // Generate random product name to avoid conflicts
   const randomId = Math.random().toString(36).substring(7);
@@ -93,35 +131,44 @@ export async function createBasicProduct(): Promise<Product> {
     throw new Error('No tax configuration found');
   }
 
-  // Create the product
+  // Create the product using the direct API endpoint
   const productId = generateUUID();
+  
+  const payload = {
+    id: productId,
+    name: productName,
+    productNumber: `TEST-${randomId}`,
+    stock: 10,
+    taxId: taxId,
+    price: [
+      {
+        currencyId: 'b7d2554b0ce847cd82f3ac9bd1c0dfca',
+        gross: 19.99,
+        net: 16.8,
+        linked: true,
+      },
+    ],
+  };
+
+  console.log('Creating product with payload:', JSON.stringify(payload, null, 2));
+  
   const productResponse = await fetch(`${appUrl}api/product`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
-    body: JSON.stringify({
-      id: productId,
-      name: productName,
-      productNumber: `TEST-${randomId}`,
-      stock: 10,
-      taxId: taxId,
-      price: [
-        {
-          currencyId: 'b7d2554b0ce847cd82f3ac9bd1c0dfca', // EUR default
-          gross: 19.99,
-          net: 16.8,
-          linked: true,
-        },
-      ],
-    }),
+    body: JSON.stringify(payload),
   });
 
   if (!productResponse.ok) {
     const errorText = await productResponse.text();
+    console.error('Product creation failed. Status:', productResponse.status);
+    console.error('Response:', errorText);
     throw new Error(`Failed to create product: ${errorText}`);
   }
+  
+  console.log('Product created successfully. Status:', productResponse.status);
 
   return {
     id: productId,

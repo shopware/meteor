@@ -25,13 +25,25 @@ test.describe('Generated Meteor Extension', () => {
       timeout: 10000,
     });
 
-    // Check for the dashboard card with the expected title
-    // Note: The card title comes from the i18n translations
-    const cardTitle = authenticatedPage.locator('.sw-card__title', {
-      hasText: 'Hello from your new Meteor app',
+    // Wait for Meteor extension iframe to be present (indicates extension is loaded)
+    // The iframe has the location-id parameter in its src
+    await authenticatedPage.waitForSelector('iframe[src*="location-id=example-dashboard-before-content"]', {
+      timeout: 20000,
+      state: 'attached',
     });
 
-    await expect(cardTitle).toBeVisible({ timeout: 10000 });
+    // Wait a bit more for the card component to be fully rendered
+    await authenticatedPage.waitForTimeout(1000);
+
+    // Find all cards on the page and look for ours by text content
+    // Use getByText which is more flexible than exact text matching
+    const card = authenticatedPage.getByText('Hello from your new Meteor app');
+    
+    // Scroll the card into view
+    await card.scrollIntoViewIfNeeded({ timeout: 10000 });
+    
+    // Verify it's visible
+    await expect(card).toBeVisible({ timeout: 5000 });
   });
 
   test('Product tab is visible and accessible', async ({
@@ -46,16 +58,16 @@ test.describe('Generated Meteor Extension', () => {
       `${process.env.ADMIN_URL || 'http://localhost:8000/admin/'}#/sw/product/detail/${product.id}`
     );
 
-    // Wait for the product detail page to load
+    // Wait for the product detail page to load by checking for the main tabs container
     await expect(
-      authenticatedPage.locator('.sw-product-detail-page'),
+      authenticatedPage.locator('main').first(),
     ).toBeVisible({
       timeout: 10000,
     });
 
     // Look for the custom tab added by the extension
     // The tab name comes from the i18n: "Example Meteor App"
-    const customTab = authenticatedPage.getByRole('link', {
+    const customTab = authenticatedPage.getByRole('tab', {
       name: 'Example Meteor App',
     });
 
@@ -65,8 +77,9 @@ test.describe('Generated Meteor Extension', () => {
     await customTab.click();
 
     // Verify the card inside the tab is visible
-    const cardInTab = authenticatedPage.locator('.sw-card__title', {
-      hasText: 'Example Meteor App',
+    const cardInTab = authenticatedPage.getByRole('heading', {
+      name: 'Example Meteor App',
+      level: 3,
     });
 
     await expect(cardInTab).toBeVisible({ timeout: 10000 });
@@ -84,29 +97,29 @@ test.describe('Generated Meteor Extension', () => {
       `${process.env.ADMIN_URL || 'http://localhost:8000/admin/'}#/sw/product/detail/${product.id}`
     );
 
-    // Wait for the product detail page to load
+    // Wait for the product detail page to load by checking for the main tabs container
     await expect(
-      authenticatedPage.locator('.sw-product-detail-page'),
+      authenticatedPage.locator('main').first(),
     ).toBeVisible({
       timeout: 10000,
     });
 
     // Click on the custom tab
-    const customTab = authenticatedPage.getByRole('link', {
+    const customTab = authenticatedPage.getByRole('tab', {
       name: 'Example Meteor App',
     });
     await customTab.click();
 
-    // Verify the card content
-    const cardSubtitle = authenticatedPage.locator('.sw-card__subtitle', {
-      hasText: 'This is an example of a product card',
-    });
+    // Verify the card content by looking for the text directly
+    const cardSubtitle = authenticatedPage.getByText(
+      'This is an example of a product card',
+    );
 
     await expect(cardSubtitle).toBeVisible({ timeout: 10000 });
 
-    // Check that the iframe for the location exists
+    // Check that the iframe for the product tab location exists
     const locationIframe = authenticatedPage.frameLocator(
-      'iframe[src*="location-id="]',
+      'iframe[src*="location-id=example-product-tab"]',
     );
     await expect(locationIframe.locator('body')).not.toBeEmpty();
   });
