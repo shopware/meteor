@@ -1,11 +1,21 @@
-import {
-  test as ShopwareTestSuite,
-  mergeTests,
-} from '@shopware-ag/acceptance-test-suite';
-import type { FixtureTypes as BaseTypes } from '@shopware-ag/acceptance-test-suite';
+import { test as base, Page } from '@playwright/test';
+import { loginToShopware } from '../helpers/login';
+import { createBasicProduct } from '../helpers/createProduct';
 
-export * from '@shopware-ag/acceptance-test-suite';
+/**
+ * Extend Playwright test with custom fixtures for Shopware integration tests
+ */
+export const test = base.extend<{
+  authenticatedPage: Page;
+  createProduct: typeof createBasicProduct;
+}>({
+  authenticatedPage: async ({ page }, use) => {
+    await loginToShopware(page);
+    await use(page);
+  },
+  createProduct: async ({}, use) => {
+    await use(createBasicProduct);
+  },
+});
 
-export type FixtureTypes = BaseTypes;
-
-export const test = mergeTests(ShopwareTestSuite);
+export { expect } from '@playwright/test';

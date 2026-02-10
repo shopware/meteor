@@ -13,9 +13,6 @@
     "test:ui": "playwright test --ui",
     "test:debug": "playwright test --debug"
   },
-  "dependencies": {
-    "@shopware-ag/acceptance-test-suite": "^3.8.4"
-  },
   "devDependencies": {
     "@playwright/test": "^1.45.0",
     "@types/node": "^22.5.5",
