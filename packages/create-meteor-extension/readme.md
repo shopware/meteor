@@ -72,17 +72,42 @@ For Shopware 6.7+ plugins, this should be placed in `custom/plugins/yourPlugin/s
 
 After creating your extension:
 
+1. Navigate to the generated directory:
 ```bash
-# TODO after finishing
+cd meteor-app
 ```
+
+2. Install dependencies:
+```bash
+npm install
+# or
+pnpm install
+```
+
+3. Start the development server:
+```bash
+npm run dev
+```
+
+4. The Vite dev server will start at `http://localhost:5173`. You'll need to configure your Shopware plugin to load this URL.
 
 ### Development Workflow
 
-TODO after finishing
+1. **Development Server**: Run `npm run dev` to start the Vite development server with hot module replacement
+2. **Type Checking**: Run `npm run type-check` to validate TypeScript types
+3. **Linting**: Run `npm run lint` to check and fix code style issues
+4. **Building**: Run `npm run build` to create a production build in the `dist/` directory
+5. **Preview**: Run `npm run preview` to preview the production build locally
 
 ### Available Scripts
 
-TODO after finishing
+- `npm run dev` - Start development server with HMR
+- `npm run build` - Build for production (runs type-check and build-only)
+- `npm run build-only` - Build without type checking
+- `npm run type-check` - Run TypeScript compiler check
+- `npm run lint` - Lint and fix code with ESLint
+- `npm run format` - Format code with Prettier
+- `npm run preview` - Preview production build locally
 
 ## Extension Locations
 

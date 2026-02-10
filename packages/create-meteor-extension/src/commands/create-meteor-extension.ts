@@ -1,10 +1,10 @@
 import { GluegunCommand, GluegunToolbox } from 'gluegun'
+import * as ejs from 'ejs'
 
 const command: GluegunCommand = {
   name: '@shopware-ag/create-meteor-extension',
   run: async (toolbox: GluegunToolbox) => {
     const {
-      template: { generate },
       print,
       prompt,
       parameters,
@@ -95,33 +95,21 @@ const command: GluegunCommand = {
         )
       }
 
-      // Generate files from the templates
+      // Process .ejs template files manually
       print.info('Processing templates...')
-      const generationPromises = files.map(async (file) => {
-        const destinationFile = file.replace(/\.ejs$/, '')
-
+      for (const file of files) {
         try {
-          await generate({
-            // Go to the parent directory of the destination file because the destination file contains the name of the extension
-            directory: filesystem.path(destinationDir, '..'),
-            template: file,
-            target: destinationFile,
-            props: {
-              name,
-            },
-          })
-
-          // Remove the original .ejs file
-          await filesystem.removeAsync(file)
+          const content = filesystem.read(file)
+          const processed = ejs.render(content, { name })
+          const targetFile = file.replace(/\.ejs$/, '')
+          filesystem.write(targetFile, processed)
+          filesystem.remove(file)
         } catch (error) {
           throw new Error(
             `Failed to process template ${file}: ${error.message}`,
           )
         }
-      })
-
-      // Wait for all file generation to complete
-      await Promise.all(generationPromises)
+      }
 
       // Print a success message
       print.newline()
@@ -130,8 +118,8 @@ const command: GluegunCommand = {
       print.info(`To get started, run the following commands:
 
 cd meteor-app
-npm install
-npm run dev
+npm install   # or: pnpm install
+npm run dev   # or: pnpm dev
 `)
     } catch (error) {
       // Rollback: remove the destination directory if it was created
@@ -148,6 +136,7 @@ npm run dev
             `Warning: Could not clean up directory ${destinationDir}`,
           )
           print.warning('You may need to remove it manually.')
+          print.info(`Run: rm -rf "${destinationDir}"`)
         }
       }
 

@@ -25,4 +25,4 @@ async function run(argv) {
   return toolbox
 }
 
-module.exports = { run }
+export { run }

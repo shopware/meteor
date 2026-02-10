@@ -7,6 +7,7 @@ test('outputs version', async () => {
   const toolbox = await run(['--version'])
 
   expect(toolbox).toBeDefined()
+  expect(run).toBeDefined()
 })
 
 test('outputs help', async () => {
@@ -14,6 +15,7 @@ test('outputs help', async () => {
   const toolbox = await run(['--help'])
 
   expect(toolbox).toBeDefined()
+  expect(run).toBeDefined()
 })
 
 test('validates extension name - rejects uppercase', async () => {
@@ -26,8 +28,6 @@ test('validates extension name - rejects uppercase', async () => {
   }
 
   // Mock prompt to simulate user input with uppercase
-  const { run } = require(filesystem.path(src, 'src', 'cli'))
-
   // Note: This test would need proper mocking of the prompt
   // For now, we're just validating the regex pattern
   const regex = /^[a-z0-9-]+$/
