@@ -21,7 +21,7 @@ test.describe('Generated Meteor Extension', () => {
     );
 
     // Wait for the dashboard to load
-    await expect(authenticatedPage.locator('.sw-dashboard-index')).toBeVisible({
+    await expect(authenticatedPage.locator('.sw-dashboard-index').first()).toBeVisible({
       timeout: 10000,
     });
 

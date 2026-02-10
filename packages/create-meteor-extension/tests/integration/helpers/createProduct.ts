@@ -8,6 +8,17 @@ interface Product {
 }
 
 /**
+ * Generate a UUID v4
+ */
+function generateUUID(): string {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
+    const r = (Math.random() * 16) | 0;
+    const v = c === 'x' ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+}
+
+/**
  * Get OAuth token for Shopware API
  */
 async function getAuthToken(): Promise<string> {
@@ -72,7 +83,7 @@ export async function createBasicProduct(): Promise<Product> {
   }
 
   // Create the product
-  const productId = crypto.randomUUID();
+  const productId = generateUUID();
   const productResponse = await fetch(`${appUrl}api/product`, {
     method: 'POST',
     headers: {
