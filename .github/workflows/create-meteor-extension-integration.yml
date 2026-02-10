@@ -2,7 +2,7 @@ name: create-meteor-extension Integration Tests
 
 on:
   pull_request:
-    
+
   push:
     branches:
       - main
@@ -49,7 +49,7 @@ jobs:
       - name: Create plugin using Shopware CLI
         working-directory: shopware/
         run: |
-          bin/console plugin:create TestExtensionPlugin
+          bin/console plugin:create TestExtensionPlugin --no-interaction
 
       # 5. Install meteor dependencies and build CLI
       - name: Install meteor dependencies
