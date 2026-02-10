@@ -1,4 +1,4 @@
-import { PlaywrightTestConfig, devices } from '@playwright/test';
+import { defineConfig, devices } from '@playwright/test';
 import dotenv from 'dotenv';
 
 // Read from default ".env" file.
@@ -22,7 +22,7 @@ if (process.env['ADMIN_URL']) {
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
-const config: PlaywrightTestConfig = {
+export default defineConfig({
   testDir: './tests',
 
   /* Maximum time one test can run for. */
@@ -76,5 +76,4 @@ const config: PlaywrightTestConfig = {
 
   /* Folder for test artifacts such as screenshots, videos, traces, etc. */
   outputDir: './test-results/playwright-output/',
-};
-export default config;
+});
