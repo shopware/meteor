@@ -49,7 +49,7 @@ jobs:
       - name: Create plugin using Shopware CLI
         working-directory: shopware/
         run: |
-          bin/console plugin:create TestExtensionPlugin --no-interaction
+          bin/console plugin:create TestExtensionPlugin Test --no-interaction
 
       # 5. Install meteor dependencies and build CLI
       - name: Install meteor dependencies
