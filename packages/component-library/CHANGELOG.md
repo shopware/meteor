@@ -1,5 +1,19 @@
 # Changelog
 
+## 4.26.0
+
+### Minor Changes
+
+- [#1041](https://github.com/shopware/meteor/pull/1041) [`cdd8bca`](https://github.com/shopware/meteor/commit/cdd8bcaad06c1e60b3bf3298e3410e3feb5484bd) Thanks [@gweiermann](https://github.com/gweiermann)! - Order backdrop of modals to make them stackable
+
+### Patch Changes
+
+- [#1040](https://github.com/shopware/meteor/pull/1040) [`196bfdc`](https://github.com/shopware/meteor/commit/196bfdcbd9b0a94e596dc62175d4a6aaffa926ca) Thanks [@alastair-simon](https://github.com/alastair-simon)! - fix size small in `mt-number-field`
+
+- Updated dependencies [[`01879a1`](https://github.com/shopware/meteor/commit/01879a18a412afbaf96c070f7b5fa459a8a56b39), [`8bcae42`](https://github.com/shopware/meteor/commit/8bcae42bd8337af2f74123b1cb8555ca82c3092a)]:
+  - @shopware-ag/meteor-tokens@1.4.0
+  - @shopware-ag/meteor-admin-sdk@6.5.1
+
 ## 4.25.0
 
 ### Minor Changes

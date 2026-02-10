@@ -1,5 +1,13 @@
 # @shopware-ag/meteor-tokens
 
+## 1.4.0
+
+### Minor Changes
+
+- [#1049](https://github.com/shopware/meteor/pull/1049) [`01879a1`](https://github.com/shopware/meteor/commit/01879a18a412afbaf96c070f7b5fa459a8a56b39) Thanks [@alastair-simon](https://github.com/alastair-simon)! - - Upgraded typescript-eslint from 8.24.1 to 8.35.0
+  - Migrated from eslint-plugin-vitest to @vitest/eslint-plugin
+  - Upgraded @types/node from 22.13.4 to 25.0.0
+
 ## 1.3.1
 
 ### Patch Changes
