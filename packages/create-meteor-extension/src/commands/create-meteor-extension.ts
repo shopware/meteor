@@ -11,26 +11,47 @@ const command: GluegunCommand = {
       filesystem,
     } = toolbox
 
-    const { name } = await prompt.ask({
-      type: 'input',
-      name: 'name',
-      initial: parameters.first,
-      message: 'What is the name of your Meteor extension?',
+    // Helper function to validate extension name
+    const validateName = (input: string): string | true => {
+      if (!input) {
+        return 'Name cannot be empty'
+      }
 
-      validate: (input: string) => {
-        if (!input) {
-          return 'Name cannot be empty'
-        }
+      // Name can only contain lowercase letters, numbers, and hyphens
+      const regex = /^[a-z0-9-]+$/
+      if (!regex.test(input)) {
+        return 'Name can only contain lowercase letters, numbers, and hyphens'
+      }
 
-        // Name can only contain lowercase letters, numbers, and hyphens
-        const regex = /^[a-z0-9-]+$/
-        if (!regex.test(input)) {
-          return 'Name can only contain lowercase letters, numbers, and hyphens'
-        }
+      return true
+    }
 
-        return true
-      },
-    })
+    // Check for non-interactive mode flags
+    const nameFromFlag = parameters.options.name
+    const outputDirFromFlag = parameters.options['output-dir']
+
+    let name: string
+
+    // Non-interactive mode: use --name flag if provided
+    if (nameFromFlag) {
+      const validation = validateName(nameFromFlag)
+      if (validation !== true) {
+        print.error(`Error: ${validation}`)
+        process.exit(1)
+      }
+      name = nameFromFlag
+      print.info(`Creating extension "${name}" (non-interactive mode)...`)
+    } else {
+      // Interactive mode: prompt for name
+      const result = await prompt.ask({
+        type: 'input',
+        name: 'name',
+        initial: parameters.first,
+        message: 'What is the name of your Meteor extension?',
+        validate: validateName,
+      })
+      name = result.name
+    }
 
     // Define the source and destination directories
     const sourceDir = filesystem.path(
@@ -39,8 +60,10 @@ const command: GluegunCommand = {
       'templates',
       'blank_project',
     )
-    // The destination directory is always "meteor-app" for Shopware 6.7+ plugin structure
-    const destinationDir = filesystem.path(filesystem.cwd(), 'meteor-app')
+    // The destination directory defaults to "meteor-app" for Shopware 6.7+ plugin structure
+    // but can be overridden with --output-dir flag
+    const outputDir = outputDirFromFlag || 'meteor-app'
+    const destinationDir = filesystem.path(filesystem.cwd(), outputDir)
 
     // Validate source directory structure
     if (!filesystem.exists(sourceDir)) {
@@ -67,7 +90,7 @@ const command: GluegunCommand = {
     // Check if the destination directory already exists
     if (filesystem.exists(destinationDir)) {
       print.error(
-        `Error: Directory "meteor-app" already exists in the current location.`,
+        `Error: Directory "${outputDir}" already exists in the current location.`,
       )
       print.info(
         'Please remove the existing directory or run this command in a different location.',
@@ -113,11 +136,11 @@ const command: GluegunCommand = {
 
       // Print a success message
       print.newline()
-      print.success(`Meteor extension "${name}" created successfully in "meteor-app" folder!`)
+      print.success(`Meteor extension "${name}" created successfully in "${outputDir}" folder!`)
       print.newline()
       print.info(`To get started, run the following commands:
 
-cd meteor-app
+cd ${outputDir}
 npm install   # or: pnpm install
 npm run dev   # or: pnpm dev
 `)

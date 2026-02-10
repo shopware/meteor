@@ -1,0 +1,122 @@
+name: create-meteor-extension Integration Tests
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  integration-test:
+    name: Test CLI with Shopware trunk
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      # 1. Setup Shopware 6 using shopware/setup-shopware
+      - name: Setup Shopware
+        uses: shopware/setup-shopware@v2
+        with:
+          shopware-version: trunk
+          shopware-repository: shopware/shopware
+          install: true
+          install-locale: en-GB
+          install-currency: EUR
+          install-admin: true
+          env: dev
+          path: shopware/
+
+      # 2. Checkout meteor repo
+      - name: Checkout meteor
+        uses: actions/checkout@v6
+        with:
+          path: meteor/
+
+      # 3. Setup Node.js and pnpm
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+          cache-dependency-path: 'meteor/pnpm-lock.yaml'
+
+      # 4. Create plugin structure using Shopware's plugin:create command
+      - name: Create plugin using Shopware CLI
+        working-directory: shopware/
+        run: |
+          bin/console plugin:create TestExtensionPlugin
+
+      # 5. Install meteor dependencies and build CLI
+      - name: Install meteor dependencies
+        working-directory: meteor/
+        run: pnpm install --frozen-lockfile
+
+      - name: Build create-meteor-extension CLI
+        working-directory: meteor/
+        run: pnpm turbo run build --filter=@shopware-ag/create-meteor-extension
+
+      # 6. Generate extension using CLI directly into plugin structure
+      - name: Generate meteor extension into plugin
+        working-directory: shopware/custom/plugins/TestExtensionPlugin/src/Resources/app
+        run: |
+          node ../../../../../../meteor/packages/create-meteor-extension/build/cli.js --name test-extension --output-dir meteor-app
+
+      # 7. Install generated extension dependencies
+      - name: Install extension dependencies
+        working-directory: shopware/custom/plugins/TestExtensionPlugin/src/Resources/app/meteor-app
+        run: pnpm install
+
+      # 8. Build extension
+      - name: Build extension
+        working-directory: shopware/custom/plugins/TestExtensionPlugin/src/Resources/app/meteor-app
+        run: pnpm run build
+
+      # 9. Activate plugin in Shopware
+      - name: Activate plugin
+        working-directory: shopware/
+        run: |
+          bin/console plugin:refresh
+          bin/console plugin:install --activate TestExtensionPlugin
+          bin/console cache:clear
+
+      # 10. Build Shopware admin assets
+      - name: Build Shopware admin
+        working-directory: shopware/
+        run: |
+          composer run build:js:admin
+
+      # 11. Start Shopware web server
+      - name: Start Shopware server
+        working-directory: shopware/
+        run: |
+          symfony server:start --allow-http --no-tls --port=8000 -d
+
+      # 12. Wait for server to be ready
+      - name: Wait for Shopware to be ready
+        run: |
+          timeout 60 bash -c 'until curl -f http://localhost:8000/admin; do sleep 2; done'
+
+      # 13. Install Playwright and run tests
+      - name: Install integration test dependencies
+        working-directory: meteor/packages/create-meteor-extension/tests/integration
+        run: |
+          pnpm install
+          npx playwright install --with-deps chromium
+
+      - name: Run Playwright tests
+        working-directory: meteor/packages/create-meteor-extension/tests/integration
+        env:
+          APP_URL: http://localhost:8000
+          SHOPWARE_ADMIN_USERNAME: admin
+          SHOPWARE_ADMIN_PASSWORD: shopware
+          CI: true
+        run: npx playwright test --reporter=github --trace=on-first-retry
+
+      # 14. Upload test results
+      - uses: actions/upload-artifact@v6
+        if: always()
+        with:
+          name: integration-test-results
+          path: meteor/packages/create-meteor-extension/tests/integration/test-results/
+          retention-days: 7

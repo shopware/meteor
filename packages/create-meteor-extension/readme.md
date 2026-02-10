@@ -33,6 +33,30 @@ The CLI will interactively prompt you for:
 
 **Note**: The CLI will always create a folder named `meteor-app` (as required by Shopware 6.7+ plugin structure), but the extension name you provide will be used in `package.json`, README, and other configuration files.
 
+### Non-Interactive Mode
+
+For CI/CD environments and automation, you can use the CLI in non-interactive mode:
+
+```bash
+npx @shopware-ag/create-meteor-extension --name my-extension --output-dir meteor-app
+```
+
+**Options:**
+- `--name`: Extension name (required in non-interactive mode). Must contain only lowercase letters, numbers, and hyphens.
+- `--output-dir`: Output directory name (optional, defaults to `meteor-app`).
+
+**Example:**
+
+```bash
+# Create extension with custom name
+npx @shopware-ag/create-meteor-extension --name my-awesome-extension
+
+# Create extension with custom output directory
+npx @shopware-ag/create-meteor-extension --name my-extension --output-dir custom-folder
+```
+
+If the `--name` flag is not provided, the CLI will run in interactive mode and prompt for input.
+
 ## What Gets Created
 
 The CLI generates a complete project structure in a folder named `meteor-app`:

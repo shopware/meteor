@@ -6,3 +6,15 @@ coverage
 dist
 build
 .vscode
+
+# Generated extension output
+meteor-app/
+
+# Integration test artifacts
+tests/integration/test-results/
+tests/integration/node_modules/
+tests/integration/package-lock.json
+tests/integration/pnpm-lock.yaml
+
+# Test temporary directories
+__tests__/tmp/
