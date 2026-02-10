@@ -64,7 +64,7 @@ jobs:
       - name: Generate meteor extension into plugin
         working-directory: shopware/custom/plugins/TestExtensionPlugin/src/Resources/app
         run: |
-          node ../../../../../../../meteor/packages/create-meteor-extension/build/cli.js --name test-extension --output-dir meteor-app
+          node ../../../../../../../meteor/packages/create-meteor-extension/bin/create-meteor-extension --name test-extension --output-dir meteor-app
 
       # 7. Install generated extension dependencies
       - name: Install extension dependencies
