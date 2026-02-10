@@ -84,14 +84,7 @@ jobs:
           bin/console plugin:install --activate TestExtensionPlugin
           bin/console cache:clear
 
-      # 10. Change admin user password for tests
-      - name: Change admin user password
-        working-directory: shopware/
-        run: |
-          bin/console user:change-password admin --password=shopware12345
-          bin/console cache:clear
-
-      # 11. Build Shopware admin assets
+      # 10. Build Shopware admin assets
       - name: Build Shopware admin
         working-directory: shopware/
         run: |
@@ -126,7 +119,7 @@ jobs:
         env:
           APP_URL: http://localhost:8000
           SHOPWARE_ADMIN_USERNAME: admin
-          SHOPWARE_ADMIN_PASSWORD: shopware12345
+          SHOPWARE_ADMIN_PASSWORD: shopware
           CI: true
         run: npx playwright test --reporter=github --trace=on-first-retry
 
