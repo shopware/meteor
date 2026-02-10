@@ -89,6 +89,15 @@ jobs:
         working-directory: shopware/
         run: |
           composer run build:js:admin
+          bin/console cache:clear
+
+      # 11. Verify extension files exist
+      - name: Verify extension build
+        run: |
+          echo "Checking extension files..."
+          ls -la shopware/custom/plugins/TestExtensionPlugin/src/Resources/app/meteor-app/dist/ || echo "No dist directory found"
+          echo "Checking for extension in public..."
+          ls -la shopware/public/bundles/testextensionplugin/ || echo "No public bundle found"
 
       # 12. Start Shopware web server
       - name: Start Shopware server
