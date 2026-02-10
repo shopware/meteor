@@ -84,11 +84,11 @@ jobs:
           bin/console plugin:install --activate TestExtensionPlugin
           bin/console cache:clear
 
-      # 10. Create admin user for tests
-      - name: Create admin user
+      # 10. Change admin user password for tests
+      - name: Change admin user password
         working-directory: shopware/
         run: |
-          bin/console user:create --admin --email=admin@example.com --firstName=Admin --lastName=User --password=shopware admin || true
+          bin/console user:change-password admin --password=shopware
 
       # 11. Build Shopware admin assets
       - name: Build Shopware admin
