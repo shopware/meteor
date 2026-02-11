@@ -108,30 +108,18 @@ npm install
 pnpm install
 ```
 
-3. Start the development server:
-```bash
-npm run dev
-```
-
-4. The Vite dev server will start at `http://localhost:5173`. You'll need to configure your Shopware plugin to load this URL.
+3. Install and activate the Extension in Shopware.
 
 ### Development Workflow
 
-1. **Development Server**: Run `npm run dev` to start the Vite development server with hot module replacement
-2. **Type Checking**: Run `npm run type-check` to validate TypeScript types
-3. **Linting**: Run `npm run lint` to check and fix code style issues
-4. **Building**: Run `npm run build` to create a production build in the `dist/` directory
-5. **Preview**: Run `npm run preview` to preview the production build locally
+1. **Type Checking**: Run `npm run type-check` to validate TypeScript types
+2. **Linting**: Run `npm run lint` to check and fix code style issues
 
 ### Available Scripts
 
-- `npm run dev` - Start development server with HMR
-- `npm run build` - Build for production (runs type-check and build-only)
-- `npm run build-only` - Build without type checking
 - `npm run type-check` - Run TypeScript compiler check
 - `npm run lint` - Lint and fix code with ESLint
 - `npm run format` - Format code with Prettier
-- `npm run preview` - Preview production build locally
 
 ## Extension Locations
 

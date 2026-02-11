@@ -18,32 +18,8 @@ npm install
 
 ### Development
 
-Start the development server with hot module replacement:
-
-```sh
-npm run dev
-```
-
-The development server will run on `http://localhost:5173` by default.
-
-### Connecting to Shopware
-
-To test your extension in Shopware:
-
-1. Make sure your development server is running (`npm run dev`)
-2. In your Shopware Administration, navigate to Settings → System → Apps
-3. Add your extension by configuring it to point to `http://localhost:5173`
-4. The extension will appear in the locations defined in `src/bootstrap.ts`
-
-### Build for Production
-
-Type-check, compile and minify for production:
-
-```sh
-npm run build
-```
-
-The built files will be in the `dist` directory.
+You need to install and activate the extension in Shopware.
+Then start the development server of your Shopware instance. It will automatically reload the extension when you make changes to the code.
 
 ### Linting
 
