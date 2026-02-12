@@ -448,19 +448,27 @@ const updateCharacterCountFromEditor = (currentEditor: Editor | null) => {
 };
 
 const decodeHtmlEntities = (value: string): string => {
+  const namedEntities: Record<string, string> = {
+    amp: "&",
+    lt: "<",
+    gt: ">",
+    quot: '"',
+    apos: "'",
+    nbsp: " ",
+  };
+
   return value.replace(
     /&(#x[0-9a-fA-F]+|#\d+|amp|lt|gt|quot|apos|nbsp);/g,
     (match, entity: string) => {
-      if (entity === "amp") return "&";
-      if (entity === "lt") return "<";
-      if (entity === "gt") return ">";
-      if (entity === "quot") return '"';
-      if (entity === "apos") return "'";
-      if (entity === "nbsp") return " ";
+      const named = namedEntities[entity];
+
+      if (named !== undefined) return named;
+
       if (entity.startsWith("#x")) {
         const code = Number.parseInt(entity.slice(2), 16);
         return Number.isNaN(code) ? match : String.fromCodePoint(code);
       }
+
       if (entity.startsWith("#")) {
         const code = Number.parseInt(entity.slice(1), 10);
         return Number.isNaN(code) ? match : String.fromCodePoint(code);
