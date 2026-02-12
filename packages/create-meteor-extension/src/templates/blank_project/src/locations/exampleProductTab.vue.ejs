@@ -1,0 +1,24 @@
+<template>
+  <p>
+    {{ t('<%= name %>.productCard.description') }}
+  </p>
+</template>
+
+<script setup lang="ts">
+import { useI18n } from 'vue-i18n';
+import { composables } from '@shopware-ag/meteor-admin-sdk';
+import {onMounted} from "vue";
+
+const { t } = useI18n();
+const { useDataset } = composables;
+
+const productData = useDataset('sw-product-detail__product', {
+  selectors: ['name']
+})
+
+onMounted(() => {
+  window.setTimeout(() => {
+    console.log("productData.data", productData.data);
+  }, 1000);
+});
+</script>

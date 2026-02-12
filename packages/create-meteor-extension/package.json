@@ -1,0 +1,65 @@
+{
+  "name": "@shopware-ag/create-meteor-extension",
+  "version": "0.0.1",
+  "description": "create-meteor-extension CLI",
+  "types": "build/types/types.d.ts",
+  "bin": {
+    "create-meteor-extension": "bin/create-meteor-extension"
+  },
+  "scripts": {
+    "clean-build": "rimraf -rf ./build",
+    "compile": "tsc -p .",
+    "copy-templates": "copyfiles -u 1 \"./src/templates/**/*\" ./build",
+    "build": "pnpm clean-build && pnpm compile && pnpm copy-templates",
+    "prepublishOnly": "pnpm build",
+    "format": "eslint \"**/*.{js,jsx,ts,tsx}\" --fix && prettier \"**/*.{js,jsx,ts,tsx,json}\" --write",
+    "test": "jest",
+    "watch": "jest --watch",
+    "snapupdate": "jest --updateSnapshot",
+    "coverage": "jest --coverage"
+  },
+  "files": [
+    "build",
+    "LICENSE",
+    "readme.md",
+    "docs",
+    "bin"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "ejs": "^3.1.9",
+    "gluegun": "^5.1.6"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.2",
+    "@types/jest": "^29.5.12",
+    "@types/node": "^22.13.14",
+    "@typescript-eslint/eslint-plugin": "^8.18.2",
+    "@typescript-eslint/parser": "^8.18.2",
+    "copyfiles": "^2.4.1",
+    "eslint": "^9.22.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
+    "husky": "^9.1.7",
+    "jest": "^29.7.0",
+    "prettier": "^3.5.3",
+    "pretty-quick": "^4.0.0",
+    "ts-jest": "^29.2.5",
+    "ts-node": "^10.9.1",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.24.1"
+  },
+  "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node"
+  },
+  "prettier": {
+    "semi": false,
+    "singleQuote": true
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
+  }
+}
