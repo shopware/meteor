@@ -119,6 +119,7 @@ function createWrapper(options?: { slots?: Record<string, string> }) {
       },
       stubs: {
         "mt-icon": true,
+        teleport: true,
       },
     },
     ...options,

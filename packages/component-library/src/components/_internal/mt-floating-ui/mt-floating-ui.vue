@@ -3,26 +3,33 @@
     <div ref="floatingUiTrigger" class="mt-floating-ui__trigger">
       <slot name="trigger" />
     </div>
-    <div
-      v-if="isOpened"
-      ref="floatingUiContent"
-      v-on-click-outside="onClickOutside"
-      class="mt-floating-ui__content"
-      :data-show="isOpened"
-      tabindex="0"
-      :style="contentStyles"
-    >
-      <div v-if="showArrow" ref="floatingUiArrow" class="mt-floating-ui__arrow" data-popper-arrow />
+    <Teleport to="body">
+      <div
+        v-if="isOpened"
+        ref="floatingUiContent"
+        v-on-click-outside="onClickOutside"
+        class="mt-floating-ui__content"
+        :data-show="isOpened"
+        tabindex="0"
+        :style="contentStyles"
+      >
+        <div
+          v-if="showArrow"
+          ref="floatingUiArrow"
+          class="mt-floating-ui__arrow"
+          data-popper-arrow
+        />
 
-      <transition name="popoverTransition">
-        <template v-if="isOpened">
-          <slot
-            :referenceElementWidth="referenceElementWidth"
-            :referenceElementHeight="referenceElementHeight"
-          />
-        </template>
-      </transition>
-    </div>
+        <transition name="popoverTransition">
+          <template v-if="isOpened">
+            <slot
+              :reference-element-width="referenceElementWidth"
+              :reference-element-height="referenceElementHeight"
+            />
+          </template>
+        </transition>
+      </div>
+    </Teleport>
   </div>
 </template>
 
@@ -38,7 +45,6 @@ import {
   size,
 } from "@floating-ui/dom";
 import { vOnClickOutside } from "@vueuse/components";
-import { defineProps, defineEmits } from "vue";
 
 export type MtFloatingUiProps = {
   isOpened: boolean;
@@ -67,7 +73,6 @@ const referenceElementHeight = ref<number>(0);
 const referenceElementWidth = ref<number>(0);
 let cleanup: () => void;
 
-const bodyContainer = window.document.querySelector("body")!;
 const originalParentContainer = floatingUiContent.value?.parentElement;
 
 const contentStyles = computed(() => {
@@ -84,9 +89,6 @@ const createFloatingUi = () => {
   if (!floatingUiTrigger.value || !floatingUiContent.value) {
     return;
   }
-
-  // move the popover to the body
-  bodyContainer.appendChild(floatingUiContent.value as HTMLElement);
 
   // add given classes also to popover element
   const givenClasses = [...(floatingUi.value?.classList.values() ?? [])].filter(
@@ -171,15 +173,6 @@ const removeFloatingUi = () => {
   // cleanup the floating ui listener
   if (cleanup) {
     cleanup();
-  }
-
-  // remove the popover from the body
-  if (
-    floatingUiContent.value &&
-    // floatingUiContent.value have to be direct child of bodyContainer
-    floatingUiContent.value.parentElement === bodyContainer
-  ) {
-    originalParentContainer?.appendChild(floatingUiContent.value as HTMLElement);
   }
 };
 
