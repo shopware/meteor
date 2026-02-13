@@ -32,7 +32,11 @@ export class TailwindDeliverable implements Deliverable {
 
     const variables = Object.entries(this.dictionary.flat()).map(
       ([key, value]) => {
-        const variableName = key.replace(/\./g, '-');
+        let variableName = key.replace(/\./g, '-');
+
+        if (variableName.startsWith('scale')) {
+          variableName = `spacing-${variableName}`;
+        }
 
         const resolvedValue = this.resolveAliasedTokenValue(value, allTokens);
 
