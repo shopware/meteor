@@ -43,6 +43,10 @@ export class TailwindThemedDeliverable implements Deliverable {
         variableName = `spacing-${variableName}`;
       }
 
+      if (variableName.startsWith('font-line-height-')) {
+        variableName = variableName.replace('font-line-height-', 'leading-');
+      }
+
       const darkValue = darkTokens[key];
 
       if (darkValue === undefined) {

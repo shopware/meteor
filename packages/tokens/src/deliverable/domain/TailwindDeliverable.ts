@@ -38,6 +38,10 @@ export class TailwindDeliverable implements Deliverable {
           variableName = `spacing-${variableName}`;
         }
 
+        if (variableName.startsWith('font-line-height-')) {
+          variableName = variableName.replace('font-line-height-', 'leading-');
+        }
+
         const resolvedValue = this.resolveAliasedTokenValue(value, allTokens);
 
         if (
