@@ -951,7 +951,7 @@ test('throws error when aliased token cannot be resolved during toString()', () 
     subject
       .fromDictionaries(adminLightDictionary, adminDarkDictionary)
       .toString(),
-  ).toThrow(
+  ).toThrowError(
     'Failed to create TailwindThemedDeliverable; Could not resolve value of aliased token:',
   );
 });
