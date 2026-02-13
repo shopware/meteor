@@ -13,7 +13,12 @@
         tabindex="0"
         :style="contentStyles"
       >
-        <div v-if="showArrow" ref="floatingUiArrow" class="mt-floating-ui__arrow" data-popper-arrow />
+        <div
+          v-if="showArrow"
+          ref="floatingUiArrow"
+          class="mt-floating-ui__arrow"
+          data-popper-arrow
+        />
 
         <transition name="popoverTransition">
           <template v-if="isOpened">
