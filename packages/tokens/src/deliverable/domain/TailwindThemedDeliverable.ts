@@ -10,7 +10,7 @@ export class TailwindThemedDeliverable implements Deliverable {
     private readonly lightDictionary: Dictionary,
     private readonly darkDictionary: Dictionary,
     private readonly options: Options = {},
-  ) {}
+  ) { }
 
   public static fromDictionaries(
     lightDictionary: Dictionary,
@@ -68,12 +68,17 @@ export class TailwindThemedDeliverable implements Deliverable {
         resolvedLightValue,
         variableName,
       );
-      const formattedDarkValue = this.formatValue(
-        resolvedDarkValue,
-        variableName,
-      );
 
-      return `--${variableName}: light-dark(${formattedLightValue}, ${formattedDarkValue});`;
+      if (variableName.startsWith('color-')) {
+        const formattedDarkValue = this.formatValue(
+          resolvedDarkValue,
+          variableName,
+        );
+
+        return `--${variableName}: light-dark(${formattedLightValue}, ${formattedDarkValue});`;
+      }
+
+      return `--${variableName}: ${formattedLightValue};`;
     });
 
     const INDENTATION = '  ';
