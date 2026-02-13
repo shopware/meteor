@@ -37,7 +37,12 @@ export class TailwindThemedDeliverable implements Deliverable {
     const darkTokens = this.darkDictionary.flat();
 
     const variables = Object.entries(lightTokens).map(([key, lightValue]) => {
-      const variableName = key.replace(/\./g, '-');
+      let variableName = key.replace(/\./g, '-');
+
+      if (variableName.startsWith('scale')) {
+        variableName = `spacing-${variableName}`;
+      }
+
       const darkValue = darkTokens[key];
 
       if (darkValue === undefined) {

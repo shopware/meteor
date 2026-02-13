@@ -192,7 +192,7 @@ test('creates a TailwindDeliverable with spacing tokens in rem', () => {
   // THEN
   expect(result).toMatchInlineSnapshot(`
     "@theme {
-      --scale-size-16: 1rem;
+      --spacing-scale-size-16: 1rem;
     }
     "
   `);
