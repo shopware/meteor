@@ -109,11 +109,15 @@ describe("mt-colorpicker", () => {
     // ASSERT
     expect(screen.getByRole("textbox")).toHaveValue("");
 
+    // ACT
+    // opening and closing the picker should not error
     await userEvent.click(
       screen.getByRole("button", {
         name: "colorpicker-toggle",
       }),
     );
+
+    // ASSERT
     expect(screen.getByTestId("mt-colorpicker-dialog")).toBeVisible();
 
     await userEvent.click(
@@ -134,6 +138,8 @@ describe("mt-colorpicker", () => {
     // ASSERT
     expect(screen.getByRole("textbox")).toHaveValue("");
 
+    // ACT
+    // opening and closing the picker should not error
     await userEvent.click(
       screen.getByRole("button", {
         name: "colorpicker-toggle",
