@@ -69,4 +69,18 @@ describe("mt-datepicker", () => {
     // ASSERT
     expect(screen.getByRole("textbox")).toHaveAttribute("placeholder", "Some placeholder");
   });
+
+  it("does not crash when modelValue is null", async () => {
+    // ARRANGE & ACT
+    const { container } = render(MtColorpicker, {
+      props: {
+        modelValue: null as unknown as string,
+        label: "Color",
+      },
+    });
+
+    // ASSERT - component should render without throwing
+    expect(screen.getByRole("textbox", { name: "Color" })).toBeVisible();
+    expect(container.querySelector(".mt-colorpicker")).toBeTruthy();
+  });
 });

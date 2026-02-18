@@ -479,7 +479,7 @@ export default defineComponent({
   computed: {
     colorValue: {
       get(): string | { string: string; red: string; green: string; blue: string; alpha?: string } {
-        return this.localValue;
+        return this.localValue ?? "";
       },
 
       set(newColor: {
