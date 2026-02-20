@@ -2,7 +2,7 @@ import userEvent from "@testing-library/user-event";
 import MtColorpicker from "./mt-colorpicker.vue";
 import { render, screen } from "@testing-library/vue";
 
-describe("mt-datepicker", () => {
+describe("mt-colorpicker", () => {
   it("opens with keyboard", async () => {
     // ARRANGE
     render(MtColorpicker, {
@@ -68,5 +68,88 @@ describe("mt-datepicker", () => {
 
     // ASSERT
     expect(screen.getByRole("textbox")).toHaveAttribute("placeholder", "Some placeholder");
+  });
+
+  it("handles null modelValue without throwing and treats it as no color", async () => {
+    // ARRANGE
+    render(MtColorpicker, {
+      props: {
+        modelValue: null,
+      },
+    });
+
+    // ASSERT
+    // textbox should be empty
+    expect(screen.getByRole("textbox")).toHaveValue("");
+
+    // opening and closing the picker should not error
+    await userEvent.click(
+      screen.getByRole("button", {
+        name: "colorpicker-toggle",
+      }),
+    );
+    expect(screen.getByTestId("mt-colorpicker-dialog")).toBeVisible();
+
+    await userEvent.click(
+      screen.getByRole("button", {
+        name: "colorpicker-toggle",
+      }),
+    );
+  });
+
+  it("handles undefined modelValue without throwing and treats it as no color", async () => {
+    // ARRANGE
+    render(MtColorpicker, {
+      props: {
+        modelValue: undefined,
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("");
+
+    // ACT
+    // opening and closing the picker should not error
+    await userEvent.click(
+      screen.getByRole("button", {
+        name: "colorpicker-toggle",
+      }),
+    );
+
+    // ASSERT
+    expect(screen.getByTestId("mt-colorpicker-dialog")).toBeVisible();
+
+    await userEvent.click(
+      screen.getByRole("button", {
+        name: "colorpicker-toggle",
+      }),
+    );
+  });
+
+  it("handles empty string modelValue as no color", async () => {
+    // ARRANGE
+    render(MtColorpicker, {
+      props: {
+        modelValue: "",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("");
+
+    // ACT
+    // opening and closing the picker should not error
+    await userEvent.click(
+      screen.getByRole("button", {
+        name: "colorpicker-toggle",
+      }),
+    );
+    expect(screen.getByTestId("mt-colorpicker-dialog")).toBeVisible();
+
+    await userEvent.click(
+      screen.getByRole("button", {
+        name: "colorpicker-toggle",
+      }),
+    );
   });
 });

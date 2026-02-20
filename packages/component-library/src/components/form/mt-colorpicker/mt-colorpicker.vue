@@ -268,7 +268,7 @@ export default defineComponent({
      * The value of the colorpicker field.
      */
     modelValue: {
-      type: String,
+      type: [String, null] as PropType<string | null>,
       required: false,
       default: "",
     },
@@ -461,7 +461,7 @@ export default defineComponent({
     alphaStep: number;
   } {
     return {
-      localValue: this.modelValue,
+      localValue: this.modelValue || "",
       visible: false,
       isDragging: false,
       userInput: null,
@@ -515,6 +515,10 @@ export default defineComponent({
           this.colorValue.startsWith("hsl") ||
           this.colorValue.startsWith("#")
         );
+      }
+
+      if (!this.colorValue || !this.colorValue.string) {
+        return false;
       }
 
       return (
@@ -736,7 +740,7 @@ export default defineComponent({
 
   watch: {
     modelValue() {
-      this.colorValue = this.modelValue;
+      this.colorValue = this.modelValue || "";
     },
 
     hslValue() {
@@ -747,7 +751,7 @@ export default defineComponent({
       if (this.applyMode) {
         // When colorpicker is closed, reset the color value
         if (!visibleStatus && visibleStatusBefore) {
-          this.colorValue = this.modelValue;
+          this.colorValue = this.modelValue || "";
         }
       }
 
@@ -757,12 +761,15 @@ export default defineComponent({
       }
 
       const color = this.colorValue;
+      const colorString = typeof color === "string" ? color : color?.string;
 
-      if ((typeof color === "string" ? color : color.string).startsWith("#")) {
+      if (!colorString) {
+        return;
+      }
+
+      if (colorString.startsWith("#")) {
         // if color is a hex value
-        const convertedHSLValue = this.convertHEXtoHSL(
-          typeof this.colorValue === "string" ? this.colorValue : this.colorValue.string,
-        );
+        const convertedHSLValue = this.convertHEXtoHSL(colorString);
 
         if (!convertedHSLValue) {
           return;
@@ -774,11 +781,9 @@ export default defineComponent({
           convertedHSLValue.luminance,
           convertedHSLValue.alpha,
         );
-      } else if ((typeof color === "string" ? color : color.string).startsWith("rgb")) {
+      } else if (colorString.startsWith("rgb")) {
         // if color is a rgb value
-        const rgbValues = this.splitRGBValues(
-          typeof this.colorValue === "string" ? this.colorValue : this.colorValue.string,
-        );
+        const rgbValues = this.splitRGBValues(colorString);
         const convertedHSLValue = this.convertRGBtoHSL(
           rgbValues.red,
           rgbValues.green,
@@ -791,11 +796,9 @@ export default defineComponent({
           convertedHSLValue.luminance,
           rgbValues.alpha,
         );
-      } else if ((typeof color === "string" ? color : color.string).startsWith("hsl")) {
+      } else if (colorString.startsWith("hsl")) {
         // if color is an hsl value
-        const hslValues = this.splitHSLValues(
-          typeof this.colorValue === "string" ? this.colorValue : this.colorValue.string,
-        );
+        const hslValues = this.splitHSLValues(colorString);
 
         this.setHslaValues(
           hslValues.hue,
