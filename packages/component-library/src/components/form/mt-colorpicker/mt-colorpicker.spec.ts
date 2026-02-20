@@ -74,7 +74,6 @@ describe("mt-colorpicker", () => {
     // ARRANGE
     render(MtColorpicker, {
       props: {
-        // @ts-expect-error - testing null handling
         modelValue: null,
       },
     });

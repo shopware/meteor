@@ -268,7 +268,7 @@ export default defineComponent({
      * The value of the colorpicker field.
      */
     modelValue: {
-      type: String,
+      type: [String, null] as PropType<string | null>,
       required: false,
       default: "",
     },
