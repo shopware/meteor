@@ -103,6 +103,20 @@ export const VisualTestRenderError: MtTextEditorStory = defineStory({
   },
 });
 
+export const VisualTestRenderLinkWithoutNewTab: MtTextEditorStory = defineStory({
+  name: "Should render link without new tab option",
+  args: {
+    modelValue:
+      '<p>Visit our <a href="https://www.shopware.com">shop page</a> for more information.</p>',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await waitForCharacterCounter(canvasElement);
+    expect(canvas.getByRole("link", { name: "shop page" })).toBeDefined();
+  },
+});
+
 export const VisualTestCharacterCountWysiwyg: MtTextEditorStory = defineStory({
   name: "Should update the character count in WYSIWYG mode",
   args: {
@@ -790,6 +804,43 @@ export const SetLink: MtTextEditorStory = defineStory({
     expect(args.updateModelValue).toHaveBeenCalledWith(
       '<h1><a target="_blank" rel="noopener noreferrer nofollow" href="https://www.shopware.com">Hello World</a></h1><p>Some text</p>',
     );
+  },
+});
+
+export const SetLinkWithoutNewTab: MtTextEditorStory = defineStory({
+  name: "Should set link without new tab option",
+  args: {
+    modelValue: "<h1>Hello World</h1><p>Some text</p>",
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    await waitForCharacterCounter(canvasElement);
+
+    await userEvent.click(canvas.getByText("Hello World"));
+
+    selectText(canvas.getByText("Hello World"));
+
+    await userEvent.click(canvas.getByLabelText("Link"));
+
+    const body = within(document.body);
+
+    const linkInput = body.getByLabelText("Link URL");
+    await userEvent.clear(linkInput);
+    await userEvent.type(linkInput, "https://www.shopware.com");
+
+    await userEvent.click(body.getByText("Apply link"));
+
+    await waitUntil(() => args.updateModelValue?.mock?.calls?.length > 0);
+
+    expect(args.updateModelValue).toHaveBeenCalledWith(
+      '<h1><a href="https://www.shopware.com">Hello World</a></h1><p>Some text</p>',
+    );
+
+    const renderedLink = canvas.getByRole("link", { name: "Hello World" });
+    expect(renderedLink).toHaveAttribute("href", "https://www.shopware.com");
+    expect(renderedLink).not.toHaveAttribute("target");
+    expect(renderedLink).not.toHaveAttribute("rel");
   },
 });
 
