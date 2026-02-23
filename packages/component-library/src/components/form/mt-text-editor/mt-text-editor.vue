@@ -866,6 +866,13 @@ label {
     margin-top: var(--scale-size-16);
   }
 
+  a[href] {
+    color: var(--color-text-brand-default);
+    text-decoration: underline;
+    cursor: pointer;
+    word-break: break-word;
+  }
+
   blockquote {
     font-size: var(--font-size-s);
     font-style: italic;
