@@ -844,6 +844,45 @@ export const SetLinkWithoutNewTab: MtTextEditorStory = defineStory({
   },
 });
 
+export const RemoveLink: MtTextEditorStory = defineStory({
+  name: "Should remove link in one click",
+  args: {
+    modelValue: '<h1><a href="https://www.shopware.com">Hello World</a></h1><p>Some text</p>',
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    await waitForCharacterCounter(canvasElement);
+
+    await userEvent.click(canvas.getByRole("link", { name: "Hello World" }));
+    selectText(canvas.getByText("Hello World"));
+
+    await userEvent.click(canvas.getByLabelText("Remove link"));
+
+    await waitUntil(() => args.updateModelValue?.mock?.calls?.length > 0);
+
+    expect(args.updateModelValue).toHaveBeenCalledWith("<h1>Hello World</h1><p>Some text</p>");
+    expect(canvas.queryByRole("link", { name: "Hello World" })).toBeNull();
+  },
+});
+
+export const VisualTestShowRemoveLinkContextualButton: MtTextEditorStory = defineStory({
+  name: "Should show remove link contextual button",
+  args: {
+    modelValue: '<h1><a href="https://www.shopware.com">Hello World</a></h1><p>Some text</p>',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await waitForCharacterCounter(canvasElement);
+
+    await userEvent.click(canvas.getByRole("link", { name: "Hello World" }));
+    selectText(canvas.getByText("Hello World"));
+
+    expect(canvas.getByLabelText("Remove link")).toBeDefined();
+  },
+});
+
 export const InsertTable: MtTextEditorStory = defineStory({
   name: "Should insert table",
   args: {
