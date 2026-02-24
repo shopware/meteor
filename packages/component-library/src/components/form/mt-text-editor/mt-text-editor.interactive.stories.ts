@@ -1573,3 +1573,33 @@ export const TestCodeModeFalse: MtTextEditorStory = defineStory({
     expect(canvas.getByLabelText("Switch to code mode")).toBeDefined();
   },
 });
+
+// ------------------------------
+// Table cell selection tests
+// ------------------------------
+
+export const VisualTestTableCellSelectionShowsContent: MtTextEditorStory = defineStory({
+  name: "Should show cell content when table cells are selected",
+  args: {},
+  play: async ({ canvasElement }) => {
+    await waitUntil(() => canvasElement.querySelector(".mt-text-editor__content-editor table td"));
+
+    const cells = canvasElement.querySelectorAll(".mt-text-editor__content-editor table td");
+
+    await userEvent.click(cells[0] as HTMLElement);
+
+    // TipTap adds .selectedCell to cells during click-drag selection
+    cells.forEach((cell) => cell.classList.add("selectedCell"));
+
+    const firstCellText = cells[0].querySelector("p");
+    expect(firstCellText).not.toBeNull();
+    expect(firstCellText!.textContent).toBe("Lorem");
+
+    // The .selectedCell::after overlay must be semi-transparent so cell content
+    // remains visible. Modern browsers resolve color-mix() to "color(srgb ... / alpha)",
+    // older ones to "rgba(...)". An opaque color (the old bug) has neither.
+    const cellStyles = window.getComputedStyle(cells[0], "::after");
+    const bg = cellStyles.getPropertyValue("background-color");
+    expect(bg).toMatch(/rgba?\(.+,|color\(.+\//);
+  },
+});

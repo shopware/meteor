@@ -957,7 +957,7 @@ label {
   }
 
   table .selectedCell::after {
-    background: var(--color-background-tertiary-default);
+    background: color-mix(in srgb, var(--color-interaction-primary-default) 12%, transparent);
     content: "";
     left: 0;
     right: 0;
