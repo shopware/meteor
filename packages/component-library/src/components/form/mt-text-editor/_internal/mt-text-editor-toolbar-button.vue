@@ -10,9 +10,9 @@
       hideDelay: 0,
     }"
     :aria-label="translatedLabel"
-    :disabled="button.disabled ? button.disabled(props.editor, disabled) : disabled"
+    :disabled="button?.disabled ? button.disabled(props.editor, disabled) : disabled"
   >
-    <mt-icon v-if="button.icon" :name="button.icon" />
+    <mt-icon v-if="button?.icon" :name="button.icon" />
     <span v-else>{{ translatedLabel }}</span>
   </button>
 </template>
@@ -48,14 +48,18 @@ const handleButtonClick = () => {
   emit("click");
 };
 
-const buttonClass = (button: CustomButton) => {
+const buttonClass = (button?: CustomButton) => {
   return {
     "mt-text-editor-toolbar-button": true,
-    "is-active": button.isActive && button.isActive(props.editor),
+    "is-active": !!button?.isActive?.(props.editor),
   };
 };
 
 const translatedLabel = computed(() => {
+  if (!props.button?.label) {
+    return "";
+  }
+
   return t(props.button.label);
 });
 </script>

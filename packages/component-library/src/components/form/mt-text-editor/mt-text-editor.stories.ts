@@ -3,9 +3,22 @@ import MtTextEditor from "./mt-text-editor.vue";
 import type { SlottedMeta } from "@/_internal/story-helper";
 import MtTextEditorToolbarButtonColor from "./_internal/mt-text-editor-toolbar-button-color.vue";
 import MtButton from "../mt-button/mt-button.vue";
-import { ref } from "vue";
+import { ref, onMounted, onBeforeUnmount } from "vue";
 import Highlight from "@tiptap/extension-highlight";
 import { fn } from "@storybook/test";
+import "./mt-text-editor.stories.css";
+
+const storyBodyClass = "mt-text-editor-story--fullscreen-fix";
+const useFullscreenStoryBodyClass = () => {
+  onMounted(() => {
+    if (typeof document === "undefined") return;
+    document.body.classList.add(storyBodyClass);
+  });
+  onBeforeUnmount(() => {
+    if (typeof document === "undefined") return;
+    document.body.classList.remove(storyBodyClass);
+  });
+};
 
 export type MtTextEditorMeta = SlottedMeta<
   typeof MtTextEditor,
@@ -15,6 +28,9 @@ export type MtTextEditorMeta = SlottedMeta<
 export default {
   title: "Components/Form/mt-text-editor",
   component: MtTextEditor,
+  parameters: {
+    layout: "fullscreen",
+  },
   args: {
     modelValue: `<h1><span style="color: rgb(5, 220, 235)">Hello</span> <span style="color: rgb(43, 235, 5)">World</span></h1><p><strong>Some</strong> text</p><ol><li><p><a target="_blank" rel="noopener noreferrer nofollow" href="https://www.shopware.com">Lorem</a></p></li><li><p>Ipsum</p></li></ol><table style="min-width: 75px"><colgroup><col style="min-width: 25px"><col style="min-width: 25px"><col style="min-width: 25px"></colgroup><tbody><tr><th colspan="1" rowspan="1"><p>First</p></th><th colspan="1" rowspan="1"><p>Second</p></th><th colspan="1" rowspan="1"><p>Third</p></th></tr><tr><td colspan="1" rowspan="1"><p>Lorem</p></td><td colspan="1" rowspan="1"><p>Ipsum</p></td><td colspan="1" rowspan="1"><p>non</p></td></tr><tr><td colspan="1" rowspan="1"><p>dolor</p></td><td colspan="1" rowspan="1"><p>sit</p></td><td colspan="1" rowspan="1"><p>amet</p></td></tr></tbody></table><p>After table</p>`,
     updateModelValue: fn(),
@@ -23,6 +39,8 @@ export default {
   render: (args) => ({
     components: { MtTextEditor, MtTextEditorToolbarButtonColor },
     setup() {
+      useFullscreenStoryBodyClass();
+
       const currentModelValue = ref(args.modelValue);
       const onUpdateModelValue = (value: string) => {
         currentModelValue.value = value;
@@ -36,7 +54,7 @@ export default {
       };
     },
     template: `
-<div class="wrapper">
+<div class="wrapper mt-text-editor-story__wrapper">
   <mt-text-editor
       v-bind="args"
       :modelValue="currentModelValue"
@@ -65,20 +83,52 @@ export const CustomButtonsStory: MtTextEditorStory = {
   name: "mt-text-editor (custom buttons)",
   args: {
     modelValue: `<h1>Hello <mark>World</mark></h1><p>In the toolbar you see now a new highlight button.</p>`,
-    tipTapConfig: {
-      extensions: [Highlight],
-    },
-    customButtons: [
-      {
-        name: "highlight",
-        label: "Highlight",
-        icon: "regular-circle-xs",
-        action: (editor) => {
-          editor.chain().focus().toggleMark("highlight").run();
-        },
-      },
-    ],
   },
+  render: (args) => ({
+    components: { MtTextEditor },
+    setup() {
+      useFullscreenStoryBodyClass();
+
+      const currentModelValue = ref(args.modelValue);
+      const onUpdateModelValue = (value: string) => {
+        currentModelValue.value = value;
+        args.updateModelValue(value);
+      };
+
+      const tipTapConfig = {
+        extensions: [Highlight],
+      };
+
+      const customButtons = [
+        {
+          name: "highlight",
+          label: "Highlight",
+          icon: "regular-circle-xs",
+          action: (editor: any) => {
+            editor.chain().focus().toggleMark("highlight").run();
+          },
+        },
+      ];
+
+      return {
+        args,
+        currentModelValue,
+        onUpdateModelValue,
+        tipTapConfig,
+        customButtons,
+      };
+    },
+    template: `
+<div class="wrapper mt-text-editor-story__wrapper">
+  <mt-text-editor
+    v-bind="args"
+    :modelValue="currentModelValue"
+    :tip-tap-config="tipTapConfig"
+    :custom-buttons="customButtons"
+    @update:modelValue="onUpdateModelValue"
+  />
+</div>`,
+  }),
 };
 
 export const DiffModalStory: MtTextEditorStory = {
@@ -91,6 +141,8 @@ export const DiffModalStory: MtTextEditorStory = {
   render: (args) => ({
     components: { MtTextEditor },
     setup() {
+      useFullscreenStoryBodyClass();
+
       const currentModelValue = ref(args.modelValue);
       const onUpdateModelValue = (value: string) => {
         currentModelValue.value = value;
@@ -104,7 +156,7 @@ export const DiffModalStory: MtTextEditorStory = {
       };
     },
     template: `
-<div class="wrapper">
+<div class="wrapper mt-text-editor-story__wrapper">
   <mt-text-editor
     v-bind="args"
     :modelValue="currentModelValue"
@@ -147,6 +199,8 @@ export const CodeModeTwoWayBindingStory: MtTextEditorStory = {
   render: (args) => ({
     components: { MtTextEditor, MtButton },
     setup() {
+      useFullscreenStoryBodyClass();
+
       const currentModelValue = ref(args.modelValue);
       const isCodeMode = ref(false);
 
@@ -168,13 +222,15 @@ export const CodeModeTwoWayBindingStory: MtTextEditorStory = {
       };
     },
     template: `
-<div class="wrapper">
-  <mt-button 
-    @click="toggleMode" 
-    style="margin-bottom: 16px;"
-  >
-    Toggle Mode (Currently: {{ isCodeMode ? 'Code' : 'WYSIWYG' }})
-  </mt-button>
+<div class="wrapper mt-text-editor-story__wrapper">
+  <div class="mt-text-editor-story__row">
+    <mt-button 
+      @click="toggleMode" 
+      style="margin-bottom: 16px;"
+    >
+      Toggle Mode (Currently: {{ isCodeMode ? 'Code' : 'WYSIWYG' }})
+    </mt-button>
+  </div>
   <mt-text-editor
     v-bind="args"
     :modelValue="currentModelValue"

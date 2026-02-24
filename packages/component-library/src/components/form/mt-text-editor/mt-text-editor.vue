@@ -204,6 +204,7 @@ import {
   ref,
   useSlots,
   watch,
+  onBeforeUnmount,
   onMounted,
   nextTick,
   type PropType,
@@ -225,6 +226,7 @@ const { t } = useI18n({
         buttons: {
           "switch-to-code": "Switch to code mode",
           "switch-to-visual": "Switch to visual mode",
+          "toggle-fullscreen": "Toggle fullscreen mode",
         },
         footer: {
           characters: "{characters} characters",
@@ -251,6 +253,7 @@ const { t } = useI18n({
         buttons: {
           "switch-to-code": "In den Code-Modus wechseln",
           "switch-to-visual": "In den visuellen Modus wechseln",
+          "toggle-fullscreen": "Vollbildmodus umschalten",
         },
         footer: {
           characters: "{characters} Zeichen",
@@ -365,11 +368,14 @@ const props = defineProps({
   },
 });
 
+const isFullscreen = ref(false);
+
 const componentClasses = computed(() => {
   return {
     "mt-text-editor--inline-edit": props.isInlineEdit,
     "mt-text-editor--disabled": props.disabled,
     "mt-text-editor--error": !!props.error,
+    "is--fullscreen": isFullscreen.value,
   };
 });
 
@@ -604,6 +610,15 @@ const mergedCustomButtons = computed<CustomButton[]>(() => {
       position: 3000,
       disabled: () => false,
     },
+    {
+      name: "toggle-fullscreen",
+      label: "mt-text-editor.buttons.toggle-fullscreen",
+      icon: isFullscreen.value ? "regular-compress-arrows-xs" : "regular-expand-arrows-xs",
+      action: () => onToggleFullscreenClick(),
+      alignment: "right",
+      position: 5000,
+      disabled: () => false,
+    },
   ];
 
   return [...editorButtons, ...props.customButtons];
@@ -631,6 +646,9 @@ const showCodeEditor = ref(props.codeMode);
 const lang = html();
 const codeEditorValue = ref(props.modelValue);
 const suppressCodeMirrorUpdates = ref(false);
+const originalBodyOverflow = ref("");
+const originalDocumentOverflow = ref("");
+const appliedFullscreen = ref(false);
 
 // Diff modal state
 const showDiffModal = ref(false);
@@ -658,6 +676,18 @@ const onToggleCodeClick = async () => {
   diffParsedHtml.value = diff.parsedBeautified;
   parsedHtmlRaw.value = diff.parsedRaw;
   showDiffModal.value = true;
+};
+
+const onToggleFullscreenClick = () => {
+  isFullscreen.value = !isFullscreen.value;
+};
+
+const onFullscreenKeydown = (event: KeyboardEvent) => {
+  if (event.key !== "Escape" || !isFullscreen.value) {
+    return;
+  }
+
+  isFullscreen.value = false;
 };
 
 const handleDiffAccept = async () => {
@@ -720,6 +750,49 @@ watch(
 
 const slots = useSlots() as Record<string, unknown>;
 
+const applyFullscreenDocumentLock = (active: boolean) => {
+  if (typeof document === "undefined") {
+    return;
+  }
+
+  if (!active) {
+    if (!appliedFullscreen.value) {
+      return;
+    }
+
+    document.body.style.overflow = originalBodyOverflow.value;
+    document.documentElement.style.overflow = originalDocumentOverflow.value;
+    appliedFullscreen.value = false;
+
+    return;
+  }
+
+  if (appliedFullscreen.value) {
+    return;
+  }
+
+  originalBodyOverflow.value = document.body.style.overflow;
+  originalDocumentOverflow.value = document.documentElement.style.overflow;
+
+  document.body.style.overflow = "hidden";
+  document.documentElement.style.overflow = "hidden";
+  appliedFullscreen.value = true;
+};
+
+watch(isFullscreen, (active) => {
+  applyFullscreenDocumentLock(active);
+
+  if (typeof document === "undefined") {
+    return;
+  }
+
+  if (active) {
+    document.addEventListener("keydown", onFullscreenKeydown);
+  } else {
+    document.removeEventListener("keydown", onFullscreenKeydown);
+  }
+});
+
 // Initial gate check when component mounts in WYSIWYG
 onMounted(async () => {
   if (showCodeEditor.value) return; // Only relevant in WYSIWYG
@@ -738,12 +811,42 @@ onMounted(async () => {
   // Allow subsequent updates to emit after initial gate check
   suppressUpdates.value = false;
 });
+
+onBeforeUnmount(() => {
+  if (typeof document !== "undefined") {
+    document.removeEventListener("keydown", onFullscreenKeydown);
+  }
+
+  applyFullscreenDocumentLock(false);
+});
 </script>
 
 <style scoped>
 .mt-text-editor {
   display: flex;
   flex-direction: column;
+}
+
+.mt-text-editor.is--fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: var(--color-background-primary-default);
+  padding: var(--scale-size-24);
+}
+
+.mt-text-editor.is--fullscreen .mt-text-editor__box {
+  min-height: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.mt-text-editor.is--fullscreen .mt-text-editor__content,
+.mt-text-editor.is--fullscreen .mt-text-editor__code-editor {
+  min-height: 0;
+  height: auto;
+  flex: 1;
 }
 
 label {
@@ -994,7 +1097,7 @@ label {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 var(--scale-size-16);
+  padding: 0 var(--scale-size-6);
   height: var(--scale-size-36);
   background-color: var(--color-background-tertiary-default);
   border-top: 1px solid var(--color-border-primary-default);
@@ -1004,6 +1107,11 @@ label {
 }
 
 .mt-text-editor__footer-left {
+  display: flex;
+  align-items: center;
+}
+
+.mt-text-editor__footer-right {
   display: flex;
   align-items: center;
 }
