@@ -988,6 +988,28 @@ export const VisualTestRenderCodeView: MtTextEditorStory = defineStory({
   },
 });
 
+export const ToggleFullscreenMode: MtTextEditorStory = defineStory({
+  name: "Should toggle fullscreen mode",
+  args: {
+    modelValue: "<h1>Hello World</h1><p>Some text</p>",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const editor = canvasElement.querySelector(".mt-text-editor") as HTMLElement | null;
+
+    await waitForCharacterCounter(canvasElement);
+    expect(editor).toBeDefined();
+
+    await userEvent.click(canvas.getByLabelText("Toggle fullscreen mode"));
+    await waitUntil(() => editor?.classList.contains("is--fullscreen"));
+    expect(editor).toHaveClass("is--fullscreen");
+
+    await userEvent.keyboard("{Escape}");
+    await waitUntil(() => !editor?.classList.contains("is--fullscreen"));
+    expect(editor).not.toHaveClass("is--fullscreen");
+  },
+});
+
 /**
  * Tests to check that the given HTML content is rendered correctly
  * in the text editor. And that custom HTML tags are not removed.
