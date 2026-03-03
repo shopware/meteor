@@ -19,16 +19,7 @@ test('outputs help', async () => {
 })
 
 test('validates extension name - rejects uppercase', async () => {
-  const extensionName = 'TestExtension'
-  const testDir = filesystem.path(src, '__tests__', 'tmp', extensionName)
-
-  // Ensure test directory doesn't exist
-  if (filesystem.exists(testDir)) {
-    filesystem.remove(testDir)
-  }
-
-  // Mock prompt to simulate user input with uppercase
-  // Note: This test would need proper mocking of the prompt
+  // TODO: This test would need proper mocking of the prompt
   // For now, we're just validating the regex pattern
   const regex = /^[a-z0-9-]+$/
   expect(regex.test('TestExtension')).toBe(false)
@@ -48,9 +39,9 @@ test('validates extension name - accepts valid names', async () => {
   expect(regex.test('my-extension-2024')).toBe(true)
 })
 
-test('non-interactive mode - creates extension with --name flag', async () => {
+test('non-interactive mode - creates extension package.json with correct name', async () => {
   const { run } = require(filesystem.path(src, 'src', 'cli'))
-  const testName = 'test-extension-' + Date.now()
+  const testName = 'test-extension-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8)
   const testDir = filesystem.path(src, '__tests__', 'tmp', testName)
 
   // Ensure test directory doesn't exist
@@ -89,7 +80,7 @@ test('non-interactive mode - creates extension with --name flag', async () => {
 
 test('non-interactive mode - creates extension with custom --output-dir', async () => {
   const { run } = require(filesystem.path(src, 'src', 'cli'))
-  const testName = 'custom-output-' + Date.now()
+  const testName = 'custom-output-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8)
   const testDir = filesystem.path(src, '__tests__', 'tmp', testName)
   const customOutputDir = 'my-custom-app'
 

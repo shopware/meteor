@@ -14,7 +14,6 @@ export const test = base.extend<{
     await loginToShopware(page)
     await use(page)
   },
-  // eslint-disable-next-line no-empty-pattern
   createProduct: async ({}, use) => {
     await use(createBasicProduct)
   },

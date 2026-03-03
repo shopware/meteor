@@ -33,6 +33,7 @@ export default tseslint.config([
         },
       ],
       "@typescript-eslint/no-require-imports": "off",
+      "no-empty-pattern": ["error", { "allowObjectPatternsAsParameters": true }],
     },
   },
   eslintConfigPrettier,

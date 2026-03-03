@@ -64,7 +64,7 @@ const command: GluegunCommand = {
     if (!filesystem.exists(sourceDir)) {
       print.error(`Error: Template directory not found at ${sourceDir}`)
       print.error('Please ensure the package is installed correctly.')
-      return
+      process.exit(1)
     }
 
     // Validate that source directory has expected structure
@@ -78,7 +78,7 @@ const command: GluegunCommand = {
       if (!filesystem.exists(filePath)) {
         print.error(`Error: Required template file missing: ${file}`)
         print.error('Please ensure the package is installed correctly.')
-        return
+        process.exit(1)
       }
     }
 
@@ -90,16 +90,14 @@ const command: GluegunCommand = {
       print.info(
         'Please remove the existing directory or run this command in a different location.',
       )
-      return
+      process.exit(1)
     }
 
     try {
       // Copy the template files from the source directory to the destination directory
       print.info(`Creating extension "${name}"...`)
 
-      filesystem.copy(sourceDir, destinationDir, {
-        overwrite: true,
-      })
+      filesystem.copy(sourceDir, destinationDir)
 
       // Look for all .ejs files in the destination directory
       const files = filesystem.find(destinationDir, {
@@ -115,10 +113,11 @@ const command: GluegunCommand = {
 
       // Process .ejs template files manually
       print.info('Processing templates...')
+      const templateVariables = { name }
       for (const file of files) {
         try {
           const content = filesystem.read(file)
-          const processed = ejs.render(content, { name })
+          const processed = ejs.render(content, templateVariables)
           const targetFile = file.replace(/\.ejs$/, '')
           filesystem.write(targetFile, processed)
           filesystem.remove(file)

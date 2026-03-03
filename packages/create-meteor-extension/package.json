@@ -7,7 +7,7 @@
     "create-meteor-extension": "bin/create-meteor-extension"
   },
   "scripts": {
-    "clean-build": "rimraf -rf ./build",
+    "clean-build": "rimraf ./build",
     "compile": "tsc -p .",
     "copy-templates": "copyfiles -u 1 \"./src/templates/**/*\" ./build",
     "build": "pnpm clean-build && pnpm compile && pnpm copy-templates",
@@ -37,6 +37,7 @@
     "@typescript-eslint/eslint-plugin": "^8.18.2",
     "@typescript-eslint/parser": "^8.18.2",
     "copyfiles": "^2.4.1",
+    "rimraf": "^6.1.3",
     "eslint": "^9.22.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.1",
