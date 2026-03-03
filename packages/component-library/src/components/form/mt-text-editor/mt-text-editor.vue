@@ -46,12 +46,12 @@
       <code-mirror
         v-else
         :lang="lang"
-        :model-value="modelValue"
+        :model-value="codeEditorValue"
         class="mt-text-editor__code-editor"
         wrap
         basic
         :disabled="disabled"
-        @update:model-value="emit('update:modelValue', $event)"
+        @update:model-value="handleCodeEditorUpdate"
       />
 
       <!-- WYSIWYG approval gate overlay -->
@@ -119,7 +119,7 @@
           <slot name="footer-right" :editor="editor">
             {{
               t("mt-text-editor.footer.characters", {
-                characters: editor?.storage.characterCount.characters(),
+                characters: characterCount,
               })
             }}
           </slot>
@@ -143,6 +143,7 @@
 <script setup lang="ts">
 // BubbleMenu is used in <component :is> in the template
 import { EditorContent, BubbleMenu, useEditor } from "@tiptap/vue-3";
+import type { Editor } from "@tiptap/core";
 // Import individual StarterKit extensions instead of the bundle
 import Document from "@tiptap/extension-document";
 import Paragraph from "@tiptap/extension-paragraph";
@@ -168,7 +169,6 @@ import TextAlign from "@tiptap/extension-text-align";
 import { Color } from "@tiptap/extension-color";
 import TextStyle from "@tiptap/extension-text-style";
 import Link from "@tiptap/extension-link";
-import CharacterCount from "@tiptap/extension-character-count";
 import Table from "@tiptap/extension-table";
 import TableCell from "@tiptap/extension-table-cell";
 import TableHeader from "@tiptap/extension-table-header";
@@ -204,16 +204,19 @@ import {
   ref,
   useSlots,
   watch,
+  onBeforeUnmount,
   onMounted,
   nextTick,
   type PropType,
 } from "vue";
 import { html } from "@codemirror/lang-html";
+import type { Text as CodeMirrorText } from "@codemirror/state";
 import { useI18n } from "vue-i18n";
 import ListItem from "@tiptap/extension-list-item";
 import mtTextEditorDiffModal from "./_internal/mt-text-editor-diff-modal.vue";
-import { getHtmlParseDiff } from "./_internal/html-parse-diff";
+import { formatHtmlForDiff, getHtmlParseDiff } from "./_internal/html-parse-diff";
 import mtButton from "@/components/form/mt-button/mt-button.vue";
+import { debounce } from "@/utils/debounce";
 
 const { t } = useI18n({
   useScope: "global",
@@ -223,6 +226,7 @@ const { t } = useI18n({
         buttons: {
           "switch-to-code": "Switch to code mode",
           "switch-to-visual": "Switch to visual mode",
+          "toggle-fullscreen": "Toggle fullscreen mode",
         },
         footer: {
           characters: "{characters} characters",
@@ -249,6 +253,7 @@ const { t } = useI18n({
         buttons: {
           "switch-to-code": "In den Code-Modus wechseln",
           "switch-to-visual": "In den visuellen Modus wechseln",
+          "toggle-fullscreen": "Vollbildmodus umschalten",
         },
         footer: {
           characters: "{characters} Zeichen",
@@ -363,11 +368,14 @@ const props = defineProps({
   },
 });
 
+const isFullscreen = ref(false);
+
 const componentClasses = computed(() => {
   return {
     "mt-text-editor--inline-edit": props.isInlineEdit,
     "mt-text-editor--disabled": props.disabled,
     "mt-text-editor--error": !!props.error,
+    "is--fullscreen": isFullscreen.value,
   };
 });
 
@@ -410,7 +418,6 @@ const editorExtensions = enhanceExtensionsWithAttributes([
       target: null, // Don't set target by default
     },
   }),
-  CharacterCount.configure({}),
   Table.configure({
     resizable: true,
   }),
@@ -435,6 +442,80 @@ const editorExtensions = enhanceExtensionsWithAttributes([
 // WYSIWYG approval gate state (declare early so editor callbacks can read it)
 const gateActive = ref(false);
 
+const characterCount = ref(0);
+
+// Read directly from the document to keep the WYSIWYG counter reactive.
+const updateCharacterCountFromEditor = (currentEditor: Editor | null) => {
+  if (!currentEditor) {
+    characterCount.value = 0;
+    return;
+  }
+  characterCount.value = getTextContentLengthFromHtml(currentEditor.getHTML());
+};
+
+const decodeHtmlEntities = (value: string): string => {
+  const namedEntities: Record<string, string> = {
+    amp: "&",
+    lt: "<",
+    gt: ">",
+    quot: '"',
+    apos: "'",
+    nbsp: " ",
+  };
+
+  return value.replace(
+    /&(#x[0-9a-fA-F]+|#\d+|amp|lt|gt|quot|apos|nbsp);/g,
+    (match, entity: string) => {
+      const named = namedEntities[entity];
+
+      if (named !== undefined) return named;
+
+      if (entity.startsWith("#x")) {
+        const code = Number.parseInt(entity.slice(2), 16);
+        return Number.isNaN(code) ? match : String.fromCodePoint(code);
+      }
+
+      if (entity.startsWith("#")) {
+        const code = Number.parseInt(entity.slice(1), 10);
+        return Number.isNaN(code) ? match : String.fromCodePoint(code);
+      }
+      return match;
+    },
+  );
+};
+
+const getTextContentLengthFromHtml = (value: string): number => {
+  if (!value) return 0;
+
+  if (typeof window === "undefined" || typeof DOMParser === "undefined") {
+    return decodeHtmlEntities(value.replace(/<[^>]*>/g, "")).length;
+  }
+
+  const doc = new DOMParser().parseFromString(value, "text/html");
+  const walker = doc.createTreeWalker(doc.body, NodeFilter.SHOW_TEXT);
+  let length = 0;
+  let node = walker.nextNode();
+
+  while (node) {
+    const content = node.nodeValue ?? "";
+    if (content.trim().length > 0) {
+      length += content.length;
+    }
+    node = walker.nextNode();
+  }
+
+  return length;
+};
+
+const updateCharacterCountFromModelValue = (value: string) => {
+  characterCount.value = getTextContentLengthFromHtml(value);
+};
+
+const codeModeCountDebounceMs = 120;
+const scheduleCharacterCountFromModelValue = debounce((value: string) => {
+  updateCharacterCountFromModelValue(value);
+}, codeModeCountDebounceMs);
+
 // Suppress emits during init and controlled updates
 const suppressUpdates = ref(true);
 
@@ -447,7 +528,12 @@ const editor = useEditor({
       class: "mt-text-editor__content-editor",
     },
   },
+  onCreate: ({ editor }) => {
+    updateCharacterCountFromEditor(editor);
+  },
   onUpdate: ({ editor }) => {
+    updateCharacterCountFromEditor(editor);
+
     if (suppressUpdates.value || gateActive.value) return;
     emit("update:modelValue", editor.getHTML());
   },
@@ -457,6 +543,13 @@ const editor = useEditor({
 watch(
   () => props.modelValue,
   (newValue) => {
+    if (showCodeEditor.value) {
+      scheduleCharacterCountFromModelValue(newValue);
+      if (!suppressCodeMirrorUpdates.value && newValue !== codeEditorValue.value) {
+        codeEditorValue.value = newValue;
+      }
+    }
+
     if (showCodeEditor.value) {
       return;
     }
@@ -468,8 +561,17 @@ watch(
     }
 
     editor.value?.commands.setContent(newValue, false);
+    updateCharacterCountFromEditor(editor.value ?? null);
   },
 );
+
+const handleCodeEditorUpdate = (value?: string | CodeMirrorText) => {
+  const nextValue = typeof value === "string" ? value : value?.toString() ?? "";
+  codeEditorValue.value = nextValue;
+  scheduleCharacterCountFromModelValue(nextValue);
+  if (suppressCodeMirrorUpdates.value) return;
+  emit("update:modelValue", nextValue);
+};
 
 watch(
   () => props.disabled,
@@ -508,6 +610,15 @@ const mergedCustomButtons = computed<CustomButton[]>(() => {
       position: 3000,
       disabled: () => false,
     },
+    {
+      name: "toggle-fullscreen",
+      label: "mt-text-editor.buttons.toggle-fullscreen",
+      icon: isFullscreen.value ? "regular-compress-arrows-xs" : "regular-expand-arrows-xs",
+      action: () => onToggleFullscreenClick(),
+      alignment: "right",
+      position: 5000,
+      disabled: () => false,
+    },
   ];
 
   return [...editorButtons, ...props.customButtons];
@@ -533,6 +644,11 @@ const toolbarWrapperComponent = computed(() => {
  */
 const showCodeEditor = ref(props.codeMode);
 const lang = html();
+const codeEditorValue = ref(props.modelValue);
+const suppressCodeMirrorUpdates = ref(false);
+const originalBodyOverflow = ref("");
+const originalDocumentOverflow = ref("");
+const appliedFullscreen = ref(false);
 
 // Diff modal state
 const showDiffModal = ref(false);
@@ -560,6 +676,18 @@ const onToggleCodeClick = async () => {
   diffParsedHtml.value = diff.parsedBeautified;
   parsedHtmlRaw.value = diff.parsedRaw;
   showDiffModal.value = true;
+};
+
+const onToggleFullscreenClick = () => {
+  isFullscreen.value = !isFullscreen.value;
+};
+
+const onFullscreenKeydown = (event: KeyboardEvent) => {
+  if (event.key !== "Escape" || !isFullscreen.value) {
+    return;
+  }
+
+  isFullscreen.value = false;
 };
 
 const handleDiffAccept = async () => {
@@ -590,22 +718,80 @@ const onChangeOpenDiffModal = (value: boolean) => {
 
 watch(
   () => showCodeEditor.value,
-  (newValue, oldValue) => {
-    // Emit codeMode change
-    emit("update:codeMode", newValue);
+  async (isCodeMode, wasCodeMode) => {
+    emit("update:codeMode", isCodeMode);
 
-    // When switching from code editor to WYSIWYG editor, update the content
-    if (!newValue && oldValue) {
+    if (isCodeMode) {
+      suppressCodeMirrorUpdates.value = true;
+      try {
+        updateCharacterCountFromModelValue(props.modelValue);
+
+        const formatted = await formatHtmlForDiff(props.modelValue);
+
+        if (showCodeEditor.value) {
+          codeEditorValue.value = formatted;
+        }
+      } finally {
+        await nextTick();
+        suppressCodeMirrorUpdates.value = false;
+      }
+    } else if (wasCodeMode) {
       suppressUpdates.value = true;
-      editor.value?.commands.setContent(props.modelValue, false);
-      Promise.resolve().then(() => {
+      try {
+        editor.value?.commands.setContent(props.modelValue, false);
+      } finally {
+        await nextTick();
         suppressUpdates.value = false;
-      });
+      }
     }
   },
+  { immediate: true },
 );
 
 const slots = useSlots() as Record<string, unknown>;
+
+const applyFullscreenDocumentLock = (active: boolean) => {
+  if (typeof document === "undefined") {
+    return;
+  }
+
+  if (!active) {
+    if (!appliedFullscreen.value) {
+      return;
+    }
+
+    document.body.style.overflow = originalBodyOverflow.value;
+    document.documentElement.style.overflow = originalDocumentOverflow.value;
+    appliedFullscreen.value = false;
+
+    return;
+  }
+
+  if (appliedFullscreen.value) {
+    return;
+  }
+
+  originalBodyOverflow.value = document.body.style.overflow;
+  originalDocumentOverflow.value = document.documentElement.style.overflow;
+
+  document.body.style.overflow = "hidden";
+  document.documentElement.style.overflow = "hidden";
+  appliedFullscreen.value = true;
+};
+
+watch(isFullscreen, (active) => {
+  applyFullscreenDocumentLock(active);
+
+  if (typeof document === "undefined") {
+    return;
+  }
+
+  if (active) {
+    document.addEventListener("keydown", onFullscreenKeydown);
+  } else {
+    document.removeEventListener("keydown", onFullscreenKeydown);
+  }
+});
 
 // Initial gate check when component mounts in WYSIWYG
 onMounted(async () => {
@@ -625,12 +811,42 @@ onMounted(async () => {
   // Allow subsequent updates to emit after initial gate check
   suppressUpdates.value = false;
 });
+
+onBeforeUnmount(() => {
+  if (typeof document !== "undefined") {
+    document.removeEventListener("keydown", onFullscreenKeydown);
+  }
+
+  applyFullscreenDocumentLock(false);
+});
 </script>
 
 <style scoped>
 .mt-text-editor {
   display: flex;
   flex-direction: column;
+}
+
+.mt-text-editor.is--fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: var(--color-background-primary-default);
+  padding: var(--scale-size-24);
+}
+
+.mt-text-editor.is--fullscreen .mt-text-editor__box {
+  min-height: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.mt-text-editor.is--fullscreen .mt-text-editor__content,
+.mt-text-editor.is--fullscreen .mt-text-editor__code-editor {
+  min-height: 0;
+  height: auto;
+  flex: 1;
 }
 
 label {
@@ -753,6 +969,13 @@ label {
     margin-top: var(--scale-size-16);
   }
 
+  a[href] {
+    color: var(--color-text-brand-default);
+    text-decoration: underline;
+    cursor: pointer;
+    word-break: break-word;
+  }
+
   blockquote {
     font-size: var(--font-size-s);
     font-style: italic;
@@ -837,7 +1060,7 @@ label {
   }
 
   table .selectedCell::after {
-    background: var(--color-background-tertiary-default);
+    background: color-mix(in srgb, var(--color-interaction-primary-default) 12%, transparent);
     content: "";
     left: 0;
     right: 0;
@@ -874,7 +1097,7 @@ label {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 var(--scale-size-16);
+  padding: 0 var(--scale-size-6);
   height: var(--scale-size-36);
   background-color: var(--color-background-tertiary-default);
   border-top: 1px solid var(--color-border-primary-default);
@@ -884,6 +1107,11 @@ label {
 }
 
 .mt-text-editor__footer-left {
+  display: flex;
+  align-items: center;
+}
+
+.mt-text-editor__footer-right {
   display: flex;
   align-items: center;
 }

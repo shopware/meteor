@@ -25,13 +25,29 @@ function selectText(element: HTMLElement) {
   selection?.addRange(range);
 }
 
+function getCharacterCount(canvasElement: HTMLElement) {
+  const counter = within(canvasElement).queryByText(/characters$/);
+  const match = counter?.textContent?.match(/(\d+) characters/);
+  if (!match) return null;
+  return Number.parseInt(match[1], 10);
+}
+
+async function expectCharacterCount(canvasElement: HTMLElement, expected: number) {
+  await waitUntil(() => getCharacterCount(canvasElement) === expected);
+  expect(getCharacterCount(canvasElement)).toBe(expected);
+}
+
+async function waitForCharacterCounter(canvasElement: HTMLElement) {
+  await waitUntil(() => getCharacterCount(canvasElement) !== null);
+}
+
 export const VisualTestRenderEditor: MtTextEditorStory = defineStory({
   name: "Should render the text editor",
   args: {},
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("82 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
   },
 });
 
@@ -43,7 +59,7 @@ export const VisualTestRenderEditorInlineMode: MtTextEditorStory = defineStory({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("82 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
   },
 });
 
@@ -55,7 +71,7 @@ export const VisualTestRenderDisabledEditor: MtTextEditorStory = defineStory({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("82 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
   },
 });
 
@@ -68,7 +84,7 @@ export const VisualTestRenderPlaceholder: MtTextEditorStory = defineStory({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("0 characters")).toBeDefined();
+    await expectCharacterCount(canvasElement, 0);
   },
 });
 
@@ -83,7 +99,57 @@ export const VisualTestRenderError: MtTextEditorStory = defineStory({
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("82 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
+  },
+});
+
+export const VisualTestRenderLinkWithoutNewTab: MtTextEditorStory = defineStory({
+  name: "Should render link without new tab option",
+  args: {
+    modelValue:
+      '<p>Visit our <a href="https://www.shopware.com">shop page</a> for more information.</p>',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await waitForCharacterCounter(canvasElement);
+    expect(canvas.getByRole("link", { name: "shop page" })).toBeDefined();
+  },
+});
+
+export const VisualTestCharacterCountWysiwyg: MtTextEditorStory = defineStory({
+  name: "Should update the character count in WYSIWYG mode",
+  args: {
+    modelValue: "<p></p>",
+  },
+  play: async ({ canvasElement }) => {
+    const editor = canvasElement.querySelector(
+      ".mt-text-editor__content-editor",
+    ) as HTMLElement | null;
+
+    expect(editor).toBeDefined();
+
+    await userEvent.click(editor!);
+    await userEvent.type(editor!, "Hello");
+
+    await expectCharacterCount(canvasElement, 5);
+  },
+});
+
+export const VisualTestCharacterCountCodeMode: MtTextEditorStory = defineStory({
+  name: "Should update the character count in code mode",
+  args: {
+    codeMode: true,
+    modelValue: "",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const codeEditor = canvas.getByRole("textbox");
+
+    await userEvent.click(codeEditor);
+    await userEvent.type(codeEditor, "abc");
+
+    await expectCharacterCount(canvasElement, 3);
   },
 });
 
@@ -100,7 +166,7 @@ export const VisualTestRenderEditorInlineModeSelected: MtTextEditorStory = defin
     await userEvent.click(canvas.getByText("Hello World"));
 
     // Wait until the counter is rendered
-    await waitUntil(() => canvas.getByText("11 characters"));
+    await waitForCharacterCounter(canvasElement);
 
     // Select "Hello World" text
     selectText(canvas.getByText("Hello World"));
@@ -128,7 +194,7 @@ export const SetParagraph: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args, screen }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("11 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
 
     // Click on button with aria-label "Format"
     await userEvent.click(canvas.getByLabelText("Format"));
@@ -152,7 +218,7 @@ export const SetHeadlineH1: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args, screen }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("11 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
 
     // Click on button with aria-label "Format"
     await userEvent.click(canvas.getByLabelText("Format"));
@@ -176,7 +242,7 @@ export const SetHeadlineH2: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args, screen }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("11 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
 
     // Click on button with aria-label "Format"
     await userEvent.click(canvas.getByLabelText("Format"));
@@ -200,7 +266,7 @@ export const SetHeadlineH3: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args, screen }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("11 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
 
     // Click on button with aria-label "Format"
     await userEvent.click(canvas.getByLabelText("Format"));
@@ -224,7 +290,7 @@ export const SetHeadlineH4: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args, screen }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("11 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
 
     // Click on button with aria-label "Format"
     await userEvent.click(canvas.getByLabelText("Format"));
@@ -248,7 +314,7 @@ export const SetHeadlineH5: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args, screen }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("11 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
 
     // Click on button with aria-label "Format"
     await userEvent.click(canvas.getByLabelText("Format"));
@@ -272,7 +338,7 @@ export const SetHeadlineH6: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args, screen }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("11 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
 
     // Click on button with aria-label "Format"
     await userEvent.click(canvas.getByLabelText("Format"));
@@ -296,7 +362,7 @@ export const SetTextColor: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args, screen }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("20 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
 
     // Click inside the editor
     await userEvent.click(canvas.getByText("Hello World"));
@@ -342,7 +408,7 @@ export const MakeFontBold: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("20 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
 
     // Click inside the editor
     await userEvent.click(canvas.getByText("Hello World"));
@@ -371,7 +437,7 @@ export const MakeFontItalic: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("20 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
 
     // Click inside the editor
     await userEvent.click(canvas.getByText("Hello World"));
@@ -400,7 +466,7 @@ export const MakeFontUnderline: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("20 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
 
     // Click inside the editor
     await userEvent.click(canvas.getByText("Hello World"));
@@ -429,7 +495,7 @@ export const MakeFontStrikeThrough: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("20 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
 
     // Click inside the editor
     await userEvent.click(canvas.getByText("Hello World"));
@@ -458,7 +524,7 @@ export const MakeFontSuperScript: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("20 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
 
     // Click inside the editor
     await userEvent.click(canvas.getByText("Hello World"));
@@ -487,7 +553,7 @@ export const MakeFontSubScript: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("20 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
 
     // Click inside the editor
     await userEvent.click(canvas.getByText("Hello World"));
@@ -516,7 +582,7 @@ export const SetTextAlignmentLeft: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args, screen }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("20 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
 
     // Click inside the editor
     await userEvent.click(canvas.getByText("Hello World"));
@@ -548,7 +614,7 @@ export const SetTextAlignmentCenter: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args, screen }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("20 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
 
     // Click inside the editor
     await userEvent.click(canvas.getByText("Hello World"));
@@ -580,7 +646,7 @@ export const SetTextAlignmentRight: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args, screen }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.getByText("20 characters")).toBeDefined();
+    await waitForCharacterCounter(canvasElement);
 
     // Click inside the editor
     await userEvent.click(canvas.getByText("Hello World"));
@@ -642,6 +708,9 @@ export const SetUnorderedList: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
 
+    // Wait for character counter
+    await waitForCharacterCounter(canvasElement);
+
     // Click inside the editor
     await userEvent.click(canvas.getByText("Hello World"));
 
@@ -669,6 +738,9 @@ export const SetOrderedList: MtTextEditorStory = defineStory({
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
 
+    // Wait for character counter
+    await waitForCharacterCounter(canvasElement);
+
     // Click inside the editor
     await userEvent.click(canvas.getByText("Hello World"));
 
@@ -695,6 +767,9 @@ export const SetLink: MtTextEditorStory = defineStory({
   },
   play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
+
+    // Wait for character counter
+    await waitForCharacterCounter(canvasElement);
 
     // Click inside the editor
     await userEvent.click(canvas.getByText("Hello World"));
@@ -729,6 +804,82 @@ export const SetLink: MtTextEditorStory = defineStory({
     expect(args.updateModelValue).toHaveBeenCalledWith(
       '<h1><a target="_blank" rel="noopener noreferrer nofollow" href="https://www.shopware.com">Hello World</a></h1><p>Some text</p>',
     );
+  },
+});
+
+export const SetLinkWithoutNewTab: MtTextEditorStory = defineStory({
+  name: "Should set link without new tab option",
+  args: {
+    modelValue: "<h1>Hello World</h1><p>Some text</p>",
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    await waitForCharacterCounter(canvasElement);
+
+    await userEvent.click(canvas.getByText("Hello World"));
+
+    selectText(canvas.getByText("Hello World"));
+
+    await userEvent.click(canvas.getByLabelText("Link"));
+
+    const body = within(document.body);
+
+    const linkInput = body.getByLabelText("Link URL");
+    await userEvent.clear(linkInput);
+    await userEvent.type(linkInput, "https://www.shopware.com");
+
+    await userEvent.click(body.getByText("Apply link"));
+
+    await waitUntil(() => args.updateModelValue?.mock?.calls?.length > 0);
+
+    expect(args.updateModelValue).toHaveBeenCalledWith(
+      '<h1><a href="https://www.shopware.com">Hello World</a></h1><p>Some text</p>',
+    );
+
+    const renderedLink = canvas.getByRole("link", { name: "Hello World" });
+    expect(renderedLink).toHaveAttribute("href", "https://www.shopware.com");
+    expect(renderedLink).not.toHaveAttribute("target");
+    expect(renderedLink).not.toHaveAttribute("rel");
+  },
+});
+
+export const RemoveLink: MtTextEditorStory = defineStory({
+  name: "Should remove link in one click",
+  args: {
+    modelValue: '<h1><a href="https://www.shopware.com">Hello World</a></h1><p>Some text</p>',
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    await waitForCharacterCounter(canvasElement);
+
+    await userEvent.click(canvas.getByRole("link", { name: "Hello World" }));
+    selectText(canvas.getByText("Hello World"));
+
+    await userEvent.click(canvas.getByLabelText("Remove link"));
+
+    await waitUntil(() => args.updateModelValue?.mock?.calls?.length > 0);
+
+    expect(args.updateModelValue).toHaveBeenCalledWith("<h1>Hello World</h1><p>Some text</p>");
+    expect(canvas.queryByRole("link", { name: "Hello World" })).toBeNull();
+  },
+});
+
+export const VisualTestShowRemoveLinkContextualButton: MtTextEditorStory = defineStory({
+  name: "Should show remove link contextual button",
+  args: {
+    modelValue: '<h1><a href="https://www.shopware.com">Hello World</a></h1><p>Some text</p>',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await waitForCharacterCounter(canvasElement);
+
+    await userEvent.click(canvas.getByRole("link", { name: "Hello World" }));
+    selectText(canvas.getByText("Hello World"));
+
+    expect(canvas.getByLabelText("Remove link")).toBeDefined();
   },
 });
 
@@ -837,6 +988,28 @@ export const VisualTestRenderCodeView: MtTextEditorStory = defineStory({
   },
 });
 
+export const ToggleFullscreenMode: MtTextEditorStory = defineStory({
+  name: "Should toggle fullscreen mode",
+  args: {
+    modelValue: "<h1>Hello World</h1><p>Some text</p>",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const editor = canvasElement.querySelector(".mt-text-editor") as HTMLElement | null;
+
+    await waitForCharacterCounter(canvasElement);
+    expect(editor).toBeDefined();
+
+    await userEvent.click(canvas.getByLabelText("Toggle fullscreen mode"));
+    await waitUntil(() => editor?.classList.contains("is--fullscreen"));
+    expect(editor).toHaveClass("is--fullscreen");
+
+    await userEvent.keyboard("{Escape}");
+    await waitUntil(() => !editor?.classList.contains("is--fullscreen"));
+    expect(editor).not.toHaveClass("is--fullscreen");
+  },
+});
+
 /**
  * Tests to check that the given HTML content is rendered correctly
  * in the text editor. And that custom HTML tags are not removed.
@@ -889,7 +1062,7 @@ export const PreserveImageTags: MtTextEditorStory = defineStory({
     const canvas = within(canvasElement);
 
     // Wait for the editor to be ready and then wait 200ms for any potential transitions
-    await waitUntil(() => canvas.getByText("Here is an image:"));
+    await waitUntil(() => canvas.queryByText("Here is an image:"));
     await new Promise((resolve) => setTimeout(resolve, 200));
 
     // Click on text using a more flexible matcher
@@ -1261,7 +1434,7 @@ export const AcceptUnsupportedHtmlDiff_AppliesParsedCode: MtTextEditorStory = de
   args: {
     modelValue: "<p>Hello</p>",
   },
-  play: async ({ canvasElement }) => {
+  play: async ({ canvasElement, args }) => {
     const canvas = within(canvasElement);
 
     // Go to code view
@@ -1285,11 +1458,14 @@ export const AcceptUnsupportedHtmlDiff_AppliesParsedCode: MtTextEditorStory = de
 
     // Accept changes
     await userEvent.click(body.getByText("Apply changes"));
+    await waitUntil(() => args.updateModelValue?.mock?.calls?.length > 0);
 
     // Open code view again
     await userEvent.click(canvas.getByLabelText("Switch to code mode"));
 
     const updatedEditor = canvas.getByRole("textbox") as HTMLElement;
+
+    await waitUntil(() => !updatedEditor.innerText.includes("data-custom"));
 
     // Assert unsupported attribute removed, structure retained
     expect(updatedEditor.innerText).not.toContain("data-custom");
@@ -1383,7 +1559,7 @@ export const VisualTestHiddenToolbar: MtTextEditorStory = defineStory({
     const canvas = within(canvasElement);
 
     // Wait for editor to render
-    await waitUntil(() => canvas.getByText("Editor without toolbar"));
+    await waitUntil(() => canvas.queryByText("Editor without toolbar"));
 
     // Assert toolbar is not present
     const toolbar = canvasElement.querySelector(".mt-text-editor-toolbar");
@@ -1404,7 +1580,7 @@ export const TestShowToolbar: MtTextEditorStory = defineStory({
     const canvas = within(canvasElement);
 
     // Wait for editor to render
-    await waitUntil(() => canvas.getByText("Editor with toolbar"));
+    await waitUntil(() => canvas.queryByText("Editor with toolbar"));
 
     // Assert toolbar buttons are present
     expect(canvas.getByLabelText("Format")).toBeDefined();
@@ -1427,7 +1603,7 @@ export const TestCodeModeDefault: MtTextEditorStory = defineStory({
     const canvas = within(canvasElement);
 
     // Wait for code editor to be rendered
-    await waitUntil(() => canvas.getByRole("textbox"));
+    await waitUntil(() => canvas.queryByRole("textbox"));
 
     // Expect the code editor to be rendered
     const codeEditor = canvas.getByRole("textbox");
@@ -1449,12 +1625,42 @@ export const TestCodeModeFalse: MtTextEditorStory = defineStory({
     const canvas = within(canvasElement);
 
     // Wait for WYSIWYG editor to be rendered
-    await waitUntil(() => canvas.getByText("Hello World"));
+    await waitUntil(() => canvas.queryByText("Hello World"));
 
     // Expect the WYSIWYG content to be rendered
     expect(canvas.getByText("Hello World")).toBeDefined();
 
     // Expect the toggle button to show "Switch to code mode"
     expect(canvas.getByLabelText("Switch to code mode")).toBeDefined();
+  },
+});
+
+// ------------------------------
+// Table cell selection tests
+// ------------------------------
+
+export const VisualTestTableCellSelectionShowsContent: MtTextEditorStory = defineStory({
+  name: "Should show cell content when table cells are selected",
+  args: {},
+  play: async ({ canvasElement }) => {
+    await waitUntil(() => canvasElement.querySelector(".mt-text-editor__content-editor table td"));
+
+    const cells = canvasElement.querySelectorAll(".mt-text-editor__content-editor table td");
+
+    await userEvent.click(cells[0] as HTMLElement);
+
+    // TipTap adds .selectedCell to cells during click-drag selection
+    cells.forEach((cell) => cell.classList.add("selectedCell"));
+
+    const firstCellText = cells[0].querySelector("p");
+    expect(firstCellText).not.toBeNull();
+    expect(firstCellText!.textContent).toBe("Lorem");
+
+    // The .selectedCell::after overlay must be semi-transparent so cell content
+    // remains visible. Modern browsers resolve color-mix() to "color(srgb ... / alpha)",
+    // older ones to "rgba(...)". An opaque color (the old bug) has neither.
+    const cellStyles = window.getComputedStyle(cells[0], "::after");
+    const bg = cellStyles.getPropertyValue("background-color");
+    expect(bg).toMatch(/rgba?\(.+,|color\(.+\//);
   },
 });

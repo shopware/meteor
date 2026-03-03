@@ -1,0 +1,38 @@
+.mt-text-editor-story__wrapper {
+  width: 100%;
+  max-width: none;
+  min-height: 520px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: var(--color-background-primary-default);
+}
+
+.mt-text-editor-story__wrapper > * {
+  width: 100%;
+  max-width: 800px;
+  text-align: left;
+}
+
+.mt-text-editor-story__row {
+  display: flex;
+  justify-content: flex-start;
+}
+.mt-text-editor-story__wrapper > .mt-text-editor.is--fullscreen {
+  width: 100%;
+  max-width: 100%;
+}
+
+body.mt-text-editor-story--fullscreen-fix
+  :is(
+    #storybook-root,
+    .sb-show-main,
+    .sb-main-centered,
+    .sb-main-padded,
+    .sb-main-fullscreen,
+    .sb-wrapper,
+    .sb-story
+  ) {
+  transform: none !important;
+}

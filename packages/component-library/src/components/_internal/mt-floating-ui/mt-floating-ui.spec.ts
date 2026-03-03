@@ -38,7 +38,7 @@ describe("mt-floating-ui", () => {
 
   beforeEach(async () => {
     if (wrapper) {
-      await wrapper.unmount();
+      wrapper.unmount();
     }
     await flushPromises();
 
@@ -77,9 +77,9 @@ describe("mt-floating-ui", () => {
       isOpened: true,
     });
 
-    const contentSlotContent = wrapper.find("#defaultSlotContent");
-    expect(contentSlotContent.exists()).toBeTruthy();
-    expect(contentSlotContent.text()).toBe('Slot content for "default" slot');
+    const contentSlotContent = document.querySelector("#defaultSlotContent");
+    expect(contentSlotContent).toBeTruthy();
+    expect(contentSlotContent?.textContent).toBe('Slot content for "default" slot');
   });
 
   it("should not render the arrow when prop is not set", () => {
@@ -98,9 +98,9 @@ describe("mt-floating-ui", () => {
       isOpened: true,
     });
 
-    const arrow = wrapper.find(".mt-floating-ui__arrow");
+    const arrow = document.querySelector(".mt-floating-ui__arrow");
 
-    expect(arrow.exists()).toBeTruthy();
+    expect(arrow).toBeTruthy();
   });
 
   it("should mount the floating ui to the document body", async () => {
@@ -115,20 +115,19 @@ describe("mt-floating-ui", () => {
     const floatingUi = document.querySelector(".mt-floating-ui");
     const floatingUiContent = document.querySelector(".mt-floating-ui__content");
 
-    expect(document.querySelector("#appWrapper")!.contains(floatingUi)).toBeTruthy();
-    expect(document.querySelector("#appWrapper")!.contains(floatingUiContent)).toBeFalsy();
+    expect(document.querySelector("#appWrapper")!.contains(floatingUi)).toBeTruthy(); // won't get teleported, so it's still in the app wrapper
+    expect(document.querySelector("#appWrapper")!.contains(floatingUiContent)).toBeFalsy(); // will get teleported to the body, so it's outside the app wrapper
     expect(floatingUiContent!.parentElement!.tagName).toBe("BODY");
   });
 
   it("should unmount the floating ui to the document body", async () => {
-    await wrapper?.unmount();
     wrapper = createWrapper();
 
     await wrapper.setProps({
       isOpened: true,
     });
 
-    await wrapper.unmount();
+    wrapper.unmount();
 
     await flushPromises();
 
