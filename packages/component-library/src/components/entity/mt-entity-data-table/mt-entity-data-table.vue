@@ -49,7 +49,7 @@
     @bulk-edit="handleBulkEdit"
     @item-delete="handleItemDelete"
   >
-    <template v-for="(_, name) in $slots" #[name]="scope">
+    <template v-for="name in Object.keys($slots)" #[name]="scope">
       <slot :name v-bind="scope ?? {}" />
     </template>
   </mt-data-table>

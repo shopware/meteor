@@ -14,7 +14,7 @@
     @item-add="onItemAdd"
   >
     <!-- Pass through all slots -->
-    <template v-for="(_, name) in $slots" #[name]="scope">
+    <template v-for="name in Object.keys($slots)" #[name]="scope">
       <slot :name="name" v-bind="scope ?? {}"></slot>
     </template>
   </mt-select>
