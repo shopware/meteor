@@ -657,25 +657,44 @@ const diffParsedHtml = ref("");
 // Raw parsed HTML to apply on acceptance (beautified only for display)
 const parsedHtmlRaw = ref("");
 
+/**
+ * Validates the current code editor content against what the visual editor can represent.
+ * If the HTML differs after parsing, the diff modal is shown for the user to review.
+ *
+ * @returns `true` if the content is valid (no diff) or the editor is not in code mode,
+ *          `false` if the diff modal was shown and the user needs to take action.
+ */
+const validate = async (): Promise<boolean> => {
+  if (!showCodeEditor.value) {
+    return true;
+  }
+
+  const diff = await getHtmlParseDiff(props.modelValue, editorExtensions, {
+    parseFromBeautified: false,
+  });
+
+  if (!diff.hasDiff) {
+    return true;
+  }
+
+  diffOriginalHtml.value = diff.originalBeautified;
+  diffParsedHtml.value = diff.parsedBeautified;
+  parsedHtmlRaw.value = diff.parsedRaw;
+  showDiffModal.value = true;
+  return false;
+};
+
 const onToggleCodeClick = async () => {
-  // Switching to Code view directly
   if (!showCodeEditor.value) {
     showCodeEditor.value = true;
     return;
   }
 
-  // Switching from Code to WYSIWYG: dry-run parse and compare using util
-  const diff = await getHtmlParseDiff(props.modelValue, editorExtensions, {
-    parseFromBeautified: false,
-  });
-  if (!diff.hasDiff) {
+  const isValid = await validate();
+
+  if (isValid) {
     showCodeEditor.value = false;
-    return;
   }
-  diffOriginalHtml.value = diff.originalBeautified;
-  diffParsedHtml.value = diff.parsedBeautified;
-  parsedHtmlRaw.value = diff.parsedRaw;
-  showDiffModal.value = true;
 };
 
 const onToggleFullscreenClick = () => {
@@ -818,6 +837,10 @@ onBeforeUnmount(() => {
   }
 
   applyFullscreenDocumentLock(false);
+});
+
+defineExpose({
+  validate,
 });
 </script>
 
