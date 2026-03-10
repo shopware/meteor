@@ -123,7 +123,7 @@
       },
       "backdrop": {
         "default": {
-          "$value": "#10101399",
+          "$value": "#101013e5",
           "$type": "color",
           "$description": "Use for elements that overlay large portions of the application while a modal or similar is open."
         }
