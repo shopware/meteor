@@ -87,6 +87,7 @@ const { t } = useI18n({
         modalTitle: "Insert/Edit Link",
         cancel: "Cancel",
         applyLink: "Apply link",
+        removeLink: "Remove link",
         openInNewTab: "Open in new tab",
         linkUrl: "Link URL",
         label: "Link",
@@ -97,6 +98,7 @@ const { t } = useI18n({
         modalTitle: "Link einfügen/bearbeiten",
         cancel: "Abbrechen",
         applyLink: "Link anwenden",
+        removeLink: "Link entfernen",
         openInNewTab: "In neuem Tab öffnen",
         linkUrl: "Link URL",
         label: "Link",
@@ -139,6 +141,22 @@ export const linkButton: CustomButton = {
   label: "mt-text-editor-toolbar-button-link.label",
   icon: "regular-link-xs",
   position: 12000,
+  contextualButtons: (editor) => {
+    if (!editor.isActive("link")) {
+      return [];
+    }
+
+    return [
+      {
+        name: "remove-link",
+        label: "mt-text-editor-toolbar-button-link.removeLink",
+        icon: "regular-times-xs",
+        action: (currentEditor) => {
+          currentEditor.chain().focus().extendMarkRange("link").unsetLink().run();
+        },
+      },
+    ];
+  },
 };
 </script>
 
