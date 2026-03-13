@@ -1,0 +1,29 @@
+name: create-meteor-extension Nightly Checks
+
+on:
+  schedule:
+    - cron: "0 2 * * *" # Every night at 2am UTC
+  workflow_dispatch:
+
+jobs:
+  template-dependency-audit:
+    name: Check template dependencies for outdated major versions
+    runs-on: ubuntu-latest
+    continue-on-error: true
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --prefer-offline
+
+      - name: Run nightly template dependency check
+        run: pnpm --filter @shopware-ag/create-meteor-extension run test:nightly
