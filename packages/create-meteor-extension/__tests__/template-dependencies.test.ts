@@ -1,5 +1,7 @@
-import { readFileSync } from 'fs'
+import { readFileSync, mkdirSync, writeFileSync, rmSync, existsSync } from 'fs'
 import { join } from 'path'
+import { tmpdir } from 'os'
+import { execSync } from 'child_process'
 
 const TEMPLATE_PATH = join(
   __dirname,
@@ -7,8 +9,21 @@ const TEMPLATE_PATH = join(
   'src/templates/blank_project/package.json.ejs',
 )
 
+interface PackageJson {
+  dependencies: Record<string, string>
+  devDependencies: Record<string, string>
+}
+
 interface NpmLatestResponse {
   version: string
+}
+
+function parseTemplatePackageJson(): PackageJson {
+  const raw = readFileSync(TEMPLATE_PATH, 'utf-8').replace(
+    /<%= name %>/g,
+    'test-placeholder',
+  )
+  return JSON.parse(raw) as PackageJson
 }
 
 async function getLatestVersion(pkg: string): Promise<string> {
@@ -30,14 +45,7 @@ function parseMajor(versionRange: string): number {
 test(
   'template package.json dependencies are not outdated by a major version',
   async () => {
-    const raw = readFileSync(TEMPLATE_PATH, 'utf-8').replace(
-      /<%= name %>/g,
-      'test-placeholder',
-    )
-    const pkg = JSON.parse(raw) as {
-      dependencies: Record<string, string>
-      devDependencies: Record<string, string>
-    }
+    const pkg = parseTemplatePackageJson()
 
     const allDeps: Record<string, string> = {
       ...pkg.dependencies,
@@ -69,4 +77,40 @@ test(
     }
   },
   30_000,
+)
+
+test(
+  'template package.json dependencies have no known vulnerabilities',
+  () => {
+    const pkg = parseTemplatePackageJson()
+
+    const tempDir = join(
+      tmpdir(),
+      `create-meteor-extension-audit-${Date.now()}`,
+    )
+    mkdirSync(tempDir, { recursive: true })
+
+    try {
+      writeFileSync(
+        join(tempDir, 'package.json'),
+        JSON.stringify(pkg, null, 2),
+        'utf-8',
+      )
+
+      execSync('npm install --package-lock-only --ignore-scripts', {
+        cwd: tempDir,
+        stdio: 'pipe',
+      })
+
+      execSync('npm audit --audit-level=moderate', {
+        cwd: tempDir,
+        stdio: 'pipe',
+      })
+    } finally {
+      if (existsSync(tempDir)) {
+        rmSync(tempDir, { recursive: true, force: true })
+      }
+    }
+  },
+  120_000,
 )
