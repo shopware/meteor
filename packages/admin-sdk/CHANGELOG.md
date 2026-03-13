@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.6.0
+
+### Minor Changes
+
+- [#1074](https://github.com/shopware/meteor/pull/1074) [`eb968bd`](https://github.com/shopware/meteor/commit/eb968bdb5df44844b600a263ece33fa689bac489) Thanks [@quando1910](https://github.com/quando1910)! - prioritize the license domain for payment iframe
+
 ## 6.5.1
 
 ### Patch Changes
