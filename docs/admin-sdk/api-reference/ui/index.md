@@ -19,7 +19,7 @@ Shopware Administration components cannot be used directly inside apps or plugin
 
 Shopware Administration components are not native Vue components. They rely on internal extension capabilities, Twig templates, and framework integrations that are not available externally.
 
-The [Meteor Component Library](https://github.com/shopware/meteor-component-library) provides Vue components designed to resemble the original Administration UI and integrate seamlessly with  extensions built using the Meteor Admin SDK.
+The [Meteor Component Library](https://github.com/shopware/meteor/tree/main/packages/component-library) provides Vue components designed to resemble the original Administration UI and integrate seamlessly with  extensions built using the Meteor Admin SDK.
 
 ## Typical UI extension workflow
 
