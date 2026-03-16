@@ -1,12 +1,25 @@
+---
+title: "Tabs"
+nav:
+  position: 60
+---
+
+
 # Tabs
 
-### Add tab item
+Tabs allow extensions to add additional tabs to existing Administration pages.
+
+They are commonly used to extend entity detail pages such as products, customers, or orders.
+
+## Add tab item
+
 Add a new tab item to an existing tab bar. The content of the the new tab item
 contains a component section. This works with tab bar's which have routing and
 also static tab bars. If the tab bar has routing then the route for the tab item
 will be generated automatically.
 
-#### Usage:  
+### Usage
+
 ```ts
 import { ui } from '@shopware-ag/meteor-admin-sdk';
 
@@ -16,13 +29,15 @@ ui.tabs('sw-product-detail' /* The positionId of the tab bar*/).addTabItem({
 })
 ```
 
-#### Parameters
+### Parameters
+
 | Name                 | Required | Default | Description                                             |
 | :------------------- | :------- | :------ | :------------------------------------------------------ |
 | `label`              | true     |         | The label of the tab bar item                           |
 | `componentSectionId` | true     |         | The Id for for the component section in the tab content |
 
-#### Example
+### Example
+
 ![Tab item example](./assets/add-tab-item-example.png)
 ```ts
 import { ui, location } from '@shopware-ag/meteor-admin-sdk';

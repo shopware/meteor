@@ -1,10 +1,21 @@
+---
+title: "Notification"
+sidebar_position: 50
+---
+
+
 # Notification
 
-### Dispatch a notification
+Notifications display persistent messages in the Shopware Administration to inform users about events, errors, or completed actions.
+
+See also: [Base Options](../api-reference/base-options.md) for shared configuration options supported by SDK message APIs.
+
+## Dispatch a notification
 
 ![notification example](./assets/notification-example.jpg)
 
-#### Usage:  
+### Usage
+
 ```ts
 function alertYes() {
   alert('Yes');
@@ -36,7 +47,8 @@ sw.notification.dispatch({
 })
 ```
 
-#### Parameters:
+### Parameters
+
 | Name         | Required | Default        | Description                                                                                                                                                                                                     |
 |:-------------|:---------|:---------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
 | `title`      | true     |                | Defines a notification's **title**.                                                                                                                                                                             |
@@ -46,5 +58,6 @@ sw.notification.dispatch({
 | `growl`      | false    | `true`         | Displays a notification that is overlaying any module. Use `false` to display the notification in the notification center (bell symbol) only.                                                                   |
 | `actions`    | false    | `[]`           | Adds clickable buttons to the notification. Each button with a `label` can trigger a `method` or open a `route` (internal route or external link). Buttons can also be disabled using the attribute `disabled`. |
 
-#### Return value:
+## Return value
+
 Returns a promise without data.

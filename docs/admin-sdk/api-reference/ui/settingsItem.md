@@ -1,10 +1,22 @@
+---
+title: "Settings Item"
+nav:
+  position: 40
+---
+
+
 # Settings Item
 
-### Add settings item
-Add a new settings item to the Shopware settings. The content of the settings item module is determined by your `locationId`. 
-A specific view or a set of actions can be triggered based on the `locationId`.
+A settings item adds an entry to the Shopware Administration settings area.
 
-#### Usage:  
+Use this when your extension provides configurable options that should appear in the central settings section.
+
+## Add settings item
+
+Add a new settings item to the Shopware settings. The content of the settings item module is determined by your `locationId`. A specific view or a set of actions can be triggered based on the `locationId`.
+
+### Usage
+
 ```ts
 ui.settings.addSettingsItem({
     label: 'App Settings',
@@ -16,7 +28,8 @@ ui.settings.addSettingsItem({
 });
 ```
 
-#### Parameters
+### Parameters
+
 | Name                 | Required | Default        | Description                                                   |
 | :------------------- | :------- | :------------- | :------------------------------------------------------------ |
 | `label`              | true     |                | The label of the tab bar item                                 |
@@ -26,12 +39,15 @@ ui.settings.addSettingsItem({
 | `displaySmartBar`    | false    | true           | Toggles the sw-page smart bar on/off                          |
 | `tab`                | false    | 'plugins'      | Determines in which tab your settings item will be displayed  |
 
-### Getting the right icon
+## Getting the right icon
+
 Assuming that your editor supports TypeScript, you should get auto-completion for valid `icon` values.
 In case that doesn't work take a look at the list [here](https://github.com/shopware/meteor-admin-sdk/blob/trunk/src/icons.ts).
 
-#### Example
+### Example
+
 ![Settings item example](./assets/add-settings-item-example.png)
+
 ```ts
 import { location, ui } from '@shopware-ag/meteor-admin-sdk';
 

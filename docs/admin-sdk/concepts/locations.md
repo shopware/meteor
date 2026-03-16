@@ -1,12 +1,35 @@
+---
+title: "Locations"
+nav:
+  position: 30
+---
+
 # Locations
+
+Locations define where an extension is rendered inside the Shopware Administration.
+
+Because an extension can appear in multiple places (such as tabs, modals, sidebars, or custom modules), extensions typically check the current location before executing UI logic.
+
+This concept allows a single extension bundle to support multiple entry points inside the Administration.
 
 Extensions can render custom views via iFrames. To support multiple views in different places every `location` of the iFrame gets a unique ID. These can be defined by the extension developer itself.
 
-*Example:*  
+## How extensions use locations
+
+An extension can appear in multiple places inside the Administration. Each of these places is identified by a **location ID**.
+
+Typical flow:
+
+1. Register UI extensions when the extension loads
+2. Define a `locationId` where the custom UI will render
+3. Render different views depending on the current location
+
+### Example
 
 A extension wants to render a custom iFrame in a card in the dashboard. The `location` of the iFrame has then a specific `locationId` like `sw-dashboard-example-app-dashboard-card`. The app can also render another iFrames which also get `locationId`s. In our example it is a iFrame in a custom modal: `example-app-example-modal-content`.
 
 The extension want to render different views depending on the `location` of the iFrame. So the extension developer can render the correct view depending on the `locationId`:
+
 ```js
 // Add the ui extensions when your extension is loaded in the hidden iFrame
 if (sw.location.is(sw.location.MAIN_HIDDEN)) {
@@ -31,6 +54,7 @@ if (sw.location.is('my-app-card-before-properties')) {
 ```
 
 ## Base location
+
 Every extension gets rendered in a hidden iFrame. In this iFrame the extension can execute different commands to extend
 the administration and add custom locations to different extension points. To check if the script will be executed in this
 location you can use the predefined constant:
@@ -44,7 +68,9 @@ if (location.is(location.MAIN_HIDDEN)) {
 ```
 
 ## Change height of location iFrame
+
 The iFrame height is by default fixed. You can update the height with the location helper:
+
 ```js
 location.updateHeight(750); // change iFrame height to 750px
 ```
@@ -52,17 +78,21 @@ location.updateHeight(750); // change iFrame height to 750px
 If you use a parameter then the height will automatically be calculated so that your whole view gets rendered. In most cases
 you don't want to update the height manually. To watch for height changes you can use the auto resizer. It updates the iFrame
 height everytime the height of the view changes:
+
 ```js
 // watch for height changes and update the iFrame
 location.startAutoResizer();
 ```
+
 ![Auto Resizer example](./assets/auto-resizer.gif)
 
 ## Avoiding scrollbars
+
 If you render custom locations it is useful to disable the scroll behavior in your view. Otherwise scrollbars are visible
 which aren't needed in most cases. To avoid this you can add the css property `overflow: hidden;` to the `body` element.
 
-## For existing plugin migrations: render Vue components instead of iFrames
+## For existing plugin migrations, render Vue components instead of iFrames
+
 In some cases you just want to use specific features from the SDK and some features from the existing plugin system which works with Twig and Component overriding. In this case you can do some things with the SDK but render components from the Shopware Component Factory instead of iFrames.
 
 To do this you need to register the component in the existing plugin system:
@@ -74,6 +104,7 @@ Shopware.Component.register('your-component-name', {
 ```
 
 Now if you want to render the component in a location you need to add the name of the component to the current location. This can be done with the `sdkLocation` store:
+
 ```js
 Shopware.State.commit('sdkLocation/addLocation', {
     locationId: 'your-location-id',

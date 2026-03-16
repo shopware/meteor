@@ -1,19 +1,22 @@
-# Media modal
+---
+title: "Media Modals"
+nav:
+  position: 100
+---
 
-This method allows an app to interact with the Administration's media modal, which includes the Media modal and the Save media modal.
 
-Functionality of each modal:
-- The Media modal is used for selecting existing media from the media library or uploading new media. This functionality has been available since version 6.7.1.
+# Media Modals
 
-- The Save media modal is used to choose a specific location to save the media, and this feature will be implemented in version 6.7.5.
+This method allows apps to interact with the Administration's media modal. Two modal types are supported:
 
-## Media modal
+- **Media modal**: Select existing media from the media library or upload new files. Available since Shopware 6.7.1.
+- **Save media modal**: Choose a specific folder and filename when saving media. Available since Shopware 6.7.5.
 
-### Open modal
+## Open modal
 
 Open media modal in the current view.
 
-#### Usage:
+### Usage
 
 ```ts
 ui.mediaModal.open({
@@ -25,7 +28,7 @@ ui.mediaModal.open({
 });
 ```
 
-#### Parameters
+### Parameters
 
 All parameters are similar to `sw-media-modal-v2` component's props
 
@@ -39,7 +42,7 @@ All parameters are similar to `sw-media-modal-v2` component's props
 | `selectors`        | false    | ['fileName', 'id', 'url'] | Selected properties which should be returned in callback function                    |
 | `callback`         | true     |                           | Callback function which will be called once the media item is selected.              |
 
-#### Example
+### Example
 
 ![Menu item example](./assets/media-modal.png)
 
@@ -58,7 +61,7 @@ ui.mediaModal.open({
 
 Open save media modal in the current view.
 
-#### Usage:
+### Usage
 
 ```ts
 ui.mediaModal.openSaveMedia({
@@ -69,7 +72,7 @@ ui.mediaModal.openSaveMedia({
 });
 ```
 
-#### Parameters
+### Parameters
 
 All parameters are similar to `sw-media-save-modal` component's props
 
@@ -80,7 +83,7 @@ All parameters are similar to `sw-media-save-modal` component's props
 | `fileType`  | false    | null                      | File extension of media to display on file name input's suffix                                    |
 | `callback`         | true     |                           | This callback function is triggered when the "Save media" button is clicked. It returns the updated file name and the folderId where the media is stored.              |
 
-#### Example
+### Example
 
 ![Menu item example](./assets/save-media-modal.png)
 

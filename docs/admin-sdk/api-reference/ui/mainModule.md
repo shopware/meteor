@@ -1,10 +1,22 @@
-# Main module
+---
+title: "Main Module"
+nav:
+  position: 20
+---
 
-### Add main module
-Add a main module to your extension. The content of the main module is determined by your `locationId`. 
-A specific view or a set of actions can be triggered based on the `locationId`.
 
-#### Usage:  
+# Main Module
+
+A main module registers a new top-level section in the Shopware Administration navigation.
+
+Use a main module when your extension provides a dedicated application area with its own pages and functionality.
+
+## Add main module
+
+Add a main module to your extension. The content of the main module is determined by your `locationId`. A specific view or a set of actions can be triggered based on the `locationId`.
+
+### Usage
+
 ```ts
 ui.mainModule.addMainModule({
     heading: 'My App',
@@ -12,7 +24,8 @@ ui.mainModule.addMainModule({
 });
 ```
 
-#### Parameters
+### Parameters
+
 | Name                    | Required | Default | Description                            |
 | :---------------------- | :------- | :------ | :------------------------------------- |
 | `heading`               | true     |         | The heading displayed in your module   |
@@ -20,8 +33,10 @@ ui.mainModule.addMainModule({
 | `displaySearchBar`      | false    | true    | Toggles the sw-page search bar on/off  |
 | `displayLanguageSwitch` | false    | false   | Toggles sw-page language switch on/off |
 
-#### Example
+### Example
+
 ![Main module example](./assets/add-main-module-example.png)
+
 ```ts
 import { location, ui } from '@shopware-ag/meteor-admin-sdk';
 
@@ -53,10 +68,12 @@ if (location.is('main-location-id')) {
 }
 ```
 
-### Add smart bar button to main module
+## Add smart bar button to main module
+
 Add a button to the smart bar of your main module. The button can be used to trigger actions, e.g. saving, cancel, etc. The location ID needs to be defined and have the same value as the `locationId` of the main module.
 
-#### Usage:
+### Usage
+
 ```ts
 ui.mainModule.addSmartbarButton({
     locationId: 'main-location-id', // locationId of your main module
@@ -67,7 +84,8 @@ ui.mainModule.addSmartbarButton({
 });
 ```
 
-#### Parameters
+### Parameters
+
 | Name              | Required | Default   | Description                                                                                                         |
 | :---------------- | :------- | :-------- | :------------------------------------------------------------------------------------------------------------------ |
 | `locationId`      | true     |           | The locationId of the module you want to display the smart bar button                                               |
@@ -77,17 +95,20 @@ ui.mainModule.addSmartbarButton({
 | `onClickCallback` | true     |           | Callback function which will be called once the button is clicked                                                   |
 | `disabled`        | false    | false     | Toggle disabled state of the button                                                                                 |
 
-### Hide smart bar
+## Hide smart bar
+
 Turn the smart bar off as needed.
 
-#### Usage:
+### Usage
+
 ```ts
 ui.mainModule.hideSmartBar({
     locationId: 'main-location-id',
 });
 ```
 
-#### Parameters
+### Parameters
+
 | Name         | Required | Default   | Description                                                                                                                                    | Available at Shopware |
 | :----------- | :------- | :-------- | :--------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------|
 | `locationId` | true     |           | The locationId of the module you want to hide the smart bar                                                                                    | v6.6.7.0               |

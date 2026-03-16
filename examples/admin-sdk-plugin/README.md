@@ -3,6 +3,7 @@
 This package contains an example plugin. It uses the [Meteor Admin SDK](https://github.com/shopware/meteor/tree/main/packages/admin-sdk) to extend the administration.
 
 ## Prerequisites
+
 We assume that you have a functioning Shopware 6 setup on your local machine.
 
 ## Plugin setup
@@ -21,5 +22,3 @@ Now you should see the plugin installed when opening the Shopware Admin and look
 1. Create a `.env` file in `<meteorRoot>/examples/admin-sdk-plugin/tests/acceptance`
 2. Specify your Shopware instance app url: `APP_URL=https://dev.local/`
 3. Run the tests: `cd <meteorRoot> && pnpm --filter @shopware-ag/meteor-admin-sdk-example-plugin run test:ats`
-
-

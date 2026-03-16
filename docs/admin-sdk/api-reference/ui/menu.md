@@ -1,23 +1,36 @@
+---
+title: "Menu"
+nav:
+  position: 30
+---
+
 # Menu
 
-### Toggle menu
+Menu items allow extensions to add navigation entries to existing areas of the Shopware Administration menu.
+
+They are typically used to expose extension functionality inside existing admin modules.
+
+## Toggle menu
 
 > Available since Shopware v6.6.2.0
 
 The Admin SDK allows you to manipulate the Admin menu of your application. One of the features it provides is the ability to toggle the Admin menu. This is done using the `collapseMenu` and `expandMenu` methods.
 
-#### Usage:
+### Usage
+
 ```ts
 ui.menu.collapseMenu(); // To collapse the Admin menu;
 
 ui.menu.expandMenu(); // To expand the Admin menu;
 ```
 
-### Add menu item
+## Add menu item
+
 Add a new menu item to the Shopware admin menu. The content of the menu item module is determined by your `locationId`.
 A specific view or a set of actions can be triggered based on the `locationId`.
 
-#### Usage:
+### Usage
+
 ```ts
 ui.menu.addMenuItem({
     label: 'Test item',
@@ -28,7 +41,8 @@ ui.menu.addMenuItem({
 })
 ```
 
-#### Parameters
+### Parameters
+
 | Name                 | Required | Default        | Description                                                   |
 | :------------------- | :------- | :------------- | :------------------------------------------------------------ |
 | `label`              | true     |                | The label of the tab bar item                                 |
@@ -38,8 +52,10 @@ ui.menu.addMenuItem({
 | `parent`             | false    | 'sw-extension' | Determines under which main menu entry your item is displayed |
 | `position`           | false    | 110            | Determines the position of your menu item                     |
 
-#### Example
+### Example
+
 ![Menu item example](./assets/add-menu-item-example.png)
+
 ```ts
 import { location, ui } from '@shopware-ag/meteor-admin-sdk';
 

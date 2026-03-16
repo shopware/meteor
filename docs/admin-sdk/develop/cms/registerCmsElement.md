@@ -1,4 +1,10 @@
-# Register CMS element
+---
+title: "Register CMS Element"
+sidebar_position: 3
+---
+
+
+# Register CMS Element
 
 > Available since Shopware v6.4.17.0
 
@@ -7,7 +13,8 @@ More information on how to develop CMS elements can be found in these guides for
 
 ![Register a CMS element in your Shopping Experiences Module via App](../assets/register-cms-element-example.png)
 
-#### Usage:
+#### Usage
+
 ```ts
 void cms.registerCmsElement({
     name: 'dailymotionElement',
@@ -22,6 +29,7 @@ void cms.registerCmsElement({
 ```
 
 #### Parameters
+
 | Name            | Required | Description                                                                                              |
 |:----------------|:---------|:---------------------------------------------------------------------------------------------------------|
 | `name`          | true     | The name of the cms element, which will also be used to generate locationIds - Should have vendor prefix |

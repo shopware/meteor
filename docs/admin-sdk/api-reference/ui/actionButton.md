@@ -1,6 +1,18 @@
-# Action button
+---
+title: "Action Button"
+nav:
+  position: 50
+---
 
-#### Usage:
+
+# Action Button
+
+An action button adds a clickable button to an existing area of the Shopware Administration.
+
+Action buttons are typically used to trigger extension-specific actions such as opening a modal, executing a workflow, or navigating to an extension module.
+
+## Usage
+
 ```ts
 import { location, ui } from '@shopware-ag/meteor-admin-sdk';
 
@@ -17,7 +29,8 @@ if (location.is(sw.location.MAIN_HIDDEN)) {
 }
 ```
 
-#### Parameters
+## Parameters
+
 | Name                 | Required | Description                                                                                                |
 | :------------------- | :------- | :--------------------------------------------------------------------------------------------------------- |
 | `action`             | true     | A unique name of your action                                                                               |
@@ -28,10 +41,12 @@ if (location.is(sw.location.MAIN_HIDDEN)) {
 | `fileTypes`          | false    | Media file types you want the action button to be displayed for. Will be available in Shopware version 6.7.6.                                          |
 | `callback`           | true     | The callback function where you receive the entity and the entityIds for further processing                |
 
-### Calling app actions
+## Calling app actions
+
 As an app developer you may want to receive the information of the callback function server side.
 The following example will render the same action button as the above example but once it gets clicked you will receive a POST request to your app server.
-**This will only work for apps. Plugin developers need to use a api client directly in there callback.**.
+
+**This will only work for apps. Plugin developers must use an API client directly in their callback.**.
 
 ```ts
 import { location, ui } from '@shopware-ag/meteor-admin-sdk';
@@ -53,7 +68,8 @@ if (location.is(sw.location.MAIN_HIDDEN)) {
 }
 ```
 
-#### Example
+## Example
+
 - Add action button in customer detail page
 
 ![Action button example](./assets/add-action-button-example.png)

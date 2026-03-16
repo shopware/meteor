@@ -1,11 +1,21 @@
-# Component Section
+---
+title: "Component Sections"
+nav:
+  position: 70
+---
+
+# Component Sections
+
+Component sections allow extensions to render UI components inside existing Administration views. They are typically used together with tabs or other extension points that expose a `positionId`.
+
+See the [Component Sections concept](../../concepts/component-sections.md) for an overview.
 
 ## Add
+
 Add a new component to a component section.
 
 ### General usage
 
-#### Usage:  
 ```ts
 import { ui } from '@shopware-ag/meteor-admin-sdk';
 
@@ -18,19 +28,22 @@ ui.componentSection.add({
 })
 ```
 
-#### Parameters
+### Parameters
+
 | Name        | Required | Default | Description                                    |
 | :---------- | :------- | :------ | :--------------------------------------------- |
 | `component` | true     |         | Choose the component which you want to render. |
 
-#### Return value:
+### Return value
+
 This method does not have a return value.
 
 ## Available components
 
 ### Card
 
-#### Properties:
+#### Properties
+
 | Name         | Required | Default | Description                        |
 |:-------------|:---------|:--------|:-----------------------------------|
 | `title`      | false    |         | The main title of the card         |
@@ -38,7 +51,8 @@ This method does not have a return value.
 | `locationId` | true     |         | The locationId for the custom view |
 | `tabs`       | false    |         | Render different content with tabs |
 
-#### Usage:
+#### Usage
+
 ```js
 import { ui } from '@shopware-ag/meteor-admin-sdk';
 
@@ -54,9 +68,11 @@ ui.componentSection.add({
 ```
 
 #### Example
+
 ![Card component example](./assets/example-card.png)
 
-#### With tabs:
+#### With tabs
+
 ```js
 import { ui } from '@shopware-ag/meteor-admin-sdk';
 
@@ -85,4 +101,5 @@ ui.componentSection.add({
 ```
 
 #### Example
+
 ![Card component with tabs example](./assets/example-card-with-tabs.png)

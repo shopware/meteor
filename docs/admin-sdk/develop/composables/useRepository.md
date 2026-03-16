@@ -1,10 +1,22 @@
+---
+title: "useRepository"
+nav:
+  position: 20
+---
+
+
 # useRepository
+
+:::info
+Some older examples reference `getRepository`. This helper is not part of the public API. Use [`useRepository`](./useRepository.md) instead.
+:::
 
 The `composables.useRepository` function is a reactive wrapper around the `getRepository` function. It creates a repository instance that automatically updates when its dependencies change. This is particularly useful when you need a repository that responds to reactive data changes in your Vue components.
 
 Unlike `getRepository`, which returns a static repository instance, `useRepository` accepts reactive references (refs) or values as parameters and returns a computed repository that updates when those parameters change.
 
-#### Usage:  
+## Usage
+
 ```ts
 // Inside a Vue component setup
 import { ref } from 'vue';
@@ -27,7 +39,7 @@ const repository = useRepository('product', myFactory);
 const products = await repository.value.search(criteria);
 ```
 
-## Dynamic Repository Creation
+## Dynamic repository creation
 
 The main advantage of `useRepository` is that it automatically recreates the repository when its inputs change:
 
@@ -36,13 +48,15 @@ The main advantage of `useRepository` is that it automatically recreates the rep
 
 This reactivity is implemented using Vue's computed properties, ensuring that the repository is only recreated when necessary.
 
-#### Parameters
+## Parameters
+
 | Name                | Required | Description                                                     |
 |:--------------------|:---------|:----------------------------------------------------------------|
 | `entityNameRef`     | true     | The name of the entity type as a ref or static value            |
 | `repositoryFactory` | false    | Optional repository factory as a ref or static value            |
 
-#### Return Value
+## Return value
+
 A computed ref containing a repository that updates when its dependencies change. The repository provides the same methods as described in the `getRepository` documentation, but you need to access them through the `.value` property of the computed ref.
 
 ## Relationship with getRepository

@@ -1,3 +1,9 @@
+---
+title: "Register CMS block"
+sidebar_position: 2
+---
+
+
 # Register CMS block
 
 > Available since Shopware v6.6.1.0
@@ -6,7 +12,8 @@ With `cms.registerCmsBlock` you can register CMS blocks to use in the Shopping E
 
 ![Register a CMS block in your Shopping Experiences Module via App](../assets/register-cms-block-example.png)
 
-#### Usage:
+#### Usage
+
 ```ts
 cms.registerCmsBlock({
     name: 'dailymotion-dual-block',
@@ -25,6 +32,7 @@ cms.registerCmsBlock({
 ```
 
 #### Parameters
+
 | Name           | Required | Description                                                                                                                                                                                                                                                                                             |
 | :------------- | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `name`         | true     | The name of the cms block - Should have vendor prefix. It can be used in the Storefront for overriding the default layout.                                                                                                                                                                              |

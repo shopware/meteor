@@ -1,10 +1,22 @@
-# Component sections
+---
+title: "Component Sections"
+nav:
+  position: 50
+---
 
-In most cases extension developers will directly use the extension capabilities of the UI components (e.g. adding tab items, adding button to grid, ...). This will cover most needs of many extensions. But in cases where a extension need special solutions which aren't feasible with the given extension they can use a feature named `Component Sections`. These are sections where any extension developer can inject components.
 
-These components are prebuilt (like cards) and contain in most cases custom [location](./locations.md) where the extension has the full freedom to render anything.
+# Component Sections
 
-### Example:
+Component sections allow extensions to render UI components inside predefined extension points in the Shopware Administration.
+
+Unlike other extension APIs that modify existing UI elements (such as tabs or buttons), component sections allow extensions to inject full components into specific UI positions.
+
+Component sections are prebuilt (like cards) and usually work together with:
+
+- [Positions](./positions.md): identify where UI can be injected
+- [Locations](./locations.md): determine where extension content should render
+
+## Example
 
 ```js
 if (location.is(location.MAIN_HIDDEN)) {
@@ -32,7 +44,8 @@ if (sw.location.is('my-app-card-before-properties')) {
 
 ![Component Sections screenshot example](./assets/component-sections-example.png)
 
-If you want to render tabs inside the `card` component section, we provide a way to do so:
+To render tabs inside the `card` component section, we provide a way to do so:
+
 ```js
 if (sw.location.is(sw.location.MAIN_HIDDEN)) {
   // Choose a position id where you want to render a custom component

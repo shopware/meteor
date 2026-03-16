@@ -1,9 +1,16 @@
+---
+title: "Subscribe"
+nav:
+  position: 40
+---
+
+
 # Subscribe
 
-With `data.subscribe` you can subscribe to dataset changes. The callback will be called every time, the dataset with the matching id is changed. 
-More information on how to find the unique identifiers can be found in [this guide](../../internals/datahandling.md).
+With `data.subscribe` you can subscribe to dataset changes. The callback will be called every time, the dataset with the matching id is changed. More information on how to find the unique identifiers can be found in [the data handling guide](../../concepts/datahandling.md).
 
-#### Usage:  
+## Usage
+
 ```ts
 data.subscribe(
     'sw-product-detail__product',
@@ -16,7 +23,8 @@ data.subscribe(
 );
 ```
 
-#### Output:
+## Output
+
 ```json
 {
   "name": "Ergonomic Copper Mr. Frenzy",
@@ -26,7 +34,8 @@ data.subscribe(
 }
 ```
 
-#### Parameters
+## Parameters
+
 | Name        | Required | Description                                                                                           |
 | :---------- | :------- |:------------------------------------------------------------------------------------------------------|
 | `id`        | true     | The unique id of the dataset you want to receive                                                      |
