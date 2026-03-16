@@ -1,7 +1,7 @@
 ---
 title: "Extending the CMS"
 nav:
-  position: 300
+  position: 10
 ---
 
 
