@@ -21,9 +21,9 @@ Shopware Administration components are not native Vue components. They rely on i
 
 The [Meteor Component Library](https://github.com/shopware/meteor-component-library) provides Vue components designed to resemble the original Administration UI and integrate seamlessly with  extensions built using the Meteor Admin SDK.
 
-## Typical development flow
+## Typical UI extension workflow
 
-A typical extension often follows this progression.
+A typical UI extension workflow often follows this progression.
 
 1. Create a new module: Use a [Main Module](./mainModule.md) when your extension needs a dedicated application area in the Administration.
 
