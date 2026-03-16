@@ -47,7 +47,7 @@ cms.registerCmsBlock({
 
 The CMS block will render automatically in the Storefront without any additional work. It renders the block as a CSS grid with the slots as grid items and the grid shorthand syntax you provided in the `slotLayout` property.
 
-If you want you can override the default layout by creating a new template file in your app. The file should be named `cms-block-app-renderer.html.twig` and should be placed in the `<your-app>/Resources/views/storefront/block` directory of your app folder. More details on how to customize the Storefront in your App can be found in this documentation: https://developer.shopware.com/docs/guides/plugins/apps/storefront/customize-templates.html
+If you want you can override the default layout by creating a new template file in your app. The file should be named `cms-block-app-renderer.html.twig` and should be placed in the `<your-app>/Resources/views/storefront/block` directory of your app folder. More details on how to customize the Storefront in your App can be found in the [Customize Templates](https://developer.shopware.com/docs/guides/plugins/apps/storefront/customize-templates.html) guide.
 
 Inside this file you need to define the block layout and the slots. The block which needs to be created follows this naming pattern: `block_app_renderer_${yourBlockName}`. The `${yourBlockName}` is the name of the block you registered with `cms.registerCmsBlock` except that you need to replace the hyphens with underscores.
 
