@@ -14,8 +14,7 @@ Use the sections below to navigate the available APIs.
 
 ## Extending the Administration UI
 
-These APIs allow extensions to add UI elements to the Shopware Administration.  
-They can be used to register modules, add navigation entries, extend existing pages, and display dialogs or side panels.
+These UI extension components allow extensions to add UI elements to the Shopware Administration. They can be used to register modules, add navigation entries, extend existing pages, and display dialogs or side panels.
 
 Typical use cases include:
 
@@ -24,7 +23,7 @@ Typical use cases include:
 - Adding navigation or settings entries
 - Displaying modals or contextual UI elements
 
-APIs in this section include:
+UI extension components in this section include:
 
 - [Main Module](./ui/mainModule.md)
 - [Menu](./ui/menu.md)
