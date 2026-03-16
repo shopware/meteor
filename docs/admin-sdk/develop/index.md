@@ -15,7 +15,7 @@ A typical Administration extension follows this workflow:
    - **Location**: Defines where extension code runs inside the Administration UI.
    - **Main module**: The entry point of your extension inside the Administration navigation.
    - **Action button**: Adds functionality to an existing Administration view, such as the product detail page.
-3. Load or modify Shopware data using [repositories](./composables/use-repository.md).
+3. Load or modify Shopware data using [repositories](./composables/useRepository.md).
 4. Provide feedback to users with [notifications](./notification.md) or [toasts](./toast.md).
 
 ## Development Tools
@@ -37,17 +37,17 @@ The following APIs allow extensions to interact with and extend the Shopware Adm
 
 Composables provide reusable helpers for working with Administration data and shared state.
 
-- **[useRepository](./composables/use-repository.md)**: Access Shopware repositories to load and manipulate entities.
-- **[useSharedState](./composables/use-shared-state.md)**: Share state between extensions or components.
+- **[useRepository](./composables/useRepository.md)**: Access Shopware repositories to load and manipulate entities.
+- **[useSharedState](./composables/useSharedState.md)**: Share state between extensions or components.
 
 ## CMS extensions
 
 The CMS API allows extensions to add new CMS blocks and elements to the Shopware content system.
 
-- **[Register CMS Block](./cms/register-cms-block.md)**: Add custom CMS blocks that structure and group content elements in the Shopping Experiences editor.
-- **[Register CMS Element](./cms/register-cms-element.md)**: Create custom CMS elements that render specific content or functionality inside CMS blocks.
+- **[Register CMS Block](./cms/registerCmsBlock.md)**: Add custom CMS blocks that structure and group content elements in the Shopping Experiences editor.
+- **[Register CMS Element](./cms/registerCmsElement.md)**: Create custom CMS elements that render specific content or functionality inside CMS blocks.
 
 ## Advanced topics
 
 - **[Entity Types](./entity-types.md)**: Configure and extend TypeScript typings for entity access and SDK usage.
-- **[Migrating Existing Admin Plugins](./migrating-existing-admin-plugins.md)**: Learn how to gradually migrate existing Twig-based Admin plugins to the Meteor Admin SDK.
+- **[Migrating Existing Admin Plugins](./migrating-admin-plugins.md)**: Learn how to gradually migrate existing Twig-based Admin plugins to the Meteor Admin SDK.
