@@ -7,7 +7,7 @@ nav:
 
 # Working with Data
 
-The Meteor Admin SDK provides APIs for accessing and manipulating Shopware data from within the Administration. These APIs allow extensions to interact with Shopware entities, react to changes in data, and update records using the same repository-based data layer used by the Administration itself.
+The Meteor Admin SDK provides tools for accessing and manipulating Shopware data from within the Administration. These APIs allow extensions to interact with Shopware entities, react to changes in data, and update records using the same repository-based data layer used by the Administration itself.
 
 Typical data workflows follow this pattern:
 
@@ -16,7 +16,7 @@ Typical data workflows follow this pattern:
 3. Subscribe to updates or changes
 4. Modify or persist data
 
-## Available APIs
+## Data access and operations
 
 - [Repository](./repository.md): Access Shopware entity repositories.
 - [Get](./get.md): Retrieve entity data from the Administration data layer.
