@@ -1,6 +1,6 @@
 ---
 title: "Register CMS block"
-sidebar_position: 10
+sidebar_position: 20
 ---
 
 
