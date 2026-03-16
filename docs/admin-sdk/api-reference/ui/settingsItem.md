@@ -41,8 +41,7 @@ ui.settings.addSettingsItem({
 
 ## Getting the right icon
 
-Assuming that your editor supports TypeScript, you should get auto-completion for valid `icon` values.
-In case that doesn't work take a look at the list [here](https://github.com/shopware/meteor-admin-sdk/blob/trunk/src/icons.ts).
+If your editor supports TypeScript, you should get auto-completion when importing icons from the Meteor icon package. To browse available icons, see the [Meteor icon kit repository](https://github.com/shopware/meteor/tree/main/packages/icon-kit).
 
 ### Example
 
