@@ -39,7 +39,7 @@ APIs in this section include:
 
 ## Working with Data
 
-These APIs allow extensions to access and manipulate Shopware entity data from within the Administration.
+These tools allow extensions to access and manipulate Shopware entity data from within the Administration.
 
 They follow the same repository-based data access pattern used internally by the Administration.
 
@@ -50,7 +50,7 @@ Typical workflows include:
 - Subscribing to changes
 - Updating or persisting entities
 
-APIs in this section include:
+Tools this section include:
 
 - [Repository](./data/repository.md)
 - [Get](./data/get.md)
