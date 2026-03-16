@@ -11,7 +11,7 @@ This section explains how to build Administration extensions with the Meteor Adm
 A typical Administration extension follows this workflow:
 
 1. Identify an extension point in the Administration UI.
-2. Add a [main module](../api-reference/ui/mainModule.md) or [action button](../api-reference/ui/actionButton.md) at that [location](./api/location.md).
+2. Add a [main module](../api-reference/ui/mainModule.md) or [action button](../api-reference/ui/actionButton.md) at that [location](./location.md).
    - **Location**: Defines where extension code runs inside the Administration UI.
    - **Main module**: The entry point of your extension inside the Administration navigation.
    - **Action button**: Adds functionality to an existing Administration view, such as the product detail page.
