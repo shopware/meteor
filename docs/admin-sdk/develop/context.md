@@ -10,15 +10,18 @@ sidebar_position: 40
 
 ### Get current language
 
-#### Usage:  
+#### Usage
+
 ```ts
 const language = await sw.context.getLanguage();
 ```
 
 #### Parameters
+
 No parameters needed.
 
-#### Return value:
+#### Return value
+
 ```ts
 Promise<{
   languageId: string,
@@ -26,7 +29,8 @@ Promise<{
 }>
 ```
 
-#### Example value:
+#### Example value
+
 ```ts
 {
   languageId: '2fbb5fe2e29a4d70aa5854ce7ce3e20b',
@@ -36,7 +40,8 @@ Promise<{
 
 ### Subscribe on language changes
 
-#### Usage:  
+#### Usage
+
 ```ts
 sw.context.subscribeLanguage(({ languageId, systemLanguageId }) => {
   // do something with the callback data
@@ -44,11 +49,13 @@ sw.context.subscribeLanguage(({ languageId, systemLanguageId }) => {
 ```
 
 #### Parameters
+
 | Name | Description |
 | :------ | :------ |
 | `callbackMethod` | Called every-time the language changes |
 
-#### Callback value:
+#### Callback value
+
 ```ts
 {
   languageId: string,
@@ -56,7 +63,8 @@ sw.context.subscribeLanguage(({ languageId, systemLanguageId }) => {
 }
 ```
 
-#### Example callback value:
+#### Example callback value
+
 ```ts
 {
   languageId: '2fbb5fe2e29a4d70aa5854ce7ce3e20b',
@@ -74,14 +82,17 @@ const environment = await sw.context.getEnvironment();
 ```
 
 #### Parameters
+
 No parameters needed.
 
-#### Return value:
+#### Return value
+
 ```ts
 Promise<'development' | 'production' | 'testing'>
 ```
 
-#### Example value:
+#### Example value
+
 ```ts
 'development'
 ```
@@ -90,15 +101,18 @@ Promise<'development' | 'production' | 'testing'>
 
 ### Get current locale
 
-#### Usage:  
+#### Usage
+
 ```ts
 const locale = await sw.context.getLocale();
 ```
 
 #### Parameters
+
 No parameters needed.
 
-#### Return value:
+#### Return value
+
 ```ts
 Promise<{
   locale: string,
@@ -106,7 +120,8 @@ Promise<{
 }>
 ```
 
-#### Example value:
+#### Example value
+
 ```ts
 {
   locale: 'de-DE',
@@ -116,7 +131,8 @@ Promise<{
 
 ### Subscribe on locale changes
 
-#### Usage:  
+#### Usage
+
 ```ts
 sw.context.subscribeLocale(({ locale, fallbackLocale }) => {
   // do something with the callback data
@@ -124,11 +140,13 @@ sw.context.subscribeLocale(({ locale, fallbackLocale }) => {
 ```
 
 #### Parameters
+
 | Name | Description |
 | :------ | :------ |
 | `callbackMethod` | Called every-time the locale changes |
 
-#### Callback value:
+#### Callback value
+
 ```ts
 {
   locale: string,
@@ -136,7 +154,8 @@ sw.context.subscribeLocale(({ locale, fallbackLocale }) => {
 }
 ```
 
-#### Example callback value:
+#### Example callback value
+
 ```ts
 {
   locale: 'de-DE',
@@ -148,15 +167,18 @@ sw.context.subscribeLocale(({ locale, fallbackLocale }) => {
 
 ### Get current currency
 
-#### Usage:  
+#### Usage
+
 ```ts
 const currency = await sw.context.getCurrency();
 ```
 
 #### Parameters
+
 No parameters needed.
 
-#### Return value:
+#### Return value
+
 ```ts
 Promise<{
   systemCurrencyId: string,
@@ -164,7 +186,8 @@ Promise<{
 }>
 ```
 
-#### Example value:
+#### Example value
+
 ```ts
 {
   systemCurrencyId: 'b7d2554b0ce847cd82f3ac9bd1c0dfca',
@@ -176,20 +199,24 @@ Promise<{
 
 ### Get current Shopware version
 
-#### Usage:  
+#### Usage
+
 ```ts
 const shopwareVersion = await sw.context.getShopwareVersion();
 ```
 
 #### Parameters
+
 No parameters needed.
 
-#### Return value:
+#### Return value
+
 ```ts
 string
 ```
 
-#### Example value:
+#### Example value
+
 ```ts
 '6.4.0.0'
 ```
@@ -200,12 +227,14 @@ In many cases you have to make sure that the shop you are communicating with has
 
 The function always treats the current Shopware version of a shop as the left hand operator of the comparison. That means a call like `context.compareIsShopwareVersion('>=', '7.0.0')` can be read as "*Compare: is Shopware version equal or greater than 7.0.0*"
 
-#### Usage:  
+#### Usage
+
 ```ts
 const isRightVersion = await sw.context.compareShopwareVersion('>=', '7.0.0')
 ```
 
 #### Parameters
+
 | Name         | Description                                                                                                       |
 |:-------------|:------------------------------------------------------------------------------------------------------------------|
 | `comparator` | The operator to compare. Possible values: `'='` `'!='` `'>'` `'<'` `'<='` `'>='`|
@@ -220,13 +249,13 @@ await sw.context.compareShopwareVersion('>=', '6.6.4.0');
 await sw.context.compareShopwareVersion('>=', '6.4.0');
 ```
 
-#### Return value:
+#### Return value
 
 ```ts
 boolean
 ```
 
-#### Example value:
+#### Example value
 ```ts
 true
 ```
@@ -237,20 +266,24 @@ true
 
 > The privileges property will be available with Shopware v6.7.1.0 and higher
 
-#### Usage:  
+#### Usage
+
 ```ts
 const { name, version, type, privileges } = await sw.context.getAppInformation();
 ```
 
 #### Parameters
+
 No parameters needed.
 
-#### Return value:
+#### Return value
+
 ```ts
 Promise<{ name: string ; version: string ; type: 'app' | 'plugin', privileges: privileges }>
 ```
 
-#### Example value:
+#### Example value
+
 ```ts
 {
   name: 'my-extension',
@@ -272,15 +305,18 @@ Promise<{ name: string ; version: string ; type: 'app' | 'plugin', privileges: p
 Do not use this feature yet. It is not implemented in a Shopware release yet.
 :::
 
-#### Usage:  
+#### Usage
+
 ```ts
 const userInformation = await sw.context.getUserInformation();
 ```
 
 #### Parameters
+
 No parameters needed.
 
-#### Return value:
+#### Return value
+
 ```ts
 Promise<{
   aclRoles: Array<{
@@ -303,7 +339,8 @@ Promise<{
 }>
 ```
 
-#### Example value:
+#### Example value
+
 ```ts
 {
     "aclRoles": [],
@@ -331,15 +368,18 @@ This feature will be available with Shopware ^6.6.2.0
 
 This feature allows you to get the timezone of the user.
 
-#### Usage:
+#### Usage
+
 ```ts
 const userTimezone = await sw.context.getUserTimezone();
 ```
 
 #### Parameters
+
 No parameters needed.
 
-#### Return value:
+#### Return value
+
 ```ts
 Promise<string>
 ```
@@ -349,11 +389,13 @@ This function returns a Promise that resolves to a string representing the user'
 ## Module information
 
 ### Get module information
+
 Get information about all registered modules. These modules are created by adding new menu items, setting items, etc.
 
 The ID can be used to change the current route to the module.
 
-#### Usage:  
+#### Usage
+
 ```ts
 const { modules } = await sw.context.getModuleInformation();
 
@@ -366,9 +408,11 @@ sw.window.routerPush({
 ```
 
 #### Parameters
+
 No parameters needed.
 
-#### Return value:
+#### Return value
+
 ```ts
 Promise<{
   modules: Array<{
@@ -380,7 +424,8 @@ Promise<{
 }>
 ```
 
-#### Example value:
+#### Example value
+
 ```ts
 {
   modules: [
@@ -412,7 +457,7 @@ const shopId = await sw.context.getShopId();
 
 no parameters needed
 
-#### Return value:
+#### Return value
 
 ```ts
 Promise<string>
