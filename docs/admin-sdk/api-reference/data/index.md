@@ -22,4 +22,4 @@ Typical data workflows follow this pattern:
 - [Get](./get.md): Retrieve entity data from the Administration data layer.
 - [Subscribe](./subscribe.md): React to changes in entity data.
 - [Update](./update.md): Modify and persist entity data.
-- [In-App Purchases](./in-app-purchases.md): APIs for working with Shopware in-app purchase functionality.
+- [In-App Purchases](./in-app-purchases.md):  Work with Shopware in-app purchase functionality.
