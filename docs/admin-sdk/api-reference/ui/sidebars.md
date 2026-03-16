@@ -34,7 +34,7 @@ sw.ui.sidebar.add({
 
 ### Example
 
-![Menu item example](../assets/sidebar-example.png)
+![Menu item example](./assets/sidebar-example.png)
 
 ## Close a sidebar
 
