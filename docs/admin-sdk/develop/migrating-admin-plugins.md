@@ -37,8 +37,6 @@ Shopware.Component.override('sw-dashboard-index', {
 
 ## Using locations with normal Vue components without iFrame rendering
 
-**This feature is not yet released in Shopware. It's only available with the development environment or `dev-trunk` version of Shopware.**
-
 This feature is useful when you want to partially migrate from the Twig plugin system to the SDK extension system and use both systems together. Instead of rendering an iFrame view for a location, you can render a normal Vue component directly inside the Shopware Administration.
 
 To do this, register the component in the existing plugin system:
