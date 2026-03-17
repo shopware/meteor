@@ -78,8 +78,16 @@ export const addPaymentIframe = async (
 }> => {
   const { name, version } = await context.getAppInformation();
   const decodedLicense = await decodeLicense();
-  const shopPlan = options.shopPlan || decodedLicense?.['plan-name'] || '';
-  const link = `${baseUrl}/payment?service-name=${name}&service-version=${version}&shop-url=${options.shopUrl}&sw-version=${options.swVersion}&sw-user-language=${options.swUserLanguage}&shop-plan=${shopPlan}`;
+  let shopPlan = '';
+  let shopUrl = '';
+  if (decodedLicense && decodedLicense.exp > Date.now() / 1000) {
+    shopUrl = decodedLicense?.['aud'] || options.shopUrl || '';
+    shopPlan = decodedLicense?.['plan-name'] || options.shopPlan || '';
+  } else {
+    shopUrl = options.shopUrl || '';
+    shopPlan = options.shopPlan || '';
+  }
+  const link = `${baseUrl}/payment?service-name=${name}&service-version=${version}&shop-url=${shopUrl}&sw-version=${options.swVersion}&sw-user-language=${options.swUserLanguage}&shop-plan=${shopPlan}`;
   const iframeEl = document.createElement('iframe');
   iframeEl.width = '100%';
   iframeEl.height = '100%';
