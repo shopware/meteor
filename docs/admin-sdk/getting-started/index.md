@@ -31,7 +31,7 @@ npm install vite
 
 #### Import variants
 
-The SDK can be imported in several ways depending on the bundling setup. Import the SDK in your frontend entry file (for example, `main.js`).
+The SDK can be imported in several ways depending on the bundling setup. You can import the SDK wherever you need it in your frontend code, for example in a module that uses it or in an entry file such as `main.js`.
 
 Import the full SDK (for quick prototyping or when using many SDK features):
 
