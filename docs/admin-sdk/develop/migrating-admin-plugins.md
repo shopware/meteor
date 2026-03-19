@@ -19,7 +19,7 @@ This approach can also help simplify your plugins and prepare them for long-term
 ### Example
 
 ```js
-// Use existing extension capabilties
+// Use existing extension capabilities
 Shopware.Component.override('sw-dashboard-index', {
     methods: {
         async createdComponent() {
