@@ -117,5 +117,5 @@ Using the CDN is quick and convenient, making it suitable for prototyping, exper
 
 Choose your extension type:
 
-- [App Installation Flow](./getting-started/installation-apps.md)
-- [Plugin Installation Flow](./getting-started/installation-plugins.md)
+- [App Installation Flow](./installation-apps.md)
+- [Plugin Installation Flow](./installation-plugins.md)
