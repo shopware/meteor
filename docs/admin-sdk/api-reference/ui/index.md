@@ -15,11 +15,11 @@ The following guides cover common UI extension patterns.
 
 ## Using UI components
 
-Shopware Administration components cannot be used directly inside apps or plugins. Instead, extensions should use the Meteor Component Library to achieve a native look and feel.
+Shopware Administration components cannot be used directly inside apps or plugins. Instead, extensions should use the [Meteor Component Library](https://github.com/shopware/meteor/tree/main/packages/component-library) to achieve a native look and feel.
 
 Shopware Administration components are not native Vue components. They rely on internal extension capabilities, Twig templates, and framework integrations that are not available externally.
 
-The [Meteor Component Library](https://github.com/shopware/meteor/tree/main/packages/component-library) provides Vue components designed to resemble the original Administration UI and integrate seamlessly with  extensions built using the Meteor Admin SDK.
+The Meteor Component Library provides Vue components designed to resemble the original Administration UI and integrate seamlessly with extensions built using the Meteor Admin SDK.
 
 ## Typical UI extension workflow
 
