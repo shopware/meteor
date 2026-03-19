@@ -76,7 +76,8 @@ sw.context.subscribeLanguage(({ languageId, systemLanguageId }) => {
 
 ### Get current environment
 
-#### Usage:  
+#### Usage
+
 ```ts
 const environment = await sw.context.getEnvironment();
 ```

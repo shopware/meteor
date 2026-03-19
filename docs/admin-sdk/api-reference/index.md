@@ -65,8 +65,8 @@ They simplify common patterns such as accessing repositories or sharing state be
 
 APIs in this section include:
 
-- [useRepository](../develop/composables/useRepository.md)
-- [useSharedState](../develop/composables/useSharedState.md)
+- [useRepository](./composables/useRepository.md)
+- [useSharedState](./composables/useSharedState.md)
 
 ## Extending the CMS
 
@@ -76,8 +76,8 @@ They can be used to introduce custom content components that merchants can use w
 
 APIs in this section include:
 
-- [Register CMS Block](../develop/cms/registerCmsBlock.md)
-- [Register CMS Element](../develop/cms/registerCmsElement.md)
+- [Register CMS Block](./cms/registerCmsBlock.md)
+- [Register CMS Element](./cms/registerCmsElement.md)
 
 ## Shared Options
 
