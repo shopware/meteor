@@ -13,7 +13,7 @@ A sidebar provides a contextual panel that displays at the right edge of the Adm
 
 Add a new sidebar. The content of the sidebar is determined by your `locationId`.
 
-### Usage
+#### Usage
 
 ```ts
 sw.ui.sidebar.add({
@@ -23,7 +23,7 @@ sw.ui.sidebar.add({
 });
 ```
 
-### Parameters
+#### Parameters
 
 | Name | Required | Description | Available at Shopware |
 | :----------- | :------- | :--------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------|
@@ -32,7 +32,7 @@ sw.ui.sidebar.add({
 | `icon` | true | The icon to display in the sidebar. You can use any icon from the Shopware icon library | 6.7 |
 | `resizable` | false | Enables horizontal resizing of the sidebar | 6.7.2.0 |
 
-### Example
+#### Example
 
 ![Menu item example](./assets/sidebar-example.png)
 
@@ -40,7 +40,7 @@ sw.ui.sidebar.add({
 
 Close an existing sidebar programmatically.
 
-### Usage
+#### Usage
 
 ```ts
 sw.ui.sidebar.close({
@@ -48,7 +48,7 @@ sw.ui.sidebar.close({
 });
 ```
 
-### Parameters
+#### Parameters
 
 | Name | Required | Description | Available at Shopware |
 | :----------- | :------- | :--------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------|
@@ -58,7 +58,7 @@ sw.ui.sidebar.close({
 
 Remove a sidebar completely from the DOM.
 
-### Usage
+#### Usage
 
 ```ts
 sw.ui.sidebar.remove({
@@ -66,7 +66,7 @@ sw.ui.sidebar.remove({
 });
 ```
 
-### Parameters
+#### Parameters
 
 | Name | Required | Description | Available at Shopware |
 | :----------- | :------- | :--------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------|

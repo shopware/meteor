@@ -12,7 +12,7 @@ The Window API provides methods for navigation and window-related utilities insi
 
 Redirect to an external URL.
 
-### Usage
+#### Usage
 
 Use this method to open an external URL either in the current tab or a new tab.
 
@@ -23,14 +23,14 @@ sw.window.redirect({
 })
 ```
 
-### Parameters
+#### Parameters
 
 | Name | Required | Default | Description |
 | :------ | :------ | :------ | :------ |
 | `url` | true | | The URL to open |
 | `newTab` | false | false | Open the URL in a new browser tab |
 
-### Return value
+#### Return value
 
 Returns a promise without data.
 
@@ -38,7 +38,7 @@ Returns a promise without data.
 
 Navigate to another page inside the Shopware Administration.
 
-### Usage
+#### Usage
 
 This method mirrors the behavior of Vue Router’s `push()`.
 
@@ -61,7 +61,7 @@ sw.window.routerPush({
 })
 ```
 
-### Parameters
+#### Parameters
 
 | Name | Required | Default | Description |
 | :------ | :------ | :------ | :------ |
@@ -70,7 +70,7 @@ sw.window.routerPush({
 | `params` | false | undefined | Additional params for the new route |
 | `replace` | false | false | Replace current browser history entry |
 
-### Return value
+#### Return value
 
 Returns a promise without data.
 
@@ -78,17 +78,17 @@ Returns a promise without data.
 
 Reload the current Administration page. This can be useful during development or when UI state must be reset.
 
-### Usage
+#### Usage
 
 ```ts
 sw.window.reload()
 ```
 
-### Parameters
+#### Parameters
 
 No parameters required.
 
-### Return value
+#### Return value
 
 Returns a promise without data.
 
@@ -98,21 +98,21 @@ Returns a promise without data.
 
 Returns a unique identifier for the current browser window. This is useful when working with session storage or detecting duplicated tabs.
 
-### Usage
+#### Usage
 
 ```ts
 sw.window.getId() 
 ```
 
-### Parameters
+#### Parameters
 
 No parameters required
 
-### Return value
+#### Return value
 
 A `string` representing a unique identifier for the current window.
 
-### Example
+#### Example
 
 This example clears `sessionStorage` when a duplicated browser tab is detected. This can happen if a user uses the *Duplicate Tab* feature of some browsers.
 
@@ -133,16 +133,16 @@ if (windowId !== storedWindowId) {
 
 Retrieve the current Administration router path.
 
-### Usage
+#### Usage
 
 ```ts
 sw.window.getPath()
 ```
 
-### Parameters
+#### Parameters
 
 No parameters required.
 
-### Return value
+#### Return value
 
 Returns a `string` containing the full path, or an empty string if the router is not available.

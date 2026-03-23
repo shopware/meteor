@@ -24,7 +24,7 @@ const { useSharedState } = composables;
 const mySharedStateValue = useSharedState('myUniqueKeyForTheSharedState', 'myInitialDataValue');
 ```
 
-### Parameters
+#### Parameters
 
 | Name           | Required | Description                                                               |
 | :------------- | :------- | :------------------------------------------------------------------------ |

@@ -82,40 +82,40 @@ criteria.getAssociation('categories')
 ### repository.search()
 Sends a search request for the repository entity.
 
-#### Usage:  
+#### Usage
 ```ts
 const exampleRepository = sw.data.repository('your_entity');
 
 const yourEntities = await exampleRepository.search(yourCriteria);
 ```
 
-#### Parameters:
+#### Parameters
 | Name       | Required | Default | Description                                    |
 | :--------- | :------- | :------ | :--------------------------------------------- |
 | `criteria` | true     |         | Your criteria object                           |
 | `context`  | false    | {}      | Change the [request context](#request-context) |
 
-#### Return value:
+#### Return value
 The return value is a EntityCollection which contains all entities matching the criteria.
 
 ### repository.get()
 Short hand to fetch a single entity from the server
 
-#### Usage:  
+#### Usage
 ```ts
 const exampleRepository = sw.data.repository('your_entity');
 
 const yourEntity = await exampleRepository.get('theEntityId');
 ```
 
-#### Parameters:
+#### Parameters
 | Name       | Required | Default | Description                                    |
 | :--------- | :------- | :------ | :--------------------------------------------- |
 | `id`       | true     |         | The id of the entity                           |
 | `context`  | false    | {}      | Change the [request context](#request-context) |
 | `criteria` | true     |         | Your criteria object                           |
 
-#### Return value:
+#### Return value
 The return value is the entity result when a matching entity was found.
 
 ### repository.save()
@@ -123,114 +123,114 @@ Detects all entity changes and send the changes to the server.
 If the entity is marked as new, the repository will send a POST create. Updates will be send as PATCH request.
 Deleted associations will be send as additional request
 
-#### Usage:  
+#### Usage
 ```ts
 const exampleRepository = sw.data.repository('your_entity');
 
 await exampleRepository.save(yourEntityObject);
 ```
 
-#### Parameters:
+#### Parameters
 | Name      | Required | Default | Description                                    |
 | :-------- | :------- | :------ | :--------------------------------------------- |
 | `entity`  | true     |         | The entity object                              |
 | `context` | false    | {}      | Change the [request context](#request-context) |
 
-#### Return value:
+#### Return value
 This method does not have a return value. It just returns a Promise which is resolved when it was saved successfully.
 
 ### repository.clone()
 Clones an existing entity
 
-#### Usage:  
+#### Usage
 ```ts
 const exampleRepository = sw.data.repository('your_entity');
 
 const clonedEntityId = await exampleRepository.clone('theEntityIdToClone');
 ```
 
-#### Parameters:
+#### Parameters
 | Name       | Required | Default | Description                                    |
 | :--------- | :------- | :------ | :--------------------------------------------- |
 | `entityId` | true     |         | The entity id which should be cloned           |
 | `context`  | false    | {}      | Change the [request context](#request-context) |
 
-#### Return value:
+#### Return value
 This method returns the id of the cloned entity.
 
 ### repository.hasChanges()
 Detects if the entity or the relations has remaining changes which are not synchronized with the server
 
-#### Usage:  
+#### Usage
 ```ts
 const exampleRepository = sw.data.repository('your_entity');
 
 const hasChanges = await exampleRepository.hasChanges(yourEntityObject);
 ```
 
-#### Parameters:
+#### Parameters
 | Name     | Required | Default | Description       |
 | :------- | :------- | :------ | :---------------- |
 | `entity` | true     |         | The entity object |
 
-#### Return value:
+#### Return value
 This method returns a boolean value. If the entity has changes then it returns `true`. Otherwise it returns `false`.
 
 ### repository.saveAll()
 Detects changes of all provided entities and send the changes to the server
 
-#### Usage:  
+#### Usage
 ```ts
 const exampleRepository = sw.data.repository('your_entity');
 
 await exampleRepository.saveAll(yourEntityCollection);
 ```
 
-#### Parameters:
+#### Parameters
 | Name       | Required | Default | Description                                    |
 | :--------- | :------- | :------ | :--------------------------------------------- |
 | `entities` | true     |         | Your entity collection which should be saved   |
 | `context`  | false    | {}      | Change the [request context](#request-context) |
 
-#### Return value:
+#### Return value
 This method does not have a return value. It just returns a Promise which is resolved when it was saved successfully.
 
 ### repository.delete()
 Sends a delete request for the provided id.
 
-#### Usage:  
+#### Usage
 ```ts
 const exampleRepository = sw.data.repository('your_entity');
 
 await exampleRepository.delete('yourEntityId');
 ```
 
-#### Parameters:
+#### Parameters
 | Name       | Required | Default | Description                                    |
 | :--------- | :------- | :------ | :--------------------------------------------- |
 | `entityId` | true     |         | The id of the entity which should be deleted   |
 | `context`  | false    | {}      | Change the [request context](#request-context) |
 
-#### Return value:
+#### Return value
 This method does not have a return value. It just returns a Promise which is resolved when it was deleted successfully.
 
 ### repository.create()
 Creates a new entity for the local schema. To Many association are initialed with a collection with the corresponding remote api route. This entity is not saved to the database yet.
 
-#### Usage:  
+#### Usage
 ```ts
 const exampleRepository = sw.data.repository('your_entity');
 
 const yourNewEntity = await exampleRepository.create();
 ```
 
-#### Parameters:
+#### Parameters
 | Name       | Required | Default | Description                                    |
 | :--------- | :------- | :------ | :--------------------------------------------- |
 | `context`  | false    | {}      | Change the [request context](#request-context) |
 | `id` | false     |         | You can provide a id of the new entity if wanted   |
 
-#### Return value:
+#### Return value
 This method returns the newly created entity.
 
 ### Request Context

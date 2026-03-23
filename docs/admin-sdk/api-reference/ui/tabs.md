@@ -18,7 +18,7 @@ contains a component section. This works with tab bar's which have routing and
 also static tab bars. If the tab bar has routing then the route for the tab item
 will be generated automatically.
 
-### Usage
+#### Usage
 
 ```ts
 import { ui } from '@shopware-ag/meteor-admin-sdk';
@@ -29,14 +29,14 @@ ui.tabs('sw-product-detail' /* The positionId of the tab bar*/).addTabItem({
 })
 ```
 
-### Parameters
+#### Parameters
 
 | Name                 | Required | Default | Description                                             |
 | :------------------- | :------- | :------ | :------------------------------------------------------ |
 | `label`              | true     |         | The label of the tab bar item                           |
 | `componentSectionId` | true     |         | The Id for for the component section in the tab content |
 
-### Example
+#### Example
 
 ![Tab item example](./assets/add-tab-item-example.png)
 ```ts

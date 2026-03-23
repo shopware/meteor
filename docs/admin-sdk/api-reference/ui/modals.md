@@ -19,7 +19,7 @@ See also: [Base Options](../base-options.md) for shared configuration options su
 
 Open a new modal in the current view. The content of the modal is determined by your `locationId` or by using plain text with `textContent`.
 
-### Usage
+#### Usage
 
 ```ts
 ui.modal.open({
@@ -55,7 +55,7 @@ ui.modal.open({
 })
 ```
 
-### Parameters
+#### Parameters
 
 | Name          | Required | Default   | Description                                                                                    | Available at Shopware |
 |:--------------|:---------|:----------|:-----------------------------------------------------------------------------------------------|:----------------------|
@@ -68,7 +68,7 @@ ui.modal.open({
 | `closable`    | false    | true      | If this is set to `false` then the modal can only be closed programmatically                   |                       |
 | `buttons`     | false    | []        | This array contains button configurations which will render buttons in the footer of the modal |                       |
 
-### Example
+#### Example
 
 ![Menu item example](./assets/modal-example.png)
 
@@ -105,7 +105,7 @@ ui.modal.open({
 
 Updates an existing modal with the given `locationId`. This can be used to modify the modal's properties after it has been opened, such as changing the title, buttons, or visibility of header/footer from inside the modal.
 
-### Usage
+#### Usage
 
 ```ts
 ui.modal.update({
@@ -125,7 +125,7 @@ ui.modal.update({
 })
 ```
 
-### Parameters
+#### Parameters
 
 | Name         | Required | Default | Description                                                                                    |
 |:-------------|:---------|:--------|:-----------------------------------------------------------------------------------------------|
@@ -140,13 +140,13 @@ ui.modal.update({
 
 Closes an opened modal. You need use the correct `locationId` of the modal which should get closed. If you don't provide a `locationId` the last modal without a `locationId` gets closed.
 
-### Usage
+#### Usage
 
 ```ts
 ui.modal.close({ locationId: 'your-location-id' })
 ```
 
-### Parameters
+#### Parameters
 
 | Name         | Required | Default | Description                                                                                                               |
 |:-------------|:---------|:--------|:--------------------------------------------------------------------------------------------------------------------------|

@@ -6,7 +6,7 @@ sidebar_position: 50
 
 # Notification
 
-Notifications display persistent messages in the Shopware Administration to inform users about events, errors, or completed actions.
+Notifications display messages in the Shopware Administration to inform users about events, errors, or completed actions. They remain visible in the notification center (bell icon) until dismissed by the user.
 
 See also: [Base Options](../api-reference/base-options.md) for shared configuration options supported by SDK message APIs.
 
@@ -14,7 +14,7 @@ See also: [Base Options](../api-reference/base-options.md) for shared configurat
 
 ![notification example](./assets/notification-example.jpg)
 
-### Usage
+#### Usage
 
 ```ts
 function alertYes() {
@@ -47,7 +47,7 @@ sw.notification.dispatch({
 })
 ```
 
-### Parameters
+#### Parameters
 
 | Name         | Required | Default        | Description                                                                                                                                                                                                     |
 |:-------------|:---------|:---------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|

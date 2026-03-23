@@ -15,7 +15,7 @@ Use a main module when your extension provides a dedicated application area with
 
 Add a main module to your extension. The content of the main module is determined by your `locationId`. A specific view or a set of actions can be triggered based on the `locationId`.
 
-### Usage
+#### Usage
 
 ```ts
 ui.mainModule.addMainModule({
@@ -24,7 +24,7 @@ ui.mainModule.addMainModule({
 });
 ```
 
-### Parameters
+#### Parameters
 
 | Name                    | Required | Default | Description                            |
 | :---------------------- | :------- | :------ | :------------------------------------- |
@@ -33,7 +33,7 @@ ui.mainModule.addMainModule({
 | `displaySearchBar`      | false    | true    | Toggles the sw-page search bar on/off  |
 | `displayLanguageSwitch` | false    | false   | Toggles sw-page language switch on/off |
 
-### Example
+#### Example
 
 ![Main module example](./assets/add-main-module-example.png)
 
@@ -72,7 +72,7 @@ if (location.is('main-location-id')) {
 
 Add a button to the smart bar of your main module. The button can be used to trigger actions, e.g. saving, cancel, etc. The location ID needs to be defined and have the same value as the `locationId` of the main module.
 
-### Usage
+#### Usage
 
 ```ts
 ui.mainModule.addSmartbarButton({
@@ -84,7 +84,7 @@ ui.mainModule.addSmartbarButton({
 });
 ```
 
-### Parameters
+#### Parameters
 
 | Name              | Required | Default   | Description                                                                                                         |
 | :---------------- | :------- | :-------- | :------------------------------------------------------------------------------------------------------------------ |
@@ -99,7 +99,7 @@ ui.mainModule.addSmartbarButton({
 
 Turn the smart bar off as needed.
 
-### Usage
+#### Usage
 
 ```ts
 ui.mainModule.hideSmartBar({
@@ -107,7 +107,7 @@ ui.mainModule.hideSmartBar({
 });
 ```
 
-### Parameters
+#### Parameters
 
 | Name         | Required | Default   | Description                                                                                                                                    | Available at Shopware |
 | :----------- | :------- | :-------- | :--------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------|

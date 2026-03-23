@@ -26,13 +26,13 @@ if (sw.location.is('my-location-id')) {
 }
 ```
 
-### Parameters
+#### Parameters
 
 | Name         | Required | Default | Description              |
 | :----------- | :------- | :------ | :----------------------- |
 | `locationId` | true     |         | The location ID to check |
 
-### Return value
+#### Return value
 
 Returns a boolean. It is `true` if the location ID matches the current location.
 
@@ -44,7 +44,7 @@ Get the name of the current location ID:
 const currentLocation = sw.location.get()
 ```
 
-### Return value
+#### Return value
 
 Returns a string with the name of the current location.
 
@@ -65,11 +65,11 @@ if (location.isIframe()) {
 
 ## iFrame heights
 
-### Parameters
+#### Parameters
 
 No parameters needed.
 
-### Return value
+#### Return value
 
 Returns a boolean. Returns `true` if executed inside an iFrame.
 
@@ -81,13 +81,13 @@ Update the height of the iFrame with this method:
 sw.location.updateHeight(750);
 ```
 
-### Parameters
+#### Parameters
 
 | Name            | Required | Default        | Description                                                                                                    |
 | :-------------- | :------- | :------------- | :------------------------------------------------------------------------------------------------------------- |
 | `iFrame height` | false    | Auto generated | The height of the iFrame. If no value is provided it will be automatically calculated from the current height. |
 
-### Return value
+#### Return value
 
 This method does not have a return value.
 
@@ -101,11 +101,11 @@ This method starts the auto resizer of the iFrame height.
 sw.location.startAutoResizer();
 ```
 
-### Parameters
+#### Parameters
 
 No parameters needed.
 
-### Return value
+#### Return value
 
 This method does not have a return value.
 
@@ -117,11 +117,11 @@ This method stops the auto resizer of the iFrame height:
 sw.location.stopAutoResizer();
 ```
 
-### Parameters
+#### Parameters
 
 No parameters needed.
 
-### Return value
+#### Return value
 
 This method does not have a return value.
 
@@ -144,7 +144,7 @@ const currentUrl = window.location.href;
 sw.location.updateUrl(new URL(currentUrl))
 ```
 
-### Parameters
+#### Parameters
 
 | Name            | Required | Default | Description                           |
 | :-------------- | :------- | :------ | :------------------------------------ |

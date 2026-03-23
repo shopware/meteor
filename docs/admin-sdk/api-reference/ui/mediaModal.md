@@ -16,7 +16,7 @@ This method allows apps to interact with the Administration's media modal. Two m
 
 Open the media modal in the current view.
 
-### Usage
+#### Usage
 
 ```ts
 ui.mediaModal.open({
@@ -28,7 +28,7 @@ ui.mediaModal.open({
 });
 ```
 
-### Parameters
+#### Parameters
 
 All parameters are similar to `sw-media-modal-v2` component's props
 
@@ -42,7 +42,7 @@ All parameters are similar to `sw-media-modal-v2` component's props
 | `selectors`        | false    | ['fileName', 'id', 'url'] | Selected properties which should be returned in callback function                    |
 | `callback`         | true     |                           | Callback function which will be called once the media item is selected.              |
 
-### Example
+#### Example
 
 ![Menu item example](./assets/media-modal.png)
 
@@ -61,7 +61,7 @@ ui.mediaModal.open({
 
 Open save media modal in the current view.
 
-### Usage
+#### Usage
 
 ```ts
 ui.mediaModal.openSaveMedia({
@@ -72,7 +72,7 @@ ui.mediaModal.openSaveMedia({
 });
 ```
 
-### Parameters
+#### Parameters
 
 All parameters are similar to `sw-media-save-modal` component's props
 
@@ -83,7 +83,7 @@ All parameters are similar to `sw-media-save-modal` component's props
 | `fileType`  | false    | null                      | File extension of media to display on file name input's suffix                                    |
 | `callback`         | true     |                           | This callback function is triggered when the "Save media" button is clicked. It returns the updated file name and the folderId where the media is stored.              |
 
-### Example
+#### Example
 
 ![Menu item example](./assets/save-media-modal.png)
 

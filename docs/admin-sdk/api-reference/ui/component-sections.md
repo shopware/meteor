@@ -28,13 +28,13 @@ ui.componentSection.add({
 })
 ```
 
-### Parameters
+#### Parameters
 
 | Name        | Required | Default | Description                                    |
 | :---------- | :------- | :------ | :--------------------------------------------- |
 | `component` | true     |         | Choose the component which you want to render. |
 
-### Return value
+#### Return value
 
 This method does not have a return value.
 

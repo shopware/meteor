@@ -15,7 +15,7 @@ Use this when your extension provides configurable options that should appear in
 
 Add a new settings item to the Shopware settings. The content of the settings item module is determined by your `locationId`. A specific view or a set of actions can be triggered based on the `locationId`.
 
-### Usage
+#### Usage
 
 ```ts
 ui.settings.addSettingsItem({
@@ -28,7 +28,7 @@ ui.settings.addSettingsItem({
 });
 ```
 
-### Parameters
+#### Parameters
 
 | Name                 | Required | Default        | Description                                                   |
 | :------------------- | :------- | :------------- | :------------------------------------------------------------ |
@@ -43,7 +43,7 @@ ui.settings.addSettingsItem({
 
 If your editor supports TypeScript, you should get auto-completion when importing icons from the Meteor icon package. To browse available icons, see the [Meteor icon kit repository](https://github.com/shopware/meteor/tree/main/packages/icon-kit).
 
-### Example
+#### Example
 
 ![Settings item example](./assets/add-settings-item-example.png)
 
