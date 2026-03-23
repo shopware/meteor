@@ -13,5 +13,6 @@ redirects:
   tooling/index.html: develop/index.html
   tooling/vue-devtools.html: develop/devtools.html
   assets/sidebar-example.png: ui/assets/sidebar-example.png
+  README.html: introduction.html
   api-reference/data/in-app-purchases.html: api-reference/ui/purchases-and-payments/in-app-purchases.html
   api-reference/ui/paymentOverviewCard.html: api-reference/ui/purchases-and-payments/paymentOverviewCard.html

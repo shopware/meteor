@@ -71,25 +71,6 @@ Create an HTML file called `my-example-app.html`. This is the page that Shopware
 
 ::: code-group
 
-```html [cdn]
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-</head>
-<body>
-  <script src="https://unpkg.com/@shopware-ag/meteor-admin-sdk/cdn"></script>
-
-  <script>
-    sw.notification.dispatch({
-      title: 'Meteor Admin SDK installed',
-      message: 'Your app is connected successfully'
-    });
-  </script>
-</body>
-</html>
-```
-
 ```html [npm]
 <!DOCTYPE html>
 <html lang="en">
@@ -109,15 +90,34 @@ Create an HTML file called `my-example-app.html`. This is the page that Shopware
 </html>
 ```
 
+```html [cdn]
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+</head>
+<body>
+  <script src="https://unpkg.com/@shopware-ag/meteor-admin-sdk/cdn"></script>
+
+  <script>
+    sw.notification.dispatch({
+      title: 'Meteor Admin SDK installed',
+      message: 'Your app is connected successfully'
+    });
+  </script>
+</body>
+</html>
+```
+
 :::
 
 When using npm, the SDK must be bundled with a build tool like Vite. See the [App development guide](https://developer.shopware.com/docs/guides/plugins/apps/app-base-guide).
 
 #### Serving the HTML file
 
-The scaffolded Hono app server does not serve static files by default. You need to add a route that serves `my-example-app.html`.
+Create the file at `demo-app/my-example-app.html` (next to `index.ts` in the app server project).
 
-Place the file next to your `index.ts` (e.g. `demo-app/my-example-app.html`), then add a route to serve it:
+The scaffolded Hono app server does not serve static files by default. Add a route to your `index.ts` that serves the HTML file:
 
 ```ts
 import { readFileSync } from 'node:fs';
@@ -161,7 +161,7 @@ Example `manifest.xml` for a local dev setup (app server running on port 3000):
     <setup>
         <!-- Use host.docker.internal if Shopware runs in Docker -->
         <registrationUrl>http://host.docker.internal:3000/register</registrationUrl>
-        <secret>S3cr3tf0re$t</secret>
+        <secret>Test</secret>
     </setup>
 
     <admin>
@@ -170,6 +170,10 @@ Example `manifest.xml` for a local dev setup (app server running on port 3000):
     </admin>
 </manifest>
 ```
+
+:::warning Keep secrets in sync
+The `<secret>` in `manifest.xml` must match the `appSecret` in your app server's `configureAppServer()` call. If you change one, update the other — otherwise the registration handshake will fail.
+:::
 
 ### 4. Install and activate the app
 
