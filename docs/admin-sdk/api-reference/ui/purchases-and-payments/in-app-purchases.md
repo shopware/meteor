@@ -11,6 +11,19 @@ nav:
 
 In-App purchases allow apps to unlock different functionality based on purchases made by the user. This guide covers how to start the in-app purchase flow directly from the Administration.
 
+::: code-group
+
+```ts [npm]
+import { iap } from '@shopware-ag/meteor-admin-sdk';
+```
+
+```ts [cdn]
+// use sw.iap instead of iap
+sw.iap.purchase({ identifier: '...' });
+```
+
+:::
+
 ## Start the purchase flow
 
 To open a modal with details about the feature that can be purchased:

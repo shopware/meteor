@@ -13,6 +13,19 @@ More information on how to develop CMS elements can be found in these guides for
 
 ![Register a CMS element in your Shopping Experiences Module via App](../assets/register-cms-element-example.png)
 
+::: code-group
+
+```ts [npm]
+import { cms } from '@shopware-ag/meteor-admin-sdk';
+```
+
+```ts [cdn]
+// use sw.cms instead of cms
+sw.cms.registerCmsElement({ /* ... */ });
+```
+
+:::
+
 #### Usage
 
 ```ts

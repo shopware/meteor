@@ -15,6 +15,19 @@ Avoid opening modals automatically without context, as this interrupts the userâ
 
 See also: [Base Options](../base-options.md) for shared configuration options supported by SDK message APIs.
 
+::: code-group
+
+```ts [npm]
+import { ui } from '@shopware-ag/meteor-admin-sdk';
+```
+
+```ts [cdn]
+// use sw.ui instead of ui
+sw.ui.modal.open({ /* ... */ });
+```
+
+:::
+
 ## Open modal
 
 Open a new modal in the current view. The content of the modal is determined by your `locationId` or by using plain text with `textContent`.

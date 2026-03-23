@@ -11,6 +11,19 @@ With `data.subscribe`, you can subscribe to changes in the dataset.
 Every time the dataset you subscribed to changes, the callback will be called with the new data.
 An individual dataset is referenced by an ID. [The data handling guide](../../concepts/datahandling.md) explains how to find available datasets.
 
+::: code-group
+
+```ts [npm]
+import { data } from '@shopware-ag/meteor-admin-sdk';
+```
+
+```ts [cdn]
+// use sw.data instead of data
+sw.data.subscribe('sw-product-detail__product', callback);
+```
+
+:::
+
 ## Usage
 
 ```ts

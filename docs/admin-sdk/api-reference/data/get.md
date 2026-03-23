@@ -12,6 +12,19 @@ Compared to `data.subscribe`, `data.get` only gives you the current state of the
 
 [The data handling guide](../../concepts/datahandling.md) explains how to find available datasets.
 
+::: code-group
+
+```ts [npm]
+import { data } from '@shopware-ag/meteor-admin-sdk';
+```
+
+```ts [cdn]
+// use sw.data instead of data
+sw.data.get({ id: 'sw-product-detail__product' });
+```
+
+:::
+
 ## Usage
 
 ```ts

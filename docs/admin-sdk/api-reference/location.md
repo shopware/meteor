@@ -10,6 +10,19 @@ Locations define where extension code is executed inside the Shopware Administra
 
 Each location represents a specific UI context (for example a tab, modal, sidebar, or hidden entry point). Extensions typically check the current location before deciding which UI elements to register or which view to render.
 
+::: code-group
+
+```ts [npm]
+import { location } from '@shopware-ag/meteor-admin-sdk';
+```
+
+```ts [cdn]
+// use sw.location instead of location
+sw.location.is(sw.location.MAIN_HIDDEN);
+```
+
+:::
+
 ## Prerequisites
 
 See [Locations](../concepts/locations.md) for a full explanation of the concept.

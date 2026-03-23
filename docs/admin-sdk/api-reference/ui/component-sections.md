@@ -10,6 +10,19 @@ Component sections allow extensions to render UI components inside existing Admi
 
 See the [Component Sections concept](../../concepts/component-sections.md) for an overview.
 
+::: code-group
+
+```ts [npm]
+import { ui } from '@shopware-ag/meteor-admin-sdk';
+```
+
+```ts [cdn]
+// use sw.ui instead of ui
+sw.ui.componentSection.add({ /* ... */ });
+```
+
+:::
+
 ## Add
 
 Add a new component to a component section.

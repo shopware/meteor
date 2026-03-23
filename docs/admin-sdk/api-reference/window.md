@@ -8,6 +8,19 @@ sidebar_position: 70
 
 The Window API provides methods for navigation and window-related utilities inside the Shopware Administration.
 
+::: code-group
+
+```ts [npm]
+import { window as swWindow } from '@shopware-ag/meteor-admin-sdk';
+```
+
+```ts [cdn]
+// use sw.window instead of window
+sw.window.routerPush({ name: '...' });
+```
+
+:::
+
 ## redirect()
 
 Redirect to an external URL.

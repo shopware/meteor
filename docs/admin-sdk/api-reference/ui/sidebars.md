@@ -9,6 +9,19 @@ nav:
 
 A sidebar provides a contextual panel that displays at the right edge of the Administration window. Unlike modals, sidebars allow users to view and interact with additional content or functionality without losing context of the main interface. Sidebars should be opened in response to user interaction rather than appearing automatically. As a best practice, avoid opening sidebars without clear user context - for example, automatically displaying extension changelog sidebars immediately after login creates a poor user experience by requiring manual dismissal of each one.
 
+::: code-group
+
+```ts [npm]
+import { ui } from '@shopware-ag/meteor-admin-sdk';
+```
+
+```ts [cdn]
+// use sw.ui instead of ui
+sw.ui.sidebar({ /* ... */ });
+```
+
+:::
+
 ## Add a sidebar
 
 Add a new sidebar. The content of the sidebar is determined by your `locationId`.

@@ -14,6 +14,19 @@ The value stored within the shared state can be any data type that can be serial
 
 ![useSharedState demo](../assets/useSharedState-demo.gif)
 
+::: code-group
+
+```ts [npm]
+import { composables } from '@shopware-ag/meteor-admin-sdk';
+```
+
+```ts [cdn]
+// use sw.composables instead of composables
+sw.composables.useSharedState('my-key', defaultValue);
+```
+
+:::
+
 ## Usage
 
 ```ts

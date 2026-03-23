@@ -12,6 +12,19 @@ This method allows apps to interact with the Administration's media modal. Two m
 - **Media modal**: Select existing media from the media library or upload new files. Available since Shopware 6.7.1.
 - **Save media modal**: Choose a specific folder and filename when saving media. Available since Shopware 6.7.5.
 
+::: code-group
+
+```ts [npm]
+import { ui } from '@shopware-ag/meteor-admin-sdk';
+```
+
+```ts [cdn]
+// use sw.ui instead of ui
+sw.ui.mediaModal.open({ /* ... */ });
+```
+
+:::
+
 ## ui.mediaModal.open()
 
 Open the media modal in the current view.

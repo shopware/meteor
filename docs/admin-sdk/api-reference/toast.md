@@ -12,6 +12,19 @@ See also: [Base Options](../api-reference/base-options.md) for shared configurat
 
 > Available since Shopware v6.6.2.0
 
+::: code-group
+
+```ts [npm]
+import { toast } from '@shopware-ag/meteor-admin-sdk';
+```
+
+```ts [cdn]
+// use sw.toast instead of toast
+sw.toast.dispatch({ msg: '...' });
+```
+
+:::
+
 ## Dispatch a toast
 
 ![toast example](./assets/toast-example.png)

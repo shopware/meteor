@@ -11,6 +11,19 @@ An action button adds a clickable button to an existing area of the Shopware Adm
 
 Action buttons are typically used to trigger extension-specific actions such as opening a modal, executing a workflow, or navigating to an extension module.
 
+::: code-group
+
+```ts [npm]
+import { ui } from '@shopware-ag/meteor-admin-sdk';
+```
+
+```ts [cdn]
+// use sw.ui instead of ui
+sw.ui.actionButton.add({ /* ... */ });
+```
+
+:::
+
 ## Usage
 
 ```ts

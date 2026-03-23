@@ -10,6 +10,19 @@ Menu items allow extensions to add navigation entries to existing areas of the S
 
 They are typically used to expose extension functionality inside existing admin modules.
 
+::: code-group
+
+```ts [npm]
+import { ui } from '@shopware-ag/meteor-admin-sdk';
+```
+
+```ts [cdn]
+// use sw.ui instead of ui
+sw.ui.menu.addMenuItem({ /* ... */ });
+```
+
+:::
+
 ## Toggle menu
 
 > Available since Shopware v6.6.2.0

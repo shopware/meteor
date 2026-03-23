@@ -11,6 +11,19 @@ A settings item adds an entry to the Shopware Administration settings area.
 
 Use this when your extension provides configurable options that should appear in the central settings section.
 
+::: code-group
+
+```ts [npm]
+import { ui } from '@shopware-ag/meteor-admin-sdk';
+```
+
+```ts [cdn]
+// use sw.ui instead of ui
+sw.ui.settings.addSettingsItem({ /* ... */ });
+```
+
+:::
+
 ## Add settings item
 
 Add a new settings item to the Shopware settings. The content of the settings item module is determined by your `locationId`. A specific view or a set of actions can be triggered based on the `locationId`.

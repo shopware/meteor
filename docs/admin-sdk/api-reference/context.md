@@ -10,6 +10,19 @@ The Context API provides read access to the current state of the Shopware Admini
 
 This is useful for adapting extension behavior based on the current Administration context — for example, loading translations for the active language or checking the Shopware version before using a newer API.
 
+::: code-group
+
+```ts [npm]
+import { context } from '@shopware-ag/meteor-admin-sdk';
+```
+
+```ts [cdn]
+// use sw.context instead of context
+sw.context.getLanguage();
+```
+
+:::
+
 ## context.getLanguage()
 
 Returns the current Administration language ID and the system default language ID. Use this to load the correct translations or filter data by language.

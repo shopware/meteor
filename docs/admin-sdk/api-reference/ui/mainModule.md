@@ -11,6 +11,19 @@ A main module registers a new top-level section in the Shopware Administration n
 
 Use a main module when your extension provides a dedicated application area with its own pages and functionality.
 
+::: code-group
+
+```ts [npm]
+import { ui } from '@shopware-ag/meteor-admin-sdk';
+```
+
+```ts [cdn]
+// use sw.ui instead of ui
+sw.ui.mainModule.add({ /* ... */ });
+```
+
+:::
+
 ## addMainModule()
 
 Add a main module to your extension. The content of the main module is determined by your `locationId`. A specific view or a set of actions can be triggered based on the `locationId`.

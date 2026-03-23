@@ -67,11 +67,11 @@ Using the [App Server SDK](https://github.com/shopware/app-sdk-js) is recommende
 
 ### 2. Create the Administration HTML page
 
-Create an HTML file. This file must be accessible via URL, so ensure that it is served by the app server.
+Create an HTML file called `my-example-app.html`. This is the page that Shopware loads inside the Administration when the app is active.
 
-CDN example:
+::: code-group
 
-```html
+```html [cdn]
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -90,9 +90,7 @@ CDN example:
 </html>
 ```
 
-npm example:
-
-```html
+```html [npm]
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -111,7 +109,34 @@ npm example:
 </html>
 ```
 
-The SDK must be bundled using the build tool. See the [App development guide](https://developer.shopware.com/docs/guides/plugins/apps/app-base-guide).
+:::
+
+When using npm, the SDK must be bundled with a build tool like Vite. See the [App development guide](https://developer.shopware.com/docs/guides/plugins/apps/app-base-guide).
+
+#### Serving the HTML file
+
+The scaffolded Hono app server does not serve static files by default. You need to add a route that serves `my-example-app.html`.
+
+Place the file next to your `index.ts` (e.g. `demo-app/my-example-app.html`), then add a route to serve it:
+
+```ts
+import { readFileSync } from 'node:fs';
+
+app.get('/my-example-app.html', (c) => {
+  const html = readFileSync('./my-example-app.html', 'utf-8');
+  return c.html(html);
+});
+```
+
+Alternatively, serve all files from a `public/` folder using Hono's static file middleware:
+
+```ts
+import { serveStatic } from '@hono/node-server/serve-static';
+
+app.use('/*', serveStatic({ root: './public' }));
+```
+
+With this approach, place the HTML file at `demo-app/public/my-example-app.html`.
 
 ### 3. Register the Administration page in `manifest.xml`
 

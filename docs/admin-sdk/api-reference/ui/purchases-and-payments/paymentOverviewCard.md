@@ -13,6 +13,19 @@ Starting with Shopware **6.4.14.0**, extensions can replace the default payment 
 
 For example, you might require merchants to complete an onboarding process with your payment provider before enabling the payment method.
 
+::: code-group
+
+```ts [npm]
+import { ui, location } from '@shopware-ag/meteor-admin-sdk';
+```
+
+```ts [cdn]
+// use sw.ui and sw.location instead of ui and location
+sw.ui.module.payment.overviewCard.add({ /* ... */ });
+```
+
+:::
+
 ## Parameters
 
 | Name                    | Required | Default        | Description                                                                                                                         |
