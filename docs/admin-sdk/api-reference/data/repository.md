@@ -79,7 +79,7 @@ criteria.getAssociation('categories')
 ```
 
 
-### Search
+### repository.search()
 Sends a search request for the repository entity.
 
 #### Usage:  
@@ -98,7 +98,7 @@ const yourEntities = await exampleRepository.search(yourCriteria);
 #### Return value:
 The return value is a EntityCollection which contains all entities matching the criteria.
 
-### Get
+### repository.get()
 Short hand to fetch a single entity from the server
 
 #### Usage:  
@@ -118,7 +118,7 @@ const yourEntity = await exampleRepository.get('theEntityId');
 #### Return value:
 The return value is the entity result when a matching entity was found.
 
-### Save
+### repository.save()
 Detects all entity changes and send the changes to the server.
 If the entity is marked as new, the repository will send a POST create. Updates will be send as PATCH request.
 Deleted associations will be send as additional request
@@ -139,7 +139,7 @@ await exampleRepository.save(yourEntityObject);
 #### Return value:
 This method does not have a return value. It just returns a Promise which is resolved when it was saved successfully.
 
-### Clone
+### repository.clone()
 Clones an existing entity
 
 #### Usage:  
@@ -158,7 +158,7 @@ const clonedEntityId = await exampleRepository.clone('theEntityIdToClone');
 #### Return value:
 This method returns the id of the cloned entity.
 
-### Has changes
+### repository.hasChanges()
 Detects if the entity or the relations has remaining changes which are not synchronized with the server
 
 #### Usage:  
@@ -176,7 +176,7 @@ const hasChanges = await exampleRepository.hasChanges(yourEntityObject);
 #### Return value:
 This method returns a boolean value. If the entity has changes then it returns `true`. Otherwise it returns `false`.
 
-### Save all
+### repository.saveAll()
 Detects changes of all provided entities and send the changes to the server
 
 #### Usage:  
@@ -195,7 +195,7 @@ await exampleRepository.saveAll(yourEntityCollection);
 #### Return value:
 This method does not have a return value. It just returns a Promise which is resolved when it was saved successfully.
 
-### Delete
+### repository.delete()
 Sends a delete request for the provided id.
 
 #### Usage:  
@@ -214,7 +214,7 @@ await exampleRepository.delete('yourEntityId');
 #### Return value:
 This method does not have a return value. It just returns a Promise which is resolved when it was deleted successfully.
 
-### Create
+### repository.create()
 Creates a new entity for the local schema. To Many association are initialed with a collection with the corresponding remote api route. This entity is not saved to the database yet.
 
 #### Usage:  

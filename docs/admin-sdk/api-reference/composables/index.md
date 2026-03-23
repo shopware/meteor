@@ -1,13 +1,13 @@
 ---
-title: "Composable APIs"
+title: "Vue Composables"
 nav:
-  position: 10
+  position: 400
 ---
 
 
-# Composable APIs
+# Vue Composables
 
-Composable APIs provide reusable helpers for working with the Shopware Administration data layer and shared state inside extensions.
+Composable APIs provide reusable Vue Composables for working with the Shopware Administration data layer and shared state inside extensions.
 
 They simplify common tasks such as accessing repositories or sharing reactive state between different parts of an extension.
 

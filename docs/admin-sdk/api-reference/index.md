@@ -12,9 +12,9 @@ These APIs allow extensions to add user interface elements, access and modify en
 
 Use the sections below to navigate the available APIs.
 
-## Extending the Administration UI
+## Extending the UI
 
-These UI extension components allow extensions to add UI elements to the Shopware Administration. They can be used to register modules, add navigation entries, extend existing pages, and display dialogs or side panels.
+These components allow extensions to add UI elements to the Shopware Administration. They can be used to register modules, add navigation entries, extend existing pages, and display dialogs or side panels.
 
 Typical use cases include:
 
@@ -51,11 +51,11 @@ Typical workflows include:
 
 Tools this section include:
 
-- [Repository](./data/repository.md)
+- [Repository](./data/repository.md): Access Shopware entity repositories
 - [Get](./data/get.md)
 - [Subscribe](./data/subscribe.md)
 - [Update](./data/update.md)
-- [In-App Purchases](./data/in-app-purchases.md)
+- [Trigger an In-App Purchase](./data/in-app-purchases.md)
 
 ## Composable APIs
 

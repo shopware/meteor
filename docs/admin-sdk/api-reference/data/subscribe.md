@@ -7,7 +7,9 @@ nav:
 
 # Subscribe
 
-With `data.subscribe` you can subscribe to dataset changes. The callback will be called every time, the dataset with the matching id is changed. More information on how to find the unique identifiers can be found in [the data handling guide](../../concepts/datahandling.md).
+With `data.subscribe`, you can subscribe to changes in the dataset. 
+Every time the dataset you subscribed to changes, the callback will be called with the new data.
+An individual dataset is referenced by an ID. [The data handling guide](../../concepts/datahandling.md) explains how to find available datasets.
 
 ## Usage
 

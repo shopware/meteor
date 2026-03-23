@@ -1,7 +1,7 @@
 ---
-title: "Extending the Administration UI"
+title: "Extending the UI"
 nav:
-  position: 10
+  position: 100
 ---
 
 

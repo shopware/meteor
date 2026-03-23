@@ -11,7 +11,7 @@ A main module registers a new top-level section in the Shopware Administration n
 
 Use a main module when your extension provides a dedicated application area with its own pages and functionality.
 
-## Add main module
+## addMainModule()
 
 Add a main module to your extension. The content of the main module is determined by your `locationId`. A specific view or a set of actions can be triggered based on the `locationId`.
 
@@ -68,7 +68,7 @@ if (location.is('main-location-id')) {
 }
 ```
 
-## Add smart bar button to main module
+## addSmartbarButton()
 
 Add a button to the smart bar of your main module. The button can be used to trigger actions, e.g. saving, cancel, etc. The location ID needs to be defined and have the same value as the `locationId` of the main module.
 
@@ -95,7 +95,7 @@ ui.mainModule.addSmartbarButton({
 | `onClickCallback` | true     |           | Callback function which will be called once the button is clicked                                                   |
 | `disabled`        | false    | false     | Toggle disabled state of the button                                                                                 |
 
-## Hide smart bar
+## hideSmartBar()
 
 Turn the smart bar off as needed.
 

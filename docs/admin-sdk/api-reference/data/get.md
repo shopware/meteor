@@ -10,7 +10,7 @@ With `data.get` you can receive datasets from the Shopware Administration.
 
 Compared to `data.subscribe`, `data.get` only gives you the current state of the data. If the data is not available yet, such as when opening a page, you won't receive any data. In these cases, it's better to subscribe to data changes instead.
 
-More information on how to find the unique identifiers can be found in the [data-handling guide](../../concepts/datahandling.md).
+[The data handling guide](../../concepts/datahandling.md) explains how to find available datasets.
 
 ## Usage
 

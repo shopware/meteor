@@ -7,7 +7,7 @@ nav:
 
 # Update
 
-With `data.update` you can update datasets from the Shopware Administration. More information on how to find the unique identifiers can be found in [the data-handling guide](../../concepts/datahandling.md).
+With `data.update` you can update datasets from the Shopware Administration. [The data handling guide](../../concepts/datahandling.md) explains how to find available datasets.
 
 ## Usage
 

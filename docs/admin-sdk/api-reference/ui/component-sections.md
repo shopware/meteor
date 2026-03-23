@@ -51,7 +51,7 @@ This method does not have a return value.
 | `locationId` | true     |         | The locationId for the custom view |
 | `tabs`       | false    |         | Render different content with tabs |
 
-#### Usage
+#### Example: Add a component to the product page
 
 ```js
 import { ui } from '@shopware-ag/meteor-admin-sdk';
@@ -67,11 +67,9 @@ ui.componentSection.add({
 })
 ```
 
-#### Example
-
 ![Card component example](./assets/example-card.png)
 
-#### With tabs
+#### Example: Add tabs to the card
 
 ```js
 import { ui } from '@shopware-ag/meteor-admin-sdk';
@@ -99,7 +97,5 @@ ui.componentSection.add({
     }
 })
 ```
-
-#### Example
 
 ![Card component with tabs example](./assets/example-card-with-tabs.png)

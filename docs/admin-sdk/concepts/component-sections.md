@@ -7,7 +7,7 @@ nav:
 
 # Component Sections
 
-Component sections allow extensions to render UI components inside predefined extension points in the Shopware Administration.
+Component sections allow extensions to render custom UI components inside predefined extension points in the Shopware Administration.
 
 Unlike other extension APIs that modify existing UI elements (such as tabs or buttons), component sections allow extensions to inject full components into specific UI positions.
 

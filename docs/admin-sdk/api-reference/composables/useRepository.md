@@ -7,13 +7,9 @@ nav:
 
 # useRepository
 
-:::info
-Some older examples reference `getRepository`. This helper is not part of the public API. Use [`useRepository`](./useRepository.md) instead.
-:::
+The `composables.useRepository` function creates a reactive repository instance that automatically updates when its dependencies change. This is particularly useful when you need a repository that responds to reactive data changes in your Vue components.
 
-The `composables.useRepository` function is a reactive wrapper around the `getRepository` function. It creates a repository instance that automatically updates when its dependencies change. This is particularly useful when you need a repository that responds to reactive data changes in your Vue components.
-
-Unlike `getRepository`, which returns a static repository instance, `useRepository` accepts reactive references (refs) or values as parameters and returns a computed repository that updates when those parameters change.
+`useRepository` accepts reactive references (refs) or values as parameters and returns a computed repository that updates when those parameters change.
 
 ## Usage
 
@@ -31,9 +27,8 @@ const productRepository = useRepository(entityName);
 entityName.value = 'category';
 // Now productRepository.value references a category repository
 
-// With a reactive repository factory
-const myFactory = ref(customRepositoryFactory);
-const repository = useRepository('product', myFactory);
+// With a custom repository factory
+const repository = useRepository('product', myRepositoryFactory);
 
 // Search for products
 const products = await repository.value.search(criteria);
@@ -59,27 +54,9 @@ This reactivity is implemented using Vue's computed properties, ensuring that th
 
 A computed ref containing a repository that updates when its dependencies change. The repository provides the same methods as described in the `getRepository` documentation, but you need to access them through the `.value` property of the computed ref.
 
-## Relationship with getRepository
+## How it works
 
-Under the hood, `useRepository` calls `getRepository` whenever its dependencies change. This means:
+`useRepository` uses Vue's `computed` to automatically recreate the repository when its inputs change. This follows Vue's composition API conventions, where composables prefixed with "use" provide reactive wrappers.
 
-- It uses the same repository factory resolution logic as `getRepository`
-- It provides the same repository interface and functionality
+- It provides the full repository interface (search, get, save, delete, etc.)
 - It adds reactivity, automatically updating when inputs change
-
-```ts
-// Example implementation (simplified)
-import { computed } from 'vue';
-import { getRepository } from './getRepository';
-
-export function useRepository(entityNameRef, factoryRef) {
-  return computed(() => {
-    const entityName = unref(entityNameRef);
-    const factory = unref(factoryRef);
-    
-    return getRepository(entityName, factory);
-  });
-}
-```
-
-This pattern follows Vue's composition API conventions, where composables prefixed with "use" typically provide reactive wrappers around non-reactive functionality.

@@ -12,9 +12,9 @@ This method allows apps to interact with the Administration's media modal. Two m
 - **Media modal**: Select existing media from the media library or upload new files. Available since Shopware 6.7.1.
 - **Save media modal**: Choose a specific folder and filename when saving media. Available since Shopware 6.7.5.
 
-## Open modal
+## ui.mediaModal.open()
 
-Open media modal in the current view.
+Open the media modal in the current view.
 
 ### Usage
 

@@ -7,7 +7,7 @@ nav:
 
 # Data Handling
 
-This guide elaborates how the data handling works between extensions and the Shopware Sdministration.
+This guide elaborates on how the data handling works between extensions and the Shopware Administration.
 
 ## What are datasets?
 
