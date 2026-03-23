@@ -171,8 +171,8 @@ Example `manifest.xml` for a local dev setup (app server running on port 3000):
 </manifest>
 ```
 
-:::warning Keep secrets in sync
-The `<secret>` in `manifest.xml` must match the `appSecret` in your app server's `configureAppServer()` call. If you change one, update the other — otherwise the registration handshake will fail.
+:::warning Keep name and secret in sync
+The `<name>` and `<secret>` in `manifest.xml` must match the `appName` and `appSecret` in your app server's `configureAppServer()` call. If you change one, update the other — otherwise the registration handshake will fail.
 :::
 
 ### 4. Install and activate the app
