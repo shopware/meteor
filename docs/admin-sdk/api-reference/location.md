@@ -127,6 +127,8 @@ This method does not have a return value.
 
 ## URL changes inside your app
 
+> Available since Shopware v6.6.8.0
+
 You can track and emit your URL changes only inside your own main module or settings page.
 
 ### Update URL

@@ -413,9 +413,11 @@ The ID can be used to change the current route to the module.
 #### Usage
 
 ```ts
+import { window as swWindow } from '@shopware-ag/meteor-admin-sdk';
+
 const { modules } = await context.getModuleInformation();
 
-window.routerPush({
+swWindow.routerPush({
   name: 'sw.extension.sdk.index',
   params: {
     id: modules[0].id
