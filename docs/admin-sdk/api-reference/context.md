@@ -6,7 +6,13 @@ sidebar_position: 40
 
 # Context
 
+The Context API provides read access to the current state of the Shopware Administration. Extensions can use these methods to retrieve information about the active language, locale, currency, environment, Shopware version, and more.
+
+This is useful for adapting extension behavior based on the current Administration context — for example, loading translations for the active language or checking the Shopware version before using a newer API.
+
 ## Language
+
+Retrieve or subscribe to the currently active Administration language.
 
 ### Get current language
 
@@ -74,6 +80,8 @@ sw.context.subscribeLanguage(({ languageId, systemLanguageId }) => {
 
 ## Environment
 
+Check whether the Administration is running in development, production, or testing mode.
+
 ### Get current environment
 
 #### Usage
@@ -99,6 +107,8 @@ Promise<'development' | 'production' | 'testing'>
 ```
 
 ## Locale
+
+Retrieve or subscribe to the browser locale used by the Administration UI.
 
 ### Get current locale
 
@@ -166,6 +176,8 @@ sw.context.subscribeLocale(({ locale, fallbackLocale }) => {
 
 ## Currency
 
+Retrieve the system currency configured for the Shopware instance.
+
 ### Get current currency
 
 #### Usage
@@ -197,6 +209,8 @@ Promise<{
 ```
 
 ## Shopware version
+
+Query the Shopware version to conditionally enable features or check compatibility.
 
 ### Get current Shopware version
 
@@ -263,6 +277,8 @@ true
 
 ## App information
 
+Retrieve metadata about the current app or plugin, including its name, version, type, and granted privileges.
+
 ### Get app information
 
 > The privileges property will be available with Shopware v6.7.1.0 and higher
@@ -299,6 +315,8 @@ Promise<{ name: string ; version: string ; type: 'app' | 'plugin', privileges: p
 ```
 
 ## User information
+
+Access details about the currently logged-in Administration user.
 
 ### Get user information
 
@@ -361,6 +379,8 @@ Promise<{
 
 ## User Timezone
 
+Retrieve the timezone setting of the currently logged-in user.
+
 ### Get user timezone
 
 :::caution
@@ -388,6 +408,8 @@ Promise<string>
 This function returns a Promise that resolves to a string representing the user's timezone.
 
 ## Module information
+
+Query the list of registered extension modules to navigate between them.
 
 ### Get module information
 
@@ -442,6 +464,8 @@ Promise<{
 
 ## ShopId
 
+Retrieve the unique shop ID used by Shopware's app system.
+
 ### Get the shopId
 
 > Available since Shopware v6.7.1.0
@@ -466,9 +490,9 @@ Promise<string>
 
 ## Check app's privileges
 
-> Available since Shopware 6.7.1.0
+Check whether a specific privilege is granted for the current app. Useful for conditionally showing features.
 
-This lets you check if a specific privilege is granted for your app
+> Available since Shopware 6.7.1.0
 
 #### Usage
 
