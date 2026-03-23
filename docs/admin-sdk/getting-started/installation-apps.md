@@ -148,7 +148,7 @@ As required by Shopware's app system, the `<setup>` section must already contain
 Remember: the `registrationUrl` must be reachable by the Shopware server. If Shopware runs in Docker, use `host.docker.internal` for that URL. The `base-app-url` is loaded by the browser, so `localhost` works fine there.
 :::
 
-Example `manifest.xml` for a local dev setup (app server running on port 3000):
+Create the file at `/custom/apps/MyExampleApp/manifest.xml` in your Shopware installation. Example for a local dev setup (app server running on port 3000):
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -161,7 +161,7 @@ Example `manifest.xml` for a local dev setup (app server running on port 3000):
     <setup>
         <!-- Use host.docker.internal if Shopware runs in Docker -->
         <registrationUrl>http://host.docker.internal:3000/register</registrationUrl>
-        <secret>Test</secret>
+        <secret>S3cr3tf0re$t</secret>
     </setup>
 
     <admin>
@@ -171,17 +171,23 @@ Example `manifest.xml` for a local dev setup (app server running on port 3000):
 </manifest>
 ```
 
-:::warning Keep name and secret in sync
-The `<name>` and `<secret>` in `manifest.xml` must match the `appName` and `appSecret` in your app server's `configureAppServer()` call. If you change one, update the other — otherwise the registration handshake will fail.
-:::
+The `<name>` and `<secret>` in the manifest must match the `appName` and `appSecret` in your app server. Open `demo-app/index.ts` and update the `configureAppServer` call to match:
+
+```ts
+configureAppServer(app, {
+  appName: "MyExampleApp",
+  appSecret: "S3cr3tf0re$t",
+  shopRepository: new BetterSqlite3Repository('shop.db'),
+});
+```
+
+If name or secret don't match between manifest and app server, the registration handshake will fail.
 
 ### 4. Install and activate the app
 
-The manifest needs to be stored under `/custom/apps/<your-app-name>/manifest.xml`. Then install using the command line:
-
 ```bash
 # if you are using Docker, run the following commands inside the container: docker compose exec -it web /bin/bash
-bin/console app:install --activate <your-app-name>
+bin/console app:install --activate MyExampleApp
 bin/console cache:clear
 ```
 
