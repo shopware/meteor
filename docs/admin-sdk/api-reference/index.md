@@ -34,7 +34,11 @@ UI extension components in this section include:
 - [Sidebars](./ui/sidebars.md)
 - [Modals](./ui/modals.md)
 - [Media Modal](./ui/mediaModal.md)
-- [Payment Overview Card](./ui/paymentOverviewCard.md)
+
+**Purchases and payments**
+
+- [In-App Purchases](./ui/purchases-and-payments/in-app-purchases.md): Start an in-app purchase flow
+- [Payment Overview Card](./ui/purchases-and-payments/paymentOverviewCard.md): Customize payment method cards
 
 ## Working with Data
 
@@ -55,7 +59,6 @@ Tools this section include:
 - [Get](./data/get.md)
 - [Subscribe](./data/subscribe.md)
 - [Update](./data/update.md)
-- [Trigger an In-App Purchase](./data/in-app-purchases.md)
 
 ## Composable APIs
 

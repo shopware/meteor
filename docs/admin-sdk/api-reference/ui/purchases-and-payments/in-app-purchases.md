@@ -1,7 +1,7 @@
 ---
 title: "In-App Purchases"
 nav:
-  position: 60
+  position: 10
 ---
 
 
@@ -16,7 +16,9 @@ In-App purchases allow apps to unlock different functionality based on purchases
 To open a modal with details about the feature that can be purchased:
 
 ```ts
-sw.iap.purchase({
+import { iap } from '@shopware-ag/meteor-admin-sdk';
+
+iap.purchase({
     identifier: 'your-in-app-purchase-id',
 });
 ```

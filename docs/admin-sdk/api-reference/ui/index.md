@@ -15,32 +15,22 @@ The following guides cover common UI extension patterns.
 
 ## Using UI components
 
-Shopware Administration components cannot be used directly inside apps or plugins. Instead, extensions should use the [Meteor Component Library](https://github.com/shopware/meteor/tree/main/packages/component-library) to achieve a native look and feel.
+Extensions should use the [Meteor Component Library](https://github.com/shopware/meteor/tree/main/packages/component-library) to build their UI. It provides Vue components designed to match the Administration look and feel and integrate seamlessly with the Meteor Admin SDK.
 
-Shopware Administration components are not native Vue components. They rely on internal extension capabilities, Twig templates, and framework integrations that are not available externally.
+## Adding new pages and navigation
 
-The Meteor Component Library provides Vue components designed to resemble the original Administration UI and integrate seamlessly with extensions built using the Meteor Admin SDK.
+- [Main Module](./mainModule.md): Add a dedicated app area in the Administration
+- [Menu](./menu.md): Add navigation entries to the sidebar
+- [Settings Item](./settingsItem.md): Place configuration inside the Administration settings
 
-## Typical UI extension workflow
+## Extending existing views
 
-A typical UI extension workflow often follows this progression.
+- [Tabs](./tabs.md): Add tabs to entity detail pages such as products, customers, or orders
+- [Component Sections](./component-sections.md): Inject custom components into extension points
+- [Sidebars](./sidebars.md): Display additional contextual information
 
-1. Create a new module: Use a [Main Module](./mainModule.md) when your extension needs a dedicated application area in the Administration.
+## Actions and dialogs
 
-2. Expose the module in navigation: Add a [Menu](./menu.md) entry so users can access your extension.
-
-3. Add configuration options: Use a [Settings Item](./settingsItem.md) to place configuration inside the Administration settings.
-
-4. Add interactive actions: Use an [Action Button](./actionButton.md) to trigger extension functionality from existing pages.
-
-5. Extend existing views: Add [Tabs](./tabs.md) to entity detail pages such as products, customers, or orders.
-
-6. Render custom UI inside existing views: Use [Component Sections](./component-sections.md) to add components to extension points.
-
-7. Provide contextual UI: Use [Sidebars](./sidebars.md) to display additional contextual information.
-
-8. Open dialogs and workflows: Use [Modals](./modals.md) for confirmations, forms, or multi-step workflows.
-
-9. Work with media: Use the [Media Modal](./mediaModal.md) to allow users to select or manage media assets.
-
-10. Extend specialized interfaces: Use a [Payment Overview Card](./paymentOverviewCard.md) to customize how payment methods appear in the Administration.
+- [Action Button](./actionButton.md): Trigger extension functionality from existing pages
+- [Modals](./modals.md): Confirmations, forms, or multi-step workflows
+- [Media Modal](./mediaModal.md): Select or manage media assets

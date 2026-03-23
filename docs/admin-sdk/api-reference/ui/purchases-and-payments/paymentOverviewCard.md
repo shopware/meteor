@@ -1,7 +1,7 @@
 ---
 title: "Payment Overview Cards"
 nav:
-  position: 110
+  position: 20
 ---
 
 
@@ -24,20 +24,17 @@ For example, you might require merchants to complete an onboarding process with 
 ## Extension example
 
 ```ts
-import { ui } from '@shopware-ag/meteor-admin-sdk';
+import { ui, location } from '@shopware-ag/meteor-admin-sdk';
 
-if (sw.location.is(sw.location.MAIN_HIDDEN)) {
-  // create the position
+if (location.is(location.MAIN_HIDDEN)) {
   ui.module.payment.overviewCard.add({
     positionId: 'my-custom-payment-overview-position',
     paymentMethodHandlers: [
       'handler_my_custom_payment_method_one',
       'handler_my_custom_payment_method_two', 
-      // ...
     ],
   });
     
-  // add your component to that position
   ui.componentSection.add({
     component: 'card',
     positionId: 'my-custom-payment-overview-position',
@@ -49,8 +46,7 @@ if (sw.location.is(sw.location.MAIN_HIDDEN)) {
   })
 }
 
-// render your view to that location
-if (sw.location.is('my-custom-payment-overview-position-before')) {
+if (location.is('my-custom-payment-overview-position-before')) {
   // your content here
 }
 ```

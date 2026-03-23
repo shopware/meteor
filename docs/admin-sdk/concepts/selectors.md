@@ -13,6 +13,29 @@ By selecting only the required properties, selectors reduce payload size and lim
 
 They are used in `data.subscribe` and `data.get`. Selectors are an array of strings, where each string represents the path to a property in the dataset.
 
+## Selector syntax
+
+A selector is a dot-separated string. Each segment between dots is one of the following:
+
+| Segment    | Syntax     | Description                                                          |
+| :--------- | :--------- | :------------------------------------------------------------------- |
+| Property   | `name`     | Access a named property on the current object                        |
+| Nested     | `a.b`      | Traverse into a nested object — each dot moves one level deeper      |
+| Array index| `[N]`      | Access a specific element in an array by its zero-based index        |
+| Wildcard   | `*`        | Iterate over all elements in an array                                |
+
+These segments combine to form a path from the root of the dataset to the value you want. For example:
+
+| Selector                 | Meaning                                                    |
+| :----------------------- | :--------------------------------------------------------- |
+| `name`                   | The `name` property at the root level                      |
+| `manufacturer.name`      | The `name` property of the `manufacturer` object           |
+| `variants.[0].name`      | The `name` of the first element in the `variants` array    |
+| `variants.*.name`        | The `name` of every element in the `variants` array        |
+| `manufacturer.id`        | The `id` property of the `manufacturer` object             |
+
+When multiple selectors are passed, their results are merged into a single object. Properties from the same parent are combined — for example `['manufacturer.id', 'manufacturer.name']` returns one `manufacturer` object containing both `id` and `name`.
+
 ## Example
 
 Consider the following example payload:
