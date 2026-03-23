@@ -16,7 +16,7 @@ This guide assumes **Shopware 6.7 or later**. Shopware 6.7 introduced a new exte
 
 Create the folder `custom/plugins/yourPluginName/src/Resources/app/meteor-app`. This is the base path for all new files for your extension.
 
-:::caution Shopware below 6.7
+:::info Shopware below 6.7
 Use the path `custom/plugins/yourPluginName/src/Resources/app/administration` instead.
 :::
 
@@ -48,7 +48,7 @@ Then create a JavaScript file in the subfolder `src/main.js` and reference it in
 </html>
 ```
 
-:::caution Shopware below 6.7
+:::info Shopware below 6.7
 Leave out `<script type="module" src="/src/main.js"></script>` — it is injected automatically in older versions.
 :::
 
@@ -73,7 +73,7 @@ bin/console cache:clear
 
 ### 5. Build and watch
 
-You don't need to set up Vite on your own — Shopware already takes care of bundling. Run the Administration watcher to rebuild the frontend:
+You don't need to set up Vite on your own — Shopware already takes care of bundling. Rerun the Administration watcher to rebuild the frontend:
 
 ```bash
 composer watch:admin
