@@ -8,7 +8,7 @@ sidebar_position: 80
 
 Extensions can localize text displayed in the Shopware Administration using snippet files and a frontend translation library.
 
-For content rendered inside your extension UI, you can use any translation solution supported by your frontend framework (for example, the Vue i18n plugin). To keep translations synchronized with the Administration language, listen for language changes using the [Context API](./context.md#subscribe-on-language-changes).
+For content rendered inside your extension UI, you can use any translation solution supported by your frontend framework (for example, the Vue i18n plugin). To keep translations synchronized with the Administration language, listen for language changes using the [Context API](../api-reference/context.md#subscribe-on-language-changes).
 
 For text rendered [inside](../concepts/locations.md) native Administration UI components (such as titles inside [component sections](../concepts/component-sections.md)), Shopware supports snippet files inside the app.
 
