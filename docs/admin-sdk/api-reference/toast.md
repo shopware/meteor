@@ -10,9 +10,7 @@ Toasts display short, temporary messages to provide feedback about user actions 
 
 See also: [Base Options](../api-reference/base-options.md) for shared configuration options supported by SDK message APIs.
 
-:::info Availability
-This feature is available since Shopware 6.6.2.0.
-:::
+> Available since Shopware v6.6.2.0
 
 ## Dispatch a toast
 

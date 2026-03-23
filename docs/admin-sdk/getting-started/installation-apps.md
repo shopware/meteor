@@ -28,7 +28,7 @@ Each app must expose its own publicly reachable URL for registration and webhook
 
 :::tip
 For local development, you don't need a public URL yet. You can use `localhost` or a tunneling service like ngrok.
-If your Shopware instance runs inside Docker, use `host.docker.internal:PORT` instead of `localhost:PORT` to reach the app server from inside the container.
+If your Shopware instance runs inside Docker, use `host.docker.internal:PORT` instead of `localhost:PORT` for the `registrationUrl` and webhook URLs so Shopware can reach your app server from inside the container. The `base-app-url` does **not** need this — it is loaded by the browser, not by the Shopware server.
 :::
 
 ## Backend requirement
@@ -44,8 +44,13 @@ Shopware also provides SDKs for other languages. See the [full list of official 
 To scaffold a new app using the App Server SDK:
 
 ```bash
+# scaffold the example app
 npx tiged shopware/app-sdk-js/examples/node-hono demo-app
 cd demo-app
+
+# install dependencies and start the dev server
+npm install
+npm run dev
 ```
 
 Visit [the App Server SDK guide](https://developer.shopware.com/docs/guides/plugins/apps/app-sdks/javascript/01-getting_started.html) for detailed instructions.
@@ -114,7 +119,11 @@ After the registration handshake is working, add the `<base-app-url>` field insi
 
 As required by Shopware's app system, the `<setup>` section must already contain the `registrationUrl` and `secret`.
 
-For an example, the `manifest.xml` of an app whose HTML page is served under `http://localhost/my-example-app.html` would look like this:
+:::tip Docker reminder
+Remember: the `registrationUrl` must be reachable by the Shopware server. If Shopware runs in Docker, use `host.docker.internal` for that URL. The `base-app-url` is loaded by the browser, so `localhost` works fine there.
+:::
+
+Example `manifest.xml` for a local dev setup (app server running on port 3000):
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -125,13 +134,14 @@ For an example, the `manifest.xml` of an app whose HTML page is served under `ht
     </meta>
 
     <setup>
-        <registrationUrl>http://link-to-your-local-app-server/register</registrationUrl>
+        <!-- Use host.docker.internal if Shopware runs in Docker -->
+        <registrationUrl>http://host.docker.internal:3000/register</registrationUrl>
         <secret>S3cr3tf0re$t</secret>
     </setup>
 
     <admin>
-        <!-- Insert your app page URL here -->
-        <base-app-url>http://localhost/my-example-app.html</base-app-url>
+        <!-- base-app-url is loaded by the browser, so localhost works -->
+        <base-app-url>http://localhost:3000/my-example-app.html</base-app-url>
     </admin>
 </manifest>
 ```

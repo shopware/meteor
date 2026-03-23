@@ -7,7 +7,7 @@ nav:
 
 # In-App Purchases
 
-Available since Shopware v6.6.9.0.
+> Available since Shopware v6.6.9.0
 
 In-App purchases allow apps to unlock different functionality based on purchases made by the user. This guide covers how to start the in-app purchase flow directly from the Administration.
 

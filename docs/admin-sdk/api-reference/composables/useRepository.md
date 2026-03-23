@@ -56,7 +56,20 @@ A computed ref containing a repository that updates when its dependencies change
 
 ## How it works
 
-`useRepository` uses Vue's `computed` to automatically recreate the repository when its inputs change. This follows Vue's composition API conventions, where composables prefixed with "use" provide reactive wrappers.
+Under the hood, `useRepository` wraps `getRepository` inside a Vue `computed`, so the repository is recreated whenever the inputs change:
 
-- It provides the full repository interface (search, get, save, delete, etc.)
-- It adds reactivity, automatically updating when inputs change
+```ts
+import { computed, unref } from 'vue';
+import { composables } from '@shopware-ag/meteor-admin-sdk';
+const { getRepository } = composables;
+
+function useRepository(entityNameRef, factoryRef) {
+  return computed(() => {
+    return getRepository(unref(entityNameRef), unref(factoryRef));
+  });
+}
+```
+
+- `getRepository(entityName, factory?)` returns a static repository instance for the given entity
+- `useRepository` adds reactivity on top, automatically updating when inputs change
+- Both provide the full repository interface (search, get, save, delete, etc.)

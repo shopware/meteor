@@ -9,21 +9,18 @@ sidebar_position: 30
 Plugins are supported on self-hosted Shopware instances only.
 
 :::info
-The setup process is slightly different for **Shopware instances below version 6.7**. Look out for spoilers that explain what's different.
+This guide assumes **Shopware 6.7 or later**. Shopware 6.7 introduced a new extension architecture (`meteor-app`) with modern frontend build tooling. If you are running an older version, differences are noted inline.
 :::
 
 ### 1. Create the administration entry
 
 Create the folder `custom/plugins/yourPluginName/src/Resources/app/meteor-app`. This is the base path for all new files for your extension.
 
-<details>
-  <summary>If your shopware instance runs a version below 6.7</summary>
-  Use the path `custom/plugins/yourPluginName/src/Resources/app/administration` instead
-</details>
+:::caution Shopware below 6.7
+Use the path `custom/plugins/yourPluginName/src/Resources/app/administration` instead.
+:::
 
 ### 2. Install the SDK
-
-Then install the SDK
 
 ```bash
 cd custom/plugins/yourPluginName/src/Resources/app/meteor-app
@@ -51,10 +48,9 @@ Then create a JavaScript file in the subfolder `src/main.js` and reference it in
 </html>
 ```
 
-<details>
-  <summary>If your shopware instance runs a version below 6.7</summary>
-  Leave out <code>&lt;script type="module" src="/src/main.js"&gt;&lt;/script&gt;</code> since it's injected automatically.
-</details>
+:::caution Shopware below 6.7
+Leave out `<script type="module" src="/src/main.js"></script>` — it is injected automatically in older versions.
+:::
 
 In `src/main.js`, add a quick test to verify the SDK works:
 
@@ -67,7 +63,7 @@ notification.dispatch({
 });
 ```
 
-### 4. Installing the plugin
+### 4. Install the plugin
 
 ```bash
 # if you are using Docker, run the following commands inside the container: docker compose exec -it web /bin/bash
@@ -75,12 +71,12 @@ bin/console plugin:install --activate yourPluginName
 bin/console cache:clear
 ```
 
-### 5. Bundling the plugin
+### 5. Build and watch
 
-You don't need to set up Vite (the bundler) on your own — Shopware already takes care of that. Run the Administration watcher to rebuild the frontend bundle:
+You don't need to set up Vite on your own — Shopware already takes care of bundling. Run the Administration watcher to rebuild the frontend:
 
 ```bash
-bin/watch-administration.sh
+composer watch:admin
 ```
 
 Wait until the compilation finishes successfully.
