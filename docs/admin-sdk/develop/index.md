@@ -1,6 +1,7 @@
 ---
 title: "Start Developing"
-sidebar_position: 30
+nav:
+  position: 30
 ---
 
 

@@ -10,11 +10,9 @@ The Context API provides read access to the current state of the Shopware Admini
 
 This is useful for adapting extension behavior based on the current Administration context — for example, loading translations for the active language or checking the Shopware version before using a newer API.
 
-## Language
+## context.getLanguage()
 
-Retrieve or subscribe to the currently active Administration language.
-
-### context.getLanguage()
+Returns the current Administration language ID and the system default language ID. Use this to load the correct translations or filter data by language.
 
 #### Usage
 
@@ -44,7 +42,9 @@ Promise<{
 }
 ```
 
-### context.subscribeLanguage()
+## context.subscribeLanguage()
+
+Subscribes to language changes in the Administration. The callback fires whenever the user switches languages, allowing extensions to react immediately (e.g. reloading translated content).
 
 #### Usage
 
@@ -78,11 +78,9 @@ context.subscribeLanguage(({ languageId, systemLanguageId }) => {
 }
 ```
 
-## Environment
+## context.getEnvironment()
 
-Check whether the Administration is running in development, production, or testing mode.
-
-### context.getEnvironment()
+Returns the current Administration environment mode. Use this to enable debug features or disable analytics in non-production environments.
 
 #### Usage
 
@@ -106,11 +104,9 @@ Promise<'development' | 'production' | 'testing'>
 'development'
 ```
 
-## Locale
+## context.getLocale()
 
-Retrieve or subscribe to the browser locale used by the Administration UI.
-
-### context.getLocale()
+Returns the browser locale used by the Administration UI, including a fallback locale. Use this to format dates, numbers, or currencies according to the user's regional settings.
 
 #### Usage
 
@@ -140,7 +136,9 @@ Promise<{
 }
 ```
 
-### context.subscribeLocale()
+## context.subscribeLocale()
+
+Subscribes to locale changes in the Administration. The callback fires whenever the locale changes, allowing extensions to re-render locale-dependent content like formatted dates or currencies.
 
 #### Usage
 
@@ -174,11 +172,9 @@ context.subscribeLocale(({ locale, fallbackLocale }) => {
 }
 ```
 
-## Currency
+## context.getCurrency()
 
-Retrieve the system currency configured for the Shopware instance.
-
-### context.getCurrency()
+Returns the system currency configured for the Shopware instance. Use this when displaying prices or working with monetary values.
 
 #### Usage
 
@@ -208,11 +204,9 @@ Promise<{
 }
 ```
 
-## Shopware version
+## context.getShopwareVersion()
 
-Query the Shopware version to conditionally enable features or check compatibility.
-
-### context.getShopwareVersion()
+Returns the Shopware version as a string. Use this to conditionally enable features or check compatibility before using newer APIs.
 
 #### Usage
 
@@ -236,11 +230,9 @@ string
 '6.4.0.0'
 ```
 
-### context.compareShopwareVersion()
+## context.compareShopwareVersion()
 
-In many cases you have to make sure that the shop you are communicating with has a certain Shopware version. For this purpose the Meteor Admin SDK provides the `context.compareShopwareVersion` function.
-
-The function always treats the current Shopware version of a shop as the left hand operator of the comparison. That means a call like `context.compareShopwareVersion('>=', '7.0.0')` can be read as "*Compare: is Shopware version equal or greater than 7.0.0*"
+Compares the current Shopware version against a target version. The current Shopware version is always the left-hand side of the comparison — so `context.compareShopwareVersion('>=', '7.0.0')` reads as "is the current Shopware version equal to or greater than 7.0.0?"
 
 #### Usage
 
@@ -274,11 +266,9 @@ boolean
 true
 ```
 
-## App information
+## context.getAppInformation()
 
-Retrieve metadata about the current app or plugin, including its name, version, type, and granted privileges.
-
-### context.getAppInformation()
+Returns metadata about the current app or plugin, including its name, version, type, and granted privileges. Use this to adapt behavior based on the extension type or check which permissions were granted.
 
 > The `privileges` property is available since Shopware v6.7.1.0.
 
@@ -313,11 +303,9 @@ Promise<{ name: string ; version: string ; type: 'app' | 'plugin', privileges: p
 }
 ```
 
-## User information
+## context.getUserInformation()
 
-Access details about the currently logged-in Administration user.
-
-### context.getUserInformation()
+Returns details about the currently logged-in Administration user, including their roles, email, and admin status. Use this to personalize the extension UI or check user permissions.
 
 > Available since Shopware v6.4.9.0
 
@@ -374,11 +362,9 @@ Promise<{
 }
 ```
 
-## User Timezone
+## context.getUserTimezone()
 
-Retrieve the timezone setting of the currently logged-in user.
-
-### context.getUserTimezone()
+Returns the timezone setting of the currently logged-in user. Use this to display dates and times in the user's local timezone.
 
 > Available since Shopware v6.6.2.0
 
@@ -400,15 +386,9 @@ Promise<string>
 
 This function returns a Promise that resolves to a string representing the user's timezone.
 
-## Module information
+## context.getModuleInformation()
 
-Query the list of registered extension modules to navigate between them.
-
-### context.getModuleInformation()
-
-Get information about all registered modules. These modules are created by adding new menu items, setting items, etc.
-
-The ID can be used to change the current route to the module.
+Returns the list of all registered extension modules (created by adding menu items, settings items, etc.). Use the module ID to navigate between extensions.
 
 #### Usage
 
@@ -457,11 +437,9 @@ Promise<{
 }
 ```
 
-## ShopId
+## context.getShopId()
 
-Retrieve the unique shop ID used by Shopware's app system.
-
-### context.getShopId()
+Returns the unique shop ID used by Shopware's app system. Use this to identify the shop instance when communicating with external services.
 
 > Available since Shopware v6.7.1.0
 
@@ -481,11 +459,9 @@ No parameters needed.
 Promise<string>
 ```
 
-## Check app's privileges
+## context.can()
 
-Check whether a specific privilege is granted for the current app. Useful for conditionally showing features.
-
-### context.can()
+Checks whether a specific privilege is granted for the current app. Use this to conditionally show features that require specific permissions.
 
 > Available since Shopware v6.7.1.0
 
