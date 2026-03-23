@@ -8,24 +8,24 @@ More options may be added in the future. Currently, the following option is avai
 | :----------- | :------- | :------ | :------------------ | :----------------------------------------------------------------------------------------- |
 | `privileges` | false    |         | >= Shopware 6.6.3.0 | Check the current user's privileges before executing the action. See [Privileges](#privileges). |
 
+#### Usage
+
+In this example you can see that in `notification`, you can insert base options alongside the message property.
+
 ```ts
 import { notification } from '@shopware-ag/meteor-admin-sdk';
 
 notification.dispatch({
     message: 'Your product report is ready',
-    privileges: [
-        'product:read',
-    ],
+    /* ... base options ... */
 });
 ```
-
-In this example, the notification is only dispatched if the current Administration user has `product:read` permission.
 
 ## Privileges
 
 The `privileges` option accepts an array of privilege strings. When provided, the SDK checks whether the current Administration user holds all listed privileges before executing the action. If any privilege is missing, the action is silently skipped.
 
-:::caution Not a security feature
+:::warning Not a security feature
 Privilege checks happen client-side in the browser. They prevent UI elements from appearing for users who lack the required permissions, but they do not enforce access control on the server. Server-side authorization is still required for any sensitive operation.
 :::
 
