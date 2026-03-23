@@ -10,8 +10,8 @@ Using the Meteor Admin SDK in an app requires exposing an Administration page fr
 
 This guide discusses two SDKs:
 
-- Meteor Admin SDK: UI layer **only**
-- Optional App Server SDK = **backend** layer
+- Meteor Admin SDK: **frontend** layer for the administration
+- App Server SDK: **backend** layer (the backend is required; only the framework you use to provide it is up to you)
 
 ## App hosting requirement
 
@@ -24,41 +24,41 @@ Example:
 - `app-one.your-company.com`
 - `app-two.your-company.com`
 
-Each app must expose its own publicly reachable URL for registration and webhook handling.
+Each app must expose its own publicly reachable URL for registration and webhook handling. This is required due to Cross-Origin security policies enforced by the browser.
+
+:::tip
+For local development, you don't need a public URL yet. You can use `localhost` or a tunneling service like ngrok.
+If your Shopware instance runs inside Docker, use `host.docker.internal:PORT` instead of `localhost:PORT` to reach the app server from inside the container.
+:::
 
 ## Backend requirement
 
 Apps require a backend that handles the registration handshake and request validation.
 
-Optional, but highly recommended for app development, is the [App Server SDK](https://github.com/shopware/app-sdk-js): a small TypeScript helper library that simplifies the registration handshake, signature verification, webhook handling, and communication with the Shopware API.
+Optional, but highly recommended for app development, is the [App Server SDK](https://github.com/shopware/app-sdk-js): a library written in TypeScript that provides a server setup to simplify the registration handshake, signature verification, webhook handling, and communication with the Shopware API.
 
-The App Server SDK is suitable for both development and production environments [across runtimes](https://www.shopware.com/en/news/shopware-app-server-sdk-in-javascript/) such as Node.js, Deno, Bun, or Cloudflare Workers.
+The App Server SDK supports Node.js, Deno, Bun, and Cloudflare Workers.
 
-To run a local dev server for an app, follow the SDK repo README for exact commands:
+Shopware also provides SDKs for other languages. See the [full list of official App SDKs](https://developer.shopware.com/docs/guides/plugins/apps/app-sdks/).
+
+To scaffold a new app using the App Server SDK:
 
 ```bash
-# clone the App Server SDK (example)
-git clone https://github.com/shopware/app-sdk-js
-cd app-sdk-js
-
-# install dependencies and start the dev server
-npm install
-npm run dev  # or `npm start` per the repo README
-
-# the dev server will expose a public URL (or you can tunnel it with ngrok) for registering the App's admin page
+npx tiged shopware/app-sdk-js/examples/node-hono demo-app
+cd demo-app
 ```
 
 Visit [the App Server SDK guide](https://developer.shopware.com/docs/guides/plugins/apps/app-sdks/javascript/01-getting_started.html) for detailed instructions.
 
 ### 1. Ensure the app server is running
 
-If the app provides an Administration UI, it must:
+Every app must:
 
 - Handle the registration handshake
 - Expose a publicly reachable URL
 - Serve an HTML page for the Administration
 
-Using the [App Server SDK](https://github.com/shopware/app-sdk-js) is recommended, as it handles the registration handshake, signature verification, webhook handling, and request validation. But it is also possible to implement the registration and request validation manually, for advanced setups.
+Using the [App Server SDK](https://github.com/shopware/app-sdk-js) is recommended, as it handles the registration handshake, signature verification, webhook handling, and request validation. It is also possible to implement the registration and request validation manually for advanced setups.
 
 ### 2. Create the Administration HTML page
 
@@ -138,15 +138,20 @@ For an example, the `manifest.xml` of an app whose HTML page is served under `ht
 
 ### 4. Install and activate the app
 
-- Upload or register the app
-- Activate it in the Administration
+The manifest needs to be stored under `/custom/apps/<your-app-name>/manifest.xml`. Then install using the command line:
+
+```bash
+# if you are using Docker, run the following commands inside the container: docker compose exec -it web /bin/bash
+bin/console app:install --activate <your-app-name>
+bin/console cache:clear
+```
 
 ### 5. Verify installation
 
-Log in to the Shopware Administration.
+Log in to the Shopware Administration. The notification should appear in the top-right corner on any page (the notification is not bound to a specific module — it appears on every page load).
 
-Open the module defined in the app's `<admin>` section.
+## Next steps
 
-The notification should appear in the top-right corner.
-
-Installation complete. ✅
+- Explore the [API Reference](../api-reference/index.md) for all available SDK features
+- Learn about [Concepts](../concepts/index.md) like locations, positions, and data handling
+- See the [Usage Guide](./usage.md) for more detailed examples

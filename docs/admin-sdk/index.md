@@ -11,21 +11,12 @@ custom_edit_url: null
 
 The Meteor Admin SDK is an npm library for building Shopware Administration UI extensions. It enables [apps](https://developer.shopware.com/docs/guides/plugins/apps/) and [plugins](https://developer.shopware.com/docs/guides/plugins/plugins/) to extend the Shopware Administration through a stable, typed API that runs in the browser context.
 
-What you can build:
+What you can do with the SDK:
 
-- Custom Administration modules
-- Context-aware UI extensions
-- Entity-driven workflows inside the Administration
-- Notification and interaction systems
-- Admin-driven integrations with external services
-- Dynamic UI behavior based on Shopware state
-
-What you can do:
-
-- Dispatch notifications
-- Access context information
-- Extend the Administration UI
-- Interact with entities
+- Build custom Administration modules and context-aware UI extensions
+- Extend the Administration UI with notifications, modals, tabs, and more
+- Access and modify entity data through the Administration data layer
+- Create entity-driven workflows and admin-driven integrations with external services
 
 ## Why use the SDK
 
@@ -44,4 +35,4 @@ Using the Meteor Admin SDK requires:
 
 ## Next steps
 
-Go here to install the SDK and choose your installation path: npm and Vite (recommended for production) or CDN (for quick prototyping).
+See the [Getting Started guide](./getting-started/index.md) to install the SDK and choose your installation path.
