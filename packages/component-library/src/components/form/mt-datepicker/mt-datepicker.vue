@@ -29,7 +29,7 @@
       :disabled="disabled"
       :required="required"
       :locale="locale"
-      :timezone="timeZone"
+      :timezone="pickerTimeZoneProp"
       :open="isDatepickerOpen"
       :teleport="true"
       :show-cancel="true"
@@ -54,7 +54,7 @@
       :minutes-grid-increment="minuteIncrement"
       :aria-invalid="!!errorMessage || !!error"
       :aria-describedby="!!errorMessage || !!error ? errorId : undefined"
-      @update:model-value="onDateValueChange"
+      @update:model-value="onUpdateModelValue"
       @open="isDatepickerOpen = true"
       @close="
         () => {
@@ -109,7 +109,7 @@
         :style="{ gridArea: 'hint' }"
       >
         <mt-icon name="solid-clock" class="mt-datepicker__hint-icon" size="12" />
-        <p>{{ timeZone || "UTC" }}</p>
+        <p>{{ effectiveTimeZone }}</p>
       </div>
     </template>
   </div>
@@ -118,6 +118,7 @@
 <script lang="ts">
 import { defineComponent, ref } from "vue";
 import type { PropType } from "vue";
+import { fromZonedTime, toZonedTime } from "date-fns-tz";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
@@ -197,7 +198,7 @@ export default defineComponent({
      * This represents the currently selected date(s).
      */
     modelValue: {
-      type: [String, Array, Date] as PropType<string | string[] | Date | Date[]>,
+      type: [String, Array, Date, Object] as PropType<string | string[] | Date | Date[] | Time>,
       default: null,
     },
 
@@ -348,6 +349,29 @@ export default defineComponent({
   },
 
   computed: {
+    effectiveTimeZone(): string {
+      const timeZone = this.timeZone || "UTC";
+
+      try {
+        new Intl.DateTimeFormat("en-CA", { timeZone });
+        return timeZone;
+      } catch {
+        return "UTC";
+      }
+    },
+
+    pickerTimeZoneProp(): string | undefined {
+      // `vue-datepicker` shifts `datetime` values around DST boundaries when
+      // we also pass its `timezone` prop. For `datetime` we therefore do the
+      // conversion ourselves with `date-fns-tz` and keep the third-party
+      // picker on plain local `Date` objects.
+      if (this.dateType === "datetime") {
+        return undefined;
+      }
+
+      return this.effectiveTimeZone;
+    },
+
     dateValue(): Date | [Date, Date] | Time | null {
       if (!this.modelValue) return null;
 
@@ -370,7 +394,18 @@ export default defineComponent({
         return { hours, minutes };
       }
 
-      // Handle datetime mode
+      // Keep the picker on a browser-local date object whose wall-clock time
+      // matches the configured timezone. This avoids DST jumps when the
+      // underlying picker recalculates timezone offsets.
+      if (this.dateType === "datetime") {
+        return Array.isArray(this.modelValue)
+          ? [
+              toZonedTime(this.modelValue[0], this.effectiveTimeZone),
+              toZonedTime(this.modelValue[1], this.effectiveTimeZone),
+            ]
+          : toZonedTime(this.modelValue, this.effectiveTimeZone);
+      }
+
       return Array.isArray(this.modelValue)
         ? [new Date(this.modelValue[0]), new Date(this.modelValue[1])]
         : new Date(this.modelValue);
@@ -398,7 +433,7 @@ export default defineComponent({
   },
 
   methods: {
-    onDateValueChange(newValue: Date | [Date, Date] | Time | null) {
+    onUpdateModelValue(newValue: Date | [Date, Date] | Time | null) {
       if (!newValue) {
         this.$emit("update:modelValue", null);
         return;
@@ -413,9 +448,17 @@ export default defineComponent({
       }
 
       // Handle datetime or date mode
-      const formatted = Array.isArray(newValue)
-        ? [newValue[0].toISOString(), newValue[1].toISOString()]
-        : newValue.toISOString();
+      const formatted =
+        this.dateType === "datetime"
+          ? Array.isArray(newValue)
+            ? [
+                fromZonedTime(newValue[0], this.effectiveTimeZone).toISOString(),
+                fromZonedTime(newValue[1], this.effectiveTimeZone).toISOString(),
+              ]
+            : fromZonedTime(newValue, this.effectiveTimeZone).toISOString()
+          : Array.isArray(newValue)
+            ? [newValue[0].toISOString(), newValue[1].toISOString()]
+            : newValue.toISOString();
       this.$emit("update:modelValue", formatted);
       return;
     },
