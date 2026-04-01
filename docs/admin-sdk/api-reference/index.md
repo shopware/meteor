@@ -29,6 +29,8 @@ UI extension components in this section include:
 - [Menu](./ui/menu.md)
 - [Settings Item](./ui/settingsItem.md)
 - [Action Button](./ui/actionButton.md)
+- [Notification](./ui/notification.md)
+- [Toast](./ui/toast.md)
 - [Tabs](./ui/tabs.md)
 - [Component Sections](./ui/component-sections.md)
 - [Sidebars](./ui/sidebars.md)

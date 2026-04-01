@@ -32,5 +32,7 @@ Extensions should use the [Meteor Component Library](https://github.com/shopware
 ## Actions and dialogs
 
 - [Action Button](./actionButton.md): Trigger extension functionality from existing pages
+- [Notification](./notification.md): Show persistent feedback in the notification center
+- [Toast](./toast.md): Show short, temporary feedback messages
 - [Modals](./modals.md): Confirmations, forms, or multi-step workflows
 - [Media Modal](./mediaModal.md): Select or manage media assets

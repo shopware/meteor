@@ -1,6 +1,7 @@
 ---
 title: "Toast"
-sidebar_position: 60
+nav:
+  position: 56
 ---
 
 
@@ -10,7 +11,7 @@ sidebar_position: 60
 
 Toasts display short, temporary messages to provide feedback about user actions or system events. Unlike [notifications](./notification.md), which persist in the notification center until dismissed, toasts disappear automatically after a short time.
 
-See also: [Base Options](../api-reference/base-options.md) for shared configuration options supported by SDK message APIs.
+See also: [Base Options](../base-options.md) for shared configuration options supported by SDK message APIs.
 
 ::: code-group
 
@@ -27,7 +28,7 @@ sw.toast.dispatch({ msg: '...' });
 
 ## Dispatch a toast
 
-![toast example](./assets/toast-example.png)
+![toast example](../assets/toast-example.png)
 
 #### Usage
 

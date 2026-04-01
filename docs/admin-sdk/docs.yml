@@ -16,3 +16,5 @@ redirects:
   README.html: introduction.html
   api-reference/data/in-app-purchases.html: api-reference/ui/purchases-and-payments/in-app-purchases.html
   api-reference/ui/paymentOverviewCard.html: api-reference/ui/purchases-and-payments/paymentOverviewCard.html
+  api-reference/notification.html: api-reference/ui/notification.html
+  api-reference/toast.html: api-reference/ui/toast.html
