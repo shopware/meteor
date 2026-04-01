@@ -11,19 +11,6 @@ Notifications display messages in the Shopware Administration to inform users ab
 
 See also: [Base Options](../base-options.md) for shared configuration options supported by SDK message APIs.
 
-::: code-group
-
-```ts [npm]
-import { notification } from '@shopware-ag/meteor-admin-sdk';
-```
-
-```ts [cdn]
-// use sw.notification instead of notification
-sw.notification.dispatch({ title: '...', message: '...' });
-```
-
-:::
-
 ## Dispatch a notification
 
 ![notification example](../assets/notification-example.jpg)
@@ -31,11 +18,13 @@ sw.notification.dispatch({ title: '...', message: '...' });
 #### Usage
 
 ```ts
+import { notification } from '@shopware-ag/meteor-admin-sdk';
+
 function alertYes() {
   alert('Yes');
 }
 
-sw.notification.dispatch({
+notification.dispatch({
     title: 'Your title',
     message: 'Your message',
     variant: 'success',

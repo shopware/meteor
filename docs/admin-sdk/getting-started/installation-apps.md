@@ -3,7 +3,6 @@ title: "App Installation Flow"
 sidebar_position: 20
 ---
 
-
 # App Installation Flow
 
 Using the Meteor Admin SDK in an app requires exposing an Administration page from the app server and registering it in the app manifest.
@@ -69,47 +68,24 @@ Using the [App Server SDK](https://github.com/shopware/app-sdk-js) is recommende
 
 Create an HTML file called `my-example-app.html`. This is the page that Shopware loads inside the Administration when the app is active.
 
-::: code-group
-
-```html [npm]
+```html
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-</head>
-<body>
-  <script type="module">
-    import { notification } from '/path/to/your/bundled/file.js';
+  <head>
+    <meta charset="UTF-8" />
+  </head>
+  <body>
+    <script type="module">
+      import { notification } from "/path/to/your/bundled/file.js";
 
-    notification.dispatch({
-      title: 'Meteor Admin SDK installed',
-      message: 'Your app is connected successfully'
-    });
-  </script>
-</body>
+      notification.dispatch({
+        title: "Meteor Admin SDK installed",
+        message: "Your app is connected successfully",
+      });
+    </script>
+  </body>
 </html>
 ```
-
-```html [cdn]
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-</head>
-<body>
-  <script src="https://unpkg.com/@shopware-ag/meteor-admin-sdk/cdn"></script>
-
-  <script>
-    sw.notification.dispatch({
-      title: 'Meteor Admin SDK installed',
-      message: 'Your app is connected successfully'
-    });
-  </script>
-</body>
-</html>
-```
-
-:::
 
 When using npm, the SDK must be bundled with a build tool like Vite. See the [App development guide](https://developer.shopware.com/docs/guides/plugins/apps/app-base-guide).
 
@@ -120,10 +96,10 @@ Create the file at `demo-app/my-example-app.html` (next to `index.ts` in the app
 The scaffolded Hono app server does not serve static files by default. Add a route to your `index.ts` that serves the HTML file:
 
 ```ts
-import { readFileSync } from 'node:fs';
+import { readFileSync } from "node:fs";
 
-app.get('/my-example-app.html', (c) => {
-  const html = readFileSync('./my-example-app.html', 'utf-8');
+app.get("/my-example-app.html", (c) => {
+  const html = readFileSync("./my-example-app.html", "utf-8");
   return c.html(html);
 });
 ```
@@ -131,9 +107,9 @@ app.get('/my-example-app.html', (c) => {
 Alternatively, serve all files from a `public/` folder using Hono's static file middleware:
 
 ```ts
-import { serveStatic } from '@hono/node-server/serve-static';
+import { serveStatic } from "@hono/node-server/serve-static";
 
-app.use('/*', serveStatic({ root: './public' }));
+app.use("/*", serveStatic({ root: "./public" }));
 ```
 
 With this approach, place the HTML file at `demo-app/public/my-example-app.html`.
@@ -177,7 +153,7 @@ The `<name>` and `<secret>` in the manifest must match the `appName` and `appSec
 configureAppServer(app, {
   appName: "MyExampleApp",
   appSecret: "S3cr3tf0re$t",
-  shopRepository: new BetterSqlite3Repository('shop.db'),
+  shopRepository: new BetterSqlite3Repository("shop.db"),
 });
 ```
 

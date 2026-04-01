@@ -3,25 +3,15 @@ title: "Context"
 sidebar_position: 40
 ---
 
-
 # Context
 
 The Context API provides read access to the current state of the Shopware Administration. Extensions can use these methods to retrieve information about the active language, locale, currency, environment, Shopware version, and more.
 
 This is useful for adapting extension behavior based on the current Administration context — for example, loading translations for the active language or checking the Shopware version before using a newer API.
 
-::: code-group
-
-```ts [npm]
-import { context } from '@shopware-ag/meteor-admin-sdk';
+```ts
+import { context } from "@shopware-ag/meteor-admin-sdk";
 ```
-
-```ts [cdn]
-// use sw.context instead of context
-sw.context.getLanguage();
-```
-
-:::
 
 ## context.getLanguage()
 
@@ -41,9 +31,9 @@ No parameters needed.
 
 ```ts
 Promise<{
-  languageId: string,
-  systemLanguageId: string
-}>
+  languageId: string;
+  systemLanguageId: string;
+}>;
 ```
 
 #### Example value
@@ -69,8 +59,8 @@ context.subscribeLanguage(({ languageId, systemLanguageId }) => {
 
 #### Parameters
 
-| Name | Description |
-| :------ | :------ |
+| Name             | Description                            |
+| :--------------- | :------------------------------------- |
 | `callbackMethod` | Called every-time the language changes |
 
 #### Callback value
@@ -108,13 +98,13 @@ No parameters needed.
 #### Return value
 
 ```ts
-Promise<'development' | 'production' | 'testing'>
+Promise<"development" | "production" | "testing">;
 ```
 
 #### Example value
 
 ```ts
-'development'
+"development";
 ```
 
 ## context.getLocale()
@@ -135,9 +125,9 @@ No parameters needed.
 
 ```ts
 Promise<{
-  locale: string,
-  fallbackLocale: string
-}>
+  locale: string;
+  fallbackLocale: string;
+}>;
 ```
 
 #### Example value
@@ -163,8 +153,8 @@ context.subscribeLocale(({ locale, fallbackLocale }) => {
 
 #### Parameters
 
-| Name | Description |
-| :------ | :------ |
+| Name             | Description                          |
+| :--------------- | :----------------------------------- |
 | `callbackMethod` | Called every-time the locale changes |
 
 #### Callback value
@@ -203,9 +193,9 @@ No parameters needed.
 
 ```ts
 Promise<{
-  systemCurrencyId: string,
-  systemCurrencyISOCode: string
-}>
+  systemCurrencyId: string;
+  systemCurrencyISOCode: string;
+}>;
 ```
 
 #### Example value
@@ -234,13 +224,13 @@ No parameters needed.
 #### Return value
 
 ```ts
-string
+string;
 ```
 
 #### Example value
 
 ```ts
-'6.4.0.0'
+"6.4.0.0";
 ```
 
 ## context.compareShopwareVersion()
@@ -250,33 +240,34 @@ Compares the current Shopware version against a target version. The current Shop
 #### Usage
 
 ```ts
-const isRightVersion = await context.compareShopwareVersion('>=', '7.0.0')
+const isRightVersion = await context.compareShopwareVersion(">=", "7.0.0");
 ```
 
 #### Parameters
 
-| Name         | Description                                                                                                       |
-|:-------------|:------------------------------------------------------------------------------------------------------------------|
-| `comparator` | The operator to compare. Possible values: `'='` `'!='` `'>'` `'<'` `'<='` `'>='`|
-| `version`    | The string with the version to compare
+| Name         | Description                                                                      |
+| :----------- | :------------------------------------------------------------------------------- |
+| `comparator` | The operator to compare. Possible values: `'='` `'!='` `'>'` `'<'` `'<='` `'>='` |
+| `version`    | The string with the version to compare                                           |
 
 The function supports both Shopware's four-digit version number and semver versions. The following calls are equivalent:
 
 ```ts
-await context.compareShopwareVersion('>=', '6.6.4.0');
+await context.compareShopwareVersion(">=", "6.6.4.0");
 
-await context.compareShopwareVersion('>=', '6.4.0');
+await context.compareShopwareVersion(">=", "6.4.0");
 ```
 
 #### Return value
 
 ```ts
-boolean
+boolean;
 ```
 
 #### Example value
+
 ```ts
-true
+true;
 ```
 
 ## context.getAppInformation()
@@ -298,7 +289,12 @@ No parameters needed.
 #### Return value
 
 ```ts
-Promise<{ name: string ; version: string ; type: 'app' | 'plugin', privileges: privileges }>
+Promise<{
+  name: string;
+  version: string;
+  type: "app" | "plugin";
+  privileges: privileges;
+}>;
 ```
 
 #### Example value
@@ -337,23 +333,23 @@ No parameters needed.
 ```ts
 Promise<{
   aclRoles: Array<{
-    name: string,
-    type: string,
-    id: string,
-    privileges: Array<string>,
-  }>,
-  active: boolean,
-  admin: boolean,
-  avatarId: string,
-  email: string,
-  firstName: string,
-  id: string,
-  lastName: string,
-  localeId: string,
-  title: string,
-  type: string,
-  username: string,
-}>
+    name: string;
+    type: string;
+    id: string;
+    privileges: Array<string>;
+  }>;
+  active: boolean;
+  admin: boolean;
+  avatarId: string;
+  email: string;
+  firstName: string;
+  id: string;
+  lastName: string;
+  localeId: string;
+  title: string;
+  type: string;
+  username: string;
+}>;
 ```
 
 #### Example value
@@ -394,7 +390,7 @@ No parameters needed.
 #### Return value
 
 ```ts
-Promise<string>
+Promise<string>;
 ```
 
 This function returns a Promise that resolves to a string representing the user's timezone.
@@ -406,16 +402,16 @@ Returns the list of all registered extension modules (created by adding menu ite
 #### Usage
 
 ```ts
-import { window as swWindow } from '@shopware-ag/meteor-admin-sdk';
+import { window as swWindow } from "@shopware-ag/meteor-admin-sdk";
 
 const { modules } = await context.getModuleInformation();
 
 swWindow.routerPush({
-  name: 'sw.extension.sdk.index',
+  name: "sw.extension.sdk.index",
   params: {
-    id: modules[0].id
-  }
-})
+    id: modules[0].id,
+  },
+});
 ```
 
 #### Parameters
@@ -427,12 +423,12 @@ No parameters needed.
 ```ts
 Promise<{
   modules: Array<{
-    displaySearchBar: boolean,
-    heading: string,
-    id: string,
-    locationId: string
-  }>
-}>
+    displaySearchBar: boolean;
+    heading: string;
+    id: string;
+    locationId: string;
+  }>;
+}>;
 ```
 
 #### Example value
@@ -442,11 +438,11 @@ Promise<{
   modules: [
     {
       displaySearchBar: true,
-      heading: 'My module',
-      id: 'sd5aasfsdfas',
-      locationId: 'my-location-id'
-    }
-  ]
+      heading: "My module",
+      id: "sd5aasfsdfas",
+      locationId: "my-location-id",
+    },
+  ];
 }
 ```
 
@@ -469,7 +465,7 @@ No parameters needed.
 #### Return value
 
 ```ts
-Promise<string>
+Promise<string>;
 ```
 
 ## context.can()
@@ -481,17 +477,17 @@ Checks whether a specific privilege is granted for the current app. Use this to 
 #### Usage
 
 ```ts
-const isAllowed: boolean = await context.can('product:read');
+const isAllowed: boolean = await context.can("product:read");
 ```
 
 #### Parameters
 
-| Name        | Description                                      |
-|:------------|:-------------------------------------------------|
+| Name        | Description                                          |
+| :---------- | :--------------------------------------------------- |
 | `privilege` | The privilege string to check, e.g. `'product:read'` |
 
 #### Return value
 
 ```ts
-boolean
+boolean;
 ```

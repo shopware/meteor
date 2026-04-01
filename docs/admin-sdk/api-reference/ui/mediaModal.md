@@ -4,7 +4,6 @@ nav:
   position: 100
 ---
 
-
 # Media Modals
 
 This method allows apps to interact with the Administration's media modal. Two modal types are supported:
@@ -12,18 +11,9 @@ This method allows apps to interact with the Administration's media modal. Two m
 - **Media modal**: Select existing media from the media library or upload new files. Available since Shopware 6.7.1.
 - **Save media modal**: Choose a specific folder and filename when saving media. Available since Shopware 6.7.5.
 
-::: code-group
-
-```ts [npm]
-import { ui } from '@shopware-ag/meteor-admin-sdk';
+```ts
+import { ui } from "@shopware-ag/meteor-admin-sdk";
 ```
-
-```ts [cdn]
-// use sw.ui instead of ui
-sw.ui.mediaModal.open({ /* ... */ });
-```
-
-:::
 
 ## ui.mediaModal.open()
 
@@ -43,7 +33,7 @@ ui.mediaModal.open({
 
 #### Parameters
 
-All parameters are similar to `sw-media-modal-v2` component's props
+All parameters are similar to the `sw-media-modal-v2` component's props.
 
 | Name               | Required | Default                   | Description                                                                          |
 | :----------------- | :------- | :------------------------ | :----------------------------------------------------------------------------------- |
@@ -87,14 +77,14 @@ ui.mediaModal.openSaveMedia({
 
 #### Parameters
 
-All parameters are similar to `sw-media-save-modal` component's props
+All parameters are similar to the `sw-media-save-modal` component's props.
 
-| Name               | Required | Default                   | Description                                                                          |
-| :----------------- | :------- | :------------------------ | :----------------------------------------------------------------------------------- |
-| `initialFolderId`  | false    | null                      | Initial folder id where the media modal will open                                    |
-| `initialFileName`  | false    | null                      | Initial file name of media to set as initial value of file name input                                    |
-| `fileType`  | false    | null                      | File extension of media to display on file name input's suffix                                    |
-| `callback`         | true     |                           | This callback function is triggered when the "Save media" button is clicked. It returns the updated file name and the folderId where the media is stored.              |
+| Name              | Required | Default | Description                                                                                                                                               |
+| :---------------- | :------- | :------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `initialFolderId` | false    | null    | Initial folder id where the media modal will open                                                                                                         |
+| `initialFileName` | false    | null    | Initial file name of media to set as initial value of file name input                                                                                     |
+| `fileType`        | false    | null    | File extension of media to display on file name input's suffix                                                                                            |
+| `callback`        | true     |         | This callback function is triggered when the "Save media" button is clicked. It returns the updated file name and the folderId where the media is stored. |
 
 #### Example
 

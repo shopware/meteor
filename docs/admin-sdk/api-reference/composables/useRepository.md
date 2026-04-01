@@ -10,19 +10,6 @@ The `composables.useRepository` function creates a reactive repository instance 
 
 `useRepository` accepts reactive references (refs) or values as parameters and returns a computed repository that updates when those parameters change.
 
-::: code-group
-
-```ts [npm]
-import { composables } from "@shopware-ag/meteor-admin-sdk";
-```
-
-```ts [cdn]
-// use sw.composables instead of composables
-sw.composables.useRepository("product");
-```
-
-:::
-
 ## Usage
 
 ```ts

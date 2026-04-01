@@ -13,19 +13,6 @@ When called inside a Vue component, `getRepository` first checks for an injected
 
 For a reactive variant that automatically updates when its inputs change, see [useRepository](./useRepository.md).
 
-::: code-group
-
-```ts [npm]
-import { composables } from '@shopware-ag/meteor-admin-sdk';
-```
-
-```ts [cdn]
-// use sw.composables instead of composables
-sw.composables.getRepository('product');
-```
-
-:::
-
 ## Usage
 
 ```ts

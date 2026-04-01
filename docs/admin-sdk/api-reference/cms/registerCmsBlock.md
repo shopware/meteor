@@ -12,22 +12,11 @@ With `cms.registerCmsBlock` you can register CMS blocks to use in the Shopping E
 
 ![Register a CMS block in your Shopping Experiences Module via App](../assets/register-cms-block-example.png)
 
-::: code-group
-
-```ts [npm]
-import { cms } from '@shopware-ag/meteor-admin-sdk';
-```
-
-```ts [cdn]
-// use sw.cms instead of cms
-sw.cms.registerCmsBlock({ /* ... */ });
-```
-
-:::
-
 #### Usage
 
 ```ts
+import { cms } from '@shopware-ag/meteor-admin-sdk';
+
 cms.registerCmsBlock({
     name: 'dailymotion-dual-block',
     label: 'ex.cms.dailymotion.block.label',

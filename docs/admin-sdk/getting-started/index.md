@@ -4,7 +4,6 @@ nav:
   position: 10
 ---
 
-
 # Getting Started
 
 This guide helps you set up the Meteor Admin SDK and start building extensions for the Shopware Administration.
@@ -37,27 +36,18 @@ If you already have a Twig-based Administration plugin and want to adopt the Met
 
 ## Install the SDK
 
-There are two ways to include the Meteor Admin SDK in your extension:
-
-::: code-group
-
-```bash [npm]
+```bash
 npm install @shopware-ag/meteor-admin-sdk
 ```
 
-```html [cdn]
-<script src="https://unpkg.com/@shopware-ag/meteor-admin-sdk/cdn"></script>
-```
+This is the recommended setup. It enables bundling and tree-shaking so only the code you use is shipped.
 
-:::
-
-**npm** is recommended for production. It enables bundling and tree-shaking so only the code you use is shipped.
-
-**CDN** is useful for quick prototypes or simple setups without a build pipeline. With the CDN build, the SDK is available globally as `sw` (e.g. `sw.notification.dispatch(...)`).
+If you want to use a CDN instead, see [Without npm](./without-npm.md).
 
 ## Next steps
 
 - [App Installation Flow](./installation-apps.md): Full walkthrough for app setup
 - [Plugin Installation Flow](./installation-plugins.md): Full walkthrough for plugin setup
+- [Without npm](./without-npm.md): Alternative setup using a plain `<script>` tag and a CDN
 - [API Reference](../api-reference/index.md): All available SDK methods
 - [Concepts](../concepts/index.md): Locations, positions, data handling, and more

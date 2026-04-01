@@ -3,7 +3,6 @@ title: "Plugin Installation Flow"
 sidebar_position: 30
 ---
 
-
 # Plugin Installation Flow
 
 Plugins are supported on self-hosted Shopware instances only.
@@ -57,11 +56,11 @@ Leave out `<script type="module" src="/src/main.js"></script>` — it is injecte
 In `src/main.js`, add a quick test to verify the SDK works:
 
 ```js
-import { notification } from '@shopware-ag/meteor-admin-sdk';
+import { notification } from "@shopware-ag/meteor-admin-sdk";
 
 notification.dispatch({
-  title: 'Hello from your plugin',
-  message: 'Meteor Admin SDK is working'
+  title: "Hello from your plugin",
+  message: "Meteor Admin SDK is working",
 });
 ```
 

@@ -3,25 +3,15 @@ title: "Location"
 sidebar_position: 30
 ---
 
-
 # Location
 
 Locations define where extension code is executed inside the Shopware Administration.
 
 Each location represents a specific UI context (for example a tab, modal, sidebar, or hidden entry point). Extensions typically check the current location before deciding which UI elements to register or which view to render.
 
-::: code-group
-
-```ts [npm]
-import { location } from '@shopware-ag/meteor-admin-sdk';
+```ts
+import { location } from "@shopware-ag/meteor-admin-sdk";
 ```
-
-```ts [cdn]
-// use sw.location instead of location
-sw.location.is(sw.location.MAIN_HIDDEN);
-```
-
-:::
 
 ## Prerequisites
 
@@ -34,8 +24,8 @@ See [Locations](../concepts/locations.md) for a full explanation of the concept.
 Check if the current location matches the given location ID:
 
 ```ts
-if (sw.location.is('my-location-id')) {
-    // Render view for location
+if (location.is("my-location-id")) {
+  // Render view for location
 }
 ```
 
@@ -54,7 +44,7 @@ Returns a boolean. It is `true` if the location ID matches the current location.
 Get the name of the current location ID:
 
 ```ts
-const currentLocation = sw.location.get()
+const currentLocation = location.get();
 ```
 
 #### Return value
@@ -63,16 +53,16 @@ Returns a string with the name of the current location.
 
 ### Check if current location is inside iFrame
 
-Useful for hybrid extensions which are using plugin and Extension SDK functionalities together (Shopware 6.6 and lower). You can use this 
+Useful for hybrid extensions which are using plugin and Extension SDK functionalities together (Shopware 6.6 and lower). You can use this
 check to separate code which should be executed inside the Extension SDK context and the plugin context.
 
 ```ts
 if (location.isIframe()) {
-    // Execute the code which uses the meteor-admin-sdk context
-    import('./extension-code');
+  // Execute the code which uses the meteor-admin-sdk context
+  import("./extension-code");
 } else {
-    // Execute the plugin code
-    import('./plugin-code');
+  // Execute the plugin code
+  import("./plugin-code");
 }
 ```
 
@@ -91,7 +81,7 @@ Returns a boolean. Returns `true` if executed inside an iFrame.
 Update the height of the iFrame with this method:
 
 ```ts
-sw.location.updateHeight(750);
+location.updateHeight(750);
 ```
 
 #### Parameters
@@ -111,7 +101,7 @@ This method starts the auto resizer of the iFrame height.
 ![Auto resizing example](../concepts/assets/auto-resizer.gif)
 
 ```ts
-sw.location.startAutoResizer();
+location.startAutoResizer();
 ```
 
 #### Parameters
@@ -127,7 +117,7 @@ This method does not have a return value.
 This method stops the auto resizer of the iFrame height:
 
 ```ts
-sw.location.stopAutoResizer();
+location.stopAutoResizer();
 ```
 
 #### Parameters
@@ -152,7 +142,7 @@ last page you sent to the administration:
 ```ts
 const currentUrl = window.location.href;
 
-sw.location.updateUrl(new URL(currentUrl))
+location.updateUrl(new URL(currentUrl));
 ```
 
 #### Parameters
@@ -167,7 +157,7 @@ To avoid manually sending URL changes, use this helper method that automatically
 Administration:
 
 ```ts
-sw.location.startAutoUrlUpdater();
+location.startAutoUrlUpdater();
 ```
 
 ### Stop automatic URL updates
@@ -175,5 +165,5 @@ sw.location.startAutoUrlUpdater();
 Stop automatic URL updaters by calling this method:
 
 ```ts
-sw.location.stopAutoUrlUpdater();
+location.stopAutoUrlUpdater();
 ```

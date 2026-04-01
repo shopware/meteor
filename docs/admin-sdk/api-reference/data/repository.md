@@ -12,23 +12,12 @@ The data handling of the SDK allows you to fetch and write nearly everything in 
 The data handling implements the repository pattern. You can create a repository for an entity simply like this:
 
 ```ts
-data.repository('your_entity_name')
+import { data } from '@shopware-ag/meteor-admin-sdk';
+
+const productRepository = data.repository('product');
 ```
 
 With this repository you can search for data, save it, delete it, create it or check for changes.
-
-::: code-group
-
-```ts [npm]
-import { data } from '@shopware-ag/meteor-admin-sdk';
-```
-
-```ts [cdn]
-// use sw.data instead of data
-sw.data.repository('product');
-```
-
-:::
 
 ### Permissions
 For every action on the repository, your app will need the matching permissions.
@@ -59,7 +48,10 @@ Remember everytime you adjust the permissions in your manifest you need to incre
 For requesting data you need to create a Criteria class which contains all information for the request:
 
 ```ts
-const criteria = new sw.data.Classes.Criteria();
+import { data } from '@shopware-ag/meteor-admin-sdk';
+
+const { Criteria } = data.Classes;
+const criteria = new Criteria();
 
 criteria.setPage(1);
 criteria.setLimit(10);
@@ -96,7 +88,7 @@ Sends a search request for the repository entity.
 
 #### Usage
 ```ts
-const exampleRepository = sw.data.repository('your_entity');
+const exampleRepository = data.repository('your_entity');
 
 const yourEntities = await exampleRepository.search(yourCriteria);
 ```
@@ -115,7 +107,7 @@ Short hand to fetch a single entity from the server
 
 #### Usage
 ```ts
-const exampleRepository = sw.data.repository('your_entity');
+const exampleRepository = data.repository('your_entity');
 
 const yourEntity = await exampleRepository.get('theEntityId');
 ```
@@ -137,7 +129,7 @@ Deleted associations will be send as additional request
 
 #### Usage
 ```ts
-const exampleRepository = sw.data.repository('your_entity');
+const exampleRepository = data.repository('your_entity');
 
 await exampleRepository.save(yourEntityObject);
 ```
@@ -156,7 +148,7 @@ Clones an existing entity
 
 #### Usage
 ```ts
-const exampleRepository = sw.data.repository('your_entity');
+const exampleRepository = data.repository('your_entity');
 
 const clonedEntityId = await exampleRepository.clone('theEntityIdToClone');
 ```
@@ -175,7 +167,7 @@ Detects if the entity or the relations has remaining changes which are not synch
 
 #### Usage
 ```ts
-const exampleRepository = sw.data.repository('your_entity');
+const exampleRepository = data.repository('your_entity');
 
 const hasChanges = await exampleRepository.hasChanges(yourEntityObject);
 ```
@@ -193,7 +185,7 @@ Detects changes of all provided entities and send the changes to the server
 
 #### Usage
 ```ts
-const exampleRepository = sw.data.repository('your_entity');
+const exampleRepository = data.repository('your_entity');
 
 await exampleRepository.saveAll(yourEntityCollection);
 ```
@@ -212,7 +204,7 @@ Sends a delete request for the provided id.
 
 #### Usage
 ```ts
-const exampleRepository = sw.data.repository('your_entity');
+const exampleRepository = data.repository('your_entity');
 
 await exampleRepository.delete('yourEntityId');
 ```
@@ -231,7 +223,7 @@ Creates a new entity for the local schema. To Many association are initialed wit
 
 #### Usage
 ```ts
-const exampleRepository = sw.data.repository('your_entity');
+const exampleRepository = data.repository('your_entity');
 
 const yourNewEntity = await exampleRepository.create();
 ```

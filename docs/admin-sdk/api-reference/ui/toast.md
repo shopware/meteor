@@ -13,19 +13,6 @@ Toasts display short, temporary messages to provide feedback about user actions 
 
 See also: [Base Options](../base-options.md) for shared configuration options supported by SDK message APIs.
 
-::: code-group
-
-```ts [npm]
-import { toast } from '@shopware-ag/meteor-admin-sdk';
-```
-
-```ts [cdn]
-// use sw.toast instead of toast
-sw.toast.dispatch({ msg: '...' });
-```
-
-:::
-
 ## Dispatch a toast
 
 ![toast example](../assets/toast-example.png)
@@ -33,11 +20,13 @@ sw.toast.dispatch({ msg: '...' });
 #### Usage
 
 ```ts
+import { toast } from '@shopware-ag/meteor-admin-sdk';
+
 function alertYes() {
   alert('Yes');
 }
 
-sw.toast.dispatch({
+toast.dispatch({
     msg: 'Your message',
     dismissible: true,
     type: 'positive',

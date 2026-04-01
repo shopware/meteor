@@ -4,55 +4,41 @@ nav:
   position: 50
 ---
 
-
 # Action Button
 
 An action button adds a clickable button to an existing area of the Shopware Administration.
 
 Action buttons are typically used to trigger extension-specific actions such as opening a modal, executing a workflow, or navigating to an extension module.
 
-::: code-group
-
-```ts [npm]
-import { ui } from '@shopware-ag/meteor-admin-sdk';
-```
-
-```ts [cdn]
-// use sw.ui instead of ui
-sw.ui.actionButton.add({ /* ... */ });
-```
-
-:::
-
-## Usage
+## actionButton.add()
 
 ```ts
-import { location, ui } from '@shopware-ag/meteor-admin-sdk';
+import { location, ui } from "@shopware-ag/meteor-admin-sdk";
 
-if (location.is(sw.location.MAIN_HIDDEN)) {
-    ui.actionButton.add({
-        action: 'your-app_customer-detail-action',
-        entity: 'customer',
-        view: 'detail',
-        label: 'Test action',
-        callback: (entity, entityIds) => {
-            // TODO: do something
-        },
-    });
+if (location.is(location.MAIN_HIDDEN)) {
+  ui.actionButton.add({
+    action: "your-app_customer-detail-action",
+    entity: "customer",
+    view: "detail",
+    label: "Test action",
+    callback: (entity, entityIds) => {
+      // TODO: do something
+    },
+  });
 }
 ```
 
-## Parameters
+#### Parameters
 
-| Name                 | Required | Description                                                                                                |
-| :------------------- | :------- | :--------------------------------------------------------------------------------------------------------- |
-| `action`             | true     | A unique name of your action                                                                               |
-| `entity`             | true     | The entity this action is for possible values: `product`, `order`, `category`, `promotion`, `customer` or `media`. Value `media` is available in Shopware version 6.7.1   |
-| `view`               | true     | Determines if the action button appears on the listing or detail page, possible values: `detail`,`list` or item. View `item` is only used for entity `media` and in version 6.7.1 |
-| `label`              | true     | The label of your action button                                                                            |
-| `meteorIcon`         | false    | Meteor icon before label. Available since Shopware v6.7.4.0. Check icon name on https://developer.shopware.com/resources/meteor-icon-kit/ |
-| `fileTypes`          | false    | Media file types you want the action button to be displayed for. Available since Shopware v6.7.6.0.                                          |
-| `callback`           | true     | The callback function where you receive the entity and the entityIds for further processing                |
+| Name         | Required | Description                                                                                                                                                                       |
+| :----------- | :------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `action`     | true     | A unique name of your action                                                                                                                                                      |
+| `entity`     | true     | The entity this action is for possible values: `product`, `order`, `category`, `promotion`, `customer` or `media`. Value `media` is available in Shopware version 6.7.1           |
+| `view`       | true     | Determines if the action button appears on the listing or detail page, possible values: `detail`,`list` or item. View `item` is only used for entity `media` and in version 6.7.1 |
+| `label`      | true     | The label of your action button                                                                                                                                                   |
+| `meteorIcon` | false    | Meteor icon before label. Available since Shopware v6.7.4.0. Check icon name on https://developer.shopware.com/resources/meteor-icon-kit/                                         |
+| `fileTypes`  | false    | Media file types you want the action button to be displayed for. Available since Shopware v6.7.6.0.                                                                               |
+| `callback`   | true     | The callback function where you receive the entity and the entityIds for further processing                                                                                       |
 
 ## Calling app actions
 
@@ -62,22 +48,22 @@ The following example will render the same action button as the above example bu
 **This will only work for apps. Plugin developers must use an API client directly in their callback.**.
 
 ```ts
-import { location, ui } from '@shopware-ag/meteor-admin-sdk';
+import { location, ui } from "@shopware-ag/meteor-admin-sdk";
 
-if (location.is(sw.location.MAIN_HIDDEN)) {
-    ui.actionButton.add({
-        action: 'your-app_customer-detail-action',
-        entity: 'customer',
-        view: 'detail',
-        label: 'Test action',
-        callback: (entity /* "customer" */, entityIds /* ["..."] */) => {
-            app.webhook.actionExecute({
-                url: 'http://your-app.com/customer-detail-action',
-                entityIds,
-                entity,
-            })
-        },
-    });
+if (location.is(location.MAIN_HIDDEN)) {
+  ui.actionButton.add({
+    action: "your-app_customer-detail-action",
+    entity: "customer",
+    view: "detail",
+    label: "Test action",
+    callback: (entity /* "customer" */, entityIds /* ["..."] */) => {
+      app.webhook.actionExecute({
+        url: "http://your-app.com/customer-detail-action",
+        entityIds,
+        entity,
+      });
+    },
+  });
 }
 ```
 
@@ -88,19 +74,21 @@ if (location.is(sw.location.MAIN_HIDDEN)) {
 ![Action button example](./assets/add-action-button-example.png)
 
 ```ts
+import { ui } from "@shopware-ag/meteor-admin-sdk";
+
 ui.actionButton.add({
-    action: 'your-app_customer-detail-action',
-    entity: 'customer',
-    view: 'detail',
-    meteorIcon: 'regular-analytics',
-    label: 'Test action',
-    callback: (entity /* "customer" */, entityIds /* ["..."] */) => {
-        app.webhook.actionExecute({
-            url: 'http://your-app.com/customer-detail-action',
-            entityIds,
-            entity,
-        })
-    },
+  action: "your-app_customer-detail-action",
+  entity: "customer",
+  view: "detail",
+  meteorIcon: "regular-analytics",
+  label: "Test action",
+  callback: (entity /* "customer" */, entityIds /* ["..."] */) => {
+    app.webhook.actionExecute({
+      url: "http://your-app.com/customer-detail-action",
+      entityIds,
+      entity,
+    });
+  },
 });
 ```
 
@@ -109,14 +97,16 @@ ui.actionButton.add({
 ![Action button media example](./assets/add-action-button-media-example.png)
 
 ```ts
+import { ui } from "@shopware-ag/meteor-admin-sdk";
+
 ui.actionButton.add({
-    action: 'test-media-button',
-    entity: 'media',
-    view: 'item',
-    meteorIcon: 'regular-tools-alt',
-    label: 'Open in Image editor',
-    callback: (entity /* "media" */, entityIds /* ["..."] */) => {
-        // TODO: Navigate to image editor app
-    },
+  action: "test-media-button",
+  entity: "media",
+  view: "item",
+  meteorIcon: "regular-tools-alt",
+  label: "Open in Image editor",
+  callback: (entity /* "media" */, entityIds /* ["..."] */) => {
+    // TODO: Navigate to image editor app
+  },
 });
 ```

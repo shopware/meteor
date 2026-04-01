@@ -11,19 +11,6 @@ Tabs allow extensions to add additional tabs to existing Administration pages.
 
 They are commonly used to extend entity detail pages such as products, customers, or orders.
 
-::: code-group
-
-```ts [npm]
-import { ui } from '@shopware-ag/meteor-admin-sdk';
-```
-
-```ts [cdn]
-// use sw.ui instead of ui
-sw.ui.tabs('sw-product-detail').addTabItem({ /* ... */ });
-```
-
-:::
-
 ## Add tab item
 
 Add a new tab item to an existing tab bar. The content of the the new tab item
@@ -53,7 +40,7 @@ ui.tabs('sw-product-detail' /* The positionId of the tab bar*/).addTabItem({
 
 ![Tab item example](./assets/add-tab-item-example.png)
 ```ts
-import { ui, location } from '@shopware-ag/meteor-admin-sdk';
+import { location, notification, ui } from '@shopware-ag/meteor-admin-sdk';
 
 // For general commands
 if (location.is(location.MAIN_HIDDEN)) {
@@ -76,11 +63,18 @@ if (location.is(location.MAIN_HIDDEN)) {
 
 // Render custom view of the component
 if (location.is('my-example-product-view-tab-card')) {
-    document.body.innerHTML = '
+    document.body.innerHTML = `
         <h1>Hello in the example card</h1>
-        <button onClick="sw.notification.dispatch({ title: 'Foo', message: 'bar' })">
-            Throw notification
-        </button>
-    ';
+        <button id="show-notification">Throw notification</button>
+    `;
+
+    document
+        .getElementById('show-notification')
+        ?.addEventListener('click', () => {
+            notification.dispatch({
+                title: 'Foo',
+                message: 'bar',
+            });
+        });
 }
 ```

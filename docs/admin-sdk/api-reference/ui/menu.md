@@ -10,18 +10,9 @@ Menu items allow extensions to add navigation entries to existing areas of the S
 
 They are typically used to expose extension functionality inside existing admin modules.
 
-::: code-group
-
-```ts [npm]
-import { ui } from '@shopware-ag/meteor-admin-sdk';
+```ts
+import { ui } from "@shopware-ag/meteor-admin-sdk";
 ```
-
-```ts [cdn]
-// use sw.ui instead of ui
-sw.ui.menu.addMenuItem({ /* ... */ });
-```
-
-:::
 
 ## Toggle menu
 
@@ -46,46 +37,47 @@ A specific view or a set of actions can be triggered based on the `locationId`.
 
 ```ts
 ui.menu.addMenuItem({
-    label: 'Test item',
-    locationId: 'your-location-id',
-    displaySearchBar: true,
-    displaySmartBar: true,
-    parent: 'sw-catalogue',
-})
+  label: "Test item",
+  locationId: "your-location-id",
+  displaySearchBar: true,
+  displaySmartBar: true,
+  parent: "sw-catalogue",
+});
 ```
 
 #### Parameters
 
-| Name                 | Required | Default        | Description                                                   |
-| :------------------- | :------- | :------------- | :------------------------------------------------------------ |
-| `label`              | true     |                | The label of the tab bar item                                 |
-| `locationId`         | true     |                | The id for the content of the menu item module                |
-| `displaySearchBar`   | false    | true           | Toggles the sw-page search bar on/off                         |
-| `displaySmartBar`    | false    | true           | Toggles the sw-page smart bar on/off                          |
-| `parent`             | false    | 'sw-extension' | Determines under which main menu entry your item is displayed |
-| `position`           | false    | 110            | Determines the position of your menu item                     |
+| Name               | Required | Default        | Description                                                   |
+| :----------------- | :------- | :------------- | :------------------------------------------------------------ |
+| `label`            | true     |                | The label of the tab bar item                                 |
+| `locationId`       | true     |                | The id for the content of the menu item module                |
+| `displaySearchBar` | false    | true           | Toggles the sw-page search bar on/off                         |
+| `displaySmartBar`  | false    | true           | Toggles the sw-page smart bar on/off                          |
+| `parent`           | false    | 'sw-extension' | Determines under which main menu entry your item is displayed |
+| `position`         | false    | 110            | Determines the position of your menu item                     |
 
 #### Example
 
 ![Menu item example](./assets/add-menu-item-example.png)
 
 ```ts
-import { location, ui } from '@shopware-ag/meteor-admin-sdk';
+import { location, ui } from "@shopware-ag/meteor-admin-sdk";
 
 // General commands
-if (location.is(sw.location.MAIN_HIDDEN)) {
-    // Add the menu item to the catalogue module
-    ui.menu.addMenuItem({
-        label: 'Test item',
-        displaySearchBar: true,
-        displaySmartBar: true,
-        locationId: 'your-location-id',
-        parent: 'sw-catalogue',
-    });
+if (location.is(location.MAIN_HIDDEN)) {
+  // Add the menu item to the catalogue module
+  ui.menu.addMenuItem({
+    label: "Test item",
+    displaySearchBar: true,
+    displaySmartBar: true,
+    locationId: "your-location-id",
+    parent: "sw-catalogue",
+  });
 }
 
 // Render your custom view
-if (location.is('your-location-id')) {
-    document.body.innerHTML = '<h1 style="text-align: center">Hello from your menu item</h1>';
+if (location.is("your-location-id")) {
+  document.body.innerHTML =
+    '<h1 style="text-align: center">Hello from your menu item</h1>';
 }
 ```
