@@ -4,7 +4,6 @@ nav:
   position: 100
 ---
 
-
 # Extending the Administration UI
 
 The Meteor Admin SDK allows extensions to add UI elements to the Shopware Administration.
@@ -12,10 +11,6 @@ The Meteor Admin SDK allows extensions to add UI elements to the Shopware Admini
 These APIs let you integrate custom functionality into existing areas of the Administration, such as navigation menus, action buttons, settings pages, or custom modules.
 
 The following guides cover common UI extension patterns.
-
-## Using UI components
-
-Extensions should use the [Meteor Component Library](https://github.com/shopware/meteor/tree/main/packages/component-library) to build their UI. It provides Vue components designed to match the Administration look and feel and integrate seamlessly with the Meteor Admin SDK.
 
 ## Adding new pages and navigation
 
