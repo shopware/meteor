@@ -6,9 +6,25 @@ nav:
 
 # Locations
 
-Locations define where an extension renders inside the Shopware Administration. Your SDK code gets injected into every location — and one hidden location — as an iframe. Since the same code runs in every iframe, you need a condition to check which location you are in and render the appropriate view.
+Locations define where an extension renders inside the Shopware Administration. Your SDK code is injected into every visible location, plus one hidden location that handles the main registration logic, and each of those locations runs inside its own iframe. Because every iframe executes the same JavaScript code, you need to check which location is currently active and render the appropriate view for it.
 
-Each location is identified by a **location ID**. When you register a UI extension (such as a component section or tab), you assign it a `locationId`. Then in your code, you use `location.is()` to branch:
+## Mental model
+
+Each location is identified by a **location ID**. When you register a UI extension, you choose a `locationId`. Then in your code, you use `location.is()` to branch between the hidden iframe where you register UI and the visible iframe where you render content:
+
+```js
+import { location } from '@shopware-ag/meteor-admin-sdk';
+
+if (location.is(location.MAIN_HIDDEN)) {
+  // Register UI extensions here
+}
+
+if (location.is('my-app-card-before-properties')) {
+  // Render the content for this location here
+}
+```
+
+Here is the same pattern with a full component section example:
 
 ```js
 import { ui, location } from '@shopware-ag/meteor-admin-sdk';

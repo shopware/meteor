@@ -7,9 +7,9 @@ nav:
 
 # Main Module
 
-A main module registers a new top-level section in the Shopware Administration navigation.
+A main module registers a dedicated page for your extension inside the Administration.
 
-Use a main module when your extension provides a dedicated application area with its own pages and functionality.
+You reach it from `Extensions > My Extensions` via the `Configure` button of your extension. Use a main module when your extension provides its own application area with dedicated pages and functionality.
 
 ::: code-group
 
@@ -26,7 +26,7 @@ sw.ui.mainModule.add({ /* ... */ });
 
 ## addMainModule()
 
-Add a main module to your extension. The content of the main module is determined by your `locationId`. A specific view or a set of actions can be triggered based on the `locationId`.
+Add a main module to your extension. The content of the main module is determined by your `locationId`. A specific view or set of actions can be triggered based on the `locationId`.
 
 #### Usage
 

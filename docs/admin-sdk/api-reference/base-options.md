@@ -1,6 +1,10 @@
 # Base Options
 
-Base options are shared configuration options that can be passed to most SDK methods. They are provided as additional properties alongside the method's own parameters.
+Base options are shared configuration options that can be passed to SDK methods which accept a single payload object. They are provided as additional properties alongside the method's own parameters.
+
+This applies to APIs such as `notification.dispatch()`, `toast.dispatch()`, many `ui.*` methods, `context.*`, `data.get()`, and `data.update()`.
+
+Higher-level data helpers such as `data.repository.*` and `data.subscribe()` currently use narrower method signatures and do not expose base options on their public API.
 
 More options may be added in the future. Currently, the following option is available:
 
@@ -10,7 +14,7 @@ More options may be added in the future. Currently, the following option is avai
 
 #### Usage
 
-In this example you can see that in `notification`, you can insert base options alongside the message property.
+In this example, the base options are passed on the same object as the method-specific fields:
 
 ```ts
 import { notification } from '@shopware-ag/meteor-admin-sdk';

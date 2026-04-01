@@ -102,13 +102,27 @@ ui.componentSection.add({
                 locationId: 'example-tab-1'
             },
             {
-                name: 'example-tab',
+                name: 'example-tab-2',
                 label: 'Second tab',
                 locationId: 'example-tab-2'
             }
         ],
     }
 })
+```
+
+To render the tabs introduced in this example, add matching entry points in your extension code using the `locationId` values that you freely chose when registering the component section. Read more about this pattern in [Locations](../../concepts/locations.md).
+
+```js
+import { location } from '@shopware-ag/meteor-admin-sdk';
+
+if (location.is('example-tab-1')) {
+    document.body.innerHTML = '<h1>First tab content</h1>';
+}
+
+if (location.is('example-tab-2')) {
+    document.body.innerHTML = '<h1>Second tab content</h1>';
+}
 ```
 
 ![Card component with tabs example](./assets/example-card-with-tabs.png)

@@ -29,7 +29,9 @@ npm install @shopware-ag/meteor-admin-sdk
 
 ### 3. Implement your entry file
 
-Create a new base `index.html` file, which will be automatically injected as a hidden iFrame to the Administration when the plugin is activated.
+Create a new base `index.html` file. Shopware loads this file as a hidden iframe when the plugin is activated.
+
+For the underlying iframe-based architecture, see [Architecture](../concepts/architecture.md) and [Locations](../concepts/locations.md).
 
 Then create a JavaScript file in the subfolder `src/main.js` and reference it in the `index.html`:
 
