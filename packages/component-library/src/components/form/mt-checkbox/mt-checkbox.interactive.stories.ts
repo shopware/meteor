@@ -5,7 +5,8 @@ import meta, { type MtCheckboxMeta, type MtCheckboxStory } from "./mt-checkbox.s
 
 export default {
   ...meta,
-  title: "Interaction Tests/Form/mt-checkbox",
+  title: "Components/mt-checkbox/Interaction tests",
+  tags: ["!autodocs"],
 } as MtCheckboxMeta;
 
 export const TestLabel: MtCheckboxStory = {

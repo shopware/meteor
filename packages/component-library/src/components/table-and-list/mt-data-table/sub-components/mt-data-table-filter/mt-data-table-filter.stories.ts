@@ -9,7 +9,7 @@ export type MtDataTableFilterMeta = SlottedMeta<
 >;
 
 export default {
-  title: "Components/Table and list/mt-data-table/sub-components/mt-data-table-filter",
+  title: "Components/mt-data-table-filter",
   component: MtDataTableFilter,
   render: (args) => ({
     components: { MtDataTableFilter },

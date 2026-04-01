@@ -5,7 +5,8 @@ import meta, { type MtBannerMeta, type MtBannerStory } from "./mt-banner.stories
 
 export default {
   ...meta,
-  title: "Interaction Tests/Feedback Indicator/mt-banner",
+  title: "Components/mt-banner/Interaction tests",
+  tags: ["!autodocs"],
 } as MtBannerMeta;
 
 export const VisualTestBannerNeutral: MtBannerStory = {

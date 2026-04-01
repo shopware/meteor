@@ -7,7 +7,8 @@ import type { MtToastMeta, MtToastStory } from "./mt-toast.stories";
 
 export default {
   ...meta,
-  title: "Interaction Tests/Feedback indicator/mt-toast",
+  title: "Components/mt-toast/Interaction tests",
+  tags: ["!autodocs"],
 } as MtToastMeta;
 
 export const TestQuickTimer: MtToastStory = {

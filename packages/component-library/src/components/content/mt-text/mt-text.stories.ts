@@ -7,7 +7,7 @@ type MtTextSlots = "default";
 export type MtTextMeta = SlottedMeta<typeof MtText, MtTextSlots>;
 
 export default {
-  title: "Components/Content/mt-text",
+  title: "Components/mt-text",
   component: MtText,
   args: {
     default: "Text",
@@ -34,4 +34,29 @@ export default {
   }),
 } satisfies MtTextMeta;
 
-export const DefaultStory: StoryObj<MtTextMeta> = {};
+export const Default: StoryObj<MtTextMeta> = {};
+
+export const AllSizes: StoryObj<MtTextMeta> = {
+  name: "All sizes",
+  render: (args) => ({
+    components: { MtText },
+    setup() {
+      return {
+        args,
+        sizes: ["2xs", "xs", "s", "m", "l", "xl", "2xl", "3xl"],
+      };
+    },
+    template: `
+      <div style="display: grid; gap: 12px;">
+        <mt-text
+          v-for="size in sizes"
+          :key="size"
+          v-bind="args"
+          :size="size"
+        >
+          {{ size }} - {{ args.default }}
+        </mt-text>
+      </div>
+    `,
+  }),
+};

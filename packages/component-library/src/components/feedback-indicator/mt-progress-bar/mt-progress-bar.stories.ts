@@ -5,7 +5,7 @@ import type { SlottedMeta } from "@/_internal/story-helper";
 export type MtProgressBarMeta = SlottedMeta<typeof MtProgressBar, "error">;
 
 export default {
-  title: "Components/Feedback Indicator/mt-progress-bar",
+  title: "Components/mt-progress-bar",
   component: MtProgressBar,
   render: (args) => ({
     setup() {
@@ -27,9 +27,7 @@ export default {
 
 export type MtProgressBarStory = StoryObj<MtProgressBarMeta>;
 
-export const Default: MtProgressBarStory = {
-  name: "Minimal",
-};
+export const Default: MtProgressBarStory = {};
 
 export const Extended: MtProgressBarStory = {
   args: {

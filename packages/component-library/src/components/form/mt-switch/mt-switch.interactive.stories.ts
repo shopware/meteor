@@ -5,7 +5,8 @@ import meta, { type MtSwitchMeta, type MtSwitchStory } from "./mt-switch.stories
 
 export default {
   ...meta,
-  title: "Interaction Tests/Form/mt-switch",
+  title: "Components/mt-switch/Interaction tests",
+  tags: ["!autodocs"],
 } as MtSwitchMeta;
 
 export const VisualTestCheckable: MtSwitchStory = {

@@ -5,7 +5,8 @@ import meta, { type MtBadgeMeta, type MtBadgeStory } from "./mt-badge.stories";
 
 export default {
   ...meta,
-  title: "Interaction Tests/Feedback Indicator/mt-badge",
+  title: "Components/mt-badge/Interaction tests",
+  tags: ["!autodocs"],
 } as MtBadgeMeta;
 
 export const VisualTestNeutralVariant: MtBadgeStory = {

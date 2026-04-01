@@ -6,7 +6,8 @@ type MtPromoBadgeStory = StoryObj<MtPromoBadgeMeta>;
 
 export default {
   ...meta,
-  title: "Interaction Tests/Feedback Indicator/mt-promo-badge",
+  title: "Components/mt-promo-badge/Interaction tests",
+  tags: ["!autodocs"],
 } as MtPromoBadgeMeta;
 
 export const VisualTestNewVariant: MtPromoBadgeStory = {

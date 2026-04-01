@@ -5,7 +5,8 @@ import meta, { type MtTextareaMeta, type MtTextareaStory } from "./mt-textarea.s
 
 export default {
   ...meta,
-  title: "Interaction Tests/Form/mt-textarea",
+  title: "Components/mt-textarea/Interaction tests",
+  tags: ["!autodocs"],
 } as MtTextareaMeta;
 
 export const VisualTestHint: MtTextareaStory = {

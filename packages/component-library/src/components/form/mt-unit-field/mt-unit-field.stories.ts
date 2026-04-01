@@ -17,7 +17,7 @@ export type MtUnitFieldMeta = SlottedMeta<
 >;
 
 const meta: Meta<typeof MtUnitField> = {
-  title: "Components/Form/mt-unit-field",
+  title: "Components/mt-unit-field",
   component: MtUnitField,
   tags: ["autodocs"],
   render: (args) => ({
@@ -101,6 +101,4 @@ export default meta;
 
 export type MtUnitFieldStory = StoryObj<typeof meta>;
 
-export const Default: MtUnitFieldStory = {
-  name: "mt-unit-field",
-};
+export const Default: MtUnitFieldStory = {};

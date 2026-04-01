@@ -5,7 +5,8 @@ import meta, { type MtEmailFieldMeta, type MtEmailFieldStory } from "./mt-email-
 
 export default {
   ...meta,
-  title: "Interaction Tests/Form/mt-email-field",
+  title: "Components/mt-email-field/Interaction tests",
+  tags: ["!autodocs"],
 } as MtEmailFieldMeta;
 
 export const VisualTestPrefix: MtEmailFieldStory = {

@@ -5,7 +5,8 @@ import meta, { type MtUnitFieldMeta, type MtUnitFieldStory } from "./mt-unit-fie
 
 export default {
   ...meta,
-  title: "Interaction Tests/Form/mt-unit-field",
+  title: "Components/mt-unit-field/Interaction tests",
+  tags: ["!autodocs"],
 } as MtUnitFieldMeta;
 
 export const VisualTestDisabledState: MtUnitFieldStory = {

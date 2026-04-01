@@ -6,7 +6,8 @@ import { waitUntil } from "../../../_internal/test-helper";
 
 export default {
   ...meta,
-  title: "Interaction Tests/Form/mt-datepicker",
+  title: "Components/mt-datepicker/Interaction tests",
+  tags: ["!autodocs"],
 } as MtDatepickerMeta;
 
 export const VisualTestDatepickerDefault: MtDatepickerStory = {

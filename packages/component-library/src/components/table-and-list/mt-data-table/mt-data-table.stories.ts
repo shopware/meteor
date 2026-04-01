@@ -42,7 +42,7 @@ export type MtDataTableMeta = SlottedMeta<
   | "_remove_primary_toolbar_button_"
 >;
 export default {
-  title: "Components/Table and list/mt-data-table",
+  title: "Components/mt-data-table",
   component: MtDataTable,
   decorators: [
     () => ({

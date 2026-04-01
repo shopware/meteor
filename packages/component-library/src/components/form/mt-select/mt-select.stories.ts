@@ -45,7 +45,7 @@ export type MtSelectMeta = SlottedMeta<
 >;
 
 export default {
-  title: "Components/Form/mt-select",
+  title: "Components/mt-select",
   component: MtSelect,
   render: (args) => ({
     template: `
@@ -431,6 +431,4 @@ export default {
 
 export type MtSelectStory = StoryObj<MtSelectMeta>;
 
-export const DefaultStory: MtSelectStory = {
-  name: "mt-select",
-};
+export const Default: MtSelectStory = {};

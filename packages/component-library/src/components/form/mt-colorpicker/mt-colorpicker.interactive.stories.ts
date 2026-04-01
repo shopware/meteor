@@ -6,7 +6,8 @@ import { waitUntil } from "@/_internal/test-helper";
 
 export default {
   ...meta,
-  title: "Interaction Tests/Form/mt-colorpicker",
+  title: "Components/mt-colorpicker/Interaction tests",
+  tags: ["!autodocs"],
 } as MtColorpickerMeta;
 
 export const VisualTestRenderColorpicker: MtColorpickerStory = {

@@ -77,7 +77,8 @@ const tabItems = [
 
 export default {
   ...meta,
-  title: "Interaction Tests/Navigation/mt-tabs",
+  title: "Components/mt-tabs/Interaction tests",
+  tags: ["!autodocs"],
 } as MtTabsMeta;
 
 export const VisualTestRenderTabs: MtTabsStory = {
