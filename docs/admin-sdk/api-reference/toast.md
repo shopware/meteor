@@ -6,11 +6,11 @@ sidebar_position: 60
 
 # Toast
 
+> Available since Shopware v6.6.2.0
+
 Toasts display short, temporary messages to provide feedback about user actions or system events. Unlike [notifications](./notification.md), which persist in the notification center until dismissed, toasts disappear automatically after a short time.
 
 See also: [Base Options](../api-reference/base-options.md) for shared configuration options supported by SDK message APIs.
-
-> Available since Shopware v6.6.2.0
 
 ::: code-group
 

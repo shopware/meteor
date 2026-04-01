@@ -81,14 +81,14 @@ if (location.is('main-location-id')) {
 }
 ```
 
-## addSmartbarButton()
+## addSmartBarButton()
 
 Add a button to the smart bar of your main module. The button can be used to trigger actions, e.g. saving, cancel, etc. The location ID needs to be defined and have the same value as the `locationId` of the main module.
 
 #### Usage
 
 ```ts
-ui.mainModule.addSmartbarButton({
+ui.mainModule.addSmartBarButton({
     locationId: 'main-location-id', // locationId of your main module
     buttonId: 'test-button', // The button id
     label: 'Click me', // The button label

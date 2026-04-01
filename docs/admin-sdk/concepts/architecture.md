@@ -29,7 +29,7 @@ The helper methods can be found in the `channel` file. It holds different method
 
 Here is an example to give you a better understanding of how that works.
 
-### Example workflow
+## Example workflow
 
 Let's imagine that an app or plugin calls the `context.getLanguage` method from the Extension SDK:
 
