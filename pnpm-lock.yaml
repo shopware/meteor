@@ -338,8 +338,8 @@ importers:
         specifier: ^2.22.3
         version: 2.22.3(@tiptap/core@2.22.3(@tiptap/pm@2.22.3))(@tiptap/pm@2.22.3)(vue@3.5.13(typescript@5.7.3))
       '@vuepic/vue-datepicker':
-        specifier: ^10.0.0
-        version: 10.0.0(vue@3.5.13(typescript@5.7.3))
+        specifier: ^11.0.3
+        version: 11.0.3(vue@3.5.13(typescript@5.7.3))
       '@vueuse/components':
         specifier: ^12.4.0
         version: 12.4.0(typescript@5.7.3)
@@ -4880,11 +4880,11 @@ packages:
       vue:
         optional: true
 
-  '@vuepic/vue-datepicker@10.0.0':
-    resolution: {integrity: sha512-ujlk3ahftVQpyCJ8hq7TmOOHrf/XFJI1ZcAh/FRB5Ci62Vq5HmHf6xux5KVi5SPUFRTJY78m+uDhYy1M+8RZ9w==}
+  '@vuepic/vue-datepicker@11.0.3':
+    resolution: {integrity: sha512-sb2adwqwK2PizLQOpxCYps2SwhVT6/ic2HMIOqHJXuYa6iAJZWGL5YVlS7O4aW+sk6ZyxlDURLO7kDZPL4HB/w==}
     engines: {node: '>=18.12.0'}
     peerDependencies:
-      vue: '>=3.2.0'
+      vue: '>=3.3.0'
 
   '@vueuse/components@10.11.0':
     resolution: {integrity: sha512-ZvLZI23d5ZAtva5fGyYh/jQtZO8l+zJ5tAXyYNqHJZkq1o5yWyqZhENvSv5mfDmN5IuAOp4tq02mRmX/ipFGcg==}
@@ -7424,7 +7424,7 @@ packages:
 
   glob@7.2.3:
     resolution: {integrity: sha512-nFR0zLpU2YCaRxwoCJvL6UvCH2JFyFVIvwTLsIf21AuHlMskA1hhTdk+LlYJtOlYt9v6dvszD2BGRqBL+iQK9Q==}
-    deprecated: Old versions of glob are not supported, and contain widely publicized security vulnerabilities, which have been fixed in the current version. Please update. Support for old versions may be purchased (at exorbitant rates) by contacting i@izs.me
+    deprecated: Glob versions prior to v9 are no longer supported
 
   glob@8.1.0:
     resolution: {integrity: sha512-r8hpEjiQEYlF2QU0df3dS+nxxSIreXQS1qRhMJM0Q5NDdR386C7jb7Hwwod8Fgiuex+k0GFjgft18yvxm5XoCQ==}
@@ -10368,7 +10368,7 @@ packages:
   puppeteer@12.0.1:
     resolution: {integrity: sha512-YQ3GRiyZW0ddxTW+iiQcv2/8TT5c3+FcRUCg7F8q2gHqxd5akZN400VRXr9cHQKLWGukmJLDiE72MrcLK9tFHQ==}
     engines: {node: '>=10.18.1'}
-    deprecated: < 22.8.2 is no longer supported
+    deprecated: < 24.10.2 is no longer supported
 
   pure-rand@6.1.0:
     resolution: {integrity: sha512-bVWawvoZoBYpp6yIoQtQXHZjmz35RSVHnUOTefl8Vcjr8snTPY1wnpSPMWekcFwbxI6gtmT7rSYPFvz71ldiOA==}
@@ -12347,8 +12347,8 @@ packages:
   vue-component-type-helpers@2.0.21:
     resolution: {integrity: sha512-3NaicyZ7N4B6cft4bfb7dOnPbE9CjLcx+6wZWAg5zwszfO4qXRh+U52dN5r5ZZfc6iMaxKCEcoH9CmxxoFZHLg==}
 
-  vue-component-type-helpers@3.2.5:
-    resolution: {integrity: sha512-tkvNr+bU8+xD/onAThIe7CHFvOJ/BO6XCOrxMzeytJq40nTfpGDJuVjyCM8ccGZKfAbGk2YfuZyDMXM56qheZQ==}
+  vue-component-type-helpers@3.2.6:
+    resolution: {integrity: sha512-O02tnvIfOQVmnvoWwuSydwRoHjZVt8UEBR+2p4rT35p8GAy5VTlWP8o5qXfJR/GWCN0nVZoYWsVUvx2jwgdBmQ==}
 
   vue-demi@0.14.10:
     resolution: {integrity: sha512-nMZBOwuzabUO0nLgIcc6rycZEebF6eeUfaiQx9+WSk8e29IbLvPU9feI6tqW4kTo3hvoYAJkMh8n8D0fuISphg==}
@@ -16195,7 +16195,7 @@ snapshots:
       ts-dedent: 2.2.0
       type-fest: 2.19.0
       vue: 3.5.13(typescript@5.7.3)
-      vue-component-type-helpers: 3.2.5
+      vue-component-type-helpers: 3.2.6
 
   '@supercharge/promise-pool@2.4.0': {}
 
@@ -18123,7 +18123,7 @@ snapshots:
       typescript: 5.7.3
       vue: 3.5.13(typescript@5.7.3)
 
-  '@vuepic/vue-datepicker@10.0.0(vue@3.5.13(typescript@5.7.3))':
+  '@vuepic/vue-datepicker@11.0.3(vue@3.5.13(typescript@5.7.3))':
     dependencies:
       date-fns: 4.1.0
       vue: 3.5.13(typescript@5.7.3)
@@ -27550,7 +27550,7 @@ snapshots:
 
   vue-component-type-helpers@2.0.21: {}
 
-  vue-component-type-helpers@3.2.5: {}
+  vue-component-type-helpers@3.2.6: {}
 
   vue-demi@0.14.10(vue@3.5.13(typescript@5.7.3)):
     dependencies:
