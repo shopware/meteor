@@ -70,7 +70,6 @@ They simplify common patterns such as accessing repositories or sharing state be
 
 APIs in this section include:
 
-- [getRepository](./composables/getRepository.md)
 - [useRepository](./composables/useRepository.md)
 - [useSharedState](./composables/useSharedState.md)
 

@@ -67,9 +67,7 @@ if (location.is(location.MAIN_HIDDEN)) {
 }
 ```
 
-## Example
-
-- Add action button in customer detail page
+## Example: Add action button in customer detail page
 
 ![Action button example](./assets/add-action-button-example.png)
 
@@ -92,7 +90,7 @@ ui.actionButton.add({
 });
 ```
 
-- Add action button in media item
+## Example: Add action button in media item
 
 ![Action button media example](./assets/add-action-button-media-example.png)
 

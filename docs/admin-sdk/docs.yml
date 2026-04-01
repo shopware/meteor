@@ -18,3 +18,4 @@ redirects:
   api-reference/ui/paymentOverviewCard.html: api-reference/ui/purchases-and-payments/paymentOverviewCard.html
   api-reference/notification.html: api-reference/ui/notification.html
   api-reference/toast.html: api-reference/ui/toast.html
+  api-reference/composables/getRepository.html: api-reference/composables/useRepository.html

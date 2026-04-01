@@ -14,7 +14,7 @@ If you want to learn what the SDK is and what it can do first, see the [Introduc
 
 Shopware supports two extension types: **apps** and **plugins**. Both can use the Meteor Admin SDK.
 
-### Apps (recommended)
+### Apps
 
 Apps run on an external server and communicate with Shopware through a defined API. They are the recommended approach because:
 

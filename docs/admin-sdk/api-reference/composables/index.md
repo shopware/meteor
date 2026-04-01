@@ -13,6 +13,5 @@ They simplify common tasks such as accessing repositories or sharing reactive st
 
 Currently, the SDK exposes:
 
-- [getRepository](./getRepository.md): Create a static repository instance for a given entity.
-- [useRepository](./useRepository.md): Reactive wrapper around `getRepository` that updates when its inputs change.
+- [useRepository](./useRepository.md): Create a reactive repository instance for a given entity.
 - [useSharedState](./useSharedState.md): Share reactive state between different extension components.
