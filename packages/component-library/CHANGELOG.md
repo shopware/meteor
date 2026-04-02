@@ -1,5 +1,18 @@
 # Changelog
 
+## 4.27.0
+
+### Minor Changes
+
+- [#1052](https://github.com/shopware/meteor/pull/1052) [`02baae0`](https://github.com/shopware/meteor/commit/02baae02835ba8323ef223a400c2a9b0d76a72c5) Thanks [@gweiermann](https://github.com/gweiermann)! - use <Teleport /> for <mt-floating-ui /> instead of manual DOM manipulation
+
+### Patch Changes
+
+- [#1058](https://github.com/shopware/meteor/pull/1058) [`e237d93`](https://github.com/shopware/meteor/commit/e237d933469394e0fd2ad4e8823194fe962d2026) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Add null/undefined handling to `MtColorpicker` modelValue
+
+- Updated dependencies [[`eb968bd`](https://github.com/shopware/meteor/commit/eb968bdb5df44844b600a263ece33fa689bac489)]:
+  - @shopware-ag/meteor-admin-sdk@6.6.0
+
 ## 4.26.0
 
 ### Minor Changes

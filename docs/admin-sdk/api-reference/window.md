@@ -109,7 +109,7 @@ adminWindow.getId();
 
 #### Parameters
 
-No parameters required
+No parameters required.
 
 #### Return value
 
