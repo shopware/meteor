@@ -4,7 +4,8 @@ import MtTooltipStory from "./mt-tooltip.stories";
 
 export default {
   ...MtTooltipStory,
-  title: "Interaction Tests/Overlay/mt-tooltip",
+  title: "Components/mt-tooltip/Interaction tests",
+  tags: ["!autodocs"],
   decorators: [
     () => ({
       template: `<div style="height: calc(100vh - 1rem * 2); width: 100%; display: grid; place-items: center;"><story/></div>`,

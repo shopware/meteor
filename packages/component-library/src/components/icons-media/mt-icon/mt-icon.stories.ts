@@ -5,7 +5,7 @@ import type { SlottedMeta } from "@/_internal/story-helper";
 export type MtIconMeta = SlottedMeta<typeof MtIcon, "default">;
 
 const meta: MtIconMeta = {
-  title: "Components/Icons & Media/mt-icon",
+  title: "Components/mt-icon",
   component: MtIcon,
   render: (args) => ({
     components: { MtIcon },
@@ -31,6 +31,4 @@ const meta: MtIconMeta = {
 export default meta;
 export type MtIconStory = StoryObj<MtIconMeta>;
 
-export const Default: MtIconStory = {
-  name: "mt-icon",
-};
+export const Default: MtIconStory = {};

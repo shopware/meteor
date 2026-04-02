@@ -8,7 +8,7 @@ import type { SlottedMeta } from "@/_internal/story-helper";
 export type MtButtonMeta = SlottedMeta<typeof MtButton, "default" | "click">;
 
 export default {
-  title: "Components/Form/mt-button",
+  title: "Components/mt-button",
   component: MtButton,
   args: {
     default: "Button",
@@ -61,6 +61,4 @@ export default {
 
 export type MtButtonStory = StoryObj<MtButtonMeta>;
 
-export const DefaultStory: MtButtonStory = {
-  name: "mt-button",
-};
+export const Default: MtButtonStory = {};

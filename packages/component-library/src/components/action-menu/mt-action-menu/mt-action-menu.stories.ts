@@ -13,7 +13,7 @@ import MtActionMenuGroup from "../mt-action-menu-group/mt-action-menu-group.vue"
 export type MtActionMenuMeta = Meta<typeof MtActionMenu>;
 
 const meta: MtActionMenuMeta = {
-  title: "Components/Form/mt-action-menu",
+  title: "Components/mt-action-menu",
   component: MtActionMenu,
   render: (args) => ({
     components: {
@@ -98,6 +98,4 @@ const meta: MtActionMenuMeta = {
 export default meta;
 export type MtActionMenuStory = StoryObj<MtActionMenuMeta>;
 
-export const Default: MtActionMenuStory = {
-  name: "mt-action-menu",
-};
+export const Default: MtActionMenuStory = {};

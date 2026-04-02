@@ -11,7 +11,7 @@ import { createId } from "@/utils/id";
 export type MtToastMeta = SlottedMeta<typeof MtToast, "">;
 
 export default {
-  title: "Components/Feedback Indicator/mt-toast",
+  title: "Components/mt-toast",
   component: MtToast,
   render: (args) => ({
     components: { MtToast, MtButton, MtSelect, MtTextField, MtCheckbox },
@@ -94,6 +94,4 @@ export default {
 
 export type MtToastStory = StoryObj<MtToastMeta>;
 
-export const Default: MtToastStory = {
-  name: "mt-toast",
-};
+export const Default: MtToastStory = {};

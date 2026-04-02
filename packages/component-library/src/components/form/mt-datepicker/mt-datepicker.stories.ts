@@ -10,7 +10,7 @@ export type MtDatepickerMeta = SlottedMeta<
 >;
 
 export default {
-  title: "Components/Form/mt-datepicker",
+  title: "Components/mt-datepicker",
   component: MtDatepicker,
   render: (args) => ({
     template: `
@@ -75,6 +75,4 @@ export default {
 
 export type MtDatepickerStory = StoryObj<MtDatepickerMeta>;
 
-export const DefaultStory: MtDatepickerStory = {
-  name: "mt-datepicker",
-};
+export const Default: MtDatepickerStory = {};

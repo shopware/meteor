@@ -7,7 +7,8 @@ import meta, {
 
 export default {
   ...meta,
-  title: "Interaction Tests/Form/mt-password-field",
+  title: "Components/mt-password-field/Interaction tests",
+  tags: ["!autodocs"],
 } as MtPasswordFieldMeta;
 
 export const VisualTestLabel: MtPasswordFieldStory = {

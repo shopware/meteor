@@ -12,7 +12,8 @@ import { waitUntil } from "../../../_internal/test-helper";
 
 export default {
   ...meta,
-  title: "Interaction Tests/Overlay/mt-modal",
+  title: "Components/mt-modal/Interaction tests",
+  tags: ["!autodocs"],
 };
 
 export const VisualTestContent = {

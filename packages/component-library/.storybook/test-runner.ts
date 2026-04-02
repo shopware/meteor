@@ -14,9 +14,9 @@ export default {
 
     // use bigger viewport for data-table and toasts
     if (
-      context.id.startsWith("interaction-tests-table-and-list") ||
-      context.id.startsWith("interaction-tests-entity-mt-entity-data-table") ||
-      context.id.startsWith("interaction-tests-feedback-indicator-mt-toast")
+      context.id.startsWith("components-mt-data-table-interaction-tests") ||
+      context.id.startsWith("components-mt-entity-data-table-interaction-tests") ||
+      context.id.startsWith("components-mt-toast-interaction-tests")
     ) {
       await page.setViewportSize({ width: 1600, height: 900 });
     }
@@ -24,14 +24,14 @@ export default {
     // use smaller viewport to test wrapping of multi select
     if (
       context.id ===
-      "interaction-tests-form-mt-select--visual-test-ensure-correct-multi-selection-wrapping"
+      "components-mt-select-interaction-tests--visual-test-ensure-correct-multi-selection-wrapping"
     ) {
       await page.setViewportSize({ width: 500, height: 650 });
     }
   },
   async postRender(page, context) {
     // Render screenshots only for interaction tests with Visual Test name
-    if (!context.id.startsWith("interaction-tests") || !context.name.startsWith("Visual Test")) {
+    if (!context.id.includes("-interaction-tests--") || !context.name.startsWith("Visual Test")) {
       return;
     }
 

@@ -2,7 +2,8 @@ import meta, { type MtAvatarMeta, type MtAvatarStory } from "./mt-avatar.stories
 
 export default {
   ...meta,
-  title: "Interaction Tests/Icons & Media/mt-avatar",
+  title: "Components/mt-avatar/Interaction tests",
+  tags: ["!autodocs"],
 } satisfies MtAvatarMeta;
 
 export const VisualTestRenderAvatar: MtAvatarStory = {

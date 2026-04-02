@@ -6,7 +6,8 @@ import meta, { type MtEntitySelectStory } from "./mt-entity-select.stories";
 
 export default {
   ...meta,
-  title: "Interaction Tests/Entity/mt-entity-select",
+  title: "Components/mt-entity-select/Interaction tests",
+  tags: ["!autodocs"],
 };
 
 export const VisualTestSingleSelection: MtEntitySelectStory = {

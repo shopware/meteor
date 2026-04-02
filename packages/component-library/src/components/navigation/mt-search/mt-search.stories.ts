@@ -8,7 +8,7 @@ import { fn } from "@storybook/test";
 export type MtSearchMeta = SlottedMeta<typeof MtSearch, "default" | "change" | "updateModelValue">;
 
 const meta: MtSearchMeta = {
-  title: "Components/Navigation/mt-search",
+  title: "Components/mt-search",
   component: MtSearch,
   args: {
     modelValue: "",
@@ -80,6 +80,4 @@ const meta: MtSearchMeta = {
 export default meta;
 export type MtSearchStory = StoryObj<MtSearchMeta>;
 
-export const Default: MtSearchStory = {
-  name: "mt-search",
-};
+export const Default: MtSearchStory = {};

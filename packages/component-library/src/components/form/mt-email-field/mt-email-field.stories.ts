@@ -18,7 +18,7 @@ export type MtEmailFieldMeta = SlottedMeta<
 >;
 
 export default {
-  title: "Components/Form/mt-email-field",
+  title: "Components/mt-email-field",
   component: MtEmailField,
   render: (args) => ({
     template: `
@@ -110,6 +110,4 @@ export default {
 
 export type MtEmailFieldStory = StoryObj<MtEmailFieldMeta>;
 
-export const DefaultStory: MtEmailFieldStory = {
-  name: "mt-email-field",
-};
+export const Default: MtEmailFieldStory = {};

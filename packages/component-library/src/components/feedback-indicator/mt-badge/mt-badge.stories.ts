@@ -6,7 +6,7 @@ import type { SlottedMeta } from "@/_internal/story-helper";
 export type MtBadgeMeta = SlottedMeta<typeof MtBadge, "default">;
 
 const meta: MtBadgeMeta = {
-  title: "Components/Feedback Indicator/mt-badge",
+  title: "Components/mt-badge",
   component: MtBadge,
   args: {
     default: "Badge",
@@ -51,6 +51,4 @@ const meta: MtBadgeMeta = {
 export default meta;
 export type MtBadgeStory = StoryObj<MtBadgeMeta>;
 
-export const Default: MtBadgeStory = {
-  name: "mt-badge",
-};
+export const Default: MtBadgeStory = {};

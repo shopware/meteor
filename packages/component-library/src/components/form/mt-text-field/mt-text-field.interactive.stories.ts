@@ -5,7 +5,8 @@ import meta, { type MtTextFieldMeta, type MtTextFieldStory } from "./mt-text-fie
 
 export default {
   ...meta,
-  title: "Interaction Tests/Form/mt-text-field",
+  title: "Components/mt-text-field/Interaction tests",
+  tags: ["!autodocs"],
 } as MtTextFieldMeta;
 
 export const TestInputValue: MtTextFieldStory = {

@@ -4,10 +4,16 @@ import MtCard from "./mt-card.vue";
 import MtInset from "../mt-inset/mt-inset.vue";
 import MtText from "@/components/content/mt-text/mt-text.vue";
 
-import { MinimalStory, ExtendedStory, type MtCardMeta, type MtCardStory } from "./mt-card.stories";
+import {
+  Default as MinimalStory,
+  ExtendedStory,
+  type MtCardMeta,
+  type MtCardStory,
+} from "./mt-card.stories";
 
 export default {
-  title: "Interaction Tests/Layout/mt-card",
+  title: "Components/mt-card/Interaction tests",
+  tags: ["!autodocs"],
 } as MtCardMeta;
 
 export const VisualTestMinimalPage: MtCardStory = {

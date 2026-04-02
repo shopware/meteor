@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/vue3";
 import MtPromoBadge from "./mt-promo-badge.vue";
 
 const meta: Meta<typeof MtPromoBadge> = {
-  title: "Components/Feedback Indicator/mt-promo-badge",
+  title: "Components/mt-promo-badge",
   component: MtPromoBadge,
   parameters: {
     docs: {
