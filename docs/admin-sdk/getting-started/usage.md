@@ -7,11 +7,9 @@ sidebar_position: 40
 
 After installing the Meteor Admin SDK, you can use it in your extensions. Most extensions should use the NPM package with a bundler such as Vite. This provides proper dependency management, type support, and better integration with modern development workflows.
 
-Alternatively, you can load the SDK via a CDN, which exposes the SDK through the global `sw` object. This approach is mainly useful for simple setups or quick experiments.
+## Show a notification
 
-## Using the SDK with NPM (recommended)
-
-Import the SDK features you need directly into your JavaScript file.
+One of the simplest SDK interactions is showing a notification in the Shopware Administration:
 
 ```js
 // import notification toolkit from the SDK
@@ -69,18 +67,6 @@ data.subscribe('sw-product-detail', (payload) => {
 ```
 
 See [Subscribe](../api-reference/data/subscribe.md), [Get](../api-reference/data/get.md), and [Repository](../api-reference/data/repository.md) for more data access patterns.
-
-## Using the SDK via CDN
-
-If you load the SDK from a CDN, its APIs are available on the global `sw` object.
-
-```js
-// access the "notification" toolkit in the global "sw" object and dispatch a new notification
-sw.notification.dispatch({
-  title: 'My first notification',
-  message: 'This was really easy to do'
-});
-```
 
 ## Find more examples
 
