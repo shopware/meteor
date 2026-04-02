@@ -12,6 +12,8 @@ With `cms.registerCmsBlock` you can register CMS blocks to use in the Shopping E
 
 ![Register a CMS block in your Shopping Experiences Module via App](../assets/register-cms-block-example.png)
 
+## registerCmsBlock()
+
 #### Usage
 
 ```ts
@@ -44,6 +46,9 @@ cms.registerCmsBlock({
 | `previewImage` | false    | The URL of the preview image. This image is shown in the Shopping Experiences Module when selecting the CMS block.                                                                                                                                                                                      |
 | `slotLayout`   | false    | The layout of the slots. This is used to define the grid layout of the slots. You can use the [CSS grid shorthand syntax](https://developer.mozilla.org/en-US/docs/Web/CSS/grid) here.                                                                                                                  |
 
+#### Return value
+
+Returns a promise without data.
 
 ## Storefront usage
 

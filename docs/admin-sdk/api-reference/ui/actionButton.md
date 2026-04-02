@@ -12,6 +12,8 @@ Action buttons are typically used to trigger extension-specific actions such as 
 
 ## actionButton.add()
 
+#### Usage
+
 ```ts
 import { location, ui } from "@shopware-ag/meteor-admin-sdk";
 
@@ -39,6 +41,10 @@ if (location.is(location.MAIN_HIDDEN)) {
 | `meteorIcon` | false    | Meteor icon before label. Available since Shopware v6.7.4.0. Check icon name on https://developer.shopware.com/resources/meteor-icon-kit/                                         |
 | `fileTypes`  | false    | Media file types you want the action button to be displayed for. Available since Shopware v6.7.6.0.                                                                               |
 | `callback`   | true     | The callback function where you receive the entity and the entityIds for further processing                                                                                       |
+
+#### Return value
+
+Returns a promise without data.
 
 ## Calling app actions
 

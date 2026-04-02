@@ -13,7 +13,7 @@ This is useful for adapting extension behavior based on the current Administrati
 import { context } from "@shopware-ag/meteor-admin-sdk";
 ```
 
-## context.getLanguage()
+## getLanguage()
 
 Returns the current Administration language ID and the system default language ID. Use this to load the correct translations or filter data by language.
 
@@ -45,7 +45,7 @@ Promise<{
 }
 ```
 
-## context.subscribeLanguage()
+## subscribeLanguage()
 
 Subscribes to language changes in the Administration. The callback fires whenever the user switches languages, allowing extensions to react immediately (e.g. reloading translated content).
 
@@ -81,7 +81,7 @@ context.subscribeLanguage(({ languageId, systemLanguageId }) => {
 }
 ```
 
-## context.getEnvironment()
+## getEnvironment()
 
 Returns the current Administration environment mode. Use this to enable debug features or disable analytics in non-production environments.
 
@@ -107,7 +107,7 @@ Promise<"development" | "production" | "testing">;
 "development";
 ```
 
-## context.getLocale()
+## getLocale()
 
 Returns the browser locale used by the Administration UI, including a fallback locale. Use this to format dates, numbers, or currencies according to the user's regional settings.
 
@@ -139,7 +139,7 @@ Promise<{
 }
 ```
 
-## context.subscribeLocale()
+## subscribeLocale()
 
 Subscribes to locale changes in the Administration. The callback fires whenever the locale changes, allowing extensions to re-render locale-dependent content like formatted dates or currencies.
 
@@ -175,7 +175,7 @@ context.subscribeLocale(({ locale, fallbackLocale }) => {
 }
 ```
 
-## context.getCurrency()
+## getCurrency()
 
 Returns the system currency configured for the Shopware instance. Use this when displaying prices or working with monetary values.
 
@@ -207,7 +207,7 @@ Promise<{
 }
 ```
 
-## context.getShopwareVersion()
+## getShopwareVersion()
 
 Returns the Shopware version as a string. Use this to conditionally enable features or check compatibility before using newer APIs.
 
@@ -233,7 +233,7 @@ string;
 "6.4.0.0";
 ```
 
-## context.compareShopwareVersion()
+## compareShopwareVersion()
 
 Compares the current Shopware version against a target version. The current Shopware version is always the left-hand side of the comparison — so `context.compareShopwareVersion('>=', '7.0.0')` reads as "is the current Shopware version equal to or greater than 7.0.0?"
 
@@ -270,7 +270,7 @@ boolean;
 true;
 ```
 
-## context.getAppInformation()
+## getAppInformation()
 
 Returns metadata about the current app or plugin, including its name, version, type, and granted privileges. Use this to adapt behavior based on the extension type or check which permissions were granted.
 
@@ -312,7 +312,7 @@ Promise<{
 }
 ```
 
-## context.getUserInformation()
+## getUserInformation()
 
 Returns details about the currently logged-in Administration user, including their roles, email, and admin status. Use this to personalize the extension UI or check user permissions.
 
@@ -371,7 +371,7 @@ Promise<{
 }
 ```
 
-## context.getUserTimezone()
+## getUserTimezone()
 
 Returns the timezone setting of the currently logged-in user. Use this to display dates and times in the user's local timezone.
 
@@ -395,7 +395,7 @@ Promise<string>;
 
 This function returns a Promise that resolves to a string representing the user's timezone.
 
-## context.getModuleInformation()
+## getModuleInformation()
 
 Returns the list of all registered extension modules (created by adding menu items, settings items, etc.). Use the module ID to navigate between extensions.
 
@@ -446,7 +446,7 @@ Promise<{
 }
 ```
 
-## context.getShopId()
+## getShopId()
 
 Returns the unique shop ID used by Shopware's app system. Use this to identify the shop instance when communicating with external services.
 
@@ -468,7 +468,7 @@ No parameters needed.
 Promise<string>;
 ```
 
-## context.can()
+## can()
 
 Checks whether a specific privilege is granted for the current app. Use this to conditionally show features that require specific permissions.
 

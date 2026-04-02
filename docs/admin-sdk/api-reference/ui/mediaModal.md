@@ -15,7 +15,7 @@ This method allows apps to interact with the Administration's media modal. Two m
 import { ui } from "@shopware-ag/meteor-admin-sdk";
 ```
 
-## ui.mediaModal.open()
+## mediaModal.open()
 
 Open the media modal in the current view.
 
@@ -58,9 +58,7 @@ ui.mediaModal.open({
 });
 ```
 
-## Save media modal
-
-### Open save media modal
+## mediaModal.openSaveMedia()
 
 Open save media modal in the current view.
 

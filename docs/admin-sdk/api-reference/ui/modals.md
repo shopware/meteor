@@ -18,7 +18,7 @@ See also: [Base Options](../base-options.md) for shared configuration options su
 import { notification, ui } from "@shopware-ag/meteor-admin-sdk";
 ```
 
-## Open modal
+## modal.open()
 
 Open a new modal in the current view. The content of the modal is determined by your `locationId` or by using plain text with `textContent`.
 
@@ -102,7 +102,11 @@ ui.modal.open({
 });
 ```
 
-## Update modal
+#### Return value
+
+Returns a promise without data.
+
+## modal.update()
 
 > Available since Shopware 6.7.1.0
 
@@ -139,7 +143,11 @@ ui.modal.update({
 | `closable`   | false    |         | If set to `false` then the modal can only be closed programmatically                |
 | `buttons`    | false    |         | Array of button configurations which will render buttons in the footer of the modal |
 
-## Close modal
+#### Return value
+
+Returns a promise without data.
+
+## modal.close()
 
 Closes an opened modal. You need use the correct `locationId` of the modal which should get closed. If you don't provide a `locationId` the last modal without a `locationId` gets closed.
 
@@ -154,3 +162,7 @@ ui.modal.close({ locationId: "your-location-id" });
 | Name         | Required | Default | Description                                                                                                               |
 | :----------- | :------- | :------ | :------------------------------------------------------------------------------------------------------------------------ |
 | `locationId` | false    |         | The locationId of the modal which should get closed. If not provided, the last modal without a locationId will be closed. |
+
+#### Return value
+
+Returns a promise without data.

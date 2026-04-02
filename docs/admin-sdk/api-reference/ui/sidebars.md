@@ -12,7 +12,7 @@ A sidebar provides a contextual panel that displays at the right edge of the Adm
 import { ui } from "@shopware-ag/meteor-admin-sdk";
 ```
 
-## Add a sidebar
+## sidebar.add()
 
 Add a new sidebar. The content of the sidebar is determined by your `locationId`.
 
@@ -35,11 +35,15 @@ ui.sidebar.add({
 | `icon`       | true     | The icon to display in the sidebar. You can use any icon from the Shopware icon library | 6.7                   |
 | `resizable`  | false    | Enables horizontal resizing of the sidebar                                              | 6.7.2.0               |
 
+#### Return value
+
+Returns a promise without data.
+
 #### Example
 
 ![Menu item example](./assets/sidebar-example.png)
 
-## Close a sidebar
+## sidebar.close()
 
 Close an existing sidebar programmatically.
 
@@ -57,7 +61,11 @@ ui.sidebar.close({
 | :----------- | :------- | :----------------------------- | :-------------------- |
 | `locationId` | true     | The id of the sidebar to close | 6.7                   |
 
-## Remove a sidebar
+#### Return value
+
+Returns a promise without data.
+
+## sidebar.remove()
 
 Remove a sidebar completely from the DOM.
 
@@ -74,3 +82,7 @@ ui.sidebar.remove({
 | Name         | Required | Description                     | Available at Shopware |
 | :----------- | :------- | :------------------------------ | :-------------------- |
 | `locationId` | true     | The id of the sidebar to remove | 6.7                   |
+
+#### Return value
+
+Returns a promise without data.

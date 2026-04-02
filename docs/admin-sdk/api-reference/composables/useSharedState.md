@@ -10,8 +10,6 @@ The `composables.useSharedState` function allows you to create shared state acro
 
 The value stored within the shared state can be any data type that can be serialized to JSON. Additionally, we have added support for Entities and EntityCollections.
 
-## Why use `useSharedState`?
-
 `useSharedState` solves a different problem than a normal Vue store:
 
 - It synchronizes data between multiple SDK locations and iframes.
@@ -23,9 +21,7 @@ If your state only lives inside a single Vue application, Pinia is still a good 
 
 ![useSharedState demo](../assets/useSharedState-demo.gif)
 
-## Reference
-
-#### Usage
+## Usage
 
 ```ts
 // Inside a Vue component setup
@@ -38,13 +34,13 @@ const mySharedStateValue = useSharedState(
 );
 ```
 
-#### Parameters
+## Parameters
 
 | Name           | Required | Description                                                               |
 | :------------- | :------- | :------------------------------------------------------------------------ |
 | `key`          | true     | The unique key used to share the state across different places            |
 | `initial data` | true     | The initial data value used when no data exists in the local shared state |
 
-#### Return value
+## Return value
 
 Returns a reactive state object with a `value` property. Reading or updating `value` accesses the shared state for the given key across all matching SDK locations.

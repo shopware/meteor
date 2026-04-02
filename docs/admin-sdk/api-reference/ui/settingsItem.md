@@ -11,7 +11,7 @@ A settings item adds an entry to the Shopware Administration settings area.
 
 Use this when your extension provides configurable options that should appear in the central settings section.
 
-## Add settings item
+## addSettingsItem()
 
 Add a new settings item to the Shopware settings. The content of the settings item module is determined by your `locationId`. A specific view or a set of actions can be triggered based on the `locationId`.
 
@@ -41,9 +41,11 @@ ui.settings.addSettingsItem({
 | `displaySmartBar`    | false    | true           | Toggles the sw-page smart bar on/off                          |
 | `tab`                | false    | 'plugins'      | Determines in which tab your settings item will be displayed  |
 
-## Getting the right icon
+#### Return value
 
-If your editor supports TypeScript, you should get auto-completion when importing icons from the Meteor icon package. To browse available icons, see the [Meteor icon kit repository](https://github.com/shopware/meteor/tree/main/packages/icon-kit).
+Returns a promise without data.
+
+To browse available icons, see the [Meteor icon kit repository](https://github.com/shopware/meteor/tree/main/packages/icon-kit). If your editor supports TypeScript, you should also get auto-completion when importing icons from the Meteor icon package.
 
 #### Example
 

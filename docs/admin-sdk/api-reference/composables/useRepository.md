@@ -33,15 +33,6 @@ const repository = useRepository("product", myRepositoryFactory);
 const products = await repository.value.search(criteria);
 ```
 
-## Dynamic repository creation
-
-The main advantage of `useRepository` is that it automatically recreates the repository when its inputs change:
-
-1. If the entity name changes, a new repository for the different entity type is created
-2. If the repository factory changes, a new repository using the different factory is created
-
-This reactivity is implemented using Vue's computed properties, ensuring that the repository is only recreated when necessary.
-
 ## Parameters
 
 | Name                | Required | Description                                          |

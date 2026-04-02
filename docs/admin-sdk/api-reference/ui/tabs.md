@@ -11,9 +11,9 @@ Tabs allow extensions to add additional tabs to existing Administration pages.
 
 They are commonly used to extend entity detail pages such as products, customers, or orders.
 
-## Add tab item
+## addTabItem()
 
-Add a new tab item to an existing tab bar. The content of the the new tab item
+Add a new tab item to an existing tab bar. The content of the new tab item
 contains a component section. This works with tab bar's which have routing and
 also static tab bars. If the tab bar has routing then the route for the tab item
 will be generated automatically.
@@ -35,6 +35,10 @@ ui.tabs('sw-product-detail' /* The positionId of the tab bar*/).addTabItem({
 | :------------------- | :------- | :------ | :------------------------------------------------------ |
 | `label`              | true     |         | The label of the tab bar item                           |
 | `componentSectionId` | true     |         | The Id for for the component section in the tab content |
+
+#### Return value
+
+Returns a promise without data.
 
 #### Example
 

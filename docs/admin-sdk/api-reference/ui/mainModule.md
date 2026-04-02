@@ -36,6 +36,10 @@ ui.mainModule.addMainModule({
 | `displaySearchBar`      | false    | true    | Toggles the sw-page search bar on/off  |
 | `displayLanguageSwitch` | false    | false   | Toggles sw-page language switch on/off |
 
+#### Return value
+
+Returns a promise without data.
+
 #### Example
 
 ![Main module example](./assets/add-main-module-example.png)
@@ -99,6 +103,10 @@ ui.mainModule.addSmartBarButton({
 | `onClickCallback` | true     |           | Callback function which will be called once the button is clicked                                                   |
 | `disabled`        | false    | false     | Toggle disabled state of the button                                                                                 |
 
+#### Return value
+
+Returns a promise without data.
+
 ## hideSmartBar()
 
 Turn the smart bar off as needed.
@@ -116,3 +124,7 @@ ui.mainModule.hideSmartBar({
 | Name         | Required | Default | Description                                                 | Available at Shopware |
 | :----------- | :------- | :------ | :---------------------------------------------------------- | :-------------------- |
 | `locationId` | true     |         | The locationId of the module you want to hide the smart bar | v6.6.7.0              |
+
+#### Return value
+
+Returns a promise without data.

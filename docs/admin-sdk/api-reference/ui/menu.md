@@ -8,27 +8,53 @@ nav:
 
 Menu items allow extensions to add navigation entries to existing areas of the Shopware Administration menu.
 
-They are typically used to expose extension functionality inside existing admin modules.
+They are typically used to expose extension functionality inside existing admin modules. In practice, this refers to the left sidebar navigation of the Administration.
 
 ```ts
 import { ui } from "@shopware-ag/meteor-admin-sdk";
 ```
 
-## Toggle menu
+## collapseMenu()
 
 > Available since Shopware v6.6.2.0
 
-The Admin SDK allows you to manipulate the Admin menu of your application. One of the features it provides is the ability to toggle the Admin menu. This is done using the `collapseMenu` and `expandMenu` methods.
+Collapse the Administration menu.
 
 #### Usage
 
 ```ts
-ui.menu.collapseMenu(); // To collapse the Admin menu;
-
-ui.menu.expandMenu(); // To expand the Admin menu;
+ui.menu.collapseMenu();
 ```
 
-## Add menu item
+#### Parameters
+
+This method does not accept parameters.
+
+#### Return value
+
+Returns a promise without data.
+
+## expandMenu()
+
+> Available since Shopware v6.6.2.0
+
+Expand the Administration menu again after it has been collapsed.
+
+#### Usage
+
+```ts
+ui.menu.expandMenu();
+```
+
+#### Parameters
+
+This method does not accept parameters.
+
+#### Return value
+
+Returns a promise without data.
+
+## addMenuItem()
 
 Add a new menu item to the Shopware admin menu. The content of the menu item module is determined by your `locationId`.
 A specific view or a set of actions can be triggered based on the `locationId`.
@@ -55,6 +81,10 @@ ui.menu.addMenuItem({
 | `displaySmartBar`  | false    | true           | Toggles the sw-page smart bar on/off                          |
 | `parent`           | false    | 'sw-extension' | Determines under which main menu entry your item is displayed |
 | `position`         | false    | 110            | Determines the position of your menu item                     |
+
+#### Return value
+
+Returns a promise without data.
 
 #### Example
 

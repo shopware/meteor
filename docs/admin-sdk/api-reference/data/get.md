@@ -12,20 +12,36 @@ Compared to `data.subscribe`, `data.get` only gives you the current state of the
 
 [The data handling guide](../../concepts/datahandling.md) explains how to find available datasets.
 
-## Usage
+## data.get()
+
+`get()` returns the current value of a dataset once. Compared to `subscribe()`, it does not continue listening for updates.
+
+#### Usage
 
 ```ts
-import { data } from '@shopware-ag/meteor-admin-sdk';
+import { data } from "@shopware-ag/meteor-admin-sdk";
 
-data.get({
-    id: 'sw-product-detail__product',
-    selectors: ['name', 'manufacturer.name'],
-}).then((product) => {
+data
+  .get({
+    id: "sw-product-detail__product",
+    selectors: ["name", "manufacturer.name"],
+  })
+  .then((product) => {
     console.log(product);
-});
+  });
 ```
 
-## Output
+#### Parameters
+
+| Name      | Required | Description                                                                                                         |
+| :-------- | :------- | :------------------------------------------------------------------------------------------------------------------ |
+| `options` | true     | Containing the unique `id` and optional `selectors`. Read more about selectors [here](../../concepts/selectors.md). |
+
+#### Return value
+
+Returns a promise that resolves with the current dataset value.
+
+For example:
 
 ```json
 {
@@ -35,9 +51,3 @@ data.get({
   }
 }
 ```
-
-## Parameters
-
-| Name      | Required | Description                                                                                                          |
-| :-------- | :------- |:---------------------------------------------------------------------------------------------------------------------|
-| `options` | true     | Containing the unique `id` and optional `selectors`. Read more about selectors [here](../../concepts/selectors.md). |

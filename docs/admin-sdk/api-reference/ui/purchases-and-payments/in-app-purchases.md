@@ -4,24 +4,35 @@ nav:
   position: 10
 ---
 
-
 # In-App Purchases
 
 > Available since Shopware v6.6.9.0
 
 In-App purchases allow apps to unlock different functionality based on purchases made by the user. This guide covers how to start the in-app purchase flow directly from the Administration.
 
-## Start the purchase flow
+## purchase()
 
-To open a modal with details about the feature that can be purchased:
+Open a modal with details about the feature that can be purchased.
+
+#### Usage
 
 ```ts
-import { iap } from '@shopware-ag/meteor-admin-sdk';
+import { iap } from "@shopware-ag/meteor-admin-sdk";
 
 iap.purchase({
-    identifier: 'your-in-app-purchase-id',
+  identifier: "your-in-app-purchase-id",
 });
 ```
+
+#### Parameters
+
+| Name         | Required | Description                             |
+| :----------- | :------- | :-------------------------------------- |
+| `identifier` | true     | The id of the in-app purchase to start. |
+
+#### Return value
+
+Returns a promise without data.
 
 ## Behavior
 
