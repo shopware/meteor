@@ -47,9 +47,12 @@ To scaffold a new app using the App Server SDK:
 npx tiged shopware/app-sdk-js/examples/node-hono demo-app
 cd demo-app
 
-# install dependencies and start the dev server
+# install dependencies
 npm install
-npm run dev
+
+# install the Meteor Admin SDK and Vite for the administration frontend
+npm install @shopware-ag/meteor-admin-sdk
+npm install -D vite
 ```
 
 Visit [the App Server SDK guide](https://developer.shopware.com/docs/guides/plugins/apps/app-sdks/javascript/01-getting_started.html) for detailed instructions.
@@ -60,63 +63,109 @@ Every app must:
 
 - Handle the registration handshake
 - Expose a publicly reachable URL
-- Serve an HTML page for the Administration
+- Serve the Administration frontend
 
 Using the [App Server SDK](https://github.com/shopware/app-sdk-js) is recommended, as it handles the registration handshake, signature verification, webhook handling, and request validation. It is also possible to implement the registration and request validation manually for advanced setups.
 
-### 2. Create the Administration HTML page
+The `npx tiged` example gives you the backend for registration and webhook handling. The following steps add the Administration frontend with Vite under `meteor-app/`.
 
-Create an HTML file called `my-example-app.html`. This is the page that Shopware loads inside the Administration when the app is active.
+### 2. Create the Administration frontend in `meteor-app/`
+
+Create the folder `demo-app/meteor-app` with an `index.html` and a `src/main.js`. This is the frontend source that Vite will serve inside the Shopware Administration.
+
+For the underlying iframe-based architecture, see [Architecture](../concepts/architecture.md) and [Locations](../concepts/locations.md).
+
+Create `demo-app/meteor-app/index.html`:
 
 ```html
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>My Example App</title>
   </head>
   <body>
-    <script type="module">
-      import { notification } from "/path/to/your/bundled/file.js";
-
-      notification.dispatch({
-        title: "Meteor Admin SDK installed",
-        message: "Your app is connected successfully",
-      });
-    </script>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
   </body>
 </html>
 ```
 
-When using npm, the SDK must be bundled with a build tool like Vite. See the [App development guide](https://developer.shopware.com/docs/guides/plugins/apps/app-base-guide).
+Create `demo-app/meteor-app/src/main.js`:
 
-#### Serving the HTML file
+```js
+import { notification } from "@shopware-ag/meteor-admin-sdk";
 
-Create the file at `demo-app/my-example-app.html` (next to `index.ts` in the app server project).
-
-The scaffolded Hono app server does not serve static files by default. Add a route to your `index.ts` that serves the HTML file:
-
-```ts
-import { readFileSync } from "node:fs";
-
-app.get("/my-example-app.html", (c) => {
-  const html = readFileSync("./my-example-app.html", "utf-8");
-  return c.html(html);
+notification.dispatch({
+  title: "Meteor Admin SDK installed",
+  message: "Your app is connected successfully",
 });
 ```
 
-Alternatively, serve all files from a `public/` folder using Hono's static file middleware:
+### 3. Mount Vite on the app server
+
+Instead of serving a standalone HTML file, let the Hono app server serve the Vite frontend under `/admin/`.
+
+In the scaffolded `demo-app/index.ts`, replace the default server startup with a custom HTTP server that forwards `/admin` requests to Vite and everything else to Hono:
 
 ```ts
-import { serveStatic } from "@hono/node-server/serve-static";
+import { readFileSync } from "node:fs";
+import { createServer } from "node:http";
+import { getRequestListener } from "@hono/node-server";
 
-app.use("/*", serveStatic({ root: "./public" }));
+// Keep your existing Hono app and configureAppServer(...) setup above.
+
+async function startServer() {
+  const honoListener = getRequestListener(app.fetch);
+  const { createServer: createViteServer } = await import("vite");
+
+  const httpServer = createServer();
+
+  const vite = await createViteServer({
+    root: "./meteor-app",
+    base: "/admin/",
+    appType: "custom",
+    server: {
+      middlewareMode: true,
+      hmr: { server: httpServer },
+    },
+  });
+
+  httpServer.on("request", (req, res) => {
+    if (req.url?.startsWith("/admin")) {
+      vite.middlewares(req, res, async () => {
+        try {
+          let html = readFileSync("./meteor-app/index.html", "utf-8");
+          html = await vite.transformIndexHtml(req.url, html);
+          res.writeHead(200, { "Content-Type": "text/html" });
+          res.end(html);
+        } catch (error) {
+          console.error(error);
+          res.writeHead(500);
+          res.end(error instanceof Error ? error.message : "Unknown error");
+        }
+      });
+      return;
+    }
+
+    honoListener(req, res);
+  });
+
+  httpServer.listen(PORT, () => {
+    console.log(`App server running at http://localhost:${PORT}`);
+    console.log(`Administration frontend: http://localhost:${PORT}/admin/`);
+  });
+}
+
+void startServer();
 ```
 
-With this approach, place the HTML file at `demo-app/public/my-example-app.html`.
+This setup serves the Administration entry page at `/admin/`. Because Vite runs in middleware mode on the same path, requests for JavaScript modules, CSS, `@vite/client`, and HMR also work without adding separate static routes.
 
-### 3. Register the Administration page in `manifest.xml`
+### 4. Register the Administration page in `manifest.xml`
 
-After the registration handshake is working, add the `<base-app-url>` field inside the `<admin>` section of the [manifest file](https://developer.shopware.com/docs/guides/plugins/apps/app-base-guide#manifest-file). The `<base-app-url>` field should contain the app's public URL.
+After the registration handshake is working, add the `<base-app-url>` field inside the `<admin>` section of the [manifest file](https://developer.shopware.com/docs/guides/plugins/apps/app-base-guide#manifest-file). It must point to the path where Vite serves the frontend, so in this example that is `/admin/`.
 
 As required by Shopware's app system, the `<setup>` section must already contain the `registrationUrl` and `secret`.
 
@@ -142,7 +191,7 @@ Create the file at `/custom/apps/MyExampleApp/manifest.xml` in your Shopware ins
 
     <admin>
         <!-- base-app-url is loaded by the browser, so localhost works -->
-        <base-app-url>http://localhost:3000/my-example-app.html</base-app-url>
+        <base-app-url>http://localhost:3000/admin/</base-app-url>
     </admin>
 </manifest>
 ```
@@ -159,7 +208,15 @@ configureAppServer(app, {
 
 If name or secret don't match between manifest and app server, the registration handshake will fail.
 
-### 4. Install and activate the app
+### 5. Start the dev server
+
+```bash
+npm run dev
+```
+
+When the server starts successfully, the Administration frontend should be reachable at `http://localhost:3000/admin/`.
+
+### 6. Install and activate the app
 
 ```bash
 # if you are using Docker, run the following commands inside the container: docker compose exec -it web /bin/bash
@@ -167,7 +224,7 @@ bin/console app:install --activate MyExampleApp
 bin/console cache:clear
 ```
 
-### 5. Verify installation
+### 7. Verify installation
 
 Log in to the Shopware Administration. The notification should appear in the top-right corner on any page (the notification is not bound to a specific module — it appears on every page load).
 
