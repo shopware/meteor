@@ -52,6 +52,7 @@ npm install
 
 # install the Meteor Admin SDK and Vite for the administration frontend
 npm install @shopware-ag/meteor-admin-sdk
+npm install vue
 npm install -D vite
 ```
 
@@ -107,7 +108,7 @@ notification.dispatch({
 
 Instead of serving a standalone HTML file, let the Hono app server serve the Vite frontend under `/admin/`.
 
-In the scaffolded `demo-app/index.ts`, replace the default server startup with a custom HTTP server that forwards `/admin` requests to Vite and everything else to Hono:
+In the scaffolded `demo-app/index.ts`, replace the default server startup `serve(...)` with a custom HTTP server that forwards `/admin` requests to Vite and everything else to Hono:
 
 ```ts
 import { readFileSync } from "node:fs";
@@ -115,6 +116,8 @@ import { createServer } from "node:http";
 import { getRequestListener } from "@hono/node-server";
 
 // Keep your existing Hono app and configureAppServer(...) setup above.
+
+const PORT = 3000;
 
 async function startServer() {
   const honoListener = getRequestListener(app.fetch);
@@ -180,12 +183,17 @@ Create the file at `/custom/apps/MyExampleApp/manifest.xml` in your Shopware ins
 <manifest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/trunk/src/Core/Framework/App/Manifest/Schema/manifest-1.0.xsd">
     <meta>
         <name>MyExampleApp</name>
-        <!-- App meta data... -->
+        <label>MyExampleApp</label>
+        <description>This is my first example app</description>
+        <author>Developer</author>
+        <copyright>(c) Developer</copyright>
+        <version>1.0.0</version>
+        <license>MIT</license>
     </meta>
 
     <setup>
         <!-- Use host.docker.internal if Shopware runs in Docker -->
-        <registrationUrl>http://host.docker.internal:3000/register</registrationUrl>
+        <registrationUrl>http://host.docker.internal:3000/app/register</registrationUrl>
         <secret>S3cr3tf0re$t</secret>
     </setup>
 
@@ -211,7 +219,7 @@ If name or secret don't match between manifest and app server, the registration 
 ### 5. Start the dev server
 
 ```bash
-npm run dev
+npm start
 ```
 
 When the server starts successfully, the Administration frontend should be reachable at `http://localhost:3000/admin/`.
