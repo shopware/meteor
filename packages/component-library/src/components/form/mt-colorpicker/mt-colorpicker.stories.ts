@@ -7,7 +7,7 @@ import { fn } from "@storybook/test";
 export type MtColorpickerMeta = SlottedMeta<typeof MtColorpicker, "default" | "updateModelValue">;
 
 export default {
-  title: "Components/Form/mt-colorpicker",
+  title: "Components/mt-colorpicker",
   component: MtColorpicker,
   render: (args) => ({
     components: { MtColorpicker },
@@ -51,6 +51,4 @@ export default {
 
 export type MtColorpickerStory = StoryObj<MtColorpickerMeta>;
 
-export const DefaultStory: MtColorpickerStory = {
-  name: "mt-colorpicker",
-};
+export const Default: MtColorpickerStory = {};

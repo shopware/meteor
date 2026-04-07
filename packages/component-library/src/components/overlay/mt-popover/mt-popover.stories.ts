@@ -13,7 +13,7 @@ export type MtPopoverMeta = SlottedMeta<
 >;
 
 export default {
-  title: "Components/Overlay/mt-popover",
+  title: "Components/mt-popover",
   component: MtPopover,
   argTypes: {
     "go-back": {
@@ -353,6 +353,4 @@ export default {
 
 export type MtPopoverStory = StoryObj<MtPopoverMeta>;
 
-export const DefaultStory: MtPopoverStory = {
-  name: "mt-popover",
-};
+export const Default: MtPopoverStory = {};

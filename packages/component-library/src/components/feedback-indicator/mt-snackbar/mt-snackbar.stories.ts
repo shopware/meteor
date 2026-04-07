@@ -11,7 +11,7 @@ import type { SlottedMeta } from "@/_internal/story-helper";
 export type MtSnackbarMeta = SlottedMeta<typeof MtSnackbar, "">;
 
 const meta: Meta<typeof MtSnackbar> = {
-  title: "Components/Feedback Indicator/mt-snackbar",
+  title: "Components/mt-snackbar",
   component: MtSnackbar,
 };
 

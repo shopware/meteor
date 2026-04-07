@@ -6,7 +6,8 @@ import type { MtButtonMeta, MtButtonStory } from "./mt-button.stories";
 
 export default {
   ...meta,
-  title: "Interaction Tests/Form/mt-button",
+  title: "Components/mt-button/Interaction tests",
+  tags: ["!autodocs"],
 } as MtButtonMeta;
 
 export const VisualTestPrimaryVariant: MtButtonStory = {

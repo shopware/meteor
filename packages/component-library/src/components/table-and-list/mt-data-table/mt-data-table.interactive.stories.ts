@@ -7,7 +7,8 @@ import Image34x24 from "../../assets/images/34x24.png";
 
 export default {
   ...meta,
-  title: "Interaction Tests/Table and list/mt-data-table",
+  title: "Components/mt-data-table/Interaction tests",
+  tags: ["!autodocs"],
 } as MtDataTableMeta;
 
 export const VisualTestRenderTable: MtDataTableStory = {

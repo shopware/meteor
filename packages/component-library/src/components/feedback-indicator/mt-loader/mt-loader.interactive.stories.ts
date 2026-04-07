@@ -2,7 +2,8 @@ import meta, { type MtLoaderMeta, type MtLoaderStory } from "./mt-loader.stories
 
 export default {
   ...meta,
-  title: "Interaction Tests/Feedback Indicator/mt-loader",
+  title: "Components/mt-loader/Interaction tests",
+  tags: ["!autodocs"],
 } as MtLoaderMeta;
 
 export const VisualTestLoaderAt50: MtLoaderStory = {

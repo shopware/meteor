@@ -8,7 +8,8 @@ import { useSnackbar } from "./composables/use-snackbar";
 
 export default {
   ...meta,
-  title: "Interaction Tests/Feedback indicator/mt-snackbar",
+  title: "Components/mt-snackbar/Interaction tests",
+  tags: ["!autodocs"],
 } as MtSnackbarMeta;
 
 export const VisualTestDefault: MtSnackbarStory = {

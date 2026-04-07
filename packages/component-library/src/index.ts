@@ -187,3 +187,5 @@ export {
 
 // Exporting types
 export type { Filter, Option, Toast, Snackbar, ChartOptions };
+export type { Editor } from "@tiptap/vue-3";
+export type { default as Link } from "@tiptap/extension-link";

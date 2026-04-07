@@ -7,7 +7,7 @@ import MtText from "@/components/content/mt-text/mt-text.vue";
 import MtIcon from "@/components/icons-media/mt-icon/mt-icon.vue";
 
 export default {
-  title: "Components/Overlay/mt-modal",
+  title: "Components/mt-modal",
   component: MtModal,
   args: {
     isOpen: true,

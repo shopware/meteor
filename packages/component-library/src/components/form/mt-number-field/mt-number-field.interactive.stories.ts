@@ -5,7 +5,8 @@ import meta, { type MtNumberFieldMeta, type MtNumberFieldStory } from "./mt-numb
 
 export default {
   ...meta,
-  title: "Interaction Tests/Form/mt-number-field",
+  title: "Components/mt-number-field/Interaction tests",
+  tags: ["!autodocs"],
 } as MtNumberFieldMeta;
 
 export const TestInputValue: MtNumberFieldStory = {

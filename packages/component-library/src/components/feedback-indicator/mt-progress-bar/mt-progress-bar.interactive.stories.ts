@@ -4,7 +4,8 @@ import meta, { type MtProgressBarMeta, type MtProgressBarStory } from "./mt-prog
 
 export default {
   ...meta,
-  title: "Interaction Tests/Feedback Indicator/mt-progress-bar",
+  title: "Components/mt-progress-bar/Interaction tests",
+  tags: ["!autodocs"],
 } as MtProgressBarMeta;
 
 export const TestValueProgressAt0: MtProgressBarStory = {

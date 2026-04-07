@@ -18,7 +18,7 @@ export type MtTextareaMeta = SlottedMeta<
 >;
 
 export default {
-  title: "Components/Form/mt-textarea",
+  title: "Components/mt-textarea",
   component: MtTextarea,
   render: (args) => ({
     template: `
@@ -45,6 +45,4 @@ export default {
 
 export type MtTextareaStory = StoryObj<MtTextareaMeta>;
 
-export const Default: MtTextareaStory = {
-  name: "mt-textarea",
-};
+export const Default: MtTextareaStory = {};

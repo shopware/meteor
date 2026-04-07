@@ -5,7 +5,7 @@ import type { SlottedMeta } from "@/_internal/story-helper";
 export type MtLoaderMeta = SlottedMeta<typeof MtLoader, "default">;
 
 const meta: MtLoaderMeta = {
-  title: "Components/Feedback Indicator/mt-loader",
+  title: "Components/mt-loader",
   component: MtLoader,
   render: (args) => ({
     setup: () => {
@@ -25,6 +25,4 @@ export default meta;
 
 export type MtLoaderStory = StoryObj<MtLoaderMeta>;
 
-export const Default: MtLoaderStory = {
-  name: "mt-loader",
-};
+export const Default: MtLoaderStory = {};
