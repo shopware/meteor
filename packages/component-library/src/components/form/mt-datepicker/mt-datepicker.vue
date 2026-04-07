@@ -19,49 +19,28 @@
 
     <mt-help-text v-if="!!helpText" :text="helpText" :style="{ gridArea: 'help-text' }" />
 
-    <vue-datepicker
-      ref="datepicker"
+    <VueDatePicker
       :model-value="dateValue"
       class="date-picker"
-      position="left"
       :style="{ gridArea: 'input' }"
+      :floating="datePickerFloating"
       :placeholder="placeholder"
       :disabled="disabled"
-      :required="required"
-      :locale="locale"
+      :locale="datePickerLocale"
       :timezone="timeZone"
-      :open="isDatepickerOpen"
       :teleport="true"
-      :show-cancel="true"
-      :clearable="true"
+      :action-row="{ showCancel: true }"
       :auto-apply="true"
       :text-input="textInput"
       :range="range"
-      :format="
-        format ??
-        (dateType === 'date' ? 'yyyy/MM/dd' : dateType === 'time' ? 'HH:mm' : 'yyyy/MM/dd, HH:mm')
-      "
+      :formats="datePickerFormats"
+      :input-attrs="datePickerInputAttrs"
+      :time-config="datePickerTimeConfig"
       :is-24="is24"
-      :type="dateType"
-      :enable-time-picker="dateType !== 'date'"
-      :exact-match="dateType === 'date'"
-      time-picker-inline
       :time-picker="dateType === 'time'"
-      :no-hours-overlay="dateType === 'time'"
-      :no-minutes-overlay="dateType === 'time'"
       :min-date="minDate"
-      :hours-grid-increment="hourIncrement"
-      :minutes-grid-increment="minuteIncrement"
-      :aria-invalid="!!errorMessage || !!error"
-      :aria-describedby="!!errorMessage || !!error ? errorId : undefined"
       @update:model-value="onDateValueChange"
-      @open="isDatepickerOpen = true"
-      @close="
-        () => {
-          isDatepickerOpen = false;
-          checkValidity();
-        }
-      "
+      @closed="onDatepickerClosed"
     >
       <template #clear-icon="{ clear }">
         <button class="mt-datepicker__clear-button" aria-label="Clear value" @click="clear">
@@ -92,7 +71,7 @@
       <template #arrow-right>
         <mt-icon name="regular-chevron-right-xs" class="month-control-arrow" />
       </template>
-    </vue-datepicker>
+    </VueDatePicker>
 
     <mt-field-error
       v-if="error || errorMessage"
@@ -115,337 +94,343 @@
   </div>
 </template>
 
-<script lang="ts">
-import { defineComponent, ref } from "vue";
-import type { PropType } from "vue";
+<script setup lang="ts">
+import { computed, onMounted, ref, watch } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
-import DatePicker, { type VueDatePickerProps } from "@vuepic/vue-datepicker";
+import {
+  VueDatePicker,
+  type FloatingConfig,
+  type FormatsConfig,
+  type InputAttributesConfig,
+  type TimeConfig,
+} from "@vuepic/vue-datepicker";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import "@vuepic/vue-datepicker/dist/main.css";
 import { useId } from "vue";
+import { enUS } from "date-fns/locale/en-US";
+import type { Locale } from "date-fns";
 
 interface Time {
   hours: number;
   minutes: number;
 }
 
-export default defineComponent({
-  name: "MtDatepicker",
-
-  components: {
-    "mt-icon": MtIcon,
-    "vue-datepicker": DatePicker,
-    "mt-field-label": MtFieldLabel,
-    "mt-field-error": MtFieldError,
-    "mt-help-text": MtHelpText,
-  },
-
-  props: {
+const props = withDefaults(
+  defineProps<{
     /**
      * A label for your date picker field. It helps the user understand what this field is for.
      */
-    label: {
-      type: String as PropType<string | null>,
-      required: false,
-      default: null,
-    },
-
+    label?: string | null;
     /**
      * Defines the type of the date picker.
      * Options: "date" (for selecting a date), or "datetime" (for selecting both).
      */
-    dateType: {
-      type: String as PropType<"date" | "datetime" | "time">,
-      required: false,
-      default: "datetime",
-    },
-
+    dateType?: "date" | "datetime" | "time";
     /**
      * Sets the locale for the date picker.
      * This affects things like the language used for month names and weekdays.
      */
-    locale: {
-      type: String as PropType<string>,
-      required: false,
-      default: "de",
-    },
-
+    locale?: string;
     /**
      * The format of the date picker.
      * You can use a string or a function to format the date.
      */
-    format: {
-      type: [String, Function] as PropType<VueDatePickerProps["format"]>,
-      required: false,
-      default: undefined,
-    },
-
+    format?: FormatsConfig["input"];
     /**
      * Defines the time zone for the date picker.
      * Useful for adjusting date and time according to a specific timezone.
      */
-    timeZone: {
-      type: String as PropType<string>,
-      required: false,
-      default: "UTC",
-    },
-
+    timeZone?: string;
     /**
      * The value of the date picker. Can be a single string or an array of strings.
      * This represents the currently selected date(s).
      */
-    modelValue: {
-      type: [String, Array, Date] as PropType<string | string[] | Date | Date[]>,
-      default: null,
-    },
-
+    modelValue?: string | string[] | Date | Date[] | null;
     /**
      * Placeholder text to show in the date picker input field when no date is selected.
      */
-    placeholder: {
-      type: String as PropType<string>,
-      required: false,
-      default: "Y-m-d ...",
-    },
-
+    placeholder?: string;
     /**
      * Determines if the timepicker is in 24 or 12 hour format
      */
-    is24: {
-      type: Boolean as PropType<boolean>,
-      required: false,
-      default: true,
-    },
-
+    is24?: boolean;
     /**
      * Determines if the date picker field is required.
      * If true, the user must select a value before submitting the form.
      */
-    required: {
-      type: Boolean as PropType<boolean>,
-      required: false,
-      default: false,
-    },
-
+    required?: boolean;
     /**
      * Determines if the date picker field is disabled.
      * If true, the user will not be able to interact with the field.
      */
-    disabled: {
-      type: Boolean as PropType<boolean>,
-      required: false,
-      default: false,
-    },
-
+    disabled?: boolean;
     /**
      * Enables the date range selection feature.
      * If true, the user can select a start and end date.
      */
-    range: {
-      type: Boolean as PropType<boolean>,
-      required: false,
-      default: false,
-    },
-
+    range?: boolean;
     /**
      * Sets the size of the datepicker.
      * Options: "small" or "default".
      */
-    size: {
-      type: String as PropType<"small" | "default">,
-      required: false,
-      default: "default",
-    },
-
+    size?: "small" | "default";
     /**
      * An error in your business logic related to this field.
      *
      * For example: {"code": 500, "detail": "Error while saving"}
      */
-    error: {
-      type: Object as PropType<{
-        code?: number;
-        detail?: string;
-      } | null>,
-      required: false,
-      default: null,
-    },
-
+    error?: { code?: number; detail?: string } | null;
     /**
      * Help text for the date picker.
      */
-    helpText: {
-      type: String as PropType<string>,
-      required: false,
-      default: undefined,
-    },
-
+    helpText?: string;
     /**
      * The minimum selectable date. Can be a Date object or an ISO string.
      * Any date before this will be disabled in the calendar.
      * For example: "today"
      */
-    minDate: {
-      type: [Date, String] as PropType<Date | string>,
-      required: false,
-      default: undefined,
-    },
-
+    minDate?: Date | string;
     /**
      * The increment for hours in the time picker grid.
      * Controls how many hours are skipped when navigating through the hours overlay.
      */
-    hourIncrement: {
-      type: Number as PropType<number>,
-      required: false,
-      default: 1,
-    },
-
+    hourIncrement?: number;
     /**
      * The increment for minutes in the time picker grid.
      * Controls how many minutes are skipped when navigating through the minutes overlay.
      */
-    minuteIncrement: {
-      type: Number as PropType<number>,
-      required: false,
-      default: 1,
-    },
-
+    minuteIncrement?: number;
     /**
      * Enables typing directly into the input field.
      */
-    textInput: {
-      type: Boolean as PropType<boolean>,
-      required: false,
-      default: false,
-    },
+    textInput?: boolean;
+  }>(),
+  {
+    label: null,
+    dateType: "datetime",
+    locale: "de",
+    format: undefined,
+    timeZone: "UTC",
+    modelValue: null,
+    placeholder: "Y-m-d ...",
+    is24: true,
+    required: false,
+    disabled: false,
+    range: false,
+    size: "default",
+    error: null,
+    helpText: undefined,
+    minDate: undefined,
+    hourIncrement: 1,
+    minuteIncrement: 1,
+    textInput: false,
   },
+);
 
-  emits: ["update:modelValue"],
+const emit = defineEmits<{
+  (e: "update:modelValue", value: string | string[] | Array<string | null> | null): void;
+}>();
 
-  setup() {
-    const errorId = useId();
-    const errorMessage = ref<{ detail: string } | undefined>(undefined);
-    const datepicker = ref<InstanceType<typeof DatePicker> | null>(null);
+const errorId = useId();
+const errorMessage = ref<{ detail: string } | undefined>(undefined);
+const isTimeHintVisible = ref(true);
+const datePickerLocale = ref<Locale>(enUS);
+let localeLoadId = 0;
 
-    return {
-      errorId,
-      errorMessage,
-      datepicker,
+async function importDateFnsLocaleModule(path: string): Promise<Locale | null> {
+  try {
+    const { default: locale } = (await import(/* @vite-ignore */ `date-fns/locale/${path}`)) as {
+      default: Locale;
     };
+    return locale;
+  } catch {
+    return null;
+  }
+}
+
+async function loadDateFnsLocale(tag: string): Promise<Locale> {
+  const normalized = tag.replace(/_/g, "-").trim() || "en-US";
+
+  const lang = normalized.split("-")[0]?.toLowerCase() ?? "";
+  const paths = lang && lang !== normalized ? [normalized, lang] : [normalized];
+
+  for (const path of paths) {
+    const locale = await importDateFnsLocaleModule(path);
+    if (locale) {
+      return locale;
+    }
+  }
+
+  return enUS;
+}
+
+watch(
+  () => props.locale,
+  async (tag) => {
+    const id = ++localeLoadId;
+    const locale = await loadDateFnsLocale(tag);
+    if (id === localeLoadId) {
+      datePickerLocale.value = locale;
+    }
   },
+  { immediate: true },
+);
 
-  data(): {
-    isDatepickerOpen: boolean;
-    isTimeHintVisible: boolean;
-  } {
-    return {
-      isDatepickerOpen: false,
-      isTimeHintVisible: true,
-    };
+const datePickerFormats = computed<Partial<FormatsConfig>>(() => {
+  const input =
+    props.format ??
+    (props.dateType === "date"
+      ? "yyyy/MM/dd"
+      : props.dateType === "time"
+        ? "HH:mm"
+        : "yyyy/MM/dd, HH:mm");
+  return { input };
+});
+
+const datePickerTimeConfig = computed<Partial<TimeConfig>>(() => ({
+  enableTimePicker: props.dateType !== "date",
+  is24: props.is24,
+  noHoursOverlay: props.dateType === "time",
+  noMinutesOverlay: props.dateType === "time",
+  hoursGridIncrement: props.hourIncrement,
+  minutesGridIncrement: props.minuteIncrement,
+  timePickerInline: true,
+}));
+
+const datePickerFloating = computed<Partial<FloatingConfig>>(() => ({
+  placement: "bottom-start",
+  arrow: true,
+  offset: 3,
+}));
+
+const datePickerInputAttrs = computed<
+  Partial<InputAttributesConfig> & {
+    "aria-invalid"?: boolean | "true" | "false";
+    "aria-describedby"?: string;
+  }
+>(() => ({
+  id: "field-id",
+  required: props.required,
+  clearable: true,
+  "aria-invalid": !!(errorMessage.value || props.error),
+  "aria-describedby": errorMessage.value || props.error ? errorId : undefined,
+}));
+
+const dateValue = computed<Date | Date[] | Time | null>(() => {
+  if (!props.modelValue) return null;
+
+  if (props.dateType === "time") {
+    if (
+      typeof props.modelValue === "object" &&
+      !Array.isArray(props.modelValue) &&
+      "hours" in props.modelValue &&
+      "minutes" in props.modelValue
+    ) {
+      return props.modelValue as Time;
+    }
+
+    const timePart =
+      typeof props.modelValue === "string" && props.modelValue.includes("T")
+        ? props.modelValue.split("T")[1].split(/[Z.+-]/)[0]
+        : (props.modelValue as string);
+
+    const [hours, minutes] = timePart.split(":").map(Number);
+    return { hours, minutes };
+  }
+
+  if (Array.isArray(props.modelValue)) {
+    return props.modelValue
+      .filter((value): value is string | Date => value !== null)
+      .map((value) => new Date(value));
+  }
+
+  return new Date(props.modelValue);
+});
+
+const updateOpacitySettings = () => {
+  document.documentElement.style.setProperty(
+    "--menu-border-opacity",
+    props.dateType === "datetime" ? "1" : "0",
+  );
+  document.documentElement.style.setProperty(
+    "--time-inc-dec-opacity",
+    props.dateType === "time" ? "1" : "0",
+  );
+};
+
+const checkValidity = () => {
+  if (!props.required) {
+    errorMessage.value = undefined;
+    return;
+  }
+
+  if (!props.modelValue) {
+    errorMessage.value = { detail: "This field is required" };
+    return;
+  }
+
+  errorMessage.value = undefined;
+};
+
+const onDatepickerClosed = () => {
+  checkValidity();
+};
+
+const onDateValueChange = (
+  newValue: Date | [Date, Date] | Time | string | string[] | Array<Date | string | null> | null,
+) => {
+  if (!newValue) {
+    emit("update:modelValue", null);
+    return;
+  }
+
+  if (typeof newValue === "object" && !Array.isArray(newValue) && "hours" in newValue) {
+    const hours = String(newValue.hours).padStart(2, "0");
+    const minutes = String(newValue.minutes).padStart(2, "0");
+    emit("update:modelValue", `${hours}:${minutes}`);
+    return;
+  }
+
+  const toUtcIso = (value: Date | string | null) => {
+    if (value === null) return null;
+    const ms = typeof value === "string" ? Date.parse(value) : value.getTime();
+    if (Number.isNaN(ms)) return null;
+    return new Date(ms).toISOString();
+  };
+
+  if (Array.isArray(newValue)) {
+    emit(
+      "update:modelValue",
+      newValue.map((value) => toUtcIso(value)),
+    );
+    return;
+  }
+
+  emit("update:modelValue", toUtcIso(newValue));
+};
+
+watch(
+  () => props.dateType,
+  () => {
+    isTimeHintVisible.value = props.dateType === "datetime";
+    updateOpacitySettings();
   },
+  { immediate: true },
+);
 
-  computed: {
-    dateValue(): Date | [Date, Date] | Time | null {
-      if (!this.modelValue) return null;
-
-      if (this.dateType === "time") {
-        // check if modelValue is type Time
-        if (
-          typeof this.modelValue === "object" &&
-          "hours" in this.modelValue &&
-          "minutes" in this.modelValue
-        )
-          return this.modelValue as Time;
-
-        // if modelValue is not type Time, convert it to Time
-        const timePart =
-          typeof this.modelValue === "string" && this.modelValue.includes("T")
-            ? this.modelValue.split("T")[1].split(/[Z.+-]/)[0]
-            : (this.modelValue as string);
-
-        const [hours, minutes] = timePart.split(":").map(Number);
-        return { hours, minutes };
-      }
-
-      // Handle datetime mode
-      return Array.isArray(this.modelValue)
-        ? [new Date(this.modelValue[0]), new Date(this.modelValue[1])]
-        : new Date(this.modelValue);
-    },
+watch(
+  () => props.modelValue,
+  () => {
+    checkValidity();
   },
-  watch: {
-    dateType: {
-      handler() {
-        this.isTimeHintVisible = this.dateType === "datetime";
-        this.updateOpacitySettings();
-      },
-      immediate: true,
-    },
-    modelValue: {
-      immediate: true,
-      handler() {
-        this.checkValidity();
-      },
-    },
-  },
+  { immediate: true },
+);
 
-  mounted() {
-    this.isTimeHintVisible = this.dateType === "datetime";
-    this.updateOpacitySettings();
-  },
-
-  methods: {
-    onDateValueChange(newValue: Date | [Date, Date] | Time | null) {
-      if (!newValue) {
-        this.$emit("update:modelValue", null);
-        return;
-      }
-
-      // Handle time mode
-      if (typeof newValue === "object" && "hours" in newValue && "minutes" in newValue) {
-        const hours = String(newValue.hours).padStart(2, "0");
-        const minutes = String(newValue.minutes).padStart(2, "0");
-        this.$emit("update:modelValue", `${hours}:${minutes}`);
-        return;
-      }
-
-      // Handle datetime or date mode
-      const formatted = Array.isArray(newValue)
-        ? [newValue[0].toISOString(), newValue[1].toISOString()]
-        : newValue.toISOString();
-      this.$emit("update:modelValue", formatted);
-      return;
-    },
-
-    updateOpacitySettings() {
-      document.documentElement.style.setProperty(
-        "--menu-border-opacity",
-        this.dateType === "datetime" ? "1" : "0",
-      );
-      document.documentElement.style.setProperty(
-        "--time-inc-dec-opacity",
-        this.dateType === "time" ? "1" : "0",
-      );
-    },
-
-    checkValidity() {
-      if (!this.required) {
-        this.errorMessage = undefined;
-        return;
-      }
-
-      if (!this.modelValue) {
-        this.errorMessage = {
-          detail: "This field is required",
-        };
-      } else {
-        this.errorMessage = undefined;
-      }
-    },
-  },
+onMounted(() => {
+  isTimeHintVisible.value = props.dateType === "datetime";
+  updateOpacitySettings();
 });
 </script>
 
@@ -571,17 +556,37 @@ export default defineComponent({
   font-weight: inherit;
   filter: drop-shadow(0px 1px 3px #0000000f);
   filter: drop-shadow(0px 1px 3px #0000001a);
-  top: -7px;
+  left: 0 !important;
+  overflow: visible !important;
 }
 
 .dp__calendar {
   padding-bottom: var(--scale-size-4);
 }
 
-.dp__arrow_top {
-  top: -0.5px;
+.dp__menu {
+  overflow: visible !important;
+}
+
+.dp__menu_inner,
+.dp__menu_content_wrapper {
+  overflow: visible !important;
+}
+
+.dp__menu::before {
+  content: "";
+  position: absolute;
+  top: -5px;
   left: var(--scale-size-24);
+  width: var(--scale-size-10);
+  height: var(--scale-size-10);
+  transform: rotate(45deg);
+  border-top: 1px solid var(--color-border-secondary-default);
+  border-left: 1px solid var(--color-border-secondary-default);
+  background: var(--color-background-primary-default);
   border-top-right-radius: 3px;
+  z-index: 3;
+  pointer-events: none;
 }
 
 .dp__instance_calendar {

@@ -91,7 +91,7 @@
     "@tiptap/pm": "^2.22.3",
     "@tiptap/starter-kit": "^2.22.3",
     "@tiptap/vue-3": "^2.22.3",
-    "@vuepic/vue-datepicker": "^11.0.3",
+    "@vuepic/vue-datepicker": "^12.1.0",
     "@vueuse/components": "^12.4.0",
     "@vueuse/core": "^13.1.0",
     "apexcharts": "^5.2.0",

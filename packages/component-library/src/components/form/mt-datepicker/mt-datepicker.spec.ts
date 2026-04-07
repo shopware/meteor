@@ -317,9 +317,9 @@ describe("mt-datepicker", () => {
     await userEvent.click(document.querySelector('[data-test-id="2025"]') as HTMLElement);
     await waitUntil(() => !document.querySelector(".dp__overlay"));
 
-    // Set the day
-    await waitUntil(() => document.getElementById("2025-03-15") !== null);
-    const dayElement = document.getElementById("2025-03-15") as HTMLElement;
+    // Set the day (v11+ calendar cell ids are prefixed with "dp-")
+    await waitUntil(() => document.getElementById("dp-2025-03-15") !== null);
+    const dayElement = document.getElementById("dp-2025-03-15") as HTMLElement;
     await userEvent.click(dayElement);
 
     // Wait and check if menu closed
@@ -389,9 +389,9 @@ describe("mt-datepicker", () => {
     await userEvent.click(document.querySelector('[data-test-id="2025"]') as HTMLElement);
     await waitUntil(() => !document.querySelector(".dp__overlay"));
 
-    // Set the day
-    await waitUntil(() => document.getElementById("2025-01-01") !== null);
-    const dayElement = document.getElementById("2025-01-01") as HTMLElement;
+    // Set the day (v11+ calendar cell ids are prefixed with "dp-")
+    await waitUntil(() => document.getElementById("dp-2025-01-01") !== null);
+    const dayElement = document.getElementById("dp-2025-01-01") as HTMLElement;
     await userEvent.click(dayElement);
 
     // Wait and check if menu closed
@@ -401,6 +401,94 @@ describe("mt-datepicker", () => {
     // ASSERT - The handler was called with the correct date
     // The input is "2025-01-01, 08:05" so the output should be  "2025-01-01T08:05:00.000Z"
     expect(handler).toHaveBeenLastCalledWith("2025-01-01T08:05:00.000Z");
+  });
+
+  it("keeps selected local time stable after DST change in Europe/Berlin", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+    const { rerender } = render(MtDatepicker, {
+      props: {
+        dateType: "datetime",
+        locale: "en-US",
+        timeZone: "Europe/Berlin",
+        textInput: true,
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    // ACT - enter 2026-04-03 14:00 (after DST switch)
+    const input = screen.getByRole("textbox");
+    await userEvent.clear(input);
+    await userEvent.type(input, "2026/04/03, 14:00");
+    await userEvent.keyboard("{Enter}");
+    await waitUntil(() => handler.mock.calls.length > 0);
+
+    // ASSERT - selected local time remains unchanged
+    expect(screen.getByRole("textbox")).toHaveValue("2026/04/03, 14:00");
+    expect(handler).toHaveBeenLastCalledWith("2026-04-03T12:00:00.000Z");
+
+    // Keep the component controlled like real usage
+    await rerender({
+      dateType: "datetime",
+      locale: "en-US",
+      timeZone: "Europe/Berlin",
+      textInput: true,
+      modelValue: "2026-04-03T12:00:00.000Z",
+      "onUpdate:modelValue": handler,
+    });
+
+    // ACT - reopen and close picker without changing value
+    await userEvent.click(screen.getByRole("textbox"));
+    await waitUntil(() => document.querySelector(".dp__menu") !== null);
+    await userEvent.keyboard("{Escape}");
+    await waitUntil(() => !document.querySelector(".dp__menu"));
+
+    // ASSERT - still no +1h shift after close/reopen cycle
+    expect(screen.getByRole("textbox")).toHaveValue("2026/04/03, 14:00");
+  });
+
+  it("keeps selected local time stable before DST change in Europe/Berlin", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+    const { rerender } = render(MtDatepicker, {
+      props: {
+        dateType: "datetime",
+        locale: "en-US",
+        timeZone: "Europe/Berlin",
+        textInput: true,
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    // ACT - enter 2026-03-20 14:00 (before DST switch)
+    const input = screen.getByRole("textbox");
+    await userEvent.clear(input);
+    await userEvent.type(input, "2026/03/20, 14:00");
+    await userEvent.keyboard("{Enter}");
+    await waitUntil(() => handler.mock.calls.length > 0);
+
+    // ASSERT - selected local time remains unchanged
+    expect(screen.getByRole("textbox")).toHaveValue("2026/03/20, 14:00");
+    expect(handler).toHaveBeenLastCalledWith("2026-03-20T13:00:00.000Z");
+
+    // Keep the component controlled like real usage
+    await rerender({
+      dateType: "datetime",
+      locale: "en-US",
+      timeZone: "Europe/Berlin",
+      textInput: true,
+      modelValue: "2026-03-20T13:00:00.000Z",
+      "onUpdate:modelValue": handler,
+    });
+
+    // ACT - reopen and close picker without changing value
+    await userEvent.click(screen.getByRole("textbox"));
+    await waitUntil(() => document.querySelector(".dp__menu") !== null);
+    await userEvent.keyboard("{Escape}");
+    await waitUntil(() => !document.querySelector(".dp__menu"));
+
+    // ASSERT - still no drift before DST
+    expect(screen.getByRole("textbox")).toHaveValue("2026/03/20, 14:00");
   });
 
   it("should increment the hours overlay by the prop value", async () => {
@@ -473,5 +561,21 @@ describe("mt-datepicker", () => {
 
     // ASSERT - The differences between each consecutive pair should match the increment value
     expect(allDifferencesMatch).toBe(true);
+  });
+
+  it("should display the correct locale when a locale string is given", async () => {
+    render(MtDatepicker, {
+      props: {
+        dateType: "date",
+        locale: "fr",
+        modelValue: "2024-07-15T00:00:00Z",
+      },
+    });
+
+    await userEvent.click(screen.getByRole("textbox"));
+    await waitUntil(() => document.querySelector(".dp__menu") !== null);
+
+    const monthLabel = document.querySelector('[data-test-id="month-toggle-overlay-0"]');
+    expect(monthLabel).toHaveTextContent("juil.");
   });
 });
