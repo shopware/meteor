@@ -1,31 +1,128 @@
-import { Canvas, Meta, Markdown } from "@storybook/blocks";
+import { Canvas, Markdown, Meta } from "@storybook/blocks";
 
 import * as SnackbarStories from "./mt-snackbar.stories";
+import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 <Meta of={SnackbarStories} title="Components/mt-snackbar" />
 
-# Snackbars
+<ComponentPageHeader
+  title="Snackbar"
+  tagName="mt-snackbar"
+  packageImports={["MtSnackbar", "useSnackbar"]}
+  sourcePath="packages/component-library/src/components/feedback-indicator/mt-snackbar"
+>
+  **Snackbar** displays temporary overlay feedback near the bottom-right corner
+  of the interface. Use it to confirm an action, report a lightweight outcome,
+  or show short-lived progress without interrupting the current workflow.
+</ComponentPageHeader>
 
-Snackbars are lightweight notifications that provide quick, contextual feedback in response to user actions. They appear in the bottom-right corner of the application, stay visible for only a few seconds, and then disappear automatically, keeping the flow of work uninterrupted. Unlike banners or modals, snackbars are temporary and non-intrusive.
+## When to use
 
-Snackbars should never interrupt the user’s experience. They are best suited for confirming actions, showing temporary updates, or signaling non-critical events.
+- Use **Snackbar** to confirm that an action completed, such as saving, deleting, or updating something.
+- Use it for non-blocking errors or warnings that people should notice without being pulled out of their current flow.
+- Use it for background progress that resolves into success or error feedback.
+- Use it when you may need one lightweight follow-up action, such as `Undo`.
 
-There is one exception: progress snackbar. Progress snackbars remain on the screen until the action is completed or canceled. They should always be followed by a success or error snackbar to finalize the feedback.
+## Examples
 
-### ✅ Do's
+### Basic
 
-- Keep it short and clear. Use concise, affirmative messages (for example, “Product saved”).
-- Use sentence case. Avoid unnecessary punctuation unless multiple sentences are needed.
-- Confirm actions. Use snackbars to acknowledge user actions or show temporary updates.
-- Provide progress feedback. Use a progress snackbar for ongoing actions, followed by a success or error snackbar.
-- Use neutral, generic language. Avoid filenames or personal details.
-- Apply appropriate variants. Use success, error and progress consistently.
+<Canvas of={SnackbarStories.Default} />
 
-### ❌ Don'ts
+## Anatomy
 
-- Don’t use for critical alerts. Errors requiring immediate attention belong in banners or modals.
-- Don’t overuse. Too many snackbars reduce usability and cause alert fatigue.
-- Don’t overload with actions. Allow only one optional action (for example, “Undo”).
-- Don’t use for persistent issues. Show banners for errors the user can resolve.
-- Don't rely solely on snackbars. Always provide an alternative way to access the action. For example, “Undo” often appears alongside “Delete”.
-- Don’t use vague language. Skip unclear messages like “Something happened”
+**Snackbar** is usually used as a pair:
+
+- `MtSnackbar` renders the notification stack and should typically be mounted once near the app shell.
+- `useSnackbar()` lets feature code trigger a snackbar by calling `addSnackbar()`.
+
+```vue
+<script setup lang="ts">
+import { MtSnackbar, useSnackbar } from "@shopware-ag/meteor-component-library";
+
+const { addSnackbar } = useSnackbar();
+
+function showSnackbar() {
+  addSnackbar({
+    message: "Changes saved",
+  });
+}
+</script>
+
+<template>
+  <button type="button" @click="showSnackbar">Show snackbar</button>
+  <mt-snackbar />
+</template>
+```
+
+## API reference
+
+### `useSnackbar()`
+
+<Markdown>
+  {`
+| Name | Description |
+| --- | --- |
+| \`snackbars\` (\`Readonly<Ref<Snackbar[]>>\`) | Reactive list of currently visible snackbars. |
+| \`addSnackbar(snackbar: Omit<Snackbar, "id">)\` | Adds a snackbar and returns the reactive snackbar instance. Useful for updating progress or completion state later. |
+| \`removeSnackbar(id: string)\` | Removes a snackbar by id. |
+| \`clearSnackbars()\` | Removes all currently visible snackbars. |
+`}
+</Markdown>
+
+### **Snackbar**
+
+The exported **Snackbar** type describes the notification object managed by `useSnackbar()`. The `id` is created automatically by `addSnackbar()`.
+
+<Markdown>
+  {`
+| Field | Value | Default | Description |
+| --- | --- | --- | --- |
+| \`message\` | \`string\` | Required | Main snackbar text shown to the user. |
+| \`variant\` | \`"success" \| "error" \| "warning" \| "progress"\` | Default appearance | Controls semantic styling and live-region behavior. |
+| \`icon\` | \`string\` | Auto by variant | Optional icon name. Usually only needed when you want to override the default icon behavior. |
+| \`link\` | \`{ text: string; url: string }\` | None | Optional single follow-up action rendered as a link button. |
+| \`duration\` | \`number\` | \`5000\` | Auto-dismiss timeout in milliseconds. Use \`0\` to disable automatic dismissal. |
+| \`progressPercentage\` | \`number\` | \`0\` | Current progress value for \`progress\` snackbars. |
+| \`uploadState\` | \`"success" \| "error"\` | None | Final state for a \`progress\` snackbar. Triggers the completion message and short follow-up timeout. |
+| \`successMessage\` | \`string\` | \`"Upload completed"\` | Optional final message shown when a progress snackbar resolves successfully. |
+| \`errorMessage\` | \`string\` | \`"Upload failed"\` | Optional final message shown when a progress snackbar resolves with an error. |
+`}
+</Markdown>
+
+## Do
+
+- Keep the message short, specific, and easy to scan at a glance.
+- Mount `MtSnackbar` once and trigger messages through `useSnackbar()` where the action happens.
+- Use `progress` snackbars for background work that will resolve into a success or error state.
+- Keep optional actions short and directly related to the message.
+
+## Don't
+
+- Do not use **Snackbar** for critical information that must stay visible until the user explicitly dismisses it.
+- Do not overload a snackbar with long text or multiple actions.
+- Do not rely on a snackbar as the only place a user can recover from a destructive action.
+- Do not fire many snackbars in rapid succession, because they quickly become noisy and easy to miss.
+
+## Behavior notes
+
+- **Snackbar** uses a global store, so one mounted `MtSnackbar` host is usually the right setup for an application.
+- Standard snackbars close automatically after `5000ms` by default.
+- Setting `duration` to `0` disables the auto-dismiss timer, which means you should remove that snackbar through `removeSnackbar` or `clearSnackbars`.
+- Hovering the snackbar stack pauses dismissal timers until the pointer leaves.
+- `progress` snackbars stay visible until `uploadState` changes to `success` or `error`, then they close shortly after showing the final message.
+- The optional `link` supports one lightweight follow-up action, not a full decision flow.
+
+## Accessibility notes
+
+- Error and warning snackbars use assertive live announcements, while default, success, and progress snackbars use polite announcements.
+- Snackbar notifications receive focus when they appear, so messages should remain concise and understandable out of context.
+- Do not use **Snackbar** for blocking confirmations, legal notices, or other information that must remain available until explicitly dismissed.
+- If you provide an action like `Undo`, make sure that recovery path also exists elsewhere in the interface and not only in the temporary snackbar.
+
+## Comparisons
+
+### **Snackbar** vs **Banner**
+
+- Use **Snackbar** for temporary overlay feedback that fades out on its own and does not belong in the page layout.
+- Use **Banner** for persistent inline messaging that should remain visible while the user continues working.

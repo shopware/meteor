@@ -25,4 +25,13 @@ export default meta;
 
 export type MtLoaderStory = StoryObj<MtLoaderMeta>;
 
-export const Default: MtLoaderStory = {};
+export const Default: MtLoaderStory = {
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-loader />`,
+      },
+    },
+  },
+};

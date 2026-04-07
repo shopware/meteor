@@ -51,4 +51,28 @@ export default {
 
 export type MtColorpickerStory = StoryObj<MtColorpickerMeta>;
 
-export const Default: MtColorpickerStory = {};
+export const Default: MtColorpickerStory = {
+  parameters: {
+    docs: {
+      source: {
+        code: `<mt-colorpicker label="Colorpicker example" model-value="#0fcff5" />`,
+      },
+    },
+  },
+};
+
+export const WithoutAlpha: MtColorpickerStory = {
+  name: "Without alpha",
+  args: {
+    label: "Solid color",
+    modelValue: "#0fcff5",
+    alpha: false,
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `<mt-colorpicker label="Solid color" model-value="#0fcff5" :alpha="false" />`,
+      },
+    },
+  },
+};

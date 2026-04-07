@@ -1,0 +1,73 @@
+import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
+
+import * as TabsStories from "./mt-tabs.stories";
+import ComponentPageHeader from "../../_docs/component-page-header.js";
+
+<Meta of={TabsStories} />
+
+<ComponentPageHeader
+  title="Tabs"
+  tagName="mt-tabs"
+  packageImports="MtTabs"
+  sourcePath="packages/component-library/src/components/navigation/mt-tabs"
+>
+  **Tabs** help users switch between related views, sections, or content areas
+  without leaving the current context.
+</ComponentPageHeader>
+
+## When to use
+
+- Use **Tabs** when users need to move between peer sections of content.
+- Use them when only one panel or view should be active at a time.
+- Use them for compact navigation inside a page, card, or workspace area.
+
+## Examples
+
+### Basic
+
+<Canvas of={TabsStories.Default} />
+
+### Vertical
+
+<Canvas of={TabsStories.Vertical} />
+
+## API reference
+
+<ArgTypes of={TabsStories} />
+
+## Do
+
+- Use short, clear labels so users can scan the available sections quickly.
+- Keep the set of tabs related and at the same hierarchy level.
+- Use badges or error indicators only when the extra status helps users prioritize where to look.
+
+## Don't
+
+- Do not use **Tabs** for unrelated actions or mixed controls.
+- Do not overload tabs with long labels that make scanning difficult.
+- Do not use tabs when a vertical navigation, segmented control, or button group would express the structure more clearly.
+
+## Behavior notes
+
+- **Tabs** take their items from the `items` prop and emit `new-item-active` when the selection changes.
+- If there are too many horizontal tabs to fit, extra items move into a `More` menu automatically.
+- `vertical` changes the layout direction, and `small` provides a more compact presentation.
+- `small` is marked as deprecated in the component and should be treated as a legacy option.
+
+## Accessibility notes
+
+- Use labels that make sense as standalone tab names.
+- Keep the order stable so keyboard and screen-reader users can build a reliable mental model.
+- Make sure the currently active tab corresponds to clearly updated content nearby.
+
+## Comparisons
+
+### **Tabs** vs `Segmented Control`
+
+- Use **Tabs** when the user is switching between sections or views.
+- Use `Segmented Control` only for its current experimental grouped-action behavior, not as a general replacement for tab navigation.
+
+### **Tabs** vs **Button**
+
+- Use **Tabs** when one selection changes the active content area.
+- Use **Button** when the user should trigger an action instead of navigating between peer sections.

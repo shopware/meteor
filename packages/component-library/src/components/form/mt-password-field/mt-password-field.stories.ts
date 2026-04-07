@@ -16,4 +16,16 @@ export default {
 
 export type MtPasswordFieldStory = StoryObj<MtPasswordFieldMeta>;
 
-export const Default: MtPasswordFieldStory = {};
+export const Default: MtPasswordFieldStory = {
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-password-field
+  v-model="password"
+  label="Password"
+/>`,
+      },
+    },
+  },
+};

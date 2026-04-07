@@ -1,0 +1,68 @@
+import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
+
+import * as FloatingUiStories from "./mt-floating-ui.stories";
+import ComponentPageHeader from "../../_docs/component-page-header.js";
+
+<Meta of={FloatingUiStories} />
+
+<ComponentPageHeader
+  title="Floating UI"
+  tagName="mt-floating-ui"
+  packageImports="MtFloatingUi"
+  sourcePath="packages/component-library/src/components/_internal/mt-floating-ui"
+>
+  **Floating UI** is the low-level primitive for building custom popover-style
+  elements with automatic positioning. Use it when you need floating content
+  that should anchor to a trigger, flip when space is limited, and close when
+  users click outside.
+</ComponentPageHeader>
+
+## When to use
+
+- Use **Floating UI** for custom popover-style surfaces such as rich pickers, menus, inspectors, or inline tools.
+- Use it when the floating content needs automatic positioning relative to a trigger element.
+- Use it when higher-level components such as **Action Menu** do not fit the custom floating interaction you need.
+
+## Examples
+
+### Basic
+
+<Canvas of={FloatingUiStories.Default} />
+
+## API reference
+
+<ArgTypes of={FloatingUiStories} />
+
+## Do
+
+- Manage the open state outside the component and update it through `isOpened` and the `close` event.
+- Provide a clear trigger element so users understand what opens the floating surface.
+- Style the slotted content as a complete surface, including background, border, spacing, and shadow.
+- Use `matchReferenceWidth` when the floating surface should align to the trigger width.
+
+## Don't
+
+- Do not use **Floating UI** when a higher-level component such as **Action Menu** already fits the use case.
+- Do not rely on it to provide a finished surface design. It only handles positioning and behavior.
+- Do not forget to handle keyboard and focus behavior for custom interactive content.
+
+## Behavior notes
+
+- **Floating UI** teleports its content to `body`, so the floating surface can escape clipping and stacking issues in the local layout.
+- The component uses Floating UI middleware to offset, flip, and measure the floating surface automatically.
+- `showArrow` adds an arrow element, but the slotted content still needs to provide the actual surface styling.
+- The default slot receives `referenceElementWidth` and `referenceElementHeight`, which can help when the floating content needs to size itself relative to the trigger.
+- `matchReferenceWidth` sets the floating container width to the trigger width automatically.
+
+## Accessibility notes
+
+- Make sure the trigger clearly communicates what will open.
+- If the floating content contains interactive controls, manage focus and keyboard behavior intentionally.
+- Provide visible structure and labels inside the floating surface so the custom content remains understandable once opened.
+
+## Comparisons
+
+### **Floating UI** vs **Popover**
+
+- Use **Floating UI** when you need a custom floating surface with your own structure and behavior.
+- Use **Popover** when the standard popover styling and interaction model already fit.

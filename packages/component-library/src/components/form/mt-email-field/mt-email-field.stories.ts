@@ -110,4 +110,16 @@ export default {
 
 export type MtEmailFieldStory = StoryObj<MtEmailFieldMeta>;
 
-export const Default: MtEmailFieldStory = {};
+export const Default: MtEmailFieldStory = {
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-email-field
+  v-model="email"
+  label="Email address"
+/>`,
+      },
+    },
+  },
+};

@@ -34,10 +34,38 @@ export default {
   }),
 } satisfies MtTextMeta;
 
-export const Default: StoryObj<MtTextMeta> = {};
+export const Default: StoryObj<MtTextMeta> = {
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-text>
+  Text
+</mt-text>`,
+      },
+    },
+  },
+};
 
 export const AllSizes: StoryObj<MtTextMeta> = {
-  name: "All sizes",
+  name: "Sizes",
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<div style="display: grid; gap: 12px;">
+  <mt-text size="2xs">2xs - Text</mt-text>
+  <mt-text size="xs">xs - Text</mt-text>
+  <mt-text size="s">s - Text</mt-text>
+  <mt-text size="m">m - Text</mt-text>
+  <mt-text size="l">l - Text</mt-text>
+  <mt-text size="xl">xl - Text</mt-text>
+  <mt-text size="2xl">2xl - Text</mt-text>
+  <mt-text size="3xl">3xl - Text</mt-text>
+</div>`,
+      },
+    },
+  },
   render: (args) => ({
     components: { MtText },
     setup() {

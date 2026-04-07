@@ -45,4 +45,16 @@ export default {
 
 export type MtTextareaStory = StoryObj<MtTextareaMeta>;
 
-export const Default: MtTextareaStory = {};
+export const Default: MtTextareaStory = {
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-textarea
+  v-model="value"
+  label="Description"
+/>`,
+      },
+    },
+  },
+};

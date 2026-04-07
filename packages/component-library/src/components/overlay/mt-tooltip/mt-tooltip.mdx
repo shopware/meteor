@@ -1,0 +1,77 @@
+import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
+
+import * as TooltipStories from "./mt-tooltip.stories";
+import ComponentPageHeader from "../../_docs/component-page-header.js";
+
+<Meta of={TooltipStories} />
+
+<ComponentPageHeader
+  title="Tooltip"
+  tagName="mt-tooltip"
+  packageImports="MtTooltip"
+  sourcePath="packages/component-library/src/components/overlay/mt-tooltip"
+>
+  **Tooltip** shows brief supporting information when users hover or focus a
+  trigger element.
+</ComponentPageHeader>
+
+## When to use
+
+- Use **Tooltip** for short contextual guidance tied to a specific trigger.
+- Use it when extra information is helpful but should stay hidden until requested.
+- Use it when the trigger is already part of the interface, such as a button, icon, or inline control.
+
+## Examples
+
+### Basic
+
+<Canvas of={TooltipStories.Default} />
+
+### Placement
+
+<Canvas of={TooltipStories.Placement} />
+
+### Rich content
+
+<Canvas of={TooltipStories.RichContent} />
+
+## Anatomy
+
+- **Tooltip** uses the default slot as the trigger.
+- The slot provides trigger bindings such as focus, hover, and accessibility attributes that should be spread onto the trigger element.
+- The tooltip body itself is rendered in a floating layer and positioned relative to the trigger.
+
+## API reference
+
+<ArgTypes of={TooltipStories} />
+
+## Do
+
+- Keep tooltip content brief and easy to scan.
+- Attach the tooltip to the element it explains.
+- Use `placement` and `maxWidth` when the surrounding layout needs a more predictable presentation.
+
+## Don't
+
+- Do not use **Tooltip** for critical information users must always see.
+- Do not put long-form instructions or complex content in the tooltip.
+- Do not rely on **Tooltip** as the only way to explain a control that would otherwise be unclear.
+
+## Behavior notes
+
+- **Tooltip** opens on hover and keyboard focus, and closes on blur, mouse leave, or common dismiss keys such as `Escape`.
+- The `content` prop accepts sanitized HTML, so simple formatting can be shown when needed.
+- `delayDurationInMs`, `hideDelayDurationInMs`, `placement`, and `maxWidth` help tune the tooltip behavior for the surrounding UI.
+
+## Accessibility notes
+
+- Only use **Tooltip** for supporting information, not for instructions users must read to complete a task.
+- Make sure the trigger control still has a clear accessible name and purpose without opening the tooltip.
+- Keep the content short enough that it can be understood quickly when focus moves to the trigger.
+
+## Comparisons
+
+### **Tooltip** vs **Help Text**
+
+- Use **Tooltip** when you need flexible tooltip behavior on an existing trigger element.
+- Use **Help Text** when you need the standard small help icon pattern next to a field or label.

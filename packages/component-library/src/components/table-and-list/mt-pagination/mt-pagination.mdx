@@ -1,0 +1,56 @@
+import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
+
+import * as PaginationStories from "./mt-pagination.stories";
+import ComponentPageHeader from "../../_docs/component-page-header.js";
+
+<Meta of={PaginationStories} />
+
+<ComponentPageHeader
+  title="Pagination"
+  tagName="mt-pagination"
+  packageImports="MtPagination"
+  sourcePath="packages/component-library/src/components/table-and-list/mt-pagination"
+>
+  **Pagination** helps users move through larger result sets one page at a time.
+</ComponentPageHeader>
+
+## When to use
+
+- Use **Pagination** when a list or table is split into pages.
+- Use it when users need to move forward, backward, or jump to a specific page.
+- Use it alongside data tables, result lists, or overview pages with many items.
+
+## Examples
+
+### Basic
+
+<Canvas of={PaginationStories.Default} />
+
+## API reference
+
+<ArgTypes of={PaginationStories} />
+
+## Do
+
+- Keep `limit` and `totalItems` in sync with the actual dataset.
+- Reset back to the first page when the page size or result set changes significantly.
+- Place **Pagination** close to the content it controls.
+
+## Don't
+
+- Do not use **Pagination** when all items comfortably fit in one view.
+- Do not use **Pagination** for exploratory browsing patterns where users are expected to keep discovering content continuously. Infinite scrolling may fit better there.
+- Do not leave the current page disconnected from the visible result range.
+- Do not mix pagination with infinite scrolling in the same content area.
+
+## Behavior notes
+
+- **Pagination** displays the current visible range, for example `1-25 of 100`.
+- It emits `change-current-page` when users navigate with the buttons or by typing a page number.
+- Changing `limit` resets the current page back to `1`.
+
+## Accessibility notes
+
+- Navigation buttons include accessible labels for first, previous, next, and last page.
+- Keep **Pagination** near the content it updates so the relationship stays clear.
+- Make sure page changes also update the visible content in a predictable way for keyboard and screen-reader users.

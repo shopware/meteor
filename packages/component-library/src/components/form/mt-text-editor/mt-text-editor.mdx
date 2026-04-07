@@ -1,12 +1,22 @@
 import { Canvas, Meta, Markdown } from "@storybook/blocks";
 
 import * as TextEditorStories from "./mt-text-editor.stories";
+import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 <Meta of={TextEditorStories} />
 
-# Text Editor
-
-The `mt-text-editor` component is a powerful and flexible rich text editor built with [tiptap](https://tiptap.dev/). It is designed to handle a variety of use cases, such as adding rich text editing to your application. This component is highly customizable and can be extended with additional buttons, features, or configurations to suit your needs.
+<ComponentPageHeader
+  title="Text Editor"
+  tagName="mt-text-editor"
+  packageImports="MtTextEditor"
+  sourcePath="packages/component-library/src/components/form/mt-text-editor"
+>
+  The **Text Editor** component is a powerful and flexible rich text editor
+  built with [Tiptap](https://tiptap.dev/). It is designed to handle a variety
+  of use cases, such as adding rich text editing to your application. This
+  component is highly customizable and can be extended with additional buttons,
+  features, or configurations to suit your needs.
+</ComponentPageHeader>
 
 ## Features
 
@@ -23,7 +33,7 @@ The `mt-text-editor` component is a powerful and flexible rich text editor built
 
 ## Usage
 
-To use the `mt-text-editor` component in your project, import it and provide the required props.
+To use the **Text Editor** component in your project, import it and provide the required props.
 
 ### Minimal Example
 
@@ -154,7 +164,7 @@ To use the `mt-text-editor` component in your project, import it and provide the
 | --------------- | ------- | ------- | ----------------------------------------------------------------------- |
 | modelValue      | String  | ''      | The HTML content of the editor. Use 'v-model' to bind it to a variable. |
 | isInlineEdit    | Boolean | 'false' | Enables inline editing with a floating toolbar.                         |
-| tipTapConfig    | Object  | {}      | Custom configuration for the tiptap editor.                             |
+| tipTapConfig    | Object  | {}      | Custom configuration for the Tiptap editor.                             |
 | customButtons   | Array   | []      | Array of custom buttons to add to the toolbar.                          |
 | excludedButtons | Array   | []      | Array of button names to exclude from the toolbar.                      |
 | disabled        | Boolean | 'false' | Disables the editor and all toolbar buttons.                            |
@@ -187,7 +197,7 @@ To use the `mt-text-editor` component in your project, import it and provide the
   {`
 | Method Name | Return Type      | Description                                                                                         |
 | ----------- | ---------------- | --------------------------------------------------------------------------------------------------- |
-| validate()  | Promise<boolean> | Validates code editor content against TipTap's parsed output. Shows diff modal if changes detected. Returns true if valid, false if diff modal was shown. |
+| validate()  | Promise<boolean> | Validates code editor content against Tiptap's parsed output. Shows diff modal if changes detected. Returns true if valid, false if diff modal was shown. |
 `}
 </Markdown>
 
@@ -195,7 +205,7 @@ To use the `mt-text-editor` component in your project, import it and provide the
 
 ## Slots
 
-The `mt-text-editor` component provides several slots for customization:
+The **Text Editor** component provides several slots for customization:
 
 ### `button_<name>`
 
@@ -239,7 +249,7 @@ Customize the left or right sections of the editor's footer.
 
 ## Toolbar Buttons
 
-The `mt-text-editor` includes the following built-in buttons by default:
+The **Text Editor** includes the following built-in buttons by default:
 
 <Markdown>
   {`
@@ -268,9 +278,9 @@ You can exclude or add custom buttons using the `excludedButtons` and `customBut
 
 ---
 
-## Customizing with TipTap Extensions
+## Customizing with Tiptap Extensions
 
-The editor uses [tiptap extensions](https://tiptap.dev/guide/extensions) for its features.
+The editor uses [Tiptap extensions](https://tiptap.dev/docs/editor/core-concepts/extensions) for its features.
 You can include custom extensions by passing them through the `tipTapConfig` prop except the hardcoded properties `content`, `editorProps` and `onUpdate`.
 For example:
 
@@ -293,7 +303,7 @@ For example:
 
 ## Customizing with Custom Buttons
 
-The `mt-text-editor` supports adding custom buttons to the toolbar by passing an array of `CustomButton` objects to the `customButtons` prop.
+The **Text Editor** supports adding custom buttons to the toolbar by passing an array of `CustomButton` objects to the `customButtons` prop.
 
 ### Key Properties of `CustomButton`
 
@@ -531,7 +541,7 @@ const customButtons = [
 
 ### Gate on Initial Unsupported HTML
 
-When the editor mounts in WYSIWYG, it dry-runs a TipTap parse and compares the HTML. If it differs (for example, unsupported attributes are removed), an overlay blocks editing. You can:
+When the editor mounts in WYSIWYG, it dry-runs a Tiptap parse and compares the HTML. If it differs (for example, unsupported attributes are removed), an overlay blocks editing. You can:
 
 - Show Diff: open a modal with side-by-side diff
 - Stay in Code: switch to code view
@@ -548,18 +558,18 @@ Accepting the diff applies the parsed HTML and enables WYSIWYG editing.
 
 ## Code Editor Mode
 
-The `mt-text-editor` includes a code editor mode for editing raw HTML. This mode is powered by [CodeMirror](https://codemirror.net/). Use the `toggle-code` button to switch between WYSIWYG mode and code mode.
+The **Text Editor** includes a code editor mode for editing raw HTML. This mode is powered by [CodeMirror](https://codemirror.net/). Use the `toggle-code` button to switch between WYSIWYG mode and code mode.
 
 ### Diff Review on Switch
 
-When switching from Code → WYSIWYG, the editor compares the code with TipTap’s parsed output. If changes are detected, a modal shows a side-by-side diff. You can:
+When switching from Code → WYSIWYG, the editor compares the code with Tiptap’s parsed output. If changes are detected, a modal shows a side-by-side diff. You can:
 
 - Accept Changes & Switch: apply the parsed HTML and switch to WYSIWYG
 - Stay in Code Editor: keep editing in code view
 
 ### Programmatic Validation
 
-The component exposes a `validate()` method via template ref. It checks the current code editor content against what TipTap can represent. If the HTML differs, the diff modal is shown for the user to review.
+The component exposes a `validate()` method via template ref. It checks the current code editor content against what Tiptap can represent. If the HTML differs, the diff modal is shown for the user to review.
 
 - Returns `true` if valid (no diff or not in code mode).
 - Returns `false` if the diff modal was shown.

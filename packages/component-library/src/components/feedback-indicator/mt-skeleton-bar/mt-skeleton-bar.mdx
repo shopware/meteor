@@ -1,0 +1,70 @@
+import { Canvas, Meta } from "@storybook/blocks";
+
+import * as SkeletonBarStories from "./mt-skeleton-bar.stories";
+import ComponentPageHeader from "../../_docs/component-page-header.js";
+
+<Meta of={SkeletonBarStories} />
+
+<ComponentPageHeader
+  title="Skeleton Bar"
+  tagName="mt-skeleton-bar"
+  packageImports="MtSkeletonBar"
+  sourcePath="packages/component-library/src/components/feedback-indicator/mt-skeleton-bar"
+>
+  **Skeleton Bar** shows a shimmering placeholder block while content is
+  loading. Use it when you want to preserve layout and signal that content will
+  appear in place shortly.
+</ComponentPageHeader>
+
+## When to use
+
+- Use **Skeleton Bar** when the final content structure is known but the real content is still loading.
+- Use it in cards, lists, tables, or detail views where preserving the final layout helps reduce visual jump.
+- Use multiple bars together when the loading state should suggest lines of text or grouped placeholder content.
+
+## Examples
+
+### Basic
+
+<Canvas of={SkeletonBarStories.Default} />
+
+### Form layout
+
+<Canvas of={SkeletonBarStories.MultipleLines} />
+
+## API reference
+
+**Skeleton Bar** does not expose public props, slots, or events. Size and layout are controlled by the surrounding container.
+
+## Do
+
+- Match the placeholder size and grouping roughly to the final content shape.
+- Use **Skeleton Bar** close to the surface where the real content will appear.
+- Replace the skeleton as soon as the actual content is ready.
+- Combine several bars with different widths when that helps communicate the expected structure.
+
+## Don't
+
+- Do not use **Skeleton Bar** when you can show real progress or completion state.
+- Do not leave skeleton placeholders visible for long-running tasks without additional context.
+- Do not use skeleton bars as a generic decoration when nothing is actually loading.
+- Do not make users interact with placeholder content that is not ready yet.
+
+## Behavior notes
+
+- **Skeleton Bar** is purely visual. It renders a shimmer animation over a neutral placeholder surface.
+- The component takes the full available width of its container, so surrounding layout controls its final size.
+- Consecutive skeleton bars add vertical spacing automatically, which makes it easy to stack them into text-like placeholder groups.
+
+## Accessibility notes
+
+- **Skeleton Bar** does not announce loading state or placeholder semantics on its own.
+- When the loading state matters for assistive technologies, expose that state on the surrounding region or pair it with additional loading text.
+- Keep the placeholder structure close to the final content so all users can understand what area is being loaded.
+
+## Comparisons
+
+### **Skeleton Bar** vs **Loader**
+
+- Use **Skeleton Bar** when the content layout is known and you want to preserve that layout while data loads.
+- Use **Loader** when a simple indeterminate loading indicator is enough and a structural placeholder would not add value.

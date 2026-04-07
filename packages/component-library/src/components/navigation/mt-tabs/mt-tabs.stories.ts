@@ -98,8 +98,31 @@ export default {
 export type MtTabsStory = StoryObj<typeof MtTabs>;
 
 export const Default: MtTabsStory = {
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-tabs
+  :items="[
+    { label: 'Overview', name: 'overview' },
+    { label: 'Orders', name: 'orders' },
+    { label: 'Customers', name: 'customers' },
+  ]"
+  default-item="overview"
+/>`,
+      },
+    },
+  },
   args: {
     items: tabItems,
     small: true,
+  },
+};
+
+export const Vertical: MtTabsStory = {
+  args: {
+    items: tabItems.slice(0, 4),
+    vertical: true,
+    defaultItem: "item2",
   },
 };

@@ -19,7 +19,6 @@ export type MtUnitFieldMeta = SlottedMeta<
 const meta: Meta<typeof MtUnitField> = {
   title: "Components/mt-unit-field",
   component: MtUnitField,
-  tags: ["autodocs"],
   render: (args) => ({
     template: `
       <div>
@@ -101,4 +100,19 @@ export default meta;
 
 export type MtUnitFieldStory = StoryObj<typeof meta>;
 
-export const Default: MtUnitFieldStory = {};
+export const Default: MtUnitFieldStory = {
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-unit-field
+  v-model="value"
+  v-model:default-unit="unit"
+  label="Length"
+  default-unit="m"
+  measurement-type="length"
+/>`,
+      },
+    },
+  },
+};

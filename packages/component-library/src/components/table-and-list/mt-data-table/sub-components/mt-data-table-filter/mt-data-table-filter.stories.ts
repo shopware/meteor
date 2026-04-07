@@ -11,6 +11,7 @@ export type MtDataTableFilterMeta = SlottedMeta<
 export default {
   title: "Components/mt-data-table-filter",
   component: MtDataTableFilter,
+  tags: ["!autodocs", "!dev"],
   render: (args) => ({
     components: { MtDataTableFilter },
     setup() {
@@ -51,4 +52,25 @@ export default {
 
 export type MtDataTableFilterStory = StoryObj<MtDataTableFilterMeta>;
 
-export const Default: MtDataTableFilterStory = {};
+export const Default: MtDataTableFilterStory = {
+  parameters: {
+    docs: {
+      source: {
+        code: `<mt-data-table-filter
+  :filter="{
+    id: 'filter',
+    label: 'Filter',
+    type: {
+      id: 'options',
+      options: [
+        { id: 'option-1', label: 'Option 1' },
+        { id: 'option-2', label: 'Option 2' },
+      ],
+    },
+  }"
+  :applied-options="[{ id: 'option-1', label: 'Option 1' }]"
+/>`,
+      },
+    },
+  },
+};

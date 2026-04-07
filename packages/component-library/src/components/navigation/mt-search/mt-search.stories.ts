@@ -80,4 +80,16 @@ const meta: MtSearchMeta = {
 export default meta;
 export type MtSearchStory = StoryObj<MtSearchMeta>;
 
-export const Default: MtSearchStory = {};
+export const Default: MtSearchStory = {
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-search
+  v-model="term"
+  placeholder="Search"
+/>`,
+      },
+    },
+  },
+};
