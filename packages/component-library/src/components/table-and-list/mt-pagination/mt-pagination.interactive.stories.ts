@@ -6,7 +6,8 @@ import type MtPagination from "./mt-pagination.vue";
 import { defineStory } from "@/_internal/story-helper";
 
 export default {
-  title: "Interaction Tests/Table and list/mt-pagination",
+  title: "Components/mt-pagination/Interaction tests",
+  tags: ["!autodocs"],
 };
 
 export const VisualTestRenderWithOnePage = defineStory<typeof MtPagination>(

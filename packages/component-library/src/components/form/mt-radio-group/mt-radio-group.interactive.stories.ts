@@ -13,7 +13,8 @@ import meta from "./mt-radio-group.stories";
 
 export default {
   ...meta,
-  title: "Interaction Tests/Form/mt-radio-group",
+  title: "Components/mt-radio-group/Interaction tests",
+  tags: ["!autodocs"],
 } as Meta;
 
 type Story = StoryObj<typeof meta>;

@@ -2,7 +2,8 @@ import meta, { type MtSearchMeta, type MtSearchStory } from "./mt-search.stories
 
 export default {
   ...meta,
-  title: "Interaction Tests/Navigation/mt-search",
+  title: "Components/mt-search/Interaction tests",
+  tags: ["!autodocs"],
 } as MtSearchMeta;
 
 export const VisualTestDefaultSize: MtSearchStory = {

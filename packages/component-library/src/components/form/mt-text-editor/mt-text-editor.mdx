@@ -39,7 +39,7 @@ To use the `mt-text-editor` component in your project, import it and provide the
 </script>
 ```
 
-<Canvas of={TextEditorStories.DefaultStory} />
+<Canvas of={TextEditorStories.Default} />
 
 ### Inline Editing
 
@@ -176,6 +176,18 @@ To use the `mt-text-editor` component in your project, import it and provide the
 | ------------------ | ------- | ------------------------------------------------------------------------------- |
 | update:modelValue  | String  | Emitted when the editor content changes. Contains the HTML string.              |
 | update:codeMode    | Boolean | Emitted when the editor mode changes between WYSIWYG and code editor.          |
+`}
+</Markdown>
+
+---
+
+## Exposed Methods
+
+<Markdown>
+  {`
+| Method Name | Return Type      | Description                                                                                         |
+| ----------- | ---------------- | --------------------------------------------------------------------------------------------------- |
+| validate()  | Promise<boolean> | Validates code editor content against TipTap's parsed output. Shows diff modal if changes detected. Returns true if valid, false if diff modal was shown. |
 `}
 </Markdown>
 
@@ -544,3 +556,33 @@ When switching from Code â†’ WYSIWYG, the editor compares the code with TipTapâ€
 
 - Accept Changes & Switch: apply the parsed HTML and switch to WYSIWYG
 - Stay in Code Editor: keep editing in code view
+
+### Programmatic Validation
+
+The component exposes a `validate()` method via template ref. It checks the current code editor content against what TipTap can represent. If the HTML differs, the diff modal is shown for the user to review.
+
+- Returns `true` if valid (no diff or not in code mode).
+- Returns `false` if the diff modal was shown.
+
+This is useful for parent components that need to validate content before closing a modal or saving.
+
+```html
+<template>
+  <mt-text-editor ref="editor" v-model="content" />
+  <mt-button @click="onSave">Save</mt-button>
+</template>
+
+<script setup>
+  import { ref } from "vue";
+
+  const editor = ref(null);
+  const content = ref("<p>Your content here</p>");
+
+  const onSave = async () => {
+    if (!editor.value) return;
+    const isValid = await editor.value.validate();
+    if (!isValid) return;
+    // proceed with save
+  };
+</script>
+```

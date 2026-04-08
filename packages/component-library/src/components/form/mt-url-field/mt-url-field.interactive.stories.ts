@@ -4,7 +4,8 @@ import { waitUntil } from "@/_internal/test-helper";
 
 export default {
   ...meta,
-  title: "Interaction Tests/Form/mt-url-field",
+  title: "Components/mt-url-field/Interaction tests",
+  tags: ["!autodocs"],
 } as MtUrlFieldMeta;
 
 export const VisualTestFocused: MtUrlFieldStory = {

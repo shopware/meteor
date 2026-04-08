@@ -7,7 +7,8 @@ import { defineStory } from "@/_internal/story-helper";
 
 export default {
   ...meta,
-  title: "Interaction Tests/Form/mt-text-editor",
+  title: "Components/mt-text-editor/Interaction tests",
+  tags: ["!autodocs"],
 } as MtTextEditorMeta;
 
 /**
@@ -100,6 +101,20 @@ export const VisualTestRenderError: MtTextEditorStory = defineStory({
     const canvas = within(canvasElement);
 
     await waitForCharacterCounter(canvasElement);
+  },
+});
+
+export const VisualTestRenderLinkWithoutNewTab: MtTextEditorStory = defineStory({
+  name: "Should render link without new tab option",
+  args: {
+    modelValue:
+      '<p>Visit our <a href="https://www.shopware.com">shop page</a> for more information.</p>',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await waitForCharacterCounter(canvasElement);
+    expect(canvas.getByRole("link", { name: "shop page" })).toBeDefined();
   },
 });
 
@@ -793,6 +808,82 @@ export const SetLink: MtTextEditorStory = defineStory({
   },
 });
 
+export const SetLinkWithoutNewTab: MtTextEditorStory = defineStory({
+  name: "Should set link without new tab option",
+  args: {
+    modelValue: "<h1>Hello World</h1><p>Some text</p>",
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    await waitForCharacterCounter(canvasElement);
+
+    await userEvent.click(canvas.getByText("Hello World"));
+
+    selectText(canvas.getByText("Hello World"));
+
+    await userEvent.click(canvas.getByLabelText("Link"));
+
+    const body = within(document.body);
+
+    const linkInput = body.getByLabelText("Link URL");
+    await userEvent.clear(linkInput);
+    await userEvent.type(linkInput, "https://www.shopware.com");
+
+    await userEvent.click(body.getByText("Apply link"));
+
+    await waitUntil(() => args.updateModelValue?.mock?.calls?.length > 0);
+
+    expect(args.updateModelValue).toHaveBeenCalledWith(
+      '<h1><a href="https://www.shopware.com">Hello World</a></h1><p>Some text</p>',
+    );
+
+    const renderedLink = canvas.getByRole("link", { name: "Hello World" });
+    expect(renderedLink).toHaveAttribute("href", "https://www.shopware.com");
+    expect(renderedLink).not.toHaveAttribute("target");
+    expect(renderedLink).not.toHaveAttribute("rel");
+  },
+});
+
+export const RemoveLink: MtTextEditorStory = defineStory({
+  name: "Should remove link in one click",
+  args: {
+    modelValue: '<h1><a href="https://www.shopware.com">Hello World</a></h1><p>Some text</p>',
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    await waitForCharacterCounter(canvasElement);
+
+    await userEvent.click(canvas.getByRole("link", { name: "Hello World" }));
+    selectText(canvas.getByText("Hello World"));
+
+    await userEvent.click(canvas.getByLabelText("Remove link"));
+
+    await waitUntil(() => args.updateModelValue?.mock?.calls?.length > 0);
+
+    expect(args.updateModelValue).toHaveBeenCalledWith("<h1>Hello World</h1><p>Some text</p>");
+    expect(canvas.queryByRole("link", { name: "Hello World" })).toBeNull();
+  },
+});
+
+export const VisualTestShowRemoveLinkContextualButton: MtTextEditorStory = defineStory({
+  name: "Should show remove link contextual button",
+  args: {
+    modelValue: '<h1><a href="https://www.shopware.com">Hello World</a></h1><p>Some text</p>',
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await waitForCharacterCounter(canvasElement);
+
+    await userEvent.click(canvas.getByRole("link", { name: "Hello World" }));
+    selectText(canvas.getByText("Hello World"));
+
+    expect(canvas.getByLabelText("Remove link")).toBeDefined();
+  },
+});
+
 export const InsertTable: MtTextEditorStory = defineStory({
   name: "Should insert table",
   args: {
@@ -895,6 +986,28 @@ export const VisualTestRenderCodeView: MtTextEditorStory = defineStory({
     const codeEditor = canvas.getByRole("textbox");
     expect(codeEditor).toBeDefined();
     expect(codeEditor.innerText).toBe("<h1>Hello World</h1><p>Some text</p>");
+  },
+});
+
+export const ToggleFullscreenMode: MtTextEditorStory = defineStory({
+  name: "Should toggle fullscreen mode",
+  args: {
+    modelValue: "<h1>Hello World</h1><p>Some text</p>",
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const editor = canvasElement.querySelector(".mt-text-editor") as HTMLElement | null;
+
+    await waitForCharacterCounter(canvasElement);
+    expect(editor).toBeDefined();
+
+    await userEvent.click(canvas.getByLabelText("Toggle fullscreen mode"));
+    await waitUntil(() => editor?.classList.contains("is--fullscreen"));
+    expect(editor).toHaveClass("is--fullscreen");
+
+    await userEvent.keyboard("{Escape}");
+    await waitUntil(() => !editor?.classList.contains("is--fullscreen"));
+    expect(editor).not.toHaveClass("is--fullscreen");
   },
 });
 
@@ -1520,5 +1633,35 @@ export const TestCodeModeFalse: MtTextEditorStory = defineStory({
 
     // Expect the toggle button to show "Switch to code mode"
     expect(canvas.getByLabelText("Switch to code mode")).toBeDefined();
+  },
+});
+
+// ------------------------------
+// Table cell selection tests
+// ------------------------------
+
+export const VisualTestTableCellSelectionShowsContent: MtTextEditorStory = defineStory({
+  name: "Should show cell content when table cells are selected",
+  args: {},
+  play: async ({ canvasElement }) => {
+    await waitUntil(() => canvasElement.querySelector(".mt-text-editor__content-editor table td"));
+
+    const cells = canvasElement.querySelectorAll(".mt-text-editor__content-editor table td");
+
+    await userEvent.click(cells[0] as HTMLElement);
+
+    // TipTap adds .selectedCell to cells during click-drag selection
+    cells.forEach((cell) => cell.classList.add("selectedCell"));
+
+    const firstCellText = cells[0].querySelector("p");
+    expect(firstCellText).not.toBeNull();
+    expect(firstCellText!.textContent).toBe("Lorem");
+
+    // The .selectedCell::after overlay must be semi-transparent so cell content
+    // remains visible. Modern browsers resolve color-mix() to "color(srgb ... / alpha)",
+    // older ones to "rgba(...)". An opaque color (the old bug) has neither.
+    const cellStyles = window.getComputedStyle(cells[0], "::after");
+    const bg = cellStyles.getPropertyValue("background-color");
+    expect(bg).toMatch(/rgba?\(.+,|color\(.+\//);
   },
 });

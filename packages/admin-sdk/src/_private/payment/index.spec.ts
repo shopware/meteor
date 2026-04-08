@@ -120,7 +120,7 @@ describe('Private Service Payment', () => {
         }
       });
 
-      it('should create an iframe with correct attributes and URL', async () => {
+      it('should create an iframe with correct attributes and URL when no valid license', async () => {
         const result = await addPaymentIframe(container, baseUrl, options);
 
         expect(mockGetAppInformation).toHaveBeenCalledTimes(1);
@@ -129,6 +129,32 @@ describe('Private Service Payment', () => {
           'https://example.com/payment?service-name=test-app&service-version=1.0.0&shop-url=https://shop.example.com&sw-version=6.5.0&sw-user-language=en-GB&shop-plan=beyond'
         );
         expect(container.contains(result.iframeEl)).toBe(true);
+      });
+
+      it('should create an iframe with shop-url and shop-plan from license when license is valid', async () => {
+        const futureExp = Math.floor(Date.now() / 1000) + 3600;
+        const mockSearch = jest.fn().mockResolvedValue({
+          first: () => ({ configurationValue: 'valid-jwt-token' }),
+        });
+        (data.repository as jest.Mock).mockReturnValue({ search: mockSearch });
+        (jwtDecode as jest.Mock).mockReturnValue({
+          aud: 'https://license-aud.shop.example.com',
+          'plan-name': 'premium',
+          exp: futureExp,
+          iat: 1000000000,
+          iss: 'shopware',
+          nbf: 1000000000,
+          'license-toggles': {},
+          'plan-usage': 'commercial',
+          'plan-variant': 'default',
+          swemp: 'example',
+        });
+
+        const result = await addPaymentIframe(container, baseUrl, options);
+
+        expect(result.iframeEl.src).toBe(
+          'https://example.com/payment?service-name=test-app&service-version=1.0.0&shop-url=https://license-aud.shop.example.com&sw-version=6.5.0&sw-user-language=en-GB&shop-plan=premium'
+        );
       });
 
       it('should append iframe to the provided element', async () => {

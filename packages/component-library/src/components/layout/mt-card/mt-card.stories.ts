@@ -28,7 +28,7 @@ export type MtCardMeta = SlottedMeta<typeof MtCard, MtCardSlots>;
 export type MtCardStory = StoryObj<MtCardMeta>;
 
 const meta: MtCardMeta = {
-  title: "Components/Layout/mt-card",
+  title: "Components/mt-card",
   component: MtCard,
   argTypes: {
     title: {
@@ -78,8 +78,7 @@ const meta: MtCardMeta = {
 
 export default meta;
 
-export const MinimalStory: StoryObj<MtCardMeta> = {
-  name: "Minimal",
+export const Default: StoryObj<MtCardMeta> = {
   render: (args) => ({
     components: { MtCard, MtContextMenuItem, MtTabs, MtAvatar, MtButton, MtText },
     setup() {

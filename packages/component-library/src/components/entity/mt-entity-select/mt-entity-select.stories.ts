@@ -53,7 +53,7 @@ const getMockRepository = (data: { id: string; name: string }[]) => {
 const mockManufacturerRepository = getMockRepository(manufacturers);
 
 export default {
-  title: "Components/Entity/mt-entity-select",
+  title: "Components/mt-entity-select",
   component: MtEntitySelect,
   argTypes: {
     "onUpdate:modelValue": {
@@ -90,7 +90,6 @@ export default {
 export type MtEntitySelectStory = StoryObj<typeof MtEntitySelect>;
 
 export const Default: MtEntitySelectStory = {
-  name: "Default (single selection)",
   args: {},
 };
 

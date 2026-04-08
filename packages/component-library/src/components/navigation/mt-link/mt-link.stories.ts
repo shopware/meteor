@@ -7,7 +7,7 @@ import type { SlottedMeta } from "@/_internal/story-helper";
 export type MtLinkMeta = SlottedMeta<typeof MtLink, "default" | "close" | "click">;
 
 export default {
-  title: "Components/Navigation/mt-link",
+  title: "Components/mt-link",
   component: MtLink,
   args: {
     as: "a",
@@ -30,6 +30,4 @@ export default {
 
 export type MtLinkStory = StoryObj<MtLinkMeta>;
 
-export const DefaultStory: MtLinkStory = {
-  name: "mt-link",
-};
+export const Default: MtLinkStory = {};

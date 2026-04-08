@@ -8,7 +8,7 @@ import MtText from "@/components/content/mt-text/mt-text.vue";
 export type MtBannerMeta = SlottedMeta<typeof MtBanner, "default" | "close">;
 
 const meta: MtBannerMeta = {
-  title: "Components/Feedback Indicator/mt-banner",
+  title: "Components/mt-banner",
   component: MtBanner,
   args: {
     title: "This is a banner",
@@ -36,6 +36,4 @@ const meta: MtBannerMeta = {
 export default meta;
 export type MtBannerStory = StoryObj<MtBannerMeta>;
 
-export const DefaultStory: MtBannerStory = {
-  name: "mt-banner",
-};
+export const Default: MtBannerStory = {};
