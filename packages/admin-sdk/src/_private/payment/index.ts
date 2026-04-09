@@ -38,7 +38,13 @@ type Flow = {
   },
 }
 
-const channel = new BroadcastChannel('payment');
+let channel: BroadcastChannel | null = null;
+const getChannel = (): BroadcastChannel => {
+  if (!channel) {
+    channel = new BroadcastChannel('payment');
+  }
+  return channel;
+};
 
 const servicePaymentModalLocationId = 'sw-service-payment-modal';
 
@@ -52,11 +58,11 @@ const _createFlow = (): Flow => {
           callback();
         }
       };
-      channel.addEventListener('message', func);
+      getChannel().addEventListener('message', func);
 
       return {
         unsubscribe: (): void => {
-          channel.removeEventListener('message', func);
+          getChannel().removeEventListener('message', func);
         },
       };
     },
@@ -105,7 +111,7 @@ export const addPaymentIframe = async (
         locationId: servicePaymentModalLocationId,
       });
     } else if ([MESSAGE_EVENT_TYPE.PAYMENT_SUCCESS].includes(event.data.type as MESSAGE_EVENT_TYPE)){
-      channel.postMessage(event.data);
+      getChannel().postMessage(event.data);
     }
   };
 
@@ -113,7 +119,7 @@ export const addPaymentIframe = async (
 
   const unmount = (): void => {
     window.removeEventListener('message', handleEvent);
-    channel.close();
+    getChannel().close();
   };
 
   el.appendChild(iframeEl);
