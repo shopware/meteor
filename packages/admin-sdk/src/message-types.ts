@@ -42,6 +42,7 @@ import type {
   repositoryCreate,
 } from './data/repository';
 import type { iapCheckout } from './iap';
+import type { telemetryDispatch } from './telemetry';
 
 /**
  * Contains all shopware send types.
@@ -106,6 +107,7 @@ export interface ShopwareMessageTypes {
   datasetUpdate: datasetUpdate,
   datasetGet: datasetGet,
   iapCheckout: iapCheckout,
+  telemetryDispatch: telemetryDispatch,
   __function__: __function__,
   __registerWindow__: __registerWindow__,
   _multiply: _multiply,
