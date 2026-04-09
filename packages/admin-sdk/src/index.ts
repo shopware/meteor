@@ -18,6 +18,7 @@ import * as webhook from './app/action';
 import * as data from './data';
 import * as iap from './iap';
 import * as payment from './_private/payment';
+import * as telemetry from './telemetry';
 import type EntityCollectionType from './_internals/data/EntityCollection';
 import type { Entity as EntityType } from './_internals/data/Entity';
 import composables from './data/composables';
@@ -58,6 +59,7 @@ export {
   data,
   composables,
   iap,
+  telemetry,
   _private,
 };
 

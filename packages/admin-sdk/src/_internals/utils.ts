@@ -64,13 +64,13 @@ export function removeRoot(path: string | number): string | number {
    if (typeof baseUrl !== 'string') {
    return undefined;
    }
- 
+
    if (baseUrl === '') {
    return undefined;
    }
- 
+
    const comparedBaseUrl = new URL(baseUrl);
- 
+
    /*
   * Check if baseUrl is the same as the current window location
   * If so, return the dummy extension with all privileges available
@@ -87,11 +87,40 @@ export function removeRoot(path: string | number): string | number {
      },
    };
    }
- 
+
    return Object.values(window._swsdk.adminExtensions)
      .find((ext) => {
      const extensionBaseUrl = new URL(ext.baseUrl);
- 
+
      return extensionBaseUrl.hostname === comparedBaseUrl.hostname;
      });
  }
+
+/**
+ * Returns the technical name (registry key) of the extension matching the given base URL.
+ * Returns undefined when the origin is the admin itself or no matching extension is found.
+ */
+export function findExtensionNameByBaseUrl(baseUrl?: string): string | undefined {
+  if (typeof baseUrl !== 'string' || baseUrl === '') {
+    return undefined;
+  }
+
+  let comparedBaseUrl: URL;
+  try {
+    comparedBaseUrl = new URL(baseUrl);
+  } catch {
+    return undefined;
+  }
+
+  if (comparedBaseUrl.origin === window.location.origin) {
+    return undefined;
+  }
+
+  return Object.entries(window._swsdk.adminExtensions).find(([, ext]) => {
+    try {
+      return new URL(ext.baseUrl).hostname === comparedBaseUrl.hostname;
+    } catch {
+      return false;
+    }
+  })?.[0];
+}
