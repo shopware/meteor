@@ -2,6 +2,11 @@ import { createSender } from '../channel';
 import { findExtensionNameByBaseUrl } from '../_internals/utils';
 
 /**
+ * Matches the TrackableType used by the Admin analytics gateway.
+ */
+type TrackableType = string | string[] | number | boolean | null;
+
+/**
  * Dispatch a telemetry event to the Admin.
  * The source (technical name of the extension) is automatically
  * resolved by the Admin SDK from the message origin and cannot be
@@ -26,6 +31,7 @@ export function trackPageView(properties: {
   sw_route_to_href: string,
   sw_route_to_name: string | null,
   sw_route_to_query?: string,
+  [key: string]: TrackableType | undefined,
 }): Promise<void> {
   return dispatch({ event: 'page_viewed', data: properties });
 }
@@ -37,6 +43,7 @@ export function trackPageView(properties: {
 export function trackLinkVisited(properties: {
   sw_link_href: string,
   sw_link_type: 'internal' | 'external',
+  [key: string]: TrackableType | undefined,
 }): Promise<void> {
   return dispatch({ event: 'link_visited', data: properties });
 }
