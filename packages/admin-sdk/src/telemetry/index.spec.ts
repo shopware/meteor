@@ -57,8 +57,22 @@ describe('telemetry', () => {
     });
 
     it('returns undefined when origin matches the admin window (same origin)', () => {
-      // window.location.origin in jsdom is 'http://localhost'
       const name = getSourceExtensionName(window.location.origin);
+      expect(name).toBeUndefined();
+    });
+
+    it('does not match an extension on the same host but a different port', () => {
+      window._swsdk.adminExtensions['port-plugin'] = {
+        baseUrl: 'http://my-plugin.localhost:8080',
+        permissions: {},
+      };
+
+      const name = getSourceExtensionName('http://my-plugin.localhost:9090');
+      expect(name).toBeUndefined();
+    });
+
+    it('does not match an extension on the same host but a different scheme', () => {
+      const name = getSourceExtensionName('https://my-plugin.localhost');
       expect(name).toBeUndefined();
     });
   });

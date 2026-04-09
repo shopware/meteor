@@ -118,7 +118,7 @@ export function findExtensionNameByBaseUrl(baseUrl?: string): string | undefined
 
   return Object.entries(window._swsdk.adminExtensions).find(([, ext]) => {
     try {
-      return new URL(ext.baseUrl).hostname === comparedBaseUrl.hostname;
+      return new URL(ext.baseUrl).origin === comparedBaseUrl.origin;
     } catch {
       return false;
     }
