@@ -1,5 +1,13 @@
 # Changelog
 
+## 6.7.0
+
+### Minor Changes
+
+- [#1100](https://github.com/shopware/meteor/pull/1100) [`f24b5cb`](https://github.com/shopware/meteor/commit/f24b5cb2228d9f5974b7f34b1835e2a7986e4158) Thanks [@bubleg](https://github.com/bubleg)! - Add typed helpers for standard telemetry events: trackPageView() and trackLinkVisited()
+
+- [#1099](https://github.com/shopware/meteor/pull/1099) [`99ccb68`](https://github.com/shopware/meteor/commit/99ccb6823ec970d7791988231df020443291bf3b) Thanks [@bubleg](https://github.com/bubleg)! - Add `telemetry.dispatch()` API for extensions to send tracking events. The `source` (extension technical name) is automatically resolved by the Admin SDK from the message origin and cannot be set manually by the extension. Also exposes `telemetry.getSourceExtensionName()` for the Admin to resolve the source when handling the event.
+
 ## 6.6.0
 
 ### Minor Changes
