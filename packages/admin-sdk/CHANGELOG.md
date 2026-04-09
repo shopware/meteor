@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.7.1
+
+### Patch Changes
+
+- [#1103](https://github.com/shopware/meteor/pull/1103) [`e7003d3`](https://github.com/shopware/meteor/commit/e7003d3a7f908544888b67b453dee9e8e246a608) Thanks [@bubleg](https://github.com/bubleg)! - fix: lazy-initialize BroadcastChannel in payment module to prevent crash in environments without BroadcastChannel support (e.g. Jest/jsdom)
+
 ## 6.7.0
 
 ### Minor Changes
