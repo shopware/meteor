@@ -1,5 +1,16 @@
 # Changelog
 
+## 4.28.0
+
+### Minor Changes
+
+- [#1085](https://github.com/shopware/meteor/pull/1085) [`d6f96a2`](https://github.com/shopware/meteor/commit/d6f96a2fb68eefc91c00be79b47a8066b4b004af) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Add story for `mt-floating-ui`
+
+### Patch Changes
+
+- Updated dependencies [[`f24b5cb`](https://github.com/shopware/meteor/commit/f24b5cb2228d9f5974b7f34b1835e2a7986e4158), [`99ccb68`](https://github.com/shopware/meteor/commit/99ccb6823ec970d7791988231df020443291bf3b)]:
+  - @shopware-ag/meteor-admin-sdk@6.7.0
+
 ## 4.27.0
 
 ### Minor Changes
