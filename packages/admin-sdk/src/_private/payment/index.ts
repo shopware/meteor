@@ -119,7 +119,7 @@ export const addPaymentIframe = async (
 
   const unmount = (): void => {
     window.removeEventListener('message', handleEvent);
-    getChannel().close();
+    channel?.close();
   };
 
   el.appendChild(iframeEl);
