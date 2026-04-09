@@ -1,9 +1,72 @@
-import { dispatch, getSourceExtensionName } from './index';
+import { dispatch, getSourceExtensionName, trackPageView, trackLinkVisited } from './index';
+
+const mockSend = jest.fn();
+jest.mock('../channel', () => ({
+  createSender: () => (...args: unknown[]) => mockSend(...args),
+}));
 
 describe('telemetry', () => {
+  beforeEach(() => {
+    mockSend.mockReset();
+    mockSend.mockResolvedValue(undefined);
+  });
+
   describe('dispatch', () => {
     it('is a function', () => {
       expect(typeof dispatch).toBe('function');
+    });
+  });
+
+  describe('trackPageView', () => {
+    it('dispatches page_viewed with the correct property names', async () => {
+      await trackPageView({
+        sw_route_from_href: '/dashboard',
+        sw_route_from_name: 'sw.dashboard.index',
+        sw_route_to_href: '/products',
+        sw_route_to_name: 'sw.product.index',
+      });
+
+      expect(mockSend).toHaveBeenCalledWith({
+        event: 'page_viewed',
+        data: {
+          sw_route_from_href: '/dashboard',
+          sw_route_from_name: 'sw.dashboard.index',
+          sw_route_to_href: '/products',
+          sw_route_to_name: 'sw.product.index',
+        },
+      });
+    });
+
+    it('includes sw_route_to_query when provided', async () => {
+      await trackPageView({
+        sw_route_from_href: '/dashboard',
+        sw_route_from_name: null,
+        sw_route_to_href: '/products',
+        sw_route_to_name: null,
+        sw_route_to_query: 'limit=25',
+      });
+
+      expect(mockSend).toHaveBeenCalledWith(expect.objectContaining({
+        data: expect.objectContaining({ sw_route_to_query: 'limit=25' }),
+      }));
+    });
+  });
+
+  describe('trackLinkVisited', () => {
+    it('dispatches link_visited with href and internal type', async () => {
+      await trackLinkVisited({ sw_link_href: '/products', sw_link_type: 'internal' });
+      expect(mockSend).toHaveBeenCalledWith({
+        event: 'link_visited',
+        data: { sw_link_href: '/products', sw_link_type: 'internal' },
+      });
+    });
+
+    it('dispatches link_visited with external type', async () => {
+      await trackLinkVisited({ sw_link_href: 'https://example.com', sw_link_type: 'external' });
+      expect(mockSend).toHaveBeenCalledWith({
+        event: 'link_visited',
+        data: { sw_link_href: 'https://example.com', sw_link_type: 'external' },
+      });
     });
   });
 
