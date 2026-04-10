@@ -1,10 +1,11 @@
 ---
 phase: 02
 slug: tutorial-workspace-ux
-status: draft
+status: approved
 shadcn_initialized: false
 preset: none
 created: 2026-04-10
+reviewed_at: 2026-04-10
 ---
 
 # Phase 02 — UI Design Contract
@@ -125,6 +126,7 @@ Support files stay read-only in this phase. Surface them as a list in the guidan
 - Lesson navigation, workspace tabs, and action buttons must be fully keyboard reachable.
 - Mark the active lesson row with `aria-current="page"`.
 - Use semantic button elements for lesson switching and actions; do not rely on clickable `div` containers.
+- Any icon-only control must provide an `aria-label` and either a tooltip or adjacent text label fallback so its purpose stays visible and screen-reader safe.
 - Preserve visible focus rings in the accent color for the active interactive element.
 - Confirmation dialogs must trap focus and return focus to the triggering control when closed.
 
