@@ -1,7 +1,11 @@
 {
   "extends": "@vue/tsconfig/tsconfig.dom.json",
   "compilerOptions": {
+    "baseUrl": ".",
     "composite": true,
+    "paths": {
+      "@shopware-ag/meteor-admin-sdk": ["../admin-sdk/es/index.d.ts"]
+    },
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.tsbuildinfo",
     "types": ["node", "vitest/globals", "vite/client"]
   },

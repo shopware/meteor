@@ -7,6 +7,7 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": fileURLToPath(new URL("./src", import.meta.url)),
+      "@shopware-ag/meteor-admin-sdk": fileURLToPath(new URL("../admin-sdk/es/index.js", import.meta.url)),
     },
   },
 });
