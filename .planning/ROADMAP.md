@@ -28,9 +28,9 @@ This roadmap keeps v1 narrow: prove a repo-owned, browser-local tutorial package
   3. The lesson model stays constrained to the narrow prototype workflow instead of exposing generic IDE or multi-file authoring behavior.
 **Plans**: 4 plans
 Plans:
-- [ ] `01-01-PLAN.md` — Create the content-first tutorial package scaffold, authoring contract, and Wave 0 validation files.
-- [ ] `01-02-PLAN.md` — Seed representative lesson bundles and add manifest-integrity coverage.
-- [ ] `01-03-PLAN.md` — Implement static lesson discovery, safe bundle resolution, and normalized catalog ordering with unit coverage.
+- [x] `01-01-PLAN.md` — Create the content-first tutorial package scaffold, authoring contract, and Wave 0 validation files.
+- [x] `01-02-PLAN.md` — Seed representative lesson bundles and add manifest-integrity coverage.
+- [x] `01-03-PLAN.md` — Implement static lesson discovery, safe bundle resolution, and normalized catalog ordering with unit coverage.
 - [ ] `01-04-PLAN.md` — Render the ordered lesson list in the browser and prove it with Playwright.
 **UI hint**: yes
 
@@ -92,7 +92,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Lesson Catalog & Authoring Model | 0/4 | Not started | - |
+| 1. Lesson Catalog & Authoring Model | 3/4 | In Progress | - |
 | 2. Tutorial Workspace UX | 0/TBD | Not started | - |
 | 3. Browser Run Loop | 0/TBD | Not started | - |
 | 4. Fake Admin Notification Slice | 0/TBD | Not started | - |
