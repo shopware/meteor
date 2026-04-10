@@ -282,17 +282,13 @@ export function describeCurrentSurface(): string {
 | A2 | The minimal Phase 3 host bridge only needs to cover the seeded lesson scenarios already in the repo (`notification` and `location`). [ASSUMED] | Architecture Patterns | Additional lesson scenarios introduced before Phase 4 could force earlier bridge expansion. |
 | A3 | Bundling one preview artifact per explicit run is fast enough for the current lesson set and does not require incremental caching in the first implementation. [ASSUMED] | Summary / Architecture Patterns | If run latency is too high, the planner will need a caching or warm-context task in Wave 1 instead of later hardening. |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Should the Phase 3 iframe stay on `sandbox="allow-scripts"` only, or does the chosen implementation still need `allow-same-origin` for any asset-loading path?**  
-   What we know: MDN strongly discourages `allow-scripts` plus `allow-same-origin` for same-origin embedded documents, and a fully bundled preview artifact avoids most same-origin loading pressure. [CITED: https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/iframe][CITED: https://esbuild.github.io/api/]  
-   What's unclear: Whether any non-bundled asset or helper the planner wants to load at runtime would force same-origin document behavior. [ASSUMED]  
-   Recommendation: Plan for a fully bundled preview artifact first and treat any `allow-same-origin` requirement as an explicit design exception that needs justification. [CITED: https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/iframe]
+   Resolution: Phase 3 will stay on `sandbox="allow-scripts"` only. The plan now standardizes on a fully bundled preview artifact plus a single tutorial-owned frame document, so there is no approved runtime asset-loading path that justifies `allow-same-origin`. Any future exception must be treated as a new design decision and not introduced silently in this phase. [CITED: https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/iframe][CITED: https://esbuild.github.io/api/]
 
 2. **What is the smallest useful Phase 3 success surface for the preview pane?**  
-   What we know: The phase must show a minimal isolated lesson app surface and must not introduce fake admin chrome early. [VERIFIED: .planning/phases/03-browser-run-loop/03-CONTEXT.md]  
-   What's unclear: Whether that surface should be a generic “run completed” card, a scenario-specific result text, or a small raw event/output panel. [ASSUMED]  
-   Recommendation: Keep it scenario-light but resultful: show session status, last successful run timestamp, and minimal scenario output text, then leave visual host chrome to Phase 4. [VERIFIED: .planning/ROADMAP.md][ASSUMED]
+   Resolution: The smallest acceptable Phase 3 success surface is a neutral isolated preview card that shows the rendered lesson output, the current preview status, and minimal scenario-specific output text only. It must not add fake-admin chrome, menus, or event timelines; those remain reserved for Phase 4. This keeps the preview resultful enough to prove explicit run/restart behavior while preserving the phase boundary. [VERIFIED: .planning/phases/03-browser-run-loop/03-CONTEXT.md][VERIFIED: .planning/ROADMAP.md]
 
 ## Environment Availability
 
