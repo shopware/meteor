@@ -17,10 +17,10 @@ Let developers understand and try the Meteor Admin SDK in the browser without ne
 - ✓ Meteor already ships a reusable Admin SDK package in `packages/admin-sdk` — existing
 - ✓ Meteor already ships hand-written Admin SDK docs in `docs/admin-sdk` — existing
 - ✓ Meteor already ships Admin SDK example consumers in `examples/admin-sdk-app` and `examples/admin-sdk-plugin` — existing
+- ✓ Phase 1 validated a dedicated tutorial package in `packages/admin-sdk-tutorial` with repo-owned lesson bundles, deterministic catalog loading, and a browser-visible lesson list
 
 ### Active
 
-- [ ] Build the tutorial as an additional package in the monorepo with its own source, tests, and build flow.
 - [ ] Provide a lesson-driven tutorial UI where users read guidance, edit code, run it, and inspect the result in the browser.
 - [ ] Keep execution entirely browser-local without TutorialKit, StackBlitz, or a remote code runner.
 - [ ] Provide a fake admin shell with only the handlers and minimal UI needed to demonstrate Admin SDK concepts.
@@ -60,11 +60,11 @@ The fake admin shell must be pedagogical rather than realistic. It only needs en
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Build a new tutorial package inside `packages/` | Keeps the tutorial close to the SDK, examples, and monorepo tooling | — Pending |
+| Build a new tutorial package inside `packages/` | Keeps the tutorial close to the SDK, examples, and monorepo tooling | Phase 1 validated `packages/admin-sdk-tutorial` as the tutorial package baseline |
 | Use a fake admin shell instead of a real Shopware Administration | Teaches concepts with far lower setup cost and far less runtime complexity | — Pending |
 | Keep code editing and execution fully in browser | The learning value depends on immediate hands-on feedback | — Pending |
 | Use the Solid tutorial and TutorialKit as interaction references only | The desired UX is clear, but the runtime and architecture should remain self-owned | — Pending |
-| Focus the first prototype on visible SDK behaviors and location concepts | These are the most teachable concepts for validating the approach early | — Pending |
+| Focus the first prototype on visible SDK behaviors and location concepts | These are the most teachable concepts for validating the approach early | Phase 1 validated the content-first lesson catalog around notifications and hidden-location concepts |
 
 ## Evolution
 
@@ -84,4 +84,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-10 after initialization*
+*Last updated: 2026-04-10 after Phase 1 completion*
