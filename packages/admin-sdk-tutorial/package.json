@@ -1,0 +1,42 @@
+{
+  "name": "@shopware-ag/meteor-admin-sdk-tutorial",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Interactive tutorial prototype for the Meteor Admin SDK",
+  "author": "shopware AG",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint:all": "pnpm lint:eslint && pnpm lint:types",
+    "lint:eslint": "eslint .",
+    "lint:eslint:fix": "eslint . --fix",
+    "lint:types": "vue-tsc --noEmit",
+    "test:unit": "vitest",
+    "test:e2e": "playwright test"
+  },
+  "dependencies": {
+    "@shopware-ag/meteor-admin-sdk": "workspace:*",
+    "vue": "^3.5.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.20.0",
+    "@playwright/test": "^1.45.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@types/node": "^18.19.19",
+    "@vitejs/plugin-vue": "^4.6.2",
+    "@vue/tsconfig": "^0.7.0",
+    "eslint": "^9.21.0",
+    "eslint-config-prettier": "^10.1.1",
+    "eslint-plugin-vitest": "^0.5.4",
+    "eslint-plugin-vue": "^9.32.0",
+    "globals": "^16.0.0",
+    "jsdom": "^26.1.0",
+    "typescript": "^5.3.3",
+    "typescript-eslint": "^8.24.1",
+    "vite": "^5.1.4",
+    "vitest": "^3.0.5",
+    "vue-tsc": "^2.2.4"
+  }
+}
