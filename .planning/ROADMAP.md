@@ -11,7 +11,7 @@ This roadmap keeps v1 narrow: prove a repo-owned, browser-local tutorial package
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
 - [x] **Phase 1: Lesson Catalog & Authoring Model** - Define the ordered lesson system and repo-owned tutorial content format.
-- [ ] **Phase 1.1: Expose a test seam in packages/admin-sdk-tutorial/src/catalog/loadLessonCatalog.ts so the missing-asset branch can be automated** - Urgent inserted work to make missing-asset coverage automatable.
+- [x] **Phase 1.1: Expose a test seam in packages/admin-sdk-tutorial/src/catalog/loadLessonCatalog.ts so the missing-asset branch can be automated** - Urgent inserted work to make missing-asset coverage automatable.
 - [ ] **Phase 2: Tutorial Workspace UX** - Deliver the split-pane learning workspace with lesson persistence and recovery controls.
 - [ ] **Phase 3: Browser Run Loop** - Let users edit, run, diagnose, and restart lessons entirely in the browser.
 - [ ] **Phase 4: Fake Admin Notification Slice** - Connect the real SDK client to a minimal fake admin shell and visible event log.
@@ -40,10 +40,10 @@ Plans:
 **Goal:** Create a narrow loader seam that keeps the runtime catalog behavior unchanged while making the missing-asset error branch automatable in tests without mutating seeded lesson fixtures.
 **Requirements**: QUAL-01
 **Depends on:** Phase 1
-**Plans:** 1 plans
+**Plans:** 1/1 plans complete
 
 Plans:
-- [ ] `01.1-01-PLAN.md` — Add a defaulted module-map seam to `loadLessonCatalog.ts` and cover the missing-asset branch with automated tests.
+- [x] `01.1-01-PLAN.md` — Add a defaulted module-map seam to `loadLessonCatalog.ts` and cover the missing-asset branch with automated tests.
 
 ### Phase 2: Tutorial Workspace UX
 **Goal**: Users can work through a lesson in a practical split view, recover from mistakes, and continue where they left off on the same device.
@@ -104,7 +104,7 @@ Phases execute in numeric order: 1 → 1.1 → 2 → 3 → 4 → 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Lesson Catalog & Authoring Model | 4/4 | Complete | 2026-04-10 |
-| 1.1 Expose a test seam in packages/admin-sdk-tutorial/src/catalog/loadLessonCatalog.ts so the missing-asset branch can be automated | 0/0 | Not started | - |
+| 1.1 Expose a test seam in packages/admin-sdk-tutorial/src/catalog/loadLessonCatalog.ts so the missing-asset branch can be automated | 1/1 | Complete | 2026-04-10 |
 | 2. Tutorial Workspace UX | 0/TBD | Not started | - |
 | 3. Browser Run Loop | 0/TBD | Not started | - |
 | 4. Fake Admin Notification Slice | 0/TBD | Not started | - |

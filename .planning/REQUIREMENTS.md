@@ -44,7 +44,7 @@
 
 ### Quality and Validation
 
-- [ ] **QUAL-01**: Tutorial catalog loader missing-asset failures are covered by automated tests through an injectable loader seam that leaves seeded lesson fixtures unchanged and preserves the default runtime catalog path.
+- [x] **QUAL-01**: Tutorial catalog loader missing-asset failures are covered by automated tests through an injectable loader seam that leaves seeded lesson fixtures unchanged and preserves the default runtime catalog path.
 
 ## v2 Requirements
 
@@ -96,7 +96,7 @@
 | LEARN-01 | Phase 5 | Pending |
 | LEARN-02 | Phase 5 | Pending |
 | LEARN-03 | Phase 1 | Complete |
-| QUAL-01 | Phase 1.1 | Pending |
+| QUAL-01 | Phase 1.1 | Complete |
 
 **Coverage:**
 - v1 requirements: 23 total
