@@ -55,7 +55,12 @@ Plans:
   3. User can reveal the expected solution for the current lesson without leaving the tutorial.
   4. User can restore the starter state for the current lesson from the tutorial UI.
   5. User can refresh the browser and continue from the last opened lesson on the same device.
-**Plans**: TBD
+**Plans**: 4 plans
+Plans:
+- [x] `02-01-PLAN.md` — Build lesson-id keyed workspace state, persistence, and dirty-draft coverage.
+- [x] `02-02-PLAN.md` — Replace the Phase 1 catalog screen with the responsive workspace shell and browser editor.
+- [x] `02-03-PLAN.md` — Add reversible solution compare mode plus guarded restore and dirty-switch flows.
+- [x] `02-04-PLAN.md` — Prove the workspace flows with integration and Playwright coverage for desktop and narrow screens.
 **UI hint**: yes
 
 ### Phase 3: Browser Run Loop
@@ -105,7 +110,7 @@ Phases execute in numeric order: 1 → 1.1 → 2 → 3 → 4 → 5
 |-------|----------------|--------|-----------|
 | 1. Lesson Catalog & Authoring Model | 4/4 | Complete | 2026-04-10 |
 | 1.1 Expose a test seam in packages/admin-sdk-tutorial/src/catalog/loadLessonCatalog.ts so the missing-asset branch can be automated | 1/1 | Complete | 2026-04-10 |
-| 2. Tutorial Workspace UX | 0/TBD | Not started | - |
+| 2. Tutorial Workspace UX | 4/4 | Ready for verification | - |
 | 3. Browser Run Loop | 0/TBD | Not started | - |
 | 4. Fake Admin Notification Slice | 0/TBD | Not started | - |
 | 5. Location Lessons & Learning Feedback | 0/TBD | Not started | - |

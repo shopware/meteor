@@ -1,0 +1,52 @@
+- main [ref=e3]:
+  - generic [ref=e4]:
+    - paragraph [ref=e5]: Phase 1 catalog prototype
+    - heading "Meteor Admin SDK Tutorial" [level=1] [ref=e6]
+    - paragraph [ref=e7]: Browse the authored lesson order before editor, runtime, and fake-admin features land.
+  - generic [ref=e8]:
+    - heading "1. Foundations" [level=2] [ref=e9]
+    - generic [ref=e10]:
+      - heading "1. Notifications" [level=3] [ref=e11]
+      - list [ref=e12]:
+        - listitem [ref=e13]:
+          - article [ref=e14]:
+            - heading "1. Dispatch your first notification" [level=4] [ref=e15]
+            - paragraph [ref=e16]: Send a notification from the SDK and tune the feedback developers see in the fake admin shell.
+            - generic [ref=e17]:
+              - generic [ref=e18]:
+                - term [ref=e19]: Scenario kind
+                - definition [ref=e20]: notification
+              - generic [ref=e21]:
+                - term [ref=e22]: Primary editable file
+                - definition [ref=e23]: starter.ts
+              - generic [ref=e24]:
+                - term [ref=e25]: Support files
+                - definition [ref=e26]: 1 read-only support file
+            - list [ref=e27]:
+              - listitem [ref=e28]:
+                - link "Notification API reference" [ref=e29] [cursor=pointer]:
+                  - /url: /guide/api-reference/notification
+    - generic [ref=e30]:
+      - heading "2. Hidden location" [level=3] [ref=e31]
+      - list [ref=e32]:
+        - listitem [ref=e33]:
+          - article [ref=e34]:
+            - heading "1. Understand hidden locations" [level=4] [ref=e35]
+            - paragraph [ref=e36]: Separate hidden bootstrap work from visible rendering so location and position IDs stay understandable.
+            - generic [ref=e37]:
+              - generic [ref=e38]:
+                - term [ref=e39]: Scenario kind
+                - definition [ref=e40]: location
+              - generic [ref=e41]:
+                - term [ref=e42]: Primary editable file
+                - definition [ref=e43]: starter.ts
+              - generic [ref=e44]:
+                - term [ref=e45]: Support files
+                - definition [ref=e46]: 1 read-only support file
+            - list [ref=e47]:
+              - listitem [ref=e48]:
+                - link "Locations concept guide" [ref=e49] [cursor=pointer]:
+                  - /url: /guide/concepts/locations
+              - listitem [ref=e50]:
+                - link "Positions concept guide" [ref=e51] [cursor=pointer]:
+                  - /url: /guide/concepts/positions
