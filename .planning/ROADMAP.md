@@ -26,7 +26,11 @@ This roadmap keeps v1 narrow: prove a repo-owned, browser-local tutorial package
   1. User can open the tutorial in the browser and see an ordered list of lessons.
   2. Tutorial authors can define lesson text, starter code, solution code, and scenario metadata in a structured format inside the repo.
   3. The lesson model stays constrained to the narrow prototype workflow instead of exposing generic IDE or multi-file authoring behavior.
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+- [ ] `01-01-PLAN.md` — Create the content-first tutorial package scaffold, authoring contracts, seeded lesson bundles, and Wave 0 validation files.
+- [ ] `01-02-PLAN.md` — Implement static lesson discovery, safe bundle resolution, and normalized catalog ordering with unit coverage.
+- [ ] `01-03-PLAN.md` — Render the ordered lesson list in the browser and prove it with Playwright.
 **UI hint**: yes
 
 ### Phase 2: Tutorial Workspace UX
@@ -87,7 +91,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Lesson Catalog & Authoring Model | 0/TBD | Not started | - |
+| 1. Lesson Catalog & Authoring Model | 0/3 | Not started | - |
 | 2. Tutorial Workspace UX | 0/TBD | Not started | - |
 | 3. Browser Run Loop | 0/TBD | Not started | - |
 | 4. Fake Admin Notification Slice | 0/TBD | Not started | - |
