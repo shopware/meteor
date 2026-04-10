@@ -40,7 +40,7 @@
 
 - [ ] **LEARN-01**: User sees lesson-specific success feedback based on lightweight checks against fake-shell state.
 - [ ] **LEARN-02**: User can jump from a lesson to the relevant Admin SDK docs or example source for deeper learning.
-- [ ] **LEARN-03**: Tutorial authors can define starter code, solution code, lesson text, and scenario metadata for each lesson in a structured format inside the repo.
+- [x] **LEARN-03**: Tutorial authors can define starter code, solution code, lesson text, and scenario metadata for each lesson in a structured format inside the repo.
 
 ## v2 Requirements
 
@@ -91,7 +91,7 @@
 | LOCT-04 | Phase 5 | Pending |
 | LEARN-01 | Phase 5 | Pending |
 | LEARN-02 | Phase 5 | Pending |
-| LEARN-03 | Phase 1 | Pending |
+| LEARN-03 | Phase 1 | Complete |
 
 **Coverage:**
 - v1 requirements: 22 total

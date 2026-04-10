@@ -2,16 +2,16 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: planning
-stopped_at: Phase 1 context gathered
-last_updated: "2026-04-10T09:01:37.570Z"
-last_activity: 2026-04-10 — Roadmap created and all v1 requirements mapped to phases.
+status: executing
+stopped_at: Completed 01-01-PLAN.md
+last_updated: "2026-04-10T11:22:42.251Z"
+last_activity: 2026-04-10
 progress:
   total_phases: 5
   completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  total_plans: 4
+  completed_plans: 1
+  percent: 25
 ---
 
 # Project State
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-04-10)
 
 **Core value:** Let developers understand and try the Meteor Admin SDK in the browser without needing a real Shopware Administration environment.
-**Current focus:** Phase 1 - Lesson Catalog & Authoring Model
+**Current focus:** Phase 01 — lesson-catalog-authoring-model
 
 ## Current Position
 
-Phase: 1 of 5 (Lesson Catalog & Authoring Model)
-Plan: 0 of 0 in current phase
-Status: Ready to plan
-Last activity: 2026-04-10 — Roadmap created and all v1 requirements mapped to phases.
+Phase: 01 (lesson-catalog-authoring-model) — EXECUTING
+Plan: 2 of 4
+Status: Ready to execute
+Last activity: 2026-04-10
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -51,6 +51,8 @@ Progress: [░░░░░░░░░░] 0%
 - Last 5 plans: none
 - Trend: Stable
 
+| Phase 01 P01 | 7 | 2 tasks | 15 files |
+
 ## Accumulated Context
 
 ### Decisions
@@ -61,6 +63,9 @@ Recent decisions affecting current work:
 - [Phase 1-5]: Keep v1 scoped to a tutorial package, not a generic browser IDE or full Shopware clone.
 - [Phase 4]: Use the real Meteor Admin SDK on the learner side and a fake host shell for the teaching surface.
 - [Phase 5]: Make location and position concepts visible with labeled placeholder surfaces instead of full admin replication.
+- [Phase 01]: Use a package-local Vue 3 + Vite tutorial shell with its own lint, unit, and e2e harnesses.
+- [Phase 01]: Freeze lesson authoring around explicit part, chapter, lesson, and file-role metadata before building the loader.
+- [Phase 01]: Start the Playwright smoke server with a direct Vite command and wait on the tutorial URL for deterministic browser checks.
 
 ### Pending Todos
 
@@ -73,6 +78,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-10T09:01:37.566Z
-Stopped at: Phase 1 context gathered
-Resume file: .planning/phases/01-lesson-catalog-authoring-model/01-CONTEXT.md
+Last session: 2026-04-10T11:22:42.248Z
+Stopped at: Completed 01-01-PLAN.md
+Resume file: None
