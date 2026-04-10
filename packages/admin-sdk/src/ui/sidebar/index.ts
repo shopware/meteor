@@ -3,6 +3,7 @@ import { createSender } from '../../channel';
 export const add = createSender('uiSidebarAdd');
 export const close = createSender('uiSidebarClose');
 export const remove = createSender('uiSidebarRemove');
+export const active = createSender('uiSidebarActive');
 
 export type uiSidebarAdd =
  {
@@ -20,6 +21,12 @@ export type uiSidebarClose =
  }
 
 export type uiSidebarRemove =
+ {
+   responseType: void,
+   locationId: string,
+ }
+
+export type uiSidebarActive =
  {
    responseType: void,
    locationId: string,

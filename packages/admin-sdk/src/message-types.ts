@@ -24,7 +24,7 @@ import type { mainModuleAdd } from './ui/main-module';
 import type { smartBarButtonAdd, smartBarHide } from './ui/main-module';
 import type { uiModalOpen, uiModalClose, uiModalUpdate } from './ui/modal/index';
 import type { uiMediaModalOpen, uiMediaModalOpenSaveMedia } from './ui/media-modal';
-import type { uiSidebarAdd, uiSidebarClose, uiSidebarRemove } from './ui/sidebar';
+import type { uiSidebarAdd, uiSidebarClose, uiSidebarRemove, uiSidebarActive } from './ui/sidebar';
 import type { actionButtonAdd } from './ui/action-button';
 import type { actionExecute } from './app/action';
 import type Criteria from './data/Criteria';
@@ -89,6 +89,7 @@ export interface ShopwareMessageTypes {
   uiSidebarAdd: uiSidebarAdd,
   uiSidebarClose: uiSidebarClose,
   uiSidebarRemove: uiSidebarRemove,
+  uiSidebarActive: uiSidebarActive,
   actionButtonAdd: actionButtonAdd,
   actionExecute: actionExecute,
   /* eslint-disable @typescript-eslint/no-explicit-any */
