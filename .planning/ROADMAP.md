@@ -73,7 +73,11 @@ Plans:
   3. User can restart the preview session to get a clean runtime state for the current lesson.
   4. User code runs locally in the browser without depending on StackBlitz, TutorialKit runtime, or a remote execution service.
   5. Learner code runs in an isolated preview session so tutorial state does not leak into the host UI.
-**Plans**: TBD
+**Plans**: 3 plans
+Plans:
+- [ ] `03-01-PLAN.md` — Build the browser-local preview compiler and scenario adapter registry for explicit runs and diagnostics.
+- [ ] `03-02-PLAN.md` — Create the sandboxed iframe session boundary and validated tutorial-owned SDK host bridge.
+- [ ] `03-03-PLAN.md` — Wire the preview runtime into the workspace UI and prove run, diagnostics, restart, and isolation in the browser.
 **UI hint**: yes
 
 ### Phase 4: Fake Admin Notification Slice
