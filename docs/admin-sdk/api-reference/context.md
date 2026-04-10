@@ -233,14 +233,14 @@ string;
 "6.4.0.0";
 ```
 
-## compareShopwareVersion()
+## compareIsShopwareVersion()
 
-Compares the current Shopware version against a target version. The current Shopware version is always the left-hand side of the comparison — so `context.compareShopwareVersion('>=', '7.0.0')` reads as "is the current Shopware version equal to or greater than 7.0.0?"
+Compares the current Shopware version against a target version. The current Shopware version is always the left-hand side of the comparison — so `context.compareIsShopwareVersion('>=', '7.0.0')` reads as "is the current Shopware version equal to or greater than 7.0.0?"
 
 #### Usage
 
 ```ts
-const isRightVersion = await context.compareShopwareVersion(">=", "7.0.0");
+const isRightVersion = await context.compareIsShopwareVersion(">=", "7.0.0");
 ```
 
 #### Parameters
@@ -253,9 +253,9 @@ const isRightVersion = await context.compareShopwareVersion(">=", "7.0.0");
 The function supports both Shopware's four-digit version number and semver versions. The following calls are equivalent:
 
 ```ts
-await context.compareShopwareVersion(">=", "6.6.4.0");
+await context.compareIsShopwareVersion(">=", "6.6.4.0");
 
-await context.compareShopwareVersion(">=", "6.4.0");
+await context.compareIsShopwareVersion(">=", "6.4.0");
 ```
 
 #### Return value
@@ -303,10 +303,10 @@ Promise<{
 {
   name: 'my-extension',
   version: '1.2.3',
-  type: 'app'
+  type: 'app',
   privileges: {
     read: [ 'product', 'customer' ],
-    write: [ 'product' ],
+    update: [ 'product' ],
     additional: [ 'system.cache_clear' ]
   }
 }
@@ -465,7 +465,7 @@ No parameters needed.
 #### Return value
 
 ```ts
-Promise<string>;
+Promise<string | null>;
 ```
 
 ## can()

@@ -16,7 +16,9 @@ This guide discusses two SDKs:
 
 Each Shopware app must be hosted on its own domain.
 
-It is NOT possible to host multiple apps under the same domain using different subfolders. Instead, use subdomains for each app.
+It is NOT possible to host multiple apps under the same domain using different subfolders such as `your-company.com/app-one` and `your-company.com/app-two`.
+
+This is because the browser security model uses the app's **origin** (`scheme + host + port`) to isolate apps, and the path is not part of that origin. Apps hosted under different subfolders would still share the same origin, so they are not treated as separate apps. For more details, see the [FAQ entry](https://developer.shopware.com/resources/admin-extension-sdk/faq/#can-i-use-the-same-domain-with-subfolders-for-multiple-apps). Instead, use a dedicated subdomain for each app.
 
 Example:
 

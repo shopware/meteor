@@ -19,7 +19,6 @@ Shopware supports two extension types: **apps** and **plugins**. Both can use th
 Apps run on an external server and communicate with Shopware through a defined API. They are the recommended approach because:
 
 - They work with **Shopware Cloud** and self-hosted instances
-- They can be distributed through the Shopware Store
 - The frontend and backend are fully decoupled from the Shopware codebase
 
 Set up an app: [App Installation Flow](./installation-apps.md)

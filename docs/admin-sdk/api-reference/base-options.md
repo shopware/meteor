@@ -69,7 +69,7 @@ notification.dispatch({
 });
 
 ui.actionButton.add({
-    action: 'generate-report',
+    name: 'generate-report',
     entity: 'product',
     view: 'detail',
     label: 'Generate Report',
