@@ -70,34 +70,34 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| LESS-01 | TBD | Pending |
-| LESS-02 | TBD | Pending |
-| LESS-03 | TBD | Pending |
-| LESS-04 | TBD | Pending |
-| LESS-05 | TBD | Pending |
-| RUN-01 | TBD | Pending |
-| RUN-02 | TBD | Pending |
-| RUN-03 | TBD | Pending |
-| RUN-04 | TBD | Pending |
-| RUN-05 | TBD | Pending |
-| SHELL-01 | TBD | Pending |
-| SHELL-02 | TBD | Pending |
-| SHELL-03 | TBD | Pending |
-| SHELL-04 | TBD | Pending |
-| SHELL-05 | TBD | Pending |
-| LOCT-01 | TBD | Pending |
-| LOCT-02 | TBD | Pending |
-| LOCT-03 | TBD | Pending |
-| LOCT-04 | TBD | Pending |
-| LEARN-01 | TBD | Pending |
-| LEARN-02 | TBD | Pending |
-| LEARN-03 | TBD | Pending |
+| LESS-01 | Phase 1 | Pending |
+| LESS-02 | Phase 2 | Pending |
+| LESS-03 | Phase 2 | Pending |
+| LESS-04 | Phase 2 | Pending |
+| LESS-05 | Phase 2 | Pending |
+| RUN-01 | Phase 2 | Pending |
+| RUN-02 | Phase 3 | Pending |
+| RUN-03 | Phase 3 | Pending |
+| RUN-04 | Phase 3 | Pending |
+| RUN-05 | Phase 3 | Pending |
+| SHELL-01 | Phase 4 | Pending |
+| SHELL-02 | Phase 4 | Pending |
+| SHELL-03 | Phase 4 | Pending |
+| SHELL-04 | Phase 4 | Pending |
+| SHELL-05 | Phase 3 | Pending |
+| LOCT-01 | Phase 5 | Pending |
+| LOCT-02 | Phase 5 | Pending |
+| LOCT-03 | Phase 5 | Pending |
+| LOCT-04 | Phase 5 | Pending |
+| LEARN-01 | Phase 5 | Pending |
+| LEARN-02 | Phase 5 | Pending |
+| LEARN-03 | Phase 1 | Pending |
 
 **Coverage:**
 - v1 requirements: 22 total
-- Mapped to phases: 0
-- Unmapped: 22 ⚠️
+- Mapped to phases: 22
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-04-10*
-*Last updated: 2026-04-10 after initial definition*
+*Last updated: 2026-04-10 after roadmap creation*
