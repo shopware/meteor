@@ -1,18 +1,24 @@
 import { normalizeCatalog } from "./normalizeCatalog";
 import type { TutorialLessonCatalogEntry, TutorialLessonManifest } from "./types";
 
+type LessonManifestModules = Record<string, TutorialLessonManifest>;
 type LessonAssetModules = Record<string, string>;
+type LessonCatalogModules = {
+  manifests: LessonManifestModules;
+  assets: LessonAssetModules;
+};
 
-const lessonManifestModules = import.meta.glob("../lessons/**/lesson.manifest.ts", {
-  import: "default",
-  eager: true,
-}) as Record<string, TutorialLessonManifest>;
-
-const lessonAssetModules = import.meta.glob("../lessons/**/*.{md,ts,js,vue,json}", {
-  import: "default",
-  eager: true,
-  query: "?raw",
-}) as LessonAssetModules;
+const defaultLessonCatalogModules = {
+  manifests: import.meta.glob("../lessons/**/lesson.manifest.ts", {
+    import: "default",
+    eager: true,
+  }) as LessonManifestModules,
+  assets: import.meta.glob("../lessons/**/*.{md,ts,js,vue,json}", {
+    import: "default",
+    eager: true,
+    query: "?raw",
+  }) as LessonAssetModules,
+} satisfies LessonCatalogModules;
 
 export function resolveLessonBundleFilePath(bundlePath: string, filePath: string): string {
   const normalizedFilePath = filePath.replace(/^\.\//, "");
@@ -73,10 +79,14 @@ function createLessonCatalogEntry(
   };
 }
 
-export function loadLessonCatalog() {
-  const lessonEntries = Object.entries(lessonManifestModules).map(([manifestPath, manifest]) =>
-    createLessonCatalogEntry(manifestPath, manifest, lessonAssetModules)
+export function loadLessonCatalogFromModules(modules: LessonCatalogModules) {
+  const lessonEntries = Object.entries(modules.manifests).map(([manifestPath, manifest]) =>
+    createLessonCatalogEntry(manifestPath, manifest, modules.assets)
   );
 
   return normalizeCatalog(lessonEntries);
+}
+
+export function loadLessonCatalog() {
+  return loadLessonCatalogFromModules(defaultLessonCatalogModules);
 }
