@@ -39,3 +39,32 @@ export interface TutorialLessonManifest {
   primaryEditableFile: string;
   scenario: TutorialLessonScenario;
 }
+
+export interface TutorialSupportFile {
+  path: string;
+  contents: string;
+}
+
+export interface TutorialLessonCatalogEntry {
+  part: TutorialPart;
+  chapter: TutorialChapter;
+  lesson: TutorialLesson;
+  bundlePath: string;
+  prose: string;
+  starterFile: string;
+  starterCode: string;
+  solutionFile: string;
+  solutionCode: string;
+  primaryEditableFile: string;
+  supportFiles: readonly TutorialSupportFile[];
+  docsLinks: readonly TutorialDocsLink[];
+  scenario: TutorialLessonScenario;
+}
+
+export interface TutorialCatalogChapter extends TutorialChapter {
+  lessons: TutorialLessonCatalogEntry[];
+}
+
+export interface TutorialCatalogPart extends TutorialPart {
+  chapters: TutorialCatalogChapter[];
+}
