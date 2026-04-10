@@ -1,4 +1,4 @@
-# Understand the hidden location
+# Understand hidden locations
 
 This lesson makes the hidden iframe tangible before the tutorial starts rendering anything visual.
 

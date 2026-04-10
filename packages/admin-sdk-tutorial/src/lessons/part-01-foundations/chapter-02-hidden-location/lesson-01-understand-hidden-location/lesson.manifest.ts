@@ -13,7 +13,7 @@ const lessonManifest: TutorialLessonManifest = {
   },
   lesson: {
     id: "understand-hidden-location",
-    title: "Understand the hidden location",
+    title: "Understand hidden locations",
     order: 1,
     summary: "Separate hidden bootstrap work from visible rendering so location and position IDs stay understandable.",
   },

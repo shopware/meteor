@@ -13,7 +13,7 @@ const lessonManifest: TutorialLessonManifest = {
   },
   lesson: {
     id: "dispatch-notification",
-    title: "Dispatch a notification",
+    title: "Dispatch your first notification",
     order: 1,
     summary: "Send a notification from the SDK and tune the feedback developers see in the fake admin shell.",
   },

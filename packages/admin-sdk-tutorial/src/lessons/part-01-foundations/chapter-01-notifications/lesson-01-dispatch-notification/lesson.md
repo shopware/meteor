@@ -1,4 +1,4 @@
-# Dispatch a notification
+# Dispatch your first notification
 
 In this lesson you wire the smallest useful feedback loop in the Admin SDK: a notification that tells the user something just happened.
 
