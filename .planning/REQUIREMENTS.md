@@ -7,7 +7,7 @@
 
 ### Lesson Flow
 
-- [ ] **LESS-01**: User can open an ordered list of tutorial lessons inside the browser.
+- [x] **LESS-01**: User can open an ordered list of tutorial lessons inside the browser.
 - [ ] **LESS-02**: User can read lesson guidance side by side with code and preview output.
 - [ ] **LESS-03**: User can reveal the expected solution for the current lesson without leaving the tutorial.
 - [ ] **LESS-04**: User can restore the starter state for the current lesson from the tutorial UI.
@@ -70,7 +70,7 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| LESS-01 | Phase 1 | Pending |
+| LESS-01 | Phase 1 | Complete |
 | LESS-02 | Phase 2 | Pending |
 | LESS-03 | Phase 2 | Pending |
 | LESS-04 | Phase 2 | Pending |

@@ -3,15 +3,15 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 01-03-PLAN.md
-last_updated: "2026-04-10T11:38:19.100Z"
+stopped_at: Completed 01-04-PLAN.md
+last_updated: "2026-04-10T11:44:45.132Z"
 last_activity: 2026-04-10
 progress:
   total_phases: 5
-  completed_phases: 0
+  completed_phases: 1
   total_plans: 4
-  completed_plans: 3
-  percent: 75
+  completed_plans: 4
+  percent: 100
 ---
 
 # Project State
@@ -26,7 +26,7 @@ See: .planning/PROJECT.md (updated 2026-04-10)
 ## Current Position
 
 Phase: 01 (lesson-catalog-authoring-model) — EXECUTING
-Plan: 3 of 4
+Plan: 4 of 4
 Status: Ready to execute
 Last activity: 2026-04-10
 
@@ -54,6 +54,7 @@ Progress: [████████░░] 75%
 | Phase 01 P01 | 7 | 2 tasks | 15 files |
 | Phase 01 P02 | 6 | 2 tasks | 13 files |
 | Phase 01 P03 | 4min | 2 tasks | 6 files |
+| Phase 01 P04 | 5min | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -70,6 +71,8 @@ Recent decisions affecting current work:
 - [Phase 01]: Start the Playwright smoke server with a direct Vite command and wait on the tutorial URL for deterministic browser checks.
 - [Phase 01]: Discover tutorial lesson bundles with Vite glob imports and expose only manifest-declared assets through the catalog loader.
 - [Phase 01]: Normalize lesson bundles into runtime-ready records carrying prose, starter code, solution code, support files, docs links, and scenario metadata.
+- [Phase 01]: Render the visible tutorial catalog directly from loadLessonCatalog() so authored manifest order stays the UI source of truth.
+- [Phase 01]: Assert canonical /guide/... hrefs in Playwright so docs-link exposure stays tied to validated manifest metadata.
 
 ### Pending Todos
 
@@ -82,6 +85,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-10T11:38:19.097Z
-Stopped at: Completed 01-03-PLAN.md
+Last session: 2026-04-10T11:44:45.128Z
+Stopped at: Completed 01-04-PLAN.md
 Resume file: None
