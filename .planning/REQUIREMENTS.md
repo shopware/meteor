@@ -42,6 +42,10 @@
 - [ ] **LEARN-02**: User can jump from a lesson to the relevant Admin SDK docs or example source for deeper learning.
 - [x] **LEARN-03**: Tutorial authors can define starter code, solution code, lesson text, and scenario metadata for each lesson in a structured format inside the repo.
 
+### Quality and Validation
+
+- [ ] **QUAL-01**: Tutorial catalog loader missing-asset failures are covered by automated tests through an injectable loader seam that leaves seeded lesson fixtures unchanged and preserves the default runtime catalog path.
+
 ## v2 Requirements
 
 ### Authoring and Lesson Depth
@@ -92,10 +96,11 @@
 | LEARN-01 | Phase 5 | Pending |
 | LEARN-02 | Phase 5 | Pending |
 | LEARN-03 | Phase 1 | Complete |
+| QUAL-01 | Phase 1.1 | Pending |
 
 **Coverage:**
-- v1 requirements: 22 total
-- Mapped to phases: 22
+- v1 requirements: 23 total
+- Mapped to phases: 23
 - Unmapped: 0
 
 ---
