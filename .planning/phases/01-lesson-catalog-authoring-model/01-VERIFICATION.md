@@ -72,7 +72,7 @@ overrides_applied: 0
 | Browser-visible ordered catalog | `/Users/jannisleifeld/.volta/bin/pnpm --dir packages/admin-sdk-tutorial exec playwright test tests/e2e/lesson-catalog.spec.ts` | `1` Playwright test passed | ✓ PASS |
 | Tutorial package ESLint | `/Users/jannisleifeld/.volta/bin/pnpm --dir packages/admin-sdk-tutorial lint:eslint` | Exit code `0` | ✓ PASS |
 | Tutorial package typecheck | `/Users/jannisleifeld/.volta/bin/pnpm --dir packages/admin-sdk-tutorial lint:types` | Exit code `0` | ✓ PASS |
-| Repo-required `packages/admin-sdk` Jest suite | `/Users/jannisleifeld/.volta/bin/pnpm --dir packages/admin-sdk test:unit` | Failed before tests ran because Watchman could not write sandboxed state under `~/.local/state/watchman` | ? SKIP |
+| Repo-required `packages/admin-sdk` Jest suite | `/Users/jannisleifeld/.volta/bin/pnpm --dir packages/admin-sdk exec jest --collectCoverage --watchman=false` | `18` suites passed, `175` tests passed | ✓ PASS |
 
 ### Requirements Coverage
 
