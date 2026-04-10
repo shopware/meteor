@@ -18,6 +18,7 @@ Let developers understand and try the Meteor Admin SDK in the browser without ne
 - ✓ Meteor already ships hand-written Admin SDK docs in `docs/admin-sdk` — existing
 - ✓ Meteor already ships Admin SDK example consumers in `examples/admin-sdk-app` and `examples/admin-sdk-plugin` — existing
 - ✓ Phase 1 validated a dedicated tutorial package in `packages/admin-sdk-tutorial` with repo-owned lesson bundles, deterministic catalog loading, and a browser-visible lesson list
+- ✓ Phase 1.1 validated an injectable loader seam that covers missing lesson assets automatically without changing seeded fixtures or the default catalog runtime path
 
 ### Active
 
@@ -84,4 +85,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-04-10 after Phase 1 completion*
+*Last updated: 2026-04-10 after Phase 1.1 completion*
