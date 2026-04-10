@@ -91,4 +91,13 @@ describe("normalizeCatalog", () => {
       )
     ).toThrowError('Lesson bundle references must not escape the lesson directory: "../escape.ts"');
   });
+
+  it("rejects absolute lesson file references", () => {
+    expect(() =>
+      resolveLessonBundleFilePath(
+        "../lessons/part-01-foundations/chapter-01-notifications/lesson-01-dispatch-notification",
+        "/etc/passwd"
+      )
+    ).toThrowError('Lesson bundle references must stay relative: "/etc/passwd"');
+  });
 });
