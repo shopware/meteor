@@ -10,7 +10,7 @@ This roadmap keeps v1 narrow: prove a repo-owned, browser-local tutorial package
 - Integer phases (1, 2, 3): Planned milestone work
 - Decimal phases (2.1, 2.2): Urgent insertions (marked with INSERTED)
 
-- [ ] **Phase 1: Lesson Catalog & Authoring Model** - Define the ordered lesson system and repo-owned tutorial content format.
+- [x] **Phase 1: Lesson Catalog & Authoring Model** - Define the ordered lesson system and repo-owned tutorial content format.
 - [ ] **Phase 2: Tutorial Workspace UX** - Deliver the split-pane learning workspace with lesson persistence and recovery controls.
 - [ ] **Phase 3: Browser Run Loop** - Let users edit, run, diagnose, and restart lessons entirely in the browser.
 - [ ] **Phase 4: Fake Admin Notification Slice** - Connect the real SDK client to a minimal fake admin shell and visible event log.
@@ -31,7 +31,7 @@ Plans:
 - [x] `01-01-PLAN.md` — Create the content-first tutorial package scaffold, authoring contract, and Wave 0 validation files.
 - [x] `01-02-PLAN.md` — Seed representative lesson bundles and add manifest-integrity coverage.
 - [x] `01-03-PLAN.md` — Implement static lesson discovery, safe bundle resolution, and normalized catalog ordering with unit coverage.
-- [ ] `01-04-PLAN.md` — Render the ordered lesson list in the browser and prove it with Playwright.
+- [x] `01-04-PLAN.md` — Render the ordered lesson list in the browser and prove it with Playwright.
 **UI hint**: yes
 
 ### Phase 2: Tutorial Workspace UX
@@ -92,7 +92,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Lesson Catalog & Authoring Model | 3/4 | In Progress | - |
+| 1. Lesson Catalog & Authoring Model | 4/4 | Complete | 2026-04-10 |
 | 2. Tutorial Workspace UX | 0/TBD | Not started | - |
 | 3. Browser Run Loop | 0/TBD | Not started | - |
 | 4. Fake Admin Notification Slice | 0/TBD | Not started | - |

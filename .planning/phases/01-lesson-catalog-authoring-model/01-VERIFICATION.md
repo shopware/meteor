@@ -95,7 +95,7 @@ None.
 
 No blocking implementation gaps found. Phase 1 achieves the roadmap goal in code: the tutorial package owns a structured lesson model, loads it deterministically, renders the ordered catalog in the browser, and keeps the visible UI constrained to catalog metadata rather than editor or runtime controls.
 
-Residual verification note: `normalizeCatalog.spec.ts` covers the escape-path rejection path, but there is no direct test yet for the loader's absolute-path rejection or missing-asset error branch. That is a coverage gap worth tightening later, not a phase-goal blocker. Also, `ROADMAP.md` still shows `01-04-PLAN.md` unchecked even though the code, summary, and passing Playwright smoke test confirm that deliverable exists; that is roadmap bookkeeping, not an implementation gap.
+Residual verification note: `normalizeCatalog.spec.ts` covers the escape-path rejection path, but there is no direct test yet for the loader's absolute-path rejection or missing-asset error branch. That is a coverage gap worth tightening later, not a phase-goal blocker.
 
 ---
 
