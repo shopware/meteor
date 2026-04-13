@@ -125,13 +125,15 @@ export function findExtensionNameByBaseUrl(baseUrl?: string, sourceWindow?: Wind
     if (sourceWindow) {
       try {
         const href = sourceWindow.location.href;
-        // Normalize baseUrl to end with '/' to prevent '/bundles/plugin' from
-        // matching '/bundles/plugin-extra/'. Among all matching extensions pick
-        // the most specific one (longest baseUrl) to handle nested base paths.
+        // Strip any trailing slash so both 'base/' and 'base' are normalised to
+        // 'base', then accept either an exact match (baseUrl IS the file) or a
+        // path-boundary prefix match (baseUrl is a directory). Among all
+        // matching extensions pick the most specific one (longest baseUrl) to
+        // handle nested base paths correctly.
         const match = Object.entries(window._swsdk.adminExtensions)
           .filter(([, ext]) => {
-            const base = ext.baseUrl.endsWith('/') ? ext.baseUrl : `${ext.baseUrl}/`;
-            return href.startsWith(base);
+            const base = ext.baseUrl.replace(/\/$/, '');
+            return href === base || href.startsWith(`${base}/`);
           })
           .sort(([, a], [, b]) => b.baseUrl.length - a.baseUrl.length)[0];
         return match?.[0];
