@@ -1,5 +1,13 @@
 # Changelog
 
+## 6.7.4
+
+### Patch Changes
+
+- [#1117](https://github.com/shopware/meteor/pull/1117) [`e5ed183`](https://github.com/shopware/meteor/commit/e5ed183fb28337aceee3addabd30b2cbc1e94309) Thanks [@bubleg](https://github.com/bubleg)! - fix(telemetry): strip query string from iframe href before same-origin baseUrl matching
+
+  The Admin SDK appends `?location-id=...` to extension iframe URLs. The same-origin source resolution in `findExtensionNameByBaseUrl` now strips the query string and fragment from the sender window's href before matching against `baseUrl`, so same-origin extensions are correctly identified even when the iframe URL contains query parameters.
+
 ## 6.7.3
 
 ### Patch Changes
