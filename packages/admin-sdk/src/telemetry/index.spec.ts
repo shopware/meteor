@@ -165,6 +165,20 @@ describe('telemetry', () => {
       expect(name).toBe('plugin-extra');
     });
 
+    it('resolves when baseUrl is the exact href of the sender window (file URL pattern)', () => {
+      window._swsdk.adminExtensions['exact-url-plugin'] = {
+        baseUrl: `${window.location.origin}/admin/exact-url-plugin/index.html`,
+        permissions: {},
+      };
+
+      const fakeWindow = {
+        location: { href: `${window.location.origin}/admin/exact-url-plugin/index.html` },
+      } as Window;
+
+      const name = getSourceExtensionName(window.location.origin, fakeWindow);
+      expect(name).toBe('exact-url-plugin');
+    });
+
     it('resolves a same-origin extension whose baseUrl has no trailing slash', () => {
       window._swsdk.adminExtensions['no-slash-plugin'] = {
         baseUrl: `${window.location.origin}/bundles/no-slash-plugin`,
