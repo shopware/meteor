@@ -147,6 +147,56 @@ describe('telemetry', () => {
       expect(name).toBeUndefined();
     });
 
+    it('does not match an extension whose baseUrl is a string prefix of another extension baseUrl', () => {
+      window._swsdk.adminExtensions['plugin'] = {
+        baseUrl: `${window.location.origin}/bundles/plugin/`,
+        permissions: {},
+      };
+      window._swsdk.adminExtensions['plugin-extra'] = {
+        baseUrl: `${window.location.origin}/bundles/plugin-extra/`,
+        permissions: {},
+      };
+
+      const fakeWindow = {
+        location: { href: `${window.location.origin}/bundles/plugin-extra/index.html` },
+      } as Window;
+
+      const name = getSourceExtensionName(window.location.origin, fakeWindow);
+      expect(name).toBe('plugin-extra');
+    });
+
+    it('resolves a same-origin extension whose baseUrl has no trailing slash', () => {
+      window._swsdk.adminExtensions['no-slash-plugin'] = {
+        baseUrl: `${window.location.origin}/bundles/no-slash-plugin`,
+        permissions: {},
+      };
+
+      const fakeWindow = {
+        location: { href: `${window.location.origin}/bundles/no-slash-plugin/index.html` },
+      } as Window;
+
+      const name = getSourceExtensionName(window.location.origin, fakeWindow);
+      expect(name).toBe('no-slash-plugin');
+    });
+
+    it('returns the most specific match when baseUrls are nested', () => {
+      window._swsdk.adminExtensions['parent-plugin'] = {
+        baseUrl: `${window.location.origin}/bundles/parent/`,
+        permissions: {},
+      };
+      window._swsdk.adminExtensions['child-plugin'] = {
+        baseUrl: `${window.location.origin}/bundles/parent/child/`,
+        permissions: {},
+      };
+
+      const fakeWindow = {
+        location: { href: `${window.location.origin}/bundles/parent/child/index.html` },
+      } as Window;
+
+      const name = getSourceExtensionName(window.location.origin, fakeWindow);
+      expect(name).toBe('child-plugin');
+    });
+
     it('does not match an extension on the same host but a different port', () => {
       window._swsdk.adminExtensions['port-plugin'] = {
         baseUrl: 'http://my-plugin.localhost:8080',

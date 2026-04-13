@@ -125,8 +125,15 @@ export function findExtensionNameByBaseUrl(baseUrl?: string, sourceWindow?: Wind
     if (sourceWindow) {
       try {
         const href = sourceWindow.location.href;
+        // Normalize baseUrl to end with '/' to prevent '/bundles/plugin' from
+        // matching '/bundles/plugin-extra/'. Among all matching extensions pick
+        // the most specific one (longest baseUrl) to handle nested base paths.
         const match = Object.entries(window._swsdk.adminExtensions)
-          .find(([, ext]) => href.startsWith(ext.baseUrl));
+          .filter(([, ext]) => {
+            const base = ext.baseUrl.endsWith('/') ? ext.baseUrl : `${ext.baseUrl}/`;
+            return href.startsWith(base);
+          })
+          .sort(([, a], [, b]) => b.baseUrl.length - a.baseUrl.length)[0];
         return match?.[0];
       } catch {
         // Same-origin access should never be denied; ignore defensively.
