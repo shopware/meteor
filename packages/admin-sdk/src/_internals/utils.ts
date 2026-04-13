@@ -98,9 +98,16 @@ export function removeRoot(path: string | number): string | number {
 
 /**
  * Returns the technical name (registry key) of the extension matching the given base URL.
- * Returns undefined when the origin is the admin itself or no matching extension is found.
+ *
+ * For cross-origin extensions the lookup uses origin comparison. For same-origin extensions
+ * (e.g. plugins served from the same host as the Admin) the origin alone is not enough to
+ * distinguish the extension from the Admin itself. Pass the sender `Window` as `sourceWindow`
+ * to enable a fallback that matches the window's full href against the known `baseUrl` prefixes.
+ *
+ * Returns undefined when no matching extension is found or when the origin is the Admin's own
+ * origin and no `sourceWindow` is provided.
  */
-export function findExtensionNameByBaseUrl(baseUrl?: string): string | undefined {
+export function findExtensionNameByBaseUrl(baseUrl?: string, sourceWindow?: Window): string | undefined {
   if (typeof baseUrl !== 'string' || baseUrl === '') {
     return undefined;
   }
@@ -113,6 +120,18 @@ export function findExtensionNameByBaseUrl(baseUrl?: string): string | undefined
   }
 
   if (comparedBaseUrl.origin === window.location.origin) {
+    // Origin alone cannot resolve same-origin extensions because origin matches
+    // the Admin itself. When the sender Window is provided, fall back to href-prefix matching.
+    if (sourceWindow) {
+      try {
+        const href = sourceWindow.location.href;
+        const match = Object.entries(window._swsdk.adminExtensions)
+          .find(([, ext]) => href.startsWith(ext.baseUrl));
+        return match?.[0];
+      } catch {
+        // Same-origin access should never be denied; ignore defensively.
+      }
+    }
     return undefined;
   }
 

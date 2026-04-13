@@ -119,8 +119,31 @@ describe('telemetry', () => {
       expect(name).toBeUndefined();
     });
 
-    it('returns undefined when origin matches the admin window (same origin)', () => {
+    it('returns undefined when origin matches the admin window and no sourceWindow is given', () => {
       const name = getSourceExtensionName(window.location.origin);
+      expect(name).toBeUndefined();
+    });
+
+    it('resolves a same-origin extension when sourceWindow href matches a baseUrl prefix', () => {
+      window._swsdk.adminExtensions['same-origin-plugin'] = {
+        baseUrl: `${window.location.origin}/bundles/same-origin-plugin/`,
+        permissions: {},
+      };
+
+      const fakeWindow = {
+        location: { href: `${window.location.origin}/bundles/same-origin-plugin/index.html` },
+      } as Window;
+
+      const name = getSourceExtensionName(window.location.origin, fakeWindow);
+      expect(name).toBe('same-origin-plugin');
+    });
+
+    it('returns undefined for same-origin when sourceWindow href does not match any baseUrl', () => {
+      const fakeWindow = {
+        location: { href: `${window.location.origin}/some/other/path` },
+      } as Window;
+
+      const name = getSourceExtensionName(window.location.origin, fakeWindow);
       expect(name).toBeUndefined();
     });
 
