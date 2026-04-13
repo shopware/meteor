@@ -1,5 +1,13 @@
 # Changelog
 
+## 6.7.2
+
+### Patch Changes
+
+- [#1112](https://github.com/shopware/meteor/pull/1112) [`b88ded5`](https://github.com/shopware/meteor/commit/b88ded5bfe9791c442829fd1bae0d6220dba0887) Thanks [@bubleg](https://github.com/bubleg)! - fix(telemetry): resolve source for same-origin extensions via sender window href
+
+  `findExtensionNameByBaseUrl` (and `getSourceExtensionName`) now accept an optional `sourceWindow` parameter. When the message origin matches the Admin's own origin — which happens for plugins served from the same host — the function falls back to matching `sourceWindow.location.href` against the known `baseUrl` prefixes instead of returning `undefined`. Cross-origin behaviour is unchanged.
+
 ## 6.7.1
 
 ### Patch Changes
