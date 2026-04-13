@@ -75,7 +75,7 @@ Promise<Consent>
   acceptedRevision: '2026-03-01',
   lastRevision: '2026-05-01',
   isAccepted: true,
-  isStale: false,
+  isStale: true,
 }
 ```
 
