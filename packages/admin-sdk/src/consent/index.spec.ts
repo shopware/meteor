@@ -1,11 +1,13 @@
 const mockStatusSender = jest.fn();
 const mockRequestSender = jest.fn();
-const mockCreateSender = jest.fn((messageType: string) => {
+let mockConsentRequestId: string | undefined;
+const mockCreateSender = jest.fn((messageType: string, options?: { requestId?: string }) => {
   if (messageType === 'consentStatus') {
     return mockStatusSender;
   }
 
   if (messageType === 'consentRequest') {
+    mockConsentRequestId = options?.requestId;
     return mockRequestSender;
   }
 
@@ -27,7 +29,7 @@ const mockCreateHandler = jest.fn((messageType: string) => {
 });
 
 jest.mock('../channel', () => ({
-  createSender: (messageType: string) => mockCreateSender(messageType),
+  createSender: (messageType: string, options?: { requestId?: string }) => mockCreateSender(messageType, options),
   createHandler: (messageType: string) => mockCreateHandler(messageType),
 }));
 
@@ -41,6 +43,7 @@ describe('consent', () => {
     mockCreateHandler.mockClear();
     mockUnhandle.mockReset();
     mockConsentRequestResponseHandler = undefined;
+    mockConsentRequestId = undefined;
     mockUnhandle.mockImplementation(() => {
       mockConsentRequestResponseHandler = undefined;
     });
@@ -60,7 +63,7 @@ describe('consent', () => {
         consent: 'newsletter',
       });
 
-      expect(mockCreateSender).toHaveBeenCalledWith('consentStatus');
+      expect(mockCreateSender).toHaveBeenCalledWith('consentStatus', undefined);
       expect(mockStatusSender).toHaveBeenCalledWith({
         consent: 'newsletter',
       });
@@ -87,16 +90,23 @@ describe('consent', () => {
       });
 
       expect(mockCreateHandler).toHaveBeenCalledWith('consentRequestResponse');
-      expect(mockCreateSender).toHaveBeenCalledWith('consentRequest');
+      expect(mockCreateSender).toHaveBeenCalledWith(
+        'consentRequest',
+        expect.objectContaining({
+          requestId: expect.any(String),
+        }),
+      );
       expect(mockRequestSender).toHaveBeenCalledWith({
         consent: 'newsletter',
         requestMessage: 'Please confirm',
         privacyLink: 'https://example.com/privacy',
       });
+      expect(mockConsentRequestId).toEqual(expect.any(String));
       expect(mockConsentRequestResponseHandler).toEqual(expect.any(Function));
 
       await mockConsentRequestResponseHandler?.({
         name: 'newsletter',
+        requestId: mockConsentRequestId,
         consent: {
           name: 'newsletter',
           status: 'accepted',
@@ -128,6 +138,7 @@ describe('consent', () => {
 
       await mockConsentRequestResponseHandler?.({
         name: 'terms-and-conditions',
+        requestId: mockConsentRequestId,
         consent: {
           name: 'terms-and-conditions',
           status: 'declined',
@@ -149,6 +160,7 @@ describe('consent', () => {
 
       await mockConsentRequestResponseHandler?.({
         name: 'newsletter',
+        requestId: mockConsentRequestId,
         consent: {
           name: 'newsletter',
           status: 'accepted',

@@ -1,3 +1,4 @@
+import { generateUniqueId } from '../_internals/utils';
 import { createHandler, createSender } from '../channel';
 
 class Consent {
@@ -41,7 +42,7 @@ export const status = async (messageData: Omit<consentStatus, 'responseType'>): 
   return Consent.fromStatusResponse(response);
 };
 
-export const request = (messageOptions: Omit<consentRequest, 'responseType'>): {
+export const request = (messageOptions: Omit<consentRequest, 'responseType' | 'requestId'>): {
   requestPromise: Promise<Consent>,
   abort: (reason?: unknown) => void,
 } => {
@@ -54,10 +55,15 @@ export const request = (messageOptions: Omit<consentRequest, 'responseType'>): {
     resolve = res;
     reject = rej;
   });
+  const requestId = generateUniqueId();
 
   const unhandle = createHandler('consentRequestResponse')((message) => {
     if (message.name !== messageOptions.consent) {
       return Promise.resolve();
+    }
+
+    if(message.requestId !== requestId) {
+      return;
     }
 
     unhandle();
@@ -65,7 +71,7 @@ export const request = (messageOptions: Omit<consentRequest, 'responseType'>): {
     return Promise.resolve();
   });
 
-  createSender('consentRequest')(messageOptions).catch((reason: unknown) => {
+  createSender('consentRequest', { requestId })(messageOptions).catch((reason: unknown) => {
     unhandle();
     reject(reason);
   });
@@ -96,6 +102,8 @@ export type consentStatus = {
 export type consentRequest = {
     responseType: void,
 
+    requestId: string,
+
     consent: string,
     requestMessage?: string,
     privacyLink?: string,
@@ -105,5 +113,6 @@ export type consentRequestResponse = {
     responseType: void,
 
     name: string,
+    requestId: string,
     consent: ConsentStatusResponseType,
 }
