@@ -63,7 +63,7 @@ export const request = (messageOptions: Omit<consentRequest, 'responseType' | 'r
     }
 
     if(message.requestId !== requestId) {
-      return;
+      return Promise.resolve();
     }
 
     unhandle();

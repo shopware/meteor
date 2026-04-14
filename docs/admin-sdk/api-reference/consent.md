@@ -4,6 +4,8 @@
 The consent API is experimental. Behavior, payloads, and availability may still change in upcoming Shopware versions.
 :::
 
+> Available since Shopware v6.7.10.0
+
 The `sw.consent` API can be used to inspect the current state of a consent and to trigger a consent request flow in the Administration.
 
 `sw.consent.status()` returns a `Promise<Consent>`.
