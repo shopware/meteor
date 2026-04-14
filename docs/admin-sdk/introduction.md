@@ -21,7 +21,7 @@ What you can do with the SDK:
 - Provides a stable, backwards-compatible API for extending the Administration and reducing complexity during Shopware updates
 - Abstracts internal complexity, so deep knowledge of the Admin internals is not required
 - Written in [TypeScript](https://www.typescriptlang.org/) with full type safety and auto-completion support
-- Lightweight and tree-shakable with no external dependencies, allowing granular imports and small bundle sizes
+- Lightweight and tree-shakable, allowing granular imports and small bundle sizes
 
 ## Prerequisites
 

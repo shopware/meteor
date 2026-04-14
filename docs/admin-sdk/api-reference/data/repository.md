@@ -150,14 +150,18 @@ Clones an existing entity
 ```ts
 const exampleRepository = data.repository('your_entity');
 
-const clonedEntityId = await exampleRepository.clone('theEntityIdToClone');
+const clonedEntityId = await exampleRepository.clone(
+    'theEntityIdToClone',
+    yourApiContext
+);
 ```
 
 #### Parameters
 | Name       | Required | Default | Description                                    |
 | :--------- | :------- | :------ | :--------------------------------------------- |
 | `entityId` | true     |         | The entity id which should be cloned           |
-| `context`  | false    | {}      | Change the [request context](#request-context) |
+| `context`  | true     |         | Change the [request context](#request-context) |
+| `behavior` | false    |         | Optional clone behavior passed as the third argument |
 
 #### Return value
 This method returns the id of the cloned entity.

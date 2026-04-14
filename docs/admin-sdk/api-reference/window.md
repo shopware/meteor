@@ -104,7 +104,7 @@ Returns a unique identifier for the current browser window. This is useful when 
 #### Usage
 
 ```ts
-adminWindow.getId();
+await adminWindow.getId();
 ```
 
 #### Parameters
@@ -113,14 +113,14 @@ No parameters required.
 
 #### Return value
 
-A `string` representing a unique identifier for the current window.
+A `Promise<string>` that resolves to a unique identifier for the current window.
 
 #### Example
 
 This example clears `sessionStorage` when a duplicated browser tab is detected. This can happen if a user uses the _Duplicate Tab_ feature of some browsers.
 
 ```ts
-const windowId = adminWindow.getId();
+const windowId = await adminWindow.getId();
 const storedWindowId = globalThis.sessionStorage.getItem("window-id");
 
 if (windowId !== storedWindowId) {
@@ -138,7 +138,7 @@ Retrieve the current Administration router path.
 #### Usage
 
 ```ts
-adminWindow.getPath();
+await adminWindow.getPath();
 ```
 
 #### Parameters
@@ -147,4 +147,4 @@ No parameters required.
 
 #### Return value
 
-Returns a `string` containing the full path, or an empty string if the router is not available.
+Returns a `Promise<string>` containing the full path, or an empty string if the router is not available.
