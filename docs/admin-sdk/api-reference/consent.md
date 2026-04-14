@@ -6,7 +6,10 @@ The consent API is experimental. Behavior, payloads, and availability may still 
 
 The `sw.consent` API can be used to inspect the current state of a consent and to trigger a consent request flow in the Administration.
 
-Both `sw.consent.status()` and `sw.consent.request()` return a `Promise<Consent>`.
+`sw.consent.status()` returns a `Promise<Consent>`.
+`sw.consent.request()` returns an object with:
+- `requestPromise: Promise<Consent>`
+- `abort: (reason: unknown) => void`
 
 ## `Consent`
 
@@ -86,11 +89,13 @@ Trigger the consent request flow in the Administration and resolve with the resu
 #### Usage
 
 ```ts
-const consent = await sw.consent.request({
+const { requestPromise } = sw.consent.request({
   consent: 'product_analytics',
   requestMessage: 'Please confirm that we may track Admin usage data.',
   privacyLink: 'https://www.shopware.com/en/privacy/dpa/',
 });
+
+const consent = await requestPromise;
 ```
 
 #### Parameters
@@ -104,7 +109,31 @@ const consent = await sw.consent.request({
 #### Return value
 
 ```ts
-Promise<Consent>
+{
+  requestPromise: Promise<Consent>,
+  abort: (reason: unknown) => void,
+}
 ```
 
-The promise resolves when Shopware sends back the matching consent response.
+`requestPromise` resolves when Shopware sends back the matching consent response.
+
+#### Abort example
+
+```ts
+const { requestPromise, abort } = sw.consent.request({
+  consent: 'product_analytics',
+});
+
+const timeout = setTimeout(() => {
+  abort(new Error('Consent request timed out'));
+}, 5000);
+
+try {
+  const consent = await requestPromise;
+  console.log(consent.status);
+} catch (error) {
+  console.error(error);
+} finally {
+  clearTimeout(timeout);
+}
+```

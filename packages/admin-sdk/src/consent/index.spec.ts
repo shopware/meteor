@@ -41,6 +41,9 @@ describe('consent', () => {
     mockCreateHandler.mockClear();
     mockUnhandle.mockReset();
     mockConsentRequestResponseHandler = undefined;
+    mockUnhandle.mockImplementation(() => {
+      mockConsentRequestResponseHandler = undefined;
+    });
   });
 
   describe('status', () => {
@@ -77,7 +80,7 @@ describe('consent', () => {
     it('registers the response handler before sending the consent request', async () => {
       mockRequestSender.mockResolvedValue(undefined);
 
-      const requestPromise = request({
+      const { requestPromise } = request({
         consent: 'newsletter',
         requestMessage: 'Please confirm',
         privacyLink: 'https://example.com/privacy',
@@ -119,7 +122,7 @@ describe('consent', () => {
     it('ignores non-matching consent responses', async () => {
       mockRequestSender.mockResolvedValue(undefined);
 
-      const requestPromise = request({
+      const { requestPromise } = request({
         consent: 'newsletter',
       });
 
@@ -166,9 +169,40 @@ describe('consent', () => {
       const sendError = new Error('request failed');
       mockRequestSender.mockRejectedValue(sendError);
 
-      await expect(request({
+      const { requestPromise } = request({
         consent: 'newsletter',
-      })).rejects.toThrow('request failed');
+      })
+
+      await expect(requestPromise).rejects.toThrow('request failed');
+
+      expect(mockUnhandle).toHaveBeenCalledTimes(1);
+    });
+
+    it('aborts and unregisters the response handler so no further messages are handled', async () => {
+      mockRequestSender.mockResolvedValue(undefined);
+
+      const { requestPromise, abort } = request({
+        consent: 'newsletter',
+      });
+
+      const abortError = new Error('request aborted');
+      abort(abortError);
+
+      expect(mockUnhandle).toHaveBeenCalledTimes(1);
+      expect(mockConsentRequestResponseHandler).toBeUndefined();
+      await expect(requestPromise).rejects.toThrow('request aborted');
+
+      const handlerAfterAbort = mockConsentRequestResponseHandler;
+      await handlerAfterAbort?.({
+        name: 'newsletter',
+        consent: {
+          name: 'newsletter',
+          status: 'accepted',
+          updatedAt: null,
+          acceptedRevision: '1',
+          latestRevision: '1',
+        },
+      });
 
       expect(mockUnhandle).toHaveBeenCalledTimes(1);
     });

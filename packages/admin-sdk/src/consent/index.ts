@@ -41,23 +41,42 @@ export const status = async (messageData: Omit<consentStatus, 'responseType'>): 
   return Consent.fromStatusResponse(response);
 };
 
-export const request = (messageOptions: Omit<consentRequest, 'responseType'>): Promise<Consent> => {
-  return new Promise((resolve, reject) => {
-    const unhandle = createHandler('consentRequestResponse')((message) => {
-      if (message.name !== messageOptions.consent) {
-        return Promise.resolve();
-      }
+export const request = (messageOptions: Omit<consentRequest, 'responseType'>): {
+  requestPromise: Promise<Consent>,
+  abort: (reason?: unknown) => void,
+} => {
+  /*
+   * Fake Promise.withResolvers because it is not available in our TS version
+   */
+  let resolve: (value: Consent | PromiseLike<Consent>) => void;
+  let reject: (reason?: unknown) => void;
+  const requestPromise = new Promise<Consent>((res, rej) => {
+    resolve = res;
+    reject = rej;
+  });
 
-      unhandle();
-      resolve(Consent.fromStatusResponse(message.consent));
+  const unhandle = createHandler('consentRequestResponse')((message) => {
+    if (message.name !== messageOptions.consent) {
       return Promise.resolve();
-    });
+    }
 
-    createSender('consentRequest')(messageOptions).catch((reason: unknown) => {
+    unhandle();
+    resolve(Consent.fromStatusResponse(message.consent));
+    return Promise.resolve();
+  });
+
+  createSender('consentRequest')(messageOptions).catch((reason: unknown) => {
+    unhandle();
+    reject(reason);
+  });
+
+  return {
+    requestPromise,
+    abort: (reason: unknown): void => {
       unhandle();
       reject(reason);
-    });
-  });
+    },
+  };
 };
 
 type ConsentStatusResponseType = {
