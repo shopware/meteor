@@ -16,7 +16,7 @@ This guide discusses two SDKs:
 
 Each Shopware app must be hosted on its own domain.
 
-It is NOT possible to host multiple apps under the same domain using different subfolders such as `your-company.com/app-one` and `your-company.com/app-two`.
+It is NOT possible to host multiple apps under the same domain using different subfolders. Instead, use subdomains for each app.
 
 Example:
 
