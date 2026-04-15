@@ -33,7 +33,7 @@ No parameters needed.
 Promise<{
   languageId: string;
   systemLanguageId: string;
-}>;
+}>
 ```
 
 #### Example value
@@ -98,7 +98,7 @@ No parameters needed.
 #### Return value
 
 ```ts
-Promise<"development" | "production" | "testing">;
+Promise<"development" | "production" | "testing">
 ```
 
 #### Example value
@@ -127,7 +127,7 @@ No parameters needed.
 Promise<{
   locale: string;
   fallbackLocale: string;
-}>;
+}>
 ```
 
 #### Example value
@@ -195,7 +195,7 @@ No parameters needed.
 Promise<{
   systemCurrencyId: string;
   systemCurrencyISOCode: string;
-}>;
+}>
 ```
 
 #### Example value
@@ -224,7 +224,7 @@ No parameters needed.
 #### Return value
 
 ```ts
-string;
+string
 ```
 
 #### Example value
@@ -261,7 +261,7 @@ await context.compareIsShopwareVersion(">=", "6.4.0");
 #### Return value
 
 ```ts
-boolean;
+boolean
 ```
 
 #### Example value
@@ -294,7 +294,7 @@ Promise<{
   version: string;
   type: "app" | "plugin";
   privileges: privileges;
-}>;
+}>
 ```
 
 #### Example value
@@ -349,7 +349,7 @@ Promise<{
   title: string;
   type: string;
   username: string;
-}>;
+}>
 ```
 
 #### Example value
@@ -390,7 +390,7 @@ No parameters needed.
 #### Return value
 
 ```ts
-Promise<string>;
+Promise<string>
 ```
 
 This function returns a Promise that resolves to a string representing the user's timezone.
@@ -428,7 +428,7 @@ Promise<{
     id: string;
     locationId: string;
   }>;
-}>;
+}>
 ```
 
 #### Example value
@@ -465,7 +465,7 @@ No parameters needed.
 #### Return value
 
 ```ts
-Promise<string | null>;
+Promise<string | null>
 ```
 
 ## can()
@@ -489,5 +489,5 @@ const isAllowed: boolean = await context.can("product:read");
 #### Return value
 
 ```ts
-boolean;
+boolean
 ```

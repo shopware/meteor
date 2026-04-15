@@ -27,7 +27,7 @@ ui.mediaModal.open({
   allowMultiSelect: false,
   fileAccept: "image/png",
   selectors: ["fileName", "id", "url"],
-  callback: (mediaSelections) => {},
+  callback: ([{ fileName, id, url }]) => {},
 });
 ```
 
@@ -54,7 +54,7 @@ ui.mediaModal.open({
   initialFolderId: "productMediaFolderId",
   allowMultiSelect: false,
   selectors: ["fileName", "id", "url"],
-  callback: (mediaSelections) => {},
+  callback: ([{ fileName, id, url }]) => {},
 });
 ```
 
