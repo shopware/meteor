@@ -4,6 +4,7 @@ import { computed, ref, watch } from 'vue';
 const props = defineProps<{
   title: string;
   description: string;
+  task: string;
   code: string;
   resetVersion: number;
 }>();
@@ -55,6 +56,11 @@ function handleInput(event: Event) {
 
     <p class="editor-panel__description">{{ description }}</p>
 
+    <div class="editor-panel__task">
+      <span>Try this</span>
+      <p>{{ task }}</p>
+    </div>
+
     <div class="editor-panel__surface">
       <div class="editor-panel__gutter">
         <span v-for="lineNumber in lineNumbers" :key="lineNumber">{{ lineNumber }}</span>
@@ -77,7 +83,7 @@ function handleInput(event: Event) {
 .editor-panel {
   min-height: 0;
   display: grid;
-  gap: 18px;
+  gap: 20px;
 }
 
 .editor-panel__header {
@@ -103,7 +109,7 @@ function handleInput(event: Event) {
 
 .editor-panel__tab {
   padding: 8px 12px;
-  border: 1px solid #d7dfeb;
+  border: 1px solid #dce5f0;
   border-radius: 12px;
   background: #f8fafc;
   color: #334155;
@@ -118,15 +124,39 @@ function handleInput(event: Event) {
   line-height: 1.6;
 }
 
+.editor-panel__task {
+  display: grid;
+  gap: 6px;
+  padding: 14px 16px;
+  border: 1px solid #dbe7ff;
+  border-radius: 14px;
+  background: #f8fbff;
+}
+
+.editor-panel__task span {
+  color: #4f46e5;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.editor-panel__task p {
+  margin: 0;
+  color: #334155;
+  line-height: 1.6;
+}
+
 .editor-panel__surface {
   min-height: 0;
   display: grid;
   grid-template-columns: auto minmax(0, 1fr);
-  border: 1px solid #dbe2ec;
-  border-radius: 16px;
+  border: 1px solid #0f172a;
+  border-radius: 18px;
   overflow: hidden;
   background: #0f172a;
   color: #e2e8f0;
+  box-shadow: inset 0 0 0 1px rgb(148 163 184 / 0.12);
 }
 
 .editor-panel__gutter {

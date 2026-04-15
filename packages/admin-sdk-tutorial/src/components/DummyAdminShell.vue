@@ -9,23 +9,30 @@ defineProps<{
 <template>
   <div class="dummy-admin">
     <aside class="dummy-admin__sidebar">
-      <strong>Admin</strong>
+      <strong>Meteor Admin</strong>
       <div v-for="menuItem in runtimeState.menuItems" :key="menuItem.id" class="dummy-admin__menu-item">
-        <span>{{ menuItem.label }}</span>
+        <span class="dummy-admin__menu-label">{{ menuItem.label }}</span>
         <small v-if="menuItem.kind === 'dynamic'">New</small>
       </div>
     </aside>
 
     <div class="dummy-admin__content">
+      <div class="dummy-admin__host-bar">
+        <span>Host UI</span>
+        <strong>{{ runtimeState.statusLabel }}</strong>
+      </div>
+
       <div
         class="dummy-admin__notification"
         :class="`dummy-admin__notification--${runtimeState.notificationTone}`"
       >
+        <span class="dummy-admin__notification-label">Notification</span>
         <strong>{{ runtimeState.notificationTitle }}</strong>
         <p>{{ runtimeState.notificationMessage }}</p>
       </div>
 
       <div class="dummy-admin__empty-state">
+        <span class="dummy-admin__empty-state-label">Host reaction</span>
         <strong>{{ runtimeState.emptyStateTitle }}</strong>
         <p>
           {{ runtimeState.emptyStateMessage }}
@@ -66,7 +73,7 @@ defineProps<{
   display: grid;
   align-content: start;
   gap: 12px;
-  padding: 18px 16px;
+  padding: 20px 16px;
   background: #111827;
   color: #e5eefb;
 }
@@ -81,6 +88,10 @@ defineProps<{
 .dummy-admin__sidebar span {
   color: #b8c3d4;
   font-size: 14px;
+}
+
+.dummy-admin__menu-label {
+  padding-right: 10px;
 }
 
 .dummy-admin__menu-item small {
@@ -100,12 +111,45 @@ defineProps<{
   padding: 16px;
 }
 
+.dummy-admin__host-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 12px;
+  border: 1px solid #dbe2ec;
+  border-radius: 14px;
+  background: #fff;
+}
+
+.dummy-admin__host-bar span {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dummy-admin__host-bar strong {
+  font-size: 13px;
+}
+
 .dummy-admin__notification {
   display: grid;
   gap: 4px;
   padding: 12px 14px;
   border-radius: 14px;
   font-size: 14px;
+}
+
+.dummy-admin__notification-label,
+.dummy-admin__empty-state-label {
+  color: currentColor;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  opacity: 0.75;
 }
 
 .dummy-admin__notification strong {
@@ -137,7 +181,7 @@ defineProps<{
 
 .dummy-admin__empty-state strong {
   display: block;
-  margin-bottom: 6px;
+  margin: 4px 0 6px;
   font-size: 14px;
 }
 
@@ -152,7 +196,7 @@ defineProps<{
   margin-bottom: 10px;
   padding: 4px 8px;
   border-radius: 999px;
-  background: #e2e8f0;
+  background: #e8eef7;
   color: #334155;
   font-size: 11px;
   font-weight: 700;
@@ -187,6 +231,7 @@ defineProps<{
   border: 1px solid #d8e0eb;
   border-radius: 16px;
   background: #ffffff;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.6);
 }
 
 .dummy-admin__card--ghost {

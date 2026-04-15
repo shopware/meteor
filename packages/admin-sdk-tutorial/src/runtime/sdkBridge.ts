@@ -13,8 +13,9 @@ export function createSdkBridge(runtimeState: Ref<TutorialRuntimeState>): Tutori
         runtimeState.value.notificationTitle = payload.title;
         runtimeState.value.notificationMessage = payload.message;
         runtimeState.value.notificationTone = payload.tone ?? 'info';
-        runtimeState.value.emptyStateTitle = payload.title;
-        runtimeState.value.emptyStateMessage = payload.message;
+        runtimeState.value.emptyStateTitle = 'What changed in the host';
+        runtimeState.value.emptyStateMessage =
+          'The host reacts immediately when the extension dispatches a notification.';
       },
     },
     menu: {
@@ -35,8 +36,9 @@ export function createSdkBridge(runtimeState: Ref<TutorialRuntimeState>): Tutori
         runtimeState.value.notificationTitle = 'Menu item added';
         runtimeState.value.notificationMessage = `“${payload.label}” is now visible in the dummy admin navigation.`;
         runtimeState.value.notificationTone = 'success';
-        runtimeState.value.emptyStateTitle = 'Menu item registered';
-        runtimeState.value.emptyStateMessage = `Added “${payload.label}” to the dummy admin navigation.`;
+        runtimeState.value.emptyStateTitle = 'What changed in the host';
+        runtimeState.value.emptyStateMessage =
+          'The host navigation now includes a new dynamic entry registered by the extension.';
       },
     },
     location: {
@@ -50,7 +52,7 @@ export function createSdkBridge(runtimeState: Ref<TutorialRuntimeState>): Tutori
             ...surface,
             title: payload.locationId,
             description: `Position: ${payload.positionId ?? 'default'}`,
-            slotLabel: 'Injected content',
+            slotLabel: 'Extension content',
             injectedContent: payload.content,
             variant: 'default',
           };
@@ -60,8 +62,9 @@ export function createSdkBridge(runtimeState: Ref<TutorialRuntimeState>): Tutori
         runtimeState.value.notificationTitle = 'Location content rendered';
         runtimeState.value.notificationMessage = `Injected content into ${payload.locationId}${payload.positionId ? ` at ${payload.positionId}` : ''}.`;
         runtimeState.value.notificationTone = 'success';
-        runtimeState.value.emptyStateTitle = 'Location content rendered';
-        runtimeState.value.emptyStateMessage = `Rendered content into ${payload.locationId}${payload.positionId ? ` at ${payload.positionId}` : ''}.`;
+        runtimeState.value.emptyStateTitle = 'What changed in the host';
+        runtimeState.value.emptyStateMessage =
+          'The host surface now shows injected extension content in the targeted slot.';
       },
     },
     reset(state) {

@@ -54,15 +54,15 @@ function getActiveLesson() {
     </section>
 
     <section class="panel panel--muted">
-      <h2>Current objective</h2>
+      <h2>Current task</h2>
       <p>
-        {{ getActiveLesson().objective }}
+        {{ getActiveLesson().task }}
       </p>
     </section>
 
     <section class="panel panel--subtle">
-      <h2>How to use this prototype</h2>
-      <p>Edit the code, click Run, and inspect how the dummy admin reacts.</p>
+      <h2>What this teaches</h2>
+      <p>{{ getActiveLesson().objective }}</p>
     </section>
   </aside>
 </template>
@@ -70,17 +70,18 @@ function getActiveLesson() {
 <style scoped>
 .sidebar {
   display: grid;
-  gap: 16px;
+  gap: 18px;
   align-content: start;
 }
 
 .sidebar__header,
 .panel {
-  padding: 24px;
-  border: 1px solid #d8e0eb;
-  border-radius: 20px;
-  background: #ffffff;
-  box-shadow: 0 16px 40px rgb(15 23 42 / 0.06);
+  padding: 26px;
+  border: 1px solid #dce5f0;
+  border-radius: 24px;
+  background: rgb(255 255 255 / 0.92);
+  box-shadow: 0 18px 48px rgb(15 23 42 / 0.06);
+  backdrop-filter: blur(10px);
 }
 
 .sidebar__eyebrow {
@@ -94,8 +95,8 @@ function getActiveLesson() {
 
 .sidebar__title {
   margin: 0 0 12px;
-  font-size: 36px;
-  line-height: 1.05;
+  font-size: 40px;
+  line-height: 1;
 }
 
 .sidebar__description,
@@ -124,9 +125,12 @@ function getActiveLesson() {
 }
 
 .panel__header span {
-  color: #66758a;
-  font-size: 13px;
-  font-weight: 600;
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: #eef2ff;
+  color: #4f46e5;
+  font-size: 12px;
+  font-weight: 700;
 }
 
 .step-list {
@@ -142,18 +146,30 @@ function getActiveLesson() {
   grid-template-columns: auto 1fr;
   gap: 14px;
   width: 100%;
-  padding: 14px;
-  border: 1px solid #e4eaf3;
-  border-radius: 16px;
+  padding: 16px;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
   background: #f9fbfd;
   text-align: left;
   cursor: pointer;
   font: inherit;
+  transition:
+    border-color 160ms ease,
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    background 160ms ease;
+}
+
+.step-list__item:hover {
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px rgb(15 23 42 / 0.05);
 }
 
 .step-list__item--active {
   border-color: #c7d2fe;
   background: linear-gradient(180deg, #eef2ff 0%, #f8fbff 100%);
+  box-shadow: inset 0 0 0 1px rgb(99 102 241 / 0.16);
 }
 
 .step-list__item strong {
@@ -171,7 +187,7 @@ function getActiveLesson() {
   place-items: center;
   width: 40px;
   height: 40px;
-  border-radius: 12px;
+  border-radius: 14px;
   background: #111827;
   color: #ffffff;
   font-size: 12px;

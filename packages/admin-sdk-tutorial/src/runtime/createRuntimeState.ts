@@ -10,14 +10,14 @@ export function createRuntimeState(lesson: TutorialLesson): TutorialRuntimeState
             title: 'sw-product-detail-actions',
             description: 'Position: before-primary-action',
             variant: 'ghost' as const,
-            slotLabel: 'Empty slot',
+            slotLabel: 'Host slot',
           },
           {
             id: 'after-primary-action',
             title: 'sw-product-detail-actions',
             description: 'Position: after-primary-action',
             variant: 'ghost' as const,
-            slotLabel: 'Empty slot',
+            slotLabel: 'Host slot',
           },
         ]
       : [
@@ -32,6 +32,7 @@ export function createRuntimeState(lesson: TutorialLesson): TutorialRuntimeState
             title: 'Try this next',
             description: lesson.objective,
             variant: 'ghost' as const,
+            slotLabel: 'Host note',
           },
         ];
 

@@ -4,6 +4,7 @@ export interface TutorialLesson {
   title: string;
   summary: string;
   description: string;
+  task: string;
   objective: string;
   starterCode: string;
   previewLabel: string;

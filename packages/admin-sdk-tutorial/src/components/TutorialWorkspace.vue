@@ -12,6 +12,8 @@ const props = defineProps<{
   runtimeState: TutorialRuntimeState;
   executionMessage: string;
   executionError: string | null;
+  executionStatus: 'idle' | 'success' | 'error';
+  lastActionLabel: string;
 }>();
 
 const emit = defineEmits<{
@@ -46,6 +48,7 @@ function runCode() {
       <CodeEditorPanel
         :title="lesson.title"
         :description="lesson.description"
+        :task="lesson.task"
         :code="code"
         :reset-version="editorResetVersion"
         @update-code="handleCodeUpdate"
@@ -58,6 +61,8 @@ function runCode() {
       :output-message="lesson.outputMessage"
       :execution-message="executionMessage"
       :execution-error="executionError"
+      :execution-status="executionStatus"
+      :last-action-label="lastActionLabel"
     />
   </section>
 </template>
@@ -66,19 +71,20 @@ function runCode() {
 .workspace {
   min-width: 0;
   display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(360px, 0.9fr);
-  gap: 16px;
+  grid-template-columns: minmax(0, 1.04fr) minmax(380px, 0.96fr);
+  gap: 18px;
 }
 
 .workspace__panel {
   min-width: 0;
   display: grid;
   gap: 18px;
-  padding: 20px;
-  border: 1px solid #d8e0eb;
-  border-radius: 20px;
-  background: #ffffff;
-  box-shadow: 0 16px 40px rgb(15 23 42 / 0.06);
+  padding: 22px;
+  border: 1px solid #dce5f0;
+  border-radius: 24px;
+  background: rgb(255 255 255 / 0.94);
+  box-shadow: 0 18px 48px rgb(15 23 42 / 0.06);
+  backdrop-filter: blur(10px);
 }
 
 .workspace__panel--editor {
@@ -103,13 +109,23 @@ function runCode() {
 }
 
 .workspace__actions button {
-  padding: 10px 14px;
+  padding: 10px 15px;
   border: 1px solid #d7dfeb;
   border-radius: 12px;
   background: #ffffff;
   color: #1f2937;
   font: inherit;
   cursor: pointer;
+  transition:
+    transform 160ms ease,
+    box-shadow 160ms ease,
+    border-color 160ms ease;
+}
+
+.workspace__actions button:hover {
+  border-color: #cbd5e1;
+  transform: translateY(-1px);
+  box-shadow: 0 10px 18px rgb(15 23 42 / 0.06);
 }
 
 .workspace__button--primary {

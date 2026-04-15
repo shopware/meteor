@@ -14,28 +14,69 @@ const editorResetVersion = ref(0);
 const previewResetVersion = ref(0);
 const executionMessage = ref('Ready to execute starter code.');
 const executionError = ref<string | null>(null);
+const executionStatus = ref<'idle' | 'success' | 'error'>('idle');
+const lastActionLabel = ref('Not run yet');
 
 const activeLesson = computed(
   () => lessons.find((lesson) => lesson.id === activeLessonId.value) ?? lessons[0],
 );
 
+function cloneRuntimeState<T>(value: T): T {
+  return JSON.parse(JSON.stringify(value)) as T;
+}
+
 const runtimeState = ref(createRuntimeState(activeLesson.value));
 const sdkBridge = createSdkBridge(runtimeState);
+const lastSuccessfulRuntimeState = ref(cloneRuntimeState(runtimeState.value));
 
-function runCurrentCode() {
+function getSuccessMessage() {
+  if (activeLesson.value.id === 'notifications') {
+    return 'Success: the notification call updated the host toast preview.';
+  }
+
+  if (activeLesson.value.id === 'menu-items') {
+    return 'Success: the menu registration updated the dummy admin navigation.';
+  }
+
+  return 'Success: the location render call moved content into the targeted host slot.';
+}
+
+function getResetMessage() {
+  return `Starter code restored and re-run for ${activeLesson.value.title}.`;
+}
+
+function runCurrentCode(source: 'run' | 'reset' | 'lesson-change' = 'run') {
   previewResetVersion.value += 1;
   sdkBridge.reset(resetRuntimeState(activeLesson.value));
 
   const result = executeLessonCode(currentCode.value, sdkBridge);
 
-  executionMessage.value = result.message;
+  if (result.ok) {
+    lastSuccessfulRuntimeState.value = cloneRuntimeState(runtimeState.value);
+  } else {
+    runtimeState.value = cloneRuntimeState(lastSuccessfulRuntimeState.value);
+  }
+
+  executionMessage.value = result.ok
+    ? source === 'reset'
+      ? getResetMessage()
+      : getSuccessMessage()
+    : `${activeLesson.value.title} run failed.`;
   executionError.value = result.error ?? null;
+  executionStatus.value = result.ok ? 'success' : 'error';
+  lastActionLabel.value =
+    source === 'reset'
+      ? `Reset + run ${previewResetVersion.value}`
+      : source === 'lesson-change'
+        ? `Lesson load ${previewResetVersion.value}`
+        : `Run ${previewResetVersion.value}`;
 }
 
 watch(activeLessonId, () => {
   currentCode.value = activeLesson.value.starterCode;
   editorResetVersion.value += 1;
-  runCurrentCode();
+  lastSuccessfulRuntimeState.value = cloneRuntimeState(resetRuntimeState(activeLesson.value));
+  runCurrentCode('lesson-change');
 });
 
 function handleLessonSelect(lessonId: string) {
@@ -49,11 +90,10 @@ function handleCodeUpdate(code: string) {
 function handleCodeReset() {
   currentCode.value = activeLesson.value.starterCode;
   editorResetVersion.value += 1;
-  executionMessage.value = 'Starter code restored. Run the lesson again to refresh the preview.';
-  executionError.value = null;
+  runCurrentCode('reset');
 }
 
-runCurrentCode();
+runCurrentCode('lesson-change');
 </script>
 
 <template>
@@ -71,6 +111,8 @@ runCurrentCode();
       :runtime-state="runtimeState"
       :execution-message="executionMessage"
       :execution-error="executionError"
+      :execution-status="executionStatus"
+      :last-action-label="lastActionLabel"
       @update-code="handleCodeUpdate"
       @reset-code="handleCodeReset"
       @run-code="runCurrentCode"
@@ -90,16 +132,18 @@ runCurrentCode();
 
 :global(body) {
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-  background: #eef2f7;
+  background:
+    radial-gradient(circle at top left, rgb(79 70 229 / 0.08), transparent 30%),
+    linear-gradient(180deg, #f4f7fb 0%, #eef2f7 100%);
   color: #1f2937;
 }
 
 .app-shell {
   min-height: 100vh;
   display: grid;
-  grid-template-columns: minmax(320px, 420px) minmax(0, 1fr);
-  gap: 20px;
-  padding: 20px;
+  grid-template-columns: minmax(340px, 430px) minmax(0, 1fr);
+  gap: 24px;
+  padding: 24px;
 }
 
 @media (max-width: 960px) {
