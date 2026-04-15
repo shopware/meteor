@@ -12,7 +12,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
   sourcePath="packages/component-library/src/components/feedback-indicator/mt-snackbar"
 >
   **Snackbar** displays temporary overlay feedback near the bottom-right corner
-  of the interface. Use it to confirm an action, report a lightweight outcome,
+  of the interface. Use it to confirm an action, report a non-critical outcome,
   or show short-lived progress without interrupting the current workflow.
 </ComponentPageHeader>
 
@@ -21,7 +21,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 - Use **Snackbar** to confirm that an action completed, such as saving, deleting, or updating something.
 - Use it for non-blocking errors or warnings that people should notice without being pulled out of their current flow.
 - Use it for background progress that resolves into success or error feedback.
-- Use it when you may need one lightweight follow-up action, such as `Undo`.
+- Use it when you may need one non-critical follow-up action, such as `Undo`.
 
 ## Examples
 
@@ -31,7 +31,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 ## Anatomy
 
-**Snackbar** is usually used as a pair:
+**Snackbar** consists of two parts:
 
 - `MtSnackbar` renders the notification stack and should typically be mounted once near the app shell.
 - `useSnackbar()` lets feature code trigger a snackbar by calling `addSnackbar()`.
