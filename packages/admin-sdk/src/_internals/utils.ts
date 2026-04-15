@@ -124,8 +124,9 @@ export function findExtensionNameByBaseUrl(baseUrl?: string, sourceWindow?: Wind
     // the Admin itself. When the sender Window is provided, fall back to href-prefix matching.
     if (sourceWindow) {
       try {
-        const href = sourceWindow.location.href;
-        // Strip any trailing slash so both 'base/' and 'base' are normalised to
+        // Strip query string — the SDK appends ?location-id=... to iFrame URLs.
+        const href = sourceWindow.location.href.split('?')[0];
+        // Strip any trailing slash so both 'base/' and 'base' normalise to
         // 'base', then accept either an exact match (baseUrl IS the file) or a
         // path-boundary prefix match (baseUrl is a directory). Among all
         // matching extensions pick the most specific one (longest baseUrl) to

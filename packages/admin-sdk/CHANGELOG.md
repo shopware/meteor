@@ -1,5 +1,21 @@
 # Changelog
 
+## 6.7.4
+
+### Patch Changes
+
+- [#1117](https://github.com/shopware/meteor/pull/1117) [`e5ed183`](https://github.com/shopware/meteor/commit/e5ed183fb28337aceee3addabd30b2cbc1e94309) Thanks [@bubleg](https://github.com/bubleg)! - fix(telemetry): strip query string from iframe href before same-origin baseUrl matching
+
+  The Admin SDK appends `?location-id=...` to extension iframe URLs. The same-origin source resolution in `findExtensionNameByBaseUrl` now strips the query string and fragment from the sender window's href before matching against `baseUrl`, so same-origin extensions are correctly identified even when the iframe URL contains query parameters.
+
+## 6.7.3
+
+### Patch Changes
+
+- [#1115](https://github.com/shopware/meteor/pull/1115) [`3555da4`](https://github.com/shopware/meteor/commit/3555da49571e2374e1c822a79006f2b8c8c0097c) Thanks [@bubleg](https://github.com/bubleg)! - fix(telemetry): handle exact-URL baseUrl pattern in same-origin extension resolution
+
+  `findExtensionNameByBaseUrl` now accepts `baseUrl` values that point directly to a file (e.g. `/admin/plugin/index.html`) rather than a directory prefix. The same-origin fallback strips any trailing slash and matches either by exact href equality or by path-boundary prefix, so plugins whose `baseUrl` is set to their entry-point URL are correctly resolved instead of falling back to `undefined`.
+
 ## 6.7.2
 
 ### Patch Changes

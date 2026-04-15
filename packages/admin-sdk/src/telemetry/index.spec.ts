@@ -171,8 +171,9 @@ describe('telemetry', () => {
         permissions: {},
       };
 
+      // The SDK appends ?location-id=... to iframe URLs; we must still resolve correctly.
       const fakeWindow = {
-        location: { href: `${window.location.origin}/admin/exact-url-plugin/index.html` },
+        location: { href: `${window.location.origin}/admin/exact-url-plugin/index.html?location-id=my-location` },
       } as Window;
 
       const name = getSourceExtensionName(window.location.origin, fakeWindow);
