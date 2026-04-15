@@ -1,0 +1,137 @@
+<script setup lang="ts">
+import CodeEditorPanel from '@/components/CodeEditorPanel.vue';
+import PreviewPanel from '@/components/PreviewPanel.vue';
+import type { TutorialLesson } from '@/types/lesson';
+import type { TutorialRuntimeState } from '@/types/runtime';
+
+const props = defineProps<{
+  lesson: TutorialLesson;
+  code: string;
+  editorResetVersion: number;
+  previewResetVersion: number;
+  runtimeState: TutorialRuntimeState;
+  executionMessage: string;
+  executionError: string | null;
+}>();
+
+const emit = defineEmits<{
+  updateCode: [code: string];
+  resetCode: [];
+  runCode: [];
+}>();
+
+function handleCodeUpdate(code: string) {
+  emit('updateCode', code);
+}
+
+function resetCode() {
+  emit('resetCode');
+}
+
+function runCode() {
+  emit('runCode');
+}
+</script>
+
+<template>
+  <section class="workspace">
+    <div class="workspace__panel workspace__panel--editor">
+      <div class="workspace__panel-header">
+        <div class="workspace__actions">
+          <button type="button" @click="resetCode">Reset</button>
+          <button type="button" class="workspace__button--primary" @click="runCode">Run</button>
+        </div>
+      </div>
+
+      <CodeEditorPanel
+        :title="lesson.title"
+        :description="lesson.description"
+        :code="code"
+        :reset-version="editorResetVersion"
+        @update-code="handleCodeUpdate"
+      />
+    </div>
+
+    <PreviewPanel
+      :runtime-state="runtimeState"
+      :preview-reset-version="previewResetVersion"
+      :output-message="lesson.outputMessage"
+      :execution-message="executionMessage"
+      :execution-error="executionError"
+    />
+  </section>
+</template>
+
+<style scoped>
+.workspace {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(360px, 0.9fr);
+  gap: 16px;
+}
+
+.workspace__panel {
+  min-width: 0;
+  display: grid;
+  gap: 18px;
+  padding: 20px;
+  border: 1px solid #d8e0eb;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0 16px 40px rgb(15 23 42 / 0.06);
+}
+
+.workspace__panel--editor {
+  min-height: calc(100vh - 40px);
+}
+
+.workspace__panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.workspace__panel-header h2 {
+  margin: 4px 0 0;
+  font-size: 20px;
+}
+
+.workspace__actions {
+  display: flex;
+  gap: 10px;
+}
+
+.workspace__actions button {
+  padding: 10px 14px;
+  border: 1px solid #d7dfeb;
+  border-radius: 12px;
+  background: #ffffff;
+  color: #1f2937;
+  font: inherit;
+  cursor: pointer;
+}
+
+.workspace__button--primary {
+  border-color: #4f46e5 !important;
+  background: #4f46e5 !important;
+  color: #ffffff !important;
+}
+
+@media (max-width: 1200px) {
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .workspace__panel--editor {
+    min-height: 520px;
+  }
+}
+
+@media (max-width: 720px) {
+  .workspace__panel-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+</style>
