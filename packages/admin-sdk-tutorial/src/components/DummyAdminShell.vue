@@ -2,13 +2,19 @@
 import DummyAdminLocationFrame from '@/components/DummyAdminLocationFrame.vue';
 import type { TutorialRuntimeState } from '@/types/runtime';
 
-defineProps<{
+withDefaults(
+  defineProps<{
   runtimeState: TutorialRuntimeState;
   lessonId: string;
   code: string;
   runCode: string;
   runVersion: number;
-}>();
+  renderLocationFrames?: boolean;
+  }>(),
+  {
+    renderLocationFrames: true,
+  },
+);
 </script>
 
 <template>
@@ -58,7 +64,7 @@ defineProps<{
             {{ surface.injectedContent }}
           </div>
           <DummyAdminLocationFrame
-            v-if="surface.runtimeLocationId"
+            v-if="renderLocationFrames && surface.runtimeLocationId"
             :lesson-id="lessonId"
             :location-id="surface.runtimeLocationId"
             :code="code"
@@ -66,6 +72,11 @@ defineProps<{
             :run-version="runVersion"
             :height="surface.runtimeHeight"
           />
+          <div v-else-if="surface.runtimeLocationId" class="dummy-admin__location-placeholder">
+            <span class="dummy-admin__location-placeholder-label">Registered location</span>
+            <strong>{{ surface.runtimeLocationId }}</strong>
+            <p>This host slot is reserved for the matching extension view.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -246,6 +257,25 @@ defineProps<{
   background: #eff6ff;
   color: #1d4ed8;
   font-weight: 600;
+}
+
+.dummy-admin__location-placeholder {
+  margin-top: 12px;
+  display: grid;
+  gap: 6px;
+  min-height: 140px;
+  padding: 14px;
+  border: 1px dashed #d8e0eb;
+  border-radius: 12px;
+  background: #f8fafc;
+}
+
+.dummy-admin__location-placeholder-label {
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .dummy-admin__canvas {

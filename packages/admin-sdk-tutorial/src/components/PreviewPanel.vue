@@ -1,105 +1,55 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue';
 
-import DummyAdminShell from '@/components/DummyAdminShell.vue';
-import type { TutorialRuntimeState } from '@/types/runtime';
+import type { TutorialRunSnapshot } from '@/types/tutorialShell';
 
 const props = defineProps<{
-  runtimeState: TutorialRuntimeState;
-  code: string;
-  iframeRunCode: string;
-  lessonId: string;
-  previewResetVersion: number;
+  runSnapshot: TutorialRunSnapshot;
+  previewLabel: string;
   outputMessage: string;
   executionMessage: string;
   executionError: string | null;
-  executionStatus: 'idle' | 'success' | 'error';
+  executionStatus: 'idle' | 'running' | 'success' | 'error';
   lastActionLabel: string;
-  iframeStatus: string;
-  lastSdkMessageType: string;
-  registeredSourceCount: number;
-  runtimeLocationId: string;
 }>();
 
 const emit = defineEmits<{
-  runtimeFrameWindow: [runtimeWindow: Window | null];
+  shellFrameWindow: [shellWindow: Window | null];
 }>();
 
-const runtimeFrame = ref<HTMLIFrameElement | null>(null);
+const shellFrame = ref<HTMLIFrameElement | null>(null);
 
-const runtimeFrameSrc = computed(
+const shellFrameSrc = computed(
   () =>
-    `/iframe-runtime.html?lesson-id=${props.lessonId}&location-id=${props.runtimeLocationId}&run-version=${props.previewResetVersion}`,
+    `/dummy-admin-shell.html?lesson-id=${props.runSnapshot.lessonId}&run-version=${props.runSnapshot.runVersion}`,
 );
 
-function syncRuntimeFrame() {
-  emit('runtimeFrameWindow', runtimeFrame.value?.contentWindow ?? null);
+function syncShellFrame() {
+  emit('shellFrameWindow', shellFrame.value?.contentWindow ?? null);
 
-  runtimeFrame.value?.contentWindow?.postMessage(
-    {
-      source: 'tutorial-host',
-      type: 'tutorial:set-code',
-      lessonId: props.lessonId,
-      locationId: props.runtimeLocationId,
-      code: props.code,
-      runCode: props.iframeRunCode,
-      runVersion: props.previewResetVersion,
-    },
+  shellFrame.value?.contentWindow?.postMessage(
+    JSON.stringify({
+      source: 'tutorial-parent',
+      type: 'tutorial:set-run-snapshot',
+      payload: props.runSnapshot,
+    }),
     '*',
   );
 }
 
 watch(
-  () => [props.code, props.lessonId, props.previewResetVersion, props.runtimeLocationId],
+  () => props.runSnapshot,
   () => {
-    syncRuntimeFrame();
+    syncShellFrame();
+  },
+  {
+    deep: true,
   },
 );
 </script>
 
 <template>
   <div class="preview-stack">
-    <section class="preview-panel">
-      <div class="preview-panel__header">
-        <div>
-          <p class="preview-panel__label">Preview</p>
-          <h2>Dummy admin shell</h2>
-        </div>
-        <span class="preview-panel__status">{{ runtimeState.statusLabel }}</span>
-      </div>
-
-      <div class="preview-panel__frame">
-        <DummyAdminShell
-          :runtime-state="runtimeState"
-          :lesson-id="lessonId"
-          :code="code"
-          :run-code="iframeRunCode"
-          :run-version="previewResetVersion"
-        />
-      </div>
-
-      <div class="preview-panel__runtime-card">
-        <div class="preview-panel__runtime-header">
-          <div>
-            <p class="preview-panel__label">Lesson runtime iframe</p>
-            <h3>{{ iframeStatus }}</h3>
-          </div>
-          <div class="preview-panel__meta">
-            <span class="preview-panel__counter">{{ lastSdkMessageType }}</span>
-            <span class="preview-panel__counter">sources: {{ registeredSourceCount }}</span>
-          </div>
-        </div>
-
-        <iframe
-          ref="runtimeFrame"
-          class="preview-panel__runtime-frame"
-          :src="runtimeFrameSrc"
-          title="Lesson runtime iframe"
-          @load="syncRuntimeFrame"
-        />
-      </div>
-    </section>
-
     <section class="preview-panel preview-panel--output">
       <div class="preview-panel__header">
         <div>
@@ -114,22 +64,46 @@ watch(
         </div>
       </div>
 
-      <div class="preview-panel__copy-block">
-        <span>What to observe</span>
-        <p class="preview-panel__output-message">{{ outputMessage }}</p>
+      <div class="preview-panel__output-grid">
+        <div class="preview-panel__copy-block">
+          <span>What to observe</span>
+          <p class="preview-panel__output-message">{{ outputMessage }}</p>
+        </div>
+
+        <div
+          v-if="executionStatus !== 'error'"
+          class="preview-panel__copy-block preview-panel__copy-block--muted"
+        >
+          <span>Execution</span>
+          <p class="preview-panel__output-empty">{{ executionMessage }}</p>
+        </div>
+
+        <p v-if="executionError" class="preview-panel__output-error">
+          <strong>Execution failed</strong>
+          <span>{{ executionMessage }}</span>
+          <span>{{ executionError }}</span>
+        </p>
       </div>
-      <div
-        v-if="executionStatus !== 'error'"
-        class="preview-panel__copy-block preview-panel__copy-block--muted"
-      >
-        <span>Execution</span>
-        <p class="preview-panel__output-empty">{{ executionMessage }}</p>
+    </section>
+
+    <section class="preview-panel preview-panel--preview">
+      <div class="preview-panel__header">
+        <div>
+          <p class="preview-panel__label">Preview</p>
+          <h2>Dummy admin shell</h2>
+        </div>
+        <span class="preview-panel__status">{{ previewLabel }}</span>
       </div>
-      <p v-if="executionError" class="preview-panel__output-error">
-        <strong>Execution failed</strong>
-        <span>{{ executionMessage }}</span>
-        <span>{{ executionError }}</span>
-      </p>
+
+      <div class="preview-panel__frame">
+        <iframe
+          ref="shellFrame"
+          class="preview-panel__shell-frame"
+          :src="shellFrameSrc"
+          title="Dummy admin shell preview"
+          @load="syncShellFrame"
+        />
+      </div>
     </section>
   </div>
 </template>
@@ -138,20 +112,29 @@ watch(
 .preview-stack {
   min-width: 0;
   display: grid;
-  gap: 18px;
-  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 14px;
+  height: 100%;
+  grid-template-rows: auto minmax(0, 1fr);
 }
 
 .preview-panel {
   min-width: 0;
   display: grid;
-  gap: 18px;
-  padding: 22px;
+  gap: 14px;
+  padding: 18px;
   border: 1px solid #dce5f0;
   border-radius: 24px;
   background: rgb(255 255 255 / 0.94);
-  box-shadow: 0 18px 48px rgb(15 23 42 / 0.06);
+  box-shadow: 0 14px 36px rgb(15 23 42 / 0.05);
   backdrop-filter: blur(10px);
+}
+
+.preview-panel--output {
+  align-content: start;
+}
+
+.preview-panel--preview {
+  grid-template-rows: auto minmax(0, 1fr);
 }
 
 .preview-panel__header {
@@ -163,12 +146,7 @@ watch(
 
 .preview-panel__header h2 {
   margin: 4px 0 0;
-  font-size: 20px;
-}
-
-.preview-panel__runtime-header h3 {
-  margin: 4px 0 0;
-  font-size: 16px;
+  font-size: 18px;
 }
 
 .preview-panel__label {
@@ -193,6 +171,7 @@ watch(
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .preview-panel__counter {
@@ -212,6 +191,11 @@ watch(
 .preview-panel__state--idle {
   background: #e2e8f0;
   color: #334155;
+}
+
+.preview-panel__state--running {
+  background: #dbeafe;
+  color: #1d4ed8;
 }
 
 .preview-panel__state--success {
@@ -236,6 +220,13 @@ watch(
   gap: 8px;
 }
 
+.preview-panel__output-grid {
+  display: grid;
+  gap: 12px;
+  max-height: 220px;
+  overflow: auto;
+}
+
 .preview-panel__copy-block span {
   color: #64748b;
   font-size: 12px;
@@ -245,44 +236,28 @@ watch(
 }
 
 .preview-panel__copy-block--muted {
-  padding: 12px 14px;
-  border: 1px dashed #d8e0eb;
+  padding: 10px 12px;
+  border: 1px solid #e6ebf2;
   border-radius: 14px;
-  background: #f8fafc;
+  background: #fbfcfe;
 }
 
 .preview-panel__frame {
   min-width: 0;
-  aspect-ratio: 16 / 10;
-  min-height: 340px;
-  max-height: 520px;
-  padding: 14px;
-  border: 1px solid #d8e0eb;
-  border-radius: 18px;
-  background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+  min-height: 480px;
+  max-height: none;
+  padding: 4px;
+  border: 1px solid #e2e8f0;
+  border-radius: 20px;
+  background: linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
 }
 
-.preview-panel__runtime-card {
-  display: grid;
-  gap: 14px;
-  padding: 16px;
-  border: 1px solid #d8e0eb;
-  border-radius: 18px;
-  background: #f8fafc;
-}
-
-.preview-panel__runtime-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-}
-
-.preview-panel__runtime-frame {
+.preview-panel__shell-frame {
   width: 100%;
-  min-height: 180px;
-  border: 1px solid #d8e0eb;
-  border-radius: 14px;
+  height: 100%;
+  min-height: 100%;
+  border: 0;
+  border-radius: 16px;
   background: #ffffff;
 }
 
@@ -304,23 +279,49 @@ watch(
 }
 
 @media (max-width: 720px) {
+  .preview-stack {
+    gap: 10px;
+  }
+
+  .preview-panel {
+    gap: 10px;
+    padding: 12px;
+    border-radius: 18px;
+  }
+
   .preview-panel__header {
     flex-direction: column;
     align-items: flex-start;
+    gap: 10px;
   }
 
   .preview-panel__meta {
     flex-wrap: wrap;
   }
 
-  .preview-panel__frame {
-    aspect-ratio: auto;
-    min-height: 420px;
+  .preview-panel__status,
+  .preview-panel__state {
+    font-size: 11px;
   }
 
-  .preview-panel__runtime-header {
-    flex-direction: column;
-    align-items: flex-start;
+  .preview-panel__output-grid {
+    gap: 9px;
+    max-height: 172px;
+  }
+
+  .preview-panel__copy-block--muted,
+  .preview-panel__output-error {
+    padding: 9px 11px;
+  }
+
+  .preview-panel__frame {
+    min-height: 392px;
+    padding: 3px;
+    border-radius: 16px;
+  }
+
+  .preview-panel__shell-frame {
+    border-radius: 12px;
   }
 }
 </style>

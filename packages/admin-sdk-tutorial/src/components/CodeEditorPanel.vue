@@ -51,22 +51,22 @@ defineExpose({
 <template>
   <div class="editor-panel">
     <div class="editor-panel__header">
-      <div>
+      <div class="editor-panel__title-group">
         <p class="editor-panel__label">Editor</p>
         <h2>{{ title }}</h2>
+        <p class="editor-panel__description">{{ description }}</p>
       </div>
 
       <div class="editor-panel__tab">main.ts</div>
     </div>
 
-    <div class="editor-panel__intro">
-      <p class="editor-panel__description">{{ description }}</p>
+    <div class="editor-panel__context">
       <p class="editor-panel__objective">{{ objective }}</p>
-    </div>
 
-    <div class="editor-panel__task">
-      <span>Try this</span>
-      <p>{{ task }}</p>
+      <div class="editor-panel__task">
+        <span>Try this</span>
+        <p>{{ task }}</p>
+      </div>
     </div>
 
     <div class="editor-panel__surface">
@@ -88,14 +88,19 @@ defineExpose({
 .editor-panel {
   min-height: 0;
   display: grid;
-  gap: 20px;
+  gap: 12px;
 }
 
 .editor-panel__header {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: space-between;
-  gap: 16px;
+  gap: 12px;
+}
+
+.editor-panel__title-group {
+  display: grid;
+  gap: 6px;
 }
 
 .editor-panel__label {
@@ -108,46 +113,49 @@ defineExpose({
 }
 
 .editor-panel__header h2 {
-  margin: 4px 0 0;
+  margin: 0;
   font-size: 20px;
+  line-height: 1.15;
 }
 
 .editor-panel__tab {
-  padding: 8px 12px;
-  border: 1px solid #dce5f0;
+  padding: 6px 9px;
+  border: 1px solid #e2e8f0;
   border-radius: 12px;
-  background: #f8fafc;
-  color: #334155;
+  background: #fbfcfe;
+  color: #475569;
   font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 600;
 }
 
 .editor-panel__description {
   margin: 0;
   color: #526072;
-  line-height: 1.6;
+  font-size: 14px;
+  line-height: 1.5;
 }
 
-.editor-panel__intro {
+.editor-panel__context {
   display: grid;
-  gap: 10px;
+  gap: 8px;
 }
 
 .editor-panel__objective {
   margin: 0;
   color: #334155;
   font-weight: 600;
-  line-height: 1.6;
+  font-size: 14px;
+  line-height: 1.5;
 }
 
 .editor-panel__task {
   display: grid;
-  gap: 6px;
-  padding: 14px 16px;
-  border: 1px solid #dbe7ff;
+  gap: 4px;
+  padding: 10px 12px;
+  border: 1px solid #dee7f7;
   border-radius: 14px;
-  background: #f8fbff;
+  background: #fafcff;
 }
 
 .editor-panel__task span {
@@ -161,7 +169,8 @@ defineExpose({
 .editor-panel__task p {
   margin: 0;
   color: #334155;
-  line-height: 1.6;
+  font-size: 14px;
+  line-height: 1.5;
 }
 
 .editor-panel__surface {
@@ -183,6 +192,7 @@ defineExpose({
   color: #64748b;
   font-size: 12px;
   font-weight: 600;
+  line-height: 1;
 }
 
 :deep(.cm-editor) {
@@ -212,6 +222,50 @@ defineExpose({
 @media (max-width: 1200px) {
   :deep(.cm-editor) {
     min-height: 360px;
+  }
+}
+
+@media (max-width: 720px) {
+  .editor-panel {
+    gap: 12px;
+  }
+
+  .editor-panel__header {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .editor-panel__title-group {
+    gap: 4px;
+  }
+
+  .editor-panel__header h2 {
+    font-size: 18px;
+  }
+
+  .editor-panel__description,
+  .editor-panel__objective,
+  .editor-panel__task p {
+    font-size: 13px;
+    line-height: 1.45;
+  }
+
+  .editor-panel__context {
+    gap: 8px;
+  }
+
+  .editor-panel__task {
+    padding: 10px 12px;
+    border-radius: 12px;
+  }
+
+  .editor-panel__tab {
+    padding: 6px 9px;
+    font-size: 12px;
+  }
+
+  :deep(.cm-editor) {
+    min-height: 320px;
   }
 }
 </style>

@@ -4,7 +4,7 @@ import { ref } from 'vue';
 import CodeEditorPanel from '@/components/CodeEditorPanel.vue';
 import PreviewPanel from '@/components/PreviewPanel.vue';
 import type { TutorialLesson } from '@/types/lesson';
-import type { TutorialRuntimeState } from '@/types/runtime';
+import type { TutorialRunSnapshot } from '@/types/tutorialShell';
 
 type CodeEditorPanelExposed = {
   getCode: () => string;
@@ -13,25 +13,19 @@ type CodeEditorPanelExposed = {
 const props = defineProps<{
   lesson: TutorialLesson;
   code: string;
-  iframeRunCode: string;
   editorResetVersion: number;
-  previewResetVersion: number;
-  runtimeState: TutorialRuntimeState;
+  runSnapshot: TutorialRunSnapshot;
   executionMessage: string;
   executionError: string | null;
-  executionStatus: 'idle' | 'success' | 'error';
+  executionStatus: 'idle' | 'running' | 'success' | 'error';
   lastActionLabel: string;
-  iframeStatus: string;
-  lastSdkMessageType: string;
-  registeredSourceCount: number;
-  runtimeLocationId: string;
 }>();
 
 const emit = defineEmits<{
   updateCode: [code: string];
   resetCode: [];
   runCode: [codeSnapshot: string];
-  runtimeFrameWindow: [runtimeWindow: Window | null];
+  shellFrameWindow: [shellWindow: Window | null];
 }>();
 
 const editorPanel = ref<CodeEditorPanelExposed | null>(null);
@@ -48,14 +42,14 @@ function runCode() {
   emit('runCode', editorPanel.value?.getCode() ?? props.code);
 }
 
-function handleRuntimeFrameWindow(runtimeWindow: Window | null) {
-  emit('runtimeFrameWindow', runtimeWindow);
+function handleShellFrameWindow(shellWindow: Window | null) {
+  emit('shellFrameWindow', shellWindow);
 }
 </script>
 
 <template>
   <section class="workspace">
-    <div class="workspace__panel workspace__panel--editor">
+    <div class="workspace__column workspace__column--editor">
       <div class="workspace__panel-header">
         <div class="workspace__actions">
           <button type="button" @click="resetCode">Reset</button>
@@ -76,21 +70,15 @@ function handleRuntimeFrameWindow(runtimeWindow: Window | null) {
     </div>
 
     <PreviewPanel
-      :runtime-state="runtimeState"
-      :code="code"
-      :iframe-run-code="iframeRunCode"
-      :preview-reset-version="previewResetVersion"
+      class="workspace__column workspace__column--preview"
+      :run-snapshot="runSnapshot"
+      :preview-label="lesson.previewLabel"
       :output-message="lesson.outputMessage"
       :execution-message="executionMessage"
       :execution-error="executionError"
       :execution-status="executionStatus"
       :last-action-label="lastActionLabel"
-      :lesson-id="lesson.id"
-      :iframe-status="iframeStatus"
-      :last-sdk-message-type="lastSdkMessageType"
-      :registered-source-count="registeredSourceCount"
-      :runtime-location-id="runtimeLocationId"
-      @runtime-frame-window="handleRuntimeFrameWindow"
+      @shell-frame-window="handleShellFrameWindow"
     />
   </section>
 </template>
@@ -99,36 +87,32 @@ function handleRuntimeFrameWindow(runtimeWindow: Window | null) {
 .workspace {
   min-width: 0;
   display: grid;
-  grid-template-columns: minmax(0, 1.04fr) minmax(380px, 0.96fr);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: stretch;
   gap: 18px;
 }
 
-.workspace__panel {
+.workspace__column {
   min-width: 0;
   display: grid;
-  gap: 18px;
-  padding: 22px;
+  gap: 14px;
+}
+
+.workspace__column--editor {
+  padding: 20px;
   border: 1px solid #dce5f0;
   border-radius: 24px;
   background: rgb(255 255 255 / 0.94);
-  box-shadow: 0 18px 48px rgb(15 23 42 / 0.06);
+  box-shadow: 0 14px 36px rgb(15 23 42 / 0.05);
   backdrop-filter: blur(10px);
-}
-
-.workspace__panel--editor {
-  min-height: calc(100vh - 40px);
+  min-height: min(880px, calc(100vh - 180px));
 }
 
 .workspace__panel-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-}
-
-.workspace__panel-header h2 {
-  margin: 4px 0 0;
-  font-size: 20px;
+  gap: 12px;
 }
 
 .workspace__actions {
@@ -162,20 +146,46 @@ function handleRuntimeFrameWindow(runtimeWindow: Window | null) {
   color: #ffffff !important;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 1199px) {
+  .workspace {
+    grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+    gap: 18px;
+  }
+}
+
+@media (max-width: 959px) {
   .workspace {
     grid-template-columns: 1fr;
   }
 
-  .workspace__panel--editor {
+  .workspace__column--editor {
     min-height: 520px;
   }
 }
 
 @media (max-width: 720px) {
+  .workspace {
+    gap: 12px;
+  }
+
+  .workspace__column--editor {
+    padding: 13px;
+    border-radius: 18px;
+  }
+
   .workspace__panel-header {
     flex-direction: column;
     align-items: flex-start;
+    gap: 10px;
+  }
+
+  .workspace__actions {
+    width: 100%;
+  }
+
+  .workspace__actions button {
+    flex: 1 1 0;
+    padding: 9px 12px;
   }
 }
 </style>

@@ -9,6 +9,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: fileURLToPath(new URL('./index.html', import.meta.url)),
+        dummyAdminShell: fileURLToPath(new URL('./dummy-admin-shell.html', import.meta.url)),
         iframeRuntime: fileURLToPath(new URL('./iframe-runtime.html', import.meta.url)),
       },
     },
