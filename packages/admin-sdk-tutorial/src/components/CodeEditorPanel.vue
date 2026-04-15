@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import { javascript } from '@codemirror/lang-javascript';
+import { oneDark } from '@codemirror/theme-one-dark';
+import CodeMirror from 'vue-codemirror6';
 import { computed, ref, watch } from 'vue';
 
 const props = defineProps<{
@@ -14,6 +17,7 @@ const emit = defineEmits<{
 }>();
 
 const localCode = ref(props.code);
+const extensions = [javascript({ typescript: true }), oneDark];
 
 watch(
   () => props.code,
@@ -29,17 +33,13 @@ watch(
   },
 );
 
-const lineNumbers = computed(() => {
-  const totalLines = localCode.value.split('\n').length;
+const characterCount = computed(() => localCode.value.length);
 
-  return Array.from({ length: totalLines }, (_, index) => index + 1);
-});
+function handleInput(nextCode?: string | { toString(): string }) {
+  const normalizedCode = typeof nextCode === 'string' ? nextCode : nextCode?.toString() ?? '';
 
-function handleInput(event: Event) {
-  const nextCode = (event.target as HTMLTextAreaElement).value;
-
-  localCode.value = nextCode;
-  emit('updateCode', nextCode);
+  localCode.value = normalizedCode;
+  emit('updateCode', normalizedCode);
 }
 </script>
 
@@ -62,20 +62,17 @@ function handleInput(event: Event) {
     </div>
 
     <div class="editor-panel__surface">
-      <div class="editor-panel__gutter">
-        <span v-for="lineNumber in lineNumbers" :key="lineNumber">{{ lineNumber }}</span>
-      </div>
-
-      <textarea
-        class="editor-panel__input"
-        :value="localCode"
-        spellcheck="false"
-        autocapitalize="off"
-        autocomplete="off"
-        autocorrect="off"
-        @input="handleInput"
+      <CodeMirror
+        class="editor-panel__codemirror"
+        :model-value="localCode"
+        :extensions="extensions"
+        basic
+        wrap
+        @update:model-value="handleInput"
       />
     </div>
+
+    <p class="editor-panel__meta">{{ characterCount }} characters</p>
   </div>
 </template>
 
@@ -149,8 +146,6 @@ function handleInput(event: Event) {
 
 .editor-panel__surface {
   min-height: 0;
-  display: grid;
-  grid-template-columns: auto minmax(0, 1fr);
   border: 1px solid #0f172a;
   border-radius: 18px;
   overflow: hidden;
@@ -159,29 +154,44 @@ function handleInput(event: Event) {
   box-shadow: inset 0 0 0 1px rgb(148 163 184 / 0.12);
 }
 
-.editor-panel__gutter {
-  display: grid;
-  align-content: start;
-  gap: 4px;
-  padding: 20px 14px;
-  background: #111b31;
-  color: #64748b;
-  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
-  font-size: 13px;
+.editor-panel__codemirror {
+  min-height: 100%;
 }
 
-.editor-panel__input {
-  min-height: 100%;
-  padding: 20px;
-  border: 0;
-  resize: none;
-  outline: none;
+.editor-panel__meta {
+  margin: 0;
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+:deep(.cm-editor) {
+  min-height: 460px;
   background: transparent;
-  color: inherit;
+}
+
+:deep(.cm-scroller) {
   font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
-  font-size: 14px;
   line-height: 1.7;
-  white-space: pre;
-  tab-size: 2;
+}
+
+:deep(.cm-content),
+:deep(.cm-gutter) {
+  padding-top: 18px;
+  padding-bottom: 18px;
+}
+
+:deep(.cm-line) {
+  padding-left: 6px;
+}
+
+:deep(.cm-focused) {
+  outline: none;
+}
+
+@media (max-width: 1200px) {
+  :deep(.cm-editor) {
+    min-height: 360px;
+  }
 }
 </style>

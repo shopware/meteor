@@ -61,8 +61,9 @@ defineProps<{
 <style scoped>
 .dummy-admin {
   display: grid;
-  grid-template-columns: 132px minmax(0, 1fr);
-  min-height: 360px;
+  grid-template-columns: 148px minmax(0, 1fr);
+  height: 100%;
+  min-height: 100%;
   border: 1px solid #dbe2ec;
   border-radius: 18px;
   overflow: hidden;
@@ -106,9 +107,10 @@ defineProps<{
 
 .dummy-admin__content {
   display: grid;
-  align-content: start;
+  grid-template-rows: auto auto auto minmax(0, 1fr);
   gap: 16px;
   padding: 16px;
+  min-height: 0;
 }
 
 .dummy-admin__host-bar {
@@ -222,11 +224,13 @@ defineProps<{
 
 .dummy-admin__canvas {
   display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
+  min-height: 0;
 }
 
 .dummy-admin__card {
-  min-height: 120px;
+  min-height: 0;
   padding: 16px;
   border: 1px solid #d8e0eb;
   border-radius: 16px;
@@ -242,6 +246,7 @@ defineProps<{
 @media (max-width: 720px) {
   .dummy-admin {
     grid-template-columns: 1fr;
+    height: auto;
   }
 
   .dummy-admin__sidebar {
@@ -249,6 +254,14 @@ defineProps<{
     grid-auto-columns: max-content;
     align-items: center;
     overflow: auto;
+  }
+
+  .dummy-admin__content {
+    grid-template-rows: auto;
+  }
+
+  .dummy-admin__canvas {
+    grid-template-columns: 1fr;
   }
 }
 </style>

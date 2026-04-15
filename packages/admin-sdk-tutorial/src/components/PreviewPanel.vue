@@ -24,9 +24,9 @@ defineProps<{
         <span class="preview-panel__status">{{ runtimeState.statusLabel }}</span>
       </div>
 
-      <DummyAdminShell
-        :runtime-state="runtimeState"
-      />
+      <div class="preview-panel__frame">
+        <DummyAdminShell :runtime-state="runtimeState" />
+      </div>
     </section>
 
     <section class="preview-panel preview-panel--output">
@@ -168,6 +168,17 @@ defineProps<{
   background: #f8fafc;
 }
 
+.preview-panel__frame {
+  min-width: 0;
+  aspect-ratio: 16 / 10;
+  min-height: 340px;
+  max-height: 520px;
+  padding: 14px;
+  border: 1px solid #d8e0eb;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
+}
+
 .preview-panel__output-error {
   margin: 0;
   padding: 12px 14px;
@@ -186,6 +197,11 @@ defineProps<{
 
   .preview-panel__meta {
     flex-wrap: wrap;
+  }
+
+  .preview-panel__frame {
+    aspect-ratio: auto;
+    min-height: 420px;
   }
 }
 </style>
