@@ -49,6 +49,7 @@ function runCode() {
         :title="lesson.title"
         :description="lesson.description"
         :task="lesson.task"
+        :objective="lesson.objective"
         :code="code"
         :reset-version="editorResetVersion"
         @update-code="handleCodeUpdate"

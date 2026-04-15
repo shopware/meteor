@@ -53,17 +53,6 @@ function getActiveLesson() {
       </ol>
     </section>
 
-    <section class="panel panel--muted">
-      <h2>Current task</h2>
-      <p>
-        {{ getActiveLesson().task }}
-      </p>
-    </section>
-
-    <section class="panel panel--subtle">
-      <h2>What this teaches</h2>
-      <p>{{ getActiveLesson().objective }}</p>
-    </section>
   </aside>
 </template>
 
@@ -194,11 +183,4 @@ function getActiveLesson() {
   font-weight: 700;
 }
 
-.panel--muted {
-  background: #f8fafc;
-}
-
-.panel--subtle {
-  background: #fdfefe;
-}
 </style>

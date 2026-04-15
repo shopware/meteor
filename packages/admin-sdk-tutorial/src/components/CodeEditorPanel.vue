@@ -8,6 +8,7 @@ const props = defineProps<{
   title: string;
   description: string;
   task: string;
+  objective: string;
   code: string;
   resetVersion: number;
 }>();
@@ -54,7 +55,10 @@ function handleInput(nextCode?: string | { toString(): string }) {
       <div class="editor-panel__tab">main.ts</div>
     </div>
 
-    <p class="editor-panel__description">{{ description }}</p>
+    <div class="editor-panel__intro">
+      <p class="editor-panel__description">{{ description }}</p>
+      <p class="editor-panel__objective">{{ objective }}</p>
+    </div>
 
     <div class="editor-panel__task">
       <span>Try this</span>
@@ -118,6 +122,18 @@ function handleInput(nextCode?: string | { toString(): string }) {
 .editor-panel__description {
   margin: 0;
   color: #526072;
+  line-height: 1.6;
+}
+
+.editor-panel__intro {
+  display: grid;
+  gap: 10px;
+}
+
+.editor-panel__objective {
+  margin: 0;
+  color: #334155;
+  font-weight: 600;
   line-height: 1.6;
 }
 
