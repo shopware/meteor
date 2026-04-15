@@ -1,5 +1,12 @@
 # Changelog
 
+## 6.8.0
+
+### Minor Changes
+
+- [#1119](https://github.com/shopware/meteor/pull/1119) [`38dca02`](https://github.com/shopware/meteor/commit/38dca021430720533747c51a0755756f02ed0aa7) Thanks [@SebastianFranze](https://github.com/SebastianFranze)! - Add an experimental consent API to the Admin SDK with `sw.consent.status()` and
+  `sw.consent.request()`, both returning a typed `Consent` result.
+
 ## 6.7.4
 
 ### Patch Changes
