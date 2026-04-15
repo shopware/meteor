@@ -1,16 +1,60 @@
 <script setup lang="ts">
+import { computed, ref, watch } from 'vue';
+
 import DummyAdminShell from '@/components/DummyAdminShell.vue';
 import type { TutorialRuntimeState } from '@/types/runtime';
 
-defineProps<{
+const props = defineProps<{
   runtimeState: TutorialRuntimeState;
+  code: string;
+  iframeRunCode: string;
+  lessonId: string;
   previewResetVersion: number;
   outputMessage: string;
   executionMessage: string;
   executionError: string | null;
   executionStatus: 'idle' | 'success' | 'error';
   lastActionLabel: string;
+  iframeStatus: string;
+  lastSdkMessageType: string;
+  registeredSourceCount: number;
+  runtimeLocationId: string;
 }>();
+
+const emit = defineEmits<{
+  runtimeFrameWindow: [runtimeWindow: Window | null];
+}>();
+
+const runtimeFrame = ref<HTMLIFrameElement | null>(null);
+
+const runtimeFrameSrc = computed(
+  () =>
+    `/iframe-runtime.html?lesson-id=${props.lessonId}&location-id=${props.runtimeLocationId}&run-version=${props.previewResetVersion}`,
+);
+
+function syncRuntimeFrame() {
+  emit('runtimeFrameWindow', runtimeFrame.value?.contentWindow ?? null);
+
+  runtimeFrame.value?.contentWindow?.postMessage(
+    {
+      source: 'tutorial-host',
+      type: 'tutorial:set-code',
+      lessonId: props.lessonId,
+      locationId: props.runtimeLocationId,
+      code: props.code,
+      runCode: props.iframeRunCode,
+      runVersion: props.previewResetVersion,
+    },
+    '*',
+  );
+}
+
+watch(
+  () => [props.code, props.lessonId, props.previewResetVersion, props.runtimeLocationId],
+  () => {
+    syncRuntimeFrame();
+  },
+);
 </script>
 
 <template>
@@ -25,7 +69,34 @@ defineProps<{
       </div>
 
       <div class="preview-panel__frame">
-        <DummyAdminShell :runtime-state="runtimeState" />
+        <DummyAdminShell
+          :runtime-state="runtimeState"
+          :lesson-id="lessonId"
+          :code="code"
+          :run-code="iframeRunCode"
+          :run-version="previewResetVersion"
+        />
+      </div>
+
+      <div class="preview-panel__runtime-card">
+        <div class="preview-panel__runtime-header">
+          <div>
+            <p class="preview-panel__label">Lesson runtime iframe</p>
+            <h3>{{ iframeStatus }}</h3>
+          </div>
+          <div class="preview-panel__meta">
+            <span class="preview-panel__counter">{{ lastSdkMessageType }}</span>
+            <span class="preview-panel__counter">sources: {{ registeredSourceCount }}</span>
+          </div>
+        </div>
+
+        <iframe
+          ref="runtimeFrame"
+          class="preview-panel__runtime-frame"
+          :src="runtimeFrameSrc"
+          title="Lesson runtime iframe"
+          @load="syncRuntimeFrame"
+        />
       </div>
     </section>
 
@@ -47,11 +118,18 @@ defineProps<{
         <span>What to observe</span>
         <p class="preview-panel__output-message">{{ outputMessage }}</p>
       </div>
-      <div class="preview-panel__copy-block preview-panel__copy-block--muted">
+      <div
+        v-if="executionStatus !== 'error'"
+        class="preview-panel__copy-block preview-panel__copy-block--muted"
+      >
         <span>Execution</span>
         <p class="preview-panel__output-empty">{{ executionMessage }}</p>
       </div>
-      <p v-if="executionError" class="preview-panel__output-error">{{ executionError }}</p>
+      <p v-if="executionError" class="preview-panel__output-error">
+        <strong>Execution failed</strong>
+        <span>{{ executionMessage }}</span>
+        <span>{{ executionError }}</span>
+      </p>
     </section>
   </div>
 </template>
@@ -86,6 +164,11 @@ defineProps<{
 .preview-panel__header h2 {
   margin: 4px 0 0;
   font-size: 20px;
+}
+
+.preview-panel__runtime-header h3 {
+  margin: 4px 0 0;
+  font-size: 16px;
 }
 
 .preview-panel__label {
@@ -179,14 +262,45 @@ defineProps<{
   background: linear-gradient(180deg, #f8fafc 0%, #eef2f7 100%);
 }
 
+.preview-panel__runtime-card {
+  display: grid;
+  gap: 14px;
+  padding: 16px;
+  border: 1px solid #d8e0eb;
+  border-radius: 18px;
+  background: #f8fafc;
+}
+
+.preview-panel__runtime-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.preview-panel__runtime-frame {
+  width: 100%;
+  min-height: 180px;
+  border: 1px solid #d8e0eb;
+  border-radius: 14px;
+  background: #ffffff;
+}
+
 .preview-panel__output-error {
   margin: 0;
+  display: grid;
+  gap: 6px;
   padding: 12px 14px;
   border: 1px solid #fecaca;
   border-radius: 14px;
   background: #fef2f2;
   color: #b91c1c;
   line-height: 1.6;
+}
+
+.preview-panel__output-error strong,
+.preview-panel__output-error span {
+  display: block;
 }
 
 @media (max-width: 720px) {
@@ -202,6 +316,11 @@ defineProps<{
   .preview-panel__frame {
     aspect-ratio: auto;
     min-height: 420px;
+  }
+
+  .preview-panel__runtime-header {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 </style>

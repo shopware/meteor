@@ -1,8 +1,13 @@
 <script setup lang="ts">
+import DummyAdminLocationFrame from '@/components/DummyAdminLocationFrame.vue';
 import type { TutorialRuntimeState } from '@/types/runtime';
 
 defineProps<{
   runtimeState: TutorialRuntimeState;
+  lessonId: string;
+  code: string;
+  runCode: string;
+  runVersion: number;
 }>();
 </script>
 
@@ -52,6 +57,15 @@ defineProps<{
           <div v-if="surface.injectedContent" class="dummy-admin__card-injected">
             {{ surface.injectedContent }}
           </div>
+          <DummyAdminLocationFrame
+            v-if="surface.runtimeLocationId"
+            :lesson-id="lessonId"
+            :location-id="surface.runtimeLocationId"
+            :code="code"
+            :run-code="runCode"
+            :run-version="runVersion"
+            :height="surface.runtimeHeight"
+          />
         </div>
       </div>
     </div>
@@ -172,6 +186,18 @@ defineProps<{
   border: 1px dashed #86efac;
   background: #f0fdf4;
   color: #166534;
+}
+
+.dummy-admin__notification--warning {
+  border: 1px dashed #fcd34d;
+  background: #fffbeb;
+  color: #92400e;
+}
+
+.dummy-admin__notification--error {
+  border: 1px dashed #fca5a5;
+  background: #fef2f2;
+  color: #b91c1c;
 }
 
 .dummy-admin__empty-state {

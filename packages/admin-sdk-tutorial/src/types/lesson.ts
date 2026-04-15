@@ -6,6 +6,7 @@ export interface TutorialLesson {
   description: string;
   task: string;
   objective: string;
+  runtimeLocationId: string;
   starterCode: string;
   previewLabel: string;
   outputMessage: string;

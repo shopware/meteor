@@ -42,6 +42,10 @@ function handleInput(nextCode?: string | { toString(): string }) {
   localCode.value = normalizedCode;
   emit('updateCode', normalizedCode);
 }
+
+defineExpose({
+  getCode: () => localCode.value,
+});
 </script>
 
 <template>

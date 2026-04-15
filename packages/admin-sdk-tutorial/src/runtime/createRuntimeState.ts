@@ -11,6 +11,7 @@ export function createRuntimeState(lesson: TutorialLesson): TutorialRuntimeState
             description: 'Position: before-primary-action',
             variant: 'ghost' as const,
             slotLabel: 'Host slot',
+            runtimeHeight: 180,
           },
           {
             id: 'after-primary-action',
@@ -18,6 +19,7 @@ export function createRuntimeState(lesson: TutorialLesson): TutorialRuntimeState
             description: 'Position: after-primary-action',
             variant: 'ghost' as const,
             slotLabel: 'Host slot',
+            runtimeHeight: 180,
           },
         ]
       : [

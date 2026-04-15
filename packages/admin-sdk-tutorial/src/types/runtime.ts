@@ -12,36 +12,17 @@ export interface DummyAdminSurface {
   variant: 'default' | 'ghost';
   slotLabel?: string;
   injectedContent?: string;
+  runtimeLocationId?: string;
+  runtimeHeight?: number;
 }
 
 export interface TutorialRuntimeState {
   statusLabel: string;
   notificationTitle: string;
   notificationMessage: string;
-  notificationTone: 'info' | 'success';
+  notificationTone: 'info' | 'success' | 'warning' | 'error';
   emptyStateTitle: string;
   emptyStateMessage: string;
   menuItems: DummyAdminMenuItem[];
   surfaces: DummyAdminSurface[];
-}
-
-export interface TutorialSdkBridge {
-  notification: {
-    dispatch: (payload: {
-      title: string;
-      message: string;
-      tone?: 'info' | 'success';
-    }) => void;
-  };
-  menu: {
-    add: (payload: { label: string; position?: number }) => void;
-  };
-  location: {
-    render: (payload: {
-      locationId: string;
-      positionId?: string;
-      content: string;
-    }) => void;
-  };
-  reset: (state: TutorialRuntimeState) => void;
 }

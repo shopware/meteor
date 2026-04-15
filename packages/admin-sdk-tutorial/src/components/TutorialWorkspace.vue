@@ -1,12 +1,19 @@
 <script setup lang="ts">
+import { ref } from 'vue';
+
 import CodeEditorPanel from '@/components/CodeEditorPanel.vue';
 import PreviewPanel from '@/components/PreviewPanel.vue';
 import type { TutorialLesson } from '@/types/lesson';
 import type { TutorialRuntimeState } from '@/types/runtime';
 
+type CodeEditorPanelExposed = {
+  getCode: () => string;
+};
+
 const props = defineProps<{
   lesson: TutorialLesson;
   code: string;
+  iframeRunCode: string;
   editorResetVersion: number;
   previewResetVersion: number;
   runtimeState: TutorialRuntimeState;
@@ -14,13 +21,20 @@ const props = defineProps<{
   executionError: string | null;
   executionStatus: 'idle' | 'success' | 'error';
   lastActionLabel: string;
+  iframeStatus: string;
+  lastSdkMessageType: string;
+  registeredSourceCount: number;
+  runtimeLocationId: string;
 }>();
 
 const emit = defineEmits<{
   updateCode: [code: string];
   resetCode: [];
-  runCode: [];
+  runCode: [codeSnapshot: string];
+  runtimeFrameWindow: [runtimeWindow: Window | null];
 }>();
+
+const editorPanel = ref<CodeEditorPanelExposed | null>(null);
 
 function handleCodeUpdate(code: string) {
   emit('updateCode', code);
@@ -31,7 +45,11 @@ function resetCode() {
 }
 
 function runCode() {
-  emit('runCode');
+  emit('runCode', editorPanel.value?.getCode() ?? props.code);
+}
+
+function handleRuntimeFrameWindow(runtimeWindow: Window | null) {
+  emit('runtimeFrameWindow', runtimeWindow);
 }
 </script>
 
@@ -46,6 +64,7 @@ function runCode() {
       </div>
 
       <CodeEditorPanel
+        ref="editorPanel"
         :title="lesson.title"
         :description="lesson.description"
         :task="lesson.task"
@@ -58,12 +77,20 @@ function runCode() {
 
     <PreviewPanel
       :runtime-state="runtimeState"
+      :code="code"
+      :iframe-run-code="iframeRunCode"
       :preview-reset-version="previewResetVersion"
       :output-message="lesson.outputMessage"
       :execution-message="executionMessage"
       :execution-error="executionError"
       :execution-status="executionStatus"
       :last-action-label="lastActionLabel"
+      :lesson-id="lesson.id"
+      :iframe-status="iframeStatus"
+      :last-sdk-message-type="lastSdkMessageType"
+      :registered-source-count="registeredSourceCount"
+      :runtime-location-id="runtimeLocationId"
+      @runtime-frame-window="handleRuntimeFrameWindow"
     />
   </section>
 </template>
