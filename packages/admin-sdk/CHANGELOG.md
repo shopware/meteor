@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.9.0
+
+### Minor Changes
+
+- [#1125](https://github.com/shopware/meteor/pull/1125) [`8bf06e1`](https://github.com/shopware/meteor/commit/8bf06e1263674c7ac16eef307b3ce94568786772) Thanks [@quando1910](https://github.com/quando1910)! - Add uiSidebarSetActive type and sender to sidebar module.
+
 ## 6.8.0
 
 ### Minor Changes
