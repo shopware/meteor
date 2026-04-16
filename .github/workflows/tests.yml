@@ -42,6 +42,26 @@ jobs:
       - name: Validate changesets package names
         run: pnpm run validate:changesets
 
+      - name: Validate docs redirects
+        if: ${{ github.event_name != 'pull_request' }}
+        run: |
+          if [ ! -f docs/admin-sdk/docs.yml ]; then
+            echo "Skipping docs redirect validation: docs/admin-sdk/docs.yml not found"
+            exit 0
+          fi
+
+          pnpm run validate:docs-redirects
+
+      - name: Validate docs redirects
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          if [ ! -f docs/admin-sdk/docs.yml ]; then
+            echo "Skipping docs redirect validation: docs/admin-sdk/docs.yml not found"
+            exit 0
+          fi
+
+          pnpm run validate:docs-redirects -- origin/${{ github.base_ref }}
+
       - name: Build packages
         run: pnpm turbo run build
 
