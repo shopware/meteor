@@ -61,14 +61,14 @@ sw.ui.sidebar.remove({
 | :----------- | :------- | :--------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------|
 | `locationId` | true | The id of the sidebar to remove | 6.7 |
 
-### Active a sidebar
+### Set an active sidebar
 
-Active a sidebar that was already registered with [`add`](#add-a-sidebar). Use this when the sidebar exists but is closed or not in front. The Administration shows the panel for the given `locationId` and loads the content you associated with that id.
+Set an active sidebar that was already registered with [`add`](#add-a-sidebar). Use this when the sidebar exists but is closed or not in front. The Administration shows the panel for the given `locationId` and loads the content you associated with that id.
 
 #### Usage:
 
 ```ts
-sw.ui.sidebar.active({
+sw.ui.sidebar.setActive({
     locationId: 'sidebar-chat-bot',
 });
 ```
