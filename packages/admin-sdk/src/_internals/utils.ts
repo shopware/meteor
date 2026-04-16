@@ -98,9 +98,16 @@ export function removeRoot(path: string | number): string | number {
 
 /**
  * Returns the technical name (registry key) of the extension matching the given base URL.
- * Returns undefined when the origin is the admin itself or no matching extension is found.
+ *
+ * For cross-origin extensions the lookup uses origin comparison. For same-origin extensions
+ * (e.g. plugins served from the same host as the Admin) the origin alone is not enough to
+ * distinguish the extension from the Admin itself. Pass the sender `Window` as `sourceWindow`
+ * to enable a fallback that matches the window's full href against the known `baseUrl` prefixes.
+ *
+ * Returns undefined when no matching extension is found or when the origin is the Admin's own
+ * origin and no `sourceWindow` is provided.
  */
-export function findExtensionNameByBaseUrl(baseUrl?: string): string | undefined {
+export function findExtensionNameByBaseUrl(baseUrl?: string, sourceWindow?: Window): string | undefined {
   if (typeof baseUrl !== 'string' || baseUrl === '') {
     return undefined;
   }
@@ -113,6 +120,28 @@ export function findExtensionNameByBaseUrl(baseUrl?: string): string | undefined
   }
 
   if (comparedBaseUrl.origin === window.location.origin) {
+    // Origin alone cannot resolve same-origin extensions because origin matches
+    // the Admin itself. When the sender Window is provided, fall back to href-prefix matching.
+    if (sourceWindow) {
+      try {
+        // Strip query string — the SDK appends ?location-id=... to iFrame URLs.
+        const href = sourceWindow.location.href.split('?')[0];
+        // Strip any trailing slash so both 'base/' and 'base' normalise to
+        // 'base', then accept either an exact match (baseUrl IS the file) or a
+        // path-boundary prefix match (baseUrl is a directory). Among all
+        // matching extensions pick the most specific one (longest baseUrl) to
+        // handle nested base paths correctly.
+        const match = Object.entries(window._swsdk.adminExtensions)
+          .filter(([, ext]) => {
+            const base = ext.baseUrl.replace(/\/$/, '');
+            return href === base || href.startsWith(`${base}/`);
+          })
+          .sort(([, a], [, b]) => b.baseUrl.length - a.baseUrl.length)[0];
+        return match?.[0];
+      } catch {
+        // Same-origin access should never be denied; ignore defensively.
+      }
+    }
     return undefined;
   }
 

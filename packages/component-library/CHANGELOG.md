@@ -1,5 +1,35 @@
 # Changelog
 
+## 4.28.5
+
+### Patch Changes
+
+- [#1102](https://github.com/shopware/meteor/pull/1102) [`924d5cb`](https://github.com/shopware/meteor/commit/924d5cbbf82be87cf3e6679c8d7a72efc5625286) Thanks [@taltholtmann](https://github.com/taltholtmann)! - Do not pass `disabled` to `mt-field-label` in `mt-switch`, so the inheritance toggle remains clickable when the field is disabled
+
+- Updated dependencies [[`38dca02`](https://github.com/shopware/meteor/commit/38dca021430720533747c51a0755756f02ed0aa7)]:
+  - @shopware-ag/meteor-admin-sdk@6.8.0
+
+## 4.28.4
+
+### Patch Changes
+
+- Updated dependencies [[`e5ed183`](https://github.com/shopware/meteor/commit/e5ed183fb28337aceee3addabd30b2cbc1e94309)]:
+  - @shopware-ag/meteor-admin-sdk@6.7.4
+
+## 4.28.3
+
+### Patch Changes
+
+- Updated dependencies [[`3555da4`](https://github.com/shopware/meteor/commit/3555da49571e2374e1c822a79006f2b8c8c0097c)]:
+  - @shopware-ag/meteor-admin-sdk@6.7.3
+
+## 4.28.2
+
+### Patch Changes
+
+- Updated dependencies [[`b88ded5`](https://github.com/shopware/meteor/commit/b88ded5bfe9791c442829fd1bae0d6220dba0887)]:
+  - @shopware-ag/meteor-admin-sdk@6.7.2
+
 ## 4.28.1
 
 ### Patch Changes

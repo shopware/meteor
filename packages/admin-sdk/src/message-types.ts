@@ -43,6 +43,11 @@ import type {
 } from './data/repository';
 import type { iapCheckout } from './iap';
 import type { telemetryDispatch } from './telemetry';
+import type {
+  consentStatus,
+  consentRequest,
+  consentRequestResponse,
+} from './consent';
 
 /**
  * Contains all shopware send types.
@@ -109,6 +114,9 @@ export interface ShopwareMessageTypes {
   datasetGet: datasetGet,
   iapCheckout: iapCheckout,
   telemetryDispatch: telemetryDispatch,
+  consentStatus: consentStatus,
+  consentRequest: consentRequest,
+  consentRequestResponse: consentRequestResponse,
   __function__: __function__,
   __registerWindow__: __registerWindow__,
   _multiply: _multiply,

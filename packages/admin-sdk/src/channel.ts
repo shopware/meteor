@@ -289,11 +289,11 @@ export function handle<MESSAGE_TYPE extends keyof ShopwareMessageTypes>
 
     let shopwareMessageData;
 
-    // Try to parse the json file
+    // Try to parse the json data
     try {
       shopwareMessageData = JSON.parse(event.data) as unknown;
     } catch {
-      // Fail silently when message is not a valid json file
+      // Fail silently when message is not a valid json data
       return;
     }
 

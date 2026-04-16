@@ -1,5 +1,36 @@
 # Changelog
 
+## 6.8.0
+
+### Minor Changes
+
+- [#1119](https://github.com/shopware/meteor/pull/1119) [`38dca02`](https://github.com/shopware/meteor/commit/38dca021430720533747c51a0755756f02ed0aa7) Thanks [@SebastianFranze](https://github.com/SebastianFranze)! - Add an experimental consent API to the Admin SDK with `sw.consent.status()` and
+  `sw.consent.request()`, both returning a typed `Consent` result.
+
+## 6.7.4
+
+### Patch Changes
+
+- [#1117](https://github.com/shopware/meteor/pull/1117) [`e5ed183`](https://github.com/shopware/meteor/commit/e5ed183fb28337aceee3addabd30b2cbc1e94309) Thanks [@bubleg](https://github.com/bubleg)! - fix(telemetry): strip query string from iframe href before same-origin baseUrl matching
+
+  The Admin SDK appends `?location-id=...` to extension iframe URLs. The same-origin source resolution in `findExtensionNameByBaseUrl` now strips the query string and fragment from the sender window's href before matching against `baseUrl`, so same-origin extensions are correctly identified even when the iframe URL contains query parameters.
+
+## 6.7.3
+
+### Patch Changes
+
+- [#1115](https://github.com/shopware/meteor/pull/1115) [`3555da4`](https://github.com/shopware/meteor/commit/3555da49571e2374e1c822a79006f2b8c8c0097c) Thanks [@bubleg](https://github.com/bubleg)! - fix(telemetry): handle exact-URL baseUrl pattern in same-origin extension resolution
+
+  `findExtensionNameByBaseUrl` now accepts `baseUrl` values that point directly to a file (e.g. `/admin/plugin/index.html`) rather than a directory prefix. The same-origin fallback strips any trailing slash and matches either by exact href equality or by path-boundary prefix, so plugins whose `baseUrl` is set to their entry-point URL are correctly resolved instead of falling back to `undefined`.
+
+## 6.7.2
+
+### Patch Changes
+
+- [#1112](https://github.com/shopware/meteor/pull/1112) [`b88ded5`](https://github.com/shopware/meteor/commit/b88ded5bfe9791c442829fd1bae0d6220dba0887) Thanks [@bubleg](https://github.com/bubleg)! - fix(telemetry): resolve source for same-origin extensions via sender window href
+
+  `findExtensionNameByBaseUrl` (and `getSourceExtensionName`) now accept an optional `sourceWindow` parameter. When the message origin matches the Admin's own origin — which happens for plugins served from the same host — the function falls back to matching `sourceWindow.location.href` against the known `baseUrl` prefixes instead of returning `undefined`. Cross-origin behaviour is unchanged.
+
 ## 6.7.1
 
 ### Patch Changes

@@ -119,9 +119,97 @@ describe('telemetry', () => {
       expect(name).toBeUndefined();
     });
 
-    it('returns undefined when origin matches the admin window (same origin)', () => {
+    it('returns undefined when origin matches the admin window and no sourceWindow is given', () => {
       const name = getSourceExtensionName(window.location.origin);
       expect(name).toBeUndefined();
+    });
+
+    it('resolves a same-origin extension when sourceWindow href matches a baseUrl prefix', () => {
+      window._swsdk.adminExtensions['same-origin-plugin'] = {
+        baseUrl: `${window.location.origin}/bundles/same-origin-plugin/`,
+        permissions: {},
+      };
+
+      const fakeWindow = {
+        location: { href: `${window.location.origin}/bundles/same-origin-plugin/index.html` },
+      } as Window;
+
+      const name = getSourceExtensionName(window.location.origin, fakeWindow);
+      expect(name).toBe('same-origin-plugin');
+    });
+
+    it('returns undefined for same-origin when sourceWindow href does not match any baseUrl', () => {
+      const fakeWindow = {
+        location: { href: `${window.location.origin}/some/other/path` },
+      } as Window;
+
+      const name = getSourceExtensionName(window.location.origin, fakeWindow);
+      expect(name).toBeUndefined();
+    });
+
+    it('does not match an extension whose baseUrl is a string prefix of another extension baseUrl', () => {
+      window._swsdk.adminExtensions['plugin'] = {
+        baseUrl: `${window.location.origin}/bundles/plugin/`,
+        permissions: {},
+      };
+      window._swsdk.adminExtensions['plugin-extra'] = {
+        baseUrl: `${window.location.origin}/bundles/plugin-extra/`,
+        permissions: {},
+      };
+
+      const fakeWindow = {
+        location: { href: `${window.location.origin}/bundles/plugin-extra/index.html` },
+      } as Window;
+
+      const name = getSourceExtensionName(window.location.origin, fakeWindow);
+      expect(name).toBe('plugin-extra');
+    });
+
+    it('resolves when baseUrl is the exact href of the sender window (file URL pattern)', () => {
+      window._swsdk.adminExtensions['exact-url-plugin'] = {
+        baseUrl: `${window.location.origin}/admin/exact-url-plugin/index.html`,
+        permissions: {},
+      };
+
+      // The SDK appends ?location-id=... to iframe URLs; we must still resolve correctly.
+      const fakeWindow = {
+        location: { href: `${window.location.origin}/admin/exact-url-plugin/index.html?location-id=my-location` },
+      } as Window;
+
+      const name = getSourceExtensionName(window.location.origin, fakeWindow);
+      expect(name).toBe('exact-url-plugin');
+    });
+
+    it('resolves a same-origin extension whose baseUrl has no trailing slash', () => {
+      window._swsdk.adminExtensions['no-slash-plugin'] = {
+        baseUrl: `${window.location.origin}/bundles/no-slash-plugin`,
+        permissions: {},
+      };
+
+      const fakeWindow = {
+        location: { href: `${window.location.origin}/bundles/no-slash-plugin/index.html` },
+      } as Window;
+
+      const name = getSourceExtensionName(window.location.origin, fakeWindow);
+      expect(name).toBe('no-slash-plugin');
+    });
+
+    it('returns the most specific match when baseUrls are nested', () => {
+      window._swsdk.adminExtensions['parent-plugin'] = {
+        baseUrl: `${window.location.origin}/bundles/parent/`,
+        permissions: {},
+      };
+      window._swsdk.adminExtensions['child-plugin'] = {
+        baseUrl: `${window.location.origin}/bundles/parent/child/`,
+        permissions: {},
+      };
+
+      const fakeWindow = {
+        location: { href: `${window.location.origin}/bundles/parent/child/index.html` },
+      } as Window;
+
+      const name = getSourceExtensionName(window.location.origin, fakeWindow);
+      expect(name).toBe('child-plugin');
     });
 
     it('does not match an extension on the same host but a different port', () => {

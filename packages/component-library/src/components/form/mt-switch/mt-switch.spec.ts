@@ -309,6 +309,29 @@ describe("mt-switch", () => {
     expect(handler).toHaveBeenCalledOnce();
   });
 
+  it("can be unlinked from its inherited value even when disabled", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+
+    render(MtSwitch, {
+      props: {
+        // @ts-expect-error -- Type is not defined
+        onInheritanceRemove: handler,
+        checked: false,
+        disabled: true,
+        inheritedValue: true,
+        isInheritanceField: true,
+        isInherited: true,
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("button", { name: "Unlink inheritance" }));
+
+    // ASSERT
+    expect(handler).toHaveBeenCalledOnce();
+  });
+
   it("can be linked to its inherited value", async () => {
     // ARRANGE
     const handler = vi.fn();
