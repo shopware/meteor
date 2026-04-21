@@ -31,4 +31,17 @@ export const Default = defineStory<typeof MtPagination>({
     limit: 25,
   },
   name: "mt-pagination",
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-pagination
+  :current-page="1"
+  :limit="25"
+  :total-items="100"
+  @change-current-page="handlePageChange"
+/>`,
+      },
+    },
+  },
 });

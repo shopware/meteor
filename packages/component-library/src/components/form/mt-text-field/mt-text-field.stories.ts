@@ -122,4 +122,16 @@ export default {
 
 export type MtTextFieldStory = StoryObj<MtTextFieldMeta>;
 
-export const Default: MtTextFieldStory = {};
+export const Default: MtTextFieldStory = {
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-text-field
+  v-model="value"
+  label="Text field label"
+/>`,
+      },
+    },
+  },
+};

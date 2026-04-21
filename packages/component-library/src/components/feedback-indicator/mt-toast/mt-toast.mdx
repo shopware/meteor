@@ -1,15 +1,22 @@
 import { Canvas, Meta, Markdown } from "@storybook/blocks";
 
 import * as ToastStories from "./mt-toast.stories";
+import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 <Meta of={ToastStories} title="Components/mt-toast" />
 
-# Toasts
-
+<ComponentPageHeader
+  title="Toast"
+  tagName="mt-toast"
+  status="deprecated" packageImports="MtToast" 
+  sourcePath="packages/component-library/src/components/feedback-indicator/mt-toast"
+>
 A toast is a form of notifaction, directly bound to user actions, to provide additional feedback.
 Unsimilar to notifications, toasts are not persistent, they are context specific.
 
 In `meteor` toasts are placed into one of two categories automatically. These categories are `quick toasts` and `regular toasts`.
+
+</ComponentPageHeader>
 
 ## Quick toasts
 

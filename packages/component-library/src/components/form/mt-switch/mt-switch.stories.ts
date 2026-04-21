@@ -19,4 +19,38 @@ export default {
 
 export type MtSwitchStory = StoryObj<MtSwitchMeta>;
 
-export const Default: MtSwitchStory = {};
+export const Default: MtSwitchStory = {
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-switch
+  v-model="enabled"
+  label="Switchfield"
+/>`,
+      },
+    },
+  },
+};
+
+export const States: MtSwitchStory = {
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-switch :model-value="false" label="Off" />
+<mt-switch :model-value="true" label="On" />
+<mt-switch :model-value="true" label="Disabled" :disabled="true" />`,
+      },
+    },
+  },
+  render: () => ({
+    components: { MtSwitch },
+    template: `
+      <div style="display: grid; gap: 12px;">
+        <mt-switch :model-value="false" label="Off" />
+        <mt-switch :model-value="true" label="On" />
+        <mt-switch :model-value="true" label="Disabled" :disabled="true" />
+      </div>`,
+  }),
+};

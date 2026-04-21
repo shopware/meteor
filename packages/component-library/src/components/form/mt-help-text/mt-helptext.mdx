@@ -1,0 +1,63 @@
+import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
+
+import * as HelpTextStories from "./mt-helptext.stories";
+import ComponentPageHeader from "../../_docs/component-page-header.js";
+
+<Meta of={HelpTextStories} />
+
+<ComponentPageHeader
+  title="Help Text"
+  tagName="mt-help-text"
+  packageImports="MtHelpText"
+  sourcePath="packages/component-library/src/components/form/mt-help-text"
+>
+  **Help Text** shows brief supporting guidance in a tooltip without adding
+  persistent text to the layout.
+</ComponentPageHeader>
+
+## When to use
+
+- Use **Help Text** for short explanatory details that are helpful but not essential at first glance.
+- Use it next to a label or control when users may occasionally need extra context.
+- Use it to keep interfaces compact while still offering lightweight guidance.
+
+## Examples
+
+### Basic
+
+<Canvas of={HelpTextStories.Default} />
+
+## API reference
+
+<ArgTypes of={HelpTextStories} />
+
+## Do
+
+- Use **Help Text** for brief, supplementary explanations.
+- Place it near the element it describes, such as next to a label.
+- Keep the tooltip text short and specific so users can understand it quickly.
+
+## Don't
+
+- Do not use **Help Text** for critical information users must always see.
+- Do not put lengthy content in the tooltip.
+- Do not use it as a substitute for a clear label or necessary inline guidance.
+
+## Behavior notes
+
+- **Help Text** uses **Tooltip** internally and shows the provided text on hover or keyboard focus.
+- `placement`, `width`, `showDelay`, and `hideDelay` can adjust how the tooltip behaves.
+- The trigger is a small icon button, so the content should stay concise and contextual.
+
+## Accessibility notes
+
+- Only use **Help Text** for optional supporting guidance, not for instructions users must read to complete a task.
+- Keep the tooltip text short enough to be understood quickly when focus moves to the trigger.
+- Make sure the nearby label or surrounding UI still makes sense without opening the tooltip.
+
+## Comparisons
+
+### **Help Text** vs **Tooltip**
+
+- Use **Help Text** when you need a standard small help trigger for brief contextual guidance near a field or control.
+- Use **Tooltip** when you need more flexible tooltip behavior or a different trigger element.

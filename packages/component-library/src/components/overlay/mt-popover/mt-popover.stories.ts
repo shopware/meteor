@@ -70,6 +70,11 @@ export default {
         MtFloatingUi,
         MtButton,
       },
+      setup: () => {
+        return {
+          args,
+        };
+      },
       data() {
         return {
           itemVisible: true,
@@ -149,12 +154,12 @@ export default {
           openContentInPeekMode: false,
         };
       },
-      watch: {},
       computed: {
         console() {
           return console;
         },
       },
+      watch: {},
       methods: {
         onColumnChangeVisibility(itemId: string) {
           const item = this.columnOrderOptions.find((i) => i.id === itemId);
@@ -343,14 +348,29 @@ export default {
         </mt-popover>
       </div>
     `,
-      setup: () => {
-        return {
-          args,
-        };
-      },
     }),
 } as MtPopoverMeta;
 
 export type MtPopoverStory = StoryObj<MtPopoverMeta>;
 
-export const Default: MtPopoverStory = {};
+export const Default: MtPopoverStory = {
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-popover title="Popover example">
+  <template #trigger="{ toggleFloatingUi }">
+    <mt-button variant="secondary" @click.stop="toggleFloatingUi">
+      Toggle popover
+    </mt-button>
+  </template>
+
+  <template #popover-items__base>
+    <mt-popover-item label="Option 1" />
+    <mt-popover-item label="Option 2" />
+  </template>
+</mt-popover>`,
+      },
+    },
+  },
+};

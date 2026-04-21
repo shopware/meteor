@@ -1,27 +1,82 @@
-import { Meta } from "@storybook/blocks";
+import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
 
 import * as BadgeStories from "./mt-badge.stories";
+import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 <Meta of={BadgeStories} title="Components/mt-badge" />
 
-# Badge
+<ComponentPageHeader
+  title="Badge"
+  tagName="mt-badge"
+  packageImports="MtBadge"
+  sourcePath="packages/component-library/src/components/feedback-indicator/mt-badge"
+>
+  **Badge** is a compact, non-interactive status label. Use it to show short,
+  glanceable states such as `Active`, `Draft`, or `Archived` without adding a
+  full message component to the layout.
+</ComponentPageHeader>
 
-The `Badge` component is a small, non-interactive visual indicator used to display the status of an entity or feature. It provides a quick, glanceable representation of state (e.g. Draft, Error). `Badges` are short, subtle, and reinforce meaning without overwhelming other UI elements.
+## When to use
 
-### ✅ Do's
+- Use **Badge** for short labels that help users scan status, category, or state quickly.
+- Use it inline in tables, cards, lists, or detail headers where space is limited.
+- Use the variant, size, icon, or status indicator to reinforce meaning when that extra visual cue helps.
 
----
+## Examples
 
-- Use `Badges` for short, clear status labels (e.g. Active, In progress, Done, …)
-- Select the variant that matches semantic meaning (e.g. `positive` for success, `critical` for errors)
-- Choose an appropriate size depending on context (list, card, inline)
-- Use the status indicator or icon for additional visual clarity when needed
+### Basic
 
-### ❌ Don'ts
+<Canvas of={BadgeStories.Default} />
 
----
+### Variants
 
-- Don’t use `Badges` for long sentences (e.g. “This product is temporarily unavailable”)
-- Don't make badges clickable as they are not `Buttons` or `Links`. However, showing a `Tooltip` on hover is allowed.
-- Don’t overload screens with too many badges, they lose effectiveness
-- Don’t rely on color alone to convey meaning, use text and/or an icon for clarity
+<Canvas of={BadgeStories.AllVariants} />
+
+### Sizes
+
+<Canvas of={BadgeStories.AllSizes} />
+
+### Status indicator
+
+<Canvas of={BadgeStories.StatusIndicator} />
+
+### Icon
+
+<Canvas of={BadgeStories.WithIcon} />
+
+## API reference
+
+<ArgTypes of={BadgeStories} />
+
+## Do
+
+- Keep badge labels short and easy to scan.
+- Choose the `variant` that matches the semantic meaning of the label.
+- Use the smallest size that still fits the surrounding layout comfortably.
+- Add an icon or status indicator only when it meaningfully improves recognition.
+
+## Don't
+
+- Do not use **Badge** for long messages or explanatory text.
+- Do not make **Badge** behave like buttons or links.
+- Do not overload a surface with too many badges, because they quickly lose emphasis.
+- Do not rely on color alone to communicate meaning.
+
+## Behavior notes
+
+- **Badge** is presentational and non-interactive. If users need to click, open, or trigger something, use a more appropriate interactive component around it.
+- The component stays intentionally compact, so it works best with a short label and a single supporting visual treatment.
+- The status indicator and icon are optional enhancements, not a replacement for a clear text label.
+
+## Accessibility notes
+
+- Keep the label understandable on its own so meaning does not depend only on color, the status dot, or the icon.
+- Because badges are non-interactive, avoid using them as the only way to expose important information or actions.
+- Use concise text so the badge remains readable in dense interfaces and small sizes.
+
+## Comparisons
+
+### **Badge** vs **Promo Badge**
+
+- Use **Badge** for general product states such as status, health, or workflow labels.
+- Use **Promo Badge** for predefined promotional labels such as `New`, `Beta`, or `Shopware AI`.

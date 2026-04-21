@@ -1,0 +1,30 @@
+import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
+
+import * as PopoverStories from "./mt-popover.stories";
+import ComponentPageHeader from "../../_docs/component-page-header.js";
+
+<Meta of={PopoverStories} />
+
+<ComponentPageHeader
+  title="Popover"
+  tagName="mt-popover"
+  status="experimental"
+  packageImports="MtPopover"
+  sourcePath="packages/component-library/src/components/overlay/mt-popover"
+>
+  **Popover** is experimental. Prefer **Action Menu** or **Floating UI** when
+  those components already fit the use case.
+</ComponentPageHeader>
+
+## Replacement guidance
+
+- Use **Action Menu** when you need a standard menu of actions or options.
+- Use **Floating UI** when you need a custom floating surface with your own layout, content, or interaction behavior.
+
+## Example
+
+<Canvas of={PopoverStories.Default} />
+
+## API reference
+
+<ArgTypes of={PopoverStories} />

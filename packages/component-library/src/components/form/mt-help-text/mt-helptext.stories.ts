@@ -4,33 +4,23 @@ import type { Meta } from "@storybook/vue3";
 
 type MtHelpTextMeta = Meta<typeof MtHelpText>;
 
-export default {
+const meta = {
   title: "Components/mt-help-text",
   component: MtHelpText,
   args: {
     text: "Help text",
   },
+} as MtHelpTextMeta;
+
+export default meta;
+
+export const Default = defineStory({
   parameters: {
     docs: {
-      description: {
-        component: `A small help icon that displays explanatory text in a tooltip on hover. Use it to provide contextual guidance without cluttering the UI.
-
-## Usage
-
-\`\`\`html
-<mt-help-text text="This field is required for checkout" />
-\`\`\`
-
-## ✅ Do's
-- Use for brief, supplementary explanations
-- Place near the element it describes (e.g. next to a label)
-
-## ❌ Don'ts
-- Don't use for critical information users must see
-- Don't put lengthy content in the tooltip`,
+      source: {
+        language: "html",
+        code: `<mt-help-text text="This field is required for checkout" />`,
       },
     },
   },
-} as MtHelpTextMeta;
-
-export const Default = defineStory({});
+});

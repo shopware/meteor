@@ -1,0 +1,60 @@
+import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
+
+import * as ColorpickerStories from "./mt-colorpicker.stories";
+import ComponentPageHeader from "../../_docs/component-page-header.js";
+
+<Meta of={ColorpickerStories} />
+
+<ComponentPageHeader
+  title="Colorpicker"
+  tagName="mt-colorpicker"
+  packageImports="MtColorpicker"
+  sourcePath="packages/component-library/src/components/form/mt-colorpicker"
+>
+  **Colorpicker** lets users choose and edit a color value directly in a form
+  field.
+</ComponentPageHeader>
+
+## When to use
+
+- Use **Colorpicker** when users need to define a custom brand, accent, or interface color.
+- Use it when a text input alone would make color editing harder or more error-prone.
+- Use the alpha option when transparency is part of the value users need to control.
+
+## Examples
+
+### Basic
+
+<Canvas of={ColorpickerStories.Default} />
+
+### Without alpha
+
+<Canvas of={ColorpickerStories.WithoutAlpha} />
+
+## API reference
+
+<ArgTypes of={ColorpickerStories} />
+
+## Do
+
+- Use a clear label so users understand what surface or token the color affects.
+- Keep the emitted format consistent with the value your feature expects.
+- Enable alpha only when transparency is actually supported by the consuming feature.
+
+## Don't
+
+- Do not use **Colorpicker** when users only need to choose from a small fixed palette.
+- Do not enable alpha if the saved value ignores transparency.
+- Do not rely on color alone to explain what a setting changes.
+
+## Behavior notes
+
+- **Colorpicker** supports different emitted output formats through `colorOutput`, such as `auto`, `hex`, `hsl`, and `rgb`.
+- When `alpha` is enabled, the picker also exposes transparency controls and can emit values with opacity.
+- `helpText`, `required`, `error`, and inheritance-related props integrate with the shared field wrapper.
+
+## Accessibility notes
+
+- Always provide a visible label so users understand what the chosen color controls.
+- Do not rely only on the visual preview. The text value should remain understandable and editable.
+- If alpha is enabled, make sure nearby context explains how transparency affects the result.

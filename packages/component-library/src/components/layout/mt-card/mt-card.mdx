@@ -1,0 +1,115 @@
+import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
+
+import * as CardStories from "./mt-card.stories";
+import ComponentPageHeader from "../../_docs/component-page-header.js";
+
+<Meta of={CardStories} />
+
+<ComponentPageHeader
+  title="Card"
+  tagName="mt-card"
+  packageImports="MtCard"
+  sourcePath="packages/component-library/src/components/layout/mt-card"
+>
+  **Card** groups related content, metadata, and local actions inside a bordered
+  surface. Use it to break a page into clearly separated sections without losing
+  the relationship between the content and the actions around it.
+</ComponentPageHeader>
+
+## When to use
+
+- Use **Card** for settings sections, dashboards, detail views, or other grouped content that should read as one surface.
+- Use it when a section needs a local header and content that should stay visually connected.
+- Use it with tabs when users need to switch between closely related views inside the same section.
+- Use it when related content should stay visually connected instead of being spread across loose page elements.
+
+## Examples
+
+### Basic
+
+<Canvas of={CardStories.Default} />
+
+### Header content
+
+<Canvas of={CardStories.HeaderContent} />
+
+### Tabs
+
+<Canvas of={CardStories.Tabs} />
+
+### Loading
+
+<Canvas of={CardStories.Loading} />
+
+### Inheritance
+
+<Canvas of={CardStories.Inheritance} />
+
+### Inset content
+
+<Canvas of={CardStories.InsetContent} />
+
+### Inset footer
+
+<Canvas of={CardStories.InsetFooter} />
+
+## Companion export
+
+**Card** exposes **Inset** as a companion layout utility for cases where content inside the card should visually break out to the card edges without hard-coding spacing values.
+
+- Use **Inset** inside the default card content when an inner block should align to the card's outer padding instead of the current content flow.
+- Use **Inset** in the `footer` slot when the footer needs its own full-width background or custom padding treatment while still staying aligned to the card spacing tokens.
+- **Inset** works by consuming the card's inset spacing variables, so it is most useful inside components such as **Card** that define those values for you.
+
+## Anatomy
+
+**Card** is composed from a few structural regions and optional slots:
+
+- The header can contain an avatar, title, subtitle, and related header content on the right.
+- The tabs area sits below the header and can be used for closely related views of the same section.
+- The content area holds the main information, form fields, or other section content.
+
+## API reference
+
+<ArgTypes of={CardStories} />
+
+## Do
+
+- Keep each **Card** focused on one topic, entity, or task.
+- Use `title` and `subtitle` when they help users scan the section quickly.
+- Use the header to add context, identity, or one closely related action for the section.
+- Use tabs only when the content stays part of the same overall section.
+- Keep the content inside a **Card** concise enough that the surface still feels like one grouped area.
+
+## Don't
+
+- Do not overload one **Card** with unrelated content blocks or too many competing actions.
+- Do not nest many **Card** components inside each other when a simpler layout would be easier to scan.
+- Do not use **Card** as a generic wrapper for unrelated page content.
+- Do not add decorative header content if it does not help users understand the section.
+- Do not use tabs for unrelated destinations or views that should be separate sections.
+- Do not rely on a decorative card title alone when the contained actions need their own clear labels.
+
+## Behavior notes
+
+- The card header is only rendered when `title`, `subtitle`, `avatar`, or their replacement slots are provided.
+- The `tabs` slot only renders the tab bar. The surrounding view is responsible for handling tab state and swapping the content.
+- `title` and `subtitle` slots can replace the matching props when you need custom header content.
+- `isLoading` overlays the content area with a loader while the card keeps its layout.
+- **Inset** pairs naturally with **Card** because the card content and footer define the inset spacing variables that **Inset** consumes.
+- `inheritance` shows the link or unlink toggle and emits `update:inheritance` when the toggle is clicked.
+- `before-card` and `after-card` are private slots and should not be used in application code.
+
+## Accessibility notes
+
+- Prefer using the `title` prop when the card needs a programmatic label, because it is also used as the card's `aria-label`.
+- If you render custom controls in `headerRight`, make sure each control has a clear accessible name.
+- Keep card titles descriptive so users can understand the section before interacting with controls inside it.
+- If you add tabs inside a **Card**, those tabs still need their own keyboard support and clear labels.
+
+## Comparisons
+
+### **Card** vs **Inset**
+
+- Use **Card** when you need a surfaced section with its own border, header, content, and optional actions.
+- Use **Inset** when you only need spacing or padded grouping inside an existing surface.

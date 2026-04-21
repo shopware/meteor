@@ -1,0 +1,67 @@
+import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
+
+import * as EntitySelectStories from "./mt-entity-select.stories";
+import ComponentPageHeader from "../../_docs/component-page-header.js";
+
+<Meta of={EntitySelectStories} title="Components/mt-entity-select" />
+
+<ComponentPageHeader
+  title="Entity Select"
+  tagName="mt-entity-select"
+  packageImports="MtEntitySelect"
+  sourcePath="packages/component-library/src/components/entity/mt-entity-select"
+>
+  **Entity Select** is a repository-backed version of **Select**. It loads
+  options from an Admin SDK entity repository so the parent component only needs
+  to manage the selected value.
+</ComponentPageHeader>
+
+## When to use
+
+- Use **Entity Select** when options should come from an Admin SDK entity repository.
+- Use it when you want built-in search and pagination for repository results.
+- Use it when an existing `modelValue` should be hydrated to a visible selected label.
+
+## Examples
+
+### Basic
+
+<Canvas of={EntitySelectStories.Default} />
+
+### With initial value
+
+<Canvas of={EntitySelectStories.WithInitialValue} />
+
+## API reference
+
+<ArgTypes of={EntitySelectStories} />
+
+## Do
+
+- Pass `entity` for the default repository lookup.
+- Use `repository` only when you need custom fetching behavior.
+- Keep `labelProperty` and `valueProperty` aligned with the entity shape you want to show and store.
+
+## Don't
+
+- Do not use it when options are already available locally.
+- Do not duplicate search or pagination in the parent component.
+- Do not assume `modelValue` stores the whole entity by default.
+
+## Behavior notes
+
+- The first page loads on mount.
+- Search is handled through repository term lookups.
+- `modelValue` stores the selected `valueProperty`, which defaults to `id`.
+
+## Accessibility notes
+
+- Use a clear visible field label so users understand what entity they are selecting.
+- Keep result labels distinct so search results stay easy to understand.
+
+## Comparisons
+
+### **Entity Select** vs **Select**
+
+- Use **Entity Select** for Admin SDK repository data.
+- Use **Select** for local or externally managed option lists.

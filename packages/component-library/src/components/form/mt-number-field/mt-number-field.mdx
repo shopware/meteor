@@ -1,0 +1,63 @@
+import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
+
+import * as NumberFieldStories from "./mt-number-field.stories";
+import ComponentPageHeader from "../../_docs/component-page-header.js";
+
+<Meta of={NumberFieldStories} />
+
+<ComponentPageHeader
+  title="Number Field"
+  tagName="mt-number-field"
+  packageImports="MtNumberField"
+  sourcePath="packages/component-library/src/components/form/mt-number-field"
+>
+  **Number Field** lets users enter numeric values with optional limits, steps,
+  and controls.
+</ComponentPageHeader>
+
+## When to use
+
+- Use **Number Field** when the value should be numeric.
+- Use it for quantities, counts, percentages, or other values that benefit from step-based input.
+- Use it when min and max limits should guide valid input.
+
+## Examples
+
+### Basic
+
+<Canvas of={NumberFieldStories.Default} />
+
+## API reference
+
+<ArgTypes of={NumberFieldStories} />
+
+## Do
+
+- Use a clear label that explains what the number represents.
+- Configure `step`, `min`, and `max` when the range is known.
+- Choose the right `numberType` for integer or decimal input.
+
+## Don't
+
+- Do not use **Number Field** for values that are identifiers but look numeric.
+- Do not use it when users need to pick both a number and a unit together.
+- Do not hide important limits from users if the field enforces them.
+
+## Behavior notes
+
+- **Number Field** builds on the shared field base and adds numeric parsing, stepping, and optional arrow controls.
+- `numberType`, `digits`, `fillDigits`, and `numberAlignEnd` help tune how numeric values are entered and displayed.
+- `showControls` can show increase and decrease buttons for step-based adjustment.
+
+## Accessibility notes
+
+- Always provide a visible label that explains the meaning of the number.
+- Use help text when users need context about valid ranges, units, or rounding.
+- Make sure any min, max, or step behavior matches the expectations shown in the UI.
+
+## Comparisons
+
+### **Number Field** vs **Text Field**
+
+- Use **Number Field** when the value should behave like a number with numeric constraints or stepping.
+- Use **Text Field** when numeric-looking content should stay as plain text.

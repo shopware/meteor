@@ -1,278 +1,133 @@
-import { Canvas, Meta } from "@storybook/blocks";
+import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
 
 import * as ActionMenuStories from "./mt-action-menu.stories";
+import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 <Meta of={ActionMenuStories} />
 
-# Action Menu
+<ComponentPageHeader
+  title="Action Menu"
+  tagName="mt-action-menu"
+  packageImports={[
+    "MtDropdownMenuRoot",
+    "MtDropdownMenuTrigger",
+    "MtDropdownMenuPortal",
+    "MtDropdownMenuSub",
+    "MtActionMenu",
+    "MtActionMenuItem",
+    "MtActionMenuGroup",
+  ]}
+  sourcePath="packages/component-library/src/components/action-menu/mt-action-menu"
+>
+  **Action Menu** reveals a short list of contextual actions from a trigger. Use
+  it to keep secondary actions close to the relevant object without adding too
+  many always-visible buttons to the interface.
+</ComponentPageHeader>
 
-Action Menus are contextual menus that reveal a list of related actions or links when triggered by a button. They help keep interfaces clean by progressively disclosing options only when needed.
+## When to use
 
-Action Menus can include icons, keyboard shortcuts, external link indicators, and multiple levels, enabling quick access to relevant actions without cluttering the UI.
+- Use **Action Menu** for secondary or contextual actions tied to a specific record, card, row, or view.
+- Use it when the user should choose from a short list of related actions such as `Duplicate`, `Move`, `Export`, or `Delete`.
+- Use it when the actions should stay available but do not deserve permanent visual priority.
 
-Action Menus are best suited for secondary or contextual actions tied to a specific object, view, or state. They should feel lightweight, predictable, and easy to scan.
+## Examples
 
-## ✅ Do's
+### Basic
 
-- Prioritize frequent actions, place destructive ones at the bottom.
-- Keep menus short, shallow, and easy to scan.
-- Maintain consistent action ordering across contexts.
-- Keep the menu hierarchy shallow. Two levels, occasionally three, should be the maximum.
-- Use clear, action-oriented labels, for example "Duplicate", "Export", or "Delete".
-- Mark destructive actions clearly. Use the item variant `critical` for actions like "Delete" or "Remove".
-- Separate destructive actions with a divider when they appear alongside non-destructive actions.
-- Keep icon usage cohesive within groups. Either all items use a leading icon or none do.
-- Account for platform differences in keyboard shortcuts, as the same action may use different keys across operating systems.
+<Canvas of={ActionMenuStories.Default} />
 
-## ❌ Don'ts
+### Without icons
 
-- Don't use Action Menus for primary actions. Primary or high-frequency actions should be directly visible.
-- Don't group unrelated actions or create groups without a clear purpose.
-- Don't overuse dividers or groups, they reduce scannability when used excessively. Avoid too many single-item groups.
-- Don't rely on color alone to convey meaning, especially for critical actions.
-- Don't hide essential functionality. If an action is critical to task completion, it should not be discoverable only through an Action Menu.
+<Canvas of={ActionMenuStories.WithoutIcons} />
+
+### Grouped items
+
+<Canvas of={ActionMenuStories.GroupedItems} />
+
+### Keyboard shortcuts
+
+<Canvas of={ActionMenuStories.KeyboardShortcuts} />
+
+### States
+
+<Canvas of={ActionMenuStories.States} />
+
+### Nested submenu
+
+<Canvas of={ActionMenuStories.NestedSubmenu} />
+
+### External links
+
+<Canvas of={ActionMenuStories.ExternalLinks} />
+
+### Match trigger width
+
+<Canvas of={ActionMenuStories.MatchTriggerWidth} />
 
 ## Anatomy
 
-The action menu system consists of several composable components:
+**Action Menu** is built from a small set of companion exports that work together:
 
-- **MtDropdownMenuRoot** - The root container that manages the open/closed state
-- **MtDropdownMenuTrigger** - The element that triggers the menu to open (typically a button)
-- **MtDropdownMenuPortal** - Renders the menu content in a portal outside the DOM hierarchy
-- **MtActionMenu** - The menu container that holds all menu items
-- **MtActionMenuItem** - Individual action items with optional icons, shortcuts, and variants
-- **MtActionMenuGroup** - Groups related items together with a visual divider
-- **MtDropdownMenuSub** - Wrapper for creating nested submenus
+- `mt-dropdown-menu-root` manages the open and closed state for the menu.
+- `mt-dropdown-menu-trigger` defines the interactive element that opens the menu, usually a **Button**.
+- `mt-dropdown-menu-portal` renders the menu content in an overlay layer outside the surrounding layout flow.
+- `mt-action-menu` renders the menu surface itself.
+- `mt-action-menu-item` renders individual actions, links, shortcuts, and submenu triggers.
+- `mt-action-menu-group` separates related actions and keeps mixed icon alignment consistent inside a group.
+- `mt-dropdown-menu-sub` creates nested submenu flows when a second level is truly needed.
 
-## Basic usage
+These parts are exported together so the parent page can document the full pattern in one place.
 
-A simple action menu with a trigger button and menu items:
+## API reference
 
-```html
-<template>
-  <mt-dropdown-menu-root>
-    <mt-dropdown-menu-trigger as-child>
-      <mt-button>Open menu</mt-button>
-    </mt-dropdown-menu-trigger>
+<ArgTypes of={ActionMenuStories} />
 
-    <mt-dropdown-menu-portal>
-      <mt-action-menu>
-        <mt-action-menu-item icon="file-text">
-          Documentation
-        </mt-action-menu-item>
+## Do
 
-        <mt-action-menu-item icon="duplicate"> Duplicate </mt-action-menu-item>
+- Keep labels short, specific, and action-oriented.
+- Prioritize frequent actions and place destructive actions later in the menu.
+- Keep action ordering consistent across similar contexts.
+- Keep the menu focused on related actions for the same object or context.
+- Use `mt-action-menu-group` to separate action sets when grouping improves scanning.
+- Separate destructive actions into their own group when they appear alongside non-destructive actions.
+- Use the `critical` variant for destructive actions such as delete or remove.
+- Keep icon usage consistent within a visual group whenever possible.
+- Use `shortcut` only when the same action is also available from the keyboard elsewhere in the product.
 
-        <mt-action-menu-item icon="copy"> Copy </mt-action-menu-item>
+## Don't
 
-        <mt-action-menu-item icon="download"> Download </mt-action-menu-item>
-      </mt-action-menu>
-    </mt-dropdown-menu-portal>
-  </mt-dropdown-menu-root>
-</template>
-```
+- Do not use **Action Menu** for the main action on a screen or card.
+- Do not hide critical task-completion steps only inside an **Action Menu**.
+- Do not group unrelated actions or create groups without a clear purpose.
+- Do not create deep or complex hierarchies when a flatter structure would be easier to scan.
+- Do not overuse groups or create many single-item groups when a flatter list would scan better.
+- Do not use icons, groups, or separators unless they add clarity.
+- Do not rely on color, icons, or shortcut labels alone to explain what an action does.
 
-## Menu items without icons
+## Behavior notes
 
-Items can be rendered without icons for a more compact appearance:
+- **Action Menu** is a compound pattern, not a standalone trigger. You always compose `mt-action-menu` with `mt-dropdown-menu-root`, `mt-dropdown-menu-trigger`, and `mt-dropdown-menu-portal`.
+- `shortcut` accepts a structured object with `modifiers` and `key`.
+- Supported modifier values are `mod`, `ctrl`, `alt`, `shift`, and `meta`.
+- Use `mod` for cross-platform shortcuts because it maps to `Command` on Mac and `Control` on Windows and Linux. Use `meta` only when you need the platform-specific meta key explicitly.
+- Supported special keys are `enter`, `esc`, `tab`, `space`, `backspace`, `delete`, `up`, `down`, `left`, and `right`.
+- Shortcut labels are formatted automatically for Mac and PC, and `aria-keyshortcuts` is added for assistive technology.
+- `mt-action-menu-item` with a `link` prop renders as an external anchor and opens in a new tab.
+- `is-sub-menu` on `mt-action-menu` and `is-sub-trigger` on `mt-action-menu-item` are used together for nested submenu patterns.
+- `match-trigger-width` is useful when the menu should align visually with a wider trigger such as a row action or account switcher.
+- Keep nesting shallow. One submenu level is usually enough, and more than two levels should be avoided.
 
-```html
-<template>
-  <mt-dropdown-menu-root>
-    <mt-dropdown-menu-trigger as-child>
-      <mt-button>Open menu</mt-button>
-    </mt-dropdown-menu-trigger>
+## Accessibility notes
 
-    <mt-dropdown-menu-portal>
-      <mt-action-menu>
-        <mt-action-menu-item>Documentation</mt-action-menu-item>
-        <mt-action-menu-item>Duplicate</mt-action-menu-item>
-        <mt-action-menu-item>Copy</mt-action-menu-item>
-        <mt-action-menu-item>Download</mt-action-menu-item>
-      </mt-action-menu>
-    </mt-dropdown-menu-portal>
-  </mt-dropdown-menu-root>
-</template>
-```
+- The trigger should have a clear accessible name so users understand what actions the menu contains.
+- Menu item labels should stay understandable without depending only on icons, color, or shortcut labels.
+- If you provide `shortcut`, it supplements the action label rather than replacing it.
+- Destructive actions should remain clearly labeled in text, not only visually differentiated through the `critical` variant.
+- Use submenu patterns carefully, because deep menu hierarchies are harder to navigate with keyboard and assistive technology.
 
-## Grouped items
+## Comparisons
 
-Use `mt-action-menu-group` to visually separate related actions:
+### **Action Menu** vs **Floating Ui**
 
-```html
-<template>
-  <mt-dropdown-menu-root>
-    <mt-dropdown-menu-trigger as-child>
-      <mt-button>Open menu</mt-button>
-    </mt-dropdown-menu-trigger>
-
-    <mt-dropdown-menu-portal>
-      <mt-action-menu>
-        <mt-action-menu-group>
-          <mt-action-menu-item icon="file-text"
-            >Documentation</mt-action-menu-item
-          >
-          <mt-action-menu-item icon="duplicate">Duplicate</mt-action-menu-item>
-        </mt-action-menu-group>
-
-        <mt-action-menu-group>
-          <mt-action-menu-item icon="cog">Settings</mt-action-menu-item>
-          <mt-action-menu-item icon="user">Profile</mt-action-menu-item>
-        </mt-action-menu-group>
-      </mt-action-menu>
-    </mt-dropdown-menu-portal>
-  </mt-dropdown-menu-root>
-</template>
-```
-
-## Keyboard shortcuts
-
-Display keyboard shortcuts alongside menu items using the `shortcut` prop. The shortcut is defined using a structured object with `modifiers` and a `key`:
-
-**Available modifiers:** `'mod'`, `'ctrl'`, `'alt'`, `'shift'`, `'meta'`
-
-- Use `'mod'` for cross-platform shortcuts (maps to ⌘ on Mac, Ctrl on Windows)
-- Use `'meta'` specifically for the Windows key on PC or Command on Mac
-
-```html
-<template>
-  <mt-dropdown-menu-root>
-    <mt-dropdown-menu-trigger as-child>
-      <mt-button>Open menu</mt-button>
-    </mt-dropdown-menu-trigger>
-
-    <mt-dropdown-menu-portal>
-      <mt-action-menu>
-        <mt-action-menu-item
-          icon="duplicate"
-          :shortcut="{ modifiers: ['mod'], key: 'd' }"
-        >
-          Duplicate
-        </mt-action-menu-item>
-
-        <mt-action-menu-item
-          icon="copy"
-          :shortcut="{ modifiers: ['mod'], key: 'c' }"
-        >
-          Copy
-        </mt-action-menu-item>
-      </mt-action-menu>
-    </mt-dropdown-menu-portal>
-  </mt-dropdown-menu-root>
-</template>
-```
-
-The component automatically formats shortcuts based on the user's platform:
-
-- **Mac**: Uses symbols (`⌘`, `⌥`, `⌃`)
-- **PC**: Uses text labels (`Ctrl`, `Shift`, `Alt`)
-
-**Available modifier keys:** `'mod'` (⌘ on Mac, Ctrl on PC), `'ctrl'`, `'alt'`, `'shift'`, `'meta'`.
-
-**Available special keys:** `'enter'`, `'esc'`, `'tab'`, `'space'`, `'backspace'`, `'delete'`, `'up'`, `'down'`, `'left'`, `'right'`.
-
-## Critical actions
-
-Use the `variant="critical"` prop for destructive actions like delete or remove:
-
-```html
-<template>
-  <mt-dropdown-menu-root>
-    <mt-dropdown-menu-trigger as-child>
-      <mt-button>Open menu</mt-button>
-    </mt-dropdown-menu-trigger>
-
-    <mt-dropdown-menu-portal>
-      <mt-action-menu>
-        <mt-action-menu-group>
-          <mt-action-menu-item icon="file-text"
-            >Documentation</mt-action-menu-item
-          >
-          <mt-action-menu-item icon="duplicate">Duplicate</mt-action-menu-item>
-        </mt-action-menu-group>
-
-        <mt-action-menu-group>
-          <mt-action-menu-item
-            icon="trash"
-            variant="critical"
-            :shortcut="{ key: 'backspace' }"
-          >
-            Delete
-          </mt-action-menu-item>
-        </mt-action-menu-group>
-      </mt-action-menu>
-    </mt-dropdown-menu-portal>
-  </mt-dropdown-menu-root>
-</template>
-```
-
-## Disabled items
-
-Disable items that are temporarily unavailable:
-
-```html
-<template>
-  <mt-dropdown-menu-root>
-    <mt-dropdown-menu-trigger as-child>
-      <mt-button>Open menu</mt-button>
-    </mt-dropdown-menu-trigger>
-
-    <mt-dropdown-menu-portal>
-      <mt-action-menu>
-        <mt-action-menu-item disabled icon="lock">
-          Disabled with icon
-        </mt-action-menu-item>
-
-        <mt-action-menu-item disabled>
-          Disabled without icon
-        </mt-action-menu-item>
-
-        <mt-action-menu-item disabled icon="trash" variant="critical">
-          Critical disabled
-        </mt-action-menu-item>
-      </mt-action-menu>
-    </mt-dropdown-menu-portal>
-  </mt-dropdown-menu-root>
-</template>
-```
-
-## Nested submenus
-
-Create nested menus using `MtDropdownMenuSub` for hierarchical navigation:
-
-```html
-<template>
-  <mt-dropdown-menu-root>
-    <mt-dropdown-menu-trigger as-child>
-      <mt-button>Open menu</mt-button>
-    </mt-dropdown-menu-trigger>
-
-    <mt-dropdown-menu-portal>
-      <mt-action-menu>
-        <mt-action-menu-item icon="file-text">
-          Documentation
-        </mt-action-menu-item>
-
-        <mt-dropdown-menu-sub>
-          <mt-action-menu-item is-sub-trigger icon="arrows">
-            Move
-          </mt-action-menu-item>
-
-          <mt-dropdown-menu-portal>
-            <mt-action-menu is-sub-menu>
-              <mt-action-menu-item icon="up-circle">Up</mt-action-menu-item>
-              <mt-action-menu-item icon="down-circle">Down</mt-action-menu-item>
-              <mt-action-menu-item icon="left-circle">Left</mt-action-menu-item>
-              <mt-action-menu-item icon="right-circle"
-                >Right</mt-action-menu-item
-              >
-            </mt-action-menu>
-          </mt-dropdown-menu-portal>
-        </mt-dropdown-menu-sub>
-
-        <mt-action-menu-item icon="cog">Settings</mt-action-menu-item>
-      </mt-action-menu>
-    </mt-dropdown-menu-portal>
-  </mt-dropdown-menu-root>
-</template>
-```
+- Use **Action Menu** for a short, scannable list of actions or links.
+- Use **Floating Ui** when you need to build a custom popover surface with richer content such as text, filters, form fields, or mixed layout content instead of a menu of actions.

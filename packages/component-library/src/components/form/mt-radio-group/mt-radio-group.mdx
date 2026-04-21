@@ -1,0 +1,99 @@
+import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
+
+import * as RadioGroupStories from "./mt-radio-group.stories";
+import ComponentPageHeader from "../../_docs/component-page-header.js";
+
+<Meta of={RadioGroupStories} />
+
+<ComponentPageHeader
+  title="Radio Group"
+  tagName="mt-radio-group"
+  packageImports={[
+    "MtRadioGroupRoot",
+    "MtRadioGroupList",
+    "MtRadioGroupItem",
+    "MtRadioGroupCustomItem",
+    "MtRadioGroupIndicator",
+  ]}
+  sourcePath="packages/component-library/src/components/form/mt-radio-group"
+>
+  **Radio Group** lets users select exactly one option from a small set of
+  mutually exclusive choices. It works best when the available options should
+  stay visible so users can compare them before deciding.
+</ComponentPageHeader>
+
+## When to use
+
+- Use **Radio Group** for mutually exclusive options where only one selection is allowed.
+- Use it when the available choices should stay visible on the page instead of being hidden in a collapsed control.
+- Use it when users benefit from scanning or comparing a small number of options before choosing one.
+
+## Examples
+
+### Basic
+
+<Canvas of={RadioGroupStories.Default} />
+
+### Custom item
+
+<Canvas of={RadioGroupStories.WithCustomItem} />
+
+## Companion exports
+
+**Radio Group** is a compound component made up of several public exports:
+
+- `MtRadioGroupRoot` provides the shared label, help text, hint, error handling, and selected-value state.
+- `MtRadioGroupList` lays out a standard vertical list of radio items with the expected spacing.
+- `MtRadioGroupItem` renders the default radio option with a label.
+- `MtRadioGroupCustomItem` lets you build fully custom option cards while still participating in the shared radio-group state.
+- `MtRadioGroupIndicator` renders the actual radio input and control, and is mainly useful inside custom-item compositions.
+
+## API reference
+
+<ArgTypes of={RadioGroupStories} />
+
+## Do
+
+- Use clear, concise labels for each option.
+- Use a descriptive group label that explains what the user is selecting.
+- Include help text or a hint when the selection needs additional context.
+- Use the `error` prop to display validation errors when needed.
+- Ensure each radio item has a unique `id` and `value`.
+- Use `MtRadioGroupList` to wrap multiple `MtRadioGroupItem` components for proper spacing.
+- Use `MtRadioGroupCustomItem` when you need custom-styled radio options such as pricing plans or feature cards.
+- Keep the number of options manageable. A small visible set is the sweet spot.
+
+## Don't
+
+- Do not use **Radio Group** for multiple selections. Use **Checkbox** instead.
+- Do not use a single radio button. Radio groups should present a real choice.
+- Do not omit labels. Always provide clear labels for accessibility and usability.
+- Do not use radio groups for long lists of options where a **Select** would be easier to scan.
+- Do not use the same `value` for multiple items within the same group.
+- Do not forget to handle the `v-model` binding so the selected value stays in sync.
+
+## Behavior notes
+
+- **Radio Group** uses `v-model` on `MtRadioGroupRoot` to manage the selected value across all items in the group.
+- `MtRadioGroupItem` should always be used inside `MtRadioGroupRoot`, because it depends on the shared radio-group context.
+- `MtRadioGroupCustomItem` gives you layout freedom, but you still need to render `MtRadioGroupIndicator` so the custom option remains a real radio control.
+- `helpText`, `hint`, and `error` follow the shared field patterns used by other form components.
+
+## Accessibility notes
+
+- Provide a clear group label or other nearby visible context so users understand what the choice controls.
+- `MtRadioGroupIndicator` uses native radio inputs, so the group benefits from standard browser keyboard behavior.
+- Keep option labels explicit so users do not need surrounding context to understand each choice.
+- If you build custom items, make sure the visible content still makes the selected state and choice meaning clear.
+
+## Comparisons
+
+### **Radio Group** vs **Checkbox**
+
+- Use **Radio Group** when users must choose exactly one option from a small set.
+- Use **Checkbox** when users can turn an option on or off independently or choose multiple items.
+
+### **Radio Group** vs **Select**
+
+- Use **Radio Group** when a small number of options should stay visible and easy to compare.
+- Use **Select** when there are more options or when space is limited.

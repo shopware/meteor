@@ -8,6 +8,12 @@ export default {
   ...meta,
   title: "Components/mt-icon/Interaction tests",
   tags: ["!autodocs"],
+  args: {
+    ...meta.args,
+    name: "regular-products",
+    color: "#3498db",
+    decorative: false,
+  },
 } as MtIconMeta;
 
 export const VisualTestRenderIcon: MtIconStory = {
