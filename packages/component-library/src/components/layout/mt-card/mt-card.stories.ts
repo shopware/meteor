@@ -8,6 +8,7 @@ import { action } from "@storybook/addon-actions";
 import type { SlottedMeta } from "@/_internal/story-helper";
 import type { StoryObj } from "@storybook/vue3";
 import MtText from "@/components/content/mt-text/mt-text.vue";
+import MtInset from "../mt-inset/mt-inset.vue";
 
 type MtCardSlots =
   | "default"
@@ -30,6 +31,7 @@ export type MtCardStory = StoryObj<MtCardMeta>;
 const meta: MtCardMeta = {
   title: "Components/mt-card",
   component: MtCard,
+  excludeStories: ["ExtendedStory"],
   argTypes: {
     title: {
       control: { type: "text" },
@@ -43,11 +45,29 @@ const meta: MtCardMeta = {
         category: "props",
       },
     },
+    toolbar: {
+      control: { type: undefined },
+      table: {
+        disable: true,
+      },
+    },
+    footer: {
+      control: { type: undefined },
+      table: {
+        disable: true,
+      },
+    },
     "context-actions": {
       control: { type: undefined },
+      table: {
+        disable: true,
+      },
     },
     grid: {
       control: { type: undefined },
+      table: {
+        disable: true,
+      },
     },
     tabs: {
       control: { type: undefined },
@@ -69,9 +89,15 @@ const meta: MtCardMeta = {
     },
     "before-card": {
       control: { type: undefined },
+      table: {
+        disable: true,
+      },
     },
     "after-card": {
       control: { type: undefined },
+      table: {
+        disable: true,
+      },
     },
   },
 };
@@ -106,7 +132,6 @@ export const Default: StoryObj<MtCardMeta> = {
     avatar: null,
     updateInheritance: fn(action("update:inhertitance")),
   },
-  ...meta,
 };
 
 export const ExtendedStory: StoryObj<MtCardMeta> = {
@@ -194,5 +219,259 @@ export const ExtendedStory: StoryObj<MtCardMeta> = {
     tabs: true,
     "context-actions": true,
   },
-  ...meta,
+};
+
+export const HeaderContent: StoryObj<MtCardMeta> = {
+  name: "Header content",
+  render: (args) => ({
+    components: { MtCard, MtAvatar, MtButton },
+    setup() {
+      return { args };
+    },
+    template: `
+    <mt-card v-bind="args">
+      <template #avatar>
+        <mt-avatar firstName="Max" lastName="Mustermann" variant="square" />
+      </template>
+
+      <template #headerRight>
+        <mt-button variant="secondary">Edit</mt-button>
+      </template>
+
+      <p>Use header content to add context and a related secondary action.</p>
+    </mt-card>`,
+  }),
+  args: {
+    title: "Customer details",
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `<mt-card title="Customer details">
+  <template #avatar>
+    <mt-avatar
+      first-name="Max"
+      last-name="Mustermann"
+      variant="square"
+    />
+  </template>
+
+  <template #headerRight>
+    <mt-button variant="secondary">Edit</mt-button>
+  </template>
+
+  <p>Use header content to add context and a related secondary action.</p>
+</mt-card>`,
+      },
+    },
+  },
+};
+
+export const Tabs: StoryObj<MtCardMeta> = {
+  render: (args) => ({
+    components: { MtCard, MtTabs },
+    setup() {
+      const tabItems = [
+        { label: "Overview", name: "overview" },
+        { label: "History", name: "history" },
+      ];
+
+      return { args, tabItems };
+    },
+    template: `
+    <mt-card v-bind="args">
+      <template #tabs>
+        <mt-tabs default-item="overview" :items="tabItems" />
+      </template>
+
+      <p>Use tabs to switch between closely related views that still belong to the same section.</p>
+    </mt-card>`,
+  }),
+  args: {
+    title: "Customer details",
+    subtitle: "Account overview",
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `<mt-card title="Customer details" subtitle="Account overview">
+  <template #tabs>
+    <mt-tabs
+      default-item="overview"
+      :items="[
+        { label: 'Overview', name: 'overview' },
+        { label: 'History', name: 'history' },
+      ]"
+    />
+  </template>
+
+  <p>Use tabs to switch between closely related views that still belong to the same section.</p>
+</mt-card>`,
+      },
+    },
+  },
+};
+
+export const Loading: StoryObj<MtCardMeta> = {
+  render: (args) => ({
+    components: { MtCard },
+    setup() {
+      return { args };
+    },
+    template: `
+    <mt-card v-bind="args">
+      <p>Loading overlays the content area while the card keeps its layout.</p>
+    </mt-card>`,
+  }),
+  args: {
+    title: "Analytics",
+    subtitle: "Latest report",
+    isLoading: true,
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `<mt-card title="Analytics" subtitle="Latest report" is-loading>
+  <p>Loading overlays the content area while the card keeps its layout.</p>
+</mt-card>`,
+      },
+    },
+  },
+};
+
+export const Inheritance: StoryObj<MtCardMeta> = {
+  render: (args) => ({
+    components: { MtCard },
+    setup() {
+      return { args };
+    },
+    template: `
+    <mt-card v-bind="args" @update:inheritance="args.updateInheritance">
+      <p>
+        Use the inheritance toggle when a card represents values that can be linked
+        or overridden.
+      </p>
+    </mt-card>`,
+  }),
+  args: {
+    title: "Product settings",
+    subtitle: "Inherited from parent configuration",
+    inheritance: true,
+    updateInheritance: fn(),
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `<mt-card
+  title="Product settings"
+  subtitle="Inherited from parent configuration"
+  :inheritance="true"
+>
+  <p>
+    Use the inheritance toggle when a card represents values that can be linked
+    or overridden.
+  </p>
+</mt-card>`,
+      },
+    },
+  },
+};
+
+export const InsetContent: StoryObj<MtCardMeta> = {
+  name: "Inset content",
+  render: (args) => ({
+    components: { MtCard, MtInset, MtText },
+    setup() {
+      return { args };
+    },
+    template: `
+    <mt-card v-bind="args">
+      <mt-inset>
+        <mt-text as="h3" size="m" weight="bold">Headline</mt-text>
+
+        <mt-text>
+          Use inset content when the inner block should visually extend to the
+          card edges while still respecting the card's own spacing tokens.
+        </mt-text>
+      </mt-inset>
+    </mt-card>`,
+  }),
+  args: {
+    title: "Customer details",
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `<mt-card title="Customer details">
+  <mt-inset>
+    <mt-text as="h3" size="m" weight="bold">Headline</mt-text>
+
+    <mt-text>
+      Use inset content when the inner block should visually extend to the
+      card edges while still respecting the card's own spacing tokens.
+    </mt-text>
+  </mt-inset>
+</mt-card>`,
+      },
+    },
+  },
+};
+
+export const InsetFooter: StoryObj<MtCardMeta> = {
+  name: "Inset footer",
+  render: (args) => ({
+    components: { MtCard, MtInset, MtText },
+    setup() {
+      return { args };
+    },
+    template: `
+    <mt-card v-bind="args">
+      <p>Use inset footer content when the footer should stretch edge to edge.</p>
+
+      <template #footer>
+        <mt-inset
+          style="
+            background: var(--color-elevation-surface-sunken);
+            padding: var(--mt-card-footer-padding);
+          "
+        >
+          <mt-text as="h3" size="m" weight="bold">Footer content</mt-text>
+
+          <mt-text>
+            The inset keeps the footer aligned with the card's own spacing while
+            allowing a full-width surface treatment inside the footer area.
+          </mt-text>
+        </mt-inset>
+      </template>
+    </mt-card>`,
+  }),
+  args: {
+    title: "Customer details",
+    footer: "<p>Custom footer</p>",
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `<mt-card title="Customer details">
+  <p>Use inset footer content when the footer should stretch edge to edge.</p>
+
+  <template #footer>
+    <mt-inset
+      style="
+        background: var(--color-elevation-surface-sunken);
+        padding: var(--mt-card-footer-padding);
+      "
+    >
+      <mt-text as="h3" size="m" weight="bold">Footer content</mt-text>
+
+      <mt-text>
+        The inset keeps the footer aligned with the card's own spacing while
+        allowing a full-width surface treatment inside the footer area.
+      </mt-text>
+    </mt-inset>
+  </template>
+</mt-card>`,
+      },
+    },
+  },
 };

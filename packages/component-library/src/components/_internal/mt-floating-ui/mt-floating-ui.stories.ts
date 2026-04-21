@@ -81,4 +81,28 @@ export default meta;
 
 export type MtFloatingUiStory = StoryObj<MtFloatingUiMeta>;
 
-export const Default: MtFloatingUiStory = {};
+export const Default: MtFloatingUiStory = {
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-floating-ui
+  :is-opened="isOpened"
+  :show-arrow="true"
+  :offset="6"
+  @close="isOpened = false"
+>
+  <template #trigger>
+    <mt-button variant="secondary" @click="isOpened = !isOpened">
+      Toggle floating UI
+    </mt-button>
+  </template>
+
+  <div class="custom-floating-surface">
+    Custom popover-style content
+  </div>
+</mt-floating-ui>`,
+      },
+    },
+  },
+};

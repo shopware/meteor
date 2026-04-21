@@ -9,7 +9,7 @@ import meta, {
 export default {
   ...meta,
   title: "Components/mt-segmented-control/Interaction tests",
-  tags: ["!autodocs"],
+  tags: ["!autodocs", "!dev"],
 } as MtSegmentedControlMeta;
 
 export const VisualTestRenderSegmentedControl: MtSegmentedControlStory = {

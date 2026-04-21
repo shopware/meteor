@@ -101,4 +101,18 @@ export default {
 
 export type MtNumberFieldStory = StoryObj<MtNumberFieldMeta>;
 
-export const Default: MtNumberFieldStory = {};
+export const Default: MtNumberFieldStory = {
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-number-field
+  v-model="quantity"
+  label="Quantity"
+  :step="1"
+  number-type="int"
+/>`,
+      },
+    },
+  },
+};

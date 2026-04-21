@@ -33,4 +33,16 @@ export default {
 
 export type MtUrlFieldStory = StoryObj<typeof MtUrlField>;
 
-export const Default: MtUrlFieldStory = {};
+export const Default: MtUrlFieldStory = {
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-url-field
+  v-model="url"
+  label="Website"
+/>`,
+      },
+    },
+  },
+};

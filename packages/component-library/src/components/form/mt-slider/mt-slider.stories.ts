@@ -74,4 +74,48 @@ export default {
 
 export type MtSliderStory = StoryObj<MtSliderMeta>;
 
-export const Default: MtSliderStory = {};
+export const Default: MtSliderStory = {
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-slider
+  v-model="value"
+  label="Slider"
+  :min="0"
+  :max="100"
+  :step="1"
+/>`,
+      },
+    },
+  },
+};
+
+export const Range: MtSliderStory = {
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-slider
+  v-model="range"
+  label="Price range"
+  :min="0"
+  :max="100"
+  :step="5"
+  :is-range="true"
+  :min-distance="10"
+/>`,
+      },
+    },
+  },
+  args: {
+    label: "Price range",
+    modelValue: [20, 80],
+    min: 0,
+    max: 100,
+    step: 5,
+    isRange: true,
+    minDistance: 10,
+    markCount: 5,
+  },
+};

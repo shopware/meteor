@@ -19,6 +19,29 @@ export default meta;
 export type MtSnackbarStory = StoryObj<MtSnackbarMeta>;
 
 export const Default: MtSnackbarStory = {
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<script setup lang="ts">
+import { MtSnackbar, useSnackbar } from "@shopware-ag/meteor-component-library";
+
+const { addSnackbar } = useSnackbar();
+
+function showSnackbar() {
+  addSnackbar({
+    message: "Changes saved",
+  });
+}
+</script>
+
+<template>
+  <button type="button" @click="showSnackbar">Show snackbar</button>
+  <mt-snackbar />
+</template>`,
+      },
+    },
+  },
   render: () => ({
     components: { MtSnackbar, MtButton, MtCheckbox, MtTextField, MtIcon },
     setup() {
@@ -102,36 +125,49 @@ export const Default: MtSnackbarStory = {
       };
     },
     template: `
-        <h2>Spawn some snackbars</h2>
-        <div style="width: 420px;">
-          <mt-text-field label="ToastMessage" v-model="msg" />
+        <h3>Spawn Snackbars</h3>
+
+
+        <div style="max-width: var(--scale-size-256); margin-bottom: var(--scale-size-22);">
+          <mt-text-field label="Message" v-model="msg" size="small"/>
         </div>
 
-        <div style="display: flex; flex-direction: row; gap: 12px; align-items: center;">
-          <mt-checkbox label="Add action" v-model:checked="action" />
+        <mt-checkbox label="Add action" v-model:checked="action" />
+
+        <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+          <mt-button @click="addDefaultSnackbar" variant="secondary" size="small">
+          Default
+          </mt-button>
+          
+          <mt-button @click="addSuccessSnackbar" variant="secondary" size="small">
+            <template #iconFront>
+              <mt-icon name="check-circle" size="14px" mode="solid"/>
+            </template>
+              Success
+          </mt-button>
+          
+          <mt-button @click="addErrorSnackbar" variant="secondary" size="small">
+            <template #iconFront>
+              <mt-icon name="exclamation-circle" size="14px" mode="solid"/>
+            </template>
+              Error
+          </mt-button>
+          
+          <mt-button @click="addProgressSnackbar" variant="secondary" size="small">
+            <template #iconFront>
+              <mt-icon name="spinner-star" size="14px" mode="solid"/>
+            </template>
+              Progress
+          </mt-button>
+
+          <mt-button @click="clearSnackbars" variant="critical" size="small">
+            <template #iconFront>
+              <mt-icon name="trash" size="14px" mode="solid"/>
+            </template>
+              Clear all
+          </mt-button>
         </div>
 
-        <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 12px;">
-          <mt-button @click="addDefaultSnackbar" variant="secondary">
-          Default Snackbar
-          </mt-button>
-          <mt-button @click="addSuccessSnackbar" variant="primary">
-          Success Snackbar
-          </mt-button>
-          <mt-button @click="addErrorSnackbar" variant="critical">
-          Error Snackbar
-          </mt-button>
-          <mt-button @click="addProgressSnackbar" variant="secondary">
-          Progress Snackbar
-          </mt-button>
-        </div>
-        
-        <mt-button @click="clearSnackbars">
-          <template #iconFront>
-            <mt-icon name="regular-trash" size="14px"/>
-          </template>
-            Clear all
-        </mt-button>
         <MtSnackbar />
     `,
   }),

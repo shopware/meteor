@@ -30,4 +30,15 @@ export default {
 
 export type MtLinkStory = StoryObj<MtLinkMeta>;
 
-export const Default: MtLinkStory = {};
+export const Default: MtLinkStory = {
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-link to="/">
+  Link
+</mt-link>`,
+      },
+    },
+  },
+};

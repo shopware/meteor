@@ -6,7 +6,7 @@ import MtDataTableFilter from "./mt-data-table-filter.vue";
 export default {
   ...meta,
   title: "Components/mt-data-table-filter/Interaction tests",
-  tags: ["!autodocs"],
+  tags: ["!autodocs", "!dev"],
 } as MtDataTableFilterMeta;
 
 export const FocusOption = defineStory<typeof MtDataTableFilter>({

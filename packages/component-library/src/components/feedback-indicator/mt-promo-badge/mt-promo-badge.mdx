@@ -1,25 +1,74 @@
-import { Meta } from "@storybook/blocks";
+import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
 
 import * as PromoBadgeStories from "./mt-promo-badge.stories";
+import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 <Meta of={PromoBadgeStories} title="Components/mt-promo-badge" />
 
-# Promo badge
+<ComponentPageHeader
+  title="Promo Badge"
+  tagName="mt-promo-badge"
+  packageImports="MtPromoBadge"
+  sourcePath="packages/component-library/src/components/feedback-indicator/mt-promo-badge"
+>
+  **Promo Badge** is a specialized version of **Badge** used to highlight
+  promotional states or feature labels such as `New`, `Beta`, or `Shopware AI`.
+  Unlike the general **Badge**, **Promo Badge** is limited to predefined
+  promotional variants so the visual treatment stays consistent across the
+  product.
+</ComponentPageHeader>
 
-The `Promo Badge` is a specialized version of the `Badge` component used to highlight promotional states or feature labels, such as _New, Beta, or Shopware AI_. Unlike the general `Badge`, `Promo Badge` is limited to predefined promotional variants to ensure consistent visual treatment across the product.
+## When to use
 
-### ✅ Do's
+- Use **Promo Badge** to highlight promotional elements across our products.
+- Use it for predefined feature labels such as `New`, `Beta`, or `Shopware AI`.
+- Use it when a promotional label should stand out consistently without inventing a new visual treatment.
 
----
+## Examples
 
-- Use to highlight promotional elements across our products
-- Keep text consistent with defined variants (New, Beta, Shopware AI, …)
-- Use a `Promo Badge` sparingly to draw attention without cluttering the interface
+### Basic
 
-### ❌ Don'ts
+<Canvas of={PromoBadgeStories.Default} />
 
----
+### Variants
 
-- Don’t use for status indicators _(e.g. Error, Success)_ → use `Badge` instead
-- Don’t create custom promotional variants. Stick to the predefined set for consistency
-- Don't make a `Promo Badge` clickable as they are not `Buttons` or `Links`. However, showing a `Tooltip` on hover is allowed.
+<Canvas of={PromoBadgeStories.Variants} />
+
+### Sizes
+
+<Canvas of={PromoBadgeStories.Sizes} />
+
+## API reference
+
+<ArgTypes of={PromoBadgeStories} />
+
+## Do
+
+- Use **Promo Badge** to highlight promotional elements across our products.
+- Keep the meaning consistent with the defined variants such as `New`, `Beta`, and `Shopware AI`.
+- Use **Promo Badge** sparingly so it draws attention without cluttering the interface.
+
+## Don't
+
+- Do not use **Promo Badge** for status indicators such as error or success. Use **Badge** instead.
+- Do not create custom promotional variants. Stick to the predefined set for consistency.
+- Do not make **Promo Badge** clickable, because it is not a **Button** or **Link**. Showing a **Tooltip** on hover is fine.
+
+## Behavior notes
+
+- **Promo Badge** wraps **Badge** and maps each promotional variant to a predefined label, icon, and badge style.
+- The visible text is controlled by the selected `variant`, so it stays consistent across products and languages.
+- The component is intentionally limited to a small set of promotional meanings rather than being a general status label.
+
+## Accessibility notes
+
+- Keep the promotional meaning understandable from the text label and not from the icon alone.
+- Because **Promo Badge** is non-interactive, avoid using it as the only way to expose an important action.
+- Use it sparingly so promotional emphasis remains meaningful in dense interfaces.
+
+## Comparisons
+
+### **Promo Badge** vs **Badge**
+
+- Use **Promo Badge** for predefined promotional labels such as `New`, `Beta`, or `Shopware AI`.
+- Use **Badge** for general product states such as status, health, or workflow labels.

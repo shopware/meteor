@@ -1,27 +1,74 @@
-import { Meta } from "@storybook/blocks";
+import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
 
 import * as AvatarStories from "./mt-avatar.stories";
+import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 <Meta of={AvatarStories} title="Components/mt-avatar" />
 
-# Avatar
+<ComponentPageHeader
+  title="Avatar"
+  tagName="mt-avatar"
+  packageImports="MtAvatar"
+  sourcePath="packages/component-library/src/components/icons-media/mt-avatar"
+>
+  **Avatar** represents a person or entity in a compact visual form, it can show
+  a profile image or initials derived from a name. **Avatar** helps users
+  recognize people quickly in lists, comments, messages, and navigation areas.
+</ComponentPageHeader>
 
-The `Avatar` component represents a person or entity in a compact visual form, it can show a profile image or initials derived from a name. Avatars help users recognize people quickly in lists, comments, messages, and navigation areas.
+## When to use
 
-### ✅ Do's
+- Use **Avatar** to identify users or entities in lists, headers, menus, and chat threads.
+- Use an image when recognition matters most and a profile image is available.
+- Use initials when no image is available or when a lightweight fallback is enough.
 
----
+## Examples
 
-- Use `mt-avatar` to identify users or entities in lists, headers, menus, and chat threads
-- Provide an `imageUrl` when possible, photos improve recognition
-- Rely on initials when no image is available, they are concise and readable
-- Pick a size that fits the layout, for example `s` for dense lists or `l` for profile headers
-- Use the `square` variant when the surrounding UI uses sharp corners
+### Basic
 
-### ❌ Don'ts
+<Canvas of={AvatarStories.Default} />
 
----
+### Sizes
 
-- Don’t treat avatars as clickable elements, wrap them in a button or link if interaction is required
-- Don’t place long text inside an avatar, it should only contain initials or an image
-- Don’t oversize avatars in dense layouts, this harms scanability
+<Canvas of={AvatarStories.AllSizes} />
+
+### With image
+
+<Canvas of={AvatarStories.WithImage} />
+
+### Square
+
+<Canvas of={AvatarStories.Square} />
+
+### All background colors
+
+<Canvas of={AvatarStories.AllBackgroundColors} />
+
+## API reference
+
+<ArgTypes of={AvatarStories} />
+
+## Do
+
+- Provide an `imageUrl` when possible, photos improve recognition.
+- Rely on initials when no image is available, they are concise and readable.
+- Pick a size that fits the layout, for example `s` for dense lists or `l` for profile headers.
+- Use the `square` variant when the surrounding UI uses sharper corners.
+
+## Don't
+
+- Don’t treat **Avatar** as a clickable element, wrap it in a button or link if interaction is required.
+- Don’t place long text inside **Avatar**, it should only contain initials or an image.
+- Don’t oversize **Avatar** in dense layouts, this harms scanability.
+
+## Behavior notes
+
+- If no `imageUrl` is provided, **Avatar** falls back to initials derived from `firstName` and `lastName`.
+- The background color is derived from the provided name, which gives repeated names a stable visual treatment.
+- **Avatar** is presentational. If the avatar should trigger an action, place it inside an interactive wrapper instead of making the avatar itself responsible for interaction.
+
+## Accessibility notes
+
+- If the avatar is only decorative, keep it out of the interaction flow.
+- If the avatar represents an important person or entity, make sure the surrounding UI still exposes that identity in text.
+- When wrapping the avatar in an interactive control, ensure the control has a clear accessible name.

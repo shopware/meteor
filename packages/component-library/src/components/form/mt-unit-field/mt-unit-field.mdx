@@ -1,0 +1,62 @@
+import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
+
+import * as UnitFieldStories from "./mt-unit-field.stories";
+import ComponentPageHeader from "../../_docs/component-page-header.js";
+
+<Meta of={UnitFieldStories} />
+
+<ComponentPageHeader
+  title="Unit Field"
+  tagName="mt-unit-field"
+  packageImports="MtUnitField"
+  sourcePath="packages/component-library/src/components/form/mt-unit-field"
+>
+  **Unit Field** combines a numeric input with a unit selector for measurements.
+</ComponentPageHeader>
+
+## When to use
+
+- Use **Unit Field** when users should enter a value together with a measurement unit.
+- Use it for lengths, weights, or other values that may switch between compatible units.
+- Use it when unit conversion should happen as part of the input flow.
+
+## Examples
+
+### Basic
+
+<Canvas of={UnitFieldStories.Default} />
+
+## API reference
+
+<ArgTypes of={UnitFieldStories} />
+
+## Do
+
+- Use a clear label that explains what is being measured.
+- Set a sensible `defaultUnit` for the most common case.
+- Choose the right `measurementType` so the available units match the use case.
+
+## Don't
+
+- Do not use **Unit Field** when the unit is fixed and never changes.
+- Do not use it for non-measurement values such as counts or identifiers.
+- Do not hide the meaning of the measurement behind a vague label.
+
+## Behavior notes
+
+- **Unit Field** combines **Number Field** behavior with a unit selector.
+- Changing the selected unit can convert the current value to keep the measurement consistent.
+- `measurementType` controls which units are available, and `defaultUnit` controls the current selection.
+
+## Accessibility notes
+
+- Always provide a visible label so users understand what the measurement refers to.
+- Make sure unit changes remain understandable, especially when the displayed numeric value updates after conversion.
+- Use help text when users need guidance about accepted ranges or preferred units.
+
+## Comparisons
+
+### **Unit Field** vs **Number Field**
+
+- Use **Unit Field** when users need to enter both a numeric value and a selectable measurement unit.
+- Use **Number Field** when the value is numeric and the unit is fixed or communicated elsewhere.

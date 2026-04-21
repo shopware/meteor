@@ -1,0 +1,63 @@
+import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
+
+import * as SearchStories from "./mt-search.stories";
+import ComponentPageHeader from "../../_docs/component-page-header.js";
+
+<Meta of={SearchStories} />
+
+<ComponentPageHeader
+  title="Search"
+  tagName="mt-search"
+  packageImports="MtSearch"
+  sourcePath="packages/component-library/src/components/navigation/mt-search"
+>
+  **Search** lets users filter or find content in a list, table, or page
+  section.
+</ComponentPageHeader>
+
+## When to use
+
+- Use **Search** to narrow down visible content as users type or confirm a search term.
+- Use it for list views, data tables, or page-level finding tools.
+- Use it when a lightweight search input is enough and a full form field wrapper is not needed.
+
+## Examples
+
+### Basic
+
+<Canvas of={SearchStories.Default} />
+
+## API reference
+
+<ArgTypes of={SearchStories} />
+
+## Do
+
+- Place **Search** close to the content it affects.
+- Use a placeholder or surrounding heading that makes the search scope clear.
+- Keep search behavior responsive so users quickly see what changed.
+
+## Don't
+
+- Do not use **Search** for values that should be stored as form data.
+- Do not use it when a labeled form field is the better semantic choice.
+- Do not leave the search scope ambiguous.
+
+## Behavior notes
+
+- **Search** uses a native `type="search"` input and emits both `update:modelValue` and `change`.
+- The component is intentionally lightweight and does not include the shared field wrapper used by the form field family.
+- `size` can make the control more compact in dense toolbars or filter areas.
+
+## Accessibility notes
+
+- Make sure the purpose of **Search** is clear from nearby visible context if the placeholder alone is not enough.
+- Keep the filtering result predictable so users understand what content the search affects.
+- Ensure keyboard users can reach the input in the same order as the content it controls.
+
+## Comparisons
+
+### **Search** vs **Text Field**
+
+- Use **Search** when the value is meant to filter or find content.
+- Use **Text Field** when the value should be entered and stored as regular form data.

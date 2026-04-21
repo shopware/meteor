@@ -1,0 +1,65 @@
+import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
+
+import * as EntityDataTableStories from "./mt-entity-data-table.stories";
+import ComponentPageHeader from "../../_docs/component-page-header.js";
+
+<Meta of={EntityDataTableStories} title="Components/mt-entity-data-table" />
+
+<ComponentPageHeader
+  title="Entity Data Table"
+  tagName="mt-entity-data-table"
+  status="experimental"
+  packageImports="MtEntityDataTable"
+  sourcePath="packages/component-library/src/components/entity/mt-entity-data-table"
+>
+  **Entity Data Table** is a repository-backed version of **Data Table**. It
+  owns loading and table state for Admin SDK entity data so the parent can focus
+  on columns and actions.
+</ComponentPageHeader>
+
+## When to use
+
+- Use **Entity Data Table** when rows should come from an Admin SDK entity repository.
+- Use it when you want searching, sorting, pagination, and filtering to refetch automatically.
+- Use it when you want built-in row selection and bulk-action wiring on top of **Data Table**.
+
+## Examples
+
+### Basic
+
+<Canvas of={EntityDataTableStories.Default} />
+
+## API reference
+
+<ArgTypes of={EntityDataTableStories} />
+
+## Do
+
+- Let the wrapper own repository-backed table state.
+- Define `availableFilters` only for filters users actually need.
+- Handle `open-details`, `bulk-delete`, and `bulk-edit` in the parent component.
+
+## Don't
+
+- Do not use it when the parent must fully own fetching and table state.
+- Do not duplicate repository search, sort, pagination, or filter handling in the parent component.
+- Do not use it for local-only datasets where plain **Data Table** is enough.
+
+## Behavior notes
+
+- Data is fetched on mount.
+- The table refetches when page, limit, sort, search, or filters change.
+- `availableFilters` generates the filter UI for repository-backed filters.
+- Bulk actions emit the currently selected row ids.
+
+## Accessibility notes
+
+- Give the table a meaningful `title` or surrounding heading.
+- Keep column labels and filter labels clear and specific.
+
+## Comparisons
+
+### **Entity Data Table** vs **Data Table**
+
+- Use **Entity Data Table** for Admin SDK repository data with built-in loading and table state.
+- Use **Data Table** when the parent component should own fetching and state management.

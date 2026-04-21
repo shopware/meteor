@@ -75,4 +75,73 @@ export default {
 
 export type MtDatepickerStory = StoryObj<MtDatepickerMeta>;
 
-export const Default: MtDatepickerStory = {};
+export const Default: MtDatepickerStory = {
+  parameters: {
+    docs: {
+      source: {
+        code: `<mt-datepicker label="Datepicker" />`,
+      },
+    },
+  },
+};
+
+export const DateOnly: MtDatepickerStory = {
+  name: "Date only",
+  args: {
+    label: "Publish date",
+    dateType: "date",
+    modelValue: "2024-11-13T00:00:00.000Z",
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `<mt-datepicker
+  label="Publish date"
+  date-type="date"
+  model-value="2024-11-13T00:00:00.000Z"
+/>`,
+      },
+    },
+  },
+};
+
+export const TimeOnly: MtDatepickerStory = {
+  name: "Time only",
+  args: {
+    label: "Reminder time",
+    dateType: "time",
+    modelValue: "12:40",
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `<mt-datepicker
+  label="Reminder time"
+  date-type="time"
+  model-value="12:40"
+/>`,
+      },
+    },
+  },
+};
+
+export const Range: MtDatepickerStory = {
+  args: {
+    label: "Campaign period",
+    dateType: "date",
+    range: true,
+    modelValue: ["2024-11-13T00:00:00.000Z", "2024-11-16T00:00:00.000Z"],
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `<mt-datepicker
+  label="Campaign period"
+  date-type="date"
+  :range="true"
+  :model-value="['2024-11-13T00:00:00.000Z', '2024-11-16T00:00:00.000Z']"
+/>`,
+      },
+    },
+  },
+};

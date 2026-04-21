@@ -1,16 +1,27 @@
 import { Canvas, Meta, Markdown } from "@storybook/blocks";
 import * as DataTableStories from "./mt-data-table.stories";
 import * as DataTableInteractiveStories from "./mt-data-table.interactive.stories";
+import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 <Meta of={DataTableStories} />
 
-# mt-data-table
-
-The `mt-data-table` is a powerful and flexible data table component designed to handle large datasets with features like pagination, sorting, filtering, and more. It's implemented as a "dumb" component, which means it focuses solely on rendering and user interactions, while delegating all data management and business logic to the parent component.
+<ComponentPageHeader
+  title="Data Table"
+  tagName="mt-data-table"
+  status="experimental"
+  packageImports="MtDataTable"
+  sourcePath="packages/component-library/src/components/table-and-list/mt-data-table"
+>
+  The **Data Table** is a powerful and flexible data table component designed to
+  handle large datasets with features like pagination, sorting, filtering, and
+  more. It's implemented as a "dumb" component, which means it focuses solely on
+  rendering and user interactions, while delegating all data management and
+  business logic to the parent component.
+</ComponentPageHeader>
 
 ## Understanding the Dumb Component Pattern
 
-As a dumb component, `mt-data-table` follows these principles:
+As a dumb component, **Data Table** follows these principles:
 
 1. **No Internal State Management**: The component doesn't maintain its own data state. All data must be provided through props and updated by the parent component.
 2. **Event-Based Communication**: When user interactions occur (sorting, filtering, pagination, etc.), the component emits events. The parent component must listen to these events and handle the data updates accordingly.
@@ -315,7 +326,7 @@ You can extend the wrapper component to include additional features like:
 
 ## Basic Usage
 
-Here's a simple example of how to use the `mt-data-table` component:
+Here's a simple example of how to use the **Data Table** component:
 
 ```html
 <template>
