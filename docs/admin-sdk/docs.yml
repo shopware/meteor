@@ -1,9 +1,9 @@
 redirects:
   api-reference/ui/component-section.html: api-reference/ui/component-sections.html
-  api-reference/ui/module/paymentOverviewCard.html: api-reference/ui/paymentOverviewCard.html
+  api-reference/ui/module/paymentOverviewCard.html: api-reference/ui/purchases-and-payments/paymentOverviewCard.html
   internals/how-it-works.html: concepts/architecture.html
   internals/datahandling.html: concepts/datahandling.html
-  api-reference/in-app-purchases/in-app-purchases.html: api-reference/data/in-app-purchases.html
+  api-reference/in-app-purchases/in-app-purchases.html: api-reference/ui/purchases-and-payments/in-app-purchases.html
   api-reference/in-app-purchases/index.html: api-reference/data/index.html
   api-reference/ui/module/index.html: api-reference/ui/index.html
   faq/index.html: develop/translations.html

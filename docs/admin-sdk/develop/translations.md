@@ -37,8 +37,11 @@ Snippet files follow the same structure used by the Shopware Administration. Ove
 Reference snippet keys directly in the UI configuration. Example:
 
 ```js
-sw.ui.componentSection('sw-manufacturer-card-custom-fields__before').add({
+import { ui } from '@shopware-ag/meteor-admin-sdk';
+
+ui.componentSection.add({
     component: 'card', 
+    positionId: 'sw-manufacturer-card-custom-fields__before',
     props: {
         title: 'my-app-name.example-card.title',
         subtitle: 'my-app-name.example-card.subtitle',

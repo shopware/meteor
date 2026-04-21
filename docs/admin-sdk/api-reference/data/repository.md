@@ -150,14 +150,18 @@ Clones an existing entity
 ```ts
 const exampleRepository = data.repository('your_entity');
 
-const clonedEntityId = await exampleRepository.clone('theEntityIdToClone');
+const clonedEntityId = await exampleRepository.clone(
+    'theEntityIdToClone',
+    yourApiContext
+);
 ```
 
 #### Parameters
 | Name       | Required | Default | Description                                    |
 | :--------- | :------- | :------ | :--------------------------------------------- |
 | `entityId` | true     |         | The entity id which should be cloned           |
-| `context`  | false    | {}      | Change the [request context](#request-context) |
+| `context`  | true     |         | Change the [request context](#request-context) |
+| `behavior` | false    |         | Configure the [clone behavior](#clone-behavior) |
 
 #### Return value
 This method returns the id of the cloned entity.
@@ -248,5 +252,24 @@ const exampleContext = {
     languageId: 'theLanguageId',
     // If you are working with versioned entities you can change the current live version id
     liveVersionId: 'yourLiveVersionId'
+}
+```
+
+### Clone Behavior
+You can optionally change the clone behavior of the request. The clone behavior controls how the entity is duplicated on the server.
+
+Use `overwrites` to replace values in the cloned entity before it is written, for example to set a different name or other field values on the copy.
+
+Use `cloneChildren` to control whether child entities are cloned as well. This value defaults to `true`.
+
+```ts
+const exampleCloneBehavior = {
+    // Replace values in the cloned entity before it is saved
+    overwrites: {
+        name: 'Copy of the original entity',
+        active: false
+    },
+    // Set to false if child entities should not be cloned
+    cloneChildren: true
 }
 ```

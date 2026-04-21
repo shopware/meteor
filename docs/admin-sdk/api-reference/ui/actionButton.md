@@ -19,7 +19,7 @@ import { location, ui } from "@shopware-ag/meteor-admin-sdk";
 
 if (location.is(location.MAIN_HIDDEN)) {
   ui.actionButton.add({
-    action: "your-app_customer-detail-action",
+    name: "your-app_customer-detail-action",
     entity: "customer",
     view: "detail",
     label: "Test action",
@@ -34,7 +34,7 @@ if (location.is(location.MAIN_HIDDEN)) {
 
 | Name         | Required | Description                                                                                                                                                                       |
 | :----------- | :------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `action`     | true     | A unique name of your action                                                                                                                                                      |
+| `name`       | true     | A unique identifier for your action                                                                                                                                                |
 | `entity`     | true     | The entity this action is for possible values: `product`, `order`, `category`, `promotion`, `customer` or `media`. Value `media` is available in Shopware version 6.7.1           |
 | `view`       | true     | Determines if the action button appears on the listing or detail page, possible values: `detail`,`list` or item. View `item` is only used for entity `media` and in version 6.7.1 |
 | `label`      | true     | The label of your action button                                                                                                                                                   |
@@ -58,7 +58,7 @@ import { location, ui } from "@shopware-ag/meteor-admin-sdk";
 
 if (location.is(location.MAIN_HIDDEN)) {
   ui.actionButton.add({
-    action: "your-app_customer-detail-action",
+    name: "your-app_customer-detail-action",
     entity: "customer",
     view: "detail",
     label: "Test action",
@@ -81,7 +81,7 @@ if (location.is(location.MAIN_HIDDEN)) {
 import { ui } from "@shopware-ag/meteor-admin-sdk";
 
 ui.actionButton.add({
-  action: "your-app_customer-detail-action",
+  name: "your-app_customer-detail-action",
   entity: "customer",
   view: "detail",
   meteorIcon: "regular-analytics",
@@ -104,7 +104,7 @@ ui.actionButton.add({
 import { ui } from "@shopware-ag/meteor-admin-sdk";
 
 ui.actionButton.add({
-  action: "test-media-button",
+  name: "test-media-button",
   entity: "media",
   view: "item",
   meteorIcon: "regular-tools-alt",

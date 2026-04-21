@@ -20,6 +20,7 @@ In this example, the base options are passed on the same object as the method-sp
 import { notification } from '@shopware-ag/meteor-admin-sdk';
 
 notification.dispatch({
+    title: 'Product report ready',
     message: 'Your product report is ready',
     /* ... base options ... */
 });
@@ -62,6 +63,7 @@ Pass the `privileges` array to any SDK method that supports base options:
 import { notification, ui } from '@shopware-ag/meteor-admin-sdk';
 
 notification.dispatch({
+    title: 'Product report ready',
     message: 'Your product report is ready',
     privileges: [
         'product:read',
@@ -69,7 +71,7 @@ notification.dispatch({
 });
 
 ui.actionButton.add({
-    action: 'generate-report',
+    name: 'generate-report',
     entity: 'product',
     view: 'detail',
     label: 'Generate Report',

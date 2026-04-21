@@ -27,7 +27,7 @@ ui.mediaModal.open({
   allowMultiSelect: false,
   fileAccept: "image/png",
   selectors: ["fileName", "id", "url"],
-  callback: ({ fileName, id, url }) => {},
+  callback: ([{ fileName, id, url }]) => {},
 });
 ```
 
@@ -42,8 +42,8 @@ All parameters are similar to the `sw-media-modal-v2` component's props.
 | `allowMultiSelect` | false    | true                      | Define single or multiple selection                                                  |
 | `defaultTab`       | false    | library                   | Defines which tab should be opened by default                                        |
 | `fileAccept`       | false    | image/\*                  | Define the file types which are allowed to be uploaded in Upload tab                 |
-| `selectors`        | false    | ['fileName', 'id', 'url'] | Selected properties which should be returned in callback function                    |
-| `callback`         | true     |                           | Callback function which will be called once the media item is selected.              |
+| `selectors`        | false    | ['fileName', 'id', 'url'] | Selected properties which should be returned for each item in the callback array     |
+| `callback`         | true     |                           | Callback function which receives an array of selected media items once a selection is made. |
 
 #### Example
 
@@ -54,7 +54,7 @@ ui.mediaModal.open({
   initialFolderId: "productMediaFolderId",
   allowMultiSelect: false,
   selectors: ["fileName", "id", "url"],
-  callback: ({ fileName, id, url }) => {},
+  callback: ([{ fileName, id, url }]) => {},
 });
 ```
 
