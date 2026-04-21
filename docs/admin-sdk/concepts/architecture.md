@@ -1,4 +1,11 @@
-# How it works
+---
+title: "Architecture"
+nav:
+  position: 20
+---
+
+
+# Architecture
 
 The Meteor Admin SDK provides wrapper methods for a better development experience. It abstracts and hides the more
 complex logic behind a simple API. This makes it easier for app and plugin developers to create their solutions and focus
@@ -22,7 +29,7 @@ The helper methods can be found in the `channel` file. It holds different method
 
 Here is an example to give you a better understanding of how that works.
 
-### Example workflow
+## Example workflow
 
 Let's imagine that an app or plugin calls the `context.getLanguage` method from the Extension SDK:
 
@@ -71,6 +78,7 @@ handle('contextLanguage', () => {
 It uses the `handle` method, which is also a helper method of the `channel`. You see now, that the type matches the sender type. And in the second argument it provides a method that returns the data.
 
 This method reacts to every `contextLanguage` request and sends the data values back to the source of the request. It also creates an object that includes meta information which in turn are needed for the original `send` window:
+
 ```js
 {
   _type: 'contextLanguage',
@@ -93,9 +101,11 @@ const language = await sw.context.getLanguage();
 And this is basically it! The app or plugin has now got the data from the Administration. It all just looks like a simple call, but there is a lot going on in the background.
 
 ## Sending methods
+
 In normal cases you can't add methods to JSON objects which will get stringified. But in our case we are convinced it would make the many developers' lives much easier if they can also use their own methods in the calls.
 
-To handle these edge-cases we are converting the methods to information objects like this:
+To handle these edge cases we are converting the methods to information objects like this:
+
 ```js
 {
   __type__: '__function__',
@@ -116,5 +126,4 @@ send('__function__', {
 
 The sender gets the message back and executes the method with the matching ID and the given arguments. The return value will then be sent back to the converted method in the receiver.
 
-This complex logic is also abstracted. To use it, just add methods to
-the data. They will then be converted and handled automatically.
+This complex logic is also abstracted. To use it, just add methods to the data. They will then be converted and handled automatically.

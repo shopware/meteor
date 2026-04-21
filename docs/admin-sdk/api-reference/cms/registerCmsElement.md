@@ -1,4 +1,10 @@
-# Register CMS element
+---
+title: "Register CMS Element"
+sidebar_position: 30
+---
+
+
+# Register CMS Element
 
 > Available since Shopware v6.4.17.0
 
@@ -7,8 +13,13 @@ More information on how to develop CMS elements can be found in these guides for
 
 ![Register a CMS element in your Shopping Experiences Module via App](../assets/register-cms-element-example.png)
 
-#### Usage:
+## registerCmsElement()
+
+#### Usage
+
 ```ts
+import { cms } from '@shopware-ag/meteor-admin-sdk';
+
 void cms.registerCmsElement({
     name: 'dailymotionElement',
     label: 'Dailymotion Video',
@@ -22,8 +33,13 @@ void cms.registerCmsElement({
 ```
 
 #### Parameters
+
 | Name            | Required | Description                                                                                              |
 |:----------------|:---------|:---------------------------------------------------------------------------------------------------------|
 | `name`          | true     | The name of the cms element, which will also be used to generate locationIds - Should have vendor prefix |
 | `label`         | true     | The label, which is visible when selecting the cms element - Use snippet keys here!                      |
 | `defaultConfig` | true     | Object containing the defaultConfig; same like in plugin development.                                    |
+
+#### Return value
+
+Returns a promise without data.

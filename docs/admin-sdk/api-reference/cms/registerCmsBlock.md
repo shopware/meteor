@@ -1,3 +1,9 @@
+---
+title: "Register CMS block"
+sidebar_position: 20
+---
+
+
 # Register CMS block
 
 > Available since Shopware v6.6.1.0
@@ -6,8 +12,13 @@ With `cms.registerCmsBlock` you can register CMS blocks to use in the Shopping E
 
 ![Register a CMS block in your Shopping Experiences Module via App](../assets/register-cms-block-example.png)
 
-#### Usage:
+## registerCmsBlock()
+
+#### Usage
+
 ```ts
+import { cms } from '@shopware-ag/meteor-admin-sdk';
+
 cms.registerCmsBlock({
     name: 'dailymotion-dual-block',
     label: 'ex.cms.dailymotion.block.label',
@@ -25,6 +36,7 @@ cms.registerCmsBlock({
 ```
 
 #### Parameters
+
 | Name           | Required | Description                                                                                                                                                                                                                                                                                             |
 | :------------- | :------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `name`         | true     | The name of the cms block - Should have vendor prefix. It can be used in the Storefront for overriding the default layout.                                                                                                                                                                              |
@@ -34,12 +46,15 @@ cms.registerCmsBlock({
 | `previewImage` | false    | The URL of the preview image. This image is shown in the Shopping Experiences Module when selecting the CMS block.                                                                                                                                                                                      |
 | `slotLayout`   | false    | The layout of the slots. This is used to define the grid layout of the slots. You can use the [CSS grid shorthand syntax](https://developer.mozilla.org/en-US/docs/Web/CSS/grid) here.                                                                                                                  |
 
+#### Return value
+
+Returns a promise without data.
 
 ## Storefront usage
 
 The CMS block will render automatically in the Storefront without any additional work. It renders the block as a CSS grid with the slots as grid items and the grid shorthand syntax you provided in the `slotLayout` property.
 
-If you want you can override the default layout by creating a new template file in your app. The file should be named `cms-block-app-renderer.html.twig` and should be placed in the `<your-app>/Resources/views/storefront/block` directory of your app folder. More details on how to customize the Storefront in your App can be found in this documentation: https://developer.shopware.com/docs/guides/plugins/apps/storefront/customize-templates.html
+If you want you can override the default layout by creating a new template file in your app. The file should be named `cms-block-app-renderer.html.twig` and should be placed in the `<your-app>/Resources/views/storefront/block` directory of your app folder. More details on how to customize the Storefront in your App can be found in the [Customize Templates](https://developer.shopware.com/docs/guides/plugins/apps/storefront/customize-templates.html) guide.
 
 Inside this file you need to define the block layout and the slots. The block which needs to be created follows this naming pattern: `block_app_renderer_${yourBlockName}`. The `${yourBlockName}` is the name of the block you registered with `cms.registerCmsBlock` except that you need to replace the hyphens with underscores.
 

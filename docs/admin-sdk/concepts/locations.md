@@ -1,39 +1,54 @@
+---
+title: "Locations"
+nav:
+  position: 30
+---
+
 # Locations
 
-Extensions can render custom views via iFrames. To support multiple views in different places every `location` of the iFrame gets a unique ID. These can be defined by the extension developer itself.
+Locations define where an extension renders inside the Shopware Administration. Your SDK code is injected into every visible location, plus one hidden location that handles the main registration logic, and each of those locations runs inside its own iframe. Because every iframe executes the same JavaScript code, you need to check which location is currently active and render the appropriate view for it.
 
-*Example:*  
+## Mental model
 
-A extension wants to render a custom iFrame in a card in the dashboard. The `location` of the iFrame has then a specific `locationId` like `sw-dashboard-example-app-dashboard-card`. The app can also render another iFrames which also get `locationId`s. In our example it is a iFrame in a custom modal: `example-app-example-modal-content`.
+Each location is identified by a **location ID**. When you register a UI extension, you choose a `locationId`. Then in your code, you use `location.is()` to branch between the hidden iframe where you register UI and the visible iframe where you render content:
 
-The extension want to render different views depending on the `location` of the iFrame. So the extension developer can render the correct view depending on the `locationId`:
 ```js
-// Add the ui extensions when your extension is loaded in the hidden iFrame
-if (sw.location.is(sw.location.MAIN_HIDDEN)) {
+import { location } from '@shopware-ag/meteor-admin-sdk';
+
+if (location.is(location.MAIN_HIDDEN)) {
+  // Register UI extensions here
+}
+
+if (location.is('my-app-card-before-properties')) {
+  // Render the content for this location here
+}
+```
+
+Here is the same pattern with a full component section example:
+
+```js
+import { ui, location } from '@shopware-ag/meteor-admin-sdk';
+
+if (location.is(location.MAIN_HIDDEN)) {
   ui.componentSection.add({
       component: 'card',
       positionId: 'sw-product-properties__before',
       props: {
           title: 'Hello from plugin',
           subtitle: 'I am before the properties card',
-          /**
-           *  The locationId:
-           **/
           locationId: 'my-app-card-before-properties'
       }
   })
 }
 
-// Render the custom UI when the iFrame location matches your defined location
-if (sw.location.is('my-app-card-before-properties')) {
-    document.body.innerHTML = '<h1>I am the in the location "my-app-card-before-properties"</h1>';
+if (location.is('my-app-card-before-properties')) {
+    document.body.innerHTML = '<h1>Custom content here</h1>';
 }
 ```
 
-## Base location
-Every extension gets rendered in a hidden iFrame. In this iFrame the extension can execute different commands to extend
-the administration and add custom locations to different extension points. To check if the script will be executed in this
-location you can use the predefined constant:
+## Base location (hidden iframe)
+
+Every extension is initially loaded in a hidden iframe. This is where you register all your UI extensions — adding tabs, component sections, menu entries, and so on. To check whether the current code is running in the hidden iframe, use the `MAIN_HIDDEN` constant:
 
 ```js
 import { location } from '@shopware-ag/meteor-admin-sdk';
@@ -43,29 +58,32 @@ if (location.is(location.MAIN_HIDDEN)) {
 }
 ```
 
-## Change height of location iFrame
-The iFrame height is by default fixed. You can update the height with the location helper:
+## Change iframe height
+
+The iframe height is fixed by default. You can set it explicitly:
+
 ```js
-location.updateHeight(750); // change iFrame height to 750px
+location.updateHeight(750); // set iframe height to 750px
 ```
 
-If you use a parameter then the height will automatically be calculated so that your whole view gets rendered. In most cases
-you don't want to update the height manually. To watch for height changes you can use the auto resizer. It updates the iFrame
-height everytime the height of the view changes:
+In most cases you want the height to adjust automatically. The auto resizer watches for height changes and updates the iframe whenever the content size changes:
+
 ```js
 // watch for height changes and update the iFrame
 location.startAutoResizer();
 ```
+
 ![Auto Resizer example](./assets/auto-resizer.gif)
 
 ## Avoiding scrollbars
-If you render custom locations it is useful to disable the scroll behavior in your view. Otherwise scrollbars are visible
-which aren't needed in most cases. To avoid this you can add the css property `overflow: hidden;` to the `body` element.
 
-## For existing plugin migrations: render Vue components instead of iFrames
-In some cases you just want to use specific features from the SDK and some features from the existing plugin system which works with Twig and Component overriding. In this case you can do some things with the SDK but render components from the Shopware Component Factory instead of iFrames.
+When rendering custom locations, add `overflow: hidden;` to the `body` element to prevent unnecessary scrollbars inside the iframe.
 
-To do this you need to register the component in the existing plugin system:
+## Render Vue components instead of iframes (plugin migration)
+
+When migrating existing plugins, you can mix the SDK with the existing plugin system. Instead of rendering an iframe, you can render a Vue component registered via `Shopware.Component.register` at a location.
+
+Register the component:
 
 ```js
 Shopware.Component.register('your-component-name', {
@@ -73,7 +91,8 @@ Shopware.Component.register('your-component-name', {
 })
 ```
 
-Now if you want to render the component in a location you need to add the name of the component to the current location. This can be done with the `sdkLocation` store:
+Then map it to a location ID using the `sdkLocation` store:
+
 ```js
 Shopware.State.commit('sdkLocation/addLocation', {
     locationId: 'your-location-id',
@@ -81,7 +100,7 @@ Shopware.State.commit('sdkLocation/addLocation', {
 })
 ```
 
-With this feature you can create mix the usage of the SDK and the existing plugin system. A complete example could be looking like this. It creates a new tab item in the product detail page, renders a card with the componentSection renderer and inside the card it renders the location. But instead of the traditional location it renders a Vue component which was registered in the Shopware Component Factory.
+A complete example that adds a tab to the product detail page and renders a Vue component inside a card:
 
 ```js
 // in a normal plugin js file without a HTML file

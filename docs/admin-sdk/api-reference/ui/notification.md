@@ -1,44 +1,58 @@
+---
+title: "Notification"
+nav:
+  position: 55
+---
+
 # Notification
 
-### Dispatch a notification
+Notifications display messages in the Shopware Administration to inform users about events, errors, or completed actions. They remain visible in the notification center (bell icon) until dismissed by the user.
 
-![notification example](./assets/notification-example.jpg)
+See also: [Base Options](../base-options.md) for shared configuration options supported by SDK message APIs.
 
-#### Usage:  
+## notification.dispatch()
+
+![notification example](../assets/notification-example.jpg)
+
+#### Usage
+
 ```ts
+import { notification } from "@shopware-ag/meteor-admin-sdk";
+
 function alertYes() {
-  alert('Yes');
+  alert("Yes");
 }
 
-sw.notification.dispatch({
-    title: 'Your title',
-    message: 'Your message',
-    variant: 'success',
-    appearance: 'notification',
-    growl: true,
-    actions: [
-        {
-            label: 'Yes',
-            method: alertYes
-        },
-        {
-            label: 'No',
-            method: () => {
-                alert('No')
-            }
-        },
-        {
-            label: 'Cancel',
-            route: 'https://www.shopware.com',
-            disabled: false,
-        }
-    ]
-})
+notification.dispatch({
+  title: "Your title",
+  message: "Your message",
+  variant: "success",
+  appearance: "notification",
+  growl: true,
+  actions: [
+    {
+      label: "Yes",
+      method: alertYes,
+    },
+    {
+      label: "No",
+      method: () => {
+        alert("No");
+      },
+    },
+    {
+      label: "Cancel",
+      route: "https://www.shopware.com",
+      disabled: false,
+    },
+  ],
+});
 ```
 
-#### Parameters:
+#### Parameters
+
 | Name         | Required | Default        | Description                                                                                                                                                                                                     |
-|:-------------|:---------|:---------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| :----------- | :------- | :------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `title`      | true     |                | Defines a notification's **title**.                                                                                                                                                                             |
 | `message`    | true     |                | Defines a notification's main expression or message to the user.                                                                                                                                                |
 | `variant`    | false    | `info`         | Defines the notification type. Available `variant` types are `success`, `info`, `warning` and `error`.                                                                                                          |
@@ -46,5 +60,6 @@ sw.notification.dispatch({
 | `growl`      | false    | `true`         | Displays a notification that is overlaying any module. Use `false` to display the notification in the notification center (bell symbol) only.                                                                   |
 | `actions`    | false    | `[]`           | Adds clickable buttons to the notification. Each button with a `label` can trigger a `method` or open a `route` (internal route or external link). Buttons can also be disabled using the attribute `disabled`. |
 
-#### Return value:
+#### Return value
+
 Returns a promise without data.

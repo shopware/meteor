@@ -1,26 +1,43 @@
+---
+title: "Context"
+sidebar_position: 40
+---
+
 # Context
 
-## Language
+The Context API provides read access to the current state of the Shopware Administration. Extensions can use these methods to retrieve information about the active language, locale, currency, environment, Shopware version, and more.
 
-### Get current language
+This is useful for adapting extension behavior based on the current Administration context — for example, loading translations for the active language or checking the Shopware version before using a newer API.
 
-#### Usage:  
 ```ts
-const language = await sw.context.getLanguage();
+import { context } from "@shopware-ag/meteor-admin-sdk";
+```
+
+## getLanguage()
+
+Returns the current Administration language ID and the system default language ID. Use this to load the correct translations or filter data by language.
+
+#### Usage
+
+```ts
+const language = await context.getLanguage();
 ```
 
 #### Parameters
+
 No parameters needed.
 
-#### Return value:
+#### Return value
+
 ```ts
 Promise<{
-  languageId: string,
-  systemLanguageId: string
+  languageId: string;
+  systemLanguageId: string;
 }>
 ```
 
-#### Example value:
+#### Example value
+
 ```ts
 {
   languageId: '2fbb5fe2e29a4d70aa5854ce7ce3e20b',
@@ -28,21 +45,26 @@ Promise<{
 }
 ```
 
-### Subscribe on language changes
+## subscribeLanguage()
 
-#### Usage:  
+Subscribes to language changes in the Administration. The callback fires whenever the user switches languages, allowing extensions to react immediately (e.g. reloading translated content).
+
+#### Usage
+
 ```ts
-sw.context.subscribeLanguage(({ languageId, systemLanguageId }) => {
+context.subscribeLanguage(({ languageId, systemLanguageId }) => {
   // do something with the callback data
 });
 ```
 
 #### Parameters
-| Name | Description |
-| :------ | :------ |
+
+| Name             | Description                            |
+| :--------------- | :------------------------------------- |
 | `callbackMethod` | Called every-time the language changes |
 
-#### Callback value:
+#### Callback value
+
 ```ts
 {
   languageId: string,
@@ -50,7 +72,8 @@ sw.context.subscribeLanguage(({ languageId, systemLanguageId }) => {
 }
 ```
 
-#### Example callback value:
+#### Example callback value
+
 ```ts
 {
   languageId: '2fbb5fe2e29a4d70aa5854ce7ce3e20b',
@@ -58,49 +81,57 @@ sw.context.subscribeLanguage(({ languageId, systemLanguageId }) => {
 }
 ```
 
-## Environment
+## getEnvironment()
 
-### Get current environment
+Returns the current Administration environment mode. Use this to enable debug features or disable analytics in non-production environments.
 
-#### Usage:  
+#### Usage
+
 ```ts
-const environment = await sw.context.getEnvironment();
+const environment = await context.getEnvironment();
 ```
 
 #### Parameters
+
 No parameters needed.
 
-#### Return value:
+#### Return value
+
 ```ts
-Promise<'development' | 'production' | 'testing'>
+Promise<"development" | "production" | "testing">
 ```
 
-#### Example value:
+#### Example value
+
 ```ts
-'development'
+"development";
 ```
 
-## Locale
+## getLocale()
 
-### Get current locale
+Returns the browser locale used by the Administration UI, including a fallback locale. Use this to format dates, numbers, or currencies according to the user's regional settings.
 
-#### Usage:  
+#### Usage
+
 ```ts
-const locale = await sw.context.getLocale();
+const locale = await context.getLocale();
 ```
 
 #### Parameters
+
 No parameters needed.
 
-#### Return value:
+#### Return value
+
 ```ts
 Promise<{
-  locale: string,
-  fallbackLocale: string
+  locale: string;
+  fallbackLocale: string;
 }>
 ```
 
-#### Example value:
+#### Example value
+
 ```ts
 {
   locale: 'de-DE',
@@ -108,21 +139,26 @@ Promise<{
 }
 ```
 
-### Subscribe on locale changes
+## subscribeLocale()
 
-#### Usage:  
+Subscribes to locale changes in the Administration. The callback fires whenever the locale changes, allowing extensions to re-render locale-dependent content like formatted dates or currencies.
+
+#### Usage
+
 ```ts
-sw.context.subscribeLocale(({ locale, fallbackLocale }) => {
+context.subscribeLocale(({ locale, fallbackLocale }) => {
   // do something with the callback data
 });
 ```
 
 #### Parameters
-| Name | Description |
-| :------ | :------ |
+
+| Name             | Description                          |
+| :--------------- | :----------------------------------- |
 | `callbackMethod` | Called every-time the locale changes |
 
-#### Callback value:
+#### Callback value
+
 ```ts
 {
   locale: string,
@@ -130,7 +166,8 @@ sw.context.subscribeLocale(({ locale, fallbackLocale }) => {
 }
 ```
 
-#### Example callback value:
+#### Example callback value
+
 ```ts
 {
   locale: 'de-DE',
@@ -138,27 +175,31 @@ sw.context.subscribeLocale(({ locale, fallbackLocale }) => {
 }
 ```
 
-## Currency
+## getCurrency()
 
-### Get current currency
+Returns the system currency configured for the Shopware instance. Use this when displaying prices or working with monetary values.
 
-#### Usage:  
+#### Usage
+
 ```ts
-const currency = await sw.context.getCurrency();
+const currency = await context.getCurrency();
 ```
 
 #### Parameters
+
 No parameters needed.
 
-#### Return value:
+#### Return value
+
 ```ts
 Promise<{
-  systemCurrencyId: string,
-  systemCurrencyISOCode: string
+  systemCurrencyId: string;
+  systemCurrencyISOCode: string;
 }>
 ```
 
-#### Example value:
+#### Example value
+
 ```ts
 {
   systemCurrencyId: 'b7d2554b0ce847cd82f3ac9bd1c0dfca',
@@ -166,138 +207,153 @@ Promise<{
 }
 ```
 
-## Shopware version
+## getShopwareVersion()
 
-### Get current Shopware version
+Returns the Shopware version as a string. Use this to conditionally enable features or check compatibility before using newer APIs.
 
-#### Usage:  
+#### Usage
+
 ```ts
-const shopwareVersion = await sw.context.getShopwareVersion();
+const shopwareVersion = await context.getShopwareVersion();
 ```
 
 #### Parameters
+
 No parameters needed.
 
-#### Return value:
+#### Return value
+
 ```ts
 string
 ```
 
-#### Example value:
+#### Example value
+
 ```ts
-'6.4.0.0'
+"6.4.0.0";
 ```
 
-### Compare current Shopware version with a given version
+## compareIsShopwareVersion()
 
-In many cases you have to make sure that the shop you are communicating with has a certain Shopware version. For this purpose the Meteor Admin SDK provides the `context.compareIsShopwareVersion` function.
+Compares the current Shopware version against a target version. The current Shopware version is always the left-hand side of the comparison — so `context.compareIsShopwareVersion('>=', '7.0.0')` reads as "is the current Shopware version equal to or greater than 7.0.0?"
 
-The function always treats the current Shopware version of a shop as the left hand operator of the comparison. That means a call like `context.compareIsShopwareVersion('>=', '7.0.0')` can be read as "*Compare: is Shopware version equal or greater than 7.0.0*"
+#### Usage
 
-#### Usage:  
 ```ts
-const isRightVersion = await sw.context.compareShopwareVersion('>=', '7.0.0')
+const isRightVersion = await context.compareIsShopwareVersion(">=", "7.0.0");
 ```
 
 #### Parameters
-| Name         | Description                                                                                                       |
-|:-------------|:------------------------------------------------------------------------------------------------------------------|
-| `comparator` | The operator to compare. Possible values: `'='` `'!='` `'>'` `'<'` `'<='` `'>='`|
-| `version`    | The string with the version to compare
 
+| Name         | Description                                                                      |
+| :----------- | :------------------------------------------------------------------------------- |
+| `comparator` | The operator to compare. Possible values: `'='` `'!='` `'>'` `'<'` `'<='` `'>='` |
+| `version`    | The string with the version to compare                                           |
 
-The function supports both, Shopware's four-digit version number and semver versions. The following calls are equivalent:
+The function supports both Shopware's four-digit version number and semver versions. The following calls are equivalent:
 
 ```ts
-await sw.context.compareShopwareVersion('>=', '6.6.4.0');
+await context.compareIsShopwareVersion(">=", "6.6.4.0");
 
-await sw.context.compareShopwareVersion('>=', '6.4.0');
+await context.compareIsShopwareVersion(">=", "6.4.0");
 ```
 
-#### Return value:
+#### Return value
 
 ```ts
 boolean
 ```
 
-#### Example value:
+#### Example value
+
 ```ts
-true
+true;
 ```
 
-## App information
+## getAppInformation()
 
-### Get app information
+Returns metadata about the current app or plugin, including its name, version, type, and granted privileges. Use this to adapt behavior based on the extension type or check which permissions were granted.
 
-> The privileges property will be available with Shopware v6.7.1.0 and higher
+> The `privileges` property is available since Shopware v6.7.1.0.
 
-#### Usage:  
+#### Usage
+
 ```ts
-const { name, version, type, privileges } = await sw.context.getAppInformation();
+const { name, version, type, privileges } = await context.getAppInformation();
 ```
 
 #### Parameters
+
 No parameters needed.
 
-#### Return value:
+#### Return value
+
 ```ts
-Promise<{ name: string ; version: string ; type: 'app' | 'plugin', privileges: privileges }>
+Promise<{
+  name: string;
+  version: string;
+  type: "app" | "plugin";
+  privileges: privileges;
+}>
 ```
 
-#### Example value:
+#### Example value
+
 ```ts
 {
   name: 'my-extension',
   version: '1.2.3',
-  type: 'app'
+  type: 'app',
   privileges: {
     read: [ 'product', 'customer' ],
-    write: [ 'product' ],
+    update: [ 'product' ],
     additional: [ 'system.cache_clear' ]
   }
 }
 ```
 
-## User information
+## getUserInformation()
 
-### Get user information
+Returns details about the currently logged-in Administration user, including their roles, email, and admin status. Use this to personalize the extension UI or check user permissions.
 
-:::caution
-Do not use this feature yet. It is not implemented in a Shopware release yet.
-:::
+> Available since Shopware v6.4.9.0
 
-#### Usage:  
+#### Usage
+
 ```ts
-const userInformation = await sw.context.getUserInformation();
+const userInformation = await context.getUserInformation();
 ```
 
 #### Parameters
+
 No parameters needed.
 
-#### Return value:
+#### Return value
+
 ```ts
 Promise<{
   aclRoles: Array<{
-    name: string,
-    type: string,
-    id: string,
-    privileges: Array<string>,
-  }>,
-  active: boolean,
-  admin: boolean,
-  avatarId: string,
-  email: string,
-  firstName: string,
-  id: string,
-  lastName: string,
-  localeId: string,
-  title: string,
-  type: string,
-  username: string,
+    name: string;
+    type: string;
+    id: string;
+    privileges: Array<string>;
+  }>;
+  active: boolean;
+  admin: boolean;
+  avatarId: string;
+  email: string;
+  firstName: string;
+  id: string;
+  lastName: string;
+  localeId: string;
+  title: string;
+  type: string;
+  username: string;
 }>
 ```
 
-#### Example value:
+#### Example value
+
 ```ts
 {
     "aclRoles": [],
@@ -315,117 +371,120 @@ Promise<{
 }
 ```
 
-## User Timezone
+## getUserTimezone()
 
-### Get user timezone
+Returns the timezone setting of the currently logged-in user. Use this to display dates and times in the user's local timezone.
 
-:::caution
-This feature will be available with Shopware ^6.6.2.0
-:::
+> Available since Shopware v6.6.2.0
 
-This feature allows you to get the timezone of the user.
+#### Usage
 
-#### Usage:
 ```ts
-const userTimezone = await sw.context.getUserTimezone();
+const userTimezone = await context.getUserTimezone();
 ```
 
 #### Parameters
+
 No parameters needed.
 
-#### Return value:
+#### Return value
+
 ```ts
 Promise<string>
 ```
 
 This function returns a Promise that resolves to a string representing the user's timezone.
 
-## Module information
+## getModuleInformation()
 
-### Get module information
-Get information about all registered modules. These modules are created by adding new menu items, setting items, etc.
+Returns the list of all registered extension modules (created by adding menu items, settings items, etc.). Use the module ID to navigate between extensions.
 
-The ID can be used to change the current route to the module.
+#### Usage
 
-#### Usage:  
 ```ts
-const { modules } = await sw.context.getModuleInformation();
+import { window as swWindow } from "@shopware-ag/meteor-admin-sdk";
 
-sw.window.routerPush({
-  name: 'sw.extension.sdk.index',
+const { modules } = await context.getModuleInformation();
+
+swWindow.routerPush({
+  name: "sw.extension.sdk.index",
   params: {
-    id: modules[0].id // get the ID of the wanted module
-  }
-})
+    id: modules[0].id,
+  },
+});
 ```
 
 #### Parameters
+
 No parameters needed.
 
-#### Return value:
+#### Return value
+
 ```ts
 Promise<{
   modules: Array<{
-    displaySearchBar: boolean,
-    heading: string,
-    id: string,
-    locationId: string
-  }>
+    displaySearchBar: boolean;
+    heading: string;
+    id: string;
+    locationId: string;
+  }>;
 }>
 ```
 
-#### Example value:
+#### Example value
+
 ```ts
 {
   modules: [
     {
       displaySearchBar: true,
-      heading: 'My module',
-      id: 'sd5aasfsdfas',
-      locationId: 'my-location-id'
-    }
-  ]
+      heading: "My module",
+      id: "sd5aasfsdfas",
+      locationId: "my-location-id",
+    },
+  ];
 }
 ```
 
-## ShopId
+## getShopId()
 
-### Get the shopId
+Returns the unique shop ID used by Shopware's app system. Use this to identify the shop instance when communicating with external services.
 
 > Available since Shopware v6.7.1.0
 
-Get the shop's shop-id used by Shopware's app system
-
 #### Usage
 
 ```ts
-const shopId = await sw.context.getShopId();
+const shopId = await context.getShopId();
 ```
 
 #### Parameters
 
-no parameters needed
-
-#### Return value:
-
-```ts
-Promise<string>
-```
-
-## Check app's privileges
-
-> Available since Shopware 6.7.1.0
-
-This lets you check if a specific privilege is granted for your app
-
-#### Usage
-
-```ts
-const isAllowed: boolean = await sw.context.can('product:read');
-```
-
-#### Parameters
 No parameters needed.
+
+#### Return value
+
+```ts
+Promise<string | null>
+```
+
+## can()
+
+Checks whether a specific privilege is granted for the current app. Use this to conditionally show features that require specific permissions.
+
+> Available since Shopware v6.7.1.0
+
+#### Usage
+
+```ts
+const isAllowed: boolean = await context.can("product:read");
+```
+
+#### Parameters
+
+| Name        | Description                                          |
+| :---------- | :--------------------------------------------------- |
+| `privilege` | The privilege string to check, e.g. `'product:read'` |
 
 #### Return value
 
