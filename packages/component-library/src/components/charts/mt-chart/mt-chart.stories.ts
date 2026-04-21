@@ -5,7 +5,7 @@ import { type SlottedMeta } from "@/_internal/story-helper";
 export type MtChartMeta = SlottedMeta<typeof MtChart, "default" | "click">;
 
 export default {
-  title: "Components/Charts/mt-chart",
+  title: "Components/mt-chart",
   component: MtChart,
   args: {
     type: "area",
@@ -27,6 +27,4 @@ export default {
 
 export type MtChartStory = StoryObj<MtChartMeta>;
 
-export const DefaultStory: MtChartStory = {
-  name: "mt-chart",
-};
+export const Default: MtChartStory = {};

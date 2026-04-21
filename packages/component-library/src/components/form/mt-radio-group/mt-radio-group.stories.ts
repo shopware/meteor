@@ -9,7 +9,7 @@ import type { StoryObj, Meta } from "@storybook/vue3";
 import { fn } from "@storybook/test";
 
 const meta: Meta = {
-  title: "Components/Form/mt-radio-group",
+  title: "Components/mt-radio-group",
   args: {
     disabled: false,
     label: "Radio Field",
@@ -56,7 +56,6 @@ export default meta;
 type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
-  name: "mt-radio-group",
   render: (args: typeof meta.args) => ({
     components: { MtRadioGroupRoot, MtRadioGroupList, MtRadioGroupItem },
     setup() {
@@ -97,7 +96,7 @@ export const Default: Story = {
 };
 
 export const WithCustomItem: Story = {
-  name: "mt-radio-group (custom item)",
+  name: "Custom item",
   render: (args: typeof meta.args) => ({
     components: {
       MtRadioGroupRoot,

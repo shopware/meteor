@@ -5,7 +5,7 @@ import type { StoryObj } from "@storybook/vue3";
 export type MtAvatarMeta = SlottedMeta<typeof MtAvatar, "default">;
 
 const meta: MtAvatarMeta = {
-  title: "Components/Icons & Media/mt-avatar",
+  title: "Components/mt-avatar",
   component: MtAvatar,
   render: (args) => ({
     components: { MtAvatar },
@@ -37,6 +37,4 @@ const meta: MtAvatarMeta = {
 export default meta;
 export type MtAvatarStory = StoryObj<MtAvatarMeta>;
 
-export const Default: MtAvatarStory = {
-  name: "mt-avatar",
-};
+export const Default: MtAvatarStory = {};

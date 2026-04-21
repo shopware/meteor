@@ -1,5 +1,61 @@
 # administration
 
+## 1.0.49
+
+### Patch Changes
+
+- Updated dependencies [[`8bf06e1`](https://github.com/shopware/meteor/commit/8bf06e1263674c7ac16eef307b3ce94568786772)]:
+  - @shopware-ag/meteor-admin-sdk@6.9.0
+  - @shopware-ag/meteor-component-library@4.28.6
+
+## 1.0.48
+
+### Patch Changes
+
+- Updated dependencies [[`38dca02`](https://github.com/shopware/meteor/commit/38dca021430720533747c51a0755756f02ed0aa7), [`924d5cb`](https://github.com/shopware/meteor/commit/924d5cbbf82be87cf3e6679c8d7a72efc5625286)]:
+  - @shopware-ag/meteor-admin-sdk@6.8.0
+  - @shopware-ag/meteor-component-library@4.28.5
+
+## 1.0.47
+
+### Patch Changes
+
+- Updated dependencies [[`e5ed183`](https://github.com/shopware/meteor/commit/e5ed183fb28337aceee3addabd30b2cbc1e94309)]:
+  - @shopware-ag/meteor-admin-sdk@6.7.4
+  - @shopware-ag/meteor-component-library@4.28.4
+
+## 1.0.46
+
+### Patch Changes
+
+- Updated dependencies [[`3555da4`](https://github.com/shopware/meteor/commit/3555da49571e2374e1c822a79006f2b8c8c0097c)]:
+  - @shopware-ag/meteor-admin-sdk@6.7.3
+  - @shopware-ag/meteor-component-library@4.28.3
+
+## 1.0.45
+
+### Patch Changes
+
+- Updated dependencies [[`b88ded5`](https://github.com/shopware/meteor/commit/b88ded5bfe9791c442829fd1bae0d6220dba0887)]:
+  - @shopware-ag/meteor-admin-sdk@6.7.2
+  - @shopware-ag/meteor-component-library@4.28.2
+
+## 1.0.44
+
+### Patch Changes
+
+- Updated dependencies [[`e7003d3`](https://github.com/shopware/meteor/commit/e7003d3a7f908544888b67b453dee9e8e246a608)]:
+  - @shopware-ag/meteor-admin-sdk@6.7.1
+  - @shopware-ag/meteor-component-library@4.28.1
+
+## 1.0.43
+
+### Patch Changes
+
+- Updated dependencies [[`d6f96a2`](https://github.com/shopware/meteor/commit/d6f96a2fb68eefc91c00be79b47a8066b4b004af), [`f24b5cb`](https://github.com/shopware/meteor/commit/f24b5cb2228d9f5974b7f34b1835e2a7986e4158), [`99ccb68`](https://github.com/shopware/meteor/commit/99ccb6823ec970d7791988231df020443291bf3b)]:
+  - @shopware-ag/meteor-component-library@4.28.0
+  - @shopware-ag/meteor-admin-sdk@6.7.0
+
 ## 1.0.42
 
 ### Patch Changes

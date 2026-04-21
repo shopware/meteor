@@ -6,7 +6,8 @@ import meta, { type MtIconStory, type MtIconMeta } from "./mt-icon.stories";
 
 export default {
   ...meta,
-  title: "Interaction Tests/Icons & Media/mt-icon",
+  title: "Components/mt-icon/Interaction tests",
+  tags: ["!autodocs"],
 } as MtIconMeta;
 
 export const VisualTestRenderIcon: MtIconStory = {

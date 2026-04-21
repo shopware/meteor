@@ -1,5 +1,56 @@
 # Changelog
 
+## 6.9.0
+
+### Minor Changes
+
+- [#1125](https://github.com/shopware/meteor/pull/1125) [`8bf06e1`](https://github.com/shopware/meteor/commit/8bf06e1263674c7ac16eef307b3ce94568786772) Thanks [@quando1910](https://github.com/quando1910)! - Add uiSidebarSetActive type and sender to sidebar module.
+
+## 6.8.0
+
+### Minor Changes
+
+- [#1119](https://github.com/shopware/meteor/pull/1119) [`38dca02`](https://github.com/shopware/meteor/commit/38dca021430720533747c51a0755756f02ed0aa7) Thanks [@SebastianFranze](https://github.com/SebastianFranze)! - Add an experimental consent API to the Admin SDK with `sw.consent.status()` and
+  `sw.consent.request()`, both returning a typed `Consent` result.
+
+## 6.7.4
+
+### Patch Changes
+
+- [#1117](https://github.com/shopware/meteor/pull/1117) [`e5ed183`](https://github.com/shopware/meteor/commit/e5ed183fb28337aceee3addabd30b2cbc1e94309) Thanks [@bubleg](https://github.com/bubleg)! - fix(telemetry): strip query string from iframe href before same-origin baseUrl matching
+
+  The Admin SDK appends `?location-id=...` to extension iframe URLs. The same-origin source resolution in `findExtensionNameByBaseUrl` now strips the query string and fragment from the sender window's href before matching against `baseUrl`, so same-origin extensions are correctly identified even when the iframe URL contains query parameters.
+
+## 6.7.3
+
+### Patch Changes
+
+- [#1115](https://github.com/shopware/meteor/pull/1115) [`3555da4`](https://github.com/shopware/meteor/commit/3555da49571e2374e1c822a79006f2b8c8c0097c) Thanks [@bubleg](https://github.com/bubleg)! - fix(telemetry): handle exact-URL baseUrl pattern in same-origin extension resolution
+
+  `findExtensionNameByBaseUrl` now accepts `baseUrl` values that point directly to a file (e.g. `/admin/plugin/index.html`) rather than a directory prefix. The same-origin fallback strips any trailing slash and matches either by exact href equality or by path-boundary prefix, so plugins whose `baseUrl` is set to their entry-point URL are correctly resolved instead of falling back to `undefined`.
+
+## 6.7.2
+
+### Patch Changes
+
+- [#1112](https://github.com/shopware/meteor/pull/1112) [`b88ded5`](https://github.com/shopware/meteor/commit/b88ded5bfe9791c442829fd1bae0d6220dba0887) Thanks [@bubleg](https://github.com/bubleg)! - fix(telemetry): resolve source for same-origin extensions via sender window href
+
+  `findExtensionNameByBaseUrl` (and `getSourceExtensionName`) now accept an optional `sourceWindow` parameter. When the message origin matches the Admin's own origin — which happens for plugins served from the same host — the function falls back to matching `sourceWindow.location.href` against the known `baseUrl` prefixes instead of returning `undefined`. Cross-origin behaviour is unchanged.
+
+## 6.7.1
+
+### Patch Changes
+
+- [#1103](https://github.com/shopware/meteor/pull/1103) [`e7003d3`](https://github.com/shopware/meteor/commit/e7003d3a7f908544888b67b453dee9e8e246a608) Thanks [@bubleg](https://github.com/bubleg)! - fix: lazy-initialize BroadcastChannel in payment module to prevent crash in environments without BroadcastChannel support (e.g. Jest/jsdom)
+
+## 6.7.0
+
+### Minor Changes
+
+- [#1100](https://github.com/shopware/meteor/pull/1100) [`f24b5cb`](https://github.com/shopware/meteor/commit/f24b5cb2228d9f5974b7f34b1835e2a7986e4158) Thanks [@bubleg](https://github.com/bubleg)! - Add typed helpers for standard telemetry events: trackPageView() and trackLinkVisited()
+
+- [#1099](https://github.com/shopware/meteor/pull/1099) [`99ccb68`](https://github.com/shopware/meteor/commit/99ccb6823ec970d7791988231df020443291bf3b) Thanks [@bubleg](https://github.com/bubleg)! - Add `telemetry.dispatch()` API for extensions to send tracking events. The `source` (extension technical name) is automatically resolved by the Admin SDK from the message origin and cannot be set manually by the extension. Also exposes `telemetry.getSourceExtensionName()` for the Admin to resolve the source when handling the event.
+
 ## 6.6.0
 
 ### Minor Changes

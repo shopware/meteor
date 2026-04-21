@@ -16,7 +16,7 @@ export type MtCheckboxMeta = SlottedMeta<
 >;
 
 export default {
-  title: "Components/Form/mt-checkbox",
+  title: "Components/mt-checkbox",
   component: MtCheckbox,
   args: {
     label: "Checkbox",
@@ -68,6 +68,4 @@ export default {
 
 export type MtCheckboxStory = StoryObj<MtCheckboxMeta>;
 
-export const DefaultStory: MtCheckboxStory = {
-  name: "mt-checkbox",
-};
+export const Default: MtCheckboxStory = {};

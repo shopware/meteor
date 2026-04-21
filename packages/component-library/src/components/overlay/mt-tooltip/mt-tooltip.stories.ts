@@ -6,7 +6,7 @@ import MtButton from "@/components/form/mt-button/mt-button.vue";
 export type MtTooltipMeta = SlottedMeta<typeof MtTooltip, "default">;
 
 export default {
-  title: "Components/Overlay/mt-tooltip",
+  title: "Components/mt-tooltip",
   component: MtTooltip,
   args: {
     content: "Tooltip content",

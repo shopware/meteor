@@ -7,7 +7,8 @@ import { defineStory } from "@/_internal/story-helper";
 
 export default {
   ...meta,
-  title: "Interaction Tests/Form/mt-text-editor",
+  title: "Components/mt-text-editor/Interaction tests",
+  tags: ["!autodocs"],
 } as MtTextEditorMeta;
 
 /**

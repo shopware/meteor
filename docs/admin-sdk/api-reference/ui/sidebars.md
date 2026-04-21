@@ -6,7 +6,7 @@ nav:
 
 # Sidebars
 
-A sidebar provides a contextual panel that displays at the right edge of the Administration window. Unlike modals, sidebars allow users to view and interact with additional content or functionality without losing context of the main interface. Sidebars should be opened in response to user interaction rather than appearing automatically. As a best practice, avoid opening sidebars without clear user context - for example, automatically displaying extension changelog sidebars immediately after login creates a poor user experience by requiring manual dismissal of each one.
+A sidebar provides a contextual panel that displays at the right edge of the Administration window. Unlike modals, sidebars allow users to view and interact with additional content or functionality without losing context of the main interface. You can open a sidebar programmatically, not only from direct UI clicks. As a best practice, still tie openings to clear user or application context: stacking many sidebars without a reason forces repeated dismissal and harms the experience.
 
 ```ts
 import { ui } from "@shopware-ag/meteor-admin-sdk";
@@ -86,3 +86,23 @@ ui.sidebar.remove({
 #### Return value
 
 Returns a promise without data.
+| Name | Required | Description | Available at Shopware |
+| :----------- | :------- | :--------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------|
+| `locationId` | true | The id of the sidebar to remove | 6.7 |
+
+## sidebar.setActive()
+
+Set an active sidebar that was already registered with [`add`](#add-a-sidebar). Use this when the sidebar exists but is closed or not in front. The Administration shows the panel for the given `locationId` and loads the content you associated with that id.
+
+#### Usage:
+
+```ts
+ui.sidebar.setActive({
+    locationId: 'sidebar-chat-bot',
+});
+```
+
+#### Parameters
+| Name | Required | Description | Available at Shopware |
+| :----------- | :------- | :--------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------|
+| `locationId` | true | The id of the sidebar to active | 6.7.9 |

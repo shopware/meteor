@@ -26,7 +26,7 @@ export type MtTextEditorMeta = SlottedMeta<
 >;
 
 export default {
-  title: "Components/Form/mt-text-editor",
+  title: "Components/mt-text-editor",
   component: MtTextEditor,
   parameters: {
     layout: "fullscreen",
@@ -68,19 +68,17 @@ export default {
 
 export type MtTextEditorStory = StoryObj<MtTextEditorMeta>;
 
-export const DefaultStory: MtTextEditorStory = {
-  name: "mt-text-editor",
-};
+export const Default: MtTextEditorStory = {};
 
 export const InlineEditStory: MtTextEditorStory = {
-  name: "mt-text-editor (inline edit)",
+  name: "Inline edit",
   args: {
     isInlineEdit: true,
   },
 };
 
 export const CustomButtonsStory: MtTextEditorStory = {
-  name: "mt-text-editor (custom buttons)",
+  name: "Custom buttons",
   args: {
     modelValue: `<h1>Hello <mark>World</mark></h1><p>In the toolbar you see now a new highlight button.</p>`,
   },
@@ -132,7 +130,7 @@ export const CustomButtonsStory: MtTextEditorStory = {
 };
 
 export const DiffModalStory: MtTextEditorStory = {
-  name: "mt-text-editor (diff modal)",
+  name: "Diff modal",
   args: {
     modelValue: '<div class="box" data-custom="123">\n  <p>Content</p>\n</div>',
     updateModelValue: fn(),
@@ -172,7 +170,7 @@ export const DiffModalStory: MtTextEditorStory = {
 };
 
 export const HiddenToolbarStory: MtTextEditorStory = {
-  name: "mt-text-editor (hidden toolbar)",
+  name: "Hidden toolbar",
   args: {
     modelValue: `<h1>Editor without toolbar</h1><p>The toolbar is completely hidden in this example. This is useful when you want a simpler editing experience or want to implement your own custom toolbar.</p>`,
     showToolbar: false,
@@ -181,7 +179,7 @@ export const HiddenToolbarStory: MtTextEditorStory = {
 };
 
 export const CodeModeStory: MtTextEditorStory = {
-  name: "mt-text-editor (code mode by default)",
+  name: "Code mode by default",
   args: {
     modelValue: `<h1>Starting in code mode</h1><p>This editor starts in code mode by default. You can toggle to WYSIWYG using the toggle button.</p>`,
     codeMode: true,
@@ -190,7 +188,7 @@ export const CodeModeStory: MtTextEditorStory = {
 };
 
 export const CodeModeTwoWayBindingStory: MtTextEditorStory = {
-  name: "mt-text-editor (code mode two-way binding)",
+  name: "Code mode two-way binding",
   args: {
     modelValue: `<h1>Programmatic mode control</h1><p>Use the button above to toggle between code and WYSIWYG mode programmatically.</p>`,
     updateModelValue: fn(),

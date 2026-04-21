@@ -29,7 +29,8 @@ interface MinimalApiContext {
 
 export default {
   ...meta,
-  title: "Interaction Tests/Entity/mt-entity-data-table",
+  title: "Components/mt-entity-data-table/Interaction tests",
+  tags: ["!autodocs"],
 } as MtEntityDataTableMeta;
 
 type MtEntityDataTableStory = StoryObj<MtEntityDataTableMeta>;

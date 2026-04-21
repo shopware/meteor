@@ -5,7 +5,8 @@ import { waitUntil } from "../_internal/test-helper";
 
 export default {
   ...meta,
-  title: "Interaction Tests/Directives/Tooltip",
+  title: "Directives/Tooltip/Interaction tests",
+  tags: ["!autodocs"],
 };
 
 export const VisualTestRenderIcon = {
