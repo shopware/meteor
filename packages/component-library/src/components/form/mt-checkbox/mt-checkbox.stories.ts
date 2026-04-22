@@ -16,7 +16,7 @@ export type MtCheckboxMeta = SlottedMeta<
 >;
 
 export default {
-  title: "Components/mt-checkbox",
+  title: "Components/Checkbox",
   component: MtCheckbox,
   args: {
     label: "Checkbox",

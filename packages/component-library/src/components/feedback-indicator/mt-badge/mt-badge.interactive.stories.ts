@@ -5,7 +5,7 @@ import meta, { type MtBadgeMeta, type MtBadgeStory } from "./mt-badge.stories";
 
 export default {
   ...meta,
-  title: "Components/mt-badge/Interaction tests",
+  title: "Components/Badge/Interaction tests",
   tags: ["!autodocs"],
 } as MtBadgeMeta;
 

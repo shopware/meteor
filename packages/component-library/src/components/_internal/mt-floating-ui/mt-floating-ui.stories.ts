@@ -8,7 +8,7 @@ import type { SlottedMeta } from "@/_internal/story-helper";
 export type MtFloatingUiMeta = SlottedMeta<typeof MtFloatingUi, "default" | "trigger" | "close">;
 
 const meta: MtFloatingUiMeta = {
-  title: "Components/mt-floating-ui",
+  title: "Components/Floating UI",
   component: MtFloatingUi,
   args: {
     showArrow: true,

@@ -11,7 +11,7 @@ import { createId } from "@/utils/id";
 export type MtToastMeta = SlottedMeta<typeof MtToast, "">;
 
 export default {
-  title: "Components/mt-toast",
+  title: "Components/Toast",
   component: MtToast,
   render: (args) => ({
     components: { MtToast, MtButton, MtSelect, MtTextField, MtCheckbox },

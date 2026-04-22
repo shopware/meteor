@@ -6,7 +6,7 @@ import { waitUntil } from "../../../_internal/test-helper";
 
 export default {
   ...meta,
-  title: "Components/mt-datepicker/Interaction tests",
+  title: "Components/Datepicker/Interaction tests",
   tags: ["!autodocs"],
 } as MtDatepickerMeta;
 

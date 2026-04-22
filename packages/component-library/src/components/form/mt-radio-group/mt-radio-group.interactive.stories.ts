@@ -13,7 +13,7 @@ import meta from "./mt-radio-group.stories";
 
 export default {
   ...meta,
-  title: "Components/mt-radio-group/Interaction tests",
+  title: "Components/Radio Group/Interaction tests",
   tags: ["!autodocs"],
 } as Meta;
 

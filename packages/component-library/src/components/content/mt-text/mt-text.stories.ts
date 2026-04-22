@@ -7,7 +7,7 @@ type MtTextSlots = "default";
 export type MtTextMeta = SlottedMeta<typeof MtText, MtTextSlots>;
 
 export default {
-  title: "Components/mt-text",
+  title: "Components/Text",
   component: MtText,
   args: {
     default: "Text",

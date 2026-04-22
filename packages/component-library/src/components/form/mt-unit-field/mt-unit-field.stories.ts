@@ -17,7 +17,7 @@ export type MtUnitFieldMeta = SlottedMeta<
 >;
 
 const meta: Meta<typeof MtUnitField> = {
-  title: "Components/mt-unit-field",
+  title: "Components/Unit Field",
   component: MtUnitField,
   render: (args) => ({
     template: `

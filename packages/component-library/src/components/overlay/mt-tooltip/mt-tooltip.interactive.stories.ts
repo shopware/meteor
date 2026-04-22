@@ -4,7 +4,7 @@ import MtTooltipStory from "./mt-tooltip.stories";
 
 export default {
   ...MtTooltipStory,
-  title: "Components/mt-tooltip/Interaction tests",
+  title: "Components/Tooltip/Interaction tests",
   tags: ["!autodocs"],
   decorators: [
     () => ({

@@ -5,7 +5,7 @@ import type { SlottedMeta } from "@/_internal/story-helper";
 export type MtSkeletonBarMeta = SlottedMeta<typeof MtSkeletonBar, "default">;
 
 export default {
-  title: "Components/mt-skeleton-bar",
+  title: "Components/Skeleton Bar",
   component: MtSkeletonBar,
   render: (args) => ({
     components: { MtSkeletonBar },

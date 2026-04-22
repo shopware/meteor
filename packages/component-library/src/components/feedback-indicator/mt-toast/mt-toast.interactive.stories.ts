@@ -7,7 +7,7 @@ import type { MtToastMeta, MtToastStory } from "./mt-toast.stories";
 
 export default {
   ...meta,
-  title: "Components/mt-toast/Interaction tests",
+  title: "Components/Toast/Interaction tests",
   tags: ["!autodocs"],
 } as MtToastMeta;
 

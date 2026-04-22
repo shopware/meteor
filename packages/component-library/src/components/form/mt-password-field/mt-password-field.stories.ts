@@ -5,7 +5,7 @@ import { fn } from "@storybook/test";
 export type MtPasswordFieldMeta = Meta<typeof MtPasswordField>;
 
 export default {
-  title: "Components/mt-password-field",
+  title: "Components/Password Field",
   component: MtPasswordField,
   args: {
     label: "Passwordfield",

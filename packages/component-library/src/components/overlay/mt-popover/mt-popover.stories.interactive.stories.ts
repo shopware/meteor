@@ -6,7 +6,7 @@ import meta, { type MtPopoverMeta, type MtPopoverStory } from "./mt-popover.stor
 
 export default {
   ...meta,
-  title: "Components/mt-popover/Interaction tests",
+  title: "Components/Popover/Interaction tests",
   tags: ["!autodocs"],
 } as MtPopoverMeta;
 

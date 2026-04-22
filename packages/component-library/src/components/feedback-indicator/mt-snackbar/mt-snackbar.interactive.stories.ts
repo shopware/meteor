@@ -8,7 +8,7 @@ import { useSnackbar } from "./composables/use-snackbar";
 
 export default {
   ...meta,
-  title: "Components/mt-snackbar/Interaction tests",
+  title: "Components/Snackbar/Interaction tests",
   tags: ["!autodocs"],
 } as MtSnackbarMeta;
 
