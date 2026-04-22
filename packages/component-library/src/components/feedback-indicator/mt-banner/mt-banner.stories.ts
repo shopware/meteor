@@ -7,7 +7,7 @@ import { fn } from "@storybook/test";
 export type MtBannerMeta = SlottedMeta<typeof MtBanner, "default" | "close">;
 
 const meta: MtBannerMeta = {
-  title: "Components/mt-banner",
+  title: "Components/Banner",
   component: MtBanner,
   args: {
     title: "This is a banner",

@@ -45,7 +45,7 @@ export type MtSelectMeta = SlottedMeta<
 >;
 
 export default {
-  title: "Components/mt-select",
+  title: "Components/Select",
   component: MtSelect,
   render: (args) => ({
     template: `

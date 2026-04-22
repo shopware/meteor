@@ -3,7 +3,7 @@ import meta, { type MtSliderMeta, type MtSliderStory } from "./mt-slider.stories
 
 export default {
   ...meta,
-  title: "Components/mt-slider/Interaction tests",
+  title: "Components/Slider/Interaction tests",
   tags: ["!autodocs"],
 } as MtSliderMeta;
 

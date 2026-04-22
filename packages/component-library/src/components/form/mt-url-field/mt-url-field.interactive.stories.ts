@@ -4,7 +4,7 @@ import { waitUntil } from "@/_internal/test-helper";
 
 export default {
   ...meta,
-  title: "Components/mt-url-field/Interaction tests",
+  title: "Components/URL Field/Interaction tests",
   tags: ["!autodocs"],
 } as MtUrlFieldMeta;
 

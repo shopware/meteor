@@ -26,7 +26,7 @@ export type MtTextEditorMeta = SlottedMeta<
 >;
 
 export default {
-  title: "Components/mt-text-editor",
+  title: "Components/Text Editor",
   component: MtTextEditor,
   parameters: {
     layout: "fullscreen",

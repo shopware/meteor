@@ -53,7 +53,7 @@ const getMockRepository = (data: { id: string; name: string }[]) => {
 const mockManufacturerRepository = getMockRepository(manufacturers);
 
 export default {
-  title: "Components/mt-entity-select",
+  title: "Components/Entity Select",
   component: MtEntitySelect,
   argTypes: {
     "onUpdate:modelValue": {

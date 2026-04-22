@@ -5,7 +5,7 @@ import MtDataTableFilter from "./mt-data-table-filter.vue";
 
 export default {
   ...meta,
-  title: "Components/mt-data-table-filter/Interaction tests",
+  title: "Components/Data Table Filter/Interaction tests",
   tags: ["!autodocs", "!dev"],
 } as MtDataTableFilterMeta;
 

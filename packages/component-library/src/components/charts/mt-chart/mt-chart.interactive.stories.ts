@@ -6,7 +6,7 @@ import meta, { type MtChartStory, type MtChartMeta } from "./mt-chart.stories";
 
 export default {
   ...meta,
-  title: "Components/mt-chart/Interaction tests",
+  title: "Components/Chart/Interaction tests",
   tags: ["!autodocs"],
 } as MtChartMeta;
 

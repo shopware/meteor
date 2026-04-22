@@ -6,7 +6,7 @@ import { waitUntil } from "@/_internal/test-helper";
 
 export default {
   ...meta,
-  title: "Components/mt-colorpicker/Interaction tests",
+  title: "Components/Colorpicker/Interaction tests",
   tags: ["!autodocs"],
 } as MtColorpickerMeta;
 

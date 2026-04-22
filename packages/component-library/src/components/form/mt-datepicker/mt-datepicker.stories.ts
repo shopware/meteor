@@ -10,7 +10,7 @@ export type MtDatepickerMeta = SlottedMeta<
 >;
 
 export default {
-  title: "Components/mt-datepicker",
+  title: "Components/Datepicker",
   component: MtDatepicker,
   render: (args) => ({
     template: `

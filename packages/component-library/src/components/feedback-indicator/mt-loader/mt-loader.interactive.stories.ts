@@ -2,7 +2,7 @@ import meta, { type MtLoaderMeta, type MtLoaderStory } from "./mt-loader.stories
 
 export default {
   ...meta,
-  title: "Components/mt-loader/Interaction tests",
+  title: "Components/Loader/Interaction tests",
   tags: ["!autodocs"],
 } as MtLoaderMeta;
 

@@ -5,7 +5,7 @@ import type { StoryObj } from "@storybook/vue3";
 
 export default {
   ...meta,
-  title: "Components/mt-text/Interaction tests",
+  title: "Components/Text/Interaction tests",
   tags: ["!autodocs"],
 } satisfies MtTextMeta;
 

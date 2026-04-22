@@ -5,7 +5,7 @@ import MtModalTrigger from "./sub-components/mt-modal-trigger.vue";
 import MtButton from "../../form/mt-button/mt-button.vue";
 
 export default {
-  title: "Components/mt-modal",
+  title: "Components/Modal",
   component: MtModal,
   args: {
     title: "Modal Title",

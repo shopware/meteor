@@ -12,7 +12,7 @@ import {
 } from "./mt-card.stories";
 
 export default {
-  title: "Components/mt-card/Interaction tests",
+  title: "Components/Card/Interaction tests",
   tags: ["!autodocs"],
 } as MtCardMeta;
 

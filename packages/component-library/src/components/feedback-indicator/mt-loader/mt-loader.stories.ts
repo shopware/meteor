@@ -5,7 +5,7 @@ import type { SlottedMeta } from "@/_internal/story-helper";
 export type MtLoaderMeta = SlottedMeta<typeof MtLoader, "default">;
 
 const meta: MtLoaderMeta = {
-  title: "Components/mt-loader",
+  title: "Components/Loader",
   component: MtLoader,
   render: (args) => ({
     setup: () => {

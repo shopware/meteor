@@ -9,7 +9,7 @@ import meta, {
 
 export default {
   ...meta,
-  title: "Components/mt-floating-ui/Interaction tests",
+  title: "Components/Floating UI/Interaction tests",
   tags: ["!autodocs"],
 } as MtFloatingUiMeta;
 

@@ -2,7 +2,7 @@ import meta, { type MtSearchMeta, type MtSearchStory } from "./mt-search.stories
 
 export default {
   ...meta,
-  title: "Components/mt-search/Interaction tests",
+  title: "Components/Search/Interaction tests",
   tags: ["!autodocs"],
 } as MtSearchMeta;
 

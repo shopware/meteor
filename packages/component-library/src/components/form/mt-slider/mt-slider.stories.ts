@@ -19,7 +19,7 @@ export type MtSliderMeta = SlottedMeta<
 >;
 
 export default {
-  title: "Components/mt-slider",
+  title: "Components/Slider",
   component: MtSlider,
   render: (args) => ({
     template: `
