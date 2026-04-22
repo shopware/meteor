@@ -246,8 +246,12 @@ export const InteractionTestApplyBooleanFilter: MtEntityDataTableStory = {
     await userEvent.click(addFilterButton);
 
     // Open "Active" filter in the opened dialog
-    await waitFor(() => document.querySelector('[role="dialog"]'));
-    const dialogContent = within(document.querySelector('[role="dialog"]') as HTMLElement);
+    const dialog = await waitFor(() => {
+      const el = document.querySelector<HTMLElement>('[role="dialog"]');
+      if (!el) throw new Error("Dialog not found");
+      return el;
+    });
+    const dialogContent = within(dialog);
     const activeFilter = await dialogContent.findByText("Active");
     await userEvent.click(activeFilter);
 
@@ -282,8 +286,12 @@ export const InteractionTestApplyMultiSelectFilter: MtEntityDataTableStory = {
     await userEvent.click(addFilterButton);
 
     // Open "Manufacturer" filter in the opened dialog
-    await waitFor(() => document.querySelector('[role="dialog"]'));
-    const dialogContent = within(document.querySelector('[role="dialog"]') as HTMLElement);
+    const dialog = await waitFor(() => {
+      const el = document.querySelector<HTMLElement>('[role="dialog"]');
+      if (!el) throw new Error("Dialog not found");
+      return el;
+    });
+    const dialogContent = within(dialog);
     const manufacturerFilter = await dialogContent.findByText("Manufacturer");
     await userEvent.click(manufacturerFilter);
 
@@ -319,8 +327,12 @@ export const InteractionTestClearFilter: MtEntityDataTableStory = {
     await userEvent.click(addFilterButton);
 
     // Open "Manufacturer" filter in the opened dialog
-    await waitFor(() => document.querySelector('[role="dialog"]'));
-    const dialogContent = within(document.querySelector('[role="dialog"]') as HTMLElement);
+    const dialog = await waitFor(() => {
+      const el = document.querySelector<HTMLElement>('[role="dialog"]');
+      if (!el) throw new Error("Dialog not found");
+      return el;
+    });
+    const dialogContent = within(dialog);
     const manufacturerFilter = await dialogContent.findByText("Manufacturer");
     await userEvent.click(manufacturerFilter);
 
@@ -391,7 +403,7 @@ export const InteractionTestEmitBulkEdit: MtEntityDataTableStory = {
     await waitFor(() => canvas.getByText("25 items selected"));
 
     // Click on "Edit" button
-    const editButton = await waitFor(() => canvas.getByRole("button", { name: /Edit/i }));
+    const editButton = await waitFor(() => canvas.getByRole("button", { name: "Edit" }));
     await userEvent.click(editButton);
 
     // Check if "onBulkEdit" event was emitted with the correct IDs

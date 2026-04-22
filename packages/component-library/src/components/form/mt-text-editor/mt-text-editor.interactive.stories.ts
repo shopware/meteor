@@ -1,4 +1,4 @@
-import { within, userEvent } from "@storybook/test";
+import { within, userEvent, waitFor, fireEvent } from "@storybook/test";
 import { expect } from "@storybook/test";
 import { waitUntil } from "../../../_internal/test-helper";
 
@@ -785,7 +785,13 @@ export const SetLink: MtTextEditorStory = defineStory({
     const body = within(document.body);
 
     // Set link url
-    const linkInput = body.getByLabelText("Link URL");
+    const linkInput = await waitFor(() => {
+      const inputs = Array.from(
+        document.querySelectorAll<HTMLInputElement>('[aria-label="Link URL"]'),
+      );
+      if (inputs.length !== 1) throw new Error("Expected exactly one Link URL input");
+      return inputs[0];
+    });
     await userEvent.clear(linkInput);
     await userEvent.type(linkInput, "https://www.shopware.com");
 
@@ -826,7 +832,13 @@ export const SetLinkWithoutNewTab: MtTextEditorStory = defineStory({
 
     const body = within(document.body);
 
-    const linkInput = body.getByLabelText("Link URL");
+    const linkInput = await waitFor(() => {
+      const inputs = Array.from(
+        document.querySelectorAll<HTMLInputElement>('[aria-label="Link URL"]'),
+      );
+      if (inputs.length !== 1) throw new Error("Expected exactly one Link URL input");
+      return inputs[0];
+    });
     await userEvent.clear(linkInput);
     await userEvent.type(linkInput, "https://www.shopware.com");
 
@@ -877,7 +889,9 @@ export const VisualTestShowRemoveLinkContextualButton: MtTextEditorStory = defin
 
     await waitForCharacterCounter(canvasElement);
 
-    await userEvent.click(canvas.getByRole("link", { name: "Hello World" }));
+    const linkEl = canvas.getByRole("link", { name: "Hello World" });
+    fireEvent.mouseDown(linkEl);
+    fireEvent.mouseUp(linkEl);
     selectText(canvas.getByText("Hello World"));
 
     expect(canvas.getByLabelText("Remove link")).toBeDefined();
