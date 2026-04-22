@@ -796,7 +796,7 @@ export const SetLink: MtTextEditorStory = defineStory({
     await userEvent.type(linkInput, "https://www.shopware.com");
 
     // Toggle link target
-    await userEvent.click(linkDialog.getByLabelText("Open in new tab"));
+    await userEvent.click(linkDialog.getByRole("checkbox", { name: "Open in new tab" }));
 
     // Click on button with text "Apply link"
     await userEvent.click(linkDialog.getByText("Apply link"));
