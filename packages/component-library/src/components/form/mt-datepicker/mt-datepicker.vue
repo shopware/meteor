@@ -39,6 +39,7 @@
       :is-24="is24"
       :time-picker="dateType === 'time'"
       :min-date="minDate"
+      :max-date="maxDate"
       @update:model-value="onDateValueChange"
       @closed="onDatepickerClosed"
     >
@@ -206,6 +207,11 @@ const props = withDefaults(
      * Enables typing directly into the input field.
      */
     textInput?: boolean;
+    /**
+     * The maximum selectable date.
+     * Can be a Date object or an ISO string
+     */
+    maxDate?: Date | string;
   }>(),
   {
     label: null,
@@ -226,6 +232,7 @@ const props = withDefaults(
     hourIncrement: 1,
     minuteIncrement: 1,
     textInput: false,
+    maxDate: undefined,
   },
 );
 
