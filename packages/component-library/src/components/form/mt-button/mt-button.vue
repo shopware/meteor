@@ -150,7 +150,7 @@ const isInsideTooltip = useIsInsideTooltip();
 }
 
 .mt-button--primary {
-  background: var(--color-interaction-primary-default);
+  background: red;
   color: var(--color-static-white);
   border-color: var(--color-interaction-primary-default);
 }
