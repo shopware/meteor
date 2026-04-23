@@ -42,6 +42,13 @@ async function waitForCharacterCounter(canvasElement: HTMLElement) {
   await waitUntil(() => getCharacterCount(canvasElement) !== null);
 }
 
+function withinLinkDialog() {
+  const dialogs = within(document.body).getAllByRole("dialog", {
+    name: "Insert/Edit Link",
+  });
+  return within(dialogs[dialogs.length - 1]!);
+}
+
 export const VisualTestRenderEditor: MtTextEditorStory = defineStory({
   name: "Should render the text editor",
   args: {},
@@ -781,22 +788,18 @@ export const SetLink: MtTextEditorStory = defineStory({
     // Click on button with aria-label "Link"
     await userEvent.click(canvas.getByLabelText("Link"));
 
-    // Get body
-    const body = within(document.body);
+    const linkDialog = withinLinkDialog();
 
     // Set link url
-    const linkInput = body.getByLabelText("Link URL");
+    const linkInput = linkDialog.getByLabelText("Link URL");
     await userEvent.clear(linkInput);
     await userEvent.type(linkInput, "https://www.shopware.com");
 
     // Toggle link target
-    const targetCheckbox = document.querySelector(
-      "div[aria-label='Open in new tab'] input[type='checkbox'",
-    ) as HTMLInputElement;
-    await userEvent.click(targetCheckbox);
+    await userEvent.click(linkDialog.getByRole("checkbox", { name: "Open in new tab" }));
 
     // Click on button with text "Apply link"
-    await userEvent.click(body.getByText("Apply link"));
+    await userEvent.click(linkDialog.getByText("Apply link"));
 
     // Wait until args was triggered with new content
     await waitUntil(() => args.updateModelValue?.mock?.calls?.length > 0);
@@ -824,13 +827,13 @@ export const SetLinkWithoutNewTab: MtTextEditorStory = defineStory({
 
     await userEvent.click(canvas.getByLabelText("Link"));
 
-    const body = within(document.body);
+    const linkDialog = withinLinkDialog();
 
-    const linkInput = body.getByLabelText("Link URL");
+    const linkInput = linkDialog.getByLabelText("Link URL");
     await userEvent.clear(linkInput);
     await userEvent.type(linkInput, "https://www.shopware.com");
 
-    await userEvent.click(body.getByText("Apply link"));
+    await userEvent.click(linkDialog.getByText("Apply link"));
 
     await waitUntil(() => args.updateModelValue?.mock?.calls?.length > 0);
 
