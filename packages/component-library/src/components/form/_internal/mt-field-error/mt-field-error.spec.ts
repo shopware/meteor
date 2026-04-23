@@ -95,7 +95,9 @@ describe("mt-field-error", () => {
       props: { error },
     });
 
-    expect(screen.getByText("This is a global error with top-level parameters")).toBeInTheDocument();
+    expect(
+      screen.getByText("This is a global error with top-level parameters"),
+    ).toBeInTheDocument();
   });
 
   it("should prefer top-level parameters over meta.parameters when both are present", () => {
@@ -116,6 +118,8 @@ describe("mt-field-error", () => {
       props: { error },
     });
 
-    expect(screen.getByText("This is a global error with top-level parameters")).toBeInTheDocument();
+    expect(
+      screen.getByText("This is a global error with top-level parameters"),
+    ).toBeInTheDocument();
   });
 });
