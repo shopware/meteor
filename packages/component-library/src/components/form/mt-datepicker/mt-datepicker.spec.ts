@@ -3,7 +3,6 @@ import { render, screen } from "@testing-library/vue";
 import MtDatepicker from "./mt-datepicker.vue";
 import userEvent from "@testing-library/user-event";
 import { waitUntil } from "@/_internal/test-helper";
-import { getByRole } from "@storybook/test";
 
 describe("mt-datepicker", () => {
   beforeEach(() => {
@@ -150,19 +149,53 @@ describe("mt-datepicker", () => {
     expect(screen.getByText("Error message")).toBeInTheDocument();
   });
 
-  it("should accept minDate as ISO string", () => {
+  it("should accept minDate as ISO string", async () => {
     // ARRANGE
-    const minDate = "2024-03-20T00:00:00.000Z";
     render(MtDatepicker, {
       props: {
+        modelValue: "2024-03-20T00:00:00.000Z",
         dateType: "date",
         locale: "en-US",
-        minDate: minDate,
+        minDate: "2024-03-20T00:00:00.000Z",
       },
     });
 
-    // ASSERT - Check that the component renders without errors when minDate is provided
-    expect(screen.getByRole("textbox")).toBeInTheDocument();
+    // ACT
+    await userEvent.click(screen.getByRole("textbox"));
+    await waitUntil(() => document.getElementsByClassName("dp__menu").length > 0);
+    await waitUntil(() => document.getElementById("dp-2024-03-19") !== null);
+    await waitUntil(() => document.getElementById("dp-2024-03-20") !== null);
+
+    const dayBeforeMinElement = document.getElementById("dp-2024-03-19") as HTMLElement;
+    const minDayElement = document.getElementById("dp-2024-03-20") as HTMLElement;
+
+    // ASSERT
+    expect(dayBeforeMinElement).toHaveAttribute("aria-disabled", "true");
+    expect(minDayElement).not.toHaveAttribute("aria-disabled", "true");
+  });
+
+  it("should accept maxDate as ISO string", async () => {
+    // ARRANGE
+    render(MtDatepicker, {
+      props: {
+        modelValue: "2024-03-19T00:00:00.000Z",
+        dateType: "date",
+        locale: "en-US",
+        maxDate: "2024-03-20T00:00:00.000Z",
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByRole("textbox"));
+    await waitUntil(() => document.getElementsByClassName("dp__menu").length > 0);
+    await waitUntil(() => document.getElementById("dp-2024-03-20") !== null);
+    await waitUntil(() => document.getElementById("dp-2024-03-21") !== null);
+
+    const maxDayElement = document.getElementById("dp-2024-03-20") as HTMLElement;
+    const dayAfterMaxElement = document.getElementById("dp-2024-03-21") as HTMLElement;
+
+    expect(maxDayElement).not.toHaveAttribute("aria-disabled", "true");
+    expect(dayAfterMaxElement).toHaveAttribute("aria-disabled", "true");
   });
 
   it("emits date when value when typed into input", async () => {
