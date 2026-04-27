@@ -29,7 +29,7 @@ export default {
   @blur="args.blur"
   @focus="args.focus"
 >
-  <template #hint>{{ args.hint }}</template>
+  <template v-if="args.hint" #hint>{{ args.hint }}</template>
 </mt-textarea>`,
     components: { MtTextarea },
     setup: () => ({ args }),

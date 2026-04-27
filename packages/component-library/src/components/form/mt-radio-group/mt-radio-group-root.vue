@@ -25,18 +25,21 @@
 
     <mt-field-error :error="error" :style="{ gridArea: 'error' }" />
 
-    <div v-if="$slots.hint" class="mt-radio-group-root__hint" :style="{ gridArea: 'hint' }">
-      <slot name="hint" />
+    <div v-if="showFieldHint" class="mt-radio-group-root__hint" :style="{ gridArea: 'hint' }">
+      <mt-field-hint>
+        <slot name="hint">{{ hint }}</slot>
+      </mt-field-hint>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, provide, readonly } from "vue";
+import { computed, provide, readonly, useSlots } from "vue";
 import { useId } from "@/composables/useId";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
+import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
 
 const props = withDefaults(
   defineProps<{
@@ -49,6 +52,10 @@ const props = withDefaults(
     error?: {
       detail: string;
     };
+    /**
+     * Optional caption below the field. The `#hint` slot takes precedence when provided.
+     */
+    hint?: string | null;
   }>(),
   {
     modelValue: null,
@@ -58,7 +65,14 @@ const props = withDefaults(
     helpText: "",
     name: undefined,
     error: undefined,
+    hint: null,
   },
+);
+
+const slots = useSlots();
+
+const showFieldHint = computed(
+  () => !!slots.hint || (props.hint != null && String(props.hint).trim() !== ""),
 );
 
 const emit = defineEmits<{
