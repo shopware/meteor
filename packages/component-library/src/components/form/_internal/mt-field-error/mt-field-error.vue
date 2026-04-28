@@ -34,9 +34,13 @@ const errorMessage = computed(() => {
     `global.error-codes.${props.error.code}`,
     `mt-field-error.${props.error.code}`,
   ];
+  const interpolationParams = {
+    ...(props.error.meta?.parameters ?? {}),
+    ...(props.error.parameters ?? {}),
+  };
 
   for (const key of translationKeys) {
-    const translation = t(key, props.error.parameters || {});
+    const translation = t(key, interpolationParams);
     const noTranslationFound = translation === key;
 
     if (!noTranslationFound) {
