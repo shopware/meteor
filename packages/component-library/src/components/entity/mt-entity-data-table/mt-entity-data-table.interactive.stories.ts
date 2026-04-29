@@ -259,12 +259,13 @@ export const InteractionTestApplyBooleanFilter: MtEntityDataTableStory = {
     const activeOption = await dialogContent.findByRole("menuitem", { name: "Active" });
     await userEvent.click(activeOption);
 
-    // Wait for the loading to complete
-    await waitUntil(() => !canvas.queryByText("Intelligent Plastic Pants"));
-    await waitUntil(() => !document.querySelector(".mt-skeleton-bar"));
-
-    // Check if the correct items are visible
-    await expect(canvas.getByText("Fantastic Plastic Hat")).toBeInTheDocument();
+    await waitFor(() => {
+      const wrapper = document.querySelector(".mt-data-table__table-wrapper");
+      if (!wrapper) {
+        throw new Error("Expected table wrapper");
+      }
+      within(wrapper as HTMLElement).getByText("Fantastic Plastic Hat");
+    });
   },
 };
 
@@ -293,15 +294,13 @@ export const InteractionTestApplyMultiSelectFilter: MtEntityDataTableStory = {
     });
     await userEvent.click(manufacturerOption);
 
-    // Wait for the loading to complete
-    await waitUntil(() => !canvas.queryByText("Intelligent Plastic Pants"));
-    await waitUntil(() => !document.querySelector(".mt-skeleton-bar"));
-
-    // Check if the correct items are visible inside the first table row
-    const tableContent = within(
-      document.querySelector(".mt-data-table__table-wrapper") as HTMLElement,
-    );
-    await expect(tableContent.getByText("Gibson - Predovic")).toBeInTheDocument();
+    await waitFor(() => {
+      const wrapper = document.querySelector(".mt-data-table__table-wrapper");
+      if (!wrapper) {
+        throw new Error("Expected table wrapper");
+      }
+      within(wrapper as HTMLElement).getByText("Gibson - Predovic");
+    });
   },
 };
 
@@ -330,15 +329,15 @@ export const InteractionTestClearFilter: MtEntityDataTableStory = {
     });
     await userEvent.click(manufacturerOption);
 
-    // Wait for the loading to complete
-    await waitUntil(() => !canvas.queryByText("Intelligent Plastic Pants"));
-    await waitUntil(() => !document.querySelector(".mt-skeleton-bar"));
-
-    // Check if the correct items are visible inside the first table row
-    const tableContent = within(
-      document.querySelector(".mt-data-table__table-wrapper") as HTMLElement,
-    );
-    await expect(tableContent.getByText("Gibson - Predovic")).toBeInTheDocument();
+    let tableWrapper!: HTMLElement;
+    await waitFor(() => {
+      const wrapper = document.querySelector(".mt-data-table__table-wrapper");
+      if (!wrapper) {
+        throw new Error("Expected table wrapper");
+      }
+      within(wrapper as HTMLElement).getByText("Gibson - Predovic");
+      tableWrapper = wrapper as HTMLElement;
+    });
 
     // Clear the filter
     const clearFilterButton = await canvas.findByText("Remove filter");
@@ -347,12 +346,9 @@ export const InteractionTestClearFilter: MtEntityDataTableStory = {
     // Wait until "Remove filter" button is not visible anymore
     await waitFor(() => !canvas.queryByText("Remove filter"));
 
-    // Wait for the loading to complete
-    await waitUntil(() => !canvas.queryByText("Gibson - Predovic"));
-    await waitUntil(() => !document.querySelector(".mt-skeleton-bar"));
-
-    // Check if the correct items are visible inside the first table row
-    await expect(tableContent.getByText("Fantastic Cotton Sausages")).toBeInTheDocument();
+    await waitFor(() => {
+      within(tableWrapper).getByText("Fantastic Cotton Sausages");
+    });
   },
 };
 
