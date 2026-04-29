@@ -9,7 +9,7 @@ import type { StoryObj, Meta } from "@storybook/vue3";
 import { fn } from "@storybook/test";
 
 const meta: Meta = {
-  title: "Components/mt-radio-group",
+  title: "Components/Radio Group",
   component: MtRadioGroupRoot,
   args: {
     disabled: false,

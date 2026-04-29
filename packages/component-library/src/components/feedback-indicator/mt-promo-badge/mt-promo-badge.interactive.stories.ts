@@ -6,7 +6,7 @@ type MtPromoBadgeStory = StoryObj<MtPromoBadgeMeta>;
 
 export default {
   ...meta,
-  title: "Components/mt-promo-badge/Interaction tests",
+  title: "Components/Promo Badge/Interaction tests",
   tags: ["!autodocs"],
 } as MtPromoBadgeMeta;
 

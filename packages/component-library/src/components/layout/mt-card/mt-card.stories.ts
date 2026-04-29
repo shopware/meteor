@@ -29,7 +29,7 @@ export type MtCardMeta = SlottedMeta<typeof MtCard, MtCardSlots>;
 export type MtCardStory = StoryObj<MtCardMeta>;
 
 const meta: MtCardMeta = {
-  title: "Components/mt-card",
+  title: "Components/Card",
   component: MtCard,
   excludeStories: ["ExtendedStory"],
   argTypes: {

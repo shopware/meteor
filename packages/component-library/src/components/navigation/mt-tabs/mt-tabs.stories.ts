@@ -76,7 +76,7 @@ const tabItems = [
 export type MtTabsMeta = SlottedMeta<typeof MtTabs, "default">;
 
 export default {
-  title: "Components/mt-tabs",
+  title: "Components/Tabs",
   component: MtTabs,
   render: (args) => ({
     components: { MtTabs },

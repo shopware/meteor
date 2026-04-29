@@ -4,7 +4,7 @@ import meta, { type MtProgressBarMeta, type MtProgressBarStory } from "./mt-prog
 
 export default {
   ...meta,
-  title: "Components/mt-progress-bar/Interaction tests",
+  title: "Components/Progress Bar/Interaction tests",
   tags: ["!autodocs"],
 } as MtProgressBarMeta;
 

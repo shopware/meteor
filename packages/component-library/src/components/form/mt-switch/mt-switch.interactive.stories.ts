@@ -5,7 +5,7 @@ import meta, { type MtSwitchMeta, type MtSwitchStory } from "./mt-switch.stories
 
 export default {
   ...meta,
-  title: "Components/mt-switch/Interaction tests",
+  title: "Components/Switch/Interaction tests",
   tags: ["!autodocs"],
 } as MtSwitchMeta;
 

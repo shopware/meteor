@@ -12,7 +12,7 @@ import { waitUntil } from "../../../_internal/test-helper";
 
 export default {
   ...meta,
-  title: "Components/mt-modal/Interaction tests",
+  title: "Components/Modal/Interaction tests",
   tags: ["!autodocs"],
 };
 

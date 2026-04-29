@@ -32,7 +32,7 @@ async function waitForVisibleTooltip(body: ReturnType<typeof within>) {
 
 export default {
   ...meta,
-  title: "Components/mt-help-text/Interaction tests",
+  title: "Components/Help Text/Interaction tests",
   tags: ["!autodocs"],
 } as MtHelpTextMeta;
 

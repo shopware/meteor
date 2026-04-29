@@ -20,7 +20,7 @@ export type MtNumberFieldMeta = SlottedMeta<
 >;
 
 export default {
-  title: "Components/mt-number-field",
+  title: "Components/Number Field",
   component: MtNumberField,
   render: (args) => ({
     template: `

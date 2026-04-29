@@ -5,7 +5,7 @@ import meta, { type MtTextFieldMeta, type MtTextFieldStory } from "./mt-text-fie
 
 export default {
   ...meta,
-  title: "Components/mt-text-field/Interaction tests",
+  title: "Components/Text Field/Interaction tests",
   tags: ["!autodocs"],
 } as MtTextFieldMeta;
 

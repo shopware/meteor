@@ -2,7 +2,7 @@ import meta, { type MtAvatarMeta, type MtAvatarStory } from "./mt-avatar.stories
 
 export default {
   ...meta,
-  title: "Components/mt-avatar/Interaction tests",
+  title: "Components/Avatar/Interaction tests",
   tags: ["!autodocs"],
 } satisfies MtAvatarMeta;
 

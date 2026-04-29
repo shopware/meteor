@@ -5,7 +5,7 @@ import type { Meta } from "@storybook/vue3";
 type MtHelpTextMeta = Meta<typeof MtHelpText>;
 
 const meta = {
-  title: "Components/mt-help-text",
+  title: "Components/Help Text",
   component: MtHelpText,
   args: {
     text: "Help text",

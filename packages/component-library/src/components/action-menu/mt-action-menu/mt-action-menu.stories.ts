@@ -223,7 +223,7 @@ const matchTriggerWidthTemplate = `
 `;
 
 const meta: MtActionMenuMeta = {
-  title: "Components/mt-action-menu",
+  title: "Components/Action Menu",
   component: MtActionMenu,
   argTypes: {
     isSubMenu: {

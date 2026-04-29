@@ -43,7 +43,7 @@ const allIcons = Object.keys(
 export type MtIconMeta = SlottedMeta<typeof MtIcon, "default">;
 
 const meta: MtIconMeta = {
-  title: "Components/mt-icon",
+  title: "Components/Icon",
   component: MtIcon,
   render: (args) => ({
     components: { MtIcon },

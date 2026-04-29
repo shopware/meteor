@@ -2,7 +2,7 @@ import type { Meta, StoryFn } from "@storybook/vue3";
 import MtEmptyState from "./mt-empty-state.vue";
 
 export default {
-  title: "Components/mt-empty-state",
+  title: "Components/Empty State",
   component: MtEmptyState,
   argTypes: {
     headline: {

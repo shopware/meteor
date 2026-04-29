@@ -6,7 +6,7 @@ import type { SlottedMeta } from "@/_internal/story-helper";
 export type MtSegmentedControlMeta = SlottedMeta<typeof MtSegmentedControl, "default">;
 
 const meta: MtSegmentedControlMeta = {
-  title: "Components/mt-segmented-control",
+  title: "Components/Segmented Control",
   component: MtSegmentedControl,
   tags: ["!autodocs", "!dev"],
   render: (args) => ({

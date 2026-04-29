@@ -8,7 +8,7 @@ import meta, {
 
 export default {
   ...meta,
-  title: "Components/mt-segmented-control/Interaction tests",
+  title: "Components/Segmented Control/Interaction tests",
   tags: ["!autodocs", "!dev"],
 } as MtSegmentedControlMeta;
 

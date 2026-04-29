@@ -18,7 +18,7 @@ import MtText from "@/components/content/mt-text/mt-text.vue";
 
 export default {
   ...meta,
-  title: "Components/mt-action-menu/Interaction tests",
+  title: "Components/Action Menu/Interaction tests",
   tags: ["!autodocs"],
 } as MtActionMenuMeta;
 

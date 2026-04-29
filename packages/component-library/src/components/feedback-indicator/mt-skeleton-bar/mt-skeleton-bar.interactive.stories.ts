@@ -5,7 +5,7 @@ import meta from "./mt-skeleton-bar.stories";
 
 export default {
   ...meta,
-  title: "Components/mt-skeleton-bar/Interaction tests",
+  title: "Components/Skeleton Bar/Interaction tests",
   tags: ["!autodocs"],
   component: MtSkeletonBar,
 } as MtSkeletonBarMeta;

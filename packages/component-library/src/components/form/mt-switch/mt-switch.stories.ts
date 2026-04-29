@@ -6,7 +6,7 @@ import { fn } from "@storybook/test";
 export type MtSwitchMeta = SlottedMeta<typeof MtSwitch, "default">;
 
 export default {
-  title: "Components/mt-switch",
+  title: "Components/Switch",
   component: MtSwitch,
   args: {
     label: "Switchfield",

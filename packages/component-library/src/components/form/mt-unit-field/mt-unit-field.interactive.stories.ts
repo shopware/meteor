@@ -5,7 +5,7 @@ import meta, { type MtUnitFieldMeta, type MtUnitFieldStory } from "./mt-unit-fie
 
 export default {
   ...meta,
-  title: "Components/mt-unit-field/Interaction tests",
+  title: "Components/Unit Field/Interaction tests",
   tags: ["!autodocs"],
 } as MtUnitFieldMeta;
 

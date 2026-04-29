@@ -22,7 +22,7 @@ export type MtTextFieldMeta = SlottedMeta<
 >;
 
 export default {
-  title: "Components/mt-text-field",
+  title: "Components/Text Field",
   component: MtTextField,
   render: (args) => ({
     template: `
