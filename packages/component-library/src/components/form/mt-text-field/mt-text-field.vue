@@ -50,7 +50,9 @@
     </template>
 
     <template #field-hint>
-      <slot name="hint" />
+      <mt-field-hint v-if="showFieldHint">
+        <slot name="hint">{{ hint }}</slot>
+      </mt-field-hint>
     </template>
 
     <template v-if="maxLength" #field-hint-right>
@@ -63,6 +65,7 @@
 import { defineComponent, type PropType } from "vue";
 import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
+import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
 
 export default defineComponent({
   name: "MtTextField",
@@ -70,6 +73,7 @@ export default defineComponent({
   components: {
     "mt-field-error": MtFieldError,
     "mt-base-field": MtBaseField,
+    "mt-field-hint": MtFieldHint,
   },
 
   props: {
@@ -105,6 +109,15 @@ export default defineComponent({
      */
     helpText: {
       type: String,
+      required: false,
+      default: null,
+    },
+
+    /**
+     * Optional caption below the field. The `#hint` slot takes precedence when provided.
+     */
+    hint: {
+      type: String as PropType<string | null>,
       required: false,
       default: null,
     },
@@ -242,6 +255,10 @@ export default defineComponent({
   },
 
   computed: {
+    showFieldHint(): boolean {
+      return !!this.$slots.hint || (this.hint != null && String(this.hint).trim() !== "");
+    },
+
     hasError(): boolean {
       // @ts-expect-error - isValid gets called in the mixin
       return !this.isValid || !!this.error;

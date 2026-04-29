@@ -235,6 +235,14 @@
     <template #error>
       <mt-field-error v-if="error" :error="error" />
     </template>
+
+    <template #field-hint>
+      <mt-field-hint v-if="showFieldHint">
+        <slot name="hint">
+          {{ hint }}
+        </slot>
+      </mt-field-hint>
+    </template>
   </mt-base-field>
 </template>
 
@@ -244,6 +252,7 @@ import type { PropType } from "vue";
 import { defineComponent } from "vue";
 import { debounce } from "@/utils/debounce";
 import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
+import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
 import MtFloatingUi from "../../_internal/mt-floating-ui/mt-floating-ui.vue";
 import MtText from "@/components/content/mt-text/mt-text.vue";
 import { createFocusTrap } from "focus-trap";
@@ -257,6 +266,7 @@ export default defineComponent({
 
   components: {
     "mt-base-field": MtBaseField,
+    "mt-field-hint": MtFieldHint,
     "mt-text": MtText,
     "mt-floating-ui": MtFloatingUi,
     "mt-button": MtButton,
@@ -287,6 +297,15 @@ export default defineComponent({
      */
     helpText: {
       type: String,
+      required: false,
+      default: null,
+    },
+
+    /**
+     * Optional caption below the field. The `#hint` slot takes precedence when provided.
+     */
+    hint: {
+      type: String as PropType<string | null>,
       required: false,
       default: null,
     },
@@ -492,6 +511,10 @@ export default defineComponent({
         this.localValue = newColor;
         this.debounceEmitColorValue();
       },
+    },
+
+    showFieldHint(): boolean {
+      return !!this.$slots.hint || (this.hint != null && String(this.hint).trim() !== "");
     },
 
     integerAlpha: {
