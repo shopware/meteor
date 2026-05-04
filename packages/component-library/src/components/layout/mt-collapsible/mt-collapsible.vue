@@ -10,9 +10,9 @@
 import { CollapsibleRoot, useForwardPropsEmits } from "reka-ui";
 
 const props = defineProps<{
-  /** The controlled open state of the collapsible. Can be bound with `v-model`. */
+  /** The controlled open state of the collapsible */
   open?: boolean;
-  /** The open state when initially rendered. Use when uncontrolled. */
+  /** The open state when initially rendered */
   defaultOpen?: boolean;
   /** When `true`, prevents the user from interacting with the collapsible. */
   disabled?: boolean;
@@ -25,7 +25,6 @@ const props = defineProps<{
 }>();
 
 const emits = defineEmits<{
-  /** Event handler called when the open state of the collapsible changes. */
   "update:open": [value: boolean];
 }>();
 

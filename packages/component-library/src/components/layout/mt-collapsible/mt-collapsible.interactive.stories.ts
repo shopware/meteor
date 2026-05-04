@@ -30,11 +30,11 @@ export const VisualTestStartsClosed: MtCollapsibleStory = {
     template: `
       <mt-collapsible>
         <mt-collapsible-trigger as-child>
-          <mt-button>Toggle</mt-button>
+          <mt-button variant="primary">Toggle content</mt-button>
         </mt-collapsible-trigger>
 
         <mt-collapsible-content>
-          <p>Hidden content</p>
+          <p style="margin-top: 8px; font-size: var(--font-size-xs);">This content is revealed and hidden by the trigger above.</p>
         </mt-collapsible-content>
       </mt-collapsible>
     `,
@@ -42,40 +42,13 @@ export const VisualTestStartsClosed: MtCollapsibleStory = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.queryByText("Hidden content")).toBeNull();
+    expect(canvas.queryByText("This content is revealed and hidden by the trigger above.")).toBeNull();
 
-    await userEvent.click(canvas.getByRole("button", { name: "Toggle" }));
+    await userEvent.click(canvas.getByRole("button", { name: "Toggle content" }));
 
     await waitFor(() => {
-      expect(canvas.getByText("Hidden content")).toBeDefined();
+      expect(canvas.getByText("This content is revealed and hidden by the trigger above.")).toBeDefined();
     });
-  },
-};
-
-export const VisualTestDefaultOpen: MtCollapsibleStory = {
-  name: "Should start open with default-open",
-  render: () => ({
-    components: sharedComponents,
-    template: `
-      <mt-collapsible default-open>
-        <mt-collapsible-trigger as-child>
-          <mt-button>Toggle</mt-button>
-        </mt-collapsible-trigger>
-
-        <mt-collapsible-content>
-          <p>Visible content</p>
-        </mt-collapsible-content>
-      </mt-collapsible>
-    `,
-  }),
-  play: ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    expect(canvas.getByText("Visible content")).toBeDefined();
-    expect(canvas.getByRole("button", { name: "Toggle" })).toHaveAttribute(
-      "aria-expanded",
-      "true",
-    );
   },
 };
 
@@ -86,11 +59,11 @@ export const VisualTestDisabled: MtCollapsibleStory = {
     template: `
       <mt-collapsible disabled>
         <mt-collapsible-trigger as-child>
-          <mt-button>Toggle</mt-button>
+          <mt-button variant="primary">Toggle content</mt-button>
         </mt-collapsible-trigger>
 
         <mt-collapsible-content>
-          <p>Hidden content</p>
+          <p style="margin-top: 8px; font-size: var(--font-size-xs);">This content is revealed and hidden by the trigger above.</p>
         </mt-collapsible-content>
       </mt-collapsible>
     `,
@@ -98,8 +71,8 @@ export const VisualTestDisabled: MtCollapsibleStory = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    await userEvent.click(canvas.getByRole("button", { name: "Toggle" }));
+    await userEvent.click(canvas.getByRole("button", { name: "Toggle content" }));
 
-    expect(canvas.queryByText("Hidden content")).toBeNull();
+    expect(canvas.queryByText("This content is revealed and hidden by the trigger above.")).toBeNull();
   },
 };

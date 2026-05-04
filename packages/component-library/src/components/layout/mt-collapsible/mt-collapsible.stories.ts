@@ -32,26 +32,12 @@ const createStory = (template: string) => ({
 const defaultTemplate = `
 <mt-collapsible>
   <mt-collapsible-trigger as-child>
-    <mt-button>Toggle content</mt-button>
+    <mt-button variant="primary">Toggle content</mt-button>
   </mt-collapsible-trigger>
 
   <mt-collapsible-content>
-    <p style="margin-top: 8px;">
+    <p style="margin-top: 8px; font-size: var(--font-size-xs);">
       This content is revealed and hidden by the trigger above.
-    </p>
-  </mt-collapsible-content>
-</mt-collapsible>
-`;
-
-const defaultOpenTemplate = `
-<mt-collapsible default-open>
-  <mt-collapsible-trigger as-child>
-    <mt-button>Toggle content</mt-button>
-  </mt-collapsible-trigger>
-
-  <mt-collapsible-content>
-    <p style="margin-top: 8px;">
-      This collapsible starts in the open state.
     </p>
   </mt-collapsible-content>
 </mt-collapsible>
@@ -60,11 +46,11 @@ const defaultOpenTemplate = `
 const disabledTemplate = `
 <mt-collapsible disabled>
   <mt-collapsible-trigger as-child>
-    <mt-button disabled>Toggle content</mt-button>
+    <mt-button variant="primary" disabled>Toggle content</mt-button>
   </mt-collapsible-trigger>
 
   <mt-collapsible-content>
-    <p style="margin-top: 8px;">
+    <p style="margin-top: 8px; font-size: var(--font-size-xs);">
       This content cannot be toggled because the collapsible is disabled.
     </p>
   </mt-collapsible-content>
@@ -99,11 +85,6 @@ export type MtCollapsibleStory = StoryObj<MtCollapsibleMeta>;
 
 export const Default: MtCollapsibleStory = {
   ...createStory(defaultTemplate),
-};
-
-export const DefaultOpen: MtCollapsibleStory = {
-  name: "Default open",
-  ...createStory(defaultOpenTemplate),
 };
 
 export const Disabled: MtCollapsibleStory = {
