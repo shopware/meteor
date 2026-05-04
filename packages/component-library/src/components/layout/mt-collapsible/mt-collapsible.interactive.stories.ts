@@ -5,10 +5,7 @@ import MtCollapsible from "./mt-collapsible.vue";
 import MtCollapsibleTrigger from "./mt-collapsible-trigger.vue";
 import MtCollapsibleContent from "./mt-collapsible-content.vue";
 
-import meta, {
-  type MtCollapsibleMeta,
-  type MtCollapsibleStory,
-} from "./mt-collapsible.stories";
+import meta, { type MtCollapsibleMeta, type MtCollapsibleStory } from "./mt-collapsible.stories";
 
 export default {
   ...meta,
@@ -42,12 +39,16 @@ export const VisualTestStartsClosed: MtCollapsibleStory = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    expect(canvas.queryByText("This content is revealed and hidden by the trigger above.")).toBeNull();
+    expect(
+      canvas.queryByText("This content is revealed and hidden by the trigger above."),
+    ).toBeNull();
 
     await userEvent.click(canvas.getByRole("button", { name: "Toggle content" }));
 
     await waitFor(() => {
-      expect(canvas.getByText("This content is revealed and hidden by the trigger above.")).toBeDefined();
+      expect(
+        canvas.getByText("This content is revealed and hidden by the trigger above."),
+      ).toBeDefined();
     });
   },
 };
@@ -73,6 +74,8 @@ export const VisualTestDisabled: MtCollapsibleStory = {
 
     await userEvent.click(canvas.getByRole("button", { name: "Toggle content" }));
 
-    expect(canvas.queryByText("This content is revealed and hidden by the trigger above.")).toBeNull();
+    expect(
+      canvas.queryByText("This content is revealed and hidden by the trigger above."),
+    ).toBeNull();
   },
 };
