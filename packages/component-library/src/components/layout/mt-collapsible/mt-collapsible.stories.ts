@@ -73,9 +73,10 @@ const meta: MtCollapsibleMeta = {
       control: { type: "boolean" },
       description: "Prevents the user from interacting with the collapsible.",
     },
-    unmountOnHide: {
+    keepMounted: {
       control: { type: "boolean" },
-      description: "When `true`, the content is unmounted while closed.",
+      description:
+        "Whether the closed content stays mounted in the DOM. Required `true` for the built-in slide animation to play; set `false` to unmount the closed subtree.",
     },
   },
 };

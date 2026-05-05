@@ -1,5 +1,14 @@
 <template>
-  <CollapsibleRoot v-bind="forwarded" class="mt-collapsible">
+  <CollapsibleRoot
+    class="mt-collapsible"
+    :open="open"
+    :default-open="defaultOpen"
+    :disabled="disabled"
+    :as="as"
+    :as-child="asChild"
+    :unmount-on-hide="!keepMounted"
+    @update:open="(value) => emits('update:open', value)"
+  >
     <template #default="slotProps">
       <slot v-bind="slotProps" />
     </template>
@@ -7,22 +16,27 @@
 </template>
 
 <script setup lang="ts">
-import { CollapsibleRoot, useForwardPropsEmits } from "reka-ui";
+import { CollapsibleRoot } from "reka-ui";
 
-const props = defineProps<{
-  /** The controlled open state of the collapsible */
-  open?: boolean;
-  /** The open state when initially rendered */
-  defaultOpen?: boolean;
-  /** When `true`, prevents the user from interacting with the collapsible. */
-  disabled?: boolean;
-  /** When `true`, the content element is unmounted while closed. */
-  unmountOnHide?: boolean;
-  /** The element or component the root should render as. */
-  as?: string | object;
-  /** Change the default rendered element to the one passed as a child, merging their props and behavior. */
-  asChild?: boolean;
-}>();
+withDefaults(
+  defineProps<{
+    open?: boolean;
+    defaultOpen?: boolean;
+    disabled?: boolean;
+    as?: string | object;
+    asChild?: boolean;
+    /**
+     * Whether the closed content stays mounted in the DOM when closed.
+     * Defaults to `true`
+     */
+    keepMounted?: boolean;
+  }>(),
+  {
+    as: "div",
+    asChild: false,
+    keepMounted: true,
+  },
+);
 
 const emits = defineEmits<{
   "update:open": [value: boolean];
@@ -31,6 +45,4 @@ const emits = defineEmits<{
 defineSlots<{
   default?: (props: { open: boolean }) => unknown;
 }>();
-
-const forwarded = useForwardPropsEmits(props, emits);
 </script>

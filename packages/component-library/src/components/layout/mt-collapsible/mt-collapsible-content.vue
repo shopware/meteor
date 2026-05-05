@@ -1,30 +1,34 @@
 <template>
-  <CollapsibleContent v-bind="forwarded" class="mt-collapsible-content">
+  <CollapsibleContent
+    class="mt-collapsible-content"
+    :as="as"
+    :as-child="asChild"
+    :force-mount="forceMount"
+    @content-found="() => emits('contentFound')"
+  >
     <slot />
   </CollapsibleContent>
 </template>
 
 <script setup lang="ts">
-import { CollapsibleContent, useForwardPropsEmits } from "reka-ui";
+import { CollapsibleContent } from "reka-ui";
 
-const props = defineProps<{
-  /** The element or component the content should render as. */
-  as?: string | object;
-  /** Change the default rendered element to the one passed as a child, merging their props and behavior. */
-  asChild?: boolean;
-  /**
-   * Used to force mounting when more control is needed. Useful when controlling
-   * animation with Vue animation libraries.
-   */
-  forceMount?: boolean;
-}>();
+withDefaults(
+  defineProps<{
+    as?: string | object;
+    asChild?: boolean;
+    forceMount?: boolean;
+  }>(),
+  {
+    as: "div",
+    asChild: false,
+    forceMount: false,
+  },
+);
 
 const emits = defineEmits<{
-  /** Emitted when the content is revealed via the browser's "find in page" feature while hidden. */
   contentFound: [];
 }>();
-
-const forwarded = useForwardPropsEmits(props, emits);
 </script>
 
 <style>

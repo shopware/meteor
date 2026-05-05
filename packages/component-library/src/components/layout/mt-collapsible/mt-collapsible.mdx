@@ -47,8 +47,8 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 - **Collapsible** is a compound pattern. You always compose `mt-collapsible` with `mt-collapsible-trigger` and `mt-collapsible-content`.
 - The open state can be controlled externally with `v-model:open` or left uncontrolled with `default-open`.
 - When `disabled`, the trigger no longer toggles the content and the data attributes reflect the disabled state for styling.
-- By default the content is unmounted while closed. Set `unmount-on-hide="false"` if surrounding logic depends on the content staying in the DOM.
-- The content element exposes the `--reka-collapsible-content-height` and `--reka-collapsible-content-width` CSS variables, which can be used to drive open and close animations.
+- The content slides open and closed over 300 ms by default, using the `--reka-collapsible-content-height` CSS variable that the component exposes on its content element. The animation respects `prefers-reduced-motion`.
+- `keep-mounted` defaults to `true` so the closed content stays in the DOM (it's hidden with `hidden="until-found"`, which keeps it discoverable to the browser's find-in-page feature) and the slide animation can play. Set `keep-mounted="false"` when the closed subtree is too expensive to leave mounted; the open/close animation will not play in that case.
 
 ## Accessibility notes
 
