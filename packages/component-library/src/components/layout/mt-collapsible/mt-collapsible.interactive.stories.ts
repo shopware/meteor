@@ -38,17 +38,17 @@ export const VisualTestStartsClosed: MtCollapsibleStory = {
   }),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
+    const toggleButton = canvas.getByRole("button", { name: "Toggle content" });
+    const content = canvas.getByText("This content is revealed and hidden by the trigger above.");
 
-    expect(
-      canvas.queryByText("This content is revealed and hidden by the trigger above."),
-    ).toBeNull();
+    expect(toggleButton).toHaveAttribute("aria-expanded", "false");
+    expect(content).not.toBeVisible();
 
-    await userEvent.click(canvas.getByRole("button", { name: "Toggle content" }));
+    await userEvent.click(toggleButton);
 
     await waitFor(() => {
-      expect(
-        canvas.getByText("This content is revealed and hidden by the trigger above."),
-      ).toBeDefined();
+      expect(toggleButton).toHaveAttribute("aria-expanded", "true");
+      expect(content).toBeVisible();
     });
   },
 };
@@ -60,7 +60,7 @@ export const VisualTestDisabled: MtCollapsibleStory = {
     template: `
       <mt-collapsible disabled>
         <mt-collapsible-trigger as-child>
-          <mt-button variant="primary">Toggle content</mt-button>
+          <mt-button variant="primary" disabled>Toggle content</mt-button>
         </mt-collapsible-trigger>
 
         <mt-collapsible-content>
@@ -71,11 +71,12 @@ export const VisualTestDisabled: MtCollapsibleStory = {
   }),
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
+    const toggleButton = canvas.getByRole("button", { name: "Toggle content" });
+    const content = canvas.getByText("This content is revealed and hidden by the trigger above.");
 
-    await userEvent.click(canvas.getByRole("button", { name: "Toggle content" }));
+    await userEvent.click(toggleButton);
 
-    expect(
-      canvas.queryByText("This content is revealed and hidden by the trigger above."),
-    ).toBeNull();
+    expect(toggleButton).toHaveAttribute("aria-expanded", "false");
+    expect(content).not.toBeVisible();
   },
 };
