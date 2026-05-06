@@ -59,7 +59,7 @@ const disabledTemplate = `
 `;
 
 const meta: MtCollapsibleMeta = {
-  title: "Components/mt-collapsible",
+  title: "Components/Collapsible",
   component: MtCollapsible,
   argTypes: {
     open: {
