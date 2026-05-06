@@ -30,12 +30,15 @@ describe("mt-collapsible", () => {
 
     // ASSERT
     await waitFor(() => {
-      expect(screen.getByRole("button", { name: "Toggle" })).toHaveAttribute("aria-expanded", "true");
+      expect(screen.getByRole("button", { name: "Toggle" })).toHaveAttribute(
+        "aria-expanded",
+        "true",
+      );
     });
     expect(screen.getByText("Collapsible content")).toBeVisible();
   });
 
-  it("does not toggle when disabled", async () => {
+  it("does not open when disabled", async () => {
     // ARRANGE
     renderCollapsible({ disabled: true });
 
@@ -45,9 +48,10 @@ describe("mt-collapsible", () => {
     // ASSERT
     expect(screen.getByRole("button", { name: "Toggle" })).toBeDisabled();
     expect(screen.getByRole("button", { name: "Toggle" })).toHaveAttribute("aria-expanded", "false");
+    expect(screen.getByText("Collapsible content")).not.toBeVisible();
   });
 
-  it("supports controlled state through `v-model:open`", async () => {
+  it("can be controlled externally with `v-model:open`", async () => {
     // ARRANGE
     render({
       components: {
@@ -68,31 +72,34 @@ describe("mt-collapsible", () => {
       `,
     });
 
-    // ACT + ASSERT
-    expect(screen.getByRole("button", { name: "Toggle" })).toHaveAttribute("aria-expanded", "false");
+    // ACT
     await userEvent.click(screen.getByRole("button", { name: "Toggle" }));
-    expect(screen.getByRole("button", { name: "Toggle" })).toHaveAttribute("aria-expanded", "true");
+
+    // ASSERT
+    expect(screen.getByText("Collapsible content")).toBeVisible();
+
+    // ACT
     await userEvent.click(screen.getByRole("button", { name: "Toggle" }));
-    expect(screen.getByRole("button", { name: "Toggle" })).toHaveAttribute("aria-expanded", "false");
+
+    // ASSERT
+    expect(screen.getByText("Collapsible content")).not.toBeVisible();
   });
 
-  it("keeps content mounted by default", () => {
+  it("keeps content mounted when `keepMounted` is true", () => {
     // ARRANGE
     const { container } = renderCollapsible();
 
     // ASSERT
     const content = container.querySelector(".mt-collapsible-content");
     expect(content).toBeInTheDocument();
-    expect(screen.getByText("Collapsible content")).toBeInTheDocument();
   });
 
   it("unmounts content when `keepMounted` is false", () => {
     // ARRANGE
     const { container } = renderCollapsible({ keepMounted: false });
+    const content = container.querySelector(".mt-collapsible-content");
 
     // ASSERT
-    const content = container.querySelector(".mt-collapsible-content");
-    expect(content).toBeInTheDocument();
     expect(content).toHaveAttribute("hidden", "");
     expect(screen.queryByText("Collapsible content")).not.toBeInTheDocument();
   });

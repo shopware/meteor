@@ -13,13 +13,14 @@ const sharedComponents = {
   MtButton,
 };
 
-const createRender = (template: string) => ({
+const createRender = (template: string) => (args: Record<string, unknown>) => ({
   components: sharedComponents,
+  setup: () => ({ args }),
   template,
 });
 
 const createStory = (template: string) => ({
-  render: () => createRender(template),
+  render: createRender(template),
   parameters: {
     docs: {
       source: {
@@ -30,7 +31,7 @@ const createStory = (template: string) => ({
 });
 
 const defaultTemplate = `
-<mt-collapsible>
+<mt-collapsible v-bind="args">
   <mt-collapsible-trigger as-child>
     <mt-button variant="primary">Toggle content</mt-button>
   </mt-collapsible-trigger>
@@ -44,9 +45,9 @@ const defaultTemplate = `
 `;
 
 const disabledTemplate = `
-<mt-collapsible disabled>
+<mt-collapsible v-bind="args">
   <mt-collapsible-trigger as-child>
-    <mt-button variant="primary" disabled>Toggle content</mt-button>
+    <mt-button variant="primary" :disabled="args.disabled">Toggle content</mt-button>
   </mt-collapsible-trigger>
 
   <mt-collapsible-content>
@@ -90,4 +91,14 @@ export const Default: MtCollapsibleStory = {
 
 export const Disabled: MtCollapsibleStory = {
   ...createStory(disabledTemplate),
+  args: {
+    disabled: true,
+  },
+};
+
+export const UnmountOnHide: MtCollapsibleStory = {
+  ...createStory(defaultTemplate),
+  args: {
+    keepMounted: false,
+  },
 };
