@@ -18,7 +18,7 @@ export type MtTextareaMeta = SlottedMeta<
 >;
 
 export default {
-  title: "Components/mt-textarea",
+  title: "Components/Textarea",
   component: MtTextarea,
   render: (args) => ({
     template: `

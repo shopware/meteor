@@ -7,7 +7,7 @@ import Image34x24 from "../../assets/images/34x24.png";
 
 export default {
   ...meta,
-  title: "Components/mt-data-table/Interaction tests",
+  title: "Components/Data Table/Interaction tests",
   tags: ["!autodocs"],
 } as MtDataTableMeta;
 

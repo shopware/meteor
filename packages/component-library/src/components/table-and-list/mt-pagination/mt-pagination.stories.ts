@@ -5,7 +5,7 @@ import { ref } from "vue";
 import { fn } from "@storybook/test";
 
 export default {
-  title: "Components/mt-pagination",
+  title: "Components/Pagination",
   component: MtPagination,
 } satisfies SlottedMeta<typeof MtPagination, "default">;
 

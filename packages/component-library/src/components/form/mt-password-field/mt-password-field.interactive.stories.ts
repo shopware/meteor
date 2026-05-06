@@ -7,7 +7,7 @@ import meta, {
 
 export default {
   ...meta,
-  title: "Components/mt-password-field/Interaction tests",
+  title: "Components/Password Field/Interaction tests",
   tags: ["!autodocs"],
 } as MtPasswordFieldMeta;
 

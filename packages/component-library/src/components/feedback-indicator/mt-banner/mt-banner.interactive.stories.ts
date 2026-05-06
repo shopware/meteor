@@ -5,7 +5,7 @@ import meta, { type MtBannerMeta, type MtBannerStory } from "./mt-banner.stories
 
 export default {
   ...meta,
-  title: "Components/mt-banner/Interaction tests",
+  title: "Components/Banner/Interaction tests",
   tags: ["!autodocs"],
 } as MtBannerMeta;
 

@@ -5,7 +5,7 @@ import type { SlottedMeta } from "@/_internal/story-helper";
 export type MtProgressBarMeta = SlottedMeta<typeof MtProgressBar, "error">;
 
 export default {
-  title: "Components/mt-progress-bar",
+  title: "Components/Progress Bar",
   component: MtProgressBar,
   render: (args) => ({
     setup() {

@@ -7,7 +7,7 @@ import meta, { type MtSelectMeta, type MtSelectStory } from "./mt-select.stories
 
 export default {
   ...meta,
-  title: "Components/mt-select/Interaction tests",
+  title: "Components/Select/Interaction tests",
   tags: ["!autodocs"],
 } as MtSelectMeta;
 

@@ -13,7 +13,7 @@ export type MtPopoverMeta = SlottedMeta<
 >;
 
 export default {
-  title: "Components/mt-popover",
+  title: "Components/Popover",
   component: MtPopover,
   argTypes: {
     "go-back": {

@@ -5,7 +5,7 @@ import meta, { type MtNumberFieldMeta, type MtNumberFieldStory } from "./mt-numb
 
 export default {
   ...meta,
-  title: "Components/mt-number-field/Interaction tests",
+  title: "Components/Number Field/Interaction tests",
   tags: ["!autodocs"],
 } as MtNumberFieldMeta;
 

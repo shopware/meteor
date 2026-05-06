@@ -4,7 +4,7 @@ import meta, { type MtLinkMeta, type MtLinkStory } from "./mt-link.stories";
 
 export default {
   ...meta,
-  title: "Components/mt-link/Interaction tests",
+  title: "Components/Link/Interaction tests",
   tags: ["!autodocs"],
 } as MtLinkMeta;
 
