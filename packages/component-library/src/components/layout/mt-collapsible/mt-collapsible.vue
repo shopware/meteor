@@ -1,11 +1,7 @@
 <template>
   <CollapsibleRoot
     class="mt-collapsible"
-    :open="open"
-    :default-open="defaultOpen"
-    :disabled="disabled"
-    :as="as"
-    :as-child="asChild"
+    v-bind="forwardedProps"
     :unmount-on-hide="!keepMounted"
     @update:open="(value) => emits('update:open', value)"
   >
@@ -16,9 +12,10 @@
 </template>
 
 <script setup lang="ts">
-import { CollapsibleRoot } from "reka-ui";
+import { computed } from "vue";
+import { CollapsibleRoot, useForwardProps } from "reka-ui";
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
     open?: boolean;
     defaultOpen?: boolean;
@@ -36,6 +33,16 @@ withDefaults(
     asChild: false,
     keepMounted: true,
   },
+);
+
+const forwardedProps = useForwardProps(
+  computed(() => ({
+    open: props.open,
+    defaultOpen: props.defaultOpen,
+    disabled: props.disabled,
+    as: props.as,
+    asChild: props.asChild,
+  })),
 );
 
 const emits = defineEmits<{

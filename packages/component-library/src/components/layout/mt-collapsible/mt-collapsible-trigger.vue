@@ -1,9 +1,5 @@
 <template>
-  <CollapsibleTrigger
-    class="mt-collapsible-trigger"
-    :as="as"
-    :as-child="asChild"
-  >
+  <CollapsibleTrigger class="mt-collapsible-trigger" :as="as" :as-child="asChild">
     <slot />
   </CollapsibleTrigger>
 </template>
