@@ -47,7 +47,10 @@ describe("mt-collapsible", () => {
 
     // ASSERT
     expect(screen.getByRole("button", { name: "Toggle" })).toBeDisabled();
-    expect(screen.getByRole("button", { name: "Toggle" })).toHaveAttribute("aria-expanded", "false");
+    expect(screen.getByRole("button", { name: "Toggle" })).toHaveAttribute(
+      "aria-expanded",
+      "false",
+    );
     expect(screen.getByText("Collapsible content")).not.toBeVisible();
   });
 
