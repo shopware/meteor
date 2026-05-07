@@ -9,7 +9,7 @@ import meta, { type MtCollapsibleMeta, type MtCollapsibleStory } from "./mt-coll
 
 export default {
   ...meta,
-  title: "Components/mt-collapsible/Interaction tests",
+  title: "Components/Collapsible/Interaction tests",
   tags: ["!autodocs"],
 } as MtCollapsibleMeta;
 
