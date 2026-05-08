@@ -1,0 +1,56 @@
+import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
+
+import * as ChartStories from "./mt-chart.stories";
+import ComponentPageHeader from "../../_docs/component-page-header.js";
+
+<Meta of={ChartStories} />
+
+<ComponentPageHeader
+  title="Chart"
+  tagName="mt-chart"
+  packageImports="MtChart"
+  sourcePath="packages/component-library/src/components/charts/mt-chart"
+>
+  **Chart** renders data visualizations inside the Meteor design system. For
+  now, this page documents the `area` chart type.
+</ComponentPageHeader>
+
+## When to use
+
+- Use **Chart** with `type="area"` to show how values change over time.
+- Use it when users should compare trends, peaks, and drops across one or more series.
+- Use it when a visual trend is easier to understand than a table alone.
+
+## Examples
+
+### Basic
+
+<Canvas of={ChartStories.Default} />
+
+## API reference
+
+<ArgTypes of={ChartStories} />
+
+## Do
+
+- Keep the time scale or sequence clear by providing meaningful x-axis labels.
+- Use short series names so the legend and tooltip stay easy to scan.
+- Pair the chart with nearby summary text when the data drives a decision.
+
+## Don't
+
+- Do not use an area chart when exact individual values are the primary goal.
+- Do not rely on color alone to explain the data series.
+- Do not use the chart as the only presentation of critical information.
+
+## Behavior notes
+
+- **Chart** passes `series` and `options` through to ApexCharts and merges your `options` with Meteor's default chart options.
+- Changing `series`, `options`, `type`, `width`, or `height` updates the rendered chart.
+- This page currently documents the `area` chart type only.
+
+## Accessibility notes
+
+- Provide the chart with nearby text that explains the main takeaway, because charts are not equally accessible for every user.
+- Do not use the chart alone for critical information without an accessible text or table alternative.
+- Keep labels and series names concise so tooltip and axis content stays readable.

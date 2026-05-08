@@ -6,7 +6,8 @@ import { waitUntil } from "../../../_internal/test-helper";
 
 export default {
   ...meta,
-  title: "Interaction Tests/Form/mt-datepicker",
+  title: "Components/Datepicker/Interaction tests",
+  tags: ["!autodocs"],
 } as MtDatepickerMeta;
 
 export const VisualTestDatepickerDefault: MtDatepickerStory = {
@@ -65,7 +66,7 @@ export const VisualTestDateInputValue: MtDatepickerStory = {
     await userEvent.click(document.querySelector('[data-test-id="Nov"]') as HTMLInputElement);
 
     // Access the calendar and click the date
-    await userEvent.click(document.getElementById("2024-11-13") as HTMLInputElement);
+    await userEvent.click(document.getElementById("dp-2024-11-13") as HTMLInputElement);
 
     // Check that the input value matches the date chosen
     const input = document.querySelector('[data-test-id="dp-input"]') as HTMLInputElement;
@@ -127,7 +128,7 @@ export const VisualTestDateTimeInputValue: MtDatepickerStory = {
     await userEvent.click(selectedMin);
 
     // Click date within calendar
-    await userEvent.click(document.getElementById("2024-11-13") as HTMLInputElement);
+    await userEvent.click(document.getElementById("dp-2024-11-13") as HTMLInputElement);
 
     // Check that the input value matches the date chosen
     const input = document.querySelector('[data-test-id="dp-input"]') as HTMLInputElement;
@@ -166,10 +167,10 @@ export const VisualTestDateRangeValue: MtDatepickerStory = {
     await userEvent.click(document.querySelector('[data-test-id="Nov"]') as HTMLInputElement);
 
     // Click first date on calendar
-    await userEvent.click(document.getElementById("2024-11-13") as HTMLInputElement);
+    await userEvent.click(document.getElementById("dp-2024-11-13") as HTMLInputElement);
 
     // Click second date on calendar
-    await userEvent.click(document.getElementById("2024-11-16") as HTMLInputElement);
+    await userEvent.click(document.getElementById("dp-2024-11-16") as HTMLInputElement);
 
     // Check that the input value matches the dates chosen
     const input = document.querySelector('[data-test-id="dp-input"]') as HTMLInputElement;
@@ -253,11 +254,11 @@ export const VisualTestDateTimeRangeValue: MtDatepickerStory = {
     await userEvent.click(document.querySelector('[data-test-id="30"]') as HTMLInputElement);
 
     // Click first date on calendar
-    const firstDate = document.getElementById("2024-11-13") as HTMLInputElement;
+    const firstDate = document.getElementById("dp-2024-11-13") as HTMLInputElement;
     await userEvent.click(firstDate);
 
     // Click second date on calendar
-    const secondDate = document.getElementById("2024-11-16") as HTMLInputElement;
+    const secondDate = document.getElementById("dp-2024-11-16") as HTMLInputElement;
     await userEvent.click(secondDate);
 
     // Check that the input value matches the dates and times chosen
@@ -320,7 +321,7 @@ export const VisualTestTestCustomFormat: MtDatepickerStory = {
     await userEvent.click(document.querySelector('[data-test-id="Nov"]') as HTMLInputElement);
 
     // Access the calendar and click the date
-    await userEvent.click(document.getElementById("2024-11-13") as HTMLInputElement);
+    await userEvent.click(document.getElementById("dp-2024-11-13") as HTMLInputElement);
 
     // Check that the input value matches the date chosen
     const input = document.querySelector('[data-test-id="dp-input"]') as HTMLInputElement;

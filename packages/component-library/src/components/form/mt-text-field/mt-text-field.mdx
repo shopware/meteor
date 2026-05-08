@@ -1,0 +1,87 @@
+import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
+
+import * as TextFieldStories from "./mt-text-field.stories";
+import ComponentPageHeader from "../../_docs/component-page-header.js";
+
+<Meta of={TextFieldStories} />
+
+<ComponentPageHeader
+  title="Text Field"
+  tagName="mt-text-field"
+  packageImports="MtTextField"
+  sourcePath="packages/component-library/src/components/form/mt-text-field"
+>
+  **Text Field** lets users enter short free-form text values in a form.
+</ComponentPageHeader>
+
+## When to use
+
+- Use **Text Field** for names, titles, identifiers, and other short text values.
+- Use it when users should type one value in a single-line input.
+- Use it when shared field features such as `hint`, `helpText`, `error`, or inheritance are helpful.
+
+## Examples
+
+### Basic
+
+<Canvas of={TextFieldStories.Default} />
+
+## API reference
+
+<ArgTypes of={TextFieldStories} />
+
+## Do
+
+- Use a clear visible label that describes the expected value.
+- Keep the content short enough for a single-line input.
+- Add help text or hint content when users need more context.
+
+## Don't
+
+- Do not use **Text Field** for longer multi-line content.
+- Do not rely on the placeholder as the only instruction.
+- Do not use it when a more specific field type would guide input better.
+
+## Behavior notes
+
+- **Text Field** supports shared field features such as `prefix`, `suffix`, `hint`, `helpText`, `error`, and inheritance handling.
+- `copyable` adds a copy button for reference-heavy values that users may need to copy out of the field.
+- `maxLength` can show a live character counter when the value length matters.
+
+## Accessibility notes
+
+- Always provide a visible label so users understand what value is expected.
+- Keep help text and error text specific so users can correct problems quickly.
+- Use a more specific field type when browser input behavior or validation would improve accessibility.
+
+## Comparisons
+
+### **Text Field** vs **Email Field**
+
+- Use **Text Field** for general text that should not be constrained to an email format.
+- Use **Email Field** when the value must be an email address.
+
+### **Text Field** vs **URL Field**
+
+- Use **Text Field** when the value is general text and should not be normalized as a web address.
+- Use **URL Field** when the value should be a link and URL-specific behavior is helpful.
+
+### **Text Field** vs **Number Field**
+
+- Use **Text Field** when the value should stay as plain text, even if it contains digits.
+- Use **Number Field** when the value should behave like a number with numeric constraints or stepping.
+
+### **Text Field** vs **Unit Field**
+
+- Use **Text Field** when the value is free-form text and does not need measurement logic.
+- Use **Unit Field** when users should enter a number together with a selectable unit.
+
+### **Text Field** vs **Password Field**
+
+- Use **Text Field** when the value is not sensitive and does not need to be masked.
+- Use **Password Field** when the value is sensitive and should be hidden by default.
+
+### **Text Field** vs **Search**
+
+- Use **Text Field** when the value should be entered and stored as regular form data.
+- Use **Search** when the value is meant to filter or find content in the interface.

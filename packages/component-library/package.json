@@ -1,6 +1,6 @@
 {
   "name": "@shopware-ag/meteor-component-library",
-  "version": "4.26.0",
+  "version": "4.28.6",
   "repository": {
     "type": "git",
     "url": "git+ssh://git@github.com:shopware/meteor.git"
@@ -66,9 +66,6 @@
     "@shopware-ag/meteor-admin-sdk": "workspace:*",
     "@shopware-ag/meteor-icon-kit": "workspace:*",
     "@shopware-ag/meteor-tokens": "workspace:*",
-    "@storybook/addon-a11y": "^8.6.15",
-    "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/vue": "^8.1.0",
     "@tiptap/extension-bubble-menu": "^2.22.3",
     "@tiptap/extension-bullet-list": "^2.22.3",
     "@tiptap/extension-character-count": "^2.22.3",
@@ -91,7 +88,7 @@
     "@tiptap/pm": "^2.22.3",
     "@tiptap/starter-kit": "^2.22.3",
     "@tiptap/vue-3": "^2.22.3",
-    "@vuepic/vue-datepicker": "^10.0.0",
+    "@vuepic/vue-datepicker": "^12.1.0",
     "@vueuse/components": "^12.4.0",
     "@vueuse/core": "^13.1.0",
     "apexcharts": "^5.2.0",
@@ -113,6 +110,9 @@
   "devDependencies": {
     "@csstools/stylelint-formatter-github": "^1.0.0",
     "@eslint/js": "^9.20.0",
+    "@storybook/addon-a11y": "^8.6.15",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/vue": "^8.1.0",
     "@shopware-ag/stylelint-plugin-meteor": "workspace:*",
     "@size-limit/esbuild": "^11.2.0",
     "@size-limit/esbuild-why": "^11.2.0",

@@ -4,7 +4,7 @@ import { usePriorityPlusNavigation } from "./usePriorityPlusNavigation";
 import { within, expect, waitFor } from "@storybook/test";
 
 const meta: Meta = {
-  title: "Composables / Internal / usePriorityPlusNavigation",
+  title: "Composables/usePriorityPlusNavigation",
   render: (args) => ({
     setup() {
       const containerElement = ref<HTMLElement>();

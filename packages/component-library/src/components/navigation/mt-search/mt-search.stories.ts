@@ -8,7 +8,7 @@ import { fn } from "@storybook/test";
 export type MtSearchMeta = SlottedMeta<typeof MtSearch, "default" | "change" | "updateModelValue">;
 
 const meta: MtSearchMeta = {
-  title: "Components/Navigation/mt-search",
+  title: "Components/Search",
   component: MtSearch,
   args: {
     modelValue: "",
@@ -81,5 +81,15 @@ export default meta;
 export type MtSearchStory = StoryObj<MtSearchMeta>;
 
 export const Default: MtSearchStory = {
-  name: "mt-search",
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-search
+  v-model="term"
+  placeholder="Search"
+/>`,
+      },
+    },
+  },
 };

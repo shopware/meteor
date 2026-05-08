@@ -1,19 +1,25 @@
-# Media modal
+---
+title: "Media Modals"
+nav:
+  position: 100
+---
 
-This method allows an app to interact with the Administration's media modal, which includes the Media modal and the Save media modal.
+# Media Modals
 
-Functionality of each modal:
-- The Media modal is used for selecting existing media from the media library or uploading new media. This functionality has been available since version 6.7.1.
+This method allows apps to interact with the Administration's media modal. Two modal types are supported:
 
-- The Save media modal is used to choose a specific location to save the media, and this feature will be implemented in version 6.7.5.
+- **Media modal**: Select existing media from the media library or upload new files. Available since Shopware 6.7.1.
+- **Save media modal**: Choose a specific folder and filename when saving media. Available since Shopware 6.7.5.
 
-## Media modal
+```ts
+import { ui } from "@shopware-ag/meteor-admin-sdk";
+```
 
-### Open modal
+## mediaModal.open()
 
-Open media modal in the current view.
+Open the media modal in the current view.
 
-#### Usage:
+#### Usage
 
 ```ts
 ui.mediaModal.open({
@@ -21,13 +27,13 @@ ui.mediaModal.open({
   allowMultiSelect: false,
   fileAccept: "image/png",
   selectors: ["fileName", "id", "url"],
-  callback: ({ fileName, id, url }) => {},
+  callback: ([{ fileName, id, url }]) => {},
 });
 ```
 
 #### Parameters
 
-All parameters are similar to `sw-media-modal-v2` component's props
+All parameters are similar to the `sw-media-modal-v2` component's props.
 
 | Name               | Required | Default                   | Description                                                                          |
 | :----------------- | :------- | :------------------------ | :----------------------------------------------------------------------------------- |
@@ -36,8 +42,8 @@ All parameters are similar to `sw-media-modal-v2` component's props
 | `allowMultiSelect` | false    | true                      | Define single or multiple selection                                                  |
 | `defaultTab`       | false    | library                   | Defines which tab should be opened by default                                        |
 | `fileAccept`       | false    | image/\*                  | Define the file types which are allowed to be uploaded in Upload tab                 |
-| `selectors`        | false    | ['fileName', 'id', 'url'] | Selected properties which should be returned in callback function                    |
-| `callback`         | true     |                           | Callback function which will be called once the media item is selected.              |
+| `selectors`        | false    | ['fileName', 'id', 'url'] | Selected properties which should be returned for each item in the callback array     |
+| `callback`         | true     |                           | Callback function which receives an array of selected media items once a selection is made. |
 
 #### Example
 
@@ -48,17 +54,15 @@ ui.mediaModal.open({
   initialFolderId: "productMediaFolderId",
   allowMultiSelect: false,
   selectors: ["fileName", "id", "url"],
-  callback: ({ fileName, id, url }) => {},
+  callback: ([{ fileName, id, url }]) => {},
 });
 ```
 
-## Save media modal
-
-### Open save media modal
+## mediaModal.openSaveMedia()
 
 Open save media modal in the current view.
 
-#### Usage:
+#### Usage
 
 ```ts
 ui.mediaModal.openSaveMedia({
@@ -71,14 +75,14 @@ ui.mediaModal.openSaveMedia({
 
 #### Parameters
 
-All parameters are similar to `sw-media-save-modal` component's props
+All parameters are similar to the `sw-media-save-modal` component's props.
 
-| Name               | Required | Default                   | Description                                                                          |
-| :----------------- | :------- | :------------------------ | :----------------------------------------------------------------------------------- |
-| `initialFolderId`  | false    | null                      | Initial folder id where the media modal will open                                    |
-| `initialFileName`  | false    | null                      | Initial file name of media to set as initial value of file name input                                    |
-| `fileType`  | false    | null                      | File extension of media to display on file name input's suffix                                    |
-| `callback`         | true     |                           | This callback function is triggered when the "Save media" button is clicked. It returns the updated file name and the folderId where the media is stored.              |
+| Name              | Required | Default | Description                                                                                                                                               |
+| :---------------- | :------- | :------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `initialFolderId` | false    | null    | Initial folder id where the media modal will open                                                                                                         |
+| `initialFileName` | false    | null    | Initial file name of media to set as initial value of file name input                                                                                     |
+| `fileType`        | false    | null    | File extension of media to display on file name input's suffix                                                                                            |
+| `callback`        | true     |         | This callback function is triggered when the "Save media" button is clicked. It returns the updated file name and the folderId where the media is stored. |
 
 #### Example
 

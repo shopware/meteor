@@ -4,7 +4,7 @@ import type { Meta, StoryObj } from "@storybook/vue3";
 export type MtUrlFieldMeta = Meta<typeof MtUrlField>;
 
 export default {
-  title: "Components/Form/mt-url-field",
+  title: "Components/URL Field",
   component: MtUrlField,
   render: (args) => ({
     components: { MtUrlField },
@@ -33,6 +33,16 @@ export default {
 
 export type MtUrlFieldStory = StoryObj<typeof MtUrlField>;
 
-export const DefaultStory: MtUrlFieldStory = {
-  name: "mt-url-field",
+export const Default: MtUrlFieldStory = {
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-url-field
+  v-model="url"
+  label="Website"
+/>`,
+      },
+    },
+  },
 };

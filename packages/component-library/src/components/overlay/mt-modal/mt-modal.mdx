@@ -1,19 +1,43 @@
-import { Meta } from "@storybook/blocks";
+import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
 
 import * as ModalStories from "./mt-modal.stories";
+import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 <Meta of={ModalStories} />
 
-# mt-modal
+<ComponentPageHeader
+  title="Modal"
+  tagName="mt-modal"
+  packageImports={[
+    "MtModal",
+    "MtModalRoot",
+    "MtModalTrigger",
+    "MtModalClose",
+    "MtModalAction",
+  ]}
+  sourcePath="packages/component-library/src/components/overlay/mt-modal"
+>
+  **Modal** displays a dialog on top of the current page and temporarily focuses
+  attention on one task or decision.
+</ComponentPageHeader>
 
-A modal is a dialog box, displayed on top of the current page.
+## When to use
+
+- Use **Modal** when users need to confirm, review, or complete a focused task without leaving the current page.
+- Use it for flows that need clear interruption, such as confirmations, forms, or important details.
+- Use it when the content should sit above the rest of the interface instead of becoming part of the page layout.
+
+## Examples
+
+### Basic
+
+<Canvas of={ModalStories.Default} sourceState="none" />
 
 ## How to use
 
-In 99% of the cases you'll open a modal through a button. We
-designed the component in a way to make this as easy as possible.
+In most cases, you will open a modal through a button. The component set is designed to make that pattern straightforward.
 
-> **Note:** You need to wrap the modal components in a `mt-modal-root` component.
+> **Note:** Wrap related modal components in `mt-modal-root`.
 
 ```html
 <template>
@@ -33,8 +57,7 @@ designed the component in a way to make this as easy as possible.
 </template>
 ```
 
-If you need to do something before you close the modal, you can use
-the `mt-modal-action` component like this:
+If you need to do something before you close the modal, you can use `mt-modal-action` like this:
 
 ```html
 <template>
@@ -58,10 +81,9 @@ the `mt-modal-action` component like this:
 </template>
 ```
 
-## Controled state
+## Controlled state
 
-Sometimes, you want to open a modal through something else than a button.
-In this case, you can use the `isOpen` prop to control the modal state.
+Sometimes you want to open a modal through something other than a button. In that case, use the `isOpen` prop to control the state directly.
 
 ```html
 <template>
@@ -89,26 +111,52 @@ In this case, you can use the `isOpen` prop to control the modal state.
 </script>
 ```
 
-## API Reference
+## Modal parts
 
 ### `mt-modal-root`
 
-The root component that wraps all related modal components.
-It takes care of controlling if the modal is visible or not.
+The root component that wraps all related modal components. It controls whether the modal is visible.
 
 ### `mt-modal`
 
-The actual modal component.
+The actual modal surface and content container.
 
-### `mt-trigger`
+### `mt-modal-trigger`
 
-An element that opens the modal, when clicked.
+An element that opens the modal when clicked.
 
 ### `mt-modal-action`
 
-Allows you to perform an action before closing the modal,
-most of the time, this is used for a confirm action.
+Allows you to perform an action before closing the modal, most often for confirm flows.
 
 ### `mt-modal-close`
 
-Closes the button when clicked.
+Closes the modal when clicked.
+
+## API reference
+
+<ArgTypes of={ModalStories} />
+
+## Do
+
+- Keep modal content focused on a single task or decision.
+- Use a clear title and footer actions so users understand how to continue or cancel.
+- Choose a modal width that matches the amount of content.
+
+## Don't
+
+- Do not overload a modal with several unrelated tasks.
+- Do not use a modal when inline content or a dedicated page would be easier to understand.
+- Do not make closing behavior ambiguous.
+
+## Behavior notes
+
+- `mt-modal-root` controls whether the modal is mounted and visible.
+- `mt-modal-trigger`, `mt-modal-action`, and `mt-modal-close` support common opening and closing flows.
+- Footer actions are usually the clearest place for confirmation and cancellation controls.
+
+## Accessibility notes
+
+- Use a clear title so users immediately understand the purpose of the dialog.
+- Keep focus behavior predictable and ensure footer actions are reachable by keyboard.
+- Only use **Modal** when interrupting the current flow is justified by the task.

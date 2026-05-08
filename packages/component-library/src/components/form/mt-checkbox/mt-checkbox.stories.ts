@@ -16,7 +16,7 @@ export type MtCheckboxMeta = SlottedMeta<
 >;
 
 export default {
-  title: "Components/Form/mt-checkbox",
+  title: "Components/Checkbox",
   component: MtCheckbox,
   args: {
     label: "Checkbox",
@@ -68,6 +68,34 @@ export default {
 
 export type MtCheckboxStory = StoryObj<MtCheckboxMeta>;
 
-export const DefaultStory: MtCheckboxStory = {
-  name: "mt-checkbox",
+export const Default: MtCheckboxStory = {
+  parameters: {
+    docs: {
+      source: {
+        code: `<mt-checkbox label="Checkbox" />`,
+      },
+    },
+  },
+};
+
+export const States: MtCheckboxStory = {
+  render: () => ({
+    components: { MtCheckbox },
+    template: `
+      <mt-checkbox label="Unchecked" />
+      <mt-checkbox label="Checked" :model-value="true" />
+      <mt-checkbox label="Disabled" disabled :model-value="true" />
+      <mt-checkbox label="Partial selection" :model-value="false" partial />
+    `,
+  }),
+  parameters: {
+    docs: {
+      source: {
+        code: `<mt-checkbox label="Unchecked" />
+<mt-checkbox label="Checked" :model-value="true" />
+<mt-checkbox label="Disabled" disabled :model-value="true" />
+<mt-checkbox label="Partial selection" :model-value="false" partial />`,
+      },
+    },
+  },
 };

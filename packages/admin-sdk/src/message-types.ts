@@ -24,7 +24,7 @@ import type { mainModuleAdd } from './ui/main-module';
 import type { smartBarButtonAdd, smartBarHide } from './ui/main-module';
 import type { uiModalOpen, uiModalClose, uiModalUpdate } from './ui/modal/index';
 import type { uiMediaModalOpen, uiMediaModalOpenSaveMedia } from './ui/media-modal';
-import type { uiSidebarAdd, uiSidebarClose, uiSidebarRemove } from './ui/sidebar';
+import type { uiSidebarAdd, uiSidebarClose, uiSidebarRemove, uiSidebarSetActive } from './ui/sidebar';
 import type { actionButtonAdd } from './ui/action-button';
 import type { actionExecute } from './app/action';
 import type Criteria from './data/Criteria';
@@ -42,6 +42,12 @@ import type {
   repositoryCreate,
 } from './data/repository';
 import type { iapCheckout } from './iap';
+import type { telemetryDispatch } from './telemetry';
+import type {
+  consentStatus,
+  consentRequest,
+  consentRequestResponse,
+} from './consent';
 
 /**
  * Contains all shopware send types.
@@ -88,6 +94,7 @@ export interface ShopwareMessageTypes {
   uiSidebarAdd: uiSidebarAdd,
   uiSidebarClose: uiSidebarClose,
   uiSidebarRemove: uiSidebarRemove,
+  uiSidebarSetActive: uiSidebarSetActive,
   actionButtonAdd: actionButtonAdd,
   actionExecute: actionExecute,
   /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -106,6 +113,10 @@ export interface ShopwareMessageTypes {
   datasetUpdate: datasetUpdate,
   datasetGet: datasetGet,
   iapCheckout: iapCheckout,
+  telemetryDispatch: telemetryDispatch,
+  consentStatus: consentStatus,
+  consentRequest: consentRequest,
+  consentRequestResponse: consentRequestResponse,
   __function__: __function__,
   __registerWindow__: __registerWindow__,
   _multiply: _multiply,

@@ -1,0 +1,67 @@
+import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
+
+import * as SliderStories from "./mt-slider.stories";
+import ComponentPageHeader from "../../_docs/component-page-header.js";
+
+<Meta of={SliderStories} />
+
+<ComponentPageHeader
+  title="Slider"
+  tagName="mt-slider"
+  packageImports="MtSlider"
+  sourcePath="packages/component-library/src/components/form/mt-slider"
+>
+  **Slider** lets users choose a numeric value or range by dragging a handle
+  along a scale.
+</ComponentPageHeader>
+
+## When to use
+
+- Use **Slider** when users should adjust a value within a known numeric range.
+- Use it when seeing the relative position of a value is more helpful than typing alone.
+- Use it for settings such as limits, thresholds, percentages, or price ranges.
+
+## Examples
+
+### Basic
+
+<Canvas of={SliderStories.Default} />
+
+### Range
+
+<Canvas of={SliderStories.Range} />
+
+## API reference
+
+<ArgTypes of={SliderStories} />
+
+## Do
+
+- Use a clear label that explains what the scale controls.
+- Set sensible `min`, `max`, and `step` values for the use case.
+- Use a range slider when users need to set both a lower and upper bound together.
+
+## Don't
+
+- Do not use **Slider** when precise text or number entry is the primary need.
+- Do not use a very large range with tiny steps if dragging would become frustrating.
+- Do not rely only on the visual bar to explain the meaning of the selected value.
+
+## Behavior notes
+
+- **Slider** can represent either a single numeric value or a two-value range through `isRange`.
+- The component includes linked number inputs, so users can adjust values by dragging or by typing.
+- `markCount`, `step`, and `minDistance` help shape how the scale behaves and how dense the value guidance feels.
+
+## Accessibility notes
+
+- Use a visible label that makes the meaning of the scale clear.
+- Make sure the chosen range and step size still allow keyboard users to reach useful values efficiently.
+- Avoid using **Slider** for critical settings if users need extremely precise control without an alternate input path.
+
+## Comparisons
+
+### **Slider** vs **Number Field**
+
+- Use **Slider** when users benefit from adjusting a value along a visible range.
+- Use **Number Field** when precise numeric entry matters more than direct manipulation.

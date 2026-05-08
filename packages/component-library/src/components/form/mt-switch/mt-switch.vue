@@ -46,7 +46,6 @@
         :inheritance="!isInheritanceField ? 'none' : isInherited ? 'linked' : 'unlinked'"
         :has-error="!!error"
         :required="required"
-        :disabled="disabled"
         @update:inheritance="
           if (isInherited) {
             $emit('inheritance-remove');

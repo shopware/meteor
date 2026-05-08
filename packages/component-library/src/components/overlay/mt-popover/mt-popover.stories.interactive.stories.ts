@@ -6,7 +6,8 @@ import meta, { type MtPopoverMeta, type MtPopoverStory } from "./mt-popover.stor
 
 export default {
   ...meta,
-  title: "Interaction Tests/Overlay/mt-popover",
+  title: "Components/Popover/Interaction tests",
+  tags: ["!autodocs"],
 } as MtPopoverMeta;
 
 export const VisualTestRenderPopoverTrigger: MtPopoverStory = {

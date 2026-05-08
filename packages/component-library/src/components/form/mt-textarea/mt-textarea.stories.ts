@@ -18,7 +18,7 @@ export type MtTextareaMeta = SlottedMeta<
 >;
 
 export default {
-  title: "Components/Form/mt-textarea",
+  title: "Components/Textarea",
   component: MtTextarea,
   render: (args) => ({
     template: `
@@ -46,5 +46,15 @@ export default {
 export type MtTextareaStory = StoryObj<MtTextareaMeta>;
 
 export const Default: MtTextareaStory = {
-  name: "mt-textarea",
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-textarea
+  v-model="value"
+  label="Description"
+/>`,
+      },
+    },
+  },
 };

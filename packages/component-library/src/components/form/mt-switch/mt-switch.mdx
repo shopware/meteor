@@ -1,0 +1,66 @@
+import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
+
+import * as SwitchStories from "./mt-switch.stories";
+import ComponentPageHeader from "../../_docs/component-page-header.js";
+
+<Meta of={SwitchStories} />
+
+<ComponentPageHeader
+  title="Switch"
+  tagName="mt-switch"
+  packageImports="MtSwitch"
+  sourcePath="packages/component-library/src/components/form/mt-switch"
+>
+  **Switch** lets users turn a setting on or off directly from the interface.
+</ComponentPageHeader>
+
+## When to use
+
+- Use **Switch** for a single binary setting that takes effect immediately.
+- Use it when the on or off state is easy to understand without extra confirmation.
+- Use it in forms or settings screens where users expect a quick toggle interaction.
+
+## Examples
+
+### Basic
+
+<Canvas of={SwitchStories.Default} />
+
+### States
+
+<Canvas of={SwitchStories.States} />
+
+## API reference
+
+<ArgTypes of={SwitchStories} />
+
+## Do
+
+- Use a clear label that describes the setting, not just the current state.
+- Use **Switch** for immediate preferences or feature toggles.
+- Add help text when users need more context about the effect of changing the setting.
+
+## Don't
+
+- Do not use **Switch** for multi-select choices.
+- Do not use it when turning something on or off requires additional explanation or confirmation.
+- Do not rely on the visual position of the thumb alone to communicate state.
+
+## Behavior notes
+
+- **Switch** supports a binary on or off value through `modelValue`.
+- The component also supports shared field patterns such as `error`, `helpText`, inheritance handling, and bordered presentation.
+- Because **Switch** is meant for direct toggling, it works best when users can understand the outcome immediately.
+
+## Accessibility notes
+
+- Use a visible label that clearly explains what the toggle controls.
+- Make sure the setting makes sense when announced with its checked or unchecked state by assistive technology.
+- Avoid using **Switch** for critical actions where accidental toggling would be risky.
+
+## Comparisons
+
+### **Switch** vs **Checkbox**
+
+- Use **Switch** for a single setting that turns something on or off immediately.
+- Use **Checkbox** when users are selecting items or confirming a value as part of a broader form submission flow.

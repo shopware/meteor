@@ -1,11 +1,25 @@
+---
+title: "Settings Item"
+nav:
+  position: 40
+---
+
+
 # Settings Item
 
-### Add settings item
-Add a new settings item to the Shopware settings. The content of the settings item module is determined by your `locationId`. 
-A specific view or a set of actions can be triggered based on the `locationId`.
+A settings item adds an entry to the Shopware Administration settings area.
 
-#### Usage:  
+Use this when your extension provides configurable options that should appear in the central settings section.
+
+## addSettingsItem()
+
+Add a new settings item to the Shopware settings. The content of the settings item module is determined by your `locationId`. A specific view or a set of actions can be triggered based on the `locationId`.
+
+#### Usage
+
 ```ts
+import { ui } from '@shopware-ag/meteor-admin-sdk';
+
 ui.settings.addSettingsItem({
     label: 'App Settings',
     locationId: 'settings-location-id',
@@ -17,6 +31,7 @@ ui.settings.addSettingsItem({
 ```
 
 #### Parameters
+
 | Name                 | Required | Default        | Description                                                   |
 | :------------------- | :------- | :------------- | :------------------------------------------------------------ |
 | `label`              | true     |                | The label of the tab bar item                                 |
@@ -26,12 +41,16 @@ ui.settings.addSettingsItem({
 | `displaySmartBar`    | false    | true           | Toggles the sw-page smart bar on/off                          |
 | `tab`                | false    | 'plugins'      | Determines in which tab your settings item will be displayed  |
 
-### Getting the right icon
-Assuming that your editor supports TypeScript, you should get auto-completion for valid `icon` values.
-In case that doesn't work take a look at the list [here](https://github.com/shopware/meteor-admin-sdk/blob/trunk/src/icons.ts).
+#### Return value
+
+Returns a promise without data.
+
+To browse available icons, see the [Meteor icon kit repository](https://github.com/shopware/meteor/tree/main/packages/icon-kit). If your editor supports TypeScript, you should also get auto-completion when importing icons from the Meteor icon package.
 
 #### Example
+
 ![Settings item example](./assets/add-settings-item-example.png)
+
 ```ts
 import { location, ui } from '@shopware-ag/meteor-admin-sdk';
 

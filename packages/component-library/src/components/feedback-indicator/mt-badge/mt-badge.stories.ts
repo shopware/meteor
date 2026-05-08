@@ -1,12 +1,11 @@
 import type { StoryObj } from "@storybook/vue3";
 import MtBadge from "./mt-badge.vue";
-import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import type { SlottedMeta } from "@/_internal/story-helper";
 
 export type MtBadgeMeta = SlottedMeta<typeof MtBadge, "default">;
 
 const meta: MtBadgeMeta = {
-  title: "Components/Feedback Indicator/mt-badge",
+  title: "Components/Badge",
   component: MtBadge,
   args: {
     default: "Badge",
@@ -30,7 +29,7 @@ const meta: MtBadgeMeta = {
     },
   },
   render: (args) => ({
-    components: { MtBadge, MtIcon },
+    components: { MtBadge },
     setup() {
       return {
         args,
@@ -52,5 +51,102 @@ export default meta;
 export type MtBadgeStory = StoryObj<MtBadgeMeta>;
 
 export const Default: MtBadgeStory = {
-  name: "mt-badge",
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-badge variant="neutral" size="s">
+  Badge
+</mt-badge>`,
+      },
+    },
+  },
+};
+
+export const AllVariants: MtBadgeStory = {
+  name: "Variants",
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-badge variant="neutral">Neutral</mt-badge>
+<mt-badge variant="info">Info</mt-badge>
+<mt-badge variant="attention">Attention</mt-badge>
+<mt-badge variant="critical">Critical</mt-badge>
+<mt-badge variant="positive">Positive</mt-badge>`,
+      },
+    },
+  },
+  render: () => ({
+    components: { MtBadge },
+    template: `
+      <div style="display: flex; gap: 12px; flex-wrap: wrap;">
+        <mt-badge variant="neutral">Neutral</mt-badge>
+        <mt-badge variant="info">Info</mt-badge>
+        <mt-badge variant="attention">Attention</mt-badge>
+        <mt-badge variant="critical">Critical</mt-badge>
+        <mt-badge variant="positive">Positive</mt-badge>
+      </div>`,
+  }),
+};
+
+export const AllSizes: MtBadgeStory = {
+  name: "Sizes",
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-badge size="s">Small</mt-badge>
+<mt-badge size="m">Medium</mt-badge>
+<mt-badge size="l">Large</mt-badge>`,
+      },
+    },
+  },
+  render: () => ({
+    components: { MtBadge },
+    template: `
+      <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap;">
+        <mt-badge size="s">Small</mt-badge>
+        <mt-badge size="m">Medium</mt-badge>
+        <mt-badge size="l">Large</mt-badge>
+      </div>`,
+  }),
+};
+
+export const StatusIndicator: MtBadgeStory = {
+  name: "Status indicator",
+  args: {
+    default: "Connected",
+    variant: "positive",
+    statusIndicator: true,
+  },
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-badge variant="positive" :status-indicator="true">
+  Connected
+</mt-badge>`,
+      },
+    },
+  },
+};
+
+export const WithIcon: MtBadgeStory = {
+  name: "With icon",
+  args: {
+    default: "Successful",
+    variant: "positive",
+    icon: "solid-check-circle",
+  },
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-badge variant="positive" icon="solid-check-circle">
+  Successful
+</mt-badge>`,
+      },
+    },
+  },
 };

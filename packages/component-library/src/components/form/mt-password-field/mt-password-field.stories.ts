@@ -5,7 +5,7 @@ import { fn } from "@storybook/test";
 export type MtPasswordFieldMeta = Meta<typeof MtPasswordField>;
 
 export default {
-  title: "Components/Form/mt-password-field",
+  title: "Components/Password Field",
   component: MtPasswordField,
   args: {
     label: "Passwordfield",
@@ -16,6 +16,16 @@ export default {
 
 export type MtPasswordFieldStory = StoryObj<MtPasswordFieldMeta>;
 
-export const DefaultStory: MtPasswordFieldStory = {
-  name: "mt-password-field",
+export const Default: MtPasswordFieldStory = {
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-password-field
+  v-model="password"
+  label="Password"
+/>`,
+      },
+    },
+  },
 };

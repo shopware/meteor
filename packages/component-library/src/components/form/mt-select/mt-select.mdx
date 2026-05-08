@@ -1,0 +1,85 @@
+import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
+
+import * as SelectStories from "./mt-select.stories";
+import ComponentPageHeader from "../../_docs/component-page-header.js";
+
+<Meta of={SelectStories} />
+
+<ComponentPageHeader
+  title="Select"
+  tagName="mt-select"
+  packageImports="MtSelect"
+  sourcePath="packages/component-library/src/components/form/mt-select"
+>
+  **Select** lets users choose one or more values from a list of predefined
+  options. It works well when the available values should come from a controlled
+  dataset and the field can help users search within that list.
+</ComponentPageHeader>
+
+## When to use
+
+- Use **Select** when users should pick from predefined options instead of entering free-form text.
+- Use it when the list may be longer than a simple inline choice group would comfortably show.
+- Use it when searching, custom option labels, or multi selection would improve the picking experience.
+
+## Examples
+
+### Basic
+
+<Canvas of={SelectStories.Default} />
+
+### Multiple selection
+
+<Canvas of={SelectStories.MultiSelection} />
+
+## API reference
+
+<ArgTypes of={SelectStories} />
+
+## Do
+
+- Use a clear field label so users understand what they are choosing.
+- Keep option labels concise and easy to scan.
+- Use `enableMultiSelection` only when selecting multiple values is a real user need.
+- Set `labelProperty` and `valueProperty` explicitly when your option shape differs from the defaults.
+- Add hint or help text when the selection rules need extra explanation.
+
+## Don't
+
+- Do not use **Select** when users should enter arbitrary text instead of choosing from known values.
+- Do not use a long select list when a smaller visible choice group would be easier to compare directly.
+- Do not rely on placeholder text as the only instruction for the field.
+- Do not mix unclear or duplicated option labels, especially in searchable lists.
+- Do not enable multi selection when the form should store exactly one value.
+
+## Behavior notes
+
+- **Select** supports both single and multiple selection. `modelValue` can be a single value, an option object, or an array depending on the selection mode and `valueProperty`.
+- The component searches within the provided options by default and supports a custom `searchFunction` when filtering needs to follow business-specific rules.
+- `labelProperty` can be a string or an array of property paths. When an array is used, the first non-empty value is used as the visible label.
+- Shared field features such as `hint`, `error`, prefix and suffix content, and inheritance handling work the same way as in other form fields.
+- `small` renders a compact variant without the inline search input, which is better suited to tighter layouts.
+
+## Customization notes
+
+- Use `selection-label-property` to customize how selected items are rendered in the closed field.
+- Use `result-item` or `result-label-property` when result rows need richer formatting than a plain text label.
+- Use `before-item-list` and `after-item-list` for supporting content around the result list, such as guidance or actions.
+
+## Accessibility notes
+
+- Provide a clear field label or other nearby visible context so users understand what the selection controls.
+- Keep option labels distinct so users can tell similar choices apart while searching or navigating with the keyboard.
+- Use help text when multiple selection, custom option rendering, or inherited values might otherwise be unclear.
+
+## Comparisons
+
+### **Select** vs **Radio Group**
+
+- Use **Select** when the option list is longer, space is limited, or search helps users find the right value.
+- Use **Radio Group** when a small set of options should stay visible so users can compare them directly.
+
+### **Select** vs **Checkbox**
+
+- Use **Select** when users should choose one value, or a constrained subset of values, from a predefined list.
+- Use **Checkbox** when users are toggling independent options on and off rather than choosing from a shared option set.

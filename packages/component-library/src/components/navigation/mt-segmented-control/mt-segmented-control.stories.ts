@@ -6,8 +6,9 @@ import type { SlottedMeta } from "@/_internal/story-helper";
 export type MtSegmentedControlMeta = SlottedMeta<typeof MtSegmentedControl, "default">;
 
 const meta: MtSegmentedControlMeta = {
-  title: "Components/Navigation/mt-segmented-control",
+  title: "Components/Segmented Control",
   component: MtSegmentedControl,
+  tags: ["!autodocs", "!dev"],
   render: (args) => ({
     components: { MtSegmentedControl, MtPopoverItem },
     template: `
@@ -112,6 +113,19 @@ const meta: MtSegmentedControlMeta = {
 export default meta;
 export type MtSegmentedControlStory = StoryObj<typeof MtSegmentedControl>;
 
-export const DefaultStory: MtSegmentedControlStory = {
-  name: "mt-segmented-control",
+export const Default: MtSegmentedControlStory = {
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-segmented-control
+  :actions="[
+    { id: 'products', label: 'Products', isPressed: true, onClick: () => {} },
+    { id: 'orders', label: 'Orders', onClick: () => {} },
+    { id: 'customers', label: 'Customers', onClick: () => {} },
+  ]"
+/>`,
+      },
+    },
+  },
 };

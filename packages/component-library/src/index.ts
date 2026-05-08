@@ -62,6 +62,9 @@ import MtEntitySelect from "./components/entity/mt-entity-select/mt-entity-selec
 import MtActionMenu from "./components/action-menu/mt-action-menu/mt-action-menu.vue";
 import MtActionMenuItem from "./components/action-menu/mt-action-menu-item/mt-action-menu-item.vue";
 import MtActionMenuGroup from "./components/action-menu/mt-action-menu-group/mt-action-menu-group.vue";
+import MtCollapsible from "./components/layout/mt-collapsible/mt-collapsible.vue";
+import MtCollapsibleTrigger from "./components/layout/mt-collapsible/mt-collapsible-trigger.vue";
+import MtCollapsibleContent from "./components/layout/mt-collapsible/mt-collapsible-content.vue";
 import {
   DropdownMenuRoot,
   DropdownMenuPortal,
@@ -137,6 +140,9 @@ export {
   MtActionMenu,
   MtActionMenuItem,
   MtActionMenuGroup,
+  MtCollapsible,
+  MtCollapsibleTrigger,
+  MtCollapsibleContent,
   DropdownMenuRoot as MtDropdownMenuRoot,
   DropdownMenuPortal as MtDropdownMenuPortal,
   DropdownMenuTrigger as MtDropdownMenuTrigger,
@@ -187,3 +193,5 @@ export {
 
 // Exporting types
 export type { Filter, Option, Toast, Snackbar, ChartOptions };
+export type { Editor } from "@tiptap/vue-3";
+export type { default as Link } from "@tiptap/extension-link";

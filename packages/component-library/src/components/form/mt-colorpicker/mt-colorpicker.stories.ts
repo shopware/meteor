@@ -7,7 +7,7 @@ import { fn } from "@storybook/test";
 export type MtColorpickerMeta = SlottedMeta<typeof MtColorpicker, "default" | "updateModelValue">;
 
 export default {
-  title: "Components/Form/mt-colorpicker",
+  title: "Components/Colorpicker",
   component: MtColorpicker,
   render: (args) => ({
     components: { MtColorpicker },
@@ -51,6 +51,28 @@ export default {
 
 export type MtColorpickerStory = StoryObj<MtColorpickerMeta>;
 
-export const DefaultStory: MtColorpickerStory = {
-  name: "mt-colorpicker",
+export const Default: MtColorpickerStory = {
+  parameters: {
+    docs: {
+      source: {
+        code: `<mt-colorpicker label="Colorpicker example" model-value="#0fcff5" />`,
+      },
+    },
+  },
+};
+
+export const WithoutAlpha: MtColorpickerStory = {
+  name: "Without alpha",
+  args: {
+    label: "Solid color",
+    modelValue: "#0fcff5",
+    alpha: false,
+  },
+  parameters: {
+    docs: {
+      source: {
+        code: `<mt-colorpicker label="Solid color" model-value="#0fcff5" :alpha="false" />`,
+      },
+    },
+  },
 };

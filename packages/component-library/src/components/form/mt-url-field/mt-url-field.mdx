@@ -1,0 +1,62 @@
+import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
+
+import * as UrlFieldStories from "./mt-url-field.stories";
+import ComponentPageHeader from "../../_docs/component-page-header.js";
+
+<Meta of={UrlFieldStories} />
+
+<ComponentPageHeader
+  title="URL Field"
+  tagName="mt-url-field"
+  packageImports="MtUrlField"
+  sourcePath="packages/component-library/src/components/form/mt-url-field"
+>
+  **URL Field** helps users enter and normalize a single web address.
+</ComponentPageHeader>
+
+## When to use
+
+- Use **URL Field** when the value should point to a website or route.
+- Use it when protocol handling like `https://` and `http://` should stay visible and easy to change.
+- Use it for external links, landing pages, or reference URLs stored in forms.
+
+## Examples
+
+### Basic
+
+<Canvas of={UrlFieldStories.Default} />
+
+## API reference
+
+<ArgTypes of={UrlFieldStories} />
+
+## Do
+
+- Use a clear label such as `Website` or `Target URL`.
+- Add help text when users need rules about valid links or allowed domains.
+- Enable `copyable` when users often reuse the saved URL elsewhere.
+
+## Don't
+
+- Do not use **URL Field** for general text input.
+- Do not ask users to type the full protocol if the field already helps manage it.
+- Do not use it for multiple links in one field.
+
+## Behavior notes
+
+- **URL Field** uses a native `type="url"` input and keeps the protocol toggle visible beside the input.
+- The component normalizes entered URLs and can omit search parameters or hashes when configured.
+- `copyable` adds a quick way to copy the current URL from the field.
+
+## Accessibility notes
+
+- Always provide a visible label so users know what kind of link is expected.
+- Keep help text specific when only certain URLs or domains are allowed.
+- Make sure the final saved URL is understandable if the protocol toggle changes the output value.
+
+## Comparisons
+
+### **URL Field** vs **Text Field**
+
+- Use **URL Field** when the value should be a web address and URL-specific behavior is helpful.
+- Use **Text Field** when the value is general text and should not be normalized as a URL.

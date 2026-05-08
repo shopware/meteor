@@ -1,0 +1,96 @@
+import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
+
+import * as IconStories from "./mt-icon.stories";
+import ComponentPageHeader from "../../_docs/component-page-header.js";
+
+<Meta of={IconStories} />
+
+<ComponentPageHeader
+  title="Icon"
+  tagName="mt-icon"
+  packageImports="MtIcon"
+  sourcePath="packages/component-library/src/components/icons-media/mt-icon"
+>
+  **Icon** renders an SVG from the Meteor icon kit. Use it for interface
+  affordances, status cues, and supporting visuals inside other components.
+</ComponentPageHeader>
+
+## All icons
+
+<Canvas of={IconStories.SearchableBrowser} sourceState="none" />
+
+## When to use
+
+- Use **Icon** for compact visual cues that support a label, action, or state.
+- Use it when an icon from the Meteor icon kit should be rendered consistently through the component library.
+- Use it when color and sizing should follow design tokens instead of ad-hoc inline SVG usage.
+
+## Examples
+
+### Basic
+
+<Canvas of={IconStories.Default} />
+
+### Mode
+
+<Canvas of={IconStories.ModeProp} />
+
+### Sizes
+
+<Canvas of={IconStories.PreferredSizes} />
+
+#### Sizing guidance
+
+- Prefer `24px` for larger standalone icons, empty states, or more prominent surfaces.
+- Prefer `20px` for standard actions, headers, and supporting icons in regular-density UI.
+- Prefer `16px` for inline controls, field affordances, and compact supporting UI.
+- Use `14px`, `12px`, or `10px` only for dense UI where the icon is clearly secondary.
+
+### Colors
+
+<Canvas of={IconStories.ColorTokens} />
+
+#### Color guidance
+
+- Use `var(--color-icon-primary-default)` for the standard icon color.
+- Use `var(--color-icon-secondary-default)` when the icon should attract less attention than surrounding primary content.
+- Use semantic icon tokens such as `brand`, `attention`, `critical`, `positive`, or `accent` when the icon color carries a semantic or contextual meaning.
+- Avoid hardcoded brand colors unless the specific asset genuinely requires them.
+
+## Common usages
+
+<Canvas of={IconStories.CommonUsages} sourceState="none" />
+
+## API reference
+
+<ArgTypes of={IconStories} />
+
+## Do
+
+- Prefer the common icon sizes `24px`, `20px`, and `16px`.
+- Use smaller sizes such as `14px`, `12px`, or `10px` only in dense UI such as action menus, compact hints, or tiny indicators.
+- Use `regular` and `solid` icons consistently within similar situations and icon groups so the interface keeps a coherent visual rhythm.
+- Prefer icon color tokens such as `var(--color-icon-primary-default)` over raw hex values.
+- Mark purely decorative icons as decorative so they stay out of the accessibility tree.
+
+## Don't
+
+- Do not treat every icon as standalone content. Most icons should support nearby text or an existing control.
+- Do not use arbitrary sizes everywhere. Reusing the common size set keeps the UI more consistent.
+- Do not mix `regular` and `solid` variants randomly inside the same control group when they serve the same visual role.
+- Do not rely on color alone to communicate critical meaning.
+
+## Behavior notes
+
+- `name` can include the icon mode directly, such as `regular-products` or `solid-pencil-s`.
+- `mode` is available when the name itself does not already include the `regular-` or `solid-` prefix, for example `name="calendar" mode="solid"`.
+- Prefer the explicit `mode` prop in docs and app code when it makes the chosen variant easier to read at a glance.
+- `solid` icons usually work better for very small sizes and for larger decorative icon use, while `regular` icons are often a better default for standard interface actions and supporting UI.
+- `size` accepts pixel strings and plain numeric values, which are normalized to pixel sizes.
+- Icons inherit `currentColor`, so using icon color tokens keeps them aligned with the theme and state tokens used elsewhere in the library.
+
+## Accessibility notes
+
+- Use `decorative` for icons that are purely visual and already explained by surrounding text.
+- If an icon communicates meaning on its own, make sure that meaning is still available through visible text or accessible labeling on the parent control.
+- Do not depend on icon color alone to convey success, warning, or error states.

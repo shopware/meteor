@@ -24,7 +24,7 @@ export const Default: StoryObj<MtEntityDataTableMeta> = {
 };
 
 const meta: MtEntityDataTableMeta = {
-  title: "Components/Entity/mt-entity-data-table",
+  title: "Components/Entity Data Table",
   component: MtEntityDataTable,
   argTypes: {
     onBulkEdit: {

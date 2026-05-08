@@ -20,7 +20,7 @@ export type MtNumberFieldMeta = SlottedMeta<
 >;
 
 export default {
-  title: "Components/Form/mt-number-field",
+  title: "Components/Number Field",
   component: MtNumberField,
   render: (args) => ({
     template: `
@@ -101,6 +101,18 @@ export default {
 
 export type MtNumberFieldStory = StoryObj<MtNumberFieldMeta>;
 
-export const DefaultStory: MtNumberFieldStory = {
-  name: "mt-number-field",
+export const Default: MtNumberFieldStory = {
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-number-field
+  v-model="quantity"
+  label="Quantity"
+  :step="1"
+  number-type="int"
+/>`,
+      },
+    },
+  },
 };

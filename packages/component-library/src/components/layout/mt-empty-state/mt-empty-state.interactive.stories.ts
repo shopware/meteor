@@ -6,7 +6,8 @@ import MtButton from "@/components/form/mt-button/mt-button.vue";
 
 export default {
   ...meta,
-  title: "Interaction Tests/Layout/mt-empty-state",
+  title: "Components/Empty State/Interaction tests",
+  tags: ["!autodocs"],
   component: MtEmptyState,
 } as Meta;
 

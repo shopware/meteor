@@ -1,0 +1,62 @@
+import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
+
+import * as TextareaStories from "./mt-textarea.stories";
+import ComponentPageHeader from "../../_docs/component-page-header.js";
+
+<Meta of={TextareaStories} />
+
+<ComponentPageHeader
+  title="Textarea"
+  tagName="mt-textarea"
+  packageImports="MtTextarea"
+  sourcePath="packages/component-library/src/components/form/mt-textarea"
+>
+  **Textarea** lets users enter longer free-form text in a form.
+</ComponentPageHeader>
+
+## When to use
+
+- Use **Textarea** for notes, descriptions, comments, or other multi-line content.
+- Use it when users need more space than a single-line field should provide.
+- Use it when line breaks and longer written input are part of the value.
+
+## Examples
+
+### Basic
+
+<Canvas of={TextareaStories.Default} />
+
+## API reference
+
+<ArgTypes of={TextareaStories} />
+
+## Do
+
+- Use a clear visible label that explains what kind of content belongs in the field.
+- Add help text or hint content when users need guidance about tone, length, or formatting.
+- Use `maxLength` when the content length matters and should stay visible.
+
+## Don't
+
+- Do not use **Textarea** for short single-line values.
+- Do not rely on the placeholder as the only instruction.
+- Do not use it when a more structured input would guide users better.
+
+## Behavior notes
+
+- **Textarea** supports shared field patterns such as `hint`, `helpText`, `error`, and inheritance handling.
+- The field can grow vertically because resizing is enabled for the text area itself.
+- `maxLength` shows a live character counter when the content length matters.
+
+## Accessibility notes
+
+- Always provide a visible label so users understand what longer text is expected.
+- Keep help text and error text specific so users know how to improve the content.
+- Use clear length guidance when the field has a maximum character limit.
+
+## Comparisons
+
+### **Textarea** vs **Text Field**
+
+- Use **Textarea** when users need to enter longer multi-line content.
+- Use **Text Field** when the value should stay short and single-line.

@@ -3,4 +3,7 @@ import { darkTheme, lightTheme } from "./shopwareTheme";
 
 addons.setConfig({
   theme: darkTheme,
+  sidebar: {
+    collapsedRoots: ["composables", "directives"],
+  },
 });

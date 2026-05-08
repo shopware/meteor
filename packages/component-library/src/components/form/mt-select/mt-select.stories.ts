@@ -45,7 +45,7 @@ export type MtSelectMeta = SlottedMeta<
 >;
 
 export default {
-  title: "Components/Form/mt-select",
+  title: "Components/Select",
   component: MtSelect,
   render: (args) => ({
     template: `
@@ -431,6 +431,46 @@ export default {
 
 export type MtSelectStory = StoryObj<MtSelectMeta>;
 
-export const DefaultStory: MtSelectStory = {
-  name: "mt-select",
+export const Default: MtSelectStory = {
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-select
+  label="Select"
+  :options="[
+    { id: 1, label: 'Option A', value: 'a' },
+    { id: 2, label: 'Option B', value: 'b' },
+    { id: 3, label: 'Option C', value: 'c' },
+  ]"
+  model-value="b"
+/>`,
+      },
+    },
+  },
+};
+
+export const MultiSelection: MtSelectStory = {
+  args: {
+    label: "Select multiple options",
+    modelValue: ["a", "c"],
+    enableMultiSelection: true,
+  },
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-select
+  v-model="selectedValues"
+  label="Select multiple options"
+  :enable-multi-selection="true"
+  :options="[
+    { id: 1, label: 'Option A', value: 'a' },
+    { id: 2, label: 'Option B', value: 'b' },
+    { id: 3, label: 'Option C', value: 'c' },
+  ]"
+/>`,
+      },
+    },
+  },
 };
