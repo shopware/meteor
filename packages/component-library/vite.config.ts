@@ -80,7 +80,7 @@ export default defineConfig({
     ],
   },
   build: {
-    sourcemap: 'hidden',
+    sourcemap: "hidden",
     cssMinify: false,
     minify: false,
     lib: {
