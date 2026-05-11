@@ -311,17 +311,7 @@
     height: 24px;
   }
 
-  &__regular-chevron-circle-left {
-    width: 24px;
-    height: 24px;
-  }
-
   &__regular-chevron-circle-right {
-    width: 24px;
-    height: 24px;
-  }
-
-  &__regular-chevron-circle-up {
     width: 24px;
     height: 24px;
   }
@@ -351,24 +341,9 @@
     height: 24px;
   }
 
-  &__regular-chevron-left-s {
-    width: 8px;
-    height: 14px;
-  }
-
-  &__regular-chevron-left-xs {
-    width: 7px;
-    height: 10px;
-  }
-
   &__regular-chevron-left-xxs {
     width: 5px;
     height: 8px;
-  }
-
-  &__regular-chevron-right {
-    width: 13px;
-    height: 24px;
   }
 
   &__regular-chevron-right-s {
@@ -383,16 +358,6 @@
 
   &__regular-chevron-right-xxs {
     width: 5px;
-    height: 8px;
-  }
-
-  &__regular-chevron-up {
-    width: 24px;
-    height: 13px;
-  }
-
-  &__regular-chevron-up-s {
-    width: 14px;
     height: 8px;
   }
 
@@ -913,7 +878,12 @@
 
   &__regular-filter {
     width: 20px;
-    height: 14px;
+    height: 23px;
+  }
+
+  &__regular-filter-alt {
+    width: 24px;
+    height: 20px;
   }
 
   &__regular-filter-s {
@@ -3198,7 +3168,12 @@
 
   &__solid-filter {
     width: 20px;
-    height: 16px;
+    height: 22px;
+  }
+
+  &__solid-filter-alt {
+    width: 24px;
+    height: 21px;
   }
 
   &__solid-filter-s {
