@@ -310,7 +310,17 @@
   height: 24;
 }
 
+#meteor-icon-kit__regular-chevron-circle-left {
+  width: 24;
+  height: 24;
+}
+
 #meteor-icon-kit__regular-chevron-circle-right {
+  width: 24;
+  height: 24;
+}
+
+#meteor-icon-kit__regular-chevron-circle-up {
   width: 24;
   height: 24;
 }
@@ -340,9 +350,24 @@
   height: 24;
 }
 
+#meteor-icon-kit__regular-chevron-left-s {
+  width: 8;
+  height: 14;
+}
+
+#meteor-icon-kit__regular-chevron-left-xs {
+  width: 7;
+  height: 10;
+}
+
 #meteor-icon-kit__regular-chevron-left-xxs {
   width: 5;
   height: 8;
+}
+
+#meteor-icon-kit__regular-chevron-right {
+  width: 13;
+  height: 24;
 }
 
 #meteor-icon-kit__regular-chevron-right-s {
@@ -357,6 +382,16 @@
 
 #meteor-icon-kit__regular-chevron-right-xxs {
   width: 5;
+  height: 8;
+}
+
+#meteor-icon-kit__regular-chevron-up {
+  width: 24;
+  height: 13;
+}
+
+#meteor-icon-kit__regular-chevron-up-s {
+  width: 14;
   height: 8;
 }
 
