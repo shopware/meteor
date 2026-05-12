@@ -232,7 +232,8 @@ function transformURL(value: string) {
   // The native URL parser rewrites numeric hosts as IPv4 (`192` → `0.0.0.192`) and normalizes
   // IPv6 literals (case-lowering, zero compression), which mangles user input as they type.
   // Preserve the raw host the user typed when it is an IPv4-like or IPv6-bracketed literal.
-  const rawHost = value.replace(URL_REGEX.PROTOCOL, "").match(/^(\[[^\]]*\][^/?#]*|[^/?#]*)/)?.[1] ?? "";
+  const rawHost =
+    value.replace(URL_REGEX.PROTOCOL, "").match(/^(\[[^\]]*\][^/?#]*|[^/?#]*)/)?.[1] ?? "";
   const isIpLike = /^[\d.]+$/.test(rawHost) || /^\[[^\]]*\](?::\d+)?$/.test(rawHost);
   const userHost = isIpLike && rawHost !== url.host ? rawHost : url.host;
 
