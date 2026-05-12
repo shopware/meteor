@@ -25,8 +25,8 @@ jobs:
       - name: Install dependencies
         run: pnpm i --frozen-lockfile --prefer-offline
 
-      - name: Install puppeteer
-        run: npx @puppeteer/browsers install chrome
+      - name: Install puppeteer chromium
+        run: node node_modules/puppeteer/install.js
 
       - name: Update icons
         run: pnpm --filter @shopware-ag/meteor-icon-kit run start
