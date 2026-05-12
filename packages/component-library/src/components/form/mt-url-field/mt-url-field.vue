@@ -231,7 +231,7 @@ function transformURL(value: string) {
   // `192.168` → `192.0.0.168`), which mangles user input while they are typing an IP. Preserve
   // the raw host the user typed when it looks numeric / IP-like.
   const rawHost = value.replace(URL_REGEX.PROTOCOL, "").match(/^([^/?#]*)/)?.[1] ?? "";
-  const userHost = /^[\d.]*$/.test(rawHost) && rawHost !== url.host ? rawHost : url.host;
+  const userHost = rawHost && /^[\d.]+$/.test(rawHost) && rawHost !== url.host ? rawHost : url.host;
 
   // build URL via native URL.toString() function instead by hand @see NEXT-15747
   return url

@@ -84,6 +84,16 @@ describe("mt-url-field", () => {
     expect(handler).toHaveBeenLastCalledWith("https://192.168.1.1");
   });
 
+  it("keeps the host when input begins with a leading slash", async () => {
+    // ARRANGE — protocol-relative or path-style input should not strip the host
+    render(MtUrlField, {
+      props: { modelValue: "//example.com" },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("example.com");
+  });
+
   it("does not autocomplete partial IP addresses while typing", async () => {
     // ARRANGE
     const handler = vi.fn();
