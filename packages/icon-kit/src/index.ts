@@ -56,14 +56,16 @@ client
     spinner.text = `Optimized ${0} out of ${iconMap.size} icons`;
 
     const styling = [] as { name: string; width: string; height: string }[];
+    const failedIcons: { iconName: string; error: Error }[] = [];
 
     await PromisePool.for(Array.from(iconMap.keys()))
       .withConcurrency(25)
       .onTaskFinished((iconName, pool) => {
         spinner.text = `Optimized ${pool.processedCount()} out of ${iconMap.size} icons`;
       })
-      .handleError((error) => {
-        console.log(error);
+      .handleError((error, iconName) => {
+        logger.info(`Failed to process icon: "${iconName}"`, { error });
+        failedIcons.push({ iconName, error: error as Error });
       })
       .process(async (iconName: string) => {
         const icon = iconMap.get(iconName);
@@ -142,6 +144,18 @@ client
           svg: optimizedSvg,
         });
       });
+
+    if (failedIcons.length > 0) {
+      spinner.warn(
+        `Completed with ${failedIcons.length} failed icon(s) out of ${iconMap.size}:`
+      );
+      failedIcons.forEach(({ iconName, error }) => {
+        console.error(`  ✗ ${iconName}: ${error.message}`);
+      });
+      throw new Error(
+        `Sync failed: ${failedIcons.length} icon(s) could not be processed`
+      );
+    }
 
     spinner.text = "Finished writing icons to filesystem";
     spinner.text = "Creating stylesheet";
