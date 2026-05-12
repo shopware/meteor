@@ -227,12 +227,18 @@ function transformURL(value: string) {
   // when a hash or search query is provided we want to allow trailing slash, eg a vue route `admin#/`
   const removeTrailingSlash = url.hash === "" && url.search === "" ? URL_REGEX.TRAILING_SLASH : "";
 
+  // The native URL parser rewrites numeric hosts as IPv4 addresses (e.g. `192` → `0.0.0.192`,
+  // `192.168` → `192.0.0.168`), which mangles user input while they are typing an IP. Preserve
+  // the raw host the user typed when it looks numeric / IP-like.
+  const rawHost = value.replace(URL_REGEX.PROTOCOL, "").match(/^([^/?#]*)/)?.[1] ?? "";
+  const userHost = /^[\d.]*$/.test(rawHost) && rawHost !== url.host ? rawHost : url.host;
+
   // build URL via native URL.toString() function instead by hand @see NEXT-15747
   return url
     .toString()
     .replace(URL_REGEX.PROTOCOL, "")
     .replace(removeTrailingSlash, "")
-    .replace(url.host, decodeURI(url.host));
+    .replace(url.host, decodeURI(userHost));
 }
 
 const { copy, copied } = useClipboard();

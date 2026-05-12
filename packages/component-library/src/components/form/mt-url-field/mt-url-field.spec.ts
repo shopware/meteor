@@ -66,6 +66,42 @@ describe("mt-url-field", () => {
     expect(handler).toHaveBeenNthCalledWith(16, "https://www.shopware.com");
   });
 
+  it("preserves IP address input without rewriting numeric hosts", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+    render(MtUrlField, {
+      props: {
+        modelValue: "",
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    // ACT
+    await userEvent.type(screen.getByRole("textbox"), "192.168.1.1");
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("192.168.1.1");
+    expect(handler).toHaveBeenLastCalledWith("https://192.168.1.1");
+  });
+
+  it("does not autocomplete partial IP addresses while typing", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+    render(MtUrlField, {
+      props: {
+        modelValue: "",
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    // ACT — type a partial IP and check intermediate state is preserved
+    await userEvent.type(screen.getByRole("textbox"), "192.168");
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("192.168");
+    expect(handler).toHaveBeenLastCalledWith("https://192.168");
+  });
+
   it("updates the domain when the user types and then focuses another element", async () => {
     // ARRANGE
     const handler = vi.fn();
