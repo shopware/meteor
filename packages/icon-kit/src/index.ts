@@ -65,7 +65,7 @@ client
       })
       .handleError((error, iconName) => {
         logger.info(`Failed to process icon: "${iconName}"`, { error });
-        failedIcons.push({ iconName, error: error as Error });
+        failedIcons.push({ iconName, error });
       })
       .process(async (iconName: string) => {
         const icon = iconMap.get(iconName);
