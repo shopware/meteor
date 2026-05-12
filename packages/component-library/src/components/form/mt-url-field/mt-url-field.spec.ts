@@ -112,6 +112,39 @@ describe("mt-url-field", () => {
     expect(handler).toHaveBeenLastCalledWith("https://192.168");
   });
 
+  it("preserves IPv6 address input without normalizing the literal", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+    render(MtUrlField, {
+      props: {
+        modelValue: "",
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    // ACT
+    // `[` is a special key descriptor in userEvent — escape with `[[`
+    await userEvent.type(screen.getByRole("textbox"), "[[2001:db8::1]");
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("[2001:db8::1]");
+    expect(handler).toHaveBeenLastCalledWith("https://[2001:db8::1]");
+  });
+
+  it("keeps the input in sync while an IPv6 literal is still being typed", async () => {
+    // ARRANGE — intermediate states like `[2001:db8::` are not valid URLs;
+    // the field must not throw or drop the user's keystrokes.
+    render(MtUrlField, {
+      props: { modelValue: "" },
+    });
+
+    // ACT — `[` is escaped as `[[` for userEvent
+    await userEvent.type(screen.getByRole("textbox"), "[[2001:db8::");
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("[2001:db8::");
+  });
+
   it("updates the domain when the user types and then focuses another element", async () => {
     // ARRANGE
     const handler = vi.fn();
