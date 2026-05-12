@@ -28,6 +28,10 @@ jobs:
       - name: Install puppeteer chromium
         run: node node_modules/puppeteer/install.js
 
+      - name: Patch svgo-autocrop for CI
+        run: |
+          sed -i 's/Puppeteer\.launch()/Puppeteer.launch({ args: ["--no-sandbox", "--disable-setuid-sandbox"] })/' node_modules/svgo-autocrop/lib/Browser.js
+
       - name: Update icons
         run: pnpm --filter @shopware-ag/meteor-icon-kit run start
 
