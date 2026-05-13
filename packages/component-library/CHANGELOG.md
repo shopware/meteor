@@ -1,5 +1,28 @@
 # Changelog
 
+## 5.0.0
+
+### Minor Changes
+
+- [#1094](https://github.com/shopware/meteor/pull/1094) [`5673f08`](https://github.com/shopware/meteor/commit/5673f0839d4c074a87d5f4b852419f5467f066a5) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Add `maxDate` prop to `mt-datepicker`
+
+- [#1141](https://github.com/shopware/meteor/pull/1141) [`703eccf`](https://github.com/shopware/meteor/commit/703eccf0fba2cbd2e2091bea32a60a8dc9730380) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Add `mt-collapsible` component to component-library
+
+- [#1141](https://github.com/shopware/meteor/pull/1141) [`703eccf`](https://github.com/shopware/meteor/commit/703eccf0fba2cbd2e2091bea32a60a8dc9730380) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Add `mt-collapsible` component to component-library
+
+- [#1094](https://github.com/shopware/meteor/pull/1094) [`5673f08`](https://github.com/shopware/meteor/commit/5673f0839d4c074a87d5f4b852419f5467f066a5) Thanks [@alastair-simon](https://github.com/alastair-simon)! - upgrade `@vuepic/vue-datepicker` from v10 to v12 and migrate `mt-datepicker` to the new vue-datepicker APIs
+
+### Patch Changes
+
+- [#1061](https://github.com/shopware/meteor/pull/1061) [`d453e51`](https://github.com/shopware/meteor/commit/d453e51231ce1f3c487cfd95755d10330e9ef8e3) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Moved test and Storybook deps to devDependencies
+
+- [#1138](https://github.com/shopware/meteor/pull/1138) [`6e8cd79`](https://github.com/shopware/meteor/commit/6e8cd79e32ba63e601ad5c3e9e0575800860bcf5) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Fix `mt-entity-data-table` Storybook interaction tests by waiting on rendered table content
+
+- [#1134](https://github.com/shopware/meteor/pull/1134) [`ac54a03`](https://github.com/shopware/meteor/commit/ac54a03028e2733b1c99ec71475b3ae39890afaf) Thanks [@alastair-simon](https://github.com/alastair-simon)! - fixed failing interaction tests inside `mt-text-editor`
+
+- Updated dependencies [[`d5fe2db`](https://github.com/shopware/meteor/commit/d5fe2dbb90ca5fa9513d9fc3626548e902a660c8), [`d5fe2db`](https://github.com/shopware/meteor/commit/d5fe2dbb90ca5fa9513d9fc3626548e902a660c8)]:
+  - @shopware-ag/meteor-icon-kit@5.7.0
+
 ## 4.28.6
 
 ### Patch Changes
