@@ -1,0 +1,49 @@
+import { render, screen } from "@testing-library/vue";
+import { describe, expect, it } from "vitest";
+import MtLoader from "./mt-loader.vue";
+
+describe("mt-loader", () => {
+  it("renders the spinner", () => {
+    const { container } = render(MtLoader);
+
+    expect(container.querySelector(".mt-loader__element")).toBeInTheDocument();
+  });
+
+  it("does not render text wrappers when headline and description are omitted", () => {
+    const { container } = render(MtLoader);
+
+    expect(container.querySelector(".mt-loader__text")).not.toBeInTheDocument();
+    expect(container.querySelector(".mt-loader__headline")).not.toBeInTheDocument();
+    expect(container.querySelector(".mt-loader__description")).not.toBeInTheDocument();
+  });
+
+  it("renders headline and description when provided", () => {
+    render(MtLoader, {
+      props: {
+        headline: "Loading data",
+        description: "This may take a few seconds.",
+      },
+    });
+
+    expect(screen.getByText("Loading data")).toBeVisible();
+    expect(screen.getByText("This may take a few seconds.")).toBeVisible();
+  });
+
+  it("renders headline and description with the expected text styles", () => {
+    render(MtLoader, {
+      props: {
+        headline: "Loading data",
+        description: "This may take a few seconds.",
+      },
+    });
+
+    expect(screen.getByText("Loading data")).toHaveClass(
+      "mt-text--size-s",
+      "mt-text--weight-semibold",
+    );
+    expect(screen.getByText("This may take a few seconds.")).toHaveClass(
+      "mt-text--size-xs",
+      "mt-text--weight-regular",
+    );
+  });
+});
