@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-loader">
+  <div class="mt-loader" :class="{ 'mt-loader--has-backdrop': backdrop }">
     <div class="mt-loader__container">
       <div class="mt-loader__element" :style="{ width: size, height: size }">
         <div :style="{ borderWidth: borderWidth }" />
@@ -36,9 +36,11 @@ const props = withDefaults(
     size?: `${string}px`;
     headline?: string;
     description?: string;
+    backdrop?: boolean;
   }>(),
   {
     size: "50px",
+    backdrop: true,
   },
 );
 
@@ -71,6 +73,9 @@ const borderWidth = computed(() => {
   right: 0;
   margin: auto;
   z-index: 400;
+}
+
+.mt-loader--has-backdrop {
   background: color-mix(in srgb, var(--color-background-tertiary-default) 80%, transparent);
 }
 

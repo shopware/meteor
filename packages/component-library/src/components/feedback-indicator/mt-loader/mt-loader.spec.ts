@@ -9,6 +9,22 @@ describe("mt-loader", () => {
     expect(container.querySelector(".mt-loader__element")).toBeInTheDocument();
   });
 
+  it("renders with a backdrop by default", () => {
+    const { container } = render(MtLoader);
+
+    expect(container.querySelector(".mt-loader")).toHaveClass("mt-loader--has-backdrop");
+  });
+
+  it("can render without a backdrop", () => {
+    const { container } = render(MtLoader, {
+      props: {
+        backdrop: false,
+      },
+    });
+
+    expect(container.querySelector(".mt-loader")).not.toHaveClass("mt-loader--has-backdrop");
+  });
+
   it("does not render text wrappers when headline and description are omitted", () => {
     const { container } = render(MtLoader);
 

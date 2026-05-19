@@ -19,6 +19,10 @@ const meta: MtLoaderMeta = {
       control: "text",
       description: "Optional description shown below the headline.",
     },
+    backdrop: {
+      control: "boolean",
+      description: "Controls whether the loader renders its backdrop background.",
+    },
   },
   render: (args) => ({
     setup: () => {
@@ -31,6 +35,7 @@ const meta: MtLoaderMeta = {
   }),
   args: {
     size: "50px",
+    backdrop: true,
   },
 };
 
