@@ -1,6 +1,6 @@
 <template>
-  <div ref="floatingUi" class="mt-floating-ui">
-    <div ref="floatingUiTrigger" class="mt-floating-ui__trigger">
+  <div ref="floatingUi" class="mt-floating-ui" :class="{ 'mt-floating-ui--detached': detached }">
+    <div v-if="!detached" ref="floatingUiTrigger" class="mt-floating-ui__trigger">
       <slot name="trigger" />
     </div>
     <Teleport to="body">
@@ -56,6 +56,16 @@ export type MtFloatingUiProps = {
    * If true, the floating UI content will match the width of the reference element.
    */
   matchReferenceWidth?: boolean;
+  /**
+   * An external DOM element to anchor the floating content to, instead of the
+   * built-in trigger slot wrapper
+   */
+  anchorElement?: HTMLElement | null;
+  /**
+   * When true, the trigger slot is not rendered and the root wrapper is not displayed
+   * Use with `anchorElement`.
+   */
+  detached?: boolean;
 };
 
 const props = defineProps<MtFloatingUiProps>();
@@ -86,7 +96,9 @@ const contentStyles = computed(() => {
 });
 
 const createFloatingUi = () => {
-  if (!floatingUiTrigger.value || !floatingUiContent.value) {
+  const referenceEl = props.anchorElement ?? floatingUiTrigger.value;
+
+  if (!referenceEl || !floatingUiContent.value) {
     return;
   }
 
@@ -97,14 +109,14 @@ const createFloatingUi = () => {
   floatingUiContent.value.classList.add(...givenClasses);
 
   cleanup = autoUpdate(
-    floatingUiTrigger.value,
+    referenceEl,
     floatingUiContent.value as HTMLElement,
     () => {
-      if (!floatingUiTrigger.value || !floatingUiContent.value) {
+      if (!referenceEl || !floatingUiContent.value) {
         return;
       }
 
-      computePosition(floatingUiTrigger.value, floatingUiContent.value as HTMLElement, {
+      computePosition(referenceEl, floatingUiContent.value as HTMLElement, {
         placement: "bottom-start",
         strategy: "fixed",
         middleware: [
@@ -190,9 +202,24 @@ watch(
   { immediate: true },
 );
 
+watch(
+  () => props.anchorElement,
+  () => {
+    if (props.isOpened) {
+      removeFloatingUi();
+      nextTick(() => {
+        createFloatingUi();
+      });
+    }
+  },
+);
+
 const onClickOutside = (event: Event) => {
-  // emit close when click is not inside trigger or content
-  if (floatingUi.value?.contains(event.target as Node)) {
+  // emit close when click is not inside trigger, external reference, or content
+  if (
+    floatingUi.value?.contains(event.target as Node) ||
+    props.anchorElement?.contains(event.target as Node)
+  ) {
     return;
   }
 
@@ -217,6 +244,10 @@ onBeforeUnmount(() => {
 
   .mt-floating-ui__trigger {
     display: inline-block;
+  }
+
+  &.mt-floating-ui--detached {
+    display: contents;
   }
 }
 

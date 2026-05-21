@@ -173,6 +173,41 @@ describe("mt-floating-ui", () => {
     expect(floatingUiContent.style.width).toBe("200px");
   });
 
+  it("should use the external anchorElement for positioning when provided", async () => {
+    const externalRef = document.createElement("div");
+    externalRef.setAttribute("id", "externalRef");
+    externalRef.getBoundingClientRect = vi.fn(() => ({
+      width: 300,
+      height: 40,
+      top: 100,
+      left: 50,
+      bottom: 140,
+      right: 350,
+      x: 50,
+      y: 100,
+      toJSON: vi.fn(),
+    }));
+    document.body.appendChild(externalRef);
+
+    wrapper = mount(MtFloatingUi, {
+      attachTo: document.getElementById("appWrapper")!,
+      slots: {
+        default: `<div id="externalAnchorContent">External anchor content</div>`,
+      },
+      props: {
+        isOpened: true,
+        anchorElement: externalRef,
+      },
+    });
+
+    await flushPromises();
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
+    const floatingUiContent = document.querySelector("#externalAnchorContent") as HTMLElement;
+
+    expect(floatingUiContent).toBeTruthy();
+  });
+
   it("should not set width when matchReferenceWidth prop is false or not set", async () => {
     wrapper = createWrapper();
 
@@ -191,5 +226,26 @@ describe("mt-floating-ui", () => {
 
     expect(floatingUiContent).toBeTruthy();
     expect(floatingUiContent.style.width).toBe("");
+  });
+
+  it("should not render the trigger when detached is true", () => {
+    const anchorElement = document.createElement("div");
+    document.body.appendChild(anchorElement);
+
+    wrapper = mount(MtFloatingUi, {
+      attachTo: document.getElementById("appWrapper")!,
+      slots: {
+        trigger: `<div id="triggerSlotContent">Trigger</div>`,
+      },
+      props: {
+        isOpened: false,
+        detached: true,
+        anchorElement,
+      },
+    });
+
+    expect(wrapper.find(".mt-floating-ui__trigger").exists()).toBe(false);
+    expect(wrapper.find("#triggerSlotContent").exists()).toBe(false);
+    expect(wrapper.find(".mt-floating-ui").classes()).toContain("mt-floating-ui--detached");
   });
 });
