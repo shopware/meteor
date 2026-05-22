@@ -38,6 +38,7 @@ withDefaults(
   border-radius: var(--border-radius-m);
   padding: var(--scale-size-4);
   min-width: 200px;
+  z-index: 1300;
 }
 
 .mt-action-menu--match-trigger-width {
@@ -45,7 +46,7 @@ withDefaults(
   max-height: var(--reka-dropdown-menu-content-available-height);
 }
 
-/* 
+/*
   When items outside a group have mixed icons (some with, some without),
   add left padding to items without icons to align text.
   Only applies when there's at least one item WITH icon AND one WITHOUT.
