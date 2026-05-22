@@ -3,7 +3,7 @@
     <slot name="customIcon">
       <mt-icon
         v-if="!hideIcon"
-        size="var(--scale-size-20)"
+        size="var(--scale-size-16)"
         class="mt-banner__icon"
         :name="bannerIcon"
         decorative
@@ -20,14 +20,17 @@
       </div>
     </div>
 
-    <button
+    <mt-button
       v-if="closable"
+      size="small"
+      variant="tertiary"
       class="mt-banner__close"
       :aria-label="t('close')"
       @click.prevent="$emit('close', bannerIndex)"
+      square
     >
-      <mt-icon name="solid-times-s" />
-    </button>
+      <mt-icon name="regular-times-xs" />
+    </mt-button>
   </div>
 </template>
 
@@ -35,6 +38,7 @@
 import { computed } from "vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
 import MtText from "@/components/mt-text/mt-text.vue";
+import MtButton from "@/components/mt-button/mt-button.vue";
 import { useFutureFlags } from "@/composables/useFutureFlags";
 import { useI18n } from "vue-i18n";
 
@@ -105,24 +109,22 @@ const bodyClasses = computed(() => ({
 
 <style scoped>
 .mt-banner {
-  --mt-banner-close-button-size: var(--scale-size-40);
-
-  border-width: 1px;
-  padding: var(--scale-size-24);
-  border-style: solid;
+  border: 1px solid;
+  padding: var(--scale-size-20);
   border-radius: var(--border-radius-xs);
+  /* @TODO: Automatic centering behavior to be removed */
   margin: 0 auto var(--scale-size-20);
   display: flex;
   flex-direction: row;
-  gap: var(--scale-size-16);
-
-  & ul {
-    padding: var(--scale-size-8) 0 var(--scale-size-8) var(--scale-size-20);
-  }
+  gap: var(--scale-size-12);
 }
 
 .mt-banner--future-remove-default-margin {
-  margin-block-end: 0;
+  margin: 0;
+}
+
+.mt-banner__icon {
+  flex-shrink: 0;
 }
 
 .mt-banner--future-full-width {
@@ -130,6 +132,7 @@ const bodyClasses = computed(() => ({
 }
 
 .mt-banner__title {
+  line-height: var(--font-line-height-2xs);
   margin-block-end: 0;
 }
 
@@ -140,36 +143,24 @@ const bodyClasses = computed(() => ({
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  flex: 1;
   gap: var(--scale-size-4);
+  flex: 1;
 }
 
 .mt-banner__message {
   color: var(--color-text-primary-default);
 }
 
-.mt-banner__icon {
-  width: var(--scale-size-20);
-  height: var(--scale-size-20);
-}
-
 .mt-banner__close {
-  width: var(--mt-banner-close-button-size);
-  height: var(--mt-banner-close-button-size);
-  border-radius: var(--border-radius-xs);
-  margin-top: calc(var(--scale-size-8) * -1);
-  margin-right: calc(var(--scale-size-8) * -1);
-
-  &:focus-visible {
-    outline: 2px solid var(--color-border-brand-default);
-  }
+  margin-top: calc(var(--scale-size-10) * -1);
+  margin-right: calc(var(--scale-size-10) * -1);
 }
 
 .mt-banner--info {
   border-color: var(--color-border-brand-default);
   background-color: var(--color-background-brand-default);
 
-  & :is(.mt-banner__icon, .mt-banner__close) {
+  & :is(.mt-banner__icon) {
     color: var(--color-icon-brand-default);
   }
 }
@@ -178,7 +169,7 @@ const bodyClasses = computed(() => ({
   border-color: var(--color-border-attention-default);
   background-color: var(--color-background-attention-default);
 
-  & :is(.mt-banner__icon, .mt-banner__close) {
+  & :is(.mt-banner__icon) {
     color: var(--color-icon-attention-default);
   }
 }
@@ -187,7 +178,7 @@ const bodyClasses = computed(() => ({
   border-color: var(--color-border-critical-default);
   background-color: var(--color-background-critical-default);
 
-  & :is(.mt-banner__icon, .mt-banner__close) {
+  & :is(.mt-banner__icon) {
     color: var(--color-icon-critical-default);
   }
 }
@@ -196,7 +187,7 @@ const bodyClasses = computed(() => ({
   border-color: var(--color-border-positive-default);
   background-color: var(--color-background-positive-default);
 
-  & :is(.mt-banner__icon, .mt-banner__close) {
+  & :is(.mt-banner__icon) {
     color: var(--color-icon-positive-default);
   }
 }
@@ -205,7 +196,7 @@ const bodyClasses = computed(() => ({
   border-color: var(--color-border-accent-default);
   background-color: var(--color-background-accent-default);
 
-  & :is(.mt-banner__icon, .mt-banner__close) {
+  & :is(.mt-banner__icon) {
     color: var(--color-icon-accent-default);
   }
 }
@@ -214,7 +205,7 @@ const bodyClasses = computed(() => ({
   border-color: var(--color-border-primary-default);
   background-color: var(--color-background-secondary-default);
 
-  & :is(.mt-banner__icon, .mt-banner__close) {
+  & :is(.mt-banner__icon) {
     color: var(--color-icon-primary-default);
   }
 }
