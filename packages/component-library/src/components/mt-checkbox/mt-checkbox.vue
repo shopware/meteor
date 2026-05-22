@@ -333,7 +333,6 @@ export default defineComponent({
     & .mt-field--checkbox__content {
       display: grid;
       grid-template-columns: 16px 1fr;
-      align-items: center;
     }
 
     & .mt-field {
@@ -350,7 +349,7 @@ export default defineComponent({
 
     & .mt-field__label {
       margin-bottom: 0;
-      margin-left: var(--scale-size-4);
+      margin-left: var(--scale-size-8);
 
       & .mt-help-text {
         margin-left: var(--scale-size-8);
