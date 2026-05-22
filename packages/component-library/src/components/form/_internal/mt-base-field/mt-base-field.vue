@@ -254,11 +254,6 @@ export default defineComponent({
   margin-bottom: var(--scale-size-32);
 }
 
-.mt-field .mt-field__help-text {
-  margin-left: var(--scale-size-4);
-  align-self: center;
-}
-
 .mt-field.has--error {
   margin-bottom: var(--scale-size-12);
 }
@@ -465,6 +460,7 @@ export default defineComponent({
   font-size: 14px;
   margin-bottom: var(--scale-size-8);
   color: var(--color-text-primary-default);
+  column-gap: var(--scale-size-6);
 }
 
 .mt-field .mt-field__label label {
