@@ -8,9 +8,9 @@
         <div :style="{ borderWidth: borderWidth }" />
       </div>
 
-      <div v-if="headline || description" class="mt-loader__text">
-        <mt-text v-if="headline" as="p" size="s" weight="semibold" class="mt-loader__headline">
-          {{ headline }}
+      <div v-if="title || description" class="mt-loader__text">
+        <mt-text v-if="title" as="p" size="s" weight="semibold" class="mt-loader__title">
+          {{ title }}
         </mt-text>
 
         <mt-text
@@ -34,7 +34,7 @@ import MtText from "@/components/content/mt-text/mt-text.vue";
 const props = withDefaults(
   defineProps<{
     size?: `${string}px`;
-    headline?: string;
+    title?: string;
     description?: string;
     backdrop?: boolean;
   }>(),
@@ -129,7 +129,7 @@ const borderWidth = computed(() => {
   padding-inline: var(--scale-size-24);
 }
 
-.mt-loader__headline,
+.mt-loader__title,
 .mt-loader__description {
   margin: 0;
   overflow-wrap: anywhere;

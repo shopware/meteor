@@ -25,18 +25,18 @@ describe("mt-loader", () => {
     expect(container.querySelector(".mt-loader")).not.toHaveClass("mt-loader--has-backdrop");
   });
 
-  it("does not render text wrappers when headline and description are omitted", () => {
+  it("does not render text wrappers when title and description are omitted", () => {
     const { container } = render(MtLoader);
 
     expect(container.querySelector(".mt-loader__text")).not.toBeInTheDocument();
-    expect(container.querySelector(".mt-loader__headline")).not.toBeInTheDocument();
+    expect(container.querySelector(".mt-loader__title")).not.toBeInTheDocument();
     expect(container.querySelector(".mt-loader__description")).not.toBeInTheDocument();
   });
 
-  it("renders headline and description when provided", () => {
+  it("renders title and description when provided", () => {
     render(MtLoader, {
       props: {
-        headline: "Loading data",
+        title: "Loading data",
         description: "This may take a few seconds.",
       },
     });
@@ -45,10 +45,10 @@ describe("mt-loader", () => {
     expect(screen.getByText("This may take a few seconds.")).toBeVisible();
   });
 
-  it("renders headline and description with the expected text styles", () => {
+  it("renders title and description with the expected text styles", () => {
     render(MtLoader, {
       props: {
-        headline: "Loading data",
+        title: "Loading data",
         description: "This may take a few seconds.",
       },
     });

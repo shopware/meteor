@@ -40,7 +40,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 - Keep the loading state brief and replace it with real content as soon as possible.
 - Use a size that fits the surrounding surface, such as a compact loader inside controls and a larger loader in content areas.
-- Use `headline` and `description` when users need short context for what is loading.
+- Use `title` and `description` when users need short context for what is loading.
 - Pair **Loader** with disabled or blocked interactions when the underlying surface should not be used while loading.
 - Place it inside a bounded surface that provides the context for what is loading.
 
@@ -56,12 +56,12 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 - The component centers itself and renders as an absolute overlay with a semi-transparent background, so it works best inside the surface that is being loaded.
 - `size` accepts pixel values such as `16px`, `32px`, or `48px`, and the ring thickness adapts to the provided size.
 - `backdrop` controls whether **Loader** renders its backdrop background and defaults to `true`.
-- `headline` and `description` render below the spinner as centered body text and can be used independently.
+- `title` and `description` render below the spinner as centered body text and can be used independently.
 
 ## Accessibility notes
 
 - **Loader** is visual only and does not announce loading state to assistive technologies on its own.
-- `headline` and `description` provide visible context, but the surrounding region should still expose an appropriate busy state when the loading state matters for screen-reader users.
+- `title` and `description` provide visible context, but the surrounding region should still expose an appropriate busy state when the loading state matters for screen-reader users.
 - If loading blocks interaction, also disable or otherwise guard the affected controls so keyboard users are not left guessing what is available.
 
 ## Comparisons

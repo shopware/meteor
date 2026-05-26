@@ -11,13 +11,13 @@ const meta: MtLoaderMeta = {
       control: "text",
       description: "The size of the loader spinner.",
     },
-    headline: {
+    title: {
       control: "text",
-      description: "Optional headline shown below the spinner.",
+      description: "Optional title shown below the spinner.",
     },
     description: {
       control: "text",
-      description: "Optional description shown below the headline.",
+      description: "Optional description shown below the title.",
     },
     backdrop: {
       control: "boolean",
@@ -57,7 +57,7 @@ export const Default: MtLoaderStory = {
 export const WithText: MtLoaderStory = {
   name: "With text",
   args: {
-    headline: "Loading data",
+    title: "Loading data",
     description: "This may take a few seconds.",
   },
   parameters: {
@@ -65,7 +65,7 @@ export const WithText: MtLoaderStory = {
       source: {
         language: "html",
         code: `<mt-loader
-  headline="Loading data"
+  title="Loading data"
   description="This may take a few seconds."
 />`,
       },
