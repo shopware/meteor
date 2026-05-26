@@ -66,6 +66,85 @@ describe("mt-url-field", () => {
     expect(handler).toHaveBeenNthCalledWith(16, "https://www.shopware.com");
   });
 
+  it("preserves IP address input without rewriting numeric hosts", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+    render(MtUrlField, {
+      props: {
+        modelValue: "",
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    // ACT
+    await userEvent.type(screen.getByRole("textbox"), "192.168.1.1");
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("192.168.1.1");
+    expect(handler).toHaveBeenLastCalledWith("https://192.168.1.1");
+  });
+
+  it("keeps the host when input begins with a leading slash", async () => {
+    // ARRANGE — protocol-relative or path-style input should not strip the host
+    render(MtUrlField, {
+      props: { modelValue: "//example.com" },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("example.com");
+  });
+
+  it("does not autocomplete partial IP addresses while typing", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+    render(MtUrlField, {
+      props: {
+        modelValue: "",
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    // ACT — type a partial IP and check intermediate state is preserved
+    await userEvent.type(screen.getByRole("textbox"), "192.168");
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("192.168");
+    expect(handler).toHaveBeenLastCalledWith("https://192.168");
+  });
+
+  it("preserves IPv6 address input without normalizing the literal", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+    render(MtUrlField, {
+      props: {
+        modelValue: "",
+        "onUpdate:modelValue": handler,
+      },
+    });
+
+    // ACT
+    // `[` is a special key descriptor in userEvent — escape with `[[`
+    await userEvent.type(screen.getByRole("textbox"), "[[2001:db8::1]");
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("[2001:db8::1]");
+    expect(handler).toHaveBeenLastCalledWith("https://[2001:db8::1]");
+  });
+
+  it("keeps the input in sync while an IPv6 literal is still being typed", async () => {
+    // ARRANGE — intermediate states like `[2001:db8::` are not valid URLs;
+    // the field must not throw or drop the user's keystrokes.
+    render(MtUrlField, {
+      props: { modelValue: "" },
+    });
+
+    // ACT — `[` is escaped as `[[` for userEvent
+    await userEvent.type(screen.getByRole("textbox"), "[[2001:db8::");
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveValue("[2001:db8::");
+  });
+
   it("updates the domain when the user types and then focuses another element", async () => {
     // ARRANGE
     const handler = vi.fn();

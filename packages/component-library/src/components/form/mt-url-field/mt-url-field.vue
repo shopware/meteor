@@ -207,19 +207,21 @@ function checkInput(inputValue: string) {
     sslActive.value = !!inputValue.match(URL_REGEX.SSL);
   }
 
-  const validated = transformURL(inputValue);
-
-  if (!validated) {
-    throw new Error("Invalid URL");
-  } else {
-    return validated;
-  }
+  // Fall back to the raw input (minus protocol) when the value is mid-typing and not yet a
+  // valid URL (e.g. an unclosed IPv6 literal like `[2001:db8::`). Without this, every
+  // intermediate keystroke throws and the input goes out of sync with what the user typed.
+  // We strip the protocol so the watcher round-trip (`X` → model `https://X` → display)
+  // does not re-introduce the prefix into the visible input.
+  return transformURL(inputValue) ?? inputValue.replace(URL_REGEX.PROTOCOL, "");
 }
 
 function transformURL(value: string) {
-  const url = new URL(value.match(URL_REGEX.PROTOCOL) ? value : `${urlPrefix.value}${value}`);
-
-  if (!url) return null;
+  let url: URL;
+  try {
+    url = new URL(value.match(URL_REGEX.PROTOCOL) ? value : `${urlPrefix.value}${value}`);
+  } catch {
+    return null;
+  }
 
   if (props.omitUrlSearch) url.search = "";
   if (props.omitUrlHash) url.hash = "";
@@ -227,12 +229,20 @@ function transformURL(value: string) {
   // when a hash or search query is provided we want to allow trailing slash, eg a vue route `admin#/`
   const removeTrailingSlash = url.hash === "" && url.search === "" ? URL_REGEX.TRAILING_SLASH : "";
 
+  // The native URL parser rewrites numeric hosts as IPv4 (`192` → `0.0.0.192`) and normalizes
+  // IPv6 literals (case-lowering, zero compression), which mangles user input as they type.
+  // Preserve the raw host the user typed when it is an IPv4-like or IPv6-bracketed literal.
+  const rawHost =
+    value.replace(URL_REGEX.PROTOCOL, "").match(/^(\[[^\]]*\][^/?#]*|[^/?#]*)/)?.[1] ?? "";
+  const isIpLike = /^[\d.]+$/.test(rawHost) || /^\[[^\]]*\](?::\d+)?$/.test(rawHost);
+  const userHost = isIpLike && rawHost !== url.host ? rawHost : url.host;
+
   // build URL via native URL.toString() function instead by hand @see NEXT-15747
   return url
     .toString()
     .replace(URL_REGEX.PROTOCOL, "")
     .replace(removeTrailingSlash, "")
-    .replace(url.host, decodeURI(url.host));
+    .replace(url.host, decodeURI(userHost));
 }
 
 const { copy, copied } = useClipboard();
