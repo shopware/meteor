@@ -36,7 +36,12 @@
       </div>
 
       <div class="mt-select__selection-indicators" :style="{ right: selectionIndicatorsRight }">
-        <mt-loader v-if="isLoading" class="mt-select__select-indicator" size="16px" />
+        <mt-loader
+          v-if="isLoading"
+          class="mt-select__select-indicator"
+          size="16px"
+          :backdrop="false"
+        />
 
         <button
           v-if="!disabled && showClearableButton"
