@@ -393,6 +393,81 @@ describe("mt-number-field", () => {
     expect(handler).toHaveBeenCalledWith(80);
   });
 
+  it("keeps fractional trailing zeros visible after deleting while editing", async () => {
+    // ARRANGE
+    const inputChangeHandler = vi.fn();
+    const updateHandler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        modelValue: 1.07,
+        "onInput-change": inputChangeHandler,
+        "onUpdate:modelValue": updateHandler,
+      },
+    });
+
+    const input = screen.getByRole("textbox") as HTMLInputElement;
+
+    // ACT
+    await userEvent.click(input);
+    input.setSelectionRange(input.value.length, input.value.length);
+    await userEvent.keyboard("{Backspace}");
+
+    // ASSERT
+    expect(input).toHaveValue("1.0");
+    expect(inputChangeHandler).toHaveBeenLastCalledWith(1);
+    expect(updateHandler).not.toHaveBeenCalled();
+  });
+
+  it("commits the edited fractional value on blur", async () => {
+    // ARRANGE
+    const updateHandler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        modelValue: 1.07,
+        "onUpdate:modelValue": updateHandler,
+      },
+    });
+
+    const input = screen.getByRole("textbox") as HTMLInputElement;
+
+    // ACT
+    await userEvent.click(input);
+    input.setSelectionRange(input.value.length, input.value.length);
+    await userEvent.keyboard("{Backspace}");
+    await userEvent.type(input, "8");
+    await userEvent.click(document.body);
+
+    // ASSERT
+    expect(updateHandler).toHaveBeenLastCalledWith(1.08);
+    expect(input).toHaveValue("1.08");
+  });
+
+  it("normalizes fractional trailing zeros on blur", async () => {
+    // ARRANGE
+    const updateHandler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        modelValue: 1.07,
+        "onUpdate:modelValue": updateHandler,
+      },
+    });
+
+    const input = screen.getByRole("textbox") as HTMLInputElement;
+
+    // ACT
+    await userEvent.click(input);
+    input.setSelectionRange(input.value.length, input.value.length);
+    await userEvent.keyboard("{Backspace}");
+    await userEvent.click(document.body);
+
+    // ASSERT
+    expect(updateHandler).toHaveBeenLastCalledWith(1);
+    expect(input).toHaveValue("1");
+  });
+
   it("warns when allowEmpty is set to false", () => {
     // ARRANGE
     vi.spyOn(console, "warn").mockImplementation(() => {});

@@ -232,6 +232,12 @@ export default defineComponent({
     return { t };
   },
 
+  data() {
+    return {
+      rawUserInput: null as string | null,
+    };
+  },
+
   computed: {
     realStep(): number {
       if (this.step === null) {
@@ -257,6 +263,10 @@ export default defineComponent({
     },
 
     stringRepresentation(): string {
+      if (this.rawUserInput !== null) {
+        return this.rawUserInput;
+      }
+
       if (this.currentValue === null) {
         return "";
       }
@@ -284,6 +294,10 @@ export default defineComponent({
   watch: {
     modelValue: {
       handler() {
+        if (!this.hasFocus) {
+          this.rawUserInput = null;
+        }
+
         if (this.modelValue === null || this.modelValue === undefined) {
           // @ts-expect-error - defined in parent
           this.currentValue = null;
@@ -336,6 +350,7 @@ export default defineComponent({
     onChange(event: Event) {
       // @ts-expect-error - target exists
       this.computeValue(event.target.value);
+      this.rawUserInput = null;
 
       this.$emit("change", event);
       this.$emit("update:modelValue", this.currentValue);
@@ -344,6 +359,7 @@ export default defineComponent({
     onInput(event: Event) {
       // @ts-expect-error - target exists
       const inputValue = event.target.value;
+      this.rawUserInput = inputValue;
 
       if (inputValue === "" && this.allowEmptyWithDefault) {
         // @ts-expect-error - defined in parent
@@ -366,6 +382,7 @@ export default defineComponent({
 
     increaseNumberByStep() {
       this.computeValue((Number(this.currentValue) + this.realStep).toString());
+      this.rawUserInput = null;
 
       this.$emit("update:modelValue", this.currentValue);
     },
@@ -373,6 +390,7 @@ export default defineComponent({
     decreaseNumberByStep() {
       // @ts-expect-error - wrong type because of component extends
       this.computeValue((this.currentValue - this.realStep).toString());
+      this.rawUserInput = null;
 
       this.$emit("update:modelValue", this.currentValue);
     },
