@@ -2,9 +2,14 @@
   <mt-modal-root :is-open="isOpen" @change="onChangeOpen">
     <mt-modal :title="t('mt-text-editor.diff.title')" width="l">
       <template #default>
-        <div class="mt-text-editor__diff-info">
+        <MtText
+          as="div"
+          size="s"
+          color="color-text-primary-default"
+          class="mt-text-editor__diff-info"
+        >
           {{ t("mt-text-editor.diff.subtitle") }}
-        </div>
+        </MtText>
 
         <div class="mt-text-editor__diff-headlines">
           <h3 class="mt-text-editor__diff-headline-current">
@@ -49,6 +54,7 @@ import { DiffView, DiffModeEnum } from "@git-diff-view/vue";
 import MtModal from "@/components/overlay/mt-modal/mt-modal.vue";
 import MtModalRoot from "@/components/overlay/mt-modal/sub-components/mt-modal-root.vue";
 import MtButton from "@/components/form/mt-button/mt-button.vue";
+import MtText from "@/components/content/mt-text/mt-text.vue";
 import { createTwoFilesPatch } from "diff";
 
 const props = defineProps<{
@@ -104,8 +110,7 @@ const diffViewTheme = computed(() => {
 
 <style scoped>
 .mt-text-editor__diff-info {
-  margin-bottom: var(--scale-size-16);
-  color: var(--color-text-primary-default);
+  margin: 0 0 var(--scale-size-16);
 }
 
 .mt-text-editor__diff-headlines {
