@@ -1,5 +1,12 @@
 # Changelog
 
+## 4.28.7
+
+### Patch Changes
+
+- Updated dependencies []:
+  - @shopware-ag/meteor-icon-kit@5.7.0
+
 ## 4.28.6
 
 ### Patch Changes
