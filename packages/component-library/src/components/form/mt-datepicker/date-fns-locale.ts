@@ -9,6 +9,10 @@ function isDateFnsLocale(value: unknown): value is Locale {
   return typeof value === "object" && value !== null && "localize" in value;
 }
 
+function isSafeLocalePath(path: string): boolean {
+  return /^[A-Za-z0-9]+(?:-[A-Za-z0-9]+)*$/.test(path);
+}
+
 export function resolveDateFnsLocaleModule(
   path: string,
   localeModule: DateFnsLocaleModule,
@@ -32,6 +36,10 @@ export function resolveDateFnsLocaleModule(
 }
 
 export async function importDateFnsLocaleModule(path: string): Promise<Locale | null> {
+  if (!isSafeLocalePath(path)) {
+    return null;
+  }
+
   try {
     const localeModule = (await import(
       /* @vite-ignore */
