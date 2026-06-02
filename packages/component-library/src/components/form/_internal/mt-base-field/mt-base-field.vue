@@ -315,7 +315,7 @@ export default defineComponent({
   border: none;
   background: var(--color-background-primary-default);
   font-size: var(--font-size-xs);
-  font-family: var(--font-size-body);
+  font-family: var(--font-family-body);
   line-height: 1;
   transition:
     border-color 0.3s ease-out,
