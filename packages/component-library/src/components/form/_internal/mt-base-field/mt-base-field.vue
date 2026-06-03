@@ -461,6 +461,7 @@ export default defineComponent({
 
 .mt-field .mt-field__label {
   display: flex;
+  /* @TODO: Use tokens for font-size and line-height in a future iteration */
   line-height: 16px;
   font-size: 14px;
   margin-bottom: var(--scale-size-8);

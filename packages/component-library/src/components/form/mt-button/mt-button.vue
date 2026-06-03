@@ -115,6 +115,7 @@ const isInsideTooltip = useIsInsideTooltip();
   border-radius: var(--border-radius-button);
   padding: var(--scale-size-2) var(--scale-size-24);
   font-size: var(--font-size-xs);
+  line-height: 1;
   border: 1px solid transparent;
   outline: none;
   font-weight: var(--font-weight-semibold);

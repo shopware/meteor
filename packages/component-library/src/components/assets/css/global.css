@@ -1,0 +1,27 @@
+body {
+  font-family: "Inter", ui-sans-serif, system-ui, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  font-feature-settings:
+    "cv02" on,
+    "cv03" on,
+    "cv04" on,
+    "cv05" on,
+    "cv08" on,
+    "cv09" on,
+    "cv10" on;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-size: var(--font-size-xs);
+  line-height: 1.5;
+  background: var(--color-elevation-surface-default);
+  color: var(--color-text-primary-default);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+/** @TODO move to tokens file once we find a solution for non figma-sync tokens **/
+:root {
+  --color-elevation-shadow-default: #1010131a !important;
+}

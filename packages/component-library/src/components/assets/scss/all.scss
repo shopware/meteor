@@ -1,8 +1,17 @@
+/* @TODO: consider native css layers in the future, currently not possible due to a massive amount of visual breaking changes. */
+
+/* 1. CSS preflight/reset */
+@import "../css/preflight";
+/* 2. Non property declaring variables and typography */
 @import "variables";
 @import "typography";
-@import "global.scss";
-@import "directives/tooltip";
-@import "directives/dragdrop";
+@import "@shopware-ag/meteor-tokens/primitives.css";
 @import "@shopware-ag/meteor-tokens/administration/light.css";
 @import "@shopware-ag/meteor-tokens/administration/dark.css";
-@import "@shopware-ag/meteor-tokens/primitives.css";
+/* 3. Global styles applied to html, body etc. */
+@import "../css/global";
+/* 4. Utility classes */
+@import "../css/utils";
+/* 5. Component specific styles that require a global import */
+@import "directives/tooltip";
+@import "directives/dragdrop";
