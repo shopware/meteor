@@ -267,14 +267,7 @@ export default defineComponent({
         return this.rawUserInput;
       }
 
-      if (this.currentValue === null) {
-        return "";
-      }
-
-      return this.fillDigits && this.numberType !== "int"
-        ? // @ts-expect-error - wrong type because of component extends
-          this.currentValue.toFixed(this.digits)
-        : this.currentValue.toString();
+      return this.getStringRepresentationFromCurrentValue();
     },
 
     controlClasses() {
@@ -347,6 +340,17 @@ export default defineComponent({
   },
 
   methods: {
+    getStringRepresentationFromCurrentValue(): string {
+      if (this.currentValue === null) {
+        return "";
+      }
+
+      return this.fillDigits && this.numberType !== "int"
+        ? // @ts-expect-error - wrong type because of component extends
+          this.currentValue.toFixed(this.digits)
+        : this.currentValue.toString();
+    },
+
     onChange(event: Event) {
       // @ts-expect-error - target exists
       this.computeValue(event.target.value);
@@ -428,7 +432,13 @@ export default defineComponent({
     },
 
     getNumberFromString(value: any) {
-      let splits = value.split("e").shift();
+      const normalizedValue = value.toString().replace(/,/g, ".");
+
+      if (normalizedValue.toLowerCase().includes("e")) {
+        return Number.parseFloat(normalizedValue);
+      }
+
+      let splits = normalizedValue;
       splits = splits.replace(/,/g, ".").split(".");
 
       if (splits.length === 1) {

@@ -468,6 +468,55 @@ describe("mt-number-field", () => {
     expect(input).toHaveValue("1");
   });
 
+  it("does not normalize exponent notation while editing", async () => {
+    // ARRANGE
+    const inputChangeHandler = vi.fn();
+    const updateHandler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        "onInput-change": inputChangeHandler,
+        "onUpdate:modelValue": updateHandler,
+      },
+    });
+
+    const input = screen.getByRole("textbox") as HTMLInputElement;
+
+    // ACT
+    await userEvent.click(input);
+    await userEvent.paste("1e3");
+
+    // ASSERT
+    expect(inputChangeHandler).toHaveBeenLastCalledWith(1000);
+    expect(updateHandler).not.toHaveBeenCalled();
+    expect(input).toHaveValue("1e3");
+  });
+
+  it("normalizes exponent notation when committing on blur", async () => {
+    // ARRANGE
+    const inputChangeHandler = vi.fn();
+    const updateHandler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        "onInput-change": inputChangeHandler,
+        "onUpdate:modelValue": updateHandler,
+      },
+    });
+
+    const input = screen.getByRole("textbox") as HTMLInputElement;
+
+    // ACT
+    await userEvent.click(input);
+    await userEvent.paste("1e3");
+    await userEvent.click(document.body);
+
+    // ASSERT
+    expect(inputChangeHandler).toHaveBeenLastCalledWith(1000);
+    expect(updateHandler).toHaveBeenLastCalledWith(1000);
+    expect(input).toHaveValue("1000");
+  });
+
   it("warns when allowEmpty is set to false", () => {
     // ARRANGE
     vi.spyOn(console, "warn").mockImplementation(() => {});
