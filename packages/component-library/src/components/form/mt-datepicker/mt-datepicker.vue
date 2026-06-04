@@ -112,6 +112,7 @@ import "@vuepic/vue-datepicker/dist/main.css";
 import { useId } from "vue";
 import { enUS } from "date-fns/locale/en-US";
 import type { Locale } from "date-fns";
+import { importDateFnsLocaleModule } from "./date-fns-locale";
 
 interface Time {
   hours: number;
@@ -245,17 +246,6 @@ const errorMessage = ref<{ detail: string } | undefined>(undefined);
 const isTimeHintVisible = ref(true);
 const datePickerLocale = ref<Locale>(enUS);
 let localeLoadId = 0;
-
-async function importDateFnsLocaleModule(path: string): Promise<Locale | null> {
-  try {
-    const { default: locale } = (await import(/* @vite-ignore */ `date-fns/locale/${path}`)) as {
-      default: Locale;
-    };
-    return locale;
-  } catch {
-    return null;
-  }
-}
 
 async function loadDateFnsLocale(tag: string): Promise<Locale> {
   const normalized = tag.replace(/_/g, "-").trim() || "en-US";
