@@ -1,5 +1,26 @@
 # Changelog
 
+## 6.0.0
+
+### Minor Changes
+
+- [#1142](https://github.com/shopware/meteor/pull/1142) [`1ab72fb`](https://github.com/shopware/meteor/commit/1ab72fbfcdbcad989083da2cb9e620240df482de) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Add `anchorElement` and `detached` props to `mt-floating-ui` for external anchor positioning.
+
+### Patch Changes
+
+- [#1161](https://github.com/shopware/meteor/pull/1161) [`10bb170`](https://github.com/shopware/meteor/commit/10bb1700651b1f8e9042936b63ac7ced808c9792) Thanks [@mstegmeyer](https://github.com/mstegmeyer)! - Fix datepicker locale loading for date-fns v4 locale module exports.
+
+- [#1151](https://github.com/shopware/meteor/pull/1151) [`a4a236c`](https://github.com/shopware/meteor/commit/a4a236c4ea378adbb015a699813023f72c2f1fb8) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Added optional headline and description props to the mt-loader component
+
+- [#1146](https://github.com/shopware/meteor/pull/1146) [`b358e2a`](https://github.com/shopware/meteor/commit/b358e2a38b7729289d37daa7c7fe475c8d0e9109) Thanks [@shyim](https://github.com/shyim)! - Fixed `mt-url-field` mangling IP address input. The native URL parser rewrote numeric hosts as IPv4 addresses (e.g. `192` → `0.0.0.192`), and IPv6 literals were normalized or rejected mid-typing. The field now preserves the raw host the user typed and keeps the input in sync while a partial address is still being entered.
+
+- [#1137](https://github.com/shopware/meteor/pull/1137) [`1d8ee80`](https://github.com/shopware/meteor/commit/1d8ee80c18011082c895f3222a19604985603c85) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - mt-field-error now resolves interpolation params from error.meta.parameters while continuing to support error.parameters.
+
+- [#1157](https://github.com/shopware/meteor/pull/1157) [`22a0d25`](https://github.com/shopware/meteor/commit/22a0d25d06d08d5a2560470a8d4745ba6663d56a) Thanks [@gweiermann](https://github.com/gweiermann)! - Prevent mt-number-field from normalizing the displayed decimal value while the user is editing.
+
+- Updated dependencies [[`ed965bd`](https://github.com/shopware/meteor/commit/ed965bdd41fe9972ba15319ccf0077dd14026ec2)]:
+  - @shopware-ag/meteor-icon-kit@5.8.0
+
 ## 5.0.0
 
 ### Minor Changes
