@@ -5,7 +5,7 @@
 ### Patch Changes
 
 - Updated dependencies [[`10bb170`](https://github.com/shopware/meteor/commit/10bb1700651b1f8e9042936b63ac7ced808c9792), [`1ab72fb`](https://github.com/shopware/meteor/commit/1ab72fbfcdbcad989083da2cb9e620240df482de), [`a4a236c`](https://github.com/shopware/meteor/commit/a4a236c4ea378adbb015a699813023f72c2f1fb8), [`b358e2a`](https://github.com/shopware/meteor/commit/b358e2a38b7729289d37daa7c7fe475c8d0e9109), [`1d8ee80`](https://github.com/shopware/meteor/commit/1d8ee80c18011082c895f3222a19604985603c85), [`22a0d25`](https://github.com/shopware/meteor/commit/22a0d25d06d08d5a2560470a8d4745ba6663d56a)]:
-  - @shopware-ag/meteor-component-library@6.0.0
+  - @shopware-ag/meteor-component-library@5.1.0
 
 ## 0.0.65
 
