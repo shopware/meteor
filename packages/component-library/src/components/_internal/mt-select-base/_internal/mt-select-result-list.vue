@@ -373,8 +373,8 @@ $mt-select-result-list-transition: all ease-in-out 0.2s;
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
   font-family: var(--font-family-body);
-  padding: var(--scale-size-8);
-  border-radius: 4px;
+  padding: var(--scale-size-4);
+  border-radius: var(--border-radius-xs);
 
   .mt-select-result-list__item-list {
     list-style: none;
