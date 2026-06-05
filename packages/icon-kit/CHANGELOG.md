@@ -1,5 +1,14 @@
 # CHANGELOG.md
 
+## 5.8.0
+
+### Minor Changes
+
+- [#1162](https://github.com/shopware/meteor/pull/1162) [`ed965bd`](https://github.com/shopware/meteor/commit/ed965bdd41fe9972ba15319ccf0077dd14026ec2) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Modified icons:
+  `shopware-intelligence`
+  `shopware-nexus`
+  `shopware-payments`
+
 ## 5.7.0
 
 ### Minor Changes
