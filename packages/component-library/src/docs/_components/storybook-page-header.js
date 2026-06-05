@@ -23,76 +23,78 @@ const STATUS_VARIANTS = {
 };
 
 const containerStyle = {
-  margin: "var(--scale-size-12) 0",
+  margin: "0.75rem 0",
 };
 
 const statusContainerStyle = {
-  marginTop: "var(--scale-size-12)",
+  marginTop: "1.25rem",
+  marginBottom: "1.25rem",
 };
 
 const statusHeaderStyle = {
   display: "inline-flex",
   alignItems: "center",
-  gap: "var(--scale-size-12)",
+  gap: "0.75rem",
   flexWrap: "wrap",
 };
 
 const statusInfoStyle = {
   display: "inline-flex",
   alignItems: "center",
-  gap: "var(--scale-size-6)",
+  gap: "0.375rem",
 };
 
 const labelStyle = {
   fontFamily: "inherit",
-  fontSize: "inherit",
+  fontSize: 15,
   lineHeight: "inherit",
-  fontWeight: "inherit",
+  fontWeight: 700,
   color: "var(--color-text-primary-default)",
 };
 
 const titleTagStyle = {
   color: "var(--color-text-secondary-default)",
-  fontWeight: "var(--font-weight-regular)",
+  fontWeight: 400,
 };
 
 const badgeStyle = (variant) => ({
   display: "inline-flex",
   alignItems: "center",
-  gap: "var(--scale-size-4)",
-  height: "var(--scale-size-20)",
-  padding: "0 var(--scale-size-8)",
-  borderRadius: "var(--border-radius-round)",
+  gap: "0.25rem",
+  height: "1.25rem",
+  padding: "0 0.5rem",
+  borderRadius: "624.9375rem",
   border: `1px solid ${variant.borderColor}`,
   backgroundColor: variant.backgroundColor,
   color: "var(--color-text-primary-default)",
   fontFamily: "var(--font-family-body)",
-  fontSize: "var(--font-size-2xs)",
-  lineHeight: "var(--font-line-height-2xs)",
-  fontWeight: "var(--font-weight-medium)",
+  fontSize: 13,
+  lineHeight: "1.125rem",
+  fontWeight: 500,
 });
 
 const sourceLinkStyle = {
   borderLeft: "1px solid var(--color-border-secondary-default)",
   color: "var(--color-text-brand-default)",
-  paddingLeft: "var(--scale-size-16)",
+  paddingLeft: "1rem",
   textDecoration: "underline",
+  fontSize: 15,
 };
 
 const indicatorStyle = (variant) => ({
-  width: "var(--scale-size-8)",
-  height: "var(--scale-size-8)",
-  borderRadius: "var(--border-radius-l)",
+  width: "0.5rem",
+  height: "0.5rem",
+  borderRadius: "0.75rem",
   backgroundColor: variant.indicatorColor,
   flexShrink: 0,
 });
 
 const codeContainerStyle = (hasDescription) => ({
-  marginTop: hasDescription ? "var(--scale-size-12)" : "var(--scale-size-8)",
+  marginTop: hasDescription ? "0.75rem" : "0.5rem",
 });
 
 const descriptionStyle = {
-  marginTop: "var(--scale-size-12)",
+  marginTop: "0.75rem",
 };
 
 const DEFAULT_PACKAGE_NAME = "@shopware-ag/meteor-component-library";
@@ -112,73 +114,94 @@ function createImportCode(packageImports, packageName) {
   return `import {\n  ${imports.join(",\n  ")},\n} from "${packageName}";`;
 }
 
-export default function ComponentPageHeader({
+const NPM_PACKAGE_URL = "https://www.npmjs.com/package/";
+
+export default function StorybookPageHeader({
   title,
   tagName,
-  status = "available",
+  status,
   code,
   language = "ts",
   packageImports,
   packageName = DEFAULT_PACKAGE_NAME,
   sourcePath,
+  sourceUrl: sourceUrlProp,
+  npmPackage,
   children,
 }) {
-  const variant = STATUS_VARIANTS[status] ?? STATUS_VARIANTS.available;
-  const sourceUrl = sourcePath ? `${COMPONENT_LIBRARY_GITHUB_TREE_URL}/${sourcePath}` : null;
+  const variant = status === "none" ? null : STATUS_VARIANTS[status] ?? STATUS_VARIANTS.available;
+  const sourceUrl =
+    sourceUrlProp ?? (sourcePath ? `${COMPONENT_LIBRARY_GITHUB_TREE_URL}/${sourcePath}` : null);
+  const npmUrl = npmPackage ? `${NPM_PACKAGE_URL}${npmPackage}` : null;
   const displayedCode = code ?? createImportCode(packageImports, packageName);
   const displayedLanguage = code ? language : "ts";
   const markdownCodeBlock = displayedCode
     ? `\`\`\`${displayedLanguage}\n${displayedCode}\n\`\`\``
     : null;
   const hasDescription = Boolean(children);
+  const showStatusRow = variant || sourceUrl || npmUrl;
+
+  const links = [
+    sourceUrl ? { key: "github", href: sourceUrl, label: "GitHub" } : null,
+    npmUrl ? { key: "npm", href: npmUrl, label: "npm" } : null,
+  ].filter(Boolean);
 
   return React.createElement("div", { style: containerStyle }, [
     React.createElement(
       "h1",
       { key: "title" },
       title,
-      " ",
-      React.createElement(
-        "span",
-        { className: "sb-unstyled", style: titleTagStyle },
-        `(${tagName})`,
-      ),
-    ),
-    React.createElement(
-      "div",
-      { style: statusContainerStyle, key: "status" },
-      React.createElement(
-        "div",
-        { style: statusHeaderStyle },
-        React.createElement(
-          "div",
-          { style: statusInfoStyle },
-          React.createElement("span", { style: labelStyle }, "Status:"),
-          React.createElement(
+      tagName
+        ? React.createElement(
             "span",
-            { style: badgeStyle(variant) },
-            React.createElement("span", {
-              "aria-hidden": "true",
-              style: indicatorStyle(variant),
-            }),
-            variant.label,
-          ),
-        ),
-        sourceUrl
-          ? React.createElement(
-              "a",
-              {
-                className: "sb-unstyled",
-                href: sourceUrl,
-                rel: "noopener noreferrer",
-                style: sourceLinkStyle,
-                target: "_blank",
-              },
-              "GitHub",
-            )
-          : null,
-      ),
+            { className: "sb-unstyled", style: { ...titleTagStyle, marginLeft: "0.25em" } },
+            `(${tagName})`,
+          )
+        : null,
     ),
+    showStatusRow
+      ? React.createElement(
+          "div",
+          { style: statusContainerStyle, key: "status" },
+          React.createElement(
+            "div",
+            { style: statusHeaderStyle },
+            variant
+              ? React.createElement(
+                  "div",
+                  { style: statusInfoStyle },
+                  React.createElement("span", { style: labelStyle }, "Status:"),
+                  React.createElement(
+                    "span",
+                    { style: badgeStyle(variant) },
+                    React.createElement("span", {
+                      "aria-hidden": "true",
+                      style: indicatorStyle(variant),
+                    }),
+                    variant.label,
+                  ),
+                )
+              : null,
+            ...links.map((link, index) => {
+              const isFirstWithoutBadge = !variant && index === 0;
+              return React.createElement(
+                "a",
+                {
+                  className: "sb-unstyled",
+                  href: link.href,
+                  key: link.key,
+                  rel: "noopener noreferrer",
+                  style: isFirstWithoutBadge
+                    ? { ...sourceLinkStyle, borderLeft: "none", paddingLeft: 0 }
+                    : sourceLinkStyle,
+                  target: "_blank",
+                },
+                link.label,
+              );
+            }),
+          ),
+        )
+      : null,
     hasDescription
       ? React.createElement("div", { key: "description", style: descriptionStyle }, children)
       : null,

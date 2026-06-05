@@ -1,0 +1,129 @@
+import { Meta } from "@storybook/blocks";
+import StorybookPageHeader from "../_components/storybook-page-header.js";
+
+<Meta title="Get Started/Developers" />
+
+<StorybookPageHeader
+  status="none"
+  title="Developers"
+  sourceUrl="https://github.com/shopware/meteor"
+/>
+
+Meteor is a monorepo that publishes each part of the design system as a standalone npm package. You can adopt the full stack or pick only what your project needs: the component library, the token set, and the icon kit are all independently installable and versioned.
+
+Install only what your project needs.
+
+## Component library
+
+The component library requires Vue 3 and includes the full component set, design tokens, icon components, and the Inter font.
+
+### Install
+
+```sh
+npm install @shopware-ag/meteor-component-library @shopware-ag/meteor-icon-kit
+```
+
+### Import styles
+
+Add both imports to your application entry point.
+
+```ts
+import "@shopware-ag/meteor-component-library/styles.css";
+import "@shopware-ag/meteor-component-library/font.css";
+```
+
+### TypeScript
+
+All components ship with TypeScript declarations. No additional setup is required. Types are resolved automatically when you import from `@shopware-ag/meteor-component-library`.
+
+### Configure i18n
+
+English and German translations are bundled. Register `vue-i18n` before mounting your app.
+
+```ts
+import { createApp } from "vue";
+import { createI18n } from "vue-i18n";
+import App from "./App.vue";
+
+const i18n = createI18n({ legacy: false });
+
+createApp(App).use(i18n).mount("#app");
+```
+
+### Use components
+
+Components are tree-shakable. Import only what you use.
+
+```vue
+<script setup>
+import { MtButton, MtBanner } from "@shopware-ag/meteor-component-library";
+</script>
+
+<template>
+  <MtButton variant="primary">Save</MtButton>
+  <MtBanner variant="success">Saved successfully.</MtBanner>
+</template>
+```
+
+## Tokens
+
+The token package is framework-agnostic. It works in any HTML/CSS project, whether or not you use Vue. Install it independently whenever you need Meteor's design decisions without the component library.
+
+### Install
+
+```sh
+npm install @shopware-ag/meteor-tokens
+```
+
+### Import
+
+Import both theme files. The light file sets tokens on `:root`, the dark file activates under `[data-theme="dark"]`.
+
+```ts
+import "@shopware-ag/meteor-tokens/administration/light.css";
+import "@shopware-ag/meteor-tokens/administration/dark.css";
+```
+
+### Use
+
+```css
+.my-component {
+  color: var(--color-text-primary-default);
+  background: var(--color-elevation-surface-default);
+  padding: var(--scale-size-16);
+}
+```
+
+## Icons
+
+The icon kit can be used standalone in any framework as SVGs, or as Vue components via `mt-icon` in the component library.
+
+### Install
+
+```sh
+npm install @shopware-ag/meteor-icon-kit
+```
+
+### Import as SVG
+
+```ts
+import PlusIcon from "@shopware-ag/meteor-icon-kit/icons/regular/plus.svg";
+```
+
+### Use with mt-icon (Vue)
+
+`mt-icon` is included in the component library and renders any icon by name.
+
+```html
+<mt-icon name="regular-plus" /> <mt-icon name="solid-checkmark" size="20px" />
+```
+
+## Browser support
+
+Meteor targets all major evergreen browsers. Features used in the component library and token package are limited to those with **Baseline Newly Available** status, meaning they are supported across Chrome, Edge, Firefox, and Safari with no polyfills required.
+
+Legacy browsers and non-evergreen environments are not supported.
+
+## Changelog
+
+The full release history for all Meteor packages is available in the [changelog on GitHub](https://github.com/shopware/meteor/releases).

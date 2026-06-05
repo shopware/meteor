@@ -1,11 +1,11 @@
 import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
 
 import * as SelectStories from "./mt-select.stories";
-import ComponentPageHeader from "../../_docs/component-page-header.js";
+import StorybookPageHeader from "../../../docs/_components/storybook-page-header.js";
 
 <Meta of={SelectStories} />
 
-<ComponentPageHeader
+<StorybookPageHeader
   title="Select"
   tagName="mt-select"
   packageImports="MtSelect"
@@ -14,7 +14,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
   **Select** lets users choose one or more values from a list of predefined
   options. It works well when the available values should come from a controlled
   dataset and the field can help users search within that list.
-</ComponentPageHeader>
+</StorybookPageHeader>
 
 ## When to use
 
@@ -74,12 +74,12 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 ## Comparisons
 
-### **Select** vs **Radio Group**
+### Select vs Radio Group
 
 - Use **Select** when the option list is longer, space is limited, or search helps users find the right value.
 - Use **Radio Group** when a small set of options should stay visible so users can compare them directly.
 
-### **Select** vs **Checkbox**
+### Select vs Checkbox
 
 - Use **Select** when users should choose one value, or a constrained subset of values, from a predefined list.
 - Use **Checkbox** when users are toggling independent options on and off rather than choosing from a shared option set.

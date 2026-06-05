@@ -1,18 +1,18 @@
 import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
 
 import * as SwitchStories from "./mt-switch.stories";
-import ComponentPageHeader from "../../_docs/component-page-header.js";
+import StorybookPageHeader from "../../../docs/_components/storybook-page-header.js";
 
 <Meta of={SwitchStories} />
 
-<ComponentPageHeader
+<StorybookPageHeader
   title="Switch"
   tagName="mt-switch"
   packageImports="MtSwitch"
   sourcePath="packages/component-library/src/components/form/mt-switch"
 >
   **Switch** lets users turn a setting on or off directly from the interface.
-</ComponentPageHeader>
+</StorybookPageHeader>
 
 ## When to use
 
@@ -60,7 +60,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 ## Comparisons
 
-### **Switch** vs **Checkbox**
+### Switch vs Checkbox
 
 - Use **Switch** for a single setting that turns something on or off immediately.
 - Use **Checkbox** when users are selecting items or confirming a value as part of a broader form submission flow.

@@ -1,11 +1,11 @@
 import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
 
 import * as ProgressBarStories from "./mt-progress-bar.stories";
-import ComponentPageHeader from "../../_docs/component-page-header.js";
+import StorybookPageHeader from "../../../docs/_components/storybook-page-header.js";
 
 <Meta of={ProgressBarStories} />
 
-<ComponentPageHeader
+<StorybookPageHeader
   title="Progress Bar"
   tagName="mt-progress-bar"
   packageImports="MtProgressBar"
@@ -14,7 +14,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
   **Progress Bar** visualizes determinate progress within a known range. Use it
   when users benefit from seeing how much work is completed and how much is
   still left.
-</ComponentPageHeader>
+</StorybookPageHeader>
 
 ## When to use
 
@@ -68,7 +68,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 ## Comparisons
 
-### **Progress Bar** vs **Loader**
+### Progress Bar vs Loader
 
 - Use **Progress Bar** when you know the current progress and can communicate it meaningfully.
 - Use **Loader** when work is in progress but the exact completion amount is unknown.

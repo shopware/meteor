@@ -1,11 +1,11 @@
 import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
 
 import * as EntityDataTableStories from "./mt-entity-data-table.stories";
-import ComponentPageHeader from "../../_docs/component-page-header.js";
+import StorybookPageHeader from "../../../docs/_components/storybook-page-header.js";
 
 <Meta of={EntityDataTableStories} title="Components/Entity Data Table" />
 
-<ComponentPageHeader
+<StorybookPageHeader
   title="Entity Data Table"
   tagName="mt-entity-data-table"
   status="experimental"
@@ -15,7 +15,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
   **Entity Data Table** is a repository-backed version of **Data Table**. It
   owns loading and table state for Admin SDK entity data so the parent can focus
   on columns and actions.
-</ComponentPageHeader>
+</StorybookPageHeader>
 
 ## When to use
 
@@ -59,7 +59,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 ## Comparisons
 
-### **Entity Data Table** vs **Data Table**
+### Entity Data Table vs Data Table
 
 - Use **Entity Data Table** for Admin SDK repository data with built-in loading and table state.
 - Use **Data Table** when the parent component should own fetching and state management.

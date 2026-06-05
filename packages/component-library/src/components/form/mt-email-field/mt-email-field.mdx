@@ -1,11 +1,11 @@
 import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
 
 import * as EmailFieldStories from "./mt-email-field.stories";
-import ComponentPageHeader from "../../_docs/component-page-header.js";
+import StorybookPageHeader from "../../../docs/_components/storybook-page-header.js";
 
 <Meta of={EmailFieldStories} />
 
-<ComponentPageHeader
+<StorybookPageHeader
   title="Email Field"
   tagName="mt-email-field"
   packageImports="MtEmailField"
@@ -13,7 +13,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 >
   **Email Field** helps users enter and validate a single email address in a
   form.
-</ComponentPageHeader>
+</StorybookPageHeader>
 
 ## When to use
 
@@ -57,7 +57,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 ## Comparisons
 
-### **Email Field** vs **Text Field**
+### Email Field vs Text Field
 
 - Use **Email Field** when the value must be an email address and email-specific input behavior is helpful.
 - Use **Text Field** when the value is general text and should not be constrained to an email format.

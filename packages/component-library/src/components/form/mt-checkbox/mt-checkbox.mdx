@@ -1,11 +1,11 @@
 import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
 
 import * as CheckboxStories from "./mt-checkbox.stories";
-import ComponentPageHeader from "../../_docs/component-page-header.js";
+import StorybookPageHeader from "../../../docs/_components/storybook-page-header.js";
 
 <Meta of={CheckboxStories} />
 
-<ComponentPageHeader
+<StorybookPageHeader
   title="Checkbox"
   tagName="mt-checkbox"
   packageImports="MtCheckbox"
@@ -13,7 +13,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 >
   **Checkbox** lets users select an independent yes or no value, or choose
   multiple items from a list.
-</ComponentPageHeader>
+</StorybookPageHeader>
 
 ## When to use
 
@@ -63,12 +63,12 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 ## Comparisons
 
-### **Checkbox** vs **Radio Group**
+### Checkbox vs Radio Group
 
 - Use **Checkbox** when users can turn an option on or off independently, or when multiple options can be selected.
 - Use **Radio Group** when users must choose exactly one option from a small set of visible choices.
 
-### **Checkbox** vs **Select**
+### Checkbox vs Select
 
 - Use **Checkbox** for a single boolean setting or when a small set of options should stay visible on the page.
 - Use **Select** when users need to choose from a longer list or when space is limited.

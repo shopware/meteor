@@ -1,11 +1,11 @@
 import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
 
 import * as SliderStories from "./mt-slider.stories";
-import ComponentPageHeader from "../../_docs/component-page-header.js";
+import StorybookPageHeader from "../../../docs/_components/storybook-page-header.js";
 
 <Meta of={SliderStories} />
 
-<ComponentPageHeader
+<StorybookPageHeader
   title="Slider"
   tagName="mt-slider"
   packageImports="MtSlider"
@@ -13,7 +13,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 >
   **Slider** lets users choose a numeric value or range by dragging a handle
   along a scale.
-</ComponentPageHeader>
+</StorybookPageHeader>
 
 ## When to use
 
@@ -61,7 +61,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 ## Comparisons
 
-### **Slider** vs **Number Field**
+### Slider vs Number Field
 
 - Use **Slider** when users benefit from adjusting a value along a visible range.
 - Use **Number Field** when precise numeric entry matters more than direct manipulation.

@@ -1,11 +1,11 @@
 import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
 
 import * as NumberFieldStories from "./mt-number-field.stories";
-import ComponentPageHeader from "../../_docs/component-page-header.js";
+import StorybookPageHeader from "../../../docs/_components/storybook-page-header.js";
 
 <Meta of={NumberFieldStories} />
 
-<ComponentPageHeader
+<StorybookPageHeader
   title="Number Field"
   tagName="mt-number-field"
   packageImports="MtNumberField"
@@ -13,7 +13,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 >
   **Number Field** lets users enter numeric values with optional limits, steps,
   and controls.
-</ComponentPageHeader>
+</StorybookPageHeader>
 
 ## When to use
 
@@ -57,7 +57,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 ## Comparisons
 
-### **Number Field** vs **Text Field**
+### Number Field vs Text Field
 
 - Use **Number Field** when the value should behave like a number with numeric constraints or stepping.
 - Use **Text Field** when numeric-looking content should stay as plain text.
