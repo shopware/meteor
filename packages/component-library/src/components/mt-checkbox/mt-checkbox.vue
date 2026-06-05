@@ -14,7 +14,7 @@
             @change.stop="onChange"
           />
           <div class="mt-field__checkbox-state">
-            <mt-icon :name="iconName" />
+            <mt-icon :name="iconName" size="var(--scale-size-10)" />
           </div>
         </div>
 
@@ -185,7 +185,7 @@ export default defineComponent({
     const futureFlags = useFutureFlags();
 
     const checkboxClasses = computed(() => ({
-      "mt-switch--future-remove-default-margin": futureFlags.removeDefaultMargin,
+      "mt-checkbox--future-remove-default-margin": futureFlags.removeDefaultMargin,
     }));
 
     return {
@@ -265,7 +265,7 @@ export default defineComponent({
     },
 
     iconName(): string {
-      return this.isPartlyChecked ? "regular-minus-xxs" : "regular-checkmark-xxs";
+      return this.isPartlyChecked ? "solid-minus-xs" : "solid-checkmark-xs";
     },
   },
 
@@ -318,7 +318,7 @@ export default defineComponent({
   & .mt-field--checkbox {
     margin-bottom: var(--scale-size-22);
 
-    &.mt-switch--future-remove-default-margin {
+    &.mt-checkbox--future-remove-default-margin {
       margin-bottom: 0;
     }
 
@@ -359,7 +359,10 @@ export default defineComponent({
     & .mt-field__checkbox {
       width: var(--scale-size-16);
       height: var(--scale-size-16);
+      margin-top: 3px;
       position: relative;
+      display: flex;
+      align-items: center;
 
       &:has(:focus-visible) {
         outline: 2px solid var(--color-border-brand-default);
@@ -402,15 +405,6 @@ export default defineComponent({
           }
         }
 
-        &:checked:disabled ~ .mt-field__checkbox-state {
-          background: var(--color-background-tertiary-default);
-          border-color: var(--color-border-primary-default);
-
-          & .mt-icon {
-            color: var(--color-border-primary-default);
-          }
-        }
-
         &:indeterminate ~ .mt-field__checkbox-state {
           background-color: var(--color-interaction-primary-default);
           border: 1px solid var(--color-interaction-primary-default);
@@ -418,6 +412,16 @@ export default defineComponent({
           & .mt-icon {
             display: inline-block;
             color: var(--color-static-white);
+          }
+        }
+
+        &:checked:disabled ~ .mt-field__checkbox-state,
+        &:indeterminate:disabled ~ .mt-field__checkbox-state {
+          background: var(--color-background-tertiary-default);
+          border-color: var(--color-border-primary-default);
+
+          & .mt-icon {
+            color: var(--color-border-primary-default);
           }
         }
       }
@@ -435,6 +439,9 @@ export default defineComponent({
         display: flex;
         justify-content: center;
         align-items: center;
+        transition-property: color, background-color, border-color;
+        transition-duration: 0.1s;
+        transition-timing-function: ease;
 
         & .mt-icon {
           display: none;
@@ -482,11 +489,15 @@ export default defineComponent({
     &.is--bordered {
       border-radius: 4px;
       border: 1px solid var(--color-border-primary-default);
-      padding: var(--scale-size-16);
+      padding-inline: var(--scale-size-12);
 
       &.has--error {
         border-color: var(--color-border-critical-default);
       }
+    }
+
+    &:not(.is--disabled) .mt-field__label label {
+      cursor: pointer;
     }
   }
 
