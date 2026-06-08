@@ -29,6 +29,12 @@ import StorybookPageHeader from "../../../docs/_components/storybook-page-header
 
 <Canvas of={FloatingUiStories.Default} />
 
+### Multiple anchors
+
+Use `detached` mode together with `anchorElement` to share one floating surface across multiple triggers. The floating panel repositions itself to each anchor as the user hovers, and a short close delay keeps it reachable when the cursor travels from trigger to panel.
+
+<Canvas of={FloatingUiStories.MultipleAnchors} />
+
 ## API reference
 
 <ArgTypes of={FloatingUiStories} />

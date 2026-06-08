@@ -1,6 +1,6 @@
 import { Meta } from "@storybook/blocks";
-import StorybookPageHeader from "../_components/storybook-page-header.js";
-import DoDont from "../_components/do-dont.js";
+import StorybookPageHeader from "../../_components/storybook-page-header.js";
+import DoDont from "../../_components/do-dont.js";
 
 <Meta title="Foundations/Tokens/Border Radius" />
 
@@ -8,11 +8,11 @@ import DoDont from "../_components/do-dont.js";
 
 Border radius decisions made ad hoc produce interfaces where similar elements have subtly different shapes, making the UI feel unpolished without an obvious cause.
 
-Meteor provides two layers of border radius tokens: a named scale for general use, and semantic tokens that encode the correct radius for specific component types. Always prefer a semantic token when one exists for your use case. Fall back to the scale when no semantic token applies.
+Meteor provides two layers of border radius tokens: semantic tokens for general use, and element-scoped tokens that encode the correct radius for specific component types. Always prefer an element-scoped token when one exists for your use case. Fall back to semantic tokens when no element-scoped token applies.
 
-## Semantic tokens
+## Element-scoped tokens
 
-Semantic tokens encode the right radius for specific element types. Use these before reaching for a scale step.
+Element-scoped tokens encode the right radius for specific element types. Use these before reaching for a semantic token.
 
 | Token                      | Value | Use for                              |
 | -------------------------- | ----- | ------------------------------------ |
@@ -20,9 +20,9 @@ Semantic tokens encode the right radius for specific element types. Use these be
 | `--border-radius-button`   | 4px   | Buttons and button-like controls     |
 | `--border-radius-checkbox` | 4px   | Checkboxes and similar input toggles |
 
-## Scale tokens
+## Semantic tokens
 
-Use scale tokens when no semantic token fits your element.
+Use semantic tokens when no element-scoped token fits your element.
 
 | Token                   | Value  |
 | ----------------------- | ------ |
@@ -38,26 +38,14 @@ Use scale tokens when no semantic token fits your element.
 | `--border-radius-4xl`   | 32px   |
 | `--border-radius-round` | 9999px |
 
-`--border-radius-round` produces a fully rounded shape (pill or circle) regardless of element size.
-
 ## Usage
 
 <DoDont
-  do="Use --border-radius-card for cards and --border-radius-button for buttons."
-  dont="Use a scale token for a card or button when a semantic token already exists."
-/>
-
-<DoDont
-  do="Use --border-radius-none to explicitly remove radius from an element."
-  dont="Use border-radius: 0 as a hardcoded value."
-/>
-
-<DoDont
   do="Use --border-radius-round for pill badges, avatar circles, and fully rounded tags."
-  dont="Use a large arbitrary value like border-radius: 999px."
+  dont="Use a large arbitrary value like border-radius: 999px or 50%."
 />
 
 <DoDont
   do="Use border-radius tokens for corner radii."
-  dont="Use scale tokens (--scale-size-*) for border-radius. They serve a different purpose and are separately maintained."
+  dont="Use scale tokens (--scale-size-*) for border-radius. Using scale directly removes the semantic layer and doesn't allow for theming or updates on border radius tokens."
 />

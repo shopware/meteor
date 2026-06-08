@@ -1,6 +1,6 @@
 import { Meta } from "@storybook/blocks";
-import StorybookPageHeader from "../_components/storybook-page-header.js";
-import DoDont from "../_components/do-dont.js";
+import StorybookPageHeader from "../../_components/storybook-page-header.js";
+import DoDont from "../../_components/do-dont.js";
 
 <Meta title="Foundations/Content/Wording" />
 
@@ -38,15 +38,15 @@ You should (almost) always write in the active voice. In active voice, the subje
 />
 
 <DoDont
-  do="Invoices are created monthly and emailed to j.miller@acme.inc"
-  dont="Shopware creates and emails your invoices monthly to j.miller@acme.inc"
+  do="The customer placed the order"
+  dont="The order was placed by the customer"
 />
 
 > **Tip:** Words like "was" and "by" often indicate passive voice. Scan for these and rework sentences where they appear.
 
 When to use passive voice:
 
-- To avoid referring to yourself or Shopware
+- To avoid referring to yourself or Shopware, for example, "Invoices are created monthly and emailed to you" avoids an unnecessary Shopware subject
 - To make it clear you didn't personally take an action
 - When the object is more important than the subject
 
@@ -87,8 +87,8 @@ We champion **people-first language**: keep the individual as the most important
 > **Tip:** If the abbreviation is well known (like API or HTML), use it directly without spelling it out.
 
 <DoDont
-  do="We've made some changes to improve your store's security"
-  dont="We've activated your SSL certificates"
+  do="Your store now supports cross-border payments through the Open Banking protocol."
+  dont="Your store now supports cross-border payments through OBP."
 />
 
 ## Capitalisation
@@ -120,30 +120,6 @@ In English, use "you" and "your" for all audiences.
 In German, use the informal address for users. In the Shopware Admin, Du, Dich, Dir, and Dein are capitalised as a sign of respect, even though standard German grammar does not require it.
 
 Example: Speichere das Produkt, bevor Du die Seite verlässt.
-
-## Form validation
-
-Validation messages appear inline, next to the field that failed. They are the most-read copy in any form, so precision matters.
-
-Write validation messages that tell the user what went wrong and what to do about it. Avoid blaming the user or restating what the label already says.
-
-<DoDont do="Enter a valid email address." dont="Invalid email." />
-
-<DoDont
-  do="Password must be at least 8 characters."
-  dont="Password is too short."
-/>
-
-For `helpText` (the supporting text shown below a field before any error), explain the constraint upfront so users do not encounter a validation error in the first place.
-
-<DoDont
-  do="Must be at least 8 characters and include a number."
-  dont="Enter your password."
-/>
-
-Required field labels use the word "required" only when most fields in the form are optional. When most fields are required, mark the exceptions as "optional" instead.
-
-For broader message writing guidelines covering errors, success, warnings, and info messages, see the [Messaging](?path=/docs/foundations-content-messaging--docs) page.
 
 ## Glossary
 

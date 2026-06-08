@@ -1,13 +1,13 @@
 import { Meta } from "@storybook/blocks";
-import StorybookPageHeader from "../_components/storybook-page-header.js";
-import DoDont from "../_components/do-dont.js";
-import TypographyScale from "../_components/typography-scale.js";
+import StorybookPageHeader from "../../_components/storybook-page-header.js";
+import DoDont from "../../_components/do-dont.js";
+import TypographyScale from "../../_components/typography-scale.js";
 
 <Meta title="Foundations/Tokens/Typography" />
 
 <StorybookPageHeader status="none" title="Typography" />
 
-Meteor uses Inter as its single typeface. All type sizes, weights, and line heights are available as CSS custom properties and via the `mt-text` component.
+Meteor uses Inter as its single typeface. All type sizes, weights, and line heights are available as CSS custom properties and via the [Text](?path=/docs/components-text--docs) component.
 
 ## Font family
 
@@ -30,7 +30,7 @@ Create hierarchy through size and weight, not decoration. A clear hierarchy guid
 
 - Use one prominent size per section. Combining multiple large sizes on a single screen competes for attention rather than directing it.
 - Increase weight before increasing size. Stepping up from `regular` to `semibold` at the same size creates sufficient contrast for labels, headings, and interactive elements.
-- Reserve `3xl` and `2xl` for page-level titles and major section headers. Use `xl` and `l` for subsections. Card titles use `m`. Use `s` and `xs` for body copy, supporting labels, and metadata. `xs` is the preferred default for body text.
+- Reserve `3xl` and `2xl` for page-level titles and major section headers. Use `xl` and `l` for subsections. Use `m` and `s` for card and section headlines. Use `xs` for body copy, supporting labels, and metadata.
 - Secondary information should use `--color-text-secondary-default`, not a smaller size. Reducing size too aggressively harms legibility.
 
 ## Line length
@@ -39,7 +39,7 @@ Keep body copy between 60 and 80 characters per line. Use `max-width: 65ch` on t
 
 ## Usage
 
-Use `mt-text` to render text in components. It accepts `size`, `weight`, `color`, and `as` props and applies the correct token combination automatically.
+Use the [Text](?path=/docs/components-text--docs) component to render text. It accepts `size`, `weight`, `color`, and `as` props and applies the correct token combination automatically.
 
 ```html
 <mt-text size="2xl" weight="semibold">Page title</mt-text>

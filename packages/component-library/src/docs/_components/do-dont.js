@@ -3,35 +3,33 @@ import React from "react";
 const gridStyle = {
   display: "grid",
   gridTemplateColumns: "1fr 1fr",
-  gap: "var(--scale-size-16)",
-  margin: "var(--scale-size-24) 0",
+  gap: "16px",
+  margin: "24px 0",
 };
 
 const cardStyle = (isdo) => ({
-  borderRadius: "var(--border-radius-xs)",
-  padding: "var(--scale-size-10) var(--scale-size-16)",
-  backgroundColor: isdo
-    ? "var(--color-background-positive-default)"
-    : "var(--color-background-critical-default)",
+  borderRadius: "4px",
+  padding: "10px 16px",
+  backgroundColor: isdo ? "#e1ffe0" : "#fff2f0",
 });
 
 const labelStyle = (isdo) => ({
   display: "flex",
   alignItems: "center",
-  gap: "var(--scale-size-6)",
-  fontSize: "var(--font-size-xs)",
+  gap: "6px",
+  fontSize: "14px",
   fontWeight: 700,
-  lineHeight: "var(--font-line-height-xs)",
-  color: isdo ? "var(--color-text-positive-default)" : "var(--color-text-critical-default)",
-  marginBottom: "var(--scale-size-8)",
+  lineHeight: "22px",
+  color: isdo ? "#00470a" : "#e2262a",
+  marginBottom: "8px",
   textTransform: "uppercase",
   letterSpacing: "0.05em",
 });
 
 const textStyle = {
-  fontSize: "var(--font-size-s)",
-  lineHeight: "var(--font-line-height-s)",
-  color: "var(--color-text-primary-default)",
+  fontSize: "16px",
+  lineHeight: "26px",
+  color: "#1e1e24",
   margin: 0,
 };
 

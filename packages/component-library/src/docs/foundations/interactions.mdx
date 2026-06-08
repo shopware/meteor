@@ -17,13 +17,8 @@ Design and test with all four input methods in mind.
 
 - **Mouse:** Hover states must appear immediately. Hit areas should be comfortably large. Use `cursor: pointer` to signal interactivity.
 - **Keyboard:** Every element must be reachable by Tab and operable with Enter or Space. Focus order should follow reading order. Never suppress the focus ring.
-- **Touch:** Targets must be at least 44x44px. Hover states do not exist; never gate actions or labels behind hover.
+- **Touch:** Targets must be at least 40x40px. Hover states do not exist; never gate actions or labels behind hover.
 - **Voice:** Every control needs a meaningful visible label. Icon-only buttons must have an `aria-label` matching what a user would say to activate it.
-
-<DoDont
-  do="Design interactive elements to work without hover as a required step. Hover should enhance, not gate."
-  dont="Put critical actions or labels behind hover-only states. Touch and voice users will never see them."
-/>
 
 ## Communicating affordance
 
@@ -37,14 +32,9 @@ Unavailable actions should remain visible but clearly inactive. A disabled state
 
 Once a user acts, the interface should respond immediately. Even if the operation takes time, the system should acknowledge the input right away.
 
-- For operations that take time, show a spinner or progress indicator so the user knows work is in progress.
-- For completed actions that do not require a new page or view, use a snackbar to confirm the outcome without interrupting the flow.
+- For operations that take time, show a [Loader](?path=/docs/components-loader--docs) or [Progress Bar](?path=/docs/components-progress-bar--docs) so the user knows work is in progress.
+- For completed actions that do not require a new page or view, use a [Snackbar](?path=/docs/components-snackbar--docs) to confirm the outcome without interrupting the flow.
 - For failures, explain what went wrong and what the user can do to resolve it. Surface errors close to where the problem occurred rather than in a generic top-level message.
-
-<DoDont
-  do="Acknowledge every user action immediately, even if the result takes time to arrive."
-  dont="Leave the interface unchanged after an action. Users will not know whether their input was received."
-/>
 
 ## Critical actions
 
@@ -55,11 +45,6 @@ Use the `critical` variant on components and the corresponding critical color to
 - Use `--color-interaction-critical-default` and its state variants for interactive controls.
 - Use `--color-text-critical-*` and `--color-icon-critical-*` tokens for supporting text, icons, and inline warnings.
 - Always pair a critical action with a confirmation step. Never trigger a destructive operation on a single click.
-
-<DoDont
-  do="Use the critical button variant and a confirmation dialog for destructive actions such as deleting a product or revoking access."
-  dont="Use a default or primary button for destructive actions. Users cannot distinguish them from safe actions at a glance."
-/>
 
 ## Focus ring
 

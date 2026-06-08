@@ -11,8 +11,6 @@ import StorybookPageHeader from "../_components/storybook-page-header.js";
 
 Meteor is a monorepo that publishes each part of the design system as a standalone npm package. You can adopt the full stack or pick only what your project needs: the component library, the token set, and the icon kit are all independently installable and versioned.
 
-Install only what your project needs.
-
 ## Component library
 
 The component library requires Vue 3 and includes the full component set, design tokens, icon components, and the Inter font.
@@ -114,13 +112,15 @@ import PlusIcon from "@shopware-ag/meteor-icon-kit/icons/regular/plus.svg";
 
 `mt-icon` is included in the component library and renders any icon by name.
 
+{/* prettier-ignore */}
 ```html
-<mt-icon name="regular-plus" /> <mt-icon name="solid-checkmark" size="20px" />
+<mt-icon name="regular-plus" />
+<mt-icon name="solid-checkmark" size="20px" />
 ```
 
 ## Browser support
 
-Meteor targets all major evergreen browsers. Features used in the component library and token package are limited to those with **Baseline Newly Available** status, meaning they are supported across Chrome, Edge, Firefox, and Safari with no polyfills required.
+Meteor targets all major evergreen browsers. Features used in the component library and token package are limited to those with [Baseline Newly Available](https://developer.mozilla.org/en-US/docs/Glossary/Baseline/Compatibility) status, a web platform interoperability signal meaning the feature is supported in the latest stable releases of Chrome, Edge, Firefox, and Safari with no polyfills required.
 
 Legacy browsers and non-evergreen environments are not supported.
 

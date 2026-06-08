@@ -10,6 +10,12 @@
       sans-serif !important;
   }
 
+  .sbdocs pre:not(.docs-story *),
+  .sbdocs pre:not(.docs-story *) * {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+      "Liberation Mono", "Courier New", monospace !important;
+  }
+
   .sbdocs :is(h1, h2, h3, h4, h5, h6):not(.docs-story *) {
     font-weight: 600 !important;
     border-bottom: none !important;
@@ -70,9 +76,17 @@
   .sbdocs-preview .docs-story,
   .sbdocs-preview .sb-story-wrapper,
   .sbdocs-preview .sb-preview-container,
+  .sbdocs-preview .sb-unstyled,
   .docblock-source pre {
     border: none !important;
     box-shadow: none !important;
+  }
+
+  .sbdocs-preview .docs-story,
+  .sbdocs-preview .sb-story-wrapper,
+  .sbdocs-preview .sb-preview-container,
+  .sbdocs-preview .sb-unstyled {
+    background-color: var(--color-elevation-surface-default) !important;
   }
 
   div:has(> .docblock-argstable) {
@@ -107,11 +121,6 @@
     font-size: 0.875em !important;
   }
 
-  .sbdocs:not(.docs-story *) div:has(> table),
-  .sbdocs:not(.docs-story *) table {
-    overflow-x: auto !important;
-  }
-
   .sbdocs table:not(.docs-story *) {
     width: 100% !important;
     border-collapse: separate !important;
@@ -126,16 +135,19 @@
   }
 
   .sbdocs table:not(.docs-story *) th,
-  [class*="css-"]
-    :where(table:not(.sb-anchor, .sb-unstyled, .sb-unstyled table))
+  .sbdocs
+    [class*="css-"]
+    :where(
+      table:not(.sb-anchor, .sb-unstyled, .sb-unstyled table):not(.docs-story *)
+    )
     tr
-    th {
+    th:not(.docs-story *) {
     text-align: left !important;
     font-weight: 600 !important;
     font-size: 14px !important;
     text-transform: none !important;
     letter-spacing: normal !important;
-    color: var(--color-text-primary-default) !important;
+    color: #1e1e24 !important;
     padding: 0.5rem 1rem !important;
     border: none !important;
     border-bottom: 1px solid #e2e3e9 !important;
@@ -148,10 +160,13 @@
   }
 
   .sbdocs table:not(.docs-story *) td,
-  [class*="css-"]
-    :where(table:not(.sb-anchor, .sb-unstyled, .sb-unstyled table))
+  .sbdocs
+    [class*="css-"]
+    :where(
+      table:not(.sb-anchor, .sb-unstyled, .sb-unstyled table):not(.docs-story *)
+    )
     tr
-    td {
+    td:not(.docs-story *) {
     padding: 0.625rem 1rem !important;
     color: #1e1e24 !important;
     background: none !important;
@@ -168,9 +183,12 @@
   .sbdocs table:not(.docs-story *) tr,
   .sbdocs table:not(.docs-story *) tr:nth-child(even),
   .sbdocs table:not(.docs-story *) tr:nth-child(odd),
-  [class*="css-"]
-    :where(table:not(.sb-anchor, .sb-unstyled, .sb-unstyled table))
-    tr {
+  .sbdocs
+    [class*="css-"]
+    :where(
+      table:not(.sb-anchor, .sb-unstyled, .sb-unstyled table):not(.docs-story *)
+    )
+    tr:not(.docs-story *) {
     background: none !important;
     border-top: none !important;
   }

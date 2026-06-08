@@ -115,7 +115,7 @@ export const ModeProp: MtIconStory = {
             size="var(--scale-size-20)"
             color="var(--color-icon-primary-default)"
           />
-          <span>Regular</span>
+          <span style="color: var(--color-text-primary-default); font-size: var(--font-size-xs);">Regular</span>
         </div>
         <div style="display: grid; gap: 8px; justify-items: center;">
           <mt-icon
@@ -124,7 +124,7 @@ export const ModeProp: MtIconStory = {
             size="var(--scale-size-20)"
             color="var(--color-icon-primary-default)"
           />
-          <span>Solid</span>
+          <span style="color: var(--color-text-primary-default); font-size: var(--font-size-xs);">Solid</span>
         </div>
       </div>
     `,
@@ -153,37 +153,37 @@ export const PreferredSizes: MtIconStory = {
     template: `
       <div style="display: grid; gap: 20px;">
         <div style="display: grid; gap: 12px;">
-          <strong>Preferred sizes</strong>
+          <strong style="color: var(--color-text-primary-default); font-size: var(--font-size-xs);">Preferred sizes</strong>
           <div style="display: flex; gap: 24px; flex-wrap: wrap; align-items: end;">
             <div style="display: grid; gap: 8px; justify-items: center; align-content: end;">
               <mt-icon name="products" mode="regular" size="var(--scale-size-24)" color="var(--color-icon-primary-default)" />
-              <span>24px</span>
+              <span style="color: var(--color-text-secondary-default); font-size: var(--font-size-xs);">24px</span>
             </div>
             <div style="display: grid; gap: 8px; justify-items: center; align-content: end;">
               <mt-icon name="products" mode="regular" size="var(--scale-size-20)" color="var(--color-icon-primary-default)" />
-              <span>20px</span>
+              <span style="color: var(--color-text-secondary-default); font-size: var(--font-size-xs);">20px</span>
             </div>
             <div style="display: grid; gap: 8px; justify-items: center; align-content: end;">
               <mt-icon name="products" mode="regular" size="var(--scale-size-16)" color="var(--color-icon-primary-default)" />
-              <span>16px</span>
+              <span style="color: var(--color-text-secondary-default); font-size: var(--font-size-xs);">16px</span>
             </div>
           </div>
         </div>
 
         <div style="display: grid; gap: 12px;">
-          <strong>Smaller exceptions in dense UI</strong>
+          <strong style="color: var(--color-text-primary-default); font-size: var(--font-size-xs);">Smaller exceptions in dense UI</strong>
           <div style="display: flex; gap: 24px; flex-wrap: wrap; align-items: end;">
             <div style="display: grid; gap: 8px; justify-items: center; align-content: end;">
               <mt-icon name="pencil-s" mode="solid" size="var(--scale-size-14)" color="var(--color-icon-primary-default)" />
-              <span>14px</span>
+              <span style="color: var(--color-text-secondary-default); font-size: var(--font-size-xs);">14px</span>
             </div>
             <div style="display: grid; gap: 8px; justify-items: center; align-content: end;">
               <mt-icon name="clock" mode="solid" size="var(--scale-size-12)" color="var(--color-icon-primary-default)" />
-              <span>12px</span>
+              <span style="color: var(--color-text-secondary-default); font-size: var(--font-size-xs);">12px</span>
             </div>
             <div style="display: grid; gap: 8px; justify-items: center; align-content: end;">
               <mt-icon name="chevron-right-s" mode="regular" size="var(--scale-size-10)" color="var(--color-icon-primary-default)" />
-              <span>10px</span>
+              <span style="color: var(--color-text-secondary-default); font-size: var(--font-size-xs);">10px</span>
             </div>
           </div>
         </div>
@@ -265,7 +265,7 @@ export const ColorTokens: MtIconStory = {
             :color="example.color"
             decorative
           />
-          <code>{{ example.color }}</code>
+          <code style="color: var(--color-text-secondary-default); font-size: var(--font-size-xs);">{{ example.color }}</code>
         </div>
       </div>
     `,
@@ -280,7 +280,11 @@ export const CommonUsages: MtIconStory = {
       return {
         commonUsages: [
           { icon: "tachometer", label: "Dashboard" },
+          { icon: "home", label: "Home" },
           { icon: "products", label: "Products" },
+          { icon: "variants", label: "Product Variants" },
+          { icon: "barcode", label: "SKU / Barcode" },
+          { icon: "crossselling", label: "Cross-selling" },
           { icon: "shopping-bag", label: "Orders" },
           { icon: "users", label: "Customers" },
           { icon: "content", label: "Content" },
@@ -289,19 +293,56 @@ export const CommonUsages: MtIconStory = {
           { icon: "cog", label: "Settings" },
           { icon: "storefront", label: "Sales Channels" },
           { icon: "shopping-cart", label: "Shopping cart" },
+          { icon: "heart", label: "Wishlist" },
           { icon: "search", label: "Search" },
+          { icon: "filter", label: "Filter" },
+          { icon: "sort", label: "Sort" },
+          { icon: "bulk-edit", label: "Bulk edit" },
+          { icon: "eye", label: "Preview" },
           { icon: "sign-in", label: "Login/Signup" },
           { icon: "sign-out", label: "Logout" },
           { icon: "database", label: "Import/Export" },
+          { icon: "download", label: "Download / Export" },
+          { icon: "upload", label: "Upload / Import" },
           { icon: "rule", label: "Rule Builder" },
           { icon: "flow", label: "Flow Builder" },
+          { icon: "sitemap", label: "Categories" },
           { icon: "image", label: "Media" },
+          { icon: "folder", label: "Folder" },
           { icon: "file-text", label: "Documents" },
+          { icon: "tag", label: "Tags" },
+          { icon: "archive", label: "Archive" },
+          { icon: "calendar", label: "Date" },
+          { icon: "clock", label: "Scheduled / Pending" },
+          { icon: "history", label: "History" },
+          { icon: "link", label: "Link" },
           { icon: "credit-card", label: "Payment methods" },
+          { icon: "discount", label: "Promotions / Discounts" },
           { icon: "truck", label: "Shipping" },
+          { icon: "inventory", label: "Stock / Inventory" },
+          { icon: "warehouse", label: "Warehouse" },
           { icon: "analytics", label: "Analytics" },
           { icon: "user", label: "Users" },
+          { icon: "key", label: "API Key / Credentials" },
+          { icon: "tools-alt", label: "Maintenance" },
+          { icon: "server", label: "Server / Infrastructure" },
           { icon: "plans", label: "Shopware Plans" },
+          { icon: "shopware-nexus", label: "Shopware Nexus" },
+          { icon: "shopware-payments", label: "Shopware Payments" },
+          { icon: "shopware-intelligence", label: "Shopware Intelligence" },
+          { icon: "check-circle", label: "Success" },
+          { icon: "exclamation-circle", label: "Error" },
+          { icon: "exclamation-triangle", label: "Warning" },
+          { icon: "info-circle", label: "Info" },
+          { icon: "bell", label: "Notifications" },
+          { icon: "chevron-left", label: "Back / Previous" },
+          { icon: "chevron-right", label: "Forward / Next" },
+          { icon: "external-link", label: "Open in new tab" },
+          { icon: "plus", label: "Add / Create" },
+          { icon: "pencil-s", label: "Edit" },
+          { icon: "minus", label: "Remove" },
+          { icon: "trash", label: "Delete" },
+          { icon: "duplicate", label: "Duplicate" },
           { icon: "copy", label: "Copy" },
           { icon: "times", label: "Close" },
         ],
@@ -309,17 +350,13 @@ export const CommonUsages: MtIconStory = {
     },
     template: `
       <div style="display: grid; gap: 16px;">
-        <p style="color: var(--color-text-secondary-default); max-width: 72ch;">
-          These examples demonstrate typical icon usage in the Shopware Administration and other Shopware products that use Meteor, where each icon has a clearly defined meaning.
-        </p>
-
         <div
-          style="display: grid; grid-template-columns: repeat(auto-fill, minmax(256px, 1fr)); gap: 12px;"
+          style="display: grid; grid-template-columns: repeat(auto-fill, minmax(256px, 1fr)); gap: 20px;"
         >
           <div
             v-for="usage in commonUsages"
             :key="usage.icon"
-            style="display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 12px; align-items: center; padding: 12px 16px; border: 1px solid var(--color-border-secondary-default); border-radius: var(--border-radius-m); background: var(--color-background-primary-default); min-width: 0;"
+            style="display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 12px; align-items: center; min-width: 0;"
           >
             <div
               style="width: 40px; height: 40px; display: grid; place-items: center; border-radius: var(--border-radius-s); background: var(--color-background-tertiary-default);"

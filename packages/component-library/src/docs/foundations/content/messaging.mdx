@@ -1,12 +1,12 @@
 import { Meta } from "@storybook/blocks";
-import StorybookPageHeader from "../_components/storybook-page-header.js";
-import DoDont from "../_components/do-dont.js";
+import StorybookPageHeader from "../../_components/storybook-page-header.js";
+import DoDont from "../../_components/do-dont.js";
 
 <Meta title="Foundations/Content/Messaging" />
 
 <StorybookPageHeader status="none" title="Messaging" />
 
-Good messages tell users what happened, why it matters, and what to do next. Every message in the Shopware Admin should be clear, honest, and respectful of the user's time.
+Good messages tell users what happened, why it matters, and what to do next. Every message in products using Meteor should be clear, honest, and respectful of the user's time.
 
 ## Error messages
 
@@ -20,6 +20,26 @@ Error messages appear after something has gone wrong. Tell users what failed and
 <DoDont
   do="Import failed. The file format is not supported. Use CSV or XLSX."
   dont="Something went wrong with your import."
+/>
+
+## Form validation
+
+Validation messages appear inline, next to the field that failed. They are the most-read copy in any form, so precision matters.
+
+Write validation messages that tell the user what went wrong and what to do about it. Avoid blaming the user or restating what the label already says.
+
+<DoDont do="Enter a valid email address." dont="Invalid email." />
+
+<DoDont
+  do="Password must be at least 8 characters."
+  dont="Password is too short."
+/>
+
+For `helpText` (the supporting text shown below a field before any error), explain the constraint upfront so users do not encounter a validation error in the first place.
+
+<DoDont
+  do="Must be at least 8 characters and include a number."
+  dont="Enter your password."
 />
 
 ## Success messages
@@ -38,21 +58,15 @@ Success messages confirm that an action completed. Confirm the outcome and get o
 
 ## Warning messages
 
-Warning messages appear before a risky or irreversible action. They prepare users, not punish them. Be calm and informative. Use "we" instead of "you" when describing issues caused by the system rather than the user.
-
-Three common patterns:
-
-- **Raise awareness:** alert users to a condition that may affect them, without requiring immediate action
-- **Highlight an imminent problem:** prompt action with a clear timeline or consequence
-- **Confirm a risky action:** state what will happen and whether it can be undone
+Warning messages appear before a risky or irreversible action. They prepare users, not punish them. Be specific about what will happen and whether it can be undone. Stay calm: avoid exclamation marks and "Warning:" prefixes.
 
 <DoDont
-  do="Unsaved changes will be lost. Leave the page or save your changes first."
+  do="Unsaved changes will be lost if you leave this page."
   dont="Warning: You have unsaved changes!"
 />
 
 <DoDont
-  do="Deleting this product will remove it from all associated sales channels."
+  do="This product will be removed from all associated Sales Channels and cannot be restored."
   dont="Are you sure you want to delete this product?"
 />
 
@@ -67,7 +81,7 @@ Info messages provide context that helps users understand the current state. The
 
 ## Empty states
 
-Use the `mt-empty-state` component for empty states wherever possible.
+Use the [Empty State](?path=/docs/components-empty-state--docs) component wherever possible.
 
 Empty states appear when a list, table, or section has no content yet. There are two distinct situations:
 

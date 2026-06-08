@@ -4,21 +4,21 @@ import React from "react";
 const STATUS_VARIANTS = {
   available: {
     label: "Available",
-    backgroundColor: "var(--color-background-positive-default)",
-    borderColor: "var(--color-border-positive-default)",
-    indicatorColor: "var(--color-icon-positive-default)",
+    backgroundColor: "#e1ffe0",
+    borderColor: "#36d046",
+    indicatorColor: "#36d046",
   },
   experimental: {
     label: "Experimental",
-    backgroundColor: "var(--color-background-attention-default)",
-    borderColor: "var(--color-border-attention-default)",
-    indicatorColor: "var(--color-icon-attention-default)",
+    backgroundColor: "#fff3e3",
+    borderColor: "#fbaf18",
+    indicatorColor: "#fbaf18",
   },
   deprecated: {
     label: "Deprecated",
-    backgroundColor: "var(--color-background-critical-default)",
-    borderColor: "var(--color-border-critical-default)",
-    indicatorColor: "var(--color-icon-critical-default)",
+    backgroundColor: "#fff2f0",
+    borderColor: "#e2262a",
+    indicatorColor: "#e2262a",
   },
 };
 
@@ -49,11 +49,11 @@ const labelStyle = {
   fontSize: 15,
   lineHeight: "inherit",
   fontWeight: 700,
-  color: "var(--color-text-primary-default)",
+  color: "#1e1e24",
 };
 
 const titleTagStyle = {
-  color: "var(--color-text-secondary-default)",
+  color: "#6b7280",
   fontWeight: 400,
 };
 
@@ -66,16 +66,16 @@ const badgeStyle = (variant) => ({
   borderRadius: "624.9375rem",
   border: `1px solid ${variant.borderColor}`,
   backgroundColor: variant.backgroundColor,
-  color: "var(--color-text-primary-default)",
-  fontFamily: "var(--font-family-body)",
+  color: "#1e1e24",
+  fontFamily: "Inter, ui-sans-serif, system-ui, -apple-system, sans-serif",
   fontSize: 13,
   lineHeight: "1.125rem",
   fontWeight: 500,
 });
 
 const sourceLinkStyle = {
-  borderLeft: "1px solid var(--color-border-secondary-default)",
-  color: "var(--color-text-brand-default)",
+  borderLeft: "1px solid #e2e3e9",
+  color: "#0870ff",
   paddingLeft: "1rem",
   textDecoration: "underline",
   fontSize: 15,

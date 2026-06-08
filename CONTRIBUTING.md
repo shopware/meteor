@@ -1,41 +1,41 @@
 ## Get involved
 
-Thank you for taking a interest in making Meteor a better project! 💙
+Thank you for taking an interest in making Meteor a better project! 💙
 
 To contribute code (features or bug fixes) open up a pull request.
 In case you want to make a larger change to the code base, open up
 an issue first before writing any code. That way you don't lose your
 valuable time in case we might reject the pull request.
 
-Shopware is available under [MIT license](./LICENSE.md).
+Shopware is available under [MIT license](https://github.com/shopware/meteor/blob/main/LICENSE.md).
 Contribute your code under MIT license.
 
-If you've never contributed to a open source project you might
+If you've never contributed to an open source project you might
 find the [this guide](https://opensource.guide/how-to-contribute/) helpful.
 
 ## Code of conduct
 
 To understand which action we tolerate we expect you to read
-our [code of conduct](./CONTRIBUTING.md).
+our [code of conduct](https://github.com/shopware/meteor/blob/main/CODE_OF_CONDUCT.md).
 
 ## Bugs
 
 Please take a look at the [existing issues](https://github.com/shopware/meteor/issues)
-before creating a new one. That way keep the number of duplicate issues low.
+before creating a new one. That way we keep the number of duplicate issues low.
 Complete the issue template as much as possible when creating a new issue.
 
 To get your bug fixed faster, add a link to a
-[project with the bug](https://stackblitz.com/edit/vitejs-vite-emem8b?file=index.html&terminal=dev)
+[project with the bug](https://stackblitz.com/edit/meteor?file=src%2FApp.vue)
 for us to reproduce in the issue's description.
 
-## Feature Requests
+## Feature requests
 
-Search trough the [list of existing feature requests](https://github.com/shopware/meteor/issues),
-before you create a issue. If somebody already requested your feature you
+Search through the [list of existing feature requests](https://github.com/shopware/meteor/issues),
+before you create an issue. If somebody already requested your feature you
 can up-vote that issue. This helps us to see what the community wants the most.
 
 If there does not already exist a feature request for your idea,
-you can [request a feature](https://github.com/shopware/meteor/issues/new).
+you can [request a feature](https://github.com/shopware/meteor/issues/new?template=03-feature.yaml).
 
 ## Local development
 
@@ -46,7 +46,7 @@ To use your changes in Shopware and your extensions, you must first publish the 
 ### Publish your changes to the local yalc repo
 
 1. Make changes for the desired package/s
-2. Publish packages with `yalc publish` from the package root folder e.g `<meteorRoot>/packages/admin-sdk`
+2. Publish packages with `yalc publish` from the package root folder e.g. `<meteorRoot>/packages/component-library`
 
 ### Add your updated package to Shopware and your extensions
 
@@ -71,13 +71,13 @@ If you want to install pnpm through another way take a look at their documentati
 
 To execute scripts defined in the packages.json file of each package you have three options:
 
-1. Or you use turbo: `npx turbo run <TASK_NAME>`
+1. You use turbo: `npx turbo run <TASK_NAME>`
 2. You run the script from the root with `pnpm --filter <PACKAGE_NAME> run <SCRIPT_NAME>`
 3. You cd into the package directory and run the script
 
 You can find the available turbo tasks in the turbo.json file
 
-Don't know turborepo? Check out [their documentation](https://turbo.build/repo/docs).
+Don't know Turborepo? Check out their [documentation](https://turbo.build/repo/docs).
 
 Make sure to follow these steps before you push your branch:
 
@@ -110,11 +110,11 @@ If you decide to release a new version, merge the release branch. Changesets wil
 
 That's it there is nothing more you have to do.
 
-### Updating the visual tests
+## Updating the visual tests
 
 1. Copy the name of your branch
 2. Go to the [actions tab](https://github.com/shopware/meteor/actions)
-3. Click on [Visual Tests](https://github.com/shopware/meteor/actions) in the left sidebar
+3. Click on [Visual tests](https://github.com/shopware/meteor/actions/workflows/visual-tests.yml) in the left sidebar
 4. You then see a blue bar with a button that says `Run workflow`, click on that
 5. Select your branch from the dropdown menu
 6. Click on the `Run workflow` button

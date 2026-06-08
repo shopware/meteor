@@ -1,6 +1,6 @@
 import { Meta } from "@storybook/blocks";
-import TokenBrowser from "../_components/token-browser.js";
-import StorybookPageHeader from "../_components/storybook-page-header.js";
+import TokenBrowser from "../../_components/token-browser.js";
+import StorybookPageHeader from "../../_components/storybook-page-header.js";
 
 <Meta title="Foundations/Tokens/Overview" />
 
@@ -45,22 +45,22 @@ import "@shopware-ag/meteor-tokens/administration/dark.css";
 
 New tokens require sign-off from both design and engineering before they are added. The process is intentionally lightweight but ensures every new token has a clear purpose and fits the existing naming structure.
 
-**Starting a proposal**
+### Starting a proposal
 
-A new token can be initiated from either side. A designer might identify a gap while building a new component in Figma; an engineer might notice a hardcoded value that should be abstracted. Either way, the proposal should be shared with the other discipline before work begins. Use a GitHub issue, a Figma comment on the library file, or the Meteor Slack channel to open the discussion.
+A new token can be initiated from either side. A designer might identify a gap while building a new component in Figma; an engineer might notice a hardcoded value that should be abstracted. Either way, the proposal should be shared with the other discipline before work begins. Use a [GitHub issue](https://github.com/shopware/meteor/issues), a Figma comment on the library file, or the Meteor Slack channel to open the discussion.
 
-**What a good proposal includes**
+#### What a good proposal includes
 
 - What the token represents and where it will be used
 - The proposed name following the `type-category-instance-variant` structure
-- The intended value in light and dark themes
+- The intended value in all available themes
 - Whether an existing token could cover the need instead
 
-**Review and sign-off**
+### Review and sign-off
 
 Both the design team and the Meteor engineering team review the proposal. The review checks that the name is consistent with existing conventions, that the token is genuinely needed and not a duplicate, and that it works correctly across both themes.
 
-**From Figma to code**
+### From Figma to code
 
 Once approved, the token is added to the Figma Variables library first. From there it is synced to the token package using the Figma Variables sync workflow. The Meteor team owns the PR that lands the token in the codebase and publishes it in the next release.
 
@@ -68,7 +68,7 @@ Once approved, the token is added to the Figma Variables library first. From the
 
 We recommend against overriding existing Meteor tokens. Overrides can cause unexpected visual divergence from the design system and break when token values change in future releases. If your project needs additional tokens, define new ones with a custom prefix instead.
 
-If you do need to override, do so after importing the Meteor token files and scope changes to `[data-theme="dark"]` for dark theme variants.
+If you do need to override, do so after importing the Meteor token files and scope changes to `[data-theme="dark"]` for theme variants.
 
 ```css
 @import "@shopware-ag/meteor-tokens/administration/light.css";

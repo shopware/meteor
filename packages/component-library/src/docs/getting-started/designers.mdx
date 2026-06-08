@@ -3,7 +3,7 @@ import StorybookPageHeader from "../_components/storybook-page-header.js";
 
 <Meta title="Get Started/Designers" />
 
-<StorybookPageHeader status="none" title="Designers" />
+<StorybookPageHeader status="none" title="Designers (at Shopware)" />
 
 Meteor ships three Figma libraries that work together. Activate all three in your file to get the full system.
 
@@ -30,11 +30,11 @@ With the libraries active, open the **Assets** panel and search for the componen
 
 Components match their code counterparts: same variants, same states, same props. Check the component's documentation page here for available options before building out your design.
 
-Avoid detaching components. Detached instances lose their variable bindings and will not update when the library changes. If a component does not cover your use case, open a discussion on GitHub so the change can be made in both the Figma library and the codebase at the same time.
+Avoid detaching components. Detached instances lose their variable bindings and will not update when the library changes. If a component does not cover your use case, open a [GitHub issue](https://github.com/shopware/meteor/issues) or start a discussion in the Meteor Slack channel so the change can be made in both the Figma library and the codebase at the same time.
 
 ## Use tokens, not hardcoded values
 
-Always apply variables from Meteor Tokens rather than hardcoded colors, sizes, or radii. Token-bound designs adapt automatically when the theme changes.
+Always apply variables from Meteor Tokens rather than hardcoded colors, sizes, or radii. Token-bound designs adapt automatically when the theme changes. See the [Tokens](?path=/docs/foundations-tokens-overview--docs) page for the full list of available tokens.
 
 ## Accessibility
 
@@ -45,8 +45,7 @@ A few things to consider while designing:
 - Use color tokens for text and backgrounds so contrast ratios are maintained across light and dark themes. Never use palette values directly.
 - Never use color as the only way to communicate state or meaning. Pair it with a label, icon, or pattern.
 - Make sure interactive elements have a visible focus state. Meteor components include focus styles by default; avoid hiding or overriding them.
-- Use a logical heading hierarchy in your layouts. Skipping heading levels creates problems for screen reader users navigating by heading.
-- Write alt text and accessible labels for any icons or images that carry meaning. Use the `decorative` option for purely visual elements.
+- Write alt text and accessible labels for any icons or images that carry meaning.
 
 For the full set of guidelines and a pre-ship checklist, see the [Accessibility](?path=/docs/foundations-accessibility--docs) page.
 

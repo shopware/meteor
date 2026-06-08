@@ -52,10 +52,10 @@ const tokenStyle = {
 
 const headingStyle = {
   fontFamily: "var(--font-family-body)",
-  fontSize: 14,
+  fontSize: 16,
   fontWeight: 600,
   color: "var(--color-text-primary-default)",
-  padding: "0.5rem 1rem",
+  padding: "0.75rem 1rem",
   backgroundColor: "#fafbfe",
   borderBottom: "1px solid #e2e3e9",
   margin: 0,
