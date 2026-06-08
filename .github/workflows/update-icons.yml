@@ -28,6 +28,16 @@ jobs:
       - name: Install puppeteer chromium
         run: node node_modules/puppeteer/install.js
 
+      - name: Pin puppeteer chromium path
+        run: |
+          CHROMIUM="$(node -e 'console.log(require("puppeteer").executablePath())')"
+          echo "Resolved Chromium: $CHROMIUM"
+          if [ ! -x "$CHROMIUM" ]; then
+            echo "::error::Chromium not found at $CHROMIUM after puppeteer install"
+            exit 1
+          fi
+          echo "PUPPETEER_EXECUTABLE_PATH=$CHROMIUM" >> "$GITHUB_ENV"
+
       - name: Patch svgo-autocrop for CI
         run: |
           sed -i 's/Puppeteer\.launch()/Puppeteer.launch({ args: ["--no-sandbox", "--disable-setuid-sandbox"] })/' node_modules/svgo-autocrop/lib/Browser.js
