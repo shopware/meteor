@@ -215,13 +215,11 @@ function useSanitizedHtml(html: string): ComputedRef<string> {
 <style scoped>
 .tooltip {
   color: var(--color-text-primary-inverse);
-  font-feature-settings: "ss01" on;
   font-family: var(--font-family-body);
   font-size: var(--font-size-2xs);
   font-weight: var(--font-weight-regular);
-  line-height: var(--line-height-2xs);
+  line-height: var(--font-line-height-2xs);
   background: var(--color-elevation-floating-default);
-  line-height: var(--font-family-line-height-2xs);
   padding: var(--scale-size-12);
   border-radius: var(--border-radius-xs);
   width: max-content;
