@@ -80,8 +80,8 @@ export const VisualTestShowsAllItem: StoryObj = {
   },
 };
 
-export const VisualTestHidesTheLastThreeItems: StoryObj = {
-  name: "Hides the last three items",
+export const VisualTestHidesTheLastTwoItems: StoryObj = {
+  name: "Hides the last two items",
   args: {
     items: [
       { id: "1", label: "Item 1" },
@@ -110,8 +110,8 @@ export const VisualTestHidesTheLastThreeItems: StoryObj = {
     await expect(canvas.getByText("Item 5")).toHaveAttribute("aria-hidden", "false");
     await expect(canvas.getByText("Item 6")).toHaveAttribute("aria-hidden", "false");
     await expect(canvas.getByText("Item 7")).toHaveAttribute("aria-hidden", "false");
+    await expect(canvas.getByText("Item 8")).toHaveAttribute("aria-hidden", "false");
 
-    await expect(canvas.getByText("Item 8")).toHaveAttribute("aria-hidden", "true");
     await expect(canvas.getByText("Item 9")).toHaveAttribute("aria-hidden", "true");
     await expect(canvas.getByText("Item 10")).toHaveAttribute("aria-hidden", "true");
 
