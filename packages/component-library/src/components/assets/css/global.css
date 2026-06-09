@@ -21,6 +21,10 @@ body {
   color-scheme: dark;
 }
 
+html, body {
+  height: 100dvh;
+}
+
 /** @TODO move to tokens file once we find a solution for non figma-sync tokens **/
 :root {
   --color-elevation-shadow-default: #1010131a !important;
