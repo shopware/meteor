@@ -1,11 +1,11 @@
 import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
 
 import * as RadioGroupStories from "./mt-radio-group.stories";
-import ComponentPageHeader from "../../_docs/component-page-header.js";
+import StorybookPageHeader from "../../../docs/_components/storybook-page-header.js";
 
 <Meta of={RadioGroupStories} />
 
-<ComponentPageHeader
+<StorybookPageHeader
   title="Radio Group"
   tagName="mt-radio-group"
   packageImports={[
@@ -20,7 +20,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
   **Radio Group** lets users select exactly one option from a small set of
   mutually exclusive choices. It works best when the available options should
   stay visible so users can compare them before deciding.
-</ComponentPageHeader>
+</StorybookPageHeader>
 
 ## When to use
 
@@ -88,12 +88,12 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 ## Comparisons
 
-### **Radio Group** vs **Checkbox**
+### Radio Group vs Checkbox
 
 - Use **Radio Group** when users must choose exactly one option from a small set.
 - Use **Checkbox** when users can turn an option on or off independently or choose multiple items.
 
-### **Radio Group** vs **Select**
+### Radio Group vs Select
 
 - Use **Radio Group** when a small number of options should stay visible and easy to compare.
 - Use **Select** when there are more options or when space is limited.

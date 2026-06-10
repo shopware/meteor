@@ -1,11 +1,11 @@
 import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
 
 import * as LoaderStories from "./mt-loader.stories";
-import ComponentPageHeader from "../../_docs/component-page-header.js";
+import StorybookPageHeader from "../../../docs/_components/storybook-page-header.js";
 
 <Meta of={LoaderStories} />
 
-<ComponentPageHeader
+<StorybookPageHeader
   title="Loader"
   tagName="mt-loader"
   packageImports="MtLoader"
@@ -14,7 +14,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
   **Loader** shows an indeterminate loading state as a centered spinner overlay.
   Use it when a surface is busy for a short time and the exact completion
   progress is not known.
-</ComponentPageHeader>
+</StorybookPageHeader>
 
 ## When to use
 
@@ -66,7 +66,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 ## Comparisons
 
-### **Loader** vs **Progress Bar**
+### Loader vs Progress Bar
 
 - Use **Loader** when work is in progress but the exact completion amount is unknown.
 - Use **Progress Bar** when you can communicate meaningful progress such as processed items, uploaded bytes, or percentage complete.

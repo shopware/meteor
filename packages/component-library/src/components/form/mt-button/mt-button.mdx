@@ -1,11 +1,11 @@
 import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
 
 import * as ButtonStories from "./mt-button.stories";
-import ComponentPageHeader from "../../_docs/component-page-header.js";
+import StorybookPageHeader from "../../../docs/_components/storybook-page-header.js";
 
 <Meta of={ButtonStories} title="Components/Button" />
 
-<ComponentPageHeader
+<StorybookPageHeader
   title="Button"
   tagName="mt-button"
   packageImports="MtButton"
@@ -14,7 +14,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
   **Button** is the standard action trigger for Meteor interfaces. Use it when
   people need to submit, confirm, continue, or trigger an action directly from
   the UI.
-</ComponentPageHeader>
+</StorybookPageHeader>
 
 ## When to use
 
@@ -82,7 +82,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 ## Comparisons
 
-### **Button** vs **Link**
+### Button vs Link
 
 - Use **Button** for actions such as saving, submitting, confirming, or opening an interface change inside the current flow.
 - Use **Link** for navigation when the user is moving to another page, route, or destination.

@@ -1,11 +1,11 @@
 import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
 
 import * as EntitySelectStories from "./mt-entity-select.stories";
-import ComponentPageHeader from "../../_docs/component-page-header.js";
+import StorybookPageHeader from "../../../docs/_components/storybook-page-header.js";
 
 <Meta of={EntitySelectStories} title="Components/Entity Select" />
 
-<ComponentPageHeader
+<StorybookPageHeader
   title="Entity Select"
   tagName="mt-entity-select"
   packageImports="MtEntitySelect"
@@ -14,7 +14,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
   **Entity Select** is a repository-backed version of **Select**. It loads
   options from an Admin SDK entity repository so the parent component only needs
   to manage the selected value.
-</ComponentPageHeader>
+</StorybookPageHeader>
 
 ## When to use
 
@@ -61,7 +61,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 ## Comparisons
 
-### **Entity Select** vs **Select**
+### Entity Select vs Select
 
 - Use **Entity Select** for Admin SDK repository data.
 - Use **Select** for local or externally managed option lists.

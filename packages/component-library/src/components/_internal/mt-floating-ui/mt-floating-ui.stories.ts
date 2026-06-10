@@ -124,7 +124,7 @@ export const MultipleAnchors: MtFloatingUiStory = {
       source: {
         language: "html",
         code: `<div
-  v-for="btn in buttons"
+  v-for="btn in anchors"
   :key="btn.label"
   @mouseenter="openFor($event, btn)"
   @mouseleave="scheduleClose"
@@ -153,21 +153,21 @@ export const MultipleAnchors: MtFloatingUiStory = {
       const activeButton = ref<{ label: string; field1: string; field2: string } | null>(null);
       let closeTimer: ReturnType<typeof setTimeout> | null = null;
 
-      const buttons = [
-        { label: "Adjust size", field1: "Width", field2: "Height" },
-        { label: "Adjust position", field1: "X offset", field2: "Y offset" },
-        { label: "Adjust padding", field1: "Horizontal", field2: "Vertical" },
+      const anchors = [
+        { label: "Anchor 1", field1: "Width", field2: "Height" },
+        { label: "Anchor 2", field1: "X offset", field2: "Y offset" },
+        { label: "Anchor 3", field1: "Horizontal", field2: "Vertical" },
       ];
 
       const values = ref<Record<string, { v1: string; v2: string }>>({
-        "Adjust size": { v1: "120", v2: "120" },
-        "Adjust position": { v1: "0", v2: "0" },
-        "Adjust padding": { v1: "16", v2: "16" },
+        "Anchor 1": { v1: "120", v2: "120" },
+        "Anchor 2": { v1: "0", v2: "0" },
+        "Anchor 3": { v1: "16", v2: "16" },
       });
 
       const floatingUiOptions = { placement: "bottom" as const, ...args.floatingUiOptions };
 
-      const openFor = (event: MouseEvent, btn: (typeof buttons)[0]) => {
+      const openFor = (event: MouseEvent, btn: (typeof anchors)[0]) => {
         if (closeTimer) {
           clearTimeout(closeTimer);
           closeTimer = null;
@@ -195,7 +195,7 @@ export const MultipleAnchors: MtFloatingUiStory = {
         isOpened,
         anchorElement,
         activeButton,
-        buttons,
+        anchors,
         values,
         floatingUiOptions,
         openFor,
@@ -204,10 +204,9 @@ export const MultipleAnchors: MtFloatingUiStory = {
       };
     },
     template: `
-      <div style="padding: 32px 32px 32px 200px;">
-        <div style="display: flex; gap: 12px;">
+        <div style="display: flex; gap: 12px; justify-content: center; width: 100%;">
           <div
-            v-for="btn in buttons"
+            v-for="btn in anchors"
             :key="btn.label"
             @mouseenter="openFor($event, btn)"
             @mouseleave="scheduleClose"
@@ -252,7 +251,6 @@ export const MultipleAnchors: MtFloatingUiStory = {
             <mt-button size="small" variant="primary">Apply</mt-button>
           </div>
         </mt-floating-ui>
-      </div>
     `,
   }),
 };

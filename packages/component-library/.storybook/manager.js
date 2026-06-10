@@ -1,8 +1,8 @@
 import { addons } from "@storybook/manager-api";
-import { darkTheme, lightTheme } from "./shopwareTheme";
+import { shopwareTheme } from "./shopwareTheme";
 
 addons.setConfig({
-  theme: darkTheme,
+  theme: shopwareTheme,
   sidebar: {
     collapsedRoots: ["composables", "directives"],
   },

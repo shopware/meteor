@@ -1,11 +1,11 @@
 import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
 
 import * as SearchStories from "./mt-search.stories";
-import ComponentPageHeader from "../../_docs/component-page-header.js";
+import StorybookPageHeader from "../../../docs/_components/storybook-page-header.js";
 
 <Meta of={SearchStories} />
 
-<ComponentPageHeader
+<StorybookPageHeader
   title="Search"
   tagName="mt-search"
   packageImports="MtSearch"
@@ -13,7 +13,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 >
   **Search** lets users filter or find content in a list, table, or page
   section.
-</ComponentPageHeader>
+</StorybookPageHeader>
 
 ## When to use
 
@@ -57,7 +57,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 ## Comparisons
 
-### **Search** vs **Text Field**
+### Search vs Text Field
 
 - Use **Search** when the value is meant to filter or find content.
 - Use **Text Field** when the value should be entered and stored as regular form data.

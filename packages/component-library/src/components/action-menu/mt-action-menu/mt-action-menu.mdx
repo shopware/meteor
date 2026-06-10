@@ -1,11 +1,11 @@
 import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
 
 import * as ActionMenuStories from "./mt-action-menu.stories";
-import ComponentPageHeader from "../../_docs/component-page-header.js";
+import StorybookPageHeader from "../../../docs/_components/storybook-page-header.js";
 
 <Meta of={ActionMenuStories} />
 
-<ComponentPageHeader
+<StorybookPageHeader
   title="Action Menu"
   tagName="mt-action-menu"
   packageImports={[
@@ -22,7 +22,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
   **Action Menu** reveals a short list of contextual actions from a trigger. Use
   it to keep secondary actions close to the relevant object without adding too
   many always-visible buttons to the interface.
-</ComponentPageHeader>
+</StorybookPageHeader>
 
 ## When to use
 
@@ -127,7 +127,7 @@ These parts are exported together so the parent page can document the full patte
 
 ## Comparisons
 
-### **Action Menu** vs **Floating Ui**
+### Action Menu vs Floating UI
 
 - Use **Action Menu** for a short, scannable list of actions or links.
-- Use **Floating Ui** when you need to build a custom popover surface with richer content such as text, filters, form fields, or mixed layout content instead of a menu of actions.
+- Use **Floating UI** when you need to build a custom popover surface with richer content such as text, filters, form fields, or mixed layout content instead of a menu of actions.

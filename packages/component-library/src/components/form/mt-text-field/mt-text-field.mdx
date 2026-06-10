@@ -1,18 +1,18 @@
 import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
 
 import * as TextFieldStories from "./mt-text-field.stories";
-import ComponentPageHeader from "../../_docs/component-page-header.js";
+import StorybookPageHeader from "../../../docs/_components/storybook-page-header.js";
 
 <Meta of={TextFieldStories} />
 
-<ComponentPageHeader
+<StorybookPageHeader
   title="Text Field"
   tagName="mt-text-field"
   packageImports="MtTextField"
   sourcePath="packages/component-library/src/components/form/mt-text-field"
 >
   **Text Field** lets users enter short free-form text values in a form.
-</ComponentPageHeader>
+</StorybookPageHeader>
 
 ## When to use
 
@@ -56,32 +56,32 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 ## Comparisons
 
-### **Text Field** vs **Email Field**
+### Text Field vs Email Field
 
 - Use **Text Field** for general text that should not be constrained to an email format.
 - Use **Email Field** when the value must be an email address.
 
-### **Text Field** vs **URL Field**
+### Text Field vs URL Field
 
 - Use **Text Field** when the value is general text and should not be normalized as a web address.
 - Use **URL Field** when the value should be a link and URL-specific behavior is helpful.
 
-### **Text Field** vs **Number Field**
+### Text Field vs Number Field
 
 - Use **Text Field** when the value should stay as plain text, even if it contains digits.
 - Use **Number Field** when the value should behave like a number with numeric constraints or stepping.
 
-### **Text Field** vs **Unit Field**
+### Text Field vs Unit Field
 
 - Use **Text Field** when the value is free-form text and does not need measurement logic.
 - Use **Unit Field** when users should enter a number together with a selectable unit.
 
-### **Text Field** vs **Password Field**
+### Text Field vs Password Field
 
 - Use **Text Field** when the value is not sensitive and does not need to be masked.
 - Use **Password Field** when the value is sensitive and should be hidden by default.
 
-### **Text Field** vs **Search**
+### Text Field vs Search
 
 - Use **Text Field** when the value should be entered and stored as regular form data.
 - Use **Search** when the value is meant to filter or find content in the interface.

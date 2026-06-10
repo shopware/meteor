@@ -1,18 +1,18 @@
 import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
 
 import * as UrlFieldStories from "./mt-url-field.stories";
-import ComponentPageHeader from "../../_docs/component-page-header.js";
+import StorybookPageHeader from "../../../docs/_components/storybook-page-header.js";
 
 <Meta of={UrlFieldStories} />
 
-<ComponentPageHeader
+<StorybookPageHeader
   title="URL Field"
   tagName="mt-url-field"
   packageImports="MtUrlField"
   sourcePath="packages/component-library/src/components/form/mt-url-field"
 >
   **URL Field** helps users enter and normalize a single web address.
-</ComponentPageHeader>
+</StorybookPageHeader>
 
 ## When to use
 
@@ -56,7 +56,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 ## Comparisons
 
-### **URL Field** vs **Text Field**
+### URL Field vs Text Field
 
 - Use **URL Field** when the value should be a web address and URL-specific behavior is helpful.
 - Use **Text Field** when the value is general text and should not be normalized as a URL.

@@ -1,11 +1,11 @@
 import { Canvas, Markdown, Meta } from "@storybook/blocks";
 
 import * as SnackbarStories from "./mt-snackbar.stories";
-import ComponentPageHeader from "../../_docs/component-page-header.js";
+import StorybookPageHeader from "../../../docs/_components/storybook-page-header.js";
 
 <Meta of={SnackbarStories} title="Components/Snackbar" />
 
-<ComponentPageHeader
+<StorybookPageHeader
   title="Snackbar"
   tagName="mt-snackbar"
   packageImports={["MtSnackbar", "useSnackbar"]}
@@ -14,7 +14,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
   **Snackbar** displays temporary overlay feedback near the bottom-right corner
   of the interface. Use it to confirm an action, report a non-critical outcome,
   or show short-lived progress without interrupting the current workflow.
-</ComponentPageHeader>
+</StorybookPageHeader>
 
 ## When to use
 
@@ -70,7 +70,7 @@ function showSnackbar() {
 `}
 </Markdown>
 
-### **Snackbar**
+### Snackbar
 
 The exported **Snackbar** type describes the notification object managed by `useSnackbar()`. The `id` is created automatically by `addSnackbar()`.
 
@@ -122,7 +122,7 @@ The exported **Snackbar** type describes the notification object managed by `use
 
 ## Comparisons
 
-### **Snackbar** vs **Banner**
+### Snackbar vs Banner
 
 - Use **Snackbar** for temporary overlay feedback that fades out on its own and does not belong in the page layout.
 - Use **Banner** for persistent inline messaging that should remain visible while the user continues working.

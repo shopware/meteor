@@ -1,18 +1,18 @@
 import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
 
 import * as TextareaStories from "./mt-textarea.stories";
-import ComponentPageHeader from "../../_docs/component-page-header.js";
+import StorybookPageHeader from "../../../docs/_components/storybook-page-header.js";
 
 <Meta of={TextareaStories} />
 
-<ComponentPageHeader
+<StorybookPageHeader
   title="Textarea"
   tagName="mt-textarea"
   packageImports="MtTextarea"
   sourcePath="packages/component-library/src/components/form/mt-textarea"
 >
   **Textarea** lets users enter longer free-form text in a form.
-</ComponentPageHeader>
+</StorybookPageHeader>
 
 ## When to use
 
@@ -56,7 +56,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 ## Comparisons
 
-### **Textarea** vs **Text Field**
+### Textarea vs Text Field
 
 - Use **Textarea** when users need to enter longer multi-line content.
 - Use **Text Field** when the value should stay short and single-line.

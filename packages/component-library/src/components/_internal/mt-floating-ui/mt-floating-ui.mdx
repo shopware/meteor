@@ -1,11 +1,11 @@
 import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
 
 import * as FloatingUiStories from "./mt-floating-ui.stories";
-import ComponentPageHeader from "../../_docs/component-page-header.js";
+import StorybookPageHeader from "../../../docs/_components/storybook-page-header.js";
 
 <Meta of={FloatingUiStories} />
 
-<ComponentPageHeader
+<StorybookPageHeader
   title="Floating UI"
   tagName="mt-floating-ui"
   packageImports="MtFloatingUi"
@@ -15,7 +15,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
   elements with automatic positioning. Use it when you need floating content
   that should anchor to a trigger, flip when space is limited, and close when
   users click outside.
-</ComponentPageHeader>
+</StorybookPageHeader>
 
 ## When to use
 
@@ -28,6 +28,12 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 ### Basic
 
 <Canvas of={FloatingUiStories.Default} />
+
+### Multiple anchors
+
+Use `detached` mode together with `anchorElement` to share one floating surface across multiple triggers. The floating panel repositions itself to each anchor as the user hovers, and a short close delay keeps it reachable when the cursor travels from trigger to panel.
+
+<Canvas of={FloatingUiStories.MultipleAnchors} />
 
 ## API reference
 
@@ -62,7 +68,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 ## Comparisons
 
-### **Floating UI** vs **Popover**
+### Floating UI vs Popover
 
 - Use **Floating UI** when you need a custom floating surface with your own structure and behavior.
 - Use **Popover** when the standard popover styling and interaction model already fit.
