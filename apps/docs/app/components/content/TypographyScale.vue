@@ -1,18 +1,26 @@
 <template>
   <div>
-    <div class="typography-scale__section">
-      <div class="typography-scale__header">Size scale</div>
+    <div class="my-6 overflow-hidden rounded-lg border border-muted">
+      <div
+        class="border-b border-muted bg-muted px-4 py-3 text-base font-semibold text-default"
+      >
+        Size scale
+      </div>
       <div
         v-for="size in sizes"
         :key="size.token"
-        class="typography-scale__row"
+        class="grid grid-cols-1 items-baseline gap-2 border-b border-muted bg-[var(--color-elevation-surface-default)] px-4 py-3 last:border-b-0 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-4"
       >
-        <div class="typography-scale__meta">
-          <span class="typography-scale__label">{{ size.label }}</span>
+        <div
+          class="flex flex-col gap-0.5 text-xs leading-[var(--font-line-height-xs)] text-muted"
+        >
+          <span class="text-sm font-semibold text-default">
+            {{ size.label }}
+          </span>
           <span>{{ resolved[size.token] ?? "" }}</span>
         </div>
         <span
-          class="typography-scale__sample"
+          class="font-normal text-default"
           :style="{
             fontSize: `var(${size.token})`,
             lineHeight: `var(${size.lineHeight})`,
@@ -23,19 +31,27 @@
       </div>
     </div>
 
-    <div class="typography-scale__section typography-scale__section--weights">
-      <div class="typography-scale__header">Weights</div>
+    <div class="my-4 overflow-hidden rounded-lg border border-muted">
+      <div
+        class="border-b border-muted bg-muted px-4 py-3 text-base font-semibold text-default"
+      >
+        Weights
+      </div>
       <div
         v-for="weight in weights"
         :key="weight.token"
-        class="typography-scale__row"
+        class="grid grid-cols-1 items-baseline gap-2 border-b border-muted bg-[var(--color-elevation-surface-default)] px-4 py-3 last:border-b-0 sm:grid-cols-[10rem_minmax(0,1fr)] sm:gap-4"
       >
-        <div class="typography-scale__meta">
-          <span class="typography-scale__label">{{ weight.label }}</span>
+        <div
+          class="flex flex-col gap-0.5 text-xs leading-[var(--font-line-height-xs)] text-muted"
+        >
+          <span class="text-sm font-semibold text-default">
+            {{ weight.label }}
+          </span>
           <span>{{ resolved[weight.token] ?? "" }}</span>
         </div>
         <span
-          class="typography-scale__sample--weight"
+          class="text-base leading-[var(--font-line-height-m)] text-default"
           :style="{ fontWeight: `var(${weight.token})` }"
         >
           The quick brown fox jumps over the lazy dog
@@ -86,65 +102,3 @@ onMounted(() => {
   resolved.value = values;
 });
 </script>
-
-<style scoped>
-.typography-scale__section {
-  margin: var(--scale-size-24) 0;
-  border: 1px solid var(--color-border-secondary-default);
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.typography-scale__section--weights {
-  margin-top: var(--scale-size-16);
-}
-
-.typography-scale__header {
-  font-size: 16px;
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary-default);
-  padding: 0.75rem 1rem;
-  background-color: var(--color-background-secondary-default);
-  border-bottom: 1px solid var(--color-border-secondary-default);
-}
-
-.typography-scale__row {
-  display: grid;
-  grid-template-columns: 10rem 1fr;
-  align-items: baseline;
-  gap: var(--scale-size-16);
-  padding: var(--scale-size-12) var(--scale-size-16);
-  border-bottom: 1px solid var(--color-border-secondary-default);
-  background-color: var(--color-elevation-surface-default);
-}
-
-.typography-scale__row:last-child {
-  border-bottom: none;
-}
-
-.typography-scale__meta {
-  font-size: var(--font-size-xs);
-  line-height: var(--font-line-height-xs);
-  color: var(--color-text-secondary-default);
-  display: flex;
-  flex-direction: column;
-  gap: var(--scale-size-2);
-}
-
-.typography-scale__label {
-  font-weight: var(--font-weight-semibold);
-  font-size: var(--font-size-s);
-  color: var(--color-text-primary-default);
-}
-
-.typography-scale__sample,
-.typography-scale__sample--weight {
-  font-weight: var(--font-weight-regular);
-  color: var(--color-text-primary-default);
-}
-
-.typography-scale__sample--weight {
-  font-size: var(--font-size-m);
-  line-height: var(--font-line-height-m);
-}
-</style>

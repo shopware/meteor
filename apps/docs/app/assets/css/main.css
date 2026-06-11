@@ -10,19 +10,33 @@
  */
 :root,
 .dark {
+  --ui-radius: var(--border-radius-button);
   --ui-bg: var(--color-elevation-surface-default);
   --ui-bg-muted: var(--color-background-secondary-default);
-  --ui-bg-elevated: var(--color-elevation-surface-raised);
+  --ui-bg-elevated: var(--color-background-tertiary-default);
   --ui-bg-accented: var(--color-background-tertiary-default);
+  --ui-bg-inverted: var(--color-elevation-floating-default);
   --ui-text: var(--color-text-primary-default);
   --ui-text-muted: var(--color-text-secondary-default);
   --ui-text-dimmed: var(--color-text-secondary-default);
   --ui-text-toned: var(--color-text-secondary-default);
   --ui-text-highlighted: var(--color-text-primary-default);
-  --ui-border: var(--color-border-primary-default);
+  --ui-text-inverted: var(--color-text-primary-inverse);
+  --ui-border: var(--color-border-secondary-default);
   --ui-border-muted: var(--color-border-secondary-default);
-  --ui-border-accented: var(--color-border-primary-default);
+  --ui-border-accented: var(--color-border-secondary-default);
+  --ui-border-inverted: var(--color-elevation-floating-default);
   --ui-primary: var(--color-interaction-primary-default);
+  --ui-secondary: var(--color-text-accent-default);
+  --ui-success: var(--color-icon-positive-default);
+  --ui-info: var(--color-icon-brand-default);
+  --ui-warning: var(--color-icon-attention-default);
+  --ui-error: var(--color-interaction-critical-default);
+}
+
+/* Custom token overwrite in light mode */
+.light {
+  --ui-bg-muted: var(--color-background-tertiary-default);
 }
 
 /* The component library's styles.css is intentionally not loaded (its global
@@ -35,4 +49,17 @@
 body {
   background: var(--color-elevation-surface-default);
   color: var(--color-text-primary-default);
+}
+
+.docs-sidebar-navigation [data-slot="link"]::before {
+  border-radius: 6px;
+  transition: background-color 150ms ease;
+}
+
+.docs-sidebar-navigation [data-slot="link"]:hover::before {
+  background-color: var(--color-interaction-secondary-hover);
+}
+
+.docs-sidebar-navigation [data-slot="link"].font-medium::before {
+  background-color: var(--color-background-brand-default);
 }

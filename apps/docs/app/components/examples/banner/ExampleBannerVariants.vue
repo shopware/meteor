@@ -1,5 +1,5 @@
 <template>
-  <div class="example-stack">
+  <div class="example-stack flex flex-col gap-3">
     <mt-banner variant="neutral" title="Neutral banner">
       Use for general information that should stay visible in the page flow.
     </mt-banner>
@@ -30,11 +30,3 @@
 <script setup lang="ts">
 import MtBanner from "@shopware-ag/meteor-component-library/MtBanner";
 </script>
-
-<style scoped>
-.example-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-</style>

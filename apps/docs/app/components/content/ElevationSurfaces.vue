@@ -1,37 +1,43 @@
 <template>
-  <div class="elevation-surfaces">
+  <div class="not-prose my-6 flex flex-col gap-4 md:flex-row">
     <div
       v-for="theme in ['light', 'dark']"
       :key="theme"
       :data-theme="theme"
-      class="elevation-surfaces__panel"
+      class="flex flex-1 flex-col items-center px-4 py-6"
     >
-      <div class="elevation-surfaces__stage">
-        <div class="elevation-surfaces__scene">
+      <div class="relative h-[260px] w-[340px] max-w-full">
+        <div
+          class="absolute left-0 top-0 flex size-[260px] items-center justify-center [perspective:800px]"
+        >
           <div
             v-for="surface in surfaces"
             :key="surface.token"
-            class="elevation-surfaces__card"
+            class="absolute size-40 rounded-xl border border-muted [transform-style:preserve-3d] [transform:rotateX(45deg)_rotateZ(-45deg)]"
             :style="{
               background: `var(${surface.token})`,
               bottom: surface.bottom,
             }"
           />
         </div>
-        <span class="elevation-surfaces__caption">
+        <span
+          class="absolute bottom-0 left-0 w-[260px] text-center text-xs text-[var(--color-static-black)]"
+        >
           {{ theme === "dark" ? "Dark mode" : "Light mode" }}
         </span>
         <div
           v-for="surface in surfaces"
           :key="surface.token + '-legend'"
-          class="elevation-surfaces__legend"
+          class="absolute left-64 flex -translate-y-1/2 items-center"
           :style="{ top: surface.centerY + 'px' }"
         >
-          <div class="elevation-surfaces__legend-dot" />
-          <div class="elevation-surfaces__legend-line" />
-          <span class="elevation-surfaces__legend-label">{{
-            surface.label
-          }}</span>
+          <div class="size-[5px] shrink-0 rounded-full bg-[#e0e0e0]" />
+          <div class="h-px w-6 shrink-0 bg-[#e0e0e0]" />
+          <span
+            class="whitespace-nowrap pl-1.5 text-xs font-medium text-[var(--color-static-black)]"
+          >
+            {{ surface.label }}
+          </span>
         </div>
       </div>
     </div>
@@ -61,88 +67,3 @@ const surfaces = [
   },
 ];
 </script>
-
-<style scoped>
-.elevation-surfaces {
-  display: flex;
-  gap: 16px;
-  margin: 24px 0;
-}
-
-.elevation-surfaces__panel {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 24px 16px;
-}
-
-.elevation-surfaces__stage {
-  position: relative;
-  width: 340px;
-  height: 260px;
-}
-
-.elevation-surfaces__scene {
-  position: absolute;
-  left: 0;
-  top: 0;
-  width: 260px;
-  height: 260px;
-  perspective: 800px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.elevation-surfaces__card {
-  position: absolute;
-  width: 160px;
-  height: 160px;
-  border-radius: 12px;
-  border: 1px solid var(--color-border-secondary-default);
-  transform: rotateX(45deg) rotateZ(-45deg);
-  transform-style: preserve-3d;
-}
-
-.elevation-surfaces__caption {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 260px;
-  text-align: center;
-  font-size: 12px;
-  color: var(--color-static-black);
-}
-
-.elevation-surfaces__legend {
-  position: absolute;
-  left: 256px;
-  transform: translateY(-50%);
-  display: flex;
-  align-items: center;
-}
-
-.elevation-surfaces__legend-dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: #e0e0e0;
-  flex-shrink: 0;
-}
-
-.elevation-surfaces__legend-line {
-  width: 24px;
-  height: 1px;
-  background: #e0e0e0;
-  flex-shrink: 0;
-}
-
-.elevation-surfaces__legend-label {
-  padding-left: 6px;
-  font-size: 12px;
-  font-weight: var(--font-weight-medium);
-  color: var(--color-static-black);
-  white-space: nowrap;
-}
-</style>

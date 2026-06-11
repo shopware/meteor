@@ -36,6 +36,79 @@ interface SlotMeta {
   description: string;
 }
 
+interface ComponentDescriptionOverrides {
+  props?: Record<string, string>;
+  events?: Record<string, string>;
+  slots?: Record<string, string>;
+}
+
+const COMPONENT_DESCRIPTION_OVERRIDES: Record<
+  string,
+  ComponentDescriptionOverrides
+> = {
+  MtButton: {
+    props: {
+      block: "Expands the button to fill the available inline space.",
+      disabled: "Disables the button and prevents user interaction.",
+      ghost: "Renders supported variants with a transparent background.",
+      is: "Sets the rendered HTML element or Vue component.",
+      isLoading: "Shows a loading indicator and hides the button content.",
+      link: "Deprecated link target for rendering the button as an anchor.",
+      size: "Controls the button height, padding, and icon slot size.",
+      square: "Renders the button as an icon-only square control.",
+      variant: "Controls the visual style and semantic emphasis of the button.",
+    },
+    slots: {
+      default: "Button label or custom button content.",
+      iconFront: "Icon rendered before the button label.",
+      iconBack: "Icon rendered after the button label.",
+    },
+  },
+  MtBanner: {
+    props: {
+      bannerIndex: "Optional identifier emitted with the close event.",
+      closable: "Shows a close button and enables the close event.",
+      hideIcon: "Hides the leading banner icon.",
+      icon: "Overrides the default icon for the selected variant.",
+      title: "Optional title shown above the banner message.",
+      variant: "Controls the banner color, icon, and semantic meaning.",
+    },
+    events: {
+      close: "Emitted when the close button is clicked.",
+    },
+    slots: {
+      customIcon: "Custom leading icon content.",
+      default: "Banner message content.",
+    },
+  },
+  MtCard: {
+    props: {
+      inheritance: "Controls the inheritance toggle state when provided.",
+      isLoading: "Shows a loader over the card content.",
+      large: "Deprecated larger card width.",
+      subtitle: "Subtitle text shown in the card header.",
+      title: "Title text shown in the card header and used as aria-label.",
+    },
+    events: {
+      "update:inheritance": "Emitted when the inheritance toggle is clicked.",
+    },
+    slots: {
+      "after-card": "Internal content rendered after the card.",
+      avatar: "Avatar or logo content shown in the card header.",
+      "before-card": "Internal content rendered before the card.",
+      "context-actions": "Context menu items rendered in the card header.",
+      default: "Main card content.",
+      footer: "Footer content rendered below the main content.",
+      grid: "Data grid content rendered inside the card body.",
+      headerRight: "Additional content on the right side of the header.",
+      subtitle: "Custom subtitle content replacing the subtitle prop.",
+      tabs: "Tab bar content rendered below the header.",
+      title: "Custom title content replacing the title prop.",
+      toolbar: "Toolbar content such as search fields or actions.",
+    },
+  },
+};
+
 function collectExampleSources(dir: string) {
   const sources: Record<string, string> = {};
 
@@ -103,12 +176,15 @@ export default defineNuxtModule({
 
         try {
           const meta = checker.getComponentMeta(componentPath);
+          const descriptions =
+            COMPONENT_DESCRIPTION_OVERRIDES[componentName] ?? {};
 
           const props: PropMeta[] = meta.props
             .filter((prop) => !prop.global)
             .map((prop) => ({
               name: prop.name,
-              description: prop.description ?? "",
+              description:
+                prop.description || descriptions.props?.[prop.name] || "",
               type: prop.type,
               required: prop.required,
               default: prop.default,
@@ -124,13 +200,15 @@ export default defineNuxtModule({
 
           const events: EventMeta[] = meta.events.map((event) => ({
             name: event.name,
-            description: event.description ?? "",
+            description:
+              event.description || descriptions.events?.[event.name] || "",
             type: event.type,
           }));
 
           const slots: SlotMeta[] = meta.slots.map((slot) => ({
             name: slot.name,
-            description: slot.description ?? "",
+            description:
+              slot.description || descriptions.slots?.[slot.name] || "",
           }));
 
           result[componentName] = { props, events, slots };

@@ -1,6 +1,16 @@
 import componentMeta from "#meteor-component-meta";
 import exampleSources from "#meteor-example-sources";
 
+export interface MeteorPageMeta {
+  tagName?: string;
+  status?: "available" | "experimental" | "deprecated" | "none";
+  packageImports?: string | string[];
+  packageName?: string;
+  sourcePath?: string;
+  sourceUrl?: string;
+  npmPackage?: string;
+}
+
 interface ComponentMeta {
   props: {
     name: string;
@@ -22,7 +32,7 @@ const VISUAL_REPLACEMENTS: Record<string, string> = {
   "home-hero": [
     "Build Shopware interfaces with Meteor.",
     "",
-    "- [Get started](/getting-started/introduction)",
+    "- [Get started](/getting-started/developers)",
     "- [Browse components](/components/button)",
     "- [Tokens](/foundations/tokens/tokens-overview)",
   ].join("\n"),
@@ -47,7 +57,9 @@ export function flattenMarkdown(markdown: string) {
     transformOutsideCodeFences(markdown, (section) => {
       let result = section;
       result = removeStyleTags(result);
+      result = removePrettierIgnoreComments(result);
       result = transformPageHeaders(result);
+      result = transformComponentImports(result);
       result = transformPropsTables(result);
       result = transformComponentExamples(result);
       result = transformDoDontHtml(result);
@@ -56,6 +68,87 @@ export function flattenMarkdown(markdown: string) {
       return result;
     }),
   ).trimEnd();
+}
+
+export function getMeteorPageMeta(page: unknown) {
+  if (!page || typeof page !== "object" || !("meteor" in page)) {
+    return undefined;
+  }
+  const meta = (page as { meteor?: unknown }).meteor;
+  return meta && typeof meta === "object"
+    ? (meta as MeteorPageMeta)
+    : undefined;
+}
+
+export function renderMeteorPageMetaMarkdown(meta?: MeteorPageMeta) {
+  const lines: string[] = [];
+  const normalized = normalizeMeteorPageMeta(meta);
+  if (!normalized) return "";
+
+  if (normalized.tagName) {
+    lines.push(`**Component tag:** \`${normalized.tagName}\``);
+  }
+
+  if (shouldRenderStatus(normalized.status)) {
+    lines.push(`**Status:** ${capitalize(normalized.status)}`);
+  }
+
+  if (normalized.importCode) {
+    lines.push(fencedCode("ts", normalized.importCode));
+  }
+
+  const links = renderMeteorPageMetaLinks(normalized);
+  if (links.length > 0) {
+    lines.push(
+      links.map((link) => `- [${link.label}](${link.href})`).join("\n"),
+    );
+  }
+
+  return lines.join("\n\n");
+}
+
+export function renderMeteorPageMetaNodes(meta?: MeteorPageMeta) {
+  const nodes: unknown[] = [];
+  const normalized = normalizeMeteorPageMeta(meta);
+  if (!normalized) return nodes;
+
+  if (normalized.tagName) {
+    nodes.push([
+      "p",
+      {},
+      ["strong", {}, "Component tag:"],
+      " ",
+      ["code", {}, normalized.tagName],
+    ]);
+  }
+
+  if (shouldRenderStatus(normalized.status)) {
+    nodes.push([
+      "p",
+      {},
+      ["strong", {}, "Status:"],
+      ` ${capitalize(normalized.status)}`,
+    ]);
+  }
+
+  if (normalized.importCode) {
+    nodes.push(["pre", { language: "ts", code: normalized.importCode }]);
+  }
+
+  const links = renderMeteorPageMetaLinks(normalized);
+  if (links.length > 0) {
+    nodes.push([
+      "ul",
+      {},
+      ...links.map((link) => [
+        "li",
+        {},
+        ["a", { href: link.href }, link.label],
+      ]),
+    ]);
+  }
+
+  return nodes;
 }
 
 function transformOutsideCodeFences(
@@ -71,6 +164,10 @@ function transformOutsideCodeFences(
 
 function removeStyleTags(markdown: string) {
   return markdown.replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, "");
+}
+
+function removePrettierIgnoreComments(markdown: string) {
+  return markdown.replace(/<!--\s*prettier-ignore-(?:start|end)\s*-->\n?/g, "");
 }
 
 function transformPageHeaders(markdown: string) {
@@ -158,6 +255,15 @@ function transformDoDontHtml(markdown: string) {
 
 function transformDoDontMdc(markdown: string) {
   let result = markdown.replace(
+    /(^|\n)::do-dont\s*\n([\s\S]*?)\n::/g,
+    (match: string, prefix: string, body: string) => {
+      const attrs = parseDoDontSlotSections(body);
+      if (!attrs["do-text"] && !attrs.dont) return match;
+      return `${prefix}${renderDoDont(attrs["do-text"], attrs.dont)}`;
+    },
+  );
+
+  result = result.replace(
     /(^|\n)::do-dont\{([\s\S]*?)\}\s*::/g,
     (_match, prefix: string, rawAttrs: string) => {
       const attrs = parseAttrs(rawAttrs);
@@ -201,36 +307,40 @@ function transformVisualWidgets(markdown: string) {
   return result;
 }
 
+function transformComponentImports(markdown: string) {
+  let result = markdown.replace(
+    /<component-import\b([^>]*)>[\s\S]*?<\/component-import>/gi,
+    (_match, rawAttrs: string) => renderComponentImport(parseAttrs(rawAttrs)),
+  );
+
+  result = result.replace(
+    /(^|\n)::component-import(?:\{([^}]*)\})?\s*::/g,
+    (_match, prefix: string, rawAttrs: string | undefined) =>
+      `${prefix}${renderComponentImport(parseAttrs(rawAttrs || ""))}`,
+  );
+
+  return result.replace(
+    /(^|\n):component-import(?:\{([^}]*)\})?/g,
+    (_match, prefix: string, rawAttrs: string | undefined) =>
+      `${prefix}${renderComponentImport(parseAttrs(rawAttrs || ""))}`,
+  );
+}
+
 function renderPageHeader(attrs: Record<string, string>, inner: string) {
   const lines: string[] = [];
   const body = inner.trim();
   if (body) lines.push(body);
 
-  if (attrs["tag-name"]) {
-    lines.push(`**Component tag:** \`${attrs["tag-name"]}\``);
-  }
-
-  if (attrs.status && attrs.status !== "none") {
-    lines.push(`**Status:** ${capitalize(attrs.status)}`);
-  }
-
-  if (attrs["package-imports"]) {
-    const importCode = renderImportCode(
-      attrs["package-imports"],
-      attrs["package-name"] || DEFAULT_COMPONENT_PACKAGE,
-    );
-    if (importCode) lines.push(fencedCode("ts", importCode));
-  }
-
-  const links: string[] = [];
-  const sourceUrl =
-    attrs["source-url"] ||
-    (attrs["source-path"] ? `${GITHUB_TREE_URL}/${attrs["source-path"]}` : "");
-  if (sourceUrl) links.push(`- [Source](${sourceUrl})`);
-  if (attrs["npm-package"]) {
-    links.push(`- [npm](${NPM_PACKAGE_URL}${attrs["npm-package"]})`);
-  }
-  if (links.length > 0) lines.push(links.join("\n"));
+  const metadata = renderMeteorPageMetaMarkdown({
+    tagName: attrs["tag-name"],
+    status: attrs.status as MeteorPageMeta["status"],
+    packageImports: attrs["package-imports"],
+    packageName: attrs["package-name"],
+    sourcePath: attrs["source-path"],
+    sourceUrl: attrs["source-url"],
+    npmPackage: attrs["npm-package"],
+  });
+  if (metadata) lines.push(metadata);
 
   return lines.join("\n\n");
 }
@@ -301,11 +411,103 @@ function renderPropsTable(component?: string) {
   return sections.join("\n\n");
 }
 
+function renderComponentImport(attrs: Record<string, string>) {
+  const packageImports = attrs["package-imports"] || attrs.imports || "";
+  if (!packageImports) return "";
+
+  const importCode = renderImportCode(
+    packageImports,
+    attrs["package-name"] || DEFAULT_COMPONENT_PACKAGE,
+  );
+
+  return importCode ? fencedCode("ts", importCode) : "";
+}
+
 function renderComponentExample(name?: string) {
   if (!name) return "";
   const source = exampleSources[name];
   if (!source) return `_Example source unavailable for \`${name}\`._`;
-  return fencedCode("vue", source.trim());
+  return fencedCode("vue", cleanExampleSource(source));
+}
+
+function cleanExampleSource(code: string) {
+  return stripDemoAttributes(stripStyleBlocks(stripScriptImports(code)))
+    .replace(/\n[ \t]+\n/g, "\n")
+    .replace(/<([A-Za-z][\w:-]*)\s*\n\s*>/g, "<$1>")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+function stripStyleBlocks(code: string) {
+  return code.replace(/\n?<style\b[^>]*>[\s\S]*?<\/style>\s*/g, "\n");
+}
+
+function stripScriptImports(code: string) {
+  return code.replace(
+    /<script setup([^>]*)>([\s\S]*?)<\/script>/g,
+    (_match, attrs: string, script: string) => {
+      const cleanedScript = removeMeteorImportStatements(script)
+        .replace(/^\s+|\s+$/g, "")
+        .trim();
+
+      return cleanedScript
+        ? `<script setup${attrs}>\n${cleanedScript}\n</script>`
+        : "";
+    },
+  );
+}
+
+function removeMeteorImportStatements(script: string) {
+  const lines = script.split("\n");
+  const cleanedLines: string[] = [];
+  let importLines: string[] | null = null;
+
+  for (const line of lines) {
+    const trimmedLine = line.trim();
+
+    if (importLines) {
+      importLines.push(line);
+
+      if (/;\s*$/.test(trimmedLine)) {
+        if (!isMeteorComponentImport(importLines.join("\n"))) {
+          cleanedLines.push(...importLines);
+        }
+        importLines = null;
+      }
+      continue;
+    }
+
+    if (trimmedLine.startsWith("import ")) {
+      importLines = [line];
+      if (/;\s*$/.test(trimmedLine)) {
+        if (!isMeteorComponentImport(line)) {
+          cleanedLines.push(line);
+        }
+        importLines = null;
+      }
+      continue;
+    }
+
+    cleanedLines.push(line);
+  }
+
+  if (importLines && !isMeteorComponentImport(importLines.join("\n"))) {
+    cleanedLines.push(...importLines);
+  }
+
+  return cleanedLines.join("\n");
+}
+
+function isMeteorComponentImport(statement: string) {
+  return /from\s+["']@shopware-ag\/meteor-component-library(?:\/[^"']*)?["']/.test(
+    statement,
+  );
+}
+
+function stripDemoAttributes(code: string) {
+  return code
+    .replace(/\sclass="example-[^"]*"/g, "")
+    .replace(/\sstyle="[\s\S]*?"/g, "");
 }
 
 function renderDoDont(doText = "", dont = "") {
@@ -326,6 +528,45 @@ function renderImportCode(packageImports: string, packageName: string) {
   }
 
   return `import {\n  ${imports.join(",\n  ")},\n} from "${packageName}";`;
+}
+
+function normalizeMeteorPageMeta(meta?: MeteorPageMeta) {
+  if (!meta) return null;
+  const sourceUrl =
+    meta.sourceUrl ||
+    (meta.sourcePath ? `${GITHUB_TREE_URL}/${meta.sourcePath}` : "");
+  const npmUrl = meta.npmPackage ? `${NPM_PACKAGE_URL}${meta.npmPackage}` : "";
+  const packageImports = Array.isArray(meta.packageImports)
+    ? meta.packageImports.join(",")
+    : meta.packageImports || "";
+  const importCode = packageImports
+    ? renderImportCode(
+        packageImports,
+        meta.packageName || DEFAULT_COMPONENT_PACKAGE,
+      )
+    : "";
+
+  return {
+    ...meta,
+    sourceUrl,
+    npmUrl,
+    importCode,
+  };
+}
+
+function shouldRenderStatus(
+  status?: MeteorPageMeta["status"],
+): status is "experimental" | "deprecated" {
+  return status === "experimental" || status === "deprecated";
+}
+
+function renderMeteorPageMetaLinks(
+  meta: NonNullable<ReturnType<typeof normalizeMeteorPageMeta>>,
+) {
+  return [
+    meta.sourceUrl ? { label: "Source", href: meta.sourceUrl } : null,
+    meta.npmUrl ? { label: "npm", href: meta.npmUrl } : null,
+  ].filter((link): link is { label: string; href: string } => link !== null);
 }
 
 function parseAttrs(rawAttrs: string) {
@@ -361,6 +602,29 @@ function parseDoDontDirectiveAttrs(rawAttrs: string) {
   if (dontMatch?.[1]) attrs.dont = normalizeDirectiveValue(dontMatch[1]);
 
   return attrs;
+}
+
+function parseDoDontSlotSections(body: string) {
+  const attrs: Record<string, string> = {};
+  const sectionPattern =
+    /(?:^|\n)#(do|dont)\s*\n([\s\S]*?)(?=\n#(?:do|dont)\s*\n|$)/g;
+  let match: RegExpExecArray | null;
+
+  while ((match = sectionPattern.exec(body))) {
+    const [, section, content = ""] = match;
+    if (section === "do") attrs["do-text"] = normalizeSlotMarkdown(content);
+    if (section === "dont") attrs.dont = normalizeSlotMarkdown(content);
+  }
+
+  return attrs;
+}
+
+function normalizeSlotMarkdown(value: string) {
+  return value
+    .split(/\r?\n/)
+    .map((line) => line.trimEnd())
+    .join("\n")
+    .trim();
 }
 
 function normalizeDirectiveValue(value: string) {

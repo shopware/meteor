@@ -10,7 +10,11 @@ import { stringify } from "minimark/stringify";
 import { withLeadingSlash } from "ufo";
 import collections from "#content/manifest";
 import { useRuntimeConfig } from "#imports";
-import { flattenMarkdown } from "./markdown-export";
+import {
+  flattenMarkdown,
+  getMeteorPageMeta,
+  renderMeteorPageMetaNodes,
+} from "./markdown-export";
 
 type RawMarkdownConfig = false | { excludeCollections?: string[] };
 type RuntimeLlmsConfig = { contentRawMarkdown?: RawMarkdownConfig };
@@ -33,8 +37,9 @@ export async function renderRawMarkdown(
 
   let path = withLeadingSlash(slug.replace(".md", ""));
   if (path.endsWith("/index")) {
-    path = path.substring(0, path.length - 6);
+    path = path.substring(0, path.length - 6) || "/";
   }
+  const paths = path === "/" ? ["/", "/index"] : [path];
 
   const rawMarkdownOptions =
     typeof llmsConfig?.contentRawMarkdown === "object"
@@ -50,7 +55,10 @@ export async function renderRawMarkdown(
 
   let page: Awaited<ReturnType<typeof findPage>> = null;
   for (const collection of collectionNames) {
-    page = await findPage(event, collection, path);
+    for (const candidatePath of paths) {
+      page = await findPage(event, collection, candidatePath);
+      if (page) break;
+    }
     if (page) break;
   }
 
@@ -68,6 +76,19 @@ export async function renderRawMarkdown(
   if (!isElement(body.value[0], "h1")) {
     body.value.unshift(["blockquote", {}, page.description || ""]);
     body.value.unshift(["h1", {}, page.title || ""]);
+  }
+
+  const metadataNodes = renderMeteorPageMetaNodes(
+    getMeteorPageMeta(page),
+  ) as MinimarkNode[];
+  if (metadataNodes.length > 0) {
+    const insertIndex =
+      isElement(body.value[0], "h1") && isElement(body.value[1], "blockquote")
+        ? 2
+        : isElement(body.value[0], "h1")
+          ? 1
+          : 0;
+    body.value.splice(insertIndex, 0, ...metadataNodes);
   }
 
   const pageWithLinks = page as typeof page & {

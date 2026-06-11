@@ -1,21 +1,19 @@
 <template>
-  <div class="color-palette">
-    <div
-      v-for="palette in palettes"
-      :key="palette.name"
-      class="color-palette__group"
-    >
-      <div class="color-palette__name">{{ palette.name }}</div>
-      <div class="color-palette__swatches">
+  <div class="not-prose my-6 grid gap-6 sm:grid-cols-2">
+    <div v-for="palette in palettes" :key="palette.name" class="min-w-0">
+      <div class="mb-2 text-[13px] font-semibold text-default">
+        {{ palette.name }}
+      </div>
+      <div class="overflow-hidden rounded-lg border border-muted">
         <div
           v-for="swatch in palette.swatches"
           :key="swatch.token"
-          class="color-palette__swatch"
+          class="flex items-center justify-between gap-2 px-3.5 py-2.5"
           :style="{ backgroundColor: swatch.hex }"
         >
           <button
             type="button"
-            class="color-palette__copy"
+            class="cursor-pointer border-0 bg-transparent p-0 font-mono text-xs font-medium hover:underline"
             :style="{ color: textColor(swatch.hex) }"
             :title="`Copy var(${swatch.token})`"
             @click="copy(`var(${swatch.token})`)"
@@ -24,7 +22,7 @@
           </button>
           <button
             type="button"
-            class="color-palette__copy color-palette__copy--muted"
+            class="cursor-pointer border-0 bg-transparent p-0 font-mono text-[11px] hover:underline"
             :style="{ color: mutedColor(swatch.hex) }"
             :title="`Copy ${swatch.hex}`"
             @click="copy(swatch.hex)"
@@ -114,58 +112,3 @@ function copy(value: string) {
     .catch(() => {});
 }
 </script>
-
-<style scoped>
-.color-palette {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 24px;
-  margin: 24px 0;
-}
-
-.color-palette__group {
-  min-width: 0;
-}
-
-.color-palette__name {
-  font-size: 13px;
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary-default);
-  margin-bottom: 8px;
-}
-
-.color-palette__swatches {
-  border-radius: 8px;
-  overflow: hidden;
-  border: 1px solid var(--color-border-secondary-default);
-}
-
-.color-palette__swatch {
-  padding: 9px 14px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 8px;
-}
-
-.color-palette__copy {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  font-family: var(--font-family-body, monospace);
-  font-size: 12px;
-  font-weight: var(--font-weight-medium);
-  letter-spacing: 0.01em;
-  text-decoration: none;
-}
-
-.color-palette__copy--muted {
-  font-size: 11px;
-  font-weight: var(--font-weight-regular);
-}
-
-.color-palette__copy:hover {
-  text-decoration: underline;
-}
-</style>

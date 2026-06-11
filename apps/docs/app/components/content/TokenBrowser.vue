@@ -1,47 +1,50 @@
 <template>
-  <div class="token-browser">
-    <div v-for="group in groups" :key="group.name" class="token-browser__group">
-      <div class="token-browser__group-inner">
-        <div class="token-browser__group-name">{{ group.name }}</div>
+  <div class="not-prose mt-6">
+    <div v-for="group in groups" :key="group.name" class="mb-10 last:mb-0">
+      <div class="overflow-hidden rounded-lg border border-muted">
+        <div
+          class="border-b border-muted bg-muted px-4 py-3 text-base font-semibold text-default"
+        >
+          {{ group.name }}
+        </div>
         <div
           v-for="token in visibleTokens(group)"
           :key="token"
-          class="token-browser__row"
+          class="grid grid-cols-[auto_minmax(0,1fr)] gap-x-4 gap-y-3 border-b border-muted px-4 py-2 last:border-b-0 sm:grid-cols-[auto_minmax(0,1fr)_auto] sm:items-center"
         >
-          <!-- Preview -->
-          <div class="token-browser__preview">
+          <div class="min-w-16 shrink-0">
             <template v-if="previewType(token) === 'color'">
-              <div class="token-browser__swatch-pair">
-                <div class="token-browser__swatch-col">
+              <div class="flex gap-1.5">
+                <div class="flex flex-col items-center gap-1">
                   <div
-                    class="token-browser__swatch"
+                    class="size-7 rounded border border-black/10"
                     :style="swatchStyle(token, values.light[token])"
                   />
-                  <span class="token-browser__swatch-label">light</span>
+                  <span class="text-[9px] text-muted">light</span>
                 </div>
-                <div class="token-browser__swatch-col">
+                <div class="flex flex-col items-center gap-1">
                   <div
                     data-theme="dark"
-                    class="token-browser__swatch"
+                    class="size-7 rounded border border-black/10"
                     :style="swatchStyle(token, values.dark[token])"
                   />
-                  <span class="token-browser__swatch-label">dark</span>
+                  <span class="text-[9px] text-muted">dark</span>
                 </div>
               </div>
             </template>
             <div
               v-else-if="previewType(token) === 'radius'"
-              class="token-browser__radius"
+              class="size-8 border-2 border-[var(--color-border-brand-default)] bg-[var(--color-background-brand-default)]"
               :style="{
                 borderRadius: token.includes('round') ? '50%' : `var(${token})`,
               }"
             />
             <div
               v-else-if="previewType(token) === 'scale-size'"
-              class="token-browser__scale"
+              class="flex h-8 w-16 items-center"
             >
               <div
-                class="token-browser__scale-bar"
+                class="h-1.5 max-w-16 rounded-[3px] bg-[var(--color-interaction-primary-default)]"
                 :style="{
                   width: `var(${token})`,
                   minWidth: values.light[token] === '0rem' ? '2px' : undefined,
@@ -50,7 +53,7 @@
             </div>
             <div
               v-else-if="previewType(token) === 'font-size'"
-              class="token-browser__font-box"
+              class="flex size-8 items-center justify-center overflow-hidden text-default"
             >
               <span
                 :style="{
@@ -63,7 +66,7 @@
             </div>
             <div
               v-else-if="previewType(token) === 'font-weight'"
-              class="token-browser__font-box"
+              class="flex size-8 items-center justify-center overflow-hidden text-default"
             >
               <span :style="{ fontSize: '14px', fontWeight: `var(${token})` }"
                 >Aa</span
@@ -71,53 +74,59 @@
             </div>
             <div
               v-else-if="previewType(token) === 'font-family'"
-              class="token-browser__font-box"
+              class="flex size-8 items-center justify-center overflow-hidden text-default"
             >
               <span :style="{ fontSize: '13px', fontFamily: `var(${token})` }"
                 >Aa</span
               >
             </div>
-            <div
-              v-else-if="previewType(token) === 'line-height'"
-              class="token-browser__leading"
-            >
+            <div v-else-if="previewType(token) === 'line-height'" class="w-8">
               <div
-                class="token-browser__leading-bar"
+                class="h-0.5 w-8 rounded-[1px] bg-[var(--color-interaction-primary-default)]"
                 :style="{ marginBottom: `var(${token})` }"
               />
-              <div class="token-browser__leading-bar" />
+              <div
+                class="h-0.5 w-8 rounded-[1px] bg-[var(--color-interaction-primary-default)]"
+              />
             </div>
-            <div v-else class="token-browser__placeholder" />
+            <div v-else class="size-8" />
           </div>
 
-          <!-- Name + description -->
-          <div class="token-browser__info">
+          <div class="min-w-0">
             <button
               type="button"
-              class="token-browser__token-name"
+              class="block cursor-pointer border-0 bg-transparent p-0 text-left font-mono text-sm font-medium text-default hover:underline"
               :title="`Copy var(${token})`"
               @click="copy(token)"
             >
               {{ token }}
             </button>
-            <span v-if="descriptions[token]" class="token-browser__description">
+            <span
+              v-if="descriptions[token]"
+              class="mt-px block text-xs text-muted"
+            >
               {{ descriptions[token] }}
             </span>
           </div>
 
-          <!-- Values -->
           <div
             v-if="previewType(token) !== 'color'"
-            class="token-browser__values"
+            class="flex flex-row flex-wrap gap-1.5 sm:flex-col sm:items-end sm:gap-[3px]"
           >
-            <span v-if="displayLight(token)" class="token-browser__value-badge">
+            <span
+              v-if="displayLight(token)"
+              class="whitespace-nowrap rounded border border-muted bg-muted px-1.5 py-px text-[11px] text-muted"
+            >
               {{ displayLight(token) }}
             </span>
-            <span v-if="displayDark(token)" class="token-browser__value-badge">
+            <span
+              v-if="displayDark(token)"
+              class="whitespace-nowrap rounded border border-muted bg-muted px-1.5 py-px text-[11px] text-muted"
+            >
               {{ displayDark(token) }}
             </span>
           </div>
-          <div v-else />
+          <div v-else class="hidden sm:block" />
         </div>
       </div>
     </div>
@@ -217,163 +226,3 @@ function copy(token: string) {
     .catch(() => {});
 }
 </script>
-
-<style scoped>
-.token-browser {
-  margin-top: 24px;
-}
-
-.token-browser__group {
-  margin-bottom: 40px;
-}
-
-.token-browser__group-inner {
-  border: 1px solid var(--color-border-secondary-default);
-  border-radius: 8px;
-  overflow: hidden;
-}
-
-.token-browser__group-name {
-  font-size: 16px;
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary-default);
-  padding: 0.75rem 1rem;
-  background-color: var(--color-background-secondary-default);
-  border-bottom: 1px solid var(--color-border-secondary-default);
-}
-
-.token-browser__row {
-  display: grid;
-  grid-template-columns: auto 1fr auto;
-  gap: 0 16px;
-  align-items: center;
-  padding: 8px 16px;
-  border-bottom: 1px solid var(--color-border-secondary-default);
-}
-
-.token-browser__row:last-child {
-  border-bottom: none;
-}
-
-.token-browser__preview {
-  flex-shrink: 0;
-  min-width: 64px;
-}
-
-.token-browser__swatch-pair {
-  display: flex;
-  gap: 6px;
-}
-
-.token-browser__swatch-col {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 3px;
-}
-
-.token-browser__swatch {
-  width: 28px;
-  height: 28px;
-  border-radius: 4px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
-}
-
-.token-browser__swatch-label {
-  font-size: 9px;
-  color: var(--color-text-secondary-default);
-  letter-spacing: 0.02em;
-}
-
-.token-browser__radius {
-  width: 32px;
-  height: 32px;
-  background-color: var(--color-background-brand-default);
-  border: 2px solid var(--color-border-brand-default);
-}
-
-.token-browser__scale {
-  width: 64px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-}
-
-.token-browser__scale-bar {
-  height: 6px;
-  max-width: 64px;
-  background-color: var(--color-interaction-primary-default);
-  border-radius: 3px;
-}
-
-.token-browser__font-box {
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  overflow: hidden;
-  color: var(--color-text-primary-default);
-}
-
-.token-browser__leading {
-  width: 32px;
-}
-
-.token-browser__leading-bar {
-  height: 2px;
-  width: 32px;
-  background-color: var(--color-interaction-primary-default);
-  border-radius: 1px;
-}
-
-.token-browser__placeholder {
-  width: 32px;
-  height: 32px;
-}
-
-.token-browser__info {
-  min-width: 0;
-}
-
-.token-browser__token-name {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
-  font-size: 14px;
-  font-weight: var(--font-weight-medium);
-  color: var(--color-text-primary-default);
-  display: block;
-  text-align: left;
-  margin-bottom: 4px;
-}
-
-.token-browser__token-name:hover {
-  text-decoration: underline;
-}
-
-.token-browser__description {
-  font-size: 12px;
-  color: var(--color-text-secondary-default);
-  display: block;
-  margin-top: 1px;
-}
-
-.token-browser__values {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-  align-items: flex-end;
-}
-
-.token-browser__value-badge {
-  font-size: 11px;
-  color: var(--color-text-secondary-default);
-  background: var(--color-background-secondary-default);
-  border: 1px solid var(--color-border-secondary-default);
-  border-radius: 4px;
-  padding: 1px 6px;
-  white-space: nowrap;
-}
-</style>
