@@ -7,6 +7,9 @@ export default defineNuxtConfig({
   colorMode: {
     dataValue: "theme",
   },
+  llms: {
+    domain: "/",
+  },
   components: [
     { path: "~/components/examples", global: true, pathPrefix: false },
     "~/components",

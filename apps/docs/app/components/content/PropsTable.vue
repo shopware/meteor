@@ -104,7 +104,7 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import componentMeta from "#build/meteor-component-meta.mjs";
+import componentMeta from "#meteor-component-meta";
 
 const props = defineProps<{
   /** Component name from the meta allowlist, e.g. MtButton */
