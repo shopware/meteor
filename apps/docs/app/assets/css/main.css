@@ -1,0 +1,38 @@
+@import "@shopware-ag/meteor-tokens/primitives.css";
+@import "@shopware-ag/meteor-tokens/administration/light.css";
+@import "@shopware-ag/meteor-tokens/administration/dark.css";
+
+/*
+ * Map Nuxt UI design variables onto meteor semantic tokens. The meteor
+ * variables themselves flip with the data-theme attribute, so a single
+ * mapping covers light and dark mode. Declared for both :root and .dark
+ * because Nuxt UI redefines the --ui-* variables under .dark.
+ */
+:root,
+.dark {
+  --ui-bg: var(--color-elevation-surface-default);
+  --ui-bg-muted: var(--color-background-secondary-default);
+  --ui-bg-elevated: var(--color-elevation-surface-raised);
+  --ui-bg-accented: var(--color-background-tertiary-default);
+  --ui-text: var(--color-text-primary-default);
+  --ui-text-muted: var(--color-text-secondary-default);
+  --ui-text-dimmed: var(--color-text-secondary-default);
+  --ui-text-toned: var(--color-text-secondary-default);
+  --ui-text-highlighted: var(--color-text-primary-default);
+  --ui-border: var(--color-border-primary-default);
+  --ui-border-muted: var(--color-border-secondary-default);
+  --ui-border-accented: var(--color-border-primary-default);
+  --ui-primary: var(--color-interaction-primary-default);
+}
+
+/* The component library's styles.css is intentionally not loaded (its global
+ * element resets conflict with the docs typography); each meteor component
+ * imports its own CSS. Carry over the dark color-scheme hint it provided. */
+[data-theme="dark"] {
+  color-scheme: dark;
+}
+
+body {
+  background: var(--color-elevation-surface-default);
+  color: var(--color-text-primary-default);
+}

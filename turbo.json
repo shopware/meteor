@@ -6,6 +6,10 @@
       "outputs": ["dist/**", "es/**", "umd/**", ".docusaurus/**", "build/**"],
       "env": ["API_KEY"]
     },
+    "meteor-docs#build": {
+      "dependsOn": ["^build"],
+      "outputs": [".output/**", ".nuxt/**"]
+    },
     "@shopware-ag/meteor-component-library#build:storybook": {
       "dependsOn": ["^build"],
       "outputs": ["storybook-static/**"],
