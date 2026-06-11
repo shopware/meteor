@@ -1,0 +1,32 @@
+{
+  "name": "meteor-docs",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "nuxt dev --port 3001",
+    "build": "nuxt build",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "postinstall": "nuxt prepare",
+    "lint:all": "pnpm lint:types && pnpm format:check",
+    "format:check": "prettier . --check",
+    "lint:types": "nuxt typecheck"
+  },
+  "dependencies": {
+    "@shopware-ag/meteor-component-library": "workspace:*",
+    "@shopware-ag/meteor-icon-kit": "workspace:*",
+    "@shopware-ag/meteor-tokens": "workspace:*",
+    "better-sqlite3": "^12.6.2",
+    "docus": "^5.12.1",
+    "nuxt": "^4.3.1",
+    "vue": "^3.5.0",
+    "vue-i18n": "^9.9.1"
+  },
+  "devDependencies": {
+    "prettier": "^3.5.3",
+    "typescript": "~5.7.3",
+    "vue-component-meta": "^2.2.0",
+    "vue-tsc": "^2.2.0"
+  }
+}
