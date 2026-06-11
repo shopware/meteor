@@ -21,7 +21,8 @@ body {
   color-scheme: dark;
 }
 
-html, body {
+html,
+body {
   height: 100dvh;
 }
 
