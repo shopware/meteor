@@ -6,6 +6,14 @@ export default defineAppConfig({
   },
   header: {
     title: "Meteor Design System",
+    logo: {
+      light: "/shopware-logo.svg",
+      dark: "/shopware-logo.svg",
+      alt: "Shopware Design",
+      class: "h-7",
+      favicon: "/shopware-signet.svg",
+      brandAssetsUrl: "https://brand.shopware.com",
+    },
   },
   socials: {
     github: "https://github.com/shopware/meteor",
@@ -17,8 +25,27 @@ export default defineAppConfig({
   },
   ui: {
     colors: {
-      primary: "blue",
-      neutral: "slate",
+      primary: "brand",
+      secondary: "purple",
+      success: "green",
+      info: "blue",
+      warning: "orange",
+      error: "red",
+      neutral: "zinc",
+    },
+    contentToc: {
+      compoundVariants: [
+        {
+          active: true,
+          class: {
+            link: "text-[var(--color-text-primary-default)]",
+          },
+        },
+      ],
+      defaultVariants: {
+        highlightVariant: "straight",
+        highlightColor: "neutral",
+      },
     },
   },
 });

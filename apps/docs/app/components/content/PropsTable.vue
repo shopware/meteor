@@ -1,104 +1,161 @@
 <template>
-  <div v-if="meta" class="props-table">
+  <div v-if="meta" class="not-prose my-8 space-y-8">
     <template v-if="meta.props.length">
-      <h3 class="props-table__heading">Props</h3>
-      <div class="props-table__wrapper">
-        <table class="props-table__table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Type</th>
-              <th>Default</th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="prop in meta.props" :key="prop.name">
-              <td>
-                <code>{{ prop.name }}</code>
-                <span
-                  v-if="prop.required"
-                  class="props-table__badge props-table__badge--required"
-                >
-                  required
-                </span>
-                <span
-                  v-if="prop.deprecated"
-                  class="props-table__badge props-table__badge--deprecated"
-                >
-                  deprecated
-                </span>
-              </td>
-              <td>
-                <code class="props-table__type">{{ prop.type }}</code>
-              </td>
-              <td>
-                <code v-if="prop.default">{{ prop.default }}</code>
-                <span v-else>-</span>
-              </td>
-              <td>
-                {{ prop.description }}
-                <em v-if="prop.deprecated" class="props-table__deprecation">{{
-                  prop.deprecated
-                }}</em>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <section>
+        <h3 class="mb-3 text-lg font-semibold text-default">Props</h3>
+        <div class="overflow-x-auto rounded-lg border border-muted">
+          <table class="w-full border-collapse text-sm">
+            <thead
+              class="bg-muted text-left text-xs font-semibold text-default"
+            >
+              <tr>
+                <th class="px-4 py-2">Name</th>
+                <th class="px-4 py-2">Type</th>
+                <th class="px-4 py-2">Default</th>
+                <th class="px-4 py-2">Description</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-muted">
+              <tr v-for="prop in meta.props" :key="prop.name" class="align-top">
+                <td class="px-4 py-3">
+                  <code
+                    class="rounded bg-muted px-1.5 py-0.5 font-mono text-xs"
+                  >
+                    {{ prop.name }}
+                  </code>
+                  <UBadge
+                    v-if="prop.required"
+                    color="warning"
+                    variant="subtle"
+                    size="sm"
+                    class="ml-2"
+                  >
+                    required
+                  </UBadge>
+                  <UBadge
+                    v-if="prop.deprecated"
+                    color="error"
+                    variant="subtle"
+                    size="sm"
+                    class="ml-2"
+                  >
+                    deprecated
+                  </UBadge>
+                </td>
+                <td class="max-w-80 px-4 py-3">
+                  <code
+                    class="rounded bg-muted px-1.5 py-0.5 font-mono text-xs break-words text-muted"
+                  >
+                    {{ prop.type }}
+                  </code>
+                </td>
+                <td class="px-4 py-3">
+                  <code
+                    v-if="prop.default"
+                    class="rounded bg-muted px-1.5 py-0.5 font-mono text-xs"
+                  >
+                    {{ prop.default }}
+                  </code>
+                  <span v-else class="text-muted">-</span>
+                </td>
+                <td class="px-4 py-3 text-default">
+                  {{ prop.description }}
+                  <em v-if="prop.deprecated" class="mt-1 block text-error">
+                    {{ prop.deprecated }}
+                  </em>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
     </template>
 
     <template v-if="meta.events.length">
-      <h3 class="props-table__heading">Events</h3>
-      <div class="props-table__wrapper">
-        <table class="props-table__table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Payload</th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="event in meta.events" :key="event.name">
-              <td>
-                <code>{{ event.name }}</code>
-              </td>
-              <td>
-                <code class="props-table__type">{{ event.type }}</code>
-              </td>
-              <td>{{ event.description }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <section>
+        <h3 class="mb-3 text-lg font-semibold text-default">Events</h3>
+        <div class="overflow-x-auto rounded-lg border border-muted">
+          <table class="w-full border-collapse text-sm">
+            <thead
+              class="bg-muted text-left text-xs font-semibold text-default"
+            >
+              <tr>
+                <th class="px-4 py-2">Name</th>
+                <th class="px-4 py-2">Payload</th>
+                <th class="px-4 py-2">Description</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-muted">
+              <tr
+                v-for="event in meta.events"
+                :key="event.name"
+                class="align-top"
+              >
+                <td class="px-4 py-3">
+                  <code
+                    class="rounded bg-muted px-1.5 py-0.5 font-mono text-xs"
+                  >
+                    {{ event.name }}
+                  </code>
+                </td>
+                <td class="max-w-80 px-4 py-3">
+                  <code
+                    class="rounded bg-muted px-1.5 py-0.5 font-mono text-xs break-words text-muted"
+                  >
+                    {{ event.type }}
+                  </code>
+                </td>
+                <td class="px-4 py-3 text-default">{{ event.description }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
     </template>
 
     <template v-if="meta.slots.length">
-      <h3 class="props-table__heading">Slots</h3>
-      <div class="props-table__wrapper">
-        <table class="props-table__table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Description</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr v-for="slot in meta.slots" :key="slot.name">
-              <td>
-                <code>{{ slot.name }}</code>
-              </td>
-              <td>{{ slot.description }}</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <section>
+        <h3 class="mb-3 text-lg font-semibold text-default">Slots</h3>
+        <div class="overflow-x-auto rounded-lg border border-muted">
+          <table class="w-full border-collapse text-sm">
+            <thead
+              class="bg-muted text-left text-xs font-semibold text-default"
+            >
+              <tr>
+                <th class="px-4 py-2">Name</th>
+                <th class="px-4 py-2">Description</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-muted">
+              <tr v-for="slot in meta.slots" :key="slot.name" class="align-top">
+                <td class="px-4 py-3">
+                  <code
+                    class="rounded bg-muted px-1.5 py-0.5 font-mono text-xs"
+                  >
+                    {{ slot.name }}
+                  </code>
+                </td>
+                <td class="px-4 py-3 text-default">{{ slot.description }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
     </template>
   </div>
-  <div v-else class="props-table__missing">
-    No API metadata available for <code>{{ component }}</code
-    >. Add it to the allowlist in <code>modules/component-meta.ts</code>.
+  <div
+    v-else
+    class="not-prose my-6 rounded-lg border border-warning/30 bg-warning/10 px-4 py-3 text-sm text-default"
+  >
+    No API metadata available for
+    <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">
+      {{ component }}
+    </code>
+    . Add it to the allowlist in
+    <code class="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">
+      modules/component-meta.ts
+    </code>
+    .
   </div>
 </template>
 
@@ -128,82 +185,3 @@ const meta = computed<ComponentMeta | undefined>(
   () => (componentMeta as Record<string, ComponentMeta>)[props.component],
 );
 </script>
-
-<style scoped>
-.props-table__heading {
-  font-size: var(--font-size-l);
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary-default);
-  margin: var(--scale-size-24) 0 var(--scale-size-12);
-}
-
-.props-table__wrapper {
-  border: 1px solid var(--color-border-secondary-default);
-  border-radius: 8px;
-  overflow-x: auto;
-}
-
-.props-table__table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: var(--font-size-xs);
-}
-
-.props-table__table th {
-  text-align: left;
-  font-weight: var(--font-weight-semibold);
-  color: var(--color-text-primary-default);
-  background-color: var(--color-background-secondary-default);
-  padding: var(--scale-size-8) var(--scale-size-16);
-  border-bottom: 1px solid var(--color-border-secondary-default);
-}
-
-.props-table__table td {
-  padding: var(--scale-size-8) var(--scale-size-16);
-  border-bottom: 1px solid var(--color-border-secondary-default);
-  color: var(--color-text-primary-default);
-  vertical-align: top;
-}
-
-.props-table__table tr:last-child td {
-  border-bottom: none;
-}
-
-.props-table__type {
-  color: var(--color-text-secondary-default);
-  word-break: break-word;
-}
-
-.props-table__badge {
-  display: inline-block;
-  margin-left: var(--scale-size-4);
-  padding: 0 var(--scale-size-4);
-  border-radius: 4px;
-  font-size: 11px;
-}
-
-.props-table__badge--required {
-  background-color: var(--color-background-attention-default);
-  color: var(--color-text-attention-default);
-}
-
-.props-table__badge--deprecated {
-  background-color: var(--color-background-critical-default);
-  color: var(--color-text-critical-default);
-}
-
-.props-table__deprecation {
-  display: block;
-  color: var(--color-text-critical-default);
-}
-
-.props-table__missing {
-  margin: 24px 0;
-  padding: var(--scale-size-12) var(--scale-size-16);
-  border: 1px solid var(--color-border-attention-default);
-  border-radius: 8px;
-  background-color: var(--color-background-attention-default);
-  color: var(--color-text-primary-default);
-  font-size: var(--font-size-xs);
-}
-</style>
