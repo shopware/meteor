@@ -4,7 +4,10 @@
 
     <template #footer>
       <mt-inset
-        class="example-inset bg-[var(--color-elevation-surface-sunken)] p-[var(--mt-card-footer-padding)]"
+        style="
+          background: var(--color-elevation-surface-sunken);
+          padding: var(--mt-card-footer-padding);
+        "
       >
         <mt-text as="h3" size="m" weight="bold">Footer content</mt-text>
 

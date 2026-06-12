@@ -34,11 +34,6 @@
   --ui-error: var(--color-interaction-critical-default);
 }
 
-/* Custom token overwrite in light mode */
-.light {
-  --ui-bg-muted: var(--color-background-tertiary-default);
-}
-
 /* The component library's styles.css is intentionally not loaded (its global
  * element resets conflict with the docs typography); each meteor component
  * imports its own CSS. Carry over the dark color-scheme hint it provided. */
