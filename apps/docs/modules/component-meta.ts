@@ -1,6 +1,6 @@
 import { existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { basename, join, resolve } from "node:path";
-import { addTemplate, defineNuxtModule } from "@nuxt/kit";
+import { addTemplate, defineNuxtModule, updateTemplates } from "@nuxt/kit";
 import { createChecker } from "vue-component-meta";
 
 /**
@@ -110,7 +110,7 @@ const COMPONENT_DESCRIPTION_OVERRIDES: Record<
 };
 
 function collectExampleSources(dir: string) {
-  const sources: Record<string, string> = {};
+  const sources: Record<string, { code: string }> = {};
 
   if (!existsSync(dir)) {
     console.warn(`[meteor-component-meta] examples dir not found: ${dir}`);
@@ -128,13 +128,75 @@ function collectExampleSources(dir: string) {
       }
 
       if (stats.isFile() && entry.endsWith(".vue")) {
-        sources[basename(entry, ".vue")] = readFileSync(fullPath, "utf8");
+        sources[basename(entry, ".vue")] = {
+          code: stripLibraryImports(readFileSync(fullPath, "utf8")),
+        };
       }
     }
   };
 
   walk(dir);
   return sources;
+}
+
+/**
+ * The displayed example code intentionally hides the library import
+ * statements; everything else is shown exactly as authored.
+ */
+function stripLibraryImports(code: string) {
+  return code
+    .replace(
+      /<script setup([^>]*)>([\s\S]*?)<\/script>\n?/g,
+      (_match, attrs: string, script: string) => {
+        const cleanedScript = removeLibraryImportStatements(script).trim();
+
+        return cleanedScript
+          ? `<script setup${attrs}>\n${cleanedScript}\n</script>\n`
+          : "";
+      },
+    )
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
+function removeLibraryImportStatements(script: string) {
+  const lines = script.split("\n");
+  const cleanedLines: string[] = [];
+  let importLines: string[] | null = null;
+
+  const flush = () => {
+    if (importLines && !isLibraryImport(importLines.join("\n"))) {
+      cleanedLines.push(...importLines);
+    }
+    importLines = null;
+  };
+
+  for (const line of lines) {
+    const trimmedLine = line.trim();
+
+    if (importLines) {
+      importLines.push(line);
+      if (/;\s*$/.test(trimmedLine)) flush();
+      continue;
+    }
+
+    if (trimmedLine.startsWith("import ")) {
+      importLines = [line];
+      if (/;\s*$/.test(trimmedLine)) flush();
+      continue;
+    }
+
+    cleanedLines.push(line);
+  }
+
+  flush();
+  return cleanedLines.join("\n");
+}
+
+function isLibraryImport(statement: string) {
+  return /from\s+["']@shopware-ag\/meteor-component-library(?:\/[^"']*)?["']/.test(
+    statement,
+  );
 }
 
 export default defineNuxtModule({
@@ -221,9 +283,7 @@ export default defineNuxtModule({
       }
     }
 
-    const exampleSources = collectExampleSources(
-      resolve(nuxt.options.srcDir, "components/examples"),
-    );
+    const examplesDir = resolve(nuxt.options.srcDir, "components/examples");
 
     const componentMetaTemplate = addTemplate({
       filename: "meteor-component-meta.mjs",
@@ -235,7 +295,30 @@ export default defineNuxtModule({
       filename: "meteor-example-sources.mjs",
       write: true,
       getContents: () =>
-        `export default ${JSON.stringify(exampleSources, null, 2)};`,
+        `export default ${JSON.stringify(collectExampleSources(examplesDir), null, 2)};`,
+    });
+
+    // The nitro dev server bundles the alias import once, so server code
+    // reads this JSON copy from disk in dev to pick up example edits.
+    const exampleSourcesJsonTemplate = addTemplate({
+      filename: "meteor-example-sources.json",
+      write: true,
+      getContents: () =>
+        JSON.stringify(collectExampleSources(examplesDir), null, 2),
+    });
+
+    nuxt.options.runtimeConfig.meteorExampleSourcesPath = nuxt.options.dev
+      ? exampleSourcesJsonTemplate.dst
+      : "";
+
+    nuxt.hook("builder:watch", async (_event, path) => {
+      if (path.includes("components/examples/")) {
+        await updateTemplates({
+          filter: (template) =>
+            template.filename === "meteor-example-sources.mjs" ||
+            template.filename === "meteor-example-sources.json",
+        });
+      }
     });
 
     nuxt.options.alias["#meteor-component-meta"] = componentMetaTemplate.dst;

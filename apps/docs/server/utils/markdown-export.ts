@@ -1,5 +1,4 @@
 import componentMeta from "#meteor-component-meta";
-import exampleSources from "#meteor-example-sources";
 
 export interface MeteorPageMeta {
   tagName?: string;
@@ -53,20 +52,25 @@ const VISUAL_REPLACEMENTS: Record<string, string> = {
 };
 
 export function flattenMarkdown(markdown: string) {
+  // Component examples are expanded first because they inject code fences
+  // (and hand-written overrides already contain fences) that the
+  // fence-splitting below must leave untouched.
   return normalizeBlankLines(
-    transformOutsideCodeFences(markdown, (section) => {
-      let result = section;
-      result = removeStyleTags(result);
-      result = removePrettierIgnoreComments(result);
-      result = transformPageHeaders(result);
-      result = transformComponentImports(result);
-      result = transformPropsTables(result);
-      result = transformComponentExamples(result);
-      result = transformDoDontHtml(result);
-      result = transformDoDontMdc(result);
-      result = transformVisualWidgets(result);
-      return result;
-    }),
+    transformOutsideCodeFences(
+      transformComponentExamples(markdown),
+      (section) => {
+        let result = section;
+        result = removeStyleTags(result);
+        result = removePrettierIgnoreComments(result);
+        result = transformPageHeaders(result);
+        result = transformComponentImports(result);
+        result = transformPropsTables(result);
+        result = transformDoDontHtml(result);
+        result = transformDoDontMdc(result);
+        result = transformVisualWidgets(result);
+        return result;
+      },
+    ),
   ).trimEnd();
 }
 
@@ -225,22 +229,22 @@ function transformPropsTables(markdown: string) {
 
 function transformComponentExamples(markdown: string) {
   let result = markdown.replace(
-    /<component-example\b([^>]*)>[\s\S]*?<\/component-example>/gi,
-    (_match, rawAttrs: string) => {
-      const name = parseAttrs(rawAttrs).name;
-      return renderComponentExample(name);
-    },
+    /<component-example\b([^>]*)>([\s\S]*?)<\/component-example>/gi,
+    (_match, rawAttrs: string, body: string) =>
+      renderComponentExample(parseAttrs(rawAttrs).name, body),
   );
 
   result = result.replace(
-    /(^|\n):component-example\{([^}]*)\}/g,
-    (_match, prefix: string, rawAttrs: string) => {
-      const name = parseAttrs(rawAttrs).name;
-      return `${prefix}${renderComponentExample(name)}`;
-    },
+    /(^|\n)::component-example\{([^}]*)\}\n([\s\S]*?)\n?::(?=\n|$)/g,
+    (_match, prefix: string, rawAttrs: string, body: string) =>
+      `${prefix}${renderComponentExample(parseAttrs(rawAttrs).name, body)}`,
   );
 
-  return result;
+  return result.replace(
+    /(^|\n):component-example\{([^}]*)\}/g,
+    (_match, prefix: string, rawAttrs: string) =>
+      `${prefix}${renderComponentExample(parseAttrs(rawAttrs).name)}`,
+  );
 }
 
 function transformDoDontHtml(markdown: string) {
@@ -423,91 +427,21 @@ function renderComponentImport(attrs: Record<string, string>) {
   return importCode ? fencedCode("ts", importCode) : "";
 }
 
-function renderComponentExample(name?: string) {
+function renderComponentExample(name?: string, body?: string) {
+  // A hand-written #code override in the directive body wins over the
+  // example file source.
+  const override = body ? extractFencedCode(body) : null;
+  if (override) return override;
+
   if (!name) return "";
-  const source = exampleSources[name];
-  if (!source) return `_Example source unavailable for \`${name}\`._`;
-  return fencedCode("vue", cleanExampleSource(source));
+  const example = getExampleSources()[name];
+  if (!example) return `_Example source unavailable for \`${name}\`._`;
+  return fencedCode("vue", example.code);
 }
 
-function cleanExampleSource(code: string) {
-  return stripDemoAttributes(stripStyleBlocks(stripScriptImports(code)))
-    .replace(/\n[ \t]+\n/g, "\n")
-    .replace(/<([A-Za-z][\w:-]*)\s*\n\s*>/g, "<$1>")
-    .replace(/\n{3,}/g, "\n\n")
-    .trim();
-}
-
-function stripStyleBlocks(code: string) {
-  return code.replace(/\n?<style\b[^>]*>[\s\S]*?<\/style>\s*/g, "\n");
-}
-
-function stripScriptImports(code: string) {
-  return code.replace(
-    /<script setup([^>]*)>([\s\S]*?)<\/script>/g,
-    (_match, attrs: string, script: string) => {
-      const cleanedScript = removeMeteorImportStatements(script)
-        .replace(/^\s+|\s+$/g, "")
-        .trim();
-
-      return cleanedScript
-        ? `<script setup${attrs}>\n${cleanedScript}\n</script>`
-        : "";
-    },
-  );
-}
-
-function removeMeteorImportStatements(script: string) {
-  const lines = script.split("\n");
-  const cleanedLines: string[] = [];
-  let importLines: string[] | null = null;
-
-  for (const line of lines) {
-    const trimmedLine = line.trim();
-
-    if (importLines) {
-      importLines.push(line);
-
-      if (/;\s*$/.test(trimmedLine)) {
-        if (!isMeteorComponentImport(importLines.join("\n"))) {
-          cleanedLines.push(...importLines);
-        }
-        importLines = null;
-      }
-      continue;
-    }
-
-    if (trimmedLine.startsWith("import ")) {
-      importLines = [line];
-      if (/;\s*$/.test(trimmedLine)) {
-        if (!isMeteorComponentImport(line)) {
-          cleanedLines.push(line);
-        }
-        importLines = null;
-      }
-      continue;
-    }
-
-    cleanedLines.push(line);
-  }
-
-  if (importLines && !isMeteorComponentImport(importLines.join("\n"))) {
-    cleanedLines.push(...importLines);
-  }
-
-  return cleanedLines.join("\n");
-}
-
-function isMeteorComponentImport(statement: string) {
-  return /from\s+["']@shopware-ag\/meteor-component-library(?:\/[^"']*)?["']/.test(
-    statement,
-  );
-}
-
-function stripDemoAttributes(code: string) {
-  return code
-    .replace(/\sclass="example-[^"]*"/g, "")
-    .replace(/\sstyle="[\s\S]*?"/g, "");
+function extractFencedCode(body: string) {
+  const match = body.match(/(`{3,}|~{3,})[^\n]*\n[\s\S]*?\n\1/);
+  return match ? match[0] : null;
 }
 
 function renderDoDont(doText = "", dont = "") {

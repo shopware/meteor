@@ -1,10 +1,8 @@
 <template>
-  <div class="example-row flex flex-wrap items-center gap-3">
-    <mt-button size="x-small">X-Small</mt-button>
-    <mt-button size="small">Small</mt-button>
-    <mt-button size="default">Default</mt-button>
-    <mt-button size="large">Large</mt-button>
-  </div>
+  <mt-button size="x-small">X-Small</mt-button>
+  <mt-button size="small">Small</mt-button>
+  <mt-button size="default">Default</mt-button>
+  <mt-button size="large">Large</mt-button>
 </template>
 
 <script setup lang="ts">

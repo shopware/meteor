@@ -28,6 +28,6 @@ declare module "#meteor-component-meta" {
 }
 
 declare module "#meteor-example-sources" {
-  const exampleSources: Record<string, string>;
+  const exampleSources: Record<string, { code: string }>;
   export default exampleSources;
 }
