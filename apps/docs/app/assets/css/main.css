@@ -3,7 +3,7 @@
 @import "@shopware-ag/meteor-tokens/administration/dark.css";
 
 /*
- * Map Nuxt UI design variables onto meteor semantic tokens. The meteor
+ * Map Nuxt UI design variables onto Meteor semantic tokens. The Meteor
  * variables themselves flip with the data-theme attribute, so a single
  * mapping covers light and dark mode. Declared for both :root and .dark
  * because Nuxt UI redefines the --ui-* variables under .dark.
@@ -12,26 +12,26 @@
 .dark {
   --ui-radius: var(--border-radius-button);
   --ui-bg: var(--color-elevation-surface-default);
-  --ui-bg-muted: var(--color-background-primary-default);
+  --ui-bg-muted: var(--color-elevation-surface-sunken);
   --ui-bg-elevated: var(--color-background-secondary-default);
   --ui-bg-accented: var(--color-background-tertiary-default);
   --ui-bg-inverted: var(--color-elevation-floating-default);
   --ui-text: var(--color-text-primary-default);
+  --ui-text-dimmed: var(--color-text-primary-disabled);
   --ui-text-muted: var(--color-text-secondary-default);
-  --ui-text-dimmed: var(--color-text-secondary-default);
   --ui-text-toned: var(--color-text-secondary-default);
   --ui-text-highlighted: var(--color-text-primary-default);
   --ui-text-inverted: var(--color-text-primary-inverse);
   --ui-border: var(--color-border-secondary-default);
   --ui-border-muted: var(--color-border-secondary-default);
-  --ui-border-accented: var(--color-border-secondary-default);
+  --ui-border-accented: var(--color-border-primary-default);
   --ui-border-inverted: var(--color-elevation-floating-default);
   --ui-primary: var(--color-interaction-primary-default);
-  --ui-secondary: var(--color-text-accent-default);
+  --ui-secondary: var(--color-interaction-secondary-default);
   --ui-success: var(--color-icon-positive-default);
   --ui-info: var(--color-icon-brand-default);
   --ui-warning: var(--color-icon-attention-default);
-  --ui-error: var(--color-interaction-critical-default);
+  --ui-error: var(--color-icon-critical-default);
 }
 
 /* The component library's styles.css is intentionally not loaded (its global
