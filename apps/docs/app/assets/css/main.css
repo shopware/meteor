@@ -45,16 +45,3 @@ body {
   background: var(--color-elevation-surface-default);
   color: var(--color-text-primary-default);
 }
-
-.docs-sidebar-navigation [data-slot="link"]::before {
-  border-radius: 6px;
-  transition: background-color 150ms ease;
-}
-
-.docs-sidebar-navigation [data-slot="link"]:hover::before {
-  background-color: var(--color-interaction-secondary-hover);
-}
-
-.docs-sidebar-navigation [data-slot="link"].font-medium::before {
-  background-color: var(--color-background-brand-default);
-}

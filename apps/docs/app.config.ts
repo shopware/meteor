@@ -18,6 +18,25 @@ export default defineAppConfig({
   socials: {
     github: "https://github.com/shopware/meteor",
   },
+  toc: {
+    bottom: {
+      title: "Useful resources",
+      links: [
+        {
+          label: "Shopware docs",
+          icon: "i-lucide-book-open",
+          to: "https://developer.shopware.com/",
+          target: "_blank",
+        },
+        {
+          label: "Brand guidelines",
+          icon: "i-lucide-palette",
+          to: "https://brand.shopware.com/",
+          target: "_blank",
+        },
+      ],
+    },
+  },
   github: {
     url: "https://github.com/shopware/meteor",
     branch: "main",
