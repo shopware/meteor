@@ -10,9 +10,7 @@
         <span>Do</span>
       </p>
       <div :class="contentClass">
-        <ul v-if="$slots.do" class="m-0 list-disc space-y-1 pl-5">
-          <MDCSlot :use="$slots.do" unwrap="ul" />
-        </ul>
+        <MDCSlot v-if="$slots.do" :use="$slots.do" />
         <ul v-else-if="doItems?.length" class="m-0 list-disc space-y-1 pl-5">
           <li v-for="item in doItems" :key="item">
             {{ item }}
@@ -34,9 +32,7 @@
         <span>Don't</span>
       </p>
       <div :class="contentClass">
-        <ul v-if="$slots.dont" class="m-0 list-disc space-y-1 pl-5">
-          <MDCSlot :use="$slots.dont" unwrap="ul" />
-        </ul>
+        <MDCSlot v-if="$slots.dont" :use="$slots.dont" />
         <ul v-else-if="dontItems?.length" class="m-0 list-disc space-y-1 pl-5">
           <li v-for="item in dontItems" :key="item">
             {{ item }}
