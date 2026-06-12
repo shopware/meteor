@@ -5,17 +5,7 @@ import type { Plugin } from "vite";
 
 const requireFromHelper = createRequire(path.join(__dirname, "helper.ts"));
 
-const interFontAssets = [
-  {
-    source: "Inter (web)/Inter-roman.var.woff2",
-    output: "Inter-roman.woff2",
-  },
-  {
-    source: "Inter (web)/Inter-italic.var.woff2",
-    output: "Inter-italic.woff2",
-  },
-];
-
+const interFontNames = ["Inter-roman", "Inter-italic"] as const;
 const interFontOutputDirectory = "assets/fonts";
 
 // Helper to convert kebab-case to PascalCase
@@ -77,10 +67,10 @@ function getInterFontCss(): string {
   const cssPath = path.resolve(__dirname, "../src/components/assets/css/fonts/inter.font.css");
   let css = fs.readFileSync(cssPath, "utf-8");
 
-  for (const fontAsset of interFontAssets) {
+  for (const fontName of interFontNames) {
     css = css.replaceAll(
-      `~inter-ui/${fontAsset.source}?v=3.19`,
-      `./${interFontOutputDirectory}/${fontAsset.output}`,
+      `~inter-ui/Inter (web)/${fontName}.var.woff2?v=3.19`,
+      `./${interFontOutputDirectory}/${fontName}.woff2`,
     );
   }
 
@@ -100,8 +90,8 @@ function readFileAsUint8Array(filePath: string): Uint8Array<ArrayBuffer> {
 }
 
 /**
- * Emits the public font.css stylesheet and its WOFF2 files without passing
- * font URLs through Vite library mode, where assets are always inlined.
+ * Emits dist/fonts.css, which backs the public "./font.css" export, plus
+ * its WOFF2 files without passing font URLs through Vite library mode.
  */
 export function emitInterFontAssets(): Plugin {
   return {
@@ -109,7 +99,7 @@ export function emitInterFontAssets(): Plugin {
     apply: (config, { command }) => {
       return command === "build" && !!config.build?.lib;
     },
-    generateBundle(_options, bundle) {
+    generateBundle() {
       const fontCssFileName = "fonts.css";
       const interUiPackageDirectory = getInterUiPackageDirectory();
 
@@ -119,11 +109,13 @@ export function emitInterFontAssets(): Plugin {
         source: getInterFontCss(),
       });
 
-      for (const fontAsset of interFontAssets) {
+      for (const fontName of interFontNames) {
         this.emitFile({
           type: "asset",
-          fileName: `${interFontOutputDirectory}/${fontAsset.output}`,
-          source: readFileAsUint8Array(path.join(interUiPackageDirectory, fontAsset.source)),
+          fileName: `${interFontOutputDirectory}/${fontName}.woff2`,
+          source: readFileAsUint8Array(
+            path.join(interUiPackageDirectory, `Inter (web)/${fontName}.var.woff2`),
+          ),
         });
       }
 
@@ -132,21 +124,6 @@ export function emitInterFontAssets(): Plugin {
         fileName: `${interFontOutputDirectory}/LICENSE.txt`,
         source: fs.readFileSync(path.join(interUiPackageDirectory, "LICENSE.txt"), "utf-8"),
       });
-
-      for (const key in bundle) {
-        const chunk = bundle[key];
-
-        if (chunk.type !== "chunk" || path.basename(chunk.fileName) !== "fonts.js") {
-          continue;
-        }
-
-        const relativePath = toRelativeImportPath(chunk.fileName, fontCssFileName);
-        const importStatement = `import '${relativePath}';`;
-
-        if (!chunk.code.includes(importStatement)) {
-          chunk.code = `${importStatement}\n${chunk.code}`;
-        }
-      }
     },
   };
 }
