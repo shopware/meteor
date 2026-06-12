@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { camelCase, upperFirst } from "scule";
+import { stripExampleCode } from "#shared/utils/stripExampleCode";
 
 const props = withDefaults(
   defineProps<{
@@ -9,7 +10,7 @@ const props = withDefaults(
     preview?: boolean;
     /** Render the source code below the preview. */
     source?: boolean;
-    /** Hide the code behind a "show code" toggle. */
+    /** Hide the code behind a "Show code" toggle. */
     collapse?: boolean;
     /** Extra classes for the preview container. */
     class?: string;
@@ -43,21 +44,18 @@ const resolvedComponent = exampleMatch
 const { data: example } = await useFetchComponentExample(camelName);
 
 const code = computed(() => {
-  const source = example.value?.code?.trim() ?? "";
+  const source = stripExampleCode(example.value?.code ?? "");
   if (!source) return "";
-
-  const codeFence = `\`\`\`vue [${pascalName}.vue]\n${source}\n\`\`\``;
-  if (props.collapse) {
-    return `::code-collapse\n${codeFence}\n::`;
-  }
-  return codeFence;
+  return `\`\`\`vue\n${source}\n\`\`\``;
 });
 
 const { data: ast } = await useAsyncData(
-  `component-example-ast-${camelName}-${props.collapse}`,
+  `component-example-ast-${camelName}`,
   () => cachedParseMarkdown(code.value),
   { watch: [code] },
 );
+
+const showCode = ref(!props.collapse);
 </script>
 
 <template>
@@ -79,19 +77,42 @@ const { data: ast } = await useAsyncData(
       </div>
     </div>
 
-    <template v-if="source">
-      <div
-        v-if="!!slots.code"
-        class="[&_pre]:rounded-t-none! [&_div.my-5]:mt-0!"
-      >
-        <slot name="code" />
-      </div>
-      <MDCRenderer
-        v-else-if="ast"
-        :body="(ast as any).body"
-        :data="(ast as any).data"
-        class="[&_pre]:rounded-t-none! [&_div.my-5]:mt-0!"
+    <UCollapsible
+      v-if="source"
+      v-model:open="showCode"
+      :unmount-on-hide="false"
+    >
+      <UButton
+        block
+        color="neutral"
+        variant="soft"
+        size="lg"
+        :label="showCode ? 'Hide code' : 'Show code'"
+        trailing-icon="i-lucide-chevron-down"
+        class="rounded-t-none border border-muted py-3 justify-center"
+        :class="showCode ? 'rounded-b-none border-b-0' : 'rounded-b-md'"
+        :ui="{
+          trailingIcon: [
+            'ms-0 transition-transform duration-200',
+            showCode ? 'rotate-180' : '',
+          ].join(' '),
+        }"
       />
-    </template>
+
+      <template #content>
+        <div
+          v-if="!!slots.code"
+          class="[&_pre]:rounded-t-none! [&_pre]:mt-0! [&_div.my-5]:my-0!"
+        >
+          <slot name="code" />
+        </div>
+        <MDCRenderer
+          v-else-if="ast"
+          :body="(ast as any).body"
+          :data="(ast as any).data"
+          class="[&_pre]:rounded-t-none! [&_pre]:mt-0! [&_div.my-5]:my-0!"
+        />
+      </template>
+    </UCollapsible>
   </div>
 </template>
