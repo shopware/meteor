@@ -56,11 +56,6 @@ $color-shopware-brand-700: #118cff;
 $color-shopware-brand-800: #0e82ff;
 $color-shopware-brand-900: #0870ff;
 
-// Menu
-// Color description: Very dark desaturated blue
-$color-menu-start: #303a4f;
-$color-menu-end: #2a3345;
-
 /* ------------------------------------
  * 2. Status colors
  * ------------------------------------ */
@@ -220,7 +215,7 @@ $font-family-default:
   "Helvetica Neue",
   sans-serif;
 $font-family-variables:
-  "Inter var",
+  "Inter",
   -apple-system,
   BlinkMacSystemFont,
   "San Francisco",
@@ -229,13 +224,13 @@ $font-family-variables:
   "Helvetica Neue",
   sans-serif;
 $font-family-default-feature-settings:
-  "cv10" on,
-  "cv05" on,
   "cv02" on,
+  "cv03" on,
+  "cv04" on,
+  "cv05" on,
   "cv07" on,
   "cv09" on,
-  "cv04" on,
-  "cv03" on;
+  "cv10" on;
 
 $font-size-xxs: 12px;
 $font-size-xs: 14px;

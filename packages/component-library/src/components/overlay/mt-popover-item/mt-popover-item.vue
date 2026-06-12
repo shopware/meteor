@@ -320,7 +320,7 @@ $font-family-default:
   "Helvetica Neue",
   sans-serif;
 $font-family-variables:
-  "Inter var",
+  "Inter",
   -apple-system,
   BlinkMacSystemFont,
   "San Francisco",

@@ -57,9 +57,9 @@
       <!-- WYSIWYG approval gate overlay -->
       <div v-if="!showCodeEditor && gateActive" class="mt-text-editor__gate">
         <div class="mt-text-editor__gate-content">
-          <p class="mt-text-editor__gate-text">
+          <MtText as="p" size="s" color="color-static-white" class="mt-text-editor__gate-text">
             {{ t("mt-text-editor.gate.message") }}
-          </p>
+          </MtText>
           <div class="mt-text-editor__gate-actions">
             <mt-button variant="primary" @click="showDiffModal = true">
               {{ t("mt-text-editor.gate.showDiff") }}
@@ -216,6 +216,7 @@ import ListItem from "@tiptap/extension-list-item";
 import mtTextEditorDiffModal from "./_internal/mt-text-editor-diff-modal.vue";
 import { formatHtmlForDiff, getHtmlParseDiff } from "./_internal/html-parse-diff";
 import mtButton from "@/components/form/mt-button/mt-button.vue";
+import MtText from "@/components/content/mt-text/mt-text.vue";
 import { debounce } from "@/utils/debounce";
 
 const { t } = useI18n({
@@ -1222,8 +1223,7 @@ label {
 }
 
 .mt-text-editor__gate-text {
-  color: var(--color-static-white);
-  margin-bottom: var(--scale-size-16);
+  margin: 0 0 var(--scale-size-16);
 }
 
 .mt-text-editor__gate-actions {

@@ -18,7 +18,7 @@ defineProps<{
   color: var(--color-text-primary-default);
   font-family: var(--font-family-body);
   font-size: var(--font-size-2xs);
-  line-height: var(--line-height-2xs);
+  line-height: var(--font-line-height-2xs);
   font-weight: var(--font-weight-medium);
   background: var(--color-background-tertiary-default);
   height: 100%;

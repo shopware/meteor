@@ -70,7 +70,7 @@ export const VisualTestTextWithFormat = {
     delayDurationInMs: 500,
     hideDelayDurationInMs: 300,
     content:
-      '<b>Bold</b> <i>Italic</i> <u>Underline</u> <s>Strikethrough</s> <a href="https://www.mendix.com">Link</a>',
+      '<b>Bold</b> <i>Italic</i> <u>Underline</u> <s>Strikethrough</s> <a href="https://shopware.com">Link</a>',
   },
 };
 

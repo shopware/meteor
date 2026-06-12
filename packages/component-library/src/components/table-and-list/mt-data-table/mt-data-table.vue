@@ -2036,7 +2036,7 @@ export default defineComponent({
 * Use inter-font instead of normal font for data-table. Also add the new variables to this file.
 */
 $font-family-variables:
-  "Inter var",
+  "Inter",
   -apple-system,
   BlinkMacSystemFont,
   "San Francisco",

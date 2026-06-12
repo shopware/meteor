@@ -1,6 +1,6 @@
 import type { Preview } from "@storybook/vue3";
 import "~/src/components/assets/scss/all.scss";
-import "~/src/components/assets/scss/font.scss";
+import "~/src/components/assets/css/fonts/inter.font.css";
 import { setup } from "@storybook/vue3";
 import { createApp } from "vue";
 import { createI18n } from "vue-i18n";
