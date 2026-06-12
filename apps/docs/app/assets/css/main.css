@@ -12,8 +12,8 @@
 .dark {
   --ui-radius: var(--border-radius-button);
   --ui-bg: var(--color-elevation-surface-default);
-  --ui-bg-muted: var(--color-background-secondary-default);
-  --ui-bg-elevated: var(--color-background-tertiary-default);
+  --ui-bg-muted: var(--color-background-primary-default);
+  --ui-bg-elevated: var(--color-background-secondary-default);
   --ui-bg-accented: var(--color-background-tertiary-default);
   --ui-bg-inverted: var(--color-elevation-floating-default);
   --ui-text: var(--color-text-primary-default);
@@ -39,9 +39,4 @@
  * imports its own CSS. Carry over the dark color-scheme hint it provided. */
 [data-theme="dark"] {
   color-scheme: dark;
-}
-
-body {
-  background: var(--color-elevation-surface-default);
-  color: var(--color-text-primary-default);
 }
