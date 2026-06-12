@@ -20,7 +20,7 @@
     "better-sqlite3": "^12.6.2",
     "docus": "^5.12.1",
     "nuxt": "^4.3.1",
-    "vue": "^3.5.0",
+    "vue": "^3.5.0"
   },
   "devDependencies": {
     "prettier": "^3.5.3",
