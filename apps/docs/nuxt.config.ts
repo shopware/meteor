@@ -6,6 +6,23 @@ const shikiTheme = {
 
 export default defineNuxtConfig({
   extends: ["docus"],
+  // meteor-components must run before nuxt-component-meta so the Mt
+  // components are registered when the meta parser snapshots the list.
+  modules: ["./modules/meteor-components", "nuxt-component-meta"],
+  componentMeta: {
+    // Only analyze the meteor component library, not docus/Nuxt UI internals.
+    exclude: [
+      (component: { filePath?: string }) =>
+        !component.filePath?.includes("packages/component-library"),
+    ],
+    metaFields: {
+      type: false,
+      props: true,
+      slots: false,
+      events: false,
+      exposed: false,
+    },
+  },
   app: {
     head: {
       link: [
@@ -23,6 +40,16 @@ export default defineNuxtConfig({
   ],
   colorMode: {
     dataValue: "theme",
+  },
+  llms: {
+    // TODO: replace with the final docs domain before going live. Without a
+    // domain, nuxt-llms does not register the /llms.txt routes at all.
+    domain: "https://meteor.shopware.com",
+    // Disable @nuxt/content's built-in /raw/*.md route so our own route in
+    // server/routes/raw takes over (it converts dynamic MDC components like
+    // :component-props into plain markdown). Link rewriting to /raw/*.md is
+    // re-added in server/plugins/llms.ts.
+    contentRawMarkdown: false,
   },
   content: {
     build: {
