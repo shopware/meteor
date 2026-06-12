@@ -42,8 +42,6 @@ export default defineNuxtConfig({
     dataValue: "theme",
   },
   llms: {
-    // TODO: replace with the final docs domain before going live. Without a
-    // domain, nuxt-llms does not register the /llms.txt routes at all.
     domain: "https://meteor.shopware.com",
     // Disable @nuxt/content's built-in /raw/*.md route so our own route in
     // server/routes/raw takes over (it converts dynamic MDC components like

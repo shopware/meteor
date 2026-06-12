@@ -1,6 +1,5 @@
 import { camelCase, kebabCase, upperFirst } from "scule";
 import { visit } from "@nuxt/content/runtime";
-// eslint-disable-next-line import/no-unresolved
 import componentMeta from "#nuxt-component-meta";
 
 type MinimarkNode = [string, Record<string, unknown>, ...unknown[]];
