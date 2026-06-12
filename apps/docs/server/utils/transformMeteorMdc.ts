@@ -1,6 +1,8 @@
-import { camelCase, kebabCase, upperFirst } from "scule";
+import { camelCase, kebabCase, pascalCase, upperFirst } from "scule";
 import { visit } from "@nuxt/content/runtime";
 import componentMeta from "#nuxt-component-meta";
+// @ts-expect-error virtual module provided by modules/component-examples.ts
+import { getComponentExample } from "#component-example/nitro";
 
 type MinimarkNode = [string, Record<string, unknown>, ...unknown[]];
 
@@ -103,6 +105,16 @@ function propsTableNode(props: PropMeta[]): MinimarkNode {
   return ["table", {}, ["thead", {}, headerRow], ["tbody", {}, ...bodyRows]];
 }
 
+function findPre(children: unknown[]): MinimarkNode | null {
+  for (const child of children) {
+    if (!Array.isArray(child)) continue;
+    if (child[0] === "pre") return child as MinimarkNode;
+    const nested = findPre(child.slice(2));
+    if (nested) return nested;
+  }
+  return null;
+}
+
 /**
  * Transforms meteor-specific dynamic MDC components in a parsed content
  * document into plain markdown, for the /raw/*.md and llms exports.
@@ -133,6 +145,36 @@ export function transformMeteorMdc(
       return (
         tableAs === "string" ? propsTableString(props) : propsTableNode(props)
       ) as never;
+    },
+  );
+
+  visit(
+    page.body as never,
+    (node) => Array.isArray(node) && node[0] === "component-example",
+    (node) => {
+      const [, attributes, ...children] = node as MinimarkNode;
+
+      // A manual #code slot already contains a code block: export that block
+      // instead of the auto-generated source.
+      const manualCode = findPre(children);
+      if (manualCode) {
+        return manualCode as never;
+      }
+
+      const name = ((attributes || {}) as Record<string, string>).name;
+      const example = name ? getComponentExample(pascalCase(name)) : null;
+      if (!example) {
+        return "";
+      }
+
+      return [
+        "pre",
+        {
+          language: "vue",
+          filename: `${example.pascalName}.vue`,
+          code: example.code,
+        },
+      ] as never;
     },
   );
 }
