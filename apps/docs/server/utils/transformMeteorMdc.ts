@@ -1,5 +1,6 @@
 import { camelCase, kebabCase, pascalCase, upperFirst } from "scule";
 import { visit } from "@nuxt/content/runtime";
+import { stripExampleCode } from "#shared/utils/stripExampleCode";
 import componentMeta from "#nuxt-component-meta";
 // @ts-expect-error virtual module provided by modules/component-examples.ts
 import { getComponentExample } from "#component-example/nitro";
@@ -171,8 +172,7 @@ export function transformMeteorMdc(
         "pre",
         {
           language: "vue",
-          filename: `${example.pascalName}.vue`,
-          code: example.code,
+          code: stripExampleCode(example.code),
         },
       ] as never;
     },
