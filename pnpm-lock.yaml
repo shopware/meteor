@@ -54,19 +54,16 @@ importers:
       vue:
         specifier: 3.5.13
         version: 3.5.13(typescript@5.7.3)
-      vue-i18n:
-        specifier: ^9.9.1
-        version: 9.13.1(vue@3.5.13(typescript@5.7.3))
     devDependencies:
+      nuxt-component-meta:
+        specifier: ^0.17.2
+        version: 0.17.2(magicast@0.5.3)
       prettier:
         specifier: ^3.5.3
         version: 3.5.3
       typescript:
         specifier: ~5.7.3
         version: 5.7.3
-      vue-component-meta:
-        specifier: ^2.2.0
-        version: 2.2.12(typescript@5.7.3)
       vue-tsc:
         specifier: ^2.2.0
         version: 2.2.4(typescript@5.7.3)
@@ -585,7 +582,7 @@ importers:
         version: 16.26.1(typescript@5.7.3)
       stylelint-config-standard-scss:
         specifier: ^13.1.0
-        version: 13.1.0(postcss@8.5.6)(stylelint@16.26.1(typescript@5.7.3))
+        version: 13.1.0(postcss@8.4.49)(stylelint@16.26.1(typescript@5.7.3))
       stylelint-define-config:
         specifier: ^1.8.0
         version: 1.8.0(stylelint@16.26.1(typescript@5.7.3))
@@ -23358,7 +23355,7 @@ snapshots:
     dependencies:
       '@volar/language-core': 2.4.28
       path-browserify: 1.0.1
-      vscode-uri: 3.0.8
+      vscode-uri: 3.1.0
 
   '@vue-macros/common@3.1.2(vue@3.5.13(typescript@5.7.3))':
     dependencies:
@@ -23489,19 +23486,6 @@ snapshots:
       '@vue/shared': 3.5.13
       alien-signals: 0.4.14
       minimatch: 9.0.4
-      muggle-string: 0.4.1
-      path-browserify: 1.0.1
-    optionalDependencies:
-      typescript: 5.7.3
-
-  '@vue/language-core@2.2.12(typescript@5.7.3)':
-    dependencies:
-      '@volar/language-core': 2.4.15
-      '@vue/compiler-dom': 3.5.13
-      '@vue/compiler-vue2': 2.7.16
-      '@vue/shared': 3.5.13
-      alien-signals: 1.0.4
-      minimatch: 9.0.5
       muggle-string: 0.4.1
       path-browserify: 1.0.1
     optionalDependencies:
@@ -32120,9 +32104,9 @@ snapshots:
     dependencies:
       postcss: 8.5.6
 
-  postcss-scss@4.0.9(postcss@8.5.6):
+  postcss-scss@4.0.9(postcss@8.4.49):
     dependencies:
-      postcss: 8.5.6
+      postcss: 8.4.49
 
   postcss-selector-parser@6.1.2:
     dependencies:
@@ -33685,26 +33669,26 @@ snapshots:
       postcss: 8.5.15
       postcss-selector-parser: 7.1.1
 
-  stylelint-config-recommended-scss@14.1.0(postcss@8.5.6)(stylelint@16.26.1(typescript@5.7.3)):
+  stylelint-config-recommended-scss@14.1.0(postcss@8.4.49)(stylelint@16.26.1(typescript@5.7.3)):
     dependencies:
-      postcss-scss: 4.0.9(postcss@8.5.6)
+      postcss-scss: 4.0.9(postcss@8.4.49)
       stylelint: 16.26.1(typescript@5.7.3)
       stylelint-config-recommended: 14.0.1(stylelint@16.26.1(typescript@5.7.3))
       stylelint-scss: 6.10.0(stylelint@16.26.1(typescript@5.7.3))
     optionalDependencies:
-      postcss: 8.5.6
+      postcss: 8.4.49
 
   stylelint-config-recommended@14.0.1(stylelint@16.26.1(typescript@5.7.3)):
     dependencies:
       stylelint: 16.26.1(typescript@5.7.3)
 
-  stylelint-config-standard-scss@13.1.0(postcss@8.5.6)(stylelint@16.26.1(typescript@5.7.3)):
+  stylelint-config-standard-scss@13.1.0(postcss@8.4.49)(stylelint@16.26.1(typescript@5.7.3)):
     dependencies:
       stylelint: 16.26.1(typescript@5.7.3)
-      stylelint-config-recommended-scss: 14.1.0(postcss@8.5.6)(stylelint@16.26.1(typescript@5.7.3))
+      stylelint-config-recommended-scss: 14.1.0(postcss@8.4.49)(stylelint@16.26.1(typescript@5.7.3))
       stylelint-config-standard: 36.0.1(stylelint@16.26.1(typescript@5.7.3))
     optionalDependencies:
-      postcss: 8.5.6
+      postcss: 8.4.49
 
   stylelint-config-standard@36.0.1(stylelint@16.26.1(typescript@5.7.3)):
     dependencies:
@@ -35469,15 +35453,6 @@ snapshots:
       - '@lezer/common'
       - '@vue/composition-api'
 
-  vue-component-meta@2.2.12(typescript@5.7.3):
-    dependencies:
-      '@volar/typescript': 2.4.15
-      '@vue/language-core': 2.2.12(typescript@5.7.3)
-      path-browserify: 1.0.1
-      vue-component-type-helpers: 2.2.12
-    optionalDependencies:
-      typescript: 5.7.3
-
   vue-component-meta@2.2.12(typescript@5.9.3):
     dependencies:
       '@volar/typescript': 2.4.15
@@ -35554,13 +35529,6 @@ snapshots:
       '@intlify/shared': 9.13.1
       '@vue/devtools-api': 6.6.4
       vue: 3.5.13(typescript@5.4.5)
-
-  vue-i18n@9.13.1(vue@3.5.13(typescript@5.7.3)):
-    dependencies:
-      '@intlify/core-base': 9.13.1
-      '@intlify/shared': 9.13.1
-      '@vue/devtools-api': 6.6.4
-      vue: 3.5.13(typescript@5.7.3)
 
   vue-i18n@9.13.1(vue@3.5.13(typescript@5.9.3)):
     dependencies:
