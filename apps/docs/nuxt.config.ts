@@ -53,6 +53,9 @@ export default defineNuxtConfig({
     "@tokens-dict": fileURLToPath(
       new URL("../../packages/tokens/dictionaries", import.meta.url),
     ),
+    "@icon-kit": fileURLToPath(
+      new URL("../../packages/icon-kit", import.meta.url),
+    ),
   },
   componentMeta: {
     // Only analyze the meteor component library, not docus/Nuxt UI internals.
