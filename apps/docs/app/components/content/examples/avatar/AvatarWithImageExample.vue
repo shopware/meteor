@@ -3,5 +3,5 @@ import MtAvatar from "@shopware-ag/meteor-component-library/MtAvatar";
 </script>
 
 <template>
-  <mt-avatar image-url="/avatar.jpg" size="m" />
+  <mt-avatar image-url="/avatar.svg" size="m" />
 </template>

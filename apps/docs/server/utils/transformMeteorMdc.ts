@@ -1,6 +1,10 @@
 import { camelCase, kebabCase, pascalCase, upperFirst } from "scule";
 import { formatType } from "#shared/utils/formatType";
 import { stripExampleCode } from "#shared/utils/stripExampleCode";
+import { DESCRIPTIONS, tokenGroups } from "#shared/data/tokens";
+import { iconCommonUsages } from "#shared/data/iconCommonUsages";
+import primitives from "@tokens-dict/foundation/primitives.tokens.json";
+import lightTokens from "@tokens-dict/administration/light.tokens.json";
 import componentMeta from "#nuxt-component-meta";
 // @ts-expect-error virtual module provided by modules/component-examples.ts
 import { getComponentExample } from "#component-example/nitro";
@@ -233,6 +237,133 @@ function findPre(children: unknown[]): MinimarkNode | null {
   return null;
 }
 
+// --- Foundations token-reference components -------------------------------
+// These dynamic components resolve their visuals from CSS variables in the
+// browser. For the static markdown export we emit the underlying token data
+// (names, values, descriptions) as tables so the raw/llms output stays useful.
+
+interface TokenRow {
+  label: string;
+  token: string;
+  value: string;
+  description?: string;
+}
+
+/**
+ * Formats a token's `$value` for display. Literal values (e.g. `#fafbfe`) pass
+ * through; a token reference like `{scale.size.18}` becomes the CSS variable it
+ * points at (`var(--scale-size-18)`), which is more useful than an empty cell.
+ */
+function displayValue(raw: unknown): string {
+  if (typeof raw === "number") return String(raw);
+  if (typeof raw !== "string") return "";
+  if (raw.startsWith("{") && raw.endsWith("}")) {
+    return `var(--${raw.slice(1, -1).replace(/\./g, "-")})`;
+  }
+  return raw;
+}
+
+const VALUE_COLUMNS: Column<TokenRow>[] = [
+  { header: "Name", cell: (r) => [{ text: r.label }] },
+  { header: "Token", cell: (r) => [{ code: r.token }] },
+  { header: "Value", cell: (r) => [{ code: r.value }] },
+];
+
+const TOKEN_DESC_COLUMNS: Column<TokenRow>[] = [
+  { header: "Token", cell: (r) => [{ code: r.token }] },
+  { header: "Description", cell: (r) => [{ text: r.description ?? "" }] },
+];
+
+function labelTokenDescColumns(first: string): Column<TokenRow>[] {
+  return [
+    { header: first, cell: (r) => [{ text: r.label }] },
+    { header: "Token", cell: (r) => [{ code: r.token }] },
+    { header: "Description", cell: (r) => [{ text: r.description ?? "" }] },
+  ];
+}
+
+const ELEVATION_ROWS: TokenRow[] = [
+  {
+    label: "Sunken",
+    token: "--color-elevation-surface-sunken",
+    value: "",
+    description:
+      "Recessed areas such as wells and inset panels that sit below the base surface.",
+  },
+  {
+    label: "Default",
+    token: "--color-elevation-surface-default",
+    value: "",
+    description: "The base surface for page and panel backgrounds.",
+  },
+  {
+    label: "Raised",
+    token: "--color-elevation-surface-raised",
+    value: "",
+    description:
+      "Elements lifted above the base, such as cards, popovers, and dropdowns.",
+  },
+];
+
+const INTERACTION_ROWS: TokenRow[] = [
+  {
+    label: "Resting",
+    token: "--color-interaction-primary-default",
+    value: "",
+    description: "The default, idle state.",
+  },
+  {
+    label: "Hover",
+    token: "--color-interaction-primary-hover",
+    value: "",
+    description: "The pointer is over the element.",
+  },
+  {
+    label: "Focus",
+    token: "--color-border-brand-default",
+    value: "",
+    description: "Keyboard focus outline.",
+  },
+  {
+    label: "Pressed",
+    token: "--color-interaction-primary-pressed",
+    value: "",
+    description: "The element is being activated.",
+  },
+  {
+    label: "Disabled",
+    token: "--color-interaction-primary-disabled",
+    value: "",
+    description: "The element is non-interactive.",
+  },
+];
+
+/** A single table, formatted for the requested stringifier (no heading). */
+function table<T>(
+  tableAs: "string" | "node",
+  columns: Column<T>[],
+  rows: T[],
+): (string | MinimarkNode)[] {
+  if (!rows.length) return [];
+  return tableAs === "string"
+    ? [tableString(columns, rows)]
+    : [tableNode(columns, rows)];
+}
+
+/** A heading followed by a table, formatted for the requested stringifier. */
+function tableSection<T>(
+  tableAs: "string" | "node",
+  title: string,
+  columns: Column<T>[],
+  rows: T[],
+): (string | MinimarkNode)[] {
+  if (!rows.length) return [];
+  if (tableAs === "string") {
+    return [`### ${title}\n\n${tableString(columns, rows)}`];
+  }
+  return [["h3", {}, title] as MinimarkNode, tableNode(columns, rows)];
+}
+
 /**
  * Transforms meteor-specific dynamic MDC components in a parsed content
  * document into plain markdown, for the /raw/*.md and llms exports.
@@ -316,6 +447,122 @@ export function transformMeteorMdc(
         [
           "pre",
           { language: "vue", code: stripExampleCode(example.code) },
+        ] as MinimarkNode,
+      ];
+    }
+
+    if (tag === "color-palette") {
+      const colors =
+        (
+          primitives as {
+            color?: Record<string, Record<string, { $value?: unknown }>>;
+          }
+        ).color ?? {};
+      return Object.entries(colors).flatMap(([name, steps]) =>
+        tableSection(
+          tableAs,
+          upperFirst(name),
+          VALUE_COLUMNS,
+          Object.entries(steps).map(([step, def]) => ({
+            label: step,
+            token: `--color-${name}-${step}`,
+            value: displayValue(def?.$value),
+          })),
+        ),
+      );
+    }
+
+    if (tag === "typography-scale") {
+      const font =
+        (
+          lightTokens as {
+            font?: {
+              size?: Record<string, { $value?: unknown }>;
+              weight?: Record<string, { $value?: unknown }>;
+            };
+          }
+        ).font ?? {};
+      const rows = (
+        group: Record<string, { $value?: unknown }> | undefined,
+        prefix: string,
+      ): TokenRow[] =>
+        Object.entries(group ?? {}).map(([label, def]) => ({
+          label: upperFirst(label),
+          token: `${prefix}-${label}`,
+          value: displayValue(def?.$value),
+        }));
+      return [
+        ...tableSection(
+          tableAs,
+          "Size scale",
+          VALUE_COLUMNS,
+          rows(font.size, "--font-size"),
+        ),
+        ...tableSection(
+          tableAs,
+          "Weights",
+          VALUE_COLUMNS,
+          rows(font.weight, "--font-weight"),
+        ),
+      ];
+    }
+
+    if (tag === "token-browser") {
+      return tokenGroups.flatMap((group) =>
+        tableSection(
+          tableAs,
+          group.name,
+          TOKEN_DESC_COLUMNS,
+          group.tokens.map((token) => ({
+            label: token,
+            token,
+            value: "",
+            description: DESCRIPTIONS[token] || "",
+          })),
+        ),
+      );
+    }
+
+    if (tag === "elevation-surfaces") {
+      return table(tableAs, labelTokenDescColumns("Surface"), ELEVATION_ROWS);
+    }
+
+    if (tag === "interaction-states") {
+      return table(tableAs, labelTokenDescColumns("State"), INTERACTION_ROWS);
+    }
+
+    if (tag === "icon-common-usages") {
+      const columns: Column<{ icon: string; label: string }>[] = [
+        { header: "Icon", cell: (r) => [{ code: r.icon }] },
+        { header: "Usage", cell: (r) => [{ text: r.label }] },
+      ];
+      return table(tableAs, columns, iconCommonUsages);
+    }
+
+    if (tag === "icon-browser") {
+      return [
+        [
+          "p",
+          {},
+          "Meteor ships a full set of UI icons in regular and solid styles, each available through the MtIcon component. Use the interactive browser on this page to search icons by name and copy their token.",
+        ] as MinimarkNode,
+      ];
+    }
+
+    if (tag === "contributing-guide") {
+      return [
+        [
+          "p",
+          {},
+          "The contributing guide is maintained in ",
+          [
+            "a",
+            {
+              href: "https://github.com/shopware/meteor/blob/main/CONTRIBUTING.md",
+            },
+            "CONTRIBUTING.md",
+          ],
+          " in the repository.",
         ] as MinimarkNode,
       ];
     }
