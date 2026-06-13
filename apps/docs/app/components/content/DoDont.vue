@@ -59,7 +59,7 @@ const SlotContent = (props: { name: "do" | "dont" }) => {
       class="rounded-lg border border-muted bg-default p-4"
     >
       <span
-        class="inline-flex items-center gap-1 rounded-full py-1 pr-2.5 pl-2 text-sm font-semibold text-white"
+        class="inline-flex items-center gap-0.5 rounded-full py-1 pr-2.5 pl-2 text-xs font-bold text-white"
         :class="card.pill"
       >
         <UIcon :name="card.icon" class="size-4" />

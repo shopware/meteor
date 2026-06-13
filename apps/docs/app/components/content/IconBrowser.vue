@@ -76,27 +76,33 @@ async function copyIconName(fullName: string) {
       v-model="searchTerm"
       icon="i-lucide-search"
       size="lg"
+      variant="outline"
       placeholder="Search icons by name..."
     />
 
-    <UTabs v-model="activeMode" :items="modeTabs" :content="false" />
+    <UTabs
+      v-model="activeMode"
+      :items="modeTabs"
+      :content="false"
+      variant="link"
+    />
 
     <div
       v-if="filteredIcons.length"
-      class="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-3"
+      class="grid grid-cols-[repeat(auto-fill,minmax(224px,1fr))] gap-3"
     >
       <button
         v-for="icon in visibleIcons"
         :key="icon.fullName"
         type="button"
-        class="flex flex-col items-center gap-3 rounded-lg border border-muted bg-default p-4 text-center transition-colors hover:bg-elevated focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
+        class="flex flex-col items-center gap-3 rounded-lg border border-muted bg-default p-4 text-center transition-colors hover:bg-[var(--color-interaction-secondary-hover)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary cursor-pointer"
         :title="`Copy ${icon.fullName}`"
         @click="copyIconName(icon.fullName)"
       >
         <MtIcon
           :name="icon.name"
           :mode="icon.mode"
-          size="var(--scale-size-24)"
+          size="var(--scale-size-20)"
           color="var(--color-icon-primary-default)"
           decorative
         />

@@ -70,7 +70,7 @@ const sample = "The quick brown fox jumps over the lazy dog";
 
 <style scoped>
 .typo__group {
-  margin: 16px 0;
+  margin: 24px 0;
   border: 1px solid var(--color-border-secondary-default);
   border-radius: 8px;
   overflow: hidden;
@@ -90,7 +90,7 @@ const sample = "The quick brown fox jumps over the lazy dog";
   grid-template-columns: 10rem 1fr;
   align-items: baseline;
   gap: 16px;
-  padding: 12px 16px;
+  padding: 10px 16px;
   background-color: var(--color-elevation-surface-default);
   border-bottom: 1px solid var(--color-border-secondary-default);
 }
