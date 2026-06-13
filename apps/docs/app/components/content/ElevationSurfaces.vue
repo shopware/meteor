@@ -1,62 +1,67 @@
 <script setup lang="ts">
 const surfaces = [
-  {
-    token: "--color-elevation-surface-sunken",
-    label: "Sunken",
-    bottom: "18%",
-    centerY: 133,
-  },
-  {
-    token: "--color-elevation-surface-default",
-    label: "Default",
-    bottom: "30%",
-    centerY: 102,
-  },
-  {
-    token: "--color-elevation-surface-raised",
-    label: "Raised",
-    bottom: "42%",
-    centerY: 71,
-  },
-];
-
-const panels = [
-  { theme: undefined, caption: "Light mode" },
-  { theme: "dark", caption: "Dark mode" },
+  { key: "sunken", label: "Sunken", bottom: "18%", centerY: 133 },
+  { key: "default", label: "Default", bottom: "30%", centerY: 102 },
+  { key: "raised", label: "Raised", bottom: "42%", centerY: 71 },
 ] as const;
+
+// Each surface/chrome token is resolved to the primitive behind it (per theme)
+// and applied through the meteor Tailwind color classes. Using fixed primitive
+// values keeps both panels correct regardless of the site's light/dark mode,
+// without relying on a data-theme attribute.
+const themes = {
+  light: {
+    caption: "Light mode",
+    panel: "bg-zinc-0 text-zinc-900",
+    border: "border-zinc-100",
+    line: "bg-zinc-100",
+    surface: { sunken: "bg-zinc-50", default: "bg-zinc-0", raised: "bg-zinc-0" },
+  },
+  dark: {
+    caption: "Dark mode",
+    panel: "bg-zinc-975 text-zinc-50",
+    border: "border-zinc-850",
+    line: "bg-zinc-850",
+    surface: {
+      sunken: "bg-zinc-1000",
+      default: "bg-zinc-975",
+      raised: "bg-zinc-950",
+    },
+  },
+} as const;
+
+const panels = ["light", "dark"] as const;
 </script>
 
 <template>
-  <div class="elevation">
+  <div class="elevation overflow-hidden rounded-lg border border-muted">
     <div
-      v-for="panel in panels"
-      :key="panel.caption"
+      v-for="theme in panels"
+      :key="theme"
       class="elevation__panel"
-      :data-theme="panel.theme"
+      :class="themes[theme].panel"
     >
       <div class="elevation__stage">
         <div class="elevation__scene">
           <div
             v-for="surface in surfaces"
-            :key="surface.token"
+            :key="surface.key"
             class="elevation__card"
-            :style="{
-              bottom: surface.bottom,
-              background: `var(${surface.token})`,
-            }"
+            :class="[themes[theme].surface[surface.key], themes[theme].border]"
+            :style="{ bottom: surface.bottom }"
           />
         </div>
 
-        <span class="elevation__caption">{{ panel.caption }}</span>
+        <span class="elevation__caption">{{ themes[theme].caption }}</span>
 
         <div
           v-for="surface in surfaces"
-          :key="`${surface.token}-legend`"
+          :key="`${surface.key}-legend`"
           class="elevation__legend"
           :style="{ top: `${surface.centerY}px` }"
         >
-          <span class="elevation__dot" />
-          <span class="elevation__line" />
+          <span class="elevation__dot" :class="themes[theme].line" />
+          <span class="elevation__line" :class="themes[theme].line" />
           <span class="elevation__legend-label">{{ surface.label }}</span>
         </div>
       </div>
@@ -67,7 +72,6 @@ const panels = [
 <style scoped>
 .elevation {
   display: flex;
-  gap: 16px;
   margin: 24px 0;
 }
 
@@ -77,7 +81,6 @@ const panels = [
   flex-direction: column;
   align-items: center;
   padding: 24px 16px;
-  background: var(--color-elevation-surface-default);
 }
 
 .elevation__stage {
@@ -103,7 +106,8 @@ const panels = [
   width: 160px;
   height: 160px;
   border-radius: 12px;
-  border: 1px solid var(--color-border-secondary-default);
+  border-width: 1px;
+  border-style: solid;
   transform: rotateX(45deg) rotateZ(-45deg);
   transform-style: preserve-3d;
 }
@@ -115,7 +119,6 @@ const panels = [
   width: 260px;
   text-align: center;
   font-size: 12px;
-  color: var(--color-text-primary-default);
 }
 
 .elevation__legend {
@@ -130,14 +133,12 @@ const panels = [
   width: 5px;
   height: 5px;
   border-radius: 50%;
-  background: var(--color-border-secondary-default);
   flex-shrink: 0;
 }
 
 .elevation__line {
   width: 24px;
   height: 1px;
-  background: var(--color-border-secondary-default);
   flex-shrink: 0;
 }
 
@@ -145,7 +146,6 @@ const panels = [
   padding-left: 6px;
   font-size: 12px;
   font-weight: 500;
-  color: var(--color-text-primary-default);
   white-space: nowrap;
 }
 </style>

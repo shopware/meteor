@@ -2,8 +2,9 @@
 import { Fragment, h, resolveComponent, type VNode } from "vue";
 
 defineProps<{
-  /** Lay the Do and Don't cards out side by side instead of stacked. */
-  horizontal?: boolean;
+  /** Stack the cards instead of laying them side by side. Use when a card has
+   * a lot of content. Cards are side by side by default. */
+  vertical?: boolean;
 }>();
 
 const slots = defineSlots<{
@@ -50,7 +51,7 @@ const SlotContent = (props: { name: "do" | "dont" }) => {
 <template>
   <div
     class="my-5 grid gap-4"
-    :class="horizontal && provided.length > 1 ? 'sm:grid-cols-2' : undefined"
+    :class="!vertical && provided.length > 1 ? 'sm:grid-cols-2' : undefined"
   >
     <div
       v-for="card in provided"

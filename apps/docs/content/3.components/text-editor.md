@@ -1,0 +1,105 @@
+---
+title: Text Editor
+description: A flexible rich text editor for adding WYSIWYG and raw HTML editing to Meteor interfaces.
+---
+
+## Import
+
+```ts
+import { MtTextEditor } from "@shopware-ag/meteor-component-library";
+```
+
+## Usage
+
+- Use **Text Editor** to let users author rich text content such as descriptions, notes, or formatted documents.
+- Bind the HTML content with `v-model`; the value is an HTML string.
+- Use the `customButtons` and `excludedButtons` props to tailor the toolbar to your use case, or set `show-toolbar` to `false` to hide it entirely.
+- Switch between WYSIWYG and raw HTML editing with the code mode, controllable through `v-model:code-mode`.
+- Enable `is-inline-edit` for an inline editing experience with a floating toolbar.
+- Extend the editor with custom Tiptap extensions through the `tipTapConfig` prop.
+
+## Examples
+
+### Basic
+
+::component-example{name="text-editor-basic-example"}
+::
+
+### Inline editing
+
+Enables inline editing with a floating toolbar.
+
+::component-example{name="text-editor-inline-edit-example"}
+::
+
+### Hidden toolbar
+
+Hide the toolbar completely for a simpler editing experience or a custom toolbar.
+
+::component-example{name="text-editor-hidden-toolbar-example"}
+::
+
+### Code mode
+
+Start the editor in raw HTML editing mode.
+
+::component-example{name="text-editor-code-mode-example"}
+::
+
+### Two-way code mode binding
+
+Control the editor mode programmatically with `v-model:code-mode`.
+
+::component-example{name="text-editor-code-mode-two-way-binding-example"}
+::
+
+### Custom toolbar buttons
+
+Add custom buttons to the toolbar, backed by a custom Tiptap extension.
+
+::component-example{name="text-editor-custom-buttons-example"}
+::
+
+### Security gate on initial load
+
+When the initial HTML would change after parsing, an overlay blocks WYSIWYG editing until the diff is reviewed and accepted.
+
+::component-example{name="text-editor-diff-modal-example"}
+::
+
+## API reference
+
+:component-api
+
+## Do and don't
+
+::do-dont{vertical}
+#do
+
+- Use `v-model` to keep the HTML content in sync with your state.
+- Provide a `label` so users understand what the field is for.
+- Tailor the toolbar with `customButtons` and `excludedButtons` to match the editing needs of the context.
+- Use the code mode when users need to inspect or edit the raw HTML.
+
+#dont
+
+- Do not feed unsupported HTML markup without expecting the security gate to require a diff review first.
+- Do not rely on the editor for plain, unformatted text where a simpler input is enough.
+- Do not hide the toolbar unless you provide another way to apply formatting.
+
+::
+
+## Behavior
+
+- The editor is built on Tiptap and accepts custom extensions through `tipTapConfig`, except the hardcoded `content`, `editorProps`, and `onUpdate` properties.
+- When the editor mounts in WYSIWYG mode, it dry-runs a Tiptap parse and compares the result with the initial HTML. If the HTML differs, an overlay blocks editing until the user reviews a diff and accepts the parsed result. While the gate is active, `update:modelValue` emits are suppressed.
+- When switching from code mode to WYSIWYG, the editor compares the code with Tiptap's parsed output and shows a side-by-side diff modal if changes are detected. The user can accept the changes and switch, or stay in the code editor.
+- The component exposes a `validate()` method through a template ref. It checks the current code editor content against what Tiptap can represent and shows the diff modal if the HTML differs. It returns `true` when valid (no diff or not in code mode) and `false` when the diff modal was shown, which is useful before saving or closing a parent modal.
+- Custom buttons are ordered by their `position` value, with default buttons spaced in increments of `1000` so custom buttons can be inserted between them.
+- The footer shows a live character count, and `contextual-buttons` can change based on the current cursor position.
+
+## Accessibility
+
+- Provide a `label` so the field has an accessible name.
+- When replacing default buttons with custom ones, ensure each button keeps a clear, descriptive label.
+- The code editor mode is powered by CodeMirror and lets users inspect and edit the raw HTML directly.
