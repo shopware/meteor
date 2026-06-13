@@ -1,6 +1,11 @@
 <script setup lang="ts">
 import { Fragment, h, resolveComponent, type VNode } from "vue";
 
+defineProps<{
+  /** Lay the Do and Don't cards out side by side instead of stacked. */
+  horizontal?: boolean;
+}>();
+
 const slots = defineSlots<{
   do?: () => VNode[];
   dont?: () => VNode[];
@@ -43,7 +48,10 @@ const SlotContent = (props: { name: "do" | "dont" }) => {
 </script>
 
 <template>
-  <div class="my-5 flex flex-col gap-4">
+  <div
+    class="my-5 grid gap-4"
+    :class="horizontal && provided.length > 1 ? 'sm:grid-cols-2' : undefined"
+  >
     <div
       v-for="card in provided"
       :key="card.key"

@@ -47,6 +47,13 @@ export default defineNuxtConfig({
   // meteor-components must run before nuxt-component-meta so the Mt
   // components are registered when the meta parser snapshots the list.
   modules: ["./modules/meteor-components", "nuxt-component-meta"],
+  // Token dictionaries (the source of truth for the foundation token tables).
+  // A Nuxt alias is added to both Vite and the tsconfig paths.
+  alias: {
+    "@tokens-dict": fileURLToPath(
+      new URL("../../packages/tokens/dictionaries", import.meta.url),
+    ),
+  },
   componentMeta: {
     // Only analyze the meteor component library, not docus/Nuxt UI internals.
     exclude: [
