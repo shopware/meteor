@@ -8,7 +8,7 @@ import { transformMeteorMdc } from "../../utils/transformMeteorMdc";
 /**
  * Overrides @nuxt/content's built-in raw markdown route. The built-in route
  * serializes the parsed AST as-is, which would leave dynamic MDC components
- * like :component-props as unreadable tags. This version runs the meteor
+ * like :component-api as unreadable tags. This version runs the meteor
  * MDC transform first so the export contains real markdown tables.
  */
 export default defineEventHandler(async (event) => {

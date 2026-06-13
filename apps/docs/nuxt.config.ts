@@ -18,9 +18,9 @@ export default defineNuxtConfig({
     metaFields: {
       type: false,
       props: true,
-      slots: false,
-      events: false,
-      exposed: false,
+      slots: true,
+      events: true,
+      exposed: true,
     },
   },
   app: {
