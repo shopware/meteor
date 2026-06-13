@@ -124,7 +124,7 @@ Use the `:do-dont` component for usage guidance. Each slot accepts plain Markdow
 ::
 ```
 
-- Provide both slots for a side-by-side pair. If you provide only one slot, the other card is omitted and the single card spans the full width.
+- Provide both slots to contrast recommended and discouraged usage; the cards stack vertically. If you provide only one slot, only that card renders.
 - Keep entries short and parallel. Prefer concrete guidance over restating the API.
 
 ## Behavior
