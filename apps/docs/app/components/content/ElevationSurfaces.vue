@@ -34,35 +34,37 @@ const panels = ["light", "dark"] as const;
 </script>
 
 <template>
-  <div class="elevation overflow-hidden rounded-lg border border-muted">
-    <div
-      v-for="theme in panels"
-      :key="theme"
-      class="elevation__panel"
-      :class="themes[theme].panel"
-    >
-      <div class="elevation__stage">
-        <div class="elevation__scene">
+  <div class="elevation-container">
+    <div class="elevation overflow-hidden rounded-lg border border-muted">
+      <div
+        v-for="theme in panels"
+        :key="theme"
+        class="elevation__panel"
+        :class="themes[theme].panel"
+      >
+        <div class="elevation__stage">
+          <div class="elevation__scene">
+            <div
+              v-for="surface in surfaces"
+              :key="surface.key"
+              class="elevation__card"
+              :class="[themes[theme].surface[surface.key], themes[theme].border]"
+              :style="{ bottom: surface.bottom }"
+            />
+          </div>
+
+          <span class="elevation__caption">{{ themes[theme].caption }}</span>
+
           <div
             v-for="surface in surfaces"
-            :key="surface.key"
-            class="elevation__card"
-            :class="[themes[theme].surface[surface.key], themes[theme].border]"
-            :style="{ bottom: surface.bottom }"
-          />
-        </div>
-
-        <span class="elevation__caption">{{ themes[theme].caption }}</span>
-
-        <div
-          v-for="surface in surfaces"
-          :key="`${surface.key}-legend`"
-          class="elevation__legend"
-          :style="{ top: `${surface.centerY}px` }"
-        >
-          <span class="elevation__dot" :class="themes[theme].line" />
-          <span class="elevation__line" :class="themes[theme].line" />
-          <span class="elevation__legend-label">{{ surface.label }}</span>
+            :key="`${surface.key}-legend`"
+            class="elevation__legend"
+            :style="{ top: `${surface.centerY}px` }"
+          >
+            <span class="elevation__dot" :class="themes[theme].line" />
+            <span class="elevation__line" :class="themes[theme].line" />
+            <span class="elevation__legend-label">{{ surface.label }}</span>
+          </div>
         </div>
       </div>
     </div>
@@ -70,9 +72,23 @@ const panels = ["light", "dark"] as const;
 </template>
 
 <style scoped>
+.elevation-container {
+  container-type: inline-size;
+}
+
 .elevation {
   display: flex;
   margin: 24px 0;
+}
+
+@container (max-width: 744px) {
+  .elevation {
+    flex-direction: column;
+  }
+
+  .elevation__panel + .elevation__panel {
+    border-top: 1px solid var(--ui-border-muted);
+  }
 }
 
 .elevation__panel {

@@ -88,11 +88,14 @@ function copy(token: string) {
   <div class="token-browser">
     <div v-for="group in groups" :key="group.name" class="tb-group">
       <div class="tb-group__header">{{ group.name }}</div>
-      <div
+      <button
         v-for="row in group.rows"
         :key="row.token"
+        type="button"
         class="tb-row"
         :class="{ 'tb-row--color': row.type === 'color' }"
+        :title="`Copy var(${row.token})`"
+        @click="copy(row.token)"
       >
         <div class="tb-preview">
           <span
@@ -135,14 +138,7 @@ function copy(token: string) {
         </div>
 
         <div class="tb-meta">
-          <button
-            type="button"
-            class="tb-token"
-            :title="`Copy var(${row.token})`"
-            @click="copy(row.token)"
-          >
-            {{ row.token }}
-          </button>
+          <span class="tb-token">{{ row.token }}</span>
           <span v-if="row.description" class="tb-desc">{{ row.description }}</span>
         </div>
 
@@ -152,7 +148,7 @@ function copy(token: string) {
           </span>
         </div>
         <div v-else />
-      </div>
+      </button>
     </div>
   </div>
 </template>
@@ -163,7 +159,7 @@ function copy(token: string) {
 }
 
 .tb-group {
-  margin-bottom: 40px;
+  margin: 24px 0;
   border: 1px solid var(--color-border-secondary-default);
   border-radius: 8px;
   overflow: hidden;
@@ -180,11 +176,28 @@ function copy(token: string) {
 
 .tb-row {
   display: grid;
-  grid-template-columns: auto 1fr auto;
+  grid-template-columns: auto minmax(0, 1fr) auto;
   gap: 0 16px;
   align-items: center;
-  padding: 8px 16px;
+  padding: 10px 16px;
   border-bottom: 1px solid var(--color-border-secondary-default);
+  width: 100%;
+  text-align: left;
+  background: none;
+  border-left: none;
+  border-right: none;
+  border-top: none;
+  cursor: pointer;
+  font: inherit;
+  color: inherit;
+}
+
+.tb-row:hover {
+  background-color: var(--color-interaction-secondary-hover);
+}
+
+.tb-row:hover .tb-token {
+  text-decoration: underline;
 }
 
 .tb-row:last-child {
@@ -202,7 +215,7 @@ function copy(token: string) {
   width: 28px;
   height: 28px;
   border-radius: 4px;
-  border: 1px solid rgba(0, 0, 0, 0.1);
+  border: 1px solid var(--color-border-secondary-default);
 }
 
 .tb-swatch--alpha {
@@ -268,26 +281,18 @@ function copy(token: string) {
 }
 
 .tb-token {
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: 0;
   font-family: monospace;
-  font-size: 14px;
+  font-size: var(--font-size-2xs);
   font-weight: 500;
   color: var(--color-text-primary-default);
-  text-align: left;
   display: block;
-}
-
-.tb-token:hover {
-  text-decoration: underline;
+  word-break: break-all;
 }
 
 .tb-desc {
   display: block;
   margin-top: 2px;
-  font-size: 12px;
+  font-size: var(--font-size-2xs);
   color: var(--color-text-secondary-default);
 }
 
@@ -300,7 +305,7 @@ function copy(token: string) {
 
 .tb-badge {
   font-family: monospace;
-  font-size: 11px;
+  font-size: var(--font-size-2xs);
   color: var(--color-text-secondary-default);
   background: var(--color-background-secondary-default);
   border: 1px solid var(--color-border-secondary-default);
