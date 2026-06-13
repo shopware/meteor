@@ -1,6 +1,15 @@
 <script setup lang="ts">
 import { camelCase, upperFirst } from "scule";
+import MtThemeProvider from "@shopware-ag/meteor-component-library/MtThemeProvider";
 import { stripExampleCode } from "#shared/utils/stripExampleCode";
+
+// Opt the docs into the meteor component library's future behavior so examples
+// reflect where the library is heading. MtThemeProvider provides these flags to
+// every descendant component via the library's own injection key.
+const futureFlags = {
+  removeCardWidth: true,
+  removeDefaultMargin: true,
+};
 
 const props = withDefaults(
   defineProps<{
@@ -70,7 +79,13 @@ const showCode = ref(!props.collapse);
         class="flex flex-wrap items-center justify-center gap-4 p-4"
         :class="props.class"
       >
-        <component :is="resolvedComponent" />
+        <!-- Previews render client-only: example components may use browser
+             APIs (ResizeObserver, document) that are unavailable during SSR. -->
+        <ClientOnly>
+          <MtThemeProvider :future="futureFlags">
+            <component :is="resolvedComponent" />
+          </MtThemeProvider>
+        </ClientOnly>
       </div>
       <div v-else class="p-4 text-sm text-muted">
         Example "{{ pascalName }}" not found.

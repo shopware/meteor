@@ -1,3 +1,41 @@
+import { fileURLToPath } from "node:url";
+
+// The meteor components import vue-i18n@9 (their nested copy) and call
+// useI18n() at setup. The docs app must install an i18n instance from the
+// SAME copy, so alias vue-i18n to the component library's version for both
+// the app plugin and the bundled components.
+const vueI18nPath = fileURLToPath(
+  new URL(
+    "../../packages/component-library/node_modules/vue-i18n",
+    import.meta.url,
+  ),
+);
+
+// The meteor component library barrel (its index.js) imports a global CSS
+// reset (dist/index.css) that retargets bare elements (*, body, button,
+// h1-h6) and leaks onto the docs typography. The docs deliberately do not
+// load it (see app/assets/css/main.css). Some examples must import from the
+// barrel (e.g. the action-menu dropdown primitives have no subpath), so drop
+// that one stylesheet by redirecting it to an empty file.
+const meteorResetNoopPath = fileURLToPath(
+  new URL("./app/assets/css/meteor-reset-noop.css", import.meta.url),
+);
+
+const dropMeteorGlobalReset = {
+  name: "drop-meteor-global-reset",
+  enforce: "pre" as const,
+  resolveId(source: string, importer?: string) {
+    if (
+      source.endsWith("index.css") &&
+      importer &&
+      importer.replace(/\\/g, "/").includes("component-library/dist/")
+    ) {
+      return meteorResetNoopPath;
+    }
+    return null;
+  },
+};
+
 const shikiTheme = {
   light: "github-light",
   default: "github-dark-default",
@@ -66,7 +104,17 @@ export default defineNuxtConfig({
     },
   },
   vite: {
+    plugins: [dropMeteorGlobalReset],
+    resolve: {
+      alias: {
+        "vue-i18n": vueI18nPath,
+      },
+    },
     optimizeDeps: {
+      // Exclude the component library so its barrel import is processed by
+      // Vite (and the dropMeteorGlobalReset plugin) rather than esbuild's dep
+      // pre-bundler, which would inline the global reset and bypass the plugin.
+      exclude: ["@shopware-ag/meteor-component-library"],
       include: [
         "@vueuse/core",
         "remark-emoji",
