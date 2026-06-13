@@ -40,6 +40,82 @@ import {
 
 These parts are exported together so the pattern can be composed in one place.
 
+## Composition
+
+In most cases you open a modal through a trigger. Wrap the related parts in `mt-modal-root`:
+
+```html
+<template>
+  <mt-modal-root>
+    <mt-modal title="Some random title">
+      <template #default>This is my modal</template>
+
+      <template #footer>
+        <mt-button-close :as="MtButton" variant="secondary">
+          Close
+        </mt-button-close>
+      </template>
+    </mt-modal>
+
+    <mt-modal-trigger :as="MtButton">Open modal</mt-modal-trigger>
+  </mt-modal-root>
+</template>
+```
+
+To run work before the modal closes, such as a network request, use `mt-modal-action`. Its click handler receives a `done` callback that closes the modal when you call it:
+
+```html
+<template>
+  <!-- mt-modal-root and mt-modal are the same as above -->
+  <template #footer>
+    <mt-modal-action
+      :as="MtButton"
+      variant="primary"
+      @click="
+        (done) => {
+          // Do something like a network request
+
+          // Call `done` to close the modal
+          done();
+        }
+      "
+    >
+      Confirm action
+    </mt-modal-action>
+  </template>
+</template>
+```
+
+### Controlled state
+
+To open a modal from something other than a trigger, control the open state directly with the `isOpen` prop on `mt-modal-root`:
+
+```html
+<template>
+  <mt-modal-root :is-open="isOpen">
+    <mt-modal title="Some random title">
+      <template #default>This is my modal</template>
+
+      <template #footer>
+        <mt-button variant="secondary" @click="() => (isOpen = false)">
+          Close
+        </mt-button>
+      </template>
+    </mt-modal>
+  </mt-modal-root>
+</template>
+
+<script setup>
+  const isOpen = ref(false);
+
+  onMounted(() => {
+    setTimeout(() => {
+      isOpen.value = true;
+    }, 1_000);
+  });
+</script>
+```
+
 ## API reference
 
 :component-api
