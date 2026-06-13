@@ -43,10 +43,7 @@ const SlotContent = (props: { name: "do" | "dont" }) => {
 </script>
 
 <template>
-  <div
-    class="my-5 grid gap-4"
-    :class="provided.length > 1 ? 'sm:grid-cols-2' : undefined"
-  >
+  <div class="my-5 flex flex-col gap-4">
     <div
       v-for="card in provided"
       :key="card.key"
