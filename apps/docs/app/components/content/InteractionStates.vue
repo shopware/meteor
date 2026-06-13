@@ -38,7 +38,8 @@ const states = [
 
 .states__row {
   display: flex;
-  gap: 24px;
+  row-gap: 16px;
+  column-gap: 24px;
   flex-wrap: wrap;
   align-items: flex-start;
 }
