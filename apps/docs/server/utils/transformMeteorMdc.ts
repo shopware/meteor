@@ -248,6 +248,38 @@ export function transformMeteorMdc(
   walkInPlace(page.body.value, (node) => {
     const [tag, attributes, ...children] = node;
 
+    if (tag === "do-dont") {
+      // Each card is a `["template", { "v-slot:do" | "v-slot:dont": "" }, ...]`.
+      // Flatten into a bold "Do" / "Don't" label followed by the card's
+      // content; skip cards whose slot was not provided. The result is plain
+      // markdown, serialized identically by both stringifiers.
+      const labels: Record<string, string> = { do: "Do", dont: "Don't" };
+
+      return ["do", "dont"].flatMap((slot) => {
+        const template = children.find(
+          (child) =>
+            Array.isArray(child) &&
+            child[0] === "template" &&
+            `v-slot:${slot}` in (child[1] as Record<string, unknown>),
+        ) as MinimarkNode | undefined;
+        if (!template) return [];
+
+        const content = template.slice(2) as MinimarkNode[];
+        if (!content.length) return [];
+
+        // MDC emits the second slot's list as bare <li>; wrap them back into a
+        // <ul> so the export is a valid markdown list.
+        const normalized = content.every((child) => child[0] === "li")
+          ? [["ul", {}, ...content] as MinimarkNode]
+          : content;
+
+        return [
+          ["p", {}, ["strong", {}, labels[slot]!]] as MinimarkNode,
+          ...normalized,
+        ];
+      });
+    }
+
     if (tag === "component-api") {
       const componentName = componentNameFrom(attributes, page);
       const sections = apiSections(componentName);
