@@ -1,6 +1,5 @@
 import { camelCase, kebabCase, pascalCase, upperFirst } from "scule";
 import { formatType } from "#shared/utils/formatType";
-import { stripExampleCode } from "#shared/utils/stripExampleCode";
 import { DESCRIPTIONS, tokenGroups } from "#shared/data/tokens";
 import { iconCommonUsages } from "#shared/data/iconCommonUsages";
 import primitives from "@tokens-dict/foundation/primitives.tokens.json";
@@ -444,10 +443,7 @@ export function transformMeteorMdc(
       if (!example) return [];
 
       return [
-        [
-          "pre",
-          { language: "vue", code: stripExampleCode(example.code) },
-        ] as MinimarkNode,
+        ["pre", { language: "vue", code: example.code.trim() }] as MinimarkNode,
       ];
     }
 
