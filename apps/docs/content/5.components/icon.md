@@ -15,6 +15,8 @@ import { MtIcon } from "@shopware-ag/meteor-component-library";
 - Use it when an icon from the Meteor icon kit should be rendered consistently through the component library.
 - Use it when color and sizing should follow design tokens instead of ad-hoc inline SVG usage.
 
+To browse the full icon set, search by name, and review icon philosophy and common usage patterns, see the [Icons](/design/icons) reference.
+
 ## Examples
 
 ### Basic
@@ -55,3 +57,7 @@ import { MtIcon } from "@shopware-ag/meteor-component-library";
 - Use `decorative` for icons that are purely visual and already explained by surrounding text.
 - If an icon communicates meaning on its own, make sure that meaning is still available through visible text or accessible labeling on the parent control.
 - Do not depend on icon color alone to convey success, warning, or error states.
+
+## Related
+
+- [Icons](/design/icons): browse the full icon set, search by name, and review icon philosophy and common usage patterns.
