@@ -86,7 +86,7 @@ const showCode = ref(!props.collapse);
         block
         color="neutral"
         variant="soft"
-        size="lg"
+        size="md"
         :label="showCode ? 'Hide code' : 'Show code'"
         trailing-icon="i-lucide-chevron-down"
         class="rounded-t-none border border-muted py-3 justify-center"
