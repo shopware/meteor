@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { camelCase, upperFirst } from "scule";
 import MtThemeProvider from "@shopware-ag/meteor-component-library/MtThemeProvider";
-import { stripExampleCode } from "#shared/utils/stripExampleCode";
 
 // Opt the docs into the meteor component library's future behavior so examples
 // reflect where the library is heading. MtThemeProvider provides these flags to
@@ -53,7 +52,7 @@ const resolvedComponent = exampleMatch
 const { data: example } = await useFetchComponentExample(camelName);
 
 const code = computed(() => {
-  const source = stripExampleCode(example.value?.code ?? "");
+  const source = (example.value?.code ?? "").trim();
   if (!source) return "";
   return `\`\`\`vue\n${source}\n\`\`\``;
 });
