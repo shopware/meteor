@@ -17,6 +17,7 @@ interface Swatch {
 }
 
 const palettes = ref<{ name: string; swatches: Swatch[] }[]>([]);
+const toast = useToast();
 
 function luminance(r: number, g: number, b: number) {
   return r * 0.299 + g * 0.587 + b * 0.114;
@@ -40,17 +41,18 @@ onMounted(() => {
     name,
     swatches: steps.map((step) => {
       const token = `${prefix}-${step}`;
-      return {
-        token,
-        step: String(step),
-        hex: style.getPropertyValue(token).trim(),
-      };
+      return { token, step: String(step), hex: style.getPropertyValue(token).trim() };
     }),
   }));
 });
 
 function copy(value: string) {
-  navigator.clipboard?.writeText(value).catch(() => {});
+  navigator.clipboard
+    ?.writeText(value)
+    .then(() =>
+      toast.add({ title: `Copied ${value}`, icon: "i-lucide-check", color: "success" }),
+    )
+    .catch(() => {});
 }
 </script>
 

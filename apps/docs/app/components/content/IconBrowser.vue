@@ -1,11 +1,5 @@
 <script setup lang="ts">
 import MtIcon from "@shopware-ag/meteor-component-library/MtIcon";
-import MtSearch from "@shopware-ag/meteor-component-library/MtSearch";
-import MtTabs from "@shopware-ag/meteor-component-library/MtTabs";
-import MtPagination from "@shopware-ag/meteor-component-library/MtPagination";
-import MtEmptyState from "@shopware-ag/meteor-component-library/MtEmptyState";
-import MtSnackbar from "@shopware-ag/meteor-component-library/MtSnackbar";
-import { useSnackbar } from "@shopware-ag/meteor-component-library";
 import iconMeta from "@icon-kit/icons/meta.json";
 
 interface IconMetaEntry {
@@ -24,39 +18,35 @@ const allIcons = (iconMeta as IconMetaEntry[])
   }))
   .sort((a, b) => a.fullName.localeCompare(b.fullName));
 
-const { addSnackbar } = useSnackbar();
+const toast = useToast();
 const itemsPerPage = 48;
 const searchTerm = ref("");
 const activeMode = ref("all");
 const currentPage = ref(1);
-const hoveredIconName = ref<string | null>(null);
-const focusVisibleIconName = ref<string | null>(null);
-const lastInteractionWasKeyboard = ref(false);
 
-const searchMatchedIcons = computed(() => {
+const searchMatched = computed(() => {
   const term = searchTerm.value.trim().toLowerCase();
-  return allIcons.filter((icon) => {
-    if (!term) return true;
-    return (
+  return allIcons.filter(
+    (icon) =>
+      !term ||
       icon.name.toLowerCase().includes(term) ||
       icon.fullName.toLowerCase().includes(term) ||
-      icon.tags.some((tag) => tag.toLowerCase().includes(term))
-    );
-  });
+      icon.tags.some((tag) => tag.toLowerCase().includes(term)),
+  );
 });
 
 const modeTabs = computed(() => {
-  const regularCount = searchMatchedIcons.value.filter((i) => i.mode === "regular").length;
-  const solidCount = searchMatchedIcons.value.filter((i) => i.mode === "solid").length;
+  const regular = searchMatched.value.filter((i) => i.mode === "regular").length;
+  const solid = searchMatched.value.filter((i) => i.mode === "solid").length;
   return [
-    { label: "All", name: "all" },
-    { label: `Regular (${regularCount})`, name: "regular" },
-    { label: `Solid (${solidCount})`, name: "solid" },
+    { label: "All", value: "all" },
+    { label: `Regular (${regular})`, value: "regular" },
+    { label: `Solid (${solid})`, value: "solid" },
   ];
 });
 
 const filteredIcons = computed(() =>
-  searchMatchedIcons.value.filter(
+  searchMatched.value.filter(
     (icon) => activeMode.value === "all" || icon.mode === activeMode.value,
   ),
 );
@@ -70,84 +60,38 @@ const visibleIcons = computed(() => {
   return filteredIcons.value.slice(start, start + itemsPerPage);
 });
 
-function handleKeyboard() {
-  lastInteractionWasKeyboard.value = true;
-}
-function handlePointer() {
-  lastInteractionWasKeyboard.value = false;
-}
-
-onMounted(() => {
-  window.addEventListener("keydown", handleKeyboard, true);
-  window.addEventListener("mousedown", handlePointer, true);
-  window.addEventListener("pointerdown", handlePointer, true);
-  window.addEventListener("touchstart", handlePointer, true);
-});
-
-onBeforeUnmount(() => {
-  window.removeEventListener("keydown", handleKeyboard, true);
-  window.removeEventListener("mousedown", handlePointer, true);
-  window.removeEventListener("pointerdown", handlePointer, true);
-  window.removeEventListener("touchstart", handlePointer, true);
-});
-
-function isHighlighted(fullName: string) {
-  return hoveredIconName.value === fullName || focusVisibleIconName.value === fullName;
-}
-
-function setHoveredIcon(fullName: string | null) {
-  hoveredIconName.value = fullName;
-}
-function setFocusedIcon(fullName: string) {
-  focusVisibleIconName.value = lastInteractionWasKeyboard.value ? fullName : null;
-}
-function clearFocusedIcon() {
-  focusVisibleIconName.value = null;
-}
-
 async function copyIconName(fullName: string) {
-  if (!navigator.clipboard?.writeText) return;
   try {
     await navigator.clipboard.writeText(fullName);
-    addSnackbar({ message: `Copied ${fullName} to clipboard`, variant: "success" });
+    toast.add({ title: `Copied ${fullName}`, icon: "i-lucide-check", color: "success" });
   } catch {
-    addSnackbar({ message: `Couldn't copy ${fullName}`, variant: "error" });
+    toast.add({ title: `Couldn't copy ${fullName}`, color: "error" });
   }
 }
 </script>
 
 <template>
-  <div class="icon-browser">
-    <MtSearch v-model="searchTerm" placeholder="Search icons by name..." />
+  <div class="flex flex-col gap-4">
+    <UInput
+      v-model="searchTerm"
+      icon="i-lucide-search"
+      size="lg"
+      placeholder="Search icons by name..."
+    />
 
-    <div class="icon-browser__tabs">
-      <MtTabs
-        :items="modeTabs"
-        :default-item="activeMode"
-        @new-item-active="activeMode = $event"
-      />
-    </div>
+    <UTabs v-model="activeMode" :items="modeTabs" :content="false" />
 
-    <div v-if="filteredIcons.length" class="icon-browser__grid">
-      <div
+    <div
+      v-if="filteredIcons.length"
+      class="grid grid-cols-[repeat(auto-fill,minmax(150px,1fr))] gap-3"
+    >
+      <button
         v-for="icon in visibleIcons"
         :key="icon.fullName"
-        role="button"
-        tabindex="0"
-        class="icon-card"
-        :class="{
-          'icon-card--active': isHighlighted(icon.fullName),
-          'icon-card--focus': focusVisibleIconName === icon.fullName,
-        }"
-        :aria-label="`Copy ${icon.fullName} icon name`"
+        type="button"
+        class="flex flex-col items-center gap-3 rounded-lg border border-muted bg-default p-4 text-center transition-colors hover:bg-elevated focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
         :title="`Copy ${icon.fullName}`"
-        @mouseenter="setHoveredIcon(icon.fullName)"
-        @mouseleave="setHoveredIcon(null)"
-        @focus="setFocusedIcon(icon.fullName)"
-        @blur="clearFocusedIcon()"
         @click="copyIconName(icon.fullName)"
-        @keydown.enter.prevent="copyIconName(icon.fullName)"
-        @keydown.space.prevent="copyIconName(icon.fullName)"
       >
         <MtIcon
           :name="icon.name"
@@ -156,89 +100,24 @@ async function copyIconName(fullName: string) {
           color="var(--color-icon-primary-default)"
           decorative
         />
-        <span class="icon-card__name">{{ icon.fullName }}</span>
-      </div>
+        <span class="text-xs break-words text-muted">{{ icon.fullName }}</span>
+      </button>
     </div>
 
-    <div v-else class="icon-browser__empty">
-      <MtEmptyState
-        icon="regular-search"
-        headline="No icons found"
-        description="Try a different search term or switch the icon mode."
-        centered
+    <div v-else class="flex flex-col items-center gap-2 py-10 text-center">
+      <UIcon name="i-lucide-search" class="size-6 text-muted" />
+      <p class="font-medium text-default">No icons found</p>
+      <p class="text-sm text-muted">
+        Try a different search term or switch the icon mode.
+      </p>
+    </div>
+
+    <div v-if="filteredIcons.length > itemsPerPage" class="flex justify-end">
+      <UPagination
+        v-model:page="currentPage"
+        :items-per-page="itemsPerPage"
+        :total="filteredIcons.length"
       />
     </div>
-
-    <div v-if="filteredIcons.length > itemsPerPage" class="icon-browser__pagination">
-      <MtPagination
-        :current-page="currentPage"
-        :limit="itemsPerPage"
-        :total-items="filteredIcons.length"
-        @change-current-page="currentPage = $event"
-      />
-    </div>
-
-    <MtSnackbar />
   </div>
 </template>
-
-<style scoped>
-.icon-browser {
-  display: grid;
-  gap: 16px;
-}
-
-.icon-browser__tabs {
-  width: 100%;
-  margin-bottom: 8px;
-}
-
-.icon-browser__grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 12px;
-}
-
-.icon-card {
-  display: grid;
-  gap: 12px;
-  align-items: start;
-  justify-items: center;
-  text-align: center;
-  padding: 16px;
-  border-radius: var(--border-radius-m);
-  border: 1px solid var(--color-border-secondary-default);
-  cursor: pointer;
-  transition: background-color 120ms ease-out;
-  background-color: var(--color-interaction-secondary-default);
-}
-
-.icon-card--active {
-  background-color: var(--color-interaction-secondary-hover);
-}
-
-.icon-card--focus {
-  outline: 2px solid var(--color-border-brand-default);
-  outline-offset: 2px;
-}
-
-.icon-card__name {
-  color: var(--color-text-secondary-default);
-  font-size: var(--font-size-2xs);
-  line-height: var(--font-line-height-2xs);
-  font-weight: var(--font-weight-medium);
-  word-break: break-word;
-}
-
-.icon-browser__empty {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  margin-top: 16px;
-}
-
-.icon-browser__pagination {
-  display: flex;
-  justify-content: end;
-}
-</style>

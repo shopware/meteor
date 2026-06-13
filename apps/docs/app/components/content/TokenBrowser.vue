@@ -144,16 +144,34 @@ onMounted(() => {
 
 // Value badges for non-color tokens: light value, plus dark value if it differs.
 function badges(token: string) {
-  const light = resolvedLight.value[token] || "";
-  const dark = resolvedDark.value[token] || "";
+  let light = resolvedLight.value[token] || "";
+  let dark = resolvedDark.value[token] || "";
+  // @nuxt/fonts appends generated fallback families to --font-family-*; show
+  // only the primary family (e.g. 'Inter').
+  if (token.startsWith("--font-family-")) {
+    const first = (value: string) => (value.split(",")[0] ?? value).trim();
+    light = first(light);
+    dark = first(dark);
+  }
   const out: string[] = [];
   if (light) out.push(light);
   if (dark && dark !== light) out.push(dark);
   return out;
 }
 
+const toast = useToast();
+
 function copy(token: string) {
-  navigator.clipboard?.writeText(`var(${token})`).catch(() => {});
+  navigator.clipboard
+    ?.writeText(`var(${token})`)
+    .then(() =>
+      toast.add({
+        title: `Copied var(${token})`,
+        icon: "i-lucide-check",
+        color: "success",
+      }),
+    )
+    .catch(() => {});
 }
 </script>
 
@@ -168,19 +186,12 @@ function copy(token: string) {
         :class="{ 'tb-row--color': row.type === 'color' }"
       >
         <div class="tb-preview">
-          <template v-if="row.type === 'color'">
-            <span
-              class="tb-swatch"
-              :class="{ 'tb-swatch--alpha': isTransparent(resolvedLight[row.token]) }"
-              :style="{ backgroundColor: `var(${row.token})` }"
-            />
-            <span
-              data-theme="dark"
-              class="tb-swatch"
-              :class="{ 'tb-swatch--alpha': isTransparent(resolvedDark[row.token]) }"
-              :style="{ backgroundColor: `var(${row.token})` }"
-            />
-          </template>
+          <span
+            v-if="row.type === 'color'"
+            class="tb-swatch"
+            :class="{ 'tb-swatch--alpha': isTransparent(resolvedLight[row.token]) }"
+            :style="{ backgroundColor: `var(${row.token})` }"
+          />
           <span
             v-else-if="row.type === 'radius'"
             class="tb-radius"
