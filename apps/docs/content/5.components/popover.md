@@ -15,7 +15,7 @@ import {
 
 ## Usage
 
-- **Popover** is experimental. Prefer [**Action Menu**](/components/action-menu) or **Floating UI** when those components already fit the use case.
+- **Popover** is experimental. Prefer [**Action Menu**](/components/action-menu) or [**Floating UI**](/components/floating-ui) when those components already fit the use case.
 - Use [**Action Menu**](/components/action-menu) when you need a standard menu of actions or options.
 - Use **Floating UI** when you need a custom floating surface with your own layout, content, or interaction behavior.
 
@@ -74,4 +74,4 @@ These parts are exported together so the pattern can be composed in one place.
 ## Related components
 
 - [**Action Menu**](/components/action-menu): when you need a short, scannable list of actions or options.
-- **Floating UI**: when you need a custom floating surface with your own layout, content, or interaction behavior.
+- [**Floating UI**](/components/floating-ui): when you need a custom floating surface with your own layout, content, or interaction behavior.

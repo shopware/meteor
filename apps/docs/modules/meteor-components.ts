@@ -24,9 +24,12 @@ export default defineNuxtModule({
     );
 
     const entries = await readdir(componentsRoot, { recursive: true });
+    // _internal components are excluded from the API docs, except
+    // mt-floating-ui which is publicly exported and has its own page.
     const componentFiles = entries.filter(
       (file) =>
-        /(^|\/)mt-[\w-]+\.vue$/.test(file) && !file.includes("_internal"),
+        /(^|\/)mt-[\w-]+\.vue$/.test(file) &&
+        (!file.includes("_internal") || file.includes("mt-floating-ui")),
     );
 
     interface MetaParserOptions {

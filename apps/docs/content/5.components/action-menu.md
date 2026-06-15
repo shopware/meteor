@@ -129,4 +129,4 @@ These parts are exported together so the pattern can be composed in one place.
 
 ## Related components
 
-- **Floating UI**: when you need a custom popover surface with richer content such as text, filters, form fields, or mixed layout content instead of a menu of actions.
+- [**Floating UI**](/components/floating-ui): when you need a custom popover surface with richer content such as text, filters, form fields, or mixed layout content instead of a menu of actions.

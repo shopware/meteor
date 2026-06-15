@@ -65,7 +65,7 @@ Show the link or unlink toggle when a card represents values that can be inherit
 - The tabs area sits below the header and can be used for closely related views of the same section.
 - The content area holds the main information, form fields, or other section content.
 
-**Card** also exposes **Inset** as a companion layout utility for cases where content inside the card should visually break out to the card edges without hard-coding spacing values.
+**Card** also exposes [**Inset**](/components/inset) as a companion layout utility for cases where content inside the card should visually break out to the card edges without hard-coding spacing values.
 
 - Use **Inset** inside the default card content when an inner block should align to the card's outer padding instead of the current content flow.
 - Use **Inset** in the `footer` slot when the footer needs its own full-width background or custom padding treatment while still staying aligned to the card spacing tokens.
@@ -116,4 +116,4 @@ Show the link or unlink toggle when a card represents values that can be inherit
 
 ## Related components
 
-- **Inset**: when you only need spacing or padded grouping inside an existing surface.
+- [**Inset**](/components/inset): when you only need spacing or padded grouping inside an existing surface.
