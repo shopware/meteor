@@ -27,6 +27,16 @@ import { MtEntitySelect } from "@shopware-ag/meteor-component-library";
 ::component-example{name="entity-select-with-initial-value-example" fullWidth}
 ::
 
+### Multi-selection
+
+::component-example{name="entity-select-multi-selection-example" fullWidth}
+::
+
+### Disabled
+
+::component-example{name="entity-select-disabled-example" fullWidth}
+::
+
 ## API reference
 
 :component-api
