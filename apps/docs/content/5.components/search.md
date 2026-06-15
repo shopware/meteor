@@ -57,9 +57,4 @@ import { MtSearch } from "@shopware-ag/meteor-component-library";
 
 ## Related components
 
-### Search vs Text Field
-
-The choice comes down to whether the value filters content or is stored as form data.
-
-- Use **Search** when the value is meant to filter or find content.
-- Use [**Text Field**](/components/text-field) when the value should be entered and stored as regular form data.
+- [**Text Field**](/components/text-field): when the value should be entered and stored as regular form data.

@@ -79,9 +79,4 @@ import { MtBadge } from "@shopware-ag/meteor-component-library";
 
 ## Related components
 
-### Badge vs Promo Badge
-
-The choice comes down to whether the label is a general product state or a predefined promotional label.
-
-- Use **Badge** for general product states such as status, health, or workflow labels.
-- Use [**Promo Badge**](/components/promo-badge) for predefined promotional labels such as `New`, `Beta`, or `Shopware AI`.
+- [**Promo Badge**](/components/promo-badge): when the label is a predefined promotional label such as `New`, `Beta`, or `Shopware AI`.

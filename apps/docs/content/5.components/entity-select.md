@@ -61,9 +61,4 @@ import { MtEntitySelect } from "@shopware-ag/meteor-component-library";
 
 ## Related components
 
-### Entity Select vs Select
-
-The choice comes down to where the options come from.
-
-- Use **Entity Select** for Admin SDK repository data.
-- Use [**Select**](/components/select) for local or externally managed option lists.
+- [**Select**](/components/select): when options come from local or externally managed lists.

@@ -57,9 +57,4 @@ import { MtUnitField } from "@shopware-ag/meteor-component-library";
 
 ## Related components
 
-### Unit Field vs Number Field
-
-The choice comes down to whether the unit is selectable or fixed.
-
-- Use **Unit Field** when users need to enter both a numeric value and a selectable measurement unit.
-- Use [**Number Field**](/components/number-field) when the value is numeric and the unit is fixed or communicated elsewhere.
+- [**Number Field**](/components/number-field): when the value is numeric and the unit is fixed or communicated elsewhere.

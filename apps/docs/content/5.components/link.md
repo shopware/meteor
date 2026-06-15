@@ -58,9 +58,4 @@ import { MtLink } from "@shopware-ag/meteor-component-library";
 
 ## Related components
 
-### Link vs Button
-
-The choice comes down to whether the control navigates somewhere or performs an action.
-
-- Use **Link** when the user should navigate to another page, route, or destination.
-- Use [**Button**](/components/button) when the user should trigger an action on the current page.
+- [**Button**](/components/button): when the user should trigger an action on the current page.

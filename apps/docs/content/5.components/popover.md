@@ -73,16 +73,5 @@ These parts are exported together so the pattern can be composed in one place.
 
 ## Related components
 
-### Popover vs Action Menu
-
-The choice comes down to whether you need a standard menu of actions or an experimental settings surface with nested views.
-
-- Use [**Action Menu**](/components/action-menu) for a short, scannable list of actions or options.
-- Use **Popover** only when you need its view and item patterns and neither [**Action Menu**](/components/action-menu) nor **Floating UI** fits.
-
-### Popover vs Floating UI
-
-The choice comes down to how much control you need over the floating content.
-
-- Use **Floating UI** when you need a custom floating surface with your own layout, content, or interaction behavior.
-- Use **Popover** only when its built-in header, views, and item rows match what you need.
+- [**Action Menu**](/components/action-menu): when you need a short, scannable list of actions or options.
+- **Floating UI**: when you need a custom floating surface with your own layout, content, or interaction behavior.

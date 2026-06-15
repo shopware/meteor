@@ -64,16 +64,5 @@ import { MtCheckbox } from "@shopware-ag/meteor-component-library";
 
 ## Related components
 
-### Checkbox vs Radio Group
-
-The choice comes down to whether options are independent or mutually exclusive.
-
-- Use **Checkbox** when users can turn an option on or off independently, or when multiple options can be selected.
-- Use [**Radio Group**](/components/radio-group) when users must choose exactly one option from a small set of visible choices.
-
-### Checkbox vs Select
-
-The choice comes down to how many options there are and whether they should stay visible.
-
-- Use **Checkbox** for a single boolean setting or when a small set of options should stay visible on the page.
-- Use [**Select**](/components/select) when users need to choose from a longer list or when space is limited.
+- [**Radio Group**](/components/radio-group): when users must choose exactly one option from a small set of visible choices.
+- [**Select**](/components/select): when users need to choose from a longer list or when space is limited.

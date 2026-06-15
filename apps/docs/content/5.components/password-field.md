@@ -57,9 +57,4 @@ import { MtPasswordField } from "@shopware-ag/meteor-component-library";
 
 ## Related components
 
-### Password Field vs Text Field
-
-The choice comes down to whether the value is sensitive and should be masked by default.
-
-- Use **Password Field** when the value is sensitive and should be masked by default.
-- Use [**Text Field**](/components/text-field) when the value is not sensitive and does not need reveal behavior.
+- [**Text Field**](/components/text-field): when the value is not sensitive and does not need reveal behavior.

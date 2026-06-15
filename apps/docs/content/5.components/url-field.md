@@ -57,9 +57,4 @@ import { MtUrlField } from "@shopware-ag/meteor-component-library";
 
 ## Related components
 
-### URL Field vs Text Field
-
-The choice comes down to whether the value is a web address or general text.
-
-- Use **URL Field** when the value should be a web address and URL-specific behavior is helpful.
-- Use [**Text Field**](/components/text-field) when the value is general text and should not be normalized as a URL.
+- [**Text Field**](/components/text-field): when the value is general text and should not be normalized as a URL.

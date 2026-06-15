@@ -57,9 +57,4 @@ import { MtTextarea } from "@shopware-ag/meteor-component-library";
 
 ## Related components
 
-### Textarea vs Text Field
-
-The choice comes down to how long the value is and whether line breaks are part of the content.
-
-- Use **Textarea** when users need to enter longer multi-line content.
-- Use [**Text Field**](/components/text-field) when the value should stay short and single-line.
+- [**Text Field**](/components/text-field): when the value should stay short and single-line.

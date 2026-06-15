@@ -62,9 +62,4 @@ import { MtSlider } from "@shopware-ag/meteor-component-library";
 
 ## Related components
 
-### Slider vs Number Field
-
-The choice comes down to whether direct manipulation or precise numeric entry matters more.
-
-- Use **Slider** when users benefit from adjusting a value along a visible range.
-- Use [**Number Field**](/components/number-field) when precise numeric entry matters more than direct manipulation.
+- [**Number Field**](/components/number-field): when precise numeric entry matters more than direct manipulation.

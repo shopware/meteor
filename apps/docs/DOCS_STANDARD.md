@@ -144,15 +144,13 @@ Do not assume that accessibility behavior is obvious from the example alone.
 
 ## Related components
 
-Use `Related components` when users are likely to choose between this component and another public component. Add one `H3` per comparison, titled `This vs Other`. Open with a single sentence naming the factor the decision comes down to, then give one bullet per option stating when to choose it. Link the other component to its page (see [Prose rules](#prose-rules)) and stay focused on the decision, not a full feature diff.
+Use `Related components` when users are likely to choose between this component and another public component. Keep it short: a single bullet list, one bullet per related component. Link the component to its page (see [Prose rules](#prose-rules)) and follow it with a brief note on when to reach for that component instead. Do not restate when to use the current component, and do not write a full feature comparison, the whole page already covers the current component.
 
 ```md
-### Select vs Radio Group
+## Related components
 
-The choice comes down to how many options there are and whether users need to see them all at once.
-
-- Use **Select** when the list is long, space is limited, or search helps users find a value.
-- Use [**Radio Group**](/components/radio-group) when a small set of options should stay visible so users can compare them directly.
+- [**Radio Group**](/components/radio-group): when a small set of options should stay visible so users can compare them directly.
+- [**Checkbox**](/components/checkbox): when users toggle independent options on and off rather than choosing from a shared option set.
 ```
 
 ## Prose rules

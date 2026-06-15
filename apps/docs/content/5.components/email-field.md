@@ -57,9 +57,4 @@ import { MtEmailField } from "@shopware-ag/meteor-component-library";
 
 ## Related components
 
-### Email Field vs Text Field
-
-The choice comes down to whether the value must be an email address.
-
-- Use **Email Field** when the value must be an email address and email-specific input behavior is helpful.
-- Use [**Text Field**](/components/text-field) when the value is general text and should not be constrained to an email format.
+- [**Text Field**](/components/text-field): when the value is general text and should not be constrained to an email format.

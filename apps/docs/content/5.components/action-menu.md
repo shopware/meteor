@@ -129,9 +129,4 @@ These parts are exported together so the pattern can be composed in one place.
 
 ## Related components
 
-### Action Menu vs Floating UI
-
-The choice comes down to whether you are presenting a list of actions or a custom surface with richer content.
-
-- Use **Action Menu** for a short, scannable list of actions or links.
-- Use **Floating UI** when you need a custom popover surface with richer content such as text, filters, form fields, or mixed layout content instead of a menu of actions.
+- **Floating UI**: when you need a custom popover surface with richer content such as text, filters, form fields, or mixed layout content instead of a menu of actions.

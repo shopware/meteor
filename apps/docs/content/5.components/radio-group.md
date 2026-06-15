@@ -90,16 +90,5 @@ Build fully custom option cards while keeping the shared radio-group state.
 
 ## Related components
 
-### Radio Group vs Checkbox
-
-The choice comes down to whether users pick one option or several.
-
-- Use **Radio Group** when users must choose exactly one option from a small set.
-- Use [**Checkbox**](/components/checkbox) when users can turn an option on or off independently or choose multiple items.
-
-### Radio Group vs Select
-
-The choice comes down to how many options there are and whether they should stay visible.
-
-- Use **Radio Group** when a small number of options should stay visible and easy to compare.
-- Use [**Select**](/components/select) when there are more options or when space is limited.
+- [**Checkbox**](/components/checkbox): when users can turn an option on or off independently or choose multiple items.
+- [**Select**](/components/select): when there are more options or when space is limited.

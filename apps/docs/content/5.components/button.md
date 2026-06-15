@@ -94,9 +94,4 @@ Use `square` and an `aria-label` for a compact, icon-only control.
 
 ## Related components
 
-### Button vs Link
-
-The choice comes down to whether the control performs an action or navigates somewhere.
-
-- Use **Button** for actions in the current flow such as saving, submitting, confirming, or opening an interface change.
-- Use [**Link**](/components/link) when the user is moving to another page, route, or destination.
+- [**Link**](/components/link): when the user is moving to another page, route, or destination.

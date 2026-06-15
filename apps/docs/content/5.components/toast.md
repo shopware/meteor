@@ -108,9 +108,4 @@ The exported **Toast** type describes a single notification in the `toasts` list
 
 ## Related components
 
-### Toast vs Snackbar
-
-The choice comes down to how the message is triggered and managed.
-
-- Use [**Snackbar**](/components/snackbar) for overlay feedback driven through the `useSnackbar()` store, with built-in support for progress and link actions.
-- Use **Toast** when you manage the active notifications in your own state and pass them to a single mounted host.
+- [**Snackbar**](/components/snackbar): when you need overlay feedback driven through the `useSnackbar()` store, with built-in support for progress and link actions.

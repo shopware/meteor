@@ -57,9 +57,4 @@ import { MtHelpText } from "@shopware-ag/meteor-component-library";
 
 ## Related components
 
-### Help Text vs Tooltip
-
-The choice comes down to whether you need a standard help trigger or full control over the tooltip.
-
-- Use **Help Text** when you need a standard small help trigger for brief contextual guidance near a field or control.
-- Use [**Tooltip**](/components/tooltip) when you need more flexible tooltip behavior or a different trigger element.
+- [**Tooltip**](/components/tooltip): when you need more flexible tooltip behavior or a different trigger element.

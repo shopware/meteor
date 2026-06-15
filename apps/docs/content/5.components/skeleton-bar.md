@@ -66,9 +66,4 @@ Combine several bars across a grid to mirror the structure of the content that w
 
 ## Related components
 
-### Skeleton Bar vs Loader
-
-The choice comes down to whether the content layout is known and worth preserving while data loads.
-
-- Use **Skeleton Bar** when the content layout is known and you want to preserve that layout while data loads.
-- Use [**Loader**](/components/loader) when a simple indeterminate loading indicator is enough and a structural placeholder would not add value.
+- [**Loader**](/components/loader): when a simple indeterminate loading indicator is enough and a structural placeholder would not add value.

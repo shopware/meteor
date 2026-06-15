@@ -68,9 +68,4 @@ import { MtBanner } from "@shopware-ag/meteor-component-library";
 
 ## Related components
 
-### Banner vs Snackbar
-
-The choice comes down to whether the message should stay in the page or appear as temporary feedback.
-
-- Use **Banner** for persistent, inline messaging that should stay visible in the page until the user moves on or dismisses it.
-- Use [**Snackbar**](/components/snackbar) for lightweight temporary feedback that appears separately from the page content.
+- [**Snackbar**](/components/snackbar): when you need lightweight temporary feedback that appears separately from the page content.

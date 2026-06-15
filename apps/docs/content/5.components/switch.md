@@ -62,9 +62,4 @@ import { MtSwitch } from "@shopware-ag/meteor-component-library";
 
 ## Related components
 
-### Switch vs Checkbox
-
-The choice comes down to whether the setting applies immediately or as part of a broader form submission.
-
-- Use **Switch** for a single setting that turns something on or off immediately.
-- Use [**Checkbox**](/components/checkbox) when users are selecting items or confirming a value as part of a broader form submission flow.
+- [**Checkbox**](/components/checkbox): when users are selecting items or confirming a value as part of a broader form submission flow.
