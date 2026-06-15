@@ -20,7 +20,13 @@ export function formatType(type: string | undefined): string | undefined {
 
     if (quote) {
       current += char;
-      if (char === quote && type[i - 1] !== "\\") quote = null;
+      if (char === quote) {
+        // A closing quote is escaped only when preceded by an odd number of
+        // backslashes (so `\"` is escaped but `\\"` is a real close).
+        let backslashes = 0;
+        for (let j = i - 1; j >= 0 && type[j] === "\\"; j--) backslashes++;
+        if (backslashes % 2 === 0) quote = null;
+      }
       continue;
     }
 

@@ -18,16 +18,12 @@ const weights = Object.keys(font.weight).map((label) => ({
   token: `--font-weight-${label}`,
 }));
 
-const resolved = ref<Record<string, string>>({});
-
-onMounted(() => {
-  const style = getComputedStyle(document.documentElement);
-  const values: Record<string, string> = {};
-  for (const { token } of sizes) values[token] = style.getPropertyValue(token).trim();
-  for (const { token } of weights)
-    values[token] = style.getPropertyValue(token).trim();
-  resolved.value = values;
-});
+// Samples render from var(--token) directly (SSR-visible); the resolved value
+// labels are progressive enhancement filled in after mount.
+const { light: resolved } = useResolvedTokens([
+  ...sizes.map((size) => size.token),
+  ...weights.map((weight) => weight.token),
+]);
 
 const sample = "The quick brown fox jumps over the lazy dog";
 </script>

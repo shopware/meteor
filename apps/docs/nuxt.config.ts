@@ -44,9 +44,12 @@ const shikiTheme = {
 
 export default defineNuxtConfig({
   extends: ["docus"],
-  // meteor-components must run before nuxt-component-meta so the Mt
-  // components are registered when the meta parser snapshots the list.
-  modules: ["./modules/meteor-components", "nuxt-component-meta"],
+  // modules/ is auto-scanned, so meteor-components and component-examples load
+  // automatically. meteor-components registers its work via the
+  // `component-meta:extend` hook (fired during the build), so module order
+  // relative to nuxt-component-meta does not matter; only the third-party
+  // module needs listing here.
+  modules: ["nuxt-component-meta"],
   // Token dictionaries (the source of truth for the foundation token tables).
   // A Nuxt alias is added to both Vite and the tsconfig paths.
   alias: {

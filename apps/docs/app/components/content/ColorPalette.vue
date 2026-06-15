@@ -2,28 +2,31 @@
 import primitives from "@tokens-dict/foundation/primitives.tokens.json";
 
 // Derived from primitives.tokens.json so the palette tracks the token source.
-const paletteDefinitions = Object.entries(
+// Built at setup (not onMounted) so the swatch grid renders during SSR; swatch
+// backgrounds come from var(--token) directly, and the resolved hex strings are
+// progressive enhancement filled in after mount.
+const palettes = Object.entries(
   (primitives as { color: Record<string, Record<string, unknown>> }).color,
 ).map(([name, steps]) => ({
   name: name.charAt(0).toUpperCase() + name.slice(1),
-  prefix: `--color-${name}`,
-  steps: Object.keys(steps).map(Number),
+  swatches: Object.keys(steps).map((step) => ({
+    token: `--color-${name}-${step}`,
+    step,
+  })),
 }));
 
-interface Swatch {
-  token: string;
-  step: string;
-  hex: string;
-}
+const allTokens = palettes.flatMap((palette) =>
+  palette.swatches.map((swatch) => swatch.token),
+);
+const { light } = useResolvedTokens(allTokens);
 
-const palettes = ref<{ name: string; swatches: Swatch[] }[]>([]);
-const toast = useToast();
+const { copy } = useCopyToClipboard();
 
 function luminance(r: number, g: number, b: number) {
   return r * 0.299 + g * 0.587 + b * 0.114;
 }
 
-function isLight(hex: string) {
+function isLight(hex: string | undefined) {
   if (!hex) return true;
   const value = hex.trim();
   if (value.startsWith("#") && value.length >= 7) {
@@ -33,26 +36,6 @@ function isLight(hex: string) {
     return luminance(r, g, b) > 160;
   }
   return true;
-}
-
-onMounted(() => {
-  const style = getComputedStyle(document.documentElement);
-  palettes.value = paletteDefinitions.map(({ name, prefix, steps }) => ({
-    name,
-    swatches: steps.map((step) => {
-      const token = `${prefix}-${step}`;
-      return { token, step: String(step), hex: style.getPropertyValue(token).trim() };
-    }),
-  }));
-});
-
-function copy(value: string) {
-  navigator.clipboard
-    ?.writeText(value)
-    .then(() =>
-      toast.add({ title: `Copied ${value}`, icon: "i-lucide-check", color: "success" }),
-    )
-    .catch(() => {});
 }
 </script>
 
@@ -65,8 +48,8 @@ function copy(value: string) {
           v-for="swatch in palette.swatches"
           :key="swatch.token"
           class="swatch"
-          :class="{ 'swatch--light': isLight(swatch.hex) }"
-          :style="{ backgroundColor: swatch.hex }"
+          :class="{ 'swatch--light': isLight(light[swatch.token]) }"
+          :style="{ backgroundColor: `var(${swatch.token})` }"
         >
           <button
             type="button"
@@ -79,10 +62,10 @@ function copy(value: string) {
           <button
             type="button"
             class="swatch__btn swatch__hex"
-            :title="`Copy ${swatch.hex}`"
-            @click="copy(swatch.hex)"
+            :title="`Copy ${light[swatch.token] ?? ''}`"
+            @click="copy(light[swatch.token] ?? '')"
           >
-            {{ swatch.hex }}
+            {{ light[swatch.token] }}
           </button>
         </div>
       </div>

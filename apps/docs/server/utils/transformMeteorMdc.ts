@@ -1,4 +1,5 @@
-import { camelCase, kebabCase, pascalCase, upperFirst } from "scule";
+import { camelCase, kebabCase, upperFirst } from "scule";
+import { exampleKey } from "#shared/utils/exampleKey";
 import { formatType } from "#shared/utils/formatType";
 import { DESCRIPTIONS, tokenGroups } from "#shared/data/tokens";
 import { iconCommonUsages } from "#shared/data/iconCommonUsages";
@@ -439,7 +440,7 @@ export function transformMeteorMdc(
       if (manualCode) return [manualCode];
 
       const name = ((attributes || {}) as Record<string, string>).name;
-      const example = name ? getComponentExample(pascalCase(name)) : null;
+      const example = name ? getComponentExample(exampleKey(name)) : null;
       if (!example) return [];
 
       return [
@@ -568,14 +569,17 @@ export function transformMeteorMdc(
 }
 
 /**
- * Recurses in place so that splice-based replacements at every depth mutate
- * the real node arrays (not a slice copy).
+ * Recurses in place so that splice-based replacements at every depth mutate the
+ * real node arrays (not a slice copy). `start` is the first index to visit: 0
+ * for a top-level node list, 2 to skip a node's [tag, attributes] and walk only
+ * its children.
  */
 function walkInPlace(
   nodes: unknown[],
   produce: (node: MinimarkNode) => (string | MinimarkNode)[] | undefined,
+  start = 0,
 ) {
-  for (let i = 0; i < nodes.length; i++) {
+  for (let i = start; i < nodes.length; i++) {
     const node = nodes[i];
     if (!Array.isArray(node) || typeof node[0] !== "string") continue;
 
@@ -587,25 +591,6 @@ function walkInPlace(
     }
 
     // Recurse into this node's children (indices 2..end) by reference.
-    walkChildren(node as MinimarkNode, produce);
-  }
-}
-
-function walkChildren(
-  node: MinimarkNode,
-  produce: (node: MinimarkNode) => (string | MinimarkNode)[] | undefined,
-) {
-  for (let i = 2; i < node.length; i++) {
-    const child = node[i];
-    if (!Array.isArray(child) || typeof child[0] !== "string") continue;
-
-    const replacement = produce(child as MinimarkNode);
-    if (replacement) {
-      node.splice(i, 1, ...replacement);
-      i += replacement.length - 1;
-      continue;
-    }
-
-    walkChildren(child as MinimarkNode, produce);
+    walkInPlace(node as MinimarkNode, produce, 2);
   }
 }

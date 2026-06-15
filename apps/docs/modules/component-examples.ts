@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync } from "node:fs";
 import fsp from "node:fs/promises";
 import { join } from "node:path";
 import { defineNuxtModule } from "@nuxt/kit";
@@ -54,11 +54,6 @@ export default defineNuxtModule({
           await writeComponentFile(component);
         }),
       );
-      await fsp.writeFile(
-        join(outputDir, "_index.json"),
-        JSON.stringify(Object.keys(components)),
-        "utf-8",
-      );
     }
 
     nuxt.hook("components:extend", async (allComponents) => {
@@ -90,15 +85,9 @@ export default defineNuxtModule({
     nuxt.hook("nitro:config", (nitroConfig) => {
       nitroConfig.virtual = nitroConfig.virtual || {};
       nitroConfig.virtual["#component-example/nitro"] = () => {
-        const indexPath = join(outputDir, "_index.json");
-        const names: string[] = existsSync(indexPath)
-          ? JSON.parse(readFileSync(indexPath, "utf-8"))
-          : [];
-
         return `import { readFileSync } from 'node:fs'
 
 const basePath = ${JSON.stringify(outputDir)}
-const names = ${JSON.stringify(names)}
 const cache = Object.create(null)
 
 export function getComponentExample(name) {
@@ -110,10 +99,6 @@ export function getComponentExample(name) {
     }
   }
   return cache[name]
-}
-
-export function listComponentExamples() {
-  return names
 }
 `;
       };

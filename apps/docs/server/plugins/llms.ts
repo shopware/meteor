@@ -9,9 +9,15 @@ function toRawMarkdownLink(href: string) {
   if (href.endsWith(".txt") || href.endsWith(".md")) {
     return href;
   }
-  return href.replace(
-    /^(https?:\/\/[^/]+)?(\/.*?)\/?$/,
-    (_match, origin, path) => `${origin ?? ""}/raw${path}.md`,
+  return (
+    href
+      .replace(
+        /^(https?:\/\/[^/]+)?(\/.*?)\/?$/,
+        (_match, origin, path) => `${origin ?? ""}/raw${path}.md`,
+      )
+      // The index page has an empty path, yielding "/raw/.md"; map it to the
+      // index document the raw route expects (matches the built-in behavior).
+      .replace(/\/raw\/\.md$/, "/raw/index.md")
   );
 }
 

@@ -27,61 +27,38 @@ const groups = tokenGroups.map((group) => ({
   ),
 }));
 
-const resolvedLight = ref<Record<string, string>>({});
-const resolvedDark = ref<Record<string, string>>({});
+const allTokens = groups.flatMap((group) => group.rows.map((row) => row.token));
+// Swatch/preview boxes render from var(--token) directly (SSR-visible); these
+// resolved strings are progressive enhancement for the value badges.
+const { light, dark } = useResolvedTokens(allTokens, { dark: true });
 
-onMounted(() => {
-  const lightStyle = getComputedStyle(document.documentElement);
-  const darkEl = document.createElement("div");
-  darkEl.setAttribute("data-theme", "dark");
-  darkEl.style.cssText = "position:absolute;visibility:hidden;pointer-events:none";
-  document.body.appendChild(darkEl);
-  const darkStyle = getComputedStyle(darkEl);
-
-  const light: Record<string, string> = {};
-  const dark: Record<string, string> = {};
+// Value badges for non-color tokens: light value, plus dark value if it
+// differs. A computed (not a function called in the template) so it recomputes
+// only when the resolved maps change, not on every render.
+const badgesByToken = computed(() => {
+  const map: Record<string, string[]> = {};
   for (const group of groups) {
-    for (const { token } of group.rows) {
-      light[token] = lightStyle.getPropertyValue(token).trim();
-      dark[token] = darkStyle.getPropertyValue(token).trim();
+    for (const { token, type } of group.rows) {
+      if (type === "color") continue;
+      let lightValue = light.value[token] || "";
+      let darkValue = dark.value[token] || "";
+      // @nuxt/fonts appends generated fallback families to --font-family-*; show
+      // only the primary family (e.g. 'Inter').
+      if (token.startsWith("--font-family-")) {
+        const first = (value: string) => (value.split(",")[0] ?? value).trim();
+        lightValue = first(lightValue);
+        darkValue = first(darkValue);
+      }
+      const out: string[] = [];
+      if (lightValue) out.push(lightValue);
+      if (darkValue && darkValue !== lightValue) out.push(darkValue);
+      map[token] = out;
     }
   }
-  document.body.removeChild(darkEl);
-  resolvedLight.value = light;
-  resolvedDark.value = dark;
+  return map;
 });
 
-// Value badges for non-color tokens: light value, plus dark value if it differs.
-function badges(token: string) {
-  let light = resolvedLight.value[token] || "";
-  let dark = resolvedDark.value[token] || "";
-  // @nuxt/fonts appends generated fallback families to --font-family-*; show
-  // only the primary family (e.g. 'Inter').
-  if (token.startsWith("--font-family-")) {
-    const first = (value: string) => (value.split(",")[0] ?? value).trim();
-    light = first(light);
-    dark = first(dark);
-  }
-  const out: string[] = [];
-  if (light) out.push(light);
-  if (dark && dark !== light) out.push(dark);
-  return out;
-}
-
-const toast = useToast();
-
-function copy(token: string) {
-  navigator.clipboard
-    ?.writeText(`var(${token})`)
-    .then(() =>
-      toast.add({
-        title: `Copied var(${token})`,
-        icon: "i-lucide-check",
-        color: "success",
-      }),
-    )
-    .catch(() => {});
-}
+const { copy } = useCopyToClipboard();
 </script>
 
 <template>
@@ -95,13 +72,13 @@ function copy(token: string) {
         class="tb-row"
         :class="{ 'tb-row--color': row.type === 'color' }"
         :title="`Copy var(${row.token})`"
-        @click="copy(row.token)"
+        @click="copy(`var(${row.token})`)"
       >
         <div class="tb-preview">
           <span
             v-if="row.type === 'color'"
             class="tb-swatch"
-            :class="{ 'tb-swatch--alpha': isTransparent(resolvedLight[row.token]) }"
+            :class="{ 'tb-swatch--alpha': isTransparent(light[row.token]) }"
             :style="{ backgroundColor: `var(${row.token})` }"
           />
           <span
@@ -143,7 +120,11 @@ function copy(token: string) {
         </div>
 
         <div v-if="row.type !== 'color'" class="tb-values">
-          <span v-for="value in badges(row.token)" :key="value" class="tb-badge">
+          <span
+            v-for="value in badgesByToken[row.token]"
+            :key="value"
+            class="tb-badge"
+          >
             {{ value }}
           </span>
         </div>

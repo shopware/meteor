@@ -17,7 +17,7 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404 });
   }
 
-  let path = withLeadingSlash(slug.replace(".md", ""));
+  let path = withLeadingSlash(slug.replace(/\.md$/, ""));
   if (path.endsWith("/index")) {
     path = path.substring(0, path.length - 6) || "/";
   }

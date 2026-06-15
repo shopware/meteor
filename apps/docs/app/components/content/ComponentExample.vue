@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { camelCase, upperFirst } from "scule";
+import { camelCase } from "scule";
 import { useClipboard } from "@vueuse/core";
+import { exampleKey } from "#shared/utils/exampleKey";
 import MtThemeProvider from "@shopware-ag/meteor-component-library/MtThemeProvider";
 
 // Opt the docs into the meteor component library's future behavior so examples
@@ -46,7 +47,7 @@ const slots = defineSlots<{
 }>();
 
 const camelName = camelCase(props.name);
-const pascalName = upperFirst(camelName);
+const pascalName = exampleKey(props.name);
 
 const exampleModules = import.meta.glob(
   "~/components/content/examples/**/*.vue",
@@ -126,7 +127,7 @@ const codeWrapperClass = computed(() => [
         >
           <UIcon
             name="i-lucide-chevron-right"
-            class="size-4 transition-transform duration-150 ease-[var(--ease-out)] motion-reduce:transition-none"
+            class="size-3.5 transition-transform duration-150 ease-[var(--ease-out)] motion-reduce:transition-none"
             :class="showCode ? 'rotate-90' : ''"
           />
           <span>Code</span>
