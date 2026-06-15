@@ -1,11 +1,11 @@
-import { pascalCase } from "scule";
+import { exampleKey } from "#shared/utils/exampleKey";
 // eslint and typescript resolve this at build time via the nitro virtual module
 // @ts-expect-error virtual module provided by modules/component-examples.ts
 import { getComponentExample } from "#component-example/nitro";
 
 export default defineEventHandler((event) => {
   const name = getRouterParam(event, "name")?.replace(/\.json$/, "") ?? "";
-  const example = getComponentExample(pascalCase(name));
+  const example = getComponentExample(exampleKey(name));
 
   if (!example) {
     throw createError({

@@ -1,3 +1,7 @@
+/* Raw --color-* token vars consumed by the --ui-* mapping below. These
+ * intentionally complement the Tailwind-flavored token imports in app.css
+ * (which feed @theme); do not consolidate the two, or the Nuxt UI <-> Meteor
+ * variable bridge breaks. */
 @import "@shopware-ag/meteor-tokens/primitives.css";
 @import "@shopware-ag/meteor-tokens/administration/light.css";
 @import "@shopware-ag/meteor-tokens/administration/dark.css";

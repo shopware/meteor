@@ -13,11 +13,6 @@
  * styles.css.
  */
 
-/* Dark color-scheme hint that styles.css set on the theme root. */
-[data-theme="dark"] {
-  color-scheme: dark;
-}
-
 /* Screen-reader-only utility. Without it, visually-hidden a11y labels (e.g. in
  * mt-pagination) render on screen.
  * Source: src/components/assets/css/utils.css */
@@ -34,7 +29,9 @@
 
 /* The v-tooltip directive appends a .mt-tooltip element to <body>, so its
  * styling cannot come from a component. Without these, tooltips (e.g. the
- * mt-text-editor toolbar) show their text but no background/padding.
+ * mt-text-editor toolbar) show their text but no background/padding. Only the
+ * "dark" appearance is re-provided since that is the directive's default and
+ * the only one the docs use.
  * Source: src/components/assets/scss/directives/tooltip.css */
 .mt-tooltip {
   position: absolute;
@@ -82,36 +79,5 @@
     top: 50%;
     margin-top: -4px;
     left: -4px;
-  }
-}
-
-.mt-tooltip--light {
-  color: #52667a;
-  font-size: 12px;
-  font-weight: lighter;
-  letter-spacing: 0;
-  line-height: 19px;
-  width: auto !important;
-  height: auto !important;
-  padding: 5px 10px;
-  background: #fff;
-  border: 1px solid #d1d9e0;
-  box-shadow: 0 3px 6px 0 rgba(120, 138, 155, 0.5);
-  border-radius: 4px;
-
-  &.mt-tooltip--top {
-    margin-top: 6px;
-  }
-
-  &.mt-tooltip--bottom {
-    margin-top: -4px;
-  }
-
-  &.mt-tooltip--left {
-    margin-left: 5px;
-  }
-
-  &.mt-tooltip--right {
-    margin-right: -5px;
   }
 }

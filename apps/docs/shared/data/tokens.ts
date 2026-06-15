@@ -5,24 +5,34 @@
 import lightTokens from "@tokens-dict/administration/light.tokens.json";
 import primitives from "@tokens-dict/foundation/primitives.tokens.json";
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-type Json = Record<string, any>;
+// A token dictionary is a tree of groups whose leaves carry a $value (and an
+// optional $description). The imported JSON is cast to this shape at the entry
+// points below.
+interface TokenLeaf {
+  $value: string | number;
+  $description?: string;
+}
+type TokenNode = TokenLeaf | { [key: string]: TokenNode };
+type TokenTree = { [key: string]: TokenNode };
+
+const isLeaf = (node: TokenNode): node is TokenLeaf =>
+  typeof node === "object" && node !== null && "$value" in node;
 
 // Flatten a token dictionary into { cssVar -> description } and, for tokens
 // whose value references another token, { cssVar -> referenced cssVar }.
-export function flattenTokenData(obj: Json, prefix = "") {
+export function flattenTokenData(obj: TokenTree, prefix = "") {
   const descriptions: Record<string, string> = {};
   const values: Record<string, string> = {};
   for (const [k, v] of Object.entries(obj)) {
     const key = prefix ? `${prefix}.${k}` : k;
     const cssVar = "--" + key.replace(/\./g, "-");
-    if (v && typeof v === "object" && "$value" in v) {
+    if (isLeaf(v)) {
       descriptions[cssVar] = v.$description || "";
       const raw = v.$value;
       if (typeof raw === "string" && raw.startsWith("{") && raw.endsWith("}")) {
         values[cssVar] = "--" + raw.slice(1, -1).replace(/\./g, "-");
       }
-    } else if (v && typeof v === "object") {
+    } else {
       const nested = flattenTokenData(v, key);
       Object.assign(descriptions, nested.descriptions);
       Object.assign(values, nested.values);
@@ -31,13 +41,12 @@ export function flattenTokenData(obj: Json, prefix = "") {
   return { descriptions, values };
 }
 
-function collectTokenKeys(obj: Json, prefix: string): string[] {
+function collectTokenKeys(obj: TokenTree, prefix: string): string[] {
   const result: string[] = [];
   for (const [k, v] of Object.entries(obj)) {
     const key = `${prefix}-${k}`;
-    if (v && typeof v === "object" && "$value" in v) result.push(key);
-    else if (v && typeof v === "object")
-      result.push(...collectTokenKeys(v, key));
+    if (isLeaf(v)) result.push(key);
+    else result.push(...collectTokenKeys(v, key));
   }
   return result;
 }
@@ -49,36 +58,46 @@ export interface TokenGroup {
   tokens: string[];
 }
 
+// The JSON modules are typed by TS as their concrete inferred shape; assert the
+// token-tree shape once here.
+const lightTree = lightTokens as unknown as TokenTree;
+
+// A top-level dictionary entry is always a group (never a leaf), so descending
+// into it yields another TokenTree.
+const asTree = (node: TokenNode): TokenTree => node as TokenTree;
+
 function buildGroups(): TokenGroup[] {
   const groups: TokenGroup[] = [];
-  for (const [topKey, topVal] of Object.entries(lightTokens as Json)) {
+  for (const [topKey, topVal] of Object.entries(lightTree)) {
     const prefix = `--${topKey}`;
     if (topKey === "color") {
-      for (const [subKey, subVal] of Object.entries(topVal as Json)) {
+      for (const [subKey, subVal] of Object.entries(asTree(topVal))) {
         groups.push({
           name: capitalize(subKey).replace(/-/g, " "),
-          tokens: collectTokenKeys(subVal as Json, `${prefix}-${subKey}`),
+          tokens: collectTokenKeys(asTree(subVal), `${prefix}-${subKey}`),
         });
       }
     } else if (topKey === "font") {
-      for (const [subKey, subVal] of Object.entries(topVal as Json)) {
+      for (const [subKey, subVal] of Object.entries(asTree(topVal))) {
         const name =
           subKey === "line-height"
             ? "Line Height"
             : `Font ${capitalize(subKey)}`;
         groups.push({
           name,
-          tokens: collectTokenKeys(subVal as Json, `${prefix}-${subKey}`),
+          tokens: collectTokenKeys(asTree(subVal), `${prefix}-${subKey}`),
         });
       }
     } else {
       groups.push({
         name: topKey.split("-").map(capitalize).join(" "),
-        tokens: collectTokenKeys(topVal as Json, prefix),
+        tokens: collectTokenKeys(asTree(topVal), prefix),
       });
     }
   }
-  const scale = (primitives as Json)?.scale?.size;
+  const scale = (
+    primitives as unknown as { scale?: { size?: Record<string, unknown> } }
+  )?.scale?.size;
   if (scale) {
     groups.push({
       name: "Scale",
@@ -99,9 +118,7 @@ export function previewType(token: string) {
   return "text";
 }
 
-export const { descriptions: DESCRIPTIONS } = flattenTokenData(
-  lightTokens as Json,
-);
+export const { descriptions: DESCRIPTIONS } = flattenTokenData(lightTree);
 
 // Groups with deprecated tokens removed, ready for display or export.
 export const tokenGroups: TokenGroup[] = buildGroups().map((group) => ({

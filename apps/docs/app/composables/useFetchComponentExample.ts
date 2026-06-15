@@ -4,18 +4,7 @@ export interface ComponentExampleData {
 }
 
 export function useFetchComponentExample(name: string) {
-  if (import.meta.server) {
-    const event = useRequestEvent();
-    event?.node.res.setHeader(
-      "x-nitro-prerender",
-      [
-        event?.node.res.getHeader("x-nitro-prerender"),
-        `/api/component-example/${name}.json`,
-      ]
-        .filter(Boolean)
-        .join(","),
-    );
-  }
+  addPrerenderHint(`/api/component-example/${name}.json`);
 
   return useAsyncData<ComponentExampleData | null>(
     `component-example-${name}`,
@@ -24,8 +13,10 @@ export function useFetchComponentExample(name: string) {
         () => null,
       ),
     {
+      lazy: import.meta.client,
       dedupe: "defer",
-      getCachedData: (key, nuxtApp) => nuxtApp.payload.data[key],
+      getCachedData: (key, nuxtApp) =>
+        nuxtApp.payload.data[key] ?? nuxtApp.static.data[key],
     },
   );
 }

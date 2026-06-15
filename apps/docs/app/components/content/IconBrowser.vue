@@ -18,7 +18,7 @@ const allIcons = (iconMeta as IconMetaEntry[])
   }))
   .sort((a, b) => a.fullName.localeCompare(b.fullName));
 
-const toast = useToast();
+const { copy } = useCopyToClipboard();
 const itemsPerPage = 48;
 const searchTerm = ref("");
 const activeMode = ref("all");
@@ -35,15 +35,21 @@ const searchMatched = computed(() => {
   );
 });
 
-const modeTabs = computed(() => {
-  const regular = searchMatched.value.filter((i) => i.mode === "regular").length;
-  const solid = searchMatched.value.filter((i) => i.mode === "solid").length;
-  return [
-    { label: "All", value: "all" },
-    { label: `Regular (${regular})`, value: "regular" },
-    { label: `Solid (${solid})`, value: "solid" },
-  ];
+const modeCounts = computed(() => {
+  let regular = 0;
+  let solid = 0;
+  for (const icon of searchMatched.value) {
+    if (icon.mode === "regular") regular++;
+    else if (icon.mode === "solid") solid++;
+  }
+  return { regular, solid };
 });
+
+const modeTabs = computed(() => [
+  { label: "All", value: "all" },
+  { label: `Regular (${modeCounts.value.regular})`, value: "regular" },
+  { label: `Solid (${modeCounts.value.solid})`, value: "solid" },
+]);
 
 const filteredIcons = computed(() =>
   searchMatched.value.filter(
@@ -60,14 +66,6 @@ const visibleIcons = computed(() => {
   return filteredIcons.value.slice(start, start + itemsPerPage);
 });
 
-async function copyIconName(fullName: string) {
-  try {
-    await navigator.clipboard.writeText(fullName);
-    toast.add({ title: `Copied ${fullName}`, icon: "i-lucide-check", color: "success" });
-  } catch {
-    toast.add({ title: `Couldn't copy ${fullName}`, color: "error" });
-  }
-}
 </script>
 
 <template>
@@ -97,7 +95,7 @@ async function copyIconName(fullName: string) {
         type="button"
         class="flex flex-col items-center gap-3 rounded-lg border border-muted bg-default p-4 text-center transition-colors hover:bg-[var(--color-interaction-secondary-hover)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary cursor-pointer"
         :title="`Copy ${icon.fullName}`"
-        @click="copyIconName(icon.fullName)"
+        @click="copy(icon.fullName)"
       >
         <MtIcon
           :name="icon.name"

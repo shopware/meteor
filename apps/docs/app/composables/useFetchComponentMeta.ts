@@ -1,18 +1,7 @@
 import type { FetchedComponentMeta } from "~/types/component-meta";
 
 export function useFetchComponentMeta(name: string) {
-  if (import.meta.server) {
-    const event = useRequestEvent();
-    event?.node.res.setHeader(
-      "x-nitro-prerender",
-      [
-        event?.node.res.getHeader("x-nitro-prerender"),
-        `/api/component-meta/${name}.json`,
-      ]
-        .filter(Boolean)
-        .join(","),
-    );
-  }
+  addPrerenderHint(`/api/component-meta/${name}.json`);
 
   return useAsyncData<FetchedComponentMeta | null>(
     `component-meta-${name}`,
@@ -23,7 +12,8 @@ export function useFetchComponentMeta(name: string) {
     {
       lazy: import.meta.client,
       dedupe: "defer",
-      getCachedData: (key, nuxtApp) => nuxtApp.payload.data[key],
+      getCachedData: (key, nuxtApp) =>
+        nuxtApp.payload.data[key] ?? nuxtApp.static.data[key],
     },
   );
 }
