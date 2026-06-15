@@ -116,9 +116,4 @@ Show the link or unlink toggle when a card represents values that can be inherit
 
 ## Related components
 
-### Card vs Inset
-
-The choice comes down to whether you need a surfaced section or only spacing inside an existing surface.
-
-- Use **Card** when you need a surfaced section with its own border, header, content, and optional actions.
-- Use **Inset** when you only need spacing or padded grouping inside an existing surface.
+- **Inset**: when you only need spacing or padded grouping inside an existing surface.

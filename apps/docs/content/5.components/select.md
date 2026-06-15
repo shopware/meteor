@@ -73,16 +73,5 @@ Enable `enableMultiSelection` so users can choose several values at once.
 
 ## Related components
 
-### Select vs Radio Group
-
-The choice comes down to how many options there are and whether users need to see them all at once.
-
-- Use **Select** when the option list is longer, space is limited, or search helps users find the right value.
-- Use [**Radio Group**](/components/radio-group) when a small set of options should stay visible so users can compare them directly.
-
-### Select vs Checkbox
-
-The choice comes down to whether users pick from a shared option set or toggle independent options.
-
-- Use **Select** when users should choose one value, or a constrained subset of values, from a predefined list.
-- Use [**Checkbox**](/components/checkbox) when users are toggling independent options on and off rather than choosing from a shared option set.
+- [**Radio Group**](/components/radio-group): when a small set of options should stay visible so users can compare them directly.
+- [**Checkbox**](/components/checkbox): when users are toggling independent options on and off rather than choosing from a shared option set.

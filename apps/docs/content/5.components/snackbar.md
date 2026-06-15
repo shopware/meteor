@@ -117,9 +117,4 @@ The exported **Snackbar** type describes the notification object managed by `use
 
 ## Related components
 
-### Snackbar vs Banner
-
-The choice comes down to whether the message is temporary overlay feedback or persistent inline messaging.
-
-- Use **Snackbar** for temporary overlay feedback that fades out on its own and does not belong in the page layout.
-- Use [**Banner**](/components/banner) for persistent inline messaging that should remain visible while the user continues working.
+- [**Banner**](/components/banner): when the message is persistent inline messaging that should remain visible while the user continues working.

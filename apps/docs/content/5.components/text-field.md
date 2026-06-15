@@ -57,44 +57,9 @@ import { MtTextField } from "@shopware-ag/meteor-component-library";
 
 ## Related components
 
-### Text Field vs Email Field
-
-The choice comes down to whether the value must be a valid email address.
-
-- Use **Text Field** for general text that should not be constrained to an email format.
-- Use [**Email Field**](/components/email-field) when the value must be an email address.
-
-### Text Field vs URL Field
-
-The choice comes down to whether the value should be treated as a web address.
-
-- Use **Text Field** when the value is general text and should not be normalized as a web address.
-- Use [**URL Field**](/components/url-field) when the value should be a link and URL-specific behavior is helpful.
-
-### Text Field vs Number Field
-
-The choice comes down to whether the value should behave like a number.
-
-- Use **Text Field** when the value should stay as plain text, even if it contains digits.
-- Use [**Number Field**](/components/number-field) when the value should behave like a number with numeric constraints or stepping.
-
-### Text Field vs Unit Field
-
-The choice comes down to whether the value needs a selectable unit of measurement.
-
-- Use **Text Field** when the value is free-form text and does not need measurement logic.
-- Use [**Unit Field**](/components/unit-field) when users should enter a number together with a selectable unit.
-
-### Text Field vs Password Field
-
-The choice comes down to whether the value is sensitive and should be hidden.
-
-- Use **Text Field** when the value is not sensitive and does not need to be masked.
-- Use [**Password Field**](/components/password-field) when the value is sensitive and should be hidden by default.
-
-### Text Field vs Search
-
-The choice comes down to whether the value is stored as form data or used to filter content.
-
-- Use **Text Field** when the value should be entered and stored as regular form data.
-- Use [**Search**](/components/search) when the value is meant to filter or find content in the interface.
+- [**Email Field**](/components/email-field): when the value must be an email address.
+- [**URL Field**](/components/url-field): when the value should be a link and URL-specific behavior is helpful.
+- [**Number Field**](/components/number-field): when the value should behave like a number with numeric constraints or stepping.
+- [**Unit Field**](/components/unit-field): when users should enter a number together with a selectable unit.
+- [**Password Field**](/components/password-field): when the value is sensitive and should be hidden by default.
+- [**Search**](/components/search): when the value is meant to filter or find content in the interface.

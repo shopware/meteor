@@ -66,9 +66,4 @@ import { MtLoader } from "@shopware-ag/meteor-component-library";
 
 ## Related components
 
-### Loader vs Progress Bar
-
-The choice comes down to whether you can communicate a meaningful amount of progress.
-
-- Use **Loader** when work is in progress but the exact completion amount is unknown.
-- Use [**Progress Bar**](/components/progress-bar) when you can communicate meaningful progress such as processed items, uploaded bytes, or percentage complete.
+- [**Progress Bar**](/components/progress-bar): when you can communicate meaningful progress such as processed items, uploaded bytes, or percentage complete.

@@ -57,9 +57,4 @@ import { MtNumberField } from "@shopware-ag/meteor-component-library";
 
 ## Related components
 
-### Number Field vs Text Field
-
-The choice comes down to whether the value should behave like a number with numeric constraints.
-
-- Use **Number Field** when the value should behave like a number with numeric constraints or stepping.
-- Use [**Text Field**](/components/text-field) when numeric-looking content should stay as plain text.
+- [**Text Field**](/components/text-field): when numeric-looking content should stay as plain text.

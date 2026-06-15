@@ -65,16 +65,5 @@ Lay the tabs out as a vertical list for side navigation within a section.
 
 ## Related components
 
-### Tabs vs Segmented Control
-
-The choice comes down to whether the user is navigating between views or grouping related actions.
-
-- Use **Tabs** when the user is switching between sections or views.
-- Use **Segmented Control** only for its current experimental grouped-action behavior, not as a general replacement for tab navigation.
-
-### Tabs vs Button
-
-The choice comes down to whether the control changes the active content or triggers an action.
-
-- Use **Tabs** when one selection changes the active content area.
-- Use [**Button**](/components/button) when the user should trigger an action instead of navigating between peer sections.
+- **Segmented Control**: when its current experimental grouped-action behavior is needed, not as a general replacement for tab navigation.
+- [**Button**](/components/button): when the user should trigger an action instead of navigating between peer sections.

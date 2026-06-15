@@ -59,9 +59,4 @@ import { MtEntityDataTable } from "@shopware-ag/meteor-component-library";
 
 ## Related components
 
-### Entity Data Table vs Data Table
-
-The choice comes down to whether the component or the parent owns data fetching and table state.
-
-- Use **Entity Data Table** for Admin SDK repository data with built-in loading and table state.
-- Use [**Data Table**](/components/data-table) when the parent component should own fetching and state management.
+- [**Data Table**](/components/data-table): when the parent component should own fetching and state management.

@@ -77,9 +77,4 @@ The `content` prop accepts sanitized HTML, so simple formatting can be shown whe
 
 ## Related components
 
-### Tooltip vs Help Text
-
-The choice comes down to whether you attach supporting information to an existing trigger or render the standard help icon pattern.
-
-- Use **Tooltip** when you need flexible tooltip behavior on an existing trigger element.
-- Use [**Help Text**](/components/help-text) when you need the standard small help icon pattern next to a field or label.
+- [**Help Text**](/components/help-text): when you need the standard small help icon pattern next to a field or label.
