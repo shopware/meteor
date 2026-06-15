@@ -112,20 +112,20 @@ const codeWrapperClass = computed(() => [
         :unmount-on-hide="false"
         :ui="{
           content:
-            'data-[state=open]:animate-[collapsible-down_100ms_ease-out] data-[state=closed]:animate-[collapsible-up_100ms_ease-out]',
+            'data-[state=open]:animate-[collapsible-down_200ms_var(--ease-out)] data-[state=closed]:animate-[collapsible-up_150ms_var(--ease-out)] motion-reduce:animate-none',
         }"
       >
         <button
           type="button"
-          class="group flex w-full items-center gap-1 rounded-t-none border border-muted py-3 px-3 text-sm text-muted hover:text-[var(--color-text-primary-default)]"
+          class="flex w-full cursor-pointer items-center gap-1 rounded-t-none border border-muted py-3 px-3 text-sm text-[var(--color-text-primary-default)] transition-colors duration-100 hover:bg-[var(--color-interaction-secondary-hover)]"
           :class="showCode ? 'rounded-b-none border-b-0' : 'rounded-b-md'"
         >
           <UIcon
             name="i-lucide-chevron-right"
-            class="size-4 transition-transform duration-100"
+            class="size-4 transition-transform duration-150 ease-[var(--ease-out)] motion-reduce:transition-none"
             :class="showCode ? 'rotate-90' : ''"
           />
-          <span class="group-hover:underline">Code</span>
+          <span>Code</span>
         </button>
 
         <template #content>
