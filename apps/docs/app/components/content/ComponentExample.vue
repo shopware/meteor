@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { camelCase, upperFirst } from "scule";
+import { useClipboard } from "@vueuse/core";
 import MtThemeProvider from "@shopware-ag/meteor-component-library/MtThemeProvider";
 
 // Opt the docs into the meteor component library's future behavior so examples
@@ -20,6 +21,9 @@ const props = withDefaults(
     source?: boolean;
     /** Hide the code behind a "Show code" toggle. */
     collapse?: boolean;
+    /** Keep the code block's built-in copy button (hidden by default, since
+     *  the toggle row already provides one). */
+    inlineCopyButton?: boolean;
     /** Extra classes for the preview container. */
     class?: string;
   }>(),
@@ -27,6 +31,7 @@ const props = withDefaults(
     preview: true,
     source: true,
     collapse: true,
+    inlineCopyButton: false,
     class: undefined,
   },
 );
@@ -51,10 +56,11 @@ const resolvedComponent = exampleMatch
 
 const { data: example } = await useFetchComponentExample(camelName);
 
+const sourceText = computed(() => (example.value?.code ?? "").trim());
+
 const code = computed(() => {
-  const source = (example.value?.code ?? "").trim();
-  if (!source) return "";
-  return `\`\`\`vue\n${source}\n\`\`\``;
+  if (!sourceText.value) return "";
+  return `\`\`\`vue\n${sourceText.value}\n\`\`\``;
 });
 
 const { data: ast } = await useAsyncData(
@@ -64,6 +70,15 @@ const { data: ast } = await useAsyncData(
 );
 
 const showCode = ref(!props.collapse);
+
+const { copy, copied } = useClipboard();
+
+// The rendered code block's only <button> is its built-in copy button; hide it
+// unless explicitly opted back in, since the toggle row provides its own.
+const codeWrapperClass = computed(() => [
+  "[&_pre]:rounded-t-none! [&_pre]:mt-0! [&_div.my-5]:my-0!",
+  props.inlineCopyButton ? "" : "[&_button]:hidden!",
+]);
 </script>
 
 <template>
@@ -91,44 +106,54 @@ const showCode = ref(!props.collapse);
       </div>
     </div>
 
-    <UCollapsible
-      v-if="source"
-      v-model:open="showCode"
-      :unmount-on-hide="false"
-      :ui="{
-        content:
-          'data-[state=open]:animate-[collapsible-down_100ms_ease-out] data-[state=closed]:animate-[collapsible-up_100ms_ease-out]',
-      }"
-    >
-      <button
-        type="button"
-        class="group flex w-full items-center gap-1 rounded-t-none border border-muted py-3 px-3 text-sm text-muted hover:text-[var(--color-text-primary-default)]"
-        :class="showCode ? 'rounded-b-none border-b-0' : 'rounded-b-md'"
+    <div v-if="source" class="relative">
+      <UCollapsible
+        v-model:open="showCode"
+        :unmount-on-hide="false"
+        :ui="{
+          content:
+            'data-[state=open]:animate-[collapsible-down_100ms_ease-out] data-[state=closed]:animate-[collapsible-up_100ms_ease-out]',
+        }"
       >
-        <UIcon
-          name="i-lucide-chevron-right"
-          class="size-4 transition-transform duration-100"
-          :class="showCode ? 'rotate-90' : ''"
-        />
-        <span class="group-hover:underline">{{
-          showCode ? "Hide code" : "Show code"
-        }}</span>
-      </button>
-
-      <template #content>
-        <div
-          v-if="!!slots.code"
-          class="[&_pre]:rounded-t-none! [&_pre]:mt-0! [&_div.my-5]:my-0!"
+        <button
+          type="button"
+          class="group flex w-full items-center gap-1 rounded-t-none border border-muted py-3 px-3 text-sm text-muted hover:text-[var(--color-text-primary-default)]"
+          :class="showCode ? 'rounded-b-none border-b-0' : 'rounded-b-md'"
         >
-          <slot name="code" />
-        </div>
-        <MDCRenderer
-          v-else-if="ast"
-          :body="(ast as any).body"
-          :data="(ast as any).data"
-          class="[&_pre]:rounded-t-none! [&_pre]:mt-0! [&_div.my-5]:my-0!"
-        />
-      </template>
-    </UCollapsible>
+          <UIcon
+            name="i-lucide-chevron-right"
+            class="size-4 transition-transform duration-100"
+            :class="showCode ? 'rotate-90' : ''"
+          />
+          <span class="group-hover:underline">Code</span>
+        </button>
+
+        <template #content>
+          <div v-if="!!slots.code" :class="codeWrapperClass">
+            <slot name="code" />
+          </div>
+          <MDCRenderer
+            v-else-if="ast"
+            :body="(ast as any).body"
+            :data="(ast as any).data"
+            :class="codeWrapperClass"
+          />
+        </template>
+      </UCollapsible>
+
+      <!-- Copy button sits to the right of the toggle row. It is a sibling of
+           the collapsible trigger (not nested in it) so clicking it neither
+           toggles the code nor nests a button inside the trigger button. -->
+      <UButton
+        v-if="sourceText"
+        :icon="copied ? 'i-lucide-check' : 'i-lucide-copy'"
+        color="neutral"
+        variant="outline"
+        size="sm"
+        :aria-label="copied ? 'Copied' : 'Copy code'"
+        class="absolute right-2 top-2 z-10"
+        @click="copy(sourceText)"
+      />
+    </div>
   </div>
 </template>

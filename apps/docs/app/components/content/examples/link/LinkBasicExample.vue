@@ -3,5 +3,5 @@ import MtLink from "@shopware-ag/meteor-component-library/MtLink";
 </script>
 
 <template>
-  <mt-link to="/">Link</mt-link>
+  <mt-link to="#">Link</mt-link>
 </template>
