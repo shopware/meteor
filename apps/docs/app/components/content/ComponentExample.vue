@@ -75,7 +75,7 @@ const showCode = ref(!props.collapse);
     >
       <div
         v-if="resolvedComponent"
-        class="flex flex-wrap items-center justify-center gap-4 p-4"
+        class="flex flex-wrap items-center justify-start gap-4 p-4"
         :class="props.class"
       >
         <!-- Previews render client-only: example components may use browser
@@ -95,23 +95,25 @@ const showCode = ref(!props.collapse);
       v-if="source"
       v-model:open="showCode"
       :unmount-on-hide="false"
+      :ui="{
+        content:
+          'data-[state=open]:animate-[collapsible-down_100ms_ease-out] data-[state=closed]:animate-[collapsible-up_100ms_ease-out]',
+      }"
     >
-      <UButton
-        block
-        color="neutral"
-        variant="soft"
-        size="md"
-        :label="showCode ? 'Hide code' : 'Show code'"
-        trailing-icon="i-lucide-chevron-down"
-        class="rounded-t-none border border-muted py-3 justify-center"
+      <button
+        type="button"
+        class="group flex w-full items-center gap-1 rounded-t-none border border-muted py-3 px-3 text-sm text-muted hover:text-[var(--color-text-primary-default)]"
         :class="showCode ? 'rounded-b-none border-b-0' : 'rounded-b-md'"
-        :ui="{
-          trailingIcon: [
-            'ms-0 transition-transform duration-200',
-            showCode ? 'rotate-180' : '',
-          ].join(' '),
-        }"
-      />
+      >
+        <UIcon
+          name="i-lucide-chevron-right"
+          class="size-4 transition-transform duration-100"
+          :class="showCode ? 'rotate-90' : ''"
+        />
+        <span class="group-hover:underline">{{
+          showCode ? "Hide code" : "Show code"
+        }}</span>
+      </button>
 
       <template #content>
         <div
