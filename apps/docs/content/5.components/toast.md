@@ -3,6 +3,10 @@ title: Toast
 description: Short-lived, action-bound feedback that appears briefly to confirm or report the result of something the user just did.
 ---
 
+::caution
+**Deprecated.** Use [**Snackbar**](/components/snackbar) instead.
+::
+
 ## Import
 
 ```ts

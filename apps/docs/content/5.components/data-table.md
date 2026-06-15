@@ -3,6 +3,10 @@ title: Data Table
 description: A flexible table for displaying large datasets with pagination, sorting, filtering, and row selection.
 ---
 
+::warning
+**Experimental.** The API may still change in a future release.
+::
+
 ## Import
 
 ```ts
