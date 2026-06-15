@@ -1,5 +1,5 @@
 import { readdir } from "node:fs/promises";
-import { basename, join } from "node:path";
+import { basename, dirname, join, relative } from "node:path";
 import { defineNuxtModule } from "@nuxt/kit";
 import { kebabCase, pascalCase } from "scule";
 
@@ -36,6 +36,24 @@ export default defineNuxtModule({
       componentDirs: unknown[];
       components: unknown[];
     }
+
+    // Expose a slug -> repo-relative source folder map so the docs page header
+    // can link each component page to its source directory on GitHub. Keyed by
+    // the component folder name without the mt- prefix (e.g. .../mt-button ->
+    // "button"). Linking the folder rather than a single file covers compound
+    // components whose parts share one directory (e.g. radio-group).
+    const repoRoot = join(nuxt.options.rootDir, "../..");
+    const sourcePaths: Record<string, string> = {};
+    for (const file of componentFiles) {
+      const dir = dirname(file);
+      const slug = kebabCase(basename(dir)).replace(/^mt-/, "");
+      sourcePaths[slug] = relative(repoRoot, join(componentsRoot, dir));
+    }
+    // Cast the target: Nuxt generates a literal type for this key from the
+    // value at prepare time, which a freshly-built Record would not satisfy.
+    (
+      nuxt.options.runtimeConfig.public as Record<string, unknown>
+    ).componentSourcePaths = sourcePaths;
 
     // The hook is provided by nuxt-component-meta and not part of Nuxt's
     // typed hook map, hence the cast.
