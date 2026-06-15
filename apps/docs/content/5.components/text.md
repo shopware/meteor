@@ -24,7 +24,7 @@ import { MtText } from "@shopware-ag/meteor-component-library";
 
 ### Sizes
 
-::component-example{name="text-sizes-example"}
+::component-example{name="text-sizes-example" class="flex-col items-start!"}
 ::
 
 ## API reference

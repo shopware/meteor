@@ -22,28 +22,28 @@ import { MtDataTable } from "@shopware-ag/meteor-component-library";
 
 ### Basic
 
-::component-example{name="data-table-basic-example"}
+::component-example{name="data-table-basic-example" fullWidth}
 ::
 
 ### Full width
 
 The `full` layout lets the table span the available width instead of sitting in a centered card.
 
-::component-example{name="data-table-full-width-example"}
+::component-example{name="data-table-full-width-example" fullWidth}
 ::
 
 ### Empty state
 
 When the data source is empty, the table shows a built-in empty state.
 
-::component-example{name="data-table-empty-state-example"}
+::component-example{name="data-table-empty-state-example" fullWidth}
 ::
 
 ### Sticky header
 
 The column header stays in view while the rows scroll.
 
-::component-example{name="data-table-sticky-header-example"}
+::component-example{name="data-table-sticky-header-example" fullWidth}
 ::
 
 ## Basic usage

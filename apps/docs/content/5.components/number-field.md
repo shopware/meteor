@@ -19,7 +19,7 @@ import { MtNumberField } from "@shopware-ag/meteor-component-library";
 
 ### Basic
 
-::component-example{name="number-field-basic-example"}
+::component-example{name="number-field-basic-example" fullWidth}
 ::
 
 ## API reference

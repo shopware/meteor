@@ -19,14 +19,14 @@ import { MtTabs } from "@shopware-ag/meteor-component-library";
 
 ### Basic
 
-::component-example{name="tabs-basic-example"}
+::component-example{name="tabs-basic-example" fullWidth}
 ::
 
 ### Vertical
 
 Lay the tabs out as a vertical list for side navigation within a section.
 
-::component-example{name="tabs-vertical-example"}
+::component-example{name="tabs-vertical-example" fullWidth}
 ::
 
 ## API reference

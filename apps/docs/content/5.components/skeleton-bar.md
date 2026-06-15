@@ -19,14 +19,14 @@ import { MtSkeletonBar } from "@shopware-ag/meteor-component-library";
 
 ### Basic
 
-::component-example{name="skeleton-bar-basic-example"}
+::component-example{name="skeleton-bar-basic-example" fullWidth}
 ::
 
 ### Form layout
 
 Combine several bars across a grid to mirror the structure of the content that will appear.
 
-::component-example{name="skeleton-bar-form-layout-example"}
+::component-example{name="skeleton-bar-form-layout-example" fullWidth}
 ::
 
 ## API reference

@@ -19,7 +19,7 @@ import { MtSearch } from "@shopware-ag/meteor-component-library";
 
 ### Basic
 
-::component-example{name="search-basic-example"}
+::component-example{name="search-basic-example" fullWidth}
 ::
 
 ## API reference

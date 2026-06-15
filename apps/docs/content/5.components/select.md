@@ -19,14 +19,14 @@ import { MtSelect } from "@shopware-ag/meteor-component-library";
 
 ### Basic
 
-::component-example{name="select-basic-example"}
+::component-example{name="select-basic-example" fullWidth}
 ::
 
 ### Multiple selection
 
 Enable `enableMultiSelection` so users can choose several values at once.
 
-::component-example{name="select-multiple-selection-example"}
+::component-example{name="select-multiple-selection-example" fullWidth}
 ::
 
 ## API reference

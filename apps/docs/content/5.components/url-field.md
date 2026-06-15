@@ -19,7 +19,7 @@ import { MtUrlField } from "@shopware-ag/meteor-component-library";
 
 ### Basic
 
-::component-example{name="url-field-basic-example"}
+::component-example{name="url-field-basic-example" fullWidth}
 ::
 
 ## API reference

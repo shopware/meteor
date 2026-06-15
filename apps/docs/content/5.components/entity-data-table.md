@@ -21,7 +21,7 @@ import { MtEntityDataTable } from "@shopware-ag/meteor-component-library";
 
 ### Basic
 
-::component-example{name="entity-data-table-default-example"}
+::component-example{name="entity-data-table-default-example" fullWidth}
 ::
 
 ## API reference

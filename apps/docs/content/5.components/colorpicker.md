@@ -19,12 +19,12 @@ import { MtColorpicker } from "@shopware-ag/meteor-component-library";
 
 ### Basic
 
-::component-example{name="colorpicker-basic-example"}
+::component-example{name="colorpicker-basic-example" fullWidth}
 ::
 
 ### Without alpha
 
-::component-example{name="colorpicker-without-alpha-example"}
+::component-example{name="colorpicker-without-alpha-example" fullWidth}
 ::
 
 ## API reference

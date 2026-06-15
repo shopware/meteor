@@ -19,7 +19,7 @@ import { MtTextField } from "@shopware-ag/meteor-component-library";
 
 ### Basic
 
-::component-example{name="text-field-basic-example"}
+::component-example{name="text-field-basic-example" fullWidth}
 ::
 
 ## API reference
