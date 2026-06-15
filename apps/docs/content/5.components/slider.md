@@ -19,12 +19,12 @@ import { MtSlider } from "@shopware-ag/meteor-component-library";
 
 ### Basic
 
-::component-example{name="slider-basic-example"}
+::component-example{name="slider-basic-example" fullWidth}
 ::
 
 ### Range
 
-::component-example{name="slider-range-example"}
+::component-example{name="slider-range-example" fullWidth}
 ::
 
 ## API reference

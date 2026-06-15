@@ -19,14 +19,14 @@ import { MtEmptyState } from "@shopware-ag/meteor-component-library";
 
 ### Basic
 
-::component-example{name="empty-state-basic-example"}
+::component-example{name="empty-state-basic-example" fullWidth}
 ::
 
 ### With action
 
 Add a link and a button so users can recover from the empty state.
 
-::component-example{name="empty-state-with-action-example"}
+::component-example{name="empty-state-with-action-example" fullWidth}
 ::
 
 ## API reference

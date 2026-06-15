@@ -19,7 +19,7 @@ import { MtEmailField } from "@shopware-ag/meteor-component-library";
 
 ### Basic
 
-::component-example{name="email-field-basic-example"}
+::component-example{name="email-field-basic-example" fullWidth}
 ::
 
 ## API reference

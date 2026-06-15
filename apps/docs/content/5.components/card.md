@@ -20,41 +20,41 @@ import { MtCard } from "@shopware-ag/meteor-component-library";
 
 ### Basic
 
-::component-example{name="card-basic-example"}
+::component-example{name="card-basic-example" fullWidth}
 ::
 
 ### Header content
 
 Use the header to add context, identity, and one related secondary action.
 
-::component-example{name="card-header-content-example"}
+::component-example{name="card-header-content-example" fullWidth}
 ::
 
 ### Tabs
 
-::component-example{name="card-tabs-example"}
+::component-example{name="card-tabs-example" fullWidth}
 ::
 
 ### Loading
 
-::component-example{name="card-loading-example"}
+::component-example{name="card-loading-example" fullWidth}
 ::
 
 ### Inheritance
 
 Show the link or unlink toggle when a card represents values that can be inherited or overridden.
 
-::component-example{name="card-inheritance-example"}
+::component-example{name="card-inheritance-example" fullWidth}
 ::
 
 ### Inset content
 
-::component-example{name="card-inset-content-example"}
+::component-example{name="card-inset-content-example" fullWidth}
 ::
 
 ### Inset footer
 
-::component-example{name="card-inset-footer-example"}
+::component-example{name="card-inset-footer-example" fullWidth}
 ::
 
 ## Anatomy

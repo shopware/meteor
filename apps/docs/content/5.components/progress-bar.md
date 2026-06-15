@@ -19,12 +19,12 @@ import { MtProgressBar } from "@shopware-ag/meteor-component-library";
 
 ### Basic
 
-::component-example{name="progress-bar-basic-example"}
+::component-example{name="progress-bar-basic-example" fullWidth}
 ::
 
 ### Custom units and error
 
-::component-example{name="progress-bar-custom-units-and-error-example"}
+::component-example{name="progress-bar-custom-units-and-error-example" fullWidth}
 ::
 
 ## API reference

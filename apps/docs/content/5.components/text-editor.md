@@ -22,49 +22,49 @@ import { MtTextEditor } from "@shopware-ag/meteor-component-library";
 
 ### Basic
 
-::component-example{name="text-editor-basic-example"}
+::component-example{name="text-editor-basic-example" fullWidth}
 ::
 
 ### Inline editing
 
 Enables inline editing with a floating toolbar.
 
-::component-example{name="text-editor-inline-edit-example"}
+::component-example{name="text-editor-inline-edit-example" fullWidth}
 ::
 
 ### Hidden toolbar
 
 Hide the toolbar completely for a simpler editing experience or a custom toolbar.
 
-::component-example{name="text-editor-hidden-toolbar-example"}
+::component-example{name="text-editor-hidden-toolbar-example" fullWidth}
 ::
 
 ### Code mode
 
 Start the editor in raw HTML editing mode.
 
-::component-example{name="text-editor-code-mode-example"}
+::component-example{name="text-editor-code-mode-example" fullWidth}
 ::
 
 ### Two-way code mode binding
 
 Control the editor mode programmatically with `v-model:code-mode`.
 
-::component-example{name="text-editor-code-mode-two-way-binding-example"}
+::component-example{name="text-editor-code-mode-two-way-binding-example" fullWidth}
 ::
 
 ### Custom toolbar buttons
 
 Add custom buttons to the toolbar, backed by a custom Tiptap extension.
 
-::component-example{name="text-editor-custom-buttons-example"}
+::component-example{name="text-editor-custom-buttons-example" fullWidth}
 ::
 
 ### Security gate on initial load
 
 When the initial HTML would change after parsing, an overlay blocks WYSIWYG editing until the diff is reviewed and accepted.
 
-::component-example{name="text-editor-diff-modal-example"}
+::component-example{name="text-editor-diff-modal-example" fullWidth}
 ::
 
 ## Slots

@@ -24,6 +24,9 @@ const props = withDefaults(
     /** Keep the code block's built-in copy button (hidden by default, since
      *  the toggle row already provides one). */
     inlineCopyButton?: boolean;
+    /** Stretch the rendered example to fill the preview width. Off by default
+     *  so intrinsic-width components (buttons, badges) stay left-aligned. */
+    fullWidth?: boolean;
     /** Extra classes for the preview container. */
     class?: string;
   }>(),
@@ -32,6 +35,7 @@ const props = withDefaults(
     source: true,
     collapse: true,
     inlineCopyButton: false,
+    fullWidth: false,
     class: undefined,
   },
 );
@@ -91,7 +95,7 @@ const codeWrapperClass = computed(() => [
       <div
         v-if="resolvedComponent"
         class="flex flex-wrap items-center justify-start gap-4 p-4"
-        :class="props.class"
+        :class="[fullWidth ? '[&>*]:w-full' : '', props.class]"
       >
         <!-- Previews render client-only: example components may use browser
              APIs (ResizeObserver, document) that are unavailable during SSR. -->

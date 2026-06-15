@@ -19,17 +19,17 @@ import { MtBanner } from "@shopware-ag/meteor-component-library";
 
 ### Basic
 
-::component-example{name="banner-basic-example"}
+::component-example{name="banner-basic-example" fullWidth}
 ::
 
 ### Closable
 
-::component-example{name="banner-closable-example"}
+::component-example{name="banner-closable-example" fullWidth}
 ::
 
 ### Variants
 
-::component-example{name="banner-variants-example"}
+::component-example{name="banner-variants-example" fullWidth}
 ::
 
 ## API reference

@@ -19,22 +19,22 @@ import { MtDatepicker } from "@shopware-ag/meteor-component-library";
 
 ### Basic
 
-::component-example{name="datepicker-basic-example"}
+::component-example{name="datepicker-basic-example" fullWidth}
 ::
 
 ### Date only
 
-::component-example{name="datepicker-date-only-example"}
+::component-example{name="datepicker-date-only-example" fullWidth}
 ::
 
 ### Time only
 
-::component-example{name="datepicker-time-only-example"}
+::component-example{name="datepicker-time-only-example" fullWidth}
 ::
 
 ### Range
 
-::component-example{name="datepicker-range-example"}
+::component-example{name="datepicker-range-example" fullWidth}
 ::
 
 ## API reference

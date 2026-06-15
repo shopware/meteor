@@ -19,7 +19,7 @@ import { MtPasswordField } from "@shopware-ag/meteor-component-library";
 
 ### Basic
 
-::component-example{name="password-field-basic-example"}
+::component-example{name="password-field-basic-example" fullWidth}
 ::
 
 ## API reference
