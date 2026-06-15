@@ -22,6 +22,21 @@ import { MtNumberField } from "@shopware-ag/meteor-component-library";
 ::component-example{name="number-field-basic-example" fullWidth}
 ::
 
+### Disabled
+
+::component-example{name="number-field-disabled-example" fullWidth}
+::
+
+### Error
+
+::component-example{name="number-field-error-example" fullWidth}
+::
+
+### Hint
+
+::component-example{name="number-field-hint-example" fullWidth}
+::
+
 ## API reference
 
 :component-api

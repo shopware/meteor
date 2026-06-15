@@ -22,6 +22,16 @@ import { MtUnitField } from "@shopware-ag/meteor-component-library";
 ::component-example{name="unit-field-basic-example" fullWidth}
 ::
 
+### Disabled
+
+::component-example{name="unit-field-disabled-example" fullWidth}
+::
+
+### Error
+
+::component-example{name="unit-field-error-example" fullWidth}
+::
+
 ## API reference
 
 :component-api

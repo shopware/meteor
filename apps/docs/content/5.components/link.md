@@ -23,6 +23,26 @@ import { MtLink } from "@shopware-ag/meteor-component-library";
 ::component-example{name="link-basic-example"}
 ::
 
+### Critical
+
+::component-example{name="link-critical-example"}
+::
+
+### Disabled
+
+::component-example{name="link-disabled-example"}
+::
+
+### External
+
+::component-example{name="link-external-example"}
+::
+
+### Internal
+
+::component-example{name="link-internal-example"}
+::
+
 ## API reference
 
 :component-api
