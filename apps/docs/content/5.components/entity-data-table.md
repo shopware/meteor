@@ -3,6 +3,10 @@ title: Entity Data Table
 description: A repository-backed Data Table that owns loading and table state for Admin SDK entity data.
 ---
 
+::warning
+**Experimental.** The API may still change in a future release. It builds on [**Data Table**](/components/data-table).
+::
+
 ## Import
 
 ```ts

@@ -3,6 +3,10 @@ title: Popover
 description: An experimental floating surface that reveals contextual settings and nested option views from a trigger.
 ---
 
+::warning
+**Experimental.** The API may still change. Prefer [**Action Menu**](/components/action-menu) or [**Floating UI**](/components/floating-ui) when they fit your use case.
+::
+
 ## Import
 
 ```ts

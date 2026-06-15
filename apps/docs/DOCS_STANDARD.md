@@ -24,15 +24,16 @@ Use `create-docs` when adding a page and `review-docs` before considering it don
 Component pages use this order:
 
 1. Frontmatter
-2. Import
-3. Usage
-4. Examples
-5. Anatomy (optional)
-6. API reference
-7. Do and don't
-8. Behavior (optional)
-9. Accessibility (optional)
-10. Related components (optional)
+2. Status banner (optional)
+3. Import
+4. Usage
+5. Examples
+6. Anatomy (optional)
+7. API reference
+8. Do and don't
+9. Behavior (optional)
+10. Accessibility (optional)
+11. Related components (optional)
 
 `Import`, `Usage`, `Examples`, `API reference`, and `Do and don't` are always present. The optional sections are included when they add value. Keep the order stable: if a section is not needed, omit it instead of moving sections around.
 
@@ -52,6 +53,24 @@ description: The standard action trigger for Meteor interfaces.
 ```
 
 Write the description as a definition of the component, not as instructions. Start with a noun phrase ("The standard action trigger for...", "A compact status label for..."), not a verb ("Use this to..."). Keep richer framing for the `Usage` section.
+
+## Status banner
+
+Components that are not generally available carry a status banner as the first content on the page, directly after the frontmatter and before `Import`. Mirror the component's status from the library (the Storybook `status`): `experimental` or `deprecated`. Available components get no banner.
+
+Use a Nuxt UI callout: `::warning` for experimental, `::caution` for deprecated. Lead with the bold status word, then a short explanation. When a preferred alternative or replacement exists, link it (see [Prose rules](#prose-rules)); do not invent one if the component has no documented successor.
+
+```md
+::warning
+**Experimental.** The API may still change. Prefer [**Action Menu**](/components/action-menu) or [**Floating UI**](/components/floating-ui) when they fit your use case.
+::
+```
+
+```md
+::caution
+**Deprecated.** Use [**Snackbar**](/components/snackbar) instead.
+::
+```
 
 ## Import
 
