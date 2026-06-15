@@ -1,7 +1,3 @@
-/* Raw --color-* token vars consumed by the --ui-* mapping below. These
- * intentionally complement the Tailwind-flavored token imports in app.css
- * (which feed @theme); do not consolidate the two, or the Nuxt UI <-> Meteor
- * variable bridge breaks. */
 @import "@shopware-ag/meteor-tokens/primitives.css";
 @import "@shopware-ag/meteor-tokens/administration/light.css";
 @import "@shopware-ag/meteor-tokens/administration/dark.css";
@@ -10,42 +6,71 @@
  * intentionally do not load) and aren't imported by any component. */
 @import "./meteor-globals.css";
 
-/*
- * Map Nuxt UI design variables onto Meteor semantic tokens. The Meteor
- * variables themselves flip with the data-theme attribute, so a single
- * mapping covers light and dark mode. Declared for both :root and .dark
- * because Nuxt UI redefines the --ui-* variables under .dark.
- */
-:root,
-.dark {
+:root {
   --ui-radius: var(--border-radius-button);
-  --ui-bg: var(--color-elevation-surface-default);
-  --ui-bg-muted: var(--color-elevation-surface-sunken);
-  --ui-bg-elevated: var(--color-background-secondary-default);
-  --ui-bg-accented: var(--color-background-tertiary-default);
-  --ui-bg-inverted: var(--color-elevation-floating-default);
-  --ui-text: var(--color-text-primary-default);
-  --ui-text-dimmed: var(--color-text-primary-disabled);
-  --ui-text-muted: var(--color-text-secondary-default);
-  --ui-text-toned: var(--color-text-secondary-default);
-  --ui-text-highlighted: var(--color-text-primary-default);
-  --ui-text-inverted: var(--color-text-primary-inverse);
-  --ui-border: var(--color-border-secondary-default);
-  --ui-border-muted: var(--color-border-secondary-default);
-  --ui-border-accented: var(--color-border-primary-default);
-  --ui-border-inverted: var(--color-elevation-floating-default);
-  --ui-primary: var(--color-interaction-primary-default);
-  --ui-secondary: var(--color-interaction-secondary-default);
-  --ui-success: var(--color-icon-positive-default);
-  --ui-info: var(--color-icon-brand-default);
-  --ui-warning: var(--color-icon-attention-default);
-  --ui-error: var(--color-icon-critical-default);
+
+  /* Surfaces */
+  --ui-bg: var(--color-zinc-0);
+  --ui-bg-muted: var(--color-zinc-50);
+  --ui-bg-elevated: var(--color-zinc-75);
+  --ui-bg-accented: var(--color-zinc-100);
+  --ui-bg-inverted: var(--color-zinc-850);
+
+  /* Text */
+  --ui-text: var(--color-zinc-900);
+  --ui-text-dimmed: var(--color-zinc-300);
+  --ui-text-muted: var(--color-zinc-600);
+  --ui-text-toned: var(--color-zinc-600);
+  --ui-text-highlighted: var(--color-zinc-900);
+  --ui-text-inverted: var(--color-zinc-50);
+
+  /* Borders */
+  --ui-border: var(--color-zinc-100);
+  --ui-border-muted: var(--color-zinc-100);
+  --ui-border-accented: var(--color-zinc-200);
+  --ui-border-inverted: var(--color-zinc-850);
+
+  /* Accents */
+  --ui-primary: var(--color-brand-500);
+  --ui-secondary: var(--color-zinc-0);
+  --ui-success: var(--color-emerald-500);
+  --ui-info: var(--color-brand-500);
+  --ui-warning: var(--color-pumpkin-500);
+  --ui-error: var(--color-red-500);
+}
+
+.dark {
+  /* Surfaces */
+  --ui-bg: var(--color-zinc-975);
+  --ui-bg-muted: var(--color-zinc-1000);
+  --ui-bg-elevated: var(--color-zinc-850);
+  --ui-bg-accented: var(--color-zinc-700);
+  --ui-bg-inverted: var(--color-zinc-0);
+
+  /* Text */
+  --ui-text: var(--color-zinc-50);
+  --ui-text-dimmed: var(--color-zinc-600);
+  --ui-text-muted: var(--color-zinc-400);
+  --ui-text-toned: var(--color-zinc-400);
+  --ui-text-highlighted: var(--color-zinc-50);
+  --ui-text-inverted: var(--color-zinc-900);
+
+  /* Borders */
+  --ui-border: var(--color-zinc-850);
+  --ui-border-muted: var(--color-zinc-850);
+  --ui-border-accented: var(--color-zinc-700);
+  --ui-border-inverted: var(--color-zinc-0);
+
+  /* Accents */
+  --ui-primary: var(--color-brand-400);
+  --ui-secondary: var(--color-zinc-900);
+  --ui-success: var(--color-emerald-400);
+  --ui-info: var(--color-brand-500);
+  --ui-warning: var(--color-pumpkin-400);
+  --ui-error: var(--color-red-400);
 }
 
 /* Docs-only design tokens. */
 :root {
-  /* Strong ease-out curve for our custom UI motion (from animations.dev). The
-   * built-in CSS easings are too weak to feel intentional. Used via
-   * ease-[var(--ease-out)]. */
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 }
