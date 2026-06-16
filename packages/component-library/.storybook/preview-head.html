@@ -1,0 +1,199 @@
+<style>
+  .sbdocs,
+  .sbdocs *:not(.docs-story *),
+  .sb-anchor {
+    font-family:
+      "Inter",
+      ui-sans-serif,
+      system-ui,
+      -apple-system,
+      sans-serif !important;
+  }
+
+  .sbdocs pre:not(.docs-story *),
+  .sbdocs pre:not(.docs-story *) * {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+      "Liberation Mono", "Courier New", monospace !important;
+  }
+
+  .sbdocs :is(h1, h2, h3, h4, h5, h6):not(.docs-story *) {
+    font-weight: 600 !important;
+    border-bottom: none !important;
+    margin-top: 2.5rem !important;
+    color: #1e1e24 !important;
+  }
+
+  .sbdocs
+    :is(h1, h2, h3, h4, h5, h6)
+    + :is(h1, h2, h3, h4, h5, h6):not(.docs-story *) {
+    margin-top: 0.75rem !important;
+  }
+
+  .sbdocs h1:not(.docs-story *) {
+    font-size: 2.25rem !important;
+    margin-top: 0 !important;
+  }
+
+  .sbdocs h2:not(.docs-story *) {
+    font-size: 1.75rem !important;
+    margin-top: 4rem !important;
+  }
+
+  .sbdocs h3:not(.docs-story *) {
+    font-size: 1.125rem !important;
+  }
+
+  .sbdocs h4:not(.docs-story *) {
+    font-size: 1rem !important;
+  }
+
+  .sbdocs h5:not(.docs-story *) {
+    font-size: 0.875rem !important;
+  }
+
+  .sbdocs h6:not(.docs-story *) {
+    font-size: 0.8125rem !important;
+  }
+
+  .sbdocs :is(p, ul, ol):not(.docs-story *) {
+    margin-top: 0 !important;
+    margin-bottom: 1.25rem !important;
+    color: #1e1e24 !important;
+    font-size: 15px !important;
+  }
+
+  .sbdocs li:not(.docs-story *) {
+    font-size: 15px !important;
+  }
+
+  .sbdocs-preview,
+  .docblock-source {
+    border: 1px solid #e2e3e9 !important;
+    border-radius: 8px !important;
+    box-shadow: none !important;
+  }
+
+  .sbdocs-preview .docs-story,
+  .sbdocs-preview .sb-story-wrapper,
+  .sbdocs-preview .sb-preview-container,
+  .sbdocs-preview .sb-unstyled,
+  .docblock-source pre {
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  .sbdocs-preview .docs-story,
+  .sbdocs-preview .sb-story-wrapper,
+  .sbdocs-preview .sb-preview-container,
+  .sbdocs-preview .sb-unstyled {
+    background-color: var(--color-elevation-surface-default) !important;
+  }
+
+  div:has(> .docblock-argstable) {
+    box-shadow: none !important;
+  }
+
+  .docblock-argstable tbody {
+    filter: none !important;
+  }
+
+  .sbdocs a:not(.docs-story *) {
+    color: #0870ff !important;
+    text-decoration: underline !important;
+  }
+
+  [class*="css-"]
+    :where(pre:not(.sb-anchor, .sb-unstyled, .sb-unstyled pre))
+    pre,
+  [class*="css-"]
+    :where(pre:not(.sb-anchor, .sb-unstyled, .sb-unstyled pre)).prismjs,
+  .prismjs,
+  .prismjs * {
+    font-size: 14px !important;
+  }
+
+  .sbdocs code:not(pre code):not(.docs-story *) {
+    background-color: #f2f3f8 !important;
+    border: 1px solid #e2e3e9 !important;
+    border-radius: 4px !important;
+    font-weight: 500 !important;
+    padding: 2px 4px !important;
+    font-size: 0.875em !important;
+  }
+
+  .sbdocs table:not(.docs-story *) {
+    width: 100% !important;
+    border-collapse: separate !important;
+    border-spacing: 0 !important;
+    margin-top: 2rem !important;
+    margin-bottom: 2rem !important;
+    background: none !important;
+    box-shadow: none !important;
+    border: 1px solid #e2e3e9 !important;
+    border-radius: 8px !important;
+    overflow: hidden !important;
+  }
+
+  .sbdocs table:not(.docs-story *) th,
+  .sbdocs
+    [class*="css-"]
+    :where(
+      table:not(.sb-anchor, .sb-unstyled, .sb-unstyled table):not(.docs-story *)
+    )
+    tr
+    th:not(.docs-story *) {
+    text-align: left !important;
+    font-weight: 600 !important;
+    font-size: 14px !important;
+    text-transform: none !important;
+    letter-spacing: normal !important;
+    color: #1e1e24 !important;
+    padding: 0.5rem 1rem !important;
+    border: none !important;
+    border-bottom: 1px solid #e2e3e9 !important;
+    border-right: 1px solid #e2e3e9 !important;
+    background: #fafbfe !important;
+  }
+
+  .sbdocs table:not(.docs-story *) th:last-child {
+    border-right: none !important;
+  }
+
+  .sbdocs table:not(.docs-story *) td,
+  .sbdocs
+    [class*="css-"]
+    :where(
+      table:not(.sb-anchor, .sb-unstyled, .sb-unstyled table):not(.docs-story *)
+    )
+    tr
+    td:not(.docs-story *) {
+    padding: 0.625rem 1rem !important;
+    color: #1e1e24 !important;
+    background: none !important;
+    filter: none !important;
+    border: none !important;
+    border-bottom: 1px solid #e2e3e9 !important;
+    border-right: 1px solid #e2e3e9 !important;
+  }
+
+  .sbdocs table:not(.docs-story *) td:last-child {
+    border-right: none !important;
+  }
+
+  .sbdocs table:not(.docs-story *) tr,
+  .sbdocs table:not(.docs-story *) tr:nth-child(even),
+  .sbdocs table:not(.docs-story *) tr:nth-child(odd),
+  .sbdocs
+    [class*="css-"]
+    :where(
+      table:not(.sb-anchor, .sb-unstyled, .sb-unstyled table):not(.docs-story *)
+    )
+    tr:not(.docs-story *) {
+    background: none !important;
+    border-top: none !important;
+  }
+
+  .sbdocs table:not(.docs-story *) tr:last-child td {
+    border-bottom: none !important;
+  }
+</style>

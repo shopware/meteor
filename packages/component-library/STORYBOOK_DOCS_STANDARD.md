@@ -7,14 +7,14 @@ Every public component should have a docs page that helps developers choose the 
 Use this section order for component docs pages:
 
 ```mdx
-<ComponentPageHeader
+<StorybookPageHeader
   title="Component name"
   tagName="mt-component-name"
   packageImports="MtComponentName"
   sourcePath="packages/component-library/src/components/group/mt-component-name"
 >
   Short description
-</ComponentPageHeader>
+</StorybookPageHeader>
 
 ## When to use
 
@@ -43,10 +43,10 @@ Main example
 
 Notes:
 
-- Start every docs page with the shared `ComponentPageHeader` block.
+- Start every docs page with the shared `StorybookPageHeader` block.
 - The shared header owns the H1. It must render the title in the format `Component name (mt-component-name)`.
 - Pass `sourcePath` as the repo-relative path to the component folder so the docs header can link to the GitHub source location.
-- Put the short component description inside `ComponentPageHeader` as children so rich MDX content such as links, bold text, multiple paragraphs, and inline code still works.
+- Put the short component description inside `StorybookPageHeader` as children so rich MDX content such as links, bold text, multiple paragraphs, and inline code still works.
 - Use `Available` as the default status. Use `Experimental` or `Deprecated` when a stronger lifecycle signal is needed.
 - `Examples` is required. Start with the main example directly under the `Examples` heading.
 - Additional examples should follow as `H3` subsections under `Examples`, using labels that describe what the example shows.
@@ -65,7 +65,7 @@ Simpler components should stay close to the core template. More complex componen
 
 - Keep docs in Storybook by using `.mdx` pages colocated with the component stories.
 - Use the component stories as the source of truth for live examples whenever possible.
-- Use the shared `ComponentPageHeader` block for the page title, component lifecycle state, package import snippet, and short description instead of hand-writing those parts in each page.
+- Use the shared `StorybookPageHeader` block for the page title, component lifecycle state, package import snippet, and short description instead of hand-writing those parts in each page.
 - Every component should have one `Default` story that shows the component in its most common state.
 - Additional stories should use human-readable user-facing names that describe what the story shows, with the first word capitalized and the remaining words lowercase, for example `Variants`, `Sizes`, `Inline edit`, or `Multiple selection`.
 - This naming rule applies to the story name shown in Storybook. The export identifier in code may still use the project's normal code naming conventions.

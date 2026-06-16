@@ -1,11 +1,11 @@
 import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
 
 import * as HelpTextStories from "./mt-helptext.stories";
-import ComponentPageHeader from "../../_docs/component-page-header.js";
+import StorybookPageHeader from "../../../docs/_components/storybook-page-header.js";
 
 <Meta of={HelpTextStories} />
 
-<ComponentPageHeader
+<StorybookPageHeader
   title="Help Text"
   tagName="mt-help-text"
   packageImports="MtHelpText"
@@ -13,7 +13,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 >
   **Help Text** shows brief supporting guidance in a tooltip without adding
   persistent text to the layout.
-</ComponentPageHeader>
+</StorybookPageHeader>
 
 ## When to use
 
@@ -57,7 +57,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 ## Comparisons
 
-### **Help Text** vs **Tooltip**
+### Help Text vs Tooltip
 
 - Use **Help Text** when you need a standard small help trigger for brief contextual guidance near a field or control.
 - Use **Tooltip** when you need more flexible tooltip behavior or a different trigger element.

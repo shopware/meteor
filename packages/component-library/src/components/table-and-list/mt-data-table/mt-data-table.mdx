@@ -1,11 +1,11 @@
 import { Canvas, Meta, Markdown } from "@storybook/blocks";
 import * as DataTableStories from "./mt-data-table.stories";
 import * as DataTableInteractiveStories from "./mt-data-table.interactive.stories";
-import ComponentPageHeader from "../../_docs/component-page-header.js";
+import StorybookPageHeader from "../../../docs/_components/storybook-page-header.js";
 
 <Meta of={DataTableStories} />
 
-<ComponentPageHeader
+<StorybookPageHeader
   title="Data Table"
   tagName="mt-data-table"
   status="experimental"
@@ -17,7 +17,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
   more. It's implemented as a "dumb" component, which means it focuses solely on
   rendering and user interactions, while delegating all data management and
   business logic to the parent component.
-</ComponentPageHeader>
+</StorybookPageHeader>
 
 ## Understanding the Dumb Component Pattern
 

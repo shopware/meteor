@@ -1,11 +1,11 @@
 import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
 
 import * as CardStories from "./mt-card.stories";
-import ComponentPageHeader from "../../_docs/component-page-header.js";
+import StorybookPageHeader from "../../../docs/_components/storybook-page-header.js";
 
 <Meta of={CardStories} />
 
-<ComponentPageHeader
+<StorybookPageHeader
   title="Card"
   tagName="mt-card"
   packageImports="MtCard"
@@ -14,7 +14,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
   **Card** groups related content, metadata, and local actions inside a bordered
   surface. Use it to break a page into clearly separated sections without losing
   the relationship between the content and the actions around it.
-</ComponentPageHeader>
+</StorybookPageHeader>
 
 ## When to use
 
@@ -109,7 +109,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 ## Comparisons
 
-### **Card** vs **Inset**
+### Card vs Inset
 
 - Use **Card** when you need a surfaced section with its own border, header, content, and optional actions.
 - Use **Inset** when you only need spacing or padded grouping inside an existing surface.

@@ -1,0 +1,53 @@
+import { Meta } from "@storybook/blocks";
+import StorybookPageHeader from "../../_components/storybook-page-header.js";
+import DoDont from "../../_components/do-dont.js";
+
+<Meta title="Foundations/Content/AI Interaction" />
+
+<StorybookPageHeader status="none" title="Artificial Intelligence" />
+
+Designing for human-AI interaction means prioritizing clear communication, appropriate transparency, and merchant control at every stage of the interaction.
+
+## Before the interaction
+
+Set expectations before a merchant engages. Explain what the feature does in terms of outcomes, not technology. Be upfront about what data it uses.
+
+<DoDont
+  do="Generate a product description from your title and attributes."
+  dont="Uses a large language model to produce text based on your input."
+/>
+
+## During the interaction
+
+Always acknowledge that input was received and processing is underway. Never leave a blank or frozen state.
+
+Merchants must be able to review output before it takes effect. Every suggestion should be previewable, editable, and dismissable.
+
+<DoDont
+  do="Show a preview of the generated content with Edit and Use actions before applying it."
+  dont="Apply AI-generated content immediately without a review step."
+/>
+
+**AI-generated content should never replace human-generated content without review or approval.**
+
+## When something goes wrong
+
+Acknowledge errors directly. Give the merchant a clear path to correct, dismiss, or retry from a clean state.
+
+<DoDont
+  do="I could not generate a description for this product. Check that the product has a title and at least one attribute."
+  dont="Something went wrong. Please try again."
+/>
+
+## Writing for AI
+
+Write in plain, conversational language. Avoid technical jargon about the underlying model or infrastructure. Speak to the merchant's goals, not the system's mechanics.
+
+Use active voice. It makes AI responses feel direct and accountable.
+
+<DoDont
+  do="I generated three product descriptions based on your input."
+  dont="Three product descriptions were generated."
+/>
+
+Never oversell what a feature can do. Be honest about limitations upfront rather than letting the merchant discover them through failure.

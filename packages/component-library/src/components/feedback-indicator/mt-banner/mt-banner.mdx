@@ -1,11 +1,11 @@
 import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
 
 import * as BannerStories from "./mt-banner.stories";
-import ComponentPageHeader from "../../_docs/component-page-header.js";
+import StorybookPageHeader from "../../../docs/_components/storybook-page-header.js";
 
 <Meta of={BannerStories} />
 
-<ComponentPageHeader
+<StorybookPageHeader
   title="Banner"
   tagName="mt-banner"
   packageImports="MtBanner"
@@ -14,7 +14,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
   **Banner** displays persistent, inline messaging inside the page layout. Use
   it when people should notice a status, warning, or informational message while
   continuing their work in the surrounding interface.
-</ComponentPageHeader>
+</StorybookPageHeader>
 
 ## When to use
 
@@ -67,7 +67,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 ## Comparisons
 
-### **Banner** vs **Snackbar**
+### Banner vs Snackbar
 
 - Use **Banner** for persistent, inline messaging that should stay visible in the page until the user moves on or dismisses it.
 - Use **Snackbar** for lightweight temporary feedback that appears separately from the page content.

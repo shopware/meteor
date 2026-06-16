@@ -1,11 +1,11 @@
 import { Canvas, Meta } from "@storybook/blocks";
 
 import * as SkeletonBarStories from "./mt-skeleton-bar.stories";
-import ComponentPageHeader from "../../_docs/component-page-header.js";
+import StorybookPageHeader from "../../../docs/_components/storybook-page-header.js";
 
 <Meta of={SkeletonBarStories} />
 
-<ComponentPageHeader
+<StorybookPageHeader
   title="Skeleton Bar"
   tagName="mt-skeleton-bar"
   packageImports="MtSkeletonBar"
@@ -14,7 +14,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
   **Skeleton Bar** shows a shimmering placeholder block while content is
   loading. Use it when you want to preserve layout and signal that content will
   appear in place shortly.
-</ComponentPageHeader>
+</StorybookPageHeader>
 
 ## When to use
 
@@ -64,7 +64,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 ## Comparisons
 
-### **Skeleton Bar** vs **Loader**
+### Skeleton Bar vs Loader
 
 - Use **Skeleton Bar** when the content layout is known and you want to preserve that layout while data loads.
 - Use **Loader** when a simple indeterminate loading indicator is enough and a structural placeholder would not add value.

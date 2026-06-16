@@ -1,11 +1,11 @@
 import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
 
 import * as TooltipStories from "./mt-tooltip.stories";
-import ComponentPageHeader from "../../_docs/component-page-header.js";
+import StorybookPageHeader from "../../../docs/_components/storybook-page-header.js";
 
 <Meta of={TooltipStories} />
 
-<ComponentPageHeader
+<StorybookPageHeader
   title="Tooltip"
   tagName="mt-tooltip"
   packageImports="MtTooltip"
@@ -13,7 +13,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 >
   **Tooltip** shows brief supporting information when users hover or focus a
   trigger element.
-</ComponentPageHeader>
+</StorybookPageHeader>
 
 ## When to use
 
@@ -71,7 +71,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 ## Comparisons
 
-### **Tooltip** vs **Help Text**
+### Tooltip vs Help Text
 
 - Use **Tooltip** when you need flexible tooltip behavior on an existing trigger element.
 - Use **Help Text** when you need the standard small help icon pattern next to a field or label.

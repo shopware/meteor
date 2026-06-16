@@ -1,18 +1,18 @@
 import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
 
 import * as LinkStories from "./mt-link.stories";
-import ComponentPageHeader from "../../_docs/component-page-header.js";
+import StorybookPageHeader from "../../../docs/_components/storybook-page-header.js";
 
 <Meta of={LinkStories} />
 
-<ComponentPageHeader
+<StorybookPageHeader
   title="Link"
   tagName="mt-link"
   packageImports="MtLink"
   sourcePath="packages/component-library/src/components/navigation/mt-link"
 >
   **Link** helps users navigate to another page, route, or destination.
-</ComponentPageHeader>
+</StorybookPageHeader>
 
 ## When to use
 
@@ -56,7 +56,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 ## Comparisons
 
-### **Link** vs **Button**
+### Link vs Button
 
 - Use **Link** when the user should navigate to another page, route, or destination.
 - Use **Button** when the user should trigger an action on the current page.

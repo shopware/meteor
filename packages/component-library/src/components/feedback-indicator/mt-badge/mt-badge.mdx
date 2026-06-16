@@ -1,11 +1,11 @@
 import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
 
 import * as BadgeStories from "./mt-badge.stories";
-import ComponentPageHeader from "../../_docs/component-page-header.js";
+import StorybookPageHeader from "../../../docs/_components/storybook-page-header.js";
 
 <Meta of={BadgeStories} title="Components/Badge" />
 
-<ComponentPageHeader
+<StorybookPageHeader
   title="Badge"
   tagName="mt-badge"
   packageImports="MtBadge"
@@ -14,7 +14,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
   **Badge** is a compact, non-interactive status label. Use it to show short,
   glanceable states such as `Active`, `Draft`, or `Archived` without adding a
   full message component to the layout.
-</ComponentPageHeader>
+</StorybookPageHeader>
 
 ## When to use
 
@@ -76,7 +76,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 ## Comparisons
 
-### **Badge** vs **Promo Badge**
+### Badge vs Promo Badge
 
 - Use **Badge** for general product states such as status, health, or workflow labels.
 - Use **Promo Badge** for predefined promotional labels such as `New`, `Beta`, or `Shopware AI`.

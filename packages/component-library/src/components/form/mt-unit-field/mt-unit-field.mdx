@@ -1,18 +1,18 @@
 import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
 
 import * as UnitFieldStories from "./mt-unit-field.stories";
-import ComponentPageHeader from "../../_docs/component-page-header.js";
+import StorybookPageHeader from "../../../docs/_components/storybook-page-header.js";
 
 <Meta of={UnitFieldStories} />
 
-<ComponentPageHeader
+<StorybookPageHeader
   title="Unit Field"
   tagName="mt-unit-field"
   packageImports="MtUnitField"
   sourcePath="packages/component-library/src/components/form/mt-unit-field"
 >
   **Unit Field** combines a numeric input with a unit selector for measurements.
-</ComponentPageHeader>
+</StorybookPageHeader>
 
 ## When to use
 
@@ -56,7 +56,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 ## Comparisons
 
-### **Unit Field** vs **Number Field**
+### Unit Field vs Number Field
 
 - Use **Unit Field** when users need to enter both a numeric value and a selectable measurement unit.
 - Use **Number Field** when the value is numeric and the unit is fixed or communicated elsewhere.

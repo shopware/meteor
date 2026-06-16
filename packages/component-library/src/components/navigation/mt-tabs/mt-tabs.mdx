@@ -1,11 +1,11 @@
 import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
 
 import * as TabsStories from "./mt-tabs.stories";
-import ComponentPageHeader from "../../_docs/component-page-header.js";
+import StorybookPageHeader from "../../../docs/_components/storybook-page-header.js";
 
 <Meta of={TabsStories} />
 
-<ComponentPageHeader
+<StorybookPageHeader
   title="Tabs"
   tagName="mt-tabs"
   packageImports="MtTabs"
@@ -13,7 +13,7 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 >
   **Tabs** help users switch between related views, sections, or content areas
   without leaving the current context.
-</ComponentPageHeader>
+</StorybookPageHeader>
 
 ## When to use
 
@@ -62,12 +62,12 @@ import ComponentPageHeader from "../../_docs/component-page-header.js";
 
 ## Comparisons
 
-### **Tabs** vs `Segmented Control`
+### Tabs vs Segmented Control
 
 - Use **Tabs** when the user is switching between sections or views.
 - Use `Segmented Control` only for its current experimental grouped-action behavior, not as a general replacement for tab navigation.
 
-### **Tabs** vs **Button**
+### Tabs vs Button
 
 - Use **Tabs** when one selection changes the active content area.
 - Use **Button** when the user should trigger an action instead of navigating between peer sections.
