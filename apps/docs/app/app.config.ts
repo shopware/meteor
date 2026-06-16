@@ -7,8 +7,8 @@ export default defineAppConfig({
   header: {
     title: "Meteor Design System",
     logo: {
-      light: "/shopware-logo.svg",
-      dark: "/shopware-logo.svg",
+      light: "/shopware-meteor-logo.svg",
+      dark: "/shopware-meteor-logo.svg",
       alt: "Shopware Design",
       class: "h-7",
       favicon: "/shopware-signet.svg",
