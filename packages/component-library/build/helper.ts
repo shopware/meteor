@@ -1,6 +1,12 @@
 import path from "path";
 import fs from "fs";
+import { createRequire } from "node:module";
 import type { Plugin } from "vite";
+
+const requireFromHelper = createRequire(path.join(__dirname, "helper.ts"));
+
+const interFontNames = ["Inter-roman", "Inter-italic"] as const;
+const interFontOutputDirectory = "assets/fonts";
 
 // Helper to convert kebab-case to PascalCase
 export function toPascalCase(str: string): string {
@@ -43,6 +49,85 @@ export function getAllComponents() {
   return components;
 }
 
+function toRelativeImportPath(fromFileName: string, toFileName: string): string {
+  let relativePath = path.posix.relative(path.posix.dirname(fromFileName), toFileName);
+
+  if (!relativePath.startsWith(".")) {
+    relativePath = `./${relativePath}`;
+  }
+
+  return relativePath;
+}
+
+function getInterUiPackageDirectory(): string {
+  return path.dirname(requireFromHelper.resolve("inter-ui/package.json"));
+}
+
+function getInterFontCss(): string {
+  const cssPath = path.resolve(__dirname, "../src/components/assets/css/fonts/inter.font.css");
+  let css = fs.readFileSync(cssPath, "utf-8");
+
+  for (const fontName of interFontNames) {
+    css = css.replaceAll(
+      `~inter-ui/Inter (web)/${fontName}.var.woff2?v=3.19`,
+      `./${interFontOutputDirectory}/${fontName}.woff2`,
+    );
+  }
+
+  if (css.includes("~inter-ui")) {
+    throw new Error("The generated font CSS still contains unresolved inter-ui asset references.");
+  }
+
+  return css;
+}
+
+function readFileAsUint8Array(filePath: string): Uint8Array<ArrayBuffer> {
+  const buffer = fs.readFileSync(filePath);
+  const bytes = new Uint8Array(buffer.byteLength);
+  bytes.set(buffer);
+
+  return bytes;
+}
+
+/**
+ * Emits dist/fonts.css, which backs the public "./font.css" export, plus
+ * its WOFF2 files without passing font URLs through Vite library mode.
+ */
+export function emitInterFontAssets(): Plugin {
+  return {
+    name: "emit-inter-font-assets",
+    apply: (config, { command }) => {
+      return command === "build" && !!config.build?.lib;
+    },
+    generateBundle() {
+      const fontCssFileName = "fonts.css";
+      const interUiPackageDirectory = getInterUiPackageDirectory();
+
+      this.emitFile({
+        type: "asset",
+        fileName: fontCssFileName,
+        source: getInterFontCss(),
+      });
+
+      for (const fontName of interFontNames) {
+        this.emitFile({
+          type: "asset",
+          fileName: `${interFontOutputDirectory}/${fontName}.woff2`,
+          source: readFileAsUint8Array(
+            path.join(interUiPackageDirectory, `Inter (web)/${fontName}.var.woff2`),
+          ),
+        });
+      }
+
+      this.emitFile({
+        type: "asset",
+        fileName: `${interFontOutputDirectory}/LICENSE.txt`,
+        source: fs.readFileSync(path.join(interUiPackageDirectory, "LICENSE.txt"), "utf-8"),
+      });
+    },
+  };
+}
+
 /**
  * Vite/Rollup plugin to inject CSS imports into JS chunks during build.
  * Ensures that any CSS imported by a chunk is also imported at runtime.
@@ -54,7 +139,7 @@ export function libInjectCss(): Plugin {
       return command === "build" && !!config.build?.lib;
     },
     enforce: "post",
-    generateBundle(options, bundle) {
+    generateBundle(_options, bundle) {
       for (const key in bundle) {
         const chunk = bundle[key];
 
@@ -87,17 +172,12 @@ export function libInjectCss(): Plugin {
 
           // 3. Inject the import if a matching CSS file was found
           if (cssFileName) {
-            // Calculate relative path from JS to CSS
-            // From "esm/MtButton.js" (dir: "esm") to "mt-button.css" -> "../mt-button.css"
-            let relativePath = path.posix.relative(path.posix.dirname(jsFileName), cssFileName);
+            const relativePath = toRelativeImportPath(jsFileName, cssFileName);
+            const importStatement = `import '${relativePath}';`;
 
-            // Ensure path starts with ./ or ../
-            if (!relativePath.startsWith(".")) {
-              relativePath = `./${relativePath}`;
+            if (!chunk.code.includes(importStatement)) {
+              chunk.code = `${importStatement}\n${chunk.code}`;
             }
-
-            // Inject import at the top
-            chunk.code = `import '${relativePath}';\n${chunk.code}`;
           }
         }
       }
