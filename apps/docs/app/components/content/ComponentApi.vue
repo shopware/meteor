@@ -26,6 +26,8 @@ interface Cell {
   value?: string;
   code?: boolean;
   required?: boolean;
+  /** Rendered on its own line beneath the cell value (used for the name column). */
+  description?: string;
 }
 
 const visible = <T extends { name: string }>(items: T[] | undefined) =>
@@ -37,39 +39,40 @@ const sections = computed(() => {
   return [
     {
       title: "Props",
-      headers: ["Prop", "Type", "Default", "Description"],
+      headers: ["Prop", "Type", "Default"],
       rows: visible(m?.props).map((prop): Cell[] => [
-        { value: kebabCase(prop.name), code: true, required: prop.required },
+        {
+          value: kebabCase(prop.name),
+          code: true,
+          required: prop.required,
+          description: prop.description,
+        },
         { value: formatType(prop.type), code: true },
         { value: prop.default, code: true },
-        { value: prop.description },
       ]),
     },
     {
       title: "Events",
-      headers: ["Event", "Payload", "Description"],
+      headers: ["Event", "Payload"],
       rows: visible(m?.events).map((event): Cell[] => [
-        { value: event.name, code: true },
+        { value: event.name, code: true, description: event.description },
         { value: formatType(event.type), code: true },
-        { value: event.description },
       ]),
     },
     {
       title: "Slots",
-      headers: ["Slot", "Bindings", "Description"],
+      headers: ["Slot", "Bindings"],
       rows: visible(m?.slots).map((slot): Cell[] => [
-        { value: slot.name, code: true },
+        { value: slot.name, code: true, description: slot.description },
         { value: formatType(slot.type), code: true },
-        { value: slot.description },
       ]),
     },
     {
       title: "Exposed",
-      headers: ["Name", "Type", "Description"],
+      headers: ["Name", "Type"],
       rows: visible(m?.exposed).map((exposed): Cell[] => [
-        { value: exposed.name, code: true },
+        { value: exposed.name, code: true, description: exposed.description },
         { value: formatType(exposed.type), code: true },
-        { value: exposed.description },
       ]),
     },
   ].filter((section) => section.rows.length > 0);
@@ -95,6 +98,9 @@ const sections = computed(() => {
             }}</ProseCode>
             <template v-else-if="cell.value">{{ cell.value }}</template>
             <span v-if="cell.required" class="text-error"> *</span>
+            <div v-if="cell.description" class="mt-1 text-sm text-muted">
+              {{ cell.description }}
+            </div>
           </ProseTd>
         </ProseTr>
       </ProseTbody>

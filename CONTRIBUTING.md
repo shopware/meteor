@@ -1,6 +1,6 @@
 ## Get involved
 
-Thank you for taking an interest in making Meteor a better project! 💙
+Thank you for taking an interest in making Meteor a better project!
 
 To contribute code (features or bug fixes) open up a pull request.
 In case you want to make a larger change to the code base, open up
