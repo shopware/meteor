@@ -69,11 +69,5 @@ export default defineAppConfig({
         highlightColor: "neutral",
       },
     },
-    contentNavigation: {
-      defaultVariants: {
-        variant: "pill",
-        highlight: true,
-      },
-    },
   },
 });

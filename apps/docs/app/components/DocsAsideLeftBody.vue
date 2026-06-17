@@ -4,17 +4,14 @@
 // containing the current page on load (`default-open`). Docus exposes no
 // config for these UContentNavigation props, so the component is overridden.
 const { sidebarNavigation } = useSubNavigation();
-const contentNavVariants = useUIConfig("contentNavigation");
 </script>
 
 <template>
   <UContentNavigation
     type="single"
     :default-open="true"
-    :highlight="contentNavVariants.highlight ?? true"
-    :highlight-color="contentNavVariants.highlightColor"
-    :variant="contentNavVariants.variant ?? 'link'"
-    :color="contentNavVariants.color"
+    :highlight="true"
+    variant="pill"
     :navigation="sidebarNavigation"
   />
 </template>
