@@ -7,7 +7,7 @@
 @import "./meteor-globals.css";
 
 :root {
-  --ui-radius: var(--border-radius-button);
+  --ui-radius: var(--border-radius-s);
 
   /* Surfaces */
   --ui-bg: var(--color-zinc-0);
@@ -62,7 +62,7 @@
   --ui-border-inverted: var(--color-zinc-0);
 
   /* Accents */
-  --ui-primary: var(--color-brand-400);
+  --ui-primary: var(--color-brand-500);
   --ui-secondary: var(--color-zinc-900);
   --ui-success: var(--color-emerald-400);
   --ui-info: var(--color-brand-500);
