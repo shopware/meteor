@@ -81,6 +81,11 @@ onBeforeUnmount(() => exploreObserver?.disconnect());
 <template>
   <div class="landing">
     <section class="hero relative isolate overflow-hidden">
+      <!-- Light mode: gray dot grid fading out toward the bottom. -->
+      <div
+        aria-hidden="true"
+        class="hero-dots absolute inset-0 -z-10 dark:hidden"
+      />
       <div
         aria-hidden="true"
         class="absolute inset-0 -z-10 hidden bg-[radial-gradient(120%_75%_at_50%_0%,color-mix(in_oklab,var(--color-brand-500)_16%,transparent),transparent_60%)] dark:block"
@@ -161,7 +166,7 @@ onBeforeUnmount(() => exploreObserver?.disconnect());
 
     <!-- Top gradient blends the dark hero smoothly into the muted surface. -->
     <section
-      class="relative bg-[linear-gradient(to_bottom,var(--hero-edge)_0px,var(--ui-bg-muted)_72px)] pt-16 pb-16 sm:pt-20 sm:pb-20"
+      class="relative bg-[linear-gradient(to_bottom,var(--hero-edge)_0px,var(--ui-bg)_72px)] pt-16 pb-16 sm:pt-20 sm:pb-20"
     >
       <UContainer>
         <div
@@ -388,7 +393,7 @@ onBeforeUnmount(() => exploreObserver?.disconnect());
       </UContainer>
     </section>
 
-    <section class="bg-muted py-12 sm:py-16">
+    <section class="py-12 sm:py-16">
       <UContainer>
         <header class="mx-auto mb-10 max-w-2xl text-center">
           <h2
@@ -431,9 +436,9 @@ onBeforeUnmount(() => exploreObserver?.disconnect());
 </template>
 
 <style scoped>
-/* Dark mode gets a dark-blue night sky; light mode stays plain (no gradient or
- * stars). --hero-edge (the hero's bottom color) is shared with the hero fade
- * and the section transition so the blend stays seamless. */
+/* Dark mode gets a dark-blue night sky with stars; light mode gets a gray dot
+ * grid (.hero-dots). --hero-edge (the hero's bottom color) is shared with the
+ * hero fade and the section transition so the blend stays seamless. */
 .landing {
   --hero-gradient: none;
   --hero-edge: var(--ui-bg);
@@ -451,6 +456,18 @@ onBeforeUnmount(() => exploreObserver?.disconnect());
 
 .hero {
   background: var(--hero-gradient);
+}
+
+.hero-dots {
+  background-image: radial-gradient(circle, #d1d5db 1px, transparent 1.5px);
+  background-size: 22px 22px;
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 0%,
+    #000 30%,
+    transparent 88%
+  );
+  mask-image: linear-gradient(to bottom, #000 0%, #000 30%, transparent 88%);
 }
 
 .type-heading-2xl {
