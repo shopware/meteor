@@ -13,7 +13,7 @@ const npmUrl =
 
 const title = "Meteor Design System";
 const description =
-  "Shopware's open-source design system for administrative interfaces. Ship faster with solid foundations, flexible components, design tokens, and a complete icon set.";
+  "Design and ship interfaces faster with solid foundations, tailored components, design tokens, and a complete icon set.";
 
 useSeo({
   title,
@@ -27,64 +27,118 @@ defineOgImage("Landing", {
 });
 
 const btnBase =
-  "relative inline-flex min-h-12 cursor-pointer select-none items-center justify-center gap-2 rounded-lg px-5 py-3 text-center text-sm font-semibold transition-colors duration-100 ease-in-out";
+  "home-btn relative inline-flex min-h-12 cursor-pointer select-none items-center justify-center gap-2 rounded-[16px] px-5 py-3 text-center text-sm font-semibold transition-colors duration-100 ease-in-out";
 
-const resources = [
+// Light-mode hero: a darker dot layer revealed through a circular mask that
+// follows the cursor (a "spotlight"), fading in/out on enter/leave.
+const dotsReveal = ref<HTMLElement | null>(null);
+const spotActive = ref(false);
+
+function onHeroMove(e: PointerEvent) {
+  const el = dotsReveal.value;
+  if (!el) return;
+  const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
+  el.style.setProperty("--mx", `${e.clientX - r.left}px`);
+  el.style.setProperty("--my", `${e.clientY - r.top}px`);
+}
+
+const tickerItems = [
+  { icon: "i-lucide-accessibility", label: "Accessible" },
+  { icon: "i-simple-icons-typescript", label: "TypeScript" },
+  { icon: "i-lucide-swatch-book", label: "Design tokens" },
+  { icon: "i-lucide-contrast", label: "Light & dark mode" },
+  { icon: "i-lucide-blocks", label: "45+ components" },
+  { icon: "i-lucide-shapes", label: "900+ icons" },
+  { icon: "i-simple-icons-vuedotjs", label: "Vue 3" },
+  { icon: "i-lucide-bot", label: "MCP server" },
+  { icon: "i-lucide-git-pull-request", label: "Open source" },
+];
+
+const npmBase = "https://www.npmjs.com/package/@shopware-ag/";
+
+const benefits = [
   {
-    label: "Changelog",
-    description: "What's new across every Meteor package.",
-    icon: "i-lucide-history",
-    to: "https://github.com/shopware/meteor/releases",
+    icon: "i-lucide-store",
+    title: "Built for Shopware",
+    text: "Components and patterns shaped for administrative commerce interfaces, not a generic UI kit.",
   },
   {
-    label: "Shopware docs",
-    description: "Documentation for the Shopware platform.",
-    icon: "i-lucide-book-open",
-    to: "https://developer.shopware.com/",
+    icon: "i-lucide-accessibility",
+    title: "Accessible out of the box",
+    text: "Every component ships with keyboard support, ARIA semantics, and light and dark themes.",
   },
   {
-    label: "Brand assets & guidelines",
-    description: "Logos, colors, and downloadable brand assets.",
-    icon: "i-lucide-palette",
-    to: "https://brand.shopware.com/",
+    icon: "i-lucide-library-big",
+    title: "Design and code in sync",
+    text: "Figma libraries, components, and tokens stay aligned, so decisions are made once and applied everywhere.",
   },
 ];
 
-// Reveal the cards on scroll; reduced-motion users get them immediately via the
-// motion-reduce utilities in the template.
-const exploreSection = ref<HTMLElement | null>(null);
-const exploreRevealed = ref(false);
-let exploreObserver: IntersectionObserver | undefined;
+const packages = [
+  {
+    name: "meteor-component-library",
+    icon: "i-lucide-blocks",
+    text: "Vue 3 component set with built-in tokens, icons, and the Inter font.",
+  },
+  {
+    name: "meteor-tokens",
+    icon: "i-lucide-palette",
+    text: "Design tokens as CSS custom properties, usable in any framework.",
+  },
+  {
+    name: "meteor-icon-kit",
+    icon: "i-lucide-shapes",
+    text: "SVG icon set, standalone or as Vue components via mt-icon.",
+  },
+];
 
-onMounted(() => {
-  const el = exploreSection.value;
-  if (!el || !("IntersectionObserver" in window)) {
-    exploreRevealed.value = true;
-    return;
-  }
-
-  exploreObserver = new IntersectionObserver(
-    (entries) => {
-      if (entries.some((entry) => entry.isIntersecting)) {
-        exploreRevealed.value = true;
-        exploreObserver?.disconnect();
-      }
-    },
-    { threshold: 0.15 },
-  );
-  exploreObserver.observe(el);
-});
-
-onBeforeUnmount(() => exploreObserver?.disconnect());
+const faqItems = [
+  {
+    label: "Is Meteor free to use?",
+    content:
+      "Yes. Meteor is completely free and open source under the MIT license. You can use it for personal, commercial, or any other projects without restrictions.",
+  },
+  {
+    label: "Which frameworks does Meteor support?",
+    content:
+      "Meteor components are built specifically for Vue.js 3 and above. The design tokens and icon kit are framework-agnostic and work with any framework or with vanilla JavaScript and CSS.",
+  },
+  {
+    label: "Which browsers does Meteor support?",
+    content:
+      "Meteor supports all modern evergreen browsers, including the latest versions of Chrome, Firefox, Safari, and Edge.",
+  },
+  {
+    label: "Do I need to credit Shopware?",
+    content:
+      "Attribution is not required, but it is appreciated. You can link to meteor.shopware.com or mention that you are using Shopware's Meteor Design System.",
+  },
+  {
+    label: "Where can I get support?",
+    slot: "support",
+  },
+];
 </script>
 
 <template>
   <div class="landing">
-    <section class="hero relative isolate overflow-hidden">
+    <section
+      class="hero relative isolate overflow-hidden"
+      @pointermove="onHeroMove"
+      @pointerenter="spotActive = true"
+      @pointerleave="spotActive = false"
+    >
       <!-- Light mode: gray dot grid fading out toward the bottom. -->
       <div
         aria-hidden="true"
         class="hero-dots absolute inset-0 -z-10 dark:hidden"
+      />
+      <!-- Darker dots revealed in a circle around the cursor. -->
+      <div
+        ref="dotsReveal"
+        aria-hidden="true"
+        class="hero-dots-reveal absolute inset-0 -z-10 dark:hidden"
+        :class="{ 'is-spot': spotActive }"
       />
       <div
         aria-hidden="true"
@@ -93,14 +147,16 @@ onBeforeUnmount(() => exploreObserver?.disconnect());
       <LandingStarfield class="-z-10 hidden dark:block" />
       <div
         aria-hidden="true"
-        class="absolute inset-x-0 bottom-0 -z-10 h-2/5 bg-[linear-gradient(to_bottom,transparent,var(--hero-edge))]"
+        class="absolute inset-x-0 bottom-0 -z-10 h-3/5 bg-[linear-gradient(to_bottom,transparent,var(--hero-edge))]"
       />
+      <LandingUfo />
 
       <UContainer
-        class="mx-auto flex flex-col items-center py-16 text-center sm:py-24 lg:py-28"
+        class="mx-auto flex flex-col items-center pt-16 text-center sm:pt-24 lg:pt-28"
       >
         <h1 class="hero-rise type-heading-2xl max-w-4xl text-highlighted">
-          Build Shopware experiences consistently, fast.
+          Build outstanding Shopware experiences with
+          <span class="italic">Meteor</span>.
         </h1>
 
         <p
@@ -162,28 +218,79 @@ onBeforeUnmount(() => exploreObserver?.disconnect());
           </UButton>
         </div>
       </UContainer>
+
+      <div
+        class="hero-rise marquee-mask relative mt-20 border-y border-default py-4 sm:mt-28 lg:mt-32"
+        :style="{ animationDelay: '320ms' }"
+      >
+        <UMarquee :overlay="false" class="[--duration:40s] [--gap:3rem]">
+          <div
+            v-for="item in tickerItems"
+            :key="item.label"
+            class="flex items-center gap-2 text-sm font-medium text-muted"
+          >
+            <UIcon :name="item.icon" class="size-4 shrink-0 text-muted" />
+            <span class="whitespace-nowrap">{{ item.label }}</span>
+          </div>
+        </UMarquee>
+      </div>
     </section>
 
-    <!-- Top gradient blends the dark hero smoothly into the muted surface. -->
+    <!-- Why Meteor: value proposition -->
     <section
-      class="relative bg-[linear-gradient(to_bottom,var(--hero-edge)_0px,var(--ui-bg)_72px)] pt-16 pb-16 sm:pt-20 sm:pb-20"
+      class="hero-rise bg-muted py-20 sm:py-28"
+      :style="{ animationDelay: '400ms' }"
     >
       <UContainer>
+        <header class="mx-auto mb-16 max-w-2xl text-center">
+          <h2
+            class="text-3xl font-bold tracking-tight text-highlighted sm:text-4xl"
+          >
+            Why teams build on Meteor
+          </h2>
+          <p class="mt-6 text-base leading-relaxed text-muted sm:text-lg">
+            More than a component library, Meteor is the shared foundation that
+            Shopware and its community design and build on together.
+          </p>
+        </header>
+
         <div
-          ref="exploreSection"
-          class="transition-all duration-[1100ms] ease-[var(--ease-out)] motion-reduce:translate-y-0 motion-reduce:opacity-100 motion-reduce:blur-[0px] motion-reduce:transition-none"
-          :class="
-            exploreRevealed
-              ? 'translate-y-0 opacity-100 blur-[0px]'
-              : 'translate-y-4 opacity-0 blur-[12px]'
-          "
+          class="grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-3 mx-auto max-w-280"
         >
-          <header class="mx-auto mb-10 max-w-2xl text-center">
+          <div
+            v-for="benefit in benefits"
+            :key="benefit.title"
+            class="mx-auto flex max-w-72 flex-col items-center text-center"
+          >
+            <div
+              class="flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary"
+            >
+              <UIcon :name="benefit.icon" class="size-5" />
+            </div>
+            <h3 class="mt-4 font-semibold text-highlighted">
+              {{ benefit.title }}
+            </h3>
+            <p class="mt-1 text-sm leading-relaxed text-muted">
+              {{ benefit.text }}
+            </p>
+          </div>
+        </div>
+      </UContainer>
+    </section>
+
+    <section class="py-20 sm:py-28">
+      <UContainer>
+        <div>
+          <header class="mx-auto mb-12 max-w-2xl text-center">
             <h2
               class="text-3xl font-bold tracking-tight text-highlighted sm:text-4xl"
             >
-              Everything you need to build
+              Explore the docs
             </h2>
+            <p class="mt-6 text-base leading-relaxed text-muted sm:text-lg">
+              Guides and references for every part of Meteor, from foundations
+              and tokens to components, content, and agents.
+            </p>
           </header>
 
           <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
@@ -195,10 +302,10 @@ onBeforeUnmount(() => exploreObserver?.disconnect());
             >
               <template #visual>
                 <div
-                  class="absolute inset-0 flex items-center justify-center p-5"
+                  class="absolute inset-0 flex items-center justify-center p-4"
                 >
                   <div
-                    class="w-full max-w-64 rounded-lg border border-default bg-elevated p-3 font-mono text-[11px]"
+                    class="w-full max-w-xs rounded-lg border border-default bg-elevated p-3 font-mono text-[10px]"
                   >
                     <div class="mb-2 flex gap-1.5">
                       <span class="size-2 rounded-full bg-error/70" />
@@ -224,32 +331,28 @@ onBeforeUnmount(() => exploreObserver?.disconnect());
             >
               <template #visual>
                 <div
-                  class="absolute inset-0 flex flex-col items-center justify-center gap-2 p-5 text-xs"
+                  class="absolute inset-0 flex items-center justify-center gap-1.5 p-4 text-[11px]"
                 >
-                  <div class="flex gap-2">
-                    <span
-                      class="rounded-md border border-default bg-elevated px-3 py-1.5 text-muted"
-                    >
-                      Default
-                    </span>
-                    <span
-                      class="rounded-md border border-primary bg-default px-3 py-1.5 text-highlighted ring-2 ring-primary/30"
-                    >
-                      Focus
-                    </span>
-                  </div>
-                  <div class="flex gap-2">
-                    <span
-                      class="rounded-md bg-primary px-3 py-1.5 text-static-white"
-                    >
-                      Active
-                    </span>
-                    <span
-                      class="rounded-md border border-default bg-elevated px-3 py-1.5 text-dimmed opacity-60"
-                    >
-                      Disabled
-                    </span>
-                  </div>
+                  <span
+                    class="rounded-md border border-default bg-elevated px-2 py-1 text-muted"
+                  >
+                    Default
+                  </span>
+                  <span
+                    class="rounded-md border border-default bg-default px-2 py-1 text-highlighted outline-2 outline-offset-2 outline-primary"
+                  >
+                    Focus
+                  </span>
+                  <span
+                    class="rounded-md bg-primary px-2 py-1 text-static-white"
+                  >
+                    Active
+                  </span>
+                  <span
+                    class="rounded-md border border-default bg-elevated px-2 py-1 text-dimmed opacity-60"
+                  >
+                    Disabled
+                  </span>
                 </div>
               </template>
             </LandingSectionCard>
@@ -262,66 +365,44 @@ onBeforeUnmount(() => exploreObserver?.disconnect());
             >
               <template #visual>
                 <div
-                  class="absolute inset-0 flex flex-col justify-center gap-2 p-5"
+                  class="absolute inset-0 flex items-center justify-center gap-3 p-5"
                 >
+                  <!-- Same UI rendered with the light and dark token sets.
+                       Built from theme-independent primitives so both panels
+                       stay fixed regardless of the page's color mode. -->
                   <div
-                    class="flex items-center gap-2 rounded-md border border-default bg-elevated px-2.5 py-1.5 text-[11px]"
+                    class="flex w-28 flex-col gap-2 rounded-lg border border-[var(--color-zinc-200)] bg-[var(--color-zinc-0)] p-3"
                   >
-                    <span
-                      class="size-4 shrink-0 rounded bg-interaction-primary-default"
+                    <UIcon
+                      name="i-lucide-sun"
+                      class="size-3.5 text-[var(--color-pumpkin-500)]"
                     />
-                    <span class="font-mono text-muted">
-                      color.interaction.primary.default
-                    </span>
+                    <span
+                      class="h-1.5 w-full rounded-full bg-[var(--color-zinc-200)]"
+                    />
+                    <span
+                      class="h-1.5 w-2/3 rounded-full bg-[var(--color-zinc-200)]"
+                    />
+                    <span
+                      class="mt-1 h-4 rounded bg-[var(--color-brand-500)]"
+                    />
                   </div>
                   <div
-                    class="flex items-center gap-2 rounded-md border border-default bg-elevated px-2.5 py-1.5 text-[11px]"
+                    class="flex w-28 flex-col gap-2 rounded-lg border border-[var(--color-zinc-850)] bg-[var(--color-zinc-975)] p-3"
                   >
-                    <span
-                      class="size-4 shrink-0 rounded bg-text-primary-default"
+                    <UIcon
+                      name="i-lucide-moon"
+                      class="size-3.5 text-[var(--color-zinc-300)]"
                     />
-                    <span class="font-mono text-muted">
-                      color.text.primary.default
-                    </span>
-                  </div>
-                </div>
-              </template>
-            </LandingSectionCard>
-
-            <LandingSectionCard
-              title="Components"
-              description="Accessible Vue 3 components, documented and ready to drop in."
-              icon="i-lucide-blocks"
-              to="/components/action-menu"
-            >
-              <template #visual>
-                <div
-                  class="absolute inset-0 flex flex-col items-center justify-center gap-4 p-5"
-                >
-                  <span
-                    class="rounded bg-interaction-primary-default px-3.5 py-1.5 text-[13px] font-semibold text-static-white"
-                  >
-                    Button
-                  </span>
-                  <div class="flex items-center gap-4 text-[11px] text-muted">
-                    <span class="flex items-center gap-1.5">
-                      <span
-                        class="relative h-4 w-7 rounded-full bg-interaction-primary-default"
-                      >
-                        <span
-                          class="absolute top-0.5 right-0.5 size-3 rounded-full bg-static-white"
-                        />
-                      </span>
-                      Switch
-                    </span>
-                    <span class="flex items-center gap-1.5">
-                      <span
-                        class="flex size-4 items-center justify-center rounded-[3px] bg-interaction-primary-default text-static-white"
-                      >
-                        <UIcon name="i-lucide-check" class="size-3" />
-                      </span>
-                      Checkbox
-                    </span>
+                    <span
+                      class="h-1.5 w-full rounded-full bg-[var(--color-zinc-700)]"
+                    />
+                    <span
+                      class="h-1.5 w-2/3 rounded-full bg-[var(--color-zinc-700)]"
+                    />
+                    <span
+                      class="mt-1 h-4 rounded bg-[var(--color-brand-500)]"
+                    />
                   </div>
                 </div>
               </template>
@@ -335,10 +416,10 @@ onBeforeUnmount(() => exploreObserver?.disconnect());
             >
               <template #visual>
                 <div
-                  class="absolute inset-0 flex flex-col justify-center gap-2 p-5 text-xs"
+                  class="absolute inset-0 flex flex-col items-center justify-center gap-2 p-5 text-xs"
                 >
                   <div
-                    class="flex items-center gap-2 rounded-md border border-default bg-elevated px-2.5 py-2"
+                    class="flex w-full max-w-44 items-center gap-2 rounded-md border border-default bg-elevated px-2.5 py-2"
                   >
                     <UIcon
                       name="i-lucide-check"
@@ -347,7 +428,7 @@ onBeforeUnmount(() => exploreObserver?.disconnect());
                     <span class="text-highlighted">Save changes</span>
                   </div>
                   <div
-                    class="flex items-center gap-2 rounded-md border border-default bg-elevated px-2.5 py-2 opacity-70"
+                    class="flex w-full max-w-44 items-center gap-2 rounded-md border border-default bg-elevated px-2.5 py-2 opacity-70"
                   >
                     <UIcon
                       name="i-lucide-x"
@@ -388,46 +469,170 @@ onBeforeUnmount(() => exploreObserver?.disconnect());
                 </div>
               </template>
             </LandingSectionCard>
+
+            <LandingSectionCard
+              title="Components"
+              description="Accessible Vue 3 components, documented and ready to drop in."
+              icon="i-lucide-blocks"
+              to="/components/action-menu"
+            >
+              <template #visual>
+                <div
+                  class="absolute inset-0 flex items-center justify-center gap-3 p-4"
+                >
+                  <span
+                    class="rounded bg-interaction-primary-default px-3.5 py-1.5 text-[13px] font-semibold text-static-white"
+                  >
+                    Button
+                  </span>
+                  <span class="flex items-center gap-2 text-xs text-muted">
+                    <span
+                      class="relative h-4 w-7 rounded-full bg-interaction-primary-default"
+                    >
+                      <span
+                        class="absolute top-0.5 right-0.5 size-3 rounded-full bg-static-white"
+                      />
+                    </span>
+                    Switch
+                  </span>
+                  <span class="flex items-center gap-2 text-xs text-muted">
+                    <span
+                      class="flex size-4 items-center justify-center rounded-[3px] bg-interaction-primary-default text-static-white"
+                    >
+                      <UIcon name="i-lucide-check" class="size-3" />
+                    </span>
+                    Checkbox
+                  </span>
+                </div>
+              </template>
+            </LandingSectionCard>
           </div>
         </div>
       </UContainer>
     </section>
 
-    <section class="py-12 sm:py-16">
+    <!-- The packages -->
+    <section class="bg-muted py-20 sm:py-28">
+      <UContainer>
+        <header class="mx-auto mb-12 max-w-2xl text-center">
+          <h2
+            class="text-3xl font-bold tracking-tight text-highlighted sm:text-4xl"
+          >
+            Install only what you need
+          </h2>
+          <p class="mt-6 text-base leading-relaxed text-muted sm:text-lg">
+            Meteor ships as three independent npm packages. Pull in the full
+            component library, or just the tokens or icons.
+          </p>
+        </header>
+
+        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <NuxtLink
+            v-for="pkg in packages"
+            :key="pkg.name"
+            :to="npmBase + pkg.name"
+            target="_blank"
+            class="group flex flex-col rounded-2xl border border-default bg-default p-6 transition-colors hover:border-accented"
+          >
+            <div class="flex items-center gap-3">
+              <div
+                class="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary"
+              >
+                <UIcon :name="pkg.icon" class="size-5" />
+              </div>
+              <UIcon
+                name="i-simple-icons-npm"
+                class="ml-auto size-5 text-dimmed transition-colors group-hover:text-highlighted"
+              />
+            </div>
+            <p
+              class="mt-4 font-mono text-sm font-medium break-all text-highlighted"
+            >
+              @shopware-ag/{{ pkg.name }}
+            </p>
+            <p class="mt-2 text-sm leading-relaxed text-muted">
+              {{ pkg.text }}
+            </p>
+            <span
+              class="mt-auto inline-flex items-center gap-1 pt-5 text-sm font-medium text-primary"
+            >
+              View on npm
+              <UIcon
+                name="i-lucide-arrow-up-right"
+                class="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+              />
+            </span>
+          </NuxtLink>
+        </div>
+
+        <div class="mt-10 text-center">
+          <NuxtLink
+            to="/getting-started/developers"
+            class="group inline-flex items-center gap-1.5 text-sm font-medium text-primary"
+          >
+            Read the developer setup guide
+            <UIcon
+              name="i-lucide-arrow-right"
+              class="size-4 transition-transform group-hover:translate-x-0.5"
+            />
+          </NuxtLink>
+        </div>
+      </UContainer>
+    </section>
+
+    <!-- FAQ -->
+    <section class="py-20 sm:py-28">
       <UContainer>
         <header class="mx-auto mb-10 max-w-2xl text-center">
           <h2
-            class="text-2xl font-bold tracking-tight text-highlighted sm:text-3xl"
+            class="text-3xl font-bold tracking-tight text-highlighted sm:text-4xl"
           >
-            Useful resources
+            Frequently asked questions
           </h2>
         </header>
+        <div class="mx-auto max-w-3xl">
+          <UAccordion :items="faqItems">
+            <template #support-body>
+              Open an issue on
+              <NuxtLink
+                to="https://github.com/shopware/meteor/issues"
+                target="_blank"
+                class="font-medium text-primary hover:underline"
+                >GitHub</NuxtLink
+              >
+              for bugs and feature requests, or start a discussion to ask the
+              community.
+            </template>
+          </UAccordion>
+        </div>
+      </UContainer>
+    </section>
 
-        <div class="grid gap-6 sm:grid-cols-3">
+    <!-- Closing CTA banner -->
+    <section class="pb-16 sm:pb-20">
+      <UContainer>
+        <div
+          class="flex flex-col items-center gap-6 rounded-2xl border border-default bg-muted px-6 py-8 text-center sm:flex-row sm:justify-between sm:gap-8 sm:px-10 sm:text-left"
+        >
+          <div>
+            <h2 class="text-lg font-semibold text-highlighted sm:text-xl">
+              Want to contribute or report an issue?
+            </h2>
+            <p class="mt-1 text-sm leading-relaxed text-muted sm:text-base">
+              Meteor is open source. Open an issue, request a feature, or send a
+              pull request on GitHub.
+            </p>
+          </div>
           <NuxtLink
-            v-for="link in resources"
-            :key="link.to"
-            :to="link.to"
+            :to="githubUrl"
             target="_blank"
-            class="group flex flex-col gap-3 rounded-2xl border border-default bg-default p-6 transition-colors hover:border-accented"
+            :class="[
+              btnBase,
+              'shrink-0 border border-default bg-interaction-secondary-default text-default hover:bg-interaction-secondary-hover',
+            ]"
           >
-            <span
-              class="flex size-10 items-center justify-center rounded-lg bg-primary/10"
-            >
-              <UIcon :name="link.icon" class="size-5 text-primary" />
-            </span>
-            <span class="flex items-center gap-1.5">
-              <span class="font-semibold text-highlighted">
-                {{ link.label }}
-              </span>
-              <UIcon
-                name="i-lucide-arrow-up-right"
-                class="size-4 text-dimmed transition-colors group-hover:text-primary"
-              />
-            </span>
-            <span class="text-sm leading-relaxed text-muted">
-              {{ link.description }}
-            </span>
+            <UIcon name="i-simple-icons-github" class="size-4" />
+            View on GitHub
           </NuxtLink>
         </div>
       </UContainer>
@@ -436,6 +641,13 @@ onBeforeUnmount(() => exploreObserver?.disconnect());
 </template>
 
 <style scoped>
+/* Squircle corners on the custom home-page buttons (border-radius set via the
+ * rounded-[16px] utility). corner-shape is kept here because Tailwind's CSS
+ * engine strips it from arbitrary-property utilities. */
+.home-btn {
+  corner-shape: squircle;
+}
+
 /* Dark mode gets a dark-blue night sky with stars; light mode gets a gray dot
  * grid (.hero-dots). --hero-edge (the hero's bottom color) is shared with the
  * hero fade and the section transition so the blend stays seamless. */
@@ -447,11 +659,11 @@ onBeforeUnmount(() => exploreObserver?.disconnect());
 .dark .landing {
   --hero-gradient: linear-gradient(
     180deg,
-    #0d1d42 0%,
-    #0a1430 55%,
+    #0a1733 0%,
+    #081025 55%,
     #060a18 100%
   );
-  --hero-edge: #060a18;
+  --hero-edge: var(--ui-bg);
 }
 
 .hero {
@@ -459,7 +671,11 @@ onBeforeUnmount(() => exploreObserver?.disconnect());
 }
 
 .hero-dots {
-  background-image: radial-gradient(circle, #d1d5db 1px, transparent 1.5px);
+  background-image: radial-gradient(
+    circle,
+    var(--color-zinc-100) 1px,
+    transparent 1.5px
+  );
   background-size: 22px 22px;
   -webkit-mask-image: linear-gradient(
     to bottom,
@@ -468,6 +684,52 @@ onBeforeUnmount(() => exploreObserver?.disconnect());
     transparent 88%
   );
   mask-image: linear-gradient(to bottom, #000 0%, #000 30%, transparent 88%);
+}
+
+.hero-dots-reveal {
+  --mx: 50%;
+  --my: 30%;
+  background-image: radial-gradient(
+    circle,
+    var(--color-zinc-200) 1px,
+    transparent 1.5px
+  );
+  background-size: 22px 22px;
+  -webkit-mask-image: radial-gradient(
+    circle 220px at var(--mx) var(--my),
+    #000 0%,
+    #000 30%,
+    transparent 70%
+  );
+  mask-image: radial-gradient(
+    circle 220px at var(--mx) var(--my),
+    #000 0%,
+    #000 30%,
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+.hero-dots-reveal.is-spot {
+  opacity: 1;
+}
+
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 6rem,
+    #000 calc(100% - 6rem),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 6rem,
+    #000 calc(100% - 6rem),
+    transparent
+  );
 }
 
 .type-heading-2xl {

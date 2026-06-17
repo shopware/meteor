@@ -26,7 +26,7 @@ const props = withDefaults(
   }>(),
   {
     starCount: 120,
-    meteorCount: 7,
+    meteorCount: 4,
   },
 );
 
@@ -56,8 +56,10 @@ const stars = computed<Star[]>(() => {
 
 const meteors = computed<Meteor[]>(() => {
   const rand = createRandom(0xc0ffee);
-  return Array.from({ length: props.meteorCount }, () => ({
-    x: round(rand() * 88 + 8, 3),
+  // Spread start positions evenly across the width (one per band, with jitter)
+  // so a handful of meteors still cover the full hero, not just the left side.
+  return Array.from({ length: props.meteorCount }, (_, i) => ({
+    x: round(8 + ((i + rand()) / props.meteorCount) * 84, 3),
     y: round(rand() * 45 - 8, 3),
     length: round(rand() * 150 + 130, 1),
     duration: round(rand() * 2.5 + 3),
@@ -112,7 +114,7 @@ const meteors = computed<Meteor[]>(() => {
 }
 
 .dark .starfield {
-  --star-color: #ffffff;
+  --star-color: #8fb0e6;
   --star-base: 1;
   --meteor-head: #ffffff;
   --meteor-trail: rgba(160, 196, 255, 0.65);
@@ -142,7 +144,7 @@ const meteors = computed<Meteor[]>(() => {
 
 .starfield__meteor {
   position: absolute;
-  height: 1px;
+  height: 2px;
   border-radius: 999px;
   background: linear-gradient(
     to right,
@@ -153,24 +155,28 @@ const meteors = computed<Meteor[]>(() => {
   filter: drop-shadow(0 0 6px var(--meteor-head));
   opacity: 0;
   /* Head (the bright right end) leads down-left; trail follows up-right. */
-  transform: rotate(135deg) translateX(0);
+  transform: rotate(135deg) translateX(0) scale(0.3);
   animation: meteor var(--meteor-duration) linear var(--meteor-delay) infinite;
 }
 
+/* Grows from small to full size mid-flight, then shrinks away. */
 @keyframes meteor {
   0% {
     opacity: 0;
-    transform: rotate(135deg) translateX(0);
+    transform: rotate(135deg) translateX(0) scale(0.3);
   }
   8% {
     opacity: 0.45;
+  }
+  50% {
+    transform: rotate(135deg) translateX(360px) scale(1);
   }
   62% {
     opacity: 0.45;
   }
   100% {
     opacity: 0;
-    transform: rotate(135deg) translateX(720px);
+    transform: rotate(135deg) translateX(720px) scale(0.3);
   }
 }
 

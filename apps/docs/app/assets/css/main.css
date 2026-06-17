@@ -33,7 +33,7 @@
   /* Accents */
   --ui-primary: var(--color-brand-500);
   --ui-secondary: var(--color-zinc-0);
-  --ui-success: var(--color-emerald-500);
+  --ui-success: var(--color-emerald-600);
   --ui-info: var(--color-brand-500);
   --ui-warning: var(--color-pumpkin-500);
   --ui-error: var(--color-red-500);
@@ -64,7 +64,7 @@
   /* Accents */
   --ui-primary: var(--color-brand-500);
   --ui-secondary: var(--color-zinc-900);
-  --ui-success: var(--color-emerald-400);
+  --ui-success: var(--color-emerald-600);
   --ui-info: var(--color-brand-500);
   --ui-warning: var(--color-pumpkin-400);
   --ui-error: var(--color-red-400);
