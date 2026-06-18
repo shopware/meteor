@@ -325,7 +325,7 @@ const faqItems = [
 
             <LandingSectionCard
               title="Foundations"
-              description="Design principles, accessibility, interaction states, and component conventions."
+              description="Design principles, accessibility, states and conventions."
               icon="i-lucide-shapes"
               to="/foundations/design-principles"
             >
@@ -472,7 +472,7 @@ const faqItems = [
 
             <LandingSectionCard
               title="Components"
-              description="Accessible Vue 3 components, documented and ready to drop in."
+              description="Vue components, documented and ready to drop in."
               icon="i-lucide-blocks"
               to="/components/action-menu"
             >
