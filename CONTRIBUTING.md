@@ -39,24 +39,53 @@ you can [request a feature](https://github.com/shopware/meteor/issues/new?templa
 
 ## Local development
 
-For local development we use `yalc` to publish packages into a virtual store and use them in other projects.
+For local development we use `yalc` to publish packages into a virtual store and consume them from other projects.
 You can find yalc [here](https://github.com/wclr/yalc) on GitHub.
-To use your changes in Shopware and your extensions, you must first publish the changes and then add them to your projects in a second step.
+To use your changes in Shopware and your extensions, you first build and publish the changed package, then add it to your project in a second step.
 
-### Publish your changes to the local yalc repo
+The walkthrough below uses the component library. Swap the package name and paths if you work on a different package.
 
-1. Make changes for the desired package/s
-2. Publish packages with `yalc publish` from the package root folder e.g. `<meteorRoot>/packages/component-library`
+### Publish your changes to the local yalc store
+
+1. Make your changes in the desired package(s).
+2. Build from the meteor root so the published files include your changes:
+
+   ```sh
+   npx turbo run build
+   ```
+
+   To rebuild only one package, scope the task: `npx turbo run build --filter=@shopware-ag/meteor-component-library`.
+
+3. Publish from the package root, here `packages/component-library`:
+
+   ```sh
+   cd packages/component-library
+   yalc publish --private --workspace --pure
+   ```
+
+   This copies the built package into the local yalc store, with its `workspace:` dependencies resolved to concrete versions so they install outside the monorepo.
+
+Repeat the build and publish steps whenever you change the source again.
 
 ### Add your updated package to Shopware and your extensions
 
-To use your updated package you can use `yalc link <package-name>` in any project folder with a `package.json`.
+Switch to the project that should consume your changes. For the Shopware administration this is `<shopware-root-folder>/src/Administration/Resources/app/administration`:
 
-For example, run `yalc link @shopware-ag/meteor-admin-sdk` in `<shopware-root-folder>/src/Administration/Resources/app/administration`.
-This will symlink the changed files to your `node_modules` folder.
+```sh
+cd <shopware-root-folder>/src/Administration/Resources/app/administration
+yalc add @shopware-ag/meteor-component-library
+npm install
+```
 
-**Caution**: `yalc link` will create symlinks with absolute paths. If you run a containerized setup, it will fail to resolve (see: https://github.com/wclr/yalc/issues/123).
-In this case, you have to use `yalc add`. `yalc add` works the same but it touches the `package.json` file of your project. Be careful not to commit these changes.
+`yalc add` copies the published files into a local `.yalc` folder and points the project's `package.json` at them; `npm install` then wires them into `node_modules`.
+Be careful not to commit the `package.json` changes.
+
+To pick up later changes, republish from the package and run `yalc update` in the consuming project.
+
+Alternatively, run `yalc link @shopware-ag/meteor-component-library` to symlink the files into `node_modules` without touching `package.json`.
+
+**Caution**: `yalc link` creates symlinks with absolute paths. If you run a containerized setup, it will fail to resolve (see: https://github.com/wclr/yalc/issues/123).
+In that case use `yalc add` as shown above.
 
 ## Creating a pull request
 
