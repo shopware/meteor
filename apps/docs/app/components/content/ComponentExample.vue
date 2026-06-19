@@ -81,7 +81,7 @@ const { copy, copied } = useClipboard();
 // The rendered code block's only <button> is its built-in copy button; hide it
 // unless explicitly opted back in, since the toggle row provides its own.
 const codeWrapperClass = computed(() => [
-  "[&_pre]:rounded-t-none! [&_pre]:mt-0! [&_div.my-5]:my-0!",
+  "[&_pre]:rounded-t-none! [&_pre]:border-t-0! [&_pre]:mt-0! [&_div.my-5]:my-0!",
   props.inlineCopyButton ? "" : "[&_button]:hidden!",
 ]);
 </script>
@@ -122,8 +122,8 @@ const codeWrapperClass = computed(() => [
       >
         <button
           type="button"
-          class="flex w-full cursor-pointer items-center gap-1 rounded-t-none border border-muted py-3 px-3 text-sm text-[var(--color-text-primary-default)] transition-colors duration-100 hover:bg-[var(--color-interaction-secondary-hover)]"
-          :class="showCode ? 'rounded-b-none border-b-0' : 'rounded-b-md'"
+          class="flex w-full cursor-pointer items-center gap-1 rounded-t-none border border-muted py-3 px-3 text-sm text-[var(--color-text-primary-default)] transition-[background-color,border-radius] duration-100 ease-[var(--ease-out)] motion-reduce:transition-none hover:bg-[var(--color-interaction-secondary-hover)]"
+          :class="showCode ? 'rounded-b-none' : 'rounded-b-md delay-[0ms,150ms]'"
         >
           <UIcon
             name="i-lucide-chevron-right"
