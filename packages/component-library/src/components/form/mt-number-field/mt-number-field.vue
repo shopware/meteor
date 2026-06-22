@@ -450,10 +450,16 @@ export default defineComponent({
       }
       const decimals = splits[splits.length - 1].length;
       const float = parseFloat(splits.join(".")).toFixed(decimals);
-      return decimals > this.digits
-        ? // @ts-expect-error - can be calculated
-          Math.round(float * 10 ** this.digits) / 10 ** this.digits
-        : Number(float);
+
+      return decimals > this.digits ? this.roundToDigits(float, this.digits) : Number(float);
+    },
+
+    roundToDigits(value: string, digits: number): number {
+      // Round on the decimal string instead of computing `value * 10 ** digits`,
+      // whose binary float error would otherwise drop e.g. 1.035 to 1.03 instead
+      // of 1.04. `Number("1.035e2")` parses straight to 103.5, so Math.round acts
+      // on the intended decimal value.
+      return Number(`${Math.round(Number(`${value}e${digits}`))}e-${digits}`);
     },
 
     checkForInteger(value: number) {

@@ -444,6 +444,28 @@ describe("mt-number-field", () => {
     expect(input).toHaveValue("1.08");
   });
 
+  it("rounds half up without float precision errors on blur", async () => {
+    // ARRANGE
+    const updateHandler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        "onUpdate:modelValue": updateHandler,
+      },
+    });
+
+    const input = screen.getByRole("textbox") as HTMLInputElement;
+
+    // ACT
+    await userEvent.click(input);
+    await userEvent.type(input, "1.035");
+    await userEvent.click(document.body);
+
+    // ASSERT
+    expect(updateHandler).toHaveBeenLastCalledWith(1.04);
+    expect(input).toHaveValue("1.04");
+  });
+
   it("normalizes fractional trailing zeros on blur", async () => {
     // ARRANGE
     const updateHandler = vi.fn();
