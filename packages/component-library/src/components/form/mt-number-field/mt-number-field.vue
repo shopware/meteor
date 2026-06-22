@@ -446,7 +446,9 @@ export default defineComponent({
       }
 
       if (this.numberType === "int") {
-        return parseInt(splits.join(""), 10);
+        // Keep the decimal point and let checkForInteger round the result. Joining
+        // without "." would concatenate the digit groups and turn 1.05 into 105.
+        return parseFloat(splits.join("."));
       }
       const decimals = splits[splits.length - 1].length;
       const float = parseFloat(splits.join(".")).toFixed(decimals);
@@ -467,13 +469,13 @@ export default defineComponent({
         return value;
       }
 
-      const floor = Math.floor(value);
-      if (floor !== value) {
+      const rounded = Math.round(value);
+      if (rounded !== value) {
         this.$nextTick(() => {
           this.$forceUpdate();
         });
       }
-      return floor;
+      return rounded;
     },
   },
 });

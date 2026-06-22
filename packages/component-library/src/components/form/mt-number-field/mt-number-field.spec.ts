@@ -539,6 +539,109 @@ describe("mt-number-field", () => {
     expect(input).toHaveValue("1000");
   });
 
+  it("rounds a decimal value to an integer on blur for int type", async () => {
+    // ARRANGE
+    const updateHandler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        numberType: "int",
+        "onUpdate:modelValue": updateHandler,
+      },
+    });
+
+    const input = screen.getByRole("textbox") as HTMLInputElement;
+
+    // ACT
+    await userEvent.click(input);
+    await userEvent.type(input, "1.05");
+
+    // ASSERT - raw value stays visible while editing, no normalization yet
+    expect(input).toHaveValue("1.05");
+    expect(updateHandler).not.toHaveBeenCalled();
+
+    // ACT
+    await userEvent.click(document.body);
+
+    // ASSERT - normalized to an integer on blur
+    expect(updateHandler).toHaveBeenLastCalledWith(1);
+    expect(input).toHaveValue("1");
+  });
+
+  it("normalizes exponent notation to an integer on blur for int type", async () => {
+    // ARRANGE
+    const updateHandler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        numberType: "int",
+        "onUpdate:modelValue": updateHandler,
+      },
+    });
+
+    const input = screen.getByRole("textbox") as HTMLInputElement;
+
+    // ACT
+    await userEvent.click(input);
+    await userEvent.type(input, "1e3");
+
+    // ASSERT - raw value stays visible while editing
+    expect(input).toHaveValue("1e3");
+
+    // ACT
+    await userEvent.click(document.body);
+
+    // ASSERT
+    expect(updateHandler).toHaveBeenLastCalledWith(1000);
+    expect(input).toHaveValue("1000");
+  });
+
+  it("rounds a small exponent value down to zero on blur for int type", async () => {
+    // ARRANGE
+    const updateHandler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        numberType: "int",
+        "onUpdate:modelValue": updateHandler,
+      },
+    });
+
+    const input = screen.getByRole("textbox") as HTMLInputElement;
+
+    // ACT
+    await userEvent.click(input);
+    await userEvent.type(input, "2e-3");
+    await userEvent.click(document.body);
+
+    // ASSERT
+    expect(updateHandler).toHaveBeenLastCalledWith(0);
+    expect(input).toHaveValue("0");
+  });
+
+  it("rounds halves up to the nearest integer on blur for int type", async () => {
+    // ARRANGE
+    const updateHandler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        numberType: "int",
+        "onUpdate:modelValue": updateHandler,
+      },
+    });
+
+    const input = screen.getByRole("textbox") as HTMLInputElement;
+
+    // ACT
+    await userEvent.click(input);
+    await userEvent.type(input, "1.5");
+    await userEvent.click(document.body);
+
+    // ASSERT
+    expect(updateHandler).toHaveBeenLastCalledWith(2);
+    expect(input).toHaveValue("2");
+  });
+
   it("warns when allowEmpty is set to false", () => {
     // ARRANGE
     vi.spyOn(console, "warn").mockImplementation(() => {});
