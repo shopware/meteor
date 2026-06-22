@@ -182,7 +182,8 @@ const cardClasses = computed(() => ({
   position: relative;
   background: var(--color-elevation-surface-raised);
   border: 1px solid var(--color-border-secondary-default);
-  border-radius: var(--border-radius-card); /* Added here */
+  border-radius: var(--border-radius-card);
+  overflow: hidden;
 
   &:not(:has(.mt-card__tabs:empty)) .mt-card__header {
     border-bottom: none;
