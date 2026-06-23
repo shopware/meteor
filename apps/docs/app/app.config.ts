@@ -20,12 +20,6 @@ export default defineAppConfig({
       title: "Useful resources",
       links: [
         {
-          label: "Changelog",
-          icon: "i-lucide-history",
-          to: "https://github.com/shopware/meteor/releases",
-          target: "_blank",
-        },
-        {
           label: "Shopware docs",
           icon: "i-lucide-book-open",
           to: "https://developer.shopware.com/",

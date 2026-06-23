@@ -101,6 +101,11 @@ export default defineNuxtConfig({
     contentRawMarkdown: false,
   },
   content: {
+    renderer: {
+      alias: {
+        tabs: "ResponsiveTabs",
+      },
+    },
     build: {
       markdown: {
         highlight: {
