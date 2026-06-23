@@ -101,17 +101,20 @@
       :style="{ gridArea: 'error' }"
     />
 
-    <div v-if="$slots.hint" class="mt-email-field__hint" :style="{ gridArea: 'hint' }">
-      <slot name="hint" />
+    <div v-if="showFieldHint" class="mt-email-field__hint" :style="{ gridArea: 'hint' }">
+      <mt-field-hint>
+        <slot name="hint">{{ hint }}</slot>
+      </mt-field-hint>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { defineProps, onMounted, ref, useTemplateRef, useId } from "vue";
+import { computed, onMounted, ref, useTemplateRef, useId, useSlots } from "vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
+import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtTooltip from "@/components/overlay/mt-tooltip/mt-tooltip.vue";
 import MtFieldAffix from "../_internal/mt-field-affix/mt-field-affix.vue";
@@ -125,7 +128,7 @@ const model = defineModel({
   type: String,
 });
 
-defineProps<{
+const props = defineProps<{
   disabled?: boolean;
   required?: boolean;
   modelValue?: string;
@@ -141,7 +144,17 @@ defineProps<{
   small?: boolean;
   isInherited?: boolean;
   isInheritanceField?: boolean;
+  /**
+   * Optional caption below the field. The `#hint` slot takes precedence when provided.
+   */
+  hint?: string | null;
 }>();
+
+const slots = useSlots();
+
+const showFieldHint = computed(
+  () => !!slots.hint || (props.hint != null && String(props.hint).trim() !== ""),
+);
 
 defineEmits(["change", "blur", "focus", "inheritance-restore", "inheritance-remove"]);
 

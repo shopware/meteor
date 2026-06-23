@@ -2,6 +2,7 @@
   <div class="mt-unit-field">
     <mt-number-field
       :model-value="modelValue"
+      :hint="hint"
       :placeholder="placeholder"
       :number-type="numberType"
       :step="step"
@@ -40,17 +41,23 @@
           @update:model-value="onUnitChange"
         />
       </template>
+
+      <template v-if="slots.hint" #hint>
+        <slot name="hint" />
+      </template>
     </mt-number-field>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, watch } from "vue";
+import { computed, useSlots, watch } from "vue";
 import MtNumberField from "../mt-number-field/mt-number-field.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtUnitSelect from "../_internal/mt-unit-select/mt-unit-select.vue";
 import convert from "convert-units";
 import type { Unit } from "convert-units";
+
+const slots = useSlots();
 
 const props = withDefaults(
   defineProps<{
@@ -79,6 +86,10 @@ const props = withDefaults(
     copyable?: boolean;
     copyableTooltip?: boolean;
     zIndex?: number | null;
+    /**
+     * Optional caption below the field. The `#hint` slot takes precedence when provided.
+     */
+    hint?: string | null;
   }>(),
   {
     modelValue: undefined,
@@ -86,6 +97,7 @@ const props = withDefaults(
     step: 1,
     defaultUnit: "mm",
     zIndex: null,
+    hint: null,
   },
 );
 

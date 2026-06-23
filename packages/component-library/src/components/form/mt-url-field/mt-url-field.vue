@@ -110,18 +110,21 @@
 
     <mt-field-error :error="error" :style="{ gridArea: 'error' }" />
 
-    <div v-if="$slots.hint" class="mt-url-field__hint">
-      <slot name="hint" />
+    <div v-if="showFieldHint" class="mt-url-field__hint">
+      <mt-field-hint>
+        <slot name="hint">{{ hint }}</slot>
+      </mt-field-hint>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { useId, computed, watch, ref, defineProps, defineEmits } from "vue";
+import { useId, computed, watch, ref, useSlots } from "vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
+import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
 import MtTooltip from "../../overlay/mt-tooltip/mt-tooltip.vue";
 import { useClipboard } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
@@ -168,6 +171,10 @@ const props = withDefaults(
     placeholder?: string;
     name?: string;
     size?: "small" | "default";
+    /**
+     * Optional caption below the field. The `#hint` slot takes precedence when provided.
+     */
+    hint?: string | null;
   }>(),
   {
     size: "default",
@@ -175,6 +182,12 @@ const props = withDefaults(
 );
 
 const id = useId();
+
+const slots = useSlots();
+
+const showFieldHint = computed(
+  () => !!slots.hint || (props.hint != null && String(props.hint).trim() !== ""),
+);
 
 const currentValue = ref(modelValue.value);
 const sslActive = ref(true);

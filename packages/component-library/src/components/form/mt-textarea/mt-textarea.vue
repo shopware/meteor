@@ -52,8 +52,10 @@
       :style="{ gridArea: 'error' }"
     />
 
-    <div v-if="!!$slots.hint" class="mt-textarea__hint">
-      <slot name="hint" />
+    <div v-if="showFieldHint" class="mt-textarea__hint">
+      <mt-field-hint>
+        <slot name="hint">{{ hint }}</slot>
+      </mt-field-hint>
     </div>
 
     <span v-if="!!maxLength" class="mt-textarea__max-length"
@@ -63,26 +65,28 @@
 </template>
 
 <script setup lang="ts">
+import { computed, useSlots } from "vue";
 import { useId } from "@/composables/useId";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
+import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
 
 const model = defineModel({
   type: String,
 });
 
-const id = useId();
-
 defineEmits<{
-  change: [typeof model.value];
-  "inheritance-remove": void;
-  "inheritance-restore": void;
-  focus: void;
-  blur: void;
+  change: [string | undefined];
+  "inheritance-remove": [];
+  "inheritance-restore": [];
+  focus: [];
+  blur: [];
 }>();
 
-defineProps<{
+const id = useId();
+
+const props = defineProps<{
   required?: boolean;
   disabled?: boolean;
   name?: string;
@@ -95,7 +99,14 @@ defineProps<{
   maxLength?: number;
   isInherited?: boolean;
   isInheritanceField?: boolean;
+  hint?: string | null;
 }>();
+
+const slots = useSlots();
+
+const showFieldHint = computed(
+  () => !!slots.hint || (props.hint != null && String(props.hint).trim() !== ""),
+);
 </script>
 
 <style scoped>

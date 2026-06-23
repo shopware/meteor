@@ -63,17 +63,20 @@
     </template>
 
     <template #field-hint>
-      <slot name="hint">
-        {{ hint }}
-      </slot>
+      <mt-field-hint v-if="showFieldHint">
+        <slot name="hint">
+          {{ hint }}
+        </slot>
+      </mt-field-hint>
     </template>
   </mt-base-field>
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, computed, useSlots } from "vue";
 import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
+import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import { useI18n } from "vue-i18n";
 
@@ -85,7 +88,6 @@ const props = withDefaults(
     placeholder?: string;
     disabled?: boolean;
     error?: { code: number; detail: string } | null;
-    // @deprecated - use slot "hint" instead
     hint?: string | null;
     toggable?: boolean;
     name?: string | undefined;
@@ -103,7 +105,6 @@ const props = withDefaults(
     placeholder: "",
     toggable: true,
     error: null,
-    // @deprecated - use slot "hint" instead
     hint: null,
     required: false,
     helpText: "",
@@ -114,6 +115,12 @@ const props = withDefaults(
     idSuffix: "",
     name: undefined,
   },
+);
+
+const slots = useSlots();
+
+const showFieldHint = computed(
+  () => !!slots.hint || (props.hint != null && String(props.hint).trim() !== ""),
 );
 
 const emit = defineEmits<{
