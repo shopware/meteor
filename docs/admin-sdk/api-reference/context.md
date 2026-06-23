@@ -7,7 +7,7 @@ sidebar_position: 40
 
 The Context API provides read access to the current state of the Shopware Administration. Extensions can use these methods to retrieve information about the active language, locale, currency, environment, Shopware version, and more.
 
-This is useful for adapting extension behavior based on the current Administration context — for example, loading translations for the active language or checking the Shopware version before using a newer API.
+This is useful for adapting extension behavior based on the current Administration context — for example, loading translations for the active language, matching the active color theme, or checking the Shopware version before using a newer API.
 
 ```ts
 import { context } from "@shopware-ag/meteor-admin-sdk";
@@ -173,6 +173,133 @@ context.subscribeLocale(({ locale, fallbackLocale }) => {
   locale: 'de-DE',
   fallbackLocale: 'en-GB'
 }
+```
+
+## getTheme()
+
+Returns the current resolved color theme of the Administration. A user's `system` preference is always resolved to the value that is actually applied, so this is either `"light"` or `"dark"`. Use this to render your iframe app in the same theme as the Administration.
+
+#### Usage
+
+```ts
+const theme = await context.getTheme();
+```
+
+#### Parameters
+
+No parameters needed.
+
+#### Return value
+
+```ts
+Promise<"light" | "dark">
+```
+
+#### Example value
+
+```ts
+"dark";
+```
+
+## subscribeTheme()
+
+Subscribes to theme changes in the Administration. The callback fires whenever the resolved theme changes, allowing your app to react immediately. Returns a function that stops the subscription.
+
+#### Usage
+
+```ts
+const unsubscribe = context.subscribeTheme((theme) => {
+  // theme is "light" or "dark"
+});
+
+// Stop listening when you no longer need updates
+unsubscribe();
+```
+
+#### Parameters
+
+| Name             | Description                                |
+| :--------------- | :----------------------------------------- |
+| `callbackMethod` | Called every time the resolved theme changes |
+
+#### Callback value
+
+```ts
+"light" | "dark"
+```
+
+## syncTheme()
+
+A small helper that mirrors the Administration theme onto your app. It writes the resolved theme to the `data-theme` attribute of an element (the document root by default), applies the current value immediately, and keeps it in sync with future changes. Because Meteor tokens are theme-aware through `data-theme`, this is usually all an iframe app needs to match the Administration's appearance.
+
+#### Usage
+
+```ts
+// Sync to <html data-theme="…"> and keep it updated
+const stopSync = await context.syncTheme();
+
+// Stop syncing later (e.g. when the app is torn down)
+stopSync();
+
+// Sync to a specific element instead of the document root
+await context.syncTheme({ target: document.getElementById("app") });
+```
+
+#### Parameters
+
+| Name            | Description                                                                          |
+| :-------------- | :----------------------------------------------------------------------------------- |
+| `options.target` | Element whose `data-theme` attribute is updated. Defaults to `document.documentElement` |
+
+#### Return value
+
+```ts
+Promise<() => void>
+```
+
+The returned function stops the subscription.
+
+### Minimal iframe app example
+
+A complete iframe app that adopts the Administration theme and reacts to changes:
+
+```html
+<!doctype html>
+<html>
+  <head>
+    <!-- Load your Meteor tokens stylesheet so themed CSS variables are available -->
+    <link rel="stylesheet" href="/your-meteor-tokens.css" />
+  </head>
+  <body>
+    <h1>My themed app</h1>
+
+    <script type="module">
+      import { context } from "@shopware-ag/meteor-admin-sdk";
+
+      // Mirror the Administration theme onto <html data-theme="…"> and keep it
+      // in sync. From here on, your Meteor-token-based styles follow the
+      // Administration automatically.
+      const stopSync = await context.syncTheme();
+
+      // Optional: stop syncing when the app unmounts.
+      window.addEventListener("beforeunload", () => stopSync());
+    </script>
+  </body>
+</html>
+```
+
+If you need the theme value yourself (for example to swap an illustration), combine `getTheme` and `subscribeTheme`:
+
+```ts
+import { context } from "@shopware-ag/meteor-admin-sdk";
+
+let theme = await context.getTheme();
+render(theme);
+
+context.subscribeTheme((next) => {
+  theme = next;
+  render(theme);
+});
 ```
 
 ## getCurrency()

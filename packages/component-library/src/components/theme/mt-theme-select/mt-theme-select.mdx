@@ -1,0 +1,88 @@
+import { ArgTypes, Canvas, Meta } from "@storybook/blocks";
+
+import * as ThemeSelectStories from "./mt-theme-select.stories";
+import StorybookPageHeader from "../../../docs/_components/storybook-page-header.js";
+
+<Meta of={ThemeSelectStories} />
+
+<StorybookPageHeader
+  title="Theme Select"
+  tagName="mt-theme-select"
+  packageImports="MtThemeSelect"
+  sourcePath="packages/component-library/src/components/theme/mt-theme-select"
+>
+  **Theme Select** lets users choose the application color theme: light, dark,
+  or following the system setting.
+</StorybookPageHeader>
+
+## When to use
+
+- Use **Theme Select** to let users pick their preferred color theme globally.
+- Use it in settings screens, profile menus, or toolbars where a theme preference belongs.
+- Use the `system` option so users can defer to their operating system preference.
+
+## Examples
+
+### Basic
+
+<Canvas of={ThemeSelectStories.Default} />
+
+### With label
+
+<Canvas of={ThemeSelectStories.WithLabel} />
+
+### Disabled
+
+<Canvas of={ThemeSelectStories.Disabled} />
+
+## Managing state
+
+**Theme Select** is a controlled component: it emits the selected scheme through `v-model` and does not apply or persist the theme itself. Pair it with the `useColorScheme` composable, which resolves the `system` option against `prefers-color-scheme`, writes the resolved value to `document.documentElement` as `data-theme`, and persists the choice to `localStorage`.
+
+<Canvas of={ThemeSelectStories.WithComposable} />
+
+### Live preview
+
+Switch the selection to see the resolved theme applied to a scoped preview. The
+`system` option follows your operating system preference.
+
+<Canvas of={ThemeSelectStories.WithPreview} />
+
+```ts
+import { useColorScheme } from "@shopware-ag/meteor-component-library";
+
+const { scheme, resolvedScheme, setScheme } = useColorScheme({
+  // storageKey: "mt-color-scheme", // set to null to disable persistence
+  // target: document.documentElement, // element that receives data-theme
+  // defaultScheme: "system",
+  // applyToTarget: true,
+});
+```
+
+- `scheme` is the user's preference (`"light" | "dark" | "system"`); bind it to `v-model`.
+- `resolvedScheme` is the value actually applied (`"light" | "dark"`) after resolving `system`.
+- `setScheme` sets the preference programmatically.
+
+## API reference
+
+<ArgTypes of={ThemeSelectStories} />
+
+## Do
+
+- Use clear, recognizable labels or tooltips for each option.
+- Default to `system` so the application respects the user's operating system preference.
+- Persist the choice so it survives reloads.
+
+## Don't
+
+- Do not use **Theme Select** for unrelated multi-option settings; it is purpose-built for color themes.
+
+## Behavior notes
+
+- The component is a thin wrapper around `mt-select` with the three color scheme options.
+- It is purely presentational. Applying and persisting the theme is the host's responsibility, which `useColorScheme` handles out of the box.
+
+## Accessibility notes
+
+- Selection and keyboard interaction follow the underlying `mt-select` component.
+- Each option is labelled with text, so the choice never relies on color alone.
