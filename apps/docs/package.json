@@ -4,11 +4,15 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "sync:changelog": "node scripts/sync-changelogs.mjs",
+    "predev": "pnpm sync:changelog",
     "dev": "nuxt dev --port 3001",
+    "prebuild": "pnpm sync:changelog",
     "build": "nuxt build",
+    "pregenerate": "pnpm sync:changelog",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare",
+    "postinstall": "nuxt prepare && pnpm sync:changelog",
     "lint:all": "pnpm lint:types && pnpm format:check",
     "format:check": "prettier . --check",
     "lint:types": "nuxt typecheck"

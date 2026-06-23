@@ -23,7 +23,6 @@ const sections = [
   {
     title: "Resources",
     links: [
-      { name: "Changelog", to: "https://github.com/shopware/meteor/releases" },
       { name: "Shopware docs", to: "https://developer.shopware.com/" },
       { name: "Brand guidelines", to: "https://brand.shopware.com/" },
       { name: "Contributing", to: "/getting-started/contributing" },

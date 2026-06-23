@@ -237,6 +237,142 @@ function findPre(children: unknown[]): MinimarkNode | null {
   return null;
 }
 
+function isMinimarkNode(node: unknown): node is MinimarkNode {
+  return Array.isArray(node) && typeof node[0] === "string";
+}
+
+// Rebuilds the subtree with every heading pushed down `by` levels (capped at
+// h6). Returns fresh node arrays so the source tree is never mutated; strings
+// and attribute objects are immutable here and shared by reference.
+function demoteHeadings(node: unknown, by = 1): unknown {
+  if (!isMinimarkNode(node)) return node;
+
+  const [tag, attributes, ...children] = node;
+  const heading = /^h([1-6])$/.exec(tag);
+  const demotedTag = heading ? `h${Math.min(6, Number(heading[1]) + by)}` : tag;
+
+  return [
+    demotedTag,
+    attributes,
+    ...children.map((child) => demoteHeadings(child, by)),
+  ] as MinimarkNode;
+}
+
+function unwrapLayoutChildren(children: unknown[]): unknown[] {
+  return children.flatMap((child) => {
+    if (isMinimarkNode(child) && child[0] === "div") {
+      return unwrapLayoutChildren(child.slice(2));
+    }
+    return [child];
+  });
+}
+
+function formatChangelogDate(date: unknown): string | null {
+  if (typeof date !== "string" && !(date instanceof Date)) return null;
+  try {
+    return new Intl.DateTimeFormat("en-US", {
+      month: "short",
+      day: "numeric",
+      year: "numeric",
+      timeZone: "UTC",
+    }).format(new Date(date));
+  } catch {
+    return String(date);
+  }
+}
+
+function slotChildren(children: unknown[], slot: string): unknown[] | null {
+  const template = children.find(
+    (child) =>
+      isMinimarkNode(child) &&
+      child[0] === "template" &&
+      `v-slot:${slot}` in (child[1] as Record<string, unknown>),
+  ) as MinimarkNode | undefined;
+
+  return template ? template.slice(2) : null;
+}
+
+function renderChangelogVersion(
+  node: MinimarkNode,
+  headingDemotion = 0,
+): (string | MinimarkNode)[] {
+  const [, attributes, ...children] = node;
+  const title =
+    typeof attributes.title === "string" ? attributes.title : "Version";
+  const date = formatChangelogDate(attributes.date);
+  const headingLevel = Math.min(6, 2 + headingDemotion);
+  const heading = [
+    `h${headingLevel}`,
+    {},
+    date ? `${title} (${date})` : title,
+  ] as MinimarkNode;
+
+  return [
+    heading,
+    ...renderMarkdownNodes(
+      slotChildren(children, "body") ?? children,
+      headingDemotion,
+    ),
+  ];
+}
+
+function renderMarkdownNode(
+  node: unknown,
+  headingDemotion = 0,
+): (string | MinimarkNode)[] {
+  if (typeof node === "string") return [node];
+  if (!isMinimarkNode(node)) return [];
+
+  const [tag, , ...children] = node;
+  if (tag === "div" || tag === "u-changelog-versions") {
+    return renderMarkdownNodes(children, headingDemotion);
+  }
+
+  if (tag === "u-changelog-version") {
+    return renderChangelogVersion(node, headingDemotion);
+  }
+
+  if (tag === "template") {
+    return renderMarkdownNodes(children, headingDemotion);
+  }
+
+  if (!headingDemotion) return [node];
+
+  const rendered = demoteHeadings(node, headingDemotion);
+  return isMinimarkNode(rendered) ? [rendered] : [];
+}
+
+function renderMarkdownNodes(
+  nodes: unknown[],
+  headingDemotion = 0,
+): (string | MinimarkNode)[] {
+  return nodes.flatMap((node) => renderMarkdownNode(node, headingDemotion));
+}
+
+function renderTabs(children: unknown[]): (string | MinimarkNode)[] {
+  const rendered: (string | MinimarkNode)[] = [];
+
+  for (const child of children) {
+    if (!isMinimarkNode(child)) continue;
+
+    if (child[0] !== "tabs-item") {
+      rendered.push(...renderMarkdownNode(child, 1));
+      continue;
+    }
+
+    const attributes = child[1] as Record<string, unknown>;
+    const label =
+      typeof attributes.label === "string" ? attributes.label : "Tab";
+    rendered.push(["h2", {}, label] as MinimarkNode);
+
+    for (const node of unwrapLayoutChildren(child.slice(2))) {
+      rendered.push(...renderMarkdownNode(node, 1));
+    }
+  }
+
+  return rendered;
+}
+
 // --- Foundations token-reference components -------------------------------
 // These dynamic components resolve their visuals from CSS variables in the
 // browser. For the static markdown export we emit the underlying token data
@@ -379,6 +515,18 @@ export function transformMeteorMdc(
   walkInPlace(page.body.value, (node) => {
     const [tag, attributes, ...children] = node;
 
+    if (tag === "tabs") {
+      return renderTabs(children);
+    }
+
+    if (tag === "u-changelog-versions") {
+      return renderMarkdownNodes(children);
+    }
+
+    if (tag === "u-changelog-version") {
+      return renderChangelogVersion(node);
+    }
+
     if (tag === "do-dont") {
       // Each card is a `["template", { "v-slot:do" | "v-slot:dont": "" }, ...]`.
       // Flatten into a bold "Do" / "Don't" label followed by the card's
@@ -387,16 +535,8 @@ export function transformMeteorMdc(
       const labels: Record<string, string> = { do: "Do", dont: "Don't" };
 
       return ["do", "dont"].flatMap((slot) => {
-        const template = children.find(
-          (child) =>
-            Array.isArray(child) &&
-            child[0] === "template" &&
-            `v-slot:${slot}` in (child[1] as Record<string, unknown>),
-        ) as MinimarkNode | undefined;
-        if (!template) return [];
-
-        const content = template.slice(2) as MinimarkNode[];
-        if (!content.length) return [];
+        const content = slotChildren(children, slot) as MinimarkNode[] | null;
+        if (!content?.length) return [];
 
         // MDC emits the second slot's list as bare <li>; wrap them back into a
         // <ul> so the export is a valid markdown list.
