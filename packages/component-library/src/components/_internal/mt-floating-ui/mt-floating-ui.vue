@@ -4,31 +4,29 @@
       <slot name="trigger" />
     </div>
     <Teleport to="body">
-      <div
-        v-if="isOpened"
-        ref="floatingUiContent"
-        v-on-click-outside="onClickOutside"
-        class="mt-floating-ui__content"
-        :data-show="isOpened"
-        tabindex="0"
-        :style="contentStyles"
-      >
+      <Transition name="popoverTransition" appear>
         <div
-          v-if="showArrow"
-          ref="floatingUiArrow"
-          class="mt-floating-ui__arrow"
-          data-popper-arrow
-        />
+          v-if="isOpened"
+          ref="floatingUiContent"
+          v-on-click-outside="onClickOutside"
+          class="mt-floating-ui__content"
+          :data-show="isOpened"
+          tabindex="0"
+          :style="contentStyles"
+        >
+          <div
+            v-if="showArrow"
+            ref="floatingUiArrow"
+            class="mt-floating-ui__arrow"
+            data-popper-arrow
+          />
 
-        <transition name="popoverTransition">
-          <template v-if="isOpened">
-            <slot
-              :reference-element-width="referenceElementWidth"
-              :reference-element-height="referenceElementHeight"
-            />
-          </template>
-        </transition>
-      </div>
+          <slot
+            :reference-element-width="referenceElementWidth"
+            :reference-element-height="referenceElementHeight"
+          />
+        </div>
+      </Transition>
     </Teleport>
   </div>
 </template>
@@ -272,32 +270,24 @@ onBeforeUnmount(() => {
     transform: rotate(45deg);
   }
 
+  &.mt-floating-ui--top,
   &.mt-floating-ui--top .mt-popover__content {
     transform-origin: top;
   }
 
+  &.mt-floating-ui--right,
   &.mt-floating-ui--right .mt-popover__content {
     transform-origin: right;
   }
 
+  &.mt-floating-ui--bottom,
   &.mt-floating-ui--bottom .mt-popover__content {
     transform-origin: bottom;
   }
 
+  &.mt-floating-ui--left,
   &.mt-floating-ui--left .mt-popover__content {
     transform-origin: left;
   }
-}
-
-.popoverTransition-enter-active,
-.popoverTransition-leave-active {
-  transition:
-    transform 0.15s,
-    opacity 0.15s;
-}
-
-.popoverTransition-enter, .popoverTransition-leave-to /* .fade-leave-active below version 2.1.8 */ {
-  transform: scale3d(1, 0, 1);
-  opacity: 0;
 }
 </style>

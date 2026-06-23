@@ -117,7 +117,7 @@ describe("mt-floating-ui", () => {
 
     expect(document.querySelector("#appWrapper")!.contains(floatingUi)).toBeTruthy(); // won't get teleported, so it's still in the app wrapper
     expect(document.querySelector("#appWrapper")!.contains(floatingUiContent)).toBeFalsy(); // will get teleported to the body, so it's outside the app wrapper
-    expect(floatingUiContent!.parentElement!.tagName).toBe("BODY");
+    expect(document.body.contains(floatingUiContent)).toBe(true);
   });
 
   it("should unmount the floating ui to the document body", async () => {
