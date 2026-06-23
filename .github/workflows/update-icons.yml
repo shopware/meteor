@@ -13,11 +13,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - uses: pnpm/action-setup@v4
 
-      - uses: actions/setup-node@v6
+      - uses: actions/setup-node@v4
         with:
           node-version: "24"
           cache: "pnpm"
@@ -25,14 +25,28 @@ jobs:
       - name: Install dependencies
         run: pnpm i --frozen-lockfile --prefer-offline
 
-      - name: Install puppeteer
-        run: npx @puppeteer/browsers install chrome
+      - name: Install puppeteer chromium
+        run: node node_modules/puppeteer/install.js
+
+      - name: Pin puppeteer chromium path
+        run: |
+          CHROMIUM="$(node -e 'console.log(require("puppeteer").executablePath())')"
+          echo "Resolved Chromium: $CHROMIUM"
+          if [ ! -x "$CHROMIUM" ]; then
+            echo "::error::Chromium not found at $CHROMIUM after puppeteer install"
+            exit 1
+          fi
+          echo "PUPPETEER_EXECUTABLE_PATH=$CHROMIUM" >> "$GITHUB_ENV"
+
+      - name: Patch svgo-autocrop for CI
+        run: |
+          sed -i 's/Puppeteer\.launch()/Puppeteer.launch({ args: ["--no-sandbox", "--disable-setuid-sandbox"] })/' node_modules/svgo-autocrop/lib/Browser.js
 
       - name: Update icons
         run: pnpm --filter @shopware-ag/meteor-icon-kit run start
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v4
+        uses: peter-evans/create-pull-request@v7
         with:
           commit-message: Update icons
           committer: Dennis Mader <${{ secrets.ICON_KIT__COMMITTER }}>
