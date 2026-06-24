@@ -31,6 +31,12 @@ export default defineAppConfig({
           to: "https://brand.shopware.com/",
           target: "_blank",
         },
+        {
+          label: "Admin SDK",
+          icon: "i-lucide-plug",
+          to: "https://developer.shopware.com/resources/admin-extension-sdk/",
+          target: "_blank",
+        },
       ],
     },
   },
