@@ -37,11 +37,6 @@ const packages = [
   },
   { dir: "packages/tokens", title: "Tokens", icon: "i-lucide-palette" },
   { dir: "packages/icon-kit", title: "Icon Kit", icon: "i-lucide-shapes" },
-  {
-    dir: "packages/stylelint-plugin-meteor",
-    title: "Stylelint Plugin",
-    icon: "i-lucide-check-check",
-  },
 ];
 
 // Walks `body` line by line, tracking fenced-code-block state the CommonMark
