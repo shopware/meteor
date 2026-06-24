@@ -74,6 +74,20 @@ function codeCell(value: string | undefined): string {
  */
 type CellPart = { code: string } | { text: string } | { raw: string };
 
+/** Discriminates a CellPart, dispatching to the handler for its variant. */
+function matchPart<R>(
+  part: CellPart,
+  on: {
+    code: (value: string) => R;
+    raw: (value: string) => R;
+    text: (value: string) => R;
+  },
+): R {
+  if ("code" in part) return on.code(part.code);
+  if ("raw" in part) return on.raw(part.raw);
+  return on.text(part.text);
+}
+
 interface Column<T> {
   header: string;
   cell: (item: T) => CellPart[];
@@ -154,11 +168,7 @@ function apiSections(componentName: string) {
  */
 function tableString<T>(columns: Column<T>[], rows: T[]): string {
   const renderPart = (part: CellPart) =>
-    "code" in part
-      ? codeCell(part.code)
-      : "raw" in part
-        ? part.raw
-        : cell(part.text);
+    matchPart(part, { code: codeCell, raw: (r) => r, text: cell });
 
   const body = rows.map(
     (row) =>
@@ -187,16 +197,13 @@ function tableNode<T>(columns: Column<T>[], rows: T[]): MinimarkNode {
   const code = (text: string): MinimarkNode => ["code", {}, cell(text)];
 
   const cellNode = (parts: CellPart[]): MinimarkNode => {
-    const contents: unknown[] = [];
-    for (const part of parts) {
-      if ("code" in part) {
-        if (part.code) contents.push(code(part.code));
-      } else if ("raw" in part) {
-        contents.push(part.raw);
-      } else if (part.text) {
-        contents.push(cell(part.text));
-      }
-    }
+    const contents = parts.flatMap((part) =>
+      matchPart<unknown[]>(part, {
+        code: (c) => (c ? [code(c)] : []),
+        raw: (r) => [r],
+        text: (t) => (t ? [cell(t)] : []),
+      }),
+    );
     return ["td", {}, ...contents] as MinimarkNode;
   };
 
@@ -240,6 +247,23 @@ function findPre(children: unknown[]): MinimarkNode | null {
 function isMinimarkNode(node: unknown): node is MinimarkNode {
   return Array.isArray(node) && typeof node[0] === "string";
 }
+
+/** Block-level tags that already serialize with surrounding blank lines. */
+const BLOCK_TAGS = new Set([
+  "p",
+  "ul",
+  "ol",
+  "blockquote",
+  "pre",
+  "table",
+  "div",
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h6",
+]);
 
 // Rebuilds the subtree with every heading pushed down `by` levels (capped at
 // h6). Returns fresh node arrays so the source tree is never mutated; strings
@@ -538,11 +562,21 @@ export function transformMeteorMdc(
         const content = slotChildren(children, slot) as MinimarkNode[] | null;
         if (!content?.length) return [];
 
-        // MDC emits the second slot's list as bare <li>; wrap them back into a
-        // <ul> so the export is a valid markdown list.
-        const normalized = content.every((child) => child[0] === "li")
+        // Re-wrap slot content so each card serializes as proper block markdown
+        // instead of gluing onto the next block. MDC emits a second slot's list
+        // as bare <li> (wrap into a <ul>), and strips the <p> wrapper around
+        // single-paragraph slot content, leaving inline nodes (wrap into a <p>).
+        const allListItems = content.every(
+          (child) => isMinimarkNode(child) && child[0] === "li",
+        );
+        const hasBlockNode = content.some(
+          (child) => isMinimarkNode(child) && BLOCK_TAGS.has(child[0]),
+        );
+        const normalized = allListItems
           ? [["ul", {}, ...content] as MinimarkNode]
-          : content;
+          : hasBlockNode
+            ? content
+            : [["p", {}, ...content] as MinimarkNode];
 
         return [
           ["p", {}, ["strong", {}, labels[slot]!]] as MinimarkNode,
