@@ -174,9 +174,15 @@ const { t } = useI18n({
 
 <style scoped>
 .mt-password-field :deep(.mt-block-field__block) {
+  background-color: var(--color-background-primary-default);
+
   &:has(input:disabled) {
     background-color: var(--color-background-tertiary-default);
   }
+}
+
+.mt-password-field.has--error :deep(.mt-block-field__block) {
+  background-color: var(--color-background-critical-default);
 }
 
 .mt-password-field__visibility-toggle {
