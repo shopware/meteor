@@ -115,6 +115,7 @@ The exported **Snackbar** type describes the notification object managed by `use
 - Do not use **Snackbar** for blocking confirmations, legal notices, or other information that must remain available until explicitly dismissed.
 - If you provide an action like `Undo`, make sure that recovery path also exists elsewhere in the interface and not only in the temporary snackbar.
 
-## Related components
+## Related
 
+- [**useSnackbar**](/composables/use-snackbar): the composable for triggering snackbars from feature code, with the full `useSnackbar()` and `Snackbar` API reference.
 - [**Banner**](/components/banner): when the message is persistent inline messaging that should remain visible while the user continues working.
