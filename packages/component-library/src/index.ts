@@ -49,6 +49,14 @@ import MtModalAction from "./components/overlay/mt-modal/sub-components/mt-modal
 import MtText from "./components/content/mt-text/mt-text.vue";
 import MtInset from "./components/layout/mt-inset/mt-inset.vue";
 import MtThemeProvider from "./components/theme/mt-theme-provider.vue";
+import MtThemeSelect from "./components/theme/mt-theme-select/mt-theme-select.vue";
+import {
+  useColorScheme,
+  type ColorScheme,
+  type ResolvedColorScheme,
+  type UseColorSchemeOptions,
+  type UseColorSchemeReturn,
+} from "./composables/useColorScheme";
 import TooltipDirective from "./directives/tooltip.directive";
 import DeviceHelperPlugin from "./plugin/device-helper.plugin";
 import MtTooltip from "./components/overlay/mt-tooltip/mt-tooltip.vue";
@@ -132,6 +140,8 @@ export {
   MtSearch,
   MtUrlField,
   MtThemeProvider,
+  MtThemeSelect,
+  useColorScheme,
   MtUnitField,
   MtEntityDataTable,
   MtEntitySelect,
@@ -193,5 +203,11 @@ export {
 
 // Exporting types
 export type { Filter, Option, Toast, Snackbar, ChartOptions };
+export type {
+  ColorScheme,
+  ResolvedColorScheme,
+  UseColorSchemeOptions,
+  UseColorSchemeReturn,
+};
 export type { Editor } from "@tiptap/vue-3";
 export type { default as Link } from "@tiptap/extension-link";

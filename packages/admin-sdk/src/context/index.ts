@@ -17,6 +17,35 @@ export const getAppInformation = createSender('contextAppInformation', {});
 export const can = createACLHelper(getAppInformation);
 export const getModuleInformation = createSender('contextModuleInformation', {});
 export const getShopId = createSender('contextShopId', {});
+export const getTheme = createSender('contextTheme', {});
+export const subscribeTheme = createSubscriber('contextTheme');
+
+/**
+ * Syncs the resolved Administration theme to the `data-theme` attribute of an
+ * element (the document root by default). The current theme is applied
+ * immediately and the attribute is updated whenever the Administration theme
+ * changes.
+ *
+ * Returns a function that stops the subscription.
+ */
+export async function syncTheme(
+  options: { target?: HTMLElement } = {},
+): Promise<() => void> {
+  const target = options.target ?? document.documentElement;
+
+  const apply = (theme: contextTheme['responseType']): void => {
+    target.dataset.theme = theme;
+  };
+
+  /*
+   * Subscribe before fetching the current value so a theme change published
+   * while getTheme() is in flight cannot slip through unobserved.
+   */
+  const unsubscribe = subscribeTheme(apply);
+  apply(await getTheme());
+
+  return unsubscribe;
+}
 
 /**
  * Get the current content language
@@ -122,4 +151,13 @@ export type contextModuleInformation = {
 
 export type contextShopId = {
   responseType: string|null,
+}
+
+/**
+ * Get the current resolved Administration color theme. A "system" preference is
+ * always resolved to the actually applied value, so this is either "light" or
+ * "dark".
+ */
+export type contextTheme = {
+  responseType: 'light' | 'dark',
 }
