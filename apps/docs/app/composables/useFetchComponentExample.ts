@@ -4,19 +4,8 @@ export interface ComponentExampleData {
 }
 
 export function useFetchComponentExample(name: string) {
-  addPrerenderHint(`/api/component-example/${name}.json`);
-
-  return useAsyncData<ComponentExampleData | null>(
+  return useFetchDocsJson<ComponentExampleData>(
     `component-example-${name}`,
-    () =>
-      $fetch<ComponentExampleData>(`/api/component-example/${name}.json`).catch(
-        () => null,
-      ),
-    {
-      lazy: import.meta.client,
-      dedupe: "defer",
-      getCachedData: (key, nuxtApp) =>
-        nuxtApp.payload.data[key] ?? nuxtApp.static.data[key],
-    },
+    `/api/component-example/${name}.json`,
   );
 }

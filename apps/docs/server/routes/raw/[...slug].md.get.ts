@@ -47,7 +47,9 @@ export default defineEventHandler(async (event) => {
     if (page.description) {
       body.value.unshift(["blockquote", {}, page.description]);
     }
-    body.value.unshift(["h1", {}, page.title]);
+    if (page.title) {
+      body.value.unshift(["h1", {}, page.title]);
+    }
   }
 
   setHeader(event, "Content-Type", "text/markdown; charset=utf-8");
