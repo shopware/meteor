@@ -1,5 +1,25 @@
 # Changelog
 
+## 5.2.0
+
+### Minor Changes
+
+- [#1155](https://github.com/shopware/meteor/pull/1155) [`dac8771`](https://github.com/shopware/meteor/commit/dac877135b31fcedaf94365f2e16f1ce4e1bea9d) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Added global css adjustments, inter font handling and css preflight reset to the library
+
+### Patch Changes
+
+- [#1155](https://github.com/shopware/meteor/pull/1155) [`dac8771`](https://github.com/shopware/meteor/commit/dac877135b31fcedaf94365f2e16f1ce4e1bea9d) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Scoped the text editor diff modal styles to avoid leaking Tailwind Preflight globally.
+
+- [#1179](https://github.com/shopware/meteor/pull/1179) [`f380305`](https://github.com/shopware/meteor/commit/f380305595b7b7abc7ede6088a6961b775fec787) Thanks [@fabianhueske](https://github.com/fabianhueske)! - Fixed `mt-card` letting full-bleed content overflow its rounded corners by clipping content with `overflow: hidden`.
+
+- [#1178](https://github.com/shopware/meteor/pull/1178) [`e21a76c`](https://github.com/shopware/meteor/commit/e21a76c571147a1b8f678d26999fe7b47198da3e) Thanks [@fabianhueske](https://github.com/fabianhueske)! - Fixed `mt-number-field` with `numberType="float"` rounding some values down due to binary floating-point errors (for example `1.035` normalized to `1.03` instead of `1.04`). Normalization now rounds on the decimal representation, so half-up rounding is consistent across values.
+
+- [#1178](https://github.com/shopware/meteor/pull/1178) [`e21a76c`](https://github.com/shopware/meteor/commit/e21a76c571147a1b8f678d26999fe7b47198da3e) Thanks [@fabianhueske](https://github.com/fabianhueske)! - Fixed `mt-number-field` with `numberType="int"` mangling decimal input on blur (for example `1.05` became `105` instead of `1`). Decimal and exponent input is now parsed as a float and rounded to the nearest integer.
+
+- [#1177](https://github.com/shopware/meteor/pull/1177) [`89e62b3`](https://github.com/shopware/meteor/commit/89e62b3e0f06b480e20ddd607945127c85d29f15) Thanks [@fabianhueske](https://github.com/fabianhueske)! - Fixed the `mt-password-field` showing the parent background behind the visibility-toggle button in dark mode. The field now paints a consistent `--color-background-primary-default` surface across the input and toggle button.
+
+- [#1172](https://github.com/shopware/meteor/pull/1172) [`db1cf75`](https://github.com/shopware/meteor/commit/db1cf75d2aa09b2039f7da587e8d2b7313af5164) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Adjusted font bundling to import the actual woff2 font files instead of vite bundling them in base64 due to library mode defaults
+
 ## 5.1.0
 
 ### Minor Changes
