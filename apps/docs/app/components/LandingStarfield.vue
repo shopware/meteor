@@ -25,8 +25,8 @@ const props = withDefaults(
     meteorCount?: number;
   }>(),
   {
-    starCount: 120,
-    meteorCount: 4,
+    starCount: 220,
+    meteorCount: 2,
   },
 );
 

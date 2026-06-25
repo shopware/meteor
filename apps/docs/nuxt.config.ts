@@ -123,6 +123,14 @@ export default defineNuxtConfig({
   },
   vite: {
     plugins: [dropMeteorGlobalReset],
+    css: {
+      // The component library's built mt-datepicker.css carries a stale
+      // `/*# sourceMappingURL=main.css.map */` comment (inherited from the
+      // bundled @vuepic/vue-datepicker vendor CSS), but no .css.map files are
+      // emitted to its dist. The dev server otherwise chases that dangling
+      // reference and logs an ENOENT "Failed to load source map" warning.
+      devSourcemap: false,
+    },
     resolve: {
       alias: {
         "vue-i18n": vueI18nPath,
@@ -134,6 +142,11 @@ export default defineNuxtConfig({
       // pre-bundler, which would inline the global reset and bypass the plugin.
       exclude: ["@shopware-ag/meteor-component-library"],
       include: [
+        // vue-i18n (aliased above to the component library's nested copy) and
+        // apexcharts (pulled in by mt-chart) are otherwise discovered at
+        // runtime, which triggers a re-optimize and full page reload.
+        "vue-i18n",
+        "apexcharts",
         "@vueuse/core",
         "remark-emoji",
         "remark-mdc",
