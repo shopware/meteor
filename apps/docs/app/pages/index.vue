@@ -140,19 +140,21 @@ const faqItems = [
         class="hero-dots-reveal absolute inset-0 -z-10 dark:hidden"
         :class="{ 'is-spot': spotActive }"
       />
-      <div
-        aria-hidden="true"
-        class="absolute inset-0 -z-10 hidden bg-[radial-gradient(120%_75%_at_50%_0%,color-mix(in_oklab,var(--color-brand-500)_16%,transparent),transparent_60%)] dark:block"
-      />
       <LandingStarfield class="-z-10 hidden dark:block" />
       <div
         aria-hidden="true"
         class="absolute inset-x-0 bottom-0 -z-10 h-3/5 bg-[linear-gradient(to_bottom,transparent,var(--hero-edge))]"
       />
+      <!-- Dark mode: a large planet curving up from the bottom edge, with the
+           starfield above it reading as the surrounding space/atmosphere. -->
+      <div
+        aria-hidden="true"
+        class="hero-earth absolute inset-x-0 bottom-0 -z-10 hidden dark:block"
+      />
       <LandingUfo />
 
       <UContainer
-        class="mx-auto flex flex-col items-center pt-16 text-center sm:pt-24 lg:pt-28"
+        class="mx-auto flex flex-col items-center pt-16 pb-16 text-center sm:pt-24 sm:pb-24 lg:pt-28 lg:pb-28"
       >
         <h1 class="hero-rise type-heading-2xl max-w-4xl text-highlighted">
           Build outstanding Shopware experiences with
@@ -218,23 +220,24 @@ const faqItems = [
           </UButton>
         </div>
       </UContainer>
-
-      <div
-        class="hero-rise marquee-mask relative mt-20 border-y border-default py-4 sm:mt-28 lg:mt-32"
-        :style="{ animationDelay: '320ms' }"
-      >
-        <UMarquee :overlay="false" class="[--duration:40s] [--gap:3rem]">
-          <div
-            v-for="item in tickerItems"
-            :key="item.label"
-            class="flex items-center gap-2 text-sm font-medium text-muted"
-          >
-            <UIcon :name="item.icon" class="size-4 shrink-0 text-muted" />
-            <span class="whitespace-nowrap">{{ item.label }}</span>
-          </div>
-        </UMarquee>
-      </div>
     </section>
+
+    <!-- Feature ticker, sitting flush below the gradient hero section. -->
+    <div
+      class="hero-rise marquee-mask relative border-y border-default py-4"
+      :style="{ animationDelay: '320ms' }"
+    >
+      <UMarquee :overlay="false" class="[--duration:40s] [--gap:3rem]">
+        <div
+          v-for="item in tickerItems"
+          :key="item.label"
+          class="flex items-center gap-2 text-sm font-medium text-muted"
+        >
+          <UIcon :name="item.icon" class="size-4 shrink-0 text-muted" />
+          <span class="whitespace-nowrap">{{ item.label }}</span>
+        </div>
+      </UMarquee>
+    </div>
 
     <!-- Why Meteor: value proposition -->
     <section
@@ -648,26 +651,51 @@ const faqItems = [
   corner-shape: squircle;
 }
 
-/* Dark mode gets a dark-blue night sky with stars; light mode gets a gray dot
- * grid (.hero-dots). --hero-edge (the hero's bottom color) is shared with the
- * hero fade and the section transition so the blend stays seamless. */
+/* Dark mode gets a night-sky gradient + starfield with a planet rising from the
+ * bottom; light mode gets a gray dot grid (.hero-dots). --hero-edge (the hero's
+ * bottom color) is shared with the hero fade and the section transition so the
+ * blend stays seamless. */
 .landing {
   --hero-gradient: none;
   --hero-edge: var(--ui-bg);
 }
 
 .dark .landing {
+  /* Night sky: a faint blue base at the bottom (by the planet's atmosphere)
+   * fading smoothly to pure black space well before the top. */
   --hero-gradient: linear-gradient(
-    180deg,
-    #0a1733 0%,
-    #081025 55%,
-    #060a18 100%
+    0deg,
+    #0b1c3a 0%,
+    #03060e 60%,
+    #000000 100%
   );
-  --hero-edge: var(--ui-bg);
 }
 
 .hero {
   background: var(--hero-gradient);
+}
+
+/* The planet: a large, bright atmospheric rim over a dark body, rising from the
+ * bottom edge of the hero. Shown in dark mode via the dark:block utility. */
+.hero-earth {
+  height: 88%;
+  background:
+    /* atmospheric halo — a faint blue glow bleeding off the limb into space */
+    radial-gradient(
+      90% 90% at 50% 142%,
+      rgba(86, 158, 245, 0.14) 46%,
+      rgba(56, 132, 240, 0.06) 58%,
+      transparent 70%
+    ),
+    /* planet — dark body with a soft cool limb forming the horizon */
+    radial-gradient(
+      78% 82% at 50% 142%,
+      #123f73 0%,
+      #0a2244 50%,
+      rgba(130, 188, 255, 0.32) 64%,
+      rgba(110, 175, 250, 0.1) 68%,
+      transparent 75%
+    );
 }
 
 .hero-dots {
