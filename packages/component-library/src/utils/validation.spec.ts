@@ -1,5 +1,5 @@
 import { describe, it } from "vitest";
-import { required } from "./validation.service";
+import { required } from "./validation";
 
 describe("validation-service", () => {
   describe("required", () => {
