@@ -22,8 +22,8 @@
 
 <script setup lang="ts">
 import { computed, useAttrs } from "vue";
-import MtIcon from "../icons-media/mt-icon/mt-icon.vue";
-import MtColorBadge from "../feedback-indicator/mt-color-badge/mt-color-badge.vue";
+import MtIcon from "../mt-icon/mt-icon.vue";
+import MtColorBadge from "../mt-color-badge/mt-color-badge.vue";
 import { useI18n } from "vue-i18n";
 
 const props = withDefaults(

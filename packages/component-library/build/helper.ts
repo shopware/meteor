@@ -64,7 +64,7 @@ function getInterUiPackageDirectory(): string {
 }
 
 function getInterFontCss(): string {
-  const cssPath = path.resolve(__dirname, "../src/components/assets/css/fonts/inter.font.css");
+  const cssPath = path.resolve(__dirname, "../src/assets/css/fonts/inter.font.css");
   let css = fs.readFileSync(cssPath, "utf-8");
 
   for (const fontName of interFontNames) {

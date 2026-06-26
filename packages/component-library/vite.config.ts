@@ -108,7 +108,7 @@ export default defineConfig({
       scss: {
         additionalData: `
           @use "sass:math";
-          @import "${path.resolve(__dirname, "src/components/assets/scss/variables.scss")}";
+          @import "${path.resolve(__dirname, "src/assets/scss/variables.scss")}";
         `,
       },
     },
