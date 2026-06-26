@@ -55,7 +55,7 @@ import {
   MtSelectResultAddItemSelectByKeyboardListener,
   MtSelectResultRemoveActiveItemListener,
   MtSelectResultRemoveItemSelectByKeyboardListener,
-} from "@/helper/provideInjectKeys";
+} from "./mt-select-result-context";
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
 

@@ -33,7 +33,7 @@ import {
   MtSelectResultAddItemSelectByKeyboardListener,
   MtSelectResultRemoveActiveItemListener,
   MtSelectResultRemoveItemSelectByKeyboardListener,
-} from "@/helper/provideInjectKeys";
+} from "./mt-select-result-context";
 
 export default defineComponent({
   components: {
