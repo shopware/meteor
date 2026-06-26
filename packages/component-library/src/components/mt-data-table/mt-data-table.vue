@@ -630,7 +630,7 @@ import MtDataTablePriceRenderer from "./renderer/mt-data-table-price-renderer.vu
 import type { PriceColumnDefinition } from "./renderer/mt-data-table-price-renderer.vue";
 import MtSegmentedControl from "../mt-segmented-control/mt-segmented-control.vue";
 import type { SegmentedControlActionsProp } from "../mt-segmented-control/mt-segmented-control.vue";
-import MtFloatingUi from "../_internal/mt-floating-ui/mt-floating-ui.vue";
+import MtFloatingUi from "../mt-floating-ui/mt-floating-ui.vue";
 import MtTooltipDirective from "../../directives/tooltip.directive";
 import MtEmptyState from "../mt-empty-state/mt-empty-state.vue";
 import StickyColumn from "../../directives/stickyColumn.directive";

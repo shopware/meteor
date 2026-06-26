@@ -1,6 +1,6 @@
 import { expect } from "@storybook/test";
 import { within, userEvent } from "@storybook/test";
-import { waitUntil } from "../../../_internal/test-helper";
+import { waitUntil } from "../../_internal/test-helper";
 import meta, {
   Default,
   type MtFloatingUiMeta,

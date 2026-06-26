@@ -244,7 +244,7 @@ import type { PropType } from "vue";
 import { defineComponent } from "vue";
 import { debounce } from "@/utils/debounce";
 import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
-import MtFloatingUi from "../_internal/mt-floating-ui/mt-floating-ui.vue";
+import MtFloatingUi from "../mt-floating-ui/mt-floating-ui.vue";
 import MtText from "@/components/mt-text/mt-text.vue";
 import { createFocusTrap } from "focus-trap";
 import type { FocusTrap } from "focus-trap";

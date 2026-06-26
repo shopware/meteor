@@ -37,7 +37,7 @@ import MtPromoBadge from "./components/mt-promo-badge/mt-promo-badge.vue";
 import MtPopover from "./components/mt-popover/mt-popover.vue";
 import MtPopoverItem from "./components/mt-popover-item/mt-popover-item.vue";
 import MtPopoverItemResult from "./components/mt-popover-item-result/mt-popover-item-result.vue";
-import MtFloatingUi from "./components/_internal/mt-floating-ui/mt-floating-ui.vue";
+import MtFloatingUi from "./components/mt-floating-ui/mt-floating-ui.vue";
 import MtModal from "./components/mt-modal/mt-modal.vue";
 import MtModalRoot from "./components/mt-modal/sub-components/mt-modal-root.vue";
 import MtModalClose from "./components/mt-modal/sub-components/mt-modal-close.vue";

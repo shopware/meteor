@@ -1,7 +1,7 @@
 import type { StoryObj } from "@storybook/vue3";
 import MtFloatingUi, { type MtFloatingUiProps } from "./mt-floating-ui.vue";
-import MtButton from "../../mt-button/mt-button.vue";
-import MtNumberField from "../../mt-number-field/mt-number-field.vue";
+import MtButton from "../mt-button/mt-button.vue";
+import MtNumberField from "../mt-number-field/mt-number-field.vue";
 import { ref } from "vue";
 import type { SlottedMeta } from "@/_internal/story-helper";
 

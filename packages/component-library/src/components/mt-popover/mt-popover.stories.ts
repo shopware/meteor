@@ -1,7 +1,7 @@
 import MtPopover from "./mt-popover.vue";
 import MtPopoverItem from "../mt-popover-item/mt-popover-item.vue";
 import MtPopoverItemResult from "../mt-popover-item-result/mt-popover-item-result.vue";
-import MtFloatingUi from "../_internal/mt-floating-ui/mt-floating-ui.vue";
+import MtFloatingUi from "../mt-floating-ui/mt-floating-ui.vue";
 import MtButton from "../mt-button/mt-button.vue";
 import type { SlottedMeta } from "@/_internal/story-helper";
 import { defineComponent } from "vue";
