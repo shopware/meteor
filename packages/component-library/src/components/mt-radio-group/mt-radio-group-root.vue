@@ -32,8 +32,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, provide, readonly } from "vue";
-import { useId } from "@/composables/useId";
+import { computed, provide, readonly, useId } from "vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
@@ -71,7 +70,7 @@ const identification = computed(() => {
   if (props.name) {
     return props.name;
   }
-  return `mt-field--${id.value}`;
+  return `mt-field--${id}`;
 });
 
 const selectedValue = computed({

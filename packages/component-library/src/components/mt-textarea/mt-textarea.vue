@@ -63,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import { useId } from "@/composables/useId";
+import { useId } from "vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
