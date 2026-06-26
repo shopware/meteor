@@ -1,19 +1,21 @@
+import { expect, userEvent, within } from "@storybook/test";
+import type { StoryObj } from "@storybook/vue3";
 import meta from "./tooltip.stories";
-import { within, userEvent } from "@storybook/test";
-import { expect } from "@storybook/test";
 import { waitUntil } from "../_internal/test-helper";
+
+type Story = StoryObj<typeof meta>;
 
 export default {
   ...meta,
   title: "Directives/Tooltip/Interaction tests",
   tags: ["!autodocs"],
-};
+} as typeof meta;
 
-export const VisualTestRenderIcon = {
+export const VisualTestRenderIcon: Story = {
   name: "Render icon",
 };
 
-export const VisualTestRenderTooltip = {
+export const VisualTestRenderTooltip: Story = {
   name: "Render tooltip",
   args: {
     message: "This is the help text",
@@ -28,14 +30,14 @@ export const VisualTestRenderTooltip = {
     // wait until tooltip is loaded
     await waitUntil(() => document.querySelector(".mt-tooltip"));
 
-    const tooltip = within(document.getElementsByClassName("mt-tooltip")[0]);
+    const tooltip = within(document.getElementsByClassName("mt-tooltip")[0] as HTMLElement);
     const helpText = tooltip.getByText("This is the help text");
 
     expect(helpText).toBeDefined();
   },
 };
 
-export const VisualTestRenderTooltipInWide = {
+export const VisualTestRenderTooltipInWide: Story = {
   name: "Render tooltip in wide",
   args: {
     message: "This is the help text",
@@ -52,7 +54,7 @@ export const VisualTestRenderTooltipInWide = {
     await waitUntil(() => document.querySelector(".mt-tooltip"));
     await waitUntil(() => document.querySelector(".mt-tooltip"));
 
-    const tooltip = within(document.getElementsByClassName("mt-tooltip")[0]);
+    const tooltip = within(document.getElementsByClassName("mt-tooltip")[0] as HTMLElement);
     const helpText = tooltip.getByText("This is the help text");
 
     expect(helpText).toBeDefined();
