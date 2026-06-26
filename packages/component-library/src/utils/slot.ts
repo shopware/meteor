@@ -4,11 +4,11 @@ export function hasSlotContent(slot: Slot | undefined | null, props: any = {}) {
   return !isSlotEmpty(slot, props);
 }
 
-export function isSlotEmpty(slot: Slot | undefined | null, props: any = {}) {
+function isSlotEmpty(slot: Slot | undefined | null, props: any = {}) {
   return isVNodeEmpty(slot?.(props));
 }
 
-export function isVNodeEmpty(vnode: VNode | VNode[] | undefined | null) {
+function isVNodeEmpty(vnode: VNode | VNode[] | undefined | null) {
   return (
     !vnode ||
     asArray(vnode).every(

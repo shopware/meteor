@@ -1,14 +1,3 @@
-/**
- * Deep copy an object
- */
-export function deepCopyObject<O extends object>(copyObject: O): O {
-  return JSON.parse(JSON.stringify(copyObject)) as O;
-}
-
-export function hasOwnProperty(scope: any, prop: string): boolean {
-  return Object.prototype.hasOwnProperty.call(scope, prop);
-}
-
 type GetPath = string | number | (string | number)[];
 
 /**
@@ -91,8 +80,6 @@ export function deepMergeObjects<T extends object>(target: T, source: Partial<T>
 }
 
 export default {
-  deepCopyObject,
-  hasOwnProperty,
   get,
   getPropertyValue,
 };
