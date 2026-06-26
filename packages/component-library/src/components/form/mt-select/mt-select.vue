@@ -129,7 +129,7 @@ import MtSelectResultList from "../_internal/mt-select-base/_internal/mt-select-
 import MtSelectResult from "../_internal/mt-select-base/_internal/mt-select-result.vue";
 import MtSelectSelectionList from "../_internal/mt-select-base/_internal/mt-select-selection-list.vue";
 import MtHighlightText from "../../_internal/mt-highlight-text.vue";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/use-meteor-i18n";
 
 export default defineComponent({
   name: "MtSelect",
@@ -368,7 +368,8 @@ export default defineComponent({
   ],
 
   setup() {
-    const { t } = useI18n({
+    const { t } = useMeteorI18n({
+      namespace: "mt.select",
       messages: {
         en: {
           messageNoResults: 'No results found for "{term}".',

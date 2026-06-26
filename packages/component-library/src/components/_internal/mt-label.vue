@@ -24,7 +24,7 @@
 import { computed, useAttrs } from "vue";
 import MtIcon from "../icons-media/mt-icon/mt-icon.vue";
 import MtColorBadge from "../feedback-indicator/mt-color-badge/mt-color-badge.vue";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/use-meteor-i18n";
 
 const props = withDefaults(
   defineProps<{
@@ -45,7 +45,8 @@ const props = withDefaults(
   },
 );
 
-const { t } = useI18n({
+const { t } = useMeteorI18n({
+  namespace: "mt.label",
   messages: {
     en: {
       remove: "Remove",

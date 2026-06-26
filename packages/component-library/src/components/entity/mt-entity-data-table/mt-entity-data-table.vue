@@ -102,7 +102,7 @@ import { computedAsync } from "@vueuse/core";
 import type { MtPopoverItemType } from "@/components/overlay/mt-popover-item/mt-popover-item.vue";
 import type { Filter } from "@/components/table-and-list/mt-data-table/mt-data-table.interfaces";
 import type { AvailableFilter } from "./mt-entity-data-table.interfaces";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/use-meteor-i18n";
 import MtModalRoot from "@/components/overlay/mt-modal/sub-components/mt-modal-root.vue";
 import MtModal from "@/components/overlay/mt-modal/mt-modal.vue";
 import MtButton from "@/components/form/mt-button/mt-button.vue";
@@ -161,7 +161,8 @@ const emit = defineEmits<{
   (e: "bulk-edit", rowIds: string[]): void;
 }>();
 
-const { t } = useI18n({
+const { t } = useMeteorI18n({
+  namespace: "mt.entity-data-table",
   messages: {
     en: {
       booleanFilter: {

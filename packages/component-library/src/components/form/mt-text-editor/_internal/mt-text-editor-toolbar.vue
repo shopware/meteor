@@ -97,7 +97,8 @@ import { computed, watch, type PropType } from "vue";
 import mtPopover from "@/components/overlay/mt-popover/mt-popover.vue";
 import mtPopoverItem from "@/components/overlay/mt-popover-item/mt-popover-item.vue";
 import mtTextEditorToolbarButton from "./mt-text-editor-toolbar-button.vue";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/use-meteor-i18n";
+import { meteorTextEditorMessages } from "../mt-text-editor.i18n";
 
 export interface CustomButton {
   name: string;
@@ -113,69 +114,7 @@ export interface CustomButton {
   contextualButtons?: (editor: Editor) => CustomButton[];
 }
 
-const { t } = useI18n({
-  useScope: "global",
-  messages: {
-    en: {
-      "mt-text-editor-toolbar": {
-        buttons: {
-          format: "Format",
-          p: "Paragraph",
-          h1: "Headline 1",
-          h2: "Headline 2",
-          h3: "Headline 3",
-          h4: "Headline 4",
-          h5: "Headline 5",
-          h6: "Headline 6",
-          bold: "Bold",
-          italic: "Italic",
-          underline: "Underline",
-          strikethrough: "Strikethrough",
-          superscript: "Superscript",
-          subscript: "Subscript",
-          "text-alignment": "Text Alignment",
-          "align-left": "Align left",
-          "align-center": "Align center",
-          "align-right": "Align right",
-          justify: "Justify",
-          "unordered-list": "Insert Unordered List",
-          "numbered-list": "Insert Ordered List",
-          undo: "Undo",
-          redo: "Redo",
-        },
-      },
-    },
-    de: {
-      "mt-text-editor-toolbar": {
-        buttons: {
-          format: "Format",
-          p: "Absatz",
-          h1: "Überschrift 1",
-          h2: "Überschrift 2",
-          h3: "Überschrift 3",
-          h4: "Überschrift 4",
-          h5: "Überschrift 5",
-          h6: "Überschrift 6",
-          bold: "Fett",
-          italic: "Kursiv",
-          underline: "Unterstrichen",
-          strikethrough: "Durchgestrichen",
-          superscript: "Hochgestellt",
-          subscript: "Tiefgestellt",
-          "text-alignment": "Textausrichtung",
-          "align-left": "Links ausrichten",
-          "align-center": "Zentriert ausrichten",
-          "align-right": "Rechts ausrichten",
-          justify: "Blocksatz",
-          "unordered-list": "Unsortierte Liste einfügen",
-          "numbered-list": "Sortierte Liste einfügen",
-          undo: "Rückgängig",
-          redo: "Wiederholen",
-        },
-      },
-    },
-  },
-});
+const { t } = useMeteorI18n({ messages: meteorTextEditorMessages });
 
 const props = defineProps({
   editor: {
@@ -201,49 +140,49 @@ const emit = defineEmits(["updateContextualButtons"]);
 const defaultButtons: CustomButton[] = [
   {
     name: "format",
-    label: "mt-text-editor-toolbar.buttons.format",
+    label: "mt.text-editor-toolbar.buttons.format",
     icon: "regular-style-xs",
     position: 1000,
     children: [
       {
         name: "p",
-        label: "mt-text-editor-toolbar.buttons.p",
+        label: "mt.text-editor-toolbar.buttons.p",
         action: () => props.editor.chain().focus().setParagraph().run(),
         isActive: (editor) => editor.isActive("paragraph"),
       },
       {
         name: "h1",
-        label: "mt-text-editor-toolbar.buttons.h1",
+        label: "mt.text-editor-toolbar.buttons.h1",
         action: () => props.editor.chain().focus().setHeading({ level: 1 }).run(),
         isActive: (editor) => editor.isActive("heading", { level: 1 }),
       },
       {
         name: "h2",
-        label: "mt-text-editor-toolbar.buttons.h2",
+        label: "mt.text-editor-toolbar.buttons.h2",
         action: () => props.editor.chain().focus().setHeading({ level: 2 }).run(),
         isActive: (editor) => editor.isActive("heading", { level: 2 }),
       },
       {
         name: "h3",
-        label: "mt-text-editor-toolbar.buttons.h3",
+        label: "mt.text-editor-toolbar.buttons.h3",
         action: () => props.editor.chain().focus().setHeading({ level: 3 }).run(),
         isActive: (editor) => editor.isActive("heading", { level: 3 }),
       },
       {
         name: "h4",
-        label: "mt-text-editor-toolbar.buttons.h4",
+        label: "mt.text-editor-toolbar.buttons.h4",
         action: () => props.editor.chain().focus().setHeading({ level: 4 }).run(),
         isActive: (editor) => editor.isActive("heading", { level: 4 }),
       },
       {
         name: "h5",
-        label: "mt-text-editor-toolbar.buttons.h5",
+        label: "mt.text-editor-toolbar.buttons.h5",
         action: () => props.editor.chain().focus().setHeading({ level: 5 }).run(),
         isActive: (editor) => editor.isActive("heading", { level: 5 }),
       },
       {
         name: "h6",
-        label: "mt-text-editor-toolbar.buttons.h6",
+        label: "mt.text-editor-toolbar.buttons.h6",
         action: () => props.editor.chain().focus().setHeading({ level: 6 }).run(),
         isActive: (editor) => editor.isActive("heading", { level: 6 }),
       },
@@ -251,7 +190,7 @@ const defaultButtons: CustomButton[] = [
   },
   {
     name: "bold",
-    label: "mt-text-editor-toolbar.buttons.bold",
+    label: "mt.text-editor-toolbar.buttons.bold",
     icon: "regular-bold-xs",
     action: () => props.editor.chain().focus().toggleBold().run(),
     isActive: (editor) => editor.isActive("bold"),
@@ -259,7 +198,7 @@ const defaultButtons: CustomButton[] = [
   },
   {
     name: "italic",
-    label: "mt-text-editor-toolbar.buttons.italic",
+    label: "mt.text-editor-toolbar.buttons.italic",
     icon: "regular-italic-xs",
     action: () => props.editor.chain().focus().toggleItalic().run(),
     isActive: (editor) => editor.isActive("italic"),
@@ -267,7 +206,7 @@ const defaultButtons: CustomButton[] = [
   },
   {
     name: "underline",
-    label: "mt-text-editor-toolbar.buttons.underline",
+    label: "mt.text-editor-toolbar.buttons.underline",
     icon: "regular-underline-xs",
     action: () => props.editor.chain().focus().toggleUnderline().run(),
     isActive: (editor) => editor.isActive("underline"),
@@ -275,7 +214,7 @@ const defaultButtons: CustomButton[] = [
   },
   {
     name: "strikethrough",
-    label: "mt-text-editor-toolbar.buttons.strikethrough",
+    label: "mt.text-editor-toolbar.buttons.strikethrough",
     icon: "regular-strikethrough-xs",
     action: () => props.editor.chain().focus().toggleStrike().run(),
     isActive: (editor) => editor.isActive("strike"),
@@ -283,7 +222,7 @@ const defaultButtons: CustomButton[] = [
   },
   {
     name: "superscript",
-    label: "mt-text-editor-toolbar.buttons.superscript",
+    label: "mt.text-editor-toolbar.buttons.superscript",
     icon: "regular-superscript-xs",
     action: () => props.editor.chain().focus().toggleSuperscript().run(),
     isActive: (editor) => editor.isActive("superscript"),
@@ -291,7 +230,7 @@ const defaultButtons: CustomButton[] = [
   },
   {
     name: "subscript",
-    label: "mt-text-editor-toolbar.buttons.subscript",
+    label: "mt.text-editor-toolbar.buttons.subscript",
     icon: "regular-subscript-xs",
     action: () => props.editor.chain().focus().toggleSubscript().run(),
     isActive: (editor) => editor.isActive("subscript"),
@@ -299,30 +238,30 @@ const defaultButtons: CustomButton[] = [
   },
   {
     name: "text-alignment",
-    label: "mt-text-editor-toolbar.buttons.text-alignment",
+    label: "mt.text-editor-toolbar.buttons.text-alignment",
     icon: "regular-align-left-xs",
     children: [
       {
         name: "align-left",
-        label: "mt-text-editor-toolbar.buttons.align-left",
+        label: "mt.text-editor-toolbar.buttons.align-left",
         action: () => props.editor.chain().focus().setTextAlign("left").run(),
         isActive: (editor) => editor.isActive({ textAlign: "left" }),
       },
       {
         name: "align-center",
-        label: "mt-text-editor-toolbar.buttons.align-center",
+        label: "mt.text-editor-toolbar.buttons.align-center",
         action: () => props.editor.chain().focus().setTextAlign("center").run(),
         isActive: (editor) => editor.isActive({ textAlign: "center" }),
       },
       {
         name: "align-right",
-        label: "mt-text-editor-toolbar.buttons.align-right",
+        label: "mt.text-editor-toolbar.buttons.align-right",
         action: () => props.editor.chain().focus().setTextAlign("right").run(),
         isActive: (editor) => editor.isActive({ textAlign: "right" }),
       },
       {
         name: "justify",
-        label: "mt-text-editor-toolbar.buttons.justify",
+        label: "mt.text-editor-toolbar.buttons.justify",
         action: () => props.editor.chain().focus().setTextAlign("justify").run(),
         isActive: (editor) => editor.isActive({ textAlign: "justify" }),
       },
@@ -332,7 +271,7 @@ const defaultButtons: CustomButton[] = [
   {
     name: "unordered-list",
     icon: "regular-list-unordered-xs",
-    label: "mt-text-editor-toolbar.buttons.unordered-list",
+    label: "mt.text-editor-toolbar.buttons.unordered-list",
     action: () => props.editor.chain().focus().toggleBulletList().run(),
     isActive: (editor) => editor.isActive("bulletList"),
     position: 10000,
@@ -340,7 +279,7 @@ const defaultButtons: CustomButton[] = [
   {
     name: "numbered-list",
     icon: "regular-list-numbered-xs",
-    label: "mt-text-editor-toolbar.buttons.numbered-list",
+    label: "mt.text-editor-toolbar.buttons.numbered-list",
     action: () => props.editor.chain().focus().toggleOrderedList().run(),
     isActive: (editor) => editor.isActive("orderedList"),
     position: 11000,
@@ -349,7 +288,7 @@ const defaultButtons: CustomButton[] = [
     name: "undo",
     icon: "regular-undo-xs",
     alignment: "right",
-    label: "mt-text-editor-toolbar.buttons.undo",
+    label: "mt.text-editor-toolbar.buttons.undo",
     action: () => props.editor.chain().focus().undo().run(),
     disabled: (editor) => {
       if (props.disabled) {
@@ -364,7 +303,7 @@ const defaultButtons: CustomButton[] = [
     name: "redo",
     icon: "regular-redo-xs",
     alignment: "right",
-    label: "mt-text-editor-toolbar.buttons.redo",
+    label: "mt.text-editor-toolbar.buttons.redo",
     action: () => props.editor.chain().focus().redo().run(),
     disabled: (editor) => {
       if (props.disabled) {

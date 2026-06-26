@@ -80,7 +80,6 @@
 <script lang="ts">
 import type { PropType } from "vue";
 import { defineComponent, computed } from "vue";
-import type { TranslateResult } from "vue-i18n";
 import MtCheckbox from "../../form/mt-checkbox/mt-checkbox.vue";
 import MtSwitch from "../../form/mt-switch/mt-switch.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
@@ -98,7 +97,7 @@ export default defineComponent({
   },
   props: {
     label: {
-      type: String as PropType<string | TranslateResult>,
+      type: String as PropType<string>,
       required: true,
     },
     type: {
@@ -135,7 +134,7 @@ export default defineComponent({
       default: undefined,
     },
     metaCopy: {
-      type: String as PropType<string | TranslateResult>,
+      type: String as PropType<string>,
       required: false,
       default: "",
     },

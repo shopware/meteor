@@ -24,7 +24,7 @@ import MtIcon from "../../../icons-media/mt-icon/mt-icon.vue";
 import MtTooltipDirective from "../../../../directives/tooltip.directive";
 import MtNotificationMixin from "../../../../mixins/notification.mixin";
 import { copyToClipboard as copyToClipboardUtil } from "../../../../utils/dom";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/use-meteor-i18n";
 
 export default defineComponent({
   name: "MtFieldCopyable",
@@ -56,7 +56,8 @@ export default defineComponent({
   setup(props) {
     const wasCopied = ref(false);
 
-    const { t } = useI18n({
+    const { t } = useMeteorI18n({
+      namespace: "mt.field-copyable",
       messages: {
         en: {
           tooltip: {

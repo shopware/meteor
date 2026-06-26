@@ -9,14 +9,14 @@ The meteor component library is a Vue component library developed by Shopware. I
 
 ## Requirements
 
-You need a working **Vue 3 application** with the **i18n plugin** for the translations. The main translations (English and German) are bundled in the components. For other languages you need to add the snippets for the correct paths.
+You only need a working **Vue 3 application**. Meteor is **translation-solution agnostic**: it ships its own internal i18n layer with the main English and German translations bundled in. It does **not** depend on `vue-i18n` (or any other i18n library), so there is no version to keep in sync.
 
 ## Installation
 
-Add these packages to your project:
+Add the package to your project:
 
 ```cli
-npm i @shopware-ag/meteor-component-library vue-i18n
+npm i @shopware-ag/meteor-component-library
 ```
 
 Import the `style.css` for general styling and `font.css` for the Inter font in the root file of your application or in you root styling file.
@@ -26,15 +26,37 @@ import "@shopware-ag/meteor-component-library/styles.css";
 import "@shopware-ag/meteor-component-library/font.css";
 ```
 
-Now, configure the i18n plugin for Vue.
+That's it — components render their bundled English snippets out of the box, with no setup.
+
+### Translations (optional)
+
+To switch language reactively, or to let your app provide/override translations, install the Meteor i18n plugin with an optional **host adapter**.
 
 ```js
-const i18n = createI18n({
-  legacy: false,
-});
+import { createMeteorI18nPlugin } from "@shopware-ag/meteor-component-library";
+
+// Bundled snippets only (English by default):
+app.use(createMeteorI18nPlugin());
+```
+
+Already using `vue-i18n`? Connect it with the bundled adapter — Meteor reuses your instance's locale and lets it override any snippet, falling back to its own snippets on a miss:
+
+```js
+import { createI18n } from "vue-i18n";
+import {
+  createMeteorI18nPlugin,
+  createVueI18nAdapter,
+} from "@shopware-ag/meteor-component-library";
+
+const i18n = createI18n({ legacy: false /* ... */ });
 
 app.use(i18n);
+app.use(createMeteorI18nPlugin({ adapter: createVueI18nAdapter(i18n) }));
 ```
+
+Any other solution works too — just provide an adapter (`{ locale, t }`) whose `t` returns `undefined` on a miss.
+
+To **override** Meteor's wording or **add a language**, target the public snippet keys (`mt.<component>.<key>`, e.g. `mt.pagination.nextPage`) — either through your host translations (host-first wins) or via `createMeteorI18nPlugin({ messages })`. See the developer docs for details.
 
 Each component works independently and can be imported directly from the root like this:
 

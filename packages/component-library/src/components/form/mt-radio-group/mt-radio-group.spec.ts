@@ -1,19 +1,8 @@
 import { render, screen } from "@testing-library/vue";
-import { vi } from "vitest";
 import MtRadioGroupRoot from "./mt-radio-group-root.vue";
 import MtRadioGroupList from "./mt-radio-group-list.vue";
 import MtRadioGroupItem from "./mt-radio-group-item.vue";
 import { userEvent } from "@testing-library/user-event";
-
-vi.mock("vue-i18n", async () => {
-  const actual = await vi.importActual("vue-i18n");
-  return {
-    ...actual,
-    useI18n: () => ({
-      t: (key: string) => key,
-    }),
-  };
-});
 
 describe("mt-radio-group", () => {
   it("renders all radio options", async () => {

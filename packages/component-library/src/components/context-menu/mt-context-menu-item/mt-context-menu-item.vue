@@ -14,7 +14,6 @@
 import MtPopoverItem from "../../overlay/mt-popover-item/mt-popover-item.vue";
 import type { PropType } from "vue";
 import { defineComponent } from "vue";
-import { type TranslateResult } from "vue-i18n";
 
 export default defineComponent({
   name: "MtContextMenuItem",
@@ -25,7 +24,7 @@ export default defineComponent({
 
   props: {
     label: {
-      type: String as PropType<string | TranslateResult>,
+      type: String as PropType<string>,
       required: true,
     },
 
