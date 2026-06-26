@@ -36,17 +36,77 @@ Components are fully built with TypeScript. No additional setup is required. Typ
 
 ### Configure i18n
 
-English and German translations are bundled. Register `vue-i18n` before mounting your app.
+Meteor is translation-solution agnostic and bundles English and German snippets, so nothing
+is required to get started — components render their bundled snippets out of the box.
+
+To switch language reactively or let your app provide/override translations, install the
+Meteor i18n plugin with an optional host adapter:
+
+```ts
+import { createApp } from "vue";
+import { createMeteorI18nPlugin } from "@shopware-ag/meteor-component-library";
+import App from "./App.vue";
+
+createApp(App).use(createMeteorI18nPlugin()).mount("#app");
+```
+
+Already using `vue-i18n`? Connect it with the bundled adapter. Meteor then follows your
+instance's locale and lets it override any snippet, falling back to its own snippets on a miss:
 
 ```ts
 import { createApp } from "vue";
 import { createI18n } from "vue-i18n";
+import {
+  createMeteorI18nPlugin,
+  createVueI18nAdapter,
+} from "@shopware-ag/meteor-component-library";
 import App from "./App.vue";
 
 const i18n = createI18n({ legacy: false });
 
-createApp(App).use(i18n).mount("#app");
+createApp(App)
+  .use(i18n)
+  .use(createMeteorI18nPlugin({ adapter: createVueI18nAdapter(i18n) }))
+  .mount("#app");
 ```
+
+Any other solution works by providing your own adapter (`{ locale, t }`), where `t` returns
+`undefined`/`null` on a miss.
+
+### Translating & overriding Meteor snippets
+
+Every Meteor snippet has a public key of the form `mt.<component>.<key>` — e.g.
+`mt.pagination.nextPage`, `mt.data-table.itemsPerPage`, `mt.field-error.INVALID_MAIL`. There are
+two ways to override Meteor's wording or add a language it doesn't bundle:
+
+**1. Via the host (recommended in the Shopware Admin).** Because resolution is host-first, a
+snippet registered in the host's translation system under the `mt.*` key wins. In the Admin this
+means a plugin translates a Meteor snippet exactly like any other admin snippet — add it to your
+`en-GB.json` / `de-DE.json` and register it the usual way:
+
+```json
+{ "mt": { "pagination": { "nextPage": "Weiter" } } }
+```
+
+**2. Via the plugin registry (standalone apps).** Pass `messages` to override snippets or add
+locales without a host translation system. Keys are the full public `mt.*` keys; locales are the
+codes your app uses (region-specific overrides fall back to the language, then English):
+
+```ts
+app.use(
+  createMeteorI18nPlugin({
+    messages: {
+      fr: {
+        mt: { pagination: { nextPage: "Suivant", previousPage: "Précédent" } },
+      },
+      "en-US": { mt: { pagination: { nextPage: "Next" } } },
+    },
+  }),
+);
+```
+
+Meteor bundles `en`/`de`; any unsupported locale falls back to English unless you supply it here
+(or via the host).
 
 ### Use components
 

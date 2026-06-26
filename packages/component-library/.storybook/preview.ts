@@ -2,8 +2,8 @@ import type { Preview } from "@storybook/vue3";
 import "~/src/components/assets/scss/all.scss";
 import "~/src/components/assets/css/fonts/inter.font.css";
 import { setup } from "@storybook/vue3";
-import { createApp } from "vue";
-import { createI18n } from "vue-i18n";
+import { createApp, ref } from "vue";
+import { createMeteorI18nPlugin } from "../src/i18n/plugin";
 import DeviceHelperPlugin from "./../src/plugin/device-helper.plugin";
 import MtThemeProvider from "../src/components/theme/mt-theme-provider.vue";
 import MtSnackbar from "../src/components/feedback-indicator/mt-snackbar/mt-snackbar.vue";
@@ -16,21 +16,15 @@ import "@shopware-ag/meteor-tokens/primitives.css";
 import "@shopware-ag/meteor-tokens/administration/light.css";
 import "@shopware-ag/meteor-tokens/administration/dark.css";
 
-const i18n = createI18n({
-  // something vue-i18n options here ...
-  legacy: false,
-  globalInjection: true,
-  locale: "en",
-  fallbackLocale: "en",
-  messages: {
-    en: {},
-    de: {},
-  },
-  allowComposition: true,
+// Drive Meteor's locale from the Storybook toolbar via a host adapter. The adapter only
+// supplies the reactive locale; translations come from Meteor's own bundled en/de snippets.
+const storybookLocale = ref("en");
+const meteorI18nPlugin = createMeteorI18nPlugin({
+  adapter: { locale: storybookLocale, t: () => undefined },
 });
 
 setup((app) => {
-  app.use(i18n);
+  app.use(meteorI18nPlugin);
   app.use(DeviceHelperPlugin);
 });
 
@@ -43,7 +37,9 @@ document.addEventListener("meteor-docs:snackbar", (e: Event) => {
     const snackbarEl = document.createElement("div");
     snackbarEl.id = "mt-snackbar-root";
     document.body.appendChild(snackbarEl);
-    createApp({ components: { MtSnackbar }, template: "<mt-snackbar />" }).mount(snackbarEl);
+    createApp({ components: { MtSnackbar }, template: "<mt-snackbar />" })
+      .use(meteorI18nPlugin)
+      .mount(snackbarEl);
   }
   const { addSnackbar } = useSnackbar();
   addSnackbar({
@@ -63,6 +59,18 @@ const preview: Preview = {
         items: [
           { value: "light", title: "Light" },
           { value: "dark", title: "Dark" },
+        ],
+      },
+    },
+    locale: {
+      name: "Locale",
+      defaultValue: "en",
+      toolbar: {
+        icon: "globe",
+        dynamicTitle: true,
+        items: [
+          { value: "en", title: "English" },
+          { value: "de", title: "Deutsch" },
         ],
       },
     },
@@ -110,14 +118,17 @@ const preview: Preview = {
 
   decorators: [
     ThemeProvider,
-    () => ({
-      components: { MtThemeProvider },
-      template: `
-        <mt-theme-provider>
-          <story />
-        </mt-theme-provider>
-      `,
-    }),
+    (story, context) => {
+      storybookLocale.value = context.globals.locale ?? "en";
+      return {
+        components: { MtThemeProvider },
+        template: `
+          <mt-theme-provider>
+            <story />
+          </mt-theme-provider>
+        `,
+      };
+    },
   ],
 
   tags: ["autodocs"],

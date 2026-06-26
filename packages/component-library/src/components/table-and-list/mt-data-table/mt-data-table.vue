@@ -642,7 +642,7 @@ import MtInset from "@/components/layout/mt-inset/mt-inset.vue";
 import { throttle } from "@/utils/throttle";
 import { reactive } from "vue";
 import type { Filter } from "./mt-data-table.interfaces";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/use-meteor-i18n";
 import { useDebounceFn } from "@vueuse/core";
 
 export interface BaseColumnDefinition {
@@ -1049,7 +1049,8 @@ export default defineComponent({
     "context-select",
   ],
   setup(props, { emit }) {
-    const { t } = useI18n({
+    const { t } = useMeteorI18n({
+      namespace: "mt.data-table",
       messages: {
         en: {
           itemsPerPage: "Items per page",

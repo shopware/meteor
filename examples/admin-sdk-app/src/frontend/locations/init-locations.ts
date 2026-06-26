@@ -2,6 +2,10 @@ import { createApp, h, defineAsyncComponent } from "vue";
 import { createI18n } from "vue-i18n";
 import "@shopware-ag/meteor-component-library/styles.css";
 import "@shopware-ag/meteor-component-library/font.css";
+import {
+  createMeteorI18nPlugin,
+  createVueI18nAdapter,
+} from "@shopware-ag/meteor-component-library";
 import { location } from "@shopware-ag/meteor-admin-sdk";
 
 // register all components for the location
@@ -36,6 +40,7 @@ const app = createApp({
 });
 
 const i18n = createI18n({
+  legacy: false,
   locale: "en",
   messages: {
     en: {
@@ -45,5 +50,8 @@ const i18n = createI18n({
 });
 
 app.use(i18n);
+
+// Let Meteor's components follow this app's vue-i18n locale and snippet overrides.
+app.use(createMeteorI18nPlugin({ adapter: createVueI18nAdapter(i18n) }));
 
 app.mount("#app");

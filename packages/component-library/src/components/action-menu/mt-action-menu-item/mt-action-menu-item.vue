@@ -49,7 +49,7 @@
 import { DropdownMenuItem, DropdownMenuSubTrigger } from "reka-ui";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
 import { computed, inject, onMounted } from "vue";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/use-meteor-i18n";
 
 type ModifierKey = "mod" | "ctrl" | "alt" | "shift" | "meta";
 type SpecialKey =
@@ -123,39 +123,35 @@ const ARIA_SPECIAL_KEYS: Record<SpecialKey, string> = {
   right: "ArrowRight",
 };
 
-const { t } = useI18n({
-  useScope: "global",
+const { t } = useMeteorI18n({
+  namespace: "mt.action-menu-item",
   messages: {
     en: {
-      "mt-action-menu-item": {
-        keys: {
-          shift: "Shift",
-          ctrl: "Ctrl",
-          alt: "Alt",
-          meta: "Win",
-          enter: "Enter",
-          esc: "Esc",
-          tab: "Tab",
-          space: "Space",
-          backspace: "Backspace",
-          delete: "Delete",
-        },
+      keys: {
+        shift: "Shift",
+        ctrl: "Ctrl",
+        alt: "Alt",
+        meta: "Win",
+        enter: "Enter",
+        esc: "Esc",
+        tab: "Tab",
+        space: "Space",
+        backspace: "Backspace",
+        delete: "Delete",
       },
     },
     de: {
-      "mt-action-menu-item": {
-        keys: {
-          shift: "Umschalt",
-          ctrl: "Strg",
-          alt: "Alt",
-          meta: "Win",
-          enter: "Eingabe",
-          esc: "Esc",
-          tab: "Tab",
-          space: "Leertaste",
-          backspace: "Rücktaste",
-          delete: "Entf",
-        },
+      keys: {
+        shift: "Umschalt",
+        ctrl: "Strg",
+        alt: "Alt",
+        meta: "Win",
+        enter: "Eingabe",
+        esc: "Esc",
+        tab: "Tab",
+        space: "Leertaste",
+        backspace: "Rücktaste",
+        delete: "Entf",
       },
     },
   },
@@ -197,8 +193,8 @@ const isMac = typeof navigator !== "undefined" && /Mac|iPod|iPhone|iPad/.test(na
 const getKeyLabel = (key: ModifierKey | SpecialKey, forMac: boolean): string => {
   if (forMac && MAC_SYMBOLS[key]) return MAC_SYMBOLS[key]!;
   if (["up", "down", "left", "right"].includes(key)) return MAC_SYMBOLS[key]!;
-  if (key === "mod") return t("mt-action-menu-item.keys.ctrl");
-  return t(`mt-action-menu-item.keys.${key}`);
+  if (key === "mod") return t("keys.ctrl");
+  return t(`keys.${key}`);
 };
 
 const formatShortcut = (def: ShortcutDefinition): { pc: string[]; mac: string[] } => {

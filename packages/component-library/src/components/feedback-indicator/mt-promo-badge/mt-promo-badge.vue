@@ -8,7 +8,7 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/use-meteor-i18n";
 import MtBadge from "../mt-badge/mt-badge.vue";
 
 const props = withDefaults(
@@ -22,7 +22,8 @@ const props = withDefaults(
   },
 );
 
-const { t } = useI18n({
+const { t } = useMeteorI18n({
+  namespace: "mt.promo-badge",
   messages: {
     en: {
       "mt-promo-badge": {

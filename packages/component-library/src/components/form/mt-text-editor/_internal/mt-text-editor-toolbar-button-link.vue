@@ -8,19 +8,19 @@
 
   <!-- Link modal -->
   <mt-modal-root :is-open="showLinkModal" @change="($event) => (showLinkModal = $event)">
-    <mt-modal width="s" :title="t('mt-text-editor-toolbar-button-link.modalTitle')">
+    <mt-modal width="s" :title="t('mt.text-editor-toolbar-button-link.modalTitle')">
       <template #default>
         <div class="mt-text-editor__link-modal">
           <mt-text-field
             v-model="linkHref"
-            :label="t('mt-text-editor-toolbar-button-link.linkUrl')"
+            :label="t('mt.text-editor-toolbar-button-link.linkUrl')"
             placeholder="https://example.com"
             required
           />
           <mt-switch
-            :label="t('mt-text-editor-toolbar-button-link.openInNewTab')"
+            :label="t('mt.text-editor-toolbar-button-link.openInNewTab')"
             :checked="linkTarget === '_blank'"
-            :aria-label="t('mt-text-editor-toolbar-button-link.openInNewTab')"
+            :aria-label="t('mt.text-editor-toolbar-button-link.openInNewTab')"
             @change="
               (checked) => {
                 linkTarget = checked ? '_blank' : '';
@@ -32,7 +32,7 @@
       <template #footer>
         <div class="mt-text-editor__link-modal-footer">
           <mt-modal-close :as="mtButton" variant="secondary">
-            {{ t("mt-text-editor-toolbar-button-link.cancel") }}
+            {{ t("mt.text-editor-toolbar-button-link.cancel") }}
           </mt-modal-close>
 
           <mt-button
@@ -58,7 +58,7 @@
               }
             "
           >
-            {{ t("mt-text-editor-toolbar-button-link.applyLink") }}
+            {{ t("mt.text-editor-toolbar-button-link.applyLink") }}
           </mt-button>
         </div>
       </template>
@@ -77,35 +77,10 @@ import mtTextField from "@/components/form/mt-text-field/mt-text-field.vue";
 import mtSwitch from "@/components/form/mt-switch/mt-switch.vue";
 import mtTextEditorToolbarButton from "./mt-text-editor-toolbar-button.vue";
 import mtModalClose from "@/components/overlay/mt-modal/sub-components/mt-modal-close.vue";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/use-meteor-i18n";
+import { meteorTextEditorMessages } from "../mt-text-editor.i18n";
 
-const { t } = useI18n({
-  useScope: "global",
-  messages: {
-    en: {
-      "mt-text-editor-toolbar-button-link": {
-        modalTitle: "Insert/Edit Link",
-        cancel: "Cancel",
-        applyLink: "Apply link",
-        removeLink: "Remove link",
-        openInNewTab: "Open in new tab",
-        linkUrl: "Link URL",
-        label: "Link",
-      },
-    },
-    de: {
-      "mt-text-editor-toolbar-button-link": {
-        modalTitle: "Link einfügen/bearbeiten",
-        cancel: "Abbrechen",
-        applyLink: "Link anwenden",
-        removeLink: "Link entfernen",
-        openInNewTab: "In neuem Tab öffnen",
-        linkUrl: "Link URL",
-        label: "Link",
-      },
-    },
-  },
-});
+const { t } = useMeteorI18n({ messages: meteorTextEditorMessages });
 
 const props = defineProps({
   editor: {
@@ -138,7 +113,7 @@ const openLinkModal = () => {
 <script lang="ts">
 export const linkButton: CustomButton = {
   name: "link",
-  label: "mt-text-editor-toolbar-button-link.label",
+  label: "mt.text-editor-toolbar-button-link.label",
   icon: "regular-link-xs",
   position: 12000,
   contextualButtons: (editor) => {
@@ -149,7 +124,7 @@ export const linkButton: CustomButton = {
     return [
       {
         name: "remove-link",
-        label: "mt-text-editor-toolbar-button-link.removeLink",
+        label: "mt.text-editor-toolbar-button-link.removeLink",
         icon: "regular-times-xs",
         action: (currentEditor) => {
           currentEditor.chain().focus().extendMarkRange("link").unsetLink().run();

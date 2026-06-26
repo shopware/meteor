@@ -94,7 +94,7 @@ import type { PropType } from "vue";
 import { defineComponent } from "vue";
 import MtTextField from "../mt-text-field/mt-text-field.vue";
 import MtIcon from "../../icons-media/mt-icon/mt-icon.vue";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/use-meteor-i18n";
 
 export default defineComponent({
   name: "MtNumberField",
@@ -216,7 +216,8 @@ export default defineComponent({
   ],
 
   setup() {
-    const { t } = useI18n({
+    const { t } = useMeteorI18n({
+      namespace: "mt.number-field",
       messages: {
         en: {
           increaseButton: "Increase",
