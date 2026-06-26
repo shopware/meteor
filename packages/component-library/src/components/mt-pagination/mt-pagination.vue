@@ -77,7 +77,7 @@
 <script setup lang="ts">
 import { computed, watch } from "vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/use-meteor-i18n";
 
 const props = defineProps<{
   currentPage: number;
@@ -85,7 +85,8 @@ const props = defineProps<{
   totalItems: number;
 }>();
 
-const { t } = useI18n({
+const { t } = useMeteorI18n({
+  namespace: "mt.pagination",
   messages: {
     en: {
       infoText: "{start}-{end} of {totalItems}",

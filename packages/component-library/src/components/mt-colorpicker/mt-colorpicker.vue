@@ -250,7 +250,7 @@ import { createFocusTrap } from "focus-trap";
 import type { FocusTrap } from "focus-trap";
 import MtButton from "@/components/mt-button/mt-button.vue";
 import mtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/use-meteor-i18n";
 
 export default defineComponent({
   name: "MtColorpicker",
@@ -426,7 +426,8 @@ export default defineComponent({
   emits: ["update:modelValue", "inheritance-restore", "inheritance-remove"],
 
   setup() {
-    const { t } = useI18n({
+    const { t } = useMeteorI18n({
+      namespace: "mt.colorpicker",
       messages: {
         en: {
           "mt-colorpicker": {

@@ -50,7 +50,7 @@ import MtPopover from "@/components/mt-popover/mt-popover.vue";
 import MtPopoverItem from "@/components/mt-popover-item/mt-popover-item.vue";
 import type { Filter, Option } from "../../mt-data-table.interfaces";
 import MtText from "@/components/mt-text/mt-text.vue";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/use-meteor-i18n";
 
 defineEmits<{
   (e: "removeOption", filterId: string, optionId: string): void;
@@ -67,7 +67,8 @@ function isOptionSelected(optionId: string) {
   return !!props.appliedOptions.find((option) => option.id === optionId);
 }
 
-const { t } = useI18n({
+const { t } = useMeteorI18n({
+  namespace: "mt.data-table-filter",
   messages: {
     en: {
       is: "is",

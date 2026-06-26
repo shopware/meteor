@@ -101,7 +101,7 @@ import MtLoader from "../mt-loader/mt-loader.vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
 import MtText from "../mt-text/mt-text.vue";
 import { useFutureFlags } from "@/composables/useFutureFlags";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/use-meteor-i18n";
 
 const props = withDefaults(
   defineProps<{
@@ -121,7 +121,8 @@ defineEmits<{
   (e: "update:inheritance", value: boolean): void;
 }>();
 
-const { t } = useI18n({
+const { t } = useMeteorI18n({
+  namespace: "mt.card",
   messages: {
     en: {
       disableInheritance: "Disable inheritance",

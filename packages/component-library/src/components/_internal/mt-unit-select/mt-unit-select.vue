@@ -46,14 +46,15 @@
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch, nextTick } from "vue";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/use-meteor-i18n";
 import MtUnitSelectResult from "./_internal/mt-unit-select-result.vue";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import type { Unit } from "convert-units";
 import { useFloating, offset, flip, shift, autoUpdate } from "@floating-ui/vue";
 import { onClickOutside } from "@vueuse/core";
 
-const { t } = useI18n({
+const { t } = useMeteorI18n({
+  namespace: "mt.unit-select",
   messages: {
     de: {
       units: {

@@ -115,7 +115,7 @@ import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
 import MtTooltip from "@/components/mt-tooltip/mt-tooltip.vue";
 import MtFieldAffix from "../_internal/mt-field-affix/mt-field-affix.vue";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/use-meteor-i18n";
 import { useClipboard } from "@vueuse/core";
 import { useFutureFlags } from "@/composables/useFutureFlags";
 
@@ -172,7 +172,8 @@ function checkValidity() {
 
 const { copy, copied } = useClipboard();
 
-const { t } = useI18n({
+const { t } = useMeteorI18n({
+  namespace: "mt.email-field",
   messages: {
     de: {
       copyTooltip: "In Zwischenablage kopieren",
