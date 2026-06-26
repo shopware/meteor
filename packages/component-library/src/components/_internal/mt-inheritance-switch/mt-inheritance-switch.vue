@@ -34,14 +34,15 @@
 <script setup lang="ts">
 import MtIcon from "../../mt-icon/mt-icon.vue";
 import MtTooltip from "@/components/mt-tooltip/mt-tooltip.vue";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/use-meteor-i18n";
 
 defineProps<{
   isInherited: boolean;
   disabled?: boolean;
 }>();
 
-const { t } = useI18n({
+const { t } = useMeteorI18n({
+  namespace: "mt.inheritance-switch",
   messages: {
     en: {
       tooltipRemoveInheritance: "Remove inheritance",

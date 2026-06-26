@@ -25,7 +25,7 @@
 <script setup lang="ts">
 import { computed, useAttrs } from "vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/use-meteor-i18n";
 
 const props = withDefaults(
   defineProps<{
@@ -46,7 +46,8 @@ const props = withDefaults(
   },
 );
 
-const { t } = useI18n({
+const { t } = useMeteorI18n({
+  namespace: "mt.label",
   messages: {
     en: {
       remove: "Remove",

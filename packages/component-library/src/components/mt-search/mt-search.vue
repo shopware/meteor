@@ -19,7 +19,7 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/use-meteor-i18n";
 import MtIcon from "../mt-icon/mt-icon.vue";
 
 withDefaults(
@@ -34,7 +34,8 @@ withDefaults(
   },
 );
 
-const { t } = useI18n({
+const { t } = useMeteorI18n({
+  namespace: "mt.search",
   messages: {
     en: {
       placeholder: "Search",

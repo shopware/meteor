@@ -40,9 +40,10 @@ import MtIcon from "../mt-icon/mt-icon.vue";
 import MtText from "@/components/mt-text/mt-text.vue";
 import MtButton from "@/components/mt-button/mt-button.vue";
 import { useFutureFlags } from "@/composables/useFutureFlags";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/use-meteor-i18n";
 
-const { t } = useI18n({
+const { t } = useMeteorI18n({
+  namespace: "mt.banner",
   messages: {
     de: {
       close: "Schließen",

@@ -5,13 +5,14 @@
 </template>
 
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/use-meteor-i18n";
 
 defineProps<{
   numberOfAppliedFilters: number;
 }>();
 
-const { t } = useI18n({
+const { t } = useMeteorI18n({
+  namespace: "mt.data-table-reset-filter-button",
   messages: {
     en: {
       label: "Remove filter | Remove filters",

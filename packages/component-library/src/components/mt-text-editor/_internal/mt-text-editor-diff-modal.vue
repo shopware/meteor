@@ -1,6 +1,6 @@
 <template>
   <mt-modal-root :is-open="isOpen" @change="onChangeOpen">
-    <mt-modal :title="t('mt-text-editor.diff.title')" width="l">
+    <mt-modal :title="t('mt.text-editor.diff.title')" width="l">
       <template #default>
         <MtText
           as="div"
@@ -8,15 +8,15 @@
           color="color-text-primary-default"
           class="mt-text-editor__diff-info"
         >
-          {{ t("mt-text-editor.diff.subtitle") }}
+          {{ t("mt.text-editor.diff.subtitle") }}
         </MtText>
 
         <div class="mt-text-editor__diff-headlines">
           <h3 class="mt-text-editor__diff-headline-current">
-            {{ t("mt-text-editor.diff.headlines.current") }}
+            {{ t("mt.text-editor.diff.headlines.current") }}
           </h3>
           <h3 class="mt-text-editor__diff-headline-new">
-            {{ t("mt-text-editor.diff.headlines.new") }}
+            {{ t("mt.text-editor.diff.headlines.new") }}
           </h3>
         </div>
 
@@ -35,10 +35,10 @@
       <template #footer>
         <div class="mt-text-editor__diff-footer">
           <mt-button variant="secondary" @click="emitCancel">
-            {{ t("mt-text-editor.diff.cancel") }}
+            {{ t("mt.text-editor.diff.cancel") }}
           </mt-button>
           <mt-button variant="critical" @click="emitAccept">
-            {{ t("mt-text-editor.diff.accept") }}
+            {{ t("mt.text-editor.diff.accept") }}
           </mt-button>
         </div>
       </template>
@@ -48,7 +48,8 @@
 
 <script setup lang="ts">
 import { defineProps, defineEmits, computed, ref, onMounted, watch } from "vue";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/use-meteor-i18n";
+import { meteorTextEditorMessages } from "../mt-text-editor.i18n";
 import "@git-diff-view/vue/styles/diff-view-pure.css";
 import { DiffView, DiffModeEnum } from "@git-diff-view/vue";
 import MtModal from "@/components/mt-modal/mt-modal.vue";
@@ -69,7 +70,7 @@ const emit = defineEmits<{
   (e: "changeOpen", value: boolean): void;
 }>();
 
-const { t } = useI18n({ useScope: "global" });
+const { t } = useMeteorI18n({ messages: meteorTextEditorMessages });
 
 const emitAccept = () => {
   emit("accept");
