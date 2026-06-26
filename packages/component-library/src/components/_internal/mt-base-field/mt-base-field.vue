@@ -72,7 +72,7 @@ import { defineComponent } from "vue";
 import MtInheritanceSwitch from "../mt-inheritance-switch/mt-inheritance-switch.vue";
 import MtFieldCopyable from "../mt-field-copyable/mt-field-copyable.vue";
 import MtHelpText from "../../mt-help-text/mt-help-text.vue";
-import useEmptySlotCheck from "../../../composables/useEmptySlotCheck";
+import { hasSlotContent } from "../../../utils/slot";
 import MtValidationMixin from "../../../mixins/validation.mixin";
 import MtFormFieldMixin from "../../../mixins/form-field.mixin";
 import { createId } from "../../../utils/id";
@@ -237,7 +237,6 @@ export default defineComponent({
   },
 
   setup() {
-    const { hasSlotContent } = useEmptySlotCheck();
     const future = useFutureFlags();
 
     return {
