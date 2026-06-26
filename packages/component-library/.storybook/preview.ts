@@ -1,13 +1,13 @@
 import type { Preview } from "@storybook/vue3";
-import "~/src/components/assets/scss/all.scss";
-import "~/src/components/assets/css/fonts/inter.font.css";
+import "~/src/assets/scss/all.scss";
+import "~/src/assets/css/fonts/inter.font.css";
 import { setup } from "@storybook/vue3";
 import { createApp } from "vue";
 import { createI18n } from "vue-i18n";
-import DeviceHelperPlugin from "./../src/plugin/device-helper.plugin";
-import MtThemeProvider from "../src/components/theme/mt-theme-provider.vue";
-import MtSnackbar from "../src/components/feedback-indicator/mt-snackbar/mt-snackbar.vue";
-import { useSnackbar } from "../src/components/feedback-indicator/mt-snackbar/composables/use-snackbar";
+import DeviceHelperPlugin from "../src/plugin/device-helper.plugin";
+import MtThemeProvider from "../src/components/mt-theme-provider/mt-theme-provider.vue";
+import MtSnackbar from "../src/components/mt-snackbar/mt-snackbar.vue";
+import { useSnackbar } from "../src/components/mt-snackbar/composables/use-snackbar";
 
 import { ThemeProvider } from "./ThemeProvider";
 
