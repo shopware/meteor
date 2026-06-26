@@ -1,5 +1,9 @@
 <template>
-  <!-- Height needs to be set inline because the card has an mt-ignore-class component as a wrapper -->
+  <!--
+    TODO(verify): This card used to be wrapped in an mt-ignore-class component, which is why
+    the height was set inline. mt-ignore-class has since been removed (it was unused), so the
+    original reason no longer applies — confirm whether any inline height handling is still needed here.
+  -->
   <mt-card class="mt-data-table" :class="MtDataTableClasses" :title="title" :subtitle="subtitle">
     <template #toolbar>
       <div class="mt-data-table__toolbar">

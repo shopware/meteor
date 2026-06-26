@@ -16,7 +16,10 @@ export function enhanceExtensionsWithAttributes(extensions: Extension[]): Extens
       "placeholder",
       "bubbleMenu",
       "floatingMenu",
-      // Skip list item since our CustomListItem handles its own attributes
+      // TODO(verify): listItem is skipped on the assumption that a custom list-item extension
+      // ("CustomListItem") handled its own class/style attributes. That extension was never
+      // wired into the editor and has since been removed, so list-item class/style attributes
+      // may currently be dropped here. Confirm whether "listItem" should still be skipped.
       "listItem",
     ];
 
