@@ -216,176 +216,118 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-/**
-* Use inter-font instead of normal font for popover. Also add the new variables to this file.
-*/
-$font-family-default:
-  "Inter",
-  -apple-system,
-  BlinkMacSystemFont,
-  "San Francisco",
-  "Segoe UI",
-  Roboto,
-  "Helvetica Neue",
-  sans-serif;
-$font-family-variables:
-  "Inter",
-  -apple-system,
-  BlinkMacSystemFont,
-  "San Francisco",
-  "Segoe UI",
-  Roboto,
-  "Helvetica Neue",
-  sans-serif;
-$font-family-default-feature-settings:
-  "ss01" on,
-  "ss02" on,
-  "case" on,
-  "cpsp" on,
-  "zero" on,
-  "cv09" on,
-  "cv07" on,
-  "cv06" on,
-  "cv10" on,
-  "cv11" on;
+<style>
+.mt-popover-item-result__group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-block-end: var(--scale-size-4);
+  margin-block-start: var(--scale-size-8);
+}
 
-$line-height-auto: auto;
-$line-height-xs: 18px;
-$line-height-sm: 20px;
-$line-height-md: 24px;
-$line-height-lg: 28px;
+.mt-popover-item-result__group-label {
+  text-transform: uppercase;
+}
 
-$color-custom-dark: #0f172a;
-$color-custom-grey: #64748b;
-$color-custom-lightgrey: #cbd5e1;
-$color-custom-border: #e5e7eb;
+.mt-popover-item-result__group-action {
+  transition: 0.3s all ease;
+  background-color: transparent;
+  border: none;
+  color: var(--color-text-brand-default);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+  font-weight: var(--font-weight-semibold);
+  text-decoration: underline;
+  cursor: pointer;
 
-$scrollShadowSize: 16px;
-$scrollShadowColor: rgba(120, 120, 120, 0.2);
-
-.mt-popover-item-result {
-  &__group-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: var(--scale-size-4);
-    margin-top: var(--scale-size-8);
+  &:hover {
+    color: var(--color-text-brand-hover);
   }
 
-  &__group-label {
-    text-transform: uppercase;
-  }
-
-  &__group-action {
-    transition: 0.3s all ease;
-    background-color: transparent;
-    border: none;
-    color: var(--color-text-brand-default);
-    font-family: var(--font-family-body);
-    font-size: var(--font-size-xs);
-    line-height: var(--font-line-height-xs);
-    font-weight: var(--font-weight-semibold);
-    text-decoration: underline;
-    cursor: pointer;
-
-    &:hover {
-      color: $color-shopware-brand-800;
-    }
-
-    &:active {
-      color: $color-shopware-brand-900;
-    }
-  }
-
-  &__option {
-    position: relative;
-  }
-
-  [class^="mt-popover-item-result__option_drop_"] {
-    position: absolute;
-    height: 50%;
-    width: 100%;
-    left: 0;
-    opacity: 0;
-    pointer-events: none;
-    transition: 0.15s all ease;
-
-    &.is--valid-drop {
-      opacity: 1;
-    }
-  }
-
-  $dropzone-highlight-width: 4px;
-  $dropzone-highlight-negative-width: -4px;
-
-  &__option_drop_before {
-    top: 0;
-    box-shadow: inset 0px $dropzone-highlight-width $dropzone-highlight-width
-      $dropzone-highlight-negative-width $color-shopware-brand-900;
-  }
-
-  &__option_drop_after {
-    bottom: 0;
-    box-shadow: inset 0px $dropzone-highlight-negative-width $dropzone-highlight-width
-      $dropzone-highlight-negative-width $color-shopware-brand-900;
-  }
-
-  .mt-popover-item {
-    transition: 0.3s all ease;
-    padding-top: var(--scale-size-4);
-    padding-bottom: var(--scale-size-4);
-
-    &.is--dragging {
-      opacity: 0.25;
-      border: none;
-      background-color: inherit;
-    }
-
-    &.is--dragging > * {
-      opacity: 1;
-    }
-  }
-
-  .option-item-enter-active,
-  .option-item-leave-active {
-    transition: opacity 0.5s;
-  }
-
-  .option-item-leave-active {
-    transition: opacity 0.2s;
-    position: absolute;
-    opacity: 0;
-  }
-
-  .option-item-enter {
-    opacity: 0;
-  }
-
-  .option-item-move {
-    transition: transform 0.3s ease;
-  }
-
-  .option-fade-enter-active,
-  .option-fade-leave-active {
-    transition: opacity 0.3s;
-  }
-  .option-fade-enter,
-  .option-fade-leave-to {
-    opacity: 0;
+  &:active {
+    color: var(--color-text-brand-pressed);
   }
 }
 
-body.is-popover-item-result-dragging {
-  [class^="mt-popover-item-result__option_drop_"] {
-    pointer-events: all;
+.mt-popover-item-result__option {
+  position: relative;
+}
+
+.mt-popover-item-result [class^="mt-popover-item-result__option_drop_"] {
+  position: absolute;
+  height: 50%;
+  width: 100%;
+  inset-inline-start: 0;
+  opacity: 0;
+  pointer-events: none;
+  transition: 0.15s all ease;
+
+  &.is--valid-drop {
+    opacity: 1;
+  }
+}
+
+.mt-popover-item-result__option_drop_before {
+  inset-block-start: 0;
+  box-shadow: inset 0px 4px 4px -4px var(--color-border-brand-selected);
+}
+
+.mt-popover-item-result__option_drop_after {
+  inset-block-end: 0;
+  box-shadow: inset 0px -4px 4px -4px var(--color-border-brand-selected);
+}
+
+.mt-popover-item-result .mt-popover-item {
+  transition: 0.3s all ease;
+  padding-block: var(--scale-size-4);
+
+  &.is--dragging {
+    opacity: 0.25;
+    border: none;
+    background-color: inherit;
   }
 
-  .mt-popover-item {
-    &.is--drag-element {
-      box-shadow: none;
-      transition: 0.3s rotate ease-in-out;
-    }
+  &.is--dragging > * {
+    opacity: 1;
   }
+}
+
+.mt-popover-item-result .option-item-enter-active,
+.mt-popover-item-result .option-item-leave-active {
+  transition: opacity 0.5s;
+}
+
+.mt-popover-item-result .option-item-leave-active {
+  transition: opacity 0.2s;
+  position: absolute;
+  opacity: 0;
+}
+
+.mt-popover-item-result .option-item-enter {
+  opacity: 0;
+}
+
+.mt-popover-item-result .option-item-move {
+  transition: transform 0.3s ease;
+}
+
+.mt-popover-item-result .option-fade-enter-active,
+.mt-popover-item-result .option-fade-leave-active {
+  transition: opacity 0.3s;
+}
+
+.mt-popover-item-result .option-fade-enter,
+.mt-popover-item-result .option-fade-leave-to {
+  opacity: 0;
+}
+
+body.is-popover-item-result-dragging [class^="mt-popover-item-result__option_drop_"] {
+  pointer-events: all;
+}
+
+body.is-popover-item-result-dragging .mt-popover-item.is--drag-element {
+  box-shadow: none;
+  transition: 0.3s rotate ease-in-out;
 }
 </style>

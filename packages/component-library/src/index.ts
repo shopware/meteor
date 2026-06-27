@@ -72,7 +72,7 @@ import {
   DropdownMenuSub,
 } from "reka-ui";
 // Import global styling
-import "./components/assets/scss/all.scss";
+import "./components/assets/css/all.css";
 
 // Importing types
 import type {

@@ -237,7 +237,7 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<style lang="scss">
+<style>
 .mt-floating-ui {
   display: inline-block;
   position: relative;

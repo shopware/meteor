@@ -2031,635 +2031,502 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-/**
-* Use inter-font instead of normal font for data-table. Also add the new variables to this file.
-*/
-$font-family-variables:
-  "Inter",
-  -apple-system,
-  BlinkMacSystemFont,
-  "San Francisco",
-  "Segoe UI",
-  Roboto,
-  "Helvetica Neue",
-  sans-serif;
-$font-family-default-feature-settings:
-  "ss01" on,
-  "ss02" on,
-  "case" on,
-  "cpsp" on,
-  "zero" on,
-  "cv09" on,
-  "cv07" on,
-  "cv06" on,
-  "cv10" on,
-  "cv11" on;
-
-$color-card-headline: #1c1c1c;
-$color-shopware-brand-vivacious-500: #0f76de;
-
-$scrollShadowSize: 16px;
-$scrollShadowColor: rgba(120, 120, 120, 0.1);
-$tableHeaderSize: 51px;
-$scrollShadowHeight: calc(100% - $tableHeaderSize - var(--scrollbar-height));
-
-$tableCellPaddingTop: 18px;
-$tableCellPaddingRight: 16px;
-$tableCellPaddingBottom: 14px;
-$tableCellPaddingLeft: 16px;
-$tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPaddingBottom
-  $tableCellPaddingLeft;
-
+<style>
 .mt-data-table {
   display: flex;
   flex-direction: column;
   height: 100%;
-
-  --table-header-size: $tableHeaderSize;
-
-  &.mt-data-table__layout-default {
-    height: 650px;
-  }
-
-  &.mt-data-table__layout-full {
-    height: 100%;
-    width: 100%;
-    max-width: none;
-  }
-
-  // normalize the table styles across browsers
-  table {
-    border-collapse: collapse;
-    width: 100%;
-  }
-
-  .mt-card__toolbar {
-    flex-direction: column;
-    gap: 0;
-
-    &:has(.mt-data-table__toolbar:empty) {
-      padding: 0;
-    }
-  }
-
-  .mt-data-table__search {
-    flex: 1;
-  }
-
-  .mt-card__content {
-    height: auto;
-    padding: 0;
-    overflow: hidden;
-  }
-
-  .mt-search {
-    .mt-field__label {
-      display: none;
-    }
-
-    .mt-field__hint:empty {
-      display: none;
-    }
-  }
-
-  // add new Inter font to data table
-  * {
-    font-family: var(--font-family-body);
-  }
-
-  @supports (font-variation-settings: normal) {
-    * {
-      font-family: $font-family-variables;
-      font-feature-settings: $font-family-default-feature-settings;
-    }
-  }
-
-  // adjust font styling
+  --mt-data-table-header-size: 51px;
+  --mt-data-table-scroll-shadow-color: rgba(120, 120, 120, 0.1);
+  --mt-data-table-scroll-shadow-height: calc(
+    100% - var(--mt-data-table-header-size) - var(--scrollbar-height)
+  );
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-regular);
-  color: $color-darkgray-300;
+  color: var(--color-text-primary-default);
   line-height: var(--font-line-height-xs);
-
-  .mt-data-table__toolbar {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: var(--scale-size-8);
-
-    &:empty {
-      display: none;
-    }
-  }
-
-  // TODO: improve the name of this css selector
-  .mt-data-table__filter {
-    color: var(--color-text-primary-default);
-    padding-top: var(--scale-size-16);
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: var(--scale-size-12);
-  }
-
-  .mt-data-table__filter-list {
-    display: flex;
-    align-items: baseline;
-    flex-wrap: wrap;
-    gap: var(--scale-size-6);
-  }
-
-  &__caption {
-    // Hide the caption visually but show it for screen readers
-    position: absolute !important;
-    height: 1px;
-    width: 1px;
-    overflow: hidden;
-    clip: rect(1px, 1px, 1px, 1px);
-  }
-
-  .mt-data-table__table-wrapper {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-  }
-
-  // add scroll shadows
   --scrollbar-height: 0px;
   --scrollbar-width: 0px;
   --fixed-left-column-width: 0px;
   --fixed-right-column-width: 0px;
-
-  .mt-data-table__scroll-shadow {
-    pointer-events: none;
-    position: absolute;
-    opacity: 0;
-    transition: 0.1s ease opacity;
-    z-index: 100;
+}
+.mt-data-table.mt-data-table__layout-default {
+  height: 650px;
+}
+.mt-data-table.mt-data-table__layout-full {
+  height: 100%;
+  width: 100%;
+  max-width: none;
+}
+.mt-data-table table {
+  border-collapse: collapse;
+  width: 100%;
+}
+.mt-data-table .mt-card__toolbar {
+  flex-direction: column;
+  gap: 0;
+}
+.mt-data-table .mt-card__toolbar:has(.mt-data-table__toolbar:empty) {
+  padding: 0;
+}
+.mt-data-table .mt-data-table__search {
+  flex: 1;
+}
+.mt-data-table .mt-card__content {
+  height: auto;
+  padding: 0;
+  overflow: hidden;
+}
+.mt-data-table .mt-search .mt-field__label {
+  display: none;
+}
+.mt-data-table .mt-search .mt-field__hint:empty {
+  display: none;
+}
+.mt-data-table * {
+  font-family: var(--font-family-body);
+}
+@supports (font-variation-settings: normal) {
+  .mt-data-table * {
+    font-family:
+      "Inter",
+      -apple-system,
+      BlinkMacSystemFont,
+      "San Francisco",
+      "Segoe UI",
+      Roboto,
+      "Helvetica Neue",
+      sans-serif;
+    font-feature-settings:
+      "ss01" on,
+      "ss02" on,
+      "case" on,
+      "cpsp" on,
+      "zero" on,
+      "cv09" on,
+      "cv07" on,
+      "cv06" on,
+      "cv10" on,
+      "cv11" on;
   }
-
-  .mt-data-table__scroll-shadow-top {
-    background: linear-gradient($scrollShadowColor, transparent);
-    top: calc($tableHeaderSize - 0.5px);
-    width: calc(100% - var(--scrollbar-width));
-    left: var(--fixed-left-column-width);
-    left: 0;
-    height: $scrollShadowSize;
-  }
-
-  .mt-data-table__scroll-shadow-right {
-    background: linear-gradient(-90deg, $scrollShadowColor, transparent);
-    top: calc($tableHeaderSize - 0.5px);
-    right: calc(var(--scrollbar-width) + var(--fixed-right-column-width));
-    height: $scrollShadowHeight;
-    width: $scrollShadowSize;
-  }
-
-  .mt-data-table__scroll-shadow-bottom {
-    background: linear-gradient(0deg, $scrollShadowColor, transparent);
-    bottom: var(--scrollbar-height);
-    width: calc(100% - var(--scrollbar-width));
-    height: $scrollShadowSize;
-  }
-
-  .mt-data-table__scroll-shadow-left {
-    background: linear-gradient(90deg, $scrollShadowColor, transparent);
-    top: calc($tableHeaderSize - 0.5px);
-    left: var(--fixed-left-column-width);
-    height: $scrollShadowHeight;
-    width: $scrollShadowSize;
-  }
-
-  &__first-column-fixed {
-    .mt-data-table__scroll-shadow-left {
-      top: 0.5px;
-      height: calc($scrollShadowHeight + $tableHeaderSize);
-    }
-  }
-
-  &__last-column-fixed {
-    .mt-data-table__scroll-shadow-right {
-      top: 0.5px;
-      height: calc($scrollShadowHeight + $tableHeaderSize);
-    }
-  }
-
-  .mt-data-table__table-wrapper[data-scroll-top] ~ .mt-data-table__scroll-shadow-top {
-    opacity: 1;
-  }
-  .mt-data-table__table-wrapper[data-scroll-right] ~ .mt-data-table__scroll-shadow-right {
-    opacity: 1;
-  }
-  .mt-data-table__table-wrapper[data-scroll-bottom] ~ .mt-data-table__scroll-shadow-bottom {
-    opacity: 1;
-  }
-  .mt-data-table__table-wrapper[data-scroll-left] ~ .mt-data-table__scroll-shadow-left {
-    opacity: 1;
-  }
-
-  // custom table styling
-  th,
-  td {
-    padding: var(--scale-size-4);
-    text-align: left;
-    border: 1px solid #ccc;
-  }
-
-  table {
-    margin: -0.5px;
-    width: calc(100% + 0.5px);
-    border-collapse: separate;
-    border-spacing: 0;
-    table-layout: auto;
-    transition: 0.3s all ease;
-  }
-
-  table.--no-transition {
-    transition: none;
-  }
-
-  &.mt-data-table__outlines td,
-  &.mt-data-table__outlines th {
-    border-right-color: var(--color-border-secondary-default);
-    border-left-color: var(--color-border-secondary-default);
-  }
-
-  td,
-  th {
-    position: relative;
-    padding: $tableCellPadding;
-    // border needs to be half the size because they are getting combined with other cells
-    border: 0.5px solid var(--color-border-secondary-default);
-    border-right-color: transparent;
-    border-left-color: transparent;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    vertical-align: top;
-
-    &.--highlighted {
-      border-right: 1px solid var(--color-border-brand-default);
-      padding-right: calc($tableCellPaddingRight - 0.5px);
-    }
-  }
-
-  th {
-    // needed for resizable container outside of table header cell
-    overflow: visible;
-  }
-
-  &__column-outline-framing-active th.--hovered,
-  &__column-outline-framing-active td.--hovered {
-    border-right-color: var(--color-border-brand-default);
-    border-left-color: var(--color-border-brand-default);
-  }
-
-  &__column-outline-framing-active tr.--hovered td {
-    border-top-color: var(--color-border-brand-default);
-    border-bottom-color: var(--color-border-brand-default);
-  }
-
-  &.mt-data-table__stripes tr:nth-child(even) {
-    background-color: var(--color-elevation-surface-sunken);
-  }
-
-  // remove duplicated border from header
-  tr:first-child td {
-    border-top-color: transparent;
-  }
-
-  thead tr {
-    background-color: var(--color-elevation-surface-sunken);
-  }
-
-  thead th {
-    font-weight: var(--font-weight-medium);
-    line-height: var(--font-line-height-2xs);
-    background-color: var(--color-elevation-surface-sunken);
-    color: var(--color-text-secondary-default);
-    min-width: 50px;
-    height: $tableHeaderSize;
-    // header is sticky so it needs to have the full border
-    border-bottom-width: 1px;
-    border-top: 0;
-    position: sticky;
-    top: -0.5px;
-    text-transform: uppercase;
-    cursor: default;
-    z-index: 10;
-  }
-
-  // custom skeleton styling
-  tbody td .mt-skeleton-bar {
-    height: var(--scale-size-24);
-  }
-
-  // override default cursor when user is resizing the columns
-  table.--resizing thead th {
-    cursor: col-resize;
-  }
-
-  tr {
-    background-color: var(--color-background-primary-default);
-  }
-
-  /**
-  * Empty state
-  */
-  &__empty-state {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  /**
-  * Row selection
-  */
-  .mt-data-table__table-select-row,
-  .mt-data-table__table-selection-head {
-    min-width: 67px;
-    max-width: 67px;
-    width: 67px;
-    padding-right: var(--scale-size-8);
-    border-right: 0px;
-    border-left-width: 0px;
-  }
-
-  .mt-data-table__table-row-number {
-    min-width: 50px;
-    width: 50px;
-    text-align: center;
-    border-left: 0px;
-
-    + .mt-data-table__table-select-row {
-      border-left-width: 1px;
-    }
-  }
-
-  .mt-data-table__table-row-number-head {
-    text-align: center;
-    border-left: 0px;
-
-    + .mt-data-table__table-selection-head {
-      border-left-width: 1px;
-    }
-  }
-
-  th[data-sticky-column],
-  td[data-sticky-column] {
-    position: sticky;
-    // left value will be calculated dynamically in JS
-    left: 0;
-    z-index: 100;
-    background-color: inherit;
-  }
-
-  th[data-sticky-column] {
-    z-index: 110;
-  }
-
-  .mt-data-table__table-row-number,
-  .mt-data-table__table-select-row {
-    z-index: 1;
-    background-color: inherit;
-  }
-
-  .mt-data-table__table-selection-head {
-    z-index: 20;
-  }
-
-  .mt-data-table__table-select-row + td,
-  .mt-data-table__table-selection-head + th {
-    border-left: 0px;
-    padding-left: var(--scale-size-8);
-  }
-
-  .mt-data-table__table-select-row,
-  .mt-data-table__table-selection-head {
-    .mt-field--checkbox {
-      margin-bottom: 0;
-
-      .mt-field--checkbox__content {
-        display: flex;
-        justify-content: center;
-        margin-top: var(--scale-size-2);
-      }
-
-      .mt-field {
-        display: none;
-      }
-    }
-  }
-
-  .mt-data-table__table-selection-bulk-edit {
-    background-color: var(--color-elevation-surface-sunken);
-    position: absolute;
-    top: -0.5px;
-    left: -0.5px;
-    width: calc(100% - var(--scrollbar-width) - 105px);
-    height: $tableHeaderSize;
-    display: flex;
-    align-items: center;
-    padding: $tableCellPadding;
-    border: 1px solid var(--color-border-secondary-default);
-    border-top: none;
-    border-right: none;
-    z-index: 120;
-  }
-
-  /***
-  * Resizable
-  */
-  &__table-head-resizable {
-    z-index: 10;
-    cursor: col-resize;
-    height: 100%;
-    width: var(--scale-size-6);
-    position: absolute;
-    top: 0px;
-  }
-
-  &__table-head-resizable-before {
-    left: -1px;
-  }
-
-  &__table-head-resizable-after {
-    right: -1px;
-  }
-
-  /***
-  * Add column indicator
-  */
-  .mt-data-table__table-head-add-column-indicator {
-    position: absolute;
-    top: 0;
-    right: 0;
-    transform: translate3d(50%, -150%, 0);
-    width: var(--scale-size-14);
-    height: var(--scale-size-16);
-  }
-
-  table.is--dragging-inside .mt-data-table__table-head-add-column-indicator {
-    display: none;
-  }
-
-  /**
-  * Column ordering
-  */
-  div[class^="mt-data-table__table-head-dropzone-"] {
-    position: absolute;
-    top: 0;
-    height: 100%;
-    width: 50%;
-    opacity: 0;
-    transition: 0.3s all ease;
-
-    &.is--valid-drop {
-      opacity: 1;
-    }
-  }
-
-  $dropzone-highlight-width: 8px;
-  $dropzone-highlight-negative-width: -8px;
-
-  .mt-data-table__table-head-dropzone-before {
-    left: 0;
-    box-shadow: inset $dropzone-highlight-width 0px $dropzone-highlight-width
-      $dropzone-highlight-negative-width $color-shopware-brand-900;
-  }
-  .mt-data-table__table-head-dropzone-after {
-    right: 0;
-    box-shadow: inset $dropzone-highlight-negative-width 0px $dropzone-highlight-width
-      $dropzone-highlight-negative-width $color-shopware-brand-900;
-  }
-
-  /**
-  * Column Settings
-  */
-  .mt-data-table__table-head-column-settings {
-    position: absolute;
-    top: var(--scale-size-16);
-    left: 0;
-    width: 100%;
-    height: calc(100% - 16px);
-
-    .mt-floating-ui__trigger,
-    .mt-data-table__table-head-column-settings-trigger {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      cursor: pointer;
-    }
-  }
-
-  table.is--dragging-inside {
-    .mt-data-table__table-head-column-settings {
-      display: none;
-      pointer-events: none;
-    }
-  }
-
-  /**
-  * Table Settings
-  */
-  $settingsColumnWidth: 65px;
-
-  .mt-data-table__table-settings-button {
-    position: sticky;
-    right: 0;
-    padding: 0;
-    text-align: center;
-    vertical-align: middle;
-    width: $settingsColumnWidth;
-
-    #meteor-icon-kit__solid-cog-s {
-      width: var(--scale-size-10);
-      height: var(--scale-size-10);
-    }
-  }
-
-  .mt-data-table__table-context-button {
-    width: 105px;
-    min-width: 105px;
-    text-align: center;
-    position: sticky;
-    right: 0;
-    background-color: inherit;
-
-    a {
-      position: relative;
-      top: 1px;
-      color: $color-shopware-brand-vivacious-500;
-      text-decoration: none;
-      font-weight: var(--font-weight-semibold);
-      font-size: var(--font-size-xs);
-      line-height: var(--font-line-height-xs);
-      font-family: var(--font-family-body);
-      margin-right: var(--scale-size-8);
-
-      &:hover {
-        text-decoration: underline;
-      }
-    }
-  }
-
-  /**
-  * Footer styling
-  */
-  &__footer-left {
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: center;
-
-    .mt-field__label {
-      display: none;
-    }
-
-    .mt-select {
-      margin-bottom: 0;
-      width: 100px;
-    }
-  }
-
-  &__footer-inset {
-    display: flex;
-    width: calc(100% + var(--mt-card-footer-padding) * 2);
-    padding: var(--scale-size-16) var(--mt-card-footer-padding);
-  }
-
-  &__footer-right {
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: center;
-    gap: var(--scale-size-16);
-    margin-left: auto;
-
-    .mt-button[aria-label="reload-data"] {
-      height: 34px;
-      width: 34px;
-    }
-
-    .mt-button #meteor-icon-kit__solid-undo-s {
-      width: var(--scale-size-12);
-      height: var(--scale-size-12);
-    }
-  }
-
-  &__pagination-info-text {
-    white-space: nowrap;
-    font-size: var(--font-size-2xs);
-    line-height: var(--font-line-height-2xs);
-    font-family: var(--font-family-body);
-    margin-left: var(--scale-size-12);
-  }
+}
+.mt-data-table .mt-data-table__toolbar {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--scale-size-8);
+}
+.mt-data-table .mt-data-table__toolbar:empty {
+  display: none;
+}
+/* TODO: improve the name of this css selector */
+.mt-data-table .mt-data-table__filter {
+  color: var(--color-text-primary-default);
+  padding-top: var(--scale-size-16);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--scale-size-12);
+}
+.mt-data-table .mt-data-table__filter-list {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: var(--scale-size-6);
+}
+/* Hide the caption visually but show it for screen readers */
+.mt-data-table__caption {
+  position: absolute !important;
+  height: 1px;
+  width: 1px;
+  overflow: hidden;
+  clip: rect(1px, 1px, 1px, 1px);
+}
+.mt-data-table .mt-data-table__table-wrapper {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+}
+.mt-data-table .mt-data-table__scroll-shadow {
+  pointer-events: none;
+  position: absolute;
+  opacity: 0;
+  transition: 0.1s ease opacity;
+  z-index: 100;
+}
+.mt-data-table .mt-data-table__scroll-shadow-top {
+  background: linear-gradient(var(--mt-data-table-scroll-shadow-color), transparent);
+  top: calc(var(--mt-data-table-header-size) - 0.5px);
+  width: calc(100% - var(--scrollbar-width));
+  left: var(--fixed-left-column-width);
+  left: 0;
+  height: var(--scale-size-16);
+}
+.mt-data-table .mt-data-table__scroll-shadow-right {
+  background: linear-gradient(-90deg, var(--mt-data-table-scroll-shadow-color), transparent);
+  top: calc(var(--mt-data-table-header-size) - 0.5px);
+  right: calc(var(--scrollbar-width) + var(--fixed-right-column-width));
+  height: var(--mt-data-table-scroll-shadow-height);
+  width: var(--scale-size-16);
+}
+.mt-data-table .mt-data-table__scroll-shadow-bottom {
+  background: linear-gradient(0deg, var(--mt-data-table-scroll-shadow-color), transparent);
+  bottom: var(--scrollbar-height);
+  width: calc(100% - var(--scrollbar-width));
+  height: var(--scale-size-16);
+}
+.mt-data-table .mt-data-table__scroll-shadow-left {
+  background: linear-gradient(90deg, var(--mt-data-table-scroll-shadow-color), transparent);
+  top: calc(var(--mt-data-table-header-size) - 0.5px);
+  left: var(--fixed-left-column-width);
+  height: var(--mt-data-table-scroll-shadow-height);
+  width: var(--scale-size-16);
+}
+.mt-data-table__first-column-fixed .mt-data-table__scroll-shadow-left {
+  top: 0.5px;
+  height: calc(var(--mt-data-table-scroll-shadow-height) + var(--mt-data-table-header-size));
+}
+.mt-data-table__last-column-fixed .mt-data-table__scroll-shadow-right {
+  top: 0.5px;
+  height: calc(var(--mt-data-table-scroll-shadow-height) + var(--mt-data-table-header-size));
+}
+.mt-data-table .mt-data-table__table-wrapper[data-scroll-top] ~ .mt-data-table__scroll-shadow-top {
+  opacity: 1;
+}
+.mt-data-table
+  .mt-data-table__table-wrapper[data-scroll-right]
+  ~ .mt-data-table__scroll-shadow-right {
+  opacity: 1;
+}
+.mt-data-table
+  .mt-data-table__table-wrapper[data-scroll-bottom]
+  ~ .mt-data-table__scroll-shadow-bottom {
+  opacity: 1;
+}
+.mt-data-table
+  .mt-data-table__table-wrapper[data-scroll-left]
+  ~ .mt-data-table__scroll-shadow-left {
+  opacity: 1;
+}
+.mt-data-table th,
+.mt-data-table td {
+  padding: var(--scale-size-4);
+  text-align: start;
+  border: 1px solid #ccc;
+}
+.mt-data-table table {
+  margin: -0.5px;
+  width: calc(100% + 0.5px);
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: auto;
+  transition: 0.3s all ease;
+}
+.mt-data-table table.--no-transition {
+  transition: none;
+}
+.mt-data-table.mt-data-table__outlines td,
+.mt-data-table.mt-data-table__outlines th {
+  border-right-color: var(--color-border-secondary-default);
+  border-left-color: var(--color-border-secondary-default);
+}
+.mt-data-table td,
+.mt-data-table th {
+  position: relative;
+  padding: 18px var(--scale-size-16) 14px var(--scale-size-16);
+  /* border needs to be half the size because they are getting combined with other cells */
+  border: 0.5px solid var(--color-border-secondary-default);
+  border-right-color: transparent;
+  border-left-color: transparent;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: top;
+}
+.mt-data-table td.--highlighted,
+.mt-data-table th.--highlighted {
+  border-right: 1px solid var(--color-border-brand-default);
+  padding-right: calc(var(--scale-size-16) - 0.5px);
+}
+.mt-data-table th {
+  /* needed for resizable container outside of table header cell */
+  overflow: visible;
+}
+.mt-data-table__column-outline-framing-active th.--hovered,
+.mt-data-table__column-outline-framing-active td.--hovered {
+  border-right-color: var(--color-border-brand-default);
+  border-left-color: var(--color-border-brand-default);
+}
+.mt-data-table__column-outline-framing-active tr.--hovered td {
+  border-top-color: var(--color-border-brand-default);
+  border-bottom-color: var(--color-border-brand-default);
+}
+.mt-data-table.mt-data-table__stripes tr:nth-child(even) {
+  background-color: var(--color-elevation-surface-sunken);
+}
+/* remove duplicated border from header */
+.mt-data-table tr:first-child td {
+  border-top-color: transparent;
+}
+.mt-data-table thead tr {
+  background-color: var(--color-elevation-surface-sunken);
+}
+.mt-data-table thead th {
+  font-weight: var(--font-weight-medium);
+  line-height: var(--font-line-height-2xs);
+  background-color: var(--color-elevation-surface-sunken);
+  color: var(--color-text-secondary-default);
+  min-width: 50px;
+  height: var(--mt-data-table-header-size);
+  /* header is sticky so it needs to have the full border */
+  border-bottom-width: 1px;
+  border-top: 0;
+  position: sticky;
+  top: -0.5px;
+  text-transform: uppercase;
+  cursor: default;
+  z-index: 10;
+}
+.mt-data-table tbody td .mt-skeleton-bar {
+  height: var(--scale-size-24);
+}
+/* override default cursor when user is resizing the columns */
+.mt-data-table table.--resizing thead th {
+  cursor: col-resize;
+}
+.mt-data-table tr {
+  background-color: var(--color-background-primary-default);
+}
+.mt-data-table__empty-state {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.mt-data-table .mt-data-table__table-select-row,
+.mt-data-table .mt-data-table__table-selection-head {
+  min-width: 67px;
+  max-width: 67px;
+  width: 67px;
+  padding-right: var(--scale-size-8);
+  border-right: 0px;
+  border-left-width: 0px;
+}
+.mt-data-table .mt-data-table__table-row-number {
+  min-width: 50px;
+  width: 50px;
+  text-align: center;
+  border-left: 0px;
+}
+.mt-data-table .mt-data-table__table-row-number + .mt-data-table__table-select-row {
+  border-left-width: 1px;
+}
+.mt-data-table .mt-data-table__table-row-number-head {
+  text-align: center;
+  border-left: 0px;
+}
+.mt-data-table .mt-data-table__table-row-number-head + .mt-data-table__table-selection-head {
+  border-left-width: 1px;
+}
+.mt-data-table th[data-sticky-column],
+.mt-data-table td[data-sticky-column] {
+  position: sticky;
+  /* left value will be calculated dynamically in JS */
+  left: 0;
+  z-index: 100;
+  background-color: inherit;
+}
+.mt-data-table th[data-sticky-column] {
+  z-index: 110;
+}
+.mt-data-table .mt-data-table__table-row-number,
+.mt-data-table .mt-data-table__table-select-row {
+  z-index: 1;
+  background-color: inherit;
+}
+.mt-data-table .mt-data-table__table-selection-head {
+  z-index: 20;
+}
+.mt-data-table .mt-data-table__table-select-row + td,
+.mt-data-table .mt-data-table__table-selection-head + th {
+  border-left: 0px;
+  padding-left: var(--scale-size-8);
+}
+.mt-data-table .mt-data-table__table-select-row .mt-field--checkbox,
+.mt-data-table .mt-data-table__table-selection-head .mt-field--checkbox {
+  margin-bottom: 0;
+}
+.mt-data-table .mt-data-table__table-select-row .mt-field--checkbox .mt-field--checkbox__content,
+.mt-data-table
+  .mt-data-table__table-selection-head
+  .mt-field--checkbox
+  .mt-field--checkbox__content {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--scale-size-2);
+}
+.mt-data-table .mt-data-table__table-select-row .mt-field--checkbox .mt-field,
+.mt-data-table .mt-data-table__table-selection-head .mt-field--checkbox .mt-field {
+  display: none;
+}
+.mt-data-table .mt-data-table__table-selection-bulk-edit {
+  background-color: var(--color-elevation-surface-sunken);
+  position: absolute;
+  top: -0.5px;
+  left: -0.5px;
+  width: calc(100% - var(--scrollbar-width) - 105px);
+  height: var(--mt-data-table-header-size);
+  display: flex;
+  align-items: center;
+  padding: 18px var(--scale-size-16) 14px var(--scale-size-16);
+  border: 1px solid var(--color-border-secondary-default);
+  border-top: none;
+  border-right: none;
+  z-index: 120;
+}
+.mt-data-table__table-head-resizable {
+  z-index: 10;
+  cursor: col-resize;
+  height: 100%;
+  width: var(--scale-size-6);
+  position: absolute;
+  top: 0px;
+}
+.mt-data-table__table-head-resizable-before {
+  left: -1px;
+}
+.mt-data-table__table-head-resizable-after {
+  right: -1px;
+}
+.mt-data-table .mt-data-table__table-head-add-column-indicator {
+  position: absolute;
+  top: 0;
+  right: 0;
+  transform: translate3d(50%, -150%, 0);
+  width: var(--scale-size-14);
+  height: var(--scale-size-16);
+}
+.mt-data-table table.is--dragging-inside .mt-data-table__table-head-add-column-indicator {
+  display: none;
+}
+.mt-data-table div[class^="mt-data-table__table-head-dropzone-"] {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  width: 50%;
+  opacity: 0;
+  transition: 0.3s all ease;
+}
+.mt-data-table div[class^="mt-data-table__table-head-dropzone-"].is--valid-drop {
+  opacity: 1;
+}
+.mt-data-table .mt-data-table__table-head-dropzone-before {
+  left: 0;
+  box-shadow: inset 8px 0px 8px -8px var(--color-border-brand-selected);
+}
+.mt-data-table .mt-data-table__table-head-dropzone-after {
+  right: 0;
+  box-shadow: inset -8px 0px 8px -8px var(--color-border-brand-selected);
+}
+.mt-data-table .mt-data-table__table-head-column-settings {
+  position: absolute;
+  top: var(--scale-size-16);
+  left: 0;
+  width: 100%;
+  height: calc(100% - 16px);
+}
+.mt-data-table .mt-data-table__table-head-column-settings .mt-floating-ui__trigger,
+.mt-data-table
+  .mt-data-table__table-head-column-settings
+  .mt-data-table__table-head-column-settings-trigger {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+.mt-data-table table.is--dragging-inside .mt-data-table__table-head-column-settings {
+  display: none;
+  pointer-events: none;
+}
+.mt-data-table .mt-data-table__table-settings-button {
+  position: sticky;
+  right: 0;
+  padding: 0;
+  text-align: center;
+  vertical-align: middle;
+  width: 65px;
+}
+.mt-data-table .mt-data-table__table-settings-button #meteor-icon-kit__solid-cog-s {
+  width: var(--scale-size-10);
+  height: var(--scale-size-10);
+}
+.mt-data-table .mt-data-table__table-context-button {
+  width: 105px;
+  min-width: 105px;
+  text-align: center;
+  position: sticky;
+  right: 0;
+  background-color: inherit;
+}
+.mt-data-table .mt-data-table__table-context-button a {
+  position: relative;
+  top: 1px;
+  color: var(--color-text-brand-default);
+  text-decoration: none;
+  font-weight: var(--font-weight-semibold);
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+  font-family: var(--font-family-body);
+  margin-right: var(--scale-size-8);
+}
+.mt-data-table .mt-data-table__table-context-button a:hover {
+  text-decoration: underline;
+}
+.mt-data-table__footer-left {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+.mt-data-table__footer-left .mt-field__label {
+  display: none;
+}
+.mt-data-table__footer-left .mt-select {
+  margin-bottom: 0;
+  width: 100px;
+}
+.mt-data-table__footer-inset {
+  display: flex;
+  width: calc(100% + var(--mt-card-footer-padding) * 2);
+  padding: var(--scale-size-16) var(--mt-card-footer-padding);
+}
+.mt-data-table__footer-right {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: var(--scale-size-16);
+  margin-left: auto;
+}
+.mt-data-table__footer-right .mt-button[aria-label="reload-data"] {
+  height: 34px;
+  width: 34px;
+}
+.mt-data-table__footer-right .mt-button #meteor-icon-kit__solid-undo-s {
+  width: var(--scale-size-12);
+  height: var(--scale-size-12);
+}
+.mt-data-table__pagination-info-text {
+  white-space: nowrap;
+  font-size: var(--font-size-2xs);
+  line-height: var(--font-line-height-2xs);
+  font-family: var(--font-family-body);
+  margin-left: var(--scale-size-12);
 }
 
 /**
@@ -2677,16 +2544,18 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
 .mt-data-table__table-head-sorting-icons {
   display: flex;
   flex-direction: column;
-
-  .mt-data-table__table-head-sort {
-    transition: 0.3s color ease;
-    color: var(--color-icon-secondary-default);
-
-    #meteor-icon-kit__solid-long-arrow-up,
-    #meteor-icon-kit__solid-long-arrow-down {
-      height: var(--scale-size-12);
-    }
-  }
+}
+.mt-data-table__table-head-sorting-icons .mt-data-table__table-head-sort {
+  transition: 0.3s color ease;
+  color: var(--color-icon-secondary-default);
+}
+.mt-data-table__table-head-sorting-icons
+  .mt-data-table__table-head-sort
+  #meteor-icon-kit__solid-long-arrow-up,
+.mt-data-table__table-head-sorting-icons
+  .mt-data-table__table-head-sort
+  #meteor-icon-kit__solid-long-arrow-down {
+  height: var(--scale-size-12);
 }
 
 /**
@@ -2694,18 +2563,13 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
 */
 .mt-data-table__table-wrapper-table-head.is--drag-element {
   max-width: none !important;
-  box-shadow: 0px 0px 4px 0px $scrollShadowColor;
+  box-shadow: 0px 0px 4px 0px var(--mt-data-table-scroll-shadow-color);
   opacity: 0.8;
-
-  // set the normal table header cell styling
+  /* set the normal table header cell styling */
   font-family: var(--font-family-body);
-  @supports (font-variation-settings: normal) {
-    font-family: $font-family-variables;
-    font-feature-settings: $font-family-default-feature-settings;
-  }
-  text-align: left;
+  text-align: start;
   font-size: var(--font-size-xs);
-  padding: $tableCellPadding;
+  padding: 18px var(--scale-size-16) 14px var(--scale-size-16);
   border: 1px solid var(--color-border-brand-default);
   border-radius: var(--border-radius-xs) var(--border-radius-xs) 0 0;
   border-top: 0;
@@ -2719,8 +2583,31 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
   color: var(--color-text-primary-default);
   min-width: 50px;
   text-transform: uppercase;
-
   transition: 0.3s rotate ease-in-out;
+}
+@supports (font-variation-settings: normal) {
+  .mt-data-table__table-wrapper-table-head.is--drag-element {
+    font-family:
+      "Inter",
+      -apple-system,
+      BlinkMacSystemFont,
+      "San Francisco",
+      "Segoe UI",
+      Roboto,
+      "Helvetica Neue",
+      sans-serif;
+    font-feature-settings:
+      "ss01" on,
+      "ss02" on,
+      "case" on,
+      "cpsp" on,
+      "zero" on,
+      "cv09" on,
+      "cv07" on,
+      "cv06" on,
+      "cv10" on,
+      "cv11" on;
+  }
 }
 
 thead th.is--dragging {
@@ -2735,39 +2622,34 @@ thead th.is--dragging {
   height: var(--scale-size-16);
   z-index: 1;
   cursor: grab;
-
-  .mt-data-table__table-head-dragzone-bar {
-    pointer-events: none;
-    transform: scale(1, 0);
-  }
-
   /* simHover (simulate hover) is needed for interaction testing
   /* because the testing library has no support for css hover
   */
-  &.simHover .mt-data-table__table-head-dragzone-bar,
-  &:hover .mt-data-table__table-head-dragzone-bar {
-    transform: scale(1, 1);
-  }
+}
+.mt-data-table__table-head-dragzone .mt-data-table__table-head-dragzone-bar {
+  pointer-events: none;
+  transform: scale(1, 0);
+}
+.mt-data-table__table-head-dragzone.simHover .mt-data-table__table-head-dragzone-bar,
+.mt-data-table__table-head-dragzone:hover .mt-data-table__table-head-dragzone-bar {
+  transform: scale(1, 1);
 }
 
-.mt-data-table__table-wrapper-table-head.is--drag-element {
-  .mt-data-table__table-head-dragzone-bar {
-    transform: scale(1, 1);
-  }
-
+.mt-data-table__table-wrapper-table-head.is--drag-element .mt-data-table__table-head-dragzone-bar {
+  transform: scale(1, 1);
+}
+.mt-data-table__table-wrapper-table-head.is--drag-element
   .mt-data-table__table-head-column-settings {
-    display: none;
-    pointer-events: none;
-  }
+  display: none;
+  pointer-events: none;
 }
 
 table.is--dragging-inside {
   -webkit-user-select: none; /* Safari */
   user-select: none;
-
-  .mt-data-table__table-head-dragzone {
-    display: none;
-  }
+}
+table.is--dragging-inside .mt-data-table__table-head-dragzone {
+  display: none;
 }
 
 .mt-data-table__table-head-dragzone-bar {
@@ -2776,7 +2658,7 @@ table.is--dragging-inside {
   left: 0;
   width: 100%;
   height: var(--scale-size-8);
-  background-color: $color-shopware-brand-900;
+  background-color: var(--color-interaction-primary-default);
   border-radius: var(--border-radius-xs) var(--border-radius-xs) 0 0;
   transition: transform 0.2s ease;
   transform-origin: top center;
@@ -2790,49 +2672,44 @@ table.is--dragging-inside {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: $color-shopware-brand-900;
+  background-color: var(--color-interaction-primary-default);
   border-radius: 0 0 var(--border-radius-xs) var(--border-radius-xs);
-
-  #meteor-icon-kit__regular-grip-horizontal-s {
-    color: $color-white;
-    width: 9px;
-  }
+}
+.mt-data-table__table-head-dragzone-indicator #meteor-icon-kit__regular-grip-horizontal-s {
+  color: var(--color-text-static-default);
+  width: 9px;
 }
 
-.mt-floating-ui__content {
-  &.mt-data-table__table-head-add-column-indicator {
-    cursor: pointer;
-    z-index: 10;
-
-    .mt-icon {
-      display: block;
-      color: var(--color-elevation-floating-default);
-      background: var(--color-icon-primary-inverse);
-      border-radius: 999px;
-
-      #meteor-icon-kit__solid-plus-square-s {
-        width: var(--scale-size-14);
-        height: var(--scale-size-14);
-      }
-    }
-  }
+.mt-floating-ui__content.mt-data-table__table-head-add-column-indicator {
+  cursor: pointer;
+  z-index: 10;
+}
+.mt-floating-ui__content.mt-data-table__table-head-add-column-indicator .mt-icon {
+  display: block;
+  color: var(--color-elevation-floating-default);
+  background: var(--color-icon-primary-inverse);
+  border-radius: 999px;
+}
+.mt-floating-ui__content.mt-data-table__table-head-add-column-indicator
+  .mt-icon
+  #meteor-icon-kit__solid-plus-square-s {
+  width: var(--scale-size-14);
+  height: var(--scale-size-14);
 }
 
 .mt-data-table__add-filter-button {
   color: var(--color-icon-primary-default);
   height: 34px;
   width: 34px;
-
-  // remove min-width later when we found a better solution
+  /* remove min-width later when we found a better solution */
   min-width: 34px;
   cursor: pointer;
   outline: 0;
   border-radius: var(--border-radius-xs);
-
-  &:hover,
-  &:focus-visible {
-    background-color: var(--color-background-tertiary-default);
-    color: var(--color-icon-primary-hover);
-  }
+}
+.mt-data-table__add-filter-button:hover,
+.mt-data-table__add-filter-button:focus-visible {
+  background-color: var(--color-background-tertiary-default);
+  color: var(--color-icon-primary-hover);
 }
 </style>
