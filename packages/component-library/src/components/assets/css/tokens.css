@@ -1,0 +1,27 @@
+/**
+ * Local design tokens that are not synced from Figma via @shopware-ag/meteor-tokens.
+ * Keep the syntax in line with the synced token files (`:root { --name: value; }`).
+ */
+:root {
+  /* z-index scale (ascending) */
+  --z-index-drag-select-box: 100;
+  --z-index-sidebar: 200;
+  --z-index-overlay: 300;
+  --z-index-over-overlay: 350;
+  --z-index-loader: 400;
+  --z-index-page-header: 550;
+  --z-index-select-results: 600;
+  --z-index-mt-page-search-bar: 650;
+  --z-index-flyout: 700;
+  --z-index-off-canvas: 750;
+  --z-index-search-bar-results: 800;
+  --z-index-modal: 1000;
+  --z-index-context-menu: 1100;
+  --z-index-notifications: 1200;
+  --z-index-hover-image: 1300;
+  --z-index-dragdrop: 1400;
+  --z-index-toasts: 1600;
+
+  /* elevation shadow (not yet provided by the synced tokens) */
+  --color-elevation-shadow-default: #1010131a !important;
+}

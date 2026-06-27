@@ -118,18 +118,11 @@ watch(
 );
 </script>
 
-<style lang="scss">
-@import "@shopware-ag/meteor-icon-kit/icons/meteor-icon-kit.scss";
-
+<style>
 .mt-icon {
   display: inline-block;
   vertical-align: middle;
   line-height: 0;
-
-  &--custom-size > svg {
-    width: 100% !important;
-    height: 100% !important;
-  }
 
   > svg {
     fill: currentColor;
@@ -142,5 +135,10 @@ watch(
       fill: currentColor;
     }
   }
+}
+
+.mt-icon--custom-size > svg {
+  width: 100% !important;
+  height: 100% !important;
 }
 </style>
