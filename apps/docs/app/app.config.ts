@@ -4,6 +4,10 @@ export default defineAppConfig({
     description:
       "Meteor is Shopware's open-source design system that drives our commerce solutions.",
   },
+  navigation: {
+    // Scope the docs sidebar to the current top-level section only.
+    sub: "aside",
+  },
   header: {
     title: "Meteor Design System",
     logo: {
@@ -21,19 +25,16 @@ export default defineAppConfig({
       links: [
         {
           label: "Shopware docs",
-          icon: "i-lucide-book-open",
           to: "https://developer.shopware.com/",
           target: "_blank",
         },
         {
           label: "Admin SDK docs",
-          icon: "i-lucide-plug",
           to: "https://developer.shopware.com/resources/admin-extension-sdk/",
           target: "_blank",
         },
         {
           label: "Brand guidelines",
-          icon: "i-lucide-palette",
           to: "https://brand.shopware.com/",
           target: "_blank",
         },

@@ -7,7 +7,9 @@
 @import "./meteor-globals.css";
 
 :root {
-  --ui-radius: var(--border-radius-xs);
+  --ui-radius: var(--border-radius-s);
+  --ui-container: 1920px;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 
   /* Surfaces */
   --ui-bg: var(--color-zinc-0);
@@ -70,7 +72,16 @@
   --ui-error: var(--color-red-400);
 }
 
-/* Docs-only design tokens. */
-:root {
-  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+/* Cap the docs prose column. Docus nests two UPages (layout + page), both with a
+ * grid-cols-10 col-span-8 center, so target only the page UPage's center: the
+ * one whose grid also holds the TOC (data-slot="right"). */
+[data-slot="root"]:has(> [data-slot="right"]) > [data-slot="center"] {
+  max-width: 52rem;
+  margin-inline: auto;
+}
+
+/* Cap the docs left sidebar (filter + nav). It's an <aside>, unlike the navbar's
+ * left slot (a <div>), so the header is left untouched. */
+aside[data-slot="left"] {
+  max-width: 15rem;
 }

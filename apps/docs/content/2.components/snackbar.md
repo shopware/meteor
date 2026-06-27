@@ -117,5 +117,4 @@ The exported **Snackbar** type describes the notification object managed by `use
 
 ## Related
 
-- [**useSnackbar**](/composables/use-snackbar): the composable for triggering snackbars from feature code, with the full `useSnackbar()` and `Snackbar` API reference.
 - [**Banner**](/components/banner): when the message is persistent inline messaging that should remain visible while the user continues working.

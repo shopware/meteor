@@ -15,7 +15,7 @@ import { MtIcon } from "@shopware-ag/meteor-component-library";
 - Use it when an icon from the Meteor icon kit should be rendered consistently through the component library.
 - Use it when color and sizing should follow design tokens instead of ad-hoc inline SVG usage.
 
-To browse the full icon set, search by name, and review icon philosophy and common usage patterns, see the [Icons](/design/icons) reference.
+To browse the full icon set, search by name, and review icon philosophy and common usage patterns, see the [Icons](/documentation/design/icons) reference.
 
 ## Examples
 
@@ -60,4 +60,4 @@ To browse the full icon set, search by name, and review icon philosophy and comm
 
 ## Related
 
-- [Icons](/design/icons): browse the full icon set, search by name, and review icon philosophy and common usage patterns.
+- [Icons](/documentation/design/icons): browse the full icon set, search by name, and review icon philosophy and common usage patterns.
