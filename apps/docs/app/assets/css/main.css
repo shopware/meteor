@@ -1,0 +1,87 @@
+@import "@shopware-ag/meteor-tokens/primitives.css";
+@import "@shopware-ag/meteor-tokens/administration/light.css";
+@import "@shopware-ag/meteor-tokens/administration/dark.css";
+
+/* Rules that live only in the library's global styles.css (which the docs
+ * intentionally do not load) and aren't imported by any component. */
+@import "./meteor-globals.css";
+
+:root {
+  --ui-radius: var(--border-radius-s);
+  --ui-container: 1920px;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+
+  /* Surfaces */
+  --ui-bg: var(--color-zinc-0);
+  --ui-bg-muted: var(--color-zinc-50);
+  --ui-bg-elevated: var(--color-zinc-75);
+  --ui-bg-accented: var(--color-zinc-100);
+  --ui-bg-inverted: var(--color-zinc-850);
+
+  /* Text */
+  --ui-text: var(--color-zinc-900);
+  --ui-text-dimmed: var(--color-zinc-300);
+  --ui-text-muted: var(--color-zinc-600);
+  --ui-text-toned: var(--color-zinc-600);
+  --ui-text-highlighted: var(--color-zinc-900);
+  --ui-text-inverted: var(--color-zinc-50);
+
+  /* Borders */
+  --ui-border: var(--color-zinc-100);
+  --ui-border-muted: var(--color-zinc-100);
+  --ui-border-accented: var(--color-zinc-200);
+  --ui-border-inverted: var(--color-zinc-850);
+
+  /* Accents */
+  --ui-primary: var(--color-brand-500);
+  --ui-secondary: var(--color-zinc-0);
+  --ui-success: var(--color-emerald-600);
+  --ui-info: var(--color-brand-500);
+  --ui-warning: var(--color-pumpkin-500);
+  --ui-error: var(--color-red-500);
+}
+
+.dark {
+  /* Surfaces */
+  --ui-bg: var(--color-zinc-975);
+  --ui-bg-muted: var(--color-zinc-1000);
+  --ui-bg-elevated: var(--color-zinc-850);
+  --ui-bg-accented: var(--color-zinc-700);
+  --ui-bg-inverted: var(--color-zinc-0);
+
+  /* Text */
+  --ui-text: var(--color-zinc-50);
+  --ui-text-dimmed: var(--color-zinc-600);
+  --ui-text-muted: var(--color-zinc-400);
+  --ui-text-toned: var(--color-zinc-400);
+  --ui-text-highlighted: var(--color-zinc-50);
+  --ui-text-inverted: var(--color-zinc-900);
+
+  /* Borders */
+  --ui-border: var(--color-zinc-850);
+  --ui-border-muted: var(--color-zinc-850);
+  --ui-border-accented: var(--color-zinc-700);
+  --ui-border-inverted: var(--color-zinc-0);
+
+  /* Accents */
+  --ui-primary: var(--color-brand-500);
+  --ui-secondary: var(--color-zinc-900);
+  --ui-success: var(--color-emerald-600);
+  --ui-info: var(--color-brand-500);
+  --ui-warning: var(--color-pumpkin-400);
+  --ui-error: var(--color-red-400);
+}
+
+/* Cap the docs prose column. Docus nests two UPages (layout + page), both with a
+ * grid-cols-10 col-span-8 center, so target only the page UPage's center: the
+ * one whose grid also holds the TOC (data-slot="right"). */
+[data-slot="root"]:has(> [data-slot="right"]) > [data-slot="center"] {
+  max-width: 52rem;
+  margin-inline: auto;
+}
+
+/* Cap the docs left sidebar (filter + nav). It's an <aside>, unlike the navbar's
+ * left slot (a <div>), so the header is left untouched. */
+aside[data-slot="left"] {
+  max-width: 15rem;
+}
