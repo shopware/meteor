@@ -49,19 +49,18 @@ $ yarn add @shopware-ag/meteor-icon-kit
 
 ## Usage
 
-Start by importing/using the provided styling.
-Either utilizing sass/scss:
+Start by importing the provided stylesheet:
 
-```scss
-@import "@shopware-ag/meteor-icon-kit/icons/meteor-icon-kit.scss";
+```css
+@import "@shopware-ag/meteor-icon-kit/icons/meteor-icon-kit.css";
 ```
 
-Or classic via the css file:
+Or classic via a `<link>`:
 
 ```html
 <link
   rel="stylesheet"
-  href="your-asset-folder/meteor-icon-kit-8e350007463127dbe9f66c60cd6896ca.css"
+  href="your-asset-folder/meteor-icon-kit.css"
 />
 ```
 

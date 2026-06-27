@@ -9,9 +9,7 @@ import path from "node:path";
 import { WinstonLogger } from "./logger/winston-logger.js";
 import ora from "ora";
 import { CSSFile } from "./domain/css-file.js";
-import { SCSSFile } from "./domain/scss-file.js";
 import { NodeFilesystem } from "./filesystem/node-filesystem.js";
-import { md5 } from "./utils.js";
 
 const logger = new WinstonLogger();
 
@@ -147,28 +145,17 @@ client
     spinner.text = "Creating stylesheet";
 
     const css = new CSSFile();
-    const scss = new SCSSFile();
 
     styling.forEach(({ name, width, height }) => {
       css.addIcon(name, {
-        width,
-        height,
-      });
-
-      scss.addIcon(name, {
         width: `${width}px`,
         height: `${height}px`,
       });
     });
 
     fileSystem.createFile(
-      path.resolve(iconDirectory, `meteor-icon-kit-${md5(styling)}.css`),
+      path.resolve(iconDirectory, "meteor-icon-kit.css"),
       css.toString()
-    );
-
-    fileSystem.createFile(
-      path.join(iconDirectory, "meteor-icon-kit.scss"),
-      scss.toString()
     );
 
     spinner.text = "Creating meta data";
