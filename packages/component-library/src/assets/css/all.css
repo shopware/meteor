@@ -1,0 +1,17 @@
+/* 1. CSS preflight/reset */
+@import "./preflight.css";
+/* 2. Local design tokens (z-index etc.) not synced from Figma */
+@import "./tokens.css";
+/* 3. Design tokens synced from Figma */
+@import "@shopware-ag/meteor-tokens/primitives.css";
+@import "@shopware-ag/meteor-tokens/administration/light.css";
+@import "@shopware-ag/meteor-tokens/administration/dark.css";
+/* 4. Global styles applied to html, body etc. */
+@import "./global.css";
+/* 5. Utility classes */
+@import "./utils.css";
+/* 6. Icon dimensions */
+@import "@shopware-ag/meteor-icon-kit/icons/meteor-icon-kit.css";
+/* 7. Component specific styles that require a global import */
+@import "./directives/tooltip.css";
+@import "./directives/dragdrop.css";

@@ -306,63 +306,40 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-/**
-* Use inter-font instead of normal font for popover. Also add the new variables to this file.
-*/
-$font-family-default:
-  "Inter",
-  -apple-system,
-  BlinkMacSystemFont,
-  "San Francisco",
-  "Segoe UI",
-  Roboto,
-  "Helvetica Neue",
-  sans-serif;
-$font-family-variables:
-  "Inter",
-  -apple-system,
-  BlinkMacSystemFont,
-  "San Francisco",
-  "Segoe UI",
-  Roboto,
-  "Helvetica Neue",
-  sans-serif;
-$font-family-default-feature-settings:
-  "ss01" on,
-  "ss02" on,
-  "case" on,
-  "cpsp" on,
-  "zero" on,
-  "cv09" on,
-  "cv07" on,
-  "cv06" on,
-  "cv10" on,
-  "cv11" on;
-
-$color-custom-dark: #0f172a;
-$color-custom-grey: #64748b;
-$color-custom-lightgrey: #cbd5e1;
-$color-custom-border: #e5e7eb;
-
-$scrollShadowSize: 16px;
-$scrollShadowColor: rgba(120, 120, 120, 0.2);
-
+<style>
 .mt-popover-item {
   display: flex;
   flex-direction: column;
   color: var(--color-text-primary-default);
   padding: var(--scale-size-8) 0;
 
-  // add new Inter font to popover item
+  /* add new Inter font to popover item */
   * {
     font-family: var(--font-family-body);
   }
 
   @supports (font-variation-settings: normal) {
     * {
-      font-family: $font-family-variables;
-      font-feature-settings: $font-family-default-feature-settings;
+      font-family:
+        "Inter",
+        -apple-system,
+        BlinkMacSystemFont,
+        "San Francisco",
+        "Segoe UI",
+        Roboto,
+        "Helvetica Neue",
+        sans-serif;
+      font-feature-settings:
+        "ss01" on,
+        "ss02" on,
+        "case" on,
+        "cpsp" on,
+        "zero" on,
+        "cv09" on,
+        "cv07" on,
+        "cv06" on,
+        "cv10" on,
+        "cv11" on;
     }
   }
 
@@ -378,163 +355,156 @@ $scrollShadowColor: rgba(120, 120, 120, 0.2);
     }
   }
 
-  &:hover {
-    &::before {
-      position: absolute;
-      background-color: var(--color-interaction-secondary-hover);
-      border-radius: var(--border-radius-xs);
-      top: var(--scale-size-4);
-      right: -8px;
-      bottom: var(--scale-size-4);
-      left: -8px;
-      pointer-events: none;
-    }
+  &:hover::before {
+    position: absolute;
+    background-color: var(--color-interaction-secondary-hover);
+    border-radius: var(--border-radius-xs);
+    inset-block: var(--scale-size-4);
+    inset-inline: -8px;
+    pointer-events: none;
   }
 
   &.is--draggable {
     cursor: grab;
   }
+}
 
-  &--critical {
-    color: var(--color-text-critical-default);
-  }
+.mt-popover-item--critical {
+  color: var(--color-text-critical-default);
+}
 
-  &--critical:hover {
+.mt-popover-item--critical:hover::before {
+  background-color: var(--color-background-critical-default);
+}
+
+.mt-popover-item--active {
+  text-decoration: underline;
+}
+
+.mt-popover-item--disabled {
+  color: var(--color-text-primary-disabled);
+
+  &:hover {
+    text-decoration: none;
+    cursor: default;
+
     &::before {
-      background-color: var(--color-background-critical-default);
+      background-color: transparent;
     }
   }
+}
 
-  &--active {
-    text-decoration: underline;
+.mt-popover-item--border-top {
+  border-block-start: 1px solid var(--color-border-secondary-default);
+  margin-block-start: -1px;
+}
+
+.mt-popover-item--border-bottom {
+  border-block-end: 1px solid var(--color-border-secondary-default);
+  margin-block-end: -1px;
+}
+
+.mt-popover-item__top-row {
+  display: flex;
+  gap: var(--scale-size-8);
+  z-index: 1;
+}
+
+.mt-popover-item__align-right {
+  display: flex;
+  gap: var(--scale-size-8);
+  margin-inline-start: auto;
+}
+
+.mt-popover-item__checkbox {
+  margin-block-start: var(--scale-size-4);
+
+  .mt-field--checkbox {
+    margin: 0;
+  }
+}
+
+.mt-popover-item__icon {
+  margin-block-start: var(--scale-size-4);
+  padding: 1px;
+
+  svg {
+    width: var(--scale-size-14) !important;
+    height: var(--scale-size-14) !important;
+  }
+}
+
+.mt-popover-item__icon--clickable {
+  cursor: pointer;
+}
+
+.mt-popover-item__label {
+  margin-inline-end: var(--scale-size-4);
+}
+
+.mt-popover-item__label,
+.mt-popover-item__contextual-detail,
+.mt-popover-item__shortcut {
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+  font-weight: var(--font-weight-medium);
+}
+
+.mt-popover-item__label--clickable,
+.mt-popover-item__contextual-detail--clickable,
+.mt-popover-item__shortcut--clickable {
+  cursor: pointer;
+}
+
+.mt-popover-item__contextual-detail,
+.mt-popover-item__shortcut {
+  color: var(--color-text-secondary-default);
+  white-space: nowrap;
+}
+
+.mt-popover-item__switch {
+  margin: var(--scale-size-4) 0 0 0;
+  min-height: var(--scale-size-16);
+}
+
+.mt-popover-item__visibility {
+  svg {
+    width: var(--scale-size-12) !important;
+    height: var(--scale-size-8) !important;
   }
 
-  &--disabled {
-    color: var(--color-text-primary-disabled);
-
-    &:hover {
-      text-decoration: none;
-      cursor: default;
-
-      &::before {
-        background-color: transparent;
-      }
-    }
+  #meteor-icon-kit__solid-eye-slash {
+    width: var(--scale-size-14) !important;
+    height: var(--scale-size-10) !important;
+    margin-block-start: -1px;
+    margin-inline: -1px;
   }
+}
 
-  &--border-top {
-    border-top: 1px solid var(--color-border-secondary-default);
-    margin-top: -1px;
-  }
+.mt-popover-item__options-count {
+  margin-inline-end: var(--scale-size-8);
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+  font-weight: var(--font-weight-medium);
+}
 
-  &--border-bottom {
-    border-bottom: 1px solid var(--color-border-secondary-default);
-    margin-bottom: -1px;
-  }
+.mt-popover-item__options svg {
+  width: 5px !important;
+  height: var(--scale-size-8) !important;
+}
 
-  &__top-row {
-    display: flex;
-    gap: var(--scale-size-8);
-    z-index: 1;
-  }
+.mt-popover-item__visibility,
+.mt-popover-item__options {
+  cursor: pointer;
+  padding-block-start: var(--scale-size-4);
+  margin-block-start: var(--scale-size-4);
+}
 
-  &__align-right {
-    display: flex;
-    gap: var(--scale-size-8);
-    margin-left: auto;
-  }
-
-  &__checkbox {
-    margin-top: var(--scale-size-4);
-
-    .mt-field--checkbox {
-      margin: 0;
-    }
-  }
-
-  &__icon {
-    margin-top: var(--scale-size-4);
-    padding: 1px;
-
-    &--clickable {
-      cursor: pointer;
-    }
-
-    svg {
-      width: var(--scale-size-14) !important;
-      height: var(--scale-size-14) !important;
-    }
-  }
-
-  &__label {
-    margin-right: var(--scale-size-4);
-  }
-
-  &__label,
-  &__contextual-detail,
-  &__shortcut {
-    font-size: var(--font-size-xs);
-    line-height: var(--font-line-height-xs);
-    font-weight: var(--font-weight-medium);
-
-    &--clickable {
-      cursor: pointer;
-    }
-  }
-
-  &__contextual-detail,
-  &__shortcut {
-    color: var(--color-text-secondary-default);
-    white-space: nowrap;
-  }
-
-  &__switch {
-    margin: var(--scale-size-4) 0 0 0;
-    min-height: var(--scale-size-16);
-  }
-
-  &__visibility {
-    svg {
-      width: var(--scale-size-12) !important;
-      height: var(--scale-size-8) !important;
-    }
-
-    #meteor-icon-kit__solid-eye-slash {
-      width: var(--scale-size-14) !important;
-      height: var(--scale-size-10) !important;
-      margin-top: -1px;
-      margin-left: -1px;
-      margin-right: -1px;
-    }
-  }
-
-  &__options-count {
-    margin-right: var(--scale-size-8);
-    font-family: var(--font-family-body);
-    font-size: var(--font-size-xs);
-    line-height: var(--font-line-height-xs);
-    font-weight: var(--font-weight-medium);
-  }
-
-  &__options {
-    svg {
-      width: 5px !important;
-      height: var(--scale-size-8) !important;
-    }
-  }
-
-  &__visibility,
-  &__options {
-    cursor: pointer;
-    padding-top: var(--scale-size-4);
-    margin-top: var(--scale-size-4);
-  }
-
-  &__meta-copy {
-    color: var(--color-text-secondary-default);
-    font-size: var(--font-size-2xs);
-    line-height: var(--font-line-height-2xs);
-    font-weight: var(--font-weight-medium);
-  }
+.mt-popover-item__meta-copy {
+  color: var(--color-text-secondary-default);
+  font-size: var(--font-size-2xs);
+  line-height: var(--font-line-height-2xs);
+  font-weight: var(--font-weight-medium);
 }
 </style>

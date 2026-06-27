@@ -103,14 +103,4 @@ export default defineConfig({
       },
     },
   },
-  css: {
-    preprocessorOptions: {
-      scss: {
-        additionalData: `
-          @use "sass:math";
-          @import "${path.resolve(__dirname, "src/assets/scss/variables.scss")}";
-        `,
-      },
-    },
-  },
 });

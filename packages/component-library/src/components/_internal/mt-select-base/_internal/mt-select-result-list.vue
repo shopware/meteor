@@ -339,11 +339,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-@import "../../../../assets/scss/variables";
-
-$mt-select-result-list-transition: all ease-in-out 0.2s;
-
+<style>
 .mt-select-result-list {
   pointer-events: none;
 }
@@ -351,10 +347,7 @@ $mt-select-result-list-transition: all ease-in-out 0.2s;
 .mt-select-result-list,
 .mt-select-result-list-popover {
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   overflow: hidden;
 }
 
