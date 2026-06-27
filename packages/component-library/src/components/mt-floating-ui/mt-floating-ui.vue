@@ -244,7 +244,7 @@ onBeforeUnmount(() => {
 });
 </script>
 
-<style lang="scss">
+<style>
 .mt-floating-ui {
   display: inline-block;
   position: relative;
@@ -303,7 +303,8 @@ onBeforeUnmount(() => {
     opacity 0.15s;
 }
 
-.popoverTransition-enter, .popoverTransition-leave-to /* .fade-leave-active below version 2.1.8 */ {
+.popoverTransition-enter-from,
+.popoverTransition-leave-to {
   transform: scale3d(1, 0, 1);
   opacity: 0;
 }

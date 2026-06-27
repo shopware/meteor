@@ -35,7 +35,6 @@
   ],
   "sideEffects": [
     "*.vue",
-    "*.scss",
     "*.css"
   ],
   "scripts": {
@@ -49,8 +48,8 @@
     "lint:all": "npm run lint:eslint && npm run format:check && npm run lint:css",
     "lint:eslint": "eslint .",
     "lint:eslint:fix": "eslint . --fix",
-    "lint:css": "stylelint \"src/**/*.vue\"",
-    "lint:css:fix": "stylelint \"src/**/*.vue\" --fix",
+    "lint:css": "stylelint \"src/**/*.{vue,css}\"",
+    "lint:css:fix": "stylelint \"src/**/*.{vue,css}\" --fix",
     "format:check": "prettier . --check",
     "format": "prettier --write .",
     "dev": "npm run storybook",
@@ -154,11 +153,9 @@
     "npm-run-all2": "^6.1.1",
     "postcss-html": "^1.7.0",
     "prettier": "3.2.5",
-    "sass": "^1.69.5",
     "size-limit": "^11.2.0",
     "storybook": "^8.6.15",
     "stylelint": "^16.26.1",
-    "stylelint-config-standard-scss": "^13.1.0",
     "stylelint-define-config": "^1.8.0",
     "ts-morph": "^20.0.0",
     "type-fest": "^4.41.0",

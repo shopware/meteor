@@ -307,9 +307,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-@import "../../../../assets/scss/variables";
-
+<style>
 .mt-select-selection-list {
   display: flex;
   flex-wrap: wrap;
@@ -322,13 +320,6 @@ export default defineComponent({
     .mt-select-selection-list--single {
       min-width: 0;
       max-width: 100%;
-    }
-  }
-
-  &--single {
-    .mt-label {
-      border: none;
-      background: unset;
     }
   }
 
@@ -360,12 +351,17 @@ export default defineComponent({
   }
 }
 
+.mt-select-selection-list--single .mt-label {
+  border: none;
+  background: unset;
+}
+
 .mt-field--medium .mt-select-selection-list {
   .mt-select-selection-list__item-holder .mt-label {
     margin: var(--scale-size-4) var(--scale-size-6) 0 0;
   }
 
-  input {
+  & input {
     padding: var(--scale-size-4) var(--scale-size-16) var(--scale-size-8) var(--scale-size-8);
   }
 }
@@ -375,7 +371,7 @@ export default defineComponent({
     margin: var(--scale-size-4) var(--scale-size-6) 0 0;
   }
 
-  input {
+  & input {
     padding: var(--scale-size-2) var(--scale-size-16) var(--scale-size-4) var(--scale-size-8);
   }
 }
