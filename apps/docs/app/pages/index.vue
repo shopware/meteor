@@ -21,6 +21,10 @@ useSeo({
   type: "website",
 });
 
+// Homepage shows the product name on its own; drop the global
+// "%s - Shopware Meteor" title suffix to avoid doubled branding.
+useHead({ titleTemplate: null });
+
 defineOgImage("Landing", {
   title: title.slice(0, 60),
   description: formatOgDescription(title, description),
@@ -173,7 +177,7 @@ const faqItems = [
           :style="{ animationDelay: '160ms' }"
         >
           <NuxtLink
-            to="/getting-started/introduction"
+            to="/documentation/getting-started"
             :class="[
               btnBase,
               'bg-interaction-primary-default text-static-white hover:bg-interaction-primary-hover',
@@ -182,7 +186,7 @@ const faqItems = [
             Get started
           </NuxtLink>
           <NuxtLink
-            to="/components/action-menu"
+            to="/components"
             :class="[
               btnBase,
               'border border-default bg-interaction-secondary-default text-default hover:bg-interaction-secondary-hover',
@@ -291,17 +295,17 @@ const faqItems = [
               Explore the docs
             </h2>
             <p class="mt-6 text-base leading-relaxed text-muted sm:text-lg">
-              Guides and references for every part of Meteor, from foundations
-              and tokens to components, content, and agents.
+              Guides and references for every part of Meteor, from guidelines
+              and design tokens to components, content, and agents.
             </p>
           </header>
 
           <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
             <LandingSectionCard
-              title="Getting started"
+              title="Getting Started"
               description="Install the packages and ship your first screen."
               icon="i-lucide-rocket"
-              to="/getting-started/introduction"
+              to="/documentation/getting-started"
             >
               <template #visual>
                 <div
@@ -327,10 +331,10 @@ const faqItems = [
             </LandingSectionCard>
 
             <LandingSectionCard
-              title="Foundations"
+              title="Guidelines"
               description="Design principles, accessibility, states and conventions."
-              icon="i-lucide-shapes"
-              to="/foundations/design-principles"
+              icon="i-lucide-compass"
+              to="/documentation/guidelines"
             >
               <template #visual>
                 <div
@@ -364,7 +368,7 @@ const faqItems = [
               title="Design"
               description="Tokens, theming, and how design decisions are encoded."
               icon="i-lucide-palette"
-              to="/design/tokens"
+              to="/documentation/design"
             >
               <template #visual>
                 <div
@@ -415,7 +419,7 @@ const faqItems = [
               title="Content"
               description="Voice, tone, and wording guidelines for UI copy."
               icon="i-lucide-pen-line"
-              to="/content/wording"
+              to="/documentation/content"
             >
               <template #visual>
                 <div
@@ -449,7 +453,7 @@ const faqItems = [
               title="Agents"
               description="Connect Meteor to AI agents through the MCP server."
               icon="i-lucide-bot"
-              to="/agents/mcp"
+              to="/documentation/getting-started/agents"
             >
               <template #visual>
                 <div
@@ -477,7 +481,7 @@ const faqItems = [
               title="Components"
               description="Vue components, documented and ready to drop in."
               icon="i-lucide-blocks"
-              to="/components/action-menu"
+              to="/components"
             >
               <template #visual>
                 <div
@@ -570,7 +574,7 @@ const faqItems = [
 
         <div class="mt-10 text-center">
           <NuxtLink
-            to="/getting-started/developers"
+            to="/documentation/getting-started"
             class="group inline-flex items-center gap-1.5 text-sm font-medium text-primary"
           >
             Read the developer setup guide
@@ -663,12 +667,7 @@ const faqItems = [
 .dark .landing {
   /* Night sky: a faint blue base at the bottom (by the planet's atmosphere)
    * fading smoothly to pure black space well before the top. */
-  --hero-gradient: linear-gradient(
-    0deg,
-    #0b1c3a 0%,
-    #03060e 60%,
-    #000000 100%
-  );
+  --hero-gradient: linear-gradient(0deg, #0b1c3a 0%, #03060e 60%, #000000 100%);
 }
 
 .hero {
@@ -688,14 +687,14 @@ const faqItems = [
       transparent 70%
     ),
     /* planet — dark body with a soft cool limb forming the horizon */
-    radial-gradient(
-      78% 82% at 50% 142%,
-      #123f73 0%,
-      #0a2244 50%,
-      rgba(130, 188, 255, 0.32) 64%,
-      rgba(110, 175, 250, 0.1) 68%,
-      transparent 75%
-    );
+      radial-gradient(
+        78% 82% at 50% 142%,
+        #123f73 0%,
+        #0a2244 50%,
+        rgba(130, 188, 255, 0.32) 64%,
+        rgba(110, 175, 250, 0.1) 68%,
+        transparent 75%
+      );
 }
 
 .hero-dots {

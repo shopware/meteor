@@ -14,11 +14,17 @@ const execFileAsync = promisify(execFile);
 const here = dirname(fileURLToPath(import.meta.url));
 const repoRoot = resolve(here, "../../..");
 const contentDir = resolve(here, "../content");
-const outFile = resolve(contentDir, "1.getting-started/6.changelog.md");
-// Older output locations to clean up when this script moves the page.
+const outFile = resolve(
+  contentDir,
+  "1.documentation/1.getting-started/5.whats-new.md",
+);
+// Older output locations to clean up when this script moves/renames the page.
 const stale = [
-  resolve(contentDir, "7.changelog.md"),
-  resolve(contentDir, "7.changelog"),
+  resolve(contentDir, "1.documentation/1.getting-started/5.changelog.md"),
+  resolve(contentDir, "1.documentation/1.get-started"),
+  resolve(contentDir, "1.docs"),
+  resolve(contentDir, "1.get-started"),
+  resolve(contentDir, "1.getting-started"),
 ];
 const fences = {
   tabItem: ":::",
@@ -30,13 +36,9 @@ const changelogVersionUi = `:ui='{"container":"w-full max-w-none [&_ul]:my-0","t
 
 // Order here is the tab order; Component Library is first.
 const packages = [
-  {
-    dir: "packages/component-library",
-    title: "Component Library",
-    icon: "i-lucide-blocks",
-  },
-  { dir: "packages/tokens", title: "Tokens", icon: "i-lucide-palette" },
-  { dir: "packages/icon-kit", title: "Icon Kit", icon: "i-lucide-shapes" },
+  { dir: "packages/component-library", title: "Component Library" },
+  { dir: "packages/tokens", title: "Tokens" },
+  { dir: "packages/icon-kit", title: "Icon Kit" },
 ];
 
 // Walks `body` line by line, tracking fenced-code-block state the CommonMark
@@ -210,7 +212,7 @@ function tabFor(pkg, body, releaseDates) {
   // only then wrap it in our own MDC fences so sanitization never touches them.
   const prose = sanitizeProse(stripH1Headings(body));
   const content = renderChangelogVersions(prose, releaseDates).trim();
-  return `${fences.tabItem}tabs-item{label="${pkg.title}" icon="${pkg.icon}"}\n\n${fences.tabContent}div{class="*:first:mt-0 *:last:mb-0"}\n\n${content}\n\n${fences.tabContent}\n\n${fences.tabItem}`;
+  return `${fences.tabItem}tabs-item{label="${pkg.title}"}\n\n${fences.tabContent}div{class="*:first:mt-0 *:last:mb-0"}\n\n${content}\n\n${fences.tabContent}\n\n${fences.tabItem}`;
 }
 
 async function run() {
@@ -227,11 +229,11 @@ async function run() {
   }
 
   const page = `---
-title: Changelog
+title: What's new
 description: Release notes for Meteor's documented packages, organized by package and listed newest first.
 ---
 
-::tabs{variant="pill"}
+::tabs{color="neutral"}
 
 ${tabs.join("\n\n")}
 
@@ -245,7 +247,7 @@ ${tabs.join("\n\n")}
   await writeFile(outFile, page);
 
   console.log(
-    `[sync-changelogs] wrote ${tabs.length} changelog tab(s) to content/1.getting-started/6.changelog.md`,
+    `[sync-changelogs] wrote ${tabs.length} changelog tab(s) to content/1.documentation/1.getting-started/5.whats-new.md`,
   );
 }
 

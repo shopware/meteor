@@ -44,6 +44,43 @@ const shikiTheme = {
 
 export default defineNuxtConfig({
   extends: ["docus"],
+  // Drives the page-title suffix (Docus' default titleTemplate `%s - <site.name>`),
+  // the OG site name, and the sitemap. Without this it falls back to the
+  // package.json name ("meteor-docs").
+  site: {
+    name: "Shopware Meteor",
+  },
+  // Section roots have no index page, so permanently redirect each to its first
+  // child instead of 404ing.
+  routeRules: {
+    "/documentation": {
+      redirect: {
+        to: "/documentation/getting-started/installation",
+        statusCode: 301,
+      },
+    },
+    "/documentation/getting-started": {
+      redirect: {
+        to: "/documentation/getting-started/installation",
+        statusCode: 301,
+      },
+    },
+    "/documentation/guidelines": {
+      redirect: {
+        to: "/documentation/guidelines/design-principles",
+        statusCode: 301,
+      },
+    },
+    "/documentation/design": {
+      redirect: { to: "/documentation/design/tokens", statusCode: 301 },
+    },
+    "/documentation/content": {
+      redirect: { to: "/documentation/content/wording", statusCode: 301 },
+    },
+    "/components": {
+      redirect: { to: "/components/action-menu", statusCode: 301 },
+    },
+  },
   // modules/ is auto-scanned, so meteor-components and component-examples load
   // automatically. meteor-components registers its work via the
   // `component-meta:extend` hook (fired during the build), so module order
