@@ -660,6 +660,7 @@ const faqItems = [
  * bottom color) is shared with the hero fade and the section transition so the
  * blend stays seamless. */
 .landing {
+  --ui-container: var(--ui-container-small);
   --hero-gradient: none;
   --hero-edge: var(--ui-bg);
 }

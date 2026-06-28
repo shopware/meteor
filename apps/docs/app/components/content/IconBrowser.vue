@@ -8,14 +8,34 @@ interface IconMetaEntry {
   tags?: string[];
 }
 
+// Lowercase and turn every run of non-alphanumeric characters (hyphens,
+// spaces, etc.) into a single space, so separators never affect matching.
+function normalize(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
+}
+
 // meta.json has one entry per icon SVG (mode + name + tags).
 const allIcons = (iconMeta as IconMetaEntry[])
-  .map((icon) => ({
-    fullName: `${icon.mode}-${icon.name}`,
-    mode: icon.mode,
-    name: icon.name,
-    tags: icon.tags ?? [],
-  }))
+  .map((icon) => {
+    const tags = icon.tags ?? [];
+    // A single normalized haystack covering mode, name, and tags. Keep a
+    // space-separated form (for word matching) and a collapsed form (so a
+    // query like "regularsidebar" still matches "regular-sidebar").
+    const haystack = normalize(
+      `${icon.mode} ${icon.name} ${tags.join(" ")}`,
+    );
+    return {
+      fullName: `${icon.mode}-${icon.name}`,
+      mode: icon.mode,
+      name: icon.name,
+      tags,
+      haystack,
+      haystackCollapsed: haystack.replace(/ /g, ""),
+    };
+  })
   .sort((a, b) => a.fullName.localeCompare(b.fullName));
 
 const { copy } = useCopyToClipboard();
@@ -25,13 +45,18 @@ const activeMode = ref("all");
 const currentPage = ref(1);
 
 const searchMatched = computed(() => {
-  const term = searchTerm.value.trim().toLowerCase();
+  const term = normalize(searchTerm.value);
+  if (!term) return allIcons;
+
+  const tokens = term.split(" ");
+  const collapsed = term.replace(/ /g, "");
+
+  // Match when every search word appears in the icon's name/mode/tags, or when
+  // the whole separator-stripped query is a substring of the collapsed text.
   return allIcons.filter(
     (icon) =>
-      !term ||
-      icon.name.toLowerCase().includes(term) ||
-      icon.fullName.toLowerCase().includes(term) ||
-      icon.tags.some((tag) => tag.toLowerCase().includes(term)),
+      tokens.every((token) => icon.haystack.includes(token)) ||
+      icon.haystackCollapsed.includes(collapsed),
   );
 });
 
@@ -75,7 +100,7 @@ const visibleIcons = computed(() => {
       icon="i-lucide-search"
       size="lg"
       variant="outline"
-      placeholder="Search icons by name..."
+      placeholder="Search icons by name or keyword..."
     />
 
     <UTabs

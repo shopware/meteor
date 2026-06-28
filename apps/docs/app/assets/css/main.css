@@ -9,6 +9,7 @@
 :root {
   --ui-radius: var(--border-radius-s);
   --ui-container: 1920px;
+  --ui-container-small: 1280px;
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 
   /* Surfaces */
