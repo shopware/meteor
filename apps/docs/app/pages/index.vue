@@ -62,17 +62,17 @@ const npmBase = "https://www.npmjs.com/package/@shopware-ag/";
 
 const benefits = [
   {
-    icon: "i-lucide-store",
+    icon: "i-custom:shopware-signet",
     title: "Built for Shopware",
     text: "Components and patterns shaped for administrative commerce interfaces, not a generic UI kit.",
   },
   {
-    icon: "i-lucide-accessibility",
+    icon: "i-lucide-person-standing",
     title: "Accessible out of the box",
     text: "Every component ships with keyboard support, ARIA semantics, and light and dark themes.",
   },
   {
-    icon: "i-lucide-library-big",
+    icon: "i-lucide-refresh-cw",
     title: "Design and code in sync",
     text: "Figma libraries, components, and tokens stay aligned, so decisions are made once and applied everywhere.",
   },
@@ -81,17 +81,14 @@ const benefits = [
 const packages = [
   {
     name: "meteor-component-library",
-    icon: "i-lucide-blocks",
     text: "Vue 3 component set with built-in tokens, icons, and the Inter font.",
   },
   {
     name: "meteor-tokens",
-    icon: "i-lucide-palette",
     text: "Design tokens as CSS custom properties, usable in any framework.",
   },
   {
     name: "meteor-icon-kit",
-    icon: "i-lucide-shapes",
     text: "SVG icon set, standalone or as Vue components via mt-icon.",
   },
 ];
@@ -287,7 +284,7 @@ const faqItems = [
 
     <section class="py-20 sm:py-28">
       <UContainer>
-        <div>
+        <div class="bg-default">
           <header class="mx-auto mb-12 max-w-2xl text-center">
             <h2
               class="text-3xl font-bold tracking-tight text-highlighted sm:text-4xl"
@@ -304,7 +301,6 @@ const faqItems = [
             <LandingSectionCard
               title="Getting Started"
               description="Install the packages and ship your first screen."
-              icon="i-lucide-rocket"
               to="/documentation/getting-started"
             >
               <template #visual>
@@ -333,7 +329,6 @@ const faqItems = [
             <LandingSectionCard
               title="Guidelines"
               description="Design principles, accessibility, states and conventions."
-              icon="i-lucide-compass"
               to="/documentation/guidelines"
             >
               <template #visual>
@@ -367,7 +362,6 @@ const faqItems = [
             <LandingSectionCard
               title="Design"
               description="Tokens, theming, and how design decisions are encoded."
-              icon="i-lucide-palette"
               to="/documentation/design"
             >
               <template #visual>
@@ -418,7 +412,6 @@ const faqItems = [
             <LandingSectionCard
               title="Content"
               description="Voice, tone, and wording guidelines for UI copy."
-              icon="i-lucide-pen-line"
               to="/documentation/content"
             >
               <template #visual>
@@ -452,7 +445,6 @@ const faqItems = [
             <LandingSectionCard
               title="Agents"
               description="Connect Meteor to AI agents through the MCP server."
-              icon="i-lucide-bot"
               to="/documentation/getting-started/agents"
             >
               <template #visual>
@@ -480,7 +472,6 @@ const faqItems = [
             <LandingSectionCard
               title="Components"
               description="Vue components, documented and ready to drop in."
-              icon="i-lucide-blocks"
               to="/components"
             >
               <template #visual>
@@ -541,16 +532,10 @@ const faqItems = [
             target="_blank"
             class="group flex flex-col rounded-2xl border border-default bg-default p-6 transition-colors hover:border-accented"
           >
-            <div class="flex items-center gap-3">
-              <div
-                class="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary"
-              >
-                <UIcon :name="pkg.icon" class="size-5" />
-              </div>
-              <UIcon
-                name="i-simple-icons-npm"
-                class="ml-auto size-5 text-dimmed transition-colors group-hover:text-highlighted"
-              />
+            <div
+              class="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary"
+            >
+              <UIcon name="i-simple-icons-npm" class="size-5" />
             </div>
             <p
               class="mt-4 font-mono text-sm font-medium break-all text-highlighted"
@@ -698,6 +683,16 @@ const faqItems = [
       );
 }
 
+/* On narrow viewports the headline wraps and the hero grows tall. Since the
+ * planet's center (142%) and radii are percentages of the element height, that
+ * would stretch it into an oversized vertical glow reaching past the viewport.
+ * Shrink the box on mobile so it stays a shallow horizon arc along the bottom. */
+@media (max-width: 640px) {
+  .hero-earth {
+    height: 55%;
+  }
+}
+
 .hero-dots {
   background-image: radial-gradient(
     circle,
@@ -705,13 +700,6 @@ const faqItems = [
     transparent 1.5px
   );
   background-size: 22px 22px;
-  -webkit-mask-image: linear-gradient(
-    to bottom,
-    #000 0%,
-    #000 30%,
-    transparent 88%
-  );
-  mask-image: linear-gradient(to bottom, #000 0%, #000 30%, transparent 88%);
 }
 
 .hero-dots-reveal {

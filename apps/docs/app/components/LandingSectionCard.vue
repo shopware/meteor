@@ -2,7 +2,6 @@
 defineProps<{
   title: string;
   description: string;
-  icon: string;
   to: string;
 }>();
 </script>
@@ -23,7 +22,6 @@ defineProps<{
       class="flex flex-1 flex-col gap-1.5 p-5 transition-colors group-hover:bg-muted"
     >
       <div class="flex items-center gap-2">
-        <UIcon :name="icon" class="size-5 shrink-0 text-highlighted" />
         <h3 class="font-semibold text-highlighted">{{ title }}</h3>
         <UIcon
           name="i-lucide-arrow-right"

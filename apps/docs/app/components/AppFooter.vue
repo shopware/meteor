@@ -7,7 +7,7 @@ const legalLinks = [
 </script>
 
 <template>
-  <footer class="border-t border-[var(--color-border-secondary-default)]">
+  <footer class="border-t border-default">
     <UContainer class="py-6">
       <div
         class="flex flex-col items-center gap-4 text-center text-xs text-muted sm:flex-row sm:items-center sm:justify-between sm:text-left"

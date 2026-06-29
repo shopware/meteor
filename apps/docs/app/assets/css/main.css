@@ -8,7 +8,7 @@
 
 :root {
   --ui-radius: var(--border-radius-s);
-  --ui-container: 1920px;
+  --ui-container: 1680px;
   --ui-container-small: 1280px;
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
 
@@ -85,4 +85,19 @@
  * left slot (a <div>), so the header is left untouched. */
 aside[data-slot="left"] {
   max-width: 15rem;
+}
+
+/* Drop the right TOC column one breakpoint earlier. Nuxt UI's UPage grid turns
+ * on at lg (1024px) and shows left + content + TOC all at once. On the lg–xl
+ * range (1024–1280px) that leaves the prose cramped, so hide the TOC there and
+ * let the content fill the inner grid; the TOC returns at xl. Same page-level
+ * UPage selector as above (the grid whose root holds the right slot). */
+@media (min-width: 1024px) and (max-width: 1279.98px) {
+  [data-slot="root"]:has(> [data-slot="right"]) > [data-slot="right"] {
+    display: none;
+  }
+
+  [data-slot="root"]:has(> [data-slot="right"]) > [data-slot="center"] {
+    grid-column: span 10 / span 10;
+  }
 }
