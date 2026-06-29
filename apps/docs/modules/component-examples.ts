@@ -2,10 +2,13 @@ import { existsSync } from "node:fs";
 import fsp from "node:fs/promises";
 import { join } from "node:path";
 import { defineNuxtModule } from "@nuxt/kit";
+import { kebabCase } from "scule";
 
 interface ExampleComponent {
   pascalName: string;
   filePath: string;
+  /** Owning component slug, derived from the examples/<group>/ folder. */
+  component?: string;
   code?: string;
 }
 
@@ -46,6 +49,23 @@ export default defineNuxtModule({
       );
     }
 
+    // A single enumerable index of every example, used by the examples MCP
+    // resource. The per-example JSON files are read by name only
+    // (getComponentExample), so they cannot be listed at runtime on their own.
+    // `name` round-trips with exampleKey(): kebabCase(pascalName).
+    async function writeIndexFile() {
+      const index = Object.values(components).map((component) => ({
+        name: kebabCase(component.pascalName),
+        pascalName: component.pascalName,
+        component: component.component,
+      }));
+      await fsp.writeFile(
+        join(outputDir, "index.json"),
+        JSON.stringify(index),
+        "utf-8",
+      );
+    }
+
     async function writeOutput() {
       await ensureOutputDir();
       await Promise.all(
@@ -54,6 +74,7 @@ export default defineNuxtModule({
           await writeComponentFile(component);
         }),
       );
+      await writeIndexFile();
     }
 
     nuxt.hook("components:extend", async (allComponents) => {
@@ -65,6 +86,7 @@ export default defineNuxtModule({
           acc[component.pascalName] = {
             pascalName: component.pascalName,
             filePath: component.filePath,
+            component: component.shortPath.match(/examples\/([^/]+)\//)?.[1],
           };
           return acc;
         }, {});
@@ -99,6 +121,14 @@ export function getComponentExample(name) {
     }
   }
   return cache[name]
+}
+
+export function listComponentExamples() {
+  try {
+    return JSON.parse(readFileSync(basePath + '/index.json', 'utf-8'))
+  } catch {
+    return []
+  }
 }
 `;
       };
