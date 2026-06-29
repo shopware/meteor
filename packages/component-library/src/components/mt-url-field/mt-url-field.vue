@@ -124,7 +124,7 @@ import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtTooltip from "../mt-tooltip/mt-tooltip.vue";
 import { useClipboard } from "@vueuse/core";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/use-meteor-i18n";
 import { useFutureFlags } from "@/composables/useFutureFlags";
 
 const futureFlags = useFutureFlags();
@@ -247,7 +247,8 @@ function transformURL(value: string) {
 
 const { copy, copied } = useClipboard();
 
-const { t } = useI18n({
+const { t } = useMeteorI18n({
+  namespace: "mt.url-field",
   messages: {
     de: {
       copyTooltip: "URL in Zwischenablage kopieren",

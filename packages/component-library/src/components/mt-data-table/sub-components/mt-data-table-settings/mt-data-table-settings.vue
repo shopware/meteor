@@ -103,7 +103,7 @@ import MtPopoverItemResult from "../../../mt-popover-item-result/mt-popover-item
 import MtTooltipDirective from "../../../../directives/tooltip.directive";
 import type { ColumnDefinition } from "../../mt-data-table.vue";
 import type { Option as ItemResultOption } from "../../../mt-popover-item-result/mt-popover-item-result.vue";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/use-meteor-i18n";
 
 export default defineComponent({
   name: "MtDataTableSettings",
@@ -153,7 +153,8 @@ export default defineComponent({
     "change-enable-row-numbering",
   ],
   setup(props, { emit }) {
-    const { t } = useI18n({
+    const { t } = useMeteorI18n({
+      namespace: "mt.data-table-settings",
       messages: {
         en: {
           title: "Settings",

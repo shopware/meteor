@@ -23,9 +23,10 @@ import type { CustomButton } from "./mt-text-editor-toolbar.vue";
 import type { Editor } from "@tiptap/vue-3";
 import mtIcon from "@/components/mt-icon/mt-icon.vue";
 import vTooltip from "@/directives/tooltip.directive";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/use-meteor-i18n";
+import { meteorTextEditorMessages } from "../mt-text-editor.i18n";
 
-const { t } = useI18n();
+const { t } = useMeteorI18n({ messages: meteorTextEditorMessages });
 
 const props = defineProps({
   editor: {

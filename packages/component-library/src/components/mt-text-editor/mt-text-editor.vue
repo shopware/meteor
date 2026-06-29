@@ -58,11 +58,11 @@
       <div v-if="!showCodeEditor && gateActive" class="mt-text-editor__gate">
         <div class="mt-text-editor__gate-content">
           <MtText as="p" size="s" color="color-static-white" class="mt-text-editor__gate-text">
-            {{ t("mt-text-editor.gate.message") }}
+            {{ t("mt.text-editor.gate.message") }}
           </MtText>
           <div class="mt-text-editor__gate-actions">
             <mt-button variant="primary" @click="showDiffModal = true">
-              {{ t("mt-text-editor.gate.showDiff") }}
+              {{ t("mt.text-editor.gate.showDiff") }}
             </mt-button>
           </div>
         </div>
@@ -118,7 +118,7 @@
         <div class="mt-text-editor__footer-right">
           <slot name="footer-right" :editor="editor">
             {{
-              t("mt-text-editor.footer.characters", {
+              t("mt.text-editor.footer.characters", {
                 characters: characterCount,
               })
             }}
@@ -211,7 +211,8 @@ import {
 } from "vue";
 import { html } from "@codemirror/lang-html";
 import type { Text as CodeMirrorText } from "@codemirror/state";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/use-meteor-i18n";
+import { meteorTextEditorMessages } from "./mt-text-editor.i18n";
 import ListItem from "@tiptap/extension-list-item";
 import mtTextEditorDiffModal from "./_internal/mt-text-editor-diff-modal.vue";
 import { formatHtmlForDiff, getHtmlParseDiff } from "./_internal/html-parse-diff";
@@ -219,66 +220,7 @@ import mtButton from "@/components/mt-button/mt-button.vue";
 import MtText from "@/components/mt-text/mt-text.vue";
 import { debounce } from "@/utils/debounce";
 
-const { t } = useI18n({
-  useScope: "global",
-  messages: {
-    en: {
-      "mt-text-editor": {
-        buttons: {
-          "switch-to-code": "Switch to code mode",
-          "switch-to-visual": "Switch to visual mode",
-          "toggle-fullscreen": "Toggle fullscreen mode",
-        },
-        footer: {
-          characters: "{characters} characters",
-        },
-        diff: {
-          title: "Code changes required",
-          subtitle:
-            "Editing in visual mode requires changes to your code. Some parts may be removed or new code may be added to ensure compatibility.",
-          accept: "Apply changes",
-          cancel: "Continue in code mode",
-          headlines: {
-            current: "Your code",
-            new: "With changes applied",
-          },
-        },
-        gate: {
-          message: "This editor contains custom code that isn’t fully supported in visual mode.",
-          showDiff: "View code",
-        },
-      },
-    },
-    de: {
-      "mt-text-editor": {
-        buttons: {
-          "switch-to-code": "In den Code-Modus wechseln",
-          "switch-to-visual": "In den visuellen Modus wechseln",
-          "toggle-fullscreen": "Vollbildmodus umschalten",
-        },
-        footer: {
-          characters: "{characters} Zeichen",
-        },
-        diff: {
-          title: "Codeänderungen erforderlich",
-          subtitle:
-            "Das Bearbeiten im visuellen Modus erfordert Änderungen an deinem Code. Einige Teile können entfernt oder neuer Code hinzugefügt werden, um die Kompatibilität sicherzustellen.",
-          accept: "Änderungen anwenden",
-          cancel: "Im Code-Modus fortfahren",
-          headlines: {
-            current: "Dein Code",
-            new: "Mit angewandten Änderungen",
-          },
-        },
-        gate: {
-          message:
-            "Dieser Editor enthält benutzerdefinierten Code, der im visuellen Modus nicht vollständig unterstützt wird.",
-          showDiff: "Code anzeigen",
-        },
-      },
-    },
-  },
-});
+const { t } = useMeteorI18n({ messages: meteorTextEditorMessages });
 
 const emit = defineEmits(["update:modelValue", "update:codeMode"]);
 
@@ -603,8 +545,8 @@ const mergedCustomButtons = computed<CustomButton[]>(() => {
     {
       name: "toggle-code",
       label: showCodeEditor.value
-        ? "mt-text-editor.buttons.switch-to-visual"
-        : "mt-text-editor.buttons.switch-to-code",
+        ? "mt.text-editor.buttons.switch-to-visual"
+        : "mt.text-editor.buttons.switch-to-code",
       icon: "regular-code-xs",
       action: () => onToggleCodeClick(),
       alignment: "right",
@@ -613,7 +555,7 @@ const mergedCustomButtons = computed<CustomButton[]>(() => {
     },
     {
       name: "toggle-fullscreen",
-      label: "mt-text-editor.buttons.toggle-fullscreen",
+      label: "mt.text-editor.buttons.toggle-fullscreen",
       icon: isFullscreen.value ? "regular-compress-arrows-xs" : "regular-expand-arrows-xs",
       action: () => onToggleFullscreenClick(),
       alignment: "right",

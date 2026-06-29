@@ -48,6 +48,10 @@ import MtInset from "./components/mt-inset/mt-inset.vue";
 import MtThemeProvider from "./components/mt-theme-provider/mt-theme-provider.vue";
 import TooltipDirective from "./directives/tooltip.directive";
 import DeviceHelperPlugin from "./plugin/device-helper.plugin";
+import { useMeteorI18n } from "./composables/use-meteor-i18n";
+import { createMeteorI18nPlugin } from "./i18n/plugin";
+import { meteorI18nInjectionKey } from "./i18n/injection";
+import { createVueI18nAdapter } from "./i18n/adapters/vue-i18n";
 import MtTooltip from "./components/mt-tooltip/mt-tooltip.vue";
 import MtTextEditor from "./components/mt-text-editor/mt-text-editor.vue";
 import MtTextEditorToolbarButton from "./components/mt-text-editor/_internal/mt-text-editor-toolbar-button.vue";
@@ -143,6 +147,11 @@ export {
   DropdownMenuSub as MtDropdownMenuSub,
   DeviceHelperPlugin,
   useSnackbar,
+  // i18n
+  useMeteorI18n,
+  createMeteorI18nPlugin,
+  meteorI18nInjectionKey,
+  createVueI18nAdapter,
   // @deprecated
   MtBanner as SwBanner,
   // @deprecated
@@ -187,5 +196,15 @@ export {
 
 // Exporting types
 export type { Filter, Option, Toast, Snackbar, ChartOptions };
+export type {
+  MeteorI18nAdapter,
+  MeteorI18nInstance,
+  MeteorMessages,
+  MeteorLocaleMessages,
+  MeteorMessageTree,
+  MeteorInterpolationValues,
+} from "./i18n/types";
+export type { MeteorLocale } from "./i18n/locale";
+export type { VueI18nLike, VueI18nComposerLike } from "./i18n/adapters/vue-i18n";
 export type { Editor } from "@tiptap/vue-3";
 export type { default as Link } from "@tiptap/extension-link";
