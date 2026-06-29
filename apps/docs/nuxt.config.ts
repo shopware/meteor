@@ -49,6 +49,9 @@ export default defineNuxtConfig({
   // package.json name ("meteor-docs").
   site: {
     name: "Shopware Meteor",
+    // Absolute base for generated og:image URLs (and sitemap entries). Override
+    // per environment with NUXT_SITE_URL.
+    url: "https://meteor.shopware.com",
   },
   // Section roots have no index page, so permanently redirect each to its first
   // child instead of 404ing.
