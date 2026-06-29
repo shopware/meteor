@@ -15,19 +15,70 @@ interface Row {
   isRound: boolean;
 }
 
-const groups = tokenGroups.map((group) => ({
-  name: group.name,
-  rows: group.tokens.map(
-    (token): Row => ({
-      token,
-      type: previewType(token),
-      description: DESCRIPTIONS[token] || "",
-      isRound: token.includes("round"),
-    }),
-  ),
-}));
+const props = defineProps<{
+  /** Comma-separated group names to show, each with its header. Defaults to all groups. */
+  groups?: string;
+  /**
+   * Comma-separated token names to show as a flat list without a group header
+   * (the surrounding page heading labels the section). An entry ending in `*`
+   * matches by prefix. Takes precedence over `groups`.
+   */
+  tokens?: string;
+}>();
 
-const allTokens = groups.flatMap((group) => group.rows.map((row) => row.token));
+const makeRow = (token: string): Row => ({
+  token,
+  type: previewType(token),
+  description: DESCRIPTIONS[token] || "",
+  isRound: token.includes("round"),
+});
+
+interface DisplayGroup {
+  /** A null name renders the rows flat, without a group header. */
+  name: string | null;
+  rows: Row[];
+}
+
+function resolveGroups(): DisplayGroup[] {
+  if (props.tokens) {
+    const specs = props.tokens
+      .split(",")
+      .map((spec) => spec.trim())
+      .filter(Boolean);
+    const matches = (token: string) =>
+      specs.some((spec) =>
+        spec.endsWith("*")
+          ? token.startsWith(spec.slice(0, -1))
+          : token === spec,
+      );
+    const rows = tokenGroups
+      .flatMap((group) => group.tokens)
+      .filter(matches)
+      .map(makeRow);
+    return [{ name: null, rows }];
+  }
+
+  const requested = props.groups
+    ?.split(",")
+    .map((name) => name.trim())
+    .filter(Boolean);
+  const source = requested?.length
+    ? requested
+        .map((name) => tokenGroups.find((group) => group.name === name))
+        .filter((group): group is (typeof tokenGroups)[number] => Boolean(group))
+    : tokenGroups;
+
+  return source.map((group) => ({
+    name: group.name,
+    rows: group.tokens.map(makeRow),
+  }));
+}
+
+const displayGroups = resolveGroups();
+
+const allTokens = displayGroups.flatMap((group) =>
+  group.rows.map((row) => row.token),
+);
 // Swatch/preview boxes render from var(--token) directly (SSR-visible); these
 // resolved strings are progressive enhancement for the value badges.
 const { light, dark } = useResolvedTokens(allTokens, { dark: true });
@@ -37,7 +88,7 @@ const { light, dark } = useResolvedTokens(allTokens, { dark: true });
 // only when the resolved maps change, not on every render.
 const badgesByToken = computed(() => {
   const map: Record<string, string[]> = {};
-  for (const group of groups) {
+  for (const group of displayGroups) {
     for (const { token, type } of group.rows) {
       if (type === "color") continue;
       let lightValue = light.value[token] || "";
@@ -63,8 +114,8 @@ const { copy } = useCopyToClipboard();
 
 <template>
   <div class="token-browser">
-    <div v-for="group in groups" :key="group.name" class="tb-group">
-      <div class="tb-group__header">{{ group.name }}</div>
+    <div v-for="group in displayGroups" :key="group.name ?? '_'" class="tb-group">
+      <div v-if="group.name" class="tb-group__header">{{ group.name }}</div>
       <button
         v-for="row in group.rows"
         :key="row.token"

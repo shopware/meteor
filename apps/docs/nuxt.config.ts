@@ -83,6 +83,30 @@ export default defineNuxtConfig({
     "/components": {
       redirect: { to: "/components/action-menu", statusCode: 301 },
     },
+    "/utilities": {
+      redirect: {
+        to: "/utilities/composables/use-snackbar",
+        statusCode: 301,
+      },
+    },
+    "/utilities/composables": {
+      redirect: {
+        to: "/utilities/composables/use-snackbar",
+        statusCode: 301,
+      },
+    },
+    "/utilities/components": {
+      redirect: {
+        to: "/utilities/components/theme-provider",
+        statusCode: 301,
+      },
+    },
+    "/utilities/directives": {
+      redirect: { to: "/utilities/directives/tooltip", statusCode: 301 },
+    },
+    "/utilities/plugins": {
+      redirect: { to: "/utilities/plugins/device-helper", statusCode: 301 },
+    },
   },
   // modules/ is auto-scanned, so meteor-components and component-examples load
   // automatically. meteor-components registers its work via the

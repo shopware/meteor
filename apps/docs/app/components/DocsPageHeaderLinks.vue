@@ -21,10 +21,6 @@ const markdownLink = computed(
 const mcpServerUrl = computed(
   () => `${window?.location?.origin}${joinURL(appBaseURL, mcpRoute)}`,
 );
-const mcpDeeplink = computed(
-  () =>
-    `${window?.location?.origin}${joinURL(appBaseURL, mcpRoute, "deeplink")}`,
-);
 
 // Link a component page to its source folder on GitHub. The slug -> folder map
 // is provided at build time by modules/meteor-components.ts.
@@ -58,18 +54,6 @@ const items = computed(() => [
       target: "_blank",
       to: markdownLink.value,
     },
-    {
-      label: t("docs.copy.gpt"),
-      icon: "i-simple-icons:openai",
-      target: "_blank",
-      to: `https://chatgpt.com/?hints=search&q=${encodeURIComponent(`Read ${markdownLink.value} so I can ask questions about it.`)}`,
-    },
-    {
-      label: t("docs.copy.claude"),
-      icon: "i-simple-icons:anthropic",
-      target: "_blank",
-      to: `https://claude.ai/new?q=${encodeURIComponent(`Read ${markdownLink.value} so I can ask questions about it.`)}`,
-    },
   ],
   [
     {
@@ -82,12 +66,6 @@ const items = computed(() => [
           icon: "i-lucide-check-circle",
         });
       },
-    },
-    {
-      label: "Add MCP Server",
-      icon: "i-simple-icons:cursor",
-      target: "_blank",
-      to: mcpDeeplink.value,
     },
   ],
 ]);

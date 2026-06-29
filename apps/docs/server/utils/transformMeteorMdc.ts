@@ -4,7 +4,6 @@ import { formatType } from "#shared/utils/formatType";
 import { DESCRIPTIONS, tokenGroups } from "#shared/data/tokens";
 import { iconCommonUsages } from "#shared/data/iconCommonUsages";
 import primitives from "@tokens-dict/foundation/primitives.tokens.json";
-import lightTokens from "@tokens-dict/administration/light.tokens.json";
 import componentMeta from "#nuxt-component-meta";
 // @ts-expect-error virtual module provided by modules/component-examples.ts
 import { getComponentExample } from "#component-example/nitro";
@@ -643,53 +642,56 @@ export function transformMeteorMdc(
       );
     }
 
-    if (tag === "typography-scale") {
-      const font =
-        (
-          lightTokens as {
-            font?: {
-              size?: Record<string, { $value?: unknown }>;
-              weight?: Record<string, { $value?: unknown }>;
-            };
-          }
-        ).font ?? {};
-      const rows = (
-        group: Record<string, { $value?: unknown }> | undefined,
-        prefix: string,
-      ): TokenRow[] =>
-        Object.entries(group ?? {}).map(([label, def]) => ({
-          label: upperFirst(label),
-          token: `${prefix}-${label}`,
-          value: displayValue(def?.$value),
-        }));
-      return [
-        ...tableSection(
-          tableAs,
-          "Size scale",
-          VALUE_COLUMNS,
-          rows(font.size, "--font-size"),
-        ),
-        ...tableSection(
-          tableAs,
-          "Weights",
-          VALUE_COLUMNS,
-          rows(font.weight, "--font-weight"),
-        ),
-      ];
-    }
-
     if (tag === "token-browser") {
-      return tokenGroups.flatMap((group) =>
+      const attrs = (attributes || {}) as Record<string, string>;
+      const makeRow = (token: string): TokenRow => ({
+        label: token,
+        token,
+        value: "",
+        description: DESCRIPTIONS[token] || "",
+      });
+
+      // Mirror TokenBrowser.vue: `tokens` renders a flat, headerless table (the
+      // page heading labels it); `groups` renders the named groups; neither
+      // renders every group. Without this, /raw and llms.txt would dump the
+      // whole token catalog on each scoped page.
+      if (attrs.tokens) {
+        const specs = attrs.tokens
+          .split(",")
+          .map((spec) => spec.trim())
+          .filter(Boolean);
+        const matches = (token: string) =>
+          specs.some((spec) =>
+            spec.endsWith("*")
+              ? token.startsWith(spec.slice(0, -1))
+              : token === spec,
+          );
+        const rows = tokenGroups
+          .flatMap((group) => group.tokens)
+          .filter(matches)
+          .map(makeRow);
+        return table(tableAs, TOKEN_DESC_COLUMNS, rows);
+      }
+
+      const requested = attrs.groups
+        ?.split(",")
+        .map((name) => name.trim())
+        .filter(Boolean);
+      const source =
+        requested && requested.length
+          ? requested
+              .map((name) => tokenGroups.find((group) => group.name === name))
+              .filter((group): group is (typeof tokenGroups)[number] =>
+                Boolean(group),
+              )
+          : tokenGroups;
+
+      return source.flatMap((group) =>
         tableSection(
           tableAs,
           group.name,
           TOKEN_DESC_COLUMNS,
-          group.tokens.map((token) => ({
-            label: token,
-            token,
-            value: "",
-            description: DESCRIPTIONS[token] || "",
-          })),
+          group.tokens.map(makeRow),
         ),
       );
     }

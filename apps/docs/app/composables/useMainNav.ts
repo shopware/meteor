@@ -16,5 +16,10 @@ export function useMainNav() {
       to: "/components",
       active: route.path.startsWith("/components"),
     },
+    {
+      label: "Utilities",
+      to: "/utilities",
+      active: route.path.startsWith("/utilities"),
+    },
   ]);
 }

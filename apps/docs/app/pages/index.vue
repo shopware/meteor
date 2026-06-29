@@ -67,14 +67,14 @@ const benefits = [
     text: "Components and patterns shaped for administrative commerce interfaces, not a generic UI kit.",
   },
   {
-    icon: "i-lucide-person-standing",
-    title: "Accessible out of the box",
-    text: "Every component ships with keyboard support, ARIA semantics, and light and dark themes.",
-  },
-  {
     icon: "i-lucide-refresh-cw",
     title: "Design and code in sync",
     text: "Figma libraries, components, and tokens stay aligned, so decisions are made once and applied everywhere.",
+  },
+  {
+    icon: "i-lucide-person-standing",
+    title: "Accessible out of the box",
+    text: "Every component ships with keyboard support, ARIA semantics, and light and dark themes.",
   },
 ];
 
@@ -90,33 +90,6 @@ const packages = [
   {
     name: "meteor-icon-kit",
     text: "SVG icon set, standalone or as Vue components via mt-icon.",
-  },
-];
-
-const faqItems = [
-  {
-    label: "Is Meteor free to use?",
-    content:
-      "Yes. Meteor is completely free and open source under the MIT license. You can use it for personal, commercial, or any other projects without restrictions.",
-  },
-  {
-    label: "Which frameworks does Meteor support?",
-    content:
-      "Meteor components are built specifically for Vue.js 3 and above. The design tokens and icon kit are framework-agnostic and work with any framework or with vanilla JavaScript and CSS.",
-  },
-  {
-    label: "Which browsers does Meteor support?",
-    content:
-      "Meteor supports all modern evergreen browsers, including the latest versions of Chrome, Firefox, Safari, and Edge.",
-  },
-  {
-    label: "Do I need to credit Shopware?",
-    content:
-      "Attribution is not required, but it is appreciated. You can link to meteor.shopware.com or mention that you are using Shopware's Meteor Design System.",
-  },
-  {
-    label: "Where can I get support?",
-    slot: "support",
   },
 ];
 </script>
@@ -572,55 +545,27 @@ const faqItems = [
       </UContainer>
     </section>
 
-    <!-- FAQ -->
+    <!-- Closing CTA -->
     <section class="py-20 sm:py-28">
       <UContainer>
-        <header class="mx-auto mb-10 max-w-2xl text-center">
+        <div
+          class="mx-auto flex max-w-2xl flex-col items-center gap-6 text-center"
+        >
           <h2
             class="text-3xl font-bold tracking-tight text-highlighted sm:text-4xl"
           >
-            Frequently asked questions
+            Want to contribute or report an issue?
           </h2>
-        </header>
-        <div class="mx-auto max-w-3xl">
-          <UAccordion :items="faqItems">
-            <template #support-body>
-              Open an issue on
-              <NuxtLink
-                to="https://github.com/shopware/meteor/issues"
-                target="_blank"
-                class="font-medium text-primary hover:underline"
-                >GitHub</NuxtLink
-              >
-              for bugs and feature requests, or start a discussion to ask the
-              community.
-            </template>
-          </UAccordion>
-        </div>
-      </UContainer>
-    </section>
-
-    <!-- Closing CTA banner -->
-    <section class="pb-16 sm:pb-20">
-      <UContainer>
-        <div
-          class="flex flex-col items-center gap-6 rounded-2xl border border-default bg-muted px-6 py-8 text-center sm:flex-row sm:justify-between sm:gap-8 sm:px-10 sm:text-left"
-        >
-          <div>
-            <h2 class="text-lg font-semibold text-highlighted sm:text-xl">
-              Want to contribute or report an issue?
-            </h2>
-            <p class="mt-1 text-sm leading-relaxed text-muted sm:text-base">
-              Meteor is open source. Open an issue, request a feature, or send a
-              pull request on GitHub.
-            </p>
-          </div>
+          <p class="text-base leading-relaxed text-muted sm:text-lg">
+            Meteor is open source. Open an issue, request a feature, or send a
+            pull request on GitHub.
+          </p>
           <NuxtLink
             :to="githubUrl"
             target="_blank"
             :class="[
               btnBase,
-              'shrink-0 border border-default bg-interaction-secondary-default text-default hover:bg-interaction-secondary-hover',
+              'border border-default bg-interaction-secondary-default text-default hover:bg-interaction-secondary-hover',
             ]"
           >
             <UIcon name="i-simple-icons-github" class="size-4" />

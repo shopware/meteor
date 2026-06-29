@@ -8,18 +8,15 @@ description: Temporary overlay feedback shown near the bottom-right corner of th
 
 ## Usage
 
-**Snackbar** shows temporary, non-blocking feedback for short-lived messages, such as confirming that an action completed (saving, deleting, or updating), surfacing errors or warnings that people should notice without leaving their current flow, or reporting background progress that resolves into success or error feedback. Use it when you may need one non-critical follow-up action, such as `Undo`.
+**Snackbar** shows temporary, non-blocking feedback for short-lived messages, such as confirming that an action completed (saving, deleting, or updating), surfacing errors or warnings that people should notice without leaving their current flow, or reporting background progress that resolves into success or error feedback. Use it when you may need one non-critical follow-up action, such as `Undo`. `mt-snackbar` is the host that renders the stack; you publish notifications with the [**useSnackbar**](/utilities/composables/use-snackbar) composable.
 
 ```ts
-import { MtSnackbar, useSnackbar } from "@shopware-ag/meteor-component-library";
+import { MtSnackbar } from "@shopware-ag/meteor-component-library";
 ```
 
 ## Anatomy
 
-**Snackbar** consists of two parts that are used together:
-
-- `MtSnackbar` renders the notification stack and should typically be mounted once near the app shell.
-- `useSnackbar()` lets feature code trigger a snackbar by calling `addSnackbar()`.
+**Snackbar** is used together with the [**useSnackbar**](/utilities/composables/use-snackbar) composable. Mount `mt-snackbar` once near your app shell to render the stack, then call `addSnackbar` from `useSnackbar` wherever an action happens.
 
 ```vue
 <script setup lang="ts">
@@ -28,9 +25,7 @@ import { MtSnackbar, useSnackbar } from "@shopware-ag/meteor-component-library";
 const { addSnackbar } = useSnackbar();
 
 function showSnackbar() {
-  addSnackbar({
-    message: "Changes saved",
-  });
+  addSnackbar({ message: "Changes saved" });
 }
 </script>
 
@@ -40,34 +35,11 @@ function showSnackbar() {
 </template>
 ```
 
-### `useSnackbar()`
-
-| Name | Description |
-| --- | --- |
-| `snackbars` (`Readonly<Ref<Snackbar[]>>`) | Reactive list of currently visible snackbars. |
-| `addSnackbar(snackbar: Omit<Snackbar, "id">)` | Adds a snackbar and returns the reactive snackbar instance. Useful for updating progress or completion state later. |
-| `removeSnackbar(id: string)` | Removes a snackbar by id. |
-| `clearSnackbars()` | Removes all currently visible snackbars. |
-
-### Snackbar
-
-The exported **Snackbar** type describes the notification object managed by `useSnackbar()`. The `id` is created automatically by `addSnackbar()`.
-
-| Field | Value | Default | Description |
-| --- | --- | --- | --- |
-| `message` | `string` | Required | Main snackbar text shown to the user. |
-| `variant` | `"success" \| "error" \| "warning" \| "progress"` | Default appearance | Controls semantic styling and live-region behavior. |
-| `icon` | `string` | Auto by variant | Optional icon name. Usually only needed when you want to override the default icon behavior. |
-| `link` | `{ text: string; url: string }` | None | Optional single follow-up action rendered as a link button. |
-| `duration` | `number` | `5000` | Auto-dismiss timeout in milliseconds. Use `0` to disable automatic dismissal. |
-| `progressPercentage` | `number` | `0` | Current progress value for `progress` snackbars. |
-| `uploadState` | `"success" \| "error"` | None | Final state for a `progress` snackbar. Triggers the completion message and short follow-up timeout. |
-| `successMessage` | `string` | `"Upload completed"` | Optional final message shown when a progress snackbar resolves successfully. |
-| `errorMessage` | `string` | `"Upload failed"` | Optional final message shown when a progress snackbar resolves with an error. |
+See [**useSnackbar**](/utilities/composables/use-snackbar) for the full publishing API (`addSnackbar`, `removeSnackbar`, `clearSnackbars`) and every `Snackbar` option.
 
 ## API reference
 
-:component-api
+`MtSnackbar` exposes no props, slots, or events. Mount it once as shown above and drive it entirely through the [**useSnackbar**](/utilities/composables/use-snackbar) composable.
 
 ## Best practices
 
@@ -106,4 +78,5 @@ The exported **Snackbar** type describes the notification object managed by `use
 
 ## Related
 
+- [**useSnackbar**](/utilities/composables/use-snackbar): the composable for publishing, updating, and removing snackbars.
 - [**Banner**](/components/banner): when the message is persistent inline messaging that should remain visible while the user continues working.

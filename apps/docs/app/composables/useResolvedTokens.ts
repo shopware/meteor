@@ -10,7 +10,7 @@ import { toValue, type MaybeRefOrGetter } from "vue";
  * works server-side) and use these resolved strings only for the value labels.
  *
  * Centralises the getComputedStyle logic previously duplicated across the
- * ColorPalette, TokenBrowser and TypographyScale components.
+ * ColorPalette and TokenBrowser components.
  */
 export function useResolvedTokens(
   tokens: MaybeRefOrGetter<string[]>,
