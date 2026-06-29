@@ -3,7 +3,12 @@ title: Collapsible
 description: An interactive container that expands and collapses related content behind a trigger.
 ---
 
-## Import
+::component-example{name="collapsible-basic-example"}
+::
+
+## Usage
+
+**Collapsible** is an interactive container that expands and collapses related content behind a trigger. Use it when secondary content should stay out of the way until a user reveals it, composing `mt-collapsible` with `mt-collapsible-trigger` and `mt-collapsible-content`.
 
 ```ts
 import {
@@ -14,11 +19,6 @@ import {
 ```
 
 ## Examples
-
-### Basic
-
-::component-example{name="collapsible-basic-example"}
-::
 
 ### Disabled
 

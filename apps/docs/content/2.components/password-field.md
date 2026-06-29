@@ -3,24 +3,18 @@ title: Password Field
 description: A masked input for sensitive text that can optionally reveal its value.
 ---
 
-## Import
+::component-example{name="password-field-basic-example" fullWidth}
+::
+
+## Usage
+
+**Password Field** is a masked input for passwords, secrets, or other credential input that can optionally reveal its value when users need to confirm briefly what they typed. Use it in sign-in, account setup, or credential update flows.
 
 ```ts
 import { MtPasswordField } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Password Field** for passwords, secrets, or other masked credential input.
-- Use it when users may need to reveal the current value briefly to confirm what they typed.
-- Use it in sign-in, account setup, or credential update flows.
-
 ## Examples
-
-### Basic
-
-::component-example{name="password-field-basic-example" fullWidth}
-::
 
 ### Disabled
 
@@ -41,7 +35,7 @@ import { MtPasswordField } from "@shopware-ag/meteor-component-library";
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do
@@ -67,7 +61,6 @@ import { MtPasswordField } from "@shopware-ag/meteor-component-library";
 ## Accessibility
 
 - Always provide a visible label so users know what credential is expected.
-- Keep password rules, errors, and hints specific so users understand how to fix issues.
 - Make sure the show or hide password control has a clear accessible name, especially if the field appears more than once on a page.
 
 ## Related components

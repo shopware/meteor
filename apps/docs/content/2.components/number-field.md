@@ -3,24 +3,18 @@ title: Number Field
 description: A numeric input control with optional limits, steps, and stepper controls.
 ---
 
-## Import
+::component-example{name="number-field-basic-example" fullWidth}
+::
+
+## Usage
+
+**Number Field** is a numeric input control for values that should be numeric, such as quantities, counts, percentages, or other values that benefit from step-based input. Use it when min and max limits should guide valid input.
 
 ```ts
 import { MtNumberField } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Number Field** when the value should be numeric.
-- Use it for quantities, counts, percentages, or other values that benefit from step-based input.
-- Use it when min and max limits should guide valid input.
-
 ## Examples
-
-### Basic
-
-::component-example{name="number-field-basic-example" fullWidth}
-::
 
 ### Disabled
 
@@ -41,7 +35,7 @@ import { MtNumberField } from "@shopware-ag/meteor-component-library";
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do

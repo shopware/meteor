@@ -3,24 +3,18 @@ title: Switch
 description: A direct on or off control for a single binary setting that takes effect immediately.
 ---
 
-## Import
+::component-example{name="switch-basic-example"}
+::
+
+## Usage
+
+**Switch** is a direct on or off control for a single binary setting that takes effect immediately. Use it in forms or settings screens where users expect a quick toggle interaction and the on or off state is easy to understand without extra confirmation.
 
 ```ts
 import { MtSwitch } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Switch** for a single binary setting that takes effect immediately.
-- Use it when the on or off state is easy to understand without extra confirmation.
-- Use it in forms or settings screens where users expect a quick toggle interaction.
-
 ## Examples
-
-### Basic
-
-::component-example{name="switch-basic-example"}
-::
 
 ### States
 
@@ -31,7 +25,7 @@ import { MtSwitch } from "@shopware-ag/meteor-component-library";
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do

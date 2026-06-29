@@ -3,24 +3,18 @@ title: Loader
 description: An indeterminate loading indicator shown as a centered spinner overlay.
 ---
 
-## Import
+::component-example{name="loader-basic-example"}
+::
+
+## Usage
+
+**Loader** is an indeterminate loading indicator shown while content, a card, or a control is waiting for async work to finish. Use it when the loading duration is uncertain and a simple busy indicator is enough, in places where users should stay in context instead of being redirected to a separate loading screen.
 
 ```ts
 import { MtLoader } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Loader** while content, a card, or a control is waiting for async work to finish.
-- Use it when the loading duration is uncertain and a simple busy indicator is enough.
-- Use it in places where users should stay in context instead of being redirected to a separate loading screen.
-
 ## Examples
-
-### Basic
-
-::component-example{name="loader-basic-example"}
-::
 
 ### With text
 
@@ -31,7 +25,7 @@ import { MtLoader } from "@shopware-ag/meteor-component-library";
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do

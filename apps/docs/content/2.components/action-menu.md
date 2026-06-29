@@ -3,24 +3,18 @@ title: Action Menu
 description: A trigger-revealed list of contextual actions for a specific object or view.
 ---
 
-## Import
+::component-example{name="action-menu-basic-example"}
+::
+
+## Usage
+
+**Action Menu** reveals a short list of contextual actions for a specific record, card, row, or view. Use it for secondary actions like `Duplicate`, `Move`, `Export`, or `Delete` that should stay available without claiming permanent visual priority.
 
 ```ts
 import { MtActionMenu } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Action Menu** for secondary or contextual actions tied to a specific record, card, row, or view.
-- Use it when the user should choose from a short list of related actions such as `Duplicate`, `Move`, `Export`, or `Delete`.
-- Use it when the actions should stay available but do not deserve permanent visual priority.
-
 ## Examples
-
-### Basic
-
-::component-example{name="action-menu-basic-example"}
-::
 
 ### Without icons
 
@@ -79,7 +73,7 @@ These parts are exported together so the pattern can be composed in one place.
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do
@@ -108,7 +102,7 @@ These parts are exported together so the pattern can be composed in one place.
 
 ## Behavior
 
-- **Action Menu** is a compound pattern, not a standalone trigger. You always compose `mt-action-menu` with `mt-dropdown-menu-root`, `mt-dropdown-menu-trigger`, and `mt-dropdown-menu-portal`.
+- **Action Menu** is a compound pattern, not a standalone trigger. It is always composed from the companion exports listed in Anatomy.
 - `shortcut` accepts a structured object with `modifiers` and `key`.
 - Supported modifier values are `mod`, `ctrl`, `alt`, `shift`, and `meta`.
 - Use `mod` for cross-platform shortcuts because it maps to `Command` on Mac and `Control` on Windows and Linux. Use `meta` only when you need the platform-specific meta key explicitly.

@@ -3,24 +3,18 @@ title: Text
 description: The base typography component for body copy, headings, and supporting text.
 ---
 
-## Import
+::component-example{name="text-basic-example"}
+::
+
+## Usage
+
+**Text** is the base typography component for body copy, labels, headings, and supporting descriptions. Use it when you need consistent typography across content and interface text, and when the semantic HTML element and the visual text style should be chosen separately.
 
 ```ts
 import { MtText } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Text** when you need consistent typography across content and interface text.
-- Use it when semantic HTML and visual text styles should be chosen separately.
-- Use it for body copy, labels, headings, and supporting descriptions.
-
 ## Examples
-
-### Basic
-
-::component-example{name="text-basic-example"}
-::
 
 ### Sizes
 
@@ -31,7 +25,7 @@ import { MtText } from "@shopware-ag/meteor-component-library";
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do

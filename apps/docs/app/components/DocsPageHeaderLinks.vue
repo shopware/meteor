@@ -107,7 +107,7 @@ async function copyPage() {
       icon="i-simple-icons:github"
       label="Source"
       color="neutral"
-      variant="soft"
+      variant="outline"
       size="md"
       :ui="{ leadingIcon: 'text-neutral size-3.5' }"
     />
@@ -117,7 +117,7 @@ async function copyPage() {
         :label="t('docs.copy.page')"
         :icon="copied ? 'i-lucide-check' : 'i-lucide-copy'"
         color="neutral"
-        variant="soft"
+        variant="outline"
         :ui="{
           leadingIcon: 'text-neutral size-3.5',
         }"
@@ -136,7 +136,7 @@ async function copyPage() {
         <UButton
           icon="i-lucide-chevron-down"
           color="neutral"
-          variant="soft"
+          variant="outline"
         />
       </UDropdownMenu>
     </UFieldGroup>

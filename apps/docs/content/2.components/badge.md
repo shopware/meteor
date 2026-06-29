@@ -3,24 +3,18 @@ title: Badge
 description: A compact, non-interactive status label for short, glanceable states.
 ---
 
-## Import
+::component-example{name="badge-basic-example"}
+::
+
+## Usage
+
+**Badge** is a compact, non-interactive label for short, glanceable states. Use it inline in tables, cards, lists, or detail headers to help users scan status, category, or state, and reach for the `variant`, size, icon, or status indicator when an extra visual cue reinforces the meaning.
 
 ```ts
 import { MtBadge } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Badge** for short labels that help users scan status, category, or state quickly.
-- Use it inline in tables, cards, lists, or detail headers where space is limited.
-- Use the variant, size, icon, or status indicator to reinforce meaning when that extra visual cue helps.
-
 ## Examples
-
-### Basic
-
-::component-example{name="badge-basic-example"}
-::
 
 ### Variants
 
@@ -46,7 +40,7 @@ import { MtBadge } from "@shopware-ag/meteor-component-library";
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do

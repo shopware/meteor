@@ -3,24 +3,18 @@ title: Skeleton Bar
 description: A shimmering placeholder block that holds layout while content loads.
 ---
 
-## Import
+::component-example{name="skeleton-bar-basic-example" fullWidth}
+::
+
+## Usage
+
+**Skeleton Bar** is a shimmering placeholder block for when the final content structure is known but the real content is still loading. Use it in cards, lists, tables, or detail views where preserving the final layout helps reduce visual jump, and combine multiple bars when the loading state should suggest lines of text or grouped placeholder content.
 
 ```ts
 import { MtSkeletonBar } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Skeleton Bar** when the final content structure is known but the real content is still loading.
-- Use it in cards, lists, tables, or detail views where preserving the final layout helps reduce visual jump.
-- Use multiple bars together when the loading state should suggest lines of text or grouped placeholder content.
-
 ## Examples
-
-### Basic
-
-::component-example{name="skeleton-bar-basic-example" fullWidth}
-::
 
 ### Form layout
 
@@ -33,7 +27,7 @@ Combine several bars across a grid to mirror the structure of the content that w
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do

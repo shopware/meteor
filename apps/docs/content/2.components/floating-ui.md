@@ -3,24 +3,18 @@ title: Floating UI
 description: A low-level primitive for building custom popover-style surfaces that anchor to a trigger, reposition automatically, and close on outside click.
 ---
 
-## Import
+::component-example{name="floating-ui-basic-example"}
+::
+
+## Usage
+
+**Floating UI** is a low-level primitive for building custom popover-style surfaces such as rich pickers, menus, inspectors, or inline tools, with automatic positioning relative to a trigger element. Use it when higher-level components such as [**Action Menu**](/components/action-menu) do not fit the custom floating interaction you need.
 
 ```ts
 import { MtFloatingUi } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Floating UI** for custom popover-style surfaces such as rich pickers, menus, inspectors, or inline tools.
-- Use it when the floating content needs automatic positioning relative to a trigger element.
-- Use it when higher-level components such as [**Action Menu**](/components/action-menu) do not fit the custom floating interaction you need.
-
 ## Examples
-
-### Basic
-
-::component-example{name="floating-ui-basic-example"}
-::
 
 ### Multiple anchors
 
@@ -33,7 +27,7 @@ Use `detached` mode together with `anchorElement` to share one floating surface 
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do

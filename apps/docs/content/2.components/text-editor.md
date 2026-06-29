@@ -3,27 +3,18 @@ title: Text Editor
 description: A flexible rich text editor for adding WYSIWYG and raw HTML editing to Meteor interfaces.
 ---
 
-## Import
+::component-example{name="text-editor-basic-example" fullWidth}
+::
+
+## Usage
+
+**Text Editor** lets users author rich text content such as descriptions, notes, or formatted documents, binding the HTML string with `v-model`. Use the `customButtons` and `excludedButtons` props to tailor the toolbar (or set `show-toolbar` to `false` to hide it entirely), switch between WYSIWYG and raw HTML editing through `v-model:code-mode`, enable `is-inline-edit` for an inline experience with a floating toolbar, and extend the editor with custom Tiptap extensions through the `tipTapConfig` prop.
 
 ```ts
 import { MtTextEditor } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Text Editor** to let users author rich text content such as descriptions, notes, or formatted documents.
-- Bind the HTML content with `v-model`; the value is an HTML string.
-- Use the `customButtons` and `excludedButtons` props to tailor the toolbar to your use case, or set `show-toolbar` to `false` to hide it entirely.
-- Switch between WYSIWYG and raw HTML editing with the code mode, controllable through `v-model:code-mode`.
-- Enable `is-inline-edit` for an inline editing experience with a floating toolbar.
-- Extend the editor with custom Tiptap extensions through the `tipTapConfig` prop.
-
 ## Examples
-
-### Basic
-
-::component-example{name="text-editor-basic-example" fullWidth}
-::
 
 ### Inline editing
 
@@ -335,7 +326,7 @@ The component exposes a `validate()` method through a template ref. It checks th
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do
@@ -366,4 +357,3 @@ The component exposes a `validate()` method through a template ref. It checks th
 
 - Provide a `label` so the field has an accessible name.
 - When replacing default buttons with custom ones, ensure each button keeps a clear, descriptive label.
-- The code editor mode is powered by CodeMirror and lets users inspect and edit the raw HTML directly.

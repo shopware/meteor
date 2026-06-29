@@ -3,27 +3,16 @@ title: Snackbar
 description: Temporary overlay feedback shown near the bottom-right corner of the interface for non-critical, short-lived messages.
 ---
 
-## Import
+::component-example{name="snackbar-basic-example"}
+::
+
+## Usage
+
+**Snackbar** shows temporary, non-blocking feedback for short-lived messages, such as confirming that an action completed (saving, deleting, or updating), surfacing errors or warnings that people should notice without leaving their current flow, or reporting background progress that resolves into success or error feedback. Use it when you may need one non-critical follow-up action, such as `Undo`.
 
 ```ts
 import { MtSnackbar, useSnackbar } from "@shopware-ag/meteor-component-library";
 ```
-
-## Usage
-
-- Use **Snackbar** to confirm that an action completed, such as saving, deleting, or updating something.
-- Use it for non-blocking errors or warnings that people should notice without being pulled out of their current flow.
-- Use it for background progress that resolves into success or error feedback.
-- Use it when you may need one non-critical follow-up action, such as `Undo`.
-
-## Examples
-
-### Basic
-
-Mount the snackbar host once, then trigger messages through `useSnackbar()`.
-
-::component-example{name="snackbar-basic-example"}
-::
 
 ## Anatomy
 
@@ -80,7 +69,7 @@ The exported **Snackbar** type describes the notification object managed by `use
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do

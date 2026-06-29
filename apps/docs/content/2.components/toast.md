@@ -7,28 +7,16 @@ description: Short-lived, action-bound feedback that appears briefly to confirm 
 **Deprecated.** Use [**Snackbar**](/components/snackbar) instead.
 ::
 
-## Import
+::component-example{name="toast-basic-example"}
+::
+
+## Usage
+
+**Toast** is short-lived, action-bound feedback for confirming a save or reporting that something failed. Use the `positive` and `informal` types for non-critical feedback that can disappear on its own, and the `critical` type for problems the user should not miss. Add `dismissible` or an `action` when the message needs a manual close control or a single follow-up such as `Undo`, and keep messages to a few words since toasts are brief and not persistent.
 
 ```ts
 import { MtToast } from "@shopware-ag/meteor-component-library";
 ```
-
-## Usage
-
-- Use **Toast** for short feedback tied directly to a user action, such as confirming a save or reporting that something failed.
-- Use the `positive` and `informal` types for non-critical feedback that can disappear on its own.
-- Use the `critical` type for problems that the user should not miss.
-- Add `dismissible` or an `action` when the message needs a manual close control or a single follow-up such as `Undo`.
-- Keep messages to a few words, since toasts are brief and not persistent.
-
-## Examples
-
-### Basic
-
-Render the toast host once, keep the list of active toasts in your own state, and remove each one when `remove-toast` fires.
-
-::component-example{name="toast-basic-example"}
-::
 
 ## Anatomy
 
@@ -73,7 +61,7 @@ The exported **Toast** type describes a single notification in the `toasts` list
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do

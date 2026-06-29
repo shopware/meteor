@@ -3,7 +3,12 @@ title: Radio Group
 description: A set of mutually exclusive options where users select exactly one visible choice.
 ---
 
-## Import
+::component-example{name="radio-group-basic-example"}
+::
+
+## Usage
+
+**Radio Group** presents a set of mutually exclusive options where only one selection is allowed. Use it when the available choices should stay visible on the page instead of being hidden in a collapsed control, and when users benefit from scanning or comparing a small number of options before choosing one.
 
 ```ts
 import {
@@ -15,18 +20,7 @@ import {
 } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Radio Group** for mutually exclusive options where only one selection is allowed.
-- Use it when the available choices should stay visible on the page instead of being hidden in a collapsed control.
-- Use it when users benefit from scanning or comparing a small number of options before choosing one.
-
 ## Examples
-
-### Basic
-
-::component-example{name="radio-group-basic-example"}
-::
 
 ### Custom item
 
@@ -49,7 +43,7 @@ Build fully custom option cards while keeping the shared radio-group state.
 
 :component-api{name="MtRadioGroupRoot"}
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do

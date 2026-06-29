@@ -3,24 +3,18 @@ title: Datepicker
 description: A calendar-style input for choosing a date, time, or date range.
 ---
 
-## Import
+::component-example{name="datepicker-basic-example" fullWidth}
+::
+
+## Usage
+
+**Datepicker** is a calendar-style input for choosing a date, a time, or both together. Use it when a structured picker is safer and faster than freeform date input, and use range mode when users need to define a start and end date in one field.
 
 ```ts
 import { MtDatepicker } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Datepicker** when users need to choose a calendar date, a time, or both together.
-- Use it when a structured picker is safer and faster than freeform date input.
-- Use range mode when users need to define a start and end date in one field.
-
 ## Examples
-
-### Basic
-
-::component-example{name="datepicker-basic-example" fullWidth}
-::
 
 ### Date only
 
@@ -41,7 +35,7 @@ import { MtDatepicker } from "@shopware-ag/meteor-component-library";
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do

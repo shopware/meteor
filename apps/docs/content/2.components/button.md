@@ -3,24 +3,18 @@ title: Button
 description: The standard action trigger for Meteor interfaces.
 ---
 
-## Import
+::component-example{name="button-basic-example"}
+::
+
+## Usage
+
+**Button** triggers a clear user action such as saving, creating, confirming, or moving to the next step. Use the `variant` to communicate action hierarchy and intent, and the size to fit the surrounding layout without changing what the action means.
 
 ```ts
 import { MtButton } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Button** for clear user actions such as saving, creating, confirming, or navigating to the next step.
-- Use the `variant` to communicate action hierarchy and intent.
-- Use button sizes to fit the surrounding layout without changing the meaning of the action.
-
 ## Examples
-
-### Basic
-
-::component-example{name="button-basic-example"}
-::
 
 ### Variants
 
@@ -59,7 +53,7 @@ Use `square` and an `aria-label` for a compact, icon-only control.
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do

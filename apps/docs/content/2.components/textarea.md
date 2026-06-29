@@ -3,24 +3,18 @@ title: Textarea
 description: A multi-line input for longer free-form text in a form.
 ---
 
-## Import
+::component-example{name="textarea-basic-example" fullWidth}
+::
+
+## Usage
+
+**Textarea** is a multi-line input for notes, descriptions, comments, or other longer free-form text in a form. Use it when users need more space than a single-line field should provide, and when line breaks and longer written input are part of the value.
 
 ```ts
 import { MtTextarea } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Textarea** for notes, descriptions, comments, or other multi-line content.
-- Use it when users need more space than a single-line field should provide.
-- Use it when line breaks and longer written input are part of the value.
-
 ## Examples
-
-### Basic
-
-::component-example{name="textarea-basic-example" fullWidth}
-::
 
 ### Disabled
 
@@ -41,7 +35,7 @@ import { MtTextarea } from "@shopware-ag/meteor-component-library";
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do
@@ -67,7 +61,6 @@ import { MtTextarea } from "@shopware-ag/meteor-component-library";
 ## Accessibility
 
 - Always provide a visible label so users understand what longer text is expected.
-- Keep help text and error text specific so users know how to improve the content.
 - Use clear length guidance when the field has a maximum character limit.
 
 ## Related components

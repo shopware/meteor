@@ -3,25 +3,18 @@ title: Card
 description: A bordered surface that groups related content, metadata, and local actions into one section.
 ---
 
-## Import
+::component-example{name="card-basic-example" fullWidth}
+::
+
+## Usage
+
+**Card** is a bordered surface that groups related content, metadata, and local actions into one section that reads as a single surface. Use it for settings sections, dashboards, detail views, or other grouped content that needs a local header and should stay visually connected instead of being spread across loose page elements. Use it with tabs when users need to switch between closely related views inside the same section.
 
 ```ts
 import { MtCard } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Card** for settings sections, dashboards, detail views, or other grouped content that should read as one surface.
-- Use it when a section needs a local header and content that should stay visually connected.
-- Use it with tabs when users need to switch between closely related views inside the same section.
-- Use it when related content should stay visually connected instead of being spread across loose page elements.
-
 ## Examples
-
-### Basic
-
-::component-example{name="card-basic-example" fullWidth}
-::
 
 ### Header content
 
@@ -75,7 +68,7 @@ Show the link or unlink toggle when a card represents values that can be inherit
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do

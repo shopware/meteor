@@ -3,24 +3,18 @@ title: Entity Select
 description: A repository-backed select that loads its options from an Admin SDK entity repository.
 ---
 
-## Import
+::component-example{name="entity-select-basic-example" fullWidth}
+::
+
+## Usage
+
+**Entity Select** is a repository-backed select that loads its options from an Admin SDK entity repository. Use it when options should come from a repository and you want built-in search and pagination for the results, or when an existing `modelValue` should be hydrated to a visible selected label.
 
 ```ts
 import { MtEntitySelect } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Entity Select** when options should come from an Admin SDK entity repository.
-- Use it when you want built-in search and pagination for repository results.
-- Use it when an existing `modelValue` should be hydrated to a visible selected label.
-
 ## Examples
-
-### Basic
-
-::component-example{name="entity-select-basic-example" fullWidth}
-::
 
 ### With initial value
 
@@ -41,7 +35,7 @@ import { MtEntitySelect } from "@shopware-ag/meteor-component-library";
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do

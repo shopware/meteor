@@ -3,24 +3,18 @@ title: Checkbox
 description: An independent on or off control for boolean values and multi-select lists.
 ---
 
-## Import
+::component-example{name="checkbox-basic-example"}
+::
+
+## Usage
+
+**Checkbox** is an independent on or off control for boolean values and multi-select lists. Use it when users can turn an option on or off without affecting other options, when multiple options in a group can be selected at the same time, or for form fields that should submit a boolean value.
 
 ```ts
 import { MtCheckbox } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Checkbox** when users can turn an option on or off without affecting other options.
-- Use it when multiple options in a group can be selected at the same time.
-- Use it for form fields that should submit a boolean value.
-
 ## Examples
-
-### Basic
-
-::component-example{name="checkbox-basic-example"}
-::
 
 ### States
 
@@ -31,7 +25,7 @@ import { MtCheckbox } from "@shopware-ag/meteor-component-library";
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do
@@ -60,7 +54,6 @@ import { MtCheckbox } from "@shopware-ag/meteor-component-library";
 - Always provide a visible label, either through the `label` prop or the `label` slot.
 - **Checkbox** uses a native checkbox input, so it supports standard keyboard interaction such as toggling with the Space key.
 - If the indeterminate state needs explanation, describe its meaning in nearby text instead of relying on the visual state alone.
-- Keep help text and error messages specific so users understand what the option controls.
 
 ## Related components
 

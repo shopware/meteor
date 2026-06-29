@@ -7,7 +7,12 @@ description: An experimental floating surface that reveals contextual settings a
 **Experimental.** The API may still change. Prefer [**Action Menu**](/components/action-menu) or [**Floating UI**](/components/floating-ui) when they fit your use case.
 ::
 
-## Import
+::component-example{name="popover-basic-example"}
+::
+
+## Usage
+
+**Popover** is an experimental floating surface that reveals contextual settings and nested option views from a trigger. Prefer [**Action Menu**](/components/action-menu) when you need a standard menu of actions or options, or **Floating UI** when you need a custom floating surface with your own layout, content, or interaction behavior, and reach for **Popover** only when neither already fits the use case.
 
 ```ts
 import {
@@ -16,19 +21,6 @@ import {
   MtPopoverItemResult,
 } from "@shopware-ag/meteor-component-library";
 ```
-
-## Usage
-
-- **Popover** is experimental. Prefer [**Action Menu**](/components/action-menu) or [**Floating UI**](/components/floating-ui) when those components already fit the use case.
-- Use [**Action Menu**](/components/action-menu) when you need a standard menu of actions or options.
-- Use **Floating UI** when you need a custom floating surface with your own layout, content, or interaction behavior.
-
-## Examples
-
-### Basic
-
-::component-example{name="popover-basic-example"}
-::
 
 ## Anatomy
 
@@ -44,7 +36,7 @@ These parts are exported together so the pattern can be composed in one place.
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do

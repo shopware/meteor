@@ -3,24 +3,18 @@ title: Tabs
 description: A compact navigation control for switching between related views within the same context.
 ---
 
-## Import
+::component-example{name="tabs-basic-example" fullWidth}
+::
+
+## Usage
+
+**Tabs** let users move between peer sections of content when only one panel or view should be active at a time. Use them for compact navigation inside a page, card, or workspace area.
 
 ```ts
 import { MtTabs } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Tabs** when users need to move between peer sections of content.
-- Use them when only one panel or view should be active at a time.
-- Use them for compact navigation inside a page, card, or workspace area.
-
 ## Examples
-
-### Basic
-
-::component-example{name="tabs-basic-example" fullWidth}
-::
 
 ### Vertical
 
@@ -33,7 +27,7 @@ Lay the tabs out as a vertical list for side navigation within a section.
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do
@@ -65,5 +59,5 @@ Lay the tabs out as a vertical list for side navigation within a section.
 
 ## Related components
 
-- **Segmented Control**: when its current experimental grouped-action behavior is needed, not as a general replacement for tab navigation.
+- Segmented Control: when its current experimental grouped-action behavior is needed, not as a general replacement for tab navigation.
 - [**Button**](/components/button): when the user should trigger an action instead of navigating between peer sections.

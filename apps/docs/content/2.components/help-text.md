@@ -3,30 +3,22 @@ title: Help Text
 description: A small help trigger that reveals brief supporting guidance in a tooltip.
 ---
 
-## Import
+::component-example{name="help-text-basic-example"}
+::
+
+## Usage
+
+**Help Text** is a small help trigger that reveals brief supporting guidance in a tooltip. Use it next to a label or control for short explanatory details that are helpful but not essential at first glance, keeping interfaces compact while still offering lightweight guidance.
 
 ```ts
 import { MtHelpText } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Help Text** for short explanatory details that are helpful but not essential at first glance.
-- Use it next to a label or control when users may occasionally need extra context.
-- Use it to keep interfaces compact while still offering lightweight guidance.
-
-## Examples
-
-### Basic
-
-::component-example{name="help-text-basic-example"}
-::
-
 ## API reference
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do

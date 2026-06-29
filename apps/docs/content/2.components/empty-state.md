@@ -3,24 +3,18 @@ title: Empty State
 description: A placeholder surface that explains why content is missing and helps users take the next useful step.
 ---
 
-## Import
+::component-example{name="empty-state-basic-example" fullWidth}
+::
+
+## Usage
+
+**Empty State** is a placeholder surface for a list, page section, or feature that has no content to show yet. Use it when users need context about why the area is empty and what they can do next, such as first-time setup, filtered no-results moments, or empty collections.
 
 ```ts
 import { MtEmptyState } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Empty State** when a list, page section, or feature has no content to show yet.
-- Use it when users need context about why the area is empty and what they can do next.
-- Use it for first-time setup, filtered no-results moments, or empty collections.
-
 ## Examples
-
-### Basic
-
-::component-example{name="empty-state-basic-example" fullWidth}
-::
 
 ### With action
 
@@ -33,7 +27,7 @@ Add a link and a button so users can recover from the empty state.
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do

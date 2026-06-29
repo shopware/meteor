@@ -3,24 +3,18 @@ title: Text Field
 description: A single-line input for short free-form text values in a form.
 ---
 
-## Import
+::component-example{name="text-field-basic-example" fullWidth}
+::
+
+## Usage
+
+**Text Field** is a single-line input for short free-form text values such as names, titles, and identifiers. Use it when users should type one value in a single-line input and when shared field features such as `hint`, `helpText`, `error`, or inheritance are helpful.
 
 ```ts
 import { MtTextField } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Text Field** for names, titles, identifiers, and other short text values.
-- Use it when users should type one value in a single-line input.
-- Use it when shared field features such as `hint`, `helpText`, `error`, or inheritance are helpful.
-
 ## Examples
-
-### Basic
-
-::component-example{name="text-field-basic-example" fullWidth}
-::
 
 ### Disabled
 
@@ -41,7 +35,7 @@ import { MtTextField } from "@shopware-ag/meteor-component-library";
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do
@@ -67,7 +61,6 @@ import { MtTextField } from "@shopware-ag/meteor-component-library";
 ## Accessibility
 
 - Always provide a visible label so users understand what value is expected.
-- Keep help text and error text specific so users can correct problems quickly.
 - Use a more specific field type when browser input behavior or validation would improve accessibility.
 
 ## Related components

@@ -7,27 +7,18 @@ description: A flexible table for displaying large datasets with pagination, sor
 **Experimental.** The API may still change in a future release.
 ::
 
-## Import
+::component-example{name="data-table-basic-example" fullWidth}
+::
+
+## Usage
+
+**Data Table** is a flexible table for presenting large, structured datasets in rows and columns. Define each column through a configuration object that sets its label, data property, renderer, and position, and drive the table entirely through props while reacting to its events, since it holds no internal data state. Use pagination, sorting, filtering, and search to help users work through large result sets, row selection and bulk actions when users need to act on several rows at once, and the `caption` prop to give screen readers a descriptive summary of the table.
 
 ```ts
 import { MtDataTable } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Data Table** to present large, structured datasets in rows and columns.
-- Define each column through a configuration object that sets its label, data property, renderer, and position.
-- Drive the table entirely through props and react to its events; it holds no internal data state.
-- Use pagination, sorting, filtering, and search to help users work through large result sets.
-- Use row selection and bulk actions when users need to act on several rows at once.
-- Use the `caption` prop to give screen readers a descriptive summary of the table.
-
 ## Examples
-
-### Basic
-
-::component-example{name="data-table-basic-example" fullWidth}
-::
 
 ### Full width
 
@@ -410,7 +401,7 @@ From here you can extend the wrapper with error handling and retry logic, cachin
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do

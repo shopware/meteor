@@ -3,25 +3,18 @@ title: Link
 description: A text-level navigation control that moves users to another page, route, or destination.
 ---
 
-## Import
+::component-example{name="link-basic-example"}
+::
+
+## Usage
+
+**Link** is a text-level navigation control that moves users to another page, route, or destination. Use it for inline links, secondary navigation, and text-level actions where the destination should feel lightweight and text-like instead of button-like, and use the `type` prop when an internal or external destination should be signaled visually.
 
 ```ts
 import { MtLink } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Link** when the primary intent is navigation.
-- Use it for inline links, secondary navigation, and text-level actions that move users somewhere else.
-- Use it when the destination should feel lightweight and text-like instead of button-like.
-- Use the `type` prop when an internal or external destination should be signaled visually.
-
 ## Examples
-
-### Basic
-
-::component-example{name="link-basic-example"}
-::
 
 ### Critical
 
@@ -47,7 +40,7 @@ import { MtLink } from "@shopware-ag/meteor-component-library";
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do

@@ -3,24 +3,18 @@ title: Promo Badge
 description: A specialized Badge for predefined promotional labels such as New, Beta, or Shopware AI.
 ---
 
-## Import
+::component-example{name="promo-badge-basic-example"}
+::
+
+## Usage
+
+**Promo Badge** highlights promotional elements across our products with predefined feature labels such as `New`, `Beta`, or `Shopware AI`. Use it when a promotional label should stand out consistently without inventing a new visual treatment.
 
 ```ts
 import { MtPromoBadge } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Promo Badge** to highlight promotional elements across our products.
-- Use it for predefined feature labels such as `New`, `Beta`, or `Shopware AI`.
-- Use it when a promotional label should stand out consistently without inventing a new visual treatment.
-
 ## Examples
-
-### Basic
-
-::component-example{name="promo-badge-basic-example"}
-::
 
 ### Variants
 
@@ -36,7 +30,7 @@ import { MtPromoBadge } from "@shopware-ag/meteor-component-library";
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do

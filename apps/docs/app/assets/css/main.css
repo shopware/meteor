@@ -7,7 +7,7 @@
 @import "./meteor-globals.css";
 
 :root {
-  --ui-radius: var(--border-radius-s);
+  --ui-radius: var(--border-radius-xs);
   --ui-container: 1680px;
   --ui-container-small: 1280px;
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);

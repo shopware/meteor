@@ -3,24 +3,18 @@ title: Avatar
 description: A compact visual representation of a person or entity, shown as a profile image or initials.
 ---
 
-## Import
+::component-example{name="avatar-basic-example"}
+::
+
+## Usage
+
+**Avatar** represents a person or entity as a profile image or initials. Use it to identify users in lists, headers, menus, and chat threads, with an image when recognition matters and a profile picture is available, or initials as a lightweight fallback.
 
 ```ts
 import { MtAvatar } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Avatar** to identify users or entities in lists, headers, menus, and chat threads.
-- Use an image when recognition matters most and a profile image is available.
-- Use initials when no image is available or when a lightweight fallback is enough.
-
 ## Examples
-
-### Basic
-
-::component-example{name="avatar-basic-example"}
-::
 
 ### Sizes
 
@@ -48,7 +42,7 @@ The background color is derived from the provided name, so repeated names get a 
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do

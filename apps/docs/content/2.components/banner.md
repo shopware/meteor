@@ -3,24 +3,18 @@ title: Banner
 description: A persistent, inline message that stays visible in the page layout.
 ---
 
-## Import
+::component-example{name="banner-basic-example" fullWidth}
+::
+
+## Usage
+
+**Banner** is a persistent, inline message that stays in the page layout. Use it for warnings, success confirmations, inherited-state hints, or inline guidance that should remain visible near the affected content until the user reads or dismisses it, rather than as a temporary overlay notification.
 
 ```ts
 import { MtBanner } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Banner** for important contextual information that should remain visible until the user has read or dismissed it.
-- Use it for warnings, success confirmations, inherited-state hints, or inline guidance near the affected content.
-- Use it when the message belongs in the page flow instead of as a temporary overlay notification.
-
 ## Examples
-
-### Basic
-
-::component-example{name="banner-basic-example" fullWidth}
-::
 
 ### Closable
 
@@ -36,7 +30,7 @@ import { MtBanner } from "@shopware-ag/meteor-component-library";
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do

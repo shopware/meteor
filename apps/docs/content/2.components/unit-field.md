@@ -3,24 +3,18 @@ title: Unit Field
 description: A numeric input combined with a unit selector for measurements.
 ---
 
-## Import
+::component-example{name="unit-field-basic-example" fullWidth}
+::
+
+## Usage
+
+**Unit Field** is a numeric input combined with a unit selector for measurements such as lengths, weights, or other values that may switch between compatible units. Use it when users should enter a value together with a measurement unit, and when unit conversion should happen as part of the input flow.
 
 ```ts
 import { MtUnitField } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Unit Field** when users should enter a value together with a measurement unit.
-- Use it for lengths, weights, or other values that may switch between compatible units.
-- Use it when unit conversion should happen as part of the input flow.
-
 ## Examples
-
-### Basic
-
-::component-example{name="unit-field-basic-example" fullWidth}
-::
 
 ### Disabled
 
@@ -36,7 +30,7 @@ import { MtUnitField } from "@shopware-ag/meteor-component-library";
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do

@@ -3,24 +3,18 @@ title: Colorpicker
 description: A form field for choosing and editing a color value.
 ---
 
-## Import
+::component-example{name="colorpicker-basic-example" fullWidth}
+::
+
+## Usage
+
+**Colorpicker** is a form field for choosing and editing a color value. Use it when users need to define a custom brand, accent, or interface color and a text input alone would make color editing harder or more error-prone. Use the alpha option when transparency is part of the value users need to control.
 
 ```ts
 import { MtColorpicker } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Colorpicker** when users need to define a custom brand, accent, or interface color.
-- Use it when a text input alone would make color editing harder or more error-prone.
-- Use the alpha option when transparency is part of the value users need to control.
-
 ## Examples
-
-### Basic
-
-::component-example{name="colorpicker-basic-example" fullWidth}
-::
 
 ### Without alpha
 
@@ -31,7 +25,7 @@ import { MtColorpicker } from "@shopware-ag/meteor-component-library";
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do

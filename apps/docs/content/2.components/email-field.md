@@ -3,24 +3,18 @@ title: Email Field
 description: A form input for entering and validating a single email address.
 ---
 
-## Import
+::component-example{name="email-field-basic-example" fullWidth}
+::
+
+## Usage
+
+**Email Field** is a form input for entering a single email address. Use it when the value should be an email address and browser email keyboards, autofill, or native validation improve the input flow, such as account settings, contact forms, invitations, or other flows that store one address.
 
 ```ts
 import { MtEmailField } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Email Field** when the value should be an email address.
-- Use it when browser email keyboards, autofill, or native validation improve the input flow.
-- Use it for account settings, contact forms, invitations, or other flows that store one address.
-
 ## Examples
-
-### Basic
-
-::component-example{name="email-field-basic-example" fullWidth}
-::
 
 ### Disabled
 
@@ -41,7 +35,7 @@ import { MtEmailField } from "@shopware-ag/meteor-component-library";
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do
@@ -68,7 +62,6 @@ import { MtEmailField } from "@shopware-ag/meteor-component-library";
 
 - Always provide a visible label so users understand what address is expected.
 - Native email input behavior can improve keyboard and autofill support, especially on mobile devices.
-- Keep error and help text specific so users understand what needs to be corrected.
 
 ## Related components
 

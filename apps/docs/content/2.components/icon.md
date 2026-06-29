@@ -3,26 +3,20 @@ title: Icon
 description: An SVG glyph from the Meteor icon kit for interface affordances, status cues, and supporting visuals.
 ---
 
-## Import
+::component-example{name="icon-basic-example"}
+::
+
+## Usage
+
+**Icon** renders an SVG glyph from the Meteor icon kit for compact visual cues that support a label, action, or state. Use it when an icon should be rendered consistently through the component library, with color and sizing following design tokens instead of ad-hoc inline SVG usage.
+
+To browse the full icon set, search by name, and review icon philosophy and common usage patterns, see the [Icons](/documentation/design/icons) reference.
 
 ```ts
 import { MtIcon } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Icon** for compact visual cues that support a label, action, or state.
-- Use it when an icon from the Meteor icon kit should be rendered consistently through the component library.
-- Use it when color and sizing should follow design tokens instead of ad-hoc inline SVG usage.
-
-To browse the full icon set, search by name, and review icon philosophy and common usage patterns, see the [Icons](/documentation/design/icons) reference.
-
 ## Examples
-
-### Basic
-
-::component-example{name="icon-basic-example"}
-::
 
 ### Mode
 

@@ -3,30 +3,22 @@ title: Search
 description: A lightweight input for filtering or finding content in a list, table, or page section.
 ---
 
-## Import
+::component-example{name="search-basic-example" fullWidth}
+::
+
+## Usage
+
+**Search** is a lightweight input that narrows down visible content as users type or confirm a search term. Use it for list views, data tables, or page-level finding tools when a simple search input is enough and a full form field wrapper is not needed.
 
 ```ts
 import { MtSearch } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Search** to narrow down visible content as users type or confirm a search term.
-- Use it for list views, data tables, or page-level finding tools.
-- Use it when a lightweight search input is enough and a full form field wrapper is not needed.
-
-## Examples
-
-### Basic
-
-::component-example{name="search-basic-example" fullWidth}
-::
-
 ## API reference
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do

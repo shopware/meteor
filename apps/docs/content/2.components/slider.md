@@ -3,24 +3,18 @@ title: Slider
 description: A draggable control for choosing a numeric value or range along a scale.
 ---
 
-## Import
+::component-example{name="slider-basic-example" fullWidth}
+::
+
+## Usage
+
+**Slider** lets users adjust a numeric value within a known range by dragging along a scale. Use it for settings such as limits, thresholds, percentages, or price ranges, where seeing the relative position of a value is more helpful than typing alone.
 
 ```ts
 import { MtSlider } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Slider** when users should adjust a value within a known numeric range.
-- Use it when seeing the relative position of a value is more helpful than typing alone.
-- Use it for settings such as limits, thresholds, percentages, or price ranges.
-
 ## Examples
-
-### Basic
-
-::component-example{name="slider-basic-example" fullWidth}
-::
 
 ### Range
 
@@ -31,7 +25,7 @@ import { MtSlider } from "@shopware-ag/meteor-component-library";
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do

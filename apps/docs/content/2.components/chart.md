@@ -3,30 +3,22 @@ title: Chart
 description: A data visualization for showing how values change over time.
 ---
 
-## Import
+::component-example{name="chart-basic-example" fullWidth}
+::
+
+## Usage
+
+**Chart** is a data visualization for showing how values change over time, used with `type="area"`. Use it when users should compare trends, peaks, and drops across one or more series, and when a visual trend is easier to understand than a table alone.
 
 ```ts
 import { MtChart } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Chart** with `type="area"` to show how values change over time.
-- Use it when users should compare trends, peaks, and drops across one or more series.
-- Use it when a visual trend is easier to understand than a table alone.
-
-## Examples
-
-### Basic
-
-::component-example{name="chart-basic-example" fullWidth}
-::
-
 ## API reference
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do
@@ -47,7 +39,6 @@ import { MtChart } from "@shopware-ag/meteor-component-library";
 
 - **Chart** passes `series` and `options` through to ApexCharts and merges your `options` with Meteor's default chart options.
 - Changing `series`, `options`, `type`, `width`, or `height` updates the rendered chart.
-- This page currently documents the `area` chart type only.
 
 ## Accessibility
 

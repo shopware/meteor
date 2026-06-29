@@ -3,24 +3,18 @@ title: Tooltip
 description: A floating layer of brief supporting information shown when users hover or focus a trigger element.
 ---
 
-## Import
+::component-example{name="tooltip-basic-example"}
+::
+
+## Usage
+
+**Tooltip** is a floating layer of brief supporting information shown when users hover or focus a trigger element. Use it for short contextual guidance when extra information is helpful but should stay hidden until requested, and when the trigger is already part of the interface, such as a button, icon, or inline control.
 
 ```ts
 import { MtTooltip } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Tooltip** for short contextual guidance tied to a specific trigger.
-- Use it when extra information is helpful but should stay hidden until requested.
-- Use it when the trigger is already part of the interface, such as a button, icon, or inline control.
-
 ## Examples
-
-### Basic
-
-::component-example{name="tooltip-basic-example"}
-::
 
 ### Placement
 
@@ -46,7 +40,7 @@ The `content` prop accepts sanitized HTML, so simple formatting can be shown whe
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do

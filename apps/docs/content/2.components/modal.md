@@ -3,7 +3,12 @@ title: Modal
 description: A dialog that sits above the current page to focus attention on a single task or decision.
 ---
 
-## Import
+::component-example{name="modal-default-example"}
+::
+
+## Usage
+
+**Modal** is a dialog that sits above the current page to focus attention on a single task or decision. Use it for flows that need clear interruption, such as confirmations, forms, or important details, when users need to complete a focused task without leaving the current page and the content should sit above the rest of the interface instead of becoming part of the page layout.
 
 ```ts
 import {
@@ -14,19 +19,6 @@ import {
   MtModalAction,
 } from "@shopware-ag/meteor-component-library";
 ```
-
-## Usage
-
-- Use **Modal** when users need to confirm, review, or complete a focused task without leaving the current page.
-- Use it for flows that need clear interruption, such as confirmations, forms, or important details.
-- Use it when the content should sit above the rest of the interface instead of becoming part of the page layout.
-
-## Examples
-
-### Basic
-
-::component-example{name="modal-default-example"}
-::
 
 ## Anatomy
 
@@ -120,7 +112,7 @@ To open a modal from something other than a trigger, control the open state dire
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do

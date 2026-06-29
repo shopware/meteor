@@ -3,30 +3,22 @@ title: Pagination
 description: A control for moving through larger result sets one page at a time.
 ---
 
-## Import
+::component-example{name="pagination-basic-example"}
+::
+
+## Usage
+
+**Pagination** is a control for moving through larger result sets one page at a time, letting users move forward, backward, or jump to a specific page. Use it alongside data tables, result lists, or overview pages with many items when a list or table is split into pages.
 
 ```ts
 import { MtPagination } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Pagination** when a list or table is split into pages.
-- Use it when users need to move forward, backward, or jump to a specific page.
-- Use it alongside data tables, result lists, or overview pages with many items.
-
-## Examples
-
-### Basic
-
-::component-example{name="pagination-basic-example"}
-::
-
 ## API reference
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do

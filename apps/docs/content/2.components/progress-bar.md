@@ -3,24 +3,18 @@ title: Progress Bar
 description: A determinate progress indicator for tasks with a known current value and maximum.
 ---
 
-## Import
+::component-example{name="progress-bar-basic-example" fullWidth}
+::
+
+## Usage
+
+**Progress Bar** is a determinate indicator for tasks such as uploads, imports, or processing steps where completion can be measured. Use it when you can communicate a meaningful current value and maximum value, placed in context close to the content or action the progress belongs to.
 
 ```ts
 import { MtProgressBar } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Progress Bar** for uploads, imports, processing steps, or other tasks where completion can be measured.
-- Use it when you can communicate a meaningful current value and maximum value.
-- Use it in context, close to the content or action the progress belongs to.
-
 ## Examples
-
-### Basic
-
-::component-example{name="progress-bar-basic-example" fullWidth}
-::
 
 ### Custom units and error
 
@@ -31,7 +25,7 @@ import { MtProgressBar } from "@shopware-ag/meteor-component-library";
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do
@@ -56,7 +50,6 @@ import { MtProgressBar } from "@shopware-ag/meteor-component-library";
 - **Progress Bar** uses the current value and `maxValue` to calculate the filled width.
 - The fill width is clamped between `0%` and `100%`, so values below `0` or above the maximum do not overflow the track.
 - By default the progress label is shown as a percentage. When `progressLabelType` is set to another value, the label is rendered as `current unit / max unit`.
-- The visible progress label is decorative for assistive technologies, while the actual progress semantics come from the `progressbar` role and ARIA values.
 - When `error` is present, the fill changes to the critical color and the error message is rendered below the track.
 
 ## Accessibility

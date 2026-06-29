@@ -3,17 +3,13 @@ title: Inset
 description: A layout utility that lets content break out to the edges of a padded container, such as a Card, by consuming the container's inset spacing variables.
 ---
 
-## Import
+## Usage
+
+**Inset** lets content break out to the edges of a padded container by consuming that container's inset spacing variables. Use it inside a padded surface such as [**Card**](/components/card), for example in a `footer` slot that needs its own full-width background, when an inner block should align to the container's outer edges instead of the content padding. Use it only inside components that define the inset spacing variables it consumes.
 
 ```ts
 import { MtInset } from "@shopware-ag/meteor-component-library";
 ```
-
-## Usage
-
-- Use **Inset** inside a padded surface such as [**Card**](/components/card) when an inner block should align to the container's outer edges instead of the current content padding.
-- Use it in a card `footer` slot when the footer needs its own full-width background or padding while staying aligned to the card spacing tokens.
-- Use it only inside components that define the inset spacing variables it consumes, such as [**Card**](/components/card).
 
 ## Example
 

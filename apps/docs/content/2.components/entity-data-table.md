@@ -7,32 +7,22 @@ description: A repository-backed Data Table that owns loading and table state fo
 **Experimental.** The API may still change in a future release. It builds on [**Data Table**](/components/data-table).
 ::
 
-## Import
+::component-example{name="entity-data-table-default-example" fullWidth}
+::
+
+## Usage
+
+**Entity Data Table** is a repository-backed [**Data Table**](/components/data-table) for rows that come from an Admin SDK entity repository. Use it when you want searching, sorting, pagination, and filtering to refetch automatically, plus built-in row selection and bulk-action wiring. Define `availableFilters` only for the filters users actually need, and handle `open-details`, `bulk-delete`, and `bulk-edit` in the parent component.
 
 ```ts
 import { MtEntityDataTable } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Entity Data Table** when rows should come from an Admin SDK entity repository.
-- Use it when you want searching, sorting, pagination, and filtering to refetch automatically.
-- Use it when you want built-in row selection and bulk-action wiring on top of [**Data Table**](/components/data-table).
-- Define `availableFilters` only for the filters users actually need.
-- Handle `open-details`, `bulk-delete`, and `bulk-edit` in the parent component.
-
-## Examples
-
-### Basic
-
-::component-example{name="entity-data-table-default-example" fullWidth}
-::
-
 ## API reference
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do

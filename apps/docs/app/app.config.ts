@@ -56,6 +56,13 @@ export default defineAppConfig({
       error: "red",
       neutral: "zinc",
     },
+    pageHeader: {
+      slots: {
+        root: "border-b-0 pb-0",
+        headline: "hidden",
+        description: "hidden",
+      },
+    },
     contentToc: {
       compoundVariants: [
         {

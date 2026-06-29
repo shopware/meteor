@@ -3,24 +3,18 @@ title: Select
 description: A control for choosing one or more values from a list of predefined options.
 ---
 
-## Import
+::component-example{name="select-basic-example" fullWidth}
+::
+
+## Usage
+
+**Select** lets users pick one or more values from a list of predefined options instead of entering free-form text. Use it when the list may be longer than a simple inline choice group would comfortably show, or when searching, custom option labels, or multi selection would improve the picking experience.
 
 ```ts
 import { MtSelect } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **Select** when users should pick from predefined options instead of entering free-form text.
-- Use it when the list may be longer than a simple inline choice group would comfortably show.
-- Use it when searching, custom option labels, or multi selection would improve the picking experience.
-
 ## Examples
-
-### Basic
-
-::component-example{name="select-basic-example" fullWidth}
-::
 
 ### Multiple selection
 
@@ -33,7 +27,7 @@ Enable `enableMultiSelection` so users can choose several values at once.
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do

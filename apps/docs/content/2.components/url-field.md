@@ -3,24 +3,18 @@ title: URL Field
 description: A single-line input for entering and normalizing a web address.
 ---
 
-## Import
+::component-example{name="url-field-basic-example" fullWidth}
+::
+
+## Usage
+
+**URL Field** is a single-line input for entering and normalizing a web address such as external links, landing pages, or reference URLs stored in forms. Use it when the value should point to a website or route, and when protocol handling like `https://` and `http://` should stay visible and easy to change.
 
 ```ts
 import { MtUrlField } from "@shopware-ag/meteor-component-library";
 ```
 
-## Usage
-
-- Use **URL Field** when the value should point to a website or route.
-- Use it when protocol handling like `https://` and `http://` should stay visible and easy to change.
-- Use it for external links, landing pages, or reference URLs stored in forms.
-
 ## Examples
-
-### Basic
-
-::component-example{name="url-field-basic-example" fullWidth}
-::
 
 ### Disabled
 
@@ -41,7 +35,7 @@ import { MtUrlField } from "@shopware-ag/meteor-component-library";
 
 :component-api
 
-## Do and don't
+## Best practices
 
 ::do-dont{vertical}
 #do

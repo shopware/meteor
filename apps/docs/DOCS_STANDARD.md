@@ -25,23 +25,23 @@ Component pages use this order:
 
 1. Frontmatter
 2. Status banner (optional)
-3. Import
+3. Basic example
 4. Usage
-5. Examples
+5. Examples (optional)
 6. Anatomy (optional)
 7. API reference
-8. Do and don't
+8. Best practices
 9. Behavior (optional)
 10. Accessibility (optional)
 11. Related components (optional)
 
-`Import`, `Usage`, `Examples`, `API reference`, and `Do and don't` are always present. The optional sections are included when they add value. Keep the order stable: if a section is not needed, omit it instead of moving sections around.
+`Basic example`, `Usage`, `API reference`, and `Best practices` are always present. `Examples` is included whenever the component has more than its basic usage to show. The optional sections are included when they add value. Keep the order stable: if a section is not needed, omit it instead of moving sections around.
 
 Each section is described below in this order. For a full page that follows the standard, copy the structure of `content/2.components/1.button.md`.
 
 ## Frontmatter
 
-The `title` and `description` frontmatter own the page heading and lead. Do not write your own H1; the first heading on the page is `## Import`.
+The `title` and `description` frontmatter own the page heading and lead. Do not write your own H1; the page opens with the basic example, and the first heading is `## Usage`.
 
 `title` is the component's display name. `description` is a single sentence that defines what the component is, written so the title and description read together as a pair:
 
@@ -72,9 +72,28 @@ Use a Nuxt UI callout: `::warning` for experimental, `::caution` for deprecated.
 ::
 ```
 
-## Import
+## Basic example
 
-Show how to import the component from the library:
+The single most representative usage of the component renders at the top of the page, directly after the frontmatter (and the status banner, when present) and before `Import`. It gives readers an immediate live preview before the reference material that follows.
+
+Show it with `::component-example` and no heading; the page title and description already introduce the component, and any further examples belong in [Examples](#examples):
+
+```md
+::component-example{name="action-menu-basic-example"}
+::
+```
+
+It is a live example like any other, authored as a real Single File Component (see [Examples](#examples) for how the files are created and referenced). Keep it to the single clearest, most representative usage.
+
+## Usage
+
+Write `Usage` as short prose, not a bullet list. Open with a sentence stating what the component does, then cover what to use it for and any constraint worth knowing up front. Keep it tight, a sentence or two; move longer explanations to `Behavior`.
+
+```md
+**Action Menu** reveals a short list of contextual actions for a specific record, card, row, or view. Use it for secondary actions like `Duplicate`, `Move`, `Export`, or `Delete` that should stay available without claiming permanent visual priority.
+```
+
+Follow the text with the import statement, showing how to import the component from the library:
 
 ````md
 ```ts
@@ -82,13 +101,9 @@ import { MtComponentName } from "@shopware-ag/meteor-component-library";
 ```
 ````
 
-## Usage
-
-Write `Usage` as a bullet point list covering the use cases the component is for, important information to keep in mind while using it, and constraints worth knowing up front. Keep each point to one line; move longer explanations to `Behavior`.
-
 ## Examples
 
-`Examples` is required. Start with the main example directly under an `H3` such as `### Basic`, then add more `H3` subsections labelled by what they show. An `H3` may be followed by a short sentence describing what the example demonstrates, when that is not obvious from the heading alone. Keep it to one line and place it above the example.
+`Examples` holds the additional examples beyond the [basic example](#basic-example) at the top of the page, and is included whenever the component has more than its basic usage to show. Put each example under an `H3` labelled by what it shows. An `H3` may be followed by a short sentence describing what the example demonstrates, when that is not obvious from the heading alone. Keep it to one line and place it above the example.
 
 Live examples are real Single File Components, not inline code blocks:
 
@@ -126,7 +141,7 @@ Use the `:component-api` component instead of hand-writing tables:
 - Hide internal members with `:component-api{ignore="someProp,anotherProp"}`.
 - The metadata, including types, defaults, and descriptions, comes from the component source and its JSDoc comments. Improve the docs by improving the comments in the component, not by editing tables here.
 
-## Do and don't
+## Best practices
 
 Use the `:do-dont` component for usage guidance. Each slot accepts plain Markdown, either a bullet list or a short paragraph:
 
