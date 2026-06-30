@@ -24,5 +24,7 @@ jobs:
       - name: Install dependencies
         run: pnpm i --frozen-lockfile --prefer-offline
       - name: Build
-        run: pnpm turbo run build
+        # meteor-docs is private (never published) and its Nuxt build OOMs the
+        # runner — exclude it; only packages/* are published below.
+        run: pnpm turbo run build --filter='!meteor-docs'
       - run: pnpx pkg-pr-new publish './packages/*'
