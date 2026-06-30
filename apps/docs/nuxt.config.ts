@@ -21,6 +21,17 @@ const vueI18nPath = fileURLToPath(
   ),
 );
 
+// vue-i18n@9 (aliased above) imports @intlify internals. Alias those to the
+// SAME nested v9 copies, otherwise the docs build mixes them with the root v11
+// @intlify (which removed `compileToFunction`) → SyntaxError at runtime on Vercel.
+const meteorIntlifyPath = (pkg: string) =>
+  fileURLToPath(
+    new URL(
+      `../../packages/component-library/node_modules/@intlify/${pkg}`,
+      import.meta.url,
+    ),
+  );
+
 // The meteor component library barrel (its index.js) imports a global CSS
 // reset (dist/index.css) that retargets bare elements (*, body, button,
 // h1-h6) and leaks onto the docs typography. The docs deliberately do not
@@ -226,6 +237,9 @@ export default defineNuxtConfig({
     resolve: {
       alias: {
         "vue-i18n": vueI18nPath,
+        "@intlify/core-base": meteorIntlifyPath("core-base"),
+        "@intlify/message-compiler": meteorIntlifyPath("message-compiler"),
+        "@intlify/shared": meteorIntlifyPath("shared"),
       },
     },
     optimizeDeps: {
