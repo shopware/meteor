@@ -1,4 +1,14 @@
 import { fileURLToPath } from "node:url";
+import { createRequire } from "node:module";
+import { dirname, join } from "node:path";
+
+// Absolute path to vue's ESM server-renderer shim (vue/server-renderer/index.mjs).
+// Used by the nitro.alias below to fix an ERR_MODULE_NOT_FOUND on Vercel — see
+// the comment there.
+const vueServerRendererEntry = join(
+  dirname(createRequire(import.meta.url).resolve("vue/package.json")),
+  "server-renderer/index.mjs",
+);
 
 // The meteor components import vue-i18n@9 (their nested copy) and call
 // useI18n() at setup. The docs app must install an i18n instance from the
@@ -192,6 +202,15 @@ export default defineNuxtConfig({
       noApiRoute: false,
       shikiEngine: "javascript",
       theme: shikiTheme,
+    },
+  },
+  nitro: {
+    // Nitro inlines `vue` but leaves a bare `import "vue/server-renderer"` in the
+    // server bundle that resolves to a non-existent node_modules/vue on Vercel
+    // → ERR_MODULE_NOT_FOUND. Alias the subpath to vue's real ESM shim so Nitro
+    // resolves and inlines it instead of emitting a dangling external import.
+    alias: {
+      "vue/server-renderer": vueServerRendererEntry,
     },
   },
   vite: {
