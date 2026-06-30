@@ -69,7 +69,7 @@ import {
   DropdownMenuSub,
 } from "reka-ui";
 // Import global styling
-import "./assets/scss/all.scss";
+import "./assets/css/all.css";
 
 // Importing types
 import type { Filter, Option } from "./components/mt-data-table/mt-data-table.interfaces";

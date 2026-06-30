@@ -1,5 +1,5 @@
 import type { Preview } from "@storybook/vue3";
-import "~/src/assets/scss/all.scss";
+import "~/src/assets/css/all.css";
 import "~/src/assets/css/fonts/inter.font.css";
 import { setup } from "@storybook/vue3";
 import { createApp } from "vue";
