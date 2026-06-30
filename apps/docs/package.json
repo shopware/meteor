@@ -15,7 +15,8 @@
     "postinstall": "nuxt prepare && pnpm sync:changelog",
     "lint:all": "pnpm lint:types && pnpm format:check",
     "format:check": "prettier . --check",
-    "lint:types": "nuxt typecheck"
+    "lint:types": "nuxt typecheck && tsc --noEmit -p test/tsconfig.json",
+    "test:unit": "vitest run"
   },
   "dependencies": {
     "@shopware-ag/meteor-component-library": "workspace:*",
@@ -27,9 +28,11 @@
     "vue": "^3.5.0"
   },
   "devDependencies": {
+    "@nuxt/test-utils": "^3.19.2",
     "nuxt-component-meta": "^0.17.2",
     "prettier": "^3.5.3",
     "typescript": "~5.7.3",
+    "vitest": "^3.2.0",
     "vue-tsc": "^2.2.0"
   }
 }

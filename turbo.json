@@ -43,6 +43,10 @@
       ],
       "outputs": []
     },
+    "meteor-docs#test:unit": {
+      "dependsOn": ["^build"],
+      "outputs": []
+    },
     "test:e2e": {
       "outputs": [],
       "dependsOn": ["^build"]
