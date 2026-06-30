@@ -9,6 +9,14 @@ on:
 
   workflow_dispatch:
 
+env:
+  # meteor-docs' production build (nuxt build, run via `turbo run build`) renders every
+  # page during @nuxt/content prerender + nuxt-llms generation, which peaks ~7.3GB and
+  # OOMs at Node's default ~4GB heap. Raise the ceiling so the build doesn't crash.
+  # NOTE: this is a stopgap — the peak scales ~linearly with page count, so it will need
+  # revisiting as components grow (durable fix = reduce the prerender/llms memory peak).
+  NODE_OPTIONS: --max-old-space-size=8192
+
 jobs:
   static-analysis:
     name: Static Analysis
@@ -69,6 +77,9 @@ jobs:
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v6
+        with:
+          # Full history so `turbo run --affected` can resolve the comparison base.
+          fetch-depth: 0
 
       - uses: pnpm/action-setup@v4
 
@@ -80,8 +91,13 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile --prefer-offline
 
+      # `--affected` only runs test:unit for packages touched by the PR (and
+      # their dependents). This is what gates the expensive meteor-docs test:
+      # it runs only when apps/docs — or a workspace dependency it reads, e.g.
+      # the component library — changed. Other packages are unaffected in
+      # practice since their unchanged tasks are already Turbo cache hits.
       - name: unit
-        run: pnpm turbo run test:unit
+        run: pnpm turbo run test:unit --affected
 
   circular-dependencies:
     name: Check for circular dependencies (Madge)

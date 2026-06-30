@@ -34,7 +34,9 @@ jobs:
         run: pnpm i --frozen-lockfile --prefer-offline
 
       - name: Build packages
-        run: pnpm turbo run build
+        # meteor-docs is private (never published) and its Nuxt build OOMs the
+        # runner — exclude it from the release build.
+        run: pnpm turbo run build --filter='!meteor-docs'
 
       - name: Create Release Pull Request or Publish to npm
         id: changesets

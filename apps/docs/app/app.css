@@ -1,0 +1,8 @@
+/* Appended to the Docus Tailwind pipeline (see docus/modules/css.ts), so
+ * @theme and @import with Tailwind semantics work here. */
+@import "@shopware-ag/meteor-tokens/tailwind";
+@import "@shopware-ag/meteor-tokens/tailwind/administration";
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+}

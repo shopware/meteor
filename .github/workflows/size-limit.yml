@@ -31,7 +31,10 @@ jobs:
         run: pnpm install --frozen-lockfile --prefer-offline
 
       - name: Build packages
-        run: pnpm turbo run build
+        # Only the component library (and its workspace deps) are needed for the
+        # size check. Building everything also builds meteor-docs, whose Nuxt
+        # build OOMs the runner — and it's irrelevant to bundle size.
+        run: pnpm turbo run build --filter=@shopware-ag/meteor-component-library
 
       - name: Run size limit
         run: pnpm --filter @shopware-ag/meteor-component-library run size
