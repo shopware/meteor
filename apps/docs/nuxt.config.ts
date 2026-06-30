@@ -85,7 +85,7 @@ export default defineNuxtConfig({
     },
     "/utilities": {
       redirect: {
-        to: "/utilities/composables/use-snackbar",
+        to: "/utilities/components/theme-provider",
         statusCode: 301,
       },
     },
