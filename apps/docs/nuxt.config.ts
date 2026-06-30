@@ -153,6 +153,15 @@ export default defineNuxtConfig({
     "@shopware-ag/meteor-component-library/font.css",
     "~/assets/css/main.css",
   ],
+  fonts: {
+    families: [
+      // Inter is already self-hosted via @shopware-ag/meteor-component-library/font.css
+      // (loaded above). Stop @nuxt/fonts (inherited from the docus layer) from
+      // re-resolving it from a remote provider, which otherwise fetches
+      // fonts.bunny.net at dev/build/test time and injects a duplicate @font-face.
+      { name: "Inter", provider: "none" },
+    ],
+  },
   colorMode: {
     dataValue: "theme",
   },
