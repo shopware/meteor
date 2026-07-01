@@ -26,12 +26,42 @@ const future = {
 
 All flags default to `false`, so component behavior is unchanged until you opt in.
 
+### Enable everything
+
+Pass `"all"` to enable every current _and_ future flag at once. New flags added in later releases are included automatically, without changing your code.
+
+Future flags exist so established applications like the Shopware Admin stay visually stable while the library keeps evolving, since new behavior stays opt-in. Because the flags also carry the behavior we intend to make default, we recommend turning them on whenever your application can accept the risk of visual breaks on future updates.
+
+```vue
+<template>
+  <MtThemeProvider future="all">
+    <!-- Your application -->
+  </MtThemeProvider>
+</template>
+```
+
+You can still opt out of individual flags while enabling the rest:
+
+```vue
+<script setup lang="ts">
+const future = { all: true, removeCardWidth: false };
+</script>
+
+<template>
+  <MtThemeProvider :future="future">
+    <!-- Your application -->
+  </MtThemeProvider>
+</template>
+```
+
 ## Future flags
 
 | Flag | Effect |
 | --- | --- |
 | `removeCardWidth` | Removes the maximum width constraint from `mt-card`. |
 | `removeDefaultMargin` | Removes the default outer margin from components such as cards, tabs, checkboxes, switches, and text fields. |
+| `removeSwitchMinHeight` | Removes the minimum height from a non-bordered `mt-switch`. |
+| `bannerFullWidth` | Makes `mt-banner` span the full width of its container. |
 
 ## API reference
 

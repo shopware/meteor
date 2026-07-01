@@ -91,6 +91,7 @@ const classes = computed(() => [
   `mt-banner--${props.variant}`,
   {
     "mt-banner--future-remove-default-margin": future.removeDefaultMargin,
+    "mt-banner--future-full-width": future.bannerFullWidth,
     "mt-banner--icon": !props.hideIcon,
     "mt-banner--closable": props.closable,
   },
@@ -122,6 +123,10 @@ const bodyClasses = computed(() => ({
 
 .mt-banner--future-remove-default-margin {
   margin-block-end: 0;
+}
+
+.mt-banner--future-full-width {
+  width: 100%;
 }
 
 .mt-banner__title {

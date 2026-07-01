@@ -3,10 +3,10 @@
 </template>
 
 <script setup lang="ts">
-import { type FutureFlags, provideFutureFlags } from "../../composables/useFutureFlags";
+import { type FutureFlagsInput, provideFutureFlags } from "../../composables/useFutureFlags";
 
 const props = defineProps<{
-  future?: FutureFlags;
+  future?: FutureFlagsInput;
 }>();
 
 provideFutureFlags(props.future);
