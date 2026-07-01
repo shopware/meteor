@@ -8,6 +8,10 @@ export default defineAppConfig({
     // Scope the docs sidebar to the current top-level section only.
     sub: "aside",
   },
+  assistant: {
+    floatingInput: false,
+    explainWithAi: false,
+  },
   header: {
     title: "Meteor Design System",
     logo: {
