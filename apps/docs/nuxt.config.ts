@@ -2,6 +2,12 @@ import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
 import { dirname, join } from "node:path";
 
+// Docus enables its AI assistant whenever AI_GATEWAY_API_KEY / VERCEL_OIDC_TOKEN
+// exist at build time. Vercel always injects VERCEL_OIDC_TOKEN and offers no way to
+// turn it off (only a Team/Global toggle) — https://vercel.com/docs/oidc
+delete process.env.AI_GATEWAY_API_KEY;
+delete process.env.VERCEL_OIDC_TOKEN;
+
 // Absolute path to vue's ESM server-renderer shim (vue/server-renderer/index.mjs).
 // Used by the nitro.alias below to fix an ERR_MODULE_NOT_FOUND on Vercel — see
 // the comment there.
