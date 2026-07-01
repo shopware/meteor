@@ -2109,7 +2109,7 @@ $tableCellPadding: $tableCellPaddingTop $tableCellPaddingRight $tableCellPadding
     flex: 1;
   }
 
-  .mt-card__content {
+  &.mt-card .mt-card__content {
     height: auto;
     padding: 0;
     overflow: hidden;

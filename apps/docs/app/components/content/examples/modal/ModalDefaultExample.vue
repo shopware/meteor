@@ -14,7 +14,9 @@ import MtButton from "@shopware-ag/meteor-component-library/MtButton";
       <template #default>Modal content</template>
 
       <template #footer>
-        <mt-modal-close :as="MtButton" variant="secondary">Close</mt-modal-close>
+        <div style="display: flex; justify-content: flex-end">
+          <mt-modal-close :as="MtButton" variant="secondary">Close</mt-modal-close>
+        </div>
       </template>
     </mt-modal>
   </mt-modal-root>

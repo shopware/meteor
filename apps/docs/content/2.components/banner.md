@@ -3,7 +3,7 @@ title: Banner
 description: A persistent, inline message that stays visible in the page layout.
 ---
 
-::component-example{name="banner-basic-example" fullWidth}
+::component-example{name="banner-basic-example"}
 ::
 
 ## Usage
@@ -18,12 +18,12 @@ import { MtBanner } from "@shopware-ag/meteor-component-library";
 
 ### Closable
 
-::component-example{name="banner-closable-example" fullWidth}
+::component-example{name="banner-closable-example"}
 ::
 
 ### Variants
 
-::component-example{name="banner-variants-example" fullWidth}
+::component-example{name="banner-variants-example"}
 ::
 
 ## API reference

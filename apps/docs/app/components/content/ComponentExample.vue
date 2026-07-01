@@ -5,12 +5,11 @@ import { exampleKey } from "#shared/utils/exampleKey";
 import MtThemeProvider from "@shopware-ag/meteor-component-library/MtThemeProvider";
 
 // Opt the docs into the meteor component library's future behavior so examples
-// reflect where the library is heading. MtThemeProvider provides these flags to
-// every descendant component via the library's own injection key.
-const futureFlags = {
-  removeCardWidth: true,
-  removeDefaultMargin: true,
-};
+// reflect where the library is heading. "all" enables every current and future
+// flag, so newly added flags show up here without touching this file.
+// MtThemeProvider provides these flags to every descendant component via the
+// library's own injection key.
+const futureFlags = "all";
 
 const props = withDefaults(
   defineProps<{
