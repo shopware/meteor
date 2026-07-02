@@ -12,10 +12,10 @@ export type FutureFlags = typeof defaultFutureFlags;
 /**
  * What an application may pass to opt into future behavior:
  * - a subset of flags, e.g. `{ removeCardWidth: true }`
- * - `"all"` or `true` to enable every current and future flag at once
- * - `{ all: true }`, optionally with overrides such as `{ all: true, removeCardWidth: false }`
+ * - `{ all: true }` to enable every current and upcoming flag at once
+ * - `{ all: true }` with overrides, e.g. `{ all: true, removeCardWidth: false }` to enable all but one
  */
-export type FutureFlagsInput = (Partial<FutureFlags> & { all?: boolean }) | "all" | boolean;
+export type FutureFlagsInput = Partial<FutureFlags> & { all?: boolean };
 
 export const futureFlagsInjectionKey = Symbol("mt-future-flags");
 
@@ -26,15 +26,11 @@ function allEnabled(): FutureFlags {
 }
 
 export function resolveFutureFlags(input: FutureFlagsInput | undefined): FutureFlags {
-  if (input == null || input === false) {
+  if (input == null) {
     return { ...defaultFutureFlags };
   }
 
-  if (input === true || input === "all") {
-    return allEnabled();
-  }
-
-  // Object form. `all: true` turns everything on first, remaining keys override.
+  // `all: true` turns everything on first, remaining keys override.
   const { all, ...overrides } = input;
   const base = all ? allEnabled() : defaultFutureFlags;
 

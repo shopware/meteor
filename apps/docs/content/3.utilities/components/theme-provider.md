@@ -28,13 +28,13 @@ All flags default to `false`, so component behavior is unchanged until you opt i
 
 ### Enable everything
 
-Pass `"all"` to enable every current _and_ future flag at once. New flags added in later releases are included automatically, without changing your code.
+Pass `{ all: true }` to enable every current _and_ upcoming flag at once. New flags added in later releases are included automatically, without changing your code.
 
 Future flags exist so established applications like the Shopware Admin stay visually stable while the library keeps evolving, since new behavior stays opt-in. Because the flags also carry the behavior we intend to make default, we recommend turning them on whenever your application can accept the risk of visual breaks on future updates.
 
 ```vue
 <template>
-  <MtThemeProvider future="all">
+  <MtThemeProvider :future="{ all: true }">
     <!-- Your application -->
   </MtThemeProvider>
 </template>
