@@ -99,7 +99,7 @@ async function copyPage() {
       :to="componentSourceUrl"
       target="_blank"
       icon="i-simple-icons:github"
-      label="Source"
+      label="GitHub"
       color="neutral"
       variant="outline"
       size="md"
