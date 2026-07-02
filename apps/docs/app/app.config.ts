@@ -50,6 +50,11 @@ export default defineAppConfig({
     branch: "main",
     rootDir: "apps/docs",
   },
+  storybook: {
+    // Base URL of the deployed component-library Storybook. Component pages link
+    // to their autodocs page here (see DocsPageHeaderLinks.vue).
+    url: "https://storybook.meteor.shopware.com",
+  },
   ui: {
     colors: {
       primary: "brand",

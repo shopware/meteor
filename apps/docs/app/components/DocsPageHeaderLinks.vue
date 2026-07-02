@@ -39,6 +39,22 @@ const componentSourceUrl = computed(() => {
   return `${github.url}/tree/${github.branch || "main"}/${path}`;
 });
 
+// Link a component page to its Storybook entry. The docs slug matches the
+// Storybook id prefix (e.g. "data-table" -> components-data-table); Storybook
+// resolves that to the component's autodocs (or first story) automatically.
+// Gated on the same source map as the GitHub link so the two buttons pair up.
+const componentStorybookUrl = computed(() => {
+  if (!route.path.startsWith("/components/")) return undefined;
+  const slug = route.path.split("/").filter(Boolean).pop() ?? "";
+  const sources = (runtimeConfig.public.componentSourcePaths ?? {}) as Record<
+    string,
+    string
+  >;
+  const storybook = appConfig.storybook as { url?: string } | undefined;
+  if (!sources[slug] || !storybook?.url) return undefined;
+  return `${storybook.url}/?path=/docs/components-${slug}`;
+});
+
 const items = computed(() => [
   [
     {
@@ -84,6 +100,18 @@ async function copyPage() {
       target="_blank"
       icon="i-simple-icons:github"
       label="Source"
+      color="neutral"
+      variant="outline"
+      size="md"
+      :ui="{ leadingIcon: 'text-neutral size-3.5' }"
+    />
+
+    <UButton
+      v-if="componentStorybookUrl"
+      :to="componentStorybookUrl"
+      target="_blank"
+      icon="i-custom:storybook"
+      label="Storybook"
       color="neutral"
       variant="outline"
       size="md"

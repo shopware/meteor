@@ -80,61 +80,10 @@ export default defineNuxtConfig({
     // per environment with NUXT_SITE_URL.
     url: "https://meteor.shopware.com",
   },
-  // Section roots have no index page, so permanently redirect each to its first
-  // child instead of 404ing.
-  routeRules: {
-    "/documentation": {
-      redirect: {
-        to: "/documentation/getting-started/installation",
-        statusCode: 301,
-      },
-    },
-    "/documentation/getting-started": {
-      redirect: {
-        to: "/documentation/getting-started/installation",
-        statusCode: 301,
-      },
-    },
-    "/documentation/guidelines": {
-      redirect: {
-        to: "/documentation/guidelines/design-principles",
-        statusCode: 301,
-      },
-    },
-    "/documentation/design": {
-      redirect: { to: "/documentation/design/tokens", statusCode: 301 },
-    },
-    "/documentation/content": {
-      redirect: { to: "/documentation/content/wording", statusCode: 301 },
-    },
-    "/components": {
-      redirect: { to: "/components/action-menu", statusCode: 301 },
-    },
-    "/utilities": {
-      redirect: {
-        to: "/utilities/components/theme-provider",
-        statusCode: 301,
-      },
-    },
-    "/utilities/composables": {
-      redirect: {
-        to: "/utilities/composables/use-snackbar",
-        statusCode: 301,
-      },
-    },
-    "/utilities/components": {
-      redirect: {
-        to: "/utilities/components/theme-provider",
-        statusCode: 301,
-      },
-    },
-    "/utilities/directives": {
-      redirect: { to: "/utilities/directives/tooltip", statusCode: 301 },
-    },
-    "/utilities/plugins": {
-      redirect: { to: "/utilities/plugins/device-helper", statusCode: 301 },
-    },
-  },
+  // Section roots (/components, /utilities, /documentation/*) have no index page.
+  // Instead of hard-coding a redirect target per section (which goes stale when
+  // the sidebar is reordered), app/middleware/section-redirect.global.ts resolves
+  // the first entry from the live navigation tree and redirects there.
   // modules/ is auto-scanned, so meteor-components and component-examples load
   // automatically. meteor-components registers its work via the
   // `component-meta:extend` hook (fired during the build), so module order
