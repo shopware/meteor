@@ -1,24 +1,21 @@
 import type { ContentNavigationItem } from "@nuxt/content";
 
 // Section roots (e.g. /components, /utilities, /documentation/design) have no
-// index page of their own. Rather than hard-coding a redirect target per
-// section — which silently points at the wrong page whenever the sidebar is
-// reordered or a higher-sorted page is added — resolve the first entry from the
-// live navigation tree and redirect there. The redirect therefore always tracks
-// whatever the sidebar shows first.
+// index page. Redirect each to its first sidebar entry, resolved from the live
+// navigation tree — so the target never goes stale when the sidebar is reordered,
+// and brand-new sections (top-level or nested) work without touching this file.
 export default defineNuxtRouteMiddleware(async (to) => {
-  // Only the docs sections use this pattern; skip the landing page and the rest.
-  if (!/^\/(documentation|components|utilities)(\/|$)/.test(to.path)) return;
+  // The landing page is the only non-content top-level route; skip it so it does
+  // not wait on the navigation query. Every other route is cheap to check.
+  if (to.path === "/") return;
 
   const path = to.path.replace(/\/+$/, "") || "/";
 
-  // Own cache key (not Docus' "navigation_docs") so we don't clash with its
-  // useAsyncData options; the query result is cached per request either way.
-  // Mirror Docus' transform: strip a `/docs` wrapper level if one exists so the
-  // tree (and its order) matches the sidebar exactly.
   const { data: navigation } = await useAsyncData(
     "section-redirect:navigation",
     () => queryCollectionNavigation("docs"),
+    // Mirror Docus' transform: strip a `/docs` wrapper level if one exists so the
+    // tree (and its order) matches the sidebar exactly.
     {
       transform: (data: ContentNavigationItem[]) =>
         data.find((item) => item.path === "/docs")?.children ?? data,
@@ -26,19 +23,34 @@ export default defineNuxtRouteMiddleware(async (to) => {
   );
 
   const nav = navigation.value;
-  if (!nav) return;
 
-  const node = findNode(nav, path);
-  // Leaf pages have no children; only section nodes are redirected.
-  if (!node?.children?.length) return;
-
-  const target = firstLeafPath(node);
-  if (target && target !== path) {
-    // 302 (temporary): the target is derived from navigation order and can
-    // change when pages are added or reordered, so it must not be hard-cached.
-    return navigateTo(target, { redirectCode: 302, replace: true });
+  if (nav) {
+    const node = findNode(nav, path);
+    // Only section nodes (those with children) redirect; leaf pages and unknown
+    // routes fall through to normal rendering / 404.
+    if (!node?.children?.length) return;
+    const target = firstLeafPath(node);
+    if (target && target !== path) {
+      // 302 (temporary): the target is derived from navigation order and can
+      // change as pages are added or reordered, so it must not be hard-cached.
+      return navigateTo(target, { redirectCode: 302, replace: true });
+    }
+    return;
   }
+
+  // Fail-safe: if the navigation tree can't be loaded, the section entry points
+  // linked from the header (see useMainNav) must still resolve instead of 404ing.
+  const fallback = SECTION_ROOT_FALLBACKS[path];
+  if (fallback) return navigateTo(fallback, { redirectCode: 302, replace: true });
 });
+
+// Only the header-linked roots need a hard-coded safety net; deeper section roots
+// are non-critical if navigation is momentarily unavailable.
+const SECTION_ROOT_FALLBACKS: Record<string, string> = {
+  "/documentation": "/documentation/getting-started/installation",
+  "/components": "/components/action-menu",
+  "/utilities": "/utilities/components/inset",
+};
 
 function findNode(
   items: ContentNavigationItem[],

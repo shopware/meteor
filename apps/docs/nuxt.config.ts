@@ -80,10 +80,6 @@ export default defineNuxtConfig({
     // per environment with NUXT_SITE_URL.
     url: "https://meteor.shopware.com",
   },
-  // Section roots (/components, /utilities, /documentation/*) have no index page.
-  // Instead of hard-coding a redirect target per section (which goes stale when
-  // the sidebar is reordered), app/middleware/section-redirect.global.ts resolves
-  // the first entry from the live navigation tree and redirects there.
   // modules/ is auto-scanned, so meteor-components and component-examples load
   // automatically. meteor-components registers its work via the
   // `component-meta:extend` hook (fired during the build), so module order
