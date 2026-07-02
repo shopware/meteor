@@ -95,11 +95,11 @@ async function copyPage() {
 <template>
   <div class="flex items-center gap-2">
     <UButton
-      v-if="componentSourceUrl"
-      :to="componentSourceUrl"
+      v-if="componentStorybookUrl"
+      :to="componentStorybookUrl"
       target="_blank"
-      icon="i-simple-icons:github"
-      label="GitHub"
+      icon="i-custom:storybook"
+      label="Storybook"
       color="neutral"
       variant="outline"
       size="md"
@@ -107,11 +107,11 @@ async function copyPage() {
     />
 
     <UButton
-      v-if="componentStorybookUrl"
-      :to="componentStorybookUrl"
+      v-if="componentSourceUrl"
+      :to="componentSourceUrl"
       target="_blank"
-      icon="i-custom:storybook"
-      label="Storybook"
+      icon="i-simple-icons:github"
+      label="GitHub"
       color="neutral"
       variant="outline"
       size="md"
