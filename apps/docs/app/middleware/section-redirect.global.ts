@@ -11,18 +11,18 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   const path = to.path.replace(/\/+$/, "") || "/";
 
-  const { data: navigation } = await useAsyncData(
-    "section-redirect:navigation",
-    () => queryCollectionNavigation("docs"),
+  // Reuse the navigation tree Docus already fetched (keyed "navigation_docs")
+  // instead of fetching our own copy, which would be serialised into the payload
+  // a second time on every docs page. On a direct SSR hit the middleware can run
+  // before Docus' fetch, so query the collection directly as a fallback.
+  const cached = useNuxtData<ContentNavigationItem[]>("navigation_docs");
+  let nav = cached.data.value ?? undefined;
+  if (!nav) {
+    const data = await queryCollectionNavigation("docs").catch(() => undefined);
     // Mirror Docus' transform: strip a `/docs` wrapper level if one exists so the
     // tree (and its order) matches the sidebar exactly.
-    {
-      transform: (data: ContentNavigationItem[]) =>
-        data.find((item) => item.path === "/docs")?.children ?? data,
-    },
-  );
-
-  const nav = navigation.value;
+    nav = data?.find((item) => item.path === "/docs")?.children ?? data;
+  }
 
   if (nav) {
     const node = findNode(nav, path);
@@ -41,7 +41,8 @@ export default defineNuxtRouteMiddleware(async (to) => {
   // Fail-safe: if the navigation tree can't be loaded, the section entry points
   // linked from the header (see useMainNav) must still resolve instead of 404ing.
   const fallback = SECTION_ROOT_FALLBACKS[path];
-  if (fallback) return navigateTo(fallback, { redirectCode: 302, replace: true });
+  if (fallback)
+    return navigateTo(fallback, { redirectCode: 302, replace: true });
 });
 
 // Only the header-linked roots need a hard-coded safety net; deeper section roots
