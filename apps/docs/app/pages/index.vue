@@ -196,6 +196,9 @@ const packages = [
       </UContainer>
     </section>
 
+    <!-- Live component showcase: a masonry collage of real Meteor components. -->
+    <LandingComponentShowcase />
+
     <!-- Feature ticker, sitting flush below the gradient hero section. -->
     <div
       class="hero-rise marquee-mask relative border-y border-default py-4"
