@@ -8,8 +8,20 @@ import MtButton from "@shopware-ag/meteor-component-library/MtButton";
 import MtLink from "@shopware-ag/meteor-component-library/MtLink";
 
 const email = ref("mia.chen@company.io");
-const password = ref("bananenstarkespasswort");
+const password = ref("peekaboo");
 const muted = "color-text-secondary-default";
+
+// The email/password fields don't forward an autocomplete attribute to their
+// inputs, so disable browser autofill on the rendered inputs directly.
+const formRef = ref<HTMLElement | null>(null);
+onMounted(() => {
+  formRef.value?.querySelectorAll("input").forEach((input) => {
+    input.setAttribute(
+      "autocomplete",
+      input.type === "email" ? "off" : "new-password",
+    );
+  });
+});
 </script>
 
 <template>
@@ -31,17 +43,17 @@ const muted = "color-text-secondary-default";
           />
         </span>
       </div>
-      <div class="connect__body">
+      <div ref="formRef" class="connect__body">
         <div class="connect__head">
           <mt-text size="l" weight="bold">Connect to Nexus</mt-text>
           <mt-text size="xs" :color="muted">
-            Sign in with your Shopware account to connect Nexus and turn every
+            Sign in with your Shopware Account to connect Nexus and turn every
             store event into an automated workflow, the moment it happens.
           </mt-text>
         </div>
         <mt-email-field v-model="email" label="Email" />
         <mt-password-field v-model="password" label="Password" />
-        <mt-button variant="primary" size="large" block>Continue</mt-button>
+        <mt-button variant="primary" size="default" block>Continue</mt-button>
         <div class="connect__footer">
           <mt-text size="xs" :color="muted"> Don't have an account? </mt-text>
           <mt-link as="a" href="#">Register now</mt-link>
@@ -78,7 +90,7 @@ const muted = "color-text-secondary-default";
 }
 .connect__logo--nx {
   background: var(--color-background-tertiary-default);
-  margin-left: calc(var(--scale-size-12) * -1);
+  margin-left: calc(var(--scale-size-8) * -1);
 }
 /* Headline + description, the two fields, and the Continue button. */
 .connect__body {

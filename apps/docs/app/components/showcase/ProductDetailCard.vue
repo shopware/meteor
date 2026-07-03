@@ -4,11 +4,28 @@ import MtIcon from "@shopware-ag/meteor-component-library/MtIcon";
 import MtText from "@shopware-ag/meteor-component-library/MtText";
 import MtButton from "@shopware-ag/meteor-component-library/MtButton";
 import MtBadge from "@shopware-ag/meteor-component-library/MtBadge";
+import MtActionMenu from "@shopware-ag/meteor-component-library/MtActionMenu";
+import MtActionMenuItem from "@shopware-ag/meteor-component-library/MtActionMenuItem";
+import MtActionMenuGroup from "@shopware-ag/meteor-component-library/MtActionMenuGroup";
+import {
+  MtDropdownMenuRoot,
+  MtDropdownMenuPortal,
+  MtDropdownMenuTrigger,
+  useSnackbar,
+} from "@shopware-ag/meteor-component-library";
+import ConfirmDialog from "./ConfirmDialog.vue";
+
+const { addSnackbar } = useSnackbar();
+const showDelete = ref(false);
+
+function deleteProduct() {
+  addSnackbar({ message: "Product deleted", variant: "error" });
+}
 
 const muted = "color-text-secondary-default";
 // Bound src (not a static `src="…"`) so Vue's compiler doesn't run
 // transformAssetUrls on it — that rewrite mangles this public-root path.
-const productImage = "/showcase-headset.jpg";
+const productImage = "/showcase-headset.png";
 </script>
 
 <template>
@@ -24,16 +41,66 @@ const productImage = "/showcase-headset.jpg";
             <mt-text size="s" weight="semibold">Aeonic Quiet Studio 2</mt-text>
             <mt-text size="2xs" :color="muted">STK · QUIET-ST2</mt-text>
           </div>
-          <mt-button
-            variant="tertiary"
-            square
-            size="default"
-            aria-label="Product options"
-          >
-            <template #iconFront>
-              <mt-icon name="solid-ellipsis-h" size="14" />
-            </template>
-          </mt-button>
+          <mt-dropdown-menu-root>
+            <mt-dropdown-menu-trigger as-child>
+              <mt-button
+                variant="tertiary"
+                square
+                size="small"
+                aria-label="Product options"
+              >
+                <template #iconFront>
+                  <mt-icon name="solid-ellipsis-h" size="14" />
+                </template>
+              </mt-button>
+            </mt-dropdown-menu-trigger>
+
+            <mt-dropdown-menu-portal>
+              <mt-action-menu>
+                <mt-action-menu-group>
+                  <mt-action-menu-item
+                    icon="pencil-s"
+                    @select="
+                      addSnackbar({
+                        message: 'Editing product',
+                        variant: 'success',
+                      })
+                    "
+                    >Edit product</mt-action-menu-item
+                  >
+                  <mt-action-menu-item
+                    icon="duplicate"
+                    @select="
+                      addSnackbar({
+                        message: 'Product duplicated',
+                        variant: 'success',
+                      })
+                    "
+                    >Duplicate</mt-action-menu-item
+                  >
+                  <mt-action-menu-item
+                    icon="link"
+                    @select="
+                      addSnackbar({
+                        message: 'Link copied',
+                        variant: 'success',
+                      })
+                    "
+                    >Copy link</mt-action-menu-item
+                  >
+                </mt-action-menu-group>
+
+                <mt-action-menu-group>
+                  <mt-action-menu-item
+                    icon="trash"
+                    variant="critical"
+                    @select="showDelete = true"
+                    >Delete</mt-action-menu-item
+                  >
+                </mt-action-menu-group>
+              </mt-action-menu>
+            </mt-dropdown-menu-portal>
+          </mt-dropdown-menu-root>
         </div>
         <mt-text size="xs" :color="muted" class="product-desc"
           >Premium over-ear wireless headphones with active noise cancellation,
@@ -55,6 +122,14 @@ const productImage = "/showcase-headset.jpg";
         </div>
       </div>
     </mt-card>
+
+    <confirm-dialog
+      v-model:open="showDelete"
+      title="Delete product?"
+      message="Aeonic Quiet Studio 2 will be permanently deleted. This action cannot be undone."
+      confirm-label="Delete"
+      @confirm="deleteProduct"
+    />
   </div>
 </template>
 

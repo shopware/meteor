@@ -80,7 +80,7 @@ const muted = "color-text-secondary-default";
         </div>
       </div>
       <mt-inset class="ship-inset">
-        <div class="flex items-center gap-4">
+        <div class="flex items-center gap-3">
           <div class="ship-tile">
             <mt-icon
               name="regular-truck"
@@ -89,10 +89,10 @@ const muted = "color-text-secondary-default";
             />
           </div>
           <div class="min-w-0 flex-1">
-            <mt-text size="xs" weight="medium">DHL Package</mt-text>
-            <mt-text size="xs" :color="muted">1–2 business days</mt-text>
+            <mt-text size="xs" weight="semibold">DHL Package</mt-text>
+            <mt-text size="2xs" :color="muted">1–2 business days</mt-text>
           </div>
-          <mt-text size="l" weight="semibold">€6.99</mt-text>
+          <mt-text size="m" weight="semibold">€6.99</mt-text>
         </div>
       </mt-inset>
     </div>
@@ -151,7 +151,7 @@ const muted = "color-text-secondary-default";
   height: var(--scale-size-40);
   border-radius: var(--border-radius-s);
   border: 1px solid var(--color-border-primary-default);
-  background: var(--color-background-secondary-default);
+  background: var(--color-background-tertiary-default);
   flex-shrink: 0;
 }
 </style>

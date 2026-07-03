@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import MtThemeProvider from "@shopware-ag/meteor-component-library/MtThemeProvider";
+import MtSnackbar from "@shopware-ag/meteor-component-library/MtSnackbar";
 import ProductSpecificationCard from "./showcase/ProductSpecificationCard.vue";
 import StoreAnalyticsCard from "./showcase/StoreAnalyticsCard.vue";
 import ShippingRateCard from "./showcase/ShippingRateCard.vue";
@@ -24,12 +25,12 @@ const futureFlags = {
 // Approximate rendered heights (px) so the client-only fallback reserves space
 // and the section doesn't shift when the cards hydrate. Ordered to match the
 // cards below.
-const skeletonHeights = [340, 260, 280, 470, 400, 240, 340, 340, 360, 340, 320];
+const skeletonHeights = [340, 260, 280, 400, 470, 240, 340, 340, 360, 340, 320];
 </script>
 
 <template>
   <section
-    class="hero-rise py-20 sm:py-28"
+    class="showcase-section hero-rise py-20 sm:py-28"
     :style="{ animationDelay: '300ms' }"
   >
     <UContainer>
@@ -39,8 +40,8 @@ const skeletonHeights = [340, 260, 280, 470, 400, 240, 340, 340, 360, 340, 320];
             <ProductSpecificationCard class="mt-showcase-item" />
             <StoreAnalyticsCard class="mt-showcase-item" />
             <ShippingRateCard class="mt-showcase-item" />
-            <ShareInviteCard class="mt-showcase-item" />
             <ConnectNexusCard class="mt-showcase-item" />
+            <ShareInviteCard class="mt-showcase-item" />
             <PlanUsageCard class="mt-showcase-item" />
             <AppearanceCard class="mt-showcase-item" />
             <ProductDetailCard class="mt-showcase-item" />
@@ -48,6 +49,9 @@ const skeletonHeights = [340, 260, 280, 470, 400, 240, 340, 340, 360, 340, 320];
             <InvoicesCard class="mt-showcase-item" />
             <CustomDomainCard class="mt-showcase-item" />
           </div>
+
+          <!-- Single global snackbar host: cards fire toasts via useSnackbar(). -->
+          <MtSnackbar />
         </MtThemeProvider>
 
         <template #fallback>
@@ -61,29 +65,23 @@ const skeletonHeights = [340, 260, 280, 470, 400, 240, 340, 340, 360, 340, 320];
           </div>
         </template>
       </ClientOnly>
-
-      <div class="mt-10 text-center">
-        <NuxtLink
-          to="/components"
-          class="group inline-flex items-center gap-1.5 text-sm font-medium text-primary"
-        >
-          Browse all components
-          <UIcon
-            name="i-lucide-arrow-right"
-            class="size-4 transition-transform group-hover:translate-x-0.5"
-          />
-        </NuxtLink>
-      </div>
     </UContainer>
   </section>
 </template>
 
 <style scoped>
+/* The landing page narrows UContainer to --ui-container-small (1280px); the
+ * showcase grid wants the full width, so restore the default --ui-container
+ * (1680px, defined in main.css) for this section's UContainer. */
+.showcase-section {
+  --ui-container: 1680px;
+}
+
 /* Masonry via CSS multi-column: cards keep their natural height and pack into
  * 1/2/3/4 responsive columns. column-gap is the horizontal gutter; the matching
  * vertical gutter is the cards' margin-bottom below. */
 .showcase-grid {
-  --showcase-gutter: var(--scale-size-16);
+  --showcase-gutter: var(--scale-size-20);
   column-count: 1;
   column-gap: var(--showcase-gutter);
 }

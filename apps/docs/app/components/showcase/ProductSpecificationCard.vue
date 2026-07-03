@@ -10,7 +10,7 @@ const productPrice = ref(54.95);
 const muted = "color-text-secondary-default";
 // Bound (not a static `src="…"`) so Vue's compiler doesn't run transformAssetUrls
 // on it — that rewrite mangles this public-root path in a sub-component.
-const productImage = "/showcase-product.png";
+const productImage = "/showcase-product.jpg";
 </script>
 
 <template>
@@ -32,7 +32,7 @@ const productImage = "/showcase-product.png";
               Lamps
             </mt-text>
             <mt-text
-              size="s"
+              size="m"
               weight="semibold"
               :color="productName ? 'color-text-primary-default' : muted"
               class="product-clip"
@@ -41,7 +41,7 @@ const productImage = "/showcase-product.png";
             </mt-text>
           </div>
           <div class="product-price">
-            <mt-text size="2xs" weight="semibold" class="product-clip">
+            <mt-text size="xs" weight="semibold" class="product-clip">
               {{ productPrice }} €
             </mt-text>
           </div>

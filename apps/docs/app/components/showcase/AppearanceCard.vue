@@ -1,11 +1,9 @@
 <script setup lang="ts">
-import MtCard from "@shopware-ag/meteor-component-library/MtCard";
 import MtRadioGroupRoot from "@shopware-ag/meteor-component-library/MtRadioGroupRoot";
 import MtRadioGroupCustomItem from "@shopware-ag/meteor-component-library/MtRadioGroupCustomItem";
 import MtRadioGroupIndicator from "@shopware-ag/meteor-component-library/MtRadioGroupIndicator";
 import MtIcon from "@shopware-ag/meteor-component-library/MtIcon";
 import MtText from "@shopware-ag/meteor-component-library/MtText";
-import MtColorpicker from "@shopware-ag/meteor-component-library/MtColorpicker";
 
 const selectedLayout = ref("grid");
 const layouts = [
@@ -13,70 +11,57 @@ const layouts = [
     value: "grid",
     name: "Grid layout",
     icon: "regular-view-grid",
-    desc: "Show products as cards in a grid, ideal for catalogs.",
+    desc: "Show products as cards in a grid.",
   },
   {
     value: "list",
     name: "List layout",
     icon: "regular-view-normal",
-    desc: "Show products as compact rows with details, ideal for catalogs.",
+    desc: "Show products as compact rows.",
   },
 ];
-const brandColor = ref("#189eff");
 const muted = "color-text-secondary-default";
 </script>
 
 <template>
-  <mt-card title="Appearance">
-    <div class="section">
-      <mt-radio-group-root v-model="selectedLayout" label="Layout style">
-        <template #default="{ disabled, identification }">
-          <div class="stack-sm">
-            <mt-radio-group-custom-item
-              v-for="l in layouts"
-              :key="l.value"
-              :value="l.value"
-            >
-              <div
-                class="pick pick--layout"
-                :class="{ 'pick--on': selectedLayout === l.value }"
-              >
-                <div class="flex min-w-0 items-start gap-4">
-                  <div class="layout-tile">
-                    <mt-icon :name="l.icon" size="16" />
-                  </div>
-                  <div class="min-w-0">
-                    <mt-text size="xs" weight="semibold">{{ l.name }}</mt-text>
-                    <mt-text size="xs" :color="muted">{{ l.desc }}</mt-text>
-                  </div>
-                </div>
-                <div class="pick-radio">
-                  <mt-radio-group-indicator
-                    :id="`layout-${l.value}`"
-                    :name="identification"
-                    :value="l.value"
-                    :checked="selectedLayout === l.value"
-                    :disabled="disabled"
-                  />
-                </div>
+  <mt-radio-group-root v-model="selectedLayout" label="Layout style">
+    <template #default="{ disabled, identification }">
+      <div class="stack-sm">
+        <mt-radio-group-custom-item
+          v-for="l in layouts"
+          :key="l.value"
+          :value="l.value"
+        >
+          <div
+            class="pick pick--layout"
+            :class="{ 'pick--on': selectedLayout === l.value }"
+          >
+            <div class="flex min-w-0 items-start gap-4">
+              <div class="layout-tile">
+                <mt-icon :name="l.icon" size="14" />
               </div>
-            </mt-radio-group-custom-item>
+              <div class="min-w-0">
+                <mt-text size="xs" weight="semibold">{{ l.name }}</mt-text>
+                <mt-text size="xs" :color="muted">{{ l.desc }}</mt-text>
+              </div>
+            </div>
+            <div class="pick-radio">
+              <mt-radio-group-indicator
+                :id="`layout-${l.value}`"
+                :name="identification"
+                :value="l.value"
+                :checked="selectedLayout === l.value"
+                :disabled="disabled"
+              />
+            </div>
           </div>
-        </template>
-      </mt-radio-group-root>
-      <mt-colorpicker v-model="brandColor" label="Brand color" />
-    </div>
-  </mt-card>
+        </mt-radio-group-custom-item>
+      </div>
+    </template>
+  </mt-radio-group-root>
 </template>
 
 <style scoped>
-/* A titled section: a 16px-gap column holding the labelled radio group and the
-   colorpicker. */
-.section {
-  display: flex;
-  flex-direction: column;
-  gap: var(--scale-size-16);
-}
 .stack-sm {
   display: flex;
   flex-direction: column;
@@ -91,7 +76,9 @@ const muted = "color-text-secondary-default";
   justify-content: space-between;
   padding: var(--scale-size-12);
   border: 1px solid var(--color-border-secondary-default);
-  border-radius: var(--border-radius-s);
+  border-radius: var(--border-radius-card);
+  background-color: var(--color-elevation-surface-raised);
+  cursor: pointer;
   transition:
     border-color 0.15s,
     background-color 0.15s;
@@ -122,26 +109,29 @@ const muted = "color-text-secondary-default";
 .layout-tile {
   display: grid;
   place-items: center;
-  width: var(--scale-size-40);
-  height: var(--scale-size-40);
+  width: var(--scale-size-32);
+  height: var(--scale-size-32);
   border-radius: var(--border-radius-s);
   border: 1px solid var(--color-border-primary-default);
   background: var(--color-background-secondary-default);
   flex-shrink: 0;
 }
 /* The radio-group root carries a default bottom margin that ignores the
-   removeDefaultMargin flag; zero it so the section flex-gap is the only spacing. */
+   removeDefaultMargin flag; zero it so the option spacing is the only gap. */
 :deep(.mt-radio-group-root) {
   margin-bottom: 0;
 }
-/* The group's built-in label sits only 2px above the options; give it 8px. */
+/* Keep the label for assistive tech but hide it visually (position: absolute
+   also drops its grid row, so the options sit flush at the top). */
 :deep(.mt-radio-group-root__label) {
-  margin-bottom: var(--scale-size-8);
-}
-/* MtColorpicker's popover carries both .mt-floating-ui (position: relative) and
-   .mt-colorpicker__colorpicker-position (position: absolute); source order lets
-   the former win, dropping the closed popover in-flow. Restore absolute. */
-:deep(.mt-colorpicker__colorpicker-position) {
   position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }
 </style>

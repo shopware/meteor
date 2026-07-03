@@ -5,6 +5,17 @@ import MtTextField from "@shopware-ag/meteor-component-library/MtTextField";
 import MtButton from "@shopware-ag/meteor-component-library/MtButton";
 import MtIcon from "@shopware-ag/meteor-component-library/MtIcon";
 import MtAvatar from "@shopware-ag/meteor-component-library/MtAvatar";
+import MtActionMenu from "@shopware-ag/meteor-component-library/MtActionMenu";
+import MtActionMenuItem from "@shopware-ag/meteor-component-library/MtActionMenuItem";
+import MtActionMenuGroup from "@shopware-ag/meteor-component-library/MtActionMenuGroup";
+import {
+  MtDropdownMenuRoot,
+  MtDropdownMenuPortal,
+  MtDropdownMenuTrigger,
+  useSnackbar,
+} from "@shopware-ag/meteor-component-library";
+
+const { addSnackbar } = useSnackbar();
 
 const inviteEmail = ref("");
 const shareUsers = [
@@ -32,8 +43,11 @@ const muted = "color-text-secondary-default";
 
       <!-- People with access -->
       <div class="stack-xs">
-        <mt-text size="xs" weight="medium" color="var(--color-text-primary-default)"
-          >People with access</mt-text
+        <mt-text
+          size="xs"
+          weight="medium"
+          color="var(--color-text-primary-default)"
+          >People with edit access</mt-text
         >
         <div class="people-list">
           <div
@@ -52,23 +66,72 @@ const muted = "color-text-secondary-default";
               >
               <mt-text size="xs" :color="muted">{{ u.email }}</mt-text>
             </div>
-            <mt-button
-              variant="tertiary"
-              square
-              size="default"
-              aria-label="Member options"
-            >
-              <template #iconFront>
-                <mt-icon name="solid-ellipsis-h" size="14" />
-              </template>
-            </mt-button>
+            <mt-dropdown-menu-root>
+              <mt-dropdown-menu-trigger as-child>
+                <mt-button
+                  variant="tertiary"
+                  square
+                  size="small"
+                  aria-label="Member options"
+                >
+                  <template #iconFront>
+                    <mt-icon name="solid-ellipsis-h" size="14" />
+                  </template>
+                </mt-button>
+              </mt-dropdown-menu-trigger>
+
+              <mt-dropdown-menu-portal>
+                <mt-action-menu>
+                  <mt-action-menu-group>
+                    <mt-action-menu-item
+                      icon="copy"
+                      @select="
+                        addSnackbar({
+                          message: 'Email copied',
+                          variant: 'success',
+                        })
+                      "
+                      >Copy email</mt-action-menu-item
+                    >
+                    <mt-action-menu-item
+                      icon="paper-plane"
+                      @select="
+                        addSnackbar({
+                          message: `Invitation sent to ${u.firstName}`,
+                          variant: 'success',
+                        })
+                      "
+                      >Resend invite</mt-action-menu-item
+                    >
+                  </mt-action-menu-group>
+
+                  <mt-action-menu-group>
+                    <mt-action-menu-item
+                      icon="user-minus"
+                      variant="critical"
+                      @select="
+                        addSnackbar({
+                          message: `${u.firstName} ${u.lastName} removed`,
+                          variant: 'error',
+                        })
+                      "
+                    >
+                      Remove access
+                    </mt-action-menu-item>
+                  </mt-action-menu-group>
+                </mt-action-menu>
+              </mt-dropdown-menu-portal>
+            </mt-dropdown-menu-root>
           </div>
         </div>
       </div>
 
       <!-- General access -->
       <div class="stack-xs">
-        <mt-text size="xs" weight="medium" color="var(--color-text-primary-default)"
+        <mt-text
+          size="xs"
+          weight="medium"
+          color="var(--color-text-primary-default)"
           >General access</mt-text
         >
         <div class="flex items-center gap-3">
@@ -81,18 +144,52 @@ const muted = "color-text-secondary-default";
           </div>
           <div class="min-w-0 flex-1">
             <mt-text size="xs" weight="medium">Everyone at the company</mt-text>
-            <mt-text size="xs" :color="muted">with a company e-mail</mt-text>
+            <mt-text size="xs" :color="muted">with a company email</mt-text>
           </div>
-          <mt-button
-            variant="tertiary"
-            square
-            size="default"
-            aria-label="Access options"
-          >
-            <template #iconFront>
-              <mt-icon name="solid-ellipsis-h" size="14" />
-            </template>
-          </mt-button>
+          <mt-dropdown-menu-root>
+            <mt-dropdown-menu-trigger as-child>
+              <mt-button
+                variant="tertiary"
+                square
+                size="small"
+                aria-label="Access options"
+              >
+                <template #iconFront>
+                  <mt-icon name="solid-ellipsis-h" size="14" />
+                </template>
+              </mt-button>
+            </mt-dropdown-menu-trigger>
+
+            <mt-dropdown-menu-portal>
+              <mt-action-menu>
+                <mt-action-menu-group>
+                  <mt-action-menu-item
+                    icon="link"
+                    @select="
+                      addSnackbar({
+                        message: 'Link copied',
+                        variant: 'success',
+                      })
+                    "
+                    >Copy link</mt-action-menu-item
+                  >
+                </mt-action-menu-group>
+
+                <mt-action-menu-group>
+                  <mt-action-menu-item
+                    icon="shield"
+                    @select="
+                      addSnackbar({
+                        message: 'Access set to private',
+                        variant: 'success',
+                      })
+                    "
+                    >Set as private</mt-action-menu-item
+                  >
+                </mt-action-menu-group>
+              </mt-action-menu>
+            </mt-dropdown-menu-portal>
+          </mt-dropdown-menu-root>
         </div>
       </div>
     </div>

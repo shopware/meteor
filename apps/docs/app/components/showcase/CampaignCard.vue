@@ -4,17 +4,13 @@ import MtInset from "@shopware-ag/meteor-component-library/MtInset";
 import MtText from "@shopware-ag/meteor-component-library/MtText";
 import MtIcon from "@shopware-ag/meteor-component-library/MtIcon";
 import MtTextField from "@shopware-ag/meteor-component-library/MtTextField";
-import MtSelect from "@shopware-ag/meteor-component-library/MtSelect";
+import MtColorpicker from "@shopware-ag/meteor-component-library/MtColorpicker";
 import MtNumberField from "@shopware-ag/meteor-component-library/MtNumberField";
 import MtDatepicker from "@shopware-ag/meteor-component-library/MtDatepicker";
 
 const title = ref("Summer Sale");
-const customer = ref("All customers");
-const customerOptions = [
-  { id: 1, label: "All customers", value: "All customers" },
-  { id: 2, label: "Returning customers", value: "Returning customers" },
-];
-const percentage = ref(20);
+const color = ref("#ffc65c");
+const percentage = ref(25);
 const validRange = ref<string[]>([
   "2026-07-01T00:00:00.000Z",
   "2026-07-31T00:00:00.000Z",
@@ -36,26 +32,19 @@ const muted = "color-text-secondary-default";
       <mt-inset class="voucher-bg">
         <div class="ticket">
           <div class="ticket__top">
-            <div class="ticket__logo">
-              <mt-icon
-                name="solid-tag"
-                size="20"
-                color="var(--color-static-white)"
-              />
+            <div class="ticket__logo" :style="{ '--campaign-color': color }">
+              <mt-icon name="solid-tag" size="20" />
             </div>
             <div class="min-w-0 flex-1">
               <mt-text
-                size="s"
+                size="m"
                 weight="semibold"
                 :color="title ? 'color-text-primary-default' : muted"
                 class="truncate"
                 >{{ title || "Campaign title" }}</mt-text
               >
-              <mt-text size="2xs" :color="muted" class="truncate">{{
-                customer
-              }}</mt-text>
             </div>
-            <mt-text size="2xl" weight="bold" class="shrink-0"
+            <mt-text size="xl" weight="bold" class="shrink-0"
               >{{ percentage }}%</mt-text
             >
           </div>
@@ -74,12 +63,7 @@ const muted = "color-text-secondary-default";
       <!-- Fields driving the ticket above. -->
       <div class="fields">
         <mt-text-field v-model="title" label="Title" size="small" />
-        <mt-select
-          v-model="customer"
-          :options="customerOptions"
-          label="Audience"
-          small
-        />
+        <mt-colorpicker v-model="color" label="Color" size="small" />
         <mt-number-field
           v-model="percentage"
           label="Discount"
@@ -141,8 +125,13 @@ const muted = "color-text-secondary-default";
   width: var(--scale-size-40);
   height: var(--scale-size-40);
   border-radius: var(--border-radius-round);
-  background: var(--color-icon-brand-default);
+  background: var(--campaign-color, var(--color-icon-brand-default));
   flex-shrink: 0;
+  /* The tag icon inherits this color (mt-icon fills with currentColor). Flip it
+     to black or white for the best contrast against the picked background;
+     fall back to white where contrast-color() isn't supported yet. */
+  color: var(--color-static-white);
+  color: contrast-color(var(--campaign-color, var(--color-icon-brand-default)));
 }
 /* Perforated divider spanning the full width. Its two ends are "punched out" by
    circles filled with the sunken backdrop colour — centred on the ticket's left

@@ -13,7 +13,7 @@ const customDomain = ref("company.io");
   <div>
     <mt-card
       title="Add custom domain"
-      subtitle="Point a domain you own to this storefront. We set up the SSL certificate automatically."
+      subtitle="Point a domain you own to this Storefront."
     >
       <div class="section">
         <mt-url-field v-model="customDomain" />
@@ -35,9 +35,7 @@ const customDomain = ref("company.io");
             <mt-text size="xs">SSL certificate valid</mt-text>
           </div>
         </div>
-        <mt-link to="https://docs.shopware.com" type="external"
-          >Learn about custom domains</mt-link
-        >
+        <mt-link to="#" type="external">Learn about custom domains</mt-link>
       </div>
     </mt-card>
   </div>
