@@ -46,18 +46,6 @@ function onHeroMove(e: PointerEvent) {
   el.style.setProperty("--my", `${e.clientY - r.top}px`);
 }
 
-const tickerItems = [
-  { icon: "i-lucide-accessibility", label: "Accessible" },
-  { icon: "i-simple-icons-typescript", label: "TypeScript" },
-  { icon: "i-lucide-swatch-book", label: "Design tokens" },
-  { icon: "i-lucide-contrast", label: "Light & dark mode" },
-  { icon: "i-lucide-blocks", label: "45+ components" },
-  { icon: "i-lucide-shapes", label: "900+ icons" },
-  { icon: "i-simple-icons-vuedotjs", label: "Vue 3" },
-  { icon: "i-lucide-bot", label: "MCP server" },
-  { icon: "i-lucide-git-pull-request", label: "Open source" },
-];
-
 const npmBase = "https://www.npmjs.com/package/@shopware-ag/";
 
 const benefits = [
@@ -102,33 +90,23 @@ const packages = [
       @pointerenter="spotActive = true"
       @pointerleave="spotActive = false"
     >
-      <!-- Light mode: gray dot grid fading out toward the bottom. -->
-      <div
-        aria-hidden="true"
-        class="hero-dots absolute inset-0 -z-10 dark:hidden"
-      />
-      <!-- Darker dots revealed in a circle around the cursor. -->
-      <div
-        ref="dotsReveal"
-        aria-hidden="true"
-        class="hero-dots-reveal absolute inset-0 -z-10 dark:hidden"
-        :class="{ 'is-spot': spotActive }"
-      />
-      <LandingStarfield class="-z-10 hidden dark:block" />
-      <div
-        aria-hidden="true"
-        class="absolute inset-x-0 bottom-0 -z-10 h-3/5 bg-[linear-gradient(to_bottom,transparent,var(--hero-edge))]"
-      />
-      <!-- Dark mode: a large planet curving up from the bottom edge, with the
-           starfield above it reading as the surrounding space/atmosphere. -->
-      <div
-        aria-hidden="true"
-        class="hero-earth absolute inset-x-0 bottom-0 -z-10 hidden dark:block"
-      />
+      <!-- All hero background layers live in one element so a single bottom
+           mask can fade the whole backdrop out over the showcase below. -->
+      <div aria-hidden="true" class="hero-bg absolute inset-0 -z-10">
+        <!-- Light mode: gray dot grid. -->
+        <div class="hero-dots absolute inset-0 dark:hidden" />
+        <!-- Darker dots revealed in a circle around the cursor. -->
+        <div
+          ref="dotsReveal"
+          class="hero-dots-reveal absolute inset-0 dark:hidden"
+          :class="{ 'is-spot': spotActive }"
+        />
+        <LandingStarfield class="hidden dark:block" />
+      </div>
       <LandingUfo />
 
       <UContainer
-        class="mx-auto flex flex-col items-center pt-16 pb-16 text-center sm:pt-24 sm:pb-24 lg:pt-28 lg:pb-28"
+        class="mx-auto flex flex-col items-center pt-16 pb-0 text-center sm:pt-24 lg:pt-28"
       >
         <h1 class="hero-rise type-heading-2xl max-w-4xl text-highlighted">
           Build outstanding Shopware experiences with
@@ -194,27 +172,11 @@ const packages = [
           </UButton>
         </div>
       </UContainer>
+
+      <!-- Live component showcase, nested in the hero so the backdrop bleeds
+           down behind the cards and fades out midway through them. -->
+      <LandingComponentShowcase />
     </section>
-
-    <!-- Live component showcase: a masonry collage of real Meteor components. -->
-    <LandingComponentShowcase />
-
-    <!-- Feature ticker, sitting flush below the gradient hero section. -->
-    <div
-      class="hero-rise marquee-mask relative border-y border-default py-4"
-      :style="{ animationDelay: '320ms' }"
-    >
-      <UMarquee :overlay="false" class="[--duration:40s] [--gap:3rem]">
-        <div
-          v-for="item in tickerItems"
-          :key="item.label"
-          class="flex items-center gap-2 text-sm font-medium text-muted"
-        >
-          <UIcon :name="item.icon" class="size-4 shrink-0 text-muted" />
-          <span class="whitespace-nowrap">{{ item.label }}</span>
-        </div>
-      </UMarquee>
-    </div>
 
     <!-- Why Meteor: value proposition -->
     <section
@@ -604,41 +566,24 @@ const packages = [
   --hero-gradient: linear-gradient(0deg, #0b1c3a 0%, #03060e 60%, #000000 100%);
 }
 
-.hero {
+/* The full-height backdrop. The dark-mode night-sky gradient lives here (not on
+   .hero) so the bottom mask fades the gradient, dots, starfield and planet out
+   together — the fade lands partway down the showcase. Tune the two stops via
+   --hero-fade-start / --hero-fade-end (distance from the top of the hero). */
+.hero-bg {
   background: var(--hero-gradient);
-}
-
-/* The planet: a large, bright atmospheric rim over a dark body, rising from the
- * bottom edge of the hero. Shown in dark mode via the dark:block utility. */
-.hero-earth {
-  height: 88%;
-  background:
-    /* atmospheric halo — a faint blue glow bleeding off the limb into space */
-    radial-gradient(
-      90% 90% at 50% 142%,
-      rgba(86, 158, 245, 0.14) 46%,
-      rgba(56, 132, 240, 0.06) 58%,
-      transparent 70%
-    ),
-    /* planet — dark body with a soft cool limb forming the horizon */
-      radial-gradient(
-        78% 82% at 50% 142%,
-        #123f73 0%,
-        #0a2244 50%,
-        rgba(130, 188, 255, 0.32) 64%,
-        rgba(110, 175, 250, 0.1) 68%,
-        transparent 75%
-      );
-}
-
-/* On narrow viewports the headline wraps and the hero grows tall. Since the
- * planet's center (142%) and radii are percentages of the element height, that
- * would stretch it into an oversized vertical glow reaching past the viewport.
- * Shrink the box on mobile so it stays a shallow horizon arc along the bottom. */
-@media (max-width: 640px) {
-  .hero-earth {
-    height: 55%;
-  }
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    #000 0,
+    #000 var(--hero-fade-start, 900px),
+    transparent var(--hero-fade-end, 1700px)
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    #000 0,
+    #000 var(--hero-fade-start, 900px),
+    transparent var(--hero-fade-end, 1700px)
+  );
 }
 
 .hero-dots {
@@ -677,23 +622,6 @@ const packages = [
 
 .hero-dots-reveal.is-spot {
   opacity: 1;
-}
-
-.marquee-mask {
-  -webkit-mask-image: linear-gradient(
-    to right,
-    transparent,
-    #000 6rem,
-    #000 calc(100% - 6rem),
-    transparent
-  );
-  mask-image: linear-gradient(
-    to right,
-    transparent,
-    #000 6rem,
-    #000 calc(100% - 6rem),
-    transparent
-  );
 }
 
 .type-heading-2xl {

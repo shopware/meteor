@@ -10,8 +10,8 @@ import PlanUsageCard from "./showcase/PlanUsageCard.vue";
 import AppearanceCard from "./showcase/AppearanceCard.vue";
 import ProductDetailCard from "./showcase/ProductDetailCard.vue";
 import CampaignCard from "./showcase/CampaignCard.vue";
-import InvoicesCard from "./showcase/InvoicesCard.vue";
 import CustomDomainCard from "./showcase/CustomDomainCard.vue";
+import PaymentsCard from "./showcase/PaymentsCard.vue";
 
 // Match the docs' other live examples: removeCardWidth drops MtCard's max-width
 // so cards fill the columns; removeDefaultMargin drops its bottom margin (the
@@ -22,32 +22,46 @@ const futureFlags = {
   removeDefaultMargin: true,
 };
 
-// Approximate rendered heights (px) so the client-only fallback reserves space
-// and the section doesn't shift when the cards hydrate. Ordered to match the
-// cards below.
-const skeletonHeights = [340, 260, 280, 400, 470, 240, 340, 340, 360, 340, 320];
+// Approximate rendered heights (px) per column so the client-only fallback
+// reserves space and the section doesn't shift when the cards hydrate. Each
+// inner array matches one column's cards below, in order.
+const skeletonColumns = [
+  [340, 470, 340],
+  [260, 360, 200],
+  [400, 240],
+  [280, 340, 320],
+];
 </script>
 
 <template>
   <section
-    class="showcase-section hero-rise py-20 sm:py-28"
+    class="showcase-section hero-rise pt-[120px]"
     :style="{ animationDelay: '300ms' }"
   >
     <UContainer>
       <ClientOnly>
         <MtThemeProvider :future="futureFlags">
+          <!-- Explicit 4-column layout: each column stacks its assigned cards. -->
           <div class="showcase-grid">
-            <ProductSpecificationCard class="mt-showcase-item" />
-            <StoreAnalyticsCard class="mt-showcase-item" />
-            <ShippingRateCard class="mt-showcase-item" />
-            <ConnectNexusCard class="mt-showcase-item" />
-            <ShareInviteCard class="mt-showcase-item" />
-            <PlanUsageCard class="mt-showcase-item" />
-            <AppearanceCard class="mt-showcase-item" />
-            <ProductDetailCard class="mt-showcase-item" />
-            <CampaignCard class="mt-showcase-item" />
-            <InvoicesCard class="mt-showcase-item" />
-            <CustomDomainCard class="mt-showcase-item" />
+            <div class="showcase-col">
+              <ProductSpecificationCard class="mt-showcase-item" />
+              <ShareInviteCard class="mt-showcase-item" />
+              <AppearanceCard class="mt-showcase-item" />
+            </div>
+            <div class="showcase-col">
+              <StoreAnalyticsCard class="mt-showcase-item" />
+              <CampaignCard class="mt-showcase-item" />
+              <PaymentsCard class="mt-showcase-item" />
+            </div>
+            <div class="showcase-col">
+              <ConnectNexusCard class="mt-showcase-item" />
+              <PlanUsageCard class="mt-showcase-item" />
+            </div>
+            <div class="showcase-col">
+              <ShippingRateCard class="mt-showcase-item" />
+              <ProductDetailCard class="mt-showcase-item" />
+              <CustomDomainCard class="mt-showcase-item" />
+            </div>
           </div>
 
           <!-- Single global snackbar host: cards fire toasts via useSnackbar(). -->
@@ -57,15 +71,24 @@ const skeletonHeights = [340, 260, 280, 400, 470, 240, 340, 340, 360, 340, 320];
         <template #fallback>
           <div class="showcase-grid">
             <div
-              v-for="(h, i) in skeletonHeights"
-              :key="i"
-              class="mt-showcase-item animate-pulse rounded-xl border border-default bg-muted"
-              :style="{ height: `${h}px` }"
-            />
+              v-for="(col, ci) in skeletonColumns"
+              :key="ci"
+              class="showcase-col"
+            >
+              <div
+                v-for="(h, i) in col"
+                :key="i"
+                class="mt-showcase-item animate-pulse rounded-xl border border-default bg-muted"
+                :style="{ height: `${h}px` }"
+              />
+            </div>
           </div>
         </template>
       </ClientOnly>
     </UContainer>
+
+    <!-- Fades the bottom of the cards into the page background. -->
+    <div aria-hidden="true" class="showcase-fade" />
   </section>
 </template>
 
@@ -75,43 +98,56 @@ const skeletonHeights = [340, 260, 280, 400, 470, 240, 340, 340, 360, 340, 320];
  * (1680px, defined in main.css) for this section's UContainer. */
 .showcase-section {
   --ui-container: 1680px;
+  position: relative;
+}
+/* Fixed-height gradient overlay on top of the cards: transparent at the top,
+   fading down to the page background so the masonry dissolves into the next
+   section. */
+.showcase-fade {
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  height: 300px;
+  background: linear-gradient(to bottom, transparent, var(--ui-bg-muted));
+  pointer-events: none;
 }
 
-/* Masonry via CSS multi-column: cards keep their natural height and pack into
- * 1/2/3/4 responsive columns. column-gap is the horizontal gutter; the matching
- * vertical gutter is the cards' margin-bottom below. */
+/* Explicit 4-column grid: card placement per column is decided in the template
+ * (each .showcase-col stacks its cards). Collapses to 2 then 1 column on
+ * narrower viewports. --showcase-gutter is both the column gap and the vertical
+ * gap between stacked cards. */
 .showcase-grid {
   --showcase-gutter: var(--scale-size-20);
-  column-count: 1;
-  column-gap: var(--showcase-gutter);
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--showcase-gutter);
 }
 
-@media (min-width: 640px) {
+@media (max-width: 1024px) {
   .showcase-grid {
-    column-count: 2;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-@media (min-width: 1024px) {
+@media (max-width: 640px) {
   .showcase-grid {
-    column-count: 3;
+    grid-template-columns: minmax(0, 1fr);
   }
 }
 
-@media (min-width: 1280px) {
-  .showcase-grid {
-    column-count: 4;
-  }
+/* A column stacks its cards top-to-bottom with the gutter between them. */
+.showcase-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--showcase-gutter);
+  min-width: 0;
 }
 
-/* Each card is a multi-column item: a full-width block, kept whole within its
- * column, with a vertical gutter equal to column-gap. `mt-showcase-item` is
- * forwarded from here onto each card's root MtCard. The two-class specificity
- * (0,2,0) beats MtCard's `.mt-card--future-remove-default-margin` (0,1,0). */
-.showcase-grid :deep(.mt-showcase-item) {
+/* `mt-showcase-item` is forwarded onto each card's root MtCard. The two-class
+ * specificity (0,2,0) beats MtCard's `.mt-card--future-remove-default-margin`
+ * (0,1,0). */
+.showcase-col :deep(.mt-showcase-item) {
   display: block;
   width: 100%;
-  margin-bottom: var(--showcase-gutter);
-  break-inside: avoid;
 }
 </style>

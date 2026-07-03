@@ -89,10 +89,10 @@ const muted = "color-text-secondary-default";
             />
           </div>
           <div class="min-w-0 flex-1">
-            <mt-text size="xs" weight="semibold">DHL Package</mt-text>
+            <mt-text size="xs" weight="semibold">Express shipping</mt-text>
             <mt-text size="2xs" :color="muted">1–2 business days</mt-text>
           </div>
-          <mt-text size="m" weight="semibold">€6.99</mt-text>
+          <mt-text size="m" weight="semibold">€12,99</mt-text>
         </div>
       </mt-inset>
     </div>
