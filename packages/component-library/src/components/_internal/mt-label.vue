@@ -104,11 +104,6 @@ const labelClasses = computed(() => {
   width: 100%;
 }
 
-/* .mt-label.mt-label--dismissable:hover {
-  background-color: var(--color-background-brand-default);
-  border-color: var(--color-border-brand-default);
-} */
-
 .mt-label.mt-label--dismissable:hover .mt-label__caption {
   width: calc(100% - 15px);
 }
