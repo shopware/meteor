@@ -42,7 +42,7 @@ const productImage = "/showcase-product.jpg";
           </div>
           <div class="product-price">
             <mt-text size="xs" weight="semibold" class="product-clip">
-              {{ productPrice }} €
+              €{{ productPrice }}
             </mt-text>
           </div>
         </div>
