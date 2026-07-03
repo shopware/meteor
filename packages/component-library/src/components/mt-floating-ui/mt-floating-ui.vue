@@ -137,7 +137,7 @@ const createFloatingUi = () => {
           }),
         ],
         ...props.floatingUiOptions,
-      }).then(({ x, y, middlewareData, placement }) => {
+      }).then(({ x, y, middlewareData, placement, strategy }) => {
         if (!floatingUiContent.value) {
           return;
         }
@@ -159,7 +159,14 @@ const createFloatingUi = () => {
           });
         }
 
+        // Set `position` inline (not just via CSS) so it always matches the
+        // strategy the coordinates were computed for. Consumer classes are
+        // copied onto this teleported element above, and a class carrying
+        // `position: absolute` would otherwise make it interpret these
+        // viewport coordinates as document coordinates — the popover then
+        // drifts away on scroll. Inline style wins over any copied class.
         Object.assign(floatingUiContent.value.style, {
+          position: strategy,
           left: `${x}px`,
           top: `${y}px`,
         });
