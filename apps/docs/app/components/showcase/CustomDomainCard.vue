@@ -6,6 +6,17 @@ import MtText from "@shopware-ag/meteor-component-library/MtText";
 import MtLink from "@shopware-ag/meteor-component-library/MtLink";
 
 const customDomain = ref("company.io");
+
+// With no domain entered, the DNS/SSL checks read as failing.
+const domainValid = computed(() => customDomain.value.trim() !== "");
+const statusIcon = computed(() =>
+  domainValid.value ? "solid-check-circle" : "solid-times-circle",
+);
+const statusColor = computed(() =>
+  domainValid.value
+    ? "var(--color-icon-positive-default)"
+    : "var(--color-icon-critical-default)",
+);
 </script>
 
 <template>
@@ -19,19 +30,11 @@ const customDomain = ref("company.io");
         <mt-url-field v-model="customDomain" />
         <div class="stack-sm">
           <div class="inline-start">
-            <mt-icon
-              name="solid-check-circle"
-              size="16"
-              color="var(--color-icon-positive-default)"
-            />
+            <mt-icon :name="statusIcon" size="16" :color="statusColor" />
             <mt-text size="xs">DNS settings valid</mt-text>
           </div>
           <div class="inline-start">
-            <mt-icon
-              name="solid-check-circle"
-              size="16"
-              color="var(--color-icon-positive-default)"
-            />
+            <mt-icon :name="statusIcon" size="16" :color="statusColor" />
             <mt-text size="xs">SSL certificate valid</mt-text>
           </div>
         </div>
