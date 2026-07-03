@@ -43,10 +43,8 @@ const muted = "color-text-secondary-default";
         <mt-password-field v-model="password" label="Password" />
         <mt-button variant="primary" size="large" block>Continue</mt-button>
         <div class="connect__footer">
-          <mt-text size="xs" :color="muted">
-            Don't have an account?
-          </mt-text>
-          <mt-link :color="muted" href="#">Register now</mt-link>
+          <mt-text size="xs" :color="muted"> Don't have an account? </mt-text>
+          <mt-link as="a" href="#">Register now</mt-link>
         </div>
       </div>
     </div>
