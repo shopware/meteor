@@ -24,35 +24,15 @@ const future = {
 </template>
 ```
 
-All flags default to `false`, so component behavior is unchanged until you opt in.
+The `future` prop takes an object. All flags default to `false`, so behavior is unchanged until you opt in. The optional `all` key sets the baseline, and any individual flag you list overrides it, so `{ all: true }` enables every current _and_ upcoming flag automatically.
 
-### Enable everything
-
-Pass `{ all: true }` to enable every current _and_ upcoming flag at once. New flags added in later releases are included automatically, without changing your code.
-
-Future flags exist so established applications like the Shopware Admin stay visually stable while the library keeps evolving, since new behavior stays opt-in. Because the flags also carry the behavior we intend to make default, we recommend turning them on whenever your application can accept the risk of visual breaks on future updates.
-
-```vue
-<template>
-  <MtThemeProvider :future="{ all: true }">
-    <!-- Your application -->
-  </MtThemeProvider>
-</template>
-```
-
-You can still opt out of individual flags while enabling the rest:
-
-```vue
-<script setup lang="ts">
-const future = { all: true, removeCardWidth: false };
-</script>
-
-<template>
-  <MtThemeProvider :future="future">
-    <!-- Your application -->
-  </MtThemeProvider>
-</template>
-```
+| Goal | `future` value |
+| --- | --- |
+| Opt out of everything (default) | Omit the prop, or don't mount a Theme Provider |
+| Opt into one flag | `{ removeCardWidth: true }` |
+| Opt into several flags | `{ removeCardWidth: true, bannerFullWidth: true }` |
+| Opt into everything | `{ all: true }` |
+| Opt into everything except one | `{ all: true, removeCardWidth: false }` |
 
 ## Future flags
 
@@ -62,7 +42,3 @@ const future = { all: true, removeCardWidth: false };
 | `removeDefaultMargin` | Removes the default outer margin from components such as cards, tabs, checkboxes, switches, and text fields. |
 | `removeSwitchMinHeight` | Removes the minimum height from a non-bordered `mt-switch`. |
 | `bannerFullWidth` | Makes `mt-banner` span the full width of its container. |
-
-## API reference
-
-:component-api
