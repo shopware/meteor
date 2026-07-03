@@ -109,9 +109,16 @@ const skeletonColumns = [
   position: absolute;
   inset-inline: 0;
   bottom: 0;
-  height: 800px;
-  background: linear-gradient(to bottom, transparent, var(--ui-bg-muted) 90%);
+  height: 640px;
+  background: linear-gradient(to bottom, transparent, var(--ui-bg) 90%);
   pointer-events: none;
+}
+.dark .showcase-fade {
+  background-image: linear-gradient(
+    to bottom,
+    transparent,
+    var(--ui-bg-muted) 90%
+  );
 }
 
 /* Explicit 4-column grid: card placement per column is decided in the template

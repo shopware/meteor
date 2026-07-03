@@ -20,7 +20,9 @@ const muted = "color-text-secondary-default";
         </div>
         <div class="payments__titles">
           <mt-text size="s" weight="semibold">Shopware Payments</mt-text>
-          <mt-text size="xs" :color="muted">Powered by PayPal</mt-text>
+          <mt-text size="xs" :color="muted"
+            >Modern, full-stack payments solution.</mt-text
+          >
         </div>
       </div>
 

@@ -106,6 +106,9 @@ const productImage = "/showcase-product.jpg";
   width: 100%;
   height: 100%;
   object-fit: cover;
+  user-drag: none;
+  -webkit-user-drag: none;
+  -moz-user-select: none;
 }
 /* The two tinted cards fanned out behind the photo. */
 .product-stack__back {

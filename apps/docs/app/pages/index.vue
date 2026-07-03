@@ -70,7 +70,7 @@ const packages = [
 </script>
 
 <template>
-  <div class="landing bg-muted">
+  <div class="landing bg-default dark:bg-muted">
     <section class="hero relative isolate overflow-hidden">
       <!-- All hero background layers live in one element so a single bottom
            mask can fade the whole backdrop out over the showcase below. -->
