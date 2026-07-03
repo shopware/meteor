@@ -215,6 +215,6 @@ export const VisualTestPartialChecked: MtCheckboxStory = {
     await expect((canvas.getByRole("checkbox") as HTMLInputElement).indeterminate).toBe(true);
     await expect((canvas.getByRole("checkbox") as HTMLInputElement).checked).toBe(false);
 
-    await expect(canvas.getByTestId("mt-icon__regular-minus-xxs")).toBeDefined();
+    await expect(canvas.getByTestId("mt-icon__solid-minus-xs")).toBeDefined();
   },
 };
