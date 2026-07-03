@@ -24,6 +24,32 @@ const packageTypes = [
   { id: 3, label: "Pallet", value: "pallet" },
 ];
 const muted = "color-text-secondary-default";
+
+// A per-package base rate; larger formats cost more to handle.
+const baseRates: Record<string, number> = {
+  "box-s": 4.9,
+  "box-m": 6.99,
+  pallet: 24.9,
+};
+// Normalize whatever length unit the fields use down to centimeters.
+const lengthToCm: Record<string, number> = {
+  mm: 0.1,
+  cm: 1,
+  dm: 10,
+  m: 100,
+  in: 2.54,
+  ft: 30.48,
+};
+
+// Made-up tariff: base rate + a size surcharge of €1.20 per 1000 cm² of
+// footprint (width x height), recomputed live from the inputs.
+const shippingPrice = computed(() => {
+  const base = baseRates[packageType.value] ?? 6.99;
+  const w = (width.value || 0) * (lengthToCm[widthUnit.value] ?? 1);
+  const h = (height.value || 0) * (lengthToCm[heightUnit.value] ?? 1);
+  const sizeSurcharge = ((w * h) / 1000) * 1.2;
+  return `€${(base + sizeSurcharge).toFixed(2).replace(".", ",")}`;
+});
 </script>
 
 <template>
@@ -60,6 +86,7 @@ const muted = "color-text-secondary-default";
           v-model="packageType"
           label="Package type"
           :options="packageTypes"
+          hideClearableButton
           small
         />
         <div class="grid grid-cols-2 gap-4">
@@ -92,7 +119,7 @@ const muted = "color-text-secondary-default";
             <mt-text size="xs" weight="semibold">Express shipping</mt-text>
             <mt-text size="2xs" :color="muted">1–2 business days</mt-text>
           </div>
-          <mt-text size="m" weight="semibold">€12,99</mt-text>
+          <mt-text size="m" weight="semibold">{{ shippingPrice }}</mt-text>
         </div>
       </mt-inset>
     </div>
