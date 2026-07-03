@@ -35,10 +35,7 @@ const skeletonColumns = [
 </script>
 
 <template>
-  <section
-    class="showcase-section hero-rise pt-[120px]"
-    :style="{ animationDelay: '300ms' }"
-  >
+  <section class="showcase-section pt-[120px]">
     <UContainer>
       <ClientOnly>
         <MtThemeProvider :future="futureFlags">
@@ -83,7 +80,7 @@ const skeletonColumns = [
               <div
                 v-for="(h, i) in col"
                 :key="i"
-                class="mt-showcase-item animate-pulse rounded-xl border border-default bg-muted"
+                class="mt-showcase-item animate-pulse rounded-xl bg-muted"
                 :style="{ height: `${h}px` }"
               />
             </div>
@@ -140,19 +137,61 @@ const skeletonColumns = [
   }
 }
 
-/* A column stacks its cards top-to-bottom with the gutter between them. */
+/* A column stacks its cards top-to-bottom with the gutter between them. Each
+ * column carries a base entrance delay so the columns cascade left-to-right. */
 .showcase-col {
   display: flex;
   flex-direction: column;
   gap: var(--showcase-gutter);
   min-width: 0;
+  --col-rise-delay: 0ms;
+}
+.showcase-col:nth-child(2) {
+  --col-rise-delay: 60ms;
+}
+.showcase-col:nth-child(3) {
+  --col-rise-delay: 120ms;
+}
+.showcase-col:nth-child(4) {
+  --col-rise-delay: 180ms;
 }
 
 /* `mt-showcase-item` is forwarded onto each card's root MtCard. The two-class
  * specificity (0,2,0) beats MtCard's `.mt-card--future-remove-default-margin`
- * (0,1,0). */
+ * (0,1,0). Cards blur-fade in (matching the hero's `rise`), staggered by their
+ * column base delay plus their row within the column. */
 .showcase-col :deep(.mt-showcase-item) {
   display: block;
   width: 100%;
+  animation: card-rise 0.8s var(--ease-out, cubic-bezier(0.23, 1, 0.32, 1)) both;
+  animation-delay: calc(var(--col-rise-delay) + var(--row-rise-delay, 0ms));
+}
+.showcase-col :deep(.mt-showcase-item:nth-child(2)) {
+  --row-rise-delay: 90ms;
+}
+.showcase-col :deep(.mt-showcase-item:nth-child(3)) {
+  --row-rise-delay: 180ms;
+}
+.showcase-col :deep(.mt-showcase-item:nth-child(4)) {
+  --row-rise-delay: 270ms;
+}
+
+@keyframes card-rise {
+  from {
+    opacity: 0;
+    transform: translateY(1rem);
+    filter: blur(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .showcase-col :deep(.mt-showcase-item) {
+    animation: none;
+  }
 }
 </style>
