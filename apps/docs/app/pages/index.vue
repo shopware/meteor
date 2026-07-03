@@ -33,19 +33,6 @@ defineOgImage("Landing", {
 const btnBase =
   "home-btn relative inline-flex min-h-12 cursor-pointer select-none items-center justify-center gap-2 rounded-[16px] px-5 py-3 text-center text-sm font-semibold transition-colors duration-100 ease-in-out";
 
-// Light-mode hero: a darker dot layer revealed through a circular mask that
-// follows the cursor (a "spotlight"), fading in/out on enter/leave.
-const dotsReveal = ref<HTMLElement | null>(null);
-const spotActive = ref(false);
-
-function onHeroMove(e: PointerEvent) {
-  const el = dotsReveal.value;
-  if (!el) return;
-  const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
-  el.style.setProperty("--mx", `${e.clientX - r.left}px`);
-  el.style.setProperty("--my", `${e.clientY - r.top}px`);
-}
-
 const npmBase = "https://www.npmjs.com/package/@shopware-ag/";
 
 const benefits = [
@@ -83,24 +70,11 @@ const packages = [
 </script>
 
 <template>
-  <div class="landing">
-    <section
-      class="hero relative isolate overflow-hidden"
-      @pointermove="onHeroMove"
-      @pointerenter="spotActive = true"
-      @pointerleave="spotActive = false"
-    >
+  <div class="landing bg-muted">
+    <section class="hero relative isolate overflow-hidden">
       <!-- All hero background layers live in one element so a single bottom
            mask can fade the whole backdrop out over the showcase below. -->
       <div aria-hidden="true" class="hero-bg absolute inset-0 -z-10">
-        <!-- Light mode: gray dot grid. -->
-        <div class="hero-dots absolute inset-0 dark:hidden" />
-        <!-- Darker dots revealed in a circle around the cursor. -->
-        <div
-          ref="dotsReveal"
-          class="hero-dots-reveal absolute inset-0 dark:hidden"
-          :class="{ 'is-spot': spotActive }"
-        />
         <LandingStarfield class="hidden dark:block" />
       </div>
       <LandingUfo />
@@ -180,7 +154,7 @@ const packages = [
 
     <!-- Why Meteor: value proposition -->
     <section
-      class="hero-rise bg-muted py-20 sm:py-28"
+      class="hero-rise py-20 sm:py-28"
       :style="{ animationDelay: '400ms' }"
     >
       <UContainer>
@@ -222,7 +196,7 @@ const packages = [
 
     <section class="py-20 sm:py-28">
       <UContainer>
-        <div class="bg-default">
+        <div>
           <header class="mx-auto mb-12 max-w-2xl text-center">
             <h2
               class="text-3xl font-bold tracking-tight text-highlighted sm:text-4xl"
@@ -448,7 +422,7 @@ const packages = [
     </section>
 
     <!-- The packages -->
-    <section class="bg-muted py-20 sm:py-28">
+    <section class="py-20 sm:py-28">
       <UContainer>
         <header class="mx-auto mb-12 max-w-2xl text-center">
           <h2
@@ -550,10 +524,8 @@ const packages = [
   corner-shape: squircle;
 }
 
-/* Dark mode gets a night-sky gradient + starfield with a planet rising from the
- * bottom; light mode gets a gray dot grid (.hero-dots). --hero-edge (the hero's
- * bottom color) is shared with the hero fade and the section transition so the
- * blend stays seamless. */
+/* Dark mode gets a night-sky gradient + starfield; light mode has no backdrop
+ * pattern. --hero-edge (the page background) is the color the backdrop fades to. */
 .landing {
   --ui-container: var(--ui-container-small);
   --hero-gradient: none;
@@ -567,8 +539,8 @@ const packages = [
 }
 
 /* The full-height backdrop. The dark-mode night-sky gradient lives here (not on
-   .hero) so the bottom mask fades the gradient, dots, starfield and planet out
-   together — the fade lands partway down the showcase. Tune the two stops via
+   .hero) so the bottom mask fades the gradient and starfield out together, with
+   the fade landing partway down the showcase. Tune the two stops via
    --hero-fade-start / --hero-fade-end (distance from the top of the hero). */
 .hero-bg {
   background: var(--hero-gradient);
@@ -584,44 +556,6 @@ const packages = [
     #000 var(--hero-fade-start, 900px),
     transparent var(--hero-fade-end, 1700px)
   );
-}
-
-.hero-dots {
-  background-image: radial-gradient(
-    circle,
-    var(--color-zinc-100) 1px,
-    transparent 1.5px
-  );
-  background-size: 22px 22px;
-}
-
-.hero-dots-reveal {
-  --mx: 50%;
-  --my: 30%;
-  background-image: radial-gradient(
-    circle,
-    var(--color-zinc-200) 1px,
-    transparent 1.5px
-  );
-  background-size: 22px 22px;
-  -webkit-mask-image: radial-gradient(
-    circle 220px at var(--mx) var(--my),
-    #000 0%,
-    #000 30%,
-    transparent 70%
-  );
-  mask-image: radial-gradient(
-    circle 220px at var(--mx) var(--my),
-    #000 0%,
-    #000 30%,
-    transparent 70%
-  );
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-
-.hero-dots-reveal.is-spot {
-  opacity: 1;
 }
 
 .type-heading-2xl {
