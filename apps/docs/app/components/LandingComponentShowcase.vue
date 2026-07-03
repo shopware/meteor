@@ -12,6 +12,7 @@ import ProductDetailCard from "./showcase/ProductDetailCard.vue";
 import CampaignCard from "./showcase/CampaignCard.vue";
 import CustomDomainCard from "./showcase/CustomDomainCard.vue";
 import PaymentsCard from "./showcase/PaymentsCard.vue";
+import PlaceholderCard from "./showcase/PlaceholderCard.vue";
 
 // Match the docs' other live examples: removeCardWidth drops MtCard's max-width
 // so cards fill the columns; removeDefaultMargin drops its bottom margin (the
@@ -26,10 +27,10 @@ const futureFlags = {
 // reserves space and the section doesn't shift when the cards hydrate. Each
 // inner array matches one column's cards below, in order.
 const skeletonColumns = [
-  [340, 470, 340],
-  [260, 360, 200],
-  [400, 240],
-  [280, 340, 320],
+  [340, 470, 340, 60],
+  [260, 280, 340, 60],
+  [400, 240, 60],
+  [360, 320, 200, 60],
 ];
 </script>
 
@@ -47,20 +48,24 @@ const skeletonColumns = [
               <ProductSpecificationCard class="mt-showcase-item" />
               <ShareInviteCard class="mt-showcase-item" />
               <AppearanceCard class="mt-showcase-item" />
+              <PlaceholderCard class="mt-showcase-item" />
             </div>
             <div class="showcase-col">
               <StoreAnalyticsCard class="mt-showcase-item" />
-              <CampaignCard class="mt-showcase-item" />
-              <PaymentsCard class="mt-showcase-item" />
+              <ShippingRateCard class="mt-showcase-item" />
+              <ProductDetailCard class="mt-showcase-item" />
+              <PlaceholderCard class="mt-showcase-item" />
             </div>
             <div class="showcase-col">
               <ConnectNexusCard class="mt-showcase-item" />
               <PlanUsageCard class="mt-showcase-item" />
+              <PlaceholderCard class="mt-showcase-item" />
             </div>
             <div class="showcase-col">
-              <ShippingRateCard class="mt-showcase-item" />
-              <ProductDetailCard class="mt-showcase-item" />
+              <CampaignCard class="mt-showcase-item" />
               <CustomDomainCard class="mt-showcase-item" />
+              <PaymentsCard class="mt-showcase-item" />
+              <PlaceholderCard class="mt-showcase-item" />
             </div>
           </div>
 
@@ -107,8 +112,8 @@ const skeletonColumns = [
   position: absolute;
   inset-inline: 0;
   bottom: 0;
-  height: 300px;
-  background: linear-gradient(to bottom, transparent, var(--ui-bg-muted));
+  height: 800px;
+  background: linear-gradient(to bottom, transparent, var(--ui-bg-muted) 90%);
   pointer-events: none;
 }
 

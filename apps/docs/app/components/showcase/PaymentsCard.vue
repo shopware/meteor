@@ -49,7 +49,7 @@ const muted = "color-text-secondary-default";
   place-items: center;
   width: var(--scale-size-48);
   height: var(--scale-size-48);
-  border-radius: var(--border-radius-m);
+  border-radius: var(--border-radius-l);
   background: var(--color-icon-brand-default);
   flex-shrink: 0;
 }
