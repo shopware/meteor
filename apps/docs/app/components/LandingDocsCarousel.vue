@@ -1,9 +1,9 @@
 <script setup lang="ts">
 // Curved "wheel" carousel: cards sit on the top arc of a large circle, the
 // centered one upright and the rest fanning out with progressive rotation.
-// Progressive enhancement: renders a plain responsive grid on the server and
-// for reduced-motion / no-JS visitors, then upgrades to the draggable arc on
-// the client. Card visuals come from the parent via the `#visual` scoped slot.
+// Cards are positioned with a reactive :style so the arc renders correctly on
+// the server too; dragging writes transforms straight to the DOM for smoothness.
+// Card visuals come from the parent via the `#visual` scoped slot.
 
 export interface DocCard {
   key: string;
@@ -24,7 +24,6 @@ const ADVANCE = 320;
 
 // Start on the first card; the loop still fans cards out on both sides.
 const activeIndex = ref(0);
-const enhanced = ref(false);
 
 const viewport = ref<HTMLElement | null>(null);
 const wheel = ref<HTMLElement | null>(null);
@@ -38,28 +37,51 @@ const wrapIndex = (v: number) => {
   return ((v % n) + n) % n;
 };
 
-// Position every card for a given (possibly fractional) active position. Each
-// card's offset is wrapped to the nearest equivalent so the arc loops endlessly;
-// far cards (which are transparent) snap instead of animating across the seam.
-function apply(effectiveActive: number) {
+// Where card `i` sits for a given (possibly fractional) active position. The
+// offset is wrapped to the nearest equivalent so the arc loops endlessly.
+function place(i: number, effectiveActive: number) {
   const n = props.items.length;
+  let o = i - effectiveActive;
+  o -= n * Math.round(o / n);
+  const angle = o * STEP;
+  const rad = (angle * Math.PI) / 180;
+  return {
+    transform: `translate(-50%, -50%) translate(${R * Math.sin(rad)}px, ${
+      R * (1 - Math.cos(rad))
+    }px) rotate(${angle}deg) scale(${Math.max(0.8, 1 - Math.abs(o) * 0.05)})`,
+    opacity: Math.max(0, 1 - Math.abs(o) * 0.24),
+    dist: Math.abs(o),
+  };
+}
+
+// Reactive settled style, used for the server render and whenever the active
+// card changes (CSS transitions animate the move).
+function cardStyle(i: number) {
+  const p = place(i, activeIndex.value);
+  return {
+    transform: p.transform,
+    opacity: String(p.opacity),
+    zIndex: String(1000 - Math.round(p.dist * 10)),
+    pointerEvents: p.dist < 3.5 ? "auto" : "none",
+  } as Record<string, string>;
+}
+
+// Far cards are transparent; snapping them across the loop seam avoids a ghost
+// flying across the screen when the active card wraps.
+function isFar(i: number) {
+  return place(i, activeIndex.value).dist > 3.6;
+}
+
+// Write transforms straight to the DOM (no reactive churn per pointer move).
+function apply(effectiveActive: number) {
   props.items.forEach((_, i) => {
     const el = cardEls[i];
     if (!el) return;
-    let o = i - effectiveActive;
-    o -= n * Math.round(o / n);
-    const angle = o * STEP;
-    const rad = (angle * Math.PI) / 180;
-    const x = R * Math.sin(rad);
-    const y = R * (1 - Math.cos(rad));
-    const dist = Math.abs(o);
-    const scale = Math.max(0.8, 1 - dist * 0.05);
-    const opacity = Math.max(0, 1 - dist * 0.24);
-    el.style.transform = `translate(-50%, -50%) translate(${x}px, ${y}px) rotate(${angle}deg) scale(${scale})`;
-    el.style.opacity = String(opacity);
-    el.style.zIndex = String(1000 - Math.round(dist * 10));
-    el.style.pointerEvents = dist < 3.5 ? "auto" : "none";
-    el.style.transition = dist > 3.6 ? "none" : "";
+    const p = place(i, effectiveActive);
+    el.style.transform = p.transform;
+    el.style.opacity = String(p.opacity);
+    el.style.zIndex = String(1000 - Math.round(p.dist * 10));
+    el.style.pointerEvents = p.dist < 3.5 ? "auto" : "none";
   });
 }
 
@@ -67,8 +89,8 @@ function go(dir: number) {
   activeIndex.value = wrapIndex(activeIndex.value + dir);
 }
 
-// Drag handling: transforms are written straight to the DOM (no reactive state
-// per move), transitions disabled while dragging and restored on release.
+// Drag handling: transitions are disabled while dragging (is-dragging) and
+// restored on release.
 let dragging = false;
 let captured = false;
 let pointerId = 0;
@@ -77,7 +99,6 @@ let moved = 0;
 let dragFrac = 0;
 
 function onPointerDown(event: PointerEvent) {
-  if (!enhanced.value) return;
   dragging = true;
   captured = false;
   moved = 0;
@@ -111,8 +132,10 @@ function onPointerUp() {
   wheel.value?.classList.remove("is-dragging");
   const target = wrapIndex(Math.round(activeIndex.value - dragFrac));
   dragFrac = 0;
+  // Changing activeIndex re-renders :style (with transition); when it doesn't
+  // change, snap the dragged transforms back to the settled position ourselves.
   if (target === activeIndex.value) apply(activeIndex.value);
-  else activeIndex.value = target; // watcher re-applies with transition
+  else activeIndex.value = target;
 }
 
 function onCardClick(event: MouseEvent, index: number) {
@@ -140,42 +163,14 @@ function onKeydown(event: KeyboardEvent) {
     go(1);
   }
 }
-
-let resizeRaf = 0;
-function onResize() {
-  cancelAnimationFrame(resizeRaf);
-  resizeRaf = requestAnimationFrame(() => apply(activeIndex.value));
-}
-
-watch(activeIndex, () => {
-  if (enhanced.value) apply(activeIndex.value);
-});
-
-onMounted(() => {
-  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (reduce) return; // keep the accessible grid
-  enhanced.value = true;
-  nextTick(() => {
-    // Position without animating the jump from the grid layout.
-    wheel.value?.classList.add("is-dragging");
-    apply(activeIndex.value);
-    requestAnimationFrame(() => wheel.value?.classList.remove("is-dragging"));
-  });
-  window.addEventListener("resize", onResize);
-});
-
-onBeforeUnmount(() => {
-  cancelAnimationFrame(resizeRaf);
-  window.removeEventListener("resize", onResize);
-});
 </script>
 
 <template>
-  <div class="docs-carousel" :class="{ 'is-enhanced': enhanced }">
+  <div class="docs-carousel">
     <div
       ref="viewport"
       class="docs-carousel__viewport"
-      :tabindex="enhanced ? 0 : -1"
+      tabindex="0"
       role="group"
       aria-roledescription="carousel"
       aria-label="Explore the docs. Use the arrow keys to move between cards."
@@ -192,13 +187,14 @@ onBeforeUnmount(() => {
           :key="item.key"
           :ref="(el) => setCard(el as Element | null, i)"
           class="docs-carousel__card"
-          :class="{ 'is-active': i === activeIndex }"
+          :class="{ 'is-active': i === activeIndex, 'is-far': isFar(i) }"
+          :style="cardStyle(i)"
         >
           <NuxtLink
             :to="item.to"
             class="doc-slide"
             draggable="false"
-            :tabindex="enhanced && i !== activeIndex ? -1 : 0"
+            :tabindex="i === activeIndex ? 0 : -1"
             @click.capture="onCardClick($event, i)"
           >
             <div class="doc-slide__visual">
@@ -221,7 +217,7 @@ onBeforeUnmount(() => {
       </div>
     </div>
 
-    <div v-if="enhanced" class="docs-carousel__controls">
+    <div class="docs-carousel__controls">
       <button
         type="button"
         class="docs-carousel__nav"
@@ -249,56 +245,62 @@ onBeforeUnmount(() => {
   isolation: isolate;
 }
 
-/* --- Fallback: responsive grid (server render, no-JS, reduced motion). Capped
-   to the small container width so it matches the rest of the page. --- */
-.docs-carousel__wheel {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
-  max-width: var(--ui-container-small, 80rem);
-  margin-inline: auto;
-  padding-inline: 1rem;
-}
-@media (min-width: 640px) {
-  .docs-carousel__wheel {
-    grid-template-columns: repeat(2, 1fr);
-    padding-inline: 1.5rem;
-  }
-}
-@media (min-width: 1024px) {
-  .docs-carousel__wheel {
-    grid-template-columns: repeat(3, 1fr);
-    padding-inline: 2rem;
-  }
-}
-
-/* --- Enhanced: the arc spans the full viewport width --- */
-.is-enhanced .docs-carousel__viewport {
+.docs-carousel__viewport {
   cursor: grab;
   touch-action: pan-y;
   outline: none;
   user-select: none;
   -webkit-user-select: none;
 }
-.is-enhanced .doc-slide {
+.doc-slide {
   -webkit-user-drag: none;
 }
-.is-enhanced .docs-carousel__wheel {
+
+/* The arc spans the full viewport width. */
+.docs-carousel__wheel {
   position: relative;
-  display: block;
   height: 430px;
-  max-width: none;
-  margin-inline: 0;
-  padding-inline: 0;
-  /* Clip horizontally (no page scroll) but let cards spill downward so the
+  /* Clip horizontally (no page scroll) but let cards spill vertically so the
      lower cards in the arc aren't cut off. */
   overflow-x: clip;
   overflow-y: visible;
+  /* Fade the arc out toward the viewport edges, past the content width. The
+     gradient is horizontal; the mask is deliberately far taller than the wheel
+     (and centered) so the cards spilling above/below aren't clipped by it. */
+  --edge-fade: max(64px, calc((100% - 1620px) / 2));
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 var(--edge-fade),
+    #000 calc(100% - var(--edge-fade)),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 var(--edge-fade),
+    #000 calc(100% - var(--edge-fade)),
+    transparent
+  );
+  -webkit-mask-size: 100% 3000px;
+  mask-size: 100% 3000px;
+  -webkit-mask-position: center;
+  mask-position: center;
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
 }
-.is-enhanced .docs-carousel__wheel.is-dragging {
+.docs-carousel__wheel.is-dragging {
   cursor: grabbing;
 }
-.is-enhanced .docs-carousel__card {
+/* Only one card shows on small screens, so the edge fade would just clip its
+   sides — drop it there. */
+@media (max-width: 639.98px) {
+  .docs-carousel__wheel {
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
+}
+.docs-carousel__card {
   position: absolute;
   top: 45%;
   left: 50%;
@@ -309,7 +311,11 @@ onBeforeUnmount(() => {
   transform-origin: center center;
   will-change: transform;
 }
-.is-enhanced .docs-carousel__wheel.is-dragging .docs-carousel__card {
+/* Snap far (transparent) cards instead of animating them across the loop seam. */
+.docs-carousel__card.is-far {
+  transition: none;
+}
+.docs-carousel__wheel.is-dragging .docs-carousel__card {
   transition: none;
 }
 
@@ -448,5 +454,11 @@ onBeforeUnmount(() => {
 .docs-carousel__nav:disabled {
   opacity: 0.4;
   cursor: default;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .docs-carousel__card {
+    transition: none;
+  }
 }
 </style>

@@ -602,9 +602,9 @@ const docCards = [
     </section>
 
     <!-- Contribute: prominent card with an animated LED gradient border. -->
-    <section class="pt-20 pb-32 sm:pt-28 sm:pb-44">
+    <section class="pt-10 pb-32 sm:pt-12 sm:pb-44">
       <UContainer>
-        <div class="contribute mx-auto max-w-3xl">
+        <div class="contribute">
           <div class="contribute__card">
             <div class="contribute__body">
               <UIcon
