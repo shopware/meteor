@@ -27,10 +27,10 @@ const futureFlags = {
 // reserves space and the section doesn't shift when the cards hydrate. Each
 // inner array matches one column's cards below, in order.
 const skeletonColumns = [
-  [340, 470, 340, 60],
-  [260, 280, 340, 60],
-  [400, 240, 60],
-  [360, 320, 200, 60],
+  [317, 398, 164, 90],
+  [283, 373, 202, 90],
+  [516, 432, 90],
+  [462, 303, 180, 90],
 ];
 </script>
 
@@ -110,21 +110,20 @@ const skeletonColumns = [
   inset-inline: 0;
   bottom: 0;
   height: 640px;
-  background: linear-gradient(to bottom, transparent, var(--ui-bg) 90%);
+  background: linear-gradient(to bottom, transparent, var(--ui-bg) 75%);
   pointer-events: none;
 }
 .dark .showcase-fade {
   background-image: linear-gradient(
     to bottom,
     transparent,
-    var(--ui-bg-muted) 90%
+    var(--ui-bg-muted) 75%
   );
 }
 
 /* Explicit 4-column grid: card placement per column is decided in the template
- * (each .showcase-col stacks its cards). Collapses to 2 then 1 column on
- * narrower viewports. --showcase-gutter is both the column gap and the vertical
- * gap between stacked cards. */
+ * (each .showcase-col stacks its cards). --showcase-gutter is both the column
+ * gap and the vertical gap between stacked cards. */
 .showcase-grid {
   --showcase-gutter: var(--scale-size-20);
   display: grid;
@@ -132,15 +131,32 @@ const skeletonColumns = [
   gap: var(--showcase-gutter);
 }
 
-@media (max-width: 1024px) {
+/* Each column is a curated stack, so narrower viewports drop whole columns
+ * (4 -> 3 -> 2) instead of reflowing everything into one endless stack. The
+ * skeleton fallback uses the same classes, so it collapses in step. */
+@media (max-width: 1439.98px) {
   .showcase-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .showcase-col:nth-child(4) {
+    display: none;
   }
 }
 
-@media (max-width: 640px) {
+@media (max-width: 1023.98px) {
   .showcase-grid {
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .showcase-col:nth-child(3) {
+    display: none;
+  }
+}
+
+/* Smartphones skip the showcase entirely; the hero hands over to the next
+ * section directly (the hero fade shortens to match, see index.vue). */
+@media (max-width: 639.98px) {
+  .showcase-section {
+    display: none;
   }
 }
 

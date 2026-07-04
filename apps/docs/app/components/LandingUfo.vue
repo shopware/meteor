@@ -15,6 +15,8 @@ let raf = 0;
 let running = false;
 let reduced = false;
 let hovering = false;
+let heroVisible = false;
+let heroObserver: IntersectionObserver | null = null;
 
 // Coordinates are relative to the hero's top-left.
 const target = { x: 0, y: 0 }; // cursor position, offset to sit above the cursor
@@ -24,7 +26,7 @@ const dest = { x: 0, y: 0 }; // where the current creep ends
 
 const OFFSET_X = -4; // sit a tiny bit to the left of the cursor
 const OFFSET_Y = -26; // hover a bit above the cursor
-const IDLE_DELAY = 1600; // cursor must be still this long before it dares appear
+const IDLE_DELAY = 2600; // cursor must be still this long before it dares appear
 const MOVE_EPS = 5; // movement under this counts as "still"
 const SWAY_AMP = 2; // tiny left-right sway while scanning
 
@@ -136,7 +138,11 @@ function frame(now: number) {
 
   if (phase === "hidden") {
     scaleVal = 0;
-    if (hovering && now - lastMoveTime > IDLE_DELAY) startAppear(now);
+    // Re-checked at the moment of appearing (not just at pointerenter): the
+    // hero must still be on screen and the page still in dark mode, so a
+    // scroll-away or a theme switch mid-run can't summon an invisible UFO.
+    if (hovering && heroVisible && isDark() && now - lastMoveTime > IDLE_DELAY)
+      startAppear(now);
   } else if (phase === "appear") {
     const t = clamp01((now - tStart) / tDur);
     scaleVal = easeOut(t);
@@ -171,11 +177,20 @@ function frame(now: number) {
     pos.y = from.y + (dest.y - from.y) * e;
     if (t >= 1) {
       gliding = false;
-      phase = "scan";
-      scanning.value = true;
-      scanRestX = pos.x;
-      scanRestY = pos.y;
-      scanStart = now;
+      // Only start scanning (and the cursor-cycle gag) when the cursor is
+      // actually still being watched: pointer inside the hero, hero on
+      // screen, dark mode. If the pointer left mid-approach (the 3s linger
+      // keeps the machine running), flee instead of scanning a cursor that
+      // is somewhere else on the page.
+      if (!hovering || !heroVisible || !isDark()) {
+        startFlee(now);
+      } else {
+        phase = "scan";
+        scanning.value = true;
+        scanRestX = pos.x;
+        scanRestY = pos.y;
+        scanStart = now;
+      }
     }
   } else if (phase === "scan") {
     // tiny left-right sway while it scans
@@ -259,6 +274,16 @@ function onLeave() {
   }, 3000);
 }
 
+// Scrolling moves the hero under a stationary cursor without firing any
+// pointer events, which would otherwise leave `hovering` and the idle timer
+// stale (the UFO then "randomly" appears while the user reads another
+// section). Treat scrolling as cursor activity and spook the UFO like any
+// other movement.
+function onScroll() {
+  lastMoveTime = performance.now();
+  if (phase !== "hidden" && phase !== "flee") startFlee(performance.now());
+}
+
 onMounted(() => {
   reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   hero = root.value?.parentElement ?? null;
@@ -266,6 +291,18 @@ onMounted(() => {
   hero.addEventListener("pointermove", onMove);
   hero.addEventListener("pointerenter", onEnter);
   hero.addEventListener("pointerleave", onLeave);
+  window.addEventListener("scroll", onScroll, { passive: true });
+
+  // Hard stop (which also tears down the cursor cycle) whenever the hero
+  // scrolls out of view: the UFO must never act while it can't be seen.
+  heroObserver = new IntersectionObserver(
+    ([entry]) => {
+      heroVisible = entry?.isIntersecting ?? false;
+      if (!heroVisible && running) stop();
+    },
+    { threshold: 0.2 },
+  );
+  heroObserver.observe(hero);
 });
 
 onBeforeUnmount(() => {
@@ -274,6 +311,8 @@ onBeforeUnmount(() => {
     hero.removeEventListener("pointerenter", onEnter);
     hero.removeEventListener("pointerleave", onLeave);
   }
+  window.removeEventListener("scroll", onScroll);
+  heroObserver?.disconnect();
   if (leaveTimer) clearTimeout(leaveTimer);
   stopCursorCycle();
   cancelAnimationFrame(raf);

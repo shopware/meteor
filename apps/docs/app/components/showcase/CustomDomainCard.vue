@@ -38,7 +38,12 @@ const statusColor = computed(() =>
             <mt-text size="xs">SSL certificate valid</mt-text>
           </div>
         </div>
-        <mt-link to="#" type="external">Learn about custom domains</mt-link>
+        <!-- Decorative demo link: a plain anchor (not router-link, whose own
+             click handler could navigate before a prevent) with the jump to
+             "#" suppressed. -->
+        <mt-link as="a" href="#" type="external" @click.prevent>
+          Learn about custom domains
+        </mt-link>
       </div>
     </mt-card>
   </div>

@@ -19,9 +19,9 @@ const { addSnackbar } = useSnackbar();
 
 const inviteEmail = ref("");
 const shareUsers = [
-  { firstName: "Mia", lastName: "Chen", email: "mia.chen@company.io" },
-  { firstName: "Jonas", lastName: "Weber", email: "jonas.weber@company.io" },
-  { firstName: "Adrian", lastName: "Silva", email: "adrian.silva@company.io" },
+  { firstName: "Mia", lastName: "Chen", email: "mia.chen@example.com" },
+  { firstName: "Jonas", lastName: "Weber", email: "jonas.weber@example.com" },
+  { firstName: "Adrian", lastName: "Silva", email: "adrian.silva@example.com" },
 ];
 const muted = "color-text-secondary-default";
 </script>
@@ -61,10 +61,12 @@ const muted = "color-text-secondary-default";
               variant="circle"
             />
             <div class="min-w-0 flex-1">
-              <mt-text size="xs" weight="medium"
+              <mt-text size="xs" weight="medium" class="w-full truncate"
                 >{{ u.firstName }} {{ u.lastName }}</mt-text
               >
-              <mt-text size="xs" :color="muted">{{ u.email }}</mt-text>
+              <mt-text size="xs" :color="muted" class="w-full truncate">{{
+                u.email
+              }}</mt-text>
             </div>
             <mt-dropdown-menu-root>
               <mt-dropdown-menu-trigger as-child>

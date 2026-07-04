@@ -246,65 +246,58 @@ function onKeydown(event: KeyboardEvent) {
 }
 
 .docs-carousel__viewport {
-  cursor: grab;
   touch-action: pan-y;
   outline: none;
   user-select: none;
   -webkit-user-select: none;
+  /* Contain the arc horizontally (so the off-screen cards never create a page
+     scrollbar). The clip box is grown with padding, then handed back to the
+     layout via matching negative margins, because WebKit clips BOTH axes when
+     either one is clipped: without the headroom, the side cards curving down
+     the arc (and the hovered card's top) get cut at the box edge. */
+  overflow-x: clip;
+  padding-top: 32px;
+  margin-top: -32px;
+  padding-bottom: 240px;
+  margin-bottom: -240px;
 }
 .doc-slide {
   -webkit-user-drag: none;
 }
 
-/* The arc spans the full viewport width. */
+/* The arc spans the full viewport width. The height leaves room below the
+   centered card for its hover expansion ("Read more" growing the card
+   downward); the side cards' arc drop spills into the viewport's padding
+   headroom above. No edge-fade mask: the per-card opacity falloff already
+   fades the arc out toward the sides, and a mask would put a visible cut
+   through the slides where they curve toward the edges. */
+/* The grab cursor lives on the wheel (not the viewport) so the viewport's
+   clip-headroom padding below the arc doesn't advertise dragging. */
 .docs-carousel__wheel {
   position: relative;
-  height: 430px;
-  /* Clip horizontally (no page scroll) but let cards spill vertically so the
-     lower cards in the arc aren't cut off. */
-  overflow-x: clip;
-  overflow-y: visible;
-  /* Fade the arc out toward the viewport edges, past the content width. The
-     gradient is horizontal; the mask is deliberately far taller than the wheel
-     (and centered) so the cards spilling above/below aren't clipped by it. */
-  --edge-fade: max(64px, calc((100% - 1620px) / 2));
-  -webkit-mask-image: linear-gradient(
-    to right,
-    transparent,
-    #000 var(--edge-fade),
-    #000 calc(100% - var(--edge-fade)),
-    transparent
-  );
-  mask-image: linear-gradient(
-    to right,
-    transparent,
-    #000 var(--edge-fade),
-    #000 calc(100% - var(--edge-fade)),
-    transparent
-  );
-  -webkit-mask-size: 100% 3000px;
-  mask-size: 100% 3000px;
-  -webkit-mask-position: center;
-  mask-position: center;
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
+  height: 460px;
+  cursor: grab;
+}
+/* One card at a time on phones (and its "Read more" is always expanded there),
+   so the wheel doesn't need the desktop headroom; tighten the gap down to the
+   controls. */
+@media (max-width: 639.98px) {
+  .docs-carousel__wheel {
+    height: 420px;
+  }
 }
 .docs-carousel__wheel.is-dragging {
   cursor: grabbing;
-}
-/* Only one card shows on small screens, so the edge fade would just clip its
-   sides — drop it there. */
-@media (max-width: 639.98px) {
-  .docs-carousel__wheel {
-    -webkit-mask-image: none;
-    mask-image: none;
-  }
 }
 .docs-carousel__card {
   position: absolute;
   top: 45%;
   left: 50%;
-  width: clamp(300px, 25vw, 390px);
+  /* Desktop width everywhere; on small screens the card just caps at 90% of
+     the viewport instead of shrinking early. */
+  width: 390px;
+  max-width: 90vw;
+  max-width: 90dvw;
   transition:
     transform 0.55s var(--ease-out),
     opacity 0.55s var(--ease-out);
@@ -325,7 +318,9 @@ function onKeydown(event: KeyboardEvent) {
   flex-direction: column;
   overflow: hidden;
   border: 1px solid var(--ui-border);
-  border-radius: 1.25rem;
+  /* 1rem matches the landing page's other card surfaces (accordion items and
+     the copy-command line). */
+  border-radius: 1rem;
   background: var(--ui-bg);
   /* Shared landing elevation (defined on .landing) so cards match the accordion
    * and copy line in both themes. */

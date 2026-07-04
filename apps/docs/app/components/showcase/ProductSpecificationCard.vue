@@ -58,6 +58,7 @@ const productImage = "/showcase-product.jpg";
           label="Price"
           size="small"
           :min="0"
+          :step="0.25"
           :digits="2"
           :show-controls="false"
         >

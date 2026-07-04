@@ -41,6 +41,22 @@ const lengthToCm: Record<string, number> = {
   ft: 30.48,
 };
 
+// Keep the demo dimensions within 5 m per side, whatever unit is active
+// (also re-clamped when switching units, e.g. 400 cm -> m becomes 5 m).
+const MAX_SIDE_CM = 500;
+watch([width, widthUnit], () => {
+  const factor = lengthToCm[widthUnit.value] ?? 1;
+  if ((width.value || 0) * factor > MAX_SIDE_CM) {
+    width.value = Math.floor((MAX_SIDE_CM / factor) * 100) / 100;
+  }
+});
+watch([height, heightUnit], () => {
+  const factor = lengthToCm[heightUnit.value] ?? 1;
+  if ((height.value || 0) * factor > MAX_SIDE_CM) {
+    height.value = Math.floor((MAX_SIDE_CM / factor) * 100) / 100;
+  }
+});
+
 // Made-up tariff: base rate + a size surcharge of €1.20 per 1000 cm² of
 // footprint (width x height), recomputed live from the inputs.
 const shippingPrice = computed(() => {
@@ -119,7 +135,9 @@ const shippingPrice = computed(() => {
             <mt-text size="xs" weight="semibold">Express shipping</mt-text>
             <mt-text size="2xs" :color="muted">1–2 business days</mt-text>
           </div>
-          <mt-text size="m" weight="semibold">{{ shippingPrice }}</mt-text>
+          <mt-text size="m" weight="semibold" class="ship-price">
+            {{ shippingPrice }}
+          </mt-text>
         </div>
       </mt-inset>
     </div>
@@ -169,6 +187,14 @@ const shippingPrice = computed(() => {
   padding: var(--mt-card-content-padding);
   background: var(--color-elevation-surface-sunken);
   border-top: 1px solid var(--color-border-secondary-default);
+}
+/* The computed price can grow arbitrarily long with extreme dimensions;
+   truncate it instead of letting it overflow or squash the label column. */
+.ship-price {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 /* Bordered, squared 40×40 icon tile. */
 .ship-tile {

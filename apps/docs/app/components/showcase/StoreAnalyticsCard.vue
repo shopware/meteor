@@ -48,6 +48,18 @@ function reloadData() {
 const revenueSeries = [
   { name: "Revenue", data: [28.2, 31.5, 30.1, 38.4, 42.8, 40.2, 46.1, 48.2] },
 ];
+const totalRevenue = computed(() =>
+  revenueSeries.reduce(
+    (total, series) =>
+      total +
+      series.data.reduce((seriesTotal, value) => seriesTotal + value, 0),
+    0,
+  ),
+);
+const formattedTotalRevenue = computed(
+  () => `€${totalRevenue.value.toFixed(1)}k`,
+);
+
 const revenueChartOptions: ChartOptions = {
   xaxis: {
     categories: ["Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "Jun"],
@@ -75,7 +87,9 @@ const revenueChartOptions: ChartOptions = {
                 text="Net revenue across all sales channels, updated hourly."
               />
             </div>
-            <mt-text size="xl" weight="bold">€48.2k</mt-text>
+            <mt-text size="xl" weight="bold">{{
+              formattedTotalRevenue
+            }}</mt-text>
           </div>
           <mt-dropdown-menu-root>
             <mt-dropdown-menu-trigger as-child>

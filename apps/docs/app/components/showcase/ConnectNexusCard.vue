@@ -7,7 +7,7 @@ import MtPasswordField from "@shopware-ag/meteor-component-library/MtPasswordFie
 import MtButton from "@shopware-ag/meteor-component-library/MtButton";
 import MtLink from "@shopware-ag/meteor-component-library/MtLink";
 
-const email = ref("mia.chen@company.io");
+const email = ref("mia.chen@example.com");
 const password = ref("peekaboo");
 const muted = "color-text-secondary-default";
 
@@ -92,7 +92,8 @@ onMounted(() => {
               <mt-text size="xs" :color="muted">
                 Don't have an account?
               </mt-text>
-              <mt-link as="a" href="#">Register now</mt-link>
+              <!-- Decorative demo link: prevent the href="#" scroll-to-top jump. -->
+              <mt-link as="a" href="#" @click.prevent>Register now</mt-link>
             </div>
           </div>
         </div>
@@ -149,6 +150,7 @@ onMounted(() => {
 }
 .connect__footer {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: var(--scale-size-4);
   font-size: var(--font-size-xs);

@@ -161,8 +161,10 @@ const docCards = [
       </div>
       <LandingUfo />
 
+      <!-- On phones the showcase below is hidden, so the hero carries its own
+           bottom padding there; from sm up the showcase provides the spacing. -->
       <UContainer
-        class="mx-auto flex flex-col items-center pt-16 pb-0 text-center sm:pt-24 lg:pt-28"
+        class="mx-auto flex flex-col items-center pt-16 pb-20 text-center sm:pt-24 sm:pb-0 lg:pt-28"
       >
         <h1 class="hero-rise type-heading-2xl max-w-4xl text-highlighted">
           Build outstanding Shopware experiences with
@@ -236,7 +238,10 @@ const docCards = [
 
     <!-- Why Meteor: value proposition as an interactive accordion. Titles stay
          scannable; expanding a row reveals the detail. -->
-    <section class="why-section relative pt-20 pb-20 sm:pt-28 sm:pb-28">
+    <!-- Top padding is smaller from sm up: the showcase above ends in its own
+         fade, so the section gap needs less breathing room than the others.
+         On phones the showcase is hidden and the hero provides the spacing. -->
+    <section class="why-section relative pt-20 pb-20 sm:pt-16 sm:pb-28">
       <!-- Light-mode only: a white-to-transparent fade at the top blends the
            dot-grid background out of the showcase above. -->
       <div aria-hidden="true" class="why-fade" />
@@ -586,12 +591,12 @@ const docCards = [
               <NuxtLink
                 :to="npmBase + pkg.name"
                 target="_blank"
-                class="pkg-link group mt-2 inline-flex items-center gap-1 text-base font-medium text-primary"
+                class="group mt-2 inline-flex items-center gap-1.5 text-base font-medium text-primary"
               >
                 View on npm
                 <UIcon
                   name="i-lucide-arrow-up-right"
-                  class="pkg-card__arrow size-4"
+                  class="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
                 />
               </NuxtLink>
             </div>
@@ -662,10 +667,6 @@ const docCards = [
 }
 .acc-item:active {
   transform: scale(0.985);
-}
-.dark .acc-item {
-  background: var(--ui-bg);
-  border: 1px solid var(--ui-border);
 }
 .acc-trigger {
   display: flex;
@@ -755,16 +756,6 @@ const docCards = [
   }
   .acc-item:active {
     transform: none;
-  }
-}
-
-/* Package rows: the "View on npm" arrow nudges on hover. */
-.pkg-card__arrow {
-  transition: transform 0.2s var(--ease-out);
-}
-@media (hover: hover) and (pointer: fine) {
-  .pkg-link:hover .pkg-card__arrow {
-    transform: translate(0.125rem, -0.125rem);
   }
 }
 
@@ -897,16 +888,33 @@ const docCards = [
   );
 }
 
+/* Smartphones hide the showcase (see LandingComponentShowcase), so the hero is
+   much shorter; switch the fade stops to percentages so the backdrop still
+   fades out within the hero instead of ending in a hard edge. */
+@media (max-width: 639.98px) {
+  .hero-bg {
+    --hero-fade-start: 55%;
+    --hero-fade-end: 100%;
+  }
+}
+
 .type-heading-2xl {
-  font-size: clamp(2.5rem, 1.8rem + 3vw, 3.5rem);
+  /* 36px on phones, growing to the unchanged 56px on desktop. */
+  font-size: clamp(2.25rem, 1.2rem + 4vw, 3.5rem);
   line-height: 1.1;
   font-weight: 700;
   letter-spacing: -0.02em;
 }
 
+/* Default body size on phones, stepping up alongside the heading from sm. */
 .type-body-lg {
-  font-size: 1.25rem;
+  font-size: 1rem;
   line-height: 1.6;
+}
+@media (min-width: 640px) {
+  .type-body-lg {
+    font-size: 1.25rem;
+  }
 }
 
 .hero-rise {
