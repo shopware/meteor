@@ -4,10 +4,64 @@
 import MtThemeProvider from "@shopware-ag/meteor-component-library/MtThemeProvider";
 import MtIcon from "@shopware-ag/meteor-component-library/MtIcon";
 import MtButton from "@shopware-ag/meteor-component-library/MtButton";
+import type { ObjectDirective } from "vue";
 
 definePageMeta({
   layout: "default",
 });
+
+// True once the WebGL hero canvas renders; the CSS fallback layers then fade.
+const glActive = ref(false);
+
+// Unmount the CSS starfield once the crossfade has finished: its ~220 twinkle
+// animations would otherwise keep running invisibly underneath the canvas.
+const starsHidden = ref(false);
+let starsTimer: ReturnType<typeof setTimeout> | undefined;
+watch(glActive, (on) => {
+  clearTimeout(starsTimer);
+  if (on) starsTimer = setTimeout(() => (starsHidden.value = true), 900);
+  else starsHidden.value = false;
+});
+onBeforeUnmount(() => clearTimeout(starsTimer));
+
+// Scroll-reveal for below-the-fold sections. SSR HTML stays visible; an
+// element is hidden only on mount (and only while still below the viewport),
+// then rises in on scroll. The directive value staggers siblings.
+const revealObservers = new WeakMap<HTMLElement, IntersectionObserver>();
+const vReveal: ObjectDirective<HTMLElement, number | undefined> = {
+  mounted(el, binding) {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (el.getBoundingClientRect().top < window.innerHeight * 0.85) return;
+    el.classList.add("lp-reveal");
+    if (binding.value) {
+      el.style.setProperty("--reveal-delay", `${binding.value}ms`);
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        io.disconnect();
+        revealObservers.delete(el);
+        el.classList.add("lp-reveal-in");
+        // Drop the classes after the rise so the reveal transition (and its
+        // delay) can't leak into hover transitions.
+        setTimeout(
+          () => {
+            el.classList.remove("lp-reveal", "lp-reveal-in");
+            el.style.removeProperty("--reveal-delay");
+          },
+          (binding.value ?? 0) + 950,
+        );
+      },
+      { rootMargin: "0px 0px -60px 0px" },
+    );
+    io.observe(el);
+    revealObservers.set(el, io);
+  },
+  unmounted(el) {
+    revealObservers.get(el)?.disconnect();
+    revealObservers.delete(el);
+  },
+};
 
 const appConfig = useAppConfig();
 
@@ -35,7 +89,7 @@ defineOgImage("Landing", {
 });
 
 const btnBase =
-  "home-btn relative inline-flex min-h-12 cursor-pointer select-none items-center justify-center gap-2 rounded-[16px] px-5 py-3 text-center text-sm font-semibold transition-[transform,color,background-color,border-color] duration-200 ease-out active:scale-[0.98]";
+  "home-btn relative inline-flex min-h-12 cursor-pointer select-none items-center justify-center gap-2 rounded-[16px] px-5 py-3 text-center text-sm font-semibold transition-[transform,color,background-color,border-color] duration-200 ease-out active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
 
 const npmBase = "https://www.npmjs.com/package/@shopware-ag/";
 
@@ -152,21 +206,37 @@ const docCards = [
 </script>
 
 <template>
-  <div class="landing bg-default dark:bg-muted">
-    <section class="hero relative isolate overflow-hidden">
-      <!-- All hero background layers live in one element so a single bottom
-           mask can fade the whole backdrop out over the showcase below. -->
-      <div aria-hidden="true" class="hero-bg absolute inset-0 -z-10">
-        <LandingStarfield class="hidden dark:block" />
+  <div class="landing">
+    <!-- overflow-clip (not -hidden) so the hero doesn't become a scroll
+         container, which would break the scroll()/view() timelines inside. -->
+    <section class="hero relative isolate overflow-clip">
+      <!-- The static backdrop layers share one masked element (a single
+           bottom fade covers gradient, starfield and the hero-bg--canvas
+           backing that hides the CSS dots). The GL canvas sits outside the
+           mask and fades itself in-shader: masking a canvas that repaints
+           every frame would re-composite the whole hero continuously. -->
+      <div
+        aria-hidden="true"
+        class="hero-bg absolute inset-0 -z-10"
+        :class="{ 'hero-bg--canvas': glActive }"
+      >
+        <LandingStarfield
+          v-if="!starsHidden"
+          class="hero-stars hidden dark:block"
+          :class="{ 'hero-stars--dim': glActive }"
+        />
       </div>
+      <LandingHeroCanvas class="-z-10" @active="glActive = $event" />
       <LandingUfo />
 
       <!-- On phones the showcase below is hidden, so the hero carries its own
            bottom padding there; from sm up the showcase provides the spacing. -->
       <UContainer
-        class="mx-auto flex flex-col items-center pt-16 pb-20 text-center sm:pt-24 sm:pb-0 lg:pt-28"
+        class="hero-copy mx-auto flex flex-col items-center pt-16 pb-20 text-center sm:pt-24 sm:pb-0 lg:pt-28"
       >
-        <h1 class="hero-rise type-heading-2xl max-w-4xl text-highlighted">
+        <h1
+          class="hero-rise type-heading-2xl max-w-4xl text-balance text-highlighted"
+        >
           Build outstanding Shopware experiences with
           <span class="italic">Meteor</span>
         </h1>
@@ -236,24 +306,19 @@ const docCards = [
       <LandingComponentShowcase />
     </section>
 
-    <!-- Why Meteor: value proposition as an interactive accordion. Titles stay
-         scannable; expanding a row reveals the detail. -->
-    <!-- Top padding is smaller from sm up: the showcase above ends in its own
-         fade, so the section gap needs less breathing room than the others.
-         On phones the showcase is hidden and the hero provides the spacing. -->
-    <section class="why-section relative pt-20 pb-20 sm:pt-16 sm:pb-28">
-      <!-- Light-mode only: a white-to-transparent fade at the top blends the
-           dot-grid background out of the showcase above. -->
+    <!-- Why Meteor: the value proposition as an accordion. Less top padding
+         from sm up (the showcase above ends in its own fade); on phones the
+         hero provides the spacing. -->
+    <section class="why-section relative pt-16 pb-20 sm:pb-28">
+      <!-- Eases the dot grid back in below the showcase fade. -->
       <div aria-hidden="true" class="why-fade" />
       <UContainer class="relative">
         <div class="grid gap-12 lg:grid-cols-12 lg:gap-16">
-          <header class="lg:col-span-5">
-            <h2
-              class="text-3xl font-bold tracking-tight text-highlighted sm:text-4xl"
+          <header v-reveal class="lg:col-span-5">
+            <h2 class="lp-h2 text-highlighted">Why teams build on Meteor</h2>
+            <p
+              class="mt-5 text-base leading-relaxed text-pretty text-muted sm:text-lg"
             >
-              Why teams build on Meteor
-            </h2>
-            <p class="mt-5 text-base leading-relaxed text-muted sm:text-lg">
               More than a component library, Meteor is the shared foundation
               that Shopware and its community design and build on together.
             </p>
@@ -263,6 +328,7 @@ const docCards = [
             <div
               v-for="(benefit, index) in benefits"
               :key="benefit.title"
+              v-reveal="index * 90"
               class="acc-item"
             >
               <button
@@ -311,20 +377,18 @@ const docCards = [
 
     <section class="py-20 sm:py-28">
       <UContainer>
-        <header class="mb-12 max-w-2xl">
-          <h2
-            class="text-3xl font-bold tracking-tight text-highlighted sm:text-4xl"
+        <header v-reveal class="mb-12 max-w-2xl">
+          <h2 class="lp-h2 text-highlighted">Explore the docs</h2>
+          <p
+            class="mt-5 text-base leading-relaxed text-pretty text-muted sm:text-lg"
           >
-            Explore the docs
-          </h2>
-          <p class="mt-5 text-base leading-relaxed text-muted sm:text-lg">
             Guides and references for every part of Meteor, from guidelines and
             design tokens to components, content, and agents.
           </p>
         </header>
       </UContainer>
 
-      <LandingDocsCarousel :items="docCards">
+      <LandingDocsCarousel v-reveal="120" :items="docCards">
         <template #visual="{ item }">
           <template v-if="item.key === 'getting-started'">
             <div class="absolute inset-0 flex items-center justify-center p-4">
@@ -375,9 +439,8 @@ const docCards = [
             <div
               class="absolute inset-0 flex items-center justify-center gap-3 p-5"
             >
-              <!-- Same UI rendered with the light and dark token sets.
-                       Built from theme-independent primitives so both panels
-                       stay fixed regardless of the page's color mode. -->
+              <!-- Both token sets side by side, built from theme-independent
+                   primitives so neither panel follows the page's color mode. -->
               <div
                 class="flex w-28 flex-col gap-2 rounded-lg border border-[var(--color-zinc-200)] bg-[var(--color-zinc-0)] p-3"
               >
@@ -458,10 +521,8 @@ const docCards = [
 
           <template v-else-if="item.key === 'components'">
             <div class="absolute inset-0 flex items-center justify-center p-5">
-              <!-- Real Meteor components. Client-only: they wrap interactive
-                   state that isn't worth server-rendering for a preview.
-                   removeDefaultMargin drops the fields' reserved hint spacing so
-                   the preview stays compact and centered. -->
+              <!-- Real Meteor components, client-only. removeDefaultMargin
+                   drops the reserved hint spacing to keep the preview compact. -->
               <ClientOnly>
                 <MtThemeProvider :future="{ removeDefaultMargin: true }">
                   <div class="flex items-center gap-3">
@@ -545,13 +606,11 @@ const docCards = [
     <!-- The packages -->
     <section class="py-20 sm:py-28">
       <UContainer>
-        <header class="max-w-2xl">
-          <h2
-            class="text-3xl font-bold tracking-tight text-highlighted sm:text-4xl"
+        <header v-reveal class="max-w-2xl">
+          <h2 class="lp-h2 text-highlighted">Install only what you need</h2>
+          <p
+            class="mt-5 text-base leading-relaxed text-pretty text-muted sm:text-lg"
           >
-            Install only what you need
-          </h2>
-          <p class="mt-5 text-base leading-relaxed text-muted sm:text-lg">
             Meteor ships as three independent npm packages. Pull in the full
             component library, or just the tokens or icons.
           </p>
@@ -569,8 +628,9 @@ const docCards = [
 
         <div class="mt-12">
           <div
-            v-for="pkg in packages"
+            v-for="(pkg, index) in packages"
             :key="pkg.name"
+            v-reveal="index * 90"
             class="grid grid-cols-1 gap-5 border-b border-default py-8 last:border-b-0 sm:grid-cols-2 sm:items-center sm:gap-10"
           >
             <div>
@@ -607,20 +667,16 @@ const docCards = [
     </section>
 
     <!-- Contribute: prominent card with an animated LED gradient border. -->
-    <section class="pt-10 pb-32 sm:pt-12 sm:pb-44">
+    <section class="pt-8 pb-28 sm:pt-10 sm:pb-40">
       <UContainer>
-        <div class="contribute">
+        <div v-reveal class="contribute">
           <div class="contribute__card">
             <div class="contribute__body">
               <UIcon
                 name="i-simple-icons-github"
                 class="contribute__logo size-12"
               />
-              <h2
-                class="mt-6 text-3xl font-bold tracking-tight text-highlighted sm:text-4xl"
-              >
-                Build Meteor with us
-              </h2>
+              <h2 class="lp-h2 mt-6 text-highlighted">Build Meteor with us</h2>
               <p
                 class="mt-4 max-w-xl text-base leading-relaxed text-muted sm:text-lg"
               >
@@ -647,16 +703,14 @@ const docCards = [
 </template>
 
 <style scoped>
-/* Squircle corners on the custom home-page buttons (border-radius set via the
- * rounded-[16px] utility). corner-shape is kept here because Tailwind's CSS
- * engine strips it from arbitrary-property utilities. */
+/* Squircle corners for the home buttons; corner-shape lives here because
+ * Tailwind strips it from arbitrary-property utilities. */
 .home-btn {
   corner-shape: squircle;
 }
 
-/* Why-section accordion. Each item is its own surface card with a gap between;
- * the panel uses the grid 0fr/1fr trick for a smooth, measurement-free height
- * transition (with a slight overshoot for bounce). */
+/* Accordion items are surface cards; the panel uses the grid 0fr/1fr trick
+ * for a measurement-free height transition. */
 .acc-item {
   border: 1px solid var(--ui-border);
   border-radius: 1rem;
@@ -818,26 +872,25 @@ const docCards = [
   }
 }
 
-/* Light-mode fade at the top of the Why section: continues the showcase's fade
- * to the page background, so the dot grid eases in instead of appearing abruptly.
- * Dark mode has no dot grid, so it isn't needed. */
+/* Continues the showcase fade past the section boundary so the dot grid
+ * eases back in instead of starting abruptly (both themes). */
 .why-fade {
   position: absolute;
   inset-inline: 0;
   top: 0;
   height: 15rem;
   pointer-events: none;
-  background: linear-gradient(to bottom, var(--ui-bg), transparent);
-}
-.dark .why-fade {
-  display: none;
+  background: linear-gradient(to bottom, var(--landing-bg), transparent);
 }
 
-/* Light mode: a subtle dot grid across the whole page. Dark mode drops the grid
- * and uses the night-sky gradient + starfield instead. */
+/* Light mode: a barely-gray page (zinc-50) with a subtle dot grid, so the
+ * white card surfaces lift off it. Dark mode uses the night sky + starfield.
+ * --landing-bg is the page background; the section fades blend into it. */
 .landing {
   --ui-container: var(--ui-container-small);
+  --landing-bg: var(--color-zinc-50);
   --hero-gradient: none;
+  background-color: var(--landing-bg);
   --dot-color: color-mix(in oklab, var(--ui-text) 7%, transparent);
   /* Slightly lighter borders, just on the landing page (light mode). */
   --ui-border: var(--color-zinc-75);
@@ -851,10 +904,9 @@ const docCards = [
 }
 
 .dark .landing {
-  /* Night sky: a faint blue base at the bottom (by the planet's atmosphere)
-   * fading smoothly to pure black space well before the top. The dot grid stays
-   * (kept faint); the night-sky gradient covers it across the hero, so it only
-   * reads on the sections below. */
+  /* Night sky: a faint blue base fading up to black space. The dot grid stays
+   * (fainter); the gradient covers it across the hero. */
+  --landing-bg: var(--ui-bg-muted);
   --hero-gradient: linear-gradient(0deg, #0b1c3a 0%, #03060e 60%, #000000 100%);
   --dot-color: color-mix(in oklab, var(--ui-text) 5%, transparent);
   /* Keep the default dark border. */
@@ -868,12 +920,11 @@ const docCards = [
     );
 }
 
-/* The full-height backdrop. The dark-mode night-sky gradient lives here (not on
-   .hero) so the bottom mask fades the gradient and starfield out together, with
-   the fade landing partway down the showcase. Tune the two stops via
-   --hero-fade-start / --hero-fade-end (distance from the top of the hero). */
+/* Full-height backdrop; the mask fades gradient, starfield and canvas out
+   together partway down the showcase. Tune via --hero-fade-start/-end. */
 .hero-bg {
-  background: var(--hero-gradient);
+  background-image: var(--hero-gradient);
+  transition: background-color 0.8s ease;
   -webkit-mask-image: linear-gradient(
     to bottom,
     #000 0,
@@ -888,9 +939,14 @@ const docCards = [
   );
 }
 
-/* Smartphones hide the showcase (see LandingComponentShowcase), so the hero is
-   much shorter; switch the fade stops to percentages so the backdrop still
-   fades out within the hero instead of ending in a hard edge. */
+/* Opaque backing while the GL canvas runs, so the CSS dot grid doesn't show
+   through under the canvas copies; the mask fades both out together. */
+.hero-bg--canvas {
+  background-color: var(--landing-bg);
+}
+
+/* Phones hide the showcase, so the hero is much shorter; percentage fade
+   stops keep the backdrop fading out within it. */
 @media (max-width: 639.98px) {
   .hero-bg {
     --hero-fade-start: 55%;
@@ -899,11 +955,19 @@ const docCards = [
 }
 
 .type-heading-2xl {
-  /* 36px on phones, growing to the unchanged 56px on desktop. */
-  font-size: clamp(2.25rem, 1.2rem + 4vw, 3.5rem);
-  line-height: 1.1;
+  /* 38px on phones, growing to 64px on desktop. */
+  font-size: clamp(2.375rem, 1.05rem + 4.6vw, 4rem);
+  line-height: 1.08;
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.022em;
+}
+
+/* Shared section-heading scale: 30px on phones up to 44px on desktop. */
+.lp-h2 {
+  font-size: clamp(1.875rem, 1.25rem + 2.2vw, 2.75rem);
+  line-height: 1.08;
+  font-weight: 700;
+  letter-spacing: -0.022em;
 }
 
 /* Default body size on phones, stepping up alongside the heading from sm. */
@@ -937,6 +1001,53 @@ const docCards = [
 @media (prefers-reduced-motion: reduce) {
   .hero-rise {
     animation: none;
+  }
+}
+
+/* Crossfade the CSS starfield out once the WebGL canvas renders. */
+.hero-stars {
+  transition: opacity 0.8s ease;
+}
+.hero-stars--dim {
+  opacity: 0;
+}
+
+/* v-reveal states. The two-class specificity keeps the reveal transition
+ * ahead of the elements' own transition shorthands while it runs. */
+@media (prefers-reduced-motion: no-preference) {
+  .landing :deep(.lp-reveal) {
+    opacity: 0;
+    transform: translateY(1.25rem);
+    filter: blur(10px);
+  }
+  .landing :deep(.lp-reveal-in) {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+    transition:
+      opacity 0.8s ease var(--reveal-delay, 0ms),
+      transform 0.8s var(--ease-out) var(--reveal-delay, 0ms),
+      filter 0.8s ease var(--reveal-delay, 0ms);
+  }
+}
+
+/* The hero copy recedes slightly faster than the page scroll (a touch of
+ * depth); without scroll-driven animation support it simply scrolls away. */
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-copy {
+      animation: hero-exit linear both;
+      animation-duration: 1ms; /* Firefox needs a non-zero duration */
+      animation-timeline: scroll(root);
+      animation-range: 0px 620px;
+    }
+  }
+}
+
+@keyframes hero-exit {
+  to {
+    opacity: 0;
+    transform: translateY(3.5rem) scale(0.99);
   }
 }
 </style>

@@ -133,7 +133,7 @@ const shippingPrice = computed(() => {
           </div>
           <div class="min-w-0 flex-1">
             <mt-text size="xs" weight="semibold">Express shipping</mt-text>
-            <mt-text size="2xs" :color="muted">1–2 business days</mt-text>
+            <mt-text size="2xs" :color="muted">1-2 business days</mt-text>
           </div>
           <mt-text size="m" weight="semibold" class="ship-price">
             {{ shippingPrice }}

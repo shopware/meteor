@@ -102,10 +102,10 @@ const muted = "color-text-secondary-default";
   background: var(--color-elevation-surface-sunken);
   border-bottom: 1px solid var(--color-border-secondary-default);
 }
-/* The ticket: a raised surface floating on the sunken backdrop. The border is an
-   inset shadow (not a real `border`) so overflow:hidden clips at the true edge —
-   letting the notch fill cover it — and the notch circles carry their own border
-   so the outline follows the cut-out curve. */
+/* The ticket: a raised surface on the sunken backdrop. Its border is an inset
+   shadow (not a real border) so overflow:hidden clips at the true edge and the
+   notch fill can cover it; the notch circles carry their own border so the
+   outline follows the cut-out curve. */
 .ticket {
   position: relative;
   overflow: hidden;
@@ -133,9 +133,8 @@ const muted = "color-text-secondary-default";
   color: var(--color-static-white);
   color: contrast-color(var(--campaign-color, var(--color-icon-brand-default)));
 }
-/* Perforated divider spanning the full width. Its two ends are "punched out" by
-   circles filled with the sunken backdrop colour — centred on the ticket's left
-   and right edges, so they read as notches cut out of the ticket. */
+/* Perforated full-width divider; its ends are punched out by circles filled
+   with the sunken backdrop colour, centred on the ticket's edges. */
 .ticket__perf {
   position: relative;
   height: 0;

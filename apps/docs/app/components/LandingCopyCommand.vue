@@ -7,9 +7,8 @@ const props = defineProps<{
 
 const { copy, isSupported } = useClipboard();
 
-// Optimistic feedback: morph the icon the instant the button is pressed rather
-// than waiting on the clipboard write to resolve (which can stall when the
-// document isn't focused). The write is fired alongside it.
+// Optimistic feedback: morph the icon immediately; the clipboard write (which
+// can stall when the document isn't focused) fires alongside.
 const copied = ref(false);
 let resetTimer: ReturnType<typeof setTimeout> | undefined;
 
@@ -35,9 +34,8 @@ onBeforeUnmount(() => clearTimeout(resetTimer));
     >
       {{ command }}
     </code>
-    <!-- Client-only: useClipboard's `isSupported` differs between server and
-         client, so rendering the button on the server causes a hydration
-         mismatch. The command text above stays in the SSR HTML. -->
+    <!-- Client-only: `isSupported` differs between server and client
+         (hydration mismatch); the command text stays in the SSR HTML. -->
     <ClientOnly>
       <button
         v-if="isSupported"
@@ -64,8 +62,7 @@ onBeforeUnmount(() => clearTimeout(resetTimer));
 
 <style scoped>
 .copy-cmd {
-  /* Shared landing elevation (defined on .landing) so it matches the accordion
-   * and slider cards in both themes. */
+  /* Shared landing elevation (defined on .landing), matching the other cards. */
   box-shadow: var(--landing-elev);
 }
 .copy-btn {

@@ -24,7 +24,7 @@ function deleteProduct() {
 
 const muted = "color-text-secondary-default";
 // Bound src (not a static `src="…"`) so Vue's compiler doesn't run
-// transformAssetUrls on it — that rewrite mangles this public-root path.
+// transformAssetUrls on it; that rewrite mangles this public-root path.
 const productImage = "/showcase-headset.png";
 </script>
 

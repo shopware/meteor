@@ -1,9 +1,8 @@
 <script setup lang="ts">
-// Curved "wheel" carousel: cards sit on the top arc of a large circle, the
-// centered one upright and the rest fanning out with progressive rotation.
-// Cards are positioned with a reactive :style so the arc renders correctly on
-// the server too; dragging writes transforms straight to the DOM for smoothness.
-// Card visuals come from the parent via the `#visual` scoped slot.
+// Curved "wheel" carousel: cards sit on the top arc of a large circle and fan
+// out with progressive rotation. A reactive :style keeps the SSR arc correct;
+// dragging writes transforms straight to the DOM. Card visuals come from the
+// parent's `#visual` scoped slot.
 
 export interface DocCard {
   key: string;
@@ -250,11 +249,10 @@ function onKeydown(event: KeyboardEvent) {
   outline: none;
   user-select: none;
   -webkit-user-select: none;
-  /* Contain the arc horizontally (so the off-screen cards never create a page
-     scrollbar). The clip box is grown with padding, then handed back to the
-     layout via matching negative margins, because WebKit clips BOTH axes when
-     either one is clipped: without the headroom, the side cards curving down
-     the arc (and the hovered card's top) get cut at the box edge. */
+  /* Contain the arc horizontally (off-screen cards must not create a page
+     scrollbar). The clip box is grown with padding and handed back via
+     matching negative margins: WebKit clips BOTH axes when either one is
+     clipped, so without the headroom the arc gets cut at the box edge. */
   overflow-x: clip;
   padding-top: 32px;
   margin-top: -32px;
@@ -265,22 +263,18 @@ function onKeydown(event: KeyboardEvent) {
   -webkit-user-drag: none;
 }
 
-/* The arc spans the full viewport width. The height leaves room below the
-   centered card for its hover expansion ("Read more" growing the card
-   downward); the side cards' arc drop spills into the viewport's padding
-   headroom above. No edge-fade mask: the per-card opacity falloff already
-   fades the arc out toward the sides, and a mask would put a visible cut
-   through the slides where they curve toward the edges. */
-/* The grab cursor lives on the wheel (not the viewport) so the viewport's
-   clip-headroom padding below the arc doesn't advertise dragging. */
+/* The wheel height leaves room for the centered card's hover expansion; the
+   side cards' arc drop spills into the viewport's padding headroom. No
+   edge-fade mask: the per-card opacity falloff already fades the arc out.
+   The grab cursor lives here (not on the viewport) so the clip-headroom
+   padding below the arc doesn't advertise dragging. */
 .docs-carousel__wheel {
   position: relative;
   height: 460px;
   cursor: grab;
 }
-/* One card at a time on phones (and its "Read more" is always expanded there),
-   so the wheel doesn't need the desktop headroom; tighten the gap down to the
-   controls. */
+/* Phones show one card with "Read more" always expanded; less headroom
+   needed, tighten the gap down to the controls. */
 @media (max-width: 639.98px) {
   .docs-carousel__wheel {
     height: 420px;
@@ -318,12 +312,9 @@ function onKeydown(event: KeyboardEvent) {
   flex-direction: column;
   overflow: hidden;
   border: 1px solid var(--ui-border);
-  /* 1rem matches the landing page's other card surfaces (accordion items and
-     the copy-command line). */
+  /* Radius and elevation match the landing page's other card surfaces. */
   border-radius: 1rem;
   background: var(--ui-bg);
-  /* Shared landing elevation (defined on .landing) so cards match the accordion
-   * and copy line in both themes. */
   box-shadow: var(--landing-elev);
   height: 100%;
 }

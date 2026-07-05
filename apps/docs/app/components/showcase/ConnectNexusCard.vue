@@ -103,7 +103,7 @@ onMounted(() => {
 </template>
 
 <style scoped>
-/* Top logos section, then the form content — 24px between the two. */
+/* Top logos section, then the form content; 24px between the two. */
 .connect {
   display: flex;
   flex-direction: column;

@@ -14,18 +14,16 @@ import CustomDomainCard from "./showcase/CustomDomainCard.vue";
 import PaymentsCard from "./showcase/PaymentsCard.vue";
 import PlaceholderCard from "./showcase/PlaceholderCard.vue";
 
-// Match the docs' other live examples: removeCardWidth drops MtCard's max-width
-// so cards fill the columns; removeDefaultMargin drops its bottom margin (the
-// grid controls the gutter). Applied on the provider that wraps the grid, so
-// every card inherits it — cards don't set future flags themselves.
+// removeCardWidth drops MtCard's max-width so cards fill the columns;
+// removeDefaultMargin drops its bottom margin (the grid controls the gutter).
+// Set on the wrapping provider so every card inherits it.
 const futureFlags = {
   removeCardWidth: true,
   removeDefaultMargin: true,
 };
 
 // Approximate rendered heights (px) per column so the client-only fallback
-// reserves space and the section doesn't shift when the cards hydrate. Each
-// inner array matches one column's cards below, in order.
+// reserves space and hydration doesn't shift the layout.
 const skeletonColumns = [
   [317, 398, 164, 90],
   [283, 373, 202, 90],
@@ -77,10 +75,11 @@ const skeletonColumns = [
               :key="ci"
               class="showcase-col"
             >
+              <!-- bg-elevated: one step off the zinc-50 page background. -->
               <div
                 v-for="(h, i) in col"
                 :key="i"
-                class="mt-showcase-item animate-pulse rounded-xl bg-muted"
+                class="mt-showcase-item animate-pulse rounded-xl bg-elevated"
                 :style="{ height: `${h}px` }"
               />
             </div>
@@ -95,35 +94,29 @@ const skeletonColumns = [
 </template>
 
 <style scoped>
-/* The landing page narrows UContainer to --ui-container-small (1280px); the
- * showcase grid wants the full width, so restore the default --ui-container
- * (1680px, defined in main.css) for this section's UContainer. */
+/* The landing page narrows UContainer to 1280px; the showcase grid wants the
+ * full default width back (1680px, see main.css). */
 .showcase-section {
   --ui-container: 1680px;
   position: relative;
 }
-/* Fixed-height gradient overlay on top of the cards: transparent at the top,
-   fading down to the page background so the masonry dissolves into the next
-   section. */
+/* Gradient overlay fading the cards down into the page background
+   (--landing-bg) so the masonry dissolves into the next section. */
 .showcase-fade {
   position: absolute;
   inset-inline: 0;
   bottom: 0;
   height: 640px;
-  background: linear-gradient(to bottom, transparent, var(--ui-bg) 75%);
-  pointer-events: none;
-}
-.dark .showcase-fade {
-  background-image: linear-gradient(
+  background: linear-gradient(
     to bottom,
     transparent,
-    var(--ui-bg-muted) 75%
+    var(--landing-bg, var(--ui-bg)) 75%
   );
+  pointer-events: none;
 }
 
-/* Explicit 4-column grid: card placement per column is decided in the template
- * (each .showcase-col stacks its cards). --showcase-gutter is both the column
- * gap and the vertical gap between stacked cards. */
+/* Explicit 4-column grid; --showcase-gutter is both the column gap and the
+ * vertical gap between stacked cards. */
 .showcase-grid {
   --showcase-gutter: var(--scale-size-20);
   display: grid;
@@ -131,9 +124,8 @@ const skeletonColumns = [
   gap: var(--showcase-gutter);
 }
 
-/* Each column is a curated stack, so narrower viewports drop whole columns
- * (4 -> 3 -> 2) instead of reflowing everything into one endless stack. The
- * skeleton fallback uses the same classes, so it collapses in step. */
+/* Narrower viewports drop whole curated columns (4 -> 3 -> 2) instead of
+ * reflowing everything; the skeleton shares the classes and follows. */
 @media (max-width: 1439.98px) {
   .showcase-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -179,10 +171,9 @@ const skeletonColumns = [
   --col-rise-delay: 180ms;
 }
 
-/* `mt-showcase-item` is forwarded onto each card's root MtCard. The two-class
- * specificity (0,2,0) beats MtCard's `.mt-card--future-remove-default-margin`
- * (0,1,0). Cards blur-fade in (matching the hero's `rise`), staggered by their
- * column base delay plus their row within the column. */
+/* Forwarded onto each card's root MtCard; the two-class specificity beats
+ * MtCard's own margin modifier. Cards blur-fade in, staggered by column base
+ * delay plus row. */
 .showcase-col :deep(.mt-showcase-item) {
   display: block;
   width: 100%;

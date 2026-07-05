@@ -67,8 +67,8 @@ const muted = "color-text-secondary-default";
   flex-direction: column;
   gap: var(--scale-size-8);
 }
-/* Selectable option rows: bordered highlighting with the brand colour when
-   active — driven by tokens, so it tracks light/dark automatically. */
+/* Selectable option rows: brand-bordered when active; token-driven, so it
+   tracks light/dark automatically. */
 .pick {
   display: flex;
   align-items: center;

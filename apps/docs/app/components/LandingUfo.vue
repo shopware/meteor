@@ -1,9 +1,7 @@
 <script setup lang="ts">
-// A shy little UFO for the hero (dark mode only, while hovered). It is afraid of
-// an active cursor and only dares to show itself when the cursor has been still
-// for a moment: it scales in a short distance away, curiously creeps over to just
-// above the cursor, and once the cursor stays put it runs a green scan. The
-// instant the cursor moves it gets spooked and shrinks away.
+// A shy little UFO for the hero (dark mode only). Once the cursor has been
+// still for a moment it scales in nearby, creeps over to just above the
+// cursor, and runs a green scan; any cursor movement spooks it away.
 
 const root = ref<HTMLElement | null>(null);
 const ufo = ref<HTMLElement | null>(null);
@@ -55,9 +53,8 @@ const easeInOut = (t: number) =>
   t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
 const isDark = () => document.documentElement.classList.contains("dark");
 
-// Just for fun: while scanning, rapidly cycle the page cursor through every CSS
-// cursor keyword via an injected global !important rule. Torn down when scanning
-// stops.
+// Just for fun: while scanning, rapidly cycle the page cursor through CSS
+// cursor keywords via an injected global !important rule.
 const CURSORS = [
   "cell",
   "crosshair",
@@ -138,9 +135,8 @@ function frame(now: number) {
 
   if (phase === "hidden") {
     scaleVal = 0;
-    // Re-checked at the moment of appearing (not just at pointerenter): the
-    // hero must still be on screen and the page still in dark mode, so a
-    // scroll-away or a theme switch mid-run can't summon an invisible UFO.
+    // Re-checked at the moment of appearing (not just at pointerenter), so a
+    // scroll-away or theme switch mid-run can't summon an invisible UFO.
     if (hovering && heroVisible && isDark() && now - lastMoveTime > IDLE_DELAY)
       startAppear(now);
   } else if (phase === "appear") {
@@ -177,11 +173,9 @@ function frame(now: number) {
     pos.y = from.y + (dest.y - from.y) * e;
     if (t >= 1) {
       gliding = false;
-      // Only start scanning (and the cursor-cycle gag) when the cursor is
-      // actually still being watched: pointer inside the hero, hero on
-      // screen, dark mode. If the pointer left mid-approach (the 3s linger
-      // keeps the machine running), flee instead of scanning a cursor that
-      // is somewhere else on the page.
+      // Only scan while the cursor is actually watched (pointer in the hero,
+      // hero on screen, dark mode). If the pointer left mid-approach, flee
+      // instead of scanning a cursor that is elsewhere on the page.
       if (!hovering || !heroVisible || !isDark()) {
         startFlee(now);
       } else {
@@ -274,11 +268,9 @@ function onLeave() {
   }, 3000);
 }
 
-// Scrolling moves the hero under a stationary cursor without firing any
-// pointer events, which would otherwise leave `hovering` and the idle timer
-// stale (the UFO then "randomly" appears while the user reads another
-// section). Treat scrolling as cursor activity and spook the UFO like any
-// other movement.
+// Scrolling moves the hero under a stationary cursor without pointer events,
+// leaving `hovering` and the idle timer stale (the UFO then "randomly"
+// appears later). Treat scrolling as cursor activity.
 function onScroll() {
   lastMoveTime = performance.now();
   if (phase !== "hidden" && phase !== "flee") startFlee(performance.now());
@@ -293,8 +285,8 @@ onMounted(() => {
   hero.addEventListener("pointerleave", onLeave);
   window.addEventListener("scroll", onScroll, { passive: true });
 
-  // Hard stop (which also tears down the cursor cycle) whenever the hero
-  // scrolls out of view: the UFO must never act while it can't be seen.
+  // Hard stop whenever the hero scrolls out of view: the UFO (and the cursor
+  // cycle) must never act while it can't be seen.
   heroObserver = new IntersectionObserver(
     ([entry]) => {
       heroVisible = entry?.isIntersecting ?? false;

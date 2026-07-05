@@ -9,13 +9,13 @@ const productName = ref("Flowsphere No. 1");
 const productPrice = ref(54.95);
 const muted = "color-text-secondary-default";
 // Bound (not a static `src="…"`) so Vue's compiler doesn't run transformAssetUrls
-// on it — that rewrite mangles this public-root path in a sub-component.
+// on it; that rewrite mangles this public-root path in a sub-component.
 const productImage = "/showcase-product.jpg";
 </script>
 
 <template>
   <!-- The plain wrapper carries this component's scope id, which the root
-       MtCard would not — so the :deep rule below can reach .mt-card__content. -->
+       MtCard would not; the :deep rule below needs it to reach .mt-card__content. -->
   <div>
     <mt-card>
       <div class="product-head">
