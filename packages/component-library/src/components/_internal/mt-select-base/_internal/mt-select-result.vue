@@ -15,7 +15,7 @@
     </span>
 
     <transition name="mt-select-result-appear">
-      <mt-icon v-if="selected" name="regular-checkmark-xs" />
+      <mt-icon v-if="selected" name="regular-checkmark-s" size="var(--scale-size-12)" />
     </transition>
 
     <span v-if="hasDescriptionSlot" class="mt-select-result__result-item-description">

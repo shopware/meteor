@@ -47,8 +47,8 @@
         @click.prevent="showPassword = !showPassword"
       >
         <mt-icon
-          :name="showPassword ? 'solid-eye-slash' : 'solid-eye'"
-          size="1.125rem"
+          :name="showPassword ? 'regular-eye-slash' : 'regular-eye'"
+          size="var(--scale-size-16)"
           aria-hidden="true"
         />
       </button>

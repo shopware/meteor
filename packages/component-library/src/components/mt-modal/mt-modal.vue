@@ -36,7 +36,7 @@
           <slot name="header-right" />
 
           <mt-modal-close v-if="closable" class="mt-modal__close-button" aria-label="Close">
-            <mt-icon aria-hidden name="regular-times-xs" />
+            <mt-icon aria-hidden name="regular-times-s" size="var(--scale-size-10)" />
           </mt-modal-close>
         </div>
 

@@ -12,7 +12,7 @@
 
     <mt-icon
       name="regular-search-s"
-      size="var(--scale-size-16)"
+      size="var(--scale-size-14)"
       color="var(--color-icon-primary-default)"
     />
   </div>
