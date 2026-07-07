@@ -582,6 +582,20 @@ describe("mt-number-field", () => {
     // ASSERT
     expect(updateHandler).toHaveBeenLastCalledWith(1333.33);
     expect(input.value).toBe("1333.33");
+
+    // ACT
+    await userEvent.clear(input);
+    await userEvent.paste("1,333.33");
+
+    // ASSERT
+    expect(inputChangeHandler).toHaveBeenLastCalledWith(1333.33);
+
+    // ACT
+    await userEvent.click(document.body);
+
+    // ASSERT
+    expect(updateHandler).toHaveBeenLastCalledWith(1333.33);
+    expect(input.value).toBe("1333.33");
   });
 
   it("rounds a decimal value to an integer on blur for int type", async () => {
