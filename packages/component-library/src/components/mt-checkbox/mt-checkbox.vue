@@ -1,6 +1,13 @@
 <template>
   <div class="mt-field--checkbox__container">
-    <div class="mt-field--checkbox" :class="{ ...MtCheckboxFieldClasses, ...checkboxClasses }">
+    <div
+      class="mt-field--checkbox"
+      :class="{
+        ...MtCheckboxFieldClasses,
+        ...checkboxClasses,
+        'mt-field--checkbox--has-label': hasLabel,
+      }"
+    >
       <div class="mt-field--checkbox__content">
         <div class="mt-field__checkbox">
           <input
@@ -186,6 +193,7 @@ export default defineComponent({
 
     const checkboxClasses = computed(() => ({
       "mt-checkbox--future-remove-default-margin": futureFlags.removeDefaultMargin,
+      "mt-checkbox--future-consistent-label-line-height": futureFlags.consistentLabelLineHeight,
     }));
 
     return {
@@ -267,6 +275,10 @@ export default defineComponent({
     iconName(): string {
       return this.isPartlyChecked ? "solid-minus-xs" : "solid-checkmark-xs";
     },
+
+    hasLabel(): boolean {
+      return !!this.label || !!this.$slots.label;
+    },
   },
 
   watch: {
@@ -333,6 +345,21 @@ export default defineComponent({
     & .mt-field--checkbox__content {
       display: grid;
       grid-template-columns: 16px 1fr;
+      /* legacy: center the box against the whole label block */
+      align-items: center;
+    }
+
+    /* consistentLabelLineHeight: the taller token label line-height means
+       the box should sit at the vertical center of the FIRST line, not
+       the whole block. Only with a label (so label-less checkboxes in
+       data tables and custom layouts are never pushed down). */
+    &.mt-checkbox--future-consistent-label-line-height .mt-field--checkbox__content {
+      align-items: start;
+    }
+
+    &.mt-checkbox--future-consistent-label-line-height.mt-field--checkbox--has-label
+      .mt-field__checkbox {
+      margin-top: 3px;
     }
 
     & .mt-field {
@@ -359,7 +386,6 @@ export default defineComponent({
     & .mt-field__checkbox {
       width: var(--scale-size-16);
       height: var(--scale-size-16);
-      margin-top: 3px;
       position: relative;
       display: flex;
       align-items: center;
@@ -490,6 +516,11 @@ export default defineComponent({
       border-radius: 4px;
       border: 1px solid var(--color-border-primary-default);
       padding-inline: var(--scale-size-12);
+      /* height comes from min-height like the switch's bordered block,
+         not from vertical padding, and the content is centered in it */
+      min-height: var(--scale-size-48);
+      display: flex;
+      align-items: center;
 
       &.has--error {
         border-color: var(--color-border-critical-default);

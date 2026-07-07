@@ -413,6 +413,11 @@ onUnmounted(() => {
   border-radius: var(--border-radius-xs);
   width: var(--scale-size-32);
   height: var(--scale-size-32);
+  /* center the icon: a bare button does not, so the inline-block icon
+     would otherwise sit low on the text baseline */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   /* prevents hover styles from being applied to non-hoverable devices */
   @media (hover: hover) {

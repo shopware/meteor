@@ -8,6 +8,7 @@
         'is--inherited': isInherited,
         'has--focus': hasFocus,
         'mt-field--future-remove-default-margin': future.removeDefaultMargin,
+        'mt-field--future-consistent-label-line-height': future.consistentLabelLineHeight,
       },
       mtBlockSize,
     ]"
@@ -455,11 +456,17 @@ export default defineComponent({
 
 .mt-field .mt-field__label {
   display: flex;
-  line-height: var(--font-line-height-xs);
+  /* legacy hardcoded value by default; the token line-height is opt-in
+     via the consistentLabelLineHeight future flag below */
+  line-height: 16px;
   font-size: var(--font-size-xs);
   margin-bottom: var(--scale-size-8);
   color: var(--color-text-primary-default);
   column-gap: var(--scale-size-6);
+}
+
+.mt-field.mt-field--future-consistent-label-line-height .mt-field__label {
+  line-height: var(--font-line-height-xs);
 }
 
 .mt-field .mt-field__label label {

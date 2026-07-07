@@ -278,6 +278,11 @@ export default defineComponent({
     margin-bottom: 0;
   }
 
+  & .mt-field__checkbox {
+    /* the action centers its content itself; no first-line label offset */
+    margin-top: 0;
+  }
+
   & .mt-field__checkbox #meteor-icon-kit__solid-checkmark-xs {
     width: var(--scale-size-8) !important;
     height: var(--scale-size-6) !important;

@@ -525,6 +525,24 @@ export default defineComponent({
     border-end-start-radius: calc(var(--border-radius-xs) - 1px);
     border-end-end-radius: calc(var(--border-radius-xs) - 1px);
   }
+
+  /* muted while the field is disabled, matching the disabled field block */
+  &.mt-field__controls--disabled {
+    background-color: var(--color-background-tertiary-default);
+
+    & button {
+      color: var(--color-icon-primary-disabled);
+    }
+  }
+}
+
+/* hide the stepper when the field is too narrow to hold it comfortably
+   (e.g. the number fields inside a range slider); the container is
+   defined on .mt-number-field in the unscoped block below */
+@container mt-number-field (max-width: 180px) {
+  .mt-number-field__controls {
+    display: none;
+  }
 }
 
 input.mt-number-field__align-end {
@@ -533,6 +551,12 @@ input.mt-number-field__align-end {
 </style>
 
 <style>
+.mt-number-field {
+  /* query container for the stepper visibility (see the scoped block) */
+  container-type: inline-size;
+  container-name: mt-number-field;
+}
+
 .mt-number-field .mt-block-field__block {
   background: var(--color-background-primary-default);
 }
