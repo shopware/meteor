@@ -279,7 +279,6 @@ export default defineComponent({
   }
 
   & .mt-field__checkbox {
-    /* the action centers its content itself; no first-line label offset */
     margin-top: 0;
   }
 

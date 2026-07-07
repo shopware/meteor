@@ -456,8 +456,6 @@ export default defineComponent({
 
 .mt-field .mt-field__label {
   display: flex;
-  /* legacy hardcoded value by default; the token line-height is opt-in
-     via the consistentLabelLineHeight future flag below */
   line-height: 16px;
   font-size: var(--font-size-xs);
   margin-bottom: var(--scale-size-8);

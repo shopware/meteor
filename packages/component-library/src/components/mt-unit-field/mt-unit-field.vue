@@ -128,14 +128,10 @@ watch(
   container: mt-unit-field / inline-size;
 }
 
-/* the stepper carries its bordered box from mt-number-field; drop its
-   trailing margin so the gap to the unit select trigger (which has its
-   own margin) is not doubled */
 .mt-unit-field :deep(.mt-number-field__controls) {
   margin-inline-end: 0;
 }
 
-/* not enough room: hide the stepper, the input and unit select stay usable */
 @container mt-unit-field (max-width: 240px) {
   .mt-unit-field :deep(.mt-number-field__controls) {
     display: none;

@@ -5,12 +5,6 @@ const defaultFutureFlags = {
   removeDefaultMargin: false,
   removeSwitchMinHeight: false,
   bannerFullWidth: false,
-  /**
-   * Field labels use the design-token line-height (--font-line-height-xs)
-   * instead of the legacy hardcoded 16px, and the checkbox aligns to the
-   * label's first line accordingly. Off by default so existing layouts
-   * keep their current label height.
-   */
   consistentLabelLineHeight: false,
 };
 

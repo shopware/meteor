@@ -483,9 +483,6 @@ export default defineComponent({
   flex-direction: column;
   flex-shrink: 0;
   width: var(--scale-size-32);
-  /* a bordered box floating in the field, same recipe as other field
-     additions: stretch minus the margin matches the field height in
-     every size variant */
   align-self: stretch;
   margin: calc(var(--_controls-margin) / 2);
   box-sizing: border-box;
@@ -513,8 +510,6 @@ export default defineComponent({
     }
   }
 
-  /* split 50/50 with a 1px separator; nested radii fit the buttons'
-     hover state to the wrapper's rounded corners */
   & button:first-of-type {
     border-start-start-radius: calc(var(--border-radius-xs) - 1px);
     border-start-end-radius: calc(var(--border-radius-xs) - 1px);
@@ -526,7 +521,6 @@ export default defineComponent({
     border-end-end-radius: calc(var(--border-radius-xs) - 1px);
   }
 
-  /* muted while the field is disabled, matching the disabled field block */
   &.mt-field__controls--disabled {
     background-color: var(--color-background-tertiary-default);
 
@@ -536,9 +530,6 @@ export default defineComponent({
   }
 }
 
-/* hide the stepper when the field is too narrow to hold it comfortably
-   (e.g. the number fields inside a range slider); the container is
-   defined on .mt-number-field in the unscoped block below */
 @container mt-number-field (max-width: 180px) {
   .mt-number-field__controls {
     display: none;
@@ -552,7 +543,6 @@ input.mt-number-field__align-end {
 
 <style>
 .mt-number-field {
-  /* query container for the stepper visibility (see the scoped block) */
   container-type: inline-size;
   container-name: mt-number-field;
 }
