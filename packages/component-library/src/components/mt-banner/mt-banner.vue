@@ -29,7 +29,7 @@
       @click.prevent="$emit('close', bannerIndex)"
       square
     >
-      <mt-icon name="regular-times-xs" />
+      <mt-icon name="regular-times-s" size="var(--scale-size-10)" />
     </mt-button>
   </div>
 </template>

@@ -45,7 +45,7 @@
     >
       <template #clear-icon="{ clear }">
         <button class="mt-datepicker__clear-button" aria-label="Clear value" @click="clear">
-          <mt-icon name="regular-times-xs" size="var(--scale-size-10)" aria-hidden="true" />
+          <mt-icon name="regular-times-s" size="var(--scale-size-10)" aria-hidden="true" />
         </button>
       </template>
 
