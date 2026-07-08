@@ -666,9 +666,9 @@ export const VisualTestUserProfileTrigger: MtActionMenuStory = {
 <dropdown-menu-root open>
     <dropdown-menu-trigger as-child>
         <button style="display: flex; align-items: center;" class="user-profile-trigger">
-          <mt-avatar 
-            first-name="John" 
-            last-name="Doe" 
+          <mt-avatar
+            first-name="John"
+            last-name="Doe"
             size="s"
           />
 
@@ -682,9 +682,9 @@ export const VisualTestUserProfileTrigger: MtActionMenuStory = {
 
           <div style="padding-left: var(--scale-size-32);" />
 
-          <mt-icon 
-            name="chevron-down-s" 
-            size="12" 
+          <mt-icon
+            name="chevron-down-s"
+            size="12"
             color="var(--color-icon-primary-default)"
           />
         </button>
@@ -753,5 +753,47 @@ export const TestMenuItemClick: MtActionMenuStory = {
 
     const menuItem = document.querySelector('[data-testid="menu-item"]');
     expect(menuItem).toBeInTheDocument();
+  },
+};
+
+// Interaction test: align prop is forwarded to reka's content element
+export const TestAlignForwarded: MtActionMenuStory = {
+  name: "Align prop is forwarded to the menu content",
+  render: () => ({
+    components: {
+      DropdownMenuRoot,
+      DropdownMenuPortal,
+      MtActionMenuItem,
+      MtActionMenu,
+      DropdownMenuTrigger,
+      MtButton,
+    },
+    template: `
+<dropdown-menu-root>
+    <dropdown-menu-trigger as-child>
+        <mt-button data-testid="trigger">Open menu</mt-button>
+    </dropdown-menu-trigger>
+
+    <dropdown-menu-portal>
+        <mt-action-menu align="end">
+          <mt-action-menu-item icon="file-text">
+            Documentation
+          </mt-action-menu-item>
+        </mt-action-menu>
+    </dropdown-menu-portal>
+</dropdown-menu-root>
+`,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const trigger = canvas.getByTestId("trigger");
+
+    await userEvent.click(trigger);
+
+    await new Promise((resolve) => setTimeout(resolve, 100));
+
+    const menu = document.querySelector(".mt-action-menu");
+    expect(menu).toBeInTheDocument();
+    expect(menu).toHaveAttribute("data-align", "end");
   },
 };

@@ -4,7 +4,8 @@
     :class="['mt-action-menu', { 'mt-action-menu--match-trigger-width': matchTriggerWidth }]"
     :side-offset="8"
     :align-offset="isSubMenu ? -5 : undefined"
-    align="start"
+    :align="align"
+    :collision-padding="8"
   >
     <slot name="default" />
   </component>
@@ -21,16 +22,21 @@ withDefaults(
      * Also constrains max-height to available viewport space.
      */
     matchTriggerWidth?: boolean;
+    /**
+     * How the menu aligns against the trigger. Ignored for sub-menus, which are
+     * positioned relative to their parent item.
+     */
+    align?: "start" | "center" | "end";
   }>(),
   {
     isSubMenu: false,
     matchTriggerWidth: false,
+    align: "start",
   },
 );
 </script>
 
 <style>
-/* Find out why we can't scope styles */
 .mt-action-menu {
   background-color: var(--color-elevation-surface-default);
   border: 1px solid var(--color-border-secondary-default);
@@ -45,7 +51,7 @@ withDefaults(
   max-height: var(--reka-dropdown-menu-content-available-height);
 }
 
-/* 
+/*
   When items outside a group have mixed icons (some with, some without),
   add left padding to items without icons to align text.
   Only applies when there's at least one item WITH icon AND one WITHOUT.

@@ -234,6 +234,12 @@ const meta: MtActionMenuMeta = {
       control: { type: "boolean" },
       description: "Matches the menu width to the trigger width.",
     },
+    align: {
+      control: { type: "inline-radio" },
+      options: ["start", "center", "end"],
+      description:
+        "How the menu aligns against the trigger. Ignored for submenus, which are positioned relative to their parent item.",
+    },
   },
 };
 
@@ -276,4 +282,34 @@ export const ExternalLinks: MtActionMenuStory = {
 export const MatchTriggerWidth: MtActionMenuStory = {
   name: "Match trigger width",
   ...createStory(matchTriggerWidthTemplate),
+};
+
+const alignmentTemplate = `
+<div style="display: flex; justify-content: flex-end;">
+  <mt-dropdown-menu-root default-open>
+    <mt-dropdown-menu-trigger as-child>
+      <mt-button>Open menu</mt-button>
+    </mt-dropdown-menu-trigger>
+
+    <mt-dropdown-menu-portal>
+      <mt-action-menu v-bind="args">
+        <mt-action-menu-item icon="file-text">Documentation</mt-action-menu-item>
+        <mt-action-menu-item icon="solid-duplicate">Duplicate</mt-action-menu-item>
+        <mt-action-menu-item icon="copy">Copy</mt-action-menu-item>
+        <mt-action-menu-item icon="trash" variant="critical">Delete</mt-action-menu-item>
+      </mt-action-menu>
+    </mt-dropdown-menu-portal>
+  </mt-dropdown-menu-root>
+</div>
+`;
+
+export const Alignment: MtActionMenuStory = {
+  args: {
+    align: "end",
+  },
+  render: (args) => ({
+    components: sharedComponents,
+    setup: () => ({ args }),
+    template: alignmentTemplate,
+  }),
 };

@@ -64,6 +64,10 @@ import StorybookPageHeader from "../../docs/_components/storybook-page-header.js
 
 <Canvas of={ActionMenuStories.MatchTriggerWidth} />
 
+### Alignment
+
+<Canvas of={ActionMenuStories.Alignment} />
+
 ## Anatomy
 
 **Action Menu** is built from a small set of companion exports that work together:
@@ -115,6 +119,7 @@ These parts are exported together so the parent page can document the full patte
 - `mt-action-menu-item` with a `link` prop renders as an external anchor and opens in a new tab.
 - `is-sub-menu` on `mt-action-menu` and `is-sub-trigger` on `mt-action-menu-item` are used together for nested submenu patterns.
 - `match-trigger-width` is useful when the menu should align visually with a wider trigger such as a row action or account switcher.
+- `align` controls how the menu lines up with its trigger (`start`, `center`, or `end`). It has no effect on submenus, which reka positions relative to their parent item.
 - Keep nesting shallow. One submenu level is usually enough, and more than two levels should be avoided.
 
 ## Accessibility notes
