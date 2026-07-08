@@ -1,9 +1,67 @@
 <script setup lang="ts">
 // Having this page makes Docus skip its own `/` route and `landing` collection
 // (docus/utils/pages.ts: landingPageExists), so this owns the home route.
+import MtThemeProvider from "@shopware-ag/meteor-component-library/MtThemeProvider";
+import MtIcon from "@shopware-ag/meteor-component-library/MtIcon";
+import MtButton from "@shopware-ag/meteor-component-library/MtButton";
+import type { ObjectDirective } from "vue";
+
 definePageMeta({
   layout: "default",
 });
+
+// True once the WebGL hero canvas renders; the CSS fallback layers then fade.
+const glActive = ref(false);
+
+// Unmount the CSS starfield once the crossfade has finished: its ~220 twinkle
+// animations would otherwise keep running invisibly underneath the canvas.
+const starsHidden = ref(false);
+let starsTimer: ReturnType<typeof setTimeout> | undefined;
+watch(glActive, (on) => {
+  clearTimeout(starsTimer);
+  if (on) starsTimer = setTimeout(() => (starsHidden.value = true), 900);
+  else starsHidden.value = false;
+});
+onBeforeUnmount(() => clearTimeout(starsTimer));
+
+// Scroll-reveal for below-the-fold sections. SSR HTML stays visible; an
+// element is hidden only on mount (and only while still below the viewport),
+// then rises in on scroll. The directive value staggers siblings.
+const revealObservers = new WeakMap<HTMLElement, IntersectionObserver>();
+const vReveal: ObjectDirective<HTMLElement, number | undefined> = {
+  mounted(el, binding) {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (el.getBoundingClientRect().top < window.innerHeight * 0.85) return;
+    el.classList.add("lp-reveal");
+    if (binding.value) {
+      el.style.setProperty("--reveal-delay", `${binding.value}ms`);
+    }
+    const io = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+        io.disconnect();
+        revealObservers.delete(el);
+        el.classList.add("lp-reveal-in");
+        // Drop the classes after the rise so the reveal transition (and its
+        // delay) can't leak into hover transitions.
+        setTimeout(
+          () => {
+            el.classList.remove("lp-reveal", "lp-reveal-in");
+            el.style.removeProperty("--reveal-delay");
+          },
+          (binding.value ?? 0) + 950,
+        );
+      },
+      { rootMargin: "0px 0px -60px 0px" },
+    );
+    io.observe(el);
+    revealObservers.set(el, io);
+  },
+  unmounted(el) {
+    revealObservers.get(el)?.disconnect();
+    revealObservers.delete(el);
+  },
+};
 
 const appConfig = useAppConfig();
 
@@ -31,57 +89,45 @@ defineOgImage("Landing", {
 });
 
 const btnBase =
-  "home-btn relative inline-flex min-h-12 cursor-pointer select-none items-center justify-center gap-2 rounded-[16px] px-5 py-3 text-center text-sm font-semibold transition-colors duration-100 ease-in-out";
-
-// Light-mode hero: a darker dot layer revealed through a circular mask that
-// follows the cursor (a "spotlight"), fading in/out on enter/leave.
-const dotsReveal = ref<HTMLElement | null>(null);
-const spotActive = ref(false);
-
-function onHeroMove(e: PointerEvent) {
-  const el = dotsReveal.value;
-  if (!el) return;
-  const r = (e.currentTarget as HTMLElement).getBoundingClientRect();
-  el.style.setProperty("--mx", `${e.clientX - r.left}px`);
-  el.style.setProperty("--my", `${e.clientY - r.top}px`);
-}
-
-const tickerItems = [
-  { icon: "i-lucide-accessibility", label: "Accessible" },
-  { icon: "i-simple-icons-typescript", label: "TypeScript" },
-  { icon: "i-lucide-swatch-book", label: "Design tokens" },
-  { icon: "i-lucide-contrast", label: "Light & dark mode" },
-  { icon: "i-lucide-blocks", label: "45+ components" },
-  { icon: "i-lucide-shapes", label: "900+ icons" },
-  { icon: "i-simple-icons-vuedotjs", label: "Vue 3" },
-  { icon: "i-lucide-bot", label: "MCP server" },
-  { icon: "i-lucide-git-pull-request", label: "Open source" },
-];
+  "home-btn relative inline-flex min-h-12 cursor-pointer select-none items-center justify-center gap-2 rounded-[16px] px-5 py-3 text-center text-sm font-semibold transition-[transform,color,background-color,border-color] duration-200 ease-out active:scale-[0.98] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary";
 
 const npmBase = "https://www.npmjs.com/package/@shopware-ag/";
 
+// `icon` is a Meteor icon-kit name, rendered via <mt-icon name="regular-…">.
 const benefits = [
   {
-    icon: "i-custom:shopware-signet",
+    icon: "shopware",
     title: "Built for Shopware",
     text: "Components and patterns shaped for administrative commerce interfaces, not a generic UI kit.",
+    detail:
+      "From data tables and rule builders to settings layouts, every component maps to a real administration pattern, so you assemble screens instead of rebuilding primitives.",
   },
   {
-    icon: "i-lucide-refresh-cw",
+    icon: "sync",
     title: "Design and code in sync",
     text: "Figma libraries, components, and tokens stay aligned, so decisions are made once and applied everywhere.",
+    detail:
+      "The same design tokens drive both Figma and code, so a change to a color or spacing value lands in both places at the same time.",
   },
   {
-    icon: "i-lucide-person-standing",
+    icon: "universal-access",
     title: "Accessible out of the box",
     text: "Every component ships with keyboard support, ARIA semantics, and light and dark themes.",
+    detail:
+      "Focus management and WCAG-compliant color contrast are built in and tested, so accessibility is the default rather than a retrofit.",
   },
 ];
+
+// Which benefit is expanded in the accordion (first one open by default).
+const openBenefit = ref<number | null>(0);
+function toggleBenefit(index: number) {
+  openBenefit.value = openBenefit.value === index ? null : index;
+}
 
 const packages = [
   {
     name: "meteor-component-library",
-    text: "Vue 3 component set with built-in tokens, icons, and the Inter font.",
+    text: "Vue 3 component set with built-in tokens and icons.",
   },
   {
     name: "meteor-tokens",
@@ -92,47 +138,107 @@ const packages = [
     text: "SVG icon set, standalone or as Vue components via mt-icon.",
   },
 ];
+
+// Cards for the "Explore the docs" arc carousel. The per-card preview art is
+// supplied in the template via the carousel's #visual scoped slot (keyed here).
+const docCards = [
+  {
+    key: "getting-started",
+    title: "Getting Started",
+    description: "Install the packages and ship your first screen.",
+    to: "/documentation/getting-started",
+  },
+  {
+    key: "guidelines",
+    title: "Guidelines",
+    description: "Design principles, accessibility, states and conventions.",
+    to: "/documentation/guidelines",
+  },
+  {
+    key: "accessibility",
+    title: "Accessibility",
+    description: "Keyboard support, ARIA semantics, and focus handling.",
+    to: "/documentation/guidelines/accessibility",
+  },
+  {
+    key: "design",
+    title: "Design",
+    description: "Tokens, theming, and how design decisions are encoded.",
+    to: "/documentation/design",
+  },
+  {
+    key: "tokens",
+    title: "Design Tokens",
+    description: "Color, spacing, and elevation as CSS custom properties.",
+    to: "/documentation/design/tokens",
+  },
+  {
+    key: "icons",
+    title: "Icons",
+    description: "A complete SVG icon set, ready as Vue components.",
+    to: "/documentation/design/icons",
+  },
+  {
+    key: "content",
+    title: "Content",
+    description: "Voice, tone, and wording guidelines for UI copy.",
+    to: "/documentation/content",
+  },
+  {
+    key: "components",
+    title: "Components",
+    description: "Vue components, documented and ready to drop in.",
+    to: "/components",
+  },
+  {
+    key: "utilities",
+    title: "Utilities",
+    description: "Composables, directives, and plugins for common needs.",
+    to: "/utilities",
+  },
+  {
+    key: "agents",
+    title: "Agents",
+    description: "Connect Meteor to AI agents through the MCP server.",
+    to: "/documentation/getting-started/agents",
+  },
+];
 </script>
 
 <template>
   <div class="landing">
-    <section
-      class="hero relative isolate overflow-hidden"
-      @pointermove="onHeroMove"
-      @pointerenter="spotActive = true"
-      @pointerleave="spotActive = false"
-    >
-      <!-- Light mode: gray dot grid fading out toward the bottom. -->
+    <!-- overflow-clip (not -hidden) so the hero doesn't become a scroll
+         container, which would break the scroll()/view() timelines inside. -->
+    <section class="hero relative isolate overflow-clip">
+      <!-- The static backdrop layers share one masked element (a single
+           bottom fade covers gradient, starfield and the hero-bg--canvas
+           backing that hides the CSS dots). The GL canvas sits outside the
+           mask and fades itself in-shader: masking a canvas that repaints
+           every frame would re-composite the whole hero continuously. -->
       <div
         aria-hidden="true"
-        class="hero-dots absolute inset-0 -z-10 dark:hidden"
-      />
-      <!-- Darker dots revealed in a circle around the cursor. -->
-      <div
-        ref="dotsReveal"
-        aria-hidden="true"
-        class="hero-dots-reveal absolute inset-0 -z-10 dark:hidden"
-        :class="{ 'is-spot': spotActive }"
-      />
-      <LandingStarfield class="-z-10 hidden dark:block" />
-      <div
-        aria-hidden="true"
-        class="absolute inset-x-0 bottom-0 -z-10 h-3/5 bg-[linear-gradient(to_bottom,transparent,var(--hero-edge))]"
-      />
-      <!-- Dark mode: a large planet curving up from the bottom edge, with the
-           starfield above it reading as the surrounding space/atmosphere. -->
-      <div
-        aria-hidden="true"
-        class="hero-earth absolute inset-x-0 bottom-0 -z-10 hidden dark:block"
-      />
+        class="hero-bg absolute inset-0 -z-10"
+        :class="{ 'hero-bg--canvas': glActive }"
+      >
+        <LandingStarfield
+          v-if="!starsHidden"
+          class="hero-stars hidden dark:block"
+          :class="{ 'hero-stars--dim': glActive }"
+        />
+      </div>
+      <LandingHeroCanvas class="-z-10" @active="glActive = $event" />
       <LandingUfo />
 
+      <!-- On phones the showcase below is hidden, so the hero carries its own
+           bottom padding there; from sm up the showcase provides the spacing. -->
       <UContainer
-        class="mx-auto flex flex-col items-center pt-16 pb-16 text-center sm:pt-24 sm:pb-24 lg:pt-28 lg:pb-28"
+        class="hero-copy mx-auto flex flex-col items-center pt-16 pb-20 text-center sm:pt-24 sm:pb-0 lg:pt-28"
       >
-        <h1 class="hero-rise type-heading-2xl max-w-4xl text-highlighted">
+        <h1
+          class="hero-rise type-heading-2xl max-w-4xl text-balance text-highlighted"
+        >
           Build outstanding Shopware experiences with
-          <span class="italic">Meteor</span>.
+          <span class="italic">Meteor</span>
         </h1>
 
         <p
@@ -194,62 +300,76 @@ const packages = [
           </UButton>
         </div>
       </UContainer>
+
+      <!-- Live component showcase, nested in the hero so the backdrop bleeds
+           down behind the cards and fades out midway through them. -->
+      <LandingComponentShowcase />
     </section>
 
-    <!-- Feature ticker, sitting flush below the gradient hero section. -->
-    <div
-      class="hero-rise marquee-mask relative border-y border-default py-4"
-      :style="{ animationDelay: '320ms' }"
-    >
-      <UMarquee :overlay="false" class="[--duration:40s] [--gap:3rem]">
-        <div
-          v-for="item in tickerItems"
-          :key="item.label"
-          class="flex items-center gap-2 text-sm font-medium text-muted"
-        >
-          <UIcon :name="item.icon" class="size-4 shrink-0 text-muted" />
-          <span class="whitespace-nowrap">{{ item.label }}</span>
-        </div>
-      </UMarquee>
-    </div>
-
-    <!-- Why Meteor: value proposition -->
-    <section
-      class="hero-rise bg-muted py-20 sm:py-28"
-      :style="{ animationDelay: '400ms' }"
-    >
-      <UContainer>
-        <header class="mx-auto mb-16 max-w-2xl text-center">
-          <h2
-            class="text-3xl font-bold tracking-tight text-highlighted sm:text-4xl"
-          >
-            Why teams build on Meteor
-          </h2>
-          <p class="mt-6 text-base leading-relaxed text-muted sm:text-lg">
-            More than a component library, Meteor is the shared foundation that
-            Shopware and its community design and build on together.
-          </p>
-        </header>
-
-        <div
-          class="grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-3 mx-auto max-w-280"
-        >
-          <div
-            v-for="benefit in benefits"
-            :key="benefit.title"
-            class="mx-auto flex max-w-72 flex-col items-center text-center"
-          >
-            <div
-              class="flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary"
+    <!-- Why Meteor: the value proposition as an accordion. Less top padding
+         from sm up (the showcase above ends in its own fade); on phones the
+         hero provides the spacing. -->
+    <section class="why-section relative pt-16 pb-20 sm:pb-28">
+      <!-- Eases the dot grid back in below the showcase fade. -->
+      <div aria-hidden="true" class="why-fade" />
+      <UContainer class="relative">
+        <div class="grid gap-12 lg:grid-cols-12 lg:gap-16">
+          <header v-reveal class="lg:col-span-5">
+            <h2 class="lp-h2 text-highlighted">Why teams build on Meteor</h2>
+            <p
+              class="mt-5 text-base leading-relaxed text-pretty text-muted sm:text-lg"
             >
-              <UIcon :name="benefit.icon" class="size-5" />
-            </div>
-            <h3 class="mt-4 font-semibold text-highlighted">
-              {{ benefit.title }}
-            </h3>
-            <p class="mt-1 text-sm leading-relaxed text-muted">
-              {{ benefit.text }}
+              More than a component library, Meteor is the shared foundation
+              that Shopware and its community design and build on together.
             </p>
+          </header>
+
+          <div class="flex flex-col gap-3 lg:col-span-7">
+            <div
+              v-for="(benefit, index) in benefits"
+              :key="benefit.title"
+              v-reveal="index * 90"
+              class="acc-item"
+            >
+              <button
+                type="button"
+                class="acc-trigger"
+                :aria-expanded="openBenefit === index"
+                @click="toggleBenefit(index)"
+              >
+                <span class="acc-icon">
+                  <mt-icon
+                    :name="`regular-${benefit.icon}`"
+                    size="20"
+                    color="var(--ui-primary)"
+                  />
+                </span>
+                <span class="acc-title">{{ benefit.title }}</span>
+                <span
+                  aria-hidden="true"
+                  class="acc-toggle"
+                  :class="{ 'acc-toggle--open': openBenefit === index }"
+                >
+                  <span class="acc-toggle__bar" />
+                  <span class="acc-toggle__bar acc-toggle__bar--v" />
+                </span>
+              </button>
+              <div
+                class="acc-panel"
+                :class="{ 'acc-panel--open': openBenefit === index }"
+              >
+                <div class="acc-panel-inner">
+                  <div class="acc-panel-content">
+                    <p class="text-base leading-relaxed text-muted">
+                      {{ benefit.text }}
+                    </p>
+                    <p class="mt-3 text-base leading-relaxed text-muted">
+                      {{ benefit.detail }}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </UContainer>
@@ -257,283 +377,246 @@ const packages = [
 
     <section class="py-20 sm:py-28">
       <UContainer>
-        <div class="bg-default">
-          <header class="mx-auto mb-12 max-w-2xl text-center">
-            <h2
-              class="text-3xl font-bold tracking-tight text-highlighted sm:text-4xl"
-            >
-              Explore the docs
-            </h2>
-            <p class="mt-6 text-base leading-relaxed text-muted sm:text-lg">
-              Guides and references for every part of Meteor, from guidelines
-              and design tokens to components, content, and agents.
-            </p>
-          </header>
-
-          <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            <LandingSectionCard
-              title="Getting Started"
-              description="Install the packages and ship your first screen."
-              to="/documentation/getting-started"
-            >
-              <template #visual>
-                <div
-                  class="absolute inset-0 flex items-center justify-center p-4"
-                >
-                  <div
-                    class="w-full max-w-xs rounded-lg border border-default bg-elevated p-3 font-mono text-[10px]"
-                  >
-                    <div class="mb-2 flex gap-1.5">
-                      <span class="size-2 rounded-full bg-error/70" />
-                      <span class="size-2 rounded-full bg-warning/70" />
-                      <span class="size-2 rounded-full bg-success/70" />
-                    </div>
-                    <p class="leading-relaxed text-muted">
-                      <span class="text-success">$</span> npm i
-                      <span class="text-highlighted break-all"
-                        >@shopware-ag/meteor-component-library</span
-                      >
-                    </p>
-                  </div>
-                </div>
-              </template>
-            </LandingSectionCard>
-
-            <LandingSectionCard
-              title="Guidelines"
-              description="Design principles, accessibility, states and conventions."
-              to="/documentation/guidelines"
-            >
-              <template #visual>
-                <div
-                  class="absolute inset-0 flex items-center justify-center gap-1.5 p-4 text-[11px]"
-                >
-                  <span
-                    class="rounded-md border border-default bg-elevated px-2 py-1 text-muted"
-                  >
-                    Default
-                  </span>
-                  <span
-                    class="rounded-md border border-default bg-default px-2 py-1 text-highlighted outline-2 outline-offset-2 outline-primary"
-                  >
-                    Focus
-                  </span>
-                  <span
-                    class="rounded-md bg-primary px-2 py-1 text-static-white"
-                  >
-                    Active
-                  </span>
-                  <span
-                    class="rounded-md border border-default bg-elevated px-2 py-1 text-dimmed opacity-60"
-                  >
-                    Disabled
-                  </span>
-                </div>
-              </template>
-            </LandingSectionCard>
-
-            <LandingSectionCard
-              title="Design"
-              description="Tokens, theming, and how design decisions are encoded."
-              to="/documentation/design"
-            >
-              <template #visual>
-                <div
-                  class="absolute inset-0 flex items-center justify-center gap-3 p-5"
-                >
-                  <!-- Same UI rendered with the light and dark token sets.
-                       Built from theme-independent primitives so both panels
-                       stay fixed regardless of the page's color mode. -->
-                  <div
-                    class="flex w-28 flex-col gap-2 rounded-lg border border-[var(--color-zinc-200)] bg-[var(--color-zinc-0)] p-3"
-                  >
-                    <UIcon
-                      name="i-lucide-sun"
-                      class="size-3.5 text-[var(--color-pumpkin-500)]"
-                    />
-                    <span
-                      class="h-1.5 w-full rounded-full bg-[var(--color-zinc-200)]"
-                    />
-                    <span
-                      class="h-1.5 w-2/3 rounded-full bg-[var(--color-zinc-200)]"
-                    />
-                    <span
-                      class="mt-1 h-4 rounded bg-[var(--color-brand-500)]"
-                    />
-                  </div>
-                  <div
-                    class="flex w-28 flex-col gap-2 rounded-lg border border-[var(--color-zinc-850)] bg-[var(--color-zinc-975)] p-3"
-                  >
-                    <UIcon
-                      name="i-lucide-moon"
-                      class="size-3.5 text-[var(--color-zinc-300)]"
-                    />
-                    <span
-                      class="h-1.5 w-full rounded-full bg-[var(--color-zinc-700)]"
-                    />
-                    <span
-                      class="h-1.5 w-2/3 rounded-full bg-[var(--color-zinc-700)]"
-                    />
-                    <span
-                      class="mt-1 h-4 rounded bg-[var(--color-brand-500)]"
-                    />
-                  </div>
-                </div>
-              </template>
-            </LandingSectionCard>
-
-            <LandingSectionCard
-              title="Content"
-              description="Voice, tone, and wording guidelines for UI copy."
-              to="/documentation/content"
-            >
-              <template #visual>
-                <div
-                  class="absolute inset-0 flex flex-col items-center justify-center gap-2 p-5 text-xs"
-                >
-                  <div
-                    class="flex w-full max-w-44 items-center gap-2 rounded-md border border-default bg-elevated px-2.5 py-2"
-                  >
-                    <UIcon
-                      name="i-lucide-check"
-                      class="size-4 shrink-0 text-success"
-                    />
-                    <span class="text-highlighted">Save changes</span>
-                  </div>
-                  <div
-                    class="flex w-full max-w-44 items-center gap-2 rounded-md border border-default bg-elevated px-2.5 py-2 opacity-70"
-                  >
-                    <UIcon
-                      name="i-lucide-x"
-                      class="size-4 shrink-0 text-error"
-                    />
-                    <span class="text-muted line-through">
-                      Submit the form data
-                    </span>
-                  </div>
-                </div>
-              </template>
-            </LandingSectionCard>
-
-            <LandingSectionCard
-              title="Agents"
-              description="Connect Meteor to AI agents through the MCP server."
-              to="/documentation/getting-started/agents"
-            >
-              <template #visual>
-                <div
-                  class="absolute inset-0 flex flex-col justify-center gap-2 p-5 text-[11px]"
-                >
-                  <div
-                    class="max-w-[85%] self-end rounded-xl rounded-br-sm bg-primary px-3 py-2 text-static-white"
-                  >
-                    Scaffold a settings page with Meteor
-                  </div>
-                  <div
-                    class="flex max-w-[85%] items-center gap-1.5 self-start rounded-xl rounded-bl-sm border border-default bg-elevated px-3 py-2 text-muted"
-                  >
-                    <UIcon
-                      name="i-lucide-bot"
-                      class="size-3.5 shrink-0 text-primary"
-                    />
-                    Using mt-card, mt-text-field...
-                  </div>
-                </div>
-              </template>
-            </LandingSectionCard>
-
-            <LandingSectionCard
-              title="Components"
-              description="Vue components, documented and ready to drop in."
-              to="/components"
-            >
-              <template #visual>
-                <div
-                  class="absolute inset-0 flex items-center justify-center gap-3 p-4"
-                >
-                  <span
-                    class="rounded bg-interaction-primary-default px-3.5 py-1.5 text-[13px] font-semibold text-static-white"
-                  >
-                    Button
-                  </span>
-                  <span class="flex items-center gap-2 text-xs text-muted">
-                    <span
-                      class="relative h-4 w-7 rounded-full bg-interaction-primary-default"
-                    >
-                      <span
-                        class="absolute top-0.5 right-0.5 size-3 rounded-full bg-static-white"
-                      />
-                    </span>
-                    Switch
-                  </span>
-                  <span class="flex items-center gap-2 text-xs text-muted">
-                    <span
-                      class="flex size-4 items-center justify-center rounded-[3px] bg-interaction-primary-default text-static-white"
-                    >
-                      <UIcon name="i-lucide-check" class="size-3" />
-                    </span>
-                    Checkbox
-                  </span>
-                </div>
-              </template>
-            </LandingSectionCard>
-          </div>
-        </div>
+        <header v-reveal class="mb-12 max-w-2xl">
+          <h2 class="lp-h2 text-highlighted">Explore the docs</h2>
+          <p
+            class="mt-5 text-base leading-relaxed text-pretty text-muted sm:text-lg"
+          >
+            Guides and references for every part of Meteor, from guidelines and
+            design tokens to components, content, and agents.
+          </p>
+        </header>
       </UContainer>
+
+      <LandingDocsCarousel v-reveal="120" :items="docCards">
+        <template #visual="{ item }">
+          <template v-if="item.key === 'getting-started'">
+            <div class="absolute inset-0 flex items-center justify-center p-4">
+              <div
+                class="w-full max-w-xs rounded-lg border border-default bg-elevated p-3 font-mono text-[10px]"
+              >
+                <div class="mb-2 flex gap-1.5">
+                  <span class="size-2 rounded-full bg-error/70" />
+                  <span class="size-2 rounded-full bg-warning/70" />
+                  <span class="size-2 rounded-full bg-success/70" />
+                </div>
+                <p class="leading-relaxed text-muted">
+                  <span class="text-success">$</span> npm i
+                  <span class="text-highlighted break-all"
+                    >@shopware-ag/meteor-component-library</span
+                  >
+                </p>
+              </div>
+            </div>
+          </template>
+
+          <template v-else-if="item.key === 'guidelines'">
+            <div
+              class="absolute inset-0 flex flex-wrap items-center justify-center gap-1.5 p-4 text-[11px]"
+            >
+              <span
+                class="rounded-md border border-default bg-elevated px-2 py-1 text-muted"
+              >
+                Default
+              </span>
+              <span
+                class="rounded-md border border-default bg-default px-2 py-1 text-highlighted outline-2 outline-offset-2 outline-primary"
+              >
+                Focus
+              </span>
+              <span class="rounded-md bg-primary px-2 py-1 text-static-white">
+                Active
+              </span>
+              <span
+                class="rounded-md border border-default bg-elevated px-2 py-1 text-dimmed opacity-60"
+              >
+                Disabled
+              </span>
+            </div>
+          </template>
+
+          <template v-else-if="item.key === 'design'">
+            <div
+              class="absolute inset-0 flex items-center justify-center gap-3 p-5"
+            >
+              <!-- Both token sets side by side, built from theme-independent
+                   primitives so neither panel follows the page's color mode. -->
+              <div
+                class="flex w-28 flex-col gap-2 rounded-lg border border-[var(--color-zinc-200)] bg-[var(--color-zinc-0)] p-3"
+              >
+                <UIcon
+                  name="i-lucide-sun"
+                  class="size-3.5 text-[var(--color-pumpkin-500)]"
+                />
+                <span
+                  class="h-1.5 w-full rounded-full bg-[var(--color-zinc-200)]"
+                />
+                <span
+                  class="h-1.5 w-2/3 rounded-full bg-[var(--color-zinc-200)]"
+                />
+                <span class="mt-1 h-4 rounded bg-[var(--color-brand-500)]" />
+              </div>
+              <div
+                class="flex w-28 flex-col gap-2 rounded-lg border border-[var(--color-zinc-850)] bg-[var(--color-zinc-975)] p-3"
+              >
+                <UIcon
+                  name="i-lucide-moon"
+                  class="size-3.5 text-[var(--color-zinc-300)]"
+                />
+                <span
+                  class="h-1.5 w-full rounded-full bg-[var(--color-zinc-700)]"
+                />
+                <span
+                  class="h-1.5 w-2/3 rounded-full bg-[var(--color-zinc-700)]"
+                />
+                <span class="mt-1 h-4 rounded bg-[var(--color-brand-500)]" />
+              </div>
+            </div>
+          </template>
+
+          <template v-else-if="item.key === 'content'">
+            <div
+              class="absolute inset-0 flex flex-col items-center justify-center gap-2 p-5 text-xs"
+            >
+              <div
+                class="flex w-full max-w-44 items-center gap-2 rounded-md border border-default bg-elevated px-2.5 py-2"
+              >
+                <UIcon
+                  name="i-lucide-check"
+                  class="size-4 shrink-0 text-success"
+                />
+                <span class="text-highlighted">Save changes</span>
+              </div>
+              <div
+                class="flex w-full max-w-44 items-center gap-2 rounded-md border border-default bg-elevated px-2.5 py-2 opacity-70"
+              >
+                <UIcon name="i-lucide-x" class="size-4 shrink-0 text-error" />
+                <span class="text-muted line-through">
+                  Submit the form data
+                </span>
+              </div>
+            </div>
+          </template>
+
+          <template v-else-if="item.key === 'agents'">
+            <div
+              class="absolute inset-0 flex flex-col justify-center gap-2 p-5 text-[11px]"
+            >
+              <div
+                class="max-w-[85%] self-end rounded-xl rounded-br-sm bg-primary px-3 py-2 text-static-white"
+              >
+                Scaffold a settings page with Meteor
+              </div>
+              <div
+                class="flex max-w-[85%] items-center gap-1.5 self-start rounded-xl rounded-bl-sm border border-default bg-elevated px-3 py-2 text-muted"
+              >
+                <UIcon
+                  name="i-lucide-bot"
+                  class="size-3.5 shrink-0 text-primary"
+                />
+                Using mt-card, mt-text-field...
+              </div>
+            </div>
+          </template>
+
+          <template v-else-if="item.key === 'components'">
+            <div class="absolute inset-0 flex items-center justify-center p-5">
+              <!-- Real Meteor components, client-only. removeDefaultMargin
+                   drops the reserved hint spacing to keep the preview compact. -->
+              <ClientOnly>
+                <MtThemeProvider :future="{ removeDefaultMargin: true }">
+                  <div class="flex items-center gap-3">
+                    <mt-button variant="secondary" size="default">
+                      Cancel
+                    </mt-button>
+                    <mt-button variant="primary" size="default">Save</mt-button>
+                  </div>
+                </MtThemeProvider>
+              </ClientOnly>
+            </div>
+          </template>
+
+          <template v-else-if="item.key === 'accessibility'">
+            <div
+              class="absolute inset-0 flex items-center justify-center gap-3 p-5 text-xs"
+            >
+              <span
+                class="rounded-md bg-primary px-3 py-1.5 font-semibold text-static-white outline-2 outline-offset-2 outline-primary"
+              >
+                Button
+              </span>
+              <span
+                class="rounded border border-default bg-elevated px-2 py-1 font-mono text-[11px] text-muted"
+              >
+                Tab
+              </span>
+            </div>
+          </template>
+
+          <template v-else-if="item.key === 'tokens'">
+            <div
+              class="absolute inset-0 flex items-center justify-center gap-2.5 p-5"
+            >
+              <span class="size-10 rounded-lg bg-[var(--color-brand-500)]" />
+              <span class="size-10 rounded-lg bg-[var(--color-brand-300)]" />
+              <span class="size-10 rounded-lg bg-[var(--color-emerald-600)]" />
+              <span class="size-10 rounded-lg bg-[var(--color-pumpkin-500)]" />
+              <span class="size-10 rounded-lg bg-[var(--color-red-500)]" />
+            </div>
+          </template>
+
+          <template v-else-if="item.key === 'icons'">
+            <div
+              class="absolute inset-0 grid grid-cols-4 place-content-center place-items-center gap-x-7 gap-y-6 p-7"
+            >
+              <mt-icon
+                v-for="icon in [
+                  'regular-home',
+                  'regular-cog',
+                  'regular-bell',
+                  'regular-search',
+                  'regular-heart',
+                  'regular-star',
+                  'regular-user',
+                  'regular-envelope',
+                ]"
+                :key="icon"
+                :name="icon"
+                size="24"
+                color="var(--ui-text-muted)"
+              />
+            </div>
+          </template>
+
+          <template v-else-if="item.key === 'utilities'">
+            <div class="absolute inset-0 flex items-center justify-center p-4">
+              <div
+                class="w-full max-w-xs rounded-lg border border-default bg-elevated p-3 font-mono text-[10px] leading-relaxed"
+              >
+                <span class="text-primary">const</span>
+                <span class="text-highlighted"> { copy } </span>=
+                <span class="text-highlighted">useCopyToClipboard</span>()
+              </div>
+            </div>
+          </template>
+        </template>
+      </LandingDocsCarousel>
     </section>
 
     <!-- The packages -->
-    <section class="bg-muted py-20 sm:py-28">
+    <section class="py-20 sm:py-28">
       <UContainer>
-        <header class="mx-auto mb-12 max-w-2xl text-center">
-          <h2
-            class="text-3xl font-bold tracking-tight text-highlighted sm:text-4xl"
+        <header v-reveal class="max-w-2xl">
+          <h2 class="lp-h2 text-highlighted">Install only what you need</h2>
+          <p
+            class="mt-5 text-base leading-relaxed text-pretty text-muted sm:text-lg"
           >
-            Install only what you need
-          </h2>
-          <p class="mt-6 text-base leading-relaxed text-muted sm:text-lg">
             Meteor ships as three independent npm packages. Pull in the full
             component library, or just the tokens or icons.
           </p>
-        </header>
-
-        <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          <NuxtLink
-            v-for="pkg in packages"
-            :key="pkg.name"
-            :to="npmBase + pkg.name"
-            target="_blank"
-            class="group flex flex-col rounded-2xl border border-default bg-default p-6 transition-colors hover:border-accented"
-          >
-            <div
-              class="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary"
-            >
-              <UIcon name="i-simple-icons-npm" class="size-5" />
-            </div>
-            <p
-              class="mt-4 font-mono text-sm font-medium break-all text-highlighted"
-            >
-              @shopware-ag/{{ pkg.name }}
-            </p>
-            <p class="mt-2 text-sm leading-relaxed text-muted">
-              {{ pkg.text }}
-            </p>
-            <span
-              class="mt-auto inline-flex items-center gap-1 pt-5 text-sm font-medium text-primary"
-            >
-              View on npm
-              <UIcon
-                name="i-lucide-arrow-up-right"
-                class="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-              />
-            </span>
-          </NuxtLink>
-        </div>
-
-        <div class="mt-10 text-center">
           <NuxtLink
             to="/documentation/getting-started"
-            class="group inline-flex items-center gap-1.5 text-sm font-medium text-primary"
+            class="group mt-5 inline-flex items-center gap-1.5 text-base font-medium text-primary"
           >
             Read the developer setup guide
             <UIcon
@@ -541,36 +624,78 @@ const packages = [
               class="size-4 transition-transform group-hover:translate-x-0.5"
             />
           </NuxtLink>
+        </header>
+
+        <div class="mt-12">
+          <div
+            v-for="(pkg, index) in packages"
+            :key="pkg.name"
+            v-reveal="index * 90"
+            class="grid grid-cols-1 gap-5 border-b border-default py-8 last:border-b-0 sm:grid-cols-2 sm:items-center sm:gap-10"
+          >
+            <div>
+              <div class="flex items-center gap-2.5">
+                <UIcon
+                  name="i-simple-icons-npm"
+                  class="size-5 shrink-0 text-primary"
+                />
+                <p
+                  class="font-mono text-base font-bold break-all text-highlighted"
+                >
+                  @shopware-ag/{{ pkg.name }}
+                </p>
+              </div>
+              <p class="mt-3 text-base leading-relaxed text-muted">
+                {{ pkg.text }}
+              </p>
+              <NuxtLink
+                :to="npmBase + pkg.name"
+                target="_blank"
+                class="group mt-2 inline-flex items-center gap-1.5 text-base font-medium text-primary"
+              >
+                View on npm
+                <UIcon
+                  name="i-lucide-arrow-up-right"
+                  class="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+                />
+              </NuxtLink>
+            </div>
+            <LandingCopyCommand :command="`npm i @shopware-ag/${pkg.name}`" />
+          </div>
         </div>
       </UContainer>
     </section>
 
-    <!-- Closing CTA -->
-    <section class="py-20 sm:py-28">
+    <!-- Contribute: prominent card with an animated LED gradient border. -->
+    <section class="pt-8 pb-28 sm:pt-10 sm:pb-40">
       <UContainer>
-        <div
-          class="mx-auto flex max-w-2xl flex-col items-center gap-6 text-center"
-        >
-          <h2
-            class="text-3xl font-bold tracking-tight text-highlighted sm:text-4xl"
-          >
-            Want to contribute or report an issue?
-          </h2>
-          <p class="text-base leading-relaxed text-muted sm:text-lg">
-            Meteor is open source. Open an issue, request a feature, or send a
-            pull request on GitHub.
-          </p>
-          <NuxtLink
-            :to="githubUrl"
-            target="_blank"
-            :class="[
-              btnBase,
-              'border border-default bg-interaction-secondary-default text-default hover:bg-interaction-secondary-hover',
-            ]"
-          >
-            <UIcon name="i-simple-icons-github" class="size-4" />
-            View on GitHub
-          </NuxtLink>
+        <div v-reveal class="contribute">
+          <div class="contribute__card">
+            <div class="contribute__body">
+              <UIcon
+                name="i-simple-icons-github"
+                class="contribute__logo size-12"
+              />
+              <h2 class="lp-h2 mt-6 text-highlighted">Build Meteor with us</h2>
+              <p
+                class="mt-4 max-w-xl text-base leading-relaxed text-muted sm:text-lg"
+              >
+                Meteor is open source. Open an issue, request a feature, or send
+                a pull request on GitHub.
+              </p>
+              <NuxtLink
+                :to="githubUrl"
+                target="_blank"
+                :class="[
+                  btnBase,
+                  'mt-8 bg-interaction-primary-default text-static-white hover:bg-interaction-primary-hover',
+                ]"
+              >
+                <UIcon name="i-simple-icons-github" class="size-4" />
+                View on GitHub
+              </NuxtLink>
+            </div>
+          </div>
         </div>
       </UContainer>
     </section>
@@ -578,131 +703,282 @@ const packages = [
 </template>
 
 <style scoped>
-/* Squircle corners on the custom home-page buttons (border-radius set via the
- * rounded-[16px] utility). corner-shape is kept here because Tailwind's CSS
- * engine strips it from arbitrary-property utilities. */
+/* Squircle corners for the home buttons; corner-shape lives here because
+ * Tailwind strips it from arbitrary-property utilities. */
 .home-btn {
   corner-shape: squircle;
 }
 
-/* Dark mode gets a night-sky gradient + starfield with a planet rising from the
- * bottom; light mode gets a gray dot grid (.hero-dots). --hero-edge (the hero's
- * bottom color) is shared with the hero fade and the section transition so the
- * blend stays seamless. */
-.landing {
-  --ui-container: var(--ui-container-small);
-  --hero-gradient: none;
-  --hero-edge: var(--ui-bg);
+/* Accordion items are surface cards; the panel uses the grid 0fr/1fr trick
+ * for a measurement-free height transition. */
+.acc-item {
+  border: 1px solid var(--ui-border);
+  border-radius: 1rem;
+  background: var(--ui-bg);
+  box-shadow: var(--landing-elev);
+  overflow: hidden;
+  transition: transform 0.15s var(--ease-out);
 }
-
-.dark .landing {
-  /* Night sky: a faint blue base at the bottom (by the planet's atmosphere)
-   * fading smoothly to pure black space well before the top. */
-  --hero-gradient: linear-gradient(0deg, #0b1c3a 0%, #03060e 60%, #000000 100%);
+.acc-item:active {
+  transform: scale(0.985);
 }
-
-.hero {
-  background: var(--hero-gradient);
+.acc-trigger {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  width: 100%;
+  padding: 1.25rem 1.5rem;
+  cursor: pointer;
+  text-align: left;
 }
-
-/* The planet: a large, bright atmospheric rim over a dark body, rising from the
- * bottom edge of the hero. Shown in dark mode via the dark:block utility. */
-.hero-earth {
-  height: 88%;
-  background:
-    /* atmospheric halo — a faint blue glow bleeding off the limb into space */
-    radial-gradient(
-      90% 90% at 50% 142%,
-      rgba(86, 158, 245, 0.14) 46%,
-      rgba(56, 132, 240, 0.06) 58%,
-      transparent 70%
-    ),
-    /* planet — dark body with a soft cool limb forming the horizon */
-      radial-gradient(
-        78% 82% at 50% 142%,
-        #123f73 0%,
-        #0a2244 50%,
-        rgba(130, 188, 255, 0.32) 64%,
-        rgba(110, 175, 250, 0.1) 68%,
-        transparent 75%
-      );
+.acc-icon {
+  display: inline-flex;
+  flex-shrink: 0;
 }
-
-/* On narrow viewports the headline wraps and the hero grows tall. Since the
- * planet's center (142%) and radii are percentages of the element height, that
- * would stretch it into an oversized vertical glow reaching past the viewport.
- * Shrink the box on mobile so it stays a shallow horizon arc along the bottom. */
-@media (max-width: 640px) {
-  .hero-earth {
-    height: 55%;
+.acc-title {
+  flex: 1;
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--ui-text-highlighted);
+}
+/* Plus/minus toggle: two bars form a plus; opening rotates the vertical bar
+ * flat so only the minus remains. */
+.acc-toggle {
+  position: relative;
+  flex-shrink: 0;
+  width: 1.125rem;
+  height: 1.125rem;
+}
+.acc-toggle__bar {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0.875rem;
+  height: 2px;
+  border-radius: 1px;
+  color: var(--ui-text-dimmed);
+  background: currentColor;
+  transform: translate(-50%, -50%);
+  transition:
+    transform 0.4s var(--ease-out),
+    color 0.25s ease;
+}
+.acc-toggle__bar--v {
+  transform: translate(-50%, -50%) rotate(90deg);
+}
+.acc-toggle--open .acc-toggle__bar {
+  color: var(--ui-text-highlighted);
+}
+.acc-toggle--open .acc-toggle__bar--v {
+  transform: translate(-50%, -50%) rotate(0deg);
+}
+@media (hover: hover) and (pointer: fine) {
+  .acc-trigger:hover .acc-toggle__bar {
+    color: var(--ui-text-highlighted);
+  }
+}
+.acc-panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.45s cubic-bezier(0.33, 1.15, 0.35, 1);
+}
+.acc-panel--open {
+  grid-template-rows: 1fr;
+}
+.acc-panel-inner {
+  min-height: 0;
+  overflow: hidden;
+}
+.acc-panel-content {
+  padding: 0 1.5rem 1.5rem;
+  opacity: 0;
+  filter: blur(6px);
+  transition:
+    opacity 0.4s ease,
+    filter 0.4s ease;
+}
+.acc-panel--open .acc-panel-content {
+  opacity: 1;
+  filter: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .acc-panel,
+  .acc-toggle__bar,
+  .acc-panel-content,
+  .acc-item {
+    transition: none;
+  }
+  .acc-item:active {
+    transform: none;
   }
 }
 
-.hero-dots {
-  background-image: radial-gradient(
-    circle,
-    var(--color-zinc-100) 1px,
-    transparent 1.5px
-  );
-  background-size: 22px 22px;
+/* Contribute card: an LED-style light runs around the border via an animated
+ * conic gradient painted into the border box, plus an ambient blue glow. */
+@property --contribute-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
 }
 
-.hero-dots-reveal {
-  --mx: 50%;
-  --my: 30%;
-  background-image: radial-gradient(
-    circle,
-    var(--color-zinc-200) 1px,
-    transparent 1.5px
-  );
-  background-size: 22px 22px;
-  -webkit-mask-image: radial-gradient(
-    circle 220px at var(--mx) var(--my),
-    #000 0%,
-    #000 30%,
-    transparent 70%
-  );
-  mask-image: radial-gradient(
-    circle 220px at var(--mx) var(--my),
-    #000 0%,
-    #000 30%,
-    transparent 70%
-  );
-  opacity: 0;
-  transition: opacity 0.4s ease;
+.contribute__card {
+  position: relative;
+  border-radius: 1.5rem;
+  border: 1.5px solid transparent;
+  background:
+    linear-gradient(var(--ui-bg), var(--ui-bg)) padding-box,
+    conic-gradient(
+        from var(--contribute-angle),
+        transparent 0deg,
+        color-mix(in oklab, var(--ui-primary) 35%, transparent) 45deg,
+        var(--ui-primary) 72deg,
+        #8ab4ff 90deg,
+        var(--ui-primary) 108deg,
+        color-mix(in oklab, var(--ui-primary) 35%, transparent) 135deg,
+        transparent 180deg,
+        transparent 360deg
+      )
+      border-box;
+  box-shadow:
+    0 0 60px -14px color-mix(in oklab, var(--ui-primary) 50%, transparent),
+    0 0 22px -8px color-mix(in oklab, var(--ui-primary) 40%, transparent);
+  animation: contribute-spin 6s linear infinite;
 }
 
-.hero-dots-reveal.is-spot {
-  opacity: 1;
+@keyframes contribute-spin {
+  to {
+    --contribute-angle: 360deg;
+  }
 }
 
-.marquee-mask {
+.contribute__body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 3.5rem 1.5rem;
+}
+
+.contribute__logo {
+  color: var(--ui-text-highlighted);
+  filter: drop-shadow(
+    0 0 18px color-mix(in oklab, var(--ui-primary) 45%, transparent)
+  );
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contribute__card {
+    animation: none;
+  }
+}
+
+/* Continues the showcase fade past the section boundary so the dot grid
+ * eases back in instead of starting abruptly (both themes). */
+.why-fade {
+  position: absolute;
+  inset-inline: 0;
+  top: 0;
+  height: 15rem;
+  pointer-events: none;
+  background: linear-gradient(to bottom, var(--landing-bg), transparent);
+}
+
+/* Light mode: a barely-gray page (zinc-50) with a subtle dot grid, so the
+ * white card surfaces lift off it. Dark mode uses the night sky + starfield.
+ * --landing-bg is the page background; the section fades blend into it. */
+.landing {
+  --ui-container: var(--ui-container-small);
+  --landing-bg: var(--color-zinc-50);
+  --hero-gradient: none;
+  background-color: var(--landing-bg);
+  --dot-color: color-mix(in oklab, var(--ui-text) 7%, transparent);
+  /* Slightly lighter borders, just on the landing page (light mode). */
+  --ui-border: var(--color-zinc-75);
+  /* Shared card elevation so the copy line, accordion and slider cards match. */
+  --landing-elev: 0 10px 28px -24px
+    color-mix(in oklab, var(--ui-primary) 20%, transparent);
+  background-image: radial-gradient(var(--dot-color) 1px, transparent 1.5px);
+  background-repeat: repeat;
+  background-size: 24px 24px;
+  background-position: center top;
+}
+
+.dark .landing {
+  /* Night sky: a faint blue base fading up to black space. The dot grid stays
+   * (fainter); the gradient covers it across the hero. */
+  --landing-bg: var(--ui-bg-muted);
+  --hero-gradient: linear-gradient(0deg, #0b1c3a 0%, #03060e 60%, #000000 100%);
+  --dot-color: color-mix(in oklab, var(--ui-text) 5%, transparent);
+  /* Keep the default dark border. */
+  --ui-border: var(--color-zinc-850);
+  /* Same elevation, a touch less blue (mixed toward grey) for dark mode. */
+  --landing-elev: 0 10px 28px -22px
+    color-mix(
+      in oklab,
+      color-mix(in oklab, var(--ui-primary) 55%, var(--color-zinc-500)) 26%,
+      transparent
+    );
+}
+
+/* Full-height backdrop; the mask fades gradient, starfield and canvas out
+   together partway down the showcase. Tune via --hero-fade-start/-end. */
+.hero-bg {
+  background-image: var(--hero-gradient);
+  transition: background-color 0.8s ease;
   -webkit-mask-image: linear-gradient(
-    to right,
-    transparent,
-    #000 6rem,
-    #000 calc(100% - 6rem),
-    transparent
+    to bottom,
+    #000 0,
+    #000 var(--hero-fade-start, 900px),
+    transparent var(--hero-fade-end, 1700px)
   );
   mask-image: linear-gradient(
-    to right,
-    transparent,
-    #000 6rem,
-    #000 calc(100% - 6rem),
-    transparent
+    to bottom,
+    #000 0,
+    #000 var(--hero-fade-start, 900px),
+    transparent var(--hero-fade-end, 1700px)
   );
+}
+
+/* Opaque backing while the GL canvas runs, so the CSS dot grid doesn't show
+   through under the canvas copies; the mask fades both out together. */
+.hero-bg--canvas {
+  background-color: var(--landing-bg);
+}
+
+/* Phones hide the showcase, so the hero is much shorter; percentage fade
+   stops keep the backdrop fading out within it. */
+@media (max-width: 639.98px) {
+  .hero-bg {
+    --hero-fade-start: 55%;
+    --hero-fade-end: 100%;
+  }
 }
 
 .type-heading-2xl {
-  font-size: clamp(2.5rem, 1.8rem + 3vw, 3.5rem);
-  line-height: 1.1;
+  /* 38px on phones, growing to 64px on desktop. */
+  font-size: clamp(2.375rem, 1.05rem + 4.6vw, 4rem);
+  line-height: 1.08;
   font-weight: 700;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.022em;
 }
 
+/* Shared section-heading scale: 30px on phones up to 44px on desktop. */
+.lp-h2 {
+  font-size: clamp(1.875rem, 1.25rem + 2.2vw, 2.75rem);
+  line-height: 1.08;
+  font-weight: 700;
+  letter-spacing: -0.022em;
+}
+
+/* Default body size on phones, stepping up alongside the heading from sm. */
 .type-body-lg {
-  font-size: 1.25rem;
+  font-size: 1rem;
   line-height: 1.6;
+}
+@media (min-width: 640px) {
+  .type-body-lg {
+    font-size: 1.25rem;
+  }
 }
 
 .hero-rise {
@@ -725,6 +1001,53 @@ const packages = [
 @media (prefers-reduced-motion: reduce) {
   .hero-rise {
     animation: none;
+  }
+}
+
+/* Crossfade the CSS starfield out once the WebGL canvas renders. */
+.hero-stars {
+  transition: opacity 0.8s ease;
+}
+.hero-stars--dim {
+  opacity: 0;
+}
+
+/* v-reveal states. The two-class specificity keeps the reveal transition
+ * ahead of the elements' own transition shorthands while it runs. */
+@media (prefers-reduced-motion: no-preference) {
+  .landing :deep(.lp-reveal) {
+    opacity: 0;
+    transform: translateY(1.25rem);
+    filter: blur(10px);
+  }
+  .landing :deep(.lp-reveal-in) {
+    opacity: 1;
+    transform: translateY(0);
+    filter: blur(0);
+    transition:
+      opacity 0.8s ease var(--reveal-delay, 0ms),
+      transform 0.8s var(--ease-out) var(--reveal-delay, 0ms),
+      filter 0.8s ease var(--reveal-delay, 0ms);
+  }
+}
+
+/* The hero copy recedes slightly faster than the page scroll (a touch of
+ * depth); without scroll-driven animation support it simply scrolls away. */
+@supports (animation-timeline: scroll()) {
+  @media (prefers-reduced-motion: no-preference) {
+    .hero-copy {
+      animation: hero-exit linear both;
+      animation-duration: 1ms; /* Firefox needs a non-zero duration */
+      animation-timeline: scroll(root);
+      animation-range: 0px 620px;
+    }
+  }
+}
+
+@keyframes hero-exit {
+  to {
+    opacity: 0;
+    transform: translateY(3.5rem) scale(0.99);
   }
 }
 </style>

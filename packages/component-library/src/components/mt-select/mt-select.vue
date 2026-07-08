@@ -12,6 +12,7 @@
     :is-inherited="isInherited"
     :is-inheritance-field="isInheritanceField"
     :disable-inheritance-toggle="disableInheritanceToggle"
+    :small="small"
     @select-expanded="onSelectExpanded"
     @select-collapsed="onSelectCollapsed"
     @clear="onClearSelection"

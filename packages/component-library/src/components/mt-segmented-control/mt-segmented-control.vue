@@ -278,7 +278,11 @@ export default defineComponent({
     margin-bottom: 0;
   }
 
-  & .mt-field__checkbox #meteor-icon-kit__regular-checkmark-xxs {
+  & .mt-field__checkbox {
+    margin-top: 0;
+  }
+
+  & .mt-field__checkbox #meteor-icon-kit__solid-checkmark-xs {
     width: var(--scale-size-8) !important;
     height: var(--scale-size-6) !important;
   }

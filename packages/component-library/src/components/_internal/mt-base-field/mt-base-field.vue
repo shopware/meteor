@@ -8,6 +8,7 @@
         'is--inherited': isInherited,
         'has--focus': hasFocus,
         'mt-field--future-remove-default-margin': future.removeDefaultMargin,
+        'mt-field--future-consistent-label-line-height': future.consistentLabelLineHeight,
       },
       mtBlockSize,
     ]"
@@ -253,11 +254,6 @@ export default defineComponent({
   margin-bottom: var(--scale-size-32);
 }
 
-.mt-field .mt-field__help-text {
-  margin-left: var(--scale-size-4);
-  align-self: center;
-}
-
 .mt-field.has--error {
   margin-bottom: var(--scale-size-12);
 }
@@ -460,11 +456,15 @@ export default defineComponent({
 
 .mt-field .mt-field__label {
   display: flex;
-  /* @TODO: Use tokens for font-size and line-height in a future iteration */
   line-height: 16px;
-  font-size: 14px;
+  font-size: var(--font-size-xs);
   margin-bottom: var(--scale-size-8);
   color: var(--color-text-primary-default);
+  column-gap: var(--scale-size-6);
+}
+
+.mt-field.mt-field--future-consistent-label-line-height .mt-field__label {
+  line-height: var(--font-line-height-xs);
 }
 
 .mt-field .mt-field__label label {

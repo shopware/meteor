@@ -53,7 +53,8 @@
         >
           <mt-icon
             class="mt-select__select-indicator mt-select__select-indicator-clear"
-            name="regular-times-xxs"
+            name="regular-times-s"
+            size="var(--scale-size-10)"
             color="var(--color-icon-primary-default)"
           />
         </button>
@@ -62,7 +63,8 @@
           class="mt-select__select-indicator"
           data-testid="mt-select__select-indicator"
           :class="{ 'mt-select__select-indicator-rotated': expanded }"
-          name="solid-chevron-down-xxs"
+          name="regular-chevron-down-s"
+          size="var(--scale-size-10)"
           color="var(--color-icon-primary-default)"
           @click.stop="toggleExpand"
         />
@@ -179,6 +181,15 @@ export default defineComponent({
       required: false,
       default: false,
     },
+
+    /**
+     * Render the select field in small without a search input
+     */
+    small: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 
   data() {
@@ -194,7 +205,7 @@ export default defineComponent({
     },
 
     selectionIndicatorsRight(): string {
-      const baseRightPx = 16;
+      const baseRightPx = this.small ? 11 : 17;
       const rightPx = baseRightPx + (this.suffixWidth || 0);
       return `${rightPx}px`;
     },
@@ -376,10 +387,9 @@ export default defineComponent({
 .mt-select .mt-select__selection-indicators {
   position: absolute;
   display: flex;
-  gap: var(--scale-size-8);
+  gap: var(--scale-size-12);
   align-items: center;
   top: 50%;
-  right: var(--scale-size-16);
   transform: translate(0, -50%);
   z-index: 1;
 }
@@ -399,10 +409,12 @@ export default defineComponent({
 }
 
 .mt-select .mt-select__select-indicator-hitbox {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: transparent;
   border: 0 solid transparent;
   color: var(--color-icon-primary-default);
-  padding: 0 var(--scale-size-4);
   cursor: pointer;
   width: var(--scale-size-32);
   height: var(--scale-size-32);
@@ -416,10 +428,6 @@ export default defineComponent({
   &:focus-visible {
     outline: var(--scale-size-2) solid var(--color-border-brand-default);
   }
-}
-
-.mt-select .mt-select__select-indicator-hitbox .mt-select__select-indicator {
-  display: block;
 }
 
 .mt-select .mt-select__select-indicator-hitbox:focus .mt-select__select-indicator-clear {

@@ -71,7 +71,7 @@ function onClick() {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: var(--scale-size-4);
+  gap: var(--scale-size-8);
   cursor: pointer;
 }
 

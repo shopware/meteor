@@ -198,7 +198,7 @@ defineEmits<{
 }
 
 .mt-switch__label {
-  padding-left: var(--scale-size-4);
+  padding-left: var(--scale-size-8);
   cursor: pointer;
 }
 

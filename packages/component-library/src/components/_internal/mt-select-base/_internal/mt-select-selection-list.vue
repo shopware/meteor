@@ -36,6 +36,7 @@
     <li v-if="invisibleCount > 0 && !hideLabels" class="mt-select-selection-list__load-more">
       <slot name="invisible-count" v-bind="{ invisibleCount, onClickInvisibleCount }">
         <mt-button
+          :size="size === 'small' ? 'x-small' : 'small'"
           variant="secondary"
           class="mt-select-selection-list__load-more-button"
           @click.stop="onClickInvisibleCount"
@@ -337,19 +338,6 @@ export default defineComponent({
     margin: var(--scale-size-8) var(--scale-size-6) 0 0;
   }
 
-  .mt-select-selection-list__load-more {
-    margin: var(--scale-size-8) var(--scale-size-6) 0 0;
-  }
-
-  button.mt-select-selection-list__load-more-button {
-    padding: var(--scale-size-8) var(--scale-size-12);
-    margin: 0 var(--scale-size-6) 0 0;
-    font-size: 12px;
-    line-height: 14px;
-    height: unset;
-    border-color: var(--color-border-primary-default);
-  }
-
   .mt-select-selection-list__input-wrapper {
     flex: 1 1 auto;
     min-width: 120px;
@@ -380,11 +368,6 @@ export default defineComponent({
   input {
     padding: var(--scale-size-4) var(--scale-size-16) var(--scale-size-8) var(--scale-size-8);
   }
-
-  .mt-select-selection-list__load-more-button {
-    padding: var(--scale-size-4) var(--scale-size-12);
-    margin: var(--scale-size-4) var(--scale-size-6) 0 0;
-  }
 }
 
 .mt-field--small .mt-select-selection-list {
@@ -394,11 +377,6 @@ export default defineComponent({
 
   input {
     padding: var(--scale-size-2) var(--scale-size-16) var(--scale-size-4) var(--scale-size-8);
-  }
-
-  .mt-select-selection-list__load-more-button {
-    padding: 0 var(--scale-size-8);
-    margin: -1px var(--scale-size-6) 0 0;
   }
 }
 </style>
