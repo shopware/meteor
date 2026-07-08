@@ -154,8 +154,8 @@ const meteors = computed<Meteor[]>(() => {
   );
   filter: drop-shadow(0 0 6px var(--meteor-head));
   opacity: 0;
-  /* Head (the bright right end) leads down-left; trail follows up-right. */
-  transform: rotate(135deg) translateX(0) scale(0.3);
+  /* Head (the bright right end) leads down-right; trail follows up-left. */
+  transform: rotate(45deg) translateX(0) scale(0.3);
   animation: meteor var(--meteor-duration) linear var(--meteor-delay) infinite;
 }
 
@@ -163,20 +163,20 @@ const meteors = computed<Meteor[]>(() => {
 @keyframes meteor {
   0% {
     opacity: 0;
-    transform: rotate(135deg) translateX(0) scale(0.3);
+    transform: rotate(45deg) translateX(0) scale(0.3);
   }
   8% {
     opacity: 0.45;
   }
   50% {
-    transform: rotate(135deg) translateX(360px) scale(1);
+    transform: rotate(45deg) translateX(360px) scale(1);
   }
   62% {
     opacity: 0.45;
   }
   100% {
     opacity: 0;
-    transform: rotate(135deg) translateX(720px) scale(0.3);
+    transform: rotate(45deg) translateX(720px) scale(0.3);
   }
 }
 
