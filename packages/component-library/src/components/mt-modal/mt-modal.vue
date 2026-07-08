@@ -36,7 +36,7 @@
           <slot name="header-right" />
 
           <mt-modal-close v-if="closable" class="mt-modal__close-button" aria-label="Close">
-            <mt-icon aria-hidden name="regular-times-xs" />
+            <mt-icon aria-hidden name="regular-times-s" size="var(--scale-size-10)" />
           </mt-modal-close>
         </div>
 
@@ -413,6 +413,9 @@ onUnmounted(() => {
   border-radius: var(--border-radius-xs);
   width: var(--scale-size-32);
   height: var(--scale-size-32);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
   /* prevents hover styles from being applied to non-hoverable devices */
   @media (hover: hover) {

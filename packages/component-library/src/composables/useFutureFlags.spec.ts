@@ -15,6 +15,7 @@ describe("useFutureFlags", () => {
         removeDefaultMargin: false,
         removeSwitchMinHeight: false,
         bannerFullWidth: false,
+        consistentLabelLineHeight: false,
       });
     });
 
@@ -39,6 +40,7 @@ describe("useFutureFlags", () => {
         removeDefaultMargin: true,
         removeSwitchMinHeight: true,
         bannerFullWidth: true,
+        consistentLabelLineHeight: true,
       });
     });
 
@@ -92,6 +94,7 @@ describe("useFutureFlags", () => {
         removeDefaultMargin: true,
         removeSwitchMinHeight: true,
         bannerFullWidth: true,
+        consistentLabelLineHeight: true,
       });
     });
   });

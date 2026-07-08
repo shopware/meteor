@@ -63,12 +63,7 @@
           tabindex="-1"
           @click="decreaseNumberByStep"
         >
-          <mt-icon
-            :style="{ marginTop: size === 'small' ? '0' : '-3px' }"
-            size="10"
-            name="regular-chevron-down-s"
-            aria-hidden="true"
-          />
+          <mt-icon size="10" name="regular-chevron-down-s" aria-hidden="true" />
         </button>
       </div>
       <slot name="_unit-suffix" />
@@ -483,20 +478,28 @@ export default defineComponent({
 
 <style scoped>
 .mt-number-field__controls {
+  --_controls-margin: var(--scale-size-6);
   display: flex;
   flex-direction: column;
-  align-items: center;
-  width: 2.625rem;
   flex-shrink: 0;
+  width: var(--scale-size-32);
+  align-self: stretch;
+  margin: calc(var(--_controls-margin) / 2);
+  box-sizing: border-box;
+  border: 1px solid var(--color-border-primary-default);
+  border-radius: var(--border-radius-xs);
+  background-color: var(--color-interaction-secondary-default);
 
   & button {
-    outline-color: var(--color-border-brand-default);
-    padding-inline: var(--scale-size-4);
-    border-radius: var(--border-radius-button);
-    color: var(--color-icon-primary-default);
-    transition: all 0.15s ease-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     width: 100%;
     flex: 1;
+    border-radius: 0;
+    outline-color: var(--color-border-brand-default);
+    color: var(--color-icon-primary-default);
+    transition: all 0.15s ease-out;
 
     &:is(:hover, :focus-visible):not(:disabled) {
       background-color: var(--color-interaction-secondary-hover);
@@ -507,11 +510,29 @@ export default defineComponent({
     }
   }
 
-  &.mt-field__controls--small button {
-    max-height: var(--scale-size-16);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  & button:first-of-type {
+    border-start-start-radius: calc(var(--border-radius-xs) - 1px);
+    border-start-end-radius: calc(var(--border-radius-xs) - 1px);
+    border-bottom: 1px solid var(--color-border-primary-default);
+  }
+
+  & button:last-of-type {
+    border-end-start-radius: calc(var(--border-radius-xs) - 1px);
+    border-end-end-radius: calc(var(--border-radius-xs) - 1px);
+  }
+
+  &.mt-field__controls--disabled {
+    background-color: var(--color-background-tertiary-default);
+
+    & button {
+      color: var(--color-icon-primary-disabled);
+    }
+  }
+}
+
+@container mt-number-field (max-width: 180px) {
+  .mt-number-field__controls {
+    display: none;
   }
 }
 
@@ -521,6 +542,11 @@ input.mt-number-field__align-end {
 </style>
 
 <style>
+.mt-number-field {
+  container-type: inline-size;
+  container-name: mt-number-field;
+}
+
 .mt-number-field .mt-block-field__block {
   background: var(--color-background-primary-default);
 }

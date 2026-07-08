@@ -6,7 +6,7 @@
     @click.stop="onClickResult"
     :aria-disabled="disabled"
   >
-    <span class="mt-select-result__result-item-preview">
+    <span class="mt-select-result__result-item-preview" v-if="$slots.preview">
       <slot name="preview" />
     </span>
 
@@ -15,7 +15,7 @@
     </span>
 
     <transition name="mt-select-result-appear">
-      <mt-icon v-if="selected" name="regular-checkmark-xs" size="16px" />
+      <mt-icon v-if="selected" name="regular-checkmark-s" size="var(--scale-size-12)" />
     </transition>
 
     <span v-if="hasDescriptionSlot" class="mt-select-result__result-item-description">
@@ -175,20 +175,21 @@ $mt-select-result-disabled-color-background: $color-gray-100;
 $mt-select-result-disabled-color-text: darken($color-gray-300, 15%);
 
 .mt-select-result {
-  padding: var(--scale-size-12) var(--scale-size-4);
+  padding: var(--scale-size-10) var(--scale-size-12);
   cursor: pointer;
-  display: grid;
-  grid-template-columns: auto auto 1fr auto;
+  display: flex;
+  flex-direction: row;
+  gap: var(--scale-size-12);
   align-items: center;
   border-radius: 4px;
 
   .mt-select-result__result-item-preview {
     order: 1;
-    margin-right: var(--scale-size-10);
     display: block;
   }
 
   .mt-select-result__result-item-text {
+    flex: 1;
     max-width: 100%;
     word-break: break-word;
     display: flex;
@@ -198,12 +199,7 @@ $mt-select-result-disabled-color-text: darken($color-gray-300, 15%);
   }
 
   &.is--active {
-    background: var(--color-background-brand-default);
-    color: var(--color-text-brand-default);
-
-    .mt-select-result__result-item-text {
-      color: var(--color-text-brand-default);
-    }
+    background: var(--color-interaction-secondary-hover);
   }
 
   .mt-select-result__result-item-description {

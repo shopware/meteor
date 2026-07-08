@@ -112,6 +112,7 @@ const isInsideTooltip = useIsInsideTooltip();
   display: inline-grid;
   place-items: center;
   width: max-content;
+  line-height: 1;
   border-radius: var(--border-radius-button);
   padding: var(--scale-size-2) var(--scale-size-24);
   font-size: var(--font-size-xs);

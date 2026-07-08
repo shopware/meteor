@@ -1484,7 +1484,11 @@ export default defineComponent({
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 90 90' width='100%25' height='100%25'%3E%3Cline x1='0' y1='90' x2='90' y2='0' style='stroke:%23DE294C;stroke-width:10' /%3E%3C/svg%3E");
 }
 
-.mt-colorpicker__colorpicker-position {
+/* Qualified with `.mt-colorpicker` so this wins over `.mt-floating-ui`
+   (position: relative), which is applied to the same element. Both are plain,
+   equal-specificity class selectors, so without this the winner would depend on
+   bundle source order and the closed popover could drop back in-flow. */
+.mt-colorpicker .mt-colorpicker__colorpicker-position {
   position: absolute;
   top: calc(100% + 2px);
   left: 0;
