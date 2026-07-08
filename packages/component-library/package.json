@@ -169,8 +169,5 @@
     "vite-plugin-svgstring": "^1.0.0",
     "vitest": "^3.0.5",
     "vue-tsc": "^2.2.4"
-  },
-  "peerDependencies": {
-    "@shopware-ag/meteor-icon-kit": "workspace:*"
   }
 }

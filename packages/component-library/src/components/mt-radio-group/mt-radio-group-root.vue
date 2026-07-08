@@ -1,5 +1,10 @@
 <template>
-  <div class="mt-radio-group-root">
+  <div
+    class="mt-radio-group-root"
+    :class="{
+      'mt-radio-group-root--future-remove-default-margin': future.removeDefaultMargin,
+    }"
+  >
     <mt-field-label
       v-if="label"
       class="mt-radio-group-root__label"
@@ -36,6 +41,7 @@ import { computed, provide, readonly, useId } from "vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
+import { useFutureFlags } from "@/composables/useFutureFlags";
 
 const props = withDefaults(
   defineProps<{
@@ -63,6 +69,8 @@ const props = withDefaults(
 const emit = defineEmits<{
   "update:modelValue": [value: string | number | boolean | null];
 }>();
+
+const future = useFutureFlags();
 
 const id = useId();
 
@@ -102,6 +110,10 @@ provide("radioGroupContext", {
   align-content: start;
   width: 100%;
   margin-bottom: var(--scale-size-32);
+}
+
+.mt-radio-group-root--future-remove-default-margin {
+  margin-bottom: 0;
 }
 
 .mt-radio-group-root__label {

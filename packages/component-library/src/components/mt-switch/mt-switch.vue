@@ -5,6 +5,7 @@
       {
         'mt-switch--no-top-margin': removeTopMargin,
         'mt-switch--future-no-default-margin': !!futureFlags.removeDefaultMargin,
+        'mt-switch--future-no-min-height': !!futureFlags.removeSwitchMinHeight,
         'mt-switch--not-bordered': !bordered,
         'mt-switch--disabled': disabled,
       },
@@ -114,6 +115,10 @@ defineEmits<{
 
 .mt-switch--future-no-default-margin {
   margin: 0;
+}
+
+.mt-switch.mt-switch--future-no-min-height {
+  min-height: 0;
 }
 
 .mt-switch__block {
