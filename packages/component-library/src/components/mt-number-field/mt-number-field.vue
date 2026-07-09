@@ -367,11 +367,11 @@ export default defineComponent({
         return;
       }
 
-      const val = Number.parseFloat(inputValue);
+      const val = this.getNumberFromString(inputValue);
 
       if (!Number.isNaN(val)) {
-        this.computeValue(val.toString(), true);
-        this.$emit("input-change", val);
+        this.computeValue(inputValue, true);
+        this.$emit("input-change", this.currentValue);
       } else if (inputValue === "" || inputValue === "-" || inputValue === ".") {
         // @ts-expect-error - defined in parent
         this.currentValue = null;
@@ -427,28 +427,31 @@ export default defineComponent({
     },
 
     getNumberFromString(value: any) {
-      const normalizedValue = value.toString().replace(/,/g, ".");
+      const normalizedValue = value.toString().trim().replace(/\s/g, "");
 
       if (normalizedValue.toLowerCase().includes("e")) {
+        return Number.parseFloat(normalizedValue.replace(/,/g, "."));
+      }
+
+      const commaIndex = normalizedValue.lastIndexOf(",");
+      const dotIndex = normalizedValue.lastIndexOf(".");
+      const decimalSeparatorIndex = Math.max(commaIndex, dotIndex);
+
+      if (decimalSeparatorIndex === -1) {
         return Number.parseFloat(normalizedValue);
       }
 
-      let splits = normalizedValue;
-      splits = splits.replace(/,/g, ".").split(".");
-
-      if (splits.length === 1) {
-        return parseFloat(splits[0]);
-      }
+      const integerPart = normalizedValue.slice(0, decimalSeparatorIndex).replace(/[,.]/g, "");
+      const decimalPart = normalizedValue.slice(decimalSeparatorIndex + 1).replace(/[,.]/g, "");
+      const parsedValue = Number.parseFloat(`${integerPart}.${decimalPart}`);
 
       if (this.numberType === "int") {
-        // Keep the decimal point and let checkForInteger round the result. Joining
-        // without "." would concatenate the digit groups and turn 1.05 into 105.
-        return parseFloat(splits.join("."));
+        return parsedValue;
       }
-      const decimals = splits[splits.length - 1].length;
-      const float = parseFloat(splits.join(".")).toFixed(decimals);
 
-      return decimals > this.digits ? this.roundToDigits(float, this.digits) : Number(float);
+      return decimalPart.length > this.digits
+        ? this.roundToDigits(parsedValue.toString(), this.digits)
+        : parsedValue;
     },
 
     roundToDigits(value: string, digits: number): number {

@@ -539,6 +539,65 @@ describe("mt-number-field", () => {
     expect(input).toHaveValue("1000");
   });
 
+  it("normalizes pasted numbers with mixed decimal and grouping separators", async () => {
+    // ARRANGE
+    const inputChangeHandler = vi.fn();
+    const updateHandler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        "onInput-change": inputChangeHandler,
+        "onUpdate:modelValue": updateHandler,
+      },
+    });
+
+    const input = screen.getByRole("textbox") as HTMLInputElement;
+
+    // ACT
+    await userEvent.click(input);
+    await userEvent.paste("333,33");
+
+    // ASSERT
+    expect(inputChangeHandler).toHaveBeenLastCalledWith(333.33);
+    expect(updateHandler).not.toHaveBeenCalled();
+    expect(input.value).toBe("333,33");
+
+    // ACT
+    await userEvent.click(document.body);
+
+    // ASSERT
+    expect(updateHandler).toHaveBeenLastCalledWith(333.33);
+    expect(input.value).toBe("333.33");
+
+    // ACT
+    await userEvent.clear(input);
+    await userEvent.paste("1.333,33");
+
+    // ASSERT
+    expect(inputChangeHandler).toHaveBeenLastCalledWith(1333.33);
+
+    // ACT
+    await userEvent.click(document.body);
+
+    // ASSERT
+    expect(updateHandler).toHaveBeenLastCalledWith(1333.33);
+    expect(input.value).toBe("1333.33");
+
+    // ACT
+    await userEvent.clear(input);
+    await userEvent.paste("1,333.33");
+
+    // ASSERT
+    expect(inputChangeHandler).toHaveBeenLastCalledWith(1333.33);
+
+    // ACT
+    await userEvent.click(document.body);
+
+    // ASSERT
+    expect(updateHandler).toHaveBeenLastCalledWith(1333.33);
+    expect(input.value).toBe("1333.33");
+  });
+
   it("rounds a decimal value to an integer on blur for int type", async () => {
     // ARRANGE
     const updateHandler = vi.fn();
