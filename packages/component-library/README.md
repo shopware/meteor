@@ -5,7 +5,7 @@ The meteor component library is a Vue component library developed by Shopware. I
 - Perfect suitable for Shopware Apps
 - Matches the Shopware administration look and feel
 - Small bundle sizes with tree-shaking
-- Completely tested and [documented](https://meteor-component-library.vercel.app/) with Storybook
+- Tested and previewed with Storybook, [documented](https://meteor.shopware.com) on meteor.shopware.com
 
 ## Requirements
 

@@ -4,8 +4,8 @@ export const shopwareTheme = create({
   base: "light",
 
   brandTitle: "Shopware",
-  brandUrl: "https://github.com/shopware/meteor",
-  brandImage: "https://meteor-component-library.vercel.app/shopware_docs_horizontal_dark.svg",
+  brandUrl: "https://meteor.shopware.com",
+  brandImage: "/shopware-meteor-logo.svg",
   brandTarget: "_blank",
 
   colorPrimary: "#0870ff",

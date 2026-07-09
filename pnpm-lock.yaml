@@ -469,9 +469,12 @@ importers:
       '@storybook/addon-links':
         specifier: ^8.6.15
         version: 8.6.15(react@17.0.2)(storybook@8.6.15(prettier@3.2.5))
-      '@storybook/blocks':
+      '@storybook/components':
         specifier: ^8.6.15
-        version: 8.6.15(react-dom@17.0.2(react@17.0.2))(react@17.0.2)(storybook@8.6.15(prettier@3.2.5))
+        version: 8.6.15(storybook@8.6.15(prettier@3.2.5))
+      '@storybook/icons':
+        specifier: ^1.2.12
+        version: 1.2.12(react-dom@17.0.2(react@17.0.2))(react@17.0.2)
       '@storybook/manager-api':
         specifier: ^8.6.15
         version: 8.6.15(storybook@8.6.15(prettier@3.2.5))
@@ -571,9 +574,6 @@ importers:
       prettier:
         specifier: 3.2.5
         version: 3.2.5
-      remark-gfm:
-        specifier: ^4.0.1
-        version: 4.0.1
       sass:
         specifier: ^1.69.5
         version: 1.77.6
@@ -15974,11 +15974,8 @@ packages:
   vue-component-type-helpers@2.2.12:
     resolution: {integrity: sha512-YbGqHZ5/eW4SnkPNR44mKVc6ZKQoRs/Rux1sxC6rdwXb4qpbOSYfDr9DsTHolOTGmIKgM9j141mZbBeg05R1pw==}
 
-  vue-component-type-helpers@3.3.4:
-    resolution: {integrity: sha512-joip1uZTaQR0nD23N400gIdJ7xY+WiiiMA/BCKz842gvGBknqDQAzklUvDEhqFvvrhQY8S2ZANBMu4X70VMFGw==}
-
-  vue-component-type-helpers@3.3.5:
-    resolution: {integrity: sha512-Fe1jyPJoUGpJOYKOri44jduR7My4yYINOMJISuMAbmrs+L5LbIDUc8NTWZYY3EJLK0yPLuCmcd5zoCsE4k2/KA==}
+  vue-component-type-helpers@3.3.6:
+    resolution: {integrity: sha512-FkljacAwJ9BUoSUdpFe3VDy0sGigNlTH9+2zcXUWmZOjN8swiCkl3t48wOJun0OsUd2cEIda1l04tsxMiKIIrQ==}
 
   vue-demi@0.14.10:
     resolution: {integrity: sha512-nMZBOwuzabUO0nLgIcc6rycZEebF6eeUfaiQx9+WSk8e29IbLvPU9feI6tqW4kTo3hvoYAJkMh8n8D0fuISphg==}
@@ -19938,7 +19935,7 @@ snapshots:
       unplugin-auto-import: 21.0.0(@nuxt/kit@4.4.8(magicast@0.5.3))(@vueuse/core@14.3.0(vue@3.5.13(typescript@5.7.3)))
       unplugin-vue-components: 32.1.0(@nuxt/kit@4.4.8(magicast@0.5.3))(vue@3.5.13(typescript@5.7.3))
       vaul-vue: 0.4.1(reka-ui@2.9.9(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))
-      vue-component-type-helpers: 3.3.4
+      vue-component-type-helpers: 3.3.6
     optionalDependencies:
       '@internationalized/date': 3.10.0
       '@internationalized/number': 3.6.5
@@ -21691,7 +21688,7 @@ snapshots:
       ts-dedent: 2.2.0
       type-fest: 2.19.0
       vue: 3.5.37(typescript@5.7.3)
-      vue-component-type-helpers: 3.3.5
+      vue-component-type-helpers: 3.3.6
 
   '@supercharge/promise-pool@2.4.0': {}
 
@@ -35849,9 +35846,7 @@ snapshots:
 
   vue-component-type-helpers@2.2.12: {}
 
-  vue-component-type-helpers@3.3.4: {}
-
-  vue-component-type-helpers@3.3.5: {}
+  vue-component-type-helpers@3.3.6: {}
 
   vue-demi@0.14.10(vue@3.5.13(typescript@5.7.3)):
     dependencies:

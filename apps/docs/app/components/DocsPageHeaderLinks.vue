@@ -22,21 +22,41 @@ const mcpServerUrl = computed(
   () => `${window?.location?.origin}${joinURL(appBaseURL, mcpRoute)}`,
 );
 
-// Link a component page to its source folder on GitHub. The slug -> folder map
-// is provided at build time by modules/meteor-components.ts.
-const componentSourceUrl = computed(() => {
+// The slug -> repo-relative source folder map, provided at build time by
+// modules/meteor-components.ts. Its keys double as the set of known components.
+const componentSourcePaths = computed(
+  () =>
+    (runtimeConfig.public.componentSourcePaths ?? {}) as Record<string, string>,
+);
+
+// The current component slug, or undefined outside a component page. Both the
+// GitHub and Storybook links are gated on this so they only show for real
+// components and always appear together.
+const componentSlug = computed(() => {
   if (!route.path.startsWith("/components/")) return undefined;
-  const slug = route.path.split("/").filter(Boolean).pop() ?? "";
-  const sources = (runtimeConfig.public.componentSourcePaths ?? {}) as Record<
-    string,
-    string
-  >;
-  const path = sources[slug];
+  const slug = route.path.split("/").filter(Boolean).pop();
+  return slug && componentSourcePaths.value[slug] ? slug : undefined;
+});
+
+// Link a component page to its source folder on GitHub.
+const componentSourceUrl = computed(() => {
+  if (!componentSlug.value) return undefined;
+  const path = componentSourcePaths.value[componentSlug.value];
   const github = appConfig.github as
     | { url?: string; branch?: string }
     | undefined;
   if (!path || !github?.url) return undefined;
   return `${github.url}/tree/${github.branch || "main"}/${path}`;
+});
+
+// Link a component page to its Storybook entry. The docs slug matches the
+// Storybook id prefix (e.g. "data-table" -> components-data-table); Storybook
+// resolves that to the component's autodocs (or first story) automatically.
+const componentStorybookUrl = computed(() => {
+  if (!componentSlug.value) return undefined;
+  const storybook = appConfig.storybook as { url?: string } | undefined;
+  if (!storybook?.url) return undefined;
+  return `${storybook.url}/?path=/docs/components-${componentSlug.value}`;
 });
 
 const items = computed(() => [
@@ -79,11 +99,23 @@ async function copyPage() {
 <template>
   <div class="flex items-center gap-2">
     <UButton
+      v-if="componentStorybookUrl"
+      :to="componentStorybookUrl"
+      target="_blank"
+      icon="i-custom:storybook"
+      label="Storybook"
+      color="neutral"
+      variant="outline"
+      size="md"
+      :ui="{ leadingIcon: 'text-neutral size-3.5' }"
+    />
+
+    <UButton
       v-if="componentSourceUrl"
       :to="componentSourceUrl"
       target="_blank"
       icon="i-simple-icons:github"
-      label="Source"
+      label="GitHub"
       color="neutral"
       variant="outline"
       size="md"
