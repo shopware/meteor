@@ -13,7 +13,8 @@ body {
   -moz-osx-font-smoothing: grayscale;
   font-size: var(--font-size-xs);
   line-height: 1.5;
-  background: var(--color-elevation-surface-default);
+  /* @deprecated hardcoded background — to be revisited in the next major */
+  background: #f9fafb;
   color: var(--color-text-primary-default);
 }
 
@@ -21,9 +22,11 @@ body {
   color-scheme: dark;
 }
 
+/* min-height, not fixed height: in the admin's auto-sized iframe a fixed
+   100dvh collapses to the 150px fallback that the admin-sdk reports back. */
 html,
 body {
-  height: 100dvh;
+  min-height: 100dvh;
 }
 
 /** @TODO move to tokens file once we find a solution for non figma-sync tokens **/
