@@ -1515,6 +1515,26 @@
   height: 24;
 }
 
+#meteor-icon-kit__regular-panel-bottom {
+  width: 24;
+  height: 24;
+}
+
+#meteor-icon-kit__regular-panel-left {
+  width: 24;
+  height: 24;
+}
+
+#meteor-icon-kit__regular-panel-right {
+  width: 24;
+  height: 24;
+}
+
+#meteor-icon-kit__regular-panel-top {
+  width: 24;
+  height: 24;
+}
+
 #meteor-icon-kit__regular-paper-plane {
   width: 21;
   height: 20;
@@ -1801,6 +1821,11 @@
 }
 
 #meteor-icon-kit__regular-shopware {
+  width: 24;
+  height: 24;
+}
+
+#meteor-icon-kit__regular-shopware-copilot {
   width: 24;
   height: 24;
 }
@@ -3745,6 +3770,26 @@
   height: 24;
 }
 
+#meteor-icon-kit__solid-panel-bottom {
+  width: 24;
+  height: 24;
+}
+
+#meteor-icon-kit__solid-panel-left {
+  width: 24;
+  height: 24;
+}
+
+#meteor-icon-kit__solid-panel-right {
+  width: 24;
+  height: 24;
+}
+
+#meteor-icon-kit__solid-panel-top {
+  width: 24;
+  height: 24;
+}
+
 #meteor-icon-kit__solid-paper-plane {
   width: 21;
   height: 20;
@@ -4021,6 +4066,11 @@
 }
 
 #meteor-icon-kit__solid-shopware {
+  width: 24;
+  height: 24;
+}
+
+#meteor-icon-kit__solid-shopware-copilot {
   width: 24;
   height: 24;
 }
