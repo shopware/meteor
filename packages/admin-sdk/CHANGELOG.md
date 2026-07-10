@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.9.1
+
+### Patch Changes
+
+- [#1243](https://github.com/shopware/meteor/pull/1243) [`9eb0c3d`](https://github.com/shopware/meteor/commit/9eb0c3d2fd496c704a63d87f73c370ade5084942) Thanks [@quynhnguyen68](https://github.com/quynhnguyen68)! - Changed `addPaymentIframe` to add `shopId` parameter to iframe url.
+
 ## 6.9.0
 
 ### Minor Changes
