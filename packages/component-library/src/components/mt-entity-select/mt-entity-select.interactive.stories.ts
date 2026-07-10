@@ -93,9 +93,8 @@ export const VisualTestSearch: MtEntitySelectStory = {
     // check if the value has been updated
     expect(args["onUpdate:modelValue"]).toHaveBeenCalledWith("manufacturer-101");
 
-    // check if input placeholder contains the selected item
-    expect(canvas.getByRole("textbox")).toHaveAttribute(
-      "placeholder",
+    // check if the input value contains the selected item
+    expect(canvas.getByRole("textbox")).toHaveValue(
       "Manufacturer 101 with a long name to test wrapping",
     );
   },
