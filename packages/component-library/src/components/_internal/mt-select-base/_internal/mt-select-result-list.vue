@@ -128,6 +128,8 @@ export default defineComponent({
     return {
       t,
       activeItemIndex,
+      activeItemChangeListeners,
+      itemSelectByKeyboardListeners,
       emitActiveItemIndex,
       setActiveItemIndex,
       addToActiveItemChangeListeners,
@@ -179,16 +181,6 @@ export default defineComponent({
       required: false,
       default: true,
     },
-  },
-
-  data(): {
-    activeItemChangeListeners: Array<(index: number) => void>;
-    itemSelectByKeyboardListeners: Array<(index: number) => void>;
-  } {
-    return {
-      activeItemChangeListeners: [],
-      itemSelectByKeyboardListeners: [],
-    };
   },
 
   computed: {

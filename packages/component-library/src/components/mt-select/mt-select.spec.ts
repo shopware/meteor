@@ -157,4 +157,56 @@ describe("mt-select", () => {
     expect(wrapper.vm.visibleResults.length).toBe(1);
     expect(wrapper.vm.visibleResults[0].value).toBe("user3");
   });
+
+  it("should select the active item with the enter key", async () => {
+    const wrapper = mount(MtSelect, {
+      props: {
+        modelValue: null,
+        options: [
+          { id: 1, label: "Option Alfred", value: "alfred" },
+          { id: 2, label: "Option Becky", value: "becky" },
+        ],
+      },
+      attachTo: document.body,
+    });
+    await flushPromises();
+
+    await wrapper.find(".mt-select__selection").trigger("click");
+    await flushPromises();
+
+    const input = wrapper.find(".mt-select-selection-list__input");
+    await input.trigger("keydown", { key: "ArrowDown" });
+    await input.trigger("keydown", { key: "Enter" });
+    await flushPromises();
+
+    expect(wrapper.emitted("update:modelValue")?.[0]).toEqual(["becky"]);
+    expect(document.querySelector(".mt-select-result-list__content")).toBeNull();
+
+    wrapper.unmount();
+  });
+
+  it("should show the selected value as input value on focus and only filter after the user edits it", async () => {
+    const wrapper = await createWrapper();
+    const input = wrapper.find(".mt-select-selection-list__input");
+
+    await input.trigger("focus");
+
+    expect((input.element as HTMLInputElement).value).toBe("Option Becky");
+    expect((input.element as HTMLInputElement).placeholder).not.toBe("Option Becky");
+    expect(wrapper.vm.visibleResults).toHaveLength(3);
+
+    await input.setValue("Option Beck");
+    await flushPromises();
+
+    expect((input.element as HTMLInputElement).value).toBe("Option Beck");
+    expect(wrapper.vm.visibleResults).toHaveLength(1);
+    expect(wrapper.vm.visibleResults[0].value).toBe("becky");
+
+    wrapper.vm.onSelectCollapsed();
+    await flushPromises();
+    await input.trigger("focus");
+
+    expect((input.element as HTMLInputElement).value).toBe("Option Becky");
+    expect(wrapper.vm.visibleResults).toHaveLength(3);
+  });
 });

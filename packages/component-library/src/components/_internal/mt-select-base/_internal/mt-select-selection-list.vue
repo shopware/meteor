@@ -186,6 +186,7 @@ export default defineComponent({
   data() {
     return {
       inputInFocus: false,
+      inputEdited: false,
     };
   },
 
@@ -207,10 +208,6 @@ export default defineComponent({
         return "";
       }
 
-      if (!this.multiSelection && this.selections.length > 0) {
-        return this.currentValue;
-      }
-
       return this.alwaysShowPlaceholder
         ? this.placeholder
           ? this.placeholder
@@ -227,7 +224,7 @@ export default defineComponent({
         return this.searchTerm;
       }
 
-      if (this.inputInFocus) {
+      if (this.inputInFocus && this.inputEdited) {
         return this.searchTerm;
       }
 
@@ -257,16 +254,19 @@ export default defineComponent({
     },
 
     onSearchTermChange(event: Event) {
+      this.inputEdited = true;
       // @ts-expect-error - target value is defined
       this.$emit("search-term-change", event.target.value, event);
     },
 
     async onInputFocus() {
       this.inputInFocus = true;
+      this.inputEdited = false;
     },
 
     clearSearchTerm() {
       this.inputInFocus = false;
+      this.inputEdited = false;
     },
 
     onKeyDownDelete() {
