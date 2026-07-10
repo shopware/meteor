@@ -1,5 +1,48 @@
 # Changelog
 
+## 5.3.0
+
+### Minor Changes
+
+- [#1242](https://github.com/shopware/meteor/pull/1242) [`db041ae`](https://github.com/shopware/meteor/commit/db041ae91891a272f8abd9da7e5bbf441a3713e1) Thanks [@fabianhueske](https://github.com/fabianhueske)! - Added a way to enable every future flag at once and introduced two new flags. The Theme Provider `future` prop now accepts `{ all: true }` to turn on all current and upcoming flags, so flags added in later releases are opted into automatically. Combine it with overrides to fine-tune, for example `{ all: true, removeCardWidth: false }` to enable everything except a single flag.
+
+  New flags:
+
+  - `removeSwitchMinHeight`: removes the minimum height from a non-bordered `mt-switch`.
+  - `bannerFullWidth`: makes `mt-banner` span the full width of its container.
+
+  All flags remain `false` by default, so behavior is unchanged until you opt in.
+
+### Patch Changes
+
+- [#1259](https://github.com/shopware/meteor/pull/1259) [`0b11681`](https://github.com/shopware/meteor/commit/0b116813d524f8d0c0f233a1db2b9982866c9cbc) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Removed `@shopware-ag/meteor-icon-kit` from `peerDependencies` to prevent unwanted major version bumps. Because Changesets treats any non-patch bump of a peer dependency as a breaking change for the dependent package, a minor release of the icon kit forced a major release of the component library. The icon kit remains a regular dependency, so resolution is unchanged.
+
+- [#1265](https://github.com/shopware/meteor/pull/1265) [`664d2d3`](https://github.com/shopware/meteor/commit/664d2d30cd91af5a7404fffa1719abf678977c0a) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Added the `license` field (`MIT`) to the package metadata, aligning it with the other Meteor packages and the repository's license.
+
+- [#1262](https://github.com/shopware/meteor/pull/1262) [`d902e2a`](https://github.com/shopware/meteor/commit/d902e2a35b30f021603b267dc4fd86e96e778e84) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Fixed the component library collapsing to a 150px iframe when embedded in the Shopware Administration: `html`/`body` now use `min-height: 100dvh` instead of a fixed `height`.
+
+  Reverted the `body` background to its original hardcoded value. The background is now deprecated and will change in an upcoming major version (likely detecting the embedded context automatically so it can go transparent inside the Administration).
+
+- [#1261](https://github.com/shopware/meteor/pull/1261) [`e5c28e0`](https://github.com/shopware/meteor/commit/e5c28e006af9f4ed25e29f01558070f88745534c) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Fixed `mt-number-field` inconsistently parsing pasted values with mixed decimal and grouping separators. Values such as `333,33` and `1.333,33` could silently become wrong amounts. The parser now treats the rightmost `.` or `,` as the decimal separator and removes earlier separators as grouping separators, and `onInput` uses the same parser so editing and blur behavior agree.
+
+- [#1266](https://github.com/shopware/meteor/pull/1266) [`b82647f`](https://github.com/shopware/meteor/commit/b82647f8d73c4ecc7d65856345097bd93f483357) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Fixed `mt-select` not selecting the highlighted option with the Enter key. The keyboard listener registry was shadowed by an empty data property, so keyboard selections never reached the result items.
+
+- [#1266](https://github.com/shopware/meteor/pull/1266) [`b82647f`](https://github.com/shopware/meteor/commit/b82647f8d73c4ecc7d65856345097bd93f483357) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Fixed `mt-select` showing the selected value as a placeholder when reopened. The value now stays in the input field; the result list is only filtered once the user actually edits the text.
+
+- [#1255](https://github.com/shopware/meteor/pull/1255) [`7c9f669`](https://github.com/shopware/meteor/commit/7c9f669b60b33a62b68ca52652337e687eae5eaf) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Various visual and positioning fixes across components:
+
+  - Fixed `mt-floating-ui` popovers landing in the wrong spot and drifting on scroll by pinning `position` to the computed strategy.
+  - Fixed `mt-colorpicker` popover positioning being sensitive to stylesheet source order.
+  - Fixed `mt-action-menu` z-index stacking order.
+  - Adjusted `mt-banner` close icon and spacing.
+  - Adjusted `mt-checkbox` and `mt-switch` icon, spacing, gap and line-height.
+  - Adjusted `mt-select` and `mt-button` field icons, spacing and active state.
+  - Used tokens for `mt-base-field` label font-size and line-height.
+
+- Updated dependencies [[`ca51ea5`](https://github.com/shopware/meteor/commit/ca51ea5ec04da206f20e726c55ab1278d860965c), [`9eb0c3d`](https://github.com/shopware/meteor/commit/9eb0c3d2fd496c704a63d87f73c370ade5084942)]:
+  - @shopware-ag/meteor-icon-kit@5.9.0
+  - @shopware-ag/meteor-admin-sdk@6.9.1
+
 ## 5.2.0
 
 ### Minor Changes

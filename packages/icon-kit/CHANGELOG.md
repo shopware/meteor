@@ -1,5 +1,25 @@
 # CHANGELOG.md
 
+## 5.9.0
+
+### Minor Changes
+
+- [#1263](https://github.com/shopware/meteor/pull/1263) [`ca51ea5`](https://github.com/shopware/meteor/commit/ca51ea5ec04da206f20e726c55ab1278d860965c) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Added multiple icons:
+  `regular-panel-bottom`
+  `regular-panel-left`
+  `regular-panel-right`
+  `regular-panel-top`
+  `regular-shopware-copilot`
+  `solid-panel-bottom`
+  `solid-panel-left`
+  `solid-panel-right`
+  `solid-panel-top`
+  `solid-shopware-copilot`
+
+  Modified icons:
+  `regular-cog`
+  `solid-cog`
+
 ## 5.8.0
 
 ### Minor Changes
