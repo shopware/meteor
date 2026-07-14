@@ -380,15 +380,16 @@ export default defineComponent({
     },
 
     increaseNumberByStep() {
-      this.computeValue((Number(this.currentValue) + this.realStep).toString());
-      this.rawUserInput = null;
-
-      this.$emit("update:modelValue", this.currentValue);
+      this.changeNumberByStep(this.realStep);
     },
 
     decreaseNumberByStep() {
-      // @ts-expect-error - wrong type because of component extends
-      this.computeValue((this.currentValue - this.realStep).toString());
+      this.changeNumberByStep(-this.realStep);
+    },
+
+    changeNumberByStep(step: number) {
+      const steppedValue = Number(this.currentValue) + step;
+      this.computeValue(this.roundToDigits(steppedValue.toString(), this.digits).toString());
       this.rawUserInput = null;
 
       this.$emit("update:modelValue", this.currentValue);
