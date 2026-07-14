@@ -22,13 +22,6 @@ body {
   color-scheme: dark;
 }
 
-/* min-height, not fixed height: in the admin's auto-sized iframe a fixed
-   100dvh collapses to the 150px fallback that the admin-sdk reports back. */
-html,
-body {
-  min-height: 100dvh;
-}
-
 /** @TODO move to tokens file once we find a solution for non figma-sync tokens **/
 :root {
   --color-elevation-shadow-default: #1010131a !important;
