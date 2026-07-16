@@ -1,5 +1,29 @@
 # Changelog
 
+## 5.3.1
+
+### Patch Changes
+
+- [#1269](https://github.com/shopware/meteor/pull/1269) [`1e4749e`](https://github.com/shopware/meteor/commit/1e4749ed333f7497e9ccec1dfd3f102e4197a7de) Thanks [@keulinho](https://github.com/keulinho)! - Fix floating-point rounding after stepping a number field.
+
+- [#1267](https://github.com/shopware/meteor/pull/1267) [`63df47b`](https://github.com/shopware/meteor/commit/63df47b653ec0bc18f35c0c2dbd8eb2e3e772557) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Remove the global `html, body` height rule from `styles.css` entirely, restoring the pre-5.2.0 behavior where consumers own their document-level layout.
+
+  The rule has caused problems in both of its variants:
+
+  - `height: 100dvh` (introduced in 5.2.0) deadlocked apps rendered in the Administration's auto-sized iframes at the 150px browser fallback, because the admin-sdk reported the pinned viewport height back to `sw-iframe-renderer`.
+  - `min-height: 100dvh` (5.3.0) fixed the deadlock but made iframe auto-resizing a one-way ratchet: `body` never shrinks below the iframe's current height, so `location.startAutoResizer()` never reports a smaller height when content shrinks, and small widgets stay floored at the 150px fallback.
+
+  With the rule removed, auto-sized iframe locations grow **and** shrink with their content again, exactly as on ≤5.1.x.
+
+  If your app relied on the implicit full-viewport height for a percentage-based layout (introduced accidentally in 5.2.0), declare it yourself:
+
+  ```css
+  html,
+  body {
+    height: 100dvh;
+  }
+  ```
+
 ## 5.3.0
 
 ### Minor Changes
