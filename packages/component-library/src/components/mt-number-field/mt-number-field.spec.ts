@@ -127,6 +127,24 @@ describe("mt-number-field", () => {
     expect((screen.getByRole("textbox") as HTMLInputElement).value).toBe("1.63");
   });
 
+  it("rounds floating point precision errors with the price field configuration", async () => {
+    const updateHandler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        modelValue: 1.62,
+        digits: 20,
+        "onUpdate:modelValue": updateHandler,
+      },
+    });
+
+    await userEvent.click(screen.getByRole("textbox"));
+    await userEvent.keyboard("{ArrowUp}");
+
+    expect(updateHandler).toHaveBeenLastCalledWith(1.63);
+    expect((screen.getByRole("textbox") as HTMLInputElement).value).toBe("1.63");
+  });
+
   it("is not possible to increment the value by pressing the increment button when inheritance is linked", async () => {
     // ASSERT
     const handler = vi.fn();
