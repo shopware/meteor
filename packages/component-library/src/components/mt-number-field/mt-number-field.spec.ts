@@ -128,24 +128,30 @@ describe("mt-number-field", () => {
   });
 
   it.each([
-    [10, 10.01],
-    [1333.33, 1333.34],
-  ])("does not reset %s when incrementing with 20 digits", async (modelValue, expectedValue) => {
-    const updateHandler = vi.fn();
+    [10, 20, 10.01],
+    [1333.33, 20, 1333.34],
+    [0.01, 50, 0.02],
+  ])(
+    "does not reset %s when incrementing with %s digits",
+    async (modelValue, digits, expectedValue) => {
+      const updateHandler = vi.fn();
 
-    render(MtNumberField, {
-      props: {
-        modelValue,
-        digits: 20,
-        "onUpdate:modelValue": updateHandler,
-      },
-    });
+      render(MtNumberField, {
+        props: {
+          modelValue,
+          digits,
+          "onUpdate:modelValue": updateHandler,
+        },
+      });
 
-    await userEvent.click(screen.getByRole("button", { name: "Increase" }));
+      await userEvent.click(screen.getByRole("button", { name: "Increase" }));
 
-    expect(updateHandler).toHaveBeenLastCalledWith(expectedValue);
-    expect((screen.getByRole("textbox") as HTMLInputElement).value).toBe(expectedValue.toString());
-  });
+      expect(updateHandler).toHaveBeenLastCalledWith(expectedValue);
+      expect((screen.getByRole("textbox") as HTMLInputElement).value).toBe(
+        expectedValue.toString(),
+      );
+    },
+  );
 
   it("preserves precision beyond the step when incrementing", async () => {
     const updateHandler = vi.fn();
