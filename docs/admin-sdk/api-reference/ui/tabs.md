@@ -41,7 +41,7 @@ ui.tabs('sw-product-detail' /* The positionId of the tab bar*/).addTabItem({
 
 The tab is registered once (globally), so use `visible` to control whether it is shown for the
 current context. Re-send `addTabItem` for the same `componentSectionId` with a new `visible` value
-to toggle the tab — the Administration upserts by `componentSectionId` instead of adding a duplicate.
+to toggle the tab - the Administration upserts by `componentSectionId` instead of adding a duplicate.
 This lets an extension register a tab hidden and reveal it only when relevant (for example, based on
 the entity that is currently opened).
 

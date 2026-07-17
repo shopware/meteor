@@ -13,7 +13,6 @@ export type uiTabsAddTabItem =
    label: string,
    /* The componentSectionId for the tab content */
    componentSectionId: string,
-   /* Whether the tab item is shown. Defaults to visible when omitted; set to `false` to hide the tab.
-      Re-send `addTabItem` for the same `componentSectionId` to toggle visibility for the current context. */
+   /* Whether the tab item is shown by default */
    visible?: boolean,
  }
