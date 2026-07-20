@@ -80,7 +80,7 @@ import MtText from "@/components/mt-text/mt-text.vue";
 import { createId } from "@/utils/id";
 import * as focusTrap from "focus-trap";
 
-defineProps({
+const props = defineProps({
   title: {
     type: String,
     required: false,
@@ -105,6 +105,11 @@ defineProps({
     type: Boolean,
     required: false,
     default: false,
+  },
+  initialFocus: {
+    type: Boolean,
+    required: false,
+    default: true,
   },
 });
 
@@ -152,6 +157,7 @@ watch(
       trap = focusTrap.createFocusTrap(modalRef.value as HTMLElement, {
         tabbableOptions: { displayCheck: "none" },
         allowOutsideClick: true,
+        initialFocus: props.initialFocus ? undefined : false,
         onPause: () => {
           // a new modal is being opened, pausing the current trap
           console.warn(

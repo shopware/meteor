@@ -66,6 +66,27 @@ describe("mt-modal", () => {
     expect(onChange).toHaveBeenNthCalledWith(1, true);
   });
 
+  it("keeps focus on the trigger when initial focus is disabled", async () => {
+    render({
+      components: { MtModal, MtModalRoot, MtModalTrigger },
+      template: `
+<mt-modal-root>
+  <mt-modal-trigger as="button">Open modal</mt-modal-trigger>
+  <mt-modal :initialFocus="false" title="title"><a href="#details">Details</a></mt-modal>
+</mt-modal-root>`,
+    });
+
+    const trigger = screen.getByRole("button", { name: "Open modal" });
+    trigger.focus();
+
+    await fireEvent.click(trigger);
+
+    await waitFor(() => {
+      expect(screen.getByRole("dialog")).toBeInTheDocument();
+      expect(trigger).toHaveFocus();
+    });
+  });
+
   it("opens the modal when clicking the trigger when 'isOpen' gets changed", async () => {
     // GIVEN
     const onChange = vi.fn();
