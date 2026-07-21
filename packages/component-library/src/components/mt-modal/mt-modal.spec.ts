@@ -66,6 +66,23 @@ describe("mt-modal", () => {
     expect(onChange).toHaveBeenNthCalledWith(1, true);
   });
 
+  it("focuses the dialog itself instead of an interactive element when opened", async () => {
+    render({
+      components: { MtModal, MtModalRoot, MtModalTrigger },
+      template: `
+<mt-modal-root>
+  <mt-modal-trigger as="button">Open modal</mt-modal-trigger>
+  <mt-modal title="title"><a href="#details">Details</a></mt-modal>
+</mt-modal-root>`,
+    });
+
+    await fireEvent.click(screen.getByRole("button", { name: "Open modal" }));
+
+    await waitFor(() => {
+      expect(screen.getByRole("dialog")).toHaveFocus();
+    });
+  });
+
   it("opens the modal when clicking the trigger when 'isOpen' gets changed", async () => {
     // GIVEN
     const onChange = vi.fn();
