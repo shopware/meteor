@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, type PropType } from "vue";
 import MtIcon from "../../../mt-icon/mt-icon.vue";
 import { inject } from "vue";
 import {
@@ -62,7 +62,7 @@ export default defineComponent({
       default: false,
     },
     descriptionPosition: {
-      type: String,
+      type: String as PropType<"bottom" | "right">,
       required: false,
       default: "right",
       validator(value: string) {

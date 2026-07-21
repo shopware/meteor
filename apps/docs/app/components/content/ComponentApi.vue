@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { camelCase, kebabCase, upperFirst } from "scule";
-import { formatType } from "#shared/utils/formatType";
+import { formatType, literalUnion } from "#shared/utils/formatType";
+import type { ComponentPropMeta } from "~/types/component-meta";
 
 const props = withDefaults(
   defineProps<{
@@ -33,6 +34,12 @@ interface Cell {
 const visible = <T extends { name: string }>(items: T[] | undefined) =>
   (items ?? []).filter((item) => !props.ignore.includes(item.name));
 
+// Prefer the resolved schema's literal union (e.g. a named enum type alias
+// expanded to its actual values) over the printed type, which can be an opaque
+// alias name or a broad `string`. Falls back to the printed type otherwise.
+const propType = (prop: ComponentPropMeta): string | undefined =>
+  literalUnion(prop.schema) ?? formatType(prop.type);
+
 const sections = computed(() => {
   const m = meta.value?.meta;
 
@@ -47,7 +54,7 @@ const sections = computed(() => {
           required: prop.required,
           description: prop.description,
         },
-        { value: formatType(prop.type), code: true },
+        { value: propType(prop), code: true },
         { value: prop.default, code: true },
       ]),
     },
