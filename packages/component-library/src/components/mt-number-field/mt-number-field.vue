@@ -101,12 +101,11 @@ export default defineComponent({
   extends: MtTextField,
 
   props: {
+    // Redeclared from MtTextField because vue-component-meta cannot resolve a
+    // refined PropType through Vue's `extends`; without this the API reference
+    // would show the inherited `size` as a bare `string` instead of its values.
     /**
      * The size of the number field.
-     *
-     * Redeclared from MtTextField: vue-component-meta cannot resolve a refined
-     * `PropType` through Vue's `extends`, so without this the docs would show
-     * the inherited `size` as a bare `string` instead of its literal values.
      *
      * @values small, default
      */
