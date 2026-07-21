@@ -37,7 +37,7 @@ const emits = defineEmits<{
 }
 
 .mt-collapsible-content[data-state="open"] {
-  animation: mt-collapsible-slide-down 300ms ease-out;
+  animation: mt-collapsible-slide-down 300ms ease-in-out;
 }
 
 .mt-collapsible-content[data-state="closed"] {
