@@ -127,6 +127,50 @@ describe("mt-number-field", () => {
     expect((screen.getByRole("textbox") as HTMLInputElement).value).toBe("1.63");
   });
 
+  it.each([
+    [10, 20, 10.01],
+    [1333.33, 20, 1333.34],
+    [0.01, 50, 0.02],
+  ])(
+    "does not reset %s when incrementing with %s digits",
+    async (modelValue, digits, expectedValue) => {
+      const updateHandler = vi.fn();
+
+      render(MtNumberField, {
+        props: {
+          modelValue,
+          digits,
+          "onUpdate:modelValue": updateHandler,
+        },
+      });
+
+      await userEvent.click(screen.getByRole("button", { name: "Increase" }));
+
+      expect(updateHandler).toHaveBeenLastCalledWith(expectedValue);
+      expect((screen.getByRole("textbox") as HTMLInputElement).value).toBe(
+        expectedValue.toString(),
+      );
+    },
+  );
+
+  it("preserves precision beyond the step when incrementing", async () => {
+    const updateHandler = vi.fn();
+
+    render(MtNumberField, {
+      props: {
+        modelValue: 1.234567,
+        step: 0.01,
+        digits: 20,
+        "onUpdate:modelValue": updateHandler,
+      },
+    });
+
+    await userEvent.click(screen.getByRole("button", { name: "Increase" }));
+
+    expect(updateHandler).toHaveBeenLastCalledWith(1.244567);
+    expect((screen.getByRole("textbox") as HTMLInputElement).value).toBe("1.244567");
+  });
+
   it("is not possible to increment the value by pressing the increment button when inheritance is linked", async () => {
     // ASSERT
     const handler = vi.fn();

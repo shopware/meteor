@@ -389,7 +389,14 @@ export default defineComponent({
 
     changeNumberByStep(step: number) {
       const steppedValue = Number(this.currentValue) + step;
-      this.computeValue(this.roundToDigits(steppedValue.toString(), this.digits).toString());
+      const roundingDigits = Math.min(
+        this.digits,
+        Math.max(
+          this.getNumberOfFractionDigits(Number(this.currentValue)),
+          this.getNumberOfFractionDigits(step),
+        ),
+      );
+      this.computeValue(this.roundToDigits(steppedValue.toString(), roundingDigits).toString());
       this.rawUserInput = null;
 
       this.$emit("update:modelValue", this.currentValue);
@@ -460,7 +467,33 @@ export default defineComponent({
       // whose binary float error would otherwise drop e.g. 1.035 to 1.03 instead
       // of 1.04. `Number("1.035e2")` parses straight to 103.5, so Math.round acts
       // on the intended decimal value.
-      return Number(`${Math.round(Number(`${value}e${digits}`))}e-${digits}`);
+      const roundedValue = Math.round(Number(`${value}e${digits}`));
+
+      if (digits === 0) {
+        return roundedValue;
+      }
+
+      // `roundedValue` may use scientific notation, so convert it to a fixed
+      // decimal string before shifting its decimal separator back.
+      const sign = roundedValue < 0 ? "-" : "";
+      const roundedString = Math.abs(roundedValue).toLocaleString("fullwide", {
+        useGrouping: false,
+        maximumFractionDigits: 0,
+      });
+      const decimalIndex = roundedString.length - digits;
+      const decimalValue =
+        decimalIndex > 0
+          ? `${sign}${roundedString.slice(0, decimalIndex)}.${roundedString.slice(decimalIndex)}`
+          : `${sign}0.${roundedString.padStart(digits, "0")}`;
+
+      return Number(decimalValue);
+    },
+
+    getNumberOfFractionDigits(value: number): number {
+      const [coefficient, exponent] = Math.abs(value).toString().split("e-");
+      const fractionDigits = coefficient.split(".")[1]?.length ?? 0;
+
+      return fractionDigits + Number(exponent ?? 0);
     },
 
     checkForInteger(value: number) {
