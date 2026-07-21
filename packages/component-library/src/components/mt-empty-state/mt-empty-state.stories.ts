@@ -17,6 +17,11 @@ export default {
       control: "text",
       description: "The icon to display in the empty state",
     },
+    iconMode: {
+      control: { type: "select", options: ["solid", "regular"] },
+      description:
+        "The fill style of the icon. Only applies when `icon` is a bare name (without a `solid-`/`regular-` prefix).",
+    },
     linkHref: {
       control: "text",
       description: "The URL to link to",

@@ -2,7 +2,12 @@
   <!-- @deprecated tag:v5 remove leftAligned class -->
   <div class="mt-empty-state" :class="{ 'mt-empty-state--left-aligned': !centered }">
     <div class="mt-empty-state__icon">
-      <mt-icon :name="icon" color="var(--color-icon-primary-default)" aria-hidden="true" />
+      <mt-icon
+        :name="icon"
+        :mode="iconMode"
+        color="var(--color-icon-primary-default)"
+        aria-hidden="true"
+      />
     </div>
 
     <mt-text as="h2" size="l" weight="bold" class="mt-empty-state__headline">
@@ -48,6 +53,11 @@ withDefaults(
     headline: string;
     description: string;
     icon: string;
+    /**
+     * The fill style of the icon. Only takes effect when `icon` is a bare icon name
+     * (without a `solid-`/`regular-` prefix); a prefixed name overrides this.
+     */
+    iconMode?: "solid" | "regular";
     linkHref?: string;
     linkText?: string;
     linkType?: "external" | "internal";
@@ -55,6 +65,7 @@ withDefaults(
     centered?: boolean;
   }>(),
   {
+    iconMode: "regular",
     linkType: "internal",
     /** @deprecated tag:v5 remove centered prop and class */
     centered: false,

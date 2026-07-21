@@ -51,6 +51,23 @@ describe("mt-empty-state", () => {
     expect(icon.attributes("name")).toBe("solid-chart-line-arrow");
   });
 
+  it("renders the icon in the regular mode by default", async () => {
+    wrapper = await createWrapper(undefined, {
+      icon: "chart-line-arrow",
+    });
+    const icon = wrapper.find("mt-icon-stub");
+    expect(icon.attributes("mode")).toBe("regular");
+  });
+
+  it("forwards the icon mode to the icon", async () => {
+    wrapper = await createWrapper(undefined, {
+      icon: "chart-line-arrow",
+      iconMode: "solid",
+    });
+    const icon = wrapper.find("mt-icon-stub");
+    expect(icon.attributes("mode")).toBe("solid");
+  });
+
   it("should render a link", async () => {
     wrapper = await createWrapper(undefined, {
       linkHref: "https://storybook.js.org",
