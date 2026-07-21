@@ -13,7 +13,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com:shopware/meteor.git"
+    "url": "git+https://github.com/shopware/meteor.git"
   },
   "type": "module",
   "license": "MIT",
