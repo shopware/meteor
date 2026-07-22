@@ -1,12 +1,12 @@
-import type { ApexOptions } from "apexcharts";
+import type { ChartOptions } from "./mt-chart-types";
 
-export function getDefaultOptions(type: string): ApexOptions {
+export function getDefaultOptions(type: string): ChartOptions {
   const options = createOptions();
 
   return options[type] ?? {};
 }
 
-function createOptions(): Record<string, ApexOptions> {
+function createOptions(): Record<string, ChartOptions> {
   return {
     area: {
       noData: {
