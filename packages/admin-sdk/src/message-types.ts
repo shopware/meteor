@@ -12,6 +12,7 @@ import type {
   contextUserInformation,
   contextUserTimezone,
   contextShopId,
+  contextTheme,
 } from './context';
 import type { uiComponentSectionRenderer } from './ui/component-section/index';
 import type { uiTabsAddTabItem } from './ui/tabs';
@@ -71,6 +72,7 @@ export interface ShopwareMessageTypes {
   contextAppInformation: contextAppInformation,
   contextModuleInformation: contextModuleInformation,
   contextShopId: contextShopId,
+  contextTheme: contextTheme,
   getPageTitle: getPageTitle,
   uiComponentSectionRenderer: uiComponentSectionRenderer,
   uiTabsAddTabItem: uiTabsAddTabItem,
