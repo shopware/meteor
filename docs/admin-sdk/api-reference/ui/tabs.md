@@ -35,33 +35,7 @@ ui.tabs('sw-product-detail' /* The positionId of the tab bar*/).addTabItem({
 | :------------------- | :------- | :------ | :--------------------------------------------------------------------------------------------------------------------------------- |
 | `label`              | true     |         | The label of the tab bar item                                                                                                       |
 | `componentSectionId` | true     |         | The Id for for the component section in the tab content                                                                             |
-| `visible`            | false    | `true`  | Whether the tab item is shown. Set to `false` to hide the tab; omit (or `true`) to show it.                                         |
-
-#### Conditional visibility
-
-The tab is registered once (globally), so use `visible` to control whether it is shown for the
-current context. Re-send `addTabItem` for the same `componentSectionId` with a new `visible` value
-to toggle the tab - the Administration upserts by `componentSectionId` instead of adding a duplicate.
-This lets an extension register a tab hidden and reveal it only when relevant (for example, based on
-the entity that is currently opened).
-
-```ts
-import { ui } from '@shopware-ag/meteor-admin-sdk';
-
-// Register the tab hidden.
-ui.tabs('sw-order-detail').addTabItem({
-    label: 'Example tab',
-    componentSectionId: 'example-order-detail-tab-content',
-    visible: false,
-});
-
-// Later, reveal it for the current context (upserted by componentSectionId).
-ui.tabs('sw-order-detail').addTabItem({
-    label: 'Example tab',
-    componentSectionId: 'example-order-detail-tab-content',
-    visible: true,
-});
-```
+| `visible`            | false    | `true`  | Whether the tab item is shown initially. Set to `false` to register it hidden; use `setVisibility()` to change it afterwards.       |
 
 #### Return value
 
@@ -109,3 +83,31 @@ if (location.is('my-example-product-view-tab-card')) {
         });
 }
 ```
+
+## setVisibility()
+
+Show or hide a tab item that was previously added with `addTabItem()`. Use this to toggle a tab's
+visibility for the current context (for example, based on the entity that is currently opened),
+instead of calling `addTabItem()` again.
+
+#### Usage
+
+```ts
+import { ui } from '@shopware-ag/meteor-admin-sdk';
+
+ui.tabs('sw-order-detail').setVisibility({
+    componentSectionId: 'example-order-detail-tab-content',
+    visible: false,
+});
+```
+
+#### Parameters
+
+| Name                 | Required | Default | Description                                               |
+| :------------------- | :------- | :------ | :---------------------------------------------------------|
+| `componentSectionId` | true     |         | The `componentSectionId` of the tab item to show or hide  |
+| `visible`            | true     |         | Whether the tab item should be shown                      |
+
+#### Return value
+
+Returns a promise without data.

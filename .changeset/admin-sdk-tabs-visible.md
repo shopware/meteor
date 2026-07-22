@@ -2,4 +2,4 @@
 "@shopware-ag/meteor-admin-sdk": minor
 ---
 
-Add an optional `visible` flag to `ui.tabs().addTabItem()` so an extension can show or hide its own registered tab. When omitted the tab is shown, so existing extensions are unaffected. Re-send `addTabItem` for the same `componentSectionId` to toggle the tab for the current context.
+Add an optional `visible` flag to `ui.tabs().addTabItem()` so an extension can register its tab hidden, and a new `ui.tabs().setVisibility()` method to show or hide it afterwards. When `visible` is omitted the tab is shown, so existing extensions are unaffected.
