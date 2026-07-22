@@ -24,6 +24,24 @@ describe("mt-status-dot", () => {
     expect(dot).toHaveClass("mt-status-dot--size-l");
   });
 
+  it("is not pulsating by default", () => {
+    // ARRANGE
+    const { container } = render(MtStatusDot);
+
+    // ACT & ASSERT
+    expect(container.firstElementChild).not.toHaveClass("mt-status-dot--pulse");
+  });
+
+  it("pulsates when the pulse prop is set", () => {
+    // ARRANGE
+    const { container } = render(MtStatusDot, {
+      props: { variant: "positive", pulse: true },
+    });
+
+    // ACT & ASSERT
+    expect(container.firstElementChild).toHaveClass("mt-status-dot--pulse");
+  });
+
   it("is hidden from assistive technology when no label is given", () => {
     // ARRANGE
     const { container } = render(MtStatusDot, {

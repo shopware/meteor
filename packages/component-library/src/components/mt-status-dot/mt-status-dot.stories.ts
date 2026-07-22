@@ -9,6 +9,7 @@ const meta: MtStatusDotMeta = {
   args: {
     variant: "neutral",
     size: "m",
+    pulse: false,
     label: "",
   },
   argTypes: {
@@ -20,6 +21,9 @@ const meta: MtStatusDotMeta = {
       control: { type: "select" },
       options: ["s", "m", "l"],
     },
+    pulse: {
+      control: { type: "boolean" },
+    },
     label: {
       control: { type: "text" },
     },
@@ -29,7 +33,7 @@ const meta: MtStatusDotMeta = {
     setup() {
       return { args };
     },
-    template: `<mt-status-dot :variant="args.variant" :size="args.size" :label="args.label" />`,
+    template: `<mt-status-dot :variant="args.variant" :size="args.size" :pulse="args.pulse" :label="args.label" />`,
   }),
 };
 
@@ -95,4 +99,19 @@ export const AllSizes: MtStatusDotStory = {
         <mt-status-dot variant="positive" size="l" />
       </div>`,
   }),
+};
+
+export const Pulse: MtStatusDotStory = {
+  args: {
+    variant: "positive",
+    pulse: true,
+  },
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-status-dot variant="positive" pulse />`,
+      },
+    },
+  },
 };

@@ -28,6 +28,13 @@ Each variant maps to a semantic color from the design system.
 ::component-example{name="status-dot-sizes-example"}
 ::
 
+### Pulse
+
+Set `pulse` to add a pulsating ring that signals ongoing, live activity, such as a process that is currently running. The animation is disabled for users who prefer reduced motion.
+
+::component-example{name="status-dot-pulse-example"}
+::
+
 ## API reference
 
 :component-api
@@ -55,12 +62,14 @@ Each variant maps to a semantic color from the design system.
 
 - **Status Dot** is presentational and non-interactive. If users need to click or trigger something, wrap it in an appropriate interactive component.
 - It renders a single fixed shape and has no text or slot content; use [**Badge**](/components/badge) when a label is required.
+- With `pulse` the dot shows a repeating ring to signal live activity. Reserve it for states that are genuinely ongoing, and avoid pulsating several dots at once.
 
 ## Accessibility
 
 - The dot is decorative by default and hidden from assistive technology, on the assumption that a visible text label carries the meaning.
 - When the dot is the only carrier of a status, set the `label` prop. It then exposes an accessible name to assistive technology.
 - Do not communicate status through color alone; keep an adjacent text label for all users.
+- The `pulse` animation is automatically disabled for users who have enabled reduced motion, leaving the dot in its static state.
 
 ## Related components
 

@@ -1,7 +1,11 @@
 <template>
   <span
     class="mt-status-dot"
-    :class="[`mt-status-dot--variant-${variant}`, `mt-status-dot--size-${size}`]"
+    :class="[
+      `mt-status-dot--variant-${variant}`,
+      `mt-status-dot--size-${size}`,
+      { 'mt-status-dot--pulse': pulse },
+    ]"
     v-bind="$attrs"
     :role="label ? 'img' : undefined"
     :aria-label="label || undefined"
@@ -25,6 +29,12 @@ withDefaults(
      */
     size?: "s" | "m" | "l";
     /**
+     * Adds a pulsating ring around the dot to signal an ongoing, live activity
+     * (e.g. something is currently active or processing). The animation is
+     * disabled for users who prefer reduced motion.
+     */
+    pulse?: boolean;
+    /**
      * An accessible label describing the status. When omitted the dot is treated
      * as decorative and hidden from assistive technology.
      */
@@ -33,6 +43,7 @@ withDefaults(
   {
     variant: "neutral",
     size: "m",
+    pulse: false,
     label: undefined,
   },
 );
@@ -40,9 +51,11 @@ withDefaults(
 
 <style scoped>
 .mt-status-dot {
+  position: relative;
   display: inline-block;
   flex-shrink: 0;
   border-radius: var(--border-radius-round);
+  background-color: var(--mt-status-dot-color);
 }
 
 .mt-status-dot--size-s {
@@ -61,22 +74,51 @@ withDefaults(
 }
 
 .mt-status-dot--variant-neutral {
-  background-color: var(--color-icon-primary-disabled);
+  --mt-status-dot-color: var(--color-icon-primary-disabled);
 }
 
 .mt-status-dot--variant-info {
-  background-color: var(--color-icon-brand-default);
+  --mt-status-dot-color: var(--color-icon-brand-default);
 }
 
 .mt-status-dot--variant-attention {
-  background-color: var(--color-icon-attention-default);
+  --mt-status-dot-color: var(--color-icon-attention-default);
 }
 
 .mt-status-dot--variant-critical {
-  background-color: var(--color-icon-critical-default);
+  --mt-status-dot-color: var(--color-icon-critical-default);
 }
 
 .mt-status-dot--variant-positive {
-  background-color: var(--color-icon-positive-default);
+  --mt-status-dot-color: var(--color-icon-positive-default);
+}
+
+/* Expanding, fading ring that reads as a "live" activity. It reuses the dot's
+   own color and scales out from behind the solid dot. */
+.mt-status-dot--pulse::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background-color: var(--mt-status-dot-color);
+  animation: mt-status-dot-pulse 1.5s ease-out infinite;
+}
+
+@keyframes mt-status-dot-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mt-status-dot--pulse::after {
+    animation: none;
+  }
 }
 </style>

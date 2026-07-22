@@ -68,6 +68,14 @@ export const VisualTestLargeSize: MtStatusDotStory = {
   },
 };
 
+export const VisualTestPulse: MtStatusDotStory = {
+  name: "Render pulsating dot",
+  args: {
+    variant: "positive",
+    pulse: true,
+  },
+};
+
 export const TestExposesLabelToAssistiveTech: MtStatusDotStory = {
   name: "Exposes its label to assistive technology",
   args: {
