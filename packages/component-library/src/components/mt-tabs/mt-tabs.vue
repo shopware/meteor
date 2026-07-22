@@ -30,7 +30,12 @@
             color="var(--color-icon-critical-default)"
           />
 
-          <mt-color-badge v-if="item.badge" :variant="item.badge" rounded />
+          <mt-status-dot
+            v-if="item.badge"
+            class="mt-tabs__badge"
+            size="m"
+            :variant="badgeStatusVariant(item.badge)"
+          />
         </button>
 
         <!-- @vue-skip -->
@@ -85,7 +90,7 @@ import type { PropType } from "vue";
 import { defineComponent, computed } from "vue";
 import MtContextButton from "../mt-context-button/mt-context-button.vue";
 import MtContextMenuItem from "../mt-context-menu-item/mt-context-menu-item.vue";
-import MtColorBadge from "../mt-color-badge/mt-color-badge.vue";
+import MtStatusDot from "../mt-status-dot/mt-status-dot.vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
 import PriorityPlus from "../_internal/mt-priority-plus-navigation.vue";
 import { useFutureFlags } from "@/composables/useFutureFlags";
@@ -108,7 +113,7 @@ export default defineComponent({
     "mt-context-button": MtContextButton,
     "mt-context-menu-item": MtContextMenuItem,
     "priority-plus": PriorityPlus,
-    "mt-color-badge": MtColorBadge,
+    "mt-status-dot": MtStatusDot,
     "mt-icon": MtIcon,
   },
 
@@ -329,6 +334,15 @@ export default defineComponent({
       };
     },
 
+    // Maps a tab's badge onto an mt-status-dot variant. Only "warning" differs
+    // ("attention" in the status-dot vocabulary); the rest map one-to-one. The
+    // public TabItem.badge values stay unchanged.
+    badgeStatusVariant(
+      badge: NonNullable<TabItem["badge"]>,
+    ): "info" | "attention" | "critical" | "positive" {
+      return badge === "warning" ? "attention" : badge;
+    },
+
     getContextMenuItemVariant(item: TabItem): string {
       if (item.hasError) {
         return "critical";
@@ -484,5 +498,10 @@ export default defineComponent({
 
 .mt-tabs__error-badge {
   margin-left: var(--scale-size-2);
+}
+
+.mt-tabs__badge {
+  margin-left: var(--scale-size-10);
+  vertical-align: middle;
 }
 </style>

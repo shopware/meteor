@@ -1,9 +1,9 @@
 <template>
   <span class="mt-badge" :class="badgeClasses" v-bind="$attrs">
-    <span
+    <mt-status-dot
       v-if="statusIndicator"
-      class="mt-badge__indicator"
-      aria-hidden="true"
+      :variant="variant"
+      :size="indicatorSize"
       data-testid="mt-badge__indicator"
     />
     <mt-icon v-if="icon" :name="icon" :size="iconSize" />
@@ -14,6 +14,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
+import MtStatusDot from "../mt-status-dot/mt-status-dot.vue";
 
 const props = withDefaults(
   defineProps<{
@@ -42,6 +43,11 @@ const size = computed(() => {
 
 const iconSize = computed(() => (size.value === "l" ? "12" : "10"));
 
+// The status indicator shares the badge's variant color and is a status dot.
+// Both badge sizes s and m use the same 8px dot (mt-status-dot "m"); only l
+// steps up to 10px ("l"), matching the previous per-size indicator sizing.
+const indicatorSize = computed(() => (size.value === "l" ? "l" : "m"));
+
 const badgeClasses = computed(() => [
   `mt-badge--variant-${props.variant}`,
   `mt-badge--size-${size.value}`,
@@ -65,11 +71,6 @@ const badgeClasses = computed(() => [
   gap: var(--scale-size-4);
   font-size: var(--font-size-2xs);
   line-height: var(--font-line-height-2xs);
-
-  .mt-badge__indicator {
-    width: var(--scale-size-8);
-    height: var(--scale-size-8);
-  }
 }
 
 .mt-badge--size-m {
@@ -78,11 +79,6 @@ const badgeClasses = computed(() => [
   gap: var(--scale-size-4);
   font-size: var(--font-size-xs);
   line-height: var(--font-line-height-xs);
-
-  .mt-badge__indicator {
-    width: var(--scale-size-8);
-    height: var(--scale-size-8);
-  }
 }
 
 .mt-badge--size-l {
@@ -91,61 +87,30 @@ const badgeClasses = computed(() => [
   gap: var(--scale-size-6);
   font-size: var(--font-size-s);
   line-height: var(--font-line-height-s);
-
-  .mt-badge__indicator {
-    width: var(--scale-size-10);
-    height: var(--scale-size-10);
-  }
 }
 
 .mt-badge--variant-neutral {
   background-color: var(--color-background-secondary-default);
   border: 1px solid var(--color-border-primary-default);
-
-  .mt-badge__indicator {
-    background-color: var(--color-icon-primary-disabled);
-  }
 }
 
 .mt-badge--variant-info {
   background-color: var(--color-background-brand-default);
   border: 1px solid var(--color-border-brand-default);
-
-  .mt-badge__indicator {
-    background-color: var(--color-icon-brand-default);
-  }
 }
 
 .mt-badge--variant-attention {
   background-color: var(--color-background-attention-default);
   border: 1px solid var(--color-border-attention-default);
-
-  .mt-badge__indicator {
-    background-color: var(--color-icon-attention-default);
-  }
 }
 
 .mt-badge--variant-critical {
   background-color: var(--color-background-critical-default);
   border: 1px solid var(--color-border-critical-default);
-
-  .mt-badge__indicator {
-    background-color: var(--color-icon-critical-default);
-  }
 }
 
 .mt-badge--variant-positive {
   background-color: var(--color-background-positive-default);
   border: 1px solid var(--color-border-positive-default);
-
-  .mt-badge__indicator {
-    background-color: var(--color-icon-positive-default);
-  }
-}
-
-.mt-badge__indicator {
-  width: var(--scale-size-8);
-  height: var(--scale-size-8);
-  border-radius: var(--border-radius-l);
 }
 </style>

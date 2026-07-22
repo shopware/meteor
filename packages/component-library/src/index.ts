@@ -34,6 +34,7 @@ import MtSnackbar from "./components/mt-snackbar/mt-snackbar.vue";
 import MtAvatar from "./components/mt-avatar/mt-avatar.vue";
 import { useSnackbar, type Snackbar } from "./components/mt-snackbar/composables/use-snackbar";
 import MtPromoBadge from "./components/mt-promo-badge/mt-promo-badge.vue";
+import MtStatusDot from "./components/mt-status-dot/mt-status-dot.vue";
 import MtPopover from "./components/mt-popover/mt-popover.vue";
 import MtPopoverItem from "./components/mt-popover-item/mt-popover-item.vue";
 import MtPopoverItemResult from "./components/mt-popover-item-result/mt-popover-item-result.vue";
@@ -111,6 +112,7 @@ export {
   MtToast,
   MtSnackbar,
   MtPromoBadge,
+  MtStatusDot,
   MtPopover,
   MtPopoverItem,
   MtPopoverItemResult,
