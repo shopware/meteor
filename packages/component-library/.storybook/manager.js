@@ -4,7 +4,13 @@ import { IconButton } from "@storybook/components";
 import { ShareAltIcon } from "@storybook/icons";
 import { shopwareTheme } from "./shopwareTheme";
 
-const DOCS_BASE_URL = "https://meteor.shopware.com";
+// When Storybook is served from localhost (local development) the Documentation
+// button points at the locally running docs app (see the root `dev` script)
+// instead of production, so the two link back and forth while developing.
+const DOCS_BASE_URL =
+  typeof window !== "undefined" && ["localhost", "127.0.0.1"].includes(window.location.hostname)
+    ? "http://localhost:3001"
+    : "https://meteor.shopware.com";
 
 // Map the active Storybook entry to its page on the docs site. Component titles follow
 // "Components/<Name>" and the docs URL uses the kebab-cased name, e.g.

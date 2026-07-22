@@ -66,6 +66,8 @@ pnpm install
 pnpm run storybook
 ```
 
+To run Storybook and the documentation site together, use `pnpm dev` from the repository root instead. See the [contribution guidelines](../../CONTRIBUTING.md#running-storybook-and-the-documentation) for details.
+
 #### Compiles and minifies for production
 
 ```shell

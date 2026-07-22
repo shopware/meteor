@@ -7,7 +7,9 @@
   "keywords": [],
   "license": "MIT",
   "scripts": {
-    "validate:changesets": "node scripts/validate-changesets.js"
+    "validate:changesets": "node scripts/validate-changesets.js",
+    "predev": "pnpm --filter=meteor-docs sync:changelog",
+    "dev": "turbo run dev --filter=meteor-docs --filter=@shopware-ag/meteor-component-library"
   },
   "devDependencies": {
     "@changesets/cli": "2.29.8",
