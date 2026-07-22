@@ -54,6 +54,7 @@
     "lint:css:fix": "stylelint \"src/**/*.vue\" --fix",
     "format:check": "prettier . --check",
     "format": "prettier --write .",
+    "dev": "npm run storybook",
     "storybook": "storybook dev -p 6006",
     "build:storybook": "storybook build",
     "test:storybook": "test-storybook",

@@ -6,7 +6,7 @@
   "scripts": {
     "sync:changelog": "node scripts/sync-changelogs.mjs",
     "predev": "pnpm sync:changelog",
-    "dev": "nuxt dev --port 3001",
+    "dev": "nuxt dev --port 3001 --open",
     "prebuild": "pnpm sync:changelog",
     "build": "nuxt build",
     "pregenerate": "pnpm sync:changelog",

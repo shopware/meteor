@@ -49,14 +49,20 @@ const componentSourceUrl = computed(() => {
   return `${github.url}/tree/${github.branch || "main"}/${path}`;
 });
 
+// Base URL of the Storybook to link to. During local development (`nuxt dev`)
+// point at the locally running Storybook (see the root `dev` script) so the
+// docs and Storybook link back and forth; otherwise use the deployed one.
+const storybookBaseUrl = computed(() => {
+  if (import.meta.dev) return "http://localhost:6006";
+  return (appConfig.storybook as { url?: string } | undefined)?.url;
+});
+
 // Link a component page to its Storybook entry. The docs slug matches the
 // Storybook id prefix (e.g. "data-table" -> components-data-table); Storybook
 // resolves that to the component's autodocs (or first story) automatically.
 const componentStorybookUrl = computed(() => {
-  if (!componentSlug.value) return undefined;
-  const storybook = appConfig.storybook as { url?: string } | undefined;
-  if (!storybook?.url) return undefined;
-  return `${storybook.url}/?path=/docs/components-${componentSlug.value}`;
+  if (!componentSlug.value || !storybookBaseUrl.value) return undefined;
+  return `${storybookBaseUrl.value}/?path=/docs/components-${componentSlug.value}`;
 });
 
 const items = computed(() => [
