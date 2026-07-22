@@ -71,7 +71,7 @@ const props = withDefaults(
     disabled?: boolean;
     required?: boolean;
     name?: string;
-    size?: string;
+    size?: "small" | "default";
     helpText?: string;
     isInherited?: boolean;
     isInheritanceField?: boolean;

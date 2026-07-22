@@ -1,3 +1,7 @@
+import type { PropSchema } from "#shared/utils/formatType";
+
+export type { PropSchema };
+
 export interface ComponentPropMeta {
   name: string;
   type?: string;
@@ -5,6 +9,7 @@ export interface ComponentPropMeta {
   description?: string;
   required?: boolean;
   tags?: { name: string; text?: string }[];
+  schema?: PropSchema;
 }
 
 export interface ComponentEventMeta {

@@ -115,7 +115,7 @@ export default defineComponent({
      * @values small, default
      */
     size: {
-      type: String,
+      type: String as PropType<"small" | "default">,
       required: false,
       default: "default",
       validator(value: string) {

@@ -69,7 +69,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, type PropType } from "vue";
 import MtInheritanceSwitch from "../mt-inheritance-switch/mt-inheritance-switch.vue";
 import MtFieldCopyable from "../mt-field-copyable/mt-field-copyable.vue";
 import MtHelpText from "../../mt-help-text/mt-help-text.vue";
@@ -180,7 +180,7 @@ export default defineComponent({
      * @values small, default
      */
     size: {
-      type: String,
+      type: String as PropType<"small" | "default">,
       required: false,
       default: "default",
       validator(value: string) {
