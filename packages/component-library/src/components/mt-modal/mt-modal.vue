@@ -8,6 +8,7 @@
         role="dialog"
         aria-modal="true"
         :aria-labelledby="id"
+        tabindex="-1"
       >
         <div v-if="!hideHeader" class="mt-modal__header">
           <slot name="header-left" />
@@ -152,6 +153,10 @@ watch(
       trap = focusTrap.createFocusTrap(modalRef.value as HTMLElement, {
         tabbableOptions: { displayCheck: "none" },
         allowOutsideClick: true,
+        // Focus the dialog itself instead of the first tabbable element so
+        // opening the modal never activates an interactive element (e.g.
+        // the close button or a tooltip trigger that opens on focus).
+        initialFocus: () => modalRef.value ?? undefined,
         onPause: () => {
           // a new modal is being opened, pausing the current trap
           console.warn(
@@ -247,6 +252,8 @@ onUnmounted(() => {
 
 <style scoped>
 .mt-modal {
+  /* the dialog itself receives the initial focus; don't render a ring around it */
+  outline: none;
   height: auto;
   position: fixed;
   top: 50%;
