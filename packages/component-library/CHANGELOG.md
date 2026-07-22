@@ -1,5 +1,17 @@
 # Changelog
 
+## 5.3.2
+
+### Patch Changes
+
+- [#1280](https://github.com/shopware/meteor/pull/1280) [`226f16a`](https://github.com/shopware/meteor/commit/226f16af4dc9e1fca419c7262d6f0d3ece89b516) Thanks [@fabianhueske](https://github.com/fabianhueske)! - Refined several prop types to their literal values so the API reference renders them accurately. The `size` prop of `mt-text-field`, `mt-number-field`, and `mt-unit-field` is now typed as `"small" | "default"`, and the `mt-popover` `width` prop is now typed as `"dynamic" | "large" | "medium" | "small"` to match the value it actually accepts (previously it listed the non-functional `"auto"` and omitted the `"dynamic"` default). These are type-only corrections; the runtime behaviour is unchanged.
+
+- [#1272](https://github.com/shopware/meteor/pull/1272) [`1cbcdb8`](https://github.com/shopware/meteor/commit/1cbcdb8ff0b7ef1040cf1ed21b94a6bf1f4caadc) Thanks [@keulinho](https://github.com/keulinho)! - Fix number field stepping for values with high fractional precision limits.
+
+- [#1279](https://github.com/shopware/meteor/pull/1279) [`de7628d`](https://github.com/shopware/meteor/commit/de7628de4b396ef5d749dcb53633cdeb02b6c222) Thanks [@alastair-simon](https://github.com/alastair-simon)! - The collapsible open and close animations now use `ease-in-out` timing for a smoother transition.
+
+- [#1275](https://github.com/shopware/meteor/pull/1275) [`d292012`](https://github.com/shopware/meteor/commit/d2920123a0f02f3436692b49eae2cdb6472cf009) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - The modal now focuses the dialog container when it opens instead of the first interactive element. This prevents unintended side effects like an accidentally focused link or a tooltip opening together with the modal, while still moving focus into the dialog for keyboard and screen reader users.
+
 ## 5.3.1
 
 ### Patch Changes
