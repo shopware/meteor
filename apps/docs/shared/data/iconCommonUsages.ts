@@ -19,6 +19,7 @@ export const iconCommonUsages: IconUsage[] = [
   { icon: "plug", label: "Extensions" },
   { icon: "cog", label: "Settings" },
   { icon: "storefront", label: "Sales Channels" },
+  { icon: "briefcase", label: "B2B Components" },
   { icon: "shopping-cart", label: "Shopping cart" },
   { icon: "heart", label: "Wishlist" },
   { icon: "search", label: "Search" },
