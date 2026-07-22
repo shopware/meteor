@@ -18,8 +18,6 @@ import { MtStatusDot } from "@shopware-ag/meteor-component-library";
 
 ### Variants
 
-Each variant maps to a semantic color from the design system.
-
 ::component-example{name="status-dot-variants-example"}
 ::
 
@@ -30,7 +28,7 @@ Each variant maps to a semantic color from the design system.
 
 ### Pulse
 
-Set `pulse` to add a pulsating ring that signals ongoing, live activity, such as a process that is currently running. The animation is disabled for users who prefer reduced motion.
+Set `pulse` to add a pulsating ring that signals ongoing, live activity, such as a process that is currently running.
 
 ::component-example{name="status-dot-pulse-example"}
 ::

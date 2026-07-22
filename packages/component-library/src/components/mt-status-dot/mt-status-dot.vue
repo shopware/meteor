@@ -93,25 +93,23 @@ withDefaults(
   --mt-status-dot-color: var(--color-icon-positive-default);
 }
 
-/* Expanding, fading ring that reads as a "live" activity. It reuses the dot's
-   own color and scales out from behind the solid dot. */
 .mt-status-dot--pulse::after {
   content: "";
   position: absolute;
   inset: 0;
   border-radius: inherit;
   background-color: var(--mt-status-dot-color);
-  animation: mt-status-dot-pulse 1.5s ease-out infinite;
+  animation: mt-status-dot-pulse 1.5s ease infinite;
 }
 
 @keyframes mt-status-dot-pulse {
   0% {
     transform: scale(1);
-    opacity: 0.5;
+    opacity: 0.75;
   }
 
   100% {
-    transform: scale(2.5);
+    transform: scale(2.25);
     opacity: 0;
   }
 }
