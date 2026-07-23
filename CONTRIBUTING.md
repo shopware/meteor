@@ -39,6 +39,21 @@ you can [request a feature](https://github.com/shopware/meteor/issues/new?templa
 
 ## Local development
 
+### Running Storybook and the documentation
+
+To work on the components themselves, start Storybook and the documentation site together from the repository root:
+
+```sh
+pnpm install
+pnpm dev
+```
+
+This runs Storybook on `http://localhost:6006` and the documentation on `http://localhost:3001` in parallel, each opening in your browser. While both run locally, the `Storybook` link on a component's documentation page and the `Documentation` link in Storybook point at these local instances instead of the deployed ones, so you can move between them while developing.
+
+To start just one of them, run `pnpm --filter @shopware-ag/meteor-component-library dev` for Storybook or `pnpm --filter meteor-docs dev` for the documentation.
+
+### Testing your changes in another project with yalc
+
 For local development we use `yalc` to publish packages into a virtual store and consume them from other projects.
 You can find yalc [here](https://github.com/wclr/yalc) on GitHub.
 To use your changes in Shopware and your extensions, you first build and publish the changed package, then add it to your project in a second step.

@@ -16,7 +16,7 @@ describe("mt-inheritance-switch", () => {
 
     // ASSERT
     expect(screen.getByRole("button")).toHaveFocus();
-    expect(screen.getByRole("tooltip")).toBeVisible();
+    expect(await screen.findByRole("tooltip")).toBeVisible();
   });
 
   it("tells the user that the inheritance switch is inherited", async () => {
@@ -31,7 +31,7 @@ describe("mt-inheritance-switch", () => {
     await userEvent.tab();
 
     // ASSERT
-    expect(screen.getByRole("tooltip")).toHaveTextContent("Remove inheritance");
+    expect(await screen.findByRole("tooltip")).toHaveTextContent("Remove inheritance");
   });
 
   it("tells the user that the inheritance switch is not inherited", async () => {
@@ -46,7 +46,7 @@ describe("mt-inheritance-switch", () => {
     await userEvent.tab();
 
     // ASSERT
-    expect(screen.getByRole("tooltip")).toHaveTextContent("Restore inheritance");
+    expect(await screen.findByRole("tooltip")).toHaveTextContent("Restore inheritance");
   });
 
   it("emits a inheritance-remove event when unlinking the inheritance", async () => {

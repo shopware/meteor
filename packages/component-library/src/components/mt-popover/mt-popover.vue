@@ -85,7 +85,7 @@ export default defineComponent({
       default: false,
     },
     width: {
-      type: String as PropType<"auto" | "large" | "medium" | "small">,
+      type: String as PropType<"dynamic" | "large" | "medium" | "small">,
       required: false,
       default: "dynamic",
       validator: (value: string) => {

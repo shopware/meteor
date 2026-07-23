@@ -74,3 +74,4 @@ import { MtBadge } from "@shopware-ag/meteor-component-library";
 ## Related components
 
 - [**Promo Badge**](/components/promo-badge): when the label is a predefined promotional label such as `New`, `Beta`, or `Shopware AI`.
+- [**Status Dot**](/components/status-dot): when a small colored dot is enough and no text label is needed.

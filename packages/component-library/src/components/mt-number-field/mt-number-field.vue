@@ -101,6 +101,23 @@ export default defineComponent({
   extends: MtTextField,
 
   props: {
+    // Redeclared from MtTextField because vue-component-meta cannot resolve a
+    // refined PropType through Vue's `extends`; without this the API reference
+    // would show the inherited `size` as a bare `string` instead of its values.
+    /**
+     * The size of the number field.
+     *
+     * @values small, default
+     */
+    size: {
+      type: String as PropType<"small" | "default">,
+      required: false,
+      default: "default",
+      validator(value: string) {
+        return ["small", "default"].includes(value);
+      },
+    },
+
     /**
      * Defines if the number should be a floating point number or integer.
      */
