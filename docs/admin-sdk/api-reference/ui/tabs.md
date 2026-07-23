@@ -31,10 +31,11 @@ ui.tabs('sw-product-detail' /* The positionId of the tab bar*/).addTabItem({
 
 #### Parameters
 
-| Name                 | Required | Default | Description                                             |
-| :------------------- | :------- | :------ | :------------------------------------------------------ |
-| `label`              | true     |         | The label of the tab bar item                           |
-| `componentSectionId` | true     |         | The Id for for the component section in the tab content |
+| Name                 | Required | Default | Description                                                                                                                          |
+| :------------------- | :------- | :------ | :--------------------------------------------------------------------------------------------------------------------------------- |
+| `label`              | true     |         | The label of the tab bar item                                                                                                       |
+| `componentSectionId` | true     |         | The Id for for the component section in the tab content                                                                             |
+| `visible`            | false    | `true`  | Whether the tab item is shown initially. Set to `false` to register it hidden; use `setVisibility()` to change it afterwards.       |
 
 #### Return value
 
@@ -82,3 +83,31 @@ if (location.is('my-example-product-view-tab-card')) {
         });
 }
 ```
+
+## setVisibility()
+
+Show or hide a tab item that was previously added with `addTabItem()`. Use this to toggle a tab's
+visibility for the current context (for example, based on the entity that is currently opened),
+instead of calling `addTabItem()` again.
+
+#### Usage
+
+```ts
+import { ui } from '@shopware-ag/meteor-admin-sdk';
+
+ui.tabs('sw-order-detail').setVisibility({
+    componentSectionId: 'example-order-detail-tab-content',
+    visible: false,
+});
+```
+
+#### Parameters
+
+| Name                 | Required | Default | Description                                               |
+| :------------------- | :------- | :------ | :---------------------------------------------------------|
+| `componentSectionId` | true     |         | The `componentSectionId` of the tab item to show or hide  |
+| `visible`            | true     |         | Whether the tab item should be shown                      |
+
+#### Return value
+
+Returns a promise without data.
