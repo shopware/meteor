@@ -152,4 +152,45 @@ describe("mt-colorpicker", () => {
       }),
     );
   });
+
+  it("displays a hint passed via the hint prop", () => {
+    // ARRANGE
+    render(MtColorpicker, {
+      props: {
+        modelValue: "#0fcff5",
+        hint: "Hint from prop",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByText("Hint from prop")).toBeVisible();
+  });
+
+  it("renders markup passed via the hint slot", () => {
+    // ARRANGE
+    render(MtColorpicker, {
+      props: {
+        modelValue: "#0fcff5",
+      },
+      slots: {
+        hint: '<span data-testid="custom-hint">Hint from slot</span>',
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByTestId("custom-hint")).toBeVisible();
+    expect(screen.getByTestId("custom-hint")).toHaveTextContent("Hint from slot");
+  });
+
+  it("does not render a hint when neither prop nor slot is provided", () => {
+    // ARRANGE
+    const { container } = render(MtColorpicker, {
+      props: {
+        modelValue: "#0fcff5",
+      },
+    });
+
+    // ASSERT
+    expect(container.querySelector(".mt-field-hint")).not.toBeInTheDocument();
+  });
 });

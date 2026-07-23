@@ -103,4 +103,48 @@ describe("mt-unit-field", () => {
     expect(modelValueHandler).toHaveBeenCalledWith(0.1); // 100 mm = 1 m
     expect(unitHandler).toHaveBeenCalledWith("m");
   });
+
+  it("displays a hint passed via the hint prop", () => {
+    // ARRANGE
+    render(MtUnitField, {
+      props: {
+        modelValue: 0,
+        defaultUnit: "mm",
+        hint: "Hint from prop",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByText("Hint from prop")).toBeVisible();
+  });
+
+  it("renders markup passed via the hint slot", () => {
+    // ARRANGE
+    render(MtUnitField, {
+      props: {
+        modelValue: 0,
+        defaultUnit: "mm",
+      },
+      slots: {
+        hint: '<span data-testid="custom-hint">Hint from slot</span>',
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByTestId("custom-hint")).toBeVisible();
+    expect(screen.getByTestId("custom-hint")).toHaveTextContent("Hint from slot");
+  });
+
+  it("does not render a hint when neither prop nor slot is provided", () => {
+    // ARRANGE
+    const { container } = render(MtUnitField, {
+      props: {
+        modelValue: 0,
+        defaultUnit: "mm",
+      },
+    });
+
+    // ASSERT
+    expect(container.querySelector(".mt-field-hint")).not.toBeInTheDocument();
+  });
 });

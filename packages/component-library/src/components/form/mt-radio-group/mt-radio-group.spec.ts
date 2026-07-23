@@ -158,4 +158,37 @@ describe("mt-radio-group", () => {
     // ASSERT
     expect(screen.getByText("Please select an option")).toBeVisible();
   });
+
+  it("displays a hint passed via the hint prop", async () => {
+    // ARRANGE
+    await render(MtRadioGroupRoot, {
+      props: {
+        hint: "Hint from prop",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByText("Hint from prop")).toBeVisible();
+  });
+
+  it("renders markup passed via the hint slot", async () => {
+    // ARRANGE
+    await render(MtRadioGroupRoot, {
+      slots: {
+        hint: '<span data-testid="custom-hint">Hint from slot</span>',
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByTestId("custom-hint")).toBeVisible();
+    expect(screen.getByTestId("custom-hint")).toHaveTextContent("Hint from slot");
+  });
+
+  it("does not render a hint when neither prop nor slot is provided", async () => {
+    // ARRANGE
+    const { container } = await render(MtRadioGroupRoot);
+
+    // ASSERT
+    expect(container.querySelector(".mt-field-hint")).not.toBeInTheDocument();
+  });
 });

@@ -1,7 +1,7 @@
 import { flushPromises, mount } from "@vue/test-utils";
 import MtSelect from "../mt-select/mt-select.vue";
 
-async function createWrapper() {
+async function createWrapper({ props = {}, slots = {} } = {}) {
   const wrapper = mount(MtSelect, {
     props: {
       modelValue: "becky",
@@ -22,7 +22,9 @@ async function createWrapper() {
           value: "c",
         },
       ],
+      ...props,
     },
+    slots,
   });
 
   await wrapper.vm.$nextTick();
@@ -156,5 +158,26 @@ describe("mt-select", () => {
     // Check that the search found the item with 'test' in the email field
     expect(wrapper.vm.visibleResults.length).toBe(1);
     expect(wrapper.vm.visibleResults[0].value).toBe("user3");
+  });
+
+  it("displays a hint passed via the hint prop", async () => {
+    const wrapper = await createWrapper({ props: { hint: "Hint from prop" } });
+
+    expect(wrapper.find(".mt-field-hint").text()).toContain("Hint from prop");
+  });
+
+  it("renders markup passed via the hint slot", async () => {
+    const wrapper = await createWrapper({
+      slots: { hint: '<span data-testid="custom-hint">Hint from slot</span>' },
+    });
+
+    expect(wrapper.find('[data-testid="custom-hint"]').exists()).toBe(true);
+    expect(wrapper.find('[data-testid="custom-hint"]').text()).toBe("Hint from slot");
+  });
+
+  it("does not render a hint when neither prop nor slot is provided", async () => {
+    const wrapper = await createWrapper();
+
+    expect(wrapper.find(".mt-field-hint").exists()).toBe(false);
   });
 });
