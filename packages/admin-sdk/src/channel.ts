@@ -570,7 +570,68 @@ const datasets = new Map<string, unknown>();
   await send('__registerWindow__', {
     sdkVersion: packageVersion,
   });
+
+  // Mirror the Administration theme onto app iframes (the admin owns its own document)
+  if (window.parent !== window) {
+    startAutoThemeSync();
+  }
 })().catch((e) => console.error(e));
+
+function isThemeValue(value: unknown): value is 'light' | 'dark' {
+  return value === 'light' || value === 'dark';
+}
+
+/**
+ * Keeps the `data-theme` attribute of `target` in sync with the resolved
+ * Administration color theme
+ *
+ * @internal - used by the automatic sync below and `context.syncTheme()`
+ */
+export function startThemeSync(target: HTMLElement): { initialFetch: Promise<void>, stop: () => void } {
+  let hasReceivedUpdate = false;
+
+  // Subscribe before fetching so an in-flight change cannot slip through unobserved
+  const stop = subscribe('contextTheme', (theme) => {
+    if (!isThemeValue(theme)) {
+      return;
+    }
+
+    hasReceivedUpdate = true;
+    target.dataset.theme = theme;
+  });
+
+  const initialFetch = send('contextTheme', {}).then((theme) => {
+    // A theme published in the meantime is newer than the fetched value
+    if (!hasReceivedUpdate && isThemeValue(theme)) {
+      target.dataset.theme = theme;
+    }
+  });
+
+  return { initialFetch, stop };
+}
+
+/**
+ * Starts the theme sync on the document root inside app iframes. Skipped
+ * when the document declares `data-theme` itself (the app owns its theme)
+ *
+ * @internal - apps that need explicit control use `context.syncTheme()`
+ */
+export function startAutoThemeSync(): () => void {
+  const target = document.documentElement;
+
+  if (target.dataset.theme) {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
+    return () => {};
+  }
+
+  const { initialFetch, stop } = startThemeSync(target);
+
+  // Fails silently: older Administrations have no contextTheme handler
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  initialFetch.catch(() => {});
+
+  return stop;
+}
 
 // New dataset registered
 export async function processDataRegistration(data: Omit<datasetRegistration, 'responseType'>): Promise<void> {
