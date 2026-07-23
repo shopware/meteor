@@ -76,15 +76,15 @@ const model = defineModel({
   type: String,
 });
 
-defineEmits<{
-  change: [string | undefined];
-  "inheritance-remove": [];
-  "inheritance-restore": [];
-  focus: [];
-  blur: [];
-}>();
-
 const id = useId();
+
+defineEmits<{
+  change: [typeof model.value];
+  "inheritance-remove": void;
+  "inheritance-restore": void;
+  focus: void;
+  blur: void;
+}>();
 
 const props = defineProps<{
   required?: boolean;
