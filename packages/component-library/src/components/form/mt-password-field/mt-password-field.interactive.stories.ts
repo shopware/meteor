@@ -1,5 +1,6 @@
 import { within, userEvent, expect } from "@storybook/test";
 
+import MtPasswordField from "./mt-password-field.vue";
 import meta, {
   type MtPasswordFieldMeta,
   type MtPasswordFieldStory,
@@ -39,13 +40,6 @@ export const VisualTestSuffix: MtPasswordFieldStory = {
   },
 };
 
-export const VisualTestHint: MtPasswordFieldStory = {
-  name: "Should display hint",
-  args: {
-    hint: "hint",
-  },
-};
-
 export const VisualTestDisabled: MtPasswordFieldStory = {
   name: "Should disable",
   args: {
@@ -77,5 +71,36 @@ export const VisualTestShowPassword: MtPasswordFieldStory = {
         name: "Show password",
       }),
     );
+  },
+};
+
+export const VisualTestHintProp: MtPasswordFieldStory = {
+  name: "Should display hint via prop",
+  args: {
+    hint: "Hint via prop",
+  },
+  render: (args) => ({
+    components: { MtPasswordField },
+    setup: () => ({ args }),
+    template: `<mt-password-field :label="args.label" :hint="args.hint" />`,
+  }),
+  play: ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getByText("Hint via prop")).toBeDefined();
+  },
+};
+
+export const VisualTestHintSlot: MtPasswordFieldStory = {
+  name: "Should display hint via slot",
+  render: (args) => ({
+    components: { MtPasswordField },
+    setup: () => ({ args }),
+    template: `<mt-password-field :label="args.label"><template #hint>Hint via slot</template></mt-password-field>`,
+  }),
+  play: ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getByText("Hint via slot")).toBeDefined();
   },
 };

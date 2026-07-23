@@ -1,4 +1,5 @@
 import { expect, within, userEvent, fireEvent } from "@storybook/test";
+import MtSlider from "./mt-slider.vue";
 import meta, { type MtSliderMeta, type MtSliderStory } from "./mt-slider.stories";
 
 export default {
@@ -412,3 +413,34 @@ function extractElements(canvas: any) {
     rightSlider: canvas.getByTestId("right-slider"),
   };
 }
+
+export const VisualTestHintProp: MtSliderStory = {
+  name: "Should display hint via prop",
+  args: {
+    hint: "Hint via prop",
+  },
+  render: (args) => ({
+    components: { MtSlider },
+    setup: () => ({ args }),
+    template: `<mt-slider :label="args.label" :model-value="0" :hint="args.hint" />`,
+  }),
+  play: ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getByText("Hint via prop")).toBeDefined();
+  },
+};
+
+export const VisualTestHintSlot: MtSliderStory = {
+  name: "Should display hint via slot",
+  render: (args) => ({
+    components: { MtSlider },
+    setup: () => ({ args }),
+    template: `<mt-slider :label="args.label" :model-value="0"><template #hint>Hint via slot</template></mt-slider>`,
+  }),
+  play: ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getByText("Hint via slot")).toBeDefined();
+  },
+};

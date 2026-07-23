@@ -1,6 +1,7 @@
 import { within, userEvent, fireEvent } from "@storybook/test";
 import { expect } from "@storybook/test";
 
+import MtColorpicker from "./mt-colorpicker.vue";
 import meta, { type MtColorpickerMeta, type MtColorpickerStory } from "./mt-colorpicker.stories";
 import { waitUntil } from "@/_internal/test-helper";
 
@@ -596,5 +597,36 @@ export const VisualTestColorpickerWithHelpText: MtColorpickerStory = {
     await userEvent.tab();
 
     expect(canvas.getByRole("tooltip")).toBeInTheDocument();
+  },
+};
+
+export const VisualTestHintProp: MtColorpickerStory = {
+  name: "Should display hint via prop",
+  args: {
+    hint: "Hint via prop",
+  },
+  render: (args) => ({
+    components: { MtColorpicker },
+    setup: () => ({ args }),
+    template: `<mt-colorpicker :label="args.label" model-value="#0fcff5" :hint="args.hint" />`,
+  }),
+  play: ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getByText("Hint via prop")).toBeDefined();
+  },
+};
+
+export const VisualTestHintSlot: MtColorpickerStory = {
+  name: "Should display hint via slot",
+  render: (args) => ({
+    components: { MtColorpicker },
+    setup: () => ({ args }),
+    template: `<mt-colorpicker :label="args.label" model-value="#0fcff5"><template #hint>Hint via slot</template></mt-colorpicker>`,
+  }),
+  play: ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getByText("Hint via slot")).toBeDefined();
   },
 };

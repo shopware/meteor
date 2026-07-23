@@ -1,6 +1,7 @@
 import { within, userEvent } from "@storybook/test";
 import { expect } from "@storybook/test";
 
+import MtTextarea from "./mt-textarea.vue";
 import meta, { type MtTextareaMeta, type MtTextareaStory } from "./mt-textarea.stories";
 
 export default {
@@ -8,18 +9,6 @@ export default {
   title: "Components/mt-textarea/Interaction tests",
   tags: ["!autodocs"],
 } as MtTextareaMeta;
-
-export const VisualTestHint: MtTextareaStory = {
-  name: "Should display hint",
-  args: {
-    hint: "hint",
-  },
-  play: ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    expect(canvas.getByText(args.hint)).toBeDefined();
-  },
-};
 
 export const VisualTestCharacterCount: MtTextareaStory = {
   name: "Should display character count with text",
@@ -125,5 +114,36 @@ export const VisualTestHelpText: MtTextareaStory = {
   name: "With help text",
   args: {
     helpText: "This is a help text",
+  },
+};
+
+export const VisualTestHintProp: MtTextareaStory = {
+  name: "Should display hint via prop",
+  args: {
+    hint: "Hint via prop",
+  },
+  render: (args) => ({
+    components: { MtTextarea },
+    setup: () => ({ args }),
+    template: `<mt-textarea :label="args.label" :hint="args.hint" />`,
+  }),
+  play: ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getByText("Hint via prop")).toBeDefined();
+  },
+};
+
+export const VisualTestHintSlot: MtTextareaStory = {
+  name: "Should display hint via slot",
+  render: (args) => ({
+    components: { MtTextarea },
+    setup: () => ({ args }),
+    template: `<mt-textarea :label="args.label"><template #hint>Hint via slot</template></mt-textarea>`,
+  }),
+  play: ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getByText("Hint via slot")).toBeDefined();
   },
 };

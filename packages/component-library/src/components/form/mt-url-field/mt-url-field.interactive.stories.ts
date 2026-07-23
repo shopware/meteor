@@ -1,4 +1,5 @@
 import { expect, fn, userEvent, within } from "@storybook/test";
+import MtUrlField from "./mt-url-field.vue";
 import meta, { type MtUrlFieldMeta, type MtUrlFieldStory } from "./mt-url-field.stories";
 import { waitUntil } from "@/_internal/test-helper";
 
@@ -108,13 +109,6 @@ export const VisualTestHelpText: MtUrlFieldStory = {
   },
 };
 
-export const VisualTestHint: MtUrlFieldStory = {
-  name: "Hint",
-  args: {
-    hint: "This is a hint",
-  },
-};
-
 export const VisualTestCopyToClipboard: MtUrlFieldStory = {
   name: "Copy to clipboard",
   args: {
@@ -147,5 +141,36 @@ export const changeModelValueFromOutside: MtUrlFieldStory = {
     args.modelValue = "https://changed.com";
     await waitUntil(() => input.value === "changed.com");
     expect(input.value).toBe("changed.com");
+  },
+};
+
+export const VisualTestHintProp: MtUrlFieldStory = {
+  name: "Should display hint via prop",
+  args: {
+    hint: "Hint via prop",
+  },
+  render: (args) => ({
+    components: { MtUrlField },
+    setup: () => ({ args }),
+    template: `<mt-url-field :label="args.label" :hint="args.hint" />`,
+  }),
+  play: ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getByText("Hint via prop")).toBeDefined();
+  },
+};
+
+export const VisualTestHintSlot: MtUrlFieldStory = {
+  name: "Should display hint via slot",
+  render: (args) => ({
+    components: { MtUrlField },
+    setup: () => ({ args }),
+    template: `<mt-url-field :label="args.label"><template #hint>Hint via slot</template></mt-url-field>`,
+  }),
+  play: ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getByText("Hint via slot")).toBeDefined();
   },
 };

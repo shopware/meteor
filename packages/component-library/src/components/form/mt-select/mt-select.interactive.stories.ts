@@ -3,6 +3,7 @@ import { expect } from "@storybook/test";
 import { waitUntil } from "../../../_internal/test-helper";
 import { screen } from "@storybook/test";
 
+import MtSelect from "./mt-select.vue";
 import meta, { type MtSelectMeta, type MtSelectStory } from "./mt-select.stories";
 
 export default {
@@ -595,25 +596,6 @@ export const VisualTestPlaceholderMulti: MtSelectStory = {
   },
 };
 
-export const VisualTestHint: MtSelectStory = {
-  name: "Should display hint",
-  args: {
-    hint: "hint",
-  },
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-    await waitUntil(() => {
-      // Check if input item contains "Option B"
-      const selectionListItem = document.querySelector(
-        ".mt-select-selection-list__input",
-      ) as HTMLInputElement;
-      return selectionListItem?.value === "Option B";
-    });
-
-    expect(canvas.getByText(args.hint)).toBeDefined();
-  },
-};
-
 export const VisualTestDisabled: MtSelectStory = {
   name: "Should disable",
   args: {
@@ -911,5 +893,36 @@ export const VisualTestPlaceholderBehaviorFalse: MtSelectStory = {
     const canvas = within(canvasElement);
 
     expect(canvas.queryByPlaceholderText(args.placeholder!)).toBeNull();
+  },
+};
+
+export const VisualTestHintProp: MtSelectStory = {
+  name: "Should display hint via prop",
+  args: {
+    hint: "Hint via prop",
+  },
+  render: (args) => ({
+    components: { MtSelect },
+    setup: () => ({ args }),
+    template: `<mt-select :label="args.label" :options="[{ id: 1, label: 'Option A', value: 'a' }]" :hint="args.hint" />`,
+  }),
+  play: ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getByText("Hint via prop")).toBeDefined();
+  },
+};
+
+export const VisualTestHintSlot: MtSelectStory = {
+  name: "Should display hint via slot",
+  render: (args) => ({
+    components: { MtSelect },
+    setup: () => ({ args }),
+    template: `<mt-select :label="args.label" :options="[{ id: 1, label: 'Option A', value: 'a' }]"><template #hint>Hint via slot</template></mt-select>`,
+  }),
+  play: ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getByText("Hint via slot")).toBeDefined();
   },
 };
