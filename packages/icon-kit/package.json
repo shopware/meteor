@@ -35,22 +35,18 @@
     "test:unit": "vitest"
   },
   "prettier": "@shopware-ag/meteor-prettier-config",
-  "dependencies": {
-    "@t3-oss/env-core": "^0.12.0",
-    "dotenv": "^16.4.1",
-    "ora": "^8.2.0",
-    "winston": "^3.17.0",
-    "zod": "^3.25.75"
-  },
   "devDependencies": {
     "@eslint/js": "^9.20.0",
     "@shopware-ag/meteor-prettier-config": "workspace:*",
     "@supercharge/promise-pool": "^2.4.0",
+    "@t3-oss/env-core": "^0.12.0",
     "@types/axios": "^0.14.0",
     "@types/node": "^20.14.9",
     "@types/svgo": "^2.6.3",
     "axios": "^0.26.1",
+    "dotenv": "^16.4.1",
     "eslint": "^9.21.0",
+    "ora": "^8.2.0",
     "prettier": "^3.5.3",
     "svgo": "^2.8.0",
     "svgo-autocrop": "1.1.1",
@@ -59,6 +55,8 @@
     "typescript": "^5.7.0",
     "typescript-eslint": "^8.24.1",
     "vite": "^6.2.2",
-    "vitest": "^3.0.9"
+    "vitest": "^3.0.9",
+    "winston": "^3.17.0",
+    "zod": "^3.25.75"
   }
 }
