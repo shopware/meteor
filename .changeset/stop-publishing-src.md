@@ -2,4 +2,4 @@
 "@shopware-ag/meteor-component-library": patch
 ---
 
-Stop publishing the `src` directory (2.3 MB, including 141 test and story files). The `exports` map only ever exposed `dist`, so `src` was unreachable through package imports.
+Stop publishing the `src` directory. The `exports` map only exposes `dist`, so `src` was never reachable through supported imports. If you reached into `src` via raw `node_modules` paths (e.g. SCSS imports), switch to the documented `dist` entry points.
