@@ -31,7 +31,6 @@
     }
   },
   "files": [
-    "src",
     "dist"
   ],
   "sideEffects": [
