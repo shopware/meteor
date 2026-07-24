@@ -1,0 +1,2 @@
+/* Intentionally empty: neutralizes the meteor component library global
+ * reset (dist/index.css), which the docs site does not load. See nuxt.config. */

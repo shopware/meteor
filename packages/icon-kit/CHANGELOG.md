@@ -1,5 +1,64 @@
 # CHANGELOG.md
 
+## 5.9.0
+
+### Minor Changes
+
+- [#1263](https://github.com/shopware/meteor/pull/1263) [`ca51ea5`](https://github.com/shopware/meteor/commit/ca51ea5ec04da206f20e726c55ab1278d860965c) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Added multiple icons:
+  `regular-panel-bottom`
+  `regular-panel-left`
+  `regular-panel-right`
+  `regular-panel-top`
+  `regular-shopware-copilot`
+  `solid-panel-bottom`
+  `solid-panel-left`
+  `solid-panel-right`
+  `solid-panel-top`
+  `solid-shopware-copilot`
+
+  Modified icons:
+  `regular-cog`
+  `solid-cog`
+
+## 5.8.0
+
+### Minor Changes
+
+- [#1162](https://github.com/shopware/meteor/pull/1162) [`ed965bd`](https://github.com/shopware/meteor/commit/ed965bdd41fe9972ba15319ccf0077dd14026ec2) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Modified icons:
+  `shopware-intelligence`
+  `shopware-nexus`
+  `shopware-payments`
+
+## 5.7.0
+
+### Minor Changes
+
+- [#1144](https://github.com/shopware/meteor/pull/1144) [`d5fe2db`](https://github.com/shopware/meteor/commit/d5fe2dbb90ca5fa9513d9fc3626548e902a660c8) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Added multiple icons:
+  `regular-bitcoin`
+  `regular-british-pound`
+  `regular-filter-alt`
+  `regular-indian-rupee`
+  `regular-japanese-yen`
+  `regular-shopware-intelligence`
+  `regular-shopware-nexus`
+  `regular-shopware-payments`
+  `regular-swiss-franc`
+  `regular-us-dollar`
+  `solid-bitcoin`
+  `solid-british-pound`
+  `solid-filter-alt`
+  `solid-indian-rupee`
+  `solid-japanese-yen`
+  `solid-shopware-intelligence`
+  `solid-shopware-nexus`
+  `solid-shopware-payments`
+  `solid-swiss-franc`
+  `solid-us-dollar`
+
+- [#1144](https://github.com/shopware/meteor/pull/1144) [`d5fe2db`](https://github.com/shopware/meteor/commit/d5fe2dbb90ca5fa9513d9fc3626548e902a660c8) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Modified icons:
+  `regular-cog-s`
+  `solid-cog-s`
+
 ## 5.6.0
 
 ### Minor Changes

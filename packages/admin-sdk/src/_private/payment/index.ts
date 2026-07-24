@@ -93,7 +93,9 @@ export const addPaymentIframe = async (
     shopUrl = options.shopUrl || '';
     shopPlan = options.shopPlan || '';
   }
-  const link = `${baseUrl}/payment?service-name=${name}&service-version=${version}&shop-url=${shopUrl}&sw-version=${options.swVersion}&sw-user-language=${options.swUserLanguage}&shop-plan=${shopPlan}`;
+
+  const shopId = await context.getShopId();
+  const link = `${baseUrl}/payment?service-name=${name}&service-version=${version}&shop-url=${shopUrl}&sw-version=${options.swVersion}&sw-user-language=${options.swUserLanguage}&shop-plan=${shopPlan}&shop-id=${shopId ?? ''}`;
   const iframeEl = document.createElement('iframe');
   iframeEl.width = '100%';
   iframeEl.height = '100%';

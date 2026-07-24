@@ -1,5 +1,56 @@
 # administration
 
+## 1.0.56
+
+### Patch Changes
+
+- Updated dependencies [[`f091304`](https://github.com/shopware/meteor/commit/f09130459e371d65651446ece113a59868001cca), [`0d8dde1`](https://github.com/shopware/meteor/commit/0d8dde13640bf8c703e779b5e7a7fa80458185fa)]:
+  - @shopware-ag/meteor-component-library@5.4.0
+  - @shopware-ag/meteor-admin-sdk@6.10.0
+
+## 1.0.55
+
+### Patch Changes
+
+- Updated dependencies [[`226f16a`](https://github.com/shopware/meteor/commit/226f16af4dc9e1fca419c7262d6f0d3ece89b516), [`1cbcdb8`](https://github.com/shopware/meteor/commit/1cbcdb8ff0b7ef1040cf1ed21b94a6bf1f4caadc), [`de7628d`](https://github.com/shopware/meteor/commit/de7628de4b396ef5d749dcb53633cdeb02b6c222), [`d292012`](https://github.com/shopware/meteor/commit/d2920123a0f02f3436692b49eae2cdb6472cf009)]:
+  - @shopware-ag/meteor-component-library@5.3.2
+
+## 1.0.54
+
+### Patch Changes
+
+- Updated dependencies [[`1e4749e`](https://github.com/shopware/meteor/commit/1e4749ed333f7497e9ccec1dfd3f102e4197a7de), [`63df47b`](https://github.com/shopware/meteor/commit/63df47b653ec0bc18f35c0c2dbd8eb2e3e772557)]:
+  - @shopware-ag/meteor-component-library@5.3.1
+
+## 1.0.53
+
+### Patch Changes
+
+- Updated dependencies [[`db041ae`](https://github.com/shopware/meteor/commit/db041ae91891a272f8abd9da7e5bbf441a3713e1), [`0b11681`](https://github.com/shopware/meteor/commit/0b116813d524f8d0c0f233a1db2b9982866c9cbc), [`664d2d3`](https://github.com/shopware/meteor/commit/664d2d30cd91af5a7404fffa1719abf678977c0a), [`d902e2a`](https://github.com/shopware/meteor/commit/d902e2a35b30f021603b267dc4fd86e96e778e84), [`e5c28e0`](https://github.com/shopware/meteor/commit/e5c28e006af9f4ed25e29f01558070f88745534c), [`9eb0c3d`](https://github.com/shopware/meteor/commit/9eb0c3d2fd496c704a63d87f73c370ade5084942), [`b82647f`](https://github.com/shopware/meteor/commit/b82647f8d73c4ecc7d65856345097bd93f483357), [`b82647f`](https://github.com/shopware/meteor/commit/b82647f8d73c4ecc7d65856345097bd93f483357), [`7c9f669`](https://github.com/shopware/meteor/commit/7c9f669b60b33a62b68ca52652337e687eae5eaf)]:
+  - @shopware-ag/meteor-component-library@5.3.0
+  - @shopware-ag/meteor-admin-sdk@6.9.1
+
+## 1.0.52
+
+### Patch Changes
+
+- Updated dependencies [[`dac8771`](https://github.com/shopware/meteor/commit/dac877135b31fcedaf94365f2e16f1ce4e1bea9d), [`f380305`](https://github.com/shopware/meteor/commit/f380305595b7b7abc7ede6088a6961b775fec787), [`e21a76c`](https://github.com/shopware/meteor/commit/e21a76c571147a1b8f678d26999fe7b47198da3e), [`e21a76c`](https://github.com/shopware/meteor/commit/e21a76c571147a1b8f678d26999fe7b47198da3e), [`89e62b3`](https://github.com/shopware/meteor/commit/89e62b3e0f06b480e20ddd607945127c85d29f15), [`db1cf75`](https://github.com/shopware/meteor/commit/db1cf75d2aa09b2039f7da587e8d2b7313af5164), [`dac8771`](https://github.com/shopware/meteor/commit/dac877135b31fcedaf94365f2e16f1ce4e1bea9d)]:
+  - @shopware-ag/meteor-component-library@5.2.0
+
+## 1.0.51
+
+### Patch Changes
+
+- Updated dependencies [[`10bb170`](https://github.com/shopware/meteor/commit/10bb1700651b1f8e9042936b63ac7ced808c9792), [`1ab72fb`](https://github.com/shopware/meteor/commit/1ab72fbfcdbcad989083da2cb9e620240df482de), [`a4a236c`](https://github.com/shopware/meteor/commit/a4a236c4ea378adbb015a699813023f72c2f1fb8), [`b358e2a`](https://github.com/shopware/meteor/commit/b358e2a38b7729289d37daa7c7fe475c8d0e9109), [`1d8ee80`](https://github.com/shopware/meteor/commit/1d8ee80c18011082c895f3222a19604985603c85), [`22a0d25`](https://github.com/shopware/meteor/commit/22a0d25d06d08d5a2560470a8d4745ba6663d56a)]:
+  - @shopware-ag/meteor-component-library@5.1.0
+
+## 1.0.50
+
+### Patch Changes
+
+- Updated dependencies [[`d453e51`](https://github.com/shopware/meteor/commit/d453e51231ce1f3c487cfd95755d10330e9ef8e3), [`5673f08`](https://github.com/shopware/meteor/commit/5673f0839d4c074a87d5f4b852419f5467f066a5), [`703eccf`](https://github.com/shopware/meteor/commit/703eccf0fba2cbd2e2091bea32a60a8dc9730380), [`703eccf`](https://github.com/shopware/meteor/commit/703eccf0fba2cbd2e2091bea32a60a8dc9730380), [`6e8cd79`](https://github.com/shopware/meteor/commit/6e8cd79e32ba63e601ad5c3e9e0575800860bcf5), [`5673f08`](https://github.com/shopware/meteor/commit/5673f0839d4c074a87d5f4b852419f5467f066a5), [`ac54a03`](https://github.com/shopware/meteor/commit/ac54a03028e2733b1c99ec71475b3ae39890afaf)]:
+  - @shopware-ag/meteor-component-library@5.0.0
+
 ## 1.0.49
 
 ### Patch Changes

@@ -14,9 +14,9 @@ export default {
 
     // use bigger viewport for data-table and toasts
     if (
-      context.id.startsWith("components-mt-data-table-interaction-tests") ||
-      context.id.startsWith("components-mt-entity-data-table-interaction-tests") ||
-      context.id.startsWith("components-mt-toast-interaction-tests")
+      context.id.startsWith("components-data-table-interaction-tests") ||
+      context.id.startsWith("components-entity-data-table-interaction-tests") ||
+      context.id.startsWith("components-toast-interaction-tests")
     ) {
       await page.setViewportSize({ width: 1600, height: 900 });
     }
@@ -24,7 +24,7 @@ export default {
     // use smaller viewport to test wrapping of multi select
     if (
       context.id ===
-      "components-mt-select-interaction-tests--visual-test-ensure-correct-multi-selection-wrapping"
+      "components-select-interaction-tests--visual-test-ensure-correct-multi-selection-wrapping"
     ) {
       await page.setViewportSize({ width: 500, height: 650 });
     }

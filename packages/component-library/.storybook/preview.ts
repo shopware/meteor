@@ -1,18 +1,15 @@
 import type { Preview } from "@storybook/vue3";
-import "~/src/components/assets/scss/all.scss";
-import "~/src/components/assets/scss/font.scss";
-import { darkTheme, lightTheme } from "./shopwareTheme";
+import "~/src/assets/scss/all.scss";
+import "~/src/assets/css/fonts/inter.font.css";
 import { setup } from "@storybook/vue3";
 import { createI18n } from "vue-i18n";
-import DeviceHelperPlugin from "./../src/plugin/device-helper.plugin";
-import MtThemeProvider from "../src/components/theme/mt-theme-provider.vue";
-import {
-  DARK_THEME_BACKGROUND_VALUE,
-  LIGHT_THEME_BACKGROUND_VALUE,
-  ThemeProvider,
-} from "./ThemeProvider";
+import DeviceHelperPlugin from "../src/plugin/device-helper.plugin";
+import MtThemeProvider from "../src/components/mt-theme-provider/mt-theme-provider.vue";
+
+import { ThemeProvider } from "./ThemeProvider";
 
 // importing meteor tokens
+import "@shopware-ag/meteor-tokens/primitives.css";
 import "@shopware-ag/meteor-tokens/administration/light.css";
 import "@shopware-ag/meteor-tokens/administration/dark.css";
 
@@ -35,9 +32,24 @@ setup((app) => {
 });
 
 const preview: Preview = {
+  globalTypes: {
+    theme: {
+      name: "Theme",
+      defaultValue: "light",
+      toolbar: {
+        icon: "contrast",
+        dynamicTitle: true,
+        items: [
+          { value: "light", title: "Light" },
+          { value: "dark", title: "Dark" },
+        ],
+      },
+    },
+  },
   parameters: {
     options: {
       storySort: {
+        order: ["Components", "Directives"],
         method: "alphabetical",
       },
     },
@@ -49,16 +61,9 @@ const preview: Preview = {
       expanded: true,
       sort: "requiredFirst",
     },
-    darkMode: {
-      dark: { ...darkTheme },
-      light: { ...lightTheme },
-    },
-    backgrounds: {
-      default: "light",
-      values: [
-        { name: "light", value: LIGHT_THEME_BACKGROUND_VALUE },
-        { name: "dark", value: DARK_THEME_BACKGROUND_VALUE },
-      ],
+    backgrounds: { disable: true },
+    docs: {
+      codePanel: true,
     },
   },
 

@@ -1,6 +1,5 @@
 import FigmaApiClient from "./figma/index.js";
 import FigmaUtil from "./figma/util/index.js";
-import type { OptimizedSvg } from "svgo";
 import { optimize } from "svgo";
 import { PromisePool } from "@supercharge/promise-pool";
 // @ts-expect-error - this dependency has no type definitions
@@ -92,7 +91,10 @@ client
               },
             },
           ],
-        }) as OptimizedSvg;
+          // svgo's `optimize()` always returns an object with a string `data`
+          // field. Asserting just that keeps this resilient across svgo majors
+          // (the old `OptimizedSvg` type was removed in svgo 3+).
+        }) as { data: string };
 
         let optimizedSvg = optimizedSvgResult.data;
         logger.info("Received optimized icon", {

@@ -41,9 +41,9 @@ jobs:
 
       - uses: actions/setup-node@v6
         with:
-          node-version: '24'
-          cache: 'pnpm'
-          cache-dependency-path: 'meteor/pnpm-lock.yaml'
+          node-version: "22.13.0"
+          cache: "pnpm"
+          cache-dependency-path: "meteor/pnpm-lock.yaml"
 
       # 4. Create plugin structure using Shopware's plugin:create command
       - name: Create plugin using Shopware CLI

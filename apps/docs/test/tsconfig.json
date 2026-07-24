@@ -1,0 +1,14 @@
+{
+  "//": "Type-checks the docs test suite. Nuxt's generated tsconfig only includes test/nuxt/**, so e2e specs here (which run in plain Node via @nuxt/test-utils/e2e, not the Nuxt env) are otherwise unchecked. Wired into `lint:types`.",
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "types": ["node"]
+  },
+  "include": ["**/*.ts"]
+}

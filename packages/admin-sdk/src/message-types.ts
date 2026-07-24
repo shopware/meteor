@@ -14,7 +14,7 @@ import type {
   contextShopId,
 } from './context';
 import type { uiComponentSectionRenderer } from './ui/component-section/index';
-import type { uiTabsAddTabItem } from './ui/tabs';
+import type { uiTabsAddTabItem, uiTabsSetVisibility } from './ui/tabs';
 import type { uiModulePaymentOverviewCard } from './ui/module/payment/overview-card';
 import type { cmsRegisterElement, cmsRegisterBlock } from './ui/cms';
 import type { locationUpdateHeight, locationUpdateUrl } from './location/index';
@@ -74,6 +74,7 @@ export interface ShopwareMessageTypes {
   getPageTitle: getPageTitle,
   uiComponentSectionRenderer: uiComponentSectionRenderer,
   uiTabsAddTabItem: uiTabsAddTabItem,
+  uiTabsSetVisibility: uiTabsSetVisibility,
   uiModulePaymentOverviewCard: uiModulePaymentOverviewCard,
   cmsRegisterElement: cmsRegisterElement,
   cmsRegisterBlock: cmsRegisterBlock,

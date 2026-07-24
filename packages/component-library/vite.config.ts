@@ -6,7 +6,7 @@ import vue from "@vitejs/plugin-vue";
 // @ts-expect-error - not typed
 import svg from "vite-plugin-svgstring";
 import dts from "vite-plugin-dts";
-import { getAllComponents, libInjectCss, toPascalCase } from "./build/helper";
+import { emitInterFontAssets, getAllComponents, libInjectCss, toPascalCase } from "./build/helper";
 
 // Get all components and their paths
 const allComponents = getAllComponents();
@@ -65,6 +65,7 @@ export default defineConfig({
       },
     }),
     libInjectCss(),
+    emitInterFontAssets(),
   ],
   resolve: {
     alias: [
@@ -80,7 +81,7 @@ export default defineConfig({
     ],
   },
   build: {
-    sourcemap: true,
+    sourcemap: "hidden",
     cssMinify: false,
     minify: false,
     lib: {
@@ -90,7 +91,7 @@ export default defineConfig({
         ...allComponents,
       },
       formats: ["es", "cjs"],
-      fileName: (format, entryName) => `${{ es: "esm", cjs: "common" }[format]}/${entryName}.js`,
+      fileName: (format, entryName) => `${format === "es" ? "esm" : "common"}/${entryName}.js`,
     },
     cssCodeSplit: true,
     rollupOptions: {
@@ -107,8 +108,7 @@ export default defineConfig({
       scss: {
         additionalData: `
           @use "sass:math";
-          @import "${path.resolve(__dirname, "src/components/assets/scss/variables.scss")}";
-          @import "${path.resolve(__dirname, "src/components/assets/scss/mixins.scss")}";
+          @import "${path.resolve(__dirname, "src/assets/scss/variables.scss")}";
         `,
       },
     },

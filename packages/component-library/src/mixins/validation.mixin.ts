@@ -1,5 +1,5 @@
 import { defineComponent } from "vue";
-import validationService from "../services/validation.service";
+import validationService from "../utils/validation";
 
 export default defineComponent({
   props: {
