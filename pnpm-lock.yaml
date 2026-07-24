@@ -417,9 +417,6 @@ importers:
       focus-trap:
         specifier: ^7.6.4
         version: 7.6.4
-      inter-ui:
-        specifier: ^3.19.3
-        version: 3.19.3
       js-beautify:
         specifier: ^1.15.4
         version: 1.15.4
@@ -559,6 +556,9 @@ importers:
       http-server:
         specifier: ^14.1.1
         version: 14.1.1
+      inter-ui:
+        specifier: ^3.19.3
+        version: 3.19.3
       jest-image-snapshot:
         specifier: ^6.4.0
         version: 6.4.0(jest@29.7.0(@types/node@18.19.36))
@@ -688,22 +688,6 @@ importers:
         version: 8.54.0(eslint@9.39.2(jiti@2.7.0))(typescript@5.9.3)
 
   packages/icon-kit:
-    dependencies:
-      '@t3-oss/env-core':
-        specifier: ^0.12.0
-        version: 0.12.0(typescript@5.7.3)(zod@3.25.75)
-      dotenv:
-        specifier: ^16.4.1
-        version: 16.4.5
-      ora:
-        specifier: ^8.2.0
-        version: 8.2.0
-      winston:
-        specifier: ^3.17.0
-        version: 3.17.0
-      zod:
-        specifier: ^3.25.75
-        version: 3.25.75
     devDependencies:
       '@eslint/js':
         specifier: ^9.20.0
@@ -714,6 +698,9 @@ importers:
       '@supercharge/promise-pool':
         specifier: ^2.4.0
         version: 2.4.0
+      '@t3-oss/env-core':
+        specifier: ^0.12.0
+        version: 0.12.0(typescript@5.7.3)(zod@3.25.75)
       '@types/axios':
         specifier: ^0.14.0
         version: 0.14.0
@@ -726,9 +713,15 @@ importers:
       axios:
         specifier: ^0.26.1
         version: 0.26.1
+      dotenv:
+        specifier: ^16.4.1
+        version: 16.4.5
       eslint:
         specifier: ^9.21.0
         version: 9.21.0(jiti@2.7.0)
+      ora:
+        specifier: ^8.2.0
+        version: 8.2.0
       prettier:
         specifier: ^3.5.3
         version: 3.5.3
@@ -756,6 +749,12 @@ importers:
       vitest:
         specifier: ^3.0.9
         version: 3.0.9(@types/debug@4.1.13)(@types/node@20.17.19)(jiti@2.7.0)(jsdom@26.1.0)(lightningcss@1.32.0)(msw@2.12.7(@types/node@20.17.19)(typescript@5.7.3))(sass@1.77.6)(terser@5.31.1)(tsx@4.19.3)(yaml@2.9.0)
+      winston:
+        specifier: ^3.17.0
+        version: 3.17.0
+      zod:
+        specifier: ^3.25.75
+        version: 3.25.75
 
   packages/prettier-config:
     devDependencies:
@@ -15977,6 +15976,9 @@ packages:
   vue-component-type-helpers@3.3.6:
     resolution: {integrity: sha512-FkljacAwJ9BUoSUdpFe3VDy0sGigNlTH9+2zcXUWmZOjN8swiCkl3t48wOJun0OsUd2cEIda1l04tsxMiKIIrQ==}
 
+  vue-component-type-helpers@3.3.8:
+    resolution: {integrity: sha512-troqCMmQodQDqUqn63NQaFi+CDSclSe7sc8VEBFqf5GFLqmGR2Ph3P2WEC7qwpRVyEWsTi/aAr4vyOe/B1hU3g==}
+
   vue-demi@0.14.10:
     resolution: {integrity: sha512-nMZBOwuzabUO0nLgIcc6rycZEebF6eeUfaiQx9+WSk8e29IbLvPU9feI6tqW4kTo3hvoYAJkMh8n8D0fuISphg==}
     engines: {node: '>=12'}
@@ -21688,7 +21690,7 @@ snapshots:
       ts-dedent: 2.2.0
       type-fest: 2.19.0
       vue: 3.5.37(typescript@5.7.3)
-      vue-component-type-helpers: 3.3.6
+      vue-component-type-helpers: 3.3.8
 
   '@supercharge/promise-pool@2.4.0': {}
 
@@ -35847,6 +35849,8 @@ snapshots:
   vue-component-type-helpers@2.2.12: {}
 
   vue-component-type-helpers@3.3.6: {}
+
+  vue-component-type-helpers@3.3.8: {}
 
   vue-demi@0.14.10(vue@3.5.13(typescript@5.7.3)):
     dependencies:
