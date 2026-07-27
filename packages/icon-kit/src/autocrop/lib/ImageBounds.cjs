@@ -22,7 +22,15 @@ module.exports = class ImageBounds {
 		// Rasterise at the SVG's intrinsic size (== viewBox size, since <svg width/height> are set
 		// to the viewBox dimensions before this is called). Background is left transparent, matching
 		// the old puppeteer 'omitBackground: true' screenshot.
-		const rendered = new Resvg(svg, { fitTo: { mode: 'original' } }).render();
+		//
+		// loadSystemFonts is disabled because it makes resvg parse the entire OS font database on
+		// every construction (~0.5s/icon, i.e. minutes across the full set). Icons contain no text,
+		// so this changes nothing about the output (verified: identical visible-pixel bounds) but
+		// removes essentially all of the optimize phase's runtime.
+		const rendered = new Resvg(svg, {
+			fitTo: { mode: 'original' },
+			font: { loadSystemFonts: false },
+		}).render();
 		const w = rendered.width;
 		const h = rendered.height;
 		const data = rendered.pixels; // RGBA, row-major, same layout jimp exposed.
