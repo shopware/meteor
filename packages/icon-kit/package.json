@@ -44,6 +44,7 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.20.0",
+    "@resvg/resvg-js": "^2.6.2",
     "@shopware-ag/meteor-prettier-config": "workspace:*",
     "@supercharge/promise-pool": "^2.4.0",
     "@types/axios": "^0.14.0",
@@ -52,8 +53,8 @@
     "axios": "^0.26.1",
     "eslint": "^9.21.0",
     "prettier": "^3.5.3",
+    "svg-pathdata": "^6.0.3",
     "svgo": "^2.8.0",
-    "svgo-autocrop": "1.1.1",
     "ts-node": "^10.8.1",
     "tsx": "^4.19.3",
     "typescript": "^5.7.0",

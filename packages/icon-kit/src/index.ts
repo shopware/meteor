@@ -1,9 +1,10 @@
 import FigmaApiClient from "./figma/index.js";
 import FigmaUtil from "./figma/util/index.js";
 import { optimize } from "svgo";
+import type { CustomPlugin } from "svgo";
 import { PromisePool } from "@supercharge/promise-pool";
-// @ts-expect-error - this dependency has no type definitions
-import * as svgoAutocrop from "svgo-autocrop";
+// Vendored SVGO plugin (CommonJS, untyped); see ./autocrop/README.md
+import svgoAutocrop from "./autocrop/index.cjs";
 import path from "node:path";
 import { WinstonLogger } from "./logger/winston-logger.js";
 import ora from "ora";
@@ -85,7 +86,9 @@ client
           plugins: [
             { name: "removeDimensions" },
             {
-              ...svgoAutocrop,
+              ...(svgoAutocrop as unknown as CustomPlugin<{
+                disableTranslateWarning: boolean;
+              }>),
               params: {
                 disableTranslateWarning: true,
               },
