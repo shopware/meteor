@@ -423,6 +423,7 @@ export default defineComponent({
   width: 5ch;
   flex-grow: 0;
   flex-shrink: 0;
+  margin-bottom: 0;
 }
 
 .mt-slider .mt-field--default > .mt-field__label {
