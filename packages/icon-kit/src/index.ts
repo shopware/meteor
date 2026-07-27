@@ -51,16 +51,20 @@ client
     const meta = util.buildMeta(iconMap);
 
     spinner.succeed("Gathered icons");
-    spinner.start("Optimizing icons");
+    // Phase 1 — download every icon's raw SVG. This is network-bound and finishes
+    // in a few seconds. It must NOT be interleaved with the optimize step below:
+    // the autocrop plugin rasterises each SVG synchronously via resvg (~0.5s/icon),
+    // which blocks the event loop long enough that concurrent in-flight S3 sockets
+    // stall and AWS resets them ("socket hang up" / ECONNRESET).
+    spinner.start("Downloading icons");
+    spinner.text = `Downloaded ${0} out of ${iconMap.size} icons`;
 
-    spinner.text = `Optimized ${0} out of ${iconMap.size} icons`;
-
-    const styling = [] as { name: string; width: string; height: string }[];
+    const rawSvgs = new Map<string, string>();
 
     await PromisePool.for(Array.from(iconMap.keys()))
       .withConcurrency(25)
       .onTaskFinished((iconName, pool) => {
-        spinner.text = `Optimized ${pool.processedCount()} out of ${iconMap.size} icons`;
+        spinner.text = `Downloaded ${pool.processedCount()} out of ${iconMap.size} icons`;
       })
       .handleError((error) => {
         console.log(error);
@@ -69,84 +73,99 @@ client
         const icon = iconMap.get(iconName);
         if (!icon) {
           throw new Error(
-            `Failed to optimize icon: ${iconName}; Icon does not exist`
+            `Failed to download icon: ${iconName}; Icon does not exist`
           );
         }
 
         const result = await client.downloadImage(icon.image);
-        const svg = result.data as string;
+        rawSvgs.set(iconName, result.data as string);
         logger.info("Received icon data", {
           icon: icon.image,
-          svg,
-        });
-
-        // Remove width/height from SVGs
-        logger.info(`Optimizing icon: ${icon.image}`);
-        const optimizedSvgResult = optimize(svg, {
-          plugins: [
-            { name: "removeDimensions" },
-            {
-              ...(svgoAutocrop as unknown as CustomPlugin<{
-                disableTranslateWarning: boolean;
-              }>),
-              params: {
-                disableTranslateWarning: true,
-              },
-            },
-          ],
-          // svgo's `optimize()` always returns an object with a string `data`
-          // field. Asserting just that keeps this resilient across svgo majors
-          // (the old `OptimizedSvg` type was removed in svgo 3+).
-        }) as { data: string };
-
-        let optimizedSvg = optimizedSvgResult.data;
-        logger.info("Received optimized icon", {
-          icon: icon.image,
-          svg: optimizedSvg,
-        });
-
-        const viewBox = optimizedSvg.match(/viewBox="(\d*) (\d*) (\d*) (\d*)"/);
-        if (viewBox) {
-          const width = viewBox[3];
-          const height = viewBox[4];
-          if (!width || !height) {
-            throw new Error(
-              `Failed to optimize icon: ${iconName}; Could not extract width and height from viewBox`
-            );
-          }
-          const className = iconName.replace(/icons\//, "").replace(/\//g, "-");
-
-          // Add class name to SVG
-          optimizedSvg = optimizedSvg.replace(
-            /<svg/,
-            `<svg id="meteor-icon-kit__${className}"`
-          );
-
-          styling.push({
-            name: className,
-            width,
-            height,
-          });
-
-          logger.info(`Added className "${className}" to style map`);
-        } else {
-          console.error(`Could not find viewBox for ${iconName}`);
-          logger.info(`Failed to further optimize icon: "${iconName}"`, {
-            icon: icon.image,
-          });
-        }
-
-        const pathToIcon = path.resolve(
-          iconDirectory,
-          `${iconName.replace("icons/", "")}.svg`
-        );
-
-        fileSystem.createFile(pathToIcon, optimizedSvg);
-        logger.info(`Created icon: "${iconName}"`, {
-          path: pathToIcon,
-          svg: optimizedSvg,
+          svg: result.data,
         });
       });
+
+    // Phase 2 — optimize + write. Pure CPU work with no open sockets, so blocking
+    // the event loop here is harmless.
+    spinner.start("Optimizing icons");
+    spinner.text = `Optimized ${0} out of ${iconMap.size} icons`;
+
+    const styling = [] as { name: string; width: string; height: string }[];
+
+    let optimizedCount = 0;
+    for (const [iconName, svg] of rawSvgs) {
+      const icon = iconMap.get(iconName)!;
+
+      // Remove width/height from SVGs
+      logger.info(`Optimizing icon: ${icon.image}`);
+      const optimizedSvgResult = optimize(svg, {
+        plugins: [
+          { name: "removeDimensions" },
+          {
+            ...(svgoAutocrop as unknown as CustomPlugin<{
+              disableTranslateWarning: boolean;
+            }>),
+            params: {
+              disableTranslateWarning: true,
+            },
+          },
+        ],
+        // svgo's `optimize()` always returns an object with a string `data`
+        // field. Asserting just that keeps this resilient across svgo majors
+        // (the old `OptimizedSvg` type was removed in svgo 3+).
+      }) as { data: string };
+
+      let optimizedSvg = optimizedSvgResult.data;
+      logger.info("Received optimized icon", {
+        icon: icon.image,
+        svg: optimizedSvg,
+      });
+
+      const viewBox = optimizedSvg.match(/viewBox="(\d*) (\d*) (\d*) (\d*)"/);
+      if (viewBox) {
+        const width = viewBox[3];
+        const height = viewBox[4];
+        if (!width || !height) {
+          throw new Error(
+            `Failed to optimize icon: ${iconName}; Could not extract width and height from viewBox`
+          );
+        }
+        const className = iconName.replace(/icons\//, "").replace(/\//g, "-");
+
+        // Add class name to SVG
+        optimizedSvg = optimizedSvg.replace(
+          /<svg/,
+          `<svg id="meteor-icon-kit__${className}"`
+        );
+
+        styling.push({
+          name: className,
+          width,
+          height,
+        });
+
+        logger.info(`Added className "${className}" to style map`);
+      } else {
+        console.error(`Could not find viewBox for ${iconName}`);
+        logger.info(`Failed to further optimize icon: "${iconName}"`, {
+          icon: icon.image,
+        });
+      }
+
+      const pathToIcon = path.resolve(
+        iconDirectory,
+        `${iconName.replace("icons/", "")}.svg`
+      );
+
+      fileSystem.createFile(pathToIcon, optimizedSvg);
+      logger.info(`Created icon: "${iconName}"`, {
+        path: pathToIcon,
+        svg: optimizedSvg,
+      });
+
+      optimizedCount++;
+      spinner.text = `Optimized ${optimizedCount} out of ${iconMap.size} icons`;
+    }
 
     spinner.text = "Finished writing icons to filesystem";
     spinner.text = "Creating stylesheet";
