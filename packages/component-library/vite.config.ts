@@ -11,7 +11,7 @@ import { emitInterFontAssets, getAllComponents, libInjectCss, toPascalCase } fro
 // Get all components and their paths
 const allComponents = getAllComponents();
 
-export const external = ["vue", "apexcharts", "vue-i18n"];
+export const external = ["vue", "chart.js", "vue-i18n"];
 
 // https://vitejs.dev/config/
 export default defineConfig({

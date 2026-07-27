@@ -1,12 +1,13 @@
 import type { Preview } from "@storybook/vue3";
 import "~/src/assets/scss/all.scss";
 import "~/src/assets/css/fonts/inter.font.css";
+import "./docs-theme.css";
 import { setup } from "@storybook/vue3";
 import { createI18n } from "vue-i18n";
 import DeviceHelperPlugin from "../src/plugin/device-helper.plugin";
 import MtThemeProvider from "../src/components/mt-theme-provider/mt-theme-provider.vue";
 
-import { ThemeProvider } from "./ThemeProvider";
+import "./ThemeProvider";
 
 // importing meteor tokens
 import "@shopware-ag/meteor-tokens/primitives.css";
@@ -68,7 +69,6 @@ const preview: Preview = {
   },
 
   decorators: [
-    ThemeProvider,
     () => ({
       components: { MtThemeProvider },
       template: `

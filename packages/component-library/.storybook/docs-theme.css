@@ -1,0 +1,13 @@
+/* Docs pages: only the story preview cards follow data-theme; the
+   surrounding docs UI keeps Storybook's default look. */
+
+[data-theme="dark"] .sbdocs-preview {
+  background: var(--color-elevation-surface-default);
+  border-color: var(--color-border-primary-default);
+}
+
+[data-theme="dark"] .sbdocs-preview :is(.sb-bar, [class^="css-"]) {
+  background-color: transparent;
+  border-color: var(--color-border-primary-default);
+  box-shadow: none;
+}
