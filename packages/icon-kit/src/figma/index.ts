@@ -83,14 +83,26 @@ export default class FigmaApiClient {
     );
   }
 
-  public downloadImage(url: string): AxiosPromise {
-    // @ts-expect-error -- TODO: add types for axios
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    return Axios({
-      url,
-      method: "GET",
-      responseType: "blob",
-    });
+  public async downloadImage(url: string, retries = 3): Promise<AxiosResponse> {
+    // Figma serves rendered SVGs from S3, where the occasional connection stalls
+    // or is reset. Without a timeout (axios defaults to none) a stalled socket
+    // hangs the whole run forever, so we bound each attempt and retry on failure.
+    let lastError: unknown;
+    for (let attempt = 0; attempt <= retries; attempt++) {
+      try {
+        // @ts-expect-error -- TODO: add types for axios
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        return await Axios({
+          url,
+          method: "GET",
+          responseType: "blob",
+          timeout: 30_000,
+        });
+      } catch (error) {
+        lastError = error;
+      }
+    }
+    throw lastError;
   }
 
   public getNodeInfo(ids: string[]): Promise<AxiosPromise<FigmaNodeResponse>> {
