@@ -5,7 +5,8 @@ import tseslint from "typescript-eslint";
 
 export default tseslint.config([
   {
-    ignores: ["node_modules/", "dist/"],
+    // src/autocrop is vendored third-party CommonJS (see src/autocrop/README.md)
+    ignores: ["node_modules/", "dist/", "src/autocrop/"],
   },
   eslint.configs.recommended,
   tseslint.configs.recommendedTypeChecked,
