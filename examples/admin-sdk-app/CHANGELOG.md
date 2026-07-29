@@ -1,5 +1,13 @@
 # meteor-admin-sdk-app
 
+## 1.0.79
+
+### Patch Changes
+
+- Updated dependencies [[`2875130`](https://github.com/shopware/meteor/commit/2875130e4b0f582daf95a05d2b33e64f68197e75), [`5377579`](https://github.com/shopware/meteor/commit/5377579ac8b450ea9a86557c91216cc69d29937b), [`5377579`](https://github.com/shopware/meteor/commit/5377579ac8b450ea9a86557c91216cc69d29937b), [`5377579`](https://github.com/shopware/meteor/commit/5377579ac8b450ea9a86557c91216cc69d29937b), [`2875130`](https://github.com/shopware/meteor/commit/2875130e4b0f582daf95a05d2b33e64f68197e75)]:
+  - @shopware-ag/meteor-admin-sdk@6.11.0
+  - @shopware-ag/meteor-component-library@5.5.0
+
 ## 1.0.78
 
 ### Patch Changes
