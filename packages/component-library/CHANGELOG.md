@@ -1,5 +1,23 @@
 # Changelog
 
+## 5.5.0
+
+### Minor Changes
+
+- [#1284](https://github.com/shopware/meteor/pull/1284) [`2875130`](https://github.com/shopware/meteor/commit/2875130e4b0f582daf95a05d2b33e64f68197e75) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Add the `mt-theme-select` component for choosing the application color theme (light, dark, or system) and the `useTheme` composable that resolves the system preference, applies the resolved theme to `data-theme`, and persists the choice.
+
+### Patch Changes
+
+- [#1289](https://github.com/shopware/meteor/pull/1289) [`5377579`](https://github.com/shopware/meteor/commit/5377579ac8b450ea9a86557c91216cc69d29937b) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Move `inter-ui` to `devDependencies`. The Inter font files are copied into `dist/assets/fonts/` at build time, so the package stays self-contained — keep using the `font.css` export. If you imported `inter-ui` directly without declaring it, add it to your own `dependencies`.
+
+- [#1289](https://github.com/shopware/meteor/pull/1289) [`5377579`](https://github.com/shopware/meteor/commit/5377579ac8b450ea9a86557c91216cc69d29937b) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Stop publishing source maps. They were built with `sourcemap: "hidden"`, so no published file referenced them — removes 23.6 MB of unreachable files from the package.
+
+- [#1289](https://github.com/shopware/meteor/pull/1289) [`5377579`](https://github.com/shopware/meteor/commit/5377579ac8b450ea9a86557c91216cc69d29937b) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Stop publishing the `src` directory. The `exports` map only exposes `dist`, so `src` was never reachable through supported imports. If you reached into `src` via raw `node_modules` paths (e.g. SCSS imports), switch to the documented `dist` entry points.
+
+- Updated dependencies [[`2875130`](https://github.com/shopware/meteor/commit/2875130e4b0f582daf95a05d2b33e64f68197e75), [`5377579`](https://github.com/shopware/meteor/commit/5377579ac8b450ea9a86557c91216cc69d29937b)]:
+  - @shopware-ag/meteor-admin-sdk@6.11.0
+  - @shopware-ag/meteor-icon-kit@5.9.1
+
 ## 5.4.0
 
 ### Minor Changes

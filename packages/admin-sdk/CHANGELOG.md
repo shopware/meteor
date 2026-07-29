@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.11.0
+
+### Minor Changes
+
+- [#1284](https://github.com/shopware/meteor/pull/1284) [`2875130`](https://github.com/shopware/meteor/commit/2875130e4b0f582daf95a05d2b33e64f68197e75) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Apps now follow the Administration color theme automatically: on startup the SDK mirrors the resolved theme onto the document root's `data-theme` attribute and keeps it in sync, so theme-aware styles (e.g. Meteor tokens) work without any app code changes. Apps that declare `data-theme` themselves are left untouched. For explicit control, the Context API exposes `context.getTheme()`, `context.subscribeTheme()`, and `context.syncTheme()`.
+
 ## 6.10.0
 
 ### Minor Changes
