@@ -25,14 +25,11 @@ jobs:
       - name: Install dependencies
         run: pnpm i --frozen-lockfile --prefer-offline
 
-      - name: Install puppeteer
-        run: npx @puppeteer/browsers install chrome
-
       - name: Update icons
         run: pnpm --filter @shopware-ag/meteor-icon-kit run start
 
       - name: Create Pull Request
-        uses: peter-evans/create-pull-request@v4
+        uses: peter-evans/create-pull-request@v8
         with:
           commit-message: Update icons
           committer: Dennis Mader <${{ secrets.ICON_KIT__COMMITTER }}>

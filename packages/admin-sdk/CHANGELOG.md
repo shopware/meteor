@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.10.0
+
+### Minor Changes
+
+- [#1270](https://github.com/shopware/meteor/pull/1270) [`0d8dde1`](https://github.com/shopware/meteor/commit/0d8dde13640bf8c703e779b5e7a7fa80458185fa) Thanks [@socrec](https://github.com/socrec)! - Add an optional `visible` flag to `ui.tabs().addTabItem()` so an extension can register its tab hidden, and a new `ui.tabs().setVisibility()` method to show or hide it afterwards. When `visible` is omitted the tab is shown, so existing extensions are unaffected.
+
 ## 6.9.1
 
 ### Patch Changes
