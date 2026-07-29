@@ -31,7 +31,7 @@
     <mt-field-error :error="error" :style="{ gridArea: 'error' }" />
 
     <div v-if="showFieldHint" class="mt-radio-group-root__hint" :style="{ gridArea: 'hint' }">
-      <mt-field-hint>
+      <mt-field-hint :hide-icon="!!$slots.hint">
         <slot name="hint">{{ hint }}</slot>
       </mt-field-hint>
     </div>

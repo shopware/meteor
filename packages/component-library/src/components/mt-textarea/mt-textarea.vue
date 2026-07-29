@@ -53,7 +53,7 @@
     />
 
     <div v-if="showFieldHint" class="mt-textarea__hint">
-      <mt-field-hint>
+      <mt-field-hint :hide-icon="!!$slots.hint">
         <slot name="hint">{{ hint }}</slot>
       </mt-field-hint>
     </div>

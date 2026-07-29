@@ -78,7 +78,7 @@
     </template>
 
     <template #field-hint>
-      <mt-field-hint v-if="showFieldHint">
+      <mt-field-hint v-if="showFieldHint" :hide-icon="!!$slots.hint">
         <slot name="hint">
           {{ hint }}
         </slot>

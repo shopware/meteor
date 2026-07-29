@@ -1,6 +1,7 @@
 <template>
   <span class="mt-field-hint">
     <mt-icon
+      v-if="!hideIcon"
       class="mt-field-hint__icon"
       name="solid-info-circle"
       size="var(--scale-size-12)"
@@ -15,6 +16,19 @@
 
 <script setup lang="ts">
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
+
+withDefaults(
+  defineProps<{
+    /**
+     * Hides the default info icon. Used when the hint content is fully custom
+     * (e.g. provided via the `#hint` slot with its own icon).
+     */
+    hideIcon?: boolean;
+  }>(),
+  {
+    hideIcon: false,
+  },
+);
 </script>
 
 <style scoped>
