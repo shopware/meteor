@@ -553,7 +553,6 @@ onMounted(() => {
   font-weight: inherit;
   filter: drop-shadow(0px 1px 3px #0000000f);
   filter: drop-shadow(0px 1px 3px #0000001a);
-  left: 0 !important;
   overflow: visible !important;
 }
 
