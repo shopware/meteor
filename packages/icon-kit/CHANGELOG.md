@@ -1,5 +1,11 @@
 # CHANGELOG.md
 
+## 5.9.1
+
+### Patch Changes
+
+- [#1289](https://github.com/shopware/meteor/pull/1289) [`5377579`](https://github.com/shopware/meteor/commit/5377579ac8b450ea9a86557c91216cc69d29937b) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Move the Figma sync tooling (`@t3-oss/env-core`, `dotenv`, `ora`, `winston`, `zod`) to `devDependencies`. It is only used by the unpublished icon sync script — installs get ~10 MB smaller. If you imported one of these packages without declaring it, add it to your own `dependencies`.
+
 ## 5.9.0
 
 ### Minor Changes

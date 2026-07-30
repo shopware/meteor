@@ -7,7 +7,7 @@ sidebar_position: 40
 
 The Context API provides read access to the current state of the Shopware Administration. Extensions can use these methods to retrieve information about the active language, locale, currency, environment, Shopware version, and more.
 
-This is useful for adapting extension behavior based on the current Administration context — for example, loading translations for the active language or checking the Shopware version before using a newer API.
+This is useful for adapting extension behavior based on the current Administration context — for example, loading translations for the active language, matching the active color theme, or checking the Shopware version before using a newer API.
 
 ```ts
 import { context } from "@shopware-ag/meteor-admin-sdk";
@@ -174,6 +174,92 @@ context.subscribeLocale(({ locale, fallbackLocale }) => {
   fallbackLocale: 'en-GB'
 }
 ```
+
+## Automatic theme synchronization
+
+On startup, the SDK mirrors the resolved Administration theme onto the `data-theme` attribute of your document root (`<html data-theme="light|dark">`) and keeps it in sync. Because Meteor tokens are theme-aware through `data-theme`, updating the SDK dependency is all an app needs to follow the Administration theme.
+
+If your document already declares `data-theme` itself, the SDK does not interfere. On Administrations without theme support, the attribute is never set.
+
+## getTheme()
+
+Returns the current resolved color theme of the Administration. A `system` preference is always resolved, so the result is either `"light"` or `"dark"`.
+
+#### Usage
+
+```ts
+const theme = await context.getTheme();
+```
+
+#### Parameters
+
+No parameters needed.
+
+#### Return value
+
+```ts
+Promise<"light" | "dark">
+```
+
+#### Example value
+
+```ts
+"dark";
+```
+
+## subscribeTheme()
+
+Subscribes to theme changes in the Administration. The callback fires whenever the resolved theme changes. Returns a function that stops the subscription.
+
+#### Usage
+
+```ts
+context.subscribeTheme((theme) => {
+  // do something with the callback data
+});
+```
+
+#### Parameters
+
+| Name             | Description                                  |
+| :--------------- | :------------------------------------------- |
+| `callbackMethod` | Called every time the resolved theme changes |
+
+#### Callback value
+
+```ts
+"light" | "dark"
+```
+
+#### Example callback value
+
+```ts
+"dark";
+```
+
+## syncTheme()
+
+Mirrors the Administration theme onto an element's `data-theme` attribute and keeps it in sync. The document root is already handled by the [automatic theme synchronization](#automatic-theme-synchronization); use this when you manage `data-theme` yourself or need the attribute on additional elements.
+
+#### Usage
+
+```ts
+const stopSync = await context.syncTheme({ target: document.getElementById("app") });
+```
+
+#### Parameters
+
+| Name             | Description                                                                             |
+| :--------------- | :-------------------------------------------------------------------------------------- |
+| `options.target` | Element whose `data-theme` attribute is updated. Defaults to `document.documentElement` |
+
+#### Return value
+
+```ts
+Promise<() => void>
+```
+
+The returned function stops the synchronization.
 
 ## getCurrency()
 

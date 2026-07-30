@@ -1,4 +1,4 @@
-import { createSender, createSubscriber } from '../channel';
+import { createSender, createSubscriber, startThemeSync } from '../channel';
 import getCompareIsShopwareVersion from './compare-version';
 import createACLHelper from './acl';
 import type { privileges } from '../_internals/privileges';
@@ -17,6 +17,27 @@ export const getAppInformation = createSender('contextAppInformation', {});
 export const can = createACLHelper(getAppInformation);
 export const getModuleInformation = createSender('contextModuleInformation', {});
 export const getShopId = createSender('contextShopId', {});
+export const getTheme = createSender('contextTheme', {});
+export const subscribeTheme = createSubscriber('contextTheme');
+
+/**
+ * Syncs the resolved Administration color theme to the `data-theme` attribute
+ * of an element (the document root by default). Returns a function that stops
+ * the synchronization.
+ */
+export async function syncTheme(options: { target?: HTMLElement } = {}): Promise<() => void> {
+  const { initialFetch, stop } = startThemeSync(options.target ?? document.documentElement);
+
+  try {
+    await initialFetch;
+  } catch (error) {
+    stop();
+
+    throw error;
+  }
+
+  return stop;
+}
 
 /**
  * Get the current content language
@@ -122,4 +143,12 @@ export type contextModuleInformation = {
 
 export type contextShopId = {
   responseType: string|null,
+}
+
+/**
+ * Get the resolved color theme (a `system` preference is always resolved
+ * to `light` or `dark`)
+ */
+export type contextTheme = {
+  responseType: 'light' | 'dark',
 }

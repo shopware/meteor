@@ -47,6 +47,14 @@ import MtModalAction from "./components/mt-modal/sub-components/mt-modal-action.
 import MtText from "./components/mt-text/mt-text.vue";
 import MtInset from "./components/mt-inset/mt-inset.vue";
 import MtThemeProvider from "./components/mt-theme-provider/mt-theme-provider.vue";
+import MtThemeSelect from "./components/mt-theme-select/mt-theme-select.vue";
+import {
+  useTheme,
+  type Theme,
+  type ResolvedTheme,
+  type UseThemeOptions,
+  type UseThemeReturn,
+} from "./composables/useTheme";
 import TooltipDirective from "./directives/tooltip.directive";
 import DeviceHelperPlugin from "./plugin/device-helper.plugin";
 import MtTooltip from "./components/mt-tooltip/mt-tooltip.vue";
@@ -128,6 +136,7 @@ export {
   MtSearch,
   MtUrlField,
   MtThemeProvider,
+  MtThemeSelect,
   MtUnitField,
   MtEntityDataTable,
   MtEntitySelect,
@@ -145,6 +154,7 @@ export {
   DropdownMenuSub as MtDropdownMenuSub,
   DeviceHelperPlugin,
   useSnackbar,
+  useTheme,
   // @deprecated
   MtBanner as SwBanner,
   // @deprecated
@@ -189,5 +199,6 @@ export {
 
 // Exporting types
 export type { Filter, Option, Toast, Snackbar, ChartOptions };
+export type { Theme, ResolvedTheme, UseThemeOptions, UseThemeReturn };
 export type { Editor } from "@tiptap/vue-3";
 export type { default as Link } from "@tiptap/extension-link";

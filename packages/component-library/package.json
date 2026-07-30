@@ -1,6 +1,6 @@
 {
   "name": "@shopware-ag/meteor-component-library",
-  "version": "5.4.0",
+  "version": "5.5.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/shopware/meteor.git"
@@ -31,7 +31,6 @@
     }
   },
   "files": [
-    "src",
     "dist"
   ],
   "sideEffects": [
@@ -101,7 +100,6 @@
     "diff": "^8.0.2",
     "dompurify": "^3.2.4",
     "focus-trap": "^7.6.4",
-    "inter-ui": "^3.19.3",
     "js-beautify": "^1.15.4",
     "nanoid": "^5.0.7",
     "reka-ui": "^2.6.0",
@@ -150,6 +148,7 @@
     "flush-promises": "^1.0.2",
     "globals": "^16.0.0",
     "http-server": "^14.1.1",
+    "inter-ui": "^3.19.3",
     "jest-image-snapshot": "^6.4.0",
     "jsdom": "^26.1.0",
     "npm-run-all2": "^6.1.1",
