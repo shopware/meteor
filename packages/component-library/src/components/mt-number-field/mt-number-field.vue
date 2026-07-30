@@ -78,7 +78,11 @@
     </template>
 
     <template #field-hint>
-      <slot name="hint" />
+      <mt-field-hint v-if="showFieldHint" :hide-icon="!!$slots.hint">
+        <slot name="hint">
+          {{ hint }}
+        </slot>
+      </mt-field-hint>
     </template>
   </mt-base-field>
 </template>
@@ -89,6 +93,7 @@ import type { PropType } from "vue";
 import { defineComponent } from "vue";
 import MtTextField from "../mt-text-field/mt-text-field.vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
+import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
 import { useI18n } from "vue-i18n";
 
 export default defineComponent({
@@ -96,6 +101,7 @@ export default defineComponent({
 
   components: {
     "mt-icon": MtIcon,
+    "mt-field-hint": MtFieldHint,
   },
 
   extends: MtTextField,

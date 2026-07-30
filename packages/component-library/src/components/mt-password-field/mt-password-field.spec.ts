@@ -224,4 +224,37 @@ describe("mt-password-field", () => {
     // ASSERT
     expect(handler).not.toHaveBeenCalled();
   });
+
+  it("displays a hint passed via the hint prop", async () => {
+    // ARRANGE
+    await render(MtPasswordField, {
+      props: {
+        hint: "Hint from prop",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByText("Hint from prop")).toBeVisible();
+  });
+
+  it("renders markup passed via the hint slot", async () => {
+    // ARRANGE
+    await render(MtPasswordField, {
+      slots: {
+        hint: '<span data-testid="custom-hint">Hint from slot</span>',
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByTestId("custom-hint")).toBeVisible();
+    expect(screen.getByTestId("custom-hint")).toHaveTextContent("Hint from slot");
+  });
+
+  it("does not render a hint when neither prop nor slot is provided", async () => {
+    // ARRANGE
+    const { container } = await render(MtPasswordField);
+
+    // ASSERT
+    expect(container.querySelector(".mt-field-hint")).not.toBeInTheDocument();
+  });
 });

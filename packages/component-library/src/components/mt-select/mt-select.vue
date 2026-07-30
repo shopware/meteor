@@ -113,7 +113,11 @@
     </template>
 
     <template #mt-select-hint>
-      <slot name="hint" />
+      <mt-field-hint v-if="showFieldHint" :hide-icon="!!$slots.hint">
+        <slot name="hint">
+          {{ hint }}
+        </slot>
+      </mt-field-hint>
     </template>
   </mt-select-base>
 </template>
@@ -125,6 +129,7 @@ import { defineComponent } from "vue";
 import { debounce } from "@/utils/debounce";
 import { getPropertyValue } from "@/utils/object";
 import { isPromise } from "@/utils/promise";
+import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
 import MtSelectBase from "../_internal/mt-select-base/mt-select-base.vue";
 import MtSelectResultList from "../_internal/mt-select-base/_internal/mt-select-result-list.vue";
 import MtSelectResult from "../_internal/mt-select-base/_internal/mt-select-result.vue";
@@ -136,6 +141,7 @@ export default defineComponent({
   name: "MtSelect",
 
   components: {
+    "mt-field-hint": MtFieldHint,
     "mt-select-base": MtSelectBase,
     "mt-select-result-list": MtSelectResultList,
     "mt-select-selection-list": MtSelectSelectionList,
@@ -354,6 +360,15 @@ export default defineComponent({
       required: false,
       default: false,
     },
+
+    /**
+     * Optional caption below the field. The `#hint` slot takes precedence when provided.
+     */
+    hint: {
+      type: String as PropType<string | null>,
+      required: false,
+      default: null,
+    },
   },
 
   emits: [
@@ -396,6 +411,10 @@ export default defineComponent({
   },
 
   computed: {
+    showFieldHint(): boolean {
+      return !!this.$slots.hint || (this.hint != null && String(this.hint).trim() !== "");
+    },
+
     visibleValues(): any[] {
       if (
         typeof this.currentValue === "string" ||

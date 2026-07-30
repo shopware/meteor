@@ -1,6 +1,7 @@
 import { within, userEvent, fn } from "@storybook/test";
 import { expect } from "@storybook/test";
 
+import MtEmailField from "./mt-email-field.vue";
 import meta, { type MtEmailFieldMeta, type MtEmailFieldStory } from "./mt-email-field.stories";
 
 export default {
@@ -30,18 +31,6 @@ export const VisualTestSuffix: MtEmailFieldStory = {
     const canvas = within(canvasElement);
 
     expect(canvas.getByText(args.suffix)).toBeDefined();
-  },
-};
-
-export const VisualTestHint: MtEmailFieldStory = {
-  name: "Should display hint",
-  args: {
-    hint: "hint",
-  },
-  play: ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    expect(canvas.getByText(args.hint)).toBeDefined();
   },
 };
 
@@ -141,5 +130,36 @@ export const VisualTestUnlinkedInheritance: MtEmailFieldStory = {
     isInheritanceField: true,
     isInherited: false,
     modelValue: "test@shopware.com",
+  },
+};
+
+export const VisualTestHintProp: MtEmailFieldStory = {
+  name: "Should display hint via prop",
+  args: {
+    hint: "Hint via prop",
+  },
+  render: (args) => ({
+    components: { MtEmailField },
+    setup: () => ({ args }),
+    template: `<mt-email-field :label="args.label" :hint="args.hint" />`,
+  }),
+  play: ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getByText("Hint via prop")).toBeDefined();
+  },
+};
+
+export const VisualTestHintSlot: MtEmailFieldStory = {
+  name: "Should display hint via slot",
+  render: (args) => ({
+    components: { MtEmailField },
+    setup: () => ({ args }),
+    template: `<mt-email-field :label="args.label"><template #hint>Hint via slot</template></mt-email-field>`,
+  }),
+  play: ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getByText("Hint via slot")).toBeDefined();
   },
 };

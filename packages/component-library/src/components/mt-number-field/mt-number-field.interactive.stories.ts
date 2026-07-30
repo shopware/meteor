@@ -1,6 +1,7 @@
 import { within, userEvent } from "@storybook/test";
 import { expect } from "@storybook/test";
 
+import MtNumberField from "./mt-number-field.vue";
 import meta, { type MtNumberFieldMeta, type MtNumberFieldStory } from "./mt-number-field.stories";
 
 export default {
@@ -237,18 +238,6 @@ export const VisualTestNumberAlignedEnd: MtNumberFieldStory = {
   },
 };
 
-export const VisualTestHint: MtNumberFieldStory = {
-  name: "Should display hint",
-  args: {
-    hint: "hint",
-  },
-  play: ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    expect(canvas.getByText(args.hint)).toBeDefined();
-  },
-};
-
 export const VisualTestDisabled: MtNumberFieldStory = {
   name: "Should disable",
   args: {
@@ -317,5 +306,36 @@ export const VisualTestHideControls: MtNumberFieldStory = {
     const canvas = within(canvasElement);
     expect(canvas.queryByTestId("mt-number-field-increase-button")).not.toBeInTheDocument();
     expect(canvas.queryByTestId("mt-number-field-decrease-button")).not.toBeInTheDocument();
+  },
+};
+
+export const VisualTestHintProp: MtNumberFieldStory = {
+  name: "Should display hint via prop",
+  args: {
+    hint: "Hint via prop",
+  },
+  render: (args) => ({
+    components: { MtNumberField },
+    setup: () => ({ args }),
+    template: `<mt-number-field :label="args.label" :hint="args.hint" />`,
+  }),
+  play: ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getByText("Hint via prop")).toBeDefined();
+  },
+};
+
+export const VisualTestHintSlot: MtNumberFieldStory = {
+  name: "Should display hint via slot",
+  render: (args) => ({
+    components: { MtNumberField },
+    setup: () => ({ args }),
+    template: `<mt-number-field :label="args.label"><template #hint>Hint via slot</template></mt-number-field>`,
+  }),
+  play: ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getByText("Hint via slot")).toBeDefined();
   },
 };

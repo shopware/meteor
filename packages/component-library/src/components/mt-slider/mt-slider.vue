@@ -99,7 +99,11 @@
     </template>
 
     <template #field-hint>
-      <slot name="hint" />
+      <mt-field-hint v-if="showFieldHint" :hide-icon="!!$slots.hint">
+        <slot name="hint">
+          {{ hint }}
+        </slot>
+      </mt-field-hint>
     </template>
   </mt-base-field>
 </template>
@@ -109,6 +113,7 @@ import type { PropType } from "vue";
 import { defineComponent } from "vue";
 import MtBaseField from "@/components/_internal/mt-base-field/mt-base-field.vue";
 import MtNumberField from "@/components/mt-number-field/mt-number-field.vue";
+import MtFieldHint from "@/components/_internal/mt-field-hint/mt-field-hint.vue";
 import MtTooltipDirective from "@/directives/tooltip.directive";
 
 export default defineComponent({
@@ -118,7 +123,7 @@ export default defineComponent({
     tooltip: MtTooltipDirective,
   },
 
-  components: { MtNumberField, MtBaseField },
+  components: { MtNumberField, MtBaseField, MtFieldHint },
 
   extends: MtBaseField,
 
@@ -201,6 +206,15 @@ export default defineComponent({
       type: Number,
       required: false,
       default: 5,
+    },
+
+    /**
+     * Optional caption below the field. The `#hint` slot takes precedence when provided.
+     */
+    hint: {
+      type: String as PropType<string | null>,
+      required: false,
+      default: null,
     },
   },
 
@@ -321,6 +335,10 @@ export default defineComponent({
   },
 
   computed: {
+    showFieldHint(): boolean {
+      return !!this.$slots.hint || (this.hint != null && String(this.hint).trim() !== "");
+    },
+
     stringRepresentation(): string {
       return this.modelValue.toString();
     },
@@ -405,6 +423,7 @@ export default defineComponent({
   width: 5ch;
   flex-grow: 0;
   flex-shrink: 0;
+  margin-bottom: 0;
 }
 
 .mt-slider .mt-field--default > .mt-field__label {

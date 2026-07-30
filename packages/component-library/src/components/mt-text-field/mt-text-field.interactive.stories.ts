@@ -1,6 +1,7 @@
 import { within, userEvent } from "@storybook/test";
 import { expect } from "@storybook/test";
 
+import MtTextField from "./mt-text-field.vue";
 import meta, { type MtTextFieldMeta, type MtTextFieldStory } from "./mt-text-field.stories";
 
 export default {
@@ -44,18 +45,6 @@ export const VisualTestSuffix: MtTextFieldStory = {
     const canvas = within(canvasElement);
 
     expect(canvas.getByText(args.suffix)).toBeDefined();
-  },
-};
-
-export const VisualTestHint: MtTextFieldStory = {
-  name: "Should display hint",
-  args: {
-    hint: "hint",
-  },
-  play: ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    expect(canvas.getByText(args.hint)).toBeDefined();
   },
 };
 
@@ -248,5 +237,36 @@ export const VisualTestHandleFocus: MtTextFieldStory = {
 
     // Check if the focus event was emitted
     expect(args.focus).toHaveBeenCalledOnce();
+  },
+};
+
+export const VisualTestHintProp: MtTextFieldStory = {
+  name: "Should display hint via prop",
+  args: {
+    hint: "Hint via prop",
+  },
+  render: (args) => ({
+    components: { MtTextField },
+    setup: () => ({ args }),
+    template: `<mt-text-field :label="args.label" :hint="args.hint" />`,
+  }),
+  play: ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getByText("Hint via prop")).toBeDefined();
+  },
+};
+
+export const VisualTestHintSlot: MtTextFieldStory = {
+  name: "Should display hint via slot",
+  render: (args) => ({
+    components: { MtTextField },
+    setup: () => ({ args }),
+    template: `<mt-text-field :label="args.label"><template #hint>Hint via slot</template></mt-text-field>`,
+  }),
+  play: ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getByText("Hint via slot")).toBeDefined();
   },
 };

@@ -226,56 +226,6 @@ export const VisualTestHelpText: Story = {
   },
 };
 
-export const VisualTestHint: Story = {
-  name: "Should render the radio group with hint text",
-  args: {
-    label: "Select an option",
-    hint: "Additional information about this field",
-    change: fn(),
-  },
-  render: (args: typeof meta.args) => ({
-    components: { MtRadioGroupRoot, MtRadioGroupList, MtRadioGroupItem },
-    setup() {
-      const modelValue = ref("value1");
-
-      const handleUpdate = (value: string) => {
-        modelValue.value = value;
-        args!.change(value);
-      };
-
-      return {
-        args,
-        modelValue,
-        handleUpdate,
-      };
-    },
-    template: `
-      <MtRadioGroupRoot
-        v-model="modelValue"
-        :disabled="args.disabled"
-        :label="args.label"
-        :help-text="args.helpText"
-        :name="args.name"
-        :error="args.error"
-        @update:modelValue="handleUpdate"
-      >
-        <template #default>
-          <MtRadioGroupList>
-            <MtRadioGroupItem id="option-1" value="value1" label="Option 1" />
-            <MtRadioGroupItem id="option-2" value="value2" label="Option 2" />
-            <MtRadioGroupItem id="option-3" value="value3" label="Option 3" />
-          </MtRadioGroupList>
-        </template>
-        <template v-if="args.hint" #hint>{{ args.hint }}</template>
-      </MtRadioGroupRoot>
-    `,
-  }),
-  play: ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    expect(canvas.getByText("Additional information about this field")).toBeDefined();
-  },
-};
-
 export const VisualTestCustomItems: Story = {
   name: "Should render the radio group with custom items",
   args: {
@@ -367,4 +317,52 @@ export const VisualTestCustomItems: Story = {
       </MtRadioGroupRoot>
     `,
   }),
+};
+
+export const VisualTestHintProp: Story = {
+  name: "Should display hint via prop",
+  args: {
+    label: "Select an option",
+    hint: "Hint via prop",
+  },
+  render: (args: typeof meta.args) => ({
+    components: { MtRadioGroupRoot, MtRadioGroupList, MtRadioGroupItem },
+    setup: () => ({ args }),
+    template: `
+      <MtRadioGroupRoot :label="args.label" :hint="args.hint">
+        <MtRadioGroupList>
+          <MtRadioGroupItem id="option-1" value="value1" label="Option 1" />
+          <MtRadioGroupItem id="option-2" value="value2" label="Option 2" />
+        </MtRadioGroupList>
+      </MtRadioGroupRoot>`,
+  }),
+  play: ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getByText("Hint via prop")).toBeDefined();
+  },
+};
+
+export const VisualTestHintSlot: Story = {
+  name: "Should display hint via slot",
+  args: {
+    label: "Select an option",
+  },
+  render: (args: typeof meta.args) => ({
+    components: { MtRadioGroupRoot, MtRadioGroupList, MtRadioGroupItem },
+    setup: () => ({ args }),
+    template: `
+      <MtRadioGroupRoot :label="args.label">
+        <template #hint>Hint via slot</template>
+        <MtRadioGroupList>
+          <MtRadioGroupItem id="option-1" value="value1" label="Option 1" />
+          <MtRadioGroupItem id="option-2" value="value2" label="Option 2" />
+        </MtRadioGroupList>
+      </MtRadioGroupRoot>`,
+  }),
+  play: ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getByText("Hint via slot")).toBeDefined();
+  },
 };

@@ -52,8 +52,10 @@
       :style="{ gridArea: 'error' }"
     />
 
-    <div v-if="!!$slots.hint" class="mt-textarea__hint">
-      <slot name="hint" />
+    <div v-if="showFieldHint" class="mt-textarea__hint">
+      <mt-field-hint :hide-icon="!!$slots.hint">
+        <slot name="hint">{{ hint }}</slot>
+      </mt-field-hint>
     </div>
 
     <span v-if="!!maxLength" class="mt-textarea__max-length"
@@ -63,10 +65,11 @@
 </template>
 
 <script setup lang="ts">
-import { useId } from "vue";
+import { computed, useSlots, useId } from "vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
+import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
 
 const model = defineModel({
   type: String,
@@ -82,7 +85,7 @@ defineEmits<{
   blur: void;
 }>();
 
-defineProps<{
+const props = defineProps<{
   required?: boolean;
   disabled?: boolean;
   name?: string;
@@ -95,7 +98,14 @@ defineProps<{
   maxLength?: number;
   isInherited?: boolean;
   isInheritanceField?: boolean;
+  hint?: string | null;
 }>();
+
+const slots = useSlots();
+
+const showFieldHint = computed(
+  () => !!slots.hint || (props.hint != null && String(props.hint).trim() !== ""),
+);
 </script>
 
 <style scoped>

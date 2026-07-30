@@ -1,6 +1,7 @@
 import { within, userEvent, screen } from "@storybook/test";
 import { expect } from "@storybook/test";
 
+import MtUnitField from "./mt-unit-field.vue";
 import meta, { type MtUnitFieldMeta, type MtUnitFieldStory } from "./mt-unit-field.stories";
 
 export default {
@@ -71,5 +72,36 @@ export const VisualTestErrorState: MtUnitFieldStory = {
 
     // Verify the error detail text matches exactly
     expect(errorMessage).toHaveTextContent(errorDetail);
+  },
+};
+
+export const VisualTestHintProp: MtUnitFieldStory = {
+  name: "Should display hint via prop",
+  args: {
+    hint: "Hint via prop",
+  },
+  render: (args) => ({
+    components: { MtUnitField },
+    setup: () => ({ args }),
+    template: `<mt-unit-field :label="args.label" default-unit="mm" :model-value="0" :hint="args.hint" />`,
+  }),
+  play: ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getByText("Hint via prop")).toBeDefined();
+  },
+};
+
+export const VisualTestHintSlot: MtUnitFieldStory = {
+  name: "Should display hint via slot",
+  render: (args) => ({
+    components: { MtUnitField },
+    setup: () => ({ args }),
+    template: `<mt-unit-field :label="args.label" default-unit="mm" :model-value="0"><template #hint>Hint via slot</template></mt-unit-field>`,
+  }),
+  play: ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getByText("Hint via slot")).toBeDefined();
   },
 };
