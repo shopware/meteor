@@ -508,6 +508,11 @@ const datasets = new Map<string, unknown>();
  */
 
 (async (): Promise<void> => {
+  // Mark embedded documents before the first paint (needs no channel)
+  if (window.parent !== window) {
+    applyEmbeddedContext();
+  }
+
   // Handle registrations at current window
   handle('__registerWindow__', ({ sdkVersion }, additionalOptions) => {
     let source: Window | undefined;
@@ -581,9 +586,15 @@ function isThemeValue(value: unknown): value is 'light' | 'dark' {
   return value === 'light' || value === 'dark';
 }
 
+function applyTheme(target: HTMLElement, theme: 'light' | 'dark'): void {
+  target.dataset.theme = theme;
+  // A matching color-scheme keeps embedded iframes transparent (on a mismatch the browser paints an opaque backdrop)
+  target.style.setProperty('color-scheme', theme);
+}
+
 /**
- * Keeps the `data-theme` attribute of `target` in sync with the resolved
- * Administration color theme
+ * Keeps the `data-theme` attribute and `color-scheme` of `target` in sync
+ * with the resolved Administration color theme
  *
  * @internal - used by the automatic sync below and `context.syncTheme()`
  */
@@ -597,13 +608,13 @@ export function startThemeSync(target: HTMLElement): { initialFetch: Promise<voi
     }
 
     hasReceivedUpdate = true;
-    target.dataset.theme = theme;
+    applyTheme(target, theme);
   });
 
   const initialFetch = send('contextTheme', {}).then((theme) => {
     // A theme published in the meantime is newer than the fetched value
     if (!hasReceivedUpdate && isThemeValue(theme)) {
-      target.dataset.theme = theme;
+      applyTheme(target, theme);
     }
   });
 
@@ -631,6 +642,35 @@ export function startAutoThemeSync(): () => void {
   initialFetch.catch(() => {});
 
   return stop;
+}
+
+/**
+ * Marks the document as embedded (`<html data-embedded>`) and unsets the
+ * body background so the Administration theme shows through instead of an
+ * opaque default background. The attribute stays untouched when the document
+ * declares it itself.
+ *
+ * @internal - runs automatically inside app iframes
+ */
+export function applyEmbeddedContext(): void {
+  const root = document.documentElement;
+
+  if (root.dataset.embedded === undefined) {
+    root.dataset.embedded = '';
+  }
+
+  if (document.getElementById('meteor-admin-sdk-embedded')) {
+    return;
+  }
+
+  const style = document.createElement('style');
+  style.id = 'meteor-admin-sdk-embedded';
+  // Supporting both schemes makes the document adopt the scheme the Administration propagates into the iframe until the theme sync pins the resolved one
+  style.textContent = [
+    'html[data-embedded] { color-scheme: light dark; }',
+    'html[data-embedded] body { background: unset; }',
+  ].join('\n');
+  document.head.appendChild(style);
 }
 
 // New dataset registered

@@ -7,6 +7,7 @@ import type {
   subscribe as subscribeType,
   publish as publishType,
   setExtensions as setExtensionsType,
+  applyEmbeddedContext as applyEmbeddedContextType,
 } from './channel';
 import MissingPrivilegesError from './_internals/privileges/missing-privileges-error';
 
@@ -20,6 +21,7 @@ let createHandler: typeof createHandlerType;
 let subscribe: typeof subscribeType;
 let publish: typeof publishType;
 let setExtensions: typeof setExtensionsType;
+let applyEmbeddedContext: typeof applyEmbeddedContextType;
 
 describe('Test the channel bridge from iFrame to admin', () => {
   beforeAll(async () => {
@@ -42,6 +44,7 @@ describe('Test the channel bridge from iFrame to admin', () => {
     subscribe = channel.subscribe;
     publish = channel.publish;
     setExtensions = channel.setExtensions;
+    applyEmbeddedContext = channel.applyEmbeddedContext;
 
     setExtensions({
       'test-extension': {
@@ -266,5 +269,33 @@ describe('Test the channel bridge from iFrame to admin', () => {
     removeHandle();
 
     expect(callback).toHaveBeenCalledTimes(0)
+  });
+
+  describe('embedded context', () => {
+    afterEach(() => {
+      delete document.documentElement.dataset.embedded;
+      document.getElementById('meteor-admin-sdk-embedded')?.remove();
+    });
+
+    it('should mark the document as embedded and unset the body background', () => {
+      applyEmbeddedContext();
+      // A second call must not duplicate anything
+      applyEmbeddedContext();
+
+      expect(document.documentElement.dataset.embedded).toBe('');
+
+      const styles = document.querySelectorAll('#meteor-admin-sdk-embedded');
+      expect(styles).toHaveLength(1);
+      expect(styles[0].textContent).toContain('html[data-embedded] { color-scheme: light dark; }');
+      expect(styles[0].textContent).toContain('html[data-embedded] body { background: unset; }');
+    });
+
+    it('should not overwrite an app-managed data-embedded value', () => {
+      document.documentElement.dataset.embedded = 'app-managed';
+
+      applyEmbeddedContext();
+
+      expect(document.documentElement.dataset.embedded).toBe('app-managed');
+    });
   });
 });
