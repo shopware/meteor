@@ -31,10 +31,13 @@ jobs:
         uses: actions/checkout@v6
         with:
           ref: ${{ github.head_ref }}
+          fetch-depth: 0
         if: ${{ github.event.pull_request.head.repo.full_name == 'shopware/meteor' }}
 
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
         if: ${{ github.event.pull_request.head.repo.full_name != 'shopware/meteor' }}
 
       - uses: pnpm/action-setup@v4
