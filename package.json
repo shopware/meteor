@@ -8,7 +8,7 @@
   "license": "MIT",
   "scripts": {
     "validate:changesets": "node scripts/validate-changesets.js",
-    "validate:docs-redirects": "node scripts/validate-docs-redirects.js"
+    "validate:docs-redirects": "node scripts/validate-docs-redirects.js",
     "predev": "pnpm --filter=meteor-docs sync:changelog",
     "dev": "turbo run dev --filter=meteor-docs --filter=@shopware-ag/meteor-component-library"
   },
