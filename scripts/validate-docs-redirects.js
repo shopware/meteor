@@ -27,19 +27,9 @@ function normalizeRedirectValue(value, lineNumber, label) {
     throw new Error(`Line ${lineNumber}: redirect ${label} must not be empty`);
   }
 
-  if (/^https?:\/\//i.test(normalizedValue)) {
-    return normalizedValue;
-  }
-
   if (normalizedValue.startsWith("/")) {
     throw new Error(
       `Line ${lineNumber}: redirect ${label} must be relative, got "${normalizedValue}"`
-    );
-  }
-
-  if (normalizedValue.includes("?") || normalizedValue.includes("#")) {
-    throw new Error(
-      `Line ${lineNumber}: redirect ${label} must not contain query strings or hashes`
     );
   }
 
@@ -117,7 +107,7 @@ function parseRedirects() {
   return { entries, errors };
 }
 
-function walkMarkdownFiles(dirPath) {
+function walkFiles(dirPath) {
   const files = [];
 
   if (!fs.existsSync(dirPath) || !fs.statSync(dirPath).isDirectory()) {
@@ -130,11 +120,11 @@ function walkMarkdownFiles(dirPath) {
     const fullPath = path.join(dirPath, entry.name);
 
     if (entry.isDirectory()) {
-      files.push(...walkMarkdownFiles(fullPath));
+      files.push(...walkFiles(fullPath));
       continue;
     }
 
-    if (entry.isFile() && entry.name.endsWith(".md")) {
+    if (entry.isFile()) {
       files.push(fullPath);
     }
   }
@@ -142,19 +132,22 @@ function walkMarkdownFiles(dirPath) {
   return files;
 }
 
-function toPublicPath(relativePath) {
-  return relativePath.split(path.sep).join("/").replace(/\.md$/, ".html");
-}
-
-function collectCurrentPages() {
-  return new Set(
-    walkMarkdownFiles(docsRoot).map((filePath) =>
-      toPublicPath(path.relative(docsRoot, filePath))
-    )
+function collectDocsFiles() {
+  const relativeFiles = walkFiles(docsRoot).map((filePath) =>
+    path.relative(docsRoot, filePath).split(path.sep).join("/")
   );
+
+  return {
+    currentFiles: new Set(relativeFiles),
+    currentPages: new Set(
+      relativeFiles
+        .filter((relativePath) => relativePath.endsWith(".md"))
+        .map((relativePath) => relativePath.replace(/\.md$/, ".html"))
+    ),
+  };
 }
 
-function validateRedirectEntries(entries, currentPages) {
+function validateRedirectEntries(entries, currentPages, currentFiles) {
   const errors = [];
   const seenSources = new Map();
   const redirectSources = new Set(entries.map((entry) => entry.source));
@@ -181,13 +174,15 @@ function validateRedirectEntries(entries, currentPages) {
       );
     }
 
-    if (!entry.target.endsWith(".html")) {
-      continue;
-    }
-
-    if (!currentPages.has(entry.target)) {
+    if (entry.target.endsWith(".html")) {
+      if (!currentPages.has(entry.target)) {
+        errors.push(
+          `Line ${entry.lineNumber}: redirect target "${entry.target}" does not match an existing page`
+        );
+      }
+    } else if (!currentFiles.has(entry.target)) {
       errors.push(
-        `Line ${entry.lineNumber}: redirect target "${entry.target}" does not match an existing page`
+        `Line ${entry.lineNumber}: redirect target "${entry.target}" does not match an existing file`
       );
     }
 
@@ -296,11 +291,15 @@ function main() {
     }
 
     const baseRef = args[0] || null;
-    const currentPages = collectCurrentPages();
+    const { currentPages, currentFiles } = collectDocsFiles();
     const parsedRedirects = parseRedirects();
     const errors = [
       ...parsedRedirects.errors,
-      ...validateRedirectEntries(parsedRedirects.entries, currentPages),
+      ...validateRedirectEntries(
+        parsedRedirects.entries,
+        currentPages,
+        currentFiles
+      ),
     ];
 
     if (baseRef) {
