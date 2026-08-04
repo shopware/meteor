@@ -4,7 +4,7 @@
   "description": "Design Tokens for the Meteor Design System used at shopware",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com:shopware/meteor.git"
+    "url": "git+https://github.com/shopware/meteor.git"
   },
   "license": "MIT",
   "author": "shopware AG",

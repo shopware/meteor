@@ -12,9 +12,10 @@ import type {
   contextUserInformation,
   contextUserTimezone,
   contextShopId,
+  contextTheme,
 } from './context';
 import type { uiComponentSectionRenderer } from './ui/component-section/index';
-import type { uiTabsAddTabItem } from './ui/tabs';
+import type { uiTabsAddTabItem, uiTabsSetVisibility } from './ui/tabs';
 import type { uiModulePaymentOverviewCard } from './ui/module/payment/overview-card';
 import type { cmsRegisterElement, cmsRegisterBlock } from './ui/cms';
 import type { locationUpdateHeight, locationUpdateUrl } from './location/index';
@@ -24,7 +25,7 @@ import type { mainModuleAdd } from './ui/main-module';
 import type { smartBarButtonAdd, smartBarHide } from './ui/main-module';
 import type { uiModalOpen, uiModalClose, uiModalUpdate } from './ui/modal/index';
 import type { uiMediaModalOpen, uiMediaModalOpenSaveMedia } from './ui/media-modal';
-import type { uiSidebarAdd, uiSidebarClose, uiSidebarRemove } from './ui/sidebar';
+import type { uiSidebarAdd, uiSidebarClose, uiSidebarRemove, uiSidebarSetActive } from './ui/sidebar';
 import type { actionButtonAdd } from './ui/action-button';
 import type { actionExecute } from './app/action';
 import type Criteria from './data/Criteria';
@@ -71,9 +72,11 @@ export interface ShopwareMessageTypes {
   contextAppInformation: contextAppInformation,
   contextModuleInformation: contextModuleInformation,
   contextShopId: contextShopId,
+  contextTheme: contextTheme,
   getPageTitle: getPageTitle,
   uiComponentSectionRenderer: uiComponentSectionRenderer,
   uiTabsAddTabItem: uiTabsAddTabItem,
+  uiTabsSetVisibility: uiTabsSetVisibility,
   uiModulePaymentOverviewCard: uiModulePaymentOverviewCard,
   cmsRegisterElement: cmsRegisterElement,
   cmsRegisterBlock: cmsRegisterBlock,
@@ -94,6 +97,7 @@ export interface ShopwareMessageTypes {
   uiSidebarAdd: uiSidebarAdd,
   uiSidebarClose: uiSidebarClose,
   uiSidebarRemove: uiSidebarRemove,
+  uiSidebarSetActive: uiSidebarSetActive,
   actionButtonAdd: actionButtonAdd,
   actionExecute: actionExecute,
   /* eslint-disable @typescript-eslint/no-explicit-any */

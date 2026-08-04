@@ -1,8 +1,6 @@
 <template>
   <!-- eslint-disable-next-line vuejs-accessibility/click-events-have-key-events -->
   <span class="mt-label" :class="labelClasses" @click.stop="$emit('selected')" tabindex="0">
-    <mt-color-badge v-if="appearance === 'badged'" :variant="variant" :rounded="true" />
-
     <span class="mt-label__caption">
       <slot />
     </span>
@@ -14,7 +12,11 @@
       @click.prevent.stop="$emit('dismiss')"
     >
       <slot name="dismiss-icon">
-        <mt-icon data-testid="dismiss-label" name="regular-times-xxs" size="var(--scale-size-10)" />
+        <mt-icon
+          data-testid="dismiss-label"
+          name="regular-times-xs"
+          color="var(--color-icon-primary-default)"
+        />
       </slot>
     </button>
   </span>
@@ -22,15 +24,14 @@
 
 <script setup lang="ts">
 import { computed, useAttrs } from "vue";
-import MtIcon from "../icons-media/mt-icon/mt-icon.vue";
-import MtColorBadge from "../feedback-indicator/mt-color-badge/mt-color-badge.vue";
+import MtIcon from "../mt-icon/mt-icon.vue";
 import { useI18n } from "vue-i18n";
 
 const props = withDefaults(
   defineProps<{
     variant?: "info" | "danger" | "success" | "warning" | "neutral" | "primary";
     size?: "small" | "medium" | "default";
-    appearance?: "default" | "pill" | "circle" | "badged";
+    appearance?: "default" | "pill" | "circle";
     ghost?: boolean;
     caps?: boolean;
     dismissable?: boolean;
@@ -100,11 +101,6 @@ const labelClasses = computed(() => {
   width: 100%;
 }
 
-.mt-label.mt-label--dismissable:hover {
-  background-color: var(--color-background-brand-default);
-  border-color: var(--color-border-brand-default);
-}
-
 .mt-label.mt-label--dismissable:hover .mt-label__caption {
   width: calc(100% - 15px);
 }
@@ -141,18 +137,6 @@ const labelClasses = computed(() => {
 .mt-label.mt-label--ghost {
   background: transparent;
   border-color: var(--color-border-primary-default);
-}
-
-.mt-label.mt-label--appearance-badged {
-  background: transparent;
-  border: 0;
-  font-size: var(--font-size-s);
-  padding: var(--scale-size-4) 0;
-  line-height: 22px;
-}
-
-.mt-label.mt-label--appearance-badged .mt-color-badge {
-  margin: 0 var(--scale-size-8) var(--scale-size-6) 0;
 }
 
 .mt-label.mt-label--appearance-pill {

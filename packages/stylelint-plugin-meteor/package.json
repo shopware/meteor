@@ -3,7 +3,7 @@
   "version": "5.0.0",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com:shopware/meteor.git"
+    "url": "git+https://github.com/shopware/meteor.git"
   },
   "main": "./dist/commonjs/index.js",
   "files": [

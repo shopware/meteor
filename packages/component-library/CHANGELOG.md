@@ -1,5 +1,186 @@
 # Changelog
 
+## 5.5.0
+
+### Minor Changes
+
+- [#1284](https://github.com/shopware/meteor/pull/1284) [`2875130`](https://github.com/shopware/meteor/commit/2875130e4b0f582daf95a05d2b33e64f68197e75) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Add the `mt-theme-select` component for choosing the application color theme (light, dark, or system) and the `useTheme` composable that resolves the system preference, applies the resolved theme to `data-theme`, and persists the choice.
+
+### Patch Changes
+
+- [#1289](https://github.com/shopware/meteor/pull/1289) [`5377579`](https://github.com/shopware/meteor/commit/5377579ac8b450ea9a86557c91216cc69d29937b) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Move `inter-ui` to `devDependencies`. The Inter font files are copied into `dist/assets/fonts/` at build time, so the package stays self-contained — keep using the `font.css` export. If you imported `inter-ui` directly without declaring it, add it to your own `dependencies`.
+
+- [#1289](https://github.com/shopware/meteor/pull/1289) [`5377579`](https://github.com/shopware/meteor/commit/5377579ac8b450ea9a86557c91216cc69d29937b) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Stop publishing source maps. They were built with `sourcemap: "hidden"`, so no published file referenced them — removes 23.6 MB of unreachable files from the package.
+
+- [#1289](https://github.com/shopware/meteor/pull/1289) [`5377579`](https://github.com/shopware/meteor/commit/5377579ac8b450ea9a86557c91216cc69d29937b) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Stop publishing the `src` directory. The `exports` map only exposes `dist`, so `src` was never reachable through supported imports. If you reached into `src` via raw `node_modules` paths (e.g. SCSS imports), switch to the documented `dist` entry points.
+
+- Updated dependencies [[`2875130`](https://github.com/shopware/meteor/commit/2875130e4b0f582daf95a05d2b33e64f68197e75), [`5377579`](https://github.com/shopware/meteor/commit/5377579ac8b450ea9a86557c91216cc69d29937b)]:
+  - @shopware-ag/meteor-admin-sdk@6.11.0
+  - @shopware-ag/meteor-icon-kit@5.9.1
+
+## 5.4.0
+
+### Minor Changes
+
+- [#1281](https://github.com/shopware/meteor/pull/1281) [`f091304`](https://github.com/shopware/meteor/commit/f09130459e371d65651446ece113a59868001cca) Thanks [@fabianhueske](https://github.com/fabianhueske)! - Add `MtStatusDot`, a small semantic status dot with variants (`neutral`, `info`, `attention`, `critical`, `positive`), sizes (`s`, `m`, `l`), an optional `pulse` animation for signaling live activity (disabled under reduced motion), and an optional accessible `label`.
+
+  The internal color badge it replaces has been removed and its usages migrated: data table badge columns now render with `MtBadge`, and the tab badge and the `MtBadge` status indicator now use `MtStatusDot`. Existing badge column `variant` values keep working unchanged; those badges now use the standard Badge styling.
+
+### Patch Changes
+
+- Updated dependencies [[`0d8dde1`](https://github.com/shopware/meteor/commit/0d8dde13640bf8c703e779b5e7a7fa80458185fa)]:
+  - @shopware-ag/meteor-admin-sdk@6.10.0
+
+## 5.3.2
+
+### Patch Changes
+
+- [#1280](https://github.com/shopware/meteor/pull/1280) [`226f16a`](https://github.com/shopware/meteor/commit/226f16af4dc9e1fca419c7262d6f0d3ece89b516) Thanks [@fabianhueske](https://github.com/fabianhueske)! - Refined several prop types to their literal values so the API reference renders them accurately. The `size` prop of `mt-text-field`, `mt-number-field`, and `mt-unit-field` is now typed as `"small" | "default"`, and the `mt-popover` `width` prop is now typed as `"dynamic" | "large" | "medium" | "small"` to match the value it actually accepts (previously it listed the non-functional `"auto"` and omitted the `"dynamic"` default). These are type-only corrections; the runtime behaviour is unchanged.
+
+- [#1272](https://github.com/shopware/meteor/pull/1272) [`1cbcdb8`](https://github.com/shopware/meteor/commit/1cbcdb8ff0b7ef1040cf1ed21b94a6bf1f4caadc) Thanks [@keulinho](https://github.com/keulinho)! - Fix number field stepping for values with high fractional precision limits.
+
+- [#1279](https://github.com/shopware/meteor/pull/1279) [`de7628d`](https://github.com/shopware/meteor/commit/de7628de4b396ef5d749dcb53633cdeb02b6c222) Thanks [@alastair-simon](https://github.com/alastair-simon)! - The collapsible open and close animations now use `ease-in-out` timing for a smoother transition.
+
+- [#1275](https://github.com/shopware/meteor/pull/1275) [`d292012`](https://github.com/shopware/meteor/commit/d2920123a0f02f3436692b49eae2cdb6472cf009) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - The modal now focuses the dialog container when it opens instead of the first interactive element. This prevents unintended side effects like an accidentally focused link or a tooltip opening together with the modal, while still moving focus into the dialog for keyboard and screen reader users.
+
+## 5.3.1
+
+### Patch Changes
+
+- [#1269](https://github.com/shopware/meteor/pull/1269) [`1e4749e`](https://github.com/shopware/meteor/commit/1e4749ed333f7497e9ccec1dfd3f102e4197a7de) Thanks [@keulinho](https://github.com/keulinho)! - Fix floating-point rounding after stepping a number field.
+
+- [#1267](https://github.com/shopware/meteor/pull/1267) [`63df47b`](https://github.com/shopware/meteor/commit/63df47b653ec0bc18f35c0c2dbd8eb2e3e772557) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Remove the global `html, body` height rule from `styles.css` entirely, restoring the pre-5.2.0 behavior where consumers own their document-level layout.
+
+  The rule has caused problems in both of its variants:
+
+  - `height: 100dvh` (introduced in 5.2.0) deadlocked apps rendered in the Administration's auto-sized iframes at the 150px browser fallback, because the admin-sdk reported the pinned viewport height back to `sw-iframe-renderer`.
+  - `min-height: 100dvh` (5.3.0) fixed the deadlock but made iframe auto-resizing a one-way ratchet: `body` never shrinks below the iframe's current height, so `location.startAutoResizer()` never reports a smaller height when content shrinks, and small widgets stay floored at the 150px fallback.
+
+  With the rule removed, auto-sized iframe locations grow **and** shrink with their content again, exactly as on ≤5.1.x.
+
+  If your app relied on the implicit full-viewport height for a percentage-based layout (introduced accidentally in 5.2.0), declare it yourself:
+
+  ```css
+  html,
+  body {
+    height: 100dvh;
+  }
+  ```
+
+## 5.3.0
+
+### Minor Changes
+
+- [#1242](https://github.com/shopware/meteor/pull/1242) [`db041ae`](https://github.com/shopware/meteor/commit/db041ae91891a272f8abd9da7e5bbf441a3713e1) Thanks [@fabianhueske](https://github.com/fabianhueske)! - Added a way to enable every future flag at once and introduced two new flags. The Theme Provider `future` prop now accepts `{ all: true }` to turn on all current and upcoming flags, so flags added in later releases are opted into automatically. Combine it with overrides to fine-tune, for example `{ all: true, removeCardWidth: false }` to enable everything except a single flag.
+
+  New flags:
+
+  - `removeSwitchMinHeight`: removes the minimum height from a non-bordered `mt-switch`.
+  - `bannerFullWidth`: makes `mt-banner` span the full width of its container.
+
+  All flags remain `false` by default, so behavior is unchanged until you opt in.
+
+### Patch Changes
+
+- [#1259](https://github.com/shopware/meteor/pull/1259) [`0b11681`](https://github.com/shopware/meteor/commit/0b116813d524f8d0c0f233a1db2b9982866c9cbc) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Removed `@shopware-ag/meteor-icon-kit` from `peerDependencies` to prevent unwanted major version bumps. Because Changesets treats any non-patch bump of a peer dependency as a breaking change for the dependent package, a minor release of the icon kit forced a major release of the component library. The icon kit remains a regular dependency, so resolution is unchanged.
+
+- [#1265](https://github.com/shopware/meteor/pull/1265) [`664d2d3`](https://github.com/shopware/meteor/commit/664d2d30cd91af5a7404fffa1719abf678977c0a) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Added the `license` field (`MIT`) to the package metadata, aligning it with the other Meteor packages and the repository's license.
+
+- [#1262](https://github.com/shopware/meteor/pull/1262) [`d902e2a`](https://github.com/shopware/meteor/commit/d902e2a35b30f021603b267dc4fd86e96e778e84) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Fixed the component library collapsing to a 150px iframe when embedded in the Shopware Administration: `html`/`body` now use `min-height: 100dvh` instead of a fixed `height`.
+
+  Reverted the `body` background to its original hardcoded value. The background is now deprecated and will change in an upcoming major version (likely detecting the embedded context automatically so it can go transparent inside the Administration).
+
+- [#1261](https://github.com/shopware/meteor/pull/1261) [`e5c28e0`](https://github.com/shopware/meteor/commit/e5c28e006af9f4ed25e29f01558070f88745534c) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Fixed `mt-number-field` inconsistently parsing pasted values with mixed decimal and grouping separators. Values such as `333,33` and `1.333,33` could silently become wrong amounts. The parser now treats the rightmost `.` or `,` as the decimal separator and removes earlier separators as grouping separators, and `onInput` uses the same parser so editing and blur behavior agree.
+
+- [#1266](https://github.com/shopware/meteor/pull/1266) [`b82647f`](https://github.com/shopware/meteor/commit/b82647f8d73c4ecc7d65856345097bd93f483357) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Fixed `mt-select` not selecting the highlighted option with the Enter key. The keyboard listener registry was shadowed by an empty data property, so keyboard selections never reached the result items.
+
+- [#1266](https://github.com/shopware/meteor/pull/1266) [`b82647f`](https://github.com/shopware/meteor/commit/b82647f8d73c4ecc7d65856345097bd93f483357) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Fixed `mt-select` showing the selected value as a placeholder when reopened. The value now stays in the input field; the result list is only filtered once the user actually edits the text.
+
+- [#1255](https://github.com/shopware/meteor/pull/1255) [`7c9f669`](https://github.com/shopware/meteor/commit/7c9f669b60b33a62b68ca52652337e687eae5eaf) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Various visual and positioning fixes across components:
+
+  - Fixed `mt-floating-ui` popovers landing in the wrong spot and drifting on scroll by pinning `position` to the computed strategy.
+  - Fixed `mt-colorpicker` popover positioning being sensitive to stylesheet source order.
+  - Fixed `mt-action-menu` z-index stacking order.
+  - Adjusted `mt-banner` close icon and spacing.
+  - Adjusted `mt-checkbox` and `mt-switch` icon, spacing, gap and line-height.
+  - Adjusted `mt-select` and `mt-button` field icons, spacing and active state.
+  - Used tokens for `mt-base-field` label font-size and line-height.
+
+- Updated dependencies [[`ca51ea5`](https://github.com/shopware/meteor/commit/ca51ea5ec04da206f20e726c55ab1278d860965c), [`9eb0c3d`](https://github.com/shopware/meteor/commit/9eb0c3d2fd496c704a63d87f73c370ade5084942)]:
+  - @shopware-ag/meteor-icon-kit@5.9.0
+  - @shopware-ag/meteor-admin-sdk@6.9.1
+
+## 5.2.0
+
+### Minor Changes
+
+- [#1155](https://github.com/shopware/meteor/pull/1155) [`dac8771`](https://github.com/shopware/meteor/commit/dac877135b31fcedaf94365f2e16f1ce4e1bea9d) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Added global css adjustments, inter font handling and css preflight reset to the library
+
+### Patch Changes
+
+- [#1155](https://github.com/shopware/meteor/pull/1155) [`dac8771`](https://github.com/shopware/meteor/commit/dac877135b31fcedaf94365f2e16f1ce4e1bea9d) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Scoped the text editor diff modal styles to avoid leaking Tailwind Preflight globally.
+
+- [#1179](https://github.com/shopware/meteor/pull/1179) [`f380305`](https://github.com/shopware/meteor/commit/f380305595b7b7abc7ede6088a6961b775fec787) Thanks [@fabianhueske](https://github.com/fabianhueske)! - Fixed `mt-card` letting full-bleed content overflow its rounded corners by clipping content with `overflow: hidden`.
+
+- [#1178](https://github.com/shopware/meteor/pull/1178) [`e21a76c`](https://github.com/shopware/meteor/commit/e21a76c571147a1b8f678d26999fe7b47198da3e) Thanks [@fabianhueske](https://github.com/fabianhueske)! - Fixed `mt-number-field` with `numberType="float"` rounding some values down due to binary floating-point errors (for example `1.035` normalized to `1.03` instead of `1.04`). Normalization now rounds on the decimal representation, so half-up rounding is consistent across values.
+
+- [#1178](https://github.com/shopware/meteor/pull/1178) [`e21a76c`](https://github.com/shopware/meteor/commit/e21a76c571147a1b8f678d26999fe7b47198da3e) Thanks [@fabianhueske](https://github.com/fabianhueske)! - Fixed `mt-number-field` with `numberType="int"` mangling decimal input on blur (for example `1.05` became `105` instead of `1`). Decimal and exponent input is now parsed as a float and rounded to the nearest integer.
+
+- [#1177](https://github.com/shopware/meteor/pull/1177) [`89e62b3`](https://github.com/shopware/meteor/commit/89e62b3e0f06b480e20ddd607945127c85d29f15) Thanks [@fabianhueske](https://github.com/fabianhueske)! - Fixed the `mt-password-field` showing the parent background behind the visibility-toggle button in dark mode. The field now paints a consistent `--color-background-primary-default` surface across the input and toggle button.
+
+- [#1172](https://github.com/shopware/meteor/pull/1172) [`db1cf75`](https://github.com/shopware/meteor/commit/db1cf75d2aa09b2039f7da587e8d2b7313af5164) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Adjusted font bundling to import the actual woff2 font files instead of vite bundling them in base64 due to library mode defaults
+
+## 5.1.0
+
+### Minor Changes
+
+- [#1142](https://github.com/shopware/meteor/pull/1142) [`1ab72fb`](https://github.com/shopware/meteor/commit/1ab72fbfcdbcad989083da2cb9e620240df482de) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Add `anchorElement` and `detached` props to `mt-floating-ui` for external anchor positioning.
+
+### Patch Changes
+
+- [#1161](https://github.com/shopware/meteor/pull/1161) [`10bb170`](https://github.com/shopware/meteor/commit/10bb1700651b1f8e9042936b63ac7ced808c9792) Thanks [@mstegmeyer](https://github.com/mstegmeyer)! - Fix datepicker locale loading for date-fns v4 locale module exports.
+
+- [#1151](https://github.com/shopware/meteor/pull/1151) [`a4a236c`](https://github.com/shopware/meteor/commit/a4a236c4ea378adbb015a699813023f72c2f1fb8) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Added optional headline and description props to the mt-loader component
+
+- [#1146](https://github.com/shopware/meteor/pull/1146) [`b358e2a`](https://github.com/shopware/meteor/commit/b358e2a38b7729289d37daa7c7fe475c8d0e9109) Thanks [@shyim](https://github.com/shyim)! - Fixed `mt-url-field` mangling IP address input. The native URL parser rewrote numeric hosts as IPv4 addresses (e.g. `192` → `0.0.0.192`), and IPv6 literals were normalized or rejected mid-typing. The field now preserves the raw host the user typed and keeps the input in sync while a partial address is still being entered.
+
+- [#1137](https://github.com/shopware/meteor/pull/1137) [`1d8ee80`](https://github.com/shopware/meteor/commit/1d8ee80c18011082c895f3222a19604985603c85) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - mt-field-error now resolves interpolation params from error.meta.parameters while continuing to support error.parameters.
+
+- [#1157](https://github.com/shopware/meteor/pull/1157) [`22a0d25`](https://github.com/shopware/meteor/commit/22a0d25d06d08d5a2560470a8d4745ba6663d56a) Thanks [@gweiermann](https://github.com/gweiermann)! - Prevent mt-number-field from normalizing the displayed decimal value while the user is editing.
+
+- Updated dependencies [[`ed965bd`](https://github.com/shopware/meteor/commit/ed965bdd41fe9972ba15319ccf0077dd14026ec2)]:
+  - @shopware-ag/meteor-icon-kit@5.8.0
+
+## 5.0.0
+
+### Minor Changes
+
+- [#1094](https://github.com/shopware/meteor/pull/1094) [`5673f08`](https://github.com/shopware/meteor/commit/5673f0839d4c074a87d5f4b852419f5467f066a5) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Add `maxDate` prop to `mt-datepicker`
+
+- [#1141](https://github.com/shopware/meteor/pull/1141) [`703eccf`](https://github.com/shopware/meteor/commit/703eccf0fba2cbd2e2091bea32a60a8dc9730380) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Add `mt-collapsible` component to component-library
+
+- [#1141](https://github.com/shopware/meteor/pull/1141) [`703eccf`](https://github.com/shopware/meteor/commit/703eccf0fba2cbd2e2091bea32a60a8dc9730380) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Add `mt-collapsible` component to component-library
+
+- [#1094](https://github.com/shopware/meteor/pull/1094) [`5673f08`](https://github.com/shopware/meteor/commit/5673f0839d4c074a87d5f4b852419f5467f066a5) Thanks [@alastair-simon](https://github.com/alastair-simon)! - upgrade `@vuepic/vue-datepicker` from v10 to v12 and migrate `mt-datepicker` to the new vue-datepicker APIs
+
+### Patch Changes
+
+- [#1061](https://github.com/shopware/meteor/pull/1061) [`d453e51`](https://github.com/shopware/meteor/commit/d453e51231ce1f3c487cfd95755d10330e9ef8e3) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Moved test and Storybook deps to devDependencies
+
+- [#1138](https://github.com/shopware/meteor/pull/1138) [`6e8cd79`](https://github.com/shopware/meteor/commit/6e8cd79e32ba63e601ad5c3e9e0575800860bcf5) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Fix `mt-entity-data-table` Storybook interaction tests by waiting on rendered table content
+
+- [#1134](https://github.com/shopware/meteor/pull/1134) [`ac54a03`](https://github.com/shopware/meteor/commit/ac54a03028e2733b1c99ec71475b3ae39890afaf) Thanks [@alastair-simon](https://github.com/alastair-simon)! - fixed failing interaction tests inside `mt-text-editor`
+
+- Updated dependencies [[`d5fe2db`](https://github.com/shopware/meteor/commit/d5fe2dbb90ca5fa9513d9fc3626548e902a660c8), [`d5fe2db`](https://github.com/shopware/meteor/commit/d5fe2dbb90ca5fa9513d9fc3626548e902a660c8)]:
+  - @shopware-ag/meteor-icon-kit@5.7.0
+
+## 4.28.6
+
+### Patch Changes
+
+- Updated dependencies [[`8bf06e1`](https://github.com/shopware/meteor/commit/8bf06e1263674c7ac16eef307b3ce94568786772)]:
+  - @shopware-ag/meteor-admin-sdk@6.9.0
+
 ## 4.28.5
 
 ### Patch Changes

@@ -1,10 +1,11 @@
 {
   "name": "@shopware-ag/meteor-component-library",
-  "version": "4.28.5",
+  "version": "5.5.0",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com:shopware/meteor.git"
+    "url": "git+https://github.com/shopware/meteor.git"
   },
+  "license": "MIT",
   "author": "shopware AG",
   "main": "dist/common/index.js",
   "module": "dist/esm/index.js",
@@ -30,7 +31,6 @@
     }
   },
   "files": [
-    "src",
     "dist"
   ],
   "sideEffects": [
@@ -53,6 +53,7 @@
     "lint:css:fix": "stylelint \"src/**/*.vue\" --fix",
     "format:check": "prettier . --check",
     "format": "prettier --write .",
+    "dev": "npm run storybook",
     "storybook": "storybook dev -p 6006",
     "build:storybook": "storybook build",
     "test:storybook": "test-storybook",
@@ -66,9 +67,6 @@
     "@shopware-ag/meteor-admin-sdk": "workspace:*",
     "@shopware-ag/meteor-icon-kit": "workspace:*",
     "@shopware-ag/meteor-tokens": "workspace:*",
-    "@storybook/addon-a11y": "^8.6.15",
-    "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/vue": "^8.1.0",
     "@tiptap/extension-bubble-menu": "^2.22.3",
     "@tiptap/extension-bullet-list": "^2.22.3",
     "@tiptap/extension-character-count": "^2.22.3",
@@ -91,7 +89,7 @@
     "@tiptap/pm": "^2.22.3",
     "@tiptap/starter-kit": "^2.22.3",
     "@tiptap/vue-3": "^2.22.3",
-    "@vuepic/vue-datepicker": "^10.0.0",
+    "@vuepic/vue-datepicker": "^12.1.0",
     "@vueuse/components": "^12.4.0",
     "@vueuse/core": "^13.1.0",
     "apexcharts": "^5.2.0",
@@ -102,7 +100,6 @@
     "diff": "^8.0.2",
     "dompurify": "^3.2.4",
     "focus-trap": "^7.6.4",
-    "inter-ui": "^3.19.3",
     "js-beautify": "^1.15.4",
     "nanoid": "^5.0.7",
     "reka-ui": "^2.6.0",
@@ -117,10 +114,12 @@
     "@size-limit/esbuild": "^11.2.0",
     "@size-limit/esbuild-why": "^11.2.0",
     "@size-limit/file": "^11.2.0",
+    "@storybook/addon-a11y": "^8.6.15",
     "@storybook/addon-essentials": "^8.6.15",
     "@storybook/addon-interactions": "^8.6.15",
     "@storybook/addon-links": "^8.6.15",
-    "@storybook/blocks": "^8.6.15",
+    "@storybook/components": "^8.6.15",
+    "@storybook/icons": "^1.2.12",
     "@storybook/manager-api": "^8.6.15",
     "@storybook/preview-api": "^8.6.15",
     "@storybook/test": "^8.6.15",
@@ -129,7 +128,9 @@
     "@storybook/types": "^8.6.15",
     "@storybook/vue3": "^8.6.15",
     "@storybook/vue3-vite": "^8.6.15",
+    "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/user-event": "^14.6.1",
+    "@testing-library/vue": "^8.1.0",
     "@tsconfig/node18": "^18.2.2",
     "@types/convert-units": "^2.3.11",
     "@types/jsdom": "^21.1.3",
@@ -147,6 +148,7 @@
     "flush-promises": "^1.0.2",
     "globals": "^16.0.0",
     "http-server": "^14.1.1",
+    "inter-ui": "^3.19.3",
     "jest-image-snapshot": "^6.4.0",
     "jsdom": "^26.1.0",
     "npm-run-all2": "^6.1.1",
@@ -155,7 +157,6 @@
     "sass": "^1.69.5",
     "size-limit": "^11.2.0",
     "storybook": "^8.6.15",
-    "storybook-dark-mode": "^4.0.2",
     "stylelint": "^16.26.1",
     "stylelint-config-standard-scss": "^13.1.0",
     "stylelint-define-config": "^1.8.0",
@@ -169,8 +170,5 @@
     "vite-plugin-svgstring": "^1.0.0",
     "vitest": "^3.0.5",
     "vue-tsc": "^2.2.4"
-  },
-  "peerDependencies": {
-    "@shopware-ag/meteor-icon-kit": "workspace:*"
   }
 }

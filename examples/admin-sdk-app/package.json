@@ -1,11 +1,11 @@
 {
   "name": "meteor-admin-sdk-app",
-  "version": "1.0.70",
+  "version": "1.0.79",
   "private": true,
   "description": "",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com:shopware/meteor.git"
+    "url": "git+https://github.com/shopware/meteor.git"
   },
   "license": "MIT",
   "author": "shopware AG",

@@ -33,7 +33,7 @@ module.exports = [
   {
     path: "dist/esm/MtCard.js",
     name: "MtCard direct import",
-    limit: "210 kb",
+    limit: "215 kb",
     ignore: ignore,
   },
   {
@@ -47,7 +47,7 @@ module.exports = [
     path: "dist/esm/index.js",
     import: "{ MtTextEditor }",
     name: "MtTextEditor",
-    limit: "800 kb",
+    limit: "805 kb",
     ignore: ignore,
   },
   {

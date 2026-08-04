@@ -3,12 +3,17 @@ import { mergeConfig } from "vite";
 import path from "path";
 
 const config: StorybookConfig = {
-  stories: ["../src/**/*.mdx", "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
+  stories: ["../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
   addons: [
     "@storybook/addon-links",
-    "@storybook/addon-essentials",
+    {
+      name: "@storybook/addon-essentials",
+      options: {
+        backgrounds: false,
+        outline: false,
+      },
+    },
     "@storybook/addon-interactions",
-    "storybook-dark-mode",
     "@storybook/addon-a11y",
   ],
   framework: {
@@ -20,7 +25,6 @@ const config: StorybookConfig = {
     return mergeConfig(config, {
       resolve: {
         alias: {
-          // Ensure /node_modules/ paths resolve correctly in both dev and build
           "/node_modules": path.resolve(__dirname, "../node_modules"),
         },
       },

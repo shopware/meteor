@@ -1,4 +1,4 @@
-import MtIcon from "../components/icons-media/mt-icon/mt-icon.vue";
+import MtIcon from "../components/mt-icon/mt-icon.vue";
 import TooltipDirective from "./tooltip.directive";
 import type { SlottedMeta } from "@/_internal/story-helper";
 import { defineComponent } from "vue";

@@ -1,5 +1,91 @@
 ---
 title: "API Reference"
 nav:
-  position: 50
+  position: 40
 ---
+
+# API Reference
+
+The Meteor Admin SDK provides APIs for extending the Shopware Administration UI and interacting with Administration data.
+
+These APIs allow extensions to add user interface elements, access and modify entity data, register CMS blocks and elements, and share state between components.
+
+Use the sections below to navigate the available APIs.
+
+## Extending the UI
+
+These components allow extensions to add UI elements to the Shopware Administration. They can be used to register modules, add navigation entries, extend existing pages, and display dialogs or side panels.
+
+Typical use cases include:
+
+- Creating custom modules in the Administration
+- Extending entity detail pages
+- Adding navigation or settings entries
+- Displaying modals or contextual UI elements
+
+UI extension components in this section include:
+
+- [Main Module](./ui/mainModule.md)
+- [Menu](./ui/menu.md)
+- [Settings Item](./ui/settingsItem.md)
+- [Action Button](./ui/actionButton.md)
+- [Notification](./ui/notification.md)
+- [Toast](./ui/toast.md)
+- [Tabs](./ui/tabs.md)
+- [Component Sections](./ui/component-sections.md)
+- [Sidebars](./ui/sidebars.md)
+- [Modals](./ui/modals.md)
+- [Media Modal](./ui/mediaModal.md)
+
+**Purchases and payments**
+
+- [In-App Purchases](./ui/purchases-and-payments/in-app-purchases.md): Start an in-app purchase flow
+- [Payment Overview Card](./ui/purchases-and-payments/paymentOverviewCard.md): Customize payment method cards
+
+## Working with Data
+
+These tools allow extensions to access and manipulate Shopware entity data from within the Administration.
+
+They follow the same repository-based data access pattern used internally by the Administration.
+
+Typical workflows include:
+
+- Accessing entity repositories
+- Retrieving entity data
+- Subscribing to changes
+- Updating or persisting entities
+
+Tools this section include:
+
+- [Repository](./data/repository.md): Access Shopware entity repositories
+- [Get](./data/get.md)
+- [Subscribe](./data/subscribe.md)
+- [Update](./data/update.md)
+
+## Composable APIs
+
+Composable APIs provide reusable helpers for working with the Administration state and data layer inside extensions.
+
+They simplify common patterns such as accessing repositories or sharing state between components.
+
+APIs in this section include:
+
+- [useRepository](./composables/useRepository.md)
+- [useSharedState](./composables/useSharedState.md)
+
+## Extending the CMS
+
+These APIs allow extensions to add new CMS blocks and elements to the Shopware Shopping Experiences editor.
+
+They can be used to introduce custom content components that merchants can use when building storefront pages.
+
+APIs in this section include:
+
+- [Register CMS Block](./cms/registerCmsBlock.md)
+- [Register CMS Element](./cms/registerCmsElement.md)
+
+## Shared Options
+
+Some SDK APIs support shared configuration options that control how actions are executed in the Administration.
+
+- [Base Options](./base-options.md)

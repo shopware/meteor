@@ -1,19 +1,32 @@
+---
+title: "Positions"
+nav:
+  position: 40
+---
+
+
 # Positions
 
-Extension developer can extend existing areas or create new areas in the administration. It is so flexible that there are way to many Id's to remember. To identify the positions which the developer want to extend we need a unique ID for every position. These Id's are the `positionId`s.
+Positions define where UI components can be injected into the Shopware Administration.
 
-### Example:
+Each extendable area exposes a unique `positionId`. Extensions use this identifier to tell the Administration where a UI component or extension should be rendered.
 
-A extension wants to add a new tab item to a tab-bar. In the administration are
-many tab-bars available. So the developer needs to choose the correct `positionId` to tell the admin which tab-bar should be extended. In this example the developer adds a new tab item to the tab-bar in the product detail page.
+Extension developers can extend existing areas or create new areas in the Administration. Memorizing all available `positionId`s is impractical. Instead, the SDK provides tooling to help discover them dynamically.
+
+## Example
+
+Suppose an extension wants to add a new tab to the product detail page. The extension must target the correct `positionId` for the tab bar.
+
 ```js
 sw.ui.tabs('sw-product-detail').addTabItem({ ... })
 ```
 
+In this example, `sw-product-detail` is the `positionId` that identifies the tab bar in the product detail page.
 
-### Vue Devtools Plugin for finding the PositionId's
-It is impossible to create a list of all potential position Id's. And they would be hard to manage. To solve this problem the SDK provides a custom plugin for the Vue Devtools. It makes identifying the position Id's very easy.
+## Finding position IDs with Vue DevTools
 
-Just open the plugin in the Devtools (It is available directly when you open the Administration). Then you can see all positions at the current administration view which are available for extending. If you click at one position Id you get more information about it. Like the property in the meteor-admin-sdk so that you directly know what functionality this position has.
+Because the number of available positions is large and varies across views, the Meteor Admin SDK provides a plugin for [Vue DevTools](../develop/devtools.md) to help discover them.
 
-In summary: the Devtool plugin provides a visual way to see which parts can be extended and what are the positionIDs for the extension position. You can find a detailed guide in the tooling section of this documentation: [Vue Devtools](../tooling/vue-devtools.md)
+Open the plugin in the Administration. When the DevTools plugin is open, it shows all extendable positions for the current Administration view. Selecting a position displays additional information, including the corresponding SDK API that can be used to extend it.
+
+This provides a visual way to identify which parts of the Administration can be extended and which positionId should be used.

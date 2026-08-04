@@ -40,6 +40,7 @@ describe('Private Service Payment', () => {
   let mockModalClose: jest.Mock;
   let mockLocationStartAutoResizer: jest.Mock;
   let mockGetAppInformation: jest.Mock;
+  let mockGetShopId: jest.Mock;
   let eventListeners: Map<string, Set<EventListener>>;
   let mockModalOpen: jest.Mock;
 
@@ -84,6 +85,10 @@ describe('Private Service Payment', () => {
     });
     (context.getAppInformation as jest.Mock) = mockGetAppInformation;
 
+    // Mock context.getShopId
+    mockGetShopId = jest.fn().mockResolvedValue('shop-id-123');
+    (context.getShopId as jest.Mock) = mockGetShopId;
+
     // Clear all mocks
     jest.clearAllMocks();
     mockBroadcastChannelInstance.addEventListener.mockClear();
@@ -126,7 +131,7 @@ describe('Private Service Payment', () => {
         expect(mockGetAppInformation).toHaveBeenCalledTimes(1);
         expect(result.iframeEl).toBeInstanceOf(HTMLIFrameElement);
         expect(result.iframeEl.src).toBe(
-          'https://example.com/payment?service-name=test-app&service-version=1.0.0&shop-url=https://shop.example.com&sw-version=6.5.0&sw-user-language=en-GB&shop-plan=beyond'
+          'https://example.com/payment?service-name=test-app&service-version=1.0.0&shop-url=https://shop.example.com&sw-version=6.5.0&sw-user-language=en-GB&shop-plan=beyond&shop-id=shop-id-123'
         );
         expect(container.contains(result.iframeEl)).toBe(true);
       });
@@ -153,8 +158,16 @@ describe('Private Service Payment', () => {
         const result = await addPaymentIframe(container, baseUrl, options);
 
         expect(result.iframeEl.src).toBe(
-          'https://example.com/payment?service-name=test-app&service-version=1.0.0&shop-url=https://license-aud.shop.example.com&sw-version=6.5.0&sw-user-language=en-GB&shop-plan=premium'
+          'https://example.com/payment?service-name=test-app&service-version=1.0.0&shop-url=https://license-aud.shop.example.com&sw-version=6.5.0&sw-user-language=en-GB&shop-plan=premium&shop-id=shop-id-123'
         );
+      });
+
+      it('should default shop-id to an empty value when getShopId returns null', async () => {
+        mockGetShopId.mockResolvedValue(null);
+        const result = await addPaymentIframe(container, baseUrl, options);
+
+        expect(mockGetShopId).toHaveBeenCalledTimes(1);
+        expect(result.iframeEl.src.endsWith('&shop-id=')).toBe(true);
       });
 
       it('should append iframe to the provided element', async () => {

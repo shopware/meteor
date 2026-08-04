@@ -8,3 +8,16 @@ packages:
 
 onlyBuiltDependencies:
   - esbuild
+
+overrides:
+  "parse-url>@types/parse-path": "-"
+  "vue@^3.0.0": 3.5.13
+  "@vue/compiler-core@^3.0.0": 3.5.13
+  "@vue/compiler-dom@^3.0.0": 3.5.13
+  "@vue/compiler-sfc@^3.0.0": 3.5.13
+  "@vue/compiler-ssr@^3.0.0": 3.5.13
+  "@vue/reactivity@^3.0.0": 3.5.13
+  "@vue/runtime-core@^3.0.0": 3.5.13
+  "@vue/runtime-dom@^3.0.0": 3.5.13
+  "@vue/server-renderer@^3.0.0": 3.5.13
+  "@vue/shared@^3.0.0": 3.5.13

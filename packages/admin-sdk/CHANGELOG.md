@@ -1,5 +1,29 @@
 # Changelog
 
+## 6.11.0
+
+### Minor Changes
+
+- [#1284](https://github.com/shopware/meteor/pull/1284) [`2875130`](https://github.com/shopware/meteor/commit/2875130e4b0f582daf95a05d2b33e64f68197e75) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Apps now follow the Administration color theme automatically: on startup the SDK mirrors the resolved theme onto the document root's `data-theme` attribute and keeps it in sync, so theme-aware styles (e.g. Meteor tokens) work without any app code changes. Apps that declare `data-theme` themselves are left untouched. For explicit control, the Context API exposes `context.getTheme()`, `context.subscribeTheme()`, and `context.syncTheme()`.
+
+## 6.10.0
+
+### Minor Changes
+
+- [#1270](https://github.com/shopware/meteor/pull/1270) [`0d8dde1`](https://github.com/shopware/meteor/commit/0d8dde13640bf8c703e779b5e7a7fa80458185fa) Thanks [@socrec](https://github.com/socrec)! - Add an optional `visible` flag to `ui.tabs().addTabItem()` so an extension can register its tab hidden, and a new `ui.tabs().setVisibility()` method to show or hide it afterwards. When `visible` is omitted the tab is shown, so existing extensions are unaffected.
+
+## 6.9.1
+
+### Patch Changes
+
+- [#1243](https://github.com/shopware/meteor/pull/1243) [`9eb0c3d`](https://github.com/shopware/meteor/commit/9eb0c3d2fd496c704a63d87f73c370ade5084942) Thanks [@quynhnguyen68](https://github.com/quynhnguyen68)! - Changed `addPaymentIframe` to add `shopId` parameter to iframe url.
+
+## 6.9.0
+
+### Minor Changes
+
+- [#1125](https://github.com/shopware/meteor/pull/1125) [`8bf06e1`](https://github.com/shopware/meteor/commit/8bf06e1263674c7ac16eef307b3ce94568786772) Thanks [@quando1910](https://github.com/quando1910)! - Add uiSidebarSetActive type and sender to sidebar module.
+
 ## 6.8.0
 
 ### Minor Changes

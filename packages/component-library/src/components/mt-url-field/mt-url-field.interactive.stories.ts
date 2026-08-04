@@ -1,0 +1,176 @@
+import { expect, fn, userEvent, within } from "@storybook/test";
+import MtUrlField from "./mt-url-field.vue";
+import meta, { type MtUrlFieldMeta, type MtUrlFieldStory } from "./mt-url-field.stories";
+import { waitUntil } from "@/_internal/test-helper";
+
+export default {
+  ...meta,
+  title: "Components/URL Field/Interaction tests",
+  tags: ["!autodocs"],
+} as MtUrlFieldMeta;
+
+export const VisualTestFocused: MtUrlFieldStory = {
+  name: "Focused",
+  args: {
+    modelValue: "https://example.com",
+  },
+  async play({ canvasElement }) {
+    const canvas = within(canvasElement);
+
+    await userEvent.click(canvas.getByRole("textbox"));
+  },
+};
+
+export const VisualTestPlaceholder: MtUrlFieldStory = {
+  name: "With placeholder",
+  args: {
+    placeholder: "Placeholder",
+  },
+};
+
+export const VisualTestRequired: MtUrlFieldStory = {
+  name: "Required",
+  args: {
+    required: true,
+  },
+};
+
+export const VisualTestHttps: MtUrlFieldStory = {
+  name: "shows HTTPS mode",
+  args: {
+    modelValue: "https://example.com",
+  },
+};
+
+export const VisualTestHttp: MtUrlFieldStory = {
+  name: "shows HTTP mode",
+  args: {
+    modelValue: "http://example.com",
+  },
+};
+
+export const VisualTestDisabled: MtUrlFieldStory = {
+  name: "Disabled",
+  args: {
+    modelValue: "https://example.com",
+    disabled: true,
+  },
+};
+
+export const VisualTestLinkedInheritance: MtUrlFieldStory = {
+  name: "Linked inheritance",
+  args: {
+    modelValue: "https://example.com",
+    isInheritanceField: true,
+    isInherited: true,
+  },
+};
+
+export const VisualTestUnlinkedInheritance: MtUrlFieldStory = {
+  name: "Linked inheritance",
+  args: {
+    modelValue: "https://example.com",
+    isInheritanceField: true,
+    isInherited: false,
+  },
+};
+
+export const VisualTestSuffix: MtUrlFieldStory = {
+  name: "With suffix",
+  args: {
+    modelValue: "https://example.com",
+    suffix: "suffix",
+  },
+};
+
+export const VisualTestError: MtUrlFieldStory = {
+  name: "Error",
+  args: {
+    modelValue: "https://example.com",
+    error: {
+      detail: "This is an error",
+    },
+  },
+};
+
+export const VisualTestSmall: MtUrlFieldStory = {
+  name: "Small",
+  args: {
+    modelValue: "https://example.com",
+    size: "small",
+  },
+};
+
+export const VisualTestHelpText: MtUrlFieldStory = {
+  name: "Helptext",
+  args: {
+    modelValue: "https://example.com",
+    helpText: "This is help text",
+  },
+};
+
+export const VisualTestCopyToClipboard: MtUrlFieldStory = {
+  name: "Copy to clipboard",
+  args: {
+    modelValue: "https://www.example.com",
+    copyable: true,
+  },
+  async play({ canvasElement }) {
+    const handler = fn();
+    navigator.clipboard.writeText = handler;
+
+    const canvas = within(canvasElement);
+
+    await userEvent.click(canvas.getByRole("button", { name: "Copy URL to clipboard" }));
+  },
+};
+
+export const changeModelValueFromOutside: MtUrlFieldStory = {
+  name: "Change modelValue from outside",
+  args: {
+    modelValue: "https://initial.com",
+  },
+  async play({ args, canvasElement }) {
+    const canvas = within(canvasElement);
+
+    // Verify initial value
+    const input = canvas.getByRole("textbox") as HTMLInputElement;
+    expect(input.value).toBe("initial.com");
+
+    // Change the modelValue from outside
+    args.modelValue = "https://changed.com";
+    await waitUntil(() => input.value === "changed.com");
+    expect(input.value).toBe("changed.com");
+  },
+};
+
+export const VisualTestHintProp: MtUrlFieldStory = {
+  name: "Should display hint via prop",
+  args: {
+    hint: "Hint via prop",
+  },
+  render: (args) => ({
+    components: { MtUrlField },
+    setup: () => ({ args }),
+    template: `<mt-url-field :label="args.label" :hint="args.hint" />`,
+  }),
+  play: ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getByText("Hint via prop")).toBeDefined();
+  },
+};
+
+export const VisualTestHintSlot: MtUrlFieldStory = {
+  name: "Should display hint via slot",
+  render: (args) => ({
+    components: { MtUrlField },
+    setup: () => ({ args }),
+    template: `<mt-url-field :label="args.label"><template #hint>Hint via slot</template></mt-url-field>`,
+  }),
+  play: ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getByText("Hint via slot")).toBeDefined();
+  },
+};

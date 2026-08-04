@@ -1,0 +1,83 @@
+/*
+ * Meteor global styles re-provided for the docs.
+ *
+ * The component library ships a global styles.css, but the docs intentionally
+ * do NOT load it: its global element resets conflict with the docs typography.
+ * Each meteor component imports its own CSS, so component styling works without
+ * it. A handful of rules, however, live ONLY in styles.css and are not imported
+ * by any individual component, so they go missing here. This file re-provides
+ * exactly those rules.
+ *
+ * When a component surfaces another missing global, add the minimal rule below
+ * (with a pointer to its source in the library) rather than loading the full
+ * styles.css.
+ */
+
+/* Screen-reader-only utility. Without it, visually-hidden a11y labels (e.g. in
+ * mt-pagination) render on screen.
+ * Source: src/components/assets/css/utils.css */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+/* The v-tooltip directive appends a .mt-tooltip element to <body>, so its
+ * styling cannot come from a component. Without these, tooltips (e.g. the
+ * mt-text-editor toolbar) show their text but no background/padding. Only the
+ * "dark" appearance is re-provided since that is the directive's default and
+ * the only one the docs use.
+ * Source: src/components/assets/scss/directives/tooltip.css */
+.mt-tooltip {
+  position: absolute;
+  z-index: 1100;
+}
+
+.mt-tooltip--dark {
+  background-color: var(--color-elevation-floating-default);
+  border-radius: var(--border-radius-xs);
+  color: var(--color-text-primary-inverse);
+  padding: 12px 16px;
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+  font-family: var(--font-family-body);
+  word-wrap: break-word;
+
+  &::before {
+    content: "";
+    position: absolute;
+    height: 8px;
+    width: 8px;
+    transform: rotate(45deg);
+    background: var(--color-elevation-floating-default);
+  }
+
+  &.mt-tooltip--top::before {
+    bottom: -4px;
+    margin-left: -4px;
+    left: 50%;
+  }
+
+  &.mt-tooltip--bottom::before {
+    top: -4px;
+    margin-left: -4px;
+    left: 50%;
+  }
+
+  &.mt-tooltip--left::before {
+    top: 50%;
+    margin-top: -4px;
+    right: -4px;
+  }
+
+  &.mt-tooltip--right::before {
+    top: 50%;
+    margin-top: -4px;
+    left: -4px;
+  }
+}
