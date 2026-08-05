@@ -1,5 +1,16 @@
 # Changelog
 
+## 5.6.0
+
+### Minor Changes
+
+- [#1139](https://github.com/shopware/meteor/pull/1139) [`26f46b6`](https://github.com/shopware/meteor/commit/26f46b611d5b1e72d28af816b50b2ee2a416017d) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Add an optional `hint` prop to all form fields for rendering a caption below the field. The existing `#hint` slot still works and takes precedence. Hint content now renders with a consistent info-icon style, which also applies to existing `#hint` slot usage.
+
+### Patch Changes
+
+- Updated dependencies [[`579d59a`](https://github.com/shopware/meteor/commit/579d59ad92b44e58d3a800b93489f6e15e5b7ae3)]:
+  - @shopware-ag/meteor-admin-sdk@6.12.0
+
 ## 5.5.0
 
 ### Minor Changes

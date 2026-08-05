@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.12.0
+
+### Minor Changes
+
+- [#1306](https://github.com/shopware/meteor/pull/1306) [`579d59a`](https://github.com/shopware/meteor/commit/579d59ad92b44e58d3a800b93489f6e15e5b7ae3) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Inside app iframes the SDK now marks the document root with a `data-embedded` attribute and unsets the body background, so embedded apps no longer paint an opaque light background over dark Administration themes. Documents that already declare `data-embedded` keep their own value. The theme sync additionally mirrors the resolved theme onto the document root's `color-scheme`, which keeps embedded iframes transparent (a color-scheme mismatch makes the browser paint an opaque backdrop behind the iframe).
+
 ## 6.11.0
 
 ### Minor Changes
