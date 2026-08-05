@@ -31,10 +31,13 @@ jobs:
         uses: actions/checkout@v6
         with:
           ref: ${{ github.head_ref }}
+          fetch-depth: 0
         if: ${{ github.event.pull_request.head.repo.full_name == 'shopware/meteor' }}
 
       - name: Checkout
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
         if: ${{ github.event.pull_request.head.repo.full_name != 'shopware/meteor' }}
 
       - uses: pnpm/action-setup@v4
@@ -49,6 +52,15 @@ jobs:
 
       - name: Validate changesets package names
         run: pnpm run validate:changesets
+
+      - name: Validate docs redirects
+        run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            pnpm run validate:docs-redirects -- origin/${{ github.base_ref }}
+            exit 0
+          fi
+
+          pnpm run validate:docs-redirects
 
       - name: Build packages
         run: pnpm turbo run build
