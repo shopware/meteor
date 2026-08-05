@@ -10,14 +10,7 @@ const redirectsFile = path.join(docsRoot, "docs.yml");
 const docsRootRepoPath = "docs/admin-sdk";
 
 function stripQuotes(value) {
-  if (
-    (value.startsWith('"') && value.endsWith('"')) ||
-    (value.startsWith("'") && value.endsWith("'"))
-  ) {
-    return value.slice(1, -1);
-  }
-
-  return value;
+  return value.replace(/^(['"])(.*)\1$/, "$2");
 }
 
 /**
