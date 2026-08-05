@@ -44,6 +44,7 @@ describe('context theme', () => {
   afterEach(() => {
     cleanups.splice(0).forEach((remove) => remove());
     delete document.documentElement.dataset.theme;
+    document.documentElement.style.removeProperty('color-scheme');
   });
 
   it('gets the current resolved theme', async () => {
@@ -87,10 +88,12 @@ describe('context theme', () => {
 
     track(await syncTheme());
     expect(document.documentElement.dataset.theme).toBe('dark');
+    expect(document.documentElement.style.getPropertyValue('color-scheme')).toBe('dark');
 
     publish('contextTheme', 'light');
     await flushPromises();
     expect(document.documentElement.dataset.theme).toBe('light');
+    expect(document.documentElement.style.getPropertyValue('color-scheme')).toBe('light');
   });
 
   it('syncs the theme to a custom target element', async () => {
@@ -100,6 +103,7 @@ describe('context theme', () => {
     track(await syncTheme({ target }));
 
     expect(target.dataset.theme).toBe('light');
+    expect(target.style.getPropertyValue('color-scheme')).toBe('light');
     expect(document.documentElement.dataset.theme).toBeUndefined();
   });
 
