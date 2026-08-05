@@ -20,6 +20,16 @@ function stripQuotes(value) {
   return value;
 }
 
+/**
+ * Normalize a redirect source or target and reject values the docs
+ * pipeline cannot serve: absolute paths, external URLs, query strings,
+ * hashes, and paths escaping docs/admin-sdk.
+ * @param {string} value - Raw value as written in docs.yml
+ * @param {number} lineNumber - Line in docs.yml, used in error messages
+ * @param {"source"|"target"} label - Which side of the redirect is parsed
+ * @returns {string} Normalized POSIX-style relative path
+ * @throws {Error} When the value is invalid
+ */
 function normalizeRedirectValue(value, lineNumber, label) {
   const normalizedValue = stripQuotes(value.trim()).replace(/\\/g, "/");
 
@@ -48,6 +58,12 @@ function normalizeRedirectValue(value, lineNumber, label) {
   return safePath;
 }
 
+/**
+ * Parse the flat "redirects:" mapping from docs.yml with a minimal
+ * line-based parser, so the script runs without any YAML dependency.
+ * Parse errors are collected instead of aborting on the first one.
+ * @returns {{entries: Array<{lineNumber: number, source: string, target: string}>, errors: string[]}}
+ */
 function parseRedirects() {
   if (!fs.existsSync(redirectsFile)) {
     throw new Error(`Redirect config not found: ${redirectsFile}`);
@@ -107,6 +123,11 @@ function parseRedirects() {
   return { entries, errors };
 }
 
+/**
+ * Recursively collect all file paths below a directory.
+ * @param {string} dirPath - Absolute directory to walk
+ * @returns {string[]} Absolute file paths
+ */
 function walkFiles(dirPath) {
   const files = [];
 
@@ -132,6 +153,12 @@ function walkFiles(dirPath) {
   return files;
 }
 
+/**
+ * Index the docs content redirect targets are validated against.
+ * `currentPages` holds the public .html paths derived from .md files,
+ * `currentFiles` holds every file (e.g. assets) relative to docs/admin-sdk.
+ * @returns {{currentFiles: Set<string>, currentPages: Set<string>}}
+ */
 function collectDocsFiles() {
   const relativeFiles = walkFiles(docsRoot).map((filePath) =>
     path.relative(docsRoot, filePath).split(path.sep).join("/")
@@ -147,6 +174,15 @@ function collectDocsFiles() {
   };
 }
 
+/**
+ * Validate parsed redirect entries: no duplicate or self-referencing
+ * sources, sources must no longer exist as pages, and every target must
+ * resolve to an existing page (.html) or file — not to another redirect.
+ * @param {Array<{lineNumber: number, source: string, target: string}>} entries
+ * @param {Set<string>} currentPages - Public .html paths of existing pages
+ * @param {Set<string>} currentFiles - All existing files in docs/admin-sdk
+ * @returns {string[]} Human-readable validation errors
+ */
 function validateRedirectEntries(entries, currentPages, currentFiles) {
   const errors = [];
   const seenSources = new Map();
@@ -196,6 +232,13 @@ function validateRedirectEntries(entries, currentPages, currentFiles) {
   return errors;
 }
 
+/**
+ * Map a repo path from git output to the public .html path used in
+ * docs.yml, e.g. "docs/admin-sdk/concepts/foo.md" -> "concepts/foo.html".
+ * @param {string} repoPath - Path relative to the repository root
+ * @returns {string|null} Public path, or null for files outside
+ *   docs/admin-sdk or non-markdown files
+ */
 function repoPathToPublicPath(repoPath) {
   const normalizedPath = repoPath.replace(/\\/g, "/");
   const relativePath = path.posix.relative(docsRootRepoPath, normalizedPath);
@@ -212,6 +255,13 @@ function repoPathToPublicPath(repoPath) {
   return relativePath.replace(/\.md$/, ".html");
 }
 
+/**
+ * Diff docs/admin-sdk against a base ref (merge-base semantics via
+ * "baseRef...HEAD") and return the public paths of markdown pages that
+ * were deleted or renamed away — the pages that now need a redirect.
+ * @param {string} baseRef - Git ref to compare against, e.g. "origin/main"
+ * @returns {string[]} Sorted public paths of removed pages
+ */
 function findRemovedMarkdownPages(baseRef) {
   try {
     const output = execFileSync(
@@ -265,6 +315,13 @@ function findRemovedMarkdownPages(baseRef) {
   }
 }
 
+/**
+ * Report every removed page that has no redirect entry pointing away
+ * from its old location.
+ * @param {string[]} removedPages - Public paths of removed pages
+ * @param {Array<{source: string}>} entries - Parsed redirect entries
+ * @returns {string[]} Human-readable validation errors
+ */
 function validateRemovedPagesHaveRedirects(removedPages, entries) {
   const errors = [];
   const redirectSources = new Set(entries.map((entry) => entry.source));
