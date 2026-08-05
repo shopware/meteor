@@ -85,45 +85,21 @@ function parseRedirects() {
 }
 
 /**
- * Recursively collect all file paths below a directory.
- * @param {string} dirPath - Absolute directory to walk
- * @returns {string[]} Absolute file paths
- */
-function walkFiles(dirPath) {
-  const files = [];
-
-  if (!fs.existsSync(dirPath) || !fs.statSync(dirPath).isDirectory()) {
-    return files;
-  }
-
-  const entries = fs.readdirSync(dirPath, { withFileTypes: true });
-
-  for (const entry of entries) {
-    const fullPath = path.join(dirPath, entry.name);
-
-    if (entry.isDirectory()) {
-      files.push(...walkFiles(fullPath));
-      continue;
-    }
-
-    if (entry.isFile()) {
-      files.push(fullPath);
-    }
-  }
-
-  return files;
-}
-
-/**
  * Index the docs content redirect targets are validated against.
  * `currentPages` holds the public .html paths derived from .md files,
  * `currentFiles` holds every file (e.g. assets) relative to docs/admin-sdk.
  * @returns {{currentFiles: Set<string>, currentPages: Set<string>}}
  */
 function collectDocsFiles() {
-  const relativeFiles = walkFiles(docsRoot).map((filePath) =>
-    path.relative(docsRoot, filePath).split(path.sep).join("/")
-  );
+  const relativeFiles = fs
+    .readdirSync(docsRoot, { withFileTypes: true, recursive: true })
+    .filter((entry) => entry.isFile())
+    .map((entry) =>
+      path
+        .relative(docsRoot, path.join(entry.parentPath, entry.name))
+        .split(path.sep)
+        .join("/")
+    );
 
   return {
     currentFiles: new Set(relativeFiles),
