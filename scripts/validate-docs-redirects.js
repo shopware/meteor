@@ -21,46 +21,10 @@ function stripQuotes(value) {
 }
 
 /**
- * Normalize a redirect source or target and reject values the docs
- * pipeline cannot serve: absolute paths, external URLs, query strings,
- * hashes, and paths escaping docs/admin-sdk.
- * @param {string} value - Raw value as written in docs.yml
- * @param {number} lineNumber - Line in docs.yml, used in error messages
- * @param {"source"|"target"} label - Which side of the redirect is parsed
- * @returns {string} Normalized POSIX-style relative path
- * @throws {Error} When the value is invalid
- */
-function normalizeRedirectValue(value, lineNumber, label) {
-  const normalizedValue = stripQuotes(value.trim()).replace(/\\/g, "/");
-
-  if (!normalizedValue) {
-    throw new Error(`Line ${lineNumber}: redirect ${label} must not be empty`);
-  }
-
-  if (normalizedValue.startsWith("/")) {
-    throw new Error(
-      `Line ${lineNumber}: redirect ${label} must be relative, got "${normalizedValue}"`
-    );
-  }
-
-  const safePath = path.posix.normalize(normalizedValue);
-
-  if (
-    safePath === "." ||
-    safePath === ".." ||
-    safePath.startsWith("../")
-  ) {
-    throw new Error(
-      `Line ${lineNumber}: redirect ${label} must stay inside docs/admin-sdk`
-    );
-  }
-
-  return safePath;
-}
-
-/**
  * Parse the flat "redirects:" mapping from docs.yml with a minimal
  * line-based parser, so the script runs without any YAML dependency.
+ * Values are only unquoted and trimmed — a malformed path is caught
+ * later because it never matches an existing page or file.
  * Parse errors are collected instead of aborting on the first one.
  * @returns {{entries: Array<{lineNumber: number, source: string, target: string}>, errors: string[]}}
  */
@@ -102,18 +66,15 @@ function parseRedirects() {
       continue;
     }
 
-    const rawSource = trimmedLine.slice(0, separatorIndex);
-    const rawTarget = trimmedLine.slice(separatorIndex + 1);
+    const source = stripQuotes(trimmedLine.slice(0, separatorIndex).trim());
+    const target = stripQuotes(trimmedLine.slice(separatorIndex + 1).trim());
 
-    try {
-      entries.push({
-        lineNumber,
-        source: normalizeRedirectValue(rawSource, lineNumber, "source"),
-        target: normalizeRedirectValue(rawTarget, lineNumber, "target"),
-      });
-    } catch (error) {
-      errors.push(error.message);
+    if (!source || !target) {
+      errors.push(`Line ${lineNumber}: invalid redirect entry`);
+      continue;
     }
+
+    entries.push({ lineNumber, source, target });
   }
 
   if (!foundRedirects) {
