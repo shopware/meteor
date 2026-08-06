@@ -14,6 +14,7 @@ export const compareIsShopwareVersion = getCompareIsShopwareVersion(getShopwareV
 export const getUserInformation = createSender('contextUserInformation', {});
 export const getUserTimezone = createSender('contextUserTimezone', {});
 export const getAppInformation = createSender('contextAppInformation', {});
+export const isService = createSender('contextIsService', {});
 export const can = createACLHelper(getAppInformation);
 export const getModuleInformation = createSender('contextModuleInformation', {});
 export const getShopId = createSender('contextShopId', {});
@@ -151,4 +152,8 @@ export type contextShopId = {
  */
 export type contextTheme = {
   responseType: 'light' | 'dark',
+}
+
+export type contextIsService = {
+  responseType: boolean,
 }
