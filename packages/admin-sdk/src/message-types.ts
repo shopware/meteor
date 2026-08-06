@@ -13,6 +13,7 @@ import type {
   contextUserTimezone,
   contextShopId,
   contextTheme,
+  contextIsService,
 } from './context';
 import type { uiComponentSectionRenderer } from './ui/component-section/index';
 import type { uiTabsAddTabItem, uiTabsSetVisibility } from './ui/tabs';
@@ -71,6 +72,7 @@ export interface ShopwareMessageTypes {
   contextUserTimezone: contextUserTimezone,
   contextAppInformation: contextAppInformation,
   contextModuleInformation: contextModuleInformation,
+  contextIsService: contextIsService,
   contextShopId: contextShopId,
   contextTheme: contextTheme,
   getPageTitle: getPageTitle,
@@ -120,6 +122,7 @@ export interface ShopwareMessageTypes {
   consentStatus: consentStatus,
   consentRequest: consentRequest,
   consentRequestResponse: consentRequestResponse,
+  servicePermissionGrant: servicePermissionGrant,
   __function__: __function__,
   __registerWindow__: __registerWindow__,
   _multiply: _multiply,
@@ -201,4 +204,8 @@ export type __registerWindow__ = {
   responseType: void,
 
   sdkVersion: string,
+}
+
+export type servicePermissionGrant = {
+  responseType: void,
 }

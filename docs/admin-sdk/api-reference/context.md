@@ -406,6 +406,26 @@ Promise<{
 }
 ```
 
+## isService()
+
+Checks whether the current extension is a Shopware Service.
+
+#### Usage
+
+```ts
+const isService = await context.isService();
+```
+
+#### Parameters
+
+No parameters needed.
+
+#### Return value
+
+```ts
+Promise<boolean>
+```
+
 ## getUserInformation()
 
 Returns details about the currently logged-in Administration user, including their roles, email, and admin status. Use this to personalize the extension UI or check user permissions.
