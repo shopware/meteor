@@ -1,5 +1,12 @@
 # nuxt-app
 
+## 0.0.73
+
+### Patch Changes
+
+- Updated dependencies [[`26f46b6`](https://github.com/shopware/meteor/commit/26f46b611d5b1e72d28af816b50b2ee2a416017d)]:
+  - @shopware-ag/meteor-component-library@5.6.0
+
 ## 0.0.72
 
 ### Patch Changes
