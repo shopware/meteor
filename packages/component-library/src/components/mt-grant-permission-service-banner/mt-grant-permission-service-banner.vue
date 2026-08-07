@@ -1,34 +1,29 @@
 <template>
   <section class="mt-grant-permission-service-banner" :class="classes" :aria-labelledby="titleId">
-    <!-- @slot Slot for replacing the default icon, for example with an illustration. -->
-    <slot name="icon">
       <mt-icon
-        v-if="!hideIcon"
         class="mt-grant-permission-service-banner__icon"
-        :name="icon"
-        :size="layout === 'vertical' ? 'var(--scale-size-32)' : 'var(--scale-size-24)'"
+        name="regular-3d"
+        size="32"
         decorative
       />
-    </slot>
 
     <div class="mt-grant-permission-service-banner__body">
       <mt-text
         :id="titleId"
         as="h3"
         weight="bold"
-        size="s"
+        size="xs"
         class="mt-grant-permission-service-banner__title"
       >
-        {{ title }}
+        {{ t('title') }}
       </mt-text>
 
       <mt-text
-        v-if="description"
-        size="xs"
+        size="2xs"
         color="color-text-secondary-default"
         class="mt-grant-permission-service-banner__description"
       >
-        {{ description }}
+        {{ t('description') }}
       </mt-text>
     </div>
 
@@ -39,23 +34,21 @@
         :is-loading="isLoading"
         :disabled="disabled"
         :block="layout === 'vertical'"
-        @click="$emit('grant')"
+        @click="handleGrantPermission"
       >
-        {{ grantLabel ?? t("grant") }}
+        {{ layout === 'vertical' ? t("grantLabel") : t("grantLongLabel") }}
       </mt-button>
 
       <mt-button
         is="a"
-        v-if="moreInfoUrl"
         variant="secondary"
         class="mt-grant-permission-service-banner__more-info"
-        :href="moreInfoUrl"
+        :href="t('moreInfoUrl')"
         target="_blank"
         rel="noopener noreferrer"
         :block="layout === 'vertical'"
-        @click="$emit('more-info')"
       >
-        {{ moreInfoLabel ?? t("moreInfo") }}
+        {{ t("moreInfo") }}
       </mt-button>
     </div>
   </section>
@@ -71,14 +64,6 @@ import MtButton from "@/components/mt-button/mt-button.vue";
 const props = withDefaults(
   defineProps<{
     /**
-     * Headline of the banner.
-     */
-    title: string;
-    /**
-     * Supporting text below the headline.
-     */
-    description?: string;
-    /**
      * Arrangement of the banner content.
      *
      * "vertical" stacks icon, text and actions for narrow containers.
@@ -86,56 +71,29 @@ const props = withDefaults(
      * "wide" renders the actions next to the text.
      */
     layout?: "vertical" | "compact" | "wide";
-    /**
-     * Meteor icon which is shown next to the text.
-     */
-    icon?: string;
-    hideIcon?: boolean;
-    /**
-     * Label of the button which starts the consent request.
-     */
-    grantLabel?: string;
-    /**
-     * Label of the secondary button which links to further information.
-     */
-    moreInfoLabel?: string;
-    /**
-     * Target of the secondary button. The button is only rendered when a target is given.
-     */
-    moreInfoUrl?: string;
-    /**
-     * Shows a loading state on the primary button while the consent request runs.
-     */
-    isLoading?: boolean;
-    disabled?: boolean;
   }>(),
   {
-    description: undefined,
     layout: "compact",
-    icon: "regular-trust",
-    hideIcon: false,
-    grantLabel: undefined,
-    moreInfoLabel: undefined,
-    moreInfoUrl: undefined,
-    isLoading: false,
-    disabled: false,
   },
 );
-
-defineEmits<{
-  grant: [];
-  "more-info": [];
-}>();
 
 const { t } = useI18n({
   messages: {
     de: {
-      grant: "Berechtigung erteilen",
+      title: "Erteilen Sie die Berechtigung, um diesen Dienst zu aktivieren.",
+      description: "Es werden nur die für die Funktion erforderlichen Daten abgerufen.",
+      grantLabel: "Berechtigung erteilen",
+      grantLongLabel :"Berechtigung erteilen und aktivieren",
       moreInfo: "Mehr erfahren",
+      moreInfoUrl: "https://www.shopware.com/de/",
     },
     en: {
-      grant: "Grant permission",
+      title: "Grant permission to activate this service.",
+      description: "Only the data needed to function will be accessed.",
+      grantLabel: "Grant permission",
+      grantLongLabel: "Grant permission and activate",
       moreInfo: "More info",
+      moreInfoUrl: "https://www.shopware.com/en/",
     },
   },
 });
@@ -143,6 +101,11 @@ const { t } = useI18n({
 const titleId = useId();
 
 const classes = computed(() => `mt-grant-permission-service-banner--${props.layout}`);
+
+function handleGrantPermission() {
+  // TODO: Implement the logic to handle granting permission
+
+}
 </script>
 
 <style scoped>
@@ -198,6 +161,7 @@ const classes = computed(() => `mt-grant-permission-service-banner--${props.layo
 }
 
 .mt-grant-permission-service-banner--compact {
+  width: fit-content;
   grid-template-columns: auto 1fr;
   grid-template-areas:
     "icon body"

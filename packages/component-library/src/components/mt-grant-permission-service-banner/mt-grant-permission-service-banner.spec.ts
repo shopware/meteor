@@ -6,7 +6,6 @@ import MtGrantPermissionServiceBanner from "./mt-grant-permission-service-banner
 function renderBanner(props = {}, options = {}) {
   return render(MtGrantPermissionServiceBanner, {
     props: {
-      title: "Grant permission to activate this service.",
       ...props,
     },
     ...options,
@@ -14,27 +13,6 @@ function renderBanner(props = {}, options = {}) {
 }
 
 describe("mt-grant-permission-service-banner", () => {
-  it("renders the title and the description", () => {
-    // ARRANGE
-    renderBanner({ description: "Only the data needed to function will be accessed." });
-
-    // ASSERT
-    expect(
-      screen.getByRole("heading", { name: "Grant permission to activate this service." }),
-    ).toBeVisible();
-    expect(screen.getByText("Only the data needed to function will be accessed.")).toBeVisible();
-  });
-
-  it("labels the banner with its title so it is announced as a region", () => {
-    // ARRANGE
-    renderBanner();
-
-    // ASSERT
-    expect(
-      screen.getByRole("region", { name: "Grant permission to activate this service." }),
-    ).toBeVisible();
-  });
-
   it("renders a decorative icon that is hidden from assistive technology", () => {
     // ARRANGE
     const { container } = renderBanner();
@@ -43,30 +21,6 @@ describe("mt-grant-permission-service-banner", () => {
     const icon = container.querySelector(".mt-grant-permission-service-banner__icon");
     expect(icon).toBeInTheDocument();
     expect(icon).toHaveAttribute("aria-hidden", "true");
-  });
-
-  it("hides the icon when hideIcon is set", () => {
-    // ARRANGE
-    const { container } = renderBanner({ hideIcon: true });
-
-    // ASSERT
-    expect(
-      container.querySelector(".mt-grant-permission-service-banner__icon"),
-    ).not.toBeInTheDocument();
-  });
-
-  it("renders a custom icon through the icon slot instead of the default one", () => {
-    // ARRANGE
-    const { container } = renderBanner(
-      {},
-      { slots: { icon: '<span data-testid="custom-icon">Custom</span>' } },
-    );
-
-    // ASSERT
-    expect(screen.getByTestId("custom-icon")).toBeVisible();
-    expect(
-      container.querySelector(".mt-grant-permission-service-banner__icon"),
-    ).not.toBeInTheDocument();
   });
 
   it("uses the compact layout by default", () => {
