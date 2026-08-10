@@ -1,10 +1,16 @@
 import flushPromises from 'flush-promises';
-import type { handle as handleType, publish as publishType, startAutoThemeSync as startAutoThemeSyncType } from '../channel';
+import type {
+  handle as handleType,
+  publish as publishType,
+  startAutoThemeSync as startAutoThemeSyncType,
+  applyEmbeddedContext as applyEmbeddedContextType,
+} from '../channel';
 import type { getTheme as getThemeType, subscribeTheme as subscribeThemeType, syncTheme as syncThemeType } from './index';
 
 let handle: typeof handleType;
 let publish: typeof publishType;
 let startAutoThemeSync: typeof startAutoThemeSyncType;
+let applyEmbeddedContext: typeof applyEmbeddedContextType;
 let getTheme: typeof getThemeType;
 let subscribeTheme: typeof subscribeThemeType;
 let syncTheme: typeof syncThemeType;
@@ -34,6 +40,7 @@ describe('context theme', () => {
     handle = channel.handle;
     publish = channel.publish;
     startAutoThemeSync = channel.startAutoThemeSync;
+    applyEmbeddedContext = channel.applyEmbeddedContext;
 
     const context = await import('./index');
     getTheme = context.getTheme;
@@ -41,10 +48,15 @@ describe('context theme', () => {
     syncTheme = context.syncTheme;
   });
 
+  const initialUrl = window.location.href;
+
   afterEach(() => {
     cleanups.splice(0).forEach((remove) => remove());
     delete document.documentElement.dataset.theme;
+    delete document.documentElement.dataset.embedded;
     document.documentElement.style.removeProperty('color-scheme');
+    document.getElementById('meteor-admin-sdk-embedded')?.remove();
+    window.history.replaceState({}, '', initialUrl);
   });
 
   it('gets the current resolved theme', async () => {
@@ -240,6 +252,46 @@ describe('context theme', () => {
 
       expect(document.documentElement.dataset.theme).toBe('light');
       expect(document.documentElement.style.getPropertyValue('color-scheme')).toBe('light');
+    });
+
+    it('pins the scheme from the URL param before the sync and follows later theme changes', async () => {
+      window.history.replaceState({}, '', '?color-scheme=dark');
+      track(handle('contextTheme', () => 'dark' as const));
+
+      // The boot sequence inside app iframes
+      const sdkOwnsTheme = applyEmbeddedContext();
+      expect(document.documentElement.dataset.theme).toBe('dark');
+      expect(document.documentElement.style.getPropertyValue('color-scheme')).toBe('dark');
+
+      track(startAutoThemeSync(sdkOwnsTheme));
+      await flushPromises();
+      expect(document.documentElement.dataset.theme).toBe('dark');
+
+      publish('contextTheme', 'light');
+      await flushPromises();
+
+      expect(document.documentElement.dataset.theme).toBe('light');
+      expect(document.documentElement.style.getPropertyValue('color-scheme')).toBe('light');
+    });
+
+    it('keeps the light pin when no Administration answers the theme fetch', async () => {
+      jest.useFakeTimers();
+
+      try {
+        const sdkOwnsTheme = applyEmbeddedContext();
+        expect(document.documentElement.style.getPropertyValue('color-scheme')).toBe('light');
+
+        // No contextTheme handler exists, like in Administrations without theme support
+        track(startAutoThemeSync(sdkOwnsTheme));
+        jest.advanceTimersByTime(8000);
+        await Promise.resolve();
+      } finally {
+        jest.useRealTimers();
+      }
+      await flushPromises();
+
+      expect(document.documentElement.style.getPropertyValue('color-scheme')).toBe('light');
+      expect(document.documentElement.dataset.theme).toBeUndefined();
     });
 
     it('ignores published values that are not a valid theme', async () => {

@@ -303,18 +303,23 @@ describe('Test the channel bridge from iFrame to admin', () => {
       expect(document.documentElement.dataset.theme).toBeUndefined();
     });
 
-    it('should apply the color scheme from the URL param before the first sync', () => {
-      window.history.replaceState({}, '', '?location-id=my-location&color-scheme=dark');
+    it.each(['dark', 'light'] as const)('should apply the "%s" color scheme from the URL param before the first sync', (scheme) => {
+      window.history.replaceState({}, '', `?location-id=my-location&color-scheme=${scheme}`);
 
       const sdkOwnsTheme = applyEmbeddedContext();
 
       expect(sdkOwnsTheme).toBe(true);
-      expect(document.documentElement.dataset.theme).toBe('dark');
-      expect(document.documentElement.style.getPropertyValue('color-scheme')).toBe('dark');
+      expect(document.documentElement.dataset.theme).toBe(scheme);
+      expect(document.documentElement.style.getPropertyValue('color-scheme')).toBe(scheme);
     });
 
-    it('should treat an invalid color scheme param like a missing one', () => {
-      window.history.replaceState({}, '', '?color-scheme=not-a-scheme');
+    it.each([
+      'not-a-scheme',
+      'system',
+      'DARK',
+      '',
+    ])('should treat the invalid color scheme param "%s" like a missing one', (value) => {
+      window.history.replaceState({}, '', `?color-scheme=${value}`);
 
       applyEmbeddedContext();
 
