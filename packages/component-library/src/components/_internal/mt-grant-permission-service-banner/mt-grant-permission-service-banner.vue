@@ -1,8 +1,13 @@
 <template>
-  <section class="mt-grant-permission-service-banner" :class="classes" :aria-labelledby="titleId">
+  <section
+    v-if="isService"
+    class="mt-grant-permission-service-banner"
+    :class="classes"
+    :aria-labelledby="titleId"
+  >
       <mt-icon
         class="mt-grant-permission-service-banner__icon"
-        name="regular-3d"
+        name="regular-trust"
         size="32"
         decorative
       />
@@ -32,7 +37,6 @@
         variant="primary"
         class="mt-grant-permission-service-banner__grant"
         :is-loading="isLoading"
-        :disabled="disabled"
         :block="layout === 'vertical'"
         @click="handleGrantPermission"
       >
@@ -55,11 +59,13 @@
 </template>
 
 <script setup lang="ts">
-import { computed, useId } from "vue";
+import { computed, onBeforeMount, ref, useId } from "vue";
 import { useI18n } from "vue-i18n";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtText from "@/components/mt-text/mt-text.vue";
 import MtButton from "@/components/mt-button/mt-button.vue";
+import { grant } from "@shopware-ag/meteor-admin-sdk/es/_private/permissions";
+import { isService as fetchIsService } from "@shopware-ag/meteor-admin-sdk/es/context";
 
 const props = withDefaults(
   defineProps<{
@@ -102,9 +108,32 @@ const titleId = useId();
 
 const classes = computed(() => `mt-grant-permission-service-banner--${props.layout}`);
 
-function handleGrantPermission() {
-  // TODO: Implement the logic to handle granting permission
+const isLoading = ref(false);
 
+// Stays false until the Administration confirms a service context, so the banner
+// never flashes in a non-service extension or outside the admin altogether.
+const isService = ref(false);
+
+onBeforeMount(async () => {
+  try {
+    isService.value = await fetchIsService();
+  } catch {
+    isService.value = false;
+  }
+});
+
+async function handleGrantPermission() {
+  if (isLoading.value) return;
+
+  isLoading.value = true;
+
+  try {
+    await grant();
+  } catch (error) {
+    console.error("Error granting permission:", error);
+  } finally {
+    isLoading.value = false;
+  }
 }
 </script>
 

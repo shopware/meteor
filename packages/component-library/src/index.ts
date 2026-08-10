@@ -25,7 +25,7 @@ import MtTextarea from "./components/mt-textarea/mt-textarea.vue";
 import MtIcon from "./components/mt-icon/mt-icon.vue";
 import MtCard from "./components/mt-card/mt-card.vue";
 import MtEmptyState from "./components/mt-empty-state/mt-empty-state.vue";
-import MtGrantPermissionServiceBanner from "./components/mt-grant-permission-service-banner/mt-grant-permission-service-banner.vue";
+import MtGrantPermissionServiceBanner from "./components/_internal/mt-grant-permission-service-banner/mt-grant-permission-service-banner.vue";
 import MtTabs from "./components/mt-tabs/mt-tabs.vue";
 import MtDataTable from "./components/mt-data-table/mt-data-table.vue";
 import MtPagination from "./components/mt-pagination/mt-pagination.vue";
