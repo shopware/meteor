@@ -2,4 +2,6 @@
 "@shopware-ag/meteor-icon-kit": minor
 ---
 
-Add new trust icon
+Added icons:
+`regular-trust`
+`solid-trust`

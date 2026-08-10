@@ -33,14 +33,14 @@ module.exports = [
   {
     path: "dist/esm/MtCard.js",
     name: "MtCard direct import",
-    limit: "215 kb",
+    limit: "220 kb",
     ignore: ignore,
   },
   {
     path: "dist/esm/index.js",
     import: "{ MtIcon }",
     name: "MtIcon",
-    limit: "200 kb",
+    limit: "205 kb",
     ignore: ignore,
   },
   {
@@ -54,7 +54,7 @@ module.exports = [
     path: "dist/esm/index.js",
     import: "{ MtDataTable }",
     name: "MtDataTable",
-    limit: "260 kb",
+    limit: "265 kb",
     ignore: ignore,
   },
 ] satisfies SizeLimitConfig;
