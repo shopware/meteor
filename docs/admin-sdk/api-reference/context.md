@@ -183,9 +183,24 @@ If your document already declares `data-theme` itself, the SDK does not interfer
 
 ## Embedded context
 
-When your app runs inside an iframe, the SDK marks the document root with a `data-embedded` attribute (`<html data-embedded>`) on startup, so stylesheets can adapt to the embedded context. It also unsets the body background (`html[data-embedded] body { background: unset; }`) as a sensible default for iframes inside of the administration.
+When your app runs inside an iframe, the SDK marks the document root with a `data-embedded` attribute (`<html data-embedded>`) on startup, so stylesheets can adapt to the embedded context. It also unsets the body background as a sensible default for iframes inside of the Administration, so the Administration theme shows through instead of an opaque light background:
 
-If your document already declares `data-embedded` itself, the SDK keeps your value.
+```css
+:where(html[data-embedded]) { color-scheme: light dark; }
+:where(html[data-embedded]) :where(body) { background: unset; }
+```
+
+Both rules are wrapped in `:where()` and therefore carry zero specificity, so **any** background your app declares itself wins — a plain `body { background: … }` is enough, and its position in the cascade does not matter.
+
+Because the body is transparent by default, surfaces that used to rely on the browser's default white background need a background of their own. Paint them with theme-aware tokens rather than a fixed colour, so they follow the Administration in both themes:
+
+```css
+.dashboard-banner {
+  background-color: var(--color-background-primary-default);
+}
+```
+
+To opt out entirely, declare `data-embedded` on your document root yourself. The SDK then leaves the document alone: it keeps your value and injects no stylesheet.
 
 ## getTheme()
 

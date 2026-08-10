@@ -647,17 +647,19 @@ export function startAutoThemeSync(): () => void {
 /**
  * Marks the document as embedded (`<html data-embedded>`) and unsets the
  * body background so the Administration theme shows through instead of an
- * opaque default background. The attribute stays untouched when the document
- * declares it itself.
+ * opaque default background. Skipped when the document declares
+ * `data-embedded` itself (the app owns its embedded styling)
  *
  * @internal - runs automatically inside app iframes
  */
 export function applyEmbeddedContext(): void {
   const root = document.documentElement;
 
-  if (root.dataset.embedded === undefined) {
-    root.dataset.embedded = '';
+  if (root.dataset.embedded !== undefined) {
+    return;
   }
+
+  root.dataset.embedded = '';
 
   if (document.getElementById('meteor-admin-sdk-embedded')) {
     return;
@@ -666,9 +668,10 @@ export function applyEmbeddedContext(): void {
   const style = document.createElement('style');
   style.id = 'meteor-admin-sdk-embedded';
   // Supporting both schemes makes the document adopt the scheme the Administration propagates into the iframe until the theme sync pins the resolved one
+  // `:where()` drops these to zero specificity, so any declaration an app makes itself wins regardless of source order
   style.textContent = [
-    'html[data-embedded] { color-scheme: light dark; }',
-    'html[data-embedded] body { background: unset; }',
+    ':where(html[data-embedded]) { color-scheme: light dark; }',
+    ':where(html[data-embedded]) :where(body) { background: unset; }',
   ].join('\n');
   document.head.appendChild(style);
 }

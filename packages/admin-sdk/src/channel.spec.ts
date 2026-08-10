@@ -286,16 +286,39 @@ describe('Test the channel bridge from iFrame to admin', () => {
 
       const styles = document.querySelectorAll('#meteor-admin-sdk-embedded');
       expect(styles).toHaveLength(1);
-      expect(styles[0].textContent).toContain('html[data-embedded] { color-scheme: light dark; }');
-      expect(styles[0].textContent).toContain('html[data-embedded] body { background: unset; }');
+      expect(styles[0].textContent).toContain(':where(html[data-embedded]) { color-scheme: light dark; }');
+      expect(styles[0].textContent).toContain(':where(html[data-embedded]) :where(body) { background: unset; }');
     });
 
-    it('should not overwrite an app-managed data-embedded value', () => {
+    it('should let an app-declared body background win over the reset', () => {
+      const appStyle = document.createElement('style');
+      appStyle.textContent = 'body { background: rgb(255, 255, 255); }';
+      document.head.appendChild(appStyle);
+
+      applyEmbeddedContext();
+
+      // jsdom drops `background: unset` instead of applying it, so the reset is replayed with a
+      // sentinel colour. That keeps this a test of the selectors' specificity - the thing that
+      // decides whether an app can override the reset at all - rather than of the value
+      const replay = document.createElement('style');
+      const injected = document.getElementById('meteor-admin-sdk-embedded');
+      replay.textContent = (injected?.textContent ?? '').replace('background: unset', 'background: rgb(1, 2, 3)');
+      // Appended last, so only zero specificity can keep the app rule winning
+      document.head.appendChild(replay);
+
+      expect(getComputedStyle(document.body).backgroundColor).toBe('rgb(255, 255, 255)');
+
+      appStyle.remove();
+      replay.remove();
+    });
+
+    it('should back off completely when the document declares data-embedded itself', () => {
       document.documentElement.dataset.embedded = 'app-managed';
 
       applyEmbeddedContext();
 
       expect(document.documentElement.dataset.embedded).toBe('app-managed');
+      expect(document.getElementById('meteor-admin-sdk-embedded')).toBeNull();
     });
   });
 });
