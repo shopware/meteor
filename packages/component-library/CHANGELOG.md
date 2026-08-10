@@ -1,5 +1,12 @@
 # Changelog
 
+## 5.6.1
+
+### Patch Changes
+
+- Updated dependencies [[`4fdee56`](https://github.com/shopware/meteor/commit/4fdee561f0dd0121f0aa8fbc780a62141ab713ab)]:
+  - @shopware-ag/meteor-icon-kit@5.10.0
+
 ## 5.6.0
 
 ### Minor Changes

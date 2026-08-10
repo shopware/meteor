@@ -1,5 +1,13 @@
 # CHANGELOG.md
 
+## 5.10.0
+
+### Minor Changes
+
+- [#1312](https://github.com/shopware/meteor/pull/1312) [`4fdee56`](https://github.com/shopware/meteor/commit/4fdee561f0dd0121f0aa8fbc780a62141ab713ab) Thanks [@github-actions](https://github.com/apps/github-actions)! - Added icons:
+  `regular-trust`
+  `solid-trust`
+
 ## 5.9.1
 
 ### Patch Changes
