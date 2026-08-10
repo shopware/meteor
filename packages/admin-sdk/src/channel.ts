@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import type { ShopwareMessageTypes } from './message-types';
-import { generateUniqueId } from './_internals/utils';
+import { generateUniqueId, getColorScheme } from './_internals/utils';
 import type { extension, privilegeString } from './_internals/privileges';
 import MissingPrivilegesError from './_internals/privileges/missing-privileges-error';
 import SerializerFactory from './_internals/serializer';
@@ -508,10 +508,10 @@ const datasets = new Map<string, unknown>();
  */
 
 (async (): Promise<void> => {
-  // Mark embedded documents before the first paint (needs no channel)
-  if (window.parent !== window) {
-    applyEmbeddedContext();
-  }
+  const isEmbedded = window.parent !== window;
+
+  // Mark embedded documents and pin the color scheme before the first paint (needs no channel)
+  const sdkOwnsTheme = isEmbedded ? applyEmbeddedContext() : false;
 
   // Handle registrations at current window
   handle('__registerWindow__', ({ sdkVersion }, additionalOptions) => {
@@ -577,8 +577,8 @@ const datasets = new Map<string, unknown>();
   });
 
   // Mirror the Administration theme onto app iframes (the admin owns its own document)
-  if (window.parent !== window) {
-    startAutoThemeSync();
+  if (isEmbedded) {
+    startAutoThemeSync(sdkOwnsTheme);
   }
 })().catch((e) => console.error(e));
 
@@ -623,14 +623,16 @@ export function startThemeSync(target: HTMLElement): { initialFetch: Promise<voi
 
 /**
  * Starts the theme sync on the document root inside app iframes. Skipped
- * when the document declares `data-theme` itself (the app owns its theme)
+ * when the document declares `data-theme` itself (the app owns its theme).
+ * `sdkOwnsTheme` marks a `data-theme` value the SDK applied itself
+ * (from the `color-scheme` URL param), which must not block the sync
  *
  * @internal - apps that need explicit control use `context.syncTheme()`
  */
-export function startAutoThemeSync(): () => void {
+export function startAutoThemeSync(sdkOwnsTheme = false): () => void {
   const target = document.documentElement;
 
-  if (target.dataset.theme) {
+  if (target.dataset.theme && !sdkOwnsTheme) {
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     return () => {};
   }
@@ -645,32 +647,47 @@ export function startAutoThemeSync(): () => void {
 }
 
 /**
- * Marks the document as embedded (`<html data-embedded>`) and unsets the
- * body background so the Administration theme shows through instead of an
- * opaque default background. The attribute stays untouched when the document
- * declares it itself.
+ * Marks the document as embedded (`<html data-embedded>`), pins the initial
+ * color scheme and unsets the body background so the Administration theme
+ * shows through instead of an opaque default background.
+ *
+ * The initial theme comes from the `color-scheme` URL param the Administration
+ * appends to the iframe src. Without the param the scheme is pinned to `light`
+ * because Administrations without theme support are always light; an explicit
+ * value avoids `color-scheme: light dark`, which would follow the OS preference
+ * in those Administrations. The `data-embedded` attribute and `data-theme`
+ * stay untouched when the document declares them itself.
  *
  * @internal - runs automatically inside app iframes
+ * @returns whether the SDK owns the document theme (`data-theme` was not declared by the app)
  */
-export function applyEmbeddedContext(): void {
+export function applyEmbeddedContext(): boolean {
   const root = document.documentElement;
 
   if (root.dataset.embedded === undefined) {
     root.dataset.embedded = '';
   }
 
-  if (document.getElementById('meteor-admin-sdk-embedded')) {
-    return;
+  const sdkOwnsTheme = root.dataset.theme === undefined;
+
+  if (sdkOwnsTheme) {
+    const urlScheme = getColorScheme();
+
+    if (isThemeValue(urlScheme)) {
+      applyTheme(root, urlScheme);
+    } else {
+      root.style.setProperty('color-scheme', 'light');
+    }
   }
 
-  const style = document.createElement('style');
-  style.id = 'meteor-admin-sdk-embedded';
-  // Supporting both schemes makes the document adopt the scheme the Administration propagates into the iframe until the theme sync pins the resolved one
-  style.textContent = [
-    'html[data-embedded] { color-scheme: light dark; }',
-    'html[data-embedded] body { background: unset; }',
-  ].join('\n');
-  document.head.appendChild(style);
+  if (!document.getElementById('meteor-admin-sdk-embedded')) {
+    const style = document.createElement('style');
+    style.id = 'meteor-admin-sdk-embedded';
+    style.textContent = 'html[data-embedded] body { background: unset; }';
+    document.head.appendChild(style);
+  }
+
+  return sdkOwnsTheme;
 }
 
 // New dataset registered

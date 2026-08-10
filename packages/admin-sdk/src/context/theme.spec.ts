@@ -227,6 +227,21 @@ describe('context theme', () => {
       expect(document.documentElement.dataset.theme).toBe('light');
     });
 
+    it('keeps syncing over a data-theme the SDK applied itself from the URL param', async () => {
+      // Simulates the boot pin from the color-scheme URL param
+      document.documentElement.dataset.theme = 'dark';
+      track(handle('contextTheme', () => 'dark' as const));
+
+      track(startAutoThemeSync(true));
+      await flushPromises();
+
+      publish('contextTheme', 'light');
+      await flushPromises();
+
+      expect(document.documentElement.dataset.theme).toBe('light');
+      expect(document.documentElement.style.getPropertyValue('color-scheme')).toBe('light');
+    });
+
     it('ignores published values that are not a valid theme', async () => {
       track(handle('contextTheme', () => 'dark' as const));
       track(startAutoThemeSync());

@@ -16,6 +16,12 @@ export function getLocationId():string|null {
   return params.get('location-id');
 }
 
+export function getColorScheme():string|null {
+  const params = new URLSearchParams(window.location.search);
+
+  return params.get('color-scheme');
+}
+
 export function getWindowSrc():string {
     const location = window.location as Location;
     const urlObject = new URL(location.pathname, location.origin);
