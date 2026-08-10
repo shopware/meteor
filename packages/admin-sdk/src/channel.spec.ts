@@ -272,16 +272,6 @@ describe('Test the channel bridge from iFrame to admin', () => {
   });
 
   describe('embedded context', () => {
-    const initialUrl = window.location.href;
-
-    afterEach(() => {
-      delete document.documentElement.dataset.embedded;
-      delete document.documentElement.dataset.theme;
-      document.documentElement.style.removeProperty('color-scheme');
-      document.getElementById('meteor-admin-sdk-embedded')?.remove();
-      window.history.replaceState({}, '', initialUrl);
-    });
-
     it('should mark the document as embedded and unset the body background', () => {
       applyEmbeddedContext();
       // A second call must not duplicate anything
@@ -295,9 +285,9 @@ describe('Test the channel bridge from iFrame to admin', () => {
     });
 
     it('should pin the light color scheme when the URL declares no scheme', () => {
-      const sdkOwnsTheme = applyEmbeddedContext();
+      const pin = applyEmbeddedContext();
 
-      expect(sdkOwnsTheme).toBe(true);
+      expect(pin).toEqual({ theme: null, scheme: 'light' });
       expect(document.documentElement.style.getPropertyValue('color-scheme')).toBe('light');
       // Only a scheme provided by the Administration sets the theme attribute
       expect(document.documentElement.dataset.theme).toBeUndefined();
@@ -306,9 +296,9 @@ describe('Test the channel bridge from iFrame to admin', () => {
     it.each(['dark', 'light'] as const)('should apply the "%s" color scheme from the URL param before the first sync', (scheme) => {
       window.history.replaceState({}, '', `?location-id=my-location&color-scheme=${scheme}`);
 
-      const sdkOwnsTheme = applyEmbeddedContext();
+      const pin = applyEmbeddedContext();
 
-      expect(sdkOwnsTheme).toBe(true);
+      expect(pin).toEqual({ theme: scheme, scheme });
       expect(document.documentElement.dataset.theme).toBe(scheme);
       expect(document.documentElement.style.getPropertyValue('color-scheme')).toBe(scheme);
     });
@@ -331,11 +321,22 @@ describe('Test the channel bridge from iFrame to admin', () => {
       document.documentElement.dataset.theme = 'dark';
       window.history.replaceState({}, '', '?color-scheme=light');
 
-      const sdkOwnsTheme = applyEmbeddedContext();
+      const pin = applyEmbeddedContext();
 
-      expect(sdkOwnsTheme).toBe(false);
+      expect(pin).toEqual({ theme: null, scheme: null });
       expect(document.documentElement.dataset.theme).toBe('dark');
       expect(document.documentElement.style.getPropertyValue('color-scheme')).toBe('');
+    });
+
+    it('should treat an empty data-theme attribute as undeclared', () => {
+      document.documentElement.dataset.theme = '';
+      window.history.replaceState({}, '', '?color-scheme=dark');
+
+      const pin = applyEmbeddedContext();
+
+      expect(pin).toEqual({ theme: 'dark', scheme: 'dark' });
+      expect(document.documentElement.dataset.theme).toBe('dark');
+      expect(document.documentElement.style.getPropertyValue('color-scheme')).toBe('dark');
     });
 
     it('should not overwrite an app-managed data-embedded value', () => {

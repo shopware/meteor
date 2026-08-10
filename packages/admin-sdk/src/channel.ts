@@ -508,10 +508,8 @@ const datasets = new Map<string, unknown>();
  */
 
 (async (): Promise<void> => {
-  const isEmbedded = window.parent !== window;
-
   // Mark embedded documents and pin the color scheme before the first paint (needs no channel)
-  const sdkOwnsTheme = isEmbedded ? applyEmbeddedContext() : false;
+  const themePin = window.parent !== window ? applyEmbeddedContext() : null;
 
   // Handle registrations at current window
   handle('__registerWindow__', ({ sdkVersion }, additionalOptions) => {
@@ -577,8 +575,8 @@ const datasets = new Map<string, unknown>();
   });
 
   // Mirror the Administration theme onto app iframes (the admin owns its own document)
-  if (isEmbedded) {
-    startAutoThemeSync(sdkOwnsTheme);
+  if (themePin) {
+    startAutoThemeSync(themePin);
   }
 })().catch((e) => console.error(e));
 
@@ -624,15 +622,22 @@ export function startThemeSync(target: HTMLElement): { initialFetch: Promise<voi
 /**
  * Starts the theme sync on the document root inside app iframes. Skipped
  * when the document declares `data-theme` itself (the app owns its theme).
- * `sdkOwnsTheme` marks a `data-theme` value the SDK applied itself
- * (from the `color-scheme` URL param), which must not block the sync
+ * `pin` carries the values {@link applyEmbeddedContext} applied at boot,
+ * which must not count as an app-declared theme. The check runs here and
+ * not at pin time because module imports run before the importing app's
+ * own code: an app can declare its theme between the pin and this call
  *
  * @internal - apps that need explicit control use `context.syncTheme()`
  */
-export function startAutoThemeSync(sdkOwnsTheme = false): () => void {
+export function startAutoThemeSync(pin: EmbeddedThemePin = { theme: null, scheme: null }): () => void {
   const target = document.documentElement;
 
-  if (target.dataset.theme && !sdkOwnsTheme) {
+  if (target.dataset.theme && target.dataset.theme !== pin.theme) {
+    // Withdraw the boot pin (unless the app replaced it already) so the app's own color-scheme rules apply
+    if (pin.scheme && target.style.getPropertyValue('color-scheme') === pin.scheme) {
+      target.style.removeProperty('color-scheme');
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     return () => {};
   }
@@ -647,6 +652,18 @@ export function startAutoThemeSync(sdkOwnsTheme = false): () => void {
 }
 
 /**
+ * The theme values {@link applyEmbeddedContext} applied to the document at
+ * boot: the `data-theme` value taken from the URL param and the pinned
+ * `color-scheme`. Null fields mark values the SDK did not apply
+ *
+ * @internal
+ */
+export type EmbeddedThemePin = {
+  theme: 'light' | 'dark' | null,
+  scheme: 'light' | 'dark' | null,
+}
+
+/**
  * Marks the document as embedded (`<html data-embedded>`), pins the initial
  * color scheme and unsets the body background so the Administration theme
  * shows through instead of an opaque default background.
@@ -656,27 +673,31 @@ export function startAutoThemeSync(sdkOwnsTheme = false): () => void {
  * because Administrations without theme support are always light; an explicit
  * value avoids `color-scheme: light dark`, which would follow the OS preference
  * in those Administrations. The `data-embedded` attribute and `data-theme`
- * stay untouched when the document declares them itself.
+ * stay untouched when the document declares them itself (an empty `data-theme`
+ * attribute counts as undeclared).
  *
  * @internal - runs automatically inside app iframes
- * @returns whether the SDK owns the document theme (`data-theme` was not declared by the app)
+ * @returns the values the SDK applied, so the theme sync can tell them apart from app-declared ones
  */
-export function applyEmbeddedContext(): boolean {
+export function applyEmbeddedContext(): EmbeddedThemePin {
   const root = document.documentElement;
 
   if (root.dataset.embedded === undefined) {
     root.dataset.embedded = '';
   }
 
-  const sdkOwnsTheme = root.dataset.theme === undefined;
+  const pin: EmbeddedThemePin = { theme: null, scheme: null };
 
-  if (sdkOwnsTheme) {
+  if (!root.dataset.theme) {
     const urlScheme = getColorScheme();
 
     if (isThemeValue(urlScheme)) {
       applyTheme(root, urlScheme);
+      pin.theme = urlScheme;
+      pin.scheme = urlScheme;
     } else {
       root.style.setProperty('color-scheme', 'light');
+      pin.scheme = 'light';
     }
   }
 
@@ -687,7 +708,7 @@ export function applyEmbeddedContext(): boolean {
     document.head.appendChild(style);
   }
 
-  return sdkOwnsTheme;
+  return pin;
 }
 
 // New dataset registered

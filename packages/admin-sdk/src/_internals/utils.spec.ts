@@ -1,12 +1,7 @@
 import { getLocationId, getColorScheme } from './utils';
 
 describe('utils', () => {
-  const initialUrl = window.location.href;
-
-  afterEach(() => {
-    window.history.replaceState({}, '', initialUrl);
-  });
-
+  // The URL is restored globally in jest.afterEnv.js
   describe('getLocationId', () => {
     it('returns the location-id search param', () => {
       window.history.replaceState({}, '', '?location-id=my-location');

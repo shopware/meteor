@@ -48,15 +48,9 @@ describe('context theme', () => {
     syncTheme = context.syncTheme;
   });
 
-  const initialUrl = window.location.href;
-
+  // Document and URL state is reset globally in jest.afterEnv.js
   afterEach(() => {
     cleanups.splice(0).forEach((remove) => remove());
-    delete document.documentElement.dataset.theme;
-    delete document.documentElement.dataset.embedded;
-    document.documentElement.style.removeProperty('color-scheme');
-    document.getElementById('meteor-admin-sdk-embedded')?.remove();
-    window.history.replaceState({}, '', initialUrl);
   });
 
   it('gets the current resolved theme', async () => {
@@ -244,7 +238,7 @@ describe('context theme', () => {
       document.documentElement.dataset.theme = 'dark';
       track(handle('contextTheme', () => 'dark' as const));
 
-      track(startAutoThemeSync(true));
+      track(startAutoThemeSync({ theme: 'dark', scheme: 'dark' }));
       await flushPromises();
 
       publish('contextTheme', 'light');
@@ -259,11 +253,11 @@ describe('context theme', () => {
       track(handle('contextTheme', () => 'dark' as const));
 
       // The boot sequence inside app iframes
-      const sdkOwnsTheme = applyEmbeddedContext();
+      const pin = applyEmbeddedContext();
       expect(document.documentElement.dataset.theme).toBe('dark');
       expect(document.documentElement.style.getPropertyValue('color-scheme')).toBe('dark');
 
-      track(startAutoThemeSync(sdkOwnsTheme));
+      track(startAutoThemeSync(pin));
       await flushPromises();
       expect(document.documentElement.dataset.theme).toBe('dark');
 
@@ -274,15 +268,46 @@ describe('context theme', () => {
       expect(document.documentElement.style.getPropertyValue('color-scheme')).toBe('light');
     });
 
+    it('backs off when the app declares data-theme between the boot pin and the sync start', async () => {
+      const pin = applyEmbeddedContext();
+      expect(document.documentElement.style.getPropertyValue('color-scheme')).toBe('light');
+
+      // App boot code runs after the SDK import but before the registration round trip completes
+      document.documentElement.dataset.theme = 'dark';
+      track(handle('contextTheme', () => 'light' as const));
+
+      track(startAutoThemeSync(pin));
+      await flushPromises();
+
+      publish('contextTheme', 'light');
+      await flushPromises();
+
+      expect(document.documentElement.dataset.theme).toBe('dark');
+      // The boot pin is withdrawn so the app's own color-scheme rules apply
+      expect(document.documentElement.style.getPropertyValue('color-scheme')).toBe('');
+    });
+
+    it('keeps a color-scheme the app set itself when backing off', async () => {
+      const pin = applyEmbeddedContext();
+
+      document.documentElement.dataset.theme = 'dark';
+      document.documentElement.style.setProperty('color-scheme', 'dark');
+
+      track(startAutoThemeSync(pin));
+      await flushPromises();
+
+      expect(document.documentElement.style.getPropertyValue('color-scheme')).toBe('dark');
+    });
+
     it('keeps the light pin when no Administration answers the theme fetch', async () => {
       jest.useFakeTimers();
 
       try {
-        const sdkOwnsTheme = applyEmbeddedContext();
+        const pin = applyEmbeddedContext();
         expect(document.documentElement.style.getPropertyValue('color-scheme')).toBe('light');
 
         // No contextTheme handler exists, like in Administrations without theme support
-        track(startAutoThemeSync(sdkOwnsTheme));
+        track(startAutoThemeSync(pin));
         jest.advanceTimersByTime(8000);
         await Promise.resolve();
       } finally {
