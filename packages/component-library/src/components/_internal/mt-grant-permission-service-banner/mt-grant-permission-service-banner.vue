@@ -1,10 +1,7 @@
 <template>
-  <section
-    v-if="isService"
-    class="mt-grant-permission-service-banner"
-    :class="classes"
-    :aria-labelledby="titleId"
-  >
+  <!-- The container establishes the query context the banner sizes itself against. -->
+  <div v-if="isService" class="mt-grant-permission-service-banner__container">
+    <section class="mt-grant-permission-service-banner" :aria-labelledby="titleId">
       <mt-icon
         class="mt-grant-permission-service-banner__icon"
         name="regular-trust"
@@ -12,76 +9,70 @@
         decorative
       />
 
-    <div class="mt-grant-permission-service-banner__body">
-      <mt-text
-        :id="titleId"
-        as="h3"
-        weight="bold"
-        size="xs"
-        class="mt-grant-permission-service-banner__title"
-      >
-        {{ t('title') }}
-      </mt-text>
+      <div class="mt-grant-permission-service-banner__body">
+        <mt-text
+          :id="titleId"
+          as="h3"
+          weight="bold"
+          size="xs"
+          class="mt-grant-permission-service-banner__title"
+        >
+          {{ t("title") }}
+        </mt-text>
 
-      <mt-text
-        size="2xs"
-        color="color-text-secondary-default"
-        class="mt-grant-permission-service-banner__description"
-      >
-        {{ t('description') }}
-      </mt-text>
-    </div>
+        <mt-text
+          size="2xs"
+          color="color-text-secondary-default"
+          class="mt-grant-permission-service-banner__description"
+        >
+          {{ t("description") }}
+        </mt-text>
+      </div>
 
-    <div class="mt-grant-permission-service-banner__actions">
-      <mt-button
-        variant="primary"
-        class="mt-grant-permission-service-banner__grant"
-        :is-loading="isLoading"
-        :block="layout === 'vertical'"
-        @click="handleGrantPermission"
-      >
-        {{ layout === 'vertical' ? t("grantLabel") : t("grantLongLabel") }}
-      </mt-button>
+      <div class="mt-grant-permission-service-banner__actions">
+        <mt-button
+          variant="primary"
+          class="mt-grant-permission-service-banner__grant"
+          :is-loading="isLoading"
+          @click="handleGrantPermission"
+        >
+          <!--
+            Both labels are rendered and the container query hides one of them, so that
+            the wording can follow the available width without a JavaScript measurement.
+            The hidden label is `display: none` and therefore excluded from the
+            accessible name.
+          -->
+          <span class="mt-grant-permission-service-banner__label--short">
+            {{ t("grantLabel") }}
+          </span>
+          <span class="mt-grant-permission-service-banner__label--long">
+            {{ t("grantLongLabel") }}
+          </span>
+        </mt-button>
 
-      <mt-button
-        is="a"
-        variant="secondary"
-        class="mt-grant-permission-service-banner__more-info"
-        :href="t('moreInfoUrl')"
-        target="_blank"
-        rel="noopener noreferrer"
-        :block="layout === 'vertical'"
-      >
-        {{ t("moreInfo") }}
-      </mt-button>
-    </div>
-  </section>
+        <mt-button
+          is="a"
+          variant="secondary"
+          class="mt-grant-permission-service-banner__more-info"
+          :href="t('moreInfoUrl')"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {{ t("moreInfo") }}
+        </mt-button>
+      </div>
+    </section>
+  </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeMount, ref, useId } from "vue";
+import { onBeforeMount, ref, useId } from "vue";
 import { useI18n } from "vue-i18n";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtText from "@/components/mt-text/mt-text.vue";
 import MtButton from "@/components/mt-button/mt-button.vue";
 import { grant } from "@shopware-ag/meteor-admin-sdk/es/_private/permissions";
 import { isService as fetchIsService } from "@shopware-ag/meteor-admin-sdk/es/context";
-
-const props = withDefaults(
-  defineProps<{
-    /**
-     * Arrangement of the banner content.
-     *
-     * "vertical" stacks icon, text and actions for narrow containers.
-     * "compact" renders the actions below the text.
-     * "wide" renders the actions next to the text.
-     */
-    layout?: "vertical" | "compact" | "wide";
-  }>(),
-  {
-    layout: "compact",
-  },
-);
 
 const { t } = useI18n({
   messages: {
@@ -91,7 +82,7 @@ const { t } = useI18n({
       grantLabel: "Berechtigung erteilen",
       grantLongLabel :"Berechtigung erteilen und aktivieren",
       moreInfo: "Mehr erfahren",
-      moreInfoUrl: "https://www.shopware.com/de/",
+      moreInfoUrl: "https://docs.shopware.com/de/shopware-6-en/shopware-services",
     },
     en: {
       title: "Grant permission to activate this service.",
@@ -99,14 +90,12 @@ const { t } = useI18n({
       grantLabel: "Grant permission",
       grantLongLabel: "Grant permission and activate",
       moreInfo: "More info",
-      moreInfoUrl: "https://www.shopware.com/en/",
+      moreInfoUrl: "https://docs.shopware.com/en/shopware-6-en/shopware-services",
     },
   },
 });
 
 const titleId = useId();
-
-const classes = computed(() => `mt-grant-permission-service-banner--${props.layout}`);
 
 const isLoading = ref(false);
 
@@ -138,6 +127,16 @@ async function handleGrantPermission() {
 </script>
 
 <style scoped>
+.mt-grant-permission-service-banner__container {
+  container-type: inline-size;
+  container-name: mt-grant-permission-service-banner;
+}
+
+/*
+ * The narrow arrangement is the default, so containers that are too small for a
+ * query to match — and browsers without container query support — get the layout
+ * that survives the least amount of space.
+ */
 .mt-grant-permission-service-banner {
   display: grid;
   gap: var(--scale-size-8) var(--scale-size-12);
@@ -145,6 +144,12 @@ async function handleGrantPermission() {
   border: 1px solid var(--color-border-primary-default);
   border-radius: var(--border-radius-card);
   background-color: var(--color-elevation-surface-raised);
+  grid-template-areas:
+    "icon"
+    "body"
+    "actions";
+  justify-items: center;
+  text-align: center;
 }
 
 .mt-grant-permission-service-banner__icon {
@@ -172,39 +177,61 @@ async function handleGrantPermission() {
   grid-area: actions;
   display: flex;
   gap: var(--scale-size-8);
-}
-
-.mt-grant-permission-service-banner--vertical {
-  grid-template-areas:
-    "icon"
-    "body"
-    "actions";
-  justify-items: center;
-  text-align: center;
-}
-
-.mt-grant-permission-service-banner--vertical .mt-grant-permission-service-banner__actions {
   flex-direction: column;
   justify-self: stretch;
   margin-block-start: var(--scale-size-8);
 }
 
-.mt-grant-permission-service-banner--compact {
-  width: fit-content;
-  grid-template-columns: auto 1fr;
-  grid-template-areas:
-    "icon body"
-    ".    actions";
+/* `.mt-button` sizes itself to `max-content`, so stretching has to be explicit. */
+.mt-grant-permission-service-banner__actions .mt-button {
+  width: 100%;
 }
 
-.mt-grant-permission-service-banner--compact .mt-grant-permission-service-banner__actions {
-  flex-wrap: wrap;
-  margin-block-start: var(--scale-size-8);
+.mt-grant-permission-service-banner__label--long {
+  display: none;
 }
 
-.mt-grant-permission-service-banner--wide {
-  grid-template-columns: auto 1fr auto;
-  grid-template-areas: "icon body actions";
-  align-items: center;
+/* Wide enough for the icon to sit next to the text. */
+@container mt-grant-permission-service-banner (width >= 25rem) {
+  .mt-grant-permission-service-banner {
+    grid-template-columns: auto 1fr;
+    grid-template-areas:
+      "icon body"
+      ".    actions";
+    justify-items: start;
+    text-align: start;
+  }
+
+  .mt-grant-permission-service-banner__actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .mt-grant-permission-service-banner__actions .mt-button {
+    width: auto;
+  }
+
+  .mt-grant-permission-service-banner__label--short {
+    display: none;
+  }
+
+  .mt-grant-permission-service-banner__label--long {
+    display: revert;
+  }
+}
+
+/* Wide enough for the actions to sit next to the text. */
+@container mt-grant-permission-service-banner (width >= 43rem) {
+  .mt-grant-permission-service-banner {
+    grid-template-columns: auto 1fr auto;
+    grid-template-areas: "icon body actions";
+    align-items: center;
+  }
+
+  .mt-grant-permission-service-banner__actions {
+    flex-wrap: nowrap;
+    margin-block-start: 0;
+  }
 }
 </style>

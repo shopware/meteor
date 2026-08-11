@@ -14,8 +14,8 @@ vi.mock("@shopware-ag/meteor-admin-sdk/es/_private/permissions", () => ({ grant 
  * Renders the banner and waits for the `isService` round-trip to settle, because
  * the banner stays hidden until the Administration confirms a service context.
  */
-async function renderBanner(props = {}) {
-  const result = render(MtGrantPermissionServiceBanner, { props });
+async function renderBanner() {
+  const result = render(MtGrantPermissionServiceBanner);
   await flushPromises();
 
   return result;
@@ -77,38 +77,29 @@ describe("mt-grant-permission-service-banner", () => {
     );
   });
 
-  it("uses the compact layout by default", async () => {
+  it("sizes itself against a query container instead of a layout prop", async () => {
+    // ARRANGE
+    const { container } = await renderBanner();
+
+    // ASSERT
+    expect(screen.getByRole("region").parentElement).toHaveClass(
+      "mt-grant-permission-service-banner__container",
+    );
+    expect(container.querySelector("[class*='mt-grant-permission-service-banner--']")).toBeNull();
+  });
+
+  it("renders both grant labels so the container query can pick one", async () => {
     // ARRANGE
     await renderBanner();
 
     // ASSERT
-    expect(screen.getByRole("region")).toHaveClass("mt-grant-permission-service-banner--compact");
-  });
-
-  it.each(["vertical", "compact", "wide"] as const)("renders the %s layout", async (layout) => {
-    // ARRANGE
-    await renderBanner({ layout });
-
-    // ASSERT
-    expect(screen.getByRole("region")).toHaveClass(`mt-grant-permission-service-banner--${layout}`);
-  });
-
-  it("uses the short grant label in the vertical layout", async () => {
-    // ARRANGE
-    await renderBanner({ layout: "vertical" });
-
-    // ASSERT
-    expect(screen.getByRole("button", { name: "Grant permission" })).toBeVisible();
-  });
-
-  it("uses the long grant label in the horizontal layouts", async () => {
-    // ARRANGE
-    await renderBanner({ layout: "wide" });
-
-    // ASSERT
+    const grantButton = getGrantButton();
     expect(
-      screen.getByRole("button", { name: "Grant permission and activate" }),
-    ).toBeVisible();
+      grantButton.querySelector(".mt-grant-permission-service-banner__label--short"),
+    ).toHaveTextContent("Grant permission");
+    expect(
+      grantButton.querySelector(".mt-grant-permission-service-banner__label--long"),
+    ).toHaveTextContent("Grant permission and activate");
   });
 
   it("grants the service permission when the user confirms", async () => {
@@ -197,7 +188,10 @@ describe("mt-grant-permission-service-banner", () => {
 
     // ASSERT
     const link = screen.getByRole("link", { name: "More info" });
-    expect(link).toHaveAttribute("href", "https://www.shopware.com/en/");
+    expect(link).toHaveAttribute(
+      "href",
+      "https://docs.shopware.com/en/shopware-6-en/shopware-services",
+    );
     expect(link).toHaveAttribute("target", "_blank");
     expect(link.getAttribute("rel")).toContain("noopener");
   });
