@@ -13,6 +13,7 @@ export type uiComponentSectionRenderer =
    responseType: void,
    component: string,
    positionId: string,
+   priority?: number,
    props: unknown,
    src?: string,
  } &
