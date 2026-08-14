@@ -19,6 +19,7 @@ import * as data from './data';
 import * as iap from './iap';
 import * as payment from './_private/payment';
 import * as permissions from './_private/permissions';
+import * as privateContext from './_private/context';
 import * as telemetry from './telemetry';
 import * as consent from './consent';
 import type EntityCollectionType from './_internals/data/EntityCollection';
@@ -45,6 +46,7 @@ const ui = {
 const _private = {
   payment,
   permissions,
+  context: privateContext,
 };
 
 /**
