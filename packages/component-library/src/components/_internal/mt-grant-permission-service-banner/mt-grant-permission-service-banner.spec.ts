@@ -6,9 +6,10 @@ import MtGrantPermissionServiceBanner from "./mt-grant-permission-service-banner
 
 const isService = vi.hoisted(() => vi.fn());
 const grant = vi.hoisted(() => vi.fn());
+const isGranted = vi.hoisted(() => vi.fn());
 
-vi.mock("@shopware-ag/meteor-admin-sdk/es/context", () => ({ isService }));
-vi.mock("@shopware-ag/meteor-admin-sdk/es/_private/permissions", () => ({ grant }));
+vi.mock("@shopware-ag/meteor-admin-sdk/es/_private/context", () => ({ isService }));
+vi.mock("@shopware-ag/meteor-admin-sdk/es/_private/permissions", () => ({ grant, isGranted }));
 
 /**
  * Renders the banner and waits for the `isService` round-trip to settle, because
@@ -32,6 +33,7 @@ beforeEach(() => {
 
   isService.mockResolvedValue(true);
   grant.mockResolvedValue(undefined);
+  isGranted.mockResolvedValue(false);
 });
 
 describe("mt-grant-permission-service-banner", () => {
@@ -49,6 +51,28 @@ describe("mt-grant-permission-service-banner", () => {
   it("renders nothing when the service context can not be resolved", async () => {
     // ARRANGE
     isService.mockRejectedValue(new Error("no channel counterpart"));
+
+    // ACT
+    await renderBanner();
+
+    // ASSERT
+    expect(screen.queryByRole("region")).not.toBeInTheDocument();
+  });
+
+  it("renders nothing when the permission has already been granted", async () => {
+    // ARRANGE
+    isGranted.mockResolvedValue(true);
+
+    // ACT
+    await renderBanner();
+
+    // ASSERT
+    expect(screen.queryByRole("region")).not.toBeInTheDocument();
+  });
+
+  it("renders nothing when the granted state can not be resolved", async () => {
+    // ARRANGE
+    isGranted.mockRejectedValue(new Error("no channel counterpart"));
 
     // ACT
     await renderBanner();
