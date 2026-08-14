@@ -57,14 +57,13 @@
       />
 
       <mt-field-addition v-if="copyable" :size="size" :has-error="hasError">
-        <mt-field-copyable :copyable-text="String(currentValue)" :tooltip="copyableTooltip" />
+        <mt-field-copyable
+          :copyable-text="String(currentValue)"
+          :copyable-tooltip="copyableTooltip"
+        />
       </mt-field-addition>
 
-      <mt-field-addition
-        v-else-if="$slots.suffix"
-        :size="size"
-        :has-error="hasError"
-      >
+      <mt-field-addition v-else-if="$slots.suffix" :size="size" :has-error="hasError">
         <slot name="suffix" />
       </mt-field-addition>
     </div>

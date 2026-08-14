@@ -108,7 +108,10 @@
       />
 
       <mt-field-addition v-if="copyable" :size="size">
-        <mt-field-copyable :copyable-text="stringRepresentation" :tooltip="copyableTooltip" />
+        <mt-field-copyable
+          :copyable-text="stringRepresentation"
+          :copyable-tooltip="copyableTooltip"
+        />
       </mt-field-addition>
     </div>
 

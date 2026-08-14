@@ -78,18 +78,25 @@ withDefaults(
   border-left: none;
 }
 
-/* A button filling the box keeps the box's padding as its own, so the whole area is clickable. */
+/*
+ * A button filling the box keeps the box's padding as its own, so the whole area is clickable.
+ * `:deep` is required because the button is usually slotted in from another component
+ * (e.g. mt-field-copyable), so it does not carry this component's scope attribute.
+ * Margin and radius are reset so a button styled for inline use still fills the box.
+ */
 .mt-field__addition:has(button) {
   padding: 0;
 }
 
-.mt-field__addition:has(button) > button {
+.mt-field__addition:has(button) > :deep(button) {
   width: 100%;
   height: 100%;
   padding: var(--scale-size-12) 15px;
+  margin: 0;
+  border-radius: 0;
 }
 
-.mt-field__addition--small:has(button) > button {
+.mt-field__addition--small:has(button) > :deep(button) {
   padding: 5px var(--scale-size-16);
 }
 </style>

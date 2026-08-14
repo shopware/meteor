@@ -85,7 +85,10 @@
       <slot name="_unit-suffix" />
 
       <mt-field-addition v-if="copyable" :size="size" :has-error="hasError">
-        <mt-field-copyable :copyable-text="stringRepresentation" :tooltip="copyableTooltip" />
+        <mt-field-copyable
+          :copyable-text="stringRepresentation"
+          :copyable-tooltip="copyableTooltip"
+        />
       </mt-field-addition>
 
       <mt-field-addition v-else-if="$slots.suffix" :size="size" :has-error="hasError">
