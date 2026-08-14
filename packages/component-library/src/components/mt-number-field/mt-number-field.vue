@@ -1,39 +1,54 @@
 <template>
-  <mt-base-field
-    class="mt-number-field"
-    :class="$attrs.class"
-    :disabled="disabled || isInherited"
-    :required="required"
-    :is-inherited="isInherited"
-    :is-inheritance-field="isInheritanceField"
-    :disable-inheritance-toggle="disableInheritanceToggle"
-    :copyable="copyable"
-    :copyable-tooltip="copyableTooltip"
-    :copyable-text="stringRepresentation"
-    :has-focus="hasFocus"
-    :help-text="helpText"
-    :name="name"
-    :size="size"
-    @inheritance-restore="$emit('inheritance-restore', $event)"
-    @inheritance-remove="$emit('inheritance-remove', $event)"
+  <div
+    class="mt-number-field mt-field"
+    :class="[
+      `mt-field--${size}`,
+      {
+        'has--error': hasError,
+        'is--disabled': disabled || isInherited,
+        'is--inherited': isInherited,
+        'has--focus': hasFocus,
+        'mt-field--future-remove-default-margin': future.removeDefaultMargin,
+        'mt-field--future-consistent-label-line-height': future.consistentLabelLineHeight,
+      },
+    ]"
   >
-    <template #label>
+    <mt-field-label
+      v-if="label"
+      class="mt-field__label"
+      :for="inputId"
+      :required="required"
+      :has-error="hasError"
+      :disabled="disableInheritanceToggle"
+      :inheritance="inheritanceState"
+      :style="labelStyle"
+      @update:inheritance="onInheritanceUpdate"
+    >
       {{ label }}
-    </template>
+    </mt-field-label>
 
-    <template #field-prefix>
-      <slot name="prefix" />
-    </template>
+    <mt-help-text
+      v-if="helpText"
+      class="mt-field__help-text"
+      :text="helpText"
+      placement="right"
+      :style="{ gridArea: 'help-text', alignSelf: 'center' }"
+    />
 
-    <template #element="{ identification }">
-      <!-- @vue-ignore -->
+    <div class="mt-number-field__block mt-block-field__block">
+      <mt-field-addition v-if="$slots.prefix" type="prefix" :size="size" :has-error="hasError">
+        <slot name="prefix" />
+      </mt-field-addition>
+
       <input
-        :id="createInputId(identification)"
+        :id="inputId"
+        class="mt-number-field__input"
         type="text"
         :name="identification"
         :disabled="disabled || isInherited"
         :value="stringRepresentation"
         :placeholder="placeholder"
+        :aria-label="label"
         :class="numberAlignEnd ? 'mt-number-field__align-end' : ''"
         @input="onInput"
         @keydown.up="increaseNumberByStep"
@@ -66,35 +81,41 @@
           <mt-icon size="10" name="regular-chevron-down-s" aria-hidden="true" />
         </button>
       </div>
+
       <slot name="_unit-suffix" />
-    </template>
 
-    <template #field-suffix>
-      <slot name="suffix" />
-    </template>
+      <mt-field-addition v-if="copyable" :size="size" :has-error="hasError">
+        <mt-field-copyable :copyable-text="stringRepresentation" :tooltip="copyableTooltip" />
+      </mt-field-addition>
 
-    <template #error>
-      <mt-field-error v-if="error" :error="error" />
-    </template>
+      <mt-field-addition v-else-if="$slots.suffix" :size="size" :has-error="hasError">
+        <slot name="suffix" />
+      </mt-field-addition>
+    </div>
 
-    <template #field-hint>
-      <mt-field-hint v-if="showFieldHint" :hide-icon="!!$slots.hint">
-        <slot name="hint">
-          {{ hint }}
-        </slot>
-      </mt-field-hint>
-    </template>
-  </mt-base-field>
+    <mt-field-error v-if="error" :error="error" :style="{ gridArea: 'error' }" />
+
+    <div v-if="showFieldHint" class="mt-field__hint-wrapper">
+      <div class="mt-field__hint">
+        <mt-field-hint :hide-icon="!!$slots.hint">
+          <slot name="hint">
+            {{ hint }}
+          </slot>
+        </mt-field-hint>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
 import type { PropType } from "vue";
 
-import { defineComponent } from "vue";
+import { defineComponent, useId } from "vue";
 import MtTextField from "../mt-text-field/mt-text-field.vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
 import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
 import { useI18n } from "vue-i18n";
+import { useFutureFlags } from "@/composables/useFutureFlags";
 
 export default defineComponent({
   name: "MtNumberField",
@@ -247,7 +268,9 @@ export default defineComponent({
       },
     });
 
-    return { t };
+    // `setup` is not merged through `extends`, so the values MtTextField's setup provides
+    // have to be re-created here.
+    return { t, future: useFutureFlags(), id: useId() };
   },
 
   data() {
@@ -537,6 +560,110 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.mt-number-field {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "label help-text"
+    "input input"
+    "error error"
+    "hint hint";
+  width: 100%;
+  margin-bottom: var(--scale-size-32);
+  container-type: inline-size;
+  container-name: mt-number-field;
+}
+
+.mt-number-field.has--error {
+  margin-bottom: var(--scale-size-12);
+}
+
+.mt-number-field.mt-field--small,
+.mt-number-field.mt-field--future-remove-default-margin {
+  margin-bottom: 0;
+}
+
+.mt-number-field.is--disabled {
+  cursor: not-allowed;
+}
+
+.mt-number-field__block {
+  grid-area: input;
+  display: flex;
+  min-height: var(--scale-size-48);
+  border: 1px solid var(--color-border-primary-default);
+  border-radius: var(--border-radius-xs);
+  overflow: hidden;
+  background: var(--color-background-primary-default);
+}
+
+.mt-number-field.mt-field--small .mt-number-field__block {
+  min-height: var(--scale-size-32);
+}
+
+.mt-number-field.is--disabled .mt-number-field__block {
+  background: var(--color-background-tertiary-default);
+}
+
+.mt-number-field.has--focus .mt-number-field__block {
+  outline: var(--scale-size-2) solid var(--color-border-brand-default);
+  outline-offset: var(--scale-size-2);
+}
+
+.mt-number-field.has--error .mt-number-field__block {
+  background: var(--color-background-critical-default);
+  border-color: var(--color-border-critical-default);
+}
+
+.mt-number-field__input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 13px var(--scale-size-16);
+  border: none;
+  background: transparent;
+  font-size: var(--font-size-xs);
+  font-family: var(--font-family-body);
+  line-height: 1;
+  color: var(--color-text-primary-default);
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.mt-number-field.mt-field--small .mt-number-field__input {
+  padding: var(--scale-size-4) var(--scale-size-16);
+}
+
+.mt-number-field__input::placeholder {
+  color: var(--color-text-secondary-default);
+}
+
+.mt-number-field__input:disabled {
+  cursor: default;
+}
+
+.mt-field__hint-wrapper {
+  grid-area: hint;
+  display: flex;
+  justify-content: space-between;
+}
+
+.mt-field__hint {
+  margin-top: var(--scale-size-4);
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+  font-family: var(--font-family-body);
+  color: var(--color-text-secondary-default);
+  display: flex;
+  align-items: center;
+  gap: var(--scale-size-8);
+}
+
+.mt-field__hint:empty {
+  display: none;
+}
+
 .mt-number-field__controls {
   --_controls-margin: var(--scale-size-6);
   display: flex;
@@ -598,20 +725,5 @@ export default defineComponent({
 
 input.mt-number-field__align-end {
   text-align: end;
-}
-</style>
-
-<style>
-.mt-number-field {
-  container-type: inline-size;
-  container-name: mt-number-field;
-}
-
-.mt-number-field .mt-block-field__block {
-  background: var(--color-background-primary-default);
-}
-
-.mt-number-field.is--disabled .mt-block-field__block {
-  background: var(--color-background-tertiary-default);
 }
 </style>

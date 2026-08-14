@@ -600,12 +600,12 @@ describe("mt-data-table", () => {
 
       expect(
         rows[disabledRowIndex]
-          .find(".mt-data-table__table-select-row .mt-field--checkbox .is--disabled")
+          .find(".mt-data-table__table-select-row .mt-field--checkbox.is--disabled")
           .exists(),
       ).toBeTruthy();
       expect(
         rows[allowRowIndex]
-          .find(".mt-data-table__table-select-row .mt-field--checkbox .is--disabled")
+          .find(".mt-data-table__table-select-row .mt-field--checkbox.is--disabled")
           .exists(),
       ).toBeFalsy();
     });
