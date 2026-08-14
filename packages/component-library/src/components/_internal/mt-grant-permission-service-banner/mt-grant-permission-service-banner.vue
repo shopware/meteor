@@ -1,6 +1,6 @@
 <template>
   <!-- The container establishes the query context the banner sizes itself against. -->
-  <div v-if="isService" class="mt-grant-permission-service-banner__container">
+  <div v-if="isShowUI" class="mt-grant-permission-service-banner__container">
     <section class="mt-grant-permission-service-banner" :aria-labelledby="titleId">
       <mt-icon
         class="mt-grant-permission-service-banner__icon"
@@ -66,13 +66,14 @@
 </template>
 
 <script setup lang="ts">
-import { onBeforeMount, ref, useId } from "vue";
+import { ref, useId } from "vue";
+import { asyncComputed } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtText from "@/components/mt-text/mt-text.vue";
 import MtButton from "@/components/mt-button/mt-button.vue";
-import { grant } from "@shopware-ag/meteor-admin-sdk/es/_private/permissions";
-import { isService as fetchIsService } from "@shopware-ag/meteor-admin-sdk/es/context";
+import { grant, isGranted } from "@shopware-ag/meteor-admin-sdk/es/_private/permissions";
+import { isService } from "@shopware-ag/meteor-admin-sdk/es/_private/context";
 
 const { t } = useI18n({
   messages: {
@@ -99,17 +100,12 @@ const titleId = useId();
 
 const isLoading = ref(false);
 
-// Stays false until the Administration confirms a service context, so the banner
-// never flashes in a non-service extension or outside the admin altogether.
-const isService = ref(false);
-
-onBeforeMount(async () => {
-  try {
-    isService.value = await fetchIsService();
-  } catch {
-    isService.value = false;
-  }
-});
+const isShowUI = asyncComputed(
+  async() => {
+    return await isService() && await !isGranted();
+  },
+  false,
+)
 
 async function handleGrantPermission() {
   if (isLoading.value) return;
@@ -132,11 +128,6 @@ async function handleGrantPermission() {
   container-name: mt-grant-permission-service-banner;
 }
 
-/*
- * The narrow arrangement is the default, so containers that are too small for a
- * query to match — and browsers without container query support — get the layout
- * that survives the least amount of space.
- */
 .mt-grant-permission-service-banner {
   display: grid;
   gap: var(--scale-size-8) var(--scale-size-12);
@@ -182,7 +173,6 @@ async function handleGrantPermission() {
   margin-block-start: var(--scale-size-8);
 }
 
-/* `.mt-button` sizes itself to `max-content`, so stretching has to be explicit. */
 .mt-grant-permission-service-banner__actions .mt-button {
   width: 100%;
 }
@@ -191,7 +181,6 @@ async function handleGrantPermission() {
   display: none;
 }
 
-/* Wide enough for the icon to sit next to the text. */
 @container mt-grant-permission-service-banner (width >= 25rem) {
   .mt-grant-permission-service-banner {
     grid-template-columns: auto 1fr;
@@ -221,7 +210,6 @@ async function handleGrantPermission() {
   }
 }
 
-/* Wide enough for the actions to sit next to the text. */
 @container mt-grant-permission-service-banner (width >= 43rem) {
   .mt-grant-permission-service-banner {
     grid-template-columns: auto 1fr auto;

@@ -28,9 +28,9 @@
       "import": "./es/location/index.js",
       "require": "./umd/location/index.js"
     },
-    "./es/context": {
-      "import": "./es/context/index.js",
-      "require": "./umd/context/index.js"
+    "./es/_private/context": {
+      "import": "./es/_private/context/index.js",
+      "require": "./umd/_private/context/index.js"
     },
     "./es/_private/permissions": {
       "import": "./es/_private/permissions/index.js",
