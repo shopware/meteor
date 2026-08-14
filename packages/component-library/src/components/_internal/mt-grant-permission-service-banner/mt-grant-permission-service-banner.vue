@@ -81,7 +81,7 @@ const { t } = useI18n({
       title: "Erteilen Sie die Berechtigung, um diesen Dienst zu aktivieren.",
       description: "Es werden nur die für die Funktion erforderlichen Daten abgerufen.",
       grantLabel: "Berechtigung erteilen",
-      grantLongLabel :"Berechtigung erteilen und aktivieren",
+      grantLongLabel: "Berechtigung erteilen und aktivieren",
       moreInfo: "Mehr erfahren",
       moreInfoUrl: "https://docs.shopware.com/de/shopware-6-en/shopware-services",
     },
@@ -100,12 +100,9 @@ const titleId = useId();
 
 const isLoading = ref(false);
 
-const isShowUI = asyncComputed(
-  async () => {
-    return (await isService()) && !(await isGranted());
-  },
-  false,
-)
+const isShowUI = asyncComputed(async () => {
+  return (await isService()) && !(await isGranted());
+}, false);
 
 async function handleGrantPermission() {
   if (isLoading.value) return;
