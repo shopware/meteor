@@ -14,6 +14,7 @@ export type MtNumberFieldMeta = SlottedMeta<
   | "updateModelValue"
   | "modelValue"
   | "hint"
+  | "hintSlot"
   | "suffix"
   | "prefix"
   | "error"
@@ -43,9 +44,9 @@ export default {
             {{ args.suffix }}
           </template>
           <template
-            v-if="args.hint"
+            v-if="args.hintSlot"
             #hint>
-            {{ args.hint }}
+            {{ args.hintSlot }}
           </template>
         </mt-number-field>
         <h4 style="display: none;">hidden</h4>

@@ -12,6 +12,7 @@ export type MtTextFieldMeta = SlottedMeta<
   | "prefix"
   | "suffix"
   | "hint"
+  | "hintSlot"
   | "label"
   | "placeholder"
   | "error"
@@ -46,9 +47,9 @@ export default {
             {{ args.suffix }}
           </template>
           <template
-            v-if="args.hint"
+            v-if="args.hintSlot"
             #hint>
-            {{ args.hint }}
+            {{ args.hintSlot }}
           </template>
       </mt-text-field>
       <h4 style="display: none;">hidden</h4>

@@ -1,3 +1,21 @@
+/**
+ * Controls for the `hint` prop and the `#hint` slot. Shared by every form field
+ * that supports hints, including the ones not using `baseFieldArgTypes`.
+ */
+export const hintArgTypes = {
+  hint: {
+    control: { type: "text" as const },
+  },
+  hintSlot: {
+    control: { type: "text" as const },
+    description:
+      "Content for the `#hint` slot. Takes precedence over the `hint` prop and replaces the default info icon.",
+    table: {
+      category: "Slots",
+    },
+  },
+};
+
 export default {
   change: {
     action: "change",
@@ -32,7 +50,5 @@ export default {
   suffix: {
     control: { type: "text" },
   },
-  hint: {
-    control: { type: "text" },
-  },
+  ...hintArgTypes,
 };

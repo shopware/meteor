@@ -1,7 +1,12 @@
 import MtUrlField from "./mt-url-field.vue";
-import type { Meta, StoryObj } from "@storybook/vue3";
+import { hintArgTypes } from "../_internal/mt-base-field/arg-types";
+import type { StoryObj } from "@storybook/vue3";
+import type { SlottedMeta } from "@/_internal/story-helper";
 
-export type MtUrlFieldMeta = Meta<typeof MtUrlField>;
+export type MtUrlFieldMeta = SlottedMeta<
+  typeof MtUrlField,
+  "default" | "prefix" | "suffix" | "hint" | "hintSlot"
+>;
 
 export default {
   title: "Components/URL Field",
@@ -19,11 +24,14 @@ export default {
     {{ args.suffix }}
   </template>
 
-  <template v-if="args.hint" #hint>
-    {{ args.hint }}
+  <template v-if="args.hintSlot" #hint>
+    {{ args.hintSlot }}
   </template>
 </mt-url-field>`,
   }),
+  argTypes: {
+    ...hintArgTypes,
+  },
   args: {
     modelValue: "https://shopware.com",
     label: "Url field",
