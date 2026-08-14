@@ -25,23 +25,28 @@
           </div>
         </div>
 
-        <mt-base-field
-          :disabled="isDisabled"
-          :is-inheritance-field="isInheritanceField"
-          :is-inherited="isInherited"
-          :name="identification"
-          :has-focus="false"
-          :help-text="helpText"
-          :required="required"
-          @inheritance-restore="$emit('inheritance-restore', $event)"
-          @inheritance-remove="$emit('inheritance-remove', $event)"
-        >
-          <template #label>
+        <div class="mt-field__label">
+          <mt-inheritance-switch
+            v-if="isInheritanceField"
+            class="mt-field__inheritance-icon"
+            :is-inherited="isInherited"
+            @inheritance-restore="$emit('inheritance-restore', $event)"
+            @inheritance-remove="$emit('inheritance-remove', $event)"
+          />
+
+          <label :for="identification" :class="{ 'is--required': required }">
             <slot name="label">
               {{ label }}
             </slot>
-          </template>
-        </mt-base-field>
+          </label>
+
+          <mt-help-text
+            v-if="helpText"
+            class="mt-field__help-text"
+            :text="helpText"
+            placement="right"
+          />
+        </div>
       </div>
     </div>
 
@@ -50,12 +55,12 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from "vue";
+import { computed, defineComponent, useId } from "vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
-import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
+import MtInheritanceSwitch from "../_internal/mt-inheritance-switch/mt-inheritance-switch.vue";
+import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import MtFormFieldMixin from "../../mixins/form-field.mixin";
-import { createId } from "../../utils/id";
 import { useFutureFlags } from "@/composables/useFutureFlags";
 
 export default defineComponent({
@@ -63,8 +68,9 @@ export default defineComponent({
 
   components: {
     "mt-icon": MtIcon,
-    "mt-base-field": MtBaseField,
     "mt-field-error": MtFieldError,
+    "mt-inheritance-switch": MtInheritanceSwitch,
+    "mt-help-text": MtHelpText,
   },
 
   mixins: [MtFormFieldMixin],
@@ -198,13 +204,13 @@ export default defineComponent({
 
     return {
       checkboxClasses,
+      id: useId(),
     };
   },
 
-  data(): { id: string | undefined; currentValue: boolean | undefined } {
+  data(): { currentValue: boolean | undefined } {
     return {
       currentValue: this.checked,
-      id: undefined,
     };
   },
 
@@ -301,8 +307,6 @@ export default defineComponent({
   },
 
   mounted() {
-    this.id = createId();
-
     if (this.checked !== undefined) {
       // @deprecated - Will be removed. Use `v-model` (modelValue / update:modelValue) instead.
       console.warn(
@@ -357,25 +361,47 @@ export default defineComponent({
       margin-top: 3px;
     }
 
-    & .mt-field {
-      margin-bottom: 0;
-
-      & .mt-block-field__block {
-        border: none;
-      }
-    }
-
-    & .mt-field--default {
-      display: flex;
-    }
-
     & .mt-field__label {
+      display: flex;
+      align-items: center;
+      column-gap: var(--scale-size-6);
+      font-size: var(--font-size-xs);
+      line-height: 16px;
+      color: var(--color-text-primary-default);
       margin-bottom: 0;
       margin-left: var(--scale-size-8);
+
+      & label {
+        flex-grow: 1;
+      }
+
+      & .is--required::after {
+        content: "*";
+        color: var(--color-icon-brand-default);
+        margin-left: var(--scale-size-4);
+      }
+
+      & .mt-field__inheritance-icon {
+        margin-left: var(--scale-size-4);
+        margin-right: var(--scale-size-4);
+      }
 
       & .mt-help-text {
         margin-left: var(--scale-size-8);
       }
+    }
+
+    /* Hide the label row entirely when there is nothing to show in it. */
+    & .mt-field__label:has(label:only-child:empty) {
+      display: none;
+    }
+
+    &.mt-checkbox--future-consistent-label-line-height .mt-field__label {
+      line-height: var(--font-line-height-xs);
+    }
+
+    &.is--inherited .mt-field__label {
+      color: var(--color-text-accent-default);
     }
 
     & .mt-field__checkbox {
@@ -531,10 +557,6 @@ export default defineComponent({
     &.checkbox-bordered {
       margin-bottom: var(--scale-size-8);
     }
-  }
-
-  & .mt-field .mt-block-field__block {
-    min-height: unset;
   }
 }
 </style>

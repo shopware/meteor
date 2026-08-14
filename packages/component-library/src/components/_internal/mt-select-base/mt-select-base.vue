@@ -1,25 +1,36 @@
 <template>
-  <mt-base-field
-    :class="mtFieldClasses"
-    v-bind="$attrs"
-    :disabled="disabled"
-    :has-focus="expanded"
-    :is-inherited="isInherited"
-    :is-inheritance-field="isInheritanceField"
-    :disable-inheritance-toggle="disableInheritanceToggle"
-    @inheritance-restore="$emit('inheritance-restore', $event)"
-    @inheritance-remove="$emit('inheritance-remove', $event)"
+  <div
+    class="mt-field"
+    :class="[
+      `mt-field--${size}`,
+      {
+        'has--focus': expanded,
+        'has--error': !!error,
+        'is--disabled': disabled,
+        'is--inherited': isInherited,
+        'mt-field--future-remove-default-margin': future.removeDefaultMargin,
+        'mt-field--future-consistent-label-line-height': future.consistentLabelLineHeight,
+      },
+    ]"
   >
-    <template #label>
+    <mt-field-label
+      v-if="label"
+      class="mt-field__label"
+      :for="identification"
+      :has-error="!!error"
+      :disabled="disableInheritanceToggle"
+      :inheritance="inheritanceState"
+      :style="labelStyle"
+      @update:inheritance="onInheritanceUpdate"
+    >
       {{ label }}
-    </template>
+    </mt-field-label>
 
-    <template #field-prefix>
-      <slot name="mt-select-prefix" />
-    </template>
+    <div class="mt-select__block mt-block-field__block">
+      <mt-field-addition type="prefix" :size="size" :has-error="!!error">
+        <slot name="mt-select-prefix" />
+      </mt-field-addition>
 
-    <!-- eslint-disable-next-line vue/no-template-shadow -->
-    <template #element="{ identification, error, size }">
       <div
         ref="selectWrapper"
         class="mt-select__selection"
@@ -75,37 +86,40 @@
           <slot name="results-list" v-bind="{ collapse }" />
         </transition>
       </template>
-    </template>
 
-    <template #field-suffix>
-      <slot name="mt-select-suffix" />
-    </template>
+      <mt-field-addition ref="suffix" :size="size" :has-error="!!error">
+        <slot name="mt-select-suffix" />
+      </mt-field-addition>
+    </div>
 
-    <template #field-hint>
-      <slot name="mt-select-hint" />
-    </template>
+    <mt-field-error v-if="error" :error="error" :style="{ gridArea: 'error' }" />
 
-    <template #error>
-      <mt-field-error v-if="error" :error="error" />
-    </template>
-  </mt-base-field>
+    <div class="mt-field__hint-wrapper">
+      <div class="mt-field__hint">
+        <slot name="mt-select-hint" />
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from "vue";
-import MtBaseField from "../mt-base-field/mt-base-field.vue";
+import { defineComponent, useId, type CSSProperties, type PropType } from "vue";
 import MtIcon from "../../mt-icon/mt-icon.vue";
 import MtLoader from "../../mt-loader/mt-loader.vue";
 import MtFieldError from "../mt-field-error/mt-field-error.vue";
+import MtFieldLabel from "../mt-field-label/mt-field-label.vue";
+import MtFieldAddition from "../mt-field-addition/mt-field-addition.vue";
+import { useFutureFlags } from "@/composables/useFutureFlags";
 
 export default defineComponent({
   name: "MtSelectBase",
 
   components: {
-    "mt-base-field": MtBaseField,
     "mt-icon": MtIcon,
     "mt-loader": MtLoader,
     "mt-field-error": MtFieldError,
+    "mt-field-label": MtFieldLabel,
+    "mt-field-addition": MtFieldAddition,
   },
 
   props: {
@@ -190,18 +204,63 @@ export default defineComponent({
       required: false,
       default: false,
     },
+
+    /**
+     * The size of the select field.
+     *
+     * @values small, default
+     */
+    size: {
+      type: String as PropType<"small" | "default">,
+      required: false,
+      default: "default",
+      validator(value: string) {
+        return ["small", "default"].includes(value);
+      },
+    },
+
+    /**
+     * @ignore
+     */
+    name: {
+      type: String,
+      required: false,
+      default: null,
+    },
+  },
+
+  setup() {
+    return {
+      future: useFutureFlags(),
+      id: useId(),
+    };
   },
 
   data() {
     return {
       expanded: false,
       suffixWidth: 0,
+      suffixObserver: null as ResizeObserver | null,
     };
   },
 
   computed: {
-    mtFieldClasses(): { "has--focus": boolean } {
-      return { "has--focus": this.expanded };
+    identification(): string {
+      return this.name ?? `mt-field--${this.id}`;
+    },
+
+    inheritanceState(): "linked" | "unlinked" | "none" {
+      if (!this.isInheritanceField) return "none";
+
+      return this.isInherited ? "linked" : "unlinked";
+    },
+
+    labelStyle(): CSSProperties {
+      return {
+        gridArea: "label",
+        marginBottom: "var(--scale-size-8)",
+        lineHeight: this.future.consistentLabelLineHeight ? "var(--font-line-height-xs)" : "16px",
+      };
     },
 
     selectionIndicatorsRight(): string {
@@ -214,10 +273,20 @@ export default defineComponent({
   mounted() {
     this.$nextTick(() => this.updateSuffixWidth());
     window.addEventListener("resize", this.updateSuffixWidth, { passive: true });
+
+    // The suffix is slot content, so it can change size without the window resizing.
+    if (typeof ResizeObserver !== "undefined") {
+      this.suffixObserver = new ResizeObserver(() => this.updateSuffixWidth());
+
+      const suffixElement = this.suffixElement();
+      if (suffixElement) this.suffixObserver.observe(suffixElement);
+    }
   },
 
   beforeUnmount() {
     window.removeEventListener("resize", this.updateSuffixWidth);
+    this.suffixObserver?.disconnect();
+    this.suffixObserver = null;
   },
 
   emits: [
@@ -229,11 +298,14 @@ export default defineComponent({
   ],
 
   methods: {
+    suffixElement(): HTMLElement | null {
+      const suffix = this.$refs.suffix as { $el?: HTMLElement } | undefined;
+
+      return suffix?.$el ?? null;
+    },
+
     updateSuffixWidth() {
-      // Find the suffix container to get the width
-      const suffixElement = this.$el?.querySelector(
-        ".mt-block-field__block > .mt-field__addition:not(.is--prefix)",
-      );
+      const suffixElement = this.suffixElement();
 
       if (!suffixElement) {
         this.suffixWidth = 0;
@@ -241,6 +313,14 @@ export default defineComponent({
       }
 
       this.suffixWidth = suffixElement.offsetWidth;
+    },
+
+    onInheritanceUpdate(value: "linked" | "unlinked") {
+      if (value === "unlinked") {
+        this.$emit("inheritance-remove");
+      } else {
+        this.$emit("inheritance-restore");
+      }
     },
 
     toggleExpand() {
@@ -362,12 +442,75 @@ export default defineComponent({
 .mt-select {
   position: relative;
   min-width: 100px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "label help-text"
+    "input input"
+    "error error"
+    "hint hint";
+  width: 100%;
+  margin-bottom: var(--scale-size-32);
 }
 
-.mt-select .mt-block-field__block {
+.mt-select.has--error {
+  margin-bottom: var(--scale-size-12);
+}
+
+.mt-select.mt-field--small,
+.mt-select.mt-field--future-remove-default-margin {
+  margin-bottom: 0;
+}
+
+.mt-select.is--disabled {
+  cursor: not-allowed;
+}
+
+.mt-select .mt-select__block {
+  grid-area: input;
+  display: flex;
+  min-height: var(--scale-size-48);
+  border: 1px solid var(--color-border-primary-default);
+  border-radius: var(--border-radius-xs);
   background-color: var(--color-background-primary-default);
   position: relative;
   overflow: hidden;
+}
+
+.mt-select.mt-field--small .mt-select__block {
+  min-height: var(--scale-size-32);
+}
+
+.mt-select.has--focus .mt-select__block {
+  outline: var(--scale-size-2) solid var(--color-border-brand-default);
+  outline-offset: var(--scale-size-2);
+}
+
+.mt-select.has--error .mt-select__block {
+  background-color: var(--color-background-critical-default);
+  border-color: var(--color-border-critical-default);
+}
+
+.mt-select .mt-field__hint-wrapper {
+  grid-area: hint;
+  display: flex;
+  justify-content: space-between;
+}
+
+.mt-select .mt-field__hint {
+  margin-top: var(--scale-size-4);
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+  font-family: var(--font-family-body);
+  color: var(--color-text-secondary-default);
+  display: flex;
+  align-items: center;
+  gap: var(--scale-size-8);
+}
+
+.mt-select .mt-field__hint:empty,
+.mt-select .mt-field__hint-wrapper:has(> .mt-field__hint:empty) {
+  display: none;
 }
 
 .mt-select .mt-select__selection {
@@ -467,7 +610,7 @@ export default defineComponent({
   padding: var(--scale-size-4) var(--scale-size-6) 0;
 }
 
-.mt-select.is--disabled .mt-block-field__block,
+.mt-select.is--disabled .mt-select__block,
 .mt-select.is--disabled .mt-label,
 .mt-select.is--disabled input {
   background-color: var(--color-background-tertiary-default);
@@ -483,7 +626,7 @@ export default defineComponent({
   padding-top: 1px;
 }
 
-.mt-select--small .mt-block-field__block {
+.mt-select--small .mt-select__block {
   min-height: unset;
 }
 
