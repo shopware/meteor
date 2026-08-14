@@ -101,8 +101,8 @@ const titleId = useId();
 const isLoading = ref(false);
 
 const isShowUI = asyncComputed(
-  async() => {
-    return await isService() && await !isGranted();
+  async () => {
+    return (await isService()) && !(await isGranted());
   },
   false,
 )
