@@ -13,7 +13,6 @@ import type {
   contextUserTimezone,
   contextShopId,
   contextTheme,
-  contextIsService,
 } from './context';
 import type { uiComponentSectionRenderer } from './ui/component-section/index';
 import type { uiTabsAddTabItem, uiTabsSetVisibility } from './ui/tabs';
@@ -50,6 +49,8 @@ import type {
   consentRequest,
   consentRequestResponse,
 } from './consent';
+import type { servicePermissionGrant, servicePermissionIsGranted } from './_private/permissions';
+import type { contextIsService } from './_private/context';
 
 /**
  * Contains all shopware send types.
@@ -123,6 +124,7 @@ export interface ShopwareMessageTypes {
   consentRequest: consentRequest,
   consentRequestResponse: consentRequestResponse,
   servicePermissionGrant: servicePermissionGrant,
+  servicePermissionIsGranted: servicePermissionIsGranted,
   __function__: __function__,
   __registerWindow__: __registerWindow__,
   _multiply: _multiply,
@@ -204,8 +206,4 @@ export type __registerWindow__ = {
   responseType: void,
 
   sdkVersion: string,
-}
-
-export type servicePermissionGrant = {
-  responseType: void,
 }
