@@ -7,9 +7,20 @@ import MtGrantPermissionServiceBanner from "./mt-grant-permission-service-banner
 const isService = vi.hoisted(() => vi.fn());
 const grant = vi.hoisted(() => vi.fn());
 const isGranted = vi.hoisted(() => vi.fn());
+const compareIsShopwareVersion = vi.hoisted(() => vi.fn());
+const routerPush = vi.hoisted(() => vi.fn());
 
-vi.mock("@shopware-ag/meteor-admin-sdk/es/_private/context", () => ({ isService }));
-vi.mock("@shopware-ag/meteor-admin-sdk/es/_private/permissions", () => ({ grant, isGranted }));
+// The component imports the SDK barrel, so the barrel is what gets mocked.
+// Only the namespaces it actually reaches for are provided — anything else the
+// component starts using will fail loudly here rather than hit the real SDK.
+vi.mock("@shopware-ag/meteor-admin-sdk", () => ({
+  window: { routerPush },
+  context: { compareIsShopwareVersion },
+  _private: {
+    permissions: { grant, isGranted },
+    context: { isService },
+  },
+}));
 
 /**
  * Renders the banner and waits for the `isService` round-trip to settle, because
@@ -34,6 +45,8 @@ beforeEach(() => {
   isService.mockResolvedValue(true);
   grant.mockResolvedValue(undefined);
   isGranted.mockResolvedValue(false);
+  compareIsShopwareVersion.mockResolvedValue(false);
+  routerPush.mockResolvedValue(undefined);
 });
 
 describe("mt-grant-permission-service-banner", () => {
@@ -136,6 +149,87 @@ describe("mt-grant-permission-service-banner", () => {
 
     // ASSERT
     expect(grant).toHaveBeenCalledTimes(1);
+    expect(routerPush).not.toHaveBeenCalled();
+  });
+
+  it("checks the Administration version before granting", async () => {
+    // ARRANGE
+    const user = userEvent.setup();
+    await renderBanner();
+
+    // ACT
+    await user.click(getGrantButton());
+
+    // ASSERT
+    expect(compareIsShopwareVersion).toHaveBeenCalledWith("<", "6.7.14.0");
+  });
+
+  it("routes to the services settings page on an Administration without grant support", async () => {
+    // ARRANGE
+    const user = userEvent.setup();
+    compareIsShopwareVersion.mockResolvedValue(true);
+
+    await renderBanner();
+
+    // ACT
+    await user.click(getGrantButton());
+
+    // ASSERT
+    expect(routerPush).toHaveBeenCalledWith({ path: "/sw/settings/services/index" });
+    expect(grant).not.toHaveBeenCalled();
+  });
+
+  it("releases the loading state after routing away", async () => {
+    // ARRANGE
+    const user = userEvent.setup();
+    compareIsShopwareVersion.mockResolvedValue(true);
+
+    await renderBanner();
+
+    // ACT
+    await user.click(getGrantButton());
+
+    // ASSERT
+    expect(getGrantButton()).toBeEnabled();
+  });
+
+  it("does not route away when the version check fails", async () => {
+    // ARRANGE
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    const user = userEvent.setup();
+    compareIsShopwareVersion.mockRejectedValue(new Error("no channel counterpart"));
+
+    await renderBanner();
+
+    // ACT
+    await user.click(getGrantButton());
+
+    // ASSERT
+    expect(routerPush).not.toHaveBeenCalled();
+    expect(grant).not.toHaveBeenCalled();
+    expect(consoleError).toHaveBeenCalled();
+
+    consoleError.mockRestore();
+  });
+
+  it("recovers when the route change is rejected", async () => {
+    // ARRANGE
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    const user = userEvent.setup();
+    compareIsShopwareVersion.mockResolvedValue(true);
+    routerPush.mockRejectedValue(new Error("unknown route"));
+
+    await renderBanner();
+
+    // ACT
+    await user.click(getGrantButton());
+
+    // ASSERT
+    expect(consoleError).toHaveBeenCalled();
+    expect(grant).not.toHaveBeenCalled();
+    expect(getGrantButton()).toBeEnabled();
+
+    consoleError.mockRestore();
   });
 
   it("shows a loading state while the permission is being granted", async () => {
