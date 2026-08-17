@@ -28,9 +28,6 @@ jobs:
       - name: Update icons
         run: pnpm --filter @shopware-ag/meteor-icon-kit run start
 
-      # Derives the changeset from what the sync actually changed in icons/, so
-      # the release notes list the added/modified/removed icons by name. A no-op
-      # sync writes no changeset.
       - name: Generate changeset
         run: pnpm --filter @shopware-ag/meteor-icon-kit run changeset
 
