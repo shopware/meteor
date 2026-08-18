@@ -5,6 +5,10 @@ import { screen } from "@storybook/test";
 
 import MtSelect from "./mt-select.vue";
 import meta, { type MtSelectMeta, type MtSelectStory } from "./mt-select.stories";
+import {
+  expectHintIconAlignedWithFirstLine,
+  multiLinePropHint,
+} from "@/components/_internal/mt-field-hint/mt-field-hint.story-helper";
 
 export default {
   ...meta,
@@ -910,6 +914,21 @@ export const VisualTestHintProp: MtSelectStory = {
     const canvas = within(canvasElement);
 
     expect(canvas.getByText("Hint via prop")).toBeDefined();
+  },
+};
+
+export const VisualTestMultiLinePropHint: MtSelectStory = {
+  name: "Should display multi line prop hint",
+  args: {
+    hint: multiLinePropHint,
+  },
+  render: (args) => ({
+    components: { MtSelect },
+    setup: () => ({ args }),
+    template: `<div style="max-width: 320px"><mt-select :label="args.label" :options="[{ id: 1, label: 'Option A', value: 'a' }]" :hint="args.hint" /></div>`,
+  }),
+  play: ({ canvasElement }) => {
+    expectHintIconAlignedWithFirstLine(canvasElement);
   },
 };
 

@@ -2,6 +2,10 @@ import { expect, fn, userEvent, within } from "@storybook/test";
 import MtUrlField from "./mt-url-field.vue";
 import meta, { type MtUrlFieldMeta, type MtUrlFieldStory } from "./mt-url-field.stories";
 import { waitUntil } from "@/_internal/test-helper";
+import {
+  expectHintIconAlignedWithFirstLine,
+  multiLinePropHint,
+} from "@/components/_internal/mt-field-hint/mt-field-hint.story-helper";
 
 export default {
   ...meta,
@@ -158,6 +162,21 @@ export const VisualTestHintProp: MtUrlFieldStory = {
     const canvas = within(canvasElement);
 
     expect(canvas.getByText("Hint via prop")).toBeDefined();
+  },
+};
+
+export const VisualTestMultiLinePropHint: MtUrlFieldStory = {
+  name: "Should display multi line prop hint",
+  args: {
+    hint: multiLinePropHint,
+  },
+  render: (args) => ({
+    components: { MtUrlField },
+    setup: () => ({ args }),
+    template: `<div style="max-width: 320px"><mt-url-field :label="args.label" :hint="args.hint" /></div>`,
+  }),
+  play: ({ canvasElement }) => {
+    expectHintIconAlignedWithFirstLine(canvasElement);
   },
 };
 

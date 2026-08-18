@@ -4,6 +4,10 @@ import { expect } from "@storybook/test";
 import MtColorpicker from "./mt-colorpicker.vue";
 import meta, { type MtColorpickerMeta, type MtColorpickerStory } from "./mt-colorpicker.stories";
 import { waitUntil } from "@/_internal/test-helper";
+import {
+  expectHintIconAlignedWithFirstLine,
+  multiLinePropHint,
+} from "@/components/_internal/mt-field-hint/mt-field-hint.story-helper";
 
 export default {
   ...meta,
@@ -614,6 +618,21 @@ export const VisualTestHintProp: MtColorpickerStory = {
     const canvas = within(canvasElement);
 
     expect(canvas.getByText("Hint via prop")).toBeDefined();
+  },
+};
+
+export const VisualTestMultiLinePropHint: MtColorpickerStory = {
+  name: "Should display multi line prop hint",
+  args: {
+    hint: multiLinePropHint,
+  },
+  render: (args) => ({
+    components: { MtColorpicker },
+    setup: () => ({ args }),
+    template: `<div style="max-width: 320px"><mt-colorpicker :label="args.label" model-value="#0fcff5" :hint="args.hint" /></div>`,
+  }),
+  play: ({ canvasElement }) => {
+    expectHintIconAlignedWithFirstLine(canvasElement);
   },
 };
 

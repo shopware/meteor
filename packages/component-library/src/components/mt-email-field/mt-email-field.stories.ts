@@ -10,6 +10,7 @@ export type MtEmailFieldMeta = SlottedMeta<
   | "updateModelValue"
   | "change"
   | "hint"
+  | "hintSlot"
   | "suffix"
   | "prefix"
   | "placeholder"
@@ -43,9 +44,9 @@ export default {
         </template>
   
         <template
-            v-if="args.hint"
+            v-if="args.hintSlot"
             #hint>
-          {{args.hint}}
+          {{args.hintSlot}}
         </template>
       </mt-email-field>
 
