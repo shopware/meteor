@@ -272,11 +272,6 @@ describe('Test the channel bridge from iFrame to admin', () => {
   });
 
   describe('embedded context', () => {
-    afterEach(() => {
-      delete document.documentElement.dataset.embedded;
-      document.getElementById('meteor-admin-sdk-embedded')?.remove();
-    });
-
     it('should mark the document as embedded and unset the body background', () => {
       applyEmbeddedContext();
       // A second call must not duplicate anything
@@ -286,8 +281,62 @@ describe('Test the channel bridge from iFrame to admin', () => {
 
       const styles = document.querySelectorAll('#meteor-admin-sdk-embedded');
       expect(styles).toHaveLength(1);
-      expect(styles[0].textContent).toContain('html[data-embedded] { color-scheme: light dark; }');
       expect(styles[0].textContent).toContain('html[data-embedded] body { background: unset; }');
+    });
+
+    it('should pin the light color scheme when the URL declares no scheme', () => {
+      const pin = applyEmbeddedContext();
+
+      expect(pin).toEqual({ theme: null, scheme: 'light' });
+      expect(document.documentElement.style.getPropertyValue('color-scheme')).toBe('light');
+      // Only a scheme provided by the Administration sets the theme attribute
+      expect(document.documentElement.dataset.theme).toBeUndefined();
+    });
+
+    it.each(['dark', 'light'] as const)('should apply the "%s" color scheme from the URL param before the first sync', (scheme) => {
+      window.history.replaceState({}, '', `?location-id=my-location&color-scheme=${scheme}`);
+
+      const pin = applyEmbeddedContext();
+
+      expect(pin).toEqual({ theme: scheme, scheme });
+      expect(document.documentElement.dataset.theme).toBe(scheme);
+      expect(document.documentElement.style.getPropertyValue('color-scheme')).toBe(scheme);
+    });
+
+    it.each([
+      'not-a-scheme',
+      'system',
+      'DARK',
+      '',
+    ])('should treat the invalid color scheme param "%s" like a missing one', (value) => {
+      window.history.replaceState({}, '', `?color-scheme=${value}`);
+
+      applyEmbeddedContext();
+
+      expect(document.documentElement.style.getPropertyValue('color-scheme')).toBe('light');
+      expect(document.documentElement.dataset.theme).toBeUndefined();
+    });
+
+    it('should not touch the theme when the app manages its own data-theme attribute', () => {
+      document.documentElement.dataset.theme = 'dark';
+      window.history.replaceState({}, '', '?color-scheme=light');
+
+      const pin = applyEmbeddedContext();
+
+      expect(pin).toEqual({ theme: null, scheme: null });
+      expect(document.documentElement.dataset.theme).toBe('dark');
+      expect(document.documentElement.style.getPropertyValue('color-scheme')).toBe('');
+    });
+
+    it('should treat an empty data-theme attribute as undeclared', () => {
+      document.documentElement.dataset.theme = '';
+      window.history.replaceState({}, '', '?color-scheme=dark');
+
+      const pin = applyEmbeddedContext();
+
+      expect(pin).toEqual({ theme: 'dark', scheme: 'dark' });
+      expect(document.documentElement.dataset.theme).toBe('dark');
+      expect(document.documentElement.style.getPropertyValue('color-scheme')).toBe('dark');
     });
 
     it('should not overwrite an app-managed data-embedded value', () => {

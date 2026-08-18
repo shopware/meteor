@@ -22,6 +22,7 @@ import { ui } from '@shopware-ag/meteor-admin-sdk';
 ui.componentSection.add({
     component: 'the-component', // Choose the component which you want to render at the component section
     positionId: 'the-position-id-of-the-component-section', // Select the positionId where you want to render the component
+    priority: 1, // Optional: control the render order when multiple extensions target the same positionId
     props: {
         ... // The properties are depending on the component
     }
@@ -30,9 +31,12 @@ ui.componentSection.add({
 
 #### Parameters
 
-| Name        | Required | Default | Description                                    |
-| :---------- | :------- | :------ | :--------------------------------------------- |
-| `component` | true     |         | Choose the component which you want to render. |
+| Name         | Required | Default | Description                                                                                                                                                                                                                                                            |
+| :----------- | :------- | :------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `component`  | true     |         | Choose the component which you want to render.                                                                                                                                                                                                                        |
+| `positionId` | true     |         | The `positionId` of the component section to render into.                                                                                                                                                                                                            |
+| `priority`   | false    |         | Controls the render order when multiple extensions register a component at the same `positionId`. Available since Shopware v6.7.14.0. Lower values render first (`1` = topmost). Must be a positive number (`1` or higher); omitted or invalid values render after entries that set a `priority`. Sections registered by Shopware services always render above app sections. |
+| `props`      | true     |         | The properties for the chosen component (see [Available components](#available-components)).                                                                                                                                                                          |
 
 #### Return value
 
