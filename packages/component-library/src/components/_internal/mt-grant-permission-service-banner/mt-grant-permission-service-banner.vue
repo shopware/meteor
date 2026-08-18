@@ -72,8 +72,14 @@ import { useI18n } from "vue-i18n";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtText from "@/components/mt-text/mt-text.vue";
 import MtButton from "@/components/mt-button/mt-button.vue";
-import { grant, isGranted } from "@shopware-ag/meteor-admin-sdk/es/_private/permissions";
-import { isService } from "@shopware-ag/meteor-admin-sdk/es/_private/context";
+// `window` must be aliased: an unaliased import shadows the global `window`
+// for this whole module.
+import { window as adminWindow, context, _private } from "@shopware-ag/meteor-admin-sdk";
+
+const { grant, isGranted } = _private.permissions;
+const { isService } = _private.context;
+const { compareIsShopwareVersion } = context;
+const { routerPush } = adminWindow;
 
 const { t } = useI18n({
   messages: {
@@ -99,12 +105,18 @@ const { t } = useI18n({
 const titleId = useId();
 
 const isLoading = ref(false);
+const shopwareServicePagePath = "/sw/settings/services/index";
 
 const isShowUI = asyncComputed(async () => {
   return (await isService()) && !(await isGranted());
 }, false);
 
 async function handleGrantPermission() {
+  if (await compareIsShopwareVersion("<", "6.7.14.0")) {
+    await routerPush({ path: shopwareServicePagePath });
+    return;
+  }
+
   if (isLoading.value) return;
 
   isLoading.value = true;
