@@ -3,6 +3,10 @@ import { expect } from "@storybook/test";
 
 import MtEmailField from "./mt-email-field.vue";
 import meta, { type MtEmailFieldMeta, type MtEmailFieldStory } from "./mt-email-field.stories";
+import {
+  expectHintIconAlignedWithFirstLine,
+  multiLinePropHint,
+} from "@/components/_internal/mt-field-hint/mt-field-hint.story-helper";
 
 export default {
   ...meta,
@@ -147,6 +151,21 @@ export const VisualTestHintProp: MtEmailFieldStory = {
     const canvas = within(canvasElement);
 
     expect(canvas.getByText("Hint via prop")).toBeDefined();
+  },
+};
+
+export const VisualTestMultiLinePropHint: MtEmailFieldStory = {
+  name: "Should display multi line prop hint",
+  args: {
+    hint: multiLinePropHint,
+  },
+  render: (args) => ({
+    components: { MtEmailField },
+    setup: () => ({ args }),
+    template: `<div style="max-width: 320px"><mt-email-field :label="args.label" :hint="args.hint" /></div>`,
+  }),
+  play: ({ canvasElement }) => {
+    expectHintIconAlignedWithFirstLine(canvasElement);
   },
 };
 
