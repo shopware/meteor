@@ -1,6 +1,19 @@
 import { render, screen } from "@testing-library/vue";
 import MtLink from "./mt-link.vue";
 import { userEvent } from "@testing-library/user-event";
+import { defineComponent } from "vue";
+
+/**
+ * Minimal stand-in for vue-router's RouterLink: it accepts a route location and
+ * resolves its own href, the way the real component does. vue-router itself is not a
+ * dependency of this package, so we cannot use it here.
+ */
+const RouterLinkStub = defineComponent({
+  props: {
+    to: { type: [String, Object], required: true },
+  },
+  template: `<a :href="typeof to === 'string' ? to : '/resolved/' + to.name"><slot /></a>`,
+});
 
 describe("mt-link", () => {
   it("renders a link", async () => {
@@ -170,5 +183,49 @@ describe("mt-link", () => {
 
     // ASSERT
     expect(handler).toHaveBeenCalledOnce();
+  });
+
+  it("lets router-link resolve its own href instead of overriding it", async () => {
+    // ARRANGE
+    render(MtLink, {
+      props: {
+        to: { name: "sw.customer.detail", params: { id: "abc" } },
+      },
+      slots: {
+        default: "Max Mustermann",
+      },
+      global: {
+        components: { "router-link": RouterLinkStub },
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("link")).toHaveAttribute("href", "/resolved/sw.customer.detail");
+  });
+
+  it("does not render a route location object into the href", async () => {
+    // ARRANGE
+    render(MtLink, {
+      props: {
+        as: "a",
+        to: { name: "sw.customer.detail", params: { id: "abc" } },
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("link")).not.toHaveAttribute("href");
+  });
+
+  it("still renders a string href when it is not a router-link", async () => {
+    // ARRANGE
+    render(MtLink, {
+      props: {
+        as: "a",
+        to: "https://www.shopware.com",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("link")).toHaveAttribute("href", "https://www.shopware.com");
   });
 });

@@ -9,11 +9,10 @@
         [`mt-link--${type}`]: type !== undefined,
       },
     ]"
-    :href="disabled ? undefined : to"
     :role="as === 'a' ? 'link' : undefined"
     :aria-disabled="disabled"
     :tabindex="disabled ? -1 : 0"
-    v-bind="to ? { ...$attrs, to } : $attrs"
+    v-bind="{ ...hrefAttribute, ...(to ? { ...$attrs, to } : $attrs) }"
     @click="disabled ? undefined : $emit('click', $event)"
   >
     <slot />
@@ -27,11 +26,12 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
-    to?: string;
+    to?: string | Record<string, unknown>;
     as?: string;
     variant?: "primary" | "critical";
     disabled?: boolean;
@@ -43,6 +43,18 @@ withDefaults(
     disabled: false,
   },
 );
+
+const hrefAttribute = computed(() => {
+  /**
+   * `router-link` resolves its own `href` from `to`. We must not bind `href` at all in
+   * that case: binding it, even as `undefined`, overrides the resolved value through
+   * attribute fallthrough and leaves the link without a usable target.
+   */
+  if (props.disabled || props.as === "router-link") return {};
+
+  // A route location object would stringify to "[object Object]" in an href.
+  return typeof props.to === "string" ? { href: props.to } : {};
+});
 
 defineEmits<{
   (e: "click", event: MouseEvent): void;
