@@ -37,8 +37,8 @@ describe("mt-datepicker", () => {
       props: {
         isInheritanceField: true,
         isInherited: true,
-        onInheritanceRemove: inheritanceRemove,
-        onInheritanceRestore: inheritanceRestore,
+        "onInheritance-remove": inheritanceRemove,
+        "onInheritance-restore": inheritanceRestore,
       },
     });
 

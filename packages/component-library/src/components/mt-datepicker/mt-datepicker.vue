@@ -262,7 +262,12 @@ const emit = defineEmits<{
 }>();
 
 const onInheritanceChange = (inheritance: "linked" | "unlinked") => {
-  emit(inheritance === "linked" ? "inheritance-restore" : "inheritance-remove");
+  if (inheritance === "linked") {
+    emit("inheritance-restore");
+    return;
+  }
+
+  emit("inheritance-remove");
 };
 
 const errorId = useId();
