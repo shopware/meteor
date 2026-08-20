@@ -12,7 +12,10 @@
       for="field-id"
       :has-error="!!error || !!errorMessage"
       :required="required"
+      :inheritance="isInheritanceField ? (isInherited ? 'linked' : 'unlinked') : 'none'"
+      :disabled="disableInheritanceToggle"
       :style="{ gridArea: 'label' }"
+      @update:inheritance="onInheritanceChange"
     >
       {{ label }}
     </mt-field-label>
@@ -25,7 +28,7 @@
       :style="{ gridArea: 'input' }"
       :floating="datePickerFloating"
       :placeholder="placeholder"
-      :disabled="disabled"
+      :disabled="disabled || isInherited"
       :locale="datePickerLocale"
       :timezone="timeZone"
       :teleport="true"
@@ -213,6 +216,18 @@ const props = withDefaults(
      * Can be a Date object or an ISO string
      */
     maxDate?: Date | string;
+    /**
+     * Toggles the inheritance visualization.
+     */
+    isInherited?: boolean;
+    /**
+     * Determines if the field is inheritable.
+     */
+    isInheritanceField?: boolean;
+    /**
+     * Determines whether the inheritance toggle can be used.
+     */
+    disableInheritanceToggle?: boolean;
   }>(),
   {
     label: null,
@@ -234,12 +249,21 @@ const props = withDefaults(
     minuteIncrement: 1,
     textInput: false,
     maxDate: undefined,
+    isInherited: false,
+    isInheritanceField: false,
+    disableInheritanceToggle: false,
   },
 );
 
 const emit = defineEmits<{
   (e: "update:modelValue", value: string | string[] | Array<string | null> | null): void;
+  (e: "inheritance-remove"): void;
+  (e: "inheritance-restore"): void;
 }>();
+
+const onInheritanceChange = (inheritance: "linked" | "unlinked") => {
+  emit(inheritance === "linked" ? "inheritance-restore" : "inheritance-remove");
+};
 
 const errorId = useId();
 const errorMessage = ref<{ detail: string } | undefined>(undefined);
