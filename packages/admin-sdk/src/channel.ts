@@ -508,6 +508,10 @@ const datasets = new Map<string, unknown>();
  */
 
 (async (): Promise<void> => {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
   // Mark embedded documents and pin the color scheme before the first paint (needs no channel)
   const themePin = window.parent !== window ? applyEmbeddedContext() : null;
 
@@ -749,12 +753,14 @@ export async function processDataRegistration(data: Omit<datasetRegistration, 'r
   }
 }
 
-window._swsdk = {
-  sourceRegistry,
-  subscriberRegistry,
-  datasets,
-  adminExtensions,
-};
+if (typeof window !== 'undefined') {
+  window._swsdk = {
+    sourceRegistry,
+    subscriberRegistry,
+    datasets,
+    adminExtensions,
+  };
+}
 
 /**
  * ----------------

@@ -1,6 +1,6 @@
 {
   "name": "@shopware-ag/meteor-admin-sdk",
-  "version": "6.13.0",
+  "version": "6.14.0",
   "description": "The Meteor SDK for the Shopware Administration.",
   "keywords": [
     "iframe",
@@ -27,6 +27,26 @@
     "./es/location": {
       "import": "./es/location/index.js",
       "require": "./umd/location/index.js"
+    },
+    "./es/context": {
+      "import": "./es/context/index.js",
+      "require": "./umd/context/index.js"
+    },
+    "./es/window": {
+      "import": "./es/window/index.js",
+      "require": "./umd/window/index.js"
+    },
+    "./es/telemetry": {
+      "import": "./es/telemetry/index.js",
+      "require": "./umd/telemetry/index.js"
+    },
+    "./es/_private/context": {
+      "import": "./es/_private/context/index.js",
+      "require": "./umd/_private/context/index.js"
+    },
+    "./es/_private/permissions": {
+      "import": "./es/_private/permissions/index.js",
+      "require": "./umd/_private/permissions/index.js"
     },
     "./es/_internals/privileges/missing-privileges-error": {
       "import": "./es/_internals/privileges/missing-privileges-error.js",

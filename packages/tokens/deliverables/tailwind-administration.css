@@ -12,7 +12,7 @@
   --color-interaction-critical-hover: light-dark(#c20017, #c20017);
   --color-interaction-critical-pressed: light-dark(#90000e, #90000e);
   --color-interaction-critical-disabled: light-dark(#ffa9a0, #5e0006);
-  --color-elevation-surface-sunken: light-dark(#fafbfe, #09090b);
+  --color-elevation-surface-sunken: light-dark(#fafbfe, #0e0e11);
   --color-elevation-surface-default: light-dark(#ffffff, #101013);
   --color-elevation-surface-selected: light-dark(#cdced4, #2d2e32);
   --color-elevation-surface-hover: light-dark(#e2e3e9, #3d3e42);
@@ -34,9 +34,9 @@
   --color-background-attention-default: light-dark(#fff3e3, #241500);
   --color-background-positive-default: light-dark(#e1ffe0, #002002);
   --color-background-accent-default: light-dark(#e4e1ff, #1c0049);
-  --color-icon-primary-default: light-dark(#1e1e24, #fafbfe);
+  --color-icon-primary-default: light-dark(#1e1e24, #e2e3e9);
   --color-icon-primary-disabled: light-dark(#b9babf, #696a6e);
-  --color-icon-primary-inverse: light-dark(#fafbfe, #1e1e24);
+  --color-icon-primary-inverse: light-dark(#e2e3e9, #1e1e24);
   --color-icon-secondary-default: light-dark(#696a6e, #a5a6ab);
   --color-icon-secondary-disabled: light-dark(#b9babf, #696a6e);
   --color-icon-secondary-inverse: light-dark(#a5a6ab, #696a6e);
@@ -51,7 +51,7 @@
   --color-icon-positive-default: light-dark(#36d046, #4dde58);
   --color-icon-accent-default: light-dark(#633bc6, #b5a8ff);
   --color-icon-static-default: light-dark(#ffffff, #ffffff);
-  --color-icon-static-dark: light-dark(#09090b, #09090b);
+  --color-icon-static-dark: light-dark(#0e0e11, #0e0e11);
   --color-icon-inverse-default: light-dark(#1e1e24, #1e1e24);
   --color-border-primary-default: light-dark(#cdced4, #3d3e42);
   --color-border-secondary-default: light-dark(#e2e3e9, #26262b);
@@ -64,9 +64,9 @@
   --color-border-attention-default: light-dark(#fbaf18, #cc8c00);
   --color-border-positive-default: light-dark(#36d046, #00ab26);
   --color-border-accent-default: light-dark(#a694ff, #886fe9);
-  --color-text-primary-default: light-dark(#1e1e24, #fafbfe);
+  --color-text-primary-default: light-dark(#1e1e24, #e2e3e9);
   --color-text-primary-disabled: light-dark(#b9babf, #696a6e);
-  --color-text-primary-inverse: light-dark(#fafbfe, #1e1e24);
+  --color-text-primary-inverse: light-dark(#e2e3e9, #1e1e24);
   --color-text-secondary-default: light-dark(#696a6e, #a5a6ab);
   --color-text-secondary-disabled: light-dark(#b9babf, #696a6e);
   --color-text-secondary-inverse: light-dark(#a5a6ab, #696a6e);
@@ -85,10 +85,10 @@
   --color-text-positive-default: light-dark(#00470a, #e1ffe0);
   --color-text-accent-default: light-dark(#633bc6, #b5a8ff);
   --color-text-static-default: light-dark(#ffffff, #ffffff);
-  --color-text-static-dark: light-dark(#09090b, #09090b);
+  --color-text-static-dark: light-dark(#0e0e11, #0e0e11);
   --color-text-inverse-default: light-dark(#1e1e24, #1e1e24);
   --color-static-white: light-dark(#ffffff, #ffffff);
-  --color-static-black: light-dark(#09090b, #09090b);
+  --color-static-black: light-dark(#0e0e11, #0e0e11);
   --font-family-headings: 'Inter';
   --font-family-body: 'Inter';
   --font-size-2xs: 0.75rem;
