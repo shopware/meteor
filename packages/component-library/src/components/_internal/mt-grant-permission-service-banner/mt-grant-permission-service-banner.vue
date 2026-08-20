@@ -74,10 +74,7 @@ import {
 } from "@shopware-ag/meteor-admin-sdk/es/context";
 import { dispatch } from "@shopware-ag/meteor-admin-sdk/es/telemetry";
 import { isService } from "@shopware-ag/meteor-admin-sdk/es/_private/context";
-import {
-  grant,
-  isGranted,
-} from "@shopware-ag/meteor-admin-sdk/es/_private/permissions";
+import { grant, isGranted } from "@shopware-ag/meteor-admin-sdk/es/_private/permissions";
 
 const { t } = useI18n({
   messages: {
