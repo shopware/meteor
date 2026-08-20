@@ -67,12 +67,17 @@ import { useI18n } from "vue-i18n";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtText from "@/components/mt-text/mt-text.vue";
 import MtButton from "@/components/mt-button/mt-button.vue";
-import { window as adminWindow, context, _private, telemetry } from "@shopware-ag/meteor-admin-sdk";
-
-const { grant, isGranted } = _private.permissions;
-const { isService } = _private.context;
-const { compareIsShopwareVersion } = context;
-const { routerPush } = adminWindow;
+import { routerPush } from "@shopware-ag/meteor-admin-sdk/es/window";
+import {
+  compareIsShopwareVersion,
+  getAppInformation,
+} from "@shopware-ag/meteor-admin-sdk/es/context";
+import { dispatch } from "@shopware-ag/meteor-admin-sdk/es/telemetry";
+import { isService } from "@shopware-ag/meteor-admin-sdk/es/_private/context";
+import {
+  grant,
+  isGranted,
+} from "@shopware-ag/meteor-admin-sdk/es/_private/permissions";
 
 const { t } = useI18n({
   messages: {
@@ -106,14 +111,14 @@ const isShowUI = asyncComputed(async () => {
 
 // Resolving the app information is a channel round-trip, so the banner starts
 // out without it and the telemetry payload has to tolerate the empty state.
-type AppInformation = Awaited<ReturnType<typeof context.getAppInformation>>;
+type AppInformation = Awaited<ReturnType<typeof getAppInformation>>;
 
 const appInfo = asyncComputed<AppInformation | null>(async () => {
-  return await context.getAppInformation();
+  return await getAppInformation();
 }, null);
 
 function track(event: string, data?: Record<string, unknown>) {
-  telemetry?.dispatch({ event, data })?.catch(() => undefined);
+  dispatch({ event, data }).catch(() => undefined);
 }
 
 async function handleGrantPermission() {

@@ -12,17 +12,20 @@ const getAppInformation = vi.hoisted(() => vi.fn());
 const routerPush = vi.hoisted(() => vi.fn());
 const dispatch = vi.hoisted(() => vi.fn());
 
-// The component imports the SDK barrel, so the barrel is what gets mocked.
-// Only the namespaces it actually reaches for are provided — anything else the
-// component starts using will fail loudly here rather than hit the real SDK.
-vi.mock("@shopware-ag/meteor-admin-sdk", () => ({
-  window: { routerPush },
-  context: { compareIsShopwareVersion, getAppInformation },
-  telemetry: { dispatch },
-  _private: {
-    permissions: { grant, isGranted },
-    context: { isService },
-  },
+vi.mock("@shopware-ag/meteor-admin-sdk/es/window", () => ({ routerPush }));
+
+vi.mock("@shopware-ag/meteor-admin-sdk/es/context", () => ({
+  compareIsShopwareVersion,
+  getAppInformation,
+}));
+
+vi.mock("@shopware-ag/meteor-admin-sdk/es/telemetry", () => ({ dispatch }));
+
+vi.mock("@shopware-ag/meteor-admin-sdk/es/_private/context", () => ({ isService }));
+
+vi.mock("@shopware-ag/meteor-admin-sdk/es/_private/permissions", () => ({
+  grant,
+  isGranted,
 }));
 
 /**

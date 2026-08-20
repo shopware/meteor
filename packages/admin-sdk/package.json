@@ -28,6 +28,18 @@
       "import": "./es/location/index.js",
       "require": "./umd/location/index.js"
     },
+    "./es/context": {
+      "import": "./es/context/index.js",
+      "require": "./umd/context/index.js"
+    },
+    "./es/window": {
+      "import": "./es/window/index.js",
+      "require": "./umd/window/index.js"
+    },
+    "./es/telemetry": {
+      "import": "./es/telemetry/index.js",
+      "require": "./umd/telemetry/index.js"
+    },
     "./es/_private/context": {
       "import": "./es/_private/context/index.js",
       "require": "./umd/_private/context/index.js"
