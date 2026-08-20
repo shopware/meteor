@@ -1,5 +1,13 @@
 # Changelog
 
+## 6.14.0
+
+### Minor Changes
+
+- [#1308](https://github.com/shopware/meteor/pull/1308) [`ede6e3d`](https://github.com/shopware/meteor/commit/ede6e3dac12c0419476b31f1d065d06a44cd1154) Thanks [@quando1910](https://github.com/quando1910)! - Add the `MtGrantPermissionServiceBanner` component and the Admin SDK APIs required to request and manage service permissions. The banner adapts its grant action to the Shopware version and permission state.
+
+- [#1318](https://github.com/shopware/meteor/pull/1318) [`ee794f9`](https://github.com/shopware/meteor/commit/ee794f94c2ac1612bd1106d0b9f8d49cddfe9fb9) Thanks [@quando1910](https://github.com/quando1910)! - Add optional `priority` to `ui.componentSection.add` to control the render order when multiple extensions register a component at the same `positionId`. Lower values render first (`1` = topmost); omitted or invalid values render after prioritized entries.
+
 ## 6.13.0
 
 ### Minor Changes
