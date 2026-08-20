@@ -36,12 +36,6 @@
           :is-loading="isLoading"
           @click="handleGrantPermission"
         >
-          <!--
-            Both labels are rendered and the container query hides one of them, so that
-            the wording can follow the available width without a JavaScript measurement.
-            The hidden label is `display: none` and therefore excluded from the
-            accessible name.
-          -->
           <span class="mt-grant-permission-service-banner__label--short">
             {{ t("grantLabel") }}
           </span>
@@ -57,6 +51,7 @@
           :href="t('moreInfoUrl')"
           target="_blank"
           rel="noopener noreferrer"
+          @click="handleClickMoreInfo"
         >
           {{ t("moreInfo") }}
         </mt-button>
@@ -72,9 +67,7 @@ import { useI18n } from "vue-i18n";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtText from "@/components/mt-text/mt-text.vue";
 import MtButton from "@/components/mt-button/mt-button.vue";
-// `window` must be aliased: an unaliased import shadows the global `window`
-// for this whole module.
-import { window as adminWindow, context, _private } from "@shopware-ag/meteor-admin-sdk";
+import { window as adminWindow, context, _private, telemetry } from "@shopware-ag/meteor-admin-sdk";
 
 const { grant, isGranted } = _private.permissions;
 const { isService } = _private.context;
@@ -85,9 +78,9 @@ const { t } = useI18n({
   messages: {
     de: {
       title: "Berechtigung erteilen, um diesen Service zu aktivieren.",
-      description: "Der Service ruft nur die Daten ab, die er zum Funktionieren benötigt.",
+      description: "Es werden nur die für die Funktion erforderlichen Daten abgerufen.",
       grantLabel: "Berechtigungen erteilen",
-      grantLongLabel: "Berechtigungen erteilen und aktivieren",
+      grantLongLabel: "Erlauben & aktivieren",
       moreInfo: "Weitere Informationen",
       moreInfoUrl: "https://docs.shopware.com/de/shopware-6-de/shopware-services",
     },
@@ -111,7 +104,23 @@ const isShowUI = asyncComputed(async () => {
   return (await isService()) && !(await isGranted());
 }, false);
 
+// Resolving the app information is a channel round-trip, so the banner starts
+// out without it and the telemetry payload has to tolerate the empty state.
+type AppInformation = Awaited<ReturnType<typeof context.getAppInformation>>;
+
+const appInfo = asyncComputed<AppInformation | null>(async () => {
+  return await context.getAppInformation();
+}, null);
+
+function track(event: string, data?: Record<string, unknown>) {
+  telemetry?.dispatch({ event, data })?.catch(() => undefined);
+}
+
 async function handleGrantPermission() {
+  track(`${appInfo.value?.name}_grant_permission_clicked`, {
+    shopware_version: appInfo.value?.version,
+  });
+
   if (await compareIsShopwareVersion("<", "6.7.14.0")) {
     await routerPush({ path: shopwareServicePagePath });
     return;
@@ -129,6 +138,10 @@ async function handleGrantPermission() {
     isLoading.value = false;
   }
 }
+
+function handleClickMoreInfo() {
+  track(`${appInfo.value?.name}_grant_permission_more_info`);
+}
 </script>
 
 <style scoped>
@@ -141,7 +154,7 @@ async function handleGrantPermission() {
 .mt-grant-permission-service-banner {
   display: grid;
   gap: var(--scale-size-8) var(--scale-size-12);
-  padding: var(--scale-size-20);
+  padding: var(--scale-size-24) var(--scale-size-20);
   border: 1px solid var(--color-border-primary-default);
   border-radius: var(--border-radius-card);
   background-color: var(--color-elevation-surface-raised);
@@ -191,7 +204,7 @@ async function handleGrantPermission() {
   display: none;
 }
 
-@container mt-grant-permission-service-banner (width >= 26rem) {
+@container mt-grant-permission-service-banner (width >= 25rem) {
   .mt-grant-permission-service-banner {
     grid-template-columns: auto 1fr;
     grid-template-areas:
@@ -199,6 +212,7 @@ async function handleGrantPermission() {
       ".    actions";
     justify-items: start;
     text-align: start;
+    padding: var(--scale-size-20);
   }
 
   .mt-grant-permission-service-banner__actions {
@@ -225,6 +239,7 @@ async function handleGrantPermission() {
     grid-template-columns: auto 1fr auto;
     grid-template-areas: "icon body actions";
     align-items: center;
+    padding: var(--scale-size-16) var(--scale-size-20);
   }
 
   .mt-grant-permission-service-banner__actions {

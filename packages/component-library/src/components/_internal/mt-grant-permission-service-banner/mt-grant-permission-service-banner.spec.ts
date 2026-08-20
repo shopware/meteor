@@ -8,14 +8,17 @@ const isService = vi.hoisted(() => vi.fn());
 const grant = vi.hoisted(() => vi.fn());
 const isGranted = vi.hoisted(() => vi.fn());
 const compareIsShopwareVersion = vi.hoisted(() => vi.fn());
+const getAppInformation = vi.hoisted(() => vi.fn());
 const routerPush = vi.hoisted(() => vi.fn());
+const dispatch = vi.hoisted(() => vi.fn());
 
 // The component imports the SDK barrel, so the barrel is what gets mocked.
 // Only the namespaces it actually reaches for are provided — anything else the
 // component starts using will fail loudly here rather than hit the real SDK.
 vi.mock("@shopware-ag/meteor-admin-sdk", () => ({
   window: { routerPush },
-  context: { compareIsShopwareVersion },
+  context: { compareIsShopwareVersion, getAppInformation },
+  telemetry: { dispatch },
   _private: {
     permissions: { grant, isGranted },
     context: { isService },
@@ -25,16 +28,31 @@ vi.mock("@shopware-ag/meteor-admin-sdk", () => ({
 /**
  * Renders the banner and waits for the `isService` round-trip to settle, because
  * the banner stays hidden until the Administration confirms a service context.
+ *
+ * The click handler is async, so anything it rejects with lands in Vue's error
+ * handler rather than in the console. The collected `errors` keep those
+ * rejections assertable instead of letting them fail the run as unhandled.
  */
 async function renderBanner() {
-  const result = render(MtGrantPermissionServiceBanner);
+  const errors: unknown[] = [];
+
+  const result = render(MtGrantPermissionServiceBanner, {
+    global: {
+      config: {
+        errorHandler: (error: unknown) => {
+          errors.push(error);
+        },
+      },
+    },
+  });
+
   await flushPromises();
 
-  return result;
+  return { ...result, errors };
 }
 
 function getGrantButton() {
-  return screen.getByRole("button", { name: /Grant permission/ });
+  return screen.getByRole("button", { name: /Grant permissions/ });
 }
 
 beforeEach(() => {
@@ -46,7 +64,14 @@ beforeEach(() => {
   grant.mockResolvedValue(undefined);
   isGranted.mockResolvedValue(false);
   compareIsShopwareVersion.mockResolvedValue(false);
+  getAppInformation.mockResolvedValue({
+    name: "SwagExample",
+    version: "1.2.3",
+    type: "app",
+    privileges: {},
+  });
   routerPush.mockResolvedValue(undefined);
+  dispatch.mockResolvedValue(undefined);
 });
 
 describe("mt-grant-permission-service-banner", () => {
@@ -110,7 +135,7 @@ describe("mt-grant-permission-service-banner", () => {
 
     // ASSERT
     expect(screen.getByRole("region")).toHaveAccessibleName(
-      "Grant permission to activate this service.",
+      "Grant permissions to activate this service.",
     );
   });
 
@@ -133,10 +158,10 @@ describe("mt-grant-permission-service-banner", () => {
     const grantButton = getGrantButton();
     expect(
       grantButton.querySelector(".mt-grant-permission-service-banner__label--short"),
-    ).toHaveTextContent("Grant permission");
+    ).toHaveTextContent("Grant permissions");
     expect(
       grantButton.querySelector(".mt-grant-permission-service-banner__label--long"),
-    ).toHaveTextContent("Grant permission and activate");
+    ).toHaveTextContent("Grant permissions and activate");
   });
 
   it("grants the service permission when the user confirms", async () => {
@@ -195,11 +220,10 @@ describe("mt-grant-permission-service-banner", () => {
 
   it("does not route away when the version check fails", async () => {
     // ARRANGE
-    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
     const user = userEvent.setup();
     compareIsShopwareVersion.mockRejectedValue(new Error("no channel counterpart"));
 
-    await renderBanner();
+    const { errors } = await renderBanner();
 
     // ACT
     await user.click(getGrantButton());
@@ -207,29 +231,28 @@ describe("mt-grant-permission-service-banner", () => {
     // ASSERT
     expect(routerPush).not.toHaveBeenCalled();
     expect(grant).not.toHaveBeenCalled();
-    expect(consoleError).toHaveBeenCalled();
-
-    consoleError.mockRestore();
+    // The version check sits outside the handler's own try/catch, so the
+    // failure leaves the handler and is reported by Vue.
+    expect(errors).toContainEqual(new Error("no channel counterpart"));
   });
 
   it("recovers when the route change is rejected", async () => {
     // ARRANGE
-    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
     const user = userEvent.setup();
     compareIsShopwareVersion.mockResolvedValue(true);
     routerPush.mockRejectedValue(new Error("unknown route"));
 
-    await renderBanner();
+    const { errors } = await renderBanner();
 
     // ACT
     await user.click(getGrantButton());
 
     // ASSERT
-    expect(consoleError).toHaveBeenCalled();
+    expect(errors).toContainEqual(new Error("unknown route"));
     expect(grant).not.toHaveBeenCalled();
+    // A rejected route change must not leave the button stuck in its loading
+    // state, otherwise the banner becomes unusable.
     expect(getGrantButton()).toBeEnabled();
-
-    consoleError.mockRestore();
   });
 
   it("shows a loading state while the permission is being granted", async () => {
@@ -298,6 +321,87 @@ describe("mt-grant-permission-service-banner", () => {
     expect(grant).toHaveBeenCalledTimes(2);
 
     consoleError.mockRestore();
+  });
+
+  it("reports the grant click to telemetry", async () => {
+    // ARRANGE
+    const user = userEvent.setup();
+    await renderBanner();
+
+    // ACT
+    await user.click(getGrantButton());
+
+    // ASSERT
+    expect(dispatch).toHaveBeenCalledWith({
+      event: "SwagExample_grant_permission_clicked",
+      data: { shopware_version: "1.2.3" },
+    });
+  });
+
+  it("reports the grant click on an Administration without grant support", async () => {
+    // ARRANGE
+    const user = userEvent.setup();
+    compareIsShopwareVersion.mockResolvedValue(true);
+
+    await renderBanner();
+
+    // ACT
+    await user.click(getGrantButton());
+
+    // ASSERT
+    // The click is what is being measured, not whether it ended in a grant or
+    // in a detour to the services settings page.
+    expect(dispatch).toHaveBeenCalledWith({
+      event: "SwagExample_grant_permission_clicked",
+      data: { shopware_version: "1.2.3" },
+    });
+    expect(routerPush).toHaveBeenCalled();
+  });
+
+  it("grants the permission when the app information is unavailable", async () => {
+    // ARRANGE
+    const user = userEvent.setup();
+    getAppInformation.mockRejectedValue(new Error("no channel counterpart"));
+
+    await renderBanner();
+
+    // ACT
+    await user.click(getGrantButton());
+
+    // ASSERT
+    // Telemetry metadata is nice to have; the banner still has to do its job
+    // without it.
+    expect(grant).toHaveBeenCalledTimes(1);
+  });
+
+  it("grants the permission when telemetry is unavailable", async () => {
+    // ARRANGE
+    const user = userEvent.setup();
+    dispatch.mockRejectedValue(new Error("no channel counterpart"));
+
+    await renderBanner();
+
+    // ACT
+    await user.click(getGrantButton());
+
+    // ASSERT
+    // A rejected dispatch is swallowed, so it neither surfaces as an unhandled
+    // rejection nor stops the grant.
+    expect(grant).toHaveBeenCalledTimes(1);
+  });
+
+  it("reports the more info click to telemetry", async () => {
+    // ARRANGE
+    const user = userEvent.setup();
+    await renderBanner();
+
+    // ACT
+    await user.click(screen.getByRole("link", { name: "More info" }));
+
+    // ASSERT
+    expect(dispatch).toHaveBeenCalledWith({
+      event: "SwagExample_grant_permission_more_info",
+    });
   });
 
   it("opens the more info target in a new tab", async () => {
