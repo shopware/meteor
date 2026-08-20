@@ -13,6 +13,7 @@
     :aria-disabled="disabled"
     :tabindex="disabled ? -1 : 0"
     v-bind="{ ...hrefAttribute, ...(to ? { ...$attrs, to } : $attrs) }"
+    @click.capture="onClickCapture"
     @click="disabled ? undefined : $emit('click', $event)"
   >
     <slot />
@@ -45,12 +46,10 @@ const props = withDefaults(
 );
 
 const hrefAttribute = computed(() => {
-  /**
-   * `router-link` resolves its own `href` from `to`. We must not bind `href` at all in
-   * that case: binding it, even as `undefined`, overrides the resolved value through
-   * attribute fallthrough and leaves the link without a usable target.
-   */
-  if (props.disabled || props.as === "router-link") return {};
+  // `href: undefined` falls through and strips the `href` a disabled router-link resolved from `to`.
+  if (props.disabled) return { href: undefined };
+  // Binding `href` here at all would clobber the one `router-link` resolves itself.
+  if (props.as === "router-link") return {};
 
   // A route location object would stringify to "[object Object]" in an href.
   return typeof props.to === "string" ? { href: props.to } : {};
@@ -59,6 +58,14 @@ const hrefAttribute = computed(() => {
 defineEmits<{
   (e: "click", event: MouseEvent): void;
 }>();
+
+// Runs before `router-link`'s own click listener, whose guard skips default-prevented events.
+function onClickCapture(event: MouseEvent) {
+  if (props.disabled) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+}
 </script>
 
 <style scoped>

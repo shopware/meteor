@@ -216,6 +216,62 @@ describe("mt-link", () => {
     expect(screen.getByRole("link")).not.toHaveAttribute("href");
   });
 
+  it("does not expose an href on a disabled router-link", async () => {
+    // ARRANGE
+    render(MtLink, {
+      props: {
+        disabled: true,
+        to: { name: "sw.customer.detail", params: { id: "abc" } },
+      },
+      slots: {
+        default: "Max Mustermann",
+      },
+      global: {
+        components: { "router-link": RouterLinkStub },
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByText("Max Mustermann")).not.toHaveAttribute("href");
+  });
+
+  it("does not navigate a disabled router-link on click", async () => {
+    // ARRANGE
+    const navigate = vi.fn();
+    // Mimics router-link's click guard, which ignores default-prevented events.
+    const GuardedRouterLinkStub = defineComponent({
+      props: {
+        to: { type: [String, Object], required: true },
+      },
+      setup: () => ({
+        onClick: (event: MouseEvent) => {
+          if (!event.defaultPrevented) navigate();
+          event.preventDefault();
+        },
+      }),
+      template: `<a href="/resolved" @click="onClick"><slot /></a>`,
+    });
+
+    render(MtLink, {
+      props: {
+        disabled: true,
+        to: { name: "sw.customer.detail", params: { id: "abc" } },
+      },
+      slots: {
+        default: "Max Mustermann",
+      },
+      global: {
+        components: { "router-link": GuardedRouterLinkStub },
+      },
+    });
+
+    // ACT
+    await userEvent.click(screen.getByText("Max Mustermann"));
+
+    // ASSERT
+    expect(navigate).not.toHaveBeenCalled();
+  });
+
   it("still renders a string href when it is not a router-link", async () => {
     // ARRANGE
     render(MtLink, {
