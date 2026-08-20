@@ -1,5 +1,21 @@
 # Changelog
 
+## 5.7.0
+
+### Minor Changes
+
+- [#1308](https://github.com/shopware/meteor/pull/1308) [`ede6e3d`](https://github.com/shopware/meteor/commit/ede6e3dac12c0419476b31f1d065d06a44cd1154) Thanks [@quando1910](https://github.com/quando1910)! - Add the `MtGrantPermissionServiceBanner` component and the Admin SDK APIs required to request and manage service permissions. The banner adapts its grant action to the Shopware version and permission state.
+
+### Patch Changes
+
+- [#1322](https://github.com/shopware/meteor/pull/1322) [`f83cc34`](https://github.com/shopware/meteor/commit/f83cc34bd4d36ccd13d587b79111a75c3ae874f7) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Align the form field hint icon with the first line of the hint text instead of the vertical center, so it stays in place when the hint wraps onto multiple lines
+
+- [#1322](https://github.com/shopware/meteor/pull/1322) [`f83cc34`](https://github.com/shopware/meteor/commit/f83cc34bd4d36ccd13d587b79111a75c3ae874f7) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Give every form field story separate Storybook controls for the `hint` prop and the `#hint` slot, so the prop is no longer shadowed by the slot.
+
+- Updated dependencies [[`ede6e3d`](https://github.com/shopware/meteor/commit/ede6e3dac12c0419476b31f1d065d06a44cd1154), [`ee794f9`](https://github.com/shopware/meteor/commit/ee794f94c2ac1612bd1106d0b9f8d49cddfe9fb9), [`80bbd6c`](https://github.com/shopware/meteor/commit/80bbd6cb5b0c1948c1e8b60d5dd05717094c080e)]:
+  - @shopware-ag/meteor-admin-sdk@6.14.0
+  - @shopware-ag/meteor-tokens@1.4.1
+
 ## 5.6.2
 
 ### Patch Changes
