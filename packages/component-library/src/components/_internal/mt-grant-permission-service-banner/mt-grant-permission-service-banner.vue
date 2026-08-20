@@ -84,18 +84,18 @@ const { routerPush } = adminWindow;
 const { t } = useI18n({
   messages: {
     de: {
-      title: "Erteilen Sie die Berechtigung, um diesen Dienst zu aktivieren.",
-      description: "Es werden nur die für die Funktion erforderlichen Daten abgerufen.",
-      grantLabel: "Berechtigung erteilen",
-      grantLongLabel: "Berechtigung erteilen und aktivieren",
-      moreInfo: "Mehr erfahren",
-      moreInfoUrl: "https://docs.shopware.com/de/shopware-6-en/shopware-services",
+      title: "Berechtigung erteilen, um diesen Service zu aktivieren.",
+      description: "Der Service ruft nur die Daten ab, die er zum Funktionieren benötigt.",
+      grantLabel: "Berechtigungen erteilen",
+      grantLongLabel: "Berechtigungen erteilen und aktivieren",
+      moreInfo: "Weitere Informationen",
+      moreInfoUrl: "https://docs.shopware.com/de/shopware-6-de/shopware-services",
     },
     en: {
-      title: "Grant permission to activate this service.",
+      title: "Grant permissions to activate this service.",
       description: "Only the data needed to function will be accessed.",
-      grantLabel: "Grant permission",
-      grantLongLabel: "Grant permission and activate",
+      grantLabel: "Grant permissions",
+      grantLongLabel: "Grant permissions and activate",
       moreInfo: "More info",
       moreInfoUrl: "https://docs.shopware.com/en/shopware-6-en/shopware-services",
     },
@@ -135,12 +135,13 @@ async function handleGrantPermission() {
 .mt-grant-permission-service-banner__container {
   container-type: inline-size;
   container-name: mt-grant-permission-service-banner;
+  background: var(--color-elevation-surface-raised);
 }
 
 .mt-grant-permission-service-banner {
   display: grid;
   gap: var(--scale-size-8) var(--scale-size-12);
-  padding: var(--scale-size-24);
+  padding: var(--scale-size-20);
   border: 1px solid var(--color-border-primary-default);
   border-radius: var(--border-radius-card);
   background-color: var(--color-elevation-surface-raised);
@@ -154,7 +155,7 @@ async function handleGrantPermission() {
 
 .mt-grant-permission-service-banner__icon {
   grid-area: icon;
-  color: var(--color-icon-primary-default);
+  color: var(--color-icon-positive-default);
 }
 
 .mt-grant-permission-service-banner__body {
@@ -190,7 +191,7 @@ async function handleGrantPermission() {
   display: none;
 }
 
-@container mt-grant-permission-service-banner (width >= 25rem) {
+@container mt-grant-permission-service-banner (width >= 26rem) {
   .mt-grant-permission-service-banner {
     grid-template-columns: auto 1fr;
     grid-template-areas:
