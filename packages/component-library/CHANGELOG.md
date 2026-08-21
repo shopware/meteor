@@ -1,5 +1,13 @@
 # Changelog
 
+## 5.7.1
+
+### Patch Changes
+
+- [#1332](https://github.com/shopware/meteor/pull/1332) [`df9d7d2`](https://github.com/shopware/meteor/commit/df9d7d213b5f2595d536615ef97567212eb6d620) Thanks [@keulinho](https://github.com/keulinho)! - Add inheritance support to `mt-datepicker`.
+
+- [#1328](https://github.com/shopware/meteor/pull/1328) [`1c00c0a`](https://github.com/shopware/meteor/commit/1c00c0ad45429a61b48756d30bb1852861067040) Thanks [@iwv-stefan-m](https://github.com/iwv-stefan-m)! - Let `mt-link` keep the `href` that `router-link` resolves, instead of overriding it with a stringified route location. Passing a route object such as `:to="{ name: 'sw.customer.detail', params: { id } }"` produced `href="[object Object]"`, which broke hover previews, ctrl/middle-click and "Open link in new tab" while a plain left-click still worked. Disabled links are now fully inert: they render no `href` and clicks on them no longer navigate or bubble
+
 ## 5.7.0
 
 ### Minor Changes
