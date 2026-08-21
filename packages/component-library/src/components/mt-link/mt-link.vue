@@ -9,11 +9,11 @@
         [`mt-link--${type}`]: type !== undefined,
       },
     ]"
-    :href="disabled ? undefined : to"
     :role="as === 'a' ? 'link' : undefined"
     :aria-disabled="disabled"
     :tabindex="disabled ? -1 : 0"
-    v-bind="to ? { ...$attrs, to } : $attrs"
+    v-bind="{ ...hrefAttribute, ...(to ? { ...$attrs, to } : $attrs) }"
+    @click.capture="onClickCapture"
     @click="disabled ? undefined : $emit('click', $event)"
   >
     <slot />
@@ -27,11 +27,12 @@
 </template>
 
 <script setup lang="ts">
+import { computed } from "vue";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 
-withDefaults(
+const props = withDefaults(
   defineProps<{
-    to?: string;
+    to?: string | Record<string, unknown>;
     as?: string;
     variant?: "primary" | "critical";
     disabled?: boolean;
@@ -44,9 +45,27 @@ withDefaults(
   },
 );
 
+const hrefAttribute = computed(() => {
+  // `href: undefined` falls through and strips the `href` a disabled router-link resolved from `to`.
+  if (props.disabled) return { href: undefined };
+  // Binding `href` here at all would clobber the one `router-link` resolves itself.
+  if (props.as === "router-link") return {};
+
+  // A route location object would stringify to "[object Object]" in an href.
+  return typeof props.to === "string" ? { href: props.to } : {};
+});
+
 defineEmits<{
   (e: "click", event: MouseEvent): void;
 }>();
+
+// Runs before `router-link`'s own click listener, whose guard skips default-prevented events.
+function onClickCapture(event: MouseEvent) {
+  if (props.disabled) {
+    event.preventDefault();
+    event.stopPropagation();
+  }
+}
 </script>
 
 <style scoped>
