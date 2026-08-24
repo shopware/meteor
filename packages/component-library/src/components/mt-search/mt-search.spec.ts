@@ -114,4 +114,27 @@ describe("mt-search", () => {
     expect(screen.getByRole("searchbox")).toHaveValue("Hello");
     expect(handler).not.toHaveBeenCalled();
   });
+
+  it("opts out of autofill by default", async () => {
+    // ARRANGE
+    render(MtSearch);
+
+    // ASSERT
+    expect(screen.getByRole("searchbox")).toHaveAttribute("autocomplete", "off");
+    expect(screen.getByRole("searchbox")).toHaveAttribute("data-1p-ignore");
+    expect(screen.getByRole("searchbox")).toHaveAttribute("data-lpignore", "true");
+    expect(screen.getByRole("searchbox")).toHaveAttribute("data-bwignore");
+  });
+
+  it("allows overriding the autocomplete attribute", async () => {
+    // ARRANGE
+    render(MtSearch, {
+      props: {
+        autocomplete: "on",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("searchbox")).toHaveAttribute("autocomplete", "on");
+  });
 });

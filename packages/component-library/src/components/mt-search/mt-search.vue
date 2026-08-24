@@ -2,12 +2,16 @@
   <div :class="['mt-search', `mt-search--size-${size}`, { 'mt-search--disabled': disabled }]">
     <input
       :value="modelValue"
-      @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
-      @change="$emit('change', ($event.target as HTMLInputElement).value)"
       class="mt-search__input"
       :disabled="disabled"
       type="search"
+      :autocomplete="autocomplete"
+      data-1p-ignore
+      data-lpignore="true"
+      data-bwignore
       :placeholder="placeholder || t('placeholder')"
+      @input="$emit('update:modelValue', ($event.target as HTMLInputElement).value)"
+      @change="$emit('change', ($event.target as HTMLInputElement).value)"
     />
 
     <mt-icon
@@ -28,9 +32,11 @@ withDefaults(
     placeholder?: string;
     size?: "small" | "default";
     disabled?: boolean;
+    autocomplete?: string;
   }>(),
   {
     size: "default",
+    autocomplete: "off",
   },
 );
 

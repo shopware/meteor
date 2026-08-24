@@ -183,7 +183,7 @@ export default defineComponent({
     },
 
     /**
-     * Render the select field in small without a search input
+     * Render the select field in small
      */
     small: {
       type: Boolean,
