@@ -54,7 +54,8 @@ Enable `enableMultiSelection` so users can choose several values at once.
 - The component searches within the provided options by default and supports a custom `searchFunction` when filtering needs to follow business-specific rules.
 - `labelProperty` can be a string or an array of property paths. When an array is used, the first non-empty value is used as the visible label.
 - Shared field features such as `hint`, `error`, prefix and suffix content, and inheritance handling work the same way as in other form fields.
-- `small` renders a compact variant without the inline search input, which is better suited to tighter layouts.
+- `small` renders a compact variant, which is better suited to tighter layouts.
+- `enableSearch` toggles the inline search input. Disabling it renders the field read-only for typing, which also keeps browsers and password managers from offering autofill in the search input.
 - Use `selectionLabelProperty` to customize how selected items are rendered in the closed field.
 - Use the `result-item` slot or `resultLabelProperty` when result rows need richer formatting than a plain text label.
 - Use the `before-item-list` and `after-item-list` slots for supporting content around the result list, such as guidance or actions.
