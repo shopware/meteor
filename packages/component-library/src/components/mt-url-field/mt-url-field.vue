@@ -65,6 +65,7 @@
         type="url"
         :placeholder="placeholder"
         :name="name"
+        :autocomplete="autocomplete"
         :required="required"
         :disabled="disabled || isInherited"
         class="mt-url-field__input"
@@ -170,6 +171,7 @@ const props = withDefaults(
     disabled?: boolean;
     placeholder?: string;
     name?: string;
+    autocomplete?: string;
     size?: "small" | "default";
     /**
      * Optional caption below the field. The `#hint` slot takes precedence when provided.
@@ -178,6 +180,7 @@ const props = withDefaults(
   }>(),
   {
     size: "default",
+    autocomplete: undefined,
   },
 );
 
