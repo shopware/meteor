@@ -29,12 +29,13 @@ const emit = defineEmits<{
 
 <style lang="css" scoped>
 .mt-unit-select-result {
-  min-width: var(--scale-size-160);
-  padding: var(--scale-size-10) var(--scale-size-16);
+  min-width: var(--scale-size-128);
+  width: 100%;
+  padding: var(--scale-size-10) var(--scale-size-12);
   display: grid;
   grid-template-columns: auto 1fr;
   align-items: center;
-  gap: var(--scale-size-8);
+  gap: var(--scale-size-32);
   border-radius: var(--border-radius-xs);
   text-align: left;
   font-size: var(--font-size-xs);
@@ -53,14 +54,14 @@ const emit = defineEmits<{
 
 .mt-unit-select-result__unit {
   color: var(--color-text-secondary-default);
+  text-align: right;
 }
 
 .mt-unit-select-result:hover {
-  background-color: var(--color-background-brand-default);
+  background-color: var(--color-interaction-secondary-hover);
 }
 
-.mt-unit-select-result--active {
-  border-radius: var(--border-radius-xs);
+li.mt-unit-select-result--active .mt-unit-select-result {
   background-color: var(--color-background-brand-default);
 }
 

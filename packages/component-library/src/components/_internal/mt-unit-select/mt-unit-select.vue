@@ -193,12 +193,13 @@ onUnmounted(() => {
 
 <style lang="css" scoped>
 .mt-unit-select {
-  padding: var(--scale-size-8);
+  padding: var(--scale-size-4);
   border: 1px solid var(--color-border-secondary-default);
-  border-radius: var(--border-radius-button);
+  border-radius: var(--border-radius-xs);
   background-color: var(--color-background-primary-default);
   color: var(--color-text-primary-default);
   font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
   box-shadow: 0 3px 6px 0 var(--color-elevation-shadow-default);
 }
 
@@ -240,5 +241,6 @@ onUnmounted(() => {
 .mt-unit-select__trigger:disabled {
   background-color: var(--color-background-tertiary-default);
   border-color: var(--color-background-tertiary-default);
+  cursor: not-allowed;
 }
 </style>
