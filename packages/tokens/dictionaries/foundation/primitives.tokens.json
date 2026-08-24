@@ -446,7 +446,7 @@
         "$description": ""
       },
       "1000": {
-        "$value": "#09090b",
+        "$value": "#0e0e11",
         "$type": "color",
         "$description": ""
       }
