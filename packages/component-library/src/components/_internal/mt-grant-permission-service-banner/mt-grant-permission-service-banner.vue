@@ -69,6 +69,7 @@ import MtText from "@/components/mt-text/mt-text.vue";
 import MtButton from "@/components/mt-button/mt-button.vue";
 import { routerPush } from "@shopware-ag/meteor-admin-sdk/es/window";
 import {
+  can,
   compareIsShopwareVersion,
   getAppInformation,
 } from "@shopware-ag/meteor-admin-sdk/es/context";
@@ -101,8 +102,29 @@ const titleId = useId();
 
 const isLoading = ref(false);
 const shopwareServicePagePath = "/sw/settings/services/index";
+const isLegacySWVersionEvaluating = ref(true);
+
+const isLegacySWVersion = asyncComputed<boolean | null>(
+  async () => {
+    try {
+      return await compareIsShopwareVersion("<", "6.7.14.0");
+    } catch {
+      return null;
+    }
+  },
+  null,
+  { evaluating: isLegacySWVersionEvaluating },
+);
 
 const isShowUI = asyncComputed(async () => {
+  if (isLegacySWVersionEvaluating.value || isLegacySWVersion.value === null) {
+    return false;
+  }
+
+  if (isLegacySWVersion.value) {
+    return await can("system_config:read");
+  }
+
   return (await isService()) && !(await isGranted());
 }, false);
 
@@ -123,7 +145,7 @@ async function handleGrantPermission() {
     shopware_version: appInfo.value?.version,
   });
 
-  if (await compareIsShopwareVersion("<", "6.7.14.0")) {
+  if (isLegacySWVersion.value) {
     await routerPush({ path: shopwareServicePagePath });
     return;
   }

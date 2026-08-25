@@ -7,6 +7,7 @@ import MtGrantPermissionServiceBanner from "./mt-grant-permission-service-banner
 const isService = vi.hoisted(() => vi.fn());
 const grant = vi.hoisted(() => vi.fn());
 const isGranted = vi.hoisted(() => vi.fn());
+const can = vi.hoisted(() => vi.fn());
 const compareIsShopwareVersion = vi.hoisted(() => vi.fn());
 const getAppInformation = vi.hoisted(() => vi.fn());
 const routerPush = vi.hoisted(() => vi.fn());
@@ -15,6 +16,7 @@ const dispatch = vi.hoisted(() => vi.fn());
 vi.mock("@shopware-ag/meteor-admin-sdk/es/window", () => ({ routerPush }));
 
 vi.mock("@shopware-ag/meteor-admin-sdk/es/context", () => ({
+  can,
   compareIsShopwareVersion,
   getAppInformation,
 }));
@@ -66,6 +68,7 @@ beforeEach(() => {
   isService.mockResolvedValue(true);
   grant.mockResolvedValue(undefined);
   isGranted.mockResolvedValue(false);
+  can.mockResolvedValue(true);
   compareIsShopwareVersion.mockResolvedValue(false);
   getAppInformation.mockResolvedValue({
     name: "SwagExample",
@@ -119,6 +122,36 @@ describe("mt-grant-permission-service-banner", () => {
     await renderBanner();
 
     // ASSERT
+    expect(screen.queryByRole("region")).not.toBeInTheDocument();
+  });
+
+  it("uses the system config privilege on Administrations without service context support", async () => {
+    // ARRANGE
+    compareIsShopwareVersion.mockResolvedValue(true);
+    can.mockResolvedValue(true);
+
+    // ACT
+    await renderBanner();
+
+    // ASSERT
+    expect(can).toHaveBeenCalledWith("system_config:read");
+    expect(isService).not.toHaveBeenCalled();
+    expect(isGranted).not.toHaveBeenCalled();
+    expect(screen.getByRole("region")).toBeInTheDocument();
+  });
+
+  it("hides on older Administrations without the system config privilege", async () => {
+    // ARRANGE
+    compareIsShopwareVersion.mockResolvedValue(true);
+    can.mockResolvedValue(false);
+
+    // ACT
+    await renderBanner();
+
+    // ASSERT
+    expect(can).toHaveBeenCalledWith("system_config:read");
+    expect(isService).not.toHaveBeenCalled();
+    expect(isGranted).not.toHaveBeenCalled();
     expect(screen.queryByRole("region")).not.toBeInTheDocument();
   });
 
@@ -221,22 +254,16 @@ describe("mt-grant-permission-service-banner", () => {
     expect(getGrantButton()).toBeEnabled();
   });
 
-  it("does not route away when the version check fails", async () => {
+  it("hides when the version check fails", async () => {
     // ARRANGE
-    const user = userEvent.setup();
     compareIsShopwareVersion.mockRejectedValue(new Error("no channel counterpart"));
 
-    const { errors } = await renderBanner();
-
-    // ACT
-    await user.click(getGrantButton());
+    await renderBanner();
 
     // ASSERT
+    expect(screen.queryByRole("region")).not.toBeInTheDocument();
     expect(routerPush).not.toHaveBeenCalled();
     expect(grant).not.toHaveBeenCalled();
-    // The version check sits outside the handler's own try/catch, so the
-    // failure leaves the handler and is reported by Vue.
-    expect(errors).toContainEqual(new Error("no channel counterpart"));
   });
 
   it("recovers when the route change is rejected", async () => {
