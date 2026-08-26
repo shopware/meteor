@@ -1,7 +1,4 @@
-import {
-  can,
-  compareIsShopwareVersion,
-} from "@shopware-ag/meteor-admin-sdk/es/context";
+import { can, compareIsShopwareVersion } from "@shopware-ag/meteor-admin-sdk/es/context";
 import { isService as checkIsService } from "@shopware-ag/meteor-admin-sdk/es/_private/context";
 import {
   grant as grantPermission,
