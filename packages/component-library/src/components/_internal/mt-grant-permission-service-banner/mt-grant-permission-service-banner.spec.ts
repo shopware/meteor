@@ -13,22 +13,30 @@ const getAppInformation = vi.hoisted(() => vi.fn());
 const routerPush = vi.hoisted(() => vi.fn());
 const dispatch = vi.hoisted(() => vi.fn());
 
-vi.mock("@shopware-ag/meteor-admin-sdk/es/window", () => ({ routerPush }));
+vi.mock("@shopware-ag/meteor-admin-sdk", () => ({
+  context: {
+    can,
+    compareIsShopwareVersion,
+  },
+  _private: {
+    context: {
+      isService,
+    },
+    permissions: {
+      grant,
+      isGranted,
+    },
+  },
+  window: {
+    routerPush,
+  },
+}));
 
 vi.mock("@shopware-ag/meteor-admin-sdk/es/context", () => ({
-  can,
-  compareIsShopwareVersion,
   getAppInformation,
 }));
 
 vi.mock("@shopware-ag/meteor-admin-sdk/es/telemetry", () => ({ dispatch }));
-
-vi.mock("@shopware-ag/meteor-admin-sdk/es/_private/context", () => ({ isService }));
-
-vi.mock("@shopware-ag/meteor-admin-sdk/es/_private/permissions", () => ({
-  grant,
-  isGranted,
-}));
 
 /**
  * Renders the banner and waits for the `isService` round-trip to settle, because
@@ -268,21 +276,27 @@ describe("mt-grant-permission-service-banner", () => {
 
   it("recovers when the route change is rejected", async () => {
     // ARRANGE
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
     const user = userEvent.setup();
     compareIsShopwareVersion.mockResolvedValue(true);
     routerPush.mockRejectedValue(new Error("unknown route"));
 
-    const { errors } = await renderBanner();
+    await renderBanner();
 
     // ACT
     await user.click(getGrantButton());
 
     // ASSERT
-    expect(errors).toContainEqual(new Error("unknown route"));
+    expect(consoleError).toHaveBeenCalledWith(
+      "Error granting permission:",
+      new Error("unknown route"),
+    );
     expect(grant).not.toHaveBeenCalled();
     // A rejected route change must not leave the button stuck in its loading
     // state, otherwise the banner becomes unusable.
     expect(getGrantButton()).toBeEnabled();
+
+    consoleError.mockRestore();
   });
 
   it("shows a loading state while the permission is being granted", async () => {

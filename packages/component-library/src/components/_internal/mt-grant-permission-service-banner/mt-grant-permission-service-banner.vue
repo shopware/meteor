@@ -1,6 +1,6 @@
 <template>
   <!-- The container establishes the query context the banner sizes itself against. -->
-  <div v-if="isShowUI" class="mt-grant-permission-service-banner__container">
+  <div v-if="isShowPermissionUI" class="mt-grant-permission-service-banner__container">
     <section class="mt-grant-permission-service-banner" :aria-labelledby="titleId">
       <mt-icon
         class="mt-grant-permission-service-banner__icon"
@@ -33,7 +33,7 @@
         <mt-button
           variant="primary"
           class="mt-grant-permission-service-banner__grant"
-          :is-loading="isLoading"
+          :is-loading="isGranting"
           @click="handleGrantPermission"
         >
           <span class="mt-grant-permission-service-banner__label--short">
@@ -61,21 +61,15 @@
 </template>
 
 <script setup lang="ts">
-import { ref, useId } from "vue";
+import { useId } from "vue";
 import { asyncComputed } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtText from "@/components/mt-text/mt-text.vue";
 import MtButton from "@/components/mt-button/mt-button.vue";
-import { routerPush } from "@shopware-ag/meteor-admin-sdk/es/window";
-import {
-  can,
-  compareIsShopwareVersion,
-  getAppInformation,
-} from "@shopware-ag/meteor-admin-sdk/es/context";
+import { useServicePermission } from "@/composables/useServicePermission";
+import { getAppInformation } from "@shopware-ag/meteor-admin-sdk/es/context";
 import { dispatch } from "@shopware-ag/meteor-admin-sdk/es/telemetry";
-import { isService } from "@shopware-ag/meteor-admin-sdk/es/_private/context";
-import { grant, isGranted } from "@shopware-ag/meteor-admin-sdk/es/_private/permissions";
 
 const { t } = useI18n({
   messages: {
@@ -100,33 +94,7 @@ const { t } = useI18n({
 
 const titleId = useId();
 
-const isLoading = ref(false);
-const shopwareServicePagePath = "/sw/settings/services/index";
-const isLegacySWVersionEvaluating = ref(true);
-
-const isLegacySWVersion = asyncComputed<boolean | null>(
-  async () => {
-    try {
-      return await compareIsShopwareVersion("<", "6.7.14.0");
-    } catch {
-      return null;
-    }
-  },
-  null,
-  { evaluating: isLegacySWVersionEvaluating },
-);
-
-const isShowUI = asyncComputed(async () => {
-  if (isLegacySWVersionEvaluating.value || isLegacySWVersion.value === null) {
-    return false;
-  }
-
-  if (isLegacySWVersion.value) {
-    return await can("system_config:read");
-  }
-
-  return (await isService()) && !(await isGranted());
-}, false);
+const { isGranting, isShowPermissionUI, grant } = useServicePermission();
 
 // Resolving the app information is a channel round-trip, so the banner starts
 // out without it and the telemetry payload has to tolerate the empty state.
@@ -145,22 +113,7 @@ async function handleGrantPermission() {
     shopware_version: appInfo.value?.version,
   });
 
-  if (isLegacySWVersion.value) {
-    await routerPush({ path: shopwareServicePagePath });
-    return;
-  }
-
-  if (isLoading.value) return;
-
-  isLoading.value = true;
-
-  try {
-    await grant();
-  } catch (error) {
-    console.error("Error granting permission:", error);
-  } finally {
-    isLoading.value = false;
-  }
+  await grant();
 }
 
 function handleClickMoreInfo() {
