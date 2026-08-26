@@ -31,6 +31,7 @@
         :step="step"
         :disabled="disabled"
         :number-type="step % 1 === 0 ? 'int' : 'float'"
+        :show-controls="false"
         data-testid="left-number-field"
       />
       <div class="mt-slider__slider">
@@ -94,6 +95,7 @@
         :step="step"
         :disabled="disabled"
         :number-type="step % 1 === 0 ? 'int' : 'float'"
+        :show-controls="false"
         data-testid="right-number-field"
       />
     </template>
@@ -432,10 +434,6 @@ export default defineComponent({
 
 .mt-slider .mt-number-field__controls {
   flex-shrink: 1;
-}
-
-.mt-slider .mt-field--default .mt-field__controls {
-  display: none;
 }
 
 .mt-slider .mt-field--default input {
