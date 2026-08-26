@@ -73,6 +73,18 @@ describe("useServicePermission", () => {
     expect(api.permissionGranted.value).toBe(true);
     expect(api.isLegacySWVersion.value).toBe(true);
     expect(api.isLegacySWVersionEvaluating.value).toBe(false);
+    expect(api.isShowPermissionUI.value).toBe(false);
+
+    wrapper.unmount();
+  });
+
+  it("shows the permission UI when the legacy permission is not granted", async () => {
+    mockCompareIsShopwareVersion.mockResolvedValue(true);
+    mockCan.mockResolvedValue(false);
+
+    const { api, wrapper } = await mountHarness();
+
+    expect(api.permissionGranted.value).toBe(false);
     expect(api.isShowPermissionUI.value).toBe(true);
 
     wrapper.unmount();

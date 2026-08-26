@@ -83,7 +83,7 @@ export function useServicePermission(): UseServicePermissionReturn {
     }
 
     if (isLegacySWVersion.value) {
-      return permissionGranted.value;
+      return !permissionGranted.value;
     }
 
     return isService.value && !permissionGranted.value;
