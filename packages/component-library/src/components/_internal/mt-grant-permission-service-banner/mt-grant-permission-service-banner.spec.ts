@@ -128,7 +128,7 @@ describe("mt-grant-permission-service-banner", () => {
   it("uses the system config privilege on Administrations without service context support", async () => {
     // ARRANGE
     compareIsShopwareVersion.mockResolvedValue(true);
-    can.mockResolvedValue(true);
+    can.mockResolvedValue(false);
 
     // ACT
     await renderBanner();
@@ -140,10 +140,10 @@ describe("mt-grant-permission-service-banner", () => {
     expect(screen.getByRole("region")).toBeInTheDocument();
   });
 
-  it("hides on older Administrations without the system config privilege", async () => {
+  it("hides on older Administrations with the system config privilege", async () => {
     // ARRANGE
     compareIsShopwareVersion.mockResolvedValue(true);
-    can.mockResolvedValue(false);
+    can.mockResolvedValue(true);
 
     // ACT
     await renderBanner();
@@ -229,6 +229,7 @@ describe("mt-grant-permission-service-banner", () => {
     // ARRANGE
     const user = userEvent.setup();
     compareIsShopwareVersion.mockResolvedValue(true);
+    can.mockResolvedValue(false);
 
     await renderBanner();
 
@@ -244,6 +245,7 @@ describe("mt-grant-permission-service-banner", () => {
     // ARRANGE
     const user = userEvent.setup();
     compareIsShopwareVersion.mockResolvedValue(true);
+    can.mockResolvedValue(false);
 
     await renderBanner();
 
@@ -271,6 +273,7 @@ describe("mt-grant-permission-service-banner", () => {
     const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
     const user = userEvent.setup();
     compareIsShopwareVersion.mockResolvedValue(true);
+    can.mockResolvedValue(false);
     routerPush.mockRejectedValue(new Error("unknown route"));
 
     await renderBanner();
@@ -378,6 +381,7 @@ describe("mt-grant-permission-service-banner", () => {
     // ARRANGE
     const user = userEvent.setup();
     compareIsShopwareVersion.mockResolvedValue(true);
+    can.mockResolvedValue(false);
 
     await renderBanner();
 
