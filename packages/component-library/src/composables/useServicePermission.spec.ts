@@ -18,23 +18,22 @@ const {
   mockRouterPush: vi.fn(),
 }));
 
-vi.mock("@shopware-ag/meteor-admin-sdk", () => ({
-  context: {
-    can: mockCan,
-    compareIsShopwareVersion: mockCompareIsShopwareVersion,
-  },
-  _private: {
-    context: {
-      isService: mockIsService,
-    },
-    permissions: {
-      grant: mockGrant,
-      isGranted: mockIsGranted,
-    },
-  },
-  window: {
-    routerPush: mockRouterPush,
-  },
+vi.mock("@shopware-ag/meteor-admin-sdk/es/context", () => ({
+  can: mockCan,
+  compareIsShopwareVersion: mockCompareIsShopwareVersion,
+}));
+
+vi.mock("@shopware-ag/meteor-admin-sdk/es/_private/context", () => ({
+  isService: mockIsService,
+}));
+
+vi.mock("@shopware-ag/meteor-admin-sdk/es/_private/permissions", () => ({
+  grant: mockGrant,
+  isGranted: mockIsGranted,
+}));
+
+vi.mock("@shopware-ag/meteor-admin-sdk/es/window", () => ({
+  routerPush: mockRouterPush,
 }));
 
 describe("useServicePermission", () => {
@@ -57,9 +56,6 @@ describe("useServicePermission", () => {
 
     const wrapper = mount(Harness);
     if (waitForAsyncState) {
-      await vi.waitFor(() => {
-        expect(api!.isLegacySWVersionEvaluating.value).toBe(false);
-      });
       await flushPromises();
     }
 

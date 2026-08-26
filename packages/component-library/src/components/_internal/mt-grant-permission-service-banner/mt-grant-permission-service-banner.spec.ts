@@ -13,30 +13,22 @@ const getAppInformation = vi.hoisted(() => vi.fn());
 const routerPush = vi.hoisted(() => vi.fn());
 const dispatch = vi.hoisted(() => vi.fn());
 
-vi.mock("@shopware-ag/meteor-admin-sdk", () => ({
-  context: {
-    can,
-    compareIsShopwareVersion,
-  },
-  _private: {
-    context: {
-      isService,
-    },
-    permissions: {
-      grant,
-      isGranted,
-    },
-  },
-  window: {
-    routerPush,
-  },
-}));
-
 vi.mock("@shopware-ag/meteor-admin-sdk/es/context", () => ({
+  can,
+  compareIsShopwareVersion,
   getAppInformation,
 }));
 
 vi.mock("@shopware-ag/meteor-admin-sdk/es/telemetry", () => ({ dispatch }));
+
+vi.mock("@shopware-ag/meteor-admin-sdk/es/_private/context", () => ({ isService }));
+
+vi.mock("@shopware-ag/meteor-admin-sdk/es/_private/permissions", () => ({
+  grant,
+  isGranted,
+}));
+
+vi.mock("@shopware-ag/meteor-admin-sdk/es/window", () => ({ routerPush }));
 
 /**
  * Renders the banner and waits for the `isService` round-trip to settle, because

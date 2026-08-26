@@ -1,4 +1,13 @@
-import { context, _private, window } from "@shopware-ag/meteor-admin-sdk";
+import {
+  can,
+  compareIsShopwareVersion,
+} from "@shopware-ag/meteor-admin-sdk/es/context";
+import { isService as checkIsService } from "@shopware-ag/meteor-admin-sdk/es/_private/context";
+import {
+  grant as grantPermission,
+  isGranted,
+} from "@shopware-ag/meteor-admin-sdk/es/_private/permissions";
+import { routerPush } from "@shopware-ag/meteor-admin-sdk/es/window";
 import { asyncComputed } from "@vueuse/core";
 import { computed, ref } from "vue";
 import type { ComputedRef, Ref } from "vue";
@@ -30,7 +39,7 @@ export function useServicePermission(): UseServicePermissionReturn {
   const isLegacySWVersion = asyncComputed<boolean | null>(
     async () => {
       try {
-        return await context.compareIsShopwareVersion("<", "6.7.14.0");
+        return await compareIsShopwareVersion("<", "6.7.14.0");
       } catch {
         return null;
       }
@@ -48,7 +57,7 @@ export function useServicePermission(): UseServicePermissionReturn {
       return false;
     }
 
-    return await _private.context.isService();
+    return await checkIsService();
   }, false);
 
   const permissionGranted = asyncComputed<boolean | null>(async () => {
@@ -58,10 +67,10 @@ export function useServicePermission(): UseServicePermissionReturn {
 
     try {
       if (isLegacySWVersion.value) {
-        return await context.can("system_config:read");
+        return await can("system_config:read");
       }
 
-      return await _private.permissions.isGranted();
+      return await isGranted();
     } catch {
       return null;
     }
@@ -90,7 +99,7 @@ export function useServicePermission(): UseServicePermissionReturn {
 
     if (isLegacySWVersion.value) {
       try {
-        await window.routerPush({ path: shopwareServicePagePath });
+        await routerPush({ path: shopwareServicePagePath });
       } catch (error) {
         console.error("Error granting permission:", error);
       }
@@ -103,7 +112,7 @@ export function useServicePermission(): UseServicePermissionReturn {
     isGranting.value = true;
 
     try {
-      await _private.permissions.grant();
+      await grantPermission();
     } catch (error) {
       console.error("Error granting permission:", error);
     } finally {
