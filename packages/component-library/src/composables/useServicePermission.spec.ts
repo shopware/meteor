@@ -57,6 +57,9 @@ describe("useServicePermission", () => {
 
     const wrapper = mount(Harness);
     if (waitForAsyncState) {
+      await vi.waitFor(() => {
+        expect(api!.isLegacySWVersionEvaluating.value).toBe(false);
+      });
       await flushPromises();
     }
 
