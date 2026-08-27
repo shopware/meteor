@@ -442,6 +442,10 @@ export default defineComponent({
   padding-right: var(--scale-size-4);
 }
 
+.mt-slider .mt-field--default.mt-number-field input {
+  min-width: 0;
+}
+
 .mt-slider .mt-slider__slider {
   position: relative;
   width: 100%;
