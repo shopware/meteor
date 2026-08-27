@@ -91,7 +91,7 @@
         data-testid="time-zone-hint"
         :style="{ gridArea: 'hint' }"
       >
-        <mt-icon name="solid-clock" class="mt-datepicker__hint-icon" size="12" />
+        <mt-icon name="solid-clock" class="mt-datepicker__hint-icon" size="var(--scale-size-12)" />
         <p>{{ timeZone || "UTC" }}</p>
       </div>
     </template>
@@ -788,8 +788,13 @@ onMounted(() => {
   font-family: var(--font-family-body);
   color: var(--color-text-secondary-default);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: var(--scale-size-4);
+}
+
+.mt-datepicker__hint-icon {
+  flex-shrink: 0;
+  margin-top: calc((var(--font-line-height-xs) - var(--scale-size-12)) / 2);
 }
 
 .mt-datepicker__wrapper.has-error .dp__input {
