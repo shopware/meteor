@@ -60,6 +60,17 @@
   </div>
 </template>
 
+<script lang="ts">
+/**
+ * For internal Shopware Services only.
+ *
+ * Displays a permission grant section for Shopware Services.
+ */
+export default {
+  name: "MtGrantPermissionServiceBanner",
+};
+</script>
+
 <script setup lang="ts">
 import { useId } from "vue";
 import { asyncComputed } from "@vueuse/core";
