@@ -794,10 +794,6 @@ onMounted(() => {
 
 .mt-datepicker__hint-icon {
   flex-shrink: 0;
-  /*
-   * Keeps the icon optically centered on the first line of the hint instead of
-   * on the whole block, so it stays put when the hint text wraps.
-   */
   margin-top: calc((var(--font-line-height-xs) - var(--scale-size-12)) / 2);
 }
 
