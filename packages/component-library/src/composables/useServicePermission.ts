@@ -99,6 +99,7 @@ export function useServicePermission(): UseServicePermissionReturn {
         await routerPush({ path: shopwareServicePagePath });
       } catch (error) {
         console.error("Error granting permission:", error);
+        throw error;
       }
 
       return;
@@ -112,6 +113,7 @@ export function useServicePermission(): UseServicePermissionReturn {
       await grantPermission();
     } catch (error) {
       console.error("Error granting permission:", error);
+      throw error;
     } finally {
       isGranting.value = false;
     }

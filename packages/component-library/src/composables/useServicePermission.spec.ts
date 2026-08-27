@@ -256,7 +256,7 @@ describe("useServicePermission", () => {
 
     const { api, wrapper } = await mountHarness();
 
-    await api.grant();
+    await expect(api.grant()).rejects.toThrow("Grant failed");
 
     expect(consoleError).toHaveBeenCalledWith(
       "Error granting permission:",
@@ -275,7 +275,7 @@ describe("useServicePermission", () => {
 
     const { api, wrapper } = await mountHarness();
 
-    await api.grant();
+    await expect(api.grant()).rejects.toThrow("Route unavailable");
 
     expect(consoleError).toHaveBeenCalledWith(
       "Error granting permission:",

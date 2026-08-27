@@ -337,6 +337,52 @@ describe("mt-grant-permission-service-banner", () => {
     expect(grant).toHaveBeenCalledTimes(1);
   });
 
+  it("emits grant-success once after the grant finishes", async () => {
+    // ARRANGE
+    const user = userEvent.setup();
+    let resolveGrant: () => void = () => {};
+    grant.mockReturnValue(
+      new Promise<void>((resolve) => {
+        resolveGrant = resolve;
+      }),
+    );
+
+    const { emitted } = await renderBanner();
+
+    // ACT
+    await user.click(getGrantButton());
+
+    // ASSERT
+    expect(emitted("grant-success")).toBeUndefined();
+
+    // ACT
+    resolveGrant();
+    await flushPromises();
+
+    // ASSERT
+    expect(emitted("grant-success")).toEqual([[]]);
+    expect(emitted("grant-error")).toBeUndefined();
+  });
+
+  it("emits grant-error once when the grant fails", async () => {
+    // ARRANGE
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    const user = userEvent.setup();
+    const permissionError = new Error("permission denied");
+    grant.mockRejectedValue(permissionError);
+
+    const { emitted } = await renderBanner();
+
+    // ACT
+    await user.click(getGrantButton());
+
+    // ASSERT
+    expect(emitted("grant-error")).toEqual([[permissionError]]);
+    expect(emitted("grant-success")).toBeUndefined();
+
+    consoleError.mockRestore();
+  });
+
   it("recovers from a failed permission request", async () => {
     // ARRANGE
     const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
@@ -442,6 +488,18 @@ describe("mt-grant-permission-service-banner", () => {
     expect(dispatch).toHaveBeenCalledWith({
       event: "SwagExample_grant_permission_more_info",
     });
+  });
+
+  it("emits more-info once when the link is clicked", async () => {
+    // ARRANGE
+    const user = userEvent.setup();
+    const { emitted } = await renderBanner();
+
+    // ACT
+    await user.click(screen.getByRole("link", { name: "More info" }));
+
+    // ASSERT
+    expect(emitted("more-info")).toEqual([[]]);
   });
 
   it("opens the more info target in a new tab", async () => {

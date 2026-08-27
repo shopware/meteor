@@ -94,6 +94,12 @@ const { t } = useI18n({
 
 const titleId = useId();
 
+const emit = defineEmits<{
+  "grant-success": [];
+  "grant-error": [error: unknown];
+  "more-info": [];
+}>();
+
 const { isGranting, isShowPermissionUI, grant } = useServicePermission();
 
 // Resolving the app information is a channel round-trip, so the banner starts
@@ -113,11 +119,17 @@ async function handleGrantPermission() {
     shopware_version: appInfo.value?.version,
   });
 
-  await grant();
+  try {
+    await grant();
+    emit("grant-success");
+  } catch (error) {
+    emit("grant-error", error);
+  }
 }
 
 function handleClickMoreInfo() {
   track(`${appInfo.value?.name}_grant_permission_more_info`);
+  emit("more-info");
 }
 </script>
 
