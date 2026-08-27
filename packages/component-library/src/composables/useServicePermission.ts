@@ -64,6 +64,9 @@ export function useServicePermission(): UseServicePermissionReturn {
 
     try {
       if (isLegacySWVersion.value) {
+        // Legacy Administrations expose the Shopware Services consent through
+        // the system configuration privilege because the dedicated service
+        // permission API is only available from Shopware 6.7.14.0 onwards.
         return await can("system_config:read");
       }
 
