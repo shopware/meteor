@@ -5,6 +5,7 @@
     :options="options"
     :label="label"
     :disabled="disabled"
+    :enable-search="false"
     hide-clearable-button
     @update:model-value="onSelect"
   />

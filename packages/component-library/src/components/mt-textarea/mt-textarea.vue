@@ -28,6 +28,7 @@
     />
 
     <textarea
+      :id="id"
       v-model="model"
       :class="[
         'mt-textarea__textarea',
@@ -35,15 +36,15 @@
           'mt-textarea__textarea--error': !!error && !!error.detail,
         },
       ]"
-      @change="$emit('change', model)"
-      @focus="$emit('focus')"
-      @blur="$emit('blur')"
-      :id="id"
       :required="required"
       :disabled="disabled || isInherited"
       :name="name"
+      :autocomplete="autocomplete"
       :placeholder="placeholder"
       :maxlength="maxLength"
+      @change="$emit('change', model)"
+      @focus="$emit('focus')"
+      @blur="$emit('blur')"
     />
 
     <mt-field-error
@@ -89,6 +90,7 @@ const props = defineProps<{
   required?: boolean;
   disabled?: boolean;
   name?: string;
+  autocomplete?: string;
   label?: string;
   placeholder?: string;
   error?: {

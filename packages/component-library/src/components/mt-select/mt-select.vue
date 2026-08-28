@@ -30,7 +30,15 @@
         :selections="visibleValues"
         :invisible-count="invisibleValueCount"
         :always-show-placeholder="alwaysShowPlaceholder"
-        v-bind="{ size, valueProperty, labelProperty, placeholder, searchTerm, disabled }"
+        v-bind="{
+          size,
+          valueProperty,
+          labelProperty,
+          placeholder,
+          searchTerm,
+          disabled,
+          enableSearch,
+        }"
         :size="small ? 'small' : 'default'"
         @total-count-click="expandValueLimit"
         @item-remove="remove"
@@ -353,12 +361,22 @@ export default defineComponent({
     },
 
     /**
-     * Render the select field in small without a search input
+     * Render the select field in small
      */
     small: {
       type: Boolean,
       required: false,
       default: false,
+    },
+
+    /**
+     * Toggles the search input. When disabled, the input is rendered readonly,
+     * which also keeps browsers from treating it as an autofillable field.
+     */
+    enableSearch: {
+      type: Boolean,
+      required: false,
+      default: true,
     },
 
     /**

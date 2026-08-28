@@ -38,6 +38,7 @@ import { MtSearch } from "@shopware-ag/meteor-component-library";
 ## Behavior
 
 - **Search** uses a native `type="search"` input and emits both `update:modelValue` and `change`.
+- The input opts out of browser autofill and password managers by default; use the `autocomplete` prop to change that.
 - The component is intentionally lightweight and does not include the shared field wrapper used by the form field family.
 - `size` can make the control more compact in dense toolbars or filter areas.
 
