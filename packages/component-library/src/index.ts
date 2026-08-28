@@ -56,6 +56,10 @@ import {
   type UseThemeOptions,
   type UseThemeReturn,
 } from "./composables/useTheme";
+import {
+  useServicePermission,
+  type UseServicePermissionReturn,
+} from "./composables/useServicePermission";
 import TooltipDirective from "./directives/tooltip.directive";
 import DeviceHelperPlugin from "./plugin/device-helper.plugin";
 import MtTooltip from "./components/mt-tooltip/mt-tooltip.vue";
@@ -157,6 +161,8 @@ export {
   DeviceHelperPlugin,
   useSnackbar,
   useTheme,
+  useServicePermission,
+  type UseServicePermissionReturn,
   // @deprecated
   MtBanner as SwBanner,
   // @deprecated
