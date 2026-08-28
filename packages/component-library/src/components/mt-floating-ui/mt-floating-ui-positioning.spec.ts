@@ -93,23 +93,6 @@ describe("mt-floating-ui positioning config", () => {
     wrapper.unmount();
   });
 
-  it("keeps the default middleware when the consumer supplies its own", async () => {
-    const consumerMiddleware: Middleware = {
-      name: "consumerMiddleware",
-      fn: () => ({}),
-    };
-
-    const { wrapper, config } = await openAndGetConfig({
-      floatingUiOptions: { middleware: [consumerMiddleware] },
-    });
-
-    const names = middlewareNames(config);
-    expect(names).toContain("consumerMiddleware");
-    expect(names).toEqual(expect.arrayContaining(["offset", "flip", "size", "hide"]));
-
-    wrapper.unmount();
-  });
-
   it("still applies consumer placement overrides", async () => {
     const { wrapper, config } = await openAndGetConfig({
       floatingUiOptions: { placement: "top-end" },

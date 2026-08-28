@@ -109,10 +109,6 @@ const createFloatingUi = () => {
   ) as string[];
   floatingUiContent.value.classList.add(...givenClasses);
 
-  // `middleware` is pulled out so consumer-supplied middleware extends the
-  // defaults instead of replacing them via the config spread below.
-  const { middleware: consumerMiddleware, ...consumerOptions } = props.floatingUiOptions ?? {};
-
   cleanup = autoUpdate(
     referenceEl,
     floatingUiContent.value as HTMLElement,
@@ -124,7 +120,6 @@ const createFloatingUi = () => {
       computePosition(referenceEl, floatingUiContent.value as HTMLElement, {
         placement: "bottom-start",
         strategy: "fixed",
-        ...consumerOptions,
         middleware: [
           floatingUiOffset(props.offset ?? 6),
           ...(() => {
@@ -134,7 +129,7 @@ const createFloatingUi = () => {
             return [];
           })(),
           flip(),
-          ...(consumerMiddleware ?? []),
+          ...(props.floatingUiOptions?.middleware ?? []),
           size({
             apply({ rects }) {
               referenceElementWidth.value = rects.reference.width ?? 0;
@@ -143,6 +138,7 @@ const createFloatingUi = () => {
           }),
           hide(),
         ],
+        ...props.floatingUiOptions,
       }).then(({ x, y, middlewareData, placement, strategy }) => {
         if (!floatingUiContent.value) {
           return;
