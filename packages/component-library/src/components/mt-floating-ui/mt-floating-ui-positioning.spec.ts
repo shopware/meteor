@@ -1,3 +1,5 @@
+// Separate from mt-floating-ui.spec.ts because vi.mock is file-wide: these
+// tests mock @floating-ui/dom, while the tests over there need the real one.
 import { mount } from "@vue/test-utils";
 import flushPromises from "flush-promises";
 import type { ComputePositionConfig, ComputePositionReturn, Middleware } from "@floating-ui/dom";
