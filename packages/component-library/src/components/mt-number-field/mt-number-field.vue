@@ -591,21 +591,14 @@ export default defineComponent({
   }
 }
 
-@container mt-number-field (max-width: 180px) {
-  .mt-number-field__controls {
-    display: none;
-  }
-}
-
 input.mt-number-field__align-end {
   text-align: end;
 }
 </style>
 
 <style>
-.mt-number-field {
-  container-type: inline-size;
-  container-name: mt-number-field;
+.mt-field.mt-number-field input {
+  min-width: calc(var(--scale-size-32) + 2ch);
 }
 
 .mt-number-field .mt-block-field__block {

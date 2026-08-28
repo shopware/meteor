@@ -45,6 +45,20 @@ describe("src/app/component/navigation/mt-tabs", () => {
     expect(wrapper.vm).toBeTruthy();
   });
 
+  it("should pass attributes to the tab list", async () => {
+    wrapper = await createWrapper({
+      attrs: {
+        class: "custom-tabs",
+        "data-test-id": "tabs",
+      },
+    });
+
+    const tabList = wrapper.get('[role="tablist"]');
+
+    expect(tabList.classes()).toContain("custom-tabs");
+    expect(tabList.attributes("data-test-id")).toBe("tabs");
+  });
+
   it("should emit on clicked tab", async () => {
     wrapper = await createWrapper();
 

@@ -47,6 +47,18 @@
   </component>
 </template>
 
+<script lang="ts">
+/**
+ * Displays the permission prompt required to activate a Shopware Service.
+ *
+ * The banner detects whether the current Administration supports native
+ * service permissions and provides the matching grant flow and more-info link.
+ */
+export default {
+  name: "MtButton",
+};
+</script>
+
 <script setup lang="ts">
 import { useIsInsideTooltip } from "@/components/mt-tooltip/composables/useIsInsideTooltip";
 import MtLoader from "../mt-loader/mt-loader.vue";
