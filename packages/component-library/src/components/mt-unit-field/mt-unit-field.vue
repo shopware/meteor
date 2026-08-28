@@ -136,17 +136,7 @@ watch(
 </script>
 
 <style scoped>
-.mt-unit-field {
-  container: mt-unit-field / inline-size;
-}
-
 .mt-unit-field :deep(.mt-number-field__controls) {
   margin-inline-end: 0;
-}
-
-@container mt-unit-field (max-width: 240px) {
-  .mt-unit-field :deep(.mt-number-field__controls) {
-    display: none;
-  }
 }
 </style>
