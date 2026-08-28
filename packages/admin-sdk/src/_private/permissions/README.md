@@ -2,6 +2,10 @@
 
 This private SDK API is available to Shopware Services through the `_private` namespace.
 
+Both methods are supported by Shopware `6.7.14.0` and newer. On older
+Administrations, they throw an error without sending unsupported channel
+messages.
+
 ## `grant()`
 
 ```ts

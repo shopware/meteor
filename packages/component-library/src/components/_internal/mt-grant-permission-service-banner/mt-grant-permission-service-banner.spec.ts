@@ -7,14 +7,14 @@ import MtGrantPermissionServiceBanner from "./mt-grant-permission-service-banner
 const isService = vi.hoisted(() => vi.fn());
 const grant = vi.hoisted(() => vi.fn());
 const isGranted = vi.hoisted(() => vi.fn());
+const can = vi.hoisted(() => vi.fn());
 const compareIsShopwareVersion = vi.hoisted(() => vi.fn());
 const getAppInformation = vi.hoisted(() => vi.fn());
 const routerPush = vi.hoisted(() => vi.fn());
 const dispatch = vi.hoisted(() => vi.fn());
 
-vi.mock("@shopware-ag/meteor-admin-sdk/es/window", () => ({ routerPush }));
-
 vi.mock("@shopware-ag/meteor-admin-sdk/es/context", () => ({
+  can,
   compareIsShopwareVersion,
   getAppInformation,
 }));
@@ -27,6 +27,8 @@ vi.mock("@shopware-ag/meteor-admin-sdk/es/_private/permissions", () => ({
   grant,
   isGranted,
 }));
+
+vi.mock("@shopware-ag/meteor-admin-sdk/es/window", () => ({ routerPush }));
 
 /**
  * Renders the banner and waits for the `isService` round-trip to settle, because
@@ -66,6 +68,7 @@ beforeEach(() => {
   isService.mockResolvedValue(true);
   grant.mockResolvedValue(undefined);
   isGranted.mockResolvedValue(false);
+  can.mockResolvedValue(true);
   compareIsShopwareVersion.mockResolvedValue(false);
   getAppInformation.mockResolvedValue({
     name: "SwagExample",
@@ -119,6 +122,36 @@ describe("mt-grant-permission-service-banner", () => {
     await renderBanner();
 
     // ASSERT
+    expect(screen.queryByRole("region")).not.toBeInTheDocument();
+  });
+
+  it("uses the system config privilege on Administrations without service context support", async () => {
+    // ARRANGE
+    compareIsShopwareVersion.mockResolvedValue(true);
+    can.mockResolvedValue(false);
+
+    // ACT
+    await renderBanner();
+
+    // ASSERT
+    expect(can).toHaveBeenCalledWith("system_config:read");
+    expect(isService).not.toHaveBeenCalled();
+    expect(isGranted).not.toHaveBeenCalled();
+    expect(screen.getByRole("region")).toBeInTheDocument();
+  });
+
+  it("hides on older Administrations with the system config privilege", async () => {
+    // ARRANGE
+    compareIsShopwareVersion.mockResolvedValue(true);
+    can.mockResolvedValue(true);
+
+    // ACT
+    await renderBanner();
+
+    // ASSERT
+    expect(can).toHaveBeenCalledWith("system_config:read");
+    expect(isService).not.toHaveBeenCalled();
+    expect(isGranted).not.toHaveBeenCalled();
     expect(screen.queryByRole("region")).not.toBeInTheDocument();
   });
 
@@ -196,6 +229,7 @@ describe("mt-grant-permission-service-banner", () => {
     // ARRANGE
     const user = userEvent.setup();
     compareIsShopwareVersion.mockResolvedValue(true);
+    can.mockResolvedValue(false);
 
     await renderBanner();
 
@@ -211,6 +245,7 @@ describe("mt-grant-permission-service-banner", () => {
     // ARRANGE
     const user = userEvent.setup();
     compareIsShopwareVersion.mockResolvedValue(true);
+    can.mockResolvedValue(false);
 
     await renderBanner();
 
@@ -221,41 +256,42 @@ describe("mt-grant-permission-service-banner", () => {
     expect(getGrantButton()).toBeEnabled();
   });
 
-  it("does not route away when the version check fails", async () => {
+  it("hides when the version check fails", async () => {
     // ARRANGE
-    const user = userEvent.setup();
     compareIsShopwareVersion.mockRejectedValue(new Error("no channel counterpart"));
 
-    const { errors } = await renderBanner();
-
-    // ACT
-    await user.click(getGrantButton());
+    await renderBanner();
 
     // ASSERT
+    expect(screen.queryByRole("region")).not.toBeInTheDocument();
     expect(routerPush).not.toHaveBeenCalled();
     expect(grant).not.toHaveBeenCalled();
-    // The version check sits outside the handler's own try/catch, so the
-    // failure leaves the handler and is reported by Vue.
-    expect(errors).toContainEqual(new Error("no channel counterpart"));
   });
 
   it("recovers when the route change is rejected", async () => {
     // ARRANGE
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
     const user = userEvent.setup();
     compareIsShopwareVersion.mockResolvedValue(true);
+    can.mockResolvedValue(false);
     routerPush.mockRejectedValue(new Error("unknown route"));
 
-    const { errors } = await renderBanner();
+    await renderBanner();
 
     // ACT
     await user.click(getGrantButton());
 
     // ASSERT
-    expect(errors).toContainEqual(new Error("unknown route"));
+    expect(consoleError).toHaveBeenCalledWith(
+      "Error granting permission:",
+      new Error("unknown route"),
+    );
     expect(grant).not.toHaveBeenCalled();
     // A rejected route change must not leave the button stuck in its loading
     // state, otherwise the banner becomes unusable.
     expect(getGrantButton()).toBeEnabled();
+
+    consoleError.mockRestore();
   });
 
   it("shows a loading state while the permission is being granted", async () => {
@@ -299,6 +335,52 @@ describe("mt-grant-permission-service-banner", () => {
 
     // ASSERT
     expect(grant).toHaveBeenCalledTimes(1);
+  });
+
+  it("emits grant-success once after the grant finishes", async () => {
+    // ARRANGE
+    const user = userEvent.setup();
+    let resolveGrant: () => void = () => {};
+    grant.mockReturnValue(
+      new Promise<void>((resolve) => {
+        resolveGrant = resolve;
+      }),
+    );
+
+    const { emitted } = await renderBanner();
+
+    // ACT
+    await user.click(getGrantButton());
+
+    // ASSERT
+    expect(emitted("grant-success")).toBeUndefined();
+
+    // ACT
+    resolveGrant();
+    await flushPromises();
+
+    // ASSERT
+    expect(emitted("grant-success")).toEqual([[]]);
+    expect(emitted("grant-error")).toBeUndefined();
+  });
+
+  it("emits grant-error once when the grant fails", async () => {
+    // ARRANGE
+    const consoleError = vi.spyOn(console, "error").mockImplementation(() => {});
+    const user = userEvent.setup();
+    const permissionError = new Error("permission denied");
+    grant.mockRejectedValue(permissionError);
+
+    const { emitted } = await renderBanner();
+
+    // ACT
+    await user.click(getGrantButton());
+
+    // ASSERT
+    expect(emitted("grant-error")).toEqual([[permissionError]]);
+    expect(emitted("grant-success")).toBeUndefined();
+
+    consoleError.mockRestore();
   });
 
   it("recovers from a failed permission request", async () => {
@@ -345,6 +427,7 @@ describe("mt-grant-permission-service-banner", () => {
     // ARRANGE
     const user = userEvent.setup();
     compareIsShopwareVersion.mockResolvedValue(true);
+    can.mockResolvedValue(false);
 
     await renderBanner();
 
@@ -405,6 +488,18 @@ describe("mt-grant-permission-service-banner", () => {
     expect(dispatch).toHaveBeenCalledWith({
       event: "SwagExample_grant_permission_more_info",
     });
+  });
+
+  it("emits more-info once when the link is clicked", async () => {
+    // ARRANGE
+    const user = userEvent.setup();
+    const { emitted } = await renderBanner();
+
+    // ACT
+    await user.click(screen.getByRole("link", { name: "More info" }));
+
+    // ASSERT
+    expect(emitted("more-info")).toEqual([[]]);
   });
 
   it("opens the more info target in a new tab", async () => {

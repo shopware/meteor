@@ -2,6 +2,10 @@
 
 This private SDK API is available to Shopware Services through the `_private` namespace.
 
+This method is supported by Shopware `6.7.14.0` and newer. On older
+Administrations, it throws an error without sending an unsupported channel
+message.
+
 ## `isService()`
 
 ```ts
