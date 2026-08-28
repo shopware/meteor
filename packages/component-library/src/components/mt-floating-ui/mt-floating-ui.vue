@@ -43,6 +43,7 @@ import {
   arrow,
   flip,
   size,
+  hide,
 } from "@floating-ui/dom";
 import { vOnClickOutside } from "@vueuse/components";
 
@@ -108,6 +109,10 @@ const createFloatingUi = () => {
   ) as string[];
   floatingUiContent.value.classList.add(...givenClasses);
 
+  // `middleware` is pulled out so consumer-supplied middleware extends the
+  // defaults instead of replacing them via the config spread below.
+  const { middleware: consumerMiddleware, ...consumerOptions } = props.floatingUiOptions ?? {};
+
   cleanup = autoUpdate(
     referenceEl,
     floatingUiContent.value as HTMLElement,
@@ -119,6 +124,7 @@ const createFloatingUi = () => {
       computePosition(referenceEl, floatingUiContent.value as HTMLElement, {
         placement: "bottom-start",
         strategy: "fixed",
+        ...consumerOptions,
         middleware: [
           floatingUiOffset(props.offset ?? 6),
           ...(() => {
@@ -128,15 +134,15 @@ const createFloatingUi = () => {
             return [];
           })(),
           flip(),
-          ...(props.floatingUiOptions?.middleware ?? []),
+          ...(consumerMiddleware ?? []),
           size({
             apply({ rects }) {
               referenceElementWidth.value = rects.reference.width ?? 0;
               referenceElementHeight.value = rects.reference.height ?? 0;
             },
           }),
+          hide(),
         ],
-        ...props.floatingUiOptions,
       }).then(({ x, y, middlewareData, placement, strategy }) => {
         if (!floatingUiContent.value) {
           return;
@@ -169,6 +175,10 @@ const createFloatingUi = () => {
           position: strategy,
           left: `${x}px`,
           top: `${y}px`,
+          // The content follows its reference on scroll; once the reference is
+          // fully scrolled out of its clipping containers the content must not
+          // stay visible (it would float over unrelated UI).
+          visibility: middlewareData.hide?.referenceHidden ? "hidden" : "visible",
         });
 
         // remove all staticSide classes
