@@ -2,7 +2,14 @@
 // tests mock @floating-ui/dom, while the tests over there need the real one.
 import { mount } from "@vue/test-utils";
 import flushPromises from "flush-promises";
-import type { ComputePositionConfig, ComputePositionReturn, Middleware } from "@floating-ui/dom";
+import type {
+  ComputePositionConfig,
+  ComputePositionReturn,
+  FlipOptions,
+  Middleware,
+} from "@floating-ui/dom";
+
+const flipSpy = vi.hoisted(() => vi.fn());
 
 const computePositionMock = vi.hoisted(() =>
   vi.fn(
@@ -26,6 +33,12 @@ vi.mock("@floating-ui/dom", async (importOriginal) => {
 
   return {
     ...actual,
+    // Records the options while still building the real middleware.
+    flip: (options?: FlipOptions) => {
+      flipSpy(options);
+
+      return actual.flip(options);
+    },
     computePosition: computePositionMock,
     autoUpdate: (
       _reference: unknown,
@@ -65,10 +78,29 @@ function giveTriggerASize(wrapper: ReturnType<typeof createWrapper>) {
   }));
 }
 
-function createWrapper(props: Record<string, unknown> = {}) {
+// Nests the mount point in one ancestor per `overflow-y` value, outermost first.
+function nestMountPointIn(...overflows: string[]) {
+  const ancestors: HTMLElement[] = [];
+
+  const mountPoint = overflows.reduce((parent, overflowY) => {
+    const ancestor = document.createElement("div");
+    ancestor.style.overflowY = overflowY;
+    parent.appendChild(ancestor);
+    ancestors.push(ancestor);
+
+    return ancestor;
+  }, document.body as HTMLElement);
+
+  return { mountPoint, ancestors };
+}
+
+function createWrapper(
+  props: Record<string, unknown> = {},
+  mountPoint: HTMLElement = document.body,
+) {
   const appWrapper = document.createElement("div");
   appWrapper.setAttribute("id", "appWrapper");
-  document.body.appendChild(appWrapper);
+  mountPoint.appendChild(appWrapper);
 
   return mount(MtFloatingUi, {
     attachTo: appWrapper,
@@ -83,8 +115,12 @@ function createWrapper(props: Record<string, unknown> = {}) {
   });
 }
 
-async function openAndGetConfig(props: Record<string, unknown> = {}, measurable = true) {
-  const wrapper = createWrapper(props);
+async function openAndGetConfig(
+  props: Record<string, unknown> = {},
+  measurable = true,
+  mountPoint: HTMLElement = document.body,
+) {
+  const wrapper = createWrapper(props, mountPoint);
 
   if (measurable) {
     giveTriggerASize(wrapper);
@@ -104,9 +140,16 @@ function middlewareNames(config: ComputePositionConfig): string[] {
   return (config.middleware ?? []).filter(Boolean).map((m) => (m as Middleware).name);
 }
 
+function lastFlipOptions(): FlipOptions {
+  expect(flipSpy).toHaveBeenCalled();
+
+  return flipSpy.mock.calls.at(-1)![0] as FlipOptions;
+}
+
 describe("mt-floating-ui positioning config", () => {
   beforeEach(() => {
     computePositionMock.mockClear();
+    flipSpy.mockClear();
     document.body.innerHTML = "";
   });
 
@@ -141,6 +184,38 @@ describe("mt-floating-ui positioning config", () => {
     });
 
     expect(config.placement).toBe("top-end");
+
+    wrapper.unmount();
+  });
+
+  it("bounds the flip by the scrollable ancestors of the reference", async () => {
+    const { mountPoint, ancestors } = nestMountPointIn("auto");
+    const [scrollPane] = ancestors;
+
+    const { wrapper } = await openAndGetConfig({}, true, mountPoint);
+
+    expect(lastFlipOptions().boundary).toStrictEqual([scrollPane]);
+    expect(lastFlipOptions().fallbackStrategy).toBe("bestFit");
+
+    wrapper.unmount();
+  });
+
+  it("keeps overflow: hidden ancestors out of the flip boundary", async () => {
+    const { mountPoint, ancestors } = nestMountPointIn("auto", "hidden");
+    const [scrollPane, clippingBox] = ancestors;
+
+    const { wrapper } = await openAndGetConfig({}, true, mountPoint);
+
+    expect(lastFlipOptions().boundary).toContain(scrollPane);
+    expect(lastFlipOptions().boundary).not.toContain(clippingBox);
+
+    wrapper.unmount();
+  });
+
+  it("falls back to the clipping ancestors without a scrollable ancestor", async () => {
+    const { wrapper } = await openAndGetConfig();
+
+    expect(lastFlipOptions().boundary).toBe("clippingAncestors");
 
     wrapper.unmount();
   });

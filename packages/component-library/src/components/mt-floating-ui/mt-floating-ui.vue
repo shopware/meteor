@@ -44,6 +44,7 @@ import {
   flip,
   size,
   hide,
+  getOverflowAncestors,
 } from "@floating-ui/dom";
 import { vOnClickOutside } from "@vueuse/components";
 
@@ -96,6 +97,25 @@ const contentStyles = computed(() => {
   return styles;
 });
 
+// The content is teleported to `<body>` and positioned `fixed`, so its own
+// clipping ancestors are just the viewport — flipping has to be bounded by the
+// reference's scroll panes to learn about a dialog body it sits in. Skip
+// `overflow: hidden` ancestors: they are usually field-sized boxes that would
+// collapse the boundary onto the reference, leaving no side that fits.
+const scrollBoundariesOf = (referenceEl: Element): Element[] | "clippingAncestors" => {
+  const scrollables = getOverflowAncestors(referenceEl).filter((ancestor): ancestor is Element => {
+    if (!(ancestor instanceof Element) || ancestor === document.body) {
+      return false;
+    }
+
+    const { overflowY } = getComputedStyle(ancestor);
+
+    return overflowY === "auto" || overflowY === "scroll";
+  });
+
+  return scrollables.length > 0 ? scrollables : "clippingAncestors";
+};
+
 const createFloatingUi = () => {
   const referenceEl = props.anchorElement ?? floatingUiTrigger.value;
 
@@ -133,7 +153,12 @@ const createFloatingUi = () => {
             }
             return [];
           })(),
-          flip(),
+          flip({
+            boundary: scrollBoundariesOf(referenceEl),
+            // Keep the least-bad side when no side fits; the default
+            // `initialPlacement` would push the content out of a short scroll pane.
+            fallbackStrategy: "bestFit",
+          }),
           ...(consumerMiddleware ?? []),
           size({
             apply({ rects }) {
