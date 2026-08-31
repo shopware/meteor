@@ -159,7 +159,6 @@ function checkValidity() {
 
   errorMessage.value = { detail: inputRef.value?.validationMessage };
 }
-
 </script>
 
 <style scoped>

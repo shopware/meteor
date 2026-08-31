@@ -318,9 +318,7 @@ export default defineComponent({
       return {
         gridArea: "label",
         marginBottom: "var(--scale-size-8)",
-        lineHeight: this.future.consistentLabelLineHeight
-          ? "var(--font-line-height-xs)"
-          : "16px",
+        lineHeight: this.future.consistentLabelLineHeight ? "var(--font-line-height-xs)" : "16px",
       };
     },
 
