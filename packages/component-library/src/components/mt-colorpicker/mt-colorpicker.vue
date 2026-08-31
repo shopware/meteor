@@ -1573,6 +1573,10 @@ export default defineComponent({
   border-color: var(--color-border-critical-default);
 }
 
+.mt-colorpicker.is--disabled .mt-colorpicker__block {
+  background: var(--color-background-tertiary-default);
+}
+
 .mt-colorpicker .mt-colorpicker__input {
   display: block;
   width: 100%;
