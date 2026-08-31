@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
 import type { ShopwareMessageTypes } from './message-types';
-import { generateUniqueId } from './_internals/utils';
+import { generateUniqueId, getColorScheme } from './_internals/utils';
 import type { extension, privilegeString } from './_internals/privileges';
 import MissingPrivilegesError from './_internals/privileges/missing-privileges-error';
 import SerializerFactory from './_internals/serializer';
@@ -508,10 +508,12 @@ const datasets = new Map<string, unknown>();
  */
 
 (async (): Promise<void> => {
-  // Mark embedded documents before the first paint (needs no channel)
-  if (window.parent !== window) {
-    applyEmbeddedContext();
+  if (typeof window === 'undefined') {
+    return;
   }
+
+  // Mark embedded documents and pin the color scheme before the first paint (needs no channel)
+  const themePin = window.parent !== window ? applyEmbeddedContext() : null;
 
   // Handle registrations at current window
   handle('__registerWindow__', ({ sdkVersion }, additionalOptions) => {
@@ -577,8 +579,8 @@ const datasets = new Map<string, unknown>();
   });
 
   // Mirror the Administration theme onto app iframes (the admin owns its own document)
-  if (window.parent !== window) {
-    startAutoThemeSync();
+  if (themePin) {
+    startAutoThemeSync(themePin);
   }
 })().catch((e) => console.error(e));
 
@@ -623,14 +625,23 @@ export function startThemeSync(target: HTMLElement): { initialFetch: Promise<voi
 
 /**
  * Starts the theme sync on the document root inside app iframes. Skipped
- * when the document declares `data-theme` itself (the app owns its theme)
+ * when the document declares `data-theme` itself (the app owns its theme).
+ * `pin` carries the values {@link applyEmbeddedContext} applied at boot,
+ * which must not count as an app-declared theme. The check runs here and
+ * not at pin time because module imports run before the importing app's
+ * own code: an app can declare its theme between the pin and this call
  *
  * @internal - apps that need explicit control use `context.syncTheme()`
  */
-export function startAutoThemeSync(): () => void {
+export function startAutoThemeSync(pin: EmbeddedThemePin = { theme: null, scheme: null }): () => void {
   const target = document.documentElement;
 
-  if (target.dataset.theme) {
+  if (target.dataset.theme && target.dataset.theme !== pin.theme) {
+    // Withdraw the boot pin (unless the app replaced it already) so the app's own color-scheme rules apply
+    if (pin.scheme && target.style.getPropertyValue('color-scheme') === pin.scheme) {
+      target.style.removeProperty('color-scheme');
+    }
+
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     return () => {};
   }
@@ -645,32 +656,63 @@ export function startAutoThemeSync(): () => void {
 }
 
 /**
- * Marks the document as embedded (`<html data-embedded>`) and unsets the
- * body background so the Administration theme shows through instead of an
- * opaque default background. The attribute stays untouched when the document
- * declares it itself.
+ * The theme values {@link applyEmbeddedContext} applied to the document at
+ * boot: the `data-theme` value taken from the URL param and the pinned
+ * `color-scheme`. Null fields mark values the SDK did not apply
+ *
+ * @internal
+ */
+export type EmbeddedThemePin = {
+  theme: 'light' | 'dark' | null,
+  scheme: 'light' | 'dark' | null,
+}
+
+/**
+ * Marks the document as embedded (`<html data-embedded>`), pins the initial
+ * color scheme and unsets the body background so the Administration theme
+ * shows through instead of an opaque default background.
+ *
+ * The initial theme comes from the `color-scheme` URL param the Administration
+ * appends to the iframe src. Without the param the scheme is pinned to `light`
+ * because Administrations without theme support are always light; an explicit
+ * value avoids `color-scheme: light dark`, which would follow the OS preference
+ * in those Administrations. The `data-embedded` attribute and `data-theme`
+ * stay untouched when the document declares them itself (an empty `data-theme`
+ * attribute counts as undeclared).
  *
  * @internal - runs automatically inside app iframes
+ * @returns the values the SDK applied, so the theme sync can tell them apart from app-declared ones
  */
-export function applyEmbeddedContext(): void {
+export function applyEmbeddedContext(): EmbeddedThemePin {
   const root = document.documentElement;
 
   if (root.dataset.embedded === undefined) {
     root.dataset.embedded = '';
   }
 
-  if (document.getElementById('meteor-admin-sdk-embedded')) {
-    return;
+  const pin: EmbeddedThemePin = { theme: null, scheme: null };
+
+  if (!root.dataset.theme) {
+    const urlScheme = getColorScheme();
+
+    if (isThemeValue(urlScheme)) {
+      applyTheme(root, urlScheme);
+      pin.theme = urlScheme;
+      pin.scheme = urlScheme;
+    } else {
+      root.style.setProperty('color-scheme', 'light');
+      pin.scheme = 'light';
+    }
   }
 
-  const style = document.createElement('style');
-  style.id = 'meteor-admin-sdk-embedded';
-  // Supporting both schemes makes the document adopt the scheme the Administration propagates into the iframe until the theme sync pins the resolved one
-  style.textContent = [
-    'html[data-embedded] { color-scheme: light dark; }',
-    'html[data-embedded] body { background: unset; }',
-  ].join('\n');
-  document.head.appendChild(style);
+  if (!document.getElementById('meteor-admin-sdk-embedded')) {
+    const style = document.createElement('style');
+    style.id = 'meteor-admin-sdk-embedded';
+    style.textContent = 'html[data-embedded] body { background: unset; }';
+    document.head.appendChild(style);
+  }
+
+  return pin;
 }
 
 // New dataset registered
@@ -711,12 +753,14 @@ export async function processDataRegistration(data: Omit<datasetRegistration, 'r
   }
 }
 
-window._swsdk = {
-  sourceRegistry,
-  subscriberRegistry,
-  datasets,
-  adminExtensions,
-};
+if (typeof window !== 'undefined') {
+  window._swsdk = {
+    sourceRegistry,
+    subscriberRegistry,
+    datasets,
+    adminExtensions,
+  };
+}
 
 /**
  * ----------------

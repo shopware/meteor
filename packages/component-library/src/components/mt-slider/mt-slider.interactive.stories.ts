@@ -1,6 +1,10 @@
 import { expect, within, userEvent, fireEvent } from "@storybook/test";
 import MtSlider from "./mt-slider.vue";
 import meta, { type MtSliderMeta, type MtSliderStory } from "./mt-slider.stories";
+import {
+  expectHintIconAlignedWithFirstLine,
+  multiLinePropHint,
+} from "@/components/_internal/mt-field-hint/mt-field-hint.story-helper";
 
 export default {
   ...meta,
@@ -428,6 +432,21 @@ export const VisualTestHintProp: MtSliderStory = {
     const canvas = within(canvasElement);
 
     expect(canvas.getByText("Hint via prop")).toBeDefined();
+  },
+};
+
+export const VisualTestMultiLinePropHint: MtSliderStory = {
+  name: "Should display multi line prop hint",
+  args: {
+    hint: multiLinePropHint,
+  },
+  render: (args) => ({
+    components: { MtSlider },
+    setup: () => ({ args }),
+    template: `<div style="max-width: 320px"><mt-slider :label="args.label" :model-value="0" :hint="args.hint" /></div>`,
+  }),
+  play: ({ canvasElement }) => {
+    expectHintIconAlignedWithFirstLine(canvasElement);
   },
 };
 

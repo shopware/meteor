@@ -573,8 +573,6 @@ export default defineComponent({
     "hint hint";
   width: 100%;
   margin-bottom: var(--scale-size-32);
-  container-type: inline-size;
-  container-name: mt-number-field;
 }
 
 .mt-number-field.has--error {
@@ -621,7 +619,7 @@ export default defineComponent({
 .mt-number-field__input {
   display: block;
   width: 100%;
-  min-width: 0;
+  min-width: calc(var(--scale-size-32) + 2ch);
   padding: 13px var(--scale-size-16);
   border: none;
   background: transparent;
@@ -717,12 +715,6 @@ export default defineComponent({
     & button {
       color: var(--color-icon-primary-disabled);
     }
-  }
-}
-
-@container mt-number-field (max-width: 180px) {
-  .mt-number-field__controls {
-    display: none;
   }
 }
 

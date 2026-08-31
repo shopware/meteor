@@ -25,6 +25,7 @@ import MtTextarea from "./components/mt-textarea/mt-textarea.vue";
 import MtIcon from "./components/mt-icon/mt-icon.vue";
 import MtCard from "./components/mt-card/mt-card.vue";
 import MtEmptyState from "./components/mt-empty-state/mt-empty-state.vue";
+import MtGrantPermissionServiceBanner from "./components/_internal/mt-grant-permission-service-banner/mt-grant-permission-service-banner.vue";
 import MtTabs from "./components/mt-tabs/mt-tabs.vue";
 import MtDataTable from "./components/mt-data-table/mt-data-table.vue";
 import MtPagination from "./components/mt-pagination/mt-pagination.vue";
@@ -55,6 +56,10 @@ import {
   type UseThemeOptions,
   type UseThemeReturn,
 } from "./composables/useTheme";
+import {
+  useServicePermission,
+  type UseServicePermissionReturn,
+} from "./composables/useServicePermission";
 import TooltipDirective from "./directives/tooltip.directive";
 import DeviceHelperPlugin from "./plugin/device-helper.plugin";
 import MtTooltip from "./components/mt-tooltip/mt-tooltip.vue";
@@ -112,6 +117,7 @@ export {
   MtIcon,
   MtCard,
   MtEmptyState,
+  MtGrantPermissionServiceBanner,
   MtHelpText,
   MtTabs,
   MtDataTable,
@@ -155,6 +161,8 @@ export {
   DeviceHelperPlugin,
   useSnackbar,
   useTheme,
+  useServicePermission,
+  type UseServicePermissionReturn,
   // @deprecated
   MtBanner as SwBanner,
   // @deprecated

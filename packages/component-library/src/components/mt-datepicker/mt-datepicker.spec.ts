@@ -29,6 +29,39 @@ describe("mt-datepicker", () => {
     expect(screen.getByRole("textbox")).toBeDisabled();
   });
 
+  it("shows the inheritance switch and emits inheritance events", async () => {
+    const inheritanceRemove = vi.fn();
+    const inheritanceRestore = vi.fn();
+
+    const { rerender } = render(MtDatepicker, {
+      props: {
+        isInheritanceField: true,
+        isInherited: true,
+        "onInheritance-remove": inheritanceRemove,
+        "onInheritance-restore": inheritanceRestore,
+      },
+    });
+
+    const inheritanceSwitch = screen.getByTestId("mt-inheritance-switch-icon").closest("button");
+    expect(inheritanceSwitch).toBeEnabled();
+    await userEvent.click(inheritanceSwitch!);
+    expect(inheritanceRemove).toHaveBeenCalledOnce();
+
+    await rerender({ isInherited: false });
+    await userEvent.click(screen.getByRole("button", { name: "Link inheritance" }));
+    expect(inheritanceRestore).toHaveBeenCalledOnce();
+  });
+
+  it("disables the datepicker while inherited", () => {
+    render(MtDatepicker, {
+      props: {
+        isInherited: true,
+      },
+    });
+
+    expect(screen.getByRole("textbox")).toBeDisabled();
+  });
+
   it("shows the date format as the placeholder when no placeholder is provided", () => {
     // ARRANGE
     render(MtDatepicker);

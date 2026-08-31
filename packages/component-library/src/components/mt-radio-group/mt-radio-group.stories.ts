@@ -5,12 +5,16 @@ import MtRadioGroupItem from "./mt-radio-group-item.vue";
 import MtRadioGroupCustomItem from "./mt-radio-group-custom-item.vue";
 import MtRadioGroupIndicator from "./mt-radio-group-indicator.vue";
 import ExampleRadioOption from "./_internal/example-radio-option.vue";
+import { hintArgTypes } from "../_internal/mt-base-field/arg-types";
 import type { StoryObj, Meta } from "@storybook/vue3";
 import { fn } from "@storybook/test";
 
 const meta: Meta = {
   title: "Components/Radio Group",
   component: MtRadioGroupRoot,
+  argTypes: {
+    ...hintArgTypes,
+  },
   args: {
     disabled: false,
     label: "Radio Field",
@@ -18,6 +22,7 @@ const meta: Meta = {
     name: undefined,
     error: undefined,
     hint: "",
+    hintSlot: "",
     change: fn(),
   },
 };
@@ -51,6 +56,7 @@ export const Default: Story = {
         :help-text="args.helpText"
         :name="args.name"
         :error="args.error"
+        :hint="args.hint"
         @update:modelValue="handleUpdate"
       >
         <template #default>
@@ -60,7 +66,7 @@ export const Default: Story = {
             <MtRadioGroupItem id="option-3" value="value3" label="Option 3" />
           </MtRadioGroupList>
         </template>
-        <template v-if="args.hint" #hint>{{ args.hint }}</template>
+        <template v-if="args.hintSlot" #hint>{{ args.hintSlot }}</template>
       </MtRadioGroupRoot>
     `,
   }),
@@ -126,6 +132,7 @@ export const WithCustomItem: Story = {
         :help-text="args.helpText"
         :name="args.name"
         :error="args.error"
+        :hint="args.hint"
         @update:modelValue="handleUpdate"
       >
         <template #default="{ disabled: isElementDisabled, identification }">
@@ -178,7 +185,7 @@ export const WithCustomItem: Story = {
             </MtRadioGroupCustomItem>
           </div>
         </template>
-        <template v-if="args.hint" #hint>{{ args.hint }}</template>
+        <template v-if="args.hintSlot" #hint>{{ args.hintSlot }}</template>
       </MtRadioGroupRoot>
     `,
   }),

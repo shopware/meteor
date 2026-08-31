@@ -1,21 +1,27 @@
 import MtColorpicker from "./mt-colorpicker.vue";
+import { hintArgTypes } from "../_internal/mt-base-field/arg-types";
 import type { StoryObj } from "@storybook/vue3";
 import type { SlottedMeta } from "@/_internal/story-helper";
 import { ref } from "vue";
 import { fn } from "@storybook/test";
 
-export type MtColorpickerMeta = SlottedMeta<typeof MtColorpicker, "default" | "updateModelValue">;
+export type MtColorpickerMeta = SlottedMeta<
+  typeof MtColorpicker,
+  "default" | "updateModelValue" | "hint" | "hintSlot"
+>;
 
 export default {
   title: "Components/Colorpicker",
   component: MtColorpicker,
   render: (args) => ({
     components: { MtColorpicker },
-    template: `<mt-colorpicker 
+    template: `<mt-colorpicker
       v-bind="args"
       :modelValue="currentModelValue"
       @update:modelValue="onUpdateModelValue"
-    ></mt-colorpicker>`,
+    >
+      <template v-if="args.hintSlot" #hint>{{ args.hintSlot }}</template>
+    </mt-colorpicker>`,
     setup: () => {
       const currentModelValue = ref(args.modelValue);
       const onUpdateModelValue = (value: string) => {
@@ -30,6 +36,9 @@ export default {
       };
     },
   }),
+  argTypes: {
+    ...hintArgTypes,
+  },
   args: {
     label: "Colorpicker example",
     modelValue: "#0fcff5",
