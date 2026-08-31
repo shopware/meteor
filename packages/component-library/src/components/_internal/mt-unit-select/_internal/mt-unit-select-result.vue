@@ -33,9 +33,9 @@ const emit = defineEmits<{
   width: 100%;
   padding: var(--scale-size-10) var(--scale-size-12);
   display: grid;
-  grid-template-columns: auto 1fr;
+  grid-template-columns: 1fr auto;
   align-items: center;
-  gap: var(--scale-size-32);
+  gap: var(--scale-size-24);
   border-radius: var(--border-radius-xs);
   text-align: left;
   font-size: var(--font-size-xs);
@@ -50,6 +50,9 @@ const emit = defineEmits<{
 
 .mt-unit-select-result__label {
   color: var(--color-text-primary-default);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .mt-unit-select-result__unit {

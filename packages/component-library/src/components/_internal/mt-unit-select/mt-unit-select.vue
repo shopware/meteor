@@ -13,7 +13,7 @@
       @click="toggleDropdown"
     >
       {{ modelValue }}
-      <MtIcon name="chevron-down-xxs" size="var(--scale-size-8)" aria-hidden="true" />
+      <MtIcon name="regular-chevron-down-s" size="var(--scale-size-10)" aria-hidden="true" />
     </button>
 
     <Teleport to="body">
@@ -193,6 +193,7 @@ onUnmounted(() => {
 
 <style lang="css" scoped>
 .mt-unit-select {
+  max-width: var(--scale-size-256);
   padding: var(--scale-size-4);
   border: 1px solid var(--color-border-secondary-default);
   border-radius: var(--border-radius-xs);
