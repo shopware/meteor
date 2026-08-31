@@ -32,7 +32,7 @@
       class="mt-field__help-text"
       :text="helpText"
       placement="right"
-      :style="{ gridArea: 'help-text', alignSelf: 'center' }"
+      :style="{ gridArea: 'help-text' }"
     />
 
     <div class="mt-password-field__block mt-block-field__block">
@@ -315,7 +315,6 @@ const { t } = useI18n({
   height: var(--scale-size-32);
   width: var(--scale-size-32);
   margin-right: var(--scale-size-8);
-  flex-shrink: 0;
 
   &:is(:hover, :focus-visible) {
     background-color: var(--color-interaction-secondary-hover);

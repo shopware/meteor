@@ -371,10 +371,6 @@ export default defineComponent({
       margin-bottom: 0;
       margin-left: var(--scale-size-8);
 
-      & label {
-        flex-grow: 1;
-      }
-
       & .is--required::after {
         content: "*";
         color: var(--color-icon-brand-default);

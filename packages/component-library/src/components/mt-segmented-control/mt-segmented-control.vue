@@ -226,8 +226,15 @@ export default defineComponent({
     display: flex;
   }
 
+  /*
+   * The doubled-up checkbox selectors outrank mt-checkbox's own label rules
+   * (.mt-field--checkbox__container .mt-field--checkbox .mt-field__label), so the
+   * segment's font wins like it did against the old global mt-base-field styles.
+   */
   & .mt-field__label,
-  & .mt-field__label label {
+  & .mt-field__label label,
+  & .mt-field--checkbox__container .mt-field--checkbox .mt-field__label,
+  & .mt-field--checkbox__container .mt-field--checkbox .mt-field__label label {
     cursor: pointer;
     font-family: inherit;
     font-size: inherit;

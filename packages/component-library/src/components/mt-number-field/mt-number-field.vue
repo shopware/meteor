@@ -32,7 +32,7 @@
       class="mt-field__help-text"
       :text="helpText"
       placement="right"
-      :style="{ gridArea: 'help-text', alignSelf: 'center' }"
+      :style="{ gridArea: 'help-text' }"
     />
 
     <div class="mt-number-field__block mt-block-field__block">

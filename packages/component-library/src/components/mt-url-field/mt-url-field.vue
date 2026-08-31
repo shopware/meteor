@@ -142,7 +142,8 @@ const props = withDefaults(
     omitUrlSearch?: boolean;
     copyable?: boolean;
     /**
-     * If set to true the copy button confirms a successful copy.
+     * When true (the default), the copy button confirms a successful copy by
+     * swapping its icon to a checkmark. Set to false for a static copy button.
      */
     copyableTooltip?: boolean;
     error?: {
@@ -164,6 +165,7 @@ const props = withDefaults(
   }>(),
   {
     size: "default",
+    copyableTooltip: true,
   },
 );
 

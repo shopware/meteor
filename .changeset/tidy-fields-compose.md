@@ -10,7 +10,7 @@ Public props, slots and events are unchanged, and the legacy structural class na
 
 `copyable` fields now share a single copy button. `mt-field-copyable` was rewritten to the implementation `mt-url-field` and `mt-email-field` already used, and those two now render the shared component instead of their own copies. Placement is unchanged everywhere: `mt-text-field`, `mt-number-field`, `mt-unit-field` and `mt-slider` still render it in the boxed field addition, `mt-url-field` and `mt-email-field` still render it inline.
 
-`copyableTooltip` is now honoured consistently: when set, a successful copy swaps the icon to a checkmark and updates the tooltip and accessible name; when unset, the button stays static. `mt-url-field` gains the prop, and `mt-email-field` now acts on the prop it already declared but ignored. Fields that do not set it are unchanged.
+`copyableTooltip` is now honoured consistently: when set, a successful copy swaps the icon to a checkmark and updates the tooltip and accessible name; when unset, the button stays static. `mt-url-field` gains the prop and `mt-email-field` now acts on the prop it already declared but ignored — for those two it defaults to `true`, matching their previous always-confirming behaviour. Fields that do not set it are unchanged.
 
 Fixed along the way:
 

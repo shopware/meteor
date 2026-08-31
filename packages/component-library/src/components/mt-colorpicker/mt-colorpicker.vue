@@ -32,7 +32,7 @@
       class="mt-field__help-text"
       :text="helpText"
       placement="right"
-      :style="{ gridArea: 'help-text', alignSelf: 'center' }"
+      :style="{ gridArea: 'help-text' }"
     />
 
     <div class="mt-colorpicker__block mt-block-field__block">
@@ -1995,7 +1995,6 @@ export default defineComponent({
  */
 .mt-colorpicker .mt-field__addition.mt-colorpicker__addition {
   position: relative;
-  padding: 0;
   display: flex;
   justify-content: center;
   align-items: center;

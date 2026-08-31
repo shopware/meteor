@@ -29,7 +29,7 @@
       class="mt-field__help-text"
       :text="helpText"
       placement="right"
-      :style="{ gridArea: 'help-text', alignSelf: 'center' }"
+      :style="{ gridArea: 'help-text' }"
     />
 
     <div class="mt-slider__block mt-block-field__block">
@@ -597,7 +597,7 @@ export default defineComponent({
 .mt-slider > .mt-slider__block {
   grid-area: input;
   display: flex;
-  align-items: center;
+  min-height: var(--scale-size-48);
   padding: var(--scale-size-4) var(--scale-size-4) calc(20px / 2);
   gap: var(--scale-size-16);
   overflow: visible;
@@ -708,10 +708,13 @@ export default defineComponent({
 .mt-slider .mt-slider__slider .mt-slider__input-slider {
   -webkit-appearance: none;
   position: relative;
+  display: block;
+  width: 100%;
   padding: 0;
   height: 8px;
   margin-top: -8px;
   background: transparent;
+  outline: none;
 }
 
 .mt-slider .mt-slider__slider .mt-slider__input-slider__double {

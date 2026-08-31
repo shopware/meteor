@@ -105,27 +105,36 @@ const model = defineModel({
   type: String,
 });
 
-const props = defineProps<{
-  disabled?: boolean;
-  required?: boolean;
-  modelValue?: string;
-  name?: string;
-  label?: string;
-  error?: {
-    detail: string;
-  };
-  helpText?: string;
-  copyable?: boolean;
-  copyableTooltip?: boolean;
-  placeholder?: string;
-  small?: boolean;
-  isInherited?: boolean;
-  isInheritanceField?: boolean;
-  /**
-   * Optional caption below the field. The `#hint` slot takes precedence when provided.
-   */
-  hint?: string | null;
-}>();
+const props = withDefaults(
+  defineProps<{
+    disabled?: boolean;
+    required?: boolean;
+    modelValue?: string;
+    name?: string;
+    label?: string;
+    error?: {
+      detail: string;
+    };
+    helpText?: string;
+    copyable?: boolean;
+    /**
+     * When true (the default), the copy button confirms a successful copy by
+     * swapping its icon to a checkmark. Set to false for a static copy button.
+     */
+    copyableTooltip?: boolean;
+    placeholder?: string;
+    small?: boolean;
+    isInherited?: boolean;
+    isInheritanceField?: boolean;
+    /**
+     * Optional caption below the field. The `#hint` slot takes precedence when provided.
+     */
+    hint?: string | null;
+  }>(),
+  {
+    copyableTooltip: true,
+  },
+);
 
 const slots = useSlots();
 
