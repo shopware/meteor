@@ -12,7 +12,7 @@
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/use-meteor-i18n";
 import MtSelect from "../mt-select/mt-select.vue";
 import type { Theme } from "@/composables/useTheme";
 
@@ -29,7 +29,8 @@ defineProps<{
   disabled?: boolean;
 }>();
 
-const { t } = useI18n({
+const { t } = useMeteorI18n({
+  namespace: "mt.theme-select",
   messages: {
     en: {
       light: "Light",
