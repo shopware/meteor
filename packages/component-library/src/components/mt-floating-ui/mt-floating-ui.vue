@@ -161,6 +161,12 @@ const createFloatingUi = () => {
           });
         }
 
+        // A zero-area reference reports as hidden (all its overflow offsets are
+        // 0), so exclude it: anchors may legitimately be size-less markers, and
+        // in jsdom every element measures 0.
+        const referenceRect = referenceEl.getBoundingClientRect();
+        const referenceIsMeasurable = referenceRect.width > 0 && referenceRect.height > 0;
+
         // Set `position` inline (not just via CSS) so it always matches the
         // strategy the coordinates were computed for. Consumer classes are
         // copied onto this teleported element above, and a class carrying
@@ -174,7 +180,8 @@ const createFloatingUi = () => {
           // The content follows its reference on scroll; once the reference is
           // fully scrolled out of its clipping containers the content must not
           // stay visible (it would float over unrelated UI).
-          visibility: middlewareData.hide?.referenceHidden ? "hidden" : "visible",
+          visibility:
+            referenceIsMeasurable && middlewareData.hide?.referenceHidden ? "hidden" : "visible",
         });
 
         // remove all staticSide classes

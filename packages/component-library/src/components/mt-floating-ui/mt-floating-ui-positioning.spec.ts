@@ -47,6 +47,24 @@ global.ResizeObserver = class ResizeObserver {
   disconnect() {}
 };
 
+// jsdom measures every element as 0×0, and a zero-area reference counts as
+// hidden — so give the trigger a size wherever the reference must be measurable.
+function giveTriggerASize(wrapper: ReturnType<typeof createWrapper>) {
+  const trigger = wrapper.find(".mt-floating-ui__trigger").element as HTMLElement;
+
+  trigger.getBoundingClientRect = vi.fn(() => ({
+    width: 200,
+    height: 40,
+    top: 100,
+    left: 50,
+    bottom: 140,
+    right: 250,
+    x: 50,
+    y: 100,
+    toJSON: vi.fn(),
+  }));
+}
+
 function createWrapper(props: Record<string, unknown> = {}) {
   const appWrapper = document.createElement("div");
   appWrapper.setAttribute("id", "appWrapper");
@@ -65,8 +83,13 @@ function createWrapper(props: Record<string, unknown> = {}) {
   });
 }
 
-async function openAndGetConfig(props: Record<string, unknown> = {}) {
+async function openAndGetConfig(props: Record<string, unknown> = {}, measurable = true) {
   const wrapper = createWrapper(props);
+
+  if (measurable) {
+    giveTriggerASize(wrapper);
+  }
+
   await wrapper.setProps({ isOpened: true });
   await flushPromises();
 
@@ -132,6 +155,23 @@ describe("mt-floating-ui positioning config", () => {
     });
 
     const { wrapper } = await openAndGetConfig();
+
+    const content = document.querySelector(".mt-floating-ui__content") as HTMLElement;
+    expect(content.style.visibility).toBe("visible");
+
+    wrapper.unmount();
+  });
+
+  it("keeps the content visible for a reference without a measurable size", async () => {
+    computePositionMock.mockResolvedValue({
+      x: 10,
+      y: 20,
+      placement: "bottom-start",
+      strategy: "fixed",
+      middlewareData: { hide: { referenceHidden: true } },
+    });
+
+    const { wrapper } = await openAndGetConfig({}, false);
 
     const content = document.querySelector(".mt-floating-ui__content") as HTMLElement;
     expect(content.style.visibility).toBe("visible");
