@@ -97,11 +97,16 @@ const contentStyles = computed(() => {
   return styles;
 });
 
+// Smallest content worth keeping on the preferred side: three 45px result rows
+// plus chrome. The floor may overshoot the pane on purpose — that leftover
+// overflow is what still lets `flip()` change sides.
+const MIN_HEIGHT = 150;
+
 // The content is teleported to `<body>` and positioned `fixed`, so its own
-// clipping ancestors are just the viewport — flipping has to be bounded by the
-// reference's scroll panes to learn about a dialog body it sits in. Skip
-// `overflow: hidden` ancestors: they are usually field-sized boxes that would
-// collapse the boundary onto the reference, leaving no side that fits.
+// clipping ancestors are just the viewport — sizing and flipping have to be
+// bounded by the reference's scroll panes to learn about a dialog body it sits
+// in. Skip `overflow: hidden` ancestors: they are usually field-sized boxes
+// that would collapse the boundary onto the reference, leaving no side that fits.
 const scrollBoundariesOf = (referenceEl: Element): Element[] | "clippingAncestors" => {
   const scrollables = getOverflowAncestors(referenceEl).filter((ancestor): ancestor is Element => {
     if (!(ancestor instanceof Element) || ancestor === document.body) {
@@ -153,19 +158,28 @@ const createFloatingUi = () => {
             }
             return [];
           })(),
-          flip({
-            boundary: scrollBoundariesOf(referenceEl),
-            // Keep the least-bad side when no side fits; the default
-            // `initialPlacement` would push the content out of a short scroll pane.
-            fallbackStrategy: "bestFit",
-          }),
-          ...(consumerMiddleware ?? []),
+          // Order matters: `size()` before `flip()` makes content that is merely
+          // too tall shrink and scroll where it is, instead of jumping over the
+          // reference and covering the field it belongs to.
           size({
-            apply({ rects }) {
+            boundary: scrollBoundariesOf(referenceEl),
+            apply({ availableHeight, rects, elements }) {
               referenceElementWidth.value = rects.reference.width ?? 0;
               referenceElementHeight.value = rects.reference.height ?? 0;
+
+              const cap = Math.max(availableHeight, MIN_HEIGHT);
+              elements.floating.style.maxHeight = `${cap}px`;
+
+              // Content with no scrollable region ignores the cap and paints
+              // past it, which would only hide that overflow from `flip()` — a
+              // context menu would sit half off-screen instead of changing sides.
+              if (elements.floating.scrollHeight > Math.ceil(cap)) {
+                elements.floating.style.maxHeight = "";
+              }
             },
           }),
+          flip({ boundary: scrollBoundariesOf(referenceEl) }),
+          ...(consumerMiddleware ?? []),
           hide(),
         ],
       }).then(({ x, y, middlewareData, placement, strategy }) => {
@@ -305,9 +319,13 @@ onBeforeUnmount(() => {
   top: 0;
   left: 0;
   z-index: 1070;
+  // Flex column so the `max-height` from `size()` reaches the slotted content:
+  // a block child with its own `max-height` paints past the capped box.
+  display: flex;
+  flex-direction: column;
 
   &[data-show] {
-    display: block;
+    display: flex;
   }
 
   /***

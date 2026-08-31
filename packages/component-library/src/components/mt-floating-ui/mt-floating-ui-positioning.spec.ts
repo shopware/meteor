@@ -7,9 +7,11 @@ import type {
   ComputePositionReturn,
   FlipOptions,
   Middleware,
+  SizeOptions,
 } from "@floating-ui/dom";
 
 const flipSpy = vi.hoisted(() => vi.fn());
+const sizeSpy = vi.hoisted(() => vi.fn());
 
 const computePositionMock = vi.hoisted(() =>
   vi.fn(
@@ -38,6 +40,11 @@ vi.mock("@floating-ui/dom", async (importOriginal) => {
       flipSpy(options);
 
       return actual.flip(options);
+    },
+    size: (options?: SizeOptions) => {
+      sizeSpy(options);
+
+      return actual.size(options);
     },
     computePosition: computePositionMock,
     autoUpdate: (
@@ -146,10 +153,39 @@ function lastFlipOptions(): FlipOptions {
   return flipSpy.mock.calls.at(-1)![0] as FlipOptions;
 }
 
+function lastSizeOptions(): SizeOptions {
+  expect(sizeSpy).toHaveBeenCalled();
+
+  return sizeSpy.mock.calls.at(-1)![0] as SizeOptions;
+}
+
+type SizeApplyState = Parameters<NonNullable<SizeOptions["apply"]>>[0];
+
+// `computePosition` is mocked, so `size()` never runs `apply` itself — call the
+// recorded one with the fields the component reads and hand back the element it
+// styled. jsdom lays nothing out, so the content height is stubbed.
+function applySizeWith(availableHeight: number, contentHeight = 0): HTMLElement {
+  const floating = document.createElement("div");
+  Object.defineProperty(floating, "scrollHeight", { get: () => contentHeight });
+
+  lastSizeOptions().apply!({
+    availableHeight,
+    availableWidth: 200,
+    rects: {
+      reference: { width: 200, height: 40, x: 50, y: 100 },
+      floating: { width: 200, height: 400, x: 50, y: 146 },
+    },
+    elements: { reference: document.createElement("div"), floating },
+  } as unknown as SizeApplyState);
+
+  return floating;
+}
+
 describe("mt-floating-ui positioning config", () => {
   beforeEach(() => {
     computePositionMock.mockClear();
     flipSpy.mockClear();
+    sizeSpy.mockClear();
     document.body.innerHTML = "";
   });
 
@@ -188,25 +224,36 @@ describe("mt-floating-ui positioning config", () => {
     wrapper.unmount();
   });
 
-  it("bounds the flip by the scrollable ancestors of the reference", async () => {
+  it("shrinks the content before it flips it", async () => {
+    const { wrapper, config } = await openAndGetConfig();
+
+    const names = middlewareNames(config);
+    expect(names.indexOf("size")).toBeGreaterThan(-1);
+    expect(names.indexOf("size")).toBeLessThan(names.indexOf("flip"));
+
+    wrapper.unmount();
+  });
+
+  it("bounds sizing and flipping by the scrollable ancestors of the reference", async () => {
     const { mountPoint, ancestors } = nestMountPointIn("auto");
     const [scrollPane] = ancestors;
 
     const { wrapper } = await openAndGetConfig({}, true, mountPoint);
 
+    expect(lastSizeOptions().boundary).toStrictEqual([scrollPane]);
     expect(lastFlipOptions().boundary).toStrictEqual([scrollPane]);
-    expect(lastFlipOptions().fallbackStrategy).toBe("bestFit");
 
     wrapper.unmount();
   });
 
-  it("keeps overflow: hidden ancestors out of the flip boundary", async () => {
+  it("keeps overflow: hidden ancestors out of the boundary", async () => {
     const { mountPoint, ancestors } = nestMountPointIn("auto", "hidden");
     const [scrollPane, clippingBox] = ancestors;
 
     const { wrapper } = await openAndGetConfig({}, true, mountPoint);
 
-    expect(lastFlipOptions().boundary).toContain(scrollPane);
+    expect(lastSizeOptions().boundary).toStrictEqual([scrollPane]);
+    expect(lastFlipOptions().boundary).toStrictEqual([scrollPane]);
     expect(lastFlipOptions().boundary).not.toContain(clippingBox);
 
     wrapper.unmount();
@@ -215,7 +262,34 @@ describe("mt-floating-ui positioning config", () => {
   it("falls back to the clipping ancestors without a scrollable ancestor", async () => {
     const { wrapper } = await openAndGetConfig();
 
+    expect(lastSizeOptions().boundary).toBe("clippingAncestors");
     expect(lastFlipOptions().boundary).toBe("clippingAncestors");
+
+    wrapper.unmount();
+  });
+
+  it("caps the content at the space left in the boundary", async () => {
+    const { wrapper } = await openAndGetConfig();
+
+    expect(applySizeWith(420).style.maxHeight).toBe("420px");
+
+    wrapper.unmount();
+  });
+
+  it("never shrinks the content below the minimum height", async () => {
+    const { wrapper } = await openAndGetConfig();
+
+    // Overshooting the boundary on purpose: the leftover overflow is what makes
+    // `flip()` move the content when a side is genuinely too small for it.
+    expect(applySizeWith(12).style.maxHeight).toBe("150px");
+
+    wrapper.unmount();
+  });
+
+  it("caps nothing when the content will not shrink into the space", async () => {
+    const { wrapper } = await openAndGetConfig();
+
+    expect(applySizeWith(200, 400).style.maxHeight).toBe("");
 
     wrapper.unmount();
   });
