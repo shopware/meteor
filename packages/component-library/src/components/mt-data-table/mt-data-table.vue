@@ -2659,6 +2659,5 @@ export default defineComponent({
 .mt-data-table__add-filter-button:hover,
 .mt-data-table__add-filter-button:focus-visible {
   background-color: var(--color-background-tertiary-default);
-  color: var(--color-icon-primary-hover);
 }
 </style>
