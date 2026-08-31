@@ -85,6 +85,21 @@ function giveTriggerASize(wrapper: ReturnType<typeof createWrapper>) {
   }));
 }
 
+// The boundary is built from the panes' own rects, which jsdom leaves at 0×0.
+function givePaneVerticalBounds(pane: HTMLElement, top: number, bottom: number) {
+  pane.getBoundingClientRect = vi.fn(() => ({
+    width: 200,
+    height: bottom - top,
+    top,
+    left: 50,
+    bottom,
+    right: 250,
+    x: 50,
+    y: top,
+    toJSON: vi.fn(),
+  }));
+}
+
 // Nests the mount point in one ancestor per `overflow-y` value, outermost first.
 function nestMountPointIn(...overflows: string[]) {
   const ancestors: HTMLElement[] = [];
@@ -234,14 +249,28 @@ describe("mt-floating-ui positioning config", () => {
     wrapper.unmount();
   });
 
-  it("bounds sizing and flipping by the scrollable ancestors of the reference", async () => {
+  it("bounds sizing and flipping by the vertical space of the scrollable ancestors", async () => {
     const { mountPoint, ancestors } = nestMountPointIn("auto");
-    const [scrollPane] = ancestors;
+    givePaneVerticalBounds(ancestors[0], 100, 400);
 
     const { wrapper } = await openAndGetConfig({}, true, mountPoint);
 
-    expect(lastSizeOptions().boundary).toStrictEqual([scrollPane]);
-    expect(lastFlipOptions().boundary).toStrictEqual([scrollPane]);
+    expect(lastSizeOptions().boundary).toMatchObject({ y: 100, height: 300 });
+    expect(lastFlipOptions().boundary).toMatchObject({ y: 100, height: 300 });
+
+    wrapper.unmount();
+  });
+
+  it("leaves the width of the boundary to the viewport", async () => {
+    const { mountPoint, ancestors } = nestMountPointIn("auto");
+    givePaneVerticalBounds(ancestors[0], 100, 400);
+
+    const { wrapper } = await openAndGetConfig({}, true, mountPoint);
+
+    // Narrowing the boundary onto the pane would make the content change
+    // alignment at the pane's edge instead of at the edge of the screen.
+    expect(lastSizeOptions().boundary).toMatchObject({ x: 0, width: window.innerWidth });
+    expect(lastFlipOptions().boundary).toMatchObject({ x: 0, width: window.innerWidth });
 
     wrapper.unmount();
   });
@@ -249,12 +278,14 @@ describe("mt-floating-ui positioning config", () => {
   it("keeps overflow: hidden ancestors out of the boundary", async () => {
     const { mountPoint, ancestors } = nestMountPointIn("auto", "hidden");
     const [scrollPane, clippingBox] = ancestors;
+    givePaneVerticalBounds(scrollPane, 100, 400);
+    givePaneVerticalBounds(clippingBox, 150, 350);
 
     const { wrapper } = await openAndGetConfig({}, true, mountPoint);
 
-    expect(lastSizeOptions().boundary).toStrictEqual([scrollPane]);
-    expect(lastFlipOptions().boundary).toStrictEqual([scrollPane]);
-    expect(lastFlipOptions().boundary).not.toContain(clippingBox);
+    // Counting the clipping box would have tightened this to 150…350.
+    expect(lastSizeOptions().boundary).toMatchObject({ y: 100, height: 300 });
+    expect(lastFlipOptions().boundary).toMatchObject({ y: 100, height: 300 });
 
     wrapper.unmount();
   });

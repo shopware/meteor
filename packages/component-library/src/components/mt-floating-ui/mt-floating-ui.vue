@@ -35,7 +35,7 @@
 
 <script setup lang="ts">
 import { ref, onBeforeUnmount, watch, nextTick, computed } from "vue";
-import type { AutoUpdateOptions, ComputePositionConfig } from "@floating-ui/dom";
+import type { AutoUpdateOptions, ComputePositionConfig, Rect } from "@floating-ui/dom";
 import {
   computePosition,
   autoUpdate,
@@ -107,7 +107,12 @@ const MIN_HEIGHT = 150;
 // bounded by the reference's scroll panes to learn about a dialog body it sits
 // in. Skip `overflow: hidden` ancestors: they are usually field-sized boxes
 // that would collapse the boundary onto the reference, leaving no side that fits.
-const scrollBoundariesOf = (referenceEl: Element): Element[] | "clippingAncestors" => {
+//
+// Only the vertical extent of those panes is a real limit — nothing clips the
+// content sideways. So the boundary keeps the viewport's full width: narrowing
+// it to the pane would move the content to the pane's edge instead of the
+// screen's, pulling a table's settings menu in over its own rows.
+const scrollBoundaryOf = (referenceEl: Element): Rect | "clippingAncestors" => {
   const scrollables = getOverflowAncestors(referenceEl).filter((ancestor): ancestor is Element => {
     if (!(ancestor instanceof Element) || ancestor === document.body) {
       return false;
@@ -118,7 +123,15 @@ const scrollBoundariesOf = (referenceEl: Element): Element[] | "clippingAncestor
     return overflowY === "auto" || overflowY === "scroll";
   });
 
-  return scrollables.length > 0 ? scrollables : "clippingAncestors";
+  if (scrollables.length === 0) {
+    return "clippingAncestors";
+  }
+
+  const rects = scrollables.map((scrollable) => scrollable.getBoundingClientRect());
+  const top = Math.max(...rects.map((rect) => rect.top));
+  const bottom = Math.min(...rects.map((rect) => rect.bottom));
+
+  return { x: 0, y: top, width: window.innerWidth, height: bottom - top };
 };
 
 const createFloatingUi = () => {
@@ -162,7 +175,7 @@ const createFloatingUi = () => {
           // too tall shrink and scroll where it is, instead of jumping over the
           // reference and covering the field it belongs to.
           size({
-            boundary: scrollBoundariesOf(referenceEl),
+            boundary: scrollBoundaryOf(referenceEl),
             apply({ availableHeight, rects, elements }) {
               referenceElementWidth.value = rects.reference.width ?? 0;
               referenceElementHeight.value = rects.reference.height ?? 0;
@@ -178,7 +191,7 @@ const createFloatingUi = () => {
               }
             },
           }),
-          flip({ boundary: scrollBoundariesOf(referenceEl) }),
+          flip({ boundary: scrollBoundaryOf(referenceEl) }),
           ...(consumerMiddleware ?? []),
           hide(),
         ],
