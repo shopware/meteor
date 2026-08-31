@@ -25,7 +25,9 @@
           </div>
         </div>
 
-        <div class="mt-field__label">
+        <!-- Keyed off the raw prop, not the computed inherited state, matching what
+             mt-base-field used to receive for the label colour. -->
+        <div class="mt-field__label" :class="{ 'is--inherited': isInherited }">
           <mt-inheritance-switch
             v-if="isInheritanceField"
             class="mt-field__inheritance-icon"
@@ -55,12 +57,13 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, useId } from "vue";
+import { computed, defineComponent } from "vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtInheritanceSwitch from "../_internal/mt-inheritance-switch/mt-inheritance-switch.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import MtFormFieldMixin from "../../mixins/form-field.mixin";
+import { createId } from "../../utils/id";
 import { useFutureFlags } from "@/composables/useFutureFlags";
 
 export default defineComponent({
@@ -204,13 +207,13 @@ export default defineComponent({
 
     return {
       checkboxClasses,
-      id: useId(),
     };
   },
 
-  data(): { currentValue: boolean | undefined } {
+  data(): { currentValue: boolean | undefined; id: string | undefined } {
     return {
       currentValue: this.checked,
+      id: undefined,
     };
   },
 
@@ -307,6 +310,8 @@ export default defineComponent({
   },
 
   mounted() {
+    this.id = createId();
+
     if (this.checked !== undefined) {
       // @deprecated - Will be removed. Use `v-model` (modelValue / update:modelValue) instead.
       console.warn(
@@ -396,7 +401,7 @@ export default defineComponent({
       line-height: var(--font-line-height-xs);
     }
 
-    &.is--inherited .mt-field__label {
+    & .mt-field__label.is--inherited {
       color: var(--color-text-accent-default);
     }
 

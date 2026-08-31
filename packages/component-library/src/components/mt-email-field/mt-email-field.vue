@@ -63,11 +63,31 @@
         "
       />
 
-      <mt-field-copyable
-        v-if="copyable"
-        :copyable-text="model"
-        :copyable-tooltip="copyableTooltip"
-      />
+      <mt-tooltip v-if="copyable" :content="t('copyTooltip')">
+        <template #default="params">
+          <button
+            type="button"
+            v-bind="params"
+            class="mt-email-field__copy-button"
+            :aria-label="
+              copied ? t('copyButtonDescriptionValueCopied') : t('copyButtonDescription')
+            "
+            @click="
+              () => {
+                if (!model) return;
+
+                copy(model);
+              }
+            "
+          >
+            <mt-icon
+              :name="copied ? 'regular-checkmark' : 'regular-copy'"
+              size="var(--scale-size-18)"
+              color="var(--color-icon-primary-default)"
+            />
+          </button>
+        </template>
+      </mt-tooltip>
 
       <mt-field-affix type="suffix" v-else-if="$slots.suffix">
         <slot name="suffix" />
@@ -95,8 +115,11 @@ import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
+import MtIcon from "../mt-icon/mt-icon.vue";
+import MtTooltip from "@/components/mt-tooltip/mt-tooltip.vue";
 import MtFieldAffix from "../_internal/mt-field-affix/mt-field-affix.vue";
-import MtFieldCopyable from "../_internal/mt-field-copyable/mt-field-copyable.vue";
+import { useI18n } from "vue-i18n";
+import { useClipboard } from "@vueuse/core";
 import { useFutureFlags } from "@/composables/useFutureFlags";
 
 const futureFlags = useFutureFlags();
@@ -105,36 +128,27 @@ const model = defineModel({
   type: String,
 });
 
-const props = withDefaults(
-  defineProps<{
-    disabled?: boolean;
-    required?: boolean;
-    modelValue?: string;
-    name?: string;
-    label?: string;
-    error?: {
-      detail: string;
-    };
-    helpText?: string;
-    copyable?: boolean;
-    /**
-     * When true (the default), the copy button confirms a successful copy by
-     * swapping its icon to a checkmark. Set to false for a static copy button.
-     */
-    copyableTooltip?: boolean;
-    placeholder?: string;
-    small?: boolean;
-    isInherited?: boolean;
-    isInheritanceField?: boolean;
-    /**
-     * Optional caption below the field. The `#hint` slot takes precedence when provided.
-     */
-    hint?: string | null;
-  }>(),
-  {
-    copyableTooltip: true,
-  },
-);
+const props = defineProps<{
+  disabled?: boolean;
+  required?: boolean;
+  modelValue?: string;
+  name?: string;
+  label?: string;
+  error?: {
+    detail: string;
+  };
+  helpText?: string;
+  copyable?: boolean;
+  copyableTooltip?: boolean;
+  placeholder?: string;
+  small?: boolean;
+  isInherited?: boolean;
+  isInheritanceField?: boolean;
+  /**
+   * Optional caption below the field. The `#hint` slot takes precedence when provided.
+   */
+  hint?: string | null;
+}>();
 
 const slots = useSlots();
 
@@ -168,6 +182,23 @@ function checkValidity() {
 
   errorMessage.value = { detail: inputRef.value?.validationMessage };
 }
+
+const { copy, copied } = useClipboard();
+
+const { t } = useI18n({
+  messages: {
+    de: {
+      copyTooltip: "In Zwischenablage kopieren",
+      copyButtonDescription: "In Zwischenablage kopieren",
+      copyButtonDescriptionValueCopied: "In Zwischenablage kopiert",
+    },
+    en: {
+      copyTooltip: "Copy to clipboard",
+      copyButtonDescription: "Copy to clipboard",
+      copyButtonDescriptionValueCopied: "Copied to clipboard",
+    },
+  },
+});
 </script>
 
 <style scoped>
@@ -241,6 +272,26 @@ function checkValidity() {
   padding-inline: var(--scale-size-16);
   height: 100%;
   width: 100%;
+}
+
+.mt-email-field__copy-button {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  right: var(--scale-size-8);
+  top: 50%;
+  transform: translate(0, -50%);
+  padding: var(--scale-size-8);
+  border-radius: var(--border-radius-button);
+  transition: background-color 0.15s ease-out;
+
+  &:is(:hover, :focus-visible) {
+    background-color: var(--color-interaction-secondary-hover);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--color-border-brand-default);
+  }
 }
 
 .mt-email-field__hint {

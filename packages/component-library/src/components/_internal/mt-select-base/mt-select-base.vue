@@ -40,10 +40,7 @@
         @keydown.tab="collapse"
         @keydown.esc="collapse"
       >
-        <slot
-          name="mt-select-selection"
-          v-bind="{ identification, error, disabled, size, expand, collapse }"
-        />
+        <slot name="mt-select-selection" v-bind="{ identification, disabled, expand, collapse }" />
       </div>
 
       <div class="mt-select__selection-indicators" :style="{ right: selectionIndicatorsRight }">
@@ -87,7 +84,7 @@
         </transition>
       </template>
 
-      <mt-field-addition ref="suffix" :size="size" :has-error="!!error">
+      <mt-field-addition :size="size" :has-error="!!error">
         <slot name="mt-select-suffix" />
       </mt-field-addition>
     </div>
@@ -103,7 +100,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useId, type CSSProperties, type PropType } from "vue";
+import { defineComponent, type CSSProperties, type PropType } from "vue";
+import { createId } from "../../../utils/id";
 import MtIcon from "../../mt-icon/mt-icon.vue";
 import MtLoader from "../../mt-loader/mt-loader.vue";
 import MtFieldError from "../mt-field-error/mt-field-error.vue";
@@ -232,7 +230,6 @@ export default defineComponent({
   setup() {
     return {
       future: useFutureFlags(),
-      id: useId(),
     };
   },
 
@@ -240,7 +237,7 @@ export default defineComponent({
     return {
       expanded: false,
       suffixWidth: 0,
-      suffixObserver: null as ResizeObserver | null,
+      id: undefined as string | undefined,
     };
   },
 
@@ -271,22 +268,14 @@ export default defineComponent({
   },
 
   mounted() {
+    this.id = createId();
+
     this.$nextTick(() => this.updateSuffixWidth());
     window.addEventListener("resize", this.updateSuffixWidth, { passive: true });
-
-    // The suffix is slot content, so it can change size without the window resizing.
-    if (typeof ResizeObserver !== "undefined") {
-      this.suffixObserver = new ResizeObserver(() => this.updateSuffixWidth());
-
-      const suffixElement = this.suffixElement();
-      if (suffixElement) this.suffixObserver.observe(suffixElement);
-    }
   },
 
   beforeUnmount() {
     window.removeEventListener("resize", this.updateSuffixWidth);
-    this.suffixObserver?.disconnect();
-    this.suffixObserver = null;
   },
 
   emits: [
@@ -298,14 +287,11 @@ export default defineComponent({
   ],
 
   methods: {
-    suffixElement(): HTMLElement | null {
-      const suffix = this.$refs.suffix as { $el?: HTMLElement } | undefined;
-
-      return suffix?.$el ?? null;
-    },
-
     updateSuffixWidth() {
-      const suffixElement = this.suffixElement();
+      // Find the suffix container to get the width
+      const suffixElement = this.$el?.querySelector(
+        ".mt-block-field__block > .mt-field__addition:not(.is--prefix)",
+      );
 
       if (!suffixElement) {
         this.suffixWidth = 0;
@@ -453,12 +439,17 @@ export default defineComponent({
   margin-bottom: var(--scale-size-32);
 }
 
+/* Ordered before .has--error so the error-state margin wins over the future flag,
+   like it did against mt-base-field's global styles. */
+.mt-select.mt-field--future-remove-default-margin {
+  margin-bottom: 0;
+}
+
 .mt-select.has--error {
   margin-bottom: var(--scale-size-12);
 }
 
-.mt-select.mt-field--small,
-.mt-select.mt-field--future-remove-default-margin {
+.mt-select.mt-field--small {
   margin-bottom: 0;
 }
 

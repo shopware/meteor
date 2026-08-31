@@ -16,7 +16,7 @@
     <mt-field-label
       v-if="label"
       class="mt-field__label"
-      :for="inputId"
+      :for="identification"
       :required="required"
       :has-error="hasError"
       :disabled="disableInheritanceToggle"
@@ -57,10 +57,7 @@
       />
 
       <mt-field-addition v-if="copyable" :size="size" :has-error="hasError">
-        <mt-field-copyable
-          :copyable-text="String(currentValue)"
-          :copyable-tooltip="copyableTooltip"
-        />
+        <mt-field-copyable :copyable-text="String(currentValue)" :tooltip="copyableTooltip" />
       </mt-field-addition>
 
       <mt-field-addition v-else-if="$slots.suffix" :size="size" :has-error="hasError">
@@ -85,7 +82,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, useId, type PropType, type CSSProperties } from "vue";
+import { defineComponent, type PropType, type CSSProperties } from "vue";
+import { createId } from "../../utils/id";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtFieldAddition from "../_internal/mt-field-addition/mt-field-addition.vue";
 import MtFieldCopyable from "../_internal/mt-field-copyable/mt-field-copyable.vue";
@@ -280,7 +278,6 @@ export default defineComponent({
   setup() {
     return {
       future: useFutureFlags(),
-      id: useId(),
     };
   },
 
@@ -288,7 +285,12 @@ export default defineComponent({
     return {
       currentValue: this.modelValue,
       hasFocus: false,
+      id: undefined as string | undefined,
     };
+  },
+
+  mounted() {
+    this.id = createId();
   },
 
   computed: {
@@ -396,12 +398,17 @@ export default defineComponent({
   margin-bottom: var(--scale-size-32);
 }
 
+/* Ordered before .has--error so the error-state margin wins over the future flag,
+   like it did against mt-base-field's global styles. */
+.mt-text-field.mt-field--future-remove-default-margin {
+  margin-bottom: 0;
+}
+
 .mt-text-field.has--error {
   margin-bottom: var(--scale-size-12);
 }
 
-.mt-text-field.mt-field--small,
-.mt-text-field.mt-field--future-remove-default-margin {
+.mt-text-field.mt-field--small {
   margin-bottom: 0;
 }
 
@@ -474,8 +481,7 @@ export default defineComponent({
 }
 
 .mt-text-field__input:-webkit-autofill {
-  -webkit-box-shadow: 0 0 0 1000px var(--color-background-primary-default) inset;
-  -webkit-text-fill-color: var(--color-text-primary-default);
+  -webkit-box-shadow: 0 0 0 1000px #fff inset;
 }
 
 .mt-field__hint-wrapper {

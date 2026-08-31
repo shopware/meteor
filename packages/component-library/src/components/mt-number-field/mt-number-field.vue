@@ -16,7 +16,7 @@
     <mt-field-label
       v-if="label"
       class="mt-field__label"
-      :for="inputId"
+      :for="identification"
       :required="required"
       :has-error="hasError"
       :disabled="disableInheritanceToggle"
@@ -85,10 +85,7 @@
       <slot name="_unit-suffix" />
 
       <mt-field-addition v-if="copyable" :size="size" :has-error="hasError">
-        <mt-field-copyable
-          :copyable-text="stringRepresentation"
-          :copyable-tooltip="copyableTooltip"
-        />
+        <mt-field-copyable :copyable-text="stringRepresentation" :tooltip="copyableTooltip" />
       </mt-field-addition>
 
       <mt-field-addition v-else-if="$slots.suffix" :size="size" :has-error="hasError">
@@ -113,7 +110,7 @@
 <script lang="ts">
 import type { PropType } from "vue";
 
-import { defineComponent, useId } from "vue";
+import { defineComponent } from "vue";
 import MtTextField from "../mt-text-field/mt-text-field.vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
 import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
@@ -273,7 +270,7 @@ export default defineComponent({
 
     // `setup` is not merged through `extends`, so the values MtTextField's setup provides
     // have to be re-created here.
-    return { t, future: useFutureFlags(), id: useId() };
+    return { t, future: useFutureFlags() };
   },
 
   data() {
@@ -575,12 +572,17 @@ export default defineComponent({
   margin-bottom: var(--scale-size-32);
 }
 
+/* Ordered before .has--error so the error-state margin wins over the future flag,
+   like it did against mt-base-field's global styles. */
+.mt-number-field.mt-field--future-remove-default-margin {
+  margin-bottom: 0;
+}
+
 .mt-number-field.has--error {
   margin-bottom: var(--scale-size-12);
 }
 
-.mt-number-field.mt-field--small,
-.mt-number-field.mt-field--future-remove-default-margin {
+.mt-number-field.mt-field--small {
   margin-bottom: 0;
 }
 
@@ -638,6 +640,10 @@ export default defineComponent({
 
 .mt-number-field__input::placeholder {
   color: var(--color-text-secondary-default);
+}
+
+.mt-number-field__input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #fff inset;
 }
 
 .mt-number-field__input:disabled {

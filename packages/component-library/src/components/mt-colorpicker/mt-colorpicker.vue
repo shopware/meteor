@@ -271,7 +271,8 @@
 <script lang="ts">
 import type { PropType } from "vue";
 
-import { defineComponent, useId } from "vue";
+import { defineComponent } from "vue";
+import { createId } from "../../utils/id";
 import { debounce } from "@/utils/debounce";
 import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
@@ -489,7 +490,6 @@ export default defineComponent({
     return {
       t,
       future: useFutureFlags(),
-      id: useId(),
     };
   },
   data(): {
@@ -507,6 +507,7 @@ export default defineComponent({
     trap: FocusTrap | null;
     hueStep: number;
     alphaStep: number;
+    id: string | undefined;
   } {
     return {
       localValue: this.modelValue || "",
@@ -521,7 +522,12 @@ export default defineComponent({
       trap: null,
       hueStep: 1,
       alphaStep: 0.01,
+      id: undefined,
     };
+  },
+
+  mounted() {
+    this.id = createId();
   },
 
   computed: {
@@ -1541,12 +1547,14 @@ export default defineComponent({
   margin-bottom: var(--scale-size-32);
 }
 
-.mt-colorpicker.has--error {
-  margin-bottom: var(--scale-size-12);
-}
-
+/* Ordered before .has--error so the error-state margin wins over the future flag,
+   like it did against mt-base-field's global styles. */
 .mt-colorpicker.mt-field--future-remove-default-margin {
   margin-bottom: 0;
+}
+
+.mt-colorpicker.has--error {
+  margin-bottom: var(--scale-size-12);
 }
 
 .mt-colorpicker.is--disabled {
@@ -1595,6 +1603,10 @@ export default defineComponent({
 
 .mt-colorpicker .mt-colorpicker__input::placeholder {
   color: var(--color-text-secondary-default);
+}
+
+.mt-colorpicker .mt-colorpicker__input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #fff inset;
 }
 
 .mt-colorpicker .mt-colorpicker__input:disabled {

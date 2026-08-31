@@ -16,7 +16,7 @@
     <mt-field-label
       v-if="label"
       class="mt-field__label"
-      :for="inputId"
+      :for="identification"
       :required="required"
       :has-error="hasError"
       :disabled="disableInheritanceToggle"
@@ -91,7 +91,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, useSlots, useId, type CSSProperties } from "vue";
+import { ref, computed, onMounted, useSlots, type CSSProperties } from "vue";
+import { createId } from "../../utils/id";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtFieldAddition from "../_internal/mt-field-addition/mt-field-addition.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
@@ -140,9 +141,14 @@ const props = withDefaults(
 
 const future = useFutureFlags();
 const slots = useSlots();
-const id = useId();
 
-const identification = computed(() => props.name ?? `mt-field--${id}`);
+const id = ref<string | undefined>(undefined);
+
+onMounted(() => {
+  id.value = createId();
+});
+
+const identification = computed(() => props.name ?? `mt-field--${id.value}`);
 
 const inputId = computed(() =>
   props.idSuffix && props.idSuffix.length > 0
@@ -238,12 +244,17 @@ const { t } = useI18n({
   margin-bottom: var(--scale-size-32);
 }
 
+/* Ordered before .has--error so the error-state margin wins over the future flag,
+   like it did against mt-base-field's global styles. */
+.mt-password-field.mt-field--future-remove-default-margin {
+  margin-bottom: 0;
+}
+
 .mt-password-field.has--error {
   margin-bottom: var(--scale-size-12);
 }
 
-.mt-password-field.mt-field--small,
-.mt-password-field.mt-field--future-remove-default-margin {
+.mt-password-field.mt-field--small {
   margin-bottom: 0;
 }
 
@@ -301,6 +312,10 @@ const { t } = useI18n({
 
 .mt-password-field__input::placeholder {
   color: var(--color-text-secondary-default);
+}
+
+.mt-password-field__input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #fff inset;
 }
 
 .mt-password-field__input:disabled {

@@ -110,10 +110,7 @@
       />
 
       <mt-field-addition v-if="copyable" :size="size">
-        <mt-field-copyable
-          :copyable-text="stringRepresentation"
-          :copyable-tooltip="copyableTooltip"
-        />
+        <mt-field-copyable :copyable-text="stringRepresentation" :tooltip="copyableTooltip" />
       </mt-field-addition>
     </div>
 
@@ -131,7 +128,8 @@
 
 <script lang="ts">
 import type { CSSProperties, PropType } from "vue";
-import { defineComponent, useId } from "vue";
+import { defineComponent } from "vue";
+import { createId } from "@/utils/id";
 import MtNumberField from "@/components/mt-number-field/mt-number-field.vue";
 import MtFieldHint from "@/components/_internal/mt-field-hint/mt-field-hint.vue";
 import MtFieldLabel from "@/components/_internal/mt-field-label/mt-field-label.vue";
@@ -358,7 +356,6 @@ export default defineComponent({
   setup() {
     return {
       future: useFutureFlags(),
-      id: useId(),
     };
   },
 
@@ -367,7 +364,12 @@ export default defineComponent({
       rangeRightValue: 0 as number,
       rangeLeftValue: 0 as number,
       activeSlider: null as null | "left" | "right",
+      id: undefined as string | undefined,
     };
+  },
+
+  mounted() {
+    this.id = createId();
   },
 
   watch: {

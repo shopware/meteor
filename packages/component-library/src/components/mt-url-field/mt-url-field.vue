@@ -78,13 +78,30 @@
         @change.stop="$emit('change', ($event.target as HTMLInputElement).value || '')"
       />
 
-      <mt-field-copyable
-        v-if="copyable"
-        :copyable-text="currentValue"
-        :copyable-tooltip="copyableTooltip"
-        :label="t('copyButtonDescription')"
-        :copied-label="t('copyButtonDescriptionValueCopied')"
-      />
+      <mt-tooltip v-if="copyable" :content="t('copyTooltip')">
+        <template #default="params">
+          <button
+            type="button"
+            v-bind="params"
+            class="mt-url-field__copy-button"
+            :aria-label="
+              copied ? t('copyButtonDescriptionValueCopied') : t('copyButtonDescription')
+            "
+            @click="
+              () => {
+                if (!currentValue) return;
+                copy(currentValue);
+              }
+            "
+          >
+            <mt-icon
+              :name="copied ? 'regular-checkmark' : 'regular-copy'"
+              size="var(--scale-size-18)"
+              color="var(--color-icon-primary-default)"
+            />
+          </button>
+        </template>
+      </mt-tooltip>
 
       <div v-if="$slots.suffix" class="mt-url-field__affix mt-url-field__affix--suffix">
         <slot name="suffix" />
@@ -108,7 +125,8 @@ import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
-import MtFieldCopyable from "../_internal/mt-field-copyable/mt-field-copyable.vue";
+import MtTooltip from "../mt-tooltip/mt-tooltip.vue";
+import { useClipboard } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import { useFutureFlags } from "@/composables/useFutureFlags";
 
@@ -141,11 +159,6 @@ const props = withDefaults(
     omitUrlHash?: boolean;
     omitUrlSearch?: boolean;
     copyable?: boolean;
-    /**
-     * When true (the default), the copy button confirms a successful copy by
-     * swapping its icon to a checkmark. Set to false for a static copy button.
-     */
-    copyableTooltip?: boolean;
     error?: {
       detail: string;
     };
@@ -165,7 +178,6 @@ const props = withDefaults(
   }>(),
   {
     size: "default",
-    copyableTooltip: true,
   },
 );
 
@@ -246,13 +258,17 @@ function transformURL(value: string) {
     .replace(url.host, decodeURI(userHost));
 }
 
+const { copy, copied } = useClipboard();
+
 const { t } = useI18n({
   messages: {
     de: {
+      copyTooltip: "URL in Zwischenablage kopieren",
       copyButtonDescription: "URL in Zwischenablage kopieren",
       copyButtonDescriptionValueCopied: "URL in Zwischenablage kopiert",
     },
     en: {
+      copyTooltip: "Copy URL to clipboard",
       copyButtonDescription: "Copy URL to clipboard",
       copyButtonDescriptionValueCopied: "Copied URL to clipboard",
     },
@@ -394,6 +410,24 @@ const { t } = useI18n({
   &:disabled {
     background-color: var(--color-interaction-secondary-disabled);
     cursor: not-allowed;
+  }
+}
+
+.mt-url-field__copy-button {
+  display: grid;
+  place-items: center;
+  padding: var(--scale-size-8);
+  border-radius: var(--border-radius-button);
+  transition: background-color 0.15s ease-out;
+  margin-inline-end: var(--scale-size-6);
+
+  &:is(:hover, :focus-visible) {
+    background-color: var(--color-interaction-secondary-hover);
+  }
+
+  &:focus-visible {
+    outline: var(--scale-size-2) solid var(--color-border-brand-default);
+    outline-offset: var(--scale-size-2);
   }
 }
 
