@@ -5,9 +5,10 @@
       subtitle="No i18n framework installed — everything below is translated by Meteor's bundled snippets."
     >
       <mt-text as="p">
-        Switch the administration language (for example between English and German): the
-        pagination texts and the validation message follow along. The language reaches this
-        iframe through the Admin SDK's locale channel and is handed to Meteor by
+        Switch the administration language (for example between English and
+        German): the pagination texts and the validation message follow along.
+        The language reaches this iframe through the Admin SDK's locale channel
+        and is handed to Meteor by
         <code>createAdminSdkAdapter()</code>.
       </mt-text>
 
