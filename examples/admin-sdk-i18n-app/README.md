@@ -22,12 +22,15 @@ admin's iframe.
          /path/to/shopware/custom/apps/MeteorAdminSDKi18nApp
    ```
 
-3. Install it (in the shop): `bin/console app:install --activate --force MeteorAdminSDKi18nApp`
+3. Start the dev server: `pnpm --filter meteor-admin-sdk-i18n-app dev` (serves on port 8889).
+   It must be running for the next step — the install performs the app registration
+   handshake against endpoints the dev server provides (see `vite.config.ts`).
+4. Install it (in the shop): `bin/console app:install --activate --force MeteorAdminSDKi18nApp`
    (`--force` skips the interactive consent prompt for the localhost app URL; uninstall again
    with `bin/console app:uninstall MeteorAdminSDKi18nApp`).
-4. Start the dev server: `pnpm --filter meteor-admin-sdk-i18n-app dev` (serves on port 8889).
-5. Open the administration — the module appears in the menu as "Meteor i18n example".
-   Switch the admin language in your user profile and watch the components follow.
+5. Open the administration — the module appears under **Extensions** in the sidebar as
+   "Meteor i18n example". Switch the admin language in your user profile and watch the
+   components follow.
 
 This app is also the intended host for a future integration test covering the
 admin-locale → SDK → Meteor re-render chain.

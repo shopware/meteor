@@ -10,6 +10,14 @@
         <license>MIT</license>
     </meta>
 
+    <setup>
+        <!-- The registration endpoints are served by the example's Vite dev server
+             (see the appRegistration plugin in vite.config.ts), so the dev server must
+             be running when the app is installed or refreshed. -->
+        <registrationUrl>http://localhost:8889/authorize</registrationUrl>
+        <secret>testSecret</secret>
+    </setup>
+
     <admin>
         <base-app-url>http://localhost:8889/index.html</base-app-url>
     </admin>
