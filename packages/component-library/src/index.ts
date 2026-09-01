@@ -66,6 +66,7 @@ import { useMeteorI18n } from "./composables/use-meteor-i18n";
 import { createMeteorI18nPlugin } from "./i18n/plugin";
 import { meteorI18nInjectionKey } from "./i18n/injection";
 import { createVueI18nAdapter } from "./i18n/adapters/vue-i18n";
+import { createAdminSdkAdapter } from "./i18n/adapters/admin-sdk";
 import MtTooltip from "./components/mt-tooltip/mt-tooltip.vue";
 import MtTextEditor from "./components/mt-text-editor/mt-text-editor.vue";
 import MtTextEditorToolbarButton from "./components/mt-text-editor/_internal/mt-text-editor-toolbar-button.vue";
@@ -172,6 +173,7 @@ export {
   createMeteorI18nPlugin,
   meteorI18nInjectionKey,
   createVueI18nAdapter,
+  createAdminSdkAdapter,
   // @deprecated
   MtBanner as SwBanner,
   // @deprecated
