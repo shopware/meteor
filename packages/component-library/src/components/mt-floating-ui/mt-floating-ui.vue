@@ -35,7 +35,7 @@
 
 <script setup lang="ts">
 import { ref, onBeforeUnmount, watch, nextTick, computed } from "vue";
-import type { AutoUpdateOptions, ComputePositionConfig } from "@floating-ui/dom";
+import type { AutoUpdateOptions, ComputePositionConfig, Rect } from "@floating-ui/dom";
 import {
   computePosition,
   autoUpdate,
@@ -44,6 +44,7 @@ import {
   flip,
   size,
   hide,
+  getOverflowAncestors,
 } from "@floating-ui/dom";
 import { vOnClickOutside } from "@vueuse/components";
 
@@ -96,6 +97,37 @@ const contentStyles = computed(() => {
   return styles;
 });
 
+// Smallest content worth keeping on the preferred side: three 45px result rows
+// plus chrome. The floor may overshoot the pane on purpose — that leftover
+// overflow is what still lets `flip()` change sides.
+const MIN_HEIGHT = 150;
+
+// Find the boundary up to where the floating ui should not further/overlay other ui.
+// The actual element is teleported to `<body>` and positioned `fixed`, so it needs
+// to find the boundaries of the referenced element for shrinking and flipping (to a direction that has more space)
+// Skip `overflow: hidden` boxes because the reference element is usually styled that way which would be a false positive
+const scrollBoundaryOf = (referenceEl: Element): Rect | "clippingAncestors" => {
+  const scrollables = getOverflowAncestors(referenceEl).filter((ancestor): ancestor is Element => {
+    if (!(ancestor instanceof Element) || ancestor === document.body) {
+      return false;
+    }
+
+    const { overflowY } = getComputedStyle(ancestor);
+
+    return overflowY === "auto" || overflowY === "scroll";
+  });
+
+  if (scrollables.length === 0) {
+    return "clippingAncestors";
+  }
+
+  const rects = scrollables.map((scrollable) => scrollable.getBoundingClientRect());
+  const top = Math.max(...rects.map((rect) => rect.top));
+  const bottom = Math.min(...rects.map((rect) => rect.bottom));
+
+  return { x: 0, y: top, width: window.innerWidth, height: bottom - top };
+};
+
 const createFloatingUi = () => {
   const referenceEl = props.anchorElement ?? floatingUiTrigger.value;
 
@@ -133,14 +165,28 @@ const createFloatingUi = () => {
             }
             return [];
           })(),
-          flip(),
-          ...(consumerMiddleware ?? []),
+          // Order matters: `size()` before `flip()` makes content that is merely
+          // too tall shrink and scroll where it is, instead of jumping over the
+          // reference and covering the field it belongs to.
           size({
-            apply({ rects }) {
+            boundary: scrollBoundaryOf(referenceEl),
+            apply({ availableHeight, rects, elements }) {
               referenceElementWidth.value = rects.reference.width ?? 0;
               referenceElementHeight.value = rects.reference.height ?? 0;
+
+              const cap = Math.max(availableHeight, MIN_HEIGHT);
+              elements.floating.style.maxHeight = `${cap}px`;
+
+              // Content with no scrollable region ignores the cap and paints
+              // past it, which would only hide that overflow from `flip()` — a
+              // context menu would sit half off-screen instead of changing sides.
+              if (elements.floating.scrollHeight > Math.ceil(cap)) {
+                elements.floating.style.maxHeight = "";
+              }
             },
           }),
+          flip({ boundary: scrollBoundaryOf(referenceEl) }),
+          ...(consumerMiddleware ?? []),
           hide(),
         ],
       }).then(({ x, y, middlewareData, placement, strategy }) => {
@@ -280,9 +326,13 @@ onBeforeUnmount(() => {
   top: 0;
   left: 0;
   z-index: 1070;
+  // Flex column so the `max-height` from `size()` reaches the slotted content:
+  // a block child with its own `max-height` paints past the capped box.
+  display: flex;
+  flex-direction: column;
 
   &[data-show] {
-    display: block;
+    display: flex;
   }
 
   /***
