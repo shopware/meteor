@@ -2,7 +2,7 @@
   "name": "meteor-admin-sdk-i18n-app",
   "version": "1.0.0",
   "private": true,
-  "description": "Example Shopware app: Meteor components follow the host admin's language via createAdminSdkAdapter — no i18n framework required.",
+  "description": "Example Shopware app: Meteor components follow the host admin's language via a minimal hand-written adapter — no i18n framework required.",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/shopware/meteor.git"

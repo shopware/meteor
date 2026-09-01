@@ -1,12 +1,15 @@
 # Meteor Admin SDK i18n Example App
 
-A minimal Shopware app demonstrating the simplest i18n setup for iframe apps: the app has
-**no translations of its own and no i18n framework** — Meteor's components render their
-bundled English/German snippets, and the language follows the host admin through the Admin
-SDK's locale channel via `createAdminSdkAdapter()` (see [src/bootstrap.ts](src/bootstrap.ts)).
+The **minimal-adapter reference** for iframe apps: this app has no translations of its own
+and no i18n framework — Meteor's components render their bundled English/German snippets, and
+a ten-line hand-written adapter (see [src/bootstrap.ts](src/bootstrap.ts)) tells Meteor which
+language the host admin is on, fed by the Admin SDK's locale channel.
 
-For an app that translates its own texts with vue-i18n, see `examples/admin-sdk-app` and the
-["Configure i18n" section of the installation docs](https://meteor.shopware.com/documentation/getting-started/installation).
+Note this profile is rare: most real apps have at least a few texts of their own (card
+titles, button labels) and should use the vue-i18n setup instead — see `examples/admin-sdk-app`
+and the ["Configure i18n" docs](https://meteor.shopware.com/documentation/getting-started/installation).
+When an app built like this one grows its own texts, the `locale` ref in bootstrap.ts carries
+over: hand it to vue-i18n and switch the adapter to `createVueI18nAdapter(i18n)`.
 
 ## Test it in a local Shopware
 

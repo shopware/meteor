@@ -56,20 +56,11 @@ app.use(createMeteorI18nPlugin({ adapter: createVueI18nAdapter(i18n) }));
 
 Any other solution works too — just provide an adapter (`{ locale, t, n? }`) whose `t` returns `undefined` on a miss and reads a reactive locale inside the call.
 
-Iframe apps in the Shopware Admin that don't need vue-i18n can follow the host admin's language directly:
-
-```js
-import {
-  createMeteorI18nPlugin,
-  createAdminSdkAdapter,
-} from "@shopware-ag/meteor-component-library";
-
-app.use(createMeteorI18nPlugin({ adapter: await createAdminSdkAdapter() }));
-```
+Iframe apps in the Shopware Admin drive the same vue-i18n instance from the Admin SDK's locale (`context.getLocale()` / `context.subscribeLocale()`). An app with no texts of its own at all (rare) doesn't need an i18n framework — an adapter is just `{ locale, t }`; see the SDK locale recipe in the [installation docs](https://meteor.shopware.com/documentation/getting-started/installation).
 
 To **override** Meteor's wording or **add a language**, target the public snippet keys (`mt.<component>.<key>`, e.g. `mt.pagination.nextPage`) — either through your host translations (host-first wins) or via `createMeteorI18nPlugin({ messages })`. See the developer docs for details.
 
-**Migrating an app from 5.x?** One line is required, or Meteor components silently stay English while the rest of your app switches language: install the plugin with an adapter (`createVueI18nAdapter(i18n)` next to your existing `app.use(i18n)` — `legacy: false` required — or `createAdminSdkAdapter()`). If you imported `vue-i18n` without declaring it, add it to your own dependencies; it is no longer shipped transitively.
+**Migrating an app from 5.x?** One line is required, or Meteor components silently stay English while the rest of your app switches language: install the plugin with an adapter (`createVueI18nAdapter(i18n)` next to your existing `app.use(i18n)` — `legacy: false` required). If you imported `vue-i18n` without declaring it, add it to your own dependencies; it is no longer shipped transitively.
 
 Each component works independently and can be imported directly from the root like this:
 

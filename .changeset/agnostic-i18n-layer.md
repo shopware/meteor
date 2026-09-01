@@ -70,16 +70,23 @@ Pick the setup that matches your app:
   app.use(createMeteorI18nPlugin({ adapter: createVueI18nAdapter(i18n) }));
   ```
 
-- **Iframe app in the Shopware Admin without own translations** — follow the host admin's
-  language over the Admin SDK:
+- **Iframe app whose visible text is entirely Meteor's** (rare — any own labels? use the
+  vue-i18n setup above, driven by the Admin SDK locale) — a hand-written adapter is enough:
 
   ```ts
-  import {
-    createMeteorI18nPlugin,
-    createAdminSdkAdapter,
-  } from "@shopware-ag/meteor-component-library";
+  import { ref } from "vue";
+  import { context } from "@shopware-ag/meteor-admin-sdk";
+  import { createMeteorI18nPlugin } from "@shopware-ag/meteor-component-library";
 
-  app.use(createMeteorI18nPlugin({ adapter: await createAdminSdkAdapter() }));
+  const { locale: initialLocale } = await context.getLocale();
+  const locale = ref(initialLocale);
+  void context.subscribeLocale(({ locale: next }) => {
+    locale.value = next;
+  });
+
+  // t always misses, so Meteor's bundled en/de texts do the translating; the
+  // adapter only tells Meteor which language the admin is on.
+  app.use(createMeteorI18nPlugin({ adapter: { locale, t: () => undefined } }));
   ```
 
 - **Shopware Admin plugins** — nothing to do; `$t`/snippet JSON keep working. New: override
