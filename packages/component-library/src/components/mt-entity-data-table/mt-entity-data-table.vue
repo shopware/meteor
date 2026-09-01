@@ -75,40 +75,8 @@
   </mt-modal-root>
 </template>
 
-<script lang="ts">
-const messages = {
-  en: {
-    booleanFilter: {
-      true: "Active",
-      false: "Inactive",
-    },
-    entity: {
-      delete: {
-        title: "Delete item",
-        description: "Are you sure you want to delete the selected items?",
-        cancel: "Cancel",
-        delete: "Delete",
-      },
-    },
-  },
-  de: {
-    booleanFilter: {
-      true: "Aktiv",
-      false: "Inaktiv",
-    },
-    entity: {
-      delete: {
-        title: "Element löschen",
-        description: "Soll dieses Element wirklich gelöscht werden?",
-        cancel: "Abbrechen",
-        delete: "Löschen",
-      },
-    },
-  },
-};
-</script>
-
 <script setup lang="ts">
+import { messages } from "./mt-entity-data-table.i18n";
 /**
  * This component is a wrapper for the mt-entity-data-table component.
  *
