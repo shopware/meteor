@@ -13,4 +13,4 @@ snippets with no configuration.
 2. `pnpm --filter meteor-vite-app dev` — then open http://localhost:5180 and switch the language.
 3. `pnpm --filter meteor-vite-app test:e2e` runs the Playwright tests (starts its own server).
 
-More on the setup options: the ["Configure i18n" section of the installation docs](https://meteor.shopware.com/documentation/getting-started/installation).
+More on the setup options: the [Internationalization docs](https://meteor.shopware.com/documentation/getting-started/internationalization).

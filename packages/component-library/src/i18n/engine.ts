@@ -13,6 +13,10 @@ const INTERPOLATION_REGEX = /\{(\w+)\}/g;
  * `n`/`count` — a message like `"Bold | Ctrl+B"` rendered without a count stays
  * intact instead of being mis-split into plural forms.
  *
+ * Plural selection uses only the default English/German choice rule (see choiceIndex);
+ * there is no per-locale rule hook. Languages with other plural systems must be served
+ * through a host adapter, not through bundled or registry messages.
+ *
  * Missing interpolation variables are left as their literal placeholder (`{var}`).
  * (vue-i18n renders an empty string there instead — a deliberate divergence: the
  * untouched placeholder makes the missing value visible.)

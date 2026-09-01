@@ -95,5 +95,11 @@ Pick the setup that matches your app:
   reactive source, `t` returns `undefined` on a miss (never the key), `n` optionally
   formats numbers.
 
+vue-i18n support: v9+ in Composition mode (`legacy: false`), v11.4.9+ recommended.
+Translations `te()` cannot see (flat dotted-key catalogs on vue-i18n < 11.3, or a `missing`
+handler serving translations at runtime) resolve with
+`createVueI18nAdapter(i18n, { skipExistenceCheck: true })`. See the Internationalization
+guide in the docs for the full version and interop notes.
+
 Resolution order: host adapter → plugin `messages` → bundled snippets → the key itself.
 Locale fallback chain: `de-DE` → `de` → `en`.

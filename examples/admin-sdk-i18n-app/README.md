@@ -7,7 +7,7 @@ language the host admin is on, fed by the Admin SDK's locale channel.
 
 Note this profile is rare: most real apps have at least a few texts of their own (card
 titles, button labels) and should use the vue-i18n setup instead — see `examples/admin-sdk-app`
-and the ["Configure i18n" docs](https://meteor.shopware.com/documentation/getting-started/installation).
+and the [Internationalization docs](https://meteor.shopware.com/documentation/getting-started/internationalization).
 When an app built like this one grows its own texts, the `locale` ref in bootstrap.ts carries
 over: hand it to vue-i18n and switch the adapter to `createVueI18nAdapter(i18n)`.
 

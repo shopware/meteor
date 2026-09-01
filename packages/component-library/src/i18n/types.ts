@@ -27,6 +27,11 @@ export interface MeteorMessages {
  * App-wide override / additional-language messages: any set of locale codes -> messages.
  * Unlike {@link MeteorMessages}, no locale is required (a consumer may supply only `en-US`,
  * only `fr`, etc.).
+ *
+ * NOTE: registry messages are rendered by Meteor's own engine, which applies only the
+ * default English/German plural rule to pipe messages — for languages with other plural
+ * systems (Russian, Polish, Arabic, ...), serve pluralized strings through a host adapter
+ * whose translation solution implements their rules.
  */
 export type MeteorLocaleMessages = Record<string, MeteorMessageTree | undefined>;
 
