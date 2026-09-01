@@ -133,7 +133,7 @@ import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
 import MtTooltip from "@/components/mt-tooltip/mt-tooltip.vue";
 import MtFieldAffix from "../_internal/mt-field-affix/mt-field-affix.vue";
-import { useMeteorI18n } from "@/composables/use-meteor-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 import { useClipboard } from "@vueuse/core";
 import { useFutureFlags } from "@/composables/useFutureFlags";
 

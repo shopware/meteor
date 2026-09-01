@@ -114,7 +114,7 @@ import MtLoader from "../mt-loader/mt-loader.vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
 import MtText from "../mt-text/mt-text.vue";
 import { useFutureFlags } from "@/composables/useFutureFlags";
-import { useMeteorI18n } from "@/composables/use-meteor-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 
 const props = withDefaults(
   defineProps<{

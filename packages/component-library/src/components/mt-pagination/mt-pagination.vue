@@ -96,7 +96,7 @@ const messages = {
 <script setup lang="ts">
 import { computed, watch } from "vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
-import { useMeteorI18n } from "@/composables/use-meteor-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 
 const props = defineProps<{
   currentPage: number;

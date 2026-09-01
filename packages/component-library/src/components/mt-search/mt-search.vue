@@ -30,7 +30,7 @@ const messages = {
 </script>
 
 <script setup lang="ts">
-import { useMeteorI18n } from "@/composables/use-meteor-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 import MtIcon from "../mt-icon/mt-icon.vue";
 
 withDefaults(

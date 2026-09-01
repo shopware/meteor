@@ -24,7 +24,7 @@ import MtIcon from "../../mt-icon/mt-icon.vue";
 import MtTooltipDirective from "../../../directives/tooltip.directive";
 import MtNotificationMixin from "../../../mixins/notification.mixin";
 import { copyToClipboard as copyToClipboardUtil } from "../../../utils/dom";
-import { useMeteorI18n } from "@/composables/use-meteor-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 
 const messages = {
   en: {

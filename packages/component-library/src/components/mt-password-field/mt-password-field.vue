@@ -79,7 +79,7 @@ import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
-import { useMeteorI18n } from "@/composables/use-meteor-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 
 const model = defineModel<string | undefined>();
 

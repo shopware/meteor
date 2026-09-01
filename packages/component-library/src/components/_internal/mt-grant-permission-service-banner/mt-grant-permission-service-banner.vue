@@ -93,7 +93,7 @@ export default {
 <script setup lang="ts">
 import { useId } from "vue";
 import { asyncComputed } from "@vueuse/core";
-import { useMeteorI18n } from "@/composables/use-meteor-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtText from "@/components/mt-text/mt-text.vue";
 import MtButton from "@/components/mt-button/mt-button.vue";

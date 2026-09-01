@@ -103,7 +103,7 @@ import { computedAsync } from "@vueuse/core";
 import type { MtPopoverItemType } from "@/components/mt-popover-item/mt-popover-item.vue";
 import type { Filter } from "@/components/mt-data-table/mt-data-table.interfaces";
 import type { AvailableFilter } from "./mt-entity-data-table.interfaces";
-import { useMeteorI18n } from "@/composables/use-meteor-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 import MtModalRoot from "@/components/mt-modal/sub-components/mt-modal-root.vue";
 import MtModal from "@/components/mt-modal/mt-modal.vue";
 import MtButton from "@/components/mt-button/mt-button.vue";

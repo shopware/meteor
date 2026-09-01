@@ -97,7 +97,7 @@ import { computed, watch, type PropType } from "vue";
 import mtPopover from "@/components/mt-popover/mt-popover.vue";
 import mtPopoverItem from "@/components/mt-popover-item/mt-popover-item.vue";
 import mtTextEditorToolbarButton from "./mt-text-editor-toolbar-button.vue";
-import { useMeteorI18n } from "@/composables/use-meteor-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 import { meteorTextEditorMessages } from "../mt-text-editor.i18n";
 
 export interface CustomButton {

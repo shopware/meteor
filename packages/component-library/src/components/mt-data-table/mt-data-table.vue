@@ -644,7 +644,7 @@ import MtInset from "@/components/mt-inset/mt-inset.vue";
 import { throttle } from "@/utils/throttle";
 import { reactive } from "vue";
 import type { Filter } from "./mt-data-table.interfaces";
-import { useMeteorI18n } from "@/composables/use-meteor-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 import { useDebounceFn } from "@vueuse/core";
 
 export interface BaseColumnDefinition {

@@ -50,7 +50,7 @@ import { messages } from "./mt-action-menu-item.i18n";
 import { DropdownMenuItem, DropdownMenuSubTrigger } from "reka-ui";
 import MtIcon from "../mt-icon/mt-icon.vue";
 import { computed, inject, onMounted } from "vue";
-import { useMeteorI18n } from "@/composables/use-meteor-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 
 type ModifierKey = "mod" | "ctrl" | "alt" | "shift" | "meta";
 type SpecialKey =

@@ -142,7 +142,7 @@ import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
 import MtTooltip from "../mt-tooltip/mt-tooltip.vue";
 import { useClipboard } from "@vueuse/core";
-import { useMeteorI18n } from "@/composables/use-meteor-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 import { useFutureFlags } from "@/composables/useFutureFlags";
 
 const futureFlags = useFutureFlags();

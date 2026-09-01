@@ -135,7 +135,7 @@ import MtSelectResultList from "../_internal/mt-select-base/_internal/mt-select-
 import MtSelectResult from "../_internal/mt-select-base/_internal/mt-select-result.vue";
 import MtSelectSelectionList from "../_internal/mt-select-base/_internal/mt-select-selection-list.vue";
 import MtHighlightText from "../_internal/mt-highlight-text.vue";
-import { useMeteorI18n } from "@/composables/use-meteor-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 
 const messages = {
   en: {

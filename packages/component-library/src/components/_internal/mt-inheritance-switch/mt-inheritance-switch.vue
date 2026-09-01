@@ -51,7 +51,7 @@ const messages = {
 <script setup lang="ts">
 import MtIcon from "../../mt-icon/mt-icon.vue";
 import MtTooltip from "@/components/mt-tooltip/mt-tooltip.vue";
-import { useMeteorI18n } from "@/composables/use-meteor-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 
 defineProps<{
   isInherited: boolean;

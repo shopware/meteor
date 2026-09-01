@@ -5,7 +5,7 @@ import {
   useMeteorI18n,
   type MeteorI18nComposer,
   type UseMeteorI18nOptions,
-} from "./use-meteor-i18n";
+} from "./useMeteorI18n";
 import { createMeteorI18nPlugin } from "@/i18n/plugin";
 import { defaultMeteorI18n } from "@/i18n/injection";
 import type { MeteorI18nAdapter } from "@/i18n/types";

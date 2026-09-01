@@ -211,7 +211,7 @@ import {
 } from "vue";
 import { html } from "@codemirror/lang-html";
 import type { Text as CodeMirrorText } from "@codemirror/state";
-import { useMeteorI18n } from "@/composables/use-meteor-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 import { meteorTextEditorMessages } from "./mt-text-editor.i18n";
 import ListItem from "@tiptap/extension-list-item";
 import mtTextEditorDiffModal from "./_internal/mt-text-editor-diff-modal.vue";

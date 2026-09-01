@@ -259,7 +259,7 @@ import { createFocusTrap } from "focus-trap";
 import type { FocusTrap } from "focus-trap";
 import MtButton from "@/components/mt-button/mt-button.vue";
 import mtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
-import { useMeteorI18n } from "@/composables/use-meteor-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 
 const messages = {
   en: {

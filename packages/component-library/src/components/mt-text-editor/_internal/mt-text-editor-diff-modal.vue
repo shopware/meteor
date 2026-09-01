@@ -48,7 +48,7 @@
 
 <script setup lang="ts">
 import { defineProps, defineEmits, computed, ref, onMounted, watch } from "vue";
-import { useMeteorI18n } from "@/composables/use-meteor-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 import { meteorTextEditorMessages } from "../mt-text-editor.i18n";
 import "@git-diff-view/vue/styles/diff-view-pure.css";
 import { DiffView, DiffModeEnum } from "@git-diff-view/vue";

@@ -103,7 +103,7 @@ import MtPopoverItemResult from "../../../mt-popover-item-result/mt-popover-item
 import MtTooltipDirective from "../../../../directives/tooltip.directive";
 import type { ColumnDefinition } from "../../mt-data-table.vue";
 import type { Option as ItemResultOption } from "../../../mt-popover-item-result/mt-popover-item-result.vue";
-import { useMeteorI18n } from "@/composables/use-meteor-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 
 const messages = {
   en: {

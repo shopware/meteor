@@ -59,7 +59,7 @@ const messages = {
 import { computed } from "vue";
 import MtIcon from "../../mt-icon/mt-icon.vue";
 import MtText from "@/components/mt-text/mt-text.vue";
-import { useMeteorI18n } from "@/composables/use-meteor-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 
 const props = defineProps<{
   error?: Record<string, any> | null;

@@ -57,7 +57,7 @@ import {
   MtSelectResultRemoveItemSelectByKeyboardListener,
 } from "./mt-select-result-context";
 import { ref } from "vue";
-import { useMeteorI18n } from "@/composables/use-meteor-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 
 const messages = {
   en: {

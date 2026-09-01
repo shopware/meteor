@@ -75,7 +75,7 @@
 <script lang="ts">
 import type { PropType } from "vue";
 import { defineComponent } from "vue";
-import { useMeteorI18n } from "@/composables/use-meteor-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 import MtLabel from "../../mt-label.vue";
 import MtButton from "../../../mt-button/mt-button.vue";
 import { getPropertyValue } from "@/utils/object";

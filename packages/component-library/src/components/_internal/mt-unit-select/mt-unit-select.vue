@@ -81,7 +81,7 @@ const messages = {
 
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch, nextTick } from "vue";
-import { useMeteorI18n } from "@/composables/use-meteor-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 import MtUnitSelectResult from "./_internal/mt-unit-select-result.vue";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import type { Unit } from "convert-units";

@@ -62,7 +62,7 @@ import {
 } from "./composables/useServicePermission";
 import TooltipDirective from "./directives/tooltip.directive";
 import DeviceHelperPlugin from "./plugin/device-helper.plugin";
-import { useMeteorI18n } from "./composables/use-meteor-i18n";
+import { useMeteorI18n } from "./composables/useMeteorI18n";
 import { createMeteorI18nPlugin } from "./i18n/plugin";
 import { meteorI18nInjectionKey } from "./i18n/injection";
 import { createVueI18nAdapter } from "./i18n/adapters/vue-i18n";
@@ -227,7 +227,7 @@ export type {
 } from "./i18n/types";
 export type { MeteorLocale } from "./i18n/locale";
 export type { MeteorI18nPluginOptions } from "./i18n/plugin";
-export type { UseMeteorI18nOptions, MeteorI18nComposer } from "./composables/use-meteor-i18n";
+export type { UseMeteorI18nOptions, MeteorI18nComposer } from "./composables/useMeteorI18n";
 export type {
   VueI18nLike,
   VueI18nComposerLike,

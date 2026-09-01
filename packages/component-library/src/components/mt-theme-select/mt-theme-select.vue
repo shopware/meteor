@@ -27,7 +27,7 @@ const messages = {
 
 <script setup lang="ts">
 import { computed } from "vue";
-import { useMeteorI18n } from "@/composables/use-meteor-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 import MtSelect from "../mt-select/mt-select.vue";
 import type { Theme } from "@/composables/useTheme";
 

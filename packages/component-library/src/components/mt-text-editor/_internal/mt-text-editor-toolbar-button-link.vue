@@ -77,7 +77,7 @@ import mtTextField from "@/components/mt-text-field/mt-text-field.vue";
 import mtSwitch from "@/components/mt-switch/mt-switch.vue";
 import mtTextEditorToolbarButton from "./mt-text-editor-toolbar-button.vue";
 import mtModalClose from "@/components/mt-modal/sub-components/mt-modal-close.vue";
-import { useMeteorI18n } from "@/composables/use-meteor-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 import { meteorTextEditorMessages } from "../mt-text-editor.i18n";
 
 const { t } = useMeteorI18n({ messages: meteorTextEditorMessages });
