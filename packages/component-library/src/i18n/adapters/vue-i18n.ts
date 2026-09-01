@@ -14,10 +14,13 @@ export interface VueI18nComposerLike {
    * form) is consulted; the locale-map form is ignored.
    */
   fallbackLocale?: Ref<unknown>;
-  t: (key: string, named?: Record<string, unknown>, options?: { locale?: string }) => string;
-  te: (key: string, locale?: string) => boolean;
+  // Deliberately method syntax (not property-function syntax): methods are checked
+  // bivariantly, so vue-i18n instances with strongly-typed locales/keys (the generics
+  // createI18n infers from `messages`) stay assignable to this duck type.
+  t(key: string, named?: Record<string, unknown>, options?: { locale?: string }): string;
+  te(key: string, locale?: string): boolean;
   /** vue-i18n's number formatter; passed through to Meteor's `n()` when present. */
-  n?: (value: number) => string;
+  n?(value: number): string;
 }
 
 /**
