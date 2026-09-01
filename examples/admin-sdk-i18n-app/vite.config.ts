@@ -60,7 +60,7 @@ function appRegistration(): Plugin {
             // stores it and uses it to sign the iframe URL; this app never calls the
             // Admin API, so it doesn't need to remember it.
             secret: randomBytes(32).toString("hex"),
-            confirmation_url: "http://localhost:8889/authorize/callback",
+            confirmation_url: "http://127.0.0.1:8889/authorize/callback",
           }),
         );
       });
@@ -70,6 +70,14 @@ function appRegistration(): Plugin {
 
 export default defineConfig({
   plugins: [vue(), appRegistration()],
+  server: {
+    // Explicit IPv4: Vite's default "localhost" can bind IPv6-only ([::1]) on macOS,
+    // while the shop's PHP curl resolves localhost to 127.0.0.1 and then can't reach
+    // the registration endpoints.
+    host: "127.0.0.1",
+    port: 8889,
+    strictPort: true,
+  },
   build: {
     // Top-level await in src/bootstrap.ts (awaiting the initial admin locale before mount).
     target: "esnext",
