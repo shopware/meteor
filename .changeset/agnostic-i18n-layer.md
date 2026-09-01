@@ -44,8 +44,19 @@ app.use(i18n);
 app.use(createMeteorI18nPlugin({ adapter: createVueI18nAdapter(i18n) }));
 ```
 
-Any other solution works via a custom adapter `{ locale, t }`, where `t` returns `undefined`/`null`
-on a miss.
+Any other solution works via a custom adapter `{ locale, t, n? }`, where `t` returns
+`undefined`/`null` on a miss and reads a reactive locale inside the call. Iframe apps that don't
+need vue-i18n can follow the host admin's language with the bundled Admin SDK adapter instead:
+`createMeteorI18nPlugin({ adapter: await createAdminSdkAdapter() })`.
+
+The vue-i18n adapter also probes the composer's `fallbackLocale` on a miss (vue-i18n v9/v10's
+`te()` only checks the active locale) and offers `createVueI18nAdapter(i18n, { legacyKeys: true })`
+to keep resolving snippet overrides that still use the pre-6.0 key names during migration
+(dev-mode deprecation warning per legacy hit).
+
+The composable returns `{ t, ti, n, locale }`: `ti()` returns `undefined` on a miss (probe
+pattern, instead of comparing `t(key) === key`), and `n()` formats numbers via the adapter's
+`n` or `Intl.NumberFormat`.
 
 ## Overriding wording / adding languages
 
@@ -71,5 +82,11 @@ app.use(
   region variants share the language-level default; region-specific overrides still win.
 - The previously global-scoped component keys (`mt-field-error.*`, `mt-text-editor*.*`,
   `mt-action-menu-item.*`) are now `mt.field-error.*`, `mt.text-editor*.*`, `mt.action-menu-item.*`.
-  If you overrode any of these in the Admin, update the key path. The primary error path
-  (`global.error-codes.*`) is unchanged.
+  If you overrode any of these in the Admin, update the key path — or let the host keep serving
+  the old names during migration via `createVueI18nAdapter(i18n, { legacyKeys: true })`. The
+  primary error path (`global.error-codes.*`) is unchanged.
+- BREAKING (types): `MtPopover`, `MtPopoverItem`, and `MtContextMenuItem` prop types (and the
+  exported `View` interface) no longer accept vue-i18n's `TranslateResult` — pass plain `string`
+  values (pre-translate with your own `t()`).
+- A message string only pluralizes (pipe syntax, `"one | many"`) when a numeric `n`/`count` value
+  is passed — a literal `|` in an override rendered without a count now stays intact.
