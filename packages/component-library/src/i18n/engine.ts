@@ -35,7 +35,9 @@ function selectPluralForm(message: string, values?: MeteorInterpolationValues): 
 }
 
 function pluralCount(values?: MeteorInterpolationValues): number | undefined {
-  const raw = values?.n ?? values?.count;
+  // `count` before `n`, matching vue-i18n's getPluralIndex precedence so the adapter-hit
+  // and bundled paths agree when a caller passes both.
+  const raw = values?.count ?? values?.n;
   if (raw === undefined || raw === null) return undefined;
 
   const num = typeof raw === "number" ? raw : Number(raw);

@@ -57,6 +57,10 @@ describe("i18n engine", () => {
       expect(render("one | {count} many", { count: 3 })).toBe("3 many");
     });
 
+    it("prefers `count` over `n` when both are passed (vue-i18n parity)", () => {
+      expect(render("one | many", { count: 5, n: 1 })).toBe("many");
+    });
+
     it("keeps a message with a literal pipe intact when no count is passed", () => {
       expect(render("Bold | Ctrl+B")).toBe("Bold | Ctrl+B");
       expect(render("Save | Cancel", { name: "x" })).toBe("Save | Cancel");

@@ -5,6 +5,26 @@ import { render } from "@/i18n/engine";
 import { lookupNested } from "@/i18n/lookup";
 import type { MeteorInterpolationValues, MeteorMessages } from "@/i18n/types";
 
+// Intl.NumberFormat construction is expensive; one formatter per locale, shared by all
+// composable instances.
+const numberFormatters = new Map<string, Intl.NumberFormat>();
+
+function numberFormatterFor(locale: string): Intl.NumberFormat {
+  let formatter = numberFormatters.get(locale);
+
+  if (!formatter) {
+    try {
+      formatter = new Intl.NumberFormat(locale);
+    } catch {
+      // The host reported an invalid locale tag — format with the runtime default instead.
+      formatter = new Intl.NumberFormat();
+    }
+    numberFormatters.set(locale, formatter);
+  }
+
+  return formatter;
+}
+
 export interface UseMeteorI18nOptions {
   /**
    * Public namespace for this component's snippets, e.g. `"mt.pagination"`. When set, the keys
@@ -97,12 +117,7 @@ export function useMeteorI18n(options: UseMeteorI18nOptions = {}): MeteorI18nCom
     const hostN = instance.adapter?.n;
     if (hostN) return hostN(value);
 
-    try {
-      return new Intl.NumberFormat(rawLocale.value).format(value);
-    } catch {
-      // The host reported an invalid locale tag — format with the runtime default instead.
-      return new Intl.NumberFormat().format(value);
-    }
+    return numberFormatterFor(rawLocale.value).format(value);
   }
 
   const locale = computed<string>({
