@@ -290,6 +290,21 @@ describe("mt-floating-ui positioning config", () => {
     wrapper.unmount();
   });
 
+  it("takes each edge of the boundary from the tightest scrollable ancestor", async () => {
+    const { mountPoint, ancestors } = nestMountPointIn("auto", "auto");
+    const [outerPane, innerPane] = ancestors;
+    givePaneVerticalBounds(outerPane, 150, 400);
+    givePaneVerticalBounds(innerPane, 100, 350);
+
+    const { wrapper } = await openAndGetConfig({}, true, mountPoint);
+
+    // Neither pane alone spans 150…350: the outer cuts the top, the inner the bottom.
+    expect(lastSizeOptions().boundary).toMatchObject({ y: 150, height: 200 });
+    expect(lastFlipOptions().boundary).toMatchObject({ y: 150, height: 200 });
+
+    wrapper.unmount();
+  });
+
   it("falls back to the clipping ancestors without a scrollable ancestor", async () => {
     const { wrapper } = await openAndGetConfig();
 
