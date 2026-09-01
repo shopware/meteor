@@ -102,16 +102,10 @@ const contentStyles = computed(() => {
 // overflow is what still lets `flip()` change sides.
 const MIN_HEIGHT = 150;
 
-// The content is teleported to `<body>` and positioned `fixed`, so its own
-// clipping ancestors are just the viewport — sizing and flipping have to be
-// bounded by the reference's scroll panes to learn about a dialog body it sits
-// in. Skip `overflow: hidden` ancestors: they are usually field-sized boxes
-// that would collapse the boundary onto the reference, leaving no side that fits.
-//
-// Only the vertical extent of those panes is a real limit — nothing clips the
-// content sideways. So the boundary keeps the viewport's full width: narrowing
-// it to the pane would move the content to the pane's edge instead of the
-// screen's, pulling a table's settings menu in over its own rows.
+// Find the boundary up to where the floating ui should not further/overlay other ui.
+// The actual element is teleported to `<body>` and positioned `fixed`, so it needs
+// to find the boundaries of the referenced element for shrinking and flipping (to a direction that has more space)
+// Skip `overflow: hidden` boxes because the reference element is usually styled that way which would be a false positive
 const scrollBoundaryOf = (referenceEl: Element): Rect | "clippingAncestors" => {
   const scrollables = getOverflowAncestors(referenceEl).filter((ancestor): ancestor is Element => {
     if (!(ancestor instanceof Element) || ancestor === document.body) {
