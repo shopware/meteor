@@ -72,6 +72,19 @@
   </mt-base-field>
 </template>
 
+<script lang="ts">
+const messages = {
+  en: {
+    showPassword: "Show password",
+    hidePassword: "Hide password",
+  },
+  de: {
+    showPassword: "Passwort anzeigen",
+    hidePassword: "Passwort verbergen",
+  },
+};
+</script>
+
 <script setup lang="ts">
 import { ref, computed, useSlots } from "vue";
 import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
@@ -167,16 +180,7 @@ function createInputId(identification: string): string {
 
 const { t } = useMeteorI18n({
   namespace: "mt.password-field",
-  messages: {
-    en: {
-      showPassword: "Show password",
-      hidePassword: "Hide password",
-    },
-    de: {
-      showPassword: "Passwort anzeigen",
-      hidePassword: "Passwort verbergen",
-    },
-  },
+  messages,
 });
 </script>
 

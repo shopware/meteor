@@ -4,6 +4,17 @@
   </button>
 </template>
 
+<script lang="ts">
+const messages = {
+  en: {
+    label: "Remove filter | Remove filters",
+  },
+  de: {
+    label: "Filter entfernen | Filter entfernen",
+  },
+};
+</script>
+
 <script setup lang="ts">
 import { useMeteorI18n } from "@/composables/use-meteor-i18n";
 
@@ -13,14 +24,7 @@ defineProps<{
 
 const { t } = useMeteorI18n({
   namespace: "mt.data-table-reset-filter-button",
-  messages: {
-    en: {
-      label: "Remove filter | Remove filters",
-    },
-    de: {
-      label: "Filter entfernen | Filter entfernen",
-    },
-  },
+  messages,
 });
 </script>
 

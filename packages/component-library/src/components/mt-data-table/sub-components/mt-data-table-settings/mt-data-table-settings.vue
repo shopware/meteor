@@ -105,6 +105,49 @@ import type { ColumnDefinition } from "../../mt-data-table.vue";
 import type { Option as ItemResultOption } from "../../../mt-popover-item-result/mt-popover-item-result.vue";
 import { useMeteorI18n } from "@/composables/use-meteor-i18n";
 
+const messages = {
+  en: {
+    title: "Settings",
+    resetAllChanges: "Reset all changes",
+    columnOrder: {
+      title: "Columns",
+      columnGroups: {
+        labelShown: "Shown in table",
+        actionLabelShown: "Hide all",
+        labelHidden: "Hidden in table",
+        actionLabelHidden: "Show all",
+      },
+    },
+    showNumberedColumn: "Show numbered column",
+    showStripedRows: "Show striped rows",
+    showOutlines: "Show outlines",
+    frameOutlines: "Frame outlines",
+    frameOutlinesMetaCopy: "Highlight column and row outlines on mouse hover",
+    tooltip: "View settings",
+    "aria-toggle-table-settings": "Toggle view settings",
+  },
+  de: {
+    title: "Einstellungen",
+    resetAllChanges: "Alle Änderungen zurücksetzen",
+    columnOrder: {
+      title: "Spalten",
+      columnGroups: {
+        labelShown: "In Tabelle sichtbar",
+        actionLabelShown: "Alle ausblenden",
+        labelHidden: "In Tabelle ausgeblendet",
+        actionLabelHidden: "Alle einblenden",
+      },
+    },
+    showNumberedColumn: "Zeige nummerierte Spalte an",
+    showStripedRows: "Zeige gestreifte Zeilen an",
+    showOutlines: "Zeige Umrisse an",
+    frameOutlines: "Hebe Umrisse vor",
+    frameOutlinesMetaCopy: "Hervorhebung von Spalten- und Zeilenumrissen bei Mausüberlagerung",
+    tooltip: "Tabelleneinstellungen",
+    "aria-toggle-table-settings": "Tabelleneinstellungen umschalten",
+  },
+};
+
 export default defineComponent({
   name: "MtDataTableSettings",
   components: {
@@ -155,49 +198,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t } = useMeteorI18n({
       namespace: "mt.data-table-settings",
-      messages: {
-        en: {
-          title: "Settings",
-          resetAllChanges: "Reset all changes",
-          columnOrder: {
-            title: "Columns",
-            columnGroups: {
-              labelShown: "Shown in table",
-              actionLabelShown: "Hide all",
-              labelHidden: "Hidden in table",
-              actionLabelHidden: "Show all",
-            },
-          },
-          showNumberedColumn: "Show numbered column",
-          showStripedRows: "Show striped rows",
-          showOutlines: "Show outlines",
-          frameOutlines: "Frame outlines",
-          frameOutlinesMetaCopy: "Highlight column and row outlines on mouse hover",
-          tooltip: "View settings",
-          "aria-toggle-table-settings": "Toggle view settings",
-        },
-        de: {
-          title: "Einstellungen",
-          resetAllChanges: "Alle Änderungen zurücksetzen",
-          columnOrder: {
-            title: "Spalten",
-            columnGroups: {
-              labelShown: "In Tabelle sichtbar",
-              actionLabelShown: "Alle ausblenden",
-              labelHidden: "In Tabelle ausgeblendet",
-              actionLabelHidden: "Alle einblenden",
-            },
-          },
-          showNumberedColumn: "Zeige nummerierte Spalte an",
-          showStripedRows: "Zeige gestreifte Zeilen an",
-          showOutlines: "Zeige Umrisse an",
-          frameOutlines: "Hebe Umrisse vor",
-          frameOutlinesMetaCopy:
-            "Hervorhebung von Spalten- und Zeilenumrissen bei Mausüberlagerung",
-          tooltip: "Tabelleneinstellungen",
-          "aria-toggle-table-settings": "Tabelleneinstellungen umschalten",
-        },
-      },
+      messages,
     });
 
     /***

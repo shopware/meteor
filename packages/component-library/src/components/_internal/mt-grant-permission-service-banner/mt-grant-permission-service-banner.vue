@@ -61,6 +61,25 @@
 </template>
 
 <script lang="ts">
+const messages = {
+  de: {
+    title: "Berechtigung erteilen, um diesen Service zu aktivieren.",
+    description: "Es werden nur die für die Funktion erforderlichen Daten abgerufen.",
+    grantLabel: "Berechtigungen erteilen",
+    grantLongLabel: "Erlauben & aktivieren",
+    moreInfo: "Weitere Informationen",
+    moreInfoUrl: "https://docs.shopware.com/de/shopware-6-de/shopware-services",
+  },
+  en: {
+    title: "Grant permissions to activate this service.",
+    description: "Only the data needed to function will be accessed.",
+    grantLabel: "Grant permissions",
+    grantLongLabel: "Grant permissions and activate",
+    moreInfo: "More info",
+    moreInfoUrl: "https://docs.shopware.com/en/shopware-6-en/shopware-services",
+  },
+};
+
 /**
  * For internal Shopware Services only.
  *
@@ -84,24 +103,7 @@ import { dispatch } from "@shopware-ag/meteor-admin-sdk/es/telemetry";
 
 const { t } = useMeteorI18n({
   namespace: "mt.grant-permission-service-banner",
-  messages: {
-    de: {
-      title: "Berechtigung erteilen, um diesen Service zu aktivieren.",
-      description: "Es werden nur die für die Funktion erforderlichen Daten abgerufen.",
-      grantLabel: "Berechtigungen erteilen",
-      grantLongLabel: "Erlauben & aktivieren",
-      moreInfo: "Weitere Informationen",
-      moreInfoUrl: "https://docs.shopware.com/de/shopware-6-de/shopware-services",
-    },
-    en: {
-      title: "Grant permissions to activate this service.",
-      description: "Only the data needed to function will be accessed.",
-      grantLabel: "Grant permissions",
-      grantLongLabel: "Grant permissions and activate",
-      moreInfo: "More info",
-      moreInfoUrl: "https://docs.shopware.com/en/shopware-6-en/shopware-services",
-    },
-  },
+  messages,
 });
 
 const titleId = useId();

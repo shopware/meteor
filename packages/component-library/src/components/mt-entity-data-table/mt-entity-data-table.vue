@@ -75,6 +75,39 @@
   </mt-modal-root>
 </template>
 
+<script lang="ts">
+const messages = {
+  en: {
+    booleanFilter: {
+      true: "Active",
+      false: "Inactive",
+    },
+    entity: {
+      delete: {
+        title: "Delete item",
+        description: "Are you sure you want to delete the selected items?",
+        cancel: "Cancel",
+        delete: "Delete",
+      },
+    },
+  },
+  de: {
+    booleanFilter: {
+      true: "Aktiv",
+      false: "Inaktiv",
+    },
+    entity: {
+      delete: {
+        title: "Element löschen",
+        description: "Soll dieses Element wirklich gelöscht werden?",
+        cancel: "Abbrechen",
+        delete: "Löschen",
+      },
+    },
+  },
+};
+</script>
+
 <script setup lang="ts">
 /**
  * This component is a wrapper for the mt-entity-data-table component.
@@ -163,36 +196,7 @@ const emit = defineEmits<{
 
 const { t } = useMeteorI18n({
   namespace: "mt.entity-data-table",
-  messages: {
-    en: {
-      booleanFilter: {
-        true: "Active",
-        false: "Inactive",
-      },
-      entity: {
-        delete: {
-          title: "Delete item",
-          description: "Are you sure you want to delete the selected items?",
-          cancel: "Cancel",
-          delete: "Delete",
-        },
-      },
-    },
-    de: {
-      booleanFilter: {
-        true: "Aktiv",
-        false: "Inaktiv",
-      },
-      entity: {
-        delete: {
-          title: "Element löschen",
-          description: "Soll dieses Element wirklich gelöscht werden?",
-          cancel: "Abbrechen",
-          delete: "Löschen",
-        },
-      },
-    },
-  },
+  messages,
 });
 
 // Required props for the mt-data-table component

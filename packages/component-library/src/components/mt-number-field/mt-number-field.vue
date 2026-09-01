@@ -96,6 +96,17 @@ import MtIcon from "../mt-icon/mt-icon.vue";
 import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
 import { useMeteorI18n } from "@/composables/use-meteor-i18n";
 
+const messages = {
+  en: {
+    increaseButton: "Increase",
+    decreaseButton: "Decrease",
+  },
+  de: {
+    increaseButton: "Erhöhen",
+    decreaseButton: "Verringern",
+  },
+};
+
 export default defineComponent({
   name: "MtNumberField",
 
@@ -236,16 +247,7 @@ export default defineComponent({
   setup() {
     const { t } = useMeteorI18n({
       namespace: "mt.number-field",
-      messages: {
-        en: {
-          increaseButton: "Increase",
-          decreaseButton: "Decrease",
-        },
-        de: {
-          increaseButton: "Erhöhen",
-          decreaseButton: "Verringern",
-        },
-      },
+      messages,
     });
 
     return { t };

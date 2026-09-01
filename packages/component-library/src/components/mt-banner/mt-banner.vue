@@ -34,6 +34,17 @@
   </div>
 </template>
 
+<script lang="ts">
+const messages = {
+  de: {
+    close: "Schließen",
+  },
+  en: {
+    close: "Close",
+  },
+};
+</script>
+
 <script setup lang="ts">
 import { computed } from "vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
@@ -44,14 +55,7 @@ import { useMeteorI18n } from "@/composables/use-meteor-i18n";
 
 const { t } = useMeteorI18n({
   namespace: "mt.banner",
-  messages: {
-    de: {
-      close: "Schließen",
-    },
-    en: {
-      close: "Close",
-    },
-  },
+  messages,
 });
 
 const props = withDefaults(

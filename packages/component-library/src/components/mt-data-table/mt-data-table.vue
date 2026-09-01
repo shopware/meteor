@@ -681,6 +681,77 @@ type ColumnProperty = ColumnDefinition[];
 /**
  * @experimental - This component can be used but there are no guarantees for API stability yet.
  */
+const messages = {
+  en: {
+    itemsPerPage: "Items per page",
+    filter: {
+      numberOfResults: "No results found for | One result found for | {n} results found for",
+      addFilter: "Add filter",
+      fetchingFilteredResults: "Getting filtered results...",
+    },
+    columnSettings: {
+      sortAscending: "Sort ascending",
+      sortDescending: "Sort descending",
+      hideColumn: "Hide column",
+    },
+    addColumnIndicator: {
+      popoverTitle: "Add column content",
+      tooltipMessage: "Add column",
+    },
+    contextButtons: {
+      edit: "Edit",
+      delete: "Delete",
+    },
+    emptyState: {
+      headline: "Add your first item",
+      description: "Currently no items are available yet.",
+    },
+    bulkEdit: {
+      itemsSelected: "1 item selected | {n} items selected",
+      edit: "Edit",
+      delete: "Delete",
+      more: "...",
+    },
+    reload: {
+      tooltip: "Reload",
+    },
+  },
+  de: {
+    itemsPerPage: "Einträge pro Seite",
+    filter: {
+      numberOfResults: "Keine Einträge gefunden | Ein Eintrag gefunden | {n} Einträge gefunden",
+      addFilter: "Filter hinzufügen",
+      fetchingFilteredResults: "Filterergebnisse werden geladen...",
+    },
+    columnSettings: {
+      sortAscending: "Aufsteigend sortieren",
+      sortDescending: "Absteigend sortieren",
+      hideColumn: "Spalte ausblenden",
+    },
+    addColumnIndicator: {
+      popoverTitle: "Spalteninhalt hinzufügen",
+      tooltipMessage: "Spalte hinzufügen",
+    },
+    contextButtons: {
+      edit: "Bearbeiten",
+      delete: "Löschen",
+    },
+    emptyState: {
+      headline: "Füge dein erstes Element hinzu",
+      description: "Aktuell sind noch keine Elemente vorhanden.",
+    },
+    bulkEdit: {
+      itemsSelected: "1 Element ausgewählt | {n} Elemente ausgewählt",
+      edit: "Bearbeiten",
+      delete: "Löschen",
+      more: "...",
+    },
+    reload: {
+      tooltip: "Neu laden",
+    },
+  },
+};
+
 export default defineComponent({
   directives: {
     draggable: draggable,
@@ -1053,77 +1124,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const { t } = useMeteorI18n({
       namespace: "mt.data-table",
-      messages: {
-        en: {
-          itemsPerPage: "Items per page",
-          filter: {
-            numberOfResults: "No results found for | One result found for | {n} results found for",
-            addFilter: "Add filter",
-            fetchingFilteredResults: "Getting filtered results...",
-          },
-          columnSettings: {
-            sortAscending: "Sort ascending",
-            sortDescending: "Sort descending",
-            hideColumn: "Hide column",
-          },
-          addColumnIndicator: {
-            popoverTitle: "Add column content",
-            tooltipMessage: "Add column",
-          },
-          contextButtons: {
-            edit: "Edit",
-            delete: "Delete",
-          },
-          emptyState: {
-            headline: "Add your first item",
-            description: "Currently no items are available yet.",
-          },
-          bulkEdit: {
-            itemsSelected: "1 item selected | {n} items selected",
-            edit: "Edit",
-            delete: "Delete",
-            more: "...",
-          },
-          reload: {
-            tooltip: "Reload",
-          },
-        },
-        de: {
-          itemsPerPage: "Einträge pro Seite",
-          filter: {
-            numberOfResults:
-              "Keine Einträge gefunden | Ein Eintrag gefunden | {n} Einträge gefunden",
-            addFilter: "Filter hinzufügen",
-            fetchingFilteredResults: "Filterergebnisse werden geladen...",
-          },
-          columnSettings: {
-            sortAscending: "Aufsteigend sortieren",
-            sortDescending: "Absteigend sortieren",
-            hideColumn: "Spalte ausblenden",
-          },
-          addColumnIndicator: {
-            popoverTitle: "Spalteninhalt hinzufügen",
-            tooltipMessage: "Spalte hinzufügen",
-          },
-          contextButtons: {
-            edit: "Bearbeiten",
-            delete: "Löschen",
-          },
-          emptyState: {
-            headline: "Füge dein erstes Element hinzu",
-            description: "Aktuell sind noch keine Elemente vorhanden.",
-          },
-          bulkEdit: {
-            itemsSelected: "1 Element ausgewählt | {n} Elemente ausgewählt",
-            edit: "Bearbeiten",
-            delete: "Löschen",
-            more: "...",
-          },
-          reload: {
-            tooltip: "Neu laden",
-          },
-        },
-      },
+      messages,
     });
 
     const filterChildViews = computed(() => {

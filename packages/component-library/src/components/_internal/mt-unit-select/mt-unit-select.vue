@@ -44,6 +44,41 @@
   </div>
 </template>
 
+<script lang="ts">
+const messages = {
+  de: {
+    units: {
+      mm: "Millimeter",
+      cm: "Zentimeter",
+      m: "Meter",
+      in: "Zoll",
+      ft: "Fuß",
+      yd: "Yard",
+      g: "Gramm",
+      kg: "Kilogramm",
+      oz: "Unze",
+      lb: "Pfund",
+    },
+    "select-unit": "Einheit auswählen",
+  },
+  en: {
+    units: {
+      mm: "Millimeters",
+      cm: "Centimeters",
+      m: "Meters",
+      in: "Inches",
+      ft: "Feet",
+      yd: "Yards",
+      g: "Grams",
+      kg: "Kilograms",
+      oz: "Ounces",
+      lb: "Pounds",
+    },
+    "select-unit": "Select unit",
+  },
+};
+</script>
+
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch, nextTick } from "vue";
 import { useMeteorI18n } from "@/composables/use-meteor-i18n";
@@ -55,38 +90,7 @@ import { onClickOutside } from "@vueuse/core";
 
 const { t } = useMeteorI18n({
   namespace: "mt.unit-select",
-  messages: {
-    de: {
-      units: {
-        mm: "Millimeter",
-        cm: "Zentimeter",
-        m: "Meter",
-        in: "Zoll",
-        ft: "Fuß",
-        yd: "Yard",
-        g: "Gramm",
-        kg: "Kilogramm",
-        oz: "Unze",
-        lb: "Pfund",
-      },
-      "select-unit": "Einheit auswählen",
-    },
-    en: {
-      units: {
-        mm: "Millimeters",
-        cm: "Centimeters",
-        m: "Meters",
-        in: "Inches",
-        ft: "Feet",
-        yd: "Yards",
-        g: "Grams",
-        kg: "Kilograms",
-        oz: "Ounces",
-        lb: "Pounds",
-      },
-      "select-unit": "Select unit",
-    },
-  },
+  messages,
 });
 
 const props = defineProps<{

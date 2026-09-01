@@ -109,6 +109,21 @@
   </div>
 </template>
 
+<script lang="ts">
+const messages = {
+  de: {
+    copyTooltip: "In Zwischenablage kopieren",
+    copyButtonDescription: "In Zwischenablage kopieren",
+    copyButtonDescriptionValueCopied: "In Zwischenablage kopiert",
+  },
+  en: {
+    copyTooltip: "Copy to clipboard",
+    copyButtonDescription: "Copy to clipboard",
+    copyButtonDescriptionValueCopied: "Copied to clipboard",
+  },
+};
+</script>
+
 <script setup lang="ts">
 import { computed, onMounted, ref, useTemplateRef, useId, useSlots } from "vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
@@ -187,18 +202,7 @@ const { copy, copied } = useClipboard();
 
 const { t } = useMeteorI18n({
   namespace: "mt.email-field",
-  messages: {
-    de: {
-      copyTooltip: "In Zwischenablage kopieren",
-      copyButtonDescription: "In Zwischenablage kopieren",
-      copyButtonDescriptionValueCopied: "In Zwischenablage kopiert",
-    },
-    en: {
-      copyTooltip: "Copy to clipboard",
-      copyButtonDescription: "Copy to clipboard",
-      copyButtonDescriptionValueCopied: "Copied to clipboard",
-    },
-  },
+  messages,
 });
 </script>
 

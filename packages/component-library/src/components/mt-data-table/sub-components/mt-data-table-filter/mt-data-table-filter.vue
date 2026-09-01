@@ -44,6 +44,19 @@
   </div>
 </template>
 
+<script lang="ts">
+const messages = {
+  en: {
+    is: "is",
+    removeButton: "Remove filter",
+  },
+  de: {
+    is: "ist",
+    removeButton: "Filter entfernen",
+  },
+};
+</script>
+
 <script setup lang="ts">
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtPopover from "@/components/mt-popover/mt-popover.vue";
@@ -69,16 +82,7 @@ function isOptionSelected(optionId: string) {
 
 const { t } = useMeteorI18n({
   namespace: "mt.data-table-filter",
-  messages: {
-    en: {
-      is: "is",
-      removeButton: "Remove filter",
-    },
-    de: {
-      is: "ist",
-      removeButton: "Filter entfernen",
-    },
-  },
+  messages,
 });
 </script>
 

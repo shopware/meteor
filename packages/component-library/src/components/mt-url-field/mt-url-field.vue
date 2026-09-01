@@ -118,6 +118,21 @@
   </div>
 </template>
 
+<script lang="ts">
+const messages = {
+  de: {
+    copyTooltip: "URL in Zwischenablage kopieren",
+    copyButtonDescription: "URL in Zwischenablage kopieren",
+    copyButtonDescriptionValueCopied: "URL in Zwischenablage kopiert",
+  },
+  en: {
+    copyTooltip: "Copy URL to clipboard",
+    copyButtonDescription: "Copy URL to clipboard",
+    copyButtonDescriptionValueCopied: "Copied URL to clipboard",
+  },
+};
+</script>
+
 <script setup lang="ts">
 import { useId, computed, watch, ref, useSlots } from "vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
@@ -262,18 +277,7 @@ const { copy, copied } = useClipboard();
 
 const { t } = useMeteorI18n({
   namespace: "mt.url-field",
-  messages: {
-    de: {
-      copyTooltip: "URL in Zwischenablage kopieren",
-      copyButtonDescription: "URL in Zwischenablage kopieren",
-      copyButtonDescriptionValueCopied: "URL in Zwischenablage kopiert",
-    },
-    en: {
-      copyTooltip: "Copy URL to clipboard",
-      copyButtonDescription: "Copy URL to clipboard",
-      copyButtonDescriptionValueCopied: "Copied URL to clipboard",
-    },
-  },
+  messages,
 });
 </script>
 

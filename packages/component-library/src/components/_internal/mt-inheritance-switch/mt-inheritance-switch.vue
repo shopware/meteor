@@ -31,6 +31,23 @@
   </mt-tooltip>
 </template>
 
+<script lang="ts">
+const messages = {
+  en: {
+    tooltipRemoveInheritance: "Remove inheritance",
+    tooltipRestoreInheritance: "Restore inheritance",
+    linkInheritance: "Link inheritance",
+    unlinkInheritance: "Unlink inheritance",
+  },
+  de: {
+    tooltipRemoveInheritance: "Vererbung entfernen",
+    tooltipRestoreInheritance: "Vererbung wiederherstellen",
+    linkInheritance: "Vererbung verknüpfen",
+    unlinkInheritance: "Vererbung trennen",
+  },
+};
+</script>
+
 <script setup lang="ts">
 import MtIcon from "../../mt-icon/mt-icon.vue";
 import MtTooltip from "@/components/mt-tooltip/mt-tooltip.vue";
@@ -43,20 +60,7 @@ defineProps<{
 
 const { t } = useMeteorI18n({
   namespace: "mt.inheritance-switch",
-  messages: {
-    en: {
-      tooltipRemoveInheritance: "Remove inheritance",
-      tooltipRestoreInheritance: "Restore inheritance",
-      linkInheritance: "Link inheritance",
-      unlinkInheritance: "Unlink inheritance",
-    },
-    de: {
-      tooltipRemoveInheritance: "Vererbung entfernen",
-      tooltipRestoreInheritance: "Vererbung wiederherstellen",
-      linkInheritance: "Vererbung verknüpfen",
-      unlinkInheritance: "Vererbung trennen",
-    },
-  },
+  messages,
 });
 
 defineEmits<{

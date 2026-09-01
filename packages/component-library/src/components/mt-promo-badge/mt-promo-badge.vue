@@ -6,6 +6,21 @@
   </span>
 </template>
 
+<script lang="ts">
+const messages = {
+  en: {
+    new: "New",
+    beta: "Beta",
+    shopwareAi: "Shopware AI",
+  },
+  de: {
+    new: "Neu",
+    beta: "Beta",
+    shopwareAi: "Shopware AI",
+  },
+};
+</script>
+
 <script setup lang="ts">
 import { computed } from "vue";
 import { useMeteorI18n } from "@/composables/use-meteor-i18n";
@@ -24,18 +39,7 @@ const props = withDefaults(
 
 const { t } = useMeteorI18n({
   namespace: "mt.promo-badge",
-  messages: {
-    en: {
-      new: "New",
-      beta: "Beta",
-      shopwareAi: "Shopware AI",
-    },
-    de: {
-      new: "Neu",
-      beta: "Beta",
-      shopwareAi: "Shopware AI",
-    },
-  },
+  messages,
 });
 
 const size = computed(() => {

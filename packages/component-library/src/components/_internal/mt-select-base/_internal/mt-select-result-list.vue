@@ -59,6 +59,15 @@ import {
 import { ref } from "vue";
 import { useMeteorI18n } from "@/composables/use-meteor-i18n";
 
+const messages = {
+  en: {
+    messageNoResults: "No results found.",
+  },
+  de: {
+    messageNoResults: "Es wurden keine Ergebnisse gefunden.",
+  },
+};
+
 export default defineComponent({
   name: "MtSelectResultList",
 
@@ -76,14 +85,7 @@ export default defineComponent({
   setup() {
     const { t } = useMeteorI18n({
       namespace: "mt.select-result-list",
-      messages: {
-        en: {
-          messageNoResults: "No results found.",
-        },
-        de: {
-          messageNoResults: "Es wurden keine Ergebnisse gefunden.",
-        },
-      },
+      messages,
     });
 
     const activeItemIndex = ref(0);

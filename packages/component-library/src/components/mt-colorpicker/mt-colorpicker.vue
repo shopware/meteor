@@ -261,6 +261,15 @@ import MtButton from "@/components/mt-button/mt-button.vue";
 import mtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import { useMeteorI18n } from "@/composables/use-meteor-i18n";
 
+const messages = {
+  en: {
+    apply: "Apply",
+  },
+  de: {
+    apply: "Anwenden",
+  },
+};
+
 export default defineComponent({
   name: "MtColorpicker",
 
@@ -447,14 +456,7 @@ export default defineComponent({
   setup() {
     const { t } = useMeteorI18n({
       namespace: "mt.colorpicker",
-      messages: {
-        en: {
-          apply: "Apply",
-        },
-        de: {
-          apply: "Anwenden",
-        },
-      },
+      messages,
     });
     return {
       t,

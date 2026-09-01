@@ -74,6 +74,25 @@
   </div>
 </template>
 
+<script lang="ts">
+const messages = {
+  en: {
+    infoText: "{start}-{end} of {totalItems}",
+    firstPage: "First page",
+    previousPage: "Previous page",
+    nextPage: "Next page",
+    lastPage: "Last page",
+  },
+  de: {
+    infoText: "{start}-{end} von {totalItems}",
+    firstPage: "Erste Seite",
+    previousPage: "Voherige Seite",
+    nextPage: "Nächste Seite",
+    lastPage: "Letzte Seite",
+  },
+};
+</script>
+
 <script setup lang="ts">
 import { computed, watch } from "vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
@@ -87,22 +106,7 @@ const props = defineProps<{
 
 const { t } = useMeteorI18n({
   namespace: "mt.pagination",
-  messages: {
-    en: {
-      infoText: "{start}-{end} of {totalItems}",
-      firstPage: "First page",
-      previousPage: "Previous page",
-      nextPage: "Next page",
-      lastPage: "Last page",
-    },
-    de: {
-      infoText: "{start}-{end} von {totalItems}",
-      firstPage: "Erste Seite",
-      previousPage: "Voherige Seite",
-      nextPage: "Nächste Seite",
-      lastPage: "Letzte Seite",
-    },
-  },
+  messages,
 });
 
 const emit = defineEmits<{

@@ -137,6 +137,15 @@ import MtSelectSelectionList from "../_internal/mt-select-base/_internal/mt-sele
 import MtHighlightText from "../_internal/mt-highlight-text.vue";
 import { useMeteorI18n } from "@/composables/use-meteor-i18n";
 
+const messages = {
+  en: {
+    messageNoResults: 'No results found for "{term}".',
+  },
+  de: {
+    messageNoResults: 'Es wurden keine Ergebnisse für "{term}" gefunden.',
+  },
+};
+
 export default defineComponent({
   name: "MtSelect",
 
@@ -386,14 +395,7 @@ export default defineComponent({
   setup() {
     const { t } = useMeteorI18n({
       namespace: "mt.select",
-      messages: {
-        en: {
-          messageNoResults: 'No results found for "{term}".',
-        },
-        de: {
-          messageNoResults: 'Es wurden keine Ergebnisse für "{term}" gefunden.',
-        },
-      },
+      messages,
     });
 
     return {
