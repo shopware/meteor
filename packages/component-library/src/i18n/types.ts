@@ -42,10 +42,21 @@ export type MeteorLocaleMessages = Record<string, MeteorMessageTree | undefined>
  *   It MUST return a nullish value (never the key itself) when it has no translation,
  *   so Meteor can fall back to its own bundled snippets. A vue-i18n host implements
  *   this as `te(key) ? t(key, values) : undefined`.
+ * - REACTIVITY: on a hit, components re-render on locale change only if `t` itself reads
+ *   a reactive locale source internally (vue-i18n's composer does this automatically).
+ *   A hand-written adapter over a plain dictionary must read its locale ref *inside* `t`
+ *   (e.g. `t: (key) => dictionaries[locale.value]?.[key]`), not capture a snapshot.
+ * - `n` is optional: format a number per the host's locale rules (e.g. vue-i18n's `n`).
+ *   When omitted, Meteor falls back to `Intl.NumberFormat` with the adapter's locale.
+ *
+ * Scope (deliberate, as of 6.0): text direction (`dir`/RTL) and subtree locale scoping
+ * are not part of this contract. If they are added later, they will be added as
+ * OPTIONAL members so existing adapters keep working.
  */
 export interface MeteorI18nAdapter {
   locale: Ref<string> | ComputedRef<string> | (() => string);
   t: (key: string, values?: MeteorInterpolationValues) => string | undefined | null;
+  n?: (value: number) => string;
 }
 
 /**

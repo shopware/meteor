@@ -16,6 +16,8 @@ export interface VueI18nComposerLike {
   fallbackLocale?: Ref<unknown>;
   t: (key: string, named?: Record<string, unknown>, options?: { locale?: string }) => string;
   te: (key: string, locale?: string) => boolean;
+  /** vue-i18n's number formatter; passed through to Meteor's `n()` when present. */
+  n?: (value: number) => string;
 }
 
 /**
@@ -94,6 +96,9 @@ export function createVueI18nAdapter(
 
   return {
     locale: composer.locale,
+    // Wrapped rather than passed by reference: vue-i18n's `n` has overloads and relies on
+    // its `this` binding.
+    ...(composer.n ? { n: (value: number) => composer.n!(value) } : {}),
     t: (key, values) => {
       const named = values as Record<string, unknown> | undefined;
 

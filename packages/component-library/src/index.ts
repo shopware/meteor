@@ -226,6 +226,12 @@ export type {
   MeteorInterpolationValues,
 } from "./i18n/types";
 export type { MeteorLocale } from "./i18n/locale";
-export type { VueI18nLike, VueI18nComposerLike } from "./i18n/adapters/vue-i18n";
+export type { MeteorI18nPluginOptions } from "./i18n/plugin";
+export type { UseMeteorI18nOptions, MeteorI18nComposer } from "./composables/use-meteor-i18n";
+export type {
+  VueI18nLike,
+  VueI18nComposerLike,
+  VueI18nAdapterOptions,
+} from "./i18n/adapters/vue-i18n";
 export type { Editor } from "@tiptap/vue-3";
 export type { default as Link } from "@tiptap/extension-link";

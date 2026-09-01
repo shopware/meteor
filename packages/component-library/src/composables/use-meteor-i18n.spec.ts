@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { defineComponent, h, ref, type Plugin } from "vue";
+import { describe, it, expect, vi } from "vitest";
+import { computed, defineComponent, h, ref, type Plugin } from "vue";
 import { mount } from "@vue/test-utils";
 import {
   useMeteorI18n,
@@ -115,5 +115,93 @@ describe("useMeteorI18n", () => {
   it("exposes a default instance so components work with no provider", () => {
     expect(defaultMeteorI18n.adapter).toBeUndefined();
     expect(defaultMeteorI18n.fallbackLocale.value).toBe("en");
+  });
+
+  describe("ti", () => {
+    it("returns the translation on a hit and undefined on a miss", () => {
+      const { ti } = setupComposable(createMeteorI18nPlugin());
+
+      expect(ti("firstPage")).toBe("First page");
+      expect(ti("missing")).toBeUndefined();
+    });
+
+    it("resolves adapter and registry hits like t", () => {
+      const adapter: MeteorI18nAdapter = {
+        locale: ref("en"),
+        t: (key) => (key === "mt.pagination.firstPage" ? "Host hit" : undefined),
+      };
+      const { ti } = setupComposable(createMeteorI18nPlugin({ adapter }));
+
+      expect(ti("firstPage")).toBe("Host hit");
+    });
+  });
+
+  describe("n (number formatting)", () => {
+    it("prefers the adapter's n when provided", () => {
+      const adapter: MeteorI18nAdapter = {
+        locale: ref("en"),
+        t: () => undefined,
+        n: (value) => `host:${value}`,
+      };
+      const { n } = setupComposable(createMeteorI18nPlugin({ adapter }));
+
+      expect(n(1234.5)).toBe("host:1234.5");
+    });
+
+    it("falls back to Intl.NumberFormat with the adapter locale", () => {
+      const adapter: MeteorI18nAdapter = { locale: ref("de-DE"), t: () => undefined };
+      const { n } = setupComposable(createMeteorI18nPlugin({ adapter }));
+
+      expect(n(1234.5)).toBe("1.234,5");
+    });
+
+    it("formats with the fallback locale when no adapter is installed", () => {
+      const { n } = setupComposable(createMeteorI18nPlugin({ locale: "en-US" }));
+
+      expect(n(1234.5)).toBe("1,234.5");
+    });
+
+    it("survives an invalid host locale tag", () => {
+      const adapter: MeteorI18nAdapter = { locale: ref("not a locale!"), t: () => undefined };
+      const { n } = setupComposable(createMeteorI18nPlugin({ adapter }));
+
+      expect(() => n(1234.5)).not.toThrow();
+      expect(typeof n(1234.5)).toBe("string");
+    });
+  });
+
+  describe("adapter reactivity contract", () => {
+    it("re-renders on locale change when the adapter's t reads its locale reactively", () => {
+      const hostLocale = ref("en");
+      const dictionaries: Record<string, Record<string, string>> = {
+        en: { "mt.pagination.firstPage": "First page (host)" },
+        de: { "mt.pagination.firstPage": "Erste Seite (host)" },
+      };
+      // The documented contract: t reads the reactive locale INSIDE the call.
+      const adapter: MeteorI18nAdapter = {
+        locale: hostLocale,
+        t: (key) => dictionaries[hostLocale.value]?.[key],
+      };
+      const composer = setupComposable(createMeteorI18nPlugin({ adapter }));
+      const rendered = computed(() => composer.t("firstPage"));
+
+      expect(rendered.value).toBe("First page (host)");
+      hostLocale.value = "de";
+      expect(rendered.value).toBe("Erste Seite (host)");
+    });
+  });
+
+  describe("locale writability", () => {
+    it("warns and ignores locale writes while an adapter is present", () => {
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+      const adapter: MeteorI18nAdapter = { locale: ref("en-GB"), t: () => undefined };
+      const { locale } = setupComposable(createMeteorI18nPlugin({ adapter }));
+
+      locale.value = "de";
+
+      expect(locale.value).toBe("en");
+      expect(warn).toHaveBeenCalledWith(expect.stringContaining("controlled by the host adapter"));
+      warn.mockRestore();
+    });
   });
 });

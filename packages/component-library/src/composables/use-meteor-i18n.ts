@@ -32,6 +32,16 @@ export interface MeteorI18nComposer {
    *   4. the public key itself
    */
   t: (key: string, values?: MeteorInterpolationValues) => string;
+  /**
+   * Like {@link t}, but returns `undefined` on a full miss instead of the public key —
+   * use it to probe keys (`ti(key) ?? fallback`) instead of comparing `t(key) === key`.
+   */
+  ti: (key: string, values?: MeteorInterpolationValues) => string | undefined;
+  /**
+   * Format a number per the current locale: the host adapter's `n` when it provides one,
+   * otherwise `Intl.NumberFormat` with the adapter's (or fallback) locale.
+   */
+  n: (value: number) => string;
   /** The current resolved language (`"en"`, `"de"`, or whatever the host reports). */
   locale: WritableComputedRef<string>;
 }
@@ -48,8 +58,12 @@ export function useMeteorI18n(options: UseMeteorI18nOptions = {}): MeteorI18nCom
   );
   const chain = computed(() => localeChain(rawLocale.value));
 
-  function t(key: string, values?: MeteorInterpolationValues): string {
-    const publicKey = namespace ? `${namespace}.${key}` : key;
+  function publicKeyOf(key: string): string {
+    return namespace ? `${namespace}.${key}` : key;
+  }
+
+  function resolve(key: string, values?: MeteorInterpolationValues): string | undefined {
+    const publicKey = publicKeyOf(key);
 
     // 1. Host adapter — a true hit only (the adapter returns nullish on a miss).
     if (instance.adapter) {
@@ -67,16 +81,45 @@ export function useMeteorI18n(options: UseMeteorI18nOptions = {}): MeteorI18nCom
       if (bundled !== undefined) return render(bundled, values);
     }
 
-    // 4. Fall back to the public key itself (keeps `t(key) === key` miss detection working).
-    return publicKey;
+    return undefined;
+  }
+
+  function t(key: string, values?: MeteorInterpolationValues): string {
+    // Fall back to the public key itself (keeps `t(key) === key` miss detection working).
+    return resolve(key, values) ?? publicKeyOf(key);
+  }
+
+  function ti(key: string, values?: MeteorInterpolationValues): string | undefined {
+    return resolve(key, values);
+  }
+
+  function n(value: number): string {
+    const hostN = instance.adapter?.n;
+    if (hostN) return hostN(value);
+
+    try {
+      return new Intl.NumberFormat(rawLocale.value).format(value);
+    } catch {
+      // The host reported an invalid locale tag — format with the runtime default instead.
+      return new Intl.NumberFormat().format(value);
+    }
   }
 
   const locale = computed<string>({
     get: () => languageOf(rawLocale.value),
     set: (value) => {
-      if (!instance.adapter) instance.fallbackLocale.value = value;
+      if (instance.adapter) {
+        if (process?.env?.NODE_ENV !== "production") {
+          console.warn(
+            "[meteor-i18n] The locale is controlled by the host adapter; writing to `locale` is ignored. " +
+              "Change the language through the host's i18n solution instead.",
+          );
+        }
+        return;
+      }
+      instance.fallbackLocale.value = value;
     },
   });
 
-  return { t, locale };
+  return { t, ti, n, locale };
 }

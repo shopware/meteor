@@ -22,37 +22,7 @@ const props = defineProps<{
   error?: Record<string, any> | null;
 }>();
 
-const errorMessage = computed(() => {
-  if (!props.error) return "";
-
-  if (!props.error.code) {
-    return t(props.error?.detail ?? "");
-  }
-
-  // Try multiple translation namespaces with fallback
-  const translationKeys = [
-    `global.error-codes.${props.error.code}`,
-    `mt.field-error.${props.error.code}`,
-  ];
-  const interpolationParams = {
-    ...(props.error.meta?.parameters ?? {}),
-    ...(props.error.parameters ?? {}),
-  };
-
-  for (const key of translationKeys) {
-    const translation = t(key, interpolationParams);
-    const noTranslationFound = translation === key;
-
-    if (!noTranslationFound) {
-      return translation;
-    }
-  }
-
-  // Fallback to error detail if no translation found
-  return props.error.detail;
-});
-
-const { t } = useMeteorI18n({
+const { t, ti } = useMeteorI18n({
   messages: {
     en: {
       mt: {
@@ -94,6 +64,36 @@ const { t } = useMeteorI18n({
     },
   },
 });
+
+const errorMessage = computed(() => {
+  if (!props.error) return "";
+
+  if (!props.error.code) {
+    return t(props.error?.detail ?? "");
+  }
+
+  // Try multiple translation namespaces with fallback
+  const translationKeys = [
+    `global.error-codes.${props.error.code}`,
+    `mt.field-error.${props.error.code}`,
+  ];
+  const interpolationParams = {
+    ...(props.error.meta?.parameters ?? {}),
+    ...(props.error.parameters ?? {}),
+  };
+
+  for (const key of translationKeys) {
+    const translation = ti(key, interpolationParams);
+
+    if (translation !== undefined) {
+      return translation;
+    }
+  }
+
+  // Fallback to error detail if no translation found
+  return props.error.detail;
+});
+
 </script>
 
 <style scoped>
