@@ -12,6 +12,12 @@ async function switchLanguage(page: Page, label: string) {
 }
 
 test.beforeEach(async ({ page }) => {
+  // Surface in-page failures in the test output — a blank page is undebuggable from CI logs.
+  page.on("pageerror", (error) => console.log("[page error]", error.message));
+  page.on("console", (message) => {
+    if (message.type() === "error")
+      console.log("[page console.error]", message.text());
+  });
   await page.goto("/");
 });
 

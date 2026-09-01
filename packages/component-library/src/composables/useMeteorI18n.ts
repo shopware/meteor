@@ -5,6 +5,17 @@ import { render } from "@/i18n/engine";
 import { lookupNested } from "@/i18n/lookup";
 import type { MeteorInterpolationValues, MeteorMessages } from "@/i18n/types";
 
+// try/catch instead of a typeof guard: bundlers statically replace the exact token
+// `process.env.NODE_ENV`, and in browsers without that replacement (where `process`
+// is not declared) the reference throws — it must never crash the consumer.
+function isDev(): boolean {
+  try {
+    return process.env.NODE_ENV !== "production";
+  } catch {
+    return false;
+  }
+}
+
 // Intl.NumberFormat construction is expensive; one formatter per locale, shared by all
 // composable instances.
 const numberFormatters = new Map<string, Intl.NumberFormat>();
@@ -124,7 +135,7 @@ export function useMeteorI18n(options: UseMeteorI18nOptions = {}): MeteorI18nCom
     get: () => languageOf(rawLocale.value),
     set: (value) => {
       if (instance.adapter) {
-        if (process?.env?.NODE_ENV !== "production") {
+        if (isDev()) {
           console.warn(
             "[meteor-i18n] The locale is controlled by the host adapter; writing to `locale` is ignored. " +
               "Change the language through the host's i18n solution instead.",

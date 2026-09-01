@@ -66,7 +66,14 @@ export interface VueI18nAdapterOptions {
 const warnedLegacyKeys = new Set<string>();
 
 function isDev(): boolean {
-  return process?.env?.NODE_ENV !== "production";
+  // try/catch instead of a typeof guard: bundlers statically replace the exact token
+  // `process.env.NODE_ENV`, and in browsers without that replacement (where `process`
+  // is not declared) the reference throws — it must never crash the consumer.
+  try {
+    return process.env.NODE_ENV !== "production";
+  } catch {
+    return false;
+  }
 }
 
 /**
