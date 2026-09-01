@@ -33,4 +33,10 @@ describe("localeChain", () => {
     expect(localeChain(undefined)).toEqual(["en"]);
     expect(localeChain("")).toEqual(["en"]);
   });
+
+  it("adds the dash-normalized form for underscore or oddly-cased locales", () => {
+    expect(localeChain("en_GB")).toEqual(["en_GB", "en-GB", "en"]);
+    expect(localeChain("de_at")).toEqual(["de_at", "de-AT", "de", "en"]);
+    expect(localeChain("EN-gb")).toEqual(["EN-gb", "en-GB", "en"]);
+  });
 });

@@ -16,16 +16,28 @@ export function languageOf(raw: string | undefined | null): string {
 }
 
 /**
+ * A locale code in its conventional dash-separated form: `"en_gb"` -> `"en-GB"`.
+ * Registry keys are conventionally written this way (`en-GB`, `de-DE`), while hosts
+ * may report underscore or differently-cased variants.
+ */
+function normalizeLocale(raw: string): string {
+  const [language, ...rest] = raw.split(/[-_]/);
+  return [language.toLowerCase(), ...rest.map((part) => part.toUpperCase())].join("-");
+}
+
+/**
  * Build the locale fallback chain for a raw host locale, most specific first, always ending
  * at the English base. Examples:
  *   "de-DE" -> ["de-DE", "de", "en"]
- *   "en-US" -> ["en-US", "en"]
+ *   "en_gb" -> ["en_gb", "en-GB", "en"]
  *   "de"    -> ["de", "en"]
  *   undefined -> ["en"]
  *
- * Region variants therefore share the language-level default (Meteor bundles `en`/`de`), while
- * region-specific overrides supplied via the plugin registry can still win at the head of the
- * chain.
+ * The raw value is kept at the head (exact registry matches keep working) with its
+ * dash-normalized form right behind it, so an `"en_GB"` host still hits an `"en-GB"`
+ * registry entry. Region variants share the language-level default (Meteor bundles
+ * `en`/`de`), while region-specific overrides supplied via the plugin registry can
+ * still win at the head of the chain.
  */
 export function localeChain(raw: string | undefined | null): string[] {
   const chain: string[] = [];
@@ -33,7 +45,10 @@ export function localeChain(raw: string | undefined | null): string[] {
     if (value && !chain.includes(value)) chain.push(value);
   };
 
-  if (raw) push(raw);
+  if (raw) {
+    push(raw);
+    push(normalizeLocale(raw));
+  }
   push(languageOf(raw));
   push(DEFAULT_LOCALE);
 

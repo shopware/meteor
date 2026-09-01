@@ -15,7 +15,13 @@ export function lookupNested(tree: MeteorMessageTree | undefined, key: string): 
 
   let current: string | MeteorMessageTree | undefined = tree;
   for (const segment of key.split(".")) {
-    if (typeof current !== "object" || current === null) return undefined;
+    if (
+      typeof current !== "object" ||
+      current === null ||
+      !Object.prototype.hasOwnProperty.call(current, segment)
+    ) {
+      return undefined;
+    }
     current = current[segment];
   }
 

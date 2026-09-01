@@ -225,7 +225,7 @@
               aria-label="colorpicker-apply-color"
               @click="applyColor"
             >
-              {{ t("mt-colorpicker.apply") }}
+              {{ t("apply") }}
             </mt-button>
           </div>
         </div>
@@ -449,14 +449,10 @@ export default defineComponent({
       namespace: "mt.colorpicker",
       messages: {
         en: {
-          "mt-colorpicker": {
-            apply: "Apply",
-          },
+          apply: "Apply",
         },
         de: {
-          "mt-colorpicker": {
-            apply: "Anwenden",
-          },
+          apply: "Anwenden",
         },
       },
     });

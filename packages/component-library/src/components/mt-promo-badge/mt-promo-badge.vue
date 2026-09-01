@@ -26,18 +26,14 @@ const { t } = useMeteorI18n({
   namespace: "mt.promo-badge",
   messages: {
     en: {
-      "mt-promo-badge": {
-        new: "New",
-        beta: "Beta",
-        shopwareAi: "Shopware AI",
-      },
+      new: "New",
+      beta: "Beta",
+      shopwareAi: "Shopware AI",
     },
     de: {
-      "mt-promo-badge": {
-        new: "Neu",
-        beta: "Beta",
-        shopwareAi: "Shopware AI",
-      },
+      new: "Neu",
+      beta: "Beta",
+      shopwareAi: "Shopware AI",
     },
   },
 });
@@ -53,10 +49,10 @@ const badgeVariant = computed(() =>
 
 const promoText = computed(() =>
   props.variant === "shopware-ai"
-    ? t("mt-promo-badge.shopwareAi")
+    ? t("shopwareAi")
     : props.variant === "new"
-      ? t("mt-promo-badge.new")
-      : t("mt-promo-badge.beta"),
+      ? t("new")
+      : t("beta"),
 );
 
 const badgeIcon = computed(() =>

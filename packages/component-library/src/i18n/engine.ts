@@ -9,8 +9,13 @@ const INTERPOLATION_REGEX = /\{(\w+)\}/g;
  * - named interpolation: `"{start}-{end}"`
  * - pipe pluralization:  `"no items | one item | {n} items"` selected by `n`/`count`
  *
- * Missing interpolation variables are left as their literal placeholder (`{var}`),
- * matching vue-i18n's default behaviour.
+ * A `|` only acts as a plural separator when the call actually passes a numeric
+ * `n`/`count` — a message like `"Bold | Ctrl+B"` rendered without a count stays
+ * intact instead of being mis-split into plural forms.
+ *
+ * Missing interpolation variables are left as their literal placeholder (`{var}`).
+ * (vue-i18n renders an empty string there instead — a deliberate divergence: the
+ * untouched placeholder makes the missing value visible.)
  */
 export function render(message: string, values?: MeteorInterpolationValues): string {
   return interpolate(selectPluralForm(message, values), values);
@@ -19,19 +24,22 @@ export function render(message: string, values?: MeteorInterpolationValues): str
 function selectPluralForm(message: string, values?: MeteorInterpolationValues): string {
   if (!message.includes("|")) return message;
 
+  const count = pluralCount(values);
+  if (count === undefined) return message;
+
   const forms = message.split("|").map((form) => form.trim());
   if (forms.length === 1) return forms[0];
 
-  const index = choiceIndex(pluralCount(values), forms.length);
+  const index = choiceIndex(count, forms.length);
   return forms[index] ?? forms[forms.length - 1];
 }
 
-function pluralCount(values?: MeteorInterpolationValues): number {
+function pluralCount(values?: MeteorInterpolationValues): number | undefined {
   const raw = values?.n ?? values?.count;
-  const num = typeof raw === "number" ? raw : Number(raw);
+  if (raw === undefined || raw === null) return undefined;
 
-  // No usable count -> treat as singular, matching the most common call site.
-  return Number.isFinite(num) ? num : 1;
+  const num = typeof raw === "number" ? raw : Number(raw);
+  return Number.isFinite(num) ? num : undefined;
 }
 
 /**
