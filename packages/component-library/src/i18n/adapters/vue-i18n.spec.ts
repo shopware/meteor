@@ -91,6 +91,74 @@ describe("createVueI18nAdapter", () => {
     });
   });
 
+  describe("hardening against host-side failure modes", () => {
+    it("degrades to a miss (with a dev warning) when the host t() throws", () => {
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+      const composer = {
+        locale: ref("en"),
+        te: () => true,
+        t: () => {
+          // vue-i18n >= 11.3 throws message-compiler SyntaxErrors at t() time.
+          throw new SyntaxError("Invalid linked format");
+        },
+      };
+
+      const adapter = createVueI18nAdapter(composer);
+
+      expect(adapter.t("mt.card.title")).toBeUndefined();
+      expect(warn).toHaveBeenCalledWith(expect.stringContaining("could not be compiled"), expect.any(SyntaxError));
+    });
+
+    it("does not let the host mutate the caller's values object", () => {
+      // vue-i18n's escapeParameter option mutates options.named in place.
+      const composer = {
+        locale: ref("en"),
+        te: () => true,
+        t: (_key: string, named?: Record<string, unknown>) => {
+          if (named) named.name = "MUTATED";
+          return "hit";
+        },
+      };
+      const values = { name: "original" };
+
+      createVueI18nAdapter(composer).t("key", values);
+
+      expect(values.name).toBe("original");
+    });
+
+    it("warns when handed a legacy-mode instance (locale is not a ref)", () => {
+      const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+      const legacyLike = {
+        locale: "en",
+        te: () => false,
+        t: (key: string) => key,
+      };
+
+      createVueI18nAdapter(legacyLike as never);
+
+      expect(warn).toHaveBeenCalledWith(expect.stringContaining("Composition-mode composer"));
+    });
+  });
+
+  describe("skipExistenceCheck option", () => {
+    it("resolves translations te() cannot see (e.g. a missing handler) and treats key-echo as a miss", () => {
+      const backendCatalog: Record<string, string> = {
+        "mt.pagination.nextPage": "From the backend",
+      };
+      const composer = {
+        locale: ref("en"),
+        // te() knows nothing — the translations only materialize through t().
+        te: () => false,
+        t: (key: string) => backendCatalog[key] ?? key,
+      };
+
+      const adapter = createVueI18nAdapter(composer, { skipExistenceCheck: true });
+
+      expect(adapter.t("mt.pagination.nextPage")).toBe("From the backend");
+      expect(adapter.t("mt.pagination.firstPage")).toBeUndefined(); // key echo -> miss
+    });
+  });
+
   describe("legacyKeys option", () => {
     it("retries mt.<x>.<rest> as mt-<x>.<rest> and warns once in dev", () => {
       const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
