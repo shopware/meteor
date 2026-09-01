@@ -106,7 +106,10 @@ describe("createVueI18nAdapter", () => {
       const adapter = createVueI18nAdapter(composer);
 
       expect(adapter.t("mt.card.title")).toBeUndefined();
-      expect(warn).toHaveBeenCalledWith(expect.stringContaining("could not be compiled"), expect.any(SyntaxError));
+      expect(warn).toHaveBeenCalledWith(
+        expect.stringContaining("could not be compiled"),
+        expect.any(SyntaxError),
+      );
     });
 
     it("does not let the host mutate the caller's values object", () => {

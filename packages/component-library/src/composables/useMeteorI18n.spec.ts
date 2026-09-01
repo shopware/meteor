@@ -1,11 +1,7 @@
 import { describe, it, expect, vi } from "vitest";
 import { computed, defineComponent, h, ref, type Plugin } from "vue";
 import { mount } from "@vue/test-utils";
-import {
-  useMeteorI18n,
-  type MeteorI18nComposer,
-  type UseMeteorI18nOptions,
-} from "./useMeteorI18n";
+import { useMeteorI18n, type MeteorI18nComposer, type UseMeteorI18nOptions } from "./useMeteorI18n";
 import { createMeteorI18nPlugin } from "@/i18n/plugin";
 import { defaultMeteorI18n } from "@/i18n/injection";
 import type { MeteorI18nAdapter } from "@/i18n/types";
