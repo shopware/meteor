@@ -168,6 +168,7 @@
     "vite-plugin-inspect": "^0.8.4",
     "vite-plugin-svgstring": "^1.0.0",
     "vitest": "^3.0.5",
+    "vue-i18n": "^11.4.9",
     "vue-tsc": "^2.2.4"
   }
 }
