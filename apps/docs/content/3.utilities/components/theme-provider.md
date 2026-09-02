@@ -34,6 +34,10 @@ The `future` prop takes an object. All flags default to `false`, so behavior is 
 | Opt into everything | `{ all: true }` |
 | Opt into everything except one | `{ all: true, removeCardWidth: false }` |
 
+## API reference
+
+:component-api{name="MtThemeProvider"}
+
 ## Future flags
 
 | Flag | Effect |
