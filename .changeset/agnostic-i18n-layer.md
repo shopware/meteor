@@ -36,8 +36,8 @@ resolve translations through an optional host adapter. Every snippet has a publi
 
 Pick the setup that matches your app:
 
-- **Standalone, no i18n framework** — nothing to do; components render bundled English.
-  Pick a language or override wording via the plugin:
+- **Your app has no texts of its own** — nothing to do; components render bundled English.
+  To pick a language or change Meteor's wording, use the plugin:
 
   ```ts
   import { createMeteorI18nPlugin } from "@shopware-ag/meteor-component-library";
@@ -70,8 +70,9 @@ Pick the setup that matches your app:
   app.use(createMeteorI18nPlugin({ adapter: createVueI18nAdapter(i18n) }));
   ```
 
-- **Iframe app whose visible text is entirely Meteor's** (rare — any own labels? use the
-  vue-i18n setup above, driven by the Admin SDK locale) — a hand-written adapter is enough:
+- **Your app has no texts of its own but runs in the Shopware Admin (iframe)** — follow the
+  admin's language with a hand-written adapter (any own labels? use the vue-i18n setup above,
+  driven by the Admin SDK locale):
 
   ```ts
   import { ref } from "vue";
@@ -91,7 +92,7 @@ Pick the setup that matches your app:
 
 - **Shopware Admin plugins** — nothing to do; `$t`/snippet JSON keep working. New: override
   any Meteor snippet by registering its `mt.*` key in your ordinary snippet files.
-- **Any other solution** — provide your own adapter `{ locale, t, n? }`: `locale` is a
+- **Your app translates its own texts with another solution** — provide your own adapter `{ locale, t, n? }`: `locale` is a
   reactive source, `t` returns `undefined` on a miss (never the key), `n` optionally
   formats numbers.
 
