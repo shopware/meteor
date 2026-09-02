@@ -1,39 +1,61 @@
 <template>
-  <mt-base-field
-    :class="componentClasses"
-    :disabled="disabled"
-    :required="required"
-    :is-inherited="isInherited"
-    :is-inheritance-field="isInheritanceField"
-    :disable-inheritance-toggle="disableInheritanceToggle"
-    :has-focus="hasFocus"
-    :help-text="helpText"
-    :name="name"
-    @inheritance-restore="$emit('inheritance-restore', $event)"
-    @inheritance-remove="$emit('inheritance-remove', $event)"
+  <div
+    class="mt-field mt-field--default"
+    :class="[
+      componentClasses,
+      {
+        'has--error': hasError,
+        'is--disabled': disabled,
+        'is--inherited': isInherited,
+        'has--focus': hasFocus,
+        'mt-field--future-remove-default-margin': future.removeDefaultMargin,
+        'mt-field--future-consistent-label-line-height': future.consistentLabelLineHeight,
+      },
+    ]"
   >
-    <template #label>
+    <mt-field-label
+      v-if="label"
+      class="mt-field__label"
+      :for="identification"
+      :required="required"
+      :has-error="hasError"
+      :disabled="disableInheritanceToggle"
+      :inheritance="inheritanceState"
+      :style="labelStyle"
+      @update:inheritance="onInheritanceUpdate"
+    >
       {{ label }}
-    </template>
+    </mt-field-label>
 
-    <template #field-prefix>
-      <div
-        class="mt-colorpicker__previewWrapper"
-        role="button"
-        :aria-pressed="visible"
-        aria-label="colorpicker-toggle"
-        @click="toggleColorPicker"
-      >
+    <mt-help-text
+      v-if="helpText"
+      class="mt-field__help-text"
+      :text="helpText"
+      placement="right"
+      :style="{ gridArea: 'help-text' }"
+    />
+
+    <div class="mt-colorpicker__block mt-block-field__block">
+      <mt-field-addition type="prefix" class="mt-colorpicker__addition" :has-error="hasError">
         <div
-          class="mt-colorpicker__previewColor"
-          :class="{ active: visible }"
-          :style="{ background: previewColorValue }"
-        />
-        <div class="mt-colorpicker__previewBackground" :class="{ 'is--invalid': !isColorValid }" />
-      </div>
-    </template>
+          class="mt-colorpicker__previewWrapper"
+          role="button"
+          :aria-pressed="visible"
+          aria-label="colorpicker-toggle"
+          @click="toggleColorPicker"
+        >
+          <div
+            class="mt-colorpicker__previewColor"
+            :class="{ active: visible }"
+            :style="{ background: previewColorValue }"
+          />
+          <div
+            class="mt-colorpicker__previewBackground"
+            :class="{ 'is--invalid': !isColorValid }"
+          />
+        </div>
+      </mt-field-addition>
 
-    <template #element="{ identification }">
       <input
         :id="identification"
         v-model="colorValue"
@@ -230,29 +252,32 @@
           </div>
         </div>
       </mt-floating-ui>
-    </template>
+    </div>
 
-    <template #error>
-      <mt-field-error v-if="error" :error="error" />
-    </template>
+    <mt-field-error v-if="error" :error="error" :style="{ gridArea: 'error' }" />
 
-    <template #field-hint>
-      <mt-field-hint v-if="showFieldHint" :hide-icon="!!$slots.hint">
-        <slot name="hint">
-          {{ hint }}
-        </slot>
-      </mt-field-hint>
-    </template>
-  </mt-base-field>
+    <div v-if="showFieldHint" class="mt-field__hint-wrapper">
+      <div class="mt-field__hint">
+        <mt-field-hint :hide-icon="!!$slots.hint">
+          <slot name="hint">
+            {{ hint }}
+          </slot>
+        </mt-field-hint>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script lang="ts">
 import type { PropType } from "vue";
 
 import { defineComponent } from "vue";
+import { createId } from "../../utils/id";
 import { debounce } from "@/utils/debounce";
-import MtBaseField from "../_internal/mt-base-field/mt-base-field.vue";
 import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
+import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
+import MtFieldAddition from "../_internal/mt-field-addition/mt-field-addition.vue";
+import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import MtFloatingUi from "../mt-floating-ui/mt-floating-ui.vue";
 import MtText from "@/components/mt-text/mt-text.vue";
 import { createFocusTrap } from "focus-trap";
@@ -260,13 +285,16 @@ import type { FocusTrap } from "focus-trap";
 import MtButton from "@/components/mt-button/mt-button.vue";
 import mtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import { useI18n } from "vue-i18n";
+import { useFutureFlags } from "@/composables/useFutureFlags";
 
 export default defineComponent({
   name: "MtColorpicker",
 
   components: {
-    "mt-base-field": MtBaseField,
     "mt-field-hint": MtFieldHint,
+    "mt-field-label": MtFieldLabel,
+    "mt-field-addition": MtFieldAddition,
+    "mt-help-text": MtHelpText,
     "mt-text": MtText,
     "mt-floating-ui": MtFloatingUi,
     "mt-button": MtButton,
@@ -461,6 +489,7 @@ export default defineComponent({
     });
     return {
       t,
+      future: useFutureFlags(),
     };
   },
   data(): {
@@ -478,6 +507,7 @@ export default defineComponent({
     trap: FocusTrap | null;
     hueStep: number;
     alphaStep: number;
+    id: string | undefined;
   } {
     return {
       localValue: this.modelValue || "",
@@ -492,7 +522,12 @@ export default defineComponent({
       trap: null,
       hueStep: 1,
       alphaStep: 0.01,
+      id: undefined,
     };
+  },
+
+  mounted() {
+    this.id = createId();
   },
 
   computed: {
@@ -759,6 +794,28 @@ export default defineComponent({
         "mt-colorpicker--compact": this.compact,
       };
     },
+
+    identification(): string {
+      return this.name ?? `mt-field--${this.id}`;
+    },
+
+    hasError(): boolean {
+      return !!this.error;
+    },
+
+    inheritanceState(): "linked" | "unlinked" | "none" {
+      if (!this.isInheritanceField) return "none";
+
+      return this.isInherited ? "linked" : "unlinked";
+    },
+
+    labelStyle(): Record<string, string> {
+      return {
+        gridArea: "label",
+        marginBottom: "var(--scale-size-8)",
+        lineHeight: this.future.consistentLabelLineHeight ? "var(--font-line-height-xs)" : "16px",
+      };
+    },
   },
 
   watch: {
@@ -841,6 +898,14 @@ export default defineComponent({
   },
 
   methods: {
+    onInheritanceUpdate(value: "linked" | "unlinked"): void {
+      if (value === "unlinked") {
+        this.$emit("inheritance-remove");
+      } else {
+        this.$emit("inheritance-restore");
+      }
+    },
+
     debounceEmitColorValue: debounce(function emitValue() {
       // @ts-expect-error - this context is wrong detected
       // Don't emit the value if applyMode is active
@@ -1471,6 +1536,98 @@ export default defineComponent({
 .mt-colorpicker {
   position: relative;
   transition: all 0.3s ease;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "label help-text"
+    "input input"
+    "error error"
+    "hint hint";
+  width: 100%;
+  margin-bottom: var(--scale-size-32);
+}
+
+/* Ordered before .has--error so the error-state margin wins over the future flag,
+   like it did against mt-base-field's global styles. */
+.mt-colorpicker.mt-field--future-remove-default-margin {
+  margin-bottom: 0;
+}
+
+.mt-colorpicker.has--error {
+  margin-bottom: var(--scale-size-12);
+}
+
+.mt-colorpicker.is--disabled {
+  cursor: not-allowed;
+}
+
+.mt-colorpicker__block {
+  grid-area: input;
+  display: flex;
+  min-height: var(--scale-size-48);
+  border: 1px solid var(--color-border-primary-default);
+  border-radius: var(--border-radius-xs);
+  overflow: hidden;
+  background: var(--color-background-primary-default);
+}
+
+.mt-colorpicker.has--focus .mt-colorpicker__block {
+  outline: var(--scale-size-2) solid var(--color-border-brand-default);
+  outline-offset: var(--scale-size-2);
+}
+
+.mt-colorpicker.has--error .mt-colorpicker__block {
+  background: var(--color-background-critical-default);
+  border-color: var(--color-border-critical-default);
+}
+
+.mt-colorpicker.is--disabled .mt-colorpicker__block {
+  background: var(--color-background-tertiary-default);
+}
+
+.mt-colorpicker .mt-colorpicker__input {
+  display: block;
+  width: 100%;
+  min-width: 0;
+  padding: 13px var(--scale-size-16);
+  border: none;
+  background: transparent;
+  font-size: var(--font-size-xs);
+  font-family: var(--font-family-body);
+  line-height: 1;
+  color: var(--color-text-primary-default);
+  outline: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.mt-colorpicker .mt-colorpicker__input::placeholder {
+  color: var(--color-text-secondary-default);
+}
+
+.mt-colorpicker .mt-colorpicker__input:-webkit-autofill {
+  -webkit-box-shadow: 0 0 0 1000px #fff inset;
+}
+
+.mt-colorpicker .mt-colorpicker__input:disabled {
+  cursor: default;
+}
+
+.mt-colorpicker .mt-field__hint-wrapper {
+  grid-area: hint;
+  display: flex;
+  justify-content: space-between;
+}
+
+.mt-colorpicker .mt-field__hint {
+  margin-top: var(--scale-size-4);
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+  font-family: var(--font-family-body);
+  color: var(--color-text-secondary-default);
+  display: flex;
+  align-items: center;
+  gap: var(--scale-size-8);
 }
 
 .mt-colorpicker__previewWrapper {
@@ -1818,12 +1975,12 @@ export default defineComponent({
   display: none;
 }
 
-.mt-colorpicker--compact .mt-block-field__block {
+.mt-colorpicker--compact .mt-colorpicker__block {
   width: fit-content;
   border: none;
 }
 
-.mt-colorpicker--compact .mt-field__addition.is--prefix {
+.mt-colorpicker--compact .mt-field__addition.mt-colorpicker__addition {
   border-right: none;
   padding: 0;
   min-width: auto;
@@ -1847,18 +2004,19 @@ export default defineComponent({
   cursor: not-allowed;
 }
 
-.mt-field__addition {
+/*
+ * Scoped to `.mt-colorpicker` on purpose: these used to be bare `.mt-field__addition` rules
+ * that reached into every field in the application, not just this one. The doubled class
+ * keeps them ahead of mt-field-addition's own scoped styles.
+ */
+.mt-colorpicker .mt-field__addition.mt-colorpicker__addition {
   position: relative;
-  padding: 0;
-}
-
-.mt-field__addition.is--prefix {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-.mt-field__addition .mt-colorpicker__trigger {
+.mt-colorpicker .mt-field__addition .mt-colorpicker__trigger {
   position: absolute;
   top: 0;
   left: 0;
@@ -1870,7 +2028,7 @@ export default defineComponent({
   cursor: pointer;
 }
 
-.mt-field__addition .mt-colorpicker__trigger .mt-icon {
+.mt-colorpicker .mt-field__addition .mt-colorpicker__trigger .mt-icon {
   line-height: 16px;
 }
 

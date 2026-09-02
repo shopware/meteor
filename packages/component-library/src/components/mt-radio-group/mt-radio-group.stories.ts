@@ -5,7 +5,7 @@ import MtRadioGroupItem from "./mt-radio-group-item.vue";
 import MtRadioGroupCustomItem from "./mt-radio-group-custom-item.vue";
 import MtRadioGroupIndicator from "./mt-radio-group-indicator.vue";
 import ExampleRadioOption from "./_internal/example-radio-option.vue";
-import { hintArgTypes } from "../_internal/mt-base-field/arg-types";
+import { hintArgTypes } from "../_internal/form-field/arg-types";
 import type { StoryObj, Meta } from "@storybook/vue3";
 import { fn } from "@storybook/test";
 

@@ -1,5 +1,5 @@
 import MtPasswordField from "./mt-password-field.vue";
-import { hintArgTypes } from "../_internal/mt-base-field/arg-types";
+import { hintArgTypes } from "../_internal/form-field/arg-types";
 import type { StoryObj } from "@storybook/vue3";
 import type { SlottedMeta } from "@/_internal/story-helper";
 import { fn } from "@storybook/test";

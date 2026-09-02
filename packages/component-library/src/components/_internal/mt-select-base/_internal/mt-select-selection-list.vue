@@ -350,12 +350,27 @@ export default defineComponent({
 
   .mt-select-selection-list__input {
     display: inline-block;
+    width: 100%;
+    min-width: 0;
     min-height: 46px;
     padding: var(--scale-size-12) var(--scale-size-16) var(--scale-size-12) var(--scale-size-8);
+    border: none;
+    background: transparent;
+    font-size: var(--font-size-xs);
+    font-family: var(--font-family-body);
+    line-height: 1;
+    color: var(--color-text-primary-default);
+    outline: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
 
     &::placeholder {
       color: var(--color-text-secondary-default);
       white-space: break-spaces;
+    }
+
+    &:-webkit-autofill {
+      -webkit-box-shadow: 0 0 0 1000px #fff inset;
     }
   }
 }
