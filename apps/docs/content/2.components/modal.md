@@ -153,6 +153,7 @@ To open a modal from something other than a trigger, control the open state dire
 - `mt-modal-trigger`, `mt-modal-action`, and `mt-modal-close` support common opening and closing flows.
 - `mt-modal-action` receives a `done` callback so you can run work, such as a network request, before the modal closes.
 - Use the `isOpen` prop on `mt-modal-root` to control the open state directly when something other than a trigger opens the modal.
+- Set `closable` to `false` on `mt-modal-root` to prevent users from dismissing the modal themselves: it disables closing via backdrop click and the Escape key and hides the header close button, so the modal only closes through your own actions, such as `mt-modal-action` or controlled state.
 - Footer actions are usually the clearest place for confirmation and cancellation controls.
 
 ## Accessibility
