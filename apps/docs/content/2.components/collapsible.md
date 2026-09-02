@@ -39,6 +39,8 @@ import {
 
 :component-api
 
+`mt-collapsible` wraps [Reka UI's `CollapsibleRoot`](https://reka-ui.com/docs/components/collapsible) and declares its full API, so the table above is complete. `keep-mounted` maps to Reka's `unmount-on-hide` (inverted). Avoid passing `unmount-on-hide` directly: it falls through to the primitive and silently overrides `keep-mounted`.
+
 ### MtCollapsibleTrigger
 
 :component-api{name="MtCollapsibleTrigger"}
