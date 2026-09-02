@@ -71,7 +71,17 @@ These parts are exported together so the pattern can be composed in one place.
 
 ## API reference
 
+### MtActionMenu
+
 :component-api
+
+### MtActionMenuItem
+
+:component-api{name="MtActionMenuItem"}
+
+### MtActionMenuGroup
+
+:component-api{name="MtActionMenuGroup"}
 
 ## Best practices
 

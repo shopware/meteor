@@ -43,9 +43,9 @@ In most cases you open a modal through a trigger. Wrap the related parts in `mt-
       <template #default>This is my modal</template>
 
       <template #footer>
-        <mt-button-close :as="MtButton" variant="secondary">
+        <mt-modal-close :as="MtButton" variant="secondary">
           Close
-        </mt-button-close>
+        </mt-modal-close>
       </template>
     </mt-modal>
 
@@ -110,7 +110,25 @@ To open a modal from something other than a trigger, control the open state dire
 
 ## API reference
 
+### MtModal
+
 :component-api
+
+### MtModalRoot
+
+:component-api{name="MtModalRoot"}
+
+### MtModalTrigger
+
+:component-api{name="MtModalTrigger"}
+
+### MtModalAction
+
+:component-api{name="MtModalAction"}
+
+### MtModalClose
+
+:component-api{name="MtModalClose"}
 
 ## Best practices
 

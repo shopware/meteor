@@ -41,7 +41,25 @@ Build fully custom option cards while keeping the shared radio-group state.
 
 ## API reference
 
+### MtRadioGroupRoot
+
 :component-api{name="MtRadioGroupRoot"}
+
+### MtRadioGroupList
+
+:component-api{name="MtRadioGroupList"}
+
+### MtRadioGroupItem
+
+:component-api{name="MtRadioGroupItem"}
+
+### MtRadioGroupCustomItem
+
+:component-api{name="MtRadioGroupCustomItem"}
+
+### MtRadioGroupIndicator
+
+:component-api{name="MtRadioGroupIndicator"}
 
 ## Best practices
 

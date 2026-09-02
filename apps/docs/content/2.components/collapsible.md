@@ -35,7 +35,17 @@ import {
 
 ## API reference
 
+### MtCollapsible
+
 :component-api
+
+### MtCollapsibleTrigger
+
+:component-api{name="MtCollapsibleTrigger"}
+
+### MtCollapsibleContent
+
+:component-api{name="MtCollapsibleContent"}
 
 ## Behavior
 
