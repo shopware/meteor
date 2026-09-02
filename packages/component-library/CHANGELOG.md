@@ -1,5 +1,20 @@
 # Changelog
 
+## 5.7.2
+
+### Patch Changes
+
+- [#1335](https://github.com/shopware/meteor/pull/1335) [`8b1fbd3`](https://github.com/shopware/meteor/commit/8b1fbd3cbe67b3327b842a9d7778884cf77a2dcd) Thanks [@fabianhueske](https://github.com/fabianhueske)! - Align the unit select dropdown styling with the select result list
+
+  The dropdown of `mt-unit-field` now uses the same edge spacing, item padding, border radius and hover color as `mt-select-result-list`. The unit trigger no longer shows a pointer cursor while it is disabled. The trigger chevron uses the same icon variant and size as `mt-select` and the number field controls. The dropdown is capped at a maximum width and long unit labels truncate with an ellipsis.
+
+- [#1356](https://github.com/shopware/meteor/pull/1356) [`fa3bfd2`](https://github.com/shopware/meteor/commit/fa3bfd25a32cc26a9564422ddb6444a20dcb4b84) Thanks [@quynhnguyen68](https://github.com/quynhnguyen68)! - Fix autofilled input fields rendering with a white background in dark mode: the `:-webkit-autofill` override hardcoded `#fff`, so Chrome's autofill and autofill-preview states painted the field white with unreadable light text. It now uses the themed background and text tokens, and matches the critical background when the field has an error
+
+- [#1349](https://github.com/shopware/meteor/pull/1349) [`8072707`](https://github.com/shopware/meteor/commit/8072707a4137dcaf2cd094df1fd3a36c2193ef40) Thanks [@gweiermann](https://github.com/gweiermann)! - mt-floating-ui: hide the floating content while its reference element is fully scrolled out of view, instead of letting it float over unrelated UI; consumer-supplied `floatingUiOptions.middleware` now extends the default middleware instead of replacing it
+
+- Updated dependencies [[`1f4d523`](https://github.com/shopware/meteor/commit/1f4d5230e015c22e048d109601a465e4fb92d46c)]:
+  - @shopware-ag/meteor-admin-sdk@6.15.0
+
 ## 5.7.1
 
 ### Patch Changes
