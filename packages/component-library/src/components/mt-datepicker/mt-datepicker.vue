@@ -84,7 +84,12 @@
       :style="{ gridArea: 'error' }"
     />
 
-    <mt-field-hint v-if="showFieldHint" :hide-icon="!!slots.hint" :style="{ gridArea: 'hint' }">
+    <mt-field-hint
+      v-if="showFieldHint"
+      class="mt-datepicker__field-hint"
+      :hide-icon="!!slots.hint"
+      :style="{ gridArea: 'hint' }"
+    >
       <slot name="hint">{{ hint }}</slot>
     </mt-field-hint>
 
@@ -95,8 +100,14 @@
         data-testid="time-zone-hint"
         :style="{ gridArea: 'hint' }"
       >
-        <mt-icon name="solid-clock" class="mt-datepicker__hint-icon" size="var(--scale-size-12)" />
-        <p>{{ timeZone || "UTC" }}</p>
+        <span class="mt-datepicker__hint-icon-wrapper">
+          <mt-icon
+            name="solid-clock"
+            class="mt-datepicker__hint-icon"
+            size="var(--scale-size-12)"
+          />
+        </span>
+        <p class="mt-datepicker__hint-text">{{ timeZone || "UTC" }}</p>
       </div>
     </template>
   </div>
@@ -802,6 +813,10 @@ onMounted(() => {
   }
 }
 
+.mt-datepicker__field-hint {
+  margin-top: var(--scale-size-4);
+}
+
 .mt-datepicker__hint {
   line-height: var(--font-line-height-xs);
   margin-top: var(--scale-size-4);
@@ -813,9 +828,25 @@ onMounted(() => {
   gap: var(--scale-size-4);
 }
 
+/*
+ * The wrapper is exactly one line tall (1lh = the inherited line-height) and
+ * centers the icon inside it. For a single line this is plain flex centering,
+ * for wrapped text the icon stays on the first line. No fixed values needed.
+ */
+.mt-datepicker__hint-icon-wrapper {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  height: 1lh;
+}
+
 .mt-datepicker__hint-icon {
   flex-shrink: 0;
-  margin-top: calc((var(--font-line-height-xs) - var(--scale-size-12)) / 2);
+}
+
+.mt-datepicker__hint-text {
+  margin: 0;
+  font: inherit;
 }
 
 .mt-datepicker__wrapper.has-error .dp__input {
