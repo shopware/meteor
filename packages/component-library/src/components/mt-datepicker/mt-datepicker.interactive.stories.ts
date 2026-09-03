@@ -439,3 +439,17 @@ export const VisualTestHelpText: MtDatepickerStory = {
     expect(canvas.getByRole("tooltip")).toBeInTheDocument();
   },
 };
+
+export const TestDefaultTimeZoneHint: MtDatepickerStory = {
+  name: "Should render the UTC time zone hint by default",
+  args: {
+    label: "Datepicker",
+  },
+  play: ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    const hint = canvas.getByTestId("time-zone-hint");
+    expect(hint).toBeVisible();
+    expect(hint).toHaveTextContent("UTC");
+  },
+};
