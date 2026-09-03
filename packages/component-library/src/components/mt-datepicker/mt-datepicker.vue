@@ -84,7 +84,11 @@
       :style="{ gridArea: 'error' }"
     />
 
-    <template v-if="isTimeHintVisible">
+    <mt-field-hint v-if="showFieldHint" :hide-icon="!!slots.hint" :style="{ gridArea: 'hint' }">
+      <slot name="hint">{{ hint }}</slot>
+    </mt-field-hint>
+
+    <template v-else-if="isTimeHintVisible">
       <!-- @deprecated tag:v5 remove field-hint class -->
       <div
         class="mt-datepicker__hint field-hint"
@@ -99,10 +103,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, onMounted, ref, useSlots, watch } from "vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
+import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
 import {
   VueDatePicker,
   type FloatingConfig,
@@ -192,6 +197,11 @@ const props = withDefaults(
      */
     helpText?: string;
     /**
+     * Optional caption below the field. The `#hint` slot takes precedence when provided.
+     * When set, it replaces the time zone hint that datetime pickers show by default.
+     */
+    hint?: string | null;
+    /**
      * The minimum selectable date. Can be a Date object or an ISO string.
      * Any date before this will be disabled in the calendar.
      * For example: "today"
@@ -244,6 +254,7 @@ const props = withDefaults(
     size: "default",
     error: null,
     helpText: undefined,
+    hint: undefined,
     minDate: undefined,
     hourIncrement: 1,
     minuteIncrement: 1,
@@ -260,6 +271,16 @@ const emit = defineEmits<{
   (e: "inheritance-remove"): void;
   (e: "inheritance-restore"): void;
 }>();
+
+defineSlots<{
+  hint?(): void;
+}>();
+
+const slots = useSlots();
+
+const showFieldHint = computed(
+  () => !!slots.hint || (props.hint != null && String(props.hint).trim() !== ""),
+);
 
 const onInheritanceChange = (inheritance: "linked" | "unlinked") => {
   if (inheritance === "linked") {
