@@ -3,7 +3,7 @@
     <span v-if="!hideIcon" class="mt-field-hint__icon-wrapper">
       <mt-icon
         class="mt-field-hint__icon"
-        name="solid-info-circle"
+        :name="icon"
         size="var(--scale-size-12)"
         color="var(--color-icon-secondary-default)"
         decorative
@@ -25,9 +25,14 @@ withDefaults(
      * (e.g. provided via the `#hint` slot with its own icon).
      */
     hideIcon?: boolean;
+    /**
+     * Icon shown in front of the hint text.
+     */
+    icon?: string;
   }>(),
   {
     hideIcon: false,
+    icon: "solid-info-circle",
   },
 );
 </script>

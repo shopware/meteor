@@ -84,32 +84,18 @@
       :style="{ gridArea: 'error' }"
     />
 
+    <!-- @deprecated tag:v5 remove field-hint class -->
     <mt-field-hint
-      v-if="showFieldHint"
-      class="mt-datepicker__field-hint"
+      v-if="showFieldHint || isTimeHintVisible"
+      class="mt-datepicker__hint"
+      :class="{ 'field-hint': !showFieldHint }"
+      :icon="showFieldHint ? 'solid-info-circle' : 'solid-clock'"
       :hide-icon="!!slots.hint"
+      :data-testid="showFieldHint ? undefined : 'time-zone-hint'"
       :style="{ gridArea: 'hint' }"
     >
-      <slot name="hint">{{ hint }}</slot>
+      <slot name="hint">{{ showFieldHint ? hint : timeZone || "UTC" }}</slot>
     </mt-field-hint>
-
-    <template v-else-if="isTimeHintVisible">
-      <!-- @deprecated tag:v5 remove field-hint class -->
-      <div
-        class="mt-datepicker__hint field-hint"
-        data-testid="time-zone-hint"
-        :style="{ gridArea: 'hint' }"
-      >
-        <span class="mt-datepicker__hint-icon-wrapper">
-          <mt-icon
-            name="solid-clock"
-            class="mt-datepicker__hint-icon"
-            size="var(--scale-size-12)"
-          />
-        </span>
-        <p class="mt-datepicker__hint-text">{{ timeZone || "UTC" }}</p>
-      </div>
-    </template>
   </div>
 </template>
 
@@ -813,40 +799,8 @@ onMounted(() => {
   }
 }
 
-.mt-datepicker__field-hint {
-  margin-top: var(--scale-size-4);
-}
-
 .mt-datepicker__hint {
-  line-height: var(--font-line-height-xs);
   margin-top: var(--scale-size-4);
-  font-size: var(--font-size-xs);
-  font-family: var(--font-family-body);
-  color: var(--color-text-secondary-default);
-  display: flex;
-  align-items: flex-start;
-  gap: var(--scale-size-4);
-}
-
-/*
- * The wrapper is exactly one line tall (1lh = the inherited line-height) and
- * centers the icon inside it. For a single line this is plain flex centering,
- * for wrapped text the icon stays on the first line. No fixed values needed.
- */
-.mt-datepicker__hint-icon-wrapper {
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  height: 1lh;
-}
-
-.mt-datepicker__hint-icon {
-  flex-shrink: 0;
-}
-
-.mt-datepicker__hint-text {
-  margin: 0;
-  font: inherit;
 }
 
 .mt-datepicker__wrapper.has-error .dp__input {

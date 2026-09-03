@@ -39,4 +39,19 @@ describe("mt-field-hint", () => {
     expect(icon).toBeInTheDocument();
     expect(icon).toHaveAttribute("aria-hidden", "true");
   });
+
+  it("renders a custom icon when the icon prop is set", () => {
+    // ARRANGE
+    render(MtFieldHint, {
+      props: {
+        icon: "solid-clock",
+      },
+      slots: {
+        default: "Some hint",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByTestId("mt-icon__solid-clock")).toBeInTheDocument();
+  });
 });

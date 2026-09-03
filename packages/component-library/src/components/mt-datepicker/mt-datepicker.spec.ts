@@ -88,8 +88,12 @@ describe("mt-datepicker", () => {
   });
 
   it("does not render a hint when neither prop nor slot is provided", () => {
-    // ARRANGE
-    const { container } = render(MtDatepicker);
+    // ARRANGE - date pickers without time have no time zone hint either
+    const { container } = render(MtDatepicker, {
+      props: {
+        dateType: "date",
+      },
+    });
 
     // ASSERT
     expect(container.querySelector(".mt-field-hint")).not.toBeInTheDocument();
