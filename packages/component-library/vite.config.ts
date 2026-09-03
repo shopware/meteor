@@ -19,7 +19,7 @@ export default defineConfig({
     vue({}),
     svg(),
     dts({
-      outDir: ["dist/esm", "dist/common"],
+      outDir: ["dist/esm"],
       cleanVueFileName: true,
       copyDtsFiles: true,
       tsconfigPath: path.resolve(__dirname, "tsconfig.vitest.json"),
@@ -40,15 +40,11 @@ export default defineConfig({
         // filePath is an absolute path, so we need to handle it accordingly
         if (!filePath.endsWith(".d.ts")) return;
 
-        // Check if it's in esm or common directory
         const esmMatch = filePath.match(/\/dist\/esm\/(.+)\.d\.ts$/);
-        const commonMatch = filePath.match(/\/dist\/common\/(.+)\.d\.ts$/);
 
-        if (!esmMatch && !commonMatch) return;
+        if (!esmMatch) return;
 
-        const match = esmMatch || commonMatch;
-        const format = esmMatch ? "esm" : "common";
-        const relativePath = match?.[1]; // e.g., "components/form/mt-button/mt-button"
+        const relativePath = esmMatch[1]; // e.g., "components/form/mt-button/mt-button"
 
         // Extract the component file name (e.g., "mt-button" from "components/form/mt-button/mt-button")
         const fileName = relativePath ? path.basename(relativePath) : "";
@@ -59,7 +55,7 @@ export default defineConfig({
           // Transform to flat structure: /absolute/path/dist/esm/MtButton.d.ts
           const distIndex = filePath.indexOf("/dist/");
           const basePath = filePath.substring(0, distIndex);
-          const newFilePath = `${basePath}/dist/${format}/${pascalCaseName}.d.ts`;
+          const newFilePath = `${basePath}/dist/esm/${pascalCaseName}.d.ts`;
           return { filePath: newFilePath };
         }
       },
@@ -90,13 +86,14 @@ export default defineConfig({
         fonts: path.resolve(__dirname, "src/fonts.ts"),
         ...allComponents,
       },
-      formats: ["es", "cjs"],
-      fileName: (format, entryName) => `${format === "es" ? "esm" : "common"}/${entryName}.js`,
+      formats: ["es"],
+      fileName: (_format, entryName) => `esm/${entryName}.js`,
     },
     cssCodeSplit: true,
     rollupOptions: {
       external: external,
       output: {
+        chunkFileNames: "[name]-[hash].js",
         globals: {
           vue: "Vue",
         },
