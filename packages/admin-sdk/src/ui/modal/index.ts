@@ -18,11 +18,12 @@ export type uiModalOpen =
     * Only simple text is supported.
     */
    textContent?: string,
-   variant?: 'default'|'small'|'large'|'full',
+   variant?: 'default'|'small'|'large'|'x-large'|'full',
    showHeader?: boolean,
    showFooter?: boolean,
    closable?: boolean,
    buttons?: buttonProps[],
+   zIndex?: number,
  }
 
 export type uiModalClose =
