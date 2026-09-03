@@ -1,10 +1,8 @@
 import { within, userEvent, screen } from "@storybook/test";
 import { expect } from "@storybook/test";
 
-import MtDatepicker from "./mt-datepicker.vue";
 import meta, { type MtDatepickerMeta, type MtDatepickerStory } from "./mt-datepicker.stories";
 import { waitUntil } from "../../_internal/test-helper";
-import { expectHintIconKeepsItsSize } from "../_internal/mt-field-hint/mt-field-hint.story-helper";
 
 export default {
   ...meta,
@@ -442,23 +440,16 @@ export const VisualTestHelpText: MtDatepickerStory = {
   },
 };
 
-export const VisualTestLongTimeZoneHint: MtDatepickerStory = {
-  name: "Should keep the time zone hint icon size when the hint does not fit",
+export const TestDefaultTimeZoneHint: MtDatepickerStory = {
+  name: "Should render the UTC time zone hint by default",
   args: {
     label: "Datepicker",
-    dateType: "datetime",
-    // long enough to not fit next to the icon in the narrow wrapper below
-    timeZone: "America/North_Dakota/New_Salem",
   },
-  render: (args) => ({
-    components: { MtDatepicker },
-    setup: () => ({ args }),
-    template: `<div style="max-width: 180px"><mt-datepicker v-bind="args" /></div>`,
-  }),
   play: ({ canvasElement }) => {
-    expectHintIconKeepsItsSize(canvasElement, {
-      iconSelector: ".mt-datepicker__hint-icon",
-      textSelector: ".mt-datepicker__hint p",
-    });
+    const canvas = within(canvasElement);
+
+    const hint = canvas.getByTestId("time-zone-hint");
+    expect(hint).toBeVisible();
+    expect(hint).toHaveTextContent("UTC");
   },
 };

@@ -84,25 +84,27 @@
       :style="{ gridArea: 'error' }"
     />
 
-    <template v-if="isTimeHintVisible">
-      <!-- @deprecated tag:v5 remove field-hint class -->
-      <div
-        class="mt-datepicker__hint field-hint"
-        data-testid="time-zone-hint"
-        :style="{ gridArea: 'hint' }"
-      >
-        <mt-icon name="solid-clock" class="mt-datepicker__hint-icon" size="var(--scale-size-12)" />
-        <p>{{ timeZone || "UTC" }}</p>
-      </div>
-    </template>
+    <!-- @deprecated tag:v5 remove field-hint class -->
+    <mt-field-hint
+      v-if="showFieldHint || isTimeHintVisible"
+      class="mt-datepicker__hint"
+      :class="{ 'field-hint': !showFieldHint }"
+      :icon="showFieldHint ? 'solid-info-circle' : 'solid-clock'"
+      :hide-icon="!!slots.hint"
+      :data-testid="showFieldHint ? undefined : 'time-zone-hint'"
+      :style="{ gridArea: 'hint' }"
+    >
+      <slot name="hint">{{ showFieldHint ? hint : timeZone || "UTC" }}</slot>
+    </mt-field-hint>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, watch } from "vue";
+import { computed, onMounted, ref, useSlots, watch } from "vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
+import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
 import {
   VueDatePicker,
   type FloatingConfig,
@@ -192,6 +194,11 @@ const props = withDefaults(
      */
     helpText?: string;
     /**
+     * Optional caption below the field. The `#hint` slot takes precedence when provided.
+     * When set, it replaces the time zone hint that datetime pickers show by default.
+     */
+    hint?: string | null;
+    /**
      * The minimum selectable date. Can be a Date object or an ISO string.
      * Any date before this will be disabled in the calendar.
      * For example: "today"
@@ -244,6 +251,7 @@ const props = withDefaults(
     size: "default",
     error: null,
     helpText: undefined,
+    hint: undefined,
     minDate: undefined,
     hourIncrement: 1,
     minuteIncrement: 1,
@@ -260,6 +268,16 @@ const emit = defineEmits<{
   (e: "inheritance-remove"): void;
   (e: "inheritance-restore"): void;
 }>();
+
+defineSlots<{
+  hint?(): void;
+}>();
+
+const slots = useSlots();
+
+const showFieldHint = computed(
+  () => !!slots.hint || (props.hint != null && String(props.hint).trim() !== ""),
+);
 
 const onInheritanceChange = (inheritance: "linked" | "unlinked") => {
   if (inheritance === "linked") {
@@ -782,19 +800,7 @@ onMounted(() => {
 }
 
 .mt-datepicker__hint {
-  line-height: var(--font-line-height-xs);
   margin-top: var(--scale-size-4);
-  font-size: var(--font-size-xs);
-  font-family: var(--font-family-body);
-  color: var(--color-text-secondary-default);
-  display: flex;
-  align-items: flex-start;
-  gap: var(--scale-size-4);
-}
-
-.mt-datepicker__hint-icon {
-  flex-shrink: 0;
-  margin-top: calc((var(--font-line-height-xs) - var(--scale-size-12)) / 2);
 }
 
 .mt-datepicker__wrapper.has-error .dp__input {
