@@ -34,23 +34,28 @@
   </div>
 </template>
 
+<script lang="ts">
+const messages = {
+  de: {
+    close: "Schließen",
+  },
+  en: {
+    close: "Close",
+  },
+};
+</script>
+
 <script setup lang="ts">
 import { computed } from "vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
 import MtText from "@/components/mt-text/mt-text.vue";
 import MtButton from "@/components/mt-button/mt-button.vue";
 import { useFutureFlags } from "@/composables/useFutureFlags";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 
-const { t } = useI18n({
-  messages: {
-    de: {
-      close: "Schließen",
-    },
-    en: {
-      close: "Close",
-    },
-  },
+const { t } = useMeteorI18n({
+  namespace: "mt.banner",
+  messages,
 });
 
 const props = withDefaults(

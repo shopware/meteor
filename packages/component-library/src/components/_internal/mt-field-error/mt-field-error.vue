@@ -12,51 +12,11 @@
   </mt-text>
 </template>
 
-<script setup lang="ts">
-import { computed } from "vue";
-import MtIcon from "../../mt-icon/mt-icon.vue";
-import MtText from "@/components/mt-text/mt-text.vue";
-import { useI18n } from "vue-i18n";
-
-const props = defineProps<{
-  error?: Record<string, any> | null;
-}>();
-
-const errorMessage = computed(() => {
-  if (!props.error) return "";
-
-  if (!props.error.code) {
-    return t(props.error?.detail ?? "");
-  }
-
-  // Try multiple translation namespaces with fallback
-  const translationKeys = [
-    `global.error-codes.${props.error.code}`,
-    `mt-field-error.${props.error.code}`,
-  ];
-  const interpolationParams = {
-    ...(props.error.meta?.parameters ?? {}),
-    ...(props.error.parameters ?? {}),
-  };
-
-  for (const key of translationKeys) {
-    const translation = t(key, interpolationParams);
-    const noTranslationFound = translation === key;
-
-    if (!noTranslationFound) {
-      return translation;
-    }
-  }
-
-  // Fallback to error detail if no translation found
-  return props.error.detail;
-});
-
-const { t } = useI18n({
-  useScope: "global",
-  messages: {
-    en: {
-      "mt-field-error": {
+<script lang="ts">
+const messages = {
+  en: {
+    mt: {
+      "field-error": {
         FRAMEWORK__MISSING_PRIVILEGE_ERROR: "Missing permissions",
         FRAMEWORK__DELETE_RESTRICTED: "Deletion failed",
         INVALID_MEDIA_URL: "Please enter a valid URL to upload a file.",
@@ -72,8 +32,10 @@ const { t } = useI18n({
         "c1051bb4-d103-4f74-8988-acbcafc7fdc3": "This field must not be empty.",
       },
     },
-    de: {
-      "mt-field-error": {
+  },
+  de: {
+    mt: {
+      "field-error": {
         FRAMEWORK__MISSING_PRIVILEGE_ERROR: "Fehlende Berechtigungen",
         FRAMEWORK__DELETE_RESTRICTED: "Löschen fehlgeschlagen",
         INVALID_MEDIA_URL: "Bitte gib eine gültige URL ein, um eine Datei hochzuladen.",
@@ -90,6 +52,50 @@ const { t } = useI18n({
       },
     },
   },
+};
+</script>
+
+<script setup lang="ts">
+import { computed } from "vue";
+import MtIcon from "../../mt-icon/mt-icon.vue";
+import MtText from "@/components/mt-text/mt-text.vue";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
+
+const props = defineProps<{
+  error?: Record<string, any> | null;
+}>();
+
+const { t, ti } = useMeteorI18n({
+  messages,
+});
+
+const errorMessage = computed(() => {
+  if (!props.error) return "";
+
+  if (!props.error.code) {
+    return t(props.error?.detail ?? "");
+  }
+
+  // Try multiple translation namespaces with fallback
+  const translationKeys = [
+    `global.error-codes.${props.error.code}`,
+    `mt.field-error.${props.error.code}`,
+  ];
+  const interpolationParams = {
+    ...(props.error.meta?.parameters ?? {}),
+    ...(props.error.parameters ?? {}),
+  };
+
+  for (const key of translationKeys) {
+    const translation = ti(key, interpolationParams);
+
+    if (translation !== undefined) {
+      return translation;
+    }
+  }
+
+  // Fallback to error detail if no translation found
+  return props.error.detail;
 });
 </script>
 

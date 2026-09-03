@@ -10,9 +10,24 @@
   />
 </template>
 
+<script lang="ts">
+const messages = {
+  en: {
+    light: "Light",
+    dark: "Dark",
+    system: "System",
+  },
+  de: {
+    light: "Hell",
+    dark: "Dunkel",
+    system: "System",
+  },
+};
+</script>
+
 <script setup lang="ts">
 import { computed } from "vue";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 import MtSelect from "../mt-select/mt-select.vue";
 import type { Theme } from "@/composables/useTheme";
 
@@ -29,19 +44,9 @@ defineProps<{
   disabled?: boolean;
 }>();
 
-const { t } = useI18n({
-  messages: {
-    en: {
-      light: "Light",
-      dark: "Dark",
-      system: "System",
-    },
-    de: {
-      light: "Hell",
-      dark: "Dunkel",
-      system: "System",
-    },
-  },
+const { t } = useMeteorI18n({
+  namespace: "mt.theme-select",
+  messages,
 });
 
 const options = computed<{ value: Theme; label: string }[]>(() => [

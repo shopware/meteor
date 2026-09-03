@@ -18,8 +18,19 @@
   </div>
 </template>
 
+<script lang="ts">
+const messages = {
+  en: {
+    placeholder: "Search",
+  },
+  de: {
+    placeholder: "Suchen",
+  },
+};
+</script>
+
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 import MtIcon from "../mt-icon/mt-icon.vue";
 
 withDefaults(
@@ -34,15 +45,9 @@ withDefaults(
   },
 );
 
-const { t } = useI18n({
-  messages: {
-    en: {
-      placeholder: "Search",
-    },
-    de: {
-      placeholder: "Suchen",
-    },
-  },
+const { t } = useMeteorI18n({
+  namespace: "mt.search",
+  messages,
 });
 
 defineEmits<{

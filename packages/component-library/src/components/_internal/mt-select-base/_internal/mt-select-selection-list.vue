@@ -75,10 +75,19 @@
 <script lang="ts">
 import type { PropType } from "vue";
 import { defineComponent } from "vue";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 import MtLabel from "../../mt-label.vue";
 import MtButton from "../../../mt-button/mt-button.vue";
 import { getPropertyValue } from "@/utils/object";
+
+const messages = {
+  de: {
+    "select-placeholder": "Auswählen...",
+  },
+  en: {
+    "select-placeholder": "Select...",
+  },
+};
 
 export default defineComponent({
   name: "MtSelectSelectionList",
@@ -166,15 +175,9 @@ export default defineComponent({
   },
 
   setup() {
-    const { t } = useI18n({
-      messages: {
-        de: {
-          "select-placeholder": "Auswählen...",
-        },
-        en: {
-          "select-placeholder": "Select...",
-        },
-      },
+    const { t } = useMeteorI18n({
+      namespace: "mt.select-selection-list",
+      messages,
     });
 
     return {

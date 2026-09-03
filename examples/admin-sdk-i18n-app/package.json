@@ -1,0 +1,36 @@
+{
+  "name": "meteor-admin-sdk-i18n-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Example Shopware app: Meteor components follow the host admin's language via a minimal hand-written adapter — no i18n framework required.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shopware/meteor.git"
+  },
+  "license": "MIT",
+  "author": "shopware AG",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --clearScreen false",
+    "build": "vite build",
+    "lint:all": "npm run lint:eslint && npm run lint:types",
+    "lint:eslint": "eslint .",
+    "lint:types": "vue-tsc --noEmit"
+  },
+  "dependencies": {
+    "@shopware-ag/meteor-admin-sdk": "workspace:*",
+    "@shopware-ag/meteor-component-library": "workspace:*",
+    "vue": "^3.5.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.18.0",
+    "@vitejs/plugin-vue": "^5.2.0",
+    "eslint": "^9.18.0",
+    "eslint-plugin-vue": "^9.32.0",
+    "globals": "^15.14.0",
+    "typescript": "^5.6.3",
+    "typescript-eslint": "^8.19.1",
+    "vite": "^5.4.11",
+    "vue-tsc": "^2.1.10"
+  }
+}

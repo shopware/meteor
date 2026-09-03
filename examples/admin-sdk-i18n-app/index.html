@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Meteor Admin SDK i18n Example</title>
+    <script>
+      // Pin the admin's theme BEFORE first paint. The admin passes ?color-scheme=dark|light
+      // on the iframe URL; without this, the page first-paints with the browser default
+      // (white) and only flips once the SDK bundle loads — a visible flash in a dark admin.
+      // The SDK's own boot pin applies the same values on import, so its automatic theme
+      // sync stays active (it only backs off when an app declares a *different* theme).
+      const scheme = new URLSearchParams(location.search).get("color-scheme");
+      if (scheme === "dark" || scheme === "light") {
+        document.documentElement.dataset.theme = scheme;
+        document.documentElement.style.colorScheme = scheme;
+      }
+    </script>
+  </head>
+  <body>
+    <div id="app"></div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

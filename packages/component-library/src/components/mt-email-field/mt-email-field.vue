@@ -109,6 +109,21 @@
   </div>
 </template>
 
+<script lang="ts">
+const messages = {
+  de: {
+    copyTooltip: "In Zwischenablage kopieren",
+    copyButtonDescription: "In Zwischenablage kopieren",
+    copyButtonDescriptionValueCopied: "In Zwischenablage kopiert",
+  },
+  en: {
+    copyTooltip: "Copy to clipboard",
+    copyButtonDescription: "Copy to clipboard",
+    copyButtonDescriptionValueCopied: "Copied to clipboard",
+  },
+};
+</script>
+
 <script setup lang="ts">
 import { computed, onMounted, ref, useTemplateRef, useId, useSlots } from "vue";
 import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
@@ -118,7 +133,7 @@ import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
 import MtTooltip from "@/components/mt-tooltip/mt-tooltip.vue";
 import MtFieldAffix from "../_internal/mt-field-affix/mt-field-affix.vue";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 import { useClipboard } from "@vueuse/core";
 import { useFutureFlags } from "@/composables/useFutureFlags";
 
@@ -185,19 +200,9 @@ function checkValidity() {
 
 const { copy, copied } = useClipboard();
 
-const { t } = useI18n({
-  messages: {
-    de: {
-      copyTooltip: "In Zwischenablage kopieren",
-      copyButtonDescription: "In Zwischenablage kopieren",
-      copyButtonDescriptionValueCopied: "In Zwischenablage kopiert",
-    },
-    en: {
-      copyTooltip: "Copy to clipboard",
-      copyButtonDescription: "Copy to clipboard",
-      copyButtonDescriptionValueCopied: "Copied to clipboard",
-    },
-  },
+const { t } = useMeteorI18n({
+  namespace: "mt.email-field",
+  messages,
 });
 </script>
 
