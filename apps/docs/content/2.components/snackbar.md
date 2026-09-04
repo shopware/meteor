@@ -72,7 +72,7 @@ See [**useSnackbar**](/utilities/composables/use-snackbar) for the full publishi
 ## Accessibility
 
 - Error and warning snackbars use assertive live announcements, while default, success, and progress snackbars use polite announcements.
-- Snackbar notifications receive focus when they appear, so messages should remain concise and understandable out of context.
+- Snackbar notifications do not take focus when they appear. The live region announces them, so the user keeps their current focus position. Keep messages concise and understandable out of context.
 - Do not use **Snackbar** for blocking confirmations, legal notices, or other information that must remain available until explicitly dismissed.
 - If you provide an action like `Undo`, make sure that recovery path also exists elsewhere in the interface and not only in the temporary snackbar.
 
