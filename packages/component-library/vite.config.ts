@@ -82,7 +82,12 @@ export default defineConfig({
   },
   build: {
     sourcemap: false,
-    cssMinify: false,
+    // CSS must go through esbuild so the native CSS nesting in our styles is
+    // flattened for browsers without nesting support; Vite only applies
+    // cssTarget inside the minify step. JS stays unminified on purpose —
+    // consumers' bundlers minify it, and readable output helps debugging.
+    cssMinify: true,
+    cssTarget: ["chrome87", "firefox78", "safari14", "edge88"],
     minify: false,
     lib: {
       entry: {
@@ -100,16 +105,6 @@ export default defineConfig({
         globals: {
           vue: "Vue",
         },
-      },
-    },
-  },
-  css: {
-    preprocessorOptions: {
-      scss: {
-        additionalData: `
-          @use "sass:math";
-          @import "${path.resolve(__dirname, "src/assets/scss/variables.scss")}";
-        `,
       },
     },
   },

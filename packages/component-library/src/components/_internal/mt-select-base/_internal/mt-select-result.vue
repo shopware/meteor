@@ -17,15 +17,11 @@
     <transition name="mt-select-result-appear">
       <mt-icon v-if="selected" name="regular-checkmark-s" size="var(--scale-size-12)" />
     </transition>
-
-    <span v-if="hasDescriptionSlot" class="mt-select-result__result-item-description">
-      <slot name="description" />
-    </span>
   </li>
 </template>
 
 <script lang="ts">
-import { defineComponent, type PropType } from "vue";
+import { defineComponent } from "vue";
 import MtIcon from "../../../mt-icon/mt-icon.vue";
 import { inject } from "vue";
 import {
@@ -61,14 +57,6 @@ export default defineComponent({
       required: false,
       default: false,
     },
-    descriptionPosition: {
-      type: String as PropType<"bottom" | "right">,
-      required: false,
-      default: "right",
-      validator(value: string) {
-        return ["bottom", "right"].includes(value);
-      },
-    },
   },
 
   data() {
@@ -84,22 +72,15 @@ export default defineComponent({
           [className: string]: boolean;
           "is--active": boolean;
           "is--disabled": boolean;
-          "has--description": boolean;
         }
     )[] {
       return [
         {
           "is--active": this.active,
           "is--disabled": this.disabled,
-          "has--description": this.hasDescriptionSlot,
-          [`is--description-${this.descriptionPosition}`]: this.hasDescriptionSlot,
         },
         `mt-select-option--${this.index}`,
       ];
-    },
-
-    hasDescriptionSlot(): boolean {
-      return !!this.$slots.description;
     },
   },
 
@@ -165,15 +146,7 @@ export default defineComponent({
 });
 </script>
 
-<style lang="scss">
-$mt-select-result-active-color-background: lighten($color-shopware-brand-500, 40%);
-$mt-select-result-active-color-text: $color-shopware-brand-500;
-$mt-select-result-color-border: $color-gray-300;
-$mt-select-result-color-icon: darken($color-gray-100, 20%);
-$mt-select-result-transition-item-icon: all ease-in-out 0.15s;
-$mt-select-result-disabled-color-background: $color-gray-100;
-$mt-select-result-disabled-color-text: darken($color-gray-300, 15%);
-
+<style>
 .mt-select-result {
   padding: var(--scale-size-10) var(--scale-size-12);
   cursor: pointer;
@@ -202,65 +175,42 @@ $mt-select-result-disabled-color-text: darken($color-gray-300, 15%);
     background: var(--color-interaction-secondary-hover);
   }
 
-  .mt-select-result__result-item-description {
-    width: 100%;
-    color: $color-gray-600;
-    order: 3;
-    line-height: 14px;
-    padding: 0 0 0 var(--scale-size-8);
-  }
-
   > .mt-icon {
     color: var(--color-icon-primary-default);
-    margin-left: var(--scale-size-4);
+    margin-inline-start: var(--scale-size-4);
     order: 4;
-    justify-self: end;
-  }
-
-  &.is--description-bottom {
-    grid-template-columns: 1fr auto;
-
-    .mt-select-result__result-item-description {
-      grid-column-start: 1;
-      padding: var(--scale-size-8) 0 0;
-      order: 3;
-    }
-
-    .mt-icon {
-      order: 2;
-    }
   }
 
   &.is--disabled {
-    color: $mt-select-result-disabled-color-text;
+    color: var(--color-text-primary-disabled);
 
     &.is--active {
-      background: $mt-select-result-disabled-color-background;
-      color: $mt-select-result-disabled-color-text;
+      background: var(--color-background-secondary-default);
+      color: var(--color-text-primary-disabled);
       cursor: default;
     }
 
     .mt-highlight-text__highlight {
-      color: $mt-select-result-disabled-color-text;
+      color: var(--color-text-primary-disabled);
     }
 
     .mt-select-result__result-item-text {
-      color: $mt-select-result-disabled-color-text;
+      color: var(--color-text-primary-disabled);
     }
   }
 
   &:last-child {
-    border-bottom: 0 none;
+    border-block-end: 0 none;
   }
 
-  // Vue.js transitions
+  /* Vue.js transitions */
   .mt-select-result-appear-enter-active,
   .mt-select-result-appear-leave-active {
-    transition: $mt-select-result-transition-item-icon;
+    transition: all ease-in-out 0.15s;
     transform: translateY(0);
   }
 
-  .mt-select-result-appear-enter,
+  .mt-select-result-appear-enter-from,
   .mt-select-result-appear-leave-to {
     opacity: 0;
     transform: translateY(-15px);
