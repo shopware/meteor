@@ -2034,15 +2034,19 @@ export default defineComponent({
 </script>
 
 <style>
-.mt-data-table {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
+.mt-data-table,
+.mt-data-table__table-wrapper-table-head.is--drag-element {
   --mt-data-table-header-size: 51px;
   --mt-data-table-scroll-shadow-color: rgba(120, 120, 120, 0.1);
   --mt-data-table-scroll-shadow-height: calc(
     100% - var(--mt-data-table-header-size) - var(--scrollbar-height)
   );
+}
+
+.mt-data-table {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
   font-size: var(--font-size-xs);
   font-weight: var(--font-weight-regular);
   color: var(--color-text-primary-default);
@@ -2537,7 +2541,7 @@ export default defineComponent({
 */
 .mt-data-table__table-wrapper-table-head.is--drag-element {
   max-width: none !important;
-  box-shadow: 0px 0px 4px 0px rgba(120, 120, 120, 0.1); /* literal: this element is appended to <body>, outside the .mt-data-table var scope */
+  box-shadow: 0px 0px 4px 0px var(--mt-data-table-scroll-shadow-color);
   opacity: 0.8;
   /* set the normal table header cell styling */
   font-family: var(--font-family-body);
