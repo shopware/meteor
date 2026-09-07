@@ -43,7 +43,6 @@ withDefaults(
   flex-direction: row;
   align-items: flex-start;
   gap: var(--scale-size-4);
-  padding: var(--scale-size-3);
   min-width: 0;
   color: var(--color-text-secondary-default);
   font-family: var(--font-family-body);
