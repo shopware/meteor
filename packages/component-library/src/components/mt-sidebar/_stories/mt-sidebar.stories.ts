@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/vue3";
-import { ref } from "vue";
+import { markRaw, ref } from "vue";
 import MtSidebar from "../mt-sidebar.vue";
 import type { SidebarRoute, SidebarTreeEntry } from "../mt-sidebar.types";
 import { entries, routeFor, user } from "./entries";
@@ -79,7 +79,8 @@ const meta: MtSidebarMeta = {
   component: MtSidebar,
   args: {
     entries,
-    linkComponent: StoryLink,
+    // markRaw: a component object stored in reactive args would be made reactive otherwise
+    linkComponent: markRaw(StoryLink),
     title: "Demo store",
     subtitle: "Administration",
   },
@@ -122,7 +123,7 @@ const meta: MtSidebarMeta = {
 
 export default meta;
 
-type MtSidebarStory = StoryObj<MtSidebarMeta>;
+export type MtSidebarStory = StoryObj<MtSidebarMeta>;
 
 /**
  * The `footer` slot holds a user block with an action menu, built from `mt-avatar`, `mt-action-menu`
