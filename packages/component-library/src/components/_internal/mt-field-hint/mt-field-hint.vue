@@ -64,10 +64,6 @@ withDefaults(
   height: 1lh;
 }
 
-.mt-field-hint__icon {
-  flex-shrink: 0;
-}
-
 .mt-field-hint__text {
   min-width: 0;
 }
