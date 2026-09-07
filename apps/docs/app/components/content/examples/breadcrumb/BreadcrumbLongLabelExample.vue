@@ -1,0 +1,30 @@
+<script setup lang="ts">
+import MtBreadcrumb from "@shopware-ag/meteor-component-library/MtBreadcrumb";
+import MtBreadcrumbItem from "@shopware-ag/meteor-component-library/MtBreadcrumbItem";
+import MtBreadcrumbLink from "@shopware-ag/meteor-component-library/MtBreadcrumbLink";
+import MtBreadcrumbSeparator from "@shopware-ag/meteor-component-library/MtBreadcrumbSeparator";
+</script>
+
+<template>
+  <div
+    style="
+      width: 480px;
+      max-width: 100%;
+      resize: horizontal;
+      overflow: hidden;
+      padding: 8px;
+      border: 1px dashed var(--color-border-primary-default);
+    "
+  >
+    <mt-breadcrumb>
+      <mt-breadcrumb-link to="#">Home</mt-breadcrumb-link>
+      <mt-breadcrumb-separator />
+      <mt-breadcrumb-link to="#"
+        >Clothing and accessories for every season of the
+        year</mt-breadcrumb-link
+      >
+      <mt-breadcrumb-separator />
+      <mt-breadcrumb-item current>Shoes</mt-breadcrumb-item>
+    </mt-breadcrumb>
+  </div>
+</template>

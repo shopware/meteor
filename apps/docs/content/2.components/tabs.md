@@ -61,3 +61,4 @@ Lay the tabs out as a vertical list for side navigation within a section.
 
 - Segmented Control: when its current experimental grouped-action behavior is needed, not as a general replacement for tab navigation.
 - [**Button**](/components/button): when the user should trigger an action instead of navigating between peer sections.
+- [**Breadcrumb**](/components/breadcrumb): when the user should move up a hierarchy instead of switching between peer sections.
