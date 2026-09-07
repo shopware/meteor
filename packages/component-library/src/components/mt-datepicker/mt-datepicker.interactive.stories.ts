@@ -1,8 +1,13 @@
 import { within, userEvent, screen } from "@storybook/test";
 import { expect } from "@storybook/test";
 
+import MtDatepicker from "./mt-datepicker.vue";
 import meta, { type MtDatepickerMeta, type MtDatepickerStory } from "./mt-datepicker.stories";
 import { waitUntil } from "../../_internal/test-helper";
+import {
+  multiLinePropHint,
+  expectHintIconAlignedWithFirstLine,
+} from "../_internal/mt-field-hint/mt-field-hint.story-helper";
 
 export default {
   ...meta,
@@ -451,5 +456,21 @@ export const TestDefaultTimeZoneHint: MtDatepickerStory = {
     const hint = canvas.getByTestId("time-zone-hint");
     expect(hint).toBeVisible();
     expect(hint).toHaveTextContent("UTC");
+  },
+};
+
+export const VisualTestMultiLinePropHint: MtDatepickerStory = {
+  name: "Should display multi line prop hint",
+  args: {
+    label: "Datepicker",
+    hint: multiLinePropHint,
+  },
+  render: (args) => ({
+    components: { MtDatepicker },
+    setup: () => ({ args }),
+    template: `<div style="max-width: 320px"><mt-datepicker :label="args.label" :hint="args.hint" /></div>`,
+  }),
+  play: ({ canvasElement }) => {
+    expectHintIconAlignedWithFirstLine(canvasElement);
   },
 };
