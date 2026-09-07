@@ -12,11 +12,12 @@ export default {
   async preRender(page, context) {
     await page.setViewportSize({ width: 850, height: 650 });
 
-    // use bigger viewport for data-table and toasts
+    // use bigger viewport for data-table, toasts and the sidebar (off-canvas below 1280px)
     if (
       context.id.startsWith("components-data-table-interaction-tests") ||
       context.id.startsWith("components-entity-data-table-interaction-tests") ||
-      context.id.startsWith("components-toast-interaction-tests")
+      context.id.startsWith("components-toast-interaction-tests") ||
+      context.id.startsWith("components-sidebar-interaction-tests")
     ) {
       await page.setViewportSize({ width: 1600, height: 900 });
     }

@@ -12,7 +12,8 @@ a mobile off-canvas mode with focus trapping. Extracted from the Shopware Admini
 | `mt-sidebar.vue`                              | The public component                                             |
 | `mt-sidebar.types.ts`                         | `SidebarEntry`, `SidebarRoute`, `SidebarRouter`                  |
 | `mt-sidebar.spec.ts`                          | Vitest / Testing Library spec                                    |
-| `_stories/mt-sidebar.stories.ts`              | Storybook stories, one per slot                                  |
+| `_stories/mt-sidebar.stories.ts`              | Storybook stories                                                |
+| `_stories/mt-sidebar.interactive.stories.ts`  | Storybook interaction tests                                      |
 | `_stories/*`                                  | Sample data and helper components used only by the stories       |
 | `_internal/mt-sidebar-item.vue`               | One navigation row, recursive up to three levels                 |
 | `_internal/mt-sidebar-context.ts`             | Provide/inject contract between the sidebar and its rows         |
