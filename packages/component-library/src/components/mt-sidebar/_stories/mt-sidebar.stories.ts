@@ -1,25 +1,16 @@
 import type { Meta, StoryObj } from "@storybook/vue3";
 import { ref } from "vue";
 import MtSidebar from "../mt-sidebar.vue";
-import MtBadge from "../../mt-badge/mt-badge.vue";
 import type { SidebarRoute, SidebarTreeEntry } from "../mt-sidebar.types";
 import { entries, routeFor, user } from "./entries";
 import { StoryLink } from "./story-link";
 import { StoryLogo } from "./story-logo";
 import { StoryLayout } from "./story-layout";
 import { StoryUserFooter } from "./story-user-footer";
-import { StorySimpleFooter } from "./story-simple-footer";
 
 export type MtSidebarMeta = Meta<typeof MtSidebar>;
 
-const components = {
-  MtSidebar,
-  MtBadge,
-  StoryLogo,
-  StoryLayout,
-  StoryUserFooter,
-  StorySimpleFooter,
-};
+const components = { MtSidebar, StoryLogo, StoryLayout, StoryUserFooter };
 
 /**
  * Renders the sidebar inside `StoryLayout` and wires the `navigate` event to a fake route so the
@@ -144,70 +135,3 @@ export const Collapsed: MtSidebarStory = {
     expanded: false,
   },
 };
-
-/**
- * Nothing is branded by default: no logo, no heading, no footer. The expand button is shown
- * permanently in the collapsed state because there is no logo to crossfade with.
- */
-export const WithoutBranding: MtSidebarStory = {
-  args: {
-    title: undefined,
-    subtitle: undefined,
-  },
-  ...createStory(`
-${sidebarOpenTag}
-</mt-sidebar>`),
-};
-
-/**
- * The footer example while the user is still being loaded.
- */
-export const LoadingUser: MtSidebarStory = createStory(`
-${sidebarOpenTag}
-  <template #logo>
-    <story-logo />
-  </template>
-
-  <template #footer>
-    <story-user-footer is-loading @action="onAction" />
-  </template>
-</mt-sidebar>`);
-
-/**
- * The scoped `entry-suffix` slot renders after the label of every entry, including nested ones and
- * the flyout of the collapsed sidebar.
- */
-export const EntrySuffix: MtSidebarStory = createStory(`
-${sidebarOpenTag}
-  <template #logo>
-    <story-logo />
-  </template>
-
-  <template #entry-suffix="{ entry }">
-    <mt-badge v-if="entry.id === 'order'" variant="critical" size="s">12</mt-badge>
-    <mt-badge v-else-if="entry.id === 'review'" variant="info" size="s">3</mt-badge>
-  </template>
-
-  <template #footer>
-    <story-user-footer :user="user" version="6.7.0.0" @action="onAction" />
-  </template>
-</mt-sidebar>`);
-
-/**
- * Any content works in the footer. The slot passes the expanded state, and the
- * `mt-sidebar__hide-on-collapse` class fades elements out when the sidebar collapses.
- */
-export const SimpleFooter: MtSidebarStory = createStory(`
-${sidebarOpenTag}
-  <template #logo>
-    <story-logo />
-  </template>
-
-  <template #footer="{ expanded }">
-    <story-simple-footer
-      :user-name="user.firstName"
-      :expanded="expanded"
-      @logout="onAction('Logout')"
-    />
-  </template>
-</mt-sidebar>`);
