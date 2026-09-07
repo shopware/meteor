@@ -2,6 +2,7 @@ import { within, expect, userEvent, waitFor } from "@storybook/test";
 
 import meta, {
   Collapsed,
+  CustomContent,
   Default,
   LongLabel,
   Sizes,
@@ -51,6 +52,11 @@ export const VisualTestWrap: MtBreadcrumbStory = {
   name: "Wrap crumbs on a narrow container",
 };
 
+export const VisualTestCustomContent: MtBreadcrumbStory = {
+  ...CustomContent,
+  name: "Render custom crumb content",
+};
+
 export const TestNavHasAccessibleName: MtBreadcrumbStory = {
   ...Default,
   name: "Exposes a labelled navigation landmark",
@@ -63,7 +69,7 @@ export const TestNavHasAccessibleName: MtBreadcrumbStory = {
 
 export const TestCurrentItemHasAriaCurrent: MtBreadcrumbStory = {
   ...Default,
-  name: "Marks the current crumb",
+  name: "Marks the current page",
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -74,7 +80,7 @@ export const TestCurrentItemHasAriaCurrent: MtBreadcrumbStory = {
 
 export const TestCollapsedHidesMiddleCrumbs: MtBreadcrumbStory = {
   ...Collapsed,
-  name: "Hides middle crumbs but keeps the root and the current crumb",
+  name: "Hides middle crumbs but keeps the root and the current page",
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 

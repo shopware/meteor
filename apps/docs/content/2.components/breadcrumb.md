@@ -11,15 +11,10 @@ description: A trail of links that shows where the current page sits in the hier
 **Breadcrumb** shows the path from the root of a hierarchy to the current page and lets users jump back to any level along the way. Use it on nested pages such as folders, categories, or documents, where users need to understand where they are and move within that structure. It is a secondary aid that complements the main navigation rather than replacing it, and it always ends with the current page.
 
 ```ts
-import {
-  MtBreadcrumb,
-  MtBreadcrumbItem,
-  MtBreadcrumbLink,
-  MtBreadcrumbSeparator,
-} from "@shopware-ag/meteor-component-library";
+import { MtBreadcrumb, type BreadcrumbItem } from "@shopware-ag/meteor-component-library";
 ```
 
-Links render as a `router-link` by default, so pass the destination through the `to` prop. Set `as="a"` to render a plain anchor instead.
+Pass the trail as `items`, ordered from the root to the current page. Every item has a `label`. An item with a `to` renders as a link, and the last item always renders as the current page, so its `to` is ignored. Links render as a `router-link` by default. Use the `link-as` prop to render a different element or component for all links, for example `link-as="a"` in an app without a router, and set `as` on a single item to override it. A plain anchor needs a string `to`, because an object cannot become an `href`.
 
 ## Examples
 
@@ -49,39 +44,23 @@ Drag the corner of the box to see the crumbs flow onto additional lines.
 ::component-example{name="breadcrumb-wrap-example"}
 ::
 
+### Custom crumb content
+
+The `item` slot replaces the label of every crumb. It receives the item, its index, and whether it is the current page. The component still renders the links, separators, and collapsing.
+
+::component-example{name="breadcrumb-custom-content-example"}
+::
+
 ### From the current route
 
-Build the trail from the route segments with `v-for` and mark the last segment as the current page. `useRoute` comes from `vue-router`.
+Build the items from the route segments and mark nothing by hand: the last item is the current page automatically. `useRoute` comes from `vue-router`.
 
 ::component-example{name="breadcrumb-route-example"}
 ::
 
-## Anatomy
-
-**Breadcrumb** consists of four companion exports that are used together:
-
-- `mt-breadcrumb` renders the navigation landmark and the ordered list. It controls the size and handles collapsing.
-- `mt-breadcrumb-link` renders a clickable level. It looks like plain text and is underlined on hover.
-- `mt-breadcrumb-item` renders a level without a destination, usually the current page.
-- `mt-breadcrumb-separator` renders the slash between two levels and is hidden from assistive technology.
-
 ## API reference
 
-### MtBreadcrumb
-
-:component-api{name="MtBreadcrumb"}
-
-### MtBreadcrumbLink
-
-:component-api{name="MtBreadcrumbLink"}
-
-### MtBreadcrumbItem
-
-:component-api{name="MtBreadcrumbItem"}
-
-### MtBreadcrumbSeparator
-
-:component-api{name="MtBreadcrumbSeparator"}
+:component-api
 
 ## Best practices
 
@@ -89,34 +68,35 @@ Build the trail from the route segments with `v-for` and mark the last segment a
 #do
 
 - Keep labels short and use the same names as in the navigation and page titles.
-- End the trail with the current page and mark it with `current`.
-- Place exactly one separator between two levels.
+- End the items with the current page.
+- Give every item except the last one a `to`, so users can move up to any level.
 
 #dont
 
 - Do not use **Breadcrumb** as the only way to reach a page, and do not use it as a replacement for the main navigation.
-- Do not turn the current page into a link.
+- Do not put the current page into the items twice, for example once as a link and once as the last item.
 
 ::
 
 ## Behavior
 
 - **Breadcrumb** fills the available width of its container and keeps all crumbs on a single line by default. Inside a flex row, set `min-width: 0` or `flex: 1` on it so the row is allowed to shrink it.
-- Use only the four parts as direct children, optionally wrapped in a `<template v-for>`. The last child represents the current page.
-- **Breadcrumb** observes its own width and reacts immediately when the container, the viewport, or a label changes.
+- The last item is the current page. It is rendered as text, never as a link, and carries `aria-current="page"`.
+- **Breadcrumb** observes its own width and reacts immediately when the container, the viewport, or the items change.
 - As long as the trail fits, every label is shown in full.
 - When the trail no longer fits, labels shrink and show an ellipsis. Long labels shrink first, and no label becomes narrower than 8 characters.
 - If the trail still does not fit once every label has reached its minimum width, the crumbs in the middle are hidden behind an ellipsis, beginning with the one next to the root. The root is hidden last, and the current page is never hidden.
-- Set `overflow="wrap"` to let the crumbs flow onto additional lines instead of collapsing. Labels are never truncated in this mode.
+- Set `overflow="wrap"` to let the crumbs flow onto additional lines instead of collapsing. Only a label wider than the whole container is truncated in this mode.
 - Hidden crumbs come back as soon as there is enough space again. Their pages remain reachable through the main navigation.
 
 ## Accessibility
 
 - The trail is a `nav` landmark that contains an ordered list, so screen readers announce it as breadcrumb navigation and read the levels in order. Use `aria-label` to change the name of the landmark.
-- The crumb marked with `current` carries `aria-current="page"`.
+- The current page carries `aria-current="page"`.
 - Separators and the ellipsis are hidden from assistive technology.
 - Links can be reached with the Tab key and show a visible focus ring. The current page is plain text and cannot be focused.
 - Hidden crumbs are not announced. Keep the number of levels small so that the trail rarely needs to collapse on the viewports you support.
+- Content in the `item` slot renders inside the crumb's link, so it must not contain links, buttons, or other interactive elements.
 
 ## Related components
 
