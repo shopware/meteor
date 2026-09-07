@@ -324,7 +324,15 @@ The component exposes a `validate()` method through a template ref. It checks th
 
 ## API reference
 
+### MtTextEditor
+
 :component-api
+
+### MtTextEditorToolbarButton
+
+Use this component inside a `button_<name>` slot to render a custom toolbar button that matches the built-in ones.
+
+:component-api{name="MtTextEditorToolbarButton"}
 
 ## Best practices
 

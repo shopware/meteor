@@ -87,20 +87,77 @@ A minimal table needs a `dataSource`, a `columns` definition, and handlers for t
 
 ## Column configuration
 
-Each column is described by a configuration object that controls how the cell is rendered and how it behaves:
+Each column is described by a configuration object that controls how the cell is rendered and how it behaves. All columns share a common base:
 
 ```typescript
-interface ColumnDefinition {
+interface BaseColumnDefinition {
   label: string; // Column header label
   property: string; // Property path in the data source object
-  renderer?: string; // How to render the cell ('text' | 'number' | 'price')
   position: number; // Column order (use increments of 100)
   sortable?: boolean; // Enable or disable sorting (default: true)
   width?: number; // Fixed column width
   allowResize?: boolean; // Allow column resizing
+  cellWrap?: "nowrap" | "normal"; // How cell content wraps
   visible?: boolean; // Show or hide the column
 }
 ```
+
+The required `renderer` selects one of four cell types, each with its own additional options:
+
+```typescript
+interface TextColumnDefinition extends BaseColumnDefinition {
+  renderer: "text";
+  clickable?: boolean; // Clicking the cell emits `open-details`
+  previewImage?: string; // Property path to a thumbnail shown before the text
+}
+
+interface NumberColumnDefinition extends BaseColumnDefinition {
+  renderer: "number";
+  clickable?: boolean;
+}
+
+interface PriceColumnDefinition extends BaseColumnDefinition {
+  renderer: "price";
+  rendererOptions: {
+    // required for price columns
+    currencyId: string;
+    currencyISOCode: string;
+    source: "gross" | "net";
+  };
+  clickable?: boolean;
+}
+
+interface BadgeColumnDefinition extends BaseColumnDefinition {
+  renderer: "badge";
+  rendererOptions: {
+    // required for badge columns
+    renderItemBadge(
+      data: unknown,
+      columnDefinition: BadgeColumnDefinition,
+    ): { label: string; variant: "critical" | "positive" | "info" };
+  };
+}
+
+type ColumnDefinition =
+  | TextColumnDefinition
+  | NumberColumnDefinition
+  | PriceColumnDefinition
+  | BadgeColumnDefinition;
+```
+
+### Custom cell rendering
+
+To take over the rendering of a column entirely, use the dynamic `column-<property>` slot. It receives the row data and the column definition:
+
+```html
+<mt-data-table :data-source="dataSource" :columns="columns">
+  <template #column-status="{ data, columnDefinition }">
+    <my-status-indicator :status="data.status" />
+  </template>
+</mt-data-table>
+```
+
+The slot name is derived from the column's `property`, so a column with `property: "status"` is customized through `#column-status`.
 
 ## Managing data
 
