@@ -1,13 +1,13 @@
 import type { Component } from "vue";
 
 /**
- * A single navigation entry as passed to `mt-admin-menu`.
+ * A single navigation entry as passed to `mt-sidebar`.
  *
  * Entries form a flat list: `parent` names the `id` (or `path`) of the entry it nests under.
  * The menu builds the tree itself and supports up to three levels of nesting.
  * Labels must already be translated. Pass only the entries the current user may see.
  */
-export interface MenuEntry {
+export interface SidebarEntry {
   /** Unique identifier. Falls back to `path` when omitted. */
   id?: string;
   /** Route name the entry navigates to. Optional for grouping entries and external links. */
@@ -35,23 +35,23 @@ export interface MenuEntry {
 /**
  * A menu entry with its resolved tree position.
  */
-export interface MenuTreeEntry extends MenuEntry {
+export interface SidebarTreeEntry extends SidebarEntry {
   level: number;
-  children: MenuTreeEntry[];
+  children: SidebarTreeEntry[];
 }
 
 /**
  * Minimal shape of the current route, compatible with a Vue Router `RouteLocationNormalized`.
  */
-export interface MenuRoute {
+export interface SidebarRoute {
   name?: string;
   path?: string;
   params?: Record<string, unknown>;
   matched?: Array<{ name?: string }>;
-  meta?: MenuRouteMeta;
+  meta?: SidebarRouteMeta;
 }
 
-export interface MenuRouteMeta {
+export interface SidebarRouteMeta {
   /** Route name of the menu entry that owns this (detail) route. */
   parentPath?: string;
   /** Written by the Shopware Administration for every module route. */
@@ -65,11 +65,11 @@ export interface MenuRouteMeta {
 /**
  * Minimal shape of the router, compatible with a Vue Router instance.
  */
-export interface MenuRouter {
-  getRoutes?: () => Array<{ name?: string | symbol | null; meta?: MenuRouteMeta }>;
+export interface SidebarRouter {
+  getRoutes?: () => Array<{ name?: string | symbol | null; meta?: SidebarRouteMeta }>;
 }
 
-export interface MenuUser {
+export interface SidebarUser {
   firstName?: string;
   lastName?: string;
   /** Role or title shown below the name, e.g. "Administrator". */
@@ -77,4 +77,4 @@ export interface MenuUser {
   avatarUrl?: string;
 }
 
-export type MenuLinkComponent = string | Component;
+export type SidebarLinkComponent = string | Component;

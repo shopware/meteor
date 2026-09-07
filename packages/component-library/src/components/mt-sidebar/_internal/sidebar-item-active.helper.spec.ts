@@ -2,9 +2,9 @@ import {
   getActiveRouteNames,
   entryParamsMatchRoute,
   isEntryOnActiveRoute,
-} from "./menu-item-active.helper";
+} from "./sidebar-item-active.helper";
 
-describe("mt-admin-menu/_internal/menu-item-active.helper", () => {
+describe("mt-sidebar/_internal/sidebar-item-active.helper", () => {
   describe("getActiveRouteNames", () => {
     it("collects the route names of the resolved chain", () => {
       const route = {

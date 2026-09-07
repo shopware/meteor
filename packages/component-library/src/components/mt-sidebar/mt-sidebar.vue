@@ -1,25 +1,25 @@
 <template>
-  <transition name="mt-admin-menu__backdrop">
+  <transition name="mt-sidebar__backdrop">
     <div
       v-if="isMobileViewport && offCanvasOpen"
-      class="mt-admin-menu__backdrop"
+      class="mt-sidebar__backdrop"
       @click="dismissOffCanvas"
     ></div>
   </transition>
 
   <aside
     ref="menuElement"
-    class="mt-admin-menu"
-    :class="adminMenuClasses"
+    class="mt-sidebar"
+    :class="sidebarClasses"
     :aria-expanded="isExpanded ? 'true' : 'false'"
     :inert="isMobileViewport && !offCanvasOpen"
   >
-    <div class="mt-admin-menu__header">
-      <div class="mt-admin-menu__header-logo-wrapper">
-        <div class="mt-admin-menu__header-logo-box">
+    <div class="mt-sidebar__header">
+      <div class="mt-sidebar__header-logo-wrapper">
+        <div class="mt-sidebar__header-logo-box">
           <!-- Sized via CSS: 24px on mobile, 26px on desktop. -->
           <mt-icon
-            class="mt-admin-menu__header-logo"
+            class="mt-sidebar__header-logo"
             name="solid-shopware"
             :aria-label="t('projectName')"
           />
@@ -28,7 +28,7 @@
         <button
           v-if="!isExpanded"
           type="button"
-          class="mt-admin-menu__header-logo-expand-button"
+          class="mt-sidebar__header-logo-expand-button"
           :aria-label="t('expandMenu')"
           @click.stop="onToggleSidebar"
         >
@@ -36,10 +36,10 @@
         </button>
       </div>
 
-      <div class="collapsible-text hide-on-collapse mt-admin-menu__version">
+      <div class="collapsible-text hide-on-collapse mt-sidebar__version">
         <mt-text
           as="div"
-          class="mt-admin-menu__shop-name"
+          class="mt-sidebar__shop-name"
           size="s"
           weight="semibold"
           :title="shopName"
@@ -47,19 +47,14 @@
           {{ shopName }}
         </mt-text>
 
-        <mt-text
-          as="div"
-          class="mt-admin-menu__title"
-          size="2xs"
-          color="color-text-secondary-default"
-        >
+        <mt-text as="div" class="mt-sidebar__title" size="2xs" color="color-text-secondary-default">
           {{ t("projectName") }}
         </mt-text>
       </div>
 
       <mt-button
         v-if="isMobileViewport"
-        class="mt-admin-menu__off-canvas-close"
+        class="mt-sidebar__off-canvas-close"
         variant="tertiary"
         size="default"
         square
@@ -72,7 +67,7 @@
       </mt-button>
       <mt-button
         v-else
-        class="mt-admin-menu__collapse-button"
+        class="mt-sidebar__collapse-button"
         variant="tertiary"
         size="default"
         square
@@ -85,27 +80,27 @@
       </mt-button>
     </div>
 
-    <div class="mt-admin-menu__body-container">
+    <div class="mt-sidebar__body-container">
       <div
         ref="menuBodyElement"
-        class="mt-admin-menu__body"
+        class="mt-sidebar__body"
         :style="scrollbarOffsetStyle"
         @keydown="onNavigationKeydown"
       >
-        <nav class="mt-admin-menu__navigation" :aria-labelledby="navigationLabelId">
+        <nav class="mt-sidebar__navigation" :aria-labelledby="navigationLabelId">
           <h2 :id="navigationLabelId" class="visually-hidden">
             {{ t("navigationLabel") }}
           </h2>
 
           <ul
-            class="mt-admin-menu__navigation-list"
+            class="mt-sidebar__navigation-list"
             @mouseenter="cancelFlyoutClose"
             @focusin="cancelFlyoutClose"
             @mouseleave="onNavigationListMouseLeave"
             @focusout="onNavigationListMouseLeave"
           >
-            <mt-admin-menu-item
-              v-for="entry in mainMenuEntries"
+            <mt-sidebar-item
+              v-for="entry in mainEntries"
               :key="entry.id || entry.path"
               :sidebar-expanded="isExpanded"
               :is-expanded="isNavigationEntryExpanded(entry)"
@@ -123,11 +118,11 @@
       </div>
     </div>
 
-    <div class="mt-admin-menu__footer">
+    <div class="mt-sidebar__footer">
       <DropdownMenuRoot :open="isUserActionsActive" @update:open="isUserActionsActive = $event">
         <DropdownMenuTrigger as-child>
           <button
-            class="mt-admin-menu__user-actions-toggle"
+            class="mt-sidebar__user-actions-toggle"
             :class="{ 'is--active': isUserActionsActive }"
             type="button"
             :aria-label="userActionsAriaLabel"
@@ -135,20 +130,20 @@
             <mt-loader v-if="isUserLoading" size="32px" />
 
             <mt-avatar
-              class="mt-admin-menu__avatar"
+              class="mt-sidebar__avatar"
               size="s"
               :image-url="user?.avatarUrl"
               :first-name="user?.firstName"
               :last-name="user?.lastName"
             />
 
-            <div class="mt-admin-menu__user-custom-fields collapsible-text hide-on-collapse">
-              <mt-text as="div" class="mt-admin-menu__user-name" size="xs" weight="semibold">
+            <div class="mt-sidebar__user-custom-fields collapsible-text hide-on-collapse">
+              <mt-text as="div" class="mt-sidebar__user-name" size="xs" weight="semibold">
                 {{ userName }}
               </mt-text>
               <mt-text
                 as="div"
-                class="mt-admin-menu__user-type"
+                class="mt-sidebar__user-type"
                 size="2xs"
                 color="color-text-secondary-default"
               >
@@ -156,7 +151,7 @@
               </mt-text>
             </div>
 
-            <div class="mt-admin-menu__user-actions-toggle-icon-wrapper">
+            <div class="mt-sidebar__user-actions-toggle-icon-wrapper">
               <mt-icon class="hide-on-collapse" name="regular-chevron-up-xs" size="8" />
               <mt-icon class="hide-on-collapse" name="regular-chevron-down-xs" size="8" />
             </div>
@@ -165,7 +160,7 @@
 
         <DropdownMenuPortal>
           <mt-action-menu
-            class="mt-admin-menu__user-actions-menu"
+            class="mt-sidebar__user-actions-menu"
             :match-trigger-width="true"
             :side-offset="4"
             side="top"
@@ -181,7 +176,7 @@
             <mt-action-menu-group v-if="version || $slots.version">
               <mt-text
                 as="div"
-                class="mt-admin-menu__version-footer"
+                class="mt-sidebar__version-footer"
                 size="2xs"
                 color="color-text-secondary-default"
               >
@@ -203,9 +198,9 @@
       @close="onFlyoutLeave"
     >
       <div
-        id="mt-admin-menu-flyout"
+        id="mt-sidebar-flyout"
         ref="flyoutElement"
-        class="mt-admin-menu__flyout-content"
+        class="mt-sidebar__flyout-content"
         :class="{ 'is--closing': isFlyoutClosing }"
         tabindex="-1"
         @mouseenter="cancelFlyoutClose"
@@ -217,15 +212,15 @@
         <mt-text
           v-if="flyoutTitle"
           as="span"
-          class="mt-admin-menu__flyout-title"
+          class="mt-sidebar__flyout-title"
           size="xs"
           color="color-text-secondary-default"
         >
           {{ flyoutTitle }}
         </mt-text>
 
-        <ul class="mt-admin-menu__flyout-list">
-          <mt-admin-menu-item
+        <ul class="mt-sidebar__flyout-list">
+          <mt-sidebar-item
             v-for="entry in flyoutEntries"
             :key="entry.id || entry.path"
             :entry="entry"
@@ -266,27 +261,27 @@ import MtFloatingUi from "@/components/mt-floating-ui/mt-floating-ui.vue";
 import MtActionMenu from "@/components/mt-action-menu/mt-action-menu.vue";
 import MtActionMenuGroup from "@/components/mt-action-menu-group/mt-action-menu-group.vue";
 import MtActionMenuItem from "@/components/mt-action-menu-item/mt-action-menu-item.vue";
-import MtAdminMenuItem from "./_internal/mt-admin-menu-item.vue";
-import { ADMIN_MENU_CONTEXT } from "./_internal/mt-admin-menu-context";
-import { buildMenuTree, menuEntryKey } from "./_internal/build-menu-tree";
-import { getActiveRouteNames, isEntryOnActiveRoute } from "./_internal/menu-item-active.helper";
+import MtSidebarItem from "./_internal/mt-sidebar-item.vue";
+import { SIDEBAR_CONTEXT } from "./_internal/mt-sidebar-context";
+import { buildSidebarTree, menuEntryKey } from "./_internal/build-sidebar-tree";
+import { getActiveRouteNames, isEntryOnActiveRoute } from "./_internal/sidebar-item-active.helper";
 import type {
-  MenuEntry,
-  MenuLinkComponent,
-  MenuRoute,
-  MenuRouter,
-  MenuTreeEntry,
-  MenuUser,
-} from "./mt-admin-menu.types";
+  SidebarEntry,
+  SidebarLinkComponent,
+  SidebarRoute,
+  SidebarRouter,
+  SidebarTreeEntry,
+  SidebarUser,
+} from "./mt-sidebar.types";
 
 export type {
-  MenuEntry,
-  MenuLinkComponent,
-  MenuRoute,
-  MenuRouter,
-  MenuTreeEntry,
-  MenuUser,
-} from "./mt-admin-menu.types";
+  SidebarEntry,
+  SidebarLinkComponent,
+  SidebarRoute,
+  SidebarRouter,
+  SidebarTreeEntry,
+  SidebarUser,
+} from "./mt-sidebar.types";
 
 const SIDEBAR_TOGGLE_ANIMATION_DURATION = 500;
 const VIEWPORT_RESIZE_SETTLE_DURATION = 200;
@@ -299,32 +294,32 @@ const props = defineProps({
    * Flat list of navigation entries. Nested via `parent`, sorted via `position`.
    */
   entries: {
-    type: Array as PropType<MenuEntry[]>,
+    type: Array as PropType<SidebarEntry[]>,
     required: true,
   },
   /**
    * The current route, used to highlight the active entry and open its branch.
    */
   route: {
-    type: Object as PropType<MenuRoute>,
+    type: Object as PropType<SidebarRoute>,
     default: undefined,
   },
   /**
    * The router, used to follow `meta.parentPath` of routes not listed in the menu.
    */
   router: {
-    type: Object as PropType<MenuRouter>,
+    type: Object as PropType<SidebarRouter>,
     default: undefined,
   },
   /**
    * Component rendering the navigation links. Receives the route location as `to`.
    */
   linkComponent: {
-    type: [String, Object] as PropType<MenuLinkComponent>,
+    type: [String, Object] as PropType<SidebarLinkComponent>,
     default: "router-link",
   },
   user: {
-    type: Object as PropType<MenuUser>,
+    type: Object as PropType<SidebarUser>,
     default: undefined,
   },
   isUserLoading: {
@@ -360,7 +355,7 @@ const props = defineProps({
 
 const emit = defineEmits<{
   (e: "logout"): void;
-  (e: "navigate", entry: MenuTreeEntry): void;
+  (e: "navigate", entry: SidebarTreeEntry): void;
 }>();
 
 defineSlots<{
@@ -403,15 +398,15 @@ const { t } = useI18n({
   },
 });
 
-const navigationLabelId = `mt-admin-menu-navigation-label-${useId()}`;
+const navigationLabelId = `mt-sidebar-navigation-label-${useId()}`;
 
 const menuElement = ref<HTMLElement | null>(null);
 const menuBodyElement = ref<HTMLElement | null>(null);
 const flyoutElement = ref<HTMLElement | null>(null);
 
-const activeEntry = ref<{ entry: MenuTreeEntry; target: HTMLElement } | null>(null);
+const activeEntry = ref<{ entry: SidebarTreeEntry; target: HTMLElement } | null>(null);
 const isUserActionsActive = ref(false);
-const flyoutEntries = ref<MenuTreeEntry[]>([]);
+const flyoutEntries = ref<SidebarTreeEntry[]>([]);
 const flyoutTitle = ref("");
 const isFlyoutClosing = ref(false);
 const isFlyoutPinned = ref(false);
@@ -421,7 +416,7 @@ const viewportWidth = ref<number | null>(typeof window === "undefined" ? null : 
 const isTogglingSidebar = ref(false);
 const isViewportResizing = ref(false);
 const activeBranchKey = ref<string | null | undefined>(null);
-const expandedEntries = ref<MenuTreeEntry[]>([]);
+const expandedEntries = ref<SidebarTreeEntry[]>([]);
 
 let flyoutCloseTimeoutId: ReturnType<typeof setTimeout> | null = null;
 let toggleSidebarTimeout: ReturnType<typeof setTimeout> | null = null;
@@ -437,9 +432,9 @@ const isMobileViewport = computed(
 
 const isExpanded = computed(() => expanded.value || isMobileViewport.value);
 
-const mainMenuEntries = computed(() => pruneDeepEntries(buildMenuTree(props.entries)));
+const mainEntries = computed(() => pruneDeepEntries(buildSidebarTree(props.entries)));
 
-const adminMenuClasses = computed(() => ({
+const sidebarClasses = computed(() => ({
   "is--expanded": isExpanded.value,
   "is--collapsed": !isExpanded.value,
   "is--off-canvas-shown": offCanvasOpen.value,
@@ -461,7 +456,7 @@ const userActionsAriaLabel = computed(() =>
   [userName.value, props.user?.title].filter(Boolean).join(", "),
 );
 
-provide(ADMIN_MENU_CONTEXT, {
+provide(SIDEBAR_CONTEXT, {
   route: computed(() => props.route),
   router: computed(() => props.router),
   linkComponent: computed(() => props.linkComponent),
@@ -509,7 +504,7 @@ watch(
 );
 
 // Entries usually arrive after the first render (app modules, plugins), so revisit the active branch
-watch(mainMenuEntries, () => {
+watch(mainEntries, () => {
   nextTick(() => expandAncestorBranchesForCurrentRoute());
 });
 
@@ -534,7 +529,7 @@ onBeforeUnmount(() => {
   }
 });
 
-function pruneDeepEntries(entries: MenuTreeEntry[]): MenuTreeEntry[] {
+function pruneDeepEntries(entries: SidebarTreeEntry[]): SidebarTreeEntry[] {
   return entries.map((entry) => {
     if (entry.level < MAX_NESTING_LEVEL) {
       return { ...entry, children: pruneDeepEntries(entry.children) };
@@ -543,8 +538,8 @@ function pruneDeepEntries(entries: MenuTreeEntry[]): MenuTreeEntry[] {
     // Nesting beyond level 3 is unsupported: report it and drop the children.
     entry.children.forEach((child) => {
       console.error(
-        `[mt-admin-menu] The navigation entry "${menuEntryKey(child)}" is nested on level 4 or higher. ` +
-          "The admin menu only supports up to three levels of nesting.",
+        `[mt-sidebar] The navigation entry "${menuEntryKey(child)}" is nested on level 4 or higher. ` +
+          "The sidebar only supports up to three levels of nesting.",
       );
     });
 
@@ -583,7 +578,7 @@ function closeNavigationOverlays() {
   }
 }
 
-function onNavigationLinkClicked(entry: MenuTreeEntry) {
+function onNavigationLinkClicked(entry: SidebarTreeEntry) {
   // Tapping the current route's entry aborts as redundant navigation, so no route watcher fires
   closeNavigationOverlays();
 
@@ -734,7 +729,7 @@ function addScrollbarOffset() {
   scrollbarOffset.value = `-${scrollbarWidthPx}px`;
 }
 
-function expandMenuEntry(entry: MenuTreeEntry) {
+function expandSidebarEntry(entry: SidebarTreeEntry) {
   const key = menuEntryKey(entry);
 
   // Entries without id and path share the key undefined, so never deduplicate them
@@ -745,7 +740,7 @@ function expandMenuEntry(entry: MenuTreeEntry) {
   expandedEntries.value = [...expandedEntries.value, entry];
 }
 
-function collapseMenuEntry(entry: MenuTreeEntry) {
+function collapseSidebarEntry(entry: SidebarTreeEntry) {
   const key = menuEntryKey(entry);
 
   if (key === undefined) {
@@ -756,21 +751,21 @@ function collapseMenuEntry(entry: MenuTreeEntry) {
   expandedEntries.value = expandedEntries.value.filter((e) => menuEntryKey(e) !== key);
 }
 
-function onMenuBranchToggle({ entry, open }: { entry: MenuTreeEntry; open: boolean }) {
+function onMenuBranchToggle({ entry, open }: { entry: SidebarTreeEntry; open: boolean }) {
   if (!isExpanded.value || !entry || entry.level !== 1) {
     return;
   }
 
   if (!open) {
-    collapseMenuEntry(entry);
+    collapseSidebarEntry(entry);
     return;
   }
 
   collapseInactiveBranches(entry);
-  expandMenuEntry(entry);
+  expandSidebarEntry(entry);
 }
 
-function collapseInactiveBranches(exceptEntry: MenuTreeEntry | null = null) {
+function collapseInactiveBranches(exceptEntry: SidebarTreeEntry | null = null) {
   const exceptKey = exceptEntry ? menuEntryKey(exceptEntry) : null;
   const activeNames = getActiveRouteNames(props.route, props.router);
 
@@ -782,21 +777,21 @@ function collapseInactiveBranches(exceptEntry: MenuTreeEntry | null = null) {
         return false;
       }
 
-      const menuEntry = mainMenuEntries.value.find((entry) => menuEntryKey(entry) === key);
+      const menuEntry = mainEntries.value.find((entry) => menuEntryKey(entry) === key);
 
       return !menuEntry || !isEntryOnActiveRoute(menuEntry, props.route, activeNames);
     })
-    .forEach((expanded) => collapseMenuEntry(expanded));
+    .forEach((expanded) => collapseSidebarEntry(expanded));
 }
 
-function onMenuItemHover(entry: MenuTreeEntry, eventTarget: HTMLElement) {
+function onMenuItemHover(entry: SidebarTreeEntry, eventTarget: HTMLElement) {
   if (isExpanded.value) {
     return;
   }
 
   cancelFlyoutClose();
 
-  const target = eventTarget.closest<HTMLElement>(".mt-admin-menu__navigation-list-item");
+  const target = eventTarget.closest<HTMLElement>(".mt-sidebar__navigation-list-item");
 
   if (!target) {
     return;
@@ -819,7 +814,7 @@ function onMenuItemHover(entry: MenuTreeEntry, eventTarget: HTMLElement) {
   }
 
   flyoutReferenceElement.value =
-    target.querySelector<HTMLElement>(".mt-admin-menu__navigation-link") ?? target;
+    target.querySelector<HTMLElement>(".mt-sidebar__navigation-link") ?? target;
   isFlyoutPinned.value = false;
   flyoutEntries.value = children;
   flyoutTitle.value = entry.label;
@@ -832,7 +827,7 @@ function onNavigationListMouseLeave(event: MouseEvent | FocusEvent) {
     return;
   }
 
-  if ((event.relatedTarget as HTMLElement | null)?.closest(".mt-admin-menu__flyout-content")) {
+  if ((event.relatedTarget as HTMLElement | null)?.closest(".mt-sidebar__flyout-content")) {
     return;
   }
 
@@ -844,7 +839,7 @@ function onFlyoutMouseLeave(event: MouseEvent | FocusEvent) {
     return;
   }
 
-  if ((event.relatedTarget as HTMLElement | null)?.closest(".mt-admin-menu__navigation-list")) {
+  if ((event.relatedTarget as HTMLElement | null)?.closest(".mt-sidebar__navigation-list")) {
     return;
   }
 
@@ -892,7 +887,7 @@ function cancelFlyoutClose() {
   isFlyoutClosing.value = false;
 }
 
-function isFlyoutEntryActive(entry: MenuTreeEntry) {
+function isFlyoutEntryActive(entry: SidebarTreeEntry) {
   if (isExpanded.value || flyoutEntries.value.length === 0) {
     return false;
   }
@@ -941,9 +936,9 @@ function deactivateFlyoutFocusTrap(returnFocus = true) {
 }
 
 function getNavigationLinks(container: HTMLElement) {
-  return Array.from(
-    container.querySelectorAll<HTMLElement>(".mt-admin-menu__navigation-link"),
-  ).filter((link) => !link.closest("[hidden]"));
+  return Array.from(container.querySelectorAll<HTMLElement>(".mt-sidebar__navigation-link")).filter(
+    (link) => !link.closest("[hidden]"),
+  );
 }
 
 function moveListFocus(links: HTMLElement[], event: KeyboardEvent) {
@@ -1022,7 +1017,7 @@ function expandAncestorBranchesForCurrentRoute() {
   }
 
   const activeNames = getActiveRouteNames(props.route, props.router);
-  const activeEntries = mainMenuEntries.value.filter((entry) =>
+  const activeEntries = mainEntries.value.filter((entry) =>
     isEntryOnActiveRoute(entry, props.route, activeNames),
   );
 
@@ -1044,11 +1039,11 @@ function expandAncestorBranchesForCurrentRoute() {
   activeBranchKey.value = ownerKey;
 
   if (owner && !isNavigationEntryExpanded(owner)) {
-    expandMenuEntry(owner);
+    expandSidebarEntry(owner);
   }
 }
 
-function isNavigationEntryExpanded(entry: MenuTreeEntry) {
+function isNavigationEntryExpanded(entry: SidebarTreeEntry) {
   const key = menuEntryKey(entry);
 
   return expandedEntries.value.some((expanded) => menuEntryKey(expanded) === key);
@@ -1056,7 +1051,7 @@ function isNavigationEntryExpanded(entry: MenuTreeEntry) {
 </script>
 
 <style lang="scss">
-.mt-admin-menu__backdrop {
+.mt-sidebar__backdrop {
   position: fixed;
   inset: 0;
   background: var(--color-elevation-backdrop-default);
@@ -1064,7 +1059,7 @@ function isNavigationEntryExpanded(entry: MenuTreeEntry) {
   cursor: pointer;
 }
 
-.mt-admin-menu__version-footer {
+.mt-sidebar__version-footer {
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -1072,31 +1067,31 @@ function isNavigationEntryExpanded(entry: MenuTreeEntry) {
   margin: var(--scale-size-8);
 }
 
-.mt-admin-menu__user-actions-menu {
+.mt-sidebar__user-actions-menu {
   min-width: var(--scale-size-256);
 }
 
-.mt-admin-menu__backdrop-enter-active,
-.mt-admin-menu__backdrop-leave-active {
+.mt-sidebar__backdrop-enter-active,
+.mt-sidebar__backdrop-leave-active {
   transition: opacity 0.3s ease-in-out;
 }
 
-.mt-admin-menu__backdrop-enter-from,
-.mt-admin-menu__backdrop-leave-to {
+.mt-sidebar__backdrop-enter-from,
+.mt-sidebar__backdrop-leave-to {
   opacity: 0;
 }
 
-.mt-admin-menu {
+.mt-sidebar {
   // Shared motion tokens for the collapse/expand animation.
-  --mt-admin-menu-bezier: cubic-bezier(0.32, 0.72, 0, 1);
-  --mt-admin-menu-duration: 0.5s; // root width/padding
-  --mt-admin-menu-duration-inner: 0.3s; // inner layout following the collapse
-  --mt-admin-menu-fade-in-duration: 0.4s;
-  --mt-admin-menu-fade-in-delay: 0.05s;
-  --mt-admin-menu-fade-out-duration: 0.05s;
+  --mt-sidebar-bezier: cubic-bezier(0.32, 0.72, 0, 1);
+  --mt-sidebar-duration: 0.5s; // root width/padding
+  --mt-sidebar-duration-inner: 0.3s; // inner layout following the collapse
+  --mt-sidebar-fade-in-duration: 0.4s;
+  --mt-sidebar-fade-in-delay: 0.05s;
+  --mt-sidebar-fade-out-duration: 0.05s;
 
   // Body vertical padding, doubling as the control points of its edge fade mask
-  --mt-admin-menu-body-fade: var(--scale-size-16);
+  --mt-sidebar-body-fade: var(--scale-size-16);
 
   background: var(--color-elevation-surface-sunken);
   width: 60px;
@@ -1105,8 +1100,8 @@ function isNavigationEntryExpanded(entry: MenuTreeEntry) {
   flex-direction: column;
   padding: var(--scale-size-16) var(--scale-size-12) var(--scale-size-8) var(--scale-size-12);
   transition:
-    width var(--mt-admin-menu-duration) var(--mt-admin-menu-bezier),
-    padding var(--mt-admin-menu-duration) var(--mt-admin-menu-bezier);
+    width var(--mt-sidebar-duration) var(--mt-sidebar-bezier),
+    padding var(--mt-sidebar-duration) var(--mt-sidebar-bezier);
 
   // Keep in sync with the `mobileBreakpoint` prop default
   @media screen and (max-width: 1280px) {
@@ -1123,7 +1118,7 @@ function isNavigationEntryExpanded(entry: MenuTreeEntry) {
     border-radius: var(--border-radius-l);
     box-shadow: 0 0 80px var(--color-elevation-shadow-default);
     z-index: $z-index-off-canvas;
-    transition: transform var(--mt-admin-menu-duration-inner) var(--mt-admin-menu-bezier);
+    transition: transform var(--mt-sidebar-duration-inner) var(--mt-sidebar-bezier);
 
     &.is--off-canvas-shown {
       transform: translateX(0);
@@ -1142,9 +1137,8 @@ function isNavigationEntryExpanded(entry: MenuTreeEntry) {
   .hide-on-collapse {
     opacity: 1;
     transition:
-      opacity var(--mt-admin-menu-fade-in-duration) ease-in-out var(--mt-admin-menu-fade-in-delay),
-      visibility var(--mt-admin-menu-fade-in-duration) ease-in-out
-        var(--mt-admin-menu-fade-in-delay);
+      opacity var(--mt-sidebar-fade-in-duration) ease-in-out var(--mt-sidebar-fade-in-delay),
+      visibility var(--mt-sidebar-fade-in-duration) ease-in-out var(--mt-sidebar-fade-in-delay);
   }
 
   &.is--collapsed .hide-on-collapse {
@@ -1152,17 +1146,17 @@ function isNavigationEntryExpanded(entry: MenuTreeEntry) {
     visibility: hidden;
     pointer-events: none;
     transition:
-      opacity var(--mt-admin-menu-fade-out-duration) ease-out,
-      visibility var(--mt-admin-menu-fade-out-duration) ease-out;
+      opacity var(--mt-sidebar-fade-out-duration) ease-out,
+      visibility var(--mt-sidebar-fade-out-duration) ease-out;
   }
 
   &.is--expanded {
-    --mt-admin-menu-body-fade: var(--scale-size-20);
+    --mt-sidebar-body-fade: var(--scale-size-20);
 
     width: 300px;
     padding: var(--scale-size-24) var(--scale-size-12) var(--scale-size-8) var(--scale-size-12);
 
-    .mt-admin-menu__navigation-link.router-link-active {
+    .mt-sidebar__navigation-link.router-link-active {
       background: var(--color-background-brand-default);
 
       .collapsible-text {
@@ -1172,8 +1166,8 @@ function isNavigationEntryExpanded(entry: MenuTreeEntry) {
   }
 
   // Typography comes from mt-text, truncation and alignment are ours.
-  .mt-admin-menu__user-name,
-  .mt-admin-menu__user-type {
+  .mt-sidebar__user-name,
+  .mt-sidebar__user-type {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -1181,29 +1175,29 @@ function isNavigationEntryExpanded(entry: MenuTreeEntry) {
     text-align: left;
   }
 
-  .mt-admin-menu__header {
+  .mt-sidebar__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: var(--scale-size-12);
     position: relative;
     padding-left: var(--scale-size-10);
-    transition: padding var(--mt-admin-menu-duration) var(--mt-admin-menu-bezier);
+    transition: padding var(--mt-sidebar-duration) var(--mt-sidebar-bezier);
   }
 
   // Keeps its layout size so the crossfade below never shifts the header
-  .mt-admin-menu__header-logo-wrapper {
+  .mt-sidebar__header-logo-wrapper {
     width: var(--scale-size-40);
     height: var(--scale-size-40);
     flex-shrink: 0;
     position: relative;
     transition:
-      width var(--mt-admin-menu-duration-inner) var(--mt-admin-menu-bezier),
-      height var(--mt-admin-menu-duration-inner) var(--mt-admin-menu-bezier);
+      width var(--mt-sidebar-duration-inner) var(--mt-sidebar-bezier),
+      height var(--mt-sidebar-duration-inner) var(--mt-sidebar-bezier);
   }
 
   // Crossfades with the expand button on hover while collapsed
-  .mt-admin-menu__header-logo-box {
+  .mt-sidebar__header-logo-box {
     position: absolute;
     inset: 0;
     display: flex;
@@ -1212,18 +1206,18 @@ function isNavigationEntryExpanded(entry: MenuTreeEntry) {
     background: var(--color-icon-brand-default);
     border-radius: var(--border-radius-m);
     transition:
-      opacity 0.12s var(--mt-admin-menu-bezier),
-      transform 0.175s var(--mt-admin-menu-bezier),
-      filter 0.175s var(--mt-admin-menu-bezier);
+      opacity 0.12s var(--mt-sidebar-bezier),
+      transform 0.175s var(--mt-sidebar-bezier),
+      filter 0.175s var(--mt-sidebar-bezier);
   }
 
-  .mt-admin-menu__header-logo {
+  .mt-sidebar__header-logo {
     width: var(--scale-size-26);
     height: var(--scale-size-26);
     color: var(--color-static-white);
     transition:
-      width var(--mt-admin-menu-duration-inner) var(--mt-admin-menu-bezier),
-      height var(--mt-admin-menu-duration-inner) var(--mt-admin-menu-bezier);
+      width var(--mt-sidebar-duration-inner) var(--mt-sidebar-bezier),
+      height var(--mt-sidebar-duration-inner) var(--mt-sidebar-bezier);
 
     // The icon kit sizes the inner svg via an id selector, hence !important
     > svg {
@@ -1232,7 +1226,7 @@ function isNavigationEntryExpanded(entry: MenuTreeEntry) {
     }
   }
 
-  .mt-admin-menu__version {
+  .mt-sidebar__version {
     flex: 1 1 auto;
     gap: 0;
     margin-top: calc(-1 * var(--scale-size-1));
@@ -1244,8 +1238,8 @@ function isNavigationEntryExpanded(entry: MenuTreeEntry) {
   }
 
   // Typography comes from mt-text, only the truncation is ours.
-  .mt-admin-menu__shop-name,
-  .mt-admin-menu__title {
+  .mt-sidebar__shop-name,
+  .mt-sidebar__title {
     min-width: 0;
     overflow: hidden;
     white-space: nowrap;
@@ -1253,22 +1247,22 @@ function isNavigationEntryExpanded(entry: MenuTreeEntry) {
     line-height: 1.4;
   }
 
-  .mt-admin-menu__collapse-button {
+  .mt-sidebar__collapse-button {
     flex-shrink: 0;
     overflow: hidden;
 
     // Shrinks out of the header layout; visibility drops it from the tab order
     transition:
-      width 0.25s var(--mt-admin-menu-bezier),
-      visibility 0.25s var(--mt-admin-menu-bezier);
+      width 0.25s var(--mt-sidebar-bezier),
+      visibility 0.25s var(--mt-sidebar-bezier);
   }
 
-  .mt-admin-menu__off-canvas-close {
+  .mt-sidebar__off-canvas-close {
     flex-shrink: 0;
   }
 
   // Scale + blur mask the overlap with the logo so it reads as one morphing element
-  .mt-admin-menu__header-logo-expand-button {
+  .mt-sidebar__header-logo-expand-button {
     position: absolute;
     inset: 0;
     display: flex;
@@ -1295,12 +1289,12 @@ function isNavigationEntryExpanded(entry: MenuTreeEntry) {
 
     // Opacity resolves faster than the transform so the scale motion stays visible
     transition:
-      opacity 0.12s var(--mt-admin-menu-bezier),
-      transform 0.2s var(--mt-admin-menu-bezier),
-      filter 0.2s var(--mt-admin-menu-bezier);
+      opacity 0.12s var(--mt-sidebar-bezier),
+      transform 0.2s var(--mt-sidebar-bezier),
+      filter 0.2s var(--mt-sidebar-bezier);
   }
 
-  .mt-admin-menu__body-container {
+  .mt-sidebar__body-container {
     flex: 1 1 0;
     overflow: hidden;
 
@@ -1308,13 +1302,13 @@ function isNavigationEntryExpanded(entry: MenuTreeEntry) {
     mask-image: linear-gradient(
       to bottom,
       transparent var(--scale-size-4),
-      #000 var(--mt-admin-menu-body-fade),
-      #000 calc(100% - var(--mt-admin-menu-body-fade)),
+      #000 var(--mt-sidebar-body-fade),
+      #000 calc(100% - var(--mt-sidebar-body-fade)),
       transparent calc(100% - var(--scale-size-4))
     );
   }
 
-  .mt-admin-menu__body {
+  .mt-sidebar__body {
     position: relative;
     height: 100%;
     display: flex;
@@ -1322,27 +1316,27 @@ function isNavigationEntryExpanded(entry: MenuTreeEntry) {
     gap: var(--scale-size-16);
 
     // Must live on the scroller: it clips at the padding box, keeping content visible for the mask
-    padding: var(--mt-admin-menu-body-fade) 0;
+    padding: var(--mt-sidebar-body-fade) 0;
     overflow-x: hidden;
     overflow-y: scroll;
     -ms-overflow-style: none;
     -webkit-overflow-scrolling: touch;
-    transition: padding var(--mt-admin-menu-duration) var(--mt-admin-menu-bezier);
+    transition: padding var(--mt-sidebar-duration) var(--mt-sidebar-bezier);
 
     &::-webkit-scrollbar {
       display: none;
     }
   }
 
-  .mt-admin-menu__navigation {
+  .mt-sidebar__navigation {
     white-space: nowrap;
   }
 
-  .mt-admin-menu__navigation-list {
+  .mt-sidebar__navigation-list {
     list-style: none;
   }
 
-  .mt-admin-menu__user-actions-toggle {
+  .mt-sidebar__user-actions-toggle {
     width: 100%;
     position: relative;
     padding: var(--scale-size-8);
@@ -1355,15 +1349,15 @@ function isNavigationEntryExpanded(entry: MenuTreeEntry) {
     border: none;
     border-radius: var(--border-radius-s);
     transition:
-      padding var(--mt-admin-menu-duration-inner) var(--mt-admin-menu-bezier),
-      gap var(--mt-admin-menu-duration-inner) var(--mt-admin-menu-bezier),
-      margin var(--mt-admin-menu-duration-inner) var(--mt-admin-menu-bezier),
+      padding var(--mt-sidebar-duration-inner) var(--mt-sidebar-bezier),
+      gap var(--mt-sidebar-duration-inner) var(--mt-sidebar-bezier),
+      margin var(--mt-sidebar-duration-inner) var(--mt-sidebar-bezier),
       background-color 0.15s ease-out;
 
     &:hover {
       background-color: var(--color-interaction-secondary-hover);
 
-      .mt-admin-menu__user-actions-toggle-icon-wrapper {
+      .mt-sidebar__user-actions-toggle-icon-wrapper {
         gap: var(--scale-size-8);
       }
     }
@@ -1373,7 +1367,7 @@ function isNavigationEntryExpanded(entry: MenuTreeEntry) {
     &.is--active:hover {
       background-color: var(--color-interaction-secondary-pressed);
 
-      .mt-admin-menu__user-actions-toggle-icon-wrapper {
+      .mt-sidebar__user-actions-toggle-icon-wrapper {
         gap: var(--scale-size-8);
       }
     }
@@ -1382,7 +1376,7 @@ function isNavigationEntryExpanded(entry: MenuTreeEntry) {
       background-color: var(--color-background-brand-default);
     }
 
-    .mt-admin-menu__user-actions-toggle-icon-wrapper {
+    .mt-sidebar__user-actions-toggle-icon-wrapper {
       width: var(--scale-size-20);
       height: var(--scale-size-20);
       flex-shrink: 0;
@@ -1399,12 +1393,12 @@ function isNavigationEntryExpanded(entry: MenuTreeEntry) {
 
       // Collapse via width instead of display none
       transition:
-        width var(--mt-admin-menu-duration-inner) var(--mt-admin-menu-bezier),
+        width var(--mt-sidebar-duration-inner) var(--mt-sidebar-bezier),
         gap 0.15s ease;
     }
   }
 
-  .mt-admin-menu__avatar {
+  .mt-sidebar__avatar {
     --mt-avatar-size: var(--scale-size-36);
 
     display: flex;
@@ -1412,11 +1406,11 @@ function isNavigationEntryExpanded(entry: MenuTreeEntry) {
     justify-content: center;
     flex-shrink: 0;
     transition:
-      transform var(--mt-admin-menu-duration-inner) var(--mt-admin-menu-bezier),
+      transform var(--mt-sidebar-duration-inner) var(--mt-sidebar-bezier),
       opacity 0.1s ease;
   }
 
-  .mt-admin-menu__user-custom-fields {
+  .mt-sidebar__user-custom-fields {
     white-space: nowrap;
     width: 100%;
     min-width: 0;
@@ -1425,7 +1419,7 @@ function isNavigationEntryExpanded(entry: MenuTreeEntry) {
   }
 
   &.is--collapsed {
-    .mt-admin-menu__collapse-button {
+    .mt-sidebar__collapse-button {
       width: 0;
       min-width: 0;
       padding: 0;
@@ -1436,14 +1430,14 @@ function isNavigationEntryExpanded(entry: MenuTreeEntry) {
       transition: none;
     }
 
-    .mt-admin-menu__user-actions-toggle {
+    .mt-sidebar__user-actions-toggle {
       padding: 0;
       margin-bottom: var(--scale-size-8);
 
       &:hover:not(.is--active) {
         background: transparent;
 
-        .mt-admin-menu__avatar {
+        .mt-sidebar__avatar {
           opacity: 0.8;
         }
       }
@@ -1451,7 +1445,7 @@ function isNavigationEntryExpanded(entry: MenuTreeEntry) {
       &:focus-visible {
         outline: none;
 
-        .mt-admin-menu__avatar {
+        .mt-sidebar__avatar {
           outline: 2px solid var(--color-border-brand-default);
           outline-offset: 2px;
         }
@@ -1464,54 +1458,54 @@ function isNavigationEntryExpanded(entry: MenuTreeEntry) {
       }
     }
 
-    .mt-admin-menu__user-actions-toggle-icon-wrapper {
+    .mt-sidebar__user-actions-toggle-icon-wrapper {
       width: 0;
     }
 
-    .mt-admin-menu__navigation-link {
+    .mt-sidebar__navigation-link {
       width: var(--scale-size-36);
       height: var(--scale-size-36);
     }
 
     @media not screen and (max-width: 1280px) {
-      .mt-admin-menu__header {
+      .mt-sidebar__header {
         padding: 0;
         margin: 0;
       }
     }
 
-    .mt-admin-menu__header-logo-wrapper {
+    .mt-sidebar__header-logo-wrapper {
       width: var(--scale-size-36);
       height: var(--scale-size-36);
     }
 
-    .mt-admin-menu__header-logo {
+    .mt-sidebar__header-logo {
       width: var(--scale-size-24);
       height: var(--scale-size-24);
     }
 
-    &:hover .mt-admin-menu__header-logo-box,
-    &:has(.mt-admin-menu__header-logo-expand-button:focus-visible) .mt-admin-menu__header-logo-box {
+    &:hover .mt-sidebar__header-logo-box,
+    &:has(.mt-sidebar__header-logo-expand-button:focus-visible) .mt-sidebar__header-logo-box {
       opacity: 0;
       transform: scale(0.85);
       filter: blur(2px);
     }
 
-    &:hover .mt-admin-menu__header-logo-expand-button,
-    .mt-admin-menu__header-logo-expand-button:focus-visible {
+    &:hover .mt-sidebar__header-logo-expand-button,
+    .mt-sidebar__header-logo-expand-button:focus-visible {
       opacity: 1;
       transform: scale(1);
       filter: blur(0);
     }
 
     &.is--toggling:hover {
-      .mt-admin-menu__header-logo-box {
+      .mt-sidebar__header-logo-box {
         opacity: 1;
         transform: none;
         filter: none;
       }
 
-      .mt-admin-menu__header-logo-expand-button {
+      .mt-sidebar__header-logo-expand-button {
         opacity: 0;
       }
     }
@@ -1530,29 +1524,29 @@ function isNavigationEntryExpanded(entry: MenuTreeEntry) {
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .mt-admin-menu,
-  .mt-admin-menu .hide-on-collapse,
-  .mt-admin-menu .mt-admin-menu__body,
-  .mt-admin-menu .mt-admin-menu__header,
-  .mt-admin-menu .mt-admin-menu__header-logo,
-  .mt-admin-menu .mt-admin-menu__header-logo-box,
-  .mt-admin-menu .mt-admin-menu__header-logo-expand-button,
-  .mt-admin-menu .mt-admin-menu__user-actions-toggle,
-  .mt-admin-menu .mt-admin-menu__user-actions-toggle-icon-wrapper,
-  .mt-admin-menu__backdrop-enter-active,
-  .mt-admin-menu__backdrop-leave-active {
+  .mt-sidebar,
+  .mt-sidebar .hide-on-collapse,
+  .mt-sidebar .mt-sidebar__body,
+  .mt-sidebar .mt-sidebar__header,
+  .mt-sidebar .mt-sidebar__header-logo,
+  .mt-sidebar .mt-sidebar__header-logo-box,
+  .mt-sidebar .mt-sidebar__header-logo-expand-button,
+  .mt-sidebar .mt-sidebar__user-actions-toggle,
+  .mt-sidebar .mt-sidebar__user-actions-toggle-icon-wrapper,
+  .mt-sidebar__backdrop-enter-active,
+  .mt-sidebar__backdrop-leave-active {
     transition: none;
   }
 
-  .mt-admin-menu__flyout-content,
-  .mt-admin-menu__flyout-content.is--closing {
+  .mt-sidebar__flyout-content,
+  .mt-sidebar__flyout-content.is--closing {
     animation: none;
   }
 }
 
-.mt-admin-menu__flyout-content {
+.mt-sidebar__flyout-content {
   // Aligns the first flyout item with the hovered entry: title height + padding + border
-  --mt-admin-menu-flyout-shift: translateY(
+  --mt-sidebar-flyout-shift: translateY(
     calc(-1 * (var(--scale-size-36) + var(--scale-size-6) + 1px))
   );
 
@@ -1564,47 +1558,47 @@ function isNavigationEntryExpanded(entry: MenuTreeEntry) {
   border: 1px solid var(--color-border-secondary-default);
   background: var(--color-elevation-surface-raised);
   box-shadow: 0 6px 12px -8px var(--color-elevation-shadow-default);
-  transform: var(--mt-admin-menu-flyout-shift);
+  transform: var(--mt-sidebar-flyout-shift);
   transform-origin: left center;
-  animation: mt-admin-menu-flyout-in 0.1s ease;
+  animation: mt-sidebar-flyout-in 0.1s ease;
 
   &.is--closing {
-    animation: mt-admin-menu-flyout-out 0.1s ease forwards;
+    animation: mt-sidebar-flyout-out 0.1s ease forwards;
   }
 }
 
-@keyframes mt-admin-menu-flyout-in {
+@keyframes mt-sidebar-flyout-in {
   from {
     opacity: 0;
-    transform: var(--mt-admin-menu-flyout-shift) scale(0.98);
+    transform: var(--mt-sidebar-flyout-shift) scale(0.98);
   }
 
   to {
     opacity: 1;
-    transform: var(--mt-admin-menu-flyout-shift) scale(1);
+    transform: var(--mt-sidebar-flyout-shift) scale(1);
   }
 }
 
-@keyframes mt-admin-menu-flyout-out {
+@keyframes mt-sidebar-flyout-out {
   from {
     opacity: 1;
-    transform: var(--mt-admin-menu-flyout-shift) scale(1);
+    transform: var(--mt-sidebar-flyout-shift) scale(1);
   }
 
   to {
     opacity: 0;
-    transform: var(--mt-admin-menu-flyout-shift) scale(0.95);
+    transform: var(--mt-sidebar-flyout-shift) scale(0.95);
   }
 }
 
-.mt-admin-menu__flyout-list {
+.mt-sidebar__flyout-list {
   list-style: none;
   margin: 0;
   padding: 0;
 }
 
 // Typography comes from mt-text, layout and truncation are ours.
-.mt-admin-menu__flyout-title {
+.mt-sidebar__flyout-title {
   height: var(--scale-size-36);
   padding: 0 var(--scale-size-6) 0 var(--scale-size-10);
   display: flex;
