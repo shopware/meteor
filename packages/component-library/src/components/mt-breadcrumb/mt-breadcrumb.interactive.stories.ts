@@ -2,7 +2,6 @@ import { within, expect, userEvent, waitFor } from "@storybook/test";
 
 import meta, {
   Collapsed,
-  CustomContent,
   Default,
   LongLabel,
   Sizes,
@@ -50,11 +49,6 @@ export const VisualTestCollapsed: MtBreadcrumbStory = {
 export const VisualTestWrap: MtBreadcrumbStory = {
   ...Wrap,
   name: "Wrap crumbs on a narrow container",
-};
-
-export const VisualTestCustomContent: MtBreadcrumbStory = {
-  ...CustomContent,
-  name: "Render custom crumb content",
 };
 
 export const TestNavHasAccessibleName: MtBreadcrumbStory = {

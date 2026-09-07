@@ -45,7 +45,7 @@
             v-bind="linkAttributes(item)"
             @click="$emit('click', item, $event)"
           >
-            <slot name="item" :item="item" :index="index" :current="false">{{ item.label }}</slot>
+            {{ item.label }}
           </component>
 
           <span
@@ -53,9 +53,7 @@
             class="mt-breadcrumb__label"
             :aria-current="isCurrent(index) ? 'page' : undefined"
           >
-            <slot name="item" :item="item" :index="index" :current="isCurrent(index)">
-              {{ item.label }}
-            </slot>
+            {{ item.label }}
           </span>
         </li>
       </template>
@@ -119,13 +117,6 @@ const props = withDefaults(
 
 defineEmits<{
   (e: "click", item: BreadcrumbItem, event: MouseEvent): void;
-}>();
-
-defineSlots<{
-  /**
-   * Replaces the label of a crumb. Receives the item, its index and whether it is the current page.
-   */
-  item?: (props: { item: BreadcrumbItem; index: number; current: boolean }) => unknown;
 }>();
 
 const { t } = useI18n({
