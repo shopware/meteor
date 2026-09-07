@@ -1,16 +1,12 @@
 import type { Meta, StoryObj } from "@storybook/vue3";
-import MtBreadcrumb from "./mt-breadcrumb.vue";
-import MtBreadcrumbItem from "./mt-breadcrumb-item.vue";
-import MtBreadcrumbLink from "./mt-breadcrumb-link.vue";
-import MtBreadcrumbSeparator from "./mt-breadcrumb-separator.vue";
+import MtText from "../mt-text/mt-text.vue";
+import MtBreadcrumb, { type BreadcrumbItem } from "./mt-breadcrumb.vue";
 
 export type MtBreadcrumbMeta = Meta<typeof MtBreadcrumb>;
 
 const sharedComponents = {
   MtBreadcrumb,
-  MtBreadcrumbItem,
-  MtBreadcrumbLink,
-  MtBreadcrumbSeparator,
+  MtText,
 };
 
 const createRender = (template: string) => (args: Record<string, unknown>) => ({
@@ -30,74 +26,68 @@ const createStory = (template: string) => ({
   },
 });
 
+const defaultItems: BreadcrumbItem[] = [
+  { label: "Home", to: "#" },
+  { label: "Products", to: "#" },
+  { label: "Shoes" },
+];
+
+const longLabelItems: BreadcrumbItem[] = [
+  { label: "Home", to: "#" },
+  { label: "Clothing and accessories for every season of the year", to: "#" },
+  { label: "Shoes" },
+];
+
+const collapsedItems: BreadcrumbItem[] = [
+  { label: "Home", to: "#" },
+  { label: "Catalog", to: "#" },
+  { label: "Clothing and accessories for every season", to: "#" },
+  { label: "Shoes", to: "#" },
+  { label: "Sneakers", to: "#" },
+  { label: "Running shoes" },
+];
+
 const defaultTemplate = `
-<mt-breadcrumb v-bind="args">
-  <mt-breadcrumb-link as="a" to="#">Home</mt-breadcrumb-link>
-  <mt-breadcrumb-separator />
-  <mt-breadcrumb-link as="a" to="#">Products</mt-breadcrumb-link>
-  <mt-breadcrumb-separator />
-  <mt-breadcrumb-item current>Shoes</mt-breadcrumb-item>
-</mt-breadcrumb>
+<mt-breadcrumb v-bind="args" link-as="a" />
 `;
 
 const sizesTemplate = `
 <div style="display: flex; flex-direction: column; gap: 16px;">
-  <mt-breadcrumb size="xs">
-    <mt-breadcrumb-link as="a" to="#">Home</mt-breadcrumb-link>
-    <mt-breadcrumb-separator />
-    <mt-breadcrumb-link as="a" to="#">Products</mt-breadcrumb-link>
-    <mt-breadcrumb-separator />
-    <mt-breadcrumb-item current>Shoes</mt-breadcrumb-item>
-  </mt-breadcrumb>
-
-  <mt-breadcrumb size="s">
-    <mt-breadcrumb-link as="a" to="#">Home</mt-breadcrumb-link>
-    <mt-breadcrumb-separator />
-    <mt-breadcrumb-link as="a" to="#">Products</mt-breadcrumb-link>
-    <mt-breadcrumb-separator />
-    <mt-breadcrumb-item current>Shoes</mt-breadcrumb-item>
-  </mt-breadcrumb>
+  <mt-breadcrumb :items="args.items" size="xs" link-as="a" />
+  <mt-breadcrumb :items="args.items" size="s" link-as="a" />
 </div>
 `;
 
-const longLabelTemplate = `
-<div style="width: 480px; max-width: 100%; resize: horizontal; overflow: hidden; border: 1px dashed var(--color-border-primary-default); padding: 8px;">
-  <mt-breadcrumb v-bind="args">
-    <mt-breadcrumb-link as="a" to="#">Home</mt-breadcrumb-link>
-    <mt-breadcrumb-separator />
-    <mt-breadcrumb-link as="a" to="#">Clothing and accessories for every season of the year</mt-breadcrumb-link>
-    <mt-breadcrumb-separator />
-    <mt-breadcrumb-item current>Shoes</mt-breadcrumb-item>
-  </mt-breadcrumb>
+const resizableTemplate = (width: number) => `
+<div style="width: ${width}px; max-width: 100%; resize: horizontal; overflow: hidden; border: 1px dashed var(--color-border-primary-default); padding: 8px;">
+  <mt-breadcrumb v-bind="args" link-as="a" />
 </div>
 `;
 
-const collapsedTemplate = `
-<div style="width: 360px; max-width: 100%; resize: horizontal; overflow: hidden; border: 1px dashed var(--color-border-primary-default); padding: 8px;">
-  <mt-breadcrumb v-bind="args">
-    <mt-breadcrumb-link as="a" to="#">Home</mt-breadcrumb-link>
-    <mt-breadcrumb-separator />
-    <mt-breadcrumb-link as="a" to="#">Catalog</mt-breadcrumb-link>
-    <mt-breadcrumb-separator />
-    <mt-breadcrumb-link as="a" to="#">Clothing and accessories for every season</mt-breadcrumb-link>
-    <mt-breadcrumb-separator />
-    <mt-breadcrumb-link as="a" to="#">Shoes</mt-breadcrumb-link>
-    <mt-breadcrumb-separator />
-    <mt-breadcrumb-link as="a" to="#">Sneakers</mt-breadcrumb-link>
-    <mt-breadcrumb-separator />
-    <mt-breadcrumb-item current>Running shoes</mt-breadcrumb-item>
-  </mt-breadcrumb>
-</div>
+const customContentTemplate = `
+<mt-breadcrumb v-bind="args" link-as="a">
+  <template #item="{ item, current }">
+    {{ item.label }}
+    <mt-text v-if="current" as="span" size="xs" color="color-text-tertiary-default">
+      (24 items)
+    </mt-text>
+  </template>
+</mt-breadcrumb>
 `;
 
 const meta: MtBreadcrumbMeta = {
   title: "Components/Breadcrumb",
   component: MtBreadcrumb,
   args: {
+    items: defaultItems,
     size: "xs",
     overflow: "collapse",
   },
   argTypes: {
+    items: {
+      control: { type: "object" },
+      description: "The crumbs from the root to the current page.",
+    },
     size: {
       control: { type: "select" },
       options: ["xs", "s"],
@@ -107,11 +97,15 @@ const meta: MtBreadcrumbMeta = {
       control: { type: "select" },
       options: ["collapse", "wrap"],
       description:
-        "`collapse` hides middle crumbs behind an ellipsis when space runs out, `wrap` lets crumbs flow onto further lines.",
+        "`collapse` shrinks labels and then hides middle crumbs behind an ellipsis when space runs out, `wrap` lets crumbs flow onto further lines.",
     },
     ariaLabel: {
       control: { type: "text" },
       description: "The accessible name of the navigation landmark.",
+    },
+    linkAs: {
+      control: { type: "text" },
+      description: "The element or component that renders a link crumb.",
     },
   },
 };
@@ -128,17 +122,29 @@ export const Sizes: MtBreadcrumbStory = {
 };
 
 export const LongLabel: MtBreadcrumbStory = {
-  ...createStory(longLabelTemplate),
+  ...createStory(resizableTemplate(480)),
   name: "Long label",
+  args: {
+    items: longLabelItems,
+  },
 };
 
 export const Collapsed: MtBreadcrumbStory = {
-  ...createStory(collapsedTemplate),
+  ...createStory(resizableTemplate(360)),
+  args: {
+    items: collapsedItems,
+  },
 };
 
 export const Wrap: MtBreadcrumbStory = {
-  ...createStory(collapsedTemplate),
+  ...createStory(resizableTemplate(360)),
   args: {
+    items: collapsedItems,
     overflow: "wrap",
   },
+};
+
+export const CustomContent: MtBreadcrumbStory = {
+  ...createStory(customContentTemplate),
+  name: "Custom content",
 };

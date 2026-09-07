@@ -1,10 +1,7 @@
 import { render, screen } from "@testing-library/vue";
 import { userEvent } from "@testing-library/user-event";
 import { defineComponent } from "vue";
-import MtBreadcrumb from "./mt-breadcrumb.vue";
-import MtBreadcrumbItem from "./mt-breadcrumb-item.vue";
-import MtBreadcrumbLink from "./mt-breadcrumb-link.vue";
-import MtBreadcrumbSeparator from "./mt-breadcrumb-separator.vue";
+import MtBreadcrumb, { type BreadcrumbItem } from "./mt-breadcrumb.vue";
 
 const RouterLinkStub = defineComponent({
   props: {
@@ -13,37 +10,20 @@ const RouterLinkStub = defineComponent({
   template: `<a :href="typeof to === 'string' ? to : '/resolved/' + to.name"><slot /></a>`,
 });
 
-const defaultTemplate = `
-<mt-breadcrumb v-bind="props">
-  <mt-breadcrumb-link as="a" to="#home">Home</mt-breadcrumb-link>
-  <mt-breadcrumb-separator />
-  <mt-breadcrumb-link as="a" to="#products" @click="onClick">Products</mt-breadcrumb-link>
-  <mt-breadcrumb-separator />
-  <mt-breadcrumb-item current>Shoes</mt-breadcrumb-item>
-</mt-breadcrumb>
-`;
+const items: BreadcrumbItem[] = [
+  { label: "Home", to: "#home", as: "a" },
+  { label: "Products", to: "#products", as: "a" },
+  { label: "Shoes" },
+];
 
-function renderBreadcrumb({
-  template = defaultTemplate,
-  props = {},
-  onClick = vi.fn(),
-}: {
-  template?: string;
-  props?: Record<string, unknown>;
-  onClick?: () => void;
-} = {}) {
-  return render(
-    {
-      components: { MtBreadcrumb, MtBreadcrumbItem, MtBreadcrumbLink, MtBreadcrumbSeparator },
-      setup: () => ({ props, onClick }),
-      template,
+function renderBreadcrumb(props: Record<string, unknown> = {}, slots: Record<string, string> = {}) {
+  return render(MtBreadcrumb, {
+    props: { items, ...props },
+    slots,
+    global: {
+      components: { "router-link": RouterLinkStub },
     },
-    {
-      global: {
-        components: { "router-link": RouterLinkStub },
-      },
-    },
-  );
+  });
 }
 
 async function nextFrame() {
@@ -61,13 +41,13 @@ describe("mt-breadcrumb", () => {
 
   it("uses the given aria label for the navigation landmark", () => {
     // ARRANGE
-    renderBreadcrumb({ props: { ariaLabel: "Where you are" } });
+    renderBreadcrumb({ ariaLabel: "Where you are" });
 
     // ASSERT
     expect(screen.getByRole("navigation", { name: "Where you are" })).toBeInTheDocument();
   });
 
-  it("exposes only the crumbs as list items", () => {
+  it("exposes one list item per crumb", () => {
     // ARRANGE
     renderBreadcrumb();
 
@@ -76,12 +56,12 @@ describe("mt-breadcrumb", () => {
     expect(screen.getAllByRole("listitem")).toHaveLength(3);
   });
 
-  it("renders a slash as the default separator", () => {
+  it("renders a slash between two crumbs that is hidden from assistive technology", () => {
     // ARRANGE
     const { container } = renderBreadcrumb();
 
     // ASSERT
-    const separators = container.querySelectorAll('[data-mt-breadcrumb="separator"]');
+    const separators = container.querySelectorAll(".mt-breadcrumb__separator");
     expect(separators).toHaveLength(2);
     separators.forEach((separator) => {
       expect(separator).toHaveTextContent("/");
@@ -89,24 +69,19 @@ describe("mt-breadcrumb", () => {
     });
   });
 
-  it("renders a plain anchor with an href", () => {
+  it("renders crumbs with a destination as links", () => {
     // ARRANGE
     renderBreadcrumb();
 
     // ASSERT
     expect(screen.getByRole("link", { name: "Home" })).toHaveAttribute("href", "#home");
+    expect(screen.getByRole("link", { name: "Products" })).toHaveAttribute("href", "#products");
   });
 
   it("lets router-link resolve the destination by default", () => {
     // ARRANGE
     renderBreadcrumb({
-      template: `
-        <mt-breadcrumb>
-          <mt-breadcrumb-link :to="{ name: 'sw.product.index' }">Products</mt-breadcrumb-link>
-          <mt-breadcrumb-separator />
-          <mt-breadcrumb-item current>Shoes</mt-breadcrumb-item>
-        </mt-breadcrumb>
-      `,
+      items: [{ label: "Products", to: { name: "sw.product.index" } }, { label: "Shoes" }],
     });
 
     // ASSERT
@@ -116,36 +91,46 @@ describe("mt-breadcrumb", () => {
     );
   });
 
-  it("emits a click event when a link is clicked", async () => {
+  it("renders the last crumb as the current page even when it has a destination", () => {
     // ARRANGE
-    const onClick = vi.fn();
-    renderBreadcrumb({ onClick });
+    renderBreadcrumb({
+      items: [
+        { label: "Home", to: "#home", as: "a" },
+        { label: "Shoes", to: "#shoes", as: "a" },
+      ],
+    });
+
+    // ASSERT
+    expect(screen.queryByRole("link", { name: "Shoes" })).not.toBeInTheDocument();
+    expect(screen.getByText("Shoes")).toHaveAttribute("aria-current", "page");
+  });
+
+  it("renders a crumb without a destination as plain text", () => {
+    // ARRANGE
+    renderBreadcrumb({
+      items: [{ label: "Home", to: "#home", as: "a" }, { label: "Catalog" }, { label: "Shoes" }],
+    });
+
+    // ASSERT
+    expect(screen.queryByRole("link", { name: "Catalog" })).not.toBeInTheDocument();
+    expect(screen.getByText("Catalog")).not.toHaveAttribute("aria-current");
+    expect(screen.getByText("Shoes")).toHaveAttribute("aria-current", "page");
+  });
+
+  it("emits the clicked item", async () => {
+    // ARRANGE
+    const handler = vi.fn();
+    renderBreadcrumb({ onClick: handler });
 
     // ACT
     await userEvent.click(screen.getByRole("link", { name: "Products" }));
 
     // ASSERT
-    expect(onClick).toHaveBeenCalledOnce();
+    expect(handler).toHaveBeenCalledOnce();
+    expect(handler).toHaveBeenCalledWith(items[1], expect.any(MouseEvent));
   });
 
-  it("marks the current crumb for assistive technology", () => {
-    // ARRANGE
-    renderBreadcrumb({
-      template: `
-        <mt-breadcrumb>
-          <mt-breadcrumb-item>Catalog</mt-breadcrumb-item>
-          <mt-breadcrumb-separator />
-          <mt-breadcrumb-item current>Shoes</mt-breadcrumb-item>
-        </mt-breadcrumb>
-      `,
-    });
-
-    // ASSERT
-    expect(screen.getByText("Shoes")).toHaveAttribute("aria-current", "page");
-    expect(screen.getByText("Catalog")).not.toHaveAttribute("aria-current");
-  });
-
-  it("does not put the current crumb into the tab order", async () => {
+  it("does not put the current page into the tab order", async () => {
     // ARRANGE
     renderBreadcrumb();
 
@@ -159,6 +144,48 @@ describe("mt-breadcrumb", () => {
     expect(document.body).toHaveFocus();
   });
 
+  it("renders custom crumb content through the item slot", () => {
+    // ARRANGE
+    renderBreadcrumb(
+      {},
+      {
+        item: `<template #item="{ item, index, current }">{{ index + 1 }}. {{ item.label }}{{ current ? " (you are here)" : "" }}</template>`,
+      },
+    );
+
+    // ASSERT
+    expect(screen.getByRole("link", { name: "1. Home" })).toBeInTheDocument();
+    expect(screen.getByText("3. Shoes (you are here)")).toHaveAttribute("aria-current", "page");
+  });
+
+  it("renders nothing without items", () => {
+    // ARRANGE
+    const { container } = renderBreadcrumb({ items: [] });
+
+    // ASSERT
+    expect(screen.queryByRole("navigation")).not.toBeInTheDocument();
+    expect(container.querySelector("nav")).toBeNull();
+  });
+
+  it("renders every link with the element given by linkAs unless the item sets as", () => {
+    // ARRANGE
+    renderBreadcrumb({
+      linkAs: "a",
+      items: [
+        { label: "Home", to: "#home" },
+        { label: "Products", to: { name: "sw.product.index" }, as: "router-link" },
+        { label: "Shoes" },
+      ],
+    });
+
+    // ASSERT
+    expect(screen.getByRole("link", { name: "Home" })).toHaveAttribute("href", "#home");
+    expect(screen.getByRole("link", { name: "Products" })).toHaveAttribute(
+      "href",
+      "/resolved/sw.product.index",
+    );
+  });
+
   it("renders in the xs size by default", () => {
     // ARRANGE
     renderBreadcrumb();
@@ -169,7 +196,7 @@ describe("mt-breadcrumb", () => {
 
   it("applies the given size", () => {
     // ARRANGE
-    renderBreadcrumb({ props: { size: "s" } });
+    renderBreadcrumb({ size: "s" });
 
     // ASSERT
     expect(screen.getByRole("navigation")).toHaveClass("mt-breadcrumb--size-s");
@@ -183,27 +210,10 @@ describe("mt-breadcrumb", () => {
     await nextFrame();
 
     // ASSERT
-    expect(container.querySelector('[data-mt-breadcrumb="ellipsis"]')).toHaveAttribute(
-      "data-collapsed",
+    expect(container.querySelector(".mt-breadcrumb__ellipsis")).toHaveClass(
+      "mt-breadcrumb__ellipsis--collapsed",
     );
-    container.querySelectorAll('[data-mt-breadcrumb="item"]').forEach((crumb) => {
-      expect(crumb).not.toHaveAttribute("data-collapsed");
-    });
-  });
-
-  it("marks the first crumb and the separator after it as leading", async () => {
-    // ARRANGE
-    const { container } = renderBreadcrumb();
-
-    // ACT
-    await nextFrame();
-
-    // ASSERT
-    const children = Array.from(container.querySelector("ol")!.children);
-    const leading = children.filter((child) => child.hasAttribute("data-leading"));
-    expect(leading).toHaveLength(2);
-    expect(leading[0]).toHaveTextContent("Home");
-    expect(leading[1]).toHaveAttribute("data-mt-breadcrumb", "separator");
+    expect(container.querySelector(".mt-breadcrumb__crumb--collapsed")).not.toBeInTheDocument();
   });
 
   it("writes the natural width of every crumb as a custom property", async () => {
@@ -214,14 +224,14 @@ describe("mt-breadcrumb", () => {
     await nextFrame();
 
     // ASSERT
-    container.querySelectorAll<HTMLElement>('[data-mt-breadcrumb="item"]').forEach((crumb) => {
+    container.querySelectorAll<HTMLElement>(".mt-breadcrumb__crumb").forEach((crumb) => {
       expect(crumb.style.getPropertyValue("--mt-breadcrumb-natural-width")).toBe("0px");
     });
   });
 
   it("switches to wrapping when overflow is set to wrap", () => {
     // ARRANGE
-    renderBreadcrumb({ props: { overflow: "wrap" } });
+    renderBreadcrumb({ overflow: "wrap" });
 
     // ASSERT
     expect(screen.getByRole("navigation")).toHaveClass("mt-breadcrumb--overflow-wrap");
