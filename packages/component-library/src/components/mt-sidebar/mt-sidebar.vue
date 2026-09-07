@@ -274,13 +274,6 @@ const props = defineProps({
     default: undefined,
   },
   /**
-   * Paints the top level icons in the `color` of their entry.
-   */
-  moduleIconColors: {
-    type: Boolean,
-    default: false,
-  },
-  /**
    * Viewport width in px at and below which the menu turns into the mobile off-canvas panel.
    */
   mobileBreakpoint: {
@@ -384,7 +377,6 @@ provide(SIDEBAR_CONTEXT, {
   route: computed(() => props.route),
   router: computed(() => props.router),
   linkComponent: computed(() => props.linkComponent),
-  moduleIconColors: computed(() => props.moduleIconColors),
   hasExpandedBranches: computed(() => expandedEntries.value.length > 0),
 });
 

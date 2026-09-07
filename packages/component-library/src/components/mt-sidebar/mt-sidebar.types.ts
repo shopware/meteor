@@ -20,8 +20,6 @@ export interface SidebarEntry {
   position?: number;
   /** Icon name of the meteor icon kit, e.g. `regular-products`. Top level only. */
   icon?: string;
-  /** Module color used for the icon when `moduleIconColors` is enabled. */
-  color?: string;
   /** Route params, e.g. to disambiguate entries sharing a route name. */
   params?: Record<string, unknown>;
   /** External URL. Rendered as a plain anchor when no `path` is set. */

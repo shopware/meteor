@@ -3,7 +3,6 @@
     v-if="showMenuItem && hasCollapsibleSubtree"
     as="li"
     :class="collapsibleLiClass"
-    :style="moduleColorStyle"
     :aria-current="rowActive ? 'page' : 'false'"
     :open="collapsibleOpen"
     @update:open="onCollapsibleOpenUpdate"
@@ -24,7 +23,6 @@
           :size="iconSize"
           class="mt-sidebar__navigation-link-icon"
           :name="navigationIconName"
-          :color="navigationIconColor"
         />
 
         <span
@@ -94,7 +92,6 @@
               :size="iconSize"
               class="mt-sidebar__navigation-link-icon"
               :name="navigationIconName"
-              :color="navigationIconColor"
             />
 
             <span
@@ -285,18 +282,6 @@ const childRouteActive = computed(
   () => children.value.length > 0 && submenuVisuallyOpen.value && hasActiveChild.value,
 );
 
-// Undefined leaves the icon to the stylesheet, which also owns the active state color
-const navigationIconColor = computed(() =>
-  context.moduleIconColors.value ? props.entry.color : undefined,
-);
-
-// Inherited by the sub items, which mark their active state with the parent module color
-const moduleColorStyle = computed(() =>
-  navigationIconColor.value
-    ? { "--mt-sidebar-module-color": navigationIconColor.value }
-    : undefined,
-);
-
 const navigationIconName = computed(() =>
   getIconName(props.entry.icon, rowActive.value || childRouteActive.value),
 );
@@ -324,7 +309,6 @@ const collapsibleLiClass = computed(() => [
     "is--entry-expanded": collapsibleOpen.value,
     "is--child-active": childRouteActive.value,
     "is--flyout-enabled": props.flyoutActive,
-    "is--module-colored": !!navigationIconColor.value,
   },
 ]);
 
@@ -334,7 +318,6 @@ const leafLiClass = computed(() => [
   {
     "is--entry-expanded": submenuVisuallyOpen.value,
     "is--child-active": childRouteActive.value,
-    "is--module-colored": !!navigationIconColor.value,
   },
 ]);
 
@@ -723,38 +706,6 @@ $nesting-line-indent: 36px;
     > .mt-sidebar__navigation-link.router-link-active
     .mt-sidebar__collapsible-text {
     color: var(--color-icon-brand-default);
-  }
-}
-
-// With module colors the icon carries the accent, so the active row drops the brand tint for the
-// neutral hover grey. Level 1 only, the rows that actually show a colored icon.
-.navigation-list-item__level-1.is--module-colored > .mt-sidebar__navigation-item-row {
-  > .mt-sidebar__navigation-link.router-link-active {
-    background: var(--color-interaction-secondary-hover);
-    color: var(--color-text-primary-default);
-
-    .mt-sidebar__collapsible-text {
-      color: var(--color-text-primary-default);
-    }
-  }
-}
-
-// An active sub item picks up the same neutral background as its colored parent row and keeps
-// the regular text color, so only the marker signals the active state.
-.navigation-list-item__level-1.is--module-colored .navigation-list-item--nested {
-  > .mt-sidebar__navigation-item-row > .mt-sidebar__navigation-link.router-link-active {
-    background: var(--color-interaction-secondary-hover);
-    color: var(--color-text-primary-default);
-
-    .mt-sidebar__collapsible-text {
-      color: var(--color-text-primary-default);
-    }
-
-    // The halo matches the row background so the line reads against it
-    &::after {
-      background: var(--mt-sidebar-module-color, var(--color-icon-brand-default));
-      outline-color: var(--color-interaction-secondary-hover);
-    }
   }
 }
 

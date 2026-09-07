@@ -32,7 +32,6 @@ sidebar renders only the navigation and the collapse toggle.
 | `route`, `router`   | Current route and router (duck-typed, Vue Router compatible). Highlight the active entry and open its branch.                     |
 | `linkComponent`     | Component rendering the links, receives the route location as `to`. Defaults to `router-link` like `mt-link`.                     |
 | `title`, `subtitle` | Heading next to the logo.                                                                                                         |
-| `moduleIconColors`  | Paints the top level icons in the `color` of their entry.                                                                         |
 | `mobileBreakpoint`  | Viewport width in px at and below which the sidebar becomes an off-canvas panel. Default 1280.                                    |
 
 ### Models
@@ -80,7 +79,6 @@ Shopware couplings replaced during the port:
 | `session` store user, `userService`, `sw-avatar`, `sw-version` | `footer` slot                                             |
 | `systemConfigApiService` shop name, hardcoded logo             | `title`, `subtitle` props, `logo` slot                    |
 | `loginService.logoutSso`, notification cleanup                 | `footer` slot                                             |
-| `useModuleIconColors`                                          | `moduleIconColors` prop                                   |
 | `$device.getViewportWidth()`                                   | `window.innerWidth`, `mobileBreakpoint` prop              |
 | Twig blocks                                                    | Slots                                                     |
 
