@@ -11,18 +11,16 @@
     ref="menuElement"
     class="mt-sidebar"
     :class="sidebarClasses"
-    :aria-expanded="isExpanded ? 'true' : 'false'"
+    :data-expanded="isExpanded"
     :inert="isMobileViewport && !offCanvasOpen"
   >
     <div class="mt-sidebar__header">
-      <div class="mt-sidebar__header-logo-wrapper">
-        <div class="mt-sidebar__header-logo-box">
-          <!-- Sized via CSS: 24px on mobile, 26px on desktop. -->
-          <mt-icon
-            class="mt-sidebar__header-logo"
-            name="solid-shopware"
-            :aria-label="t('projectName')"
-          />
+      <div
+        class="mt-sidebar__header-logo-wrapper"
+        :class="{ 'mt-sidebar__header-logo-wrapper--empty': !$slots.logo }"
+      >
+        <div v-if="$slots.logo" class="mt-sidebar__header-logo-box">
+          <slot name="logo" />
         </div>
 
         <button
@@ -36,19 +34,29 @@
         </button>
       </div>
 
-      <div class="collapsible-text hide-on-collapse mt-sidebar__version">
+      <div
+        v-if="title || subtitle"
+        class="mt-sidebar__collapsible-text mt-sidebar__hide-on-collapse mt-sidebar__heading"
+      >
         <mt-text
+          v-if="title"
           as="div"
-          class="mt-sidebar__shop-name"
+          class="mt-sidebar__title"
           size="s"
           weight="semibold"
-          :title="shopName"
+          :title="title"
         >
-          {{ shopName }}
+          {{ title }}
         </mt-text>
 
-        <mt-text as="div" class="mt-sidebar__title" size="2xs" color="color-text-secondary-default">
-          {{ t("projectName") }}
+        <mt-text
+          v-if="subtitle"
+          as="div"
+          class="mt-sidebar__subtitle"
+          size="2xs"
+          color="color-text-secondary-default"
+        >
+          {{ subtitle }}
         </mt-text>
       </div>
 
@@ -75,7 +83,7 @@
         @click.stop="onToggleSidebar"
       >
         <template #iconFront>
-          <mt-icon class="hide-on-collapse" name="regular-panel-left" size="16px" />
+          <mt-icon class="mt-sidebar__hide-on-collapse" name="regular-panel-left" size="16px" />
         </template>
       </mt-button>
     </div>
@@ -112,81 +120,80 @@
               @flyout-close-request="onFlyoutLeave"
               @flyout-navigate="onFlyoutNavigate"
               @navigation-link-click="onNavigationLinkClicked"
-            />
+            >
+              <template #entry-suffix="slotProps">
+                <slot name="entry-suffix" v-bind="slotProps" />
+              </template>
+            </mt-sidebar-item>
           </ul>
         </nav>
       </div>
     </div>
 
     <div class="mt-sidebar__footer">
-      <DropdownMenuRoot :open="isUserActionsActive" @update:open="isUserActionsActive = $event">
-        <DropdownMenuTrigger as-child>
-          <button
-            class="mt-sidebar__user-actions-toggle"
-            :class="{ 'is--active': isUserActionsActive }"
-            type="button"
-            :aria-label="userActionsAriaLabel"
-          >
-            <mt-loader v-if="isUserLoading" size="32px" />
+      <slot name="footer">
+        <DropdownMenuRoot
+          v-if="showUserMenu"
+          :open="isUserActionsActive"
+          @update:open="isUserActionsActive = $event"
+        >
+          <DropdownMenuTrigger as-child>
+            <button
+              class="mt-sidebar__user-actions-toggle"
+              :class="{ 'is--active': isUserActionsActive }"
+              type="button"
+              :aria-label="userActionsAriaLabel"
+            >
+              <mt-sidebar-user :user="user" :is-loading="isUserLoading" />
 
-            <mt-avatar
-              class="mt-sidebar__avatar"
-              size="s"
-              :image-url="user?.avatarUrl"
-              :first-name="user?.firstName"
-              :last-name="user?.lastName"
-            />
+              <div class="mt-sidebar__user-actions-toggle-icon-wrapper">
+                <mt-icon
+                  class="mt-sidebar__hide-on-collapse"
+                  name="regular-chevron-up-xs"
+                  size="8"
+                />
+                <mt-icon
+                  class="mt-sidebar__hide-on-collapse"
+                  name="regular-chevron-down-xs"
+                  size="8"
+                />
+              </div>
+            </button>
+          </DropdownMenuTrigger>
 
-            <div class="mt-sidebar__user-custom-fields collapsible-text hide-on-collapse">
-              <mt-text as="div" class="mt-sidebar__user-name" size="xs" weight="semibold">
-                {{ userName }}
-              </mt-text>
-              <mt-text
-                as="div"
-                class="mt-sidebar__user-type"
-                size="2xs"
-                color="color-text-secondary-default"
-              >
-                {{ user?.title }}
-              </mt-text>
-            </div>
+          <DropdownMenuPortal>
+            <mt-action-menu
+              class="mt-sidebar__user-actions-menu"
+              :match-trigger-width="true"
+              :side-offset="4"
+              side="top"
+            >
+              <mt-action-menu-group v-if="$slots['user-actions']">
+                <slot name="user-actions" />
+              </mt-action-menu-group>
 
-            <div class="mt-sidebar__user-actions-toggle-icon-wrapper">
-              <mt-icon class="hide-on-collapse" name="regular-chevron-up-xs" size="8" />
-              <mt-icon class="hide-on-collapse" name="regular-chevron-down-xs" size="8" />
-            </div>
-          </button>
-        </DropdownMenuTrigger>
+              <mt-action-menu-group v-if="version || $slots.version">
+                <mt-text
+                  as="div"
+                  class="mt-sidebar__version-footer"
+                  size="2xs"
+                  color="color-text-secondary-default"
+                >
+                  {{ t("version") }}
+                  <slot name="version">{{ version }}</slot>
+                </mt-text>
+              </mt-action-menu-group>
+            </mt-action-menu>
+          </DropdownMenuPortal>
+        </DropdownMenuRoot>
 
-        <DropdownMenuPortal>
-          <mt-action-menu
-            class="mt-sidebar__user-actions-menu"
-            :match-trigger-width="true"
-            :side-offset="4"
-            side="top"
-          >
-            <mt-action-menu-group>
-              <slot name="user-actions" />
-
-              <mt-action-menu-item icon="regular-sign-out" variant="critical" @click="onLogoutUser">
-                {{ t("logout") }}
-              </mt-action-menu-item>
-            </mt-action-menu-group>
-
-            <mt-action-menu-group v-if="version || $slots.version">
-              <mt-text
-                as="div"
-                class="mt-sidebar__version-footer"
-                size="2xs"
-                color="color-text-secondary-default"
-              >
-                {{ t("version") }}
-                <slot name="version">{{ version }}</slot>
-              </mt-text>
-            </mt-action-menu-group>
-          </mt-action-menu>
-        </DropdownMenuPortal>
-      </DropdownMenuRoot>
+        <div
+          v-else-if="user || isUserLoading"
+          class="mt-sidebar__user-actions-toggle mt-sidebar__user-actions-toggle--static"
+        >
+          <mt-sidebar-user :user="user" :is-loading="isUserLoading" />
+        </div>
+      </slot>
     </div>
 
     <mt-floating-ui
@@ -230,7 +237,11 @@
             :collapsible-text="false"
             @flyout-navigate="onFlyoutNavigate"
             @navigation-link-click="onNavigationLinkClicked"
-          />
+          >
+            <template #entry-suffix="slotProps">
+              <slot name="entry-suffix" v-bind="slotProps" />
+            </template>
+          </mt-sidebar-item>
         </ul>
       </div>
     </mt-floating-ui>
@@ -255,13 +266,11 @@ import { useI18n } from "vue-i18n";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtText from "@/components/mt-text/mt-text.vue";
 import MtButton from "@/components/mt-button/mt-button.vue";
-import MtLoader from "@/components/mt-loader/mt-loader.vue";
-import MtAvatar from "@/components/mt-avatar/mt-avatar.vue";
 import MtFloatingUi from "@/components/mt-floating-ui/mt-floating-ui.vue";
 import MtActionMenu from "@/components/mt-action-menu/mt-action-menu.vue";
 import MtActionMenuGroup from "@/components/mt-action-menu-group/mt-action-menu-group.vue";
-import MtActionMenuItem from "@/components/mt-action-menu-item/mt-action-menu-item.vue";
 import MtSidebarItem from "./_internal/mt-sidebar-item.vue";
+import MtSidebarUser from "./_internal/mt-sidebar-user.vue";
 import { SIDEBAR_CONTEXT } from "./_internal/mt-sidebar-context";
 import { buildSidebarTree, menuEntryKey } from "./_internal/build-sidebar-tree";
 import { getActiveRouteNames, isEntryOnActiveRoute } from "./_internal/sidebar-item-active.helper";
@@ -326,9 +335,19 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
-  shopName: {
+  /**
+   * Heading next to the logo, e.g. the name of the shop or application.
+   */
+  title: {
     type: String,
-    default: "Shopware",
+    default: undefined,
+  },
+  /**
+   * Secondary line below the title.
+   */
+  subtitle: {
+    type: String,
+    default: undefined,
   },
   /**
    * Version shown in the user menu. Omit to hide the version row.
@@ -354,15 +373,20 @@ const props = defineProps({
 });
 
 const emit = defineEmits<{
-  (e: "logout"): void;
   (e: "navigate", entry: SidebarTreeEntry): void;
 }>();
 
-defineSlots<{
-  /** Additional items for the user action menu, rendered above the logout item. */
+const slots = defineSlots<{
+  /** Logo shown in the header. Add the `mt-sidebar__header-logo` class to an icon to size it. */
+  logo?: () => unknown;
+  /** Replaces the whole footer, including the default user block and its action menu. */
+  footer?: () => unknown;
+  /** Items of the user action menu, e.g. `mt-action-menu-item`s. Requires `user`. */
   "user-actions"?: () => unknown;
   /** Replaces the plain `version` text in the user action menu. */
   version?: () => unknown;
+  /** Rendered after the label of every entry, e.g. for a badge or counter. */
+  "entry-suffix"?: (props: { entry: SidebarTreeEntry }) => unknown;
 }>();
 
 /**
@@ -378,20 +402,16 @@ const offCanvasOpen = defineModel<boolean>("offCanvasOpen", { default: false });
 const { t } = useI18n({
   messages: {
     en: {
-      projectName: "Administration",
       expandMenu: "Expand menu",
       collapseMenu: "Collapse menu",
       closeMenu: "Close menu",
-      logout: "Logout",
       version: "Version:",
       navigationLabel: "Main navigation",
     },
     de: {
-      projectName: "Administration",
       expandMenu: "Menü ausklappen",
       collapseMenu: "Menü einklappen",
       closeMenu: "Menü schließen",
-      logout: "Abmelden",
       version: "Version:",
       navigationLabel: "Hauptnavigation",
     },
@@ -454,6 +474,13 @@ const userName = computed(() =>
 // The collapsed sidebar hides the visible user name, leaving the avatar button unnamed
 const userActionsAriaLabel = computed(() =>
   [userName.value, props.user?.title].filter(Boolean).join(", "),
+);
+
+// A menu that would open empty is not offered
+const showUserMenu = computed(
+  () =>
+    (!!props.user || props.isUserLoading) &&
+    (!!slots["user-actions"] || !!props.version || !!slots.version),
 );
 
 provide(SIDEBAR_CONTEXT, {
@@ -708,12 +735,6 @@ function toggleSidebar() {
 
   isUserActionsActive.value = false;
   flyoutEntries.value = [];
-}
-
-function onLogoutUser() {
-  expandedEntries.value = [];
-
-  emit("logout");
 }
 
 function addScrollbarOffset() {
@@ -1125,7 +1146,7 @@ function isNavigationEntryExpanded(entry: SidebarTreeEntry) {
     }
   }
 
-  .collapsible-text {
+  .mt-sidebar__collapsible-text {
     display: inline-block;
     white-space: nowrap;
     width: 100%;
@@ -1134,14 +1155,14 @@ function isNavigationEntryExpanded(entry: SidebarTreeEntry) {
   }
 
   // Elements animating layout on top of this must keep that transition on a parent
-  .hide-on-collapse {
+  .mt-sidebar__hide-on-collapse {
     opacity: 1;
     transition:
       opacity var(--mt-sidebar-fade-in-duration) ease-in-out var(--mt-sidebar-fade-in-delay),
       visibility var(--mt-sidebar-fade-in-duration) ease-in-out var(--mt-sidebar-fade-in-delay);
   }
 
-  &.is--collapsed .hide-on-collapse {
+  &.is--collapsed .mt-sidebar__hide-on-collapse {
     opacity: 0;
     visibility: hidden;
     pointer-events: none;
@@ -1159,7 +1180,7 @@ function isNavigationEntryExpanded(entry: SidebarTreeEntry) {
     .mt-sidebar__navigation-link.router-link-active {
       background: var(--color-background-brand-default);
 
-      .collapsible-text {
+      .mt-sidebar__collapsible-text {
         color: var(--color-icon-brand-default);
       }
     }
@@ -1226,7 +1247,7 @@ function isNavigationEntryExpanded(entry: SidebarTreeEntry) {
     }
   }
 
-  .mt-sidebar__version {
+  .mt-sidebar__heading {
     flex: 1 1 auto;
     gap: 0;
     margin-top: calc(-1 * var(--scale-size-1));
@@ -1238,8 +1259,8 @@ function isNavigationEntryExpanded(entry: SidebarTreeEntry) {
   }
 
   // Typography comes from mt-text, only the truncation is ours.
-  .mt-sidebar__shop-name,
-  .mt-sidebar__title {
+  .mt-sidebar__title,
+  .mt-sidebar__subtitle {
     min-width: 0;
     overflow: hidden;
     white-space: nowrap;
@@ -1410,6 +1431,15 @@ function isNavigationEntryExpanded(entry: SidebarTreeEntry) {
       opacity 0.1s ease;
   }
 
+  // Without a menu the user block is informational only
+  .mt-sidebar__user-actions-toggle--static {
+    cursor: default;
+
+    &:hover {
+      background-color: transparent;
+    }
+  }
+
   .mt-sidebar__user-custom-fields {
     white-space: nowrap;
     width: 100%;
@@ -1511,6 +1541,16 @@ function isNavigationEntryExpanded(entry: SidebarTreeEntry) {
     }
   }
 
+  // Without a logo there is nothing to crossfade, so the expand button is always shown
+  .mt-sidebar__header-logo-wrapper--empty .mt-sidebar__header-logo-expand-button,
+  &.is--collapsed.is--toggling:hover
+    .mt-sidebar__header-logo-wrapper--empty
+    .mt-sidebar__header-logo-expand-button {
+    opacity: 1;
+    transform: none;
+    filter: none;
+  }
+
   // Crossing the off-canvas breakpoint would animate the width difference between both modes
   &.is--viewport-resizing,
   &.is--viewport-resizing * {
@@ -1525,7 +1565,7 @@ function isNavigationEntryExpanded(entry: SidebarTreeEntry) {
 
 @media (prefers-reduced-motion: reduce) {
   .mt-sidebar,
-  .mt-sidebar .hide-on-collapse,
+  .mt-sidebar .mt-sidebar__hide-on-collapse,
   .mt-sidebar .mt-sidebar__body,
   .mt-sidebar .mt-sidebar__header,
   .mt-sidebar .mt-sidebar__header-logo,

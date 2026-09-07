@@ -2,7 +2,8 @@ import { render, screen, waitFor, within } from "@testing-library/vue";
 import { userEvent } from "@testing-library/user-event";
 import { defineComponent, h } from "vue";
 import MtSidebar from "./mt-sidebar.vue";
-import type { SidebarEntry, SidebarRoute } from "./mt-sidebar.types";
+import MtActionMenuItem from "@/components/mt-action-menu-item/mt-action-menu-item.vue";
+import type { SidebarEntry, SidebarRoute, SidebarTreeEntry } from "./mt-sidebar.types";
 
 // Stands in for `router-link`: the library does not depend on vue-router
 const RouterLinkStub = defineComponent({
@@ -68,18 +69,20 @@ const entries: SidebarEntry[] = [
   },
 ];
 
+const user = { firstName: "Max", lastName: "Mustermann", title: "Administrator" };
+
 function routeFor(name: string): SidebarRoute {
   return { name, path: `/${name.replace(/\./g, "/")}`, matched: [{ name }], params: {} };
 }
 
-function renderMenu(props: Record<string, unknown> = {}) {
+function renderSidebar(props: Record<string, unknown> = {}, slots: Record<string, unknown> = {}) {
   return render(MtSidebar, {
     props: {
       entries,
       linkComponent: RouterLinkStub,
-      user: { firstName: "Max", lastName: "Mustermann", title: "Administrator" },
       ...props,
     },
+    slots,
   });
 }
 
@@ -110,104 +113,179 @@ describe("mt-sidebar", () => {
     Object.defineProperty(window, "innerWidth", { value: 1920, configurable: true });
   });
 
-  it("renders the top level entries", () => {
-    renderMenu();
+  describe("navigation", () => {
+    it("renders the top level entries", () => {
+      renderSidebar();
 
-    const navigation = screen.getByRole("navigation", { name: "Main navigation" });
+      const navigation = screen.getByRole("navigation", { name: "Main navigation" });
 
-    expect(getEntryLabel("Dashboard", navigation)).toBeVisible();
-    expect(getEntryLabel("Catalogues", navigation)).toBeVisible();
-    expect(getEntryLabel("Docs", navigation)).toBeVisible();
+      expect(getEntryLabel("Dashboard", navigation)).toBeVisible();
+      expect(getEntryLabel("Catalogues", navigation)).toBeVisible();
+      expect(getEntryLabel("Docs", navigation)).toBeVisible();
+    });
+
+    it("renders route entries through the link component", () => {
+      renderSidebar();
+
+      expect(getEntryLabel("Dashboard").closest("a")).toHaveAttribute(
+        "href",
+        "#sw.dashboard.index",
+      );
+    });
+
+    it("renders external links as plain anchors", () => {
+      renderSidebar();
+
+      const link = getEntryLabel("Docs").closest("a");
+
+      expect(link).toHaveAttribute("href", "https://docs.shopware.com");
+      expect(link).toHaveAttribute("target", "_blank");
+    });
+
+    it("drops entries nested deeper than three levels", () => {
+      renderSidebar({ route: routeFor("sw.review.index") });
+
+      expect(getEntryLabel("Reviews")).toBeInTheDocument();
+      expect(queryEntryLabel("Too deep")).toBeUndefined();
+      expect(console.error).toHaveBeenCalledWith(expect.stringContaining('"sw-too-deep"'));
+    });
+
+    it("expands a branch when its row is clicked", async () => {
+      renderSidebar();
+
+      expect(getEntryLabel("Products")).not.toBeVisible();
+
+      await userEvent.click(screen.getByRole("button", { name: "Catalogues" }));
+
+      expect(getEntryLabel("Products")).toBeVisible();
+      expect(getEntryLabel("Categories")).toBeVisible();
+    });
+
+    it("opens the branch owning the current route and marks the entry as current", async () => {
+      renderSidebar({ route: routeFor("sw.category.index") });
+
+      await waitFor(() => expect(getEntryLabel("Categories")).toBeVisible());
+
+      expect(getEntryLabel("Categories").closest("li")).toHaveAttribute("aria-current", "page");
+      expect(getEntryLabel("Dashboard").closest("li")).toHaveAttribute("aria-current", "false");
+    });
+
+    it("emits navigate when a navigation link is clicked", async () => {
+      const { emitted } = renderSidebar();
+
+      await userEvent.click(getEntryLabel("Dashboard"));
+
+      expect(emitted().navigate).toHaveLength(1);
+      expect(emitted().navigate[0]).toEqual([expect.objectContaining({ id: "sw-dashboard" })]);
+    });
+
+    it("renders the entry-suffix slot after every label", () => {
+      renderSidebar(
+        {},
+        {
+          "entry-suffix": ({ entry }: { entry: SidebarTreeEntry }) =>
+            h("span", { "data-testid": `suffix-${entry.id}` }, "new"),
+        },
+      );
+
+      expect(screen.getByTestId("suffix-sw-dashboard")).toHaveTextContent("new");
+      expect(screen.getByTestId("suffix-sw-product")).toBeInTheDocument();
+    });
   });
 
-  it("renders route entries through the link component", () => {
-    renderMenu();
+  describe("collapsing", () => {
+    it("emits update:expanded when the collapse button is clicked", async () => {
+      const { emitted } = renderSidebar();
 
-    expect(getEntryLabel("Dashboard").closest("a")).toHaveAttribute("href", "#sw.dashboard.index");
+      await userEvent.click(screen.getByRole("button", { name: "Collapse menu" }));
+
+      expect(emitted()["update:expanded"]).toEqual([[false]]);
+    });
+
+    it("offers an expand button when collapsed", async () => {
+      const { emitted } = renderSidebar({ expanded: false });
+
+      await userEvent.click(screen.getByRole("button", { name: "Expand menu" }));
+
+      expect(emitted()["update:expanded"]).toEqual([[true]]);
+    });
+
+    it("shows the children of a hovered branch in a flyout when collapsed", async () => {
+      renderSidebar({ expanded: false });
+
+      expect(document.getElementById("mt-sidebar-flyout")).toBeNull();
+
+      await userEvent.hover(screen.getByRole("button", { name: "Catalogues" }));
+
+      const flyout = document.getElementById("mt-sidebar-flyout");
+
+      expect(flyout).not.toBeNull();
+      expect(getEntryLabel("Products", flyout as HTMLElement)).toBeInTheDocument();
+      expect(getEntryLabel("Categories", flyout as HTMLElement)).toBeInTheDocument();
+    });
   });
 
-  it("renders external links as plain anchors", () => {
-    renderMenu();
+  describe("header", () => {
+    it("renders title, subtitle and the logo slot", () => {
+      renderSidebar(
+        { title: "Demo store", subtitle: "Administration" },
+        { logo: '<span data-testid="logo">Logo</span>' },
+      );
 
-    const link = getEntryLabel("Docs").closest("a");
+      expect(screen.getByText("Demo store")).toBeVisible();
+      expect(screen.getByText("Administration")).toBeVisible();
+      expect(screen.getByTestId("logo")).toBeVisible();
+    });
 
-    expect(link).toHaveAttribute("href", "https://docs.shopware.com");
-    expect(link).toHaveAttribute("target", "_blank");
+    it("renders no heading and no logo box without title, subtitle and logo", () => {
+      renderSidebar();
+
+      expect(document.querySelector(".mt-sidebar__heading")).toBeNull();
+      expect(document.querySelector(".mt-sidebar__header-logo-box")).toBeNull();
+    });
   });
 
-  it("drops entries nested deeper than three levels", () => {
-    renderMenu({ route: routeFor("sw.review.index") });
+  describe("footer", () => {
+    it("renders the user without a menu when there are no actions", () => {
+      renderSidebar({ user });
 
-    expect(getEntryLabel("Reviews")).toBeInTheDocument();
-    expect(queryEntryLabel("Too deep")).toBeUndefined();
-    expect(console.error).toHaveBeenCalledWith(expect.stringContaining('"sw-too-deep"'));
-  });
+      expect(screen.getByText("Max Mustermann")).toBeVisible();
+      expect(screen.getByText("Administrator")).toBeVisible();
+      expect(
+        screen.queryByRole("button", { name: "Max Mustermann, Administrator" }),
+      ).not.toBeInTheDocument();
+    });
 
-  it("expands a branch when its row is clicked", async () => {
-    renderMenu();
+    it("opens a menu with the user-actions slot and the version", async () => {
+      const onProfile = vi.fn();
 
-    expect(getEntryLabel("Products")).not.toBeVisible();
+      renderSidebar(
+        { user, version: "6.7.0.0" },
+        {
+          "user-actions": () => h(MtActionMenuItem, { onClick: onProfile }, () => "Profile"),
+        },
+      );
 
-    await userEvent.click(screen.getByRole("button", { name: "Catalogues" }));
+      await userEvent.click(screen.getByRole("button", { name: "Max Mustermann, Administrator" }));
 
-    expect(getEntryLabel("Products")).toBeVisible();
-    expect(getEntryLabel("Categories")).toBeVisible();
-  });
+      expect(await screen.findByText(/6\.7\.0\.0/)).toBeInTheDocument();
 
-  it("opens the branch owning the current route and marks the entry as current", async () => {
-    renderMenu({ route: routeFor("sw.category.index") });
+      await userEvent.click(screen.getByRole("menuitem", { name: "Profile" }));
 
-    await waitFor(() => expect(getEntryLabel("Categories")).toBeVisible());
+      expect(onProfile).toHaveBeenCalledOnce();
+    });
 
-    expect(getEntryLabel("Categories").closest("li")).toHaveAttribute("aria-current", "page");
-    expect(getEntryLabel("Dashboard").closest("li")).toHaveAttribute("aria-current", "false");
-  });
+    it("renders nothing in the footer without a user", () => {
+      renderSidebar();
 
-  it("emits update:expanded when the collapse button is clicked", async () => {
-    const { emitted } = renderMenu();
+      expect(document.querySelector(".mt-sidebar__footer")?.children).toHaveLength(0);
+    });
 
-    await userEvent.click(screen.getByRole("button", { name: "Collapse menu" }));
+    it("replaces the footer with the footer slot", () => {
+      renderSidebar({ user }, { footer: '<p data-testid="footer">Custom footer</p>' });
 
-    expect(emitted()["update:expanded"]).toEqual([[false]]);
-  });
-
-  it("offers an expand button when collapsed", async () => {
-    const { emitted } = renderMenu({ expanded: false });
-
-    await userEvent.click(screen.getByRole("button", { name: "Expand menu" }));
-
-    expect(emitted()["update:expanded"]).toEqual([[true]]);
-  });
-
-  it("shows the children of a hovered branch in a flyout when collapsed", async () => {
-    renderMenu({ expanded: false });
-
-    expect(document.getElementById("mt-sidebar-flyout")).toBeNull();
-
-    await userEvent.hover(screen.getByRole("button", { name: "Catalogues" }));
-
-    const flyout = document.getElementById("mt-sidebar-flyout");
-
-    expect(flyout).not.toBeNull();
-    expect(getEntryLabel("Products", flyout as HTMLElement)).toBeInTheDocument();
-    expect(getEntryLabel("Categories", flyout as HTMLElement)).toBeInTheDocument();
-  });
-
-  it("emits navigate when a navigation link is clicked", async () => {
-    const { emitted } = renderMenu();
-
-    await userEvent.click(getEntryLabel("Dashboard"));
-
-    expect(emitted().navigate).toHaveLength(1);
-    expect(emitted().navigate[0]).toEqual([expect.objectContaining({ id: "sw-dashboard" })]);
-  });
-
-  it("shows the user and emits logout from the user menu", async () => {
-    const { emitted } = renderMenu({ version: "6.7.0.0" });
-
-    await userEvent.click(screen.getByRole("button", { name: "Max Mustermann, Administrator" }));
-    await userEvent.click(await screen.findByRole("menuitem", { name: "Logout" }));
-
-    expect(emitted().logout).toHaveLength(1);
+      expect(screen.getByTestId("footer")).toHaveTextContent("Custom footer");
+      expect(screen.queryByText("Max Mustermann")).not.toBeInTheDocument();
+    });
   });
 });
