@@ -131,69 +131,7 @@
     </div>
 
     <div class="mt-sidebar__footer">
-      <slot name="footer">
-        <DropdownMenuRoot
-          v-if="showUserMenu"
-          :open="isUserActionsActive"
-          @update:open="isUserActionsActive = $event"
-        >
-          <DropdownMenuTrigger as-child>
-            <button
-              class="mt-sidebar__user-actions-toggle"
-              :class="{ 'is--active': isUserActionsActive }"
-              type="button"
-              :aria-label="userActionsAriaLabel"
-            >
-              <mt-sidebar-user :user="user" :is-loading="isUserLoading" />
-
-              <div class="mt-sidebar__user-actions-toggle-icon-wrapper">
-                <mt-icon
-                  class="mt-sidebar__hide-on-collapse"
-                  name="regular-chevron-up-xs"
-                  size="8"
-                />
-                <mt-icon
-                  class="mt-sidebar__hide-on-collapse"
-                  name="regular-chevron-down-xs"
-                  size="8"
-                />
-              </div>
-            </button>
-          </DropdownMenuTrigger>
-
-          <DropdownMenuPortal>
-            <mt-action-menu
-              class="mt-sidebar__user-actions-menu"
-              :match-trigger-width="true"
-              :side-offset="4"
-              side="top"
-            >
-              <mt-action-menu-group v-if="$slots['user-actions']">
-                <slot name="user-actions" />
-              </mt-action-menu-group>
-
-              <mt-action-menu-group v-if="version || $slots.version">
-                <mt-text
-                  as="div"
-                  class="mt-sidebar__version-footer"
-                  size="2xs"
-                  color="color-text-secondary-default"
-                >
-                  {{ t("version") }}
-                  <slot name="version">{{ version }}</slot>
-                </mt-text>
-              </mt-action-menu-group>
-            </mt-action-menu>
-          </DropdownMenuPortal>
-        </DropdownMenuRoot>
-
-        <div
-          v-else-if="user || isUserLoading"
-          class="mt-sidebar__user-actions-toggle mt-sidebar__user-actions-toggle--static"
-        >
-          <mt-sidebar-user :user="user" :is-loading="isUserLoading" />
-        </div>
-      </slot>
+      <slot name="footer" :expanded="isExpanded" />
     </div>
 
     <mt-floating-ui
@@ -261,16 +199,12 @@ import {
   type PropType,
 } from "vue";
 import { createFocusTrap, type FocusTrap } from "focus-trap";
-import { DropdownMenuPortal, DropdownMenuRoot, DropdownMenuTrigger } from "reka-ui";
 import { useI18n } from "vue-i18n";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtText from "@/components/mt-text/mt-text.vue";
 import MtButton from "@/components/mt-button/mt-button.vue";
 import MtFloatingUi from "@/components/mt-floating-ui/mt-floating-ui.vue";
-import MtActionMenu from "@/components/mt-action-menu/mt-action-menu.vue";
-import MtActionMenuGroup from "@/components/mt-action-menu-group/mt-action-menu-group.vue";
 import MtSidebarItem from "./_internal/mt-sidebar-item.vue";
-import MtSidebarUser from "./_internal/mt-sidebar-user.vue";
 import { SIDEBAR_CONTEXT } from "./_internal/mt-sidebar-context";
 import { buildSidebarTree, menuEntryKey } from "./_internal/build-sidebar-tree";
 import { getActiveRouteNames, isEntryOnActiveRoute } from "./_internal/sidebar-item-active.helper";
@@ -280,7 +214,6 @@ import type {
   SidebarRoute,
   SidebarRouter,
   SidebarTreeEntry,
-  SidebarUser,
 } from "./mt-sidebar.types";
 
 export type {
@@ -289,7 +222,6 @@ export type {
   SidebarRoute,
   SidebarRouter,
   SidebarTreeEntry,
-  SidebarUser,
 } from "./mt-sidebar.types";
 
 const SIDEBAR_TOGGLE_ANIMATION_DURATION = 500;
@@ -327,14 +259,6 @@ const props = defineProps({
     type: [String, Object] as PropType<SidebarLinkComponent>,
     default: "router-link",
   },
-  user: {
-    type: Object as PropType<SidebarUser>,
-    default: undefined,
-  },
-  isUserLoading: {
-    type: Boolean,
-    default: false,
-  },
   /**
    * Heading next to the logo, e.g. the name of the shop or application.
    */
@@ -346,13 +270,6 @@ const props = defineProps({
    * Secondary line below the title.
    */
   subtitle: {
-    type: String,
-    default: undefined,
-  },
-  /**
-   * Version shown in the user menu. Omit to hide the version row.
-   */
-  version: {
     type: String,
     default: undefined,
   },
@@ -376,15 +293,14 @@ const emit = defineEmits<{
   (e: "navigate", entry: SidebarTreeEntry): void;
 }>();
 
-const slots = defineSlots<{
+defineSlots<{
   /** Logo shown in the header. Add the `mt-sidebar__header-logo` class to an icon to size it. */
   logo?: () => unknown;
-  /** Replaces the whole footer, including the default user block and its action menu. */
-  footer?: () => unknown;
-  /** Items of the user action menu, e.g. `mt-action-menu-item`s. Requires `user`. */
-  "user-actions"?: () => unknown;
-  /** Replaces the plain `version` text in the user action menu. */
-  version?: () => unknown;
+  /**
+   * Footer below the navigation, e.g. the current user with an action menu. Receives the
+   * expanded state so its content can adapt to the collapsed rail.
+   */
+  footer?: (props: { expanded: boolean }) => unknown;
   /** Rendered after the label of every entry, e.g. for a badge or counter. */
   "entry-suffix"?: (props: { entry: SidebarTreeEntry }) => unknown;
 }>();
@@ -405,14 +321,12 @@ const { t } = useI18n({
       expandMenu: "Expand menu",
       collapseMenu: "Collapse menu",
       closeMenu: "Close menu",
-      version: "Version:",
       navigationLabel: "Main navigation",
     },
     de: {
       expandMenu: "Menü ausklappen",
       collapseMenu: "Menü einklappen",
       closeMenu: "Menü schließen",
-      version: "Version:",
       navigationLabel: "Hauptnavigation",
     },
   },
@@ -425,7 +339,6 @@ const menuBodyElement = ref<HTMLElement | null>(null);
 const flyoutElement = ref<HTMLElement | null>(null);
 
 const activeEntry = ref<{ entry: SidebarTreeEntry; target: HTMLElement } | null>(null);
-const isUserActionsActive = ref(false);
 const flyoutEntries = ref<SidebarTreeEntry[]>([]);
 const flyoutTitle = ref("");
 const isFlyoutClosing = ref(false);
@@ -467,22 +380,6 @@ const scrollbarOffsetStyle = computed(() => ({
   "margin-left": scrollbarOffset.value,
 }));
 
-const userName = computed(() =>
-  [props.user?.firstName, props.user?.lastName].filter(Boolean).join(" "),
-);
-
-// The collapsed sidebar hides the visible user name, leaving the avatar button unnamed
-const userActionsAriaLabel = computed(() =>
-  [userName.value, props.user?.title].filter(Boolean).join(", "),
-);
-
-// A menu that would open empty is not offered
-const showUserMenu = computed(
-  () =>
-    (!!props.user || props.isUserLoading) &&
-    (!!slots["user-actions"] || !!props.version || !!slots.version),
-);
-
 provide(SIDEBAR_CONTEXT, {
   route: computed(() => props.route),
   router: computed(() => props.router),
@@ -508,11 +405,6 @@ watch(isMobileViewport, (isMobile) => {
   if (!isMobile && offCanvasOpen.value) {
     closeOffCanvas();
   }
-
-  // The teleported user menu would float detached over the hidden off-canvas rail otherwise
-  if (isMobile) {
-    isUserActionsActive.value = false;
-  }
 });
 
 // Query-insensitive on purpose: listing pagination/sorting must not re-expand a collapsed branch
@@ -520,9 +412,6 @@ watch(
   () => props.route?.path,
   () => {
     closeNavigationOverlays();
-
-    // The teleported user menu would survive the page change otherwise
-    isUserActionsActive.value = false;
 
     // Ensure the branch owning the new page is open, once the route change has rendered
     nextTick(() => expandAncestorBranchesForCurrentRoute());
@@ -733,7 +622,6 @@ function toggleSidebar() {
     onFlyoutLeave();
   }
 
-  isUserActionsActive.value = false;
   flyoutEntries.value = [];
 }
 
@@ -1080,18 +968,6 @@ function isNavigationEntryExpanded(entry: SidebarTreeEntry) {
   cursor: pointer;
 }
 
-.mt-sidebar__version-footer {
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  gap: var(--scale-size-4);
-  margin: var(--scale-size-8);
-}
-
-.mt-sidebar__user-actions-menu {
-  min-width: var(--scale-size-256);
-}
-
 .mt-sidebar__backdrop-enter-active,
 .mt-sidebar__backdrop-leave-active {
   transition: opacity 0.3s ease-in-out;
@@ -1184,16 +1060,6 @@ function isNavigationEntryExpanded(entry: SidebarTreeEntry) {
         color: var(--color-icon-brand-default);
       }
     }
-  }
-
-  // Typography comes from mt-text, truncation and alignment are ours.
-  .mt-sidebar__user-name,
-  .mt-sidebar__user-type {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    max-width: 200px;
-    text-align: left;
   }
 
   .mt-sidebar__header {
@@ -1357,97 +1223,6 @@ function isNavigationEntryExpanded(entry: SidebarTreeEntry) {
     list-style: none;
   }
 
-  .mt-sidebar__user-actions-toggle {
-    width: 100%;
-    position: relative;
-    padding: var(--scale-size-8);
-    display: flex;
-    align-items: center;
-    align-self: stretch;
-    gap: var(--scale-size-12);
-    cursor: pointer;
-    background-color: transparent;
-    border: none;
-    border-radius: var(--border-radius-s);
-    transition:
-      padding var(--mt-sidebar-duration-inner) var(--mt-sidebar-bezier),
-      gap var(--mt-sidebar-duration-inner) var(--mt-sidebar-bezier),
-      margin var(--mt-sidebar-duration-inner) var(--mt-sidebar-bezier),
-      background-color 0.15s ease-out;
-
-    &:hover {
-      background-color: var(--color-interaction-secondary-hover);
-
-      .mt-sidebar__user-actions-toggle-icon-wrapper {
-        gap: var(--scale-size-8);
-      }
-    }
-
-    &:active,
-    &.is--active,
-    &.is--active:hover {
-      background-color: var(--color-interaction-secondary-pressed);
-
-      .mt-sidebar__user-actions-toggle-icon-wrapper {
-        gap: var(--scale-size-8);
-      }
-    }
-
-    .mt-loader {
-      background-color: var(--color-background-brand-default);
-    }
-
-    .mt-sidebar__user-actions-toggle-icon-wrapper {
-      width: var(--scale-size-20);
-      height: var(--scale-size-20);
-      flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: var(--scale-size-6);
-      overflow: hidden;
-
-      .mt-icon {
-        color: var(--color-icon-primary-default);
-      }
-
-      // Collapse via width instead of display none
-      transition:
-        width var(--mt-sidebar-duration-inner) var(--mt-sidebar-bezier),
-        gap 0.15s ease;
-    }
-  }
-
-  .mt-sidebar__avatar {
-    --mt-avatar-size: var(--scale-size-36);
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    transition:
-      transform var(--mt-sidebar-duration-inner) var(--mt-sidebar-bezier),
-      opacity 0.1s ease;
-  }
-
-  // Without a menu the user block is informational only
-  .mt-sidebar__user-actions-toggle--static {
-    cursor: default;
-
-    &:hover {
-      background-color: transparent;
-    }
-  }
-
-  .mt-sidebar__user-custom-fields {
-    white-space: nowrap;
-    width: 100%;
-    min-width: 0;
-    overflow: hidden;
-    position: relative;
-  }
-
   &.is--collapsed {
     .mt-sidebar__collapse-button {
       width: 0;
@@ -1458,38 +1233,6 @@ function isNavigationEntryExpanded(entry: SidebarTreeEntry) {
 
       // Hide instantly when collapsing; the base state still animates the reveal
       transition: none;
-    }
-
-    .mt-sidebar__user-actions-toggle {
-      padding: 0;
-      margin-bottom: var(--scale-size-8);
-
-      &:hover:not(.is--active) {
-        background: transparent;
-
-        .mt-sidebar__avatar {
-          opacity: 0.8;
-        }
-      }
-
-      &:focus-visible {
-        outline: none;
-
-        .mt-sidebar__avatar {
-          outline: 2px solid var(--color-border-brand-default);
-          outline-offset: 2px;
-        }
-      }
-
-      &:active,
-      &.is--active,
-      &.is--active:hover {
-        background-color: transparent;
-      }
-    }
-
-    .mt-sidebar__user-actions-toggle-icon-wrapper {
-      width: 0;
     }
 
     .mt-sidebar__navigation-link {
@@ -1571,8 +1314,6 @@ function isNavigationEntryExpanded(entry: SidebarTreeEntry) {
   .mt-sidebar .mt-sidebar__header-logo,
   .mt-sidebar .mt-sidebar__header-logo-box,
   .mt-sidebar .mt-sidebar__header-logo-expand-button,
-  .mt-sidebar .mt-sidebar__user-actions-toggle,
-  .mt-sidebar .mt-sidebar__user-actions-toggle-icon-wrapper,
   .mt-sidebar__backdrop-enter-active,
   .mt-sidebar__backdrop-leave-active {
     transition: none;

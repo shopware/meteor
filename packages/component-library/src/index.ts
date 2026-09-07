@@ -42,7 +42,6 @@ import type {
   SidebarTreeEntry,
   SidebarRoute,
   SidebarRouter,
-  SidebarUser,
 } from "./components/mt-sidebar/mt-sidebar.types";
 import { useSnackbar, type Snackbar } from "./components/mt-snackbar/composables/use-snackbar";
 import MtPromoBadge from "./components/mt-promo-badge/mt-promo-badge.vue";
@@ -167,7 +166,6 @@ export {
   type SidebarTreeEntry,
   type SidebarRoute,
   type SidebarRouter,
-  type SidebarUser,
   MtActionMenu,
   MtActionMenuItem,
   MtActionMenuGroup,

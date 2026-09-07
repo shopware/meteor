@@ -93,7 +93,14 @@ export const entries: SidebarEntry[] = [
   { id: "settings", path: "settings.index", label: "Settings", icon: "regular-cog", position: 80 },
 ];
 
-export const user = { firstName: "Max", lastName: "Mustermann", title: "Administrator" };
+export interface StoryUser {
+  firstName: string;
+  lastName: string;
+  title?: string;
+  avatarUrl?: string;
+}
+
+export const user: StoryUser = { firstName: "Max", lastName: "Mustermann", title: "Administrator" };
 
 /**
  * A minimal route object for the given route name, as Vue Router would resolve it.
