@@ -1,50 +1,68 @@
 # mt-sidebar
 
-The sidebar navigation extracted from the Shopware Administration (formerly `sw-admin-menu`), ported to Meteor conventions. Not yet
-exported from `src/index.ts`.
+A collapsible application sidebar: header with logo and collapse toggle, a navigation tree of up
+to three levels, an optional user footer with an action menu, a flyout for the collapsed state and
+a mobile off-canvas mode with focus trapping. Extracted from the Shopware Administration
+(`sw-admin-menu`) and ported to Meteor conventions.
 
 ## Structure
 
-| File                                          | Purpose                                                                                                   |
-| --------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| `mt-sidebar.vue`                              | The sidebar shell: header with logo and collapse toggle, navigation tree, user footer, flyout, off-canvas |
-| `mt-sidebar.types.ts`                         | `SidebarEntry`, `SidebarRoute`, `SidebarRouter`, `SidebarUser` and friends                                |
-| `mt-sidebar.spec.ts`                          | Vitest / Testing Library spec                                                                             |
-| `mt-sidebar.stories.ts`                       | Storybook stories                                                                                         |
-| `_internal/mt-sidebar-item.vue`               | One navigation row, recursive up to three levels                                                          |
-| `_internal/mt-sidebar-context.ts`             | Provide/inject contract between the menu and its rows                                                     |
-| `_internal/build-sidebar-tree.ts`             | Nests the flat entry list (replaces Shopware's `FlatTreeHelper`)                                          |
-| `_internal/sidebar-item-active.helper(.spec)` | Active route detection via `route.matched` and `meta.parentPath`                                          |
+| File                                          | Purpose                                                          |
+| --------------------------------------------- | ---------------------------------------------------------------- |
+| `mt-sidebar.vue`                              | The public component                                             |
+| `mt-sidebar.types.ts`                         | `SidebarEntry`, `SidebarRoute`, `SidebarRouter`, `SidebarUser`   |
+| `mt-sidebar.spec.ts`                          | Vitest / Testing Library spec                                    |
+| `_stories/mt-sidebar.stories.ts`              | Storybook stories, one per slot                                  |
+| `_stories/*`                                  | Sample data and helper components used only by the stories       |
+| `_internal/mt-sidebar-item.vue`               | One navigation row, recursive up to three levels                 |
+| `_internal/mt-sidebar-user.vue`               | Default footer content: avatar, name and title                   |
+| `_internal/mt-sidebar-context.ts`             | Provide/inject contract between the sidebar and its rows         |
+| `_internal/build-sidebar-tree.ts`             | Nests the flat entry list                                        |
+| `_internal/sidebar-item-active.helper(.spec)` | Active route detection via `route.matched` and `meta.parentPath` |
 
 ## API
 
-The component owns no application state. Everything Shopware injected (stores, services, ACL,
-snippets, router) arrives via props, models and events:
+Nothing is branded by default. Without `title`, `subtitle`, a `logo` slot or a `user`, the
+sidebar renders only the navigation and the collapse toggle.
 
-| Shopware coupling                                         | Meteor replacement                                                        |
-| --------------------------------------------------------- | ------------------------------------------------------------------------- |
-| `menuService`, `appModulesService`, custom entity entries | `entries` prop: flat `SidebarEntry[]`, nested via `parent`                |
-| `adminMenu` store `isExpanded` (+ `localStorage`)         | `v-model:expanded`; persistence is the consumer's job                     |
-| `EventBus` `sw-admin-menu/toggle-offcanvas`               | `v-model:offCanvasOpen`                                                   |
-| `adminMenu` store `expandedEntries`                       | Internal state                                                            |
-| `acl`, `hasAccessToRoute`, settings special case          | Removed: pass only the entries the user may see                           |
-| `$t` on entry labels                                      | `label` must already be translated                                        |
-| `$t` on the menu's own strings                            | `useI18n` messages inside the component (`en`, `de`)                      |
-| `$route`, `$router`                                       | `route` and `router` props (duck-typed, compatible with Vue Router)       |
-| `router-link`                                             | `linkComponent` prop, defaults to `"router-link"` like `mt-link`          |
-| `session` store user, `userService`                       | `user` and `isUserLoading` props                                          |
-| `systemConfigApiService` shop name                        | `shopName` prop                                                           |
-| `sw-version`                                              | `version` prop or `#version` slot                                         |
-| `sw-avatar`                                               | `mt-avatar`                                                               |
-| `loginService.logoutSso`, notification store cleanup      | `logout` event                                                            |
-| `useModuleIconColors`                                     | `moduleIconColors` prop                                                   |
-| `$device.getViewportWidth()`                              | `window.innerWidth`, `mobileBreakpoint` prop (default 1280)               |
-| Twig blocks (`sw-profile`, `sw-sales-channel` overrides)  | `#user-actions` and `#version` slots; other extension points were dropped |
+### Props
 
-Events: `logout`, `navigate(entry)`, `update:expanded`, `update:offCanvasOpen`.
+| Prop                    | Description                                                                                                                       |
+| ----------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `entries`               | Flat `SidebarEntry[]`, nested via `parent`, sorted via `position`. Labels must be translated. Pass only entries the user may see. |
+| `route`, `router`       | Current route and router (duck-typed, Vue Router compatible). Highlight the active entry and open its branch.                     |
+| `linkComponent`         | Component rendering the links, receives the route location as `to`. Defaults to `router-link` like `mt-link`.                     |
+| `title`, `subtitle`     | Heading next to the logo.                                                                                                         |
+| `user`, `isUserLoading` | Renders the default footer with avatar, name and title.                                                                           |
+| `version`               | Shown at the bottom of the user menu.                                                                                             |
+| `moduleIconColors`      | Paints the top level icons in the `color` of their entry.                                                                         |
+| `mobileBreakpoint`      | Viewport width in px at and below which the sidebar becomes an off-canvas panel. Default 1280.                                    |
 
-CSS classes are prefixed `mt-sidebar__*`. The `router-link-active` class name is kept because
-Vue Router sets it on the rendered links.
+### Models
+
+`v-model:expanded` (default `true`) and `v-model:offCanvasOpen` (default `false`). Persisting the
+expanded state is the consumer's job.
+
+### Slots
+
+| Slot                       | Description                                                                                        |
+| -------------------------- | -------------------------------------------------------------------------------------------------- |
+| `logo`                     | Header logo. Add the `mt-sidebar__header-logo` class to an icon to size it.                        |
+| `footer`                   | Replaces the whole footer.                                                                         |
+| `user-actions`             | Items of the user action menu. The menu only exists with `user` and either this slot or `version`. |
+| `version`                  | Replaces the plain version text in the user menu.                                                  |
+| `entry-suffix="{ entry }"` | Rendered after the label of every entry, including nested ones and the flyout.                     |
+
+### Events
+
+`navigate(entry)` when a navigation link is clicked. There is no built-in logout: add an action
+item via `user-actions`.
+
+### Styling hooks
+
+Everything is prefixed `mt-sidebar__*`. `mt-sidebar__hide-on-collapse` fades an element out when
+the sidebar collapses and can be used inside the `footer` slot. The `router-link-active` class name
+is kept because Vue Router sets it on the rendered links.
 
 ## Provenance
 
@@ -53,5 +71,24 @@ Vue Router sets it on the rendered links.
 - Source: `src/Administration/Resources/app/administration/src/app/component/structure/sw-admin-menu{,-item}/`,
   `app/store/admin-menu.store.ts`, `app/composables/use-module-icon-colors.ts`
 
+Shopware couplings replaced during the port:
+
+| Shopware coupling                                         | Meteor replacement                                        |
+| --------------------------------------------------------- | --------------------------------------------------------- |
+| `menuService`, `appModulesService`, custom entity entries | `entries` prop                                            |
+| `adminMenu` store `isExpanded` (+ `localStorage`)         | `v-model:expanded`                                        |
+| `EventBus` `sw-admin-menu/toggle-offcanvas`               | `v-model:offCanvasOpen`                                   |
+| `adminMenu` store `expandedEntries`                       | Internal state                                            |
+| `acl`, `hasAccessToRoute`, settings special case          | Removed: pass only the entries the user may see           |
+| `$t` on entry labels and menu strings                     | Translated labels; inline `useI18n` messages (`en`, `de`) |
+| `$route`, `$router`, `router-link`                        | `route`, `router`, `linkComponent` props                  |
+| `session` store user, `userService`                       | `user`, `isUserLoading` props                             |
+| `systemConfigApiService` shop name, hardcoded logo        | `title`, `subtitle` props, `logo` slot                    |
+| `sw-version`, `sw-avatar`                                 | `version` prop or slot, `mt-avatar`                       |
+| `loginService.logoutSso`, notification cleanup            | `user-actions` slot                                       |
+| `useModuleIconColors`                                     | `moduleIconColors` prop                                   |
+| `$device.getViewportWidth()`                              | `window.innerWidth`, `mobileBreakpoint` prop              |
+| Twig blocks                                               | Slots                                                     |
+
 The Jest specs of the original components relied on Shopware's `wrapTestComponent` harness and
-were replaced by `mt-sidebar.spec.ts`. The pure `sidebar-item-active.helper.spec.ts` was ported as is.
+were replaced by `mt-sidebar.spec.ts`. The pure active-route helper spec was ported as is.

@@ -29,19 +29,21 @@
 
         <span
           class="mt-sidebar__navigation-link-label"
-          :class="collapsibleText ? 'collapsible-text hide-on-collapse' : ''"
+          :class="
+            collapsibleText ? 'mt-sidebar__collapsible-text mt-sidebar__hide-on-collapse' : ''
+          "
           :title="entry.label"
         >
           {{ entry.label }}
         </span>
 
-        <slot name="additional-text" />
+        <slot name="entry-suffix" :entry="entry" />
 
         <span class="mt-sidebar__navigation-link-expand-icon-box">
           <mt-icon
             :name="expandIcon"
             size="8"
-            class="mt-sidebar__navigation-link-expand-icon collapsible-text hide-on-collapse"
+            class="mt-sidebar__navigation-link-expand-icon mt-sidebar__collapsible-text mt-sidebar__hide-on-collapse"
           />
         </span>
       </component>
@@ -60,7 +62,11 @@
         @menu-item-hover="forwardMenuItemHover"
         @flyout-navigate="forwardFlyoutNavigate"
         @navigation-link-click="forwardNavigationLinkClick"
-      />
+      >
+        <template #entry-suffix="slotProps">
+          <slot name="entry-suffix" v-bind="slotProps" />
+        </template>
+      </mt-sidebar-item>
     </mt-collapsible-content>
   </mt-collapsible>
 
@@ -93,13 +99,15 @@
 
             <span
               class="mt-sidebar__navigation-link-label"
-              :class="collapsibleText ? 'collapsible-text hide-on-collapse' : ''"
+              :class="
+                collapsibleText ? 'mt-sidebar__collapsible-text mt-sidebar__hide-on-collapse' : ''
+              "
               :title="entry.label"
             >
               {{ entry.label }}
             </span>
 
-            <slot name="additional-text" />
+            <slot name="entry-suffix" :entry="entry" />
           </component>
         </div>
       </template>
@@ -174,6 +182,11 @@ const emit = defineEmits<{
   (e: "flyout-close-request"): void;
   (e: "flyout-navigate", payload: { disclosesChildren: boolean }): void;
   (e: "navigation-link-click", entry: SidebarTreeEntry): void;
+}>();
+
+defineSlots<{
+  /** Rendered after the label; forwarded to the nested rows. */
+  "entry-suffix"?: (props: { entry: SidebarTreeEntry }) => unknown;
 }>();
 
 const context = inject(SIDEBAR_CONTEXT);
@@ -680,7 +693,7 @@ $nesting-line-indent: 36px;
   background: none;
   color: var(--color-icon-brand-default);
 
-  .collapsible-text {
+  .mt-sidebar__collapsible-text {
     color: var(--color-icon-brand-default);
   }
 
@@ -701,14 +714,14 @@ $nesting-line-indent: 36px;
 }
 
 .mt-sidebar__navigation-list-item.is--entry-expanded {
-  .collapsible-text {
+  .mt-sidebar__collapsible-text {
     color: var(--color-text-primary-default);
   }
 
   &
     > .mt-sidebar__navigation-item-row
     > .mt-sidebar__navigation-link.router-link-active
-    .collapsible-text {
+    .mt-sidebar__collapsible-text {
     color: var(--color-icon-brand-default);
   }
 }
@@ -720,7 +733,7 @@ $nesting-line-indent: 36px;
     background: var(--color-interaction-secondary-hover);
     color: var(--color-text-primary-default);
 
-    .collapsible-text {
+    .mt-sidebar__collapsible-text {
       color: var(--color-text-primary-default);
     }
   }
@@ -733,7 +746,7 @@ $nesting-line-indent: 36px;
     background: var(--color-interaction-secondary-hover);
     color: var(--color-text-primary-default);
 
-    .collapsible-text {
+    .mt-sidebar__collapsible-text {
       color: var(--color-text-primary-default);
     }
 
@@ -745,7 +758,7 @@ $nesting-line-indent: 36px;
   }
 }
 
-// Tree lines and indicators follow .hide-on-collapse timing, scoped to the toggle window
+// Tree lines and indicators follow .mt-sidebar__hide-on-collapse timing, scoped to the toggle window
 .mt-sidebar.is--toggling .navigation-list-item--nested {
   > .mt-sidebar__sub-navigation-list::before,
   > .mt-sidebar__navigation-item-row > .mt-sidebar__navigation-link::before,
