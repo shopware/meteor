@@ -1,5 +1,9 @@
 import MtDatepicker from "./components/mt-datepicker/mt-datepicker.vue";
 import MtBanner from "./components/mt-banner/mt-banner.vue";
+import MtBreadcrumb from "./components/mt-breadcrumb/mt-breadcrumb.vue";
+import MtBreadcrumbItem from "./components/mt-breadcrumb/mt-breadcrumb-item.vue";
+import MtBreadcrumbLink from "./components/mt-breadcrumb/mt-breadcrumb-link.vue";
+import MtBreadcrumbSeparator from "./components/mt-breadcrumb/mt-breadcrumb-separator.vue";
 import MtBadge from "./components/mt-badge/mt-badge.vue";
 import MtLoader from "./components/mt-loader/mt-loader.vue";
 import MtProgressBar from "./components/mt-progress-bar/mt-progress-bar.vue";
@@ -90,6 +94,10 @@ import type { Filter, Option } from "./components/mt-data-table/mt-data-table.in
 
 export {
   MtBanner,
+  MtBreadcrumb,
+  MtBreadcrumbItem,
+  MtBreadcrumbLink,
+  MtBreadcrumbSeparator,
   MtBadge,
   MtLoader,
   MtProgressBar,
