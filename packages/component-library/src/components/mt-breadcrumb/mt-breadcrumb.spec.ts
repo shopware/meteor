@@ -16,10 +16,9 @@ const items: BreadcrumbItem[] = [
   { label: "Shoes" },
 ];
 
-function renderBreadcrumb(props: Record<string, unknown> = {}, slots: Record<string, string> = {}) {
+function renderBreadcrumb(props: Record<string, unknown> = {}) {
   return render(MtBreadcrumb, {
     props: { items, ...props },
-    slots,
     global: {
       components: { "router-link": RouterLinkStub },
     },
@@ -142,20 +141,6 @@ describe("mt-breadcrumb", () => {
     // ASSERT
     expect(screen.getByText("Shoes")).not.toHaveFocus();
     expect(document.body).toHaveFocus();
-  });
-
-  it("renders custom crumb content through the item slot", () => {
-    // ARRANGE
-    renderBreadcrumb(
-      {},
-      {
-        item: `<template #item="{ item, index, current }">{{ index + 1 }}. {{ item.label }}{{ current ? " (you are here)" : "" }}</template>`,
-      },
-    );
-
-    // ASSERT
-    expect(screen.getByRole("link", { name: "1. Home" })).toBeInTheDocument();
-    expect(screen.getByText("3. Shoes (you are here)")).toHaveAttribute("aria-current", "page");
   });
 
   it("renders nothing without items", () => {

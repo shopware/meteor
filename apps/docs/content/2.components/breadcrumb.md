@@ -44,13 +44,6 @@ Drag the corner of the box to see the crumbs flow onto additional lines.
 ::component-example{name="breadcrumb-wrap-example"}
 ::
 
-### Custom crumb content
-
-The `item` slot replaces the label of every crumb. It receives the item, its index, and whether it is the current page. The component still renders the links, separators, and collapsing.
-
-::component-example{name="breadcrumb-custom-content-example"}
-::
-
 ### From the current route
 
 Build the items from the route segments and mark nothing by hand: the last item is the current page automatically. `useRoute` comes from `vue-router`.
@@ -96,7 +89,6 @@ Build the items from the route segments and mark nothing by hand: the last item 
 - Separators and the ellipsis are hidden from assistive technology.
 - Links can be reached with the Tab key and show a visible focus ring. The current page is plain text and cannot be focused.
 - Hidden crumbs are not announced. Keep the number of levels small so that the trail rarely needs to collapse on the viewports you support.
-- Content in the `item` slot renders inside the crumb's link, so it must not contain links, buttons, or other interactive elements.
 
 ## Related components
 

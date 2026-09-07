@@ -1,12 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/vue3";
-import MtText from "../mt-text/mt-text.vue";
 import MtBreadcrumb, { type BreadcrumbItem } from "./mt-breadcrumb.vue";
 
 export type MtBreadcrumbMeta = Meta<typeof MtBreadcrumb>;
 
 const sharedComponents = {
   MtBreadcrumb,
-  MtText,
 };
 
 const createRender = (template: string) => (args: Record<string, unknown>) => ({
@@ -62,17 +60,6 @@ const resizableTemplate = (width: number) => `
 <div style="width: ${width}px; max-width: 100%; resize: horizontal; overflow: hidden; border: 1px dashed var(--color-border-primary-default); padding: 8px;">
   <mt-breadcrumb v-bind="args" link-as="a" />
 </div>
-`;
-
-const customContentTemplate = `
-<mt-breadcrumb v-bind="args" link-as="a">
-  <template #item="{ item, current }">
-    {{ item.label }}
-    <mt-text v-if="current" as="span" size="xs" color="color-text-tertiary-default">
-      (24 items)
-    </mt-text>
-  </template>
-</mt-breadcrumb>
 `;
 
 const meta: MtBreadcrumbMeta = {
@@ -142,9 +129,4 @@ export const Wrap: MtBreadcrumbStory = {
     items: collapsedItems,
     overflow: "wrap",
   },
-};
-
-export const CustomContent: MtBreadcrumbStory = {
-  ...createStory(customContentTemplate),
-  name: "Custom content",
 };
