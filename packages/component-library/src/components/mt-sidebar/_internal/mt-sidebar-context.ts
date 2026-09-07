@@ -5,7 +5,6 @@ export interface SidebarContext {
   route: ComputedRef<SidebarRoute | undefined>;
   router: ComputedRef<SidebarRouter | undefined>;
   linkComponent: ComputedRef<SidebarLinkComponent>;
-  moduleIconColors: ComputedRef<boolean>;
   /** Whether any top-level branch is expanded, in which case the route stops keeping folders open. */
   hasExpandedBranches: ComputedRef<boolean>;
 }

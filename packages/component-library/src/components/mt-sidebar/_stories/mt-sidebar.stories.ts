@@ -91,7 +91,6 @@ const meta: MtSidebarMeta = {
     linkComponent: StoryLink,
     title: "Demo store",
     subtitle: "Administration",
-    moduleIconColors: false,
   },
   argTypes: {
     entries: {
@@ -118,10 +117,6 @@ const meta: MtSidebarMeta = {
       control: { type: "text" },
       description: "Secondary line below the title.",
     },
-    moduleIconColors: {
-      control: { type: "boolean" },
-      description: "Paints the top level icons in the `color` of their entry.",
-    },
     expanded: {
       control: { type: "boolean" },
       description: "Sidebar expanded state. Use with `v-model:expanded`.",
@@ -147,12 +142,6 @@ export const Default: MtSidebarStory = {};
 export const Collapsed: MtSidebarStory = {
   args: {
     expanded: false,
-  },
-};
-
-export const ModuleIconColors: MtSidebarStory = {
-  args: {
-    moduleIconColors: true,
   },
 };
 

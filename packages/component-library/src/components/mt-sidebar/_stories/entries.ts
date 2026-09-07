@@ -9,14 +9,12 @@ export const entries: SidebarEntry[] = [
     path: "dashboard.index",
     label: "Dashboard",
     icon: "regular-home",
-    color: "#6ad6f0",
     position: 10,
   },
   {
     id: "catalogue",
     label: "Catalogues",
     icon: "regular-products",
-    color: "#57d9a3",
     position: 20,
   },
   { id: "product", path: "product.index", label: "Products", parent: "catalogue", position: 10 },
@@ -40,7 +38,6 @@ export const entries: SidebarEntry[] = [
     path: "order.index",
     label: "Orders",
     icon: "regular-shopping-bag",
-    color: "#a092f0",
     position: 30,
   },
   {
@@ -48,10 +45,9 @@ export const entries: SidebarEntry[] = [
     path: "customer.index",
     label: "Customers",
     icon: "regular-users",
-    color: "#f88962",
     position: 40,
   },
-  { id: "content", label: "Content", icon: "regular-content", color: "#ff85c2", position: 50 },
+  { id: "content", label: "Content", icon: "regular-content", position: 50 },
   {
     id: "cms",
     path: "cms.index",
@@ -64,7 +60,6 @@ export const entries: SidebarEntry[] = [
     id: "marketing",
     label: "Marketing",
     icon: "regular-megaphone",
-    color: "#ffd700",
     position: 60,
   },
   {
