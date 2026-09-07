@@ -7,12 +7,19 @@ import { entries, routeFor, user } from "./entries";
 import { StoryLink } from "./story-link";
 import { StoryLogo } from "./story-logo";
 import { StoryLayout } from "./story-layout";
-import { StoryUserActions } from "./story-user-actions";
-import { StoryFooter } from "./story-footer";
+import { StoryUserFooter } from "./story-user-footer";
+import { StorySimpleFooter } from "./story-simple-footer";
 
 export type MtSidebarMeta = Meta<typeof MtSidebar>;
 
-const components = { MtSidebar, MtBadge, StoryLogo, StoryLayout, StoryUserActions, StoryFooter };
+const components = {
+  MtSidebar,
+  MtBadge,
+  StoryLogo,
+  StoryLayout,
+  StoryUserFooter,
+  StorySimpleFooter,
+};
 
 /**
  * Renders the sidebar inside `StoryLayout` and wires the `navigate` event to a fake route so the
@@ -35,7 +42,7 @@ function createRender(sidebarTemplate: string) {
         alert(`${name} clicked`);
       }
 
-      return { args, route, expanded, onNavigate, onAction };
+      return { args, route, expanded, user, onNavigate, onAction };
     },
     template: `
       <story-layout :route="route">
@@ -71,8 +78,8 @@ ${sidebarOpenTag}
     <story-logo />
   </template>
 
-  <template #user-actions>
-    <story-user-actions @action="onAction" />
+  <template #footer>
+    <story-user-footer :user="user" version="6.7.0.0" @action="onAction" />
   </template>
 </mt-sidebar>`;
 
@@ -84,10 +91,7 @@ const meta: MtSidebarMeta = {
     linkComponent: StoryLink,
     title: "Demo store",
     subtitle: "Administration",
-    user,
-    version: "6.7.0.0",
     moduleIconColors: false,
-    isUserLoading: false,
   },
   argTypes: {
     entries: {
@@ -114,14 +118,6 @@ const meta: MtSidebarMeta = {
       control: { type: "text" },
       description: "Secondary line below the title.",
     },
-    user: {
-      description:
-        "Renders the default footer with avatar, name and title. Combine with the `user-actions` slot or `version` to get a menu.",
-    },
-    version: {
-      control: { type: "text" },
-      description: "Version shown at the bottom of the user menu.",
-    },
     moduleIconColors: {
       control: { type: "boolean" },
       description: "Paints the top level icons in the `color` of their entry.",
@@ -142,6 +138,10 @@ export default meta;
 
 type MtSidebarStory = StoryObj<MtSidebarMeta>;
 
+/**
+ * The `footer` slot holds a user block with an action menu, built from `mt-avatar`, `mt-action-menu`
+ * and reka-ui's dropdown primitives. See `StoryUserFooter` for the implementation.
+ */
 export const Default: MtSidebarStory = {};
 
 export const Collapsed: MtSidebarStory = {
@@ -156,13 +156,6 @@ export const ModuleIconColors: MtSidebarStory = {
   },
 };
 
-export const LoadingUser: MtSidebarStory = {
-  args: {
-    isUserLoading: true,
-    user: undefined,
-  },
-};
-
 /**
  * Nothing is branded by default: no logo, no heading, no footer. The expand button is shown
  * permanently in the collapsed state because there is no logo to crossfade with.
@@ -171,8 +164,6 @@ export const WithoutBranding: MtSidebarStory = {
   args: {
     title: undefined,
     subtitle: undefined,
-    user: undefined,
-    version: undefined,
   },
   ...createStory(`
 ${sidebarOpenTag}
@@ -180,19 +171,18 @@ ${sidebarOpenTag}
 };
 
 /**
- * With a `user` but neither `user-actions` nor `version`, the footer shows the user without a menu.
+ * The footer example while the user is still being loaded.
  */
-export const UserWithoutMenu: MtSidebarStory = {
-  args: {
-    version: undefined,
-  },
-  ...createStory(`
+export const LoadingUser: MtSidebarStory = createStory(`
 ${sidebarOpenTag}
   <template #logo>
     <story-logo />
   </template>
-</mt-sidebar>`),
-};
+
+  <template #footer>
+    <story-user-footer is-loading @action="onAction" />
+  </template>
+</mt-sidebar>`);
 
 /**
  * The scoped `entry-suffix` slot renders after the label of every entry, including nested ones and
@@ -209,39 +199,26 @@ ${sidebarOpenTag}
     <mt-badge v-else-if="entry.id === 'review'" variant="info" size="s">3</mt-badge>
   </template>
 
-  <template #user-actions>
-    <story-user-actions @action="onAction" />
-  </template>
-</mt-sidebar>`);
-
-/**
- * The `footer` slot replaces the default user block entirely.
- */
-export const CustomFooter: MtSidebarStory = createStory(`
-${sidebarOpenTag}
-  <template #logo>
-    <story-logo />
-  </template>
-
   <template #footer>
-    <story-footer :user-name="args.user.firstName" @logout="onAction('Logout')" />
+    <story-user-footer :user="user" version="6.7.0.0" @action="onAction" />
   </template>
 </mt-sidebar>`);
 
 /**
- * The `version` slot replaces the plain version text in the user menu, e.g. with a release link.
+ * Any content works in the footer. The slot passes the expanded state, and the
+ * `mt-sidebar__hide-on-collapse` class fades elements out when the sidebar collapses.
  */
-export const CustomVersion: MtSidebarStory = createStory(`
+export const SimpleFooter: MtSidebarStory = createStory(`
 ${sidebarOpenTag}
   <template #logo>
     <story-logo />
   </template>
 
-  <template #user-actions>
-    <story-user-actions @action="onAction" />
-  </template>
-
-  <template #version>
-    <a href="https://github.com/shopware/shopware/releases" target="_blank">6.7.0.0</a>
+  <template #footer="{ expanded }">
+    <story-simple-footer
+      :user-name="user.firstName"
+      :expanded="expanded"
+      @logout="onAction('Logout')"
+    />
   </template>
 </mt-sidebar>`);

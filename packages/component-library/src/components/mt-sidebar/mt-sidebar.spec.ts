@@ -2,7 +2,6 @@ import { render, screen, waitFor, within } from "@testing-library/vue";
 import { userEvent } from "@testing-library/user-event";
 import { defineComponent, h } from "vue";
 import MtSidebar from "./mt-sidebar.vue";
-import MtActionMenuItem from "@/components/mt-action-menu-item/mt-action-menu-item.vue";
 import type { SidebarEntry, SidebarRoute, SidebarTreeEntry } from "./mt-sidebar.types";
 
 // Stands in for `router-link`: the library does not depend on vue-router
@@ -68,8 +67,6 @@ const entries: SidebarEntry[] = [
     position: 30,
   },
 ];
-
-const user = { firstName: "Max", lastName: "Mustermann", title: "Administrator" };
 
 function routeFor(name: string): SidebarRoute {
   return { name, path: `/${name.replace(/\./g, "/")}`, matched: [{ name }], params: {} };
@@ -246,46 +243,22 @@ describe("mt-sidebar", () => {
   });
 
   describe("footer", () => {
-    it("renders the user without a menu when there are no actions", () => {
-      renderSidebar({ user });
-
-      expect(screen.getByText("Max Mustermann")).toBeVisible();
-      expect(screen.getByText("Administrator")).toBeVisible();
-      expect(
-        screen.queryByRole("button", { name: "Max Mustermann, Administrator" }),
-      ).not.toBeInTheDocument();
-    });
-
-    it("opens a menu with the user-actions slot and the version", async () => {
-      const onProfile = vi.fn();
-
-      renderSidebar(
-        { user, version: "6.7.0.0" },
-        {
-          "user-actions": () => h(MtActionMenuItem, { onClick: onProfile }, () => "Profile"),
-        },
-      );
-
-      await userEvent.click(screen.getByRole("button", { name: "Max Mustermann, Administrator" }));
-
-      expect(await screen.findByText(/6\.7\.0\.0/)).toBeInTheDocument();
-
-      await userEvent.click(screen.getByRole("menuitem", { name: "Profile" }));
-
-      expect(onProfile).toHaveBeenCalledOnce();
-    });
-
-    it("renders nothing in the footer without a user", () => {
+    it("renders nothing in the footer without a footer slot", () => {
       renderSidebar();
 
       expect(document.querySelector(".mt-sidebar__footer")?.children).toHaveLength(0);
     });
 
-    it("replaces the footer with the footer slot", () => {
-      renderSidebar({ user }, { footer: '<p data-testid="footer">Custom footer</p>' });
+    it("renders the footer slot with the expanded state", () => {
+      renderSidebar(
+        { expanded: false },
+        {
+          footer: ({ expanded }: { expanded: boolean }) =>
+            h("p", { "data-testid": "footer" }, expanded ? "expanded" : "collapsed"),
+        },
+      );
 
-      expect(screen.getByTestId("footer")).toHaveTextContent("Custom footer");
-      expect(screen.queryByText("Max Mustermann")).not.toBeInTheDocument();
+      expect(screen.getByTestId("footer")).toHaveTextContent("collapsed");
     });
   });
 });

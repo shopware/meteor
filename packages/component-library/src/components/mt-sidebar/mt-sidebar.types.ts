@@ -69,12 +69,4 @@ export interface SidebarRouter {
   getRoutes?: () => Array<{ name?: string | symbol | null; meta?: SidebarRouteMeta }>;
 }
 
-export interface SidebarUser {
-  firstName?: string;
-  lastName?: string;
-  /** Role or title shown below the name, e.g. "Administrator". */
-  title?: string;
-  avatarUrl?: string;
-}
-
 export type SidebarLinkComponent = string | Component;

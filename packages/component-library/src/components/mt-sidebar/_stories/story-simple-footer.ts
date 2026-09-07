@@ -4,13 +4,15 @@ import MtIcon from "../../mt-icon/mt-icon.vue";
 import MtText from "../../mt-text/mt-text.vue";
 
 /**
- * Example content for the `footer` slot, replacing the default user block with a logout button.
- * `mt-sidebar__hide-on-collapse` fades the texts out when the sidebar collapses.
+ * Example content for the `footer` slot: a plain logout button. `mt-sidebar__hide-on-collapse`
+ * fades the texts out when the sidebar collapses; the `expanded` slot prop switches the button to
+ * its icon-only form.
  */
-export const StoryFooter = defineComponent({
-  name: "StoryFooter",
+export const StorySimpleFooter = defineComponent({
+  name: "StorySimpleFooter",
   props: {
     userName: { type: String, required: true },
+    expanded: { type: Boolean, default: true },
   },
   emits: {
     logout: () => true,
@@ -39,10 +41,20 @@ export const StoryFooter = defineComponent({
           ),
           h(
             MtButton,
-            { variant: "secondary", size: "small", block: true, onClick: () => emit("logout") },
+            {
+              variant: "secondary",
+              size: "small",
+              block: props.expanded,
+              square: !props.expanded,
+              "aria-label": props.expanded ? undefined : "Logout",
+              onClick: () => emit("logout"),
+            },
             {
               iconFront: () => h(MtIcon, { name: "regular-sign-out", size: "12px" }),
-              default: () => h("span", { class: "mt-sidebar__hide-on-collapse" }, "Logout"),
+              default: () =>
+                props.expanded
+                  ? h("span", { class: "mt-sidebar__hide-on-collapse" }, "Logout")
+                  : null,
             },
           ),
         ],
