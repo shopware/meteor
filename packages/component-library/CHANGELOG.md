@@ -1,5 +1,24 @@
 # Changelog
 
+## 5.7.1
+
+### Patch Changes
+
+- [#1332](https://github.com/shopware/meteor/pull/1332) [`df9d7d2`](https://github.com/shopware/meteor/commit/df9d7d213b5f2595d536615ef97567212eb6d620) Thanks [@keulinho](https://github.com/keulinho)! - Add inheritance support to `mt-datepicker`.
+
+- [#1340](https://github.com/shopware/meteor/pull/1340) [`c06ad7a`](https://github.com/shopware/meteor/commit/c06ad7a9f397d047f43f4c6167fd947b5a4599d5) Thanks [@quando1910](https://github.com/quando1910)! - Add success and error events to the service permission banner, document the banner and its `useServicePermission` composable, and guard service context and permission APIs for Shopware 6.7.14 and newer.
+
+- [#1344](https://github.com/shopware/meteor/pull/1344) [`00c54cb`](https://github.com/shopware/meteor/commit/00c54cbf68d8d244fe6eb0745ea99f5402a9ff6a) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Remove the inline-size containers from `mt-number-field` and `mt-unit-field`: the containment broke intrinsic sizing, collapsing the fields to zero width in flex, grid and table layouts. The inner input now carries a small `min-width` so fields cannot be crushed to unusable sizes, and stepper controls are shown unless `showControls` is disabled — `mt-slider` disables them for its compact fields
+
+- [#1336](https://github.com/shopware/meteor/pull/1336) [`5fe40e3`](https://github.com/shopware/meteor/commit/5fe40e3391c0bb34e86a547164dcf9a595a8a17e) Thanks [@keulinho](https://github.com/keulinho)! - Forward `MtTabs` attributes to the tab-list element.
+
+- [#1345](https://github.com/shopware/meteor/pull/1345) [`aef7b6a`](https://github.com/shopware/meteor/commit/aef7b6a6a9da39955ed740b9045cfc4808f517b3) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Keep the hint icon at a fixed size when the hint text does not fit on one line. The datepicker's time zone icon could be squeezed away completely by a long time zone name, and it now stays aligned with the first line of the hint like the other form field hints
+
+- [#1328](https://github.com/shopware/meteor/pull/1328) [`1c00c0a`](https://github.com/shopware/meteor/commit/1c00c0ad45429a61b48756d30bb1852861067040) Thanks [@iwv-stefan-m](https://github.com/iwv-stefan-m)! - Let `mt-link` keep the `href` that `router-link` resolves, instead of overriding it with a stringified route location. Passing a route object such as `:to="{ name: 'sw.customer.detail', params: { id } }"` produced `href="[object Object]"`, which broke hover previews, ctrl/middle-click and "Open link in new tab" while a plain left-click still worked. Disabled links are now fully inert: they render no `href` and clicks on them no longer navigate or bubble
+
+- Updated dependencies [[`c06ad7a`](https://github.com/shopware/meteor/commit/c06ad7a9f397d047f43f4c6167fd947b5a4599d5)]:
+  - @shopware-ag/meteor-admin-sdk@6.14.1
+
 ## 5.7.0
 
 ### Minor Changes

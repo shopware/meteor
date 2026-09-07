@@ -389,9 +389,43 @@ describe('Private Service Payment', () => {
         showHeader: false,
         showFooter: false,
         closable: false,
+        zIndex: undefined,
       });
       expect(flow).toBeDefined();
       expect(flow.subscribe).toBeInstanceOf(Function);
+    });
+
+    it('should pass a custom z-index to the modal when requested', async () => {
+      await startPaymentFlow({
+        variant: 'x-large',
+        zIndex: 2000,
+      });
+
+      expect(mockModalOpen).toHaveBeenCalledWith({
+        locationId: 'sw-service-payment-modal',
+        variant: 'x-large',
+        showHeader: false,
+        showFooter: false,
+        closable: false,
+        zIndex: 2000,
+      });
+    });
+
+    it('should allow overriding the existing modal visibility options', async () => {
+      await startPaymentFlow({
+        showHeader: true,
+        showFooter: true,
+        closable: true,
+      });
+
+      expect(mockModalOpen).toHaveBeenCalledWith({
+        locationId: 'sw-service-payment-modal',
+        variant: 'small',
+        showHeader: true,
+        showFooter: true,
+        closable: true,
+        zIndex: undefined,
+      });
     });
 
     it('should return a flow with subscribe method', async () => {
@@ -716,4 +750,3 @@ describe('Private Service Payment', () => {
   });
 
 });
-
