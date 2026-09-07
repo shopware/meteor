@@ -100,7 +100,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref, useSlots, watch } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import MtFieldLabel from "../_internal/mt-field-label/mt-field-label.vue";
@@ -269,11 +269,9 @@ const emit = defineEmits<{
   (e: "inheritance-restore"): void;
 }>();
 
-defineSlots<{
+const slots = defineSlots<{
   hint?(): void;
 }>();
-
-const slots = useSlots();
 
 const showFieldHint = computed(
   () => !!slots.hint || (props.hint != null && String(props.hint).trim() !== ""),
