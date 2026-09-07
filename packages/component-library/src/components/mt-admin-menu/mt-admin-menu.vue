@@ -1,0 +1,1617 @@
+<template>
+  <transition name="mt-admin-menu__backdrop">
+    <div
+      v-if="isMobileViewport && offCanvasOpen"
+      class="mt-admin-menu__backdrop"
+      @click="dismissOffCanvas"
+    ></div>
+  </transition>
+
+  <aside
+    ref="menuElement"
+    class="mt-admin-menu"
+    :class="adminMenuClasses"
+    :aria-expanded="isExpanded ? 'true' : 'false'"
+    :inert="isMobileViewport && !offCanvasOpen"
+  >
+    <div class="mt-admin-menu__header">
+      <div class="mt-admin-menu__header-logo-wrapper">
+        <div class="mt-admin-menu__header-logo-box">
+          <!-- Sized via CSS: 24px on mobile, 26px on desktop. -->
+          <mt-icon
+            class="mt-admin-menu__header-logo"
+            name="solid-shopware"
+            :aria-label="t('projectName')"
+          />
+        </div>
+
+        <button
+          v-if="!isExpanded"
+          type="button"
+          class="mt-admin-menu__header-logo-expand-button"
+          :aria-label="t('expandMenu')"
+          @click.stop="onToggleSidebar"
+        >
+          <mt-icon name="regular-panel-left" size="16px" />
+        </button>
+      </div>
+
+      <div class="collapsible-text hide-on-collapse mt-admin-menu__version">
+        <mt-text
+          as="div"
+          class="mt-admin-menu__shop-name"
+          size="s"
+          weight="semibold"
+          :title="shopName"
+        >
+          {{ shopName }}
+        </mt-text>
+
+        <mt-text
+          as="div"
+          class="mt-admin-menu__title"
+          size="2xs"
+          color="color-text-secondary-default"
+        >
+          {{ t("projectName") }}
+        </mt-text>
+      </div>
+
+      <mt-button
+        v-if="isMobileViewport"
+        class="mt-admin-menu__off-canvas-close"
+        variant="tertiary"
+        size="default"
+        square
+        :aria-label="t('closeMenu')"
+        @click.stop="dismissOffCanvas"
+      >
+        <template #iconFront>
+          <mt-icon name="solid-times" size="12px" />
+        </template>
+      </mt-button>
+      <mt-button
+        v-else
+        class="mt-admin-menu__collapse-button"
+        variant="tertiary"
+        size="default"
+        square
+        :aria-label="t('collapseMenu')"
+        @click.stop="onToggleSidebar"
+      >
+        <template #iconFront>
+          <mt-icon class="hide-on-collapse" name="regular-panel-left" size="16px" />
+        </template>
+      </mt-button>
+    </div>
+
+    <div class="mt-admin-menu__body-container">
+      <div
+        ref="menuBodyElement"
+        class="mt-admin-menu__body"
+        :style="scrollbarOffsetStyle"
+        @keydown="onNavigationKeydown"
+      >
+        <nav class="mt-admin-menu__navigation" :aria-labelledby="navigationLabelId">
+          <h2 :id="navigationLabelId" class="visually-hidden">
+            {{ t("navigationLabel") }}
+          </h2>
+
+          <ul
+            class="mt-admin-menu__navigation-list"
+            @mouseenter="cancelFlyoutClose"
+            @focusin="cancelFlyoutClose"
+            @mouseleave="onNavigationListMouseLeave"
+            @focusout="onNavigationListMouseLeave"
+          >
+            <mt-admin-menu-item
+              v-for="entry in mainMenuEntries"
+              :key="entry.id || entry.path"
+              :sidebar-expanded="isExpanded"
+              :is-expanded="isNavigationEntryExpanded(entry)"
+              :flyout-active="isFlyoutEntryActive(entry)"
+              :entry="entry"
+              @menu-item-hover="onMenuItemHover"
+              @branch-toggle="onMenuBranchToggle"
+              @flyout-focus-request="onFlyoutFocusRequest"
+              @flyout-close-request="onFlyoutLeave"
+              @flyout-navigate="onFlyoutNavigate"
+              @navigation-link-click="onNavigationLinkClicked"
+            />
+          </ul>
+        </nav>
+      </div>
+    </div>
+
+    <div class="mt-admin-menu__footer">
+      <DropdownMenuRoot :open="isUserActionsActive" @update:open="isUserActionsActive = $event">
+        <DropdownMenuTrigger as-child>
+          <button
+            class="mt-admin-menu__user-actions-toggle"
+            :class="{ 'is--active': isUserActionsActive }"
+            type="button"
+            :aria-label="userActionsAriaLabel"
+          >
+            <mt-loader v-if="isUserLoading" size="32px" />
+
+            <mt-avatar
+              class="mt-admin-menu__avatar"
+              size="s"
+              :image-url="user?.avatarUrl"
+              :first-name="user?.firstName"
+              :last-name="user?.lastName"
+            />
+
+            <div class="mt-admin-menu__user-custom-fields collapsible-text hide-on-collapse">
+              <mt-text as="div" class="mt-admin-menu__user-name" size="xs" weight="semibold">
+                {{ userName }}
+              </mt-text>
+              <mt-text
+                as="div"
+                class="mt-admin-menu__user-type"
+                size="2xs"
+                color="color-text-secondary-default"
+              >
+                {{ user?.title }}
+              </mt-text>
+            </div>
+
+            <div class="mt-admin-menu__user-actions-toggle-icon-wrapper">
+              <mt-icon class="hide-on-collapse" name="regular-chevron-up-xs" size="8" />
+              <mt-icon class="hide-on-collapse" name="regular-chevron-down-xs" size="8" />
+            </div>
+          </button>
+        </DropdownMenuTrigger>
+
+        <DropdownMenuPortal>
+          <mt-action-menu
+            class="mt-admin-menu__user-actions-menu"
+            :match-trigger-width="true"
+            :side-offset="4"
+            side="top"
+          >
+            <mt-action-menu-group>
+              <slot name="user-actions" />
+
+              <mt-action-menu-item icon="regular-sign-out" variant="critical" @click="onLogoutUser">
+                {{ t("logout") }}
+              </mt-action-menu-item>
+            </mt-action-menu-group>
+
+            <mt-action-menu-group v-if="version || $slots.version">
+              <mt-text
+                as="div"
+                class="mt-admin-menu__version-footer"
+                size="2xs"
+                color="color-text-secondary-default"
+              >
+                {{ t("version") }}
+                <slot name="version">{{ version }}</slot>
+              </mt-text>
+            </mt-action-menu-group>
+          </mt-action-menu>
+        </DropdownMenuPortal>
+      </DropdownMenuRoot>
+    </div>
+
+    <mt-floating-ui
+      :is-opened="!isExpanded && flyoutEntries.length > 0"
+      :anchor-element="flyoutReferenceElement"
+      :floating-ui-options="{ placement: 'right-start' }"
+      :offset="12"
+      detached
+      @close="onFlyoutLeave"
+    >
+      <div
+        id="mt-admin-menu-flyout"
+        ref="flyoutElement"
+        class="mt-admin-menu__flyout-content"
+        :class="{ 'is--closing': isFlyoutClosing }"
+        tabindex="-1"
+        @mouseenter="cancelFlyoutClose"
+        @focusin="cancelFlyoutClose"
+        @mouseleave="onFlyoutMouseLeave"
+        @focusout="onFlyoutMouseLeave"
+        @keydown="onFlyoutKeydown"
+      >
+        <mt-text
+          v-if="flyoutTitle"
+          as="span"
+          class="mt-admin-menu__flyout-title"
+          size="xs"
+          color="color-text-secondary-default"
+        >
+          {{ flyoutTitle }}
+        </mt-text>
+
+        <ul class="mt-admin-menu__flyout-list">
+          <mt-admin-menu-item
+            v-for="entry in flyoutEntries"
+            :key="entry.id || entry.path"
+            :entry="entry"
+            :menu-depth="2"
+            :sidebar-expanded="isExpanded"
+            :display-icon="false"
+            :collapsible-text="false"
+            @flyout-navigate="onFlyoutNavigate"
+            @navigation-link-click="onNavigationLinkClicked"
+          />
+        </ul>
+      </div>
+    </mt-floating-ui>
+  </aside>
+</template>
+
+<script setup lang="ts">
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  provide,
+  ref,
+  useId,
+  watch,
+  type PropType,
+} from "vue";
+import { createFocusTrap, type FocusTrap } from "focus-trap";
+import { DropdownMenuPortal, DropdownMenuRoot, DropdownMenuTrigger } from "reka-ui";
+import { useI18n } from "vue-i18n";
+import MtIcon from "@/components/mt-icon/mt-icon.vue";
+import MtText from "@/components/mt-text/mt-text.vue";
+import MtButton from "@/components/mt-button/mt-button.vue";
+import MtLoader from "@/components/mt-loader/mt-loader.vue";
+import MtAvatar from "@/components/mt-avatar/mt-avatar.vue";
+import MtFloatingUi from "@/components/mt-floating-ui/mt-floating-ui.vue";
+import MtActionMenu from "@/components/mt-action-menu/mt-action-menu.vue";
+import MtActionMenuGroup from "@/components/mt-action-menu-group/mt-action-menu-group.vue";
+import MtActionMenuItem from "@/components/mt-action-menu-item/mt-action-menu-item.vue";
+import MtAdminMenuItem from "./_internal/mt-admin-menu-item.vue";
+import { ADMIN_MENU_CONTEXT } from "./_internal/mt-admin-menu-context";
+import { buildMenuTree, menuEntryKey } from "./_internal/build-menu-tree";
+import { getActiveRouteNames, isEntryOnActiveRoute } from "./_internal/menu-item-active.helper";
+import type {
+  MenuEntry,
+  MenuLinkComponent,
+  MenuRoute,
+  MenuRouter,
+  MenuTreeEntry,
+  MenuUser,
+} from "./mt-admin-menu.types";
+
+export type {
+  MenuEntry,
+  MenuLinkComponent,
+  MenuRoute,
+  MenuRouter,
+  MenuTreeEntry,
+  MenuUser,
+} from "./mt-admin-menu.types";
+
+const SIDEBAR_TOGGLE_ANIMATION_DURATION = 500;
+const VIEWPORT_RESIZE_SETTLE_DURATION = 200;
+const FLYOUT_CLOSE_DELAY = 180;
+const FLYOUT_CLOSE_ANIMATION_DURATION = 200;
+const MAX_NESTING_LEVEL = 3;
+
+const props = defineProps({
+  /**
+   * Flat list of navigation entries. Nested via `parent`, sorted via `position`.
+   */
+  entries: {
+    type: Array as PropType<MenuEntry[]>,
+    required: true,
+  },
+  /**
+   * The current route, used to highlight the active entry and open its branch.
+   */
+  route: {
+    type: Object as PropType<MenuRoute>,
+    default: undefined,
+  },
+  /**
+   * The router, used to follow `meta.parentPath` of routes not listed in the menu.
+   */
+  router: {
+    type: Object as PropType<MenuRouter>,
+    default: undefined,
+  },
+  /**
+   * Component rendering the navigation links. Receives the route location as `to`.
+   */
+  linkComponent: {
+    type: [String, Object] as PropType<MenuLinkComponent>,
+    default: "router-link",
+  },
+  user: {
+    type: Object as PropType<MenuUser>,
+    default: undefined,
+  },
+  isUserLoading: {
+    type: Boolean,
+    default: false,
+  },
+  shopName: {
+    type: String,
+    default: "Shopware",
+  },
+  /**
+   * Version shown in the user menu. Omit to hide the version row.
+   */
+  version: {
+    type: String,
+    default: undefined,
+  },
+  /**
+   * Paints the top level icons in the `color` of their entry.
+   */
+  moduleIconColors: {
+    type: Boolean,
+    default: false,
+  },
+  /**
+   * Viewport width in px at and below which the menu turns into the mobile off-canvas panel.
+   */
+  mobileBreakpoint: {
+    type: Number,
+    default: 1280,
+  },
+});
+
+const emit = defineEmits<{
+  (e: "logout"): void;
+  (e: "navigate", entry: MenuTreeEntry): void;
+}>();
+
+defineSlots<{
+  /** Additional items for the user action menu, rendered above the logout item. */
+  "user-actions"?: () => unknown;
+  /** Replaces the plain `version` text in the user action menu. */
+  version?: () => unknown;
+}>();
+
+/**
+ * Whether the sidebar is expanded. Ignored on mobile viewports, where the panel is always expanded.
+ */
+const expanded = defineModel<boolean>("expanded", { default: true });
+
+/**
+ * Whether the mobile off-canvas panel is shown.
+ */
+const offCanvasOpen = defineModel<boolean>("offCanvasOpen", { default: false });
+
+const { t } = useI18n({
+  messages: {
+    en: {
+      projectName: "Administration",
+      expandMenu: "Expand menu",
+      collapseMenu: "Collapse menu",
+      closeMenu: "Close menu",
+      logout: "Logout",
+      version: "Version:",
+      navigationLabel: "Main navigation",
+    },
+    de: {
+      projectName: "Administration",
+      expandMenu: "Menü ausklappen",
+      collapseMenu: "Menü einklappen",
+      closeMenu: "Menü schließen",
+      logout: "Abmelden",
+      version: "Version:",
+      navigationLabel: "Hauptnavigation",
+    },
+  },
+});
+
+const navigationLabelId = `mt-admin-menu-navigation-label-${useId()}`;
+
+const menuElement = ref<HTMLElement | null>(null);
+const menuBodyElement = ref<HTMLElement | null>(null);
+const flyoutElement = ref<HTMLElement | null>(null);
+
+const activeEntry = ref<{ entry: MenuTreeEntry; target: HTMLElement } | null>(null);
+const isUserActionsActive = ref(false);
+const flyoutEntries = ref<MenuTreeEntry[]>([]);
+const flyoutTitle = ref("");
+const isFlyoutClosing = ref(false);
+const isFlyoutPinned = ref(false);
+const flyoutReferenceElement = ref<HTMLElement | null>(null);
+const scrollbarOffset = ref("");
+const viewportWidth = ref<number | null>(typeof window === "undefined" ? null : window.innerWidth);
+const isTogglingSidebar = ref(false);
+const isViewportResizing = ref(false);
+const activeBranchKey = ref<string | null | undefined>(null);
+const expandedEntries = ref<MenuTreeEntry[]>([]);
+
+let flyoutCloseTimeoutId: ReturnType<typeof setTimeout> | null = null;
+let toggleSidebarTimeout: ReturnType<typeof setTimeout> | null = null;
+let viewportResizeTimeout: ReturnType<typeof setTimeout> | null = null;
+let flyoutFocusTrap: FocusTrap | null = null;
+let offCanvasFocusTrap: FocusTrap | null = null;
+let menuDropdownObserver: MutationObserver | null = null;
+let openMenuDropdownTrigger: HTMLElement | null = null;
+
+const isMobileViewport = computed(
+  () => viewportWidth.value !== null && viewportWidth.value <= props.mobileBreakpoint,
+);
+
+const isExpanded = computed(() => expanded.value || isMobileViewport.value);
+
+const mainMenuEntries = computed(() => pruneDeepEntries(buildMenuTree(props.entries)));
+
+const adminMenuClasses = computed(() => ({
+  "is--expanded": isExpanded.value,
+  "is--collapsed": !isExpanded.value,
+  "is--off-canvas-shown": offCanvasOpen.value,
+  "is--toggling": isTogglingSidebar.value,
+  "is--viewport-resizing": isViewportResizing.value,
+}));
+
+const scrollbarOffsetStyle = computed(() => ({
+  right: scrollbarOffset.value,
+  "margin-left": scrollbarOffset.value,
+}));
+
+const userName = computed(() =>
+  [props.user?.firstName, props.user?.lastName].filter(Boolean).join(" "),
+);
+
+// The collapsed sidebar hides the visible user name, leaving the avatar button unnamed
+const userActionsAriaLabel = computed(() =>
+  [userName.value, props.user?.title].filter(Boolean).join(", "),
+);
+
+provide(ADMIN_MENU_CONTEXT, {
+  route: computed(() => props.route),
+  router: computed(() => props.router),
+  linkComponent: computed(() => props.linkComponent),
+  moduleIconColors: computed(() => props.moduleIconColors),
+  hasExpandedBranches: computed(() => expandedEntries.value.length > 0),
+});
+
+watch(isExpanded, () => {
+  toggleSidebar();
+  startSidebarToggleWindow();
+});
+
+watch(offCanvasOpen, (isShown) => {
+  if (isShown) {
+    activateOffCanvasFocusTrap();
+  } else {
+    deactivateOffCanvasFocusTrap();
+  }
+});
+
+watch(isMobileViewport, (isMobile) => {
+  if (!isMobile && offCanvasOpen.value) {
+    closeOffCanvas();
+  }
+
+  // The teleported user menu would float detached over the hidden off-canvas rail otherwise
+  if (isMobile) {
+    isUserActionsActive.value = false;
+  }
+});
+
+// Query-insensitive on purpose: listing pagination/sorting must not re-expand a collapsed branch
+watch(
+  () => props.route?.path,
+  () => {
+    closeNavigationOverlays();
+
+    // The teleported user menu would survive the page change otherwise
+    isUserActionsActive.value = false;
+
+    // Ensure the branch owning the new page is open, once the route change has rendered
+    nextTick(() => expandAncestorBranchesForCurrentRoute());
+  },
+  { immediate: true },
+);
+
+// Entries usually arrive after the first render (app modules, plugins), so revisit the active branch
+watch(mainMenuEntries, () => {
+  nextTick(() => expandAncestorBranchesForCurrentRoute());
+});
+
+onMounted(() => {
+  window.addEventListener("resize", onViewportResize);
+  addScrollbarOffset();
+});
+
+onBeforeUnmount(() => {
+  cancelFlyoutClose();
+  deactivateFlyoutFocusTrap(false);
+  deactivateOffCanvasFocusTrap();
+
+  window.removeEventListener("resize", onViewportResize);
+
+  if (toggleSidebarTimeout) {
+    clearTimeout(toggleSidebarTimeout);
+  }
+
+  if (viewportResizeTimeout) {
+    clearTimeout(viewportResizeTimeout);
+  }
+});
+
+function pruneDeepEntries(entries: MenuTreeEntry[]): MenuTreeEntry[] {
+  return entries.map((entry) => {
+    if (entry.level < MAX_NESTING_LEVEL) {
+      return { ...entry, children: pruneDeepEntries(entry.children) };
+    }
+
+    // Nesting beyond level 3 is unsupported: report it and drop the children.
+    entry.children.forEach((child) => {
+      console.error(
+        `[mt-admin-menu] The navigation entry "${menuEntryKey(child)}" is nested on level 4 or higher. ` +
+          "The admin menu only supports up to three levels of nesting.",
+      );
+    });
+
+    return { ...entry, children: [] };
+  });
+}
+
+function onViewportResize() {
+  viewportWidth.value = window.innerWidth;
+  isViewportResizing.value = true;
+
+  if (viewportResizeTimeout) {
+    clearTimeout(viewportResizeTimeout);
+  }
+
+  viewportResizeTimeout = setTimeout(() => {
+    isViewportResizing.value = false;
+  }, VIEWPORT_RESIZE_SETTLE_DURATION);
+}
+
+function closeOffCanvas() {
+  offCanvasOpen.value = false;
+}
+
+function closeNavigationOverlays() {
+  // Ensure an open flyout closes once the page changes
+  if (!isExpanded.value && flyoutEntries.value.length && !isFlyoutPinned.value) {
+    // Ensure the keyboard focus stays on the new page
+    deactivateFlyoutFocusTrap(false);
+    onFlyoutLeave();
+  }
+
+  // Make sure the mobile off-canvas panel closes so the new page is not left hidden behind it
+  if (isMobileViewport.value && offCanvasOpen.value) {
+    closeOffCanvas();
+  }
+}
+
+function onNavigationLinkClicked(entry: MenuTreeEntry) {
+  // Tapping the current route's entry aborts as redundant navigation, so no route watcher fires
+  closeNavigationOverlays();
+
+  emit("navigate", entry);
+}
+
+function dismissOffCanvas() {
+  // Explicit dismissal restores focus to the opener
+  if (offCanvasFocusTrap) {
+    offCanvasFocusTrap.deactivate();
+    return;
+  }
+
+  closeOffCanvas();
+}
+
+function activateOffCanvasFocusTrap() {
+  nextTick(() => {
+    const panelElement = menuElement.value;
+
+    if (!panelElement || !offCanvasOpen.value || offCanvasFocusTrap) {
+      return;
+    }
+
+    offCanvasFocusTrap = createFocusTrap(panelElement, {
+      escapeDeactivates: true,
+      clickOutsideDeactivates: false,
+      allowOutsideClick: true,
+      returnFocusOnDeactivate: true,
+      delayInitialFocus: false,
+      fallbackFocus: panelElement,
+      onDeactivate: () => {
+        stopMenuDropdownObserver();
+        offCanvasFocusTrap = null;
+        closeOffCanvas();
+      },
+    });
+
+    offCanvasFocusTrap.activate();
+    startMenuDropdownObserver(panelElement);
+  });
+}
+
+function startMenuDropdownObserver(panelElement: HTMLElement) {
+  menuDropdownObserver = new MutationObserver(syncMenuDropdownFocusOwner);
+
+  menuDropdownObserver.observe(panelElement, {
+    subtree: true,
+    childList: true,
+    attributes: true,
+    attributeFilter: ["data-state"],
+  });
+}
+
+function stopMenuDropdownObserver() {
+  menuDropdownObserver?.disconnect();
+  menuDropdownObserver = null;
+  openMenuDropdownTrigger = null;
+}
+
+function syncMenuDropdownFocusOwner() {
+  if (!offCanvasFocusTrap) {
+    return;
+  }
+
+  // aria-haspopup narrows this to dropdown triggers: open navigation collapsibles share the same data-state
+  const openTrigger = menuElement.value?.querySelector<HTMLElement>(
+    '[aria-haspopup="menu"][data-state="open"]',
+  );
+
+  if (openTrigger && !openMenuDropdownTrigger) {
+    openMenuDropdownTrigger = openTrigger;
+    offCanvasFocusTrap.pause();
+
+    return;
+  }
+
+  if (!openTrigger && openMenuDropdownTrigger) {
+    const previousTrigger = openMenuDropdownTrigger;
+    openMenuDropdownTrigger = null;
+
+    if (previousTrigger.isConnected) {
+      previousTrigger.focus();
+    }
+
+    offCanvasFocusTrap.unpause();
+  }
+}
+
+function deactivateOffCanvasFocusTrap() {
+  if (!offCanvasFocusTrap) {
+    return;
+  }
+
+  const trap = offCanvasFocusTrap;
+  offCanvasFocusTrap = null;
+
+  trap.deactivate({ returnFocus: false });
+}
+
+function onToggleSidebar() {
+  expanded.value = !isExpanded.value;
+
+  toggleSidebar();
+}
+
+function startSidebarToggleWindow() {
+  // Marks the sidebar as mid-toggle so CSS can suppress unwanted animations while it slides
+  isTogglingSidebar.value = true;
+
+  if (toggleSidebarTimeout) {
+    clearTimeout(toggleSidebarTimeout);
+  }
+
+  toggleSidebarTimeout = setTimeout(() => {
+    isTogglingSidebar.value = false;
+    toggleSidebarTimeout = null;
+  }, SIDEBAR_TOGGLE_ANIMATION_DURATION);
+}
+
+function toggleSidebar() {
+  // Collapsing hides the expanded tree, so drop that state and close anything left floating
+  if (!isExpanded.value) {
+    expandedEntries.value = [];
+    onFlyoutLeave();
+  }
+
+  isUserActionsActive.value = false;
+  flyoutEntries.value = [];
+}
+
+function onLogoutUser() {
+  expandedEntries.value = [];
+
+  emit("logout");
+}
+
+function addScrollbarOffset() {
+  const body = menuBodyElement.value;
+
+  if (!body) {
+    return;
+  }
+
+  // A negative offset pulls the scrollbar outside the menu so it does not eat into the visible width
+  const scrollbarWidthPx = body.offsetWidth - body.clientWidth;
+
+  scrollbarOffset.value = `-${scrollbarWidthPx}px`;
+}
+
+function expandMenuEntry(entry: MenuTreeEntry) {
+  const key = menuEntryKey(entry);
+
+  // Entries without id and path share the key undefined, so never deduplicate them
+  if (key !== undefined && expandedEntries.value.some((e) => menuEntryKey(e) === key)) {
+    return;
+  }
+
+  expandedEntries.value = [...expandedEntries.value, entry];
+}
+
+function collapseMenuEntry(entry: MenuTreeEntry) {
+  const key = menuEntryKey(entry);
+
+  if (key === undefined) {
+    expandedEntries.value = expandedEntries.value.filter((e) => e !== entry);
+    return;
+  }
+
+  expandedEntries.value = expandedEntries.value.filter((e) => menuEntryKey(e) !== key);
+}
+
+function onMenuBranchToggle({ entry, open }: { entry: MenuTreeEntry; open: boolean }) {
+  if (!isExpanded.value || !entry || entry.level !== 1) {
+    return;
+  }
+
+  if (!open) {
+    collapseMenuEntry(entry);
+    return;
+  }
+
+  collapseInactiveBranches(entry);
+  expandMenuEntry(entry);
+}
+
+function collapseInactiveBranches(exceptEntry: MenuTreeEntry | null = null) {
+  const exceptKey = exceptEntry ? menuEntryKey(exceptEntry) : null;
+  const activeNames = getActiveRouteNames(props.route, props.router);
+
+  expandedEntries.value
+    .filter((expanded) => {
+      const key = menuEntryKey(expanded);
+
+      if (key === exceptKey) {
+        return false;
+      }
+
+      const menuEntry = mainMenuEntries.value.find((entry) => menuEntryKey(entry) === key);
+
+      return !menuEntry || !isEntryOnActiveRoute(menuEntry, props.route, activeNames);
+    })
+    .forEach((expanded) => collapseMenuEntry(expanded));
+}
+
+function onMenuItemHover(entry: MenuTreeEntry, eventTarget: HTMLElement) {
+  if (isExpanded.value) {
+    return;
+  }
+
+  cancelFlyoutClose();
+
+  const target = eventTarget.closest<HTMLElement>(".mt-admin-menu__navigation-list-item");
+
+  if (!target) {
+    return;
+  }
+
+  const hasChildrenClass = target.classList.contains("navigation-list-item__has-children");
+  const children = hasChildrenClass ? entry.children : [];
+
+  if (!hasChildrenClass || children.length === 0) {
+    onFlyoutLeave();
+    return;
+  }
+
+  const entryKey = menuEntryKey(entry);
+  const active = activeEntry.value?.entry;
+  const activeKey = active ? menuEntryKey(active) : null;
+
+  if (activeKey === entryKey && flyoutEntries.value.length > 0) {
+    return;
+  }
+
+  flyoutReferenceElement.value =
+    target.querySelector<HTMLElement>(".mt-admin-menu__navigation-link") ?? target;
+  isFlyoutPinned.value = false;
+  flyoutEntries.value = children;
+  flyoutTitle.value = entry.label;
+
+  activeEntry.value = { entry, target };
+}
+
+function onNavigationListMouseLeave(event: MouseEvent | FocusEvent) {
+  if (isSuppressedFlyoutFocusOut(event)) {
+    return;
+  }
+
+  if ((event.relatedTarget as HTMLElement | null)?.closest(".mt-admin-menu__flyout-content")) {
+    return;
+  }
+
+  scheduleFlyoutClose();
+}
+
+function onFlyoutMouseLeave(event: MouseEvent | FocusEvent) {
+  if (isSuppressedFlyoutFocusOut(event)) {
+    return;
+  }
+
+  if ((event.relatedTarget as HTMLElement | null)?.closest(".mt-admin-menu__navigation-list")) {
+    return;
+  }
+
+  scheduleFlyoutClose();
+}
+
+function isSuppressedFlyoutFocusOut(event: Event) {
+  return event.type === "focusout" && isFlyoutPinned.value;
+}
+
+function onFlyoutNavigate({ disclosesChildren }: { disclosesChildren: boolean }) {
+  isFlyoutPinned.value = disclosesChildren;
+}
+
+function scheduleFlyoutClose() {
+  if (isExpanded.value || !flyoutEntries.value.length) {
+    return;
+  }
+
+  cancelFlyoutClose();
+
+  flyoutCloseTimeoutId = setTimeout(() => {
+    startFlyoutCloseAnimation();
+  }, FLYOUT_CLOSE_DELAY);
+}
+
+function startFlyoutCloseAnimation() {
+  if (!flyoutEntries.value.length) {
+    return;
+  }
+
+  isFlyoutClosing.value = true;
+
+  flyoutCloseTimeoutId = setTimeout(() => {
+    onFlyoutLeave();
+  }, FLYOUT_CLOSE_ANIMATION_DURATION);
+}
+
+function cancelFlyoutClose() {
+  if (flyoutCloseTimeoutId) {
+    clearTimeout(flyoutCloseTimeoutId);
+    flyoutCloseTimeoutId = null;
+  }
+
+  isFlyoutClosing.value = false;
+}
+
+function isFlyoutEntryActive(entry: MenuTreeEntry) {
+  if (isExpanded.value || flyoutEntries.value.length === 0) {
+    return false;
+  }
+
+  const active = activeEntry.value?.entry;
+
+  return !!active && menuEntryKey(active) === menuEntryKey(entry);
+}
+
+function onFlyoutFocusRequest() {
+  nextTick(() => {
+    const element = flyoutElement.value;
+
+    if (!element || flyoutEntries.value.length === 0) {
+      return;
+    }
+
+    deactivateFlyoutFocusTrap(false);
+
+    flyoutFocusTrap = createFocusTrap(element, {
+      escapeDeactivates: true,
+      clickOutsideDeactivates: true,
+      returnFocusOnDeactivate: true,
+      delayInitialFocus: false,
+      fallbackFocus: element,
+      onDeactivate: () => {
+        flyoutFocusTrap = null;
+        onFlyoutLeave();
+      },
+    });
+
+    flyoutFocusTrap.activate();
+  });
+}
+
+function deactivateFlyoutFocusTrap(returnFocus = true) {
+  if (!flyoutFocusTrap) {
+    return;
+  }
+
+  const trap = flyoutFocusTrap;
+  flyoutFocusTrap = null;
+
+  // Override the configured onDeactivate: it closes the flyout via onFlyoutLeave
+  trap.deactivate({ returnFocus, onDeactivate: () => {} });
+}
+
+function getNavigationLinks(container: HTMLElement) {
+  return Array.from(
+    container.querySelectorAll<HTMLElement>(".mt-admin-menu__navigation-link"),
+  ).filter((link) => !link.closest("[hidden]"));
+}
+
+function moveListFocus(links: HTMLElement[], event: KeyboardEvent) {
+  // arrow key support, per the APG disclosure navigation pattern.
+  if (links.length === 0) {
+    return;
+  }
+
+  const currentIndex = links.indexOf(document.activeElement as HTMLElement);
+  let nextIndex: number;
+
+  switch (event.key) {
+    case "ArrowDown":
+      nextIndex = currentIndex < 0 ? 0 : (currentIndex + 1) % links.length;
+      break;
+    case "ArrowUp":
+      nextIndex =
+        currentIndex < 0 ? links.length - 1 : (currentIndex - 1 + links.length) % links.length;
+      break;
+    case "Home":
+      nextIndex = 0;
+      break;
+    case "End":
+      nextIndex = links.length - 1;
+      break;
+    default:
+      return;
+  }
+
+  event.preventDefault();
+  links[nextIndex]?.focus();
+}
+
+function onNavigationKeydown(event: KeyboardEvent) {
+  const menuBody = menuBodyElement.value;
+
+  if (!menuBody) {
+    return;
+  }
+
+  moveListFocus(getNavigationLinks(menuBody), event);
+}
+
+function onFlyoutKeydown(event: KeyboardEvent) {
+  if (event.key === "ArrowLeft") {
+    event.preventDefault();
+    deactivateFlyoutFocusTrap(true);
+    onFlyoutLeave();
+
+    return;
+  }
+
+  const element = flyoutElement.value;
+
+  if (!element) {
+    return;
+  }
+
+  moveListFocus(getNavigationLinks(element), event);
+}
+
+function onFlyoutLeave() {
+  deactivateFlyoutFocusTrap();
+  cancelFlyoutClose();
+  isFlyoutPinned.value = false;
+  activeEntry.value = null;
+  flyoutReferenceElement.value = null;
+  flyoutEntries.value = [];
+  flyoutTitle.value = "";
+}
+
+function expandAncestorBranchesForCurrentRoute() {
+  // Only the expanded sidebar shows a tree to open; collapsed entries use the flyout instead
+  if (!isExpanded.value) {
+    return;
+  }
+
+  const activeNames = getActiveRouteNames(props.route, props.router);
+  const activeEntries = mainMenuEntries.value.filter((entry) =>
+    isEntryOnActiveRoute(entry, props.route, activeNames),
+  );
+
+  // Pages the menu does not list at all own no branch; leave the tree as the user left it
+  if (!activeEntries.length) {
+    return;
+  }
+
+  const owner = activeEntries.find((entry) => entry.children.length > 0) ?? null;
+  const ownerKey = owner ? menuEntryKey(owner) : null;
+
+  // The cached owner may have been collapsed manually
+  if (ownerKey === activeBranchKey.value && (!owner || isNavigationEntryExpanded(owner))) {
+    return;
+  }
+
+  // Branches only stay open while they own the active item, or while nothing in the menu does.
+  collapseInactiveBranches(owner);
+  activeBranchKey.value = ownerKey;
+
+  if (owner && !isNavigationEntryExpanded(owner)) {
+    expandMenuEntry(owner);
+  }
+}
+
+function isNavigationEntryExpanded(entry: MenuTreeEntry) {
+  const key = menuEntryKey(entry);
+
+  return expandedEntries.value.some((expanded) => menuEntryKey(expanded) === key);
+}
+</script>
+
+<style lang="scss">
+.mt-admin-menu__backdrop {
+  position: fixed;
+  inset: 0;
+  background: var(--color-elevation-backdrop-default);
+  z-index: $z-index-off-canvas - 1;
+  cursor: pointer;
+}
+
+.mt-admin-menu__version-footer {
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  gap: var(--scale-size-4);
+  margin: var(--scale-size-8);
+}
+
+.mt-admin-menu__user-actions-menu {
+  min-width: var(--scale-size-256);
+}
+
+.mt-admin-menu__backdrop-enter-active,
+.mt-admin-menu__backdrop-leave-active {
+  transition: opacity 0.3s ease-in-out;
+}
+
+.mt-admin-menu__backdrop-enter-from,
+.mt-admin-menu__backdrop-leave-to {
+  opacity: 0;
+}
+
+.mt-admin-menu {
+  // Shared motion tokens for the collapse/expand animation.
+  --mt-admin-menu-bezier: cubic-bezier(0.32, 0.72, 0, 1);
+  --mt-admin-menu-duration: 0.5s; // root width/padding
+  --mt-admin-menu-duration-inner: 0.3s; // inner layout following the collapse
+  --mt-admin-menu-fade-in-duration: 0.4s;
+  --mt-admin-menu-fade-in-delay: 0.05s;
+  --mt-admin-menu-fade-out-duration: 0.05s;
+
+  // Body vertical padding, doubling as the control points of its edge fade mask
+  --mt-admin-menu-body-fade: var(--scale-size-16);
+
+  background: var(--color-elevation-surface-sunken);
+  width: 60px;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: var(--scale-size-16) var(--scale-size-12) var(--scale-size-8) var(--scale-size-12);
+  transition:
+    width var(--mt-admin-menu-duration) var(--mt-admin-menu-bezier),
+    padding var(--mt-admin-menu-duration) var(--mt-admin-menu-bezier);
+
+  // Keep in sync with the `mobileBreakpoint` prop default
+  @media screen and (max-width: 1280px) {
+    position: absolute;
+    top: 0;
+
+    // Shift by the margin too, it would keep 8px of the panel in view
+    transform: translateX(calc(-100% - var(--scale-size-8)));
+    bottom: 0;
+    height: auto;
+    margin: var(--scale-size-8);
+    background: var(--color-elevation-surface-default);
+    border: 1px solid var(--color-border-secondary-default);
+    border-radius: var(--border-radius-l);
+    box-shadow: 0 0 80px var(--color-elevation-shadow-default);
+    z-index: $z-index-off-canvas;
+    transition: transform var(--mt-admin-menu-duration-inner) var(--mt-admin-menu-bezier);
+
+    &.is--off-canvas-shown {
+      transform: translateX(0);
+    }
+  }
+
+  .collapsible-text {
+    display: inline-block;
+    white-space: nowrap;
+    width: 100%;
+    position: relative;
+    pointer-events: none;
+  }
+
+  // Elements animating layout on top of this must keep that transition on a parent
+  .hide-on-collapse {
+    opacity: 1;
+    transition:
+      opacity var(--mt-admin-menu-fade-in-duration) ease-in-out var(--mt-admin-menu-fade-in-delay),
+      visibility var(--mt-admin-menu-fade-in-duration) ease-in-out
+        var(--mt-admin-menu-fade-in-delay);
+  }
+
+  &.is--collapsed .hide-on-collapse {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition:
+      opacity var(--mt-admin-menu-fade-out-duration) ease-out,
+      visibility var(--mt-admin-menu-fade-out-duration) ease-out;
+  }
+
+  &.is--expanded {
+    --mt-admin-menu-body-fade: var(--scale-size-20);
+
+    width: 300px;
+    padding: var(--scale-size-24) var(--scale-size-12) var(--scale-size-8) var(--scale-size-12);
+
+    .mt-admin-menu__navigation-link.router-link-active {
+      background: var(--color-background-brand-default);
+
+      .collapsible-text {
+        color: var(--color-icon-brand-default);
+      }
+    }
+  }
+
+  // Typography comes from mt-text, truncation and alignment are ours.
+  .mt-admin-menu__user-name,
+  .mt-admin-menu__user-type {
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 200px;
+    text-align: left;
+  }
+
+  .mt-admin-menu__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--scale-size-12);
+    position: relative;
+    padding-left: var(--scale-size-10);
+    transition: padding var(--mt-admin-menu-duration) var(--mt-admin-menu-bezier);
+  }
+
+  // Keeps its layout size so the crossfade below never shifts the header
+  .mt-admin-menu__header-logo-wrapper {
+    width: var(--scale-size-40);
+    height: var(--scale-size-40);
+    flex-shrink: 0;
+    position: relative;
+    transition:
+      width var(--mt-admin-menu-duration-inner) var(--mt-admin-menu-bezier),
+      height var(--mt-admin-menu-duration-inner) var(--mt-admin-menu-bezier);
+  }
+
+  // Crossfades with the expand button on hover while collapsed
+  .mt-admin-menu__header-logo-box {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-icon-brand-default);
+    border-radius: var(--border-radius-m);
+    transition:
+      opacity 0.12s var(--mt-admin-menu-bezier),
+      transform 0.175s var(--mt-admin-menu-bezier),
+      filter 0.175s var(--mt-admin-menu-bezier);
+  }
+
+  .mt-admin-menu__header-logo {
+    width: var(--scale-size-26);
+    height: var(--scale-size-26);
+    color: var(--color-static-white);
+    transition:
+      width var(--mt-admin-menu-duration-inner) var(--mt-admin-menu-bezier),
+      height var(--mt-admin-menu-duration-inner) var(--mt-admin-menu-bezier);
+
+    // The icon kit sizes the inner svg via an id selector, hence !important
+    > svg {
+      width: 100% !important;
+      height: 100% !important;
+    }
+  }
+
+  .mt-admin-menu__version {
+    flex: 1 1 auto;
+    gap: 0;
+    margin-top: calc(-1 * var(--scale-size-1));
+    min-width: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+
+  // Typography comes from mt-text, only the truncation is ours.
+  .mt-admin-menu__shop-name,
+  .mt-admin-menu__title {
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    line-height: 1.4;
+  }
+
+  .mt-admin-menu__collapse-button {
+    flex-shrink: 0;
+    overflow: hidden;
+
+    // Shrinks out of the header layout; visibility drops it from the tab order
+    transition:
+      width 0.25s var(--mt-admin-menu-bezier),
+      visibility 0.25s var(--mt-admin-menu-bezier);
+  }
+
+  .mt-admin-menu__off-canvas-close {
+    flex-shrink: 0;
+  }
+
+  // Scale + blur mask the overlap with the logo so it reads as one morphing element
+  .mt-admin-menu__header-logo-expand-button {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--border-radius-m);
+    background: var(--color-interaction-secondary-default);
+    border: 1px solid var(--color-border-primary-default);
+    color: var(--color-icon-primary-default);
+    cursor: pointer;
+
+    // Opacity only: visibility hidden would stop keyboard users tabbing to it
+    opacity: 0;
+    transform: scale(1.15);
+    filter: blur(2px);
+
+    &:hover {
+      background: var(--color-interaction-secondary-hover);
+    }
+
+    &:active {
+      background: var(--color-interaction-secondary-pressed);
+    }
+
+    // Opacity resolves faster than the transform so the scale motion stays visible
+    transition:
+      opacity 0.12s var(--mt-admin-menu-bezier),
+      transform 0.2s var(--mt-admin-menu-bezier),
+      filter 0.2s var(--mt-admin-menu-bezier);
+  }
+
+  .mt-admin-menu__body-container {
+    flex: 1 1 0;
+    overflow: hidden;
+
+    // Fades from 4px inside the edge to the body padding, so resting content stays opaque
+    mask-image: linear-gradient(
+      to bottom,
+      transparent var(--scale-size-4),
+      #000 var(--mt-admin-menu-body-fade),
+      #000 calc(100% - var(--mt-admin-menu-body-fade)),
+      transparent calc(100% - var(--scale-size-4))
+    );
+  }
+
+  .mt-admin-menu__body {
+    position: relative;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--scale-size-16);
+
+    // Must live on the scroller: it clips at the padding box, keeping content visible for the mask
+    padding: var(--mt-admin-menu-body-fade) 0;
+    overflow-x: hidden;
+    overflow-y: scroll;
+    -ms-overflow-style: none;
+    -webkit-overflow-scrolling: touch;
+    transition: padding var(--mt-admin-menu-duration) var(--mt-admin-menu-bezier);
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .mt-admin-menu__navigation {
+    white-space: nowrap;
+  }
+
+  .mt-admin-menu__navigation-list {
+    list-style: none;
+  }
+
+  .mt-admin-menu__user-actions-toggle {
+    width: 100%;
+    position: relative;
+    padding: var(--scale-size-8);
+    display: flex;
+    align-items: center;
+    align-self: stretch;
+    gap: var(--scale-size-12);
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+    border-radius: var(--border-radius-s);
+    transition:
+      padding var(--mt-admin-menu-duration-inner) var(--mt-admin-menu-bezier),
+      gap var(--mt-admin-menu-duration-inner) var(--mt-admin-menu-bezier),
+      margin var(--mt-admin-menu-duration-inner) var(--mt-admin-menu-bezier),
+      background-color 0.15s ease-out;
+
+    &:hover {
+      background-color: var(--color-interaction-secondary-hover);
+
+      .mt-admin-menu__user-actions-toggle-icon-wrapper {
+        gap: var(--scale-size-8);
+      }
+    }
+
+    &:active,
+    &.is--active,
+    &.is--active:hover {
+      background-color: var(--color-interaction-secondary-pressed);
+
+      .mt-admin-menu__user-actions-toggle-icon-wrapper {
+        gap: var(--scale-size-8);
+      }
+    }
+
+    .mt-loader {
+      background-color: var(--color-background-brand-default);
+    }
+
+    .mt-admin-menu__user-actions-toggle-icon-wrapper {
+      width: var(--scale-size-20);
+      height: var(--scale-size-20);
+      flex-shrink: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: var(--scale-size-6);
+      overflow: hidden;
+
+      .mt-icon {
+        color: var(--color-icon-primary-default);
+      }
+
+      // Collapse via width instead of display none
+      transition:
+        width var(--mt-admin-menu-duration-inner) var(--mt-admin-menu-bezier),
+        gap 0.15s ease;
+    }
+  }
+
+  .mt-admin-menu__avatar {
+    --mt-avatar-size: var(--scale-size-36);
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition:
+      transform var(--mt-admin-menu-duration-inner) var(--mt-admin-menu-bezier),
+      opacity 0.1s ease;
+  }
+
+  .mt-admin-menu__user-custom-fields {
+    white-space: nowrap;
+    width: 100%;
+    min-width: 0;
+    overflow: hidden;
+    position: relative;
+  }
+
+  &.is--collapsed {
+    .mt-admin-menu__collapse-button {
+      width: 0;
+      min-width: 0;
+      padding: 0;
+      border: 0;
+      visibility: hidden;
+
+      // Hide instantly when collapsing; the base state still animates the reveal
+      transition: none;
+    }
+
+    .mt-admin-menu__user-actions-toggle {
+      padding: 0;
+      margin-bottom: var(--scale-size-8);
+
+      &:hover:not(.is--active) {
+        background: transparent;
+
+        .mt-admin-menu__avatar {
+          opacity: 0.8;
+        }
+      }
+
+      &:focus-visible {
+        outline: none;
+
+        .mt-admin-menu__avatar {
+          outline: 2px solid var(--color-border-brand-default);
+          outline-offset: 2px;
+        }
+      }
+
+      &:active,
+      &.is--active,
+      &.is--active:hover {
+        background-color: transparent;
+      }
+    }
+
+    .mt-admin-menu__user-actions-toggle-icon-wrapper {
+      width: 0;
+    }
+
+    .mt-admin-menu__navigation-link {
+      width: var(--scale-size-36);
+      height: var(--scale-size-36);
+    }
+
+    @media not screen and (max-width: 1280px) {
+      .mt-admin-menu__header {
+        padding: 0;
+        margin: 0;
+      }
+    }
+
+    .mt-admin-menu__header-logo-wrapper {
+      width: var(--scale-size-36);
+      height: var(--scale-size-36);
+    }
+
+    .mt-admin-menu__header-logo {
+      width: var(--scale-size-24);
+      height: var(--scale-size-24);
+    }
+
+    &:hover .mt-admin-menu__header-logo-box,
+    &:has(.mt-admin-menu__header-logo-expand-button:focus-visible) .mt-admin-menu__header-logo-box {
+      opacity: 0;
+      transform: scale(0.85);
+      filter: blur(2px);
+    }
+
+    &:hover .mt-admin-menu__header-logo-expand-button,
+    .mt-admin-menu__header-logo-expand-button:focus-visible {
+      opacity: 1;
+      transform: scale(1);
+      filter: blur(0);
+    }
+
+    &.is--toggling:hover {
+      .mt-admin-menu__header-logo-box {
+        opacity: 1;
+        transform: none;
+        filter: none;
+      }
+
+      .mt-admin-menu__header-logo-expand-button {
+        opacity: 0;
+      }
+    }
+  }
+
+  // Crossing the off-canvas breakpoint would animate the width difference between both modes
+  &.is--viewport-resizing,
+  &.is--viewport-resizing * {
+    transition: none;
+  }
+
+  // Keyframes need their own suppression; only closing, else it replays when the class is removed
+  &.is--viewport-resizing .mt-collapsible-content[data-state="closed"] {
+    animation: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mt-admin-menu,
+  .mt-admin-menu .hide-on-collapse,
+  .mt-admin-menu .mt-admin-menu__body,
+  .mt-admin-menu .mt-admin-menu__header,
+  .mt-admin-menu .mt-admin-menu__header-logo,
+  .mt-admin-menu .mt-admin-menu__header-logo-box,
+  .mt-admin-menu .mt-admin-menu__header-logo-expand-button,
+  .mt-admin-menu .mt-admin-menu__user-actions-toggle,
+  .mt-admin-menu .mt-admin-menu__user-actions-toggle-icon-wrapper,
+  .mt-admin-menu__backdrop-enter-active,
+  .mt-admin-menu__backdrop-leave-active {
+    transition: none;
+  }
+
+  .mt-admin-menu__flyout-content,
+  .mt-admin-menu__flyout-content.is--closing {
+    animation: none;
+  }
+}
+
+.mt-admin-menu__flyout-content {
+  // Aligns the first flyout item with the hovered entry: title height + padding + border
+  --mt-admin-menu-flyout-shift: translateY(
+    calc(-1 * (var(--scale-size-36) + var(--scale-size-6) + 1px))
+  );
+
+  width: 264px;
+  padding: var(--scale-size-6);
+  display: flex;
+  flex-direction: column;
+  border-radius: var(--border-radius-m);
+  border: 1px solid var(--color-border-secondary-default);
+  background: var(--color-elevation-surface-raised);
+  box-shadow: 0 6px 12px -8px var(--color-elevation-shadow-default);
+  transform: var(--mt-admin-menu-flyout-shift);
+  transform-origin: left center;
+  animation: mt-admin-menu-flyout-in 0.1s ease;
+
+  &.is--closing {
+    animation: mt-admin-menu-flyout-out 0.1s ease forwards;
+  }
+}
+
+@keyframes mt-admin-menu-flyout-in {
+  from {
+    opacity: 0;
+    transform: var(--mt-admin-menu-flyout-shift) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: var(--mt-admin-menu-flyout-shift) scale(1);
+  }
+}
+
+@keyframes mt-admin-menu-flyout-out {
+  from {
+    opacity: 1;
+    transform: var(--mt-admin-menu-flyout-shift) scale(1);
+  }
+
+  to {
+    opacity: 0;
+    transform: var(--mt-admin-menu-flyout-shift) scale(0.95);
+  }
+}
+
+.mt-admin-menu__flyout-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+// Typography comes from mt-text, layout and truncation are ours.
+.mt-admin-menu__flyout-title {
+  height: var(--scale-size-36);
+  padding: 0 var(--scale-size-6) 0 var(--scale-size-10);
+  display: flex;
+  align-items: center;
+  gap: var(--scale-size-10);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+</style>
