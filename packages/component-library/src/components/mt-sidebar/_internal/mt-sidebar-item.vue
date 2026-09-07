@@ -10,10 +10,10 @@
     @mouseenter="emit('menu-item-hover', entry, $event.currentTarget as HTMLElement)"
     @keydown="onCollapsedParentKeydown"
   >
-    <div class="mt-admin-menu__navigation-item-row">
+    <div class="mt-sidebar__navigation-item-row">
       <component
         :is="entryPath ? linkComponent : MtCollapsibleTrigger"
-        class="mt-admin-menu__navigation-link"
+        class="mt-sidebar__navigation-link"
         :class="{ 'router-link-active': rowActive }"
         :aria-label="collapsedAriaLabel"
         v-bind="entryPath ? { ...linkProps, 'aria-expanded': collapsibleOpen } : { type: 'button' }"
@@ -22,13 +22,13 @@
         <mt-icon
           v-if="displayIcon"
           :size="iconSize"
-          class="mt-admin-menu__navigation-link-icon"
+          class="mt-sidebar__navigation-link-icon"
           :name="navigationIconName"
           :color="navigationIconColor"
         />
 
         <span
-          class="mt-admin-menu__navigation-link-label"
+          class="mt-sidebar__navigation-link-label"
           :class="collapsibleText ? 'collapsible-text hide-on-collapse' : ''"
           :title="entry.label"
         >
@@ -37,18 +37,18 @@
 
         <slot name="additional-text" />
 
-        <span class="mt-admin-menu__navigation-link-expand-icon-box">
+        <span class="mt-sidebar__navigation-link-expand-icon-box">
           <mt-icon
             :name="expandIcon"
             size="8"
-            class="mt-admin-menu__navigation-link-expand-icon collapsible-text hide-on-collapse"
+            class="mt-sidebar__navigation-link-expand-icon collapsible-text hide-on-collapse"
           />
         </span>
       </component>
     </div>
 
-    <mt-collapsible-content as="ul" class="mt-admin-menu__sub-navigation-list">
-      <mt-admin-menu-item
+    <mt-collapsible-content as="ul" class="mt-sidebar__sub-navigation-list">
+      <mt-sidebar-item
         v-for="(childEntry, subMenuIndex) in children"
         :key="childEntry.id ?? childEntry.path ?? subMenuIndex"
         :entry="childEntry"
@@ -73,12 +73,12 @@
     <mt-tooltip :content="entry.label" placement="right">
       <template #default="tooltipProps">
         <div
-          class="mt-admin-menu__navigation-item-row"
+          class="mt-sidebar__navigation-item-row"
           v-bind="collapsedTooltipTriggerProps(tooltipProps)"
         >
           <component
             :is="leafTag"
-            class="mt-admin-menu__navigation-link"
+            class="mt-sidebar__navigation-link"
             :class="{ 'router-link-active': rowActive }"
             v-bind="leafAttrs"
             v-on="entryPath ? { click: onNavigationLinkClick } : {}"
@@ -86,13 +86,13 @@
             <mt-icon
               v-if="displayIcon"
               :size="iconSize"
-              class="mt-admin-menu__navigation-link-icon"
+              class="mt-sidebar__navigation-link-icon"
               :name="navigationIconName"
               :color="navigationIconColor"
             />
 
             <span
-              class="mt-admin-menu__navigation-link-label"
+              class="mt-sidebar__navigation-link-label"
               :class="collapsibleText ? 'collapsible-text hide-on-collapse' : ''"
               :title="entry.label"
             >
@@ -114,13 +114,13 @@ import MtTooltip from "@/components/mt-tooltip/mt-tooltip.vue";
 import MtCollapsible from "@/components/mt-collapsible/mt-collapsible.vue";
 import MtCollapsibleTrigger from "@/components/mt-collapsible/mt-collapsible-trigger.vue";
 import MtCollapsibleContent from "@/components/mt-collapsible/mt-collapsible-content.vue";
-import type { MenuTreeEntry } from "../mt-admin-menu.types";
-import { ADMIN_MENU_CONTEXT } from "./mt-admin-menu-context";
+import type { SidebarTreeEntry } from "../mt-sidebar.types";
+import { SIDEBAR_CONTEXT } from "./mt-sidebar-context";
 import {
   getActiveRouteNames,
   isEntryOnActiveRoute,
   entryParamsMatchRoute,
-} from "./menu-item-active.helper";
+} from "./sidebar-item-active.helper";
 
 /**
  * Props of the tooltip trigger that open it; stripped when the row shows no tooltip.
@@ -129,7 +129,7 @@ const TOOLTIP_OPEN_TRIGGER_PROPS = ["onMouseover", "onFocus", "aria-describedby"
 
 const props = defineProps({
   entry: {
-    type: Object as PropType<MenuTreeEntry>,
+    type: Object as PropType<SidebarTreeEntry>,
     required: true,
   },
   menuDepth: {
@@ -168,18 +168,18 @@ const props = defineProps({
 });
 
 const emit = defineEmits<{
-  (e: "menu-item-hover", entry: MenuTreeEntry, target: HTMLElement): void;
-  (e: "branch-toggle", payload: { entry: MenuTreeEntry; open: boolean }): void;
+  (e: "menu-item-hover", entry: SidebarTreeEntry, target: HTMLElement): void;
+  (e: "branch-toggle", payload: { entry: SidebarTreeEntry; open: boolean }): void;
   (e: "flyout-focus-request"): void;
   (e: "flyout-close-request"): void;
   (e: "flyout-navigate", payload: { disclosesChildren: boolean }): void;
-  (e: "navigation-link-click", entry: MenuTreeEntry): void;
+  (e: "navigation-link-click", entry: SidebarTreeEntry): void;
 }>();
 
-const context = inject(ADMIN_MENU_CONTEXT);
+const context = inject(SIDEBAR_CONTEXT);
 
 if (!context) {
-  throw new Error("mt-admin-menu-item must be rendered inside mt-admin-menu");
+  throw new Error("mt-sidebar-item must be rendered inside mt-sidebar");
 }
 
 const route = context.route;
@@ -188,7 +188,7 @@ const linkComponent = context.linkComponent;
 const suppressRouteKeepsFolderOpen = ref(false);
 const manualNestedOpen = ref(false);
 
-// Admin menu supports at most three levels; level-3 rows are leaf items only
+// Sidebar supports at most three levels; level-3 rows are leaf items only
 const isLeafDepth = computed(() => props.menuDepth >= 3);
 
 const activeRouteNames = computed(() => getActiveRouteNames(route.value, context.router.value));
@@ -280,7 +280,7 @@ const navigationIconColor = computed(() =>
 // Inherited by the sub items, which mark their active state with the parent module color
 const moduleColorStyle = computed(() =>
   navigationIconColor.value
-    ? { "--mt-admin-menu-module-color": navigationIconColor.value }
+    ? { "--mt-sidebar-module-color": navigationIconColor.value }
     : undefined,
 );
 
@@ -295,7 +295,7 @@ function getElementClasses() {
     key,
     `navigation-list-item__type-${props.entry.moduleType}`,
     `navigation-list-item__${key}`,
-    `mt-admin-menu__item--${props.entry.id}`,
+    `mt-sidebar__item--${props.entry.id}`,
     `navigation-list-item__level-${props.entry.level}`,
     {
       "navigation-list-item__has-children": children.value.length > 0,
@@ -305,7 +305,7 @@ function getElementClasses() {
 }
 
 const collapsibleLiClass = computed(() => [
-  "mt-admin-menu__navigation-list-item",
+  "mt-sidebar__navigation-list-item",
   getElementClasses(),
   {
     "is--entry-expanded": collapsibleOpen.value,
@@ -316,7 +316,7 @@ const collapsibleLiClass = computed(() => [
 ]);
 
 const leafLiClass = computed(() => [
-  "mt-admin-menu__navigation-list-item",
+  "mt-sidebar__navigation-list-item",
   getElementClasses(),
   {
     "is--entry-expanded": submenuVisuallyOpen.value,
@@ -337,7 +337,7 @@ const collapsedFlyoutAria = computed<{ "aria-expanded"?: string; "aria-controls"
 
   return {
     "aria-expanded": "true",
-    "aria-controls": "mt-admin-menu-flyout",
+    "aria-controls": "mt-sidebar-flyout",
   };
 });
 
@@ -440,7 +440,7 @@ function onNavigationLinkClick() {
   emit("navigation-link-click", props.entry);
 }
 
-function forwardNavigationLinkClick(entry: MenuTreeEntry) {
+function forwardNavigationLinkClick(entry: SidebarTreeEntry) {
   emit("navigation-link-click", entry);
 }
 
@@ -448,7 +448,7 @@ function forwardFlyoutNavigate(payload: { disclosesChildren: boolean }) {
   emit("flyout-navigate", payload);
 }
 
-function forwardMenuItemHover(entry: MenuTreeEntry, target: HTMLElement) {
+function forwardMenuItemHover(entry: SidebarTreeEntry, target: HTMLElement) {
   emit("menu-item-hover", entry, target);
 }
 
@@ -493,7 +493,7 @@ function onCollapsedParentKeydown(event: KeyboardEvent) {
 $nesting-line-offset: 18px;
 $nesting-line-indent: 36px;
 
-.mt-admin-menu__navigation-list-item {
+.mt-sidebar__navigation-list-item {
   .mt-collapsible-content[data-state="open"],
   .mt-collapsible-content[data-state="closed"] {
     animation-duration: 0.3s;
@@ -501,7 +501,7 @@ $nesting-line-indent: 36px;
   }
 }
 
-.mt-admin-menu__navigation-link {
+.mt-sidebar__navigation-link {
   color: var(--color-text-primary-default);
   display: flex;
   height: var(--scale-size-36);
@@ -535,7 +535,7 @@ $nesting-line-indent: 36px;
     flex-shrink: 0;
   }
 
-  .mt-admin-menu__navigation-link-label {
+  .mt-sidebar__navigation-link-label {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -546,22 +546,22 @@ $nesting-line-indent: 36px;
 }
 
 // Native button variants of the navigation link, dropping the user agent chrome
-.mt-admin-menu__navigation-item-row button.mt-admin-menu__navigation-link {
+.mt-sidebar__navigation-item-row button.mt-sidebar__navigation-link {
   border: 0;
   background: none;
 }
 
-.mt-admin-menu__navigation-item-row {
+.mt-sidebar__navigation-item-row {
   display: flex;
   align-items: stretch;
 }
 
-.mt-admin-menu__navigation-link-expand-icon {
+.mt-sidebar__navigation-link-expand-icon {
   flex-shrink: 0;
   color: var(--color-icon-primary-default);
 }
 
-.mt-admin-menu__navigation-link-expand-icon-box {
+.mt-sidebar__navigation-link-expand-icon-box {
   width: var(--scale-size-24);
   height: var(--scale-size-24);
   flex-shrink: 0;
@@ -571,14 +571,14 @@ $nesting-line-indent: 36px;
   margin-left: auto;
 }
 
-.mt-admin-menu__sub-navigation-list {
+.mt-sidebar__sub-navigation-list {
   list-style: none;
   margin: 0;
   padding: 0;
   overflow: hidden;
 }
 
-.navigation-list-item--nested > .mt-admin-menu__sub-navigation-list {
+.navigation-list-item--nested > .mt-sidebar__sub-navigation-list {
   margin-left: $nesting-line-offset;
   position: relative;
   padding-left: $nesting-line-indent - $nesting-line-offset - 1px;
@@ -597,15 +597,13 @@ $nesting-line-indent: 36px;
 
 // Shorten the tree line when the last visible row is a closed leaf
 .navigation-list-item--nested:last-child
-  > .mt-admin-menu__sub-navigation-list:has(
-    > .mt-admin-menu__navigation-list-item:last-child:not(.is--entry-expanded)
+  > .mt-sidebar__sub-navigation-list:has(
+    > .mt-sidebar__navigation-list-item:last-child:not(.is--entry-expanded)
   )::before {
   bottom: var(--scale-size-12);
 }
 
-.navigation-list-item--nested
-  > .mt-admin-menu__navigation-item-row
-  > .mt-admin-menu__navigation-link {
+.navigation-list-item--nested > .mt-sidebar__navigation-item-row > .mt-sidebar__navigation-link {
   padding-left: $nesting-line-indent;
 
   &::before {
@@ -647,38 +645,38 @@ $nesting-line-indent: 36px;
   }
 }
 
-.navigation-list-item--nested.is--child-active > .mt-admin-menu__navigation-item-row {
-  > .mt-admin-menu__navigation-link::after {
+.navigation-list-item--nested.is--child-active > .mt-sidebar__navigation-item-row {
+  > .mt-sidebar__navigation-link::after {
     opacity: 1;
     background: var(--color-border-primary-default);
     outline-color: var(--color-elevation-surface-sunken);
   }
 
-  > .mt-admin-menu__navigation-link:hover::after {
+  > .mt-sidebar__navigation-link:hover::after {
     outline-color: var(--color-interaction-secondary-hover);
   }
 }
 
-.navigation-list-item--nested:first-child > .mt-admin-menu__navigation-item-row {
-  > .mt-admin-menu__navigation-link::before {
+.navigation-list-item--nested:first-child > .mt-sidebar__navigation-item-row {
+  > .mt-sidebar__navigation-link::before {
     top: var(--scale-size-12);
   }
 }
 
 .navigation-list-item--nested:last-child:not(.is--entry-expanded)
-  > .mt-admin-menu__navigation-item-row {
-  > .mt-admin-menu__navigation-link::before {
+  > .mt-sidebar__navigation-item-row {
+  > .mt-sidebar__navigation-link::before {
     bottom: var(--scale-size-12);
   }
 }
 
-.navigation-list-item__level-1 > .mt-admin-menu__navigation-item-row {
-  > .mt-admin-menu__navigation-link.router-link-active {
+.navigation-list-item__level-1 > .mt-sidebar__navigation-item-row {
+  > .mt-sidebar__navigation-link.router-link-active {
     background: var(--color-background-brand-default);
   }
 }
 
-.mt-admin-menu__navigation-link.router-link-active {
+.mt-sidebar__navigation-link.router-link-active {
   background: none;
   color: var(--color-icon-brand-default);
 
@@ -686,30 +684,30 @@ $nesting-line-indent: 36px;
     color: var(--color-icon-brand-default);
   }
 
-  .mt-admin-menu__navigation-link-icon {
+  .mt-sidebar__navigation-link-icon {
     color: var(--color-icon-brand-default);
   }
 }
 
-.mt-admin-menu__flyout-content .mt-admin-menu__navigation-link.router-link-active {
+.mt-sidebar__flyout-content .mt-sidebar__navigation-link.router-link-active {
   background: var(--color-background-brand-default);
 }
 
-.mt-admin-menu__navigation-list-item.is--flyout-enabled > .mt-admin-menu__navigation-item-row {
-  > .mt-admin-menu__navigation-link {
+.mt-sidebar__navigation-list-item.is--flyout-enabled > .mt-sidebar__navigation-item-row {
+  > .mt-sidebar__navigation-link {
     color: var(--color-text-primary-default);
     background: var(--color-interaction-secondary-hover);
   }
 }
 
-.mt-admin-menu__navigation-list-item.is--entry-expanded {
+.mt-sidebar__navigation-list-item.is--entry-expanded {
   .collapsible-text {
     color: var(--color-text-primary-default);
   }
 
   &
-    > .mt-admin-menu__navigation-item-row
-    > .mt-admin-menu__navigation-link.router-link-active
+    > .mt-sidebar__navigation-item-row
+    > .mt-sidebar__navigation-link.router-link-active
     .collapsible-text {
     color: var(--color-icon-brand-default);
   }
@@ -717,8 +715,8 @@ $nesting-line-indent: 36px;
 
 // With module colors the icon carries the accent, so the active row drops the brand tint for the
 // neutral hover grey. Level 1 only, the rows that actually show a colored icon.
-.navigation-list-item__level-1.is--module-colored > .mt-admin-menu__navigation-item-row {
-  > .mt-admin-menu__navigation-link.router-link-active {
+.navigation-list-item__level-1.is--module-colored > .mt-sidebar__navigation-item-row {
+  > .mt-sidebar__navigation-link.router-link-active {
     background: var(--color-interaction-secondary-hover);
     color: var(--color-text-primary-default);
 
@@ -731,7 +729,7 @@ $nesting-line-indent: 36px;
 // An active sub item picks up the same neutral background as its colored parent row and keeps
 // the regular text color, so only the marker signals the active state.
 .navigation-list-item__level-1.is--module-colored .navigation-list-item--nested {
-  > .mt-admin-menu__navigation-item-row > .mt-admin-menu__navigation-link.router-link-active {
+  > .mt-sidebar__navigation-item-row > .mt-sidebar__navigation-link.router-link-active {
     background: var(--color-interaction-secondary-hover);
     color: var(--color-text-primary-default);
 
@@ -741,27 +739,27 @@ $nesting-line-indent: 36px;
 
     // The halo matches the row background so the line reads against it
     &::after {
-      background: var(--mt-admin-menu-module-color, var(--color-icon-brand-default));
+      background: var(--mt-sidebar-module-color, var(--color-icon-brand-default));
       outline-color: var(--color-interaction-secondary-hover);
     }
   }
 }
 
 // Tree lines and indicators follow .hide-on-collapse timing, scoped to the toggle window
-.mt-admin-menu.is--toggling .navigation-list-item--nested {
-  > .mt-admin-menu__sub-navigation-list::before,
-  > .mt-admin-menu__navigation-item-row > .mt-admin-menu__navigation-link::before,
-  > .mt-admin-menu__navigation-item-row > .mt-admin-menu__navigation-link::after {
+.mt-sidebar.is--toggling .navigation-list-item--nested {
+  > .mt-sidebar__sub-navigation-list::before,
+  > .mt-sidebar__navigation-item-row > .mt-sidebar__navigation-link::before,
+  > .mt-sidebar__navigation-item-row > .mt-sidebar__navigation-link::after {
     transition:
       opacity 0.3s ease-in-out 0.1s,
       visibility 0.3s ease-in-out 0.1s;
   }
 }
 
-.mt-admin-menu.is--collapsed .navigation-list-item--nested {
-  > .mt-admin-menu__sub-navigation-list::before,
-  > .mt-admin-menu__navigation-item-row > .mt-admin-menu__navigation-link::before,
-  > .mt-admin-menu__navigation-item-row > .mt-admin-menu__navigation-link::after {
+.mt-sidebar.is--collapsed .navigation-list-item--nested {
+  > .mt-sidebar__sub-navigation-list::before,
+  > .mt-sidebar__navigation-item-row > .mt-sidebar__navigation-link::before,
+  > .mt-sidebar__navigation-item-row > .mt-sidebar__navigation-link::after {
     opacity: 0;
     visibility: hidden;
     transition:

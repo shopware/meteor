@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from "@storybook/vue3";
 import { defineComponent, h, ref } from "vue";
-import MtAdminMenu from "./mt-admin-menu.vue";
-import type { MenuEntry, MenuRoute, MenuTreeEntry } from "./mt-admin-menu.types";
+import MtSidebar from "./mt-sidebar.vue";
+import type { SidebarEntry, SidebarRoute, SidebarTreeEntry } from "./mt-sidebar.types";
 
-export type MtAdminMenuMeta = Meta<typeof MtAdminMenu>;
+export type MtSidebarMeta = Meta<typeof MtSidebar>;
 
 /**
  * Storybook has no router, so the links only prevent the default navigation. Consumers pass
@@ -29,7 +29,7 @@ const StoryLink = defineComponent({
   },
 });
 
-const entries: MenuEntry[] = [
+const entries: SidebarEntry[] = [
   {
     id: "sw-dashboard",
     path: "sw.dashboard.index",
@@ -151,13 +151,13 @@ const entries: MenuEntry[] = [
   },
 ];
 
-function routeFor(name: string): MenuRoute {
+function routeFor(name: string): SidebarRoute {
   return { name, path: `/${name.replace(/\./g, "/")}`, matched: [{ name }], params: {} };
 }
 
-const meta: MtAdminMenuMeta = {
-  title: "Components/Admin Menu",
-  component: MtAdminMenu,
+const meta: MtSidebarMeta = {
+  title: "Components/Sidebar",
+  component: MtSidebar,
   args: {
     entries,
     linkComponent: StoryLink,
@@ -198,12 +198,12 @@ const meta: MtAdminMenuMeta = {
     },
   },
   render: (args) => ({
-    components: { MtAdminMenu },
+    components: { MtSidebar },
     setup() {
-      const route = ref<MenuRoute>(routeFor("sw.product.index"));
+      const route = ref<SidebarRoute>(routeFor("sw.product.index"));
       const expanded = ref(args.expanded ?? true);
 
-      function onNavigate(entry: MenuTreeEntry) {
+      function onNavigate(entry: SidebarTreeEntry) {
         if (entry.path) {
           route.value = { ...routeFor(entry.path), params: entry.params ?? {} };
         }
@@ -213,7 +213,7 @@ const meta: MtAdminMenuMeta = {
     },
     template: `
       <div style="height: 100vh; display: flex; background: var(--color-elevation-surface-default);">
-        <mt-admin-menu
+        <mt-sidebar
           v-bind="args"
           v-model:expanded="expanded"
           :route="route"
@@ -229,23 +229,23 @@ const meta: MtAdminMenuMeta = {
 
 export default meta;
 
-type MtAdminMenuStory = StoryObj<MtAdminMenuMeta>;
+type MtSidebarStory = StoryObj<MtSidebarMeta>;
 
-export const Default: MtAdminMenuStory = {};
+export const Default: MtSidebarStory = {};
 
-export const Collapsed: MtAdminMenuStory = {
+export const Collapsed: MtSidebarStory = {
   args: {
     expanded: false,
   },
 };
 
-export const ModuleIconColors: MtAdminMenuStory = {
+export const ModuleIconColors: MtSidebarStory = {
   args: {
     moduleIconColors: true,
   },
 };
 
-export const LoadingUser: MtAdminMenuStory = {
+export const LoadingUser: MtSidebarStory = {
   args: {
     isUserLoading: true,
     user: undefined,

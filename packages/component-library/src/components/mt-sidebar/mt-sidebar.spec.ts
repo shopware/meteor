@@ -1,8 +1,8 @@
 import { render, screen, waitFor, within } from "@testing-library/vue";
 import { userEvent } from "@testing-library/user-event";
 import { defineComponent, h } from "vue";
-import MtAdminMenu from "./mt-admin-menu.vue";
-import type { MenuEntry, MenuRoute } from "./mt-admin-menu.types";
+import MtSidebar from "./mt-sidebar.vue";
+import type { SidebarEntry, SidebarRoute } from "./mt-sidebar.types";
 
 // Stands in for `router-link`: the library does not depend on vue-router
 const RouterLinkStub = defineComponent({
@@ -22,7 +22,7 @@ const RouterLinkStub = defineComponent({
   },
 });
 
-const entries: MenuEntry[] = [
+const entries: SidebarEntry[] = [
   {
     id: "sw-dashboard",
     path: "sw.dashboard.index",
@@ -68,12 +68,12 @@ const entries: MenuEntry[] = [
   },
 ];
 
-function routeFor(name: string): MenuRoute {
+function routeFor(name: string): SidebarRoute {
   return { name, path: `/${name.replace(/\./g, "/")}`, matched: [{ name }], params: {} };
 }
 
 function renderMenu(props: Record<string, unknown> = {}) {
-  return render(MtAdminMenu, {
+  return render(MtSidebar, {
     props: {
       entries,
       linkComponent: RouterLinkStub,
@@ -89,7 +89,7 @@ function renderMenu(props: Record<string, unknown> = {}) {
 function getEntryLabel(text: string, container: HTMLElement = document.body) {
   const label = within(container)
     .getAllByText(text)
-    .find((element) => element.classList.contains("mt-admin-menu__navigation-link-label"));
+    .find((element) => element.classList.contains("mt-sidebar__navigation-link-label"));
 
   if (!label) {
     throw new Error(`Found no navigation entry labelled "${text}"`);
@@ -101,10 +101,10 @@ function getEntryLabel(text: string, container: HTMLElement = document.body) {
 function queryEntryLabel(text: string) {
   return screen
     .queryAllByText(text)
-    .find((element) => element.classList.contains("mt-admin-menu__navigation-link-label"));
+    .find((element) => element.classList.contains("mt-sidebar__navigation-link-label"));
 }
 
-describe("mt-admin-menu", () => {
+describe("mt-sidebar", () => {
   beforeEach(() => {
     vi.spyOn(console, "error").mockImplementation(() => {});
     Object.defineProperty(window, "innerWidth", { value: 1920, configurable: true });
@@ -182,11 +182,11 @@ describe("mt-admin-menu", () => {
   it("shows the children of a hovered branch in a flyout when collapsed", async () => {
     renderMenu({ expanded: false });
 
-    expect(document.getElementById("mt-admin-menu-flyout")).toBeNull();
+    expect(document.getElementById("mt-sidebar-flyout")).toBeNull();
 
     await userEvent.hover(screen.getByRole("button", { name: "Catalogues" }));
 
-    const flyout = document.getElementById("mt-admin-menu-flyout");
+    const flyout = document.getElementById("mt-sidebar-flyout");
 
     expect(flyout).not.toBeNull();
     expect(getEntryLabel("Products", flyout as HTMLElement)).toBeInTheDocument();

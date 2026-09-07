@@ -1,20 +1,20 @@
-# mt-admin-menu
+# mt-sidebar
 
-The sidebar navigation of the Shopware Administration, ported to Meteor conventions. Not yet
+The sidebar navigation extracted from the Shopware Administration (formerly `sw-admin-menu`), ported to Meteor conventions. Not yet
 exported from `src/index.ts`.
 
 ## Structure
 
-| File                                       | Purpose                                                                                                   |
-| ------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
-| `mt-admin-menu.vue`                        | The sidebar shell: header with logo and collapse toggle, navigation tree, user footer, flyout, off-canvas |
-| `mt-admin-menu.types.ts`                   | `MenuEntry`, `MenuRoute`, `MenuRouter`, `MenuUser` and friends                                            |
-| `mt-admin-menu.spec.ts`                    | Vitest / Testing Library spec                                                                             |
-| `mt-admin-menu.stories.ts`                 | Storybook stories                                                                                         |
-| `_internal/mt-admin-menu-item.vue`         | One navigation row, recursive up to three levels                                                          |
-| `_internal/mt-admin-menu-context.ts`       | Provide/inject contract between the menu and its rows                                                     |
-| `_internal/build-menu-tree.ts`             | Nests the flat entry list (replaces Shopware's `FlatTreeHelper`)                                          |
-| `_internal/menu-item-active.helper(.spec)` | Active route detection via `route.matched` and `meta.parentPath`                                          |
+| File                                          | Purpose                                                                                                   |
+| --------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `mt-sidebar.vue`                              | The sidebar shell: header with logo and collapse toggle, navigation tree, user footer, flyout, off-canvas |
+| `mt-sidebar.types.ts`                         | `SidebarEntry`, `SidebarRoute`, `SidebarRouter`, `SidebarUser` and friends                                |
+| `mt-sidebar.spec.ts`                          | Vitest / Testing Library spec                                                                             |
+| `mt-sidebar.stories.ts`                       | Storybook stories                                                                                         |
+| `_internal/mt-sidebar-item.vue`               | One navigation row, recursive up to three levels                                                          |
+| `_internal/mt-sidebar-context.ts`             | Provide/inject contract between the menu and its rows                                                     |
+| `_internal/build-sidebar-tree.ts`             | Nests the flat entry list (replaces Shopware's `FlatTreeHelper`)                                          |
+| `_internal/sidebar-item-active.helper(.spec)` | Active route detection via `route.matched` and `meta.parentPath`                                          |
 
 ## API
 
@@ -23,7 +23,7 @@ snippets, router) arrives via props, models and events:
 
 | Shopware coupling                                         | Meteor replacement                                                        |
 | --------------------------------------------------------- | ------------------------------------------------------------------------- |
-| `menuService`, `appModulesService`, custom entity entries | `entries` prop: flat `MenuEntry[]`, nested via `parent`                   |
+| `menuService`, `appModulesService`, custom entity entries | `entries` prop: flat `SidebarEntry[]`, nested via `parent`                |
 | `adminMenu` store `isExpanded` (+ `localStorage`)         | `v-model:expanded`; persistence is the consumer's job                     |
 | `EventBus` `sw-admin-menu/toggle-offcanvas`               | `v-model:offCanvasOpen`                                                   |
 | `adminMenu` store `expandedEntries`                       | Internal state                                                            |
@@ -43,7 +43,7 @@ snippets, router) arrives via props, models and events:
 
 Events: `logout`, `navigate(entry)`, `update:expanded`, `update:offCanvasOpen`.
 
-CSS classes are prefixed `mt-admin-menu__*`. The `router-link-active` class name is kept because
+CSS classes are prefixed `mt-sidebar__*`. The `router-link-active` class name is kept because
 Vue Router sets it on the rendered links.
 
 ## Provenance
@@ -54,4 +54,4 @@ Vue Router sets it on the rendered links.
   `app/store/admin-menu.store.ts`, `app/composables/use-module-icon-colors.ts`
 
 The Jest specs of the original components relied on Shopware's `wrapTestComponent` harness and
-were replaced by `mt-admin-menu.spec.ts`. The pure `menu-item-active.helper.spec.ts` was ported as is.
+were replaced by `mt-sidebar.spec.ts`. The pure `sidebar-item-active.helper.spec.ts` was ported as is.
