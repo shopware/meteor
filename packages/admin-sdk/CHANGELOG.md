@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.14.1
+
+### Patch Changes
+
+- [#1340](https://github.com/shopware/meteor/pull/1340) [`c06ad7a`](https://github.com/shopware/meteor/commit/c06ad7a9f397d047f43f4c6167fd947b5a4599d5) Thanks [@quando1910](https://github.com/quando1910)! - Add success and error events to the service permission banner, document the banner and its `useServicePermission` composable, and guard service context and permission APIs for Shopware 6.7.14 and newer.
+
 ## 6.14.0
 
 ### Minor Changes

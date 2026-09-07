@@ -1,4 +1,5 @@
 import * as modal from '../../ui/modal';
+import type { uiModalOpen } from '../../ui/modal';
 import * as location from '../../location';
 import * as context from '../../context';
 import * as data from '../../data';
@@ -45,6 +46,16 @@ const getChannel = (): BroadcastChannel => {
   }
   return channel;
 };
+
+/**
+ * Configuration for the shared payment modal. The payment location is kept
+ * internal; callers can customise the modal without having to know how the
+ * payment iframe is mounted in Admin.
+ */
+export type PaymentFlowOptions = Pick<
+  uiModalOpen,
+  'variant' | 'zIndex' | 'showHeader' | 'showFooter' | 'closable'
+>;
 
 const servicePaymentModalLocationId = 'sw-service-payment-modal';
 
@@ -129,13 +140,24 @@ export const addPaymentIframe = async (
   return { iframeEl, unmount };
 };
 
-export const startPaymentFlow = async (): Promise<Flow> => {
+export const startPaymentFlow = async (
+  options: PaymentFlowOptions = {},
+): Promise<Flow> => {
+  const {
+    variant = 'small',
+    zIndex,
+    showHeader = false,
+    showFooter = false,
+    closable = false,
+  } = options;
+
   await modal.open({
     locationId: servicePaymentModalLocationId,
-    variant: 'small',
-    showHeader: false,
-    showFooter: false,
-    closable: false,
+    variant,
+    showHeader,
+    showFooter,
+    closable,
+    zIndex,
   });
 
   const flow = _createFlow();
