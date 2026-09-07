@@ -1,0 +1,21 @@
+{
+    "global": {
+        "sw-admin-menu": {
+            "linkLogout": "Abmelden",
+            "linkMinimizeMenu": "Menü einklappen",
+            "linkExpandMenu": "Menü ausklappen",
+            "linkCloseMenu": "Menü schließen",
+            "textShopwareAdmin": "Shopware Administration",
+            "textProjectName": "Administration",
+            "textVersion": "Version:",
+            "administrator": "Administrator",
+            "navigation": {
+                "label": "Hauptnavigation",
+                "mainMenuItemCatalogue": "Kataloge",
+                "mainMenuItemContent": "Inhalte",
+                "mainMenuItemMarketing": "Marketing",
+                "mainMenuItemAutomation": "Automation"
+            }
+        }
+    }
+}
