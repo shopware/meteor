@@ -15,9 +15,7 @@ export const TestSelectTheme: MtThemeSelectStory = {
 
     await userEvent.click(canvas.getByRole("textbox"));
 
-    const popover = within(
-      document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement,
-    );
+    const popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
     await userEvent.click(popover.getByTestId("mt-select-option--dark"));
 
     expect(args["onUpdate:modelValue"]).toHaveBeenCalledWith("dark");

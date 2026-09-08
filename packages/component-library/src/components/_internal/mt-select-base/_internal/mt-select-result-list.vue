@@ -1,10 +1,11 @@
 <template>
   <div class="mt-select-result-list">
-    <mt-popover-deprecated
+    <mt-floating-ui
+      :is-opened="true"
       class="mt-select-result-list-popover"
-      :popover-class="popoverClass"
-      :z-index="1100"
-      :resize-width="popoverResizeWidth"
+      :class="popoverClass"
+      :match-reference-width="popoverResizeWidth"
+      :offset="0"
     >
       <!-- @vue-expect-error -->
       <div
@@ -39,7 +40,7 @@
           {{ emptyMessage || t("messageNoResults") }}
         </div>
       </div>
-    </mt-popover-deprecated>
+    </mt-floating-ui>
   </div>
 </template>
 
@@ -47,7 +48,7 @@
 import type { PropType } from "vue";
 
 import { defineComponent } from "vue";
-import MtPopoverDeprecated from "../../mt-popover-deprecated/mt-popover-deprecated.vue";
+import MtFloatingUi from "../../../mt-floating-ui/mt-floating-ui.vue";
 import MtIcon from "../../../mt-icon/mt-icon.vue";
 import { provide } from "vue";
 import {
@@ -55,6 +56,7 @@ import {
   MtSelectResultAddItemSelectByKeyboardListener,
   MtSelectResultRemoveActiveItemListener,
   MtSelectResultRemoveItemSelectByKeyboardListener,
+  MtSelectResultSelectItem,
 } from "./mt-select-result-context";
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
@@ -63,13 +65,14 @@ export default defineComponent({
   name: "MtSelectResultList",
 
   components: {
-    "mt-popover-deprecated": MtPopoverDeprecated,
+    "mt-floating-ui": MtFloatingUi,
     "mt-icon": MtIcon,
   },
 
   provide() {
     return {
       setActiveItemIndex: this.setActiveItemIndex,
+      [MtSelectResultSelectItem]: (item: unknown) => this.$emit("item-select", item),
     };
   },
 
@@ -337,21 +340,38 @@ export default defineComponent({
 $mt-select-result-list-transition: all ease-in-out 0.2s;
 
 .mt-select-result-list {
-  pointer-events: none;
-}
-
-.mt-select-result-list,
-.mt-select-result-list-popover {
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
   overflow: hidden;
+  pointer-events: none;
 }
 
-.mt-select-result-list-popover .mt-popover-deprecated__wrapper {
-  width: 100%;
+// Child combinator, not descendant: mt-floating-ui copies the root's classes
+// onto the teleported content, where `right`/`bottom` would stretch the open list.
+.mt-select-result-list > .mt-floating-ui {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+// Stretched so the list anchors to the field, not to an empty inline wrapper.
+.mt-select-result-list > .mt-floating-ui > .mt-floating-ui__trigger {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+// Above mt-floating-ui's own 1070, so a dropdown opened inside another floating
+// layer stays on top of it.
+.mt-floating-ui__content.mt-select-result-list-popover {
+  z-index: 1100;
 }
 
 .mt-select-result-list__content {
@@ -382,9 +402,5 @@ $mt-select-result-list-transition: all ease-in-out 0.2s;
   opacity: 0;
   min-height: 293px;
   height: 293px;
-}
-
-.mt-popover-deprecated__wrapper.--placement-bottom-outside.mt-select-result-list-popover-wrapper {
-  transform: translate(0, calc(-100% - 48px));
 }
 </style>

@@ -33,6 +33,7 @@ import {
   MtSelectResultAddItemSelectByKeyboardListener,
   MtSelectResultRemoveActiveItemListener,
   MtSelectResultRemoveItemSelectByKeyboardListener,
+  MtSelectResultSelectItem,
 } from "./mt-select-result-context";
 
 export default defineComponent({
@@ -110,12 +111,14 @@ export default defineComponent({
     const removeItemSelectByKeyboardListener = inject(
       MtSelectResultRemoveItemSelectByKeyboardListener,
     );
+    const selectItem = inject(MtSelectResultSelectItem);
 
     return {
       addActiveItemListener,
       removeActiveItemListener,
       addItemSelectByKeyboardListener,
       removeItemSelectByKeyboardListener,
+      selectItem,
     };
   },
 
@@ -153,8 +156,7 @@ export default defineComponent({
         return;
       }
 
-      // @ts-expect-error - parent.parent should be defined
-      this.$parent.$parent.$emit("item-select", this.item);
+      this.selectItem?.(this.item);
     },
 
     onMouseEnter() {

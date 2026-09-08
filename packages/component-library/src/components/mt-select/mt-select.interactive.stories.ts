@@ -27,9 +27,7 @@ export const TestRemovalOfSelectionByList: MtSelectStory = {
 
     await userEvent.click(canvas.getByRole("textbox"));
 
-    const popover = within(
-      document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement,
-    );
+    const popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
     await userEvent.click(popover.getByTestId("mt-select-option--a"));
 
     expect(args.change).toHaveBeenCalledWith(["b", "d"]);
@@ -75,7 +73,7 @@ export const VisualTestSingleSelection: MtSelectStory = {
     await userEvent.type(canvas.getByRole("textbox"), "A");
     await new Promise((resolve) => setTimeout(resolve, 300));
 
-    let popover = within(document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement);
+    let popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
     await waitUntil(() => popover.getByTestId("mt-select-option--a"));
     await userEvent.click(popover.getByTestId("mt-select-option--a"));
 
@@ -93,7 +91,7 @@ export const VisualTestSingleSelection: MtSelectStory = {
     await userEvent.clear(canvas.getByRole("textbox"));
     await userEvent.type(canvas.getByRole("textbox"), "F");
     await new Promise((resolve) => setTimeout(resolve, 300));
-    popover = within(document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement);
+    popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
 
     await waitUntil(() => popover.getByTestId("mt-select-option--f"));
     await userEvent.click(popover.getByTestId("mt-select-option--f"));
@@ -112,7 +110,7 @@ export const VisualTestSingleSelection: MtSelectStory = {
     await userEvent.click(canvas.getByRole("textbox"));
     await userEvent.clear(canvas.getByRole("textbox"));
     await userEvent.type(canvas.getByRole("textbox"), "FF");
-    popover = within(document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement);
+    popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
 
     await waitUntil(() => popover.getByTestId("mt-select-option--ff"));
     await new Promise((resolve) => setTimeout(resolve, 200));
@@ -149,7 +147,7 @@ export const VisualTestSingleSelectionOptionAsValue: MtSelectStory = {
     await userEvent.type(canvas.getByRole("textbox"), "A");
     await new Promise((resolve) => setTimeout(resolve, 300));
 
-    let popover = within(document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement);
+    let popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
     await waitUntil(() => popover.getByText(findByHighlightText("Option A")));
     await userEvent.click(popover.getByText(findByHighlightText("Option A")));
 
@@ -166,7 +164,7 @@ export const VisualTestSingleSelectionOptionAsValue: MtSelectStory = {
     await userEvent.clear(canvas.getByRole("textbox"));
     await userEvent.type(canvas.getByRole("textbox"), "F");
     await new Promise((resolve) => setTimeout(resolve, 300));
-    popover = within(document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement);
+    popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
 
     await waitUntil(() => popover.getByText(findByHighlightText("Option F")));
     await userEvent.click(popover.getByText(findByHighlightText("Option F")));
@@ -184,7 +182,7 @@ export const VisualTestSingleSelectionOptionAsValue: MtSelectStory = {
     await userEvent.click(canvas.getByRole("textbox"));
     await userEvent.clear(canvas.getByRole("textbox"));
     await userEvent.type(canvas.getByRole("textbox"), "FF");
-    popover = within(document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement);
+    popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
 
     await waitUntil(() => popover.getByText(findByHighlightText("Option FF")));
     await new Promise((resolve) => setTimeout(resolve, 200));
@@ -245,7 +243,7 @@ export const VisualTestSingleSelectionSmall: MtSelectStory = {
     await userEvent.type(canvas.getByRole("textbox"), "A");
     await new Promise((resolve) => setTimeout(resolve, 300));
 
-    let popover = within(document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement);
+    let popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
     await waitUntil(() => popover.getByTestId("mt-select-option--a"));
     await userEvent.click(popover.getByTestId("mt-select-option--a"));
 
@@ -263,7 +261,7 @@ export const VisualTestSingleSelectionSmall: MtSelectStory = {
     await userEvent.clear(canvas.getByRole("textbox"));
     await userEvent.type(canvas.getByRole("textbox"), "F");
     await new Promise((resolve) => setTimeout(resolve, 300));
-    popover = within(document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement);
+    popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
 
     await waitUntil(() => popover.getByTestId("mt-select-option--f"));
     await userEvent.click(popover.getByTestId("mt-select-option--f"));
@@ -282,7 +280,7 @@ export const VisualTestSingleSelectionSmall: MtSelectStory = {
     await userEvent.click(canvas.getByRole("textbox"));
     await userEvent.clear(canvas.getByRole("textbox"));
     await userEvent.type(canvas.getByRole("textbox"), "FF");
-    popover = within(document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement);
+    popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
 
     await waitUntil(() => popover.getByTestId("mt-select-option--ff"));
     await new Promise((resolve) => setTimeout(resolve, 200));
@@ -312,7 +310,7 @@ export const VisualTestSingleSelectionLongInSmallWidth: MtSelectStory = {
     await userEvent.type(canvas.getByRole("textbox"), "A");
     await new Promise((resolve) => setTimeout(resolve, 300));
 
-    let popover = within(document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement);
+    let popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
     await waitUntil(() => popover.getByTestId("mt-select-option--a"));
     await userEvent.click(popover.getByTestId("mt-select-option--a"));
 
@@ -331,7 +329,7 @@ export const VisualTestSingleSelectionLongInSmallWidth: MtSelectStory = {
     await userEvent.clear(canvas.getByRole("textbox"));
     await userEvent.type(canvas.getByRole("textbox"), "F");
     await new Promise((resolve) => setTimeout(resolve, 300));
-    popover = within(document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement);
+    popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
 
     await waitUntil(() => popover.getByTestId("mt-select-option--f"));
     await userEvent.click(popover.getByTestId("mt-select-option--f"));
@@ -350,7 +348,7 @@ export const VisualTestSingleSelectionLongInSmallWidth: MtSelectStory = {
     await userEvent.click(canvas.getByRole("textbox"));
     await userEvent.clear(canvas.getByRole("textbox"));
     await userEvent.type(canvas.getByRole("textbox"), "FF");
-    popover = within(document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement);
+    popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
 
     await waitUntil(() => popover.getByTestId("mt-select-option--ff"));
     await new Promise((resolve) => setTimeout(resolve, 200));
@@ -382,9 +380,7 @@ export const VisualTestMultiSelect: MtSelectStory = {
     // open selection
     await userEvent.click(canvas.getByRole("textbox"));
 
-    const popover = within(
-      document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement,
-    );
+    const popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
     await userEvent.click(popover.getByTestId("mt-select-option--a"));
 
     expect(args.itemAdd).toHaveBeenCalledWith({
@@ -442,9 +438,7 @@ export const VisualTestMultiSelectOptionAsValue: MtSelectStory = {
     // open selection
     await userEvent.click(canvas.getByRole("textbox"));
 
-    const popover = within(
-      document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement,
-    );
+    const popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
     await userEvent.click(popover.getByText("Option A"));
 
     expect(args.change).toHaveBeenCalledWith([
@@ -531,9 +525,7 @@ export const VisualTestMultiSelectWithInitialValue: MtSelectStory = {
     // open selection
     await userEvent.click(canvas.getByRole("textbox"));
 
-    const popover = within(
-      document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement,
-    );
+    const popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
     await userEvent.click(popover.getByTestId("mt-select-option--b"));
 
     expect(args.itemAdd).toHaveBeenCalledWith({
@@ -612,7 +604,7 @@ export const VisualTestDisabled: MtSelectStory = {
 
     await userEvent.click(canvas.getByRole("textbox"));
 
-    const popover = document.querySelector(".mt-popover-deprecated__wrapper");
+    const popover = document.querySelector(".mt-floating-ui__content");
     expect(popover).toBe(null);
   },
 };
@@ -633,7 +625,7 @@ export const VisualTestDisabledSingleOption: MtSelectStory = {
 
     await userEvent.click(canvas.getByRole("textbox"));
 
-    const popover = document.querySelector(".mt-popover-deprecated__wrapper");
+    const popover = document.querySelector(".mt-floating-ui__content");
     expect(popover).toBeVisible();
 
     // Check if option A and C are enabled, option B is disabled
@@ -696,9 +688,7 @@ export const VisualTestHighlightSearchTerm: MtSelectStory = {
       return result?.classList.contains("is--active");
     });
 
-    const popover = within(
-      document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement,
-    );
+    const popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
     // Option A is separated in different elements. This methods get the combined instance.
     expect(
       popover.getByText((content, element) => {
@@ -750,9 +740,7 @@ export const VisualTestEnsureSingleSelectionWithoutLoadMore: MtSelectStory = {
       return highlight?.textContent === "Option long text";
     });
 
-    const popover = within(
-      document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement,
-    );
+    const popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
     await userEvent.click(popover.getByTestId("mt-select-option--Longer value text"));
 
     expect(args.itemAdd).toHaveBeenCalledWith({
@@ -837,14 +825,12 @@ export const VisualTestEnsureSelectionOpensViaIndicators: MtSelectStory = {
     await userEvent.click(canvas.getByTestId("mt-select__select-indicator"));
 
     // selection should open
-    const popover = within(
-      document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement,
-    );
+    const popover = within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
     await waitUntil(() => popover.getByTestId("mt-select-option--a"));
 
     // close selection via indicator
     await userEvent.click(canvas.getByTestId("mt-select__select-indicator"));
-    expect(document.querySelector(".mt-popover-deprecated__wrapper")).toBeNull();
+    expect(document.querySelector(".mt-floating-ui__content")).toBeNull();
   },
 };
 
