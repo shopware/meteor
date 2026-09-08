@@ -12,7 +12,7 @@
           v-if="index > 0"
           :ref="(el) => setElement(separatorEls, index, el)"
           class="mt-breadcrumb__separator"
-          :class="{ 'mt-breadcrumb__separator--collapsed': collapsedSeparators.includes(index) }"
+          :hidden="collapsedSeparators.includes(index)"
           role="presentation"
           aria-hidden="true"
         >
@@ -23,23 +23,50 @@
           v-if="index === 1"
           :ref="setEllipsis"
           class="mt-breadcrumb__ellipsis"
-          :class="{ 'mt-breadcrumb__ellipsis--collapsed': !showEllipsis }"
-          role="presentation"
-          aria-hidden="true"
+          :hidden="!showEllipsis"
         >
-          …
+          <dropdown-menu-root :open="overflowOpen" @update:open="overflowOpen = $event">
+            <dropdown-menu-trigger as-child>
+              <mt-button
+                square
+                variant="tertiary"
+                :size="size === 'xs' ? 'x-small' : 'small'"
+                :aria-label="t('hiddenLevels', hiddenCrumbs.length)"
+              >
+                <mt-icon
+                  name="solid-ellipsis-h-s"
+                  :size="size === 'xs' ? 'var(--scale-size-10)' : 'var(--scale-size-12)'"
+                  color="var(--color-text-secondary-default)"
+                  decorative
+                />
+              </mt-button>
+            </dropdown-menu-trigger>
+
+            <dropdown-menu-portal>
+              <mt-action-menu>
+                <mt-action-menu-item
+                  v-for="hidden in hiddenCrumbs"
+                  :key="hidden.index"
+                  :as="hidden.item.to ? resolveLinkComponent(hidden.item) : undefined"
+                  :disabled="!hidden.item.to"
+                  v-bind="hidden.item.to ? linkAttributes(hidden.item) : {}"
+                  @click="hidden.item.to && $emit('click', hidden.item, $event)"
+                >
+                  {{ hidden.item.label }}
+                </mt-action-menu-item>
+              </mt-action-menu>
+            </dropdown-menu-portal>
+          </dropdown-menu-root>
         </li>
 
         <li
           :ref="(el) => setElement(crumbEls, index, el)"
           class="mt-breadcrumb__crumb"
-          :class="{
-            'mt-breadcrumb__crumb--current': isCurrent(index),
-            'mt-breadcrumb__crumb--collapsed': collapsedCrumbs.includes(index),
-          }"
+          :class="{ 'mt-breadcrumb__crumb--current': isCurrent(index) }"
+          :hidden="collapsedCrumbs.includes(index)"
         >
           <component
-            :is="item.as ?? linkAs"
+            :is="resolveLinkComponent(item)"
             v-if="isLink(item, index)"
             class="mt-breadcrumb__link"
             v-bind="linkAttributes(item)"
@@ -72,9 +99,22 @@ export interface BreadcrumbItem {
 </script>
 
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, onUpdated, ref } from "vue";
+import {
+  computed,
+  onBeforeUnmount,
+  onMounted,
+  onUpdated,
+  ref,
+  resolveDynamicComponent,
+  watch,
+} from "vue";
 import { useI18n } from "vue-i18n";
 import { useResizeObserver } from "@vueuse/core";
+import { DropdownMenuPortal, DropdownMenuRoot, DropdownMenuTrigger } from "reka-ui";
+import MtActionMenu from "../mt-action-menu/mt-action-menu.vue";
+import MtActionMenuItem from "../mt-action-menu-item/mt-action-menu-item.vue";
+import MtButton from "../mt-button/mt-button.vue";
+import MtIcon from "../mt-icon/mt-icon.vue";
 import { computeCollapsed, type BreadcrumbChild } from "./_internal/mt-breadcrumb-collapse";
 
 const props = withDefaults(
@@ -123,9 +163,11 @@ const { t } = useI18n({
   messages: {
     en: {
       ariaLabel: "Breadcrumb",
+      hiddenLevels: "Show {count} hidden level | Show {count} hidden levels",
     },
     de: {
       ariaLabel: "Brotkrumennavigation",
+      hiddenLevels: "{count} ausgeblendete Ebene anzeigen | {count} ausgeblendete Ebenen anzeigen",
     },
   },
 });
@@ -141,6 +183,15 @@ let ellipsisEl: HTMLElement | null = null;
 const collapsedCrumbs = ref<number[]>([]);
 const collapsedSeparators = ref<number[]>([]);
 const showEllipsis = ref(false);
+const overflowOpen = ref(false);
+
+const hiddenCrumbs = computed(() =>
+  collapsedCrumbs.value.map((index) => ({ item: props.items[index], index })),
+);
+
+watch(showEllipsis, (visible) => {
+  if (!visible) overflowOpen.value = false;
+});
 
 let frame: number | undefined;
 let lastWidth = 0;
@@ -160,6 +211,12 @@ function isCurrent(index: number) {
 
 function isLink(item: BreadcrumbItem, index: number) {
   return Boolean(item.to) && !isCurrent(index);
+}
+
+function resolveLinkComponent(item: BreadcrumbItem) {
+  const as = item.as ?? props.linkAs;
+
+  return typeof as === "string" ? (resolveDynamicComponent(as) as string | Component) : as;
 }
 
 function linkAttributes(item: BreadcrumbItem) {
@@ -216,7 +273,13 @@ function measureChild(child: MeasuredChild) {
   return floor;
 }
 
-function applyCollapsed(hidden: MeasuredChild[]) {
+function applyCollapsed(children: MeasuredChild[], hidden: MeasuredChild[]) {
+  // The `hidden` attribute is also bound in the template. Setting it here keeps the DOM
+  // correct when the result did not change and Vue skips the patch.
+  children.forEach((child) => {
+    child.element.hidden = hidden.includes(child);
+  });
+
   const crumbs = hidden.filter((child) => child.kind === "item").map((child) => child.index);
   const separators = hidden
     .filter((child) => child.kind === "separator")
@@ -235,12 +298,16 @@ function layout() {
 
   const children = collectChildren();
   children.forEach((child) => {
+    child.element.hidden = false;
     child.element.style.removeProperty("--mt-breadcrumb-natural-width");
     child.element.style.removeProperty("--mt-breadcrumb-shrink");
   });
 
   if (props.overflow !== "collapse") {
-    applyCollapsed([]);
+    applyCollapsed(
+      children,
+      children.filter((child) => child.kind === "ellipsis"),
+    );
     return;
   }
 
@@ -260,7 +327,7 @@ function layout() {
   list.removeAttribute("data-measuring");
 
   const hidden = computeCollapsed(children, available, gap).map((index) => children[index]);
-  applyCollapsed(hidden);
+  applyCollapsed(children, hidden);
 }
 
 useResizeObserver(navEl, ([entry]) => {
@@ -288,6 +355,7 @@ onBeforeUnmount(() => {
 .mt-breadcrumb {
   --mt-breadcrumb-item-min-width: 8ch;
 
+  display: flow-root;
   min-width: 0;
   max-width: 100%;
   font-family: var(--font-family-body);
@@ -299,9 +367,17 @@ onBeforeUnmount(() => {
   line-height: var(--font-line-height-xs);
 }
 
+.mt-breadcrumb--size-xs .mt-breadcrumb__list {
+  min-height: var(--scale-size-24);
+}
+
 .mt-breadcrumb--size-s {
   font-size: var(--font-size-s);
   line-height: var(--font-line-height-s);
+}
+
+.mt-breadcrumb--size-s .mt-breadcrumb__list {
+  min-height: var(--scale-size-32);
 }
 
 .mt-breadcrumb__list {
@@ -309,9 +385,12 @@ onBeforeUnmount(() => {
   flex-wrap: nowrap;
   align-items: center;
   column-gap: var(--scale-size-6);
+  box-sizing: content-box;
   min-width: 0;
-  margin: 0;
-  padding: 0;
+  /* Room for the focus rings (2px outline, 2px offset) inside the clipping box. The
+     negative margin cancels the padding so the layout does not change. */
+  margin: calc(-1 * var(--scale-size-4));
+  padding: var(--scale-size-4);
   overflow: hidden;
   list-style: none;
 }
@@ -342,8 +421,7 @@ onBeforeUnmount(() => {
   font-weight: var(--font-weight-semibold);
 }
 
-.mt-breadcrumb__separator,
-.mt-breadcrumb__ellipsis {
+.mt-breadcrumb__separator {
   display: inline-flex;
   align-items: center;
   flex-shrink: 0;
@@ -351,9 +429,13 @@ onBeforeUnmount(() => {
   user-select: none;
 }
 
-.mt-breadcrumb__list:not([data-measuring]) > .mt-breadcrumb__crumb--collapsed,
-.mt-breadcrumb__list:not([data-measuring]) > .mt-breadcrumb__separator--collapsed,
-.mt-breadcrumb__list:not([data-measuring]) > .mt-breadcrumb__ellipsis--collapsed {
+.mt-breadcrumb__ellipsis {
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.mt-breadcrumb__list > [hidden] {
   display: none;
 }
 
