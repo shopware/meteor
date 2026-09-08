@@ -32,7 +32,7 @@ Labels are shown in full as long as the trail fits. As the container gets narrow
 
 ### Collapsing on narrow containers
 
-When the trail does not fit, the labels shrink first. Once they have reached their minimum width, the crumbs in the middle disappear behind an ellipsis, beginning with the one next to the root. Drag the corner of the box to watch crumbs shrink, disappear, and come back.
+When the trail does not fit, the labels shrink first. Once they have reached their minimum width, the crumbs in the middle move into a menu behind the ellipsis button, beginning with the one next to the root. Drag the corner of the box to watch crumbs shrink, disappear, and come back, and open the menu to reach the hidden levels.
 
 ::component-example{name="breadcrumb-collapsed-example"}
 ::
@@ -78,9 +78,10 @@ Build the items from the route segments and mark nothing by hand: the last item 
 - **Breadcrumb** observes its own width and reacts immediately when the container, the viewport, or the items change.
 - As long as the trail fits, every label is shown in full.
 - When the trail no longer fits, labels shrink and show an ellipsis. Long labels shrink first, and no label becomes narrower than 8 characters.
-- If the trail still does not fit once every label has reached its minimum width, the crumbs in the middle are hidden behind an ellipsis, beginning with the one next to the root. The root is hidden last, and the current page is never hidden.
+- If the trail still does not fit once every label has reached its minimum width, the crumbs in the middle are hidden behind an ellipsis button, beginning with the one next to the root. The root is hidden last, and the current page is never hidden.
+- The ellipsis button opens a menu that lists the hidden levels from the root downwards. Each entry is a link to that level; levels without a destination are listed but disabled.
 - Set `overflow="wrap"` to let the crumbs flow onto additional lines instead of collapsing. Only a label wider than the whole container is truncated in this mode.
-- Hidden crumbs come back as soon as there is enough space again. Their pages remain reachable through the main navigation.
+- Hidden crumbs come back as soon as there is enough space again. An open menu closes when its button disappears.
 
 ## Accessibility
 
@@ -88,7 +89,8 @@ Build the items from the route segments and mark nothing by hand: the last item 
 - The current page carries `aria-current="page"`.
 - Separators and the ellipsis are hidden from assistive technology.
 - Links can be reached with the Tab key and show a visible focus ring. The current page is plain text and cannot be focused.
-- Hidden crumbs are not announced. Keep the number of levels small so that the trail rarely needs to collapse on the viewports you support.
+- The ellipsis button is in the tab order, is named "Show n hidden levels", and announces that it opens a menu. Enter or Space opens the menu and focuses its first entry, the arrow keys move between entries, and Escape closes the menu and returns focus to the button.
+- The menu entries are links, so they can also be opened in a new tab.
 
 ## Related components
 
