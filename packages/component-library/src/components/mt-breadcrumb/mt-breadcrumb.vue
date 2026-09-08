@@ -280,10 +280,15 @@ function applyCollapsed(children: MeasuredChild[], hidden: MeasuredChild[]) {
     child.element.hidden = hidden.includes(child);
   });
 
-  const crumbs = hidden.filter((child) => child.kind === "item").map((child) => child.index);
+  const byPosition = (a: number, b: number) => a - b;
+  const crumbs = hidden
+    .filter((child) => child.kind === "item")
+    .map((child) => child.index)
+    .sort(byPosition);
   const separators = hidden
     .filter((child) => child.kind === "separator")
-    .map((child) => child.index);
+    .map((child) => child.index)
+    .sort(byPosition);
 
   if (crumbs.join() !== collapsedCrumbs.value.join()) collapsedCrumbs.value = crumbs;
   if (separators.join() !== collapsedSeparators.value.join())
@@ -433,6 +438,10 @@ onBeforeUnmount(() => {
   display: inline-flex;
   align-items: center;
   flex-shrink: 0;
+}
+
+.mt-breadcrumb__ellipsis .mt-button[data-state="open"] {
+  background: var(--color-interaction-secondary-pressed);
 }
 
 .mt-breadcrumb__list > [hidden] {

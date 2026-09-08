@@ -40,12 +40,12 @@ const WIDTHS: Record<string, number> = {
  * jsdom has no layout. Fake element widths by class so three 100px crumbs overflow a
  * 260px breadcrumb and the middle crumb collapses into the overflow menu.
  */
-function fakeLayout() {
+function fakeLayout(navWidth = WIDTHS["mt-breadcrumb"]) {
   vi.spyOn(HTMLElement.prototype, "getBoundingClientRect").mockImplementation(function (
     this: HTMLElement,
   ) {
     const match = Object.keys(WIDTHS).find((className) => this.classList.contains(className));
-    const width = match ? WIDTHS[match] : 0;
+    const width = match === "mt-breadcrumb" ? navWidth : match ? WIDTHS[match] : 0;
 
     return { width, height: 0, top: 0, left: 0, right: width, bottom: 0, x: 0, y: 0 } as DOMRect;
   });
@@ -270,6 +270,22 @@ describe("mt-breadcrumb", () => {
       const entry = screen.getByRole("menuitem", { name: "Products" });
       expect(menu).toContainElement(entry);
       expect(entry).toHaveAttribute("href", "#products");
+    });
+
+    it("lists the hidden crumbs from the root downwards even when the root is hidden last", async () => {
+      // ARRANGE
+      vi.restoreAllMocks();
+      fakeLayout(200);
+      renderBreadcrumb();
+      await nextFrame();
+
+      // ACT
+      screen.getByRole("button", { name: "Show 2 hidden levels" }).focus();
+      await userEvent.keyboard("{Enter}");
+
+      // ASSERT
+      const entries = await screen.findAllByRole("menuitem");
+      expect(entries.map((entry) => entry.textContent?.trim())).toEqual(["Home", "Products"]);
     });
 
     it("lists a hidden crumb without a destination as a disabled entry", async () => {
