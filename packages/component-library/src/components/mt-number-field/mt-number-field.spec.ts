@@ -867,4 +867,16 @@ describe("mt-number-field", () => {
     // ASSERT
     expect(container.querySelector(".mt-field-hint")).not.toBeInTheDocument();
   });
+
+  it("forwards the autocomplete prop to the input", async () => {
+    // ARRANGE
+    render(MtNumberField, {
+      props: {
+        autocomplete: "off",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveAttribute("autocomplete", "off");
+  });
 });

@@ -232,4 +232,28 @@ describe("mt-select", () => {
     expect((input.element as HTMLInputElement).value).toBe("Option Becky");
     expect(wrapper.vm.visibleResults).toHaveLength(3);
   });
+
+  it("should render a searchable input that opts out of autofill", async () => {
+    const wrapper = await createWrapper();
+
+    const input = wrapper.find(".mt-select-selection-list__input");
+
+    expect(input.attributes("autocomplete")).toBe("off");
+    expect(input.attributes("data-1p-ignore")).toBeDefined();
+    expect(input.attributes("data-lpignore")).toBe("true");
+    expect(input.attributes("data-bwignore")).toBeDefined();
+    expect(input.attributes("readonly")).toBeUndefined();
+  });
+
+  it("should render a readonly input when search is disabled", async () => {
+    const wrapper = await createWrapper({
+      props: {
+        enableSearch: false,
+      },
+    });
+
+    const input = wrapper.find(".mt-select-selection-list__input");
+
+    expect(input.attributes("readonly")).toBeDefined();
+  });
 });
