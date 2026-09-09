@@ -349,17 +349,8 @@ $mt-select-result-list-transition: all ease-in-out 0.2s;
   pointer-events: none;
 }
 
-// Child combinator, not descendant: mt-floating-ui copies the root's classes
-// onto the teleported content, where `right`/`bottom` would stretch the open list.
-.mt-select-result-list > .mt-floating-ui {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-}
-
-// Stretched so the list anchors to the field, not to an empty inline wrapper.
+// Stretch the bounding box, so floating-ui attaches the list to the field's bottom, not its top.
+.mt-select-result-list > .mt-floating-ui,
 .mt-select-result-list > .mt-floating-ui > .mt-floating-ui__trigger {
   position: absolute;
   top: 0;
@@ -368,10 +359,8 @@ $mt-select-result-list-transition: all ease-in-out 0.2s;
   bottom: 0;
 }
 
-// Above mt-floating-ui's own 1070, so a dropdown opened inside another floating
-// layer stays on top of it.
 .mt-floating-ui__content.mt-select-result-list-popover {
-  z-index: 1100;
+  z-index: 1100; // above mt-floating-ui's own 1070
 }
 
 .mt-select-result-list__content {
