@@ -64,6 +64,7 @@
         :empty-message="t('messageNoResults', { term: searchTerm })"
         :focus-el="getFocusElement()"
         @paginate="$emit('paginate')"
+        @item-select="addItem"
       >
         <template #before-item-list>
           <slot name="before-item-list" />

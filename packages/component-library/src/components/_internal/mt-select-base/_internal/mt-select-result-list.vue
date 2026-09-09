@@ -56,6 +56,7 @@ import {
   MtSelectResultAddItemSelectByKeyboardListener,
   MtSelectResultRemoveActiveItemListener,
   MtSelectResultRemoveItemSelectByKeyboardListener,
+  MtSelectResultSelectItem,
 } from "./mt-select-result-context";
 import { ref } from "vue";
 import { useI18n } from "vue-i18n";
@@ -71,6 +72,7 @@ export default defineComponent({
   provide() {
     return {
       setActiveItemIndex: this.setActiveItemIndex,
+      [MtSelectResultSelectItem]: (item: unknown) => this.$emit("item-select", item),
     };
   },
 
