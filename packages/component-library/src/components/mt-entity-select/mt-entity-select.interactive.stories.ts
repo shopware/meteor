@@ -62,9 +62,7 @@ export const VisualTestMultiSelection: MtEntitySelectStory = {
     ]);
 
     // remove one selection
-    const popover = await within(
-      document.querySelector(".mt-popover-deprecated__wrapper") as HTMLElement,
-    );
+    const popover = await within(document.querySelector(".mt-floating-ui__content") as HTMLElement);
     await userEvent.click(popover.getByText("Manufacturer 5 with a long name to test wrapping"));
     expect(args["onUpdate:modelValue"]).toHaveBeenLastCalledWith([
       "manufacturer-2",

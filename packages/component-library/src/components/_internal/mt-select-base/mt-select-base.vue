@@ -310,16 +310,17 @@ export default defineComponent({
         path = this.computePath(event);
       }
 
-      // Check if path contains a "mt-popover-deprecated" or "mt-popover-deprecated__wrapper"
+      // The result list is teleported out of the field, so a click inside it
+      // lands outside `this.$el`.
       if (
-        path.find((element: any) => {
-          const containsMtPopoverDeprecated = element.classList.contains("mt-popover-deprecated");
-          const containsMtPopoverDeprecatedWrapper = element.classList.contains(
+        path.find((element: any) =>
+          [
+            "mt-floating-ui",
+            "mt-floating-ui__content",
+            "mt-popover-deprecated",
             "mt-popover-deprecated__wrapper",
-          );
-
-          return containsMtPopoverDeprecated || containsMtPopoverDeprecatedWrapper;
-        })
+          ].some((className) => element.classList?.contains(className)),
+        )
       ) {
         return;
       }

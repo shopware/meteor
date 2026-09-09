@@ -12,3 +12,5 @@ export const MtSelectResultAddItemSelectByKeyboardListener = Symbol() as Injecti
 export const MtSelectResultRemoveItemSelectByKeyboardListener = Symbol() as InjectionKey<
   (listener: (index: number) => void) => void
 >;
+
+export const MtSelectResultSelectItem = Symbol() as InjectionKey<(item: unknown) => void>;
