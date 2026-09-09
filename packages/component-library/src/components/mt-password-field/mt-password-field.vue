@@ -26,6 +26,7 @@
         :id="createInputId(identification)"
         :type="showPassword ? 'text' : 'password'"
         :name="identification"
+        :autocomplete="autocomplete"
         :placeholder="placeholder"
         :disabled="disabled || isInherited"
         :value="model ?? ''"
@@ -91,6 +92,7 @@ const props = withDefaults(
     hint?: string | null;
     toggable?: boolean;
     name?: string | undefined;
+    autocomplete?: string;
     // additions to align with base-field
     required?: boolean;
     helpText?: string;
@@ -103,6 +105,7 @@ const props = withDefaults(
   {
     label: null,
     placeholder: "",
+    autocomplete: undefined,
     toggable: true,
     error: null,
     hint: null,

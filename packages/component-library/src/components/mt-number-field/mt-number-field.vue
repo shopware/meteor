@@ -31,6 +31,7 @@
         :id="createInputId(identification)"
         type="text"
         :name="identification"
+        :autocomplete="autocomplete"
         :disabled="disabled || isInherited"
         :value="stringRepresentation"
         :placeholder="placeholder"
