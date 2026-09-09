@@ -58,6 +58,10 @@
           ref="MtSelectInput"
           class="mt-select-selection-list__input"
           type="text"
+          autocomplete="off"
+          data-1p-ignore
+          data-lpignore="true"
+          data-bwignore
           :disabled="disabled"
           :readonly="!enableSearch"
           :placeholder="showPlaceholder"

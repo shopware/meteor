@@ -340,4 +340,16 @@ describe("mt-textarea", () => {
     // ASSERT
     expect(screen.getByRole("textbox")).toBeDisabled();
   });
+
+  it("forwards the autocomplete prop to the textarea", async () => {
+    // ARRANGE
+    render(MtTextarea, {
+      props: {
+        autocomplete: "off",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveAttribute("autocomplete", "off");
+  });
 });
