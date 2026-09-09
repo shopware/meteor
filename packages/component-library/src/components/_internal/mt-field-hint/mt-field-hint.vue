@@ -51,11 +51,6 @@ withDefaults(
   line-height: var(--font-line-height-xs);
 }
 
-/*
- * The wrapper is exactly one line tall (1lh = the inherited line-height) and
- * centers the icon inside it. For a single line this is plain flex centering,
- * for wrapped text the icon stays on the first line. No fixed values needed.
- */
 .mt-field-hint__icon-wrapper {
   flex-shrink: 0;
   display: flex;
