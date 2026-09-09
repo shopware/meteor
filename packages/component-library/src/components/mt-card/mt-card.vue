@@ -94,6 +94,19 @@
   <slot name="after-card" />
 </template>
 
+<script lang="ts">
+const messages = {
+  en: {
+    disableInheritance: "Disable inheritance",
+    enableInheritance: "Enable inheritance",
+  },
+  de: {
+    disableInheritance: "Vererbung deaktivieren",
+    enableInheritance: "Vererbung aktivieren",
+  },
+};
+</script>
+
 <script setup lang="ts">
 import { computed } from "vue";
 import MtContextButton from "../mt-context-button/mt-context-button.vue";
@@ -101,7 +114,7 @@ import MtLoader from "../mt-loader/mt-loader.vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
 import MtText from "../mt-text/mt-text.vue";
 import { useFutureFlags } from "@/composables/useFutureFlags";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 
 const props = withDefaults(
   defineProps<{
@@ -121,17 +134,9 @@ defineEmits<{
   (e: "update:inheritance", value: boolean): void;
 }>();
 
-const { t } = useI18n({
-  messages: {
-    en: {
-      disableInheritance: "Disable inheritance",
-      enableInheritance: "Enable inheritance",
-    },
-    de: {
-      disableInheritance: "Vererbung deaktivieren",
-      enableInheritance: "Vererbung aktivieren",
-    },
-  },
+const { t } = useMeteorI18n({
+  namespace: "mt.card",
+  messages,
 });
 
 const slots = defineSlots<{

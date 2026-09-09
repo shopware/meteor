@@ -1,0 +1,41 @@
+{
+  "name": "meteor-vite-app",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Standalone Vite + Vue example: the app translates its own texts with vue-i18n and supplies French for Meteor's snippets from the same catalog.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shopware/meteor.git"
+  },
+  "license": "MIT",
+  "author": "shopware AG",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --port 5180 --strictPort",
+    "build": "vite build",
+    "lint:all": "npm run lint:eslint && npm run lint:types",
+    "lint:eslint": "eslint .",
+    "lint:types": "vue-tsc --noEmit",
+    "test:e2e": "concurrently --handle-input --kill-others --success first \"npm run dev\" \"wait-on --verbose http-get://localhost:5180/ && playwright test\"",
+    "test:e2e:dev": "playwright test"
+  },
+  "dependencies": {
+    "@shopware-ag/meteor-component-library": "workspace:*",
+    "vue": "^3.5.0",
+    "vue-i18n": "^11.4.5"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.18.0",
+    "@playwright/test": "^1.45.0",
+    "@vitejs/plugin-vue": "^5.2.0",
+    "concurrently": "^9.1.0",
+    "eslint": "^9.18.0",
+    "eslint-plugin-vue": "^9.32.0",
+    "globals": "^15.14.0",
+    "typescript": "^5.6.3",
+    "typescript-eslint": "^8.19.1",
+    "vite": "^5.4.11",
+    "vue-tsc": "^2.1.10",
+    "wait-on": "^8.0.1"
+  }
+}

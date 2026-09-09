@@ -113,7 +113,11 @@ onMounted(() => {
   nextTick(() => {
     const triggerDOMElement = document.querySelector<HTMLElement>(`#mt-tooltip--${id}__trigger`);
 
-    if (!triggerDOMElement && process?.env?.NODE_ENV !== "test") {
+    // `typeof` guard: in browsers `process` is not declared and even `process?.` throws.
+    if (
+      !triggerDOMElement &&
+      (typeof process === "undefined" || process.env?.NODE_ENV !== "test")
+    ) {
       throw new Error(
         `Failed to render mt-tooltip; Could not find trigger element with id: "mt-tooltip--${id}__trigger"`,
       );

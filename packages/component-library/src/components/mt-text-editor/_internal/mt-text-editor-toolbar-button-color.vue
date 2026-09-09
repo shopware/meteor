@@ -16,23 +16,6 @@ import type { PropType } from "vue";
 import MtColorpicker from "../../mt-colorpicker/mt-colorpicker.vue";
 import type { Editor } from "@tiptap/vue-3";
 import type { CustomButton } from "./mt-text-editor-toolbar.vue";
-import { useI18n } from "vue-i18n";
-
-useI18n({
-  useScope: "global",
-  messages: {
-    en: {
-      "mt-text-editor-toolbar-button-color": {
-        label: "Text Color",
-      },
-    },
-    de: {
-      "mt-text-editor-toolbar-button-color": {
-        label: "Textfarbe",
-      },
-    },
-  },
-});
 
 const props = defineProps({
   editor: {
@@ -61,7 +44,7 @@ const onUpdateModelValue = (color: string) => {
 <script lang="ts">
 export const colorButton: CustomButton = {
   name: "text-color",
-  label: "mt-text-editor-toolbar-button-color.label",
+  label: "mt.text-editor-toolbar-button-color.label",
   position: 2000,
 };
 </script>

@@ -246,6 +246,38 @@
         </MtModal>
       </MtModalRoot>
     </SwCard>
+
+    <!-- i18n integration-test surface (only rendered with ?i18n=1, so the default
+         page and its visual snapshot stay untouched). -->
+    <section v-if="showI18nDemo" data-testid="i18n-demo">
+      <button type="button" data-testid="locale-en" @click="locale = 'en'">
+        en
+      </button>
+      <button type="button" data-testid="locale-de" @click="locale = 'de'">
+        de
+      </button>
+      <button
+        type="button"
+        data-testid="locale-en-us"
+        @click="locale = 'en-US'"
+      >
+        en-US
+      </button>
+      <button
+        type="button"
+        data-testid="locale-en-gb"
+        @click="locale = 'en-GB'"
+      >
+        en-GB
+      </button>
+
+      <MtPagination
+        :current-page="1"
+        :limit="25"
+        :total-items="213"
+        @change-current-page="() => {}"
+      />
+    </section>
   </div>
 </template>
 
@@ -263,8 +295,15 @@ import {
   MtModalTrigger,
   MtModalAction,
   MtText,
+  MtPagination,
 } from "@shopware-ag/meteor-component-library";
+import { useI18n } from "vue-i18n";
 import SwBlockStack from "./components/sw-block-stack.vue";
+
+// Drive the host vue-i18n locale from the i18n demo controls; Meteor components follow it
+// via the adapter wired in plugins/i18n.ts.
+const { locale } = useI18n({ useScope: "global" });
+const showI18nDemo = computed(() => !!useRoute().query.i18n);
 
 const showBanner = ref();
 const text = ref();
