@@ -95,4 +95,24 @@ describe("mt-text-field", () => {
     // ASSERT
     expect(container.querySelector(".mt-field-hint")).not.toBeInTheDocument();
   });
+
+  it("forwards the autocomplete prop to the input", async () => {
+    // ARRANGE
+    render(MtTextField, {
+      props: {
+        autocomplete: "off",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveAttribute("autocomplete", "off");
+  });
+
+  it("does not render an autocomplete attribute by default", async () => {
+    // ARRANGE
+    render(MtTextField);
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).not.toHaveAttribute("autocomplete");
+  });
 });
