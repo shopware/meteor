@@ -33,7 +33,6 @@ import {
   MtSelectResultAddItemSelectByKeyboardListener,
   MtSelectResultRemoveActiveItemListener,
   MtSelectResultRemoveItemSelectByKeyboardListener,
-  MtSelectResultSelectItem,
 } from "./mt-select-result-context";
 
 export default defineComponent({
@@ -71,6 +70,8 @@ export default defineComponent({
       },
     },
   },
+
+  emits: ["item-select"],
 
   data() {
     return {
@@ -111,14 +112,12 @@ export default defineComponent({
     const removeItemSelectByKeyboardListener = inject(
       MtSelectResultRemoveItemSelectByKeyboardListener,
     );
-    const selectItem = inject(MtSelectResultSelectItem);
 
     return {
       addActiveItemListener,
       removeActiveItemListener,
       addItemSelectByKeyboardListener,
       removeItemSelectByKeyboardListener,
-      selectItem,
     };
   },
 
@@ -156,7 +155,7 @@ export default defineComponent({
         return;
       }
 
-      this.selectItem?.(this.item);
+      this.$emit("item-select", this.item);
     },
 
     onMouseEnter() {
