@@ -118,18 +118,14 @@ watch(
 );
 </script>
 
-<style lang="scss">
-@import "@shopware-ag/meteor-icon-kit/icons/meteor-icon-kit.scss";
+<style>
+/* Ships with this component so granular imports (dist/esm/MtIcon.js) keep the icon dimensions */
+@import "@shopware-ag/meteor-icon-kit/icons/meteor-icon-kit.css";
 
 .mt-icon {
   display: inline-block;
   vertical-align: middle;
   line-height: 0;
-
-  &--custom-size > svg {
-    width: 100% !important;
-    height: 100% !important;
-  }
 
   > svg {
     fill: currentColor;
@@ -137,10 +133,15 @@ watch(
     width: 100%;
     height: 100%;
 
-    path,
-    use {
+    & path,
+    & use {
       fill: currentColor;
     }
   }
+}
+
+.mt-icon--custom-size > svg {
+  width: 100% !important;
+  height: 100% !important;
 }
 </style>

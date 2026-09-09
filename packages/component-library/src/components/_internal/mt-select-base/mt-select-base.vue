@@ -494,7 +494,7 @@ export default defineComponent({
   transform: translateY(0);
 }
 
-.mt-select-result-list-fade-down-enter,
+.mt-select-result-list-fade-down-enter-from,
 .mt-select-result-list-fade-down-leave-to {
   transform: translateY(-10px);
   opacity: 0;
