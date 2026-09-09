@@ -257,4 +257,29 @@ describe("mt-password-field", () => {
     // ASSERT
     expect(container.querySelector(".mt-field-hint")).not.toBeInTheDocument();
   });
+
+  it("forwards the autocomplete prop to the input", async () => {
+    // ARRANGE
+    await render(MtPasswordField, {
+      props: {
+        label: "Password",
+        autocomplete: "new-password",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByLabelText("Password")).toHaveAttribute("autocomplete", "new-password");
+  });
+
+  it("does not render an autocomplete attribute by default", async () => {
+    // ARRANGE
+    await render(MtPasswordField, {
+      props: {
+        label: "Password",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByLabelText("Password")).not.toHaveAttribute("autocomplete");
+  });
 });
