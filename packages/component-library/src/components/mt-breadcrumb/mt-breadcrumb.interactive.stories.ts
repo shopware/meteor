@@ -85,7 +85,7 @@ export const TestCollapsedHidesMiddleCrumbs: MtBreadcrumbStory = {
 
     expect(canvas.getByText("Home")).toBeVisible();
     expect(canvas.getByText("Running shoes")).toBeVisible();
-    expect(canvas.getByText("…")).toBeVisible();
+    expect(canvas.getByRole("button", { name: /hidden level/ })).toBeVisible();
   },
 };
 
