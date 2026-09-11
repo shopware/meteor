@@ -14,7 +14,7 @@ description: A trail of links that shows where the current page sits in the hier
 import { MtBreadcrumb, type BreadcrumbItem } from "@shopware-ag/meteor-component-library";
 ```
 
-Pass the trail as `items`, ordered from the root to the current page. Every item has a `label`. An item with a `to` renders as a link, and the last item always renders as the current page, so its `to` is ignored. Links render as a `router-link` by default. Use the `link-as` prop to render a different element or component for all links, for example `link-as="a"` in an app without a router, and set `as` on a single item to override it. A plain anchor needs a string `to`, because an object cannot become an `href`.
+Pass the trail as `items`, ordered from the root to the current page. Every item has a `label`. An item with a `to` renders as a link, and the last item always renders as the current page, so its `to` is ignored. Links render as a `router-link` by default. In an app without a router, set `link-as="a"` to render plain anchors instead. You can also pass any other element or component, and a single item can override it with its own `as`. Anything other than `router-link` receives the item's `to` value as its `href`, so it must be a URL string, not a route object.
 
 ## Examples
 
