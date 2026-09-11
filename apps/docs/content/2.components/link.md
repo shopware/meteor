@@ -72,3 +72,4 @@ import { MtLink } from "@shopware-ag/meteor-component-library";
 ## Related components
 
 - [**Button**](/components/button): when the user should trigger an action on the current page.
+- [**Breadcrumb**](/components/breadcrumb): when the user should see and move along the path to the current page.

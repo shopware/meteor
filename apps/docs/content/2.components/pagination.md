@@ -47,3 +47,7 @@ import { MtPagination } from "@shopware-ag/meteor-component-library";
 - Navigation buttons include accessible labels for first, previous, next, and last page.
 - Keep **Pagination** near the content it updates so the relationship stays clear.
 - Make sure page changes also update the visible content in a predictable way for keyboard and screen-reader users.
+
+## Related components
+
+- [**Breadcrumb**](/components/breadcrumb): when the user moves up a hierarchy instead of through pages of the same list.
