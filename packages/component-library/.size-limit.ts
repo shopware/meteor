@@ -1,7 +1,9 @@
 import type { SizeLimitConfig } from "size-limit";
 import { external } from "./vite.config";
 
-const ignore = [...external];
+// esbuild externalizes subpath imports only via a wildcard, so `date-fns/*`
+// covers the lazily imported locale modules (e.g. `date-fns/locale/de`).
+const ignore = [...external, "date-fns/*"];
 
 module.exports = [
   {
