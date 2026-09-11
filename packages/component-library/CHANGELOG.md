@@ -1,5 +1,41 @@
 # Changelog
 
+## 5.8.0
+
+### Minor Changes
+
+- [#1187](https://github.com/shopware/meteor/pull/1187) [`54f20ca`](https://github.com/shopware/meteor/commit/54f20cafd3e586303bed2fdc0e3a9df59773e6f0) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Remove the SCSS/Sass dependency — all styles are plain CSS. Legacy SCSS colors were replaced with design tokens and popovers/data table now inherit the global typography, which slightly changes some colors and glyphs. The shipped CSS is now minified.
+
+- [#1360](https://github.com/shopware/meteor/pull/1360) [`cb6e680`](https://github.com/shopware/meteor/commit/cb6e680bc03123b9f67e6f82bf8073676e15719e) Thanks [@alastair-simon](https://github.com/alastair-simon)! - mt-datepicker: add the `hint` prop and `#hint` slot for an optional caption below the field, matching the other form fields. A custom hint replaces the default time zone hint of datetime pickers, which now uses the same shared hint styling.
+
+  The time zone hint is now rendered by `mt-field-hint`, which changes its DOM. It used to be `div.mt-datepicker__hint.field-hint > (mt-icon.mt-datepicker__hint-icon, p)` and is now `span.mt-field-hint.mt-datepicker__hint.field-hint > (span.mt-field-hint__icon-wrapper > mt-icon.mt-field-hint__icon, span.mt-field-hint__text)`. The `data-testid="time-zone-hint"` attribute is unchanged. Custom styles that target `.mt-datepicker__hint-icon` or `.mt-datepicker__hint p` need to be updated, and the clock icon is now `aria-hidden`.
+
+### Patch Changes
+
+- [#1373](https://github.com/shopware/meteor/pull/1373) [`a7b15a4`](https://github.com/shopware/meteor/commit/a7b15a4e59ef707f22c2bf69693885ddcccf9cd2) Thanks [@fabianhueske](https://github.com/fabianhueske)! - Align the global font feature settings with the brand guidelines. The `body` styles now only enable `ss01`, `cv10` and `cv11` instead of the previous `cv02`, `cv03`, `cv04`, `cv05`, `cv08`, `cv09` and `cv10` set, which changes the shape of some glyphs.
+
+- [#1335](https://github.com/shopware/meteor/pull/1335) [`8b1fbd3`](https://github.com/shopware/meteor/commit/8b1fbd3cbe67b3327b842a9d7778884cf77a2dcd) Thanks [@fabianhueske](https://github.com/fabianhueske)! - Align the unit select dropdown styling with the select result list
+
+  The dropdown of `mt-unit-field` now uses the same edge spacing, item padding, border radius and hover color as `mt-select-result-list`. The unit trigger no longer shows a pointer cursor while it is disabled. The trigger chevron uses the same icon variant and size as `mt-select` and the number field controls. The dropdown is capped at a maximum width and long unit labels truncate with an ellipsis.
+
+- [#1360](https://github.com/shopware/meteor/pull/1360) [`cb6e680`](https://github.com/shopware/meteor/commit/cb6e680bc03123b9f67e6f82bf8073676e15719e) Thanks [@alastair-simon](https://github.com/alastair-simon)! - mt-field-hint, mt-datepicker: keep the hint icon at its size and centered on the first line when the hint text wraps onto multiple lines. The alignment no longer depends on the `--font-line-height-xs` token or the icon size.
+
+- [#1356](https://github.com/shopware/meteor/pull/1356) [`fa3bfd2`](https://github.com/shopware/meteor/commit/fa3bfd25a32cc26a9564422ddb6444a20dcb4b84) Thanks [@quynhnguyen68](https://github.com/quynhnguyen68)! - Fix autofilled input fields rendering with a white background in dark mode: the `:-webkit-autofill` override hardcoded `#fff`, so Chrome's autofill and autofill-preview states painted the field white with unreadable light text. It now uses the themed background and text tokens, and matches the critical background when the field has an error
+
+- [#1349](https://github.com/shopware/meteor/pull/1349) [`8072707`](https://github.com/shopware/meteor/commit/8072707a4137dcaf2cd094df1fd3a36c2193ef40) Thanks [@gweiermann](https://github.com/gweiermann)! - mt-floating-ui: hide the floating content while its reference element is fully scrolled out of view, instead of letting it float over unrelated UI; consumer-supplied `floatingUiOptions.middleware` now extends the default middleware instead of replacing it
+
+- [#1338](https://github.com/shopware/meteor/pull/1338) [`3fd7290`](https://github.com/shopware/meteor/commit/3fd729088c1e1e9609681198c34299cc91a211bf) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Give consumers control over browser and password-manager autofill across form fields. All text-entry fields (`mt-text-field`, `mt-email-field`, `mt-password-field`, `mt-url-field`, `mt-number-field`, `mt-textarea`) forward a new `autocomplete` prop to their native input, e.g. `autocomplete="new-password"` or `autocomplete="off"`. `mt-select` exposes an `enableSearch` prop — disabling it renders a readonly search input that browsers skip — and its search input now opts out of autofill (`autocomplete="off"`, `data-1p-ignore`, `data-lpignore`, `data-bwignore`), as does `mt-search` by default (overridable via the same `autocomplete` prop). `mt-theme-select` disables its unneeded search input
+
+- [#1347](https://github.com/shopware/meteor/pull/1347) [`7a7337c`](https://github.com/shopware/meteor/commit/7a7337c523e02df0f04df4af95fccf4e52e1b02c) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Remove the unused date-fns-tz dependency. Nothing in the library imports it, so it only added weight to every install.
+
+- [#1361](https://github.com/shopware/meteor/pull/1361) [`78070ef`](https://github.com/shopware/meteor/commit/78070efbb54d56cc5c76fe66b7355f9c9daaca82) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Revert the datepicker time zone hint icon sizing change from 5.7.1 (#1345). It caused a visual regression in the hint layout
+
+- [#1363](https://github.com/shopware/meteor/pull/1363) [`dbe6577`](https://github.com/shopware/meteor/commit/dbe6577d22e6cd92bd472362bf4ebd6d84a3e5c4) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Stop `mt-snackbar` from stealing keyboard focus when a notification appears
+
+- Updated dependencies [[`54f20ca`](https://github.com/shopware/meteor/commit/54f20cafd3e586303bed2fdc0e3a9df59773e6f0), [`1f4d523`](https://github.com/shopware/meteor/commit/1f4d5230e015c22e048d109601a465e4fb92d46c)]:
+  - @shopware-ag/meteor-icon-kit@5.11.0
+  - @shopware-ag/meteor-admin-sdk@6.15.0
+
 ## 5.7.1
 
 ### Patch Changes
