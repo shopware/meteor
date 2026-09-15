@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from "@storybook/vue3";
-import { markRaw } from "vue";
+import { markRaw, ref, watch } from "vue";
 import MtNav from "../mt-nav.vue";
-import { entries, routeFor } from "./entries";
+import type { NavRoute, NavTreeEntry } from "../mt-nav.types";
+import { routeFor, sections } from "./entries";
 import { StoryLink } from "./story-link";
 
 export type MtNavMeta = Meta<typeof MtNav>;
@@ -10,16 +11,16 @@ const meta: MtNavMeta = {
   title: "Components/Nav",
   component: MtNav,
   args: {
-    entries,
+    sections,
     route: routeFor("product.index"),
     // markRaw: a component object stored in reactive args would be made reactive otherwise
     linkComponent: markRaw(StoryLink),
     expanded: true,
   },
   argTypes: {
-    entries: {
+    sections: {
       description:
-        "Flat list of translated navigation entries, nested via `parent` and sorted via `position`. Pass only entries the user may see.",
+        "Sections with an optional `header` and a flat list of translated entries, nested via `parent` and sorted via `position`. Pass only entries the user may see.",
     },
     route: {
       description:
@@ -39,12 +40,26 @@ const meta: MtNavMeta = {
         "Whether the navigation is expanded. Collapsed, it shows the top level icons only and opens branches in a flyout.",
     },
   },
+  // Follows the clicked entry with a fake route so the active state changes like in an application
   render: (args) => ({
     components: { MtNav },
     setup() {
-      return { args };
+      const route = ref<NavRoute | undefined>(args.route);
+
+      watch(
+        () => args.route,
+        (value) => (route.value = value),
+      );
+
+      function onNavigate(entry: NavTreeEntry) {
+        if (entry.path) {
+          route.value = { ...routeFor(entry.path), params: entry.params ?? {} };
+        }
+      }
+
+      return { args, route, onNavigate };
     },
-    template: `<mt-nav v-bind="args" />`,
+    template: `<mt-nav v-bind="args" :route="route" @navigate="onNavigate" />`,
   }),
 };
 

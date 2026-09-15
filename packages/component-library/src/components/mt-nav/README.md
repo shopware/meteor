@@ -1,9 +1,9 @@
 # mt-nav
 
-The main navigation of an application: a tree of up to three levels, a collapsed mode showing the
-top level icons only with a flyout for their children, arrow-key navigation and active route
-detection. Extracted from the Shopware Administration (`sw-admin-menu`) and ported to Meteor
-conventions.
+The main navigation of an application: sections with an optional header, each a tree of up to
+three levels, a collapsed mode showing the top level icons only with a flyout for their children,
+arrow-key navigation and active route detection. Extracted from the Shopware Administration
+(`sw-admin-menu`) and ported to Meteor conventions.
 
 The component renders only the `<nav>`. The panel around it (logo, heading, collapse toggle, user
 block, mobile off-canvas behaviour) is the application's shell, which owns the expanded state and
@@ -14,11 +14,12 @@ passes it in.
 | File                                      | Purpose                                                          |
 | ----------------------------------------- | ---------------------------------------------------------------- |
 | `mt-nav.vue`                              | The public component                                             |
-| `mt-nav.types.ts`                         | `NavEntry`, `NavRoute`, `NavRouter`                              |
+| `mt-nav.types.ts`                         | `NavSection`, `NavEntry`, `NavRoute`, `NavRouter`                |
 | `mt-nav.spec.ts`                          | Vitest / Testing Library spec                                    |
 | `_stories/mt-nav.stories.ts`              | Storybook stories                                                |
 | `_stories/mt-nav.interactive.stories.ts`  | Storybook interaction tests                                      |
 | `_stories/*`                              | Sample data and helper components used only by the stories       |
+| `_internal/mt-nav-section.vue`            | Header and list of one section; the rows are slotted in          |
 | `_internal/mt-nav-item.vue`               | One navigation row, recursive up to three levels                 |
 | `_internal/mt-nav-context.ts`             | Provide/inject contract between the navigation and its rows      |
 | `_internal/build-nav-tree.ts`             | Nests the flat entry list                                        |
@@ -28,12 +29,12 @@ passes it in.
 
 ### Props
 
-| Prop              | Description                                                                                                                   |
-| ----------------- | ----------------------------------------------------------------------------------------------------------------------------- |
-| `entries`         | Flat `NavEntry[]`, nested via `parent`, sorted via `position`. Labels must be translated. Pass only entries the user may see. |
-| `route`, `router` | Current route and router (duck-typed, Vue Router compatible). Highlight the active entry and open its branch.                 |
-| `linkComponent`   | Component rendering the links, receives the route location as `to`. Defaults to `router-link` like `mt-link`.                 |
-| `expanded`        | Default `true`. Collapsed, the navigation shows the top level icons only and opens branches in a flyout.                      |
+| Prop              | Description                                                                                                                  |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `sections`        | `NavSection[]`, each with an optional `header` and flat `entries` nested via `parent` and sorted via `position`. Translated. |
+| `route`, `router` | Current route and router (duck-typed, Vue Router compatible). Highlight the active entry and open its branch.                |
+| `linkComponent`   | Component rendering the links, receives the route location as `to`. Defaults to `router-link` like `mt-link`.                |
+| `expanded`        | Default `true`. Collapsed, the navigation shows the top level icons only and opens branches in a flyout.                     |
 
 ### Slots
 
@@ -70,7 +71,7 @@ Shopware couplings replaced or dropped during the port:
 
 | Shopware coupling                                              | Meteor replacement                                        |
 | -------------------------------------------------------------- | --------------------------------------------------------- |
-| `menuService`, `appModulesService`, custom entity entries      | `entries` prop                                            |
+| `menuService`, `appModulesService`, custom entity entries      | `sections` prop                                           |
 | `adminMenu` store `isExpanded` (+ `localStorage`)              | `expanded` prop, owned by the shell                       |
 | `adminMenu` store `expandedEntries`                            | Internal state                                            |
 | `acl`, `hasAccessToRoute`, settings special case               | Removed: pass only the entries the user may see           |
