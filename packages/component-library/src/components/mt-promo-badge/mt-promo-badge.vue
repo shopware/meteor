@@ -6,9 +6,24 @@
   </span>
 </template>
 
+<script lang="ts">
+const messages = {
+  en: {
+    new: "New",
+    beta: "Beta",
+    shopwareAi: "Shopware AI",
+  },
+  de: {
+    new: "Neu",
+    beta: "Beta",
+    shopwareAi: "Shopware AI",
+  },
+};
+</script>
+
 <script setup lang="ts">
 import { computed } from "vue";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 import MtBadge from "../mt-badge/mt-badge.vue";
 
 const props = withDefaults(
@@ -22,23 +37,9 @@ const props = withDefaults(
   },
 );
 
-const { t } = useI18n({
-  messages: {
-    en: {
-      "mt-promo-badge": {
-        new: "New",
-        beta: "Beta",
-        shopwareAi: "Shopware AI",
-      },
-    },
-    de: {
-      "mt-promo-badge": {
-        new: "Neu",
-        beta: "Beta",
-        shopwareAi: "Shopware AI",
-      },
-    },
-  },
+const { t } = useMeteorI18n({
+  namespace: "mt.promo-badge",
+  messages,
 });
 
 const size = computed(() => {
@@ -52,10 +53,10 @@ const badgeVariant = computed(() =>
 
 const promoText = computed(() =>
   props.variant === "shopware-ai"
-    ? t("mt-promo-badge.shopwareAi")
+    ? t("shopwareAi")
     : props.variant === "new"
-      ? t("mt-promo-badge.new")
-      : t("mt-promo-badge.beta"),
+      ? t("new")
+      : t("beta"),
 );
 
 const badgeIcon = computed(() =>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/shopware/platform/trunk/src/Core/Framework/App/Manifest/Schema/manifest-1.0.xsd">
+    <meta>
+        <name>MeteorAdminSDKi18nApp</name>
+        <label>Meteor Admin SDK i18n Example App</label>
+        <description>Shows Meteor components following the host admin's language via the Admin SDK adapter, with no i18n framework in the app.</description>
+        <author>Shopware AG</author>
+        <copyright>(c) by Shopware AG</copyright>
+        <version>1.0.0</version>
+        <license>MIT</license>
+    </meta>
+
+    <setup>
+        <!-- The registration endpoints are served by the example's Vite dev server
+             (see the appRegistration plugin in vite.config.ts), so the dev server must
+             be running when the app is installed or refreshed. -->
+        <registrationUrl>http://127.0.0.1:8889/authorize</registrationUrl>
+        <secret>testSecret</secret>
+    </setup>
+
+    <admin>
+        <base-app-url>http://127.0.0.1:8889/index.html</base-app-url>
+    </admin>
+</manifest>

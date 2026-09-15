@@ -24,7 +24,28 @@ import MtIcon from "../../mt-icon/mt-icon.vue";
 import MtTooltipDirective from "../../../directives/tooltip.directive";
 import MtNotificationMixin from "../../../mixins/notification.mixin";
 import { copyToClipboard as copyToClipboardUtil } from "../../../utils/dom";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
+
+const messages = {
+  en: {
+    tooltip: {
+      wasCopied: "Copied to clipboard.",
+      canCopy: "Copy to clipboard.",
+      notificationCopySuccessMessage: "Text has been copied to clipboard.",
+      notificationCopyFailureMessage: "Text could not be copied to clipboard.",
+      errorTitle: "Error copying to clipboard",
+    },
+  },
+  de: {
+    tooltip: {
+      wasCopied: "In Zwischenablage kopiert.",
+      canCopy: "In Zwischenablage kopieren.",
+      notificationCopySuccessMessage: "Der Text wurde in die Zwischenablage kopiert.",
+      notificationCopyFailureMessage: "Der Text konnte nicht in die Zwischenablage kopiert werden.",
+      errorTitle: "Fehler beim kopieren in die Zwischenablage",
+    },
+  },
+};
 
 export default defineComponent({
   name: "MtFieldCopyable",
@@ -56,28 +77,9 @@ export default defineComponent({
   setup(props) {
     const wasCopied = ref(false);
 
-    const { t } = useI18n({
-      messages: {
-        en: {
-          tooltip: {
-            wasCopied: "Copied to clipboard.",
-            canCopy: "Copy to clipboard.",
-            notificationCopySuccessMessage: "Text has been copied to clipboard.",
-            notificationCopyFailureMessage: "Text could not be copied to clipboard.",
-            errorTitle: "Error copying to clipboard",
-          },
-        },
-        de: {
-          tooltip: {
-            wasCopied: "In Zwischenablage kopiert.",
-            canCopy: "In Zwischenablage kopieren.",
-            notificationCopySuccessMessage: "Der Text wurde in die Zwischenablage kopiert.",
-            notificationCopyFailureMessage:
-              "Der Text konnte nicht in die Zwischenablage kopiert werden.",
-            errorTitle: "Fehler beim kopieren in die Zwischenablage",
-          },
-        },
-      },
+    const { t } = useMeteorI18n({
+      namespace: "mt.field-copyable",
+      messages,
     });
 
     const tooltipText = computed(() =>

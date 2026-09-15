@@ -225,7 +225,7 @@
               aria-label="colorpicker-apply-color"
               @click="applyColor"
             >
-              {{ t("mt-colorpicker.apply") }}
+              {{ t("apply") }}
             </mt-button>
           </div>
         </div>
@@ -259,7 +259,16 @@ import { createFocusTrap } from "focus-trap";
 import type { FocusTrap } from "focus-trap";
 import MtButton from "@/components/mt-button/mt-button.vue";
 import mtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
+
+const messages = {
+  en: {
+    apply: "Apply",
+  },
+  de: {
+    apply: "Anwenden",
+  },
+};
 
 export default defineComponent({
   name: "MtColorpicker",
@@ -445,19 +454,9 @@ export default defineComponent({
   emits: ["update:modelValue", "inheritance-restore", "inheritance-remove"],
 
   setup() {
-    const { t } = useI18n({
-      messages: {
-        en: {
-          "mt-colorpicker": {
-            apply: "Apply",
-          },
-        },
-        de: {
-          "mt-colorpicker": {
-            apply: "Anwenden",
-          },
-        },
-      },
+    const { t } = useMeteorI18n({
+      namespace: "mt.colorpicker",
+      messages,
     });
     return {
       t,

@@ -3,7 +3,10 @@ import { defineComponent } from "vue";
 export default defineComponent({
   methods: {
     createNotification() {
-      // TODO: Implement a general notification system
+      // TODO: Implement a general notification system.
+      // NOTE: the default `title` values below are raw snippet keys (`global.default.*`) —
+      // an implementation must translate them (host adapter / bundled snippets) before
+      // display, or they will render as keys.
       // return Shopware.State.dispatch('notification/createNotification', notification);
     },
 
@@ -32,7 +35,7 @@ export default defineComponent({
     createNotificationWarning(config: any) {
       const notification = {
         variant: "warning",
-        title: this.$tc("global.default.warning"),
+        title: "global.default.warning",
         ...config,
       };
 

@@ -4,22 +4,27 @@
   </button>
 </template>
 
+<script lang="ts">
+const messages = {
+  en: {
+    label: "Remove filter | Remove filters",
+  },
+  de: {
+    label: "Filter entfernen | Filter entfernen",
+  },
+};
+</script>
+
 <script setup lang="ts">
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 
 defineProps<{
   numberOfAppliedFilters: number;
 }>();
 
-const { t } = useI18n({
-  messages: {
-    en: {
-      label: "Remove filter | Remove filters",
-    },
-    de: {
-      label: "Filter entfernen | Filter entfernen",
-    },
-  },
+const { t } = useMeteorI18n({
+  namespace: "mt.data-table-reset-filter-button",
+  messages,
 });
 </script>
 

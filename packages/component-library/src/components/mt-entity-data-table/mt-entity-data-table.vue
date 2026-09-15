@@ -76,6 +76,7 @@
 </template>
 
 <script setup lang="ts">
+import { messages } from "./mt-entity-data-table.i18n";
 /**
  * This component is a wrapper for the mt-entity-data-table component.
  *
@@ -102,7 +103,7 @@ import { computedAsync } from "@vueuse/core";
 import type { MtPopoverItemType } from "@/components/mt-popover-item/mt-popover-item.vue";
 import type { Filter } from "@/components/mt-data-table/mt-data-table.interfaces";
 import type { AvailableFilter } from "./mt-entity-data-table.interfaces";
-import { useI18n } from "vue-i18n";
+import { useMeteorI18n } from "@/composables/useMeteorI18n";
 import MtModalRoot from "@/components/mt-modal/sub-components/mt-modal-root.vue";
 import MtModal from "@/components/mt-modal/mt-modal.vue";
 import MtButton from "@/components/mt-button/mt-button.vue";
@@ -161,37 +162,9 @@ const emit = defineEmits<{
   (e: "bulk-edit", rowIds: string[]): void;
 }>();
 
-const { t } = useI18n({
-  messages: {
-    en: {
-      booleanFilter: {
-        true: "Active",
-        false: "Inactive",
-      },
-      entity: {
-        delete: {
-          title: "Delete item",
-          description: "Are you sure you want to delete the selected items?",
-          cancel: "Cancel",
-          delete: "Delete",
-        },
-      },
-    },
-    de: {
-      booleanFilter: {
-        true: "Aktiv",
-        false: "Inaktiv",
-      },
-      entity: {
-        delete: {
-          title: "Element löschen",
-          description: "Soll dieses Element wirklich gelöscht werden?",
-          cancel: "Abbrechen",
-          delete: "Löschen",
-        },
-      },
-    },
-  },
+const { t } = useMeteorI18n({
+  namespace: "mt.entity-data-table",
+  messages,
 });
 
 // Required props for the mt-data-table component
