@@ -2,6 +2,7 @@ import { expect, userEvent, within } from "@storybook/test";
 import { waitUntil } from "@/_internal/test-helper";
 
 import meta, { type MtNavMeta, type MtNavStory } from "./mt-nav.stories";
+import { sectionsWithHeaders } from "./entries";
 
 export default {
   ...meta,
@@ -17,8 +18,25 @@ export const VisualTestDefault: MtNavStory = {
 
     expect(within(navigation).getByText("Dashboard")).toBeVisible();
     expect(within(navigation).getByText("Catalogues")).toBeVisible();
-    expect(within(navigation).getByRole("heading", { name: "System" })).toBeVisible();
     expect(within(navigation).getByText("Settings")).toBeVisible();
+    expect(within(navigation).queryByRole("heading", { level: 3 })).toBeNull();
+  },
+};
+
+export const VisualTestSections: MtNavStory = {
+  name: "Render sections with headers",
+  args: {
+    sections: sectionsWithHeaders,
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const navigation = canvas.getByRole("navigation", { name: "Main navigation" });
+
+    expect(within(navigation).getByRole("heading", { name: "Shop" })).toBeVisible();
+    expect(within(navigation).getByRole("heading", { name: "System" })).toBeVisible();
+    expect(
+      within(canvas.getByRole("list", { name: "System" })).getByText("Settings"),
+    ).toBeVisible();
   },
 };
 
