@@ -1,94 +1,58 @@
 import type { NavEntry, NavRoute, NavSection } from "../mt-nav.types";
 
 /**
- * Sample navigation resembling a shop administration. Nested via `parent`, sorted via `position`.
+ * Sample navigation resembling a shop administration, nested via `children`.
  */
 const shopEntries: NavEntry[] = [
-  {
-    id: "dashboard",
-    path: "dashboard.index",
-    label: "Dashboard",
-    icon: "regular-home",
-    position: 10,
-  },
+  { id: "dashboard", path: "dashboard.index", label: "Dashboard", icon: "regular-home" },
   {
     id: "catalogue",
     label: "Catalogues",
     icon: "regular-products",
-    position: 20,
+    children: [
+      {
+        id: "product",
+        path: "product.index",
+        label: "Products",
+        children: [{ id: "review", path: "review.index", label: "Reviews" }],
+      },
+      { id: "category", path: "category.index", label: "Categories" },
+      { id: "manufacturer", path: "manufacturer.index", label: "Manufacturers" },
+    ],
   },
-  { id: "product", path: "product.index", label: "Products", parent: "catalogue", position: 10 },
-  { id: "review", path: "review.index", label: "Reviews", parent: "product", position: 10 },
+  { id: "order", path: "order.index", label: "Orders", icon: "regular-shopping-bag" },
+  { id: "customer", path: "customer.index", label: "Customers", icon: "regular-users" },
   {
-    id: "category",
-    path: "category.index",
-    label: "Categories",
-    parent: "catalogue",
-    position: 20,
+    id: "content",
+    label: "Content",
+    icon: "regular-content",
+    children: [
+      { id: "cms", path: "cms.index", label: "Shopping Experiences" },
+      { id: "media", path: "media.index", label: "Media" },
+    ],
   },
-  {
-    id: "manufacturer",
-    path: "manufacturer.index",
-    label: "Manufacturers",
-    parent: "catalogue",
-    position: 30,
-  },
-  {
-    id: "order",
-    path: "order.index",
-    label: "Orders",
-    icon: "regular-shopping-bag",
-    position: 30,
-  },
-  {
-    id: "customer",
-    path: "customer.index",
-    label: "Customers",
-    icon: "regular-users",
-    position: 40,
-  },
-  { id: "content", label: "Content", icon: "regular-content", position: 50 },
-  {
-    id: "cms",
-    path: "cms.index",
-    label: "Shopping Experiences",
-    parent: "content",
-    position: 10,
-  },
-  { id: "media", path: "media.index", label: "Media", parent: "content", position: 20 },
   {
     id: "marketing",
     label: "Marketing",
     icon: "regular-megaphone",
-    position: 60,
-  },
-  {
-    id: "promotion",
-    path: "promotion.index",
-    label: "Promotions",
-    parent: "marketing",
-    position: 10,
-  },
-  {
-    id: "newsletter",
-    path: "newsletter.index",
-    label: "Newsletter recipients",
-    parent: "marketing",
-    position: 20,
+    children: [
+      { id: "promotion", path: "promotion.index", label: "Promotions" },
+      { id: "newsletter", path: "newsletter.index", label: "Newsletter recipients" },
+    ],
   },
 ];
 
 const systemEntries: NavEntry[] = [
-  { id: "extension", label: "Extensions", icon: "regular-plug", position: 70 },
   {
-    id: "my-extensions",
-    path: "extension.my-extensions",
-    label: "My extensions",
-    parent: "extension",
-    position: 10,
+    id: "extension",
+    label: "Extensions",
+    icon: "regular-plug",
+    children: [
+      { id: "my-extensions", path: "extension.my-extensions", label: "My extensions" },
+      { id: "store", path: "extension.store", label: "Store" },
+    ],
   },
-  { id: "store", path: "extension.store", label: "Store", parent: "extension", position: 20 },
-  { id: "settings", path: "settings.index", label: "Settings", icon: "regular-cog", position: 80 },
+  { id: "settings", path: "settings.index", label: "Settings", icon: "regular-cog" },
 ];
 
 export const sections: NavSection[] = [

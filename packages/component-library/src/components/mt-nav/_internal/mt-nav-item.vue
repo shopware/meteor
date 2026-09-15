@@ -112,7 +112,7 @@ import MtTooltip from "@/components/mt-tooltip/mt-tooltip.vue";
 import MtCollapsible from "@/components/mt-collapsible/mt-collapsible.vue";
 import MtCollapsibleTrigger from "@/components/mt-collapsible/mt-collapsible-trigger.vue";
 import MtCollapsibleContent from "@/components/mt-collapsible/mt-collapsible-content.vue";
-import type { NavTreeEntry } from "../mt-nav.types";
+import type { NavEntry } from "../mt-nav.types";
 import { NAV_CONTEXT } from "./mt-nav-context";
 import {
   getActiveRouteNames,
@@ -127,7 +127,7 @@ const TOOLTIP_OPEN_TRIGGER_PROPS = ["onMouseover", "onFocus", "aria-describedby"
 
 const props = defineProps({
   entry: {
-    type: Object as PropType<NavTreeEntry>,
+    type: Object as PropType<NavEntry>,
     required: true,
   },
   menuDepth: {
@@ -166,17 +166,17 @@ const props = defineProps({
 });
 
 const emit = defineEmits<{
-  (e: "menu-item-hover", entry: NavTreeEntry, target: HTMLElement): void;
-  (e: "branch-toggle", payload: { entry: NavTreeEntry; open: boolean }): void;
+  (e: "menu-item-hover", entry: NavEntry, target: HTMLElement): void;
+  (e: "branch-toggle", payload: { entry: NavEntry; open: boolean }): void;
   (e: "flyout-focus-request"): void;
   (e: "flyout-close-request"): void;
   (e: "flyout-navigate", payload: { disclosesChildren: boolean }): void;
-  (e: "navigation-link-click", entry: NavTreeEntry): void;
+  (e: "navigation-link-click", entry: NavEntry): void;
 }>();
 
 defineSlots<{
   /** Rendered after the label; forwarded to the nested rows. */
-  "entry-suffix"?: (props: { entry: NavTreeEntry }) => unknown;
+  "entry-suffix"?: (props: { entry: NavEntry }) => unknown;
 }>();
 
 const context = inject(NAV_CONTEXT);
@@ -287,7 +287,7 @@ function getElementClasses() {
     `navigation-list-item__type-${props.entry.moduleType}`,
     `navigation-list-item__${key}`,
     `mt-nav__item--${props.entry.id}`,
-    `navigation-list-item__level-${props.entry.level}`,
+    `navigation-list-item__level-${props.menuDepth}`,
     {
       "navigation-list-item__has-children": children.value.length > 0,
       "navigation-list-item--nested": props.menuDepth > 1,
@@ -429,7 +429,7 @@ function onNavigationLinkClick() {
   emit("navigation-link-click", props.entry);
 }
 
-function forwardNavigationLinkClick(entry: NavTreeEntry) {
+function forwardNavigationLinkClick(entry: NavEntry) {
   emit("navigation-link-click", entry);
 }
 
@@ -437,7 +437,7 @@ function forwardFlyoutNavigate(payload: { disclosesChildren: boolean }) {
   emit("flyout-navigate", payload);
 }
 
-function forwardMenuItemHover(entry: NavTreeEntry, target: HTMLElement) {
+function forwardMenuItemHover(entry: NavEntry, target: HTMLElement) {
   emit("menu-item-hover", entry, target);
 }
 

@@ -22,19 +22,18 @@ passes it in.
 | `_internal/mt-nav-section.vue`            | Header and list of one section; the rows are slotted in          |
 | `_internal/mt-nav-item.vue`               | One navigation row, recursive up to three levels                 |
 | `_internal/mt-nav-context.ts`             | Provide/inject contract between the navigation and its rows      |
-| `_internal/build-nav-tree.ts`             | Nests the flat entry list                                        |
 | `_internal/nav-item-active.helper(.spec)` | Active route detection via `route.matched` and `meta.parentPath` |
 
 ## API
 
 ### Props
 
-| Prop              | Description                                                                                                                  |
-| ----------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| `sections`        | `NavSection[]`, each with an optional `header` and flat `entries` nested via `parent` and sorted via `position`. Translated. |
-| `route`, `router` | Current route and router (duck-typed, Vue Router compatible). Highlight the active entry and open its branch.                |
-| `linkComponent`   | Component rendering the links, receives the route location as `to`. Defaults to `router-link` like `mt-link`.                |
-| `expanded`        | Default `true`. Collapsed, the navigation shows the top level icons only and opens branches in a flyout.                     |
+| Prop              | Description                                                                                                                   |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `sections`        | `NavSection[]`, each with an optional `header` and a tree of `entries` nested via `children`, up to three levels. Translated. |
+| `route`, `router` | Current route and router (duck-typed, Vue Router compatible). Highlight the active entry and open its branch.                 |
+| `linkComponent`   | Component rendering the links, receives the route location as `to`. Defaults to `router-link` like `mt-link`.                 |
+| `expanded`        | Default `true`. Collapsed, the navigation shows the top level icons only and opens branches in a flyout.                      |
 
 ### Slots
 
