@@ -1,14 +1,14 @@
 /**
- * Which sidebar entry is active, derived from the resolved `route.matched` chain.
+ * Which navigation entry is active, derived from the resolved `route.matched` chain.
  */
 
-import type { SidebarRoute, SidebarRouter } from "../mt-sidebar.types";
+import type { NavRoute, NavRouter } from "../mt-nav.types";
 
-type SidebarEntryLike = {
+type NavEntryLike = {
   id?: string;
   path?: string;
   params?: Record<string, unknown>;
-  children?: SidebarEntryLike[];
+  children?: NavEntryLike[];
 };
 
 /**
@@ -17,7 +17,7 @@ type SidebarEntryLike = {
  * Extensions cannot be asked to declare `parentPath` retroactively, so an ambiguous set is used as-is
  * and highlights the module's entries. Core modules declare it, so there the ambiguity is declined.
  */
-function ownModuleMenuPaths(route: SidebarRoute | undefined, activeNames: Set<string>): string[] {
+function ownModuleMenuPaths(route: NavRoute | undefined, activeNames: Set<string>): string[] {
   const module = route?.meta?.$module;
   const menuPaths = (module?.navigation ?? [])
     .map((entry) => entry.path)
@@ -37,7 +37,7 @@ function ownModuleMenuPaths(route: SidebarRoute | undefined, activeNames: Set<st
 /**
  * Route names counting as "current": the `matched` chain plus everything reachable via `parentPath`.
  */
-export function getActiveRouteNames(route?: SidebarRoute, router?: SidebarRouter): Set<string> {
+export function getActiveRouteNames(route?: NavRoute, router?: NavRouter): Set<string> {
   const names = new Set<string>();
 
   (route?.matched ?? []).forEach((record) => {
@@ -82,7 +82,7 @@ export function getActiveRouteNames(route?: SidebarRoute, router?: SidebarRouter
  * App, SDK and custom entity entries share a route name and differ only by params, so compare the
  * params the entry declares. Entries without params always match.
  */
-export function entryParamsMatchRoute(entry?: SidebarEntryLike, route?: SidebarRoute): boolean {
+export function entryParamsMatchRoute(entry?: NavEntryLike, route?: NavRoute): boolean {
   if (!entry?.params) {
     return true;
   }
@@ -98,8 +98,8 @@ export function entryParamsMatchRoute(entry?: SidebarEntryLike, route?: SidebarR
  * Whether the entry's own route is active, or for path-less grouping entries the descendant's.
  */
 export function isEntryOnActiveRoute(
-  entry?: SidebarEntryLike,
-  route?: SidebarRoute,
+  entry?: NavEntryLike,
+  route?: NavRoute,
   activeNames: Set<string> = getActiveRouteNames(route),
 ): boolean {
   if (entry?.path && activeNames.has(entry.path) && entryParamsMatchRoute(entry, route)) {

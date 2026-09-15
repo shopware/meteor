@@ -9,10 +9,10 @@
     @mouseenter="emit('menu-item-hover', entry, $event.currentTarget as HTMLElement)"
     @keydown="onCollapsedParentKeydown"
   >
-    <div class="mt-sidebar__navigation-item-row">
+    <div class="mt-nav__item-row">
       <component
         :is="entryPath ? linkComponent : MtCollapsibleTrigger"
-        class="mt-sidebar__navigation-link"
+        class="mt-nav__link"
         :class="{ 'router-link-active': rowActive }"
         :aria-label="collapsedAriaLabel"
         v-bind="entryPath ? { ...linkProps, 'aria-expanded': collapsibleOpen } : { type: 'button' }"
@@ -21,15 +21,13 @@
         <mt-icon
           v-if="displayIcon"
           :size="iconSize"
-          class="mt-sidebar__navigation-link-icon"
+          class="mt-nav__link-icon"
           :name="navigationIconName"
         />
 
         <span
-          class="mt-sidebar__navigation-link-label"
-          :class="
-            collapsibleText ? 'mt-sidebar__collapsible-text mt-sidebar__hide-on-collapse' : ''
-          "
+          class="mt-nav__link-label"
+          :class="collapsibleText ? 'mt-nav__collapsible-text mt-nav__hide-on-collapse' : ''"
           :title="entry.label"
         >
           {{ entry.label }}
@@ -37,24 +35,24 @@
 
         <slot name="entry-suffix" :entry="entry" />
 
-        <span class="mt-sidebar__navigation-link-expand-icon-box">
+        <span class="mt-nav__link-expand-icon-box">
           <mt-icon
             :name="expandIcon"
             size="8"
-            class="mt-sidebar__navigation-link-expand-icon mt-sidebar__collapsible-text mt-sidebar__hide-on-collapse"
+            class="mt-nav__link-expand-icon mt-nav__collapsible-text mt-nav__hide-on-collapse"
           />
         </span>
       </component>
     </div>
 
-    <mt-collapsible-content as="ul" class="mt-sidebar__sub-navigation-list">
-      <mt-sidebar-item
+    <mt-collapsible-content as="ul" class="mt-nav__sub-list">
+      <mt-nav-item
         v-for="(childEntry, subMenuIndex) in children"
         :key="childEntry.id ?? childEntry.path ?? subMenuIndex"
         :entry="childEntry"
         :menu-depth="menuDepth + 1"
         :display-icon="false"
-        :sidebar-expanded="sidebarExpanded"
+        :nav-expanded="navExpanded"
         :collapsible-text="collapsibleText"
         :icon-size="iconSize"
         @menu-item-hover="forwardMenuItemHover"
@@ -64,7 +62,7 @@
         <template #entry-suffix="slotProps">
           <slot name="entry-suffix" v-bind="slotProps" />
         </template>
-      </mt-sidebar-item>
+      </mt-nav-item>
     </mt-collapsible-content>
   </mt-collapsible>
 
@@ -76,13 +74,10 @@
   >
     <mt-tooltip :content="entry.label" placement="right">
       <template #default="tooltipProps">
-        <div
-          class="mt-sidebar__navigation-item-row"
-          v-bind="collapsedTooltipTriggerProps(tooltipProps)"
-        >
+        <div class="mt-nav__item-row" v-bind="collapsedTooltipTriggerProps(tooltipProps)">
           <component
             :is="leafTag"
-            class="mt-sidebar__navigation-link"
+            class="mt-nav__link"
             :class="{ 'router-link-active': rowActive }"
             v-bind="leafAttrs"
             v-on="entryPath ? { click: onNavigationLinkClick } : {}"
@@ -90,15 +85,13 @@
             <mt-icon
               v-if="displayIcon"
               :size="iconSize"
-              class="mt-sidebar__navigation-link-icon"
+              class="mt-nav__link-icon"
               :name="navigationIconName"
             />
 
             <span
-              class="mt-sidebar__navigation-link-label"
-              :class="
-                collapsibleText ? 'mt-sidebar__collapsible-text mt-sidebar__hide-on-collapse' : ''
-              "
+              class="mt-nav__link-label"
+              :class="collapsibleText ? 'mt-nav__collapsible-text mt-nav__hide-on-collapse' : ''"
               :title="entry.label"
             >
               {{ entry.label }}
@@ -119,13 +112,13 @@ import MtTooltip from "@/components/mt-tooltip/mt-tooltip.vue";
 import MtCollapsible from "@/components/mt-collapsible/mt-collapsible.vue";
 import MtCollapsibleTrigger from "@/components/mt-collapsible/mt-collapsible-trigger.vue";
 import MtCollapsibleContent from "@/components/mt-collapsible/mt-collapsible-content.vue";
-import type { SidebarTreeEntry } from "../mt-sidebar.types";
-import { SIDEBAR_CONTEXT } from "./mt-sidebar-context";
+import type { NavTreeEntry } from "../mt-nav.types";
+import { NAV_CONTEXT } from "./mt-nav-context";
 import {
   getActiveRouteNames,
   isEntryOnActiveRoute,
   entryParamsMatchRoute,
-} from "./sidebar-item-active.helper";
+} from "./nav-item-active.helper";
 
 /**
  * Props of the tooltip trigger that open it; stripped when the row shows no tooltip.
@@ -134,7 +127,7 @@ const TOOLTIP_OPEN_TRIGGER_PROPS = ["onMouseover", "onFocus", "aria-describedby"
 
 const props = defineProps({
   entry: {
-    type: Object as PropType<SidebarTreeEntry>,
+    type: Object as PropType<NavTreeEntry>,
     required: true,
   },
   menuDepth: {
@@ -154,7 +147,7 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
-  sidebarExpanded: {
+  navExpanded: {
     type: Boolean,
     default: true,
   },
@@ -173,23 +166,23 @@ const props = defineProps({
 });
 
 const emit = defineEmits<{
-  (e: "menu-item-hover", entry: SidebarTreeEntry, target: HTMLElement): void;
-  (e: "branch-toggle", payload: { entry: SidebarTreeEntry; open: boolean }): void;
+  (e: "menu-item-hover", entry: NavTreeEntry, target: HTMLElement): void;
+  (e: "branch-toggle", payload: { entry: NavTreeEntry; open: boolean }): void;
   (e: "flyout-focus-request"): void;
   (e: "flyout-close-request"): void;
   (e: "flyout-navigate", payload: { disclosesChildren: boolean }): void;
-  (e: "navigation-link-click", entry: SidebarTreeEntry): void;
+  (e: "navigation-link-click", entry: NavTreeEntry): void;
 }>();
 
 defineSlots<{
   /** Rendered after the label; forwarded to the nested rows. */
-  "entry-suffix"?: (props: { entry: SidebarTreeEntry }) => unknown;
+  "entry-suffix"?: (props: { entry: NavTreeEntry }) => unknown;
 }>();
 
-const context = inject(SIDEBAR_CONTEXT);
+const context = inject(NAV_CONTEXT);
 
 if (!context) {
-  throw new Error("mt-sidebar-item must be rendered inside mt-sidebar");
+  throw new Error("mt-nav-item must be rendered inside mt-nav");
 }
 
 const route = context.route;
@@ -198,7 +191,7 @@ const linkComponent = context.linkComponent;
 const suppressRouteKeepsFolderOpen = ref(false);
 const manualNestedOpen = ref(false);
 
-// Sidebar supports at most three levels; level-3 rows are leaf items only
+// The navigation supports at most three levels; level-3 rows are leaf items only
 const isLeafDepth = computed(() => props.menuDepth >= 3);
 
 const activeRouteNames = computed(() => getActiveRouteNames(route.value, context.router.value));
@@ -212,7 +205,7 @@ const hasActiveChild = computed(() =>
 );
 
 const hasCollapsibleSubtree = computed(
-  // Ignores the sidebar state on purpose: switching template branch on collapse makes the icons flash
+  // Ignores the expanded state on purpose: switching template branch on collapse makes the icons flash
   () => children.value.length > 0 && !isLeafDepth.value,
 );
 
@@ -226,7 +219,7 @@ const routeKeepsFolderOpen = computed(() => {
 
 const submenuVisuallyOpen = computed(() => {
   if (props.menuDepth === 1) {
-    if (!props.sidebarExpanded) {
+    if (!props.navExpanded) {
       return false;
     }
 
@@ -293,7 +286,7 @@ function getElementClasses() {
     key,
     `navigation-list-item__type-${props.entry.moduleType}`,
     `navigation-list-item__${key}`,
-    `mt-sidebar__item--${props.entry.id}`,
+    `mt-nav__item--${props.entry.id}`,
     `navigation-list-item__level-${props.entry.level}`,
     {
       "navigation-list-item__has-children": children.value.length > 0,
@@ -303,7 +296,7 @@ function getElementClasses() {
 }
 
 const collapsibleLiClass = computed(() => [
-  "mt-sidebar__navigation-list-item",
+  "mt-nav__list-item",
   getElementClasses(),
   {
     "is--entry-expanded": collapsibleOpen.value,
@@ -313,7 +306,7 @@ const collapsibleLiClass = computed(() => [
 ]);
 
 const leafLiClass = computed(() => [
-  "mt-sidebar__navigation-list-item",
+  "mt-nav__list-item",
   getElementClasses(),
   {
     "is--entry-expanded": submenuVisuallyOpen.value,
@@ -322,7 +315,7 @@ const leafLiClass = computed(() => [
 ]);
 
 const collapsedFlyoutAria = computed<{ "aria-expanded"?: string; "aria-controls"?: string }>(() => {
-  if (props.sidebarExpanded || props.menuDepth !== 1 || children.value.length === 0) {
+  if (props.navExpanded || props.menuDepth !== 1 || children.value.length === 0) {
     return {};
   }
 
@@ -333,13 +326,13 @@ const collapsedFlyoutAria = computed<{ "aria-expanded"?: string; "aria-controls"
 
   return {
     "aria-expanded": "true",
-    "aria-controls": "mt-sidebar-flyout",
+    "aria-controls": "mt-nav-flyout",
   };
 });
 
 // Collapsed top-level rows hide their label, so the accessible name needs an aria-label.
 const collapsedAriaLabel = computed(() =>
-  !props.sidebarExpanded && props.menuDepth === 1 ? props.entry.label : undefined,
+  !props.navExpanded && props.menuDepth === 1 ? props.entry.label : undefined,
 );
 
 const linkProps = computed(() => ({
@@ -379,7 +372,7 @@ const leafAttrs = computed(() => {
 
 // Top-level entries without children have no flyout, label is accessible via a tooltip
 const showsCollapsedTooltip = computed(
-  () => !props.sidebarExpanded && props.menuDepth === 1 && children.value.length === 0,
+  () => !props.navExpanded && props.menuDepth === 1 && children.value.length === 0,
 );
 
 // Query-insensitive on purpose: listing pagination/sorting must not undo a manual collapse
@@ -426,7 +419,7 @@ function toggleSubmenu() {
 }
 
 function onNavigationLinkClick() {
-  if (!props.sidebarExpanded) {
+  if (!props.navExpanded) {
     emit("flyout-navigate", { disclosesChildren: hasCollapsibleSubtree.value });
   }
 
@@ -436,7 +429,7 @@ function onNavigationLinkClick() {
   emit("navigation-link-click", props.entry);
 }
 
-function forwardNavigationLinkClick(entry: SidebarTreeEntry) {
+function forwardNavigationLinkClick(entry: NavTreeEntry) {
   emit("navigation-link-click", entry);
 }
 
@@ -444,7 +437,7 @@ function forwardFlyoutNavigate(payload: { disclosesChildren: boolean }) {
   emit("flyout-navigate", payload);
 }
 
-function forwardMenuItemHover(entry: SidebarTreeEntry, target: HTMLElement) {
+function forwardMenuItemHover(entry: NavTreeEntry, target: HTMLElement) {
   emit("menu-item-hover", entry, target);
 }
 
@@ -455,14 +448,14 @@ function onCollapsibleOpenUpdate(open: boolean) {
     manualNestedOpen.value = open;
   }
 
-  if (props.menuDepth === 1 && props.sidebarExpanded) {
+  if (props.menuDepth === 1 && props.navExpanded) {
     emit("branch-toggle", { entry: props.entry, open });
   }
 }
 
 function onCollapsedParentKeydown(event: KeyboardEvent) {
   // Keyboard access to the collapsed flyout - disclosure navigation pattern
-  if (props.sidebarExpanded || props.menuDepth !== 1 || children.value.length === 0) {
+  if (props.navExpanded || props.menuDepth !== 1 || children.value.length === 0) {
     return;
   }
 
@@ -489,7 +482,7 @@ function onCollapsedParentKeydown(event: KeyboardEvent) {
 $nesting-line-offset: 18px;
 $nesting-line-indent: 36px;
 
-.mt-sidebar__navigation-list-item {
+.mt-nav__list-item {
   .mt-collapsible-content[data-state="open"],
   .mt-collapsible-content[data-state="closed"] {
     animation-duration: 0.3s;
@@ -497,7 +490,7 @@ $nesting-line-indent: 36px;
   }
 }
 
-.mt-sidebar__navigation-link {
+.mt-nav__link {
   color: var(--color-text-primary-default);
   display: flex;
   height: var(--scale-size-36);
@@ -531,7 +524,7 @@ $nesting-line-indent: 36px;
     flex-shrink: 0;
   }
 
-  .mt-sidebar__navigation-link-label {
+  .mt-nav__link-label {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
@@ -542,22 +535,22 @@ $nesting-line-indent: 36px;
 }
 
 // Native button variants of the navigation link, dropping the user agent chrome
-.mt-sidebar__navigation-item-row button.mt-sidebar__navigation-link {
+.mt-nav__item-row button.mt-nav__link {
   border: 0;
   background: none;
 }
 
-.mt-sidebar__navigation-item-row {
+.mt-nav__item-row {
   display: flex;
   align-items: stretch;
 }
 
-.mt-sidebar__navigation-link-expand-icon {
+.mt-nav__link-expand-icon {
   flex-shrink: 0;
   color: var(--color-icon-primary-default);
 }
 
-.mt-sidebar__navigation-link-expand-icon-box {
+.mt-nav__link-expand-icon-box {
   width: var(--scale-size-24);
   height: var(--scale-size-24);
   flex-shrink: 0;
@@ -567,14 +560,14 @@ $nesting-line-indent: 36px;
   margin-left: auto;
 }
 
-.mt-sidebar__sub-navigation-list {
+.mt-nav__sub-list {
   list-style: none;
   margin: 0;
   padding: 0;
   overflow: hidden;
 }
 
-.navigation-list-item--nested > .mt-sidebar__sub-navigation-list {
+.navigation-list-item--nested > .mt-nav__sub-list {
   margin-left: $nesting-line-offset;
   position: relative;
   padding-left: $nesting-line-indent - $nesting-line-offset - 1px;
@@ -593,13 +586,11 @@ $nesting-line-indent: 36px;
 
 // Shorten the tree line when the last visible row is a closed leaf
 .navigation-list-item--nested:last-child
-  > .mt-sidebar__sub-navigation-list:has(
-    > .mt-sidebar__navigation-list-item:last-child:not(.is--entry-expanded)
-  )::before {
+  > .mt-nav__sub-list:has(> .mt-nav__list-item:last-child:not(.is--entry-expanded))::before {
   bottom: var(--scale-size-12);
 }
 
-.navigation-list-item--nested > .mt-sidebar__navigation-item-row > .mt-sidebar__navigation-link {
+.navigation-list-item--nested > .mt-nav__item-row > .mt-nav__link {
   padding-left: $nesting-line-indent;
 
   &::before {
@@ -641,89 +632,85 @@ $nesting-line-indent: 36px;
   }
 }
 
-.navigation-list-item--nested.is--child-active > .mt-sidebar__navigation-item-row {
-  > .mt-sidebar__navigation-link::after {
+.navigation-list-item--nested.is--child-active > .mt-nav__item-row {
+  > .mt-nav__link::after {
     opacity: 1;
     background: var(--color-border-primary-default);
     outline-color: var(--color-elevation-surface-sunken);
   }
 
-  > .mt-sidebar__navigation-link:hover::after {
+  > .mt-nav__link:hover::after {
     outline-color: var(--color-interaction-secondary-hover);
   }
 }
 
-.navigation-list-item--nested:first-child > .mt-sidebar__navigation-item-row {
-  > .mt-sidebar__navigation-link::before {
+.navigation-list-item--nested:first-child > .mt-nav__item-row {
+  > .mt-nav__link::before {
     top: var(--scale-size-12);
   }
 }
 
-.navigation-list-item--nested:last-child:not(.is--entry-expanded)
-  > .mt-sidebar__navigation-item-row {
-  > .mt-sidebar__navigation-link::before {
+.navigation-list-item--nested:last-child:not(.is--entry-expanded) > .mt-nav__item-row {
+  > .mt-nav__link::before {
     bottom: var(--scale-size-12);
   }
 }
 
-.navigation-list-item__level-1 > .mt-sidebar__navigation-item-row {
-  > .mt-sidebar__navigation-link.router-link-active {
+.navigation-list-item__level-1 > .mt-nav__item-row {
+  > .mt-nav__link.router-link-active {
     background: var(--color-background-brand-default);
   }
 }
 
-.mt-sidebar__navigation-link.router-link-active {
+.mt-nav__link.router-link-active {
   background: none;
   color: var(--color-icon-brand-default);
 
-  .mt-sidebar__collapsible-text {
+  .mt-nav__collapsible-text {
     color: var(--color-icon-brand-default);
   }
 
-  .mt-sidebar__navigation-link-icon {
+  .mt-nav__link-icon {
     color: var(--color-icon-brand-default);
   }
 }
 
-.mt-sidebar__flyout-content .mt-sidebar__navigation-link.router-link-active {
+.mt-nav__flyout-content .mt-nav__link.router-link-active {
   background: var(--color-background-brand-default);
 }
 
-.mt-sidebar__navigation-list-item.is--flyout-enabled > .mt-sidebar__navigation-item-row {
-  > .mt-sidebar__navigation-link {
+.mt-nav__list-item.is--flyout-enabled > .mt-nav__item-row {
+  > .mt-nav__link {
     color: var(--color-text-primary-default);
     background: var(--color-interaction-secondary-hover);
   }
 }
 
-.mt-sidebar__navigation-list-item.is--entry-expanded {
-  .mt-sidebar__collapsible-text {
+.mt-nav__list-item.is--entry-expanded {
+  .mt-nav__collapsible-text {
     color: var(--color-text-primary-default);
   }
 
-  &
-    > .mt-sidebar__navigation-item-row
-    > .mt-sidebar__navigation-link.router-link-active
-    .mt-sidebar__collapsible-text {
+  & > .mt-nav__item-row > .mt-nav__link.router-link-active .mt-nav__collapsible-text {
     color: var(--color-icon-brand-default);
   }
 }
 
-// Tree lines and indicators follow .mt-sidebar__hide-on-collapse timing, scoped to the toggle window
-.mt-sidebar.is--toggling .navigation-list-item--nested {
-  > .mt-sidebar__sub-navigation-list::before,
-  > .mt-sidebar__navigation-item-row > .mt-sidebar__navigation-link::before,
-  > .mt-sidebar__navigation-item-row > .mt-sidebar__navigation-link::after {
+// Tree lines and indicators follow .mt-nav__hide-on-collapse timing, scoped to the toggle window
+.mt-nav.is--toggling .navigation-list-item--nested {
+  > .mt-nav__sub-list::before,
+  > .mt-nav__item-row > .mt-nav__link::before,
+  > .mt-nav__item-row > .mt-nav__link::after {
     transition:
       opacity 0.3s ease-in-out 0.1s,
       visibility 0.3s ease-in-out 0.1s;
   }
 }
 
-.mt-sidebar.is--collapsed .navigation-list-item--nested {
-  > .mt-sidebar__sub-navigation-list::before,
-  > .mt-sidebar__navigation-item-row > .mt-sidebar__navigation-link::before,
-  > .mt-sidebar__navigation-item-row > .mt-sidebar__navigation-link::after {
+.mt-nav.is--collapsed .navigation-list-item--nested {
+  > .mt-nav__sub-list::before,
+  > .mt-nav__item-row > .mt-nav__link::before,
+  > .mt-nav__item-row > .mt-nav__link::after {
     opacity: 0;
     visibility: hidden;
     transition:

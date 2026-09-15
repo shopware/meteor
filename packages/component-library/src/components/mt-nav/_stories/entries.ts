@@ -1,9 +1,9 @@
-import type { SidebarEntry, SidebarRoute } from "../mt-sidebar.types";
+import type { NavEntry, NavRoute } from "../mt-nav.types";
 
 /**
  * Sample navigation resembling a shop administration. Nested via `parent`, sorted via `position`.
  */
-export const entries: SidebarEntry[] = [
+export const entries: NavEntry[] = [
   {
     id: "dashboard",
     path: "dashboard.index",
@@ -88,18 +88,9 @@ export const entries: SidebarEntry[] = [
   { id: "settings", path: "settings.index", label: "Settings", icon: "regular-cog", position: 80 },
 ];
 
-export interface StoryUser {
-  firstName: string;
-  lastName: string;
-  title?: string;
-  avatarUrl?: string;
-}
-
-export const user: StoryUser = { firstName: "Max", lastName: "Mustermann", title: "Administrator" };
-
 /**
  * A minimal route object for the given route name, as Vue Router would resolve it.
  */
-export function routeFor(name: string): SidebarRoute {
+export function routeFor(name: string): NavRoute {
   return { name, path: `/${name.replace(/\./g, "/")}`, matched: [{ name }], params: {} };
 }

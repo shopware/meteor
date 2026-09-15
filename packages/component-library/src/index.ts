@@ -33,13 +33,8 @@ import MtSkeletonBar from "./components/mt-skeleton-bar/mt-skeleton-bar.vue";
 import MtToast, { type Toast } from "./components/mt-toast/mt-toast.vue";
 import MtSnackbar from "./components/mt-snackbar/mt-snackbar.vue";
 import MtAvatar from "./components/mt-avatar/mt-avatar.vue";
-import MtSidebar from "./components/mt-sidebar/mt-sidebar.vue";
-import type {
-  SidebarEntry,
-  SidebarTreeEntry,
-  SidebarRoute,
-  SidebarRouter,
-} from "./components/mt-sidebar/mt-sidebar.types";
+import MtNav from "./components/mt-nav/mt-nav.vue";
+import type { NavEntry, NavTreeEntry, NavRoute, NavRouter } from "./components/mt-nav/mt-nav.types";
 import { useSnackbar, type Snackbar } from "./components/mt-snackbar/composables/use-snackbar";
 import MtPromoBadge from "./components/mt-promo-badge/mt-promo-badge.vue";
 import MtStatusDot from "./components/mt-status-dot/mt-status-dot.vue";
@@ -155,11 +150,11 @@ export {
   MtEntitySelect,
   TooltipDirective,
   MtAvatar,
-  MtSidebar,
-  type SidebarEntry,
-  type SidebarTreeEntry,
-  type SidebarRoute,
-  type SidebarRouter,
+  MtNav,
+  type NavEntry,
+  type NavTreeEntry,
+  type NavRoute,
+  type NavRouter,
   MtActionMenu,
   MtActionMenuItem,
   MtActionMenuGroup,
