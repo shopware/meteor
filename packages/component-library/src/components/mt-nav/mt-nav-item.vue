@@ -106,8 +106,8 @@ import { NAV_CONTEXT } from "./_internal/mt-nav-context";
 import { pruneDeepItems } from "./_internal/prune-deep-items";
 import {
   getActiveRouteNames,
-  isEntryOnActiveRoute,
-  entryParamsMatchRoute,
+  isItemOnActiveRoute,
+  itemParamsMatchRoute,
 } from "./_internal/nav-item-active.helper";
 
 /**
@@ -182,7 +182,7 @@ const isBranchExpanded = computed(
 );
 
 const hasActiveChild = computed(() =>
-  children.value.some((child) => isEntryOnActiveRoute(child, route.value, activeRouteNames.value)),
+  children.value.some((child) => isItemOnActiveRoute(child, route.value, activeRouteNames.value)),
 );
 
 const hasCollapsibleSubtree = computed(
@@ -215,7 +215,7 @@ const submenuVisuallyOpen = computed(() => {
 const collapsibleOpen = computed(() => hasCollapsibleSubtree.value && submenuVisuallyOpen.value);
 
 const rowActive = computed(() => {
-  if (!isEntryOnActiveRoute(props.item, route.value, activeRouteNames.value)) {
+  if (!isItemOnActiveRoute(props.item, route.value, activeRouteNames.value)) {
     return false;
   }
 
@@ -223,7 +223,7 @@ const rowActive = computed(() => {
     !hasActiveChild.value &&
     !!props.item.path &&
     activeRouteNames.value.has(props.item.path) &&
-    entryParamsMatchRoute(props.item, route.value);
+    itemParamsMatchRoute(props.item, route.value);
 
   if (!selfIsCurrent && children.value.length > 0 && submenuVisuallyOpen.value) {
     return false;
@@ -256,18 +256,12 @@ const navigationIconName = computed(() =>
   getIconName(props.item.icon, rowActive.value || childRouteActive.value),
 );
 
+// `mt-nav__item--<id>` lets applications target a specific row
 function getElementClasses() {
-  const key = (props.item.id ?? itemPath.value ?? "").replace(/\./g, "-");
-
   return [
-    key,
-    `navigation-list-item__type-${props.item.moduleType}`,
-    `navigation-list-item__${key}`,
-    `mt-nav__item--${props.item.id}`,
-    `navigation-list-item__level-${props.menuDepth}`,
+    props.item.id ? `mt-nav__item--${props.item.id}` : "",
     {
-      "navigation-list-item__has-children": children.value.length > 0,
-      "navigation-list-item--nested": props.menuDepth > 1,
+      "mt-nav__list-item--nested": props.menuDepth > 1,
     },
   ];
 }
@@ -486,7 +480,7 @@ $nesting-line-indent: 36px;
   overflow: hidden;
 }
 
-.navigation-list-item--nested > .mt-nav__sub-list {
+.mt-nav__list-item--nested > .mt-nav__sub-list {
   margin-left: $nesting-line-offset;
   position: relative;
   padding-left: $nesting-line-indent - $nesting-line-offset - 1px;
@@ -504,12 +498,12 @@ $nesting-line-indent: 36px;
 }
 
 // Shorten the tree line when the last visible row is a closed leaf
-.navigation-list-item--nested:last-child
+.mt-nav__list-item--nested:last-child
   > .mt-nav__sub-list:has(> .mt-nav__list-item:last-child:not(.is--entry-expanded))::before {
   bottom: var(--scale-size-12);
 }
 
-.navigation-list-item--nested > .mt-nav__item-row > .mt-nav__link {
+.mt-nav__list-item--nested > .mt-nav__item-row > .mt-nav__link {
   padding-left: $nesting-line-indent;
 
   &::before {
@@ -551,7 +545,7 @@ $nesting-line-indent: 36px;
   }
 }
 
-.navigation-list-item--nested.is--child-active > .mt-nav__item-row {
+.mt-nav__list-item--nested.is--child-active > .mt-nav__item-row {
   > .mt-nav__link::after {
     opacity: 1;
     background: var(--color-border-primary-default);
@@ -563,19 +557,19 @@ $nesting-line-indent: 36px;
   }
 }
 
-.navigation-list-item--nested:first-child > .mt-nav__item-row {
+.mt-nav__list-item--nested:first-child > .mt-nav__item-row {
   > .mt-nav__link::before {
     top: var(--scale-size-12);
   }
 }
 
-.navigation-list-item--nested:last-child:not(.is--entry-expanded) > .mt-nav__item-row {
+.mt-nav__list-item--nested:last-child:not(.is--entry-expanded) > .mt-nav__item-row {
   > .mt-nav__link::before {
     bottom: var(--scale-size-12);
   }
 }
 
-.navigation-list-item__level-1 > .mt-nav__item-row {
+.mt-nav__list-item:not(.mt-nav__list-item--nested) > .mt-nav__item-row {
   > .mt-nav__link.router-link-active {
     background: var(--color-background-brand-default);
   }
@@ -605,7 +599,7 @@ $nesting-line-indent: 36px;
 }
 
 // Tree lines and indicators follow .mt-nav__hide-on-collapse timing, scoped to the toggle window
-.mt-nav.is--toggling .navigation-list-item--nested {
+.mt-nav.is--toggling .mt-nav__list-item--nested {
   > .mt-nav__sub-list::before,
   > .mt-nav__item-row > .mt-nav__link::before,
   > .mt-nav__item-row > .mt-nav__link::after {
@@ -615,7 +609,7 @@ $nesting-line-indent: 36px;
   }
 }
 
-.mt-nav.is--collapsed .navigation-list-item--nested {
+.mt-nav.is--collapsed .mt-nav__list-item--nested {
   > .mt-nav__sub-list::before,
   > .mt-nav__item-row > .mt-nav__link::before,
   > .mt-nav__item-row > .mt-nav__link::after {

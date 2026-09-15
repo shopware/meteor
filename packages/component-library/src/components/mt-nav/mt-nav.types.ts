@@ -24,8 +24,6 @@ export interface NavItem {
   link?: string;
   /** Anchor target for `link`. */
   target?: string;
-  /** Free-form type, rendered as a class for styling hooks. */
-  moduleType?: string;
 }
 
 /**
@@ -40,13 +38,12 @@ export interface NavRoute {
 }
 
 export interface NavRouteMeta {
-  /** Route name of the navigation item that owns this (detail) route. */
+  /**
+   * Route name of the navigation item that owns this route, for pages the navigation does not
+   * list, e.g. detail pages. Followed through the router, so it may point at another route
+   * declaring a `parentPath` of its own.
+   */
   parentPath?: string;
-  /** Written by the Shopware Administration for every module route. */
-  $module?: {
-    type?: string;
-    navigation?: Array<{ path?: string }>;
-  };
   [key: string]: unknown;
 }
 

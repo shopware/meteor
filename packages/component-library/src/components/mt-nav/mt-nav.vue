@@ -37,7 +37,7 @@ import {
 import { useI18n } from "vue-i18n";
 import { NAV_CONTEXT } from "./_internal/mt-nav-context";
 import { navItemKey } from "./_internal/nav-item-key";
-import { getActiveRouteNames, isEntryOnActiveRoute } from "./_internal/nav-item-active.helper";
+import { getActiveRouteNames, isItemOnActiveRoute } from "./_internal/nav-item-active.helper";
 import type { NavItem, NavLinkComponent, NavRoute, NavRouter } from "./mt-nav.types";
 
 export type { NavItem, NavLinkComponent, NavRoute, NavRouter } from "./mt-nav.types";
@@ -262,7 +262,7 @@ function collapseInactiveBranches(exceptItem: NavItem | null = null) {
 
       const mainItem = mainItems.value.find((item) => navItemKey(item) === key);
 
-      return !mainItem || !isEntryOnActiveRoute(mainItem, props.route, activeNames);
+      return !mainItem || !isItemOnActiveRoute(mainItem, props.route, activeNames);
     })
     .forEach((expanded) => collapseItem(expanded));
 }
@@ -316,7 +316,7 @@ function expandAncestorBranchesForCurrentRoute() {
 
   const activeNames = getActiveRouteNames(props.route, props.router);
   const activeItems = mainItems.value.filter((item) =>
-    isEntryOnActiveRoute(item, props.route, activeNames),
+    isItemOnActiveRoute(item, props.route, activeNames),
   );
 
   // Pages the navigation does not list at all own no branch; leave the tree as the user left it
