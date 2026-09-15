@@ -3,8 +3,8 @@ import type { Component } from "vue";
 /**
  * A single navigation entry as passed to `mt-nav`.
  *
- * Entries form a flat list: `parent` names the `id` (or `path`) of the entry it nests under.
- * The navigation builds the tree itself and supports up to three levels of nesting.
+ * Entries form a tree: `children` holds the entries nested below, in the order they are shown.
+ * The navigation supports up to three levels of nesting.
  * Labels must already be translated. Pass only the entries the current user may see.
  */
 export interface NavEntry {
@@ -14,10 +14,8 @@ export interface NavEntry {
   path?: string;
   /** Translated label. */
   label: string;
-  /** `id` (or `path`) of the parent entry. Omit for top-level entries. */
-  parent?: string;
-  /** Sort order among siblings. */
-  position?: number;
+  /** Nested entries, shown in the given order. */
+  children?: NavEntry[];
   /** Icon name of the meteor icon kit, e.g. `regular-products`. Top level only. */
   icon?: string;
   /** Route params, e.g. to disambiguate entries sharing a route name. */
@@ -38,16 +36,8 @@ export interface NavSection {
   id?: string;
   /** Translated heading above the entries. Hidden while the navigation is collapsed. */
   header?: string;
-  /** Flat list of the section's entries. `parent` references must point into the same section. */
+  /** Top level entries of the section, shown in the given order. */
   entries: NavEntry[];
-}
-
-/**
- * A navigation entry with its resolved tree position.
- */
-export interface NavTreeEntry extends NavEntry {
-  level: number;
-  children: NavTreeEntry[];
 }
 
 /**

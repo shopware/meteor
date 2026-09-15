@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/vue3";
 import { markRaw, ref, watch } from "vue";
 import MtNav from "../mt-nav.vue";
-import type { NavRoute, NavTreeEntry } from "../mt-nav.types";
+import type { NavEntry, NavRoute } from "../mt-nav.types";
 import { routeFor, sections } from "./entries";
 import { StoryLink } from "./story-link";
 
@@ -20,7 +20,7 @@ const meta: MtNavMeta = {
   argTypes: {
     sections: {
       description:
-        "Sections with an optional `header` and a flat list of translated entries, nested via `parent` and sorted via `position`. Pass only entries the user may see.",
+        "Sections with an optional `header` and a tree of translated entries, nested via `children`. Pass only entries the user may see.",
     },
     route: {
       description:
@@ -51,7 +51,7 @@ const meta: MtNavMeta = {
         (value) => (route.value = value),
       );
 
-      function onNavigate(entry: NavTreeEntry) {
+      function onNavigate(entry: NavEntry) {
         if (entry.path) {
           route.value = { ...routeFor(entry.path), params: entry.params ?? {} };
         }

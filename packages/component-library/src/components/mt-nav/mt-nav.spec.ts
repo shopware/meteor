@@ -2,7 +2,7 @@ import { render, screen, waitFor, within } from "@testing-library/vue";
 import { userEvent } from "@testing-library/user-event";
 import { defineComponent, h } from "vue";
 import MtNav from "./mt-nav.vue";
-import type { NavEntry, NavRoute, NavSection, NavTreeEntry } from "./mt-nav.types";
+import type { NavEntry, NavRoute, NavSection } from "./mt-nav.types";
 
 // Stands in for `router-link`: the library does not depend on vue-router
 const RouterLinkStub = defineComponent({
@@ -23,49 +23,29 @@ const RouterLinkStub = defineComponent({
 });
 
 const entries: NavEntry[] = [
+  { id: "sw-dashboard", path: "sw.dashboard.index", label: "Dashboard", icon: "regular-home" },
   {
-    id: "sw-dashboard",
-    path: "sw.dashboard.index",
-    label: "Dashboard",
-    icon: "regular-home",
-    position: 10,
+    id: "sw-catalogue",
+    label: "Catalogues",
+    icon: "regular-products",
+    children: [
+      {
+        id: "sw-product",
+        path: "sw.product.index",
+        label: "Products",
+        children: [
+          {
+            id: "sw-review",
+            path: "sw.review.index",
+            label: "Reviews",
+            children: [{ id: "sw-too-deep", path: "sw.deep.index", label: "Too deep" }],
+          },
+        ],
+      },
+      { id: "sw-category", path: "sw.category.index", label: "Categories" },
+    ],
   },
-  { id: "sw-catalogue", label: "Catalogues", icon: "regular-products", position: 20 },
-  {
-    id: "sw-product",
-    path: "sw.product.index",
-    label: "Products",
-    parent: "sw-catalogue",
-    position: 10,
-  },
-  {
-    id: "sw-category",
-    path: "sw.category.index",
-    label: "Categories",
-    parent: "sw-catalogue",
-    position: 20,
-  },
-  {
-    id: "sw-review",
-    path: "sw.review.index",
-    label: "Reviews",
-    parent: "sw-product",
-    position: 10,
-  },
-  {
-    id: "sw-too-deep",
-    path: "sw.deep.index",
-    label: "Too deep",
-    parent: "sw-review",
-    position: 10,
-  },
-  {
-    id: "sw-docs",
-    link: "https://docs.shopware.com",
-    target: "_blank",
-    label: "Docs",
-    position: 30,
-  },
+  { id: "sw-docs", link: "https://docs.shopware.com", target: "_blank", label: "Docs" },
 ];
 
 const sections: NavSection[] = [{ id: "main", entries }];
@@ -181,7 +161,7 @@ describe("mt-nav", () => {
       renderNav(
         {},
         {
-          "entry-suffix": ({ entry }: { entry: NavTreeEntry }) =>
+          "entry-suffix": ({ entry }: { entry: NavEntry }) =>
             h("span", { "data-testid": `suffix-${entry.id}` }, "new"),
         },
       );
@@ -196,7 +176,7 @@ describe("mt-nav", () => {
       renderNav({
         sections: [
           { id: "shop", entries: entries.slice(0, 2) },
-          { id: "help", header: "Help", entries: [entries[6]] },
+          { id: "help", header: "Help", entries: [entries[2]] },
         ],
       });
 
@@ -214,7 +194,7 @@ describe("mt-nav", () => {
       renderNav({
         sections: [
           { id: "top", entries: [entries[0]] },
-          { id: "catalogue", header: "Catalogue", entries: entries.slice(1, 6) },
+          { id: "catalogue", header: "Catalogue", entries: [entries[1]] },
         ],
         route: routeFor("sw.category.index"),
       });

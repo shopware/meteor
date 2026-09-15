@@ -16,7 +16,7 @@
       @keydown="onNavigationKeydown"
     >
       <mt-nav-section
-        v-for="(section, index) in sectionTrees"
+        v-for="(section, index) in prunedSections"
         :key="section.id ?? section.header ?? index"
         :header="section.header"
         @mouseenter="cancelFlyoutClose"
@@ -118,24 +118,10 @@ import MtText from "@/components/mt-text/mt-text.vue";
 import MtNavItem from "./_internal/mt-nav-item.vue";
 import MtNavSection from "./_internal/mt-nav-section.vue";
 import { NAV_CONTEXT } from "./_internal/mt-nav-context";
-import { buildNavTree, menuEntryKey } from "./_internal/build-nav-tree";
 import { getActiveRouteNames, isEntryOnActiveRoute } from "./_internal/nav-item-active.helper";
-import type {
-  NavLinkComponent,
-  NavRoute,
-  NavRouter,
-  NavSection,
-  NavTreeEntry,
-} from "./mt-nav.types";
+import type { NavEntry, NavLinkComponent, NavRoute, NavRouter, NavSection } from "./mt-nav.types";
 
-export type {
-  NavEntry,
-  NavLinkComponent,
-  NavRoute,
-  NavRouter,
-  NavSection,
-  NavTreeEntry,
-} from "./mt-nav.types";
+export type { NavEntry, NavLinkComponent, NavRoute, NavRouter, NavSection } from "./mt-nav.types";
 
 const TOGGLE_ANIMATION_DURATION = 500;
 const FLYOUT_CLOSE_DELAY = 180;
@@ -144,8 +130,8 @@ const MAX_NESTING_LEVEL = 3;
 
 const props = defineProps({
   /**
-   * Sections of the navigation, each with an optional header and a flat list of entries.
-   * Entries nest via `parent` within their section and are sorted via `position`.
+   * Sections of the navigation, each with an optional header and a tree of entries nested via
+   * `children`, up to three levels deep.
    */
   sections: {
     type: Array as PropType<NavSection[]>,
@@ -183,12 +169,12 @@ const props = defineProps({
 });
 
 const emit = defineEmits<{
-  (e: "navigate", entry: NavTreeEntry): void;
+  (e: "navigate", entry: NavEntry): void;
 }>();
 
 defineSlots<{
   /** Rendered after the label of every entry, e.g. for a badge or counter. */
-  "entry-suffix"?: (props: { entry: NavTreeEntry }) => unknown;
+  "entry-suffix"?: (props: { entry: NavEntry }) => unknown;
 }>();
 
 const { t } = useI18n({
@@ -207,8 +193,8 @@ const navigationLabelId = `mt-nav-label-${useId()}`;
 const navBodyElement = ref<HTMLElement | null>(null);
 const flyoutElement = ref<HTMLElement | null>(null);
 
-const activeEntry = ref<{ entry: NavTreeEntry; target: HTMLElement } | null>(null);
-const flyoutEntries = ref<NavTreeEntry[]>([]);
+const activeEntry = ref<{ entry: NavEntry; target: HTMLElement } | null>(null);
+const flyoutEntries = ref<NavEntry[]>([]);
 const flyoutTitle = ref("");
 const isFlyoutClosing = ref(false);
 const isFlyoutPinned = ref(false);
@@ -216,21 +202,21 @@ const flyoutReferenceElement = ref<HTMLElement | null>(null);
 const scrollbarOffset = ref("");
 const isToggling = ref(false);
 const activeBranchKey = ref<string | null | undefined>(null);
-const expandedEntries = ref<NavTreeEntry[]>([]);
+const expandedEntries = ref<NavEntry[]>([]);
 
 let flyoutCloseTimeoutId: ReturnType<typeof setTimeout> | null = null;
 let toggleTimeout: ReturnType<typeof setTimeout> | null = null;
 let flyoutFocusTrap: FocusTrap | null = null;
 
-const sectionTrees = computed(() =>
+const prunedSections = computed(() =>
   props.sections.map((section) => ({
     ...section,
-    entries: pruneDeepEntries(buildNavTree(section.entries)),
+    entries: pruneDeepEntries(section.entries),
   })),
 );
 
 // Every top level entry across the sections; branches are keyed globally, not per section
-const mainEntries = computed(() => sectionTrees.value.flatMap((section) => section.entries));
+const mainEntries = computed(() => prunedSections.value.flatMap((section) => section.entries));
 
 const navClasses = computed(() => ({
   "is--expanded": props.expanded,
@@ -288,14 +274,24 @@ onBeforeUnmount(() => {
   }
 });
 
-function pruneDeepEntries(entries: NavTreeEntry[]): NavTreeEntry[] {
+/**
+ * Identity of an entry: its id, with the path as fallback. Branches are keyed by it, so entries
+ * without either share the key undefined and are compared by reference instead.
+ */
+function menuEntryKey(entry: NavEntry): string | undefined {
+  return entry.id ?? entry.path;
+}
+
+function pruneDeepEntries(entries: NavEntry[], level = 1): NavEntry[] {
   return entries.map((entry) => {
-    if (entry.level < MAX_NESTING_LEVEL) {
-      return { ...entry, children: pruneDeepEntries(entry.children) };
+    const children = entry.children ?? [];
+
+    if (level < MAX_NESTING_LEVEL) {
+      return { ...entry, children: pruneDeepEntries(children, level + 1) };
     }
 
     // Nesting beyond level 3 is unsupported: report it and drop the children.
-    entry.children.forEach((child) => {
+    children.forEach((child) => {
       console.error(
         `[mt-nav] The navigation entry "${menuEntryKey(child)}" is nested on level 4 or higher. ` +
           "The navigation only supports up to three levels of nesting.",
@@ -315,7 +311,7 @@ function closeFlyoutAfterNavigation() {
   }
 }
 
-function onNavigationLinkClicked(entry: NavTreeEntry) {
+function onNavigationLinkClicked(entry: NavEntry) {
   // Tapping the current route's entry aborts as redundant navigation, so no route watcher fires
   closeFlyoutAfterNavigation();
 
@@ -359,7 +355,7 @@ function addScrollbarOffset() {
   scrollbarOffset.value = `-${scrollbarWidthPx}px`;
 }
 
-function expandEntry(entry: NavTreeEntry) {
+function expandEntry(entry: NavEntry) {
   const key = menuEntryKey(entry);
 
   // Entries without id and path share the key undefined, so never deduplicate them
@@ -370,7 +366,7 @@ function expandEntry(entry: NavTreeEntry) {
   expandedEntries.value = [...expandedEntries.value, entry];
 }
 
-function collapseEntry(entry: NavTreeEntry) {
+function collapseEntry(entry: NavEntry) {
   const key = menuEntryKey(entry);
 
   if (key === undefined) {
@@ -381,8 +377,9 @@ function collapseEntry(entry: NavTreeEntry) {
   expandedEntries.value = expandedEntries.value.filter((e) => menuEntryKey(e) !== key);
 }
 
-function onMenuBranchToggle({ entry, open }: { entry: NavTreeEntry; open: boolean }) {
-  if (!props.expanded || !entry || entry.level !== 1) {
+// Only top level rows emit branch-toggle, nested rows keep their own open state
+function onMenuBranchToggle({ entry, open }: { entry: NavEntry; open: boolean }) {
+  if (!props.expanded || !entry) {
     return;
   }
 
@@ -395,7 +392,7 @@ function onMenuBranchToggle({ entry, open }: { entry: NavTreeEntry; open: boolea
   expandEntry(entry);
 }
 
-function collapseInactiveBranches(exceptEntry: NavTreeEntry | null = null) {
+function collapseInactiveBranches(exceptEntry: NavEntry | null = null) {
   const exceptKey = exceptEntry ? menuEntryKey(exceptEntry) : null;
   const activeNames = getActiveRouteNames(props.route, props.router);
 
@@ -414,7 +411,7 @@ function collapseInactiveBranches(exceptEntry: NavTreeEntry | null = null) {
     .forEach((expanded) => collapseEntry(expanded));
 }
 
-function onMenuItemHover(entry: NavTreeEntry, eventTarget: HTMLElement) {
+function onMenuItemHover(entry: NavEntry, eventTarget: HTMLElement) {
   if (props.expanded) {
     return;
   }
@@ -428,7 +425,7 @@ function onMenuItemHover(entry: NavTreeEntry, eventTarget: HTMLElement) {
   }
 
   const hasChildrenClass = target.classList.contains("navigation-list-item__has-children");
-  const children = hasChildrenClass ? entry.children : [];
+  const children = hasChildrenClass ? entry.children ?? [] : [];
 
   if (!hasChildrenClass || children.length === 0) {
     onFlyoutLeave();
@@ -516,7 +513,7 @@ function cancelFlyoutClose() {
   isFlyoutClosing.value = false;
 }
 
-function isFlyoutEntryActive(entry: NavTreeEntry) {
+function isFlyoutEntryActive(entry: NavEntry) {
   if (props.expanded || flyoutEntries.value.length === 0) {
     return false;
   }
@@ -655,7 +652,7 @@ function expandAncestorBranchesForCurrentRoute() {
     return;
   }
 
-  const owner = activeEntries.find((entry) => entry.children.length > 0) ?? null;
+  const owner = activeEntries.find((entry) => (entry.children ?? []).length > 0) ?? null;
   const ownerKey = owner ? menuEntryKey(owner) : null;
 
   // The cached owner may have been collapsed manually
@@ -672,7 +669,7 @@ function expandAncestorBranchesForCurrentRoute() {
   }
 }
 
-function isEntryExpanded(entry: NavTreeEntry) {
+function isEntryExpanded(entry: NavEntry) {
   const key = menuEntryKey(entry);
 
   return expandedEntries.value.some((expanded) => menuEntryKey(expanded) === key);
