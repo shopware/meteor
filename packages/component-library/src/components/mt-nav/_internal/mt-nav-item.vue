@@ -6,17 +6,17 @@
     :aria-current="rowActive ? 'page' : 'false'"
     :open="collapsibleOpen"
     @update:open="onCollapsibleOpenUpdate"
-    @mouseenter="emit('menu-item-hover', entry, $event.currentTarget as HTMLElement)"
+    @mouseenter="context.onItemHover(item, $event.currentTarget as HTMLElement)"
     @keydown="onCollapsedParentKeydown"
   >
     <div class="mt-nav__item-row">
       <component
-        :is="entryPath ? linkComponent : MtCollapsibleTrigger"
+        :is="itemPath ? linkComponent : MtCollapsibleTrigger"
         class="mt-nav__link"
         :class="{ 'router-link-active': rowActive }"
         :aria-label="collapsedAriaLabel"
-        v-bind="entryPath ? { ...linkProps, 'aria-expanded': collapsibleOpen } : { type: 'button' }"
-        v-on="entryPath ? { click: onNavigationLinkClick } : {}"
+        v-bind="itemPath ? { ...linkProps, 'aria-expanded': collapsibleOpen } : { type: 'button' }"
+        v-on="itemPath ? { click: onNavigationLinkClick } : {}"
       >
         <mt-icon
           v-if="displayIcon"
@@ -28,12 +28,12 @@
         <span
           class="mt-nav__link-label"
           :class="collapsibleText ? 'mt-nav__collapsible-text mt-nav__hide-on-collapse' : ''"
-          :title="entry.label"
+          :title="item.label"
         >
-          {{ entry.label }}
+          {{ item.label }}
         </span>
 
-        <slot name="entry-suffix" :entry="entry" />
+        <slot name="item-suffix" :item="item" />
 
         <span class="mt-nav__link-expand-icon-box">
           <mt-icon
@@ -47,20 +47,16 @@
 
     <mt-collapsible-content as="ul" class="mt-nav__sub-list">
       <mt-nav-item
-        v-for="(childEntry, subMenuIndex) in children"
-        :key="childEntry.id ?? childEntry.path ?? subMenuIndex"
-        :entry="childEntry"
+        v-for="(childItem, subMenuIndex) in children"
+        :key="childItem.id ?? childItem.path ?? subMenuIndex"
+        :item="childItem"
         :menu-depth="menuDepth + 1"
         :display-icon="false"
-        :nav-expanded="navExpanded"
         :collapsible-text="collapsibleText"
         :icon-size="iconSize"
-        @menu-item-hover="forwardMenuItemHover"
-        @flyout-navigate="forwardFlyoutNavigate"
-        @navigation-link-click="forwardNavigationLinkClick"
       >
-        <template #entry-suffix="slotProps">
-          <slot name="entry-suffix" v-bind="slotProps" />
+        <template #item-suffix="slotProps">
+          <slot name="item-suffix" v-bind="slotProps" />
         </template>
       </mt-nav-item>
     </mt-collapsible-content>
@@ -70,9 +66,9 @@
     v-else-if="showMenuItem"
     :class="leafLiClass"
     :aria-current="rowActive ? 'page' : 'false'"
-    @mouseenter="emit('menu-item-hover', entry, $event.currentTarget as HTMLElement)"
+    @mouseenter="context.onItemHover(item, $event.currentTarget as HTMLElement)"
   >
-    <mt-tooltip :content="entry.label" placement="right">
+    <mt-tooltip :content="item.label" placement="right">
       <template #default="tooltipProps">
         <div class="mt-nav__item-row" v-bind="collapsedTooltipTriggerProps(tooltipProps)">
           <component
@@ -80,7 +76,7 @@
             class="mt-nav__link"
             :class="{ 'router-link-active': rowActive }"
             v-bind="leafAttrs"
-            v-on="entryPath ? { click: onNavigationLinkClick } : {}"
+            v-on="itemPath ? { click: onNavigationLinkClick } : {}"
           >
             <mt-icon
               v-if="displayIcon"
@@ -92,12 +88,12 @@
             <span
               class="mt-nav__link-label"
               :class="collapsibleText ? 'mt-nav__collapsible-text mt-nav__hide-on-collapse' : ''"
-              :title="entry.label"
+              :title="item.label"
             >
-              {{ entry.label }}
+              {{ item.label }}
             </span>
 
-            <slot name="entry-suffix" :entry="entry" />
+            <slot name="item-suffix" :item="item" />
           </component>
         </div>
       </template>
@@ -112,7 +108,7 @@ import MtTooltip from "@/components/mt-tooltip/mt-tooltip.vue";
 import MtCollapsible from "@/components/mt-collapsible/mt-collapsible.vue";
 import MtCollapsibleTrigger from "@/components/mt-collapsible/mt-collapsible-trigger.vue";
 import MtCollapsibleContent from "@/components/mt-collapsible/mt-collapsible-content.vue";
-import type { NavEntry } from "../mt-nav.types";
+import type { NavItem } from "../mt-nav.types";
 import { NAV_CONTEXT } from "./mt-nav-context";
 import {
   getActiveRouteNames,
@@ -126,8 +122,8 @@ import {
 const TOOLTIP_OPEN_TRIGGER_PROPS = ["onMouseover", "onFocus", "aria-describedby"];
 
 const props = defineProps({
-  entry: {
-    type: Object as PropType<NavEntry>,
+  item: {
+    type: Object as PropType<NavItem>,
     required: true,
   },
   menuDepth: {
@@ -147,46 +143,23 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
-  navExpanded: {
-    type: Boolean,
-    default: true,
-  },
-  isExpanded: {
-    type: Boolean,
-    default: false,
-  },
-  showActiveState: {
-    type: Boolean,
-    default: true,
-  },
-  flyoutActive: {
-    type: Boolean,
-    default: false,
-  },
 });
-
-const emit = defineEmits<{
-  (e: "menu-item-hover", entry: NavEntry, target: HTMLElement): void;
-  (e: "branch-toggle", payload: { entry: NavEntry; open: boolean }): void;
-  (e: "flyout-focus-request"): void;
-  (e: "flyout-close-request"): void;
-  (e: "flyout-navigate", payload: { disclosesChildren: boolean }): void;
-  (e: "navigation-link-click", entry: NavEntry): void;
-}>();
 
 defineSlots<{
   /** Rendered after the label; forwarded to the nested rows. */
-  "entry-suffix"?: (props: { entry: NavEntry }) => unknown;
+  "item-suffix"?: (props: { item: NavItem }) => unknown;
 }>();
 
-const context = inject(NAV_CONTEXT);
+const injectedContext = inject(NAV_CONTEXT);
 
-if (!context) {
+if (!injectedContext) {
   throw new Error("mt-nav-item must be rendered inside mt-nav");
 }
 
+const context = injectedContext;
 const route = context.route;
 const linkComponent = context.linkComponent;
+const navExpanded = context.expanded;
 
 const suppressRouteKeepsFolderOpen = ref(false);
 const manualNestedOpen = ref(false);
@@ -196,9 +169,18 @@ const isLeafDepth = computed(() => props.menuDepth >= 3);
 
 const activeRouteNames = computed(() => getActiveRouteNames(route.value, context.router.value));
 
-const children = computed(() => props.entry.children ?? []);
+const children = computed(() => props.item.children ?? []);
 
-const entryPath = computed(() => props.entry.path);
+const itemPath = computed(() => props.item.path);
+
+// Only top-level branches are tracked by the navigation; nested rows keep their own state
+const isBranchExpanded = computed(
+  () => props.menuDepth === 1 && context.isItemExpanded(props.item),
+);
+
+const flyoutActive = computed(
+  () => props.menuDepth === 1 && context.isFlyoutItemActive(props.item),
+);
 
 const hasActiveChild = computed(() =>
   children.value.some((child) => isEntryOnActiveRoute(child, route.value, activeRouteNames.value)),
@@ -219,13 +201,13 @@ const routeKeepsFolderOpen = computed(() => {
 
 const submenuVisuallyOpen = computed(() => {
   if (props.menuDepth === 1) {
-    if (!props.navExpanded) {
+    if (!navExpanded.value) {
       return false;
     }
 
     return context.hasExpandedBranches.value
-      ? props.isExpanded
-      : props.isExpanded || routeKeepsFolderOpen.value;
+      ? isBranchExpanded.value
+      : isBranchExpanded.value || routeKeepsFolderOpen.value;
   }
 
   return routeKeepsFolderOpen.value || manualNestedOpen.value;
@@ -234,19 +216,15 @@ const submenuVisuallyOpen = computed(() => {
 const collapsibleOpen = computed(() => hasCollapsibleSubtree.value && submenuVisuallyOpen.value);
 
 const rowActive = computed(() => {
-  if (!props.showActiveState) {
-    return false;
-  }
-
-  if (!isEntryOnActiveRoute(props.entry, route.value, activeRouteNames.value)) {
+  if (!isEntryOnActiveRoute(props.item, route.value, activeRouteNames.value)) {
     return false;
   }
 
   const selfIsCurrent =
     !hasActiveChild.value &&
-    !!props.entry.path &&
-    activeRouteNames.value.has(props.entry.path) &&
-    entryParamsMatchRoute(props.entry, route.value);
+    !!props.item.path &&
+    activeRouteNames.value.has(props.item.path) &&
+    entryParamsMatchRoute(props.item, route.value);
 
   if (!selfIsCurrent && children.value.length > 0 && submenuVisuallyOpen.value) {
     return false;
@@ -256,15 +234,15 @@ const rowActive = computed(() => {
 });
 
 const linkTo = computed(() => {
-  if (props.entry.params) {
-    return { name: props.entry.path, params: props.entry.params };
+  if (props.item.params) {
+    return { name: props.item.path, params: props.item.params };
   }
 
-  return { name: props.entry.path };
+  return { name: props.item.path };
 });
 
 const showMenuItem = computed(
-  () => children.value.length > 0 || !!entryPath.value || !!props.entry.link,
+  () => children.value.length > 0 || !!itemPath.value || !!props.item.link,
 );
 
 const expandIcon = computed(() =>
@@ -276,17 +254,17 @@ const childRouteActive = computed(
 );
 
 const navigationIconName = computed(() =>
-  getIconName(props.entry.icon, rowActive.value || childRouteActive.value),
+  getIconName(props.item.icon, rowActive.value || childRouteActive.value),
 );
 
 function getElementClasses() {
-  const key = (props.entry.id ?? entryPath.value ?? "").replace(/\./g, "-");
+  const key = (props.item.id ?? itemPath.value ?? "").replace(/\./g, "-");
 
   return [
     key,
-    `navigation-list-item__type-${props.entry.moduleType}`,
+    `navigation-list-item__type-${props.item.moduleType}`,
     `navigation-list-item__${key}`,
-    `mt-nav__item--${props.entry.id}`,
+    `mt-nav__item--${props.item.id}`,
     `navigation-list-item__level-${props.menuDepth}`,
     {
       "navigation-list-item__has-children": children.value.length > 0,
@@ -301,7 +279,7 @@ const collapsibleLiClass = computed(() => [
   {
     "is--entry-expanded": collapsibleOpen.value,
     "is--child-active": childRouteActive.value,
-    "is--flyout-enabled": props.flyoutActive,
+    "is--flyout-enabled": flyoutActive.value,
   },
 ]);
 
@@ -315,12 +293,12 @@ const leafLiClass = computed(() => [
 ]);
 
 const collapsedFlyoutAria = computed<{ "aria-expanded"?: string; "aria-controls"?: string }>(() => {
-  if (props.navExpanded || props.menuDepth !== 1 || children.value.length === 0) {
+  if (navExpanded.value || props.menuDepth !== 1 || children.value.length === 0) {
     return {};
   }
 
   // aria-controls only while open
-  if (!props.flyoutActive) {
+  if (!flyoutActive.value) {
     return { "aria-expanded": "false" };
   }
 
@@ -332,37 +310,37 @@ const collapsedFlyoutAria = computed<{ "aria-expanded"?: string; "aria-controls"
 
 // Collapsed top-level rows hide their label, so the accessible name needs an aria-label.
 const collapsedAriaLabel = computed(() =>
-  !props.navExpanded && props.menuDepth === 1 ? props.entry.label : undefined,
+  !navExpanded.value && props.menuDepth === 1 ? props.item.label : undefined,
 );
 
 const linkProps = computed(() => ({
   to: linkTo.value,
-  activeClass: props.showActiveState ? "router-link-active" : "",
-  exactActiveClass: props.showActiveState ? "router-link-exact-active" : "",
+  activeClass: "router-link-active",
+  exactActiveClass: "router-link-exact-active",
   ...collapsedFlyoutAria.value,
 }));
 
 const leafTag = computed(() => {
-  if (entryPath.value) {
+  if (itemPath.value) {
     return linkComponent.value;
   }
 
-  return props.entry.link ? "a" : "span";
+  return props.item.link ? "a" : "span";
 });
 
 const leafAttrs = computed(() => {
-  if (entryPath.value) {
+  if (itemPath.value) {
     return {
       ...linkProps.value,
       "aria-label": collapsedAriaLabel.value,
     };
   }
 
-  if (props.entry.link) {
+  if (props.item.link) {
     return {
-      href: props.entry.link,
-      target: props.entry.target,
-      title: props.entry.label,
+      href: props.item.link,
+      target: props.item.target,
+      title: props.item.label,
       "aria-label": collapsedAriaLabel.value,
     };
   }
@@ -370,9 +348,9 @@ const leafAttrs = computed(() => {
   return {};
 });
 
-// Top-level entries without children have no flyout, label is accessible via a tooltip
+// Top-level items without children have no flyout, label is accessible via a tooltip
 const showsCollapsedTooltip = computed(
-  () => !props.navExpanded && props.menuDepth === 1 && children.value.length === 0,
+  () => !navExpanded.value && props.menuDepth === 1 && children.value.length === 0,
 );
 
 // Query-insensitive on purpose: listing pagination/sorting must not undo a manual collapse
@@ -419,26 +397,14 @@ function toggleSubmenu() {
 }
 
 function onNavigationLinkClick() {
-  if (!props.navExpanded) {
-    emit("flyout-navigate", { disclosesChildren: hasCollapsibleSubtree.value });
+  if (!navExpanded.value) {
+    context.onFlyoutNavigate(hasCollapsibleSubtree.value);
   }
 
   // No-op unless this row has a collapsible subtree.
   toggleSubmenu();
 
-  emit("navigation-link-click", props.entry);
-}
-
-function forwardNavigationLinkClick(entry: NavEntry) {
-  emit("navigation-link-click", entry);
-}
-
-function forwardFlyoutNavigate(payload: { disclosesChildren: boolean }) {
-  emit("flyout-navigate", payload);
-}
-
-function forwardMenuItemHover(entry: NavEntry, target: HTMLElement) {
-  emit("menu-item-hover", entry, target);
+  context.onLinkClick(props.item);
 }
 
 function onCollapsibleOpenUpdate(open: boolean) {
@@ -448,33 +414,33 @@ function onCollapsibleOpenUpdate(open: boolean) {
     manualNestedOpen.value = open;
   }
 
-  if (props.menuDepth === 1 && props.navExpanded) {
-    emit("branch-toggle", { entry: props.entry, open });
+  if (props.menuDepth === 1 && navExpanded.value) {
+    context.onBranchToggle(props.item, open);
   }
 }
 
 function onCollapsedParentKeydown(event: KeyboardEvent) {
   // Keyboard access to the collapsed flyout - disclosure navigation pattern
-  if (props.navExpanded || props.menuDepth !== 1 || children.value.length === 0) {
+  if (navExpanded.value || props.menuDepth !== 1 || children.value.length === 0) {
     return;
   }
 
-  if ((event.key === "Escape" || event.key === "ArrowLeft") && props.flyoutActive) {
-    emit("flyout-close-request");
+  if ((event.key === "Escape" || event.key === "ArrowLeft") && flyoutActive.value) {
+    context.onFlyoutCloseRequest();
     return;
   }
 
   const isActivationKey = event.key === "Enter" || event.key === " ";
-  // Entries with an own route keep Enter/Space for navigation.
-  const opensFlyout = event.key === "ArrowRight" || (isActivationKey && !entryPath.value);
+  // Items with an own route keep Enter/Space for navigation.
+  const opensFlyout = event.key === "ArrowRight" || (isActivationKey && !itemPath.value);
 
   if (!opensFlyout) {
     return;
   }
 
   event.preventDefault();
-  emit("menu-item-hover", props.entry, event.currentTarget as HTMLElement);
-  emit("flyout-focus-request");
+  context.onItemHover(props.item, event.currentTarget as HTMLElement);
+  context.onFlyoutFocusRequest();
 }
 </script>
 

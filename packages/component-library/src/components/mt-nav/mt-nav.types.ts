@@ -1,24 +1,24 @@
 import type { Component } from "vue";
 
 /**
- * A single navigation entry as passed to `mt-nav`.
+ * A single navigation item as passed to `mt-nav-section`.
  *
- * Entries form a tree: `children` holds the entries nested below, in the order they are shown.
+ * Items form a tree: `children` holds the items nested below, in the order they are shown.
  * The navigation supports up to three levels of nesting.
- * Labels must already be translated. Pass only the entries the current user may see.
+ * Labels must already be translated. Pass only the items the current user may see.
  */
-export interface NavEntry {
+export interface NavItem {
   /** Unique identifier. Falls back to `path` when omitted. */
   id?: string;
-  /** Route name the entry navigates to. Optional for grouping entries and external links. */
+  /** Route name the item navigates to. Optional for grouping items and external links. */
   path?: string;
   /** Translated label. */
   label: string;
-  /** Nested entries, shown in the given order. */
-  children?: NavEntry[];
+  /** Nested items, shown in the given order. */
+  children?: NavItem[];
   /** Icon name of the meteor icon kit, e.g. `regular-products`. Top level only. */
   icon?: string;
-  /** Route params, e.g. to disambiguate entries sharing a route name. */
+  /** Route params, e.g. to disambiguate items sharing a route name. */
   params?: Record<string, unknown>;
   /** External URL. Rendered as a plain anchor when no `path` is set. */
   link?: string;
@@ -26,18 +26,6 @@ export interface NavEntry {
   target?: string;
   /** Free-form type, rendered as a class for styling hooks. */
   moduleType?: string;
-}
-
-/**
- * A group of entries rendered as one list, optionally below a header.
- */
-export interface NavSection {
-  /** Unique identifier, used as the render key. Falls back to `header`. */
-  id?: string;
-  /** Translated heading above the entries. Hidden while the navigation is collapsed. */
-  header?: string;
-  /** Top level entries of the section, shown in the given order. */
-  entries: NavEntry[];
 }
 
 /**
@@ -52,7 +40,7 @@ export interface NavRoute {
 }
 
 export interface NavRouteMeta {
-  /** Route name of the navigation entry that owns this (detail) route. */
+  /** Route name of the navigation item that owns this (detail) route. */
   parentPath?: string;
   /** Written by the Shopware Administration for every module route. */
   $module?: {

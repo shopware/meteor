@@ -1,8 +1,9 @@
 import { render, screen, waitFor, within } from "@testing-library/vue";
 import { userEvent } from "@testing-library/user-event";
-import { defineComponent, h } from "vue";
+import { defineComponent, h, type VNode } from "vue";
 import MtNav from "./mt-nav.vue";
-import type { NavEntry, NavRoute, NavSection } from "./mt-nav.types";
+import MtNavSection from "./mt-nav-section.vue";
+import type { NavItem, NavRoute } from "./mt-nav.types";
 
 // Stands in for `router-link`: the library does not depend on vue-router
 const RouterLinkStub = defineComponent({
@@ -22,7 +23,7 @@ const RouterLinkStub = defineComponent({
   },
 });
 
-const entries: NavEntry[] = [
+const items: NavItem[] = [
   { id: "sw-dashboard", path: "sw.dashboard.index", label: "Dashboard", icon: "regular-home" },
   {
     id: "sw-catalogue",
@@ -48,39 +49,45 @@ const entries: NavEntry[] = [
   { id: "sw-docs", link: "https://docs.shopware.com", target: "_blank", label: "Docs" },
 ];
 
-const sections: NavSection[] = [{ id: "main", entries }];
-
 function routeFor(name: string): NavRoute {
   return { name, path: `/${name.replace(/\./g, "/")}`, matched: [{ name }], params: {} };
 }
 
-function renderNav(props: Record<string, unknown> = {}, slots: Record<string, unknown> = {}) {
+function section(props: { header?: string; items: NavItem[] }, slots?: Record<string, unknown>) {
+  return h(MtNavSection, props, slots);
+}
+
+/**
+ * Renders the navigation with the given sections; a single section with all items by default.
+ */
+function renderNav(props: Record<string, unknown> = {}, sections?: () => VNode[]) {
   return render(MtNav, {
     props: {
-      sections,
       linkComponent: RouterLinkStub,
       ...props,
     },
-    slots,
+    slots: {
+      default: sections ?? (() => [section({ items })]),
+    },
   });
 }
 
 /**
  * The label of a navigation row. Plain text queries also hit the teleported tooltip copies.
  */
-function getEntryLabel(text: string, container: HTMLElement = document.body) {
+function getItemLabel(text: string, container: HTMLElement = document.body) {
   const label = within(container)
     .getAllByText(text)
     .find((element) => element.classList.contains("mt-nav__link-label"));
 
   if (!label) {
-    throw new Error(`Found no navigation entry labelled "${text}"`);
+    throw new Error(`Found no navigation item labelled "${text}"`);
   }
 
   return label;
 }
 
-function queryEntryLabel(text: string) {
+function queryItemLabel(text: string) {
   return screen
     .queryAllByText(text)
     .find((element) => element.classList.contains("mt-nav__link-label"));
@@ -92,79 +99,78 @@ describe("mt-nav", () => {
   });
 
   describe("navigation", () => {
-    it("renders the top level entries", () => {
+    it("renders the top level items", () => {
       renderNav();
 
       const navigation = screen.getByRole("navigation", { name: "Main navigation" });
 
-      expect(getEntryLabel("Dashboard", navigation)).toBeVisible();
-      expect(getEntryLabel("Catalogues", navigation)).toBeVisible();
-      expect(getEntryLabel("Docs", navigation)).toBeVisible();
+      expect(getItemLabel("Dashboard", navigation)).toBeVisible();
+      expect(getItemLabel("Catalogues", navigation)).toBeVisible();
+      expect(getItemLabel("Docs", navigation)).toBeVisible();
     });
 
-    it("renders route entries through the link component", () => {
+    it("renders route items through the link component", () => {
       renderNav();
 
-      expect(getEntryLabel("Dashboard").closest("a")).toHaveAttribute(
-        "href",
-        "#sw.dashboard.index",
-      );
+      expect(getItemLabel("Dashboard").closest("a")).toHaveAttribute("href", "#sw.dashboard.index");
     });
 
     it("renders external links as plain anchors", () => {
       renderNav();
 
-      const link = getEntryLabel("Docs").closest("a");
+      const link = getItemLabel("Docs").closest("a");
 
       expect(link).toHaveAttribute("href", "https://docs.shopware.com");
       expect(link).toHaveAttribute("target", "_blank");
     });
 
-    it("drops entries nested deeper than three levels", () => {
+    it("drops items nested deeper than three levels", () => {
       renderNav({ route: routeFor("sw.review.index") });
 
-      expect(getEntryLabel("Reviews")).toBeInTheDocument();
-      expect(queryEntryLabel("Too deep")).toBeUndefined();
+      expect(getItemLabel("Reviews")).toBeInTheDocument();
+      expect(queryItemLabel("Too deep")).toBeUndefined();
       expect(console.error).toHaveBeenCalledWith(expect.stringContaining('"sw-too-deep"'));
     });
 
     it("expands a branch when its row is clicked", async () => {
       renderNav();
 
-      expect(getEntryLabel("Products")).not.toBeVisible();
+      expect(getItemLabel("Products")).not.toBeVisible();
 
       await userEvent.click(screen.getByRole("button", { name: "Catalogues" }));
 
-      expect(getEntryLabel("Products")).toBeVisible();
-      expect(getEntryLabel("Categories")).toBeVisible();
+      expect(getItemLabel("Products")).toBeVisible();
+      expect(getItemLabel("Categories")).toBeVisible();
     });
 
-    it("opens the branch owning the current route and marks the entry as current", async () => {
+    it("opens the branch owning the current route and marks the item as current", async () => {
       renderNav({ route: routeFor("sw.category.index") });
 
-      await waitFor(() => expect(getEntryLabel("Categories")).toBeVisible());
+      await waitFor(() => expect(getItemLabel("Categories")).toBeVisible());
 
-      expect(getEntryLabel("Categories").closest("li")).toHaveAttribute("aria-current", "page");
-      expect(getEntryLabel("Dashboard").closest("li")).toHaveAttribute("aria-current", "false");
+      expect(getItemLabel("Categories").closest("li")).toHaveAttribute("aria-current", "page");
+      expect(getItemLabel("Dashboard").closest("li")).toHaveAttribute("aria-current", "false");
     });
 
     it("emits navigate when a navigation link is clicked", async () => {
       const { emitted } = renderNav();
 
-      await userEvent.click(getEntryLabel("Dashboard"));
+      await userEvent.click(getItemLabel("Dashboard"));
 
       expect(emitted().navigate).toHaveLength(1);
       expect(emitted().navigate[0]).toEqual([expect.objectContaining({ id: "sw-dashboard" })]);
     });
 
-    it("renders the entry-suffix slot after every label", () => {
-      renderNav(
-        {},
-        {
-          "entry-suffix": ({ entry }: { entry: NavEntry }) =>
-            h("span", { "data-testid": `suffix-${entry.id}` }, "new"),
-        },
-      );
+    it("renders the item-suffix slot of a section after every label", () => {
+      renderNav({}, () => [
+        section(
+          { items },
+          {
+            "item-suffix": ({ item }: { item: NavItem }) =>
+              h("span", { "data-testid": `suffix-${item.id}` }, "new"),
+          },
+        ),
+      ]);
 
       expect(screen.getByTestId("suffix-sw-dashboard")).toHaveTextContent("new");
       expect(screen.getByTestId("suffix-sw-product")).toBeInTheDocument();
@@ -173,12 +179,10 @@ describe("mt-nav", () => {
 
   describe("sections", () => {
     it("renders one list per section, labelled by its header", () => {
-      renderNav({
-        sections: [
-          { id: "shop", entries: entries.slice(0, 2) },
-          { id: "help", header: "Help", entries: [entries[2]] },
-        ],
-      });
+      renderNav({}, () => [
+        section({ items: items.slice(0, 2) }),
+        section({ header: "Help", items: [items[2]] }),
+      ]);
 
       const lists = screen
         .getAllByRole("list")
@@ -191,21 +195,24 @@ describe("mt-nav", () => {
     });
 
     it("opens the branch owning the current route across sections", async () => {
-      renderNav({
-        sections: [
-          { id: "top", entries: [entries[0]] },
-          { id: "catalogue", header: "Catalogue", entries: [entries[1]] },
-        ],
-        route: routeFor("sw.category.index"),
-      });
+      renderNav({ route: routeFor("sw.category.index") }, () => [
+        section({ items: [items[0]] }),
+        section({ header: "Catalogue", items: [items[1]] }),
+      ]);
 
-      await waitFor(() => expect(getEntryLabel("Categories")).toBeVisible());
-      expect(getEntryLabel("Categories").closest("li")).toHaveAttribute("aria-current", "page");
+      await waitFor(() => expect(getItemLabel("Categories")).toBeVisible());
+      expect(getItemLabel("Categories").closest("li")).toHaveAttribute("aria-current", "page");
+    });
+
+    it("throws when a section is rendered outside the navigation", () => {
+      expect(() => render(MtNavSection, { props: { items } })).toThrow(
+        "mt-nav-section must be rendered inside mt-nav",
+      );
     });
   });
 
   describe("collapsed", () => {
-    it("reflects the expanded state on the root element", () => {
+    it("reflects the expanded state on the root element", async () => {
       const { rerender } = renderNav({ expanded: false });
 
       const navigation = screen.getByRole("navigation", { name: "Main navigation" });
@@ -213,17 +220,17 @@ describe("mt-nav", () => {
       expect(navigation).toHaveClass("is--collapsed");
       expect(navigation).toHaveAttribute("data-expanded", "false");
 
-      return rerender({ sections, linkComponent: RouterLinkStub, expanded: true }).then(() => {
-        expect(navigation).toHaveClass("is--expanded");
-        expect(navigation).toHaveAttribute("data-expanded", "true");
-      });
+      await rerender({ linkComponent: RouterLinkStub, expanded: true });
+
+      expect(navigation).toHaveClass("is--expanded");
+      expect(navigation).toHaveAttribute("data-expanded", "true");
     });
 
     it("names the top level rows through an aria-label because their labels are hidden", () => {
       renderNav({ expanded: false });
 
-      expect(getEntryLabel("Dashboard").closest("a")).toHaveAttribute("aria-label", "Dashboard");
-      expect(getEntryLabel("Docs").closest("a")).toHaveAttribute("aria-label", "Docs");
+      expect(getItemLabel("Dashboard").closest("a")).toHaveAttribute("aria-label", "Dashboard");
+      expect(getItemLabel("Docs").closest("a")).toHaveAttribute("aria-label", "Docs");
     });
 
     it("shows the children of a hovered branch in a flyout", async () => {
@@ -236,8 +243,8 @@ describe("mt-nav", () => {
       const flyout = document.getElementById("mt-nav-flyout");
 
       expect(flyout).not.toBeNull();
-      expect(getEntryLabel("Products", flyout as HTMLElement)).toBeInTheDocument();
-      expect(getEntryLabel("Categories", flyout as HTMLElement)).toBeInTheDocument();
+      expect(getItemLabel("Products", flyout as HTMLElement)).toBeInTheDocument();
+      expect(getItemLabel("Categories", flyout as HTMLElement)).toBeInTheDocument();
     });
   });
 });
