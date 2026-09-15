@@ -15,15 +15,17 @@
       :style="scrollbarOffsetStyle"
       @keydown="onNavigationKeydown"
     >
-      <ul
-        class="mt-nav__list"
+      <mt-nav-section
+        v-for="(section, index) in sectionTrees"
+        :key="section.id ?? section.header ?? index"
+        :header="section.header"
         @mouseenter="cancelFlyoutClose"
         @focusin="cancelFlyoutClose"
-        @mouseleave="onListMouseLeave"
-        @focusout="onListMouseLeave"
+        @mouseleave="onSectionMouseLeave"
+        @focusout="onSectionMouseLeave"
       >
         <mt-nav-item
-          v-for="entry in mainEntries"
+          v-for="entry in section.entries"
           :key="entry.id || entry.path"
           :nav-expanded="expanded"
           :is-expanded="isEntryExpanded(entry)"
@@ -40,9 +42,10 @@
             <slot name="entry-suffix" v-bind="slotProps" />
           </template>
         </mt-nav-item>
-      </ul>
+      </mt-nav-section>
     </div>
 
+    <!--
     <mt-floating-ui
       :is-opened="!expanded && flyoutEntries.length > 0"
       :anchor-element="flyoutReferenceElement"
@@ -92,6 +95,7 @@
         </ul>
       </div>
     </mt-floating-ui>
+    -->
   </nav>
 </template>
 
@@ -110,14 +114,28 @@ import {
 import { createFocusTrap, type FocusTrap } from "focus-trap";
 import { useI18n } from "vue-i18n";
 import MtText from "@/components/mt-text/mt-text.vue";
-import MtFloatingUi from "@/components/mt-floating-ui/mt-floating-ui.vue";
+// import MtFloatingUi from "@/components/mt-floating-ui/mt-floating-ui.vue";
 import MtNavItem from "./_internal/mt-nav-item.vue";
+import MtNavSection from "./_internal/mt-nav-section.vue";
 import { NAV_CONTEXT } from "./_internal/mt-nav-context";
 import { buildNavTree, menuEntryKey } from "./_internal/build-nav-tree";
 import { getActiveRouteNames, isEntryOnActiveRoute } from "./_internal/nav-item-active.helper";
-import type { NavEntry, NavLinkComponent, NavRoute, NavRouter, NavTreeEntry } from "./mt-nav.types";
+import type {
+  NavLinkComponent,
+  NavRoute,
+  NavRouter,
+  NavSection,
+  NavTreeEntry,
+} from "./mt-nav.types";
 
-export type { NavEntry, NavLinkComponent, NavRoute, NavRouter, NavTreeEntry } from "./mt-nav.types";
+export type {
+  NavEntry,
+  NavLinkComponent,
+  NavRoute,
+  NavRouter,
+  NavSection,
+  NavTreeEntry,
+} from "./mt-nav.types";
 
 const TOGGLE_ANIMATION_DURATION = 500;
 const FLYOUT_CLOSE_DELAY = 180;
@@ -126,10 +144,11 @@ const MAX_NESTING_LEVEL = 3;
 
 const props = defineProps({
   /**
-   * Flat list of navigation entries. Nested via `parent`, sorted via `position`.
+   * Sections of the navigation, each with an optional header and a flat list of entries.
+   * Entries nest via `parent` within their section and are sorted via `position`.
    */
-  entries: {
-    type: Array as PropType<NavEntry[]>,
+  sections: {
+    type: Array as PropType<NavSection[]>,
     required: true,
   },
   /**
@@ -203,7 +222,15 @@ let flyoutCloseTimeoutId: ReturnType<typeof setTimeout> | null = null;
 let toggleTimeout: ReturnType<typeof setTimeout> | null = null;
 let flyoutFocusTrap: FocusTrap | null = null;
 
-const mainEntries = computed(() => pruneDeepEntries(buildNavTree(props.entries)));
+const sectionTrees = computed(() =>
+  props.sections.map((section) => ({
+    ...section,
+    entries: pruneDeepEntries(buildNavTree(section.entries)),
+  })),
+);
+
+// Every top level entry across the sections; branches are keyed globally, not per section
+const mainEntries = computed(() => sectionTrees.value.flatMap((section) => section.entries));
 
 const navClasses = computed(() => ({
   "is--expanded": props.expanded,
@@ -424,7 +451,7 @@ function onMenuItemHover(entry: NavTreeEntry, eventTarget: HTMLElement) {
   activeEntry.value = { entry, target };
 }
 
-function onListMouseLeave(event: MouseEvent | FocusEvent) {
+function onSectionMouseLeave(event: MouseEvent | FocusEvent) {
   if (isSuppressedFlyoutFocusOut(event)) {
     return;
   }
@@ -441,7 +468,7 @@ function onFlyoutMouseLeave(event: MouseEvent | FocusEvent) {
     return;
   }
 
-  if ((event.relatedTarget as HTMLElement | null)?.closest(".mt-nav__list")) {
+  if ((event.relatedTarget as HTMLElement | null)?.closest(".mt-nav__section")) {
     return;
   }
 
@@ -723,6 +750,9 @@ function isEntryExpanded(entry: NavTreeEntry) {
   .mt-nav__body {
     position: relative;
     height: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: var(--scale-size-16);
 
     // Must live on the scroller: it clips at the padding box, keeping content visible for the mask
     padding: var(--mt-nav-body-fade) 0;
@@ -735,10 +765,6 @@ function isEntryExpanded(entry: NavTreeEntry) {
     &::-webkit-scrollbar {
       display: none;
     }
-  }
-
-  .mt-nav__list {
-    list-style: none;
   }
 }
 

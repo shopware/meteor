@@ -31,6 +31,18 @@ export interface NavEntry {
 }
 
 /**
+ * A group of entries rendered as one list, optionally below a header.
+ */
+export interface NavSection {
+  /** Unique identifier, used as the render key. Falls back to `header`. */
+  id?: string;
+  /** Translated heading above the entries. Hidden while the navigation is collapsed. */
+  header?: string;
+  /** Flat list of the section's entries. `parent` references must point into the same section. */
+  entries: NavEntry[];
+}
+
+/**
  * A navigation entry with its resolved tree position.
  */
 export interface NavTreeEntry extends NavEntry {

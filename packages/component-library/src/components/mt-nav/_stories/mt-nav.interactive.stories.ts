@@ -17,6 +17,7 @@ export const VisualTestDefault: MtNavStory = {
 
     expect(within(navigation).getByText("Dashboard")).toBeVisible();
     expect(within(navigation).getByText("Catalogues")).toBeVisible();
+    expect(within(navigation).getByRole("heading", { name: "System" })).toBeVisible();
     expect(within(navigation).getByText("Settings")).toBeVisible();
   },
 };

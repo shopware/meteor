@@ -2,7 +2,7 @@ import { render, screen, waitFor, within } from "@testing-library/vue";
 import { userEvent } from "@testing-library/user-event";
 import { defineComponent, h } from "vue";
 import MtNav from "./mt-nav.vue";
-import type { NavEntry, NavRoute, NavTreeEntry } from "./mt-nav.types";
+import type { NavEntry, NavRoute, NavSection, NavTreeEntry } from "./mt-nav.types";
 
 // Stands in for `router-link`: the library does not depend on vue-router
 const RouterLinkStub = defineComponent({
@@ -68,6 +68,8 @@ const entries: NavEntry[] = [
   },
 ];
 
+const sections: NavSection[] = [{ id: "main", entries }];
+
 function routeFor(name: string): NavRoute {
   return { name, path: `/${name.replace(/\./g, "/")}`, matched: [{ name }], params: {} };
 }
@@ -75,7 +77,7 @@ function routeFor(name: string): NavRoute {
 function renderNav(props: Record<string, unknown> = {}, slots: Record<string, unknown> = {}) {
   return render(MtNav, {
     props: {
-      entries,
+      sections,
       linkComponent: RouterLinkStub,
       ...props,
     },
@@ -189,6 +191,39 @@ describe("mt-nav", () => {
     });
   });
 
+  describe("sections", () => {
+    it("renders one list per section, labelled by its header", () => {
+      renderNav({
+        sections: [
+          { id: "shop", entries: entries.slice(0, 2) },
+          { id: "help", header: "Help", entries: [entries[6]] },
+        ],
+      });
+
+      const lists = screen
+        .getAllByRole("list")
+        .filter((list) => list.classList.contains("mt-nav__list"));
+
+      expect(lists).toHaveLength(2);
+      expect(screen.getByRole("heading", { name: "Help" })).toBeVisible();
+      expect(within(screen.getByRole("list", { name: "Help" })).getByText("Docs")).toBeVisible();
+      expect(lists[0]).not.toHaveAttribute("aria-labelledby");
+    });
+
+    it("opens the branch owning the current route across sections", async () => {
+      renderNav({
+        sections: [
+          { id: "top", entries: [entries[0]] },
+          { id: "catalogue", header: "Catalogue", entries: entries.slice(1, 6) },
+        ],
+        route: routeFor("sw.category.index"),
+      });
+
+      await waitFor(() => expect(getEntryLabel("Categories")).toBeVisible());
+      expect(getEntryLabel("Categories").closest("li")).toHaveAttribute("aria-current", "page");
+    });
+  });
+
   describe("collapsed", () => {
     it("reflects the expanded state on the root element", () => {
       const { rerender } = renderNav({ expanded: false });
@@ -198,7 +233,7 @@ describe("mt-nav", () => {
       expect(navigation).toHaveClass("is--collapsed");
       expect(navigation).toHaveAttribute("data-expanded", "false");
 
-      return rerender({ entries, linkComponent: RouterLinkStub, expanded: true }).then(() => {
+      return rerender({ sections, linkComponent: RouterLinkStub, expanded: true }).then(() => {
         expect(navigation).toHaveClass("is--expanded");
         expect(navigation).toHaveAttribute("data-expanded", "true");
       });

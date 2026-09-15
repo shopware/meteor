@@ -1,9 +1,9 @@
-import type { NavEntry, NavRoute } from "../mt-nav.types";
+import type { NavEntry, NavRoute, NavSection } from "../mt-nav.types";
 
 /**
  * Sample navigation resembling a shop administration. Nested via `parent`, sorted via `position`.
  */
-export const entries: NavEntry[] = [
+const shopEntries: NavEntry[] = [
   {
     id: "dashboard",
     path: "dashboard.index",
@@ -76,6 +76,9 @@ export const entries: NavEntry[] = [
     parent: "marketing",
     position: 20,
   },
+];
+
+const systemEntries: NavEntry[] = [
   { id: "extension", label: "Extensions", icon: "regular-plug", position: 70 },
   {
     id: "my-extensions",
@@ -86,6 +89,11 @@ export const entries: NavEntry[] = [
   },
   { id: "store", path: "extension.store", label: "Store", parent: "extension", position: 20 },
   { id: "settings", path: "settings.index", label: "Settings", icon: "regular-cog", position: 80 },
+];
+
+export const sections: NavSection[] = [
+  { id: "shop", entries: shopEntries },
+  { id: "system", header: "System", entries: systemEntries },
 ];
 
 /**
