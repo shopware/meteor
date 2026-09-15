@@ -79,32 +79,3 @@ export const VisualTestCollapsed: MtNavStory = {
     expect(within(navigation).getByRole("button", { name: "Catalogues" })).toBeVisible();
   },
 };
-
-export const VisualTestFlyout: MtNavStory = {
-  name: "Show the flyout of a collapsed branch",
-  args: {
-    expanded: false,
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    await userEvent.hover(canvas.getByRole("button", { name: "Marketing" }));
-
-    // The flyout is positioned asynchronously and fades in, so wait for it to be fully shown
-    await waitUntil(() => {
-      const element = document.getElementById("mt-nav-flyout");
-
-      return (
-        element !== null &&
-        getComputedStyle(element).visibility === "visible" &&
-        getComputedStyle(element).opacity === "1"
-      );
-    });
-
-    const flyout = within(document.getElementById("mt-nav-flyout") as HTMLElement);
-
-    expect(flyout.getByText("Marketing")).toBeVisible();
-    expect(flyout.getByText("Promotions")).toBeVisible();
-    expect(flyout.getByText("Newsletter recipients")).toBeVisible();
-  },
-};

@@ -6,8 +6,6 @@
     :aria-current="rowActive ? 'page' : 'false'"
     :open="collapsibleOpen"
     @update:open="onCollapsibleOpenUpdate"
-    @mouseenter="context.onItemHover(item, $event.currentTarget as HTMLElement)"
-    @keydown="onCollapsedParentKeydown"
   >
     <div class="mt-nav__item-row">
       <component
@@ -62,12 +60,7 @@
     </mt-collapsible-content>
   </mt-collapsible>
 
-  <li
-    v-else-if="showMenuItem"
-    :class="leafLiClass"
-    :aria-current="rowActive ? 'page' : 'false'"
-    @mouseenter="context.onItemHover(item, $event.currentTarget as HTMLElement)"
-  >
+  <li v-else-if="showMenuItem" :class="leafLiClass" :aria-current="rowActive ? 'page' : 'false'">
     <mt-tooltip :content="item.label" placement="right">
       <template #default="tooltipProps">
         <div class="mt-nav__item-row" v-bind="collapsedTooltipTriggerProps(tooltipProps)">
@@ -102,19 +95,20 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, ref, watch, type PropType } from "vue";
+import { computed, inject, onBeforeUnmount, ref, watch, type PropType } from "vue";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtTooltip from "@/components/mt-tooltip/mt-tooltip.vue";
 import MtCollapsible from "@/components/mt-collapsible/mt-collapsible.vue";
 import MtCollapsibleTrigger from "@/components/mt-collapsible/mt-collapsible-trigger.vue";
 import MtCollapsibleContent from "@/components/mt-collapsible/mt-collapsible-content.vue";
-import type { NavItem } from "../mt-nav.types";
-import { NAV_CONTEXT } from "./mt-nav-context";
+import type { NavItem } from "./mt-nav.types";
+import { NAV_CONTEXT } from "./_internal/mt-nav-context";
+import { pruneDeepItems } from "./_internal/prune-deep-items";
 import {
   getActiveRouteNames,
   isEntryOnActiveRoute,
   entryParamsMatchRoute,
-} from "./nav-item-active.helper";
+} from "./_internal/nav-item-active.helper";
 
 /**
  * Props of the tooltip trigger that open it; stripped when the row shows no tooltip.
@@ -122,10 +116,14 @@ import {
 const TOOLTIP_OPEN_TRIGGER_PROPS = ["onMouseover", "onFocus", "aria-describedby"];
 
 const props = defineProps({
+  /**
+   * The item to render, nested via `children` up to three levels deep.
+   */
   item: {
     type: Object as PropType<NavItem>,
     required: true,
   },
+  /** Internal: nesting depth of the row, starting at 1 for the top level. */
   menuDepth: {
     type: Number,
     default: 1,
@@ -161,6 +159,11 @@ const route = context.route;
 const linkComponent = context.linkComponent;
 const navExpanded = context.expanded;
 
+// Top-level rows make themselves known, so the navigation can find the branch owning the route
+if (props.menuDepth === 1) {
+  onBeforeUnmount(context.registerItems(computed(() => pruneDeepItems([props.item]))));
+}
+
 const suppressRouteKeepsFolderOpen = ref(false);
 const manualNestedOpen = ref(false);
 
@@ -176,10 +179,6 @@ const itemPath = computed(() => props.item.path);
 // Only top-level branches are tracked by the navigation; nested rows keep their own state
 const isBranchExpanded = computed(
   () => props.menuDepth === 1 && context.isItemExpanded(props.item),
-);
-
-const flyoutActive = computed(
-  () => props.menuDepth === 1 && context.isFlyoutItemActive(props.item),
 );
 
 const hasActiveChild = computed(() =>
@@ -279,7 +278,6 @@ const collapsibleLiClass = computed(() => [
   {
     "is--entry-expanded": collapsibleOpen.value,
     "is--child-active": childRouteActive.value,
-    "is--flyout-enabled": flyoutActive.value,
   },
 ]);
 
@@ -292,22 +290,6 @@ const leafLiClass = computed(() => [
   },
 ]);
 
-const collapsedFlyoutAria = computed<{ "aria-expanded"?: string; "aria-controls"?: string }>(() => {
-  if (navExpanded.value || props.menuDepth !== 1 || children.value.length === 0) {
-    return {};
-  }
-
-  // aria-controls only while open
-  if (!flyoutActive.value) {
-    return { "aria-expanded": "false" };
-  }
-
-  return {
-    "aria-expanded": "true",
-    "aria-controls": "mt-nav-flyout",
-  };
-});
-
 // Collapsed top-level rows hide their label, so the accessible name needs an aria-label.
 const collapsedAriaLabel = computed(() =>
   !navExpanded.value && props.menuDepth === 1 ? props.item.label : undefined,
@@ -317,7 +299,6 @@ const linkProps = computed(() => ({
   to: linkTo.value,
   activeClass: "router-link-active",
   exactActiveClass: "router-link-exact-active",
-  ...collapsedFlyoutAria.value,
 }));
 
 const leafTag = computed(() => {
@@ -348,7 +329,7 @@ const leafAttrs = computed(() => {
   return {};
 });
 
-// Top-level items without children have no flyout, label is accessible via a tooltip
+// Collapsed top-level rows hide their label, which stays accessible via a tooltip
 const showsCollapsedTooltip = computed(
   () => !navExpanded.value && props.menuDepth === 1 && children.value.length === 0,
 );
@@ -397,10 +378,6 @@ function toggleSubmenu() {
 }
 
 function onNavigationLinkClick() {
-  if (!navExpanded.value) {
-    context.onFlyoutNavigate(hasCollapsibleSubtree.value);
-  }
-
   // No-op unless this row has a collapsible subtree.
   toggleSubmenu();
 
@@ -417,30 +394,6 @@ function onCollapsibleOpenUpdate(open: boolean) {
   if (props.menuDepth === 1 && navExpanded.value) {
     context.onBranchToggle(props.item, open);
   }
-}
-
-function onCollapsedParentKeydown(event: KeyboardEvent) {
-  // Keyboard access to the collapsed flyout - disclosure navigation pattern
-  if (navExpanded.value || props.menuDepth !== 1 || children.value.length === 0) {
-    return;
-  }
-
-  if ((event.key === "Escape" || event.key === "ArrowLeft") && flyoutActive.value) {
-    context.onFlyoutCloseRequest();
-    return;
-  }
-
-  const isActivationKey = event.key === "Enter" || event.key === " ";
-  // Items with an own route keep Enter/Space for navigation.
-  const opensFlyout = event.key === "ArrowRight" || (isActivationKey && !itemPath.value);
-
-  if (!opensFlyout) {
-    return;
-  }
-
-  event.preventDefault();
-  context.onItemHover(props.item, event.currentTarget as HTMLElement);
-  context.onFlyoutFocusRequest();
 }
 </script>
 
@@ -638,17 +591,6 @@ $nesting-line-indent: 36px;
 
   .mt-nav__link-icon {
     color: var(--color-icon-brand-default);
-  }
-}
-
-.mt-nav__flyout-content .mt-nav__link.router-link-active {
-  background: var(--color-background-brand-default);
-}
-
-.mt-nav__list-item.is--flyout-enabled > .mt-nav__item-row {
-  > .mt-nav__link {
-    color: var(--color-text-primary-default);
-    background: var(--color-interaction-secondary-hover);
   }
 }
 

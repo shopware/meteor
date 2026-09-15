@@ -14,18 +14,12 @@ export interface NavContext {
   hasExpandedBranches: ComputedRef<boolean>;
   /** Whether the branch of a top-level item is open. */
   isItemExpanded: (item: NavItem) => boolean;
-  /** Whether the collapsed flyout currently shows the children of the item. */
-  isFlyoutItemActive: (item: NavItem) => boolean;
   /**
-   * Makes the top-level items of a section known to the navigation, which needs the complete
-   * list to find the branch owning the current route. Returns the matching unregister function.
+   * Makes a top-level row known to the navigation, which needs the complete list to find the
+   * branch owning the current route. Returns the matching unregister function.
    */
   registerItems: (items: Ref<NavItem[]>) => () => void;
-  onItemHover: (item: NavItem, target: HTMLElement) => void;
   onBranchToggle: (item: NavItem, open: boolean) => void;
-  onFlyoutFocusRequest: () => void;
-  onFlyoutCloseRequest: () => void;
-  onFlyoutNavigate: (disclosesChildren: boolean) => void;
   onLinkClick: (item: NavItem) => void;
 }
 

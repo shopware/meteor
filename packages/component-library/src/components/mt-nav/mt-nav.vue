@@ -14,58 +14,9 @@
       class="mt-nav__body"
       :style="scrollbarOffsetStyle"
       @keydown="onNavigationKeydown"
-      @mouseenter="cancelFlyoutClose"
-      @focusin="cancelFlyoutClose"
-      @mouseleave="onBodyMouseLeave"
-      @focusout="onBodyMouseLeave"
     >
       <slot />
     </div>
-
-    <!--
-    <mt-floating-ui
-      :is-opened="!expanded && flyoutItems.length > 0"
-      :anchor-element="flyoutReferenceElement"
-      :floating-ui-options="{ placement: 'right-start' }"
-      :offset="12"
-      detached
-      @close="onFlyoutLeave"
-    >
-      <div
-        id="mt-nav-flyout"
-        ref="flyoutElement"
-        class="mt-nav__flyout-content"
-        :class="{ 'is--closing': isFlyoutClosing }"
-        tabindex="-1"
-        @mouseenter="cancelFlyoutClose"
-        @focusin="cancelFlyoutClose"
-        @mouseleave="onFlyoutMouseLeave"
-        @focusout="onFlyoutMouseLeave"
-        @keydown="onFlyoutKeydown"
-      >
-        <mt-text
-          v-if="flyoutTitle"
-          as="span"
-          class="mt-nav__flyout-title"
-          size="xs"
-          color="color-text-secondary-default"
-        >
-          {{ flyoutTitle }}
-        </mt-text>
-
-        <ul class="mt-nav__flyout-list">
-          <mt-nav-item
-            v-for="item in flyoutItems"
-            :key="item.id || item.path"
-            :item="item"
-            :menu-depth="2"
-            :display-icon="false"
-            :collapsible-text="false"
-          />
-        </ul>
-      </div>
-    </mt-floating-ui>
-    -->
   </nav>
 </template>
 
@@ -83,11 +34,7 @@ import {
   type PropType,
   type Ref,
 } from "vue";
-import { createFocusTrap, type FocusTrap } from "focus-trap";
 import { useI18n } from "vue-i18n";
-// import MtText from "@/components/mt-text/mt-text.vue";
-// import MtFloatingUi from "@/components/mt-floating-ui/mt-floating-ui.vue";
-// import MtNavItem from "./_internal/mt-nav-item.vue";
 import { NAV_CONTEXT } from "./_internal/mt-nav-context";
 import { navItemKey } from "./_internal/nav-item-key";
 import { getActiveRouteNames, isEntryOnActiveRoute } from "./_internal/nav-item-active.helper";
@@ -96,8 +43,6 @@ import type { NavItem, NavLinkComponent, NavRoute, NavRouter } from "./mt-nav.ty
 export type { NavItem, NavLinkComponent, NavRoute, NavRouter } from "./mt-nav.types";
 
 const TOGGLE_ANIMATION_DURATION = 500;
-const FLYOUT_CLOSE_DELAY = 180;
-const FLYOUT_CLOSE_ANIMATION_DURATION = 200;
 
 const props = defineProps({
   /**
@@ -122,8 +67,7 @@ const props = defineProps({
     default: "router-link",
   },
   /**
-   * Whether the navigation is expanded. Collapsed, it shows the top level icons only and opens
-   * branches in a flyout.
+   * Whether the navigation is expanded. Collapsed, it shows the top level icons only.
    */
   expanded: {
     type: Boolean,
@@ -136,7 +80,7 @@ const emit = defineEmits<{
 }>();
 
 defineSlots<{
-  /** The `mt-nav-section` components holding the items. */
+  /** The `mt-nav-section` components holding the rows. */
   default?: () => unknown;
 }>();
 
@@ -154,27 +98,18 @@ const { t } = useI18n({
 const navigationLabelId = `mt-nav-label-${useId()}`;
 
 const navBodyElement = ref<HTMLElement | null>(null);
-const flyoutElement = ref<HTMLElement | null>(null);
 
-const activeItem = ref<{ item: NavItem; target: HTMLElement } | null>(null);
-const flyoutItems = ref<NavItem[]>([]);
-const flyoutTitle = ref("");
-const isFlyoutClosing = ref(false);
-const isFlyoutPinned = ref(false);
-const flyoutReferenceElement = ref<HTMLElement | null>(null);
 const scrollbarOffset = ref("");
 const isToggling = ref(false);
 const activeBranchKey = ref<string | null | undefined>(null);
 const expandedItems = ref<NavItem[]>([]);
 
-// The top level items of every mounted section, in registration order
+// The top level rows of every mounted section, in mount order
 const registeredItemLists = shallowRef<Ref<NavItem[]>[]>([]);
 
-let flyoutCloseTimeoutId: ReturnType<typeof setTimeout> | null = null;
 let toggleTimeout: ReturnType<typeof setTimeout> | null = null;
-let flyoutFocusTrap: FocusTrap | null = null;
 
-// Every top level item across the sections; branches are keyed globally, not per section
+// Every top level row across the sections; branches are keyed globally, not per section
 const mainItems = computed(() => registeredItemLists.value.flatMap((list) => list.value));
 
 const navClasses = computed(() => ({
@@ -195,20 +130,19 @@ provide(NAV_CONTEXT, {
   expanded: computed(() => props.expanded),
   hasExpandedBranches: computed(() => expandedItems.value.length > 0),
   isItemExpanded,
-  isFlyoutItemActive,
   registerItems,
-  onItemHover,
   onBranchToggle,
-  onFlyoutFocusRequest,
-  onFlyoutCloseRequest: onFlyoutLeave,
-  onFlyoutNavigate,
   onLinkClick,
 });
 
 watch(
   () => props.expanded,
   () => {
-    onExpandedChange();
+    // Collapsing hides the expanded tree, so drop that state
+    if (!props.expanded) {
+      expandedItems.value = [];
+    }
+
     startToggleWindow();
   },
 );
@@ -217,15 +151,13 @@ watch(
 watch(
   () => props.route?.path,
   () => {
-    closeFlyoutAfterNavigation();
-
     // Ensure the branch owning the new page is open, once the route change has rendered
     nextTick(() => expandAncestorBranchesForCurrentRoute());
   },
   { immediate: true },
 );
 
-// Sections usually mount after the first render (app modules, plugins), so revisit the active branch
+// Rows usually mount after the first render (app modules, plugins), so revisit the active branch
 watch(mainItems, () => {
   nextTick(() => expandAncestorBranchesForCurrentRoute());
 });
@@ -235,9 +167,6 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  cancelFlyoutClose();
-  deactivateFlyoutFocusTrap(false);
-
   if (toggleTimeout) {
     clearTimeout(toggleTimeout);
   }
@@ -251,19 +180,7 @@ function registerItems(items: Ref<NavItem[]>) {
   };
 }
 
-function closeFlyoutAfterNavigation() {
-  // Ensure an open flyout closes once the page changes
-  if (!props.expanded && flyoutItems.value.length && !isFlyoutPinned.value) {
-    // Ensure the keyboard focus stays on the new page
-    deactivateFlyoutFocusTrap(false);
-    onFlyoutLeave();
-  }
-}
-
 function onLinkClick(item: NavItem) {
-  // Tapping the current route's item aborts as redundant navigation, so no route watcher fires
-  closeFlyoutAfterNavigation();
-
   emit("navigate", item);
 }
 
@@ -279,16 +196,6 @@ function startToggleWindow() {
     isToggling.value = false;
     toggleTimeout = null;
   }, TOGGLE_ANIMATION_DURATION);
-}
-
-function onExpandedChange() {
-  // Collapsing hides the expanded tree, so drop that state and close anything left floating
-  if (!props.expanded) {
-    expandedItems.value = [];
-    onFlyoutLeave();
-  }
-
-  flyoutItems.value = [];
 }
 
 function addScrollbarOffset() {
@@ -360,164 +267,18 @@ function collapseInactiveBranches(exceptItem: NavItem | null = null) {
     .forEach((expanded) => collapseItem(expanded));
 }
 
-function onItemHover(item: NavItem, eventTarget: HTMLElement) {
-  if (props.expanded) {
+function onNavigationKeydown(event: KeyboardEvent) {
+  // arrow key support, per the APG disclosure navigation pattern.
+  const body = navBodyElement.value;
+
+  if (!body) {
     return;
   }
 
-  cancelFlyoutClose();
-
-  const target = eventTarget.closest<HTMLElement>(".mt-nav__list-item");
-
-  if (!target) {
-    return;
-  }
-
-  const hasChildrenClass = target.classList.contains("navigation-list-item__has-children");
-  const children = hasChildrenClass ? item.children ?? [] : [];
-
-  if (!hasChildrenClass || children.length === 0) {
-    onFlyoutLeave();
-    return;
-  }
-
-  const itemKey = navItemKey(item);
-  const active = activeItem.value?.item;
-  const activeKey = active ? navItemKey(active) : null;
-
-  if (activeKey === itemKey && flyoutItems.value.length > 0) {
-    return;
-  }
-
-  flyoutReferenceElement.value = target.querySelector<HTMLElement>(".mt-nav__link") ?? target;
-  isFlyoutPinned.value = false;
-  flyoutItems.value = children;
-  flyoutTitle.value = item.label;
-
-  activeItem.value = { item, target };
-}
-
-function onBodyMouseLeave(event: MouseEvent | FocusEvent) {
-  if (isSuppressedFlyoutFocusOut(event)) {
-    return;
-  }
-
-  if ((event.relatedTarget as HTMLElement | null)?.closest(".mt-nav__flyout-content")) {
-    return;
-  }
-
-  scheduleFlyoutClose();
-}
-
-function onFlyoutMouseLeave(event: MouseEvent | FocusEvent) {
-  if (isSuppressedFlyoutFocusOut(event)) {
-    return;
-  }
-
-  if ((event.relatedTarget as HTMLElement | null)?.closest(".mt-nav__body")) {
-    return;
-  }
-
-  scheduleFlyoutClose();
-}
-
-function isSuppressedFlyoutFocusOut(event: Event) {
-  return event.type === "focusout" && isFlyoutPinned.value;
-}
-
-function onFlyoutNavigate(disclosesChildren: boolean) {
-  isFlyoutPinned.value = disclosesChildren;
-}
-
-function scheduleFlyoutClose() {
-  if (props.expanded || !flyoutItems.value.length) {
-    return;
-  }
-
-  cancelFlyoutClose();
-
-  flyoutCloseTimeoutId = setTimeout(() => {
-    startFlyoutCloseAnimation();
-  }, FLYOUT_CLOSE_DELAY);
-}
-
-function startFlyoutCloseAnimation() {
-  if (!flyoutItems.value.length) {
-    return;
-  }
-
-  isFlyoutClosing.value = true;
-
-  flyoutCloseTimeoutId = setTimeout(() => {
-    onFlyoutLeave();
-  }, FLYOUT_CLOSE_ANIMATION_DURATION);
-}
-
-function cancelFlyoutClose() {
-  if (flyoutCloseTimeoutId) {
-    clearTimeout(flyoutCloseTimeoutId);
-    flyoutCloseTimeoutId = null;
-  }
-
-  isFlyoutClosing.value = false;
-}
-
-function isFlyoutItemActive(item: NavItem) {
-  if (props.expanded || flyoutItems.value.length === 0) {
-    return false;
-  }
-
-  const active = activeItem.value?.item;
-
-  return !!active && navItemKey(active) === navItemKey(item);
-}
-
-function onFlyoutFocusRequest() {
-  nextTick(() => {
-    const element = flyoutElement.value;
-
-    if (!element || flyoutItems.value.length === 0) {
-      return;
-    }
-
-    deactivateFlyoutFocusTrap(false);
-
-    flyoutFocusTrap = createFocusTrap(element, {
-      escapeDeactivates: true,
-      clickOutsideDeactivates: true,
-      returnFocusOnDeactivate: true,
-      delayInitialFocus: false,
-      fallbackFocus: element,
-      onDeactivate: () => {
-        flyoutFocusTrap = null;
-        onFlyoutLeave();
-      },
-    });
-
-    flyoutFocusTrap.activate();
-  });
-}
-
-function deactivateFlyoutFocusTrap(returnFocus = true) {
-  if (!flyoutFocusTrap) {
-    return;
-  }
-
-  const trap = flyoutFocusTrap;
-  flyoutFocusTrap = null;
-
-  // Override the configured onDeactivate: it closes the flyout via onFlyoutLeave
-  trap.deactivate({ returnFocus, onDeactivate: () => {} });
-}
-
-function getNavigationLinks(container: HTMLElement) {
-  return Array.from(container.querySelectorAll<HTMLElement>(".mt-nav__link")).filter(
+  const links = Array.from(body.querySelectorAll<HTMLElement>(".mt-nav__link")).filter(
     (link) => !link.closest("[hidden]"),
   );
-}
 
-function moveListFocus(links: HTMLElement[], event: KeyboardEvent) {
-  // arrow key support, per the APG disclosure navigation pattern.
   if (links.length === 0) {
     return;
   }
@@ -547,46 +308,8 @@ function moveListFocus(links: HTMLElement[], event: KeyboardEvent) {
   links[nextIndex]?.focus();
 }
 
-function onNavigationKeydown(event: KeyboardEvent) {
-  const body = navBodyElement.value;
-
-  if (!body) {
-    return;
-  }
-
-  moveListFocus(getNavigationLinks(body), event);
-}
-
-function onFlyoutKeydown(event: KeyboardEvent) {
-  if (event.key === "ArrowLeft") {
-    event.preventDefault();
-    deactivateFlyoutFocusTrap(true);
-    onFlyoutLeave();
-
-    return;
-  }
-
-  const element = flyoutElement.value;
-
-  if (!element) {
-    return;
-  }
-
-  moveListFocus(getNavigationLinks(element), event);
-}
-
-function onFlyoutLeave() {
-  deactivateFlyoutFocusTrap();
-  cancelFlyoutClose();
-  isFlyoutPinned.value = false;
-  activeItem.value = null;
-  flyoutReferenceElement.value = null;
-  flyoutItems.value = [];
-  flyoutTitle.value = "";
-}
-
 function expandAncestorBranchesForCurrentRoute() {
-  // Only the expanded navigation shows a tree to open; collapsed items use the flyout instead
+  // Only the expanded navigation shows a tree to open
   if (!props.expanded) {
     return;
   }
@@ -720,73 +443,5 @@ function isItemExpanded(item: NavItem) {
   .mt-nav .mt-nav__body {
     transition: none;
   }
-
-  .mt-nav__flyout-content,
-  .mt-nav__flyout-content.is--closing {
-    animation: none;
-  }
-}
-
-.mt-nav__flyout-content {
-  // Aligns the first flyout item with the hovered row: title height + padding + border
-  --mt-nav-flyout-shift: translateY(calc(-1 * (var(--scale-size-36) + var(--scale-size-6) + 1px)));
-
-  width: 264px;
-  padding: var(--scale-size-6);
-  display: flex;
-  flex-direction: column;
-  border-radius: var(--border-radius-m);
-  border: 1px solid var(--color-border-secondary-default);
-  background: var(--color-elevation-surface-raised);
-  box-shadow: 0 6px 12px -8px var(--color-elevation-shadow-default);
-  transform: var(--mt-nav-flyout-shift);
-  transform-origin: left center;
-  animation: mt-nav-flyout-in 0.1s ease;
-
-  &.is--closing {
-    animation: mt-nav-flyout-out 0.1s ease forwards;
-  }
-}
-
-@keyframes mt-nav-flyout-in {
-  from {
-    opacity: 0;
-    transform: var(--mt-nav-flyout-shift) scale(0.98);
-  }
-
-  to {
-    opacity: 1;
-    transform: var(--mt-nav-flyout-shift) scale(1);
-  }
-}
-
-@keyframes mt-nav-flyout-out {
-  from {
-    opacity: 1;
-    transform: var(--mt-nav-flyout-shift) scale(1);
-  }
-
-  to {
-    opacity: 0;
-    transform: var(--mt-nav-flyout-shift) scale(0.95);
-  }
-}
-
-.mt-nav__flyout-list {
-  list-style: none;
-  margin: 0;
-  padding: 0;
-}
-
-// Typography comes from mt-text, layout and truncation are ours.
-.mt-nav__flyout-title {
-  height: var(--scale-size-36);
-  padding: 0 var(--scale-size-6) 0 var(--scale-size-10);
-  display: flex;
-  align-items: center;
-  gap: var(--scale-size-10);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 </style>
