@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from "@storybook/vue3";
 import { markRaw, ref, watch } from "vue";
 import MtNav from "../mt-nav.vue";
 import type { NavEntry, NavRoute } from "../mt-nav.types";
-import { routeFor, sections } from "./entries";
+import { routeFor, sections, sectionsWithHeaders } from "./entries";
 import { StoryLink } from "./story-link";
 
 export type MtNavMeta = Meta<typeof MtNav>;
@@ -68,6 +68,15 @@ export default meta;
 export type MtNavStory = StoryObj<MtNavMeta>;
 
 export const Default: MtNavStory = {};
+
+/**
+ * Several sections, each with a `header` above its entries.
+ */
+export const Sections: MtNavStory = {
+  args: {
+    sections: sectionsWithHeaders,
+  },
+};
 
 export const Collapsed: MtNavStory = {
   args: {

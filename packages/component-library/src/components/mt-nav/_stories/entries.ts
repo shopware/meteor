@@ -55,8 +55,16 @@ const systemEntries: NavEntry[] = [
   { id: "settings", path: "settings.index", label: "Settings", icon: "regular-cog" },
 ];
 
-export const sections: NavSection[] = [
-  { id: "shop", entries: shopEntries },
+/**
+ * Everything in one section without a header.
+ */
+export const sections: NavSection[] = [{ id: "main", entries: [...shopEntries, ...systemEntries] }];
+
+/**
+ * The same entries split into headed sections.
+ */
+export const sectionsWithHeaders: NavSection[] = [
+  { id: "shop", header: "Shop", entries: shopEntries },
   { id: "system", header: "System", entries: systemEntries },
 ];
 
