@@ -1,28 +1,27 @@
 import { expect, userEvent, within } from "@storybook/test";
 import { waitUntil } from "@/_internal/test-helper";
 
-import meta, { type MtSidebarMeta, type MtSidebarStory } from "./mt-sidebar.stories";
+import meta, { type MtNavMeta, type MtNavStory } from "./mt-nav.stories";
 
 export default {
   ...meta,
-  title: "Components/Sidebar/Interaction tests",
+  title: "Components/Nav/Interaction tests",
   tags: ["!autodocs"],
-} as MtSidebarMeta;
+} as MtNavMeta;
 
-export const VisualTestDefault: MtSidebarStory = {
-  name: "Render the sidebar",
+export const VisualTestDefault: MtNavStory = {
+  name: "Render the navigation",
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const navigation = canvas.getByRole("navigation", { name: "Main navigation" });
 
     expect(within(navigation).getByText("Dashboard")).toBeVisible();
     expect(within(navigation).getByText("Catalogues")).toBeVisible();
-    expect(canvas.getByText("Demo store")).toBeVisible();
-    expect(canvas.getByText("Max Mustermann")).toBeVisible();
+    expect(within(navigation).getByText("Settings")).toBeVisible();
   },
 };
 
-export const VisualTestActiveRoute: MtSidebarStory = {
+export const VisualTestActiveRoute: MtNavStory = {
   name: "Open the branch of the current route",
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -34,7 +33,7 @@ export const VisualTestActiveRoute: MtSidebarStory = {
   },
 };
 
-export const VisualTestExpandBranch: MtSidebarStory = {
+export const VisualTestExpandBranch: MtNavStory = {
   name: "Expand a branch by clicking its row",
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
@@ -48,25 +47,24 @@ export const VisualTestExpandBranch: MtSidebarStory = {
   },
 };
 
-export const VisualTestCollapse: MtSidebarStory = {
-  name: "Collapse and expand the sidebar",
+export const VisualTestCollapsed: MtNavStory = {
+  name: "Render the collapsed navigation",
+  args: {
+    expanded: false,
+  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    const sidebar = canvasElement.querySelector(".mt-sidebar") as HTMLElement;
+    const navigation = canvas.getByRole("navigation", { name: "Main navigation" });
 
-    await userEvent.click(canvas.getByRole("button", { name: "Collapse menu" }));
+    expect(navigation).toHaveClass("is--collapsed");
 
-    await waitUntil(() => sidebar.classList.contains("is--collapsed"));
-    expect(sidebar).toHaveAttribute("data-expanded", "false");
-
-    await userEvent.click(canvas.getByRole("button", { name: "Expand menu" }));
-
-    await waitUntil(() => sidebar.classList.contains("is--expanded"));
-    expect(sidebar).toHaveAttribute("data-expanded", "true");
+    // Labels are hidden, so the rows are named through aria-label
+    expect(within(navigation).getByRole("link", { name: "Dashboard" })).toBeVisible();
+    expect(within(navigation).getByRole("button", { name: "Catalogues" })).toBeVisible();
   },
 };
 
-export const VisualTestFlyout: MtSidebarStory = {
+export const VisualTestFlyout: MtNavStory = {
   name: "Show the flyout of a collapsed branch",
   args: {
     expanded: false,
@@ -78,7 +76,7 @@ export const VisualTestFlyout: MtSidebarStory = {
 
     // The flyout is positioned asynchronously and fades in, so wait for it to be fully shown
     await waitUntil(() => {
-      const element = document.getElementById("mt-sidebar-flyout");
+      const element = document.getElementById("mt-nav-flyout");
 
       return (
         element !== null &&
@@ -87,29 +85,10 @@ export const VisualTestFlyout: MtSidebarStory = {
       );
     });
 
-    const flyout = within(document.getElementById("mt-sidebar-flyout") as HTMLElement);
+    const flyout = within(document.getElementById("mt-nav-flyout") as HTMLElement);
 
     expect(flyout.getByText("Marketing")).toBeVisible();
     expect(flyout.getByText("Promotions")).toBeVisible();
     expect(flyout.getByText("Newsletter recipients")).toBeVisible();
-  },
-};
-
-export const VisualTestUserMenu: MtSidebarStory = {
-  name: "Open the user menu in the footer",
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    await userEvent.click(canvas.getByRole("button", { name: "Max Mustermann, Administrator" }));
-
-    await waitUntil(() => document.querySelector('[role="menu"]') !== null);
-
-    const menu = within(document.querySelector('[role="menu"]') as HTMLElement);
-
-    expect(menu.getByRole("menuitem", { name: "Profile" })).toBeVisible();
-    expect(menu.getByRole("menuitem", { name: "Logout" })).toBeVisible();
-    expect(menu.getByText("Version: 6.7.0.0")).toBeVisible();
-
-    await userEvent.keyboard("{Escape}");
   },
 };

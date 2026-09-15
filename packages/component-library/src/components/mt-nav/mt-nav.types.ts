@@ -1,13 +1,13 @@
 import type { Component } from "vue";
 
 /**
- * A single navigation entry as passed to `mt-sidebar`.
+ * A single navigation entry as passed to `mt-nav`.
  *
  * Entries form a flat list: `parent` names the `id` (or `path`) of the entry it nests under.
- * The menu builds the tree itself and supports up to three levels of nesting.
+ * The navigation builds the tree itself and supports up to three levels of nesting.
  * Labels must already be translated. Pass only the entries the current user may see.
  */
-export interface SidebarEntry {
+export interface NavEntry {
   /** Unique identifier. Falls back to `path` when omitted. */
   id?: string;
   /** Route name the entry navigates to. Optional for grouping entries and external links. */
@@ -31,26 +31,26 @@ export interface SidebarEntry {
 }
 
 /**
- * A menu entry with its resolved tree position.
+ * A navigation entry with its resolved tree position.
  */
-export interface SidebarTreeEntry extends SidebarEntry {
+export interface NavTreeEntry extends NavEntry {
   level: number;
-  children: SidebarTreeEntry[];
+  children: NavTreeEntry[];
 }
 
 /**
  * Minimal shape of the current route, compatible with a Vue Router `RouteLocationNormalized`.
  */
-export interface SidebarRoute {
+export interface NavRoute {
   name?: string;
   path?: string;
   params?: Record<string, unknown>;
   matched?: Array<{ name?: string }>;
-  meta?: SidebarRouteMeta;
+  meta?: NavRouteMeta;
 }
 
-export interface SidebarRouteMeta {
-  /** Route name of the menu entry that owns this (detail) route. */
+export interface NavRouteMeta {
+  /** Route name of the navigation entry that owns this (detail) route. */
   parentPath?: string;
   /** Written by the Shopware Administration for every module route. */
   $module?: {
@@ -63,8 +63,8 @@ export interface SidebarRouteMeta {
 /**
  * Minimal shape of the router, compatible with a Vue Router instance.
  */
-export interface SidebarRouter {
-  getRoutes?: () => Array<{ name?: string | symbol | null; meta?: SidebarRouteMeta }>;
+export interface NavRouter {
+  getRoutes?: () => Array<{ name?: string | symbol | null; meta?: NavRouteMeta }>;
 }
 
-export type SidebarLinkComponent = string | Component;
+export type NavLinkComponent = string | Component;

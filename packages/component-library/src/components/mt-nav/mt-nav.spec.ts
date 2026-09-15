@@ -1,8 +1,8 @@
 import { render, screen, waitFor, within } from "@testing-library/vue";
 import { userEvent } from "@testing-library/user-event";
 import { defineComponent, h } from "vue";
-import MtSidebar from "./mt-sidebar.vue";
-import type { SidebarEntry, SidebarRoute, SidebarTreeEntry } from "./mt-sidebar.types";
+import MtNav from "./mt-nav.vue";
+import type { NavEntry, NavRoute, NavTreeEntry } from "./mt-nav.types";
 
 // Stands in for `router-link`: the library does not depend on vue-router
 const RouterLinkStub = defineComponent({
@@ -22,7 +22,7 @@ const RouterLinkStub = defineComponent({
   },
 });
 
-const entries: SidebarEntry[] = [
+const entries: NavEntry[] = [
   {
     id: "sw-dashboard",
     path: "sw.dashboard.index",
@@ -68,12 +68,12 @@ const entries: SidebarEntry[] = [
   },
 ];
 
-function routeFor(name: string): SidebarRoute {
+function routeFor(name: string): NavRoute {
   return { name, path: `/${name.replace(/\./g, "/")}`, matched: [{ name }], params: {} };
 }
 
-function renderSidebar(props: Record<string, unknown> = {}, slots: Record<string, unknown> = {}) {
-  return render(MtSidebar, {
+function renderNav(props: Record<string, unknown> = {}, slots: Record<string, unknown> = {}) {
+  return render(MtNav, {
     props: {
       entries,
       linkComponent: RouterLinkStub,
@@ -89,7 +89,7 @@ function renderSidebar(props: Record<string, unknown> = {}, slots: Record<string
 function getEntryLabel(text: string, container: HTMLElement = document.body) {
   const label = within(container)
     .getAllByText(text)
-    .find((element) => element.classList.contains("mt-sidebar__navigation-link-label"));
+    .find((element) => element.classList.contains("mt-nav__link-label"));
 
   if (!label) {
     throw new Error(`Found no navigation entry labelled "${text}"`);
@@ -101,18 +101,17 @@ function getEntryLabel(text: string, container: HTMLElement = document.body) {
 function queryEntryLabel(text: string) {
   return screen
     .queryAllByText(text)
-    .find((element) => element.classList.contains("mt-sidebar__navigation-link-label"));
+    .find((element) => element.classList.contains("mt-nav__link-label"));
 }
 
-describe("mt-sidebar", () => {
+describe("mt-nav", () => {
   beforeEach(() => {
     vi.spyOn(console, "error").mockImplementation(() => {});
-    Object.defineProperty(window, "innerWidth", { value: 1920, configurable: true });
   });
 
   describe("navigation", () => {
     it("renders the top level entries", () => {
-      renderSidebar();
+      renderNav();
 
       const navigation = screen.getByRole("navigation", { name: "Main navigation" });
 
@@ -122,7 +121,7 @@ describe("mt-sidebar", () => {
     });
 
     it("renders route entries through the link component", () => {
-      renderSidebar();
+      renderNav();
 
       expect(getEntryLabel("Dashboard").closest("a")).toHaveAttribute(
         "href",
@@ -131,7 +130,7 @@ describe("mt-sidebar", () => {
     });
 
     it("renders external links as plain anchors", () => {
-      renderSidebar();
+      renderNav();
 
       const link = getEntryLabel("Docs").closest("a");
 
@@ -140,7 +139,7 @@ describe("mt-sidebar", () => {
     });
 
     it("drops entries nested deeper than three levels", () => {
-      renderSidebar({ route: routeFor("sw.review.index") });
+      renderNav({ route: routeFor("sw.review.index") });
 
       expect(getEntryLabel("Reviews")).toBeInTheDocument();
       expect(queryEntryLabel("Too deep")).toBeUndefined();
@@ -148,7 +147,7 @@ describe("mt-sidebar", () => {
     });
 
     it("expands a branch when its row is clicked", async () => {
-      renderSidebar();
+      renderNav();
 
       expect(getEntryLabel("Products")).not.toBeVisible();
 
@@ -159,7 +158,7 @@ describe("mt-sidebar", () => {
     });
 
     it("opens the branch owning the current route and marks the entry as current", async () => {
-      renderSidebar({ route: routeFor("sw.category.index") });
+      renderNav({ route: routeFor("sw.category.index") });
 
       await waitFor(() => expect(getEntryLabel("Categories")).toBeVisible());
 
@@ -168,7 +167,7 @@ describe("mt-sidebar", () => {
     });
 
     it("emits navigate when a navigation link is clicked", async () => {
-      const { emitted } = renderSidebar();
+      const { emitted } = renderNav();
 
       await userEvent.click(getEntryLabel("Dashboard"));
 
@@ -177,10 +176,10 @@ describe("mt-sidebar", () => {
     });
 
     it("renders the entry-suffix slot after every label", () => {
-      renderSidebar(
+      renderNav(
         {},
         {
-          "entry-suffix": ({ entry }: { entry: SidebarTreeEntry }) =>
+          "entry-suffix": ({ entry }: { entry: NavTreeEntry }) =>
             h("span", { "data-testid": `suffix-${entry.id}` }, "new"),
         },
       );
@@ -190,75 +189,40 @@ describe("mt-sidebar", () => {
     });
   });
 
-  describe("collapsing", () => {
-    it("emits update:expanded when the collapse button is clicked", async () => {
-      const { emitted } = renderSidebar();
+  describe("collapsed", () => {
+    it("reflects the expanded state on the root element", () => {
+      const { rerender } = renderNav({ expanded: false });
 
-      await userEvent.click(screen.getByRole("button", { name: "Collapse menu" }));
+      const navigation = screen.getByRole("navigation", { name: "Main navigation" });
 
-      expect(emitted()["update:expanded"]).toEqual([[false]]);
+      expect(navigation).toHaveClass("is--collapsed");
+      expect(navigation).toHaveAttribute("data-expanded", "false");
+
+      return rerender({ entries, linkComponent: RouterLinkStub, expanded: true }).then(() => {
+        expect(navigation).toHaveClass("is--expanded");
+        expect(navigation).toHaveAttribute("data-expanded", "true");
+      });
     });
 
-    it("offers an expand button when collapsed", async () => {
-      const { emitted } = renderSidebar({ expanded: false });
+    it("names the top level rows through an aria-label because their labels are hidden", () => {
+      renderNav({ expanded: false });
 
-      await userEvent.click(screen.getByRole("button", { name: "Expand menu" }));
-
-      expect(emitted()["update:expanded"]).toEqual([[true]]);
+      expect(getEntryLabel("Dashboard").closest("a")).toHaveAttribute("aria-label", "Dashboard");
+      expect(getEntryLabel("Docs").closest("a")).toHaveAttribute("aria-label", "Docs");
     });
 
-    it("shows the children of a hovered branch in a flyout when collapsed", async () => {
-      renderSidebar({ expanded: false });
+    it("shows the children of a hovered branch in a flyout", async () => {
+      renderNav({ expanded: false });
 
-      expect(document.getElementById("mt-sidebar-flyout")).toBeNull();
+      expect(document.getElementById("mt-nav-flyout")).toBeNull();
 
       await userEvent.hover(screen.getByRole("button", { name: "Catalogues" }));
 
-      const flyout = document.getElementById("mt-sidebar-flyout");
+      const flyout = document.getElementById("mt-nav-flyout");
 
       expect(flyout).not.toBeNull();
       expect(getEntryLabel("Products", flyout as HTMLElement)).toBeInTheDocument();
       expect(getEntryLabel("Categories", flyout as HTMLElement)).toBeInTheDocument();
-    });
-  });
-
-  describe("header", () => {
-    it("renders title, subtitle and the logo slot", () => {
-      renderSidebar(
-        { title: "Demo store", subtitle: "Administration" },
-        { logo: '<span data-testid="logo">Logo</span>' },
-      );
-
-      expect(screen.getByText("Demo store")).toBeVisible();
-      expect(screen.getByText("Administration")).toBeVisible();
-      expect(screen.getByTestId("logo")).toBeVisible();
-    });
-
-    it("renders no heading and no logo box without title, subtitle and logo", () => {
-      renderSidebar();
-
-      expect(document.querySelector(".mt-sidebar__heading")).toBeNull();
-      expect(document.querySelector(".mt-sidebar__header-logo-box")).toBeNull();
-    });
-  });
-
-  describe("footer", () => {
-    it("renders nothing in the footer without a footer slot", () => {
-      renderSidebar();
-
-      expect(document.querySelector(".mt-sidebar__footer")?.children).toHaveLength(0);
-    });
-
-    it("renders the footer slot with the expanded state", () => {
-      renderSidebar(
-        { expanded: false },
-        {
-          footer: ({ expanded }: { expanded: boolean }) =>
-            h("p", { "data-testid": "footer" }, expanded ? "expanded" : "collapsed"),
-        },
-      );
-
-      expect(screen.getByTestId("footer")).toHaveTextContent("collapsed");
     });
   });
 });
