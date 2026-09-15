@@ -1,8 +1,7 @@
 import { expect, userEvent, within } from "@storybook/test";
 import { waitUntil } from "@/_internal/test-helper";
 
-import meta, { type MtNavMeta, type MtNavStory } from "./mt-nav.stories";
-import { sectionsWithHeaders } from "./entries";
+import meta, { Sections, type MtNavMeta, type MtNavStory } from "./mt-nav.stories";
 
 export default {
   ...meta,
@@ -24,10 +23,8 @@ export const VisualTestDefault: MtNavStory = {
 };
 
 export const VisualTestSections: MtNavStory = {
+  ...Sections,
   name: "Render sections with headers",
-  args: {
-    sections: sectionsWithHeaders,
-  },
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const navigation = canvas.getByRole("navigation", { name: "Main navigation" });

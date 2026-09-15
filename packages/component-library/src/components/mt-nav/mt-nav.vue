@@ -14,40 +14,17 @@
       class="mt-nav__body"
       :style="scrollbarOffsetStyle"
       @keydown="onNavigationKeydown"
+      @mouseenter="cancelFlyoutClose"
+      @focusin="cancelFlyoutClose"
+      @mouseleave="onBodyMouseLeave"
+      @focusout="onBodyMouseLeave"
     >
-      <mt-nav-section
-        v-for="(section, index) in prunedSections"
-        :key="section.id ?? section.header ?? index"
-        :header="section.header"
-        @mouseenter="cancelFlyoutClose"
-        @focusin="cancelFlyoutClose"
-        @mouseleave="onSectionMouseLeave"
-        @focusout="onSectionMouseLeave"
-      >
-        <mt-nav-item
-          v-for="entry in section.entries"
-          :key="entry.id || entry.path"
-          :nav-expanded="expanded"
-          :is-expanded="isEntryExpanded(entry)"
-          :flyout-active="isFlyoutEntryActive(entry)"
-          :entry="entry"
-          @menu-item-hover="onMenuItemHover"
-          @branch-toggle="onMenuBranchToggle"
-          @flyout-focus-request="onFlyoutFocusRequest"
-          @flyout-close-request="onFlyoutLeave"
-          @flyout-navigate="onFlyoutNavigate"
-          @navigation-link-click="onNavigationLinkClicked"
-        >
-          <template #entry-suffix="slotProps">
-            <slot name="entry-suffix" v-bind="slotProps" />
-          </template>
-        </mt-nav-item>
-      </mt-nav-section>
+      <slot />
     </div>
 
     <!--
     <mt-floating-ui
-      :is-opened="!expanded && flyoutEntries.length > 0"
+      :is-opened="!expanded && flyoutItems.length > 0"
       :anchor-element="flyoutReferenceElement"
       :floating-ui-options="{ placement: 'right-start' }"
       :offset="12"
@@ -78,20 +55,13 @@
 
         <ul class="mt-nav__flyout-list">
           <mt-nav-item
-            v-for="entry in flyoutEntries"
-            :key="entry.id || entry.path"
-            :entry="entry"
+            v-for="item in flyoutItems"
+            :key="item.id || item.path"
+            :item="item"
             :menu-depth="2"
-            :nav-expanded="expanded"
             :display-icon="false"
             :collapsible-text="false"
-            @flyout-navigate="onFlyoutNavigate"
-            @navigation-link-click="onNavigationLinkClicked"
-          >
-            <template #entry-suffix="slotProps">
-              <slot name="entry-suffix" v-bind="slotProps" />
-            </template>
-          </mt-nav-item>
+          />
         </ul>
       </div>
     </mt-floating-ui>
@@ -107,45 +77,38 @@ import {
   onMounted,
   provide,
   ref,
+  shallowRef,
   useId,
   watch,
   type PropType,
+  type Ref,
 } from "vue";
 import { createFocusTrap, type FocusTrap } from "focus-trap";
 import { useI18n } from "vue-i18n";
-import MtText from "@/components/mt-text/mt-text.vue";
+// import MtText from "@/components/mt-text/mt-text.vue";
 // import MtFloatingUi from "@/components/mt-floating-ui/mt-floating-ui.vue";
-import MtNavItem from "./_internal/mt-nav-item.vue";
-import MtNavSection from "./_internal/mt-nav-section.vue";
+// import MtNavItem from "./_internal/mt-nav-item.vue";
 import { NAV_CONTEXT } from "./_internal/mt-nav-context";
+import { navItemKey } from "./_internal/nav-item-key";
 import { getActiveRouteNames, isEntryOnActiveRoute } from "./_internal/nav-item-active.helper";
-import type { NavEntry, NavLinkComponent, NavRoute, NavRouter, NavSection } from "./mt-nav.types";
+import type { NavItem, NavLinkComponent, NavRoute, NavRouter } from "./mt-nav.types";
 
-export type { NavEntry, NavLinkComponent, NavRoute, NavRouter, NavSection } from "./mt-nav.types";
+export type { NavItem, NavLinkComponent, NavRoute, NavRouter } from "./mt-nav.types";
 
 const TOGGLE_ANIMATION_DURATION = 500;
 const FLYOUT_CLOSE_DELAY = 180;
 const FLYOUT_CLOSE_ANIMATION_DURATION = 200;
-const MAX_NESTING_LEVEL = 3;
 
 const props = defineProps({
   /**
-   * Sections of the navigation, each with an optional header and a tree of entries nested via
-   * `children`, up to three levels deep.
-   */
-  sections: {
-    type: Array as PropType<NavSection[]>,
-    required: true,
-  },
-  /**
-   * The current route, used to highlight the active entry and open its branch.
+   * The current route, used to highlight the active item and open its branch.
    */
   route: {
     type: Object as PropType<NavRoute>,
     default: undefined,
   },
   /**
-   * The router, used to follow `meta.parentPath` of routes not listed in the menu.
+   * The router, used to follow `meta.parentPath` of routes not listed in the navigation.
    */
   router: {
     type: Object as PropType<NavRouter>,
@@ -169,12 +132,12 @@ const props = defineProps({
 });
 
 const emit = defineEmits<{
-  (e: "navigate", entry: NavEntry): void;
+  (e: "navigate", item: NavItem): void;
 }>();
 
 defineSlots<{
-  /** Rendered after the label of every entry, e.g. for a badge or counter. */
-  "entry-suffix"?: (props: { entry: NavEntry }) => unknown;
+  /** The `mt-nav-section` components holding the items. */
+  default?: () => unknown;
 }>();
 
 const { t } = useI18n({
@@ -193,8 +156,8 @@ const navigationLabelId = `mt-nav-label-${useId()}`;
 const navBodyElement = ref<HTMLElement | null>(null);
 const flyoutElement = ref<HTMLElement | null>(null);
 
-const activeEntry = ref<{ entry: NavEntry; target: HTMLElement } | null>(null);
-const flyoutEntries = ref<NavEntry[]>([]);
+const activeItem = ref<{ item: NavItem; target: HTMLElement } | null>(null);
+const flyoutItems = ref<NavItem[]>([]);
 const flyoutTitle = ref("");
 const isFlyoutClosing = ref(false);
 const isFlyoutPinned = ref(false);
@@ -202,21 +165,17 @@ const flyoutReferenceElement = ref<HTMLElement | null>(null);
 const scrollbarOffset = ref("");
 const isToggling = ref(false);
 const activeBranchKey = ref<string | null | undefined>(null);
-const expandedEntries = ref<NavEntry[]>([]);
+const expandedItems = ref<NavItem[]>([]);
+
+// The top level items of every mounted section, in registration order
+const registeredItemLists = shallowRef<Ref<NavItem[]>[]>([]);
 
 let flyoutCloseTimeoutId: ReturnType<typeof setTimeout> | null = null;
 let toggleTimeout: ReturnType<typeof setTimeout> | null = null;
 let flyoutFocusTrap: FocusTrap | null = null;
 
-const prunedSections = computed(() =>
-  props.sections.map((section) => ({
-    ...section,
-    entries: pruneDeepEntries(section.entries),
-  })),
-);
-
-// Every top level entry across the sections; branches are keyed globally, not per section
-const mainEntries = computed(() => prunedSections.value.flatMap((section) => section.entries));
+// Every top level item across the sections; branches are keyed globally, not per section
+const mainItems = computed(() => registeredItemLists.value.flatMap((list) => list.value));
 
 const navClasses = computed(() => ({
   "is--expanded": props.expanded,
@@ -233,7 +192,17 @@ provide(NAV_CONTEXT, {
   route: computed(() => props.route),
   router: computed(() => props.router),
   linkComponent: computed(() => props.linkComponent),
-  hasExpandedBranches: computed(() => expandedEntries.value.length > 0),
+  expanded: computed(() => props.expanded),
+  hasExpandedBranches: computed(() => expandedItems.value.length > 0),
+  isItemExpanded,
+  isFlyoutItemActive,
+  registerItems,
+  onItemHover,
+  onBranchToggle,
+  onFlyoutFocusRequest,
+  onFlyoutCloseRequest: onFlyoutLeave,
+  onFlyoutNavigate,
+  onLinkClick,
 });
 
 watch(
@@ -256,8 +225,8 @@ watch(
   { immediate: true },
 );
 
-// Entries usually arrive after the first render (app modules, plugins), so revisit the active branch
-watch(mainEntries, () => {
+// Sections usually mount after the first render (app modules, plugins), so revisit the active branch
+watch(mainItems, () => {
   nextTick(() => expandAncestorBranchesForCurrentRoute());
 });
 
@@ -274,48 +243,28 @@ onBeforeUnmount(() => {
   }
 });
 
-/**
- * Identity of an entry: its id, with the path as fallback. Branches are keyed by it, so entries
- * without either share the key undefined and are compared by reference instead.
- */
-function menuEntryKey(entry: NavEntry): string | undefined {
-  return entry.id ?? entry.path;
-}
+function registerItems(items: Ref<NavItem[]>) {
+  registeredItemLists.value = [...registeredItemLists.value, items];
 
-function pruneDeepEntries(entries: NavEntry[], level = 1): NavEntry[] {
-  return entries.map((entry) => {
-    const children = entry.children ?? [];
-
-    if (level < MAX_NESTING_LEVEL) {
-      return { ...entry, children: pruneDeepEntries(children, level + 1) };
-    }
-
-    // Nesting beyond level 3 is unsupported: report it and drop the children.
-    children.forEach((child) => {
-      console.error(
-        `[mt-nav] The navigation entry "${menuEntryKey(child)}" is nested on level 4 or higher. ` +
-          "The navigation only supports up to three levels of nesting.",
-      );
-    });
-
-    return { ...entry, children: [] };
-  });
+  return () => {
+    registeredItemLists.value = registeredItemLists.value.filter((list) => list !== items);
+  };
 }
 
 function closeFlyoutAfterNavigation() {
   // Ensure an open flyout closes once the page changes
-  if (!props.expanded && flyoutEntries.value.length && !isFlyoutPinned.value) {
+  if (!props.expanded && flyoutItems.value.length && !isFlyoutPinned.value) {
     // Ensure the keyboard focus stays on the new page
     deactivateFlyoutFocusTrap(false);
     onFlyoutLeave();
   }
 }
 
-function onNavigationLinkClicked(entry: NavEntry) {
-  // Tapping the current route's entry aborts as redundant navigation, so no route watcher fires
+function onLinkClick(item: NavItem) {
+  // Tapping the current route's item aborts as redundant navigation, so no route watcher fires
   closeFlyoutAfterNavigation();
 
-  emit("navigate", entry);
+  emit("navigate", item);
 }
 
 function startToggleWindow() {
@@ -335,11 +284,11 @@ function startToggleWindow() {
 function onExpandedChange() {
   // Collapsing hides the expanded tree, so drop that state and close anything left floating
   if (!props.expanded) {
-    expandedEntries.value = [];
+    expandedItems.value = [];
     onFlyoutLeave();
   }
 
-  flyoutEntries.value = [];
+  flyoutItems.value = [];
 }
 
 function addScrollbarOffset() {
@@ -355,63 +304,63 @@ function addScrollbarOffset() {
   scrollbarOffset.value = `-${scrollbarWidthPx}px`;
 }
 
-function expandEntry(entry: NavEntry) {
-  const key = menuEntryKey(entry);
+function expandItem(item: NavItem) {
+  const key = navItemKey(item);
 
-  // Entries without id and path share the key undefined, so never deduplicate them
-  if (key !== undefined && expandedEntries.value.some((e) => menuEntryKey(e) === key)) {
+  // Items without id and path share the key undefined, so never deduplicate them
+  if (key !== undefined && expandedItems.value.some((e) => navItemKey(e) === key)) {
     return;
   }
 
-  expandedEntries.value = [...expandedEntries.value, entry];
+  expandedItems.value = [...expandedItems.value, item];
 }
 
-function collapseEntry(entry: NavEntry) {
-  const key = menuEntryKey(entry);
+function collapseItem(item: NavItem) {
+  const key = navItemKey(item);
 
   if (key === undefined) {
-    expandedEntries.value = expandedEntries.value.filter((e) => e !== entry);
+    expandedItems.value = expandedItems.value.filter((e) => e !== item);
     return;
   }
 
-  expandedEntries.value = expandedEntries.value.filter((e) => menuEntryKey(e) !== key);
+  expandedItems.value = expandedItems.value.filter((e) => navItemKey(e) !== key);
 }
 
-// Only top level rows emit branch-toggle, nested rows keep their own open state
-function onMenuBranchToggle({ entry, open }: { entry: NavEntry; open: boolean }) {
-  if (!props.expanded || !entry) {
+// Only top level rows report their toggle, nested rows keep their own open state
+function onBranchToggle(item: NavItem, open: boolean) {
+  if (!props.expanded) {
     return;
   }
 
   if (!open) {
-    collapseEntry(entry);
+    collapseItem(item);
     return;
   }
 
-  collapseInactiveBranches(entry);
-  expandEntry(entry);
+  collapseInactiveBranches(item);
+  expandItem(item);
 }
 
-function collapseInactiveBranches(exceptEntry: NavEntry | null = null) {
-  const exceptKey = exceptEntry ? menuEntryKey(exceptEntry) : null;
+function collapseInactiveBranches(exceptItem: NavItem | null = null) {
+  const exceptKey = exceptItem ? navItemKey(exceptItem) : null;
   const activeNames = getActiveRouteNames(props.route, props.router);
 
-  expandedEntries.value
+  expandedItems.value
     .filter((expanded) => {
-      const key = menuEntryKey(expanded);
+      const key = navItemKey(expanded);
 
       if (key === exceptKey) {
         return false;
       }
 
-      const menuEntry = mainEntries.value.find((entry) => menuEntryKey(entry) === key);
+      const mainItem = mainItems.value.find((item) => navItemKey(item) === key);
 
-      return !menuEntry || !isEntryOnActiveRoute(menuEntry, props.route, activeNames);
+      return !mainItem || !isEntryOnActiveRoute(mainItem, props.route, activeNames);
     })
-    .forEach((expanded) => collapseEntry(expanded));
+    .forEach((expanded) => collapseItem(expanded));
 }
 
-function onMenuItemHover(entry: NavEntry, eventTarget: HTMLElement) {
+function onItemHover(item: NavItem, eventTarget: HTMLElement) {
   if (props.expanded) {
     return;
   }
@@ -425,30 +374,30 @@ function onMenuItemHover(entry: NavEntry, eventTarget: HTMLElement) {
   }
 
   const hasChildrenClass = target.classList.contains("navigation-list-item__has-children");
-  const children = hasChildrenClass ? entry.children ?? [] : [];
+  const children = hasChildrenClass ? item.children ?? [] : [];
 
   if (!hasChildrenClass || children.length === 0) {
     onFlyoutLeave();
     return;
   }
 
-  const entryKey = menuEntryKey(entry);
-  const active = activeEntry.value?.entry;
-  const activeKey = active ? menuEntryKey(active) : null;
+  const itemKey = navItemKey(item);
+  const active = activeItem.value?.item;
+  const activeKey = active ? navItemKey(active) : null;
 
-  if (activeKey === entryKey && flyoutEntries.value.length > 0) {
+  if (activeKey === itemKey && flyoutItems.value.length > 0) {
     return;
   }
 
   flyoutReferenceElement.value = target.querySelector<HTMLElement>(".mt-nav__link") ?? target;
   isFlyoutPinned.value = false;
-  flyoutEntries.value = children;
-  flyoutTitle.value = entry.label;
+  flyoutItems.value = children;
+  flyoutTitle.value = item.label;
 
-  activeEntry.value = { entry, target };
+  activeItem.value = { item, target };
 }
 
-function onSectionMouseLeave(event: MouseEvent | FocusEvent) {
+function onBodyMouseLeave(event: MouseEvent | FocusEvent) {
   if (isSuppressedFlyoutFocusOut(event)) {
     return;
   }
@@ -465,7 +414,7 @@ function onFlyoutMouseLeave(event: MouseEvent | FocusEvent) {
     return;
   }
 
-  if ((event.relatedTarget as HTMLElement | null)?.closest(".mt-nav__section")) {
+  if ((event.relatedTarget as HTMLElement | null)?.closest(".mt-nav__body")) {
     return;
   }
 
@@ -476,12 +425,12 @@ function isSuppressedFlyoutFocusOut(event: Event) {
   return event.type === "focusout" && isFlyoutPinned.value;
 }
 
-function onFlyoutNavigate({ disclosesChildren }: { disclosesChildren: boolean }) {
+function onFlyoutNavigate(disclosesChildren: boolean) {
   isFlyoutPinned.value = disclosesChildren;
 }
 
 function scheduleFlyoutClose() {
-  if (props.expanded || !flyoutEntries.value.length) {
+  if (props.expanded || !flyoutItems.value.length) {
     return;
   }
 
@@ -493,7 +442,7 @@ function scheduleFlyoutClose() {
 }
 
 function startFlyoutCloseAnimation() {
-  if (!flyoutEntries.value.length) {
+  if (!flyoutItems.value.length) {
     return;
   }
 
@@ -513,21 +462,21 @@ function cancelFlyoutClose() {
   isFlyoutClosing.value = false;
 }
 
-function isFlyoutEntryActive(entry: NavEntry) {
-  if (props.expanded || flyoutEntries.value.length === 0) {
+function isFlyoutItemActive(item: NavItem) {
+  if (props.expanded || flyoutItems.value.length === 0) {
     return false;
   }
 
-  const active = activeEntry.value?.entry;
+  const active = activeItem.value?.item;
 
-  return !!active && menuEntryKey(active) === menuEntryKey(entry);
+  return !!active && navItemKey(active) === navItemKey(item);
 }
 
 function onFlyoutFocusRequest() {
   nextTick(() => {
     const element = flyoutElement.value;
 
-    if (!element || flyoutEntries.value.length === 0) {
+    if (!element || flyoutItems.value.length === 0) {
       return;
     }
 
@@ -630,49 +579,49 @@ function onFlyoutLeave() {
   deactivateFlyoutFocusTrap();
   cancelFlyoutClose();
   isFlyoutPinned.value = false;
-  activeEntry.value = null;
+  activeItem.value = null;
   flyoutReferenceElement.value = null;
-  flyoutEntries.value = [];
+  flyoutItems.value = [];
   flyoutTitle.value = "";
 }
 
 function expandAncestorBranchesForCurrentRoute() {
-  // Only the expanded navigation shows a tree to open; collapsed entries use the flyout instead
+  // Only the expanded navigation shows a tree to open; collapsed items use the flyout instead
   if (!props.expanded) {
     return;
   }
 
   const activeNames = getActiveRouteNames(props.route, props.router);
-  const activeEntries = mainEntries.value.filter((entry) =>
-    isEntryOnActiveRoute(entry, props.route, activeNames),
+  const activeItems = mainItems.value.filter((item) =>
+    isEntryOnActiveRoute(item, props.route, activeNames),
   );
 
-  // Pages the menu does not list at all own no branch; leave the tree as the user left it
-  if (!activeEntries.length) {
+  // Pages the navigation does not list at all own no branch; leave the tree as the user left it
+  if (!activeItems.length) {
     return;
   }
 
-  const owner = activeEntries.find((entry) => (entry.children ?? []).length > 0) ?? null;
-  const ownerKey = owner ? menuEntryKey(owner) : null;
+  const owner = activeItems.find((item) => (item.children ?? []).length > 0) ?? null;
+  const ownerKey = owner ? navItemKey(owner) : null;
 
   // The cached owner may have been collapsed manually
-  if (ownerKey === activeBranchKey.value && (!owner || isEntryExpanded(owner))) {
+  if (ownerKey === activeBranchKey.value && (!owner || isItemExpanded(owner))) {
     return;
   }
 
-  // Branches only stay open while they own the active item, or while nothing in the menu does.
+  // Branches only stay open while they own the active item, or while nothing in the navigation does.
   collapseInactiveBranches(owner);
   activeBranchKey.value = ownerKey;
 
-  if (owner && !isEntryExpanded(owner)) {
-    expandEntry(owner);
+  if (owner && !isItemExpanded(owner)) {
+    expandItem(owner);
   }
 }
 
-function isEntryExpanded(entry: NavEntry) {
-  const key = menuEntryKey(entry);
+function isItemExpanded(item: NavItem) {
+  const key = navItemKey(item);
 
-  return expandedEntries.value.some((expanded) => menuEntryKey(expanded) === key);
+  return expandedItems.value.some((expanded) => navItemKey(expanded) === key);
 }
 </script>
 
@@ -779,7 +728,7 @@ function isEntryExpanded(entry: NavEntry) {
 }
 
 .mt-nav__flyout-content {
-  // Aligns the first flyout item with the hovered entry: title height + padding + border
+  // Aligns the first flyout item with the hovered row: title height + padding + border
   --mt-nav-flyout-shift: translateY(calc(-1 * (var(--scale-size-36) + var(--scale-size-6) + 1px)));
 
   width: 264px;

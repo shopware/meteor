@@ -1,9 +1,9 @@
-import type { NavEntry, NavRoute, NavSection } from "../mt-nav.types";
+import type { NavItem, NavRoute } from "../mt-nav.types";
 
 /**
  * Sample navigation resembling a shop administration, nested via `children`.
  */
-const shopEntries: NavEntry[] = [
+export const shopItems: NavItem[] = [
   { id: "dashboard", path: "dashboard.index", label: "Dashboard", icon: "regular-home" },
   {
     id: "catalogue",
@@ -42,7 +42,7 @@ const shopEntries: NavEntry[] = [
   },
 ];
 
-const systemEntries: NavEntry[] = [
+export const systemItems: NavItem[] = [
   {
     id: "extension",
     label: "Extensions",
@@ -56,17 +56,9 @@ const systemEntries: NavEntry[] = [
 ];
 
 /**
- * Everything in one section without a header.
+ * Everything in one list, for a single section without a header.
  */
-export const sections: NavSection[] = [{ id: "main", entries: [...shopEntries, ...systemEntries] }];
-
-/**
- * The same entries split into headed sections.
- */
-export const sectionsWithHeaders: NavSection[] = [
-  { id: "shop", header: "Shop", entries: shopEntries },
-  { id: "system", header: "System", entries: systemEntries },
-];
+export const items: NavItem[] = [...shopItems, ...systemItems];
 
 /**
  * A minimal route object for the given route name, as Vue Router would resolve it.
