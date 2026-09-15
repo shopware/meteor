@@ -2,6 +2,7 @@ import type { Meta, StoryObj } from "@storybook/vue3";
 import { markRaw, ref, watch } from "vue";
 import MtNav from "../mt-nav.vue";
 import MtNavSection from "../mt-nav-section.vue";
+import MtNavItem from "../mt-nav-item.vue";
 import type { NavItem, NavRoute } from "../mt-nav.types";
 import { items, routeFor, shopItems, systemItems } from "./entries";
 import { StoryLink } from "./story-link";
@@ -15,7 +16,7 @@ export type MtNavMeta = Meta<typeof MtNav>;
 function createStory(template: string): MtNavStory {
   return {
     render: (args) => ({
-      components: { MtNav, MtNavSection },
+      components: { MtNav, MtNavSection, MtNavItem },
       setup() {
         const route = ref<NavRoute | undefined>(args.route);
 
@@ -46,19 +47,26 @@ function createStory(template: string): MtNavStory {
 
 const defaultTemplate = `
 <mt-nav v-bind="args" :route="route" @navigate="onNavigate">
-  <mt-nav-section :items="items" />
+  <mt-nav-section>
+    <mt-nav-item v-for="item in items" :key="item.id" :item="item" />
+  </mt-nav-section>
 </mt-nav>`;
 
 const sectionsTemplate = `
 <mt-nav v-bind="args" :route="route" @navigate="onNavigate">
-  <mt-nav-section header="Shop" :items="shopItems" />
-  <mt-nav-section header="System" :items="systemItems" />
+  <mt-nav-section header="Shop">
+    <mt-nav-item v-for="item in shopItems" :key="item.id" :item="item" />
+  </mt-nav-section>
+
+  <mt-nav-section header="System">
+    <mt-nav-item v-for="item in systemItems" :key="item.id" :item="item" />
+  </mt-nav-section>
 </mt-nav>`;
 
 const meta: MtNavMeta = {
   title: "Components/Nav",
   component: MtNav,
-  subcomponents: { MtNavSection },
+  subcomponents: { MtNavSection, MtNavItem },
   args: {
     route: routeFor("product.index"),
     // markRaw: a component object stored in reactive args would be made reactive otherwise
@@ -81,7 +89,7 @@ const meta: MtNavMeta = {
     expanded: {
       control: { type: "boolean" },
       description:
-        "Whether the navigation is expanded. Collapsed, it shows the top level icons only and opens branches in a flyout.",
+        "Whether the navigation is expanded. Collapsed, it shows the top level icons only.",
     },
   },
   ...createStory(defaultTemplate),
@@ -92,7 +100,7 @@ export default meta;
 export type MtNavStory = StoryObj<MtNavMeta>;
 
 /**
- * A single `mt-nav-section` without a header holds the items.
+ * A single `mt-nav-section` without a header holds the `mt-nav-item` rows.
  */
 export const Default: MtNavStory = {};
 

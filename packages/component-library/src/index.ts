@@ -35,6 +35,7 @@ import MtSnackbar from "./components/mt-snackbar/mt-snackbar.vue";
 import MtAvatar from "./components/mt-avatar/mt-avatar.vue";
 import MtNav from "./components/mt-nav/mt-nav.vue";
 import MtNavSection from "./components/mt-nav/mt-nav-section.vue";
+import MtNavItem from "./components/mt-nav/mt-nav-item.vue";
 import type { NavItem, NavRoute, NavRouter } from "./components/mt-nav/mt-nav.types";
 import { useSnackbar, type Snackbar } from "./components/mt-snackbar/composables/use-snackbar";
 import MtPromoBadge from "./components/mt-promo-badge/mt-promo-badge.vue";
@@ -153,6 +154,7 @@ export {
   MtAvatar,
   MtNav,
   MtNavSection,
+  MtNavItem,
   type NavItem,
   type NavRoute,
   type NavRouter,

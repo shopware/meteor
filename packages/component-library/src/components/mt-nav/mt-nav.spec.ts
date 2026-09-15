@@ -3,6 +3,7 @@ import { userEvent } from "@testing-library/user-event";
 import { defineComponent, h, type VNode } from "vue";
 import MtNav from "./mt-nav.vue";
 import MtNavSection from "./mt-nav-section.vue";
+import MtNavItem from "./mt-nav-item.vue";
 import type { NavItem, NavRoute } from "./mt-nav.types";
 
 // Stands in for `router-link`: the library does not depend on vue-router
@@ -53,8 +54,15 @@ function routeFor(name: string): NavRoute {
   return { name, path: `/${name.replace(/\./g, "/")}`, matched: [{ name }], params: {} };
 }
 
+/**
+ * A section with one row per item. Slots are passed on to every row.
+ */
 function section(props: { header?: string; items: NavItem[] }, slots?: Record<string, unknown>) {
-  return h(MtNavSection, props, slots);
+  const { items: sectionItems, ...sectionProps } = props;
+
+  return h(MtNavSection, sectionProps, () =>
+    sectionItems.map((item) => h(MtNavItem, { item, key: item.id ?? item.path }, slots)),
+  );
 }
 
 /**
@@ -161,7 +169,7 @@ describe("mt-nav", () => {
       expect(emitted().navigate[0]).toEqual([expect.objectContaining({ id: "sw-dashboard" })]);
     });
 
-    it("renders the item-suffix slot of a section after every label", () => {
+    it("renders the item-suffix slot of a row after every label, including nested ones", () => {
       renderNav({}, () => [
         section(
           { items },
@@ -204,9 +212,34 @@ describe("mt-nav", () => {
       expect(getItemLabel("Categories").closest("li")).toHaveAttribute("aria-current", "page");
     });
 
-    it("throws when a section is rendered outside the navigation", () => {
-      expect(() => render(MtNavSection, { props: { items } })).toThrow(
-        "mt-nav-section must be rendered inside mt-nav",
+    it("keeps one top level branch open across sections", async () => {
+      renderNav({}, () => [
+        section({ items: [items[1]] }),
+        section({
+          header: "Help",
+          items: [
+            {
+              id: "sw-help",
+              label: "Help",
+              children: [{ id: "sw-faq", path: "sw.faq.index", label: "FAQ" }],
+            },
+          ],
+        }),
+      ]);
+
+      await userEvent.click(screen.getByRole("button", { name: "Catalogues" }));
+      expect(getItemLabel("Products")).toBeVisible();
+
+      await userEvent.click(screen.getByRole("button", { name: "Help" }));
+
+      expect(getItemLabel("FAQ")).toBeVisible();
+      expect(getItemLabel("Products")).not.toBeVisible();
+    });
+
+    it("throws when a section or a row is rendered outside the navigation", () => {
+      expect(() => render(MtNavSection)).toThrow("mt-nav-section must be rendered inside mt-nav");
+      expect(() => render(MtNavItem, { props: { item: items[0] } })).toThrow(
+        "mt-nav-item must be rendered inside mt-nav",
       );
     });
   });
@@ -231,20 +264,6 @@ describe("mt-nav", () => {
 
       expect(getItemLabel("Dashboard").closest("a")).toHaveAttribute("aria-label", "Dashboard");
       expect(getItemLabel("Docs").closest("a")).toHaveAttribute("aria-label", "Docs");
-    });
-
-    it("shows the children of a hovered branch in a flyout", async () => {
-      renderNav({ expanded: false });
-
-      expect(document.getElementById("mt-nav-flyout")).toBeNull();
-
-      await userEvent.hover(screen.getByRole("button", { name: "Catalogues" }));
-
-      const flyout = document.getElementById("mt-nav-flyout");
-
-      expect(flyout).not.toBeNull();
-      expect(getItemLabel("Products", flyout as HTMLElement)).toBeInTheDocument();
-      expect(getItemLabel("Categories", flyout as HTMLElement)).toBeInTheDocument();
     });
   });
 });

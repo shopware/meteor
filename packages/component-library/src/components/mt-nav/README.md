@@ -1,12 +1,12 @@
 # mt-nav
 
-The main navigation of an application: `mt-nav-section` components with an optional header, each
-rendering a tree of items up to three levels deep, a collapsed mode showing the top level icons
-only with a flyout for their children, arrow-key navigation and active route detection. Extracted
-from the Shopware Administration (`sw-admin-menu`) and ported to Meteor conventions.
+The main navigation of an application: `mt-nav-item` rows grouped in `mt-nav-section` components
+with an optional header, each row a tree up to three levels deep, a collapsed mode showing the
+top level icons only, arrow-key navigation and active route detection. Extracted from the Shopware Administration (`sw-admin-menu`) and ported to Meteor
+conventions.
 
-`mt-nav` renders only the `<nav>` and owns the shared state: which branch is open, which item is
-active, the collapsed flyout. The panel around it (logo, heading, collapse toggle, user block,
+`mt-nav` renders only the `<nav>` and owns the shared state: which branch is open and which item
+is active. The panel around it (logo, heading, collapse toggle, user block,
 mobile off-canvas behaviour) is the application's shell, which owns the expanded state and passes
 it in.
 
@@ -17,8 +17,13 @@ it in.
   :expanded="expanded"
   @navigate="closeOffCanvas"
 >
-  <mt-nav-section :items="shopItems" />
-  <mt-nav-section header="System" :items="systemItems" />
+  <mt-nav-section>
+    <mt-nav-item :item="dashboard" />
+  </mt-nav-section>
+
+  <mt-nav-section header="Shop">
+    <mt-nav-item v-for="item in shopItems" :key="item.id" :item="item" />
+  </mt-nav-section>
 </mt-nav>
 ```
 
@@ -26,16 +31,17 @@ it in.
 
 | File                                      | Purpose                                                          |
 | ----------------------------------------- | ---------------------------------------------------------------- |
-| `mt-nav.vue`                              | The navigation: shared state, keyboard handling, flyout          |
-| `mt-nav-section.vue`                      | Header and list of one section, rendering its `items`            |
+| `mt-nav.vue`                              | The navigation: shared state and keyboard handling               |
+| `mt-nav-section.vue`                      | Header and list of one section; the rows are slotted in          |
+| `mt-nav-item.vue`                         | One navigation row, recursive up to three levels                 |
 | `mt-nav.types.ts`                         | `NavItem`, `NavRoute`, `NavRouter`                               |
 | `mt-nav.spec.ts`                          | Vitest / Testing Library spec                                    |
 | `_stories/mt-nav.stories.ts`              | Storybook stories                                                |
 | `_stories/mt-nav.interactive.stories.ts`  | Storybook interaction tests                                      |
 | `_stories/*`                              | Sample data and helper components used only by the stories       |
-| `_internal/mt-nav-item.vue`               | One navigation row, recursive up to three levels                 |
 | `_internal/mt-nav-context.ts`             | Provide/inject contract between the navigation, sections, rows   |
 | `_internal/nav-item-key.ts`               | Identity of an item, used to key the open branches               |
+| `_internal/prune-deep-items.ts`           | Drops and reports items nested deeper than three levels          |
 | `_internal/nav-item-active.helper(.spec)` | Active route detection via `route.matched` and `meta.parentPath` |
 
 ## API
@@ -46,25 +52,33 @@ it in.
 | ----------------- | ------------------------------------------------------------------------------------------------------------- |
 | `route`, `router` | Current route and router (duck-typed, Vue Router compatible). Highlight the active item and open its branch.  |
 | `linkComponent`   | Component rendering the links, receives the route location as `to`. Defaults to `router-link` like `mt-link`. |
-| `expanded`        | Default `true`. Collapsed, the navigation shows the top level icons only and opens branches in a flyout.      |
+| `expanded`        | Default `true`. Collapsed, the navigation shows the top level icons only.                                     |
 
 The default slot takes the sections. `navigate(item)` is emitted when a navigation link is
 clicked. Use it to close an off-canvas panel or to track navigation.
 
 ### mt-nav-section
 
-| Prop     | Description                                                                              |
-| -------- | ---------------------------------------------------------------------------------------- |
-| `header` | Optional heading above the items. Hidden while the navigation is collapsed.              |
-| `items`  | `NavItem[]`, nested via `children` up to three levels. Labels are translated by the app. |
+| Prop     | Description                                                                |
+| -------- | -------------------------------------------------------------------------- |
+| `header` | Optional heading above the rows. Hidden while the navigation is collapsed. |
 
-| Slot                     | Description                                                                   |
-| ------------------------ | ----------------------------------------------------------------------------- |
-| `item-suffix="{ item }"` | Rendered after the label of every item of the section, including nested ones. |
+The default slot takes the `mt-nav-item` rows. Rows are `<li>` elements and the section renders
+the list around them, so single rows without a header also go into a section.
 
-A section must be rendered inside `mt-nav`. Items are `<li>` elements, so single items without a
-header also go into a section. Sections register their items with the navigation, which uses the
-complete list to find the branch owning the current route and to keep only one branch open.
+### mt-nav-item
+
+| Prop   | Description                                                                            |
+| ------ | -------------------------------------------------------------------------------------- |
+| `item` | `NavItem`, nested via `children` up to three levels. Labels are translated by the app. |
+
+| Slot                     | Description                                          |
+| ------------------------ | ---------------------------------------------------- |
+| `item-suffix="{ item }"` | Rendered after the label, including the nested rows. |
+
+Sections and rows must be rendered inside `mt-nav`. Every top level row registers its item with
+the navigation, which uses the complete list to find the branch owning the current route and to
+keep only one branch open, no matter which section the branch sits in.
 
 ### Layout
 
@@ -90,7 +104,7 @@ Shopware couplings replaced or dropped during the port:
 
 | Shopware coupling                                              | Meteor replacement                                        |
 | -------------------------------------------------------------- | --------------------------------------------------------- |
-| `menuService`, `appModulesService`, custom entity entries      | `items` prop of `mt-nav-section`                          |
+| `menuService`, `appModulesService`, custom entity entries      | `item` prop of `mt-nav-item`                              |
 | `adminMenu` store `isExpanded` (+ `localStorage`)              | `expanded` prop, owned by the shell                       |
 | `adminMenu` store `expandedEntries`                            | Internal state                                            |
 | `acl`, `hasAccessToRoute`, settings special case               | Removed: pass only the items the user may see             |
