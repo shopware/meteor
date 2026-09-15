@@ -1,38 +1,15 @@
 /**
- * Which navigation entry is active, derived from the resolved `route.matched` chain.
+ * Which navigation item is active, derived from the resolved `route.matched` chain.
  */
 
 import type { NavRoute, NavRouter } from "../mt-nav.types";
 
-type NavEntryLike = {
+type NavItemLike = {
   id?: string;
   path?: string;
   params?: Record<string, unknown>;
-  children?: NavEntryLike[];
+  children?: NavItemLike[];
 };
-
-/**
- * Stand-in for a missing `parentPath`: the menu entries the route's own module contributes.
- *
- * Extensions cannot be asked to declare `parentPath` retroactively, so an ambiguous set is used as-is
- * and highlights the module's entries. Core modules declare it, so there the ambiguity is declined.
- */
-function ownModuleMenuPaths(route: NavRoute | undefined, activeNames: Set<string>): string[] {
-  const module = route?.meta?.$module;
-  const menuPaths = (module?.navigation ?? [])
-    .map((entry) => entry.path)
-    .filter((path): path is string => !!path);
-
-  if (menuPaths.some((path) => activeNames.has(path))) {
-    return [];
-  }
-
-  if (menuPaths.length > 1 && module?.type === "core") {
-    return [];
-  }
-
-  return menuPaths;
-}
 
 /**
  * Route names counting as "current": the `matched` chain plus everything reachable via `parentPath`.
@@ -53,10 +30,7 @@ export function getActiveRouteNames(route?: NavRoute, router?: NavRouter): Set<s
   const findRoute = (name: string) =>
     router?.getRoutes?.().find((candidate) => candidate.name === name) ?? null;
   const visited = new Set<string>();
-  // An explicit `parentPath` wins; the module's own entries fill in for routes that declare none.
-  const pending = route?.meta?.parentPath
-    ? [route.meta.parentPath]
-    : ownModuleMenuPaths(route, names);
+  const pending = route?.meta?.parentPath ? [route.meta.parentPath] : [];
 
   while (pending.length) {
     const parentPath = pending.shift() as string;
@@ -79,32 +53,32 @@ export function getActiveRouteNames(route?: NavRoute, router?: NavRouter): Set<s
 }
 
 /**
- * App, SDK and custom entity entries share a route name and differ only by params, so compare the
- * params the entry declares. Entries without params always match.
+ * Items sharing a route name differ only by params, so compare the params the item declares.
+ * Items without params always match.
  */
-export function entryParamsMatchRoute(entry?: NavEntryLike, route?: NavRoute): boolean {
-  if (!entry?.params) {
+export function itemParamsMatchRoute(item?: NavItemLike, route?: NavRoute): boolean {
+  if (!item?.params) {
     return true;
   }
 
-  const entryParams = entry.params;
+  const itemParams = item.params;
 
-  return Object.keys(entryParams).every(
-    (key) => String(route?.params?.[key]) === String(entryParams[key]),
+  return Object.keys(itemParams).every(
+    (key) => String(route?.params?.[key]) === String(itemParams[key]),
   );
 }
 
 /**
- * Whether the entry's own route is active, or for path-less grouping entries the descendant's.
+ * Whether the item's own route is active, or for path-less grouping items the descendant's.
  */
-export function isEntryOnActiveRoute(
-  entry?: NavEntryLike,
+export function isItemOnActiveRoute(
+  item?: NavItemLike,
   route?: NavRoute,
   activeNames: Set<string> = getActiveRouteNames(route),
 ): boolean {
-  if (entry?.path && activeNames.has(entry.path) && entryParamsMatchRoute(entry, route)) {
+  if (item?.path && activeNames.has(item.path) && itemParamsMatchRoute(item, route)) {
     return true;
   }
 
-  return (entry?.children ?? []).some((child) => isEntryOnActiveRoute(child, route, activeNames));
+  return (item?.children ?? []).some((child) => isItemOnActiveRoute(child, route, activeNames));
 }

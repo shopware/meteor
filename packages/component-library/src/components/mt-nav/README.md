@@ -57,6 +57,11 @@ it in.
 The default slot takes the sections. `navigate(item)` is emitted when a navigation link is
 clicked. Use it to close an off-canvas panel or to track navigation.
 
+The active item is the one whose `path` is in the route's `matched` chain. Pages the navigation
+does not list, e.g. detail pages, declare the owning route name as `meta.parentPath`; the chain is
+followed through `router.getRoutes()`, so a detail route may point at a listing route that points
+at its own parent in turn.
+
 ### mt-nav-section
 
 | Prop     | Description                                                                |
@@ -90,8 +95,9 @@ background: the collapsed rows are 36px wide, so a 60px panel with 12px horizont
 
 Everything is prefixed `mt-nav__*`. The root carries `is--expanded` / `is--collapsed` and, for half
 a second after the state changes, `is--toggling`, so a shell can synchronise its own transitions.
-`mt-nav__hide-on-collapse` fades an element out when the navigation collapses. The
-`router-link-active` class name is kept because Vue Router sets it on the rendered links.
+`mt-nav__hide-on-collapse` fades an element out when the navigation collapses. Rows carry
+`mt-nav__item--<id>` for targeting a single row. The `router-link-active` class name is kept
+because Vue Router sets it on the rendered links.
 
 ## Provenance
 
@@ -108,6 +114,7 @@ Shopware couplings replaced or dropped during the port:
 | `adminMenu` store `isExpanded` (+ `localStorage`)              | `expanded` prop, owned by the shell                       |
 | `adminMenu` store `expandedEntries`                            | Internal state                                            |
 | `acl`, `hasAccessToRoute`, settings special case               | Removed: pass only the items the user may see             |
+| `meta.$module` fallback, `moduleType` and legacy class names   | Removed: declare `meta.parentPath` on detail routes       |
 | `$t` on entry labels and menu strings                          | Translated labels; inline `useI18n` messages (`en`, `de`) |
 | `$route`, `$router`, `router-link`                             | `route`, `router`, `linkComponent` props                  |
 | Header (logo, shop name, collapse toggle)                      | Shell of the application                                  |
