@@ -2020,6 +2020,11 @@
   height: 23;
 }
 
+#meteor-icon-kit__regular-test {
+  width: 14;
+  height: 9;
+}
+
 #meteor-icon-kit__regular-thumbs-down {
   width: 24;
   height: 24;
@@ -4238,6 +4243,11 @@
 #meteor-icon-kit__solid-tag {
   width: 23;
   height: 23;
+}
+
+#meteor-icon-kit__solid-test {
+  width: 10;
+  height: 10;
 }
 
 #meteor-icon-kit__solid-thumbs-down {
