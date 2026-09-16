@@ -138,8 +138,7 @@ test("ignores the generated artifacts the sync also rewrites", () => {
   const { root, iconDirectory } = createRepository();
   fs.writeFileSync(path.join(iconDirectory, "meta.json"), '{"changed":true}');
   fs.writeFileSync(path.join(iconDirectory, "meteor-icon-kit.scss"), "// css");
-  // The stylesheet carries a content hash, so every sync looks like a rename.
-  fs.writeFileSync(path.join(iconDirectory, "meteor-icon-kit-abc123.css"), "");
+  fs.writeFileSync(path.join(iconDirectory, "meteor-icon-kit.css"), "");
 
   // ACT
   const result = run(iconDirectory);

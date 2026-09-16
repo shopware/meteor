@@ -1,4 +1,5 @@
 import { execFileSync } from "node:child_process";
+import crypto from "node:crypto";
 import fs from "node:fs";
 import path from "node:path";
 import { ChangesetFile, type Bump } from "./changeset-file.js";
@@ -7,7 +8,6 @@ import {
   parseIconChanges,
   type IconChanges,
 } from "./icon-changes.js";
-import { md5 } from "../utils.js";
 
 export type GenerateChangesetResult = {
   changes: IconChanges;
@@ -21,6 +21,10 @@ export type GenerateChangesetResult = {
 
 function git(args: string[], cwd: string): string {
   return execFileSync("git", args, { cwd, encoding: "utf-8" });
+}
+
+function md5(input: unknown): string {
+  return crypto.createHash("md5").update(JSON.stringify(input)).digest("hex");
 }
 
 /**
