@@ -1,6 +1,6 @@
 <template>
   <priority-plus ref="priorityPlus" #default="{ mainItems, moreItems }" :list="items">
-    <div :class="tabClasses" role="tablist">
+    <div v-bind="$attrs" :class="tabClasses" role="tablist">
       <span class="mt-tabs__slider" :class="sliderClasses" :style="sliderStyle" />
 
       <template v-if="!vertical">
@@ -116,6 +116,8 @@ export default defineComponent({
     "mt-status-dot": MtStatusDot,
     "mt-icon": MtIcon,
   },
+
+  inheritAttrs: false,
 
   emits: ["new-item-active"],
 

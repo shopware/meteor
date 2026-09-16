@@ -1,5 +1,15 @@
 # @shopware-ag/meteor-tokens
 
+## 1.4.1
+
+### Patch Changes
+
+- [#1333](https://github.com/shopware/meteor/pull/1333) [`80bbd6c`](https://github.com/shopware/meteor/commit/80bbd6cb5b0c1948c1e8b60d5dd05717094c080e) Thanks [@fabianhueske](https://github.com/fabianhueske)! - - Changed `color/text/primary/default` to map to `color/zinc/100` instead of `color/zinc/50` in dark mode
+  - Changed `color/icon/primary/default` to map to `color/zinc/100` instead of `color/zinc/50` in dark mode
+  - Changed `color/text/primary/inverse` to map to `color/zinc/100` instead of `color/zinc/50` in light mode
+  - Changed `color/icon/primary/inverse` to map to `color/zinc/100` instead of `color/zinc/50` in light mode
+  - Changed `zinc/1000` to map to `#0E0E11` instead of `#09090B`
+
 ## 1.4.0
 
 ### Minor Changes

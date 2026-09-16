@@ -50,6 +50,7 @@
         :required="required"
         :disabled="disabled || isInherited"
         :name="name"
+        :autocomplete="autocomplete"
         :placeholder="placeholder"
         :aria-invalid="!!errorMessage || !!error"
         :aria-describedby="!!errorMessage || !!error ? errorId : undefined"
@@ -133,6 +134,7 @@ const props = defineProps<{
   required?: boolean;
   modelValue?: string;
   name?: string;
+  autocomplete?: string;
   label?: string;
   error?: {
     detail: string;

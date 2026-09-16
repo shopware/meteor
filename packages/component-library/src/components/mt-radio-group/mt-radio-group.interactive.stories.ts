@@ -10,6 +10,10 @@ import ExampleRadioOption from "./_internal/example-radio-option.vue";
 import type { StoryObj, Meta } from "@storybook/vue3";
 import { fn } from "@storybook/test";
 import meta from "./mt-radio-group.stories";
+import {
+  expectHintIconAlignedWithFirstLine,
+  multiLinePropHint,
+} from "@/components/_internal/mt-field-hint/mt-field-hint.story-helper";
 
 export default {
   ...meta,
@@ -340,6 +344,30 @@ export const VisualTestHintProp: Story = {
     const canvas = within(canvasElement);
 
     expect(canvas.getByText("Hint via prop")).toBeDefined();
+  },
+};
+
+export const VisualTestMultiLinePropHint: Story = {
+  name: "Should display multi line prop hint",
+  args: {
+    label: "Select an option",
+    hint: multiLinePropHint,
+  },
+  render: (args: typeof meta.args) => ({
+    components: { MtRadioGroupRoot, MtRadioGroupList, MtRadioGroupItem },
+    setup: () => ({ args }),
+    template: `
+      <div style="max-width: 320px">
+        <MtRadioGroupRoot :label="args.label" :hint="args.hint">
+          <MtRadioGroupList>
+            <MtRadioGroupItem id="option-1" value="value1" label="Option 1" />
+            <MtRadioGroupItem id="option-2" value="value2" label="Option 2" />
+          </MtRadioGroupList>
+        </MtRadioGroupRoot>
+      </div>`,
+  }),
+  play: ({ canvasElement }) => {
+    expectHintIconAlignedWithFirstLine(canvasElement);
   },
 };
 

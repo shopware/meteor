@@ -3,6 +3,10 @@ import { expect } from "@storybook/test";
 
 import MtUnitField from "./mt-unit-field.vue";
 import meta, { type MtUnitFieldMeta, type MtUnitFieldStory } from "./mt-unit-field.stories";
+import {
+  expectHintIconAlignedWithFirstLine,
+  multiLinePropHint,
+} from "@/components/_internal/mt-field-hint/mt-field-hint.story-helper";
 
 export default {
   ...meta,
@@ -89,6 +93,21 @@ export const VisualTestHintProp: MtUnitFieldStory = {
     const canvas = within(canvasElement);
 
     expect(canvas.getByText("Hint via prop")).toBeDefined();
+  },
+};
+
+export const VisualTestMultiLinePropHint: MtUnitFieldStory = {
+  name: "Should display multi line prop hint",
+  args: {
+    hint: multiLinePropHint,
+  },
+  render: (args) => ({
+    components: { MtUnitField },
+    setup: () => ({ args }),
+    template: `<div style="max-width: 320px"><mt-unit-field :label="args.label" default-unit="mm" :model-value="0" :hint="args.hint" /></div>`,
+  }),
+  play: ({ canvasElement }) => {
+    expectHintIconAlignedWithFirstLine(canvasElement);
   },
 };
 

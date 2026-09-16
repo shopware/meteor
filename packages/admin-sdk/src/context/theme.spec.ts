@@ -1,10 +1,16 @@
 import flushPromises from 'flush-promises';
-import type { handle as handleType, publish as publishType, startAutoThemeSync as startAutoThemeSyncType } from '../channel';
+import type {
+  handle as handleType,
+  publish as publishType,
+  startAutoThemeSync as startAutoThemeSyncType,
+  applyEmbeddedContext as applyEmbeddedContextType,
+} from '../channel';
 import type { getTheme as getThemeType, subscribeTheme as subscribeThemeType, syncTheme as syncThemeType } from './index';
 
 let handle: typeof handleType;
 let publish: typeof publishType;
 let startAutoThemeSync: typeof startAutoThemeSyncType;
+let applyEmbeddedContext: typeof applyEmbeddedContextType;
 let getTheme: typeof getThemeType;
 let subscribeTheme: typeof subscribeThemeType;
 let syncTheme: typeof syncThemeType;
@@ -34,6 +40,7 @@ describe('context theme', () => {
     handle = channel.handle;
     publish = channel.publish;
     startAutoThemeSync = channel.startAutoThemeSync;
+    applyEmbeddedContext = channel.applyEmbeddedContext;
 
     const context = await import('./index');
     getTheme = context.getTheme;
@@ -41,10 +48,9 @@ describe('context theme', () => {
     syncTheme = context.syncTheme;
   });
 
+  // Document and URL state is reset globally in jest.afterEnv.js
   afterEach(() => {
     cleanups.splice(0).forEach((remove) => remove());
-    delete document.documentElement.dataset.theme;
-    document.documentElement.style.removeProperty('color-scheme');
   });
 
   it('gets the current resolved theme', async () => {
@@ -225,6 +231,92 @@ describe('context theme', () => {
       await flushPromises();
 
       expect(document.documentElement.dataset.theme).toBe('light');
+    });
+
+    it('keeps syncing over a data-theme the SDK applied itself from the URL param', async () => {
+      // Simulates the boot pin from the color-scheme URL param
+      document.documentElement.dataset.theme = 'dark';
+      track(handle('contextTheme', () => 'dark' as const));
+
+      track(startAutoThemeSync({ theme: 'dark', scheme: 'dark' }));
+      await flushPromises();
+
+      publish('contextTheme', 'light');
+      await flushPromises();
+
+      expect(document.documentElement.dataset.theme).toBe('light');
+      expect(document.documentElement.style.getPropertyValue('color-scheme')).toBe('light');
+    });
+
+    it('pins the scheme from the URL param before the sync and follows later theme changes', async () => {
+      window.history.replaceState({}, '', '?color-scheme=dark');
+      track(handle('contextTheme', () => 'dark' as const));
+
+      // The boot sequence inside app iframes
+      const pin = applyEmbeddedContext();
+      expect(document.documentElement.dataset.theme).toBe('dark');
+      expect(document.documentElement.style.getPropertyValue('color-scheme')).toBe('dark');
+
+      track(startAutoThemeSync(pin));
+      await flushPromises();
+      expect(document.documentElement.dataset.theme).toBe('dark');
+
+      publish('contextTheme', 'light');
+      await flushPromises();
+
+      expect(document.documentElement.dataset.theme).toBe('light');
+      expect(document.documentElement.style.getPropertyValue('color-scheme')).toBe('light');
+    });
+
+    it('backs off when the app declares data-theme between the boot pin and the sync start', async () => {
+      const pin = applyEmbeddedContext();
+      expect(document.documentElement.style.getPropertyValue('color-scheme')).toBe('light');
+
+      // App boot code runs after the SDK import but before the registration round trip completes
+      document.documentElement.dataset.theme = 'dark';
+      track(handle('contextTheme', () => 'light' as const));
+
+      track(startAutoThemeSync(pin));
+      await flushPromises();
+
+      publish('contextTheme', 'light');
+      await flushPromises();
+
+      expect(document.documentElement.dataset.theme).toBe('dark');
+      // The boot pin is withdrawn so the app's own color-scheme rules apply
+      expect(document.documentElement.style.getPropertyValue('color-scheme')).toBe('');
+    });
+
+    it('keeps a color-scheme the app set itself when backing off', async () => {
+      const pin = applyEmbeddedContext();
+
+      document.documentElement.dataset.theme = 'dark';
+      document.documentElement.style.setProperty('color-scheme', 'dark');
+
+      track(startAutoThemeSync(pin));
+      await flushPromises();
+
+      expect(document.documentElement.style.getPropertyValue('color-scheme')).toBe('dark');
+    });
+
+    it('keeps the light pin when no Administration answers the theme fetch', async () => {
+      jest.useFakeTimers();
+
+      try {
+        const pin = applyEmbeddedContext();
+        expect(document.documentElement.style.getPropertyValue('color-scheme')).toBe('light');
+
+        // No contextTheme handler exists, like in Administrations without theme support
+        track(startAutoThemeSync(pin));
+        jest.advanceTimersByTime(8000);
+        await Promise.resolve();
+      } finally {
+        jest.useRealTimers();
+      }
+      await flushPromises();
+
+      expect(document.documentElement.style.getPropertyValue('color-scheme')).toBe('light');
+      expect(document.documentElement.dataset.theme).toBeUndefined();
     });
 
     it('ignores published values that are not a valid theme', async () => {

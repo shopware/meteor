@@ -259,6 +259,62 @@ test.describe('Context tests', () => {
   });
 });
 
+test.describe('Embedded context', () => {
+  function embeddedState(subFrame: { evaluate: <T>(fn: () => T) => Promise<T> }) {
+    return subFrame.evaluate(() => ({
+      embedded: document.documentElement.dataset.embedded,
+      theme: document.documentElement.dataset.theme ?? null,
+      colorScheme: document.documentElement.style.getPropertyValue('color-scheme'),
+      hasStyle: !!document.getElementById('meteor-admin-sdk-embedded'),
+    }));
+  }
+
+  test('pins the light scheme when the iFrame URL declares no color scheme', async ({ page }) => {
+    const { subFrame } = await setup({ page });
+
+    const state = await embeddedState(subFrame);
+
+    expect(state.embedded).toBe('');
+    expect(state.theme).toBeNull();
+    expect(state.colorScheme).toBe('light');
+    expect(state.hasStyle).toBe(true);
+  });
+
+  test('applies the color scheme from the iFrame URL without Administration support', async ({ page }) => {
+    const { subFrame } = await setup({
+      page,
+      subFrameSrc: 'http://localhost:8182?location-id=test&color-scheme=dark',
+    });
+
+    const state = await embeddedState(subFrame);
+
+    expect(state.theme).toBe('dark');
+    expect(state.colorScheme).toBe('dark');
+  });
+
+  test('fetches the theme on boot and follows later theme changes', async ({ page }) => {
+    const { mainFrame, subFrame } = await setup({
+      page,
+      subFrameSrc: 'http://localhost:8182?color-scheme=light',
+      // The handler must exist before the sub frame registers
+      mainFrameSetup: (mainPage) => mainPage.evaluate(() => {
+        window.sw_internal.handle('contextTheme', () => 'dark' as const);
+      }),
+    });
+
+    // The initial fetch overrides the light pin from the URL
+    await expect.poll(async () => (await embeddedState(subFrame)).theme).toBe('dark');
+    expect((await embeddedState(subFrame)).colorScheme).toBe('dark');
+
+    await mainFrame.evaluate(async () => {
+      await window.sw_internal.publish('contextTheme', 'light');
+    });
+
+    await expect.poll(async () => (await embeddedState(subFrame)).theme).toBe('light');
+    expect((await embeddedState(subFrame)).colorScheme).toBe('light');
+  });
+});
+
 test.describe('Serializing tests', () => {
   test('send criteria to iFrame', async ({ page }) => {
     const { mainFrame, subFrame } = await setup({ page });

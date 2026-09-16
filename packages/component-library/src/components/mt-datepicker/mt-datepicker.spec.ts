@@ -29,6 +29,104 @@ describe("mt-datepicker", () => {
     expect(screen.getByRole("textbox")).toBeDisabled();
   });
 
+  it("shows the inheritance switch and emits inheritance events", async () => {
+    const inheritanceRemove = vi.fn();
+    const inheritanceRestore = vi.fn();
+
+    const { rerender } = render(MtDatepicker, {
+      props: {
+        isInheritanceField: true,
+        isInherited: true,
+        "onInheritance-remove": inheritanceRemove,
+        "onInheritance-restore": inheritanceRestore,
+      },
+    });
+
+    const inheritanceSwitch = screen.getByTestId("mt-inheritance-switch-icon").closest("button");
+    expect(inheritanceSwitch).toBeEnabled();
+    await userEvent.click(inheritanceSwitch!);
+    expect(inheritanceRemove).toHaveBeenCalledOnce();
+
+    await rerender({ isInherited: false });
+    await userEvent.click(screen.getByRole("button", { name: "Link inheritance" }));
+    expect(inheritanceRestore).toHaveBeenCalledOnce();
+  });
+
+  it("disables the datepicker while inherited", () => {
+    render(MtDatepicker, {
+      props: {
+        isInherited: true,
+      },
+    });
+
+    expect(screen.getByRole("textbox")).toBeDisabled();
+  });
+
+  it("displays a hint passed via the hint prop", () => {
+    // ARRANGE
+    render(MtDatepicker, {
+      props: {
+        hint: "Hint from prop",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByText("Hint from prop")).toBeVisible();
+  });
+
+  it("renders markup passed via the hint slot", () => {
+    // ARRANGE
+    render(MtDatepicker, {
+      slots: {
+        hint: '<span data-testid="custom-hint">Hint from slot</span>',
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByTestId("custom-hint")).toBeVisible();
+    expect(screen.getByTestId("custom-hint")).toHaveTextContent("Hint from slot");
+  });
+
+  it("does not render a hint when neither prop nor slot is provided", () => {
+    // ARRANGE - date pickers without time have no time zone hint either
+    const { container } = render(MtDatepicker, {
+      props: {
+        dateType: "date",
+      },
+    });
+
+    // ASSERT
+    expect(container.querySelector(".mt-field-hint")).not.toBeInTheDocument();
+  });
+
+  it("shows the time zone hint for datetime pickers when no custom hint is provided", () => {
+    // ARRANGE
+    render(MtDatepicker, {
+      props: {
+        dateType: "datetime",
+        timeZone: "Europe/Berlin",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByTestId("time-zone-hint")).toHaveTextContent("Europe/Berlin");
+  });
+
+  it("replaces the time zone hint with the custom hint when one is provided", () => {
+    // ARRANGE
+    render(MtDatepicker, {
+      props: {
+        dateType: "datetime",
+        timeZone: "Europe/Berlin",
+        hint: "Hint from prop",
+      },
+    });
+
+    // ASSERT
+    expect(screen.getByText("Hint from prop")).toBeVisible();
+    expect(screen.queryByTestId("time-zone-hint")).not.toBeInTheDocument();
+  });
+
   it("shows the date format as the placeholder when no placeholder is provided", () => {
     // ARRANGE
     render(MtDatepicker);

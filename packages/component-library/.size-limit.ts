@@ -47,7 +47,7 @@ module.exports = [
     path: "dist/esm/index.js",
     import: "{ MtTextEditor }",
     name: "MtTextEditor",
-    limit: "805 kb",
+    limit: "810 kb",
     ignore: ignore,
   },
   {

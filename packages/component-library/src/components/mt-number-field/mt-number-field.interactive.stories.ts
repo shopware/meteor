@@ -3,6 +3,10 @@ import { expect } from "@storybook/test";
 
 import MtNumberField from "./mt-number-field.vue";
 import meta, { type MtNumberFieldMeta, type MtNumberFieldStory } from "./mt-number-field.stories";
+import {
+  expectHintIconAlignedWithFirstLine,
+  multiLinePropHint,
+} from "@/components/_internal/mt-field-hint/mt-field-hint.story-helper";
 
 export default {
   ...meta,
@@ -323,6 +327,21 @@ export const VisualTestHintProp: MtNumberFieldStory = {
     const canvas = within(canvasElement);
 
     expect(canvas.getByText("Hint via prop")).toBeDefined();
+  },
+};
+
+export const VisualTestMultiLinePropHint: MtNumberFieldStory = {
+  name: "Should display multi line prop hint",
+  args: {
+    hint: multiLinePropHint,
+  },
+  render: (args) => ({
+    components: { MtNumberField },
+    setup: () => ({ args }),
+    template: `<div style="max-width: 320px"><mt-number-field :label="args.label" :hint="args.hint" /></div>`,
+  }),
+  play: ({ canvasElement }) => {
+    expectHintIconAlignedWithFirstLine(canvasElement);
   },
 };
 

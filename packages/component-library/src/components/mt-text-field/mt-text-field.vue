@@ -29,6 +29,7 @@
         :id="createInputId(identification)"
         type="text"
         :name="identification"
+        :autocomplete="autocomplete"
         :disabled="hasDisabledInput"
         :value="currentValue"
         :placeholder="placeholder"
@@ -93,6 +94,16 @@ export default defineComponent({
       type: String,
       required: false,
       default: "",
+    },
+
+    /**
+     * Forwarded to the native input's `autocomplete` attribute, e.g. to opt out
+     * of browser autofill with `off` or to request a specific autofill type.
+     */
+    autocomplete: {
+      type: String,
+      required: false,
+      default: undefined,
     },
 
     /**

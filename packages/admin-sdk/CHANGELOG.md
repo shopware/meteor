@@ -1,5 +1,25 @@
 # Changelog
 
+## 6.14.1
+
+### Patch Changes
+
+- [#1340](https://github.com/shopware/meteor/pull/1340) [`c06ad7a`](https://github.com/shopware/meteor/commit/c06ad7a9f397d047f43f4c6167fd947b5a4599d5) Thanks [@quando1910](https://github.com/quando1910)! - Add success and error events to the service permission banner, document the banner and its `useServicePermission` composable, and guard service context and permission APIs for Shopware 6.7.14 and newer.
+
+## 6.14.0
+
+### Minor Changes
+
+- [#1308](https://github.com/shopware/meteor/pull/1308) [`ede6e3d`](https://github.com/shopware/meteor/commit/ede6e3dac12c0419476b31f1d065d06a44cd1154) Thanks [@quando1910](https://github.com/quando1910)! - Add the `MtGrantPermissionServiceBanner` component and the Admin SDK APIs required to request and manage service permissions. The banner adapts its grant action to the Shopware version and permission state.
+
+- [#1318](https://github.com/shopware/meteor/pull/1318) [`ee794f9`](https://github.com/shopware/meteor/commit/ee794f94c2ac1612bd1106d0b9f8d49cddfe9fb9) Thanks [@quando1910](https://github.com/quando1910)! - Add optional `priority` to `ui.componentSection.add` to control the render order when multiple extensions register a component at the same `positionId`. Lower values render first (`1` = topmost); omitted or invalid values render after prioritized entries.
+
+## 6.13.0
+
+### Minor Changes
+
+- [#1317](https://github.com/shopware/meteor/pull/1317) [`71c0a2c`](https://github.com/shopware/meteor/commit/71c0a2c093950bc9fa661deaa836e8123c741684) Thanks [@fabianhueske](https://github.com/fabianhueske)! - Embedded app documents now always receive an explicit color scheme instead of `color-scheme: light dark`. The initial scheme is read from the `color-scheme` URL param that theme-aware Administrations append to the iframe src, so the correct scheme applies before the first paint. Without the param the document is pinned to `light`, which matches Administrations without theme support and prevents the OS dark mode preference from switching embedded apps to dark. Documents that declare `data-theme` themselves stay untouched and are responsible for declaring a matching `color-scheme` in their own styles.
+
 ## 6.12.0
 
 ### Minor Changes

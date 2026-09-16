@@ -5,7 +5,6 @@
     :class="classes"
     :role="role"
     :aria-live="ariaLive"
-    tabindex="0"
     :data-mounted="mounted"
     :data-removed="removed"
     :style="{
@@ -338,11 +337,6 @@ function onRemoveSnackbar() {
 
 onMounted(() => {
   mounted.value = true;
-
-  // If the snackbar element is found then focus it
-  if (snackbarEl.value) {
-    snackbarEl.value.focus();
-  }
 });
 
 onBeforeUnmount(() => {

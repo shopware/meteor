@@ -1,4 +1,5 @@
 import MtTextarea from "./mt-textarea.vue";
+import { hintArgTypes } from "../_internal/mt-base-field/arg-types";
 import type { StoryObj } from "@storybook/vue3";
 import type { SlottedMeta } from "@/_internal/story-helper";
 import { fn } from "@storybook/test";
@@ -9,6 +10,7 @@ export type MtTextareaMeta = SlottedMeta<
   | "change"
   | "updateModelValue"
   | "hint"
+  | "hintSlot"
   | "label"
   | "placeholder"
   | "error"
@@ -29,11 +31,14 @@ export default {
   @blur="args.blur"
   @focus="args.focus"
 >
-  <template v-if="args.hint" #hint>{{ args.hint }}</template>
+  <template v-if="args.hintSlot" #hint>{{ args.hintSlot }}</template>
 </mt-textarea>`,
     components: { MtTextarea },
     setup: () => ({ args }),
   }),
+  argTypes: {
+    ...hintArgTypes,
+  },
   args: {
     label: "Textareafield",
     "onUpdate:modelValue": fn(),

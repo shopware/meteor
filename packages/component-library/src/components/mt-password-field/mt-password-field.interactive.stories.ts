@@ -5,6 +5,10 @@ import meta, {
   type MtPasswordFieldMeta,
   type MtPasswordFieldStory,
 } from "./mt-password-field.stories";
+import {
+  expectHintIconAlignedWithFirstLine,
+  multiLinePropHint,
+} from "@/components/_internal/mt-field-hint/mt-field-hint.story-helper";
 
 export default {
   ...meta,
@@ -88,6 +92,21 @@ export const VisualTestHintProp: MtPasswordFieldStory = {
     const canvas = within(canvasElement);
 
     expect(canvas.getByText("Hint via prop")).toBeDefined();
+  },
+};
+
+export const VisualTestMultiLinePropHint: MtPasswordFieldStory = {
+  name: "Should display multi line prop hint",
+  args: {
+    hint: multiLinePropHint,
+  },
+  render: (args) => ({
+    components: { MtPasswordField },
+    setup: () => ({ args }),
+    template: `<div style="max-width: 320px"><mt-password-field :label="args.label" :hint="args.hint" /></div>`,
+  }),
+  play: ({ canvasElement }) => {
+    expectHintIconAlignedWithFirstLine(canvasElement);
   },
 };
 

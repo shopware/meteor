@@ -224,7 +224,7 @@
           "$description": "Use for disabled icons."
         },
         "inverse": {
-          "$value": "{color.zinc.50}",
+          "$value": "{color.zinc.100}",
           "$type": "color",
           "$description": "Use for icons on inverse backgrounds."
         }
@@ -410,7 +410,7 @@
           "$description": "Use for text indicating disabled states of parent elements."
         },
         "inverse": {
-          "$value": "{color.zinc.50}",
+          "$value": "{color.zinc.100}",
           "$type": "color",
           "$description": "Use for text on inverse backgrounds."
         }

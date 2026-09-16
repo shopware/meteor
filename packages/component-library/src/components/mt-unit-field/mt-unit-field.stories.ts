@@ -13,6 +13,8 @@ export type MtUnitFieldMeta = SlottedMeta<
   | "change"
   | "updateModelValue"
   | "modelValue"
+  | "hint"
+  | "hintSlot"
   | "error"
 >;
 
@@ -30,6 +32,11 @@ const meta: Meta<typeof MtUnitField> = {
           @update:modelValue="args.updateModelValue"
           @inheritance-restore="inheritanceRestoreWrapper"
           @inheritance-remove="inheritanceRemoveWrapper">
+          <template
+            v-if="args.hintSlot"
+            #hint>
+            {{ args.hintSlot }}
+          </template>
         </mt-unit-field>
         <h4 style="display: none;">hidden</h4>
       </div>`,

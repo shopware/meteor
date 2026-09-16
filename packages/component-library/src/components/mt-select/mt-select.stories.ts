@@ -1,4 +1,5 @@
 import MtSelect from "./mt-select.vue";
+import { hintArgTypes } from "../_internal/mt-base-field/arg-types";
 import type { StoryObj } from "@storybook/vue3";
 import type { SlottedMeta } from "@/_internal/story-helper";
 import { fn } from "@storybook/test";
@@ -22,6 +23,7 @@ export type MtSelectMeta = SlottedMeta<
   | "prefix"
   | "suffix"
   | "hint"
+  | "hintSlot"
   | "beforeItemList"
   | "selectionLabelProperty"
   | "resultItem"
@@ -76,10 +78,10 @@ export default {
             {{ args.suffix }}
           </template>
           <template
-              v-if="args.hint"
+              v-if="args.hintSlot"
               #hint
           >
-            {{ args.hint }}
+            {{ args.hintSlot }}
           </template>
           <template
               v-if="args.beforeItemList"
@@ -141,10 +143,10 @@ export default {
             {{ args.suffix }}
           </template>
           <template
-              v-if="args.hint"
+              v-if="args.hintSlot"
               #hint
           >
-            {{ args.hint }}
+            {{ args.hintSlot }}
           </template>
           <template
               v-if="args.beforeItemList"
@@ -328,12 +330,7 @@ export default {
         category: "Slots",
       },
     },
-    hint: {
-      control: { type: "text" },
-      table: {
-        category: "Slots",
-      },
-    },
+    ...hintArgTypes,
     beforeItemList: {
       control: { type: "text" },
       table: {

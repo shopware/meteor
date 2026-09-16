@@ -33,18 +33,6 @@ function attemptLogin() {
     }, 500);
   }, 1200);
 }
-
-// The email/password fields don't forward an autocomplete attribute to their
-// inputs, so disable browser autofill on the rendered inputs directly.
-const formRef = ref<HTMLElement | null>(null);
-onMounted(() => {
-  formRef.value?.querySelectorAll("input").forEach((input) => {
-    input.setAttribute(
-      "autocomplete",
-      input.type === "email" ? "off" : "new-password",
-    );
-  });
-});
 </script>
 
 <template>
@@ -68,7 +56,7 @@ onMounted(() => {
               />
             </span>
           </div>
-          <div ref="formRef" class="connect__body">
+          <div class="connect__body">
             <div class="connect__head">
               <mt-text size="l" weight="bold">Connect to Nexus</mt-text>
               <mt-text size="xs" :color="muted">
@@ -77,8 +65,12 @@ onMounted(() => {
                 happens.
               </mt-text>
             </div>
-            <mt-text-field v-model="email" label="Email" />
-            <mt-password-field v-model="password" label="Password" />
+            <mt-text-field v-model="email" label="Email" autocomplete="off" />
+            <mt-password-field
+              v-model="password"
+              label="Password"
+              autocomplete="new-password"
+            />
             <mt-button
               variant="primary"
               size="default"

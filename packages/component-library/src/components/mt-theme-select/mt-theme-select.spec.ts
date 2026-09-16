@@ -15,6 +15,14 @@ describe("mt-theme-select", () => {
     expect(screen.getByRole("textbox")).toHaveValue("Dark");
   });
 
+  it("renders a readonly input so browsers do not offer autofill", async () => {
+    // ARRANGE
+    render(MtThemeSelect);
+
+    // ASSERT
+    expect(screen.getByRole("textbox")).toHaveAttribute("readonly");
+  });
+
   it("defaults to the system color theme", async () => {
     // ARRANGE
     render(MtThemeSelect);

@@ -475,7 +475,7 @@ const handleItemDeleteConfirm = async () => {
 };
 </script>
 
-<style lang="scss">
+<style>
 .mt-entity-data-table__delete-modal-footer {
   display: flex;
   gap: 0.5rem;

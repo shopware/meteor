@@ -177,9 +177,11 @@ context.subscribeLocale(({ locale, fallbackLocale }) => {
 
 ## Automatic theme synchronization
 
-On startup, the SDK mirrors the resolved Administration theme onto the `data-theme` attribute and the `color-scheme` style of your document root (`<html data-theme="light|dark">`) and keeps both in sync. Because Meteor tokens are theme-aware through `data-theme`, updating the SDK dependency is all an app needs to follow the Administration theme. The matching `color-scheme` keeps the iframe transparent — on a mismatch the browser paints an opaque backdrop behind it.
+On startup, the SDK mirrors the resolved Administration theme onto the `data-theme` attribute and the `color-scheme` style of your document root (`<html data-theme="light|dark">`) and keeps both in sync. Because Meteor tokens are theme-aware through `data-theme`, updating the SDK dependency is all an app needs to follow the Administration theme. The matching `color-scheme` keeps the iframe transparent: on a mismatch the browser paints an opaque backdrop behind it.
 
-If your document already declares `data-theme` itself, the SDK does not interfere. On Administrations without theme support, the attribute is never set.
+The initial theme is read from the `color-scheme` URL param that theme-aware Administrations append to the iframe src, so the correct scheme is applied before the first paint. Administrations without theme support do not send the param; in that case the document is pinned to the light scheme, which matches those Administrations and prevents the OS dark mode preference from leaking into the app. Later theme changes arrive through the regular sync.
+
+If your document already declares `data-theme` itself, the SDK does not interfere. In that case, declare a matching `color-scheme` in your own styles: without one the browser falls back to the light scheme and paints an opaque backdrop behind the iframe in a dark Administration. On Administrations without theme support, the attribute is never set.
 
 ## Embedded context
 
