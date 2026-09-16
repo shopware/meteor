@@ -73,7 +73,17 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref, nextTick, computed, provide, useId, type ComputedRef } from "vue";
+import {
+  onMounted,
+  ref,
+  nextTick,
+  computed,
+  provide,
+  useId,
+  toValue,
+  type ComputedRef,
+  type MaybeRefOrGetter,
+} from "vue";
 import {
   autoUpdate,
   flip,
@@ -105,7 +115,7 @@ const props = withDefaults(
   },
 );
 
-const sanitizedContent = useSanitizedHtml(props.content);
+const sanitizedContent = useSanitizedHtml(() => props.content);
 
 const id = useId();
 
@@ -203,9 +213,9 @@ provide(TooltipContext, true);
  * It returns the value as a computed read-only property.
  * The sanitization is done using the `sanitize` function from DOMPurify.
  */
-function useSanitizedHtml(html: string): ComputedRef<string> {
+function useSanitizedHtml(html: MaybeRefOrGetter<string>): ComputedRef<string> {
   return computed(() => {
-    return DOMPurify.sanitize(html, {
+    return DOMPurify.sanitize(toValue(html), {
       ALLOWED_TAGS: ["a", "b", "br", "strong", "i", "em", "u", "s", "li", "ul", "img", "svg"],
     });
   });
