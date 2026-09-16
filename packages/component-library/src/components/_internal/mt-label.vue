@@ -76,16 +76,16 @@ const labelClasses = computed(() => {
 
 <style>
 .mt-label {
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
   position: relative;
   max-width: 100%;
   min-width: 56px;
-  margin: 0 var(--scale-size-6) var(--scale-size-6) 0;
-  padding: var(--scale-size-8) var(--scale-size-12);
+  padding: 0 var(--scale-size-12);
   height: var(--scale-size-32);
   border: 1px solid var(--color-border-primary-default);
   background: var(--color-background-secondary-default);
-  line-height: 1.1;
+  line-height: 1;
   font-family: var(--font-family-body);
   font-size: var(--font-size-xs);
   color: var(--color-text-primary-default);
@@ -97,8 +97,10 @@ const labelClasses = computed(() => {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  display: inline-block;
+  display: block;
   width: 100%;
+  /* flex items default to min-width: auto, which would disable the ellipsis */
+  min-width: 0;
 }
 
 .mt-label.mt-label--dismissable:hover .mt-label__caption {
@@ -112,8 +114,9 @@ const labelClasses = computed(() => {
 }
 
 .mt-label.mt-label--size-medium {
-  height: var(--scale-size-24);
-  padding: var(--scale-size-4) var(--scale-size-12);
+  height: var(--scale-size-20);
+  padding: 0 var(--scale-size-6);
+  font-size: var(--font-size-2xs);
 }
 
 .mt-label.mt-label--size-small {
