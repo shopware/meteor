@@ -35,6 +35,8 @@ import { MtEntitySelect } from "@shopware-ag/meteor-component-library";
 
 :component-api
 
+**Entity Select** wraps [**Select**](/components/select) and forwards all additional attributes and slots to it. Beyond the props listed above, the rest of the `MtSelect` API is available — for example `label`, `placeholder`, `error`, `hint`, and `small`, as well as slots such as `result-item`. The exceptions are `options`, `isLoading`, and `searchFunction`, which **Entity Select** manages itself through the repository.
+
 ## Best practices
 
 ::do-dont{vertical}
