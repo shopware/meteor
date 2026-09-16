@@ -1,66 +1,57 @@
 # mt-nav
 
-The main navigation of an application: `mt-nav-item` rows grouped in `mt-nav-section` components
-with an optional header, each row a tree up to three levels deep, a collapsed mode showing the
-top level icons only, arrow-key navigation and active route detection. Extracted from the Shopware Administration (`sw-admin-menu`) and ported to Meteor
-conventions.
+The main navigation of an application, built from three components: `mt-nav` owns the shared
+state, `mt-nav-section` groups rows below an optional header, and `mt-nav-item` is one row,
+nesting further rows up to three levels deep. The navigation has a collapsed mode showing the
+top level icons only, arrow-key navigation and opens the branch holding the active row.
+Extracted from the Shopware Administration (`sw-admin-menu`) and ported to Meteor conventions.
 
-`mt-nav` renders only the `<nav>` and owns the shared state: which branch is open and which item
-is active. The panel around it (logo, heading, collapse toggle, user block,
-mobile off-canvas behaviour) is the application's shell, which owns the expanded state and passes
-it in.
+`mt-nav` renders only the `<nav>`. The panel around it (logo, heading, collapse toggle, user
+block, mobile off-canvas behaviour) is the application's shell, which owns the expanded state and
+passes it in.
 
 ```vue
-<mt-nav
-  :route="route"
-  :router="router"
-  :expanded="expanded"
-  @navigate="closeOffCanvas"
->
-  <mt-nav-section>
-    <mt-nav-item :item="dashboard" />
-  </mt-nav-section>
-
+<mt-nav :expanded="expanded" @navigate="closeOffCanvas">
   <mt-nav-section header="Shop">
-    <mt-nav-item v-for="item in shopItems" :key="item.id" :item="item" />
+    <mt-nav-item label="Dashboard" icon="regular-home" :to="{ name: 'dashboard' }" :active="isCurrent('dashboard')" />
+
+    <mt-nav-item label="Catalogues" icon="regular-products">
+      <mt-nav-item label="Products" :to="{ name: 'product.index' }" :active="isCurrent('product.index')">
+        <mt-nav-item label="Reviews" :to="{ name: 'review.index' }" :active="isCurrent('review.index')" />
+      </mt-nav-item>
+      <mt-nav-item label="Categories" :to="{ name: 'category.index' }" :active="isCurrent('category.index')" />
+    </mt-nav-item>
+
+    <mt-nav-item label="Docs" href="https://docs.shopware.com" target="_blank" />
   </mt-nav-section>
 </mt-nav>
 ```
 
 ## Structure
 
-| File                                      | Purpose                                                          |
-| ----------------------------------------- | ---------------------------------------------------------------- |
-| `mt-nav.vue`                              | The navigation: shared state and keyboard handling               |
-| `mt-nav-section.vue`                      | Header and list of one section; the rows are slotted in          |
-| `mt-nav-item.vue`                         | One navigation row, recursive up to three levels                 |
-| `mt-nav.types.ts`                         | `NavItem`, `NavRoute`, `NavRouter`                               |
-| `mt-nav.spec.ts`                          | Vitest / Testing Library spec                                    |
-| `_stories/mt-nav.stories.ts`              | Storybook stories                                                |
-| `_stories/mt-nav.interactive.stories.ts`  | Storybook interaction tests                                      |
-| `_stories/*`                              | Sample data and helper components used only by the stories       |
-| `_internal/mt-nav-context.ts`             | Provide/inject contract between the navigation, sections, rows   |
-| `_internal/nav-item-key.ts`               | Identity of an item, used to key the open branches               |
-| `_internal/prune-deep-items.ts`           | Drops and reports items nested deeper than three levels          |
-| `_internal/nav-item-active.helper(.spec)` | Active route detection via `route.matched` and `meta.parentPath` |
+| File                                     | Purpose                                                         |
+| ---------------------------------------- | --------------------------------------------------------------- |
+| `mt-nav.vue`                             | The navigation: open branches and keyboard handling             |
+| `mt-nav-section.vue`                     | Header and list of one section; the rows are slotted in         |
+| `mt-nav-item.vue`                        | One navigation row; nested rows are slotted in                  |
+| `mt-nav.types.ts`                        | `NavLinkComponent`, `NavLinkTarget`, `NavNavigateEvent`         |
+| `mt-nav.spec.ts`                         | Vitest / Testing Library spec                                   |
+| `_stories/mt-nav.stories.ts`             | Storybook stories                                               |
+| `_stories/mt-nav.interactive.stories.ts` | Storybook interaction tests                                     |
+| `_stories/*`                             | Sample data and helper components used only by the stories      |
+| `_internal/mt-nav-context.ts`            | Provide/inject contracts between the navigation, sections, rows |
 
 ## API
 
 ### mt-nav
 
-| Prop              | Description                                                                                                   |
-| ----------------- | ------------------------------------------------------------------------------------------------------------- |
-| `route`, `router` | Current route and router (duck-typed, Vue Router compatible). Highlight the active item and open its branch.  |
-| `linkComponent`   | Component rendering the links, receives the route location as `to`. Defaults to `router-link` like `mt-link`. |
-| `expanded`        | Default `true`. Collapsed, the navigation shows the top level icons only.                                     |
+| Prop            | Description                                                                                          |
+| --------------- | ---------------------------------------------------------------------------------------------------- |
+| `linkComponent` | Component rendering the links, receives the `to` of a row. Defaults to `router-link` like `mt-link`. |
+| `expanded`      | Default `true`. Collapsed, the navigation shows the top level icons only.                            |
 
-The default slot takes the sections. `navigate(item)` is emitted when a navigation link is
-clicked. Use it to close an off-canvas panel or to track navigation.
-
-The active item is the one whose `path` is in the route's `matched` chain. Pages the navigation
-does not list, e.g. detail pages, declare the owning route name as `meta.parentPath`; the chain is
-followed through `router.getRoutes()`, so a detail route may point at a listing route that points
-at its own parent in turn.
+The default slot takes the sections. `navigate({ label, to, href })` is emitted when a row with a
+`to` or `href` is clicked. Use it to close an off-canvas panel or to track navigation.
 
 ### mt-nav-section
 
@@ -73,17 +64,32 @@ the list around them, so single rows without a header also go into a section.
 
 ### mt-nav-item
 
-| Prop   | Description                                                                            |
-| ------ | -------------------------------------------------------------------------------------- |
-| `item` | `NavItem`, nested via `children` up to three levels. Labels are translated by the app. |
+| Prop     | Description                                                                          |
+| -------- | ------------------------------------------------------------------------------------ |
+| `label`  | Translated label.                                                                    |
+| `icon`   | Icon name of the meteor icon kit, e.g. `regular-products`. Shown on top level rows.  |
+| `to`     | Route location handed to the link component as `to`.                                 |
+| `href`   | External URL, rendered as a plain anchor when no `to` is set. `target` goes with it. |
+| `active` | Whether the row is the current page.                                                 |
 
-| Slot                     | Description                                          |
-| ------------------------ | ---------------------------------------------------- |
-| `item-suffix="{ item }"` | Rendered after the label, including the nested rows. |
+| Slot     | Description                                                     |
+| -------- | --------------------------------------------------------------- |
+| default  | Nested `mt-nav-item` rows. Three levels in total are supported. |
+| `suffix` | Rendered after the label, e.g. for a badge or counter.          |
 
-Sections and rows must be rendered inside `mt-nav`. Every top level row registers its item with
-the navigation, which uses the complete list to find the branch owning the current route and to
-keep only one branch open, no matter which section the branch sits in.
+A row with nested rows and no `to` renders as a button toggling them. A row with both navigates
+and toggles. Rows nested deeper than three levels are not rendered and reported to the console.
+
+### Active state
+
+The application decides which row is current and sets `active` on it, typically by comparing the
+row's route with the current route. Pages the navigation does not list, e.g. detail pages, mark
+the row of their listing as active. The ancestors of the active row open and, while closed, take
+over its highlight. When the active row moves into another top level branch, that branch opens
+and branches holding nothing active close.
+
+Sections and rows must be rendered inside `mt-nav`. Top level rows register with the navigation,
+nested rows report their active state to their parent row.
 
 ### Layout
 
@@ -95,9 +101,8 @@ background: the collapsed rows are 36px wide, so a 60px panel with 12px horizont
 
 Everything is prefixed `mt-nav__*`. The root carries `is--expanded` / `is--collapsed` and, for half
 a second after the state changes, `is--toggling`, so a shell can synchronise its own transitions.
-`mt-nav__hide-on-collapse` fades an element out when the navigation collapses. Rows carry
-`mt-nav__item--<id>` for targeting a single row. The `router-link-active` class name is kept
-because Vue Router sets it on the rendered links.
+`mt-nav__hide-on-collapse` fades an element out when the navigation collapses. Rows accept a
+`class` attribute for targeting a single row; the active link carries `is--active`.
 
 ## Provenance
 
@@ -108,20 +113,21 @@ because Vue Router sets it on the rendered links.
 
 Shopware couplings replaced or dropped during the port:
 
-| Shopware coupling                                              | Meteor replacement                                        |
-| -------------------------------------------------------------- | --------------------------------------------------------- |
-| `menuService`, `appModulesService`, custom entity entries      | `item` prop of `mt-nav-item`                              |
-| `adminMenu` store `isExpanded` (+ `localStorage`)              | `expanded` prop, owned by the shell                       |
-| `adminMenu` store `expandedEntries`                            | Internal state                                            |
-| `acl`, `hasAccessToRoute`, settings special case               | Removed: pass only the items the user may see             |
-| `meta.$module` fallback, `moduleType` and legacy class names   | Removed: declare `meta.parentPath` on detail routes       |
-| `$t` on entry labels and menu strings                          | Translated labels; inline `useI18n` messages (`en`, `de`) |
-| `$route`, `$router`, `router-link`                             | `route`, `router`, `linkComponent` props                  |
-| Header (logo, shop name, collapse toggle)                      | Shell of the application                                  |
-| `session` store user, `userService`, `sw-avatar`, `sw-version` | Shell of the application                                  |
-| `loginService.logoutSso`, notification cleanup                 | Shell of the application                                  |
-| Off-canvas panel, backdrop, `$device.getViewportWidth()`       | Shell of the application                                  |
-| Twig blocks                                                    | Slots                                                     |
+| Shopware coupling                                              | Meteor replacement                                      |
+| -------------------------------------------------------------- | ------------------------------------------------------- |
+| `menuService`, `appModulesService`, custom entity entries      | `mt-nav-item` rows written by the application           |
+| `adminMenu` store `isExpanded` (+ `localStorage`)              | `expanded` prop, owned by the shell                     |
+| `adminMenu` store `expandedEntries`                            | Internal state                                          |
+| `acl`, `hasAccessToRoute`, settings special case               | Removed: render only the rows the user may see          |
+| `$t` on entry labels and menu strings                          | Translated `label` props; inline `useI18n` (`en`, `de`) |
+| `$route`, `$router`, `router-link`, `meta.parentPath`          | `active` prop set by the application, `linkComponent`   |
+| `meta.$module` fallback, `moduleType` and legacy class names   | Removed                                                 |
+| Header (logo, shop name, collapse toggle)                      | Shell of the application                                |
+| `session` store user, `userService`, `sw-avatar`, `sw-version` | Shell of the application                                |
+| `loginService.logoutSso`, notification cleanup                 | Shell of the application                                |
+| Off-canvas panel, backdrop, `$device.getViewportWidth()`       | Shell of the application                                |
+| Collapsed flyout                                               | Dropped                                                 |
+| Twig blocks                                                    | Slots                                                   |
 
 The Jest specs of the original components relied on Shopware's `wrapTestComponent` harness and
-were replaced by `mt-nav.spec.ts`. The pure active-route helper spec was ported as is.
+were replaced by `mt-nav.spec.ts`.

@@ -8,8 +8,6 @@ export const StoryLink = defineComponent({
   name: "StoryLink",
   props: {
     to: { type: Object as PropType<{ name?: string }>, required: true },
-    activeClass: { type: String, default: "" },
-    exactActiveClass: { type: String, default: "" },
   },
   setup(props, { slots }) {
     return () =>

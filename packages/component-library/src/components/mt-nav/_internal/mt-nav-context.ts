@@ -1,26 +1,43 @@
-import type { ComputedRef, InjectionKey, Ref } from "vue";
-import type { NavItem, NavLinkComponent, NavRoute, NavRouter } from "../mt-nav.types";
+import type { ComputedRef, InjectionKey } from "vue";
+import type { NavLinkComponent, NavNavigateEvent } from "../mt-nav.types";
+
+/**
+ * What a top-level row tells the navigation about itself, so the navigation can open the branch
+ * owning the active item and keep only one branch open.
+ */
+export interface NavBranchRegistration {
+  key: string;
+  hasChildren: ComputedRef<boolean>;
+  /** Whether the row itself or one of its descendants is active. */
+  isActive: ComputedRef<boolean>;
+}
 
 /**
  * Shared state of `mt-nav`, provided to the sections and rows slotted into it.
  */
 export interface NavContext {
-  route: ComputedRef<NavRoute | undefined>;
-  router: ComputedRef<NavRouter | undefined>;
   linkComponent: ComputedRef<NavLinkComponent>;
   /** Whether the navigation is expanded. Collapsed, rows show icons only. */
   expanded: ComputedRef<boolean>;
-  /** Whether any top-level branch is expanded, in which case the route stops keeping folders open. */
+  /** Whether any top-level branch is expanded, in which case the active item stops keeping folders open. */
   hasExpandedBranches: ComputedRef<boolean>;
-  /** Whether the branch of a top-level item is open. */
-  isItemExpanded: (item: NavItem) => boolean;
-  /**
-   * Makes a top-level row known to the navigation, which needs the complete list to find the
-   * branch owning the current route. Returns the matching unregister function.
-   */
-  registerItems: (items: Ref<NavItem[]>) => () => void;
-  onBranchToggle: (item: NavItem, open: boolean) => void;
-  onLinkClick: (item: NavItem) => void;
+  isBranchExpanded: (key: string) => boolean;
+  /** Registers a top-level row. Returns the matching unregister function. */
+  registerBranch: (registration: NavBranchRegistration) => () => void;
+  onBranchToggle: (key: string, open: boolean) => void;
+  onLinkClick: (event: NavNavigateEvent) => void;
+}
+
+/**
+ * Provided by every row to the rows nested inside it.
+ */
+export interface NavItemContext {
+  /** Nesting depth of the providing row, starting at 1 for the top level. */
+  depth: number;
+  /** Lets a nested row report whether it, or one of its descendants, is active. */
+  reportActive: (key: string, active: boolean) => void;
 }
 
 export const NAV_CONTEXT: InjectionKey<NavContext> = Symbol("mt-nav");
+
+export const NAV_ITEM_CONTEXT: InjectionKey<NavItemContext> = Symbol("mt-nav-item");

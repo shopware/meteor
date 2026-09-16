@@ -32,35 +32,18 @@ import {
   useId,
   watch,
   type PropType,
-  type Ref,
 } from "vue";
 import { useI18n } from "vue-i18n";
-import { NAV_CONTEXT } from "./_internal/mt-nav-context";
-import { navItemKey } from "./_internal/nav-item-key";
-import { getActiveRouteNames, isItemOnActiveRoute } from "./_internal/nav-item-active.helper";
-import type { NavItem, NavLinkComponent, NavRoute, NavRouter } from "./mt-nav.types";
+import { NAV_CONTEXT, type NavBranchRegistration } from "./_internal/mt-nav-context";
+import type { NavLinkComponent, NavNavigateEvent } from "./mt-nav.types";
 
-export type { NavItem, NavLinkComponent, NavRoute, NavRouter } from "./mt-nav.types";
+export type { NavLinkComponent, NavLinkTarget, NavNavigateEvent } from "./mt-nav.types";
 
 const TOGGLE_ANIMATION_DURATION = 500;
 
 const props = defineProps({
   /**
-   * The current route, used to highlight the active item and open its branch.
-   */
-  route: {
-    type: Object as PropType<NavRoute>,
-    default: undefined,
-  },
-  /**
-   * The router, used to follow `meta.parentPath` of routes not listed in the navigation.
-   */
-  router: {
-    type: Object as PropType<NavRouter>,
-    default: undefined,
-  },
-  /**
-   * Component rendering the navigation links. Receives the route location as `to`.
+   * Component rendering the navigation links. Receives the target of an item as `to`.
    */
   linkComponent: {
     type: [String, Object] as PropType<NavLinkComponent>,
@@ -76,7 +59,7 @@ const props = defineProps({
 });
 
 const emit = defineEmits<{
-  (e: "navigate", item: NavItem): void;
+  (e: "navigate", event: NavNavigateEvent): void;
 }>();
 
 defineSlots<{
@@ -101,16 +84,21 @@ const navBodyElement = ref<HTMLElement | null>(null);
 
 const scrollbarOffset = ref("");
 const isToggling = ref(false);
-const activeBranchKey = ref<string | null | undefined>(null);
-const expandedItems = ref<NavItem[]>([]);
+const expandedKeys = ref<string[]>([]);
+const activeBranchKey = ref<string | null>(null);
 
-// The top level rows of every mounted section, in mount order
-const registeredItemLists = shallowRef<Ref<NavItem[]>[]>([]);
+// The top-level rows of every mounted section, in mount order
+const branches = shallowRef<NavBranchRegistration[]>([]);
 
 let toggleTimeout: ReturnType<typeof setTimeout> | null = null;
 
-// Every top level row across the sections; branches are keyed globally, not per section
-const mainItems = computed(() => registeredItemLists.value.flatMap((list) => list.value));
+const hasActiveItem = computed(() => branches.value.some((branch) => branch.isActive.value));
+
+// The top-level branch holding the active item, if the active item sits inside a branch
+const activeOwnerKey = computed(
+  () =>
+    branches.value.find((branch) => branch.hasChildren.value && branch.isActive.value)?.key ?? null,
+);
 
 const navClasses = computed(() => ({
   "is--expanded": props.expanded,
@@ -124,13 +112,11 @@ const scrollbarOffsetStyle = computed(() => ({
 }));
 
 provide(NAV_CONTEXT, {
-  route: computed(() => props.route),
-  router: computed(() => props.router),
   linkComponent: computed(() => props.linkComponent),
   expanded: computed(() => props.expanded),
-  hasExpandedBranches: computed(() => expandedItems.value.length > 0),
-  isItemExpanded,
-  registerItems,
+  hasExpandedBranches: computed(() => expandedKeys.value.length > 0),
+  isBranchExpanded,
+  registerBranch,
   onBranchToggle,
   onLinkClick,
 });
@@ -140,26 +126,16 @@ watch(
   () => {
     // Collapsing hides the expanded tree, so drop that state
     if (!props.expanded) {
-      expandedItems.value = [];
+      expandedKeys.value = [];
     }
 
     startToggleWindow();
   },
 );
 
-// Query-insensitive on purpose: listing pagination/sorting must not re-expand a collapsed branch
-watch(
-  () => props.route?.path,
-  () => {
-    // Ensure the branch owning the new page is open, once the route change has rendered
-    nextTick(() => expandAncestorBranchesForCurrentRoute());
-  },
-  { immediate: true },
-);
-
-// Rows usually mount after the first render (app modules, plugins), so revisit the active branch
-watch(mainItems, () => {
-  nextTick(() => expandAncestorBranchesForCurrentRoute());
+// Rows report their active state once mounted, so wait for the render before opening a branch
+watch([activeOwnerKey, hasActiveItem], () => {
+  nextTick(() => openBranchOfActiveItem());
 });
 
 onMounted(() => {
@@ -172,16 +148,17 @@ onBeforeUnmount(() => {
   }
 });
 
-function registerItems(items: Ref<NavItem[]>) {
-  registeredItemLists.value = [...registeredItemLists.value, items];
+function registerBranch(registration: NavBranchRegistration) {
+  branches.value = [...branches.value, registration];
 
   return () => {
-    registeredItemLists.value = registeredItemLists.value.filter((list) => list !== items);
+    branches.value = branches.value.filter((branch) => branch !== registration);
+    collapseBranch(registration.key);
   };
 }
 
-function onLinkClick(item: NavItem) {
-  emit("navigate", item);
+function onLinkClick(event: NavNavigateEvent) {
+  emit("navigate", event);
 }
 
 function startToggleWindow() {
@@ -211,60 +188,70 @@ function addScrollbarOffset() {
   scrollbarOffset.value = `-${scrollbarWidthPx}px`;
 }
 
-function expandItem(item: NavItem) {
-  const key = navItemKey(item);
-
-  // Items without id and path share the key undefined, so never deduplicate them
-  if (key !== undefined && expandedItems.value.some((e) => navItemKey(e) === key)) {
-    return;
-  }
-
-  expandedItems.value = [...expandedItems.value, item];
+function isBranchExpanded(key: string) {
+  return expandedKeys.value.includes(key);
 }
 
-function collapseItem(item: NavItem) {
-  const key = navItemKey(item);
-
-  if (key === undefined) {
-    expandedItems.value = expandedItems.value.filter((e) => e !== item);
-    return;
+function expandBranch(key: string) {
+  if (!isBranchExpanded(key)) {
+    expandedKeys.value = [...expandedKeys.value, key];
   }
-
-  expandedItems.value = expandedItems.value.filter((e) => navItemKey(e) !== key);
 }
 
-// Only top level rows report their toggle, nested rows keep their own open state
-function onBranchToggle(item: NavItem, open: boolean) {
+function collapseBranch(key: string) {
+  expandedKeys.value = expandedKeys.value.filter((expanded) => expanded !== key);
+}
+
+// Only top-level rows report their toggle, nested rows keep their own open state
+function onBranchToggle(key: string, open: boolean) {
   if (!props.expanded) {
     return;
   }
 
   if (!open) {
-    collapseItem(item);
+    collapseBranch(key);
     return;
   }
 
-  collapseInactiveBranches(item);
-  expandItem(item);
+  collapseInactiveBranches(key);
+  expandBranch(key);
 }
 
-function collapseInactiveBranches(exceptItem: NavItem | null = null) {
-  const exceptKey = exceptItem ? navItemKey(exceptItem) : null;
-  const activeNames = getActiveRouteNames(props.route, props.router);
+function collapseInactiveBranches(exceptKey: string | null = null) {
+  expandedKeys.value = expandedKeys.value.filter((key) => {
+    if (key === exceptKey) {
+      return true;
+    }
 
-  expandedItems.value
-    .filter((expanded) => {
-      const key = navItemKey(expanded);
+    return branches.value.find((branch) => branch.key === key)?.isActive.value ?? false;
+  });
+}
 
-      if (key === exceptKey) {
-        return false;
-      }
+function openBranchOfActiveItem() {
+  // Only the expanded navigation shows a tree to open
+  if (!props.expanded) {
+    return;
+  }
 
-      const mainItem = mainItems.value.find((item) => navItemKey(item) === key);
+  // Pages the navigation does not list own no branch; leave the tree as the user left it
+  if (!hasActiveItem.value) {
+    return;
+  }
 
-      return !mainItem || !isItemOnActiveRoute(mainItem, props.route, activeNames);
-    })
-    .forEach((expanded) => collapseItem(expanded));
+  const ownerKey = activeOwnerKey.value;
+
+  // The cached owner may have been collapsed manually
+  if (ownerKey === activeBranchKey.value && (!ownerKey || isBranchExpanded(ownerKey))) {
+    return;
+  }
+
+  // Branches only stay open while they hold the active item, or while nothing in the navigation does.
+  collapseInactiveBranches(ownerKey);
+  activeBranchKey.value = ownerKey;
+
+  if (ownerKey) {
+    expandBranch(ownerKey);
+  }
 }
 
 function onNavigationKeydown(event: KeyboardEvent) {
@@ -306,45 +293,6 @@ function onNavigationKeydown(event: KeyboardEvent) {
 
   event.preventDefault();
   links[nextIndex]?.focus();
-}
-
-function expandAncestorBranchesForCurrentRoute() {
-  // Only the expanded navigation shows a tree to open
-  if (!props.expanded) {
-    return;
-  }
-
-  const activeNames = getActiveRouteNames(props.route, props.router);
-  const activeItems = mainItems.value.filter((item) =>
-    isItemOnActiveRoute(item, props.route, activeNames),
-  );
-
-  // Pages the navigation does not list at all own no branch; leave the tree as the user left it
-  if (!activeItems.length) {
-    return;
-  }
-
-  const owner = activeItems.find((item) => (item.children ?? []).length > 0) ?? null;
-  const ownerKey = owner ? navItemKey(owner) : null;
-
-  // The cached owner may have been collapsed manually
-  if (ownerKey === activeBranchKey.value && (!owner || isItemExpanded(owner))) {
-    return;
-  }
-
-  // Branches only stay open while they own the active item, or while nothing in the navigation does.
-  collapseInactiveBranches(owner);
-  activeBranchKey.value = ownerKey;
-
-  if (owner && !isItemExpanded(owner)) {
-    expandItem(owner);
-  }
-}
-
-function isItemExpanded(item: NavItem) {
-  const key = navItemKey(item);
-
-  return expandedItems.value.some((expanded) => navItemKey(expanded) === key);
 }
 </script>
 
@@ -402,7 +350,7 @@ function isItemExpanded(item: NavItem) {
   &.is--expanded {
     --mt-nav-body-fade: var(--scale-size-20);
 
-    .mt-nav__link.router-link-active {
+    .mt-nav__link.is--active {
       background: var(--color-background-brand-default);
 
       .mt-nav__collapsible-text {
