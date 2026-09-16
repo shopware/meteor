@@ -30,6 +30,7 @@
     "lint:eslint": "eslint ./src",
     "lint:types": "tsc --noEmit",
     "start": "tsx ./src/index.ts",
+    "changeset": "tsx ./src/changeset/index.ts",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test:unit": "vitest"
