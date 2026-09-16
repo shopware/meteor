@@ -1,37 +1,36 @@
 <template>
   <mt-collapsible
-    v-if="showMenuItem && hasCollapsibleSubtree"
+    v-if="hasCollapsibleSubtree"
     as="li"
-    :class="collapsibleLiClass"
+    :class="rowClasses"
     :aria-current="rowActive ? 'page' : 'false'"
     :open="collapsibleOpen"
     @update:open="onCollapsibleOpenUpdate"
   >
     <div class="mt-nav__item-row">
       <component
-        :is="itemPath ? linkComponent : MtCollapsibleTrigger"
+        :is="linkTag"
         class="mt-nav__link"
-        :class="{ 'router-link-active': rowActive }"
+        :class="{ 'is--active': rowActive }"
         :aria-label="collapsedAriaLabel"
-        v-bind="itemPath ? { ...linkProps, 'aria-expanded': collapsibleOpen } : { type: 'button' }"
-        v-on="itemPath ? { click: onNavigationLinkClick } : {}"
+        v-bind="linkAttrs"
+        v-on="to || href ? { click: onLinkClick } : {}"
       >
         <mt-icon
-          v-if="displayIcon"
-          :size="iconSize"
+          v-if="icon && depth === 1"
+          size="16px"
           class="mt-nav__link-icon"
-          :name="navigationIconName"
+          :name="iconName"
         />
 
         <span
-          class="mt-nav__link-label"
-          :class="collapsibleText ? 'mt-nav__collapsible-text mt-nav__hide-on-collapse' : ''"
-          :title="item.label"
+          class="mt-nav__link-label mt-nav__collapsible-text mt-nav__hide-on-collapse"
+          :title="label"
         >
-          {{ item.label }}
+          {{ label }}
         </span>
 
-        <slot name="item-suffix" :item="item" />
+        <slot name="suffix" />
 
         <span class="mt-nav__link-expand-icon-box">
           <mt-icon
@@ -44,49 +43,37 @@
     </div>
 
     <mt-collapsible-content as="ul" class="mt-nav__sub-list">
-      <mt-nav-item
-        v-for="(childItem, subMenuIndex) in children"
-        :key="childItem.id ?? childItem.path ?? subMenuIndex"
-        :item="childItem"
-        :menu-depth="menuDepth + 1"
-        :display-icon="false"
-        :collapsible-text="collapsibleText"
-        :icon-size="iconSize"
-      >
-        <template #item-suffix="slotProps">
-          <slot name="item-suffix" v-bind="slotProps" />
-        </template>
-      </mt-nav-item>
+      <slot />
     </mt-collapsible-content>
   </mt-collapsible>
 
-  <li v-else-if="showMenuItem" :class="leafLiClass" :aria-current="rowActive ? 'page' : 'false'">
-    <mt-tooltip :content="item.label" placement="right">
+  <li v-else :class="rowClasses" :aria-current="rowActive ? 'page' : 'false'">
+    <mt-tooltip :content="label" placement="right">
       <template #default="tooltipProps">
         <div class="mt-nav__item-row" v-bind="collapsedTooltipTriggerProps(tooltipProps)">
           <component
-            :is="leafTag"
+            :is="linkTag"
             class="mt-nav__link"
-            :class="{ 'router-link-active': rowActive }"
-            v-bind="leafAttrs"
-            v-on="itemPath ? { click: onNavigationLinkClick } : {}"
+            :class="{ 'is--active': rowActive }"
+            :aria-label="collapsedAriaLabel"
+            v-bind="linkAttrs"
+            v-on="to || href ? { click: onLinkClick } : {}"
           >
             <mt-icon
-              v-if="displayIcon"
-              :size="iconSize"
+              v-if="icon && depth === 1"
+              size="16px"
               class="mt-nav__link-icon"
-              :name="navigationIconName"
+              :name="iconName"
             />
 
             <span
-              class="mt-nav__link-label"
-              :class="collapsibleText ? 'mt-nav__collapsible-text mt-nav__hide-on-collapse' : ''"
-              :title="item.label"
+              class="mt-nav__link-label mt-nav__collapsible-text mt-nav__hide-on-collapse"
+              :title="label"
             >
-              {{ item.label }}
+              {{ label }}
             </span>
 
-            <slot name="item-suffix" :item="item" />
+            <slot name="suffix" />
           </component>
         </div>
       </template>
@@ -95,20 +82,26 @@
 </template>
 
 <script setup lang="ts">
-import { computed, inject, onBeforeUnmount, ref, watch, type PropType } from "vue";
+import {
+  computed,
+  inject,
+  onBeforeUnmount,
+  provide,
+  ref,
+  useId,
+  useSlots,
+  watch,
+  type PropType,
+} from "vue";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtTooltip from "@/components/mt-tooltip/mt-tooltip.vue";
 import MtCollapsible from "@/components/mt-collapsible/mt-collapsible.vue";
 import MtCollapsibleTrigger from "@/components/mt-collapsible/mt-collapsible-trigger.vue";
 import MtCollapsibleContent from "@/components/mt-collapsible/mt-collapsible-content.vue";
-import type { NavItem } from "./mt-nav.types";
-import { NAV_CONTEXT } from "./_internal/mt-nav-context";
-import { pruneDeepItems } from "./_internal/prune-deep-items";
-import {
-  getActiveRouteNames,
-  isItemOnActiveRoute,
-  itemParamsMatchRoute,
-} from "./_internal/nav-item-active.helper";
+import { NAV_CONTEXT, NAV_ITEM_CONTEXT } from "./_internal/mt-nav-context";
+import type { NavLinkTarget } from "./mt-nav.types";
+
+const MAX_NESTING_LEVEL = 3;
 
 /**
  * Props of the tooltip trigger that open it; stripped when the row shows no tooltip.
@@ -117,36 +110,57 @@ const TOOLTIP_OPEN_TRIGGER_PROPS = ["onMouseover", "onFocus", "aria-describedby"
 
 const props = defineProps({
   /**
-   * The item to render, nested via `children` up to three levels deep.
+   * Translated label of the row.
    */
-  item: {
-    type: Object as PropType<NavItem>,
+  label: {
+    type: String,
     required: true,
   },
-  /** Internal: nesting depth of the row, starting at 1 for the top level. */
-  menuDepth: {
-    type: Number,
-    default: 1,
-    validator: (value: number) => [1, 2, 3].includes(value),
-  },
-  displayIcon: {
-    type: Boolean,
-    default: true,
-  },
-  iconSize: {
+  /**
+   * Icon name of the meteor icon kit, e.g. `regular-products`. Shown on top-level rows only.
+   */
+  icon: {
     type: String,
-    default: "16px",
+    default: undefined,
   },
-  collapsibleText: {
+  /**
+   * Route location handed to the link component of the navigation as `to`.
+   */
+  to: {
+    type: [String, Object] as PropType<NavLinkTarget>,
+    default: undefined,
+  },
+  /**
+   * External URL, rendered as a plain anchor when no `to` is set.
+   */
+  href: {
+    type: String,
+    default: undefined,
+  },
+  /**
+   * Anchor target for `href`.
+   */
+  target: {
+    type: String,
+    default: undefined,
+  },
+  /**
+   * Whether the row is the current page. Its ancestors open and highlight accordingly.
+   */
+  active: {
     type: Boolean,
-    default: true,
+    default: false,
   },
 });
 
 defineSlots<{
-  /** Rendered after the label; forwarded to the nested rows. */
-  "item-suffix"?: (props: { item: NavItem }) => unknown;
+  /** Nested `mt-nav-item` rows, up to three levels deep in total. */
+  default?: () => unknown;
+  /** Rendered after the label, e.g. for a badge or counter. */
+  suffix?: () => unknown;
 }>();
+
+const slots = useSlots();
 
 const injectedContext = inject(NAV_CONTEXT);
 
@@ -155,185 +169,138 @@ if (!injectedContext) {
 }
 
 const context = injectedContext;
-const route = context.route;
+const parent = inject(NAV_ITEM_CONTEXT, null);
+const depth = parent ? parent.depth + 1 : 1;
+const key = useId();
+
 const linkComponent = context.linkComponent;
 const navExpanded = context.expanded;
 
-// Top-level rows make themselves known, so the navigation can find the branch owning the route
-if (props.menuDepth === 1) {
-  onBeforeUnmount(context.registerItems(computed(() => pruneDeepItems([props.item]))));
+const hasChildren = computed(() => !!slots.default);
+
+// The navigation supports at most three levels; deeper rows are leaf items only
+const isLeafDepth = depth >= MAX_NESTING_LEVEL;
+
+if (isLeafDepth && slots.default) {
+  console.error(
+    `[mt-nav] The navigation item "${props.label}" has nested items on level 4 or higher. ` +
+      "The navigation only supports up to three levels of nesting.",
+  );
 }
 
-const suppressRouteKeepsFolderOpen = ref(false);
+const hasCollapsibleSubtree = computed(() => hasChildren.value && !isLeafDepth);
+
+// Keys of the nested rows that are active themselves or hold the active row
+const activeDescendants = ref<string[]>([]);
+const hasActiveDescendant = computed(() => activeDescendants.value.length > 0);
+const isActive = computed(() => props.active || hasActiveDescendant.value);
+
+const suppressActiveKeepsOpen = ref(false);
 const manualNestedOpen = ref(false);
 
-// The navigation supports at most three levels; level-3 rows are leaf items only
-const isLeafDepth = computed(() => props.menuDepth >= 3);
+provide(NAV_ITEM_CONTEXT, {
+  depth,
+  reportActive(childKey, active) {
+    const others = activeDescendants.value.filter((existing) => existing !== childKey);
 
-const activeRouteNames = computed(() => getActiveRouteNames(route.value, context.router.value));
-
-const children = computed(() => props.item.children ?? []);
-
-const itemPath = computed(() => props.item.path);
-
-// Only top-level branches are tracked by the navigation; nested rows keep their own state
-const isBranchExpanded = computed(
-  () => props.menuDepth === 1 && context.isItemExpanded(props.item),
-);
-
-const hasActiveChild = computed(() =>
-  children.value.some((child) => isItemOnActiveRoute(child, route.value, activeRouteNames.value)),
-);
-
-const hasCollapsibleSubtree = computed(
-  // Ignores the expanded state on purpose: switching template branch on collapse makes the icons flash
-  () => children.value.length > 0 && !isLeafDepth.value,
-);
-
-const routeKeepsFolderOpen = computed(() => {
-  if (!children.value.length || suppressRouteKeepsFolderOpen.value) {
-    return false;
-  }
-
-  return hasActiveChild.value;
+    activeDescendants.value = active ? [...others, childKey] : others;
+  },
 });
 
+if (parent) {
+  const parentContext = parent;
+
+  watch(isActive, (active) => parentContext.reportActive(key, active), { immediate: true });
+  onBeforeUnmount(() => parentContext.reportActive(key, false));
+} else {
+  onBeforeUnmount(context.registerBranch({ key, hasChildren, isActive }));
+}
+
+// A manual collapse holds until the active row changes
+watch(
+  () => activeDescendants.value.join(","),
+  () => {
+    suppressActiveKeepsOpen.value = false;
+  },
+);
+
+const activeKeepsOpen = computed(() => hasActiveDescendant.value && !suppressActiveKeepsOpen.value);
+
 const submenuVisuallyOpen = computed(() => {
-  if (props.menuDepth === 1) {
+  if (depth === 1) {
     if (!navExpanded.value) {
       return false;
     }
 
+    const branchExpanded = context.isBranchExpanded(key);
+
     return context.hasExpandedBranches.value
-      ? isBranchExpanded.value
-      : isBranchExpanded.value || routeKeepsFolderOpen.value;
+      ? branchExpanded
+      : branchExpanded || activeKeepsOpen.value;
   }
 
-  return routeKeepsFolderOpen.value || manualNestedOpen.value;
+  return activeKeepsOpen.value || manualNestedOpen.value;
 });
 
 const collapsibleOpen = computed(() => hasCollapsibleSubtree.value && submenuVisuallyOpen.value);
 
-const rowActive = computed(() => {
-  if (!isItemOnActiveRoute(props.item, route.value, activeRouteNames.value)) {
-    return false;
-  }
-
-  const selfIsCurrent =
-    !hasActiveChild.value &&
-    !!props.item.path &&
-    activeRouteNames.value.has(props.item.path) &&
-    itemParamsMatchRoute(props.item, route.value);
-
-  if (!selfIsCurrent && children.value.length > 0 && submenuVisuallyOpen.value) {
-    return false;
-  }
-
-  return true;
-});
-
-const linkTo = computed(() => {
-  if (props.item.params) {
-    return { name: props.item.path, params: props.item.params };
-  }
-
-  return { name: props.item.path };
-});
-
-const showMenuItem = computed(
-  () => children.value.length > 0 || !!itemPath.value || !!props.item.link,
+// A closed branch stands in for the active row it hides
+const rowActive = computed(
+  () => props.active || (hasActiveDescendant.value && !submenuVisuallyOpen.value),
 );
+
+const childActive = computed(() => hasActiveDescendant.value && submenuVisuallyOpen.value);
 
 const expandIcon = computed(() =>
   submenuVisuallyOpen.value ? "regular-chevron-up-xs" : "regular-chevron-down-xs",
 );
 
-const childRouteActive = computed(
-  () => children.value.length > 0 && submenuVisuallyOpen.value && hasActiveChild.value,
-);
+const iconName = computed(() => getIconName(props.icon, rowActive.value || childActive.value));
 
-const navigationIconName = computed(() =>
-  getIconName(props.item.icon, rowActive.value || childRouteActive.value),
-);
-
-// `mt-nav__item--<id>` lets applications target a specific row
-function getElementClasses() {
-  return [
-    props.item.id ? `mt-nav__item--${props.item.id}` : "",
-    {
-      "mt-nav__list-item--nested": props.menuDepth > 1,
-    },
-  ];
-}
-
-const collapsibleLiClass = computed(() => [
+const rowClasses = computed(() => [
   "mt-nav__list-item",
-  getElementClasses(),
   {
-    "is--entry-expanded": collapsibleOpen.value,
-    "is--child-active": childRouteActive.value,
-  },
-]);
-
-const leafLiClass = computed(() => [
-  "mt-nav__list-item",
-  getElementClasses(),
-  {
+    "mt-nav__list-item--nested": depth > 1,
     "is--entry-expanded": submenuVisuallyOpen.value,
-    "is--child-active": childRouteActive.value,
+    "is--child-active": childActive.value,
   },
 ]);
 
 // Collapsed top-level rows hide their label, so the accessible name needs an aria-label.
 const collapsedAriaLabel = computed(() =>
-  !navExpanded.value && props.menuDepth === 1 ? props.item.label : undefined,
+  !navExpanded.value && depth === 1 ? props.label : undefined,
 );
 
-const linkProps = computed(() => ({
-  to: linkTo.value,
-  activeClass: "router-link-active",
-  exactActiveClass: "router-link-exact-active",
-}));
-
-const leafTag = computed(() => {
-  if (itemPath.value) {
+const linkTag = computed(() => {
+  if (props.to) {
     return linkComponent.value;
   }
 
-  return props.item.link ? "a" : "span";
+  if (props.href) {
+    return "a";
+  }
+
+  return hasCollapsibleSubtree.value ? MtCollapsibleTrigger : "span";
 });
 
-const leafAttrs = computed(() => {
-  if (itemPath.value) {
+const linkAttrs = computed(() => {
+  if (props.to) {
     return {
-      ...linkProps.value,
-      "aria-label": collapsedAriaLabel.value,
+      to: props.to,
+      "aria-expanded": hasCollapsibleSubtree.value ? collapsibleOpen.value : undefined,
     };
   }
 
-  if (props.item.link) {
-    return {
-      href: props.item.link,
-      target: props.item.target,
-      title: props.item.label,
-      "aria-label": collapsedAriaLabel.value,
-    };
+  if (props.href) {
+    return { href: props.href, target: props.target, title: props.label };
   }
 
-  return {};
+  return hasCollapsibleSubtree.value ? { type: "button" } : {};
 });
 
-// Collapsed top-level rows hide their label, which stays accessible via a tooltip
+// Collapsed top-level rows without children hide their label, which stays accessible via a tooltip
 const showsCollapsedTooltip = computed(
-  () => !navExpanded.value && props.menuDepth === 1 && children.value.length === 0,
-);
-
-// Query-insensitive on purpose: listing pagination/sorting must not undo a manual collapse
-watch(
-  () => route.value?.path,
-  () => {
-    suppressRouteKeepsFolderOpen.value = false;
-  },
+  () => !navExpanded.value && depth === 1 && !hasChildren.value,
 );
 
 function collapsedTooltipTriggerProps(tooltipProps: Record<string, unknown>) {
@@ -363,30 +330,24 @@ function getIconName(name: string | undefined, isActive: boolean) {
   return `${name}`;
 }
 
-function toggleSubmenu() {
-  if (!hasCollapsibleSubtree.value) {
-    return;
+function onLinkClick() {
+  // A link with nested rows also toggles them
+  if (hasCollapsibleSubtree.value) {
+    onCollapsibleOpenUpdate(!collapsibleOpen.value);
   }
 
-  onCollapsibleOpenUpdate(!collapsibleOpen.value);
-}
-
-function onNavigationLinkClick() {
-  // No-op unless this row has a collapsible subtree.
-  toggleSubmenu();
-
-  context.onLinkClick(props.item);
+  context.onLinkClick({ label: props.label, to: props.to, href: props.href });
 }
 
 function onCollapsibleOpenUpdate(open: boolean) {
-  suppressRouteKeepsFolderOpen.value = !open;
+  suppressActiveKeepsOpen.value = !open;
 
-  if (props.menuDepth >= 2) {
+  if (depth >= 2) {
     manualNestedOpen.value = open;
   }
 
-  if (props.menuDepth === 1 && navExpanded.value) {
-    context.onBranchToggle(props.item, open);
+  if (depth === 1 && navExpanded.value) {
+    context.onBranchToggle(key, open);
   }
 }
 </script>
@@ -424,7 +385,7 @@ $nesting-line-indent: 36px;
   font-weight: var(--font-weight-medium);
   border-radius: var(--border-radius-s);
 
-  &:not(.router-link-active):hover {
+  &:not(.is--active):hover {
     background: var(--color-interaction-secondary-hover);
   }
 
@@ -532,13 +493,13 @@ $nesting-line-indent: 36px;
     outline: 4px solid transparent;
   }
 
-  &:not(.router-link-active):hover::after {
+  &:not(.is--active):hover::after {
     opacity: 1;
     background: var(--color-border-primary-default);
     outline-color: var(--color-interaction-secondary-hover);
   }
 
-  &.router-link-active::after {
+  &.is--active::after {
     opacity: 1;
     background: var(--color-icon-brand-default);
     outline-color: var(--color-background-brand-default);
@@ -570,12 +531,12 @@ $nesting-line-indent: 36px;
 }
 
 .mt-nav__list-item:not(.mt-nav__list-item--nested) > .mt-nav__item-row {
-  > .mt-nav__link.router-link-active {
+  > .mt-nav__link.is--active {
     background: var(--color-background-brand-default);
   }
 }
 
-.mt-nav__link.router-link-active {
+.mt-nav__link.is--active {
   background: none;
   color: var(--color-icon-brand-default);
 
@@ -593,7 +554,7 @@ $nesting-line-indent: 36px;
     color: var(--color-text-primary-default);
   }
 
-  & > .mt-nav__item-row > .mt-nav__link.router-link-active .mt-nav__collapsible-text {
+  & > .mt-nav__item-row > .mt-nav__link.is--active .mt-nav__collapsible-text {
     color: var(--color-icon-brand-default);
   }
 }

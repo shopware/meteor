@@ -38,7 +38,7 @@ export const VisualTestSections: MtNavStory = {
 };
 
 export const VisualTestActiveRoute: MtNavStory = {
-  name: "Open the branch of the current route",
+  name: "Open the branch of the active row",
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -60,6 +60,24 @@ export const VisualTestExpandBranch: MtNavStory = {
 
     expect(canvas.getByText("Shopping Experiences")).toBeVisible();
     expect(canvas.getByText("Media")).toBeVisible();
+  },
+};
+
+export const VisualTestNavigate: MtNavStory = {
+  name: "Move the active state to the clicked row",
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await userEvent.click(canvas.getByRole("link", { name: "Orders" }));
+
+    await waitUntil(
+      () => canvas.getByText("Orders").closest("li")?.getAttribute("aria-current") === "page",
+    );
+
+    // The branch that held the previous page closes once nothing inside it is active
+    await waitUntil(() => !canvas.getByText("Products").checkVisibility());
+
+    expect(canvas.getByText("Products").closest("li")).toHaveAttribute("aria-current", "false");
   },
 };
 
