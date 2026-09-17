@@ -90,7 +90,6 @@ const labelClasses = computed(() => {
   align-items: center;
   position: relative;
   max-width: 100%;
-  min-width: 56px;
   padding: 0 var(--scale-size-12);
   height: var(--scale-size-32);
   border: 1px solid var(--color-border-primary-default);
