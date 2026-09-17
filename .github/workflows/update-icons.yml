@@ -28,6 +28,9 @@ jobs:
       - name: Update icons
         run: pnpm --filter @shopware-ag/meteor-icon-kit run start
 
+      - name: Generate changeset
+        run: pnpm --filter @shopware-ag/meteor-icon-kit run changeset
+
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v8
         with:
