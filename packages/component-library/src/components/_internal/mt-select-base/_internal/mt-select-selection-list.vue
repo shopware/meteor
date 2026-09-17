@@ -353,15 +353,16 @@ export default defineComponent({
     }
   }
 
+  /* same height as the medium tags, so wrapped rows are all equally tall */
   .mt-select-selection-list__input-wrapper--small .mt-select-selection-list__input {
-    min-height: var(--scale-size-24);
+    min-height: var(--scale-size-20);
     padding: var(--scale-size-2) var(--scale-size-16) var(--scale-size-2) var(--scale-size-8);
   }
 }
 
 .mt-select-selection-list--small {
   gap: var(--scale-size-4) var(--scale-size-6);
-  padding-block: var(--scale-size-2);
+  padding-block: var(--scale-size-4);
 
   /* match the 20px medium tags; the button's own scoped x-small size is 24px */
   .mt-select-selection-list__load-more .mt-select-selection-list__load-more-button {

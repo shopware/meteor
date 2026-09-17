@@ -14,7 +14,8 @@
       <slot name="dismiss-icon">
         <mt-icon
           data-testid="dismiss-label"
-          name="regular-times-xs"
+          :name="dismissIcon.name"
+          :size="dismissIcon.size"
           color="var(--color-icon-primary-default)"
         />
       </slot>
@@ -60,6 +61,15 @@ const { t } = useI18n({
 const attrs = useAttrs();
 const showDismissable = computed(() => !!attrs.onDismiss && props.dismissable);
 
+/**
+ * The 12px `times-s` glyph is scaled down instead of using the smaller glyphs,
+ * because its stroke gets thinner with it, which matches the tag text better.
+ */
+const dismissIcon = computed(() => ({
+  name: "regular-times-s",
+  size: props.size === "medium" ? "var(--scale-size-8)" : "var(--scale-size-10)",
+}));
+
 const labelClasses = computed(() => {
   return [
     `mt-label--appearance-${props.appearance}`,
@@ -85,7 +95,8 @@ const labelClasses = computed(() => {
   height: var(--scale-size-32);
   border: 1px solid var(--color-border-primary-default);
   background: var(--color-background-secondary-default);
-  line-height: 1;
+  /* a full line box, so the caption's overflow: hidden does not clip descenders */
+  line-height: var(--font-line-height-xs);
   font-family: var(--font-family-body);
   font-size: var(--font-size-xs);
   color: var(--color-text-primary-default);
@@ -117,6 +128,16 @@ const labelClasses = computed(() => {
   height: var(--scale-size-20);
   padding: 0 var(--scale-size-6);
   font-size: var(--font-size-2xs);
+  line-height: var(--font-line-height-2xs);
+}
+
+/* the dismiss icon sits flush with the smaller horizontal padding */
+.mt-label.mt-label--size-medium .mt-label__dismiss {
+  right: var(--scale-size-6);
+}
+
+.mt-label.mt-label--size-medium.mt-label--dismissable:hover .mt-label__caption {
+  width: calc(100% - var(--scale-size-12));
 }
 
 .mt-label.mt-label--size-small {
