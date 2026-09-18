@@ -2,6 +2,7 @@ import { ref } from "vue";
 import MtRadioGroupRoot from "./mt-radio-group-root.vue";
 import MtRadioGroupList from "./mt-radio-group-list.vue";
 import MtRadioGroupItem from "./mt-radio-group-item.vue";
+import MtRadioGroupCardItem from "./mt-radio-group-card-item.vue";
 import MtRadioGroupCustomItem from "./mt-radio-group-custom-item.vue";
 import MtRadioGroupIndicator from "./mt-radio-group-indicator.vue";
 import ExampleRadioOption from "./_internal/example-radio-option.vue";
@@ -93,6 +94,93 @@ export const Default: Story = {
       id="option-3"
       value="value3"
       label="Option 3"
+    />
+  </mt-radio-group-list>
+</mt-radio-group-root>`,
+      },
+    },
+  },
+};
+
+export const WithCardItems: Story = {
+  name: "Card items",
+  args: {
+    label: "Choose a delivery method",
+    modelValue: "standard",
+  },
+  render: (args: typeof meta.args) => ({
+    components: { MtRadioGroupRoot, MtRadioGroupList, MtRadioGroupCardItem },
+    setup() {
+      const modelValue = ref(args!.modelValue);
+
+      const handleUpdate = (value: string) => {
+        modelValue.value = value;
+        args!.change(value);
+      };
+
+      return { args, modelValue, handleUpdate };
+    },
+    template: `
+      <div style="max-width: 480px">
+        <MtRadioGroupRoot
+          v-model="modelValue"
+          :disabled="args.disabled"
+          :label="args.label"
+          :help-text="args.helpText"
+          :name="args.name"
+          :error="args.error"
+          :hint="args.hint"
+          @update:modelValue="handleUpdate"
+        >
+          <MtRadioGroupList>
+            <MtRadioGroupCardItem
+              id="standard-delivery"
+              value="standard"
+              label="Standard delivery"
+              description="Delivery within 3–5 business days."
+            />
+            <MtRadioGroupCardItem
+              id="express-delivery"
+              value="express"
+              label="Express delivery"
+              description="Delivery on the next business day for orders placed before 14:00."
+            />
+            <MtRadioGroupCardItem
+              id="store-collection"
+              value="collection"
+              label="Collect in store"
+            />
+          </MtRadioGroupList>
+          <template v-if="args.hintSlot" #hint>{{ args.hintSlot }}</template>
+        </MtRadioGroupRoot>
+      </div>
+    `,
+  }),
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-radio-group-root
+  v-model="selectedDeliveryMethod"
+  label="Choose a delivery method"
+>
+  <mt-radio-group-list>
+    <mt-radio-group-card-item
+      id="standard-delivery"
+      value="standard"
+      label="Standard delivery"
+      description="Delivery within 3–5 business days."
+    />
+    <mt-radio-group-card-item
+      id="express-delivery"
+      value="express"
+      label="Express delivery"
+      description="Delivery on the next business day for orders placed before 14:00."
+    />
+    <mt-radio-group-card-item
+      id="store-collection"
+      value="collection"
+      label="Collect in store"
     />
   </mt-radio-group-list>
 </mt-radio-group-root>`,

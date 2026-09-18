@@ -11,6 +11,7 @@ import MtRadioGroupRoot from "./components/mt-radio-group/mt-radio-group-root.vu
 import MtRadioGroupIndicator from "./components/mt-radio-group/mt-radio-group-indicator.vue";
 import MtRadioGroupList from "./components/mt-radio-group/mt-radio-group-list.vue";
 import MtRadioGroupItem from "./components/mt-radio-group/mt-radio-group-item.vue";
+import MtRadioGroupCardItem from "./components/mt-radio-group/mt-radio-group-card-item.vue";
 import MtRadioGroupCustomItem from "./components/mt-radio-group/mt-radio-group-custom-item.vue";
 import MtColorpicker from "./components/mt-colorpicker/mt-colorpicker.vue";
 import MtDivider from "./components/mt-divider/mt-divider.vue";
@@ -102,6 +103,7 @@ export {
   MtRadioGroupIndicator,
   MtRadioGroupList,
   MtRadioGroupItem,
+  MtRadioGroupCardItem,
   MtRadioGroupCustomItem,
   MtColorpicker,
   MtDatepicker,
