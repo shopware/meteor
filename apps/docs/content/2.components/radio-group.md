@@ -15,6 +15,7 @@ import {
   MtRadioGroupRoot,
   MtRadioGroupList,
   MtRadioGroupItem,
+  MtRadioGroupCardItem,
   MtRadioGroupCustomItem,
   MtRadioGroupIndicator,
 } from "@shopware-ag/meteor-component-library";
@@ -22,9 +23,16 @@ import {
 
 ## Examples
 
+### Card item
+
+Use card items when each option needs a label and a short supporting description.
+
+::component-example{name="radio-group-card-item-example"}
+::
+
 ### Custom item
 
-Build fully custom option cards while keeping the shared radio-group state.
+Build fully custom option cards when you need richer content or a different layout.
 
 ::component-example{name="radio-group-custom-item-example"}
 ::
@@ -36,12 +44,19 @@ Build fully custom option cards while keeping the shared radio-group state.
 - `MtRadioGroupRoot` provides the shared label, help text, hint, error handling, and selected-value state.
 - `MtRadioGroupList` lays out a standard vertical list of radio items with the expected spacing.
 - `MtRadioGroupItem` renders the default radio option with a label.
+- `MtRadioGroupCardItem` renders a bordered option card with a label and an optional description.
 - `MtRadioGroupCustomItem` lets you build fully custom option cards while still participating in the shared radio-group state.
 - `MtRadioGroupIndicator` renders the actual radio input and control, and is mainly useful inside custom-item compositions.
 
 ## API reference
 
+### Root
+
 :component-api{name="MtRadioGroupRoot"}
+
+### Card item
+
+:component-api{name="MtRadioGroupCardItem"}
 
 ## Best practices
 
@@ -53,8 +68,10 @@ Build fully custom option cards while keeping the shared radio-group state.
 - Include help text or a hint when the selection needs additional context.
 - Use the `error` prop to display validation errors when needed.
 - Ensure each radio item has a unique `id` and `value`.
-- Use `MtRadioGroupList` to wrap multiple `MtRadioGroupItem` components for proper spacing.
-- Use `MtRadioGroupCustomItem` when you need custom-styled radio options such as pricing plans or feature cards.
+- Use `MtRadioGroupList` to space standard items or card items vertically.
+- Use `MtRadioGroupItem` for simple choices that only need a label.
+- Use `MtRadioGroupCardItem` when a short description helps users compare options.
+- Use `MtRadioGroupCustomItem` for richer content or layouts, such as pricing plans with feature lists.
 - Keep the number of options manageable. A small visible set is the sweet spot.
 
 #dont
@@ -71,14 +88,19 @@ Build fully custom option cards while keeping the shared radio-group state.
 ## Behavior
 
 - **Radio Group** uses `v-model` on `MtRadioGroupRoot` to manage the selected value across all items in the group.
-- `MtRadioGroupItem` should always be used inside `MtRadioGroupRoot`, because it depends on the shared radio-group context.
+- Use standard items and card items inside `MtRadioGroupRoot`. Both share the selected value, group name, and disabled state.
+- Clicking anywhere on a card selects its option. A disabled group prevents selection on all its cards.
+- Card items inherit the root's error state. Set a card's `error` prop to mark an individual option as invalid.
 - `MtRadioGroupCustomItem` gives you layout freedom, but you still need to render `MtRadioGroupIndicator` so the custom option remains a real radio control.
 - `helpText`, `hint`, and `error` follow the shared field patterns used by other form components.
 
 ## Accessibility
 
 - Provide a clear group label or other nearby visible context so users understand what the choice controls.
-- `MtRadioGroupIndicator` uses native radio inputs, so the group benefits from standard browser keyboard behavior.
+- `MtRadioGroupIndicator` uses native radio inputs. Tab enters or leaves the group, arrow keys move between options and select them, and Space selects the focused option.
+- Card items keep the native radio input and show a focus outline around the card during keyboard navigation.
+- A card's label names its radio input. Its description is associated with the input so screen readers can announce the supporting text.
+- Use `ariaDescribedBy` on a card to reference additional descriptive text by its element ID.
 - Keep option labels explicit so users do not need surrounding context to understand each choice.
 - If you build custom items, make sure the visible content still makes the selected state and choice meaning clear.
 

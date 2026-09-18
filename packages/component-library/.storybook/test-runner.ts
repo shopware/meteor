@@ -35,12 +35,49 @@ export default {
       return;
     }
 
+    const pressedCard =
+      context.id === "components-radio-group-interaction-tests--visual-test-pressed-card-item";
+    const hoveredCard =
+      context.id === "components-radio-group-interaction-tests--visual-test-hovered-card-item";
+    const focusedCard =
+      context.id ===
+        "components-radio-group-interaction-tests--visual-test-focused-selected-card-item" ||
+      context.id ===
+        "components-radio-group-interaction-tests--visual-test-focused-unselected-card-item";
+
+    // Native pointer input activates CSS states that userEvent cannot simulate.
+    if (pressedCard || hoveredCard) {
+      await page.getByText("Express delivery", { exact: true }).hover();
+    }
+
+    if (pressedCard) {
+      await page.mouse.down();
+    }
+
+    if (focusedCard) {
+      // Restore keyboard modality after native pointer tests so :focus-visible applies.
+      await page.keyboard.press("Tab");
+      await page.getByRole("radio", { name: "Standard delivery", exact: true }).focus();
+    }
+
     // wait 300ms before screenshot to make sure any pending animation is finished
     await (() => new Promise((resolve) => setTimeout(resolve, 300)))();
 
     const image = await page.screenshot({
       animations: "disabled",
     });
+
+    if (pressedCard) {
+      await page.mouse.up();
+    }
+
+    if (pressedCard || hoveredCard) {
+      await page.mouse.move(0, 0);
+    }
+
+    if (focusedCard) {
+      await page.mouse.click(0, 0);
+    }
 
     expect(image).toMatchImageSnapshot({
       comparisonMethod: "ssim",
