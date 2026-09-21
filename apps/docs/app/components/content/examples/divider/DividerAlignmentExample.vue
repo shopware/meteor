@@ -5,7 +5,7 @@ import MtText from "@shopware-ag/meteor-component-library/MtText";
 
 <template>
   <div style="display: grid; gap: var(--scale-size-24)">
-    <mt-divider alignment="left">
+    <mt-divider alignment="start">
       <mt-text size="xs" color="color-text-secondary-default"
         >Customer details</mt-text
       >
@@ -15,7 +15,7 @@ import MtText from "@shopware-ag/meteor-component-library/MtText";
         >New messages</mt-text
       >
     </mt-divider>
-    <mt-divider alignment="right">
+    <mt-divider alignment="end">
       <mt-text size="xs" color="color-text-secondary-default"
         >Updated 5 minutes ago</mt-text
       >
