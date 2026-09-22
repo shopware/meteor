@@ -24,15 +24,12 @@ import { inject, useId } from "vue";
 import MtText from "@/components/mt-text/mt-text.vue";
 import { NAV_CONTEXT } from "./_internal/mt-nav-context";
 
-defineProps({
+defineProps<{
   /**
    * Heading above the items of the section.
    */
-  header: {
-    type: String,
-    default: undefined,
-  },
-});
+  header?: string;
+}>();
 
 defineSlots<{
   /** The `mt-nav-item` rows of the section. */
