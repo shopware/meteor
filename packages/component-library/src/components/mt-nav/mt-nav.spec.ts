@@ -143,9 +143,14 @@ describe("mt-nav", () => {
 
       await waitFor(() => expect(getRowLabel("Categories")).toBeVisible());
 
-      expect(getRowLabel("Categories").closest("li")).toHaveAttribute("aria-current", "page");
-      expect(getRowLabel("Dashboard").closest("li")).toHaveAttribute("aria-current", "false");
-      expect(getRowLabel("Catalogues").closest("li")).toHaveAttribute("aria-current", "false");
+      expect(getRowLabel("Categories").closest(".mt-nav__link")).toHaveAttribute(
+        "aria-current",
+        "page",
+      );
+      expect(getRowLabel("Dashboard").closest(".mt-nav__link")).not.toHaveAttribute("aria-current");
+      expect(getRowLabel("Catalogues").closest(".mt-nav__link")).not.toHaveAttribute(
+        "aria-current",
+      );
     });
 
     it("marks a closed branch as current in place of the active row it hides", async () => {
@@ -156,7 +161,10 @@ describe("mt-nav", () => {
       await userEvent.click(screen.getByRole("button", { name: "Catalogues" }));
 
       await waitFor(() => expect(getRowLabel("Categories")).not.toBeVisible());
-      expect(getRowLabel("Catalogues").closest("li")).toHaveAttribute("aria-current", "page");
+      expect(getRowLabel("Catalogues").closest(".mt-nav__link")).toHaveAttribute(
+        "aria-current",
+        "page",
+      );
     });
 
     it("emits navigate with the clicked row", async () => {
@@ -213,7 +221,7 @@ describe("mt-nav", () => {
 
       await waitFor(() => expect(getRowLabel("FAQ")).toBeVisible());
       expect(getRowLabel("Products")).not.toBeVisible();
-      expect(getRowLabel("FAQ").closest("li")).toHaveAttribute("aria-current", "page");
+      expect(getRowLabel("FAQ").closest(".mt-nav__link")).toHaveAttribute("aria-current", "page");
     });
 
     it("closes the open branch when a top level row becomes active", async () => {
@@ -224,7 +232,10 @@ describe("mt-nav", () => {
       await rerender({ current: "sw.dashboard.index" });
 
       await waitFor(() => expect(getRowLabel("Products")).not.toBeVisible());
-      expect(getRowLabel("Dashboard").closest("li")).toHaveAttribute("aria-current", "page");
+      expect(getRowLabel("Dashboard").closest(".mt-nav__link")).toHaveAttribute(
+        "aria-current",
+        "page",
+      );
     });
 
     it("reopens a manually closed branch when the active row moves inside it", async () => {
@@ -238,7 +249,10 @@ describe("mt-nav", () => {
       await rerender({ current: "sw.category.index" });
 
       await waitFor(() => expect(getRowLabel("Categories")).toBeVisible());
-      expect(getRowLabel("Categories").closest("li")).toHaveAttribute("aria-current", "page");
+      expect(getRowLabel("Categories").closest(".mt-nav__link")).toHaveAttribute(
+        "aria-current",
+        "page",
+      );
     });
 
     it("keeps one top level branch open across sections", async () => {

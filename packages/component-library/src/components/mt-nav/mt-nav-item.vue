@@ -1,25 +1,18 @@
 <template>
-  <mt-collapsible
-    v-if="hasCollapsibleSubtree"
-    as="li"
-    :class="rowClasses"
-    :aria-current="rowActive ? 'page' : 'false'"
-    :open="subtreeOpen"
-    @update:open="setSubtreeOpen"
-  >
+  <component :is="rowComponent" v-bind="rowProps" class="mt-nav__list-item" :class="rowClasses">
     <div class="mt-nav__item-row">
       <component
         :is="linkTag"
         class="mt-nav__link"
         :class="{ 'is--active': rowActive }"
+        :aria-current="rowActive ? 'page' : undefined"
         v-bind="linkAttrs"
-        v-on="to || href ? { click: onLinkClick } : {}"
       >
         <mt-icon
-          v-if="icon && depth === 1"
-          size="16px"
-          class="mt-nav__link-icon"
+          v-if="iconName && depth === 1"
           :name="iconName"
+          size="16"
+          class="mt-nav__link-icon"
         />
 
         <span class="mt-nav__link-label" :title="label">
@@ -28,50 +21,29 @@
 
         <slot name="suffix" />
 
-        <span class="mt-nav__link-expand-icon-box">
-          <mt-icon :name="expandIcon" size="8" class="mt-nav__link-expand-icon" />
+        <span v-if="hasCollapsibleSubtree" class="mt-nav__link-expand-icon-box">
+          <mt-icon
+            :name="subtreeOpen ? 'regular-chevron-up-xs' : 'regular-chevron-down-xs'"
+            size="8"
+            class="mt-nav__link-expand-icon"
+          />
         </span>
       </component>
     </div>
 
-    <mt-collapsible-content as="ul" class="mt-nav__sub-list">
+    <mt-collapsible-content v-if="hasCollapsibleSubtree" as="ul" class="mt-nav__sub-list">
       <slot />
     </mt-collapsible-content>
-  </mt-collapsible>
-
-  <li v-else :class="rowClasses" :aria-current="rowActive ? 'page' : 'false'">
-    <div class="mt-nav__item-row">
-      <component
-        :is="linkTag"
-        class="mt-nav__link"
-        :class="{ 'is--active': rowActive }"
-        v-bind="linkAttrs"
-        v-on="to || href ? { click: onLinkClick } : {}"
-      >
-        <mt-icon
-          v-if="icon && depth === 1"
-          size="16px"
-          class="mt-nav__link-icon"
-          :name="iconName"
-        />
-
-        <span class="mt-nav__link-label" :title="label">
-          {{ label }}
-        </span>
-
-        <slot name="suffix" />
-      </component>
-    </div>
-  </li>
+  </component>
 </template>
 
 <script setup lang="ts">
-import { computed, inject, onBeforeUnmount, provide, ref, useId, useSlots, watch } from "vue";
+import { computed, inject, onBeforeUnmount, provide, ref, useId, watch } from "vue";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtCollapsible from "@/components/mt-collapsible/mt-collapsible.vue";
 import MtCollapsibleTrigger from "@/components/mt-collapsible/mt-collapsible-trigger.vue";
 import MtCollapsibleContent from "@/components/mt-collapsible/mt-collapsible-content.vue";
-import { NAV_CONTEXT, NAV_ITEM_CONTEXT, type NavLinkTarget } from "./_internal/mt-nav-context";
+import { NAV_ITEM_CONTEXT, useNavContext, type NavLinkTarget } from "./_internal/mt-nav-context";
 
 const MAX_NESTING_LEVEL = 3;
 
@@ -102,43 +74,40 @@ const props = defineProps<{
   active?: boolean;
 }>();
 
-defineSlots<{
+const slots = defineSlots<{
   /** Nested `mt-nav-item` rows, up to three levels deep in total. */
   default?: () => unknown;
   /** Rendered after the label, e.g. for a badge or counter. */
   suffix?: () => unknown;
 }>();
 
-const slots = useSlots();
-
-const context = inject(NAV_CONTEXT);
-
-if (!context) {
-  throw new Error("mt-nav-item must be rendered inside mt-nav");
-}
+const context = useNavContext("mt-nav-item");
 
 const parent = inject(NAV_ITEM_CONTEXT, null);
+
 const depth = parent ? parent.depth + 1 : 1;
+
 const key = useId();
 
 const hasChildren = computed(() => !!slots.default);
 
-// The navigation supports at most three levels; deeper rows are leaf items only
 const isLeafDepth = depth >= MAX_NESTING_LEVEL;
 
 if (isLeafDepth && slots.default) {
   console.error(
-    `[mt-nav] The navigation item "${props.label}" has nested items on level 4 or higher. ` +
-      "The navigation only supports up to three levels of nesting.",
+    `[mt-nav] The navigation item "${props.label}" has nested items on level ${MAX_NESTING_LEVEL + 1} or higher. ` +
+      `The navigation only supports up to ${MAX_NESTING_LEVEL} levels of nesting.`,
   );
 }
 
 const hasCollapsibleSubtree = computed(() => hasChildren.value && !isLeafDepth);
 
-// Keys of the nested rows that are active themselves or hold the active row
 const activeDescendants = ref<string[]>([]);
+
 const activeChildKey = computed(() => activeDescendants.value[0] ?? null);
+
 const hasActiveDescendant = computed(() => activeDescendants.value.length > 0);
+
 const isActive = computed(() => props.active || hasActiveDescendant.value);
 
 provide(NAV_ITEM_CONTEXT, {
@@ -162,42 +131,39 @@ if (parent) {
   onBeforeUnmount(context.registerBranch({ key, hasChildren, isActive, activeChildKey }));
 }
 
-// The user's last toggle of a nested row. Unset, the row is open while it holds the active row.
 const manualOpen = ref<boolean | null>(null);
 
-// A manual collapse holds until the active row changes
 watch(activeDescendants, () => {
   if (manualOpen.value === false) {
     manualOpen.value = null;
   }
 });
 
-// Top-level rows are opened by the navigation, which keeps one branch open at a time
 const subtreeOpen = computed(() =>
   depth === 1 ? context.isBranchExpanded(key) : manualOpen.value ?? hasActiveDescendant.value,
 );
 
-// A closed branch stands in for the active row it hides
 const rowActive = computed(() => props.active || (hasActiveDescendant.value && !subtreeOpen.value));
 
 const childActive = computed(() => hasActiveDescendant.value && subtreeOpen.value);
 
-const expandIcon = computed(() =>
-  subtreeOpen.value ? "regular-chevron-up-xs" : "regular-chevron-down-xs",
-);
-
 const iconName = computed(() =>
-  props.icon ? getIconName(props.icon, rowActive.value || childActive.value) : undefined,
+  rowActive.value || childActive.value ? props.icon?.replace(/^regular-/, "solid-") : props.icon,
 );
 
-const rowClasses = computed(() => [
-  "mt-nav__list-item",
-  {
-    "mt-nav__list-item--nested": depth > 1,
-    "is--entry-expanded": subtreeOpen.value,
-    "is--child-active": childActive.value,
-  },
-]);
+const rowComponent = computed(() => (hasCollapsibleSubtree.value ? MtCollapsible : "li"));
+
+const rowProps = computed(() =>
+  hasCollapsibleSubtree.value
+    ? { as: "li", open: subtreeOpen.value, "onUpdate:open": setSubtreeOpen }
+    : {},
+);
+
+const rowClasses = computed(() => ({
+  "mt-nav__list-item--nested": depth > 1,
+  "is--entry-expanded": subtreeOpen.value,
+  "is--child-active": childActive.value,
+}));
 
 const linkTag = computed(() => {
   if (props.to) {
@@ -216,20 +182,17 @@ const linkAttrs = computed(() => {
     return {
       to: props.to,
       "aria-expanded": hasCollapsibleSubtree.value ? subtreeOpen.value : undefined,
+      onClick: onLinkClick,
     };
   }
 
   if (props.href) {
-    return { href: props.href, target: props.target, title: props.label };
+    return { href: props.href, target: props.target, onClick: onLinkClick };
   }
 
+  // The collapsible trigger toggles the nested rows itself
   return hasCollapsibleSubtree.value ? { type: "button" } : {};
 });
-
-function getIconName(name: string, isActive: boolean) {
-  // Swaps a regular icon for its solid variant while the row is active
-  return isActive && name.startsWith("regular-") ? name.replace("regular-", "solid-") : name;
-}
 
 function onLinkClick() {
   // Reports the click to the navigation and, for a link with nested rows, toggles them too

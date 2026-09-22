@@ -45,7 +45,10 @@ export const VisualTestActiveRoute: MtNavStory = {
     // The story starts on product.index, which sits below Catalogues
     await waitUntil(() => canvas.getByText("Products").checkVisibility());
 
-    expect(canvas.getByText("Products").closest("li")).toHaveAttribute("aria-current", "page");
+    expect(canvas.getByText("Products").closest(".mt-nav__link")).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
   },
 };
 
@@ -71,12 +74,16 @@ export const VisualTestNavigate: MtNavStory = {
     await userEvent.click(canvas.getByRole("link", { name: "Orders" }));
 
     await waitUntil(
-      () => canvas.getByText("Orders").closest("li")?.getAttribute("aria-current") === "page",
+      () =>
+        canvas.getByText("Orders").closest(".mt-nav__link")?.getAttribute("aria-current") ===
+        "page",
     );
 
     // The branch that held the previous page closes once nothing inside it is active
     await waitUntil(() => !canvas.getByText("Products").checkVisibility());
 
-    expect(canvas.getByText("Products").closest("li")).toHaveAttribute("aria-current", "false");
+    expect(canvas.getByText("Products").closest(".mt-nav__link")).not.toHaveAttribute(
+      "aria-current",
+    );
   },
 };

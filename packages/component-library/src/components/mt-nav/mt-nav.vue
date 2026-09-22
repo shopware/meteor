@@ -39,7 +39,9 @@ const emit = defineEmits<{
 }>();
 
 defineSlots<{
-  /** The `mt-nav-section` components holding the rows. */
+  /**
+   * The `mt-nav-section` components holding the rows.
+   * */
   default?: () => unknown;
 }>();
 

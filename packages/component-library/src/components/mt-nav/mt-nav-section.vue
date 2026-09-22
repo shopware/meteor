@@ -20,9 +20,9 @@
 </template>
 
 <script setup lang="ts">
-import { inject, useId } from "vue";
+import { useId } from "vue";
 import MtText from "@/components/mt-text/mt-text.vue";
-import { NAV_CONTEXT } from "./_internal/mt-nav-context";
+import { useNavContext } from "./_internal/mt-nav-context";
 
 defineProps<{
   /**
@@ -36,9 +36,7 @@ defineSlots<{
   default?: () => unknown;
 }>();
 
-if (!inject(NAV_CONTEXT)) {
-  throw new Error("mt-nav-section must be rendered inside mt-nav");
-}
+useNavContext("mt-nav-section");
 
 const headerId = `mt-nav-section-header-${useId()}`;
 </script>
