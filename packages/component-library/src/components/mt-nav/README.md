@@ -37,7 +37,7 @@ off-canvas behaviour) is the application's shell.
 | `mt-nav.spec.ts`                         | Vitest / Testing Library spec                                   |
 | `_stories/mt-nav.stories.ts`             | Storybook stories                                               |
 | `_stories/mt-nav.interactive.stories.ts` | Storybook interaction tests                                     |
-| `_stories/*`                             | Sample data and helper components used only by the stories      |
+| `_stories/story-link.ts`                 | Router-link stand-in used only by the stories                   |
 | `_internal/mt-nav-context.ts`            | Provide/inject contracts between the navigation, sections, rows |
 
 ## API
