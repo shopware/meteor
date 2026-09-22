@@ -28,17 +28,16 @@ off-canvas behaviour) is the application's shell.
 
 ## Structure
 
-| File                                     | Purpose                                                         |
-| ---------------------------------------- | --------------------------------------------------------------- |
-| `mt-nav.vue`                             | The navigation: open branches and keyboard handling             |
-| `mt-nav-section.vue`                     | Header and list of one section; the rows are slotted in         |
-| `mt-nav-item.vue`                        | One navigation row; nested rows are slotted in                  |
-| `mt-nav.types.ts`                        | `NavLinkComponent`, `NavLinkTarget`, `NavNavigateEvent`         |
-| `mt-nav.spec.ts`                         | Vitest / Testing Library spec                                   |
-| `_stories/mt-nav.stories.ts`             | Storybook stories                                               |
-| `_stories/mt-nav.interactive.stories.ts` | Storybook interaction tests                                     |
-| `_stories/story-link.ts`                 | Router-link stand-in used only by the stories                   |
-| `_internal/mt-nav-context.ts`            | Provide/inject contracts between the navigation, sections, rows |
+| File                            | Purpose                                                                    |
+| ------------------------------- | -------------------------------------------------------------------------- |
+| `mt-nav.vue`                    | The navigation: open branches and keyboard handling                        |
+| `mt-nav-section.vue`            | Header and list of one section; the rows are slotted in                    |
+| `mt-nav-item.vue`               | One navigation row; nested rows are slotted in                             |
+| `mt-nav.spec.ts`                | Vitest / Testing Library spec                                              |
+| `mt-nav.stories.ts`             | Storybook stories                                                          |
+| `mt-nav.interactive.stories.ts` | Storybook interaction tests                                                |
+| `_internal/mt-nav-context.ts`   | Provide/inject contracts and the public types, re-exported by `mt-nav.vue` |
+| `_internal/story-link.ts`       | Router-link stand-in used only by the stories                              |
 
 ## API
 

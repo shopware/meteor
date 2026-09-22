@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from "@storybook/vue3";
 import { markRaw, ref } from "vue";
-import MtNav from "../mt-nav.vue";
-import MtNavSection from "../mt-nav-section.vue";
-import MtNavItem from "../mt-nav-item.vue";
-import type { NavNavigateEvent } from "../mt-nav.types";
-import { StoryLink } from "./story-link";
+import MtNav from "./mt-nav.vue";
+import MtNavSection from "./mt-nav-section.vue";
+import MtNavItem from "./mt-nav-item.vue";
+import type { NavNavigateEvent } from "./mt-nav.vue";
+import { StoryLink } from "./_internal/story-link";
 
 export type MtNavMeta = Meta<typeof MtNav>;
 
