@@ -22,14 +22,14 @@
           :name="iconName"
         />
 
-        <span class="mt-nav__link-label mt-nav__link-text" :title="label">
+        <span class="mt-nav__link-label" :title="label">
           {{ label }}
         </span>
 
         <slot name="suffix" />
 
         <span class="mt-nav__link-expand-icon-box">
-          <mt-icon :name="expandIcon" size="8" class="mt-nav__link-expand-icon mt-nav__link-text" />
+          <mt-icon :name="expandIcon" size="8" class="mt-nav__link-expand-icon" />
         </span>
       </component>
     </div>
@@ -55,7 +55,7 @@
           :name="iconName"
         />
 
-        <span class="mt-nav__link-label mt-nav__link-text" :title="label">
+        <span class="mt-nav__link-label" :title="label">
           {{ label }}
         </span>
 
@@ -227,7 +227,9 @@ const expandIcon = computed(() =>
   submenuVisuallyOpen.value ? "regular-chevron-up-xs" : "regular-chevron-down-xs",
 );
 
-const iconName = computed(() => getIconName(props.icon, rowActive.value || childActive.value));
+const iconName = computed(() =>
+  props.icon ? getIconName(props.icon, rowActive.value || childActive.value) : undefined,
+);
 
 const rowClasses = computed(() => [
   "mt-nav__list-item",
@@ -265,18 +267,9 @@ const linkAttrs = computed(() => {
   return hasCollapsibleSubtree.value ? { type: "button" } : {};
 });
 
-function getIconName(name: string | undefined, isActive: boolean) {
-  if (isActive && typeof name === "string") {
-    if (name.startsWith("regular-")) {
-      return name.replace("regular-", "solid-");
-    }
-
-    if (name.startsWith("icon/regular/")) {
-      return name.replace("icon/regular/", "icon/solid/");
-    }
-  }
-
-  return `${name}`;
+// Active rows show the solid variant of their regular icon
+function getIconName(name: string, isActive: boolean) {
+  return isActive && name.startsWith("regular-") ? name.replace("regular-", "solid-") : name;
 }
 
 function onLinkClick() {
@@ -495,12 +488,16 @@ $nesting-line-indent: 36px;
 }
 
 .mt-nav__list-item.is--entry-expanded {
-  .mt-nav__link-text {
+  .mt-nav__link-label,
+  .mt-nav__link-expand-icon {
     color: var(--color-text-primary-default);
   }
 
-  & > .mt-nav__item-row > .mt-nav__link.is--active .mt-nav__link-text {
-    color: var(--color-icon-brand-default);
+  & > .mt-nav__item-row > .mt-nav__link.is--active {
+    .mt-nav__link-label,
+    .mt-nav__link-expand-icon {
+      color: var(--color-icon-brand-default);
+    }
   }
 }
 </style>

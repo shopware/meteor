@@ -4,29 +4,14 @@
       {{ t("navigationLabel") }}
     </h2>
 
-    <div
-      ref="navBodyElement"
-      class="mt-nav__body"
-      :style="scrollbarOffsetStyle"
-      @keydown="onNavigationKeydown"
-    >
+    <div ref="navBodyElement" class="mt-nav__body" @keydown="onNavigationKeydown">
       <slot />
     </div>
   </nav>
 </template>
 
 <script setup lang="ts">
-import {
-  computed,
-  nextTick,
-  onMounted,
-  provide,
-  ref,
-  shallowRef,
-  useId,
-  watch,
-  type PropType,
-} from "vue";
+import { computed, nextTick, provide, ref, shallowRef, useId, watch, type PropType } from "vue";
 import { useI18n } from "vue-i18n";
 import {
   NAV_CONTEXT,
@@ -71,7 +56,6 @@ const navigationLabelId = `mt-nav-label-${useId()}`;
 
 const navBodyElement = ref<HTMLElement | null>(null);
 
-const scrollbarOffset = ref("");
 const expandedKeys = ref<string[]>([]);
 const activeBranchKey = ref<string | null>(null);
 
@@ -85,11 +69,6 @@ const activeOwnerKey = computed(
   () =>
     branches.value.find((branch) => branch.hasChildren.value && branch.isActive.value)?.key ?? null,
 );
-
-const scrollbarOffsetStyle = computed(() => ({
-  right: scrollbarOffset.value,
-  "margin-left": scrollbarOffset.value,
-}));
 
 provide(NAV_CONTEXT, {
   linkComponent: computed(() => props.linkComponent),
@@ -105,10 +84,6 @@ watch([activeOwnerKey, hasActiveItem], () => {
   nextTick(() => openBranchOfActiveItem());
 });
 
-onMounted(() => {
-  addScrollbarOffset();
-});
-
 function registerBranch(registration: NavBranchRegistration) {
   branches.value = [...branches.value, registration];
 
@@ -120,19 +95,6 @@ function registerBranch(registration: NavBranchRegistration) {
 
 function onLinkClick(event: NavNavigateEvent) {
   emit("navigate", event);
-}
-
-function addScrollbarOffset() {
-  const body = navBodyElement.value;
-
-  if (!body) {
-    return;
-  }
-
-  // A negative offset pulls the scrollbar outside the navigation so it does not eat into the visible width
-  const scrollbarWidthPx = body.offsetWidth - body.clientWidth;
-
-  scrollbarOffset.value = `-${scrollbarWidthPx}px`;
 }
 
 function isBranchExpanded(key: string) {
@@ -253,18 +215,11 @@ function onNavigationKeydown(event: KeyboardEvent) {
     transparent calc(100% - var(--scale-size-4))
   );
 
-  .mt-nav__link-text {
-    display: inline-block;
-    white-space: nowrap;
-    width: 100%;
-    position: relative;
-    pointer-events: none;
-  }
-
   .mt-nav__link.is--active {
     background: var(--color-background-brand-default);
 
-    .mt-nav__link-text {
+    .mt-nav__link-label,
+    .mt-nav__link-expand-icon {
       color: var(--color-icon-brand-default);
     }
   }
@@ -279,9 +234,10 @@ function onNavigationKeydown(event: KeyboardEvent) {
     // Must live on the scroller: it clips at the padding box, keeping content visible for the mask
     padding: var(--mt-nav-body-fade) 0;
     overflow-x: hidden;
-    overflow-y: scroll;
-    -ms-overflow-style: none;
-    -webkit-overflow-scrolling: touch;
+    overflow-y: auto;
+
+    // The edge fade stands in for the scrollbar; the vendor rule covers Safari before 18.2
+    scrollbar-width: none;
 
     &::-webkit-scrollbar {
       display: none;
