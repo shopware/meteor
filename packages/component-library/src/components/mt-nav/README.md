@@ -2,16 +2,15 @@
 
 The main navigation of an application, built from three components: `mt-nav` owns the shared
 state, `mt-nav-section` groups rows below an optional header, and `mt-nav-item` is one row,
-nesting further rows up to three levels deep. The navigation has a collapsed mode showing the
-top level icons only, arrow-key navigation and opens the branch holding the active row.
+nesting further rows up to three levels deep. The navigation has arrow-key navigation and opens
+the branch holding the active row.
 Extracted from the Shopware Administration (`sw-admin-menu`) and ported to Meteor conventions.
 
-`mt-nav` renders only the `<nav>`. The panel around it (logo, heading, collapse toggle, user
-block, mobile off-canvas behaviour) is the application's shell, which owns the expanded state and
-passes it in.
+`mt-nav` renders only the `<nav>`. The panel around it (logo, heading, user block, mobile
+off-canvas behaviour) is the application's shell.
 
 ```vue
-<mt-nav :expanded="expanded" @navigate="closeOffCanvas">
+<mt-nav @navigate="closeOffCanvas">
   <mt-nav-section header="Shop">
     <mt-nav-item label="Dashboard" icon="regular-home" :to="{ name: 'dashboard' }" :active="isCurrent('dashboard')" />
 
@@ -48,16 +47,15 @@ passes it in.
 | Prop            | Description                                                                                          |
 | --------------- | ---------------------------------------------------------------------------------------------------- |
 | `linkComponent` | Component rendering the links, receives the `to` of a row. Defaults to `router-link` like `mt-link`. |
-| `expanded`      | Default `true`. Collapsed, the navigation shows the top level icons only.                            |
 
 The default slot takes the sections. `navigate({ label, to, href })` is emitted when a row with a
 `to` or `href` is clicked. Use it to close an off-canvas panel or to track navigation.
 
 ### mt-nav-section
 
-| Prop     | Description                                                                |
-| -------- | -------------------------------------------------------------------------- |
-| `header` | Optional heading above the rows. Hidden while the navigation is collapsed. |
+| Prop     | Description                      |
+| -------- | -------------------------------- |
+| `header` | Optional heading above the rows. |
 
 The default slot takes the `mt-nav-item` rows. Rows are `<li>` elements and the section renders
 the list around them, so single rows without a header also go into a section.
@@ -95,14 +93,12 @@ nested rows report their active state to their parent row.
 
 The root fills the height of its container and scrolls its content, fading it out at the top and
 bottom edges. Give it a flex item with `min-height: 0` or a fixed height. It sets no width and no
-background: the collapsed rows are 36px wide, so a 60px panel with 12px horizontal padding fits.
+background.
 
 ### Styling hooks
 
-Everything is prefixed `mt-nav__*`. The root carries `is--expanded` / `is--collapsed` and, for half
-a second after the state changes, `is--toggling`, so a shell can synchronise its own transitions.
-`mt-nav__hide-on-collapse` fades an element out when the navigation collapses. Rows accept a
-`class` attribute for targeting a single row; the active link carries `is--active`.
+Everything is prefixed `mt-nav__*`. Rows accept a `class` attribute for targeting a single row;
+the active link carries `is--active`.
 
 ## Provenance
 
@@ -116,7 +112,7 @@ Shopware couplings replaced or dropped during the port:
 | Shopware coupling                                              | Meteor replacement                                      |
 | -------------------------------------------------------------- | ------------------------------------------------------- |
 | `menuService`, `appModulesService`, custom entity entries      | `mt-nav-item` rows written by the application           |
-| `adminMenu` store `isExpanded` (+ `localStorage`)              | `expanded` prop, owned by the shell                     |
+| `adminMenu` store `isExpanded` (+ `localStorage`)              | Dropped: the navigation is always expanded              |
 | `adminMenu` store `expandedEntries`                            | Internal state                                          |
 | `acl`, `hasAccessToRoute`, settings special case               | Removed: render only the rows the user may see          |
 | `$t` on entry labels and menu strings                          | Translated `label` props; inline `useI18n` (`en`, `de`) |
@@ -126,7 +122,7 @@ Shopware couplings replaced or dropped during the port:
 | `session` store user, `userService`, `sw-avatar`, `sw-version` | Shell of the application                                |
 | `loginService.logoutSso`, notification cleanup                 | Shell of the application                                |
 | Off-canvas panel, backdrop, `$device.getViewportWidth()`       | Shell of the application                                |
-| Collapsed flyout                                               | Dropped                                                 |
+| Collapsed mode and flyout                                      | Dropped                                                 |
 | Twig blocks                                                    | Slots                                                   |
 
 The Jest specs of the original components relied on Shopware's `wrapTestComponent` harness and

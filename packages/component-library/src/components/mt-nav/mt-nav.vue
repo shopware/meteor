@@ -1,10 +1,5 @@
 <template>
-  <nav
-    class="mt-nav"
-    :class="navClasses"
-    :data-expanded="expanded"
-    :aria-labelledby="navigationLabelId"
-  >
+  <nav class="mt-nav" :aria-labelledby="navigationLabelId">
     <h2 :id="navigationLabelId" class="visually-hidden">
       {{ t("navigationLabel") }}
     </h2>
@@ -24,7 +19,6 @@
 import {
   computed,
   nextTick,
-  onBeforeUnmount,
   onMounted,
   provide,
   ref,
@@ -39,8 +33,6 @@ import type { NavLinkComponent, NavNavigateEvent } from "./mt-nav.types";
 
 export type { NavLinkComponent, NavLinkTarget, NavNavigateEvent } from "./mt-nav.types";
 
-const TOGGLE_ANIMATION_DURATION = 500;
-
 const props = defineProps({
   /**
    * Component rendering the navigation links. Receives the target of an item as `to`.
@@ -48,13 +40,6 @@ const props = defineProps({
   linkComponent: {
     type: [String, Object] as PropType<NavLinkComponent>,
     default: "router-link",
-  },
-  /**
-   * Whether the navigation is expanded. Collapsed, it shows the top level icons only.
-   */
-  expanded: {
-    type: Boolean,
-    default: true,
   },
 });
 
@@ -83,14 +68,11 @@ const navigationLabelId = `mt-nav-label-${useId()}`;
 const navBodyElement = ref<HTMLElement | null>(null);
 
 const scrollbarOffset = ref("");
-const isToggling = ref(false);
 const expandedKeys = ref<string[]>([]);
 const activeBranchKey = ref<string | null>(null);
 
 // The top-level rows of every mounted section, in mount order
 const branches = shallowRef<NavBranchRegistration[]>([]);
-
-let toggleTimeout: ReturnType<typeof setTimeout> | null = null;
 
 const hasActiveItem = computed(() => branches.value.some((branch) => branch.isActive.value));
 
@@ -100,12 +82,6 @@ const activeOwnerKey = computed(
     branches.value.find((branch) => branch.hasChildren.value && branch.isActive.value)?.key ?? null,
 );
 
-const navClasses = computed(() => ({
-  "is--expanded": props.expanded,
-  "is--collapsed": !props.expanded,
-  "is--toggling": isToggling.value,
-}));
-
 const scrollbarOffsetStyle = computed(() => ({
   right: scrollbarOffset.value,
   "margin-left": scrollbarOffset.value,
@@ -113,25 +89,12 @@ const scrollbarOffsetStyle = computed(() => ({
 
 provide(NAV_CONTEXT, {
   linkComponent: computed(() => props.linkComponent),
-  expanded: computed(() => props.expanded),
   hasExpandedBranches: computed(() => expandedKeys.value.length > 0),
   isBranchExpanded,
   registerBranch,
   onBranchToggle,
   onLinkClick,
 });
-
-watch(
-  () => props.expanded,
-  () => {
-    // Collapsing hides the expanded tree, so drop that state
-    if (!props.expanded) {
-      expandedKeys.value = [];
-    }
-
-    startToggleWindow();
-  },
-);
 
 // Rows report their active state once mounted, so wait for the render before opening a branch
 watch([activeOwnerKey, hasActiveItem], () => {
@@ -140,12 +103,6 @@ watch([activeOwnerKey, hasActiveItem], () => {
 
 onMounted(() => {
   addScrollbarOffset();
-});
-
-onBeforeUnmount(() => {
-  if (toggleTimeout) {
-    clearTimeout(toggleTimeout);
-  }
 });
 
 function registerBranch(registration: NavBranchRegistration) {
@@ -159,20 +116,6 @@ function registerBranch(registration: NavBranchRegistration) {
 
 function onLinkClick(event: NavNavigateEvent) {
   emit("navigate", event);
-}
-
-function startToggleWindow() {
-  // Marks the navigation as mid-toggle so CSS can suppress unwanted animations while it resizes
-  isToggling.value = true;
-
-  if (toggleTimeout) {
-    clearTimeout(toggleTimeout);
-  }
-
-  toggleTimeout = setTimeout(() => {
-    isToggling.value = false;
-    toggleTimeout = null;
-  }, TOGGLE_ANIMATION_DURATION);
 }
 
 function addScrollbarOffset() {
@@ -204,10 +147,6 @@ function collapseBranch(key: string) {
 
 // Only top-level rows report their toggle, nested rows keep their own open state
 function onBranchToggle(key: string, open: boolean) {
-  if (!props.expanded) {
-    return;
-  }
-
   if (!open) {
     collapseBranch(key);
     return;
@@ -228,11 +167,6 @@ function collapseInactiveBranches(exceptKey: string | null = null) {
 }
 
 function openBranchOfActiveItem() {
-  // Only the expanded navigation shows a tree to open
-  if (!props.expanded) {
-    return;
-  }
-
   // Pages the navigation does not list own no branch; leave the tree as the user left it
   if (!hasActiveItem.value) {
     return;
@@ -298,15 +232,8 @@ function onNavigationKeydown(event: KeyboardEvent) {
 
 <style lang="scss">
 .mt-nav {
-  // Shared motion tokens for the collapse/expand animation, matching a 0.5s width transition of the host
-  --mt-nav-bezier: cubic-bezier(0.32, 0.72, 0, 1);
-  --mt-nav-duration: 0.5s;
-  --mt-nav-fade-in-duration: 0.4s;
-  --mt-nav-fade-in-delay: 0.05s;
-  --mt-nav-fade-out-duration: 0.05s;
-
   // Body vertical padding, doubling as the control points of its edge fade mask
-  --mt-nav-body-fade: var(--scale-size-16);
+  --mt-nav-body-fade: var(--scale-size-20);
 
   height: 100%;
   min-height: 0;
@@ -322,7 +249,7 @@ function onNavigationKeydown(event: KeyboardEvent) {
     transparent calc(100% - var(--scale-size-4))
   );
 
-  .mt-nav__collapsible-text {
+  .mt-nav__link-text {
     display: inline-block;
     white-space: nowrap;
     width: 100%;
@@ -330,38 +257,12 @@ function onNavigationKeydown(event: KeyboardEvent) {
     pointer-events: none;
   }
 
-  // Elements animating layout on top of this must keep that transition on a parent
-  .mt-nav__hide-on-collapse {
-    opacity: 1;
-    transition:
-      opacity var(--mt-nav-fade-in-duration) ease-in-out var(--mt-nav-fade-in-delay),
-      visibility var(--mt-nav-fade-in-duration) ease-in-out var(--mt-nav-fade-in-delay);
-  }
+  .mt-nav__link.is--active {
+    background: var(--color-background-brand-default);
 
-  &.is--collapsed .mt-nav__hide-on-collapse {
-    opacity: 0;
-    visibility: hidden;
-    pointer-events: none;
-    transition:
-      opacity var(--mt-nav-fade-out-duration) ease-out,
-      visibility var(--mt-nav-fade-out-duration) ease-out;
-  }
-
-  &.is--expanded {
-    --mt-nav-body-fade: var(--scale-size-20);
-
-    .mt-nav__link.is--active {
-      background: var(--color-background-brand-default);
-
-      .mt-nav__collapsible-text {
-        color: var(--color-icon-brand-default);
-      }
+    .mt-nav__link-text {
+      color: var(--color-icon-brand-default);
     }
-  }
-
-  &.is--collapsed .mt-nav__link {
-    width: var(--scale-size-36);
-    height: var(--scale-size-36);
   }
 
   .mt-nav__body {
@@ -377,19 +278,10 @@ function onNavigationKeydown(event: KeyboardEvent) {
     overflow-y: scroll;
     -ms-overflow-style: none;
     -webkit-overflow-scrolling: touch;
-    transition: padding var(--mt-nav-duration) var(--mt-nav-bezier);
 
     &::-webkit-scrollbar {
       display: none;
     }
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .mt-nav,
-  .mt-nav .mt-nav__hide-on-collapse,
-  .mt-nav .mt-nav__body {
-    transition: none;
   }
 }
 </style>

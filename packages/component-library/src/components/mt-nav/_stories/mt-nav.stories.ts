@@ -52,7 +52,7 @@ const defaultTemplate = `
 </mt-nav>`;
 
 const defaultSource = `
-<mt-nav :expanded="expanded" @navigate="onNavigate">
+<mt-nav @navigate="onNavigate">
   <mt-nav-section>
     <mt-nav-item label="Dashboard" icon="regular-home" :to="{ name: 'dashboard.index' }" :active="isCurrent('dashboard.index')" />
 
@@ -79,7 +79,7 @@ const sectionsTemplate = `
 </mt-nav>`;
 
 const sectionsSource = `
-<mt-nav :expanded="expanded" @navigate="onNavigate">
+<mt-nav @navigate="onNavigate">
   <mt-nav-section header="Shop">
     <mt-nav-item label="Dashboard" icon="regular-home" :to="{ name: 'dashboard.index' }" :active="isCurrent('dashboard.index')" />
     <mt-nav-item label="Orders" icon="regular-shopping-bag" :to="{ name: 'order.index' }" :active="isCurrent('order.index')" />
@@ -97,18 +97,12 @@ const meta: MtNavMeta = {
   args: {
     // markRaw: a component object stored in reactive args would be made reactive otherwise
     linkComponent: markRaw(StoryLink),
-    expanded: true,
   },
   argTypes: {
     linkComponent: {
       control: false,
       description:
         "Component rendering the links. Receives the `to` of a row. Defaults to `router-link`.",
-    },
-    expanded: {
-      control: { type: "boolean" },
-      description:
-        "Whether the navigation is expanded. Collapsed, it shows the top level icons only.",
     },
   },
   ...createStory(defaultTemplate, defaultSource),
@@ -128,9 +122,3 @@ export const Default: MtNavStory = {};
  * Several sections, each with a `header` above its rows.
  */
 export const Sections: MtNavStory = createStory(sectionsTemplate, sectionsSource);
-
-export const Collapsed: MtNavStory = {
-  args: {
-    expanded: false,
-  },
-};
