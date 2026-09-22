@@ -193,52 +193,44 @@ function onNavigationKeydown(event: KeyboardEvent) {
 }
 </script>
 
-<style lang="scss">
+<style>
 .mt-nav {
-  // Body vertical padding, doubling as the control points of its edge fade mask
-  --mt-nav-body-fade: var(--scale-size-20);
-
   height: 100%;
   min-height: 0;
   overflow: hidden;
   white-space: nowrap;
 
-  // Fades from 4px inside the edge to the body padding, so resting content stays opaque
   mask-image: linear-gradient(
     to bottom,
     transparent var(--scale-size-4),
-    #000 var(--mt-nav-body-fade),
-    #000 calc(100% - var(--mt-nav-body-fade)),
+    #000 var(--scale-size-20),
+    #000 calc(100% - var(--scale-size-20)),
     transparent calc(100% - var(--scale-size-4))
   );
+}
 
-  .mt-nav__link.is--active {
-    background: var(--color-background-brand-default);
+.mt-nav .mt-nav__link.is--active {
+  background: var(--color-background-brand-default);
+}
 
-    .mt-nav__link-label,
-    .mt-nav__link-expand-icon {
-      color: var(--color-icon-brand-default);
-    }
-  }
+.mt-nav .mt-nav__link.is--active .mt-nav__link-label,
+.mt-nav .mt-nav__link.is--active .mt-nav__link-expand-icon {
+  color: var(--color-icon-brand-default);
+}
 
-  .mt-nav__body {
-    position: relative;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    gap: var(--scale-size-16);
+.mt-nav__body {
+  position: relative;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--scale-size-16);
+  padding: var(--scale-size-20) 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
 
-    // Must live on the scroller: it clips at the padding box, keeping content visible for the mask
-    padding: var(--mt-nav-body-fade) 0;
-    overflow-x: hidden;
-    overflow-y: auto;
-
-    // The edge fade stands in for the scrollbar; the vendor rule covers Safari before 18.2
-    scrollbar-width: none;
-
-    &::-webkit-scrollbar {
-      display: none;
-    }
-  }
+.mt-nav__body::-webkit-scrollbar {
+  display: none;
 }
 </style>
