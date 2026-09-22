@@ -4,8 +4,8 @@
     as="li"
     :class="rowClasses"
     :aria-current="rowActive ? 'page' : 'false'"
-    :open="collapsibleOpen"
-    @update:open="onCollapsibleOpenUpdate"
+    :open="subtreeOpen"
+    @update:open="setSubtreeOpen"
   >
     <div class="mt-nav__item-row">
       <component
@@ -139,18 +139,15 @@ defineSlots<{
 
 const slots = useSlots();
 
-const injectedContext = inject(NAV_CONTEXT);
+const context = inject(NAV_CONTEXT);
 
-if (!injectedContext) {
+if (!context) {
   throw new Error("mt-nav-item must be rendered inside mt-nav");
 }
 
-const context = injectedContext;
 const parent = inject(NAV_ITEM_CONTEXT, null);
 const depth = parent ? parent.depth + 1 : 1;
 const key = useId();
-
-const linkComponent = context.linkComponent;
 
 const hasChildren = computed(() => !!slots.default);
 
@@ -168,63 +165,53 @@ const hasCollapsibleSubtree = computed(() => hasChildren.value && !isLeafDepth);
 
 // Keys of the nested rows that are active themselves or hold the active row
 const activeDescendants = ref<string[]>([]);
+const activeChildKey = computed(() => activeDescendants.value[0] ?? null);
 const hasActiveDescendant = computed(() => activeDescendants.value.length > 0);
 const isActive = computed(() => props.active || hasActiveDescendant.value);
-
-const suppressActiveKeepsOpen = ref(false);
-const manualNestedOpen = ref(false);
 
 provide(NAV_ITEM_CONTEXT, {
   depth,
   reportActive(childKey, active) {
-    const others = activeDescendants.value.filter((existing) => existing !== childKey);
+    // Records whether a nested row is active or holds the active row
+    if (active === activeDescendants.value.includes(childKey)) {
+      return;
+    }
 
-    activeDescendants.value = active ? [...others, childKey] : others;
+    activeDescendants.value = active
+      ? [...activeDescendants.value, childKey]
+      : activeDescendants.value.filter((existing) => existing !== childKey);
   },
 });
 
 if (parent) {
-  const parentContext = parent;
-
-  watch(isActive, (active) => parentContext.reportActive(key, active), { immediate: true });
-  onBeforeUnmount(() => parentContext.reportActive(key, false));
+  watch(isActive, (active) => parent.reportActive(key, active), { immediate: true });
+  onBeforeUnmount(() => parent.reportActive(key, false));
 } else {
-  onBeforeUnmount(context.registerBranch({ key, hasChildren, isActive }));
+  onBeforeUnmount(context.registerBranch({ key, hasChildren, isActive, activeChildKey }));
 }
 
+// The user's last toggle of a nested row. Unset, the row is open while it holds the active row.
+const manualOpen = ref<boolean | null>(null);
+
 // A manual collapse holds until the active row changes
-watch(
-  () => activeDescendants.value.join(","),
-  () => {
-    suppressActiveKeepsOpen.value = false;
-  },
-);
-
-const activeKeepsOpen = computed(() => hasActiveDescendant.value && !suppressActiveKeepsOpen.value);
-
-const submenuVisuallyOpen = computed(() => {
-  if (depth === 1) {
-    const branchExpanded = context.isBranchExpanded(key);
-
-    return context.hasExpandedBranches.value
-      ? branchExpanded
-      : branchExpanded || activeKeepsOpen.value;
+watch(activeDescendants, () => {
+  if (manualOpen.value === false) {
+    manualOpen.value = null;
   }
-
-  return activeKeepsOpen.value || manualNestedOpen.value;
 });
 
-const collapsibleOpen = computed(() => hasCollapsibleSubtree.value && submenuVisuallyOpen.value);
-
-// A closed branch stands in for the active row it hides
-const rowActive = computed(
-  () => props.active || (hasActiveDescendant.value && !submenuVisuallyOpen.value),
+// Top-level rows are opened by the navigation, which keeps one branch open at a time
+const subtreeOpen = computed(() =>
+  depth === 1 ? context.isBranchExpanded(key) : manualOpen.value ?? hasActiveDescendant.value,
 );
 
-const childActive = computed(() => hasActiveDescendant.value && submenuVisuallyOpen.value);
+// A closed branch stands in for the active row it hides
+const rowActive = computed(() => props.active || (hasActiveDescendant.value && !subtreeOpen.value));
+
+const childActive = computed(() => hasActiveDescendant.value && subtreeOpen.value);
 
 const expandIcon = computed(() =>
-  submenuVisuallyOpen.value ? "regular-chevron-up-xs" : "regular-chevron-down-xs",
+  subtreeOpen.value ? "regular-chevron-up-xs" : "regular-chevron-down-xs",
 );
 
 const iconName = computed(() =>
@@ -235,14 +222,14 @@ const rowClasses = computed(() => [
   "mt-nav__list-item",
   {
     "mt-nav__list-item--nested": depth > 1,
-    "is--entry-expanded": submenuVisuallyOpen.value,
+    "is--entry-expanded": subtreeOpen.value,
     "is--child-active": childActive.value,
   },
 ]);
 
 const linkTag = computed(() => {
   if (props.to) {
-    return linkComponent.value;
+    return context.linkComponent.value;
   }
 
   if (props.href) {
@@ -256,7 +243,7 @@ const linkAttrs = computed(() => {
   if (props.to) {
     return {
       to: props.to,
-      "aria-expanded": hasCollapsibleSubtree.value ? collapsibleOpen.value : undefined,
+      "aria-expanded": hasCollapsibleSubtree.value ? subtreeOpen.value : undefined,
     };
   }
 
@@ -267,29 +254,26 @@ const linkAttrs = computed(() => {
   return hasCollapsibleSubtree.value ? { type: "button" } : {};
 });
 
-// Active rows show the solid variant of their regular icon
 function getIconName(name: string, isActive: boolean) {
+  // Swaps a regular icon for its solid variant while the row is active
   return isActive && name.startsWith("regular-") ? name.replace("regular-", "solid-") : name;
 }
 
 function onLinkClick() {
-  // A link with nested rows also toggles them
+  // Reports the click to the navigation and, for a link with nested rows, toggles them too
   if (hasCollapsibleSubtree.value) {
-    onCollapsibleOpenUpdate(!collapsibleOpen.value);
+    setSubtreeOpen(!subtreeOpen.value);
   }
 
   context.onLinkClick({ label: props.label, to: props.to, href: props.href });
 }
 
-function onCollapsibleOpenUpdate(open: boolean) {
-  suppressActiveKeepsOpen.value = !open;
-
-  if (depth >= 2) {
-    manualNestedOpen.value = open;
-  }
-
+function setSubtreeOpen(open: boolean) {
+  // Opens or closes the nested rows: the navigation decides for top-level rows, the row itself below
   if (depth === 1) {
     context.onBranchToggle(key, open);
+  } else {
+    manualOpen.value = open;
   }
 }
 </script>

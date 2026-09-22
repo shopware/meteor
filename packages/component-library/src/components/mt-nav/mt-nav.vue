@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, provide, ref, shallowRef, useId, watch, type PropType } from "vue";
+import { computed, provide, ref, shallowRef, useId, watch, type PropType } from "vue";
 import { useI18n } from "vue-i18n";
 import {
   NAV_CONTEXT,
@@ -57,34 +57,35 @@ const navigationLabelId = `mt-nav-label-${useId()}`;
 const navBodyElement = ref<HTMLElement | null>(null);
 
 const expandedKeys = ref<string[]>([]);
-const activeBranchKey = ref<string | null>(null);
 
-// The top-level rows of every mounted section, in mount order
 const branches = shallowRef<NavBranchRegistration[]>([]);
 
 const hasActiveItem = computed(() => branches.value.some((branch) => branch.isActive.value));
 
-// The top-level branch holding the active item, if the active item sits inside a branch
 const activeOwnerKey = computed(
   () =>
     branches.value.find((branch) => branch.hasChildren.value && branch.isActive.value)?.key ?? null,
 );
 
+const activeRowSignature = computed(() =>
+  branches.value
+    .filter((branch) => branch.isActive.value)
+    .map((branch) => `${branch.key}/${branch.activeChildKey.value ?? ""}`)
+    .join(","),
+);
+
 provide(NAV_CONTEXT, {
   linkComponent: computed(() => props.linkComponent),
-  hasExpandedBranches: computed(() => expandedKeys.value.length > 0),
   isBranchExpanded,
   registerBranch,
   onBranchToggle,
-  onLinkClick,
+  onLinkClick: (event) => emit("navigate", event),
 });
 
-// Rows report their active state once mounted, so wait for the render before opening a branch
-watch([activeOwnerKey, hasActiveItem], () => {
-  nextTick(() => openBranchOfActiveItem());
-});
+watch(activeRowSignature, openBranchOfActiveItem, { flush: "post" });
 
 function registerBranch(registration: NavBranchRegistration) {
+  // Adds a top-level row to the list and returns the function that removes it again
   branches.value = [...branches.value, registration];
 
   return () => {
@@ -93,26 +94,25 @@ function registerBranch(registration: NavBranchRegistration) {
   };
 }
 
-function onLinkClick(event: NavNavigateEvent) {
-  emit("navigate", event);
-}
-
 function isBranchExpanded(key: string) {
+  // Tells whether the top-level row with this key is open
   return expandedKeys.value.includes(key);
 }
 
 function expandBranch(key: string) {
+  // Opens the top-level row with this key
   if (!isBranchExpanded(key)) {
     expandedKeys.value = [...expandedKeys.value, key];
   }
 }
 
 function collapseBranch(key: string) {
+  // Closes the top-level row with this key
   expandedKeys.value = expandedKeys.value.filter((expanded) => expanded !== key);
 }
 
-// Only top-level rows report their toggle, nested rows keep their own open state
 function onBranchToggle(key: string, open: boolean) {
+  // Applies a user toggle: opening a row closes the others, except the one holding the active item
   if (!open) {
     collapseBranch(key);
     return;
@@ -122,7 +122,8 @@ function onBranchToggle(key: string, open: boolean) {
   expandBranch(key);
 }
 
-function collapseInactiveBranches(exceptKey: string | null = null) {
+function collapseInactiveBranches(exceptKey: string | null) {
+  // Closes every open row that neither holds the active item nor matches the given key
   expandedKeys.value = expandedKeys.value.filter((key) => {
     if (key === exceptKey) {
       return true;
@@ -133,21 +134,15 @@ function collapseInactiveBranches(exceptKey: string | null = null) {
 }
 
 function openBranchOfActiveItem() {
-  // Pages the navigation does not list own no branch; leave the tree as the user left it
+  // Opens the row holding the active item and closes the others; leaves the tree alone if nothing is active
   if (!hasActiveItem.value) {
     return;
   }
 
   const ownerKey = activeOwnerKey.value;
 
-  // The cached owner may have been collapsed manually
-  if (ownerKey === activeBranchKey.value && (!ownerKey || isBranchExpanded(ownerKey))) {
-    return;
-  }
-
-  // Branches only stay open while they hold the active item, or while nothing in the navigation does.
+  // Branches only stay open while they hold the active item
   collapseInactiveBranches(ownerKey);
-  activeBranchKey.value = ownerKey;
 
   if (ownerKey) {
     expandBranch(ownerKey);
@@ -155,7 +150,7 @@ function openBranchOfActiveItem() {
 }
 
 function onNavigationKeydown(event: KeyboardEvent) {
-  // arrow key support, per the APG disclosure navigation pattern.
+  // Moves focus between the visible links with the arrow, Home and End keys
   const body = navBodyElement.value;
 
   if (!body) {
