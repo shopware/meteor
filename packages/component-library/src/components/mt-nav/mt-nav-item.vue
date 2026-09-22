@@ -98,7 +98,6 @@ if (isLeafDepth && slots.default) {
   );
 }
 
-// Rows on the last supported level are leaves even when they slot further rows
 const hasChildren = computed(() => !!slots.default && !isLeafDepth);
 
 const activeDescendants = ref<string[]>([]);
