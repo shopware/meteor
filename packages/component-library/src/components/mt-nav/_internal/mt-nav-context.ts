@@ -1,4 +1,4 @@
-import type { Component, ComputedRef, InjectionKey } from "vue";
+import { inject, type Component, type ComputedRef, type InjectionKey } from "vue";
 
 /**
  * Component rendering the navigation links, e.g. `router-link`. Receives the target as `to`.
@@ -59,3 +59,14 @@ export interface NavItemContext {
 export const NAV_CONTEXT: InjectionKey<NavContext> = Symbol("mt-nav");
 
 export const NAV_ITEM_CONTEXT: InjectionKey<NavItemContext> = Symbol("mt-nav-item");
+
+export function useNavContext(component: string): NavContext {
+  // Returns the state of the surrounding mt-nav, or throws if the component is rendered outside one
+  const context = inject(NAV_CONTEXT, null);
+
+  if (!context) {
+    throw new Error(`${component} must be rendered inside mt-nav`);
+  }
+
+  return context;
+}
