@@ -12,7 +12,6 @@
         :is="linkTag"
         class="mt-nav__link"
         :class="{ 'is--active': rowActive }"
-        :aria-label="collapsedAriaLabel"
         v-bind="linkAttrs"
         v-on="to || href ? { click: onLinkClick } : {}"
       >
@@ -23,21 +22,14 @@
           :name="iconName"
         />
 
-        <span
-          class="mt-nav__link-label mt-nav__collapsible-text mt-nav__hide-on-collapse"
-          :title="label"
-        >
+        <span class="mt-nav__link-label mt-nav__link-text" :title="label">
           {{ label }}
         </span>
 
         <slot name="suffix" />
 
         <span class="mt-nav__link-expand-icon-box">
-          <mt-icon
-            :name="expandIcon"
-            size="8"
-            class="mt-nav__link-expand-icon mt-nav__collapsible-text mt-nav__hide-on-collapse"
-          />
+          <mt-icon :name="expandIcon" size="8" class="mt-nav__link-expand-icon mt-nav__link-text" />
         </span>
       </component>
     </div>
@@ -48,36 +40,28 @@
   </mt-collapsible>
 
   <li v-else :class="rowClasses" :aria-current="rowActive ? 'page' : 'false'">
-    <mt-tooltip :content="label" placement="right">
-      <template #default="tooltipProps">
-        <div class="mt-nav__item-row" v-bind="collapsedTooltipTriggerProps(tooltipProps)">
-          <component
-            :is="linkTag"
-            class="mt-nav__link"
-            :class="{ 'is--active': rowActive }"
-            :aria-label="collapsedAriaLabel"
-            v-bind="linkAttrs"
-            v-on="to || href ? { click: onLinkClick } : {}"
-          >
-            <mt-icon
-              v-if="icon && depth === 1"
-              size="16px"
-              class="mt-nav__link-icon"
-              :name="iconName"
-            />
+    <div class="mt-nav__item-row">
+      <component
+        :is="linkTag"
+        class="mt-nav__link"
+        :class="{ 'is--active': rowActive }"
+        v-bind="linkAttrs"
+        v-on="to || href ? { click: onLinkClick } : {}"
+      >
+        <mt-icon
+          v-if="icon && depth === 1"
+          size="16px"
+          class="mt-nav__link-icon"
+          :name="iconName"
+        />
 
-            <span
-              class="mt-nav__link-label mt-nav__collapsible-text mt-nav__hide-on-collapse"
-              :title="label"
-            >
-              {{ label }}
-            </span>
+        <span class="mt-nav__link-label mt-nav__link-text" :title="label">
+          {{ label }}
+        </span>
 
-            <slot name="suffix" />
-          </component>
-        </div>
-      </template>
-    </mt-tooltip>
+        <slot name="suffix" />
+      </component>
+    </div>
   </li>
 </template>
 
@@ -94,7 +78,6 @@ import {
   type PropType,
 } from "vue";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
-import MtTooltip from "@/components/mt-tooltip/mt-tooltip.vue";
 import MtCollapsible from "@/components/mt-collapsible/mt-collapsible.vue";
 import MtCollapsibleTrigger from "@/components/mt-collapsible/mt-collapsible-trigger.vue";
 import MtCollapsibleContent from "@/components/mt-collapsible/mt-collapsible-content.vue";
@@ -102,11 +85,6 @@ import { NAV_CONTEXT, NAV_ITEM_CONTEXT } from "./_internal/mt-nav-context";
 import type { NavLinkTarget } from "./mt-nav.types";
 
 const MAX_NESTING_LEVEL = 3;
-
-/**
- * Props of the tooltip trigger that open it; stripped when the row shows no tooltip.
- */
-const TOOLTIP_OPEN_TRIGGER_PROPS = ["onMouseover", "onFocus", "aria-describedby"];
 
 const props = defineProps({
   /**
@@ -174,7 +152,6 @@ const depth = parent ? parent.depth + 1 : 1;
 const key = useId();
 
 const linkComponent = context.linkComponent;
-const navExpanded = context.expanded;
 
 const hasChildren = computed(() => !!slots.default);
 
@@ -228,10 +205,6 @@ const activeKeepsOpen = computed(() => hasActiveDescendant.value && !suppressAct
 
 const submenuVisuallyOpen = computed(() => {
   if (depth === 1) {
-    if (!navExpanded.value) {
-      return false;
-    }
-
     const branchExpanded = context.isBranchExpanded(key);
 
     return context.hasExpandedBranches.value
@@ -266,11 +239,6 @@ const rowClasses = computed(() => [
   },
 ]);
 
-// Collapsed top-level rows hide their label, so the accessible name needs an aria-label.
-const collapsedAriaLabel = computed(() =>
-  !navExpanded.value && depth === 1 ? props.label : undefined,
-);
-
 const linkTag = computed(() => {
   if (props.to) {
     return linkComponent.value;
@@ -297,24 +265,6 @@ const linkAttrs = computed(() => {
 
   return hasCollapsibleSubtree.value ? { type: "button" } : {};
 });
-
-// Collapsed top-level rows without children hide their label, which stays accessible via a tooltip
-const showsCollapsedTooltip = computed(
-  () => !navExpanded.value && depth === 1 && !hasChildren.value,
-);
-
-function collapsedTooltipTriggerProps(tooltipProps: Record<string, unknown>) {
-  if (showsCollapsedTooltip.value) {
-    // Focus does not bubble to the non-focusable row, focusin/focusout do
-    const { onFocus, onBlur, ...bubblingProps } = tooltipProps;
-
-    return { ...bubblingProps, onFocusin: onFocus, onFocusout: onBlur };
-  }
-
-  return Object.fromEntries(
-    Object.entries(tooltipProps).filter(([key]) => !TOOLTIP_OPEN_TRIGGER_PROPS.includes(key)),
-  );
-}
 
 function getIconName(name: string | undefined, isActive: boolean) {
   if (isActive && typeof name === "string") {
@@ -346,7 +296,7 @@ function onCollapsibleOpenUpdate(open: boolean) {
     manualNestedOpen.value = open;
   }
 
-  if (depth === 1 && navExpanded.value) {
+  if (depth === 1) {
     context.onBranchToggle(key, open);
   }
 }
@@ -540,45 +490,18 @@ $nesting-line-indent: 36px;
   background: none;
   color: var(--color-icon-brand-default);
 
-  .mt-nav__collapsible-text {
-    color: var(--color-icon-brand-default);
-  }
-
   .mt-nav__link-icon {
     color: var(--color-icon-brand-default);
   }
 }
 
 .mt-nav__list-item.is--entry-expanded {
-  .mt-nav__collapsible-text {
+  .mt-nav__link-text {
     color: var(--color-text-primary-default);
   }
 
-  & > .mt-nav__item-row > .mt-nav__link.is--active .mt-nav__collapsible-text {
+  & > .mt-nav__item-row > .mt-nav__link.is--active .mt-nav__link-text {
     color: var(--color-icon-brand-default);
-  }
-}
-
-// Tree lines and indicators follow .mt-nav__hide-on-collapse timing, scoped to the toggle window
-.mt-nav.is--toggling .mt-nav__list-item--nested {
-  > .mt-nav__sub-list::before,
-  > .mt-nav__item-row > .mt-nav__link::before,
-  > .mt-nav__item-row > .mt-nav__link::after {
-    transition:
-      opacity 0.3s ease-in-out 0.1s,
-      visibility 0.3s ease-in-out 0.1s;
-  }
-}
-
-.mt-nav.is--collapsed .mt-nav__list-item--nested {
-  > .mt-nav__sub-list::before,
-  > .mt-nav__item-row > .mt-nav__link::before,
-  > .mt-nav__item-row > .mt-nav__link::after {
-    opacity: 0;
-    visibility: hidden;
-    transition:
-      opacity 0.05s ease-out,
-      visibility 0.05s ease-out;
   }
 }
 </style>

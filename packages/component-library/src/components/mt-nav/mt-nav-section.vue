@@ -4,7 +4,7 @@
       v-if="header"
       :id="headerId"
       as="h3"
-      class="mt-nav__section-header mt-nav__hide-on-collapse"
+      class="mt-nav__section-header"
       size="2xs"
       weight="semibold"
       color="color-text-secondary-default"
@@ -26,7 +26,7 @@ import { NAV_CONTEXT } from "./_internal/mt-nav-context";
 
 defineProps({
   /**
-   * Heading above the items of the section. Hidden while the navigation is collapsed.
+   * Heading above the items of the section.
    */
   header: {
     type: String,
@@ -52,7 +52,7 @@ const headerId = `mt-nav-section-header-${useId()}`;
   flex-direction: column;
 }
 
-// Typography comes from mt-text; the fixed height keeps the rows in place when the header fades out
+// Typography comes from mt-text
 .mt-nav__section-header {
   height: var(--scale-size-24);
   margin: 0 0 var(--scale-size-4);

@@ -80,20 +80,3 @@ export const VisualTestNavigate: MtNavStory = {
     expect(canvas.getByText("Products").closest("li")).toHaveAttribute("aria-current", "false");
   },
 };
-
-export const VisualTestCollapsed: MtNavStory = {
-  name: "Render the collapsed navigation",
-  args: {
-    expanded: false,
-  },
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const navigation = canvas.getByRole("navigation", { name: "Main navigation" });
-
-    expect(navigation).toHaveClass("is--collapsed");
-
-    // Labels are hidden, so the rows are named through aria-label
-    expect(within(navigation).getByRole("link", { name: "Dashboard" })).toBeVisible();
-    expect(within(navigation).getByRole("button", { name: "Catalogues" })).toBeVisible();
-  },
-};

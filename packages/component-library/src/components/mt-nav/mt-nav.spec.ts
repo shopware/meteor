@@ -264,28 +264,4 @@ describe("mt-nav", () => {
       );
     });
   });
-
-  describe("collapsed", () => {
-    it("reflects the expanded state on the root element", async () => {
-      const { rerender } = renderNav({ expanded: false });
-
-      const navigation = screen.getByRole("navigation", { name: "Main navigation" });
-
-      expect(navigation).toHaveClass("is--collapsed");
-      expect(navigation).toHaveAttribute("data-expanded", "false");
-
-      await rerender({ linkComponent: RouterLinkStub, expanded: true });
-
-      expect(navigation).toHaveClass("is--expanded");
-      expect(navigation).toHaveAttribute("data-expanded", "true");
-    });
-
-    it("names the top level rows through an aria-label because their labels are hidden", () => {
-      renderNav({ expanded: false });
-
-      expect(getRowLabel("Dashboard").closest("a")).toHaveAttribute("aria-label", "Dashboard");
-      expect(getRowLabel("Docs").closest("a")).toHaveAttribute("aria-label", "Docs");
-      expect(screen.getByRole("button", { name: "Catalogues" })).toBeInTheDocument();
-    });
-  });
 });

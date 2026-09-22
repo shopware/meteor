@@ -17,8 +17,6 @@ export interface NavBranchRegistration {
  */
 export interface NavContext {
   linkComponent: ComputedRef<NavLinkComponent>;
-  /** Whether the navigation is expanded. Collapsed, rows show icons only. */
-  expanded: ComputedRef<boolean>;
   /** Whether any top-level branch is expanded, in which case the active item stops keeping folders open. */
   hasExpandedBranches: ComputedRef<boolean>;
   isBranchExpanded: (key: string) => boolean;
