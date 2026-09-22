@@ -227,6 +227,20 @@ describe("mt-nav", () => {
       expect(getRowLabel("Dashboard").closest("li")).toHaveAttribute("aria-current", "page");
     });
 
+    it("reopens a manually closed branch when the active row moves inside it", async () => {
+      const { rerender } = render(Wrapper, { props: { current: "sw.product.index" } });
+
+      await waitFor(() => expect(getRowLabel("Products")).toBeVisible());
+
+      await userEvent.click(screen.getByRole("button", { name: "Catalogues" }));
+      await waitFor(() => expect(getRowLabel("Products")).not.toBeVisible());
+
+      await rerender({ current: "sw.category.index" });
+
+      await waitFor(() => expect(getRowLabel("Categories")).toBeVisible());
+      expect(getRowLabel("Categories").closest("li")).toHaveAttribute("aria-current", "page");
+    });
+
     it("keeps one top level branch open across sections", async () => {
       render(Wrapper);
 

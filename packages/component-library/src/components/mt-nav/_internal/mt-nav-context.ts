@@ -28,6 +28,8 @@ export interface NavBranchRegistration {
   hasChildren: ComputedRef<boolean>;
   /** Whether the row itself or one of its descendants is active. */
   isActive: ComputedRef<boolean>;
+  /** Key of the nested row that is active or holds the active row, so a move inside the branch is noticed. */
+  activeChildKey: ComputedRef<string | null>;
 }
 
 /**
@@ -35,11 +37,11 @@ export interface NavBranchRegistration {
  */
 export interface NavContext {
   linkComponent: ComputedRef<NavLinkComponent>;
-  /** Whether any top-level branch is expanded, in which case the active item stops keeping folders open. */
-  hasExpandedBranches: ComputedRef<boolean>;
+  /** Whether the top-level row with the given key is open. The navigation owns this state. */
   isBranchExpanded: (key: string) => boolean;
   /** Registers a top-level row. Returns the matching unregister function. */
   registerBranch: (registration: NavBranchRegistration) => () => void;
+  /** Reports the user toggling a top-level row. */
   onBranchToggle: (key: string, open: boolean) => void;
   onLinkClick: (event: NavNavigateEvent) => void;
 }

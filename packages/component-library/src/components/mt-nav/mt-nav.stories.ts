@@ -13,6 +13,7 @@ export type MtNavMeta = Meta<typeof MtNav>;
  * state changes like in an application. The docs show the same template, minus the story args.
  */
 function createStory(template: string): MtNavStory {
+  // Builds a story rendering the template with the shared setup and showing it as the docs source
   return {
     render: (args) => ({
       components: { MtNav, MtNavSection, MtNavItem },
@@ -20,10 +21,12 @@ function createStory(template: string): MtNavStory {
         const current = ref("product.index");
 
         function isCurrent(name: string) {
+          // Tells whether the given route name is the fake current route
           return current.value === name;
         }
 
         function onNavigate(event: NavNavigateEvent) {
+          // Moves the fake current route to the clicked row
           const name = (event.to as { name?: string } | undefined)?.name;
 
           if (name) {
