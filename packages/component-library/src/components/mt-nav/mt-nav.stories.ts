@@ -115,6 +115,26 @@ const meta: MtNavMeta = {
   ...createStory(defaultTemplate),
 };
 
+meta.parameters = {
+  ...meta.parameters,
+  docs: {
+    ...meta.parameters?.docs,
+    description: {
+      component: `
+The main navigation of an application: \`mt-nav\` owns the shared state, \`mt-nav-section\` groups
+rows below an optional header and \`mt-nav-item\` is one row, nesting further rows up to three
+levels deep. The root fills its container and scrolls its content, fading it out at the edges.
+
+The application decides which row is current and sets \`active\` on it, typically by comparing the
+row's route with the current route. The ancestors of the active row open and, while closed, take
+over its highlight. When the active row moves, the branch holding it opens and branches holding
+nothing active close. Only one top-level branch is open at a time; nested rows remember their own
+toggle. Arrow, Home and End keys move focus between the visible links.
+`.trim(),
+    },
+  },
+};
+
 export default meta;
 
 export type MtNavStory = StoryObj<MtNavMeta>;

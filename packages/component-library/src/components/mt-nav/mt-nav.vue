@@ -39,9 +39,7 @@ const emit = defineEmits<{
 }>();
 
 defineSlots<{
-  /**
-   * The `mt-nav-section` components holding the rows.
-   * */
+  /** The `mt-nav-section` components holding the rows. */
   default?: () => unknown;
 }>();
 
@@ -154,10 +152,12 @@ function openBranchOfActiveItem() {
 }
 
 function onNavigationKeydown(event: KeyboardEvent) {
-  // Moves focus between the visible links with the arrow, Home and End keys
+  // Moves focus between the visible links with the arrow, Home and End keys, without wrapping
   const body = navBodyElement.value;
+  const target = event.target;
 
-  if (!body) {
+  // Keys pressed inside slotted content, e.g. a button in a suffix, keep their meaning
+  if (!body || !(target instanceof HTMLElement) || !target.matches(".mt-nav__link")) {
     return;
   }
 
@@ -165,20 +165,15 @@ function onNavigationKeydown(event: KeyboardEvent) {
     (link) => !link.closest("[hidden]"),
   );
 
-  if (links.length === 0) {
-    return;
-  }
-
-  const currentIndex = links.indexOf(document.activeElement as HTMLElement);
+  const currentIndex = links.indexOf(target);
   let nextIndex: number;
 
   switch (event.key) {
     case "ArrowDown":
-      nextIndex = currentIndex < 0 ? 0 : (currentIndex + 1) % links.length;
+      nextIndex = Math.min(currentIndex + 1, links.length - 1);
       break;
     case "ArrowUp":
-      nextIndex =
-        currentIndex < 0 ? links.length - 1 : (currentIndex - 1 + links.length) % links.length;
+      nextIndex = Math.max(currentIndex - 1, 0);
       break;
     case "Home":
       nextIndex = 0;
@@ -209,15 +204,6 @@ function onNavigationKeydown(event: KeyboardEvent) {
     #000 calc(100% - var(--scale-size-20)),
     transparent calc(100% - var(--scale-size-4))
   );
-}
-
-.mt-nav .mt-nav__link.is--active {
-  background: var(--color-background-brand-default);
-}
-
-.mt-nav .mt-nav__link.is--active .mt-nav__link-label,
-.mt-nav .mt-nav__link.is--active .mt-nav__link-expand-icon {
-  color: var(--color-icon-brand-default);
 }
 
 .mt-nav__body {
