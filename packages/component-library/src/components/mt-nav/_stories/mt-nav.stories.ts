@@ -4,23 +4,24 @@ import MtNav from "../mt-nav.vue";
 import MtNavSection from "../mt-nav-section.vue";
 import MtNavItem from "../mt-nav-item.vue";
 import type { NavNavigateEvent } from "../mt-nav.types";
-import { items, shopItems, systemItems } from "./entries";
 import { StoryLink } from "./story-link";
-import { StoryNavItems } from "./story-nav-items";
 
 export type MtNavMeta = Meta<typeof MtNav>;
 
 /**
- * Renders the given template with the sample items and follows the clicked row with a fake
- * current route, so the active state changes like in an application. `sourceCode` is what the
- * docs show: the rows written out as an application would.
+ * Renders the template with a fake current route that follows the clicked row, so the active
+ * state changes like in an application. The docs show the same template, minus the story args.
  */
-function createStory(template: string, sourceCode: string): MtNavStory {
+function createStory(template: string): MtNavStory {
   return {
     render: (args) => ({
-      components: { MtNav, MtNavSection, MtNavItem, StoryNavItems },
+      components: { MtNav, MtNavSection, MtNavItem },
       setup() {
         const current = ref("product.index");
+
+        function isCurrent(name: string) {
+          return current.value === name;
+        }
 
         function onNavigate(event: NavNavigateEvent) {
           const name = (event.to as { name?: string } | undefined)?.name;
@@ -30,30 +31,21 @@ function createStory(template: string, sourceCode: string): MtNavStory {
           }
         }
 
-        return { args, current, onNavigate, items, shopItems, systemItems };
+        return { args, isCurrent, onNavigate };
       },
       template,
     }),
     parameters: {
       docs: {
         source: {
-          code: sourceCode.trim(),
+          code: template.replace(' v-bind="args"', "").trim(),
         },
       },
     },
   };
 }
 
-const defaultTemplate = `
-<mt-nav v-bind="args" @navigate="onNavigate">
-  <mt-nav-section>
-    <story-nav-items :items="items" :current="current" />
-  </mt-nav-section>
-</mt-nav>`;
-
-const defaultSource = `
-<mt-nav @navigate="onNavigate">
-  <mt-nav-section>
+const shopRows = `
     <mt-nav-item label="Dashboard" icon="regular-home" :to="{ name: 'dashboard.index' }" :active="isCurrent('dashboard.index')" />
 
     <mt-nav-item label="Catalogues" icon="regular-products">
@@ -61,32 +53,44 @@ const defaultSource = `
         <mt-nav-item label="Reviews" :to="{ name: 'review.index' }" :active="isCurrent('review.index')" />
       </mt-nav-item>
       <mt-nav-item label="Categories" :to="{ name: 'category.index' }" :active="isCurrent('category.index')" />
+      <mt-nav-item label="Manufacturers" :to="{ name: 'manufacturer.index' }" :active="isCurrent('manufacturer.index')" />
     </mt-nav-item>
 
-    <mt-nav-item label="Docs" href="https://docs.shopware.com" target="_blank" />
+    <mt-nav-item label="Orders" icon="regular-shopping-bag" :to="{ name: 'order.index' }" :active="isCurrent('order.index')" />
+    <mt-nav-item label="Customers" icon="regular-users" :to="{ name: 'customer.index' }" :active="isCurrent('customer.index')" />
+
+    <mt-nav-item label="Content" icon="regular-content">
+      <mt-nav-item label="Shopping Experiences" :to="{ name: 'cms.index' }" :active="isCurrent('cms.index')" />
+      <mt-nav-item label="Media" :to="{ name: 'media.index' }" :active="isCurrent('media.index')" />
+    </mt-nav-item>
+
+    <mt-nav-item label="Marketing" icon="regular-megaphone">
+      <mt-nav-item label="Promotions" :to="{ name: 'promotion.index' }" :active="isCurrent('promotion.index')" />
+      <mt-nav-item label="Newsletter recipients" :to="{ name: 'newsletter.index' }" :active="isCurrent('newsletter.index')" />
+    </mt-nav-item>`;
+
+const systemRows = `
+    <mt-nav-item label="Extensions" icon="regular-plug">
+      <mt-nav-item label="My extensions" :to="{ name: 'extension.my-extensions' }" :active="isCurrent('extension.my-extensions')" />
+      <mt-nav-item label="Store" :to="{ name: 'extension.store' }" :active="isCurrent('extension.store')" />
+    </mt-nav-item>
+
+    <mt-nav-item label="Settings" icon="regular-cog" :to="{ name: 'settings.index' }" :active="isCurrent('settings.index')" />
+    <mt-nav-item label="Docs" href="https://docs.shopware.com" target="_blank" />`;
+
+const defaultTemplate = `
+<mt-nav v-bind="args" @navigate="onNavigate">
+  <mt-nav-section>${shopRows}
+${systemRows}
   </mt-nav-section>
 </mt-nav>`;
 
 const sectionsTemplate = `
 <mt-nav v-bind="args" @navigate="onNavigate">
-  <mt-nav-section header="Shop">
-    <story-nav-items :items="shopItems" :current="current" />
+  <mt-nav-section header="Shop">${shopRows}
   </mt-nav-section>
 
-  <mt-nav-section header="System">
-    <story-nav-items :items="systemItems" :current="current" />
-  </mt-nav-section>
-</mt-nav>`;
-
-const sectionsSource = `
-<mt-nav @navigate="onNavigate">
-  <mt-nav-section header="Shop">
-    <mt-nav-item label="Dashboard" icon="regular-home" :to="{ name: 'dashboard.index' }" :active="isCurrent('dashboard.index')" />
-    <mt-nav-item label="Orders" icon="regular-shopping-bag" :to="{ name: 'order.index' }" :active="isCurrent('order.index')" />
-  </mt-nav-section>
-
-  <mt-nav-section header="System">
-    <mt-nav-item label="Settings" icon="regular-cog" :to="{ name: 'settings.index' }" :active="isCurrent('settings.index')" />
+  <mt-nav-section header="System">${systemRows}
   </mt-nav-section>
 </mt-nav>`;
 
@@ -105,7 +109,7 @@ const meta: MtNavMeta = {
         "Component rendering the links. Receives the `to` of a row. Defaults to `router-link`.",
     },
   },
-  ...createStory(defaultTemplate, defaultSource),
+  ...createStory(defaultTemplate),
 };
 
 export default meta;
@@ -121,4 +125,4 @@ export const Default: MtNavStory = {};
 /**
  * Several sections, each with a `header` above its rows.
  */
-export const Sections: MtNavStory = createStory(sectionsTemplate, sectionsSource);
+export const Sections: MtNavStory = createStory(sectionsTemplate);
