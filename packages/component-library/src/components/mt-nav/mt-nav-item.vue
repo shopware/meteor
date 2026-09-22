@@ -21,7 +21,7 @@
 
         <slot name="suffix" />
 
-        <span v-if="hasCollapsibleSubtree" class="mt-nav__link-expand-icon-box">
+        <span v-if="hasChildren" class="mt-nav__link-expand-icon-box">
           <mt-icon
             :name="subtreeOpen ? 'regular-chevron-up-xs' : 'regular-chevron-down-xs'"
             size="8"
@@ -31,7 +31,7 @@
       </component>
     </div>
 
-    <mt-collapsible-content v-if="hasCollapsibleSubtree" as="ul" class="mt-nav__sub-list">
+    <mt-collapsible-content v-if="hasChildren" as="ul" class="mt-nav__sub-list">
       <slot />
     </mt-collapsible-content>
   </component>
@@ -89,8 +89,6 @@ const depth = parent ? parent.depth + 1 : 1;
 
 const key = useId();
 
-const hasChildren = computed(() => !!slots.default);
-
 const isLeafDepth = depth >= MAX_NESTING_LEVEL;
 
 if (isLeafDepth && slots.default) {
@@ -100,7 +98,8 @@ if (isLeafDepth && slots.default) {
   );
 }
 
-const hasCollapsibleSubtree = computed(() => hasChildren.value && !isLeafDepth);
+// Rows on the last supported level are leaves even when they slot further rows
+const hasChildren = computed(() => !!slots.default && !isLeafDepth);
 
 const activeDescendants = ref<string[]>([]);
 
@@ -151,17 +150,15 @@ const iconName = computed(() =>
   rowActive.value || childActive.value ? props.icon?.replace(/^regular-/, "solid-") : props.icon,
 );
 
-const rowComponent = computed(() => (hasCollapsibleSubtree.value ? MtCollapsible : "li"));
+const rowComponent = computed(() => (hasChildren.value ? MtCollapsible : "li"));
 
 const rowProps = computed(() =>
-  hasCollapsibleSubtree.value
-    ? { as: "li", open: subtreeOpen.value, "onUpdate:open": setSubtreeOpen }
-    : {},
+  hasChildren.value ? { as: "li", open: subtreeOpen.value, "onUpdate:open": setSubtreeOpen } : {},
 );
 
 const rowClasses = computed(() => ({
   "mt-nav__list-item--nested": depth > 1,
-  "is--entry-expanded": subtreeOpen.value,
+  "is--open": subtreeOpen.value,
   "is--child-active": childActive.value,
 }));
 
@@ -174,14 +171,14 @@ const linkTag = computed(() => {
     return "a";
   }
 
-  return hasCollapsibleSubtree.value ? MtCollapsibleTrigger : "span";
+  return hasChildren.value ? MtCollapsibleTrigger : "span";
 });
 
 const linkAttrs = computed(() => {
   if (props.to) {
     return {
       to: props.to,
-      "aria-expanded": hasCollapsibleSubtree.value ? subtreeOpen.value : undefined,
+      "aria-expanded": hasChildren.value ? subtreeOpen.value : undefined,
       onClick: onLinkClick,
     };
   }
@@ -191,12 +188,12 @@ const linkAttrs = computed(() => {
   }
 
   // The collapsible trigger toggles the nested rows itself
-  return hasCollapsibleSubtree.value ? { type: "button" } : {};
+  return hasChildren.value ? { type: "button" } : {};
 });
 
 function onLinkClick() {
   // Reports the click to the navigation and, for a link with nested rows, toggles them too
-  if (hasCollapsibleSubtree.value) {
+  if (hasChildren.value) {
     setSubtreeOpen(!subtreeOpen.value);
   }
 
@@ -276,7 +273,6 @@ function setSubtreeOpen(open: boolean) {
 }
 
 .mt-nav__link-expand-icon {
-  flex-shrink: 0;
   color: var(--color-icon-primary-default);
 }
 
@@ -322,7 +318,7 @@ function setSubtreeOpen(open: boolean) {
 
 /* Shorten the tree line when the last visible row is a closed leaf */
 .mt-nav__list-item--nested:last-child
-  > .mt-nav__sub-list:has(> .mt-nav__list-item:last-child:not(.is--entry-expanded))::before {
+  > .mt-nav__sub-list:has(> .mt-nav__list-item:last-child:not(.is--open))::before {
   bottom: var(--scale-size-12);
 }
 
@@ -382,38 +378,18 @@ function setSubtreeOpen(open: boolean) {
   top: var(--scale-size-12);
 }
 
-.mt-nav__list-item--nested:last-child:not(.is--entry-expanded)
-  > .mt-nav__item-row
-  > .mt-nav__link::before {
+.mt-nav__list-item--nested:last-child:not(.is--open) > .mt-nav__item-row > .mt-nav__link::before {
   bottom: var(--scale-size-12);
 }
 
-.mt-nav__list-item:not(.mt-nav__list-item--nested) > .mt-nav__item-row > .mt-nav__link.is--active {
+/* Scoped to the row so the rule also beats the user agent reset on button links */
+.mt-nav__item-row .mt-nav__link.is--active {
   background: var(--color-background-brand-default);
-}
-
-.mt-nav__link.is--active {
-  background: none;
   color: var(--color-icon-brand-default);
 }
 
-.mt-nav__link.is--active .mt-nav__link-icon {
-  color: var(--color-icon-brand-default);
-}
-
-.mt-nav__list-item.is--entry-expanded .mt-nav__link-label,
-.mt-nav__list-item.is--entry-expanded .mt-nav__link-expand-icon {
-  color: var(--color-text-primary-default);
-}
-
-.mt-nav__list-item.is--entry-expanded
-  > .mt-nav__item-row
-  > .mt-nav__link.is--active
-  .mt-nav__link-label,
-.mt-nav__list-item.is--entry-expanded
-  > .mt-nav__item-row
-  > .mt-nav__link.is--active
-  .mt-nav__link-expand-icon {
+.mt-nav__item-row .mt-nav__link.is--active .mt-nav__link-icon,
+.mt-nav__item-row .mt-nav__link.is--active .mt-nav__link-expand-icon {
   color: var(--color-icon-brand-default);
 }
 </style>

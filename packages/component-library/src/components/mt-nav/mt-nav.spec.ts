@@ -68,24 +68,14 @@ function renderNav(props: Record<string, unknown> = {}, sections?: () => VNode[]
 }
 
 /**
- * The label of a navigation row. Plain text queries also hit the teleported tooltip copies.
+ * The label of a navigation row. Section headers may repeat a row label, so match the label element.
  */
 function getRowLabel(text: string, container: HTMLElement = document.body) {
-  const label = within(container)
-    .getAllByText(text)
-    .find((element) => element.classList.contains("mt-nav__link-label"));
-
-  if (!label) {
-    throw new Error(`Found no navigation row labelled "${text}"`);
-  }
-
-  return label;
+  return within(container).getByText(text, { selector: ".mt-nav__link-label" });
 }
 
 function queryRowLabel(text: string) {
-  return screen
-    .queryAllByText(text)
-    .find((element) => element.classList.contains("mt-nav__link-label"));
+  return screen.queryByText(text, { selector: ".mt-nav__link-label" });
 }
 
 describe("mt-nav", () => {
@@ -123,7 +113,7 @@ describe("mt-nav", () => {
       renderNav({}, () => [section(sampleRows("sw.review.index"))]);
 
       expect(getRowLabel("Reviews")).toBeInTheDocument();
-      expect(queryRowLabel("Too deep")).toBeUndefined();
+      expect(queryRowLabel("Too deep")).toBeNull();
       expect(console.error).toHaveBeenCalledWith(expect.stringContaining('"Reviews"'));
     });
 
@@ -175,6 +165,30 @@ describe("mt-nav", () => {
       expect(emitted().navigate).toEqual([
         [{ label: "Dashboard", to: { name: "sw.dashboard.index" }, href: undefined }],
       ]);
+    });
+
+    it("does not emit navigate for a row that only toggles", async () => {
+      const { emitted } = renderNav();
+
+      await userEvent.click(screen.getByRole("button", { name: "Catalogues" }));
+
+      expect(emitted().navigate).toBeUndefined();
+    });
+
+    it("toggles the nested rows of a link and stands in for the active row it hides", async () => {
+      renderNav({}, () => [section(sampleRows("sw.review.index"))]);
+
+      await waitFor(() => expect(getRowLabel("Reviews")).toBeVisible());
+
+      await userEvent.click(getRowLabel("Products"));
+
+      await waitFor(() => expect(getRowLabel("Reviews")).not.toBeVisible());
+      expect(getRowLabel("Products").closest("a")).toHaveAttribute("aria-current", "page");
+
+      await userEvent.click(getRowLabel("Products"));
+
+      await waitFor(() => expect(getRowLabel("Reviews")).toBeVisible());
+      expect(getRowLabel("Products").closest("a")).not.toHaveAttribute("aria-current");
     });
 
     it("renders the suffix slot after the label", () => {
@@ -265,6 +279,55 @@ describe("mt-nav", () => {
 
       expect(getRowLabel("FAQ")).toBeVisible();
       expect(getRowLabel("Products")).not.toBeVisible();
+    });
+  });
+
+  describe("keyboard", () => {
+    it("moves focus between the visible links without wrapping", async () => {
+      renderNav();
+
+      const dashboard = getRowLabel("Dashboard").closest("a") as HTMLElement;
+      const catalogues = screen.getByRole("button", { name: "Catalogues" });
+      const docs = getRowLabel("Docs").closest("a") as HTMLElement;
+
+      dashboard.focus();
+
+      await userEvent.keyboard("{ArrowUp}");
+      expect(dashboard).toHaveFocus();
+
+      // The closed branch hides its rows, so the next link is the external one
+      await userEvent.keyboard("{ArrowDown}{ArrowDown}");
+      expect(docs).toHaveFocus();
+
+      await userEvent.keyboard("{ArrowDown}");
+      expect(docs).toHaveFocus();
+
+      await userEvent.keyboard("{Home}");
+      expect(dashboard).toHaveFocus();
+
+      await userEvent.keyboard("{End}");
+      expect(docs).toHaveFocus();
+
+      await userEvent.keyboard("{ArrowUp}");
+      expect(catalogues).toHaveFocus();
+    });
+
+    it("leaves keys pressed inside slotted content alone", async () => {
+      renderNav({}, () => [
+        section([
+          route("Dashboard", "sw.dashboard.index"),
+          item({ label: "Orders", to: { name: "sw.order.index" } }, undefined, {
+            suffix: () => h("button", { type: "button" }, "new"),
+          }),
+        ]),
+      ]);
+
+      const suffixButton = screen.getByRole("button", { name: "new" });
+
+      suffixButton.focus();
+      await userEvent.keyboard("{ArrowUp}");
+
+      expect(suffixButton).toHaveFocus();
     });
   });
 
