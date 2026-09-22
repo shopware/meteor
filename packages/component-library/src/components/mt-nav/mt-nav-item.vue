@@ -250,16 +250,11 @@ function setSubtreeOpen(open: boolean) {
 }
 </script>
 
-<style lang="scss">
-$nesting-line-offset: 18px;
-$nesting-line-indent: 36px;
-
-.mt-nav__list-item {
-  .mt-collapsible-content[data-state="open"],
-  .mt-collapsible-content[data-state="closed"] {
-    animation-duration: 0.3s;
-    animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
-  }
+<style>
+.mt-nav__list-item .mt-collapsible-content[data-state="open"],
+.mt-nav__list-item .mt-collapsible-content[data-state="closed"] {
+  animation-duration: 0.3s;
+  animation-timing-function: cubic-bezier(0.32, 0.72, 0, 1);
 }
 
 .mt-nav__link {
@@ -282,31 +277,31 @@ $nesting-line-indent: 36px;
   position: relative;
   font-weight: var(--font-weight-medium);
   border-radius: var(--border-radius-s);
-
-  &:not(.is--active):hover {
-    background: var(--color-interaction-secondary-hover);
-  }
-
-  &:focus-visible {
-    outline: var(--scale-size-2) solid var(--color-border-brand-default);
-    outline-offset: calc(-1 * var(--scale-size-2));
-  }
-
-  .mt-icon {
-    flex-shrink: 0;
-  }
-
-  .mt-nav__link-label {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    flex-grow: 1;
-    text-align: left;
-    min-width: 0;
-  }
 }
 
-// Native button variants of the navigation link, dropping the user agent chrome
+.mt-nav__link:not(.is--active):hover {
+  background: var(--color-interaction-secondary-hover);
+}
+
+.mt-nav__link:focus-visible {
+  outline: var(--scale-size-2) solid var(--color-border-brand-default);
+  outline-offset: calc(-1 * var(--scale-size-2));
+}
+
+.mt-nav__link .mt-icon {
+  flex-shrink: 0;
+}
+
+.mt-nav__link .mt-nav__link-label {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  flex-grow: 1;
+  text-align: left;
+  min-width: 0;
+}
+
+/* Native button variants of the navigation link, dropping the user agent chrome */
 .mt-nav__item-row button.mt-nav__link {
   border: 0;
   background: none;
@@ -339,121 +334,123 @@ $nesting-line-indent: 36px;
   overflow: hidden;
 }
 
-.mt-nav__list-item--nested > .mt-nav__sub-list {
-  margin-left: $nesting-line-offset;
-  position: relative;
-  padding-left: $nesting-line-indent - $nesting-line-offset - 1px;
-
-  &::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    width: 1px;
-    background: var(--color-border-secondary-default);
-    border-radius: 1px;
-  }
+/* Nested rows draw a tree line at the offset and indent their link past it */
+.mt-nav__list-item--nested {
+  --mt-nav-tree-line-offset: 18px;
+  --mt-nav-tree-indent: 36px;
 }
 
-// Shorten the tree line when the last visible row is a closed leaf
+.mt-nav__list-item--nested > .mt-nav__sub-list {
+  margin-left: var(--mt-nav-tree-line-offset);
+  position: relative;
+  padding-left: calc(var(--mt-nav-tree-indent) - var(--mt-nav-tree-line-offset) - 1px);
+}
+
+.mt-nav__list-item--nested > .mt-nav__sub-list::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--color-border-secondary-default);
+  border-radius: 1px;
+}
+
+/* Shorten the tree line when the last visible row is a closed leaf */
 .mt-nav__list-item--nested:last-child
   > .mt-nav__sub-list:has(> .mt-nav__list-item:last-child:not(.is--entry-expanded))::before {
   bottom: var(--scale-size-12);
 }
 
 .mt-nav__list-item--nested > .mt-nav__item-row > .mt-nav__link {
-  padding-left: $nesting-line-indent;
-
-  &::before {
-    content: "";
-    position: absolute;
-    left: $nesting-line-offset;
-    top: 0;
-    bottom: 0;
-    width: 1px;
-    background: var(--color-border-secondary-default);
-    border-radius: 1px;
-  }
-
-  // The transparent outline acts as a colour-swappable halo, so no extra element is needed
-  &::after {
-    content: "";
-    position: absolute;
-    left: $nesting-line-offset - 1px;
-    top: 50%;
-    transform: translateY(-50%);
-    width: 3px;
-    height: 16px;
-    border-radius: 5px;
-    opacity: 0;
-    pointer-events: none;
-    outline: 4px solid transparent;
-  }
-
-  &:not(.is--active):hover::after {
-    opacity: 1;
-    background: var(--color-border-primary-default);
-    outline-color: var(--color-interaction-secondary-hover);
-  }
-
-  &.is--active::after {
-    opacity: 1;
-    background: var(--color-icon-brand-default);
-    outline-color: var(--color-background-brand-default);
-  }
+  padding-left: var(--mt-nav-tree-indent);
 }
 
-.mt-nav__list-item--nested.is--child-active > .mt-nav__item-row {
-  > .mt-nav__link::after {
-    opacity: 1;
-    background: var(--color-border-primary-default);
-    outline-color: var(--color-elevation-surface-sunken);
-  }
-
-  > .mt-nav__link:hover::after {
-    outline-color: var(--color-interaction-secondary-hover);
-  }
+.mt-nav__list-item--nested > .mt-nav__item-row > .mt-nav__link::before {
+  content: "";
+  position: absolute;
+  left: var(--mt-nav-tree-line-offset);
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--color-border-secondary-default);
+  border-radius: 1px;
 }
 
-.mt-nav__list-item--nested:first-child > .mt-nav__item-row {
+/* The transparent outline acts as a colour-swappable halo, so no extra element is needed */
+.mt-nav__list-item--nested > .mt-nav__item-row > .mt-nav__link::after {
+  content: "";
+  position: absolute;
+  left: calc(var(--mt-nav-tree-line-offset) - 1px);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 3px;
+  height: 16px;
+  border-radius: 5px;
+  opacity: 0;
+  pointer-events: none;
+  outline: 4px solid transparent;
+}
+
+.mt-nav__list-item--nested > .mt-nav__item-row > .mt-nav__link:not(.is--active):hover::after {
+  opacity: 1;
+  background: var(--color-border-primary-default);
+  outline-color: var(--color-interaction-secondary-hover);
+}
+
+.mt-nav__list-item--nested > .mt-nav__item-row > .mt-nav__link.is--active::after {
+  opacity: 1;
+  background: var(--color-icon-brand-default);
+  outline-color: var(--color-background-brand-default);
+}
+
+.mt-nav__list-item--nested.is--child-active > .mt-nav__item-row > .mt-nav__link::after {
+  opacity: 1;
+  background: var(--color-border-primary-default);
+  outline-color: var(--color-elevation-surface-sunken);
+}
+
+.mt-nav__list-item--nested.is--child-active > .mt-nav__item-row > .mt-nav__link:hover::after {
+  outline-color: var(--color-interaction-secondary-hover);
+}
+
+.mt-nav__list-item--nested:first-child > .mt-nav__item-row > .mt-nav__link::before {
+  top: var(--scale-size-12);
+}
+
+.mt-nav__list-item--nested:last-child:not(.is--entry-expanded)
+  > .mt-nav__item-row
   > .mt-nav__link::before {
-    top: var(--scale-size-12);
-  }
+  bottom: var(--scale-size-12);
 }
 
-.mt-nav__list-item--nested:last-child:not(.is--entry-expanded) > .mt-nav__item-row {
-  > .mt-nav__link::before {
-    bottom: var(--scale-size-12);
-  }
-}
-
-.mt-nav__list-item:not(.mt-nav__list-item--nested) > .mt-nav__item-row {
-  > .mt-nav__link.is--active {
-    background: var(--color-background-brand-default);
-  }
+.mt-nav__list-item:not(.mt-nav__list-item--nested) > .mt-nav__item-row > .mt-nav__link.is--active {
+  background: var(--color-background-brand-default);
 }
 
 .mt-nav__link.is--active {
   background: none;
   color: var(--color-icon-brand-default);
-
-  .mt-nav__link-icon {
-    color: var(--color-icon-brand-default);
-  }
 }
 
-.mt-nav__list-item.is--entry-expanded {
-  .mt-nav__link-label,
-  .mt-nav__link-expand-icon {
-    color: var(--color-text-primary-default);
-  }
+.mt-nav__link.is--active .mt-nav__link-icon {
+  color: var(--color-icon-brand-default);
+}
 
-  & > .mt-nav__item-row > .mt-nav__link.is--active {
-    .mt-nav__link-label,
-    .mt-nav__link-expand-icon {
-      color: var(--color-icon-brand-default);
-    }
-  }
+.mt-nav__list-item.is--entry-expanded .mt-nav__link-label,
+.mt-nav__list-item.is--entry-expanded .mt-nav__link-expand-icon {
+  color: var(--color-text-primary-default);
+}
+
+.mt-nav__list-item.is--entry-expanded
+  > .mt-nav__item-row
+  > .mt-nav__link.is--active
+  .mt-nav__link-label,
+.mt-nav__list-item.is--entry-expanded
+  > .mt-nav__item-row
+  > .mt-nav__link.is--active
+  .mt-nav__link-expand-icon {
+  color: var(--color-icon-brand-default);
 }
 </style>

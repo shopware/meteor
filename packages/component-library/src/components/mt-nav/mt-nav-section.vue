@@ -43,13 +43,13 @@ if (!inject(NAV_CONTEXT)) {
 const headerId = `mt-nav-section-header-${useId()}`;
 </script>
 
-<style lang="scss">
+<style>
 .mt-nav__section {
   display: flex;
   flex-direction: column;
 }
 
-// Typography comes from mt-text
+/* Typography comes from mt-text */
 .mt-nav__section-header {
   height: var(--scale-size-24);
   margin: 0 0 var(--scale-size-4);
