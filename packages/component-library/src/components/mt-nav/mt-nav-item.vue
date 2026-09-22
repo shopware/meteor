@@ -66,17 +66,7 @@
 </template>
 
 <script setup lang="ts">
-import {
-  computed,
-  inject,
-  onBeforeUnmount,
-  provide,
-  ref,
-  useId,
-  useSlots,
-  watch,
-  type PropType,
-} from "vue";
+import { computed, inject, onBeforeUnmount, provide, ref, useId, useSlots, watch } from "vue";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtCollapsible from "@/components/mt-collapsible/mt-collapsible.vue";
 import MtCollapsibleTrigger from "@/components/mt-collapsible/mt-collapsible-trigger.vue";
@@ -85,50 +75,32 @@ import { NAV_CONTEXT, NAV_ITEM_CONTEXT, type NavLinkTarget } from "./_internal/m
 
 const MAX_NESTING_LEVEL = 3;
 
-const props = defineProps({
+const props = defineProps<{
   /**
    * Translated label of the row.
    */
-  label: {
-    type: String,
-    required: true,
-  },
+  label: string;
   /**
    * Icon name of the meteor icon kit, e.g. `regular-products`. Shown on top-level rows only.
    */
-  icon: {
-    type: String,
-    default: undefined,
-  },
+  icon?: string;
   /**
    * Route location handed to the link component of the navigation as `to`.
    */
-  to: {
-    type: [String, Object] as PropType<NavLinkTarget>,
-    default: undefined,
-  },
+  to?: NavLinkTarget;
   /**
    * External URL, rendered as a plain anchor when no `to` is set.
    */
-  href: {
-    type: String,
-    default: undefined,
-  },
+  href?: string;
   /**
    * Anchor target for `href`.
    */
-  target: {
-    type: String,
-    default: undefined,
-  },
+  target?: string;
   /**
    * Whether the row is the current page. Its ancestors open and highlight accordingly.
    */
-  active: {
-    type: Boolean,
-    default: false,
-  },
-});
+  active?: boolean;
+}>();
 
 defineSlots<{
   /** Nested `mt-nav-item` rows, up to three levels deep in total. */

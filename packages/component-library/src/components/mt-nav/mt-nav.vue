@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, provide, ref, shallowRef, useId, watch, type PropType } from "vue";
+import { computed, provide, ref, shallowRef, useId, watch } from "vue";
 import { useI18n } from "vue-i18n";
 import {
   NAV_CONTEXT,
@@ -22,15 +22,17 @@ import {
 
 export type { NavLinkComponent, NavLinkTarget, NavNavigateEvent } from "./_internal/mt-nav-context";
 
-const props = defineProps({
-  /**
-   * Component rendering the navigation links. Receives the target of an item as `to`.
-   */
-  linkComponent: {
-    type: [String, Object] as PropType<NavLinkComponent>,
-    default: "router-link",
+const props = withDefaults(
+  defineProps<{
+    /**
+     * Component rendering the navigation links. Receives the target of an item as `to`.
+     */
+    linkComponent?: NavLinkComponent;
+  }>(),
+  {
+    linkComponent: "router-link",
   },
-});
+);
 
 const emit = defineEmits<{
   (e: "navigate", event: NavNavigateEvent): void;
