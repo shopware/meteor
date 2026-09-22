@@ -28,10 +28,14 @@ import {
   type PropType,
 } from "vue";
 import { useI18n } from "vue-i18n";
-import { NAV_CONTEXT, type NavBranchRegistration } from "./_internal/mt-nav-context";
-import type { NavLinkComponent, NavNavigateEvent } from "./mt-nav.types";
+import {
+  NAV_CONTEXT,
+  type NavBranchRegistration,
+  type NavLinkComponent,
+  type NavNavigateEvent,
+} from "./_internal/mt-nav-context";
 
-export type { NavLinkComponent, NavLinkTarget, NavNavigateEvent } from "./mt-nav.types";
+export type { NavLinkComponent, NavLinkTarget, NavNavigateEvent } from "./_internal/mt-nav-context";
 
 const props = defineProps({
   /**

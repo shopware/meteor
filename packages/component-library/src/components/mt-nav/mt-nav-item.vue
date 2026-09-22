@@ -81,8 +81,7 @@ import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtCollapsible from "@/components/mt-collapsible/mt-collapsible.vue";
 import MtCollapsibleTrigger from "@/components/mt-collapsible/mt-collapsible-trigger.vue";
 import MtCollapsibleContent from "@/components/mt-collapsible/mt-collapsible-content.vue";
-import { NAV_CONTEXT, NAV_ITEM_CONTEXT } from "./_internal/mt-nav-context";
-import type { NavLinkTarget } from "./mt-nav.types";
+import { NAV_CONTEXT, NAV_ITEM_CONTEXT, type NavLinkTarget } from "./_internal/mt-nav-context";
 
 const MAX_NESTING_LEVEL = 3;
 
