@@ -23,7 +23,7 @@
       <slot name="prefix" />
     </template>
 
-    <template #mt-select-selection="{ size }">
+    <template #mt-select-selection="{ size, identification }">
       <mt-select-selection-list
         ref="selectionList"
         :multi-selection="enableMultiSelection"
@@ -32,6 +32,7 @@
         :always-show-placeholder="alwaysShowPlaceholder"
         v-bind="{
           size,
+          identification,
           valueProperty,
           labelProperty,
           placeholder,
