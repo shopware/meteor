@@ -54,9 +54,13 @@
       class="mt-select-selection-list__input-wrapper"
       :class="inputWrapperClasses"
     >
-      <slot name="input" v-bind="{ placeholder, searchTerm, onSearchTermChange, onKeyDownDelete }">
+      <slot
+        name="input"
+        v-bind="{ identification, placeholder, searchTerm, onSearchTermChange, onKeyDownDelete }"
+      >
         <!-- eslint-disable-next-line vuejs-accessibility/form-control-has-label -->
         <input
+          :id="identification"
           ref="MtSelectInput"
           class="mt-select-selection-list__input"
           type="text"
@@ -95,6 +99,14 @@ export default defineComponent({
   },
 
   props: {
+    /**
+     * The id of the input element. Used to associate the field's label with the input.
+     */
+    identification: {
+      type: String as PropType<string | undefined>,
+      required: false,
+      default: undefined,
+    },
     selections: {
       type: Array as PropType<Record<string, string>[]>,
       required: false,

@@ -23,7 +23,7 @@
       <slot name="prefix" />
     </template>
 
-    <template #mt-select-selection>
+    <template #mt-select-selection="{ identification }">
       <mt-select-selection-list
         ref="selectionList"
         :multi-selection="enableMultiSelection"
@@ -31,6 +31,7 @@
         :invisible-count="invisibleValueCount"
         :always-show-placeholder="alwaysShowPlaceholder"
         v-bind="{
+          identification,
           valueProperty,
           labelProperty,
           placeholder,
