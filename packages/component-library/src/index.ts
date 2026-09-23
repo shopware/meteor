@@ -83,6 +83,7 @@ import {
   type MtAppSide,
 } from "./components/mt-app/composables/useMtApp";
 import MtCollapsible from "./components/mt-collapsible/mt-collapsible.vue";
+import MtContainer from "./components/mt-container/mt-container.vue";
 import MtCollapsibleTrigger from "./components/mt-collapsible/mt-collapsible-trigger.vue";
 import MtCollapsibleContent from "./components/mt-collapsible/mt-collapsible-content.vue";
 import {
@@ -168,6 +169,7 @@ export {
   MtCollapsible,
   MtCollapsibleTrigger,
   MtCollapsibleContent,
+  MtContainer,
   DropdownMenuRoot as MtDropdownMenuRoot,
   DropdownMenuPortal as MtDropdownMenuPortal,
   DropdownMenuTrigger as MtDropdownMenuTrigger,
