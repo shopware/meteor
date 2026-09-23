@@ -23,6 +23,20 @@ Enable `enableMultiSelection` so users can choose several values at once.
 ::component-example{name="select-multiple-selection-example" fullWidth}
 ::
 
+### Many selected values
+
+`valueLimit` caps how many selected values are shown as tags. The remaining ones collapse into a counter that expands the full list when clicked.
+
+::component-example{name="select-value-limit-example" fullWidth}
+::
+
+### Small
+
+`small` renders the compact variant with a lower field height and smaller tags, for toolbars and other tight layouts.
+
+::component-example{name="select-small-example" fullWidth}
+::
+
 ## API reference
 
 :component-api

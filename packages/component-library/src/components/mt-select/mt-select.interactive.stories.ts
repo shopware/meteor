@@ -821,6 +821,52 @@ export const VisualTestEnsureCorrectMultiSelectionWrapping: MtSelectStory = {
   },
 };
 
+export const VisualTestMultiSelectLoadMore: MtSelectStory = {
+  name: "Should center the load more button next to the tags",
+  args: {
+    enableMultiSelection: true,
+    valueLimit: 2,
+    modelValue: ["a", "b", "c", "d", "e"],
+  },
+};
+
+export const VisualTestMultiSelectSmall: MtSelectStory = {
+  name: "Should multi select in small",
+  args: {
+    enableMultiSelection: true,
+    small: true,
+    modelValue: ["a", "b"],
+  },
+};
+
+export const VisualTestMultiSelectSmallLoadMore: MtSelectStory = {
+  name: "Should center the load more button next to the tags in small",
+  args: {
+    enableMultiSelection: true,
+    small: true,
+    valueLimit: 2,
+    modelValue: ["a", "b", "c", "d", "e"],
+  },
+};
+
+export const VisualTestMultiSelectSizeSmallAttr: MtSelectStory = {
+  name: "Should render size small identical to the small prop",
+  args: {
+    enableMultiSelection: true,
+    size: "small",
+    valueLimit: 2,
+    modelValue: ["a", "b", "c", "d", "e"],
+  },
+};
+
+export const VisualTestMultiSelectSmallWrapping: MtSelectStory = {
+  name: "Should wrap multi selection correctly in small",
+  args: {
+    ...VisualTestEnsureCorrectMultiSelectionWrapping.args,
+    small: true,
+  },
+};
+
 export const VisualTestEnsureSelectionOpensViaIndicators: MtSelectStory = {
   name: "Should open selection via indicators",
   play: async ({ canvasElement }) => {
