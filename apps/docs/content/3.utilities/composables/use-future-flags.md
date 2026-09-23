@@ -30,6 +30,7 @@ const hasDefaultMargin = computed(() => !futureFlags.removeDefaultMargin);
 | `removeDefaultMargin` | `boolean` | `false` | Removes the default outer margin from components such as cards, tabs, checkboxes, switches, and text fields. |
 | `removeSwitchMinHeight` | `boolean` | `false` | Removes the minimum height from a non-bordered `mt-switch`. |
 | `bannerFullWidth` | `boolean` | `false` | Makes `mt-banner` span the full width of its container. |
+| `consistentLabelLineHeight` | `boolean` | `false` | Gives field labels a consistent line height. |
 
 ## Related
 
