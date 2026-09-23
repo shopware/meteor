@@ -50,12 +50,12 @@ export const WithContent: MtDividerStory = {
   },
 };
 
-export const LeftAligned: MtDividerStory = {
-  name: "Left-aligned content",
+export const StartAligned: MtDividerStory = {
+  name: "Start-aligned content",
   render: () => ({
     components: { MtDivider, MtText },
     template: `
-<mt-divider alignment="left">
+<mt-divider alignment="start">
   <mt-text size="xs" color="color-text-secondary-default">Customer details</mt-text>
 </mt-divider>`,
   }),
@@ -63,7 +63,7 @@ export const LeftAligned: MtDividerStory = {
     docs: {
       source: {
         language: "html",
-        code: `<mt-divider alignment="left">
+        code: `<mt-divider alignment="start">
   <mt-text size="xs" color="color-text-secondary-default">Customer details</mt-text>
 </mt-divider>`,
       },

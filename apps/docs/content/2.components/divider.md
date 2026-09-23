@@ -32,7 +32,7 @@ Slot content renders centered between two divider lines, with a fixed gap on bot
 
 ### Aligned content
 
-With `alignment="left"` or `alignment="right"` the content moves to the corresponding edge and the divider line on that side is removed, for example for section labels, feed markers, or timestamps.
+With `alignment="start"` or `alignment="end"` the content moves to that edge (left or right for horizontal, top or bottom for vertical dividers) and the divider line on that side is removed, for example for section labels, feed markers, or timestamps.
 
 ::component-example{name="divider-alignment-example" fullWidth}
 ::
@@ -82,7 +82,7 @@ By default the divider stays inset within the container padding. With `full-blee
 
 - The divider fills its container: full width when horizontal, full height when vertical. A vertical divider therefore needs a parent with a defined height, such as a flex row.
 - Without slot content a single continuous line renders. With slot content the line splits into a start and end segment with the content centered between them by default.
-- `alignment` moves slot content to the `left` or `right` edge; the line on that side is removed and a single segment fills the remaining space. Without slot content the prop has no effect.
+- `alignment` moves slot content to the `start` or `end` edge of the divider, regardless of its orientation; the line on that side is removed and a single segment fills the remaining space. Without slot content the prop has no effect.
 - `color` accepts a design token name such as `color-border-brand-default` and defaults to the secondary border color.
 - With `full-bleed` the divider extends beyond its container by the default card padding (`--scale-size-24`) in its line direction: horizontally when horizontal, vertically when vertical.
 

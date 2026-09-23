@@ -59,7 +59,7 @@ describe("mt-divider", () => {
     expect(container.firstElementChild).toHaveClass("mt-divider--align-center");
   });
 
-  it.each(["left", "right"] as const)("aligns slot content to the %s", async (alignment) => {
+  it.each(["start", "end"] as const)("aligns slot content to the %s", async (alignment) => {
     const { container } = render(MtDivider, {
       props: {
         alignment,

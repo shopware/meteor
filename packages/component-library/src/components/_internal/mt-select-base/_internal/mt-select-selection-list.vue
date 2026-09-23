@@ -1,5 +1,8 @@
 <template>
-  <ul class="mt-select-selection-list">
+  <ul
+    class="mt-select-selection-list"
+    :class="{ 'mt-select-selection-list--small': size === 'small' }"
+  >
     <!-- eslint-disable vue/no-use-v-if-with-v-for -->
     <template v-for="(selection, index) in selections" :key="selection[valueProperty]">
       <li
@@ -7,7 +10,6 @@
         :class="[
           'mt-select-selection-list__item-holder--' + index,
           'mt-select-selection-list__item-holder',
-          classBindings,
         ]"
         :data-id="selection[valueProperty]"
       >
@@ -17,7 +19,7 @@
         >
           <mt-label
             :dismissable="!isSelectionDisabled(selection)"
-            :size="size"
+            :size="size === 'small' ? 'medium' : 'default'"
             @dismiss="onClickDismiss(selection)"
           >
             <span class="mt-select-selection-list__item" :title="getKey(selection, labelProperty)">
@@ -52,9 +54,13 @@
       class="mt-select-selection-list__input-wrapper"
       :class="inputWrapperClasses"
     >
-      <slot name="input" v-bind="{ placeholder, searchTerm, onSearchTermChange, onKeyDownDelete }">
+      <slot
+        name="input"
+        v-bind="{ identification, placeholder, searchTerm, onSearchTermChange, onKeyDownDelete }"
+      >
         <!-- eslint-disable-next-line vuejs-accessibility/form-control-has-label -->
         <input
+          :id="identification"
           ref="MtSelectInput"
           class="mt-select-selection-list__input"
           type="text"
@@ -93,6 +99,14 @@ export default defineComponent({
   },
 
   props: {
+    /**
+     * The id of the input element. Used to associate the field's label with the input.
+     */
+    identification: {
+      type: String as PropType<string | undefined>,
+      required: false,
+      default: undefined,
+    },
     selections: {
       type: Array as PropType<Record<string, string>[]>,
       required: false,
@@ -195,12 +209,6 @@ export default defineComponent({
   },
 
   computed: {
-    classBindings(): { "mt-select-selection-list--single": boolean } {
-      return {
-        "mt-select-selection-list--single": !this.multiSelection,
-      };
-    },
-
     inputWrapperClasses(): { "mt-select-selection-list__input-wrapper--small": boolean } {
       return {
         "mt-select-selection-list__input-wrapper--small": this.size === "small",
@@ -315,22 +323,21 @@ export default defineComponent({
 .mt-select-selection-list {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
+  gap: var(--scale-size-6) var(--scale-size-8);
+  padding-block: var(--scale-size-6);
   list-style: none;
   width: calc(100% - 30px);
 
-  &:has(.mt-select-selection-list--single) {
-    flex-wrap: nowrap;
-
-    .mt-select-selection-list--single {
-      min-width: 0;
-      max-width: 100%;
-    }
+  .mt-select-selection-list__item-holder,
+  .mt-select-selection-list__load-more,
+  .mt-select-selection-list__input-wrapper {
+    display: flex;
+    align-items: center;
   }
 
   .mt-select-selection-list__item-holder {
     max-width: 220px;
-    line-height: 0;
-    margin: var(--scale-size-8) var(--scale-size-6) 0 0;
   }
 
   .mt-select-selection-list__input-wrapper {
@@ -338,45 +345,29 @@ export default defineComponent({
     min-width: 120px;
   }
 
-  .mt-select-selection-list__input-wrapper--small .mt-select-selection-list__input {
-    min-height: 32px;
-    padding: var(--scale-size-4) var(--scale-size-16) var(--scale-size-4) var(--scale-size-8);
-  }
-
   .mt-select-selection-list__input {
-    display: inline-block;
-    min-height: 46px;
-    padding: var(--scale-size-12) var(--scale-size-16) var(--scale-size-12) var(--scale-size-8);
+    min-height: var(--scale-size-32);
+    padding: var(--scale-size-4) var(--scale-size-16) var(--scale-size-4) var(--scale-size-8);
 
     &::placeholder {
       color: var(--color-text-secondary-default);
       white-space: break-spaces;
     }
   }
-}
 
-.mt-select-selection-list--single .mt-label {
-  border: none;
-  background: unset;
-}
-
-.mt-field--medium .mt-select-selection-list {
-  .mt-select-selection-list__item-holder .mt-label {
-    margin: var(--scale-size-4) var(--scale-size-6) 0 0;
-  }
-
-  & input {
-    padding: var(--scale-size-4) var(--scale-size-16) var(--scale-size-8) var(--scale-size-8);
+  .mt-select-selection-list__input-wrapper--small .mt-select-selection-list__input {
+    min-height: var(--scale-size-20);
+    padding: var(--scale-size-2) var(--scale-size-16) var(--scale-size-2) var(--scale-size-8);
   }
 }
 
-.mt-field--small .mt-select-selection-list {
-  .mt-select-selection-list__item-holder .mt-label {
-    margin: var(--scale-size-4) var(--scale-size-6) 0 0;
-  }
+.mt-select-selection-list--small {
+  gap: var(--scale-size-4) var(--scale-size-6);
+  padding-block: var(--scale-size-4);
 
-  & input {
-    padding: var(--scale-size-2) var(--scale-size-16) var(--scale-size-4) var(--scale-size-8);
+  .mt-select-selection-list__load-more .mt-select-selection-list__load-more-button {
+    min-height: var(--scale-size-20);
+    padding-inline: var(--scale-size-6);
   }
 }
 </style>

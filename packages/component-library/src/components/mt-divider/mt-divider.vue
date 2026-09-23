@@ -28,10 +28,11 @@ const props = withDefaults(
      */
     orientation?: "horizontal" | "vertical";
     /**
-     * Where slot content sits on the divider. With "left" or "right" the line
-     * on that side is removed and the content moves to the edge.
+     * Where slot content sits on the divider. With "start" or "end" the line on that side
+     * is removed and the content moves to that edge: left or right for a horizontal divider,
+     * top or bottom for a vertical one.
      */
-    alignment?: "center" | "left" | "right";
+    alignment?: "center" | "start" | "end";
     /**
      * The line style of the divider.
      */
@@ -112,8 +113,8 @@ defineSlots<{
   border: 0 solid var(--mt-divider-color);
 }
 
-.mt-divider--align-left.mt-divider--with-content::before,
-.mt-divider--align-right.mt-divider--with-content::after {
+.mt-divider--align-start.mt-divider--with-content::before,
+.mt-divider--align-end.mt-divider--with-content::after {
   content: none;
 }
 

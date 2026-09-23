@@ -24,7 +24,8 @@ export default {
     // use smaller viewport to test wrapping of multi select
     if (
       context.id ===
-      "components-select-interaction-tests--visual-test-ensure-correct-multi-selection-wrapping"
+        "components-select-interaction-tests--visual-test-ensure-correct-multi-selection-wrapping" ||
+      context.id === "components-select-interaction-tests--visual-test-multi-select-small-wrapping"
     ) {
       await page.setViewportSize({ width: 500, height: 650 });
     }
