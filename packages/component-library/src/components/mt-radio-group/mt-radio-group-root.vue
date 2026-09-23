@@ -108,6 +108,7 @@ provide("radioGroupContext", {
   selectedValue: readonly(selectedValue),
   selectOption,
   disabled: computed(() => props.disabled),
+  error: computed(() => !!props.error),
   name: computed(() => props.name || identification.value),
 });
 </script>
