@@ -853,7 +853,6 @@ export const VisualTestMultiSelectSizeSmallAttr: MtSelectStory = {
   name: "Should render size small identical to the small prop",
   args: {
     enableMultiSelection: true,
-    // passed through as an attribute, must look exactly like `small: true`
     size: "small",
     valueLimit: 2,
     modelValue: ["a", "b", "c", "d", "e"],

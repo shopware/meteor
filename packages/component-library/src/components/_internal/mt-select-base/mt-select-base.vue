@@ -368,7 +368,6 @@ export default defineComponent({
 }
 
 .mt-select .mt-select__selection {
-  /* centers the selection list inside the field block */
   display: flex;
   align-items: center;
   width: 100%;

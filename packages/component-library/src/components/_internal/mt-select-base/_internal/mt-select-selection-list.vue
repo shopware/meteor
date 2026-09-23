@@ -308,12 +308,6 @@ export default defineComponent({
 </script>
 
 <style>
-/*
- * The list owns all spacing between tags, the "+N" button and the input:
- * a single gap plus block padding. Every item is vertically centered in its
- * row, so tags, the button and the input line up regardless of their height.
- * The list itself is centered inside the field block by .mt-select__selection.
- */
 .mt-select-selection-list {
   display: flex;
   flex-wrap: wrap;
@@ -323,10 +317,6 @@ export default defineComponent({
   list-style: none;
   width: calc(100% - 30px);
 
-  /*
-   * The items inherit the larger line-height of .mt-select__selection; a flex
-   * item has no line box strut, so the row is exactly as tall as its content.
-   */
   .mt-select-selection-list__item-holder,
   .mt-select-selection-list__load-more,
   .mt-select-selection-list__input-wrapper {
@@ -353,7 +343,6 @@ export default defineComponent({
     }
   }
 
-  /* same height as the medium tags, so wrapped rows are all equally tall */
   .mt-select-selection-list__input-wrapper--small .mt-select-selection-list__input {
     min-height: var(--scale-size-20);
     padding: var(--scale-size-2) var(--scale-size-16) var(--scale-size-2) var(--scale-size-8);
@@ -364,7 +353,6 @@ export default defineComponent({
   gap: var(--scale-size-4) var(--scale-size-6);
   padding-block: var(--scale-size-4);
 
-  /* match the 20px medium tags; the button's own scoped x-small size is 24px */
   .mt-select-selection-list__load-more .mt-select-selection-list__load-more-button {
     min-height: var(--scale-size-20);
     padding-inline: var(--scale-size-6);
