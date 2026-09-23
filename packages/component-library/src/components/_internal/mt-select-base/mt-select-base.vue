@@ -19,7 +19,7 @@
     </template>
 
     <!-- eslint-disable-next-line vue/no-template-shadow -->
-    <template #element="{ identification, error, size }">
+    <template #element="{ identification }">
       <div
         ref="selectWrapper"
         class="mt-select__selection"
@@ -29,10 +29,7 @@
         @keydown.tab="collapse"
         @keydown.esc="collapse"
       >
-        <slot
-          name="mt-select-selection"
-          v-bind="{ identification, error, disabled, size, expand, collapse }"
-        />
+        <slot name="mt-select-selection" v-bind="{ identification, disabled, expand, collapse }" />
       </div>
 
       <div class="mt-select__selection-indicators" :style="{ right: selectionIndicatorsRight }">
@@ -371,6 +368,8 @@ export default defineComponent({
 }
 
 .mt-select .mt-select__selection {
+  display: flex;
+  align-items: center;
   width: 100%;
   position: relative;
   padding: 0 var(--scale-size-8);
@@ -459,12 +458,8 @@ export default defineComponent({
   cursor: pointer;
 }
 
-.mt-select.mt-field--medium .mt-select__selection {
-  padding: var(--scale-size-4) var(--scale-size-6) 0;
-}
-
-.mt-select.mt-field--small .mt-select__selection {
-  padding: var(--scale-size-4) var(--scale-size-6) 0;
+.mt-select.mt-select--small .mt-select__selection {
+  padding: 0 var(--scale-size-6);
 }
 
 .mt-select.is--disabled .mt-block-field__block,
@@ -477,14 +472,8 @@ export default defineComponent({
   cursor: pointer;
 }
 
-.mt-select--small .mt-select-selection-list--single .mt-label {
-  cursor: pointer;
-  height: var(--scale-size-18);
-  padding-top: 1px;
-}
-
-.mt-select--small .mt-block-field__block {
-  min-height: unset;
+.mt-select.mt-select--small .mt-block-field__block {
+  min-height: var(--scale-size-32);
 }
 
 /* Vue.js transitions */
