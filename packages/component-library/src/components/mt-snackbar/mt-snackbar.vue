@@ -14,10 +14,15 @@
   </Teleport>
 </template>
 
+<script lang="ts">
+// module-level, so every host instance shares the count
+let mountedHosts = 0;
+</script>
+
 <script setup lang="ts">
 import MtSnackbarNotification from "./_internal/mt-snackbar-notification.vue";
 import { useSnackbar, type Snackbar } from "./composables/use-snackbar";
-import { ref } from "vue";
+import { onMounted, onUnmounted, ref } from "vue";
 
 export interface HeightT {
   height: number;
@@ -25,6 +30,21 @@ export interface HeightT {
 }
 
 const { snackbars, removeSnackbar } = useSnackbar();
+
+// The snackbar state is global, so every mounted host renders every message.
+onMounted(() => {
+  mountedHosts += 1;
+
+  if (import.meta.env.DEV && mountedHosts > 1) {
+    console.warn(
+      "[MtSnackbar] More than one snackbar host is mounted; every notification will be rendered multiple times. Mount <mt-snackbar /> once, or rely on the host that <mt-app /> renders.",
+    );
+  }
+});
+
+onUnmounted(() => {
+  mountedHosts -= 1;
+});
 
 const heights = ref<HeightT[]>([]);
 const isHovered = ref(false);
