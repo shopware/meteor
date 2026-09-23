@@ -5,25 +5,44 @@
     </h2>
 
     <div ref="navBodyElement" class="mt-nav__body" @keydown="onNavigationKeydown">
-      <slot />
+      <mt-nav-section
+        v-for="(section, index) in sections"
+        :key="index"
+        :section="section"
+        :section-index="index"
+      />
     </div>
   </nav>
 </template>
 
 <script setup lang="ts">
-import { computed, provide, ref, shallowRef, useId, watch } from "vue";
+import { computed, provide, ref, useId, watch } from "vue";
 import { useI18n } from "vue-i18n";
+import MtNavSection from "./_internal/mt-nav-section.vue";
 import {
   NAV_CONTEXT,
-  type NavBranchRegistration,
+  branchKey,
+  hasNestedItems,
+  isItemActive,
+  type NavItem,
   type NavLinkComponent,
-  type NavNavigateEvent,
+  type NavSection,
+  type NavSlots,
 } from "./_internal/mt-nav-context";
 
-export type { NavLinkComponent, NavLinkTarget, NavNavigateEvent } from "./_internal/mt-nav-context";
+export type {
+  NavItem,
+  NavLinkComponent,
+  NavLinkTarget,
+  NavSection,
+} from "./_internal/mt-nav-context";
 
 const props = withDefaults(
   defineProps<{
+    /**
+     * The sections of the navigation, each holding its rows. Rows nest through `children`.
+     */
+    sections: NavSection[];
     /**
      * Component rendering the navigation links. Receives the target of an item as `to`.
      */
@@ -35,13 +54,11 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  (e: "navigate", event: NavNavigateEvent): void;
+  /** A row with a `to` or `href` was clicked. */
+  (e: "navigate", item: NavItem): void;
 }>();
 
-defineSlots<{
-  /** The `mt-nav-section` components holding the rows. */
-  default?: () => unknown;
-}>();
+const slots = defineSlots<NavSlots>();
 
 const { t } = useI18n({
   messages: {
@@ -58,43 +75,42 @@ const navigationLabelId = `mt-nav-label-${useId()}`;
 
 const navBodyElement = ref<HTMLElement | null>(null);
 
+// Keys of the open top-level rows. Nested rows keep their own open state.
 const expandedKeys = ref<string[]>([]);
 
-const branches = shallowRef<NavBranchRegistration[]>([]);
-
-const hasActiveItem = computed(() => branches.value.some((branch) => branch.isActive.value));
-
-const activeOwnerKey = computed(
-  () =>
-    branches.value.find((branch) => branch.hasChildren.value && branch.isActive.value)?.key ?? null,
+// The top-level rows of every section, with the keys their open state is kept under
+const branches = computed(() =>
+  props.sections.flatMap((section, sectionIndex) =>
+    section.items.map((item) => ({ key: branchKey(sectionIndex, item), item })),
+  ),
 );
 
+const hasActiveItem = computed(() => branches.value.some((branch) => isItemActive(branch.item)));
+
+// The top-level branch holding the active item, if the active item sits inside a branch
+const activeOwnerKey = computed(
+  () =>
+    branches.value.find((branch) => hasNestedItems(branch.item) && isItemActive(branch.item))
+      ?.key ?? null,
+);
+
+// Changes whenever the active row moves, also within the branch already holding it
 const activeRowSignature = computed(() =>
   branches.value
-    .filter((branch) => branch.isActive.value)
-    .map((branch) => `${branch.key}/${branch.activeChildKey.value ?? ""}`)
+    .filter((branch) => isItemActive(branch.item))
+    .map((branch) => `${branch.key}/${branch.item.children?.find(isItemActive)?.label ?? ""}`)
     .join(","),
 );
 
 provide(NAV_CONTEXT, {
   linkComponent: computed(() => props.linkComponent),
+  slots,
   isBranchExpanded,
-  registerBranch,
   onBranchToggle,
-  onLinkClick: (event) => emit("navigate", event),
+  onNavigate: (item) => emit("navigate", item),
 });
 
-watch(activeRowSignature, openBranchOfActiveItem, { flush: "post" });
-
-function registerBranch(registration: NavBranchRegistration) {
-  // Adds a top-level row to the list and returns the function that removes it again
-  branches.value = [...branches.value, registration];
-
-  return () => {
-    branches.value = branches.value.filter((branch) => branch !== registration);
-    collapseBranch(registration.key);
-  };
-}
+watch(activeRowSignature, openBranchOfActiveItem, { immediate: true });
 
 function isBranchExpanded(key: string) {
   // Tells whether the top-level row with this key is open
@@ -131,7 +147,9 @@ function collapseInactiveBranches(exceptKey: string | null) {
       return true;
     }
 
-    return branches.value.find((branch) => branch.key === key)?.isActive.value ?? false;
+    const branch = branches.value.find((candidate) => candidate.key === key);
+
+    return branch ? isItemActive(branch.item) : false;
   });
 }
 
