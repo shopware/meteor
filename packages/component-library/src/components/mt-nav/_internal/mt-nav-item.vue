@@ -15,11 +15,11 @@
           class="mt-nav__link-icon"
         />
 
-        <span class="mt-nav__link-label" :title="label">
-          {{ label }}
+        <span class="mt-nav__link-label" :title="item.label">
+          {{ item.label }}
         </span>
 
-        <slot name="suffix" />
+        <component :is="context.slots.suffix" v-if="context.slots.suffix" :item="item" />
 
         <span v-if="hasChildren" class="mt-nav__link-expand-icon-box">
           <mt-icon
@@ -32,121 +32,87 @@
     </div>
 
     <mt-collapsible-content v-if="hasChildren" as="ul" class="mt-nav__sub-list">
-      <slot />
+      <mt-nav-item
+        v-for="child in item.children"
+        :key="child.label"
+        :item="child"
+        :depth="depth + 1"
+        :branch-key="branchKey"
+      />
     </mt-collapsible-content>
   </component>
 </template>
 
 <script setup lang="ts">
-import { computed, inject, onBeforeUnmount, provide, ref, useId, watch } from "vue";
+import { computed, ref, watch } from "vue";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtCollapsible from "@/components/mt-collapsible/mt-collapsible.vue";
 import MtCollapsibleTrigger from "@/components/mt-collapsible/mt-collapsible-trigger.vue";
 import MtCollapsibleContent from "@/components/mt-collapsible/mt-collapsible-content.vue";
-import { NAV_ITEM_CONTEXT, useNavContext, type NavLinkTarget } from "./_internal/mt-nav-context";
-
-const MAX_NESTING_LEVEL = 3;
+import {
+  MAX_NESTING_LEVEL,
+  hasNestedItems,
+  isItemActive,
+  useNavContext,
+  type NavItem,
+} from "./mt-nav-context";
 
 const props = defineProps<{
-  /**
-   * Translated label of the row.
-   */
-  label: string;
-  /**
-   * Icon name of the meteor icon kit, e.g. `regular-products`. Shown on top-level rows only.
-   */
-  icon?: string;
-  /**
-   * Route location handed to the link component of the navigation as `to`.
-   */
-  to?: NavLinkTarget;
-  /**
-   * External URL, rendered as a plain anchor when no `to` is set.
-   */
-  href?: string;
-  /**
-   * Anchor target for `href`.
-   */
-  target?: string;
-  /**
-   * Whether the row is the current page. Its ancestors open and highlight accordingly.
-   */
-  active?: boolean;
+  item: NavItem;
+  /** Nesting depth of the row, starting at 1 for the top level. */
+  depth: number;
+  /** Key of the top-level row this row belongs to, under which the navigation keeps the open state. */
+  branchKey: string;
 }>();
 
-const slots = defineSlots<{
-  /** Nested `mt-nav-item` rows, up to three levels deep in total. */
-  default?: () => unknown;
-  /** Rendered after the label, e.g. for a badge or counter. */
-  suffix?: () => unknown;
-}>();
+const context = useNavContext();
 
-const context = useNavContext("mt-nav-item");
+const isLeafDepth = props.depth >= MAX_NESTING_LEVEL;
 
-const parent = inject(NAV_ITEM_CONTEXT, null);
-
-const depth = parent ? parent.depth + 1 : 1;
-
-const key = useId();
-
-const isLeafDepth = depth >= MAX_NESTING_LEVEL;
-
-if (isLeafDepth && slots.default) {
+if (isLeafDepth && hasNestedItems(props.item)) {
   console.error(
-    `[mt-nav] The navigation item "${props.label}" has nested items on level ${MAX_NESTING_LEVEL + 1} or higher. ` +
+    `[mt-nav] The navigation item "${props.item.label}" has nested items on level ${MAX_NESTING_LEVEL + 1} or higher. ` +
       `The navigation only supports up to ${MAX_NESTING_LEVEL} levels of nesting.`,
   );
 }
 
-const hasChildren = computed(() => !!slots.default && !isLeafDepth);
+// Rows on the last supported level are leaves even when they have nested items
+const hasChildren = computed(() => hasNestedItems(props.item) && !isLeafDepth);
 
-const activeDescendants = ref<string[]>([]);
+// The nested row that is active or holds the active row
+const activeChildLabel = computed(() => props.item.children?.find(isItemActive)?.label ?? null);
 
-const activeChildKey = computed(() => activeDescendants.value[0] ?? null);
+const hasActiveDescendant = computed(() => activeChildLabel.value !== null);
 
-const hasActiveDescendant = computed(() => activeDescendants.value.length > 0);
-
-const isActive = computed(() => props.active || hasActiveDescendant.value);
-
-provide(NAV_ITEM_CONTEXT, {
-  depth,
-  reportActive(childKey, active) {
-    // Records whether a nested row is active or holds the active row
-    if (active === activeDescendants.value.includes(childKey)) {
-      return;
-    }
-
-    activeDescendants.value = active
-      ? [...activeDescendants.value, childKey]
-      : activeDescendants.value.filter((existing) => existing !== childKey);
-  },
-});
-
-if (parent) {
-  watch(isActive, (active) => parent.reportActive(key, active), { immediate: true });
-  onBeforeUnmount(() => parent.reportActive(key, false));
-} else {
-  onBeforeUnmount(context.registerBranch({ key, hasChildren, isActive, activeChildKey }));
-}
-
+// The user's last toggle of a nested row. Unset, the row is open while it holds the active row.
 const manualOpen = ref<boolean | null>(null);
 
-watch(activeDescendants, () => {
+// A manual collapse holds until the active row changes
+watch(activeChildLabel, () => {
   if (manualOpen.value === false) {
     manualOpen.value = null;
   }
 });
 
+// Top-level rows are opened by the navigation, which keeps one branch open at a time
 const subtreeOpen = computed(() =>
-  depth === 1 ? context.isBranchExpanded(key) : manualOpen.value ?? hasActiveDescendant.value,
+  props.depth === 1
+    ? context.isBranchExpanded(props.branchKey)
+    : manualOpen.value ?? hasActiveDescendant.value,
 );
 
-const rowActive = computed(() => props.active || (hasActiveDescendant.value && !subtreeOpen.value));
+// A closed branch stands in for the active row it hides
+const rowActive = computed(
+  () => !!props.item.active || (hasActiveDescendant.value && !subtreeOpen.value),
+);
 
 const childActive = computed(() => hasActiveDescendant.value && subtreeOpen.value);
 
+// Active rows show the solid variant of their regular icon
 const iconName = computed(() =>
-  rowActive.value || childActive.value ? props.icon?.replace(/^regular-/, "solid-") : props.icon,
+  rowActive.value || childActive.value
+    ? props.item.icon?.replace(/^regular-/, "solid-")
+    : props.item.icon,
 );
 
 const rowComponent = computed(() => (hasChildren.value ? MtCollapsible : "li"));
@@ -156,17 +122,17 @@ const rowProps = computed(() =>
 );
 
 const rowClasses = computed(() => ({
-  "mt-nav__list-item--nested": depth > 1,
+  "mt-nav__list-item--nested": props.depth > 1,
   "is--open": subtreeOpen.value,
   "is--child-active": childActive.value,
 }));
 
 const linkTag = computed(() => {
-  if (props.to) {
+  if (props.item.to) {
     return context.linkComponent.value;
   }
 
-  if (props.href) {
+  if (props.item.href) {
     return "a";
   }
 
@@ -174,16 +140,16 @@ const linkTag = computed(() => {
 });
 
 const linkAttrs = computed(() => {
-  if (props.to) {
+  if (props.item.to) {
     return {
-      to: props.to,
+      to: props.item.to,
       "aria-expanded": hasChildren.value ? subtreeOpen.value : undefined,
       onClick: onLinkClick,
     };
   }
 
-  if (props.href) {
-    return { href: props.href, target: props.target, onClick: onLinkClick };
+  if (props.item.href) {
+    return { href: props.item.href, target: props.item.target, onClick: onLinkClick };
   }
 
   // The collapsible trigger toggles the nested rows itself
@@ -196,13 +162,13 @@ function onLinkClick() {
     setSubtreeOpen(!subtreeOpen.value);
   }
 
-  context.onLinkClick({ label: props.label, to: props.to, href: props.href });
+  context.onNavigate(props.item);
 }
 
 function setSubtreeOpen(open: boolean) {
   // Opens or closes the nested rows: the navigation decides for top-level rows, the row itself below
-  if (depth === 1) {
-    context.onBranchToggle(key, open);
+  if (props.depth === 1) {
+    context.onBranchToggle(props.branchKey, open);
   } else {
     manualOpen.value = open;
   }
