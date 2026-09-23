@@ -24,6 +24,10 @@ const future = {
 </template>
 ```
 
+::note
+Building a standalone application? [**App**](/components/app) accepts the same `future` prop and additionally lays out header, sidebars and content, so it does not need a Theme Provider around it.
+::
+
 The `future` prop takes an object. All flags default to `false`, so behavior is unchanged until you opt in. The optional `all` key sets the baseline, and any individual flag you list overrides it, so `{ all: true }` enables every current _and_ upcoming flag automatically.
 
 | Goal | `future` value |
@@ -42,3 +46,4 @@ The `future` prop takes an object. All flags default to `false`, so behavior is 
 | `removeDefaultMargin` | Removes the default outer margin from components such as cards, tabs, checkboxes, switches, and text fields. |
 | `removeSwitchMinHeight` | Removes the minimum height from a non-bordered `mt-switch`. |
 | `bannerFullWidth` | Makes `mt-banner` span the full width of its container. |
+| `consistentLabelLineHeight` | Gives field labels a consistent line height. |
