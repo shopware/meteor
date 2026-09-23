@@ -42,23 +42,23 @@ export const VisualTestWithContent: MtDividerStory = {
   }),
 };
 
-export const VisualTestAlignLeft: MtDividerStory = {
-  name: "Render divider with left-aligned content",
+export const VisualTestAlignStart: MtDividerStory = {
+  name: "Render divider with start-aligned content",
   render: () => ({
     components: { MtDivider, MtText },
     template: `
-<mt-divider alignment="left">
+<mt-divider alignment="start">
   <mt-text size="xs" color="color-text-secondary-default">Today</mt-text>
 </mt-divider>`,
   }),
 };
 
-export const VisualTestAlignRight: MtDividerStory = {
-  name: "Render divider with right-aligned content",
+export const VisualTestAlignEnd: MtDividerStory = {
+  name: "Render divider with end-aligned content",
   render: () => ({
     components: { MtDivider, MtText },
     template: `
-<mt-divider alignment="right">
+<mt-divider alignment="end">
   <mt-text size="xs" color="color-text-secondary-default">Today</mt-text>
 </mt-divider>`,
   }),
