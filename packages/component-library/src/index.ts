@@ -20,6 +20,7 @@ import MtLink from "./components/mt-link/mt-link.vue";
 import MtNumberField from "./components/mt-number-field/mt-number-field.vue";
 import MtPasswordField from "./components/mt-password-field/mt-password-field.vue";
 import MtSelect from "./components/mt-select/mt-select.vue";
+import MtSidebar from "./components/mt-sidebar/mt-sidebar.vue";
 import MtSlider from "@/components/mt-slider/mt-slider.vue";
 import MtSwitch from "./components/mt-switch/mt-switch.vue";
 import MtTextField from "./components/mt-text-field/mt-text-field.vue";
@@ -112,6 +113,7 @@ export {
   MtNumberField,
   MtPasswordField,
   MtSelect,
+  MtSidebar,
   MtSlider,
   MtSwitch,
   MtTextField,
