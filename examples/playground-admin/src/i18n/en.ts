@@ -2,22 +2,36 @@ export const en = {
   app: {
     title: "Meteor playground",
   },
-  shell: {
-    navigation: "Navigation",
-    details: "Details",
-  },
   nav: {
-    pageOne: "Page one",
-    pageTwo: "Page two",
+    label: "Main navigation",
+    dashboard: "Dashboard",
+    products: "Products",
+    cms: "CMS",
     settings: "Settings",
-    actions: "Actions",
-    documentation: "Documentation",
-    copyLink: "Copy link",
   },
-  pages: {
-    one: "This is page one.",
-    two: "This is page two. It is long enough to scroll inside the content panel.",
-    paragraph: "Paragraph {n} of the long page.",
+  dashboard: {
+    title: "Admin playground",
+    description:
+      "A minimal application for trying out the Meteor app shell: header, sidebars, drawers on small screens, theme and language.",
+  },
+  products: {
+    title: "Products",
+    name: "Product",
+    sku: "Product number",
+    category: "Category",
+    stock: "Stock",
+    price: "Price",
+    categories: {
+      lighting: "Lighting",
+      textiles: "Home textiles",
+      kitchen: "Kitchen",
+      apparel: "Apparel",
+      footwear: "Footwear",
+      accessories: "Accessories",
+    },
+  },
+  cms: {
+    back: "Back",
   },
   settings: {
     userTitle: "User settings",
@@ -27,10 +41,6 @@ export const en = {
     header: "Header",
     sidebarStart: "Start sidebar",
     sidebarEnd: "End sidebar",
-    closeOnNavigate: "Close drawer on navigation",
-    snackbar: "Snackbar host",
-    future: "Future flags",
-    breakpoint: "Breakpoint (px)",
     openModal: "Open modal",
     modalTitle: "Modal",
     modalText: "A modal opened from inside the shell.",

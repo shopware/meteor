@@ -8,7 +8,6 @@ import {
   MtModalClose,
   MtModalRoot,
   MtModalTrigger,
-  MtNumberField,
   MtSelect,
   MtSwitch,
   MtText,
@@ -21,7 +20,6 @@ import { settings } from "../store/settings";
 const { t } = useI18n();
 const { addSnackbar } = useSnackbar();
 
-// Shares the persisted preference ("mt-theme" in localStorage) with the shell, which applies it
 const { theme } = useTheme();
 
 const localeOptions = [
@@ -56,21 +54,6 @@ const localeOptions = [
           <mt-switch
             v-model="settings.sidebarEnd"
             :label="t('settings.sidebarEnd')"
-          />
-          <mt-switch
-            v-model="settings.closeOnNavigate"
-            :label="t('settings.closeOnNavigate')"
-          />
-          <mt-switch
-            v-model="settings.snackbar"
-            :label="t('settings.snackbar')"
-          />
-          <mt-switch v-model="settings.future" :label="t('settings.future')" />
-          <mt-number-field
-            v-model="settings.breakpoint"
-            :label="t('settings.breakpoint')"
-            number-type="int"
-            :min="0"
           />
         </div>
 

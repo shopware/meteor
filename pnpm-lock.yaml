@@ -225,9 +225,6 @@ importers:
         specifier: ^5.1.0
         version: 5.1.0(@vue/compiler-sfc@3.5.13)(vite@8.3.0(@types/node@22.19.10)(esbuild@0.28.0)(jiti@2.7.0)(sass@1.77.6)(terser@5.31.1)(tsx@4.19.3)(yaml@2.9.0))(vue@3.5.13(typescript@5.9.3))
     devDependencies:
-      '@playwright/test':
-        specifier: ^1.45.0
-        version: 1.47.2
       '@shopware-ag/meteor-icon-kit':
         specifier: workspace:*
         version: link:../../packages/icon-kit

@@ -7,8 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "lint:types": "vue-tsc --build",
-    "test:e2e": "playwright test"
+    "lint:types": "vue-tsc --build"
   },
   "dependencies": {
     "@shopware-ag/meteor-component-library": "workspace:*",
@@ -17,7 +16,6 @@
     "vue-router": "^5.1.0"
   },
   "devDependencies": {
-    "@playwright/test": "^1.45.0",
     "@shopware-ag/meteor-icon-kit": "workspace:*",
     "@types/node": "^22.10.0",
     "@vitejs/plugin-vue": "^6.0.7",
