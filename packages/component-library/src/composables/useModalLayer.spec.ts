@@ -3,7 +3,7 @@ import { render, screen } from "@testing-library/vue";
 import userEvent from "@testing-library/user-event";
 import { useModalLayer } from "./useModalLayer";
 
-function createHarness() {
+function createHarness(options: { restoreToOpener?: boolean } = {}) {
   const active = ref(false);
   const onEscape = vi.fn();
   const returnTarget = ref<HTMLElement | null>(null);
@@ -13,10 +13,10 @@ function createHarness() {
       const panel = ref<HTMLElement | null>(null);
 
       useModalLayer({
-        target: panel,
+        panel,
         active,
         onEscape,
-        returnFocusTo: () => returnTarget.value,
+        ...(options.restoreToOpener ? {} : { returnFocusTo: () => returnTarget.value }),
       });
 
       return () =>
@@ -122,6 +122,39 @@ describe("useModalLayer", () => {
     expect(onEscape).not.toHaveBeenCalled();
   });
 
+  it("closes only the topmost layer on Escape while the focus is lost to the page", async () => {
+    // ARRANGE
+    const lower = { active: ref(false), onEscape: vi.fn() };
+    const upper = { active: ref(false), onEscape: vi.fn() };
+    const Layers: Component = {
+      setup() {
+        const lowerPanel = ref<HTMLElement | null>(null);
+        const upperPanel = ref<HTMLElement | null>(null);
+        useModalLayer({ panel: lowerPanel, ...lower });
+        useModalLayer({ panel: upperPanel, ...upper });
+
+        return () => [
+          h("div", { ref: lowerPanel, tabindex: -1 }),
+          h("div", { ref: upperPanel, tabindex: -1 }, [h("button", "Save")]),
+        ];
+      },
+    };
+    render(Layers);
+    lower.active.value = true;
+    await nextTick();
+    upper.active.value = true;
+    await nextTick();
+    screen.getByRole("button", { name: "Save" }).focus();
+    screen.getByRole("button", { name: "Save" }).blur();
+
+    // ACT
+    await userEvent.keyboard("{Escape}");
+
+    // ASSERT
+    expect(upper.onEscape).toHaveBeenCalledTimes(1);
+    expect(lower.onEscape).not.toHaveBeenCalled();
+  });
+
   it("wraps Tab from the last element to the first one", async () => {
     // ARRANGE
     const { Harness, active } = createHarness();
@@ -164,5 +197,73 @@ describe("useModalLayer", () => {
 
     // ASSERT
     expect(screen.getByRole("button", { name: "Last" })).toHaveFocus();
+  });
+
+  it("returns the focus to the element that opened it", async () => {
+    // ARRANGE
+    const { Harness, active } = createHarness({ restoreToOpener: true });
+    render(Harness);
+    screen.getByRole("button", { name: "Outside" }).focus();
+    active.value = true;
+    await nextTick();
+
+    // ACT
+    active.value = false;
+    await nextTick();
+
+    // ASSERT
+    expect(screen.getByRole("button", { name: "Outside" })).toHaveFocus();
+  });
+
+  it("keeps the background inert until every layer that made it inert is closed", async () => {
+    // ARRANGE
+    const background = document.createElement("div");
+    background.textContent = "Background";
+    document.body.appendChild(background);
+    const first = ref(false);
+    const second = ref(false);
+    const Layers: Component = {
+      setup() {
+        const panel = ref<HTMLElement | null>(null);
+        const otherPanel = ref<HTMLElement | null>(null);
+        useModalLayer({
+          panel,
+          active: first,
+          onEscape: () => {},
+          inertTargets: () => [background],
+        });
+        useModalLayer({
+          panel: otherPanel,
+          active: second,
+          onEscape: () => {},
+          inertTargets: () => [background],
+        });
+
+        return () => [
+          h("div", { ref: panel, tabindex: -1 }),
+          h("div", { ref: otherPanel, tabindex: -1 }),
+        ];
+      },
+    };
+    render(Layers);
+    first.value = true;
+    await nextTick();
+    second.value = true;
+    await nextTick();
+
+    // ACT
+    first.value = false;
+    await nextTick();
+
+    // ASSERT
+    expect(background).toHaveAttribute("inert");
+
+    // ACT
+    second.value = false;
+    await nextTick();
+
+    // ASSERT
+    expect(background).not.toHaveAttribute("inert");
+    background.remove();
   });
 });

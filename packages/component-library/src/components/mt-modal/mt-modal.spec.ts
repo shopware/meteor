@@ -4,6 +4,7 @@ import MtModalTrigger from "./sub-components/mt-modal-trigger.vue";
 import MtModalAction from "./sub-components/mt-modal-action.vue";
 import { render, screen, fireEvent, waitFor } from "@testing-library/vue";
 import { ref } from "vue";
+import userEvent from "@testing-library/user-event";
 
 describe("mt-modal", () => {
   it("the modal is hidden by default", () => {
@@ -179,14 +180,41 @@ describe("mt-modal", () => {
 </mt-modal-root>`,
     });
 
-    await fireEvent.click(screen.getByRole("button", { name: "Open modal" }));
+    await userEvent.click(screen.getByRole("button", { name: "Open modal" }));
+    await waitFor(() => expect(screen.getByRole("dialog")).toHaveFocus());
 
     // WHEN
-    await fireEvent.keyDown(document, { key: "Escape" });
+    await userEvent.keyboard("{Escape}");
 
     // THEN
-    const modal = screen.queryByRole("dialog");
-    expect(modal).not.toBeInTheDocument();
+    expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
+  });
+
+  it("makes the page behind the modal inert while it is open", async () => {
+    // GIVEN
+    const { container } = render({
+      components: { MtModal, MtModalRoot, MtModalTrigger },
+      template: `
+<mt-modal-root>
+  <mt-modal-trigger as='button'>Open modal</mt-modal-trigger>
+
+  <mt-modal title='title'>mt-modal works!</mt-modal>
+</mt-modal-root>`,
+    });
+
+    // WHEN
+    await userEvent.click(screen.getByRole("button", { name: "Open modal" }));
+    await waitFor(() => expect(screen.getByRole("dialog")).toHaveFocus());
+
+    // THEN
+    expect(container).toHaveAttribute("inert");
+
+    // WHEN
+    await userEvent.keyboard("{Escape}");
+
+    // THEN
+    expect(container).not.toHaveAttribute("inert");
+    expect(screen.getByRole("button", { name: "Open modal" })).toHaveFocus();
   });
 
   it("closes the modal when clicking on the backdrop", async () => {
