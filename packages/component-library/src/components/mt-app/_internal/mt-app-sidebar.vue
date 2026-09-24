@@ -12,7 +12,6 @@
     :aria-label="label"
     :tabindex="isMobile ? -1 : undefined"
     :inert="(isMobile && !isOpen) || undefined"
-    @click="onClick"
   >
     <div v-if="isMobile" class="mt-app__sidebar-chrome">
       <mt-button
@@ -36,15 +35,14 @@
 import { computed, onBeforeUnmount, ref, useTemplateRef, watch } from "vue";
 import MtButton from "@/components/mt-button/mt-button.vue";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
+import { useModalLayer } from "@/composables/useModalLayer";
 import { useAppLayout, type MtAppSide } from "../composables/useAppLayout";
-import { isNavigationClick } from "../composables/useAppDrawer";
-import { useModalLayer } from "../composables/useModalLayer";
 
 /**
  * One sidebar region of the shell. The same element is an inline
  * `complementary` landmark in the desktop layout and an off-canvas modal
  * drawer in the mobile layout, so the slotted content is never re-mounted
- * when the layout changes.
+ * when the layout changes. Switching the layout does not animate.
  */
 const props = defineProps<{
   side: MtAppSide;
@@ -66,9 +64,6 @@ const panelElement = useTemplateRef<HTMLElement>("panel");
 const isMobile = computed(() => layout.isMobile.value);
 const isOpen = computed(() => isMobile.value && layout.activeSide.value === props.side);
 
-// A layout switch must not animate: entering the drawer mode jumps straight to the closed
-// position instead of sliding out of view. Transitions are off for the render that switches
-// the mode, and come back once the new position has been applied.
 const motion = ref(true);
 
 watch(isMobile, () => {
@@ -78,29 +73,22 @@ watch(isMobile, () => {
 watch(
   isMobile,
   () => {
-    // commits the switched styles while transitions are still off
     void panelElement.value?.offsetWidth;
     motion.value = true;
   },
   { flush: "post" },
 );
 
-// registering in setup keeps the drawer state aware of this side before the first render
 const unregister = layout.registerSidebar(props.side);
 onBeforeUnmount(unregister);
 
 useModalLayer({
-  target: panelElement,
+  panel: panelElement,
   active: isOpen,
   onEscape: () => layout.close(),
+  inertTargets: () => layout.inertTargets(props.side),
   returnFocusTo: () => layout.focusReturnTarget(props.side),
 });
-
-function onClick(event: MouseEvent) {
-  if (!isOpen.value || !layout.closeOnNavigate.value || !panelElement.value) return;
-
-  if (isNavigationClick(event, panelElement.value)) layout.close();
-}
 </script>
 
 <style scoped>
@@ -110,8 +98,11 @@ function onClick(event: MouseEvent) {
   flex: none;
   min-width: 0;
   min-height: 0;
-  /* the panel receives programmatic focus when it opens; no ring for that */
   outline: none;
+}
+
+.mt-app__sidebar[hidden] {
+  display: none;
 }
 
 .mt-app__sidebar-body {
@@ -129,7 +120,6 @@ function onClick(event: MouseEvent) {
   padding: var(--scale-size-8);
 }
 
-/* the close button sits where the header trigger was */
 .mt-app__sidebar--end .mt-app__sidebar-chrome {
   justify-content: flex-end;
 }
@@ -137,12 +127,10 @@ function onClick(event: MouseEvent) {
 .mt-app__sidebar[data-mode="drawer"] {
   position: fixed;
   inset-block: 0;
-  z-index: 900;
+  z-index: var(--z-index-drawer, 900);
   min-width: min(var(--scale-size-256), calc(100% - var(--scale-size-48)));
-  /* a strip of the backdrop always stays tappable */
   max-width: calc(100% - var(--scale-size-48));
   background-color: var(--color-elevation-surface-raised);
-  /* the open panel must not create a containing block for fixed descendants */
   transform: none;
   visibility: visible;
   transition: transform 200ms cubic-bezier(0.05, 0.7, 0.1, 1);
@@ -158,7 +146,6 @@ function onClick(event: MouseEvent) {
   border-inline-start: 1px solid var(--color-border-secondary-default);
 }
 
-/* the panel becomes unreachable exactly when the slide-out ends */
 .mt-app__sidebar[data-mode="drawer"][data-state="closed"] {
   visibility: hidden;
   pointer-events: none;
@@ -181,8 +168,13 @@ function onClick(event: MouseEvent) {
   }
 }
 
-/* set for the one render that switches between inline and drawer mode */
 .mt-app__sidebar[data-mode][data-state][data-motion="off"] {
   transition: none;
+}
+
+@media print {
+  .mt-app__sidebar {
+    display: none;
+  }
 }
 </style>
