@@ -34,9 +34,6 @@
       "cache": false,
       "persistent": true
     },
-    "playground-admin#test:e2e": {
-      "outputs": []
-    },
     "lint:eslint": {
       "outputs": []
     },

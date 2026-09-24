@@ -8,7 +8,6 @@ import { router } from "./router";
 import { i18n } from "./i18n";
 import { LOCALE_STORAGE_KEY, settings } from "./store/settings";
 
-// the host owns the i18n instance; Meteor components pick the locale up from it
 watch(
   () => settings.locale,
   (locale) => {
@@ -21,5 +20,4 @@ watch(
 
 const app = createApp(App).use(i18n).use(router).use(DeviceHelperPlugin);
 
-// mount after the first route resolved, so the shell renders its final regions right away
 router.isReady().then(() => app.mount("#app"));

@@ -6,16 +6,16 @@ defineProps<{
 </script>
 
 <template>
-  <div class="sidebar-end" :class="{ 'sidebar-end--framed': framed }" />
+  <div class="sidebar" :class="{ 'sidebar--framed': framed }" />
 </template>
 
 <style scoped>
-.sidebar-end {
-  width: 20rem; /* 320px */
+.sidebar {
+  width: 20rem;
   padding: var(--scale-size-16);
 }
 
-.sidebar-end--framed {
+.sidebar--framed {
   height: 100%;
   overflow: auto;
   background-color: var(--color-elevation-surface-default);

@@ -1,9 +1,7 @@
-/* page wrapper inside the shell's content panel: owns the spacing around the content */
 .page {
   padding: var(--scale-size-40);
 }
 
-/* the content inside the page's mt-container */
 .page__content {
   display: grid;
   gap: var(--scale-size-16);

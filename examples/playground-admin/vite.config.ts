@@ -5,8 +5,6 @@ import vue from "@vitejs/plugin-vue";
 // @ts-expect-error - the plugin ships no usable type declarations
 import svg from "vite-plugin-svgstring";
 
-// The playground consumes the component library from its sources, so changes to the
-// library show up immediately and no library build is needed to run it.
 const librarySource = fileURLToPath(
   new URL("../../packages/component-library/src", import.meta.url),
 );
@@ -18,11 +16,7 @@ function componentSourcePath(name: string) {
 }
 
 export default defineConfig({
-  plugins: [
-    vue(),
-    // mt-icon imports SVG files as markup strings; the library's own Vite config registers this plugin too
-    svg(),
-  ],
+  plugins: [vue(), svg()],
   server: {
     port: 3002,
     strictPort: true,
@@ -32,12 +26,9 @@ export default defineConfig({
     strictPort: true,
   },
   define: {
-    // convert-units (used by mt-unit-field) references Node's `global`
     global: "globalThis",
   },
   resolve: {
-    // one runtime for the app and the library: the library would otherwise resolve
-    // vue-i18n from its own node_modules (a different major version)
     dedupe: ["vue", "vue-i18n"],
     alias: [
       {
@@ -56,12 +47,10 @@ export default defineConfig({
         ),
       },
       {
-        // per-component imports, e.g. `@shopware-ag/meteor-component-library/MtSegmentedControl`
         find: /^@shopware-ag\/meteor-component-library\/(Mt\w+)$/,
         replacement: "$1",
         customResolver: (name) => componentSourcePath(name),
       },
-      // the library sources use these aliases internally
       { find: "@", replacement: librarySource },
       { find: /^~(.*)$/, replacement: "$1" },
     ],

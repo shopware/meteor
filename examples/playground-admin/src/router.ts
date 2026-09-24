@@ -1,13 +1,15 @@
 import { createRouter, createWebHistory } from "vue-router";
-import PageOne from "./pages/PageOne.vue";
-import PageTwo from "./pages/PageTwo.vue";
+import DashboardPage from "./pages/DashboardPage.vue";
+import ProductsPage from "./pages/ProductsPage.vue";
+import CmsPage from "./pages/CmsPage.vue";
 import SettingsPage from "./pages/SettingsPage.vue";
 
 export const router = createRouter({
   history: createWebHistory(),
   routes: [
-    { path: "/", name: "page-one", component: PageOne },
-    { path: "/page-two", name: "page-two", component: PageTwo },
+    { path: "/", name: "dashboard", component: DashboardPage },
+    { path: "/products", name: "products", component: ProductsPage },
+    { path: "/cms", name: "cms", component: CmsPage },
     { path: "/settings", name: "settings", component: SettingsPage },
   ],
 });
