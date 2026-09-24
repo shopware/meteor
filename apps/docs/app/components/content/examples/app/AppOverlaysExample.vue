@@ -9,16 +9,14 @@ import MtPopoverItem from "@shopware-ag/meteor-component-library/MtPopoverItem";
 import MtText from "@shopware-ag/meteor-component-library/MtText";
 import { useSnackbar } from "@shopware-ag/meteor-component-library";
 
-// the shell renders the snackbar host; components anywhere below it only add messages
 const { addSnackbar } = useSnackbar();
 </script>
 
 <template>
   <mt-app
     class="app-overlays"
-    :breakpoint="0"
+    :mobile-breakpoint="0"
     :apply-theme="false"
-    :future="{ all: true }"
     :lock-document="false"
   >
     <template #header>

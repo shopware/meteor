@@ -8,7 +8,7 @@ description: A layout wrapper that limits content to a maximum width and centers
 
 ## Usage
 
-**Container** keeps page content at a readable width. It fills the available width up to its size and centers itself with automatic inline margins. It has no padding of its own, so the surrounding page or region stays in charge of spacing.
+**Container** keeps page content at a readable width: it fills the available width up to its size and centers itself. It has no padding of its own, so the surrounding page stays in charge of spacing.
 
 ```ts
 import { MtContainer } from "@shopware-ag/meteor-component-library";
@@ -62,5 +62,5 @@ The widths come from three custom properties defined in the library's global sty
 
 ## Related components
 
-- [**App**](/components/app) for the application shell around the page content.
-- [**Card**](/components/card) to group content inside a container.
+- [**Card**](/components/card): when content inside the container needs a visible surface and a title.
+- [**Inset**](/utilities/components/inset): when content should break out of its container's padding instead.
