@@ -1,5 +1,6 @@
 import { within, expect, userEvent, waitFor } from "@storybook/test";
 import { defineStory } from "@/_internal/story-helper";
+import { useSnackbar } from "../mt-snackbar/composables/use-snackbar";
 
 import meta, {
   Composable,
@@ -8,10 +9,11 @@ import meta, {
   Default,
   DynamicRegions,
   Embedded,
+  Layering,
+  LongContent,
   Mobile,
   MobileHeaderless,
   MobileLongContent,
-  WithoutSnackbar,
   type MtAppMeta,
   type MtAppStory,
 } from "./mt-app.stories";
@@ -20,6 +22,7 @@ export default {
   ...meta,
   title: "Components/App/Interaction tests",
   tags: ["!autodocs"],
+  beforeEach: () => useSnackbar().clearSnackbars(),
 } as MtAppMeta;
 
 const startTrigger = { name: "Open Primary sidebar" };
@@ -38,6 +41,12 @@ function closedDrawer(canvasElement: HTMLElement, name: string) {
   return canvasElement.querySelector<HTMLElement>(`[role="dialog"][aria-label="${name}"]`);
 }
 
+function topmostElementAt(element: Element) {
+  const rect = element.getBoundingClientRect();
+
+  return document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
+}
+
 async function openDrawer(
   canvas: ReturnType<typeof within>,
   trigger: { name: string },
@@ -50,6 +59,7 @@ async function openDrawer(
 
   const drawer = canvas.getByRole("dialog", { name: drawerName });
   await waitFor(() => expect(drawer).toBeVisible());
+  await Promise.all(drawer.getAnimations().map((animation) => animation.finished));
 
   return drawer;
 }
@@ -336,32 +346,52 @@ export const TestActionMenuInsideDrawerKeepsItOpen = defineStory<MtAppMeta>(
   { from: Mobile },
 );
 
-export const TestModalFromDrawerEscapeClosesOnlyModal = defineStory<MtAppMeta>(
+export const TestOverlayLayering = defineStory<MtAppMeta>(
   {
-    name: "Stacks a modal above the drawer and closes only the modal on Escape",
+    name: "Layers overlays above the drawer and closes one layer per Escape",
     play: async ({ canvasElement, screen }) => {
       const canvas = within(canvasElement);
-
       const drawer = await openDrawer(canvas, startTrigger, "Primary sidebar");
+      const filters = within(drawer).getByRole("button", { name: "Filters" });
 
-      await userEvent.click(within(drawer).getByRole("button", { name: "Send feedback" }));
-      const modal = await screen.findByRole("dialog", { name: "Send feedback" });
+      await userEvent.click(filters);
+      const popoverItem = await screen.findByText("Shipped orders");
+      await waitFor(() => expect(popoverItem.contains(topmostElementAt(popoverItem))).toBe(true));
+      await userEvent.click(filters);
+      await waitFor(() => expect(screen.queryByText("Shipped orders")).not.toBeInTheDocument());
+
+      await userEvent.click(within(drawer).getByRole("button", { name: "Edit order" }));
+      const modal = await screen.findByRole("dialog", { name: "Edit order" });
       await waitFor(() => expect(modal).toHaveFocus());
-      const rect = modal.getBoundingClientRect();
-      expect(
-        document
-          .elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2)
-          ?.closest("[role=dialog]"),
-      ).toBe(modal);
+      expect(modal.contains(topmostElementAt(modal))).toBe(true);
+      expect(drawer.closest("[inert]")).not.toBeNull();
 
+      await userEvent.click(within(modal).getByRole("textbox"));
+      const option = await screen.findByTestId("mt-select-option--express");
+      await waitFor(() => expect(option.contains(topmostElementAt(option))).toBe(true));
+
+      await userEvent.click(within(modal).getByRole("button", { name: "Save" }));
+      const snackbar = (await screen.findByText("Order saved")).closest<HTMLElement>(
+        ".mt-snackbar-notification",
+      )!;
+      await waitFor(() => expect(snackbar.contains(topmostElementAt(snackbar))).toBe(true));
+      expect(snackbar.closest("[inert]")).toBeNull();
+
+      await userEvent.click(within(modal).getByRole("textbox"));
+      await screen.findByTestId("mt-select-option--express");
       await userEvent.keyboard("{Escape}");
 
       await waitFor(() =>
-        expect(screen.queryByRole("dialog", { name: "Send feedback" })).not.toBeInTheDocument(),
+        expect(screen.queryByTestId("mt-select-option--express")).not.toBeInTheDocument(),
       );
+      expect(modal).toBeInTheDocument();
+
+      await userEvent.keyboard("{Escape}");
+
+      await waitFor(() => expect(modal).not.toBeInTheDocument());
       expect(drawer).toBeVisible();
       await waitFor(() =>
-        expect(within(drawer).getByRole("button", { name: "Send feedback" })).toHaveFocus(),
+        expect(within(drawer).getByRole("button", { name: "Edit order" })).toHaveFocus(),
       );
 
       await userEvent.keyboard("{Escape}");
@@ -369,8 +399,22 @@ export const TestModalFromDrawerEscapeClosesOnlyModal = defineStory<MtAppMeta>(
       await waitFor(() => expect(drawer).not.toBeVisible());
     },
   },
-  { from: Mobile },
+  { from: Layering },
 );
+
+export const TestDocumentDoesNotScroll: MtAppStory = {
+  ...LongContent,
+  name: "Scrolls the content panel while the document stays in place",
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const main = canvas.getByRole("main");
+    const root = document.documentElement;
+
+    expect(getComputedStyle(root).overflowY).toBe("hidden");
+    expect(root.scrollHeight).toBe(root.clientHeight);
+    expect(main.scrollHeight).toBeGreaterThan(main.clientHeight);
+  },
+};
 
 export const TestSameElementAcrossLayouts: MtAppStory = {
   ...DynamicRegions,
@@ -443,19 +487,4 @@ export const TestSnackbarHostRendersOnce = defineStory<MtAppMeta>(
     },
   },
   { from: Default },
-);
-
-export const TestWithoutSnackbarHost = defineStory<MtAppMeta>(
-  {
-    name: "Renders no snackbar when the host is disabled",
-    play: async ({ canvasElement, screen }) => {
-      const canvas = within(canvasElement);
-
-      await userEvent.click(canvas.getByRole("button", { name: "Show success" }));
-      await new Promise((resolve) => setTimeout(resolve, 100));
-
-      expect(screen.queryByText("Order saved")).not.toBeInTheDocument();
-    },
-  },
-  { from: WithoutSnackbar },
 );

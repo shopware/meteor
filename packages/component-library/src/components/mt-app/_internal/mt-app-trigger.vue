@@ -55,7 +55,6 @@ defineExpose({ element });
   padding: var(--scale-size-8);
 }
 
-/* a lone end trigger (no header content, no start sidebar) still sits at the end */
 .mt-app__trigger--end {
   margin-inline-start: auto;
 }

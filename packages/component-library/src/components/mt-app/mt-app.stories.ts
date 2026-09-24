@@ -8,6 +8,7 @@ import MtCard from "../mt-card/mt-card.vue";
 import MtText from "../mt-text/mt-text.vue";
 import MtTextField from "../mt-text-field/mt-text-field.vue";
 import MtSwitch from "../mt-switch/mt-switch.vue";
+import MtSelect from "../mt-select/mt-select.vue";
 import MtPopover from "../mt-popover/mt-popover.vue";
 import MtPopoverItem from "../mt-popover-item/mt-popover-item.vue";
 import MtActionMenu from "../mt-action-menu/mt-action-menu.vue";
@@ -55,6 +56,7 @@ const sharedComponents = {
   MtText,
   MtTextField,
   MtSwitch,
+  MtSelect,
   MtPopover,
   MtPopoverItem,
   MtActionMenu,
@@ -104,6 +106,12 @@ const createCards = (count: number) =>
 
 const detailFields = ["Customer", "Email", "Shipping address", "Billing address", "Payment method"];
 
+const shippingMethods = [
+  { label: "Standard", value: "standard" },
+  { label: "Express", value: "express" },
+  { label: "Pickup", value: "pickup" },
+];
+
 const createRender = (template: string, cardCount = 12) =>
   function render(args: Record<string, unknown>) {
     return {
@@ -115,6 +123,7 @@ const createRender = (template: string, cardCount = 12) =>
         const showStart = ref(true);
         const showEnd = ref(true);
         const mobile = ref(false);
+        const shippingMethod = ref("standard");
 
         function notify(variant: "success" | "error") {
           addSnackbar({
@@ -129,6 +138,8 @@ const createRender = (template: string, cardCount = 12) =>
           navItems,
           cards: createCards(cardCount),
           detailFields,
+          shippingMethods,
+          shippingMethod,
           notify,
           theme,
           showHeader,
@@ -314,7 +325,7 @@ const composableTemplate = `
 `;
 
 const dynamicRegionsTemplate = `
-<mt-app v-bind="args" :breakpoint="mobile ? 99999 : 0">
+<mt-app v-bind="args" :mobile-breakpoint="mobile ? 99999 : 0">
   <template v-if="showHeader" #header>
     <div style="display: flex; align-items: center; min-height: var(--scale-size-48); padding-inline: var(--scale-size-16);">
       <mt-text as="span" size="s" weight="bold">Meteor Shop</mt-text>
@@ -344,6 +355,41 @@ const dynamicRegionsTemplate = `
 </mt-app>
 `;
 
+const layeringTemplate = `
+<mt-app v-bind="args">
+  ${headerTemplate}
+
+  <template #sidebar-start>
+    <nav aria-label="Main" style="display: grid; gap: var(--scale-size-16); width: 16rem; padding: var(--scale-size-16);">
+      <mt-popover title="Filters">
+        <template #trigger="{ toggleFloatingUi }">
+          <mt-button variant="secondary" size="small" block @click.stop="toggleFloatingUi">Filters</mt-button>
+        </template>
+
+        <template #popover-items__base>
+          <mt-popover-item label="Open orders" />
+          <mt-popover-item label="Shipped orders" />
+        </template>
+      </mt-popover>
+
+      <mt-modal-root>
+        <mt-modal-trigger :as="MtButton" variant="secondary" size="small" block>Edit order</mt-modal-trigger>
+
+        <mt-modal title="Edit order">
+          <mt-select v-model="shippingMethod" label="Shipping method" :options="shippingMethods" />
+
+          <template #footer>
+            <mt-button variant="primary" size="small" @click="notify('success')">Save</mt-button>
+          </template>
+        </mt-modal>
+      </mt-modal-root>
+    </nav>
+  </template>
+
+  ${contentTemplate}
+</mt-app>
+`;
+
 const meta: MtAppMeta = {
   title: "Components/App",
   component: MtApp,
@@ -357,19 +403,15 @@ const meta: MtAppMeta = {
     },
   },
   args: {
-    // stories pin the layout so they look the same at every canvas size
-    breakpoint: 0,
+    mobileBreakpoint: 0,
     theme: "light",
-    // Storybook's theme toolbar owns the page theme
     applyTheme: false,
-    snackbar: true,
     closeOnNavigate: true,
-    future: { all: true },
     "onUpdate:theme": fn(),
     "onDrawer-change": fn(),
   },
   argTypes: {
-    breakpoint: {
+    mobileBreakpoint: {
       control: { type: "number" },
       description:
         "The viewport width in pixels below which the sidebars become off-canvas drawers. `0` disables the mobile layout.",
@@ -379,21 +421,9 @@ const meta: MtAppMeta = {
       options: ["light", "dark", "system"],
       description: "The controlled theme preference.",
     },
-    snackbar: {
-      control: { type: "boolean" },
-      description: "Whether the shell renders the snackbar host.",
-    },
     closeOnNavigate: {
       control: { type: "boolean" },
-      description: "Whether following a link inside an open drawer closes the drawer.",
-    },
-    sidebarStartLabel: {
-      control: { type: "text" },
-      description: "The accessible name of the start sidebar and its drawer.",
-    },
-    sidebarEndLabel: {
-      control: { type: "text" },
-      description: "The accessible name of the end sidebar and its drawer.",
+      description: "Whether a Vue Router navigation closes the open drawer.",
     },
   },
 };
@@ -428,13 +458,13 @@ export const LongContent: MtAppStory = {
 export const Responsive: MtAppStory = {
   ...createStory(defaultTemplate),
   args: {
-    breakpoint: 1280,
+    mobileBreakpoint: 1280,
   },
   parameters: {
     docs: {
       description: {
         story:
-          "Uses the default breakpoint of 1280px: resize the canvas to switch between inline sidebars and drawers.",
+          "Uses the default mobile breakpoint of 1280px: resize the canvas to switch between inline sidebars and drawers.",
       },
     },
   },
@@ -443,7 +473,7 @@ export const Responsive: MtAppStory = {
 export const Mobile: MtAppStory = {
   ...createStory(defaultTemplate),
   args: {
-    breakpoint: 99999,
+    mobileBreakpoint: 99999,
   },
 };
 
@@ -451,7 +481,7 @@ export const MobileLongContent: MtAppStory = {
   ...createStory(defaultTemplate, 48),
   name: "Mobile with long content",
   args: {
-    breakpoint: 99999,
+    mobileBreakpoint: 99999,
   },
 };
 
@@ -459,7 +489,15 @@ export const MobileHeaderless: MtAppStory = {
   ...createStory(navigationOnlyTemplate),
   name: "Mobile without header",
   args: {
-    breakpoint: 99999,
+    mobileBreakpoint: 99999,
+  },
+};
+
+export const Layering: MtAppStory = {
+  ...createStory(layeringTemplate),
+  name: "Stacked overlays",
+  args: {
+    mobileBreakpoint: 99999,
   },
 };
 
@@ -510,13 +548,5 @@ export const Embedded: MtAppStory = {
           "`--mt-app-height` sizes the shell when it does not own the viewport, and `lockDocument` is turned off so the page keeps scrolling.",
       },
     },
-  },
-};
-
-export const WithoutSnackbar: MtAppStory = {
-  ...createStory(contentOnlyTemplate),
-  name: "Without snackbar host",
-  args: {
-    snackbar: false,
   },
 };

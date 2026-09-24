@@ -31,7 +31,6 @@ defineSlots<{
 </script>
 
 <style scoped>
-/* fills the available width up to its size and centers itself; spacing is the parent's job */
 .mt-container {
   width: 100%;
   margin-inline: auto;

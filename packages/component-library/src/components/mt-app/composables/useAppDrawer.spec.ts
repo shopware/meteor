@@ -1,11 +1,13 @@
 import { effectScope, nextTick, ref } from "vue";
-import { isNavigationClick, useAppDrawer } from "./useAppDrawer";
+import { useAppDrawer } from "./useAppDrawer";
 
-function setup(options: { mobile?: boolean } = {}) {
+function setup(options: { mobile?: boolean; available?: boolean } = {}) {
   const isMobile = ref(options.mobile ?? true);
   const onChange = vi.fn();
   const scope = effectScope();
-  const drawer = scope.run(() => useAppDrawer({ isMobile, onChange }))!;
+  const drawer = scope.run(() =>
+    useAppDrawer({ isMobile, onChange, isAvailable: () => options.available ?? true }),
+  )!;
 
   return { isMobile, onChange, drawer, dispose: () => scope.stop() };
 }
@@ -39,6 +41,18 @@ describe("useAppDrawer", () => {
   it("does nothing in the desktop layout", () => {
     // ARRANGE
     const { drawer } = setup({ mobile: false });
+    drawer.registerSidebar("start");
+
+    // ACT
+    drawer.open("start");
+
+    // ASSERT
+    expect(drawer.activeSide.value).toBeNull();
+  });
+
+  it("ignores sides whose sidebar is not available", () => {
+    // ARRANGE
+    const { drawer } = setup({ available: false });
     drawer.registerSidebar("start");
 
     // ACT
@@ -107,7 +121,7 @@ describe("useAppDrawer", () => {
     expect(onChange).toHaveBeenLastCalledWith(null);
   });
 
-  it("closes when the open sidebar is removed", () => {
+  it("closes when the open sidebar is removed", async () => {
     // ARRANGE
     const { drawer } = setup();
     const unregister = drawer.registerSidebar("start");
@@ -115,69 +129,11 @@ describe("useAppDrawer", () => {
 
     // ACT
     unregister();
+    await nextTick();
 
     // ASSERT
     expect(drawer.activeSide.value).toBeNull();
     drawer.open("start");
     expect(drawer.activeSide.value).toBeNull();
-  });
-});
-
-describe("isNavigationClick", () => {
-  function clickResult(anchorHtml: string, init: MouseEventInit = {}) {
-    const root = document.createElement("div");
-    root.innerHTML = anchorHtml;
-    document.body.appendChild(root);
-
-    let result: boolean | undefined;
-    root.addEventListener("click", (event) => {
-      event.preventDefault();
-      result = isNavigationClick(event, root);
-    });
-
-    const target = root.querySelector("[data-target]") ?? root.firstElementChild!;
-    target.dispatchEvent(
-      new MouseEvent("click", { bubbles: true, cancelable: true, button: 0, ...init }),
-    );
-    root.remove();
-
-    return result;
-  }
-
-  it("recognizes a plain click on a link", () => {
-    expect(clickResult('<a href="/orders">Orders</a>')).toBe(true);
-  });
-
-  it("recognizes a click on an element inside a link", () => {
-    expect(clickResult('<a href="/orders"><span data-target>Orders</span></a>')).toBe(true);
-  });
-
-  it("ignores clicks with modifier keys", () => {
-    expect(clickResult('<a href="/orders">Orders</a>', { metaKey: true })).toBe(false);
-    expect(clickResult('<a href="/orders">Orders</a>', { ctrlKey: true })).toBe(false);
-    expect(clickResult('<a href="/orders">Orders</a>', { shiftKey: true })).toBe(false);
-    expect(clickResult('<a href="/orders">Orders</a>', { altKey: true })).toBe(false);
-  });
-
-  it("ignores clicks with other mouse buttons", () => {
-    expect(clickResult('<a href="/orders">Orders</a>', { button: 1 })).toBe(false);
-  });
-
-  it("ignores links that open elsewhere or download", () => {
-    expect(clickResult('<a href="/orders" target="_blank">Orders</a>')).toBe(false);
-    expect(clickResult('<a href="/report.pdf" download>Report</a>')).toBe(false);
-  });
-
-  it("accepts links that explicitly target the same window", () => {
-    expect(clickResult('<a href="/orders" target="_self">Orders</a>')).toBe(true);
-  });
-
-  it("ignores placeholder links", () => {
-    expect(clickResult('<a href="#">Toggle</a>')).toBe(false);
-    expect(clickResult('<a href="">Toggle</a>')).toBe(false);
-  });
-
-  it("ignores clicks on buttons", () => {
-    expect(clickResult("<button>Expand</button>")).toBe(false);
   });
 });

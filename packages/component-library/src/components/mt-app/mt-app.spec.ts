@@ -6,13 +6,14 @@ import {
   nextTick,
   onMounted,
   ref,
+  type App,
   type Component,
 } from "vue";
 import { render, screen, waitFor } from "@testing-library/vue";
 import userEvent from "@testing-library/user-event";
 import MtApp from "./mt-app.vue";
-import MtThemeProvider from "../mt-theme-provider/mt-theme-provider.vue";
 import { useMtApp } from "./composables/useMtApp";
+import { useMtAppRegions, type MtAppRegions } from "./composables/useMtAppRegions";
 import { useFutureFlags } from "../../composables/useFutureFlags";
 import { useSnackbar } from "../mt-snackbar/composables/use-snackbar";
 
@@ -84,15 +85,76 @@ const allSlots = {
 
 type Slots = Partial<Record<keyof typeof allSlots, unknown>>;
 
-function renderApp(options: { props?: Record<string, unknown>; slots?: Slots } = {}) {
-  return render(MtApp, {
-    props: { theme: "light", applyTheme: false, snackbar: false, ...options.props },
+async function renderApp(
+  options: { props?: Record<string, unknown>; slots?: Slots; router?: unknown } = {},
+) {
+  const result = render(MtApp, {
+    global: {
+      plugins: options.router
+        ? [
+            {
+              install: (app: App) => {
+                app.config.globalProperties.$router = options.router;
+              },
+            },
+          ]
+        : [],
+    },
+    props: { theme: "light", applyTheme: false, ...options.props },
     slots: options.slots ?? allSlots,
   });
+
+  await nextTick();
+
+  return result;
 }
 
 function mobileProps(props: Record<string, unknown> = {}) {
-  return { breakpoint: 99999, ...props };
+  return { mobileBreakpoint: 99999, ...props };
+}
+
+function createFakeRouter() {
+  const guards: (() => void)[] = [];
+  const hooks: ((
+    to: { path: string; hash: string },
+    from: { path: string; hash: string },
+  ) => void)[] = [];
+  const listeners: (() => void)[] = [];
+  let current = { path: "/", hash: "" };
+  let position = 0;
+
+  const router = {
+    beforeEach: (guard: () => void) => (guards.push(guard), () => undefined),
+    afterEach: (hook: (typeof hooks)[number]) => (hooks.push(hook), () => undefined),
+    options: {
+      history: { listen: (listener: () => void) => (listeners.push(listener), () => undefined) },
+    },
+  };
+
+  window.history.replaceState({ position }, "");
+
+  async function navigate(path: string, options: { back?: boolean } = {}) {
+    position += options.back ? -1 : 1;
+    window.history.replaceState({ position }, "");
+    if (options.back) listeners.forEach((listener) => listener());
+    guards.forEach((guard) => guard());
+
+    const from = current;
+    current = { path, hash: "" };
+    hooks.forEach((hook) => hook(current, from));
+
+    await nextTick();
+    await new Promise((resolve) => requestAnimationFrame(resolve));
+    await nextTick();
+  }
+
+  return { router, navigate };
+}
+
+function scrollContent(top: number) {
+  const main = screen.getByRole("main");
+  main.scrollTop = top;
+  main.dispatchEvent(new Event("scroll"));
 }
 
 const startTriggerName = "Open Primary sidebar";
@@ -112,9 +174,9 @@ describe("mt-app", () => {
   });
 
   describe("regions", () => {
-    it("renders a landmark for every filled slot", () => {
+    it("renders a landmark for every filled slot", async () => {
       // ACT
-      renderApp();
+      await renderApp();
 
       // ASSERT
       expect(screen.getByRole("banner")).toHaveTextContent("Header content");
@@ -127,9 +189,9 @@ describe("mt-app", () => {
       );
     });
 
-    it("renders no header and no sidebars when only content is given", () => {
+    it("renders no header and no sidebars when only content is given", async () => {
       // ACT
-      renderApp({ slots: { content: allSlots.content } });
+      await renderApp({ slots: { content: allSlots.content } });
 
       // ASSERT
       expect(screen.queryByRole("banner")).not.toBeInTheDocument();
@@ -137,9 +199,9 @@ describe("mt-app", () => {
       expect(screen.getByRole("main")).toBeInTheDocument();
     });
 
-    it("renders only the start sidebar when the end slot is empty", () => {
+    it("renders only the start sidebar when the end slot is empty", async () => {
       // ACT
-      renderApp({
+      await renderApp({
         slots: { content: allSlots.content, "sidebar-start": allSlots["sidebar-start"] },
       });
 
@@ -148,9 +210,9 @@ describe("mt-app", () => {
       expect(screen.getByRole("complementary", { name: "Primary sidebar" })).toBeInTheDocument();
     });
 
-    it("treats a slot that renders nothing as absent", () => {
+    it("treats a slot that renders nothing as absent", async () => {
       // ACT
-      renderApp({
+      await renderApp({
         slots: {
           content: allSlots.content,
           "sidebar-end": () => [createCommentVNode("v-if")],
@@ -163,18 +225,9 @@ describe("mt-app", () => {
       expect(screen.queryByRole("complementary")).not.toBeInTheDocument();
     });
 
-    it("uses the given sidebar labels", () => {
+    it("renders no drawer triggers in the desktop layout", async () => {
       // ACT
-      renderApp({ props: { sidebarStartLabel: "Navigation", sidebarEndLabel: "Tools" } });
-
-      // ASSERT
-      expect(screen.getByRole("complementary", { name: "Navigation" })).toBeInTheDocument();
-      expect(screen.getByRole("complementary", { name: "Tools" })).toBeInTheDocument();
-    });
-
-    it("renders no drawer triggers in the desktop layout", () => {
-      // ACT
-      renderApp();
+      await renderApp();
 
       // ASSERT
       expect(screen.queryByRole("button", { name: startTriggerName })).not.toBeInTheDocument();
@@ -184,9 +237,9 @@ describe("mt-app", () => {
   });
 
   describe("mobile header", () => {
-    it("places a trigger for every filled sidebar around the header content", () => {
+    it("places a trigger for every filled sidebar around the header content", async () => {
       // ACT
-      renderApp({ props: mobileProps() });
+      await renderApp({ props: mobileProps() });
 
       // ASSERT
       expect(screen.getByRole("banner")).toHaveTextContent("Header content");
@@ -194,9 +247,9 @@ describe("mt-app", () => {
       expect(screen.getByRole("button", { name: endTriggerName })).toBeInTheDocument();
     });
 
-    it("renders a trigger only for filled sidebars", () => {
+    it("renders a trigger only for filled sidebars", async () => {
       // ACT
-      renderApp({
+      await renderApp({
         props: mobileProps(),
         slots: { content: allSlots.content, "sidebar-end": allSlots["sidebar-end"] },
       });
@@ -206,9 +259,9 @@ describe("mt-app", () => {
       expect(screen.getByRole("button", { name: endTriggerName })).toBeInTheDocument();
     });
 
-    it("renders a shell-owned header with just the triggers when the header slot is empty", () => {
+    it("renders a shell-owned header with just the triggers when the header slot is empty", async () => {
       // ACT
-      renderApp({
+      await renderApp({
         props: mobileProps(),
         slots: { content: allSlots.content, "sidebar-start": allSlots["sidebar-start"] },
       });
@@ -218,20 +271,20 @@ describe("mt-app", () => {
       expect(screen.getByRole("button", { name: startTriggerName })).toBeInTheDocument();
     });
 
-    it("renders no header when there is neither header content nor a sidebar", () => {
+    it("renders no header when there is neither header content nor a sidebar", async () => {
       // ACT
-      renderApp({ props: mobileProps(), slots: { content: allSlots.content } });
+      await renderApp({ props: mobileProps(), slots: { content: allSlots.content } });
 
       // ASSERT
       expect(screen.queryByRole("banner")).not.toBeInTheDocument();
     });
 
-    it("never uses the mobile layout when the breakpoint is zero", () => {
+    it("never uses the mobile layout when the breakpoint is zero", async () => {
       // ARRANGE
       stubMatchMedia(390);
 
       // ACT
-      renderApp({ props: { breakpoint: 0 } });
+      await renderApp({ props: { mobileBreakpoint: 0 } });
 
       // ASSERT
       expect(screen.queryByRole("button", { name: startTriggerName })).not.toBeInTheDocument();
@@ -240,9 +293,9 @@ describe("mt-app", () => {
   });
 
   describe("drawers", () => {
-    it("starts with closed drawers that are unreachable", () => {
+    it("starts with closed drawers that are unreachable", async () => {
       // ACT
-      renderApp({ props: mobileProps() });
+      await renderApp({ props: mobileProps() });
 
       // ASSERT
       const drawer = screen.getByRole("dialog", { name: "Primary sidebar" });
@@ -261,7 +314,7 @@ describe("mt-app", () => {
 
     it("opens a drawer from its trigger and makes the rest of the shell inert", async () => {
       // ARRANGE
-      renderApp({ props: mobileProps() });
+      await renderApp({ props: mobileProps() });
 
       // ACT
       await userEvent.click(screen.getByRole("button", { name: startTriggerName }));
@@ -282,7 +335,7 @@ describe("mt-app", () => {
 
     it("keeps only one drawer open", async () => {
       // ARRANGE
-      const { emitted } = renderApp({ props: mobileProps() });
+      const { emitted } = await renderApp({ props: mobileProps() });
       await userEvent.click(screen.getByRole("button", { name: startTriggerName }));
 
       // ACT
@@ -298,7 +351,7 @@ describe("mt-app", () => {
 
     it("closes again when the trigger is pressed twice quickly", async () => {
       // ARRANGE
-      const { emitted } = renderApp({ props: mobileProps() });
+      const { emitted } = await renderApp({ props: mobileProps() });
 
       // ACT
       await userEvent.dblClick(screen.getByRole("button", { name: startTriggerName }));
@@ -311,7 +364,7 @@ describe("mt-app", () => {
 
     it("closes on the backdrop and returns the focus to the trigger", async () => {
       // ARRANGE
-      renderApp({ props: mobileProps() });
+      await renderApp({ props: mobileProps() });
       await userEvent.click(screen.getByRole("button", { name: startTriggerName }));
 
       // ACT
@@ -327,7 +380,7 @@ describe("mt-app", () => {
 
     it("closes with its close button", async () => {
       // ARRANGE
-      renderApp({ props: mobileProps() });
+      await renderApp({ props: mobileProps() });
       await userEvent.click(screen.getByRole("button", { name: endTriggerName }));
 
       // ACT
@@ -342,7 +395,7 @@ describe("mt-app", () => {
 
     it("closes on Escape pressed inside the drawer", async () => {
       // ARRANGE
-      renderApp({ props: mobileProps() });
+      await renderApp({ props: mobileProps() });
       await userEvent.click(screen.getByRole("button", { name: startTriggerName }));
       await waitFor(() =>
         expect(screen.getByRole("dialog", { name: "Primary sidebar" })).toHaveFocus(),
@@ -357,7 +410,7 @@ describe("mt-app", () => {
 
     it("ignores Escape pressed outside the drawer", async () => {
       // ARRANGE
-      renderApp({ props: mobileProps() });
+      await renderApp({ props: mobileProps() });
       await userEvent.click(screen.getByRole("button", { name: startTriggerName }));
       screen.getByRole("button", { name: "Content action" }).focus();
 
@@ -370,7 +423,7 @@ describe("mt-app", () => {
 
     it("stays open for clicks inside the drawer", async () => {
       // ARRANGE
-      renderApp({ props: mobileProps() });
+      await renderApp({ props: mobileProps() });
       await userEvent.click(screen.getByRole("button", { name: startTriggerName }));
 
       // ACT
@@ -382,7 +435,7 @@ describe("mt-app", () => {
 
     it("keeps the keyboard focus inside the drawer", async () => {
       // ARRANGE
-      renderApp({ props: mobileProps() });
+      await renderApp({ props: mobileProps() });
       await userEvent.click(screen.getByRole("button", { name: startTriggerName }));
       screen.getByRole("button", { name: "Start action" }).focus();
 
@@ -394,77 +447,52 @@ describe("mt-app", () => {
     });
   });
 
-  describe("navigation", () => {
-    function renderWithLink(props: Record<string, unknown> = {}) {
-      const linkClick = vi.fn((event: MouseEvent) => event.preventDefault());
-
-      const result = renderApp({
-        props: mobileProps(props),
-        slots: {
-          content: allSlots.content,
-          "sidebar-start": () => [
-            h("nav", [
-              h("a", { href: "/orders", onClick: linkClick }, "Orders"),
-              h("a", { href: "/help", target: "_blank", onClick: linkClick }, "Help"),
-              h("a", { href: "#", onClick: linkClick }, "Toggle group"),
-            ]),
-          ],
-        },
-      });
-
-      return { ...result, linkClick };
-    }
-
-    it("closes when a link inside the drawer is followed, even if the link handled the click", async () => {
+  describe("router integration", () => {
+    it("closes an open drawer after a navigation", async () => {
       // ARRANGE
-      renderWithLink();
+      const { router, navigate } = createFakeRouter();
+      await renderApp({ props: mobileProps(), router });
       await userEvent.click(screen.getByRole("button", { name: startTriggerName }));
 
       // ACT
-      await userEvent.click(screen.getByRole("link", { name: "Orders" }));
+      await navigate("/orders");
 
       // ASSERT
-      expect(screen.getByRole("dialog", { name: "Primary sidebar" })).toHaveAttribute("inert");
+      expect(screen.getByRole("dialog", { name: "Primary sidebar", hidden: true })).toHaveAttribute(
+        "inert",
+      );
     });
 
-    it("stays open when the link opens a new window or is a placeholder", async () => {
+    it("keeps the drawer open when closing on navigation is disabled", async () => {
       // ARRANGE
-      renderWithLink();
+      const { router, navigate } = createFakeRouter();
+      await renderApp({ props: mobileProps({ closeOnNavigate: false }), router });
       await userEvent.click(screen.getByRole("button", { name: startTriggerName }));
 
       // ACT
-      await userEvent.click(screen.getByRole("link", { name: "Help" }));
-      await userEvent.click(screen.getByRole("link", { name: "Toggle group" }));
+      await navigate("/orders");
 
       // ASSERT
       expect(screen.getByRole("dialog", { name: "Primary sidebar" })).not.toHaveAttribute("inert");
     });
 
-    it("stays open when the link is opened with a modifier key", async () => {
+    it("scrolls the content to the top when the path changes and restores it when going back", async () => {
       // ARRANGE
-      const user = userEvent.setup();
-      renderWithLink();
-      await user.click(screen.getByRole("button", { name: startTriggerName }));
+      const { router, navigate } = createFakeRouter();
+      await renderApp({ router });
+      scrollContent(400);
 
       // ACT
-      await user.keyboard("{Meta>}");
-      await user.click(screen.getByRole("link", { name: "Orders" }));
-      await user.keyboard("{/Meta}");
+      await navigate("/orders");
 
       // ASSERT
-      expect(screen.getByRole("dialog", { name: "Primary sidebar" })).not.toHaveAttribute("inert");
-    });
-
-    it("stays open on navigation when closing on navigation is disabled", async () => {
-      // ARRANGE
-      renderWithLink({ closeOnNavigate: false });
-      await userEvent.click(screen.getByRole("button", { name: startTriggerName }));
+      expect(screen.getByRole("main").scrollTop).toBe(0);
 
       // ACT
-      await userEvent.click(screen.getByRole("link", { name: "Orders" }));
+      await navigate("/", { back: true });
 
       // ASSERT
-      expect(screen.getByRole("dialog", { name: "Primary sidebar" })).not.toHaveAttribute("inert");
+      expect(screen.getByRole("main").scrollTop).toBe(400);
     });
   });
 
@@ -472,7 +500,7 @@ describe("mt-app", () => {
     it("turns open drawers back into inline sidebars when the viewport grows", async () => {
       // ARRANGE
       const media = stubMatchMedia(390);
-      renderApp({ props: { breakpoint: 1280 } });
+      await renderApp({ props: { mobileBreakpoint: 1280 } });
       await userEvent.click(screen.getByRole("button", { name: startTriggerName }));
       await waitFor(() =>
         expect(screen.getByRole("dialog", { name: "Primary sidebar" })).toHaveFocus(),
@@ -496,7 +524,7 @@ describe("mt-app", () => {
     it("enters the mobile layout with closed drawers", async () => {
       // ARRANGE
       const media = stubMatchMedia(1440);
-      renderApp({ props: { breakpoint: 1280 } });
+      await renderApp({ props: { mobileBreakpoint: 1280 } });
 
       // ACT
       media.setWidth(390);
@@ -518,8 +546,8 @@ describe("mt-app", () => {
           return () => h("button", { onClick: () => count.value++ }, `Count ${count.value}`);
         },
       };
-      renderApp({
-        props: { breakpoint: 1280 },
+      await renderApp({
+        props: { mobileBreakpoint: 1280 },
         slots: { content: allSlots.content, "sidebar-start": () => [h(Counter)] },
       });
       await userEvent.click(screen.getByRole("button", { name: "Count 0" }));
@@ -541,7 +569,7 @@ describe("mt-app", () => {
         components: { MtApp },
         props: { showEnd: Boolean },
         template: `
-          <mt-app :breakpoint="99999" theme="light" :apply-theme="false" :snackbar="false">
+          <mt-app :mobile-breakpoint="99999" theme="light" :apply-theme="false">
             <template #content><p>Main content</p></template>
             <template #sidebar-start><nav>Start nav</nav></template>
             <template v-if="showEnd" #sidebar-end><div>End tools</div></template>
@@ -549,6 +577,7 @@ describe("mt-app", () => {
         `,
       });
       const { rerender } = render(Wrapper, { props: { showEnd: true } });
+      await nextTick();
       await userEvent.click(screen.getByRole("button", { name: endTriggerName }));
 
       // ACT
@@ -557,7 +586,9 @@ describe("mt-app", () => {
       // ASSERT
       expect(screen.queryByRole("button", { name: endTriggerName })).not.toBeInTheDocument();
       expect(screen.queryByRole("dialog", { name: "Secondary sidebar" })).not.toBeInTheDocument();
-      expect(screen.getByTestId("mt-app-backdrop")).toHaveAttribute("data-state", "closed");
+      await waitFor(() =>
+        expect(screen.getByTestId("mt-app-backdrop")).toHaveAttribute("data-state", "closed"),
+      );
       expect(screen.getByRole("main")).not.toHaveAttribute("inert");
       await waitFor(() => expect(screen.getByRole("main")).toHaveFocus());
     });
@@ -584,7 +615,7 @@ describe("mt-app", () => {
 
     it("lets content open and close drawers", async () => {
       // ARRANGE
-      renderApp({
+      await renderApp({
         props: mobileProps(),
         slots: {
           content: () => [h(Probe)],
@@ -608,7 +639,7 @@ describe("mt-app", () => {
 
     it("ignores drawer requests for empty sidebars and in the desktop layout", async () => {
       // ARRANGE
-      renderApp({
+      await renderApp({
         props: mobileProps(),
         slots: { content: () => [h(Probe)], "sidebar-start": allSlots["sidebar-start"] },
       });
@@ -622,7 +653,7 @@ describe("mt-app", () => {
 
     it("stays inactive in the desktop layout", async () => {
       // ARRANGE
-      renderApp({
+      await renderApp({
         slots: { content: () => [h(Probe)], "sidebar-start": allSlots["sidebar-start"] },
       });
 
@@ -633,22 +664,18 @@ describe("mt-app", () => {
       expect(screen.getByRole("status")).toHaveTextContent("mobile:false drawer:null");
     });
 
-    it("provides inert defaults and warns outside of the shell", () => {
-      // ARRANGE
-      const warn = vi.spyOn(console, "warn").mockImplementation(() => undefined);
-
+    it("provides inert defaults outside of the shell", async () => {
       // ACT
       render(Probe);
 
       // ASSERT
       expect(screen.getByRole("status")).toHaveTextContent("mobile:false drawer:null theme:system");
-      expect(warn).toHaveBeenCalledWith(expect.stringContaining("useMtApp()"));
     });
 
     it("manages and persists the theme when it is not controlled", async () => {
       // ARRANGE
       const { emitted } = render(MtApp, {
-        props: { snackbar: false, themeStorageKey: "app-theme" },
+        props: { themeStorageKey: "app-theme" },
         slots: { content: () => [h(Probe)] },
       });
       expect(document.documentElement.dataset.theme).toBe("light");
@@ -666,7 +693,7 @@ describe("mt-app", () => {
     it("only reports theme changes when the theme is controlled", async () => {
       // ARRANGE
       const { emitted, rerender } = render(MtApp, {
-        props: { snackbar: false, theme: "light" },
+        props: { theme: "light" },
         slots: { content: () => [h(Probe)] },
       });
 
@@ -686,10 +713,10 @@ describe("mt-app", () => {
       expect(screen.getByRole("status")).toHaveTextContent("theme:dark");
     });
 
-    it("leaves the document theme alone when applying it is disabled", () => {
+    it("leaves the document theme alone when applying it is disabled", async () => {
       // ACT
       render(MtApp, {
-        props: { snackbar: false, theme: "dark", applyTheme: false },
+        props: { theme: "dark", applyTheme: false },
         slots: { content: allSlots.content },
       });
 
@@ -702,42 +729,132 @@ describe("mt-app", () => {
     const FlagProbe: Component = {
       setup() {
         const future = useFutureFlags();
-        const enabled = computed(() => future.removeCardWidth);
-        return () => h("output", enabled.value ? "card width removed" : "card width kept");
+        const text = computed(
+          () => `card:${future.removeCardWidth} banner:${future.bannerFullWidth}`,
+        );
+        return () => h("output", text.value);
       },
     };
 
-    it("provides the given flags and updates them reactively", async () => {
+    it("enables all future flags by default", async () => {
+      // ACT
+      await renderApp({ slots: { content: () => [h(FlagProbe)] } });
+
+      // ASSERT
+      expect(screen.getByRole("status")).toHaveTextContent("card:true banner:true");
+    });
+
+    it("applies single overrides on top of all enabled flags and updates them reactively", async () => {
       // ARRANGE
-      const { rerender } = renderApp({
-        props: { future: { removeCardWidth: true } },
-        slots: { content: () => [h(FlagProbe)] },
-      });
-      expect(screen.getByRole("status")).toHaveTextContent("card width removed");
+      const { rerender } = await renderApp({ slots: { content: () => [h(FlagProbe)] } });
 
       // ACT
       await rerender({ future: { removeCardWidth: false } });
 
       // ASSERT
-      expect(screen.getByRole("status")).toHaveTextContent("card width kept");
+      expect(screen.getByRole("status")).toHaveTextContent("card:false banner:true");
     });
 
-    it("inherits the flags of a surrounding provider when none are given", () => {
+    it("lets the application opt out of all future flags", async () => {
       // ACT
-      render(MtThemeProvider, {
-        props: { future: { all: true } },
+      await renderApp({
+        props: { future: { all: false } },
+        slots: { content: () => [h(FlagProbe)] },
+      });
+
+      // ASSERT
+      expect(screen.getByRole("status")).toHaveTextContent("card:false banner:false");
+    });
+  });
+
+  describe("hiding regions", () => {
+    function createView(regions: MtAppRegions) {
+      return defineComponent({
+        setup() {
+          useMtAppRegions(regions);
+          return () => h("p", "Fullscreen view");
+        },
+      });
+    }
+
+    it("hides the header while a view hides it and shows it again when the view goes away", async () => {
+      // ARRANGE
+      const View = createView({ header: false });
+      const showView = ref(true);
+      await renderApp({
+        slots: { ...allSlots, content: () => [showView.value ? h(View) : h("p", "Page")] },
+      });
+      expect(screen.queryByRole("banner")).not.toBeInTheDocument();
+
+      // ACT
+      showView.value = false;
+      await nextTick();
+
+      // ASSERT
+      expect(screen.getByRole("banner")).toHaveTextContent("Header content");
+    });
+
+    it("keeps a hidden sidebar mounted and removes its drawer trigger", async () => {
+      // ARRANGE
+      const mounted = vi.fn();
+      const Counter: Component = {
+        setup() {
+          onMounted(mounted);
+          return () => h("button", "Navigation item");
+        },
+      };
+      const View = createView({ sidebarStart: false });
+      const showView = ref(true);
+      await renderApp({
+        props: mobileProps(),
         slots: {
-          default: () =>
-            h(
-              MtApp,
-              { theme: "light", applyTheme: false, snackbar: false },
-              { content: () => [h(FlagProbe)] },
-            ),
+          header: allSlots.header,
+          "sidebar-start": () => [h(Counter)],
+          content: () => [showView.value ? h(View) : h("p", "Page")],
         },
       });
 
       // ASSERT
-      expect(screen.getByRole("status")).toHaveTextContent("card width removed");
+      expect(screen.queryByRole("button", { name: startTriggerName })).not.toBeInTheDocument();
+
+      // ACT
+      showView.value = false;
+      await nextTick();
+
+      // ASSERT
+      expect(screen.getByRole("button", { name: startTriggerName })).toBeInTheDocument();
+      expect(mounted).toHaveBeenCalledTimes(1);
+    });
+
+    it("keeps a region hidden until no view hides it anymore", async () => {
+      // ARRANGE
+      const FirstView = createView({ header: false });
+      const SecondView = createView({ header: false });
+      const showFirst = ref(true);
+      const showSecond = ref(true);
+      await renderApp({
+        slots: {
+          ...allSlots,
+          content: () => [
+            showFirst.value ? h(FirstView) : null,
+            showSecond.value ? h(SecondView) : null,
+          ],
+        },
+      });
+
+      // ACT
+      showFirst.value = false;
+      await nextTick();
+
+      // ASSERT
+      expect(screen.queryByRole("banner")).not.toBeInTheDocument();
+
+      // ACT
+      showSecond.value = false;
+      await nextTick();
+
+      // ASSERT
+      expect(screen.getByRole("banner")).toBeInTheDocument();
     });
   });
 
@@ -755,42 +872,6 @@ describe("mt-app", () => {
 
       // ASSERT
       expect(screen.getAllByText("Saved successfully")).toHaveLength(1);
-    });
-
-    it("renders no snackbar host when disabled", async () => {
-      // ARRANGE
-      renderApp({ props: { snackbar: false } });
-
-      // ACT
-      useSnackbar().addSnackbar({ message: "Saved successfully" });
-      await nextTick();
-
-      // ASSERT
-      expect(screen.queryByText("Saved successfully")).not.toBeInTheDocument();
-    });
-  });
-
-  describe("document", () => {
-    it("locks document scrolling while mounted and releases it on unmount", () => {
-      // ACT
-      const { unmount } = renderApp();
-
-      // ASSERT
-      expect(document.documentElement.style.overflow).toBe("hidden");
-
-      // ACT
-      unmount();
-
-      // ASSERT
-      expect(document.documentElement.style.overflow).toBe("");
-    });
-
-    it("leaves the document alone when locking is disabled", () => {
-      // ACT
-      renderApp({ props: { lockDocument: false } });
-
-      // ASSERT
-      expect(document.documentElement.style.overflow).toBe("");
     });
   });
 });

@@ -1,6 +1,11 @@
 <template>
-  <Teleport to="body">
-    <div class="mt-snackbar" @mouseenter="isHovered = true" @mouseleave="isHovered = false">
+  <Teleport v-if="isActiveHost" to="body">
+    <div
+      class="mt-snackbar"
+      data-mt-overlay
+      @mouseenter="isHovered = true"
+      @mouseleave="isHovered = false"
+    >
       <mt-snackbar-notification
         v-for="snackbar in snackbars"
         :key="snackbar.id"
@@ -15,14 +20,15 @@
 </template>
 
 <script lang="ts">
-// module-level, so every host instance shares the count
-let mountedHosts = 0;
+import { ref as moduleRef } from "vue";
+
+const mountedHosts = moduleRef<symbol[]>([]);
 </script>
 
 <script setup lang="ts">
 import MtSnackbarNotification from "./_internal/mt-snackbar-notification.vue";
 import { useSnackbar, type Snackbar } from "./composables/use-snackbar";
-import { onMounted, onUnmounted, ref } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 
 export interface HeightT {
   height: number;
@@ -31,19 +37,15 @@ export interface HeightT {
 
 const { snackbars, removeSnackbar } = useSnackbar();
 
-// The snackbar state is global, so every mounted host renders every message.
-onMounted(() => {
-  mountedHosts += 1;
+const hostId = Symbol("mt-snackbar");
+const isActiveHost = computed(() => mountedHosts.value[0] === hostId);
 
-  if (import.meta.env.DEV && mountedHosts > 1) {
-    console.warn(
-      "[MtSnackbar] More than one snackbar host is mounted; every notification will be rendered multiple times. Mount <mt-snackbar /> once, or rely on the host that <mt-app /> renders.",
-    );
-  }
+onMounted(() => {
+  mountedHosts.value.push(hostId);
 });
 
 onUnmounted(() => {
-  mountedHosts -= 1;
+  mountedHosts.value = mountedHosts.value.filter((id) => id !== hostId);
 });
 
 const heights = ref<HeightT[]>([]);
@@ -80,7 +82,7 @@ function removeSnackbarWithHeightCleanup(snackbarToRemove: Snackbar) {
   position: fixed;
   bottom: var(--scale-size-16);
   right: var(--scale-size-16);
-  z-index: 1600;
+  z-index: var(--z-index-notification, 1600);
   pointer-events: none;
   transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
 }
