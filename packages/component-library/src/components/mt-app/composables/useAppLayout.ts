@@ -1,7 +1,6 @@
 import {
   computed,
   inject,
-  onBeforeUnmount,
   onScopeDispose,
   ref,
   toValue,
@@ -13,6 +12,13 @@ import {
 
 export type MtAppSide = "start" | "end";
 
+/** The regions of the shell that a view can hide, see `useMtAppRegions`. */
+export interface MtAppRegions {
+  header?: boolean;
+  sidebarStart?: boolean;
+  sidebarEnd?: boolean;
+}
+
 /**
  * The media query that matches below the given viewport width. `max-width` is
  * inclusive, so a fraction is subtracted to keep the breakpoint itself on the
@@ -23,11 +29,15 @@ export function breakpointQuery(breakpoint: number): string {
 }
 
 /**
- * Whether the viewport is narrower than the breakpoint. The value is read
- * synchronously, so the first render already uses the right layout. A
- * breakpoint of zero (or less) disables the mobile layout entirely.
+ * Whether the viewport is narrower than the breakpoint. The viewport is only read
+ * while `enabled` is true, which the shell sets after mounting: server-rendered markup
+ * and the first client render then agree. A breakpoint of zero (or less) disables the
+ * mobile layout entirely.
  */
-export function useBreakpoint(breakpoint: MaybeRefOrGetter<number>): Readonly<Ref<boolean>> {
+export function useBreakpoint(
+  breakpoint: MaybeRefOrGetter<number>,
+  enabled: Readonly<Ref<boolean>>,
+): Readonly<Ref<boolean>> {
   const isMobile = ref(false);
   let mediaQuery: MediaQueryList | undefined;
 
@@ -41,12 +51,12 @@ export function useBreakpoint(breakpoint: MaybeRefOrGetter<number>): Readonly<Re
   };
 
   watch(
-    () => toValue(breakpoint),
-    (value) => {
+    [() => toValue(breakpoint), enabled],
+    ([value, isEnabled]) => {
       stop();
 
       const supported = typeof window !== "undefined" && typeof window.matchMedia === "function";
-      if (value <= 0 || !supported) {
+      if (!isEnabled || value <= 0 || !supported) {
         isMobile.value = false;
         return;
       }
@@ -63,52 +73,23 @@ export function useBreakpoint(breakpoint: MaybeRefOrGetter<number>): Readonly<Re
   return computed(() => isMobile.value);
 }
 
-/**
- * Locks the document while the shell owns the viewport: the document itself never
- * scrolls (an overlay positioned below the fold in the body would otherwise make
- * it scrollable) and the page behind the shell uses the shell background instead
- * of the body color. Previous inline styles are restored when the lock is released.
- */
-export function useDocumentLock(enabled: () => boolean): void {
-  let previous: { overflow: string; backgroundColor: string } | undefined;
-
-  function lock() {
-    if (typeof document === "undefined" || previous) return;
-
-    const { style } = document.documentElement;
-    previous = { overflow: style.overflow, backgroundColor: style.backgroundColor };
-    style.overflow = "hidden";
-    style.setProperty("background-color", "var(--color-elevation-surface-sunken)");
-  }
-
-  function unlock() {
-    if (typeof document === "undefined" || !previous) return;
-
-    const { style } = document.documentElement;
-    style.overflow = previous.overflow;
-    style.backgroundColor = previous.backgroundColor;
-    previous = undefined;
-  }
-
-  watch(enabled, (value) => (value ? lock() : unlock()), { immediate: true });
-
-  onBeforeUnmount(unlock);
-}
-
 /** Provided by mt-app; the contract between the shell and its internal parts. */
 export interface AppLayoutContext {
   isMobile: Readonly<Ref<boolean>>;
   activeSide: Readonly<Ref<MtAppSide | null>>;
-  closeOnNavigate: Readonly<Ref<boolean>>;
   /** Announces a sidebar for the given side; the returned function removes it again. */
   registerSidebar(side: MtAppSide): () => void;
   open(side: MtAppSide): void;
   close(): void;
+  /** The shell regions that become inert while the drawer of the given side is open. */
+  inertTargets(side: MtAppSide): (Element | null | undefined)[];
   /**
    * The element that receives focus when the drawer of the given side closes;
    * `null` leaves the focus where it is.
    */
   focusReturnTarget(side: MtAppSide): HTMLElement | null;
+  /** Hides regions while the returned release function has not been called. */
+  requestRegions(regions: () => MtAppRegions): () => void;
 }
 
 export const appLayoutKey = Symbol("mt-app-layout") as InjectionKey<AppLayoutContext>;
@@ -119,7 +100,6 @@ export function useAppLayout(component: string): AppLayoutContext {
   if (context === null) {
     const error = new Error(`<${component} /> is missing a parent <mt-app /> component.`);
 
-    // V8-only and not typed in the DOM lib
     const ErrorWithCapture = Error as ErrorConstructor & {
       captureStackTrace?(target: object, constructorOpt?: unknown): void;
     };

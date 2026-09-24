@@ -14,7 +14,9 @@ export interface MtAppContext {
   theme: Readonly<Ref<Theme>>;
   /** The theme that is applied after resolving `system`. */
   resolvedTheme: Readonly<Ref<ResolvedTheme>>;
-  /** Opens the drawer of the given side. Does nothing in the desktop layout or for an empty sidebar. */
+  /** The element that scrolls the content. The window itself never scrolls while the shell is mounted. */
+  scrollContainer: Readonly<Ref<HTMLElement | null>>;
+  /** Opens the drawer of the given side. Does nothing in the desktop layout or for an empty or hidden sidebar. */
   openDrawer(side: MtAppSide): void;
   closeDrawer(): void;
   /** Sets the theme preference. With a controlled `theme` prop this only emits `update:theme`. */
@@ -27,29 +29,20 @@ export function provideMtApp(context: MtAppContext): void {
   provide(mtAppKey, context);
 }
 
-let warnedAboutMissingShell = false;
-
 /**
  * Gives descendants of `<mt-app>` access to the shell state. Outside of a shell it
- * returns inert defaults (and warns once in development) so that components using
- * it keep working when they are rendered on their own.
+ * returns inert defaults, so components using it keep working on their own.
  */
 export function useMtApp(): MtAppContext {
   const context = inject(mtAppKey, null);
   if (context !== null) return context;
-
-  if (import.meta.env.DEV && !warnedAboutMissingShell) {
-    warnedAboutMissingShell = true;
-    console.warn(
-      "[MtApp] useMtApp() was called outside of <mt-app />; the shell state is not available.",
-    );
-  }
 
   return {
     isMobile: ref(false),
     activeDrawer: ref(null),
     theme: ref<Theme>("system"),
     resolvedTheme: ref<ResolvedTheme>("light"),
+    scrollContainer: ref(null),
     openDrawer: () => undefined,
     closeDrawer: () => undefined,
     setTheme: () => undefined,

@@ -61,22 +61,42 @@ describe("useAppLayout", () => {
   });
 
   describe("useBreakpoint", () => {
-    it("reports the mobile layout synchronously on the first read", () => {
+    it("reports the mobile layout as soon as it is enabled", () => {
       // ARRANGE
       const media = stubMatchMedia(true);
 
       // ACT
-      const { result } = withScope(() => useBreakpoint(1280));
+      const { result } = withScope(() => useBreakpoint(1280, ref(true)));
 
       // ASSERT
       expect(result.value).toBe(true);
       expect(media.queries()).toEqual(["(max-width: 1279.98px)"]);
     });
 
+    it("does not read the viewport before it is enabled", async () => {
+      // ARRANGE
+      const media = stubMatchMedia(true);
+      const enabled = ref(false);
+
+      // ACT
+      const { result } = withScope(() => useBreakpoint(1280, enabled));
+
+      // ASSERT
+      expect(result.value).toBe(false);
+      expect(media.queries()).toEqual([]);
+
+      // ACT
+      enabled.value = true;
+      await nextTick();
+
+      // ASSERT
+      expect(result.value).toBe(true);
+    });
+
     it("follows viewport changes", async () => {
       // ARRANGE
       const media = stubMatchMedia(false);
-      const { result } = withScope(() => useBreakpoint(1280));
+      const { result } = withScope(() => useBreakpoint(1280, ref(true)));
       expect(result.value).toBe(false);
 
       // ACT
@@ -91,7 +111,7 @@ describe("useAppLayout", () => {
       // ARRANGE
       const media = stubMatchMedia(false);
       const breakpoint = ref(1280);
-      withScope(() => useBreakpoint(breakpoint));
+      withScope(() => useBreakpoint(breakpoint, ref(true)));
 
       // ACT
       breakpoint.value = 800;
@@ -107,7 +127,7 @@ describe("useAppLayout", () => {
       const media = stubMatchMedia(true);
 
       // ACT
-      const { result } = withScope(() => useBreakpoint(0));
+      const { result } = withScope(() => useBreakpoint(0, ref(true)));
 
       // ASSERT
       expect(result.value).toBe(false);
@@ -117,7 +137,7 @@ describe("useAppLayout", () => {
     it("stops listening when its scope is disposed", () => {
       // ARRANGE
       const media = stubMatchMedia(false);
-      const { dispose } = withScope(() => useBreakpoint(1280));
+      const { dispose } = withScope(() => useBreakpoint(1280, ref(true)));
       expect(media.listenerCount()).toBe(1);
 
       // ACT

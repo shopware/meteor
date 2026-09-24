@@ -81,6 +81,10 @@ import {
   type MtAppContext,
   type MtAppSide,
 } from "./components/mt-app/composables/useMtApp";
+import {
+  useMtAppRegions,
+  type MtAppRegions,
+} from "./components/mt-app/composables/useMtAppRegions";
 import MtCollapsible from "./components/mt-collapsible/mt-collapsible.vue";
 import MtContainer from "./components/mt-container/mt-container.vue";
 import MtCollapsibleTrigger from "./components/mt-collapsible/mt-collapsible-trigger.vue";
@@ -164,6 +168,7 @@ export {
   MtActionMenuGroup,
   MtApp,
   useMtApp,
+  useMtAppRegions,
   MtCollapsible,
   MtCollapsibleTrigger,
   MtCollapsibleContent,
@@ -222,6 +227,6 @@ export {
 // Exporting types
 export type { Filter, Option, Toast, Snackbar, ChartOptions, BreadcrumbItem };
 export type { Theme, ResolvedTheme, UseThemeOptions, UseThemeReturn };
-export type { MtAppContext, MtAppSide };
+export type { MtAppContext, MtAppRegions, MtAppSide };
 export type { Editor } from "@tiptap/vue-3";
 export type { default as Link } from "@tiptap/extension-link";

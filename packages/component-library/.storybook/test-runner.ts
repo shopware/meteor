@@ -21,7 +21,6 @@ export default {
       await page.setViewportSize({ width: 1600, height: 900 });
     }
 
-    // the app shell needs a desktop-sized canvas; mobile visual tests use a phone-sized one
     if (context.id.startsWith("components-app-interaction-tests")) {
       await page.setViewportSize({ width: 1440, height: 900 });
     }
