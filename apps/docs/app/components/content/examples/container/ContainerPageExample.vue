@@ -5,7 +5,6 @@ import MtText from "@shopware-ag/meteor-component-library/MtText";
 </script>
 
 <template>
-  <!-- the page owns the spacing, the container only limits and centers the content -->
   <div class="page">
     <mt-container as="section" size="s">
       <mt-card title="Account">

@@ -19,10 +19,8 @@ const showEnd = ref(false);
 
     <mt-app
       class="app-regions__shell"
-      :breakpoint="0"
+      :mobile-breakpoint="0"
       :apply-theme="false"
-      :future="{ all: true }"
-      :snackbar="false"
       :lock-document="false"
     >
       <template v-if="showHeader" #header>

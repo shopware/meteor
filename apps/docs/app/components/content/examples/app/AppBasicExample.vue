@@ -8,13 +8,10 @@ const navigation = ["Dashboard", "Orders", "Customers", "Products", "Settings"];
 </script>
 
 <template>
-  <!-- breakpoint, apply-theme, future and snackbar are only set for this embedded demo -->
   <mt-app
     class="app-example"
-    :breakpoint="0"
+    :mobile-breakpoint="0"
     :apply-theme="false"
-    :future="{ all: true }"
-    :snackbar="false"
     :lock-document="false"
   >
     <template #header>

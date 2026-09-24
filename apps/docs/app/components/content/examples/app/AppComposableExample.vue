@@ -4,7 +4,6 @@ import MtApp from "@shopware-ag/meteor-component-library/MtApp";
 import MtText from "@shopware-ag/meteor-component-library/MtText";
 import { useMtApp } from "@shopware-ag/meteor-component-library";
 
-// any component below <mt-app> can read the shell state
 const ShellState = defineComponent({
   setup() {
     const app = useMtApp();
@@ -22,10 +21,8 @@ const ShellState = defineComponent({
 <template>
   <mt-app
     class="app-composable"
-    :breakpoint="0"
+    :mobile-breakpoint="0"
     :apply-theme="false"
-    :future="{ all: true }"
-    :snackbar="false"
     :lock-document="false"
   >
     <template #content>
