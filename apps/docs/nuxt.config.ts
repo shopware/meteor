@@ -136,6 +136,7 @@ export default defineNuxtConfig({
   },
   colorMode: {
     dataValue: "theme",
+    storageKey: "mt-theme",
   },
   llms: {
     domain: "https://meteor.shopware.com",

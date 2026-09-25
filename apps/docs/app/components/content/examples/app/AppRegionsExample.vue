@@ -17,37 +17,32 @@ const showEnd = ref(false);
       <mt-switch v-model="showEnd" label="End sidebar" />
     </div>
 
-    <mt-app
-      class="app-regions__shell"
-      :mobile-breakpoint="0"
-      :apply-theme="false"
-      :lock-document="false"
-    >
+    <mt-app class="app-regions__shell" :mobile-breakpoint="0">
       <template v-if="showHeader" #header>
-        <div class="app-regions__region">
-          <mt-text as="span" size="xs" weight="semibold">Header</mt-text>
+        <div class="slot slot--header">
+          <mt-text size="xs" color="color-text-secondary-default">header</mt-text>
         </div>
       </template>
 
       <template v-if="showStart" #sidebar-start>
-        <div class="app-regions__region app-regions__sidebar">
-          <mt-text as="span" size="xs" weight="semibold">Start sidebar</mt-text>
-        </div>
-      </template>
-
-      <template #content>
-        <div class="app-regions__region">
-          <mt-text size="xs">
-            Sidebars and content sit directly below the header, with 8px between
-            them and towards the shell edges. Without a header, that spacing
-            applies at the top too. Absent regions leave no gap behind.
+        <div class="slot slot--sidebar">
+          <mt-text size="xs" color="color-text-secondary-default">
+            sidebar-start
           </mt-text>
         </div>
       </template>
 
+      <template #content>
+        <div class="slot slot--content">
+          <mt-text size="xs" color="color-text-secondary-default">content</mt-text>
+        </div>
+      </template>
+
       <template v-if="showEnd" #sidebar-end>
-        <div class="app-regions__region app-regions__sidebar">
-          <mt-text as="span" size="xs" weight="semibold">End sidebar</mt-text>
+        <div class="slot slot--sidebar">
+          <mt-text size="xs" color="color-text-secondary-default">
+            sidebar-end
+          </mt-text>
         </div>
       </template>
     </mt-app>
@@ -73,11 +68,27 @@ const showEnd = ref(false);
   border-radius: var(--border-radius-m);
 }
 
-.app-regions__region {
-  padding: var(--scale-size-16);
+.slot {
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  height: 100%;
+  background-color: var(--color-background-secondary-default);
+  border: 1px dashed var(--color-border-primary-default);
+  border-radius: var(--border-radius-m);
 }
 
-.app-regions__sidebar {
+.slot--header {
+  height: var(--scale-size-56);
+  margin: var(--scale-size-8);
+}
+
+.slot--sidebar {
   width: var(--scale-size-160);
+}
+
+.slot--content {
+  min-height: calc(100% - var(--scale-size-32));
+  margin: var(--scale-size-16);
 }
 </style>

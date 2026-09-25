@@ -28,33 +28,33 @@ const FullscreenView = defineComponent({
 </script>
 
 <template>
-  <mt-app
-    class="app-fullscreen"
-    :mobile-breakpoint="0"
-    :apply-theme="false"
-    :lock-document="false"
-  >
+  <mt-app class="app-fullscreen" :mobile-breakpoint="0">
     <template #header>
-      <div class="app-fullscreen__region">
-        <mt-text as="span" size="xs" weight="semibold">Header</mt-text>
+      <div class="slot slot--header">
+        <mt-text size="xs" color="color-text-secondary-default">header</mt-text>
       </div>
     </template>
 
     <template #sidebar-start>
-      <div class="app-fullscreen__region app-fullscreen__sidebar">
-        <mt-text as="span" size="xs" weight="semibold">Navigation</mt-text>
+      <div class="slot slot--sidebar">
+        <mt-text size="xs" color="color-text-secondary-default">
+          sidebar-start
+        </mt-text>
       </div>
     </template>
 
     <template #content>
-      <div class="app-fullscreen__region">
+      <div class="slot slot--content">
+        <mt-text size="xs" color="color-text-secondary-default">content</mt-text>
         <fullscreen-view />
       </div>
     </template>
 
     <template #sidebar-end>
-      <div class="app-fullscreen__region app-fullscreen__sidebar">
-        <mt-text as="span" size="xs" weight="semibold">Assistant</mt-text>
+      <div class="slot slot--sidebar">
+        <mt-text size="xs" color="color-text-secondary-default">
+          sidebar-end
+        </mt-text>
       </div>
     </template>
   </mt-app>
@@ -67,11 +67,29 @@ const FullscreenView = defineComponent({
   border-radius: var(--border-radius-m);
 }
 
-.app-fullscreen__region {
-  padding: var(--scale-size-16);
+.slot {
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  height: 100%;
+  background-color: var(--color-background-secondary-default);
+  border: 1px dashed var(--color-border-primary-default);
+  border-radius: var(--border-radius-m);
 }
 
-.app-fullscreen__sidebar {
+.slot--header {
+  height: var(--scale-size-56);
+  margin: var(--scale-size-8);
+}
+
+.slot--sidebar {
   width: var(--scale-size-160);
+}
+
+.slot--content {
+  place-content: center;
+  gap: var(--scale-size-16);
+  min-height: calc(100% - var(--scale-size-32));
+  margin: var(--scale-size-16);
 }
 </style>
