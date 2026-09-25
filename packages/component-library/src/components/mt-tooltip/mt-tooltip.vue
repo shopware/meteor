@@ -26,6 +26,7 @@
     <Transition v-bind="$attrs">
       <div
         v-show="isVisible"
+        data-mt-overlay
         :data-placement="calculatedPlacement"
         style="position: absolute; z-index: var(--z-index-tooltip, 1100)"
       >
