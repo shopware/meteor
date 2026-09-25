@@ -1,45 +1,24 @@
 import { within, expect, userEvent, waitFor } from "@storybook/test";
 import { defineStory } from "@/_internal/story-helper";
+import { ref } from "vue";
+import MtApp from "./mt-app.vue";
+import MtButton from "../mt-button/mt-button.vue";
+import MtPopover from "../mt-popover/mt-popover.vue";
+import MtPopoverItem from "../mt-popover-item/mt-popover-item.vue";
+import MtModal from "../mt-modal/mt-modal.vue";
+import MtModalRoot from "../mt-modal/sub-components/mt-modal-root.vue";
+import MtModalTrigger from "../mt-modal/sub-components/mt-modal-trigger.vue";
+import MtSelect from "../mt-select/mt-select.vue";
 import { useSnackbar } from "../mt-snackbar/composables/use-snackbar";
-
-import meta, {
-  Composable,
-  ContentOnly,
-  Dark,
-  Default,
-  DynamicRegions,
-  Embedded,
-  Layering,
-  LongContent,
-  Mobile,
-  MobileHeaderless,
-  MobileLongContent,
-  type MtAppMeta,
-  type MtAppStory,
-} from "./mt-app.stories";
+import meta, { Default, SlotPlaceholder, type MtAppMeta, type MtAppStory } from "./mt-app.stories";
 
 export default {
   ...meta,
   title: "Components/App/Interaction tests",
-  tags: ["!autodocs"],
   beforeEach: () => useSnackbar().clearSnackbars(),
 } as MtAppMeta;
 
 const startTrigger = { name: "Open Primary sidebar" };
-const endTrigger = { name: "Open Secondary sidebar" };
-
-/** Cards inside the content render `<header>` elements too, so the shell header is queried directly. */
-function shellHeader(canvasElement: HTMLElement) {
-  return canvasElement.querySelector<HTMLElement>(".mt-app__header");
-}
-
-/**
- * A closed drawer is hidden (visibility: hidden + inert), so it has no accessible name
- * and cannot be found through a role query.
- */
-function closedDrawer(canvasElement: HTMLElement, name: string) {
-  return canvasElement.querySelector<HTMLElement>(`[role="dialog"][aria-label="${name}"]`);
-}
 
 function topmostElementAt(element: Element) {
   const rect = element.getBoundingClientRect();
@@ -47,19 +26,12 @@ function topmostElementAt(element: Element) {
   return document.elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2);
 }
 
-async function openDrawer(
-  canvas: ReturnType<typeof within>,
-  trigger: { name: string },
-  drawerName: string,
-) {
-  await userEvent.click(canvas.getByRole("button", trigger));
-  await waitFor(() =>
-    expect(canvas.getByRole("button", trigger)).toHaveAttribute("aria-expanded", "true"),
-  );
+async function openStartDrawer(canvas: ReturnType<typeof within>) {
+  await userEvent.click(canvas.getByRole("button", startTrigger));
 
-  const drawer = canvas.getByRole("dialog", { name: drawerName });
+  const drawer = await within(document.body).findByRole("dialog", { name: "Primary sidebar" });
   await waitFor(() => expect(drawer).toBeVisible());
-  await Promise.all(drawer.getAnimations().map((animation) => animation.finished));
+  await waitFor(() => expect(drawer.className).not.toContain("mt-drawer-slide-enter"));
 
   return drawer;
 }
@@ -69,289 +41,107 @@ export const VisualTestDesktop: MtAppStory = {
   name: "Render the desktop layout",
 };
 
-export const VisualTestContentOnly: MtAppStory = {
-  ...ContentOnly,
-  name: "Render the shell with content only",
-};
-
-export const VisualTestDark: MtAppStory = {
-  ...Dark,
-  name: "Render the dark theme",
-};
-
-export const VisualTestEmbedded: MtAppStory = {
-  ...Embedded,
-  name: "Render an embedded shell with a fixed height",
-};
-
-export const VisualTestHeaderPopoverOpen = defineStory<MtAppMeta>(
-  {
-    name: "Render a header popover above the content",
-    play: async ({ canvasElement, screen }) => {
-      const canvas = within(canvasElement);
-
-      await userEvent.click(canvas.getByRole("button", { name: "Jane Doe" }));
-      await screen.findByText("Sign out");
-    },
-  },
-  { from: Default },
-);
-
-export const VisualTestMobileClosed: MtAppStory = {
-  ...Mobile,
-  name: "Render the mobile layout with closed drawers",
-};
-
-export const VisualTestMobileStartDrawerOpen: MtAppStory = {
-  ...Mobile,
-  name: "Render the open navigation drawer",
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    await userEvent.click(canvas.getByRole("button", startTrigger));
-    await waitFor(() =>
-      expect(canvas.getByRole("button", startTrigger)).toHaveAttribute("aria-expanded", "true"),
-    );
-  },
-};
-
-export const VisualTestMobileEndDrawerOpen: MtAppStory = {
-  ...Mobile,
-  name: "Render the open details drawer",
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    await userEvent.click(canvas.getByRole("button", endTrigger));
-    await waitFor(() =>
-      expect(canvas.getByRole("button", endTrigger)).toHaveAttribute("aria-expanded", "true"),
-    );
-  },
-};
-
-export const VisualTestMobileHeaderless: MtAppStory = {
-  ...MobileHeaderless,
-  name: "Render the shell-owned header on mobile",
-};
-
-export const TestDesktopLayout: MtAppStory = {
+export const VisualTestMobileDrawerOpen: MtAppStory = {
   ...Default,
-  name: "Shows inline sidebars and no triggers on desktop",
+  name: "Render the open drawer in the mobile layout",
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    expect(shellHeader(canvasElement)).toBeVisible();
-    expect(canvas.getByRole("main")).toBeVisible();
-    expect(canvas.getByRole("complementary", { name: "Primary sidebar" })).toBeVisible();
-    expect(canvas.getByRole("complementary", { name: "Secondary sidebar" })).toBeVisible();
-    expect(canvas.queryByRole("button", startTrigger)).not.toBeInTheDocument();
-    expect(canvas.queryByRole("dialog")).not.toBeInTheDocument();
+    await openStartDrawer(within(canvasElement));
   },
 };
 
-export const TestContentSpacing: MtAppStory = {
+export const TestDrawerFocus: MtAppStory = {
   ...Default,
-  name: "Keeps 8px around and between the regions below the header",
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    const header = shellHeader(canvasElement)!.getBoundingClientRect();
-    const main = canvas.getByRole("main").getBoundingClientRect();
-    const start = canvas
-      .getByRole("complementary", { name: "Primary sidebar" })
-      .getBoundingClientRect();
-    const end = canvas
-      .getByRole("complementary", { name: "Secondary sidebar" })
-      .getBoundingClientRect();
-    const shell = canvasElement.querySelector(".mt-app")!.getBoundingClientRect();
-
-    expect(main.top - header.bottom).toBeCloseTo(0, 0);
-    expect(main.left - start.right).toBeCloseTo(8, 0);
-    expect(end.left - main.right).toBeCloseTo(8, 0);
-    expect(shell.bottom - main.bottom).toBeCloseTo(8, 0);
-    expect(start.left - shell.left).toBeCloseTo(8, 0);
-    expect(shell.right - end.right).toBeCloseTo(8, 0);
-    expect(start.top - header.bottom).toBeCloseTo(0, 0);
-    expect(header.top).toBeCloseTo(shell.top, 0);
+  name: "Moves the focus into the open drawer and back to its trigger on Escape",
+  args: {
+    mobileBreakpoint: 99999,
   },
-};
-
-export const TestContentOnlySpacing: MtAppStory = {
-  ...ContentOnly,
-  name: "Keeps the content panel 8px away from the shell edges without other regions",
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
+    const trigger = canvas.getByRole("button", startTrigger);
 
-    const main = canvas.getByRole("main").getBoundingClientRect();
-    const shell = canvasElement.querySelector(".mt-app")!.getBoundingClientRect();
+    const drawer = await openStartDrawer(canvas);
 
-    expect(shellHeader(canvasElement)).toBeNull();
-    expect(canvas.queryByRole("complementary")).not.toBeInTheDocument();
-    expect(main.top - shell.top).toBeCloseTo(8, 0);
-    expect(main.left - shell.left).toBeCloseTo(8, 0);
-    expect(shell.right - main.right).toBeCloseTo(8, 0);
-    expect(shell.bottom - main.bottom).toBeCloseTo(8, 0);
-  },
-};
-
-export const TestMobileTriggersControlDrawers: MtAppStory = {
-  ...Mobile,
-  name: "Opens a drawer from its trigger and closes it with the close button",
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    expect(canvas.getByRole("button", startTrigger)).toHaveAttribute("aria-expanded", "false");
-    expect(closedDrawer(canvasElement, "Primary sidebar")).not.toBeVisible();
-    expect(closedDrawer(canvasElement, "Primary sidebar")).toHaveAttribute("inert");
-
-    const drawer = await openDrawer(canvas, startTrigger, "Primary sidebar");
     await waitFor(() => expect(drawer).toHaveFocus());
-    expect(canvas.getByRole("button", startTrigger)).toHaveAttribute("aria-expanded", "true");
-    expect(canvas.getByRole("button", startTrigger)).toHaveAttribute("aria-controls", drawer.id);
-    expect(canvas.getByRole("main")).toHaveAttribute("inert");
-
-    await userEvent.click(canvas.getByRole("button", { name: "Close Primary sidebar" }));
-
-    await waitFor(() => expect(drawer).not.toBeVisible());
-    expect(canvas.getByRole("main")).not.toHaveAttribute("inert");
-    await waitFor(() => expect(canvas.getByRole("button", startTrigger)).toHaveFocus());
-  },
-};
-
-export const TestEscapeClosesDrawer: MtAppStory = {
-  ...Mobile,
-  name: "Closes the drawer on Escape",
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    const drawer = await openDrawer(canvas, endTrigger, "Secondary sidebar");
-    await waitFor(() => expect(drawer).toHaveFocus());
-    expect(args["onDrawer-change"]).toHaveBeenCalledTimes(1);
+    expect(trigger).toHaveAttribute("aria-expanded", "true");
+    expect(trigger).toHaveAttribute("aria-controls", drawer.id);
+    expect(canvas.getByRole("main").closest("[inert]")).not.toBeNull();
 
     await userEvent.keyboard("{Escape}");
 
     await waitFor(() => expect(drawer).not.toBeVisible());
-    await waitFor(() => expect(canvas.getByRole("button", endTrigger)).toHaveFocus());
+    expect(canvas.getByRole("main").closest("[inert]")).toBeNull();
+    await waitFor(() => expect(trigger).toHaveFocus());
   },
 };
-
-export const TestBackdropClickClosesDrawer: MtAppStory = {
-  ...Mobile,
-  name: "Closes the drawer when the backdrop is clicked",
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    const drawer = await openDrawer(canvas, startTrigger, "Primary sidebar");
-    expect(args["onDrawer-change"]).toHaveBeenCalledTimes(1);
-
-    await userEvent.click(canvas.getByTestId("mt-app-backdrop"));
-
-    await waitFor(() => expect(drawer).not.toBeVisible());
-    expect(args["onDrawer-change"]).toHaveBeenNthCalledWith(1, "start");
-    expect(args["onDrawer-change"]).toHaveBeenNthCalledWith(2, null);
-  },
-};
-
-export const TestOnlyOneDrawerOpen: MtAppStory = {
-  ...Mobile,
-  name: "Opening the second drawer closes the first one",
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    const startDrawer = await openDrawer(canvas, startTrigger, "Primary sidebar");
-    const endDrawer = await openDrawer(canvas, endTrigger, "Secondary sidebar");
-
-    await waitFor(() => expect(startDrawer).not.toBeVisible());
-    expect(endDrawer).toBeVisible();
-    expect(canvas.getByRole("button", startTrigger)).toHaveAttribute("aria-expanded", "false");
-    expect(canvas.getByRole("button", endTrigger)).toHaveAttribute("aria-expanded", "true");
-  },
-};
-
-export const TestTabStaysInsideDrawer: MtAppStory = {
-  ...Mobile,
-  name: "Wraps the keyboard focus inside the open drawer",
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    const drawer = await openDrawer(canvas, startTrigger, "Primary sidebar");
-    await waitFor(() => expect(drawer).toHaveFocus());
-
-    await userEvent.tab({ shift: true });
-
-    expect(within(drawer).getByRole("button", { name: "Send feedback" })).toHaveFocus();
-
-    await userEvent.tab();
-
-    expect(within(drawer).getByRole("button", { name: "Close Primary sidebar" })).toHaveFocus();
-  },
-};
-
-export const TestScrollPositionPreserved: MtAppStory = {
-  ...MobileLongContent,
-  name: "Keeps the content scroll position while a drawer is open",
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const main = canvas.getByRole("main");
-    main.scrollTop = 300;
-    expect(main.scrollTop).toBe(300);
-
-    const drawer = await openDrawer(canvas, startTrigger, "Primary sidebar");
-    expect(main.scrollTop).toBe(300);
-
-    await userEvent.click(canvas.getByTestId("mt-app-backdrop"));
-    await waitFor(() => expect(drawer).not.toBeVisible());
-    expect(main.scrollTop).toBe(300);
-    expect(window.scrollY).toBe(0);
-  },
-};
-
-export const TestHeaderlessMobileRendersShellHeader: MtAppStory = {
-  ...MobileHeaderless,
-  name: "Renders a shell-owned header for the triggers when there is no header content",
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    expect(shellHeader(canvasElement)).toBeVisible();
-    expect(shellHeader(canvasElement)).not.toHaveTextContent("Meteor Shop");
-    expect(canvas.getByRole("button", startTrigger)).toBeVisible();
-    expect(canvas.queryByRole("button", endTrigger)).not.toBeInTheDocument();
-  },
-};
-
-export const TestActionMenuInsideDrawerKeepsItOpen = defineStory<MtAppMeta>(
-  {
-    name: "Keeps the drawer open while a menu inside it is used",
-    play: async ({ canvasElement, screen }) => {
-      const canvas = within(canvasElement);
-
-      const drawer = await openDrawer(canvas, startTrigger, "Primary sidebar");
-
-      await userEvent.click(within(drawer).getByRole("button", { name: "More actions" }));
-      const menu = await screen.findByRole("menu");
-      const item = within(menu).getByRole("menuitem", { name: "Copy link" });
-      const rect = item.getBoundingClientRect();
-      expect(
-        document
-          .elementFromPoint(rect.left + rect.width / 2, rect.top + rect.height / 2)
-          ?.closest("[role=menu]"),
-      ).toBe(menu);
-
-      await userEvent.click(item);
-
-      await waitFor(() => expect(screen.queryByRole("menu")).not.toBeInTheDocument());
-      expect(drawer).toBeVisible();
-      expect(canvas.getByRole("button", startTrigger)).toHaveAttribute("aria-expanded", "true");
-    },
-  },
-  { from: Mobile },
-);
 
 export const TestOverlayLayering = defineStory<MtAppMeta>(
   {
     name: "Layers overlays above the drawer and closes one layer per Escape",
+    args: {
+      mobileBreakpoint: 99999,
+    },
+    render: (args) => ({
+      components: {
+        MtApp,
+        MtButton,
+        MtPopover,
+        MtPopoverItem,
+        MtModal,
+        MtModalRoot,
+        MtModalTrigger,
+        MtSelect,
+        SlotPlaceholder,
+      },
+      setup() {
+        const { addSnackbar } = useSnackbar();
+        const shippingMethod = ref("standard");
+        const shippingMethods = [
+          { label: "Standard", value: "standard" },
+          { label: "Express", value: "express" },
+        ];
+
+        return { args, MtButton, addSnackbar, shippingMethod, shippingMethods };
+      },
+      template: `
+        <mt-app v-bind="args">
+          <template #sidebar-start>
+            <slot-placeholder name="sidebar-start" width="15rem">
+              <mt-popover title="Filters">
+                <template #trigger="{ toggleFloatingUi }">
+                  <mt-button variant="secondary" @click.stop="toggleFloatingUi">Filters</mt-button>
+                </template>
+
+                <template #popover-items__base>
+                  <mt-popover-item label="Open orders" />
+                  <mt-popover-item label="Shipped orders" />
+                </template>
+              </mt-popover>
+
+              <mt-modal-root>
+                <mt-modal-trigger :as="MtButton" variant="secondary">Edit order</mt-modal-trigger>
+
+                <mt-modal title="Edit order">
+                  <mt-select v-model="shippingMethod" label="Shipping method" :options="shippingMethods" />
+
+                  <template #footer>
+                    <mt-button variant="primary" @click="addSnackbar({ message: 'Order saved', variant: 'success' })">
+                      Save
+                    </mt-button>
+                  </template>
+                </mt-modal>
+              </mt-modal-root>
+            </slot-placeholder>
+          </template>
+
+          <template #content>
+            <slot-placeholder name="content" inset="var(--scale-size-16)" />
+          </template>
+        </mt-app>
+      `,
+    }),
     play: async ({ canvasElement, screen }) => {
       const canvas = within(canvasElement);
-      const drawer = await openDrawer(canvas, startTrigger, "Primary sidebar");
+      const drawer = await openStartDrawer(canvas);
       const filters = within(drawer).getByRole("button", { name: "Filters" });
 
       await userEvent.click(filters);
@@ -399,91 +189,31 @@ export const TestOverlayLayering = defineStory<MtAppMeta>(
       await waitFor(() => expect(drawer).not.toBeVisible());
     },
   },
-  { from: Layering },
+  { from: Default },
 );
 
-export const TestDocumentDoesNotScroll: MtAppStory = {
-  ...LongContent,
-  name: "Scrolls the content panel while the document stays in place",
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const main = canvas.getByRole("main");
-    const root = document.documentElement;
-
-    expect(getComputedStyle(root).overflowY).toBe("hidden");
-    expect(root.scrollHeight).toBe(root.clientHeight);
-    expect(main.scrollHeight).toBeGreaterThan(main.clientHeight);
-  },
-};
-
-export const TestSameElementAcrossLayouts: MtAppStory = {
-  ...DynamicRegions,
-  name: "Uses the same sidebar element as inline region and as drawer",
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const inlineSidebar = canvas.getByRole("complementary", { name: "Primary sidebar" });
-
-    await userEvent.click(canvas.getByRole("button", { name: "Toggle mobile layout" }));
-
-    await waitFor(() => expect(closedDrawer(canvasElement, "Primary sidebar")).toBe(inlineSidebar));
-    expect(closedDrawer(canvasElement, "Primary sidebar")).toHaveAttribute("inert");
-
-    await userEvent.click(canvas.getByRole("button", { name: "Toggle mobile layout" }));
-
-    expect(await canvas.findByRole("complementary", { name: "Primary sidebar" })).toBe(
-      inlineSidebar,
-    );
-  },
-};
-
-export const TestRemovingSlotRemovesTrigger: MtAppStory = {
-  ...DynamicRegions,
-  name: "Removes the trigger and drawer together with the sidebar content",
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
-    await userEvent.click(canvas.getByRole("button", { name: "Toggle mobile layout" }));
-    expect(await canvas.findByRole("button", endTrigger)).toBeVisible();
-    expect(canvas.getByRole("button", startTrigger)).toBeVisible();
-
-    await userEvent.click(canvas.getByRole("button", { name: "Toggle end sidebar" }));
-
-    await waitFor(() => expect(canvas.queryByRole("button", endTrigger)).not.toBeInTheDocument());
-    expect(canvas.queryByRole("dialog", { name: "Secondary sidebar" })).not.toBeInTheDocument();
-    expect(canvas.getByRole("button", startTrigger)).toBeVisible();
-
-    await userEvent.click(canvas.getByRole("button", { name: "Toggle header" }));
-
-    await waitFor(() => expect(shellHeader(canvasElement)).not.toHaveTextContent("Meteor Shop"));
-    expect(canvas.getByRole("button", startTrigger)).toBeVisible();
-  },
-};
-
-export const TestShellStateAndThemeEvents: MtAppStory = {
-  ...Composable,
-  name: "Exposes the shell state and reports theme changes",
-  play: async ({ canvasElement, args }) => {
-    const canvas = within(canvasElement);
-
-    expect(canvas.getByTestId("shell-status")).toHaveTextContent(
-      "Layout: desktop · Drawer: none · Theme: light (light)",
-    );
-
-    await userEvent.click(canvas.getByRole("button", { name: "Use dark theme" }));
-
-    expect(args["onUpdate:theme"]).toHaveBeenCalledWith("dark");
-  },
-};
-
-export const TestSnackbarHostRendersOnce = defineStory<MtAppMeta>(
+export const TestDocumentDoesNotScroll = defineStory<MtAppMeta>(
   {
-    name: "Renders every snackbar exactly once",
-    play: async ({ canvasElement, screen }) => {
+    name: "Scrolls the content panel while the document stays in place",
+    render: (args) => ({
+      components: { MtApp, SlotPlaceholder },
+      setup: () => ({ args }),
+      template: `
+        <mt-app v-bind="args">
+          <template #content>
+            <slot-placeholder name="content" inset="var(--scale-size-16)" height="200vh" />
+          </template>
+        </mt-app>
+      `,
+    }),
+    play: async ({ canvasElement }) => {
       const canvas = within(canvasElement);
+      const main = canvas.getByRole("main");
+      const root = document.documentElement;
 
-      await userEvent.click(canvas.getByRole("button", { name: "Show success" }));
-
-      expect(await screen.findAllByText("Order saved")).toHaveLength(1);
+      expect(getComputedStyle(root).overflowY).toBe("hidden");
+      expect(root.scrollHeight).toBe(root.clientHeight);
+      expect(main.scrollHeight).toBeGreaterThan(main.clientHeight);
     },
   },
   { from: Default },

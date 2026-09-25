@@ -1,57 +1,77 @@
 <template>
   <div
-    :id="id"
-    ref="panel"
+    ref="inline"
     class="mt-app__sidebar"
     :class="`mt-app__sidebar--${side}`"
-    :data-mode="isMobile ? 'drawer' : 'inline'"
-    :data-state="isOpen ? 'open' : 'closed'"
-    :data-motion="motion ? undefined : 'off'"
-    :role="isMobile ? 'dialog' : 'complementary'"
-    :aria-modal="isMobile ? 'true' : undefined"
-    :aria-label="label"
-    :tabindex="isMobile ? -1 : undefined"
-    :inert="(isMobile && !isOpen) || undefined"
+    :role="isMobile ? undefined : 'complementary'"
+    :aria-label="isMobile ? undefined : label"
+    :hidden="hidden || isMobile || undefined"
   >
-    <div v-if="isMobile" class="mt-app__sidebar-chrome">
-      <mt-button
-        variant="tertiary"
-        size="small"
-        square
-        :aria-label="closeLabel"
-        @click="layout.close()"
-      >
-        <mt-icon name="regular-times-s" size="var(--scale-size-10)" decorative />
-      </mt-button>
-    </div>
-
-    <div class="mt-app__sidebar-body">
+    <div ref="host" class="mt-app__sidebar-content">
       <slot />
     </div>
   </div>
+
+  <mt-drawer-root
+    v-if="isMobile"
+    :open="isOpen"
+    @update:open="(open: boolean) => (open ? layout.open(side) : layout.close())"
+  >
+    <mt-drawer-content
+      :id="id"
+      :side="side"
+      :variant="drawerVariant"
+      :title="label"
+      class="mt-app__drawer"
+      hide-header
+      inset
+      keep-mounted
+    >
+      <div class="mt-app__drawer-chrome" :class="`mt-app__drawer-chrome--${side}`">
+        <mt-drawer-close
+          :as="MtButton"
+          variant="tertiary"
+          size="small"
+          square
+          :aria-label="closeLabel"
+        >
+          <mt-icon name="regular-times-s" size="var(--scale-size-10)" decorative />
+        </mt-drawer-close>
+      </div>
+
+      <div ref="drawerBody" />
+    </mt-drawer-content>
+  </mt-drawer-root>
 </template>
 
 <script setup lang="ts">
-import { computed, onBeforeUnmount, ref, useTemplateRef, watch } from "vue";
+import { computed, onBeforeUnmount, useTemplateRef, watch } from "vue";
 import MtButton from "@/components/mt-button/mt-button.vue";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
-import { useModalLayer } from "@/composables/useModalLayer";
+import MtDrawerRoot from "@/components/mt-drawer/mt-drawer-root.vue";
+import MtDrawerContent from "@/components/mt-drawer/mt-drawer-content.vue";
+import MtDrawerClose from "@/components/mt-drawer/mt-drawer-close.vue";
 import { useAppLayout, type MtAppSide } from "../composables/useAppLayout";
 
 /**
- * One sidebar region of the shell. The same element is an inline
- * `complementary` landmark in the desktop layout and an off-canvas modal
- * drawer in the mobile layout, so the slotted content is never re-mounted
- * when the layout changes. Switching the layout does not animate.
+ * One sidebar region of the shell: an inline `complementary` landmark in the desktop
+ * layout and an `mt-drawer` in the mobile layout. The slotted content renders once into
+ * a host element that is moved between both places (a disabled `<Teleport>` cannot be
+ * hydrated and enabled reliably), so its state survives layout changes and server
+ * markup matches the first client render.
  */
 const props = defineProps<{
   side: MtAppSide;
-  /** the element id the header trigger points to via `aria-controls` */
+  /** the id of the drawer the header trigger points to via `aria-controls` */
   id: string;
   /** the accessible name of the region and drawer */
   label: string;
   /** the accessible name of the drawer's close button */
   closeLabel: string;
+  /** hides the region while a view hides it */
+  hidden?: boolean;
+  /** the look of the drawer in the mobile layout */
+  drawerVariant: "default" | "floating";
 }>();
 
 defineSlots<{
@@ -59,35 +79,40 @@ defineSlots<{
 }>();
 
 const layout = useAppLayout("mt-app-sidebar");
-const panelElement = useTemplateRef<HTMLElement>("panel");
+const inline = useTemplateRef<HTMLElement>("inline");
+const host = useTemplateRef<HTMLElement>("host");
+const drawerBody = useTemplateRef<HTMLElement>("drawerBody");
 
 const isMobile = computed(() => layout.isMobile.value);
 const isOpen = computed(() => isMobile.value && layout.activeSide.value === props.side);
 
-const motion = ref(true);
+function placeContent() {
+  const target = isMobile.value && drawerBody.value ? drawerBody.value : inline.value;
 
-watch(isMobile, () => {
-  motion.value = false;
-});
+  if (host.value && target && host.value.parentElement !== target) target.append(host.value);
+}
 
 watch(
   isMobile,
-  () => {
-    void panelElement.value?.offsetWidth;
-    motion.value = true;
+  (mobile) => {
+    if (!mobile) placeContent();
   },
-  { flush: "post" },
+  { flush: "sync" },
 );
+
+watch([isMobile, drawerBody], placeContent, { flush: "post" });
 
 const unregister = layout.registerSidebar(props.side);
 onBeforeUnmount(unregister);
 
-useModalLayer({
-  panel: panelElement,
-  active: isOpen,
-  onEscape: () => layout.close(),
-  inertTargets: () => layout.inertTargets(props.side),
-  returnFocusTo: () => layout.focusReturnTarget(props.side),
+defineExpose({
+  /** Whether the focused element is inside this sidebar, in either layout. */
+  containsFocus: () => {
+    const active = document.activeElement;
+    if (!active) return false;
+
+    return Boolean(host.value?.contains(active));
+  },
 });
 </script>
 
@@ -98,78 +123,29 @@ useModalLayer({
   flex: none;
   min-width: 0;
   min-height: 0;
-  outline: none;
+  overflow: auto;
+  overscroll-behavior: contain;
 }
 
 .mt-app__sidebar[hidden] {
   display: none;
 }
 
-.mt-app__sidebar-body {
-  flex: 1 1 auto;
-  min-height: 0;
-  overflow: auto;
-  overscroll-behavior: contain;
+.mt-app__sidebar-content {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
 }
 
-.mt-app__sidebar-chrome {
+.mt-app__drawer-chrome {
   display: flex;
-  flex: none;
   align-items: center;
   min-height: var(--scale-size-48);
   padding: var(--scale-size-8);
 }
 
-.mt-app__sidebar--end .mt-app__sidebar-chrome {
+.mt-app__drawer-chrome--end {
   justify-content: flex-end;
-}
-
-.mt-app__sidebar[data-mode="drawer"] {
-  position: fixed;
-  inset-block: 0;
-  z-index: var(--z-index-drawer, 900);
-  min-width: min(var(--scale-size-256), calc(100% - var(--scale-size-48)));
-  max-width: calc(100% - var(--scale-size-48));
-  background-color: var(--color-elevation-surface-raised);
-  transform: none;
-  visibility: visible;
-  transition: transform 200ms cubic-bezier(0.05, 0.7, 0.1, 1);
-}
-
-.mt-app__sidebar--start[data-mode="drawer"] {
-  inset-inline-start: 0;
-  border-inline-end: 1px solid var(--color-border-secondary-default);
-}
-
-.mt-app__sidebar--end[data-mode="drawer"] {
-  inset-inline-end: 0;
-  border-inline-start: 1px solid var(--color-border-secondary-default);
-}
-
-.mt-app__sidebar[data-mode="drawer"][data-state="closed"] {
-  visibility: hidden;
-  pointer-events: none;
-  transition:
-    transform 200ms cubic-bezier(0.3, 0, 0.8, 0.15),
-    visibility 0s linear 200ms;
-}
-
-.mt-app__sidebar--start[data-mode="drawer"][data-state="closed"] {
-  transform: translateX(-100%);
-}
-
-.mt-app__sidebar--end[data-mode="drawer"][data-state="closed"] {
-  transform: translateX(100%);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .mt-app__sidebar[data-mode="drawer"] {
-    transition: none;
-  }
-}
-
-.mt-app__sidebar[data-mode][data-state][data-motion="off"] {
-  transition: none;
 }
 
 @media print {

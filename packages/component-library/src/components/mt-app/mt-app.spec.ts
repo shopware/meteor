@@ -20,8 +20,8 @@ import { useSnackbar } from "../mt-snackbar/composables/use-snackbar";
 type MediaListener = (event: MediaQueryListEvent) => void;
 
 /**
- * Stubs `matchMedia` with a fake viewport width: `max-width` queries match when the
- * width is at most the queried value, every other query (e.g. the OS color scheme
+ * Stubs `matchMedia` with a fake viewport width: `width <` queries match when the
+ * width is below the queried value, every other query (e.g. the OS color scheme
  * asked by useTheme) never matches.
  */
 function stubMatchMedia(width = 1440) {
@@ -31,14 +31,14 @@ function stubMatchMedia(width = 1440) {
   vi.stubGlobal(
     "matchMedia",
     vi.fn((query: string) => {
-      const maxWidth = Number(/\(max-width: ([\d.]+)px\)/.exec(query)?.[1] ?? NaN);
+      const maxWidth = Number(/\(width < ([\d.]+)px\)/.exec(query)?.[1] ?? NaN);
       const listeners = new Set<MediaListener>();
       const entry = { maxWidth, listeners };
       if (!Number.isNaN(maxWidth)) widthLists.push(entry);
 
       return {
         get matches() {
-          return Number.isNaN(maxWidth) ? false : state.width <= maxWidth;
+          return Number.isNaN(maxWidth) ? false : state.width < maxWidth;
         },
         media: query,
         onchange: null,
@@ -54,7 +54,7 @@ function stubMatchMedia(width = 1440) {
       state.width = value;
       widthLists.forEach((entry) =>
         entry.listeners.forEach((listener) =>
-          listener({ matches: value <= entry.maxWidth } as MediaQueryListEvent),
+          listener({ matches: value < entry.maxWidth } as MediaQueryListEvent),
         ),
       );
     },
@@ -100,7 +100,7 @@ async function renderApp(
           ]
         : [],
     },
-    props: { theme: "light", applyTheme: false, ...options.props },
+    props: options.props,
     slots: options.slots ?? allSlots,
   });
 
@@ -159,6 +159,22 @@ function scrollContent(top: number) {
 
 const startTriggerName = "Open Primary sidebar";
 const endTriggerName = "Open Secondary sidebar";
+
+function drawerOf(triggerName: string) {
+  const trigger = screen.getByRole("button", { name: triggerName });
+
+  return document.getElementById(trigger.getAttribute("aria-controls") ?? "")!;
+}
+
+function isInert(element: Element) {
+  return element.closest("[inert]") !== null;
+}
+
+function visibleBackdrops() {
+  return screen
+    .queryAllByTestId("mt-drawer-backdrop")
+    .filter((backdrop) => backdrop.style.display !== "none");
+}
 
 describe("mt-app", () => {
   beforeEach(() => {
@@ -298,18 +314,15 @@ describe("mt-app", () => {
       await renderApp({ props: mobileProps() });
 
       // ASSERT
-      const drawer = screen.getByRole("dialog", { name: "Primary sidebar" });
+      const drawer = drawerOf(startTriggerName);
+      expect(drawer).toHaveAttribute("role", "dialog");
       expect(drawer).toHaveAttribute("inert");
       expect(drawer).toHaveAttribute("aria-modal", "true");
       expect(screen.getByRole("button", { name: startTriggerName })).toHaveAttribute(
         "aria-expanded",
         "false",
       );
-      expect(screen.getByRole("button", { name: startTriggerName })).toHaveAttribute(
-        "aria-controls",
-        drawer.id,
-      );
-      expect(screen.getByTestId("mt-app-backdrop")).toHaveAttribute("data-state", "closed");
+      expect(visibleBackdrops()).toHaveLength(0);
     });
 
     it("opens a drawer from its trigger and makes the rest of the shell inert", async () => {
@@ -322,10 +335,11 @@ describe("mt-app", () => {
       // ASSERT
       const drawer = screen.getByRole("dialog", { name: "Primary sidebar" });
       expect(drawer).not.toHaveAttribute("inert");
-      expect(screen.getByRole("banner")).toHaveAttribute("inert");
-      expect(screen.getByRole("main")).toHaveAttribute("inert");
-      expect(screen.getByRole("dialog", { name: "Secondary sidebar" })).toHaveAttribute("inert");
-      expect(screen.getByTestId("mt-app-backdrop")).toHaveAttribute("data-state", "open");
+      expect(drawer).toHaveAttribute("id", drawerOf(startTriggerName).id);
+      expect(isInert(screen.getByRole("banner"))).toBe(true);
+      expect(isInert(screen.getByRole("main"))).toBe(true);
+      expect(drawerOf(endTriggerName)).toHaveAttribute("inert");
+      expect(visibleBackdrops()).toHaveLength(1);
       expect(screen.getByRole("button", { name: startTriggerName })).toHaveAttribute(
         "aria-expanded",
         "true",
@@ -335,31 +349,39 @@ describe("mt-app", () => {
 
     it("keeps only one drawer open", async () => {
       // ARRANGE
-      const { emitted } = await renderApp({ props: mobileProps() });
+      await renderApp({ props: mobileProps() });
       await userEvent.click(screen.getByRole("button", { name: startTriggerName }));
 
       // ACT
       await userEvent.click(screen.getByRole("button", { name: endTriggerName }));
 
       // ASSERT
-      expect(screen.getByRole("dialog", { name: "Primary sidebar" })).toHaveAttribute("inert");
-      expect(screen.getByRole("dialog", { name: "Secondary sidebar" })).not.toHaveAttribute(
-        "inert",
+      expect(drawerOf(startTriggerName)).toHaveAttribute("inert");
+      expect(drawerOf(endTriggerName)).not.toHaveAttribute("inert");
+      expect(screen.getByRole("button", { name: startTriggerName })).toHaveAttribute(
+        "aria-expanded",
+        "false",
       );
-      expect(emitted()["drawer-change"]).toEqual([["start"], ["end"]]);
+      expect(screen.getByRole("button", { name: endTriggerName })).toHaveAttribute(
+        "aria-expanded",
+        "true",
+      );
     });
 
     it("closes again when the trigger is pressed twice quickly", async () => {
       // ARRANGE
-      const { emitted } = await renderApp({ props: mobileProps() });
+      await renderApp({ props: mobileProps() });
 
       // ACT
       await userEvent.dblClick(screen.getByRole("button", { name: startTriggerName }));
 
       // ASSERT
-      expect(screen.getByRole("dialog", { name: "Primary sidebar" })).toHaveAttribute("inert");
-      expect(screen.getByTestId("mt-app-backdrop")).toHaveAttribute("data-state", "closed");
-      expect(emitted()["drawer-change"]).toEqual([["start"], [null]]);
+      await waitFor(() => expect(drawerOf(startTriggerName)).toHaveAttribute("inert"));
+      expect(visibleBackdrops()).toHaveLength(0);
+      expect(screen.getByRole("button", { name: startTriggerName })).toHaveAttribute(
+        "aria-expanded",
+        "false",
+      );
     });
 
     it("closes on the backdrop and returns the focus to the trigger", async () => {
@@ -368,11 +390,11 @@ describe("mt-app", () => {
       await userEvent.click(screen.getByRole("button", { name: startTriggerName }));
 
       // ACT
-      await userEvent.click(screen.getByTestId("mt-app-backdrop"));
+      await userEvent.click(visibleBackdrops()[0]);
 
       // ASSERT
-      expect(screen.getByRole("dialog", { name: "Primary sidebar" })).toHaveAttribute("inert");
-      expect(screen.getByRole("main")).not.toHaveAttribute("inert");
+      expect(drawerOf(startTriggerName)).toHaveAttribute("inert");
+      expect(isInert(screen.getByRole("main"))).toBe(false);
       await waitFor(() =>
         expect(screen.getByRole("button", { name: startTriggerName })).toHaveFocus(),
       );
@@ -387,7 +409,7 @@ describe("mt-app", () => {
       await userEvent.click(screen.getByRole("button", { name: "Close Secondary sidebar" }));
 
       // ASSERT
-      expect(screen.getByRole("dialog", { name: "Secondary sidebar" })).toHaveAttribute("inert");
+      expect(drawerOf(endTriggerName)).toHaveAttribute("inert");
       await waitFor(() =>
         expect(screen.getByRole("button", { name: endTriggerName })).toHaveFocus(),
       );
@@ -405,7 +427,7 @@ describe("mt-app", () => {
       await userEvent.keyboard("{Escape}");
 
       // ASSERT
-      expect(screen.getByRole("dialog", { name: "Primary sidebar" })).toHaveAttribute("inert");
+      expect(drawerOf(startTriggerName)).toHaveAttribute("inert");
     });
 
     it("ignores Escape pressed outside the drawer", async () => {
@@ -458,22 +480,7 @@ describe("mt-app", () => {
       await navigate("/orders");
 
       // ASSERT
-      expect(screen.getByRole("dialog", { name: "Primary sidebar", hidden: true })).toHaveAttribute(
-        "inert",
-      );
-    });
-
-    it("keeps the drawer open when closing on navigation is disabled", async () => {
-      // ARRANGE
-      const { router, navigate } = createFakeRouter();
-      await renderApp({ props: mobileProps({ closeOnNavigate: false }), router });
-      await userEvent.click(screen.getByRole("button", { name: startTriggerName }));
-
-      // ACT
-      await navigate("/orders");
-
-      // ASSERT
-      expect(screen.getByRole("dialog", { name: "Primary sidebar" })).not.toHaveAttribute("inert");
+      expect(drawerOf(startTriggerName)).toHaveAttribute("inert");
     });
 
     it("scrolls the content to the top when the path changes and restores it when going back", async () => {
@@ -496,6 +503,23 @@ describe("mt-app", () => {
     });
   });
 
+  describe("overlapping navigations", () => {
+    it("restores the position of the latest navigation when an earlier one is still pending", async () => {
+      // ARRANGE
+      const { router, navigate } = createFakeRouter();
+      await renderApp({ router });
+      scrollContent(400);
+
+      // ACT
+      const first = navigate("/orders");
+      await navigate("/", { back: true });
+      await first;
+
+      // ASSERT
+      expect(screen.getByRole("main").scrollTop).toBe(400);
+    });
+  });
+
   describe("responsive changes", () => {
     it("turns open drawers back into inline sidebars when the viewport grows", async () => {
       // ARRANGE
@@ -511,14 +535,13 @@ describe("mt-app", () => {
       await nextTick();
 
       // ASSERT
-      expect(screen.queryByRole("dialog")).not.toBeInTheDocument();
-      expect(screen.queryByTestId("mt-app-backdrop")).not.toBeInTheDocument();
+      expect(screen.queryByRole("dialog", { hidden: true })).not.toBeInTheDocument();
+      expect(screen.queryAllByTestId("mt-drawer-backdrop")).toHaveLength(0);
       expect(screen.queryByRole("button", { name: startTriggerName })).not.toBeInTheDocument();
       const sidebar = screen.getByRole("complementary", { name: "Primary sidebar" });
-      expect(sidebar).not.toHaveAttribute("inert");
-      expect(sidebar).not.toHaveAttribute("aria-modal");
-      expect(screen.getByRole("main")).not.toHaveAttribute("inert");
-      await waitFor(() => expect(sidebar).toHaveFocus());
+      expect(isInert(sidebar)).toBe(false);
+      expect(isInert(screen.getByRole("main"))).toBe(false);
+      await waitFor(() => expect(screen.getByRole("main")).toHaveFocus());
     });
 
     it("enters the mobile layout with closed drawers", async () => {
@@ -531,8 +554,8 @@ describe("mt-app", () => {
       await nextTick();
 
       // ASSERT
-      expect(screen.getByRole("dialog", { name: "Primary sidebar" })).toHaveAttribute("inert");
-      expect(screen.getByTestId("mt-app-backdrop")).toHaveAttribute("data-state", "closed");
+      await waitFor(() => expect(drawerOf(startTriggerName)).toHaveAttribute("inert"));
+      expect(visibleBackdrops()).toHaveLength(0);
     });
 
     it("keeps the state of sidebar content across layout changes without re-mounting it", async () => {
@@ -569,7 +592,7 @@ describe("mt-app", () => {
         components: { MtApp },
         props: { showEnd: Boolean },
         template: `
-          <mt-app :mobile-breakpoint="99999" theme="light" :apply-theme="false">
+          <mt-app :mobile-breakpoint="99999">
             <template #content><p>Main content</p></template>
             <template #sidebar-start><nav>Start nav</nav></template>
             <template v-if="showEnd" #sidebar-end><div>End tools</div></template>
@@ -586,10 +609,8 @@ describe("mt-app", () => {
       // ASSERT
       expect(screen.queryByRole("button", { name: endTriggerName })).not.toBeInTheDocument();
       expect(screen.queryByRole("dialog", { name: "Secondary sidebar" })).not.toBeInTheDocument();
-      await waitFor(() =>
-        expect(screen.getByTestId("mt-app-backdrop")).toHaveAttribute("data-state", "closed"),
-      );
-      expect(screen.getByRole("main")).not.toHaveAttribute("inert");
+      await waitFor(() => expect(visibleBackdrops()).toHaveLength(0));
+      expect(isInert(screen.getByRole("main"))).toBe(false);
       await waitFor(() => expect(screen.getByRole("main")).toHaveFocus());
     });
   });
@@ -672,12 +693,9 @@ describe("mt-app", () => {
       expect(screen.getByRole("status")).toHaveTextContent("mobile:false drawer:null theme:system");
     });
 
-    it("manages and persists the theme when it is not controlled", async () => {
+    it("applies and persists the theme preference", async () => {
       // ARRANGE
-      const { emitted } = render(MtApp, {
-        props: { themeStorageKey: "app-theme" },
-        slots: { content: () => [h(Probe)] },
-      });
+      render(MtApp, { slots: { content: () => [h(Probe)] } });
       expect(document.documentElement.dataset.theme).toBe("light");
 
       // ACT
@@ -685,43 +703,8 @@ describe("mt-app", () => {
 
       // ASSERT
       expect(document.documentElement.dataset.theme).toBe("dark");
-      expect(localStorage.getItem("app-theme")).toBe("dark");
+      expect(localStorage.getItem("mt-theme")).toBe("dark");
       expect(screen.getByRole("status")).toHaveTextContent("theme:dark");
-      expect(emitted()["update:theme"]).toEqual([["dark"]]);
-    });
-
-    it("only reports theme changes when the theme is controlled", async () => {
-      // ARRANGE
-      const { emitted, rerender } = render(MtApp, {
-        props: { theme: "light" },
-        slots: { content: () => [h(Probe)] },
-      });
-
-      // ACT
-      await userEvent.click(screen.getByRole("button", { name: "Use dark theme" }));
-
-      // ASSERT
-      expect(emitted()["update:theme"]).toEqual([["dark"]]);
-      expect(document.documentElement.dataset.theme).toBe("light");
-      expect(localStorage.getItem("mt-theme")).toBeNull();
-
-      // ACT
-      await rerender({ theme: "dark" });
-
-      // ASSERT
-      expect(document.documentElement.dataset.theme).toBe("dark");
-      expect(screen.getByRole("status")).toHaveTextContent("theme:dark");
-    });
-
-    it("leaves the document theme alone when applying it is disabled", async () => {
-      // ACT
-      render(MtApp, {
-        props: { theme: "dark", applyTheme: false },
-        slots: { content: allSlots.content },
-      });
-
-      // ASSERT
-      expect(document.documentElement.dataset.theme).toBeUndefined();
     });
   });
 
@@ -861,10 +844,7 @@ describe("mt-app", () => {
   describe("snackbar host", () => {
     it("renders snackbar notifications once by default", async () => {
       // ARRANGE
-      render(MtApp, {
-        props: { theme: "light", applyTheme: false },
-        slots: { content: allSlots.content },
-      });
+      render(MtApp, { slots: { content: allSlots.content } });
 
       // ACT
       useSnackbar().addSnackbar({ message: "Saved successfully" });

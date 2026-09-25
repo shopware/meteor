@@ -1,7 +1,6 @@
 <template>
   <div class="mt-app__trigger" :class="`mt-app__trigger--${side}`">
     <mt-button
-      ref="buttonRef"
       variant="tertiary"
       size="small"
       square
@@ -16,7 +15,6 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from "vue";
 import MtButton from "@/components/mt-button/mt-button.vue";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import type { MtAppSide } from "../composables/useAppLayout";
@@ -38,15 +36,6 @@ defineProps<{
 defineEmits<{
   (e: "click"): void;
 }>();
-
-const buttonRef = ref<InstanceType<typeof MtButton> | null>(null);
-
-/** the button element; the shell restores the focus to it when the drawer closes */
-const element = computed<HTMLElement | null>(
-  () => (buttonRef.value?.$el as HTMLElement | undefined) ?? null,
-);
-
-defineExpose({ element });
 </script>
 
 <style scoped>
