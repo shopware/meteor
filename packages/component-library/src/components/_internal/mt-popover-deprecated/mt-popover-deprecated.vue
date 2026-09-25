@@ -3,6 +3,7 @@
     <div
       v-popover="popoverConfig"
       class="mt-popover-deprecated__wrapper"
+      data-mt-overlay
       :class="popoverClass"
       :style="componentStyle"
     >

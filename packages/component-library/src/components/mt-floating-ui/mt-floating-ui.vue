@@ -9,6 +9,7 @@
         ref="floatingUiContent"
         v-on-click-outside="onClickOutside"
         class="mt-floating-ui__content"
+        data-mt-overlay
         :data-show="isOpened"
         tabindex="0"
         :style="contentStyles"
