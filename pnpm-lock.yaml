@@ -461,8 +461,8 @@ importers:
         specifier: ^5.0.7
         version: 5.0.7
       reka-ui:
-        specifier: ^2.6.0
-        version: 2.6.0(typescript@5.7.3)(vue@3.5.37(typescript@5.7.3))
+        specifier: ^2.10.5
+        version: 2.10.5(vue@3.5.37(typescript@5.7.3))
       vue-codemirror6:
         specifier: ^1.3.8
         version: 1.3.8(@lezer/common@1.2.3)(vue@3.5.37(typescript@5.7.3))
@@ -5869,20 +5869,12 @@ packages:
     resolution: {integrity: sha512-ldZXEhOBb8Is7xLs01fR3YEc3DERiz5silj8tnGkFZytt1abEvl/GhUmCE0PMLaMPTa3Jk4HbKmRlHmu+gCftg==}
     engines: {node: '>=12'}
 
-  '@tanstack/virtual-core@3.13.12':
-    resolution: {integrity: sha512-1YBOJfRHV4sXUmWsFSf5rQor4Ss82G8dQWLRbnk3GA4jeP8hQt1hxXh0tmflpC0dz3VgEv/1+qwPyLeWkQuPFA==}
-
   '@tanstack/virtual-core@3.17.0':
     resolution: {integrity: sha512-gOxY/hFkPh/XQYhnThBHzkbkX3Ed+z/iushyz+R+JAr213aXxUDgQoTgTdrDpBSRsjFM73P/KfUyWmaF9WHMkQ==}
 
   '@tanstack/vue-table@8.21.3':
     resolution: {integrity: sha512-rusRyd77c5tDPloPskctMyPLFEQUeBzxdQ+2Eow4F7gDPlPOB1UnnhzfpdvqZ8ZyX2rRNGmqNnQWm87OI2OQPw==}
     engines: {node: '>=12'}
-    peerDependencies:
-      vue: 3.5.13
-
-  '@tanstack/vue-virtual@3.13.12':
-    resolution: {integrity: sha512-vhF7kEU9EXWXh+HdAwKJ2m3xaOnTTmgcdXcF2pim8g4GvI7eRrk2YRuV5nUlZnd/NbCIX4/Ja2OZu5EjJL06Ww==}
     peerDependencies:
       vue: 3.5.13
 
@@ -7212,9 +7204,6 @@ packages:
   '@vueuse/core@12.4.0':
     resolution: {integrity: sha512-XnjQYcJwCsyXyIafyA6SvyN/OBtfPnjvJmbxNxQjCcyWD198urwm5TYvIUUyAxEAN0K7HJggOgT15cOlWFyLeA==}
 
-  '@vueuse/core@12.8.2':
-    resolution: {integrity: sha512-HbvCmZdzAu3VGi/pWYm5Ut+Kd9mn1ZHnn4L5G8kOQTPs/IwIAmJoBrmYk2ckLArgMXZj0AW3n5CAejLUO+PhdQ==}
-
   '@vueuse/core@13.1.0':
     resolution: {integrity: sha512-PAauvdRXZvTWXtGLg8cPUFjiZEddTqmogdwYpnn60t08AA5a8Q4hZokBnpTOnVNqySlFlTcRYIC8OqreV4hv3Q==}
     peerDependencies:
@@ -7278,9 +7267,6 @@ packages:
   '@vueuse/metadata@12.4.0':
     resolution: {integrity: sha512-AhPuHs/qtYrKHUlEoNO6zCXufu8OgbR8S/n2oMw1OQuBQJ3+HOLQ+EpvXs+feOlZMa0p8QVvDWNlmcJJY8rW2g==}
 
-  '@vueuse/metadata@12.8.2':
-    resolution: {integrity: sha512-rAyLGEuoBJ/Il5AmFHiziCPdQzRt88VxR+Y/A/QhJ1EWtWqPBBAxTAFaSkviwEuOEZNtW8pvkPgoCZQ+HxqW1A==}
-
   '@vueuse/metadata@13.1.0':
     resolution: {integrity: sha512-+TDd7/a78jale5YbHX9KHW3cEDav1lz1JptwDvep2zSG8XjCsVE+9mHIzjTOaPbHUAk5XiE4jXLz51/tS+aKQw==}
 
@@ -7301,9 +7287,6 @@ packages:
 
   '@vueuse/shared@12.4.0':
     resolution: {integrity: sha512-9yLgbHVIF12OSCojnjTIoZL1+UA10+O4E1aD6Hpfo/DKVm5o3SZIwz6CupqGy3+IcKI8d6Jnl26EQj/YucnW0Q==}
-
-  '@vueuse/shared@12.8.2':
-    resolution: {integrity: sha512-dznP38YzxZoNloI0qpEfpkms8knDtaoQ6Y/sfS0L7Yki4zh40LFHEhur0odJC6xTHG5dxWVPiUWBXn+wCG2s5w==}
 
   '@vueuse/shared@13.1.0':
     resolution: {integrity: sha512-IVS/qRRjhPTZ6C2/AM3jieqXACGwFZwWTdw5sNTSKk2m/ZpkuuN+ri+WCVUP8TqaKwJYt/KuMwmXspMAw8E6ew==}
@@ -8621,9 +8604,6 @@ packages:
   define-properties@1.2.1:
     resolution: {integrity: sha512-8QmQKqEASLd5nx0U1B1okLElbUuuttJ/AnYmRXbbbGDWh6uS208EjD4Xqq/I9wK7u0v6O08XhTWnt5XtEbR6Dg==}
     engines: {node: '>= 0.4'}
-
-  defu@6.1.4:
-    resolution: {integrity: sha512-mEQCMmwJu317oSz8CwdIOdwf3xMif1ttiM8LTufzc3g6kR+9Pe236twL8j3IYT1F7GfRgGcW6MWxzZjLIkuHIg==}
 
   defu@6.1.7:
     resolution: {integrity: sha512-7z22QmUWiQ/2d0KkdYmANbRUVABpZ9SNYyH5vx6PZ+nE5bcC0l7uFvEfHlyld/HcGBFTL536ClDt3DEcSlEJAQ==}
@@ -13745,8 +13725,8 @@ packages:
   rehype-sort-attributes@5.0.1:
     resolution: {integrity: sha512-Bxo+AKUIELcnnAZwJDt5zUDDRpt4uzhfz9d0PVGhcxYWsbFj5Cv35xuWxu5r1LeYNFNhgGqsr9Q2QiIOM/Qctg==}
 
-  reka-ui@2.6.0:
-    resolution: {integrity: sha512-NrGMKrABD97l890mFS3TNUzB0BLUfbL3hh0NjcJRIUSUljb288bx3Mzo31nOyUcdiiW0HqFGXJwyCBh9cWgb0w==}
+  reka-ui@2.10.5:
+    resolution: {integrity: sha512-/8o0y9BThE0hcHKFg+3770tWcJh3qKdOEFxLOPb9HIajXeFoH/J530cZH62jUJunbqwBgpSBL9v7nB8LJ5pDXA==}
     peerDependencies:
       vue: 3.5.13
 
@@ -15929,9 +15909,6 @@ packages:
 
   vue-component-type-helpers@3.3.11:
     resolution: {integrity: sha512-LwcxzeliO9fkQcpJG0PoX8X5kmAhKmH9wkpDLxNabwzkQ9Zeib2YVHwFV4pcWmMLfXVfjr/dSV+DaJ3cIPgSNA==}
-
-  vue-component-type-helpers@3.3.6:
-    resolution: {integrity: sha512-FkljacAwJ9BUoSUdpFe3VDy0sGigNlTH9+2zcXUWmZOjN8swiCkl3t48wOJun0OsUd2cEIda1l04tsxMiKIIrQ==}
 
   vue-demi@0.14.10:
     resolution: {integrity: sha512-nMZBOwuzabUO0nLgIcc6rycZEebF6eeUfaiQx9+WSk8e29IbLvPU9feI6tqW4kTo3hvoYAJkMh8n8D0fuISphg==}
@@ -19614,7 +19591,7 @@ snapshots:
       unplugin-auto-import: 21.0.0(@nuxt/kit@4.4.8(magicast@0.5.3))(@vueuse/core@14.3.0(vue@3.5.13(typescript@5.7.3)))
       unplugin-vue-components: 32.1.0(@nuxt/kit@4.4.8(magicast@0.5.3))(vue@3.5.13(typescript@5.7.3))
       vaul-vue: 0.4.1(reka-ui@2.9.9(vue@3.5.13(typescript@5.7.3)))(vue@3.5.13(typescript@5.7.3))
-      vue-component-type-helpers: 3.3.6
+      vue-component-type-helpers: 3.3.11
     optionalDependencies:
       '@internationalized/date': 3.10.0
       '@internationalized/number': 3.6.5
@@ -21683,8 +21660,6 @@ snapshots:
 
   '@tanstack/table-core@8.21.3': {}
 
-  '@tanstack/virtual-core@3.13.12': {}
-
   '@tanstack/virtual-core@3.17.0': {}
 
   '@tanstack/vue-table@8.21.3(vue@3.5.13(typescript@5.7.3))':
@@ -21692,15 +21667,15 @@ snapshots:
       '@tanstack/table-core': 8.21.3
       vue: 3.5.13(typescript@5.7.3)
 
-  '@tanstack/vue-virtual@3.13.12(vue@3.5.37(typescript@5.7.3))':
-    dependencies:
-      '@tanstack/virtual-core': 3.13.12
-      vue: 3.5.37(typescript@5.7.3)
-
   '@tanstack/vue-virtual@3.13.28(vue@3.5.13(typescript@5.7.3))':
     dependencies:
       '@tanstack/virtual-core': 3.17.0
       vue: 3.5.13(typescript@5.7.3)
+
+  '@tanstack/vue-virtual@3.13.28(vue@3.5.37(typescript@5.7.3))':
+    dependencies:
+      '@tanstack/virtual-core': 3.17.0
+      vue: 3.5.37(typescript@5.7.3)
 
   '@testing-library/dom@10.4.0':
     dependencies:
@@ -23672,15 +23647,6 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  '@vueuse/core@12.8.2(typescript@5.7.3)':
-    dependencies:
-      '@types/web-bluetooth': 0.0.21
-      '@vueuse/metadata': 12.8.2
-      '@vueuse/shared': 12.8.2(typescript@5.7.3)
-      vue: 3.5.13(typescript@5.7.3)
-    transitivePeerDependencies:
-      - typescript
-
   '@vueuse/core@13.1.0(vue@3.5.37(typescript@5.7.3))':
     dependencies:
       '@types/web-bluetooth': 0.0.21
@@ -23702,6 +23668,13 @@ snapshots:
       '@vueuse/shared': 14.3.0(vue@3.5.13(typescript@5.7.3))
       vue: 3.5.13(typescript@5.7.3)
 
+  '@vueuse/core@14.3.0(vue@3.5.37(typescript@5.7.3))':
+    dependencies:
+      '@types/web-bluetooth': 0.0.21
+      '@vueuse/metadata': 14.3.0
+      '@vueuse/shared': 14.3.0(vue@3.5.37(typescript@5.7.3))
+      vue: 3.5.37(typescript@5.7.3)
+
   '@vueuse/integrations@14.3.0(axios@1.13.5)(focus-trap@7.6.4)(fuse.js@7.4.2)(jwt-decode@4.0.0)(nprogress@0.2.0)(vue@3.5.13(typescript@5.7.3))':
     dependencies:
       '@vueuse/core': 14.3.0(vue@3.5.13(typescript@5.7.3))
@@ -23717,8 +23690,6 @@ snapshots:
   '@vueuse/metadata@10.11.0': {}
 
   '@vueuse/metadata@12.4.0': {}
-
-  '@vueuse/metadata@12.8.2': {}
 
   '@vueuse/metadata@13.1.0': {}
 
@@ -23750,12 +23721,6 @@ snapshots:
     transitivePeerDependencies:
       - typescript
 
-  '@vueuse/shared@12.8.2(typescript@5.7.3)':
-    dependencies:
-      vue: 3.5.13(typescript@5.7.3)
-    transitivePeerDependencies:
-      - typescript
-
   '@vueuse/shared@13.1.0(vue@3.5.37(typescript@5.7.3))':
     dependencies:
       vue: 3.5.37(typescript@5.7.3)
@@ -23767,6 +23732,10 @@ snapshots:
   '@vueuse/shared@14.3.0(vue@3.5.13(typescript@5.7.3))':
     dependencies:
       vue: 3.5.13(typescript@5.7.3)
+
+  '@vueuse/shared@14.3.0(vue@3.5.37(typescript@5.7.3))':
+    dependencies:
+      vue: 3.5.37(typescript@5.7.3)
 
   '@webcontainer/env@1.1.1': {}
 
@@ -25209,8 +25178,6 @@ snapshots:
       define-data-property: 1.1.4
       has-property-descriptors: 1.0.2
       object-keys: 1.1.1
-
-  defu@6.1.4: {}
 
   defu@6.1.7: {}
 
@@ -32753,22 +32720,21 @@ snapshots:
       '@types/hast': 3.0.4
       unist-util-visit: 5.1.0
 
-  reka-ui@2.6.0(typescript@5.7.3)(vue@3.5.37(typescript@5.7.3)):
+  reka-ui@2.10.5(vue@3.5.37(typescript@5.7.3)):
     dependencies:
-      '@floating-ui/dom': 1.7.0
-      '@floating-ui/vue': 1.1.6(vue@3.5.37(typescript@5.7.3))
+      '@floating-ui/dom': 1.7.6
+      '@floating-ui/vue': 1.1.11(vue@3.5.37(typescript@5.7.3))
       '@internationalized/date': 3.10.0
       '@internationalized/number': 3.6.5
-      '@tanstack/vue-virtual': 3.13.12(vue@3.5.37(typescript@5.7.3))
-      '@vueuse/core': 12.8.2(typescript@5.7.3)
-      '@vueuse/shared': 12.8.2(typescript@5.7.3)
+      '@tanstack/vue-virtual': 3.13.28(vue@3.5.37(typescript@5.7.3))
+      '@vueuse/core': 14.3.0(vue@3.5.37(typescript@5.7.3))
+      '@vueuse/shared': 14.3.0(vue@3.5.37(typescript@5.7.3))
       aria-hidden: 1.2.6
-      defu: 6.1.4
+      defu: 6.1.7
       ohash: 2.0.11
       vue: 3.5.37(typescript@5.7.3)
     transitivePeerDependencies:
       - '@vue/composition-api'
-      - typescript
 
   reka-ui@2.9.9(vue@3.5.13(typescript@5.7.3)):
     dependencies:
@@ -35514,8 +35480,6 @@ snapshots:
   vue-component-type-helpers@2.2.12: {}
 
   vue-component-type-helpers@3.3.11: {}
-
-  vue-component-type-helpers@3.3.6: {}
 
   vue-demi@0.14.10(vue@3.5.13(typescript@5.7.3)):
     dependencies:
