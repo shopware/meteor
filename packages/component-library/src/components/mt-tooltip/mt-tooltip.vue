@@ -10,6 +10,7 @@
       onBlur,
       onKeydown: (event: KeyboardEvent) => {
         const keysThatCloseTooltip = ['Escape', ' ', 'Enter'];
+        if (event.key === 'Escape' && isVisible) event.preventDefault();
         if (keysThatCloseTooltip.includes(event.key)) hide({ causedByKeyPress: true });
         mouseoverTimeout.stop();
       },
@@ -25,8 +26,9 @@
     <Transition v-bind="$attrs">
       <div
         v-show="isVisible"
+        data-mt-overlay
         :data-placement="calculatedPlacement"
-        style="position: absolute; z-index: 1100"
+        style="position: absolute; z-index: var(--z-index-tooltip, 1100)"
       >
         <!-- Needs to be v-show, otherwise we have a jumping entry when tooltip is visible for the first time -->
         <div

@@ -4,6 +4,7 @@ interface StateDefinition {
   isOpen: Ref<boolean>;
   setIsOpen: (value: boolean) => void;
   closable: Ref<boolean>;
+  backdrop: Readonly<Ref<HTMLElement | null>>;
 }
 
 export const DialogContext = Symbol("DialogContext") as InjectionKey<StateDefinition>;

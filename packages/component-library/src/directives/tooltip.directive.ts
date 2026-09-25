@@ -209,6 +209,7 @@ class Tooltip {
     element.setAttribute("aria-role", "tooltip");
     element.setAttribute("aria-label", "currently-opened-tooltip");
     element.classList.add("mt-tooltip");
+    element.setAttribute("data-mt-overlay", "");
     element.classList.add(`mt-tooltip--${this._appearance}`);
 
     if (this._zIndex !== null) {

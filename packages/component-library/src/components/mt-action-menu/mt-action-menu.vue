@@ -38,7 +38,7 @@ withDefaults(
   border-radius: var(--border-radius-m);
   padding: var(--scale-size-4);
   min-width: 200px;
-  z-index: 1300;
+  z-index: var(--z-index-menu, 1300);
 }
 
 .mt-action-menu--match-trigger-width {

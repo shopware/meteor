@@ -1,4 +1,5 @@
-import { within, userEvent } from "@storybook/test";
+import { within, userEvent, fn, waitFor } from "@storybook/test";
+import { ref } from "vue";
 import { expect } from "@storybook/test";
 import { waitUntil } from "../../_internal/test-helper";
 import { screen } from "@storybook/test";
@@ -989,5 +990,88 @@ export const VisualTestHintSlot: MtSelectStory = {
     const canvas = within(canvasElement);
 
     expect(canvas.getByText("Hint via slot")).toBeDefined();
+  },
+};
+
+const clickBefore = fn();
+const clickAfter = fn();
+
+export const TestKeyboardNavigationBothDirections: MtSelectStory = {
+  name: "Should reach and open every select with Tab and Shift+Tab without clicking anything",
+  render: () => ({
+    components: { MtSelect },
+    setup: () => ({
+      first: ref("a"),
+      second: ref(null),
+      clickBefore,
+      clickAfter,
+      options: [
+        { id: 1, label: "Option A", value: "a" },
+        { id: 2, label: "Option B", value: "b" },
+      ],
+    }),
+    template: `
+      <div style="display: grid; gap: 16px; max-width: 320px;">
+        <button type="button" @click="clickBefore">Before</button>
+        <mt-select v-model="first" label="First" :options="options" />
+        <mt-select v-model="second" label="Second" :options="options" />
+        <button type="button" @click="clickAfter">After</button>
+      </div>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    clickBefore.mockClear();
+    clickAfter.mockClear();
+
+    const canvas = within(canvasElement);
+    const before = canvas.getByRole("button", { name: "Before" });
+    const after = canvas.getByRole("button", { name: "After" });
+    const [first, second] = Array.from(canvasElement.querySelectorAll<HTMLElement>(".mt-select"));
+
+    function focusState() {
+      const active = document.activeElement;
+      const describe = (name: string) => {
+        if (active?.matches("[data-clearable-button]")) return `${name}-clear`;
+        return active?.matches(".mt-select-selection-list__input") ? name : `${name}-other`;
+      };
+      const place =
+        active === before
+          ? "before"
+          : active === after
+            ? "after"
+            : active && first.contains(active)
+              ? describe("first")
+              : active && second.contains(active)
+                ? describe("second")
+                : "elsewhere";
+      const open = [
+        first.classList.contains("has--focus") ? "first-open" : "",
+        second.classList.contains("has--focus") ? "second-open" : "",
+      ].filter(Boolean);
+
+      return [place, ...open].join(" ");
+    }
+
+    async function press(key: string, expected: string) {
+      await userEvent.keyboard(key);
+      await waitFor(() => expect(focusState()).toBe(expected));
+    }
+
+    before.focus();
+
+    await press("{Tab}", "first first-open");
+    await press("{Tab}", "first-clear");
+    await press("{Tab}", "second second-open");
+    await press("{Tab}", "second-clear");
+    await press("{Tab}", "after");
+
+    await press("{Shift>}{Tab}{/Shift}", "second-clear");
+    await press("{Shift>}{Tab}{/Shift}", "second second-open");
+    await press("{Shift>}{Tab}{/Shift}", "first-clear");
+    await press("{Shift>}{Tab}{/Shift}", "first first-open");
+    await press("{Shift>}{Tab}{/Shift}", "before");
+
+    expect(clickBefore).not.toHaveBeenCalled();
+    expect(clickAfter).not.toHaveBeenCalled();
   },
 };

@@ -48,6 +48,10 @@ import MtModalRoot from "./components/mt-modal/sub-components/mt-modal-root.vue"
 import MtModalClose from "./components/mt-modal/sub-components/mt-modal-close.vue";
 import MtModalTrigger from "./components/mt-modal/sub-components/mt-modal-trigger.vue";
 import MtModalAction from "./components/mt-modal/sub-components/mt-modal-action.vue";
+import MtDrawerRoot from "./components/mt-drawer/mt-drawer-root.vue";
+import MtDrawerTrigger from "./components/mt-drawer/mt-drawer-trigger.vue";
+import MtDrawerContent from "./components/mt-drawer/mt-drawer-content.vue";
+import MtDrawerClose from "./components/mt-drawer/mt-drawer-close.vue";
 import MtText from "./components/mt-text/mt-text.vue";
 import MtInset from "./components/mt-inset/mt-inset.vue";
 import MtThemeProvider from "./components/mt-theme-provider/mt-theme-provider.vue";
@@ -76,7 +80,18 @@ import MtEntitySelect from "./components/mt-entity-select/mt-entity-select.vue";
 import MtActionMenu from "./components/mt-action-menu/mt-action-menu.vue";
 import MtActionMenuItem from "./components/mt-action-menu-item/mt-action-menu-item.vue";
 import MtActionMenuGroup from "./components/mt-action-menu-group/mt-action-menu-group.vue";
+import MtApp from "./components/mt-app/mt-app.vue";
+import {
+  useMtApp,
+  type MtAppContext,
+  type MtAppSide,
+} from "./components/mt-app/composables/useMtApp";
+import {
+  useMtAppRegions,
+  type MtAppRegions,
+} from "./components/mt-app/composables/useMtAppRegions";
 import MtCollapsible from "./components/mt-collapsible/mt-collapsible.vue";
+import MtContainer from "./components/mt-container/mt-container.vue";
 import MtCollapsibleTrigger from "./components/mt-collapsible/mt-collapsible-trigger.vue";
 import MtCollapsibleContent from "./components/mt-collapsible/mt-collapsible-content.vue";
 import {
@@ -143,6 +158,10 @@ export {
   MtModalTrigger,
   MtModalClose,
   MtModalAction,
+  MtDrawerRoot,
+  MtDrawerTrigger,
+  MtDrawerContent,
+  MtDrawerClose,
   MtText,
   MtInset,
   MtSearch,
@@ -157,9 +176,13 @@ export {
   MtActionMenu,
   MtActionMenuItem,
   MtActionMenuGroup,
+  MtApp,
+  useMtApp,
+  useMtAppRegions,
   MtCollapsible,
   MtCollapsibleTrigger,
   MtCollapsibleContent,
+  MtContainer,
   DropdownMenuRoot as MtDropdownMenuRoot,
   DropdownMenuPortal as MtDropdownMenuPortal,
   DropdownMenuTrigger as MtDropdownMenuTrigger,
@@ -214,5 +237,10 @@ export {
 // Exporting types
 export type { Filter, Option, Toast, Snackbar, ChartOptions, BreadcrumbItem };
 export type { Theme, ResolvedTheme, UseThemeOptions, UseThemeReturn };
+export type { MtAppContext, MtAppRegions, MtAppSide };
+export type {
+  MtDrawerDismissReason,
+  MtDrawerSide,
+} from "./components/mt-drawer/composables/useDrawerContext";
 export type { Editor } from "@tiptap/vue-3";
 export type { default as Link } from "@tiptap/extension-link";
