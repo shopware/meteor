@@ -29,7 +29,7 @@ const { isMobile, activeDrawer, openDrawer, closeDrawer } = useMtApp();
 | `scrollContainer` | `Readonly<Ref<HTMLElement \| null>>`      | The content element that scrolls, for scrolling programmatically or restoring positions with a router other than Vue Router. `null` outside of a shell. |
 | `openDrawer`      | `(side: "start" \| "end") => void`        | Opens the drawer of the given side. Does nothing in the desktop layout or for an empty or hidden sidebar.                                               |
 | `closeDrawer`     | `() => void`                              | Closes the open drawer.                                                                                                                                 |
-| `setTheme`        | `(theme: Theme) => void`                  | Sets the theme preference. With a controlled `theme` prop on the shell this only emits `update:theme`.                                                  |
+| `setTheme`        | `(theme: Theme) => void`                  | Sets and persists the theme preference.                                                                                                                 |
 
 ## Related components
 

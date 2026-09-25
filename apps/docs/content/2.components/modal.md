@@ -147,3 +147,7 @@ To open a modal from something other than a trigger, control the open state dire
 - Escape closes a closable modal while the focus is inside it, or lost to the page because the focused element disappeared. An open select result list or tooltip inside the modal takes Escape first, and overlays rendered outside the modal, such as a date picker, handle Escape themselves.
 - On close, the focus returns to the element that opened the modal.
 - Only use **Modal** when interrupting the current flow is justified by the task.
+
+## Related components
+
+- [**Drawer**](/components/drawer): when a secondary task or a form should slide in from an edge and keep the current view visible.

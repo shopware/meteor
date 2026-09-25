@@ -19,12 +19,7 @@ const ShellState = defineComponent({
 </script>
 
 <template>
-  <mt-app
-    class="app-composable"
-    :mobile-breakpoint="0"
-    :apply-theme="false"
-    :lock-document="false"
-  >
+  <mt-app class="app-composable" :mobile-breakpoint="0">
     <template #content>
       <div class="app-composable__content">
         <shell-state />
