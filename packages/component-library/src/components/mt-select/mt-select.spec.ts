@@ -1,3 +1,4 @@
+import { defineComponent } from "vue";
 import { flushPromises, mount } from "@vue/test-utils";
 import MtSelect from "./mt-select.vue";
 
@@ -38,6 +39,33 @@ vi.mock("@/utils/debounce", () => ({
 }));
 
 describe("mt-select", () => {
+  it("moves the focus to the previous element on Shift+Tab without clicking it", async () => {
+    // ARRANGE
+    const onClick = vi.fn();
+    const wrapper = mount(
+      defineComponent({
+        components: { MtSelect },
+        setup: () => ({ onClick, options: [{ id: 1, label: "Option Alfred", value: "alfred" }] }),
+        template: `
+          <div>
+            <button id="before" @click="onClick">Before</button>
+            <div inert><button @click="onClick">Inert</button></div>
+            <mt-select label="Select" :options="options" />
+          </div>
+        `,
+      }),
+      { attachTo: document.body },
+    );
+
+    // ACT
+    await wrapper.find(".mt-select__selection").trigger("keydown", { key: "Tab", shiftKey: true });
+
+    // ASSERT
+    expect(document.activeElement).toBe(wrapper.find("#before").element);
+    expect(onClick).not.toHaveBeenCalled();
+    wrapper.unmount();
+  });
+
   it("should render the select component", async () => {
     const wrapper = await createWrapper();
 

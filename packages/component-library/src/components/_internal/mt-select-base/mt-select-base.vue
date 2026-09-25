@@ -291,21 +291,19 @@ export default defineComponent({
     focusPreviousFormElement() {
       const focusableSelector =
         'a, button, input, textarea, select, details, [tabindex]:not([tabindex="-1"])';
-      const myFocusable = this.$el.querySelector(focusableSelector);
-      const keyboardFocusable = [
-        ...document.querySelectorAll(focusableSelector),
-        // @ts-expect-error - target is set and contains dataset
-      ].filter((el) => !el.hasAttribute("disabled") && el.dataset.clearableButton === undefined);
+      const wrapper = this.$refs.selectWrapper as HTMLElement;
+      const keyboardFocusable = Array.from(
+        document.querySelectorAll<HTMLElement>(focusableSelector),
+      ).filter(
+        (element) =>
+          !element.hasAttribute("disabled") &&
+          element.tabIndex >= 0 &&
+          !element.closest("[inert]") &&
+          (typeof element.checkVisibility !== "function" || element.checkVisibility()),
+      );
 
-      keyboardFocusable.forEach((element, index) => {
-        if (index > 0 && element === myFocusable) {
-          const kbFocusable = keyboardFocusable[index - 1];
-          // @ts-expect-error - click exists on element
-          kbFocusable.click();
-          // @ts-expect-error - focus exists on element
-          kbFocusable.focus();
-        }
-      });
+      const index = keyboardFocusable.indexOf(wrapper);
+      if (index > 0) keyboardFocusable[index - 1].focus();
     },
 
     listenToClickOutside(event: Event) {
