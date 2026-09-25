@@ -30,6 +30,8 @@ function nextFrame() {
   });
 }
 
+const MAX_SAVED_POSITIONS = 50;
+
 function historyEntryKey(): unknown {
   return window.history.state?.position ?? window.location.href;
 }
@@ -54,15 +56,23 @@ export function useAppRouter(options: UseAppRouterOptions): void {
   const positions = new Map<unknown, number>();
   let saving = true;
   let isPopNavigation = false;
+  let navigationId = 0;
   let teardown: (() => void)[] = [];
+
+  function savePosition(top: number) {
+    const key = historyEntryKey();
+    positions.delete(key);
+    positions.set(key, top);
+
+    if (positions.size > MAX_SAVED_POSITIONS) positions.delete(positions.keys().next().value);
+  }
 
   useEventListener(
     options.scrollContainer,
     "scroll",
     () => {
-      if (saving && options.scrollContainer.value) {
-        positions.set(historyEntryKey(), options.scrollContainer.value.scrollTop);
-      }
+      if (saving && options.scrollContainer.value)
+        savePosition(options.scrollContainer.value.scrollTop);
     },
     { passive: true },
   );
@@ -76,10 +86,13 @@ export function useAppRouter(options: UseAppRouterOptions): void {
       return;
     }
 
+    const id = ++navigationId;
     options.onNavigate();
 
     await nextTick();
     await nextFrame();
+
+    if (id !== navigationId) return;
 
     const container = options.scrollContainer.value;
     const savedPosition = positions.get(historyEntryKey());
@@ -96,7 +109,7 @@ export function useAppRouter(options: UseAppRouterOptions): void {
         container.scrollTop = 0;
       }
 
-      positions.set(historyEntryKey(), container.scrollTop);
+      savePosition(container.scrollTop);
     }
 
     saving = true;

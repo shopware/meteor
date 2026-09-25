@@ -1,5 +1,6 @@
 import { createSSRApp, h, nextTick } from "vue";
 import { renderToString } from "vue/server-renderer";
+import { waitFor } from "@testing-library/vue";
 import { createI18n } from "vue-i18n";
 import MtApp from "./mt-app.vue";
 
@@ -7,10 +8,10 @@ function stubViewport(width: number) {
   vi.stubGlobal(
     "matchMedia",
     vi.fn((query: string) => {
-      const maxWidth = Number(/\(max-width: ([\d.]+)px\)/.exec(query)?.[1] ?? NaN);
+      const maxWidth = Number(/\(width < ([\d.]+)px\)/.exec(query)?.[1] ?? NaN);
 
       return {
-        matches: Number.isNaN(maxWidth) ? false : width <= maxWidth,
+        matches: Number.isNaN(maxWidth) ? false : width < maxWidth,
         media: query,
         onchange: null,
         addEventListener: () => undefined,
@@ -24,16 +25,12 @@ function stubViewport(width: number) {
 function createApp() {
   return createSSRApp({
     render: () =>
-      h(
-        MtApp,
-        { theme: "light", applyTheme: false },
-        {
-          header: () => h("span", "Header content"),
-          "sidebar-start": () => h("nav", "Navigation"),
-          content: () => h("p", "Main content"),
-          "sidebar-end": () => h("div", "Tools"),
-        },
-      ),
+      h(MtApp, null, {
+        header: () => h("span", "Header content"),
+        "sidebar-start": () => h("nav", "Navigation"),
+        content: () => h("p", "Main content"),
+        "sidebar-end": () => h("div", "Tools"),
+      }),
   }).use(createI18n({ legacy: false, locale: "en" }));
 }
 
@@ -80,6 +77,6 @@ describe("mt-app server-side rendering", () => {
     // ASSERT
     expect(hydrationMessages).toEqual([]);
     expect(container.querySelector(".mt-app")).toHaveAttribute("data-layout", "mobile");
-    expect(container.querySelector('[role="dialog"]')).toBeInTheDocument();
+    await waitFor(() => expect(document.querySelector('[role="dialog"]')).toBeInTheDocument());
   });
 });

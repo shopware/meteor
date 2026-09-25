@@ -19,7 +19,7 @@ export interface MtAppContext {
   /** Opens the drawer of the given side. Does nothing in the desktop layout or for an empty or hidden sidebar. */
   openDrawer(side: MtAppSide): void;
   closeDrawer(): void;
-  /** Sets the theme preference. With a controlled `theme` prop this only emits `update:theme`. */
+  /** Sets and persists the theme preference. */
   setTheme(theme: Theme): void;
 }
 

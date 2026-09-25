@@ -56,7 +56,7 @@ describe("useAppLayout", () => {
       const query = breakpointQuery(1280);
 
       // ASSERT
-      expect(query).toBe("(max-width: 1279.98px)");
+      expect(query).toBe("(width < 1280px)");
     });
   });
 
@@ -70,7 +70,7 @@ describe("useAppLayout", () => {
 
       // ASSERT
       expect(result.value).toBe(true);
-      expect(media.queries()).toEqual(["(max-width: 1279.98px)"]);
+      expect(media.queries()).toEqual(["(width < 1280px)"]);
     });
 
     it("does not read the viewport before it is enabled", async () => {
@@ -118,7 +118,7 @@ describe("useAppLayout", () => {
       await nextTick();
 
       // ASSERT
-      expect(media.queries()).toEqual(["(max-width: 1279.98px)", "(max-width: 799.98px)"]);
+      expect(media.queries()).toEqual(["(width < 1280px)", "(width < 800px)"]);
       expect(media.listenerCount()).toBe(1);
     });
 

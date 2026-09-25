@@ -19,13 +19,9 @@ export interface MtAppRegions {
   sidebarEnd?: boolean;
 }
 
-/**
- * The media query that matches below the given viewport width. `max-width` is
- * inclusive, so a fraction is subtracted to keep the breakpoint itself on the
- * desktop side.
- */
+/** The media query that matches while the viewport is narrower than the given width. */
 export function breakpointQuery(breakpoint: number): string {
-  return `(max-width: ${breakpoint - 0.02}px)`;
+  return `(width < ${breakpoint}px)`;
 }
 
 /**
@@ -81,13 +77,6 @@ export interface AppLayoutContext {
   registerSidebar(side: MtAppSide): () => void;
   open(side: MtAppSide): void;
   close(): void;
-  /** The shell regions that become inert while the drawer of the given side is open. */
-  inertTargets(side: MtAppSide): (Element | null | undefined)[];
-  /**
-   * The element that receives focus when the drawer of the given side closes;
-   * `null` leaves the focus where it is.
-   */
-  focusReturnTarget(side: MtAppSide): HTMLElement | null;
   /** Hides regions while the returned release function has not been called. */
   requestRegions(regions: () => MtAppRegions): () => void;
 }
