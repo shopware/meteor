@@ -8,7 +8,7 @@ import { settings } from "./store/settings";
 </script>
 
 <template>
-  <mt-app>
+  <mt-app end-drawer-variant="floating">
     <template v-if="settings.header" #header>
       <AppHeader />
     </template>
