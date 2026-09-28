@@ -20,7 +20,7 @@
     <mt-drawer-content
       :id="id"
       :side="side"
-      :variant="drawerVariant"
+      variant="floating"
       :title="label"
       class="mt-app__drawer"
       hide-header
@@ -70,8 +70,6 @@ const props = defineProps<{
   closeLabel: string;
   /** hides the region while a view hides it */
   hidden?: boolean;
-  /** the look of the drawer in the mobile layout */
-  drawerVariant: "default" | "floating";
 }>();
 
 defineSlots<{

@@ -54,7 +54,7 @@ A view hides the header and sidebars with [**useMtAppRegions**](/utilities/compo
 ## Anatomy
 
 - `header`: spans the full width, keeps its intrinsic height and sits directly on the row of sidebars and content; without a header that row keeps an 8px gap to the top edge. In the mobile layout the shell places a trigger for every filled sidebar at the start and end of it. Without header content, a minimal shell-owned header holds just the triggers.
-- `sidebar-start` and `sidebar-end`: `complementary` landmarks in the desktop layout. Below the mobile breakpoint their content moves into a [**Drawer**](/components/drawer) without being re-mounted, so component and form state inside them survive every layout change. Each drawer has a close button, a backdrop, Escape and swipe handling and its own translated accessible name. `startDrawerVariant` and `endDrawerVariant` switch a drawer to the `floating` look of **Drawer**.
+- `sidebar-start` and `sidebar-end`: `complementary` landmarks in the desktop layout. Below the mobile breakpoint their content moves into a [**Drawer**](/components/drawer) without being re-mounted, so component and form state inside them survive every layout change. Each drawer has a close button, a backdrop, Escape and swipe handling and its own translated accessible name. The drawers use the floating look of **Drawer**.
 - `content`: the `<main>` landmark and the only scroll container of the shell, available as `scrollContainer` from `useMtApp()`.
 - `global`: app-wide hosts that render no layout box, such as notification renderers or keyboard-shortcut listeners. They stay mounted across route changes.
 

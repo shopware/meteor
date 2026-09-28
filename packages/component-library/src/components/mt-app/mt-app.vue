@@ -54,7 +54,6 @@
         side="start"
         :label="startLabel"
         :close-label="t('closeSidebar', { label: startLabel })"
-        :drawer-variant="startDrawerVariant"
         :hidden="hiddenRegions.sidebarStart || undefined"
       >
         <slot name="sidebar-start" v-bind="sidebarSlotProps('start')" />
@@ -71,7 +70,6 @@
         side="end"
         :label="endLabel"
         :close-label="t('closeSidebar', { label: endLabel })"
-        :drawer-variant="endDrawerVariant"
         :hidden="hiddenRegions.sidebarEnd || undefined"
       >
         <slot name="sidebar-end" v-bind="sidebarSlotProps('end')" />
@@ -136,22 +134,10 @@ const props = withDefaults(
      * mobile layout.
      */
     mobileBreakpoint?: number;
-    /**
-     * The look of the start sidebar's drawer in the mobile layout. `floating` keeps an
-     * 8px distance to the viewport edges and gets a border with rounded corners.
-     */
-    startDrawerVariant?: "default" | "floating";
-    /**
-     * The look of the end sidebar's drawer in the mobile layout. `floating` keeps an
-     * 8px distance to the viewport edges and gets a border with rounded corners.
-     */
-    endDrawerVariant?: "default" | "floating";
   }>(),
   {
     future: undefined,
     mobileBreakpoint: 1280,
-    startDrawerVariant: "default",
-    endDrawerVariant: "default",
   },
 );
 
