@@ -52,6 +52,7 @@ import MtDrawerRoot from "./components/mt-drawer/mt-drawer-root.vue";
 import MtDrawerTrigger from "./components/mt-drawer/mt-drawer-trigger.vue";
 import MtDrawerContent from "./components/mt-drawer/mt-drawer-content.vue";
 import MtDrawerClose from "./components/mt-drawer/mt-drawer-close.vue";
+import MtUser from "./components/mt-user/mt-user.vue";
 import MtText from "./components/mt-text/mt-text.vue";
 import MtInset from "./components/mt-inset/mt-inset.vue";
 import MtThemeProvider from "./components/mt-theme-provider/mt-theme-provider.vue";
@@ -162,6 +163,7 @@ export {
   MtDrawerTrigger,
   MtDrawerContent,
   MtDrawerClose,
+  MtUser,
   MtText,
   MtInset,
   MtSearch,

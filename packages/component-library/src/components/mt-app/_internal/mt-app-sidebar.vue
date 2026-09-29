@@ -27,19 +27,21 @@
       inset
       keep-mounted
     >
-      <div class="mt-app__drawer-chrome" :class="`mt-app__drawer-chrome--${side}`">
-        <mt-drawer-close
-          :as="MtButton"
-          variant="tertiary"
-          size="small"
-          square
-          :aria-label="closeLabel"
-        >
-          <mt-icon name="regular-times-s" size="var(--scale-size-10)" decorative />
-        </mt-drawer-close>
-      </div>
+      <div class="mt-app__drawer-layout">
+        <div class="mt-app__drawer-chrome" :class="`mt-app__drawer-chrome--${side}`">
+          <mt-drawer-close
+            :as="MtButton"
+            variant="tertiary"
+            size="small"
+            square
+            :aria-label="closeLabel"
+          >
+            <mt-icon name="regular-times-s" size="var(--scale-size-10)" decorative />
+          </mt-drawer-close>
+        </div>
 
-      <div ref="drawerBody" />
+        <div ref="drawerBody" class="mt-app__drawer-body" />
+      </div>
     </mt-drawer-content>
   </mt-drawer-root>
 </template>
@@ -131,8 +133,20 @@ defineExpose({
 
 .mt-app__sidebar-content {
   display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
+}
+
+.mt-app__drawer-layout {
+  display: flex;
   flex-direction: column;
   min-height: 100%;
+}
+
+.mt-app__drawer-body {
+  display: flex;
+  flex: 1 0 auto;
+  flex-direction: column;
 }
 
 .mt-app__drawer-chrome {
