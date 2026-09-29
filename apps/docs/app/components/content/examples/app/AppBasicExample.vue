@@ -54,7 +54,7 @@ import MtText from "@shopware-ag/meteor-component-library/MtText";
 
 .slot--header {
   height: var(--scale-size-56);
-  margin: var(--scale-size-8);
+  margin-block: var(--scale-size-8);
 }
 
 .slot--sidebar-start {

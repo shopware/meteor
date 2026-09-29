@@ -14,6 +14,7 @@
     <header
       v-if="hasHeader() || showTriggers()"
       class="mt-app__header"
+      :class="{ 'mt-app__header--with-triggers': showTriggers() }"
       :hidden="(hiddenRegions.header && !showTriggers()) || undefined"
     >
       <mt-app-trigger
@@ -118,6 +119,8 @@ import { provideMtApp } from "./composables/useMtApp";
  * both sidebars and the content area, turns the sidebars into off-canvas
  * drawers below the mobile breakpoint, and provides theme, future flags
  * and the snackbar host to everything inside. Use one shell per application.
+ *
+ * @experimental This can be used, but the API may still change in a future release.
  */
 const props = withDefaults(
   defineProps<{
@@ -378,7 +381,13 @@ defineExpose({
   display: flex;
   flex: none;
   align-items: center;
+  column-gap: var(--scale-size-8);
   min-width: 0;
+  padding-inline: var(--scale-size-8);
+}
+
+.mt-app__header--with-triggers {
+  min-height: var(--scale-size-56);
 }
 
 .mt-app__header-content {

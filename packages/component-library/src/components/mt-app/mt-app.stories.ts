@@ -46,7 +46,7 @@ export const SlotPlaceholder: Component = {
 const template = `
 <mt-app v-bind="args">
   <template #header>
-    <slot-placeholder name="header" height="var(--scale-size-56)" inset="var(--scale-size-8)" />
+    <slot-placeholder name="header" height="var(--scale-size-56)" inset="var(--scale-size-8) 0" />
   </template>
 
   <template #sidebar-start>

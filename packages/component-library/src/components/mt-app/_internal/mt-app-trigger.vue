@@ -1,17 +1,17 @@
 <template>
-  <div class="mt-app__trigger" :class="`mt-app__trigger--${side}`">
-    <mt-button
-      variant="tertiary"
-      size="small"
-      square
-      :aria-label="label"
-      :aria-expanded="expanded ? 'true' : 'false'"
-      :aria-controls="controls"
-      @click="$emit('click')"
-    >
-      <mt-icon :name="icon" size="var(--scale-size-16)" decorative />
-    </mt-button>
-  </div>
+  <mt-button
+    class="mt-app__trigger"
+    :class="`mt-app__trigger--${side}`"
+    variant="tertiary"
+    size="default"
+    square
+    :aria-label="label"
+    :aria-expanded="expanded ? 'true' : 'false'"
+    :aria-controls="controls"
+    @click="$emit('click')"
+  >
+    <mt-icon :name="icon" size="var(--scale-size-16)" decorative />
+  </mt-button>
 </template>
 
 <script setup lang="ts">
@@ -41,7 +41,6 @@ defineEmits<{
 <style scoped>
 .mt-app__trigger {
   flex: none;
-  padding: var(--scale-size-8);
 }
 
 .mt-app__trigger--end {

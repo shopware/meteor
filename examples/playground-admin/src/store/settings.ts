@@ -12,7 +12,7 @@ export interface Settings {
 export const LOCALE_STORAGE_KEY = "playground-admin-locale";
 
 export const settings = reactive<Settings>({
-  header: true,
+  header: false,
   sidebarStart: true,
   sidebarEnd: true,
   locale: localStorage.getItem(LOCALE_STORAGE_KEY) === "de" ? "de" : "en",
