@@ -15,6 +15,8 @@ export type { MtAppRegions };
  * toggle regions while the component stays mounted. When several components hide
  * regions, a region stays hidden until none of them hides it anymore. Hidden regions
  * stay mounted, so their state survives. Outside of a shell the call does nothing.
+ *
+ * @experimental This can be used, but the API may still change in a future release.
  */
 export function useMtAppRegions(regions: MaybeRefOrGetter<MtAppRegions>): void {
   const layout = inject(appLayoutKey, null);

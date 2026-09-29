@@ -10,9 +10,18 @@ import {
   type Ref,
 } from "vue";
 
+/**
+ * A side of the shell's sidebars.
+ *
+ * @experimental This can be used, but the API may still change in a future release.
+ */
 export type MtAppSide = "start" | "end";
 
-/** The regions of the shell that a view can hide, see `useMtAppRegions`. */
+/**
+ * The regions of the shell that a view can hide, see `useMtAppRegions`.
+ *
+ * @experimental This can be used, but the API may still change in a future release.
+ */
 export interface MtAppRegions {
   header?: boolean;
   sidebarStart?: boolean;

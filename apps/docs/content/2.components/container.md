@@ -3,6 +3,10 @@ title: Container
 description: A layout wrapper that limits content to a maximum width and centers it.
 ---
 
+::warning
+**Experimental.** The API may still change in a future release.
+::
+
 ::component-example{name="container-basic-example" fullWidth}
 ::
 

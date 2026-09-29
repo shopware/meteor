@@ -3,6 +3,10 @@ title: useMtAppRegions
 description: A composable that hides the header or sidebars of the surrounding App shell while a view is shown.
 ---
 
+::warning
+**Experimental.** The API may still change in a future release.
+::
+
 ::component-example{name="app-fullscreen-example" fullWidth}
 ::
 

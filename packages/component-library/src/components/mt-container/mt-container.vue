@@ -7,6 +7,11 @@
 <script setup lang="ts">
 import type { Component } from "vue";
 
+/**
+ * A layout wrapper that fills the available width up to a maximum width and centers itself.
+ *
+ * @experimental This can be used, but the API may still change in a future release.
+ */
 withDefaults(
   defineProps<{
     /**

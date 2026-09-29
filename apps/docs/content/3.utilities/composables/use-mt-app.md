@@ -3,6 +3,10 @@ title: useMtApp
 description: A composable that exposes the state and controls of the surrounding App shell.
 ---
 
+::warning
+**Experimental.** The API may still change in a future release.
+::
+
 ::component-example{name="app-composable-example" fullWidth}
 ::
 

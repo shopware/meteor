@@ -4,7 +4,11 @@ import type { MtAppSide } from "./useAppLayout";
 
 export type { MtAppSide };
 
-/** The shell state and controls that `useMtApp()` exposes to descendants of `<mt-app>`. */
+/**
+ * The shell state and controls that `useMtApp()` exposes to descendants of `<mt-app>`.
+ *
+ * @experimental This can be used, but the API may still change in a future release.
+ */
 export interface MtAppContext {
   /** Whether the shell currently uses the mobile layout with off-canvas sidebars. */
   isMobile: Readonly<Ref<boolean>>;
@@ -32,6 +36,8 @@ export function provideMtApp(context: MtAppContext): void {
 /**
  * Gives descendants of `<mt-app>` access to the shell state. Outside of a shell it
  * returns inert defaults, so components using it keep working on their own.
+ *
+ * @experimental This can be used, but the API may still change in a future release.
  */
 export function useMtApp(): MtAppContext {
   const context = inject(mtAppKey, null);

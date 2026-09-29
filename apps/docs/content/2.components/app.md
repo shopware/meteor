@@ -3,6 +3,10 @@ title: App
 description: The application shell that arranges header, sidebars and content, and turns the sidebars into drawers on small screens.
 ---
 
+::warning
+**Experimental.** The API may still change in a future release.
+::
+
 ::component-example{name="app-basic-example" fullWidth}
 ::
 
@@ -53,7 +57,7 @@ A view hides the header and sidebars with [**useMtAppRegions**](/utilities/compo
 
 ## Anatomy
 
-- `header`: spans the full width, keeps its intrinsic height and sits directly on the row of sidebars and content; without a header that row keeps an 8px gap to the top edge. In the mobile layout the shell places a trigger for every filled sidebar at the start and end of it. Without header content, a minimal shell-owned header holds just the triggers.
+- `header`: spans the full width with an 8px inset on both sides, keeps its intrinsic height and sits directly on the row of sidebars and content; without a header that row keeps an 8px gap to the top edge. In the mobile layout the shell places a trigger for every filled sidebar at the start and end of it, 8px away from the header content, so the header content should not add its own inline padding there (check `isMobile` from the slot props or [**useMtApp**](/utilities/composables/use-mt-app)). Without header content, a minimal shell-owned header holds just the triggers.
 - `sidebar-start` and `sidebar-end`: `complementary` landmarks in the desktop layout. Below the mobile breakpoint their content moves into a [**Drawer**](/components/drawer) without being re-mounted, so component and form state inside them survive every layout change. Each drawer has a close button, a backdrop, Escape and swipe handling and its own translated accessible name. The drawers use the floating look of **Drawer**.
 - `content`: the `<main>` landmark and the only scroll container of the shell, available as `scrollContainer` from `useMtApp()`.
 - `global`: app-wide hosts that render no layout box, such as notification renderers or keyboard-shortcut listeners. They stay mounted across route changes.
