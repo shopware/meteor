@@ -1,7 +1,7 @@
 import { flushPromises, mount } from "@vue/test-utils";
 import MtSelect from "./mt-select.vue";
 
-async function createWrapper({ props = {}, slots = {} } = {}) {
+async function createWrapper({ props = {}, slots = {}, attrs = {} } = {}) {
   const wrapper = mount(MtSelect, {
     props: {
       modelValue: "becky",
@@ -25,6 +25,7 @@ async function createWrapper({ props = {}, slots = {} } = {}) {
       ...props,
     },
     slots,
+    attrs,
   });
 
   await wrapper.vm.$nextTick();
@@ -255,5 +256,28 @@ describe("mt-select", () => {
     const input = wrapper.find(".mt-select-selection-list__input");
 
     expect(input.attributes("readonly")).toBeDefined();
+  });
+
+  it("associates the label with the input via the name attribute", async () => {
+    const wrapper = await createWrapper({
+      props: { label: "Date range" },
+      attrs: { name: "date-range" },
+    });
+
+    const label = wrapper.find(".mt-field__label label");
+    const input = wrapper.find(".mt-select-selection-list__input");
+
+    expect(label.attributes("for")).toBe("date-range");
+    expect(input.attributes("id")).toBe("date-range");
+  });
+
+  it("associates the label with the input via a generated id when no name is given", async () => {
+    const wrapper = await createWrapper({ props: { label: "Date range" } });
+
+    const label = wrapper.find(".mt-field__label label");
+    const input = wrapper.find(".mt-select-selection-list__input");
+
+    expect(label.attributes("for")).toMatch(/^mt-field--/);
+    expect(input.attributes("id")).toBe(label.attributes("for"));
   });
 });

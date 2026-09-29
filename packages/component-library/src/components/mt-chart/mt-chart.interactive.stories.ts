@@ -1,4 +1,3 @@
-import { within } from "@storybook/test";
 import { expect } from "@storybook/test";
 import { waitUntil } from "@/_internal/test-helper";
 
@@ -22,12 +21,10 @@ export const VisualTestRenderChart: MtChartStory = {
     },
   },
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
     // wait until chart is loaded and rendered
-    await waitUntil(() => document.querySelector(".apexcharts-canvas"));
+    await waitUntil(() => canvasElement.querySelector(".apexcharts-canvas"));
 
-    expect(canvas.findByTestId("mt-chart")).toBeDefined();
+    expect(canvasElement.querySelector(".apexcharts-canvas")).not.toBeNull();
   },
 };
 
@@ -45,12 +42,10 @@ export const VisualTestRenderChartWithCorrectSize: MtChartStory = {
     },
   },
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
     // wait until chart is loaded and rendered
-    await waitUntil(() => document.querySelector(".apexcharts-canvas"));
+    await waitUntil(() => canvasElement.querySelector(".apexcharts-canvas"));
 
-    expect(canvas.findByTestId("mt-chart")).toBeDefined();
+    expect(canvasElement.querySelector(".apexcharts-canvas")).not.toBeNull();
   },
 };
 
@@ -72,12 +67,10 @@ export const VisualTestRenderChartWithSeries: MtChartStory = {
     },
   },
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
     // wait until chart is loaded and rendered
-    await waitUntil(() => document.querySelector(".apexcharts-canvas"));
+    await waitUntil(() => canvasElement.querySelector(".apexcharts-canvas"));
 
-    expect(canvas.findByTestId("mt-chart")).toBeDefined();
+    expect(canvasElement.querySelector(".apexcharts-canvas")).not.toBeNull();
   },
 };
 
@@ -97,11 +90,9 @@ export const VisualTestRenderChartWithMergedOptions: MtChartStory = {
     },
   },
   play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-
     // wait until chart is loaded and rendered
-    await waitUntil(() => document.querySelector(".apexcharts-canvas"));
+    await waitUntil(() => canvasElement.querySelector(".apexcharts-canvas"));
 
-    expect(canvas.findByTestId("mt-chart")).toBeDefined();
+    expect(canvasElement.querySelector(".apexcharts-canvas")).not.toBeNull();
   },
 };

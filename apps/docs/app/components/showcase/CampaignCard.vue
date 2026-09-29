@@ -7,6 +7,7 @@ import MtTextField from "@shopware-ag/meteor-component-library/MtTextField";
 import MtColorpicker from "@shopware-ag/meteor-component-library/MtColorpicker";
 import MtNumberField from "@shopware-ag/meteor-component-library/MtNumberField";
 import MtDatepicker from "@shopware-ag/meteor-component-library/MtDatepicker";
+import MtDivider from "@shopware-ag/meteor-component-library/MtDivider";
 
 const title = ref("Summer Sale");
 const color = ref("#ffc65c");
@@ -48,7 +49,9 @@ const muted = "color-text-secondary-default";
               >{{ percentage }}%</mt-text
             >
           </div>
-          <div class="ticket__perf"></div>
+          <div class="ticket__perf">
+            <mt-divider variant="dashed" decorative />
+          </div>
           <div class="ticket__bottom">
             <mt-icon
               name="regular-calendar"
@@ -133,18 +136,16 @@ const muted = "color-text-secondary-default";
   color: var(--color-static-white);
   color: contrast-color(var(--campaign-color, var(--color-icon-brand-default)));
 }
-/* Perforated full-width divider; its ends are punched out by circles filled
-   with the sunken backdrop colour, centred on the ticket's edges. */
+/* Perforation: a dashed mt-divider whose ends are punched out by circles
+   filled with the sunken backdrop colour, centred on the ticket's edges. */
 .ticket__perf {
   position: relative;
-  height: 0;
-  border-top: 1px dashed var(--color-border-secondary-default);
 }
 .ticket__perf::before,
 .ticket__perf::after {
   content: "";
   position: absolute;
-  top: 0;
+  top: 50%;
   box-sizing: border-box;
   width: var(--scale-size-16);
   height: var(--scale-size-16);

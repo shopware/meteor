@@ -12,7 +12,7 @@
     :is-inherited="isInherited"
     :is-inheritance-field="isInheritanceField"
     :disable-inheritance-toggle="disableInheritanceToggle"
-    :small="small"
+    :small="isSmall"
     @select-expanded="onSelectExpanded"
     @select-collapsed="onSelectCollapsed"
     @clear="onClearSelection"
@@ -23,7 +23,7 @@
       <slot name="prefix" />
     </template>
 
-    <template #mt-select-selection="{ size }">
+    <template #mt-select-selection="{ identification }">
       <mt-select-selection-list
         ref="selectionList"
         :multi-selection="enableMultiSelection"
@@ -31,7 +31,7 @@
         :invisible-count="invisibleValueCount"
         :always-show-placeholder="alwaysShowPlaceholder"
         v-bind="{
-          size,
+          identification,
           valueProperty,
           labelProperty,
           placeholder,
@@ -39,7 +39,7 @@
           disabled,
           enableSearch,
         }"
-        :size="small ? 'small' : 'default'"
+        :size="isSmall ? 'small' : 'default'"
         @total-count-click="expandValueLimit"
         @item-remove="remove"
         @last-item-delete="removeLastItem"
@@ -523,9 +523,17 @@ export default defineComponent({
       return this.options;
     },
 
+    /**
+     * `size="small"` passed as an attribute reaches mt-base-field through $attrs;
+     * treat it like the `small` prop so both render the same small select.
+     */
+    isSmall(): boolean {
+      return this.small || this.$attrs.size === "small";
+    },
+
     componentClasses(): Record<string, boolean> {
       return {
-        "mt-select--small": this.small,
+        "mt-select--small": this.isSmall,
       };
     },
   },

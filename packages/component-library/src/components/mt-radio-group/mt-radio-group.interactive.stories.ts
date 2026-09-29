@@ -4,12 +4,13 @@ import { expect } from "@storybook/test";
 import MtRadioGroupRoot from "./mt-radio-group-root.vue";
 import MtRadioGroupList from "./mt-radio-group-list.vue";
 import MtRadioGroupItem from "./mt-radio-group-item.vue";
+import MtRadioGroupCardItem from "./mt-radio-group-card-item.vue";
 import MtRadioGroupCustomItem from "./mt-radio-group-custom-item.vue";
 import MtRadioGroupIndicator from "./mt-radio-group-indicator.vue";
 import ExampleRadioOption from "./_internal/example-radio-option.vue";
 import type { StoryObj, Meta } from "@storybook/vue3";
 import { fn } from "@storybook/test";
-import meta from "./mt-radio-group.stories";
+import meta, { WithCardItems } from "./mt-radio-group.stories";
 import {
   expectHintIconAlignedWithFirstLine,
   multiLinePropHint,
@@ -22,6 +23,204 @@ export default {
 } as Meta;
 
 type Story = StoryObj<typeof meta>;
+
+export const VisualTestCardItems: Story = {
+  ...WithCardItems,
+  name: "Visual Test: Card items",
+};
+
+export const VisualTestHoveredCardItem: Story = {
+  ...WithCardItems,
+  name: "Visual Test: Hovered card item",
+};
+
+export const VisualTestPressedCardItem: Story = {
+  ...WithCardItems,
+  name: "Visual Test: Pressed card item",
+};
+
+export const VisualTestDarkCardItems: Story = {
+  ...VisualTestCardItems,
+  name: "Visual Test: Card items in dark mode",
+  globals: { theme: "dark" },
+};
+
+export const VisualTestDisabledCardItems: Story = {
+  ...WithCardItems,
+  name: "Visual Test: Disabled card items",
+  args: {
+    ...WithCardItems.args,
+    disabled: true,
+    change: fn(),
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    expect(canvas.getByRole("radio", { name: "Express delivery" })).toBeDisabled();
+    expect(canvas.getByRole("radio", { name: "Express delivery" })).not.toBeChecked();
+    expect(canvas.getByRole("radio", { name: "Standard delivery" })).toBeDisabled();
+    expect(canvas.getByRole("radio", { name: "Standard delivery" })).toBeChecked();
+    expect(args.change).not.toHaveBeenCalled();
+  },
+};
+
+export const VisualTestCardItemsWithError: Story = {
+  ...WithCardItems,
+  name: "Visual Test: Card items with a group error",
+  args: {
+    ...WithCardItems.args,
+    error: { detail: "This delivery method is not available for your address." },
+  },
+};
+
+export const VisualTestFocusedSelectedCardItem: Story = {
+  ...WithCardItems,
+  name: "Visual Test: Focused selected card item",
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await userEvent.tab();
+
+    expect(canvas.getByRole("radio", { name: "Standard delivery" })).toHaveFocus();
+    expect(canvas.getByRole("radio", { name: "Standard delivery" })).toBeChecked();
+  },
+};
+
+export const VisualTestFocusedUnselectedCardItem: Story = {
+  ...WithCardItems,
+  name: "Visual Test: Focused unselected card item",
+  args: {
+    ...WithCardItems.args,
+    modelValue: null,
+    change: fn(),
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    await userEvent.tab();
+
+    expect(canvas.getByRole("radio", { name: "Standard delivery" })).toHaveFocus();
+    expect(canvas.getByRole("radio", { name: "Standard delivery" })).not.toBeChecked();
+    expect(args.change).not.toHaveBeenCalled();
+  },
+};
+
+export const TestSelectsCardItems: Story = {
+  ...WithCardItems,
+  name: "Selects card items with their labels",
+  args: {
+    ...WithCardItems.args,
+    change: fn(),
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const standard = canvas.getByRole("radio", { name: "Standard delivery" });
+    const express = canvas.getByRole("radio", { name: "Express delivery" });
+
+    await userEvent.click(canvas.getByText("Express delivery"));
+
+    expect(express).toBeChecked();
+    expect(standard).not.toBeChecked();
+    expect(express).toHaveAccessibleDescription(
+      "Delivery on the next business day for orders placed before 14:00.",
+    );
+    expect(args.change).toHaveBeenCalledWith("express");
+    expect(args.change).toHaveBeenCalledTimes(1);
+
+    await userEvent.click(canvas.getByText("Express delivery"));
+
+    expect(args.change).toHaveBeenCalledTimes(1);
+
+    await userEvent.click(canvas.getByText("Standard delivery"));
+
+    expect(standard).toBeChecked();
+    expect(express).not.toBeChecked();
+    expect(args.change).toHaveBeenLastCalledWith("standard");
+    expect(args.change).toHaveBeenCalledTimes(2);
+  },
+};
+
+export const TestSelectsCardItemsWithKeyboard: Story = {
+  ...WithCardItems,
+  name: "Selects card items with arrow keys and space",
+  args: {
+    ...WithCardItems.args,
+    modelValue: null,
+    change: fn(),
+  },
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+
+    await userEvent.tab();
+    await userEvent.keyboard(" ");
+
+    expect(canvas.getByRole("radio", { name: "Standard delivery" })).toBeChecked();
+    expect(args.change).toHaveBeenCalledWith("standard");
+    expect(args.change).toHaveBeenCalledTimes(1);
+
+    await userEvent.keyboard("{ArrowDown}");
+
+    expect(canvas.getByRole("radio", { name: "Express delivery" })).toHaveFocus();
+    expect(canvas.getByRole("radio", { name: "Express delivery" })).toBeChecked();
+    expect(canvas.getByRole("radio", { name: "Standard delivery" })).not.toBeChecked();
+    expect(args.change).toHaveBeenLastCalledWith("express");
+
+    await userEvent.keyboard("{ArrowUp}");
+
+    expect(canvas.getByRole("radio", { name: "Standard delivery" })).toHaveFocus();
+    expect(canvas.getByRole("radio", { name: "Standard delivery" })).toBeChecked();
+    expect(args.change).toHaveBeenLastCalledWith("standard");
+  },
+};
+
+export const VisualTestMixedCardItems: Story = {
+  name: "Visual Test: Standard and card items in the same group",
+  args: {
+    label: "Choose a delivery method",
+    change: fn(),
+  },
+  render: (args: typeof meta.args) => ({
+    components: { MtRadioGroupRoot, MtRadioGroupList, MtRadioGroupItem, MtRadioGroupCardItem },
+    setup() {
+      const modelValue = ref("default");
+
+      return { args, modelValue };
+    },
+    template: `
+      <div style="max-width: 480px">
+        <MtRadioGroupRoot v-model="modelValue" :label="args.label" @update:modelValue="args.change">
+          <MtRadioGroupList>
+            <MtRadioGroupItem id="store-default" value="default" label="Use the store default" />
+            <MtRadioGroupCardItem
+              id="express-delivery"
+              value="express"
+              label="Express delivery"
+              description="Delivery on the next business day for orders placed before 14:00."
+            />
+          </MtRadioGroupList>
+        </MtRadioGroupRoot>
+      </div>
+    `,
+  }),
+  play: async ({ canvasElement, args }) => {
+    const canvas = within(canvasElement);
+    const standard = canvas.getByRole("radio", { name: "Use the store default" });
+    const card = canvas.getByRole("radio", { name: "Express delivery" });
+
+    await userEvent.click(canvas.getByText("Express delivery"));
+
+    expect(card).toBeChecked();
+    expect(standard).not.toBeChecked();
+    expect(args.change).toHaveBeenCalledWith("express");
+    expect(args.change).toHaveBeenCalledTimes(1);
+
+    await userEvent.click(canvas.getByText("Use the store default"));
+
+    expect(standard).toBeChecked();
+    expect(card).not.toBeChecked();
+    expect(args.change).toHaveBeenLastCalledWith("default");
+  },
+};
 
 export const VisualTestDefault: Story = {
   name: "Should render the default radio group",
