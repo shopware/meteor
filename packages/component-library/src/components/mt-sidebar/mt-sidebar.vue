@@ -144,8 +144,9 @@ defineExpose({
   --mt-sidebar-padding-block-start: var(--scale-size-24);
   --mt-sidebar-padding-block-end: var(--scale-size-8);
 
-  /* Height of the fade at the top and bottom edge of the scrolling navigation.
-     Doubles as the content's vertical padding, so resting content stays fully visible. */
+  /* Height of the fade at the top and bottom edge of the scrolling navigation. The slot
+     content brings its own vertical padding (mt-nav pads by the same amount), so the
+     fades only ever cover content that scrolled past the edge. */
   --mt-sidebar-body-fade: var(--scale-size-20);
 
   display: flex;
@@ -189,13 +190,12 @@ defineExpose({
   display: none;
 }
 
-/* The padding lives here, not on the scroll container: padding on the scroll
-   container would keep the sticky fades away from the header and footer. */
+/* No padding on the scroll container or in here: it would keep the sticky fades
+   away from the header and footer, and stack with the padding of the navigation. */
 .mt-sidebar__content {
   display: flex;
   flex-direction: column;
   gap: var(--scale-size-16);
-  padding: var(--mt-sidebar-body-fade) 0;
 }
 
 /* Fades the navigation into the sidebar background at the edge it scrolls past,
