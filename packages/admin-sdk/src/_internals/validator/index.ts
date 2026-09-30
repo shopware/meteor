@@ -40,7 +40,19 @@ export default function validate({
         return;
       }
 
+      /*
+       * An empty collection carries no entity data, so reading it needs no privilege.
+       * Write privileges are still checked, because an emptied collection can delete associations.
+       */
+      const isEmptyCollection = value === '__EntityCollection__'
+        && Array.isArray(parentEntry.__entities__)
+        && parentEntry.__entities__.length === 0;
+
       [...privilegesToCheck].sort().forEach(privilege => {
+        if (isEmptyCollection && privilege === 'read') {
+          return;
+        }
+
         const permissionsForPrivilege = extension.permissions[privilege];
         if (
           (
