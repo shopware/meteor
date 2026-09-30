@@ -3,7 +3,9 @@ import { within, expect, waitFor } from "@storybook/test";
 import meta, { type MtSidebarMeta, type MtSidebarStory } from "./mt-sidebar.stories";
 import {
   demoComponents,
-  navigationItems,
+  demoLinkComponent,
+  demoSections,
+  shortDemoSections,
   demoNavigationTemplate,
   demoHeaderTemplate,
   demoFooterTemplate,
@@ -15,10 +17,13 @@ export default {
   tags: ["!autodocs"],
 } as MtSidebarMeta;
 
-function renderSidebar(options: { items?: typeof navigationItems; withHeader?: boolean } = {}) {
+function renderSidebar(options: { sections?: typeof demoSections } = {}) {
   return () => ({
     components: demoComponents,
-    setup: () => ({ items: options.items ?? navigationItems }),
+    setup: () => ({
+      sections: options.sections ?? demoSections,
+      linkComponent: demoLinkComponent,
+    }),
     template: `
 <div style="height: 480px; display: flex;">
   <mt-sidebar>
@@ -47,7 +52,7 @@ export const VisualTestWithHeaderAndFooter: MtSidebarStory = {
 
 export const VisualTestShortNavigation: MtSidebarStory = {
   name: "Render sidebar with short navigation",
-  render: renderSidebar({ items: navigationItems.slice(0, 4) }),
+  render: renderSidebar({ sections: shortDemoSections }),
 };
 
 export const VisualTestScrolledToBottom: MtSidebarStory = {
@@ -151,7 +156,7 @@ export const TestShowsTopShadowAtBottom: MtSidebarStory = {
 
 export const TestShowsNoShadowsWhenNavigationFits: MtSidebarStory = {
   name: "Shows no shadows when the navigation fits",
-  render: renderSidebar({ items: navigationItems.slice(0, 4) }),
+  render: renderSidebar({ sections: shortDemoSections }),
   play: async ({ canvasElement }) => {
     const body = canvasElement.querySelector<HTMLElement>(".mt-sidebar__body");
     if (!body) throw new Error("Sidebar body not found");

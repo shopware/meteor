@@ -3,7 +3,9 @@ import type { SlottedMeta } from "@/_internal/story-helper";
 import MtSidebar from "./mt-sidebar.vue";
 import {
   demoComponents,
-  navigationItems,
+  demoLinkComponent,
+  demoSections,
+  shortDemoSections,
   demoNavigationTemplate,
   demoHeaderTemplate,
   demoFooterTemplate,
@@ -28,7 +30,7 @@ const meta: MtSidebarMeta = {
   },
   render: (args) => ({
     components: demoComponents,
-    setup: () => ({ args, items: navigationItems }),
+    setup: () => ({ args, sections: demoSections, linkComponent: demoLinkComponent }),
     template: `
 <div style="height: 480px; display: flex;">
   <mt-sidebar v-bind="args">
@@ -60,9 +62,7 @@ export const Default: MtSidebarStory = {
       source: {
         language: "html",
         code: `<mt-sidebar>
-  <nav aria-label="Main">
-    <!-- your navigation -->
-  </nav>
+  <mt-nav :sections="sections" />
 </mt-sidebar>`,
       },
     },
@@ -73,7 +73,7 @@ export const WithHeaderAndFooter: MtSidebarStory = {
   name: "With header and footer",
   render: () => ({
     components: demoComponents,
-    setup: () => ({ items: navigationItems }),
+    setup: () => ({ sections: demoSections, linkComponent: demoLinkComponent }),
     template: `
 <div style="height: 480px; display: flex;">
   <mt-sidebar>
@@ -98,9 +98,7 @@ export const WithHeaderAndFooter: MtSidebarStory = {
     <!-- logo, shop name, collapse button, ... -->
   </template>
 
-  <nav aria-label="Main">
-    <!-- your navigation -->
-  </nav>
+  <mt-nav :sections="sections" />
 
   <template #footer>
     <!-- user menu, logout, ... -->
@@ -115,7 +113,7 @@ export const ShortNavigation: MtSidebarStory = {
   name: "Short navigation",
   render: () => ({
     components: demoComponents,
-    setup: () => ({ items: navigationItems.slice(0, 4) }),
+    setup: () => ({ sections: shortDemoSections, linkComponent: demoLinkComponent }),
     template: `
 <div style="height: 480px; display: flex;">
   <mt-sidebar>
@@ -151,9 +149,7 @@ export const CustomWidth: MtSidebarStory = {
       source: {
         language: "html",
         code: `<mt-sidebar width="20rem">
-  <nav aria-label="Main">
-    <!-- your navigation -->
-  </nav>
+  <mt-nav :sections="sections" />
 </mt-sidebar>`,
       },
     },

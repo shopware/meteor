@@ -1,5 +1,9 @@
 import { DropdownMenuPortal, DropdownMenuRoot, DropdownMenuTrigger } from "reka-ui";
+import { markRaw } from "vue";
 import MtSidebar from "../mt-sidebar.vue";
+import MtNav from "../../mt-nav/mt-nav.vue";
+import type { NavItem, NavSection } from "../../mt-nav/mt-nav.vue";
+import { StoryLink } from "../../mt-nav/_internal/story-link";
 import MtText from "../../mt-text/mt-text.vue";
 import MtIcon from "../../mt-icon/mt-icon.vue";
 import MtAvatar from "../../mt-avatar/mt-avatar.vue";
@@ -16,6 +20,7 @@ export const demoComponents = {
   MtDropdownMenuRoot: DropdownMenuRoot,
   MtDropdownMenuTrigger: DropdownMenuTrigger,
   MtSidebar,
+  MtNav,
   MtText,
   MtIcon,
   MtAvatar,
@@ -25,53 +30,78 @@ export const demoComponents = {
   MtActionMenuItem,
 };
 
-export const navigationItems = [
-  { label: "Dashboard", icon: "regular-home" },
-  { label: "Orders", icon: "regular-shopping-bag" },
-  { label: "Products", icon: "regular-box" },
-  { label: "Customers", icon: "regular-users" },
-  { label: "Marketing", icon: "regular-megaphone" },
-  { label: "Content", icon: "regular-file-text" },
-  { label: "Media", icon: "regular-image" },
-  { label: "Categories", icon: "regular-tag" },
-  { label: "Shipping", icon: "regular-truck" },
-  { label: "Payments", icon: "regular-credit-card" },
-  { label: "Sales channels", icon: "regular-storefront" },
-  { label: "Analytics", icon: "regular-chart-line" },
-  { label: "Notifications", icon: "regular-bell" },
-  { label: "Languages", icon: "regular-globe" },
-  { label: "Help", icon: "regular-question-circle" },
-  { label: "Settings", icon: "regular-cog" },
+/**
+ * Storybook has no router, so the navigation renders its links with this stand-in.
+ * markRaw: a component object stored in reactive state would be made reactive otherwise.
+ */
+export const demoLinkComponent = markRaw(StoryLink);
+
+const shopItems: NavItem[] = [
+  { label: "Dashboard", icon: "regular-home", to: { name: "dashboard.index" }, active: true },
+  { label: "Orders", icon: "regular-shopping-bag", to: { name: "order.index" } },
+  {
+    label: "Catalogues",
+    icon: "regular-products",
+    children: [
+      { label: "Products", to: { name: "product.index" } },
+      { label: "Categories", to: { name: "category.index" } },
+      { label: "Manufacturers", to: { name: "manufacturer.index" } },
+    ],
+  },
+  { label: "Customers", icon: "regular-users", to: { name: "customer.index" } },
+  {
+    label: "Content",
+    icon: "regular-content",
+    children: [
+      { label: "Shopping Experiences", to: { name: "cms.index" } },
+      { label: "Media", to: { name: "media.index" } },
+    ],
+  },
+  {
+    label: "Marketing",
+    icon: "regular-megaphone",
+    children: [
+      { label: "Promotions", to: { name: "promotion.index" } },
+      { label: "Newsletter recipients", to: { name: "newsletter.index" } },
+    ],
+  },
+  { label: "Analytics", icon: "regular-chart-line", to: { name: "analytics.index" } },
+  { label: "Sales channels", icon: "regular-storefront", to: { name: "sales-channel.index" } },
+  { label: "Shipping", icon: "regular-truck", to: { name: "shipping.index" } },
+  { label: "Payments", icon: "regular-credit-card", to: { name: "payment.index" } },
+];
+
+const systemItems: NavItem[] = [
+  {
+    label: "Extensions",
+    icon: "regular-plug",
+    children: [
+      { label: "My extensions", to: { name: "extension.my-extensions" } },
+      { label: "Store", to: { name: "extension.store" } },
+    ],
+  },
+  { label: "Settings", icon: "regular-cog", to: { name: "settings.index" } },
 ];
 
 /**
- * A plain navigation list used to demonstrate the sidebar. Any navigation
- * component can be placed into the default slot instead.
+ * A navigation tall enough to scroll inside the sidebar of the stories.
+ */
+export const demoSections: NavSection[] = [
+  { items: shopItems },
+  { header: "System", items: systemItems },
+];
+
+/**
+ * A navigation short enough to fit into the sidebar of the stories without scrolling.
+ */
+export const shortDemoSections: NavSection[] = [{ items: shopItems.slice(0, 4) }];
+
+/**
+ * The navigation used to demonstrate the sidebar. Any navigation can be placed
+ * into the default slot instead.
  */
 export const demoNavigationTemplate = `
-<nav aria-label="Main">
-  <ul style="list-style: none; margin: 0; padding: 0; display: grid; gap: var(--scale-size-4);">
-    <li v-for="(item, index) in items" :key="item.label">
-      <a
-        href="#"
-        :aria-current="index === 0 ? 'page' : undefined"
-        :style="{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 'var(--scale-size-12)',
-          padding: 'var(--scale-size-8) var(--scale-size-12)',
-          borderRadius: 'var(--border-radius-xs)',
-          textDecoration: 'none',
-          color: 'var(--color-text-primary-default)',
-          background: index === 0 ? 'var(--color-elevation-surface-selected)' : 'transparent',
-        }"
-      >
-        <mt-icon :name="item.icon" size="var(--scale-size-16)" aria-hidden="true" />
-        <mt-text as="span" size="s">{{ item.label }}</mt-text>
-      </a>
-    </li>
-  </ul>
-</nav>`;
+<mt-nav :sections="sections" :link-component="linkComponent" />`;
 
 /**
  * Header as used by the Shopware administration: logo box, shop name,
