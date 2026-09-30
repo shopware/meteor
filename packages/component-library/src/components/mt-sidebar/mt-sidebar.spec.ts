@@ -114,10 +114,10 @@ describe("mt-sidebar", () => {
     expect(container.firstElementChild).not.toHaveClass("mt-sidebar--has-footer");
   });
 
-  it("uses a default width of 16rem", async () => {
+  it("uses a default width of 300px", async () => {
     const { container } = render(MtSidebar);
 
-    expect(container.firstElementChild).toHaveStyle({ "--mt-sidebar-width": "16rem" });
+    expect(container.firstElementChild).toHaveStyle({ "--mt-sidebar-width": "300px" });
   });
 
   it("applies a custom width", async () => {

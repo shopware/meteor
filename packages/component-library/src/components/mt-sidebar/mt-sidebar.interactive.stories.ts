@@ -1,12 +1,13 @@
 import { within, expect, waitFor } from "@storybook/test";
 
 import meta, { type MtSidebarMeta, type MtSidebarStory } from "./mt-sidebar.stories";
-import { navigationItems, demoNavigationTemplate } from "./_mocks/demo-navigation";
-import MtSidebar from "./mt-sidebar.vue";
-import MtText from "../mt-text/mt-text.vue";
-import MtIcon from "../mt-icon/mt-icon.vue";
-import MtAvatar from "../mt-avatar/mt-avatar.vue";
-import MtButton from "../mt-button/mt-button.vue";
+import {
+  demoComponents,
+  navigationItems,
+  demoNavigationTemplate,
+  demoHeaderTemplate,
+  demoFooterTemplate,
+} from "./_mocks/demo-navigation";
 
 export default {
   ...meta,
@@ -16,25 +17,19 @@ export default {
 
 function renderSidebar(options: { items?: typeof navigationItems; withHeader?: boolean } = {}) {
   return () => ({
-    components: { MtSidebar, MtText, MtIcon, MtAvatar, MtButton },
+    components: demoComponents,
     setup: () => ({ items: options.items ?? navigationItems }),
     template: `
 <div style="height: 480px; display: flex;">
   <mt-sidebar>
     <template #header>
-      <mt-text as="span" size="m" weight="semibold">Administration</mt-text>
+      ${demoHeaderTemplate}
     </template>
 
     ${demoNavigationTemplate}
 
     <template #footer>
-      <div style="display: flex; align-items: center; gap: var(--scale-size-12);">
-        <mt-avatar size="s" first-name="Max" last-name="Mustermann" />
-        <mt-text as="span" size="s" style="flex: 1;">Max Mustermann</mt-text>
-        <mt-button variant="secondary" size="small" square aria-label="Log out">
-          <mt-icon name="regular-sign-out" size="var(--scale-size-16)" aria-hidden="true" />
-        </mt-button>
-      </div>
+      ${demoFooterTemplate}
     </template>
   </mt-sidebar>
 </div>`,
@@ -105,8 +100,8 @@ export const TestKeepsHeaderAndFooterVisibleWhileScrolling: MtSidebarStory = {
       expect(body.scrollTop).toBeGreaterThan(0);
     });
 
-    expect(canvas.getByText("Administration")).toBeVisible();
-    expect(canvas.getByRole("button", { name: "Log out" })).toBeVisible();
+    expect(canvas.getByText("Demo shop")).toBeVisible();
+    expect(canvas.getByRole("button", { name: "User menu: Max Mustermann" })).toBeVisible();
     expect(canvas.getByRole("link", { name: "Settings" })).toBeVisible();
   },
 };
