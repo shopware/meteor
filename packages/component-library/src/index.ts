@@ -36,6 +36,13 @@ import MtSkeletonBar from "./components/mt-skeleton-bar/mt-skeleton-bar.vue";
 import MtToast, { type Toast } from "./components/mt-toast/mt-toast.vue";
 import MtSnackbar from "./components/mt-snackbar/mt-snackbar.vue";
 import MtAvatar from "./components/mt-avatar/mt-avatar.vue";
+import MtNav from "./components/mt-nav/mt-nav.vue";
+import type {
+  NavItem,
+  NavLinkComponent,
+  NavLinkTarget,
+  NavSection,
+} from "./components/mt-nav/mt-nav.vue";
 import { useSnackbar, type Snackbar } from "./components/mt-snackbar/composables/use-snackbar";
 import MtPromoBadge from "./components/mt-promo-badge/mt-promo-badge.vue";
 import MtStatusDot from "./components/mt-status-dot/mt-status-dot.vue";
@@ -154,6 +161,11 @@ export {
   MtEntitySelect,
   TooltipDirective,
   MtAvatar,
+  MtNav,
+  type NavItem,
+  type NavLinkComponent,
+  type NavLinkTarget,
+  type NavSection,
   MtActionMenu,
   MtActionMenuItem,
   MtActionMenuGroup,
