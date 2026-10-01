@@ -1,5 +1,11 @@
 # Changelog
 
+## 6.15.0
+
+### Minor Changes
+
+- [#1321](https://github.com/shopware/meteor/pull/1321) [`1f4d523`](https://github.com/shopware/meteor/commit/1f4d5230e015c22e048d109601a465e4fb92d46c) Thanks [@magdakok](https://github.com/magdakok)! - Add additional configuration options to the Admin SDK modal API (size variant and z-index).
+
 ## 6.14.1
 
 ### Patch Changes
