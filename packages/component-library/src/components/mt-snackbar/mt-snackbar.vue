@@ -1,6 +1,11 @@
 <template>
-  <Teleport to="body">
-    <div class="mt-snackbar" @mouseenter="isHovered = true" @mouseleave="isHovered = false">
+  <Teleport v-if="isActiveHost" to="body">
+    <div
+      class="mt-snackbar"
+      data-mt-overlay
+      @mouseenter="isHovered = true"
+      @mouseleave="isHovered = false"
+    >
       <mt-snackbar-notification
         v-for="snackbar in snackbars"
         :key="snackbar.id"
@@ -14,10 +19,16 @@
   </Teleport>
 </template>
 
+<script lang="ts">
+import { ref as moduleRef } from "vue";
+
+const mountedHosts = moduleRef<symbol[]>([]);
+</script>
+
 <script setup lang="ts">
 import MtSnackbarNotification from "./_internal/mt-snackbar-notification.vue";
 import { useSnackbar, type Snackbar } from "./composables/use-snackbar";
-import { ref } from "vue";
+import { computed, onMounted, onUnmounted, ref } from "vue";
 
 export interface HeightT {
   height: number;
@@ -25,6 +36,17 @@ export interface HeightT {
 }
 
 const { snackbars, removeSnackbar } = useSnackbar();
+
+const hostId = Symbol("mt-snackbar");
+const isActiveHost = computed(() => mountedHosts.value[0] === hostId);
+
+onMounted(() => {
+  mountedHosts.value.push(hostId);
+});
+
+onUnmounted(() => {
+  mountedHosts.value = mountedHosts.value.filter((id) => id !== hostId);
+});
 
 const heights = ref<HeightT[]>([]);
 const isHovered = ref(false);
@@ -60,7 +82,7 @@ function removeSnackbarWithHeightCleanup(snackbarToRemove: Snackbar) {
   position: fixed;
   bottom: var(--scale-size-16);
   right: var(--scale-size-16);
-  z-index: 1600;
+  z-index: var(--z-index-notification, 1600);
   pointer-events: none;
   transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
 }

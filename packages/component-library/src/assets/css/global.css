@@ -1,3 +1,15 @@
+:root {
+  --container-size-s: 42.5rem;
+  --container-size-m: 60rem;
+  --container-size-l: 80rem;
+  --z-index-drawer: 900;
+  --z-index-modal: 1000;
+  --z-index-popover: 1070;
+  --z-index-tooltip: 1100;
+  --z-index-menu: 1300;
+  --z-index-notification: 1600;
+}
+
 body {
   font-family: "Inter", ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";

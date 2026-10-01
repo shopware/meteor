@@ -131,7 +131,7 @@ function onMouseLeave() {
 
 .mt-toast--bottom-center .mt-toast-notification {
   display: flex;
-  z-index: 1600;
+  z-index: var(--z-index-notification, 1600);
   position: absolute;
   height: 51px;
   color: white;
@@ -166,7 +166,7 @@ function onMouseLeave() {
 .mt-toast--bottom-right .mt-toast-notification {
   display: flex;
   transition: all 0.7s ease;
-  z-index: 1600;
+  z-index: var(--z-index-notification, 1600);
   position: absolute;
   height: 51px;
   color: white;
@@ -198,7 +198,7 @@ function onMouseLeave() {
 }
 
 .mt-toast--collapsed .mt-toast--bottom-right .mt-toast-notification:nth-child(1) {
-  z-index: 1599;
+  z-index: calc(var(--z-index-notification, 1600) - 1);
 }
 
 .mt-toast--collapsed .mt-toast--bottom-right .mt-toast-notification:nth-child(2) {

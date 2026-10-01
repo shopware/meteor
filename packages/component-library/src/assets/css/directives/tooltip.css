@@ -1,6 +1,6 @@
 .mt-tooltip {
   position: absolute;
-  z-index: 1100;
+  z-index: var(--z-index-tooltip, 1100);
 }
 
 .mt-tooltip--dark {

@@ -24,21 +24,26 @@ const future = {
 </template>
 ```
 
+::note
+Building a standalone application? [**App**](/components/app) enables all future flags by default, accepts the same `future` prop to opt out, and additionally lays out header, sidebars and content, so it does not need a Theme Provider around it.
+::
+
 The `future` prop takes an object. All flags default to `false`, so behavior is unchanged until you opt in. The optional `all` key sets the baseline, and any individual flag you list overrides it, so `{ all: true }` enables every current _and_ upcoming flag automatically.
 
-| Goal | `future` value |
-| --- | --- |
-| Opt out of everything (default) | Omit the prop, or don't mount a Theme Provider |
-| Opt into one flag | `{ removeCardWidth: true }` |
-| Opt into several flags | `{ removeCardWidth: true, bannerFullWidth: true }` |
-| Opt into everything | `{ all: true }` |
-| Opt into everything except one | `{ all: true, removeCardWidth: false }` |
+| Goal                            | `future` value                                     |
+| ------------------------------- | -------------------------------------------------- |
+| Opt out of everything (default) | Omit the prop, or don't mount a Theme Provider     |
+| Opt into one flag               | `{ removeCardWidth: true }`                        |
+| Opt into several flags          | `{ removeCardWidth: true, bannerFullWidth: true }` |
+| Opt into everything             | `{ all: true }`                                    |
+| Opt into everything except one  | `{ all: true, removeCardWidth: false }`            |
 
 ## Future flags
 
-| Flag | Effect |
-| --- | --- |
-| `removeCardWidth` | Removes the maximum width constraint from `mt-card`. |
-| `removeDefaultMargin` | Removes the default outer margin from components such as cards, tabs, checkboxes, switches, and text fields. |
-| `removeSwitchMinHeight` | Removes the minimum height from a non-bordered `mt-switch`. |
-| `bannerFullWidth` | Makes `mt-banner` span the full width of its container. |
+| Flag                        | Effect                                                                                                       |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `removeCardWidth`           | Removes the maximum width constraint from `mt-card`.                                                         |
+| `removeDefaultMargin`       | Removes the default outer margin from components such as cards, tabs, checkboxes, switches, and text fields. |
+| `removeSwitchMinHeight`     | Removes the minimum height from a non-bordered `mt-switch`.                                                  |
+| `bannerFullWidth`           | Makes `mt-banner` span the full width of its container.                                                      |
+| `consistentLabelLineHeight` | Gives field labels a consistent line height.                                                                 |
