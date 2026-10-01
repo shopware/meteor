@@ -14,7 +14,7 @@ const { serialize } = SerializerFactory({
 const origin = 'https://example.com';
 
 /* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument */
-function createLanguage(translations: any[]): unknown {
+function createLanguage(translations: any[], total: number|null = null, aggregations: any = null): unknown {
   return new Entity('language-id', 'language' as any, {
     name: 'English',
     appMcpToolTranslations: new EntityCollection(
@@ -23,6 +23,8 @@ function createLanguage(translations: any[]): unknown {
       {} as ApiContext,
       null,
       translations,
+      total,
+      aggregations,
     ),
   } as any);
 }
@@ -53,6 +55,24 @@ describe('validator', () => {
     });
 
     expect(error).toBeNull();
+  });
+
+  [
+    { name: 'a total', total: 42, aggregations: null },
+    { name: 'a total of zero', total: 0, aggregations: null },
+    { name: 'aggregations', total: null, aggregations: { count: { count: 42 } } },
+  ].forEach(({ name, total, aggregations }) => {
+    it(`should require read privileges for an empty collection with ${name}`, () => {
+      const error = validate({
+        serializedData: serialize({ language: createLanguage([], total, aggregations) }),
+        origin,
+        type: 'datasetSubscribe',
+        privilegesToCheck: ['read'],
+      });
+
+      expect(error).toBeInstanceOf(MissingPrivilegesError);
+      expect((error as MissingPrivilegesError).missingPrivileges).toEqual(['read:app_mcp_tool_translation']);
+    });
   });
 
   it('should require read privileges for a collection with entities', () => {
