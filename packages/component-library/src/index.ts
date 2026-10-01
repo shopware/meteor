@@ -212,5 +212,6 @@ export {
 // Exporting types
 export type { Filter, Option, Toast, Snackbar, ChartOptions, BreadcrumbItem };
 export type { Theme, ResolvedTheme, UseThemeOptions, UseThemeReturn };
+export type { SpacingSize } from "./utils/spacing";
 export type { Editor } from "@tiptap/vue-3";
 export type { default as Link } from "@tiptap/extension-link";
