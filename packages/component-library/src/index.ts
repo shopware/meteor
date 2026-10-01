@@ -15,6 +15,7 @@ import MtRadioGroupCustomItem from "./components/mt-radio-group/mt-radio-group-c
 import MtColorpicker from "./components/mt-colorpicker/mt-colorpicker.vue";
 import MtDivider from "./components/mt-divider/mt-divider.vue";
 import MtGrid from "./components/mt-grid/mt-grid.vue";
+import MtGridItem from "./components/mt-grid/mt-grid-item.vue";
 import MtEmailField from "./components/mt-email-field/mt-email-field.vue";
 import MtHelpText from "./components/mt-help-text/mt-help-text.vue";
 import MtLink from "./components/mt-link/mt-link.vue";
@@ -108,6 +109,7 @@ export {
   MtDatepicker,
   MtDivider,
   MtGrid,
+  MtGridItem,
   MtEmailField,
   MtChart,
   MtLink,
