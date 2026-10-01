@@ -11,7 +11,13 @@ import { emitInterFontAssets, getAllComponents, libInjectCss, toPascalCase } fro
 // Get all components and their paths
 const allComponents = getAllComponents();
 
-export const external = ["vue", "apexcharts", "vue-i18n"];
+export const external = ["vue", "apexcharts", "vue-i18n", "date-fns"];
+
+// Rollup treats string entries as exact matches, so subpath imports like
+// `date-fns/locale/de` need an explicit check. Keeping them external lets the
+// consumer's bundler code-split each locale into a lazy chunk instead of
+// shipping all locales inside this package.
+const isExternal = (id: string) => external.includes(id) || id.startsWith("date-fns/");
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -100,7 +106,7 @@ export default defineConfig({
     },
     cssCodeSplit: true,
     rollupOptions: {
-      external: external,
+      external: isExternal,
       output: {
         globals: {
           vue: "Vue",

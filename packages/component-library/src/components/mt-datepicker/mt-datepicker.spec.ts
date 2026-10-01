@@ -706,6 +706,13 @@ describe("mt-datepicker", () => {
     await userEvent.click(screen.getByRole("textbox"));
     await waitUntil(() => document.querySelector(".dp__menu") !== null);
 
+    // The locale is loaded asynchronously, so wait until it is applied
+    await waitUntil(() =>
+      document
+        .querySelector('[data-test-id="month-toggle-overlay-0"]')
+        ?.textContent?.includes("juil."),
+    );
+
     const monthLabel = document.querySelector('[data-test-id="month-toggle-overlay-0"]');
     expect(monthLabel).toHaveTextContent("juil.");
   });
