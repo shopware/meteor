@@ -11,6 +11,7 @@ const meta: MtStatusDotMeta = {
     size: "m",
     pulse: false,
     label: "",
+    disabled: false,
   },
   argTypes: {
     variant: {
@@ -27,13 +28,16 @@ const meta: MtStatusDotMeta = {
     label: {
       control: { type: "text" },
     },
+    disabled: {
+      control: { type: "boolean" },
+    },
   },
   render: (args) => ({
     components: { MtStatusDot },
     setup() {
       return { args };
     },
-    template: `<mt-status-dot :variant="args.variant" :size="args.size" :pulse="args.pulse" :label="args.label" />`,
+    template: `<mt-status-dot :variant="args.variant" :size="args.size" :pulse="args.pulse" :label="args.label" :disabled="args.disabled" />`,
   }),
 };
 
@@ -114,4 +118,30 @@ export const Pulse: MtStatusDotStory = {
       },
     },
   },
+};
+
+export const Disabled: MtStatusDotStory = {
+  parameters: {
+    docs: {
+      source: {
+        language: "html",
+        code: `<mt-status-dot variant="neutral" disabled />
+<mt-status-dot variant="info" disabled />
+<mt-status-dot variant="attention" disabled />
+<mt-status-dot variant="critical" disabled />
+<mt-status-dot variant="positive" disabled />`,
+      },
+    },
+  },
+  render: () => ({
+    components: { MtStatusDot },
+    template: `
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <mt-status-dot variant="neutral" disabled />
+        <mt-status-dot variant="info" disabled />
+        <mt-status-dot variant="attention" disabled />
+        <mt-status-dot variant="critical" disabled />
+        <mt-status-dot variant="positive" disabled />
+      </div>`,
+  }),
 };

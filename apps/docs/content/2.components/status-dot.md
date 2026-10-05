@@ -33,6 +33,13 @@ Set `pulse` to add a pulsating ring that signals ongoing, live activity, such as
 ::component-example{name="status-dot-pulse-example"}
 ::
 
+### Disabled
+
+Set `disabled` when the dot belongs to a disabled element. The dot switches to the disabled color of its variant, and `pulse` has no effect.
+
+::component-example{name="status-dot-disabled-example"}
+::
+
 ## API reference
 
 :component-api
@@ -66,6 +73,7 @@ Set `pulse` to add a pulsating ring that signals ongoing, live activity, such as
 
 - The dot is decorative by default and hidden from assistive technology, on the assumption that a visible text label carries the meaning.
 - When the dot is the only carrier of a status, set the `label` prop. It then exposes an accessible name to assistive technology.
+- `disabled` only changes the color and adds no ARIA state, because the dot is not interactive. If a labeled dot is disabled and that matters to users, say so in the `label`.
 - Do not communicate status through color alone; keep an adjacent text label for all users.
 - The `pulse` animation is automatically disabled for users who have enabled reduced motion, leaving the dot in its static state.
 

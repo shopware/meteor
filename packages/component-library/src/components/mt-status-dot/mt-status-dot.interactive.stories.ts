@@ -1,6 +1,7 @@
 import { within } from "@storybook/test";
 import { expect } from "@storybook/test";
 
+import MtStatusDot from "./mt-status-dot.vue";
 import meta, { type MtStatusDotMeta, type MtStatusDotStory } from "./mt-status-dot.stories";
 
 export default {
@@ -74,6 +75,21 @@ export const VisualTestPulse: MtStatusDotStory = {
     variant: "positive",
     pulse: true,
   },
+};
+
+export const VisualTestDisabledVariants: MtStatusDotStory = {
+  name: "Render disabled variants",
+  render: () => ({
+    components: { MtStatusDot },
+    template: `
+      <div style="display: flex; gap: 12px; align-items: center;">
+        <mt-status-dot variant="neutral" disabled />
+        <mt-status-dot variant="info" disabled />
+        <mt-status-dot variant="attention" disabled />
+        <mt-status-dot variant="critical" disabled />
+        <mt-status-dot variant="positive" disabled />
+      </div>`,
+  }),
 };
 
 export const TestExposesLabelToAssistiveTech: MtStatusDotStory = {
