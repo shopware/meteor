@@ -136,6 +136,7 @@ export default defineNuxtConfig({
   },
   colorMode: {
     dataValue: "theme",
+    storageKey: "mt-theme",
   },
   // serverInfo of the MCP server Docus ships via @nuxtjs/mcp-toolkit. The name
   // defaults to an empty string. Keep in sync with

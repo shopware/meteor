@@ -81,3 +81,11 @@
     left: -4px;
   }
 }
+
+/* Layout widths of mt-container.
+ * Source: src/assets/css/global.css */
+:root {
+  --container-size-s: 42.5rem;
+  --container-size-m: 60rem;
+  --container-size-l: 80rem;
+}
