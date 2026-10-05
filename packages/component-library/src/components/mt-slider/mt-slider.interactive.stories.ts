@@ -463,3 +463,38 @@ export const VisualTestHintSlot: MtSliderStory = {
     expect(canvas.getByText("Hint via slot")).toBeDefined();
   },
 };
+
+export const VisualTestFieldIsRequired: MtSliderStory = {
+  name: "Should display an indicator that the field is required",
+  args: {
+    modelValue: 25,
+    required: true,
+  },
+  play: ({ canvasElement }) => {
+    expect(canvasElement.querySelector(".mt-field-label")).toHaveClass(
+      "mt-field-label--is-required",
+    );
+  },
+};
+
+export const VisualTestHelpText: MtSliderStory = {
+  name: "Should display a help text icon next to the label",
+  args: {
+    modelValue: 25,
+    helpText: "Text for helping you",
+  },
+  play: ({ canvasElement }) => {
+    expect(canvasElement.querySelector(".mt-field__help-text")).toBeInTheDocument();
+  },
+};
+
+export const VisualTestCopyable: MtSliderStory = {
+  name: "Should display a copy button",
+  args: {
+    modelValue: 25,
+    copyable: true,
+  },
+  play: ({ canvasElement }) => {
+    expect(canvasElement.querySelector(".mt-field-copyable")).toBeInTheDocument();
+  },
+};

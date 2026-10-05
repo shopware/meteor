@@ -289,3 +289,25 @@ export const VisualTestHintSlot: MtTextFieldStory = {
     expect(canvas.getByText("Hint via slot")).toBeDefined();
   },
 };
+
+export const VisualTestHelpText: MtTextFieldStory = {
+  name: "Should display a help text icon next to the label",
+  args: {
+    modelValue: "Shopware",
+    helpText: "Text for helping you",
+  },
+  play: ({ canvasElement }) => {
+    expect(canvasElement.querySelector(".mt-field__help-text")).toBeInTheDocument();
+  },
+};
+
+export const VisualTestCopyable: MtTextFieldStory = {
+  name: "Should display a copy button",
+  args: {
+    modelValue: "Shopware",
+    copyable: true,
+  },
+  play: ({ canvasElement }) => {
+    expect(canvasElement.querySelector(".mt-field-copyable")).toBeInTheDocument();
+  },
+};

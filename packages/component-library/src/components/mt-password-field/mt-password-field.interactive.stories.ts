@@ -123,3 +123,27 @@ export const VisualTestHintSlot: MtPasswordFieldStory = {
     expect(canvas.getByText("Hint via slot")).toBeDefined();
   },
 };
+
+export const VisualTestFieldIsRequired: MtPasswordFieldStory = {
+  name: "Should display an indicator that the field is required",
+  args: {
+    modelValue: "S3cr3tfor3$t",
+    required: true,
+  },
+  play: ({ canvasElement }) => {
+    expect(canvasElement.querySelector(".mt-field-label")).toHaveClass(
+      "mt-field-label--is-required",
+    );
+  },
+};
+
+export const VisualTestHelpText: MtPasswordFieldStory = {
+  name: "Should display a help text icon next to the label",
+  args: {
+    modelValue: "S3cr3tfor3$t",
+    helpText: "Text for helping you",
+  },
+  play: ({ canvasElement }) => {
+    expect(canvasElement.querySelector(".mt-field__help-text")).toBeInTheDocument();
+  },
+};
