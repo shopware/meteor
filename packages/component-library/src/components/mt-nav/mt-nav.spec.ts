@@ -1,9 +1,8 @@
 import { render, screen, waitFor, within } from "@testing-library/vue";
 import { userEvent } from "@testing-library/user-event";
-import { defineComponent, h, type FunctionalComponent, type VNode } from "vue";
+import { defineComponent, h, type FunctionalComponent } from "vue";
 import MtNav from "./mt-nav.vue";
-import MtNavSection from "./mt-nav-section.vue";
-import MtNavItem from "./mt-nav-item.vue";
+import type { NavItem, NavSection } from "./mt-nav.vue";
 
 // Stands in for `router-link`: the library does not depend on vue-router
 const RouterLinkStub: FunctionalComponent<{ to: { name: string } }> = (props, { slots }) =>
@@ -11,59 +10,47 @@ const RouterLinkStub: FunctionalComponent<{ to: { name: string } }> = (props, { 
 
 RouterLinkStub.props = { to: { type: Object, required: true } };
 
-type ItemProps = {
-  label: string;
-  icon?: string;
-  to?: { name: string };
-  href?: string;
-  target?: string;
-  active?: boolean;
-};
-
-function item(props: ItemProps, children?: VNode[], slots: Record<string, unknown> = {}) {
-  return h(
-    MtNavItem,
-    { ...props, key: props.label },
-    { ...slots, default: children ? () => children : undefined },
-  );
-}
-
 /**
  * A row navigating to the named route, active when it is the current one.
  */
-function route(label: string, name: string, current?: string, children?: VNode[]) {
-  return item({ label, to: { name }, active: name === current }, children);
+function route(label: string, name: string, current?: string, children?: NavItem[]): NavItem {
+  return { label, to: { name }, active: name === current, children };
 }
 
 /**
  * The sample tree: a leaf, a branch three levels deep with one level too many, and an external link.
  */
-function sampleRows(current?: string) {
+function sampleItems(current?: string): NavItem[] {
   return [
     route("Dashboard", "sw.dashboard.index", current),
-    item({ label: "Catalogues", icon: "regular-products" }, [
-      route("Products", "sw.product.index", current, [
-        route("Reviews", "sw.review.index", current, [route("Too deep", "sw.deep.index", current)]),
-      ]),
-      route("Categories", "sw.category.index", current),
-    ]),
-    item({ label: "Docs", href: "https://docs.shopware.com", target: "_blank" }),
+    {
+      label: "Catalogues",
+      icon: "regular-products",
+      children: [
+        route("Products", "sw.product.index", current, [
+          route("Reviews", "sw.review.index", current, [
+            route("Too deep", "sw.deep.index", current),
+          ]),
+        ]),
+        route("Categories", "sw.category.index", current),
+      ],
+    },
+    { label: "Docs", href: "https://docs.shopware.com", target: "_blank" },
   ];
 }
 
-function section(children: VNode[], props: { header?: string } = {}) {
-  return h(MtNavSection, props, () => children);
+function sampleSections(current?: string): NavSection[] {
+  return [{ items: sampleItems(current) }];
 }
 
-function renderNav(props: Record<string, unknown> = {}, sections?: () => VNode[]) {
+function renderNav(props: Record<string, unknown> = {}, slots: Record<string, unknown> = {}) {
   return render(MtNav, {
     props: {
       linkComponent: RouterLinkStub,
+      sections: sampleSections(),
       ...props,
     },
-    slots: {
-      default: sections ?? (() => [section(sampleRows())]),
-    },
+    slots,
   });
 }
 
@@ -110,11 +97,20 @@ describe("mt-nav", () => {
     });
 
     it("drops rows nested deeper than three levels", () => {
-      renderNav({}, () => [section(sampleRows("sw.review.index"))]);
+      renderNav({ sections: sampleSections("sw.review.index") });
 
       expect(getRowLabel("Reviews")).toBeInTheDocument();
       expect(queryRowLabel("Too deep")).toBeNull();
       expect(console.error).toHaveBeenCalledWith(expect.stringContaining('"Reviews"'));
+    });
+
+    it("renders a row with an empty children list as a leaf", () => {
+      renderNav({
+        sections: [{ items: [{ label: "Empty", to: { name: "sw.empty" }, children: [] }] }],
+      });
+
+      expect(getRowLabel("Empty").closest("a")).not.toHaveAttribute("aria-expanded");
+      expect(screen.queryByRole("button")).toBeNull();
     });
 
     it("expands a branch when its row is clicked", async () => {
@@ -129,7 +125,7 @@ describe("mt-nav", () => {
     });
 
     it("opens the branch holding the active row and marks the row as current", async () => {
-      renderNav({}, () => [section(sampleRows("sw.category.index"))]);
+      renderNav({ sections: sampleSections("sw.category.index") });
 
       await waitFor(() => expect(getRowLabel("Categories")).toBeVisible());
 
@@ -144,7 +140,7 @@ describe("mt-nav", () => {
     });
 
     it("marks a closed branch as current in place of the active row it hides", async () => {
-      renderNav({}, () => [section(sampleRows("sw.category.index"))]);
+      renderNav({ sections: sampleSections("sw.category.index") });
 
       await waitFor(() => expect(getRowLabel("Categories")).toBeVisible());
 
@@ -163,7 +159,7 @@ describe("mt-nav", () => {
       await userEvent.click(getRowLabel("Dashboard"));
 
       expect(emitted().navigate).toEqual([
-        [{ label: "Dashboard", to: { name: "sw.dashboard.index" }, href: undefined }],
+        [expect.objectContaining({ label: "Dashboard", to: { name: "sw.dashboard.index" } })],
       ]);
     });
 
@@ -176,7 +172,7 @@ describe("mt-nav", () => {
     });
 
     it("toggles the nested rows of a link and stands in for the active row it hides", async () => {
-      renderNav({}, () => [section(sampleRows("sw.review.index"))]);
+      renderNav({ sections: sampleSections("sw.review.index") });
 
       await waitFor(() => expect(getRowLabel("Reviews")).toBeVisible());
 
@@ -191,14 +187,14 @@ describe("mt-nav", () => {
       expect(getRowLabel("Products").closest("a")).not.toHaveAttribute("aria-current");
     });
 
-    it("renders the suffix slot after the label", () => {
-      renderNav({}, () => [
-        section([
-          item({ label: "Dashboard", to: { name: "sw.dashboard.index" } }, undefined, {
-            suffix: () => h("span", { "data-testid": "suffix" }, "new"),
-          }),
-        ]),
-      ]);
+    it("renders the suffix slot after the label of each row", () => {
+      renderNav(
+        {},
+        {
+          suffix: ({ item }: { item: NavItem }) =>
+            item.label === "Dashboard" ? h("span", { "data-testid": "suffix" }, "new") : null,
+        },
+      );
 
       expect(screen.getByTestId("suffix")).toHaveTextContent("new");
       expect(getRowLabel("Dashboard").nextElementSibling).toBe(screen.getByTestId("suffix"));
@@ -210,18 +206,24 @@ describe("mt-nav", () => {
       props: { current: { type: String, default: undefined } },
       setup(props) {
         return () =>
-          h(MtNav, { linkComponent: RouterLinkStub }, () => [
-            section(sampleRows(props.current)),
-            section(
-              [
-                item({ label: "Help" }, [
-                  route("FAQ", "sw.faq.index", props.current),
-                  route("Contact", "sw.contact.index", props.current),
-                ]),
-              ],
-              { header: "Help" },
-            ),
-          ]);
+          h(MtNav, {
+            linkComponent: RouterLinkStub,
+            sections: [
+              { items: sampleItems(props.current) },
+              {
+                header: "Help",
+                items: [
+                  {
+                    label: "Help",
+                    children: [
+                      route("FAQ", "sw.faq.index", props.current),
+                      route("Contact", "sw.contact.index", props.current),
+                    ],
+                  },
+                ],
+              },
+            ],
+          });
       },
     });
 
@@ -313,14 +315,19 @@ describe("mt-nav", () => {
     });
 
     it("leaves keys pressed inside slotted content alone", async () => {
-      renderNav({}, () => [
-        section([
-          route("Dashboard", "sw.dashboard.index"),
-          item({ label: "Orders", to: { name: "sw.order.index" } }, undefined, {
-            suffix: () => h("button", { type: "button" }, "new"),
-          }),
-        ]),
-      ]);
+      renderNav(
+        {
+          sections: [
+            {
+              items: [route("Dashboard", "sw.dashboard.index"), route("Orders", "sw.order.index")],
+            },
+          ],
+        },
+        {
+          suffix: ({ item }: { item: NavItem }) =>
+            item.label === "Orders" ? h("button", { type: "button" }, "new") : null,
+        },
+      );
 
       const suffixButton = screen.getByRole("button", { name: "new" });
 
@@ -333,10 +340,12 @@ describe("mt-nav", () => {
 
   describe("sections", () => {
     it("renders one list per section, labelled by its header", () => {
-      renderNav({}, () => [
-        section(sampleRows().slice(0, 2)),
-        section([item({ label: "Docs", href: "https://docs.shopware.com" })], { header: "Help" }),
-      ]);
+      renderNav({
+        sections: [
+          { items: sampleItems().slice(0, 2) },
+          { header: "Help", items: [{ label: "Docs", href: "https://docs.shopware.com" }] },
+        ],
+      });
 
       const lists = screen
         .getAllByRole("list")
@@ -346,13 +355,6 @@ describe("mt-nav", () => {
       expect(screen.getByRole("heading", { name: "Help" })).toBeVisible();
       expect(within(screen.getByRole("list", { name: "Help" })).getByText("Docs")).toBeVisible();
       expect(lists[0]).not.toHaveAttribute("aria-labelledby");
-    });
-
-    it("throws when a section or a row is rendered outside the navigation", () => {
-      expect(() => render(MtNavSection)).toThrow("mt-nav-section must be rendered inside mt-nav");
-      expect(() => render(MtNavItem, { props: { label: "Dashboard" } })).toThrow(
-        "mt-nav-item must be rendered inside mt-nav",
-      );
     });
   });
 });

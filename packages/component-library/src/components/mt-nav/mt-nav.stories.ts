@@ -1,118 +1,182 @@
 import type { Meta, StoryObj } from "@storybook/vue3";
-import { markRaw, ref } from "vue";
+import { computed, markRaw, ref } from "vue";
 import MtNav from "./mt-nav.vue";
-import MtNavSection from "./mt-nav-section.vue";
-import MtNavItem from "./mt-nav-item.vue";
-import type { NavNavigateEvent } from "./mt-nav.vue";
+import type { NavItem, NavSection } from "./mt-nav.vue";
 import { StoryLink } from "./_internal/story-link";
 
 export type MtNavMeta = Meta<typeof MtNav>;
 
 /**
- * Renders the template with a fake current route that follows the clicked row, so the active
- * state changes like in an application. The docs show the same template, minus the story args.
+ * Sample navigation resembling a shop administration.
  */
-function createStory(template: string): MtNavStory {
-  // Builds a story rendering the template with the shared setup and showing it as the docs source
+const shopItems: NavItem[] = [
+  { label: "Dashboard", icon: "regular-home", to: { name: "dashboard.index" } },
+  {
+    label: "Catalogues",
+    icon: "regular-products",
+    children: [
+      {
+        label: "Products",
+        to: { name: "product.index" },
+        children: [{ label: "Reviews", to: { name: "review.index" } }],
+      },
+      { label: "Categories", to: { name: "category.index" } },
+      { label: "Manufacturers", to: { name: "manufacturer.index" } },
+    ],
+  },
+  { label: "Orders", icon: "regular-shopping-bag", to: { name: "order.index" } },
+  { label: "Customers", icon: "regular-users", to: { name: "customer.index" } },
+  {
+    label: "Content",
+    icon: "regular-content",
+    children: [
+      { label: "Shopping Experiences", to: { name: "cms.index" } },
+      { label: "Media", to: { name: "media.index" } },
+    ],
+  },
+  {
+    label: "Marketing",
+    icon: "regular-megaphone",
+    children: [
+      { label: "Promotions", to: { name: "promotion.index" } },
+      { label: "Newsletter recipients", to: { name: "newsletter.index" } },
+    ],
+  },
+];
+
+const systemItems: NavItem[] = [
+  {
+    label: "Extensions",
+    icon: "regular-plug",
+    children: [
+      { label: "My extensions", to: { name: "extension.my-extensions" } },
+      { label: "Store", to: { name: "extension.store" } },
+    ],
+  },
+  { label: "Settings", icon: "regular-cog", to: { name: "settings.index" } },
+  { label: "Docs", href: "https://docs.shopware.com", target: "_blank" },
+];
+
+function withActive(items: NavItem[], current: string): NavItem[] {
+  // Marks the row whose route is the current one as active, like an application would
+  return items.map((item) => ({
+    ...item,
+    active: (item.to as { name?: string } | undefined)?.name === current,
+    children: item.children && withActive(item.children, current),
+  }));
+}
+
+/**
+ * Renders the navigation with a fake current route that follows the clicked row, so the active
+ * state changes like in an application. `sourceCode` is what the docs show.
+ */
+function createStory(buildSections: (current: string) => NavSection[], sourceCode: string) {
+  // Builds a story deriving the sections from the fake current route
   return {
     render: (args) => ({
-      components: { MtNav, MtNavSection, MtNavItem },
+      components: { MtNav },
       setup() {
         const current = ref("product.index");
+        const sections = computed(() => buildSections(current.value));
 
-        function isCurrent(name: string) {
-          // Tells whether the given route name is the fake current route
-          return current.value === name;
-        }
-
-        function onNavigate(event: NavNavigateEvent) {
+        function onNavigate(item: NavItem) {
           // Moves the fake current route to the clicked row
-          const name = (event.to as { name?: string } | undefined)?.name;
+          const name = (item.to as { name?: string } | undefined)?.name;
 
           if (name) {
             current.value = name;
           }
         }
 
-        return { args, isCurrent, onNavigate };
+        return { args, sections, onNavigate };
       },
-      template,
+      template: `<mt-nav v-bind="args" :sections="sections" @navigate="onNavigate" />`,
     }),
     parameters: {
       docs: {
         source: {
-          code: template.replace(' v-bind="args"', "").trim(),
+          code: sourceCode.trim(),
         },
       },
     },
-  };
+  } satisfies MtNavStory;
 }
 
-const shopRows = `
-    <mt-nav-item label="Dashboard" icon="regular-home" :to="{ name: 'dashboard.index' }" :active="isCurrent('dashboard.index')" />
+const defaultSource = `
+<mt-nav :sections="sections" @navigate="onNavigate" />
 
-    <mt-nav-item label="Catalogues" icon="regular-products">
-      <mt-nav-item label="Products" :to="{ name: 'product.index' }" :active="isCurrent('product.index')">
-        <mt-nav-item label="Reviews" :to="{ name: 'review.index' }" :active="isCurrent('review.index')" />
-      </mt-nav-item>
-      <mt-nav-item label="Categories" :to="{ name: 'category.index' }" :active="isCurrent('category.index')" />
-      <mt-nav-item label="Manufacturers" :to="{ name: 'manufacturer.index' }" :active="isCurrent('manufacturer.index')" />
-    </mt-nav-item>
+<script setup lang="ts">
+import type { NavSection } from "@shopware-ag/meteor-component-library";
 
-    <mt-nav-item label="Orders" icon="regular-shopping-bag" :to="{ name: 'order.index' }" :active="isCurrent('order.index')" />
-    <mt-nav-item label="Customers" icon="regular-users" :to="{ name: 'customer.index' }" :active="isCurrent('customer.index')" />
+const sections: NavSection[] = [
+  {
+    items: [
+      { label: "Dashboard", icon: "regular-home", to: { name: "dashboard.index" }, active: isCurrent("dashboard.index") },
+      {
+        label: "Catalogues",
+        icon: "regular-products",
+        children: [
+          {
+            label: "Products",
+            to: { name: "product.index" },
+            active: isCurrent("product.index"),
+            children: [{ label: "Reviews", to: { name: "review.index" }, active: isCurrent("review.index") }],
+          },
+          { label: "Categories", to: { name: "category.index" }, active: isCurrent("category.index") },
+        ],
+      },
+      { label: "Docs", href: "https://docs.shopware.com", target: "_blank" },
+    ],
+  },
+];
+</script>`;
 
-    <mt-nav-item label="Content" icon="regular-content">
-      <mt-nav-item label="Shopping Experiences" :to="{ name: 'cms.index' }" :active="isCurrent('cms.index')" />
-      <mt-nav-item label="Media" :to="{ name: 'media.index' }" :active="isCurrent('media.index')" />
-    </mt-nav-item>
+const sectionsSource = `
+<mt-nav :sections="sections" @navigate="onNavigate" />
 
-    <mt-nav-item label="Marketing" icon="regular-megaphone">
-      <mt-nav-item label="Promotions" :to="{ name: 'promotion.index' }" :active="isCurrent('promotion.index')" />
-      <mt-nav-item label="Newsletter recipients" :to="{ name: 'newsletter.index' }" :active="isCurrent('newsletter.index')" />
-    </mt-nav-item>`;
+<script setup lang="ts">
+import type { NavSection } from "@shopware-ag/meteor-component-library";
 
-const systemRows = `
-    <mt-nav-item label="Extensions" icon="regular-plug">
-      <mt-nav-item label="My extensions" :to="{ name: 'extension.my-extensions' }" :active="isCurrent('extension.my-extensions')" />
-      <mt-nav-item label="Store" :to="{ name: 'extension.store' }" :active="isCurrent('extension.store')" />
-    </mt-nav-item>
-
-    <mt-nav-item label="Settings" icon="regular-cog" :to="{ name: 'settings.index' }" :active="isCurrent('settings.index')" />
-    <mt-nav-item label="Docs" href="https://docs.shopware.com" target="_blank" />`;
-
-const defaultTemplate = `
-<mt-nav v-bind="args" @navigate="onNavigate">
-  <mt-nav-section>${shopRows}
-${systemRows}
-  </mt-nav-section>
-</mt-nav>`;
-
-const sectionsTemplate = `
-<mt-nav v-bind="args" @navigate="onNavigate">
-  <mt-nav-section header="Shop">${shopRows}
-  </mt-nav-section>
-
-  <mt-nav-section header="System">${systemRows}
-  </mt-nav-section>
-</mt-nav>`;
+const sections: NavSection[] = [
+  {
+    header: "Shop",
+    items: [
+      { label: "Dashboard", icon: "regular-home", to: { name: "dashboard.index" }, active: isCurrent("dashboard.index") },
+      { label: "Orders", icon: "regular-shopping-bag", to: { name: "order.index" }, active: isCurrent("order.index") },
+    ],
+  },
+  {
+    header: "System",
+    items: [
+      { label: "Settings", icon: "regular-cog", to: { name: "settings.index" }, active: isCurrent("settings.index") },
+    ],
+  },
+];
+</script>`;
 
 const meta: MtNavMeta = {
   title: "Components/Nav",
   component: MtNav,
-  subcomponents: { MtNavSection, MtNavItem },
   args: {
     // markRaw: a component object stored in reactive args would be made reactive otherwise
     linkComponent: markRaw(StoryLink),
   },
   argTypes: {
+    sections: {
+      control: false,
+      description:
+        "The sections of the navigation, each holding its rows. Rows nest through `children`.",
+    },
     linkComponent: {
       control: false,
       description:
         "Component rendering the links. Receives the `to` of a row. Defaults to `router-link`.",
     },
   },
-  ...createStory(defaultTemplate),
+  ...createStory(
+    (current) => [{ items: withActive([...shopItems, ...systemItems], current) }],
+    defaultSource,
+  ),
 };
 
 meta.parameters = {
@@ -121,9 +185,9 @@ meta.parameters = {
     ...meta.parameters?.docs,
     description: {
       component: `
-The main navigation of an application: \`mt-nav\` owns the shared state, \`mt-nav-section\` groups
-rows below an optional header and \`mt-nav-item\` is one row, nesting further rows up to three
-levels deep. The root fills its container and scrolls its content, fading it out at the edges.
+The main navigation of an application. It takes its structure as data: \`sections\` holds groups
+of rows below an optional header, and rows nest through \`children\` up to three levels deep.
+The root fills its container and scrolls its content, fading it out at the edges.
 
 The application decides which row is current and sets \`active\` on it, typically by comparing the
 row's route with the current route. The ancestors of the active row open and, while closed, take
@@ -140,12 +204,17 @@ export default meta;
 export type MtNavStory = StoryObj<MtNavMeta>;
 
 /**
- * A single `mt-nav-section` without a header holds the `mt-nav-item` rows. Rows nest by
- * slotting further rows into them; the row marked `active` opens its ancestors.
+ * A single section without a header holds all rows. The row marked `active` opens its ancestors.
  */
 export const Default: MtNavStory = {};
 
 /**
  * Several sections, each with a `header` above its rows.
  */
-export const Sections: MtNavStory = createStory(sectionsTemplate);
+export const Sections: MtNavStory = createStory(
+  (current) => [
+    { header: "Shop", items: withActive(shopItems, current) },
+    { header: "System", items: withActive(systemItems, current) },
+  ],
+  sectionsSource,
+);

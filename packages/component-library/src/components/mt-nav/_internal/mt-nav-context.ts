@@ -11,61 +11,83 @@ export type NavLinkComponent = string | Component;
 export type NavLinkTarget = string | Record<string, unknown>;
 
 /**
- * Payload of the `navigate` event of `mt-nav`, describing the clicked item.
+ * One row of the navigation. Rows nest through `children`, up to three levels deep in total.
  */
-export interface NavNavigateEvent {
+export interface NavItem {
+  /** Translated label of the row. Siblings need distinct labels. */
   label: string;
+  /** Icon name of the meteor icon kit, e.g. `regular-products`. Shown on top-level rows only. */
+  icon?: string;
+  /** Route location handed to the link component as `to`. */
   to?: NavLinkTarget;
+  /** External URL, rendered as a plain anchor when no `to` is set. */
   href?: string;
+  /** Anchor target for `href`. */
+  target?: string;
+  /** Whether the row is the current page. Its ancestors open and highlight accordingly. */
+  active?: boolean;
+  /** Nested rows. A row with nested rows and no `to` renders as a button toggling them. */
+  children?: NavItem[];
 }
 
 /**
- * What a top-level row tells the navigation about itself, so the navigation can open the branch
- * owning the active item and keep only one branch open.
+ * A group of rows below an optional header.
  */
-export interface NavBranchRegistration {
-  key: string;
-  hasChildren: ComputedRef<boolean>;
-  /** Whether the row itself or one of its descendants is active. */
-  isActive: ComputedRef<boolean>;
-  /** Key of the nested row that is active or holds the active row, so a move inside the branch is noticed. */
-  activeChildKey: ComputedRef<string | null>;
+export interface NavSection {
+  header?: string;
+  items: NavItem[];
 }
 
 /**
- * Shared state of `mt-nav`, provided to the sections and rows slotted into it.
+ * The navigation supports at most this many levels; deeper rows are leaf items only.
+ */
+export const MAX_NESTING_LEVEL = 3;
+
+export function isItemActive(item: NavItem): boolean {
+  // Tells whether the row itself or one of its descendants is active
+  return !!item.active || (item.children?.some(isItemActive) ?? false);
+}
+
+export function hasNestedItems(item: NavItem): boolean {
+  // Tells whether the row has rows to nest below it
+  return (item.children?.length ?? 0) > 0;
+}
+
+export function branchKey(sectionIndex: number, item: NavItem): string {
+  // Identifies a top-level row across sections, for the open state the navigation keeps
+  return `${sectionIndex}/${item.label}`;
+}
+
+/**
+ * Slots of `mt-nav`.
+ */
+export interface NavSlots {
+  /** Rendered after the label of every row, e.g. for a badge or counter. */
+  suffix?: (props: { item: NavItem }) => unknown;
+}
+
+/**
+ * Shared state of `mt-nav`, provided to the internal sections and rows.
  */
 export interface NavContext {
   linkComponent: ComputedRef<NavLinkComponent>;
+  /** The slots of `mt-nav`, so a row can render the `suffix` slot for itself. */
+  slots: Readonly<NavSlots>;
   /** Whether the top-level row with the given key is open. The navigation owns this state. */
   isBranchExpanded: (key: string) => boolean;
-  /** Registers a top-level row. Returns the matching unregister function. */
-  registerBranch: (registration: NavBranchRegistration) => () => void;
   /** Reports the user toggling a top-level row. */
   onBranchToggle: (key: string, open: boolean) => void;
-  onLinkClick: (event: NavNavigateEvent) => void;
-}
-
-/**
- * Provided by every row to the rows nested inside it.
- */
-export interface NavItemContext {
-  /** Nesting depth of the providing row, starting at 1 for the top level. */
-  depth: number;
-  /** Lets a nested row report whether it, or one of its descendants, is active. */
-  reportActive: (key: string, active: boolean) => void;
+  onNavigate: (item: NavItem) => void;
 }
 
 export const NAV_CONTEXT: InjectionKey<NavContext> = Symbol("mt-nav");
 
-export const NAV_ITEM_CONTEXT: InjectionKey<NavItemContext> = Symbol("mt-nav-item");
-
-export function useNavContext(component: string): NavContext {
-  // Returns the state of the surrounding mt-nav, or throws if the component is rendered outside one
+export function useNavContext(): NavContext {
+  // Returns the state of the surrounding mt-nav, or throws if rendered outside one
   const context = inject(NAV_CONTEXT, null);
 
   if (!context) {
-    throw new Error(`${component} must be rendered inside mt-nav`);
+    throw new Error("mt-nav rows must be rendered inside mt-nav");
   }
 
   return context;

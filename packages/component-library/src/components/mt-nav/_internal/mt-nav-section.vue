@@ -1,20 +1,26 @@
 <template>
   <div class="mt-nav__section">
     <mt-text
-      v-if="header"
+      v-if="section.header"
       :id="headerId"
       as="h3"
       class="mt-nav__section-header"
       size="2xs"
       weight="semibold"
       color="color-text-secondary-default"
-      :title="header"
+      :title="section.header"
     >
-      {{ header }}
+      {{ section.header }}
     </mt-text>
 
-    <ul class="mt-nav__list" :aria-labelledby="header ? headerId : undefined">
-      <slot />
+    <ul class="mt-nav__list" :aria-labelledby="section.header ? headerId : undefined">
+      <mt-nav-item
+        v-for="item in section.items"
+        :key="item.label"
+        :item="item"
+        :depth="1"
+        :branch-key="branchKey(sectionIndex, item)"
+      />
     </ul>
   </div>
 </template>
@@ -22,21 +28,14 @@
 <script setup lang="ts">
 import { useId } from "vue";
 import MtText from "@/components/mt-text/mt-text.vue";
-import { useNavContext } from "./_internal/mt-nav-context";
+import MtNavItem from "./mt-nav-item.vue";
+import { branchKey, type NavSection } from "./mt-nav-context";
 
 defineProps<{
-  /**
-   * Heading above the items of the section.
-   */
-  header?: string;
+  section: NavSection;
+  /** Position of the section in the navigation, part of the keys of its top-level rows. */
+  sectionIndex: number;
 }>();
-
-defineSlots<{
-  /** The `mt-nav-item` rows of the section. */
-  default?: () => unknown;
-}>();
-
-useNavContext("mt-nav-section");
 
 const headerId = `mt-nav-section-header-${useId()}`;
 </script>
