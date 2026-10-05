@@ -1,0 +1,17 @@
+---
+"@shopware-ag/meteor-component-library": minor
+---
+
+Add the AI components `MtPromptField`, `MtContextUsage`, `MtAttachment`, `MtTextShimmer`, `MtConversation`, `MtMessage`, `MtMessageActions`, `MtChainOfThought`, `MtReasoning`, `MtTool`, `MtConfirmation` and `MtCheckpoint`. They are experimental: their API may still change in a future release.
+
+- `MtPromptField` is the input of an AI prompt: a growing textarea, file attachments (`accept`, `maxFiles`, `maxFileSize`; paste, drop, `v-model:files`), a `header` slot for context and `tools`/`tools-end` slots for tools, and a submit button driven by `status` (`ready`, `submitted`, `streaming`, `error`, the values of the AI SDK) that becomes a stop button emitting `stop` while a request runs. `submit` emits `{ text, files }`. The parts `MtPromptFieldActionMenu`, `MtPromptFieldAddAttachments` and `MtPromptFieldModelSelect` fill its slots, and `useMtPromptField()` gives custom parts access to the field.
+- `MtContextUsage` shows how much of a model's context window is used as a small ring in a button with the token counts in a tooltip, and `MtAttachment` shows a file or a reference attached to a prompt or message, from a `File` or from a `url` with its `mediaType`.
+- `MtConversation` is the scrolling message list of an AI chat: it follows new content while users are at the end, stops as soon as they scroll up and offers a button back to the latest message. The `status` slot reserves one line of `xs` text after the messages for a live status, the edges fade where more messages are out of view, and a `footer` keeps the prompt below the list. `MtMessage` shows one message, as a bubble for the user or across the full width for the assistant and the system, with an `attachments` slot.
+- The AI components display what the AI SDK's `useChat()` produces, with props shaped like its message parts, without depending on it. The new types `MtToolState` and `MtToolApproval` have the values of its tool parts.
+- `MtChainOfThought` shows steps an app assembles as a collapsible timeline: `MtChainOfThoughtHeader` opens and closes it, `MtChainOfThoughtContent` holds the `MtChainOfThoughtStep`s with a `label`, a `description` and a `status` (`complete`, `active`, `pending`, `error`).
+- `MtReasoning` shows the reasoning of a model collapsed behind "Thought for N seconds" until the user opens it, with a status dot that pulses while `streaming`, and measures the duration. With `defaultOpen`, it opens while streaming and closes a second after. `MtReasoningTrigger` and `MtReasoningContent` (Markdown) are its parts.
+- `MtTool` shows a tool call as a collapsible card: `MtToolHeader` with a status dot, the tool's name and a badge for each of the seven tool states, and `MtToolContent` with `MtToolInput` and `MtToolOutput` (JSON, text, an error or a custom slot).
+- `MtConfirmation` asks to approve a tool call and shows the answer: `MtConfirmationTitle`, `MtConfirmationRequest` and `MtConfirmationActions` with `MtConfirmationAction` while the approval is requested, `MtConfirmationAccepted` or `MtConfirmationRejected` afterwards.
+- `MtMessageActions` and `MtMessageAction` add icon buttons with tooltips to an answer, such as copy, retry and feedback.
+- `MtCheckpoint`, `MtCheckpointIcon` and `MtCheckpointTrigger` mark a point between messages, such as a switched model or a restore point.
+- `MtTextShimmer` shows `MtText` with a moving highlight for running AI work and accepts all of its props. Without `color-mix()`, in forced colors and with reduced motion it renders as plain text.

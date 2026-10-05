@@ -87,6 +87,40 @@ import {
 } from "reka-ui";
 // Import global styling
 import MtMarkdown from "./components/mt-markdown/mt-markdown.vue";
+import MtTextShimmer from "./components/mt-text-shimmer/mt-text-shimmer.vue";
+import MtPromptField from "./components/mt-prompt-field/mt-prompt-field.vue";
+import MtPromptFieldActionMenu from "./components/mt-prompt-field/mt-prompt-field-action-menu.vue";
+import MtPromptFieldAddAttachments from "./components/mt-prompt-field/mt-prompt-field-add-attachments.vue";
+import MtPromptFieldModelSelect from "./components/mt-prompt-field/mt-prompt-field-model-select.vue";
+import MtContextUsage from "./components/mt-context-usage/mt-context-usage.vue";
+import MtAttachment from "./components/mt-attachment/mt-attachment.vue";
+import MtConversation from "./components/mt-conversation/mt-conversation.vue";
+import MtMessage from "./components/mt-message/mt-message.vue";
+import MtMessageActions from "./components/mt-message-actions/mt-message-actions.vue";
+import MtMessageAction from "./components/mt-message-actions/mt-message-action.vue";
+import MtChainOfThought from "./components/mt-chain-of-thought/mt-chain-of-thought.vue";
+import MtChainOfThoughtHeader from "./components/mt-chain-of-thought/mt-chain-of-thought-header.vue";
+import MtChainOfThoughtContent from "./components/mt-chain-of-thought/mt-chain-of-thought-content.vue";
+import MtChainOfThoughtStep from "./components/mt-chain-of-thought/mt-chain-of-thought-step.vue";
+import MtReasoning from "./components/mt-reasoning/mt-reasoning.vue";
+import MtReasoningTrigger from "./components/mt-reasoning/mt-reasoning-trigger.vue";
+import MtReasoningContent from "./components/mt-reasoning/mt-reasoning-content.vue";
+import MtTool from "./components/mt-tool/mt-tool.vue";
+import MtToolHeader from "./components/mt-tool/mt-tool-header.vue";
+import MtToolContent from "./components/mt-tool/mt-tool-content.vue";
+import MtToolInput from "./components/mt-tool/mt-tool-input.vue";
+import MtToolOutput from "./components/mt-tool/mt-tool-output.vue";
+import MtConfirmation from "./components/mt-confirmation/mt-confirmation.vue";
+import MtConfirmationTitle from "./components/mt-confirmation/mt-confirmation-title.vue";
+import MtConfirmationRequest from "./components/mt-confirmation/mt-confirmation-request.vue";
+import MtConfirmationAccepted from "./components/mt-confirmation/mt-confirmation-accepted.vue";
+import MtConfirmationRejected from "./components/mt-confirmation/mt-confirmation-rejected.vue";
+import MtConfirmationActions from "./components/mt-confirmation/mt-confirmation-actions.vue";
+import MtConfirmationAction from "./components/mt-confirmation/mt-confirmation-action.vue";
+import MtCheckpoint from "./components/mt-checkpoint/mt-checkpoint.vue";
+import MtCheckpointIcon from "./components/mt-checkpoint/mt-checkpoint-icon.vue";
+import MtCheckpointTrigger from "./components/mt-checkpoint/mt-checkpoint-trigger.vue";
+import { useMtPromptField } from "./components/mt-prompt-field/composables/usePromptFieldContext";
 import "./assets/css/all.css";
 
 // Importing types
@@ -211,6 +245,40 @@ export {
   // @deprecated
   MtSkeletonBar as SwSkeletonBar,
   MtMarkdown,
+  MtTextShimmer,
+  MtPromptField,
+  MtPromptFieldActionMenu,
+  MtPromptFieldAddAttachments,
+  MtPromptFieldModelSelect,
+  MtContextUsage,
+  MtAttachment,
+  MtConversation,
+  MtMessage,
+  MtMessageActions,
+  MtMessageAction,
+  MtChainOfThought,
+  MtChainOfThoughtHeader,
+  MtChainOfThoughtContent,
+  MtChainOfThoughtStep,
+  MtReasoning,
+  MtReasoningTrigger,
+  MtReasoningContent,
+  MtTool,
+  MtToolHeader,
+  MtToolContent,
+  MtToolInput,
+  MtToolOutput,
+  MtConfirmation,
+  MtConfirmationTitle,
+  MtConfirmationRequest,
+  MtConfirmationAccepted,
+  MtConfirmationRejected,
+  MtConfirmationActions,
+  MtConfirmationAction,
+  MtCheckpoint,
+  MtCheckpointIcon,
+  MtCheckpointTrigger,
+  useMtPromptField,
 };
 
 // Exporting types
@@ -218,3 +286,10 @@ export type { Filter, Option, Toast, Snackbar, ChartOptions, BreadcrumbItem };
 export type { Theme, ResolvedTheme, UseThemeOptions, UseThemeReturn };
 export type { Editor } from "@tiptap/vue-3";
 export type { default as Link } from "@tiptap/extension-link";
+export type { MtChatStatus, MtToolApproval, MtToolState } from "./types/ai";
+export type {
+  MtPromptFieldError,
+  MtPromptFieldMessage,
+  MtPromptFieldModel,
+} from "./components/mt-prompt-field/mt-prompt-field.types";
+export type { MtPromptFieldContext } from "./components/mt-prompt-field/composables/usePromptFieldContext";

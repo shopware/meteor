@@ -12,7 +12,7 @@ description: Rendered Markdown in Meteor's prose styles, safe for untrusted cont
 
 ## Usage
 
-**Markdown** renders a Markdown string, typically the answer of an AI model, with headings, lists, tables, code blocks and links in [prose styles](/documentation/design/prose). Use it wherever Markdown arrives as text, for example inside a **Message**, and set `streaming` while the text is still arriving.
+**Markdown** renders a Markdown string, typically the answer of an AI model, with headings, lists, tables, code blocks and links in [prose styles](/documentation/design/prose). Use it wherever Markdown arrives as text, for example inside a [**Message**](/components/message), and set `streaming` while the text is still arriving.
 
 It supports GitHub Flavored Markdown: tables, task lists, strikethrough and links written as bare addresses. Raw HTML in the content shows as text.
 
@@ -85,7 +85,7 @@ The content is treated as untrusted, because a model's answer can be influenced 
 
 ## Accessibility
 
-- The content renders as semantic HTML: headings, lists, tables with column headers, quotes and code. Models choose heading levels themselves, so place the component where any heading level is acceptable, for example inside a **Message**.
+- The content renders as semantic HTML: headings, lists, tables with column headers, quotes and code. Models choose heading levels themselves, so place the component where any heading level is acceptable, for example inside a [**Message**](/components/message).
 - A wide table or code block scrolls horizontally inside its own box instead of widening the page.
 - The copy button of a code block has an accessible name, which changes to "Copied" after copying. It is hidden until the code block is hovered or focused, and always visible on touch screens.
 - Task list checkboxes are disabled, because they show a state and can't be changed.
@@ -93,4 +93,5 @@ The content is treated as untrusted, because a model's answer can be influenced 
 ## Related components
 
 - [**Text**](/components/text): for plain text that contains no Markdown.
+- [**Message**](/components/message): the chat message that usually holds an AI answer.
 - [**Text Editor**](/components/text-editor): for rich text that users write and edit.

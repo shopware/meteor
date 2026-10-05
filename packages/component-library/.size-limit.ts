@@ -6,7 +6,7 @@ const ignore = [...external];
 module.exports = [
   {
     path: "dist/esm/index.js",
-    limit: "967 kb",
+    limit: "978 kb",
     name: "index.js",
     ignore: ignore,
   },
@@ -14,7 +14,7 @@ module.exports = [
     path: "dist/esm/index.js",
     import: "{ MtButton }",
     name: "MtButton",
-    limit: "36 kb",
+    limit: "37 kb",
     ignore: ignore,
   },
   {
@@ -27,7 +27,7 @@ module.exports = [
     path: "dist/esm/index.js",
     import: "{ MtCard }",
     name: "MtCard",
-    limit: "241 kb",
+    limit: "243 kb",
     ignore: ignore,
   },
   {
