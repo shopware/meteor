@@ -101,3 +101,8 @@ aside[data-slot="left"] {
     grid-column: span 10 / span 10;
   }
 }
+
+html:root:has(.mt-app) {
+  overflow: revert-layer;
+  background-color: revert-layer;
+}
