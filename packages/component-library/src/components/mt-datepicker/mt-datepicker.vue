@@ -1,5 +1,4 @@
 <template>
-  <!-- @deprecated tag:v5 remove wrapper class -->
   <div
     class="mt-datepicker__wrapper wrapper"
     :class="{
@@ -513,6 +512,7 @@ onMounted(() => {
   --dp-range-between-border-color: var(--color-background-brand-default);
 }
 
+/* @deprecated tag:v5 remove the `wrapper` class of the root element */
 .mt-datepicker__wrapper {
   display: grid;
   grid-template-areas:
