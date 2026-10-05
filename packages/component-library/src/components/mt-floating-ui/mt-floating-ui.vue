@@ -9,6 +9,7 @@
         ref="floatingUiContent"
         v-on-click-outside="onClickOutside"
         class="mt-floating-ui__content"
+        data-mt-overlay
         :data-show="isOpened"
         tabindex="0"
         :style="contentStyles"
@@ -279,7 +280,7 @@ onBeforeUnmount(() => {
   position: fixed;
   top: 0;
   left: 0;
-  z-index: 1070;
+  z-index: var(--z-index-popover, 1070);
 
   &[data-show] {
     display: block;

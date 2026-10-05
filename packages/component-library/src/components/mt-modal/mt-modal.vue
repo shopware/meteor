@@ -72,14 +72,18 @@
   </transition>
 </template>
 
+<script lang="ts">
+let openModals = 0;
+</script>
+
 <script setup lang="ts">
-import { nextTick, onMounted, onUnmounted, ref, watch, type PropType } from "vue";
+import { computed, nextTick, onMounted, onUnmounted, ref, watch, type PropType } from "vue";
 import { useModalContext } from "./composables/useModalContext";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtModalClose from "./sub-components/mt-modal-close.vue";
 import MtText from "@/components/mt-text/mt-text.vue";
 import { createId } from "@/utils/id";
-import * as focusTrap from "focus-trap";
+import { useModalLayer } from "@/composables/useModalLayer";
 
 defineProps({
   title: {
@@ -111,75 +115,46 @@ defineProps({
 
 const id = `mt-modal--${createId()}`;
 
-const { isOpen, setIsOpen, closable } = useModalContext("mt-modal");
-
-let closeOnEscapeEventListener: ((event: KeyboardEvent) => void) | undefined = undefined;
-
-watch(
-  isOpen,
-  (value) => {
-    if (value) {
-      closeOnEscapeEventListener = (event: KeyboardEvent) => {
-        if (event.key === "Escape" && closable.value) setIsOpen(false);
-      };
-
-      document.addEventListener("keydown", closeOnEscapeEventListener);
-    } else {
-      if (closeOnEscapeEventListener) {
-        document.removeEventListener("keydown", closeOnEscapeEventListener);
-      }
-    }
-  },
-  { immediate: true },
-);
-
-onUnmounted(() => {
-  if (closeOnEscapeEventListener) {
-    document.removeEventListener("keydown", closeOnEscapeEventListener);
-  }
-});
+const { isOpen, setIsOpen, closable, backdrop } = useModalContext("mt-modal");
 
 const modalRef = ref<HTMLElement | null>(null);
-let trap: ReturnType<typeof focusTrap.createFocusTrap> | undefined;
+const isActive = computed(() => !!isOpen.value);
+
+useModalLayer({
+  panel: modalRef,
+  active: isActive,
+  onEscape: () => {
+    if (closable.value) setIsOpen(false);
+  },
+  inertTargets: () =>
+    Array.from(document.body.children).filter(
+      (element) =>
+        element !== modalRef.value &&
+        element !== backdrop.value &&
+        !element.hasAttribute("data-mt-overlay"),
+    ),
+});
 
 watch(
-  isOpen,
-  async () => {
-    const isModalOpen = !!isOpen.value;
-    if (isModalOpen) await nextTick();
+  isActive,
+  (value, previous) => {
+    if (value) {
+      openModals += 1;
 
-    if (!modalRef.value) return;
-    if (isModalOpen) {
-      trap = focusTrap.createFocusTrap(modalRef.value as HTMLElement, {
-        tabbableOptions: { displayCheck: "none" },
-        allowOutsideClick: true,
-        // Focus the dialog itself instead of the first tabbable element so
-        // opening the modal never activates an interactive element (e.g.
-        // the close button or a tooltip trigger that opens on focus).
-        initialFocus: () => modalRef.value ?? undefined,
-        onPause: () => {
-          // a new modal is being opened, pausing the current trap
-          console.warn(
-            "[MtModal] It is not recommended to stack multiple modals on top of each other.",
-          );
-        },
-        onUnpause: () => {
-          // the current trap is being resumed (the newest modal is being closed, we are now in the foreground)
-        },
-      });
-
-      trap.activate();
-
-      return;
+      if (openModals > 1) {
+        console.warn(
+          "[MtModal] It is not recommended to stack multiple modals on top of each other.",
+        );
+      }
+    } else if (previous) {
+      openModals -= 1;
     }
-
-    if (trap) trap.deactivate();
   },
   { immediate: true },
 );
 
 onUnmounted(() => {
-  if (trap) trap.deactivate();
+  if (isActive.value) openModals -= 1;
 });
 
 const modalContentRef = ref<HTMLElement | null>(null);
@@ -259,7 +234,7 @@ onUnmounted(() => {
   top: 50%;
   left: 50%;
   translate: -50% -50%;
-  z-index: 1000;
+  z-index: var(--z-index-modal, 1000);
   background-color: var(--color-elevation-surface-raised);
   border-radius: var(--border-radius-card);
   overflow: hidden;

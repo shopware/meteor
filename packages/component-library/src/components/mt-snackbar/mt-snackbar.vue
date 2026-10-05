@@ -1,6 +1,11 @@
 <template>
   <Teleport to="body">
-    <div class="mt-snackbar" @mouseenter="isHovered = true" @mouseleave="isHovered = false">
+    <div
+      class="mt-snackbar"
+      data-mt-overlay
+      @mouseenter="isHovered = true"
+      @mouseleave="isHovered = false"
+    >
       <mt-snackbar-notification
         v-for="snackbar in snackbars"
         :key="snackbar.id"
@@ -60,7 +65,7 @@ function removeSnackbarWithHeightCleanup(snackbarToRemove: Snackbar) {
   position: fixed;
   bottom: var(--scale-size-16);
   right: var(--scale-size-16);
-  z-index: 1600;
+  z-index: var(--z-index-notification, 1600);
   pointer-events: none;
   transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1);
 }

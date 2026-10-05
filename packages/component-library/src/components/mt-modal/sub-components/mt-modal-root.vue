@@ -2,8 +2,9 @@
   <transition name="fade">
     <Teleport to="body">
       <div
-        class="mt-modal-root__backdrop"
         v-if="isOpen"
+        ref="backdrop"
+        class="mt-modal-root__backdrop"
         aria-hidden
         data-testid="modal-backdrop"
         @click="
@@ -19,7 +20,7 @@
 </template>
 
 <script setup lang="ts">
-import { provide, ref, watch } from "vue";
+import { provide, ref, useTemplateRef, watch } from "vue";
 import { DialogContext } from "../composables/useModalContext";
 
 const props = withDefaults(defineProps<{ isOpen?: boolean; closable?: boolean }>(), {
@@ -30,6 +31,7 @@ const emit = defineEmits(["change"]);
 
 const isOpen = ref(props.isOpen);
 const closable = ref(props.closable);
+const backdrop = useTemplateRef<HTMLElement>("backdrop");
 
 watch(isOpen, () => {
   emit("change", isOpen.value);
@@ -57,6 +59,7 @@ provide(DialogContext, {
   isOpen,
   setIsOpen,
   closable,
+  backdrop,
 });
 </script>
 
@@ -68,7 +71,7 @@ provide(DialogContext, {
   right: 0;
   bottom: 0;
   background-color: var(--color-elevation-backdrop-default);
-  z-index: 1000;
+  z-index: var(--z-index-modal, 1000);
 }
 
 .fade-enter-active {
