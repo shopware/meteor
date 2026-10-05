@@ -86,6 +86,7 @@ import {
   DropdownMenuSub,
 } from "reka-ui";
 // Import global styling
+import MtMarkdown from "./components/mt-markdown/mt-markdown.vue";
 import "./assets/css/all.css";
 
 // Importing types
@@ -209,6 +210,7 @@ export {
   MtPagination as SwPagination,
   // @deprecated
   MtSkeletonBar as SwSkeletonBar,
+  MtMarkdown,
 };
 
 // Exporting types

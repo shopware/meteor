@@ -8,6 +8,7 @@
 @import "./global.css";
 /* 4. Utility classes */
 @import "./utils.css";
+@import "./prose.css";
 /* 5. Component specific styles that require a global import */
 @import "./directives/tooltip.css";
 @import "./directives/dragdrop.css";

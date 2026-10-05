@@ -1,0 +1,240 @@
+/*
+  Prose: typography for HTML without classes of its own, such as rendered Markdown.
+  Every rule has the specificity of one class, so scoped component styles win over it, and nothing
+  inside `.mt-not-prose` is touched.
+  The spacing follows GitHub's Markdown: blocks carry a bottom margin and headings a larger top
+  margin, so a heading sits closer to its own content than to the block above it.
+*/
+
+.mt-prose {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+  color: var(--color-text-primary-default);
+  overflow-wrap: break-word;
+}
+
+/* Blocks */
+
+.mt-prose
+  :where(p, ul, ol, blockquote, pre, table):not(
+    :where(.mt-not-prose, .mt-not-prose *)
+  ) {
+  margin-block: 0 var(--scale-size-12);
+}
+
+/* Headings */
+
+.mt-prose
+  :where(h1, h2, h3, h4, h5, h6):not(:where(.mt-not-prose, .mt-not-prose *)) {
+  font-family: var(--font-family-headings);
+  font-weight: var(--font-weight-semibold);
+}
+
+.mt-prose :where(h1):not(:where(.mt-not-prose, .mt-not-prose *)) {
+  margin-block: var(--scale-size-24) var(--scale-size-12);
+  font-size: var(--font-size-xl);
+  line-height: var(--font-line-height-xl);
+}
+
+.mt-prose :where(h2):not(:where(.mt-not-prose, .mt-not-prose *)) {
+  margin-block: var(--scale-size-24) var(--scale-size-12);
+  font-size: var(--font-size-l);
+  line-height: var(--font-line-height-l);
+}
+
+.mt-prose :where(h3):not(:where(.mt-not-prose, .mt-not-prose *)) {
+  margin-block: var(--scale-size-20) var(--scale-size-8);
+  font-size: var(--font-size-m);
+  line-height: var(--font-line-height-m);
+}
+
+.mt-prose :where(h4):not(:where(.mt-not-prose, .mt-not-prose *)) {
+  margin-block: var(--scale-size-20) var(--scale-size-8);
+  font-size: var(--font-size-s);
+  line-height: var(--font-line-height-s);
+}
+
+.mt-prose :where(h5, h6):not(:where(.mt-not-prose, .mt-not-prose *)) {
+  margin-block: var(--scale-size-16) var(--scale-size-8);
+  font-size: var(--font-size-xs);
+  line-height: var(--font-line-height-xs);
+}
+
+.mt-prose :where(h6):not(:where(.mt-not-prose, .mt-not-prose *)) {
+  color: var(--color-text-secondary-default);
+}
+
+/* Lists */
+
+.mt-prose :where(ul, ol):not(:where(.mt-not-prose, .mt-not-prose *)) {
+  padding-inline-start: var(--scale-size-24);
+}
+
+.mt-prose :where(ul):not(:where(.mt-not-prose, .mt-not-prose *)) {
+  list-style-type: disc;
+}
+
+.mt-prose :where(:is(ul, ol) ul):not(:where(.mt-not-prose, .mt-not-prose *)) {
+  list-style-type: circle;
+}
+
+.mt-prose
+  :where(:is(ul, ol) :is(ul, ol) ul):not(
+    :where(.mt-not-prose, .mt-not-prose *)
+  ) {
+  list-style-type: square;
+}
+
+.mt-prose :where(ol):not(:where(.mt-not-prose, .mt-not-prose *)) {
+  list-style-type: decimal;
+}
+
+.mt-prose :where(:is(ul, ol) ol):not(:where(.mt-not-prose, .mt-not-prose *)) {
+  list-style-type: lower-roman;
+}
+
+.mt-prose
+  :where(:is(ul, ol) :is(ul, ol) ol):not(
+    :where(.mt-not-prose, .mt-not-prose *)
+  ) {
+  list-style-type: lower-alpha;
+}
+
+/* Items of a tight list are 4px apart; paragraphs make a list loose, with the block spacing. */
+.mt-prose :where(li + li):not(:where(.mt-not-prose, .mt-not-prose *)) {
+  margin-block-start: var(--scale-size-4);
+}
+
+.mt-prose :where(li > p):not(:where(.mt-not-prose, .mt-not-prose *)) {
+  margin-block-start: var(--scale-size-12);
+}
+
+/* A nested list continues the rhythm of its list instead of starting a new block. */
+.mt-prose :where(li > ul, li > ol):not(:where(.mt-not-prose, .mt-not-prose *)) {
+  margin-block: var(--scale-size-4) 0;
+}
+
+/* Task lists: the checkbox takes the place of the bullet. */
+.mt-prose
+  :where(
+    li:has(
+        > input[type="checkbox"],
+        > p:first-child > input[type="checkbox"]:first-child
+      )
+  ):not(:where(.mt-not-prose, .mt-not-prose *)) {
+  list-style-type: none;
+}
+
+.mt-prose
+  :where(
+    li > input[type="checkbox"],
+    li > p:first-child > input[type="checkbox"]:first-child
+  ):not(:where(.mt-not-prose, .mt-not-prose *)) {
+  display: inline-block;
+  margin-inline: calc(var(--scale-size-20) * -1) var(--scale-size-6);
+  vertical-align: middle;
+  accent-color: var(--color-interaction-primary-default);
+}
+
+/* Blockquotes */
+
+.mt-prose :where(blockquote):not(:where(.mt-not-prose, .mt-not-prose *)) {
+  padding-inline-start: var(--scale-size-12);
+  border-inline-start: var(--scale-size-4) solid
+    var(--color-border-primary-default);
+  color: var(--color-text-secondary-default);
+}
+
+/* Inline */
+
+.mt-prose :where(strong, b):not(:where(.mt-not-prose, .mt-not-prose *)) {
+  font-weight: var(--font-weight-semibold);
+}
+
+.mt-prose :where(a):not(:where(.mt-not-prose, .mt-not-prose *)) {
+  color: var(--color-text-brand-default);
+  text-decoration: underline;
+}
+
+.mt-prose :where(a:hover):not(:where(.mt-not-prose, .mt-not-prose *)) {
+  color: var(--color-text-brand-hover);
+}
+
+.mt-prose :where(a:focus-visible):not(:where(.mt-not-prose, .mt-not-prose *)) {
+  outline: 2px solid var(--color-border-brand-default);
+  outline-offset: 2px;
+  border-radius: var(--border-radius-xs);
+}
+
+/* Code */
+
+.mt-prose :where(code):not(:where(.mt-not-prose, .mt-not-prose *)) {
+  padding: var(--scale-size-2) var(--scale-size-4);
+  border-radius: var(--border-radius-xs);
+  background-color: var(--color-background-tertiary-default);
+  /* stylelint-disable-next-line meteor/prefer-font-token -- relative, so inline code also scales inside headings */
+  font-size: 0.875em;
+}
+
+.mt-prose :where(pre):not(:where(.mt-not-prose, .mt-not-prose *)) {
+  padding: var(--scale-size-12) var(--scale-size-16);
+  border-radius: var(--border-radius-s);
+  background-color: var(--color-background-tertiary-default);
+  font-size: var(--font-size-2xs);
+  line-height: var(--font-line-height-2xs);
+  white-space: pre;
+  overflow-x: auto;
+}
+
+.mt-prose :where(pre code):not(:where(.mt-not-prose, .mt-not-prose *)) {
+  padding: 0;
+  border-radius: var(--border-radius-none);
+  background-color: transparent;
+  font-size: inherit;
+}
+
+/* Tables */
+
+.mt-prose :where(th, td):not(:where(.mt-not-prose, .mt-not-prose *)) {
+  padding: var(--scale-size-6) var(--scale-size-12);
+  border: 1px solid var(--color-border-secondary-default);
+  vertical-align: top;
+}
+
+.mt-prose :where(th):not(:where(.mt-not-prose, .mt-not-prose *)) {
+  background-color: var(--color-background-secondary-default);
+  font-weight: var(--font-weight-semibold);
+}
+
+/* Header cells are centered by default; an `align` attribute still wins. */
+.mt-prose :where(th:not([align])):not(:where(.mt-not-prose, .mt-not-prose *)) {
+  text-align: start;
+}
+
+/* Rules and media */
+
+.mt-prose :where(hr):not(:where(.mt-not-prose, .mt-not-prose *)) {
+  margin-block: var(--scale-size-24);
+  border-block-start-color: var(--color-border-secondary-default);
+}
+
+.mt-prose :where(img):not(:where(.mt-not-prose, .mt-not-prose *)) {
+  border-radius: var(--border-radius-xs);
+}
+
+/* The first and last block sit flush with the container and with a blockquote. */
+
+.mt-prose > :where(:first-child),
+.mt-prose
+  :where(blockquote):not(:where(.mt-not-prose, .mt-not-prose *))
+  > :where(:first-child) {
+  margin-block-start: 0;
+}
+
+.mt-prose > :where(:last-child),
+.mt-prose
+  :where(blockquote):not(:where(.mt-not-prose, .mt-not-prose *))
+  > :where(:last-child) {
+  margin-block-end: 0;
+}
