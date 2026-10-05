@@ -1,0 +1,9 @@
+.page {
+  padding: var(--scale-size-40);
+}
+
+.page__content {
+  display: grid;
+  gap: var(--scale-size-16);
+  align-content: start;
+}

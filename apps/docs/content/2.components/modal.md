@@ -136,9 +136,14 @@ To open a modal from something other than a trigger, control the open state dire
 - `mt-modal-action` receives a `done` callback so you can run work, such as a network request, before the modal closes.
 - Use the `isOpen` prop on `mt-modal-root` to control the open state directly when something other than a trigger opens the modal.
 - Footer actions are usually the clearest place for confirmation and cancellation controls.
+- A modal opened from a [**Drawer**](/components/drawer), such as a sidebar drawer of [**App**](/components/app), stacks above the drawer and closes before it.
 
 ## Accessibility
 
 - Use a clear title so users immediately understand the purpose of the dialog.
 - Keep focus behavior predictable and ensure footer actions are reachable by keyboard.
 - Only use **Modal** when interrupting the current flow is justified by the task.
+
+## Related components
+
+- [**Drawer**](/components/drawer): when a secondary task or a form should slide in from an edge without leaving the current view.

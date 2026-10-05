@@ -1,0 +1,10 @@
+---
+"@shopware-ag/meteor-component-library": minor
+---
+
+Add the application shell `MtApp`, the layout container `MtContainer`, the drawer `MtDrawer` and `MtUser`. The components, the composables `useMtApp()` and `useMtAppRegions()` and the new `--container-size-*` custom properties are experimental: their API may still change in a future release.
+
+- `MtApp` arranges the `header`, `sidebar-start`, `content`, `sidebar-end` and `global` slots and turns the sidebars into floating drawers below `mobileBreakpoint` (1280px by default, `0` disables it). The document does not scroll; the content panel and the sidebars scroll on their own. With Vue Router the shell closes drawers on navigation, also on a link to the page that is already shown, and restores the content's scroll position. It enables all future flags (override single ones through `future`), applies the theme stored under `mt-theme`, mounts the `MtSnackbar` host, adds a skip-to-content button and supports server-side rendering and printing. When only `content` is filled, it fills the shell without a frame. `useMtApp()` exposes the shell state, and `useMtAppRegions()` lets a view hide the header and sidebars, for example for fullscreen routes, and with `contentFrame: false` also the frame around the content.
+- `MtContainer` limits page content to `s` (680px), `m` (960px, default) or `l` (1280px), set by the new `--container-size-*` custom properties.
+- `MtDrawerRoot`, `MtDrawerTrigger`, `MtDrawerContent` and `MtDrawerClose` slide a panel in from any edge, in a `default` or `floating` variant, with swipe to dismiss. With `dismissible: false`, backdrop clicks, Escape and swipes emit `dismiss-prevented` instead of closing, for example to confirm unsaved changes. Drawers share the modal layer of `MtModal`, so a modal opened from a drawer stacks above it and closes first. It builds on reka-ui's alpha Drawer, so reka-ui is updated to `^2.10.5`.
+- `MtUser` shows a user as avatar, name and an optional subtitle, with an avatar-only mode for collapsed contexts and a `suffix` slot for a menu trigger.
