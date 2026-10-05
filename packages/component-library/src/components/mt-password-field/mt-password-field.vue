@@ -121,6 +121,10 @@ const props = withDefaults(
     isInheritanceField?: boolean;
     disableInheritanceToggle?: boolean;
     idSuffix?: string;
+    /**
+     * Validation rules for the field, kept for API compatibility with the other fields.
+     */
+    validation?: string | string[] | boolean | Record<string, unknown> | null;
   }>(),
   {
     label: null,
@@ -136,6 +140,7 @@ const props = withDefaults(
     disableInheritanceToggle: false,
     idSuffix: "",
     name: undefined,
+    validation: null,
   },
 );
 

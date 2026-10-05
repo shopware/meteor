@@ -91,6 +91,7 @@ import MtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import MtFieldHint from "../_internal/mt-field-hint/mt-field-hint.vue";
 import MtHelpText from "../mt-help-text/mt-help-text.vue";
 import { useFutureFlags } from "@/composables/useFutureFlags";
+import MtValidationMixin from "../../mixins/validation.mixin";
 
 export default defineComponent({
   name: "MtTextField",
@@ -103,6 +104,8 @@ export default defineComponent({
     "mt-field-hint": MtFieldHint,
     "mt-help-text": MtHelpText,
   },
+
+  mixins: [MtValidationMixin],
 
   props: {
     /**
@@ -307,7 +310,7 @@ export default defineComponent({
     },
 
     hasError(): boolean {
-      return !!this.error;
+      return !this.isValid || !!this.error;
     },
 
     inheritanceState(): "linked" | "unlinked" | "none" {

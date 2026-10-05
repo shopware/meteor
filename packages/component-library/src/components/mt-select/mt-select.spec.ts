@@ -304,4 +304,10 @@ describe("mt-select", () => {
     expect(wrapper.classes()).toContain("mt-select--small");
     expect(wrapper.findComponent({ name: "MtSelectSelectionList" }).props("size")).toBe("small");
   });
+
+  it("accepts the validation prop without rendering it as an attribute", async () => {
+    const wrapper = await createWrapper({ props: { label: "Select", validation: "required" } });
+
+    expect(wrapper.attributes("validation")).toBeUndefined();
+  });
 });

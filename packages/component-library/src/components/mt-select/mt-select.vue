@@ -141,6 +141,7 @@ import MtSelectResult from "../_internal/mt-select-base/_internal/mt-select-resu
 import MtSelectSelectionList from "../_internal/mt-select-base/_internal/mt-select-selection-list.vue";
 import MtHighlightText from "../_internal/mt-highlight-text.vue";
 import { useI18n } from "vue-i18n";
+import MtValidationMixin from "../../mixins/validation.mixin";
 
 export default defineComponent({
   name: "MtSelect",
@@ -153,6 +154,8 @@ export default defineComponent({
     "mt-highlight-text": MtHighlightText,
     "mt-select-result": MtSelectResult,
   },
+
+  mixins: [MtValidationMixin],
 
   inheritAttrs: false,
 

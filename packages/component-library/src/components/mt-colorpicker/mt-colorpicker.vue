@@ -286,6 +286,7 @@ import MtButton from "@/components/mt-button/mt-button.vue";
 import mtFieldError from "../_internal/mt-field-error/mt-field-error.vue";
 import { useI18n } from "vue-i18n";
 import { useFutureFlags } from "@/composables/useFutureFlags";
+import MtValidationMixin from "../../mixins/validation.mixin";
 
 export default defineComponent({
   name: "MtColorpicker",
@@ -300,6 +301,8 @@ export default defineComponent({
     "mt-button": MtButton,
     "mt-field-error": mtFieldError,
   },
+
+  mixins: [MtValidationMixin],
 
   props: {
     /**

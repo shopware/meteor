@@ -138,6 +138,7 @@ import MtFieldCopyable from "@/components/_internal/mt-field-copyable/mt-field-c
 import MtHelpText from "@/components/mt-help-text/mt-help-text.vue";
 import MtTooltipDirective from "@/directives/tooltip.directive";
 import { useFutureFlags } from "@/composables/useFutureFlags";
+import MtValidationMixin from "../../mixins/validation.mixin";
 
 export default defineComponent({
   name: "MtSlider",
@@ -154,6 +155,8 @@ export default defineComponent({
     MtFieldCopyable,
     MtHelpText,
   },
+
+  mixins: [MtValidationMixin],
 
   props: {
     /**

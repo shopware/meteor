@@ -272,4 +272,14 @@ describe("mt-colorpicker", () => {
     // ASSERT
     expect(screen.getByRole("button", { name: "Unlink inheritance" })).toBeDisabled();
   });
+
+  it("accepts the validation prop without rendering it as an attribute", () => {
+    // ARRANGE
+    const { container } = render(MtColorpicker, {
+      props: { label: "Label", modelValue: "#0fcff5", validation: "required" },
+    });
+
+    // ASSERT
+    expect(container.querySelector(".mt-field")).not.toHaveAttribute("validation");
+  });
 });

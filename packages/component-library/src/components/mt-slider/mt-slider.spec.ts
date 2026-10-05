@@ -126,4 +126,12 @@ describe("mt-slider", () => {
     // ASSERT
     expect(container.querySelector(".mt-field")).toHaveClass("mt-field--small");
   });
+
+  it("accepts the validation prop without rendering it as an attribute", () => {
+    // ARRANGE
+    const { container } = renderSlider({ props: { label: "Label", validation: "required" } });
+
+    // ASSERT
+    expect(container.querySelector(".mt-field")).not.toHaveAttribute("validation");
+  });
 });

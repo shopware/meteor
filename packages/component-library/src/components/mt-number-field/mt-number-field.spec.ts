@@ -960,4 +960,14 @@ describe("mt-number-field", () => {
     // ASSERT
     expect(container.querySelector(".mt-field")).toHaveClass("mt-field--small");
   });
+
+  it("shows the error state when the validation prop fails for the value", () => {
+    // ARRANGE
+    const { container } = render(MtNumberField, {
+      props: { label: "Label", validation: "required" },
+    });
+
+    // ASSERT
+    expect(container.querySelector(".mt-field")).toHaveClass("has--error");
+  });
 });
