@@ -1,7 +1,12 @@
-import { defineComponent, h } from "vue";
+import { computed, defineComponent, h, nextTick, ref, type Component } from "vue";
 import { render, screen } from "@testing-library/vue";
 import MtThemeProvider from "../components/mt-theme-provider/mt-theme-provider.vue";
-import { resolveFutureFlags, useFutureFlags } from "./useFutureFlags";
+import {
+  provideFutureFlags,
+  resolveFutureFlags,
+  useFutureFlags,
+  type FutureFlagsInput,
+} from "./useFutureFlags";
 
 describe("useFutureFlags", () => {
   describe("resolveFutureFlags", () => {
@@ -96,6 +101,75 @@ describe("useFutureFlags", () => {
         bannerFullWidth: true,
         consistentLabelLineHeight: true,
       });
+    });
+  });
+
+  describe("provideFutureFlags with a reactive input", () => {
+    // plain component objects: the file already defines one component with defineComponent
+    const ReactiveConsumer: Component = {
+      setup() {
+        const future = useFutureFlags();
+        const enabled = computed(() => future.removeCardWidth);
+        return () => h("span", enabled.value ? "card width removed" : "card width kept");
+      },
+    };
+
+    function createProvider(input: () => FutureFlagsInput | undefined): Component {
+      return {
+        setup(_, { slots }) {
+          provideFutureFlags(input);
+          return () => slots.default?.();
+        },
+      };
+    }
+
+    it("updates consumers when the input of a getter changes", async () => {
+      // ARRANGE
+      const input = ref<FutureFlagsInput | undefined>({ removeCardWidth: true });
+      render(
+        createProvider(() => input.value),
+        {
+          slots: { default: () => h(ReactiveConsumer) },
+        },
+      );
+      expect(screen.getByText("card width removed")).toBeInTheDocument();
+
+      // ACT
+      input.value = { removeCardWidth: false };
+      await nextTick();
+
+      // ASSERT
+      expect(screen.getByText("card width kept")).toBeInTheDocument();
+    });
+
+    it("resolves all with overrides for a reactive input", async () => {
+      // ARRANGE
+      const input = ref<FutureFlagsInput | undefined>(undefined);
+      render(
+        createProvider(() => input.value),
+        {
+          slots: { default: () => h(ReactiveConsumer) },
+        },
+      );
+      expect(screen.getByText("card width kept")).toBeInTheDocument();
+
+      // ACT
+      input.value = { all: true };
+      await nextTick();
+
+      // ASSERT
+      expect(screen.getByText("card width removed")).toBeInTheDocument();
+    });
+
+    it("keeps providing a static object for a plain input", () => {
+      // ACT
+      render(MtThemeProvider, {
+        props: { future: { removeCardWidth: true } },
+        slots: { default: () => h(ReactiveConsumer) },
+      });
+
+      // ASSERT
+      expect(screen.getByText("card width removed")).toBeInTheDocument();
     });
   });
 });
