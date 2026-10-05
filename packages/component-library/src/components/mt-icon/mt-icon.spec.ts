@@ -86,4 +86,17 @@ describe("mt-icon", () => {
     expect(screen.getByTestId("mt-icon__regular-3d")).toHaveStyle("height: 2rem");
     expect(screen.getByTestId("mt-icon__regular-3d")).toHaveStyle("width: 2rem");
   });
+
+  it("renders a single root element, so <transition> can animate it", () => {
+    // ARRANGE
+    const { container } = render(MtIcon, {
+      props: {
+        name: "3d",
+      },
+    });
+
+    // ASSERT
+    expect(container.childNodes).toHaveLength(1);
+    expect(container.firstChild).toBe(screen.getByTestId("mt-icon__regular-3d"));
+  });
 });
