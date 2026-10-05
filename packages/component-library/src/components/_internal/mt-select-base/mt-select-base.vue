@@ -17,6 +17,7 @@
       v-if="label"
       class="mt-field__label"
       :for="identification"
+      :required="required"
       :has-error="!!error"
       :disabled="disableInheritanceToggle"
       :inheritance="inheritanceState"
@@ -25,6 +26,14 @@
     >
       {{ label }}
     </mt-field-label>
+
+    <mt-help-text
+      v-if="helpText"
+      class="mt-field__help-text"
+      :text="helpText"
+      placement="right"
+      :style="{ gridArea: 'help-text' }"
+    />
 
     <div class="mt-select__block mt-block-field__block">
       <mt-field-addition type="prefix" :size="size" :has-error="!!error">
@@ -84,7 +93,11 @@
         </transition>
       </template>
 
-      <mt-field-addition :size="size" :has-error="!!error">
+      <mt-field-addition v-if="copyable" :size="size" :has-error="!!error">
+        <mt-field-copyable :copyable-text="copyableText" :tooltip="copyableTooltip" />
+      </mt-field-addition>
+
+      <mt-field-addition v-else :size="size" :has-error="!!error">
         <slot name="mt-select-suffix" />
       </mt-field-addition>
     </div>
@@ -107,6 +120,8 @@ import MtLoader from "../../mt-loader/mt-loader.vue";
 import MtFieldError from "../mt-field-error/mt-field-error.vue";
 import MtFieldLabel from "../mt-field-label/mt-field-label.vue";
 import MtFieldAddition from "../mt-field-addition/mt-field-addition.vue";
+import MtFieldCopyable from "../mt-field-copyable/mt-field-copyable.vue";
+import MtHelpText from "../../mt-help-text/mt-help-text.vue";
 import { useFutureFlags } from "@/composables/useFutureFlags";
 
 export default defineComponent({
@@ -118,6 +133,8 @@ export default defineComponent({
     "mt-field-error": MtFieldError,
     "mt-field-label": MtFieldLabel,
     "mt-field-addition": MtFieldAddition,
+    "mt-field-copyable": MtFieldCopyable,
+    "mt-help-text": MtHelpText,
   },
 
   props: {
@@ -145,6 +162,51 @@ export default defineComponent({
       type: Boolean,
       required: false,
       default: false,
+    },
+
+    /**
+     * Determines if the field is required.
+     */
+    required: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    /**
+     * A text that helps the user to understand what this field does.
+     */
+    helpText: {
+      type: String,
+      required: false,
+      default: "",
+    },
+
+    /**
+     * Toggles the copy function of the select field.
+     */
+    copyable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    /**
+     * If set to true the tooltip will change on successful copy.
+     */
+    copyableTooltip: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    /**
+     * The text that gets copied to the clipboard.
+     */
+    copyableText: {
+      type: String,
+      required: false,
+      default: "",
     },
 
     /**

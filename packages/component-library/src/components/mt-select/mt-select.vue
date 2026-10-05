@@ -8,6 +8,11 @@
     v-bind="$attrs"
     :error="error"
     :disabled="disabled"
+    :required="required"
+    :help-text="helpText"
+    :copyable="copyable"
+    :copyable-tooltip="copyableTooltip"
+    :copyable-text="copyableText"
     :show-clearable-button="!hideClearableButton"
     :is-inherited="isInherited"
     :is-inheritance-field="isInheritanceField"
@@ -369,6 +374,42 @@ export default defineComponent({
       required: false,
       default: null,
     },
+
+    /**
+     * Determines if the field is required.
+     */
+    required: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    /**
+     * A text that helps the user to understand what this field does.
+     */
+    helpText: {
+      type: String,
+      required: false,
+      default: "",
+    },
+
+    /**
+     * Toggles a button that copies the labels of the selected options to the clipboard.
+     */
+    copyable: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
+
+    /**
+     * If set to true the tooltip will change on successful copy.
+     */
+    copyableTooltip: {
+      type: Boolean,
+      required: false,
+      default: false,
+    },
   },
 
   emits: [
@@ -413,6 +454,13 @@ export default defineComponent({
   computed: {
     showFieldHint(): boolean {
       return !!this.$slots.hint || (this.hint != null && String(this.hint).trim() !== "");
+    },
+
+    copyableText(): string {
+      return this.visibleValues
+        .map((item) => this.getKey(item, this.labelProperty))
+        .filter((label) => label !== undefined && label !== null && label !== "")
+        .join(", ");
     },
 
     visibleValues(): any[] {

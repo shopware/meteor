@@ -232,4 +232,76 @@ describe("mt-select", () => {
     expect((input.element as HTMLInputElement).value).toBe("Option Becky");
     expect(wrapper.vm.visibleResults).toHaveLength(3);
   });
+
+  it("renders a help text when the helpText prop is set", async () => {
+    const wrapper = await createWrapper({ props: { label: "Select", helpText: "Some help" } });
+
+    expect(wrapper.find(".mt-field__help-text").exists()).toBe(true);
+  });
+
+  it("marks the label as required when the required prop is set", async () => {
+    const wrapper = await createWrapper({ props: { label: "Select", required: true } });
+
+    expect(wrapper.find("label").classes()).toContain("mt-field-label--is-required");
+  });
+
+  it("renders a copy button with the selected label when the copyable prop is set", async () => {
+    const wrapper = await createWrapper({ props: { label: "Select", copyable: true } });
+
+    const copyable = wrapper.findComponent({ name: "MtFieldCopyable" });
+
+    expect(copyable.exists()).toBe(true);
+    expect(copyable.props("copyableText")).toBe("Option Becky");
+  });
+
+  it("renders an error message when the error prop is set", async () => {
+    const wrapper = await createWrapper({
+      props: { label: "Select", error: { code: 500, detail: "There is an error" } },
+    });
+
+    expect(wrapper.find(".mt-field__error").text()).toContain("There is an error");
+  });
+
+  it("disables the selection input when the disabled prop is set", async () => {
+    const wrapper = await createWrapper({ props: { label: "Select", disabled: true } });
+
+    expect(wrapper.find(".mt-select-selection-list__input").attributes("disabled")).toBeDefined();
+  });
+
+  it("renders an inheritance switch when the isInheritanceField prop is set", async () => {
+    const wrapper = await createWrapper({ props: { label: "Select", isInheritanceField: true } });
+
+    expect(wrapper.find('button[aria-label="Link inheritance"]').exists()).toBe(true);
+  });
+
+  it("marks the field as inherited when the isInherited prop is set", async () => {
+    const wrapper = await createWrapper({
+      props: { label: "Select", isInheritanceField: true, isInherited: true },
+    });
+
+    expect(wrapper.classes()).toContain("is--inherited");
+    expect(wrapper.find('button[aria-label="Unlink inheritance"]').exists()).toBe(true);
+  });
+
+  it("disables the inheritance switch when the disableInheritanceToggle prop is set", async () => {
+    const wrapper = await createWrapper({
+      props: {
+        label: "Select",
+        isInheritanceField: true,
+        isInherited: true,
+        disableInheritanceToggle: true,
+      },
+    });
+
+    expect(
+      wrapper.find('button[aria-label="Unlink inheritance"]').attributes("disabled"),
+    ).toBeDefined();
+  });
+
+  it("renders the small variant when the small prop is set", async () => {
+    const wrapper = await createWrapper({ props: { label: "Select", small: true } });
+
+    expect(wrapper.classes()).toContain("mt-select--small");
+    expect(wrapper.findComponent({ name: "MtSelectSelectionList" }).props("size")).toBe("small");
+  });
 });
