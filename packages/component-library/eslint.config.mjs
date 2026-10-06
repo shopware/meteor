@@ -56,8 +56,8 @@ export default tseslint.config([
   },
   {
     // mt-icon renders the SVG markup of the bundled icon kit, not user content. The rule is turned
-    // off here instead of with a template comment, because a comment at the template root makes the
-    // component a fragment in development builds, which <transition> cannot animate.
+    // off here instead of with a template comment, because a comment at the template root makes
+    // mt-icon a fragment in development builds, which breaks swapping icons in <transition mode="out-in">.
     files: ["src/components/mt-icon/mt-icon.vue"],
     rules: {
       "vue/no-v-html": "off",

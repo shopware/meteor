@@ -1,4 +1,5 @@
 import { render, screen } from "@testing-library/vue";
+import { ref } from "vue";
 import MtIcon from "./mt-icon.vue";
 
 describe("mt-icon", () => {
@@ -87,16 +88,27 @@ describe("mt-icon", () => {
     expect(screen.getByTestId("mt-icon__regular-3d")).toHaveStyle("width: 2rem");
   });
 
-  it("renders a single root element, so <transition> can animate it", () => {
+  it("can be swapped inside an out-in transition", async () => {
     // ARRANGE
-    const { container } = render(MtIcon, {
-      props: {
-        name: "3d",
+    const loading = ref(false);
+    render(
+      {
+        components: { MtIcon },
+        setup: () => ({ loading }),
+        template: `
+          <transition mode="out-in">
+            <mt-icon v-if="loading" name="solid-square" />
+            <mt-icon v-else name="solid-paper-plane" />
+          </transition>
+        `,
       },
-    });
+      { global: { stubs: { transition: false } } },
+    );
+
+    // ACT
+    loading.value = true;
 
     // ASSERT
-    expect(container.childNodes).toHaveLength(1);
-    expect(container.firstChild).toBe(screen.getByTestId("mt-icon__regular-3d"));
+    expect(await screen.findByTestId("mt-icon__solid-square")).toBeInTheDocument();
   });
 });
