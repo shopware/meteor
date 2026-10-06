@@ -54,6 +54,29 @@ describe("mt-tooltip", () => {
     expect(screen.getByRole("tooltip", { name: "Tooltip" })).toBeVisible();
   });
 
+  it("keeps the tooltip open when the element is focused right after rendering", async () => {
+    // ARRANGE
+    render(MtTooltip, {
+      props: {
+        content: "Tooltip",
+      },
+      slots: {
+        default: "<button v-bind='params'>Open tooltip</button>",
+      },
+    });
+
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime,
+    });
+
+    // ACT
+    await user.tab();
+    await vi.advanceTimersByTimeAsync(1000);
+
+    // ASSERT
+    expect(screen.getByRole("tooltip", { name: "Tooltip" })).toBeVisible();
+  });
+
   it("announces the content of the tooltip trough the trigger", async () => {
     // ARRANGE
     render(MtTooltip, {
