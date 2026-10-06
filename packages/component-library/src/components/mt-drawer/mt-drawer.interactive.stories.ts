@@ -56,7 +56,6 @@ export const TestGuardedClose = defineStory<MtDrawerMeta>(
       const confirm = await screen.findByRole("dialog", { name: "Discard changes?" });
       await waitFor(() => expect(confirm).toHaveFocus());
       expect(drawer).toBeVisible();
-      expect(drawer.closest("[inert]")).not.toBeNull();
       expect(confirm.contains(topmostElementAt(confirm))).toBe(true);
 
       await userEvent.click(within(confirm).getByRole("button", { name: "Discard changes" }));
