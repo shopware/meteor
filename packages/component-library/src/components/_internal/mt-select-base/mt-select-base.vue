@@ -282,7 +282,7 @@ export default defineComponent({
 
     focusPreviousFormElement() {
       const focusableSelector =
-        'a, button, input, textarea, select, details, [tabindex]:not([tabindex="-1"])';
+        'a[href], button, input, textarea, select, summary, [tabindex]:not([tabindex="-1"])';
       const wrapper = this.$refs.selectWrapper as HTMLElement;
       const keyboardFocusable = Array.from(
         document.querySelectorAll<HTMLElement>(focusableSelector),

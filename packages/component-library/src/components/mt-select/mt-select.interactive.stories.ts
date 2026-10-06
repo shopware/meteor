@@ -1027,49 +1027,40 @@ export const TestKeyboardNavigationBothDirections: MtSelectStory = {
     const before = canvas.getByRole("button", { name: "Before" });
     const after = canvas.getByRole("button", { name: "After" });
     const [first, second] = Array.from(canvasElement.querySelectorAll<HTMLElement>(".mt-select"));
+    const input = (select: HTMLElement) => select.querySelector(".mt-select-selection-list__input");
+    const clear = (select: HTMLElement) => select.querySelector("[data-clearable-button]");
 
-    function focusState() {
-      const active = document.activeElement;
-      const describe = (name: string) => {
-        if (active?.matches("[data-clearable-button]")) return `${name}-clear`;
-        return active?.matches(".mt-select-selection-list__input") ? name : `${name}-other`;
-      };
-      const place =
-        active === before
-          ? "before"
-          : active === after
-            ? "after"
-            : active && first.contains(active)
-              ? describe("first")
-              : active && second.contains(active)
-                ? describe("second")
-                : "elsewhere";
-      const open = [
-        first.classList.contains("has--focus") ? "first-open" : "",
-        second.classList.contains("has--focus") ? "second-open" : "",
-      ].filter(Boolean);
-
-      return [place, ...open].join(" ");
-    }
-
-    async function press(key: string, expected: string) {
-      await userEvent.keyboard(key);
-      await waitFor(() => expect(focusState()).toBe(expected));
+    async function expectFocus(element: Element | null, openSelect?: HTMLElement) {
+      await waitFor(() => expect(element).toHaveFocus());
+      expect(first.classList.contains("has--focus")).toBe(openSelect === first);
+      expect(second.classList.contains("has--focus")).toBe(openSelect === second);
     }
 
     before.focus();
 
-    await press("{Tab}", "first first-open");
-    await press("{Tab}", "first-clear");
-    await press("{Tab}", "second second-open");
-    await press("{Tab}", "second-clear");
-    await press("{Tab}", "after");
+    const forward: [Element | null, HTMLElement?][] = [
+      [input(first), first],
+      [clear(first)],
+      [input(second), second],
+      [clear(second)],
+      [after],
+    ];
+    for (const [element, openSelect] of forward) {
+      await userEvent.tab();
+      await expectFocus(element, openSelect);
+    }
 
-    await press("{Shift>}{Tab}{/Shift}", "second-clear");
-    await press("{Shift>}{Tab}{/Shift}", "second second-open");
-    await press("{Shift>}{Tab}{/Shift}", "first-clear");
-    await press("{Shift>}{Tab}{/Shift}", "first first-open");
-    await press("{Shift>}{Tab}{/Shift}", "before");
+    const backward: [Element | null, HTMLElement?][] = [
+      [clear(second)],
+      [input(second), second],
+      [clear(first)],
+      [input(first), first],
+      [before],
+    ];
+    for (const [element, openSelect] of backward) {
+      await userEvent.tab({ shift: true });
+      await expectFocus(element, openSelect);
+    }
 
     expect(clickBefore).not.toHaveBeenCalled();
     expect(clickAfter).not.toHaveBeenCalled();
