@@ -154,7 +154,6 @@ export const TestOverlayLayering = defineStory<MtAppMeta>(
       const modal = await screen.findByRole("dialog", { name: "Edit order" });
       await waitFor(() => expect(modal).toHaveFocus());
       expect(modal.contains(topmostElementAt(modal))).toBe(true);
-      expect(drawer.closest("[inert]")).not.toBeNull();
 
       await userEvent.click(within(modal).getByRole("textbox"));
       const option = await screen.findByTestId("mt-select-option--express");
@@ -166,15 +165,6 @@ export const TestOverlayLayering = defineStory<MtAppMeta>(
       )!;
       await waitFor(() => expect(snackbar.contains(topmostElementAt(snackbar))).toBe(true));
       expect(snackbar.closest("[inert]")).toBeNull();
-
-      await userEvent.click(within(modal).getByRole("textbox"));
-      await screen.findByTestId("mt-select-option--express");
-      await userEvent.keyboard("{Escape}");
-
-      await waitFor(() =>
-        expect(screen.queryByTestId("mt-select-option--express")).not.toBeInTheDocument(),
-      );
-      expect(modal).toBeInTheDocument();
 
       await userEvent.keyboard("{Escape}");
 

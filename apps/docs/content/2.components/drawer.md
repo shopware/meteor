@@ -91,7 +91,7 @@ Set `dismissible` to `false` while a form has unsaved changes. A click on the ba
 
 - **Dismissing.** A click on the backdrop, Escape and a swipe towards the edge close the drawer. With `dismissible` set to `false` they emit `dismiss-prevented` with the reason (`outside-click`, `escape-key` or `swipe`) and the drawer stays open. `mt-drawer-close` and the close button in the header always close it.
 - **Mounting.** The content is mounted while the drawer is open and removed after it closes. With `keep-mounted` it stays mounted, so its state survives closing and opening.
-- **Layering.** Drawers share the modal layer with [**Modal**](/components/modal). While a drawer is open, the page behind it is inert. Overlays opened from inside it, such as select result lists, date pickers, popovers and a confirmation modal, render above it and stay usable. An open select result list or tooltip and a confirmation modal take Escape before the drawer, and a date picker handles Escape itself while its calendar has the focus. Popovers do not close on Escape.
+- **Layering.** While a drawer is open, the page behind it is inert. Overlays opened from inside it, such as select result lists, date pickers, popovers and a confirmation modal, render above it and stay usable. An open select result list or tooltip and a confirmation modal take Escape before the drawer, and a date picker handles Escape itself while its calendar has the focus. Popovers do not close on Escape. Elements that you render into `<body>` yourself before the drawer opens become inert too, unless they carry the `data-mt-overlay` attribute.
 - **Size.** Without `size`, the drawer takes the size of its content, up to the viewport size minus 48px.
 
 ## Accessibility
