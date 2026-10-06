@@ -3,7 +3,6 @@ import MtModalRoot from "./sub-components/mt-modal-root.vue";
 import MtModalTrigger from "./sub-components/mt-modal-trigger.vue";
 import MtModalAction from "./sub-components/mt-modal-action.vue";
 import MtDatepicker from "@/components/mt-datepicker/mt-datepicker.vue";
-import MtToast from "@/components/mt-toast/mt-toast.vue";
 import { render, screen, fireEvent, waitFor } from "@testing-library/vue";
 import { ref } from "vue";
 import userEvent from "@testing-library/user-event";
@@ -219,24 +218,12 @@ describe("mt-modal", () => {
     expect(screen.getByRole("button", { name: "Open modal" })).toHaveFocus();
   });
 
-  it("keeps a date picker and a toast usable while the modal is open", async () => {
+  it("keeps a date picker inside the modal usable", async () => {
     // GIVEN
     const { container } = render(
       {
-        components: { MtModal, MtModalRoot, MtModalTrigger, MtDatepicker, MtToast },
-        setup: () => ({
-          toasts: [
-            {
-              id: 1,
-              msg: "Product saved",
-              type: "positive",
-              action: { label: "Undo", callback: () => {} },
-            },
-          ],
-        }),
+        components: { MtModal, MtModalRoot, MtModalTrigger, MtDatepicker },
         template: `
-<mt-toast :toasts='toasts' />
-
 <mt-modal-root>
   <mt-modal-trigger as='button'>Open modal</mt-modal-trigger>
 
@@ -245,7 +232,7 @@ describe("mt-modal", () => {
   </mt-modal>
 </mt-modal-root>`,
       },
-      { global: { stubs: { transition: false, "transition-group": false } } },
+      { global: { stubs: { transition: false } } },
     );
 
     // WHEN
@@ -258,7 +245,6 @@ describe("mt-modal", () => {
     expect(container).toHaveAttribute("inert");
     expect(datepickerMenu).not.toBeNull();
     expect(datepickerMenu?.closest("[inert]")).toBeNull();
-    expect(screen.getByRole("button", { name: "Undo" }).closest("[inert]")).toBeNull();
   });
 
   it("closes the modal when clicking on the backdrop", async () => {

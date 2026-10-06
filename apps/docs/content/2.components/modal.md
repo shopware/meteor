@@ -136,7 +136,7 @@ To open a modal from something other than a trigger, control the open state dire
 - `mt-modal-action` receives a `done` callback so you can run work, such as a network request, before the modal closes.
 - Use the `isOpen` prop on `mt-modal-root` to control the open state directly when something other than a trigger opens the modal.
 - Footer actions are usually the clearest place for confirmation and cancellation controls.
-- While the modal is open, the page behind it is inert. Overlays opened from inside the modal, such as select result lists, date pickers and [**Snackbar**](/components/snackbar) notifications, stay usable.
+- While the modal is open, the page behind it is inert, including an `mt-toast` rendered in the page. Overlays opened from inside the modal, such as select result lists, date pickers and [**Snackbar**](/components/snackbar) notifications, stay usable.
 - Overlays that you render into `<body>` yourself before the modal opens become inert too, unless they carry the `data-mt-overlay` attribute.
 
 ## Accessibility
