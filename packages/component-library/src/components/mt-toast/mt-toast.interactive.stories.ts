@@ -1,4 +1,4 @@
-import { within, userEvent } from "@storybook/test";
+import { within, userEvent, screen } from "@storybook/test";
 import { expect } from "@storybook/test";
 import { waitUntil } from "@/_internal/test-helper";
 
@@ -23,7 +23,7 @@ export const TestQuickTimer: MtToastStory = {
     const informalButton = await canvas.findByText("Add informal toast");
     await userEvent.click(informalButton);
 
-    const toast = await canvas.getByRole("log");
+    const toast = await screen.getByRole("log");
     expect(toast).toBeInTheDocument();
 
     // Timeout is required because animations cause the element to stay in the dom for longer
@@ -44,7 +44,7 @@ export const TestTimer: MtToastStory = {
     const informalButton = await canvas.findByText("Add critical toast");
     await userEvent.click(informalButton);
 
-    const toast = await canvas.getByRole("alert");
+    const toast = await screen.getByRole("alert");
     expect(toast).toBeInTheDocument();
 
     // Timeout is required because animations cause the element to stay in the dom for longer
@@ -64,10 +64,10 @@ export const TestAction: MtToastStory = {
     const informalButton = await canvas.findByText("Add informal toast");
     await userEvent.click(informalButton);
 
-    const toast = await canvas.getByRole("log");
+    const toast = await screen.getByRole("log");
     expect(toast).toBeInTheDocument();
 
-    const actionButton = await canvas.getByText("action");
+    const actionButton = await screen.getByText("action");
     expect(actionButton).toBeInTheDocument();
 
     // Save original console.log
@@ -102,10 +102,10 @@ export const TestManualClose: MtToastStory = {
     const informalButton = await canvas.findByText("Add informal toast");
     await userEvent.click(informalButton);
 
-    const toast = await canvas.getByRole("log");
+    const toast = await screen.getByRole("log");
     expect(toast).toBeInTheDocument();
 
-    const toastCloseButton = await canvas.getByTestId("dismiss-toast");
+    const toastCloseButton = await screen.getByTestId("dismiss-toast");
     expect(toastCloseButton).toBeInTheDocument();
 
     await userEvent.click(toastCloseButton);
@@ -127,7 +127,7 @@ export const TestEscClose: MtToastStory = {
     const informalButton = await canvas.findByText("Add informal toast");
     await userEvent.click(informalButton);
 
-    const toast = await canvas.getByRole("log");
+    const toast = await screen.getByRole("log");
     expect(toast).toBeInTheDocument();
 
     await userEvent.click(toast);
@@ -151,7 +151,7 @@ export const VisualTestInformalQuick: MtToastStory = {
     const informalButton = await canvas.findByText("Add informal toast");
     await userEvent.click(informalButton);
 
-    const toast = await canvas.getByRole("log");
+    const toast = await screen.getByRole("log");
     expect(toast).toBeInTheDocument();
   },
 };
@@ -168,7 +168,7 @@ export const VisualTestPositivelQuick: MtToastStory = {
     const informalButton = await canvas.findByText("Add positive toast");
     await userEvent.click(informalButton);
 
-    const toast = await canvas.getByRole("log");
+    const toast = await screen.getByRole("log");
     expect(toast).toBeInTheDocument();
   },
 };
@@ -185,7 +185,7 @@ export const VisualTestCritical: MtToastStory = {
     const informalButton = await canvas.findByText("Add critical toast");
     await userEvent.click(informalButton);
 
-    const toast = await canvas.getByRole("alert");
+    const toast = await screen.getByRole("alert");
     expect(toast).toBeInTheDocument();
   },
 };
@@ -205,10 +205,10 @@ export const VisualTestInformalDismissible: MtToastStory = {
     const informalButton = await canvas.findByText("Add informal toast");
     await userEvent.click(informalButton);
 
-    const toast = await canvas.getByRole("log");
+    const toast = await screen.getByRole("log");
     expect(toast).toBeInTheDocument();
 
-    const toastCloseButton = await canvas.getByTestId("dismiss-toast");
+    const toastCloseButton = await screen.getByTestId("dismiss-toast");
     expect(toastCloseButton).toBeInTheDocument();
   },
 };
@@ -228,10 +228,10 @@ export const VisualTestPositiveDismissible: MtToastStory = {
     const informalButton = await canvas.findByText("Add positive toast");
     await userEvent.click(informalButton);
 
-    const toast = await canvas.getByRole("log");
+    const toast = await screen.getByRole("log");
     expect(toast).toBeInTheDocument();
 
-    const toastCloseButton = await canvas.getByTestId("dismiss-toast");
+    const toastCloseButton = await screen.getByTestId("dismiss-toast");
     expect(toastCloseButton).toBeInTheDocument();
   },
 };
@@ -251,10 +251,10 @@ export const VisualTestCriticalDismissible: MtToastStory = {
     const informalButton = await canvas.findByText("Add critical toast");
     await userEvent.click(informalButton);
 
-    const toast = await canvas.getByRole("alert");
+    const toast = await screen.getByRole("alert");
     expect(toast).toBeInTheDocument();
 
-    const toastCloseButton = await canvas.getByTestId("dismiss-toast");
+    const toastCloseButton = await screen.getByTestId("dismiss-toast");
     expect(toastCloseButton).toBeInTheDocument();
   },
 };
@@ -274,10 +274,10 @@ export const VisualTestInformalAction: MtToastStory = {
     const informalButton = await canvas.findByText("Add informal toast");
     await userEvent.click(informalButton);
 
-    const toast = await canvas.getByRole("log");
+    const toast = await screen.getByRole("log");
     expect(toast).toBeInTheDocument();
 
-    const toastCloseButton = await canvas.getByTestId("dismiss-toast");
+    const toastCloseButton = await screen.getByTestId("dismiss-toast");
     expect(toastCloseButton).toBeInTheDocument();
   },
 };
@@ -297,10 +297,10 @@ export const VisualTestPositiveAction: MtToastStory = {
     const informalButton = await canvas.findByText("Add positive toast");
     await userEvent.click(informalButton);
 
-    const toast = await canvas.getByRole("log");
+    const toast = await screen.getByRole("log");
     expect(toast).toBeInTheDocument();
 
-    const toastCloseButton = await canvas.getByTestId("dismiss-toast");
+    const toastCloseButton = await screen.getByTestId("dismiss-toast");
     expect(toastCloseButton).toBeInTheDocument();
   },
 };
@@ -320,10 +320,10 @@ export const VisualTestCriticalAction: MtToastStory = {
     const informalButton = await canvas.findByText("Add critical toast");
     await userEvent.click(informalButton);
 
-    const toast = await canvas.getByRole("alertdialog");
+    const toast = await screen.getByRole("alertdialog");
     expect(toast).toBeInTheDocument();
 
-    const toastCloseButton = await canvas.getByTestId("dismiss-toast");
+    const toastCloseButton = await screen.getByTestId("dismiss-toast");
     expect(toastCloseButton).toBeInTheDocument();
   },
 };
@@ -343,7 +343,7 @@ export const VisualTestInformalIcon: MtToastStory = {
     const informalButton = await canvas.findByText("Add informal toast");
     await userEvent.click(informalButton);
 
-    const toast = await canvas.getByRole("log");
+    const toast = await screen.getByRole("log");
     expect(toast).toBeInTheDocument();
   },
 };
@@ -363,7 +363,7 @@ export const VisualTestPositivelIcon: MtToastStory = {
     const informalButton = await canvas.findByText("Add positive toast");
     await userEvent.click(informalButton);
 
-    const toast = await canvas.getByRole("log");
+    const toast = await screen.getByRole("log");
     expect(toast).toBeInTheDocument();
   },
 };
@@ -383,7 +383,7 @@ export const VisualTestCriticalIcon: MtToastStory = {
     const informalButton = await canvas.findByText("Add critical toast");
     await userEvent.click(informalButton);
 
-    const toast = await canvas.getByRole("alert");
+    const toast = await screen.getByRole("alert");
     expect(toast).toBeInTheDocument();
   },
 };
@@ -409,7 +409,7 @@ export const VisualTestInformalMaxed: MtToastStory = {
     const informalButton = await canvas.findByText("Add informal toast");
     await userEvent.click(informalButton);
 
-    const toast = await canvas.getByRole("log");
+    const toast = await screen.getByRole("log");
     expect(toast).toBeInTheDocument();
   },
 };
@@ -435,7 +435,7 @@ export const VisualTestPositivelMaxed: MtToastStory = {
     const informalButton = await canvas.findByText("Add positive toast");
     await userEvent.click(informalButton);
 
-    const toast = await canvas.getByRole("log");
+    const toast = await screen.getByRole("log");
     expect(toast).toBeInTheDocument();
   },
 };
@@ -461,7 +461,7 @@ export const VisualTestCriticalMaxed: MtToastStory = {
     const informalButton = await canvas.findByText("Add critical toast");
     await userEvent.click(informalButton);
 
-    const toast = await canvas.getByRole("alertdialog");
+    const toast = await screen.getByRole("alertdialog");
     expect(toast).toBeInTheDocument();
   },
 };
@@ -483,7 +483,7 @@ export const VisualTestCollapsedStack: MtToastStory = {
     toastButton = await canvas.findByText("Add critical toast");
     await userEvent.click(toastButton);
 
-    const toast = await canvas.getAllByText("Max three words");
+    const toast = await screen.getAllByText("Max three words");
     expect(toast.length).toEqual(3);
   },
 };
@@ -510,9 +510,9 @@ export const VisualTestExpandedStack: MtToastStory = {
     toastButton = await canvas.findByText("Add critical toast");
     await userEvent.click(toastButton);
 
-    await userEvent.hover(await canvas.getByRole("alertdialog"));
+    await userEvent.hover(await screen.getByRole("alertdialog"));
 
-    const toast = await canvas.getAllByText("Max three words");
+    const toast = await screen.getAllByText("Max three words");
     expect(toast.length).toEqual(3);
   },
 };
@@ -533,9 +533,9 @@ export const VisualTestMessageTooLong: MtToastStory = {
     const toastButton = await canvas.findByText("Add critical toast");
     await userEvent.click(toastButton);
 
-    await userEvent.hover(await canvas.getByRole("alertdialog"));
+    await userEvent.hover(await screen.getByRole("alertdialog"));
 
-    const toast = await canvas.getByText(message);
+    const toast = await screen.getByText(message);
     expect(toast).toBeInTheDocument();
   },
 };

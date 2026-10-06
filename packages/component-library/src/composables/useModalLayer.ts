@@ -70,7 +70,9 @@ function getTabbables(root: HTMLElement): HTMLElement[] {
     const tabindex = element.getAttribute("tabindex");
     if (tabindex !== null && Number(tabindex) < 0) return false;
 
-    return !element.closest("[hidden],[inert]");
+    if (element.closest("[hidden],[inert]")) return false;
+
+    return typeof element.checkVisibility !== "function" || element.checkVisibility();
   });
 }
 
@@ -97,15 +99,14 @@ function wrapTab(event: KeyboardEvent, root: HTMLElement) {
 }
 
 /**
- * The modal behavior shared by `mt-modal` and the drawers of `mt-app`: while active,
- * the panel holds the focus, Tab stays inside it, Escape closes it and the elements
- * outside it are inert. Escape is handled by the topmost layer only, and only when it is
+ * Modal behavior for a panel, used by `mt-modal`: while active, the panel holds the
+ * focus, Tab stays inside it, Escape closes it and the elements outside it are inert. Escape is handled by the topmost layer only, and only when it is
  * pressed inside the panel or while the focus is lost to the page (e.g. after the focused
  * element was removed or blurred), so overlays teleported to the body (menus, date pickers,
  * popovers) keep their own keys and stay usable.
  *
- * Inertness is reference-counted across layers, so a modal opened from a drawer never
- * releases what the drawer made inert. Focus moves run after the DOM has been patched,
+ * Inertness is reference-counted across layers, so a layer opened from another one never
+ * releases what the other layer made inert. Focus moves run after the DOM has been patched,
  * because focusing an element that is still inert or hidden has no effect.
  */
 export function useModalLayer(options: UseModalLayerOptions): void {

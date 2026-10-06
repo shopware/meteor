@@ -137,12 +137,13 @@ To open a modal from something other than a trigger, control the open state dire
 - Use the `isOpen` prop on `mt-modal-root` to control the open state directly when something other than a trigger opens the modal.
 - Footer actions are usually the clearest place for confirmation and cancellation controls.
 - While the modal is open, the page behind it is inert. Overlays opened from inside the modal, such as select result lists, date pickers and [**Snackbar**](/components/snackbar) notifications, stay usable.
+- Overlays that you render into `<body>` yourself before the modal opens become inert too, unless they carry the `data-mt-overlay` attribute.
 
 ## Accessibility
 
 - Use a clear title so users immediately understand the purpose of the dialog.
 - Keep focus behavior predictable and ensure footer actions are reachable by keyboard.
 - The dialog receives the focus when it opens, and Tab and Shift+Tab stay inside it. Assistive technology cannot reach the inert page behind it.
-- Escape closes a closable modal while the focus is inside it. It also closes the modal when the focused element disappeared and the focus fell back to the page. An open select result list or tooltip inside the modal takes Escape first, and a date picker handles Escape itself while its calendar has the focus.
+- Escape closes a closable modal while the focus is inside it or has fallen back to the page. An open select result list, tooltip or date picker inside the modal handles Escape first.
 - On close, the focus returns to the element that had the focus when the modal opened, usually its trigger.
 - Only use **Modal** when interrupting the current flow is justified by the task.

@@ -1,38 +1,49 @@
 <template>
-  <div class="mt-toast" :class="classes" @mouseenter="onMouseEnter" @mouseleave="onMouseLeave">
-    <!-- This is here for layout reasons -->
-    <div class="mt-toast--bottom-left"></div>
+  <Teleport to="body">
+    <div
+      v-bind="$attrs"
+      class="mt-toast"
+      data-mt-overlay
+      :class="classes"
+      @mouseenter="onMouseEnter"
+      @mouseleave="onMouseLeave"
+    >
+      <!-- This is here for layout reasons -->
+      <div class="mt-toast--bottom-left"></div>
 
-    <div class="mt-toast--bottom-center">
-      <Transition name="quick-toasts">
-        <mt-toast-notification
-          v-if="quickToast"
-          :toast="quickToast"
-          @remove-toast="$emit('remove-toast', quickToast.id)"
-          :quick-display="true"
-          :key="quickToast.id"
-        />
-      </Transition>
-    </div>
+      <div class="mt-toast--bottom-center">
+        <Transition name="quick-toasts">
+          <mt-toast-notification
+            v-if="quickToast"
+            :toast="quickToast"
+            @remove-toast="$emit('remove-toast', quickToast.id)"
+            :quick-display="true"
+            :key="quickToast.id"
+          />
+        </Transition>
+      </div>
 
-    <div class="mt-toast--bottom-right">
-      <TransitionGroup name="toasts">
-        <mt-toast-notification
-          v-for="(toast, index) in rightToasts"
-          :key="toast.id"
-          :toast="toast"
-          @remove-toast="$emit('remove-toast', toast.id)"
-          :style="{ '--num': index }"
-          :index="index"
-        />
-      </TransitionGroup>
+      <div class="mt-toast--bottom-right">
+        <TransitionGroup name="toasts">
+          <mt-toast-notification
+            v-for="(toast, index) in rightToasts"
+            :key="toast.id"
+            :toast="toast"
+            @remove-toast="$emit('remove-toast', toast.id)"
+            :style="{ '--num': index }"
+            :index="index"
+          />
+        </TransitionGroup>
+      </div>
     </div>
-  </div>
+  </Teleport>
 </template>
 
 <script setup lang="ts">
 import { type PropType, ref, toRef, computed, watch } from "vue";
 import MtToastNotification from "./mt-toast-notification.vue";
+
+defineOptions({ inheritAttrs: false });
 
 export interface Toast {
   id: number | string;

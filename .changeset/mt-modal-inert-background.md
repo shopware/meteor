@@ -2,4 +2,4 @@
 "@shopware-ag/meteor-component-library": minor
 ---
 
-`MtModal` makes the page behind it inert instead of trapping the focus with `focus-trap`. Overlays opened from inside the modal, such as select result lists, date pickers, snackbars and other elements appended to `<body>` later, stay usable. Escape closes the topmost modal while the focus is inside it or lost to the page, Tab and Shift+Tab wrap inside the dialog, and the focus returns to the element that opened it.
+`mt-modal` makes the page behind it inert instead of trapping the focus, so menus, select lists and date pickers opened from inside a modal work, and the focus returns to the element that opened it. `mt-toast` now renders into `<body>` to stay usable while a modal is open. Overlays that you render into `<body>` yourself before a modal opens need the `data-mt-overlay` attribute, or they become inert too.

@@ -72,13 +72,9 @@
   </transition>
 </template>
 
-<script lang="ts">
-let openModals = 0;
-</script>
-
 <script setup lang="ts">
 import { computed, nextTick, onMounted, onUnmounted, ref, watch, type PropType } from "vue";
-import { useModalContext } from "./composables/useModalContext";
+import { useModalContext, useStackedModalWarning } from "./composables/useModalContext";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtModalClose from "./sub-components/mt-modal-close.vue";
 import MtText from "@/components/mt-text/mt-text.vue";
@@ -131,31 +127,12 @@ useModalLayer({
       (element) =>
         element !== modalRef.value &&
         element !== backdrop.value &&
-        !element.hasAttribute("data-mt-overlay"),
+        !element.hasAttribute("data-mt-overlay") &&
+        element.childElementCount > 0,
     ),
 });
 
-watch(
-  isActive,
-  (value, previous) => {
-    if (value) {
-      openModals += 1;
-
-      if (openModals > 1) {
-        console.warn(
-          "[MtModal] It is not recommended to stack multiple modals on top of each other.",
-        );
-      }
-    } else if (previous) {
-      openModals -= 1;
-    }
-  },
-  { immediate: true },
-);
-
-onUnmounted(() => {
-  if (isActive.value) openModals -= 1;
-});
+useStackedModalWarning(isActive);
 
 const modalContentRef = ref<HTMLElement | null>(null);
 const showShadows = ref<"top" | "middle" | "bottom" | "none">("none");
