@@ -48,8 +48,11 @@
   --color-icon-critical-hover: light-dark(#c20017, #c20017);
   --color-icon-critical-disabled: light-dark(#ff7f74, #5e0006);
   --color-icon-attention-default: light-dark(#fbaf18, #ffbc51);
+  --color-icon-attention-disabled: light-dark(#ffcb7e, #533600);
   --color-icon-positive-default: light-dark(#36d046, #4dde58);
+  --color-icon-positive-disabled: light-dark(#73f27a, #00470a);
   --color-icon-accent-default: light-dark(#633bc6, #b5a8ff);
+  --color-icon-accent-disabled: light-dark(#c4bbff, #3e0091);
   --color-icon-static-default: light-dark(#ffffff, #ffffff);
   --color-icon-static-dark: light-dark(#0e0e11, #0e0e11);
   --color-icon-inverse-default: light-dark(#1e1e24, #1e1e24);
