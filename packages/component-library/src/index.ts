@@ -79,6 +79,7 @@ import MtActionMenuGroup from "./components/mt-action-menu-group/mt-action-menu-
 import MtCollapsible from "./components/mt-collapsible/mt-collapsible.vue";
 import MtCollapsibleTrigger from "./components/mt-collapsible/mt-collapsible-trigger.vue";
 import MtCollapsibleContent from "./components/mt-collapsible/mt-collapsible-content.vue";
+import MtMarkdown from "./components/mt-markdown/mt-markdown.vue";
 import {
   DropdownMenuRoot,
   DropdownMenuPortal,
@@ -86,7 +87,6 @@ import {
   DropdownMenuSub,
 } from "reka-ui";
 // Import global styling
-import MtMarkdown from "./components/mt-markdown/mt-markdown.vue";
 import "./assets/css/all.css";
 
 // Importing types
@@ -161,6 +161,7 @@ export {
   MtCollapsible,
   MtCollapsibleTrigger,
   MtCollapsibleContent,
+  MtMarkdown,
   DropdownMenuRoot as MtDropdownMenuRoot,
   DropdownMenuPortal as MtDropdownMenuPortal,
   DropdownMenuTrigger as MtDropdownMenuTrigger,
@@ -210,7 +211,6 @@ export {
   MtPagination as SwPagination,
   // @deprecated
   MtSkeletonBar as SwSkeletonBar,
-  MtMarkdown,
 };
 
 // Exporting types

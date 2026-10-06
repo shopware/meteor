@@ -19,7 +19,7 @@ import { normalizeImagePrefix } from "./_internal/safe-url";
 import { stableTail } from "./_internal/stable-tail";
 
 /**
- * Renders Markdown, such as the answer of an AI model, with the `mt-prose` styles. It supports
+ * Renders Markdown, such as the answer of an AI model, with Meteor's typography. It supports
  * GitHub Flavored Markdown and keeps up with text that is still streaming. Raw HTML is shown as
  * text, links only use safe schemes and images only load from allowed addresses.
  *
@@ -82,6 +82,8 @@ const imagePrefixes = computed<string[]>((previous) => {
   return previous?.join("\n") === next.join("\n") ? previous : next;
 });
 </script>
+
+<style src="./prose.css"></style>
 
 <style>
 /* The wrappers of tables and code blocks take the block spacing of the element inside them. */

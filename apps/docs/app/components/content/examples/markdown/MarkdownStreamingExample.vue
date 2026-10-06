@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from "vue";
-import { MtButton, MtMarkdown } from "@shopware-ag/meteor-component-library";
+import { MtButton, MtCard, MtMarkdown } from "@shopware-ag/meteor-component-library";
 
 const answer = `Two products need attention:
 
@@ -43,17 +43,11 @@ onBeforeUnmount(stop);
 </script>
 
 <template>
-  <div class="markdown-streaming-example">
-    <mt-markdown :content="content" :streaming="streaming" />
-    <mt-button variant="secondary" :disabled="streaming" @click="play">Replay</mt-button>
-  </div>
-</template>
+  <mt-card title="Stock check">
+    <template #headerRight>
+      <mt-button variant="secondary" :disabled="streaming" @click="play">Replay</mt-button>
+    </template>
 
-<style scoped>
-.markdown-streaming-example {
-  display: grid;
-  gap: var(--scale-size-16);
-  justify-items: start;
-  min-height: 22rem;
-}
-</style>
+    <mt-markdown :content="content" :streaming="streaming" />
+  </mt-card>
+</template>

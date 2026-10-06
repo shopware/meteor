@@ -34,7 +34,7 @@ import MtButton from "@/components/mt-button/mt-button.vue";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtTooltip from "@/components/mt-tooltip/mt-tooltip.vue";
 
-/** A block of code with a button that copies it, for `mt-markdown` and `mt-tool`. */
+/** A block of code with a button that copies it, for `mt-markdown`. */
 defineProps<{
   code: string;
   language?: string;
@@ -53,7 +53,7 @@ const { copy, copied } = useClipboard();
 </script>
 
 <style>
-/* Styled on its own, so code looks the same inside and outside of `mt-prose`. */
+/* Styled on its own, because the prose styles skip everything inside `mt-not-prose`. */
 .mt-code-block {
   position: relative;
 }

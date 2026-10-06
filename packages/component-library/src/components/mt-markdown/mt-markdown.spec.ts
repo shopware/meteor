@@ -14,12 +14,6 @@ function renderMarkdown(content: string, props: Record<string, unknown> = {}) {
 }
 
 describe("mt-markdown", () => {
-  it("styles its content as prose", () => {
-    const { container } = renderMarkdown("Hello");
-
-    expect(container.firstElementChild).toHaveClass("mt-markdown", "mt-prose");
-  });
-
   it.each([
     ["# Title", "h1"],
     ["###### Small title", "h6"],
