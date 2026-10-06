@@ -82,7 +82,7 @@ A view hides the header and sidebars with [**useMtAppRegions**](/utilities/compo
 - Do not use the shell inside Administration extensions, in iframes that the host sizes to their content, or in existing page layouts; keep the [**Theme Provider**](/utilities/components/theme-provider) and your host's layout there.
 - Do not mount your own [**Snackbar**](/components/snackbar) host; the shell already renders one, and only one host renders the notifications at a time.
 - Do not render another `<main>` element inside the content slot.
-- Do not give your own content inside the shell a z-index above `--z-index-drawer` (900); it would cover the drawers.
+- Do not give your own content inside the shell a z-index above 900; it would cover the drawers.
 
 ::
 
@@ -124,21 +124,21 @@ The shell renders on the server and hydrates without mismatches. The server know
 
 ### Layering
 
-Overlays keep their render targets and stack in this order. Most layers read their z-index from a custom property that the global stylesheet sets on `:root`, so an application can move a whole layer; without the global stylesheet the same values apply as fallbacks. Select result lists and the date picker use fixed values.
+Overlays keep their render targets and stack in this order.
 
-| Layer                                               | Custom property          | Default        | Rendered in |
-| --------------------------------------------------- | ------------------------ | -------------- | ----------- |
-| Header, sidebars, content                           |                          | document order | shell       |
-| Drawer backdrop and drawers                         | `--z-index-drawer`       | 900            | body        |
-| [**Modal**](/components/modal)                      | `--z-index-modal`        | 1000           | body        |
-| [**Popover**](/components/popover), context buttons | `--z-index-popover`      | 1070           | body        |
-| [**Tooltip**](/utilities/directives/tooltip)        | `--z-index-tooltip`      | 1100           | body        |
-| Select result lists                                 |                          | 1100           | body        |
-| [**Action Menu**](/components/action-menu)          | `--z-index-menu`         | 1300           | body        |
-| [**Snackbar**](/components/snackbar)                | `--z-index-notification` | 1600           | body        |
-| Date picker                                         |                          | 99999          | body        |
+| Layer                                               | z-index        | Rendered in |
+| --------------------------------------------------- | -------------- | ----------- |
+| Header, sidebars, content                           | document order | shell       |
+| Drawer backdrop and drawers                         | 900            | body        |
+| [**Modal**](/components/modal)                      | 1000           | body        |
+| [**Popover**](/components/popover), context buttons | 1070           | body        |
+| [**Tooltip**](/utilities/directives/tooltip)        | 1100           | body        |
+| Select result lists                                 | 1100           | body        |
+| [**Action Menu**](/components/action-menu)          | 1300           | body        |
+| [**Snackbar**](/components/snackbar)                | 1600           | body        |
+| Date picker                                         | 99999          | body        |
 
-Drawers and modals share one modal layer. While one is open everything behind it is inert, and overlays opened from inside it, such as menus, popovers, select result lists, date pickers and snackbars, stay usable. A modal opened from a drawer stacks above it. Escape closes the innermost layer only: an open select result list or tooltip first, then the modal, then the drawer.
+While a drawer is open, everything behind it is inert, and overlays opened from inside it, such as menus, popovers, select result lists, date pickers and snackbars, stay usable. A modal opened from a drawer stacks above it and closes first. An open select result list or tooltip inside the drawer takes Escape before the drawer.
 
 ## Accessibility
 

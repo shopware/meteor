@@ -5,6 +5,7 @@ import MtDrawerRoot from "./mt-drawer-root.vue";
 import MtDrawerTrigger from "./mt-drawer-trigger.vue";
 import MtDrawerContent from "./mt-drawer-content.vue";
 import MtDrawerClose from "./mt-drawer-close.vue";
+import MtDatepicker from "@/components/mt-datepicker/mt-datepicker.vue";
 
 function renderDrawer(options: { dismissible?: boolean } = {}) {
   const onDismissPrevented = vi.fn();
@@ -100,6 +101,34 @@ describe("mt-drawer", () => {
     expect(
       screen.getByRole("button", { name: "Outside", hidden: true }).closest("[inert]"),
     ).not.toBeNull();
+  });
+
+  it("keeps a date picker inside the drawer usable", async () => {
+    // ARRANGE
+    render(
+      {
+        components: { MtDrawerRoot, MtDrawerTrigger, MtDrawerContent, MtDatepicker },
+        template: `
+        <mt-drawer-root>
+          <mt-drawer-trigger>Edit order</mt-drawer-trigger>
+
+          <mt-drawer-content title="Order details">
+            <mt-datepicker label="Delivery date" />
+          </mt-drawer-content>
+        </mt-drawer-root>
+      `,
+      },
+      { global: { stubs: { transition: false } } },
+    );
+
+    // ACT
+    await openDrawer();
+
+    // ASSERT
+    const datepickerMenu = document.querySelector(".dp__outer_menu_wrap");
+
+    expect(datepickerMenu).not.toBeNull();
+    expect(datepickerMenu?.closest("[inert]")).toBeNull();
   });
 
   it("closes on Escape and on the backdrop", async () => {

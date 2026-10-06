@@ -204,15 +204,23 @@ useModalLayer({
       (element) =>
         !(panelElement.value && element.contains(panelElement.value)) &&
         !(backdrop.value && element.contains(backdrop.value)) &&
-        !element.hasAttribute("data-mt-overlay"),
+        !element.hasAttribute("data-mt-overlay") &&
+        !isEmptyContainer(element),
     ),
 });
+
+/** A closed overlay container, such as a date picker's menu wrapper, has nothing to block. */
+function isEmptyContainer(element: Element) {
+  return (
+    element.tagName === "DIV" && element.childElementCount === 0 && !element.textContent?.trim()
+  );
+}
 </script>
 
 <style scoped>
 .mt-drawer {
   position: fixed;
-  z-index: var(--z-index-drawer, 900);
+  z-index: 900;
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -324,7 +332,7 @@ useModalLayer({
 .mt-drawer__backdrop {
   position: fixed;
   inset: 0;
-  z-index: var(--z-index-drawer, 900);
+  z-index: 900;
   background-color: var(--color-elevation-backdrop-default);
 }
 
