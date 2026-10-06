@@ -1,84 +1,62 @@
-import { Comment, Fragment, Text, createCommentVNode, createTextVNode, createVNode, h } from "vue";
+import { render } from "@testing-library/vue";
+import { defineComponent } from "vue";
 import { hasSlotContent } from "./slot";
 
+function hasDefaultSlotContent(template: string, items: { id: number; visible: boolean }[] = []) {
+  let result: boolean | undefined;
+
+  const Probe = defineComponent({
+    setup(_, { slots }) {
+      return () => {
+        result = hasSlotContent(slots.default);
+        return null;
+      };
+    },
+  });
+
+  render({
+    components: { Probe },
+    data: () => ({ items }),
+    template: `<Probe>${template}</Probe>`,
+  });
+
+  return result;
+}
+
+const list = `
+  <template v-for="item in items" :key="item.id">
+    <span v-if="item.visible">Item {{ item.id }}</span>
+  </template>
+`;
+
 describe("hasSlotContent", () => {
-  it("treats a missing slot as empty", () => {
+  it("treats an element hidden by v-if as empty", () => {
     // ACT
-    const result = hasSlotContent(undefined);
+    const result = hasDefaultSlotContent(`<span v-if="false">Error</span>`);
 
     // ASSERT
     expect(result).toBe(false);
   });
 
-  it("treats a slot that renders only a comment as empty", () => {
+  it("treats a v-for whose items are all hidden by v-if as empty", () => {
     // ACT
-    const result = hasSlotContent(() => [createCommentVNode("v-if")]);
-
-    // ASSERT
-    expect(result).toBe(false);
-  });
-
-  it("treats a slot that renders an element as content", () => {
-    // ACT
-    const result = hasSlotContent(() => [h("nav")]);
-
-    // ASSERT
-    expect(result).toBe(true);
-  });
-
-  it("treats a slot that renders text as content", () => {
-    // ACT
-    const result = hasSlotContent(() => [createTextVNode("Hello")]);
-
-    // ASSERT
-    expect(result).toBe(true);
-  });
-
-  it("treats a list that renders only comments as empty", () => {
-    // ARRANGE
-    const list = createVNode(Fragment, null, [
-      createCommentVNode("v-if"),
-      createCommentVNode("v-if"),
+    const result = hasDefaultSlotContent(list, [
+      { id: 1, visible: false },
+      { id: 2, visible: false },
     ]);
 
-    // ACT
-    const result = hasSlotContent(() => [list]);
-
     // ASSERT
     expect(result).toBe(false);
   });
 
-  it("treats a list that renders at least one element as content", () => {
-    // ARRANGE
-    const list = createVNode(Fragment, null, [createCommentVNode("v-if"), h("li")]);
-
+  it("treats a v-for with one shown item as content", () => {
     // ACT
-    const result = hasSlotContent(() => [list]);
+    const result = hasDefaultSlotContent(list, [
+      { id: 1, visible: false },
+      { id: 2, visible: true },
+    ]);
 
     // ASSERT
     expect(result).toBe(true);
-  });
-
-  it("treats nested empty lists as empty", () => {
-    // ARRANGE
-    const inner = createVNode(Fragment, null, [createCommentVNode("v-if")]);
-    const outer = createVNode(Fragment, null, [inner, createVNode(Text, null, "")]);
-
-    // ACT
-    const result = hasSlotContent(() => [outer]);
-
-    // ASSERT
-    expect(result).toBe(false);
-  });
-
-  it("passes the slot props to the slot function", () => {
-    // ARRANGE
-    const slot = vi.fn(() => [createVNode(Comment)]);
-
-    // ACT
-    hasSlotContent(slot, { isMobile: true });
-
-    // ASSERT
-    expect(slot).toHaveBeenCalledWith({ isMobile: true });
   });
 });

@@ -1,44 +1,20 @@
-import { Comment, Text, type VNode, type VNodeArrayChildren, Fragment } from "vue";
+import { Comment, Fragment, Text, isVNode, type VNodeChild } from "vue";
 
 /** A slot function as exposed by `useSlots()` or typed via `defineSlots()`. */
 type SlotLike = (...args: any[]) => unknown;
 
 export function hasSlotContent(slot: SlotLike | undefined | null, props: any = {}) {
-  return !isSlotEmpty(slot, props);
-}
-
-function isSlotEmpty(slot: SlotLike | undefined | null, props: any = {}) {
-  return isVNodeEmpty(slot?.(props) as VNode | VNode[] | undefined);
-}
-
-function isVNodeEmpty(vnode: VNode | VNode[] | undefined | null): boolean {
-  return (
-    !vnode ||
-    asArray(vnode).every(
-      (vnode) =>
-        vnode.type === Comment ||
-        (vnode.type === Text && !vnode.children?.length) ||
-        (vnode.type === Fragment && isFragmentEmpty(vnode)),
-    )
-  );
+  return !isEmpty(slot?.(props) as VNodeChild);
 }
 
 /**
- * A fragment (for example rendered by `v-for`) is empty when it has no children or
- * when every child is empty itself, such as the comments left behind by `v-if`.
+ * Comments (left by `v-if`), empty text and fragments (rendered by `v-for`) whose children
+ * are all empty render nothing.
  */
-function isFragmentEmpty(vnode: VNode): boolean {
-  const children = vnode.children as VNodeArrayChildren | null;
-  if (!children?.length) return true;
+function isEmpty(node: VNodeChild): boolean {
+  if (Array.isArray(node)) return node.every(isEmpty);
+  if (!isVNode(node)) return node == null || typeof node === "boolean" || node === "";
+  if (node.type === Fragment) return isEmpty(node.children as VNodeChild);
 
-  return children.every((child) => {
-    if (child == null || child === "") return true;
-    if (typeof child !== "object") return false;
-
-    return isVNodeEmpty(child as VNode | VNode[]);
-  });
-}
-
-function asArray<T>(arg: T | T[] | null) {
-  return Array.isArray(arg) ? arg : arg !== null ? [arg] : [];
+  return node.type === Comment || (node.type === Text && !node.children?.length);
 }
