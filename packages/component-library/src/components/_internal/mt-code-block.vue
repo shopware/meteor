@@ -1,8 +1,8 @@
 <template>
   <div class="mt-code-block mt-not-prose">
-    <pre><code :class="language ? `language-${language}` : undefined">{{ code }}</code></pre>
+    <pre ref="pre"><slot /></pre>
 
-    <div v-if="!incomplete" class="mt-code-block__copy">
+    <div class="mt-code-block__copy">
       <mt-tooltip :content="copied ? t('copied') : t('copy')">
         <template #default="tooltip">
           <mt-button
@@ -11,7 +11,7 @@
             size="x-small"
             square
             :aria-label="copied ? t('copied') : t('copy')"
-            @click="copy(code)"
+            @click="copy(pre?.textContent ?? '')"
           >
             <template #iconFront>
               <mt-icon
@@ -28,19 +28,17 @@
 </template>
 
 <script setup lang="ts">
+import { useTemplateRef } from "vue";
 import { useClipboard } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import MtButton from "@/components/mt-button/mt-button.vue";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtTooltip from "@/components/mt-tooltip/mt-tooltip.vue";
 
-/** A block of code with a button that copies it, for `mt-markdown`. */
-defineProps<{
-  code: string;
-  language?: string;
-  /** Whether the block is still being written, so there is nothing complete to copy yet. */
-  incomplete?: boolean;
-}>();
+/** The code block of `mt-markdown`: the `pre` element with a button that copies its code. */
+defineOptions({ inheritAttrs: false });
+
+const pre = useTemplateRef<HTMLPreElement>("pre");
 
 const { t } = useI18n({
   messages: {

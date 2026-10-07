@@ -96,14 +96,6 @@ export default defineNuxtConfig({
       new URL("../../packages/icon-kit", import.meta.url),
     ),
   },
-  // The component library's dist is prebuilt and needs no auto-imports. Its
-  // bundled dependencies keep minified names such as `h`, which the auto-import
-  // scanner mistakes for Vue's `h` and imports a second time.
-  imports: {
-    transform: {
-      exclude: [/[\\/]packages[\\/]component-library[\\/]dist[\\/]/],
-    },
-  },
   componentMeta: {
     // Only analyze the meteor component library, not docus/Nuxt UI internals.
     exclude: [

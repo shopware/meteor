@@ -5,7 +5,7 @@ const answer = `This is the product photo from your media library:
 
 ![The product photo](https://meteor.shopware.com/showcase-product.jpg)
 
-An image from anywhere else shows as a link: ![A photo from another site](https://images.example.com/lamp.png)`;
+An image from anywhere else doesn't load: ![A photo from another site](https://images.example.com/lamp.png)`;
 </script>
 
 <template>

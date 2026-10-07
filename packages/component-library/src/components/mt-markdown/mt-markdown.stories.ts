@@ -77,7 +77,7 @@ Two products are low on stock, and the linen cushion is **sold`,
   },
 };
 
-/** A code block that is still being written has no copy button yet. */
+/** A code block that is still being written already renders as a code block. */
 export const StreamingCode: MtMarkdownStory = {
   args: {
     streaming: true,

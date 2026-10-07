@@ -1,22 +1,24 @@
 <template>
-  <div class="mt-markdown mt-prose">
-    <mt-markdown-block
-      v-for="(token, index) in parsed.tokens"
-      :key="index"
-      :token="token"
-      :image-prefixes="imagePrefixes"
-      :incomplete="streaming && index === parsed.tokens.length - 1"
+  <Suspense>
+    <Markdown
+      :key="allowedImagePrefixes.join()"
+      v-bind="$attrs"
+      class="mt-markdown mt-prose"
+      :value="content"
+      :streaming="streaming"
+      :options="options"
+      :plugins="plugins"
+      :components="components"
     />
-  </div>
+  </Suspense>
 </template>
 
 <script setup lang="ts">
-import { computed } from "vue";
-import { Lexer, type Token } from "marked";
-import remend from "remend";
-import MtMarkdownBlock from "./_internal/mt-markdown-block";
-import { normalizeImagePrefix } from "./_internal/safe-url";
-import { stableTail } from "./_internal/stable-tail";
+import { computed, h, type FunctionalComponent } from "vue";
+import { Markdown } from "@comark/vue";
+import security from "@comark/vue/plugins/security";
+import taskList from "@comark/vue/plugins/task-list";
+import MtCodeBlock from "@/components/_internal/mt-code-block.vue";
 
 /**
  * Renders Markdown, such as the answer of an AI model, with Meteor's typography. It supports
@@ -27,20 +29,17 @@ import { stableTail } from "./_internal/stable-tail";
  */
 const props = withDefaults(
   defineProps<{
-    /** The Markdown, including tables, task lists, strikethrough and autolinks. */
+    /** The Markdown, including tables, task lists and strikethrough. */
     content: string;
     /**
-     * Whether the content is still arriving. Only what already renders as in the finished text
-     * shows: syntax without content yet, such as `**` or `##`, waits for it, a table appears with
-     * its header and first row and then row by row, and unfinished emphasis such as `**bold`
-     * renders as if it were complete. A code block that is still being written has no copy button
-     * yet.
+     * Whether the content is still arriving. Unfinished syntax at the end, such as `**bold`,
+     * renders as if it were complete.
      */
     streaming?: boolean;
     /**
      * The https addresses that images may load from, such as `https://cdn.example.com/media/`.
-     * Other images show as a link. No image loads by default, because the address of an image in
-     * a model's answer can carry data out of the conversation.
+     * No image with an absolute address loads by default, because the address of an image in a
+     * model's answer can carry data out of the conversation.
      */
     allowedImagePrefixes?: string[];
   }>(),
@@ -50,37 +49,36 @@ const props = withDefaults(
   },
 );
 
-interface ParsedMarkdown {
-  /** The link reference definitions, which can change how earlier blocks render. */
-  links: string;
-  tokens: Token[];
-}
+defineOptions({ inheritAttrs: false });
 
-const parsed = computed<ParsedMarkdown>((previous) => {
-  // While streaming, only the part that renders as it will in the finished text, repaired by
-  // `remend`, so no Markdown ever shows unrendered or half rendered.
-  const text = props.streaming ? remend(stableTail(props.content)) : props.content;
-  // A new lexer each time: `lex()` adds to the tokens of earlier calls.
-  const lexed = new Lexer({ gfm: true }).lex(text);
-  const links = JSON.stringify(lexed.links);
+// Raw HTML and Comark's own syntax stay off, so the content can't create elements or components,
+// and headings get no ids, which could collide with the page's.
+const options = { registerDefaultPlugins: false, headingIds: false };
 
-  // Unchanged blocks keep their token object, so their components don't render again.
-  const reusable = previous?.links === links ? previous.tokens : [];
-  const tokens = lexed
-    .filter((token) => token.type !== "space" && token.type !== "def")
-    .map((token, index) => (reusable[index]?.raw === token.raw ? reusable[index] : token));
+const plugins = computed(() => [
+  taskList(),
+  security({
+    allowedProtocols: ["http", "https", "mailto", "tel"],
+    allowedImagePrefixes: props.allowedImagePrefixes,
+    allowDataImages: false,
+  }),
+]);
 
-  return { links, tokens };
-});
+/** A wide table scrolls in its wrapper; a scrolling table itself loses its semantics in Safari. */
+const MarkdownTable: FunctionalComponent = (_, { attrs, slots }) =>
+  h("div", { class: "mt-markdown__table" }, h("table", attrs, slots.default?.()));
 
-// Kept as the same array while the prefixes are the same, even if a new array is passed.
-const imagePrefixes = computed<string[]>((previous) => {
-  const next = props.allowedImagePrefixes
-    .map(normalizeImagePrefix)
-    .filter((prefix): prefix is string => prefix !== undefined);
+/** Links that leave the app open in a new tab, so they don't replace the conversation. */
+const MarkdownLink: FunctionalComponent = (_, { attrs, slots }) =>
+  h(
+    "a",
+    /^https?:\/\//i.test(String(attrs.href ?? ""))
+      ? { ...attrs, target: "_blank", rel: "noopener noreferrer" }
+      : attrs,
+    slots.default?.(),
+  );
 
-  return previous?.join("\n") === next.join("\n") ? previous : next;
-});
+const components = { pre: MtCodeBlock, table: MarkdownTable, a: MarkdownLink };
 </script>
 
 <style src="./prose.css"></style>

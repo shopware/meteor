@@ -24,14 +24,14 @@ import { MtMarkdown } from "@shopware-ag/meteor-component-library";
 
 ### Streaming
 
-Pass the text as it arrives and set `streaming` until the answer is complete. The text still appears word by word, but only once it renders as it will in the finished answer, so raw Markdown never flashes while the answer streams.
+Pass the text as it arrives and set `streaming` until the answer is complete. Unfinished syntax at the end renders as if it were complete, so raw Markdown doesn't flash while the answer streams.
 
 ::component-example{name="markdown-streaming-example" fullWidth}
 ::
 
 ### Images
 
-No image loads unless its address starts with one of `allowed-image-prefixes`. Other images show as a link to the image.
+No image with a full address loads unless the address starts with one of `allowed-image-prefixes`. Other images show only their alternative text.
 
 ::component-example{name="markdown-images-example"}
 ::
@@ -59,29 +59,26 @@ No image loads unless its address starts with one of `allowed-image-prefixes`. O
 
 ## Behavior
 
+**Markdown** builds on [Comark](https://comark.dev).
+
 ### Streaming
 
-- With `streaming`, only what already renders as in the finished answer shows. Once `streaming` is off, the complete text renders unchanged.
-- Syntax at the end that has nothing to format yet, such as `**`, `##`, `- ` or `- [x]`, waits until its content arrives. Punctuation at the very end can still be the start of syntax, so it appears with the next part of the answer.
-- Emphasis, inline code and strikethrough that already have content render as if they were complete. A link whose address is still arriving shows as text, and an image whose address is still arriving is left out.
-- A table appears with its header and first row, then row by row.
-- A code block without its closing fence renders as a code block up to the end of the text. Its copy button appears once the next block starts or the answer is complete.
-- Blocks that are finished don't render again while the answer grows, so long answers stay fast.
-- Three constructs only resolve with text that comes later, and models rarely write them. Tables whose rows don't start with `|` show their first line as text until the delimiter row arrives. Headings underlined with `===` or `---` show as a paragraph until the next block starts. Reference links like `[text][1]` show as text until their definition arrives.
+- With `streaming`, unfinished syntax at the end renders as if it were complete, such as `**bold` as bold text. Syntax that has nothing to format yet, such as `**` or `##`, waits until its content arrives.
+- A link whose address is still arriving shows as text, and a code block without its closing fence renders as a code block.
 
 ### Content
 
 - Line breaks follow CommonMark, as on GitHub: a single line break inside a paragraph becomes a space. End a line with two spaces or a backslash for a hard break.
-- Common named character references, such as `&amp;` and `&nbsp;`, are decoded, except in code.
+- Character references, such as `&amp;`, are decoded, except in code.
 - Each code block has a button that copies its code. The language from the opening fence is added to the code as a `language-*` class.
 
 ### Security
 
 The content is treated as untrusted, because a model's answer can be influenced by the data it reads.
 
-- Raw HTML, such as `<script>` or `<img onerror>`, shows as text. The only exception is `<br>`, which becomes a line break, because models often write it into table cells.
+- Raw HTML, such as `<script>`, `<img onerror>` or `<br>`, shows as text.
 - Links only use `http`, `https`, `mailto` and `tel`, or have no scheme, like `/orders` or `#top`. Links with any other scheme, such as `javascript:`, show as text. Links with a full `http` or `https` address open in a new tab, without access to the page that opened them.
-- Images load only from `https` addresses that start with one of `allowed-image-prefixes`. The address of an image loads without a click, so an image in an answer could otherwise send data from the conversation to another server.
+- Images with a full address load only if it starts with one of `allowed-image-prefixes`. The address of an image loads without a click, so an image in an answer could otherwise send data from the conversation to another server.
 
 ## Accessibility
 
