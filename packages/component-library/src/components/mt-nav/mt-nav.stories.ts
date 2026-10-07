@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from "@storybook/vue3";
 import { computed, markRaw, ref } from "vue";
 import MtNav from "./mt-nav.vue";
+import MtBadge from "../mt-badge/mt-badge.vue";
 import type { NavItem, NavSection } from "./mt-nav.vue";
 import { StoryLink } from "./_internal/story-link";
 
@@ -68,13 +69,18 @@ function withActive(items: NavItem[], current: string): NavItem[] {
 
 /**
  * Renders the navigation with a fake current route that follows the clicked row, so the active
- * state changes like in an application. `sourceCode` is what the docs show.
+ * state changes like in an application. `sourceCode` is what the docs show, `slotContent` is
+ * rendered inside the navigation.
  */
-function createStory(buildSections: (current: string) => NavSection[], sourceCode: string) {
+function createStory(
+  buildSections: (current: string) => NavSection[],
+  sourceCode: string,
+  slotContent = "",
+) {
   // Builds a story deriving the sections from the fake current route
   return {
     render: (args) => ({
-      components: { MtNav },
+      components: { MtNav, MtBadge },
       setup() {
         const current = ref("product.index");
         const sections = computed(() => buildSections(current.value));
@@ -88,9 +94,9 @@ function createStory(buildSections: (current: string) => NavSection[], sourceCod
           }
         }
 
-        return { args, sections, onNavigate };
+        return { args, sections, onNavigate, badges };
       },
-      template: `<mt-nav v-bind="args" :sections="sections" @navigate="onNavigate" />`,
+      template: `<mt-nav v-bind="args" :sections="sections" @navigate="onNavigate">${slotContent}</mt-nav>`,
     }),
     parameters: {
       docs: {
@@ -153,6 +159,34 @@ const sections: NavSection[] = [
   },
 ];
 </script>`;
+
+const badgesSource = `
+<mt-nav :sections="sections" @navigate="onNavigate">
+  <template #suffix="{ item }">
+    <mt-badge v-if="badges[item.label]" :variant="badges[item.label].variant">
+      {{ badges[item.label].text }}
+    </mt-badge>
+  </template>
+</mt-nav>
+
+<script setup lang="ts">
+const badges = {
+  Orders: { text: "12", variant: "critical" },
+  Reviews: { text: "3", variant: "attention" },
+  Marketing: { text: "2", variant: "info" },
+  Promotions: { text: "New", variant: "info" },
+};
+</script>`;
+
+/**
+ * Badges shown in the `suffix` slot of the badge story, keyed by row label.
+ */
+const badges: Record<string, { text: string; variant: "critical" | "attention" | "info" }> = {
+  Orders: { text: "12", variant: "critical" },
+  Reviews: { text: "3", variant: "attention" },
+  Marketing: { text: "2", variant: "info" },
+  Promotions: { text: "New", variant: "info" },
+};
 
 const meta: MtNavMeta = {
   title: "Components/Nav",
@@ -217,4 +251,21 @@ export const Sections: MtNavStory = createStory(
     { header: "System", items: withActive(systemItems, current) },
   ],
   sectionsSource,
+);
+
+/**
+ * The `suffix` slot renders after the label of every row and receives the row as `item`, e.g. to
+ * show an `mt-badge` with a counter or a hint on chosen rows.
+ */
+export const Badges: MtNavStory = createStory(
+  (current) => [
+    { header: "Shop", items: withActive(shopItems, current) },
+    { header: "System", items: withActive(systemItems, current) },
+  ],
+  badgesSource,
+  `<template #suffix="{ item }">
+    <mt-badge v-if="badges[item.label]" :variant="badges[item.label].variant">
+      {{ badges[item.label].text }}
+    </mt-badge>
+  </template>`,
 );
