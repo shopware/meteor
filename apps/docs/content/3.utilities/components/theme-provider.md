@@ -39,6 +39,6 @@ The `future` prop takes an object. All flags default to `false`, so behavior is 
 | Flag | Effect |
 | --- | --- |
 | `removeCardWidth` | Removes the maximum width constraint from `mt-card`. |
-| `removeDefaultMargin` | Removes the default outer margin from components such as cards, tabs, checkboxes, switches, and text fields. |
+| `removeDefaultMargin` | Removes the default outer margin from components such as cards, tabs, checkboxes, switches, and text fields. Use [**Grid**](/utilities/components/grid) and [**Stack**](/utilities/components/stack) to space them instead. |
 | `removeSwitchMinHeight` | Removes the minimum height from a non-bordered `mt-switch`. |
 | `bannerFullWidth` | Makes `mt-banner` span the full width of its container. |
