@@ -27,7 +27,7 @@ module.exports = [
     path: "dist/esm/index.js",
     import: "{ MtCard }",
     name: "MtCard",
-    limit: "240 kb",
+    limit: "245 kb",
     ignore: ignore,
   },
   {

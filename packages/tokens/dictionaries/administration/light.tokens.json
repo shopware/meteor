@@ -282,7 +282,7 @@
         "disabled": {
           "$value": "{color.red.300}",
           "$type": "color",
-          "$description": "Use for icons indicating disabled, critical or error states."
+          "$description": "Use for icons indicating disabled critical or error states."
         }
       },
       "attention": {
@@ -290,6 +290,11 @@
           "$value": "{color.orange.500}",
           "$type": "color",
           "$description": "Use for icons indicating attention or warning states."
+        },
+        "disabled": {
+          "$value": "{color.orange.300}",
+          "$type": "color",
+          "$description": "Use for icons indicating disabled attention or warning states."
         }
       },
       "positive": {
@@ -297,6 +302,11 @@
           "$value": "{color.green.500}",
           "$type": "color",
           "$description": "Use for icons indicating positive or success states."
+        },
+        "disabled": {
+          "$value": "{color.green.300}",
+          "$type": "color",
+          "$description": "Use for icons indicating disabled positive or success states."
         }
       },
       "accent": {
@@ -304,6 +314,11 @@
           "$value": "{color.purple.700}",
           "$type": "color",
           "$description": "Use for icons indicating Shopware’s inheritance behavior."
+        },
+        "disabled": {
+          "$value": "{color.purple.300}",
+          "$type": "color",
+          "$description": "Use for icons indicating Shopware’s disabled inheritance behavior."
         }
       },
       "static": {
