@@ -1,15 +1,22 @@
-import { render, screen, waitFor } from "@testing-library/vue";
+import { render, screen, waitFor, type RenderOptions } from "@testing-library/vue";
 import userEvent from "@testing-library/user-event";
 import MtMarkdown from "./mt-markdown.vue";
 
 /** Renders the Markdown and waits for Comark's asynchronous parsing. */
-async function renderMarkdown(content: string, props: Record<string, unknown> = {}) {
-  const result = render({
-    components: { MtMarkdown },
-    setup: () => ({ content, props }),
-    // Testing Library doesn't render a root that suspends, so the component gets a wrapper.
-    template: `<div><mt-markdown :content="content" v-bind="props" /></div>`,
-  });
+async function renderMarkdown(
+  content: string,
+  props: Record<string, unknown> = {},
+  options: RenderOptions<unknown> = {},
+) {
+  const result = render(
+    {
+      components: { MtMarkdown },
+      setup: () => ({ content, props }),
+      // Testing Library doesn't render a root that suspends, so the component gets a wrapper.
+      template: `<div><mt-markdown :content="content" v-bind="props" /></div>`,
+    },
+    options,
+  );
   await waitFor(() => expect(result.container.querySelector(".mt-markdown")).not.toBeNull());
 
   return result;
@@ -89,6 +96,25 @@ describe("mt-markdown", () => {
 
     Reflect.deleteProperty(navigator, "clipboard");
     Reflect.deleteProperty(navigator, "permissions");
+  });
+
+  it("ignores the app's global components and Comark setup", async () => {
+    const Replaced = { template: "<span>Replaced</span>" };
+    const { container } = await renderMarkdown(
+      "Hello **world**",
+      {},
+      {
+        global: {
+          components: { ProseP: Replaced, P: Replaced },
+          provide: {
+            comark: { components: { ProseStrong: Replaced }, componentManifest: () => null },
+          },
+        },
+      },
+    );
+
+    expect(container.querySelector(".mt-markdown > p > strong")).toHaveTextContent("world");
+    expect(container).not.toHaveTextContent("Replaced");
   });
 
   it("renders unfinished emphasis while streaming without showing its syntax", async () => {

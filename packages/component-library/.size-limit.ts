@@ -57,4 +57,11 @@ module.exports = [
     limit: "265 kb",
     ignore: ignore,
   },
+  {
+    path: "dist/esm/index.js",
+    import: "{ MtMarkdown }",
+    name: "MtMarkdown",
+    limit: "297 kb",
+    ignore: ignore,
+  },
 ] satisfies SizeLimitConfig;

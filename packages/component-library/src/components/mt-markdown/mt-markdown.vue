@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, h, type FunctionalComponent } from "vue";
+import { computed, h, provide, type FunctionalComponent } from "vue";
 import { Markdown } from "@comark/vue";
 import security from "@comark/vue/plugins/security";
 import taskList from "@comark/vue/plugins/task-list";
@@ -78,7 +78,52 @@ const MarkdownLink: FunctionalComponent = (_, { attrs, slots }) =>
     slots.default?.(),
   );
 
-const components = { pre: MtCodeBlock, table: MarkdownTable, a: MarkdownLink };
+/** Renders an element as itself. */
+const element =
+  (tag: string): FunctionalComponent =>
+  (_, { attrs, slots }) =>
+    h(tag, attrs, slots.default?.());
+
+/**
+ * Every element Comark renders here has a mapping. Comark falls back to the app's global
+ * components for elements without one, such as Nuxt UI's `ProseP`, which would change the content.
+ */
+const ELEMENTS = [
+  "blockquote",
+  "br",
+  "code",
+  "del",
+  "em",
+  "h1",
+  "h2",
+  "h3",
+  "h4",
+  "h5",
+  "h6",
+  "hr",
+  "img",
+  "input",
+  "li",
+  "ol",
+  "p",
+  "strong",
+  "tbody",
+  "td",
+  "th",
+  "thead",
+  "tr",
+  "ul",
+];
+
+const components = {
+  ...Object.fromEntries(ELEMENTS.map((tag) => [tag, element(tag)])),
+  pre: MtCodeBlock,
+  table: MarkdownTable,
+  a: MarkdownLink,
+};
+
+// Replaces the Comark setup of the app, whose components would apply here too.
+provide("comark", { components: {}, componentManifest: () => null });
 </script>
 
 <style src="./prose.css"></style>
