@@ -25,7 +25,7 @@ Enable `enableMultiSelection` so users can choose several values at once.
 
 ### Many selected values
 
-`valueLimit` caps how many selected values are shown as tags. The remaining ones collapse into a `+N` counter, and each click on it doubles the number of shown tags.
+`valueLimit` caps how many selected values are shown as tags. The remaining ones collapse into a counter that expands the full list when clicked.
 
 ::component-example{name="select-value-limit-example" fullWidth}
 ::
