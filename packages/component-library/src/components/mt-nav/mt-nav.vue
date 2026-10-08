@@ -1,7 +1,7 @@
 <template>
   <nav class="mt-nav" :aria-labelledby="navigationLabelId">
     <h2 :id="navigationLabelId" class="visually-hidden">
-      {{ t("navigationLabel") }}
+      {{ label ?? t("navigationLabel") }}
     </h2>
 
     <div ref="navBodyElement" class="mt-nav__body" @keydown="onNavigationKeydown">
@@ -48,9 +48,14 @@ const props = withDefaults(
      * Component rendering the navigation links. Receives the target of an item as `to`.
      */
     linkComponent?: NavLinkComponent;
+    /**
+     * Accessible name of the navigation. Defaults to the translated "Main navigation".
+     */
+    label?: string;
   }>(),
   {
     linkComponent: "router-link",
+    label: undefined,
   },
 );
 

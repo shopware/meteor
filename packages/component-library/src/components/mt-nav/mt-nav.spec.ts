@@ -70,6 +70,14 @@ describe("mt-nav", () => {
     vi.spyOn(console, "error").mockImplementation(() => {});
   });
 
+  describe("label", () => {
+    it("names the navigation after the label prop", () => {
+      renderNav({ label: "Settings navigation" });
+
+      expect(screen.getByRole("navigation", { name: "Settings navigation" })).toBeInTheDocument();
+    });
+  });
+
   describe("rows", () => {
     it("renders the top level rows", () => {
       renderNav();
