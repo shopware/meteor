@@ -6,21 +6,12 @@ const { t } = useI18n();
 </script>
 
 <template>
-  <div class="page">
-    <mt-container size="m" class="intro">
-      <mt-text as="h1" size="l" weight="semibold">{{
-        t("dashboard.title")
-      }}</mt-text>
-      <mt-text size="xs" color="color-text-secondary-default">
-        {{ t("dashboard.description") }}
-      </mt-text>
-    </mt-container>
-  </div>
+  <mt-container as="section" class="page stack">
+    <mt-text as="h1" size="l" weight="semibold">{{
+      t("dashboard.title")
+    }}</mt-text>
+    <mt-text size="xs" color="color-text-secondary-default">
+      {{ t("dashboard.description") }}
+    </mt-text>
+  </mt-container>
 </template>
-
-<style scoped>
-.intro {
-  display: grid;
-  gap: var(--scale-size-4);
-}
-</style>

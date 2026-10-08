@@ -6,48 +6,34 @@ export const en = {
   nav: {
     label: "Main navigation",
     dashboard: "Dashboard",
-    products: "Products",
     cms: "CMS",
     settings: "Settings",
+  },
+  sidebar: {
+    label: "Details",
   },
   dashboard: {
     title: "Admin playground",
     description:
       "A minimal application for trying out the Meteor app shell: header, sidebars, drawers on small screens, theme and language.",
   },
-  products: {
-    title: "Products",
-    name: "Product",
-    sku: "Product number",
-    category: "Category",
-    stock: "Stock",
-    price: "Price",
-    categories: {
-      lighting: "Lighting",
-      textiles: "Home textiles",
-      kitchen: "Kitchen",
-      apparel: "Apparel",
-      footwear: "Footwear",
-      accessories: "Accessories",
-    },
-  },
   cms: {
     back: "Back",
   },
+  notFound: {
+    title: "Page not found",
+    description: "The page you are looking for doesn't exist.",
+    home: "Go to the dashboard",
+  },
   settings: {
-    userTitle: "User settings",
+    title: "User settings",
     language: "Language",
     theme: "Theme",
-    shellTitle: "App shell",
-    header: "Header",
-    navigation: "Navigation",
-    sidebar: "Sidebar",
-    openModal: "Open modal",
-    modalTitle: "Modal",
-    modalText: "A modal opened from inside the shell.",
-    close: "Close",
-    showNotification: "Show notification",
-    notification: "Notification from the snackbar host",
+    reset: "Reset settings",
+    resetTitle: "Reset settings?",
+    resetText: "Language and theme go back to their defaults.",
+    cancel: "Cancel",
+    resetDone: "Settings reset",
   },
 };
 
