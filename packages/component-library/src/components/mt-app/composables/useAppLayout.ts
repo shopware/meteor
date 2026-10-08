@@ -13,14 +13,14 @@ import {
 /**
  * A side of the shell's sidebars.
  *
- * @experimental This can be used, but the API may still change in a future release.
+ * @experimental Not for public use yet: undocumented, and it may change or be removed without notice.
  */
 export type MtAppSide = "start" | "end";
 
 /**
  * The regions of the shell that a view can hide, see `useMtAppRegions`.
  *
- * @experimental This can be used, but the API may still change in a future release.
+ * @experimental Not for public use yet: undocumented, and it may change or be removed without notice.
  */
 export interface MtAppRegions {
   header?: boolean;
