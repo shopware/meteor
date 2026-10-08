@@ -120,7 +120,7 @@ import { provideMtApp } from "./composables/useMtApp";
  * drawers below the mobile breakpoint, and provides theme, future flags
  * and the snackbar host to everything inside. Use one shell per application.
  *
- * @experimental This can be used, but the API may still change in a future release.
+ * @experimental Not for public use yet: undocumented, and it may change or be removed without notice.
  */
 const props = withDefaults(
   defineProps<{
