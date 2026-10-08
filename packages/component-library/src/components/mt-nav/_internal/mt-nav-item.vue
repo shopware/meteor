@@ -5,7 +5,7 @@
         :is="linkTag"
         class="mt-nav__link"
         :class="{ 'is--active': rowActive }"
-        :aria-current="rowActive ? 'page' : undefined"
+        :aria-current="item.active ? 'page' : rowActive ? 'true' : undefined"
         v-bind="linkAttrs"
       >
         <mt-icon

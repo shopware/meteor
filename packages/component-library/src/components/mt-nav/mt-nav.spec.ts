@@ -156,7 +156,7 @@ describe("mt-nav", () => {
       );
     });
 
-    it("marks a closed branch as current in place of the active row it hides", async () => {
+    it("marks a closed branch with aria-current true in place of the active row it hides", async () => {
       renderNav({ sections: sampleSections("sw.category.index") });
 
       await waitFor(() => expect(getRowLabel("Categories")).toBeVisible());
@@ -166,7 +166,7 @@ describe("mt-nav", () => {
       await waitFor(() => expect(getRowLabel("Categories")).not.toBeVisible());
       expect(getRowLabel("Products").closest(".mt-nav__link")).toHaveAttribute(
         "aria-current",
-        "page",
+        "true",
       );
     });
 
@@ -196,7 +196,7 @@ describe("mt-nav", () => {
       await userEvent.click(getRowLabel("Overview"));
 
       await waitFor(() => expect(getRowLabel("Reviews")).not.toBeVisible());
-      expect(getRowLabel("Overview").closest("a")).toHaveAttribute("aria-current", "page");
+      expect(getRowLabel("Overview").closest("a")).toHaveAttribute("aria-current", "true");
 
       await userEvent.click(getRowLabel("Overview"));
 
