@@ -38,6 +38,7 @@ import MtSnackbar from "./components/mt-snackbar/mt-snackbar.vue";
 import MtAvatar from "./components/mt-avatar/mt-avatar.vue";
 import MtNav from "./components/mt-nav/mt-nav.vue";
 import type {
+  NavActiveMatcher,
   NavItem,
   NavLinkComponent,
   NavLinkTarget,
@@ -162,6 +163,7 @@ export {
   TooltipDirective,
   MtAvatar,
   MtNav,
+  type NavActiveMatcher,
   type NavItem,
   type NavLinkComponent,
   type NavLinkTarget,

@@ -1,6 +1,6 @@
 import { render, screen, waitFor, within } from "@testing-library/vue";
 import { userEvent } from "@testing-library/user-event";
-import { defineComponent, h, type FunctionalComponent } from "vue";
+import { defineComponent, h, ref, type FunctionalComponent } from "vue";
 import MtNav from "./mt-nav.vue";
 import type { NavItem, NavSection } from "./mt-nav.vue";
 
@@ -306,6 +306,62 @@ describe("mt-nav", () => {
 
       expect(getRowLabel("FAQ")).toBeVisible();
       expect(getRowLabel("Overview")).not.toBeVisible();
+    });
+  });
+
+  describe("isActive", () => {
+    function routeName(item: NavItem) {
+      return (item.to as { name?: string } | undefined)?.name;
+    }
+
+    it("marks the row it matches as current and opens its branch", async () => {
+      renderNav({ isActive: (item: NavItem) => routeName(item) === "sw.category.index" });
+
+      await waitFor(() => expect(getRowLabel("Categories")).toBeVisible());
+
+      expect(getRowLabel("Categories").closest(".mt-nav__link")).toHaveAttribute(
+        "aria-current",
+        "page",
+      );
+    });
+
+    it("follows the current route without new sections", async () => {
+      const current = ref("sw.dashboard.index");
+
+      renderNav({ isActive: (item: NavItem) => routeName(item) === current.value });
+
+      expect(getRowLabel("Dashboard").closest(".mt-nav__link")).toHaveAttribute(
+        "aria-current",
+        "page",
+      );
+
+      current.value = "sw.category.index";
+
+      await waitFor(() => expect(getRowLabel("Categories")).toBeVisible());
+      expect(getRowLabel("Categories").closest(".mt-nav__link")).toHaveAttribute(
+        "aria-current",
+        "page",
+      );
+      expect(getRowLabel("Dashboard").closest(".mt-nav__link")).not.toHaveAttribute(
+        "aria-current",
+      );
+    });
+
+    it("marks only the deepest matching row as the current page", async () => {
+      renderNav({
+        isActive: (item: NavItem) =>
+          ["sw.product.index", "sw.review.index"].includes(routeName(item) ?? ""),
+      });
+
+      await waitFor(() => expect(getRowLabel("Reviews")).toBeVisible());
+
+      expect(getRowLabel("Reviews").closest(".mt-nav__link")).toHaveAttribute(
+        "aria-current",
+        "page",
+      );
+      expect(getRowLabel("Overview").closest(".mt-nav__link")).not.toHaveAttribute(
+        "aria-current",
+      );
     });
   });
 

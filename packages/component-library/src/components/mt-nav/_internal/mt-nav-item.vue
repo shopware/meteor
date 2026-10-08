@@ -5,7 +5,7 @@
         :is="linkTag"
         class="mt-nav__link"
         :class="{ 'is--active': rowActive }"
-        :aria-current="item.active ? 'page' : rowActive ? 'true' : undefined"
+        :aria-current="isCurrentPage ? 'page' : rowActive ? 'true' : undefined"
         v-bind="linkAttrs"
       >
         <mt-icon
@@ -65,7 +65,6 @@ import MtCollapsibleContent from "@/components/mt-collapsible/mt-collapsible-con
 import {
   MAX_NESTING_LEVEL,
   hasNestedItems,
-  isItemActive,
   itemKey,
   useNavContext,
   type NavItem,
@@ -106,7 +105,7 @@ const hasChildren = computed(() => hasNestedItems(props.item) && !isLeafDepth);
 
 // The nested row that is active or holds the active row
 const activeChildKey = computed(() => {
-  const activeChild = props.item.children?.find(isItemActive);
+  const activeChild = props.item.children?.find(context.isItemActive);
 
   return activeChild ? itemKey(activeChild) : null;
 });
@@ -130,9 +129,14 @@ const subtreeOpen = computed(() =>
     : manualOpen.value ?? hasActiveDescendant.value,
 );
 
+// The deepest active row is the current page, so a row holding an active row defers to it
+const isCurrentPage = computed(
+  () => context.isRowActive(props.item) && !hasActiveDescendant.value,
+);
+
 // A closed branch stands in for the active row it hides
 const rowActive = computed(
-  () => !!props.item.active || (hasActiveDescendant.value && !subtreeOpen.value),
+  () => isCurrentPage.value || (hasActiveDescendant.value && !subtreeOpen.value),
 );
 
 const childActive = computed(() => hasActiveDescendant.value && subtreeOpen.value);

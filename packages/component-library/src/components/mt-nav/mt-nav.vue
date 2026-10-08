@@ -24,7 +24,9 @@ import {
   branchKey,
   hasNestedItems,
   isItemActive,
+  isRowActive,
   itemKey,
+  type NavActiveMatcher,
   type NavItem,
   type NavLinkComponent,
   type NavSection,
@@ -32,6 +34,7 @@ import {
 } from "./_internal/mt-nav-context";
 
 export type {
+  NavActiveMatcher,
   NavItem,
   NavLinkComponent,
   NavLinkTarget,
@@ -52,10 +55,16 @@ const props = withDefaults(
      * Accessible name of the navigation. Defaults to the translated "Main navigation".
      */
     label?: string;
+    /**
+     * Tells whether a row is the current page, e.g. by comparing its route with the current route.
+     * Lets the sections stay static instead of setting `active` on every route change.
+     */
+    isActive?: NavActiveMatcher;
   }>(),
   {
     linkComponent: "router-link",
     label: undefined,
+    isActive: undefined,
   },
 );
 
@@ -90,21 +99,26 @@ const branches = computed(() =>
   ),
 );
 
-const hasActiveItem = computed(() => branches.value.some((branch) => isItemActive(branch.item)));
+function isActiveItem(item: NavItem) {
+  // Tells whether the row or one of its descendants is active, through its flag or `isActive`
+  return isItemActive(item, props.isActive);
+}
+
+const hasActiveItem = computed(() => branches.value.some((branch) => isActiveItem(branch.item)));
 
 // The top-level branch holding the active item, if the active item sits inside a branch
 const activeOwnerKey = computed(
   () =>
-    branches.value.find((branch) => hasNestedItems(branch.item) && isItemActive(branch.item))
+    branches.value.find((branch) => hasNestedItems(branch.item) && isActiveItem(branch.item))
       ?.key ?? null,
 );
 
 // Changes whenever the active row moves, also within the branch already holding it
 const activeRowSignature = computed(() =>
   branches.value
-    .filter((branch) => isItemActive(branch.item))
+    .filter((branch) => isActiveItem(branch.item))
     .map((branch) => {
-      const activeChild = branch.item.children?.find(isItemActive);
+      const activeChild = branch.item.children?.find(isActiveItem);
 
       return `${branch.key}/${activeChild ? itemKey(activeChild) : ""}`;
     })
@@ -113,6 +127,8 @@ const activeRowSignature = computed(() =>
 
 provide(NAV_CONTEXT, {
   linkComponent: computed(() => props.linkComponent),
+  isRowActive: (item) => isRowActive(item, props.isActive),
+  isItemActive: isActiveItem,
   slots,
   isBranchExpanded,
   onBranchToggle,
@@ -158,7 +174,7 @@ function collapseInactiveBranches(exceptKey: string | null) {
 
     const branch = branches.value.find((candidate) => candidate.key === key);
 
-    return branch ? isItemActive(branch.item) : false;
+    return branch ? isActiveItem(branch.item) : false;
   });
 }
 

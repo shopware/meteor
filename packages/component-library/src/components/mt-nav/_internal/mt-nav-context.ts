@@ -11,6 +11,11 @@ export type NavLinkComponent = string | Component;
 export type NavLinkTarget = string | object;
 
 /**
+ * Tells whether a row is the current page, e.g. by comparing its route with the current route.
+ */
+export type NavActiveMatcher = (item: NavItem) => boolean;
+
+/**
  * One row of the navigation. Rows nest through `children`, up to three levels deep in total.
  */
 export interface NavItem {
@@ -26,7 +31,7 @@ export interface NavItem {
   href?: string;
   /** Anchor target for `href`. */
   target?: string;
-  /** Whether the row is the current page. Its ancestors open and highlight accordingly. */
+  /** Whether the row is the current page. Its ancestors open and highlight accordingly. Alternative to `isActive` on `mt-nav`. */
   active?: boolean;
   /** Nested rows. A row with nested rows and no `to` renders as a button toggling them. */
   children?: NavItem[];
@@ -45,9 +50,17 @@ export interface NavSection {
  */
 export const MAX_NESTING_LEVEL = 3;
 
-export function isItemActive(item: NavItem): boolean {
+export function isRowActive(item: NavItem, isActive?: NavActiveMatcher): boolean {
+  // Tells whether the row itself is active, through its own flag or the navigation's matcher
+  return !!item.active || (isActive?.(item) ?? false);
+}
+
+export function isItemActive(item: NavItem, isActive?: NavActiveMatcher): boolean {
   // Tells whether the row itself or one of its descendants is active
-  return !!item.active || (item.children?.some(isItemActive) ?? false);
+  return (
+    isRowActive(item, isActive) ||
+    (item.children?.some((child) => isItemActive(child, isActive)) ?? false)
+  );
 }
 
 export function hasNestedItems(item: NavItem): boolean {
@@ -78,6 +91,10 @@ export interface NavSlots {
  */
 export interface NavContext {
   linkComponent: ComputedRef<NavLinkComponent>;
+  /** Tells whether the row itself is active. */
+  isRowActive: (item: NavItem) => boolean;
+  /** Tells whether the row itself or one of its descendants is active. */
+  isItemActive: (item: NavItem) => boolean;
   /** The slots of `mt-nav`, so a row can render the `suffix` slot for itself. */
   slots: Readonly<NavSlots>;
   /** Whether the top-level row with the given key is open. The navigation owns this state. */

@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from "@storybook/vue3";
-import { computed, markRaw, ref } from "vue";
+import { markRaw, ref } from "vue";
 import MtNav from "./mt-nav.vue";
 import MtBadge from "../mt-badge/mt-badge.vue";
 import type { NavItem, NavSection } from "./mt-nav.vue";
@@ -103,13 +103,9 @@ const nestedItems: NavItem[] = [
   },
 ];
 
-function withActive(items: NavItem[], current: string): NavItem[] {
-  // Marks the row whose route is the current one as active, like an application would
-  return items.map((item) => ({
-    ...item,
-    active: (item.to as { name?: string } | undefined)?.name === current,
-    children: item.children && withActive(item.children, current),
-  }));
+function routeName(item: NavItem) {
+  // Reads the route name of a row, if it links to a route
+  return (item.to as { name?: string } | undefined)?.name;
 }
 
 /**
@@ -118,31 +114,35 @@ function withActive(items: NavItem[], current: string): NavItem[] {
  * rendered inside the navigation and `initialRoute` is the route the story starts on.
  */
 function createStory(
-  buildSections: (current: string) => NavSection[],
+  sections: NavSection[],
   sourceCode: string,
   slotContent = "",
   initialRoute = "product.index",
 ) {
-  // Builds a story deriving the sections from the fake current route
+  // Builds a story matching the static sections against the fake current route
   return {
     render: (args) => ({
       components: { MtNav, MtBadge },
       setup() {
         const current = ref(initialRoute);
-        const sections = computed(() => buildSections(current.value));
+
+        function isActive(item: NavItem) {
+          // Matches the row against the fake current route, like an application would
+          return routeName(item) === current.value;
+        }
 
         function onNavigate(item: NavItem) {
           // Moves the fake current route to the clicked row
-          const name = (item.to as { name?: string } | undefined)?.name;
+          const name = routeName(item);
 
           if (name) {
             current.value = name;
           }
         }
 
-        return { args, sections, onNavigate, badges };
+        return { args, sections, isActive, onNavigate, badges };
       },
-      template: `<mt-nav v-bind="args" :sections="sections" @navigate="onNavigate">${slotContent}</mt-nav>`,
+      template: `<mt-nav v-bind="args" :sections="sections" :is-active="isActive" @navigate="onNavigate">${slotContent}</mt-nav>`,
     }),
     parameters: {
       docs: {
@@ -155,15 +155,22 @@ function createStory(
 }
 
 const defaultSource = `
-<mt-nav :sections="sections" @navigate="onNavigate" />
+<mt-nav :sections="sections" :is-active="isActive" @navigate="onNavigate" />
 
 <script setup lang="ts">
-import type { NavSection } from "@shopware-ag/meteor-component-library";
+import { useRoute, type RouteLocationNamedRaw } from "vue-router";
+import type { NavItem, NavSection } from "@shopware-ag/meteor-component-library";
+
+const route = useRoute();
+
+function isActive(item: NavItem) {
+  return (item.to as RouteLocationNamedRaw | undefined)?.name === route.name;
+}
 
 const sections: NavSection[] = [
   {
     items: [
-      { label: "Dashboard", icon: "regular-home", to: { name: "dashboard.index" }, active: isCurrent("dashboard.index") },
+      { label: "Dashboard", icon: "regular-home", to: { name: "dashboard.index" } },
       {
         label: "Products",
         icon: "regular-products",
@@ -171,10 +178,9 @@ const sections: NavSection[] = [
           {
             label: "Overview",
             to: { name: "product.index" },
-            active: isCurrent("product.index"),
-            children: [{ label: "Reviews", to: { name: "review.index" }, active: isCurrent("review.index") }],
+            children: [{ label: "Reviews", to: { name: "review.index" } }],
           },
-          { label: "Categories", to: { name: "category.index" }, active: isCurrent("category.index") },
+          { label: "Categories", to: { name: "category.index" } },
         ],
       },
       { label: "Docs", href: "https://docs.shopware.com", target: "_blank" },
@@ -184,33 +190,47 @@ const sections: NavSection[] = [
 </script>`;
 
 const sectionsSource = `
-<mt-nav :sections="sections" @navigate="onNavigate" />
+<mt-nav :sections="sections" :is-active="isActive" @navigate="onNavigate" />
 
 <script setup lang="ts">
-import type { NavSection } from "@shopware-ag/meteor-component-library";
+import { useRoute, type RouteLocationNamedRaw } from "vue-router";
+import type { NavItem, NavSection } from "@shopware-ag/meteor-component-library";
+
+const route = useRoute();
+
+function isActive(item: NavItem) {
+  return (item.to as RouteLocationNamedRaw | undefined)?.name === route.name;
+}
 
 const sections: NavSection[] = [
   {
     header: "Shop",
     items: [
-      { label: "Dashboard", icon: "regular-home", to: { name: "dashboard.index" }, active: isCurrent("dashboard.index") },
-      { label: "Orders", icon: "regular-shopping-bag", to: { name: "order.index" }, active: isCurrent("order.index") },
+      { label: "Dashboard", icon: "regular-home", to: { name: "dashboard.index" } },
+      { label: "Orders", icon: "regular-shopping-bag", to: { name: "order.index" } },
     ],
   },
   {
     header: "System",
     items: [
-      { label: "Settings", icon: "regular-cog", to: { name: "settings.index" }, active: isCurrent("settings.index") },
+      { label: "Settings", icon: "regular-cog", to: { name: "settings.index" } },
     ],
   },
 ];
 </script>`;
 
 const nestedSource = `
-<mt-nav :sections="sections" @navigate="onNavigate" />
+<mt-nav :sections="sections" :is-active="isActive" @navigate="onNavigate" />
 
 <script setup lang="ts">
-import type { NavSection } from "@shopware-ag/meteor-component-library";
+import { useRoute, type RouteLocationNamedRaw } from "vue-router";
+import type { NavItem, NavSection } from "@shopware-ag/meteor-component-library";
+
+const route = useRoute();
+
+function isActive(item: NavItem) {
+  return (item.to as RouteLocationNamedRaw | undefined)?.name === route.name;
+}
 
 const sections: NavSection[] = [
   {
@@ -222,14 +242,14 @@ const sections: NavSection[] = [
           {
             label: "Shop",
             children: [
-              { label: "Basic information", to: { name: "basic-information.index" }, active: isCurrent("basic-information.index") },
-              { label: "Languages", to: { name: "language.index" }, active: isCurrent("language.index") },
+              { label: "Basic information", to: { name: "basic-information.index" } },
+              { label: "Languages", to: { name: "language.index" } },
             ],
           },
           {
             label: "System",
             children: [
-              { label: "Users & permissions", to: { name: "user.index" }, active: isCurrent("user.index") },
+              { label: "Users & permissions", to: { name: "user.index" } },
             ],
           },
         ],
@@ -240,7 +260,7 @@ const sections: NavSection[] = [
 </script>`;
 
 const badgesSource = `
-<mt-nav :sections="sections" @navigate="onNavigate">
+<mt-nav :sections="sections" :is-active="isActive" @navigate="onNavigate">
   <template #suffix="{ item }">
     <mt-badge v-if="badges[item.label]" :variant="badges[item.label].variant">
       {{ badges[item.label].text }}
@@ -285,11 +305,13 @@ const meta: MtNavMeta = {
       description:
         "Component rendering the links. Receives the `to` of a row. Defaults to `router-link`.",
     },
+    isActive: {
+      control: false,
+      description:
+        "Tells whether a row is the current page, e.g. by comparing its route with the current route.",
+    },
   },
-  ...createStory(
-    (current) => [{ items: withActive([...shopItems, ...systemItems], current) }],
-    defaultSource,
-  ),
+  ...createStory([{ items: [...shopItems, ...systemItems] }], defaultSource),
 };
 
 meta.parameters = {
@@ -302,8 +324,10 @@ The main navigation of an application. It takes its structure as data: \`section
 of rows below an optional header, and rows nest through \`children\` up to three levels deep.
 The root fills its container and scrolls its content, fading it out at the edges.
 
-The application decides which row is current and sets \`active\` on it, typically by comparing the
-row's route with the current route. The ancestors of the active row open and, while closed, take
+The application decides which row is current: either through \`isActive\`, a function comparing a
+row's route with the current route, or by setting \`active\` on the row itself. With \`isActive\`
+the sections can stay static. When several nested rows match, the deepest one is the current page.
+The ancestors of the active row open and, while closed, take
 over its highlight. When the active row moves, the branch holding it opens and branches holding
 nothing active close. Only one top-level branch is open at a time; nested rows remember their own
 toggle. Arrow, Home and End keys move focus between the visible links.
@@ -317,7 +341,7 @@ export default meta;
 export type MtNavStory = StoryObj<MtNavMeta>;
 
 /**
- * A single section without a header holds all rows. The row marked `active` opens its ancestors.
+ * A single section without a header holds all rows. The row matched by `isActive` opens its ancestors.
  */
 export const Default: MtNavStory = {};
 
@@ -325,9 +349,9 @@ export const Default: MtNavStory = {};
  * Several sections, each with a `header` above its rows.
  */
 export const Sections: MtNavStory = createStory(
-  (current) => [
-    { header: "Shop", items: withActive(shopItems, current) },
-    { header: "System", items: withActive(systemItems, current) },
+  [
+    { header: "Shop", items: shopItems },
+    { header: "System", items: systemItems },
   ],
   sectionsSource,
 );
@@ -337,9 +361,9 @@ export const Sections: MtNavStory = createStory(
  * show an `mt-badge` with a counter or a hint on chosen rows.
  */
 export const Badges: MtNavStory = createStory(
-  (current) => [
-    { header: "Shop", items: withActive(shopItems, current) },
-    { header: "System", items: withActive(systemItems, current) },
+  [
+    { header: "Shop", items: shopItems },
+    { header: "System", items: systemItems },
   ],
   badgesSource,
   `<template #suffix="{ item }">
@@ -354,7 +378,7 @@ export const Badges: MtNavStory = createStory(
  * `to` only toggles its rows; one with a `to` is a link and opens its rows when clicked.
  */
 export const NestedSubmenus: MtNavStory = createStory(
-  (current) => [{ items: withActive(nestedItems, current) }],
+  [{ items: nestedItems }],
   nestedSource,
   "",
   "language.index",
