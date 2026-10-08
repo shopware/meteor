@@ -58,6 +58,51 @@ const systemItems: NavItem[] = [
   { label: "Docs", href: "https://docs.shopware.com", target: "_blank" },
 ];
 
+/**
+ * Sample navigation whose submenus hold submenus of their own, using all three levels.
+ */
+const nestedItems: NavItem[] = [
+  { label: "Dashboard", icon: "regular-home", to: { name: "dashboard.index" } },
+  {
+    label: "Products",
+    icon: "regular-products",
+    children: [
+      {
+        label: "Overview",
+        to: { name: "product.index" },
+        children: [{ label: "Reviews", to: { name: "review.index" } }],
+      },
+      {
+        label: "Categories",
+        to: { name: "category.index" },
+        children: [{ label: "Dynamic product groups", to: { name: "product-stream.index" } }],
+      },
+      { label: "Manufacturers", to: { name: "manufacturer.index" } },
+    ],
+  },
+  {
+    label: "Settings",
+    icon: "regular-cog",
+    children: [
+      {
+        label: "Shop",
+        children: [
+          { label: "Basic information", to: { name: "basic-information.index" } },
+          { label: "Languages", to: { name: "language.index" } },
+          { label: "Currencies", to: { name: "currency.index" } },
+        ],
+      },
+      {
+        label: "System",
+        children: [
+          { label: "Users & permissions", to: { name: "user.index" } },
+          { label: "Integrations", to: { name: "integration.index" } },
+        ],
+      },
+    ],
+  },
+];
+
 function withActive(items: NavItem[], current: string): NavItem[] {
   // Marks the row whose route is the current one as active, like an application would
   return items.map((item) => ({
@@ -70,19 +115,20 @@ function withActive(items: NavItem[], current: string): NavItem[] {
 /**
  * Renders the navigation with a fake current route that follows the clicked row, so the active
  * state changes like in an application. `sourceCode` is what the docs show, `slotContent` is
- * rendered inside the navigation.
+ * rendered inside the navigation and `initialRoute` is the route the story starts on.
  */
 function createStory(
   buildSections: (current: string) => NavSection[],
   sourceCode: string,
   slotContent = "",
+  initialRoute = "product.index",
 ) {
   // Builds a story deriving the sections from the fake current route
   return {
     render: (args) => ({
       components: { MtNav, MtBadge },
       setup() {
-        const current = ref("product.index");
+        const current = ref(initialRoute);
         const sections = computed(() => buildSections(current.value));
 
         function onNavigate(item: NavItem) {
@@ -155,6 +201,39 @@ const sections: NavSection[] = [
     header: "System",
     items: [
       { label: "Settings", icon: "regular-cog", to: { name: "settings.index" }, active: isCurrent("settings.index") },
+    ],
+  },
+];
+</script>`;
+
+const nestedSource = `
+<mt-nav :sections="sections" @navigate="onNavigate" />
+
+<script setup lang="ts">
+import type { NavSection } from "@shopware-ag/meteor-component-library";
+
+const sections: NavSection[] = [
+  {
+    items: [
+      {
+        label: "Settings",
+        icon: "regular-cog",
+        children: [
+          {
+            label: "Shop",
+            children: [
+              { label: "Basic information", to: { name: "basic-information.index" }, active: isCurrent("basic-information.index") },
+              { label: "Languages", to: { name: "language.index" }, active: isCurrent("language.index") },
+            ],
+          },
+          {
+            label: "System",
+            children: [
+              { label: "Users & permissions", to: { name: "user.index" }, active: isCurrent("user.index") },
+            ],
+          },
+        ],
+      },
     ],
   },
 ];
@@ -268,4 +347,15 @@ export const Badges: MtNavStory = createStory(
       {{ badges[item.label].text }}
     </mt-badge>
   </template>`,
+);
+
+/**
+ * Submenus can hold submenus of their own, up to three levels in total. A nested row without a
+ * `to` only toggles its rows; one with a `to` is a link and opens its rows when clicked.
+ */
+export const NestedSubmenus: MtNavStory = createStory(
+  (current) => [{ items: withActive(nestedItems, current) }],
+  nestedSource,
+  "",
+  "language.index",
 );
