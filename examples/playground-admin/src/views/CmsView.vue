@@ -1,16 +1,10 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
 import { useRouter } from "vue-router";
-import {
-  MtButton,
-  MtIcon,
-  useMtAppRegions,
-} from "@shopware-ag/meteor-component-library";
+import { MtButton, MtIcon } from "@shopware-ag/meteor-component-library";
 
 const { t } = useI18n();
 const router = useRouter();
-
-useMtAppRegions({ header: false, navigation: false, sidebar: false });
 
 function goBack() {
   if (router.options.history.state.back) router.back();

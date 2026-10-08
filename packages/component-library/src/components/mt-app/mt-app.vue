@@ -4,6 +4,13 @@
     :class="{ 'mt-app--responsive': mobileBreakpoint > 0, 'mt-app--frameless': isFrameless() }"
     :data-layout="isMounted ? (isMobile ? 'mobile' : 'desktop') : undefined"
   >
+    <div
+      v-if="isLoadingBarShown"
+      class="mt-app__loading-bar"
+      role="progressbar"
+      :aria-label="t('loading')"
+    />
+
     <div v-if="hasContent()" class="mt-app__skip">
       <mt-button variant="secondary" size="small" @click="focusContent">
         {{ t("skipToContent") }}
@@ -59,7 +66,13 @@
         <slot name="navigation" v-bind="panelSlotProps('navigation')" />
       </mt-app-region>
 
-      <main v-if="hasContent()" ref="main" class="mt-app__content" tabindex="-1">
+      <main
+        v-if="hasContent()"
+        ref="main"
+        class="mt-app__content"
+        tabindex="-1"
+        :aria-busy="isLoadingBarShown || undefined"
+      >
         <slot name="content" />
       </main>
 
@@ -108,8 +121,10 @@ import MtAppTrigger from "./_internal/mt-app-trigger.vue";
 import { appContextKey } from "./composables/useAppContext";
 import { useAppPanels } from "./composables/useAppPanels";
 import { useAppRegions } from "./composables/useAppRegions";
-import { useRouteChange, type RouteLike } from "./composables/useRouteChange";
+import { useAppLoading } from "./composables/useAppLoading";
+import { useRouteChange, useRouteMeta, type RouteLike } from "./composables/useAppRouter";
 import type { MtAppContext, MtAppPanel } from "./composables/useMtApp";
+import type { MtAppRegions } from "./composables/useMtAppRegions";
 
 /**
  * The root shell of a standalone Meteor application. It arranges the header, the navigation,
@@ -121,9 +136,11 @@ import type { MtAppContext, MtAppPanel } from "./composables/useMtApp";
  *   shouldn't add another landmark of the same kind. Their labels name the landmarks and, in the
  *   mobile layout, the drawers and their triggers. The defaults are translated for English and
  *   German; pass both labels in other languages.
- * - Components inside the shell read and control it with `useMtApp()`, and a view hides regions
- *   with `useMtAppRegions()`. The component that renders `<mt-app>` uses the `header` slot props
- *   or a template ref instead, because it is not inside the shell.
+ * - Components inside the shell read and control it with `useMtApp()`. The component that renders
+ *   `<mt-app>` uses the `header` slot props or a template ref instead, because it is not inside
+ *   the shell.
+ * - A route hides regions with `meta: { mtAppRegions: { header: false } }`, and a page toggles them
+ *   with `useMtAppRegions()`.
  * - With Vue Router, a navigation closes the open drawer and shows the new page from its top,
  *   or from the element of its URL hash, and screen readers announce the new document title.
  *
@@ -144,6 +161,12 @@ const props = withDefaults(
      * the mobile layout.
      */
     mobileBreakpoint?: number;
+    /**
+     * Shows a thin loading bar along the top edge while a navigation is pending or while app code
+     * reports loading with `useMtApp().startLoading()`. It appears only after 200ms, so quick
+     * navigations don't flash it.
+     */
+    loadingBar?: boolean;
     /** The accessible name of the navigation. Defaults to "Navigation". */
     navigationLabel?: string;
     /** The accessible name of the sidebar, such as "Assistant". Defaults to "Sidebar". */
@@ -154,6 +177,7 @@ const props = withDefaults(
     mobileBreakpoint: 1280,
     navigationLabel: undefined,
     sidebarLabel: undefined,
+    loadingBar: false,
   },
 );
 
@@ -193,6 +217,7 @@ const { t } = useI18n({
       open: "Open {label}",
       close: "Close {label}",
       skipToContent: "Skip to content",
+      loading: "Loading",
     },
     de: {
       navigation: "Navigation",
@@ -200,6 +225,7 @@ const { t } = useI18n({
       open: "{label} öffnen",
       close: "{label} schließen",
       skipToContent: "Zum Inhalt springen",
+      loading: "Wird geladen",
     },
   },
 });
@@ -225,6 +251,14 @@ const matchesMobileBreakpoint = useMediaQuery(() => `(width < ${props.mobileBrea
 const isMobile = computed(() => isMounted.value && matchesMobileBreakpoint.value);
 
 const { hidden: hiddenRegions, requestRegions } = useAppRegions();
+
+// Regions that the current route hides in its meta, which changes as soon as a navigation is
+// confirmed, before the new page renders, so they don't flicker during page transitions.
+const routeMeta = useRouteMeta();
+requestRegions(() => (routeMeta.value.mtAppRegions ?? {}) as MtAppRegions);
+
+const { isLoading, startLoading } = useAppLoading();
+const isLoadingBarShown = computed(() => props.loadingBar && isLoading.value);
 
 const panels = useAppPanels({
   isMobile,
@@ -305,6 +339,7 @@ const headerSlotProps = computed<HeaderSlotProps>(() => ({
   open: panels.open,
   close: panels.close,
   toggle: panels.toggle,
+  startLoading,
 }));
 
 function panelSlotProps(panel: MtAppPanel): PanelSlotProps {
@@ -362,6 +397,7 @@ provide(appContextKey, {
   open: panels.open,
   close: panels.close,
   toggle: panels.toggle,
+  startLoading,
   requestRegions,
   focusContent,
 });
@@ -392,12 +428,25 @@ function announcePage() {
   pageAnnouncement.value = document.title;
 }
 
-useRouteChange(async (to, from) => {
-  panels.closeDrawer();
-  await nextTick();
+let finishNavigationLoading: (() => void) | undefined;
 
-  scrollContent(to, from);
-  if (to.path !== from.path) announcePage();
+useRouteChange({
+  onStart() {
+    finishNavigationLoading?.();
+    finishNavigationLoading = startLoading();
+  },
+  onEnd() {
+    finishNavigationLoading?.();
+    finishNavigationLoading = undefined;
+  },
+  // A navigation closes the open drawer, shows the new page from its top and announces it.
+  async onNavigate(to, from) {
+    panels.closeDrawer();
+    await nextTick();
+
+    scrollContent(to, from);
+    if (to.path !== from.path) announcePage();
+  },
 });
 
 // Applies the stored theme preference to the document.
@@ -411,6 +460,7 @@ defineExpose({
   open: panels.open,
   close: panels.close,
   toggle: panels.toggle,
+  startLoading,
 });
 </script>
 
@@ -489,6 +539,41 @@ defineExpose({
   display: none;
 }
 
+.mt-app__loading-bar {
+  position: absolute;
+  inset-block-start: 0;
+  inset-inline: 0;
+  z-index: 2;
+  height: 2px;
+  overflow: hidden;
+}
+
+.mt-app__loading-bar::before {
+  content: "";
+  position: absolute;
+  inset-block: 0;
+  width: 40%;
+  background-color: var(--color-interaction-primary-default);
+  animation: mt-app-loading 1.2s ease-in-out infinite;
+}
+
+@keyframes mt-app-loading {
+  from {
+    transform: translateX(-100%);
+  }
+
+  to {
+    transform: translateX(250%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mt-app__loading-bar::before {
+    width: 100%;
+    animation: none;
+  }
+}
+
 .mt-app__skip {
   position: absolute;
   inset-block-start: var(--scale-size-8);
@@ -526,7 +611,8 @@ defineExpose({
   }
 
   .mt-app__skip,
-  .mt-app__header {
+  .mt-app__header,
+  .mt-app__loading-bar {
     display: none;
   }
 
