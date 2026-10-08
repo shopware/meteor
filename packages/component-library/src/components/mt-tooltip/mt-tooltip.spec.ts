@@ -1121,4 +1121,48 @@ describe("mt-tooltip", () => {
     // ASSERT
     expect(screen.getByRole("tooltip", { name: "Tooltip" })).toBeVisible();
   });
+
+  it("updates the accessible description when the content changes", async () => {
+    // ARRANGE
+    const { rerender } = render(MtTooltip, {
+      props: {
+        content: "First",
+      },
+      slots: {
+        default: "<button v-bind='params'>Open tooltip</button>",
+      },
+    });
+
+    // ACT
+    await rerender({ content: "Second" });
+
+    // ASSERT
+    expect(screen.getByRole("button", { name: "Open tooltip" })).toHaveAccessibleDescription(
+      "Second",
+    );
+  });
+
+  it("updates the content of an open tooltip when the content changes", async () => {
+    // ARRANGE
+    const { rerender } = render(MtTooltip, {
+      props: {
+        content: "First",
+      },
+      slots: {
+        default: "<button v-bind='params'>Open tooltip</button>",
+      },
+    });
+
+    const user = userEvent.setup({
+      advanceTimers: vi.advanceTimersByTime,
+    });
+
+    await user.tab();
+
+    // ACT
+    await rerender({ content: "Second" });
+
+    // ASSERT
+    expect(screen.getByRole("tooltip")).toHaveTextContent("Second");
+  });
 });
