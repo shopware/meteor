@@ -331,6 +331,31 @@ describe("mt-nav", () => {
       expect(products).toHaveFocus();
     });
 
+    it("skips label-only rows", async () => {
+      renderNav({
+        sections: [
+          {
+            items: [
+              route("Dashboard", "sw.dashboard.index"),
+              { label: "Coming soon" },
+              route("Orders", "sw.order.index"),
+            ],
+          },
+        ],
+      });
+
+      const dashboard = getRowLabel("Dashboard").closest("a") as HTMLElement;
+      const orders = getRowLabel("Orders").closest("a") as HTMLElement;
+
+      dashboard.focus();
+
+      await userEvent.keyboard("{ArrowDown}");
+      expect(orders).toHaveFocus();
+
+      await userEvent.keyboard("{ArrowUp}");
+      expect(dashboard).toHaveFocus();
+    });
+
     it("leaves keys pressed inside slotted content alone", async () => {
       renderNav(
         {

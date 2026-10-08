@@ -178,8 +178,9 @@ function onNavigationKeydown(event: KeyboardEvent) {
     return;
   }
 
+  // Label-only rows render as a span and can't take focus, so they're skipped
   const links = Array.from(body.querySelectorAll<HTMLElement>(".mt-nav__link")).filter(
-    (link) => !link.closest("[hidden]"),
+    (link) => link.tabIndex >= 0 && !link.closest("[hidden]"),
   );
 
   const currentIndex = links.indexOf(target);
