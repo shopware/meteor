@@ -50,9 +50,9 @@
 import { computed, onBeforeUnmount, useTemplateRef, watch } from "vue";
 import MtButton from "@/components/mt-button/mt-button.vue";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
-import MtDrawerRoot from "@/components/mt-drawer/mt-drawer-root.vue";
-import MtDrawerContent from "@/components/mt-drawer/mt-drawer-content.vue";
-import MtDrawerClose from "@/components/mt-drawer/mt-drawer-close.vue";
+import MtDrawerRoot from "@/components/_internal/mt-drawer/mt-drawer-root.vue";
+import MtDrawerContent from "@/components/_internal/mt-drawer/mt-drawer-content.vue";
+import MtDrawerClose from "@/components/_internal/mt-drawer/mt-drawer-close.vue";
 import { useAppContext } from "../composables/useAppContext";
 import type { MtAppPanel } from "../composables/useMtApp";
 
