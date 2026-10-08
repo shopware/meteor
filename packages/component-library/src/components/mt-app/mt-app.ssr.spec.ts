@@ -27,9 +27,9 @@ function createApp() {
     render: () =>
       h(MtApp, null, {
         header: () => h("span", "Header content"),
-        "sidebar-start": () => h("nav", "Navigation"),
+        navigation: () => h("a", { href: "/" }, "Orders"),
         content: () => h("p", "Main content"),
-        "sidebar-end": () => h("div", "Tools"),
+        sidebar: () => h("div", "Tools"),
       }),
   }).use(createI18n({ legacy: false, locale: "en" }));
 }

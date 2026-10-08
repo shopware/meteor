@@ -3,7 +3,6 @@
     class="mt-app"
     :class="{ 'mt-app--responsive': mobileBreakpoint > 0, 'mt-app--frameless': isFrameless() }"
     :data-layout="isMounted ? (isMobile ? 'mobile' : 'desktop') : undefined"
-    :data-drawer="activeSide ?? undefined"
   >
     <div v-if="hasContent()" class="mt-app__skip">
       <mt-button variant="secondary" size="small" @click="focusContent">
@@ -12,23 +11,23 @@
     </div>
 
     <header
-      v-if="hasHeader() || showTriggers()"
+      v-if="hasSlot('header') || showTriggers()"
       class="mt-app__header"
       :class="{ 'mt-app__header--with-triggers': showTriggers() }"
       :hidden="(hiddenRegions.header && !showTriggers()) || undefined"
     >
       <mt-app-trigger
-        v-if="isMobile && isSidebarVisible('start')"
-        side="start"
-        :label="t('openSidebar', { label: startLabel })"
-        :expanded="activeSide === 'start'"
-        :controls="drawerIds.start"
+        v-if="isMobile && isAvailable('navigation')"
+        panel="navigation"
+        :label="t('open', { label: labels.navigation })"
+        :expanded="panels.isOpen('navigation')"
+        :controls="drawerIds.navigation"
         icon="regular-bars"
-        @click="drawer.toggle('start')"
+        @click="panels.toggle('navigation')"
       />
 
       <div
-        v-if="hasHeader()"
+        v-if="hasSlot('header')"
         ref="headerContent"
         class="mt-app__header-content"
         :hidden="hiddenRegions.header || undefined"
@@ -37,47 +36,49 @@
       </div>
 
       <mt-app-trigger
-        v-if="isMobile && isSidebarVisible('end')"
-        side="end"
-        :label="t('openSidebar', { label: endLabel })"
-        :expanded="activeSide === 'end'"
-        :controls="drawerIds.end"
+        v-if="isMobile && isAvailable('sidebar')"
+        panel="sidebar"
+        :label="t('open', { label: labels.sidebar })"
+        :expanded="panels.isOpen('sidebar')"
+        :controls="drawerIds.sidebar"
         icon="regular-panel-right"
-        @click="drawer.toggle('end')"
+        @click="panels.toggle('sidebar')"
       />
     </header>
 
     <div class="mt-app__body">
-      <mt-app-sidebar
-        v-if="hasSidebar('start')"
-        :id="drawerIds.start"
-        ref="startSidebar"
-        side="start"
-        :label="startLabel"
-        :close-label="t('closeSidebar', { label: startLabel })"
-        :hidden="hiddenRegions.sidebarStart || undefined"
+      <mt-app-region
+        v-if="hasSlot('navigation')"
+        :id="drawerIds.navigation"
+        ref="navigationRegion"
+        panel="navigation"
+        :label="labels.navigation"
+        :close-label="t('close', { label: labels.navigation })"
+        :hidden="!isOpenInline('navigation') || undefined"
       >
-        <slot name="sidebar-start" v-bind="sidebarSlotProps('start')" />
-      </mt-app-sidebar>
+        <slot name="navigation" v-bind="panelSlotProps('navigation')" />
+      </mt-app-region>
 
       <main v-if="hasContent()" ref="main" class="mt-app__content" tabindex="-1">
         <slot name="content" />
       </main>
 
-      <mt-app-sidebar
-        v-if="hasSidebar('end')"
-        :id="drawerIds.end"
-        ref="endSidebar"
-        side="end"
-        :label="endLabel"
-        :close-label="t('closeSidebar', { label: endLabel })"
-        :hidden="hiddenRegions.sidebarEnd || undefined"
+      <mt-app-region
+        v-if="hasSlot('sidebar')"
+        :id="drawerIds.sidebar"
+        ref="sidebarRegion"
+        panel="sidebar"
+        :label="labels.sidebar"
+        :close-label="t('close', { label: labels.sidebar })"
+        :hidden="!isOpenInline('sidebar') || undefined"
       >
-        <slot name="sidebar-end" v-bind="sidebarSlotProps('end')" />
-      </mt-app-sidebar>
+        <slot name="sidebar" v-bind="panelSlotProps('sidebar')" />
+      </mt-app-region>
     </div>
 
-    <slot name="global" />
+    <span class="mt-app__announcer" aria-live="polite" aria-atomic="true">{{
+      pageAnnouncement
+    }}</span>
 
     <mt-snackbar />
   </div>
@@ -91,34 +92,40 @@ import {
   onMounted,
   provide,
   ref,
-  shallowReactive,
   useId,
   useTemplateRef,
   watch,
 } from "vue";
+import { useMediaQuery, useMounted } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import MtButton from "@/components/mt-button/mt-button.vue";
 import MtSnackbar from "@/components/mt-snackbar/mt-snackbar.vue";
 import { provideFutureFlags, type FutureFlagsInput } from "@/composables/useFutureFlags";
 import { useTheme } from "@/composables/useTheme";
 import { hasSlotContent } from "@/utils/slot";
-import MtAppSidebar from "./_internal/mt-app-sidebar.vue";
+import MtAppRegion from "./_internal/mt-app-region.vue";
 import MtAppTrigger from "./_internal/mt-app-trigger.vue";
-import { useAppDrawer } from "./composables/useAppDrawer";
-import {
-  appLayoutKey,
-  useBreakpoint,
-  type MtAppRegions,
-  type MtAppSide,
-} from "./composables/useAppLayout";
-import { useAppRouter } from "./composables/useAppRouter";
-import { provideMtApp } from "./composables/useMtApp";
+import { appContextKey } from "./composables/useAppContext";
+import { useAppPanels } from "./composables/useAppPanels";
+import { useAppRegions } from "./composables/useAppRegions";
+import { useRouteChange, type RouteLike } from "./composables/useRouteChange";
+import type { MtAppContext, MtAppPanel } from "./composables/useMtApp";
 
 /**
- * The root shell of a standalone Meteor application. It arranges the header,
- * both sidebars and the content area, turns the sidebars into off-canvas
- * drawers below the mobile breakpoint, and provides theme, future flags
- * and the snackbar host to everything inside. Use one shell per application.
+ * The root shell of a standalone Meteor application. It arranges the header, the navigation,
+ * the content and the sidebar, turns the navigation and the sidebar into drawers below the
+ * mobile breakpoint, and provides the theme, the future flags and the snackbar host to
+ * everything inside. Use one shell per application.
+ *
+ * - The navigation and the sidebar render as `<nav>` and `<aside>` landmarks, so their slots
+ *   shouldn't add another landmark of the same kind. Their labels name the landmarks and, in the
+ *   mobile layout, the drawers and their triggers. The defaults are translated for English and
+ *   German; pass both labels in other languages.
+ * - Components inside the shell read and control it with `useMtApp()`, and a view hides regions
+ *   with `useMtAppRegions()`. The component that renders `<mt-app>` uses the `header` slot props
+ *   or a template ref instead, because it is not inside the shell.
+ * - With Vue Router, a navigation closes the open drawer and shows the new page from its top,
+ *   or from the element of its URL hash, and screen readers announce the new document title.
  *
  * @experimental Not for public use yet: undocumented, and it may change or be removed without notice.
  */
@@ -133,137 +140,100 @@ const props = withDefaults(
     future?: FutureFlagsInput;
     /**
      * The viewport width in pixels below which the shell switches to the mobile
-     * layout and the sidebars become off-canvas drawers. `0` disables the
-     * mobile layout.
+     * layout, in which the navigation and the sidebar become drawers. `0` disables
+     * the mobile layout.
      */
     mobileBreakpoint?: number;
+    /** The accessible name of the navigation. Defaults to "Navigation". */
+    navigationLabel?: string;
+    /** The accessible name of the sidebar, such as "Assistant". Defaults to "Sidebar". */
+    sidebarLabel?: string;
   }>(),
   {
     future: undefined,
     mobileBreakpoint: 1280,
+    navigationLabel: undefined,
+    sidebarLabel: undefined,
   },
 );
 
-interface SidebarSlotProps {
+/** Whether the navigation is shown in the desktop layout. */
+const navigationOpen = defineModel<boolean>("navigationOpen", { default: true });
+
+/** Whether the sidebar is shown in the desktop layout. */
+const sidebarOpen = defineModel<boolean>("sidebarOpen", { default: true });
+
+interface PanelSlotProps {
   /** Whether the shell uses the mobile layout. */
   isMobile: boolean;
-  /** Whether the sidebar is open as a drawer. */
+  /** Whether the panel is open in the current layout. */
   isOpen: boolean;
-  /** Closes the drawer. */
+  /** Closes the panel. */
   close: () => void;
 }
 
+type HeaderSlotProps = Omit<MtAppContext, "isMobile"> & { isMobile: boolean };
+
 const slots = defineSlots<{
-  /** The header bar. In the mobile layout the drawer triggers are placed at its start and end. */
-  header?(props: { isMobile: boolean }): unknown;
-  /** The start sidebar, usually the navigation. Becomes a drawer in the mobile layout. */
-  "sidebar-start"?(props: SidebarSlotProps): unknown;
+  /** The header bar. In the mobile layout, the drawer triggers sit at its start and end. */
+  header?(props: HeaderSlotProps): unknown;
+  /** The navigation. Becomes a drawer in the mobile layout. */
+  navigation?(props: PanelSlotProps): unknown;
   /** The scrollable main content. */
   content?(): unknown;
-  /** The end sidebar, for example an assistant or contextual tools. Becomes a drawer in the mobile layout. */
-  "sidebar-end"?(props: SidebarSlotProps): unknown;
-  /** App-wide hosts without a layout box, such as keyboard shortcut listeners. */
-  global?(): unknown;
+  /** A panel next to the content, for example an assistant. Becomes a drawer in the mobile layout. */
+  sidebar?(props: PanelSlotProps): unknown;
 }>();
 
 const { t } = useI18n({
   messages: {
     en: {
-      sidebarStart: "Primary sidebar",
-      sidebarEnd: "Secondary sidebar",
-      openSidebar: "Open {label}",
-      closeSidebar: "Close {label}",
+      navigation: "Navigation",
+      sidebar: "Sidebar",
+      open: "Open {label}",
+      close: "Close {label}",
       skipToContent: "Skip to content",
     },
     de: {
-      sidebarStart: "Primäre Seitenleiste",
-      sidebarEnd: "Sekundäre Seitenleiste",
-      openSidebar: "{label} öffnen",
-      closeSidebar: "{label} schließen",
+      navigation: "Navigation",
+      sidebar: "Seitenleiste",
+      open: "{label} öffnen",
+      close: "{label} schließen",
       skipToContent: "Zum Inhalt springen",
     },
   },
 });
 
+const labels = computed<Record<MtAppPanel, string>>(() => ({
+  navigation: props.navigationLabel ?? t("navigation"),
+  sidebar: props.sidebarLabel ?? t("sidebar"),
+}));
+
 const headerContentElement = useTemplateRef<HTMLElement>("headerContent");
 const mainElement = useTemplateRef<HTMLElement>("main");
-const startSidebar = useTemplateRef<InstanceType<typeof MtAppSidebar>>("startSidebar");
-const endSidebar = useTemplateRef<InstanceType<typeof MtAppSidebar>>("endSidebar");
+const regionElements = {
+  navigation: useTemplateRef<InstanceType<typeof MtAppRegion>>("navigationRegion"),
+  sidebar: useTemplateRef<InstanceType<typeof MtAppRegion>>("sidebarRegion"),
+};
 
-const drawerIds = { start: useId(), end: useId() };
+const drawerIds: Record<MtAppPanel, string> = { navigation: useId(), sidebar: useId() };
 
-// The viewport is unknown on the server, so it is only read after mounting:
-// the server markup and the first client render then use the same layout.
-const isMounted = ref(false);
-onMounted(() => {
-  isMounted.value = true;
-});
+// The viewport is unknown on the server, so the mobile layout only applies after mounting:
+// the server markup and the first client render then agree. A breakpoint of 0 never matches.
+const isMounted = useMounted();
+const matchesMobileBreakpoint = useMediaQuery(() => `(width < ${props.mobileBreakpoint}px)`);
+const isMobile = computed(() => isMounted.value && matchesMobileBreakpoint.value);
 
-const isMobile = useBreakpoint(() => props.mobileBreakpoint, isMounted);
-const drawer = useAppDrawer({
+const { hidden: hiddenRegions, requestRegions } = useAppRegions();
+
+const panels = useAppPanels({
   isMobile,
-  isAvailable: (side) => !isSidebarHidden(side),
+  canOpenDrawer: isAvailable,
+  desktopState: { navigation: navigationOpen, sidebar: sidebarOpen },
 });
-const activeSide = drawer.activeSide;
-
-const startLabel = computed(() => t("sidebarStart"));
-const endLabel = computed(() => t("sidebarEnd"));
-
-const regionRequests = shallowReactive(new Map<symbol, () => MtAppRegions>());
-
-const hiddenRegions = computed<Required<MtAppRegions>>((previous) => {
-  const requested = Array.from(regionRequests.values(), (regions) => regions());
-  const next = {
-    header: requested.some((regions) => regions.header === false),
-    sidebarStart: requested.some((regions) => regions.sidebarStart === false),
-    sidebarEnd: requested.some((regions) => regions.sidebarEnd === false),
-    contentFrame: requested.some((regions) => regions.contentFrame === false),
-  };
-
-  const isUnchanged =
-    previous?.header === next.header &&
-    previous.sidebarStart === next.sidebarStart &&
-    previous.sidebarEnd === next.sidebarEnd &&
-    previous.contentFrame === next.contentFrame;
-
-  return isUnchanged ? previous : next;
-});
-
-function isSidebarHidden(side: MtAppSide) {
-  return side === "start" ? hiddenRegions.value.sidebarStart : hiddenRegions.value.sidebarEnd;
-}
-
-function requestRegions(regions: () => MtAppRegions) {
-  const id = Symbol("mt-app-regions");
-  regionRequests.set(id, regions);
-
-  return () => {
-    regionRequests.delete(id);
-  };
-}
-
-watch(hiddenRegions, (next, previous) => {
-  if (activeSide.value && isSidebarHidden(activeSide.value)) drawer.close();
-
-  const active = document.activeElement;
-  if (!active) return;
-
-  const isHidingFocus =
-    (next.header && !previous.header && headerContentElement.value?.contains(active)) ||
-    (next.sidebarStart && !previous.sidebarStart && startSidebar.value?.containsFocus()) ||
-    (next.sidebarEnd && !previous.sidebarEnd && endSidebar.value?.containsFocus());
-
-  if (isHidingFocus) nextTick(focusContent);
-});
-
-const headerSlotProps = computed(() => ({ isMobile: isMobile.value }));
-
-function sidebarSlotProps(side: MtAppSide): SidebarSlotProps {
-  return { isMobile: isMobile.value, isOpen: activeSide.value === side, close: drawer.close };
-}
 
 // Detecting empty slots renders them, so their presence is evaluated once per render.
-let slotPresence: { header: boolean; start: boolean; end: boolean; content: boolean } | undefined;
+let slotPresence: Record<"header" | MtAppPanel | "content", boolean> | undefined;
 
 onBeforeUpdate(() => {
   slotPresence = undefined;
@@ -272,113 +242,175 @@ onBeforeUpdate(() => {
 function getSlotPresence() {
   slotPresence ??= {
     header: hasSlotContent(slots.header, headerSlotProps.value),
-    start: hasSlotContent(slots["sidebar-start"], sidebarSlotProps("start")),
-    end: hasSlotContent(slots["sidebar-end"], sidebarSlotProps("end")),
+    navigation: hasSlotContent(slots.navigation, panelSlotProps("navigation")),
+    sidebar: hasSlotContent(slots.sidebar, panelSlotProps("sidebar")),
     content: hasSlotContent(slots.content),
   };
 
   return slotPresence;
 }
 
-function hasHeader() {
-  return getSlotPresence().header;
-}
-
-function hasSidebar(side: MtAppSide) {
-  return getSlotPresence()[side];
+function hasSlot(name: "header" | MtAppPanel) {
+  return getSlotPresence()[name];
 }
 
 function hasContent() {
   return getSlotPresence().content;
 }
 
-function isSidebarVisible(side: MtAppSide) {
-  return hasSidebar(side) && !isSidebarHidden(side);
+/** Whether the panel can be shown: its slot is filled and no view hides it. */
+function isAvailable(panel: MtAppPanel) {
+  return hasSlot(panel) && !hiddenRegions.value[panel];
+}
+
+/**
+ * Whether the panel is open next to the content and no view hides it, which only happens in the
+ * desktop layout. It doesn't probe the slot, so watchers can use it outside of rendering.
+ */
+function isOpenInline(panel: MtAppPanel) {
+  return !isMobile.value && !hiddenRegions.value[panel] && panels.isOpen(panel);
+}
+
+/** Whether the panel is visible next to the content. */
+function isShownInline(panel: MtAppPanel) {
+  return hasSlot(panel) && isOpenInline(panel);
 }
 
 function showTriggers() {
-  return isMobile.value && (isSidebarVisible("start") || isSidebarVisible("end"));
+  return isMobile.value && (isAvailable("navigation") || isAvailable("sidebar"));
 }
 
 /**
  * The content fills the shell without a frame when no other slot is filled. Regions that a view
- * hides keep the frame, so the view looks like the others, unless the view asks for
- * `contentFrame: false`.
+ * hides and closed panels keep the frame, so the view looks like the others, unless the view asks
+ * for `contentFrame: false`.
  */
 function isFrameless() {
   if (!hasContent()) return false;
+  if (!hasSlot("header") && !hasSlot("navigation") && !hasSlot("sidebar")) return true;
 
-  const presence = getSlotPresence();
-  if (!presence.header && !presence.start && !presence.end) return true;
-
-  const isHeaderVisible = (hasHeader() && !hiddenRegions.value.header) || showTriggers();
+  const isHeaderVisible = (hasSlot("header") && !hiddenRegions.value.header) || showTriggers();
 
   return (
     hiddenRegions.value.contentFrame &&
     !isHeaderVisible &&
-    !isSidebarVisible("start") &&
-    !isSidebarVisible("end")
+    !isShownInline("navigation") &&
+    !isShownInline("sidebar")
   );
+}
+
+const headerSlotProps = computed<HeaderSlotProps>(() => ({
+  isMobile: isMobile.value,
+  isOpen: panels.isOpen,
+  open: panels.open,
+  close: panels.close,
+  toggle: panels.toggle,
+}));
+
+function panelSlotProps(panel: MtAppPanel): PanelSlotProps {
+  return {
+    isMobile: isMobile.value,
+    isOpen: panels.isOpen(panel),
+    close: () => panels.close(panel),
+  };
 }
 
 function focusContent() {
   mainElement.value?.focus({ preventScroll: true });
 }
 
-function registerSidebar(side: MtAppSide) {
-  const unregister = drawer.registerSidebar(side);
+// A region that disappears while it holds the focus would leave the focus nowhere.
+watch(
+  () => ({
+    header: !hiddenRegions.value.header,
+    navigation: isOpenInline("navigation"),
+    sidebar: isOpenInline("sidebar"),
+  }),
+  (visible, wasVisible) => {
+    const active = document.activeElement;
+    if (!active) return;
 
-  return () => {
-    const wasActive = activeSide.value === side;
-    unregister();
+    const isHidingFocus =
+      (wasVisible.header && !visible.header && headerContentElement.value?.contains(active)) ||
+      (wasVisible.navigation &&
+        !visible.navigation &&
+        regionElements.navigation.value?.containsFocus()) ||
+      (wasVisible.sidebar && !visible.sidebar && regionElements.sidebar.value?.containsFocus());
 
-    if (wasActive) nextTick(focusContent);
-  };
-}
+    if (isHidingFocus) nextTick(focusContent);
+  },
+);
 
-// Sync, so the open drawer is still known here before useAppDrawer closes it for the new layout.
+// A view that hides a panel also closes its drawer.
+watch(hiddenRegions, (hidden) => {
+  const drawer = panels.drawer.value;
+  if (drawer && hidden[drawer]) panels.closeDrawer();
+});
+
+// Sync, so the open drawer is still known here before useAppPanels closes it for the new layout.
 watch(
   isMobile,
   () => {
-    if (activeSide.value !== null) nextTick(focusContent);
+    if (panels.drawer.value !== null) nextTick(focusContent);
   },
   { flush: "sync" },
 );
 
-provide(appLayoutKey, {
+provide(appContextKey, {
   isMobile,
-  activeSide,
-  registerSidebar,
-  open: drawer.open,
-  close: drawer.close,
+  isOpen: panels.isOpen,
+  open: panels.open,
+  close: panels.close,
+  toggle: panels.toggle,
   requestRegions,
+  focusContent,
 });
 
-useAppRouter({
-  scrollContainer: mainElement,
-  onNavigate: () => drawer.close(),
+const pageAnnouncement = ref("");
+let announcedTitle = "";
+
+onMounted(() => {
+  announcedTitle = document.title;
 });
 
-const { theme, resolvedTheme, setTheme } = useTheme();
+/** Shows a new page from its top, or from the element of its URL hash, as browsers do for a window. */
+function scrollContent(to: RouteLike, from: RouteLike) {
+  const main = mainElement.value;
+  if (!main) return;
+
+  const target = to.hash ? document.getElementById(decodeURIComponent(to.hash.slice(1))) : null;
+
+  if (target && main.contains(target)) target.scrollIntoView();
+  else if (to.path !== from.path) main.scrollTop = 0;
+}
+
+/** Tells screen readers that a new page is shown, as they hear after a full page load. */
+function announcePage() {
+  if (document.title === announcedTitle) return;
+
+  announcedTitle = document.title;
+  pageAnnouncement.value = document.title;
+}
+
+useRouteChange(async (to, from) => {
+  panels.closeDrawer();
+  await nextTick();
+
+  scrollContent(to, from);
+  if (to.path !== from.path) announcePage();
+});
+
+// Applies the stored theme preference to the document.
+useTheme();
 
 provideFutureFlags(() => ({ all: true, ...props.future }));
 
-provideMtApp({
-  isMobile,
-  activeDrawer: activeSide,
-  theme,
-  resolvedTheme,
-  scrollContainer: mainElement,
-  openDrawer: drawer.open,
-  closeDrawer: drawer.close,
-  setTheme,
-});
-
 defineExpose({
-  /** Opens the drawer of the given side (mobile layout only). */
-  openDrawer: drawer.open,
-  /** Closes the open drawer. */
-  closeDrawer: drawer.close,
+  isMobile,
+  isOpen: panels.isOpen,
+  open: panels.open,
+  close: panels.close,
+  toggle: panels.toggle,
 });
 </script>
 
@@ -464,7 +496,8 @@ defineExpose({
   z-index: 1;
 }
 
-.mt-app__skip:not(:focus-within) {
+.mt-app__skip:not(:focus-within),
+.mt-app__announcer {
   width: var(--scale-size-1);
   height: var(--scale-size-1);
   overflow: hidden;
@@ -472,13 +505,17 @@ defineExpose({
   white-space: nowrap;
 }
 
+.mt-app__announcer {
+  position: absolute;
+}
+
 /*
  * Until the app has mounted, the layout is unknown (see isMounted). Hide the inline
- * sidebars below the default breakpoint so small screens don't show them before the
+ * panels below the default breakpoint so small screens don't show them before the
  * drawers take over. Custom breakpoints only apply once the app has mounted.
  */
 @media (width < 1280px) {
-  .mt-app--responsive:not([data-layout]) :deep(.mt-app__sidebar) {
+  .mt-app--responsive:not([data-layout]) :deep(.mt-app__region) {
     display: none;
   }
 }
