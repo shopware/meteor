@@ -301,6 +301,39 @@ describe("mt-nav", () => {
     });
   });
 
+  describe("row ids", () => {
+    function translatedSections(de: boolean): NavSection[] {
+      return [
+        {
+          items: [
+            {
+              id: "products",
+              label: de ? "Produkte" : "Products",
+              children: [
+                {
+                  id: "overview",
+                  label: de ? "Übersicht" : "Overview",
+                  to: { name: "sw.product.index" },
+                },
+              ],
+            },
+          ],
+        },
+      ];
+    }
+
+    it("keeps a branch open when its label changes but its id stays", async () => {
+      const { rerender } = renderNav({ sections: translatedSections(false) });
+
+      await userEvent.click(screen.getByRole("button", { name: "Products" }));
+      await waitFor(() => expect(getRowLabel("Overview")).toBeVisible());
+
+      await rerender({ sections: translatedSections(true) });
+
+      expect(getRowLabel("Übersicht")).toBeVisible();
+    });
+  });
+
   describe("keyboard", () => {
     it("moves focus between the visible links without wrapping", async () => {
       renderNav();

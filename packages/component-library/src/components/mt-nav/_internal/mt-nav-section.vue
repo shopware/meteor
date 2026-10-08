@@ -16,7 +16,7 @@
     <ul class="mt-nav__list" :aria-labelledby="section.header ? headerId : undefined">
       <mt-nav-item
         v-for="item in section.items"
-        :key="item.label"
+        :key="itemKey(item)"
         :item="item"
         :depth="1"
         :branch-key="branchKey(sectionIndex, item)"
@@ -29,7 +29,7 @@
 import { useId } from "vue";
 import MtText from "@/components/mt-text/mt-text.vue";
 import MtNavItem from "./mt-nav-item.vue";
-import { branchKey, type NavSection } from "./mt-nav-context";
+import { branchKey, itemKey, type NavSection } from "./mt-nav-context";
 
 defineProps<{
   section: NavSection;

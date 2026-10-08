@@ -24,6 +24,7 @@ import {
   branchKey,
   hasNestedItems,
   isItemActive,
+  itemKey,
   type NavItem,
   type NavLinkComponent,
   type NavSection,
@@ -97,7 +98,11 @@ const activeOwnerKey = computed(
 const activeRowSignature = computed(() =>
   branches.value
     .filter((branch) => isItemActive(branch.item))
-    .map((branch) => `${branch.key}/${branch.item.children?.find(isItemActive)?.label ?? ""}`)
+    .map((branch) => {
+      const activeChild = branch.item.children?.find(isItemActive);
+
+      return `${branch.key}/${activeChild ? itemKey(activeChild) : ""}`;
+    })
     .join(","),
 );
 

@@ -46,7 +46,7 @@
     <mt-collapsible-content v-if="hasChildren" as="ul" class="mt-nav__sub-list">
       <mt-nav-item
         v-for="child in item.children"
-        :key="child.label"
+        :key="itemKey(child)"
         :item="child"
         :depth="depth + 1"
         :branch-key="branchKey"
@@ -66,6 +66,7 @@ import {
   MAX_NESTING_LEVEL,
   hasNestedItems,
   isItemActive,
+  itemKey,
   useNavContext,
   type NavItem,
 } from "./mt-nav-context";
@@ -104,15 +105,19 @@ if (isLeafDepth && hasNestedItems(props.item)) {
 const hasChildren = computed(() => hasNestedItems(props.item) && !isLeafDepth);
 
 // The nested row that is active or holds the active row
-const activeChildLabel = computed(() => props.item.children?.find(isItemActive)?.label ?? null);
+const activeChildKey = computed(() => {
+  const activeChild = props.item.children?.find(isItemActive);
 
-const hasActiveDescendant = computed(() => activeChildLabel.value !== null);
+  return activeChild ? itemKey(activeChild) : null;
+});
+
+const hasActiveDescendant = computed(() => activeChildKey.value !== null);
 
 // The user's last toggle of a nested row. Unset, the row is open while it holds the active row.
 const manualOpen = ref<boolean | null>(null);
 
 // A manual collapse holds until the active row changes
-watch(activeChildLabel, () => {
+watch(activeChildKey, () => {
   if (manualOpen.value === false) {
     manualOpen.value = null;
   }

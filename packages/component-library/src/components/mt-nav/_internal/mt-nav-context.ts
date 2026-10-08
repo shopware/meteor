@@ -14,7 +14,9 @@ export type NavLinkTarget = string | object;
  * One row of the navigation. Rows nest through `children`, up to three levels deep in total.
  */
 export interface NavItem {
-  /** Translated label of the row. Siblings need distinct labels. */
+  /** Stable identifier of the row. Siblings need distinct ids; without one, the label is used. */
+  id?: string;
+  /** Translated label of the row. */
   label: string;
   /** Icon name of the meteor icon kit, e.g. `regular-products`. Shown on top-level rows only. */
   icon?: string;
@@ -53,9 +55,14 @@ export function hasNestedItems(item: NavItem): boolean {
   return (item.children?.length ?? 0) > 0;
 }
 
+export function itemKey(item: NavItem): string {
+  // Identifies a row among its siblings, by its id or, without one, its label
+  return item.id ?? item.label;
+}
+
 export function branchKey(sectionIndex: number, item: NavItem): string {
   // Identifies a top-level row across sections, for the open state the navigation keeps
-  return `${sectionIndex}/${item.label}`;
+  return `${sectionIndex}/${itemKey(item)}`;
 }
 
 /**
