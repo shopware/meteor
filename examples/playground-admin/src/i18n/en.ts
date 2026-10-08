@@ -1,7 +1,6 @@
 export const en = {
   app: {
     title: "Meteor playground",
-    toggleSidebar: "Show or hide the sidebar",
   },
   nav: {
     label: "Main navigation",
@@ -15,7 +14,7 @@ export const en = {
   dashboard: {
     title: "Admin playground",
     description:
-      "A minimal application for trying out the Meteor app shell: header, sidebars, drawers on small screens, theme and language.",
+      "A minimal application for trying out the Meteor app shell: navigation, sidebar, drawers on small screens, theme and language.",
   },
   cms: {
     back: "Back",

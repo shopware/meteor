@@ -3,8 +3,7 @@
 A minimal Vue 3 + Vite + TypeScript application built on the `<mt-app>` application shell, set up the way a
 production app would use it:
 
-- header, navigation and sidebar, which become drawers on small screens;
-- the desktop panel state is remembered with `v-model:navigation-open` and `v-model:sidebar-open`;
+- navigation and sidebar, which become drawers on small screens;
 - lazy-loaded routes with a page title each, which the shell announces to screen readers, plus the
   optional loading bar;
 - a full-screen route that hides the shell's regions with `meta.mtAppRegions`;
@@ -26,7 +25,6 @@ The app follows the [`create-vue`](https://github.com/vuejs/create-vue) layout, 
 ```
 src/
   components/
-    AppHeader.vue    the header, with a desktop toggle for the sidebar
     AppNav.vue       the navigation
     AppSidebar.vue   the sidebar
   views/             one view per route

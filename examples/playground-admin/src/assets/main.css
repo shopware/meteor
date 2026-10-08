@@ -1,6 +1,6 @@
 /* The padding of every page. */
 .page {
-  padding: var(--scale-size-40);
+  padding: var(--scale-size-32);
 }
 
 /* Stacks its children with the default spacing. */
