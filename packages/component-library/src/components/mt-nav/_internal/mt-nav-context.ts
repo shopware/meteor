@@ -8,7 +8,7 @@ export type NavLinkComponent = string | Component;
 /**
  * Route location handed to the link component, e.g. a Vue Router `RouteLocationRaw`.
  */
-export type NavLinkTarget = string | Record<string, unknown>;
+export type NavLinkTarget = string | object;
 
 /**
  * One row of the navigation. Rows nest through `children`, up to three levels deep in total.
