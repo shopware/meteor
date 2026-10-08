@@ -9,6 +9,7 @@ export interface AppContext {
   open(panel: MtAppPanel): void;
   close(panel: MtAppPanel): void;
   toggle(panel: MtAppPanel): void;
+  startLoading(): () => void;
   /** Hides regions until the returned function is called. */
   requestRegions(regions: () => MtAppRegions): () => void;
   /** Moves the focus to the content, for example when the focused region disappears. */
