@@ -8,5 +8,5 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true
   },
-  "include": ["env.d.ts", "src/**/*.ts", "src/**/*.vue", "shared/**/*.ts"]
+  "include": ["env.d.ts", "src/**/*.ts", "src/**/*.vue"]
 }

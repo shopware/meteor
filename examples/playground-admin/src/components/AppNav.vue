@@ -6,7 +6,6 @@ const { t } = useI18n();
 
 const routes = [
   { to: "/", label: "nav.dashboard" },
-  { to: "/products", label: "nav.products" },
   { to: "/cms", label: "nav.cms" },
   { to: "/settings", label: "nav.settings" },
 ];
