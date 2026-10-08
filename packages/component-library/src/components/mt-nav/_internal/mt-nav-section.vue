@@ -8,7 +8,6 @@
       size="xs"
       weight="regular"
       color="color-text-secondary-default"
-      :title="section.header"
     >
       {{ section.header }}
     </mt-text>
