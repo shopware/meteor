@@ -15,7 +15,7 @@
           class="mt-nav__link-icon"
         />
 
-        <span class="mt-nav__link-label" :title="item.label">
+        <span class="mt-nav__link-label">
           {{ item.label }}
         </span>
 
