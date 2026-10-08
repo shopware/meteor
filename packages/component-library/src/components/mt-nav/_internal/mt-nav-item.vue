@@ -390,7 +390,7 @@ function setSubtreeOpen(open: boolean) {
 
 .mt-nav__item-row .mt-nav__link.is--active {
   background: var(--color-background-brand-default);
-  color: var(--color-icon-brand-default);
+  color: var(--color-text-brand-default);
 }
 
 .mt-nav__item-row .mt-nav__link.is--active .mt-nav__link-icon,
