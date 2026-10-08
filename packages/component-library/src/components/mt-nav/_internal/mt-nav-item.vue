@@ -295,16 +295,17 @@ function setSubtreeOpen(open: boolean) {
   overflow: hidden;
 }
 
-/* Nested rows draw a tree line at the offset and indent their link past it */
 .mt-nav__list-item--nested {
-  --mt-nav-tree-line-offset: 18px;
-  --mt-nav-tree-indent: 36px;
+  --mt-nav-tree-line-offset: var(--scale-size-18);
+  --mt-nav-tree-indent: var(--scale-size-36);
 }
 
 .mt-nav__list-item--nested > .mt-nav__sub-list {
   margin-left: var(--mt-nav-tree-line-offset);
   position: relative;
-  padding-left: calc(var(--mt-nav-tree-indent) - var(--mt-nav-tree-line-offset) - 1px);
+  padding-left: calc(
+    var(--mt-nav-tree-indent) - var(--mt-nav-tree-line-offset) - var(--scale-size-1)
+  );
 }
 
 .mt-nav__list-item--nested > .mt-nav__sub-list::before {
@@ -313,9 +314,9 @@ function setSubtreeOpen(open: boolean) {
   left: 0;
   top: 0;
   bottom: 0;
-  width: 1px;
+  width: var(--scale-size-1);
   background: var(--color-border-secondary-default);
-  border-radius: 1px;
+  border-radius: var(--border-radius-2xs);
 }
 
 /* Shorten the tree line when the last visible row is a closed leaf */
@@ -334,24 +335,23 @@ function setSubtreeOpen(open: boolean) {
   left: var(--mt-nav-tree-line-offset);
   top: 0;
   bottom: 0;
-  width: 1px;
+  width: var(--scale-size-1);
   background: var(--color-border-secondary-default);
-  border-radius: 1px;
+  border-radius: var(--border-radius-2xs);
 }
 
-/* The transparent outline acts as a colour-swappable halo, so no extra element is needed */
 .mt-nav__list-item--nested > .mt-nav__item-row > .mt-nav__link::after {
   content: "";
   position: absolute;
-  left: calc(var(--mt-nav-tree-line-offset) - 1px);
+  left: calc(var(--mt-nav-tree-line-offset) - var(--scale-size-1));
   top: 50%;
   transform: translateY(-50%);
   width: 3px;
-  height: 16px;
-  border-radius: 5px;
+  height: var(--scale-size-16);
+  border-radius: var(--border-radius-round);
   opacity: 0;
   pointer-events: none;
-  outline: 4px solid transparent;
+  outline: var(--scale-size-4) solid transparent;
 }
 
 .mt-nav__list-item--nested > .mt-nav__item-row > .mt-nav__link:not(.is--active):hover::after {
@@ -369,7 +369,7 @@ function setSubtreeOpen(open: boolean) {
 .mt-nav__list-item--nested.is--child-active > .mt-nav__item-row > .mt-nav__link::after {
   opacity: 1;
   background: var(--color-border-primary-default);
-  outline-color: var(--color-elevation-surface-sunken);
+  outline-color: var(--color-elevation-surface-default);
 }
 
 .mt-nav__list-item--nested.is--child-active > .mt-nav__item-row > .mt-nav__link:hover::after {
