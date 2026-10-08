@@ -2,4 +2,4 @@
 "@shopware-ag/meteor-component-library": patch
 ---
 
-`mt-select` and `mt-tooltip` mark the Escape key as handled when it closes their result list or tooltip, so a surrounding element that also listens for Escape can ignore it.
+`mt-select` and `mt-tooltip` now call `preventDefault()` on the Escape `keydown` event when Escape closes their result list or tooltip. Your own Escape handlers can check `event.defaultPrevented` to leave that press alone, so one press doesn't also close a surrounding dialog.
