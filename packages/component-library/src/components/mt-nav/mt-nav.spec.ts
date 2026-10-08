@@ -24,10 +24,10 @@ function sampleItems(current?: string): NavItem[] {
   return [
     route("Dashboard", "sw.dashboard.index", current),
     {
-      label: "Catalogues",
+      label: "Products",
       icon: "regular-products",
       children: [
-        route("Products", "sw.product.index", current, [
+        route("Overview", "sw.product.index", current, [
           route("Reviews", "sw.review.index", current, [
             route("Too deep", "sw.deep.index", current),
           ]),
@@ -77,7 +77,7 @@ describe("mt-nav", () => {
       const navigation = screen.getByRole("navigation", { name: "Main navigation" });
 
       expect(getRowLabel("Dashboard", navigation)).toBeVisible();
-      expect(getRowLabel("Catalogues", navigation)).toBeVisible();
+      expect(getRowLabel("Products", navigation)).toBeVisible();
       expect(getRowLabel("Docs", navigation)).toBeVisible();
     });
 
@@ -133,11 +133,11 @@ describe("mt-nav", () => {
     it("expands a branch when its row is clicked", async () => {
       renderNav();
 
-      expect(getRowLabel("Products")).not.toBeVisible();
+      expect(getRowLabel("Overview")).not.toBeVisible();
 
-      await userEvent.click(screen.getByRole("button", { name: "Catalogues" }));
+      await userEvent.click(screen.getByRole("button", { name: "Products" }));
 
-      expect(getRowLabel("Products")).toBeVisible();
+      expect(getRowLabel("Overview")).toBeVisible();
       expect(getRowLabel("Categories")).toBeVisible();
     });
 
@@ -151,7 +151,7 @@ describe("mt-nav", () => {
         "page",
       );
       expect(getRowLabel("Dashboard").closest(".mt-nav__link")).not.toHaveAttribute("aria-current");
-      expect(getRowLabel("Catalogues").closest(".mt-nav__link")).not.toHaveAttribute(
+      expect(getRowLabel("Products").closest(".mt-nav__link")).not.toHaveAttribute(
         "aria-current",
       );
     });
@@ -161,10 +161,10 @@ describe("mt-nav", () => {
 
       await waitFor(() => expect(getRowLabel("Categories")).toBeVisible());
 
-      await userEvent.click(screen.getByRole("button", { name: "Catalogues" }));
+      await userEvent.click(screen.getByRole("button", { name: "Products" }));
 
       await waitFor(() => expect(getRowLabel("Categories")).not.toBeVisible());
-      expect(getRowLabel("Catalogues").closest(".mt-nav__link")).toHaveAttribute(
+      expect(getRowLabel("Products").closest(".mt-nav__link")).toHaveAttribute(
         "aria-current",
         "page",
       );
@@ -183,7 +183,7 @@ describe("mt-nav", () => {
     it("does not emit navigate for a row that only toggles", async () => {
       const { emitted } = renderNav();
 
-      await userEvent.click(screen.getByRole("button", { name: "Catalogues" }));
+      await userEvent.click(screen.getByRole("button", { name: "Products" }));
 
       expect(emitted().navigate).toBeUndefined();
     });
@@ -193,15 +193,15 @@ describe("mt-nav", () => {
 
       await waitFor(() => expect(getRowLabel("Reviews")).toBeVisible());
 
-      await userEvent.click(getRowLabel("Products"));
+      await userEvent.click(getRowLabel("Overview"));
 
       await waitFor(() => expect(getRowLabel("Reviews")).not.toBeVisible());
-      expect(getRowLabel("Products").closest("a")).toHaveAttribute("aria-current", "page");
+      expect(getRowLabel("Overview").closest("a")).toHaveAttribute("aria-current", "page");
 
-      await userEvent.click(getRowLabel("Products"));
+      await userEvent.click(getRowLabel("Overview"));
 
       await waitFor(() => expect(getRowLabel("Reviews")).toBeVisible());
-      expect(getRowLabel("Products").closest("a")).not.toHaveAttribute("aria-current");
+      expect(getRowLabel("Overview").closest("a")).not.toHaveAttribute("aria-current");
     });
 
     it("renders the suffix slot after the label of each row", () => {
@@ -247,24 +247,24 @@ describe("mt-nav", () => {
     it("moves the open branch along with the active row", async () => {
       const { rerender } = render(Wrapper, { props: { current: "sw.product.index" } });
 
-      await waitFor(() => expect(getRowLabel("Products")).toBeVisible());
+      await waitFor(() => expect(getRowLabel("Overview")).toBeVisible());
       expect(getRowLabel("FAQ")).not.toBeVisible();
 
       await rerender({ current: "sw.faq.index" });
 
       await waitFor(() => expect(getRowLabel("FAQ")).toBeVisible());
-      expect(getRowLabel("Products")).not.toBeVisible();
+      expect(getRowLabel("Overview")).not.toBeVisible();
       expect(getRowLabel("FAQ").closest(".mt-nav__link")).toHaveAttribute("aria-current", "page");
     });
 
     it("closes the open branch when a top level row becomes active", async () => {
       const { rerender } = render(Wrapper, { props: { current: "sw.product.index" } });
 
-      await waitFor(() => expect(getRowLabel("Products")).toBeVisible());
+      await waitFor(() => expect(getRowLabel("Overview")).toBeVisible());
 
       await rerender({ current: "sw.dashboard.index" });
 
-      await waitFor(() => expect(getRowLabel("Products")).not.toBeVisible());
+      await waitFor(() => expect(getRowLabel("Overview")).not.toBeVisible());
       expect(getRowLabel("Dashboard").closest(".mt-nav__link")).toHaveAttribute(
         "aria-current",
         "page",
@@ -274,10 +274,10 @@ describe("mt-nav", () => {
     it("reopens a manually closed branch when the active row moves inside it", async () => {
       const { rerender } = render(Wrapper, { props: { current: "sw.product.index" } });
 
-      await waitFor(() => expect(getRowLabel("Products")).toBeVisible());
+      await waitFor(() => expect(getRowLabel("Overview")).toBeVisible());
 
-      await userEvent.click(screen.getByRole("button", { name: "Catalogues" }));
-      await waitFor(() => expect(getRowLabel("Products")).not.toBeVisible());
+      await userEvent.click(screen.getByRole("button", { name: "Products" }));
+      await waitFor(() => expect(getRowLabel("Overview")).not.toBeVisible());
 
       await rerender({ current: "sw.category.index" });
 
@@ -291,13 +291,13 @@ describe("mt-nav", () => {
     it("keeps one top level branch open across sections", async () => {
       render(Wrapper);
 
-      await userEvent.click(screen.getByRole("button", { name: "Catalogues" }));
-      expect(getRowLabel("Products")).toBeVisible();
+      await userEvent.click(screen.getByRole("button", { name: "Products" }));
+      expect(getRowLabel("Overview")).toBeVisible();
 
       await userEvent.click(screen.getByRole("button", { name: "Help" }));
 
       expect(getRowLabel("FAQ")).toBeVisible();
-      expect(getRowLabel("Products")).not.toBeVisible();
+      expect(getRowLabel("Overview")).not.toBeVisible();
     });
   });
 
@@ -306,7 +306,7 @@ describe("mt-nav", () => {
       renderNav();
 
       const dashboard = getRowLabel("Dashboard").closest("a") as HTMLElement;
-      const catalogues = screen.getByRole("button", { name: "Catalogues" });
+      const products = screen.getByRole("button", { name: "Products" });
       const docs = getRowLabel("Docs").closest("a") as HTMLElement;
 
       dashboard.focus();
@@ -328,7 +328,7 @@ describe("mt-nav", () => {
       expect(docs).toHaveFocus();
 
       await userEvent.keyboard("{ArrowUp}");
-      expect(catalogues).toHaveFocus();
+      expect(products).toHaveFocus();
     });
 
     it("leaves keys pressed inside slotted content alone", async () => {

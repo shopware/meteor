@@ -16,7 +16,7 @@ export const VisualTestDefault: MtNavStory = {
     const navigation = canvas.getByRole("navigation", { name: "Main navigation" });
 
     expect(within(navigation).getByText("Dashboard")).toBeVisible();
-    expect(within(navigation).getByText("Catalogues")).toBeVisible();
+    expect(within(navigation).getByText("Products")).toBeVisible();
     expect(within(navigation).getByText("Settings")).toBeVisible();
     expect(within(navigation).queryByRole("heading", { level: 3 })).toBeNull();
   },
@@ -42,10 +42,10 @@ export const VisualTestActiveRoute: MtNavStory = {
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
-    // The story starts on product.index, which sits below Catalogues
-    await waitUntil(() => canvas.getByText("Products").checkVisibility());
+    // The story starts on product.index, which sits below Products
+    await waitUntil(() => canvas.getByText("Overview").checkVisibility());
 
-    expect(canvas.getByText("Products").closest(".mt-nav__link")).toHaveAttribute(
+    expect(canvas.getByText("Overview").closest(".mt-nav__link")).toHaveAttribute(
       "aria-current",
       "page",
     );
@@ -80,9 +80,9 @@ export const VisualTestNavigate: MtNavStory = {
     );
 
     // The branch that held the previous page closes once nothing inside it is active
-    await waitUntil(() => !canvas.getByText("Products").checkVisibility());
+    await waitUntil(() => !canvas.getByText("Overview").checkVisibility());
 
-    expect(canvas.getByText("Products").closest(".mt-nav__link")).not.toHaveAttribute(
+    expect(canvas.getByText("Overview").closest(".mt-nav__link")).not.toHaveAttribute(
       "aria-current",
     );
   },

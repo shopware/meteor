@@ -13,11 +13,11 @@ export type MtNavMeta = Meta<typeof MtNav>;
 const shopItems: NavItem[] = [
   { label: "Dashboard", icon: "regular-home", to: { name: "dashboard.index" } },
   {
-    label: "Catalogues",
+    label: "Products",
     icon: "regular-products",
     children: [
       {
-        label: "Products",
+        label: "Overview",
         to: { name: "product.index" },
         children: [{ label: "Reviews", to: { name: "review.index" } }],
       },
@@ -119,11 +119,11 @@ const sections: NavSection[] = [
     items: [
       { label: "Dashboard", icon: "regular-home", to: { name: "dashboard.index" }, active: isCurrent("dashboard.index") },
       {
-        label: "Catalogues",
+        label: "Products",
         icon: "regular-products",
         children: [
           {
-            label: "Products",
+            label: "Overview",
             to: { name: "product.index" },
             active: isCurrent("product.index"),
             children: [{ label: "Reviews", to: { name: "review.index" }, active: isCurrent("review.index") }],
