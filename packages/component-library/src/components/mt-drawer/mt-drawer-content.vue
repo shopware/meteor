@@ -25,6 +25,7 @@
         aria-modal="true"
         :inert="!isOpen || undefined"
         v-bind="{
+          // Reka points aria-describedby at the description, which only exists with a visible subtitle.
           ...(subtitle && !hideHeader ? {} : { 'aria-describedby': undefined }),
           ...$attrs,
         }"
@@ -71,16 +72,16 @@ import { useI18n } from "vue-i18n";
 import { DrawerContent, DrawerDescription, DrawerPortal, DrawerTitle } from "reka-ui";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtText from "@/components/mt-text/mt-text.vue";
-import { useModalLayer } from "./composables/useModalLayer";
 import { hasSlotContent } from "@/utils/slot";
 import MtDrawerClose from "./mt-drawer-close.vue";
 import { useDrawerContext, type MtDrawerSide } from "./composables/useDrawerContext";
+import { useModalLayer } from "./composables/useModalLayer";
 
 /**
- * @experimental Not for public use yet: undocumented, and it may change or be removed without notice.
- *
  * The panel of a drawer: it slides in from an edge of the viewport above a backdrop,
  * makes the page behind it inert and returns the focus when it closes.
+ *
+ * @experimental Not for public use yet: undocumented, and it may change or be removed without notice.
  */
 const props = withDefaults(
   defineProps<{
@@ -171,6 +172,8 @@ watch(
   { flush: "sync" },
 );
 
+// The modal layer activates a tick after opening: `v-show` reveals the panel only after the
+// post-flush watchers, and focusing an element that is still `display: none` does nothing.
 watch(
   isOpen,
   (open) => {

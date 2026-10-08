@@ -3,21 +3,15 @@ import { render, screen } from "@testing-library/vue";
 import userEvent from "@testing-library/user-event";
 import { useModalLayer } from "./useModalLayer";
 
-function createHarness(options: { restoreToOpener?: boolean } = {}) {
+function createHarness() {
   const active = ref(false);
   const onEscape = vi.fn();
-  const returnTarget = ref<HTMLElement | null>(null);
 
   const Harness: Component = {
     setup() {
       const panel = ref<HTMLElement | null>(null);
 
-      useModalLayer({
-        panel,
-        active,
-        onEscape,
-        ...(options.restoreToOpener ? {} : { returnFocusTo: () => returnTarget.value }),
-      });
+      useModalLayer({ panel, active, onEscape });
 
       return () =>
         h("div", [
@@ -31,7 +25,7 @@ function createHarness(options: { restoreToOpener?: boolean } = {}) {
     },
   };
 
-  return { Harness, active, onEscape, returnTarget };
+  return { Harness, active, onEscape };
 }
 
 describe("useModalLayer", () => {
@@ -46,38 +40,6 @@ describe("useModalLayer", () => {
 
     // ASSERT
     expect(screen.getByRole("dialog", { name: "Panel" })).toHaveFocus();
-  });
-
-  it("restores the focus to the given element when it deactivates", async () => {
-    // ARRANGE
-    const { Harness, active, returnTarget } = createHarness();
-    render(Harness);
-    returnTarget.value = screen.getByRole("button", { name: "Outside" });
-    active.value = true;
-    await nextTick();
-
-    // ACT
-    active.value = false;
-    await nextTick();
-
-    // ASSERT
-    expect(screen.getByRole("button", { name: "Outside" })).toHaveFocus();
-  });
-
-  it("leaves the focus alone when no return element is given", async () => {
-    // ARRANGE
-    const { Harness, active } = createHarness();
-    render(Harness);
-    active.value = true;
-    await nextTick();
-    screen.getByRole("button", { name: "Middle" }).focus();
-
-    // ACT
-    active.value = false;
-    await nextTick();
-
-    // ASSERT
-    expect(screen.getByRole("button", { name: "Middle" })).toHaveFocus();
   });
 
   it("closes on Escape pressed inside the panel", async () => {
@@ -215,7 +177,7 @@ describe("useModalLayer", () => {
 
   it("returns the focus to the element that opened it", async () => {
     // ARRANGE
-    const { Harness, active } = createHarness({ restoreToOpener: true });
+    const { Harness, active } = createHarness();
     render(Harness);
     screen.getByRole("button", { name: "Outside" }).focus();
     active.value = true;

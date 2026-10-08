@@ -14,11 +14,15 @@ export type MtDrawerSide = "start" | "end" | "top" | "bottom";
  */
 export type MtDrawerDismissReason = "outside-click" | "escape-key" | "swipe";
 
+/** What `mt-drawer-root` shares with its trigger, content and close button. */
 export interface MtDrawerContext {
   isOpen: Readonly<Ref<boolean>>;
+  /** The edge the content slides in from, set by the content, so the root knows the swipe direction. */
   side: Ref<MtDrawerSide>;
   setOpen(open: boolean): void;
+  /** Closes the drawer, or reports the reason when it is not dismissible. */
   dismiss(reason: MtDrawerDismissReason): void;
+  /** Registers how the content moves back after a swipe that may not close the drawer. */
   onSwipeRefused(reset: () => void): void;
 }
 
@@ -26,7 +30,13 @@ export const drawerContextKey = Symbol("mt-drawer") as InjectionKey<MtDrawerCont
 
 export function useDrawerContext(component: string): MtDrawerContext {
   const context = inject(drawerContextKey, null);
-  if (!context) throw new Error(`<${component}> must be used inside <mt-drawer-root>.`);
+
+  if (context === null) {
+    const error = new Error(`<${component} /> is missing a parent <mt-drawer-root /> component.`);
+    if (Error.captureStackTrace) Error.captureStackTrace(error, useDrawerContext);
+
+    throw error;
+  }
 
   return context;
 }

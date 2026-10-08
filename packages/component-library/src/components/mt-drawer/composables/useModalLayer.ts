@@ -12,11 +12,6 @@ export interface UseModalLayerOptions {
   onEscape(): void;
   /** The elements outside the panel that become inert while the layer is active. */
   inertTargets?: () => Iterable<Element | null | undefined>;
-  /**
-   * The element that receives the focus when the layer deactivates. Defaults to the
-   * element that was focused before the layer opened; `null` leaves the focus alone.
-   */
-  returnFocusTo?: () => HTMLElement | null;
 }
 
 const TABBABLE_SELECTOR = [
@@ -154,7 +149,8 @@ export function useModalLayer(options: UseModalLayerOptions): void {
     acquired.forEach(releaseInert);
     acquired = [];
 
-    const target = options.returnFocusTo ? options.returnFocusTo() : previousFocus;
+    // The focus returns to the element that had it before the layer opened.
+    const target = previousFocus;
     previousFocus = null;
 
     if (target?.isConnected) target.focus({ preventScroll: true });
