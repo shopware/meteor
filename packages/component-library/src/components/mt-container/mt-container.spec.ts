@@ -3,28 +3,16 @@ import { describe, expect, it } from "vitest";
 import MtContainer from "./mt-container.vue";
 
 describe("mt-container", () => {
-  it("renders its content", () => {
-    // ACT
-    render(MtContainer, { slots: { default: "Page content" } });
-
-    // ASSERT
-    expect(screen.getByText("Page content")).toBeVisible();
-  });
-
-  it("uses the medium width by default", () => {
-    // ACT
-    render(MtContainer, { slots: { default: "Page content" } });
-
-    // ASSERT
-    expect(screen.getByText("Page content")).toHaveClass("mt-container--size-m");
-  });
-
-  it.each(["s", "m", "l"] as const)("limits the width to size %s", (size) => {
+  it.each([
+    [undefined, "m"],
+    ["s", "s"],
+    ["l", "l"],
+  ] as const)("limits the width for size %s to %s", (size, expected) => {
     // ACT
     render(MtContainer, { props: { size }, slots: { default: "Page content" } });
 
     // ASSERT
-    expect(screen.getByText("Page content")).toHaveClass(`mt-container--size-${size}`);
+    expect(screen.getByText("Page content")).toHaveClass(`mt-container--size-${expected}`);
   });
 
   it("renders as the given element", () => {
