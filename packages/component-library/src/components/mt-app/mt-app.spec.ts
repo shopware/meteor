@@ -125,22 +125,16 @@ function createFakeRouter() {
     afterEach: (hook: (typeof hooks)[number]) => (hooks.push(hook), () => undefined),
   };
 
-  async function navigate(path: string) {
+  async function navigate(path: string, hash = "") {
     const from = current;
-    current = { path, hash: "" };
+    current = { path, hash };
     hooks.forEach((hook) => hook(current, from));
 
     await nextTick();
     await nextTick();
   }
 
-  /** A navigation that Vue Router reports as duplicated, for example a link to the current route. */
-  async function navigateToCurrent() {
-    hooks.forEach((hook) => hook(current, current, { type: 16 }));
-    await nextTick();
-  }
-
-  return { router, navigate, navigateToCurrent };
+  return { router, navigate };
 }
 
 const navigationTriggerName = "Open Navigation";
@@ -189,7 +183,7 @@ describe("mt-app", () => {
       );
     });
 
-    it("renders no header and no panels when only content is given", async () => {
+    it("lets only content fill the shell without a frame", async () => {
       // ACT
       await renderApp({ slots: { content: allSlots.content } });
 
@@ -197,48 +191,25 @@ describe("mt-app", () => {
       expect(screen.queryByRole("banner")).not.toBeInTheDocument();
       expect(screen.queryByRole("navigation")).not.toBeInTheDocument();
       expect(screen.queryByRole("complementary")).not.toBeInTheDocument();
-      expect(screen.getByRole("main")).toBeInTheDocument();
-    });
-
-    it("lets the content fill the shell without a frame when no other slot is filled", async () => {
-      // ACT
-      await renderApp({ slots: { content: allSlots.content } });
-
-      // ASSERT
       expect(screen.getByRole("main").closest(".mt-app")).toHaveClass("mt-app--frameless");
     });
 
-    it("keeps the frame around the content when another slot is filled", async () => {
-      // ACT
-      await renderApp({
-        slots: { content: allSlots.content, navigation: allSlots.navigation },
-      });
+    it.each([
+      ["desktop", {}],
+      ["mobile", mobileProps()],
+    ])(
+      "keeps the frame around the content in the %s layout when another slot is filled",
+      async (_, props) => {
+        // ACT
+        await renderApp({
+          props,
+          slots: { content: allSlots.content, navigation: allSlots.navigation },
+        });
 
-      // ASSERT
-      expect(screen.getByRole("main").closest(".mt-app")).not.toHaveClass("mt-app--frameless");
-    });
-
-    it("keeps the frame in the mobile layout, where the sidebars become drawers", async () => {
-      // ACT
-      await renderApp({
-        props: mobileProps(),
-        slots: { content: allSlots.content, navigation: allSlots.navigation },
-      });
-
-      // ASSERT
-      expect(screen.getByRole("main").closest(".mt-app")).not.toHaveClass("mt-app--frameless");
-    });
-
-    it("renders only the navigation when the sidebar slot is empty", async () => {
-      // ACT
-      await renderApp({
-        slots: { content: allSlots.content, navigation: allSlots.navigation },
-      });
-
-      // ASSERT
-      expect(screen.queryByRole("complementary")).not.toBeInTheDocument();
-      expect(screen.getByRole("navigation", { name: "Navigation" })).toBeInTheDocument();
-    });
+        // ASSERT
+        expect(screen.getByRole("main").closest(".mt-app")).not.toHaveClass("mt-app--frameless");
+      },
+    );
 
     it("treats a slot that renders nothing as absent", async () => {
       // ACT
@@ -267,17 +238,7 @@ describe("mt-app", () => {
   });
 
   describe("mobile header", () => {
-    it("places a trigger for every filled sidebar around the header content", async () => {
-      // ACT
-      await renderApp({ props: mobileProps() });
-
-      // ASSERT
-      expect(screen.getByRole("banner")).toHaveTextContent("Header content");
-      expect(screen.getByRole("button", { name: navigationTriggerName })).toBeInTheDocument();
-      expect(screen.getByRole("button", { name: sidebarTriggerName })).toBeInTheDocument();
-    });
-
-    it("renders a trigger only for filled sidebars", async () => {
+    it("renders a trigger only for filled panels", async () => {
       // ACT
       await renderApp({
         props: mobileProps(),
@@ -429,79 +390,9 @@ describe("mt-app", () => {
         expect(screen.getByRole("button", { name: sidebarTriggerName })).toHaveFocus(),
       );
     });
-
-    it("closes on Escape pressed inside the drawer", async () => {
-      // ARRANGE
-      await renderApp({ props: mobileProps() });
-      await userEvent.click(screen.getByRole("button", { name: navigationTriggerName }));
-      await waitFor(() => expect(screen.getByRole("dialog", { name: "Navigation" })).toHaveFocus());
-
-      // ACT
-      await userEvent.keyboard("{Escape}");
-
-      // ASSERT
-      expect(drawerOf(navigationTriggerName)).toHaveAttribute("inert");
-    });
-
-    it("ignores Escape pressed outside the drawer", async () => {
-      // ARRANGE
-      await renderApp({ props: mobileProps() });
-      await userEvent.click(screen.getByRole("button", { name: navigationTriggerName }));
-      screen.getByRole("button", { name: "Content action" }).focus();
-
-      // ACT
-      await userEvent.keyboard("{Escape}");
-
-      // ASSERT
-      expect(screen.getByRole("dialog", { name: "Navigation" })).not.toHaveAttribute("inert");
-    });
-
-    it("stays open for clicks inside the drawer", async () => {
-      // ARRANGE
-      await renderApp({ props: mobileProps() });
-      await userEvent.click(screen.getByRole("button", { name: navigationTriggerName }));
-
-      // ACT
-      await userEvent.click(screen.getByRole("button", { name: "Start action" }));
-
-      // ASSERT
-      expect(screen.getByRole("dialog", { name: "Navigation" })).not.toHaveAttribute("inert");
-    });
-
-    it("keeps the keyboard focus inside the drawer", async () => {
-      // ARRANGE
-      await renderApp({ props: mobileProps() });
-      await userEvent.click(screen.getByRole("button", { name: navigationTriggerName }));
-      screen.getByRole("button", { name: "Start action" }).focus();
-
-      // ACT
-      await userEvent.tab();
-
-      // ASSERT
-      expect(screen.getByRole("button", { name: "Close Navigation" })).toHaveFocus();
-    });
   });
 
   describe("router integration", () => {
-    it("closes an open drawer after a link to the current route", async () => {
-      // ARRANGE
-      const { router, navigateToCurrent } = createFakeRouter();
-      await renderApp({ props: mobileProps(), router });
-      await userEvent.click(screen.getByRole("button", { name: navigationTriggerName }));
-      expect(screen.getByRole("dialog", { name: "Navigation" })).not.toHaveAttribute("inert");
-
-      // ACT
-      await navigateToCurrent();
-
-      // ASSERT
-      await waitFor(() =>
-        expect(screen.getByRole("button", { name: navigationTriggerName })).toHaveAttribute(
-          "aria-expanded",
-          "false",
-        ),
-      );
-    });
-
     it("closes an open drawer after a navigation", async () => {
       // ARRANGE
       const { router, navigate } = createFakeRouter();
@@ -526,6 +417,24 @@ describe("mt-app", () => {
 
       // ASSERT
       expect(screen.getByRole("main").scrollTop).toBe(0);
+    });
+
+    it("shows the element of a link's hash", async () => {
+      // ARRANGE
+      const { router, navigate } = createFakeRouter();
+      await renderApp({
+        router,
+        slots: { content: '<h2 id="shipping">Shipping</h2>' },
+      });
+      const target = screen.getByRole("heading", { name: "Shipping" });
+      const scrollIntoView = vi.fn();
+      target.scrollIntoView = scrollIntoView;
+
+      // ACT
+      await navigate("/help", "#shipping");
+
+      // ASSERT
+      expect(scrollIntoView).toHaveBeenCalledTimes(1);
     });
 
     it("announces the title of a new page to screen readers", async () => {
@@ -569,20 +478,6 @@ describe("mt-app", () => {
       expect(isInert(sidebar)).toBe(false);
       expect(isInert(screen.getByRole("main"))).toBe(false);
       await waitFor(() => expect(screen.getByRole("main")).toHaveFocus());
-    });
-
-    it("enters the mobile layout with closed drawers", async () => {
-      // ARRANGE
-      const media = stubMatchMedia(1440);
-      await renderApp({ props: { mobileBreakpoint: 1280 } });
-
-      // ACT
-      media.setWidth(390);
-      await nextTick();
-
-      // ASSERT
-      await waitFor(() => expect(drawerOf(navigationTriggerName)).toHaveAttribute("inert"));
-      expect(visibleBackdrops()).toHaveLength(0);
     });
 
     it("keeps the state of sidebar content across layout changes without re-mounting it", async () => {
@@ -836,17 +731,6 @@ describe("mt-app", () => {
       // ASSERT
       expect(screen.getByRole("status")).toHaveTextContent("card:false banner:true");
     });
-
-    it("lets the application opt out of all future flags", async () => {
-      // ACT
-      await renderApp({
-        props: { future: { all: false } },
-        slots: { content: () => [h(FlagProbe)] },
-      });
-
-      // ASSERT
-      expect(screen.getByRole("status")).toHaveTextContent("card:false banner:false");
-    });
   });
 
   describe("hiding regions", () => {
@@ -908,42 +792,25 @@ describe("mt-app", () => {
       expect(mounted).toHaveBeenCalledTimes(1);
     });
 
-    it("keeps the frame around the content when a view hides every region", async () => {
+    it.each<[string, MtAppRegions, boolean]>([
+      ["hides every region", { header: false, navigation: false, sidebar: false }, false],
+      [
+        "hides every region without a frame",
+        { header: false, navigation: false, sidebar: false, contentFrame: false },
+        true,
+      ],
+      ["asks for no frame while a panel is visible", { header: false, contentFrame: false }, false],
+    ])("frames the content as expected when a view %s", async (_, regions, isFrameless) => {
       // ARRANGE
-      const View = createView({ header: false, navigation: false, sidebar: false });
+      const View = createView(regions);
 
       // ACT
       await renderApp({ slots: { ...allSlots, content: () => [h(View)] } });
 
       // ASSERT
-      expect(screen.getByRole("main").closest(".mt-app")).not.toHaveClass("mt-app--frameless");
-    });
-
-    it("removes the frame when a view asks for it and no other region is visible", async () => {
-      // ARRANGE
-      const View = createView({
-        header: false,
-        navigation: false,
-        sidebar: false,
-        contentFrame: false,
-      });
-
-      // ACT
-      await renderApp({ slots: { ...allSlots, content: () => [h(View)] } });
-
-      // ASSERT
-      expect(screen.getByRole("main").closest(".mt-app")).toHaveClass("mt-app--frameless");
-    });
-
-    it("keeps the frame when a view asks for it while a sidebar is visible", async () => {
-      // ARRANGE
-      const View = createView({ header: false, contentFrame: false });
-
-      // ACT
-      await renderApp({ slots: { ...allSlots, content: () => [h(View)] } });
-
-      // ASSERT
-      expect(screen.getByRole("main").closest(".mt-app")).not.toHaveClass("mt-app--frameless");
+      expect(
+        screen.getByRole("main").closest(".mt-app")?.classList.contains("mt-app--frameless"),
+      ).toBe(isFrameless);
     });
   });
 

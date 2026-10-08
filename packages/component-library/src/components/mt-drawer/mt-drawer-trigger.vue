@@ -10,9 +10,9 @@ import { DrawerTrigger } from "reka-ui";
 import { useDrawerContext } from "./composables/useDrawerContext";
 
 /**
- * @experimental Not for public use yet: undocumented, and it may change or be removed without notice.
- *
  * Opens the surrounding drawer. Renders a button unless `as` names another element or component.
+ *
+ * @experimental Not for public use yet: undocumented, and it may change or be removed without notice.
  */
 withDefaults(
   defineProps<{
