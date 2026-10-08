@@ -544,7 +544,7 @@ defineExpose({
   inset-block-start: 0;
   inset-inline: 0;
   z-index: 2;
-  height: 2px;
+  height: var(--scale-size-2);
   overflow: hidden;
 }
 
