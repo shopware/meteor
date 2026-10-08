@@ -5,8 +5,8 @@
       :id="headerId"
       as="h3"
       class="mt-nav__section-header"
-      size="2xs"
-      weight="semibold"
+      size="xs"
+      weight="regular"
       color="color-text-secondary-default"
       :title="section.header"
     >
@@ -33,7 +33,6 @@ import { branchKey, type NavSection } from "./mt-nav-context";
 
 defineProps<{
   section: NavSection;
-  /** Position of the section in the navigation, part of the keys of its top-level rows. */
   sectionIndex: number;
 }>();
 
@@ -46,7 +45,6 @@ const headerId = `mt-nav-section-header-${useId()}`;
   flex-direction: column;
 }
 
-/* Typography comes from mt-text */
 .mt-nav__section-header {
   height: var(--scale-size-24);
   margin: 0 0 var(--scale-size-4);
