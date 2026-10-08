@@ -8,47 +8,34 @@ export const de: Messages = {
   nav: {
     label: "Hauptnavigation",
     dashboard: "Dashboard",
-    products: "Produkte",
     cms: "CMS",
     settings: "Einstellungen",
+  },
+  sidebar: {
+    label: "Details",
   },
   dashboard: {
     title: "Admin-Playground",
     description:
       "Eine minimale Anwendung zum Ausprobieren der Meteor App-Shell: Kopfzeile, Seitenleisten, Drawer auf kleinen Bildschirmen, Design und Sprache.",
   },
-  products: {
-    title: "Produkte",
-    name: "Produkt",
-    sku: "Produktnummer",
-    category: "Kategorie",
-    stock: "Bestand",
-    price: "Preis",
-    categories: {
-      lighting: "Beleuchtung",
-      textiles: "Heimtextilien",
-      kitchen: "Küche",
-      apparel: "Bekleidung",
-      footwear: "Schuhe",
-      accessories: "Accessoires",
-    },
-  },
   cms: {
     back: "Zurück",
   },
+  notFound: {
+    title: "Seite nicht gefunden",
+    description: "Die Seite, die du suchst, gibt es nicht.",
+    home: "Zum Dashboard",
+  },
   settings: {
-    userTitle: "Benutzereinstellungen",
+    title: "Benutzereinstellungen",
     language: "Sprache",
     theme: "Design",
-    shellTitle: "App-Shell",
-    header: "Kopfzeile",
-    navigation: "Navigation",
-    sidebar: "Seitenleiste",
-    openModal: "Modal öffnen",
-    modalTitle: "Modal",
-    modalText: "Ein Modal, das innerhalb der Shell geöffnet wurde.",
-    close: "Schließen",
-    showNotification: "Benachrichtigung anzeigen",
-    notification: "Benachrichtigung vom Snackbar-Host",
+    reset: "Einstellungen zurücksetzen",
+    resetTitle: "Einstellungen zurücksetzen?",
+    resetText:
+      "Sprache und Design werden auf ihre Standardwerte zurückgesetzt.",
+    cancel: "Abbrechen",
+    resetDone: "Einstellungen zurückgesetzt",
   },
 };

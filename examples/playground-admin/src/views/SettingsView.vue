@@ -5,112 +5,79 @@ import {
   MtCard,
   MtContainer,
   MtModal,
+  MtModalAction,
   MtModalClose,
   MtModalRoot,
   MtModalTrigger,
   MtSelect,
-  MtSwitch,
   MtText,
   MtThemeSelect,
   useSnackbar,
   useTheme,
 } from "@shopware-ag/meteor-component-library";
-import { settings } from "../stores/settings";
 
-const { t } = useI18n();
-const { addSnackbar } = useSnackbar();
-
+const { t, locale } = useI18n();
 const { theme } = useTheme();
+const { addSnackbar } = useSnackbar();
 
 const localeOptions = [
   { label: "English", value: "en" },
   { label: "Deutsch", value: "de" },
 ];
+
+function reset(done: () => void) {
+  locale.value = "en";
+  theme.value = "system";
+  done();
+  addSnackbar({ message: t("settings.resetDone"), variant: "success" });
+}
 </script>
 
 <template>
-  <div class="page">
-    <mt-container size="s" class="page__content">
-      <mt-card :title="t('settings.userTitle')">
-        <div class="settings-form">
-          <mt-select
-            v-model="settings.locale"
-            :label="t('settings.language')"
-            :options="localeOptions"
-            :enable-search="false"
-            hide-clearable-button
-          />
-          <mt-theme-select v-model="theme" :label="t('settings.theme')" />
-        </div>
-      </mt-card>
+  <mt-container as="section" size="s" class="page stack">
+    <mt-card :title="t('settings.title')">
+      <div class="stack">
+        <mt-select
+          v-model="locale"
+          :label="t('settings.language')"
+          :options="localeOptions"
+          :enable-search="false"
+          hide-clearable-button
+        />
+        <mt-theme-select v-model="theme" :label="t('settings.theme')" />
+      </div>
 
-      <mt-card :title="t('settings.shellTitle')">
-        <div class="settings-form">
-          <mt-switch v-model="settings.header" :label="t('settings.header')" />
-          <mt-switch
-            v-model="settings.navigation"
-            :label="t('settings.navigation')"
-          />
-          <mt-switch
-            v-model="settings.sidebar"
-            :label="t('settings.sidebar')"
-          />
-        </div>
+      <template #footer>
+        <mt-modal-root>
+          <mt-modal-trigger :as="MtButton" variant="secondary" size="default">
+            {{ t("settings.reset") }}
+          </mt-modal-trigger>
 
-        <template #footer>
-          <div class="settings-actions">
-            <mt-modal-root>
-              <mt-modal-trigger
-                :as="MtButton"
-                variant="secondary"
-                size="default"
-              >
-                {{ t("settings.openModal") }}
-              </mt-modal-trigger>
+          <mt-modal :title="t('settings.resetTitle')" width="s">
+            <mt-text size="xs">{{ t("settings.resetText") }}</mt-text>
 
-              <mt-modal :title="t('settings.modalTitle')">
-                <mt-text size="xs">{{ t("settings.modalText") }}</mt-text>
-
-                <template #footer>
-                  <mt-modal-close
-                    :as="MtButton"
-                    variant="secondary"
-                    size="default"
-                  >
-                    {{ t("settings.close") }}
-                  </mt-modal-close>
-                </template>
-              </mt-modal>
-            </mt-modal-root>
-
-            <mt-button
-              variant="secondary"
-              size="default"
-              @click="
-                addSnackbar({
-                  message: t('settings.notification'),
-                  variant: 'success',
-                })
-              "
-            >
-              {{ t("settings.showNotification") }}
-            </mt-button>
-          </div>
-        </template>
-      </mt-card>
-    </mt-container>
-  </div>
+            <template #footer>
+              <div class="actions">
+                <mt-modal-close
+                  :as="MtButton"
+                  variant="secondary"
+                  size="default"
+                >
+                  {{ t("settings.cancel") }}
+                </mt-modal-close>
+                <mt-modal-action
+                  :as="MtButton"
+                  variant="critical"
+                  size="default"
+                  @click="reset"
+                >
+                  {{ t("settings.reset") }}
+                </mt-modal-action>
+              </div>
+            </template>
+          </mt-modal>
+        </mt-modal-root>
+      </template>
+    </mt-card>
+  </mt-container>
 </template>
-
-<style scoped>
-.settings-form {
-  display: grid;
-  gap: var(--scale-size-16);
-}
-
-.settings-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--scale-size-8);
-}
-</style>
