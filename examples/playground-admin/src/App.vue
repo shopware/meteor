@@ -11,7 +11,7 @@ const { t } = useI18n();
 </script>
 
 <template>
-  <mt-app :navigation-label="t('nav.label')">
+  <mt-app :navigation-label="t('nav.label')" loading-bar>
     <template v-if="settings.header" #header>
       <AppHeader />
     </template>

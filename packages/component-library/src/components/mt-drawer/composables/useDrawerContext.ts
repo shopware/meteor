@@ -1,17 +1,9 @@
 import { inject, type InjectionKey, type Ref } from "vue";
 
-/**
- * The edge of the viewport a drawer slides in from.
- *
- * @experimental Not for public use yet: undocumented, and it may change or be removed without notice.
- */
+/** The edge of the viewport a drawer slides in from. */
 export type MtDrawerSide = "start" | "end" | "top" | "bottom";
 
-/**
- * Why a drawer that is not dismissible refused to close.
- *
- * @experimental Not for public use yet: undocumented, and it may change or be removed without notice.
- */
+/** Why a drawer that is not dismissible refused to close. */
 export type MtDrawerDismissReason = "outside-click" | "escape-key" | "swipe";
 
 /** What `mt-drawer-root` shares with its trigger, content and close button. */

@@ -3,9 +3,12 @@ import {
   createCommentVNode,
   defineComponent,
   h,
+  KeepAlive,
   nextTick,
   onMounted,
   ref,
+  shallowRef,
+  Transition,
   type App,
   type Component,
 } from "vue";
@@ -86,10 +89,16 @@ const allSlots = {
 type Slots = Partial<Record<keyof typeof allSlots, unknown>>;
 
 async function renderApp(
-  options: { props?: Record<string, unknown>; slots?: Slots; router?: unknown } = {},
+  options: {
+    props?: Record<string, unknown>;
+    slots?: Slots;
+    router?: unknown;
+    stubs?: Record<string, boolean>;
+  } = {},
 ) {
   const result = render(MtApp, {
     global: {
+      stubs: options.stubs,
       plugins: options.router
         ? [
             {
@@ -113,28 +122,41 @@ function mobileProps(props: Record<string, unknown> = {}) {
   return { mobileBreakpoint: 99999, ...props };
 }
 
-function createFakeRouter() {
-  const hooks: ((
-    to: { path: string; hash: string },
-    from: { path: string; hash: string },
-    failure?: unknown,
-  ) => void)[] = [];
-  let current = { path: "/", hash: "" };
+interface FakeRoute {
+  path: string;
+  hash: string;
+  meta: Record<string, unknown>;
+}
+
+function createFakeRouter(initialMeta: Record<string, unknown> = {}) {
+  const guards: (() => void)[] = [];
+  const hooks: ((to: FakeRoute, from: FakeRoute, failure?: unknown) => void)[] = [];
+  const currentRoute = shallowRef<FakeRoute>({ path: "/", hash: "", meta: initialMeta });
 
   const router = {
+    currentRoute,
+    beforeEach: (guard: () => void) => (guards.push(guard), () => undefined),
     afterEach: (hook: (typeof hooks)[number]) => (hooks.push(hook), () => undefined),
+    onError: () => () => undefined,
   };
 
-  async function navigate(path: string, hash = "") {
-    const from = current;
-    current = { path, hash };
-    hooks.forEach((hook) => hook(current, from));
+  /** Starts a navigation; the returned function completes it, as Vue Router does after its guards. */
+  function start(path: string, options: { hash?: string; meta?: Record<string, unknown> } = {}) {
+    guards.forEach((guard) => guard());
 
-    await nextTick();
-    await nextTick();
+    return async () => {
+      const from = currentRoute.value;
+      currentRoute.value = { path, hash: options.hash ?? "", meta: options.meta ?? {} };
+      hooks.forEach((hook) => hook(currentRoute.value, from));
+
+      await nextTick();
+      await nextTick();
+    };
   }
 
-  return { router, navigate };
+  const navigate = (path: string, options?: Parameters<typeof start>[1]) => start(path, options)();
+
+  return { router, currentRoute, start, navigate };
 }
 
 const navigationTriggerName = "Open Navigation";
@@ -431,7 +453,7 @@ describe("mt-app", () => {
       target.scrollIntoView = scrollIntoView;
 
       // ACT
-      await navigate("/help", "#shipping");
+      await navigate("/help", { hash: "#shipping" });
 
       // ASSERT
       expect(scrollIntoView).toHaveBeenCalledTimes(1);
@@ -811,6 +833,159 @@ describe("mt-app", () => {
       expect(
         screen.getByRole("main").closest(".mt-app")?.classList.contains("mt-app--frameless"),
       ).toBe(isFrameless);
+    });
+  });
+
+  describe("route regions", () => {
+    const fullscreen = { mtAppRegions: { header: false, navigation: false, sidebar: false } };
+
+    it("hides the regions of the current route from the first render", async () => {
+      // ACT
+      const { router } = createFakeRouter(fullscreen);
+      await renderApp({ router });
+
+      // ASSERT
+      expect(screen.queryByRole("banner")).not.toBeInTheDocument();
+      expect(screen.queryByRole("navigation")).not.toBeInTheDocument();
+    });
+
+    it("keeps them hidden while a transition switches between two full-screen pages", async () => {
+      // ARRANGE
+      const { router, currentRoute, navigate } = createFakeRouter(fullscreen);
+      const pages: Record<string, Component> = {
+        "/": { render: () => h("p", "Editor A") },
+        "/b": { render: () => h("p", "Editor B") },
+      };
+      await renderApp({
+        router,
+        stubs: { transition: false },
+        slots: {
+          ...allSlots,
+          content: () =>
+            h(Transition, { mode: "out-in" }, () =>
+              h(pages[currentRoute.value.path], { key: currentRoute.value.path }),
+            ),
+        },
+      });
+      expect(screen.queryByRole("banner")).not.toBeInTheDocument();
+      const renderedHeaders: Node[] = [];
+      const observer = new MutationObserver((records) =>
+        records.forEach((record) =>
+          record.addedNodes.forEach((node) => {
+            if (node instanceof Element && node.matches("header")) renderedHeaders.push(node);
+          }),
+        ),
+      );
+      observer.observe(document.body, { childList: true, subtree: true });
+
+      // ACT
+      await navigate("/b", { meta: fullscreen });
+      await waitFor(() => expect(screen.getByText("Editor B")).toBeInTheDocument());
+      observer.disconnect();
+
+      // ASSERT
+      expect(renderedHeaders).toEqual([]);
+      expect(screen.queryByRole("banner")).not.toBeInTheDocument();
+    });
+
+    it("gives the regions back while a page that KeepAlive caches isn't shown", async () => {
+      // ARRANGE
+      const FullscreenPage = defineComponent({
+        setup() {
+          useMtAppRegions({ header: false });
+          return () => h("p", "Editor");
+        },
+      });
+      const OtherPage: Component = { render: () => h("p", "Orders") };
+      const page = shallowRef<Component>(FullscreenPage);
+      await renderApp({
+        slots: { ...allSlots, content: () => h(KeepAlive, () => h(page.value)) },
+      });
+      expect(screen.queryByRole("banner")).not.toBeInTheDocument();
+
+      // ACT
+      page.value = OtherPage;
+      await nextTick();
+
+      // ASSERT
+      expect(screen.getByRole("banner")).toBeInTheDocument();
+
+      // ACT
+      page.value = FullscreenPage;
+      await nextTick();
+
+      // ASSERT
+      expect(screen.queryByRole("banner")).not.toBeInTheDocument();
+    });
+  });
+
+  describe("loading bar", () => {
+    beforeEach(() => {
+      vi.useFakeTimers();
+    });
+
+    afterEach(() => {
+      vi.useRealTimers();
+    });
+
+    it("shows no loading bar by default", async () => {
+      // ARRANGE
+      const { router, start } = createFakeRouter();
+      await renderApp({ router });
+
+      // ACT
+      start("/orders");
+      await vi.advanceTimersByTimeAsync(500);
+
+      // ASSERT
+      expect(screen.queryByRole("progressbar")).not.toBeInTheDocument();
+    });
+
+    it("shows the loading bar while a slow navigation is pending", async () => {
+      // ARRANGE
+      const { router, start } = createFakeRouter();
+      await renderApp({ router, props: { loadingBar: true } });
+
+      // ACT
+      const complete = start("/orders");
+      await vi.advanceTimersByTimeAsync(200);
+
+      // ASSERT
+      expect(screen.getByRole("progressbar", { name: "Loading" })).toBeInTheDocument();
+      expect(screen.getByRole("main")).toHaveAttribute("aria-busy", "true");
+
+      // ACT
+      await complete();
+
+      // ASSERT
+      expect(screen.queryByRole("progressbar")).not.toBeInTheDocument();
+      expect(screen.getByRole("main")).not.toHaveAttribute("aria-busy");
+    });
+
+    it("keeps the loading bar while the app reports loading", async () => {
+      // ARRANGE
+      let startLoading: (() => () => void) | undefined;
+      const Page = defineComponent({
+        setup() {
+          startLoading = useMtApp().startLoading;
+          return () => h("p", "Orders");
+        },
+      });
+      await renderApp({ props: { loadingBar: true }, slots: { content: () => h(Page) } });
+
+      // ACT
+      const done = startLoading!();
+      await vi.advanceTimersByTimeAsync(200);
+
+      // ASSERT
+      expect(screen.getByRole("progressbar")).toBeInTheDocument();
+
+      // ACT
+      done();
+      await nextTick();
+
+      // ASSERT
+      expect(screen.queryByRole("progressbar")).not.toBeInTheDocument();
     });
   });
 

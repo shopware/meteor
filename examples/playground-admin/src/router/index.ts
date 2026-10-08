@@ -9,7 +9,15 @@ export const router = createRouter({
   routes: [
     { path: "/", name: "dashboard", component: DashboardView },
     { path: "/products", name: "products", component: ProductsView },
-    { path: "/cms", name: "cms", component: CmsView },
+    {
+      path: "/cms",
+      name: "cms",
+      component: CmsView,
+      // A full-screen editor: the shell hides its regions before the page renders.
+      meta: {
+        mtAppRegions: { header: false, navigation: false, sidebar: false },
+      },
+    },
     { path: "/settings", name: "settings", component: SettingsView },
   ],
 });

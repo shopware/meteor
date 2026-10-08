@@ -27,6 +27,11 @@ export interface MtAppContext {
   close(panel: MtAppPanel): void;
   /** Opens the panel when it is closed, and closes it when it is open. */
   toggle(panel: MtAppPanel): void;
+  /**
+   * Reports loading, for example while a page fetches its data, until the returned function is
+   * called. The shell shows its loading bar meanwhile, if `loading-bar` is on.
+   */
+  startLoading(): () => void;
 }
 
 /**
@@ -47,6 +52,7 @@ export function useMtApp(): MtAppContext {
       open: () => undefined,
       close: () => undefined,
       toggle: () => undefined,
+      startLoading: () => () => undefined,
     };
   }
 
@@ -56,5 +62,6 @@ export function useMtApp(): MtAppContext {
     open: context.open,
     close: context.close,
     toggle: context.toggle,
+    startLoading: context.startLoading,
   };
 }
