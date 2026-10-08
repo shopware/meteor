@@ -1,6 +1,7 @@
 export const en = {
   app: {
     title: "Meteor playground",
+    toggleSidebar: "Show or hide the sidebar",
   },
   nav: {
     label: "Main navigation",
@@ -39,8 +40,8 @@ export const en = {
     theme: "Theme",
     shellTitle: "App shell",
     header: "Header",
-    sidebarStart: "Start sidebar",
-    sidebarEnd: "End sidebar",
+    navigation: "Navigation",
+    sidebar: "Sidebar",
     openModal: "Open modal",
     modalTitle: "Modal",
     modalText: "A modal opened from inside the shell.",

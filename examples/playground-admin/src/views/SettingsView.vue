@@ -48,12 +48,12 @@ const localeOptions = [
         <div class="settings-form">
           <mt-switch v-model="settings.header" :label="t('settings.header')" />
           <mt-switch
-            v-model="settings.sidebarStart"
-            :label="t('settings.sidebarStart')"
+            v-model="settings.navigation"
+            :label="t('settings.navigation')"
           />
           <mt-switch
-            v-model="settings.sidebarEnd"
-            :label="t('settings.sidebarEnd')"
+            v-model="settings.sidebar"
+            :label="t('settings.sidebar')"
           />
         </div>
 

@@ -3,6 +3,7 @@ import type { Messages } from "./en";
 export const de: Messages = {
   app: {
     title: "Meteor Playground",
+    toggleSidebar: "Seitenleiste ein- oder ausblenden",
   },
   nav: {
     label: "Hauptnavigation",
@@ -41,8 +42,8 @@ export const de: Messages = {
     theme: "Design",
     shellTitle: "App-Shell",
     header: "Kopfzeile",
-    sidebarStart: "Start-Seitenleiste",
-    sidebarEnd: "End-Seitenleiste",
+    navigation: "Navigation",
+    sidebar: "Seitenleiste",
     openModal: "Modal öffnen",
     modalTitle: "Modal",
     modalText: "Ein Modal, das innerhalb der Shell geöffnet wurde.",

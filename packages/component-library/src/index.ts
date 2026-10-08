@@ -95,7 +95,7 @@ import MtApp from "./components/mt-app/mt-app.vue";
 import {
   useMtApp,
   type MtAppContext,
-  type MtAppSide,
+  type MtAppPanel,
 } from "./components/mt-app/composables/useMtApp";
 import {
   useMtAppRegions,
@@ -241,7 +241,7 @@ export type { Filter, Option, Toast, Snackbar, ChartOptions, BreadcrumbItem };
 export type { Theme, ResolvedTheme, UseThemeOptions, UseThemeReturn };
 export type { Editor } from "@tiptap/vue-3";
 export type { default as Link } from "@tiptap/extension-link";
-export type { MtAppContext, MtAppRegions, MtAppSide };
+export type { MtAppContext, MtAppPanel, MtAppRegions };
 export type {
   MtDrawerDismissReason,
   MtDrawerSide,

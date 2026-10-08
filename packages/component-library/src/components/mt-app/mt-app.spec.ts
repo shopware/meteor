@@ -78,9 +78,9 @@ function createLocalStorageMock(): Storage {
 
 const allSlots = {
   header: "<span>Header content</span>",
-  "sidebar-start": '<nav><a href="/orders">Orders</a><button>Start action</button></nav>',
+  navigation: '<a href="/orders">Orders</a><button>Start action</button>',
   content: "<p>Main content</p><button>Content action</button>",
-  "sidebar-end": "<div><button>End action</button></div>",
+  sidebar: "<div><button>End action</button></div>",
 };
 
 type Slots = Partial<Record<keyof typeof allSlots, unknown>>;
@@ -114,38 +114,23 @@ function mobileProps(props: Record<string, unknown> = {}) {
 }
 
 function createFakeRouter() {
-  const guards: (() => void)[] = [];
   const hooks: ((
     to: { path: string; hash: string },
     from: { path: string; hash: string },
     failure?: unknown,
   ) => void)[] = [];
-  const listeners: (() => void)[] = [];
   let current = { path: "/", hash: "" };
-  let position = 0;
 
   const router = {
-    beforeEach: (guard: () => void) => (guards.push(guard), () => undefined),
     afterEach: (hook: (typeof hooks)[number]) => (hooks.push(hook), () => undefined),
-    options: {
-      history: { listen: (listener: () => void) => (listeners.push(listener), () => undefined) },
-    },
   };
 
-  window.history.replaceState({ position }, "");
-
-  async function navigate(path: string, options: { back?: boolean } = {}) {
-    position += options.back ? -1 : 1;
-    window.history.replaceState({ position }, "");
-    if (options.back) listeners.forEach((listener) => listener());
-    guards.forEach((guard) => guard());
-
+  async function navigate(path: string) {
     const from = current;
     current = { path, hash: "" };
     hooks.forEach((hook) => hook(current, from));
 
     await nextTick();
-    await new Promise((resolve) => requestAnimationFrame(resolve));
     await nextTick();
   }
 
@@ -158,14 +143,8 @@ function createFakeRouter() {
   return { router, navigate, navigateToCurrent };
 }
 
-function scrollContent(top: number) {
-  const main = screen.getByRole("main");
-  main.scrollTop = top;
-  main.dispatchEvent(new Event("scroll"));
-}
-
-const startTriggerName = "Open Primary sidebar";
-const endTriggerName = "Open Secondary sidebar";
+const navigationTriggerName = "Open Navigation";
+const sidebarTriggerName = "Open Sidebar";
 
 function drawerOf(triggerName: string) {
   const trigger = screen.getByRole("button", { name: triggerName });
@@ -203,21 +182,20 @@ describe("mt-app", () => {
 
       // ASSERT
       expect(screen.getByRole("banner")).toHaveTextContent("Header content");
-      expect(screen.getByRole("complementary", { name: "Primary sidebar" })).toHaveTextContent(
-        "Orders",
-      );
+      expect(screen.getByRole("navigation", { name: "Navigation" })).toHaveTextContent("Orders");
       expect(screen.getByRole("main")).toHaveTextContent("Main content");
-      expect(screen.getByRole("complementary", { name: "Secondary sidebar" })).toHaveTextContent(
+      expect(screen.getByRole("complementary", { name: "Sidebar" })).toHaveTextContent(
         "End action",
       );
     });
 
-    it("renders no header and no sidebars when only content is given", async () => {
+    it("renders no header and no panels when only content is given", async () => {
       // ACT
       await renderApp({ slots: { content: allSlots.content } });
 
       // ASSERT
       expect(screen.queryByRole("banner")).not.toBeInTheDocument();
+      expect(screen.queryByRole("navigation")).not.toBeInTheDocument();
       expect(screen.queryByRole("complementary")).not.toBeInTheDocument();
       expect(screen.getByRole("main")).toBeInTheDocument();
     });
@@ -233,7 +211,7 @@ describe("mt-app", () => {
     it("keeps the frame around the content when another slot is filled", async () => {
       // ACT
       await renderApp({
-        slots: { content: allSlots.content, "sidebar-start": allSlots["sidebar-start"] },
+        slots: { content: allSlots.content, navigation: allSlots.navigation },
       });
 
       // ASSERT
@@ -244,22 +222,22 @@ describe("mt-app", () => {
       // ACT
       await renderApp({
         props: mobileProps(),
-        slots: { content: allSlots.content, "sidebar-start": allSlots["sidebar-start"] },
+        slots: { content: allSlots.content, navigation: allSlots.navigation },
       });
 
       // ASSERT
       expect(screen.getByRole("main").closest(".mt-app")).not.toHaveClass("mt-app--frameless");
     });
 
-    it("renders only the start sidebar when the end slot is empty", async () => {
+    it("renders only the navigation when the sidebar slot is empty", async () => {
       // ACT
       await renderApp({
-        slots: { content: allSlots.content, "sidebar-start": allSlots["sidebar-start"] },
+        slots: { content: allSlots.content, navigation: allSlots.navigation },
       });
 
       // ASSERT
-      expect(screen.getAllByRole("complementary")).toHaveLength(1);
-      expect(screen.getByRole("complementary", { name: "Primary sidebar" })).toBeInTheDocument();
+      expect(screen.queryByRole("complementary")).not.toBeInTheDocument();
+      expect(screen.getByRole("navigation", { name: "Navigation" })).toBeInTheDocument();
     });
 
     it("treats a slot that renders nothing as absent", async () => {
@@ -267,7 +245,7 @@ describe("mt-app", () => {
       await renderApp({
         slots: {
           content: allSlots.content,
-          "sidebar-end": () => [createCommentVNode("v-if")],
+          sidebar: () => [createCommentVNode("v-if")],
           header: () => [createCommentVNode("v-if")],
         },
       });
@@ -282,8 +260,8 @@ describe("mt-app", () => {
       await renderApp();
 
       // ASSERT
-      expect(screen.queryByRole("button", { name: startTriggerName })).not.toBeInTheDocument();
-      expect(screen.queryByRole("button", { name: endTriggerName })).not.toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: navigationTriggerName })).not.toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: sidebarTriggerName })).not.toBeInTheDocument();
       expect(screen.getByRole("main")).not.toHaveAttribute("inert");
     });
   });
@@ -295,32 +273,32 @@ describe("mt-app", () => {
 
       // ASSERT
       expect(screen.getByRole("banner")).toHaveTextContent("Header content");
-      expect(screen.getByRole("button", { name: startTriggerName })).toBeInTheDocument();
-      expect(screen.getByRole("button", { name: endTriggerName })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: navigationTriggerName })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: sidebarTriggerName })).toBeInTheDocument();
     });
 
     it("renders a trigger only for filled sidebars", async () => {
       // ACT
       await renderApp({
         props: mobileProps(),
-        slots: { content: allSlots.content, "sidebar-end": allSlots["sidebar-end"] },
+        slots: { content: allSlots.content, sidebar: allSlots.sidebar },
       });
 
       // ASSERT
-      expect(screen.queryByRole("button", { name: startTriggerName })).not.toBeInTheDocument();
-      expect(screen.getByRole("button", { name: endTriggerName })).toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: navigationTriggerName })).not.toBeInTheDocument();
+      expect(screen.getByRole("button", { name: sidebarTriggerName })).toBeInTheDocument();
     });
 
     it("renders a shell-owned header with just the triggers when the header slot is empty", async () => {
       // ACT
       await renderApp({
         props: mobileProps(),
-        slots: { content: allSlots.content, "sidebar-start": allSlots["sidebar-start"] },
+        slots: { content: allSlots.content, navigation: allSlots.navigation },
       });
 
       // ASSERT
       expect(screen.getByRole("banner")).not.toHaveTextContent("Header content");
-      expect(screen.getByRole("button", { name: startTriggerName })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: navigationTriggerName })).toBeInTheDocument();
     });
 
     it("renders no header when there is neither header content nor a sidebar", async () => {
@@ -339,8 +317,9 @@ describe("mt-app", () => {
       await renderApp({ props: { mobileBreakpoint: 0 } });
 
       // ASSERT
-      expect(screen.queryByRole("button", { name: startTriggerName })).not.toBeInTheDocument();
-      expect(screen.getAllByRole("complementary")).toHaveLength(2);
+      expect(screen.queryByRole("button", { name: navigationTriggerName })).not.toBeInTheDocument();
+      expect(screen.getByRole("navigation", { name: "Navigation" })).toBeInTheDocument();
+      expect(screen.getByRole("complementary", { name: "Sidebar" })).toBeInTheDocument();
     });
   });
 
@@ -350,11 +329,11 @@ describe("mt-app", () => {
       await renderApp({ props: mobileProps() });
 
       // ASSERT
-      const drawer = drawerOf(startTriggerName);
+      const drawer = drawerOf(navigationTriggerName);
       expect(drawer).toHaveAttribute("role", "dialog");
       expect(drawer).toHaveAttribute("inert");
       expect(drawer).toHaveAttribute("aria-modal", "true");
-      expect(screen.getByRole("button", { name: startTriggerName })).toHaveAttribute(
+      expect(screen.getByRole("button", { name: navigationTriggerName })).toHaveAttribute(
         "aria-expanded",
         "false",
       );
@@ -366,17 +345,17 @@ describe("mt-app", () => {
       await renderApp({ props: mobileProps() });
 
       // ACT
-      await userEvent.click(screen.getByRole("button", { name: startTriggerName }));
+      await userEvent.click(screen.getByRole("button", { name: navigationTriggerName }));
 
       // ASSERT
-      const drawer = screen.getByRole("dialog", { name: "Primary sidebar" });
+      const drawer = screen.getByRole("dialog", { name: "Navigation" });
       expect(drawer).not.toHaveAttribute("inert");
-      expect(drawer).toHaveAttribute("id", drawerOf(startTriggerName).id);
+      expect(drawer).toHaveAttribute("id", drawerOf(navigationTriggerName).id);
       expect(isInert(screen.getByRole("banner"))).toBe(true);
       expect(isInert(screen.getByRole("main"))).toBe(true);
-      expect(drawerOf(endTriggerName)).toHaveAttribute("inert");
+      expect(drawerOf(sidebarTriggerName)).toHaveAttribute("inert");
       expect(visibleBackdrops()).toHaveLength(1);
-      expect(screen.getByRole("button", { name: startTriggerName })).toHaveAttribute(
+      expect(screen.getByRole("button", { name: navigationTriggerName })).toHaveAttribute(
         "aria-expanded",
         "true",
       );
@@ -386,19 +365,19 @@ describe("mt-app", () => {
     it("keeps only one drawer open", async () => {
       // ARRANGE
       await renderApp({ props: mobileProps() });
-      await userEvent.click(screen.getByRole("button", { name: startTriggerName }));
+      await userEvent.click(screen.getByRole("button", { name: navigationTriggerName }));
 
       // ACT
-      await userEvent.click(screen.getByRole("button", { name: endTriggerName }));
+      await userEvent.click(screen.getByRole("button", { name: sidebarTriggerName }));
 
       // ASSERT
-      expect(drawerOf(startTriggerName)).toHaveAttribute("inert");
-      expect(drawerOf(endTriggerName)).not.toHaveAttribute("inert");
-      expect(screen.getByRole("button", { name: startTriggerName })).toHaveAttribute(
+      expect(drawerOf(navigationTriggerName)).toHaveAttribute("inert");
+      expect(drawerOf(sidebarTriggerName)).not.toHaveAttribute("inert");
+      expect(screen.getByRole("button", { name: navigationTriggerName })).toHaveAttribute(
         "aria-expanded",
         "false",
       );
-      expect(screen.getByRole("button", { name: endTriggerName })).toHaveAttribute(
+      expect(screen.getByRole("button", { name: sidebarTriggerName })).toHaveAttribute(
         "aria-expanded",
         "true",
       );
@@ -409,12 +388,12 @@ describe("mt-app", () => {
       await renderApp({ props: mobileProps() });
 
       // ACT
-      await userEvent.dblClick(screen.getByRole("button", { name: startTriggerName }));
+      await userEvent.dblClick(screen.getByRole("button", { name: navigationTriggerName }));
 
       // ASSERT
-      await waitFor(() => expect(drawerOf(startTriggerName)).toHaveAttribute("inert"));
+      await waitFor(() => expect(drawerOf(navigationTriggerName)).toHaveAttribute("inert"));
       expect(visibleBackdrops()).toHaveLength(0);
-      expect(screen.getByRole("button", { name: startTriggerName })).toHaveAttribute(
+      expect(screen.getByRole("button", { name: navigationTriggerName })).toHaveAttribute(
         "aria-expanded",
         "false",
       );
@@ -423,85 +402,83 @@ describe("mt-app", () => {
     it("closes on the backdrop and returns the focus to the trigger", async () => {
       // ARRANGE
       await renderApp({ props: mobileProps() });
-      await userEvent.click(screen.getByRole("button", { name: startTriggerName }));
+      await userEvent.click(screen.getByRole("button", { name: navigationTriggerName }));
 
       // ACT
       await userEvent.click(visibleBackdrops()[0]);
 
       // ASSERT
-      expect(drawerOf(startTriggerName)).toHaveAttribute("inert");
+      expect(drawerOf(navigationTriggerName)).toHaveAttribute("inert");
       expect(isInert(screen.getByRole("main"))).toBe(false);
       await waitFor(() =>
-        expect(screen.getByRole("button", { name: startTriggerName })).toHaveFocus(),
+        expect(screen.getByRole("button", { name: navigationTriggerName })).toHaveFocus(),
       );
     });
 
     it("closes with its close button", async () => {
       // ARRANGE
       await renderApp({ props: mobileProps() });
-      await userEvent.click(screen.getByRole("button", { name: endTriggerName }));
+      await userEvent.click(screen.getByRole("button", { name: sidebarTriggerName }));
 
       // ACT
-      await userEvent.click(screen.getByRole("button", { name: "Close Secondary sidebar" }));
+      await userEvent.click(screen.getByRole("button", { name: "Close Sidebar" }));
 
       // ASSERT
-      expect(drawerOf(endTriggerName)).toHaveAttribute("inert");
+      expect(drawerOf(sidebarTriggerName)).toHaveAttribute("inert");
       await waitFor(() =>
-        expect(screen.getByRole("button", { name: endTriggerName })).toHaveFocus(),
+        expect(screen.getByRole("button", { name: sidebarTriggerName })).toHaveFocus(),
       );
     });
 
     it("closes on Escape pressed inside the drawer", async () => {
       // ARRANGE
       await renderApp({ props: mobileProps() });
-      await userEvent.click(screen.getByRole("button", { name: startTriggerName }));
-      await waitFor(() =>
-        expect(screen.getByRole("dialog", { name: "Primary sidebar" })).toHaveFocus(),
-      );
+      await userEvent.click(screen.getByRole("button", { name: navigationTriggerName }));
+      await waitFor(() => expect(screen.getByRole("dialog", { name: "Navigation" })).toHaveFocus());
 
       // ACT
       await userEvent.keyboard("{Escape}");
 
       // ASSERT
-      expect(drawerOf(startTriggerName)).toHaveAttribute("inert");
+      expect(drawerOf(navigationTriggerName)).toHaveAttribute("inert");
     });
 
     it("ignores Escape pressed outside the drawer", async () => {
       // ARRANGE
       await renderApp({ props: mobileProps() });
-      await userEvent.click(screen.getByRole("button", { name: startTriggerName }));
+      await userEvent.click(screen.getByRole("button", { name: navigationTriggerName }));
       screen.getByRole("button", { name: "Content action" }).focus();
 
       // ACT
       await userEvent.keyboard("{Escape}");
 
       // ASSERT
-      expect(screen.getByRole("dialog", { name: "Primary sidebar" })).not.toHaveAttribute("inert");
+      expect(screen.getByRole("dialog", { name: "Navigation" })).not.toHaveAttribute("inert");
     });
 
     it("stays open for clicks inside the drawer", async () => {
       // ARRANGE
       await renderApp({ props: mobileProps() });
-      await userEvent.click(screen.getByRole("button", { name: startTriggerName }));
+      await userEvent.click(screen.getByRole("button", { name: navigationTriggerName }));
 
       // ACT
       await userEvent.click(screen.getByRole("button", { name: "Start action" }));
 
       // ASSERT
-      expect(screen.getByRole("dialog", { name: "Primary sidebar" })).not.toHaveAttribute("inert");
+      expect(screen.getByRole("dialog", { name: "Navigation" })).not.toHaveAttribute("inert");
     });
 
     it("keeps the keyboard focus inside the drawer", async () => {
       // ARRANGE
       await renderApp({ props: mobileProps() });
-      await userEvent.click(screen.getByRole("button", { name: startTriggerName }));
+      await userEvent.click(screen.getByRole("button", { name: navigationTriggerName }));
       screen.getByRole("button", { name: "Start action" }).focus();
 
       // ACT
       await userEvent.tab();
 
       // ASSERT
-      expect(screen.getByRole("button", { name: "Close Primary sidebar" })).toHaveFocus();
+      expect(screen.getByRole("button", { name: "Close Navigation" })).toHaveFocus();
     });
   });
 
@@ -510,15 +487,15 @@ describe("mt-app", () => {
       // ARRANGE
       const { router, navigateToCurrent } = createFakeRouter();
       await renderApp({ props: mobileProps(), router });
-      await userEvent.click(screen.getByRole("button", { name: startTriggerName }));
-      expect(screen.getByRole("dialog", { name: "Primary sidebar" })).not.toHaveAttribute("inert");
+      await userEvent.click(screen.getByRole("button", { name: navigationTriggerName }));
+      expect(screen.getByRole("dialog", { name: "Navigation" })).not.toHaveAttribute("inert");
 
       // ACT
       await navigateToCurrent();
 
       // ASSERT
       await waitFor(() =>
-        expect(screen.getByRole("button", { name: startTriggerName })).toHaveAttribute(
+        expect(screen.getByRole("button", { name: navigationTriggerName })).toHaveAttribute(
           "aria-expanded",
           "false",
         ),
@@ -529,49 +506,46 @@ describe("mt-app", () => {
       // ARRANGE
       const { router, navigate } = createFakeRouter();
       await renderApp({ props: mobileProps(), router });
-      await userEvent.click(screen.getByRole("button", { name: startTriggerName }));
+      await userEvent.click(screen.getByRole("button", { name: navigationTriggerName }));
 
       // ACT
       await navigate("/orders");
 
       // ASSERT
-      expect(drawerOf(startTriggerName)).toHaveAttribute("inert");
+      expect(drawerOf(navigationTriggerName)).toHaveAttribute("inert");
     });
 
-    it("scrolls the content to the top when the path changes and restores it when going back", async () => {
+    it("shows a new page from its top", async () => {
       // ARRANGE
       const { router, navigate } = createFakeRouter();
       await renderApp({ router });
-      scrollContent(400);
+      screen.getByRole("main").scrollTop = 400;
 
       // ACT
       await navigate("/orders");
 
       // ASSERT
       expect(screen.getByRole("main").scrollTop).toBe(0);
-
-      // ACT
-      await navigate("/", { back: true });
-
-      // ASSERT
-      expect(screen.getByRole("main").scrollTop).toBe(400);
     });
-  });
 
-  describe("overlapping navigations", () => {
-    it("restores the position of the latest navigation when an earlier one is still pending", async () => {
+    it("announces the title of a new page to screen readers", async () => {
       // ARRANGE
       const { router, navigate } = createFakeRouter();
-      await renderApp({ router });
-      scrollContent(400);
+      const { container } = await renderApp({ router });
+      const announcer = container.querySelector("[aria-live]");
 
       // ACT
-      const first = navigate("/orders");
-      await navigate("/", { back: true });
-      await first;
+      document.title = "Orders";
+      await navigate("/orders");
 
       // ASSERT
-      expect(screen.getByRole("main").scrollTop).toBe(400);
+      expect(announcer).toHaveTextContent("Orders");
+
+      // ACT
+      await navigate("/orders/1");
+
+      // ASSERT
+      expect(announcer).toHaveTextContent("Orders");
     });
   });
 
@@ -580,10 +554,8 @@ describe("mt-app", () => {
       // ARRANGE
       const media = stubMatchMedia(390);
       await renderApp({ props: { mobileBreakpoint: 1280 } });
-      await userEvent.click(screen.getByRole("button", { name: startTriggerName }));
-      await waitFor(() =>
-        expect(screen.getByRole("dialog", { name: "Primary sidebar" })).toHaveFocus(),
-      );
+      await userEvent.click(screen.getByRole("button", { name: navigationTriggerName }));
+      await waitFor(() => expect(screen.getByRole("dialog", { name: "Navigation" })).toHaveFocus());
 
       // ACT
       media.setWidth(1440);
@@ -592,8 +564,8 @@ describe("mt-app", () => {
       // ASSERT
       expect(screen.queryByRole("dialog", { hidden: true })).not.toBeInTheDocument();
       expect(screen.queryAllByTestId("mt-drawer-backdrop")).toHaveLength(0);
-      expect(screen.queryByRole("button", { name: startTriggerName })).not.toBeInTheDocument();
-      const sidebar = screen.getByRole("complementary", { name: "Primary sidebar" });
+      expect(screen.queryByRole("button", { name: navigationTriggerName })).not.toBeInTheDocument();
+      const sidebar = screen.getByRole("navigation", { name: "Navigation" });
       expect(isInert(sidebar)).toBe(false);
       expect(isInert(screen.getByRole("main"))).toBe(false);
       await waitFor(() => expect(screen.getByRole("main")).toHaveFocus());
@@ -609,7 +581,7 @@ describe("mt-app", () => {
       await nextTick();
 
       // ASSERT
-      await waitFor(() => expect(drawerOf(startTriggerName)).toHaveAttribute("inert"));
+      await waitFor(() => expect(drawerOf(navigationTriggerName)).toHaveAttribute("inert"));
       expect(visibleBackdrops()).toHaveLength(0);
     });
 
@@ -626,7 +598,7 @@ describe("mt-app", () => {
       };
       await renderApp({
         props: { mobileBreakpoint: 1280 },
-        slots: { content: allSlots.content, "sidebar-start": () => [h(Counter)] },
+        slots: { content: allSlots.content, navigation: () => [h(Counter)] },
       });
       await userEvent.click(screen.getByRole("button", { name: "Count 0" }));
 
@@ -649,28 +621,28 @@ describe("mt-app", () => {
         template: `
           <mt-app :mobile-breakpoint="99999">
             <template #content><p>Main content</p></template>
-            <template #sidebar-start><nav>Start nav</nav></template>
-            <template v-if="showEnd" #sidebar-end><div>End tools</div></template>
+            <template #navigation><a href="/">Start nav</a></template>
+            <template v-if="showEnd" #sidebar><div>End tools</div></template>
           </mt-app>
         `,
       });
       const { rerender } = render(Wrapper, { props: { showEnd: true } });
       await nextTick();
-      await userEvent.click(screen.getByRole("button", { name: endTriggerName }));
+      await userEvent.click(screen.getByRole("button", { name: sidebarTriggerName }));
 
       // ACT
       await rerender({ showEnd: false });
 
       // ASSERT
-      expect(screen.queryByRole("button", { name: endTriggerName })).not.toBeInTheDocument();
-      expect(screen.queryByRole("dialog", { name: "Secondary sidebar" })).not.toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: sidebarTriggerName })).not.toBeInTheDocument();
+      expect(screen.queryByRole("dialog", { name: "Sidebar" })).not.toBeInTheDocument();
       await waitFor(() => expect(visibleBackdrops()).toHaveLength(0));
       expect(isInert(screen.getByRole("main"))).toBe(false);
       await waitFor(() => expect(screen.getByRole("main")).toHaveFocus());
     });
   });
 
-  describe("shell context", () => {
+  describe("controls", () => {
     const Probe: Component = {
       setup() {
         const app = useMtApp();
@@ -679,65 +651,60 @@ describe("mt-app", () => {
           h("div", [
             h(
               "output",
-              `mobile:${app.isMobile.value} drawer:${app.activeDrawer.value} theme:${app.theme.value}`,
+              `mobile:${app.isMobile.value} navigation:${app.isOpen("navigation")} sidebar:${app.isOpen("sidebar")}`,
             ),
-            h("button", { onClick: () => app.openDrawer("start") }, "Open start"),
-            h("button", { onClick: () => app.openDrawer("end") }, "Open end"),
-            h("button", { onClick: () => app.closeDrawer() }, "Close drawer"),
-            h("button", { onClick: () => app.setTheme("dark") }, "Use dark theme"),
+            h("button", { onClick: () => app.open("navigation") }, "Open navigation"),
+            h("button", { onClick: () => app.toggle("sidebar") }, "Toggle sidebar"),
+            h("button", { onClick: () => app.close("navigation") }, "Close navigation"),
           ]);
       },
     };
 
-    it("lets content open and close drawers", async () => {
+    it("shows and hides the panels in the desktop layout", async () => {
+      // ARRANGE
+      await renderApp({ slots: { ...allSlots, content: () => [h(Probe)] } });
+
+      // ACT
+      await userEvent.click(screen.getByRole("button", { name: "Toggle sidebar" }));
+
+      // ASSERT
+      expect(screen.getByRole("status")).toHaveTextContent("navigation:true sidebar:false");
+      expect(screen.queryByRole("complementary")).not.toBeInTheDocument();
+
+      // ACT
+      await userEvent.click(screen.getByRole("button", { name: "Toggle sidebar" }));
+
+      // ASSERT
+      expect(screen.getByRole("complementary", { name: "Sidebar" })).toBeInTheDocument();
+    });
+
+    it("opens and closes the drawers in the mobile layout", async () => {
       // ARRANGE
       await renderApp({
         props: mobileProps(),
-        slots: {
-          content: () => [h(Probe)],
-          "sidebar-start": allSlots["sidebar-start"],
-        },
+        slots: { content: () => [h(Probe)], navigation: allSlots.navigation },
       });
 
       // ACT
-      await userEvent.click(screen.getByRole("button", { name: "Open start" }));
+      await userEvent.click(screen.getByRole("button", { name: "Open navigation" }));
 
       // ASSERT
-      expect(screen.getByRole("status")).toHaveTextContent("mobile:true drawer:start");
-      expect(screen.getByRole("dialog", { name: "Primary sidebar" })).not.toHaveAttribute("inert");
-
-      // ACT
-      await userEvent.click(screen.getByRole("button", { name: "Close drawer" }));
-
-      // ASSERT
-      expect(screen.getByRole("status")).toHaveTextContent("drawer:null");
+      expect(screen.getByRole("status")).toHaveTextContent("mobile:true navigation:true");
+      expect(screen.getByRole("dialog", { name: "Navigation" })).not.toHaveAttribute("inert");
     });
 
-    it("ignores drawer requests for empty sidebars and in the desktop layout", async () => {
+    it("ignores an empty panel", async () => {
       // ARRANGE
       await renderApp({
         props: mobileProps(),
-        slots: { content: () => [h(Probe)], "sidebar-start": allSlots["sidebar-start"] },
+        slots: { content: () => [h(Probe)], navigation: allSlots.navigation },
       });
 
       // ACT
-      await userEvent.click(screen.getByRole("button", { name: "Open end" }));
+      await userEvent.click(screen.getByRole("button", { name: "Toggle sidebar" }));
 
       // ASSERT
-      expect(screen.getByRole("status")).toHaveTextContent("drawer:null");
-    });
-
-    it("stays inactive in the desktop layout", async () => {
-      // ARRANGE
-      await renderApp({
-        slots: { content: () => [h(Probe)], "sidebar-start": allSlots["sidebar-start"] },
-      });
-
-      // ACT
-      await userEvent.click(screen.getByRole("button", { name: "Open start" }));
-
-      // ASSERT
-      expect(screen.getByRole("status")).toHaveTextContent("mobile:false drawer:null");
+      expect(screen.getByRole("status")).toHaveTextContent("sidebar:false");
     });
 
     it("provides inert defaults outside of the shell", async () => {
@@ -745,21 +712,98 @@ describe("mt-app", () => {
       render(Probe);
 
       // ASSERT
-      expect(screen.getByRole("status")).toHaveTextContent("mobile:false drawer:null theme:system");
+      expect(screen.getByRole("status")).toHaveTextContent(
+        "mobile:false navigation:false sidebar:false",
+      );
     });
 
-    it("applies and persists the theme preference", async () => {
+    it("passes the controls to the header slot", async () => {
       // ARRANGE
-      render(MtApp, { slots: { content: () => [h(Probe)] } });
-      expect(document.documentElement.dataset.theme).toBe("light");
+      await renderApp({
+        slots: {
+          ...allSlots,
+          header: ({ toggle }: { toggle: (panel: string) => void }) =>
+            h("button", { onClick: () => toggle("navigation") }, "Menu"),
+        },
+      });
 
       // ACT
-      await userEvent.click(screen.getByRole("button", { name: "Use dark theme" }));
+      await userEvent.click(screen.getByRole("button", { name: "Menu" }));
+
+      // ASSERT
+      expect(screen.queryByRole("navigation")).not.toBeInTheDocument();
+    });
+
+    it("exposes the controls through a template ref", async () => {
+      // ARRANGE
+      const shell = ref<InstanceType<typeof MtApp> | null>(null);
+      render(() =>
+        h(
+          MtApp,
+          { ref: shell },
+          { content: () => h("p", "Content"), sidebar: () => h("p", "Tools") },
+        ),
+      );
+      await nextTick();
+
+      // ACT
+      shell.value?.close("sidebar");
+      await nextTick();
+
+      // ASSERT
+      expect(screen.queryByRole("complementary")).not.toBeInTheDocument();
+    });
+
+    it("binds the desktop state with v-model", async () => {
+      // ARRANGE
+      const onUpdate = vi.fn();
+      const { rerender } = await renderApp({
+        props: { "onUpdate:navigationOpen": onUpdate },
+        slots: { ...allSlots, content: () => [h(Probe)] },
+      });
+
+      // ACT
+      await userEvent.click(screen.getByRole("button", { name: "Close navigation" }));
+
+      // ASSERT
+      expect(onUpdate).toHaveBeenCalledWith(false);
+
+      // ACT
+      await rerender({ sidebarOpen: false });
+
+      // ASSERT
+      expect(screen.queryByRole("complementary")).not.toBeInTheDocument();
+    });
+  });
+
+  describe("labels", () => {
+    it("names the panels and their triggers with the given labels", async () => {
+      // ARRANGE
+      const { rerender } = await renderApp({
+        props: mobileProps({ sidebarLabel: "Assistant" }),
+      });
+
+      // ASSERT
+      expect(screen.getByRole("button", { name: "Open Assistant" })).toBeInTheDocument();
+
+      // ACT
+      await rerender(mobileProps({ sidebarLabel: "Details" }));
+
+      // ASSERT
+      expect(screen.getByRole("button", { name: "Open Details" })).toBeInTheDocument();
+    });
+  });
+
+  describe("theme", () => {
+    it("applies the stored theme preference", async () => {
+      // ARRANGE
+      localStorage.setItem("mt-theme", "dark");
+
+      // ACT
+      await renderApp({ slots: { content: allSlots.content } });
 
       // ASSERT
       expect(document.documentElement.dataset.theme).toBe("dark");
-      expect(localStorage.getItem("mt-theme")).toBe("dark");
-      expect(screen.getByRole("status")).toHaveTextContent("theme:dark");
     });
   });
 
@@ -841,32 +885,32 @@ describe("mt-app", () => {
           return () => h("button", "Navigation item");
         },
       };
-      const View = createView({ sidebarStart: false });
+      const View = createView({ navigation: false });
       const showView = ref(true);
       await renderApp({
         props: mobileProps(),
         slots: {
           header: allSlots.header,
-          "sidebar-start": () => [h(Counter)],
+          navigation: () => [h(Counter)],
           content: () => [showView.value ? h(View) : h("p", "Page")],
         },
       });
 
       // ASSERT
-      expect(screen.queryByRole("button", { name: startTriggerName })).not.toBeInTheDocument();
+      expect(screen.queryByRole("button", { name: navigationTriggerName })).not.toBeInTheDocument();
 
       // ACT
       showView.value = false;
       await nextTick();
 
       // ASSERT
-      expect(screen.getByRole("button", { name: startTriggerName })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: navigationTriggerName })).toBeInTheDocument();
       expect(mounted).toHaveBeenCalledTimes(1);
     });
 
     it("keeps the frame around the content when a view hides every region", async () => {
       // ARRANGE
-      const View = createView({ header: false, sidebarStart: false, sidebarEnd: false });
+      const View = createView({ header: false, navigation: false, sidebar: false });
 
       // ACT
       await renderApp({ slots: { ...allSlots, content: () => [h(View)] } });
@@ -879,8 +923,8 @@ describe("mt-app", () => {
       // ARRANGE
       const View = createView({
         header: false,
-        sidebarStart: false,
-        sidebarEnd: false,
+        navigation: false,
+        sidebar: false,
         contentFrame: false,
       });
 
@@ -900,37 +944,6 @@ describe("mt-app", () => {
 
       // ASSERT
       expect(screen.getByRole("main").closest(".mt-app")).not.toHaveClass("mt-app--frameless");
-    });
-
-    it("keeps a region hidden until no view hides it anymore", async () => {
-      // ARRANGE
-      const FirstView = createView({ header: false });
-      const SecondView = createView({ header: false });
-      const showFirst = ref(true);
-      const showSecond = ref(true);
-      await renderApp({
-        slots: {
-          ...allSlots,
-          content: () => [
-            showFirst.value ? h(FirstView) : null,
-            showSecond.value ? h(SecondView) : null,
-          ],
-        },
-      });
-
-      // ACT
-      showFirst.value = false;
-      await nextTick();
-
-      // ASSERT
-      expect(screen.queryByRole("banner")).not.toBeInTheDocument();
-
-      // ACT
-      showSecond.value = false;
-      await nextTick();
-
-      // ASSERT
-      expect(screen.getByRole("banner")).toBeInTheDocument();
     });
   });
 

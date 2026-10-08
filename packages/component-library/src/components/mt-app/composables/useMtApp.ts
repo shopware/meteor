@@ -1,56 +1,60 @@
-import { inject, provide, ref, type InjectionKey, type Ref } from "vue";
-import type { ResolvedTheme, Theme } from "@/composables/useTheme";
-import type { MtAppSide } from "./useAppLayout";
-
-export type { MtAppSide };
+import { computed, inject, type Ref } from "vue";
+import { appContextKey } from "./useAppContext";
 
 /**
- * The shell state and controls that `useMtApp()` exposes to descendants of `<mt-app>`.
+ * A panel of the shell that can be opened and closed: the navigation or the sidebar.
+ *
+ * @experimental Not for public use yet: undocumented, and it may change or be removed without notice.
+ */
+export type MtAppPanel = "navigation" | "sidebar";
+
+/**
+ * The shell state and controls that `useMtApp()` returns.
  *
  * @experimental Not for public use yet: undocumented, and it may change or be removed without notice.
  */
 export interface MtAppContext {
-  /** Whether the shell currently uses the mobile layout with off-canvas sidebars. */
+  /** Whether the shell uses the mobile layout, in which the panels are drawers. */
   isMobile: Readonly<Ref<boolean>>;
-  /** The sidebar that is open as a drawer, or `null`. Always `null` in the desktop layout. */
-  activeDrawer: Readonly<Ref<MtAppSide | null>>;
-  /** The theme preference: `light`, `dark` or `system`. */
-  theme: Readonly<Ref<Theme>>;
-  /** The theme that is applied after resolving `system`. */
-  resolvedTheme: Readonly<Ref<ResolvedTheme>>;
-  /** The element that scrolls the content. Users cannot scroll the window while the shell is mounted. */
-  scrollContainer: Readonly<Ref<HTMLElement | null>>;
-  /** Opens the drawer of the given side. Does nothing in the desktop layout or for an empty or hidden sidebar. */
-  openDrawer(side: MtAppSide): void;
-  closeDrawer(): void;
-  /** Sets and persists the theme preference. */
-  setTheme(theme: Theme): void;
-}
-
-export const mtAppKey = Symbol("mt-app") as InjectionKey<MtAppContext>;
-
-export function provideMtApp(context: MtAppContext): void {
-  provide(mtAppKey, context);
+  /**
+   * Whether the panel is open: shown in the desktop layout, or open as a drawer in the mobile
+   * layout. A view can still hide an open panel with `useMtAppRegions()`.
+   */
+  isOpen(panel: MtAppPanel): boolean;
+  /** Shows the panel, or opens its drawer in the mobile layout. */
+  open(panel: MtAppPanel): void;
+  /** Hides the panel, or closes its drawer in the mobile layout. */
+  close(panel: MtAppPanel): void;
+  /** Opens the panel when it is closed, and closes it when it is open. */
+  toggle(panel: MtAppPanel): void;
 }
 
 /**
- * Gives descendants of `<mt-app>` access to the shell state. Outside of a shell it
- * returns inert defaults, so components using it keep working on their own.
+ * Reads and controls the surrounding `<mt-app>` from any component inside of it. The component
+ * that renders `<mt-app>` itself uses the `header` slot props or a template ref instead, because
+ * it is not inside the shell. Outside of a shell, it returns inert defaults, so components that
+ * use it keep working on their own.
  *
  * @experimental Not for public use yet: undocumented, and it may change or be removed without notice.
  */
 export function useMtApp(): MtAppContext {
-  const context = inject(mtAppKey, null);
-  if (context !== null) return context;
+  const context = inject(appContextKey, null);
+
+  if (context === null) {
+    return {
+      isMobile: computed(() => false),
+      isOpen: () => false,
+      open: () => undefined,
+      close: () => undefined,
+      toggle: () => undefined,
+    };
+  }
 
   return {
-    isMobile: ref(false),
-    activeDrawer: ref(null),
-    theme: ref<Theme>("system"),
-    resolvedTheme: ref<ResolvedTheme>("light"),
-    scrollContainer: ref(null),
-    openDrawer: () => undefined,
-    closeDrawer: () => undefined,
-    setTheme: () => undefined,
+    isMobile: context.isMobile,
+    isOpen: context.isOpen,
+    open: context.open,
+    close: context.close,
+    toggle: context.toggle,
   };
 }

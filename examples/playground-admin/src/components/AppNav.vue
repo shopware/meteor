@@ -13,25 +13,23 @@ const routes = [
 </script>
 
 <template>
-  <div class="sidebar-start">
-    <nav :aria-label="t('nav.label')">
-      <ul class="sidebar-start__links">
-        <li v-for="route in routes" :key="route.to">
-          <mt-link class="sidebar-start__link" :to="route.to">{{
-            t(route.label)
-          }}</mt-link>
-        </li>
-      </ul>
-    </nav>
+  <div class="app-nav">
+    <ul class="app-nav__links">
+      <li v-for="route in routes" :key="route.to">
+        <mt-link class="app-nav__link" :to="route.to">{{
+          t(route.label)
+        }}</mt-link>
+      </li>
+    </ul>
 
-    <div class="sidebar-start__footer">
+    <div class="app-nav__footer">
       <mt-user name="Mila Hoffmann" subtitle="mila.hoffmann@example.com" />
     </div>
   </div>
 </template>
 
 <style scoped>
-.sidebar-start {
+.app-nav {
   display: flex;
   flex: 1;
   flex-direction: column;
@@ -39,7 +37,7 @@ const routes = [
   padding: var(--scale-size-16);
 }
 
-.sidebar-start__links {
+.app-nav__links {
   display: grid;
   gap: var(--scale-size-8);
   margin: 0;
@@ -47,12 +45,12 @@ const routes = [
   list-style: none;
 }
 
-.sidebar-start__footer {
+.app-nav__footer {
   margin-block-start: auto;
   padding-block-start: var(--scale-size-16);
 }
 
-.sidebar-start__link.router-link-exact-active {
+.app-nav__link.router-link-exact-active {
   font-weight: var(--font-weight-semibold);
 }
 </style>

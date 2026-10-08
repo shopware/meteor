@@ -1,25 +1,25 @@
 <template>
-  <div
+  <component
+    :is="panel === 'navigation' ? 'nav' : 'aside'"
     ref="inline"
-    class="mt-app__sidebar"
-    :class="`mt-app__sidebar--${side}`"
-    :role="isMobile ? undefined : 'complementary'"
-    :aria-label="isMobile ? undefined : label"
+    class="mt-app__region"
+    :class="`mt-app__region--${panel}`"
+    :aria-label="label"
     :hidden="hidden || isMobile || undefined"
   >
-    <div ref="host" class="mt-app__sidebar-content">
+    <div ref="host" class="mt-app__region-content">
       <slot />
     </div>
-  </div>
+  </component>
 
   <mt-drawer-root
     v-if="isMobile"
     :open="isOpen"
-    @update:open="(open: boolean) => (open ? layout.open(side) : layout.close())"
+    @update:open="(open: boolean) => (open ? app.open(panel) : app.close(panel))"
   >
     <mt-drawer-content
       :id="id"
-      :side="side"
+      :side="panel === 'navigation' ? 'start' : 'end'"
       variant="floating"
       :title="label"
       class="mt-app__drawer"
@@ -28,7 +28,7 @@
       keep-mounted
     >
       <div class="mt-app__drawer-layout">
-        <div class="mt-app__drawer-chrome" :class="`mt-app__drawer-chrome--${side}`">
+        <div class="mt-app__drawer-chrome" :class="`mt-app__drawer-chrome--${panel}`">
           <mt-drawer-close
             :as="MtButton"
             variant="tertiary"
@@ -53,24 +53,24 @@ import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtDrawerRoot from "@/components/mt-drawer/mt-drawer-root.vue";
 import MtDrawerContent from "@/components/mt-drawer/mt-drawer-content.vue";
 import MtDrawerClose from "@/components/mt-drawer/mt-drawer-close.vue";
-import { useAppLayout, type MtAppSide } from "../composables/useAppLayout";
+import { useAppContext } from "../composables/useAppContext";
+import type { MtAppPanel } from "../composables/useMtApp";
 
 /**
- * One sidebar region of the shell: an inline `complementary` landmark in the desktop
- * layout and an `mt-drawer` in the mobile layout. The slotted content renders once into
- * a host element that is moved between both places (a disabled `<Teleport>` cannot be
- * hydrated and enabled reliably), so its state survives layout changes and server
- * markup matches the first client render.
+ * One panel of the shell: a `navigation` or `complementary` landmark in the desktop layout and a
+ * drawer in the mobile layout. The slot content renders once into a host element that moves
+ * between both places, so its state survives layout changes and the server markup matches the
+ * first client render (a disabled `<Teleport>` can't be hydrated and enabled reliably).
  */
 const props = defineProps<{
-  side: MtAppSide;
-  /** the id of the drawer the header trigger points to via `aria-controls` */
+  panel: MtAppPanel;
+  /** The id of the drawer, which the header trigger points to with `aria-controls`. */
   id: string;
-  /** the accessible name of the region and drawer */
+  /** The accessible name of the landmark and the drawer. */
   label: string;
-  /** the accessible name of the drawer's close button */
+  /** The accessible name of the drawer's close button. */
   closeLabel: string;
-  /** hides the region while a view hides it */
+  /** Hides the panel in the desktop layout, because it is closed or a view hides it. */
   hidden?: boolean;
 }>();
 
@@ -78,20 +78,22 @@ defineSlots<{
   default?(): unknown;
 }>();
 
-const layout = useAppLayout("mt-app-sidebar");
+const app = useAppContext("mt-app-region");
 const inline = useTemplateRef<HTMLElement>("inline");
 const host = useTemplateRef<HTMLElement>("host");
 const drawerBody = useTemplateRef<HTMLElement>("drawerBody");
 
-const isMobile = computed(() => layout.isMobile.value);
-const isOpen = computed(() => isMobile.value && layout.activeSide.value === props.side);
+const isMobile = computed(() => app.isMobile.value);
+const isOpen = computed(() => isMobile.value && app.isOpen(props.panel));
 
+/** Moves the slot content into the drawer in the mobile layout, and back inline otherwise. */
 function placeContent() {
   const target = isMobile.value && drawerBody.value ? drawerBody.value : inline.value;
 
   if (host.value && target && host.value.parentElement !== target) target.append(host.value);
 }
 
+// Back inline before the drawer unmounts, so the content isn't removed with it.
 watch(
   isMobile,
   (mobile) => {
@@ -102,22 +104,26 @@ watch(
 
 watch([isMobile, drawerBody], placeContent, { flush: "post" });
 
-const unregister = layout.registerSidebar(props.side);
-onBeforeUnmount(unregister);
+// A drawer that disappears while it is open would leave the focus nowhere.
+onBeforeUnmount(() => {
+  if (!isOpen.value) return;
+
+  app.close(props.panel);
+  app.focusContent();
+});
 
 defineExpose({
-  /** Whether the focused element is inside this sidebar, in either layout. */
+  /** Whether the focused element is inside this panel, in either layout. */
   containsFocus: () => {
     const active = document.activeElement;
-    if (!active) return false;
 
-    return Boolean(host.value?.contains(active));
+    return Boolean(active && host.value?.contains(active));
   },
 });
 </script>
 
 <style scoped>
-.mt-app__sidebar {
+.mt-app__region {
   display: flex;
   flex-direction: column;
   flex: none;
@@ -127,11 +133,11 @@ defineExpose({
   overscroll-behavior: contain;
 }
 
-.mt-app__sidebar[hidden] {
+.mt-app__region[hidden] {
   display: none;
 }
 
-.mt-app__sidebar-content {
+.mt-app__region-content {
   display: flex;
   flex: 1 0 auto;
   flex-direction: column;
@@ -156,12 +162,12 @@ defineExpose({
   padding: var(--scale-size-8);
 }
 
-.mt-app__drawer-chrome--end {
+.mt-app__drawer-chrome--sidebar {
   justify-content: flex-end;
 }
 
 @media print {
-  .mt-app__sidebar {
+  .mt-app__region {
     display: none;
   }
 }
