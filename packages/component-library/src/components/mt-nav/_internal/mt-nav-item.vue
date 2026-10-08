@@ -21,6 +21,18 @@
 
         <component :is="context.slots.suffix" v-if="context.slots.suffix" :item="item" />
 
+        <span v-if="isExternal" class="mt-nav__link-external-icon-box">
+          <mt-icon
+            name="regular-external-link-s"
+            size="10"
+            class="mt-nav__link-external-icon"
+            aria-hidden="true"
+          />
+          <span v-if="item.target === '_blank'" class="visually-hidden">
+            {{ t("opensInNewTab") }}
+          </span>
+        </span>
+
         <span v-if="hasChildren" class="mt-nav__link-expand-icon-box">
           <mt-icon
             :name="subtreeOpen ? 'regular-chevron-up-xs' : 'regular-chevron-down-xs'"
@@ -45,6 +57,7 @@
 
 <script setup lang="ts">
 import { computed, ref, watch } from "vue";
+import { useI18n } from "vue-i18n";
 import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtCollapsible from "@/components/mt-collapsible/mt-collapsible.vue";
 import MtCollapsibleTrigger from "@/components/mt-collapsible/mt-collapsible-trigger.vue";
@@ -66,6 +79,17 @@ const props = defineProps<{
 }>();
 
 const context = useNavContext();
+
+const { t } = useI18n({
+  messages: {
+    en: {
+      opensInNewTab: "(opens in a new tab)",
+    },
+    de: {
+      opensInNewTab: "(öffnet in einem neuen Tab)",
+    },
+  },
+});
 
 const isLeafDepth = props.depth >= MAX_NESTING_LEVEL;
 
@@ -114,6 +138,9 @@ const iconName = computed(() =>
     ? props.item.icon?.replace(/^regular-/, "solid-")
     : props.item.icon,
 );
+
+// Rows leaving the app through a plain anchor mark themselves with a trailing icon
+const isExternal = computed(() => !props.item.to && !!props.item.href);
 
 const rowComponent = computed(() => (hasChildren.value ? MtCollapsible : "li"));
 
@@ -249,6 +276,16 @@ function setSubtreeOpen(open: boolean) {
   align-items: center;
   justify-content: center;
   margin-left: auto;
+}
+
+.mt-nav__link-external-icon-box {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+}
+
+.mt-nav__link-external-icon {
+  color: var(--color-icon-secondary-default);
 }
 
 .mt-nav__sub-list {

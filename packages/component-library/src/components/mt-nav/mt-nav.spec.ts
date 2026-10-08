@@ -96,6 +96,23 @@ describe("mt-nav", () => {
       expect(link).toHaveAttribute("target", "_blank");
     });
 
+    it("marks external links with a trailing icon and announces the new tab", () => {
+      renderNav();
+
+      const link = getRowLabel("Docs").closest("a")!;
+
+      expect(link.querySelector(".mt-nav__link-external-icon")).not.toBeNull();
+      expect(link).toHaveAccessibleName("Docs (opens in a new tab)");
+    });
+
+    it("shows no external icon on rows with a route target", () => {
+      renderNav();
+
+      const link = getRowLabel("Dashboard").closest("a")!;
+
+      expect(link.querySelector(".mt-nav__link-external-icon")).toBeNull();
+    });
+
     it("drops rows nested deeper than three levels", () => {
       renderNav({ sections: sampleSections("sw.review.index") });
 
