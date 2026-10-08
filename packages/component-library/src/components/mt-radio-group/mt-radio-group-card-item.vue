@@ -35,22 +35,12 @@ import type { RadioGroupContext } from "./_internal/mt-radio-group-context";
 
 const props = withDefaults(
   defineProps<{
-    /** The id of the radio input; its label and description refer to it. */
     id: string;
-    /** The value the group takes when this option is selected. */
     value: string | number | boolean;
-    /** The visible name of the option, which also names its radio input. */
     label: string;
-    /** Supporting text below the label, announced as the description of the radio input. */
     description?: string;
-    /** Marks the radio input as required. */
     required?: boolean;
-    /** The ids of further elements that describe the option. */
     ariaDescribedBy?: string;
-    /**
-     * Marks the option as invalid for assistive technology (`aria-invalid`). The error state of
-     * the group applies as well.
-     */
     error?: boolean;
   }>(),
   {
