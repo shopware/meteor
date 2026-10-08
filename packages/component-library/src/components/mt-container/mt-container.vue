@@ -10,14 +10,11 @@ import type { Component } from "vue";
 /**
  * A layout wrapper that fills the available width up to a maximum width and centers itself.
  *
- * @experimental This can be used, but the API may still change in a future release.
+ * @experimental Not for public use yet: undocumented, and it may change or be removed without notice.
  */
 withDefaults(
   defineProps<{
-    /**
-     * The maximum width of the container: `s` (680px), `m` (960px) or `l` (1280px).
-     * The values come from the `--container-size-*` custom properties.
-     */
+    /** The maximum width of the container: `s` (680px), `m` (960px) or `l` (1280px). */
     size?: "s" | "m" | "l";
     /**
      * The element or component that renders the container.
@@ -42,14 +39,14 @@ defineSlots<{
 }
 
 .mt-container--size-s {
-  max-width: var(--container-size-s);
+  max-width: 42.5rem;
 }
 
 .mt-container--size-m {
-  max-width: var(--container-size-m);
+  max-width: 60rem;
 }
 
 .mt-container--size-l {
-  max-width: var(--container-size-l);
+  max-width: 80rem;
 }
 </style>
