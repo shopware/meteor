@@ -22,8 +22,6 @@ import {
  * Holds the open state of a drawer and decides how it may be dismissed. Place
  * `mt-drawer-trigger` and `mt-drawer-content` inside it. Builds on reka-ui's Drawer,
  * which is still an alpha primitive.
- *
- * @experimental Not for public use yet: undocumented, and it may change or be removed without notice.
  */
 const props = withDefaults(
   defineProps<{

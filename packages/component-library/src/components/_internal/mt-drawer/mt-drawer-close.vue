@@ -12,8 +12,6 @@ import { useDrawerContext } from "./composables/useDrawerContext";
 /**
  * Closes the surrounding drawer, also when it is not dismissible. Renders a button
  * unless `as` names another element or component.
- *
- * @experimental Not for public use yet: undocumented, and it may change or be removed without notice.
  */
 withDefaults(
   defineProps<{

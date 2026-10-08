@@ -80,8 +80,6 @@ import { useModalLayer } from "./composables/useModalLayer";
 /**
  * The panel of a drawer: it slides in from an edge of the viewport above a backdrop,
  * makes the page behind it inert and returns the focus when it closes.
- *
- * @experimental Not for public use yet: undocumented, and it may change or be removed without notice.
  */
 const props = withDefaults(
   defineProps<{

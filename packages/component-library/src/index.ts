@@ -86,10 +86,6 @@ import {
   DropdownMenuSub,
 } from "reka-ui";
 // Import global styling
-import MtDrawerRoot from "./components/mt-drawer/mt-drawer-root.vue";
-import MtDrawerTrigger from "./components/mt-drawer/mt-drawer-trigger.vue";
-import MtDrawerContent from "./components/mt-drawer/mt-drawer-content.vue";
-import MtDrawerClose from "./components/mt-drawer/mt-drawer-close.vue";
 import MtUser from "./components/mt-user/mt-user.vue";
 import MtApp from "./components/mt-app/mt-app.vue";
 import {
@@ -225,10 +221,6 @@ export {
   MtPagination as SwPagination,
   // @deprecated
   MtSkeletonBar as SwSkeletonBar,
-  MtDrawerRoot,
-  MtDrawerTrigger,
-  MtDrawerContent,
-  MtDrawerClose,
   MtUser,
   MtApp,
   useMtApp,
@@ -242,7 +234,3 @@ export type { Theme, ResolvedTheme, UseThemeOptions, UseThemeReturn };
 export type { Editor } from "@tiptap/vue-3";
 export type { default as Link } from "@tiptap/extension-link";
 export type { MtAppContext, MtAppPanel, MtAppRegions };
-export type {
-  MtDrawerDismissReason,
-  MtDrawerSide,
-} from "./components/mt-drawer/composables/useDrawerContext";
