@@ -3,7 +3,7 @@ import { computed, markRaw, ref } from "vue";
 import MtNav from "./mt-nav.vue";
 import MtBadge from "../mt-badge/mt-badge.vue";
 import type { NavItem, NavSection } from "./mt-nav.vue";
-import { StoryLink } from "./_internal/story-link";
+import { StoryLink } from "./mt-nav.story-helper";
 
 export type MtNavMeta = Meta<typeof MtNav>;
 
