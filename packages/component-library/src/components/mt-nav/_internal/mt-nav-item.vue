@@ -253,7 +253,6 @@ function setSubtreeOpen(open: boolean) {
   min-width: 0;
 }
 
-/* Native button variants of the navigation link, dropping the user agent chrome */
 .mt-nav__item-row button.mt-nav__link {
   border: 0;
   background: none;
@@ -319,7 +318,6 @@ function setSubtreeOpen(open: boolean) {
   border-radius: var(--border-radius-2xs);
 }
 
-/* Shorten the tree line when the last visible row is a closed leaf */
 .mt-nav__list-item--nested:last-child
   > .mt-nav__sub-list:has(> .mt-nav__list-item:last-child:not(.is--open))::before {
   bottom: var(--scale-size-12);
@@ -385,7 +383,6 @@ function setSubtreeOpen(open: boolean) {
   bottom: var(--scale-size-12);
 }
 
-/* Scoped to the row so the rule also beats the user agent reset on button links */
 .mt-nav__item-row .mt-nav__link.is--active {
   background: var(--color-background-brand-default);
   color: var(--color-icon-brand-default);

@@ -54,7 +54,6 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
-  /** A row with a `to` or `href` was clicked. */
   (e: "navigate", item: NavItem): void;
 }>();
 
