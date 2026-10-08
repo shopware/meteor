@@ -346,6 +346,7 @@ function setSubtreeOpen(open: boolean) {
   left: calc(var(--mt-nav-tree-line-offset) - var(--scale-size-1));
   top: 50%;
   transform: translateY(-50%);
+  /* stylelint-disable-next-line meteor/prefer-sizing-token */
   width: 3px;
   height: var(--scale-size-16);
   border-radius: var(--border-radius-round);
