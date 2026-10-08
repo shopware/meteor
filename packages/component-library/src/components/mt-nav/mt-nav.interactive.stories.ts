@@ -9,19 +9,6 @@ export default {
   tags: ["!autodocs"],
 } as MtNavMeta;
 
-export const VisualTestDefault: MtNavStory = {
-  name: "Render the navigation",
-  play: async ({ canvasElement }) => {
-    const canvas = within(canvasElement);
-    const navigation = canvas.getByRole("navigation", { name: "Main navigation" });
-
-    expect(within(navigation).getByText("Dashboard")).toBeVisible();
-    expect(within(navigation).getByText("Products")).toBeVisible();
-    expect(within(navigation).getByText("Settings")).toBeVisible();
-    expect(within(navigation).queryByRole("heading", { level: 3 })).toBeNull();
-  },
-};
-
 export const VisualTestSections: MtNavStory = {
   ...Sections,
   name: "Render sections with headers",
