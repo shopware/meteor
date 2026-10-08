@@ -40,7 +40,7 @@ const { isMobile, isOpen, toggle } = useMtApp();
   align-items: center;
   justify-content: space-between;
   min-height: var(--scale-size-56);
-  padding-inline: var(--scale-size-16);
+  padding-inline: var(--scale-size-8);
 }
 
 .app-header--mobile {
