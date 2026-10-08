@@ -69,6 +69,9 @@ const props = withDefaults(
 );
 
 const emit = defineEmits<{
+  /**
+   * Emitted when a row with a `to` or `href` is clicked. Rows that only toggle nested rows do not emit it.
+   */
   (e: "navigate", item: NavItem): void;
 }>();
 
