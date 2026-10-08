@@ -133,6 +133,13 @@ defineExpose({
   overscroll-behavior: contain;
 }
 
+/* In the desktop layout, the sidebar is framed like the content. */
+.mt-app__region--sidebar {
+  background-color: var(--color-elevation-surface-default);
+  border: 1px solid var(--color-border-secondary-default);
+  border-radius: var(--border-radius-m);
+}
+
 .mt-app__region[hidden] {
   display: none;
 }

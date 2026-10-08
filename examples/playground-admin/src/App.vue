@@ -41,8 +41,8 @@ const sidebarOpen = usePanelState("playground-admin-sidebar-open");
       <RouterView />
     </template>
 
-    <template #sidebar="{ isMobile }">
-      <AppSidebar :framed="!isMobile" />
+    <template #sidebar>
+      <AppSidebar />
     </template>
   </mt-app>
 </template>
