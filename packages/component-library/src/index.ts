@@ -106,6 +106,7 @@ import {
   type MtAppRegions,
 } from "./components/mt-app/composables/useMtAppRegions";
 import MtContainer from "./components/mt-container/mt-container.vue";
+import MtPage from "./components/mt-page/mt-page.vue";
 import "./assets/css/all.css";
 
 // Importing types
@@ -240,6 +241,7 @@ export {
   useMtApp,
   useMtAppRegions,
   MtContainer,
+  MtPage,
 };
 
 // Exporting types
