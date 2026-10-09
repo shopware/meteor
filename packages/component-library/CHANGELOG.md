@@ -1,5 +1,23 @@
 # Changelog
 
+## 5.9.0
+
+### Minor Changes
+
+- [#1386](https://github.com/shopware/meteor/pull/1386) [`8ec5a71`](https://github.com/shopware/meteor/commit/8ec5a71dbb8daa01263f2c1640c7120da99199cc) Thanks [@alastair-simon](https://github.com/alastair-simon)! - Add the `mt-nav` component for the main application navigation, with sections, up to three levels of nested rows and keyboard navigation
+
+- [#1401](https://github.com/shopware/meteor/pull/1401) [`f7cc3c9`](https://github.com/shopware/meteor/commit/f7cc3c980e90ff16b4eca1f545116d93db771ca5) Thanks [@fabianhueske](https://github.com/fabianhueske)! - Add a `disabled` prop to `MtStatusDot` that renders the dot in the disabled color token of its variant and turns off `pulse`.
+
+### Patch Changes
+
+- [#1374](https://github.com/shopware/meteor/pull/1374) [`b8e77b6`](https://github.com/shopware/meteor/commit/b8e77b6eb9a1fe986d9432f77b1fb9b5bd569af6) Thanks [@hrombach-dsee](https://github.com/hrombach-dsee)! - Fix `mt-tooltip` not updating when the `content` prop changes
+
+- [#1395](https://github.com/shopware/meteor/pull/1395) [`01286c0`](https://github.com/shopware/meteor/commit/01286c0098feff9109cc77542d545b587c9b8f36) Thanks [@arnoldstoba](https://github.com/arnoldstoba)! - Fix notifications showing twice when `mt-snackbar` is mounted more than once. Only one mounted `mt-snackbar` renders them now.
+
+- Updated dependencies [[`17f05b1`](https://github.com/shopware/meteor/commit/17f05b15ee5884498f11fc3211dad1be8216c900), [`4a2c88a`](https://github.com/shopware/meteor/commit/4a2c88a9f81eba89be37d44b97a0ee48059ee036)]:
+  - @shopware-ag/meteor-admin-sdk@6.15.1
+  - @shopware-ag/meteor-icon-kit@5.12.0
+
 ## 5.8.0
 
 ### Minor Changes
