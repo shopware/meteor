@@ -295,45 +295,11 @@ const meta: MtNavMeta = {
     linkComponent: markRaw(StoryLink),
   },
   argTypes: {
-    sections: {
-      control: false,
-      description:
-        "The sections of the navigation, each holding its rows. Rows nest through `children`.",
-    },
-    linkComponent: {
-      control: false,
-      description:
-        "Component rendering the links. Receives the `to` of a row. Defaults to `router-link`.",
-    },
-    isActive: {
-      control: false,
-      description:
-        "Tells whether a row is the current page, e.g. by comparing its route with the current route.",
-    },
+    sections: { control: false },
+    linkComponent: { control: false },
+    isActive: { control: false },
   },
   ...createStory([{ items: [...shopItems, ...systemItems] }], defaultSource),
-};
-
-meta.parameters = {
-  ...meta.parameters,
-  docs: {
-    ...meta.parameters?.docs,
-    description: {
-      component: `
-The main navigation of an application. It takes its structure as data: \`sections\` holds groups
-of rows below an optional header, and rows nest through \`children\` up to three levels deep.
-The root fills its container and scrolls its content, fading it out at the edges.
-
-The application decides which row is current: either through \`isActive\`, a function comparing a
-row's route with the current route, or by setting \`active\` on the row itself. With \`isActive\`
-the sections can stay static. When several nested rows match, the deepest one is the current page.
-The ancestors of the active row open and, while closed, take
-over its highlight. When the active row moves, the branch holding it opens and branches holding
-nothing active close. Only one top-level branch is open at a time; nested rows remember their own
-toggle. Arrow, Home and End keys move focus between the visible links.
-`.trim(),
-    },
-  },
 };
 
 export default meta;

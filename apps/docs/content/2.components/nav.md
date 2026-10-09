@@ -3,6 +3,10 @@ title: Nav
 description: The main navigation of an application, built from sections of nested rows.
 ---
 
+::warning
+**Experimental.** The API may still change in a future release.
+::
+
 ::component-example{name="nav-basic-example"}
 ::
 
