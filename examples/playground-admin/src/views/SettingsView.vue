@@ -9,6 +9,7 @@ import {
   MtModalClose,
   MtModalRoot,
   MtModalTrigger,
+  MtPage,
   MtSelect,
   MtText,
   MtThemeSelect,
@@ -34,50 +35,48 @@ function reset(done: () => void) {
 </script>
 
 <template>
-  <mt-container as="section" size="s" class="page stack">
-    <mt-card :title="t('settings.title')">
-      <div class="stack">
-        <mt-select
-          v-model="locale"
-          :label="t('settings.language')"
-          :options="localeOptions"
-          :enable-search="false"
-          hide-clearable-button
-        />
-        <mt-theme-select v-model="theme" :label="t('settings.theme')" />
-      </div>
+  <mt-page :title="t('settings.title')">
+    <template #actions>
+      <mt-modal-root>
+        <mt-modal-trigger :as="MtButton" variant="secondary" size="default">
+          {{ t("settings.reset") }}
+        </mt-modal-trigger>
 
-      <template #footer>
-        <mt-modal-root>
-          <mt-modal-trigger :as="MtButton" variant="secondary" size="default">
-            {{ t("settings.reset") }}
-          </mt-modal-trigger>
+        <mt-modal :title="t('settings.resetTitle')" width="s">
+          <mt-text size="xs">{{ t("settings.resetText") }}</mt-text>
 
-          <mt-modal :title="t('settings.resetTitle')" width="s">
-            <mt-text size="xs">{{ t("settings.resetText") }}</mt-text>
+          <template #footer>
+            <div class="actions">
+              <mt-modal-close :as="MtButton" variant="secondary" size="default">
+                {{ t("settings.cancel") }}
+              </mt-modal-close>
+              <mt-modal-action
+                :as="MtButton"
+                variant="critical"
+                size="default"
+                @click="reset"
+              >
+                {{ t("settings.reset") }}
+              </mt-modal-action>
+            </div>
+          </template>
+        </mt-modal>
+      </mt-modal-root>
+    </template>
 
-            <template #footer>
-              <div class="actions">
-                <mt-modal-close
-                  :as="MtButton"
-                  variant="secondary"
-                  size="default"
-                >
-                  {{ t("settings.cancel") }}
-                </mt-modal-close>
-                <mt-modal-action
-                  :as="MtButton"
-                  variant="critical"
-                  size="default"
-                  @click="reset"
-                >
-                  {{ t("settings.reset") }}
-                </mt-modal-action>
-              </div>
-            </template>
-          </mt-modal>
-        </mt-modal-root>
-      </template>
-    </mt-card>
-  </mt-container>
+    <mt-container size="s" class="page stack">
+      <mt-card>
+        <div class="stack">
+          <mt-select
+            v-model="locale"
+            :label="t('settings.language')"
+            :options="localeOptions"
+            :enable-search="false"
+            hide-clearable-button
+          />
+          <mt-theme-select v-model="theme" :label="t('settings.theme')" />
+        </div>
+      </mt-card>
+    </mt-container>
+  </mt-page>
 </template>

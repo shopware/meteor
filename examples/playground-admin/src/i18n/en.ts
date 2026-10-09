@@ -17,7 +17,13 @@ export const en = {
       "A minimal application for trying out the Meteor app shell: navigation, sidebar, drawers on small screens, theme and language.",
   },
   cms: {
+    title: "CMS",
     back: "Back",
+    blocks: "Blocks",
+    block: "Block {number}",
+    canvas: "Canvas",
+    properties: "Properties",
+    noSelection: "No block selected",
   },
   notFound: {
     title: "Page not found",
