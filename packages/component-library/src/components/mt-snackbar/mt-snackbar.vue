@@ -1,6 +1,11 @@
 <template>
   <Teleport v-if="isActiveHost" to="body">
-    <div class="mt-snackbar" @mouseenter="isHovered = true" @mouseleave="isHovered = false">
+    <div
+      class="mt-snackbar"
+      data-mt-overlay
+      @mouseenter="isHovered = true"
+      @mouseleave="isHovered = false"
+    >
       <mt-snackbar-notification
         v-for="snackbar in snackbars"
         :key="snackbar.id"

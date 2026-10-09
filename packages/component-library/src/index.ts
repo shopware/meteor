@@ -86,6 +86,18 @@ import {
   DropdownMenuSub,
 } from "reka-ui";
 // Import global styling
+import MtUser from "./components/mt-user/mt-user.vue";
+import MtApp from "./components/mt-app/mt-app.vue";
+import {
+  useMtApp,
+  type MtAppContext,
+  type MtAppPanel,
+} from "./components/mt-app/composables/useMtApp";
+import {
+  useMtAppRegions,
+  type MtAppRegions,
+} from "./components/mt-app/composables/useMtAppRegions";
+import MtContainer from "./components/mt-container/mt-container.vue";
 import "./assets/css/all.css";
 
 // Importing types
@@ -209,6 +221,11 @@ export {
   MtPagination as SwPagination,
   // @deprecated
   MtSkeletonBar as SwSkeletonBar,
+  MtUser,
+  MtApp,
+  useMtApp,
+  useMtAppRegions,
+  MtContainer,
 };
 
 // Exporting types
@@ -216,3 +233,4 @@ export type { Filter, Option, Toast, Snackbar, ChartOptions, BreadcrumbItem };
 export type { Theme, ResolvedTheme, UseThemeOptions, UseThemeReturn };
 export type { Editor } from "@tiptap/vue-3";
 export type { default as Link } from "@tiptap/extension-link";
+export type { MtAppContext, MtAppPanel, MtAppRegions };

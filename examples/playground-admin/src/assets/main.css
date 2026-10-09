@@ -1,0 +1,18 @@
+/* The padding of every page. */
+.page {
+  padding: var(--scale-size-32);
+}
+
+/* Stacks its children with the default spacing. */
+.stack {
+  display: grid;
+  gap: var(--scale-size-16);
+  align-content: start;
+}
+
+/* A row of buttons at the end of a footer. */
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--scale-size-8);
+}
