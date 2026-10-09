@@ -59,6 +59,9 @@
         :id="drawerIds.navigation"
         ref="navigationRegion"
         panel="navigation"
+        :controller="appContext"
+        as="nav"
+        side="start"
         :label="labels.navigation"
         :close-label="t('close', { label: labels.navigation })"
         :hidden="!isOpenInline('navigation') || undefined"
@@ -81,6 +84,9 @@
         :id="drawerIds.sidebar"
         ref="sidebarRegion"
         panel="sidebar"
+        :controller="appContext"
+        as="aside"
+        side="end"
         :label="labels.sidebar"
         :close-label="t('close', { label: labels.sidebar })"
         :hidden="!isOpenInline('sidebar') || undefined"
@@ -118,7 +124,7 @@ import { useTheme } from "@/composables/useTheme";
 import { hasSlotContent } from "@/utils/slot";
 import MtAppRegion from "./_internal/mt-app-region.vue";
 import MtAppTrigger from "./_internal/mt-app-trigger.vue";
-import { appContextKey } from "./composables/useAppContext";
+import { appContextKey, type AppContext } from "./composables/useAppContext";
 import { useAppPanels } from "./composables/useAppPanels";
 import { useAppRegions } from "./composables/useAppRegions";
 import { useAppLoading } from "./composables/useAppLoading";
@@ -293,7 +299,7 @@ function hasContent() {
 }
 
 /** Whether the panel can be shown: its slot is filled and no view hides it. */
-function isAvailable(panel: MtAppPanel) {
+function isAvailable(panel: MtAppPanel): boolean {
   return hasSlot(panel) && !hiddenRegions.value[panel];
 }
 
@@ -391,7 +397,7 @@ watch(
   { flush: "sync" },
 );
 
-provide(appContextKey, {
+const appContext: AppContext = {
   isMobile,
   isOpen: panels.isOpen,
   open: panels.open,
@@ -400,7 +406,9 @@ provide(appContextKey, {
   startLoading,
   requestRegions,
   focusContent,
-});
+};
+
+provide(appContextKey, appContext);
 
 const pageAnnouncement = ref("");
 let announcedTitle = "";
@@ -600,7 +608,7 @@ defineExpose({
  * drawers take over. Custom breakpoints only apply once the app has mounted.
  */
 @media (width < 1280px) {
-  .mt-app--responsive:not([data-layout]) :deep(.mt-app__region) {
+  .mt-app--responsive:not([data-layout]) :deep(.mt-app__body > .mt-app__region) {
     display: none;
   }
 }
