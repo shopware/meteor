@@ -101,6 +101,7 @@ import { useAppRegions, type MtAppRegions } from "./components/mt-app/composable
 import { useAppLoading } from "./components/mt-app/composables/useAppLoading";
 import { useUnsavedChanges } from "./components/mt-app/composables/useUnsavedChanges";
 import MtContainer from "./components/mt-container/mt-container.vue";
+import MtPage from "./components/mt-page/mt-page.vue";
 import "./assets/css/all.css";
 
 // Importing types
@@ -237,6 +238,7 @@ export {
   useAppLoading,
   useUnsavedChanges,
   MtContainer,
+  MtPage,
 };
 
 // Exporting types
