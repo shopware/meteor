@@ -1,11 +1,13 @@
-import type { Meta, StoryObj } from "@storybook/vue3";
+import type { StoryObj } from "@storybook/vue3";
 import { markRaw, ref } from "vue";
 import MtNav from "./mt-nav.vue";
 import MtBadge from "../mt-badge/mt-badge.vue";
+import MtBanner from "../mt-banner/mt-banner.vue";
+import type { SlottedMeta } from "@/_internal/story-helper";
 import type { NavItem, NavSection } from "./mt-nav.vue";
 import { StoryLink } from "./mt-nav.story-helper";
 
-export type MtNavMeta = Meta<typeof MtNav>;
+export type MtNavMeta = SlottedMeta<typeof MtNav, "_storybook_internal_show_experimental_warning_">;
 
 /**
  * Sample navigation resembling a shop administration.
@@ -122,7 +124,7 @@ function createStory(
   // Builds a story matching the static sections against the fake current route
   return {
     render: (args) => ({
-      components: { MtNav, MtBadge },
+      components: { MtNav, MtBadge, MtBanner },
       setup() {
         const current = ref(initialRoute);
 
@@ -142,7 +144,20 @@ function createStory(
 
         return { args, sections, isActive, onNavigate, badges };
       },
-      template: `<mt-nav v-bind="args" :sections="sections" :is-active="isActive" @navigate="onNavigate">${slotContent}</mt-nav>`,
+      template: `
+      <mt-banner
+          v-if="args._storybook_internal_show_experimental_warning_"
+          title="Experimental component"
+          variant="attention"
+      >
+        This component is currently in an experimental state and may undergo frequent
+        changes. Please use it with discretion and be prepared for potential updates
+        that could impact its functionality, appearance, or behavior. We welcome
+        feedback, which can be submitted in the GitHub Discussions of the
+        Meteor Component Library.
+      </mt-banner>
+
+      <mt-nav v-bind="args" :sections="sections" :is-active="isActive" @navigate="onNavigate">${slotContent}</mt-nav>`,
     }),
     parameters: {
       docs: {
@@ -293,8 +308,16 @@ const meta: MtNavMeta = {
   args: {
     // markRaw: a component object stored in reactive args would be made reactive otherwise
     linkComponent: markRaw(StoryLink),
+    // TODO: can be removed when component is not experimental anymore
+    _storybook_internal_show_experimental_warning_: false,
   },
   argTypes: {
+    // TODO: can be removed when component is not experimental anymore
+    _storybook_internal_show_experimental_warning_: {
+      table: {
+        disable: true,
+      },
+    },
     sections: { control: false },
     linkComponent: { control: false },
     isActive: { control: false },
@@ -309,7 +332,11 @@ export type MtNavStory = StoryObj<MtNavMeta>;
 /**
  * A single section without a header holds all rows. The row matched by `isActive` opens its ancestors.
  */
-export const Default: MtNavStory = {};
+export const Default: MtNavStory = {
+  args: {
+    _storybook_internal_show_experimental_warning_: true,
+  },
+};
 
 /**
  * Several sections, each with a `header` above its rows.
