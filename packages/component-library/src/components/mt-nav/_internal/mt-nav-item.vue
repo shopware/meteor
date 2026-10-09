@@ -130,9 +130,7 @@ const subtreeOpen = computed(() =>
 );
 
 // The deepest active row is the current page, so a row holding an active row defers to it
-const isCurrentPage = computed(
-  () => context.isRowActive(props.item) && !hasActiveDescendant.value,
-);
+const isCurrentPage = computed(() => context.isRowActive(props.item) && !hasActiveDescendant.value);
 
 // A closed branch stands in for the active row it hides
 const rowActive = computed(

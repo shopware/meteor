@@ -159,9 +159,7 @@ describe("mt-nav", () => {
         "page",
       );
       expect(getRowLabel("Dashboard").closest(".mt-nav__link")).not.toHaveAttribute("aria-current");
-      expect(getRowLabel("Products").closest(".mt-nav__link")).not.toHaveAttribute(
-        "aria-current",
-      );
+      expect(getRowLabel("Products").closest(".mt-nav__link")).not.toHaveAttribute("aria-current");
     });
 
     it("marks a closed branch with aria-current true in place of the active row it hides", async () => {
@@ -342,9 +340,7 @@ describe("mt-nav", () => {
         "aria-current",
         "page",
       );
-      expect(getRowLabel("Dashboard").closest(".mt-nav__link")).not.toHaveAttribute(
-        "aria-current",
-      );
+      expect(getRowLabel("Dashboard").closest(".mt-nav__link")).not.toHaveAttribute("aria-current");
     });
 
     it("marks only the deepest matching row as the current page", async () => {
@@ -359,9 +355,7 @@ describe("mt-nav", () => {
         "aria-current",
         "page",
       );
-      expect(getRowLabel("Overview").closest(".mt-nav__link")).not.toHaveAttribute(
-        "aria-current",
-      );
+      expect(getRowLabel("Overview").closest(".mt-nav__link")).not.toHaveAttribute("aria-current");
     });
   });
 
