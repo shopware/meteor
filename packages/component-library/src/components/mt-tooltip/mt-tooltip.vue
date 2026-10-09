@@ -148,10 +148,12 @@ function onBlur(event: FocusEvent) {
 
 const mouseoverTimeout = useTimeout(props.delayDurationInMs, {
   controls: true,
+  immediate: false,
   callback: () => show({ gotOpenedBy: "hover" }),
 });
 const mouseLeaveTimeout = useTimeout(props.hideDelayDurationInMs, {
   controls: true,
+  immediate: false,
   callback: hide,
 });
 
