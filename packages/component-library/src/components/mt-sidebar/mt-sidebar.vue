@@ -158,6 +158,7 @@ defineExpose({
   overflow-x: hidden;
   overflow-y: auto;
   overscroll-behavior: contain;
+  scroll-padding-block: var(--scale-size-20);
   scrollbar-width: none;
   -webkit-overflow-scrolling: touch;
 }
