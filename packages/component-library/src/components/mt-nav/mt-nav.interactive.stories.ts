@@ -1,0 +1,76 @@
+import { expect, userEvent, within } from "@storybook/test";
+import { waitUntil } from "@/_internal/test-helper";
+
+import meta, { Sections, type MtNavMeta, type MtNavStory } from "./mt-nav.stories";
+
+export default {
+  ...meta,
+  title: "Components/Nav/Interaction tests",
+  tags: ["!autodocs"],
+} as MtNavMeta;
+
+export const VisualTestSections: MtNavStory = {
+  ...Sections,
+  name: "Render sections with headers",
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const navigation = canvas.getByRole("navigation", { name: "Main navigation" });
+
+    expect(within(navigation).getByRole("heading", { name: "Shop" })).toBeVisible();
+    expect(within(navigation).getByRole("heading", { name: "System" })).toBeVisible();
+    expect(
+      within(canvas.getByRole("list", { name: "System" })).getByText("Settings"),
+    ).toBeVisible();
+  },
+};
+
+export const VisualTestActiveRoute: MtNavStory = {
+  name: "Open the branch of the active row",
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // The story starts on product.index, which sits below Products
+    await waitUntil(() => canvas.getByText("Overview").checkVisibility());
+
+    expect(canvas.getByText("Overview").closest(".mt-nav__link")).toHaveAttribute(
+      "aria-current",
+      "page",
+    );
+  },
+};
+
+export const VisualTestExpandBranch: MtNavStory = {
+  name: "Expand a branch by clicking its row",
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await userEvent.click(canvas.getByRole("button", { name: "Content" }));
+
+    await waitUntil(() => canvas.getByText("Media").checkVisibility());
+
+    expect(canvas.getByText("Shopping Experiences")).toBeVisible();
+    expect(canvas.getByText("Media")).toBeVisible();
+  },
+};
+
+export const VisualTestNavigate: MtNavStory = {
+  name: "Move the active state to the clicked row",
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    await userEvent.click(canvas.getByRole("link", { name: "Orders" }));
+
+    await waitUntil(
+      () =>
+        canvas.getByText("Orders").closest(".mt-nav__link")?.getAttribute("aria-current") ===
+        "page",
+    );
+
+    // The branch that held the previous page closes once nothing inside it is active
+    await waitUntil(() => !canvas.getByText("Overview").checkVisibility());
+
+    expect(canvas.getByText("Overview").closest(".mt-nav__link")).not.toHaveAttribute(
+      "aria-current",
+    );
+  },
+};
