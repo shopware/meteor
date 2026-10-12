@@ -1,13 +1,5 @@
 <template>
-  <aside
-    class="mt-sidebar"
-    :class="{
-      'mt-sidebar--has-header': !!$slots.header,
-      'mt-sidebar--has-footer': !!$slots.footer,
-    }"
-    :style="{ '--mt-sidebar-width': width }"
-    :aria-label="ariaLabel"
-  >
+  <aside class="mt-sidebar" :style="{ '--mt-sidebar-width': width }" :aria-label="ariaLabel">
     <header v-if="$slots.header" class="mt-sidebar__header">
       <slot name="header" />
     </header>
