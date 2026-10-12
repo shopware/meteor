@@ -1,5 +1,4 @@
 <template>
-  <!-- The container establishes the query context the banner sizes itself against. -->
   <div v-if="isShowPermissionUI" class="mt-grant-permission-service-banner__container">
     <section class="mt-grant-permission-service-banner" :aria-labelledby="titleId">
       <mt-icon
@@ -145,6 +144,7 @@ function handleClickMoreInfo() {
 </script>
 
 <style scoped>
+/* The container establishes the query context the banner sizes itself against. */
 .mt-grant-permission-service-banner__container {
   container-type: inline-size;
   container-name: mt-grant-permission-service-banner;

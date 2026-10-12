@@ -58,7 +58,6 @@
         name="input"
         v-bind="{ identification, placeholder, searchTerm, onSearchTermChange, onKeyDownDelete }"
       >
-        <!-- eslint-disable-next-line vuejs-accessibility/form-control-has-label -->
         <input
           :id="identification"
           ref="MtSelectInput"
