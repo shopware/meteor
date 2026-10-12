@@ -23,7 +23,6 @@
       </transition>
 
       <div class="mt-sidebar__content">
-        <!-- @slot The navigation of the sidebar. Scrolls on its own when it is taller than the sidebar -->
         <slot />
       </div>
 
@@ -37,7 +36,6 @@
     </div>
 
     <footer v-if="$slots.footer" class="mt-sidebar__footer">
-      <!-- @slot Fixed area at the bottom of the sidebar, for example a user menu or a logout button -->
       <slot name="footer" />
     </footer>
   </aside>
