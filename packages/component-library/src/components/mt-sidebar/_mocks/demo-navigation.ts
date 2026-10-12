@@ -1,13 +1,13 @@
 import { DropdownMenuPortal, DropdownMenuRoot, DropdownMenuTrigger } from "reka-ui";
 import { markRaw } from "vue";
 import MtSidebar from "../mt-sidebar.vue";
+import MtSidebarHeader from "../../mt-sidebar-header/mt-sidebar-header.vue";
 import MtNav from "../../mt-nav/mt-nav.vue";
 import type { NavItem, NavSection } from "../../mt-nav/mt-nav.vue";
 import { StoryLink } from "../../mt-nav/mt-nav.story-helper";
 import MtText from "../../mt-text/mt-text.vue";
 import MtIcon from "../../mt-icon/mt-icon.vue";
 import MtAvatar from "../../mt-avatar/mt-avatar.vue";
-import MtButton from "../../mt-button/mt-button.vue";
 import MtActionMenu from "../../mt-action-menu/mt-action-menu.vue";
 import MtActionMenuGroup from "../../mt-action-menu-group/mt-action-menu-group.vue";
 import MtActionMenuItem from "../../mt-action-menu-item/mt-action-menu-item.vue";
@@ -20,11 +20,11 @@ export const demoComponents = {
   MtDropdownMenuRoot: DropdownMenuRoot,
   MtDropdownMenuTrigger: DropdownMenuTrigger,
   MtSidebar,
+  MtSidebarHeader,
   MtNav,
   MtText,
   MtIcon,
   MtAvatar,
-  MtButton,
   MtActionMenu,
   MtActionMenuGroup,
   MtActionMenuItem,
@@ -104,55 +104,10 @@ export const demoNavigationTemplate = `
 <mt-nav :sections="sections" :link-component="linkComponent" />`;
 
 /**
- * Header as used by the Shopware administration: logo box, shop name,
- * product name and a button to collapse the sidebar.
+ * Header as used by the Shopware administration.
  */
 export const demoHeaderTemplate = `
-<div
-  style="
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    width: var(--scale-size-40);
-    height: var(--scale-size-40);
-    background: var(--color-icon-brand-default);
-    border-radius: var(--border-radius-m);
-  "
->
-  <mt-icon
-    name="solid-shopware"
-    size="var(--scale-size-26)"
-    color="var(--color-static-white)"
-    aria-label="Shopware"
-  />
-</div>
-
-<div style="flex: 1 1 auto; min-width: 0; display: flex; flex-direction: column; justify-content: center;">
-  <mt-text
-    as="div"
-    size="s"
-    weight="semibold"
-    style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; line-height: 1.4;"
-    title="Demo shop"
-  >
-    Demo shop
-  </mt-text>
-  <mt-text
-    as="div"
-    size="2xs"
-    color="color-text-secondary-default"
-    style="overflow: hidden; white-space: nowrap; text-overflow: ellipsis; line-height: 1.4;"
-  >
-    Shopware
-  </mt-text>
-</div>
-
-<mt-button variant="tertiary" size="default" square aria-label="Minimize menu" style="flex-shrink: 0;">
-  <template #iconFront>
-    <mt-icon name="regular-panel-left" size="var(--scale-size-16)" aria-hidden="true" />
-  </template>
-</mt-button>`;
+<mt-sidebar-header title="Demo shop" subtitle="Shopware" />`;
 
 /**
  * Footer as used by the Shopware administration: a user menu toggle with
