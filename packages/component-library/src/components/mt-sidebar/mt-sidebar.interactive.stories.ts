@@ -41,6 +41,21 @@ function renderSidebar(options: { sections?: typeof demoSections } = {}) {
   });
 }
 
+/**
+ * Scrolls the body so that the link is cut off a little at the given edge,
+ * like the next link when moving through the navigation with the arrow keys.
+ */
+function scrollLinkPartlyOutOfView(body: HTMLElement, link: HTMLElement, edge: "top" | "bottom") {
+  const bodyRect = body.getBoundingClientRect();
+  const linkRect = link.getBoundingClientRect();
+  const hiddenPart = linkRect.height / 4;
+
+  body.scrollTop +=
+    edge === "top"
+      ? linkRect.top - bodyRect.top + hiddenPart
+      : linkRect.bottom - bodyRect.bottom - hiddenPart;
+}
+
 export const VisualTestDefault: MtSidebarStory = {
   name: "Render sidebar with header, navigation and footer",
 };
@@ -145,6 +160,52 @@ export const TestShowsTopShadowAtBottom: MtSidebarStory = {
     await waitFor(() => {
       expect(canvasElement.querySelector(".mt-sidebar__scroll-shadow--top")).not.toBeNull();
       expect(canvasElement.querySelector(".mt-sidebar__scroll-shadow--bottom")).toBeNull();
+    });
+  },
+};
+
+export const TestKeepsFocusedLinkClearOfBottomShadow: MtSidebarStory = {
+  name: "Keeps a focused link clear of the bottom shadow",
+  render: renderSidebar(),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const body = canvasElement.querySelector<HTMLElement>(".mt-sidebar__body");
+    if (!body) throw new Error("Sidebar body not found");
+
+    const link = canvas.getByRole("link", { name: "Payments" });
+    scrollLinkPartlyOutOfView(body, link, "bottom");
+    link.focus();
+
+    await waitFor(() => {
+      const shadow = canvasElement.querySelector(".mt-sidebar__scroll-shadow--bottom");
+      if (!shadow) throw new Error("Bottom shadow not found");
+
+      expect(link.getBoundingClientRect().bottom).toBeLessThanOrEqual(
+        shadow.getBoundingClientRect().top,
+      );
+    });
+  },
+};
+
+export const TestKeepsFocusedLinkClearOfTopShadow: MtSidebarStory = {
+  name: "Keeps a focused link clear of the top shadow",
+  render: renderSidebar(),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    const body = canvasElement.querySelector<HTMLElement>(".mt-sidebar__body");
+    if (!body) throw new Error("Sidebar body not found");
+
+    const link = canvas.getByRole("link", { name: "Customers" });
+    scrollLinkPartlyOutOfView(body, link, "top");
+    link.focus();
+
+    await waitFor(() => {
+      const shadow = canvasElement.querySelector(".mt-sidebar__scroll-shadow--top");
+      if (!shadow) throw new Error("Top shadow not found");
+
+      expect(link.getBoundingClientRect().top).toBeGreaterThanOrEqual(
+        shadow.getBoundingClientRect().bottom,
+      );
     });
   },
 };
