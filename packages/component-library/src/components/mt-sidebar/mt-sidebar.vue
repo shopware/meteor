@@ -15,7 +15,7 @@
     <div ref="scrollContainerRef" class="mt-sidebar__body" @scroll.passive="updateScrollShadows">
       <transition name="mt-sidebar-shadow-fade">
         <div
-          v-if="['bottom', 'middle'].includes(scrollPosition)"
+          v-if="canScrollUp"
           class="mt-sidebar__scroll-shadow mt-sidebar__scroll-shadow--top"
           data-testid="mt-sidebar-scroll-shadow-top"
         />
@@ -27,7 +27,7 @@
 
       <transition name="mt-sidebar-shadow-fade">
         <div
-          v-if="['top', 'middle'].includes(scrollPosition)"
+          v-if="canScrollDown"
           class="mt-sidebar__scroll-shadow mt-sidebar__scroll-shadow--bottom"
           data-testid="mt-sidebar-scroll-shadow-bottom"
         />
@@ -68,7 +68,8 @@ defineSlots<{
 
 const scrollContainerRef = ref<HTMLElement | null>(null);
 
-const scrollPosition = ref<"none" | "top" | "middle" | "bottom">("none");
+const canScrollUp = ref(false);
+const canScrollDown = ref(false);
 
 const thresholdInPx = 1;
 
@@ -78,22 +79,8 @@ function updateScrollShadows() {
 
   const { scrollHeight, clientHeight, scrollTop } = element;
 
-  const isScrollable = scrollHeight - clientHeight > thresholdInPx;
-  if (!isScrollable) {
-    scrollPosition.value = "none";
-    return;
-  }
-
-  const reachedTop = scrollTop <= thresholdInPx;
-  const reachedBottom = scrollHeight - scrollTop - clientHeight <= thresholdInPx;
-
-  if (reachedTop) {
-    scrollPosition.value = "top";
-  } else if (reachedBottom) {
-    scrollPosition.value = "bottom";
-  } else {
-    scrollPosition.value = "middle";
-  }
+  canScrollUp.value = scrollTop > thresholdInPx;
+  canScrollDown.value = scrollHeight - clientHeight - scrollTop > thresholdInPx;
 }
 
 let resizeObserver: ResizeObserver | null = null;
