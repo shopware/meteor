@@ -63,6 +63,7 @@
           ref="MtSelectInput"
           class="mt-select-selection-list__input"
           type="text"
+          tabindex="-1"
           autocomplete="off"
           data-1p-ignore
           data-lpignore="true"
