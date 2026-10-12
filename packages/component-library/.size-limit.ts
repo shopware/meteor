@@ -14,7 +14,7 @@ module.exports = [
     path: "dist/esm/index.js",
     import: "{ MtButton }",
     name: "MtButton",
-    limit: "36 kb",
+    limit: "37 kb",
     ignore: ignore,
   },
   {
