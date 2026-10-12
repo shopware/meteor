@@ -110,5 +110,6 @@ describe("mt-icon", () => {
 
     // ASSERT
     expect(await screen.findByTestId("mt-icon__solid-square")).toBeInTheDocument();
+    expect(screen.queryByTestId("mt-icon__solid-paper-plane")).not.toBeInTheDocument();
   });
 });

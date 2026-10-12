@@ -48,7 +48,6 @@
             :style="{ left: styleStartPosition, right: styleEndPosition }"
           />
         </div>
-        <!-- eslint-disable-next-line vuejs-accessibility/form-control-has-label -->
         <input
           v-if="isRange"
           type="range"
@@ -63,7 +62,6 @@
           @mouseleave="activeSlider = null"
           data-testid="left-slider"
         />
-        <!-- eslint-disable-next-line vuejs-accessibility/form-control-has-label -->
         <input
           :id="identification"
           type="range"
