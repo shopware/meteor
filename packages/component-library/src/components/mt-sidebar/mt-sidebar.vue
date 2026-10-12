@@ -9,7 +9,6 @@
     :aria-label="ariaLabel"
   >
     <header v-if="$slots.header" class="mt-sidebar__header">
-      <!-- @slot Fixed area at the top of the sidebar, for example a logo or a title -->
       <slot name="header" />
     </header>
 
@@ -69,13 +68,6 @@ defineSlots<{
 
 const scrollContainerRef = ref<HTMLElement | null>(null);
 
-/**
- * Where the scrollable body currently is:
- * - "none": everything fits, no scrolling needed
- * - "top": scrolled to the top, more content below
- * - "bottom": scrolled to the bottom, more content above
- * - "middle": more content in both directions
- */
 const scrollPosition = ref<"none" | "top" | "middle" | "bottom">("none");
 
 const thresholdInPx = 1;
@@ -127,35 +119,21 @@ onBeforeUnmount(() => {
 });
 
 defineExpose({
-  /**
-   * Re-evaluates the scroll shadows, e.g. after the navigation changed
-   * in a way the sidebar cannot detect on its own.
-   */
   updateScrollShadows,
 });
 </script>
 
 <style scoped>
 .mt-sidebar {
-  --mt-sidebar-background: var(--color-elevation-surface-sunken);
-  --mt-sidebar-padding-inline: var(--scale-size-12);
-  --mt-sidebar-padding-block-start: var(--scale-size-24);
-  --mt-sidebar-padding-block-end: var(--scale-size-8);
-
-  /* Height of the fade at the top and bottom edge of the scrolling navigation. The slot
-     content brings its own vertical padding (mt-nav pads by the same amount), so the
-     fades only ever cover content that scrolled past the edge. */
-  --mt-sidebar-body-fade: var(--scale-size-20);
-
   display: flex;
   flex-direction: column;
   width: var(--mt-sidebar-width);
   max-width: 100%;
   height: 100%;
   min-height: 0;
-  padding: var(--mt-sidebar-padding-block-start) var(--mt-sidebar-padding-inline)
-    var(--mt-sidebar-padding-block-end);
-  background: var(--mt-sidebar-background);
+  padding: var(--scale-size-24) var(--scale-size-12)
+    var(--scale-size-8);
+  background: var(--color-elevation-surface-sunken);
   color: var(--color-text-primary-default);
 }
 
@@ -188,41 +166,37 @@ defineExpose({
   display: none;
 }
 
-/* No padding on the scroll container or in here: it would keep the sticky fades
-   away from the header and footer, and stack with the padding of the navigation. */
 .mt-sidebar__content {
   display: flex;
   flex-direction: column;
   gap: var(--scale-size-16);
 }
 
-/* Fades the navigation into the sidebar background at the edge it scrolls past,
-   from 4px inside the edge to the body padding. */
 .mt-sidebar__scroll-shadow {
   position: sticky;
   left: 0;
   right: 0;
   z-index: 1;
-  height: var(--mt-sidebar-body-fade);
+  height: var(--scale-size-20);
   pointer-events: none;
 }
 
 .mt-sidebar__scroll-shadow--top {
   top: 0;
-  margin-block-end: calc(var(--mt-sidebar-body-fade) * -1);
+  margin-block-end: calc(var(--scale-size-20) * -1);
   background: linear-gradient(
     to bottom,
-    var(--mt-sidebar-background) var(--scale-size-4),
+    var(--color-elevation-surface-sunken) var(--scale-size-4),
     transparent
   );
 }
 
 .mt-sidebar__scroll-shadow--bottom {
   bottom: 0;
-  margin-block-start: calc(var(--mt-sidebar-body-fade) * -1);
+  margin-block-start: calc(var(--scale-size-20) * -1);
   background: linear-gradient(
     to top,
-    var(--mt-sidebar-background) var(--scale-size-4),
+    var(--color-elevation-surface-sunken) var(--scale-size-4),
     transparent
   );
 }
