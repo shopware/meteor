@@ -94,8 +94,7 @@ useResizeObserver([scrollContainerRef, contentRef], updateScrollShadows);
   max-width: 100%;
   height: 100%;
   min-height: 0;
-  padding: var(--scale-size-24) var(--scale-size-12)
-    var(--scale-size-8);
+  padding: var(--scale-size-24) var(--scale-size-12) var(--scale-size-8);
   background: var(--color-elevation-surface-sunken);
   color: var(--color-text-primary-default);
 }
@@ -106,7 +105,6 @@ useResizeObserver([scrollContainerRef, contentRef], updateScrollShadows);
 }
 
 .mt-sidebar__header {
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -123,7 +121,6 @@ useResizeObserver([scrollContainerRef, contentRef], updateScrollShadows);
   overscroll-behavior: contain;
   scroll-padding-block: var(--scale-size-20);
   scrollbar-width: none;
-  -webkit-overflow-scrolling: touch;
 }
 
 .mt-sidebar__body::-webkit-scrollbar {
@@ -138,8 +135,6 @@ useResizeObserver([scrollContainerRef, contentRef], updateScrollShadows);
 
 .mt-sidebar__scroll-shadow {
   position: sticky;
-  left: 0;
-  right: 0;
   z-index: 1;
   height: var(--scale-size-20);
   pointer-events: none;
