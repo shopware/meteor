@@ -127,6 +127,7 @@ defineExpose({
 .mt-sidebar {
   display: flex;
   flex-direction: column;
+  flex-shrink: 0;
   width: var(--mt-sidebar-width);
   max-width: 100%;
   height: 100%;
