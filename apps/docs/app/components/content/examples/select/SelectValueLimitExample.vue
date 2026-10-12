@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import MtSelect from "@shopware-ag/meteor-component-library/MtSelect";
+import { MtSelect } from "@shopware-ag/meteor-component-library";
 
 const options = [
   { id: 1, label: "Shoes", value: "shoes" },

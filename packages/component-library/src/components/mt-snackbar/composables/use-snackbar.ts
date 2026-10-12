@@ -1,5 +1,5 @@
 import { createId } from "@/utils/id";
-import { ref, reactive, readonly, type Ref } from "vue";
+import { computed, onMounted, onUnmounted, ref, reactive, readonly, type Ref } from "vue";
 
 export interface Snackbar {
   id: string;
@@ -19,6 +19,23 @@ export interface Snackbar {
 
 // Global snackbars state
 const globalSnackbars = ref<Snackbar[]>([]);
+
+const snackbarHosts = ref<symbol[]>([]);
+
+/** Registers a mounted `mt-snackbar`. Only the first registered host renders the notifications. */
+export function useSnackbarHost() {
+  const id = Symbol("mt-snackbar");
+
+  onMounted(() => {
+    snackbarHosts.value.push(id);
+  });
+
+  onUnmounted(() => {
+    snackbarHosts.value = snackbarHosts.value.filter((host) => host !== id);
+  });
+
+  return computed(() => snackbarHosts.value[0] === id);
+}
 
 export function useSnackbar() {
   function addSnackbar(snackbarData: Omit<Snackbar, "id">) {

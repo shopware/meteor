@@ -63,6 +63,7 @@ See [**useSnackbar**](/utilities/composables/use-snackbar) for the full publishi
 ## Behavior
 
 - **Snackbar** uses a global store, so one mounted `MtSnackbar` host is usually the right setup for an application.
+- If more than one `MtSnackbar` is mounted, only the first one renders the stack; when it unmounts, the next one takes over.
 - Standard snackbars close automatically after `5000ms` by default.
 - Setting `duration` to `0` disables the auto-dismiss timer, which means you should remove that snackbar through `removeSnackbar` or `clearSnackbars`.
 - Hovering the snackbar stack pauses dismissal timers until the pointer leaves.

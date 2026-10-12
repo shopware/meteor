@@ -11,6 +11,8 @@ Selectors allow extensions to request only specific fields from Administration d
 
 By selecting only the required properties, selectors reduce payload size and limit the privileges required to access data.
 
+Without selectors, the whole dataset is sent, and your app needs `read` privileges for every entity it contains, including nested associations. Empty association collections are the exception: they contain no entity data, so they need no `read` privilege.
+
 They are used in `data.subscribe` and `data.get`. Selectors are an array of strings, where each string represents the path to a property in the dataset.
 
 ## Selector syntax

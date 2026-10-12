@@ -1,5 +1,5 @@
 <template>
-  <Teleport to="body">
+  <Teleport v-if="isActiveHost" to="body">
     <div class="mt-snackbar" @mouseenter="isHovered = true" @mouseleave="isHovered = false">
       <mt-snackbar-notification
         v-for="snackbar in snackbars"
@@ -16,7 +16,7 @@
 
 <script setup lang="ts">
 import MtSnackbarNotification from "./_internal/mt-snackbar-notification.vue";
-import { useSnackbar, type Snackbar } from "./composables/use-snackbar";
+import { useSnackbar, useSnackbarHost, type Snackbar } from "./composables/use-snackbar";
 import { ref } from "vue";
 
 export interface HeightT {
@@ -25,6 +25,7 @@ export interface HeightT {
 }
 
 const { snackbars, removeSnackbar } = useSnackbar();
+const isActiveHost = useSnackbarHost();
 
 const heights = ref<HeightT[]>([]);
 const isHovered = ref(false);
