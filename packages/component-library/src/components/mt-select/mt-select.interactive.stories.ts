@@ -1,4 +1,5 @@
-import { within, userEvent } from "@storybook/test";
+import { within, userEvent, fn, waitFor } from "@storybook/test";
+import { ref } from "vue";
 import { expect } from "@storybook/test";
 import { waitUntil } from "../../_internal/test-helper";
 import { screen } from "@storybook/test";
@@ -989,5 +990,79 @@ export const VisualTestHintSlot: MtSelectStory = {
     const canvas = within(canvasElement);
 
     expect(canvas.getByText("Hint via slot")).toBeDefined();
+  },
+};
+
+const clickBefore = fn();
+const clickAfter = fn();
+
+export const TestKeyboardNavigationBothDirections: MtSelectStory = {
+  name: "Should reach and open every select with Tab and Shift+Tab without clicking anything",
+  render: () => ({
+    components: { MtSelect },
+    setup: () => ({
+      first: ref("a"),
+      second: ref(null),
+      clickBefore,
+      clickAfter,
+      options: [
+        { id: 1, label: "Option A", value: "a" },
+        { id: 2, label: "Option B", value: "b" },
+      ],
+    }),
+    template: `
+      <div style="display: grid; gap: 16px; max-width: 320px;">
+        <button type="button" @click="clickBefore">Before</button>
+        <mt-select v-model="first" label="First" :options="options" />
+        <mt-select v-model="second" label="Second" :options="options" />
+        <button type="button" @click="clickAfter">After</button>
+      </div>
+    `,
+  }),
+  play: async ({ canvasElement }) => {
+    clickBefore.mockClear();
+    clickAfter.mockClear();
+
+    const canvas = within(canvasElement);
+    const before = canvas.getByRole("button", { name: "Before" });
+    const after = canvas.getByRole("button", { name: "After" });
+    const [first, second] = Array.from(canvasElement.querySelectorAll<HTMLElement>(".mt-select"));
+    const input = (select: HTMLElement) => select.querySelector(".mt-select-selection-list__input");
+    const clear = (select: HTMLElement) => select.querySelector("[data-clearable-button]");
+
+    async function expectFocus(element: Element | null, openSelect?: HTMLElement) {
+      await waitFor(() => expect(element).toHaveFocus());
+      expect(first.classList.contains("has--focus")).toBe(openSelect === first);
+      expect(second.classList.contains("has--focus")).toBe(openSelect === second);
+    }
+
+    before.focus();
+
+    const forward: [Element | null, HTMLElement?][] = [
+      [input(first), first],
+      [clear(first)],
+      [input(second), second],
+      [clear(second)],
+      [after],
+    ];
+    for (const [element, openSelect] of forward) {
+      await userEvent.tab();
+      await expectFocus(element, openSelect);
+    }
+
+    const backward: [Element | null, HTMLElement?][] = [
+      [clear(second)],
+      [input(second), second],
+      [clear(first)],
+      [input(first), first],
+      [before],
+    ];
+    for (const [element, openSelect] of backward) {
+      await userEvent.tab({ shift: true });
+      await expectFocus(element, openSelect);
+    }
+
+    expect(clickBefore).not.toHaveBeenCalled();
+    expect(clickAfter).not.toHaveBeenCalled();
   },
 };
