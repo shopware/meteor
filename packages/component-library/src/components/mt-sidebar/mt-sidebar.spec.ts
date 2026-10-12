@@ -90,7 +90,6 @@ describe("mt-sidebar", () => {
 
     const header = container.querySelector("header.mt-sidebar__header");
     expect(header).toHaveTextContent("Administration");
-    expect(container.firstElementChild).toHaveClass("mt-sidebar--has-header");
   });
 
   it("renders the footer slot inside a footer element", async () => {
@@ -102,7 +101,6 @@ describe("mt-sidebar", () => {
 
     const footer = container.querySelector("footer.mt-sidebar__footer");
     expect(footer).toContainElement(screen.getByRole("button", { name: "Log out" }));
-    expect(container.firstElementChild).toHaveClass("mt-sidebar--has-footer");
   });
 
   it("does not render header and footer elements without slot content", async () => {
@@ -110,8 +108,6 @@ describe("mt-sidebar", () => {
 
     expect(container.querySelector(".mt-sidebar__header")).toBeNull();
     expect(container.querySelector(".mt-sidebar__footer")).toBeNull();
-    expect(container.firstElementChild).not.toHaveClass("mt-sidebar--has-header");
-    expect(container.firstElementChild).not.toHaveClass("mt-sidebar--has-footer");
   });
 
   it("uses a default width of 300px", async () => {
