@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from "@testing-library/vue";
 import { describe, expect, it, vi, afterEach } from "vitest";
-import { defineComponent, nextTick, ref } from "vue";
+import { nextTick } from "vue";
 import MtSidebar from "./mt-sidebar.vue";
 
 type ScrollMetrics = {
@@ -269,36 +269,5 @@ describe("mt-sidebar", () => {
 
     scrollHeightSpy.mockRestore();
     clientHeightSpy.mockRestore();
-  });
-
-  it("exposes updateScrollShadows to re-evaluate the shadows on demand", async () => {
-    const Wrapper = defineComponent({
-      components: { MtSidebar },
-      setup() {
-        const sidebar = ref<InstanceType<typeof MtSidebar> | null>(null);
-
-        return {
-          sidebar,
-          refresh: () => sidebar.value?.updateScrollShadows(),
-        };
-      },
-      template: `
-        <button type="button" @click="refresh">Refresh</button>
-        <mt-sidebar ref="sidebar"><nav>Navigation</nav></mt-sidebar>
-      `,
-    });
-
-    const { container } = render(Wrapper);
-
-    const body = getScrollContainer(container);
-    mockScrollMetrics(body, { scrollHeight: 1000, clientHeight: 400 });
-
-    expect(bottomShadow()).toBeNull();
-
-    await fireEvent.click(screen.getByRole("button", { name: "Refresh" }));
-    await nextTick();
-
-    expect(bottomShadow()).toBeInTheDocument();
-    expect(topShadow()).toBeNull();
   });
 });

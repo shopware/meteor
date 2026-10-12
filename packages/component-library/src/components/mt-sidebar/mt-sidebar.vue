@@ -97,10 +97,6 @@ onBeforeUnmount(() => {
   resizeObserver?.disconnect();
   resizeObserver = null;
 });
-
-defineExpose({
-  updateScrollShadows,
-});
 </script>
 
 <style scoped>
