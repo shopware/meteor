@@ -118,6 +118,9 @@ import { enUS } from "date-fns/locale/en-US";
 import type { Locale } from "date-fns";
 import { importDateFnsLocaleModule } from "./date-fns-locale";
 
+// @deprecated tag:v5 remove the `wrapper` class of the root element. Keep `mt-datepicker__wrapper`,
+// which the styles build on.
+
 interface Time {
   hours: number;
   minutes: number;
@@ -512,7 +515,6 @@ onMounted(() => {
   --dp-range-between-border-color: var(--color-background-brand-default);
 }
 
-/* @deprecated tag:v5 remove the `wrapper` class of the root element */
 .mt-datepicker__wrapper {
   display: grid;
   grid-template-areas:

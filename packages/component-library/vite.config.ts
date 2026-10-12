@@ -17,7 +17,8 @@ export const external = ["vue", "apexcharts", "vue-i18n"];
 export default defineConfig({
   plugins: [
     // Drops template comments in development too, as the production build does, so a comment can't
-    // turn a single-root template into a fragment in Storybook and the tests.
+    // turn a single-root template into a fragment in Storybook and the tests. Consumer templates keep
+    // their comments in development, so test how components handle them with runtime template strings.
     vue({ template: { compilerOptions: { comments: false } } }),
     svg(),
     dts({
