@@ -13,7 +13,7 @@
         />
       </transition>
 
-      <div class="mt-sidebar__content">
+      <div ref="contentRef" class="mt-sidebar__content">
         <slot />
       </div>
 
@@ -33,7 +33,8 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, onBeforeUnmount, onMounted, ref } from "vue";
+import { onMounted, ref } from "vue";
+import { useResizeObserver } from "@vueuse/core";
 import { hasSlotContent } from "@/utils/slot";
 
 withDefaults(
@@ -60,6 +61,7 @@ defineSlots<{
 }>();
 
 const scrollContainerRef = ref<HTMLElement | null>(null);
+const contentRef = ref<HTMLElement | null>(null);
 
 const canScrollUp = ref(false);
 const canScrollDown = ref(false);
@@ -76,27 +78,11 @@ function updateScrollShadows() {
   canScrollDown.value = scrollHeight - clientHeight - scrollTop > thresholdInPx;
 }
 
-let resizeObserver: ResizeObserver | null = null;
+onMounted(updateScrollShadows);
 
-onMounted(async () => {
-  await nextTick();
-  updateScrollShadows();
-
-  // Recheck when the sidebar or its content changes size, e.g. when
-  // a navigation group is expanded or the window gets smaller.
-  if (typeof ResizeObserver === "undefined" || !scrollContainerRef.value) return;
-
-  resizeObserver = new ResizeObserver(() => updateScrollShadows());
-  resizeObserver.observe(scrollContainerRef.value);
-
-  const content = scrollContainerRef.value.querySelector(".mt-sidebar__content");
-  if (content) resizeObserver.observe(content);
-});
-
-onBeforeUnmount(() => {
-  resizeObserver?.disconnect();
-  resizeObserver = null;
-});
+// Recheck when the sidebar or its content changes size, e.g. when
+// a navigation group is expanded or the window gets smaller.
+useResizeObserver([scrollContainerRef, contentRef], updateScrollShadows);
 </script>
 
 <style scoped>

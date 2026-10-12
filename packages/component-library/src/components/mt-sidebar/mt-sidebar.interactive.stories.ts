@@ -1,4 +1,4 @@
-import { within, expect, waitFor } from "@storybook/test";
+import { within, expect, waitFor, userEvent } from "@storybook/test";
 
 import meta, { type MtSidebarMeta, type MtSidebarStory } from "./mt-sidebar.stories";
 import {
@@ -229,6 +229,31 @@ export const TestKeepsWidthNextToWideContent: MtSidebarStory = {
     if (!sidebar) throw new Error("Sidebar not found");
 
     expect(sidebar.getBoundingClientRect().width).toBe(300);
+  },
+};
+
+export const TestRechecksShadowsWhenNavigationGrows: MtSidebarStory = {
+  name: "Rechecks the shadows when the navigation grows",
+  render: () => ({
+    components: demoComponents,
+    setup: () => ({ sections: shortDemoSections, linkComponent: demoLinkComponent }),
+    template: `
+<div style="height: 260px; display: flex;">
+  <mt-sidebar>
+    ${demoNavigationTemplate}
+  </mt-sidebar>
+</div>`,
+  }),
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    expect(canvasElement.querySelector(".mt-sidebar__scroll-shadow--bottom")).toBeNull();
+
+    // Opening a group makes the navigation taller without scrolling it
+    await userEvent.click(canvas.getByRole("button", { name: "Catalogues" }));
+
+    await waitFor(() => {
+      expect(canvasElement.querySelector(".mt-sidebar__scroll-shadow--bottom")).not.toBeNull();
+    });
   },
 };
 
