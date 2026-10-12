@@ -1,6 +1,6 @@
 <template>
   <aside class="mt-sidebar" :style="{ '--mt-sidebar-width': width }" :aria-label="ariaLabel">
-    <header v-if="$slots.header" class="mt-sidebar__header">
+    <header v-if="hasSlotContent($slots.header)" class="mt-sidebar__header">
       <slot name="header" />
     </header>
 
@@ -26,7 +26,7 @@
       </transition>
     </div>
 
-    <footer v-if="$slots.footer" class="mt-sidebar__footer">
+    <footer v-if="hasSlotContent($slots.footer)" class="mt-sidebar__footer">
       <slot name="footer" />
     </footer>
   </aside>
@@ -34,6 +34,7 @@
 
 <script setup lang="ts">
 import { nextTick, onBeforeUnmount, onMounted, ref } from "vue";
+import { hasSlotContent } from "@/utils/slot";
 
 withDefaults(
   defineProps<{

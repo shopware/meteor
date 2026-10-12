@@ -110,6 +110,18 @@ describe("mt-sidebar", () => {
     expect(container.querySelector(".mt-sidebar__footer")).toBeNull();
   });
 
+  it("does not render header and footer elements when their slots render nothing", async () => {
+    const { container } = render(MtSidebar, {
+      slots: {
+        header: '<span v-if="false">Administration</span>',
+        footer: '<button v-if="false">Log out</button>',
+      },
+    });
+
+    expect(container.querySelector(".mt-sidebar__header")).toBeNull();
+    expect(container.querySelector(".mt-sidebar__footer")).toBeNull();
+  });
+
   it("uses a default width of 300px", async () => {
     const { container } = render(MtSidebar);
 
