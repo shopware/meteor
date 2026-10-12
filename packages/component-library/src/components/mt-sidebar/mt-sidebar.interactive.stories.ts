@@ -210,6 +210,28 @@ export const TestKeepsFocusedLinkClearOfTopShadow: MtSidebarStory = {
   },
 };
 
+export const TestKeepsWidthNextToWideContent: MtSidebarStory = {
+  name: "Keeps its width next to wide content",
+  render: () => ({
+    components: demoComponents,
+    setup: () => ({ sections: demoSections, linkComponent: demoLinkComponent }),
+    template: `
+<div style="height: 480px; display: flex;">
+  <mt-sidebar>
+    ${demoNavigationTemplate}
+  </mt-sidebar>
+
+  <div style="min-width: 2000px;">Wide content</div>
+</div>`,
+  }),
+  play: async ({ canvasElement }) => {
+    const sidebar = canvasElement.querySelector<HTMLElement>(".mt-sidebar");
+    if (!sidebar) throw new Error("Sidebar not found");
+
+    expect(sidebar.getBoundingClientRect().width).toBe(300);
+  },
+};
+
 export const TestShowsNoShadowsWhenNavigationFits: MtSidebarStory = {
   name: "Shows no shadows when the navigation fits",
   render: renderSidebar({ sections: shortDemoSections }),
