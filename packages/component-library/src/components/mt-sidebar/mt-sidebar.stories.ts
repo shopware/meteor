@@ -37,6 +37,9 @@ const meta: MtSidebarMeta = {
     <template v-if="args.header" #header>
       <div v-html="args.header"></div>
     </template>
+    <template v-else #header>
+      ${demoHeaderTemplate}
+    </template>
 
     <template v-if="args.default" #default>
       <div v-html="args.default"></div>
@@ -48,6 +51,9 @@ const meta: MtSidebarMeta = {
     <template v-if="args.footer" #footer>
       <div v-html="args.footer"></div>
     </template>
+    <template v-else #footer>
+      ${demoFooterTemplate}
+    </template>
   </mt-sidebar>
 </div>`,
   }),
@@ -57,38 +63,6 @@ export default meta;
 export type MtSidebarStory = StoryObj<MtSidebarMeta>;
 
 export const Default: MtSidebarStory = {
-  parameters: {
-    docs: {
-      source: {
-        language: "html",
-        code: `<mt-sidebar>
-  <mt-nav :sections="sections" />
-</mt-sidebar>`,
-      },
-    },
-  },
-};
-
-export const WithHeaderAndFooter: MtSidebarStory = {
-  name: "With header and footer",
-  render: () => ({
-    components: demoComponents,
-    setup: () => ({ sections: demoSections, linkComponent: demoLinkComponent }),
-    template: `
-<div style="height: 480px; display: flex;">
-  <mt-sidebar>
-    <template #header>
-      ${demoHeaderTemplate}
-    </template>
-
-    ${demoNavigationTemplate}
-
-    <template #footer>
-      ${demoFooterTemplate}
-    </template>
-  </mt-sidebar>
-</div>`,
-  }),
   parameters: {
     docs: {
       source: {

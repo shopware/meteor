@@ -42,12 +42,7 @@ function renderSidebar(options: { sections?: typeof demoSections } = {}) {
 }
 
 export const VisualTestDefault: MtSidebarStory = {
-  name: "Render sidebar with navigation only",
-};
-
-export const VisualTestWithHeaderAndFooter: MtSidebarStory = {
-  name: "Render sidebar with header and footer",
-  render: renderSidebar(),
+  name: "Render sidebar with header, navigation and footer",
 };
 
 export const VisualTestShortNavigation: MtSidebarStory = {
