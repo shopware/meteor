@@ -1,33 +1,23 @@
-import { DropdownMenuPortal, DropdownMenuRoot, DropdownMenuTrigger } from "reka-ui";
 import { markRaw } from "vue";
 import MtSidebar from "../mt-sidebar.vue";
+import MtSidebarFooter from "../../mt-sidebar-footer/mt-sidebar-footer.vue";
 import MtNav from "../../mt-nav/mt-nav.vue";
 import type { NavItem, NavSection } from "../../mt-nav/mt-nav.vue";
 import { StoryLink } from "../../mt-nav/mt-nav.story-helper";
 import MtText from "../../mt-text/mt-text.vue";
 import MtIcon from "../../mt-icon/mt-icon.vue";
-import MtAvatar from "../../mt-avatar/mt-avatar.vue";
 import MtButton from "../../mt-button/mt-button.vue";
-import MtActionMenu from "../../mt-action-menu/mt-action-menu.vue";
-import MtActionMenuGroup from "../../mt-action-menu-group/mt-action-menu-group.vue";
-import MtActionMenuItem from "../../mt-action-menu-item/mt-action-menu-item.vue";
 
 /**
  * Everything the demo templates below need to render.
  */
 export const demoComponents = {
-  MtDropdownMenuPortal: DropdownMenuPortal,
-  MtDropdownMenuRoot: DropdownMenuRoot,
-  MtDropdownMenuTrigger: DropdownMenuTrigger,
   MtSidebar,
+  MtSidebarFooter,
   MtNav,
   MtText,
   MtIcon,
-  MtAvatar,
   MtButton,
-  MtActionMenu,
-  MtActionMenuGroup,
-  MtActionMenuItem,
 };
 
 /**
@@ -155,89 +145,7 @@ export const demoHeaderTemplate = `
 </mt-button>`;
 
 /**
- * Footer as used by the Shopware administration: a user menu toggle with
- * avatar, name and role that opens an action menu with the logout action.
+ * Footer as used by the Shopware administration.
  */
 export const demoFooterTemplate = `
-<mt-dropdown-menu-root>
-  <mt-dropdown-menu-trigger as-child>
-    <button
-      type="button"
-      aria-label="User menu: Max Mustermann"
-      style="
-        width: 100%;
-        display: flex;
-        align-items: center;
-        gap: var(--scale-size-12);
-        padding: var(--scale-size-8);
-        border: none;
-        border-radius: var(--border-radius-s);
-        background: transparent;
-        color: inherit;
-        cursor: pointer;
-        text-align: left;
-      "
-    >
-      <mt-avatar
-        size="s"
-        first-name="Max"
-        last-name="Mustermann"
-        style="--mt-avatar-size: var(--scale-size-36); flex-shrink: 0;"
-      />
-
-      <div style="flex: 1 1 auto; min-width: 0; overflow: hidden; white-space: nowrap;">
-        <mt-text
-          as="div"
-          size="xs"
-          weight="semibold"
-          style="overflow: hidden; text-overflow: ellipsis;"
-        >
-          Max Mustermann
-        </mt-text>
-        <mt-text
-          as="div"
-          size="2xs"
-          color="color-text-secondary-default"
-          style="overflow: hidden; text-overflow: ellipsis;"
-        >
-          Administrator
-        </mt-text>
-      </div>
-
-      <div
-        style="
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          gap: var(--scale-size-6);
-          flex-shrink: 0;
-          width: var(--scale-size-20);
-          height: var(--scale-size-20);
-          color: var(--color-icon-primary-default);
-        "
-      >
-        <mt-icon name="regular-chevron-up-xs" size="var(--scale-size-8)" aria-hidden="true" />
-        <mt-icon name="regular-chevron-down-xs" size="var(--scale-size-8)" aria-hidden="true" />
-      </div>
-    </button>
-  </mt-dropdown-menu-trigger>
-
-  <mt-dropdown-menu-portal>
-    <mt-action-menu match-trigger-width side="top">
-      <mt-action-menu-group>
-        <mt-action-menu-item icon="regular-sign-out" variant="critical">Log out</mt-action-menu-item>
-      </mt-action-menu-group>
-      <mt-action-menu-group>
-        <mt-text
-          as="div"
-          size="2xs"
-          color="color-text-secondary-default"
-          style="margin: var(--scale-size-8);"
-        >
-          Version 6.7.0.0
-        </mt-text>
-      </mt-action-menu-group>
-    </mt-action-menu>
-  </mt-dropdown-menu-portal>
-</mt-dropdown-menu-root>`;
+<mt-sidebar-footer first-name="Max" last-name="Mustermann" role="Administrator" version="6.7.0.0" />`;
