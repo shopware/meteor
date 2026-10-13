@@ -22,8 +22,17 @@ describe("date-fns locale resolver", () => {
     expect(resolveDateFnsLocaleModule("de", { default: de })).toBe(de);
   });
 
+  it("imports locale paths case-insensitively", async () => {
+    await expect(importDateFnsLocaleModule("DE")).resolves.toBe(de);
+    await expect(importDateFnsLocaleModule("EN-gb")).resolves.toBe(enGB);
+  });
+
   it("rejects unsafe locale import paths", async () => {
     await expect(importDateFnsLocaleModule("../format")).resolves.toBeNull();
     await expect(importDateFnsLocaleModule("en/US")).resolves.toBeNull();
+  });
+
+  it("returns null for unknown locale paths", async () => {
+    await expect(importDateFnsLocaleModule("not-a-locale")).resolves.toBeNull();
   });
 });
