@@ -19,7 +19,7 @@ describe("useAppLoading", () => {
     const { isLoading, startLoading } = setup();
 
     // ACT
-    const done = startLoading();
+    startLoading();
     await nextTick();
     vi.advanceTimersByTime(199);
 
@@ -31,10 +31,25 @@ describe("useAppLoading", () => {
 
     // ASSERT
     expect(isLoading.value).toBe(true);
+  });
+
+  it("keeps loading shown for at least 500ms, so it doesn't flash", async () => {
+    // ARRANGE
+    const { isLoading, startLoading } = setup();
+    const done = startLoading();
+    await nextTick();
+    vi.advanceTimersByTime(250);
 
     // ACT
     done();
     await nextTick();
+    vi.advanceTimersByTime(449);
+
+    // ASSERT
+    expect(isLoading.value).toBe(true);
+
+    // ACT
+    vi.advanceTimersByTime(1);
 
     // ASSERT
     expect(isLoading.value).toBe(false);
@@ -75,6 +90,7 @@ describe("useAppLoading", () => {
     // ACT
     second();
     await nextTick();
+    vi.advanceTimersByTime(500);
 
     // ASSERT
     expect(isLoading.value).toBe(false);
