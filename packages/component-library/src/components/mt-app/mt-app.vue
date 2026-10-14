@@ -60,7 +60,7 @@
         ref="navigationRegion"
         panel="navigation"
         :controller="appContext"
-        as="nav"
+        as="div"
         side="start"
         :label="labels.navigation"
         :close-label="t('close', { label: labels.navigation })"
@@ -138,10 +138,10 @@ import type { MtAppRegions } from "./composables/useMtAppRegions";
  * mobile breakpoint, and provides the theme, the future flags and the snackbar host to
  * everything inside. Use one shell per application.
  *
- * - The navigation and the sidebar render as `<nav>` and `<aside>` landmarks, so their slots
- *   shouldn't add another landmark of the same kind. Their labels name the landmarks and, in the
- *   mobile layout, the drawers and their triggers. The defaults are translated for English and
- *   German; pass both labels in other languages.
+ * - The sidebar renders as an `<aside>` landmark, so its slot shouldn't add another one. The
+ *   navigation slot brings its own `<nav>`, such as `mt-nav`. The labels name the sidebar landmark
+ *   and, in the mobile layout, the drawers and their triggers. The defaults are translated for
+ *   English and German; pass both labels in other languages.
  * - Components inside the shell read and control it with `useMtApp()`. The component that renders
  *   `<mt-app>` uses the `header` slot props or a template ref instead, because it is not inside
  *   the shell.
@@ -173,7 +173,10 @@ const props = withDefaults(
      * navigations don't flash it.
      */
     loadingBar?: boolean;
-    /** The accessible name of the navigation. Defaults to "Navigation". */
+    /**
+     * The accessible name of the navigation drawer and its trigger in the mobile layout. Defaults
+     * to "Navigation".
+     */
     navigationLabel?: string;
     /** The accessible name of the sidebar, such as "Assistant". Defaults to "Sidebar". */
     sidebarLabel?: string;
