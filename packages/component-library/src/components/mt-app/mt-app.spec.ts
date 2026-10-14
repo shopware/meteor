@@ -959,8 +959,14 @@ describe("mt-app", () => {
       await complete();
 
       // ASSERT
-      expect(screen.queryByRole("progressbar")).not.toBeInTheDocument();
+      expect(screen.getByRole("progressbar")).toBeInTheDocument();
       expect(screen.getByRole("main")).not.toHaveAttribute("aria-busy");
+
+      // ACT
+      await vi.advanceTimersByTimeAsync(500);
+
+      // ASSERT
+      expect(screen.queryByRole("progressbar")).not.toBeInTheDocument();
     });
 
     it("keeps the loading bar while the app reports loading", async () => {
@@ -983,7 +989,7 @@ describe("mt-app", () => {
 
       // ACT
       done();
-      await nextTick();
+      await vi.advanceTimersByTimeAsync(500);
 
       // ASSERT
       expect(screen.queryByRole("progressbar")).not.toBeInTheDocument();

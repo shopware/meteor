@@ -1,16 +1,22 @@
-import { onScopeDispose, readonly, ref, watch } from "vue";
+import { computed, onScopeDispose, readonly, ref, watch } from "vue";
 
 /** How long loading has to last before it shows, so quick navigations don't flash the bar. */
 const SHOW_DELAY = 200;
 
+/** The minimum time loading stays shown, so loading ending just after the delay doesn't flash. */
+const MIN_VISIBLE = 500;
+
 /**
  * Whether the app is loading: while any loading that `startLoading()` reported is not done yet.
- * `isLoading` turns on after a short delay and off right away.
+ * `isLoading` turns on after a short delay, and once on, it stays on for a minimum time.
  */
 export function useAppLoading() {
   const pendingCount = ref(0);
+  const isPending = computed(() => pendingCount.value > 0);
   const isLoading = ref(false);
   let showTimer: ReturnType<typeof setTimeout> | undefined;
+  let hideTimer: ReturnType<typeof setTimeout> | undefined;
+  let shownAt = 0;
 
   /** Reports loading until the returned function is called. */
   function startLoading(): () => void {
@@ -25,17 +31,39 @@ export function useAppLoading() {
     };
   }
 
-  watch(
-    () => pendingCount.value > 0,
-    (isPending) => {
-      clearTimeout(showTimer);
+  watch(isPending, (pending) => {
+    clearTimeout(showTimer);
+    clearTimeout(hideTimer);
 
-      if (isPending) showTimer = setTimeout(() => (isLoading.value = true), SHOW_DELAY);
-      else isLoading.value = false;
-    },
-  );
+    if (pending) {
+      if (isLoading.value) return;
 
-  onScopeDispose(() => clearTimeout(showTimer));
+      showTimer = setTimeout(() => {
+        isLoading.value = true;
+        shownAt = Date.now();
+      }, SHOW_DELAY);
 
-  return { isLoading: readonly(isLoading), startLoading };
+      return;
+    }
+
+    const remaining = MIN_VISIBLE - (Date.now() - shownAt);
+
+    if (isLoading.value && remaining > 0) {
+      hideTimer = setTimeout(() => (isLoading.value = false), remaining);
+    } else {
+      isLoading.value = false;
+    }
+  });
+
+  onScopeDispose(() => {
+    clearTimeout(showTimer);
+    clearTimeout(hideTimer);
+  });
+
+  return {
+    isLoading: readonly(isLoading),
+    /** Whether loading is pending right now, without the delay and minimum time of `isLoading`. */
+    isPending,
+    startLoading,
+  };
 }

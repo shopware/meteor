@@ -74,7 +74,7 @@
         ref="main"
         class="mt-app__content"
         tabindex="-1"
-        :aria-busy="isLoadingBarShown || undefined"
+        :aria-busy="isBusy || undefined"
       >
         <slot name="content" />
       </main>
@@ -170,7 +170,7 @@ const props = withDefaults(
     /**
      * Shows a thin loading bar along the top edge while a navigation is pending or while app code
      * reports loading with `useMtApp().startLoading()`. It appears only after 200ms, so quick
-     * navigations don't flash it.
+     * navigations don't flash it, and stays for at least 500ms once shown.
      */
     loadingBar?: boolean;
     /**
@@ -266,8 +266,10 @@ const { hidden: hiddenRegions, requestRegions } = useAppRegions();
 const routeMeta = useRouteMeta();
 requestRegions(() => (routeMeta.value.mtAppRegions ?? {}) as MtAppRegions);
 
-const { isLoading, startLoading } = useAppLoading();
+const { isLoading, isPending, startLoading } = useAppLoading();
 const isLoadingBarShown = computed(() => props.loadingBar && isLoading.value);
+// The content is busy for as long as the loading lasts, while the bar may stay a bit longer.
+const isBusy = computed(() => props.loadingBar && isPending.value);
 
 const panels = useAppPanels({
   isMobile,
