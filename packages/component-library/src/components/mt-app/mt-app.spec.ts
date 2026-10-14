@@ -81,7 +81,8 @@ function createLocalStorageMock(): Storage {
 
 const allSlots = {
   header: "<span>Header content</span>",
-  navigation: '<a href="/orders">Orders</a><button>Start action</button>',
+  navigation:
+    '<nav aria-label="Main"><a href="/orders">Orders</a><button>Start action</button></nav>',
   content: "<p>Main content</p><button>Content action</button>",
   sidebar: "<div><button>End action</button></div>",
 };
@@ -192,13 +193,14 @@ describe("mt-app", () => {
   });
 
   describe("regions", () => {
-    it("renders a landmark for every filled slot", async () => {
+    it("renders a landmark per slot, except the navigation that brings its own", async () => {
       // ACT
       await renderApp();
 
       // ASSERT
       expect(screen.getByRole("banner")).toHaveTextContent("Header content");
-      expect(screen.getByRole("navigation", { name: "Navigation" })).toHaveTextContent("Orders");
+      expect(screen.getByRole("link", { name: "Orders" })).toBeVisible();
+      expect(screen.getAllByRole("navigation")).toHaveLength(1);
       expect(screen.getByRole("main")).toHaveTextContent("Main content");
       expect(screen.getByRole("complementary", { name: "Sidebar" })).toHaveTextContent(
         "End action",
@@ -301,7 +303,7 @@ describe("mt-app", () => {
 
       // ASSERT
       expect(screen.queryByRole("button", { name: navigationTriggerName })).not.toBeInTheDocument();
-      expect(screen.getByRole("navigation", { name: "Navigation" })).toBeInTheDocument();
+      expect(screen.getByRole("link", { name: "Orders" })).toBeVisible();
       expect(screen.getByRole("complementary", { name: "Sidebar" })).toBeInTheDocument();
     });
   });
@@ -496,8 +498,7 @@ describe("mt-app", () => {
       expect(screen.queryByRole("dialog", { hidden: true })).not.toBeInTheDocument();
       expect(screen.queryAllByTestId("mt-drawer-backdrop")).toHaveLength(0);
       expect(screen.queryByRole("button", { name: navigationTriggerName })).not.toBeInTheDocument();
-      const sidebar = screen.getByRole("navigation", { name: "Navigation" });
-      expect(isInert(sidebar)).toBe(false);
+      expect(isInert(screen.getByRole("link", { name: "Orders" }))).toBe(false);
       expect(isInert(screen.getByRole("main"))).toBe(false);
       await waitFor(() => expect(screen.getByRole("main")).toHaveFocus());
     });
