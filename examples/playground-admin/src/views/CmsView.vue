@@ -7,21 +7,23 @@ import {
   MtPage,
   MtText,
 } from "@shopware-ag/meteor-component-library";
+import { useBreadcrumb } from "../composables/useBreadcrumb";
 
 const { t } = useI18n();
 const router = useRouter();
+const breadcrumb = useBreadcrumb(() => t("cms.title"));
 
 const blocks = Array.from({ length: 40 }, (_, index) => index + 1);
 
 function goBack() {
   if (router.options.history.state.back) router.back();
-  else router.push("/");
+  else router.push({ name: "dashboard" });
 }
 </script>
 
 <template>
   <mt-page
-    :title="t('cms.title')"
+    :breadcrumb="breadcrumb"
     :start-label="t('cms.blocks')"
     :end-label="t('cms.properties')"
   >
@@ -63,9 +65,7 @@ function goBack() {
   display: grid;
   gap: var(--scale-size-8);
   width: 15rem;
-  margin: 0;
   padding: var(--scale-size-16);
-  list-style: none;
 }
 
 .cms-canvas {

@@ -3,7 +3,6 @@ import { useI18n } from "vue-i18n";
 import {
   MtButton,
   MtCard,
-  MtContainer,
   MtModal,
   MtModalAction,
   MtModalClose,
@@ -16,8 +15,10 @@ import {
   useSnackbar,
   useTheme,
 } from "@shopware-ag/meteor-component-library";
+import { useBreadcrumb } from "../composables/useBreadcrumb";
 
 const { t, locale } = useI18n();
+const breadcrumb = useBreadcrumb(() => t("settings.title"));
 const { theme } = useTheme();
 const { addSnackbar } = useSnackbar();
 
@@ -26,16 +27,16 @@ const localeOptions = [
   { label: "Deutsch", value: "de" },
 ];
 
-function reset(done: () => void) {
+function reset(close: () => void) {
   locale.value = "en";
   theme.value = "system";
-  done();
+  close();
   addSnackbar({ message: t("settings.resetDone"), variant: "success" });
 }
 </script>
 
 <template>
-  <mt-page :title="t('settings.title')">
+  <mt-page width="s" :breadcrumb="breadcrumb">
     <template #actions>
       <mt-modal-root>
         <mt-modal-trigger :as="MtButton" variant="secondary" size="default">
@@ -48,7 +49,7 @@ function reset(done: () => void) {
           <template #footer>
             <div class="actions">
               <mt-modal-close :as="MtButton" variant="secondary" size="default">
-                {{ t("settings.cancel") }}
+                {{ t("common.cancel") }}
               </mt-modal-close>
               <mt-modal-action
                 :as="MtButton"
@@ -64,19 +65,17 @@ function reset(done: () => void) {
       </mt-modal-root>
     </template>
 
-    <mt-container size="s" class="page stack">
-      <mt-card>
-        <div class="stack">
-          <mt-select
-            v-model="locale"
-            :label="t('settings.language')"
-            :options="localeOptions"
-            :enable-search="false"
-            hide-clearable-button
-          />
-          <mt-theme-select v-model="theme" :label="t('settings.theme')" />
-        </div>
-      </mt-card>
-    </mt-container>
+    <mt-card>
+      <div class="stack">
+        <mt-select
+          v-model="locale"
+          :label="t('settings.language')"
+          :options="localeOptions"
+          :enable-search="false"
+          hide-clearable-button
+        />
+        <mt-theme-select v-model="theme" :label="t('settings.theme')" />
+      </div>
+    </mt-card>
   </mt-page>
 </template>
