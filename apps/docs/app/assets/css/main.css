@@ -101,3 +101,9 @@ aside[data-slot="left"] {
     grid-column: span 10 / span 10;
   }
 }
+
+/* App examples render mt-app, which locks the scrolling and the background of its document. */
+html:root:has(.mt-app) {
+  overflow: revert-layer;
+  background-color: revert-layer;
+}
