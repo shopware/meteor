@@ -121,7 +121,7 @@ Live examples are real Single File Components, not inline code blocks:
 
 - The component renders a live preview and the example's source as a copyable code block. You do not write the code block yourself; it is extracted from the SFC.
 - Keep example SFCs clean, focused, and copy-friendly. Show the minimum markup a developer needs and avoid generating markup through loops.
-- Use props to tune the display: `preview`, `source`, `collapse`, and `class`. By default the code sits behind a "Show code" toggle.
+- Use props to tune the display: `preview`, `source`, `collapse`, `fullWidth`, `inset`, and `class`. By default the code sits behind a "Show code" toggle. `inset` removes the padding of the preview, for full-bleed examples such as a page or the app shell that should reach the border of the preview.
 - Provide a manual `#code` slot only when the auto-extracted source is not what a reader should copy.
 
 ## Anatomy
