@@ -32,7 +32,7 @@ import { hasSlotContent } from "@/utils/slot";
  * - Inside `mt-page`, the breadcrumb in the page header hides its current crumb while this title
  *   is on screen.
  *
- * @experimental Not for public use yet: undocumented, and it may change or be removed without notice.
+ * @experimental The API may still change in a future release.
  */
 defineProps<{
   /** The title, such as the name of the product the page shows. */

@@ -1,7 +1,7 @@
 <template>
   <div
     class="mt-app"
-    :class="{ 'mt-app--responsive': mobileBreakpoint > 0, 'mt-app--frameless': isFrameless() }"
+    :class="{ 'mt-app--responsive': breakpoint > 0, 'mt-app--frameless': isFrameless() }"
     :data-layout="isMounted ? (isMobile ? 'mobile' : 'desktop') : undefined"
   >
     <div
@@ -100,6 +100,29 @@
     }}</span>
 
     <mt-snackbar />
+
+    <!-- Rendered after mounting, because its teleports have no server markup to hydrate. -->
+    <mt-modal-root v-if="isMounted" :is-open="isConfirmingLeave" @change="onLeaveDialogChange">
+      <mt-modal :title="t('discardTitle')" width="s">
+        <mt-text size="xs">{{ t("discardText") }}</mt-text>
+
+        <template #footer>
+          <div class="mt-app__leave-actions">
+            <mt-modal-close :as="MtButton" variant="secondary" size="default">
+              {{ t("keepEditing") }}
+            </mt-modal-close>
+            <mt-modal-action
+              :as="MtButton"
+              variant="critical"
+              size="default"
+              @click="answerLeave(true)"
+            >
+              {{ t("discardChanges") }}
+            </mt-modal-action>
+          </div>
+        </template>
+      </mt-modal>
+    </mt-modal-root>
   </div>
 </template>
 
@@ -115,10 +138,15 @@ import {
   useTemplateRef,
   watch,
 } from "vue";
-import { useMediaQuery, useMounted } from "@vueuse/core";
+import { defaultWindow, useEventListener, useMediaQuery, useMounted } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import MtButton from "@/components/mt-button/mt-button.vue";
+import MtModal from "@/components/mt-modal/mt-modal.vue";
+import MtModalAction from "@/components/mt-modal/sub-components/mt-modal-action.vue";
+import MtModalClose from "@/components/mt-modal/sub-components/mt-modal-close.vue";
+import MtModalRoot from "@/components/mt-modal/sub-components/mt-modal-root.vue";
 import MtSnackbar from "@/components/mt-snackbar/mt-snackbar.vue";
+import MtText from "@/components/mt-text/mt-text.vue";
 import { provideFutureFlags, type FutureFlagsInput } from "@/composables/useFutureFlags";
 import { useTheme } from "@/composables/useTheme";
 import { hasSlotContent } from "@/utils/slot";
@@ -126,31 +154,39 @@ import MtAppRegion from "./_internal/mt-app-region.vue";
 import MtAppTrigger from "./_internal/mt-app-trigger.vue";
 import { appContextKey, type AppContext } from "./composables/useAppContext";
 import { useAppPanels } from "./composables/useAppPanels";
-import { useAppRegions } from "./composables/useAppRegions";
-import { useAppLoading } from "./composables/useAppLoading";
-import { useRouteChange, useRouteMeta, type RouteLike } from "./composables/useAppRouter";
-import type { MtAppContext, MtAppPanel } from "./composables/useMtApp";
-import type { MtAppRegions } from "./composables/useMtAppRegions";
+import { createAppRegions } from "./composables/createAppRegions";
+import { createAppLoading } from "./composables/createAppLoading";
+import { createAppUnsavedChanges } from "./composables/createAppUnsavedChanges";
+import {
+  useRouteChange,
+  useRouteGuard,
+  useRouteMeta,
+  type RouteLike,
+} from "./composables/useAppRouter";
+import type { MtAppContext, MtAppPanel } from "./composables/useApp";
+import type { MtAppRegions } from "./composables/useAppRegions";
 
 /**
  * The root shell of a standalone Meteor application. It arranges the header, the navigation,
  * the content and the sidebar, turns the navigation and the sidebar into drawers below the
- * mobile breakpoint, and provides the theme, the future flags and the snackbar host to
+ * breakpoint, and provides the theme, the future flags and the snackbar host to
  * everything inside. Use one shell per application.
  *
  * - The sidebar renders as an `<aside>` landmark, so its slot shouldn't add another one. The
  *   navigation slot brings its own `<nav>`, such as `mt-nav`. The labels name the sidebar landmark
  *   and, in the mobile layout, the drawers and their triggers. The defaults are translated for
  *   English and German; pass both labels in other languages.
- * - Components inside the shell read and control it with `useMtApp()`. The component that renders
+ * - Components inside the shell read and control it with `useApp()`. The component that renders
  *   `<mt-app>` uses the `header` slot props or a template ref instead, because it is not inside
  *   the shell.
  * - A route hides regions with `meta: { mtAppRegions: { header: false } }`, and a page toggles them
- *   with `useMtAppRegions()`.
+ *   with `useAppRegions()`.
+ * - Views report unsaved changes with `useUnsavedChanges()`. The shell then asks whether to
+ *   discard them before a navigation or a reload loses them.
  * - With Vue Router, a navigation closes the open drawer and shows the new page from its top,
  *   or from the element of its URL hash, and screen readers announce the new document title.
  *
- * @experimental Not for public use yet: undocumented, and it may change or be removed without notice.
+ * @experimental The API may still change in a future release.
  */
 const props = withDefaults(
   defineProps<{
@@ -166,10 +202,10 @@ const props = withDefaults(
      * layout, in which the navigation and the sidebar become drawers. `0` disables
      * the mobile layout.
      */
-    mobileBreakpoint?: number;
+    breakpoint?: number;
     /**
      * Shows a thin loading bar along the top edge while a navigation is pending or while app code
-     * reports loading with `useMtApp().startLoading()`. It appears only after 200ms, so quick
+     * reports loading with `useAppLoading()`. It appears only after 200ms, so quick
      * navigations don't flash it, and stays for at least 500ms once shown.
      */
     loadingBar?: boolean;
@@ -183,7 +219,7 @@ const props = withDefaults(
   }>(),
   {
     future: undefined,
-    mobileBreakpoint: 1280,
+    breakpoint: 1280,
     navigationLabel: undefined,
     sidebarLabel: undefined,
     loadingBar: false,
@@ -227,6 +263,10 @@ const { t } = useI18n({
       close: "Close {label}",
       skipToContent: "Skip to content",
       loading: "Loading",
+      discardTitle: "Discard unsaved changes?",
+      discardText: "Your changes on this page will be lost.",
+      keepEditing: "Keep editing",
+      discardChanges: "Discard changes",
     },
     de: {
       navigation: "Navigation",
@@ -235,6 +275,10 @@ const { t } = useI18n({
       close: "{label} schließen",
       skipToContent: "Zum Inhalt springen",
       loading: "Wird geladen",
+      discardTitle: "Ungespeicherte Änderungen verwerfen?",
+      discardText: "Deine Änderungen auf dieser Seite gehen verloren.",
+      keepEditing: "Weiter bearbeiten",
+      discardChanges: "Änderungen verwerfen",
     },
   },
 });
@@ -256,17 +300,43 @@ const drawerIds: Record<MtAppPanel, string> = { navigation: useId(), sidebar: us
 // The viewport is unknown on the server, so the mobile layout only applies after mounting:
 // the server markup and the first client render then agree. A breakpoint of 0 never matches.
 const isMounted = useMounted();
-const matchesMobileBreakpoint = useMediaQuery(() => `(width < ${props.mobileBreakpoint}px)`);
-const isMobile = computed(() => isMounted.value && matchesMobileBreakpoint.value);
+const matchesBreakpoint = useMediaQuery(() => `(width < ${props.breakpoint}px)`);
+const isMobile = computed(() => isMounted.value && matchesBreakpoint.value);
 
-const { hidden: hiddenRegions, requestRegions } = useAppRegions();
+const { hidden: hiddenRegions, requestRegions } = createAppRegions();
 
 // Regions that the current route hides in its meta, which changes as soon as a navigation is
 // confirmed, before the new page renders, so they don't flicker during page transitions.
 const routeMeta = useRouteMeta();
 requestRegions(() => (routeMeta.value.mtAppRegions ?? {}) as MtAppRegions);
 
-const { isLoading, isPending, startLoading } = useAppLoading();
+const {
+  hasUnsavedChanges,
+  isConfirming: isConfirmingLeave,
+  registerUnsavedChanges,
+  confirmLeave,
+  guardNavigation,
+  answer: answerLeave,
+} = createAppUnsavedChanges();
+
+/** Closing the confirmation in any other way than discarding keeps the changes. */
+function onLeaveDialogChange(open: boolean) {
+  if (!open) answerLeave(false);
+}
+
+// Registered before the guard that starts the loading bar, so the bar doesn't run while the
+// confirmation is open.
+useRouteGuard(guardNavigation);
+
+// The browser asks before a reload or closing the tab loses unsaved changes. The listener only
+// exists while there are some, so it doesn't keep the page out of the back/forward cache.
+useEventListener(
+  () => (hasUnsavedChanges.value ? defaultWindow : undefined),
+  "beforeunload",
+  (event: BeforeUnloadEvent) => event.preventDefault(),
+);
+
+const { isLoading, isPending, startLoading } = createAppLoading();
 const isLoadingBarShown = computed(() => props.loadingBar && isLoading.value);
 // The content is busy for as long as the loading lasts, while the bar may stay a bit longer.
 const isBusy = computed(() => props.loadingBar && isPending.value);
@@ -350,7 +420,7 @@ const headerSlotProps = computed<HeaderSlotProps>(() => ({
   open: panels.open,
   close: panels.close,
   toggle: panels.toggle,
-  startLoading,
+  confirmLeave,
 }));
 
 function panelSlotProps(panel: MtAppPanel): PanelSlotProps {
@@ -410,6 +480,8 @@ const appContext: AppContext = {
   toggle: panels.toggle,
   startLoading,
   requestRegions,
+  registerUnsavedChanges,
+  confirmLeave,
   focusContent,
 };
 
@@ -473,7 +545,7 @@ defineExpose({
   open: panels.open,
   close: panels.close,
   toggle: panels.toggle,
-  startLoading,
+  confirmLeave,
 });
 </script>
 
@@ -585,6 +657,12 @@ defineExpose({
     width: 100%;
     animation: none;
   }
+}
+
+.mt-app__leave-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--scale-size-8);
 }
 
 .mt-app__skip {

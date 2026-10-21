@@ -8,9 +8,6 @@ import {
   type MaybeRefOrGetter,
 } from "vue";
 import { appContextKey } from "./useAppContext";
-// Loads Vue Router's types for the augmentation of `RouteMeta` below. The generated types drop this
-// import, so apps without Vue Router don't need it.
-import type {} from "vue-router";
 
 /**
  * The parts of the shell that a view can hide with `useAppRegions()`: its regions and the frame
@@ -24,14 +21,6 @@ export interface MtAppRegions {
   sidebar?: boolean;
   /** `false` removes the frame around the content while no other region is visible. */
   contentFrame?: boolean;
-}
-
-// Types `meta.mtAppRegions` in apps that use Vue Router. Without Vue Router, TypeScript skips it.
-declare module "vue-router" {
-  interface RouteMeta {
-    /** The parts of `mt-app` that the route hides, applied before its page renders. */
-    mtAppRegions?: MtAppRegions;
-  }
 }
 
 /**

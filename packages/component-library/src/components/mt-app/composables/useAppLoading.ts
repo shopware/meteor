@@ -1,69 +1,57 @@
-import { computed, onScopeDispose, readonly, ref, watch } from "vue";
-
-/** How long loading has to last before it shows, so quick navigations don't flash the bar. */
-const SHOW_DELAY = 200;
-
-/** The minimum time loading stays shown, so loading ending just after the delay doesn't flash. */
-const MIN_VISIBLE = 500;
+import {
+  getCurrentInstance,
+  inject,
+  onActivated,
+  onDeactivated,
+  onScopeDispose,
+  ref,
+  toValue,
+  watch,
+  type MaybeRefOrGetter,
+} from "vue";
+import { appContextKey } from "./useAppContext";
 
 /**
- * Whether the app is loading: while any loading that `startLoading()` reported is not done yet.
- * `isLoading` turns on after a short delay, and once on, it stays on for a minimum time.
+ * Reports loading to the surrounding `<mt-app>` while `isLoading` is `true`, for as long as the
+ * calling component (or effect scope) is alive and not deactivated by `<KeepAlive>`. The shell
+ * shows its loading bar meanwhile, if `loading-bar` is on, so a page can pass the same state it
+ * passes to `mt-page`:
+ *
+ * ```ts
+ * const isLoading = ref(true);
+ *
+ * useAppLoading(isLoading);
+ * ```
+ *
+ * When several components report loading, the bar runs until none of them is loading anymore.
+ * Outside of a shell, the call does nothing.
+ *
+ * @experimental The API may still change in a future release.
  */
-export function useAppLoading() {
-  const pendingCount = ref(0);
-  const isPending = computed(() => pendingCount.value > 0);
-  const isLoading = ref(false);
-  let showTimer: ReturnType<typeof setTimeout> | undefined;
-  let hideTimer: ReturnType<typeof setTimeout> | undefined;
-  let shownAt = 0;
+export function useAppLoading(isLoading: MaybeRefOrGetter<boolean>): void {
+  const context = inject(appContextKey, null);
+  if (context === null) return;
 
-  /** Reports loading until the returned function is called. */
-  function startLoading(): () => void {
-    let isDone = false;
-    pendingCount.value += 1;
+  const isActive = ref(true);
+  let finishLoading: (() => void) | undefined;
 
-    return () => {
-      if (isDone) return;
+  watch(
+    () => isActive.value && toValue(isLoading),
+    (loading) => {
+      if (loading) finishLoading ??= context.startLoading();
+      else {
+        finishLoading?.();
+        finishLoading = undefined;
+      }
+    },
+    { immediate: true },
+  );
 
-      isDone = true;
-      pendingCount.value -= 1;
-    };
+  // A page that <KeepAlive> caches doesn't report loading while it isn't shown.
+  if (getCurrentInstance()) {
+    onDeactivated(() => (isActive.value = false));
+    onActivated(() => (isActive.value = true));
   }
 
-  watch(isPending, (pending) => {
-    clearTimeout(showTimer);
-    clearTimeout(hideTimer);
-
-    if (pending) {
-      if (isLoading.value) return;
-
-      showTimer = setTimeout(() => {
-        isLoading.value = true;
-        shownAt = Date.now();
-      }, SHOW_DELAY);
-
-      return;
-    }
-
-    const remaining = MIN_VISIBLE - (Date.now() - shownAt);
-
-    if (isLoading.value && remaining > 0) {
-      hideTimer = setTimeout(() => (isLoading.value = false), remaining);
-    } else {
-      isLoading.value = false;
-    }
-  });
-
-  onScopeDispose(() => {
-    clearTimeout(showTimer);
-    clearTimeout(hideTimer);
-  });
-
-  return {
-    isLoading: readonly(isLoading),
-    /** Whether loading is pending right now, without the delay and minimum time of `isLoading`. */
-    isPending,
-    startLoading,
-  };
+  onScopeDispose(() => finishLoading?.());
 }
