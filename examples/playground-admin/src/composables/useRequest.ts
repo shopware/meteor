@@ -1,4 +1,5 @@
-import { useMtApp } from "@shopware-ag/meteor-component-library";
+import { ref } from "vue";
+import { useAppLoading } from "@shopware-ag/meteor-component-library";
 
 /** How long the mock server takes to answer, so the loading states show. */
 const LATENCY = 300;
@@ -13,17 +14,19 @@ export function transfer<Value>(value: Value): Value {
  * to the shell, which shows its loading bar meanwhile.
  */
 export function useRequest() {
-  const { startLoading } = useMtApp();
+  const pendingRequests = ref(0);
+
+  useAppLoading(() => pendingRequests.value > 0);
 
   async function request<Result>(call: () => Result): Promise<Result> {
-    const finishLoading = startLoading();
+    pendingRequests.value += 1;
 
     try {
       await new Promise((resolve) => setTimeout(resolve, LATENCY));
 
       return transfer(call());
     } finally {
-      finishLoading();
+      pendingRequests.value -= 1;
     }
   }
 

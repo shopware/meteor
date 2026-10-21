@@ -27,10 +27,6 @@ export const de: Messages = {
     active: "Aktiv",
     inactive: "Inaktiv",
     required: "Dieses Feld ist ein Pflichtfeld.",
-    discardTitle: "Ungespeicherte Änderungen verwerfen?",
-    discardText: "Deine Änderungen auf dieser Seite gehen verloren.",
-    keepEditing: "Weiter bearbeiten",
-    discardChanges: "Änderungen verwerfen",
   },
   dashboard: {
     greeting: {
@@ -283,7 +279,6 @@ export const de: Messages = {
   },
   cms: {
     title: "Erlebniswelten",
-    back: "Zurück",
     blocks: "Blöcke",
     block: "Block {number}",
     canvas: "Arbeitsfläche",

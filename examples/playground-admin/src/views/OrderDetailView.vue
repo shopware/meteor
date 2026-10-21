@@ -31,7 +31,7 @@ import { useBreadcrumb } from "../composables/useBreadcrumb";
 import { useFormat } from "../composables/useFormat";
 import { useOrderStates } from "../composables/useOrderStates";
 import { useRepository } from "../composables/useRepository";
-import { useUnsavedChanges } from "../composables/useUnsavedChanges";
+import { useDraft } from "../composables/useDraft";
 
 const { t } = useI18n();
 const route = useRoute();
@@ -47,7 +47,7 @@ const tagOptions = shallowRef<{ value: string; label: string }[]>([]);
 const isLoading = ref(true);
 const isSaving = ref(false);
 
-const { isDirty, markSaved, discard } = useUnsavedChanges(order);
+const { isDirty, markSaved, discard } = useDraft(order);
 
 async function load() {
   isLoading.value = true;
@@ -109,7 +109,7 @@ function addressLines(address: Address) {
   ].filter((line): line is string => Boolean(line));
 }
 
-/** Most orders ship to the billing address, which the pane then doesn't repeat. */
+/** Most orders ship to the billing address, which the panel then doesn't repeat. */
 const shipsToBillingAddress = computed(
   () =>
     !!order.value &&
@@ -140,7 +140,7 @@ function removeDocument(document: OrderDocument) {
 <template>
   <mt-page
     width="m"
-    :loading="isLoading"
+    :is-loading="isLoading"
     :breadcrumb="breadcrumb"
     :end-label="t('orders.details.customer')"
   >
@@ -409,7 +409,7 @@ function removeDocument(document: OrderDocument) {
     </div>
 
     <template v-if="order || isLoading" #end>
-      <div class="stack order-detail__pane">
+      <div class="stack order-detail__panel">
         <template v-if="order">
           <section class="stack">
             <mt-text
@@ -563,7 +563,7 @@ function removeDocument(document: OrderDocument) {
   min-width: 0;
 }
 
-.order-detail__pane {
+.order-detail__panel {
   width: 20rem;
   padding: var(--scale-size-16);
 }

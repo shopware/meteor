@@ -1,24 +1,12 @@
 <script setup lang="ts">
 import { useI18n } from "vue-i18n";
-import { useRouter } from "vue-router";
-import {
-  MtButton,
-  MtIcon,
-  MtPage,
-  MtText,
-} from "@shopware-ag/meteor-component-library";
+import { MtPage, MtText } from "@shopware-ag/meteor-component-library";
 import { useBreadcrumb } from "../composables/useBreadcrumb";
 
 const { t } = useI18n();
-const router = useRouter();
 const breadcrumb = useBreadcrumb(() => t("cms.title"));
 
 const blocks = Array.from({ length: 40 }, (_, index) => index + 1);
-
-function goBack() {
-  if (router.options.history.state.back) router.back();
-  else router.push({ name: "dashboard" });
-}
 </script>
 
 <template>
@@ -26,16 +14,8 @@ function goBack() {
     :breadcrumb="breadcrumb"
     :start-label="t('cms.blocks')"
     :end-label="t('cms.properties')"
+    closable
   >
-    <template #actions>
-      <mt-button variant="secondary" size="default" @click="goBack">
-        <template #iconFront="{ size }">
-          <mt-icon name="regular-chevron-left-xs" :size="size" />
-        </template>
-        {{ t("cms.back") }}
-      </mt-button>
-    </template>
-
     <template #start>
       <ul class="cms-blocks">
         <li v-for="block in blocks" :key="block">

@@ -25,10 +25,6 @@ export const en = {
     active: "Active",
     inactive: "Inactive",
     required: "This field is required.",
-    discardTitle: "Discard unsaved changes?",
-    discardText: "Your changes on this page will be lost.",
-    keepEditing: "Keep editing",
-    discardChanges: "Discard changes",
   },
   dashboard: {
     greeting: {
@@ -276,7 +272,6 @@ export const en = {
   },
   cms: {
     title: "Shopping Experiences",
-    back: "Back",
     blocks: "Blocks",
     block: "Block {number}",
     canvas: "Canvas",
