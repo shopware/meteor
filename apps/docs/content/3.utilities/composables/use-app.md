@@ -9,7 +9,7 @@ description: A composable for reading and controlling the surrounding App shell 
 
 ## Usage
 
-`useApp` gives any component inside [**App**](/components/app) the state and the controls of the shell: whether it uses the mobile layout and which panels are open, and ways to open and close them. To report loading to the loading bar of the shell, use [**useAppLoading**](/utilities/composables/use-app-loading). The component that renders **App** itself is not inside the shell, so it uses the props of the `header` slot or a template ref instead, which offer the same controls.
+`useApp` gives any component inside [**App**](/components/app) the state and the controls of the shell: whether it uses the mobile layout and which panels are open, and ways to open and close them. To report loading to the loading bar of the shell, use [**useAppLoading**](/utilities/composables/use-app-loading). `useApp` only works in components inside **App**, such as your pages. In the component that renders `<mt-app>`, use the props of the `header` slot or a template ref instead.
 
 ```ts
 import { useApp } from "@shopware-ag/meteor-component-library";
