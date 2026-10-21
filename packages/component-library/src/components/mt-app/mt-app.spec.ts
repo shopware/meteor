@@ -15,8 +15,10 @@ import {
 import { render, screen, waitFor } from "@testing-library/vue";
 import userEvent from "@testing-library/user-event";
 import MtApp from "./mt-app.vue";
-import { useMtApp } from "./composables/useMtApp";
-import { useMtAppRegions, type MtAppRegions } from "./composables/useMtAppRegions";
+import { useApp } from "./composables/useApp";
+import { useAppRegions, type MtAppRegions } from "./composables/useAppRegions";
+import { useAppLoading } from "./composables/useAppLoading";
+import { useUnsavedChanges } from "./composables/useUnsavedChanges";
 import { useFutureFlags } from "../../composables/useFutureFlags";
 import { useSnackbar } from "../mt-snackbar/composables/use-snackbar";
 
@@ -120,44 +122,76 @@ async function renderApp(
 }
 
 function mobileProps(props: Record<string, unknown> = {}) {
-  return { mobileBreakpoint: 99999, ...props };
+  return { breakpoint: 99999, ...props };
+}
+
+interface FakeRouteRecord {
+  path: string;
+  instances: Record<string, unknown>;
 }
 
 interface FakeRoute {
   path: string;
   hash: string;
   meta: Record<string, unknown>;
+  params?: Record<string, string>;
+  matched?: FakeRouteRecord[];
+}
+
+type FakeRouteOptions = Partial<Omit<FakeRoute, "path">>;
+
+function createFakeRoute(path: string, options: FakeRouteOptions = {}): FakeRoute {
+  return { hash: "", meta: {}, ...options, path };
 }
 
 function createFakeRouter(initialMeta: Record<string, unknown> = {}) {
-  const guards: (() => void)[] = [];
+  const guards: ((to: FakeRoute, from: FakeRoute) => unknown)[] = [];
   const hooks: ((to: FakeRoute, from: FakeRoute, failure?: unknown) => void)[] = [];
   const currentRoute = shallowRef<FakeRoute>({ path: "/", hash: "", meta: initialMeta });
 
   const router = {
     currentRoute,
-    beforeEach: (guard: () => void) => (guards.push(guard), () => undefined),
+    beforeEach: (guard: (typeof guards)[number]) => (guards.push(guard), () => undefined),
     afterEach: (hook: (typeof hooks)[number]) => (hooks.push(hook), () => undefined),
     onError: () => () => undefined,
   };
 
-  /** Starts a navigation; the returned function completes it, as Vue Router does after its guards. */
-  function start(path: string, options: { hash?: string; meta?: Record<string, unknown> } = {}) {
-    guards.forEach((guard) => guard());
+  async function complete(to: FakeRoute) {
+    const from = currentRoute.value;
+    currentRoute.value = to;
+    hooks.forEach((hook) => hook(to, from));
 
-    return async () => {
-      const from = currentRoute.value;
-      currentRoute.value = { path, hash: options.hash ?? "", meta: options.meta ?? {} };
-      hooks.forEach((hook) => hook(currentRoute.value, from));
-
-      await nextTick();
-      await nextTick();
-    };
+    await nextTick();
+    await nextTick();
   }
 
-  const navigate = (path: string, options?: Parameters<typeof start>[1]) => start(path, options)();
+  /** Starts a navigation; the returned function completes it, as Vue Router does after its guards. */
+  function start(path: string, options?: FakeRouteOptions) {
+    const to = createFakeRoute(path, options);
+    guards.forEach((guard) => guard(to, currentRoute.value));
 
-  return { router, currentRoute, start, navigate };
+    return () => complete(to);
+  }
+
+  const navigate = (path: string, options?: FakeRouteOptions) => start(path, options)();
+
+  /** Navigates after the guards, one after the other as Vue Router runs them; resolves whether it did. */
+  async function attempt(path: string, options?: FakeRouteOptions) {
+    const to = createFakeRoute(path, options);
+    const from = currentRoute.value;
+
+    for (const guard of guards) {
+      if ((await guard(to, from)) === false) {
+        hooks.forEach((hook) => hook(to, from, { type: 4 }));
+        return false;
+      }
+    }
+
+    await complete(to);
+    return true;
+  }
+
+  return { router, currentRoute, start, navigate, attempt };
 }
 
 const navigationTriggerName = "Open Navigation";
@@ -309,7 +343,7 @@ describe("mt-app", () => {
       stubMatchMedia(390);
 
       // ACT
-      await renderApp({ props: { mobileBreakpoint: 0 } });
+      await renderApp({ props: { breakpoint: 0 } });
 
       // ASSERT
       expect(screen.queryByRole("button", { name: navigationTriggerName })).not.toBeInTheDocument();
@@ -496,7 +530,7 @@ describe("mt-app", () => {
     it("turns open drawers back into inline sidebars when the viewport grows", async () => {
       // ARRANGE
       const media = stubMatchMedia(390);
-      await renderApp({ props: { mobileBreakpoint: 1280 } });
+      await renderApp({ props: { breakpoint: 1280 } });
       await userEvent.click(screen.getByRole("button", { name: navigationTriggerName }));
       await waitFor(() => expect(screen.getByRole("dialog", { name: "Navigation" })).toHaveFocus());
 
@@ -525,7 +559,7 @@ describe("mt-app", () => {
         },
       };
       await renderApp({
-        props: { mobileBreakpoint: 1280 },
+        props: { breakpoint: 1280 },
         slots: { content: allSlots.content, navigation: () => [h(Counter)] },
       });
       await userEvent.click(screen.getByRole("button", { name: "Count 0" }));
@@ -547,7 +581,7 @@ describe("mt-app", () => {
         components: { MtApp },
         props: { showEnd: Boolean },
         template: `
-          <mt-app :mobile-breakpoint="99999">
+          <mt-app :breakpoint="99999">
             <template #content><p>Main content</p></template>
             <template #navigation><a href="/">Start nav</a></template>
             <template v-if="showEnd" #sidebar><div>End tools</div></template>
@@ -573,7 +607,7 @@ describe("mt-app", () => {
   describe("controls", () => {
     const Probe: Component = {
       setup() {
-        const app = useMtApp();
+        const app = useApp();
 
         return () =>
           h("div", [
@@ -770,7 +804,7 @@ describe("mt-app", () => {
     function createView(regions: MtAppRegions) {
       return defineComponent({
         setup() {
-          useMtAppRegions(regions);
+          useAppRegions(regions);
           return () => h("p", "Fullscreen view");
         },
       });
@@ -903,7 +937,7 @@ describe("mt-app", () => {
       // ARRANGE
       const FullscreenPage = defineComponent({
         setup() {
-          useMtAppRegions({ header: false });
+          useAppRegions({ header: false });
           return () => h("p", "Editor");
         },
       });
@@ -927,6 +961,215 @@ describe("mt-app", () => {
 
       // ASSERT
       expect(screen.queryByRole("banner")).not.toBeInTheDocument();
+    });
+  });
+
+  describe("unsaved changes", () => {
+    const question = "Discard unsaved changes?";
+    const ordersRoute = { matched: [{ path: "/orders", instances: {} }] };
+
+    /** Renders an editor with unsaved changes in the route record of `/products/:id`. */
+    async function renderEditor() {
+      const hasChanges = ref(true);
+      const answers: Promise<boolean>[] = [];
+      const record: FakeRouteRecord = { path: "/products/:id", instances: {} };
+      const Editor = defineComponent({
+        setup(_, { expose }) {
+          // Closed like a `<script setup>` component, as the router sees those.
+          expose();
+          useUnsavedChanges(hasChanges);
+          const app = useApp();
+
+          return () =>
+            h(
+              "button",
+              { onClick: () => answers.push(app.confirmLeave(), app.confirmLeave()) },
+              "Close editor",
+            );
+        },
+      });
+      const OtherPage: Component = { render: () => h("p", "Orders") };
+      const page = shallowRef<Component>(Editor);
+
+      const { router, currentRoute, attempt } = createFakeRouter();
+      currentRoute.value = createFakeRoute("/products/1", {
+        params: { id: "1" },
+        matched: [record],
+      });
+
+      await renderApp({
+        router,
+        slots: {
+          ...allSlots,
+          // Like RouterView, which registers the page it renders in the route record.
+          content: () =>
+            h(KeepAlive, () =>
+              h(page.value, {
+                ref: (instance: unknown) => {
+                  if (page.value === Editor && instance) record.instances.default = instance;
+                },
+              }),
+            ),
+        },
+      });
+
+      return {
+        hasChanges,
+        answers,
+        record,
+        attempt,
+        showOtherPage: () => (page.value = OtherPage),
+      };
+    }
+
+    it("asks before a navigation leaves the page and stays when the user keeps editing", async () => {
+      // ARRANGE
+      const { attempt } = await renderEditor();
+
+      // ACT
+      const navigation = attempt("/orders", ordersRoute);
+
+      // ASSERT
+      expect(await screen.findByRole("dialog", { name: question })).toBeInTheDocument();
+
+      // ACT
+      await userEvent.click(screen.getByRole("button", { name: "Keep editing" }));
+
+      // ASSERT
+      await expect(navigation).resolves.toBe(false);
+      await waitFor(() =>
+        expect(screen.queryByRole("dialog", { name: question })).not.toBeInTheDocument(),
+      );
+    });
+
+    it("leaves after the user discards the changes", async () => {
+      // ARRANGE
+      const { attempt } = await renderEditor();
+      const navigation = attempt("/orders", ordersRoute);
+
+      // ACT
+      await userEvent.click(await screen.findByRole("button", { name: "Discard changes" }));
+
+      // ASSERT
+      await expect(navigation).resolves.toBe(true);
+    });
+
+    it("stays when the user closes the question with Escape", async () => {
+      // ARRANGE
+      const { attempt } = await renderEditor();
+      const navigation = attempt("/orders", ordersRoute);
+      await screen.findByRole("dialog", { name: question });
+
+      // ACT
+      await userEvent.keyboard("{Escape}");
+
+      // ASSERT
+      await expect(navigation).resolves.toBe(false);
+    });
+
+    it("doesn't ask without unsaved changes", async () => {
+      // ARRANGE
+      const { hasChanges, attempt } = await renderEditor();
+
+      // ACT
+      hasChanges.value = false;
+
+      // ASSERT
+      await expect(attempt("/orders", ordersRoute)).resolves.toBe(true);
+      expect(screen.queryByRole("dialog", { name: question })).not.toBeInTheDocument();
+    });
+
+    it("asks before the params of the page change", async () => {
+      // ARRANGE
+      const { record, attempt } = await renderEditor();
+
+      // ACT
+      void attempt("/products/2", { params: { id: "2" }, matched: [record] });
+
+      // ASSERT
+      expect(await screen.findByRole("dialog", { name: question })).toBeInTheDocument();
+    });
+
+    it("doesn't ask when only the hash or the child route changes", async () => {
+      // ARRANGE
+      const { record, attempt } = await renderEditor();
+
+      // ACT
+      const hashChange = await attempt("/products/1", {
+        hash: "#prices",
+        params: { id: "1" },
+        matched: [record],
+      });
+      const childChange = await attempt("/products/1/seo", {
+        params: { id: "1" },
+        matched: [record, { path: "seo", instances: {} }],
+      });
+
+      // ASSERT
+      expect([hashChange, childChange]).toEqual([true, true]);
+      expect(screen.queryByRole("dialog", { name: question })).not.toBeInTheDocument();
+    });
+
+    it("doesn't ask while KeepAlive keeps the page off the screen", async () => {
+      // ARRANGE
+      const { attempt, showOtherPage } = await renderEditor();
+
+      // ACT
+      showOtherPage();
+      await nextTick();
+
+      // ASSERT
+      await expect(attempt("/orders", ordersRoute)).resolves.toBe(true);
+    });
+
+    it("lets the browser ask before a reload while there are unsaved changes", async () => {
+      // ARRANGE
+      const { hasChanges } = await renderEditor();
+      const reload = () => {
+        const event = new Event("beforeunload", { cancelable: true });
+        window.dispatchEvent(event);
+        return event;
+      };
+
+      // ASSERT
+      expect(reload().defaultPrevented).toBe(true);
+
+      // ACT
+      hasChanges.value = false;
+      await nextTick();
+
+      // ASSERT
+      expect(reload().defaultPrevented).toBe(false);
+    });
+
+    it("asks once when a view leaves without a navigation", async () => {
+      // ARRANGE
+      const { answers } = await renderEditor();
+
+      // ACT
+      await userEvent.click(screen.getByRole("button", { name: "Close editor" }));
+
+      // ASSERT
+      expect(await screen.findAllByRole("dialog", { name: question })).toHaveLength(1);
+
+      // ACT
+      await userEvent.click(screen.getByRole("button", { name: "Discard changes" }));
+
+      // ASSERT
+      await expect(Promise.all(answers)).resolves.toEqual([true, true]);
+    });
+
+    it("lets a view leave right away without unsaved changes", async () => {
+      // ARRANGE
+      const { hasChanges, answers } = await renderEditor();
+      hasChanges.value = false;
+
+      // ACT
+      await userEvent.click(screen.getByRole("button", { name: "Close editor" }));
+
+      // ASSERT
+      await expect(Promise.all(answers)).resolves.toEqual([true, true]);
+      expect(screen.queryByRole("dialog", { name: question })).not.toBeInTheDocument();
     });
   });
 
@@ -979,30 +1222,67 @@ describe("mt-app", () => {
       expect(screen.queryByRole("progressbar")).not.toBeInTheDocument();
     });
 
-    it("keeps the loading bar while the app reports loading", async () => {
-      // ARRANGE
-      let startLoading: (() => () => void) | undefined;
+    function renderLoadingPage() {
+      const isLoading = ref(false);
+      const isShown = ref(true);
       const Page = defineComponent({
         setup() {
-          startLoading = useMtApp().startLoading;
+          useAppLoading(isLoading);
           return () => h("p", "Orders");
         },
       });
-      await renderApp({ props: { loadingBar: true }, slots: { content: () => h(Page) } });
+      const OtherPage: Component = { render: () => h("p", "Customers") };
+
+      const result = renderApp({
+        props: { loadingBar: true },
+        slots: {
+          content: () => h(KeepAlive, () => (isShown.value ? h(Page) : h(OtherPage))),
+        },
+      });
+
+      return { result, isLoading, isShown };
+    }
+
+    it("keeps the loading bar while a page reports loading", async () => {
+      // ARRANGE
+      const { result, isLoading } = renderLoadingPage();
+      await result;
 
       // ACT
-      const done = startLoading!();
+      isLoading.value = true;
       await vi.advanceTimersByTimeAsync(200);
 
       // ASSERT
       expect(screen.getByRole("progressbar")).toBeInTheDocument();
 
       // ACT
-      done();
+      isLoading.value = false;
       await vi.advanceTimersByTimeAsync(500);
 
       // ASSERT
       expect(screen.queryByRole("progressbar")).not.toBeInTheDocument();
+    });
+
+    it("stops the loading of a page that KeepAlive takes off the screen", async () => {
+      // ARRANGE
+      const { result, isLoading, isShown } = renderLoadingPage();
+      await result;
+      isLoading.value = true;
+      await vi.advanceTimersByTimeAsync(200);
+
+      // ACT
+      isShown.value = false;
+      await vi.advanceTimersByTimeAsync(500);
+
+      // ASSERT
+      expect(screen.queryByRole("progressbar")).not.toBeInTheDocument();
+
+      // ACT
+      isShown.value = true;
+      await vi.advanceTimersByTimeAsync(200);
+
+      // ASSERT
+      expect(screen.getByRole("progressbar")).toBeInTheDocument();
     });
   });
 

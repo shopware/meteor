@@ -4,14 +4,35 @@
     class="mt-page"
     :class="{
       'mt-page--responsive': breakpoint > 0,
-      'mt-page--with-panes': hasSlot('start') || hasSlot('end'),
+      'mt-page--header-border': closable || hasSlot('start') || hasSlot('end'),
     }"
     :data-layout="isMeasured ? (isNarrow ? 'narrow' : 'wide') : undefined"
   >
     <header
-      v-if="loading || title || hasSlot('actions') || showTrigger('start') || showTrigger('end')"
+      v-if="
+        closable ||
+        isLoading ||
+        title ||
+        hasSlot('actions') ||
+        showTrigger('start') ||
+        showTrigger('end')
+      "
       class="mt-page__header"
     >
+      <template v-if="closable">
+        <mt-button
+          class="mt-page__close"
+          variant="tertiary"
+          size="default"
+          square
+          :aria-label="t('closePage')"
+          @click="close"
+        >
+          <mt-icon name="regular-times" size="var(--scale-size-16)" decorative />
+        </mt-button>
+        <mt-divider class="mt-page__close-divider" orientation="vertical" decorative />
+      </template>
+
       <mt-app-trigger
         v-if="showTrigger('start')"
         panel="start"
@@ -31,7 +52,7 @@
           :hide-current="isHeadingVisible"
         />
       </template>
-      <mt-skeleton-bar v-else-if="loading" class="mt-page__title-skeleton" aria-hidden="true" />
+      <mt-skeleton-bar v-else-if="isLoading" class="mt-page__title-skeleton" aria-hidden="true" />
 
       <div v-if="hasSlot('actions')" class="mt-page__actions">
         <slot name="actions" />
@@ -67,9 +88,9 @@
         ref="content"
         class="mt-page__content"
         :class="{ 'mt-page__content--inset': inset }"
-        :aria-busy="loading || undefined"
+        :aria-busy="isLoading || undefined"
       >
-        <mt-container v-if="width !== 'full'" :size="width">
+        <mt-container v-if="width !== 'full'" :width="width">
           <slot />
         </mt-container>
         <slot v-else />
@@ -95,6 +116,7 @@
 <script setup lang="ts">
 import {
   computed,
+  getCurrentInstance,
   inject,
   nextTick,
   onBeforeUpdate,
@@ -108,37 +130,43 @@ import {
 import { useResizeObserver } from "@vueuse/core";
 import { useI18n } from "vue-i18n";
 import MtBreadcrumb, { type BreadcrumbItem } from "@/components/mt-breadcrumb/mt-breadcrumb.vue";
+import MtButton from "@/components/mt-button/mt-button.vue";
 import MtContainer from "@/components/mt-container/mt-container.vue";
+import MtDivider from "@/components/mt-divider/mt-divider.vue";
+import MtIcon from "@/components/mt-icon/mt-icon.vue";
 import MtSkeletonBar from "@/components/mt-skeleton-bar/mt-skeleton-bar.vue";
 import MtAppRegion from "@/components/mt-app/_internal/mt-app-region.vue";
 import MtAppTrigger from "@/components/mt-app/_internal/mt-app-trigger.vue";
 import { appContextKey } from "@/components/mt-app/composables/useAppContext";
 import { useAppPanels, type PanelController } from "@/components/mt-app/composables/useAppPanels";
+import { useRouterBack } from "@/components/mt-app/composables/useAppRouter";
 import { hasSlotContent } from "@/utils/slot";
 import { pageContextKey } from "./_internal/mt-page-context";
 
-type PagePane = "start" | "end";
+type PagePanel = "start" | "end";
 
 /**
  * The frame of a page in the content of `mt-app`: a header with the breadcrumb and the actions, the
- * content, and up to two panes next to it. The page fills the content area, and the content and
- * each pane scroll on their own while the header stays in place.
+ * content, and up to two panels next to it. The page fills the content area, and the content and
+ * each panel scroll on their own while the header stays in place.
  *
- * - A pane is as wide as its content, so give the slot content a fixed width.
- * - Below the breakpoint, measured on the page and not on the viewport, the panes become drawers
+ * - A panel is as wide as its content, so give the slot content a fixed width.
+ * - Below the breakpoint, measured on the page and not on the viewport, the panels become drawers
  *   that open from triggers in the page header.
  * - The content is padded, less on narrow pages. `width` limits it to a centered maximum width,
  *   and `inset` removes the padding for full-bleed content such as an editor canvas.
- * - While `loading`, the header renders right away, with a placeholder while the label of the
+ * - While `isLoading`, the header renders right away, with a placeholder while the label of the
  *   current page isn't known yet, so it doesn't appear late and push the content down.
+ * - `closable` adds a close button at the start of the header, for full-screen views that hide the
+ *   navigation of the shell.
  *
- * @experimental Not for public use yet: undocumented, and it may change or be removed without notice.
+ * @experimental The API may still change in a future release.
  */
 const props = withDefaults(
   defineProps<{
     /**
      * The maximum width of the content, centered in the content area: `s` (680px), `m` (960px),
-     * `l` (1280px) or `full`. The panes and the header always span the page.
+     * `l` (1280px) or `full`. The panels and the header always span the page.
      */
     width?: "s" | "m" | "l" | "full";
     /** Removes the padding around the content, for full-bleed content such as an editor canvas. */
@@ -147,41 +175,54 @@ const props = withDefaults(
      * Whether the page's data is loading. The header renders with a placeholder while the current
      * page has no label, and the content is marked busy for assistive technology.
      */
-    loading?: boolean;
+    isLoading?: boolean;
     /**
      * The trail from the root to this page, shown in the page header. The last item is the page
      * itself: its label is the page's `<h1>`. An `icon` on the first item marks the section.
      */
     breadcrumb?: BreadcrumbItem[];
-    /** The accessible name of the start pane, its drawer and its trigger. Defaults to "Start panel". */
+    /** The accessible name of the start panel, its drawer and its trigger. Defaults to "Start panel". */
     startLabel?: string;
-    /** The accessible name of the end pane, its drawer and its trigger. Defaults to "End panel". */
+    /** The accessible name of the end panel, its drawer and its trigger. Defaults to "End panel". */
     endLabel?: string;
     /**
-     * The page width in pixels below which the panes become drawers. `0` keeps them next to the
+     * The page width in pixels below which the panels become drawers. `0` keeps them next to the
      * content.
      */
     breakpoint?: number;
+    /**
+     * Shows a close button at the start of the header, for full-screen views that hide the
+     * navigation of the shell. It goes back to the previous page, or up the breadcrumb when the
+     * page was opened directly. Listen to `close` to handle it yourself, for example without
+     * Vue Router.
+     */
+    closable?: boolean;
   }>(),
   {
     width: "full",
     inset: false,
-    loading: false,
+    isLoading: false,
     breadcrumb: () => [],
     startLabel: undefined,
     endLabel: undefined,
     breakpoint: 960,
+    closable: false,
   },
 );
+
+const emit = defineEmits<{
+  /** The close button was clicked. Listening replaces the navigation of the button. */
+  close: [];
+}>();
 
 const slots = defineSlots<{
   /** The scrollable content of the page. */
   default?(): unknown;
   /** Buttons at the end of the page header. */
   actions?(): unknown;
-  /** A pane before the content, for example a list. Becomes a drawer on a narrow page. */
+  /** A panel before the content, for example a list. Becomes a drawer on a narrow page. */
   start?(): unknown;
-  /** A pane after the content, for example properties. Becomes a drawer on a narrow page. */
+  /** A panel after the content, for example properties. Becomes a drawer on a narrow page. */
   end?(): unknown;
 }>();
 
@@ -192,12 +233,14 @@ const { t } = useI18n({
       end: "End panel",
       open: "Open {label}",
       close: "Close {label}",
+      closePage: "Close",
     },
     de: {
       start: "Startbereich",
       end: "Endbereich",
       open: "{label} öffnen",
       close: "{label} schließen",
+      closePage: "Schließen",
     },
   },
 });
@@ -205,7 +248,7 @@ const { t } = useI18n({
 /** The label of the current page, the last item of the breadcrumb. */
 const title = computed(() => props.breadcrumb.at(-1)?.label ?? "");
 
-const labels = computed<Record<PagePane, string>>(() => ({
+const labels = computed<Record<PagePanel, string>>(() => ({
   start: props.startLabel ?? t("start"),
   end: props.endLabel ?? t("end"),
 }));
@@ -217,7 +260,7 @@ const regionElements = {
   end: useTemplateRef<InstanceType<typeof MtAppRegion>>("endRegion"),
 };
 
-const drawerIds: Record<PagePane, string> = { start: useId(), end: useId() };
+const drawerIds: Record<PagePanel, string> = { start: useId(), end: useId() };
 
 // The page width is unknown on the server and until the first measurement, so the narrow layout
 // only applies after it: the server markup and the first client render then agree.
@@ -237,13 +280,13 @@ const isNarrow = computed(
 );
 
 // Detecting empty slots renders them, so their presence is evaluated once per render.
-let slotPresence: Record<PagePane | "actions", boolean> | undefined;
+let slotPresence: Record<PagePanel | "actions", boolean> | undefined;
 
 onBeforeUpdate(() => {
   slotPresence = undefined;
 });
 
-function hasSlot(name: PagePane | "actions") {
+function hasSlot(name: PagePanel | "actions") {
   slotPresence ??= {
     actions: hasSlotContent(slots.actions),
     start: hasSlotContent(slots.start),
@@ -253,17 +296,33 @@ function hasSlot(name: PagePane | "actions") {
   return slotPresence[name];
 }
 
-function showTrigger(pane: PagePane) {
-  return isNarrow.value && hasSlot(pane);
+function showTrigger(panel: PagePanel) {
+  return isNarrow.value && hasSlot(panel);
 }
 
-const panels = useAppPanels<PagePane>({
+const panels = useAppPanels<PagePanel>({
   isMobile: isNarrow,
   canOpenDrawer: hasSlot,
   desktopState: { start: ref(true), end: ref(true) },
 });
 
 const app = inject(appContextKey, null);
+const instance = getCurrentInstance();
+const goBack = useRouterBack();
+
+/** Leaves the page: back, or up the breadcrumb, or to the start page, unless a listener closes it. */
+function close() {
+  if (instance?.vnode.props?.onClose) {
+    emit("close");
+    return;
+  }
+
+  const parent = props.breadcrumb
+    .slice(0, -1)
+    .reverse()
+    .find((item) => item.to !== undefined);
+  goBack(parent?.to ?? "/");
+}
 
 /** Moves the focus to the content of the surrounding shell. */
 function focusContent() {
@@ -361,7 +420,7 @@ const controller: PanelController = {
   focusContent,
 };
 
-// A pane that moves between the page and its drawer while it holds the focus would leave the
+// A panel that moves between the page and its drawer while it holds the focus would leave the
 // focus nowhere. Sync, so the open drawer is still known here before useAppPanels closes it.
 watch(
   isNarrow,
@@ -389,7 +448,7 @@ watch(
   display: flex;
   grid-row: 1;
   align-items: center;
-  gap: var(--scale-size-8);
+  gap: var(--scale-size-12);
   min-width: 0;
   height: var(--scale-size-64);
   padding-inline: var(--scale-size-12);
@@ -401,9 +460,17 @@ watch(
     );
 }
 
-/* With panes, the border always separates the header from them. */
-.mt-page--with-panes .mt-page__header {
+/*
+ * The border always separates the header from the panels, and the divider of the close button
+ * ends on it.
+ */
+.mt-page--header-border .mt-page__header {
   border-bottom-color: var(--color-border-secondary-default);
+}
+
+.mt-page__close,
+.mt-page__close-divider {
+  flex: none;
 }
 
 .mt-page__breadcrumb {
@@ -418,6 +485,18 @@ watch(
   height: var(--font-line-height-xs);
   margin-block: 0;
   margin-inline-start: var(--scale-size-8);
+}
+
+/*
+ * Right after the divider, the title is as far from it as the close icon, which sits inset in its
+ * square button, so both sides of the divider look the same.
+ */
+.mt-page__close-divider + .visually-hidden + .mt-page__breadcrumb {
+  padding-inline-start: var(--scale-size-12);
+}
+
+.mt-page .mt-page__close-divider + .mt-page__title-skeleton {
+  margin-inline-start: var(--scale-size-12);
 }
 
 .mt-page__actions {
@@ -466,7 +545,7 @@ watch(
 }
 
 /*
- * Until the page is measured, its layout is unknown (see isMeasured). Hide the panes below the
+ * Until the page is measured, its layout is unknown (see isMeasured). Hide the panels below the
  * default breakpoint so narrow pages don't show them before the drawers take over. Custom
  * breakpoints only apply once the page is measured.
  */
