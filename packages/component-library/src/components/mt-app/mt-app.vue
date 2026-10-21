@@ -176,9 +176,8 @@ import type { MtAppRegions } from "./composables/useAppRegions";
  *   navigation slot brings its own `<nav>`, such as `mt-nav`. The labels name the sidebar landmark
  *   and, in the mobile layout, the drawers and their triggers. The defaults are translated for
  *   English and German; pass both labels in other languages.
- * - Components inside the shell read and control it with `useApp()`. The component that renders
- *   `<mt-app>` uses the `header` slot props or a template ref instead, because it is not inside
- *   the shell.
+ * - Components inside the shell, such as pages, read and control it with `useApp()`. In the
+ *   component that renders `<mt-app>`, use the props of the `header` slot or a template ref.
  * - A route hides regions with `meta: { mtAppRegions: { header: false } }`, and a page toggles them
  *   with `useAppRegions()`.
  * - Views report unsaved changes with `useUnsavedChanges()`. The shell then asks whether to

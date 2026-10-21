@@ -36,10 +36,10 @@ export interface MtAppContext {
 }
 
 /**
- * Reads and controls the surrounding `<mt-app>` from any component inside of it. The component
- * that renders `<mt-app>` itself uses the `header` slot props or a template ref instead, because
- * it is not inside the shell. Outside of a shell, it returns inert defaults, so components that
- * use it keep working on their own.
+ * Reads and controls the surrounding `<mt-app>`. It only works in components inside the shell,
+ * such as pages. In the component that renders `<mt-app>`, use the props of the `header` slot or
+ * a template ref instead. Outside of a shell, it returns inert defaults, so components that use it
+ * keep working on their own.
  *
  * @experimental The API may still change in a future release.
  */
