@@ -29,7 +29,7 @@ import { useDuplicateProduct } from "../composables/useDuplicateProduct";
 import { useFormat } from "../composables/useFormat";
 import { useRepository } from "../composables/useRepository";
 import { useStockStatus } from "../composables/useStockStatus";
-import { useUnsavedChanges } from "../composables/useUnsavedChanges";
+import { useDraft } from "../composables/useDraft";
 
 const { t, locale } = useI18n();
 const route = useRoute();
@@ -120,7 +120,7 @@ const errors = ref<{
   taxId?: FieldError;
 }>({});
 
-const { isDirty, markSaved, discard } = useUnsavedChanges(product);
+const { isDirty, markSaved, discard } = useDraft(product);
 
 function discardChanges() {
   discard();
@@ -261,7 +261,7 @@ const tabs = computed(() => [
 </script>
 
 <template>
-  <mt-page width="l" :loading="isLoading" :breadcrumb="breadcrumb">
+  <mt-page width="l" :is-loading="isLoading" :breadcrumb="breadcrumb">
     <template #actions>
       <mt-button
         variant="secondary"
