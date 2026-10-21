@@ -144,7 +144,7 @@ function openProduct(product: Product) {
 </script>
 
 <template>
-  <mt-page :loading="isLoading" :breadcrumb="breadcrumb">
+  <mt-page :is-loading="isLoading" :breadcrumb="breadcrumb">
     <mt-empty-state
       v-if="!isLoading && categoryId && !category"
       icon="regular-folder"
