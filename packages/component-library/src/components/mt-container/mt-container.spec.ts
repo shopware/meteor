@@ -7,12 +7,12 @@ describe("mt-container", () => {
     [undefined, "m"],
     ["s", "s"],
     ["l", "l"],
-  ] as const)("limits the width for size %s to %s", (size, expected) => {
+  ] as const)("limits the width %s to %s", (width, expected) => {
     // ACT
-    render(MtContainer, { props: { size }, slots: { default: "Page content" } });
+    render(MtContainer, { props: { width }, slots: { default: "Page content" } });
 
     // ASSERT
-    expect(screen.getByText("Page content")).toHaveClass(`mt-container--size-${expected}`);
+    expect(screen.getByText("Page content")).toHaveClass(`mt-container--width-${expected}`);
   });
 
   it("renders as the given element", () => {

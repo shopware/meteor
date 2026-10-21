@@ -4,21 +4,21 @@ import { appContextKey } from "./useAppContext";
 /**
  * A panel of the shell that can be opened and closed: the navigation or the sidebar.
  *
- * @experimental Not for public use yet: undocumented, and it may change or be removed without notice.
+ * @experimental The API may still change in a future release.
  */
 export type MtAppPanel = "navigation" | "sidebar";
 
 /**
- * The shell state and controls that `useMtApp()` returns.
+ * The shell state and controls that `useApp()` returns.
  *
- * @experimental Not for public use yet: undocumented, and it may change or be removed without notice.
+ * @experimental The API may still change in a future release.
  */
 export interface MtAppContext {
   /** Whether the shell uses the mobile layout, in which the panels are drawers. */
   isMobile: Readonly<Ref<boolean>>;
   /**
    * Whether the panel is open: shown in the desktop layout, or open as a drawer in the mobile
-   * layout. A view can still hide an open panel with `useMtAppRegions()`.
+   * layout. A view can still hide an open panel with `useAppRegions()`.
    */
   isOpen(panel: MtAppPanel): boolean;
   /** Shows the panel, or opens its drawer in the mobile layout. */
@@ -28,10 +28,11 @@ export interface MtAppContext {
   /** Opens the panel when it is closed, and closes it when it is open. */
   toggle(panel: MtAppPanel): void;
   /**
-   * Reports loading, for example while a page fetches its data, until the returned function is
-   * called. The shell shows its loading bar meanwhile, if `loading-bar` is on.
+   * Asks the user whether to discard the unsaved changes that views report with
+   * `useUnsavedChanges()`, for leaving them without a navigation, such as closing an editor.
+   * Resolves `true` to leave, right away when there are none.
    */
-  startLoading(): () => void;
+  confirmLeave(): Promise<boolean>;
 }
 
 /**
@@ -40,9 +41,9 @@ export interface MtAppContext {
  * it is not inside the shell. Outside of a shell, it returns inert defaults, so components that
  * use it keep working on their own.
  *
- * @experimental Not for public use yet: undocumented, and it may change or be removed without notice.
+ * @experimental The API may still change in a future release.
  */
-export function useMtApp(): MtAppContext {
+export function useApp(): MtAppContext {
   const context = inject(appContextKey, null);
 
   if (context === null) {
@@ -52,7 +53,7 @@ export function useMtApp(): MtAppContext {
       open: () => undefined,
       close: () => undefined,
       toggle: () => undefined,
-      startLoading: () => () => undefined,
+      confirmLeave: () => Promise.resolve(true),
     };
   }
 
@@ -62,6 +63,6 @@ export function useMtApp(): MtAppContext {
     open: context.open,
     close: context.close,
     toggle: context.toggle,
-    startLoading: context.startLoading,
+    confirmLeave: context.confirmLeave,
   };
 }

@@ -35,11 +35,11 @@ type ContentLayoutSidebar = "start" | "end";
  * The content of a page with up to two sidebars of 300px next to it, for example inside `mt-page`
  * or one of its tabs. The layout fills the width of its parent, and each region stacks its blocks.
  *
- * - Unlike the panes of `mt-page`, the sidebars scroll with the content and never become drawers.
+ * - Unlike the panels of `mt-page`, the sidebars scroll with the content and never become drawers.
  * - When the content gets too narrow, the sidebars wrap: the start sidebar above the content, the
  *   end sidebar below it. Two sidebars wrap together.
  *
- * @experimental Not for public use yet: undocumented, and it may change or be removed without notice.
+ * @experimental The API may still change in a future release.
  */
 const slots = defineSlots<{
   /** The main content, in the middle. */

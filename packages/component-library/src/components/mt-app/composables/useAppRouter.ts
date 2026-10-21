@@ -4,12 +4,28 @@ export interface RouteLike {
   path: string;
   hash: string;
   meta?: Record<string, unknown>;
+  params?: Record<string, unknown>;
+  /** The route records of the route, from the root to the deepest child. */
+  matched?: RouteRecordLike[];
 }
+
+/** The part of a Vue Router route record that the shell uses. */
+export interface RouteRecordLike {
+  path: string;
+  /** The component instances that the record renders, by view name. */
+  instances?: Record<string, unknown>;
+}
+
+/** What a navigation guard returns: `false` cancels the navigation. */
+export type RouteGuardResult = boolean | void | Promise<boolean | void>;
 
 /** The part of a Vue Router instance that the shell uses. */
 interface RouterLike {
   currentRoute: { value: RouteLike };
-  beforeEach(guard: () => void): () => void;
+  options: { history: { state: Record<string, unknown> } };
+  back(): void;
+  push(to: unknown): Promise<unknown>;
+  beforeEach(guard: (to: RouteLike, from: RouteLike) => RouteGuardResult): () => void;
   afterEach(hook: (to: RouteLike, from: RouteLike, failure?: unknown) => void): () => void;
   onError(handler: () => void): () => void;
 }
@@ -68,4 +84,39 @@ export function useRouteMeta(): ComputedRef<Record<string, unknown>> {
   const router = findRouter();
 
   return computed(() => router?.currentRoute?.value?.meta ?? {});
+}
+
+/**
+ * Runs the guard before every navigation of the app's Vue Router, which a `false` result cancels.
+ * Does nothing without a router.
+ */
+export function useRouteGuard(guard: (to: RouteLike, from: RouteLike) => RouteGuardResult): void {
+  const router = findRouter();
+  let stop: (() => void) | undefined;
+
+  onMounted(() => {
+    if (typeof router?.beforeEach === "function") stop = router.beforeEach(guard);
+  });
+
+  onBeforeUnmount(() => {
+    stop?.();
+    stop = undefined;
+  });
+}
+
+/**
+ * Returns a function that goes back to the previous page of the app's Vue Router, or to the
+ * fallback when the app has none, for example when the page was opened directly. The returned
+ * function does nothing without a router.
+ */
+export function useRouterBack(): (fallback: unknown) => void {
+  const router = findRouter();
+
+  return (fallback) => {
+    if (typeof router?.push !== "function") return;
+
+    // Vue Router keeps the previous location of the app in the history state.
+    if (router.options?.history?.state?.back && typeof router.back === "function") router.back();
+    else void router.push(fallback);
+  };
 }

@@ -41,7 +41,7 @@ import { hasSlotContent } from "@/utils/slot";
  * A user shown as avatar, name and an optional secondary line, for example in a
  * sidebar footer or a user menu.
  *
- * @experimental Not for public use yet: undocumented, and it may change or be removed without notice.
+ * @experimental The API may still change in a future release.
  */
 const props = withDefaults(
   defineProps<{

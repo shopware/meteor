@@ -1,11 +1,11 @@
 import { effectScope, nextTick } from "vue";
-import { useAppLoading } from "./useAppLoading";
+import { createAppLoading } from "./createAppLoading";
 
 function setup() {
-  return effectScope().run(() => useAppLoading())!;
+  return effectScope().run(() => createAppLoading())!;
 }
 
-describe("useAppLoading", () => {
+describe("createAppLoading", () => {
   beforeEach(() => {
     vi.useFakeTimers();
   });

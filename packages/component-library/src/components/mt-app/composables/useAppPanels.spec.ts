@@ -1,6 +1,6 @@
 import { nextTick, ref } from "vue";
 import { useAppPanels } from "./useAppPanels";
-import type { MtAppPanel } from "./useMtApp";
+import type { MtAppPanel } from "./useApp";
 
 function setup(options: { isMobile?: boolean; unavailable?: MtAppPanel[] } = {}) {
   const isMobile = ref(options.isMobile ?? false);
