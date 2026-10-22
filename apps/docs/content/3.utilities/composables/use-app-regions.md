@@ -32,17 +32,7 @@ const routes = [
 ];
 ```
 
-Vue Router doesn't know `mtAppRegions`. To type it, add it to the `RouteMeta` of your application:
-
-```ts
-import type { MtAppRegions } from "@shopware-ag/meteor-component-library";
-
-declare module "vue-router" {
-  interface RouteMeta {
-    mtAppRegions?: MtAppRegions;
-  }
-}
-```
+With Vue Router, `meta.mtAppRegions` is typed through `RouteMeta`, without any setup.
 
 ## API
 
