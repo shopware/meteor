@@ -31,16 +31,22 @@ function filterNavigation(
   });
 }
 
+// The open sections are tracked by their position, so a section with fewer
+// groups (such as Blocks) would leave the next section's later groups closed.
+// A new instance per top-level section opens all of them again.
+const section = computed(() => route.path.split("/")[1]);
+
 const filteredNavigation = computed<ContentNavigationItem[]>(() => {
   const q = query.value.trim().toLowerCase();
   const nav = sidebarNavigation.value ?? [];
-  return q ? filterNavigation(nav, q) : nav;
+  return groupComponentNavigation(q ? filterNavigation(nav, q) : nav);
 });
 </script>
 
 <template>
   <UContentNavigation
     v-if="filteredNavigation.length"
+    :key="section"
     type="multiple"
     :highlight="false"
     variant="pill"
