@@ -21,6 +21,7 @@ import { useAppLoading } from "./composables/useAppLoading";
 import { useUnsavedChanges } from "./composables/useUnsavedChanges";
 import { useFutureFlags } from "../../composables/useFutureFlags";
 import { useSnackbar } from "../mt-snackbar/composables/use-snackbar";
+import type { Router } from "vue-router";
 
 type MediaListener = (event: MediaQueryListEvent) => void;
 
@@ -106,7 +107,7 @@ async function renderApp(
         ? [
             {
               install: (app: App) => {
-                app.config.globalProperties.$router = options.router;
+                app.config.globalProperties.$router = options.router as Router;
               },
             },
           ]

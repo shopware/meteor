@@ -7,6 +7,7 @@ import {
   useRouterBack,
   type RouteLike,
 } from "./useAppRouter";
+import type { Router } from "vue-router";
 
 type AfterEachHook = (to: RouteLike, from: RouteLike, failure?: unknown) => void;
 
@@ -51,7 +52,7 @@ function renderWithRouter(router: unknown, setup: () => void) {
       plugins: [
         {
           install: (app: App) => {
-            app.config.globalProperties.$router = router;
+            app.config.globalProperties.$router = router as Router;
           },
         },
       ],
