@@ -3,6 +3,7 @@ import { render, screen, within } from "@testing-library/vue";
 import userEvent from "@testing-library/user-event";
 import MtPage from "./mt-page.vue";
 import type { BreadcrumbItem } from "../mt-breadcrumb/mt-breadcrumb.vue";
+import type { Router } from "vue-router";
 
 const RouterLinkStub = defineComponent({
   props: {
@@ -34,7 +35,7 @@ function renderPage(options: { props?: Record<string, unknown>; router?: unknown
         ? [
             {
               install: (app: App) => {
-                app.config.globalProperties.$router = options.router;
+                app.config.globalProperties.$router = options.router as Router;
               },
             },
           ]
