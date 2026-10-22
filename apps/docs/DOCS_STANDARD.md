@@ -16,7 +16,7 @@ Use `create-docs` when adding a page and `review-docs` before considering it don
 ## Where pages live
 
 - Component pages live under `content/2.components/` as Markdown files, one per component.
-- The numeric filename prefix controls ordering (for example `1.button.md`). The slug after the prefix is the URL segment, so `1.button.md` serves at `/components/button`.
+- The files have no numeric prefix, so the slug is the file name: `button.md` serves at `/components/button`. The sidebar groups and orders them as described in [Frontmatter](#frontmatter).
 - The slug also resolves the documented component: `button` maps to `MtButton`. Keep the slug aligned with the component name so `:component-api` and examples resolve automatically.
 
 ## Section order
@@ -37,7 +37,7 @@ Component pages use this order:
 
 `Basic example`, `Usage`, `API reference`, and `Best practices` are always present. `Examples` is included whenever the component has more than its basic usage to show. The optional sections are included when they add value. Keep the order stable: if a section is not needed, omit it instead of moving sections around.
 
-Each section is described below in this order. For a full page that follows the standard, copy the structure of `content/2.components/1.button.md`.
+Each section is described below in this order. For a full page that follows the standard, copy the structure of `content/2.components/button.md`.
 
 ## Frontmatter
 
@@ -51,6 +51,8 @@ title: Button
 description: The standard action trigger for Meteor interfaces.
 ---
 ```
+
+The sidebar groups the component pages into the sections `Layout`, `Content`, `Navigation`, `Forms`, `Status` and `Overlays`, without changing their URLs. The sections and the pages in each are set in `app/utils/groupComponentNavigation.ts`, and each section lists its pages alphabetically. Add a new component to its section there; until then, it shows after the sections.
 
 Write the description as a definition of the component, not as instructions. Start with a noun phrase ("The standard action trigger for...", "A compact status label for..."), not a verb ("Use this to..."). Keep richer framing for the `Usage` section.
 
@@ -186,6 +188,34 @@ Use `Related components` when users are likely to choose between this component 
 - [**Radio Group**](/components/radio-group): when a small set of options should stay visible so users can compare them directly.
 - [**Checkbox**](/components/checkbox): when users toggle independent options on and off rather than choosing from a shared option set.
 ```
+
+## Blocks
+
+Blocks are templates for whole pages and recurring patterns, built from public components. They are not components of their own: readers copy the code into their application and adapt it.
+
+### Where blocks live
+
+- Each block is a single Single File Component under `app/components/content/blocks/<group>/<Name>Block.vue`, for example `app/components/content/blocks/pages/DetailPageBlock.vue`. The `Block` suffix keeps the names apart from the examples.
+- Its page lives under `content/4.blocks/<n>.<group>/<n>.<slug>.md`, for example `content/4.blocks/2.pages/1.detail-page.md`, which serves at `/blocks/pages/detail-page`. Each group folder has a `.navigation.yml` with its title.
+
+### Page structure
+
+1. Frontmatter: `title` is the name of the block, `description` a single sentence that defines it, as for component pages.
+2. The preview, with no heading: `::block-preview{name="detail-page-block"}`. It renders the block in an iframe that readers can resize with the handle on its right edge, and shows its code to copy. The preview has the 16:9 ratio of a screen, at least 480px tall and never taller than the window; set `height` in pixels only when a block needs a fixed height.
+3. `## Usage`: short prose on when to use the block and what to replace or adapt, such as the sample data or the requests.
+4. `## Examples` (optional): further variants of the block, each under an `H3` with a short description and its own `::block-preview`. Each variant is a block of its own, named after the page and the variant, such as `DetailPageContentBlock.vue` for the variant with content of the detail page.
+5. `## Components`: a bullet list that links each component the block uses, with what it is used for.
+
+When a page shows several variants, the first preview shows the structure: the slots of the layout components, filled with `placeholder-slot`s named after their slots, such as `Page: actions`. The variants below show it with real content.
+
+Block pages have no table of contents, so the preview can take the whole width. The text below it keeps the usual width of the prose and stays aligned to the left.
+
+### Code
+
+- A page block shows the structure of a page: the shell, the page header, tabs and cards. Fill the cards with `placeholder-slot` instead of real content such as form fields, so the structure stays easy to read. Leave the placeholders without a `name`, and give each a height that suggests the size of its content. Pass `name` only where the label helps, such as in a component example that shows which slot holds what.
+- Other blocks, such as the login, show complete content. Keep them ready to copy: import from `@shopware-ag/meteor-component-library`, keep the sample data in the file, and do not use i18n or composables of the docs app.
+- Style only with Meteor tokens, in a `<style scoped>` block. Small layout classes such as `.stack` or `.grid` belong into the block itself.
+- Mark the places to replace, such as a timeout that stands in for a request, with a short comment.
 
 ## Prose rules
 
