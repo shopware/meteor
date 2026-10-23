@@ -35,7 +35,7 @@
 
       <dropdown-menu-portal>
         <mt-action-menu match-trigger-width side="top">
-          <mt-action-menu-group v-if="$slots.default">
+          <mt-action-menu-group v-if="hasSlotContent($slots.default)">
             <!-- @slot Further entries of the user menu, placed above the logout entry. Use mt-action-menu-item -->
             <slot />
           </mt-action-menu-group>
@@ -76,6 +76,7 @@ import MtActionMenuItem from "../mt-action-menu-item/mt-action-menu-item.vue";
 import MtAvatar from "../mt-avatar/mt-avatar.vue";
 import MtIcon from "../mt-icon/mt-icon.vue";
 import MtText from "../mt-text/mt-text.vue";
+import { hasSlotContent } from "@/utils/slot";
 
 const props = withDefaults(
   defineProps<{
