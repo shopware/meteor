@@ -41,7 +41,6 @@ export const serviceMessageSchema = z.object({
   targetLocationId: z.string(),
   data: z.unknown(),
 }).refine(value => Object.prototype.hasOwnProperty.call(value, 'data'), {
-  // z.unknown() accepts a missing key; explicit undefined remains a valid payload.
   message: 'Message must contain data.',
   path: ['data'],
 });
