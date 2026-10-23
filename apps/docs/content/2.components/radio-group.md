@@ -97,6 +97,7 @@ Build fully custom option cards when you need richer content or a different layo
 ## Accessibility
 
 - Provide a clear group label or other nearby visible context so users understand what the choice controls.
+- The root's `label` names the radio group for screen readers. The root's `hint` and `error`, and any element referenced by its `ariaDescribedBy`, describe the group.
 - `MtRadioGroupIndicator` uses native radio inputs. Tab enters or leaves the group, arrow keys move between options and select them, and Space selects the focused option.
 - Card items keep the native radio input and show a focus outline around the card during keyboard navigation.
 - A card's label names its radio input. Its description is associated with the input so screen readers can announce the supporting text.

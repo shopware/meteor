@@ -7,8 +7,8 @@
   >
     <mt-field-label
       v-if="label"
+      :id="labelId"
       class="mt-radio-group-root__label"
-      :for="identification"
       :disabled="disabled"
       :has-error="!!error"
       :style="{ gridArea: 'label' }"
@@ -21,16 +21,22 @@
     <div
       class="mt-radio-group-root__options"
       role="radiogroup"
+      :aria-labelledby="label ? labelId : undefined"
       :aria-disabled="disabled || undefined"
-      :aria-describedby="ariaDescribedBy"
+      :aria-describedby="describedBy"
       :style="{ gridArea: 'options' }"
     >
       <slot :disabled="disabled" :identification="identification" />
     </div>
 
-    <mt-field-error :error="error" :style="{ gridArea: 'error' }" />
+    <mt-field-error :id="errorId" :error="error" :style="{ gridArea: 'error' }" />
 
-    <div v-if="showFieldHint" class="mt-radio-group-root__hint" :style="{ gridArea: 'hint' }">
+    <div
+      v-if="showFieldHint"
+      :id="hintId"
+      class="mt-radio-group-root__hint"
+      :style="{ gridArea: 'hint' }"
+    >
       <mt-field-hint :hide-icon="!!$slots.hint">
         <slot name="hint">{{ hint }}</slot>
       </mt-field-hint>
@@ -87,6 +93,9 @@ const emit = defineEmits<{
 const future = useFutureFlags();
 
 const id = useId();
+const labelId = useId();
+const errorId = useId();
+const hintId = useId();
 
 const identification = computed(() => {
   if (props.name) {
@@ -94,6 +103,17 @@ const identification = computed(() => {
   }
   return `mt-field--${id}`;
 });
+
+const describedBy = computed(
+  () =>
+    [
+      props.ariaDescribedBy,
+      props.error ? errorId : undefined,
+      showFieldHint.value ? hintId : undefined,
+    ]
+      .filter(Boolean)
+      .join(" ") || undefined,
+);
 
 const selectedValue = computed({
   get: () => props.modelValue,

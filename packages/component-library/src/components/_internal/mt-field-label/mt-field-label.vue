@@ -30,13 +30,14 @@ import mtInheritanceSwitch from "../mt-inheritance-switch/mt-inheritance-switch.
 
 const props = withDefaults(
   defineProps<{
-    for: string;
+    for?: string;
     hasError?: boolean;
     required?: boolean;
     inheritance?: "linked" | "unlinked" | "none";
     disabled?: boolean;
   }>(),
   {
+    for: undefined,
     inheritance: "none",
   },
 );

@@ -449,4 +449,72 @@ describe("mt-radio-group", () => {
     // ASSERT
     expect(container.querySelector(".mt-field-hint")).not.toBeInTheDocument();
   });
+
+  it("names the radio group after its label", () => {
+    // ARRANGE
+    render({
+      components: { MtRadioGroupRoot, MtRadioGroupItem },
+      template: `
+        <MtRadioGroupRoot label="Choose a plan">
+          <MtRadioGroupItem id="basic" value="basic" label="Basic" />
+        </MtRadioGroupRoot>
+      `,
+    });
+
+    // ASSERT
+    expect(screen.getByRole("radiogroup", { name: "Choose a plan" })).toBeVisible();
+    expect(screen.getByText("Choose a plan")).not.toHaveAttribute("for");
+  });
+
+  it("describes the radio group with additional guidance, its error and its hint", () => {
+    // ARRANGE
+    render({
+      components: { MtRadioGroupRoot, MtRadioGroupItem },
+      template: `
+        <p id="plan-guidance">Billed monthly.</p>
+        <MtRadioGroupRoot
+          label="Choose a plan"
+          aria-described-by="plan-guidance"
+          :error="{ detail: 'Select a plan to continue.' }"
+          hint="You can change the plan later."
+        >
+          <MtRadioGroupItem id="basic" value="basic" label="Basic" />
+        </MtRadioGroupRoot>
+      `,
+    });
+
+    // ASSERT
+    expect(screen.getByRole("radiogroup", { name: "Choose a plan" })).toHaveAccessibleDescription(
+      "Billed monthly. Select a plan to continue. You can change the plan later.",
+    );
+  });
+
+  it("stops describing the radio group with an error once it is cleared", async () => {
+    // ARRANGE
+    render({
+      components: { MtRadioGroupRoot, MtRadioGroupItem },
+      setup: () => ({
+        error: ref<{ detail: string } | undefined>({ detail: "Select a plan to continue." }),
+      }),
+      template: `
+        <button @click="error = undefined">Clear error</button>
+        <MtRadioGroupRoot label="Choose a plan" :error="error">
+          <MtRadioGroupItem id="basic" value="basic" label="Basic" />
+        </MtRadioGroupRoot>
+      `,
+    });
+
+    // ASSERT
+    expect(screen.getByRole("radiogroup", { name: "Choose a plan" })).toHaveAccessibleDescription(
+      "Select a plan to continue.",
+    );
+
+    // ACT
+    await userEvent.click(screen.getByRole("button", { name: "Clear error" }));
+
+    // ASSERT
+    expect(screen.getByRole("radiogroup", { name: "Choose a plan" })).not.toHaveAttribute(
+      "aria-describedby",
+    );
+  });
 });
